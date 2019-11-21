@@ -1,0 +1,75 @@
+= Metarnoma Native PDF
+
+image:https://github.com/metanorma/mn-native-pdf/workflows/xml-fo/badge.svg["Build Status", link="https://github.com/metanorma/mn-native-pdf/actions?workflow=xml-fo"]
+
+The experimental PDF is available here:
+
+* https://metanorma.github.io/mn-native-pdf/iso-24229.pdf[ISO 24229 sample (PDF)]
+
+
+== Purpose
+
+This repository pilots native PDF capabilities of Metnaorma using XML-FO via Apache FOP.
+
+
+== Installing Build Tools
+
+You will need Apache FOP, `envsubst`, `make` and the Cambria font set.
+
+=== On macOS
+
+[source,sh]
+----
+# Install `envsubst`
+brew install gettext
+brew link --force gettext
+
+# Install Apache FOP
+brew install fop
+----
+
+Manually add the Cambria fonts (`cambria.ttf`, `cambriab.ttf`, `cambriai.ttf`, `cambriaz.ttf`) to your `fonts/` directory under this repository, or anywhere else. Point to it using the environment variable `MN_PDF_FONT_PATH`.
+
+e.g.
+[source,sh]
+----
+mkdir ~/mn-native-pdf/fonts/
+cp /tmp/*.ttf ~/mn-native-pdf/fonts/
+----
+
+Building the document is then easy:
+
+[source,sh]
+----
+cd ~/mn-native-pdf/
+make all
+
+# PDFs will be generated as documents/*.pdf
+----
+
+=== On Ubuntu Linux
+
+[source,sh]
+----
+sudo apt-get -y install gettext-base fop cabextract
+mkdir -p ~/.fonts
+curl -Ls http://plasmasturm.org/dl/vistafonts-installer | bash
+----
+
+The Cambria fonts can be setup using the very super convenient setup script kindly provided by http://plasmasturm.org[Aristotle Pagaltzis] at http://plasmasturm.org/code/vistafonts-installer/ .
+
+
+Building the document is then easy:
+
+[source,sh]
+----
+export MN_PDF_FONT_PATH=~/.fonts
+
+make all
+# PDFs will be generated as documents/*.pdf
+----
+
+
+== Copyright
+
+Ribose Inc.
