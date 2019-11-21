@@ -13,7 +13,7 @@ jobs:
       - name: Setup fonts # i.e. Cambria
         run: |
           mkdir -p ~/.fonts
-          curl -Ls http://plasmasturm.org/dl/vistafonts-installer | sudo bash
+          curl -Ls http://plasmasturm.org/dl/vistafonts-installer | bash
       - uses: actions/checkout@master
       - name: Compile output
         env:
