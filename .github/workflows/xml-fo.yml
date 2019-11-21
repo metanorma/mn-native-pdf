@@ -6,30 +6,24 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - name: Setup fonts # i.e. Cambria
-        run: |
-          sudo apt-get install -y cabextract
-          mkdir -p ~/.fonts
-          curl -s http://plasmasturm.org/dl/vistafonts-installer | sudo bash
+      # cabextract for fonts, gettext-base for envsubst
       - name: Setup prerequisites
         run: |
-          sudo apt-get -y install gettext-base
-          sudo apt-get install -y fop
+          sudo apt-get -y install gettext-base fop cabextract
+      - name: Setup fonts # i.e. Cambria
+        run: |
+          mkdir -p ~/.fonts
+          curl -s http://plasmasturm.org/dl/vistafonts-installer | sudo bash
       - uses: actions/checkout@master
-      - name: Set font directory
-      env:
-        FONT_PATH: ${{ secrets.GITHUB_REPOSITORY }}
+      - name: Compile output
+        env:
+          MN_PDF_FONT_PATH: ~/.fonts
         run: |
-          envsubst < pdf_fonts_config.xml.in > pdf_fonts_config.xml
-      - name: Build PDF document
-        run: |
-          fop -c pdf_fonts_config.xml -xml iso-24229.xml -xsl iso-24229.xsl -out application/pdf iso-24229.pdf
-          mkdir -p published
-          mv *.pdf published/
+          make all
       - uses: actions/upload-artifact@master
         with:
-          name: published
-          path: published
+          name: documents
+          path: documents
 
 
   deploy-gh-pages:
@@ -40,7 +34,7 @@ jobs:
     - uses: actions/checkout@master
     - uses: actions/download-artifact@master
       with:
-        name: published
+        name: documents
     - name: deploy-to-gh
       env:
         GITHUB_REPOSITORY: ${{ secrets.GITHUB_REPOSITORY }}
