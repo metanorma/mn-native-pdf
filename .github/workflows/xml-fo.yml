@@ -20,10 +20,11 @@ jobs:
           MN_PDF_FONT_PATH: ~/.fonts
         run: |
           make all
+          mv documents published
       - uses: actions/upload-artifact@master
         with:
-          name: documents
-          path: documents
+          name: published
+          path: published
 
 
   deploy-gh-pages:
@@ -34,7 +35,7 @@ jobs:
     - uses: actions/checkout@master
     - uses: actions/download-artifact@master
       with:
-        name: documents
+        name: published
     - name: deploy-to-gh
       env:
         GITHUB_REPOSITORY: ${{ secrets.GITHUB_REPOSITORY }}
