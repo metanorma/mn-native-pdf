@@ -207,7 +207,7 @@
 		</fo:root>
 	</xsl:template> 
 
-	<!-- for pass the paremeter 'sectionNum' over templates, like tunnel parameter in XSLT 2.0 -->
+	<!-- for pass the paremeter 'sectionNum' over templates, like 'tunnel' parameter in XSLT 2.0 -->
 	<xsl:template match="node()">
 		<xsl:param name="sectionNum"/>
 		<xsl:param name="sectionNumSkew"/>
@@ -293,7 +293,7 @@
 				</xsl:choose>
 			</xsl:attribute>
 			<fo:inline id="{$id}">
-				<!-- level=<xsl:value-of select="$level"/>x -->
+				<!-- DEBUG level=<xsl:value-of select="$level"/>x -->
 				<xsl:if test="$sectionNum">
 					<xsl:value-of select="$sectionNum"/>
 					<xsl:choose>
@@ -377,6 +377,9 @@
 		<xsl:value-of select="."/>
 	</xsl:template>
 	
+	<xsl:template match="iso:td//text() | iso:th//text()">
+		<xsl:call-template name="add-zero-spaces"/>
+	</xsl:template>
 	
 	<xsl:template match="iso:iso-standard/iso:sections/*" mode="contents">
 		<xsl:param name="sectionNum"/>
@@ -414,7 +417,6 @@
 	<xsl:template match="iso:bibitem" mode="contents"/>
 	
 	<xsl:template match="iso:ul | iso:ol">
-	<!-- provisional-distance-between-starts="6.3mm" provisional-label-separation="5mm" -->
 		<fo:list-block >
 			<xsl:apply-templates />
 		</fo:list-block>
@@ -445,7 +447,6 @@
 		</fo:list-item>
 	</xsl:template>
 	
-	
 	<xsl:template match="iso:link">
 		<fo:inline><xsl:value-of select="@target"/></fo:inline>
 	</xsl:template>
@@ -470,7 +471,6 @@
 			<xsl:attribute name="section">
 				<xsl:value-of select="$value"/>
 			</xsl:attribute>
-			<!-- <xsl:value-of select="$value"/> -->
 		</item>
 	</xsl:template>
 	
@@ -494,8 +494,6 @@
 		</fo:block>
 	</xsl:template>
 	
-	
-	
 	<xsl:template match="iso:annex">
 		<fo:block break-before="page"/>
 		<fo:block font-size="13pt" text-align="center">
@@ -516,13 +514,11 @@
 			<xsl:attribute name="section">
 				<xsl:value-of select="$value"/>
 			</xsl:attribute>
-			<!-- <xsl:value-of select="$value"/> -->
 			<xsl:text> (</xsl:text><xsl:value-of select="@obligation"/><xsl:text>) </xsl:text>
 			<xsl:value-of select="iso:title"/>
 		</item>
 		<xsl:apply-templates select="iso:clause" mode="contents"/>
 	</xsl:template>
-	
 	
 	<xsl:template match="iso:annex/iso:title">
 		<fo:block font-size="13pt" text-align="center" font-weight="bold" margin-bottom="12pt" keep-with-next="always">
@@ -542,8 +538,6 @@
 			<xsl:attribute name="section">
 				<xsl:value-of select="$value"/>
 			</xsl:attribute>
-			<!-- <xsl:value-of select="$value"/>
-			<xsl:value-of select="'&#xA0;&#xA0;'"/> -->
 			<xsl:value-of select="iso:title"/>
 		</item>
 	</xsl:template>
@@ -558,35 +552,105 @@
 		</fo:block>
 	</xsl:template>
 	
-	
-	
 	<xsl:template match="iso:table">
 		<fo:block font-weight="bold" text-align="center" margin-bottom="6pt">
 			<xsl:text>Table </xsl:text><xsl:number format="A." count="iso:annex"/><xsl:number format="1"/>
 		</fo:block>
-		<fo:table table-layout="fixed" font-size="10pt" width="100%">
-			<xsl:apply-templates />
-		</fo:table>
+		
+		<xsl:variable name="colwidths">
+			<xsl:variable name="cols-count" select="count(iso:thead/iso:tr/iso:th)"/>
+			<xsl:call-template name="calculate-column-widths">
+				<xsl:with-param name="cols-count" select="$cols-count"/>
+			</xsl:call-template>
+		</xsl:variable>
+
+		<xsl:variable name="margin-left">
+			<xsl:choose>
+				<xsl:when test="sum(xalan:nodeset($colwidths)//column) &gt; 75">15</xsl:when>
+				<xsl:otherwise>0</xsl:otherwise>
+			</xsl:choose>
+		</xsl:variable>
+		
+		<fo:block-container margin-left="-{$margin-left}mm" margin-right="-{$margin-left}mm">
+			<fo:table table-layout="fixed" font-size="10pt" width="100%" margin-left="{$margin-left}mm" margin-right="{$margin-left}mm">
+				<xsl:for-each select="xalan:nodeset($colwidths)//column">
+					<fo:table-column column-width="proportional-column-width({.})"/>
+				</xsl:for-each>
+				<xsl:apply-templates />
+			</fo:table>
+		</fo:block-container>
+	</xsl:template>
+	
+	<xsl:template name="calculate-column-widths">
+		<xsl:param name="cols-count"/>
+		<xsl:param name="curr-col" select="1"/>
+		<xsl:param name="width" select="0"/>
+		
+		<xsl:if test="$curr-col &lt;= $cols-count">
+			<xsl:variable name="widths">
+				<xsl:for-each select="iso:thead//iso:tr">
+					<width>
+						<xsl:variable name="words">
+							<xsl:call-template name="tokenize">
+								<xsl:with-param name="text" select="translate(iso:th[$curr-col],'- —', '   ')"/>
+							</xsl:call-template>
+						</xsl:variable>
+						<xsl:call-template name="max_length">
+							<xsl:with-param name="words" select="xalan:nodeset($words)"/>
+						</xsl:call-template>
+					</width>
+				</xsl:for-each>
+				<xsl:for-each select="iso:tbody//iso:tr">
+					<width>
+						<xsl:variable name="words">
+							<xsl:call-template name="tokenize">
+								<xsl:with-param name="text" select="translate(iso:td[$curr-col],'- —', '   ')"/>
+							</xsl:call-template>
+						</xsl:variable>
+						<xsl:call-template name="max_length">
+							<xsl:with-param name="words" select="xalan:nodeset($words)"/>
+						</xsl:call-template>
+					</width>
+				</xsl:for-each>
+			</xsl:variable>
+			
+			<column>
+				<xsl:for-each select="xalan:nodeset($widths)//width">
+					<xsl:sort select="." data-type="number" order="descending"/>
+					<xsl:if test="position()=1">
+							<xsl:value-of select="."/>
+					</xsl:if>
+				</xsl:for-each>
+			</column>
+			<xsl:call-template name="calculate-column-widths">
+				<xsl:with-param name="cols-count" select="$cols-count"/>
+				<xsl:with-param name="curr-col" select="$curr-col +1"/>
+			</xsl:call-template>
+		</xsl:if>
 	</xsl:template>
 	
 	<!-- for debug purpose only -->
 	<xsl:template match="iso:table2"/>
 	
-	<xsl:template match="iso:thead">
-		<fo:table-header font-weight="bold">
+	<xsl:template match="iso:thead"/>
+	
+	<xsl:template match="iso:thead" mode="process">
+		<!-- <fo:table-header font-weight="bold">
 			<xsl:apply-templates />
-		</fo:table-header>
+		</fo:table-header> -->
+			<xsl:apply-templates />
 	</xsl:template>
 	
 	<xsl:template match="iso:tbody">
-		<xsl:apply-templates select="iso:note" mode="process"/>
 		<fo:table-body>
+			<xsl:apply-templates select="../iso:thead" mode="process"/>
 			<xsl:apply-templates />
+			<xsl:apply-templates select="../iso:note" mode="process"/>
 		</fo:table-body>
 	</xsl:template>
 	
 	<xsl:template match="iso:thead/iso:tr">
-		<fo:table-row min-height="4mm" border-top="solid black 1.5pt" border-bottom="solid black 1.5pt">
+		<fo:table-row font-weight="bold" min-height="4mm" border-top="solid black 1.5pt" border-bottom="solid black 1.5pt">
 			<xsl:apply-templates />
 		</fo:table-row>
 	</xsl:template>
@@ -615,20 +679,41 @@
 	
 	<xsl:template match="iso:table/iso:note"/>
 	<xsl:template match="iso:table/iso:note" mode="process">
-		<fo:table-footer>
+		<xsl:variable name="cols-count" select="count(../iso:thead/iso:tr/iso:th)"/>
+		<!-- <fo:table-footer> -->
 			<fo:table-row>
-				<fo:table-cell>
+				<fo:table-cell border="solid black 1pt" padding-left="1mm" padding-right="1mm" padding-top="1mm" number-columns-spanned="{$cols-count}">
 					<xsl:apply-templates />
+						<xsl:for-each select="..//iso:fn">
+							<fo:block margin-bottom="12pt">
+								<fo:inline font-size="80%" padding-right="5mm" vertical-align="super" id="{@reference}">
+									<xsl:value-of select="@reference"/>
+								</fo:inline>
+								<xsl:apply-templates />
+							</fo:block>
+						</xsl:for-each>
 				</fo:table-cell>
 			</fo:table-row>
-		</fo:table-footer>
+		<!-- </fo:table-footer> -->
 	</xsl:template>
 
+	<xsl:template match="iso:fn">
+		<fo:inline font-size="80%" keep-with-previous.within-line="always" vertical-align="super">
+			<fo:basic-link internal-destination="{@reference}">
+				<xsl:value-of select="@reference"/>
+			</fo:basic-link>
+		</fo:inline>
+	</xsl:template>
+	
+	<xsl:template match="iso:fn/iso:p">
+		<fo:inline>
+			<xsl:apply-templates />
+		</fo:inline>
+	</xsl:template>
+	
 	<xsl:template match="iso:references[@id = '_bibliography']">
 		<fo:block break-before="page"/>
-		
 			<xsl:apply-templates />
-		
 	</xsl:template>
 
 	<xsl:template match="iso:references[@id = '_bibliography']" mode="contents">
@@ -710,7 +795,7 @@
 	<xsl:template match="iso:eref">
 		<fo:inline>
 			<fo:basic-link internal-destination="{@bibitemid}">
-				<xsl:value-of select="@citeas"/>
+				<xsl:value-of select="@citeas" disable-output-escaping="yes"/>
 			</fo:basic-link>
 		</fo:inline>
 	</xsl:template>
@@ -755,5 +840,57 @@
 			</fo:table>
 		</fo:static-content>
 	</xsl:template>
+
+	<!-- split string 'text' by 'separator' -->
+	<xsl:template name="tokenize">
+		<xsl:param name="text"/>
+		<xsl:param name="separator" select="' '"/>
+		<xsl:choose>
+			<xsl:when test="not(contains($text, $separator))">
+				<word>
+					<xsl:value-of select="string-length(normalize-space($text))"/>
+				</word>
+			</xsl:when>
+			<xsl:otherwise>
+				<word>
+					<xsl:value-of select="string-length(normalize-space(substring-before($text, $separator)))"/>
+				</word>
+				<xsl:call-template name="tokenize">
+					<xsl:with-param name="text" select="substring-after($text, $separator)"/>
+				</xsl:call-template>
+			</xsl:otherwise>
+		</xsl:choose>
+	</xsl:template>
+
+	<!-- get max value in array -->
+	<xsl:template name="max_length">
+		<xsl:param name="words"/>
+		<xsl:for-each select="$words//word">
+				<xsl:sort select="." data-type="number" order="descending"/>
+				<xsl:if test="position()=1">
+						<xsl:value-of select="."/>
+				</xsl:if>
+		</xsl:for-each>
+	</xsl:template>
+
+	<!-- add zero space after dash character (for table's entries) -->
+	<xsl:template name="add-zero-spaces">
+		<xsl:param name="text" select="."/>
+		<xsl:variable name="zero-space-after-chars">&#x002D;</xsl:variable>
+		<xsl:variable name="zero-space">&#x200B;</xsl:variable>
+		<xsl:choose>
+			<xsl:when test="contains($text, $zero-space-after-chars)">
+				<xsl:value-of select="substring-before($text, $zero-space-after-chars)"/>
+				<xsl:value-of select="$zero-space-after-chars"/>
+				<xsl:value-of select="$zero-space"/>
+				<xsl:call-template name="add-zero-spaces">
+					<xsl:with-param name="text" select="substring-after($text, $zero-space-after-chars)"/>
+				</xsl:call-template>
+			</xsl:when>
+			<xsl:otherwise>
+				<xsl:value-of select="$text"/>
+			</xsl:otherwise>
+		</xsl:choose>
+	</xsl:template>   
 	
 </xsl:stylesheet>
