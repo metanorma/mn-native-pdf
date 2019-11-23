@@ -574,7 +574,14 @@
 		<fo:block-container margin-left="-{$margin-left}mm" margin-right="-{$margin-left}mm">
 			<fo:table table-layout="fixed" font-size="10pt" width="100%" margin-left="{$margin-left}mm" margin-right="{$margin-left}mm">
 				<xsl:for-each select="xalan:nodeset($colwidths)//column">
-					<fo:table-column column-width="proportional-column-width({.})"/>
+					<xsl:choose>
+						<xsl:when test=". = 1">
+							<fo:table-column column-width="proportional-column-width(2)"/>
+						</xsl:when>
+						<xsl:otherwise>
+							<fo:table-column column-width="proportional-column-width({.})"/>
+						</xsl:otherwise>
+					</xsl:choose>
 				</xsl:for-each>
 				<xsl:apply-templates />
 			</fo:table>
