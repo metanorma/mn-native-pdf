@@ -14,6 +14,8 @@ jobs:
         run: |
           mkdir -p ~/.fonts
           curl -Ls http://plasmasturm.org/dl/vistafonts-installer | bash
+          ls -l ~/.fonts/truetype/freefont
+          ls -l ~/.fonts/truetype
       - uses: actions/checkout@master
       - name: Compile output
         env:
