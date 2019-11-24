@@ -80,27 +80,27 @@ the location of this file.
 					<font-triplet name="Cambria" style="italic" weight="bold"/>
 				</font>
 				<!-- for missing characters in cambria, and for Hebrew glyphs -->
-				<font kerning="yes" embed-url="file://usr/share/fonts/truetype/freefont/FreeSerif.ttf">
+				<font kerning="yes" embed-url="file:///usr/share/fonts/truetype/freefont/FreeSerif.ttf">
 					<font-triplet name="FreeSerif" style="normal" weight="normal"/>
 				</font>
-				<font kerning="yes" embed-url="file://usr/share/fonts/truetype/freefont/FreeSerifBold.ttf">
+				<font kerning="yes" embed-url="file:///usr/share/fonts/truetype/freefont/FreeSerifBold.ttf">
 					<font-triplet name="FreeSerif" style="normal" weight="bold"/>
 				</font>
-				<font kerning="yes" embed-url="file://usr/share/fonts/truetype/freefont/FreeSerifItalic.ttf">
+				<font kerning="yes" embed-url="file:///usr/share/fonts/truetype/freefont/FreeSerifItalic.ttf">
 					<font-triplet name="FreeSerif" style="italic" weight="normal"/>
 				</font>
-				<font kerning="yes" embed-url="file://usr/share/fonts/truetype/freefont/FreeSerifBoldItalic.ttf">
+				<font kerning="yes" embed-url="file:///usr/share/fonts/truetype/freefont/FreeSerifBoldItalic.ttf">
 					<font-triplet name="FreeSerif" style="italic" weight="bold"/>
 				</font>
 				<!-- for Korean glyphs -->
-				<font kerning="yes" embed-url="file://usr/share/fonts/truetype/nanum/NanumGothic.ttf">
+				<font kerning="yes" embed-url="file:///usr/share/fonts/truetype/nanum/NanumGothic.ttf">
 					<font-triplet name="NanumGothic" style="normal" weight="normal"/>
 				</font>
-				<font kerning="yes" embed-url="file://usr/share/fonts/truetype/nanum/NanumGothicBold.ttf">
+				<font kerning="yes" embed-url="file:///usr/share/fonts/truetype/nanum/NanumGothicBold.ttf">
 					<font-triplet name="NanumGothic" style="normal" weight="bold"/>
 				</font>
 				<!-- for Japanese glyphs -->
-				<font kerning="yes" embed-url="file://usr/share/fonts/truetype/droid/DroidSansFallbackFull.ttf">
+				<font kerning="yes" embed-url="file:///usr/share/fonts/truetype/droid/DroidSansFallbackFull.ttf">
 					<font-triplet name="DroidSans" style="normal" weight="normal"/>
 				</font>
 				
