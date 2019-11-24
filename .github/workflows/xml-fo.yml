@@ -14,6 +14,7 @@ jobs:
         run: |
           mkdir -p ~/.fonts
           curl -Ls http://plasmasturm.org/dl/vistafonts-installer | bash
+          ls -l /home
           ls -l ~/.fonts
           ls -l ~/.fonts/truetype
           ls -l ~/.fonts/truetype/freefont
