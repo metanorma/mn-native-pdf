@@ -1,0 +1,859 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<itu-standard xmlns="https://open.ribose.com/standards/itu">
+<bibdata type="standard">
+  <title language="en" format="text/plain" type="main">Author’s guide for drafting ITU-T Recommendations</title>
+  <docidentifier type="ITU">ITU-T A.1500 (fictitious)</docidentifier>
+  <docnumber>A.1500 (fictitious)</docnumber>
+  <date type="published">
+    <on>2016-02-05</on>
+  </date>
+  <date type="created">
+    <on>2011-03-15</on>
+  </date>
+  <contributor>
+    <role type="author"/>
+    <organization>
+      <name>International Telecommunication Union</name>
+      <abbreviation>ITU</abbreviation>
+    </organization>
+  </contributor>
+  <contributor>
+    <role type="publisher"/>
+    <organization>
+      <name>International Telecommunication Union</name>
+      <abbreviation>ITU</abbreviation>
+    </organization>
+  </contributor>
+  
+  <language>en</language>
+  <script>Latn</script><abstract><p id="_31a127b2-2cb3-4fad-9360-4b0ad7e8a5df">This author's guide for drafting ITU-T Recommendations permits uniform, efficient preparation of texts by TSB for publication. It covers the rules for drafting a Recommendation in a standard manner. Its provisions should be applied in all instances where texts (such as draft Recommendations) are being prepared by study group authors for approval and publication. The methods presented in this author's guide are the basis for a template and will remain stable until changes to current publication procedures necessitate their modification.</p>
+<p id="_cef7e1da-a7fd-4434-b566-f4c55c90e4bd">In order to facilitate comparison with other presentation styles, this author's guide has been prepared in accordance with the presentation rules that it mandates. The examples used within the text, such as references, are for illustrative purposes only. Thus, this author's guide constitutes an example of the proposed presentation style. Please note that Recommendation ITU-T A.1500 is a fictitious Recommendation used to illustrate the points given in this guide.</p></abstract>
+  <status>
+    <stage>published</stage>
+  </status>
+  <copyright>
+    <from>2019</from>
+    <owner>
+      <organization>
+        <name>International Telecommunication Union</name>
+        <abbreviation>ITU</abbreviation>
+      </organization>
+    </owner>
+  </copyright>
+  <ext>
+    <doctype>recommendation</doctype>
+    <editorialgroup>
+      <bureau>T</bureau>
+    </editorialgroup>
+    <ip-notice-received>false</ip-notice-received>
+    <structuredidentifier>
+      <bureau>T</bureau>
+      <docnumber>A.1500 (fictitious)</docnumber>
+    </structuredidentifier>
+  </ext>
+</bibdata>
+<preface><abstract id="_summary"><p id="_ca36f1a8-807e-4359-b4c4-7f70e0dc2265">This author's guide for drafting ITU-T Recommendations permits uniform, efficient preparation of texts by TSB for publication. It covers the rules for drafting a Recommendation in a standard manner. Its provisions should be applied in all instances where texts (such as draft Recommendations) are being prepared by study group authors for approval and publication. The methods presented in this author's guide are the basis for a template and will remain stable until changes to current publication procedures necessitate their modification.</p>
+<p id="_3f6e54fb-ee92-450c-bf3d-15aa724bfb77">In order to facilitate comparison with other presentation styles, this author's guide has been prepared in accordance with the presentation rules that it mandates. The examples used within the text, such as references, are for illustrative purposes only. Thus, this author's guide constitutes an example of the proposed presentation style. Please note that Recommendation ITU-T A.1500 is a fictitious Recommendation used to illustrate the points given in this guide.</p></abstract><clause id="_history" obligation="normative"><title>History</title><p id="_8d5d510a-2873-4a7a-ae84-5d2718d7a9fc">TSAG agreed at its February 2011 meeting to update the author's guide (last revised 14 March 2007) based upon <link target="http://www.itu.int/md/T09-TSAG-C-0041/en">C41</link> and the related discussion of that meeting. The convener of the ad hoc group on working methods, together with TSB, was tasked with preparing a final text. That text appears on subsequent pages.</p>
+<p id="_ded1dc8c-90b3-4c2f-b6ca-62fbbab6ba3b">Subsequently, TSAG agreed at its February 2016 meeting to make mandatory the Keywords field based on <link target="http://www.itu.int/md/T13-TSAG-160201-TD-GEN-0405/en">TD405</link>. The required changes have been introduced in this guide in clean text.</p></clause></preface><sections>
+
+<clause id="Scope" obligation="normative"><title>Scope</title><note id="_0127328b-02b3-4f40-91c9-7fa595096613">
+  <p id="_f5a3fa73-72f6-4e1b-b66c-f28393b78c64">Recommendation ITU-T A.1500 is a fictitious Recommendation. It was established for illustrative purposes only and constitutes an example of the proposed presentation style.</p>
+</note>
+<p id="_ae22e58f-9426-411d-b0b7-bd90d54193db">This author's guide is intended to provide a common approach to the preparation of ITU-T texts that are intended for publication, e.g., draft Recommendations. It attempts to cover the kind of questions likely to arise in the preparation of an ITU-T Recommendation and provides, through application of its own rules, an illustration using the normal order of the elements of drafting a typical Recommendation. To avoid confusion which may result from this approach for a first-time reader, detailed explanations of the contents of each heading are given in <xref target="Description_of_introductory_material_to_be_provided_by_the_author"/> and <xref target="Description_of_core_material"/> below.</p>
+<p id="_e6ab997c-a66b-4024-a2a7-64a6f9a9a497"><xref target="table1"/> shows the arrangement of the elements that may comprise a published Recommendation. Shaded rows correspond to elements provided by TSB.</p>
+<p id="_65e5ba86-c66a-47ab-afe2-3840dbe46b62">For common texts developed with ISO/IEC, <eref type="inline" bibitemid="ITU-T_A.23" citeas="ITU-T A.23"/> applies instead of this author's guide.</p></clause>
+
+<clause id="Definitions" obligation="normative"><title>Definitions</title><terms id="Terms_defined_elsewhere" obligation="normative"><title>Terms defined elsewhere</title><p>This Recommendation uses the following terms defined elsewhere:</p><term id="_amendment"><preferred>amendment</preferred><definition><p id="_e478bdde-5d77-44f9-a76a-bf79fba32e98">An amendment to a Recommendation contains changes or additions to an already published ITU-T Recommendation. The amendment is published by ITU-T as a separate document that contains primarily changes or additions<fn reference="1">
+  <p id="_d0e7bcff-48cb-4243-8d68-18fc74673096">An amendment should have a title that reflects its content.</p>
+</fn>. If it forms an integral part of the Recommendation, approval of an amendment follows the same approval procedures as Recommendations; otherwise, it is agreed by the study group.</p></definition>
+
+<table id="table1">
+  <name>Arrangement of elements (typical)</name>
+  <tbody>
+    <tr>
+      <th align="center">
+        <strong>Element</strong>
+      </th>
+      <th align="center">
+        <strong>Clause number</strong>
+      </th>
+    </tr>
+    <tr>
+      <td colspan="2" align="left"><strong>Introductory material</strong><fn reference="a">
+  <p id="_a0af8fea-ce1e-4bcd-9b69-84623b4fe4b8">These elements are not considered to be parts of the Recommendation.</p>
+</fn></td>
+    </tr>
+    <tr>
+      <td align="left">Cover page</td>
+      <td align="left">None<fn reference="b">
+  <p id="_093f2fcb-bf18-459d-8bf1-503be21bc8e4">These elements are provided by TSB.</p>
+</fn></td>
+    </tr>
+    <tr>
+      <td align="left">Summary</td>
+      <td align="left">None</td>
+    </tr>
+    <tr>
+      <td align="left">History</td>
+      <td align="left">None<fn reference="b">
+  <p id="_f15e6afd-b7b7-44ae-800e-2bf41e01dffd">These elements are provided by TSB.</p>
+</fn></td>
+    </tr>
+    <tr>
+      <td align="left">Keywords</td>
+      <td align="left">None</td>
+    </tr>
+    <tr>
+      <td align="left">Foreword</td>
+      <td align="left">None<fn reference="b">
+  <p id="_a63d9424-ca3a-4b67-9504-dcd56652ca38">These elements are provided by TSB.</p>
+</fn></td>
+    </tr>
+    <tr>
+      <td align="left">Table of Contents</td>
+      <td align="left">None<fn reference="b">
+  <p id="_ba73414b-6985-409e-a7cd-4b318419a9cb">These elements are provided by TSB.</p>
+</fn></td>
+    </tr>
+    <tr>
+      <td align="left">Introduction (optional)</td>
+      <td align="left">None</td>
+    </tr>
+    <tr>
+      <td colspan="2" align="left">
+        <strong>Recommendation core material</strong>
+      </td>
+    </tr>
+    <tr>
+      <td align="left">Title</td>
+      <td align="left">None</td>
+    </tr>
+    <tr>
+      <td align="left">Scope</td>
+      <td align="left">1</td>
+    </tr>
+    <tr>
+      <td align="left">References</td>
+      <td align="left">2<fn reference="c">
+  <p id="_3d3657f9-fcaa-4892-9a67-77ea059770ef">When empty, the clause is maintained with an appropriate indication, e.g., "This clause is intentionally left blank.", or "None.".</p>
+</fn></td>
+    </tr>
+    <tr>
+      <td align="left">Definitions</td>
+      <td align="left">3<fn reference="c">
+  <p id="_5c662b2f-e412-4eec-a1fd-5406ee7f4f7b">When empty, the clause is maintained with an appropriate indication, e.g., "This clause is intentionally left blank.", or "None.".</p>
+</fn></td>
+    </tr>
+    <tr>
+      <td align="left">Abbreviations and acronyms</td>
+      <td align="left">4<fn reference="c">
+  <p id="_33bb1f84-b1a5-4b1e-853e-d3800f4de4eb">When empty, the clause is maintained with an appropriate indication, e.g., "This clause is intentionally left blank.", or "None.".</p>
+</fn></td>
+    </tr>
+    <tr>
+      <td align="left">Conventions</td>
+      <td align="left">5<fn reference="c">
+  <p id="_b329ba97-88f9-4bd3-a094-a26c85fe0084">When empty, the clause is maintained with an appropriate indication, e.g., "This clause is intentionally left blank.", or "None.".</p>
+</fn></td>
+    </tr>
+    <tr>
+      <td align="left">Text of the Recommendation</td>
+      <td align="left">6 onwards<fn reference="c">
+  <p id="_2f3e9ab6-b635-4855-aa55-671c943a693e">When empty, the clause is maintained with an appropriate indication, e.g., "This clause is intentionally left blank.", or "None.".</p>
+</fn></td>
+    </tr>
+    <tr>
+      <td align="left">Annexes (form an integral part of the Recommendation)</td>
+      <td align="left">A onwards</td>
+    </tr>
+    <tr>
+      <td align="left">Appendices (do not form an integral part of the Recommendation)</td>
+      <td align="left">I onwards</td>
+    </tr>
+    <tr>
+      <td align="left">Electronic attachment</td>
+      <td align="left">–<fn reference="d">
+  <p id="_6659521f-4a04-4e7f-9ccb-77255307b52a">An electronic attachment may correspond to a clause, an annex, an appendix or may be a non-numbered item.</p>
+</fn></td>
+    </tr>
+    <tr>
+      <td align="left">Bibliography</td>
+      <td align="left">None</td>
+    </tr>
+    <tr>
+      <td align="left">Index (optional and rarely used)</td>
+      <td align="left">None</td>
+    </tr>
+  </tbody>
+</table><termsource status="identical">
+  <origin bibitemid="b-ITU-T_A.1" type="inline" citeas="b-ITU-T A.1"/>
+</termsource></term>
+<term id="term-annex"><preferred>annex</preferred><definition><p id="_1eb638e5-7e13-4972-b04b-72a7882f47de">An annex to a Recommendation contains material (e.g., technical detail or explanation) which is necessary to its overall completeness and comprehensibility and is therefore considered an integral part of the Recommendation. As an integral part of the Recommendation, approval of an annex follows the same approval procedures as Recommendations.</p></definition>
+<termsource status="identical">
+  <origin bibitemid="b-ITU-T_A.1" type="inline" citeas="b-ITU-T A.1"/>
+</termsource></term>
+<term id="term-appendix"><preferred>appendix</preferred><definition><p id="_67b231a2-0701-4632-bbc1-bb578f6a086a">An appendix to a Recommendation contains material which is supplementary to and associated with the subject matter of the Recommendation but is not essential to its completeness or comprehensibility. It is therefore not considered to be an integral part of the Recommendation and thus does not require the same approval procedures as Recommendations; agreement by the study group is sufficient.</p></definition>
+<termsource status="identical">
+  <origin bibitemid="b-ITU-T_A.1" type="inline" citeas="b-ITU-T A.1"/>
+</termsource></term>
+<term id="term-clause"><preferred>clause</preferred><definition><p id="_4e45030a-81a2-4b14-8315-58c6272265ae">The word clause shall be used to denote single-digit or multiple-digit numbered text passages.</p></definition>
+<termsource status="identical">
+  <origin bibitemid="b-ITU-T_A.1" type="inline" citeas="b-ITU-T A.1"/>
+</termsource></term>
+<term id="term-corrigendum"><preferred>corrigendum</preferred><definition><p id="_6d41b272-5a73-4a00-b605-f8cdc9d36c81">A corrigendum to a Recommendation contains corrections to an already published ITU-T Recommendation. A corrigendum is published by ITU-T as a separate document that contains only corrections. TSB may correct obvious errors by issuing a corrigendum with the concurrence of the study group chairman; otherwise, approval of a corrigendum follows the same approval procedures as Recommendations.</p></definition>
+<termsource status="identical">
+  <origin bibitemid="b-ITU-T_A.1" type="inline" citeas="b-ITU-T A.1"/>
+</termsource></term>
+<term id="term-implementers-guide"><preferred>implementers' guide</preferred><definition><p id="_7db405a3-5376-45a3-9993-f7476a723713">An implementers' guide is a document which records all identified defects (e.g., typographical errors, editorial errors, ambiguities, omissions or inconsistencies and technical errors) associated with a Recommendation or a set of Recommendations and their status of correction, from their identification to final resolution. An implementers' guide is issued by ITU-T following agreement by a study group, or following agreement by a working party with concurrence of the study group chairman. Typically, defect corrections are first collected in an implementers' guide and, at a time deemed appropriate by the study group, they are used to produce a corrigendum or are included as revisions to a Recommendation.</p></definition>
+<termsource status="identical">
+  <origin bibitemid="b-ITU-T_A.1" type="inline" citeas="b-ITU-T A.1"/>
+</termsource></term></terms>
+<terms id="Terms_defined_in_this_Recommendation" obligation="normative"><title>Terms defined in this Recommendation</title><p>This Recommendation defines the following terms:</p><term id="term-normative-reference"><preferred>normative reference</preferred><definition><p id="_3ca3443d-4ac4-43e2-9b60-cb01434a0563">Another document that contains provisions which, through reference to it, constitute provisions of the referring document.</p></definition>
+
+
+<termnote id="_ad4fe48d-29d2-4a5a-8be3-b7a521acc01f">
+  <p id="_c1834d7d-aed2-42f9-8ad4-b2fd69abfc23">Entries listed in the "References" element shall be for normative references that are referenced from within the main body, including annexes, of the Recommendation.</p>
+</termnote><termnote id="_b929f461-520f-4a3a-b52c-1222f6055919">
+  <p id="_48565c80-3d16-4549-b7a4-75ef89b8df41">All non-normative references must appear as entries in the "Bibliography" element.</p>
+</termnote><termnote id="_9478fb8c-cd19-4a84-8a74-4d37e832613a">
+  <p id="_41f3d6c6-16d6-413a-9892-b2bf86a4d496">The sole reference to a normative reference should not be made from an appendix.</p>
+</termnote></term>
+<term id="term-supplement">
+  <preferred>supplement</preferred>
+  <definition><p id="_2fd6d178-39e7-42be-af9f-53dc05568d54">A supplement contains illustrative material, published in a separate document, which is supplementary to and associated with the subject matter of one or more Recommendations, but is not essential to their completeness, understandability or ability to be implemented, and is therefore not considered to be an integral part of any Recommendation(s). As such, a supplement does not require the same approval procedures as Recommendations; agreement by the study group is sufficient. For additional guidance regarding supplements, see <eref type="inline" bibitemid="b-ITU-T_A.13" citeas="b-ITU-T A.13"/>.</p></definition>
+</term>
+<term id="term-text"><preferred>text</preferred><definition><p id="_c789c029-5cf3-49e1-b620-1bf44c77bf7f">Text is the content of a document, in particular a Recommendation, and may include printed or coded text, or data (such as test images, graphics, software, etc.).</p></definition>
+<termnote id="_b2c85908-223a-4425-b309-20c6cf61ee3c">
+  <p id="_f1d06075-21eb-4f6d-ba46-cc062c0f2865">The "text" of Recommendations is to be understood in a broad sense.</p>
+</termnote></term></terms></clause>
+<definitions id="Abbreviations_and_acronyms"><title>Abbreviations and acronyms</title><p id="_70f6833c-f60f-415e-a555-383043527eac">This Recommendation uses the following abbreviations and acronyms:</p>
+<dl id="_4f2fe09e-d795-407d-85cc-14873fdc9dea">
+  <dt>CD-ROM</dt>
+  <dd>
+    <p id="_a8308f62-78f0-4e1f-b482-b83991e3cef0">Compact Disk Read-Only Memory</p>
+  </dd>
+  <dt>DVD-ROM</dt>
+  <dd>
+    <p id="_b0271e28-17f9-42ac-b6b6-5e68081e88c1">Digital Versatile Disk Read-Only Memory</p>
+  </dd>
+  <dt>PICS</dt>
+  <dd>
+    <p id="_98ab6c8d-60b2-4eb9-9eee-096c98466c7e">Protocol Implementation Conformance Statement</p>
+  </dd>
+</dl></definitions>
+<clause id="Conventions" obligation="normative">
+  <title>Conventions</title>
+  <p id="_a63e53ae-c07d-4767-bfe7-fe4701b8c042">None.</p>
+</clause>
+<clause id="Recommendation_number_and_title" obligation="normative"><title>Recommendation number and title</title><p id="_ad368c0b-7f8e-487a-8e5d-63fc1930e1d6">Recommendations are identified by their number, date of approval and title.</p>
+<clause id="Recommendation_number" obligation="normative"><title>Recommendation number</title><p id="_edaa3cf0-36b9-47bc-82e8-17eb415e4697">Each ITU-T Recommendation is identified by a unique Recommendation number. This number is composed of a letter prefix referring to the series, and a number identifying the particular subject in the series. If necessary, this main number may be followed by a suffix number (e.g., Recommendation ITU-T G.108.2). In some exceptional circumstances, a dual number may be considered for a Recommendation when it belongs to more than one series, (e.g., Recommendation ITU-T G.709/Y.1331).</p>
+<p id="_3881a2e5-2aff-478f-bf22-c94bbeaea290">Recommendation numbers are chosen in consultation with the study group chairman and study group counsellor.</p></clause>
+<clause id="Date_of_approval" obligation="normative">
+  <title>Date of approval</title>
+  <p id="_ef313190-9bb9-4a52-a61e-9c4bc03d6944">Recommendation editions are identified by their date of approval. This is normally the year of approval, but may be indicated as month and year, if necessary, to uniquely identify the version of the Recommendation.</p>
+</clause>
+<clause id="Recommendation_title" obligation="normative">
+  <title>Recommendation title</title>
+  <p id="_29ec5e77-0571-4a53-821d-bcd9c6ff8734">The title should not be unnecessarily long and should provide an indication of the main topics covered. The title should be unique, and should not contain acronyms. It should not repeat the series and sub-series titles which are already indicated on the Recommendation cover page.</p>
+</clause></clause>
+<clause id="Description_of_introductory_material_to_be_provided_by_the_author" obligation="normative"><title>Description of introductory material to be provided by the author</title><p id="_7a539f6b-25d2-49d5-96bf-dd5b7878da5a">Introductory material is not considered as part of the Recommendation. Consequently, it shall not contain any normative requirements. Pages containing introductory material shall be numbered with lower case Roman numerals in the final publication.</p>
+<clause id="Summary_mandatory" obligation="normative">
+  <title>Summary (mandatory)</title>
+  <p id="_0bc09cd5-8d6e-4372-9af2-3249aecf8daf">This element shall be supplied by the rapporteur or the editor. It is placed before the main body of the Recommendation. It provides a brief overview of the purpose and contents of the Recommendation, thus permitting readers to judge its usefulness for their work.</p>
+</clause>
+<clause id="Keywords_mandatory" obligation="normative">
+  <title>Keywords (mandatory)</title>
+  <p id="_d0a37a37-17cf-417e-a315-f2d2fc27359f">This element, placed before the main body of the Recommendation, lists a limited number of words or word combinations that identify the main topics in the Recommendation. Keywords shall be placed successively in alphabetical order separated by commas.</p>
+</clause>
+<clause id="Introduction_optional" obligation="normative">
+  <title>Introduction (optional)</title>
+  <p id="_a75c23d9-2fe6-4492-a919-ca3c2a664188">This element, placed before the main body of the Recommendation, may provide information that the author deems appropriate and that is not already provided in the "Summary" or in the "Scope" elements.</p>
+</clause></clause>
+<clause id="Description_of_core_material" obligation="normative"><title>Description of core material</title><p id="_cc59a7c4-d4fc-4248-81a3-1cf6b2494a84">The Recommendation commences on Arabic numeral page 1 that follows the Roman-numbered pages in the final publication. The Recommendation title will appear at the beginning of page 1, just preceding clause 1, "Scope".</p>
+<clause id="Scope" obligation="normative">
+  <title>Scope</title>
+  <p id="_db5b43b7-4af9-4b93-912d-d0aa0924ef3c">This element should appear, as clause 1, at the beginning of every Recommendation, to define, without ambiguity, its intent or object and the aspects covered, thereby indicating the limits of its applicability.</p>
+</clause>
+<clause id="Core_material_references" obligation="normative"><title>References</title><p id="_b0c8aa3c-7a4f-4296-bdc3-30a94ffdc1a9">This element should appear as clause 2, and permits the author to list, alphanumerically in ascending order, ITU-T and ITU-R Recommendations, International Organization for Standardization (ISO), International Electrotechnical Commission (IEC) and other accepted organizations' standards referred to in the main body of the Recommendation and which are considered to be incorporated by reference into the Recommendation. <eref type="inline" bibitemid="ITU-T_A.5" citeas="ITU-T A.5"/> provides generic procedures for referencing the documents of organizations other than ISO and IEC in ITU-T Recommendations.</p>
+<p id="_f3cea04e-1f0c-44d9-b721-f4e965d15b88">The "References" element shall be introduced by the following boilerplate paragraph:</p>
+<p id="_69f7ad70-24f6-415d-9dc5-da6236dd4ce4">"The following ITU-T Recommendations and other references contain provisions which, through reference in this text, constitute provisions of this Recommendation. At the time of publication, the editions indicated were valid. All Recommendations and other references are subject to revision; users of this Recommendation are therefore encouraged to investigate the possibility of applying the most recent edition of the Recommendations and other references listed below. A list of the currently valid ITU-T Recommendations is regularly published. The reference to a document within this Recommendation does not give it, as a stand-alone document, the status of a Recommendation."</p>
+<p id="_20c6c599-bb87-489d-bbcb-3110c73aa8d2">ITU-T and ITU-R Recommendations will be identified by "Recommendation ITU-T" or "Recommendation ITU-R" followed by the Recommendation number and then by the year of approval between parentheses (e.g., "Recommendation ITU-T A.5 (2016)") in clause 2. They will be followed by the full title of the Recommendation.</p>
+<p id="_84758328-a16a-41ca-b147-1aba24b8bbe4">Each referenced document shall be introduced in clause 2 with a citation tag so that subsequent references to these texts in the remainder of the Recommendation can use the citation tag, e.g., <eref type="inline" bibitemid="ITU-T_A.5" citeas="ITU-T A.5"/>.<note id="_cce82aca-d01a-4ec1-b64e-bec0f1dd813a">
+  <p id="_51ad2c9a-f253-4862-aa33-393d18ba3c16">The citation tag in square brackets is generally the short form or abbreviation indicating the standards group that produced the document, followed by the number or designation of the document itself.</p>
+</note></p>
+
+<p id="_c8ef7aa4-8b98-4f9a-ac5c-882b16a71874">Informative (non-normative) reference to any other publicly available texts may be made through a bibliography, at the end of the Recommendation (see <xref target="Core_material_bibliography"/>). Informative references provide supplemental information to assist the understanding of the Recommendation and to which conformance is not necessary. If the reader does not need to read the referenced document to obtain information that is not explicitly stated in the referencing Recommendation, then the referenced document is informative.</p>
+<p id="_b25fe768-5192-45f2-b9b6-794529c8460d"><xref target="examp1"/> illustrates examples of presentation of references.</p>
+<example id="examp1"><name>Example of presentation of references</name><p id="_6bd03289-cdb5-46f8-bd07-fadc322bd692">
+  <strong>Dual-numbered Recommendation:</strong>
+  <br/>
+</p>
+<dl id="_80d8e42e-f2f7-429b-88a8-a39648d0689e">
+  <dt>[ITU-T G.707]</dt>
+  <dd>
+    <p id="_93374c83-45c7-45b7-afd2-8185ca3931c2">Recommendation ITU-T G.707/Y.1322 (2007), <em>Network node interface for the synchronous digital hierarchy (SDH)</em>.<br/></p>
+  </dd>
+</dl>
+<p id="_384b5ebe-f13c-41bc-8673-c29a0dcf7887">
+  <strong>Identical Recommendation | International Standard (or "common text"):</strong>
+  <br/>
+</p>
+<dl id="_ac206f4f-c471-4691-b4cf-db0a3d7358e3">
+  <dt>[ITU-T H.222.0]</dt>
+  <dd>
+    <p id="_4086eabc-fbd9-4168-a4a4-1d5234245d6c">Recommendation ITU-T H.222.0 (2006) | ISO/IEC 13818-1:2007, <em>Information technology – Generic coding of moving pictures and associated audio information: Systems</em>.<br/></p>
+  </dd>
+</dl>
+<p id="_cb2a1a60-3302-4c0b-be58-504f98e1dddd">
+  <strong>Paired Recommendation | International Standard (or "twin text"):</strong>
+  <br/>
+</p>
+<dl id="_0ffdb288-6d20-4277-b5d3-00ee6752511b">
+  <dt>[ITU-T T.50]</dt>
+  <dd>
+    <p id="_f5c1ddbd-caee-4944-9daa-1c469ac52689">Recommendation ITU-T T.50 (1992), <em>International Reference Alphabet (IRA) (Formerly International Alphabet No. 5 or IA5) – Information technology – 7-bit coded character set for information interchange</em>.<br/></p>
+  </dd>
+</dl>
+<p id="_970bfd50-e0b2-4f69-96e1-8e53e5e2261d">
+  <strong>Series or sub-series of Recommendations:</strong>
+  <br/>
+</p>
+<dl id="_b2a44863-50cf-4966-9760-fca94065f5b1">
+  <dt>[ITU-T M.3016.x]</dt>
+  <dd>
+    <p id="_97299298-029d-48f1-b8f6-defee57c38e9">Recommendation ITU-T M.3016.x-series (2005), <em>Security for the management plane</em>.<br/></p>
+  </dd>
+  <dt>[ITU-T Q.4xx]</dt>
+  <dd>
+    <p id="_890ebc4f-f4c9-4d7c-911d-dc5c7ceb0a3e">Recommendations ITU-T Q.4xx-series (1988), <em>Specifications of Signalling System R2</em>.<br/></p>
+  </dd>
+</dl>
+<p id="_db57a41d-b5cd-4040-b448-2dd130b50b58">
+  <strong>Recommendation ITU-T Q.816 (2001) plus all amendments and corrigenda that apply to that base:</strong>
+  <br/>
+</p>
+<dl id="_8988af73-68fe-4bae-ac3b-ed46dae0bc5e">
+  <dt>[ITU-T Q.816]</dt>
+  <dd>
+    <p id="_5e2eadc3-68c3-4732-bed3-532beb501ad2">Recommendation ITU-T Q.816 (2001), <em>CORBA-based TMN services</em>.<br/></p>
+  </dd>
+</dl>
+<p id="_e326ce76-ed6a-46a6-9d00-11ee557da4de">
+  <strong>SDOs:</strong>
+  <br/>
+</p>
+<dl id="_d89776a6-cccd-4efd-980b-cbb1b6296b59">
+  <dt>[ETSI ETS 300 724]</dt>
+  <dd>
+    <p id="_2076713b-c742-46c5-bd60-3308b1419193">ETSI ETS 300 724 ed. 1 (1997), <em>Digital cellular telecommunications system; ANSI-C code for the GSM Enhanced Full Rate (EFR) speech codec (GSM 06.53).</em><br/></p>
+  </dd>
+  <dt>[IEC 61883-4]</dt>
+  <dd>
+    <p id="_9feb3b41-67af-4e33-927e-382fed53eb89">IEC 61883-4 (2004), <em>Consumer audio/video equipment – Digital interface – Part 4: MPEG2-TS data transmission.</em><br/></p>
+  </dd>
+  <dt>[IETF RFC 1042]</dt>
+  <dd>
+    <p id="_b8aa964a-34a3-440c-adb3-071dd0a3b579">IETF RFC 1042 (1988), <em>Standard for the transmission of IP datagrams over IEEE 802 networks.</em></p>
+  </dd>
+</dl></example></clause>
+<clause id="Core_material_definitions" obligation="normative"><title>Definitions</title><p id="_3b35ce72-7cd9-4fab-9ebd-e13e7ea29317">This element should appear as clause 3; it gives the definitions necessary for the understanding of certain terms used in the Recommendation. For more details, see <xref target="annexB"/>.</p>
+<p id="_e7da5740-ca8b-44cb-a80f-059a4aac7c90">The following statements are used to introduce terms, grouped according to where they are defined under the following boilerplate sentences:</p>
+<p id="_4a20a38f-cbf6-4c5e-a408-df372d5dec30">For clause 3.1: "This Recommendation uses the following terms defined elsewhere:".</p>
+<p id="_69353264-3c48-498f-90bc-fc4c39cc3c0f">For clause 3.2: "This Recommendation defines the following terms:".</p>
+<p id="_d33023dc-c5ed-47f2-826f-0947bd25a87b">In order to associate defined terms in the different language versions of the Recommendation, it is useful to give a clause number to each term.</p>
+<note id="_4a78748a-5023-4da3-9264-368f1b679373">
+  <p id="_8723d0e6-2bac-4adf-a688-8c058d5bd916">Terms which are defined elsewhere should normally include only a normative reference to the defining document to avoid difficulty in keeping multiple copies of a definition aligned. In exceptional circumstances, a definition for a term defined elsewhere may be quoted with an informative reference to the source document in order to allow for a stand-alone document.</p>
+</note>
+<note id="_919b61a9-6124-473e-9856-d2bc679b677e">
+  <p id="_204fc4b4-0e39-4232-ba55-49c05ba37cf0">TSB collects all new terms and their definitions from new or revised Recommendations and adds them to the ITU-T Terms and Definitions database, which is available to the general public on the ITU‑T website (<link target="http://www.itu.int/ITU-R/go/terminology-database"/>).</p>
+</note></clause>
+<clause id="Core_material_abbreviations_and_acronyms" obligation="normative"><title>Abbreviations and acronyms</title><p id="_c42a5dda-6ea2-4f7f-98ac-5f7c29b9e0fb">This element should appear as clause 4. It lists in alphabetical order all the abbreviations and acronyms from throughout the Recommendation with their unabbreviated forms. The letters which appear in the acronym shall be capitalized. The first appearance of any acronym within the Recommendation should be preceded by its complete unabbreviated form, e.g., asynchronous transfer mode (ATM). It is recommended to use abbreviations in figures and tables, due to lack of space. The plural of a fully capitalized acronym is formed by adding a lower case "s", e.g., ICTs (not ICTS).</p>
+<p id="_1003dc60-9018-4d6c-b9a3-4d1e1bd06554">Clause 4 shall start with the following text: "This Recommendation uses the following abbreviations and acronyms:".</p>
+<note id="_c1d2709b-97e6-4d5e-88fb-36ccf18a743e">
+  <p id="_f8b9df92-5eec-49e0-b1de-be47c138f383">Abbreviations for physical quantities, measurement units and their multiples from the International System of Units (SI) (e.g., kHz) do not need to be listed, as they are well known.</p>
+</note>
+<note id="_0cfe3244-1565-4f7e-879a-b6105cbee813">
+  <p id="_add21c0c-a17d-4d49-bac5-3144a1c45614">Names of ITU and other major international standards development organizations do not need to be included in clause 4, "Abbreviations". Less familiar <eref type="inline" bibitemid="ITU-T_A.5" citeas="ITU-T A.5"/> or <eref type="inline" bibitemid="b-ITU-T_A.6" citeas="b-ITU-T A.6"/> qualified organizations may be listed, where appropriate.</p>
+</note></clause>
+<clause id="Core_material_conventions" obligation="normative"><title>Conventions</title><p id="_ab350e00-4b47-4be2-b10f-7c88de2c3760">This element should appear as clause 5. It describes particular notations, assumptions, styles, presentations, etc., used within the Recommendation, if any.</p>
+<p id="_ea5ffcb2-a6c3-4841-9feb-777a7c403194">The unnecessary use of capitalized words shall be avoided. Special classes of terms or other texts that are to be capitalized throughout the Recommendation shall be listed in the "Conventions" clause.</p>
+<p id="_0c53b16f-4030-4a33-8f50-80d9346f44d9">An ITU-T Recommendation, by definition, is not mandatory – compliance is voluntary. The use of the words "shall" and "must" and their negatives "shall not" and "must not" are to be used with care and sparingly. These words are only to be used to express mandatory provisions, when necessary, to give the Recommendation meaning and effect; i.e., if certain values and/or parts of a Recommendation are essential and the Recommendation will have no meaning if these values and/or parts are not strictly respected or adhered to. Compliance with the Recommendation is achieved only when all mandatory provisions are met. However, the inclusion of mandatory provisions in a Recommendation does not imply that compliance with the Recommendation is required of any party.</p></clause>
+<clause id="Recommendation_technical_content" obligation="normative"><title>Recommendation technical content</title><p id="_18c7da6d-6428-4cb4-aa9d-d7b05c9ed083">Recommendation clauses 6 and onwards contain technical specifications.</p>
+<note id="_23f7ded1-1d1b-4489-8c92-8a4a8b68ae36">
+  <p id="_8a22d6fc-06b0-4305-8704-bdb8293e9d70">Non-normative material should be placed in an appendix.</p>
+</note></clause>
+<clause id="Annexes" obligation="normative"><title>Annexes</title><p id="_694901db-fc1b-4ba0-aca7-039b10a21060">Annexes form an integral part of the Recommendation and shall appear immediately after the main body of the Recommendation. They shall be designated A, B, C, etc. A single annex shall be designated Annex A. The following text should appear immediately after and below the annex title: "(This annex forms an integral part of this Recommendation.)".</p>
+<p id="_3a7be6da-a761-4038-a841-dde5517bc50f">Numbers given to the clauses, tables, figures and equations of an annex shall be preceded by the letter assigned to that annex (e.g., clause A.2, Figure B.3, Equation C-1). The numbering shall start afresh with each annex.</p></clause>
+<clause id="Appendices" obligation="normative"><title>Appendices</title><p id="_8913ba95-2b20-4a74-82f3-c87e73b39264">Appendices do not form an integral part of the Recommendation and shall appear immediately after the last annex of the Recommendation or, if there are no annexes, after the main body of the Recommendation. They shall be designated with upper case Roman numerals (i.e., I, II, III). A single appendix shall be designated Appendix I. The following text should appear immediately after and below the appendix title: "(This appendix does not form an integral part of this Recommendation.)".</p>
+<p id="_ba234f8b-213e-495d-a237-7a20ea6efdea">Numbers given to the clauses, tables, figures and equations of an appendix shall be preceded by the numeral assigned to that appendix (e.g., clause II.3, Table IV.2, Equation III-1). The numbering shall start afresh with each appendix.</p></clause>
+<clause id="Electronic_attachments" obligation="normative"><title>Electronic attachments</title><p id="_013dad88-9501-4ccc-ab87-d689e415cf6b">An electronic attachment contains information that is disclosed only in electronic format, such as source code software, test data, formal-language descriptions, software user guides or pro forma to be completed by the users (PICS, etc.). They are recorded on an appropriate electronic physical medium (CD-ROM, DVD-ROM, etc.) attached to the cover for paper publication, and are grouped with the main text file for web publication.</p>
+<p id="_3946023c-faed-4378-af0d-3bc0c1d3d686">Electronic attachments may be normative or informative, and may correspond to a clause, an annex, an appendix or may be an unnumbered item.</p>
+<p id="_1574e68e-3b0b-4a5e-b0e2-850a1e075281">If the electronic attachment or any other part of a Recommendation is covered by a copyright or a patent, the intellectual property rights owner must file with TSB a TSB-standardized software copyright and licensing declaration form or a patent statement licensing declaration form. More information on this topic can be found at: <link target="http://www.itu.int/en/ITU-T/ipr/Pages/default.aspx"/>.</p></clause>
+<clause id="Core_material_bibliography" obligation="normative"><title>Bibliography</title><p id="_707cdaac-4299-4d03-9cda-c408ca8d4d1c">This element may be present in order to cite references or sources not covered by the "References" element and which are intended for background information (i.e., they are informative not normative). Referencing draft standards and internal ITU documents (e.g., TDs or contributions) and other documents that are not available to all readers of the published Recommendation shall be avoided.</p>
+<p id="_faaa1536-f1b8-4d62-9582-cba83f19296f">If these documents are referenced, a format similar to that used in clause 2 should be used, with a slight difference in the formulation of the citation tag ("b-" is inserted at the start of the tag). <xref target="examp8-2"/> provides examples of bibliographic entries.</p></clause>
+<clause id="Index" obligation="normative"><title>Index</title><p id="_c634fd5c-f880-4117-bef1-3142a1e9f6d3">This element, when needed, should be the last element of the Recommendation. It is preferable to reference the index entries to the clause number (and not to the page number) since page numbering is subject to change during processing in TSB.</p>
+<example id="examp8-2"><name>Example of presentation of bibliographic entries</name><p id="_c92fe8cb-6a76-4272-aed3-12151d10f496">
+  <strong>Supplements:</strong>
+  <br/>
+</p>
+<dl id="_539629cb-d8e5-4323-ace4-364ba5c22f47">
+  <dt>[b-ITU-T G-Sup.41]</dt>
+  <dd>
+    <p id="_324e1c4e-2930-4d88-9c2f-615e29d48a5b">ITU-T G-series Recommendations – Supplement 41 (2010), <em>Design guidelines for optical fibre submarine cable systems</em>.<br/></p>
+  </dd>
+</dl>
+<p id="_c56b2e85-1c63-46c2-b997-b71dc578d668">
+  <strong>Book:</strong>
+  <br/>
+</p>
+<dl id="_7abada24-47b8-475c-9629-1fe8d5e0c273">
+  <dt>[b-Trischitta]</dt>
+  <dd>
+    <p id="_fa35ef37-fea3-491a-a742-4e11dadf791e">Trischitta, P.R., and Varma, E.L. (1989), <em>Jitter in Digital Transmission Systems</em>, Norwood, MA, Artech House.<br/></p>
+  </dd>
+</dl>
+<p id="_9b81f37d-7b23-45ad-b1e0-74944e4d8bf1">
+  <strong>Article in journal:</strong>
+  <br/>
+</p>
+<dl id="_6011093c-c2ec-48c6-8895-d22482b2e100">
+  <dt>[b-Cornaglia]</dt>
+  <dd>
+    <p id="_588a560d-0f3a-4cd8-af9c-f027c556f269">Cornaglia, B., Pane, P., and Spini, M. (1995), <em>Errored Block Detection with Bit Interleaved Parity Failures in SDH Network</em>, IEEE Transactions on Communications, Vol. 43, No. 12, December, pp. 2904-2906.<br/></p>
+  </dd>
+</dl>
+<p id="_490774f2-a6fc-44ca-a64f-535de7c49290">
+  <strong>Web-only document:</strong>
+  <br/>
+</p>
+<dl id="_4e179375-5b20-4267-b36a-873012ca3880">
+  <dt>[b-W3C HTML 4.01]</dt>
+  <dd>
+    <p id="_54d68848-d590-4722-b83d-0b7e928d8065"><em>W3C, HTML 4.01 Specification</em>, W3C Recommendation 24 December 1999.<br/>
+<link target="http://www.w3.org/TR/1999/REC-html401-19991224/"/></p>
+  </dd>
+</dl></example></clause></clause>
+<clause id="Formatting_indications" obligation="normative"><title>Formatting indications</title><clause id="General" obligation="normative"><title>General</title><p id="_01dd39a8-f93c-4878-b1cd-e95c677838f6">Due to the multiple compatibility problems and the resulting risks of misinterpretation of objects such as equations or figures during the different processing stages, authors should send, when requested by TSB, a stable electronic copy (e.g., a pdf file) that shows the intended layout of figures and equations.</p>
+<p id="_76049173-d322-4337-a132-66306069362b">The original publication of this author's guide occurred prior to the creation of the standard template<fn reference="2">
+  <p id="_55c1839e-11f7-41e9-b943-de8b1ffbab4a">Templates can be found at: <link target="http://www.itu.int/ITU-T/studygroups/templates/index.html"/></p>
+</fn>.] for use in the preparation of ITU-T texts in Microsoft Word. By using the correct template and applying the appropriate "style" to the text, the author avoids the need to know the details of the formatting associated with font sizes and types, indentation, inter-line spacing, etc. Those styles have been used within this author′s guide. Although the template saves the author from the need to know these details, they have been maintained in the guide.</p>
+<p id="_2c8d91c4-63d8-43b0-8a41-6276efaacc21">Deviations from the styles presented in the standard template should be avoided. In exceptional cases wherein the author requires the use of additional styles, this need shall be indicated explicitly when submitting the text to TSB.</p>
+<p id="_d1dc2068-ec2d-4aac-974a-4688d591c34d">Paragraphs of the normal text should start at the left margin.</p></clause>
+<clause id="Fonts" obligation="normative"><title>Fonts</title><p id="_7864b41c-5634-42b8-8d41-b983f318de1a">In general, all Recommendations should use a serif font (e.g., "Times New Roman") with the point size set at 12. Where required, a sans serif font (e.g., "Arial"), a constant width font (e.g., "Courier New"), and a standard mathematical symbol font may also be used. The recommended font is 8pt "Arial" for indicating URIs within the text. The recommended font is 9pt "Courier New" for ASN.1 modules and types, as well as for XML documents and schemas. Unless there are extenuating circumstances, no other special fonts should be used. (As a reminder, using the appropriate template for the particular type of document automatically implements all the special formatting if one selects the correct style for the elements within the document.)</p>
+<p id="_579a6e16-7cc0-45c9-9c2b-8e4fc06a74dd">If circumstances require special characters beyond these font families, the font should be embedded in the saved electronic file to allow for correct text rendering. In general, natural language descriptions should use a serif font, while formal or programming language elements should use a constant width font.</p>
+<p id="_4e8b4f63-333b-491b-be66-bb7edeeb78df">The unnecessary use of italic and bold typeface within the text should be avoided.</p></clause>
+<clause id="Clause_number_and_titles" obligation="normative"><title>Clause numbers and titles</title><clause id="Clause_numbers" obligation="normative"><title>Clause numbers</title><p id="_80d717c3-b137-498a-80d2-9facdd240fb7">Clauses should be numbered with the digits in bold and separated by periods (e.g., <strong>8.3.1</strong>). In the case of a single-numbered clause, no period shall be present.</p>
+<p id="_bade5146-6b08-40dd-aa1e-957cb5f1280d">The clause number shall appear together with the clause title on a separate line.</p></clause>
+<clause id="Clause_titles" obligation="normative">
+  <title>Clause titles</title>
+  <p id="_fa9eb5c5-ef30-4a70-aa84-045328e08fd3">The title, in bold, indicating the content of the clause shall appear to the right of the clause number. Untitled clauses should be avoided.</p>
+</clause>
+<clause id="Lists" obligation="normative"><title>Lists</title><p id="_1ae0cfa3-80ed-4fb6-98ed-0c1615883551">Lists allow associated short clauses to be presented outside of the main paragraph numbering scheme thus avoiding excessively long clause numbers (e.g., 2.13.3.3.2 is equivalent to point two of the third indent of clause 2.13.3). In the interest of simplicity, authors should avoid lists with more than three levels.</p>
+<p id="_8773eb3f-ce20-44a8-8b97-7e65d3a6dfa7">One-level-only lists may be separated with dashes, bullets or numbers:</p>
+<ul id="_434ad554-f516-45ac-b9bc-7e1d1e2c2432">
+  <li>
+    <p id="_0ef0f50d-5150-40a9-ba2c-3e50c2a34953">first item;</p>
+  </li>
+  <li>
+    <p id="_5e831d4e-f030-420e-9bdc-b1e162d2e621">second item;</p>
+  </li>
+  <li>
+    <p id="_b1169e88-e6f4-43e4-a5c2-e39ef62c6244">etc.</p>
+  </li>
+</ul>
+<p id="_88a27537-a802-410c-90e1-dfa325dafd64">When sub-lists appear within a list as a second level, main levels, at least, should be numbered:</p>
+<ol id="_102b12e2-affa-4c67-ad4f-dc83484f61e2">
+  <li>
+    <p id="_eaf3843d-fced-487e-831d-5a174255dd62">first item:</p>
+    <ol id="_2e3267d0-9d5a-499f-95b5-f1e52b75d469">
+  <li>
+    <p id="_0d118867-ada8-4059-ad1c-4ce64eb0bde0">first sub-item;</p>
+  </li>
+  <li>
+    <p id="_42abb9e0-cd00-4f4d-a599-65974d184b7c">second sub-item.</p>
+  </li>
+</ol>
+  </li>
+  <li>
+    <p id="_fd671613-ab37-42e7-a28b-e3b2bbee55c6">second item:</p>
+    <ol id="_8499b735-0db2-4634-b1a1-c72fb4886bd4">
+  <li>
+    <p id="_d08a7294-e77d-42c3-9fdb-21d23586292e">first sub-item;</p>
+  </li>
+  <li>
+    <p id="_a53ad5eb-5549-4818-9c0c-6885e4e19a8d">second sub-item.</p>
+  </li>
+</ol>
+  </li>
+</ol></clause></clause>
+<clause id="Mathematical_expressions_and_symbols_formulae_equations_etc" obligation="normative"><title>Mathematical expressions and symbols (formulae, equations, etc.)</title><clause id="Quantities_units_and_symbols" obligation="normative">
+  <title>Quantities, units and symbols</title>
+  <p id="_c7579a71-298f-4cbf-84d8-ca3924b3d053">Physical quantities, units, symbol names and usage shall follow the International System of Units (SI), as defined by ISO. Letter symbols used to express quantities in an expression shall be listed with their explanations below the expression, or group of expressions, using them.</p>
+</clause>
+<clause id="Equations_and_formulae" obligation="normative"><title>Equations and formulae</title><p id="_a8d1580a-3e29-42ff-9094-3fd7558a691e">Equations and formulae shall be in the mathematically correct form and shall occupy one or more lines with no text, unless text is an integral part of the expression. ITU formats all equations and formulae by means of MathType; to avoid transcription errors within ITU during publication, the use of this tool by the authors is encouraged.</p>
+<p id="_6e0c2c79-a36b-496e-9063-3d23e8ff7bcc">When necessary, equations should be given a number (placed between parentheses at the right margin of the page) that contains the main clause number plus a number in Arabic numerals in sequence from the beginning of this clause. For example, Equation 6-3 is the third mathematical expression in clause 6 of the Recommendation in which it is contained. Given the complicated nature of mathematical expressions, great care shall be exercised to ensure the clarity of manuscripts (e.g., for the vertical placement of subscripted or superscripted numbers or variables).</p></clause>
+<clause id="Numbers_and_special_characters" obligation="normative"><title>Numbers and special characters</title><p id="_c3191925-2088-4141-8fd4-db08afc94e5f">In order to avoid ambiguity, it is recommended to use a single quote (') as a thousand's digit separator instead of spaces, commas or dots (e.g., "1'000'000").</p>
+<p id="_cb781e86-f474-4b14-a24a-30d15947dbe9">Arabic numerals and non-Latin characters (e.g., Greek, Cyrillic) should not be in italic typeface.</p></clause></clause>
+<clause id="Figures_and_tables" obligation="normative"><title>Figures and tables</title><p id="_4e4d3f43-62a7-43a0-b6ee-39706d80696c">Each figure and table shall be referred to explicitly within the text.</p>
+<clause id="Figures" obligation="normative"><title>Figures</title><p id="_f7c6dd6e-277c-463b-9eb5-b63bd9b86bfc">Figures shall be numbered with Arabic numerals, beginning with 1 (within annexes or appendices, there will be a letter-plus-period or a Roman-numeral-plus-period prefix). This numbering shall normally be independent from the numbering of the clause and of any tables. For Recommendations which are very long or complex, however, the author may number figures sequentially with respect to the single digit clause number. For example, Figure 4-3 denotes the third figure in clause 4 of the Recommendation in which it is contained.</p>
+<p id="_45d9bfc6-5a59-4390-a343-93f370e62e1f">The number and title shall be placed on the same line and centred, below the figure. The first letter of the title shall be capitalized; all other words shall not be capitalized unless they are special terms that are capitalized throughout the Recommendation in accordance with the conventions given.</p>
+<p id="_89b50aa1-282b-41fd-a391-9c81dbce9f3f">When a figure is in 2 parts (e.g., Figure 6, part a and part b), refer to these parts in the text as follows: Figure 6-a, Figure 6-b. They may be referred to collectively as Figure 6.</p>
+<p id="_cc634ab1-48c8-4673-bfb3-d9afd1f9a463">Figures and references to figures should generally be legible and understandable when using greyscale printing. It is helpful to remember that rich colours visible on computer monitors do not appear the same on paper and in the case of greyscale printing they often appear as black. To assure legibility, ITU-T uses 9pt Times New Roman font for text within figures.</p>
+<p id="_09dbd693-e822-4f53-b7bd-047e21076e1f">If there are too many objects on a figure, it is preferable to break the figure into several parts.</p>
+<p id="_52eedc9e-f6fb-41fb-b77b-c81b6ad9248e">To facilitate the editing process of figures, authors are encouraged to submit additionally an editable source file for the figures in their original format (CorelDraw, Microsoft Visio, Microsoft PowerPoint, Micrografx Designer, etc.) when submitting the final text.</p>
+<p id="_f50dedc4-4a9b-4aea-aa1c-4b8a4896518d">It is recommended that the figure index that is shown in the lower right-hand corner of the figure be preserved if a figure previously published by ITU has formed the basis of the new or modified figure. This index allows TSB to locate the source, which can reduce the time to publication by allowing the reuse of the foundation drawing.</p>
+<figure id="fig3">
+  <name>Example of presentation of figures</name>
+  <image src="data:image/gif;base64,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" id="_52395b44-7d7e-410c-9460-05c9815b1913" mimetype="image/gif" height="auto" width="auto"/>
+</figure></clause>
+<clause id="Tables" obligation="normative"><title>Tables</title><p id="_48bd4b6c-e7b9-4b9a-af13-e72d69ffda6b">Tables shall be numbered with Arabic numerals, beginning with 1 (within annexes or appendices there will be a letter-plus-period or a Roman-numeral-plus-period prefix). This numbering shall normally be independent of the numbering of the clause and of any figures. For Recommendations which are very long and complex, the author may number sequentially with respect to the single digit clause number. For example, Table 4-3 denotes the third table in clause 4 of the Recommendation in which it is contained.</p>
+<p id="_517917f8-64a8-46df-84b3-f8c13e355647">The number and title shall be placed on the same line and centred, above the table. The first letter of the title shall be capitalized; all other words shall not be capitalized unless they are special terms that are capitalized throughout the Recommendation in accordance with the conventions given.</p>
+<p id="_6af2a083-2c57-421c-8673-1ee03453d538">The heading of each column shall be bold-faced and centred, and its first letter shall be capitalized.</p>
+<p id="_fd89a9a2-6715-498c-8827-8c228e930f59">If the table is longer than a page length, the table number and title as well as column headings shall be repeated on each page.</p>
+<p id="_23ccc64c-02af-4e30-b818-674920d41c46">If the table is wider than a page width, then each row in the complete table shall be assigned an index number. Each sub-table shall contain the index number in the first column.</p></clause></clause>
+<clause id="Notes_and_footnotes" obligation="normative"><title>Notes and footnotes</title><clause id="Notes_and_footnotes_to_the_main_text" obligation="normative"><title>Notes and footnotes to the main text</title><p id="_ec416b29-11a6-4304-8f0d-fef459e898cd">If the text is written in a clear manner, the need for notes should be minimal. If supplementary or complementary information is necessary, notes may be integrated in the text of a Recommendation. They shall normally be placed after the clause or paragraph to which they refer.</p>
+<p id="_7a296ec0-6939-44b6-b7d9-3c97c3c89ad5">In a numbered clause containing only one note, the note shall start with the word "NOTE", placed at the beginning of the first line of the note and followed by a space and an "em" dash.<note id="_8dc0f8da-f1cd-4b95-a306-c1ee0657801b">
+  <p id="_62de1954-57e5-4d15-8a20-4b9fa9f243f1">This note is an example.</p>
+</note></p>
+
+<p id="_8c5eaec5-5286-417b-83ea-fd0d3c263ffb">In a numbered clause containing two or more notes, each note shall be preceded by the word "NOTE", a space then an Arabic numeral, a space and an "em" dash at the beginning of its first line. Regardless of whether they occur singly or in one or more groups, all notes within the same numbered clause shall be numbered consecutively (i.e., NOTE 1 –, NOTE 2 –, NOTE 3 –, etc.).</p>
+<p id="_7f67c3e0-0d61-4179-afa7-a2d3f535fa9e">Footnotes<fn reference="3">
+  <p id="_687a956d-6a8f-4e1e-8fcc-c10e237974c7">Footnote example.</p>
+</fn> may be used to provide information regarding a particular item, word or concept. They shall be indicated by a superior positioned Arabic numeral at the appropriate location in the text and shall be numbered consecutively throughout the Recommendation. Both the indicator and the footnote itself shall be printed with a font one or two point sizes smaller than the main text.</p>
+<p id="_31e81d08-382d-4ba7-b0de-35b695746088">If the same footnote appears repeatedly on the same page of the text, the text of the footnote should be removed after the first time it is used. Furthermore, the same identifier for the footnote should be used for each occurrence of reference to that note on the page. Should the same footnote appear multiple times across multiple pages, the same rules within each page apply as above; however, the footnote should appear with a (possibly) different identifier for the first occurrence on each page.</p>
+<p id="_511d5326-e410-4e0c-8e46-0d951bc5a3de">Notes and footnotes should not contain normative specifications.</p></clause>
+<clause id="Notes_to_tables_and_figures" obligation="normative">
+  <title>Notes to tables and figures</title>
+  <p id="_66c4a051-ee8d-4520-9a89-6b669304937a">Notes to tables and figures shall be treated independently from footnotes and notes integrated in the Recommendation. They shall be located for tables within the frame of the table, and for figures, between the figure and its title. Notes for each table and each figure shall be numbered independently. Such notes may contain normative specifications. Notes to a table or a figure can be indicated alternatively by a superscripted lower case letter (see <xref target="fig3"/>). Both the indicator and the note itself shall be printed in a font several point sizes smaller than the main text. To assure legibility, ITU-T uses 9pt Times New Roman font for text within figures and tables.</p>
+</clause></clause>
+<clause id="Citing_of_references" obligation="normative"><title>Citing of references</title><clause id="References_within_the_same_Recommendation" obligation="normative">
+  <title>References within the same Recommendation</title>
+  <p id="_f8edfd4d-e9e9-4ef0-ab6c-ba3cefd5fe04">When reference is made to text passages, tables, figures, equations, etc., within the same Recommendation, it is sufficient to cite the appropriate number without the Recommendation number, e.g., "see Table 4", or "see clause 5" or "see clause 5.4.7".</p>
+</clause>
+<clause id="References_to_parts_of_another_Recommendation" obligation="normative">
+  <title>References to parts of another Recommendation</title>
+  <p id="_e1c290ee-39b8-4265-9821-23d1aa0a7e94">When reference is made to text passages, tables, figures, equations, etc., in another Recommendation, the citation tag (see <xref target="Core_material_references"/>) of the referenced Recommendation should be included in the reference, e.g., "see Figure 1 of [b-ITU-T A.8]", "see clause 2 of [b-ITU-T A.4]" or "see clause 2.2.10 of [ITU-T A.5]".</p>
+</clause></clause>
+<clause id="Formal_language_descriptions" obligation="normative">
+  <title>Formal language descriptions</title>
+  <p id="_2dfe37c0-b503-4246-a87b-83a2e5fa3548">Formal language modules should be presented using only characters acceptable by the relevant compilers (including tabs, line returns, etc.). See <xref target="Fonts"/> regarding the use of fonts for formal languages.</p>
+</clause></clause>
+<clause id="Additional_guidance" obligation="normative"><title>Additional guidance</title><p id="_190c0d24-4009-45ce-ba86-1b55339f7c02">An ITU English language style guide [b-ITU style] is available.</p>
+<p id="_f92efe34-b911-4b47-b639-0dc269c5a3e2">When revising an approved ITU-T Recommendation, adequate indications should be given to identify the differences from the published version of the same text. Annex A provides additional details concerning adequate indications.</p>
+<p id="_0f38138f-2a14-44b1-b6ce-883add2ed0a7">The identification of XML namespaces defined in ITU-T Recommendations requires a common approach for the URI naming scheme. This approach is described in Annex C.</p>
+<p id="_0433c953-de90-405e-8ca6-7f613edb914d">As a quality assurance initiative, TSAG has identified the actions required to improve the quality of ITU-T Recommendations. These are indicated in Annex D, in which rapporteurs are identified as being responsible for ensuring that all of the points in the check list have been fulfilled adequately.</p>
+<p id="_a838e442-5da5-469e-9ddb-6f321efeac0c">Editors and rapporteurs are invited to consider the application of the presentation style that is indicated in Annex E in the amendments and corrigenda submitted to ITU, in order to help determine the modifications and to facilitate the processing of texts by TSB.</p></clause>
+
+
+
+
+
+
+</sections><annex id="_revision_to_existing_text" obligation="normative"><title>Revision to existing text</title><p id="_6c872a58-0e83-43e3-b218-6e13607c89fa">The following is based on clause I.2.7 of <eref type="inline" bibitemid="b-ITU-T_A.2" citeas="b-ITU-T A.2"/>:</p>
+<p id="_579d87d9-2715-4c02-afae-7659c7d62803">When revising an ITU-T Recommendation, adequate indications should be given to identify any changes proposed with regard to the previous <strong>published</strong> version of the same text.</p>
+<p id="_8c0abfed-7404-4c68-aa29-85b976d09493">If a contribution proposes modifications to a non-published text, e.g., a draft Recommendation, the portions of the text to be modified should also be clearly shown with revision marks.</p>
+<p id="_f837badb-7020-4962-aaac-9a7b81d03bec">Such change indications could be made, for example, by strikethrough, underlining and by vertical revision bars (|) appearing at the margin of the page.</p>
+<p id="_92303acc-6b2c-4dab-b230-eab73a90807a">Authors are advised to ask TSB for the last published source file of the Recommendation to be amended or revised.</p></annex><annex id="annexB" obligation="normative"><title>Guidance on the development of definitions</title><clause id="AnnexB_introduction" obligation="normative">
+  <title>Introduction</title>
+  <p id="_3d40ed79-869b-4574-ac8f-df8bbd1f4eb4">A considerable amount of time is spent by study groups on terminology and definitions but the results can be duplicative and of inconsistent quality. Greater consistency is needed in the way definitions are drafted. In addition, consideration needs to be given to ensuring that definitions are drafted in a way that allows for automated compilation and processing of new definitions so that the ITU database of definitions can be more easily maintained. Annex 2 to WTSA Resolution 67 (Johannesburg, 2008) provides basic guidelines for the preparation of terms and definitions. This annex builds on that guidance to help study groups to adopt a consistent approach to terminology and definitions and also to address the requirements for automated updating of the terminology database.</p>
+</clause>
+<clause id="Terms_and_definitions" obligation="normative">
+  <title>Terms and definitions</title>
+  <p id="_6480bf6c-108a-44e9-9203-f92cb8710258">A <em>term</em> is simply a word, or group of words that is used to express a specific concept. A <em>definition</em> is a clear, concise and accurate statement that expresses the precise meaning of a term or concept.</p>
+</clause>
+<clause id="Best_practices_for_writing_definitions_within_ITU-T_Recommendations" obligation="normative"><title>Best practices for writing definitions within ITU-T Recommendations</title><clause id="Use_of_existing_terminology" obligation="normative"><title>Use of existing terminology</title><p id="_d2193999-d411-496c-8616-0f3a2823b71d">Developers of Recommendations spend a great amount of time on terminology development. While it is important that definitions accurately capture the subject concept or term, experience has shown that terminology discussions frequently consume significant technical meeting time. One way to reduce unnecessary discussion is to use already-defined terms.</p>
+<p id="_e28eece9-1d52-47ba-bf84-b37405c2c3f1">New terms should not be developed where an acceptable definition already exists. Also, already-existing terms should not be redefined. Existing definitions should be consulted before any new definition is developed to check if the term/concept has already been defined. Only if no satisfactory definition exists should development of a new definition be considered. When defining a new term/concept, the name used for the term should not duplicate the name used for an already-defined term/concept.</p>
+<p id="_bf435252-a036-48dc-a11f-7428e6b29fa3">ITU provides an online database, "ITU Terms and Definitions"<fn reference="4">
+  <p id="_c021f8fb-da25-4426-b660-4dca2c0a3ac8">
+    <link target="http://www.itu.int/ITU-R/go/terminology-database"/>
+  </p>
+</fn>, to assist in discovering existing terms and definitions in ITU-R and ITU-T Recommendations.</p></clause>
+<clause id="Structure" obligation="normative"><title>Structure</title><p id="_8651a984-3fe9-437d-a6c0-3cf7bf4764ba">A formal definition is a concise, logical statement that comprises three essential elements:</p>
+<ol id="_5ef74b81-ff82-4099-bad9-0d2ce99a0dbd">
+  <li>
+    <p id="_6fcac07a-51bb-4e54-a822-143cb21c879e">The term (word or phrase) to be defined;</p>
+  </li>
+  <li>
+    <p id="_0b4b2e97-0a2b-4971-93b1-98ba6e1a7975">The class of object or concept to which the term belongs; and</p>
+  </li>
+  <li>
+    <p id="_5294af61-e62a-4f62-88d6-cd3fe8748ad5">The characteristics that distinguish it from all others of its class.</p>
+  </li>
+</ol>
+<p id="_381a706d-659e-4769-b37b-ef14a6c030f4">An example of a complete definition in ITU-T style is:</p>
+<table id="_e964f49a-b8ab-4e23-86ad-f81f26229bd1" unnumbered="true">
+  <tbody>
+    <tr>
+      <td align="center">
+        <strong>cryptographic algorithm:</strong>
+      </td>
+      <td align="center">a mathematical function</td>
+      <td align="center">that computes a result from one or several input values.</td>
+    </tr>
+    <tr>
+      <td align="center">(The term)</td>
+      <td align="center">(The class of object)</td>
+      <td align="center">(The distinguishing characteristics)</td>
+    </tr>
+  </tbody>
+</table></clause>
+<clause id="Conciseness" obligation="normative"><title>Conciseness</title><p id="_b46e6143-771f-4f54-874a-d11212c3a0ad">Definitions should be concise and should include only the necessary information. To avoid complexity and confusion, each definition should describe only one concept.</p>
+<p id="_89763d50-c188-422e-bb16-603dc85c4d80">Definitions should contain only information that makes the concept unique and should not contain detailed explanations or extraneous material. Any additional descriptive information or other supplementary (i.e., non-normative, non-essential) information that is necessary to differentiate the concept from other concepts may be included as notes, figures or equations.</p>
+<p id="_3d336b3d-668b-485d-9aa2-a859ab278ee1">Figures, equations and tables should not replace the verbal representation of the defined term but may form useful supplementary information.</p>
+<note id="_a64ded09-3eec-4baf-9510-afa735e5fbdd">
+  <p id="_d4c5f064-105d-4ba2-a3b6-5424080e4817">It is recognized that, for mathematical terms, equations may be the most effective and efficient way of defining the term.</p>
+</note></clause>
+<clause id="Clarity_and_accuracy" obligation="normative">
+  <title>Clarity and accuracy</title>
+  <p id="_2b650b02-96cb-44b8-a60e-04bbdc0b9066">Definitions must be accurate, clear and positive. Inaccurate and negative definitions are not acceptable. Nor should definitions be circular or include, or paraphrase, the term being defined. The language used in a definition must either be common English language terms or defined elsewhere in the text.</p>
+</clause>
+<clause id="Independence" obligation="normative">
+  <title>Independence</title>
+  <p id="_77b01368-e0de-47b3-b63a-491855239b95">Definitions must be able to stand alone. In other words, the meaning should be understandable without requiring reference to other parts of the Recommendation. This is particularly important since the terms and definitions are being extracted for use by delegates, and consumers on the web.</p>
+</clause>
+<clause id="Grammatical_form" obligation="normative">
+  <title>Grammatical form</title>
+  <p id="_d9e5be72-52c8-4b9c-bdcb-dfe4b873626c">The form of the definition should also be the same part of speech<fn reference="5">
+  <p id="_7cc7be08-d27e-4557-bd83-3d0296e801d3">"parts of speech" are <em>verbs, nouns, adjectives, adverbs, etc</em>.</p>
+</fn> as the term or concept being defined. For example, if the term being defined is a noun, the definition should not be expressed as a verb or other part of speech.</p>
+</clause>
+<clause id="Illustrations_within_definitions" obligation="normative">
+  <title>Illustrations within definitions</title>
+  <p id="_fdb15e09-a544-405c-90c7-b62891cf469b">While figures or equations can assist with the understanding of the meaning of a term, they should not form the essence of the definition. In other words, they are best applied as supplemental, informative material to enhance the presentation of the concepts involved. In general, they should not replace the textual representation of the basic definition.</p>
+</clause>
+<clause id="Symbols_and_abbreviations" obligation="normative">
+  <title>Symbols and abbreviations</title>
+  <p id="_b40c7ad4-8f1d-4cf2-8e20-6dadbee02b18">Where abbreviations are used within a definition, an explanation or expansion of those abbreviations must be included. Standard symbols for measurement units should not be defined.</p>
+</clause>
+<clause id="Protocol_elements" obligation="normative">
+  <title>Protocol elements</title>
+  <p id="_459a4fbc-f429-4908-bf77-dac055362834">Formal or detailed descriptions of protocol elements should be avoided within the "Definitions" clause; these are best handled within the main body of the Recommendation (clause 6 or later).</p>
+</clause>
+<clause id="Variables_and_special_notations_catalogues_within_definitions" obligation="normative">
+  <title>Variables and special notations catalogued within definitions</title>
+  <p id="_7302fa28-ad30-4d8f-acaf-17cf5bc9c09b">Definitions should be limited to concepts related to terms and not the method of representing information within a Recommendation. The latter group is more appropriately documented within clause 5, "Conventions".</p>
+</clause>
+<clause id="Undefined_terms" obligation="normative">
+  <title>Undefined terms</title>
+  <p id="_973b9987-899b-4f0b-9066-e4d7b8caee39">Where a term is used but not defined (either explicitly, or by reference), it must be assumed that common English language usage (i.e., the dictionary definition) of the term is intended. Recognized English language dictionaries include: <em>The Concise Oxford Dictionary</em>, <em>The Shorter Oxford English Dictionary</em>, <em>The Collins Concise English Dictionary</em>, <em>Webster's New World College Dictionary or Chambers Concise Dictionary</em>.</p>
+</clause></clause>
+<clause id="Formatting_of_definitions" obligation="normative"><title>Formatting of definitions</title><p id="_c631eee6-8a82-4c44-8ee9-d7d48d894428">Formatting requirements for definitions are illustrated in <xref target="Definitions"/> and explained in <xref target="Core_material_definitions"/> of this author's guide.<note id="_6a3cb39b-72bd-4037-9159-e55846f1b382">
+  <p id="_cd7c154f-ba45-466d-bcf4-3830adb3c9eb">The formatting requirements for definitions within common or twin texts jointly developed with ISO/IEC JTC 1 are illustrated in clause 3 of Appendix II of <eref type="inline" bibitemid="ITU-T_A.23" citeas="ITU-T A.23"/>.</p>
+</note></p>
+
+<p id="_d6240a34-59c0-4434-9d43-6e742cc4583a">In addition, the following stylistic aspects are preferred:</p>
+<ul id="_54f626a5-9da1-486b-b240-6db6d06a924f">
+  <li>
+    <p id="_8830a6a6-4365-4420-bfd0-580920024298">Each definition should begin with a clause number, placed at the margin with a tab between the number and the term. The term should be in bold, beginning with a lower case letter and followed by a colon. Definitions should end with a period.</p>
+  </li>
+  <li>
+    <p id="_93449ee0-439b-415c-a7c2-23c4c8a67898">Definitions with more than one explanation should be separated with semicolons.</p>
+  </li>
+  <li>
+    <p id="_5c834946-2cfd-42ac-ab1c-4c2e8957178c">Definitions should appear in alphabetical order.</p>
+  </li>
+</ul></clause></annex><annex id="_uri_naming_scheme_for_the_identification_of_xml_namespaces_defined_in_itu_t_recommendations" obligation="normative"><title>URI naming scheme for the identification of XML namespaces defined in ITU-T Recommendations</title><clause id="AnnexC_introduction" obligation="normative"><title>Introduction</title><p id="_e3562f79-d9b6-442a-aa9f-99cdefda2ee7">ITU-T Recommendations increasingly define XML schemas. To answer the growing demand of universal resource identifiers (URIs) for referencing XML namespaces in ITU-T Recommendations, ITU reserved the following URL:<br/></p>
+<p align="center" id="_4953d53d-ab62-42d1-a265-ed46a9ec458e">
+  <tt>http://www.itu.int/xml-namespace/</tt>
+</p>
+<p id="_6ef88e27-6179-4a8f-87e5-4ee66e8c4281">This annex gives the rules for allocating URIs to XML namespaces defined in ITU-T Recommendations.</p></clause>
+<clause id="Proposed_structure_for_URIs_defined_in_ITU-T_Recommendations" obligation="normative"><title>Proposed structure for URIs defined in ITU-T Recommendations</title><p id="_26320525-65b4-4ad7-8ea4-ff3eb4dc4cbe">In order to guarantee the uniqueness of namespaces defined in ITU-T Recommendations as well as to improve their visibility, any XML namespace will be referenced with a URI of the form:<br/></p>
+<p align="center" id="_df9c5f81-2e0b-4a97-a009-b3c48a1d799d">
+  <strong>
+    <tt>http://www.itu.int/xml-namespace/itu-t/x.<em>nnn.pp/name</em>/</tt>
+  </strong>
+</p>
+<p id="_4f3ddb24-91ac-4da7-a917-b02e22e3b199">where:</p>
+<dl id="_9426591d-37ae-4b1f-af9e-ae8231649678">
+  <dt>"x"</dt>
+  <dd>
+    <p id="_7562b443-f2c1-4799-828c-b710e752a883">is the ITU-T Recommendation series letter, in lower case, of the referenced Recommendation, i.e., "a" to "z"</p>
+  </dd>
+  <dt>"nnn"</dt>
+  <dd>
+    <p id="_2620dc6f-634a-4360-998d-628ebe399bd2">is the main number of the Recommendation</p>
+  </dd>
+  <dt>"pp"</dt>
+  <dd>
+    <p id="_c1e83864-4dcc-4495-a3cf-95710747efd8">is the sub-number, if any</p>
+  </dd>
+  <dt>"name"</dt>
+  <dd>
+    <p id="_ccfc614d-f5a2-432c-a32d-463145237445">is the namespace(s) defined in the Recommendation</p>
+  </dd>
+</dl>
+<p id="_45690eb1-dee7-431c-8df4-b81db40611fa">The study group responsible for the Recommendation identified by the namespace, "<strong><tt>http://www.itu.int/xml-namespace/itu-t/<em>x.nnn.pp</em>/</tt></strong>", has the authority to allocate one or more subsequent arcs. Moreover, that study group has the authority to insert a subsequent arc to handle version numbers or approval dates, if there is a need to differentiate among editions of that Recommendation. Such allocations shall be published in the Recommendation making those allocations. All arcs shall preferably be written in lower case.</p>
+<p id="_a0811075-fd59-4344-b728-f30b0464f8fc">It is noted that this naming scheme can easily be extended to accommodate other types of documents produced in ITU.</p></clause>
+<clause id="Examples_of_use" obligation="normative">
+  <title>Examples of use</title>
+  <ul id="_5e71e0b0-dccc-4732-b2ef-aa350d0892ea">
+  <li>
+    <p id="_05c0c6e3-b677-47ee-9aea-99d066aa2162">Recommendation ITU-T X.1206 (2008), <em>A vendor-neutral framework for automatic notification of security related information and dissemination of updates</em>.</p>
+    <p align="center" id="_13658997-4b76-43ea-9ff5-5b4594d395e7">
+  <strong>
+    <tt>http://www.itu.int/xml-namespace/itu-t/x.1206/core/</tt>
+  </strong>
+</p>
+  </li>
+  <li>
+    <p id="_9d40c333-51a7-4cdd-b7a5-4012ad672bda">Draft Recommendation ITU-T H.325, <em>Advanced multimedia systems for next generation and other packet-switched networks</em>.</p>
+    <p align="center" id="_78b2f81e-b418-48ab-863b-4387003d80e5">
+  <strong>
+    <tt>http://www.itu.int/xml-namespace/itu-t/h.325/core/</tt>
+  </strong>
+</p>
+  </li>
+</ul>
+</clause></annex><annex id="_actions_required_to_improve_the_quality_of_itu_t_recommendations" obligation="normative"><title>Actions required to improve the quality of ITU-T Recommendations</title><p id="_78cdb30f-8333-47eb-b4ac-0511e9526beb">In an ITU-T meeting on a Question and before a draft Recommendation is proposed for approval, consent or determination, the rapporteur should ensure that all of the bullet points of the check list below have been reviewed and that they have been fulfilled adequately. This should also be reflected in the report of the Question.<note id="_b1ad1caf-65c6-4916-871c-fc7bf4620120">
+  <p id="_720886f6-121b-4d49-a82c-aa0aa9818ff6">Additional guidance is provided in clause 5 of <eref type="inline" bibitemid="b-ITU-T_Rap" citeas="b-ITU-T Rap"/>.</p>
+</note></p>
+
+<p id="_4f212124-1419-4f17-875d-05e79ec63ccb">The draft <title of="" the="" draft="">, which is proposed for approval, consent or determination:</title></p>
+<ul id="_fc8f1df7-fda1-4d10-8b66-307ee23ef970">
+  <li>
+    <p id="_d52d6d7d-143b-4c39-9d28-d01fe8b97782">has been thoroughly reviewed for technical accuracy;</p>
+  </li>
+  <li>
+    <p id="_52979b6e-c304-45f9-b3b9-1263f0e0dff8">is technically soundwith as few options as feasible;</p>
+  </li>
+  <li>
+    <p id="_e0f77c6f-6d28-44a3-9e18-7bd04e25ee57">has content that does not conflict with the content of an already approved Recommendation;</p>
+  </li>
+  <li>
+    <p id="_255493a4-3644-4d34-8db3-5bbe2d4af3a3">does not contain case studies within the normative part;</p>
+  </li>
+  <li>
+    <p id="_9d68bb4c-cad3-4bfe-9a1b-19cd44f65ff6">has only short illustrative examples, if necessary, included in the normative part;</p>
+  </li>
+  <li>
+    <p id="_a53f1f36-d17e-449b-8272-377b91eaf533">follows the author's guidelines (including the use of ITU-T templates, which can be found at: <link target="http://www.itu.int/ITU-T/studygroups/templates/index.html"/>)</p>
+  </li>
+  <li>
+    <p id="_c7192790-e9bf-4ddf-9a73-1f696b664226">has been spell-checked and is grammatically correct, to the extent practicable;</p>
+  </li>
+  <li>
+    <p id="_34206842-8a93-494f-9e9a-12c4a9c8d2c5">contains definitions that have been developed after consulting the ITU-T Terms and Definitions database<fn reference="4">
+  <p id="_ee0a6592-f179-4371-825d-2a14c2d978db">
+    <link target="http://www.itu.int/ITU-R/go/terminology-database"/>
+  </p>
+</fn> and following the guidance of the standardization committee for vocabulary (SCV) (see <xref target="annexB"/>);</p>
+  </li>
+  <li>
+    <p id="_243b5973-73ca-4da6-9640-e9989adaefe9">has all acronyms, including those in the figures and tables, correctly spelled out;</p>
+  </li>
+  <li>
+    <p id="_a917dd55-e9da-49ee-8ab2-d2d4201dc84d">has the normative part making use of all references in clause 2 (References);</p>
+  </li>
+  <li>
+    <p id="_3d98e8ff-82bc-4e91-9f87-73bb26b4b73a">has all references in clause 2 (References) qualified in accordance with <eref type="inline" bibitemid="ITU-T_A.5" citeas="ITU-T A.5"/>.</p>
+  </li>
+</ul></annex><annex id="_presentation_style_of_amendments_and_corrigenda" obligation="normative"><title>Presentation style of amendments and corrigenda</title><p id="_592c022e-0b2f-4d49-8ea4-03c71f00bced">This annex describes a suggested presentation format for amendments and corrigenda. Editors and rapporteurs are invited to consider the application of the following presentation in the amendments and corrigenda submitted to ITU, in order to help determine the modifications and to facilitate the processing of texts by TSB.</p>
+<p id="_9783fa90-e977-4ab2-89ae-7f381fe32786">This proposal applies to ITU-T texts only. The presentation of ITU-T | ISO/IEC common texts is governed by <eref type="inline" bibitemid="ITU-T_A.23" citeas="ITU-T A.23"/>.</p>
+<clause id="Preferred_presentation_format" obligation="normative"><title>Preferred presentation format</title><p id="_229541cb-6730-42c2-8400-60921a44ec32">The principle of the format is to present changes with revision marks and to replace unchanged text with ellipses, keeping only the necessary parts to help locate the modified parts.</p>
+<p id="_34c14e50-f318-4e13-bf1a-b0a7a3561638">The following fixed header is added in italics to the text:</p>
+<p id="_86492581-64d8-45fa-b2d1-ed6928cbbdb4">
+  <em>Modifications introduced by this [amendment | corrigendum] are shown in revision marks. Unchanged text is replaced by ellipsis (…). Some parts of unchanged text (clause numbers, etc.) have been kept to locate the correct insertion points.</em>
+</p>
+<p id="_d6321aa3-77ad-4f6a-839a-61d25185c790">Unmodified text is replaced by ellipses. Parts of the text (clause titles, etc.) are kept to locate the modified parts. In case there is any doubt whether the deletion of a text part will still allow one to properly locate the modified part, the text part is kept.</p>
+<p id="_8b24929c-e06f-4d1a-bd95-f158ce1d2759">The text appears, then, as shown in the example given in <xref target="exampE_1"/>.</p>
+<example id="exampE_1"><name>Example application of the presentation format</name><p id="_1725e3be-d0a0-4046-852f-797f8110585e">
+  <strong>…​</strong>
+</p>
+<p id="_386f318d-9268-4b69-9aae-778585d34c54">
+  <strong>6	Definition of the VBD mode of operation</strong>
+</p>
+<p id="_42776252-6ae2-4be8-9365-dba9750bc12d">
+  <strong>…​</strong>
+</p>
+<p id="_143f1c40-ed72-4c9a-837d-b086fdd208e1">and should consider the appropriate application of:</p>
+<p id="_33c86cec-0933-4845-983f-ef602f5b4d1c">
+  <del>The use of echo cancellers on the VBD channel, as per Rec. ITU-T G.168.</del>
+</p>
+<p id="_160225c9-2ad3-44c9-8b4f-af839439d906">Forward error correction (FEC) (e.g., per [IETF RFC 2733]) or other forms of redundancy <add>(e.g., per [IETF RFC 2198</add>)] only if support has been successfully negotiated with the remote ITU-T V.152 implementation.</p>
+<p id="_fc34cd90-58ba-4aea-9a84-24ba1175568c">
+  <strong>…​</strong>
+</p></example></clause>
+<clause id="Exceptions_to_the_above_presentation_format" obligation="normative">
+  <title>Exceptions to the above presentation format</title>
+  <p id="_eea35b6c-a626-4176-899a-730fb7ff3048">The above presentation format is intended to simplify presentation. It should not be considered as a constraint. Sometimes, other formats lead to simpler presentation, for instance, when deleting or adding complete annexes or appendices.</p>
+</clause>
+<clause id="Numbering_new_clauses_tables_and_figures" obligation="normative"><title>Numbering new clauses, tables and figures</title><p id="_70914501-ae53-4a52-8291-93bc70e117b7">In a corrigendum or an amendment, existing clause, figure and table numbers should not be modified, in order to allow for further non-ambiguous referencing, especially in future amendments and corrigenda to the same version of the Recommendation.</p>
+<clause id="Deletion_od_a_clause_table_or_figure" obligation="normative">
+  <title>Deletion of a clause, table or figure</title>
+  <p id="_0ef85414-c75a-4068-b396-8839c91a3243">The subsequent clauses, tables or figures should not be renumbered, and the deleted number should not be reused.</p>
+</clause>
+<clause id="Insertion_of_a_clause_table_or_figure" obligation="normative"><title>Insertion of a clause, table or figure</title><p id="_55e1025d-a91d-459d-ac4e-b95ebc41cd59">Previous clause, figure or table numbers will be extended with letters in order to designate the inserted clauses, tables or figures.</p>
+<p id="_7271e882-84a3-415b-a66f-f015ef5fbffc"><em>Example:</em> If several clauses are to be inserted, for instance, between clauses 6.1 and 6.2, they should be numbered as 6.1a, 6.1b, etc.</p></clause>
+<clause id="Renumbering" obligation="normative">
+  <title>Renumbering</title>
+  <p id="_66836d40-5feb-4b8b-92f3-13d59064e81d">When issuing a completely revised edition, clauses, figures and tables will be renumbered sequentially.</p>
+</clause></clause></annex><annex id="_appendices" obligation="informative"><title>Appendices</title><p id="_9f376129-4793-470d-ae65-3c0fa74d5740">Appendices do not form an integral part of a Recommendation. It should be noted that while a bibliography is considered an appendix, and thus is non-normative, it is not explicitly labelled as an appendix. The text "(This appendix does not form an integral part of this Recommendation.)" does not follow the "Bibliography" heading.</p>
+<p id="_4ef36233-98c0-4f2d-a3e1-6da5f5de36f7">The sole reference to a normative reference listed in clause 2 should not be made from an appendix. The sole reference to a non-normative reference such as <eref type="inline" bibitemid="b-ITU-T_K.35" citeas="b-ITU-T K.35"/> may appear in an appendix.</p></annex><bibliography><references id="References" obligation="informative">
+  <title>References</title><p>The following ITU-T Recommendations and other references contain provisions which, through reference in this text, constitute provisions of this Recommendation. At the time of publication, the editions indicated were valid. All Recommendations and other references are subject to revision; users of this Recommendation are therefore encouraged to investigate the possibility of applying the most recent edition of the Recommendations and other references listed below. A list of the currently valid ITU-T Recommendations is regularly published. The reference to a document within this Recommendation does not give it, as a stand-alone document, the status of a Recommendation.</p><bibitem id="ITU-T_A.23">
+  <formattedref format="application/x-isodoc+xml">Recommendation ITU-T A.23, Annex A (2014), <em>Guide for ITU-T and ISO/IEC JTC 1 cooperation.</em></formattedref>
+  <docidentifier>ITU-T A.23</docidentifier>
+</bibitem><bibitem id="ITU-T_A.5">
+  <formattedref format="application/x-isodoc+xml">Recommendation ITU-T A.5 (2016), <em>Generic procedures for including references to documents of other organizations in ITU-T Recommendations.</em></formattedref>
+  <docidentifier>ITU-T A.5</docidentifier>
+</bibitem>
+  
+  
+</references><references id="Bibliography" obligation="informative">
+  <title>Bibliography</title><bibitem id="b-Essay">
+  <formattedref format="application/x-isodoc+xml">Essay Writing Center, <em>Definition Essay</em>.<br/>
+<link target="http://essayinfo.com/essays/definition_essay.php"/> (Referenced 1.02.2016)</formattedref>
+  <docidentifier>b-Essay</docidentifier>
+</bibitem><bibitem id="b-ISO_704">
+  <formattedref format="application/x-isodoc+xml">ISO 704:2009, <em>Terminology work – Principles and methods</em>.</formattedref>
+  <docidentifier>b-ISO 704</docidentifier>
+</bibitem><bibitem id="b-ITU_style">
+  <formattedref format="application/x-isodoc+xml"><em>ITU English language style guide</em> (2015).<br/>
+<link target="http://www.itu.int/SG-CP/docs/styleguide.doc"/></formattedref>
+  <docidentifier>b-ITU style</docidentifier>
+</bibitem><bibitem id="b-ITU-T_A.1">
+  <formattedref format="application/x-isodoc+xml">Recommendation ITU-T A.1 (2012), <em>Working methods for study groups of the ITU Telecommunication Standardization Sector</em>.</formattedref>
+  <docidentifier>b-ITU-T A.1</docidentifier>
+</bibitem><bibitem id="b-ITU-T_A.13">
+  <formattedref format="application/x-isodoc+xml">Recommendation ITU-T A.13 (2000), <em>Supplements to ITU‑T Recommendations</em>.</formattedref>
+  <docidentifier>b-ITU-T A.13</docidentifier>
+</bibitem><bibitem id="b-ITU-T_A.2">
+  <formattedref format="application/x-isodoc+xml">Recommendation ITU-T A.2 (2012), <em>Presentation of contributions to the ITU Telecommunication Standardization Sector</em>.</formattedref>
+  <docidentifier>b-ITU-T A.2</docidentifier>
+</bibitem><bibitem id="b-ITU-T_A.4">
+  <formattedref format="application/x-isodoc+xml">Recommendation ITU-T A.4 (2012), <em>Communication process between the ITU Telecommunication Standardization Sector and forums and consortia</em>.</formattedref>
+  <docidentifier>b-ITU-T A.4</docidentifier>
+</bibitem><bibitem id="b-ITU-T_A.6">
+  <formattedref format="application/x-isodoc+xml">Recommendation ITU-T A.6 (2012), <em>Cooperation and exchange of information between the ITU Telecommunication Standardization Sector and national and regional standards development organizations</em>.</formattedref>
+  <docidentifier>b-ITU-T A.6</docidentifier>
+</bibitem><bibitem id="b-ITU-T_A.8">
+  <formattedref format="application/x-isodoc+xml">Recommendation ITU-T A.8 (2008), <em>Alternative approval process for new and revised ITU-T Recommendations</em>.</formattedref>
+  <docidentifier>b-ITU-T A.8</docidentifier>
+</bibitem><bibitem id="b-ITU-T_G.108.2">
+  <formattedref format="application/x-isodoc+xml">Recommendation ITU-T G.108.2 (2007), <em>Transmission planning aspects of echo cancellers</em>.</formattedref>
+  <docidentifier>b-ITU-T G.108.2</docidentifier>
+</bibitem><bibitem id="b-ITU-T_G.709">
+  <formattedref format="application/x-isodoc+xml">Recommendation ITU-T G.709/Y.1331 (2012), <em>Interfaces for the optical transport network</em>.</formattedref>
+  <docidentifier>b-ITU-T G.709</docidentifier>
+</bibitem><bibitem id="b-ITU-T_K.35">
+  <formattedref format="application/x-isodoc+xml">Recommendation ITU-T K.35 (1996), <em>Bonding configurations and earthing at remote electronic sites</em>.</formattedref>
+  <docidentifier>b-ITU-T K.35</docidentifier>
+</bibitem><bibitem id="b-ITU-T_Rap">
+  <formattedref format="application/x-isodoc+xml">ITU-T, <em>Manual for Rapporteurs and Editors</em>, 12 February 2010.<br/>
+<link target="http://www.itu.int/oth/T0A0F000006/en"/></formattedref>
+  <docidentifier>b-ITU-T Rap</docidentifier>
+</bibitem>
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+</references></bibliography>
+</itu-standard>
