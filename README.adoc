@@ -35,6 +35,38 @@ e.g.
 ----
 mkdir ~/mn-native-pdf/fonts/
 cp /tmp/*.ttf ~/mn-native-pdf/fonts/
+
+export MN_PDF_FONT_PATH=~/mn-native-pdf/fonts
+export MN_PDF_FONT_PATH=~/src/mn/mn-native-pdf/fonts
+
+# Install FreeSerif
+pushd $(mktemp -d)
+curl -Ls https://www.fontspace.com/download/13277/e8f09161b1174b2abe9bd65fb8223c48/gnu-freefont_freeserif.zip -o freefont.zip
+unzip freefont.zip
+mkdir -p ${MN_PDF_FONT_PATH}/truetype/freefont/
+mv *.ttf ${MN_PDF_FONT_PATH}/truetype/freefont/
+popd
+
+# Install Nanum Gothic
+pushd $(mktemp -d)
+curl -Ls https://fonts.google.com/download?family=Nanum%20Gothic -o nanum.zip
+unzip nanum.zip
+mv NanumGothic{-,}Bold.ttf
+mv NanumGothic{-,}ExtraBold.ttf
+mv NanumGothic{-,}Regular.ttf
+mkdir -p ${MN_PDF_FONT_PATH}/truetype/nanum/
+mv *.ttf ${MN_PDF_FONT_PATH}/truetype/nanum/
+popd
+
+# Install Droid Sans
+pushd $(mktemp -d)
+curl -Ls https://fonts.google.com/download?family=Droid%20Sans -o droid.zip
+unzip droid.zip
+mv DroidSans{-,}Regular.ttf
+mv DroidSans{-,}Bold.ttf
+mkdir -p ${MN_PDF_FONT_PATH}/truetype/droid/
+mv *.ttf ${MN_PDF_FONT_PATH}/truetype/droid/
+popd
 ----
 
 Building the document is then easy:
@@ -51,12 +83,29 @@ make all
 
 [source,sh]
 ----
-sudo apt-get -y install gettext-base fop cabextract
+sudo apt-get -y install gettext-base fop cabextract wget
+
+# Install fontforge
+sudo apt-get -y install software-properties-common
+sudo add-apt-repository ppa:fontforge/fontforge
+sudo apt-get update
+sudo apt-get -y install fontforge
+
+# Install fonts
+sudo apt-get -y install fonts-freefont-ttf fonts-nanum fonts-droid-fallback
+
+# (If necessary)
+echo ttf-mscorefonts-installer msttcorefonts/accepted-mscorefonts-eula select true | sudo debconf-set-selections
+sudo apt-get install ttf-mscorefonts-installer
+
+# Setup Cambria fonts
+curl -Ls https://gist.github.com/maxwelleite/10774746/raw/ttf-vista-fonts-installer.sh | sudo bash
+sudo chown -R $(whoami) /usr/share/fonts/
 mkdir -p ~/.fonts
-curl -Ls http://plasmasturm.org/dl/vistafonts-installer | bash
+cp -a /usr/share/fonts/* ~/.fonts
 ----
 
-The Cambria fonts can be setup using the very super convenient setup script kindly provided by http://plasmasturm.org[Aristotle Pagaltzis] at http://plasmasturm.org/code/vistafonts-installer/ .
+NOTE: While the Cambria fonts can be setup using the very super convenient setup script kindly provided by http://plasmasturm.org[Aristotle Pagaltzis] at http://plasmasturm.org/code/vistafonts-installer/ , we have switched to https://gist.github.com/maxwelleite/10774746/raw/ttf-vista-fonts-installer.sh in order to be able to extract "Cambria Math" from `cambria.ttc` with `fontforge` for math equations.
 
 
 Building the document is then easy:
