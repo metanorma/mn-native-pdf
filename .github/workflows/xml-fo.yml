@@ -15,19 +15,19 @@ jobs:
           sudo apt-get -y install software-properties-common
           sudo add-apt-repository ppa:fontforge/fontforge
           sudo apt-get update
-          #sudo apt-get -y install fontforge
+          sudo apt-get -y install fontforge
 
           # Install fonts
-          #sudo apt-get -y install fonts-freefont-ttf fonts-nanum fonts-droid-fallback
+          sudo apt-get -y install fonts-freefont-ttf fonts-nanum fonts-droid-fallback
 
           # If necessary
-          #echo ttf-mscorefonts-installer msttcorefonts/accepted-mscorefonts-eula select true | sudo debconf-set-selections
-          #sudo apt-get install ttf-mscorefonts-installer
+          echo ttf-mscorefonts-installer msttcorefonts/accepted-mscorefonts-eula select true | sudo debconf-set-selections
+          sudo apt-get install ttf-mscorefonts-installer
 
 
       - name: Setup fonts # i.e. Cambria
         run: |
-          #curl -Ls https://gist.github.com/maxwelleite/10774746/raw/ttf-vista-fonts-installer.sh | sudo bash
+          curl -Ls https://gist.github.com/maxwelleite/10774746/raw/ttf-vista-fonts-installer.sh | sudo bash
           sudo chown -R $(whoami) /usr/share/fonts/
           mkdir -p ~/.fonts
           cp -a /usr/share/fonts/* ~/.fonts
