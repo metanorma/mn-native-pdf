@@ -21,7 +21,7 @@ documents/%.pdf: sources/%.xml pdf_fonts_config.xml documents
 	FILENAME=$<; \
 	OUTFILE=$@; \
 	XSLT_PATH=${XSLT_PATH}; \
-  fop -c pdf_fonts_config.xml -xml $$FILENAME -xsl $$XSLT_PATH -foout $$OUTFILE.xml \
+  fop -c pdf_fonts_config.xml -xml $$FILENAME -xsl $$XSLT_PATH -foout $$OUTFILE.xml; \
   fop -c pdf_fonts_config.xml -fo $$OUTFILE.xml -out application/pdf $$OUTFILE
 
 pdf_fonts_config.xml: pdf_fonts_config.xml.in
