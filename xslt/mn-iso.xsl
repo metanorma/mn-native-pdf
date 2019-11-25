@@ -762,12 +762,12 @@
 	</xsl:template>
 
 	<xsl:template match="mathml:math">
-		<fo:inline font-size="12pt" color="red">
+		<!-- <fo:inline font-size="12pt" color="red">
 			MathML issue! <xsl:apply-templates />
-		</fo:inline>
-		<!-- <fo:instream-foreign-object>
+		</fo:inline> -->
+		<fo:instream-foreign-object>
 			<xsl:copy-of select="."/>
-		</fo:instream-foreign-object> -->
+		</fo:instream-foreign-object>
 	</xsl:template>
 	
 	<xsl:template match="iso:xref">
