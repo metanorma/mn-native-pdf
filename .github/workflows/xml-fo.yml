@@ -19,7 +19,10 @@ jobs:
 
           # Install fonts
           sudo apt-get -y install fonts-freefont-ttf fonts-nanum fonts-droid-fallback
-          # ttf-mscorefonts-installer
+
+          # If necessary
+          echo ttf-mscorefonts-installer msttcorefonts/accepted-mscorefonts-eula select true | sudo debconf-set-selections
+          sudo apt-get install ttf-mscorefonts-installer
 
 
       - name: Setup fonts # i.e. Cambria
