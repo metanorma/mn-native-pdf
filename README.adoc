@@ -53,19 +53,15 @@ curl -Ls https://fonts.google.com/download?family=Nanum%20Gothic -o nanum.zip
 unzip nanum.zip
 mv NanumGothic{-,}Bold.ttf
 mv NanumGothic{-,}ExtraBold.ttf
-mv NanumGothic{-,}Regular.ttf
+mv NanumGothic-Regular NanumGothic.ttf
 mkdir -p ${MN_PDF_FONT_PATH}/truetype/nanum/
 mv *.ttf ${MN_PDF_FONT_PATH}/truetype/nanum/
 popd
 
-# Install Droid Sans
-pushd $(mktemp -d)
-curl -Ls https://fonts.google.com/download?family=Droid%20Sans -o droid.zip
-unzip droid.zip
-mv DroidSans{-,}Regular.ttf
-mv DroidSans{-,}Bold.ttf
+# Install Droid Sans Fallback
 mkdir -p ${MN_PDF_FONT_PATH}/truetype/droid/
-mv *.ttf ${MN_PDF_FONT_PATH}/truetype/droid/
+pushd ${MN_PDF_FONT_PATH}/truetype/droid/
+wget https://github.com/aosp-mirror/platform_frameworks_base/raw/master/data/fonts/DroidSansFallbackFull.ttf
 popd
 ----
 
