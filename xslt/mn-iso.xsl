@@ -15,8 +15,10 @@
 	<xsl:variable name="linebreak" select="'&#x2028;'"/>
 
 	<!-- Information and documentation — Codes for transcription systems  -->
-	<xsl:variable name="title-en" select="concat(/iso:iso-standard/iso:bibdata/iso:title[@language = 'en' and @type = 'title-intro'], ' &#x2014; ' ,/iso:iso-standard/iso:bibdata/iso:title[@language = 'en' and @type = 'title-main'])"/>
-	<xsl:variable name="title-fr" select="concat(/iso:iso-standard/iso:bibdata/iso:title[@language = 'fr' and @type = 'title-intro'],  ' &#x2014; ' ,/iso:iso-standard/iso:bibdata/iso:title[@language = 'fr' and @type = 'title-main'])"/>
+	<!-- <xsl:variable name="title-en" select="concat(/iso:iso-standard/iso:bibdata/iso:title[@language = 'en' and @type = 'title-intro'], ' &#x2014; ' ,/iso:iso-standard/iso:bibdata/iso:title[@language = 'en' and @type = 'title-main'])"/> -->
+	<xsl:variable name="title-en" select="/iso:iso-standard/iso:bibdata/iso:title[@language = 'en' and @type = 'main']"/>
+	<!-- <xsl:variable name="title-fr" select="concat(/iso:iso-standard/iso:bibdata/iso:title[@language = 'fr' and @type = 'title-intro'],  ' &#x2014; ' ,/iso:iso-standard/iso:bibdata/iso:title[@language = 'fr' and @type = 'title-main'])"/> -->
+	<xsl:variable name="title-fr" select="/iso:iso-standard/iso:bibdata/iso:title[@language = 'fr' and @type = 'main']"/>
 
 	<!-- Example:
 		<item level="1" id="Foreword" display="true">Foreword</item>
@@ -40,7 +42,7 @@
 	</xsl:variable>
 	
 	<xsl:template match="/">
-		<fo:root xmlns:fo="http://www.w3.org/1999/XSL/Format" font-family="Cambria" font-size="11pt">
+		<fo:root xmlns:fo="http://www.w3.org/1999/XSL/Format" font-family="Cambria, FreeSerif, NanumGothic, DroidSans" font-size="11pt">
 			<fo:layout-master-set>
 				<!-- cover page -->
 				<fo:simple-page-master master-name="cover-page" page-width="{$pageWidth}" page-height="{$pageHeight}">
@@ -410,7 +412,8 @@
 	
 	<xsl:template match="iso:bibitem">
 		<fo:block margin-bottom="12pt">
-			<fo:inline id="{iso:docidentifier}"><xsl:value-of select="iso:docidentifier"/></fo:inline>, <fo:inline font-style="italic"><xsl:value-of select="iso:title[@type = 'main' and @language = 'en']"/></fo:inline>
+				<!-- iso:docidentifier -->
+			<fo:inline id="{@id}"><xsl:value-of select="iso:docidentifier"/></fo:inline>, <fo:inline font-style="italic"><xsl:value-of select="iso:title[@type = 'main' and @language = 'en']"/></fo:inline>
 		</fo:block>
 	</xsl:template>
 	
@@ -483,13 +486,13 @@
 	<xsl:template match="iso:termsource">
 		<fo:block margin-bottom="12pt" keep-with-previous="always">
 			<!-- Example: [SOURCE: ISO 5127:2017, 3.1.6.02] -->
-			<fo:basic-link internal-destination="{iso:origin/@citeas}">
-			<xsl:text>[SOURCE: </xsl:text>
-			<xsl:value-of select="iso:origin/@citeas"/>
-			<xsl:if test="iso:origin/iso:locality/iso:referenceFrom">
-				<xsl:text>, </xsl:text><xsl:value-of select="iso:origin/iso:locality/iso:referenceFrom"/>
-			</xsl:if>
-			<xsl:text>]</xsl:text>
+			<fo:basic-link internal-destination="{iso:origin/@bibitemid}">
+				<xsl:text>[SOURCE: </xsl:text>
+				<xsl:value-of select="iso:origin/@citeas"/>
+				<xsl:if test="iso:origin/iso:locality/iso:referenceFrom">
+					<xsl:text>, </xsl:text><xsl:value-of select="iso:origin/iso:locality/iso:referenceFrom"/>
+				</xsl:if>
+				<xsl:text>]</xsl:text>
 			</fo:basic-link>
 		</fo:block>
 	</xsl:template>
