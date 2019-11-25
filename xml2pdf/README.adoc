@@ -1,0 +1,19 @@
+= XML2PDF
+
+== Installing Build Tools
+
+You will need `maven` build tool.
+* https://www.baeldung.com/install-maven-on-windows-linux-mac[How to install Maven on Windows, Linux, Mac]
+
+
+Building the PDF document:
+
+[source,sh]
+----
+mvn clean compile exec:java -Dexec.args="./source/pdf_fonts_config.xml ./source/iso-24229.xml ./source/mn-iso.xsl ./out/result.pdf"
+----
+
+
+== Copyright
+
+Ribose Inc.

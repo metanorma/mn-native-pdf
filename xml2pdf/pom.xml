@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>com.metanorma.fop</groupId>
+    <artifactId>xml2pdf</artifactId>
+    <version>1.0</version>
+    <name>XML to PDF conversion by FOP</name>
+      
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <maven.compiler.source>1.8</maven.compiler.source>
+        <maven.compiler.target>1.8</maven.compiler.target>
+        <jarname>${project.artifactId}-${project.version}.jar</jarname>
+        <exec.mainClass>com.metanorma.fop.XML2PDF</exec.mainClass>
+    </properties>
+    <dependencies>
+        <!-- https://mvnrepository.com/artifact/org.apache.xmlgraphics/fop -->
+        <dependency>
+            <groupId>org.apache.xmlgraphics</groupId>
+            <artifactId>fop</artifactId>
+            <version>2.4</version>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/de.rototor.jeuclid/jeuclid-fop -->
+        <dependency>
+            <groupId>de.rototor.jeuclid</groupId>
+            <artifactId>jeuclid-fop</artifactId>
+            <version>3.1.14</version>
+        </dependency>
+        <dependency>
+            <groupId>de.rototor.jeuclid</groupId>
+            <artifactId>jeuclid-core</artifactId>
+            <version>3.1.14</version>
+        </dependency>
+        <dependency>
+            <groupId>xalan</groupId>
+            <artifactId>xalan</artifactId>
+            <version>2.7.2</version>
+        </dependency>
+    </dependencies>
+
+</project>
