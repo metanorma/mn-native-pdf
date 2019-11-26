@@ -1,4 +1,4 @@
-name: xml-fo
+name: ubuntu
 
 on: [push, pull_request]
 
@@ -24,9 +24,9 @@ jobs:
           echo ttf-mscorefonts-installer msttcorefonts/accepted-mscorefonts-eula select true | sudo debconf-set-selections
           sudo apt-get install ttf-mscorefonts-installer
 
-
-      - name: Setup fonts # i.e. Cambria
+      - name: Setup fonts
         run: |
+          # Setup Cambria
           curl -Ls https://gist.github.com/maxwelleite/10774746/raw/ttf-vista-fonts-installer.sh | sudo bash
           sudo chown -R $(whoami) /usr/share/fonts/
           mkdir -p ~/.fonts

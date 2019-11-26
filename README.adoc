@@ -1,6 +1,7 @@
 = Metarnoma Native PDF
 
-image:https://github.com/metanorma/mn-native-pdf/workflows/xml-fo/badge.svg["Build Status", link="https://github.com/metanorma/mn-native-pdf/actions?workflow=xml-fo"]
+image:https://github.com/metanorma/mn-native-pdf/workflows/ubuntu/badge.svg["Build Status", link="https://github.com/metanorma/mn-native-pdf/actions?workflow=ubuntu"]
+image:https://github.com/metanorma/mn-native-pdf/workflows/macos/badge.svg["Build Status", link="https://github.com/metanorma/mn-native-pdf/actions?workflow=macos"]
 
 The experimental PDF is available here:
 
@@ -26,6 +27,9 @@ brew link --force gettext
 
 # Install Apache FOP
 brew install fop
+
+# Install Maven
+brew install maven
 ----
 
 Manually add the Cambria fonts (`cambria.ttf`, `cambriab.ttf`, `cambriai.ttf`, `cambriaz.ttf`) to your `fonts/` directory under this repository, or anywhere else. Point to it using the environment variable `MN_PDF_FONT_PATH`.
@@ -33,11 +37,19 @@ Manually add the Cambria fonts (`cambria.ttf`, `cambriab.ttf`, `cambriai.ttf`, `
 e.g.
 [source,sh]
 ----
-mkdir ~/mn-native-pdf/fonts/
-cp /tmp/*.ttf ~/mn-native-pdf/fonts/
+export MN_PDF_FONT_PATH=$(pwd)/fonts
+mkdir -p ${MN_PDF_FONT_PATH}
 
-export MN_PDF_FONT_PATH=~/mn-native-pdf/fonts
-export MN_PDF_FONT_PATH=~/src/mn/mn-native-pdf/fonts
+# Install Cambria
+pushd $(mktemp -d)
+curl -Ls https://www.rmtweb.co.uk/wp-content/uploads/2013/06/Calibri-and-Cambria-Fonts.zip -o cambria.zip
+unzip cambria.zip
+mkdir -p ${MN_PDF_FONT_PATH}/truetype/vista/
+mv ./Calibri\ and\ Cambria\ Fonts/Cambria.ttf ${MN_PDF_FONT_PATH}/truetype/vista/cambria.ttf
+mv ./Calibri\ and\ Cambria\ Fonts/Cambria\ Bold.ttf ${MN_PDF_FONT_PATH}/truetype/vista/cambriab.ttf
+mv ./Calibri\ and\ Cambria\ Fonts/Cambria\ Italic.ttf ${MN_PDF_FONT_PATH}/truetype/vista/cambriai.ttf
+mv ./Calibri\ and\ Cambria\ Fonts/Cambria\ Bold\ Italic.ttf ${MN_PDF_FONT_PATH}/truetype/vista/cambriaz.ttf
+popd
 
 # Install FreeSerif
 pushd $(mktemp -d)

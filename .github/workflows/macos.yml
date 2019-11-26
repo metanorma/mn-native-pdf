@@ -1,0 +1,106 @@
+name: macos
+
+on: [push, pull_request]
+
+jobs:
+  build:
+    runs-on: macos-latest
+    steps:
+      # cabextract for fonts, gettext-base for envsubst
+      - name: Setup prerequisites
+        run: |
+          # Install `envsubst`
+          brew install gettext
+          brew link --force gettext
+
+          # Install Apache FOP
+          brew install fop
+
+          # Install Maven
+          brew install maven
+
+      - uses: actions/checkout@master
+
+      - name: Install Cambria
+        run: |
+          export MN_PDF_FONT_PATH=${GITHUB_WORKSPACE}/fonts
+          mkdir -p ${MN_PDF_FONT_PATH}/truetype/vista/
+
+          # Install Cambria
+          pushd $(mktemp -d)
+          curl -Ls https://www.rmtweb.co.uk/wp-content/uploads/2013/06/Calibri-and-Cambria-Fonts.zip -o cambria.zip
+          unzip cambria.zip
+          mkdir -p ${MN_PDF_FONT_PATH}/truetype/vista/
+          mv ./Calibri\ and\ Cambria\ Fonts/Cambria*.ttf .
+          mv Cambria.ttf cambria.ttf
+          mv Cambria\ Bold.ttf cambriab.ttf
+          mv Cambria\ Italic.ttf cambriai.ttf
+          mv Cambria\ Bold\ Italic.ttf cambriaz.ttf
+          mv *.ttf ${MN_PDF_FONT_PATH}/truetype/vista/
+          popd
+
+      - name: Install FreeSerif
+        run: |
+          export MN_PDF_FONT_PATH=${GITHUB_WORKSPACE}/fonts
+          mkdir -p ${MN_PDF_FONT_PATH}/truetype/freefont/
+
+          pushd $(mktemp -d)
+          curl -Ls https://www.fontspace.com/download/13277/e8f09161b1174b2abe9bd65fb8223c48/gnu-freefont_freeserif.zip -o freefont.zip
+          unzip freefont.zip
+          mv *.ttf ${MN_PDF_FONT_PATH}/truetype/freefont/
+          popd
+
+      - name: Install Nanum Gothic
+        run: |
+          export MN_PDF_FONT_PATH=${GITHUB_WORKSPACE}/fonts
+          mkdir -p ${MN_PDF_FONT_PATH}/truetype/nanum/
+
+          pushd $(mktemp -d)
+          curl -Ls https://fonts.google.com/download?family=Nanum%20Gothic -o nanum.zip
+          unzip nanum.zip
+          mv NanumGothic{-,}Bold.ttf
+          mv NanumGothic{-,}ExtraBold.ttf
+          mv NanumGothic-Regular.ttf NanumGothic.ttf
+          mv *.ttf ${MN_PDF_FONT_PATH}/truetype/nanum/
+          popd
+
+      - name: Install Droid Sans Fallback
+        run: |
+          export MN_PDF_FONT_PATH=${GITHUB_WORKSPACE}/fonts
+          mkdir -p ${MN_PDF_FONT_PATH}/truetype/droid/
+
+          pushd ${MN_PDF_FONT_PATH}/truetype/droid/
+          wget https://github.com/aosp-mirror/platform_frameworks_base/raw/master/data/fonts/DroidSansFallbackFull.ttf
+          popd
+
+      - name: Compile output
+        run: |
+          export MN_PDF_FONT_PATH=${GITHUB_WORKSPACE}/fonts
+
+          ls -alR ${MN_PDF_FONT_PATH}
+
+          make all
+          mv documents published
+
+      - uses: actions/upload-artifact@master
+        with:
+          name: published
+          path: published
+
+
+  # deploy-gh-pages:
+  #   if: github.ref == 'refs/heads/master'
+  #   runs-on: ubuntu-latest
+  #   needs: build
+  #   steps:
+  #   - uses: actions/checkout@master
+  #   - uses: actions/download-artifact@master
+  #     with:
+  #       name: published
+  #   - name: deploy-to-gh
+  #     env:
+  #       GITHUB_REPOSITORY: ${{ secrets.GITHUB_REPOSITORY }}
+  #       GH_DEPLOY_KEY: ${{ secrets.GH_DEPLOY_KEY }}
+  #       GIT_SSH_COMMAND: "ssh -o StrictHostKeyChecking=no"
+  #     run: |
+  #       curl -L https://raw.githubusercontent.com/metanorma/metanorma-build-scripts/master/ghactions-deploy-to-gh-pages.sh | bash
