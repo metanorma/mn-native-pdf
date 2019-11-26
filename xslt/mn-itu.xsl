@@ -1028,21 +1028,25 @@
 								</xsl:otherwise>
 							</xsl:choose>
 						</xsl:variable>
-						<fo:table-row>
-							<fo:table-cell border="solid black 1pt" padding-left="1mm" padding-right="1mm" padding-top="1mm" number-columns-spanned="{$cols-count}">
-								<xsl:for-each select="..//*[local-name()='fn']">
-									<xsl:variable name="reference" select="@reference"/>
-									<xsl:if test="preceding-sibling::*[local-name()='fn'][@reference != $reference]">
-										<fo:block margin-bottom="12pt">
-											<fo:inline font-size="80%" padding-right="5mm" vertical-align="super" id="{@reference}">
-												<xsl:value-of select="@reference"/>
-											</fo:inline>
-											<xsl:apply-templates />
-										</fo:block>
-									</xsl:if>
-								</xsl:for-each>
-							</fo:table-cell>
-						</fo:table-row>
+						<xsl:if test="$cols-count &gt; 0">
+							<fo:table-row>
+								<fo:table-cell border="solid black 1pt" padding-left="1mm" padding-right="1mm" padding-top="1mm" number-columns-spanned="{$cols-count}">
+									<fo:block>
+										<xsl:for-each select="..//*[local-name()='fn']">
+											<xsl:variable name="reference" select="@reference"/>
+											<xsl:if test="preceding-sibling::*[local-name()='fn'][@reference != $reference]">
+												<fo:block margin-bottom="12pt">
+													<fo:inline font-size="80%" padding-right="5mm" vertical-align="super" id="{@reference}">
+														<xsl:value-of select="@reference"/>
+													</fo:inline>
+													<xsl:apply-templates />
+												</fo:block>
+											</xsl:if>
+										</xsl:for-each>
+									</fo:block>
+								</fo:table-cell>
+							</fo:table-row>
+						</xsl:if>
 					</xsl:if>
 				</xsl:otherwise>
 			</xsl:choose>
