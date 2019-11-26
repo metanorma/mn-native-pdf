@@ -36,42 +36,45 @@ Manually add the Cambria fonts (`cambria.ttf`, `cambriab.ttf`, `cambriai.ttf`, `
 
 e.g.
 [source,sh]
-----
-export MN_PDF_FONT_PATH=$(pwd)/fonts
-mkdir -p ${MN_PDF_FONT_PATH}
+mkdir -p ${MN_PDF_FONT_PATH}/truetype/vista/
 
 # Install Cambria
 pushd $(mktemp -d)
 curl -Ls https://www.rmtweb.co.uk/wp-content/uploads/2013/06/Calibri-and-Cambria-Fonts.zip -o cambria.zip
 unzip cambria.zip
 mkdir -p ${MN_PDF_FONT_PATH}/truetype/vista/
-mv ./Calibri\ and\ Cambria\ Fonts/Cambria.ttf ${MN_PDF_FONT_PATH}/truetype/vista/cambria.ttf
-mv ./Calibri\ and\ Cambria\ Fonts/Cambria\ Bold.ttf ${MN_PDF_FONT_PATH}/truetype/vista/cambriab.ttf
-mv ./Calibri\ and\ Cambria\ Fonts/Cambria\ Italic.ttf ${MN_PDF_FONT_PATH}/truetype/vista/cambriai.ttf
-mv ./Calibri\ and\ Cambria\ Fonts/Cambria\ Bold\ Italic.ttf ${MN_PDF_FONT_PATH}/truetype/vista/cambriaz.ttf
+mv ./Calibri\ and\ Cambria\ Fonts/Cambria*.ttf .
+mv Cambria.ttf cambria.ttf
+mv Cambria\ Bold.ttf cambriab.ttf
+mv Cambria\ Italic.ttf cambriai.ttf
+mv Cambria\ Bold\ Italic.ttf cambriaz.ttf
+mv *.ttf ${MN_PDF_FONT_PATH}/truetype/vista/
 popd
 
 # Install FreeSerif
+mkdir -p ${MN_PDF_FONT_PATH}/truetype/freefont/
+
 pushd $(mktemp -d)
 curl -Ls https://www.fontspace.com/download/13277/e8f09161b1174b2abe9bd65fb8223c48/gnu-freefont_freeserif.zip -o freefont.zip
 unzip freefont.zip
-mkdir -p ${MN_PDF_FONT_PATH}/truetype/freefont/
 mv *.ttf ${MN_PDF_FONT_PATH}/truetype/freefont/
 popd
 
 # Install Nanum Gothic
+mkdir -p ${MN_PDF_FONT_PATH}/truetype/nanum/
+
 pushd $(mktemp -d)
 curl -Ls https://fonts.google.com/download?family=Nanum%20Gothic -o nanum.zip
 unzip nanum.zip
 mv NanumGothic{-,}Bold.ttf
 mv NanumGothic{-,}ExtraBold.ttf
-mv NanumGothic-Regular NanumGothic.ttf
-mkdir -p ${MN_PDF_FONT_PATH}/truetype/nanum/
+mv NanumGothic-Regular.ttf NanumGothic.ttf
 mv *.ttf ${MN_PDF_FONT_PATH}/truetype/nanum/
 popd
 
 # Install Droid Sans Fallback
 mkdir -p ${MN_PDF_FONT_PATH}/truetype/droid/
+
 pushd ${MN_PDF_FONT_PATH}/truetype/droid/
 wget https://github.com/aosp-mirror/platform_frameworks_base/raw/master/data/fonts/DroidSansFallbackFull.ttf
 popd
@@ -81,7 +84,7 @@ Building the document is then easy:
 
 [source,sh]
 ----
-cd ~/mn-native-pdf/
+export MN_PDF_FONT_PATH=$(pwd)/fonts
 make all
 
 # PDFs will be generated as documents/*.pdf
