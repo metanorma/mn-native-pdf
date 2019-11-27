@@ -80,6 +80,7 @@ jobs:
           ls -alR ${MN_PDF_FONT_PATH}
           printenv
           ls -alR /Library/Fonts
+          ls -alR /System/Library/Fonts
           
           make all
           mv documents published
