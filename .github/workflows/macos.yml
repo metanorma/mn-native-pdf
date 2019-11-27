@@ -78,7 +78,8 @@ jobs:
           export MN_PDF_FONT_PATH=${GITHUB_WORKSPACE}/fonts
 
           ls -alR ${MN_PDF_FONT_PATH}
-
+          ls -alR ${GITHUB_WORKSPACE}
+          
           make all
           mv documents published
 
