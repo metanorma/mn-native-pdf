@@ -78,14 +78,15 @@ jobs:
           export MN_PDF_FONT_PATH=${GITHUB_WORKSPACE}/fonts
           mkdir -p ${MN_PDF_FONT_PATH}/truetype/msttcorefonts
           ls -alR /System/Library/Fonts
-          cp /System/Library/Fonts/Supplemental/Arial.ttf ${MN_PDF_FONT_PATH}/truetype/msttcorefonts/arial.ttf
-          cp /System/Library/Fonts/Supplemental/Arial\ Bold.ttf ${MN_PDF_FONT_PATH}/truetype/msttcorefonts/arialb.ttf
-          cp /System/Library/Fonts/Supplemental/Arial\ Italic.ttf ${MN_PDF_FONT_PATH}/truetype/msttcorefonts/ariali.ttf
-          cp /System/Library/Fonts/Supplemental/Arial\ Bold\ Italic.ttf ${MN_PDF_FONT_PATH}/truetype/msttcorefonts/arialbi.ttf
-          cp /System/Library/Fonts/Supplemental/Times\ New\ Roman.ttf ${MN_PDF_FONT_PATH}/truetype/msttcorefonts/times.ttf
-          cp /System/Library/Fonts/Supplemental/Times\ New\ Roman\ Bold.ttf ${MN_PDF_FONT_PATH}/truetype/msttcorefonts/timesbd.ttf
-          cp /System/Library/Fonts/Supplemental/Times\ New\ Roman\ Italic.ttf ${MN_PDF_FONT_PATH}/truetype/msttcorefonts/timesi.ttf
-          cp /System/Library/Fonts/Supplemental/Times\ New\ Roman\ Bold\ Italic.ttf ${MN_PDF_FONT_PATH}/truetype/msttcorefonts/timesbi.ttf
+          ln -s /System/Library/Fonts/Supplemental/Arial.ttf ${MN_PDF_FONT_PATH}/truetype/msttcorefonts/arial.ttf
+          ln -s /System/Library/Fonts/Supplemental/Arial\ Bold.ttf ${MN_PDF_FONT_PATH}/truetype/msttcorefonts/arialbd.ttf
+          ln -s /System/Library/Fonts/Supplemental/Arial\ Italic.ttf ${MN_PDF_FONT_PATH}/truetype/msttcorefonts/ariali.ttf
+          ln -s /System/Library/Fonts/Supplemental/Arial\ Bold\ Italic.ttf ${MN_PDF_FONT_PATH}/truetype/msttcorefonts/arialbi.ttf
+          ln -s /System/Library/Fonts/Supplemental/Times\ New\ Roman.ttf ${MN_PDF_FONT_PATH}/truetype/msttcorefonts/times.ttf
+          ln -s /System/Library/Fonts/Supplemental/Times\ New\ Roman\ Bold.ttf ${MN_PDF_FONT_PATH}/truetype/msttcorefonts/timesbd.ttf
+          ln -s /System/Library/Fonts/Supplemental/Times\ New\ Roman\ Italic.ttf ${MN_PDF_FONT_PATH}/truetype/msttcorefonts/timesi.ttf
+          ln -s /System/Library/Fonts/Supplemental/Times\ New\ Roman\ Bold\ Italic.ttf ${MN_PDF_FONT_PATH}/truetype/msttcorefonts/timesbi.ttf
+          ls -alR ${MN_PDF_FONT_PATH}
 
       - name: Compile output
         run: |
