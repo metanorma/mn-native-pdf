@@ -103,7 +103,31 @@ the location of this file.
 				<font kerning="yes" embed-url="file://${MN_PDF_FONT_PATH}/truetype/droid/DroidSansFallbackFull.ttf">
 					<font-triplet name="DroidSans" style="normal" weight="normal"/>
 				</font>
-
+				<font kerning="yes" embed-url="file://${MN_PDF_FONT_PATH}/truetype/msttcorefonts/arial.ttf">
+					<font-triplet name="Arial" style="normal" weight="normal"/>
+				</font>
+				<font kerning="yes" embed-url="file://${MN_PDF_FONT_PATH}/truetype/msttcorefonts/arialbd.ttf">
+					<font-triplet name="Arial" style="normal" weight="bold"/>
+				</font>
+				<font kerning="yes" embed-url="file://${MN_PDF_FONT_PATH}/truetype/msttcorefonts/arialbi.ttf">
+					<font-triplet name="Arial" style="italic" weight="bold"/>
+				</font>
+				<font kerning="yes" embed-url="file://${MN_PDF_FONT_PATH}/truetype/msttcorefonts/ariali.ttf">
+					<font-triplet name="Arial" style="italic" weight="normal"/>
+				</font>
+				<font kerning="yes" embed-url="file://${MN_PDF_FONT_PATH}/truetype/msttcorefonts/times.ttf">
+					<font-triplet name="Times New Roman" style="normal" weight="normal"/>
+				</font>
+				<font kerning="yes" embed-url="file://${MN_PDF_FONT_PATH}/truetype/msttcorefonts/timesbd.ttf">
+					<font-triplet name="Times New Roman" style="normal" weight="bold"/>
+				</font>
+				<font kerning="yes" embed-url="file://${MN_PDF_FONT_PATH}/truetype/msttcorefonts/timesbi.ttf">
+					<font-triplet name="Times New Roman" style="italic" weight="bold"/>
+				</font>
+				<font kerning="yes" embed-url="file://${MN_PDF_FONT_PATH}/truetype/msttcorefonts/timesi.ttf">
+					<font-triplet name="Times New Roman" style="italic" weight="normal"/>
+				</font>
+				
         <!--
         <font metrics-url="arial.xml" kerning="yes" embed-url="arial.ttf">
           <font-triplet name="Arial" style="normal" weight="normal"/>
