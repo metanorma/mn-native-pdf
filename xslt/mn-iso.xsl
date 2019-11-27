@@ -3,17 +3,14 @@
 
 	<xsl:output method="xml" encoding="UTF-8" indent="yes"/>
 	
-	<xsl:variable name="lower">abcdefghijklmnopqrstuvwxyz</xsl:variable> 
-	<xsl:variable name="upper">ABCDEFGHIJKLMNOPQRSTUVWXYZ</xsl:variable>
-
+	<xsl:include href="./common.xsl"/>
+	
 	<xsl:variable name="pageWidth" select="'210mm'"/>
 	<xsl:variable name="pageHeight" select="'297mm'"/>
 
 	<xsl:variable name="copyrightText" select="concat('© ISO ', iso:iso-standard/iso:bibdata/iso:copyright/iso:from ,' – All rights reserved')"/>
 	<xsl:variable name="ISOname" select="concat(/iso:iso-standard/iso:bibdata/iso:docidentifier, ':', /iso:iso-standard/iso:bibdata/iso:copyright/iso:from , '(', translate(substring(iso:iso-standard/iso:bibdata/iso:language,1,1),$lower, $upper), ') ')"/>
 	
-	<xsl:variable name="linebreak" select="'&#x2028;'"/>
-
 	<!-- Information and documentation — Codes for transcription systems  -->
 	<!-- <xsl:variable name="title-en" select="concat(/iso:iso-standard/iso:bibdata/iso:title[@language = 'en' and @type = 'title-intro'], ' &#x2014; ' ,/iso:iso-standard/iso:bibdata/iso:title[@language = 'en' and @type = 'title-main'])"/> -->
 	<xsl:variable name="title-en" select="/iso:iso-standard/iso:bibdata/iso:title[@language = 'en' and @type = 'main']"/>
@@ -117,33 +114,31 @@
 						<fo:block padding-top="2mm">WD stage</fo:block>
 					</fo:block-container>
 					<fo:block><xsl:value-of select="$linebreak"/></fo:block>
-					<fo:block-container font-size="10pt" margin-top="12pt" margin-bottom="6pt" border="0.5pt solid black">
-						<fo:block padding-top="1mm">
-							<fo:block text-align="center" font-weight="bold">Warning for WDs and CD</fo:block>
-							<fo:block margin-top="6pt" margin-bottom="6pt" margin-left="1.5mm" margin-right="1.5mm">This document is not an ISO International Standard. It is distributed for review and comment. It is subject to change without notice and may not be referred to as an International Standard.</fo:block>
-							<fo:block margin-left="1.5mm" margin-right="1.5mm">Recipients of this draft are invited to submit, with their comments, notification of any relevant patent rights of which they are aware and to provide supporting documentation.</fo:block>
-						</fo:block>
-					</fo:block-container>
+					
+					<xsl:if test="/iso:iso-standard/iso:boilerplate/iso:license-statement">
+						<fo:block-container font-size="10pt" margin-top="12pt" margin-bottom="6pt" border="0.5pt solid black">
+							<fo:block padding-top="1mm">
+								<xsl:apply-templates select="/iso:iso-standard/iso:boilerplate/iso:license-statement"/>
+								
+								
+								
+							</fo:block>
+						</fo:block-container>
+					</xsl:if>
         </fo:flow>
       </fo:page-sequence>
 			
 			<fo:page-sequence master-reference="document" format="i" force-page-count="no-force">
 				<xsl:call-template name="insertHeaderFooter"/>
 				<fo:flow flow-name="xsl-region-body">
-					<fo:block-container margin-top="12pt" margin-bottom="6pt" margin-left="1.5mm" margin-right="1.5mm" border="0.5pt solid black">
-						<fo:block margin-bottom="12pt">© ISO 2019, Published in Switzerland.</fo:block>
-						<fo:block font-size="10pt" margin-bottom="12pt">All rights reserved. Unless otherwise specified, no part of this publication may be reproduced or utilized otherwise in any form or by any means, electronic or mechanical, including photocopying, or posting on the internet or an intranet, without prior written permission. Permission can be requested from either ISO at the address below or ISO’s member body in the country of the requester.</fo:block>
-						<fo:block font-size="10pt" text-indent="7.1mm">
-							<fo:block>ISO copyright office</fo:block>
-							<fo:block>Ch. de Blandonnet 8 • CP 401</fo:block>
-							<fo:block>CH-1214 Vernier, Geneva, Switzerland</fo:block>
-							<fo:block>Tel.  + 41 22 749 01 11</fo:block>
-							<fo:block>Fax  + 41 22 749 09 47</fo:block>
-							<fo:block>copyright@iso.org</fo:block>
-							<fo:block>www.iso.org</fo:block>
-						</fo:block>
-					</fo:block-container>
-					<fo:block break-after="page"/>
+					<xsl:if test="/iso:iso-standard/iso:boilerplate/iso:copyright-statement">
+						<fo:block-container margin-top="12pt" margin-bottom="6pt" margin-left="1.5mm" margin-right="1.5mm" border="0.5pt solid black">
+							<xsl:apply-templates select="/iso:iso-standard/iso:boilerplate/iso:copyright-statement"/>
+							
+						</fo:block-container>
+						<fo:block break-after="page"/>
+					</xsl:if>
+					
 					<fo:block-container font-weight="bold">
 						<fo:block font-size="14pt" margin-bottom="15.5pt">Contents</fo:block>
 							<!-- <xsl:copy-of select="xalan:nodeset($contents)"/> -->
@@ -226,6 +221,49 @@
 			<xsl:with-param name="sectionNum" select="$sectionNum"/>
 			<xsl:with-param name="sectionNumSkew" select="$sectionNumSkew"/>
 		</xsl:apply-templates>
+	</xsl:template>
+	
+	<xsl:template match="iso:license-statement//iso:title">
+		<fo:block text-align="center" font-weight="bold">
+			<xsl:apply-templates />
+		</fo:block>
+	</xsl:template>
+	
+	<xsl:template match="iso:license-statement//iso:p">
+		<fo:block margin-left="1.5mm" margin-right="1.5mm">
+			<xsl:if test="following-sibling::iso:p">
+				<xsl:attribute name="margin-top">6pt</xsl:attribute>
+				<xsl:attribute name="margin-bottom">6pt</xsl:attribute>
+			</xsl:if>
+			<xsl:apply-templates />
+		</fo:block>
+	</xsl:template>
+	
+	<!-- <fo:block margin-bottom="12pt">© ISO 2019, Published in Switzerland.</fo:block>
+			<fo:block font-size="10pt" margin-bottom="12pt">All rights reserved. Unless otherwise specified, no part of this publication may be reproduced or utilized otherwise in any form or by any means, electronic or mechanical, including photocopying, or posting on the internet or an intranet, without prior written permission. Permission can be requested from either ISO at the address below or ISO’s member body in the country of the requester.</fo:block>
+			<fo:block font-size="10pt" text-indent="7.1mm">
+				<fo:block>ISO copyright office</fo:block>
+				<fo:block>Ch. de Blandonnet 8 • CP 401</fo:block>
+				<fo:block>CH-1214 Vernier, Geneva, Switzerland</fo:block>
+				<fo:block>Tel.  + 41 22 749 01 11</fo:block>
+				<fo:block>Fax  + 41 22 749 09 47</fo:block>
+				<fo:block>copyright@iso.org</fo:block>
+				<fo:block>www.iso.org</fo:block>
+			</fo:block> -->
+	
+	<xsl:template match="iso:copyright-statement//iso:p">
+		<fo:block>
+			<xsl:if test="preceding-sibling::iso:p">
+				<xsl:attribute name="font-size">10pt</xsl:attribute>
+			</xsl:if>
+			<xsl:if test="following-sibling::iso:p">
+				<xsl:attribute name="margin-bottom">12pt</xsl:attribute>
+			</xsl:if>
+			<xsl:if test="not(following-sibling::iso:p)">
+				<xsl:attribute name="margin-left">7.1mm</xsl:attribute>
+			</xsl:if>
+			<xsl:apply-templates />
+		</fo:block>
 	</xsl:template>
 	
 	<!-- Foreword, Introduction -->
@@ -375,12 +413,9 @@
 		</fo:inline>
 	</xsl:template>
 	
+
 	<xsl:template match="text()">
 		<xsl:value-of select="."/>
-	</xsl:template>
-	
-	<xsl:template match="iso:td//text() | iso:th//text()">
-		<xsl:call-template name="add-zero-spaces"/>
 	</xsl:template>
 	
 	<xsl:template match="iso:iso-standard/iso:sections/*" mode="contents">
@@ -555,171 +590,8 @@
 		</fo:block>
 	</xsl:template>
 	
-	<xsl:template match="iso:table">
-		<fo:block font-weight="bold" text-align="center" margin-bottom="6pt">
-			<xsl:text>Table </xsl:text><xsl:number format="A." count="iso:annex"/><xsl:number format="1"/>
-		</fo:block>
-		
-		<xsl:variable name="colwidths">
-			<xsl:variable name="cols-count" select="count(iso:thead/iso:tr/iso:th)"/>
-			<xsl:call-template name="calculate-column-widths">
-				<xsl:with-param name="cols-count" select="$cols-count"/>
-			</xsl:call-template>
-		</xsl:variable>
 
-		<xsl:variable name="margin-left">
-			<xsl:choose>
-				<xsl:when test="sum(xalan:nodeset($colwidths)//column) &gt; 75">15</xsl:when>
-				<xsl:otherwise>0</xsl:otherwise>
-			</xsl:choose>
-		</xsl:variable>
-		
-		<fo:block-container margin-left="-{$margin-left}mm" margin-right="-{$margin-left}mm">
-			<fo:table table-layout="fixed" font-size="10pt" width="100%" margin-left="{$margin-left}mm" margin-right="{$margin-left}mm">
-				<xsl:for-each select="xalan:nodeset($colwidths)//column">
-					<xsl:choose>
-						<xsl:when test=". = 1">
-							<fo:table-column column-width="proportional-column-width(2)"/>
-						</xsl:when>
-						<xsl:otherwise>
-							<fo:table-column column-width="proportional-column-width({.})"/>
-						</xsl:otherwise>
-					</xsl:choose>
-				</xsl:for-each>
-				<xsl:apply-templates />
-			</fo:table>
-		</fo:block-container>
-	</xsl:template>
-	
-	<xsl:template name="calculate-column-widths">
-		<xsl:param name="cols-count"/>
-		<xsl:param name="curr-col" select="1"/>
-		<xsl:param name="width" select="0"/>
-		
-		<xsl:if test="$curr-col &lt;= $cols-count">
-			<xsl:variable name="widths">
-				<xsl:for-each select="iso:thead//iso:tr">
-					<width>
-						<xsl:variable name="words">
-							<xsl:call-template name="tokenize">
-								<xsl:with-param name="text" select="translate(iso:th[$curr-col],'- —', '   ')"/>
-							</xsl:call-template>
-						</xsl:variable>
-						<xsl:call-template name="max_length">
-							<xsl:with-param name="words" select="xalan:nodeset($words)"/>
-						</xsl:call-template>
-					</width>
-				</xsl:for-each>
-				<xsl:for-each select="iso:tbody//iso:tr">
-					<width>
-						<xsl:variable name="words">
-							<xsl:call-template name="tokenize">
-								<xsl:with-param name="text" select="translate(iso:td[$curr-col],'- —', '   ')"/>
-							</xsl:call-template>
-						</xsl:variable>
-						<xsl:call-template name="max_length">
-							<xsl:with-param name="words" select="xalan:nodeset($words)"/>
-						</xsl:call-template>
-					</width>
-				</xsl:for-each>
-			</xsl:variable>
-			
-			<column>
-				<xsl:for-each select="xalan:nodeset($widths)//width">
-					<xsl:sort select="." data-type="number" order="descending"/>
-					<xsl:if test="position()=1">
-							<xsl:value-of select="."/>
-					</xsl:if>
-				</xsl:for-each>
-			</column>
-			<xsl:call-template name="calculate-column-widths">
-				<xsl:with-param name="cols-count" select="$cols-count"/>
-				<xsl:with-param name="curr-col" select="$curr-col +1"/>
-			</xsl:call-template>
-		</xsl:if>
-	</xsl:template>
-	
-	<!-- for debug purpose only -->
-	<xsl:template match="iso:table2"/>
-	
-	<xsl:template match="iso:thead"/>
-	
-	<xsl:template match="iso:thead" mode="process">
-		<!-- <fo:table-header font-weight="bold">
-			<xsl:apply-templates />
-		</fo:table-header> -->
-			<xsl:apply-templates />
-	</xsl:template>
-	
-	<xsl:template match="iso:tbody">
-		<fo:table-body>
-			<xsl:apply-templates select="../iso:thead" mode="process"/>
-			<xsl:apply-templates />
-			<xsl:apply-templates select="../iso:note" mode="process"/>
-		</fo:table-body>
-	</xsl:template>
-	
-	<xsl:template match="iso:thead/iso:tr">
-		<fo:table-row font-weight="bold" min-height="4mm" border-top="solid black 1.5pt" border-bottom="solid black 1.5pt">
-			<xsl:apply-templates />
-		</fo:table-row>
-	</xsl:template>
-	
-	<xsl:template match="iso:tr">
-		<fo:table-row min-height="4mm">
-			<xsl:apply-templates />
-		</fo:table-row>
-	</xsl:template>
-	
-	<xsl:template match="iso:th">
-		<fo:table-cell border="solid black 1pt" padding-left="1mm" display-align="center">
-			<fo:block>
-				<xsl:apply-templates />
-			</fo:block>
-		</fo:table-cell>
-	</xsl:template>
-	
-	<xsl:template match="iso:td">
-		<fo:table-cell border="solid black 1pt" padding-left="1mm">
-			<fo:block>
-				<xsl:apply-templates />
-			</fo:block>
-		</fo:table-cell>
-	</xsl:template>
-	
-	<xsl:template match="iso:table/iso:note"/>
-	<xsl:template match="iso:table/iso:note" mode="process">
-		<xsl:variable name="cols-count" select="count(../iso:thead/iso:tr/iso:th)"/>
-		<!-- <fo:table-footer> -->
-			<fo:table-row>
-				<fo:table-cell border="solid black 1pt" padding-left="1mm" padding-right="1mm" padding-top="1mm" number-columns-spanned="{$cols-count}">
-					<xsl:apply-templates />
-						<xsl:for-each select="..//iso:fn">
-							<fo:block margin-bottom="12pt">
-								<fo:inline font-size="80%" padding-right="5mm" vertical-align="super" id="{@reference}">
-									<xsl:value-of select="@reference"/>
-								</fo:inline>
-								<xsl:apply-templates />
-							</fo:block>
-						</xsl:for-each>
-				</fo:table-cell>
-			</fo:table-row>
-		<!-- </fo:table-footer> -->
-	</xsl:template>
 
-	<xsl:template match="iso:fn">
-		<fo:inline font-size="80%" keep-with-previous.within-line="always" vertical-align="super">
-			<fo:basic-link internal-destination="{@reference}">
-				<xsl:value-of select="@reference"/>
-			</fo:basic-link>
-		</fo:inline>
-	</xsl:template>
-	
-	<xsl:template match="iso:fn/iso:p">
-		<fo:inline>
-			<xsl:apply-templates />
-		</fo:inline>
-	</xsl:template>
 	
 	<xsl:template match="iso:references[@id = '_bibliography']">
 		<fo:block break-before="page"/>
@@ -851,56 +723,6 @@
 		</fo:static-content>
 	</xsl:template>
 
-	<!-- split string 'text' by 'separator' -->
-	<xsl:template name="tokenize">
-		<xsl:param name="text"/>
-		<xsl:param name="separator" select="' '"/>
-		<xsl:choose>
-			<xsl:when test="not(contains($text, $separator))">
-				<word>
-					<xsl:value-of select="string-length(normalize-space($text))"/>
-				</word>
-			</xsl:when>
-			<xsl:otherwise>
-				<word>
-					<xsl:value-of select="string-length(normalize-space(substring-before($text, $separator)))"/>
-				</word>
-				<xsl:call-template name="tokenize">
-					<xsl:with-param name="text" select="substring-after($text, $separator)"/>
-				</xsl:call-template>
-			</xsl:otherwise>
-		</xsl:choose>
-	</xsl:template>
 
-	<!-- get max value in array -->
-	<xsl:template name="max_length">
-		<xsl:param name="words"/>
-		<xsl:for-each select="$words//word">
-				<xsl:sort select="." data-type="number" order="descending"/>
-				<xsl:if test="position()=1">
-						<xsl:value-of select="."/>
-				</xsl:if>
-		</xsl:for-each>
-	</xsl:template>
 
-	<!-- add zero space after dash character (for table's entries) -->
-	<xsl:template name="add-zero-spaces">
-		<xsl:param name="text" select="."/>
-		<xsl:variable name="zero-space-after-chars">&#x002D;</xsl:variable>
-		<xsl:variable name="zero-space">&#x200B;</xsl:variable>
-		<xsl:choose>
-			<xsl:when test="contains($text, $zero-space-after-chars)">
-				<xsl:value-of select="substring-before($text, $zero-space-after-chars)"/>
-				<xsl:value-of select="$zero-space-after-chars"/>
-				<xsl:value-of select="$zero-space"/>
-				<xsl:call-template name="add-zero-spaces">
-					<xsl:with-param name="text" select="substring-after($text, $zero-space-after-chars)"/>
-				</xsl:call-template>
-			</xsl:when>
-			<xsl:otherwise>
-				<xsl:value-of select="$text"/>
-			</xsl:otherwise>
-		</xsl:choose>
-	</xsl:template>   
-	
 </xsl:stylesheet>
