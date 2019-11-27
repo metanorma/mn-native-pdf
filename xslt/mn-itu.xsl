@@ -861,6 +861,19 @@
 		<fo:list-block >
 			<xsl:apply-templates />
 		</fo:list-block>
+		<xsl:apply-templates select="./itu:note" mode="process"/>
+	</xsl:template>
+	
+	<xsl:template match="itu:ul//itu:note |  itu:ol//itu:note"/>
+	<xsl:template match="itu:ul//itu:note/itu:p  | itu:ol//itu:note/itu:p" mode="process">
+		<fo:block font-size="11pt" margin-top="4pt">
+			<xsl:text>NOTE </xsl:text>
+			<xsl:if test="../following-sibling::itu:note or ../preceding-sibling::itu:note">
+					<xsl:number count="itu:note"/><xsl:text> </xsl:text>
+				</xsl:if>
+			<xsl:text>– </xsl:text>
+			<xsl:apply-templates />
+		</fo:block>
 	</xsl:template>
 	
 	<xsl:template match="itu:li">
@@ -1539,7 +1552,7 @@
 	</xsl:template>
 	
 	<xsl:template name="insertHeaderFooter">
-		<fo:static-content flow-name="footer-even" font-family="Timew New Roman" font-size="11pt">
+		<fo:static-content flow-name="footer-even" font-family="Times New Roman" font-size="11pt">
 			<fo:block-container height="19mm" display-align="after">
 				<fo:table table-layout="fixed" width="100%" display-align="after">
 					<fo:table-column column-width="10%"/>
@@ -1559,7 +1572,7 @@
 				</fo:table>
 			</fo:block-container>
 		</fo:static-content>
-		<fo:static-content flow-name="footer-odd" font-family="Timew New Roman" font-size="11pt">
+		<fo:static-content flow-name="footer-odd" font-family="Times New Roman" font-size="11pt">
 			<fo:block-container height="19mm" display-align="after">
 				<fo:table table-layout="fixed" width="100%" display-align="after">
 					<fo:table-column column-width="90%"/>
