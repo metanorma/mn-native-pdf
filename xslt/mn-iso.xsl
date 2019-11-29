@@ -24,17 +24,17 @@
 	<xsl:variable name="contents">
 		<contents>
 			<xsl:apply-templates select="/iso:iso-standard/iso:preface/node()" mode="contents"/>
-			<xsl:apply-templates select="/iso:iso-standard/iso:sections/iso:clause[@id = '_scope']" mode="contents">
+			<xsl:apply-templates select="/iso:iso-standard/iso:sections/iso:clause[1]" mode="contents"> <!-- [@id = '_scope'] -->
 				<xsl:with-param name="sectionNum" select="'1'"/>
 			</xsl:apply-templates>
-			<xsl:apply-templates select="/iso:iso-standard/iso:bibliography/iso:references[@id = '_normative_references']" mode="contents">
+			<xsl:apply-templates select="/iso:iso-standard/iso:bibliography/iso:references[1]" mode="contents"> <!-- [@id = '_normative_references'] -->
 				<xsl:with-param name="sectionNum" select="'2'"/>
 			</xsl:apply-templates>
-			<xsl:apply-templates select="/iso:iso-standard/iso:sections/node()[@id != '_scope']" mode="contents">
+			<xsl:apply-templates select="/iso:iso-standard/iso:sections/*[position() &gt; 1]" mode="contents"> <!-- @id != '_scope' -->
 				<xsl:with-param name="sectionNumSkew" select="'1'"/>
 			</xsl:apply-templates>
 			<xsl:apply-templates select="/iso:iso-standard/iso:annex" mode="contents"/>
-			<xsl:apply-templates select="/iso:iso-standard/iso:bibliography/iso:references[@id = '_bibliography']" mode="contents"/>
+			<xsl:apply-templates select="/iso:iso-standard/iso:bibliography/iso:references[position() &gt; 1]" mode="contents"/> <!-- @id = '_bibliography' -->
 			
 			<xsl:apply-templates select="//iso:figure" mode="contents"/>
 			
@@ -163,7 +163,7 @@
 								<xsl:value-of select="/iso:iso-standard/iso:bibdata/iso:title[@language = 'en' and @type = 'title-main']"/>
 								<xsl:if test="/iso:iso-standard/iso:bibdata/iso:ext/iso:structuredidentifier/iso:project-number[@part]">
 									<xsl:text> — </xsl:text>
-									<fo:block margin-top="6pt">
+									<fo:block font-weight="normal" margin-top="6pt">
 										<xsl:text>Part </xsl:text><xsl:value-of select="/iso:iso-standard/iso:bibdata/iso:ext/iso:structuredidentifier/iso:project-number/@part"/>
 										<xsl:text>:</xsl:text>
 									</fo:block>
@@ -221,7 +221,7 @@
 					
 					<fo:block-container font-weight="bold">
 						<fo:block font-size="14pt" margin-bottom="15.5pt">Contents</fo:block>
-							<xsl:copy-of select="xalan:nodeset($contents)"/>
+							<!-- <xsl:copy-of select="xalan:nodeset($contents)"/> -->
 							
 							
 							<xsl:for-each select="xalan:nodeset($contents)//item">
@@ -285,14 +285,16 @@
 					</fo:block-container>
 					<!-- Clause(s) -->
 					<fo:block>
-						<xsl:apply-templates select="/iso:iso-standard/iso:sections/iso:clause[@id = '_scope']">
+						
+						<xsl:apply-templates select="/iso:iso-standard/iso:sections/iso:clause[1]"> <!-- @id = '_scope' -->
 							<xsl:with-param name="sectionNum" select="'1'"/>
 						</xsl:apply-templates>
-						<xsl:apply-templates select="/iso:iso-standard/iso:bibliography/iso:references[@id = '_normative_references']">
+						
+						<xsl:apply-templates select="/iso:iso-standard/iso:bibliography/iso:references[1]"> <!-- [@id = '_normative_references'] -->
 							<xsl:with-param name="sectionNum" select="'2'"/>
 						</xsl:apply-templates>
 						
-						<xsl:apply-templates select="/iso:iso-standard/iso:sections/node()[@id != '_scope']">
+						<xsl:apply-templates select="/iso:iso-standard/iso:sections/*[position() &gt; 1]"> <!-- @id != '_scope' -->
 							<xsl:with-param name="sectionNumSkew" select="'1'"/>
 						</xsl:apply-templates>
 						
@@ -300,7 +302,7 @@
 						<xsl:apply-templates select="/iso:iso-standard/iso:annex"/>
 						
 						<!-- Bibliography -->
-						<xsl:apply-templates select="/iso:iso-standard/iso:bibliography/iso:references[@id = '_bibliography']"/>
+						<xsl:apply-templates select="/iso:iso-standard/iso:bibliography/iso:references[position() &gt; 1]"/> <!-- @id = '_bibliography' -->
 					</fo:block>
 					
 				</fo:flow>
@@ -506,7 +508,7 @@
 		
 	</xsl:template>
 	
-	<xsl:template match="iso:preface//iso:title | iso:bibliography/iso:references[@id = '_normative_references' or @id='_bibliography']/iso:title" mode="contents">
+	<xsl:template match="iso:preface//iso:title | iso:bibliography/iso:references/iso:title" mode="contents"> <!-- [@id = '_normative_references' or @id='_bibliography'] -->
 		<xsl:param name="sectionNum"/>
 		<item level="1" type="preface" display="true"> <!-- display-section="false" -->
 			<xsl:attribute name="id">
@@ -642,8 +644,9 @@
 	</xsl:template>
 	
 	<xsl:template match="iso:review">
-		<fo:block font-weight="bold">Review:</fo:block>
-		<xsl:apply-templates />
+		<!-- comment 2019-11-29 -->
+		<!-- <fo:block font-weight="bold">Review:</fo:block>
+		<xsl:apply-templates /> -->
 	</xsl:template>
 
 	<xsl:template match="text()">
@@ -1035,18 +1038,20 @@
 	
 
 
-	
-	<xsl:template match="iso:references[@id = '_bibliography']">
+	<!-- <xsl:template match="iso:references[@id = '_bibliography']"> -->
+	<xsl:template match="iso:references[position() &gt; 1]">
 		<fo:block break-after="page"/>
 			<xsl:apply-templates />
 	</xsl:template>
 
-	<xsl:template match="iso:references[@id = '_bibliography']" mode="contents">
+	<!-- <xsl:template match="iso:references[@id = '_bibliography']" mode="contents"> -->
+	<xsl:template match="iso:references[position() &gt; 1]" mode="contents">
 		<xsl:apply-templates mode="contents"/>
 	</xsl:template>
 	
 	<!-- Example: [1] ISO 9:1995, Information and documentation – Transliteration of Cyrillic characters into Latin characters – Slavic and non-Slavic languages -->
-	<xsl:template match="iso:references[@id = '_bibliography']/iso:bibitem">
+	<!-- <xsl:template match="iso:references[@id = '_bibliography']/iso:bibitem"> -->
+	<xsl:template match="iso:references[position() &gt; 1]/iso:bibitem">
 		<fo:list-block margin-bottom="12pt" provisional-distance-between-starts="12mm">
 			<fo:list-item>
 				<fo:list-item-label end-indent="label-end()">
@@ -1079,9 +1084,11 @@
 		</fo:list-block>
 	</xsl:template>
 	
-	<xsl:template match="iso:references[@id = '_bibliography']/iso:bibitem" mode="contents"/>
+	<!-- <xsl:template match="iso:references[@id = '_bibliography']/iso:bibitem" mode="contents"/> -->
+	<xsl:template match="iso:references[position() &gt; 1]/iso:bibitem" mode="contents"/>
 	
-	<xsl:template match="iso:references[@id = '_bibliography']/iso:bibitem/iso:title">
+	<!-- <xsl:template match="iso:references[@id = '_bibliography']/iso:bibitem/iso:title"> -->
+	<xsl:template match="iso:references[position() &gt; 1]/iso:bibitem/iso:title">
 		<fo:inline font-style="italic">
 			<xsl:apply-templates />
 		</fo:inline>
@@ -1187,7 +1194,13 @@
 	</xsl:template>
 
 	<xsl:template match="iso:sourcecode">
-		<fo:block font-family="Courier" font-size="9pt" margin-bottom="12pt" white-space="pre">
+		<fo:block font-family="Courier" font-size="9pt" margin-bottom="12pt">
+			<xsl:choose>
+				<xsl:when test="@lang = 'en'"></xsl:when>
+				<xsl:otherwise>
+					<xsl:attribute name="white-space">pre</xsl:attribute>
+				</xsl:otherwise>
+			</xsl:choose>
 			<xsl:apply-templates/>
 		</fo:block>
 	</xsl:template>
