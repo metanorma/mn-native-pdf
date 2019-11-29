@@ -73,12 +73,28 @@ jobs:
           wget https://github.com/aosp-mirror/platform_frameworks_base/raw/master/data/fonts/DroidSansFallbackFull.ttf
           popd
 
+      - name: Install System Fonts
+        run: |
+          export MN_PDF_FONT_PATH=${GITHUB_WORKSPACE}/fonts
+          mkdir -p ${MN_PDF_FONT_PATH}/truetype/msttcorefonts
+          ls -alR /System/Library/Fonts
+          ln -s /System/Library/Fonts/Supplemental/Arial.ttf ${MN_PDF_FONT_PATH}/truetype/msttcorefonts/arial.ttf
+          ln -s /System/Library/Fonts/Supplemental/Arial\ Bold.ttf ${MN_PDF_FONT_PATH}/truetype/msttcorefonts/arialbd.ttf
+          ln -s /System/Library/Fonts/Supplemental/Arial\ Italic.ttf ${MN_PDF_FONT_PATH}/truetype/msttcorefonts/ariali.ttf
+          ln -s /System/Library/Fonts/Supplemental/Arial\ Bold\ Italic.ttf ${MN_PDF_FONT_PATH}/truetype/msttcorefonts/arialbi.ttf
+          ln -s /System/Library/Fonts/Supplemental/Times\ New\ Roman.ttf ${MN_PDF_FONT_PATH}/truetype/msttcorefonts/times.ttf
+          ln -s /System/Library/Fonts/Supplemental/Times\ New\ Roman\ Bold.ttf ${MN_PDF_FONT_PATH}/truetype/msttcorefonts/timesbd.ttf
+          ln -s /System/Library/Fonts/Supplemental/Times\ New\ Roman\ Italic.ttf ${MN_PDF_FONT_PATH}/truetype/msttcorefonts/timesi.ttf
+          ln -s /System/Library/Fonts/Supplemental/Times\ New\ Roman\ Bold\ Italic.ttf ${MN_PDF_FONT_PATH}/truetype/msttcorefonts/timesbi.ttf
+          ls -alR ${MN_PDF_FONT_PATH}
+
       - name: Compile output
         run: |
           export MN_PDF_FONT_PATH=${GITHUB_WORKSPACE}/fonts
 
           ls -alR ${MN_PDF_FONT_PATH}
-
+          
+          
           make all
           mv documents published
 

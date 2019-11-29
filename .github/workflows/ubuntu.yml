@@ -34,7 +34,10 @@ jobs:
           ls -l /home/runner
           ls -l ~/.fonts
           ls -l ~/.fonts/truetype
+          ls -l ~/.fonts/truetype/droid
           ls -l ~/.fonts/truetype/freefont
+          ls -l ~/.fonts/truetype/vista
+          ls -l ~/.fonts/truetype/msttcorefonts
       - uses: actions/checkout@master
       - name: Compile output
         env:
