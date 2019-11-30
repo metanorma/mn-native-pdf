@@ -22,11 +22,27 @@
 	</xsl:template>
 	
 	<xsl:template match="*[local-name()='table']">
+		<xsl:variable name="namespace" select="substring-before(name(/*), '-')"/>
+		<xsl:if test="$namespace = 'itu'">
+			<fo:block space-before="18pt">&#xA0;</fo:block>				
+		</xsl:if>
 		<xsl:choose>
 			<xsl:when test="@unnumbered = 'true'"></xsl:when>
 			<xsl:otherwise>
 				<fo:block font-weight="bold" text-align="center" margin-bottom="6pt">
-					<xsl:text>Table </xsl:text><xsl:number format="A." count="*[local-name()='annex']"/><xsl:number format="1"/>
+					<xsl:text>Table </xsl:text>
+						<xsl:choose>
+							<xsl:when test="ancestor::annex">
+								<xsl:number format="A-1" level="multiple" count="*[local-name()='annex'] |*[local-name()='table'] "/>
+							</xsl:when>
+							<xsl:otherwise>
+								<!-- <xsl:number format="1"/> -->
+								<xsl:number format="A." count="*[local-name()='annex']"/>
+								<xsl:number format="1" level="any" count="*[local-name()='sections']//*[local-name()='table']"/>
+							</xsl:otherwise>
+						</xsl:choose>
+						
+						
 					<xsl:if test="*[local-name()='name']">
 						<xsl:text> — </xsl:text>
 						<xsl:apply-templates select="*[local-name()='name']"/>
@@ -64,8 +80,7 @@
 			</xsl:choose>
 		</xsl:variable>
 		
-		<fo:block-container margin-left="-{$margin-left}mm" margin-right="-{$margin-left}mm">
-			<xsl:variable name="namespace" select="substring-before(name(/*), '-')"/>
+		<fo:block-container margin-left="-{$margin-left}mm" margin-right="-{$margin-left}mm">			
 			<fo:table id="{@id}" table-layout="fixed" font-size="10pt" width="100%" margin-left="{$margin-left}mm" margin-right="{$margin-left}mm">
 				<xsl:for-each select="xalan:nodeset($colwidths)//column">
 					<xsl:choose>
@@ -80,7 +95,7 @@
 				<xsl:apply-templates />
 			</fo:table>
 			<xsl:if test="$namespace = 'itu'">
-				<fo:block space-after="18pt">&#xA0;</fo:block>				
+				<fo:block space-after="6pt">&#xA0;</fo:block>				
 			</xsl:if>
 		</fo:block-container>
 	</xsl:template>

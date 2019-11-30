@@ -335,8 +335,8 @@
 													<xsl:when test="@section != '' and not(@display-section = 'false')">
 														<xsl:if test="@level = 1">
 															<xsl:choose>
-																<xsl:when test="string-length(@section) &gt; 10">25mm</xsl:when>
-																<xsl:when test="string-length(@section) &gt; 5">20mm</xsl:when>
+																<xsl:when test="string-length(@section) &gt; 10">27mm</xsl:when>
+																<xsl:when test="string-length(@section) &gt; 5">22mm</xsl:when>
 																<!-- <xsl:when test="@type = 'annex'">20mm</xsl:when> -->
 																<xsl:otherwise>12mm</xsl:otherwise>
 															</xsl:choose>
@@ -503,20 +503,8 @@
 			</xsl:choose>
 		</xsl:variable>
 		
-		<xsl:variable name="level_total" select="count(ancestor::*)"/>
 		<xsl:variable name="level">
-			<xsl:choose>
-				<xsl:when test="ancestor::itu:sections">
-					<xsl:value-of select="$level_total - 2"/>
-				</xsl:when>
-				<xsl:when test="ancestor::itu:bibliography">
-					<xsl:value-of select="$level_total - 2"/>
-				</xsl:when>
-				<xsl:when test="local-name(ancestor::*[1]) = 'annex'">1</xsl:when>
-				<xsl:otherwise>
-					<xsl:value-of select="$level_total - 1"/>
-				</xsl:otherwise>
-			</xsl:choose>
+			<xsl:call-template name="getLevel"/>
 		</xsl:variable>
 		
 		<!-- <xsl:message>
@@ -524,62 +512,11 @@
 		</xsl:message> -->
 		
 		<xsl:variable name="section">
-			<xsl:choose>
-				<xsl:when test="ancestor::itu:bibliography">
-					<xsl:value-of select="$sectionNum"/>
-				</xsl:when>
-				<xsl:when test="ancestor::itu:sections">
-					<!-- 1, 2, 3, 4, ... from main section (not annex, bibliography, ...) -->
-					<xsl:choose>
-						<xsl:when test="$level = 1">
-							<xsl:value-of select="$sectionNum"/>
-						</xsl:when>
-						<xsl:when test="$level &gt;= 2">
-							<xsl:variable name="num">
-								<xsl:number format=".1" level="multiple" count="itu:clause/itu:clause | itu:clause/itu:terms | itu:terms/itu:term"/>
-							</xsl:variable>
-							<xsl:value-of select="concat($sectionNum, $num)"/>
-						</xsl:when>
-						<xsl:otherwise>
-							<!-- z<xsl:value-of select="$sectionNum"/>z -->
-						</xsl:otherwise>
-					</xsl:choose>
-				</xsl:when>
-				
-				<xsl:when test="ancestor::itu:annex[@obligation = 'informative']">
-					<xsl:choose>
-						<xsl:when test="$level = 1">
-							<xsl:text>Appendix  </xsl:text>
-							<xsl:number format="I" level="any" count="itu:annex[@obligation = 'informative']"/>
-						</xsl:when>
-						<xsl:otherwise>
-							<xsl:number format="I.1" level="multiple" count="itu:annex[@obligation = 'informative'] | itu:clause"/>
-						</xsl:otherwise>
-					</xsl:choose>
-				</xsl:when>
-				<xsl:when test="ancestor::itu:annex">
-					<xsl:choose>
-						<xsl:when test="$level = 1">
-							<xsl:text>Annex </xsl:text>
-							<xsl:choose>
-								<xsl:when test="count(//itu:annex) = 1">
-									<xsl:value-of select="/itu:itu-standard/itu:bibdata/itu:ext/itu:structuredidentifier/itu:annexid"/>
-								</xsl:when>
-								<xsl:otherwise>
-									<xsl:number format="A" level="any" count="itu:annex"/>
-								</xsl:otherwise>
-							</xsl:choose>
-						</xsl:when>
-						<xsl:otherwise>
-							<xsl:number format="A.1" level="multiple" count="itu:annex | itu:clause"/>
-						</xsl:otherwise>
-					</xsl:choose>
-				</xsl:when>
-				<xsl:otherwise>
-				</xsl:otherwise>
-			</xsl:choose>
+			<xsl:call-template name="getSection">
+				<xsl:with-param name="sectionNum" select="$sectionNum"/>
+			</xsl:call-template>
 		</xsl:variable>
-		
+			
 		<xsl:variable name="display">
 			<xsl:choose>
 				<!-- <xsl:when test="ancestor::itu:annex">true</xsl:when> -->
@@ -627,7 +564,29 @@
 		<xsl:param name="sectionNum" />
 		<item level="" id="{@id}" display="false">
 			<xsl:attribute name="section">
-				<xsl:text>Figure </xsl:text><xsl:number format="1.1-1" level="multiple" count="itu:annex | itu:figure"/>
+				<xsl:text>Figure </xsl:text>
+				<xsl:choose>
+					<xsl:when test="ancestor::itu:annex">
+						<xsl:choose>
+							<xsl:when test="count(//itu:annex) = 1">
+								<xsl:value-of select="/itu:itu-standard/itu:bibdata/itu:ext/itu:structuredidentifier/itu:annexid"/><xsl:number format="-1" level="any" count="itu:annex//itu:figure"/>
+							</xsl:when>
+							<xsl:otherwise>
+								<xsl:number format="A.1-1" level="multiple" count="itu:annex | itu:figure"/>
+							</xsl:otherwise>
+						</xsl:choose>		
+					</xsl:when>
+					<xsl:when test="ancestor::itu:figure">
+						<xsl:for-each select="parent::*[1]">
+							<xsl:number format="1" level="any" count="itu:figure[not(parent::itu:figure)]"/>
+						</xsl:for-each>
+						<xsl:number format="-a"  count="itu:figure"/>
+					</xsl:when>
+					<xsl:otherwise>
+						<xsl:number format="1" level="any" count="itu:figure[not(parent::itu:figure)]"/>
+						<!-- <xsl:number format="1.1-1" level="multiple" count="itu:annex | itu:figure"/> -->
+					</xsl:otherwise>
+				</xsl:choose>
 			</xsl:attribute>
 		</item>
 	</xsl:template>
@@ -636,7 +595,16 @@
 		<xsl:param name="sectionNum" />
 		<item level="" id="{@id}" display="false">
 			<xsl:attribute name="section">
-				<xsl:text>Table </xsl:text><xsl:number format="1"/>
+				<xsl:text>Table </xsl:text>
+				<xsl:choose>
+					<xsl:when test="ancestor::annex">
+						<xsl:number format="A-1" level="multiple" count="itu:annex | itu:table"/>
+					</xsl:when>
+					<xsl:otherwise>
+						<!-- <xsl:number format="1"/> -->
+						<xsl:number format="1" level="any" count="*[local-name()='sections']//*[local-name()='table']"/>
+					</xsl:otherwise>
+				</xsl:choose>
 			</xsl:attribute>
 		</item>
 	</xsl:template>
@@ -726,7 +694,11 @@
 	
 	<xsl:template match="itu:note/itu:p" name="note">
 		<fo:block font-size="11pt" space-before="4pt" >
-			<fo:inline>NOTE – </fo:inline>
+			<xsl:text>NOTE </xsl:text>
+			<xsl:if test="../following-sibling::itu:note or ../preceding-sibling::itu:note">
+					<xsl:number count="itu:note"/><xsl:text> </xsl:text>
+				</xsl:if>
+			<xsl:text>– </xsl:text>
 			<xsl:apply-templates />
 		</fo:block>
 	</xsl:template>
@@ -742,7 +714,22 @@
 	<xsl:template match="itu:bibitem">
 		<fo:block  id="{@id}" margin-top="6pt" margin-left="14mm" text-indent="-14mm">
 				<!-- iso:docidentifier -->
-			<fo:inline padding-right="5mm">[<xsl:value-of select="itu:docidentifier"/>]</fo:inline><xsl:value-of select="itu:docidentifier"/><xsl:apply-templates />			</fo:block>
+			<fo:inline padding-right="5mm">[<xsl:value-of select="itu:docidentifier"/>]</fo:inline><xsl:value-of select="itu:docidentifier"/>
+				<xsl:if test="itu:title">
+				<fo:inline font-style="italic">
+						<xsl:text>, </xsl:text>
+						<xsl:choose>
+							<xsl:when test="itu:title[@type = 'main' and @language = 'en']">
+								<xsl:value-of select="itu:title[@type = 'main' and @language = 'en']"/>
+							</xsl:when>
+							<xsl:otherwise>
+								<xsl:value-of select="itu:title"/>
+							</xsl:otherwise>
+						</xsl:choose>
+					</fo:inline>
+				</xsl:if>
+				<xsl:apply-templates select="itu:formattedref"/>
+			</fo:block>
 	</xsl:template>
 	<xsl:template match="itu:bibitem/itu:docidentifier"/>
 	
@@ -799,8 +786,14 @@
 		</xsl:variable>
 		
 		<xsl:variable name="parent-name"  select="local-name(..)"/>
-		
-		<xsl:variable name="level_total" select="count(ancestor::*)"/>
+		<xsl:variable name="references_num_current">
+			<xsl:number level="any" count="itu:references"/>
+		</xsl:variable>
+			
+		<xsl:variable name="level">
+			<xsl:call-template name="getLevel"/>
+		</xsl:variable>
+		<!-- <xsl:variable name="level_total" select="count(ancestor::*)"/>
 		<xsl:variable name="level">
 			<xsl:choose>
 				<xsl:when test="ancestor::itu:sections">
@@ -814,7 +807,7 @@
 					<xsl:value-of select="$level_total - 1"/>
 				</xsl:otherwise>
 			</xsl:choose>
-		</xsl:variable>
+		</xsl:variable> -->
 		
 		<!-- <xsl:variable name="level">
 			<xsl:choose>
@@ -885,20 +878,18 @@
 								</xsl:when>
 								<xsl:otherwise>
 									<xsl:number format="A" level="any" count="itu:annex"/>
-									
-								<!-- 	<fo:block font-size="14pt" text-align="center" font-weight="bold"  keep-with-next="always">
-										<xsl:apply-templates />
-									</fo:block>
-									<fo:block font-size="12pt" text-align="center" margin-top="6pt">
-										<xsl:text>(This annex forms an integral part of this Recommendation.)</xsl:text>
-									</fo:block> -->
-									
-									
 								</xsl:otherwise>
 							</xsl:choose>
 						</xsl:when>
 						<xsl:otherwise>
-							<xsl:number format="A.1" level="multiple" count="itu:annex | itu:clause"/>
+							<xsl:choose>
+								<xsl:when test="count(//itu:annex) = 1">
+									<xsl:value-of select="/itu:itu-standard/itu:bibdata/itu:ext/itu:structuredidentifier/itu:annexid"/><xsl:number format=".1" level="multiple" count="itu:clause"/> <!-- itu:annex |  -->
+								</xsl:when>
+								<xsl:otherwise>
+									<xsl:number format="A.1" level="multiple" count="itu:annex | itu:clause"/>
+								</xsl:otherwise>
+							</xsl:choose>
 						</xsl:otherwise>
 					</xsl:choose>
 				</xsl:when>
@@ -926,7 +917,7 @@
 					</fo:block>
 				</fo:block>
 			</xsl:when>
-			<xsl:when test="$parent-name = 'references'">
+			<xsl:when test="$parent-name = 'references' and $references_num_current != 1">
 				<fo:block id="{$id}" font-size="14pt" font-weight="bold" text-align="center" margin-bottom="18pt">
 					<xsl:apply-templates />
 				</fo:block>
@@ -975,7 +966,13 @@
 		<!-- DEBUG need -->
 		<fo:block space-before="6pt" text-align="justify">
 			<fo:inline id="{../@id}" padding-right="5mm" font-weight="bold">
-				<xsl:value-of select="$sectionNum"/><xsl:number format=".1" level="multiple" count="itu:clause/itu:clause | itu:clause/itu:terms | itu:terms/itu:term"/>
+				<!-- <xsl:value-of select="$sectionNum"/><xsl:number format=".1" level="multiple" count="itu:clause/itu:clause | itu:clause/itu:terms | itu:terms/itu:term"/> -->
+				<xsl:variable name="section">
+					<xsl:call-template name="getSection">
+						<xsl:with-param name="sectionNum" select="$sectionNum"/>
+					</xsl:call-template>
+				</xsl:variable>
+				<xsl:value-of select="$section"/>
 			</fo:inline>
 			<fo:inline font-weight="bold">
 				<xsl:apply-templates />
@@ -986,12 +983,13 @@
 			<xsl:text>: </xsl:text>
 			<xsl:apply-templates select="following-sibling::itu:definition/node()" mode="process"/> <!--   -->
 		</fo:block>
-		<xsl:if test="following-sibling::itu:table">
+		<!-- <xsl:if test="following-sibling::itu:table">
 			<fo:block space-after="18pt">&#xA0;</fo:block>
-		</xsl:if>
+		</xsl:if> -->
 	</xsl:template>
 	
 	<xsl:template match="itu:definition/itu:p"/>
+	<xsl:template match="itu:definition/itu:formula"/>
 	
 	<xsl:template match="itu:definition/itu:p" mode="process"> <!--   -->
 		<xsl:choose>
@@ -1002,7 +1000,7 @@
 			</xsl:when>
 			<xsl:otherwise>
 				<fo:block margin-top="6pt" text-align="justify">
-					<xsl:apply-templates />
+					<xsl:apply-templates/>
 				</fo:block>
 			</xsl:otherwise>
 		</xsl:choose>
@@ -1113,10 +1111,23 @@
 						<xsl:text>Figure </xsl:text>
 						<xsl:choose>
 							<xsl:when test="ancestor::itu:annex">
-								<xsl:number format="A.1-1" level="multiple" count="itu:annex | itu:figure"/>
+								<xsl:choose>
+									<xsl:when test="count(//itu:annex) = 1">
+										<xsl:value-of select="/itu:itu-standard/itu:bibdata/itu:ext/itu:structuredidentifier/itu:annexid"/><xsl:number format="-1" level="any" count="itu:annex//itu:figure"/>
+									</xsl:when>
+									<xsl:otherwise>
+										<xsl:number format="A.1-1" level="multiple" count="itu:annex | itu:figure"/>
+									</xsl:otherwise>
+								</xsl:choose>		
+							</xsl:when>
+							<xsl:when test="ancestor::itu:figure">
+								<xsl:for-each select="parent::*[1]">
+									<xsl:number format="1" level="any" count="itu:figure[not(parent::itu:figure)]"/>
+								</xsl:for-each>
+								<xsl:number format="-a"  count="itu:figure"/>
 							</xsl:when>
 							<xsl:otherwise>
-								<xsl:number format="1" level="any"/>
+								<xsl:number format="1" level="any" count="itu:figure[not(parent::itu:figure)]"/>
 							</xsl:otherwise>
 						</xsl:choose>
 						<xsl:if test="itu:name">
@@ -1135,7 +1146,12 @@
 	
 	<xsl:template match="itu:figure/itu:image">
 		<fo:block text-align="center">
-			<fo:external-graphic src="{@src}" content-width="75%" content-height="scale-to-fit" scaling="uniform"/>
+			<!-- <fo:external-graphic src="{@src}" content-width="75%" content-height="scale-to-fit" scaling="uniform"/> -->
+			
+			<fo:external-graphic src="{@src}"
+				width="75%"
+				content-height="100%"
+				content-width="scale-to-fit" scaling="uniform"/>
 		</fo:block>
 	</xsl:template>
 	
@@ -1270,6 +1286,7 @@
 			</fo:list-item-label>
 			<fo:list-item-body start-indent="body-start()">
 				<xsl:apply-templates />
+				<xsl:apply-templates select=".//itu:note" mode="process"/>
 			</fo:list-item-body>
 		</fo:list-item>
 	</xsl:template>
@@ -1387,8 +1404,8 @@
 	<xsl:template match="iso:references[@id = '_bibliography']/iso:bibitem" mode="contents"/>
 	
 
-	<xsl:template match="itu:formula">
-		<fo:block margin-top="6pt"> <!--  text-align="center" -->
+	<xsl:template match="itu:formula" name="formula">
+		<fo:block id="{@id}" margin-top="6pt"> <!--  text-align="center" -->
 			<fo:table table-layout="fixed" width="100%">
 				<fo:table-column column-width="95%"/>
 				<fo:table-column column-width="5%"/>
@@ -1415,23 +1432,18 @@
 	</xsl:template>
 	
 	<xsl:template match="itu:formula" mode="process">
-		<fo:block margin-top="6pt" text-align="center">
-			<xsl:apply-templates />
-			<fo:inline keep-together.within-line="always">
-				<xsl:text>(</xsl:text><xsl:value-of select="position()"/><xsl:text>)</xsl:text>
-			</fo:inline>
-		</fo:block>
+		<xsl:call-template name="formula"/>
 	</xsl:template>
 	
 	<xsl:template match="mathml:math">
 		<!-- <fo:inline font-size="12pt" color="red">
 			MathML: 
 		</fo:inline> -->
-		<fo:inline font-family="Cambria Math">
+		<!-- <fo:inline font-family="Cambria Math">
 			<fo:instream-foreign-object> 
 				<xsl:copy-of select="."/>
 			</fo:instream-foreign-object>
-		</fo:inline>
+		</fo:inline> -->
 	</xsl:template>
 	
 	<xsl:template match="itu:xref">
@@ -1481,7 +1493,11 @@
 	
 	<xsl:template match="itu:example/itu:name">
 		<fo:block font-weight="bold">
-			<xsl:text>EXAMPLE — </xsl:text>
+			<xsl:text>EXAMPLE</xsl:text>
+			<xsl:if test="count(ancestor::itu:clause[1]/itu:example) &gt; 1">
+				<xsl:text> </xsl:text><xsl:number count="itu:example"/>
+			</xsl:if>
+			<xsl:text> — </xsl:text>
 			<xsl:apply-templates />
 		</fo:block>
 	</xsl:template>
@@ -1517,9 +1533,13 @@
 			</xsl:if>
 			<fo:basic-link internal-destination="{@bibitemid}">
 				<xsl:text>[</xsl:text><xsl:value-of select="@citeas" disable-output-escaping="yes"/><xsl:text>]</xsl:text>
-				<xsl:if test="iso:locality">
+				<xsl:if test="itu:locality">
 					<xsl:text>, </xsl:text>
-					<xsl:apply-templates select="iso:locality"/>
+					<xsl:choose>
+						<xsl:when test="itu:locality/@type = 'section'">Section </xsl:when>
+						<xsl:otherwise></xsl:otherwise>
+					</xsl:choose>
+					<xsl:apply-templates select="itu:locality"/>
 				</xsl:if>
 			</fo:basic-link>
 		</fo:inline>
@@ -2086,12 +2106,23 @@
 						</xsl:when>
 						<xsl:when test="$level &gt;= 2">
 							<xsl:variable name="num">
-								<xsl:number format=".1" level="multiple" count="itu:clause/itu:clause | itu:clause/itu:terms | itu:terms/itu:term"/>
+								<xsl:number format=".1" level="multiple" count="itu:clause/itu:clause | itu:clause/itu:terms | itu:terms/itu:term | itu:clause/itu:term"/>
 							</xsl:variable>
 							<xsl:value-of select="concat($sectionNum, $num)"/>
 						</xsl:when>
 						<xsl:otherwise>
 							<!-- z<xsl:value-of select="$sectionNum"/>z -->
+						</xsl:otherwise>
+					</xsl:choose>
+				</xsl:when>
+				<xsl:when test="ancestor::itu:annex[@obligation = 'informative']">
+					<xsl:choose>
+						<xsl:when test="$level = 1">
+							<xsl:text>Appendix  </xsl:text>
+							<xsl:number format="I" level="any" count="itu:annex[@obligation = 'informative']"/>
+						</xsl:when>
+						<xsl:otherwise>
+							<xsl:number format="I.1" level="multiple" count="itu:annex[@obligation = 'informative'] | itu:clause"/>
 						</xsl:otherwise>
 					</xsl:choose>
 				</xsl:when>
@@ -2109,7 +2140,14 @@
 							</xsl:choose>
 						</xsl:when>
 						<xsl:otherwise>
-							<xsl:number format="A.1" level="multiple" count="itu:annex | itu:clause"/>
+							<xsl:choose>
+								<xsl:when test="count(//itu:annex) = 1">
+									<xsl:value-of select="/itu:itu-standard/itu:bibdata/itu:ext/itu:structuredidentifier/itu:annexid"/><xsl:number format=".1" level="multiple" count="itu:clause"/> <!-- itu:annex |  -->
+								</xsl:when>
+								<xsl:otherwise>
+									<xsl:number format="A.1" level="multiple" count="itu:annex | itu:clause"/>
+								</xsl:otherwise>
+							</xsl:choose>
 						</xsl:otherwise>
 					</xsl:choose>
 				</xsl:when>
