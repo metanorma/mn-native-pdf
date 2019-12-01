@@ -31,18 +31,23 @@
 			<xsl:otherwise>
 				<fo:block font-weight="bold" text-align="center" margin-bottom="6pt">
 					<xsl:text>Table </xsl:text>
-						<xsl:choose>
-							<xsl:when test="ancestor::annex">
-								<xsl:number format="A-1" level="multiple" count="*[local-name()='annex'] |*[local-name()='table'] "/>
-							</xsl:when>
-							<xsl:otherwise>
-								<!-- <xsl:number format="1"/> -->
-								<xsl:number format="A." count="*[local-name()='annex']"/>
-								<xsl:number format="1" level="any" count="*[local-name()='sections']//*[local-name()='table']"/>
-							</xsl:otherwise>
-						</xsl:choose>
-						
-						
+					<xsl:choose>
+						<xsl:when test="ancestor::*[local-name()='annex']">
+							<xsl:choose>
+								<xsl:when test="$namespace = 'iso'">
+									<xsl:number format="A." count="*[local-name()='annex']"/><xsl:number format="1"/>
+								</xsl:when>
+								<xsl:otherwise> <!-- for itu -->
+									<xsl:number format="A-1" level="multiple" count="*[local-name()='annex'] | *[local-name()='table'] "/>
+								</xsl:otherwise>
+							</xsl:choose>
+						</xsl:when>
+						<xsl:otherwise>
+							<!-- <xsl:number format="1"/> -->
+							<xsl:number format="A." count="*[local-name()='annex']"/>
+							<xsl:number format="1" level="any" count="*[local-name()='sections']//*[local-name()='table']"/>
+						</xsl:otherwise>
+					</xsl:choose>
 					<xsl:if test="*[local-name()='name']">
 						<xsl:text> — </xsl:text>
 						<xsl:apply-templates select="*[local-name()='name']"/>
@@ -351,8 +356,8 @@
 		<xsl:if test="xalan:nodeset($references)//fn">
 			<fo:block>
 				<fo:table width="95%" table-layout="fixed">
-					<fo:table-column column-width="10%"/>
-					<fo:table-column column-width="90%"/>
+					<fo:table-column column-width="15%"/>
+					<fo:table-column column-width="85%"/>
 					<fo:table-body>
 						<xsl:for-each select="xalan:nodeset($references)//fn">
 							<xsl:variable name="reference" select="@reference"/>

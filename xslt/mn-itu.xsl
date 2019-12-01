@@ -1439,11 +1439,11 @@
 		<!-- <fo:inline font-size="12pt" color="red">
 			MathML: 
 		</fo:inline> -->
-		<!-- <fo:inline font-family="Cambria Math">
+		<fo:inline font-family="Cambria Math">
 			<fo:instream-foreign-object> 
 				<xsl:copy-of select="."/>
 			</fo:instream-foreign-object>
-		</fo:inline> -->
+		</fo:inline>
 	</xsl:template>
 	
 	<xsl:template match="itu:xref">
