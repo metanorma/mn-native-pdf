@@ -9,7 +9,7 @@ jobs:
       # cabextract for fonts, gettext-base for envsubst
       - name: Setup prerequisites
         run: |
-          sudo apt-get -y install gettext-base fop cabextract wget
+          sudo apt-get -y install gettext-base fop cabextract wget p7zip-full
 
           # Install fontforge
           sudo apt-get -y install software-properties-common
@@ -31,13 +31,11 @@ jobs:
           sudo chown -R $(whoami) /usr/share/fonts/
           mkdir -p ~/.fonts
           cp -a /usr/share/fonts/* ~/.fonts
+          curl -L https://github.com/Pal3love/Source-Han-TrueType/raw/master/SourceHanSans.7z -o ~/.fonts/hansans.7z
+          cd ~/.fonts
+          7z x hansans.7z
           ls -l /home/runner
-          ls -l ~/.fonts
-          ls -l ~/.fonts/truetype
-          ls -l ~/.fonts/truetype/droid
-          ls -l ~/.fonts/truetype/freefont
-          ls -l ~/.fonts/truetype/vista
-          ls -l ~/.fonts/truetype/msttcorefonts
+          ls -alR ~/.fonts
       - uses: actions/checkout@master
       - name: Compile output
         env:

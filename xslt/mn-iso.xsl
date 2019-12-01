@@ -9,7 +9,9 @@
 	<xsl:variable name="pageHeight" select="'297mm'"/>
 
 	<xsl:variable name="copyrightText" select="concat('© ISO ', iso:iso-standard/iso:bibdata/iso:copyright/iso:from ,' – All rights reserved')"/>
-	<xsl:variable name="ISOname" select="concat(/iso:iso-standard/iso:bibdata/iso:docidentifier, ':', /iso:iso-standard/iso:bibdata/iso:copyright/iso:from , '(', translate(substring(iso:iso-standard/iso:bibdata/iso:language,1,1),$lower, $upper), ') ')"/>
+  <!-- <xsl:variable name="lang-1st-letter" select="concat('(', translate(substring(iso:iso-standard/iso:bibdata/iso:language,1,1),$lower, $upper), ')')"/> -->
+  <xsl:variable name="lang-1st-letter" select="''"/>
+	<xsl:variable name="ISOname" select="concat(/iso:iso-standard/iso:bibdata/iso:docidentifier, ':', /iso:iso-standard/iso:bibdata/iso:copyright/iso:from , $lang-1st-letter)"/>
 	
 	<!-- Information and documentation — Codes for transcription systems  -->
 	<!-- <xsl:variable name="title-en" select="concat(/iso:iso-standard/iso:bibdata/iso:title[@language = 'en' and @type = 'title-intro'], ' &#x2014; ' ,/iso:iso-standard/iso:bibdata/iso:title[@language = 'en' and @type = 'title-main'])"/> -->
@@ -44,7 +46,7 @@
 	</xsl:variable>
 	
 	<xsl:template match="/">
-		<fo:root xmlns:fo="http://www.w3.org/1999/XSL/Format" font-family="Cambria, FreeSerif, NanumGothic, DroidSans" font-size="11pt">
+		<fo:root xmlns:fo="http://www.w3.org/1999/XSL/Format" font-family="Cambria, FreeSerif, HanSans, NanumGothic, DroidSans" font-size="11pt"> <!-- alternatives: SimSun -->
 			<fo:layout-master-set>
 				<!-- cover page -->
 				<fo:simple-page-master master-name="cover-page" page-width="{$pageWidth}" page-height="{$pageHeight}">
@@ -105,13 +107,13 @@
 							
 								<!-- ISO/CD 17301-1(E)  -->
 								<fo:block margin-bottom="12pt">
-									<xsl:value-of select="concat(/iso:iso-standard/iso:bibdata/iso:docidentifier, '(', translate(substring(iso:iso-standard/iso:bibdata/iso:language,1,1),$lower, $upper), ') ')"/>
+									<xsl:value-of select="concat(/iso:iso-standard/iso:bibdata/iso:docidentifier, $lang-1st-letter)"/>
 								</fo:block>
 							</xsl:when>
 							<xsl:otherwise>
 								<fo:block font-size="14pt" font-weight="bold" margin-bottom="12pt">
 									<!-- ISO/WD 24229(E)  -->
-									<xsl:value-of select="concat(/iso:iso-standard/iso:bibdata/iso:docidentifier, '(', translate(substring(iso:iso-standard/iso:bibdata/iso:language,1,1),$lower, $upper), ') ')"/>
+									<xsl:value-of select="concat(/iso:iso-standard/iso:bibdata/iso:docidentifier, $lang-1st-letter)"/>
 								</fo:block>
 								
 							</xsl:otherwise>
@@ -1188,7 +1190,6 @@
 				<xsl:when test="$type = 'clause'">Clause </xsl:when><!-- and not (ancestor::annex) -->
 				<xsl:otherwise></xsl:otherwise> <!-- <xsl:value-of select="$type"/> -->
 			</xsl:choose>
-			<xsl:text></xsl:text>
 			<xsl:value-of select="xalan:nodeset($contents)//item[@id = current()/@target]/@section"/>
       </fo:basic-link>
 	</xsl:template>
@@ -1210,12 +1211,6 @@
 			<fo:inline padding-right="9mm">EXAMPLE</fo:inline>
 			<xsl:apply-templates />
 		</fo:block>
-	</xsl:template>
-	
-	<xsl:template match="iso:tt">
-		<fo:inline font-family="Courier" font-size="10pt">
-			<xsl:apply-templates />
-		</fo:inline>
 	</xsl:template>
 	
 	<xsl:template match="iso:note/iso:p" name="note">
@@ -1276,9 +1271,14 @@
 						</fo:table-cell>
 						<fo:table-cell>
 							<fo:block text-align="right">
-								<xsl:if test="not(ancestor::iso:annex)">
-									<xsl:text>(</xsl:text><xsl:number level="any" count="iso:formula"/><xsl:text>)</xsl:text>
-								</xsl:if>
+								<xsl:choose>
+									<xsl:when test="ancestor::iso:annex">
+										<xsl:text>(</xsl:text><xsl:number format="A.1" level="multiple" count="iso:annex | iso:formula"/><xsl:text>)</xsl:text>
+									</xsl:when>
+									<xsl:otherwise> <!-- not(ancestor::iso:annex) -->
+										<xsl:text>(</xsl:text><xsl:number level="any" count="iso:formula"/><xsl:text>)</xsl:text>
+									</xsl:otherwise>
+								</xsl:choose>
 							</fo:block>
 						</fo:table-cell>
 					</fo:table-row>
