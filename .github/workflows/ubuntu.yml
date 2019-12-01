@@ -31,7 +31,7 @@ jobs:
           sudo chown -R $(whoami) /usr/share/fonts/
           mkdir -p ~/.fonts
           cp -a /usr/share/fonts/* ~/.fonts
-          curl -L https://github.com/Pal3love/Source-Han-TrueType/raw/master/SourceHanSans.7z -o ~/.fonts/hansans.7z
+          curl -Ls https://github.com/Pal3love/Source-Han-TrueType/raw/master/SourceHanSans.7z -o ~/.fonts/hansans.7z
           cd ~/.fonts
           7z x hansans.7z
           ls -l /home/runner
