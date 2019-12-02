@@ -32,7 +32,7 @@ import org.xml.sax.SAXException;
  * This class for the conversion of an XML file to PDF using FOP and JEuclid
  */
 public class XML2PDF {
-    
+
     /**
      * Converts an XML file to a PDF file using FOP
      * @param config the FOP config file
@@ -50,23 +50,23 @@ public class XML2PDF {
             //Setup XSLT
             TransformerFactory factory = TransformerFactory.newInstance();
             Transformer transformer = factory.newTransformer(new StreamSource(xsl));
-            
+
             //Setup input for XSLT transformation
             Source src = new StreamSource(xml);
-            
+
             //Setup output
             StringWriter resultWriter = new StringWriter();
             StreamResult sr = new StreamResult(resultWriter);
-            
+
             //Start XSLT transformation and FOP generating
             transformer.transform(src, sr);
             String xmlFO = resultWriter.toString();
-                    
+
             // Step 1: Construct a FopFactory by specifying a reference to the configuration file
             // (reuse if you plan to render multiple documents!)
             FopFactory fopFactory = FopFactory.newInstance(config);
 
-          
+
             JEuclidFopFactoryConfigurator.configure(fopFactory);
             FOUserAgent foUserAgent = fopFactory.newFOUserAgent();
             // configure foUserAgent as desired
@@ -82,7 +82,7 @@ public class XML2PDF {
             // Setup JAXP using identity transformer
             factory = TransformerFactory.newInstance();
             transformer = factory.newTransformer(); // identity transformer
-           
+
             // Setup input stream
             Source srcFO = new StreamSource(new StringReader(xmlFO));
 
@@ -100,7 +100,7 @@ public class XML2PDF {
         }
     }
 
-    
+
     /**
      * Main method.
      * @param args command-line arguments
@@ -110,11 +110,11 @@ public class XML2PDF {
             System.out.println("Usage: java -jar xml2pdf <path to XML config file> <path to source XML file> <path to source XSLT file> <path to output PDF");
             System.exit(-1);
         }
-        
+
         try {
             System.out.println("XML2PDF\n");
             System.out.println("Preparing...");
-            
+
             //Setup config, input and output files
             final String argConfig = args[0];
             File fConfig = new File(argConfig);
@@ -135,7 +135,7 @@ public class XML2PDF {
                 System.exit(-1);
             }
             final String argPDF = args[3];
-            File fPDF = new File(argPDF);        
+            File fPDF = new File(argPDF);
 
             System.out.println("Input: FOP config (" + fConfig + ")");
             System.out.println("Input: XML (" + fXML + ")");
@@ -152,7 +152,7 @@ public class XML2PDF {
             e.printStackTrace(System.err);
             System.exit(-1);
         }
-        
+
     }
-    
+
 }
