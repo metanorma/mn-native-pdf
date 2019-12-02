@@ -30,6 +30,9 @@ brew install fop
 
 # Install Maven
 brew install maven
+
+# Install p7zip
+brew install p7zip
 ----
 
 Manually add the Cambria fonts (`cambria.ttf`, `cambriab.ttf`, `cambriai.ttf`, `cambriaz.ttf`) to your `fonts/` directory under this repository, or anywhere else. Point to it using the environment variable `MN_PDF_FONT_PATH`.
@@ -78,6 +81,15 @@ mkdir -p ${MN_PDF_FONT_PATH}/truetype/droid/
 
 pushd ${MN_PDF_FONT_PATH}/truetype/droid/
 wget https://github.com/aosp-mirror/platform_frameworks_base/raw/master/data/fonts/DroidSansFallbackFull.ttf
+popd
+
+# Install CJK fonts
+export MN_PDF_FONT_PATH=${GITHUB_WORKSPACE}/fonts
+
+pushd $(mktemp -d)
+curl -Ls https://github.com/Pal3love/Source-Han-TrueType/raw/master/SourceHanSans.7z -o hansans.7z
+7za x hansans.7z
+mv *.ttc ${MN_PDF_FONT_PATH}/
 popd
 
 # Install MS system fonts

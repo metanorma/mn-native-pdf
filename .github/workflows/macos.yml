@@ -106,14 +106,14 @@ jobs:
           export MN_PDF_FONT_PATH=${GITHUB_WORKSPACE}/fonts
 
           ls -alR ${MN_PDF_FONT_PATH}
-          
-          
+
+
           make all
           mv documents published
 
       - uses: actions/upload-artifact@master
         with:
-          name: published
+          name: published-macos
           path: published
 
 

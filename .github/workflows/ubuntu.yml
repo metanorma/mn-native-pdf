@@ -24,28 +24,34 @@ jobs:
           echo ttf-mscorefonts-installer msttcorefonts/accepted-mscorefonts-eula select true | sudo debconf-set-selections
           sudo apt-get install ttf-mscorefonts-installer
 
-      - name: Setup fonts
+      - name: Setup Cambria fonts
         run: |
           # Setup Cambria
           curl -Ls https://gist.github.com/maxwelleite/10774746/raw/ttf-vista-fonts-installer.sh | sudo bash
           sudo chown -R $(whoami) /usr/share/fonts/
           mkdir -p ~/.fonts
           cp -a /usr/share/fonts/* ~/.fonts
-          curl -Ls https://github.com/Pal3love/Source-Han-TrueType/raw/master/SourceHanSans.7z -o ~/.fonts/hansans.7z
-          cd ~/.fonts
-          7z x hansans.7z
-          ls -l /home/runner
           ls -alR ~/.fonts
+
+      - name: Setup CJK fonts
+        run: |
+          cd ~/.fonts
+          curl -Ls https://github.com/Pal3love/Source-Han-TrueType/raw/master/SourceHanSans.7z -o ~/.fonts/hansans.7z
+          7z x hansans.7z
+          ls -alR ~/.fonts
+
       - uses: actions/checkout@master
+
       - name: Compile output
         env:
           MN_PDF_FONT_PATH: ~/.fonts
         run: |
           make all
           mv documents published
+
       - uses: actions/upload-artifact@master
         with:
-          name: published
+          name: published-ubuntu
           path: published
 
 
@@ -57,7 +63,7 @@ jobs:
     - uses: actions/checkout@master
     - uses: actions/download-artifact@master
       with:
-        name: published
+        name: published-ubuntu
     - name: deploy-to-gh
       env:
         GITHUB_REPOSITORY: ${{ secrets.GITHUB_REPOSITORY }}
