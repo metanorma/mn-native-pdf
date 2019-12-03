@@ -19,6 +19,9 @@ jobs:
           # Install Maven
           brew install maven
 
+          # Install p7zip
+          brew install p7zip
+
       - uses: actions/checkout@master
 
       - name: Install Cambria
@@ -73,6 +76,16 @@ jobs:
           wget https://github.com/aosp-mirror/platform_frameworks_base/raw/master/data/fonts/DroidSansFallbackFull.ttf
           popd
 
+      - name: Install Chinese fonts
+        run: |
+          export MN_PDF_FONT_PATH=${GITHUB_WORKSPACE}/fonts
+
+          pushd $(mktemp -d)
+          curl -Ls https://github.com/Pal3love/Source-Han-TrueType/raw/master/SourceHanSans.7z -o hansans.7z
+          7za x hansans.7z
+          mv *.ttc ${MN_PDF_FONT_PATH}/
+          popd
+
       - name: Install System Fonts
         run: |
           export MN_PDF_FONT_PATH=${GITHUB_WORKSPACE}/fonts
@@ -93,14 +106,14 @@ jobs:
           export MN_PDF_FONT_PATH=${GITHUB_WORKSPACE}/fonts
 
           ls -alR ${MN_PDF_FONT_PATH}
-          
-          
+
+
           make all
           mv documents published
 
       - uses: actions/upload-artifact@master
         with:
-          name: published
+          name: published-macos
           path: published
 
 
