@@ -1,0 +1,8 @@
+[submodule "mn-samples-itu"]
+	path = mn-samples-itu
+	url = https://github.com/metanorma/mn-samples-itu
+	branch = gh-pages
+[submodule "mn-samples-iso"]
+	path = mn-samples-iso
+	url = https://github.com/metanorma/mn-samples-iso
+	branch = gh-pages

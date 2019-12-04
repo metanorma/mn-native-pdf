@@ -6,6 +6,14 @@ image:https://github.com/metanorma/mn-native-pdf/workflows/macos/badge.svg["Buil
 The experimental PDF is available here:
 
 * https://metanorma.github.io/mn-native-pdf/iso-24229.pdf[ISO 24229 sample (PDF)]
+* https://metanorma.github.io/mn-native-pdf/iso-rice-en.pdf[ISO Rice sample (PDF)]
+* https://metanorma.github.io/mn-native-pdf/itu-G.191.pdf[ITU G.191 (PDF)]
+* https://metanorma.github.io/mn-native-pdf/itu-G.650.1-201803-v2.pdf[ITU G.650.1-201803-v2 (PDF)]
+* https://metanorma.github.io/mn-native-pdf/itu-G.650.1-201803.pdf[ITU G.650.1-201803 (PDF)]
+* https://metanorma.github.io/mn-native-pdf/itu-T-Editing-Guidelines-201602.pdf[ITU T-Editing-Guidelines-201602 (PDF)]
+* https://metanorma.github.io/mn-native-pdf/itu-T-REC-H.782-201811-I.MSW-E.pdf[ITU T-REC-H.782-201811-I.MSW-E (PDF)]
+* https://metanorma.github.io/mn-native-pdf/itu-T-REC-J.1108-201901-P.MSW-E.pdf[ITU T-REC-J.1108-201901-P.MSW-E (PDF)]
+* https://metanorma.github.io/mn-native-pdf/itu-T-REC-P.1203-201710-I.MSW-E.pdf[ITU T-REC-P.1203-201710-I.MSW-E (PDF)]
 
 
 == Purpose

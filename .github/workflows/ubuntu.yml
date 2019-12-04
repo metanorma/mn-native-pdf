@@ -42,6 +42,10 @@ jobs:
 
       - uses: actions/checkout@master
 
+      - name: Update submodules
+        run: |
+          make update-init update-modules
+
       - name: Compile output
         env:
           MN_PDF_FONT_PATH: ~/.fonts

@@ -101,12 +101,15 @@ jobs:
           ln -s /System/Library/Fonts/Supplemental/Times\ New\ Roman\ Bold\ Italic.ttf ${MN_PDF_FONT_PATH}/truetype/msttcorefonts/timesbi.ttf
           ls -alR ${MN_PDF_FONT_PATH}
 
+      - name: Update submodules
+        run: |
+          make update-init update-modules
+
       - name: Compile output
         run: |
           export MN_PDF_FONT_PATH=${GITHUB_WORKSPACE}/fonts
 
           ls -alR ${MN_PDF_FONT_PATH}
-
 
           make all
           mv documents published
