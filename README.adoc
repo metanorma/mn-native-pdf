@@ -160,8 +160,11 @@ Building the document is then easy:
 ----
 export MN_PDF_FONT_PATH=~/.fonts
 
-make all
+# Pull submodules
+make update-init update-modules
+
 # PDFs will be generated as documents/*.pdf
+make all
 ----
 
 
