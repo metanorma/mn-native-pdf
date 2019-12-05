@@ -3,6 +3,7 @@ SHELL := /bin/bash
 SRCDIR := sources
 DESTDIR := documents
 SRC := $(patsubst mn-samples-iso/documents/%,sources/%,$(wildcard mn-samples-iso/documents/*.xml)) \
+	$(patsubst mn-samples-iec/documents/%,sources/%,$(wildcard mn-samples-iec/documents/*.xml)) \
 	$(patsubst mn-samples-itu/documents/%,sources/itu-%,$(wildcard mn-samples-itu/documents/*.xml))
 PDF := $(patsubst sources/%,documents/%,$(patsubst %.xml,%.pdf,$(SRC)))
 XSLT_PATH_BASE := $(shell pwd)/xslt/mn-FOO.xsl
@@ -26,6 +27,9 @@ sources/iso-%.xml: mn-samples-iso/documents/iso-%.xml
 	cp $< $@
 
 sources/itu-%.xml: mn-samples-itu/documents/%.xml
+	cp $< $@
+
+sources/iec-%.xml: mn-samples-iso/documents/iec-%.xml
 	cp $< $@
 
 documents/%.pdf: sources/%.xml pdf_fonts_config.xml documents
