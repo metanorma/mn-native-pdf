@@ -14,9 +14,6 @@ else
 	MN_PDF_FONT_PATH := $(pwd)/fonts
 endif
 
-x:
-	echo $(PDF)
-
 all: $(PDF)
 
 documents:
