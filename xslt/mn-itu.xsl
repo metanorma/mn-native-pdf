@@ -114,6 +114,13 @@
 			<!-- cover page -->
 			<fo:page-sequence master-reference="cover-page" force-page-count="no-force">
 				<fo:flow flow-name="xsl-region-body">
+				
+					<fo:block-container absolute-position="fixed" left="148mm" top="265mm">
+						<fo:block>
+							<fo:external-graphic src="{concat('data:image/png;base64,', normalize-space($Image-Logo))}" width="42.6mm" content-height="17.7mm" content-width="scale-to-fit" scaling="uniform"/>
+						</fo:block>
+					</fo:block-container>
+				
 					<fo:block-container absolute-position="fixed" left="-7mm" top="0">
 						<fo:block>
 							<fo:external-graphic src="{concat('data:image/png;base64,', normalize-space($Image-Fond-Rec))}" width="43.6mm" content-height="299.2mm" content-width="scale-to-fit" scaling="uniform"/>
@@ -121,15 +128,16 @@
 					</fo:block-container>
 					<fo:block-container font-family="Arial">
 						<fo:table width="100%" table-layout="fixed"> <!-- 175.4mm-->
-							<fo:table-column column-width="28.3mm"/>
-							<fo:table-column column-width="65mm"/>
-							<fo:table-column column-width="78mm"/>
+							<fo:table-column column-width="25.2mm"/>
+							<fo:table-column column-width="44.4mm"/>
+							<fo:table-column column-width="35.8mm"/>
+							<fo:table-column column-width="67mm"/>
 							<fo:table-body>
 								<fo:table-row height="42.5mm">
 									<fo:table-cell>
 										<fo:block>&#xA0;</fo:block>
 									</fo:table-cell>
-									<fo:table-cell number-columns-spanned="2">
+									<fo:table-cell number-columns-spanned="3">
 										<fo:block font-family="Helvetica" font-size="13pt" font-weight="bold" letter-spacing="4pt" color="gray" margin-top="16pt"> <!-- Helvetica for letter-spacing working -->
 											<fo:block><xsl:value-of select="$linebreak"/></fo:block>
 											<xsl:value-of select="/itu:itu-standard/itu:bibdata/itu:contributor[itu:role/@type='author']/itu:organization/itu:name"/>
@@ -140,13 +148,13 @@
 									<fo:table-cell>
 										<fo:block>&#xA0;</fo:block>
 									</fo:table-cell>
-									<fo:table-cell padding-top="1mm">
+									<fo:table-cell padding-top="2mm" padding-bottom="-1mm">
 										<fo:block font-family="Helvetica" font-size="36pt" font-weight="bold" margin-top="6pt" letter-spacing="2pt"> <!-- Helvetica for letter-spacing working -->
 											<xsl:value-of select="substring-before(/itu:itu-standard/itu:bibdata/itu:docidentifier, ' ')"/>
 										</fo:block>
 									</fo:table-cell>
-									<fo:table-cell display-align="after">
-										<fo:block font-size="30pt" font-weight="bold" text-align="right"  margin-top="12pt">
+									<fo:table-cell padding-top="1mm" number-columns-spanned="2" padding-bottom="-1mm">
+										<fo:block font-size="30pt" font-weight="bold" text-align="right"  margin-top="12pt" padding="0mm">
 											<xsl:value-of select="substring-after(/itu:itu-standard/itu:bibdata/itu:docidentifier, ' ')"/>
 										</fo:block>
 									</fo:table-cell>
@@ -155,8 +163,8 @@
 									<fo:table-cell>
 										<fo:block>&#xA0;</fo:block>
 									</fo:table-cell>
-									<fo:table-cell font-size="10pt">
-										<fo:block margin-top="6pt">
+									<fo:table-cell font-size="10pt" number-columns-spanned="2" padding-top="1mm">
+										<fo:block>
 											<xsl:text>TELECOMMUNICATION</xsl:text>
 										</fo:block>
 										<fo:block>
@@ -179,30 +187,32 @@
 										</fo:block>
 									</fo:table-cell>
 								</fo:table-row>
-								<fo:table-row height="60mm">
+								<fo:table-row height="59mm">
 									<fo:table-cell>
 										<fo:block>&#xA0;</fo:block>
 									</fo:table-cell>
-									<fo:table-cell font-size="16pt" number-columns-spanned="2" border-bottom="0.5mm solid black"  padding-right="2mm">
-										<fo:block margin-top="6pt">
+									<fo:table-cell font-size="16pt" number-columns-spanned="3" border-bottom="0.5mm solid black" padding-right="2mm">
+										<fo:block >
 											<xsl:variable name="title">
 												<xsl:text>Series </xsl:text>
 												<xsl:value-of select="/itu:itu-standard/itu:bibdata/itu:series[@type = 'main']"/>
 											</xsl:variable>
 											<xsl:value-of select="translate($title, $lower, $upper)"/>
 										</fo:block>
-										<fo:block margin-top="6pt">
-											<xsl:value-of select="/itu:itu-standard/itu:bibdata/itu:series[@type = 'secondary']"/>
-											<xsl:text> — </xsl:text>
-											<xsl:value-of select="/itu:itu-standard/itu:bibdata/itu:series[@type = 'tertiary']"/>
-										</fo:block>
+										<xsl:if test="/itu:itu-standard/itu:bibdata/itu:series">
+											<fo:block margin-top="6pt">
+												<xsl:value-of select="/itu:itu-standard/itu:bibdata/itu:series[@type = 'secondary']"/>
+												<xsl:text> — </xsl:text>
+												<xsl:value-of select="/itu:itu-standard/itu:bibdata/itu:series[@type = 'tertiary']"/>
+											</fo:block>
+										</xsl:if>
 									</fo:table-cell>
 								</fo:table-row>
 								<fo:table-row height="40mm">
 									<fo:table-cell>
 										<fo:block>&#xA0;</fo:block>
 									</fo:table-cell>
-									<fo:table-cell font-size="18pt" number-columns-spanned="2">
+									<fo:table-cell font-size="18pt" number-columns-spanned="3">
 										<fo:block padding-right="2mm" margin-top="6pt">
 											<xsl:if test="not(/itu:itu-standard/itu:bibdata/itu:title[@type = 'annex' and @language = 'en'])">
 												<xsl:attribute name="font-weight">bold</xsl:attribute>
@@ -217,7 +227,7 @@
 									</fo:table-cell>
 								</fo:table-row>
 								<fo:table-row height="40mm">
-									<fo:table-cell number-columns-spanned="2">
+									<fo:table-cell number-columns-spanned="4">
 										<fo:block>&#xA0;</fo:block>
 									</fo:table-cell>
 								</fo:table-row>
@@ -225,7 +235,7 @@
 									<fo:table-cell>
 										<fo:block>&#xA0;</fo:block>
 									</fo:table-cell>
-									<fo:table-cell number-columns-spanned="2">
+									<fo:table-cell number-columns-spanned="3">
 										<fo:block font-size="16pt" margin-top="3pt">
 											<xsl:value-of select="$doctype"/>
 											<xsl:text>&#xA0;&#xA0;</xsl:text>
@@ -242,9 +252,6 @@
 								</fo:table-row>
 							</fo:table-body>
 						</fo:table>
-						<fo:block text-align="right" margin-top="6pt">
-							<fo:external-graphic src="{concat('data:image/png;base64,', normalize-space($Image-Logo))}" width="42.6mm" content-height="17.7mm" content-width="scale-to-fit" scaling="uniform"/>
-						</fo:block>
 					</fo:block-container>
 				</fo:flow>
 			</fo:page-sequence>
