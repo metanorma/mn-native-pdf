@@ -24,6 +24,17 @@
 	</xsl:template>
 	
 	<xsl:template match="*[local-name()='table']">
+	
+		<xsl:variable name="simple-table">
+			<!-- <xsl:copy> -->
+				<xsl:call-template  name="getSimpleTable"/>
+			<!-- </xsl:copy> -->
+		</xsl:variable>
+	
+		<!-- DEBUG -->
+		<!-- SourceTable=<xsl:copy-of select="current()"/>EndSourceTable
+		Simpletable=<xsl:copy-of select="$simple-table"/>EndSimpltable -->
+	
 		<!-- <xsl:variable name="namespace" select="substring-before(name(/*), '-')"/> -->
 		<xsl:if test="$namespace = 'itu'">
 			<fo:block space-before="18pt">&#xA0;</fo:block>				
@@ -74,27 +85,43 @@
 			</xsl:otherwise>
 		</xsl:choose>
 		
+		<xsl:variable name="cols-count" select="count(xalan:nodeset($simple-table)//tr[1]/td)"/>
+		
+		<!-- <xsl:variable name="cols-count">
+			<xsl:choose>
+				<xsl:when test="*[local-name()='thead']">
+					<xsl:call-template name="calculate-columns-numbers">
+						<xsl:with-param name="table-row" select="*[local-name()='thead']/*[local-name()='tr'][1]"/>
+					</xsl:call-template>
+				</xsl:when>
+				<xsl:otherwise>
+					<xsl:call-template name="calculate-columns-numbers">
+						<xsl:with-param name="table-row" select="*[local-name()='tbody']/*[local-name()='tr'][1]"/>
+					</xsl:call-template>
+				</xsl:otherwise>
+			</xsl:choose>
+		</xsl:variable> -->
+		<!-- cols-count=<xsl:copy-of select="$cols-count"/> -->
+		<!-- cols-count2=<xsl:copy-of select="$cols-count2"/> -->
+		
+		
+		
 		<xsl:variable name="colwidths">
-			<xsl:variable name="cols-count">
-				<xsl:choose>
-					<xsl:when test="*[local-name()='thead']">
-						<!-- <xsl:value-of select="count(*[local-name()='thead']/*[local-name()='tr']/*[local-name()='th'])"/> -->
-						<xsl:call-template name="calculate-columns-numbers">
-							<xsl:with-param name="table-row" select="*[local-name()='thead']/*[local-name()='tr'][1]"/>
-						</xsl:call-template>
-					</xsl:when>
-					<xsl:otherwise>
-						<!-- <xsl:value-of select="count(*[local-name()='tbody']/*[local-name()='tr'][1]/*[local-name()='td'])"/> -->
-						<xsl:call-template name="calculate-columns-numbers">
-							<xsl:with-param name="table-row" select="*[local-name()='tbody']/*[local-name()='tr'][1]"/>
-						</xsl:call-template>
-					</xsl:otherwise>
-				</xsl:choose>
-			</xsl:variable>
+			<xsl:call-template name="calculate-column-widths">
+				<xsl:with-param name="cols-count" select="$cols-count"/>
+				<xsl:with-param name="table" select="$simple-table"/>
+			</xsl:call-template>
+		</xsl:variable>
+		
+		<xsl:variable name="colwidths2">
 			<xsl:call-template name="calculate-column-widths">
 				<xsl:with-param name="cols-count" select="$cols-count"/>
 			</xsl:call-template>
 		</xsl:variable>
+		
+		
+		<!-- colwidthsNew=<xsl:copy-of select="$colwidths"/>
+		colwidthsOld=<xsl:copy-of select="$colwidths2"/> -->
 		
 		<xsl:variable name="margin-left">
 			<xsl:choose>
@@ -152,43 +179,75 @@
 	</xsl:template>
 
 	<xsl:template name="calculate-column-widths">
+		<xsl:param name="table"/>
 		<xsl:param name="cols-count"/>
 		<xsl:param name="curr-col" select="1"/>
 		<xsl:param name="width" select="0"/>
 		
 		<xsl:if test="$curr-col &lt;= $cols-count">
 			<xsl:variable name="widths">
-				<xsl:for-each select="*[local-name()='thead']//*[local-name()='tr']">
-					<xsl:variable name="words">
-						<xsl:call-template name="tokenize">
-							<xsl:with-param name="text" select="translate(*[local-name()='th'][$curr-col],'- —', '   ')"/>
-						</xsl:call-template>
-					</xsl:variable>
-					<xsl:variable name="max_length">
-						<xsl:call-template name="max_length">
-							<xsl:with-param name="words" select="xalan:nodeset($words)"/>
-						</xsl:call-template>
-					</xsl:variable>
-					<width>
-						<xsl:value-of select="$max_length"/>
-					</width>
-				</xsl:for-each>
-				<xsl:for-each select="*[local-name()='tbody']//*[local-name()='tr']">
-					<xsl:variable name="words">
-						<xsl:call-template name="tokenize">
-							<xsl:with-param name="text" select="translate(*[local-name()='td'][$curr-col],'- —', '   ')"/>
-						</xsl:call-template>
-					</xsl:variable>
-					<xsl:variable name="max_length">
-						<xsl:call-template name="max_length">
-							<xsl:with-param name="words" select="xalan:nodeset($words)"/>
-						</xsl:call-template>
-					</xsl:variable>
-					<width>
-						<xsl:value-of select="$max_length"/>
-					</width>
+				<xsl:choose>
+					<xsl:when test="not($table)">
+						<xsl:for-each select="*[local-name()='thead']//*[local-name()='tr']">
+							<xsl:variable name="words">
+								<xsl:call-template name="tokenize">
+									<xsl:with-param name="text" select="translate(*[local-name()='th'][$curr-col],'- —', '   ')"/>
+								</xsl:call-template>
+							</xsl:variable>
+							<xsl:variable name="max_length">
+								<xsl:call-template name="max_length">
+									<xsl:with-param name="words" select="xalan:nodeset($words)"/>
+								</xsl:call-template>
+							</xsl:variable>
+							<width>
+								<xsl:value-of select="$max_length"/>
+							</width>
+						</xsl:for-each>
+						<xsl:for-each select="*[local-name()='tbody']//*[local-name()='tr']">
+							<xsl:variable name="words">
+								<xsl:call-template name="tokenize">
+									<xsl:with-param name="text" select="translate(*[local-name()='td'][$curr-col],'- —', '   ')"/>
+								</xsl:call-template>
+							</xsl:variable>
+							<xsl:variable name="max_length">
+								<xsl:call-template name="max_length">
+									<xsl:with-param name="words" select="xalan:nodeset($words)"/>
+								</xsl:call-template>
+							</xsl:variable>
+							<width>
+								<xsl:value-of select="$max_length"/>
+							</width>
+							
+						</xsl:for-each>
+					</xsl:when>
+					<xsl:otherwise>
+						<xsl:for-each select="xalan:nodeset($table)//tr">
+							<xsl:variable name="words">
+								<xsl:call-template name="tokenize">
+									<xsl:with-param name="text" select="translate(td[$curr-col],'- —', '   ')"/>
+								</xsl:call-template>
+							</xsl:variable>
+							<xsl:variable name="max_length">
+								<xsl:call-template name="max_length">
+									<xsl:with-param name="words" select="xalan:nodeset($words)"/>
+								</xsl:call-template>
+							</xsl:variable>
+							<width>
+								<xsl:variable name="divider">
+									<xsl:choose>
+										<xsl:when test="td[$curr-col]/@divide">
+											<xsl:value-of select="td[$curr-col]/@divide"/>
+										</xsl:when>
+										<xsl:otherwise>1</xsl:otherwise>
+									</xsl:choose>
+								</xsl:variable>
+								<xsl:value-of select="$max_length div $divider"/>
+							</width>
+							
+						</xsl:for-each>
 					
-				</xsl:for-each>
+					</xsl:otherwise>
+				</xsl:choose>
 			</xsl:variable>
 
 			
@@ -203,6 +262,7 @@
 			<xsl:call-template name="calculate-column-widths">
 				<xsl:with-param name="cols-count" select="$cols-count"/>
 				<xsl:with-param name="curr-col" select="$curr-col +1"/>
+				<xsl:with-param name="table" select="$table"/>
 			</xsl:call-template>
 		</xsl:if>
 	</xsl:template>
@@ -800,6 +860,8 @@
 	<xsl:template name="add-zero-spaces">
 		<xsl:param name="text" select="."/>
 		<xsl:variable name="zero-space-after-chars">&#x002D;</xsl:variable>
+		<xsl:variable name="zero-space-after-dot">.</xsl:variable>
+		<xsl:variable name="zero-space-after-colon">:</xsl:variable>
 		<xsl:variable name="zero-space">&#x200B;</xsl:variable>
 		<xsl:choose>
 			<xsl:when test="contains($text, $zero-space-after-chars)">
@@ -810,10 +872,184 @@
 					<xsl:with-param name="text" select="substring-after($text, $zero-space-after-chars)"/>
 				</xsl:call-template>
 			</xsl:when>
+			<xsl:when test="contains($text, $zero-space-after-dot)">
+				<xsl:value-of select="substring-before($text, $zero-space-after-dot)"/>
+				<xsl:value-of select="$zero-space-after-dot"/>
+				<xsl:value-of select="$zero-space"/>
+				<xsl:call-template name="add-zero-spaces">
+					<xsl:with-param name="text" select="substring-after($text, $zero-space-after-dot)"/>
+				</xsl:call-template>
+			</xsl:when>
+			<xsl:when test="contains($text, $zero-space-after-colon)">
+				<xsl:value-of select="substring-before($text, $zero-space-after-colon)"/>
+				<xsl:value-of select="$zero-space-after-colon"/>
+				<xsl:value-of select="$zero-space"/>
+				<xsl:call-template name="add-zero-spaces">
+					<xsl:with-param name="text" select="substring-after($text, $zero-space-after-colon)"/>
+				</xsl:call-template>
+			</xsl:when>
 			<xsl:otherwise>
 				<xsl:value-of select="$text"/>
 			</xsl:otherwise>
 		</xsl:choose>
 	</xsl:template>   
+
+	<!-- Table normalization (colspan,rowspan processing for adding TDs) for column width calculation -->
+	<xsl:template name="getSimpleTable">
+		<xsl:variable name="simple-table">
+			<xsl:choose>
+				<xsl:when test="current()//*[local-name()='th'][@colspan] or current()//*[local-name()='td'][@colspan] ">
+					
+					<!-- Step 1. colspan processing -->
+					<xsl:variable name="simple-table-colspan">
+						<tbody>
+							<xsl:apply-templates mode="simple-table-colspan"/>
+						</tbody>
+					</xsl:variable>
+					
+					<!-- Step 2. rowspan processing -->
+					<xsl:variable name="simple-table-rowspan">
+						<xsl:apply-templates select="xalan:nodeset($simple-table-colspan)" mode="simple-table-rowspan"/>
+					</xsl:variable>
+					
+					<xsl:copy-of select="xalan:nodeset($simple-table-rowspan)"/>
+					
+				</xsl:when>
+				<xsl:otherwise>
+					<xsl:copy-of select="current()"/>
+				</xsl:otherwise>
+			</xsl:choose>
+		</xsl:variable>
+		<xsl:copy-of select="$simple-table"/>
+	</xsl:template>
+		
+	<!-- ===================== -->
+	<!-- 1. mode "simple-table-colspan" 
+			1.1. remove thead, tbody, fn
+			1.2. rename th -> td
+			1.3. repeating N td with colspan=N
+			1.4. remove namespace
+			1.5. remove @colspan attribute
+			1.6. add @divide attribute for divide text width in further processing 
+	-->
+	<!-- ===================== -->	
+	<xsl:template match="*[local-name()='thead'] | *[local-name()='tbody']" mode="simple-table-colspan">
+		<xsl:apply-templates mode="simple-table-colspan"/>
+	</xsl:template>
+	<xsl:template match="*[local-name()='fn']" mode="simple-table-colspan"/>
+	
+	<xsl:template match="*[local-name()='th'] | *[local-name()='td']" mode="simple-table-colspan">
+		<xsl:choose>
+			<xsl:when test="@colspan">
+				<xsl:variable name="td">
+					<xsl:element name="td">
+						<xsl:attribute name="divide"><xsl:value-of select="@colspan"/></xsl:attribute>
+						<xsl:apply-templates select="@*" mode="simple-table-colspan"/>
+						<xsl:apply-templates mode="simple-table-colspan"/>
+					</xsl:element>
+				</xsl:variable>
+				<xsl:call-template name="repeatNode">
+					<xsl:with-param name="count" select="@colspan"/>
+					<xsl:with-param name="node" select="$td"/>
+				</xsl:call-template>
+			</xsl:when>
+			<xsl:otherwise>
+				<xsl:element name="td">
+					<xsl:apply-templates select="@*" mode="simple-table-colspan"/>
+					<xsl:apply-templates mode="simple-table-colspan"/>
+				</xsl:element>
+			</xsl:otherwise>
+		</xsl:choose>
+	</xsl:template>
+	
+	<xsl:template match="@colspan" mode="simple-table-colspan"/>
+	
+	<xsl:template match="*[local-name()='tr']" mode="simple-table-colspan">
+		<xsl:element name="tr">
+			<xsl:apply-templates select="@*" mode="simple-table-colspan"/>
+			<xsl:apply-templates mode="simple-table-colspan"/>
+		</xsl:element>
+	</xsl:template>
+	
+	<xsl:template match="@*|node()" mode="simple-table-colspan">
+		<xsl:copy>
+				<xsl:apply-templates select="@*|node()" mode="simple-table-colspan"/>
+		</xsl:copy>
+	</xsl:template>
+	
+	<!-- repeat node 'count' times -->
+	<xsl:template name="repeatNode">
+		<xsl:param name="count"/>
+		<xsl:param name="node"/>
+		
+		<xsl:if test="$count &gt; 0">
+			<xsl:call-template name="repeatNode">
+				<xsl:with-param name="count" select="$count - 1"/>
+				<xsl:with-param name="node" select="$node"/>
+			</xsl:call-template>
+			<xsl:copy-of select="$node"/>
+		</xsl:if>
+	</xsl:template>
+	<!-- End mode simple-table-colspan  -->
+	<!-- ===================== -->
+	<!-- ===================== -->
+	
+	<!-- ===================== -->
+	<!-- 2. mode "simple-table-rowspan" 
+	Row span processing, more information http://andrewjwelch.com/code/xslt/table/table-normalization.html	-->
+	<!-- ===================== -->		
+	<xsl:template match="@*|node()" mode="simple-table-rowspan">
+		<xsl:copy>
+				<xsl:apply-templates select="@*|node()" mode="simple-table-rowspan"/>
+		</xsl:copy>
+	</xsl:template>
+	
+	<xsl:template match="tbody" mode="simple-table-rowspan">
+		<xsl:copy>
+				<xsl:copy-of select="tr[1]" />
+				<xsl:apply-templates select="tr[2]" mode="simple-table-rowspan">
+						<xsl:with-param name="previousRow" select="tr[1]" />
+				</xsl:apply-templates>
+		</xsl:copy>
+	</xsl:template>
+	
+	<xsl:template match="tr" mode="simple-table-rowspan">
+		<xsl:param name="previousRow"/>
+		<xsl:variable name="currentRow" select="." />
+	
+		<xsl:variable name="normalizedTDs">
+				<xsl:for-each select="xalan:nodeset($previousRow)//td">
+						<xsl:choose>
+								<xsl:when test="@rowspan &gt; 1">
+										<xsl:copy>
+												<xsl:attribute name="rowspan">
+														<xsl:value-of select="@rowspan - 1" />
+												</xsl:attribute>
+												<xsl:copy-of select="@*[not(name() = 'rowspan')]" />
+												<xsl:copy-of select="node()" />
+										</xsl:copy>
+								</xsl:when>
+								<xsl:otherwise>
+										<xsl:copy-of select="$currentRow/td[1 + count(current()/preceding-sibling::td[not(@rowspan) or (@rowspan = 1)])]" />
+								</xsl:otherwise>
+						</xsl:choose>
+				</xsl:for-each>
+		</xsl:variable>
+
+		<xsl:variable name="newRow">
+				<xsl:copy>
+						<xsl:copy-of select="$currentRow/@*" />
+						<xsl:copy-of select="xalan:nodeset($normalizedTDs)" />
+				</xsl:copy>
+		</xsl:variable>
+		<xsl:copy-of select="$newRow" />
+
+		<xsl:apply-templates select="following-sibling::tr[1]" mode="simple-table-rowspan">
+				<xsl:with-param name="previousRow" select="$newRow" />
+		</xsl:apply-templates>
+	</xsl:template>
+	<!-- End mode simple-table-rowspan  -->
+	<!-- ===================== -->	
+	<!-- ===================== -->	
 	
 </xsl:stylesheet>
