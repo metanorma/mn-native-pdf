@@ -48,6 +48,7 @@ Manually add the Cambria fonts (`cambria.ttf`, `cambriab.ttf`, `cambriai.ttf`, `
 e.g.
 [source,sh]
 ----
+export MN_PDF_FONT_PATH=$(pwd)/fonts
 mkdir -p ${MN_PDF_FONT_PATH}/truetype/vista/
 
 # Install Cambria
