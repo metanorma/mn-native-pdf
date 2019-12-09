@@ -643,6 +643,9 @@
 		<xsl:if test="not($parent = 'formula' and count(*[local-name()='dt']) = 1)">
 		
 			<fo:block>
+				<xsl:if test="$namespace = 'itu' and local-name(..) = 'li'">
+					<xsl:attribute name="margin-left">-4mm</xsl:attribute>
+				</xsl:if>
 				<xsl:if test="$namespace = 'nist' and not(.//*[local-name()='dt']//*[local-name()='stem'])">
 					<xsl:attribute name="margin-left">5mm</xsl:attribute>
 				</xsl:if>
@@ -650,21 +653,62 @@
 					<xsl:if test="$namespace = 'nist' and not(.//*[local-name()='dt']//*[local-name()='stem'])">
 						<xsl:attribute name="margin-left">-2.5mm</xsl:attribute>
 					</xsl:if>
+					
+					<!-- create virtual html table for dl/[dt and dd] -->
+					<xsl:variable name="html-table">
+						<xsl:element name="{$namespace}:table">
+							<tbody>
+								<xsl:apply-templates mode="dl"/>
+							</tbody>
+						</xsl:element>
+					</xsl:variable>
+					
+					<xsl:variable name="colwidths">
+						<xsl:call-template name="calculate-column-widths">
+							<xsl:with-param name="cols-count" select="2"/>
+							<xsl:with-param name="table" select="$html-table"/>
+						</xsl:call-template>
+					</xsl:variable>
+					<!-- colwidths=<xsl:value-of select="$colwidths"/> -->
+					
 					<fo:table width="95%" table-layout="fixed">
 						<xsl:if test="$key_iso = 'true'">
 							<xsl:attribute name="font-size">10pt</xsl:attribute>
 						</xsl:if>
-						<!-- <xsl:if test="namespace = 'iso' and local-name(..) = 'figure'">
-							<xsl:attribute name="font-size">10pt</xsl:attribute>
-						</xsl:if> -->
 						<xsl:choose>
 							<xsl:when test="ancestor::*[local-name()='dl']"><!-- second level, i.e. inlined table -->
 								<fo:table-column column-width="50%"/>
 								<fo:table-column column-width="50%"/>
 							</xsl:when>
 							<xsl:otherwise>
-								<fo:table-column column-width="15%"/>
-								<fo:table-column column-width="85%"/>
+								<xsl:choose>
+									<!-- <xsl:when test="xalan:nodeset($colwidths)/column[1] div xalan:nodeset($colwidths)/column[2] &gt; 1.7">
+										<fo:table-column column-width="60%"/>
+										<fo:table-column column-width="40%"/>
+									</xsl:when> -->
+									<xsl:when test="xalan:nodeset($colwidths)/column[1] div xalan:nodeset($colwidths)/column[2] &gt; 1.3">
+										<fo:table-column column-width="50%"/>
+										<fo:table-column column-width="50%"/>
+									</xsl:when>
+									<xsl:when test="xalan:nodeset($colwidths)/column[1] div xalan:nodeset($colwidths)/column[2] &gt; 0.5">
+										<fo:table-column column-width="40%"/>
+										<fo:table-column column-width="60%"/>
+									</xsl:when>
+									<xsl:otherwise>
+										<xsl:for-each select="xalan:nodeset($colwidths)//column">
+											<xsl:choose>
+												<xsl:when test=". = 1">
+													<fo:table-column column-width="proportional-column-width(2)"/>
+												</xsl:when>
+												<xsl:otherwise>
+													<fo:table-column column-width="proportional-column-width({.})"/>
+												</xsl:otherwise>
+											</xsl:choose>
+										</xsl:for-each>
+									</xsl:otherwise>
+								</xsl:choose>
+								<!-- <fo:table-column column-width="15%"/>
+								<fo:table-column column-width="85%"/> -->
 							</xsl:otherwise>
 						</xsl:choose>
 						<fo:table-body>
@@ -680,6 +724,14 @@
 	
 	<xsl:template match="*[local-name()='dl']/*[local-name()='note']">
 		<xsl:param name="key_iso"/>
+		
+		<!-- <tr>
+			<td>NOTE</td>
+			<td>
+				<xsl:apply-templates />
+			</td>
+		</tr>
+		 -->
 		<fo:table-row>
 			<fo:table-cell>
 				<fo:block margin-top="6pt">
@@ -697,8 +749,39 @@
 		</fo:table-row>
 	</xsl:template>
 	
+	<xsl:template match="*[local-name()='dt']" mode="dl">
+		<tr>
+			<td>
+				<xsl:apply-templates />
+			</td>
+			<td>
+				<xsl:choose>
+					<xsl:when test="$namespace = 'nist'">
+						<xsl:if test="local-name(*[1]) != 'stem'">
+							<xsl:apply-templates select="following-sibling::*[local-name()='dd'][1]" mode="process"/>
+						</xsl:if>
+					</xsl:when>
+					<xsl:otherwise>
+						<xsl:apply-templates select="following-sibling::*[local-name()='dd'][1]" mode="process"/>
+					</xsl:otherwise>
+				</xsl:choose>
+			</td>
+		</tr>
+		<xsl:if test="local-name(*[1]) = 'stem' and $namespace = 'nist' ">
+			<tr>
+				<td>
+					<xsl:text>&#xA0;</xsl:text>
+				</td>
+				<td>
+					<xsl:apply-templates select="following-sibling::*[local-name()='dd'][1]" mode="dl_process"/>
+				</td>
+			</tr>
+		</xsl:if>
+	</xsl:template>
+	
 	<xsl:template match="*[local-name()='dt']">
 		<xsl:param name="key_iso"/>
+		
 		<fo:table-row>
 			<fo:table-cell>
 				<fo:block margin-top="6pt">
@@ -746,7 +829,10 @@
 		</xsl:if>
 	</xsl:template>
 	
-	
+	<xsl:template match="*[local-name()='dd']" mode="dl"/>
+	<xsl:template match="*[local-name()='dd']" mode="dl_process">
+		<xsl:apply-templates />
+	</xsl:template>
 	
 	<xsl:template match="*[local-name()='dd']"/>
 	<xsl:template match="*[local-name()='dd']" mode="process">

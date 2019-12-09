@@ -1003,7 +1003,9 @@
 		<xsl:element name="{$element-name}">
 			<xsl:attribute name="font-family">Courier</xsl:attribute>
 			<xsl:attribute name="font-size">10pt</xsl:attribute>
-			<xsl:attribute name="text-align">center</xsl:attribute>
+			<xsl:if test="local-name(..) != 'dt'">
+				<xsl:attribute name="text-align">center</xsl:attribute>
+			</xsl:if>
 			<xsl:apply-templates />
 		</xsl:element>
 	</xsl:template>
