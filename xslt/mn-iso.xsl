@@ -35,7 +35,7 @@
 	<xsl:variable name="isPublished">
 		<xsl:variable name="stage" select="number(/iso:iso-standard/iso:bibdata/iso:status/iso:stage)"/>
 		<xsl:choose>
-			<xsl:when test="$stage = 'NaN'">false</xsl:when>
+			<xsl:when test="string($stage) = 'NaN'">false</xsl:when>
 			<xsl:when test="$stage &gt;=60">true</xsl:when>
 			<xsl:otherwise>false</xsl:otherwise>
 		</xsl:choose>
@@ -48,6 +48,8 @@
 	<xsl:variable name="contents">
 		<contents>
 			<xsl:apply-templates select="/iso:iso-standard/iso:preface/node()" mode="contents"/>
+				<!-- <xsl:with-param name="sectionNum" select="'0'"/>
+			</xsl:apply-templates> -->
 			<xsl:apply-templates select="/iso:iso-standard/iso:sections/iso:clause[1]" mode="contents"> <!-- [@id = '_scope'] -->
 				<xsl:with-param name="sectionNum" select="'1'"/>
 			</xsl:apply-templates>
@@ -379,8 +381,10 @@
 							DEBUG
 							contents=<xsl:copy-of select="xalan:nodeset($contents)"/>
 						<xsl:text disable-output-escaping="yes">--&gt;</xsl:text>
+						
 						<xsl:variable name="margin-left">12</xsl:variable>
-						<xsl:for-each select="xalan:nodeset($contents)//item[@display = 'true']">
+						<xsl:for-each select="xalan:nodeset($contents)//item[@display = 'true'][not(@level = 2 and starts-with(@section, '0'))]"><!-- skip clause from preface -->
+							
 							<fo:block>
 								<xsl:if test="@level = 1">
 									<xsl:attribute name="margin-top">5pt</xsl:attribute>
@@ -392,6 +396,7 @@
 									</xsl:if>
 									<xsl:attribute name="provisional-distance-between-starts">
 										<xsl:choose>
+											<!-- skip 0 section without subsections -->
 											<xsl:when test="@section != '' and not(@display-section = 'false')"><xsl:value-of select="$margin-left"/>mm</xsl:when>
 											<xsl:otherwise>0mm</xsl:otherwise>
 										</xsl:choose>
@@ -424,6 +429,7 @@
 									</fo:list-item>
 								</fo:list-block>
 							</fo:block>
+							
 						</xsl:for-each>
 					</fo:block-container>
 					<!-- Foreword, Introduction -->
@@ -442,10 +448,14 @@
 				<xsl:call-template name="insertHeaderFooter"/>
 				<fo:flow flow-name="xsl-region-body">
 				
-					<fo:block-container absolute-position="fixed" left="19mm" top="10mm" height="9mm" width="172mm" border-top="0.5mm solid black" border-bottom="0.5mm solid black" display-align="center">
-						<fo:block font-size="12pt" font-weight="bold">
+					<fo:block-container absolute-position="fixed" left="19mm" top="13mm" height="9mm" width="172mm" border-top="0.5mm solid black" border-bottom="0.5mm solid black" display-align="center" background-color="white">
+						<fo:block text-align-last="justify" font-size="12pt" font-weight="bold">
 							<xsl:variable name="doctype" select="/iso:iso-standard/iso:bibdata/iso:ext/iso:doctype"/>
-							<xsl:value-of select="translate(translate($doctype,'-',' '), $lower,$upper)"/>
+							<fo:inline><xsl:value-of select="translate(translate($doctype,'-',' '), $lower,$upper)"/></fo:inline>
+							<fo:inline keep-together.within-line="always">
+								<fo:leader leader-pattern="space"/>
+								<fo:inline><xsl:value-of select="$ISOname"/></fo:inline>
+							</fo:inline>
 						</fo:block>
 					</fo:block-container>
 					
@@ -456,14 +466,14 @@
 							<xsl:value-of select="$title-en"/>
 						</fo:block>
 						 -->
-						<fo:block font-size="18pt" font-weight="bold" margin-top="6pt" margin-bottom="18pt">
+						<fo:block font-size="18pt" font-weight="bold" margin-top="12pt" margin-bottom="18pt">
 							<fo:block>
 								<xsl:value-of select="$title-intro"/>
 								<xsl:text> — </xsl:text>
 								<xsl:value-of select="$title-main"/>
 								<xsl:if test="$part != ''">
 									<xsl:text> — </xsl:text>
-									<fo:block font-weight="normal" margin-top="6pt">
+									<fo:block font-weight="normal" margin-top="12pt">
 										<xsl:text>Part </xsl:text><xsl:value-of select="$part"/>
 										<xsl:text>:</xsl:text>
 									</fo:block>
@@ -483,7 +493,7 @@
 							<xsl:with-param name="sectionNum" select="'1'"/>
 						</xsl:apply-templates>
 
-						<fo:block space-before="36pt">&#xA0;</fo:block>
+						<fo:block space-before="27pt">&#xA0;</fo:block>
 						 <!-- Normative references  -->
 						<xsl:apply-templates select="/iso:iso-standard/iso:bibliography/iso:references[1]">
 							<xsl:with-param name="sectionNum" select="'2'"/>
@@ -613,7 +623,6 @@
 	</xsl:template>
 	
 	
-
 	<xsl:template match="iso:figure" mode="contents">
 		<item level="" id="{@id}" display="false">
 			<xsl:attribute name="section">
@@ -622,13 +631,6 @@
 		</item>
 	</xsl:template>
 	
-<!-- 	<xsl:template match="iso:table" mode="contents">
-		<item level="" id="{@id}" display="false">
-			<xsl:attribute name="section">
-				<xsl:text>Table </xsl:text><xsl:number format="1"/>
-			</xsl:attribute>
-		</item>
-	</xsl:template> -->
 	
 	<xsl:template match="iso:table" mode="contents">
 		<xsl:param name="sectionNum" />
@@ -663,41 +665,6 @@
 			</xsl:attribute>
 		</item>
 	</xsl:template>
-
-	<xsl:template match="iso:preferred2" mode="contents">
-		<xsl:param name="sectionNum"/>
-		<item id="{../@id}" display="false">
-			<xsl:variable name="value">
-				<xsl:value-of select="$sectionNum"/>.<xsl:number count="iso:term"/>
-			</xsl:variable>
-			<xsl:attribute name="section">
-				<xsl:value-of select="$value"/>
-			</xsl:attribute>
-		</item>
-	</xsl:template>
-
-	
-	<!-- <item id="AnnexA" level="1" display="true" display-section="false" section="Annex A">Annex A (normative) Determination of defects</item> -->
-	<xsl:template match="iso:annex2" mode="contents">
-		<xsl:variable name="sectionNum">
-			<xsl:number format="A" level="any"/>
-		</xsl:variable>
-		<item id="{@id}" level="1" display="true" type="annex" display-section="false">
-			<xsl:variable name="value">
-				<xsl:value-of select="'Annex '"/><xsl:value-of select="$sectionNum"/>
-			</xsl:variable>
-			<xsl:attribute name="section">
-				<xsl:value-of select="$value"/>
-			</xsl:attribute>
-			
-			<xsl:value-of select="iso:title"/>
-		</item>
-		<xsl:apply-templates mode="contents">
-			<xsl:with-param name="sectionNum" select="$sectionNum"/>
-		</xsl:apply-templates>
-	</xsl:template>
-	
-	
 	<!-- ============================= -->
 	<!-- ============================= -->
 	
@@ -874,7 +841,7 @@
 					<xsl:attribute name="margin-top"> <!-- margin-top -->
 						<xsl:choose>
 							<xsl:when test="$level = 2 and ancestor::annex">18pt</xsl:when>
-							<xsl:when test="$level = '' or $level = 1">13.5pt</xsl:when>
+							<xsl:when test="$level = '' or $level = 1">6pt</xsl:when><!-- 13.5pt -->
 							<xsl:otherwise>12pt</xsl:otherwise>
 						</xsl:choose>
 					</xsl:attribute>
@@ -926,8 +893,9 @@
 		<xsl:element name="{$element-name}">
 			<xsl:attribute name="text-align">
 				<xsl:choose>
+					<!-- <xsl:when test="ancestor::iso:preface">justify</xsl:when> -->
 					<xsl:when test="@align"><xsl:value-of select="@align"/></xsl:when>
-					<xsl:otherwise>left</xsl:otherwise><!-- justify -->
+					<xsl:otherwise>justify</xsl:otherwise><!-- left -->
 				</xsl:choose>
 			</xsl:attribute>
 			<xsl:attribute name="margin-bottom">6pt</xsl:attribute>
@@ -1057,7 +1025,7 @@
 	
 	
 	<xsl:template match="iso:bibitem">
-		<fo:block id="{@id}" margin-bottom="12pt">
+		<fo:block id="{@id}" margin-bottom="6pt"> <!-- 12 pt -->
 				<!-- iso:docidentifier -->
 			<xsl:if test="iso:docidentifier">
 				<xsl:choose>
@@ -1080,12 +1048,6 @@
 		</fo:block>
 	</xsl:template>
 	
-	<!-- <xsl:template match="iso:bibitem" mode="contents">
-		<xsl:if test="iso:note">
-			<xsl:variable name=""
-			<item id="_4" level="3" type="annex" display="false" section="B.5.2"/>
-		</xsl:if>
-	</xsl:template> -->
 	
 	<xsl:template match="iso:bibitem/iso:note">
 		<fo:footnote>
@@ -1146,7 +1108,7 @@
 	
 	<xsl:template match="iso:link">
 		<fo:inline>
-			<fo:basic-link external-destination="{@target}">
+			<fo:basic-link external-destination="{@target}" color="blue" text-decoration="underline">
 				<xsl:choose>
 					<xsl:when test="normalize-space(.) = ''">
 						<xsl:value-of select="@target"/>
@@ -1183,6 +1145,14 @@
 		<fo:block>DEPRECATED: <xsl:apply-templates /></fo:block>
 	</xsl:template>
 	
+	<xsl:template match="iso:definition[preceding-sibling::iso:domain]">
+		<xsl:apply-templates />
+	</xsl:template>
+	<xsl:template match="iso:definition[preceding-sibling::iso:domain]/iso:p">
+		<fo:inline> <xsl:apply-templates /></fo:inline>
+		<fo:block>&#xA0;</fo:block>
+	</xsl:template>
+	
 	<xsl:template match="iso:definition">
 		<fo:block margin-bottom="6pt">
 			<xsl:apply-templates />
@@ -1204,6 +1174,10 @@
 		</fo:block>
 	</xsl:template>
 	
+	<xsl:template match="iso:modification">
+		<xsl:text>, modified — </xsl:text>
+		<xsl:apply-templates/>
+	</xsl:template>
 	<xsl:template match="iso:modification/iso:p">
 		<fo:inline><xsl:apply-templates/></fo:inline>
 	</xsl:template>
@@ -1222,7 +1196,7 @@
 	</xsl:template>
 	
 	<xsl:template match="iso:domain">
-		<xsl:text>&lt;</xsl:text><xsl:apply-templates/><xsl:text>&gt;</xsl:text>
+		<fo:inline>&lt;<xsl:apply-templates/>&gt;</fo:inline>
 	</xsl:template>
 	
 	
@@ -1329,7 +1303,7 @@
 	</xsl:template>
 	
 	<xsl:template match="iso:appendix//iso:example">
-		<fo:block font-size="10pt" font-family="Courier" margin-bottom="12pt">
+		<fo:block font-size="10pt" margin-bottom="12pt">
 			<xsl:text>EXAMPLE</xsl:text>
 			<xsl:if test="iso:name">
 				<xsl:text> — </xsl:text><xsl:apply-templates select="iso:name" mode="process"/>
@@ -1385,13 +1359,18 @@
 	
 	<xsl:template match="iso:xref">
 		<fo:basic-link internal-destination="{@target}">
+			<xsl:variable name="section" select="xalan:nodeset($contents)//item[@id = current()/@target]/@section"/>
+			<xsl:if test="not(starts-with($section, 'Figure') or starts-with($section, 'Table'))">
+				<xsl:attribute name="color">blue</xsl:attribute>
+				<xsl:attribute name="text-decoration">underline</xsl:attribute>
+			</xsl:if>
 			<xsl:variable name="type" select="xalan:nodeset($contents)//item[@id = current()/@target]/@type"/>
 			<xsl:variable name="root" select="xalan:nodeset($contents)//item[@id = current()/@target]/@root"/>
 			<xsl:choose>
 				<xsl:when test="$type = 'clause' and $root != 'annex'">Clause </xsl:when><!-- and not (ancestor::annex) -->
 				<xsl:otherwise></xsl:otherwise> <!-- <xsl:value-of select="$type"/> -->
 			</xsl:choose>
-			<xsl:value-of select="xalan:nodeset($contents)//item[@id = current()/@target]/@section"/>
+			<xsl:value-of select="$section"/>
       </fo:basic-link>
 	</xsl:template>
 
@@ -1429,6 +1408,10 @@
 				<xsl:attribute name="font-size">80%</xsl:attribute>
 				<xsl:attribute name="keep-with-previous.within-line">always</xsl:attribute>
 				<xsl:attribute name="vertical-align">super</xsl:attribute>
+			</xsl:if>
+			<xsl:if test="@type = 'inline'">
+				<xsl:attribute name="color">blue</xsl:attribute>
+				<xsl:attribute name="text-decoration">underline</xsl:attribute>
 			</xsl:if>
 			<!-- <xsl:if test="@type = 'inline'">
 				<xsl:attribute name="text-decoration">underline</xsl:attribute>
@@ -1476,12 +1459,12 @@
 				<fo:table-column column-width="5%"/>
 				<fo:table-body>
 					<fo:table-row>
-						<fo:table-cell>
+						<fo:table-cell display-align="center">
 							<fo:block text-align="left" margin-left="5mm">
 								<xsl:apply-templates />
 							</fo:block>
 						</fo:table-cell>
-						<fo:table-cell>
+						<fo:table-cell display-align="center">
 							<fo:block text-align="right">
 								<xsl:choose>
 									<xsl:when test="ancestor::iso:annex">
@@ -1511,7 +1494,7 @@
 		<xsl:param name="font-weight" select="'bold'"/>
 		<fo:static-content flow-name="header-even">
 			<fo:block-container height="24mm" display-align="before">
-				<fo:block font-weight="bold" padding-top="12.5mm"><xsl:value-of select="$ISOname"/></fo:block>
+				<fo:block  font-size="12pt" font-weight="bold" padding-top="12.5mm"><xsl:value-of select="$ISOname"/></fo:block>
 			</fo:block-container>
 		</fo:static-content>
 		<fo:static-content flow-name="footer-even">
@@ -1521,7 +1504,7 @@
 					<fo:table-column column-width="50%"/>
 					<fo:table-body>
 						<fo:table-row>
-							<fo:table-cell padding-top="0mm"  font-size="11pt" font-weight="{$font-weight}">
+							<fo:table-cell padding-top="0mm" font-size="11pt" font-weight="{$font-weight}">
 								<fo:block><fo:page-number/></fo:block>
 							</fo:table-cell>
 							<fo:table-cell padding-top="0mm"  font-size="9pt">
@@ -1534,7 +1517,7 @@
 		</fo:static-content>
 		<fo:static-content flow-name="header-odd">
 			<fo:block-container height="24mm" display-align="before">
-				<fo:block font-weight="bold" text-align="right" padding-top="12.5mm"><xsl:value-of select="$ISOname"/></fo:block>
+				<fo:block  font-size="12pt" font-weight="bold" text-align="right" padding-top="12.5mm"><xsl:value-of select="$ISOname"/></fo:block>
 			</fo:block-container>
 		</fo:static-content>
 		<fo:static-content flow-name="footer-odd">
@@ -1572,7 +1555,9 @@
 		<xsl:variable name="level_total" select="count(ancestor::*)"/>
 		<xsl:variable name="level">
 			<xsl:choose>
-				<xsl:when test="ancestor::iso:preface">1</xsl:when>
+				<xsl:when test="ancestor::iso:preface">
+					<xsl:value-of select="$level_total - 2"/>
+				</xsl:when>
 				<xsl:when test="ancestor::iso:sections">
 					<xsl:value-of select="$level_total - 2"/>
 				</xsl:when>
@@ -1648,6 +1633,20 @@
 									<xsl:number format="A.1" level="multiple" count="iso:annex | iso:clause"/>
 								</xsl:otherwise>
 							</xsl:choose>
+						</xsl:otherwise>
+					</xsl:choose>
+				</xsl:when>
+				<xsl:when test="ancestor::iso:preface"> <!-- if preface and there is clause(s) -->
+					<xsl:choose>
+						<xsl:when test="$level = 1 and  ..//iso:clause">0</xsl:when>
+						<xsl:when test="$level &gt;= 2">
+							<xsl:variable name="num">
+								<xsl:number format=".1" level="multiple" count="iso:clause"/>
+							</xsl:variable>
+							<xsl:value-of select="concat('0', $num)"/>
+						</xsl:when>
+						<xsl:otherwise>
+							<!-- z<xsl:value-of select="$sectionNum"/>z -->
 						</xsl:otherwise>
 					</xsl:choose>
 				</xsl:when>
