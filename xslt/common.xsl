@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:fo="http://www.w3.org/1999/XSL/Format" xmlns:iso="http://riboseinc.com/isoxml" xmlns:itu="https://open.ribose.com/standards/itu" xmlns:mathml="http://www.w3.org/1998/Math/MathML" xmlns:xalan="http://xml.apache.org/xalan" version="1.0">
+<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:fo="http://www.w3.org/1999/XSL/Format" xmlns:iso="http://riboseinc.com/isoxml" xmlns:itu="https://open.ribose.com/standards/itu" xmlns:nist="http://www.nist.gov/metanorma" xmlns:mathml="http://www.w3.org/1998/Math/MathML" xmlns:xalan="http://xml.apache.org/xalan" version="1.0">
 
 	
 	<xsl:variable name="lower">abcdefghijklmnopqrstuvwxyz</xsl:variable> 
@@ -404,6 +404,9 @@
 
 	<xsl:template match="*[local-name()='th']">
 		<fo:table-cell text-align="{@align}" border="solid black 1pt" padding-left="1mm" display-align="center">
+			<xsl:if test="$namespace = 'iso'">
+				<xsl:attribute name="padding-top">1mm</xsl:attribute>
+			</xsl:if>
 			<xsl:if test="$namespace = 'nist'">
 				<xsl:attribute name="text-align">center</xsl:attribute>
 				<xsl:attribute name="background-color">black</xsl:attribute>
@@ -428,6 +431,9 @@
 	
 	<xsl:template match="*[local-name()='td']">
 		<fo:table-cell text-align="{@align}" display-align="center" border="solid black 1pt" padding-left="1mm">
+			<xsl:if test="$namespace = 'iso' and ancestor::*[local-name() = 'thead']">
+				<xsl:attribute name="padding-top">0.5mm</xsl:attribute>
+			</xsl:if>
 			<xsl:if test="$namespace = 'iso' and ancestor::*[local-name() = 'tfoot']">
 				<xsl:attribute name="border">solid black 0</xsl:attribute>
 			</xsl:if>
@@ -582,8 +588,14 @@
 	<!-- *[local-name()='table']// -->
 	<xsl:template match="*[local-name()='fn']">
 		<!-- <xsl:variable name="namespace" select="substring-before(name(/*), '-')"/> -->
-		<fo:inline font-size="80%" keep-with-previous.within-line="always" vertical-align="super">
+		<fo:inline font-size="80%" keep-with-previous.within-line="always">
+			<xsl:if test="$namespace = 'iso' and ancestor::*[local-name()='td']">
+				<xsl:attribute name="font-weight">normal</xsl:attribute>
+				<!-- <xsl:attribute name="alignment-baseline">hanging</xsl:attribute> -->
+				<xsl:attribute name="baseline-shift">15%</xsl:attribute>
+			</xsl:if>
 			<xsl:if test="$namespace = 'itu' or $namespace = 'nist'">
+				<xsl:attribute name="vertical-align">super</xsl:attribute>
 				<xsl:attribute name="color">blue</xsl:attribute>
 			</xsl:if>
 			<xsl:if test="$namespace = 'nist'">
@@ -621,10 +633,10 @@
 					<xsl:apply-templates select="*[local-name()='dd']/*" mode="inline"/>
 				</fo:block>
 			</xsl:when>
-			<xsl:when test="$parent = 'formula'">
+			<xsl:when test="$parent = 'formula'"> <!-- a few components -->
 				<fo:block margin-bottom="12pt">
 					<xsl:if test="$namespace = 'iso'">
-						<xsl:attribute name="margin-bottom">0</xsl:attribute>
+						<xsl:attribute name="margin-bottom">6pt</xsl:attribute>
 					</xsl:if>
 					<xsl:text>where</xsl:text>
 				</fo:block>
@@ -640,9 +652,12 @@
 			</xsl:when>
 		</xsl:choose>
 		
+		<!-- a few components -->
 		<xsl:if test="not($parent = 'formula' and count(*[local-name()='dt']) = 1)">
-		
 			<fo:block>
+				<xsl:if test="$namespace ='iso' and $parent = 'formula'">
+					<xsl:attribute name="margin-left">4mm</xsl:attribute>
+				</xsl:if>
 				<xsl:if test="$namespace = 'itu' and local-name(..) = 'li'">
 					<xsl:attribute name="margin-left">-4mm</xsl:attribute>
 				</xsl:if>
@@ -674,6 +689,9 @@
 					<fo:table width="95%" table-layout="fixed">
 						<xsl:if test="$key_iso = 'true'">
 							<xsl:attribute name="font-size">10pt</xsl:attribute>
+						</xsl:if>
+						<xsl:if test="$key_iso = 'true' and $parent = 'formula'">
+							<xsl:attribute name="font-size">11pt</xsl:attribute>
 						</xsl:if>
 						<xsl:choose>
 							<xsl:when test="ancestor::*[local-name()='dl']"><!-- second level, i.e. inlined table -->
