@@ -1,6 +1,10 @@
 name: ubuntu
 
-on: [push, pull_request]
+on:
+  push:
+    branches:
+      - master
+  pull_request:
 
 jobs:
   build:
@@ -68,9 +72,10 @@ jobs:
     - uses: actions/download-artifact@master
       with:
         name: published-ubuntu
+        path: published
     - name: deploy-to-gh
       env:
-        GITHUB_REPOSITORY: ${{ secrets.GITHUB_REPOSITORY }}
+        # GITHUB_REPOSITORY: ${{ secrets.GITHUB_REPOSITORY }}
         GH_DEPLOY_KEY: ${{ secrets.GH_DEPLOY_KEY }}
         GIT_SSH_COMMAND: "ssh -o StrictHostKeyChecking=no"
       run: |
