@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:fo="http://www.w3.org/1999/XSL/Format" xmlns:itu="https://open.ribose.com/standards/itu" xmlns:mathml="http://www.w3.org/1998/Math/MathML" xmlns:xalan="http://xml.apache.org/xalan" version="1.0">
+<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:fo="http://www.w3.org/1999/XSL/Format" xmlns:itu="https://open.ribose.com/standards/itu" xmlns:mathml="http://www.w3.org/1998/Math/MathML" xmlns:xalan="http://xml.apache.org/xalan" xmlns:fox="http://xmlgraphics.apache.org/fop/extensions" version="1.0">
 
 	<xsl:output method="xml" encoding="UTF-8" indent="yes"/>
 
@@ -52,9 +52,13 @@
 			
 		</contents>
 	</xsl:variable>
+
+	<xsl:variable name="lang">
+		<xsl:call-template name="getLang"/>
+	</xsl:variable>
 	
 	<xsl:template match="/">
-		<fo:root xmlns:fo="http://www.w3.org/1999/XSL/Format" font-family="Times New Roman, FreeSerif, NanumGothic, DroidSans" font-size="12pt">
+		<fo:root xmlns:fo="http://www.w3.org/1999/XSL/Format" font-family="Times New Roman, FreeSerif, NanumGothic, DroidSans" font-size="12pt" xml:lang="{$lang}">
 			<fo:layout-master-set>
 				<!-- cover page -->
 				<fo:simple-page-master master-name="cover-page" page-width="{$pageWidth}" page-height="{$pageHeight}">
@@ -111,19 +115,57 @@
 				</fo:page-sequence-master>
 			</fo:layout-master-set>
 
+			<fo:declarations>
+				<pdf:catalog xmlns:pdf="http://xmlgraphics.apache.org/fop/extensions/pdf">
+						<pdf:dictionary type="normal" key="ViewerPreferences">
+							<pdf:boolean key="DisplayDocTitle">true</pdf:boolean>
+						</pdf:dictionary>
+					</pdf:catalog>
+				<x:xmpmeta xmlns:x="adobe:ns:meta/">
+					<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+						<rdf:Description rdf:about="" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:pdf="http://ns.adobe.com/pdf/1.3/">
+						<!-- Dublin Core properties go here -->
+							<dc:title><xsl:value-of select="/itu:itu-standard/itu:bibdata/itu:title[@type='main']"/></dc:title>
+							<dc:creator><xsl:value-of select="/itu:iso-standard/itu:bibdata/itu:contributor[itu:role/@type='author']/itu:organization/itu:name"/></dc:creator>
+							<dc:description>
+								<xsl:variable name="abstract">
+									<xsl:copy-of select="/itu:itu-standard/itu:bibdata/itu:abstract//text()"/>
+								</xsl:variable>
+								<xsl:value-of select="normalize-space($abstract)"/>
+							</dc:description>
+							<pdf:Keywords>
+								<xsl:for-each select="/itu:itu-standard/itu:bibdata//itu:keyword">
+								<xsl:sort data-type="text" order="ascending"/>
+								<xsl:apply-templates/>
+								<xsl:choose>
+									<xsl:when test="position() != last()">, </xsl:when>
+									<xsl:otherwise>.</xsl:otherwise>
+								</xsl:choose>
+							</xsl:for-each>
+							</pdf:Keywords>
+						</rdf:Description>
+						<rdf:Description rdf:about=""
+								xmlns:xmp="http://ns.adobe.com/xap/1.0/">
+							<!-- XMP properties go here -->
+							<xmp:CreatorTool></xmp:CreatorTool>
+						</rdf:Description>
+					</rdf:RDF>
+				</x:xmpmeta>
+			</fo:declarations>
+			
 			<!-- cover page -->
 			<fo:page-sequence master-reference="cover-page" force-page-count="no-force">
 				<fo:flow flow-name="xsl-region-body">
 				
 					<fo:block-container absolute-position="fixed" left="148mm" top="265mm">
 						<fo:block>
-							<fo:external-graphic src="{concat('data:image/png;base64,', normalize-space($Image-Logo))}" width="42.6mm" content-height="17.7mm" content-width="scale-to-fit" scaling="uniform"/>
+							<fo:external-graphic src="{concat('data:image/png;base64,', normalize-space($Image-Logo))}" width="42.6mm" content-height="17.7mm" content-width="scale-to-fit" scaling="uniform" fox:alt-text="Image {@alt}"/>
 						</fo:block>
 					</fo:block-container>
 				
 					<fo:block-container absolute-position="fixed" left="-7mm" top="0">
 						<fo:block>
-							<fo:external-graphic src="{concat('data:image/png;base64,', normalize-space($Image-Fond-Rec))}" width="43.6mm" content-height="299.2mm" content-width="scale-to-fit" scaling="uniform"/>
+							<fo:external-graphic src="{concat('data:image/png;base64,', normalize-space($Image-Fond-Rec))}" width="43.6mm" content-height="299.2mm" content-width="scale-to-fit" scaling="uniform" fox:alt-text="Image {@alt}"/>
 						</fo:block>
 					</fo:block-container>
 					<fo:block-container font-family="Arial">
@@ -138,9 +180,11 @@
 										<fo:block>&#xA0;</fo:block>
 									</fo:table-cell>
 									<fo:table-cell number-columns-spanned="3">
-										<fo:block font-family="Helvetica" font-size="13pt" font-weight="bold" letter-spacing="4pt" color="gray" margin-top="16pt"> <!-- Helvetica for letter-spacing working -->
+										<fo:block font-family="Arial" font-size="13pt" font-weight="bold" color="gray" margin-top="16pt"> <!-- letter-spacing="4pt", Helvetica for letter-spacing working -->
 											<fo:block><xsl:value-of select="$linebreak"/></fo:block>
-											<xsl:value-of select="/itu:itu-standard/itu:bibdata/itu:contributor[itu:role/@type='author']/itu:organization/itu:name"/>
+											<xsl:call-template name="addLetterSpacing">
+												<xsl:with-param name="text" select="/itu:itu-standard/itu:bibdata/itu:contributor[itu:role/@type='author']/itu:organization/itu:name"/>
+											</xsl:call-template>
 										</fo:block>
 									</fo:table-cell>
 								</fo:table-row>
@@ -149,7 +193,7 @@
 										<fo:block>&#xA0;</fo:block>
 									</fo:table-cell>
 									<fo:table-cell padding-top="2mm" padding-bottom="-1mm">
-										<fo:block font-family="Helvetica" font-size="36pt" font-weight="bold" margin-top="6pt" letter-spacing="2pt"> <!-- Helvetica for letter-spacing working -->
+										<fo:block font-family="Arial" font-size="36pt" font-weight="bold" margin-top="6pt" letter-spacing="2pt"> <!-- Helvetica for letter-spacing working -->
 											<xsl:value-of select="substring-before(/itu:itu-standard/itu:bibdata/itu:docidentifier, ' ')"/>
 										</fo:block>
 									</fo:table-cell>
@@ -389,7 +433,7 @@
 															<xsl:if test="@type = 'annex'">
 																<xsl:attribute name="font-weight">bold</xsl:attribute>
 															</xsl:if>
-															<fo:basic-link internal-destination="{@id}">
+															<fo:basic-link internal-destination="{@id}" fox:alt-text="text()">
 																<xsl:value-of select="text()"/>
 																<fo:inline keep-together.within-line="always">
 																	<fo:leader leader-pattern="dots"/>
@@ -974,7 +1018,7 @@
 				<xsl:number level="any" count="itu:p/itu:fn"/>
 			</xsl:variable>
 			<fo:inline font-size="60%" keep-with-previous.within-line="always" vertical-align="super">
-				<fo:basic-link internal-destination="footnote_{@reference}_{$number}">
+				<fo:basic-link internal-destination="footnote_{@reference}_{$number}" fox:alt-text="footnote {@reference} {$number}">
 					<!-- <xsl:value-of select="@reference"/> -->
 					<xsl:value-of select="$number + count(//itu:bibitem/itu:note)"/>
 				</fo:basic-link>
@@ -1047,7 +1091,7 @@
 	<xsl:template match="itu:image">
 		<fo:block text-align="center">
 			<!-- <fo:external-graphic src="{@src}" content-width="75%" content-height="scale-to-fit" scaling="uniform"/> -->
-			<fo:external-graphic src="{@src}"
+			<fo:external-graphic src="{@src}"  fox:alt-text="Image {@alt}"
 				width="75%"
 				content-height="100%"
 				content-width="scale-to-fit" scaling="uniform"/>
@@ -1183,7 +1227,7 @@
 				<xsl:attribute name="font-family">Arial</xsl:attribute>
 				<xsl:attribute name="font-size">8pt</xsl:attribute>
 			</xsl:if>
-			<fo:basic-link external-destination="{@target}">
+			<fo:basic-link external-destination="{@target}" fox:alt-text="{@target}">
 				<xsl:choose>
 					<xsl:when test="normalize-space(.) = ''">
 						<xsl:value-of select="@target"/>
@@ -1257,7 +1301,7 @@
 			MathML: 
 		</fo:inline> -->
 		<fo:inline font-family="Cambria Math">
-			<fo:instream-foreign-object> 
+			<fo:instream-foreign-object fox:alt-text="Math"> 
 				<xsl:copy-of select="."/>
 			</fo:instream-foreign-object>
 		</fo:inline>
@@ -1270,7 +1314,7 @@
 		
 		<xsl:variable name="text" select="xalan:nodeset($contents)//item[@id = current()/@target]/text()"/>
 		
-		<fo:basic-link internal-destination="{@target}" color="blue" text-decoration="underline">
+		<fo:basic-link internal-destination="{@target}" color="blue" text-decoration="underline" fox:alt-text="{@target}">
 			<xsl:variable name="type" select="xalan:nodeset($contents)//item[@id = current()/@target]/@type"/>
 			<xsl:choose>
 				<xsl:when test="$type = 'clause'">Clause </xsl:when><!-- and not (ancestor::annex) -->
@@ -1376,7 +1420,7 @@
 				<xsl:attribute name="keep-with-previous.within-line">always</xsl:attribute>
 				<xsl:attribute name="vertical-align">super</xsl:attribute>
 			</xsl:if>
-			<fo:basic-link internal-destination="{@bibitemid}" color="blue" text-decoration="underline">
+			<fo:basic-link internal-destination="{@bibitemid}" color="blue" text-decoration="underline" fox:alt-text="{@citeas}">
 				<xsl:text>[</xsl:text><xsl:value-of select="@citeas" disable-output-escaping="yes"/><xsl:text>]</xsl:text>
 				<xsl:if test="itu:locality">
 					<xsl:text>, </xsl:text>
@@ -2001,6 +2045,17 @@
 			</xsl:choose>
 		</xsl:variable>
 		<xsl:value-of select="$section"/>
+	</xsl:template>
+
+	<xsl:template name="addLetterSpacing">
+		<xsl:param name="text"/>
+		<xsl:if test="string-length($text) &gt; 0">
+			<xsl:variable name="char" select="substring($text, 1, 1)"/>
+			<xsl:value-of select="$char"/><fo:inline font-size="15pt"><xsl:value-of select="'&#xA0;'"/></fo:inline>
+			<xsl:call-template name="addLetterSpacing">
+				<xsl:with-param name="text" select="substring($text, 2)"/>
+			</xsl:call-template>
+		</xsl:if>
 	</xsl:template>
 	
 </xsl:stylesheet>
