@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:fo="http://www.w3.org/1999/XSL/Format" xmlns:iso="http://riboseinc.com/isoxml" xmlns:mathml="http://www.w3.org/1998/Math/MathML" xmlns:xalan="http://xml.apache.org/xalan" version="1.0">
+<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:fo="http://www.w3.org/1999/XSL/Format" xmlns:iso="http://riboseinc.com/isoxml" xmlns:mathml="http://www.w3.org/1998/Math/MathML" xmlns:xalan="http://xml.apache.org/xalan" xmlns:fox="http://xmlgraphics.apache.org/fop/extensions" version="1.0">
 
-	<xsl:output method="xml" encoding="UTF-8" indent="yes"/>
+	<xsl:output method="xml" encoding="UTF-8" indent="no"/>
 	
 	<xsl:include href="./common.xsl"/>
 	
@@ -69,8 +69,12 @@
 		</contents>
 	</xsl:variable>
 	
+	<xsl:variable name="lang">
+		<xsl:call-template name="getLang"/>
+	</xsl:variable>
+	
 	<xsl:template match="/">
-		<fo:root xmlns:fo="http://www.w3.org/1999/XSL/Format" font-family="Cambria, FreeSerif, HanSans, NanumGothic, DroidSans" font-size="11pt"> <!-- alternatives: SimSun -->
+		<fo:root xmlns:fo="http://www.w3.org/1999/XSL/Format" font-family="Cambria, FreeSerif, HanSans, NanumGothic, DroidSans" font-size="11pt" xml:lang="{$lang}"> <!-- alternatives: SimSun -->
 			<fo:layout-master-set>
 				<!-- cover page -->
 				<fo:simple-page-master master-name="cover-page" page-width="{$pageWidth}" page-height="{$pageHeight}">
@@ -121,6 +125,34 @@
 				</fo:page-sequence-master>
 			</fo:layout-master-set>
 
+			<fo:declarations>
+				<pdf:catalog xmlns:pdf="http://xmlgraphics.apache.org/fop/extensions/pdf">
+						<pdf:dictionary type="normal" key="ViewerPreferences">
+							<pdf:boolean key="DisplayDocTitle">true</pdf:boolean>
+						</pdf:dictionary>
+					</pdf:catalog>
+				<x:xmpmeta xmlns:x="adobe:ns:meta/">
+					<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+						<rdf:Description rdf:about="" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:pdf="http://ns.adobe.com/pdf/1.3/">
+						<!-- Dublin Core properties go here -->
+							<dc:title><xsl:value-of select="$title-en"/></dc:title>
+							<dc:creator><xsl:value-of select="/iso-standard/bibdata/contributor[role/@type='author']/organization/name"/></dc:creator>
+							<dc:description>
+								<xsl:variable name="abstract">
+									<xsl:copy-of select="/iso:iso-standard/iso:bibliography/iso:references/iso:bibitem/iso:abstract//text()"/>
+								</xsl:variable>
+								<xsl:value-of select="normalize-space($abstract)"/>
+							</dc:description>
+							<pdf:Keywords></pdf:Keywords>
+						</rdf:Description>
+						<rdf:Description rdf:about=""
+								xmlns:xmp="http://ns.adobe.com/xap/1.0/">
+							<!-- XMP properties go here -->
+							<xmp:CreatorTool></xmp:CreatorTool>
+						</rdf:Description>
+					</rdf:RDF>
+				</x:xmpmeta>
+			</fo:declarations>
 			
 			<!-- cover page -->
 			<xsl:choose>
@@ -134,7 +166,7 @@
 									<fo:table-row height="32mm">
 										<fo:table-cell display-align="center">
 											<fo:block text-align="left">
-												<fo:external-graphic src="{concat('data:image/png;base64,', normalize-space($Image-ISO-Logo))}" width="21mm" content-height="21mm" content-width="scale-to-fit" scaling="uniform"/>
+												<fo:external-graphic src="{concat('data:image/png;base64,', normalize-space($Image-ISO-Logo))}" width="21mm" content-height="21mm" content-width="scale-to-fit" scaling="uniform" fox:alt-text="Image {@alt}"/>
 											</fo:block>
 										</fo:table-cell>
 										<fo:table-cell  display-align="center">
@@ -355,7 +387,7 @@
 					
 						<fo:block-container height="250mm" display-align="after">
 							<fo:block>
-								<fo:external-graphic src="{concat('data:image/png;base64,', normalize-space($Image-Attention))}" width="14mm" content-height="13mm" content-width="scale-to-fit" scaling="uniform"/>
+								<fo:external-graphic src="{concat('data:image/png;base64,', normalize-space($Image-Attention))}" width="14mm" content-height="13mm" content-width="scale-to-fit" scaling="uniform" fox:alt-text="Image {@alt}"/>
 								<fo:inline padding-left="5mm" font-size="12pt" font-weight="bold">COPYRIGHT PROTECTED DOCUMENT</fo:inline>
 								<!-- <xsl:value-of select="$linebreak"/> -->
 								<fo:block>&#xA0;</fo:block>
@@ -411,7 +443,7 @@
 										</fo:list-item-label>
 											<fo:list-item-body start-indent="body-start()">
 												<fo:block text-align-last="justify" margin-left="12mm" text-indent="-12mm">
-													<fo:basic-link internal-destination="{@id}">
+													<fo:basic-link internal-destination="{@id}" fox:alt-text="{text()}">
 														<xsl:if test="@section and @display-section = 'false'">
 															<xsl:value-of select="@section"/><xsl:text> </xsl:text>
 														</xsl:if>
@@ -925,7 +957,7 @@
 				<xsl:number level="any" count="iso:p/iso:fn"/>
 			</xsl:variable>
 			<fo:inline font-size="80%" keep-with-previous.within-line="always" vertical-align="super">
-				<fo:basic-link internal-destination="footnote_{@reference}">
+				<fo:basic-link internal-destination="footnote_{@reference}" fox:alt-text="footnote {@reference}">
 					<!-- <xsl:value-of select="@reference"/> -->
 					<xsl:value-of select="$number + count(//iso:bibitem/iso:note)"/><xsl:text>)</xsl:text>
 				</fo:basic-link>
@@ -962,7 +994,7 @@
 	<xsl:template match="iso:image">
 		<fo:block-container text-align="center">
 			<fo:block>
-				<fo:external-graphic src="{@src}"/>
+				<fo:external-graphic src="{@src}" fox:alt-text="Image {@alt}"/>
 			</fo:block>
 			<fo:block font-weight="bold" margin-top="12pt" margin-bottom="12pt">Figure <xsl:number format="1" level="any"/></fo:block>
 		</fo:block-container>
@@ -1017,7 +1049,7 @@
 	
 	<xsl:template match="iso:figure/iso:image">
 		<fo:block text-align="center">
-			<fo:external-graphic src="{@src}" content-width="100%" content-height="scale-to-fit" scaling="uniform"/> <!-- content-width="75%"  -->
+			<fo:external-graphic src="{@src}" content-width="100%" content-height="scale-to-fit" scaling="uniform" fox:alt-text="Image {@alt}"/> <!-- content-width="75%"  -->
 		</fo:block>
 	</xsl:template>
 	
@@ -1055,7 +1087,7 @@
 				<xsl:number level="any" count="iso:bibitem/iso:note"/>
 			</xsl:variable>
 			<fo:inline font-size="85%" keep-with-previous.within-line="always" vertical-align="super"> <!--60% -->
-				<fo:basic-link internal-destination="footnote_{../@id}">
+				<fo:basic-link internal-destination="footnote_{../@id}" fox:alt-text="footnote {$number}">
 					<xsl:value-of select="$number"/><xsl:text>)</xsl:text>
 				</fo:basic-link>
 			</fo:inline>
@@ -1108,7 +1140,7 @@
 	
 	<xsl:template match="iso:link">
 		<fo:inline>
-			<fo:basic-link external-destination="{@target}" color="blue" text-decoration="underline">
+			<fo:basic-link external-destination="{@target}" color="blue" text-decoration="underline" fox:alt-text="{@target}">
 				<xsl:choose>
 					<xsl:when test="normalize-space(.) = ''">
 						<xsl:value-of select="@target"/>
@@ -1162,7 +1194,7 @@
 	<xsl:template match="iso:termsource">
 		<fo:block margin-bottom="8pt" keep-with-previous="always">
 			<!-- Example: [SOURCE: ISO 5127:2017, 3.1.6.02] -->
-			<fo:basic-link internal-destination="{iso:origin/@bibitemid}">
+			<fo:basic-link internal-destination="{iso:origin/@bibitemid}" fox:alt-text="{iso:origin/@citeas}">
 				<xsl:text>[SOURCE: </xsl:text>
 				<xsl:value-of select="iso:origin/@citeas"/>
 				<xsl:if test="iso:origin/iso:locality/iso:referenceFrom">
@@ -1285,7 +1317,7 @@
 	</xsl:template>
 	
 	<xsl:template match="iso:source">
-		<fo:basic-link internal-destination="{@bibitemid}">
+		<fo:basic-link internal-destination="{@bibitemid}" fox:alt-text="{@citeas}">
 			<xsl:value-of select="@citeas" disable-output-escaping="yes"/>
 			<xsl:if test="iso:locality">
 				<xsl:text>, </xsl:text>
@@ -1321,7 +1353,7 @@
 		<fo:basic-link internal-destination="{@target}"><fo:inline>&lt;<xsl:apply-templates />&gt;</fo:inline></fo:basic-link>
 	</xsl:template> -->
 	<xsl:template match="iso:callout">		
-			<fo:basic-link internal-destination="{@target}">&lt;<xsl:apply-templates />&gt;</fo:basic-link>
+			<fo:basic-link internal-destination="{@target}" fox:alt-text="{@target}">&lt;<xsl:apply-templates />&gt;</fo:basic-link>
 	</xsl:template>
 	
 	<xsl:template match="iso:annotation">
@@ -1352,13 +1384,13 @@
 		<!-- <fo:inline font-size="12pt" color="red">
 			MathML issue! <xsl:apply-templates />
 		</fo:inline> -->
-		<fo:instream-foreign-object>
+		<fo:instream-foreign-object fox:alt-text="Math">
 			<xsl:copy-of select="."/>
 		</fo:instream-foreign-object>
 	</xsl:template>
 	
 	<xsl:template match="iso:xref">
-		<fo:basic-link internal-destination="{@target}">
+		<fo:basic-link internal-destination="{@target}" fox:alt-text="{@target}">
 			<xsl:variable name="section" select="xalan:nodeset($contents)//item[@id = current()/@target]/@section"/>
 			<xsl:if test="not(starts-with($section, 'Figure') or starts-with($section, 'Table'))">
 				<xsl:attribute name="color">blue</xsl:attribute>
@@ -1402,7 +1434,7 @@
 
 	<!-- <eref type="inline" bibitemid="ISO20483" citeas="ISO 20483:2013"><locality type="annex"><referenceFrom>C</referenceFrom></locality></eref> -->
 	<xsl:template match="iso:eref">
-		<fo:basic-link internal-destination="{@bibitemid}" > <!-- font-size="9pt" color="blue" vertical-align="super" -->
+		<fo:basic-link internal-destination="{@bibitemid}" fox:alt-text="{@citeas}"> <!-- font-size="9pt" color="blue" vertical-align="super" -->
 			<xsl:if test="@type = 'footnote'">
 				<xsl:attribute name="keep-together.within-line">always</xsl:attribute>
 				<xsl:attribute name="font-size">80%</xsl:attribute>
