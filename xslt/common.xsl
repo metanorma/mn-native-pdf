@@ -1186,5 +1186,13 @@
 	<!-- End mode simple-table-rowspan  -->
 	<!-- ===================== -->	
 	<!-- ===================== -->	
+
+	<xsl:template name="getLang">
+		<xsl:variable name="language" select="//*[local-name()='bibdata']//*[local-name()='language']"/>
+		<xsl:choose>
+			<xsl:when test="$language = 'English'">en</xsl:when>
+			<xsl:otherwise><xsl:value-of select="$language"/></xsl:otherwise>
+		</xsl:choose>
+	</xsl:template>
 	
 </xsl:stylesheet>

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:fo="http://www.w3.org/1999/XSL/Format" xmlns:un="https://open.ribose.com/standards/unece" xmlns:mathml="http://www.w3.org/1998/Math/MathML" xmlns:xalan="http://xml.apache.org/xalan" version="1.0">
+<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:fo="http://www.w3.org/1999/XSL/Format" xmlns:un="https://open.ribose.com/standards/unece" xmlns:mathml="http://www.w3.org/1998/Math/MathML" xmlns:xalan="http://xml.apache.org/xalan" xmlns:fox="http://xmlgraphics.apache.org/fop/extensions" version="1.0">
 
 	<xsl:output version="1.0" method="xml" encoding="UTF-8" indent="no"/>
 
@@ -15,12 +15,16 @@
 		</contents>
 	</xsl:variable>
 	
+	<xsl:variable name="lang">
+		<xsl:call-template name="getLang"/>
+	</xsl:variable>	
+
 	<xsl:variable name="doctype">
 		<xsl:value-of select="/un:unece-standard/un:bibdata/un:ext/un:doctype"/>
 	</xsl:variable>
 	
 	<xsl:template match="/">
-		<fo:root xmlns:fo="http://www.w3.org/1999/XSL/Format" font-family="Times New Roman, FreeSerif, HanSans, NanumGothic, DroidSans" font-size="10.5pt">
+		<fo:root xmlns:fo="http://www.w3.org/1999/XSL/Format" font-family="Times New Roman, FreeSerif, HanSans, NanumGothic, DroidSans" font-size="10.5pt" xml:lang="{$lang}">
 			<fo:layout-master-set>
 				<!-- Cover page -->
 				<fo:simple-page-master master-name="cover-page" page-width="{$pageWidth}" page-height="{$pageHeight}">
@@ -40,7 +44,35 @@
 					<fo:region-end region-name="right" extent="19mm"/>
 				</fo:simple-page-master>
 			</fo:layout-master-set>
-
+			
+			<fo:declarations>
+				<pdf:catalog xmlns:pdf="http://xmlgraphics.apache.org/fop/extensions/pdf">
+						<pdf:dictionary type="normal" key="ViewerPreferences">
+							<pdf:boolean key="DisplayDocTitle">true</pdf:boolean>
+						</pdf:dictionary>
+					</pdf:catalog>
+				<x:xmpmeta xmlns:x="adobe:ns:meta/">
+					<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+						<rdf:Description rdf:about="" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:pdf="http://ns.adobe.com/pdf/1.3/">
+						<!-- Dublin Core properties go here -->
+							<dc:title><xsl:value-of select="/un:unece-standard/un:bibdata/un:title[@language = 'en' and @type = 'main']"/></dc:title>
+							<dc:creator></dc:creator>
+							<dc:description>
+								<xsl:variable name="abstract">
+									<xsl:copy-of select="/un:unece-standard/un:preface/un:abstract//text()"/>
+								</xsl:variable>
+								<xsl:value-of select="normalize-space($abstract)"/>
+							</dc:description>
+							<pdf:Keywords></pdf:Keywords>
+						</rdf:Description>
+						<rdf:Description rdf:about=""
+								xmlns:xmp="http://ns.adobe.com/xap/1.0/">
+							<!-- XMP properties go here -->
+							<xmp:CreatorTool></xmp:CreatorTool>
+						</rdf:Description>
+					</rdf:RDF>
+				</x:xmpmeta>
+			</fo:declarations>
 			
 			<!-- Cover Page -->
 			<fo:page-sequence master-reference="cover-page" force-page-count="no-force">				
@@ -427,7 +459,7 @@
 				<xsl:number level="any" count="un:fn[not(ancestor::un:table)]"/>
 			</xsl:variable>
 			<fo:inline font-size="60%" keep-with-previous.within-line="always" vertical-align="super">
-				<fo:basic-link internal-destination="footnote_{@reference}_{$number}">
+				<fo:basic-link internal-destination="footnote_{@reference}_{$number}" fox:alt-text="footnote {@reference} {$number}">
 					<xsl:value-of select="$number + count(//un:bibitem/un:note)"/>
 				</fo:basic-link>
 			</fo:inline>
@@ -522,7 +554,7 @@
 	</xsl:template>
 	
 	<xsl:template match="un:link">
-		<fo:basic-link external-destination="{@target}" color="blue" text-decoration="underline">
+		<fo:basic-link external-destination="{@target}" color="blue" text-decoration="underline" fox:alt-text="{@target}">
 			<xsl:choose>
 				<xsl:when test="normalize-space(.) = ''">
 					<xsl:value-of select="@target"/>
@@ -537,7 +569,7 @@
 	<xsl:template match="un:xref">
 		<xsl:variable name="section" select="xalan:nodeset($contents)//item[@id = current()/@target]/@section"/>
 		<xsl:variable name="type" select="xalan:nodeset($contents)//item[@id = current()/@target]/@type"/>
-		<fo:basic-link internal-destination="{@target}" text-decoration="underline" color="blue">
+		<fo:basic-link internal-destination="{@target}" text-decoration="underline" color="blue" fox:alt-text="{@target}">
 			<xsl:choose>
 				<xsl:when test="$section != ''"><xsl:value-of select="$section"/></xsl:when>
 				<xsl:otherwise>???</xsl:otherwise>
@@ -795,7 +827,7 @@
 	
 	<xsl:template match="un:image">
 		<fo:block text-align="center" margin-bottom="12pt" keep-with-next="always">
-			<fo:external-graphic src="{@src}"
+			<fo:external-graphic src="{@src}" fox:alt-text="Image"
 				width="75%"
 				content-height="100%"
 				content-width="scale-to-fit" scaling="uniform"/>
@@ -976,7 +1008,7 @@
 	
 	<xsl:template match="un:eref">
 		<!-- <fo:inline color="blue"> -->
-		<fo:basic-link internal-destination="{@bibitemid}" color="blue">
+		<fo:basic-link internal-destination="{@bibitemid}" color="blue" fox:alt-text="{@citeas}">
 			<xsl:if test="@type = 'footnote'">
 				<xsl:attribute name="keep-together.within-line">always</xsl:attribute>
 				<xsl:attribute name="font-size">80%</xsl:attribute>
