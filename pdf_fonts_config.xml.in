@@ -146,6 +146,15 @@ the location of this file.
 				<font kerning="yes" embed-url="file://${MN_PDF_FONT_PATH}/truetype/msttcorefonts/timesi.ttf">
 					<font-triplet name="Times New Roman" style="italic" weight="normal"/>
 				</font>
+				<!-- for Chinese glyphs -->
+				<!-- https://github.com/Pal3love/Source-Han-TrueType/raw/master/SourceHanSans.7z -->
+				<font kerning="yes" embed-url="file://${MN_PDF_FONT_PATH}/SourceHanSans-Normal.ttc" sub-font="Source Han Sans Normal"  simulate-style="true">
+					<font-triplet name="HanSans" style="normal" weight="normal"/>
+					<font-triplet name="HanSans" style="italic" weight="normal"/>
+				</font>
+				<font kerning="yes" embed-url="file://${MN_PDF_FONT_PATH}/SourceHanSans-Bold.ttc" sub-font="Source Han Sans Bold">
+					<font-triplet name="HanSans" style="normal" weight="bold"/>
+				</font>
 				
         <!--
         <font metrics-url="arial.xml" kerning="yes" embed-url="arial.ttf">
