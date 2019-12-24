@@ -149,6 +149,15 @@ the location of this file.
 				<font kerning="yes" embed-url="file://${MN_PDF_FONT_PATH}/truetype/msttcorefonts/cour.ttf">
 					<font-triplet name="Courier" style="normal" weight="normal"/>
 				</font>
+				<font kerning="yes" embed-url="file://${MN_PDF_FONT_PATH}/truetype/msttcorefonts/courbd.ttf">
+					<font-triplet name="Courier" style="normal" weight="bold"/>
+				</font>
+				<font kerning="yes" embed-url="file://${MN_PDF_FONT_PATH}/truetype/msttcorefonts/courbi.ttf">
+					<font-triplet name="Courier" style="italic" weight="bold"/>
+				</font>
+				<font kerning="yes" embed-url="file://${MN_PDF_FONT_PATH}/truetype/msttcorefonts/couri.ttf">
+					<font-triplet name="Courier" style="italic" weight="normal"/>
+				</font>
 				<!-- for Chinese glyphs -->
 				<!-- https://github.com/Pal3love/Source-Han-TrueType/raw/master/SourceHanSans.7z -->
 				<font kerning="yes" embed-url="file://${MN_PDF_FONT_PATH}/SourceHanSans-Normal.ttc" sub-font="Source Han Sans Normal"  simulate-style="true">

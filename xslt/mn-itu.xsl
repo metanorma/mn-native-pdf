@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:fo="http://www.w3.org/1999/XSL/Format" xmlns:itu="https://open.ribose.com/standards/itu" xmlns:mathml="http://www.w3.org/1998/Math/MathML" xmlns:xalan="http://xml.apache.org/xalan" xmlns:fox="http://xmlgraphics.apache.org/fop/extensions" version="1.0">
 
-	<xsl:output method="xml" encoding="UTF-8" indent="yes"/>
+	<xsl:output method="xml" encoding="UTF-8" indent="no"/>
 
 	<xsl:include href="./common.xsl"/>
 	
@@ -797,7 +797,7 @@
 	<!-- ============================= -->
 	<!-- PARAGRAPHS                                    -->
 	<!-- ============================= -->	
-	<xsl:template match="itu:p">
+	<xsl:template match="itu:p | itu:sections/itu:p">
 		<fo:block margin-top="6pt">
 			<xsl:attribute name="text-align">
 				<xsl:choose>
@@ -1144,7 +1144,7 @@
 		</fo:block>
 	</xsl:template>
 	
-	<xsl:template match="itu:ul | itu:ol">
+	<xsl:template match="itu:ul | itu:ol | itu:sections/itu:ul | itu:sections/itu:ol">
 		<fo:list-block >
 			<xsl:apply-templates />
 		</fo:list-block>
