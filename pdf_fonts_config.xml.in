@@ -15,6 +15,8 @@ the location of this file.
 <!-- NOTE: This is the version of the configuration -->
 <fop version="1.0">
 
+  <accessibility>true</accessibility>
+  
   <!-- Base URL for resolving relative URLs -->
   <base>.</base>
 
@@ -30,6 +32,8 @@ the location of this file.
   <!-- Uses renderer mime type for renderers -->
   <renderers>
     <renderer mime="application/pdf">
+      <pdf-ua-mode>PDF/UA-1</pdf-ua-mode>
+      <linearization>true</linearization>
       <filterList>
         <!-- provides compression using zlib flate (default is on) -->
         <value>flate</value>
@@ -79,6 +83,18 @@ the location of this file.
 				<font kerning="yes" embed-url="file://${MN_PDF_FONT_PATH}/truetype/vista/cambriaz.ttf">
 					<font-triplet name="Cambria" style="italic" weight="bold"/>
 				</font>
+				<font kerning="yes" embed-url="file://${MN_PDF_FONT_PATH}/truetype/vista/calibri.ttf">
+					<font-triplet name="Calibri" style="normal" weight="normal"/>
+				</font>
+				<font kerning="yes" embed-url="file://${MN_PDF_FONT_PATH}/truetype/vista/calibrib.ttf">
+					<font-triplet name="Calibri" style="normal" weight="bold"/>
+				</font>
+				<font kerning="yes" embed-url="file://${MN_PDF_FONT_PATH}/truetype/vista/calibrii.ttf">
+					<font-triplet name="Calibri" style="italic" weight="normal"/>
+				</font>
+				<font kerning="yes" embed-url="file://${MN_PDF_FONT_PATH}/truetype/vista/calibriz.ttf">
+					<font-triplet name="Calibri" style="italic" weight="bold"/>
+				</font>
 				<!-- for missing characters in cambria, and for Hebrew glyphs -->
 				<font kerning="yes" embed-url="file://${MN_PDF_FONT_PATH}/truetype/freefont/FreeSerif.ttf">
 					<font-triplet name="FreeSerif" style="normal" weight="normal"/>
@@ -115,6 +131,9 @@ the location of this file.
 				<font kerning="yes" embed-url="file://${MN_PDF_FONT_PATH}/truetype/msttcorefonts/ariali.ttf">
 					<font-triplet name="Arial" style="italic" weight="normal"/>
 				</font>
+				<font kerning="yes" embed-url="file://${MN_PDF_FONT_PATH}/truetype/msttcorefonts/ariblk.ttf">
+					<font-triplet name="Arial Black" style="normal" weight="normal"/>
+				</font>
 				<font kerning="yes" embed-url="file://${MN_PDF_FONT_PATH}/truetype/msttcorefonts/times.ttf">
 					<font-triplet name="Times New Roman" style="normal" weight="normal"/>
 				</font>
@@ -126,15 +145,6 @@ the location of this file.
 				</font>
 				<font kerning="yes" embed-url="file://${MN_PDF_FONT_PATH}/truetype/msttcorefonts/timesi.ttf">
 					<font-triplet name="Times New Roman" style="italic" weight="normal"/>
-				</font>
-				<!-- for Chinese glyphs -->
-				<!-- https://github.com/Pal3love/Source-Han-TrueType/raw/master/SourceHanSans.7z -->
-				<font kerning="yes" embed-url="file://${MN_PDF_FONT_PATH}/SourceHanSans-Normal.ttc" sub-font="Source Han Sans Normal"  simulate-style="true">
-					<font-triplet name="HanSans" style="normal" weight="normal"/>
-					<font-triplet name="HanSans" style="italic" weight="normal"/>
-				</font>
-				<font kerning="yes" embed-url="file://${MN_PDF_FONT_PATH}/SourceHanSans-Bold.ttc" sub-font="Source Han Sans Bold">
-					<font-triplet name="HanSans" style="normal" weight="bold"/>
 				</font>
 				
         <!--
