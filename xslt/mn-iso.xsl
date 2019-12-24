@@ -136,7 +136,7 @@
 						<rdf:Description rdf:about="" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:pdf="http://ns.adobe.com/pdf/1.3/">
 						<!-- Dublin Core properties go here -->
 							<dc:title><xsl:value-of select="$title-en"/></dc:title>
-							<dc:creator><xsl:value-of select="/iso-standard/bibdata/contributor[role/@type='author']/organization/name"/></dc:creator>
+							<dc:creator><xsl:value-of select="/iso:iso-standard/iso:bibdata/iso:contributor[iso:role/@type='author']/iso:organization/iso:name"/></dc:creator>
 							<dc:description>
 								<xsl:variable name="abstract">
 									<xsl:copy-of select="/iso:iso-standard/iso:bibliography/iso:references/iso:bibitem/iso:abstract//text()"/>

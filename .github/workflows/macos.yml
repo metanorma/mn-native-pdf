@@ -103,6 +103,7 @@ jobs:
           ln -s /System/Library/Fonts/Supplemental/Times\ New\ Roman\ Bold.ttf ${MN_PDF_FONT_PATH}/truetype/msttcorefonts/timesbd.ttf
           ln -s /System/Library/Fonts/Supplemental/Times\ New\ Roman\ Italic.ttf ${MN_PDF_FONT_PATH}/truetype/msttcorefonts/timesi.ttf
           ln -s /System/Library/Fonts/Supplemental/Times\ New\ Roman\ Bold\ Italic.ttf ${MN_PDF_FONT_PATH}/truetype/msttcorefonts/timesbi.ttf
+          ln -s /System/Library/Fonts/Supplemental/Courier\ New.ttf ${MN_PDF_FONT_PATH}/truetype/msttcorefonts/cour.ttf
           ls -alR ${MN_PDF_FONT_PATH}
 
       - name: Update submodules
