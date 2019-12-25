@@ -13,6 +13,7 @@ jobs:
       # cabextract for fonts, gettext-base for envsubst
       - name: Setup prerequisites
         run: |
+          sudo apt-get update
           sudo apt-get -y install gettext-base fop cabextract wget p7zip-full
 
           # Install fontforge
