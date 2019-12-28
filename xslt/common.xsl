@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:fo="http://www.w3.org/1999/XSL/Format" xmlns:iso="http://riboseinc.com/isoxml" xmlns:itu="https://open.ribose.com/standards/itu" xmlns:nist="http://www.nist.gov/metanorma" xmlns:mathml="http://www.w3.org/1998/Math/MathML" xmlns:xalan="http://xml.apache.org/xalan" version="1.0">
+<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:fo="http://www.w3.org/1999/XSL/Format" xmlns:iso="http://riboseinc.com/isoxml" xmlns:itu="https://open.ribose.com/standards/itu" xmlns:nist="http://www.nist.gov/metanorma" xmlns:mathml="http://www.w3.org/1998/Math/MathML" xmlns:xalan="http://xml.apache.org/xalan"  xmlns:fox="http://xmlgraphics.apache.org/fop/extensions" version="1.0">
 	
 	<xsl:variable name="lower">abcdefghijklmnopqrstuvwxyz</xsl:variable> 
 	<xsl:variable name="upper">ABCDEFGHIJKLMNOPQRSTUVWXYZ</xsl:variable>
@@ -606,7 +606,7 @@
 			<xsl:if test="$namespace = 'nist'">
 				<xsl:attribute name="text-decoration">underline</xsl:attribute>
 			</xsl:if>
-			<fo:basic-link internal-destination="{@reference}_{ancestor::*[@id][1]/@id}"> <!-- @reference   | ancestor::*[local-name()='clause'][1]/@id-->
+			<fo:basic-link internal-destination="{@reference}_{ancestor::*[@id][1]/@id}" fox:alt-text="{@reference}"> <!-- @reference   | ancestor::*[local-name()='clause'][1]/@id-->
 				<xsl:value-of select="@reference"/>
 			</fo:basic-link>
 		</fo:inline>

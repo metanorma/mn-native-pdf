@@ -107,7 +107,7 @@ public class XML2PDF {
      */
     public static void main(String[] args) {
         if (args.length != 4) {
-            System.out.println("Usage: java -jar xml2pdf <path to XML config file> <path to source XML file> <path to source XSLT file> <path to output PDF");
+            System.out.println("Usage: java -jar xml2pdf <path to XML config file> <path to source XML file> <path to source XSLT file> <path to output PDF>");
             System.exit(-1);
         }
 
