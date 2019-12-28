@@ -3,7 +3,8 @@ SHELL := /bin/bash
 SRCDIR := sources
 DESTDIR := documents
 SRC := $(patsubst mn-samples-iso/documents/%,sources/%,$(wildcard mn-samples-iso/documents/*.xml)) \
-	$(patsubst mn-samples-itu/documents/%,sources/itu-%,$(wildcard mn-samples-itu/documents/*.xml))
+	$(patsubst mn-samples-itu/documents/%,sources/itu-%,$(wildcard mn-samples-itu/documents/*.xml)) \
+	$(patsubst mn-samples-un/documents/%,sources/un-%,$(wildcard mn-samples-un/documents/*.xml))
 PDF := $(patsubst sources/%,documents/%,$(patsubst %.xml,%.pdf,$(SRC)))
 XSLT_PATH_BASE := $(shell pwd)/xslt
 XML2PDF_PATH :=  $(shell pwd)/xml2pdf
@@ -28,6 +29,9 @@ sources/iso-%.xml: mn-samples-iso/documents/iso-%.xml
 	cp $< $@
 
 sources/itu-%.xml: mn-samples-itu/documents/%.xml
+	cp $< $@
+
+sources/un-%.xml: mn-samples-un/documents/%.xml
 	cp $< $@
 
 documents/%.pdf: sources/%.xml pdf_fonts_config.xml xml2pdf/target/xml2pdf-1.0.jar | documents
