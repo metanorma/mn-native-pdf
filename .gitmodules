@@ -6,3 +6,7 @@
 	path = mn-samples-iso
 	url = https://github.com/metanorma/mn-samples-iso
 	branch = gh-pages
+[submodule "mn-samples-un"]
+	path = mn-samples-un
+	url = https://github.com/metanorma/mn-samples-un
+	branch = gh-pages
