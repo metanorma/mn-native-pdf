@@ -8,7 +8,7 @@ SRC := $(patsubst mn-samples-iso/documents/%,sources/%,$(wildcard mn-samples-iso
 	$(patsubst mn-samples-un/documents/%,sources/un-%,$(wildcard mn-samples-un/documents/*.xml))
 PDF := $(patsubst sources/%,documents/%,$(patsubst %.xml,%.pdf,$(SRC)))
 XSLT_PATH_BASE := $(shell pwd)/xslt
-XML2PDF_PATH :=  $(shell pwd)/xml2pdf
+MN2PDF_DOWNLOAD_PATH := https://github.com/metanorma/mn2pdf/releases/download/v1.0.0/mn2pdf-1.0.jar
 
 ifdef MN_PDF_FONT_PATH
 	MN_PDF_FONT_PATH := $(MN_PDF_FONT_PATH)
@@ -18,10 +18,8 @@ endif
 
 all: $(PDF)
 
-xml2pdf/target/xml2pdf-1.0.jar:
-	pushd xml2pdf; \
-	mvn clean package shade:shade; \
-	popd
+mn2pdf.jar:
+	curl -sSL ${MN2PDF_DOWNLOAD_PATH} -o mn2pdf.jar
 
 documents:
 	mkdir -p $@
@@ -39,7 +37,7 @@ sources/un-%.xml: mn-samples-un/documents/%.xml
 	cp $< $@
 
 # TODO: the `FILENAME_FLAVOR` lines is a hack until metanorma/metanorma-iec#17 is done.
-documents/%.pdf: sources/%.xml pdf_fonts_config.xml xml2pdf/target/xml2pdf-1.0.jar | documents
+documents/%.pdf: sources/%.xml pdf_fonts_config.xml mn2pdf.jar | documents
 	FILENAME=$<; \
 	OUTFILE=$@; \
 	MN_FLAVOR=$$(xmllint --xpath 'name(*)' $${FILENAME} | cut -d '-' -f 1); \
@@ -47,7 +45,7 @@ documents/%.pdf: sources/%.xml pdf_fonts_config.xml xml2pdf/target/xml2pdf-1.0.j
 	if [ $$FILENAME_FLAVOR == "iec" ]; then MN_FLAVOR="iec"; fi; \
 	DOCTYPE=$$(xmllint --xpath "//*[local-name()='doctype']/text()" $${FILENAME}); \
 	XSLT_PATH=${XSLT_PATH_BASE}/$${MN_FLAVOR}.$${DOCTYPE}.xsl; \
-  java -jar ${XML2PDF_PATH}/target/xml2pdf-1.0.jar pdf_fonts_config.xml $$FILENAME $$XSLT_PATH $$OUTFILE
+  java -jar mn2pdf.jar pdf_fonts_config.xml $$FILENAME $$XSLT_PATH $$OUTFILE
 
 # This document is currently broken
 documents/itu-D-REC-D.19-201003-E.pdf:
@@ -57,9 +55,8 @@ pdf_fonts_config.xml: pdf_fonts_config.xml.in
 	envsubst < pdf_fonts_config.xml.in > pdf_fonts_config.xml
 
 clean:
-	rm -f pdf_fonts_config.xml
+	rm -f mn2pdf.jar pdf_fonts_config.xml
 	rm -rf documents
-	rm -rf ${XML2PDF_PATH}/target
 
 update-init:
 	git submodule update --init
