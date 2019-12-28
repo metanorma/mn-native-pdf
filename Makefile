@@ -32,7 +32,7 @@ sources/itu-%.xml: mn-samples-itu/documents/%.xml
 sources/iso-%.xml: mn-samples-iso/documents/iso-%.xml
 	cp $< $@
 
-sources/iec-%.xml: mn-samples-iso/documents/iec-%.xml
+sources/iec-%.xml: mn-samples-iec/documents/iec-%.xml
 	cp $< $@
 
 sources/un-%.xml: mn-samples-un/documents/%.xml
