@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:fo="http://www.w3.org/1999/XSL/Format" xmlns:iso="http://riboseinc.com/isoxml" xmlns:mathml="http://www.w3.org/1998/Math/MathML" xmlns:xalan="http://xml.apache.org/xalan" version="1.0">
+<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:fo="http://www.w3.org/1999/XSL/Format" xmlns:iso="http://riboseinc.com/isoxml" xmlns:mathml="http://www.w3.org/1998/Math/MathML" xmlns:xalan="http://xml.apache.org/xalan" xmlns:fox="http://xmlgraphics.apache.org/fop/extensions" version="1.0">
 
-	<xsl:output method="xml" encoding="UTF-8" indent="yes"/>
+	<xsl:output method="xml" encoding="UTF-8" indent="no"/>
 	
 	<xsl:include href="./common.xsl"/>
 	
@@ -50,10 +50,14 @@
 		</contents>
 	</xsl:variable>
 	
+	<xsl:variable name="lang">
+		<xsl:call-template name="getLang"/>
+	</xsl:variable>	
+	
 	<xsl:template match="/">
 		<!-- https://stackoverflow.com/questions/25261949/xsl-fo-letter-spacing-with-text-align -->
 		<!-- https://xmlgraphics.apache.org/fop/knownissues.html -->
-		<fo:root xmlns:fo="http://www.w3.org/1999/XSL/Format" font-family="Arial, FreeSerif, HanSans, NanumGothic, DroidSans" font-size="10pt">
+		<fo:root xmlns:fo="http://www.w3.org/1999/XSL/Format" font-family="Arial, FreeSerif, HanSans, NanumGothic, DroidSans" font-size="10pt" xml:lang="{$lang}">
 			<fo:layout-master-set>
 				<!-- odd pages -->
 				<fo:simple-page-master master-name="odd" page-width="{$pageWidth}" page-height="{$pageHeight}">
@@ -79,6 +83,34 @@
 				</fo:page-sequence-master>
 			</fo:layout-master-set>
 
+			<fo:declarations>
+				<pdf:catalog xmlns:pdf="http://xmlgraphics.apache.org/fop/extensions/pdf">
+						<pdf:dictionary type="normal" key="ViewerPreferences">
+							<pdf:boolean key="DisplayDocTitle">true</pdf:boolean>
+						</pdf:dictionary>
+					</pdf:catalog>
+				<x:xmpmeta xmlns:x="adobe:ns:meta/">
+					<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+						<rdf:Description rdf:about="" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:pdf="http://ns.adobe.com/pdf/1.3/">
+						<!-- Dublin Core properties go here -->
+							<dc:title><xsl:value-of select="$title-en"/></dc:title>
+							<dc:creator></dc:creator>
+							<dc:description>
+								<xsl:variable name="abstract">
+									<xsl:copy-of select="/iso:iso-standard/iso:bibliography/iso:references/iso:bibitem/iso:abstract[@language = 'en']//text()"/>
+								</xsl:variable>
+								<xsl:value-of select="normalize-space($abstract)"/>
+							</dc:description>
+							<pdf:Keywords></pdf:Keywords>
+						</rdf:Description>
+						<rdf:Description rdf:about=""
+								xmlns:xmp="http://ns.adobe.com/xap/1.0/">
+							<!-- XMP properties go here -->
+							<xmp:CreatorTool></xmp:CreatorTool>
+						</rdf:Description>
+					</rdf:RDF>
+				</x:xmpmeta>
+			</fo:declarations>
 			
 			<fo:page-sequence master-reference="document" format="i" force-page-count="no-force">
 				<xsl:call-template name="insertHeaderFooter"/>
@@ -97,7 +129,7 @@
 						<xsl:for-each select="xalan:nodeset($contents)//item[@display = 'true']
 																																													[@level &lt;= 2]
 																																													[not(@level = 2 and starts-with(@section, '0'))]"><!-- skip clause from preface -->
-							<fo:block font-family="Helvetica" text-align-last="justify">
+							<fo:block text-align-last="justify"> <!-- font-family="Helvetica"  -->
 								<xsl:if test="@level = 1">
 									<xsl:attribute name="margin-bottom">5pt</xsl:attribute>
 								</xsl:if>
@@ -108,7 +140,7 @@
 									<xsl:attribute name="margin-left">5mm</xsl:attribute>
 								</xsl:if>
 								
-								<fo:basic-link internal-destination="{@id}">
+								<fo:basic-link internal-destination="{@id}" fox:alt-text="{text()}">
 									<xsl:if test="@section != '' and not(@display-section = 'false')"> <!--   -->
 										<xsl:value-of select="@section"/><xsl:text> </xsl:text>
 									</xsl:if>
@@ -137,7 +169,7 @@
 							<fo:block margin-top="5pt" margin-bottom="10pt">&#xA0;</fo:block>
 							<xsl:for-each select="xalan:nodeset($contents)//item[@type = 'table']">
 								<fo:block text-align-last="justify" margin-bottom="5pt" margin-left="8mm" text-indent="-8mm">
-									<fo:basic-link internal-destination="{@id}">
+									<fo:basic-link internal-destination="{@id}"  fox:alt-text="{@section}">
 										<xsl:value-of select="@section"/>
 										<xsl:if test="text() != ''">
 											<xsl:text> — </xsl:text>
@@ -157,7 +189,7 @@
 							<fo:block margin-top="5pt" margin-bottom="10pt">&#xA0;</fo:block>
 							<xsl:for-each select="xalan:nodeset($contents)//item[@type = 'figure']">
 								<fo:block text-align-last="justify" margin-bottom="5pt" margin-left="8mm" text-indent="-8mm">
-									<fo:basic-link internal-destination="{@id}">
+									<fo:basic-link internal-destination="{@id}"  fox:alt-text="{@section}">
 										<xsl:value-of select="@section"/>
 										<xsl:if test="text() != ''">
 											<xsl:text> — </xsl:text>
@@ -371,6 +403,7 @@
 	
 	
 	<xsl:template match="iso:figure" mode="contents">
+		<xsl:param name="sectionNum"/>
 		<xsl:apply-templates mode="contents">
 			<xsl:with-param name="sectionNum" select="$sectionNum"/>
 		</xsl:apply-templates>
@@ -769,7 +802,7 @@
 				<xsl:number level="any" count="iso:p/iso:fn"/>
 			</xsl:variable>
 			<fo:inline font-size="8pt" keep-with-previous.within-line="always" baseline-shift="15%"> <!-- font-size="80%"  vertical-align="super"-->
-				<fo:basic-link internal-destination="footnote_{@reference}">
+				<fo:basic-link internal-destination="footnote_{@reference}" fox:alt-text="footnote {@reference}">
 					<!-- <xsl:value-of select="@reference"/> -->
 					<xsl:value-of select="$number + count(//iso:bibitem/iso:note)"/><!-- <xsl:text>)</xsl:text> -->
 				</fo:basic-link>
@@ -810,7 +843,7 @@
 	<xsl:template match="iso:image">
 		<fo:block-container text-align="center">
 			<fo:block>
-				<fo:external-graphic src="{@src}"/>
+				<fo:external-graphic src="{@src}" fox:alt-text="Image"/>
 			</fo:block>
 			<fo:block font-weight="bold" margin-top="12pt" margin-bottom="12pt">Figure <xsl:number format="1" level="any"/></fo:block>
 		</fo:block-container>
@@ -866,7 +899,7 @@
 	
 	<xsl:template match="iso:figure/iso:image">
 		<fo:block text-align="center">
-			<fo:external-graphic src="{@src}" width="75%" content-height="scale-to-fit" scaling="uniform"/> <!-- content-width="100%"  -->
+			<fo:external-graphic src="{@src}" width="75%" content-height="scale-to-fit" scaling="uniform" fox:alt-text="Image"/> <!-- content-width="100%"  -->
 		</fo:block>
 	</xsl:template>
 	
@@ -904,7 +937,7 @@
 				<xsl:number level="any" count="iso:bibitem/iso:note"/>
 			</xsl:variable>
 			<fo:inline font-size="8pt" keep-with-previous.within-line="always"  baseline-shift="15%" > <!--font-size="85%"  vertical-align="super"60% -->
-				<fo:basic-link internal-destination="footnote_{../@id}">
+				<fo:basic-link internal-destination="footnote_{../@id}" fox:alt-text="footnote {$number}">
 					<xsl:value-of select="$number"/><!-- <xsl:text>)</xsl:text> -->
 				</fo:basic-link>
 			</fo:inline>
@@ -975,7 +1008,7 @@
 	
 	<xsl:template match="iso:link">
 		<fo:inline>
-			<fo:basic-link external-destination="{@target}">
+			<fo:basic-link external-destination="{@target}" fox:alt-text="{@target}">
 				<xsl:choose>
 					<xsl:when test="normalize-space(.) = ''">
 						<xsl:value-of select="@target"/>
@@ -1029,7 +1062,7 @@
 	<xsl:template match="iso:termsource">
 		<fo:block margin-bottom="8pt" keep-with-previous="always">
 			<!-- Example: [SOURCE: ISO 5127:2017, 3.1.6.02] -->
-			<fo:basic-link internal-destination="{iso:origin/@bibitemid}">
+			<fo:basic-link internal-destination="{iso:origin/@bibitemid}" fox:alt-text="{iso:origin/@citeas}">
 				<xsl:text>[SOURCE: </xsl:text>
 				<xsl:value-of select="iso:origin/@citeas"/>
 				<xsl:if test="iso:origin/iso:locality/iso:referenceFrom">
@@ -1152,7 +1185,7 @@
 	</xsl:template>
 	
 	<xsl:template match="iso:source">
-		<fo:basic-link internal-destination="{@bibitemid}">
+		<fo:basic-link internal-destination="{@bibitemid}" fox:alt-text="{@citeas}">
 			<xsl:value-of select="@citeas" disable-output-escaping="yes"/>
 			<xsl:if test="iso:locality">
 				<xsl:text>, </xsl:text>
@@ -1188,7 +1221,7 @@
 		<fo:basic-link internal-destination="{@target}"><fo:inline>&lt;<xsl:apply-templates />&gt;</fo:inline></fo:basic-link>
 	</xsl:template> -->
 	<xsl:template match="iso:callout">		
-			<fo:basic-link internal-destination="{@target}">&lt;<xsl:apply-templates />&gt;</fo:basic-link>
+			<fo:basic-link internal-destination="{@target}" fox:alt-text="{@target}">&lt;<xsl:apply-templates />&gt;</fo:basic-link>
 	</xsl:template>
 	
 	<xsl:template match="iso:annotation">
@@ -1217,15 +1250,15 @@
 	
 	<xsl:template match="mathml:math">
 		<fo:inline font-family="Cambria Math">
-			<fo:instream-foreign-object>
+			<fo:instream-foreign-object fox:alt-text="Math">
 				<xsl:copy-of select="."/>
 			</fo:instream-foreign-object>
 		</fo:inline>
 	</xsl:template>
 	
 	<xsl:template match="iso:xref">
-		<fo:basic-link internal-destination="{@target}">
-			<xsl:variable name="section" select="xalan:nodeset($contents)//item[@id = current()/@target]/@section"/>
+		<xsl:variable name="section" select="xalan:nodeset($contents)//item[@id = current()/@target]/@section"/>
+		<fo:basic-link internal-destination="{@target}" fox:alt-text="{$section}">
 			<xsl:variable name="type" select="xalan:nodeset($contents)//item[@id = current()/@target]/@type"/>
 			<xsl:variable name="root" select="xalan:nodeset($contents)//item[@id = current()/@target]/@root"/>
 			<xsl:variable name="parentsection" select="xalan:nodeset($contents)//item[@id = current()/@target]/@parentsection"/>
@@ -1273,7 +1306,7 @@
 
 	<!-- <eref type="inline" bibitemid="ISO20483" citeas="ISO 20483:2013"><locality type="annex"><referenceFrom>C</referenceFrom></locality></eref> -->
 	<xsl:template match="iso:eref">
-		<fo:basic-link internal-destination="{@bibitemid}">
+		<fo:basic-link internal-destination="{@bibitemid}" fox:alt-text="{@citeas}">
 			<xsl:if test="@type = 'footnote'">
 				<xsl:attribute name="keep-together.within-line">always</xsl:attribute>
 				<xsl:attribute name="font-size">80%</xsl:attribute>
