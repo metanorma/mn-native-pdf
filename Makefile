@@ -30,17 +30,18 @@ sources/iso-%.xml: mn-samples-iso/documents/iso-%.xml
 sources/itu-%.xml: mn-samples-itu/documents/%.xml
 	cp $< $@
 
-documents/%.pdf: sources/%.xml pdf_fonts_config.xml documents
 documents/%.pdf: sources/%.xml pdf_fonts_config.xml xml2pdf/target/xml2pdf-1.0.jar | documents
 	FILENAME=$<; \
 	OUTFILE=$@; \
-	MN_FLAVOR=$$(grep -o '<[a-z]*-standard' $$FILENAME | tr -d '<' | cut -d '-' -f 1); \
-	XSLT_PATH_BASE=${XSLT_PATH_BASE}; \
-	XSLT_PATH=$${XSLT_PATH_BASE/FOO/$${MN_FLAVOR}}; \
-  (cd ${XML2PDF_PATH} && mvn clean compile exec:java -Dexec.args="../pdf_fonts_config.xml ../$$FILENAME $$XSLT_PATH ../$$OUTFILE")
+	MN_FLAVOR=$$(xmllint --xpath 'name(*)' $${FILENAME} | cut -d '-' -f 1); \
+	DOCTYPE=$$(xmllint --xpath "//*[local-name()='doctype']/text()" $${FILENAME}); \
+	XSLT_PATH=${XSLT_PATH_BASE}/$${MN_FLAVOR}.$${DOCTYPE}.xsl; \
   java -jar ${XML2PDF_PATH}/target/xml2pdf-1.0.jar pdf_fonts_config.xml $$FILENAME $$XSLT_PATH $$OUTFILE
 #  fop -c pdf_fonts_config.xml -xml $$FILENAME -xsl $$XSLT_PATH -foout $$OUTFILE.xml; \
 #  fop -c pdf_fonts_config.xml -fo $$OUTFILE.xml -out application/pdf $$OUTFILE
+
+# This document is currently broken
+documents/itu-D-REC-D.19-201003-E.pdf:
 
 pdf_fonts_config.xml: pdf_fonts_config.xml.in
 	MN_PDF_FONT_PATH=${MN_PDF_FONT_PATH}; \
