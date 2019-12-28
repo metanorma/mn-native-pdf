@@ -79,6 +79,7 @@ jobs:
       uses: docker://peaceiris/gh-pages:v2
       with:
         emptyCommits: false
+        forceOrphan: true
       env:
         ACTIONS_DEPLOY_KEY: ${{ secrets.GH_DEPLOY_KEY }}
         PUBLISH_BRANCH: gh-pages
