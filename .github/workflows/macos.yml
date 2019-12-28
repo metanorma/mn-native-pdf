@@ -17,12 +17,6 @@ jobs:
           brew install gettext
           brew link --force gettext
 
-          # Install Apache FOP
-          brew install fop
-
-          # Install Maven
-          brew install maven
-
           # Install p7zip
           brew install p7zip
 
@@ -126,21 +120,3 @@ jobs:
         with:
           name: published-macos
           path: published
-
-
-  # deploy-gh-pages:
-  #   if: github.ref == 'refs/heads/master'
-  #   runs-on: ubuntu-latest
-  #   needs: build
-  #   steps:
-  #   - uses: actions/checkout@master
-  #   - uses: actions/download-artifact@master
-  #     with:
-  #       name: published
-  #   - name: deploy-to-gh
-  #     env:
-  #       GITHUB_REPOSITORY: ${{ secrets.GITHUB_REPOSITORY }}
-  #       GH_DEPLOY_KEY: ${{ secrets.GH_DEPLOY_KEY }}
-  #       GIT_SSH_COMMAND: "ssh -o StrictHostKeyChecking=no"
-  #     run: |
-  #       curl -L https://raw.githubusercontent.com/metanorma/metanorma-build-scripts/master/ghactions-deploy-to-gh-pages.sh | bash
