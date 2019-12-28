@@ -10,11 +10,11 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      # cabextract for fonts, gettext-base for envsubst
+      # cabextract for fonts, gettext-base for envsubst, libxml2-utils for xmllint
       - name: Setup prerequisites
         run: |
           sudo apt-get update
-          sudo apt-get -y install gettext-base cabextract wget p7zip-full
+          sudo apt-get -y install gettext-base cabextract wget p7zip-full libxml2-utils
 
           # Install fontforge
           sudo apt-get -y install software-properties-common
