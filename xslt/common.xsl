@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:fo="http://www.w3.org/1999/XSL/Format" xmlns:iso="http://riboseinc.com/isoxml" xmlns:itu="https://open.ribose.com/standards/itu" xmlns:nist="http://www.nist.gov/metanorma" xmlns:mathml="http://www.w3.org/1998/Math/MathML" xmlns:xalan="http://xml.apache.org/xalan" version="1.0">
-
+<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:fo="http://www.w3.org/1999/XSL/Format" xmlns:iso="http://riboseinc.com/isoxml" xmlns:itu="https://open.ribose.com/standards/itu" xmlns:nist="http://www.nist.gov/metanorma" xmlns:mathml="http://www.w3.org/1998/Math/MathML" xmlns:xalan="http://xml.apache.org/xalan"  xmlns:fox="http://xmlgraphics.apache.org/fop/extensions" version="1.0">
 	
 	<xsl:variable name="lower">abcdefghijklmnopqrstuvwxyz</xsl:variable> 
 	<xsl:variable name="upper">ABCDEFGHIJKLMNOPQRSTUVWXYZ</xsl:variable>
@@ -24,7 +23,6 @@
 	</xsl:template>
 	
 
-	
 	<xsl:template match="*[local-name()='table']">
 	
 		<xsl:variable name="simple-table">
@@ -51,6 +49,10 @@
 					<xsl:if test="$namespace = 'nist'">
 						<xsl:attribute name="font-family">Arial</xsl:attribute>
 						<xsl:attribute name="font-size">9pt</xsl:attribute>
+					</xsl:if>
+					<xsl:if test="$namespace = 'unece'">
+						<xsl:attribute name="font-weight">normal</xsl:attribute>
+						<xsl:attribute name="font-size">11pt</xsl:attribute>
 					</xsl:if>
 					<xsl:text>Table </xsl:text>
 					<xsl:choose>
@@ -83,7 +85,12 @@
 									<xsl:number format="A-" count="*[local-name()='annex']"/>
 									<xsl:number format="1" level="any" count="*[local-name()='table'][not(@unnumbered) or @unnumbered != 'true'][ancestor::*[local-name()='annex'][@id = $annex-id]]"/>
 								</xsl:when>
-								<xsl:otherwise> <!-- for itu -->
+								<xsl:when test="$namespace = 'unece'">
+									<xsl:variable name="annex-id" select="ancestor::*[local-name()='annex']/@id"/>
+									<xsl:number format="I." count="*[local-name()='annex']"/>
+									<xsl:number format="1" level="any" count="*[local-name()='table'][not(@unnumbered) or @unnumbered != 'true'][ancestor::*[local-name()='annex'][@id = $annex-id]]"/>
+								</xsl:when>
+								<xsl:otherwise>
 									<xsl:number format="A-1" level="multiple" count="*[local-name()='annex'] | *[local-name()='table'][not(@unnumbered) or @unnumbered != 'true'] "/>
 								</xsl:otherwise>
 							</xsl:choose>
@@ -154,6 +161,9 @@
 		<fo:block-container margin-left="-{$margin-left}mm" margin-right="-{$margin-left}mm">			
 			<xsl:if test="$namespace = 'itu' or $namespace = 'nist'">
 				<xsl:attribute name="space-after">6pt</xsl:attribute>
+			</xsl:if>
+			<xsl:if test="$namespace='unece'">
+				<xsl:attribute name="space-after">12pt</xsl:attribute>
 			</xsl:if>
 			<fo:table id="{@id}" table-layout="fixed" width="100%" margin-left="{$margin-left}mm" margin-right="{$margin-left}mm">
 				<xsl:if test="$namespace = 'iso'">
@@ -398,7 +408,7 @@
 	
 
 	<xsl:template match="*[local-name()='th']">
-		<fo:table-cell text-align="{@align}" border="solid black 1pt" padding-left="1mm" display-align="center">
+		<fo:table-cell text-align="{@align}" font-weight="bold" border="solid black 1pt" padding-left="1mm" display-align="center">
 			<xsl:if test="$namespace = 'iso'">
 				<xsl:attribute name="padding-top">1mm</xsl:attribute>
 			</xsl:if>
@@ -596,7 +606,7 @@
 			<xsl:if test="$namespace = 'nist'">
 				<xsl:attribute name="text-decoration">underline</xsl:attribute>
 			</xsl:if>
-			<fo:basic-link internal-destination="{@reference}_{ancestor::*[@id][1]/@id}"> <!-- @reference   | ancestor::*[local-name()='clause'][1]/@id-->
+			<fo:basic-link internal-destination="{@reference}_{ancestor::*[@id][1]/@id}" fox:alt-text="{@reference}"> <!-- @reference   | ancestor::*[local-name()='clause'][1]/@id-->
 				<xsl:value-of select="@reference"/>
 			</fo:basic-link>
 		</fo:inline>
@@ -1176,5 +1186,13 @@
 	<!-- End mode simple-table-rowspan  -->
 	<!-- ===================== -->	
 	<!-- ===================== -->	
+
+	<xsl:template name="getLang">
+		<xsl:variable name="language" select="//*[local-name()='bibdata']//*[local-name()='language']"/>
+		<xsl:choose>
+			<xsl:when test="$language = 'English'">en</xsl:when>
+			<xsl:otherwise><xsl:value-of select="$language"/></xsl:otherwise>
+		</xsl:choose>
+	</xsl:template>
 	
 </xsl:stylesheet>
