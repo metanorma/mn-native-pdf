@@ -38,15 +38,16 @@ sources/iec-%.xml: mn-samples-iec/documents/iec-%.xml
 sources/un-%.xml: mn-samples-un/documents/%.xml
 	cp $< $@
 
+# TODO: the `FILENAME_FLAVOR` lines is a hack until metanorma/metanorma-iec#17 is done.
 documents/%.pdf: sources/%.xml pdf_fonts_config.xml xml2pdf/target/xml2pdf-1.0.jar | documents
 	FILENAME=$<; \
 	OUTFILE=$@; \
 	MN_FLAVOR=$$(xmllint --xpath 'name(*)' $${FILENAME} | cut -d '-' -f 1); \
+	FILENAME_FLAVOR=$$(echo "$*" | cut -d '-' -f 1); \
+	if [ $$FILENAME_FLAVOR == "iec" ]; then MN_FLAVOR="iec"; fi; \
 	DOCTYPE=$$(xmllint --xpath "//*[local-name()='doctype']/text()" $${FILENAME}); \
 	XSLT_PATH=${XSLT_PATH_BASE}/$${MN_FLAVOR}.$${DOCTYPE}.xsl; \
   java -jar ${XML2PDF_PATH}/target/xml2pdf-1.0.jar pdf_fonts_config.xml $$FILENAME $$XSLT_PATH $$OUTFILE
-#  fop -c pdf_fonts_config.xml -xml $$FILENAME -xsl $$XSLT_PATH -foout $$OUTFILE.xml; \
-#  fop -c pdf_fonts_config.xml -fo $$OUTFILE.xml -out application/pdf $$OUTFILE
 
 # This document is currently broken
 documents/itu-D-REC-D.19-201003-E.pdf:
