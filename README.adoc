@@ -112,6 +112,11 @@ ln -s /System/Library/Fonts/Supplemental/Times\ New\ Roman.ttf ${MN_PDF_FONT_PAT
 ln -s /System/Library/Fonts/Supplemental/Times\ New\ Roman\ Bold.ttf ${MN_PDF_FONT_PATH}/truetype/msttcorefonts/timesbd.ttf
 ln -s /System/Library/Fonts/Supplemental/Times\ New\ Roman\ Italic.ttf ${MN_PDF_FONT_PATH}/truetype/msttcorefonts/timesi.ttf
 ln -s /System/Library/Fonts/Supplemental/Times\ New\ Roman\ Bold\ Italic.ttf ${MN_PDF_FONT_PATH}/truetype/msttcorefonts/timesbi.ttf
+ln -s /System/Library/Fonts/Supplemental/Courier\ New.ttf ${MN_PDF_FONT_PATH}/truetype/msttcorefonts/cour.ttf
+ln -s /System/Library/Fonts/Supplemental/Courier\ New\ Italic.ttf ${MN_PDF_FONT_PATH}/truetype/msttcorefonts/couri.ttf
+ln -s /System/Library/Fonts/Supplemental/Courier\ New\ Bold.ttf ${MN_PDF_FONT_PATH}/truetype/msttcorefonts/courbd.ttf
+ln -s /System/Library/Fonts/Supplemental/Courier\ New\ Bold\ Italic.ttf ${MN_PDF_FONT_PATH}/truetype/msttcorefonts/courbi.ttf
+
 ls -alR ${MN_PDF_FONT_PATH}
 
 ----
