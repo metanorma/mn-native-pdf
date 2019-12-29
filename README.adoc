@@ -1,29 +1,22 @@
-= Metarnoma Native PDF
+= Metanorma Native PDF
 
 image:https://github.com/metanorma/mn-native-pdf/workflows/ubuntu/badge.svg["Build Status", link="https://github.com/metanorma/mn-native-pdf/actions?workflow=ubuntu"]
 image:https://github.com/metanorma/mn-native-pdf/workflows/macos/badge.svg["Build Status", link="https://github.com/metanorma/mn-native-pdf/actions?workflow=macos"]
 
-The experimental PDF is available here:
+The experimental PDFs are available here:
 
-* https://metanorma.github.io/mn-native-pdf/iso-24229.pdf[ISO 24229 sample (PDF)]
-* https://metanorma.github.io/mn-native-pdf/iso-rice-en.pdf[ISO Rice sample (PDF)]
-* https://metanorma.github.io/mn-native-pdf/itu-G.191.pdf[ITU G.191 (PDF)]
-* https://metanorma.github.io/mn-native-pdf/itu-G.650.1-201803-v2.pdf[ITU G.650.1-201803-v2 (PDF)]
-* https://metanorma.github.io/mn-native-pdf/itu-G.650.1-201803.pdf[ITU G.650.1-201803 (PDF)]
-* https://metanorma.github.io/mn-native-pdf/itu-T-Editing-Guidelines-201602.pdf[ITU T-Editing-Guidelines-201602 (PDF)]
-* https://metanorma.github.io/mn-native-pdf/itu-T-REC-H.782-201811-I.MSW-E.pdf[ITU T-REC-H.782-201811-I.MSW-E (PDF)]
-* https://metanorma.github.io/mn-native-pdf/itu-T-REC-J.1108-201901-P.MSW-E.pdf[ITU T-REC-J.1108-201901-P.MSW-E (PDF)]
-* https://metanorma.github.io/mn-native-pdf/itu-T-REC-P.1203-201710-I.MSW-E.pdf[ITU T-REC-P.1203-201710-I.MSW-E (PDF)]
+* https://metanorma.github.io/mn-native-pdf/[Metanorma mn2pdf samples]
 
 
 == Purpose
 
-This repository pilots native PDF capabilities of Metnaorma using XML-FO via Apache FOP.
+This repository pilots native PDF capabilities of Metanorma using XML-FO via Apache FOP.
 
 
 == Installing Build Tools
 
-You will need Apache FOP, `envsubst`, `make` and the Cambria font set.
+You will need `mn2pdf`, `envsubst`, `make` and a number of fonts.
+
 
 === On macOS
 
@@ -33,36 +26,56 @@ You will need Apache FOP, `envsubst`, `make` and the Cambria font set.
 brew install gettext
 brew link --force gettext
 
-# Install Apache FOP
-brew install fop
+# Install cabextract
+brew install cabextract
 
-# Install Maven
-brew install maven
+# Install Fontforge
+brew install fontforge
 
 # Install p7zip
 brew install p7zip
 ----
 
-Manually add the Cambria fonts (`cambria.ttf`, `cambriab.ttf`, `cambriai.ttf`, `cambriaz.ttf`) to your `fonts/` directory under this repository, or anywhere else. Point to it using the environment variable `MN_PDF_FONT_PATH`.
-
-e.g.
 [source,sh]
 ----
+# Install Microsoft Vista fonts
 export MN_PDF_FONT_PATH=$(pwd)/fonts
 mkdir -p ${MN_PDF_FONT_PATH}/truetype/vista/
 
-# Install Cambria
-pushd $(mktemp -d)
-curl -Ls https://www.rmtweb.co.uk/wp-content/uploads/2013/06/Calibri-and-Cambria-Fonts.zip -o cambria.zip
-unzip cambria.zip
-mkdir -p ${MN_PDF_FONT_PATH}/truetype/vista/
-mv ./Calibri\ and\ Cambria\ Fonts/Cambria*.ttf .
-mv Cambria.ttf cambria.ttf
-mv Cambria\ Bold.ttf cambriab.ttf
-mv Cambria\ Italic.ttf cambriai.ttf
-mv Cambria\ Bold\ Italic.ttf cambriaz.ttf
-mv *.ttf ${MN_PDF_FONT_PATH}/truetype/vista/
-popd
+curl -Ls https://gist.githubusercontent.com/ronaldtse/b53c05030a1eee94087aa9f80592b88b/raw/macos-vista-fonts-installer.sh | sudo bash
+
+ls -alR ~/Library/Fonts/Microsoft
+
+ln -s ~/Library/Fonts/Microsoft/Calibri\ Bold\ Italic.ttf ${MN_PDF_FONT_PATH}/truetype/vista/calibriz.ttf
+ln -s ~/Library/Fonts/Microsoft/Calibri\ Bold.ttf         ${MN_PDF_FONT_PATH}/truetype/vista/calibrib.ttf
+ln -s ~/Library/Fonts/Microsoft/Calibri\ Italic.ttf       ${MN_PDF_FONT_PATH}/truetype/vista/calibrii.ttf
+ln -s ~/Library/Fonts/Microsoft/Calibri.ttf               ${MN_PDF_FONT_PATH}/truetype/vista/calibri.ttf
+ln -s ~/Library/Fonts/Microsoft/Cambria\ Bold\ Italic.ttf ${MN_PDF_FONT_PATH}/truetype/vista/cambriaz.ttf
+ln -s ~/Library/Fonts/Microsoft/Cambria\ Bold.ttf         ${MN_PDF_FONT_PATH}/truetype/vista/cambriab.ttf
+ln -s ~/Library/Fonts/Microsoft/Cambria\ Italic.ttf       ${MN_PDF_FONT_PATH}/truetype/vista/cambriai.ttf
+ln -s ~/Library/Fonts/Microsoft/Cambria\ Math.ttf         ${MN_PDF_FONT_PATH}/truetype/vista/cambriam.ttf
+ln -s ~/Library/Fonts/Microsoft/Cambria.ttf               ${MN_PDF_FONT_PATH}/truetype/vista/cambria.ttf
+ln -s ~/Library/Fonts/Microsoft/Candara\ Bold\ Italic.ttf ${MN_PDF_FONT_PATH}/truetype/vista/candaraz.ttf
+ln -s ~/Library/Fonts/Microsoft/Candara\ Bold.ttf         ${MN_PDF_FONT_PATH}/truetype/vista/candarab.ttf
+ln -s ~/Library/Fonts/Microsoft/Candara\ Italic.ttf       ${MN_PDF_FONT_PATH}/truetype/vista/candarai.ttf
+ln -s ~/Library/Fonts/Microsoft/Candara.ttf               ${MN_PDF_FONT_PATH}/truetype/vista/candara.ttf
+ln -s ~/Library/Fonts/Microsoft/Consola\ Bold\ Italic.ttf ${MN_PDF_FONT_PATH}/truetype/vista/consolaz.ttf
+ln -s ~/Library/Fonts/Microsoft/Consola\ Bold.ttf         ${MN_PDF_FONT_PATH}/truetype/vista/consolab.ttf
+ln -s ~/Library/Fonts/Microsoft/Consola\ Italic.ttf       ${MN_PDF_FONT_PATH}/truetype/vista/consolai.ttf
+ln -s ~/Library/Fonts/Microsoft/Consola.ttf               ${MN_PDF_FONT_PATH}/truetype/vista/consola.ttf
+ln -s ~/Library/Fonts/Microsoft/Constan\ Bold\ Italic.ttf ${MN_PDF_FONT_PATH}/truetype/vista/constanz.ttf
+ln -s ~/Library/Fonts/Microsoft/Constan\ Bold.ttf         ${MN_PDF_FONT_PATH}/truetype/vista/constanb.ttf
+ln -s ~/Library/Fonts/Microsoft/Constan\ Italic.ttf       ${MN_PDF_FONT_PATH}/truetype/vista/constani.ttf
+ln -s ~/Library/Fonts/Microsoft/Constan.ttf               ${MN_PDF_FONT_PATH}/truetype/vista/constan.ttf
+ln -s ~/Library/Fonts/Microsoft/Corbel\ Bold\ Italic.ttf  ${MN_PDF_FONT_PATH}/truetype/vista/corbelz.ttf
+ln -s ~/Library/Fonts/Microsoft/Corbel\ Bold.ttf          ${MN_PDF_FONT_PATH}/truetype/vista/corbelb.ttf
+ln -s ~/Library/Fonts/Microsoft/Corbel\ Italic.ttf        ${MN_PDF_FONT_PATH}/truetype/vista/corbeli.ttf
+ln -s ~/Library/Fonts/Microsoft/Corbel.ttf                ${MN_PDF_FONT_PATH}/truetype/vista/corbel.ttf
+ln -s ~/Library/Fonts/Microsoft/Meiryo\ Bold\ Italic.ttf  ${MN_PDF_FONT_PATH}/truetype/vista/meiryoz.ttf
+ln -s ~/Library/Fonts/Microsoft/Meiryo\ Bold.ttf          ${MN_PDF_FONT_PATH}/truetype/vista/meiryob.ttf
+ln -s ~/Library/Fonts/Microsoft/Meiryo\ Italic.ttf        ${MN_PDF_FONT_PATH}/truetype/vista/meiryoi.ttf
+ln -s ~/Library/Fonts/Microsoft/Meiryo.ttf                ${MN_PDF_FONT_PATH}/truetype/vista/meiryo.ttf
+
 
 # Install FreeSerif
 mkdir -p ${MN_PDF_FONT_PATH}/truetype/freefont/
@@ -101,7 +114,7 @@ curl -Ls https://github.com/Pal3love/Source-Han-TrueType/raw/master/SourceHanSan
 mv *.ttc ${MN_PDF_FONT_PATH}/
 popd
 
-# Install MS system fonts
+# Install Microsoft Core fonts
 mkdir -p ${MN_PDF_FONT_PATH}/truetype/msttcorefonts
 ls -alR /System/Library/Fonts
 ln -s /System/Library/Fonts/Supplemental/Arial.ttf ${MN_PDF_FONT_PATH}/truetype/msttcorefonts/arial.ttf
@@ -135,7 +148,7 @@ make all
 
 [source,sh]
 ----
-sudo apt-get -y install gettext-base fop cabextract wget
+sudo apt-get -y install gettext-base cabextract wget
 
 # Install fontforge
 sudo apt-get -y install software-properties-common

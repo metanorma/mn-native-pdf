@@ -22,23 +22,45 @@ jobs:
 
       - uses: actions/checkout@master
 
-      - name: Install Cambria
+      - name: Install Microsoft Vista fonts
         run: |
-          export MN_PDF_FONT_PATH=${GITHUB_WORKSPACE}/fonts
-          mkdir -p ${MN_PDF_FONT_PATH}/truetype/vista/
+          curl -Ls https://gist.githubusercontent.com/ronaldtse/b53c05030a1eee94087aa9f80592b88b/raw/macos-vista-fonts-installer.sh | sudo bash
 
-          # Install Cambria
-          pushd $(mktemp -d)
-          curl -Ls https://www.rmtweb.co.uk/wp-content/uploads/2013/06/Calibri-and-Cambria-Fonts.zip -o cambria.zip
-          unzip cambria.zip
-          mkdir -p ${MN_PDF_FONT_PATH}/truetype/vista/
-          mv ./Calibri\ and\ Cambria\ Fonts/Cambria*.ttf .
-          mv Cambria.ttf cambria.ttf
-          mv Cambria\ Bold.ttf cambriab.ttf
-          mv Cambria\ Italic.ttf cambriai.ttf
-          mv Cambria\ Bold\ Italic.ttf cambriaz.ttf
-          mv *.ttf ${MN_PDF_FONT_PATH}/truetype/vista/
-          popd
+          export MN_PDF_FONT_PATH=${GITHUB_WORKSPACE}/fonts
+          mkdir -p ${MN_PDF_FONT_PATH}/truetype/vista
+
+          ls -alR ~/Library/Fonts/Microsoft
+
+          ln -s ~/Library/Fonts/Microsoft/Calibri\ Bold\ Italic.ttf ${MN_PDF_FONT_PATH}/truetype/vista/calibriz.ttf
+          ln -s ~/Library/Fonts/Microsoft/Calibri\ Bold.ttf         ${MN_PDF_FONT_PATH}/truetype/vista/calibrib.ttf
+          ln -s ~/Library/Fonts/Microsoft/Calibri\ Italic.ttf       ${MN_PDF_FONT_PATH}/truetype/vista/calibrii.ttf
+          ln -s ~/Library/Fonts/Microsoft/Calibri.ttf               ${MN_PDF_FONT_PATH}/truetype/vista/calibri.ttf
+          ln -s ~/Library/Fonts/Microsoft/Cambria\ Bold\ Italic.ttf ${MN_PDF_FONT_PATH}/truetype/vista/cambriaz.ttf
+          ln -s ~/Library/Fonts/Microsoft/Cambria\ Bold.ttf         ${MN_PDF_FONT_PATH}/truetype/vista/cambriab.ttf
+          ln -s ~/Library/Fonts/Microsoft/Cambria\ Italic.ttf       ${MN_PDF_FONT_PATH}/truetype/vista/cambriai.ttf
+          ln -s ~/Library/Fonts/Microsoft/Cambria\ Math.ttf         ${MN_PDF_FONT_PATH}/truetype/vista/cambriam.ttf
+          ln -s ~/Library/Fonts/Microsoft/Cambria.ttf               ${MN_PDF_FONT_PATH}/truetype/vista/cambria.ttf
+          ln -s ~/Library/Fonts/Microsoft/Candara\ Bold\ Italic.ttf ${MN_PDF_FONT_PATH}/truetype/vista/candaraz.ttf
+          ln -s ~/Library/Fonts/Microsoft/Candara\ Bold.ttf         ${MN_PDF_FONT_PATH}/truetype/vista/candarab.ttf
+          ln -s ~/Library/Fonts/Microsoft/Candara\ Italic.ttf       ${MN_PDF_FONT_PATH}/truetype/vista/candarai.ttf
+          ln -s ~/Library/Fonts/Microsoft/Candara.ttf               ${MN_PDF_FONT_PATH}/truetype/vista/candara.ttf
+          ln -s ~/Library/Fonts/Microsoft/Consola\ Bold\ Italic.ttf ${MN_PDF_FONT_PATH}/truetype/vista/consolaz.ttf
+          ln -s ~/Library/Fonts/Microsoft/Consola\ Bold.ttf         ${MN_PDF_FONT_PATH}/truetype/vista/consolab.ttf
+          ln -s ~/Library/Fonts/Microsoft/Consola\ Italic.ttf       ${MN_PDF_FONT_PATH}/truetype/vista/consolai.ttf
+          ln -s ~/Library/Fonts/Microsoft/Consola.ttf               ${MN_PDF_FONT_PATH}/truetype/vista/consola.ttf
+          ln -s ~/Library/Fonts/Microsoft/Constan\ Bold\ Italic.ttf ${MN_PDF_FONT_PATH}/truetype/vista/constanz.ttf
+          ln -s ~/Library/Fonts/Microsoft/Constan\ Bold.ttf         ${MN_PDF_FONT_PATH}/truetype/vista/constanb.ttf
+          ln -s ~/Library/Fonts/Microsoft/Constan\ Italic.ttf       ${MN_PDF_FONT_PATH}/truetype/vista/constani.ttf
+          ln -s ~/Library/Fonts/Microsoft/Constan.ttf               ${MN_PDF_FONT_PATH}/truetype/vista/constan.ttf
+          ln -s ~/Library/Fonts/Microsoft/Corbel\ Bold\ Italic.ttf  ${MN_PDF_FONT_PATH}/truetype/vista/corbelz.ttf
+          ln -s ~/Library/Fonts/Microsoft/Corbel\ Bold.ttf          ${MN_PDF_FONT_PATH}/truetype/vista/corbelb.ttf
+          ln -s ~/Library/Fonts/Microsoft/Corbel\ Italic.ttf        ${MN_PDF_FONT_PATH}/truetype/vista/corbeli.ttf
+          ln -s ~/Library/Fonts/Microsoft/Corbel.ttf                ${MN_PDF_FONT_PATH}/truetype/vista/corbel.ttf
+          ln -s ~/Library/Fonts/Microsoft/Meiryo\ Bold\ Italic.ttf  ${MN_PDF_FONT_PATH}/truetype/vista/meiryoz.ttf
+          ln -s ~/Library/Fonts/Microsoft/Meiryo\ Bold.ttf          ${MN_PDF_FONT_PATH}/truetype/vista/meiryob.ttf
+          ln -s ~/Library/Fonts/Microsoft/Meiryo\ Italic.ttf        ${MN_PDF_FONT_PATH}/truetype/vista/meiryoi.ttf
+          ln -s ~/Library/Fonts/Microsoft/Meiryo.ttf                ${MN_PDF_FONT_PATH}/truetype/vista/meiryo.ttf
+
 
       - name: Install FreeSerif
         run: |
@@ -84,7 +106,7 @@ jobs:
           mv *.ttc ${MN_PDF_FONT_PATH}/
           popd
 
-      - name: Install System Fonts
+      - name: Install Microsoft Core Fonts
         run: |
           export MN_PDF_FONT_PATH=${GITHUB_WORKSPACE}/fonts
           mkdir -p ${MN_PDF_FONT_PATH}/truetype/msttcorefonts
