@@ -6,6 +6,9 @@ SRC := $(patsubst mn-samples-iso/documents/%,sources/%,$(wildcard mn-samples-iso
 	$(patsubst mn-samples-itu/documents/%,sources/itu-%,$(wildcard mn-samples-itu/documents/*.xml)) \
 	$(patsubst mn-samples-un/documents/%,sources/un-%,$(wildcard mn-samples-un/documents/*.xml))
 PDF := $(patsubst sources/%,documents/%,$(patsubst %.xml,%.pdf,$(SRC)))
+HTML := $(patsubst sources/%,documents/%,$(patsubst %.xml,%.html,$(SRC)))
+DOC := $(patsubst sources/%,documents/%,$(patsubst %.xml,%.doc,$(SRC)))
+RXL := $(patsubst sources/%,documents/%,$(patsubst %.xml,%.rxl,$(SRC)))
 XSLT_PATH_BASE := $(shell pwd)/xslt
 MN2PDF_DOWNLOAD_PATH := https://github.com/metanorma/mn2pdf/releases/download/v1.0.0/mn2pdf-1.0.jar
 
@@ -15,21 +18,24 @@ else
 	MN_PDF_FONT_PATH := $(pwd)/fonts
 endif
 
-all: $(PDF)
+all: documents.html
 
 mn2pdf.jar:
 	curl -sSL ${MN2PDF_DOWNLOAD_PATH} -o mn2pdf.jar
 
+sources/iso-%: mn-samples-iso/documents/iso-%
+	cp $< $@
+
+sources/itu-%: mn-samples-itu/documents/%
+	cp $< $@
+
+sources/un-%: mn-samples-un/documents/%
+	cp $< $@
+
 documents:
 	mkdir -p $@
 
-sources/iso-%.xml: mn-samples-iso/documents/iso-%.xml
-	cp $< $@
-
-sources/itu-%.xml: mn-samples-itu/documents/%.xml
-	cp $< $@
-
-sources/un-%.xml: mn-samples-un/documents/%.xml
+documents/%: sources/% | documents
 	cp $< $@
 
 documents/%.pdf: sources/%.xml pdf_fonts_config.xml mn2pdf.jar | documents
@@ -43,12 +49,24 @@ documents/%.pdf: sources/%.xml pdf_fonts_config.xml mn2pdf.jar | documents
 # This document is currently broken
 documents/itu-D-REC-D.19-201003-E.pdf:
 
+documents.rxl: $(HTML) $(DOC) $(RXL) $(PDF)
+	${PREFIX_CMD} relaton concatenate \
+	  -t "$(shell yq r metanorma.yml relaton.collection.name)" \
+		-g "$(shell yq r metanorma.yml relaton.collection.organization)" \
+		documents $@
+
+documents.html: documents.rxl
+	${PREFIX_CMD} relaton xml2html documents.rxl
+
 pdf_fonts_config.xml: pdf_fonts_config.xml.in
 	MN_PDF_FONT_PATH=${MN_PDF_FONT_PATH}; \
 	envsubst < pdf_fonts_config.xml.in > pdf_fonts_config.xml
 
+distclean: clean
+	rm -f mn2pdf.jar
+
 clean:
-	rm -f mn2pdf.jar pdf_fonts_config.xml
+	rm -f pdf_fonts_config.xml
 	rm -rf documents
 
 update-init:
