@@ -55,6 +55,9 @@ documents.rxl: $(HTML) $(DOC) $(RXL) $(PDF) | bundle
 		-g "$(shell yq r metanorma.yml relaton.collection.organization)" \
 		documents $@
 
+bundle:
+	bundle
+
 documents.html: documents.rxl
 	bundle exec relaton xml2html documents.rxl
 
@@ -75,4 +78,4 @@ update-init:
 update-modules:
 	git submodule foreach git pull origin gh-pages
 
-.PHONY: all clean update-init update-modules
+.PHONY: all clean update-init update-modules bundle
