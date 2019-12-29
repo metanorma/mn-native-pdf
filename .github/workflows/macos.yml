@@ -17,6 +17,12 @@ jobs:
           brew install gettext
           brew link --force gettext
 
+          # Install cabextract
+          brew install cabextract
+
+          # Install Fontforge
+          brew install fontforge
+
           # Install p7zip
           brew install p7zip
 
@@ -24,7 +30,7 @@ jobs:
 
       - name: Install Microsoft Vista fonts
         run: |
-          curl -Ls https://gist.githubusercontent.com/ronaldtse/b53c05030a1eee94087aa9f80592b88b/raw/macos-vista-fonts-installer.sh | sudo bash
+          curl -Ls https://gist.githubusercontent.com/ronaldtse/b53c05030a1eee94087aa9f80592b88b/raw/macos-vista-fonts-installer.sh | bash
 
           export MN_PDF_FONT_PATH=${GITHUB_WORKSPACE}/fonts
           mkdir -p ${MN_PDF_FONT_PATH}/truetype/vista
