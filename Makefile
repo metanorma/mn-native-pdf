@@ -49,14 +49,14 @@ documents/%.pdf: sources/%.xml pdf_fonts_config.xml mn2pdf.jar | documents
 # This document is currently broken
 documents/itu-D-REC-D.19-201003-E.pdf:
 
-documents.rxl: $(HTML) $(DOC) $(RXL) $(PDF)
-	${PREFIX_CMD} relaton concatenate \
+documents.rxl: $(HTML) $(DOC) $(RXL) $(PDF) | bundle
+	bundle exec relaton concatenate \
 	  -t "$(shell yq r metanorma.yml relaton.collection.name)" \
 		-g "$(shell yq r metanorma.yml relaton.collection.organization)" \
 		documents $@
 
 documents.html: documents.rxl
-	${PREFIX_CMD} relaton xml2html documents.rxl
+	bundle exec relaton xml2html documents.rxl
 
 pdf_fonts_config.xml: pdf_fonts_config.xml.in
 	MN_PDF_FONT_PATH=${MN_PDF_FONT_PATH}; \

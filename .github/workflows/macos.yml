@@ -26,6 +26,9 @@ jobs:
           # Install p7zip
           brew install p7zip
 
+          # Install yq
+          brew install yq
+
       - uses: actions/checkout@master
 
       - name: Install Microsoft Vista fonts
