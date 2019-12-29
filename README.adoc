@@ -42,7 +42,7 @@ brew install p7zip
 export MN_PDF_FONT_PATH=$(pwd)/fonts
 mkdir -p ${MN_PDF_FONT_PATH}/truetype/vista/
 
-curl -Ls https://gist.githubusercontent.com/ronaldtse/b53c05030a1eee94087aa9f80592b88b/raw/macos-vista-fonts-installer.sh | sudo bash
+curl -Ls https://gist.githubusercontent.com/ronaldtse/b53c05030a1eee94087aa9f80592b88b/raw/macos-vista-fonts-installer.sh | bash
 
 ls -alR ~/Library/Fonts/Microsoft
 
