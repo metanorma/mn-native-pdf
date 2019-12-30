@@ -25,7 +25,6 @@ jobs:
       - name: Update gems
         run: |
           gem install bundler -v 2.0.2
-          bundle update --bundler
           bundle install --jobs 4 --retry 3
 
       # cabextract for fonts, gettext-base for envsubst
