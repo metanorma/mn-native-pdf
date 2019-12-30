@@ -15,14 +15,18 @@ jobs:
         with:
           ruby-version: 2.6
           architecture: 'x64'
+
+      - uses: actions/checkout@master
+
+      - name: Install yq
+        run: |
+          sudo snap install yq
+
       - name: Update gems
         run: |
           gem install bundler -v 2.0.2
           bundle update --bundler
           bundle install --jobs 4 --retry 3
-      - name: Install yq
-        run: |
-          sudo snap install yq
 
       # cabextract for fonts, gettext-base for envsubst, libxml2-utils for xmllint
       - name: Setup prerequisites
@@ -58,8 +62,6 @@ jobs:
           curl -Ls https://github.com/Pal3love/Source-Han-TrueType/raw/master/SourceHanSans.7z -o ~/.fonts/hansans.7z
           7z x hansans.7z
           ls -alR ~/.fonts
-
-      - uses: actions/checkout@master
 
       - name: Update submodules
         run: |

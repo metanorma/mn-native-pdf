@@ -15,14 +15,18 @@ jobs:
         with:
           ruby-version: 2.6
           architecture: 'x64'
+
+      - name: Install yq
+        run: |
+          brew install yq
+
+      - uses: actions/checkout@master
+
       - name: Update gems
         run: |
           gem install bundler -v 2.0.2
           bundle update --bundler
           bundle install --jobs 4 --retry 3
-      - name: Install yq
-        run: |
-          brew install yq
 
       # cabextract for fonts, gettext-base for envsubst
       - name: Setup prerequisites
@@ -42,8 +46,6 @@ jobs:
 
           # Install yq
           brew install yq
-
-      - uses: actions/checkout@master
 
       - name: Install Microsoft Vista fonts
         run: |
