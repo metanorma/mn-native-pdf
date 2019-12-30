@@ -10,6 +10,20 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
+      - name: Use Ruby
+        uses: actions/setup-ruby@v1
+        with:
+          ruby-version: 2.6
+          architecture: 'x64'
+      - name: Update gems
+        run: |
+          gem install bundler
+          bundle update --bundler
+          bundle install --jobs 4 --retry 3
+      - name: Install yq
+        run: |
+          sudo snap install yq
+
       # cabextract for fonts, gettext-base for envsubst, libxml2-utils for xmllint
       - name: Setup prerequisites
         run: |
