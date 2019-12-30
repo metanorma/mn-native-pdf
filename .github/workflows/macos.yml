@@ -47,8 +47,7 @@ jobs:
           ln -s ~/Library/Fonts/Microsoft/Cambria\ Bold\ Italic.ttf ${MN_PDF_FONT_PATH}/truetype/vista/cambriaz.ttf
           ln -s ~/Library/Fonts/Microsoft/Cambria\ Bold.ttf         ${MN_PDF_FONT_PATH}/truetype/vista/cambriab.ttf
           ln -s ~/Library/Fonts/Microsoft/Cambria\ Italic.ttf       ${MN_PDF_FONT_PATH}/truetype/vista/cambriai.ttf
-          ln -s ~/Library/Fonts/Microsoft/Cambria\ Math.ttf         ${MN_PDF_FONT_PATH}/truetype/vista/cambriam.ttf
-          ln -s ~/Library/Fonts/Microsoft/Cambria.ttf               ${MN_PDF_FONT_PATH}/truetype/vista/cambria.ttf
+          ln -s ~/Library/Fonts/Microsoft/Cambria.ttc               ${MN_PDF_FONT_PATH}/truetype/vista/cambria.ttc
           ln -s ~/Library/Fonts/Microsoft/Candara\ Bold\ Italic.ttf ${MN_PDF_FONT_PATH}/truetype/vista/candaraz.ttf
           ln -s ~/Library/Fonts/Microsoft/Candara\ Bold.ttf         ${MN_PDF_FONT_PATH}/truetype/vista/candarab.ttf
           ln -s ~/Library/Fonts/Microsoft/Candara\ Italic.ttf       ${MN_PDF_FONT_PATH}/truetype/vista/candarai.ttf
@@ -65,10 +64,8 @@ jobs:
           ln -s ~/Library/Fonts/Microsoft/Corbel\ Bold.ttf          ${MN_PDF_FONT_PATH}/truetype/vista/corbelb.ttf
           ln -s ~/Library/Fonts/Microsoft/Corbel\ Italic.ttf        ${MN_PDF_FONT_PATH}/truetype/vista/corbeli.ttf
           ln -s ~/Library/Fonts/Microsoft/Corbel.ttf                ${MN_PDF_FONT_PATH}/truetype/vista/corbel.ttf
-          ln -s ~/Library/Fonts/Microsoft/Meiryo\ Bold\ Italic.ttf  ${MN_PDF_FONT_PATH}/truetype/vista/meiryoz.ttf
-          ln -s ~/Library/Fonts/Microsoft/Meiryo\ Bold.ttf          ${MN_PDF_FONT_PATH}/truetype/vista/meiryob.ttf
-          ln -s ~/Library/Fonts/Microsoft/Meiryo\ Italic.ttf        ${MN_PDF_FONT_PATH}/truetype/vista/meiryoi.ttf
-          ln -s ~/Library/Fonts/Microsoft/Meiryo.ttf                ${MN_PDF_FONT_PATH}/truetype/vista/meiryo.ttf
+          ln -s ~/Library/Fonts/Microsoft/Meiryo\ Bold.ttc          ${MN_PDF_FONT_PATH}/truetype/vista/meiryob.ttc
+          ln -s ~/Library/Fonts/Microsoft/Meiryo.ttc                ${MN_PDF_FONT_PATH}/truetype/vista/meiryo.ttc
 
 
       - name: Install FreeSerif
