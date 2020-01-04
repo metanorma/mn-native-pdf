@@ -10,22 +10,22 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@master
+
       - name: Use Ruby
         uses: actions/setup-ruby@v1
         with:
           ruby-version: 2.6
           architecture: 'x64'
 
-      - uses: actions/checkout@master
-
-      - name: Install yq
-        run: |
-          sudo snap install yq
-
       - name: Update gems
         run: |
           gem install bundler -v 2.0.2
           bundle install --jobs 4 --retry 3
+
+      - name: Install yq
+        run: |
+          sudo snap install yq
 
       # cabextract for fonts, gettext-base for envsubst, libxml2-utils for xmllint
       - name: Setup prerequisites
@@ -43,15 +43,9 @@ jobs:
           echo ttf-mscorefonts-installer msttcorefonts/accepted-mscorefonts-eula select true | sudo debconf-set-selections
           sudo apt-get install ttf-mscorefonts-installer
 
-      # - name: Setup font structure
-      #   run: |
-      #     mkdir -p ~/.fonts
-      #     # sudo chown -R $(whoami) /usr/share/fonts/
-
       - name: Setup Cambria fonts
         run: |
           curl -Ls https://raw.githubusercontent.com/metanorma/vista-fonts-installer/master/vista-fonts-installer.sh | sudo bash
-        # export MN_PDF_FONT_PATH=${GITHUB_WORKSPACE}/fonts
 
       - name: Setup CJK fonts
         run: |
