@@ -48,11 +48,11 @@ jobs:
 
       - name: Setup CJK fonts
         run: |
-          mkdir -p /usr/share/fonts/adobe
+          mkdir -p /usr/share/fonts/truetype/adobe
           pushd $(mktemp -d)
           curl -Ls https://github.com/Pal3love/Source-Han-TrueType/raw/master/SourceHanSans.7z -o hansans.7z
           7za x hansans.7z
-          mv *.ttc /usr/share/fonts/adobe
+          mv *.ttc /usr/share/fonts/truetype/adobe
           popd
 
       - name: Update submodules
