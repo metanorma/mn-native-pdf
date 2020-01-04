@@ -78,4 +78,11 @@ update-init:
 update-modules:
 	git submodule foreach git pull origin gh-pages
 
-.PHONY: all clean update-init update-modules bundle
+publish: published
+published: documents.html
+	mkdir -p published && \
+	cp -a documents $@/ && \
+	cp $< published/index.html; \
+	if [ -d "images" ]; then cp -a images published; fi
+
+.PHONY: all clean update-init update-modules bundle publish
