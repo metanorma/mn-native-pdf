@@ -35,9 +35,6 @@ jobs:
 
           # Install fontforge
           sudo apt-get -y install software-properties-common
-          sudo add-apt-repository ppa:fontforge/fontforge
-          sudo apt-get update
-          sudo apt-get -y install fontforge
 
           # Install fonts
           sudo apt-get -y install fonts-freefont-ttf fonts-nanum fonts-droid-fallback
@@ -46,21 +43,22 @@ jobs:
           echo ttf-mscorefonts-installer msttcorefonts/accepted-mscorefonts-eula select true | sudo debconf-set-selections
           sudo apt-get install ttf-mscorefonts-installer
 
+      # - name: Setup font structure
+      #   run: |
+      #     mkdir -p ~/.fonts
+      #     # sudo chown -R $(whoami) /usr/share/fonts/
+
       - name: Setup Cambria fonts
         run: |
-          # Setup Cambria
-          curl -Ls https://gist.github.com/maxwelleite/10774746/raw/ttf-vista-fonts-installer.sh | sudo bash
-          sudo chown -R $(whoami) /usr/share/fonts/
-          mkdir -p ~/.fonts
-          cp -a /usr/share/fonts/* ~/.fonts
-          ls -alR ~/.fonts
+          curl -Ls https://raw.githubusercontent.com/metanorma/vista-fonts-installer/master/vista-fonts-installer.sh | sudo bash
+        # export MN_PDF_FONT_PATH=${GITHUB_WORKSPACE}/fonts
 
       - name: Setup CJK fonts
         run: |
-          cd ~/.fonts
-          curl -Ls https://github.com/Pal3love/Source-Han-TrueType/raw/master/SourceHanSans.7z -o ~/.fonts/hansans.7z
+          mkdir -p /usr/share/fonts/adobe
+          cd /usr/share/fonts/adobe
+          curl -Ls https://github.com/Pal3love/Source-Han-TrueType/raw/master/SourceHanSans.7z -o hansans.7z
           7z x hansans.7z
-          ls -alR ~/.fonts
 
       - name: Update submodules
         run: |
@@ -68,7 +66,7 @@ jobs:
 
       - name: Compile output
         env:
-          MN_PDF_FONT_PATH: ~/.fonts
+          MN_PDF_FONT_PATH: /usr/share/fonts/
         run: |
           make all
           mv documents published

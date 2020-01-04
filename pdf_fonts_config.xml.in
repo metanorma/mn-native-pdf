@@ -98,6 +98,18 @@ the location of this file.
 				<font kerning="yes" embed-url="file://${MN_PDF_FONT_PATH}/truetype/vista/calibriz.ttf">
 					<font-triplet name="Calibri" style="italic" weight="bold"/>
 				</font>
+				<font kerning="yes" embed-url="file://${MN_PDF_FONT_PATH}/truetype/vista/meiryo.ttc" sub-font="Meiryo">
+					<font-triplet name="Meiryo" style="normal" weight="normal"/>
+				</font>
+				<font kerning="yes" embed-url="file://${MN_PDF_FONT_PATH}/truetype/vista/meiryo.ttc" sub-font="Meiryo Italic">
+					<font-triplet name="Meiryo" style="italic" weight="normal"/>
+				</font>
+				<font kerning="yes" embed-url="file://${MN_PDF_FONT_PATH}/truetype/vista/meiryob.ttc" sub-font="Meiryo Bold">
+					<font-triplet name="Meiryo Bold" style="normal" weight="bold"/>
+				</font>
+				<font kerning="yes" embed-url="file://${MN_PDF_FONT_PATH}/truetype/vista/meiryob.ttc" sub-font="Meiryo Bold Italic">
+					<font-triplet name="Meiryo Bold" style="italic" weight="bold"/>
+				</font>
 				<!-- for missing characters in cambria, and for Hebrew glyphs -->
 				<font kerning="yes" embed-url="file://${MN_PDF_FONT_PATH}/truetype/freefont/FreeSerif.ttf">
 					<font-triplet name="FreeSerif" style="normal" weight="normal"/>
@@ -163,11 +175,11 @@ the location of this file.
 				</font>
 				<!-- for Chinese glyphs -->
 				<!-- https://github.com/Pal3love/Source-Han-TrueType/raw/master/SourceHanSans.7z -->
-				<font kerning="yes" embed-url="file://${MN_PDF_FONT_PATH}/SourceHanSans-Normal.ttc" sub-font="Source Han Sans Normal"  simulate-style="true">
+				<font kerning="yes" embed-url="file://${MN_PDF_FONT_PATH}/truetype/adobe/SourceHanSans-Normal.ttc" sub-font="Source Han Sans Normal"  simulate-style="true">
 					<font-triplet name="HanSans" style="normal" weight="normal"/>
 					<font-triplet name="HanSans" style="italic" weight="normal"/>
 				</font>
-				<font kerning="yes" embed-url="file://${MN_PDF_FONT_PATH}/SourceHanSans-Bold.ttc" sub-font="Source Han Sans Bold">
+				<font kerning="yes" embed-url="file://${MN_PDF_FONT_PATH}/truetype/adobe/SourceHanSans-Bold.ttc" sub-font="Source Han Sans Bold">
 					<font-triplet name="HanSans" style="normal" weight="bold"/>
 				</font>
 
