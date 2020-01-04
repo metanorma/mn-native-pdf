@@ -31,17 +31,16 @@ jobs:
       - name: Setup prerequisites
         run: |
           sudo apt-get update
-          sudo apt-get -y install gettext-base cabextract wget p7zip-full libxml2-utils
+          sudo apt-get -y install gettext-base cabextract wget p7zip-full libxml2-utils curl
 
-          # Install fontforge
-          sudo apt-get -y install software-properties-common
+          sudo apt-get -y install software-properties-common gcc ruby ruby-dev libffi-dev make libxml2-dev
 
           # Install fonts
           sudo apt-get -y install fonts-freefont-ttf fonts-nanum fonts-droid-fallback
 
           # If necessary
           echo ttf-mscorefonts-installer msttcorefonts/accepted-mscorefonts-eula select true | sudo debconf-set-selections
-          sudo apt-get install ttf-mscorefonts-installer
+          sudo apt-get install -y ttf-mscorefonts-installer
 
       - name: Setup Cambria fonts
         run: |
@@ -50,9 +49,11 @@ jobs:
       - name: Setup CJK fonts
         run: |
           mkdir -p /usr/share/fonts/adobe
-          cd /usr/share/fonts/adobe
+          pushd $(mktemp -d)
           curl -Ls https://github.com/Pal3love/Source-Han-TrueType/raw/master/SourceHanSans.7z -o hansans.7z
-          7z x hansans.7z
+          7za x hansans.7z
+          mv *.ttc /usr/share/fonts/adobe
+          popd
 
       - name: Update submodules
         run: |
