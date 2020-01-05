@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:fo="http://www.w3.org/1999/XSL/Format" xmlns:iso="http://riboseinc.com/isoxml" xmlns:mathml="http://www.w3.org/1998/Math/MathML" xmlns:xalan="http://xml.apache.org/xalan" xmlns:fox="http://xmlgraphics.apache.org/fop/extensions" version="1.0">
+<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:fo="http://www.w3.org/1999/XSL/Format" xmlns:iec="http://riboseinc.com/isoxml" xmlns:mathml="http://www.w3.org/1998/Math/MathML" xmlns:xalan="http://xml.apache.org/xalan" xmlns:fox="http://xmlgraphics.apache.org/fop/extensions" version="1.0">
 
 	<xsl:output method="xml" encoding="UTF-8" indent="no"/>
 	
@@ -8,22 +8,22 @@
 	<xsl:variable name="pageWidth" select="'210mm'"/>
 	<xsl:variable name="pageHeight" select="'297mm'"/>
 
-	<xsl:variable name="copyrightText" select="concat('© ', /iso:iso-standard/iso:bibdata/iso:copyright/iso:owner/iso:organization/iso:abbreviation, ':', iso:iso-standard/iso:bibdata/iso:copyright/iso:from)"/>
-  <!-- <xsl:variable name="lang-1st-letter" select="concat('(', translate(substring(iso:iso-standard/iso:bibdata/iso:language,1,1),$lower, $upper), ')')"/> -->
+	<xsl:variable name="copyrightText" select="concat('© ', /iec:iec-standard/iec:bibdata/iec:copyright/iec:owner/iec:organization/iec:abbreviation, ':', iec:iec-standard/iec:bibdata/iec:copyright/iec:from)"/>
+  <!-- <xsl:variable name="lang-1st-letter" select="concat('(', translate(substring(iec:iec-standard/iec:bibdata/iec:language,1,1),$lower, $upper), ')')"/> -->
   <xsl:variable name="lang-1st-letter" select="''"/>
-	<xsl:variable name="ISOname" select="/iso:iso-standard/iso:bibdata/iso:docidentifier[@type='iso']"/>
+	<xsl:variable name="ISOname" select="/iec:iec-standard/iec:bibdata/iec:docidentifier[@type='iso']"/>
 	
 	<!-- Information and documentation — Codes for transcription systems  -->
-	<xsl:variable name="title-en" select="/iso:iso-standard/iso:bibdata/iso:title[@language = 'en' and @type = 'main']"/>
-	<xsl:variable name="title-fr" select="/iso:iso-standard/iso:bibdata/iso:title[@language = 'fr' and @type = 'main']"/>
+	<xsl:variable name="title-en" select="/iec:iec-standard/iec:bibdata/iec:title[@language = 'en' and @type = 'main']"/>
+	<xsl:variable name="title-fr" select="/iec:iec-standard/iec:bibdata/iec:title[@language = 'fr' and @type = 'main']"/>
 
-	<xsl:variable name="title-intro" select="/iso:iso-standard/iso:bibdata/iso:title[@language = 'en' and @type = 'title-intro']"/>
-	<xsl:variable name="title-main" select="/iso:iso-standard/iso:bibdata/iso:title[@language = 'en' and @type = 'title-main']"/>
-	<xsl:variable name="part" select="/iso:iso-standard/iso:bibdata/iso:ext/iso:structuredidentifier/iso:project-number/@part"/>
+	<xsl:variable name="title-intro" select="/iec:iec-standard/iec:bibdata/iec:title[@language = 'en' and @type = 'title-intro']"/>
+	<xsl:variable name="title-main" select="/iec:iec-standard/iec:bibdata/iec:title[@language = 'en' and @type = 'title-main']"/>
+	<xsl:variable name="part" select="/iec:iec-standard/iec:bibdata/iec:ext/iec:structuredidentifier/iec:project-number/@part"/>
 	
-	<xsl:variable name="title-part" select="/iso:iso-standard/iso:bibdata/iso:title[@language = 'en' and @type = 'title-part']"/>
+	<xsl:variable name="title-part" select="/iec:iec-standard/iec:bibdata/iec:title[@language = 'en' and @type = 'title-part']"/>
 	
-	<xsl:variable name="organization" select="translate(/iso:iso-standard/iso:bibdata/iso:contributor/iso:organization/iso:name, $lower, $upper)"/>
+	<xsl:variable name="organization" select="translate(/iec:iec-standard/iec:bibdata/iec:contributor/iec:organization/iec:name, $lower, $upper)"/>
 	
 	
 	<!-- Example:
@@ -32,20 +32,20 @@
 	-->
 	<xsl:variable name="contents">
 		<contents>
-			<xsl:apply-templates select="/iso:iso-standard/iso:preface/node()" mode="contents"/>
+			<xsl:apply-templates select="/iec:iec-standard/iec:preface/node()" mode="contents"/>
 				<!-- <xsl:with-param name="sectionNum" select="'0'"/>
 			</xsl:apply-templates> -->
-			<xsl:apply-templates select="/iso:iso-standard/iso:sections/iso:clause[1]" mode="contents"> <!-- [@id = '_scope'] -->
+			<xsl:apply-templates select="/iec:iec-standard/iec:sections/iec:clause[1]" mode="contents"> <!-- [@id = '_scope'] -->
 				<xsl:with-param name="sectionNum" select="'1'"/>
 			</xsl:apply-templates>
-			<xsl:apply-templates select="/iso:iso-standard/iso:bibliography/iso:references[1]" mode="contents"> <!-- [@id = '_normative_references'] -->
+			<xsl:apply-templates select="/iec:iec-standard/iec:bibliography/iec:references[1]" mode="contents"> <!-- [@id = '_normative_references'] -->
 				<xsl:with-param name="sectionNum" select="'2'"/>
 			</xsl:apply-templates>
-			<xsl:apply-templates select="/iso:iso-standard/iso:sections/*[position() &gt; 1]" mode="contents"> <!-- @id != '_scope' -->
+			<xsl:apply-templates select="/iec:iec-standard/iec:sections/*[position() &gt; 1]" mode="contents"> <!-- @id != '_scope' -->
 				<xsl:with-param name="sectionNumSkew" select="'1'"/>
 			</xsl:apply-templates>
-			<xsl:apply-templates select="/iso:iso-standard/iso:annex" mode="contents"/>
-			<xsl:apply-templates select="/iso:iso-standard/iso:bibliography/iso:references[position() &gt; 1]" mode="contents"/> <!-- @id = '_bibliography' -->
+			<xsl:apply-templates select="/iec:iec-standard/iec:annex" mode="contents"/>
+			<xsl:apply-templates select="/iec:iec-standard/iec:bibliography/iec:references[position() &gt; 1]" mode="contents"/> <!-- @id = '_bibliography' -->
 			
 		</contents>
 	</xsl:variable>
@@ -57,7 +57,7 @@
 	<xsl:template match="/">
 		<!-- https://stackoverflow.com/questions/25261949/xsl-fo-letter-spacing-with-text-align -->
 		<!-- https://xmlgraphics.apache.org/fop/knownissues.html -->
-		<fo:root xmlns:fo="http://www.w3.org/1999/XSL/Format" font-family="Arial, FreeSerif, HanSans, NanumGothic, DroidSans" font-size="10pt" xml:lang="{$lang}">
+		<fo:root xmlns:fo="http://www.w3.org/1999/XSL/Format" font-family="Arial, FreeSerif, HanSans, DroidSans" font-size="10pt" xml:lang="{$lang}">
 			<fo:layout-master-set>
 				<!-- odd pages -->
 				<fo:simple-page-master master-name="odd" page-width="{$pageWidth}" page-height="{$pageHeight}">
@@ -97,7 +97,7 @@
 							<dc:creator></dc:creator>
 							<dc:description>
 								<xsl:variable name="abstract">
-									<xsl:copy-of select="/iso:iso-standard/iso:bibliography/iso:references/iso:bibitem/iso:abstract[@language = 'en']//text()"/>
+									<xsl:copy-of select="/iec:iec-standard/iec:bibliography/iec:references/iec:bibitem/iec:abstract[@language = 'en']//text()"/>
 								</xsl:variable>
 								<xsl:value-of select="normalize-space($abstract)"/>
 							</dc:description>
@@ -230,7 +230,7 @@
 					</fo:block-container>
 					
 					<!-- Foreword, Introduction -->
-					<xsl:apply-templates select="/iso:iso-standard/iso:preface/*"/>
+					<xsl:apply-templates select="/iec:iec-standard/iec:preface/*"/>
 						
 				</fo:flow>
 			</fo:page-sequence>
@@ -270,25 +270,25 @@
 					<fo:block>
 					
 						<!-- Scope -->
-						<xsl:apply-templates select="/iso:iso-standard/iso:sections/iso:clause[1]">
+						<xsl:apply-templates select="/iec:iec-standard/iec:sections/iec:clause[1]">
 							<xsl:with-param name="sectionNum" select="'1'"/>
 						</xsl:apply-templates>
 
 						 <!-- Normative references  -->
-						<xsl:apply-templates select="/iso:iso-standard/iso:bibliography/iso:references[1]">
+						<xsl:apply-templates select="/iec:iec-standard/iec:bibliography/iec:references[1]">
 							<xsl:with-param name="sectionNum" select="'2'"/>
 						</xsl:apply-templates>
 						
 						 <!-- main sections -->
-						<xsl:apply-templates select="/iso:iso-standard/iso:sections/*[position() &gt; 1]">
+						<xsl:apply-templates select="/iec:iec-standard/iec:sections/*[position() &gt; 1]">
 							<xsl:with-param name="sectionNumSkew" select="'1'"/>
 						</xsl:apply-templates>
 						
 						<!-- Annex(s) -->
-						<xsl:apply-templates select="/iso:iso-standard/iso:annex"/>
+						<xsl:apply-templates select="/iec:iec-standard/iec:annex"/>
 						
 						<!-- Bibliography -->
-						<xsl:apply-templates select="/iso:iso-standard/iso:bibliography/iso:references[position() &gt; 1]"/>
+						<xsl:apply-templates select="/iec:iec-standard/iec:bibliography/iec:references[position() &gt; 1]"/>
 					</fo:block>
 					
 				</fo:flow>
@@ -323,14 +323,14 @@
 	
 	<!-- calculate main section number (1,2,3) and pass it deep into templates -->
 	<!-- it's necessary, because there is itu:bibliography/itu:references from other section, but numbering should be sequental -->
-	<xsl:template match="iso:iso-standard/iso:sections/*" mode="contents">
+	<xsl:template match="iec:iec-standard/iec:sections/*" mode="contents">
 		<xsl:param name="sectionNum"/>
 		<xsl:param name="sectionNumSkew" select="0"/>
 		<xsl:variable name="sectionNum_">
 			<xsl:choose>
 				<xsl:when test="$sectionNum"><xsl:value-of select="$sectionNum"/></xsl:when>
 				<xsl:when test="$sectionNumSkew != 0">
-					<xsl:variable name="number"><xsl:number count="*"/></xsl:variable> <!-- iso:sections/iso:clause | iso:sections/iso:terms -->
+					<xsl:variable name="number"><xsl:number count="*"/></xsl:variable> <!-- iec:sections/iec:clause | iec:sections/iec:terms -->
 					<xsl:value-of select="$number + $sectionNumSkew"/>
 				</xsl:when>
 				<xsl:otherwise>
@@ -344,7 +344,7 @@
 	</xsl:template>
 	
 	<!-- Any node with title element - clause, definition, annex,... -->
-	<xsl:template match="iso:title | iso:preferred" mode="contents">
+	<xsl:template match="iec:title | iec:preferred" mode="contents">
 		<xsl:param name="sectionNum"/>
 		<!-- sectionNum=<xsl:value-of select="$sectionNum"/> -->
 		<xsl:variable name="id">
@@ -363,9 +363,9 @@
 		
 		<xsl:variable name="display">
 			<xsl:choose>
-				<xsl:when test="ancestor::iso:bibitem">false</xsl:when>
-				<xsl:when test="ancestor::iso:term">false</xsl:when>
-				<xsl:when test="ancestor::iso:annex and $level &gt;= 2">false</xsl:when>
+				<xsl:when test="ancestor::iec:bibitem">false</xsl:when>
+				<xsl:when test="ancestor::iec:term">false</xsl:when>
+				<xsl:when test="ancestor::iec:annex and $level &gt;= 2">false</xsl:when>
 				<xsl:when test="$level &lt;= 3">true</xsl:when>
 				<xsl:otherwise>false</xsl:otherwise>
 			</xsl:choose>
@@ -373,7 +373,7 @@
 		
 		<xsl:variable name="display-section">
 			<xsl:choose>
-				<xsl:when test="ancestor::iso:annex">false</xsl:when>
+				<xsl:when test="ancestor::iec:annex">false</xsl:when>
 				<xsl:otherwise>true</xsl:otherwise>
 			</xsl:choose>
 		</xsl:variable>
@@ -384,7 +384,7 @@
 
 		<xsl:variable name="root">
 			<xsl:choose>
-				<xsl:when test="ancestor::iso:annex">annex</xsl:when>
+				<xsl:when test="ancestor::iec:annex">annex</xsl:when>
 			</xsl:choose>
 		</xsl:variable>
 		
@@ -402,7 +402,7 @@
 	</xsl:template>
 	
 	
-	<xsl:template match="iso:figure" mode="contents">
+	<xsl:template match="iec:figure" mode="contents">
 		<xsl:param name="sectionNum"/>
 		<xsl:apply-templates mode="contents">
 			<xsl:with-param name="sectionNum" select="$sectionNum"/>
@@ -411,35 +411,35 @@
 			<xsl:attribute name="section">
 				<xsl:text>Figure </xsl:text>
 				<xsl:choose>
-					<xsl:when test="ancestor::iso:annex">
+					<xsl:when test="ancestor::iec:annex">
 						<xsl:choose>
-							<xsl:when test="count(//iso:annex) = 1">
-								<xsl:value-of select="/iso:iso-standard/iso:bibdata/iso:ext/iso:structuredidentifier/iso:annexid"/><xsl:number format="-1" level="any" count="iso:annex//iso:figure"/>
+							<xsl:when test="count(//iec:annex) = 1">
+								<xsl:value-of select="/iec:iec-standard/iec:bibdata/iec:ext/iec:structuredidentifier/iec:annexid"/><xsl:number format="-1" level="any" count="iec:annex//iec:figure"/>
 							</xsl:when>
 							<xsl:otherwise>
-								<xsl:number format="A.1-1" level="multiple" count="iso:annex | iso:figure"/>
+								<xsl:number format="A.1-1" level="multiple" count="iec:annex | iec:figure"/>
 							</xsl:otherwise>
 						</xsl:choose>		
 					</xsl:when>
-					<xsl:when test="ancestor::iso:figure">
+					<xsl:when test="ancestor::iec:figure">
 						<xsl:for-each select="parent::*[1]">
-							<xsl:number format="1" level="any" count="iso:figure[not(parent::iso:figure)]"/>
+							<xsl:number format="1" level="any" count="iec:figure[not(parent::iec:figure)]"/>
 						</xsl:for-each>
-						<xsl:number format="-a"  count="iso:figure"/>
+						<xsl:number format="-a"  count="iec:figure"/>
 					</xsl:when>
 					<xsl:otherwise>
-						<xsl:number format="1" level="any" count="iso:figure[not(parent::iso:figure)]"/>
+						<xsl:number format="1" level="any" count="iec:figure[not(parent::iec:figure)]"/>
 					</xsl:otherwise>
 				</xsl:choose>
 			</xsl:attribute>
-			<xsl:value-of select="iso:name"/>
+			<xsl:value-of select="iec:name"/>
 		</item>
 	</xsl:template>
 	
 	
-	<xsl:template match="iso:table" mode="contents">
+	<xsl:template match="iec:table" mode="contents">
 		<xsl:param name="sectionNum" />
-		<xsl:variable name="annex-id" select="ancestor::iso:annex/@id"/>
+		<xsl:variable name="annex-id" select="ancestor::iec:annex/@id"/>
 		<item level="" id="{@id}" display="false" type="table">
 			<xsl:attribute name="section">
 				<xsl:text>Table </xsl:text>
@@ -448,8 +448,8 @@
 							<xsl:text>ES-</xsl:text><xsl:number format="1" count="*[local-name()='executivesummary']//*[local-name()='table']"/>
 						</xsl:when>
 					<xsl:when test="ancestor::*[local-name()='annex']">
-						<xsl:number format="A." count="iso:annex"/>
-						<xsl:number format="1" level="any" count="iso:table[ancestor::iso:annex[@id = $annex-id]]"/>
+						<xsl:number format="A." count="iec:annex"/>
+						<xsl:number format="1" level="any" count="iec:table[ancestor::iec:annex[@id = $annex-id]]"/>
 					</xsl:when>
 					<xsl:otherwise>
 						<!-- <xsl:number format="1"/> -->
@@ -462,20 +462,20 @@
 					</xsl:otherwise>
 				</xsl:choose>
 			</xsl:attribute>
-			<xsl:value-of select="iso:name/text()"/>
+			<xsl:value-of select="iec:name/text()"/>
 		</item>
 	</xsl:template>
 	
 	
 	
-	<xsl:template match="iso:formula" mode="contents">
+	<xsl:template match="iec:formula" mode="contents">
 		<xsl:param name="sectionNum" />
 		<item level="" id="{@id}" display="false" type="formula">
 			<xsl:attribute name="section">
-				<xsl:text>Formula (</xsl:text><xsl:number format="A.1" level="multiple" count="iso:annex | iso:formula"/><xsl:text>)</xsl:text>
+				<xsl:text>Formula (</xsl:text><xsl:number format="A.1" level="multiple" count="iec:annex | iec:formula"/><xsl:text>)</xsl:text>
 			</xsl:attribute>
 			<xsl:attribute name="parentsection">
-				<xsl:for-each select="parent::*[1]/iso:title">
+				<xsl:for-each select="parent::*[1]/iec:title">
 					<xsl:call-template name="getSection">
 						<xsl:with-param name="sectionNum" select="$sectionNum"/>
 					</xsl:call-template>
@@ -487,15 +487,15 @@
 	<!-- ============================= -->
 	
 	
-	<xsl:template match="iso:license-statement//iso:title">
+	<xsl:template match="iec:license-statement//iec:title">
 		<fo:block text-align="center" font-weight="bold">
 			<xsl:apply-templates />
 		</fo:block>
 	</xsl:template>
 	
-	<xsl:template match="iso:license-statement//iso:p">
+	<xsl:template match="iec:license-statement//iec:p">
 		<fo:block margin-left="1.5mm" margin-right="1.5mm">
-			<xsl:if test="following-sibling::iso:p">
+			<xsl:if test="following-sibling::iec:p">
 				<xsl:attribute name="margin-top">6pt</xsl:attribute>
 				<xsl:attribute name="margin-bottom">6pt</xsl:attribute>
 			</xsl:if>
@@ -514,16 +514,16 @@
 				<fo:block>copyright@iso.org</fo:block>
 				<fo:block>www.iso.org</fo:block>
 			</fo:block> -->
-	<xsl:template match="iso:copyright-statement//iso:p">
+	<xsl:template match="iec:copyright-statement//iec:p">
 		<fo:block>
-			<xsl:if test="preceding-sibling::iso:p">
+			<xsl:if test="preceding-sibling::iec:p">
 				<!-- <xsl:attribute name="font-size">10pt</xsl:attribute> -->
 			</xsl:if>
-			<xsl:if test="following-sibling::iso:p">
+			<xsl:if test="following-sibling::iec:p">
 				<!-- <xsl:attribute name="margin-bottom">12pt</xsl:attribute> -->
 				<xsl:attribute name="margin-bottom">3pt</xsl:attribute>
 			</xsl:if>
-			<xsl:if test="not(following-sibling::iso:p)">
+			<xsl:if test="not(following-sibling::iec:p)">
 				<!-- <xsl:attribute name="margin-left">7.1mm</xsl:attribute> -->
 				<xsl:attribute name="margin-left">4mm</xsl:attribute>
 			</xsl:if>
@@ -532,12 +532,12 @@
 	</xsl:template>
 	
 	
-	<xsl:template match="iso:iso-standard/iso:preface/iso:foreword" priority="2">
-		<fo:block id="{iso:title}" margin-bottom="10pt" font-size="12pt" text-align="center">
-			<xsl:value-of select="translate(iso:title, $lower, $upper)"/>
+	<xsl:template match="iec:iec-standard/iec:preface/iec:foreword" priority="2">
+		<fo:block id="{iec:title}" margin-bottom="10pt" font-size="12pt" text-align="center">
+			<xsl:value-of select="translate(iec:title, $lower, $upper)"/>
 		</fo:block>
 		<fo:block font-size="8pt" text-align="justify" margin-left="6.3mm">
-			<xsl:apply-templates select="/iso:iso-standard/iso:boilerplate/iso:legal-statement/*"/>
+			<xsl:apply-templates select="/iec:iec-standard/iec:boilerplate/iec:legal-statement/*"/>
 		</fo:block>
 		<fo:block>
 			<xsl:apply-templates select="*[not(local-name() = 'title')]"/>
@@ -545,7 +545,7 @@
 	</xsl:template>
 	
 	<!-- Foreword, Introduction -->
-	<xsl:template match="iso:iso-standard/iso:preface/*">
+	<xsl:template match="iec:iec-standard/iec:preface/*">
 		<fo:block break-after="page"/>
 		<fo:block>
 			<xsl:apply-templates />
@@ -554,11 +554,11 @@
 	
 	
 	<!-- clause, terms, clause, ...-->
-	<xsl:template match="iso:iso-standard/iso:sections/*">
+	<xsl:template match="iec:iec-standard/iec:sections/*">
 		<xsl:param name="sectionNum"/>
 		<xsl:param name="sectionNumSkew" select="0"/>
 		<fo:block>
-			<xsl:variable name="pos"><xsl:number count="iso:sections/iso:clause | iso:sections/iso:terms"/></xsl:variable>
+			<xsl:variable name="pos"><xsl:number count="iec:sections/iec:clause | iec:sections/iec:terms"/></xsl:variable>
 			<!-- <xsl:if test="$pos &gt;= 2">
 				<xsl:attribute name="space-before">18pt</xsl:attribute>
 			</xsl:if> -->
@@ -567,14 +567,14 @@
 				<xsl:choose>
 					<xsl:when test="$sectionNum"><xsl:value-of select="$sectionNum"/></xsl:when>
 					<xsl:when test="$sectionNumSkew != 0">
-						<xsl:variable name="number"><xsl:number count="iso:sections/iso:clause | iso:sections/iso:terms"/></xsl:variable>
+						<xsl:variable name="number"><xsl:number count="iec:sections/iec:clause | iec:sections/iec:terms"/></xsl:variable>
 						<xsl:value-of select="$number + $sectionNumSkew"/>
 					</xsl:when>
 				</xsl:choose>
 			</xsl:variable>
-			<xsl:if test="not(iso:title)">
+			<xsl:if test="not(iec:title)">
 				<fo:block margin-top="3pt" margin-bottom="12pt">
-					<xsl:value-of select="$sectionNum_"/><xsl:number format=".1 " level="multiple" count="iso:clause" />
+					<xsl:value-of select="$sectionNum_"/><xsl:number format=".1 " level="multiple" count="iec:clause" />
 				</fo:block>
 			</xsl:if>
 			<xsl:apply-templates>
@@ -583,7 +583,7 @@
 		</fo:block>
 	</xsl:template>
 	
-	<xsl:template match="iso:annex//iso:clause">
+	<xsl:template match="iec:annex//iec:clause">
 		<xsl:param name="sectionNum"/>
 		<fo:block margin-top="5pt" margin-bottom="10pt" text-align="justify">
 			<xsl:apply-templates>
@@ -592,7 +592,7 @@
 		</fo:block>
 	</xsl:template>
 	
-	<xsl:template match="iso:clause//iso:clause[not(iso:title)]">
+	<xsl:template match="iec:clause//iec:clause[not(iec:title)]">
 		<xsl:param name="sectionNum"/>
 		<xsl:variable name="section">
 			<xsl:call-template name="getSection">
@@ -621,12 +621,12 @@
 	</xsl:template>
 	
 	
-	<xsl:template match="iso:title">
+	<xsl:template match="iec:title">
 		<xsl:param name="sectionNum"/>
 		
 		<xsl:variable name="parent-name"  select="local-name(..)"/>
 		<xsl:variable name="references_num_current">
-			<xsl:number level="any" count="iso:references"/>
+			<xsl:number level="any" count="iec:references"/>
 		</xsl:variable>
 		
 		<xsl:variable name="id">
@@ -645,15 +645,15 @@
 		
 		<xsl:variable name="font-size">
 			<xsl:choose>
-				<xsl:when test="ancestor::iso:sections and $level = 1">11pt</xsl:when>
-				<xsl:when test="ancestor::iso:references[not (preceding-sibling::iso:references)]">11pt</xsl:when>
+				<xsl:when test="ancestor::iec:sections and $level = 1">11pt</xsl:when>
+				<xsl:when test="ancestor::iec:references[not (preceding-sibling::iec:references)]">11pt</xsl:when>
 				<xsl:otherwise>10pt</xsl:otherwise>
 			</xsl:choose>
 		</xsl:variable>
 			<!-- <xsl:choose>
-				<xsl:when test="ancestor::iso:annex and $level = 1">12pt</xsl:when>
-				<xsl:when test="ancestor::iso:annex and $level &gt;= 2">10pt</xsl:when>
-				<xsl:when test="ancestor::iso:preface">16pt</xsl:when>
+				<xsl:when test="ancestor::iec:annex and $level = 1">12pt</xsl:when>
+				<xsl:when test="ancestor::iec:annex and $level &gt;= 2">10pt</xsl:when>
+				<xsl:when test="ancestor::iec:preface">16pt</xsl:when>
 				<xsl:when test="$level = 2">12pt</xsl:when>
 				<xsl:when test="$level &gt;= 3">11pt</xsl:when>
 				<xsl:otherwise>13pt</xsl:otherwise>
@@ -703,7 +703,7 @@
 						<xsl:attribute name="keep-with-next">always</xsl:attribute>		
 						<xsl:attribute name="margin-top"> <!-- margin-top -->
 							<xsl:choose>
-								<xsl:when test="$level &gt;= 2 and ancestor::iso:annex">5pt</xsl:when>
+								<xsl:when test="$level &gt;= 2 and ancestor::iec:annex">5pt</xsl:when>
 								<xsl:when test="$level = '' or $level = 1">10pt</xsl:when><!-- 13.5pt -->
 								<xsl:otherwise>10pt</xsl:otherwise>
 							</xsl:choose>
@@ -733,7 +733,7 @@
 						
 				</xsl:element>
 				
-				<!-- <xsl:if test="$element-name = 'fo:inline' and not(following-sibling::iso:p)">
+				<!-- <xsl:if test="$element-name = 'fo:inline' and not(following-sibling::iec:p)">
 					<fo:block> 
 						<xsl:value-of select="$linebreak"/>
 					</fo:block>
@@ -745,7 +745,7 @@
 	
 
 	
-	<xsl:template match="iso:p">
+	<xsl:template match="iec:p">
 		<xsl:param name="inline" select="'false'"/>
 		<xsl:variable name="previous-element" select="local-name(preceding-sibling::*[1])"/>
 		<xsl:variable name="element-name">
@@ -762,7 +762,7 @@
 				<xsl:element name="{$element-name}">
 					<xsl:attribute name="text-align">
 						<xsl:choose>
-							<!-- <xsl:when test="ancestor::iso:preface">justify</xsl:when> -->
+							<!-- <xsl:when test="ancestor::iec:preface">justify</xsl:when> -->
 							<xsl:when test="@align"><xsl:value-of select="@align"/></xsl:when>
 							<xsl:otherwise>justify</xsl:otherwise><!-- left -->
 						</xsl:choose>
@@ -780,7 +780,7 @@
 		
 		<!-- <xsl:if test="$element-name = 'fo:inline' and not($inline = 'true') and not(local-name(..) = 'admonition')">
 			<fo:block margin-bottom="10pt">
-				 <xsl:if test="ancestor::iso:annex">
+				 <xsl:if test="ancestor::iec:annex">
 					<xsl:attribute name="margin-bottom">0pt</xsl:attribute>
 				 </xsl:if>
 				<xsl:value-of select="$linebreak"/>
@@ -796,23 +796,23 @@
 			<p id="_8e5cf917-f75a-4a49-b0aa-1714cb6cf954">Formerly denoted as 15 % (m/m).</p>
 		</fn>
 	-->
-	<xsl:template match="iso:p/iso:fn">
+	<xsl:template match="iec:p/iec:fn">
 		<fo:footnote>
 			<xsl:variable name="number">
-				<xsl:number level="any" count="iso:p/iso:fn"/>
+				<xsl:number level="any" count="iec:p/iec:fn"/>
 			</xsl:variable>
 			<fo:inline font-size="8pt" keep-with-previous.within-line="always" baseline-shift="15%"> <!-- font-size="80%"  vertical-align="super"-->
 				<fo:basic-link internal-destination="footnote_{@reference}" fox:alt-text="footnote {@reference}">
 					<!-- <xsl:value-of select="@reference"/> -->
-					<xsl:value-of select="$number + count(//iso:bibitem/iso:note)"/><!-- <xsl:text>)</xsl:text> -->
+					<xsl:value-of select="$number + count(//iec:bibitem/iec:note)"/><!-- <xsl:text>)</xsl:text> -->
 				</fo:basic-link>
 			</fo:inline>
 			<fo:footnote-body>
 				<fo:block font-size="8pt" margin-bottom="5pt">
 					<fo:inline id="footnote_{@reference}" keep-with-next.within-line="always" baseline-shift="15%"> <!-- padding-right="3mm" font-size="60%"  alignment-baseline="hanging" -->
-						<xsl:value-of select="$number + count(//iso:bibitem/iso:note)"/><!-- <xsl:text>)</xsl:text> -->
+						<xsl:value-of select="$number + count(//iec:bibitem/iec:note)"/><!-- <xsl:text>)</xsl:text> -->
 					</fo:inline>
-					<xsl:for-each select="iso:p">
+					<xsl:for-each select="iec:p">
 							<xsl:apply-templates />
 					</xsl:for-each>
 				</fo:block>
@@ -820,15 +820,15 @@
 		</fo:footnote>
 	</xsl:template>
 
-	<xsl:template match="iso:p/iso:fn/iso:p">
+	<xsl:template match="iec:p/iec:fn/iec:p">
 		<xsl:apply-templates />
 	</xsl:template>
 	
-	<xsl:template match="iso:dd/iso:p">
+	<xsl:template match="iec:dd/iec:p">
 		<fo:block margin-bottom="10pt"><xsl:apply-templates /></fo:block>
 	</xsl:template>
 	
-	<xsl:template match="iso:review">
+	<xsl:template match="iec:review">
 		<!-- comment 2019-11-29 -->
 		<!-- <fo:block font-weight="bold">Review:</fo:block>
 		<xsl:apply-templates /> -->
@@ -840,7 +840,7 @@
 	
 
 
-	<xsl:template match="iso:image">
+	<xsl:template match="iec:image">
 		<fo:block-container text-align="center">
 			<fo:block>
 				<fo:external-graphic src="{@src}" fox:alt-text="Image"/>
@@ -850,7 +850,7 @@
 		
 	</xsl:template>
 
-	<xsl:template match="iso:figure">
+	<xsl:template match="iec:figure">
 		<xsl:variable name="title">
 			<xsl:text>Figure </xsl:text>
 		</xsl:variable>
@@ -860,12 +860,12 @@
 				<xsl:apply-templates />
 			</fo:block>
 			<xsl:call-template name="fn_display_figure"/>
-			<xsl:for-each select="iso:note//iso:p">
+			<xsl:for-each select="iec:note//iec:p">
 				<xsl:call-template name="note"/>
 			</xsl:for-each>
 			<fo:block font-weight="bold" text-align="center" margin-top="12pt" margin-bottom="12pt" keep-with-previous="always">
 				<xsl:choose>
-					<xsl:when test="ancestor::iso:annex">
+					<xsl:when test="ancestor::iec:annex">
 						
 						<!-- <xsl:choose>
 							
@@ -873,7 +873,7 @@
 								<xsl:number format="a) "/>
 							</xsl:when>
 							<xsl:otherwise> -->
-								<xsl:value-of select="$title"/><xsl:number format="A.1-1" level="multiple" count="iso:annex | iso:figure"/>
+								<xsl:value-of select="$title"/><xsl:number format="A.1-1" level="multiple" count="iec:annex | iec:figure"/>
 							<!-- </xsl:otherwise>
 						</xsl:choose> -->
 						
@@ -882,22 +882,22 @@
 						<xsl:value-of select="$title"/><xsl:number format="1" level="any"/>
 					</xsl:otherwise>
 				</xsl:choose>
-				<xsl:if test="iso:name">
+				<xsl:if test="iec:name">
 					<!-- <xsl:if test="not(local-name(..) = 'figure')"> -->
 						<xsl:text> — </xsl:text>
 					<!-- </xsl:if> -->
-					<xsl:value-of select="iso:name"/>
+					<xsl:value-of select="iec:name"/>
 				</xsl:if>
 			</fo:block>
 		</fo:block-container>
 	</xsl:template>
 	
-	<xsl:template match="iso:figure/iso:name"/>
-	<xsl:template match="iso:figure/iso:fn"/>
-	<xsl:template match="iso:figure/iso:note"/>
+	<xsl:template match="iec:figure/iec:name"/>
+	<xsl:template match="iec:figure/iec:fn"/>
+	<xsl:template match="iec:figure/iec:note"/>
 	
 	
-	<xsl:template match="iso:figure/iso:image">
+	<xsl:template match="iec:figure/iec:image">
 		<fo:block text-align="center">
 			<fo:external-graphic src="{@src}" width="75%" content-height="scale-to-fit" scaling="uniform" fox:alt-text="Image"/> <!-- content-width="100%"  -->
 		</fo:block>
@@ -906,24 +906,24 @@
 	
 	
 	
-	<xsl:template match="iso:bibitem">
+	<xsl:template match="iec:bibitem">
 		<fo:block id="{@id}" margin-top="5pt" margin-bottom="10pt"> <!-- letter-spacing="0.4pt" -->
-				<!-- iso:docidentifier -->
-			<xsl:if test="iso:docidentifier">
+				<!-- iec:docidentifier -->
+			<xsl:if test="iec:docidentifier">
 				<xsl:choose>
-					<xsl:when test="iso:docidentifier/@type = 'metanorma'"/>
-					<xsl:otherwise><fo:inline><xsl:value-of select="iso:docidentifier"/></fo:inline></xsl:otherwise>
+					<xsl:when test="iec:docidentifier/@type = 'metanorma'"/>
+					<xsl:otherwise><fo:inline><xsl:value-of select="iec:docidentifier"/></fo:inline></xsl:otherwise>
 				</xsl:choose>
 			</xsl:if>
-			<xsl:apply-templates select="iso:note"/>
-			<xsl:if test="iso:docidentifier">, </xsl:if>
+			<xsl:apply-templates select="iec:note"/>
+			<xsl:if test="iec:docidentifier">, </xsl:if>
 			<fo:inline font-style="italic">
 				<xsl:choose>
-					<xsl:when test="iso:title[@type = 'main' and @language = 'en']">
-						<xsl:value-of select="iso:title[@type = 'main' and @language = 'en']"/>
+					<xsl:when test="iec:title[@type = 'main' and @language = 'en']">
+						<xsl:value-of select="iec:title[@type = 'main' and @language = 'en']"/>
 					</xsl:when>
 					<xsl:otherwise>
-						<xsl:value-of select="iso:title"/>
+						<xsl:value-of select="iec:title"/>
 					</xsl:otherwise>
 				</xsl:choose>
 			</fo:inline>
@@ -931,10 +931,10 @@
 	</xsl:template>
 	
 	
-	<xsl:template match="iso:bibitem/iso:note">
+	<xsl:template match="iec:bibitem/iec:note">
 		<fo:footnote>
 			<xsl:variable name="number">
-				<xsl:number level="any" count="iso:bibitem/iso:note"/>
+				<xsl:number level="any" count="iec:bibitem/iec:note"/>
 			</xsl:variable>
 			<fo:inline font-size="8pt" keep-with-previous.within-line="always"  baseline-shift="15%" > <!--font-size="85%"  vertical-align="super"60% -->
 				<fo:basic-link internal-destination="footnote_{../@id}" fox:alt-text="footnote {$number}">
@@ -954,19 +954,19 @@
 	
 	
 	
-	<xsl:template match="iso:ul | iso:ol">
+	<xsl:template match="iec:ul | iec:ol">
 		<fo:list-block provisional-distance-between-starts="7mm">
 			<xsl:if test="local-name() = 'ul'">
 				<xsl:attribute name="margin-left">6mm</xsl:attribute>
 			</xsl:if>
-			<xsl:if test="ancestor::iso:legal-statement">
+			<xsl:if test="ancestor::iec:legal-statement">
 				<xsl:attribute name="provisional-distance-between-starts">5mm</xsl:attribute>
 			</xsl:if>
 			<xsl:apply-templates />
 		</fo:list-block>
 	</xsl:template>
 	
-	<xsl:template match="iso:li">
+	<xsl:template match="iec:li">
 		<fo:list-item>
 			<fo:list-item-label end-indent="label-end()">
 				<xsl:if test="local-name(..) = 'ul'">
@@ -997,16 +997,16 @@
 		</fo:list-item>
 	</xsl:template>
 	
-	<xsl:template match="iso:li/iso:p">
+	<xsl:template match="iec:li/iec:p">
 		<fo:block margin-bottom="0pt">
-			<xsl:if test="ancestor::iso:legal-statement">
+			<xsl:if test="ancestor::iec:legal-statement">
 				<xsl:attribute name="margin-bottom">5pt</xsl:attribute>
 			</xsl:if>
 			<xsl:apply-templates />
 		</fo:block>
 	</xsl:template>
 	
-	<xsl:template match="iso:link">
+	<xsl:template match="iec:link">
 		<fo:inline>
 			<fo:basic-link external-destination="{@target}" fox:alt-text="{@target}">
 				<xsl:choose>
@@ -1021,12 +1021,12 @@
 		</fo:inline>
 	</xsl:template>
 	
-	<xsl:template match="iso:preferred">
+	<xsl:template match="iec:preferred">
 		<xsl:param name="sectionNum"/>
 		<fo:block line-height="1.1">
 			<fo:block font-weight="bold" keep-with-next="always">
 				<fo:inline id="{../@id}">
-					<xsl:value-of select="$sectionNum"/>.<xsl:number count="iso:term"/>
+					<xsl:value-of select="$sectionNum"/>.<xsl:number count="iec:term"/>
 				</fo:inline>
 			</fo:block>
 			<fo:block font-weight="bold" keep-with-next="always">
@@ -1035,54 +1035,54 @@
 		</fo:block>
 	</xsl:template>
 	
-	<xsl:template match="iso:admitted">
+	<xsl:template match="iec:admitted">
 		<fo:block>
 			<xsl:apply-templates />
 		</fo:block>
 	</xsl:template>
 	
-	<xsl:template match="iso:deprecates">
+	<xsl:template match="iec:deprecates">
 		<fo:block font-size="8pt" margin-top="5pt" margin-bottom="5pt">DEPRECATED: <xsl:apply-templates /></fo:block>
 	</xsl:template>
 	
-	<xsl:template match="iso:definition[preceding-sibling::iso:domain]">
+	<xsl:template match="iec:definition[preceding-sibling::iec:domain]">
 		<xsl:apply-templates />
 	</xsl:template>
-	<xsl:template match="iso:definition[preceding-sibling::iso:domain]/iso:p">
+	<xsl:template match="iec:definition[preceding-sibling::iec:domain]/iec:p">
 		<fo:inline> <xsl:apply-templates /></fo:inline>
 		<fo:block>&#xA0;</fo:block>
 	</xsl:template>
 	
-	<xsl:template match="iso:definition">
+	<xsl:template match="iec:definition">
 		<fo:block margin-bottom="6pt">
 			<xsl:apply-templates />
 		</fo:block>
 	</xsl:template>
 	
-	<xsl:template match="iso:termsource">
+	<xsl:template match="iec:termsource">
 		<fo:block margin-bottom="8pt" keep-with-previous="always">
 			<!-- Example: [SOURCE: ISO 5127:2017, 3.1.6.02] -->
-			<fo:basic-link internal-destination="{iso:origin/@bibitemid}" fox:alt-text="{iso:origin/@citeas}">
+			<fo:basic-link internal-destination="{iec:origin/@bibitemid}" fox:alt-text="{iec:origin/@citeas}">
 				<xsl:text>[SOURCE: </xsl:text>
-				<xsl:value-of select="iso:origin/@citeas"/>
-				<xsl:if test="iso:origin/iso:locality/iso:referenceFrom">
-					<xsl:text>, </xsl:text><xsl:value-of select="iso:origin/iso:locality/iso:referenceFrom"/>
+				<xsl:value-of select="iec:origin/@citeas"/>
+				<xsl:if test="iec:origin/iec:locality/iec:referenceFrom">
+					<xsl:text>, </xsl:text><xsl:value-of select="iec:origin/iec:locality/iec:referenceFrom"/>
 				</xsl:if>
 			</fo:basic-link>
-			<xsl:apply-templates select="iso:modification"/>
+			<xsl:apply-templates select="iec:modification"/>
 			<xsl:text>]</xsl:text>
 		</fo:block>
 	</xsl:template>
 	
-	<xsl:template match="iso:modification">
+	<xsl:template match="iec:modification">
 		<xsl:text>, modified — </xsl:text>
 		<xsl:apply-templates/>
 	</xsl:template>
-	<xsl:template match="iso:modification/iso:p">
+	<xsl:template match="iec:modification/iec:p">
 		<fo:inline><xsl:apply-templates/></fo:inline>
 	</xsl:template>
 	
-	<xsl:template match="iso:termnote">
+	<xsl:template match="iec:termnote">
 		<fo:block font-size="8pt" margin-top="5pt" margin-bottom="5pt">
 			<xsl:text>Note </xsl:text>
 			<xsl:number />
@@ -1091,43 +1091,43 @@
 		</fo:block>
 	</xsl:template>
 	
-	<xsl:template match="iso:termnote/iso:p">
+	<xsl:template match="iec:termnote/iec:p">
 		<fo:inline><xsl:apply-templates/></fo:inline>
 	</xsl:template>
 	
-	<xsl:template match="iso:domain">
+	<xsl:template match="iec:domain">
 		<fo:inline>&lt;<xsl:apply-templates/>&gt;</fo:inline>
 	</xsl:template>
 	
 	
-	<xsl:template match="iso:termexample">
+	<xsl:template match="iec:termexample">
 		<fo:block margin-bottom="10pt">
 			<fo:inline padding-right="10mm">EXAMPLE</fo:inline>
 			<xsl:apply-templates />
 		</fo:block>
 	</xsl:template>
 	
-	<xsl:template match="iso:termexample/iso:p">
+	<xsl:template match="iec:termexample/iec:p">
 		<fo:inline><xsl:apply-templates/></fo:inline>
 	</xsl:template>
 
 	
-	<xsl:template match="iso:annex">
+	<xsl:template match="iec:annex">
 		<fo:block break-after="page"/>
 		<xsl:apply-templates />
 	</xsl:template>
 
 	
-	<!-- <xsl:template match="iso:references[@id = '_bibliography']"> -->
-	<xsl:template match="iso:references[position() &gt; 1]">
+	<!-- <xsl:template match="iec:references[@id = '_bibliography']"> -->
+	<xsl:template match="iec:references[position() &gt; 1]">
 		<fo:block break-after="page"/>
 			<xsl:apply-templates />
 	</xsl:template>
 
 
 	<!-- Example: [1] ISO 9:1995, Information and documentation – Transliteration of Cyrillic characters into Latin characters – Slavic and non-Slavic languages -->
-	<!-- <xsl:template match="iso:references[@id = '_bibliography']/iso:bibitem"> -->
-	<xsl:template match="iso:references[position() &gt; 1]/iso:bibitem">
+	<!-- <xsl:template match="iec:references[@id = '_bibliography']/iec:bibitem"> -->
+	<xsl:template match="iec:references[position() &gt; 1]/iec:bibitem">
 		<fo:list-block margin-top="5pt" margin-bottom="10pt" provisional-distance-between-starts="12mm">
 			<fo:list-item>
 				<fo:list-item-label end-indent="label-end()">
@@ -1139,101 +1139,101 @@
 				</fo:list-item-label>
 				<fo:list-item-body start-indent="body-start()">
 					<fo:block>
-						<xsl:if test="iso:docidentifier">
+						<xsl:if test="iec:docidentifier">
 							<xsl:choose>
-								<xsl:when test="iso:docidentifier/@type = 'metanorma'"/>
-								<xsl:otherwise><fo:inline><xsl:value-of select="iso:docidentifier"/>, </fo:inline></xsl:otherwise>
+								<xsl:when test="iec:docidentifier/@type = 'metanorma'"/>
+								<xsl:otherwise><fo:inline><xsl:value-of select="iec:docidentifier"/>, </fo:inline></xsl:otherwise>
 							</xsl:choose>
 						</xsl:if>
 						<xsl:choose>
-							<xsl:when test="iso:title[@type = 'main' and @language = 'en']">
-								<xsl:apply-templates select="iso:title[@type = 'main' and @language = 'en']"/>
+							<xsl:when test="iec:title[@type = 'main' and @language = 'en']">
+								<xsl:apply-templates select="iec:title[@type = 'main' and @language = 'en']"/>
 							</xsl:when>
 							<xsl:otherwise>
-								<xsl:apply-templates select="iso:title"/>
+								<xsl:apply-templates select="iec:title"/>
 							</xsl:otherwise>
 						</xsl:choose>
-						<xsl:apply-templates select="iso:formattedref"/>
+						<xsl:apply-templates select="iec:formattedref"/>
 					</fo:block>
 				</fo:list-item-body>
 			</fo:list-item>
 		</fo:list-block>
 	</xsl:template>
 	
-	<!-- <xsl:template match="iso:references[@id = '_bibliography']/iso:bibitem" mode="contents"/> -->
-	<xsl:template match="iso:references[position() &gt; 1]/iso:bibitem" mode="contents"/>
+	<!-- <xsl:template match="iec:references[@id = '_bibliography']/iec:bibitem" mode="contents"/> -->
+	<xsl:template match="iec:references[position() &gt; 1]/iec:bibitem" mode="contents"/>
 	
-	<!-- <xsl:template match="iso:references[@id = '_bibliography']/iso:bibitem/iso:title"> -->
-	<xsl:template match="iso:references[position() &gt; 1]/iso:bibitem/iso:title">
+	<!-- <xsl:template match="iec:references[@id = '_bibliography']/iec:bibitem/iec:title"> -->
+	<xsl:template match="iec:references[position() &gt; 1]/iec:bibitem/iec:title">
 		<fo:inline font-style="italic">
 			<xsl:apply-templates />
 		</fo:inline>
 	</xsl:template>
 
-	<xsl:template match="iso:quote">
+	<xsl:template match="iec:quote">
 		<fo:block margin-top="5pt" margin-bottom="10pt" margin-left="12mm" margin-right="12mm">
-			<xsl:apply-templates select=".//iso:p"/>
+			<xsl:apply-templates select=".//iec:p"/>
 			<fo:block text-align="right" margin-top="15pt">
 				<!-- — ISO, ISO 7301:2011, Clause 1 -->
-				<xsl:text>— </xsl:text><xsl:value-of select="iso:author"/>
-				<xsl:if test="iso:source">
+				<xsl:text>— </xsl:text><xsl:value-of select="iec:author"/>
+				<xsl:if test="iec:source">
 					<xsl:text>, </xsl:text>
-					<xsl:apply-templates select="iso:source"/>
+					<xsl:apply-templates select="iec:source"/>
 				</xsl:if>
 			</fo:block>
 		</fo:block>
 	</xsl:template>
 	
-	<xsl:template match="iso:source">
+	<xsl:template match="iec:source">
 		<fo:basic-link internal-destination="{@bibitemid}" fox:alt-text="{@citeas}">
 			<xsl:value-of select="@citeas" disable-output-escaping="yes"/>
-			<xsl:if test="iso:locality">
+			<xsl:if test="iec:locality">
 				<xsl:text>, </xsl:text>
-				<xsl:apply-templates select="iso:locality"/>
+				<xsl:apply-templates select="iec:locality"/>
 			</xsl:if>
 		</fo:basic-link>
 	</xsl:template>
 	
-	<xsl:template match="iso:appendix">
+	<xsl:template match="iec:appendix">
 		<fo:block font-weight="bold" margin-top="5pt" margin-bottom="5pt">
 			<fo:inline padding-right="5mm">Appendix <xsl:number /></fo:inline>
-			<xsl:apply-templates select="iso:title" mode="process"/>
+			<xsl:apply-templates select="iec:title" mode="process"/>
 		</fo:block>
 		<xsl:apply-templates />
 	</xsl:template>
 	
-	<xsl:template match="iso:appendix//iso:example">
+	<xsl:template match="iec:appendix//iec:example">
 		<fo:block margin-top="14pt" margin-bottom="14pt">
 			<xsl:text>EXAMPLE</xsl:text>
-			<xsl:if test="iso:name">
-				<xsl:text> — </xsl:text><xsl:apply-templates select="iso:name" mode="process"/>
+			<xsl:if test="iec:name">
+				<xsl:text> — </xsl:text><xsl:apply-templates select="iec:name" mode="process"/>
 			</xsl:if>
 		</fo:block>
 		<xsl:apply-templates />
 	</xsl:template>
 	
-	<xsl:template match="iso:appendix//iso:example/iso:name"/>
-	<xsl:template match="iso:appendix//iso:example/iso:name" mode="process">
+	<xsl:template match="iec:appendix//iec:example/iec:name"/>
+	<xsl:template match="iec:appendix//iec:example/iec:name" mode="process">
 		<fo:inline><xsl:apply-templates /></fo:inline>
 	</xsl:template>
 	
-	<!-- <xsl:template match="iso:callout/text()">	
+	<!-- <xsl:template match="iec:callout/text()">	
 		<fo:basic-link internal-destination="{@target}"><fo:inline>&lt;<xsl:apply-templates />&gt;</fo:inline></fo:basic-link>
 	</xsl:template> -->
-	<xsl:template match="iso:callout">		
+	<xsl:template match="iec:callout">		
 			<fo:basic-link internal-destination="{@target}" fox:alt-text="{@target}">&lt;<xsl:apply-templates />&gt;</fo:basic-link>
 	</xsl:template>
 	
-	<xsl:template match="iso:annotation">
+	<xsl:template match="iec:annotation">
 		<fo:block>
 			
 		</fo:block>
 		<xsl:apply-templates />
 	</xsl:template>
 	
-	<xsl:template match="iso:annotation/text()"/>
+	<xsl:template match="iec:annotation/text()"/>
 	
-	<xsl:template match="iso:annotation/iso:p">
+	<xsl:template match="iec:annotation/iec:p">
 		<xsl:variable name="annotation-id" select="../@id"/>
 		<xsl:variable name="callout" select="//*[@target = $annotation-id]/text()"/>
 		<fo:block id="{$annotation-id}">
@@ -1243,8 +1243,8 @@
 	</xsl:template>
 	
 	
-	<xsl:template match="iso:appendix/iso:title"/>
-	<xsl:template match="iso:appendix/iso:title" mode="process">
+	<xsl:template match="iec:appendix/iec:title"/>
+	<xsl:template match="iec:appendix/iec:title" mode="process">
 		<fo:inline><xsl:apply-templates /></fo:inline>
 	</xsl:template>
 	
@@ -1256,7 +1256,7 @@
 		</fo:inline>
 	</xsl:template>
 	
-	<xsl:template match="iso:xref">
+	<xsl:template match="iec:xref">
 		<xsl:variable name="section" select="xalan:nodeset($contents)//item[@id = current()/@target]/@section"/>
 		<fo:basic-link internal-destination="{@target}" fox:alt-text="{$section}">
 			<xsl:variable name="type" select="xalan:nodeset($contents)//item[@id = current()/@target]/@type"/>
@@ -1267,7 +1267,7 @@
 				<xsl:otherwise></xsl:otherwise> <!-- <xsl:value-of select="$type"/> -->
 			</xsl:choose>
 			<xsl:variable name="currentsection">
-				<xsl:for-each select="ancestor::iso:clause[1]/iso:title">
+				<xsl:for-each select="ancestor::iec:clause[1]/iec:title">
 					<xsl:call-template name="getSection"/>
 				</xsl:for-each>
 			</xsl:variable>
@@ -1278,7 +1278,7 @@
       </fo:basic-link>
 	</xsl:template>
 
-	<xsl:template match="iso:sourcecode">
+	<xsl:template match="iec:sourcecode">
 		<fo:block font-family="Courier" font-size="9pt" margin-top="5pt" margin-bottom="5pt">
 			<xsl:choose>
 				<xsl:when test="@lang = 'en'"></xsl:when>
@@ -1290,14 +1290,14 @@
 		</fo:block>
 	</xsl:template>
 	
-	<xsl:template match="iso:example/iso:p">
+	<xsl:template match="iec:example/iec:p">
 		<fo:block>
 			<fo:inline padding-right="9mm">EXAMPLE</fo:inline>
 			<xsl:apply-templates />
 		</fo:block>
 	</xsl:template>
 	
-	<xsl:template match="iso:note/iso:p" name="note">
+	<xsl:template match="iec:note/iec:p" name="note">
 		<fo:block margin-top="5pt" margin-bottom="5pt" font-size="8pt">
 			<fo:inline padding-right="6mm">NOTE</fo:inline>
 			<xsl:apply-templates />
@@ -1305,7 +1305,7 @@
 	</xsl:template>
 
 	<!-- <eref type="inline" bibitemid="ISO20483" citeas="ISO 20483:2013"><locality type="annex"><referenceFrom>C</referenceFrom></locality></eref> -->
-	<xsl:template match="iso:eref">
+	<xsl:template match="iec:eref">
 		<fo:basic-link internal-destination="{@bibitemid}" fox:alt-text="{@citeas}">
 			<xsl:if test="@type = 'footnote'">
 				<xsl:attribute name="keep-together.within-line">always</xsl:attribute>
@@ -1315,28 +1315,28 @@
 			</xsl:if>
 			
 			<xsl:value-of select="@citeas" disable-output-escaping="yes"/>
-			<xsl:if test="iso:locality">
+			<xsl:if test="iec:locality">
 				<xsl:text>, </xsl:text>
 				<!-- <xsl:choose>
-						<xsl:when test="iso:locality/@type = 'section'">Section </xsl:when>
-						<xsl:when test="iso:locality/@type = 'clause'">Clause </xsl:when>
+						<xsl:when test="iec:locality/@type = 'section'">Section </xsl:when>
+						<xsl:when test="iec:locality/@type = 'clause'">Clause </xsl:when>
 						<xsl:otherwise></xsl:otherwise>
 					</xsl:choose> -->
-					<xsl:apply-templates select="iso:locality"/>
+					<xsl:apply-templates select="iec:locality"/>
 			</xsl:if>
 		</fo:basic-link>
 	</xsl:template>
 	
-	<xsl:template match="iso:locality">
+	<xsl:template match="iec:locality">
 		<xsl:choose>
 			<xsl:when test="@type ='clause'">Clause </xsl:when>
 			<xsl:when test="@type ='annex'">Annex </xsl:when>
 			<xsl:otherwise><xsl:value-of select="@type"/></xsl:otherwise>
 		</xsl:choose>
-		<xsl:text> </xsl:text><xsl:value-of select="iso:referenceFrom"/>
+		<xsl:text> </xsl:text><xsl:value-of select="iec:referenceFrom"/>
 	</xsl:template>
 	
-	<xsl:template match="iso:admonition">
+	<xsl:template match="iec:admonition">
 		<fo:block font-weight="bold">
 			<fo:block  text-align="center" margin-top="5pt" margin-bottom="10pt">
 				<xsl:value-of select="translate(@type, $lower, $upper)"/>
@@ -1346,13 +1346,13 @@
 		</fo:block>
 	</xsl:template>
 	
-	<xsl:template match="iso:formula/iso:dt/iso:stem">
+	<xsl:template match="iec:formula/iec:dt/iec:stem">
 		<fo:inline>
 			<xsl:apply-templates />
 		</fo:inline>
 	</xsl:template>
 	
-	<xsl:template match="iso:formula/iso:stem">
+	<xsl:template match="iec:formula/iec:stem">
 		<fo:block id="{../@id}" margin-top="6pt" margin-bottom="12pt">
 			<fo:table table-layout="fixed" width="100%">
 				<fo:table-column column-width="95%"/>
@@ -1367,11 +1367,11 @@
 						<fo:table-cell display-align="center">
 							<fo:block text-align="right" margin-right="-10mm">
 								<xsl:choose>
-									<xsl:when test="ancestor::iso:annex">
-										<xsl:text>(</xsl:text><xsl:number format="A.1" level="multiple" count="iso:annex | iso:formula"/><xsl:text>)</xsl:text>
+									<xsl:when test="ancestor::iec:annex">
+										<xsl:text>(</xsl:text><xsl:number format="A.1" level="multiple" count="iec:annex | iec:formula"/><xsl:text>)</xsl:text>
 									</xsl:when>
-									<xsl:otherwise> <!-- not(ancestor::iso:annex) -->
-										<xsl:text>(</xsl:text><xsl:number level="any" count="iso:formula"/><xsl:text>)</xsl:text>
+									<xsl:otherwise> <!-- not(ancestor::iec:annex) -->
+										<xsl:text>(</xsl:text><xsl:number level="any" count="iec:formula"/><xsl:text>)</xsl:text>
 									</xsl:otherwise>
 								</xsl:choose>
 							</fo:block>
@@ -1385,7 +1385,7 @@
 	</xsl:template>
 	
 	
-	<xsl:template match="iso:br" priority="2">
+	<xsl:template match="iec:br" priority="2">
 		<!-- <fo:block>&#xA0;</fo:block> -->
 		<xsl:value-of select="$linebreak"/>
 	</xsl:template>
@@ -1457,13 +1457,13 @@
 		<xsl:variable name="level_total" select="count(ancestor::*)"/>
 		<xsl:variable name="level">
 			<xsl:choose>
-				<xsl:when test="ancestor::iso:preface">
+				<xsl:when test="ancestor::iec:preface">
 					<xsl:value-of select="$level_total - 2"/>
 				</xsl:when>
-				<xsl:when test="ancestor::iso:sections">
+				<xsl:when test="ancestor::iec:sections">
 					<xsl:value-of select="$level_total - 2"/>
 				</xsl:when>
-				<xsl:when test="ancestor::iso:bibliography">
+				<xsl:when test="ancestor::iec:bibliography">
 					<xsl:value-of select="$level_total - 2"/>
 				</xsl:when>
 				<xsl:when test="local-name(ancestor::*[1]) = 'annex'">1</xsl:when>
@@ -1482,10 +1482,10 @@
 		</xsl:variable>
 		<xsl:variable name="section">
 			<xsl:choose>
-				<xsl:when test="ancestor::iso:bibliography">
+				<xsl:when test="ancestor::iec:bibliography">
 					<xsl:value-of select="$sectionNum"/>
 				</xsl:when>
-				<xsl:when test="ancestor::iso:sections">
+				<xsl:when test="ancestor::iec:sections">
 					<!-- 1, 2, 3, 4, ... from main section (not annex, bibliography, ...) -->
 					<xsl:choose>
 						<xsl:when test="$level = 1">
@@ -1493,7 +1493,7 @@
 						</xsl:when>
 						<xsl:when test="$level &gt;= 2">
 							<xsl:variable name="num">
-								<xsl:number format=".1" level="multiple" count="iso:clause/iso:clause | iso:clause/iso:terms | iso:terms/iso:term | iso:clause/iso:term"/>
+								<xsl:number format=".1" level="multiple" count="iec:clause/iec:clause | iec:clause/iec:terms | iec:terms/iec:term | iec:clause/iec:term"/>
 							</xsl:variable>
 							<xsl:value-of select="concat($sectionNum, $num)"/>
 						</xsl:when>
@@ -1502,48 +1502,48 @@
 						</xsl:otherwise>
 					</xsl:choose>
 				</xsl:when>
-				<!-- <xsl:when test="ancestor::iso:annex[@obligation = 'informative']">
+				<!-- <xsl:when test="ancestor::iec:annex[@obligation = 'informative']">
 					<xsl:choose>
 						<xsl:when test="$level = 1">
 							<xsl:text>Annex  </xsl:text>
-							<xsl:number format="I" level="any" count="iso:annex[@obligation = 'informative']"/>
+							<xsl:number format="I" level="any" count="iec:annex[@obligation = 'informative']"/>
 						</xsl:when>
 						<xsl:otherwise>
-							<xsl:number format="I.1" level="multiple" count="iso:annex[@obligation = 'informative'] | iso:clause"/>
+							<xsl:number format="I.1" level="multiple" count="iec:annex[@obligation = 'informative'] | iec:clause"/>
 						</xsl:otherwise>
 					</xsl:choose>
 				</xsl:when> -->
-				<xsl:when test="ancestor::iso:annex">
+				<xsl:when test="ancestor::iec:annex">
 					<xsl:choose>
 						<xsl:when test="$level = 1">
 							<xsl:text>Annex </xsl:text>
 							<xsl:choose>
-								<xsl:when test="count(//iso:annex) = 1">
-									<xsl:value-of select="/iso:iso-standard/iso:bibdata/iso:ext/iso:structuredidentifier/iso:annexid"/>
+								<xsl:when test="count(//iec:annex) = 1">
+									<xsl:value-of select="/iec:iec-standard/iec:bibdata/iec:ext/iec:structuredidentifier/iec:annexid"/>
 								</xsl:when>
 								<xsl:otherwise>
-									<xsl:number format="A" level="any" count="iso:annex"/>
+									<xsl:number format="A" level="any" count="iec:annex"/>
 								</xsl:otherwise>
 							</xsl:choose>
 						</xsl:when>
 						<xsl:otherwise>
 							<xsl:choose>
-								<xsl:when test="count(//iso:annex) = 1">
-									<xsl:value-of select="/iso:iso-standard/iso:bibdata/iso:ext/iso:structuredidentifier/iso:annexid"/><xsl:number format=".1" level="multiple" count="iso:clause"/>
+								<xsl:when test="count(//iec:annex) = 1">
+									<xsl:value-of select="/iec:iec-standard/iec:bibdata/iec:ext/iec:structuredidentifier/iec:annexid"/><xsl:number format=".1" level="multiple" count="iec:clause"/>
 								</xsl:when>
 								<xsl:otherwise>
-									<xsl:number format="A.1" level="multiple" count="iso:annex | iso:clause"/>
+									<xsl:number format="A.1" level="multiple" count="iec:annex | iec:clause"/>
 								</xsl:otherwise>
 							</xsl:choose>
 						</xsl:otherwise>
 					</xsl:choose>
 				</xsl:when>
-				<xsl:when test="ancestor::iso:preface"> <!-- if preface and there is clause(s) -->
+				<xsl:when test="ancestor::iec:preface"> <!-- if preface and there is clause(s) -->
 					<xsl:choose>
-						<xsl:when test="$level = 1 and  ..//iso:clause">0</xsl:when>
+						<xsl:when test="$level = 1 and  ..//iec:clause">0</xsl:when>
 						<xsl:when test="$level &gt;= 2">
 							<xsl:variable name="num">
-								<xsl:number format=".1" level="multiple" count="iso:clause"/>
+								<xsl:number format=".1" level="multiple" count="iec:clause"/>
 							</xsl:variable>
 							<xsl:value-of select="concat('0', $num)"/>
 						</xsl:when>
