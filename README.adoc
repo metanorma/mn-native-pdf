@@ -1,29 +1,22 @@
-= Metarnoma Native PDF
+= Metanorma Native PDF
 
 image:https://github.com/metanorma/mn-native-pdf/workflows/ubuntu/badge.svg["Build Status", link="https://github.com/metanorma/mn-native-pdf/actions?workflow=ubuntu"]
 image:https://github.com/metanorma/mn-native-pdf/workflows/macos/badge.svg["Build Status", link="https://github.com/metanorma/mn-native-pdf/actions?workflow=macos"]
 
-The experimental PDF is available here:
+The experimental PDFs are available here:
 
-* https://metanorma.github.io/mn-native-pdf/iso-24229.pdf[ISO 24229 sample (PDF)]
-* https://metanorma.github.io/mn-native-pdf/iso-rice-en.pdf[ISO Rice sample (PDF)]
-* https://metanorma.github.io/mn-native-pdf/itu-G.191.pdf[ITU G.191 (PDF)]
-* https://metanorma.github.io/mn-native-pdf/itu-G.650.1-201803-v2.pdf[ITU G.650.1-201803-v2 (PDF)]
-* https://metanorma.github.io/mn-native-pdf/itu-G.650.1-201803.pdf[ITU G.650.1-201803 (PDF)]
-* https://metanorma.github.io/mn-native-pdf/itu-T-Editing-Guidelines-201602.pdf[ITU T-Editing-Guidelines-201602 (PDF)]
-* https://metanorma.github.io/mn-native-pdf/itu-T-REC-H.782-201811-I.MSW-E.pdf[ITU T-REC-H.782-201811-I.MSW-E (PDF)]
-* https://metanorma.github.io/mn-native-pdf/itu-T-REC-J.1108-201901-P.MSW-E.pdf[ITU T-REC-J.1108-201901-P.MSW-E (PDF)]
-* https://metanorma.github.io/mn-native-pdf/itu-T-REC-P.1203-201710-I.MSW-E.pdf[ITU T-REC-P.1203-201710-I.MSW-E (PDF)]
+* https://metanorma.github.io/mn-native-pdf/[Metanorma mn2pdf samples]
 
 
 == Purpose
 
-This repository pilots native PDF capabilities of Metnaorma using XML-FO via Apache FOP.
+This repository pilots native PDF capabilities of Metanorma using XML-FO via Apache FOP.
 
 
 == Installing Build Tools
 
-You will need Apache FOP, `envsubst`, `make` and the Cambria font set.
+You will need `mn2pdf`, `envsubst`, `make` and a number of fonts.
+
 
 === On macOS
 
@@ -33,36 +26,21 @@ You will need Apache FOP, `envsubst`, `make` and the Cambria font set.
 brew install gettext
 brew link --force gettext
 
-# Install Apache FOP
-brew install fop
-
-# Install Maven
-brew install maven
+# Install cabextract
+brew install cabextract
 
 # Install p7zip
 brew install p7zip
 ----
 
-Manually add the Cambria fonts (`cambria.ttf`, `cambriab.ttf`, `cambriai.ttf`, `cambriaz.ttf`) to your `fonts/` directory under this repository, or anywhere else. Point to it using the environment variable `MN_PDF_FONT_PATH`.
-
-e.g.
 [source,sh]
 ----
-export MN_PDF_FONT_PATH=$(pwd)/fonts
-mkdir -p ${MN_PDF_FONT_PATH}/truetype/vista/
+export MN_PDF_FONT_PATH=$(pwd)/.fonts
 
-# Install Cambria
-pushd $(mktemp -d)
-curl -Ls https://www.rmtweb.co.uk/wp-content/uploads/2013/06/Calibri-and-Cambria-Fonts.zip -o cambria.zip
-unzip cambria.zip
-mkdir -p ${MN_PDF_FONT_PATH}/truetype/vista/
-mv ./Calibri\ and\ Cambria\ Fonts/Cambria*.ttf .
-mv Cambria.ttf cambria.ttf
-mv Cambria\ Bold.ttf cambriab.ttf
-mv Cambria\ Italic.ttf cambriai.ttf
-mv Cambria\ Bold\ Italic.ttf cambriaz.ttf
-mv *.ttf ${MN_PDF_FONT_PATH}/truetype/vista/
-popd
+# Install Microsoft Vista fonts
+export MS_FONT_PATH=${MN_PDF_FONT_PATH}/truetype/vista
+export RENAME_FONTS=false
+curl -Ls https://raw.githubusercontent.com/metanorma/vista-fonts-installer/master/vista-fonts-installer.sh | bash
 
 # Install FreeSerif
 mkdir -p ${MN_PDF_FONT_PATH}/truetype/freefont/
@@ -93,15 +71,15 @@ wget https://github.com/aosp-mirror/platform_frameworks_base/raw/master/data/fon
 popd
 
 # Install CJK fonts
-export MN_PDF_FONT_PATH=${GITHUB_WORKSPACE}/fonts
+mkdir -p ${MN_PDF_FONT_PATH}/truetype/adobe/
 
 pushd $(mktemp -d)
 curl -Ls https://github.com/Pal3love/Source-Han-TrueType/raw/master/SourceHanSans.7z -o hansans.7z
 7za x hansans.7z
-mv *.ttc ${MN_PDF_FONT_PATH}/
+mv *.ttc ${MN_PDF_FONT_PATH}/truetype/adobe/
 popd
 
-# Install MS system fonts
+# Install Microsoft Core fonts
 mkdir -p ${MN_PDF_FONT_PATH}/truetype/msttcorefonts
 ls -alR /System/Library/Fonts
 ln -s /System/Library/Fonts/Supplemental/Arial.ttf ${MN_PDF_FONT_PATH}/truetype/msttcorefonts/arial.ttf
@@ -135,13 +113,10 @@ make all
 
 [source,sh]
 ----
-sudo apt-get -y install gettext-base fop cabextract wget
+sudo apt-get -y install gettext-base cabextract wget
 
 # Install fontforge
 sudo apt-get -y install software-properties-common
-sudo add-apt-repository ppa:fontforge/fontforge
-sudo apt-get update
-sudo apt-get -y install fontforge
 
 # Install fonts
 sudo apt-get -y install fonts-freefont-ttf fonts-nanum fonts-droid-fallback
@@ -151,20 +126,15 @@ echo ttf-mscorefonts-installer msttcorefonts/accepted-mscorefonts-eula select tr
 sudo apt-get install ttf-mscorefonts-installer
 
 # Setup Cambria fonts
-curl -Ls https://gist.github.com/maxwelleite/10774746/raw/ttf-vista-fonts-installer.sh | sudo bash
-sudo chown -R $(whoami) /usr/share/fonts/
-mkdir -p ~/.fonts
-cp -a /usr/share/fonts/* ~/.fonts
+curl -Ls https://raw.githubusercontent.com/metanorma/vista-fonts-installer/master/vista-fonts-installer.sh | sudo bash
 ----
-
-NOTE: While the Cambria fonts can be setup using the very super convenient setup script kindly provided by http://plasmasturm.org[Aristotle Pagaltzis] at http://plasmasturm.org/code/vistafonts-installer/ , we have switched to https://gist.github.com/maxwelleite/10774746/raw/ttf-vista-fonts-installer.sh in order to be able to extract "Cambria Math" from `cambria.ttc` with `fontforge` for math equations.
 
 
 Building the document is then easy:
 
 [source,sh]
 ----
-export MN_PDF_FONT_PATH=~/.fonts
+export MN_PDF_FONT_PATH=/usr/share/fonts
 
 # Pull submodules
 make update-init update-modules

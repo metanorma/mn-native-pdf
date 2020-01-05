@@ -10,6 +10,23 @@ jobs:
   build:
     runs-on: macos-latest
     steps:
+      - name: Use Ruby
+        uses: actions/setup-ruby@v1
+        with:
+          ruby-version: 2.6
+          architecture: 'x64'
+
+      - name: Install yq
+        run: |
+          brew install yq
+
+      - uses: actions/checkout@master
+
+      - name: Update gems
+        run: |
+          gem install bundler -v 2.0.2
+          bundle install --jobs 4 --retry 3
+
       # cabextract for fonts, gettext-base for envsubst
       - name: Setup prerequisites
         run: |
@@ -17,28 +34,21 @@ jobs:
           brew install gettext
           brew link --force gettext
 
+          # Install cabextract
+          brew install cabextract
+
           # Install p7zip
           brew install p7zip
 
-      - uses: actions/checkout@master
+          # Install yq
+          brew install yq
 
-      - name: Install Cambria
+      - name: Install Microsoft Vista fonts
         run: |
           export MN_PDF_FONT_PATH=${GITHUB_WORKSPACE}/fonts
-          mkdir -p ${MN_PDF_FONT_PATH}/truetype/vista/
-
-          # Install Cambria
-          pushd $(mktemp -d)
-          curl -Ls https://www.rmtweb.co.uk/wp-content/uploads/2013/06/Calibri-and-Cambria-Fonts.zip -o cambria.zip
-          unzip cambria.zip
-          mkdir -p ${MN_PDF_FONT_PATH}/truetype/vista/
-          mv ./Calibri\ and\ Cambria\ Fonts/Cambria*.ttf .
-          mv Cambria.ttf cambria.ttf
-          mv Cambria\ Bold.ttf cambriab.ttf
-          mv Cambria\ Italic.ttf cambriai.ttf
-          mv Cambria\ Bold\ Italic.ttf cambriaz.ttf
-          mv *.ttf ${MN_PDF_FONT_PATH}/truetype/vista/
-          popd
+          export MS_FONT_PATH=${MN_PDF_FONT_PATH}/truetype/vista
+          export RENAME_FONTS=false
+          curl -Ls https://raw.githubusercontent.com/metanorma/vista-fonts-installer/master/vista-fonts-installer.sh | bash
 
       - name: Install FreeSerif
         run: |
@@ -77,14 +87,15 @@ jobs:
       - name: Install Chinese fonts
         run: |
           export MN_PDF_FONT_PATH=${GITHUB_WORKSPACE}/fonts
+          mkdir -p ${MN_PDF_FONT_PATH}/truetype/adobe/
 
           pushd $(mktemp -d)
           curl -Ls https://github.com/Pal3love/Source-Han-TrueType/raw/master/SourceHanSans.7z -o hansans.7z
           7za x hansans.7z
-          mv *.ttc ${MN_PDF_FONT_PATH}/
+          mv *.ttc ${MN_PDF_FONT_PATH}/truetype/adobe/
           popd
 
-      - name: Install System Fonts
+      - name: Install Microsoft Core Fonts
         run: |
           export MN_PDF_FONT_PATH=${GITHUB_WORKSPACE}/fonts
           mkdir -p ${MN_PDF_FONT_PATH}/truetype/msttcorefonts

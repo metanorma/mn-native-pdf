@@ -10,42 +10,50 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      # cabextract for fonts, gettext-base for envsubst
+      - uses: actions/checkout@master
+
+      - name: Use Ruby
+        uses: actions/setup-ruby@v1
+        with:
+          ruby-version: 2.6
+          architecture: 'x64'
+
+      - name: Update gems
+        run: |
+          gem install bundler -v 2.0.2
+          bundle install --jobs 4 --retry 3
+
+      - name: Install yq
+        run: |
+          sudo snap install yq
+
+      # cabextract for fonts, gettext-base for envsubst, libxml2-utils for xmllint
       - name: Setup prerequisites
         run: |
           sudo apt-get update
-          sudo apt-get -y install gettext-base cabextract wget p7zip-full libxml2-utils
+          sudo apt-get -y install gettext-base cabextract wget p7zip-full libxml2-utils curl
 
-          # Install fontforge
-          sudo apt-get -y install software-properties-common
-          sudo add-apt-repository ppa:fontforge/fontforge
-          sudo apt-get update
-          sudo apt-get -y install fontforge
+          sudo apt-get -y install software-properties-common gcc ruby ruby-dev libffi-dev make libxml2-dev
 
           # Install fonts
           sudo apt-get -y install fonts-freefont-ttf fonts-nanum fonts-droid-fallback
 
           # If necessary
           echo ttf-mscorefonts-installer msttcorefonts/accepted-mscorefonts-eula select true | sudo debconf-set-selections
-          sudo apt-get install ttf-mscorefonts-installer
+          sudo apt-get install -y ttf-mscorefonts-installer
 
       - name: Setup Cambria fonts
         run: |
-          # Setup Cambria
-          curl -Ls https://gist.github.com/maxwelleite/10774746/raw/ttf-vista-fonts-installer.sh | sudo bash
-          sudo chown -R $(whoami) /usr/share/fonts/
-          mkdir -p ~/.fonts
-          cp -a /usr/share/fonts/* ~/.fonts
-          ls -alR ~/.fonts
+          curl -Ls https://raw.githubusercontent.com/metanorma/vista-fonts-installer/master/vista-fonts-installer.sh | sudo bash
 
       - name: Setup CJK fonts
         run: |
-          cd ~/.fonts
-          curl -Ls https://github.com/Pal3love/Source-Han-TrueType/raw/master/SourceHanSans.7z -o ~/.fonts/hansans.7z
-          7z x hansans.7z
-          ls -alR ~/.fonts
-
-      - uses: actions/checkout@master
+          mkdir -p /usr/share/fonts/truetype/adobe
+          pushd $(mktemp -d)
+          curl -Ls https://github.com/Pal3love/Source-Han-TrueType/raw/master/SourceHanSans.7z -o hansans.7z
+          7za x hansans.7z
+          mv *.ttc /usr/share/fonts/truetype/adobe
+          popd
 
       - name: Update submodules
         run: |
@@ -53,10 +61,9 @@ jobs:
 
       - name: Compile output
         env:
-          MN_PDF_FONT_PATH: ~/.fonts
+          MN_PDF_FONT_PATH: /usr/share/fonts/
         run: |
-          make all
-          mv documents published
+          make all published
 
       - uses: actions/upload-artifact@master
         with:
@@ -74,10 +81,13 @@ jobs:
       with:
         name: published-ubuntu
         path: published
-    - name: deploy-to-gh
+
+    - name: GitHub Pages action
+      uses: docker://peaceiris/gh-pages:v2
+      with:
+        emptyCommits: false
+        forceOrphan: true
       env:
-        # GITHUB_REPOSITORY: ${{ secrets.GITHUB_REPOSITORY }}
-        GH_DEPLOY_KEY: ${{ secrets.GH_DEPLOY_KEY }}
-        GIT_SSH_COMMAND: "ssh -o StrictHostKeyChecking=no"
-      run: |
-        curl -L https://raw.githubusercontent.com/metanorma/metanorma-build-scripts/master/ghactions-deploy-to-gh-pages.sh | bash
+        ACTIONS_DEPLOY_KEY: ${{ secrets.GH_DEPLOY_KEY }}
+        PUBLISH_BRANCH: gh-pages
+        PUBLISH_DIR: ./published
