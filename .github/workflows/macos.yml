@@ -37,9 +37,6 @@ jobs:
           # Install cabextract
           brew install cabextract
 
-          # Install Fontforge
-          brew install fontforge
-
           # Install p7zip
           brew install p7zip
 
@@ -48,40 +45,10 @@ jobs:
 
       - name: Install Microsoft Vista fonts
         run: |
-          curl -Ls https://gist.githubusercontent.com/ronaldtse/b53c05030a1eee94087aa9f80592b88b/raw/macos-vista-fonts-installer.sh | bash
-
           export MN_PDF_FONT_PATH=${GITHUB_WORKSPACE}/fonts
-          mkdir -p ${MN_PDF_FONT_PATH}/truetype/vista
-
-          ls -alR ~/Library/Fonts/Microsoft
-
-          ln -s ~/Library/Fonts/Microsoft/Calibri\ Bold\ Italic.ttf ${MN_PDF_FONT_PATH}/truetype/vista/calibriz.ttf
-          ln -s ~/Library/Fonts/Microsoft/Calibri\ Bold.ttf         ${MN_PDF_FONT_PATH}/truetype/vista/calibrib.ttf
-          ln -s ~/Library/Fonts/Microsoft/Calibri\ Italic.ttf       ${MN_PDF_FONT_PATH}/truetype/vista/calibrii.ttf
-          ln -s ~/Library/Fonts/Microsoft/Calibri.ttf               ${MN_PDF_FONT_PATH}/truetype/vista/calibri.ttf
-          ln -s ~/Library/Fonts/Microsoft/Cambria\ Bold\ Italic.ttf ${MN_PDF_FONT_PATH}/truetype/vista/cambriaz.ttf
-          ln -s ~/Library/Fonts/Microsoft/Cambria\ Bold.ttf         ${MN_PDF_FONT_PATH}/truetype/vista/cambriab.ttf
-          ln -s ~/Library/Fonts/Microsoft/Cambria\ Italic.ttf       ${MN_PDF_FONT_PATH}/truetype/vista/cambriai.ttf
-          ln -s ~/Library/Fonts/Microsoft/Cambria.ttc               ${MN_PDF_FONT_PATH}/truetype/vista/cambria.ttc
-          ln -s ~/Library/Fonts/Microsoft/Candara\ Bold\ Italic.ttf ${MN_PDF_FONT_PATH}/truetype/vista/candaraz.ttf
-          ln -s ~/Library/Fonts/Microsoft/Candara\ Bold.ttf         ${MN_PDF_FONT_PATH}/truetype/vista/candarab.ttf
-          ln -s ~/Library/Fonts/Microsoft/Candara\ Italic.ttf       ${MN_PDF_FONT_PATH}/truetype/vista/candarai.ttf
-          ln -s ~/Library/Fonts/Microsoft/Candara.ttf               ${MN_PDF_FONT_PATH}/truetype/vista/candara.ttf
-          ln -s ~/Library/Fonts/Microsoft/Consola\ Bold\ Italic.ttf ${MN_PDF_FONT_PATH}/truetype/vista/consolaz.ttf
-          ln -s ~/Library/Fonts/Microsoft/Consola\ Bold.ttf         ${MN_PDF_FONT_PATH}/truetype/vista/consolab.ttf
-          ln -s ~/Library/Fonts/Microsoft/Consola\ Italic.ttf       ${MN_PDF_FONT_PATH}/truetype/vista/consolai.ttf
-          ln -s ~/Library/Fonts/Microsoft/Consola.ttf               ${MN_PDF_FONT_PATH}/truetype/vista/consola.ttf
-          ln -s ~/Library/Fonts/Microsoft/Constan\ Bold\ Italic.ttf ${MN_PDF_FONT_PATH}/truetype/vista/constanz.ttf
-          ln -s ~/Library/Fonts/Microsoft/Constan\ Bold.ttf         ${MN_PDF_FONT_PATH}/truetype/vista/constanb.ttf
-          ln -s ~/Library/Fonts/Microsoft/Constan\ Italic.ttf       ${MN_PDF_FONT_PATH}/truetype/vista/constani.ttf
-          ln -s ~/Library/Fonts/Microsoft/Constan.ttf               ${MN_PDF_FONT_PATH}/truetype/vista/constan.ttf
-          ln -s ~/Library/Fonts/Microsoft/Corbel\ Bold\ Italic.ttf  ${MN_PDF_FONT_PATH}/truetype/vista/corbelz.ttf
-          ln -s ~/Library/Fonts/Microsoft/Corbel\ Bold.ttf          ${MN_PDF_FONT_PATH}/truetype/vista/corbelb.ttf
-          ln -s ~/Library/Fonts/Microsoft/Corbel\ Italic.ttf        ${MN_PDF_FONT_PATH}/truetype/vista/corbeli.ttf
-          ln -s ~/Library/Fonts/Microsoft/Corbel.ttf                ${MN_PDF_FONT_PATH}/truetype/vista/corbel.ttf
-          ln -s ~/Library/Fonts/Microsoft/Meiryo\ Bold.ttc          ${MN_PDF_FONT_PATH}/truetype/vista/meiryob.ttc
-          ln -s ~/Library/Fonts/Microsoft/Meiryo.ttc                ${MN_PDF_FONT_PATH}/truetype/vista/meiryo.ttc
-
+          export MS_FONT_PATH=${MN_PDF_FONT_PATH}/truetype/vista
+          export RENAME_FONTS=false
+          curl -Ls https://raw.githubusercontent.com/metanorma/vista-fonts-installer/master/vista-fonts-installer.sh | bash
 
       - name: Install FreeSerif
         run: |
@@ -120,11 +87,12 @@ jobs:
       - name: Install Chinese fonts
         run: |
           export MN_PDF_FONT_PATH=${GITHUB_WORKSPACE}/fonts
+          mkdir -p ${MN_PDF_FONT_PATH}/truetype/adobe/
 
           pushd $(mktemp -d)
           curl -Ls https://github.com/Pal3love/Source-Han-TrueType/raw/master/SourceHanSans.7z -o hansans.7z
           7za x hansans.7z
-          mv *.ttc ${MN_PDF_FONT_PATH}/
+          mv *.ttc ${MN_PDF_FONT_PATH}/truetype/adobe/
           popd
 
       - name: Install Microsoft Core Fonts

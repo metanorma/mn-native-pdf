@@ -29,53 +29,18 @@ brew link --force gettext
 # Install cabextract
 brew install cabextract
 
-# Install Fontforge
-brew install fontforge
-
 # Install p7zip
 brew install p7zip
 ----
 
 [source,sh]
 ----
+export MN_PDF_FONT_PATH=$(pwd)/.fonts
+
 # Install Microsoft Vista fonts
-export MN_PDF_FONT_PATH=$(pwd)/fonts
-mkdir -p ${MN_PDF_FONT_PATH}/truetype/vista/
-
-curl -Ls https://gist.githubusercontent.com/ronaldtse/b53c05030a1eee94087aa9f80592b88b/raw/macos-vista-fonts-installer.sh | bash
-
-ls -alR ~/Library/Fonts/Microsoft
-
-ln -s ~/Library/Fonts/Microsoft/Calibri\ Bold\ Italic.ttf ${MN_PDF_FONT_PATH}/truetype/vista/calibriz.ttf
-ln -s ~/Library/Fonts/Microsoft/Calibri\ Bold.ttf         ${MN_PDF_FONT_PATH}/truetype/vista/calibrib.ttf
-ln -s ~/Library/Fonts/Microsoft/Calibri\ Italic.ttf       ${MN_PDF_FONT_PATH}/truetype/vista/calibrii.ttf
-ln -s ~/Library/Fonts/Microsoft/Calibri.ttf               ${MN_PDF_FONT_PATH}/truetype/vista/calibri.ttf
-ln -s ~/Library/Fonts/Microsoft/Cambria\ Bold\ Italic.ttf ${MN_PDF_FONT_PATH}/truetype/vista/cambriaz.ttf
-ln -s ~/Library/Fonts/Microsoft/Cambria\ Bold.ttf         ${MN_PDF_FONT_PATH}/truetype/vista/cambriab.ttf
-ln -s ~/Library/Fonts/Microsoft/Cambria\ Italic.ttf       ${MN_PDF_FONT_PATH}/truetype/vista/cambriai.ttf
-ln -s ~/Library/Fonts/Microsoft/Cambria\ Math.ttf         ${MN_PDF_FONT_PATH}/truetype/vista/cambriam.ttf
-ln -s ~/Library/Fonts/Microsoft/Cambria.ttf               ${MN_PDF_FONT_PATH}/truetype/vista/cambria.ttf
-ln -s ~/Library/Fonts/Microsoft/Candara\ Bold\ Italic.ttf ${MN_PDF_FONT_PATH}/truetype/vista/candaraz.ttf
-ln -s ~/Library/Fonts/Microsoft/Candara\ Bold.ttf         ${MN_PDF_FONT_PATH}/truetype/vista/candarab.ttf
-ln -s ~/Library/Fonts/Microsoft/Candara\ Italic.ttf       ${MN_PDF_FONT_PATH}/truetype/vista/candarai.ttf
-ln -s ~/Library/Fonts/Microsoft/Candara.ttf               ${MN_PDF_FONT_PATH}/truetype/vista/candara.ttf
-ln -s ~/Library/Fonts/Microsoft/Consola\ Bold\ Italic.ttf ${MN_PDF_FONT_PATH}/truetype/vista/consolaz.ttf
-ln -s ~/Library/Fonts/Microsoft/Consola\ Bold.ttf         ${MN_PDF_FONT_PATH}/truetype/vista/consolab.ttf
-ln -s ~/Library/Fonts/Microsoft/Consola\ Italic.ttf       ${MN_PDF_FONT_PATH}/truetype/vista/consolai.ttf
-ln -s ~/Library/Fonts/Microsoft/Consola.ttf               ${MN_PDF_FONT_PATH}/truetype/vista/consola.ttf
-ln -s ~/Library/Fonts/Microsoft/Constan\ Bold\ Italic.ttf ${MN_PDF_FONT_PATH}/truetype/vista/constanz.ttf
-ln -s ~/Library/Fonts/Microsoft/Constan\ Bold.ttf         ${MN_PDF_FONT_PATH}/truetype/vista/constanb.ttf
-ln -s ~/Library/Fonts/Microsoft/Constan\ Italic.ttf       ${MN_PDF_FONT_PATH}/truetype/vista/constani.ttf
-ln -s ~/Library/Fonts/Microsoft/Constan.ttf               ${MN_PDF_FONT_PATH}/truetype/vista/constan.ttf
-ln -s ~/Library/Fonts/Microsoft/Corbel\ Bold\ Italic.ttf  ${MN_PDF_FONT_PATH}/truetype/vista/corbelz.ttf
-ln -s ~/Library/Fonts/Microsoft/Corbel\ Bold.ttf          ${MN_PDF_FONT_PATH}/truetype/vista/corbelb.ttf
-ln -s ~/Library/Fonts/Microsoft/Corbel\ Italic.ttf        ${MN_PDF_FONT_PATH}/truetype/vista/corbeli.ttf
-ln -s ~/Library/Fonts/Microsoft/Corbel.ttf                ${MN_PDF_FONT_PATH}/truetype/vista/corbel.ttf
-ln -s ~/Library/Fonts/Microsoft/Meiryo\ Bold\ Italic.ttf  ${MN_PDF_FONT_PATH}/truetype/vista/meiryoz.ttf
-ln -s ~/Library/Fonts/Microsoft/Meiryo\ Bold.ttf          ${MN_PDF_FONT_PATH}/truetype/vista/meiryob.ttf
-ln -s ~/Library/Fonts/Microsoft/Meiryo\ Italic.ttf        ${MN_PDF_FONT_PATH}/truetype/vista/meiryoi.ttf
-ln -s ~/Library/Fonts/Microsoft/Meiryo.ttf                ${MN_PDF_FONT_PATH}/truetype/vista/meiryo.ttf
-
+export MS_FONT_PATH=${MN_PDF_FONT_PATH}/truetype/vista
+export RENAME_FONTS=false
+curl -Ls https://raw.githubusercontent.com/metanorma/vista-fonts-installer/master/vista-fonts-installer.sh | bash
 
 # Install FreeSerif
 mkdir -p ${MN_PDF_FONT_PATH}/truetype/freefont/
@@ -106,12 +71,12 @@ wget https://github.com/aosp-mirror/platform_frameworks_base/raw/master/data/fon
 popd
 
 # Install CJK fonts
-export MN_PDF_FONT_PATH=${GITHUB_WORKSPACE}/fonts
+mkdir -p ${MN_PDF_FONT_PATH}/truetype/adobe/
 
 pushd $(mktemp -d)
 curl -Ls https://github.com/Pal3love/Source-Han-TrueType/raw/master/SourceHanSans.7z -o hansans.7z
 7za x hansans.7z
-mv *.ttc ${MN_PDF_FONT_PATH}/
+mv *.ttc ${MN_PDF_FONT_PATH}/truetype/adobe/
 popd
 
 # Install Microsoft Core fonts
@@ -152,9 +117,6 @@ sudo apt-get -y install gettext-base cabextract wget
 
 # Install fontforge
 sudo apt-get -y install software-properties-common
-sudo add-apt-repository ppa:fontforge/fontforge
-sudo apt-get update
-sudo apt-get -y install fontforge
 
 # Install fonts
 sudo apt-get -y install fonts-freefont-ttf fonts-nanum fonts-droid-fallback
@@ -164,20 +126,15 @@ echo ttf-mscorefonts-installer msttcorefonts/accepted-mscorefonts-eula select tr
 sudo apt-get install ttf-mscorefonts-installer
 
 # Setup Cambria fonts
-curl -Ls https://gist.github.com/maxwelleite/10774746/raw/ttf-vista-fonts-installer.sh | sudo bash
-sudo chown -R $(whoami) /usr/share/fonts/
-mkdir -p ~/.fonts
-cp -a /usr/share/fonts/* ~/.fonts
+curl -Ls https://raw.githubusercontent.com/metanorma/vista-fonts-installer/master/vista-fonts-installer.sh | sudo bash
 ----
-
-NOTE: While the Cambria fonts can be setup using the very super convenient setup script kindly provided by http://plasmasturm.org[Aristotle Pagaltzis] at http://plasmasturm.org/code/vistafonts-installer/ , we have switched to https://gist.github.com/maxwelleite/10774746/raw/ttf-vista-fonts-installer.sh in order to be able to extract "Cambria Math" from `cambria.ttc` with `fontforge` for math equations.
 
 
 Building the document is then easy:
 
 [source,sh]
 ----
-export MN_PDF_FONT_PATH=~/.fonts
+export MN_PDF_FONT_PATH=/usr/share/fonts
 
 # Pull submodules
 make update-init update-modules
