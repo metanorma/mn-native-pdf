@@ -42,34 +42,6 @@ export MS_FONT_PATH=${MN_PDF_FONT_PATH}/truetype/vista
 export RENAME_FONTS=false
 curl -Ls https://raw.githubusercontent.com/metanorma/vista-fonts-installer/master/vista-fonts-installer.sh | bash
 
-# Install FreeSerif
-mkdir -p ${MN_PDF_FONT_PATH}/truetype/freefont/
-
-pushd $(mktemp -d)
-curl -Ls https://www.fontspace.com/download/13277/e8f09161b1174b2abe9bd65fb8223c48/gnu-freefont_freeserif.zip -o freefont.zip
-unzip freefont.zip
-mv *.ttf ${MN_PDF_FONT_PATH}/truetype/freefont/
-popd
-
-# Install Nanum Gothic
-mkdir -p ${MN_PDF_FONT_PATH}/truetype/nanum/
-
-pushd $(mktemp -d)
-curl -Ls https://fonts.google.com/download?family=Nanum%20Gothic -o nanum.zip
-unzip nanum.zip
-mv NanumGothic{-,}Bold.ttf
-mv NanumGothic{-,}ExtraBold.ttf
-mv NanumGothic-Regular.ttf NanumGothic.ttf
-mv *.ttf ${MN_PDF_FONT_PATH}/truetype/nanum/
-popd
-
-# Install Droid Sans Fallback
-mkdir -p ${MN_PDF_FONT_PATH}/truetype/droid/
-
-pushd ${MN_PDF_FONT_PATH}/truetype/droid/
-wget https://github.com/aosp-mirror/platform_frameworks_base/raw/master/data/fonts/DroidSansFallbackFull.ttf
-popd
-
 # Install CJK fonts
 mkdir -p ${MN_PDF_FONT_PATH}/truetype/adobe/
 
@@ -118,9 +90,6 @@ sudo apt-get -y install gettext-base cabextract wget
 
 # Install fontforge
 sudo apt-get -y install software-properties-common
-
-# Install fonts
-sudo apt-get -y install fonts-freefont-ttf fonts-nanum fonts-droid-fallback
 
 # Install MS system fonts
 echo ttf-mscorefonts-installer msttcorefonts/accepted-mscorefonts-eula select true | sudo debconf-set-selections
