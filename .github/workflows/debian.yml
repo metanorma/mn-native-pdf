@@ -11,8 +11,6 @@ jobs:
     runs-on: ubuntu-latest
     container: debian
     steps:
-      - uses: actions/checkout@master
-
       # cabextract for fonts, gettext-base for envsubst, libxml2-utils for xmllint
       - name: Setup prerequisites
         run: |
@@ -51,6 +49,8 @@ jobs:
           7za x hansans.7z
           mv *.ttc /usr/share/fonts/truetype/adobe
           cd ${PREVPWD}
+
+      - uses: actions/checkout@master
 
       - name: Update submodules
         run: |
