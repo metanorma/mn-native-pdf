@@ -91,9 +91,6 @@ sudo apt-get -y install gettext-base cabextract wget
 # Install fontforge
 sudo apt-get -y install software-properties-common
 
-# Install fonts
-sudo apt-get -y install fonts-freefont-ttf
-
 # Install MS system fonts
 echo ttf-mscorefonts-installer msttcorefonts/accepted-mscorefonts-eula select true | sudo debconf-set-selections
 sudo apt-get install ttf-mscorefonts-installer

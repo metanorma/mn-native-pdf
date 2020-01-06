@@ -26,8 +26,6 @@ jobs:
             software-properties-common gcc ruby ruby-dev libffi-dev make libxml2-dev libxslt1-dev
 
           # Install fonts
-          sudo apt-get -y install fonts-freefont-ttf
-
           # If necessary
           echo ttf-mscorefonts-installer msttcorefonts/accepted-mscorefonts-eula select true | sudo debconf-set-selections
           sudo apt-get install -y ttf-mscorefonts-installer
