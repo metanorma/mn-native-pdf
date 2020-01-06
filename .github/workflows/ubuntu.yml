@@ -23,10 +23,6 @@ jobs:
           gem install bundler -v 2.0.2
           bundle install --jobs 4 --retry 3
 
-      - name: Install yq
-        run: |
-          sudo snap install yq
-
       # cabextract for fonts, gettext-base for envsubst, libxml2-utils for xmllint
       - name: Setup prerequisites
         run: |

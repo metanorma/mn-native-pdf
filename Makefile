@@ -55,8 +55,8 @@ documents/itu-D-REC-D.19-201003-E.pdf:
 
 documents.rxl: $(HTML) $(DOC) $(RXL) $(PDF) | bundle
 	bundle exec relaton concatenate \
-	  -t "$(shell yq r metanorma.yml relaton.collection.name)" \
-		-g "$(shell yq r metanorma.yml relaton.collection.organization)" \
+	  -t "mn2pdf samples" \
+		-g "Metanorma" \
 		documents $@
 
 bundle:
