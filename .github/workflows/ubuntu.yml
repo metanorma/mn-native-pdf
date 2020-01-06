@@ -18,25 +18,15 @@ jobs:
           ruby-version: 2.6
           architecture: 'x64'
 
-      - name: Update gems
-        run: |
-          gem install bundler -v 2.0.2
-          bundle install --jobs 4 --retry 3
-
-      - name: Install yq
-        run: |
-          sudo snap install yq
-
       # cabextract for fonts, gettext-base for envsubst, libxml2-utils for xmllint
       - name: Setup prerequisites
         run: |
           sudo apt-get update
-          sudo apt-get -y install gettext-base cabextract wget p7zip-full libxml2-utils curl
-
-          sudo apt-get -y install software-properties-common gcc ruby ruby-dev libffi-dev make libxml2-dev
+          sudo apt-get -y install gettext-base cabextract wget p7zip-full libxml2-utils curl \
+            software-properties-common gcc ruby ruby-dev libffi-dev make libxml2-dev libxslt1-dev
 
           # Install fonts
-          sudo apt-get -y install fonts-freefont-ttf fonts-nanum fonts-droid-fallback
+          sudo apt-get -y install fonts-freefont-ttf fonts-droid-fallback
 
           # If necessary
           echo ttf-mscorefonts-installer msttcorefonts/accepted-mscorefonts-eula select true | sudo debconf-set-selections
@@ -54,6 +44,12 @@ jobs:
           7za x hansans.7z
           mv *.ttc /usr/share/fonts/truetype/adobe
           popd
+
+      - name: Update gems
+        run: |
+          gem install bundler -v 2.0.2
+          bundle config build.nokogiri --use-system-libraries
+          bundle install --jobs 4 --retry 3
 
       - name: Update submodules
         run: |
