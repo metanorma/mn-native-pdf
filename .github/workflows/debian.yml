@@ -20,12 +20,6 @@ jobs:
             libxml2-dev libxslt1-dev zlib1g-dev zlib1g pkg-config g++ default-jre gnupg \
             git
 
-      - name: Update gems
-        run: |
-          gem install bundler -v 2.0.2
-          bundle config build.nokogiri --use-system-libraries
-          bundle install --jobs 4 --retry 3
-
       - name: Install fonts
         run: |
           apt-get -y install fonts-freefont-ttf fonts-droid-fallback
@@ -51,6 +45,12 @@ jobs:
           cd ${PREVPWD}
 
       - uses: actions/checkout@master
+
+      - name: Update gems
+        run: |
+          gem install bundler -v 2.0.2
+          bundle config build.nokogiri --use-system-libraries
+          bundle install --jobs 4 --retry 3
 
       - name: Update submodules
         run: |
