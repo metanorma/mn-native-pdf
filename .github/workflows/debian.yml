@@ -19,7 +19,7 @@ jobs:
           apt-get update
           apt-get -y install gettext-base cabextract wget p7zip-full libxml2-utils curl \
             software-properties-common gcc ruby ruby-dev libffi-dev libsass-dev make \
-            libxml2-dev libxslt-dev zlib1g-dev zlib1g
+            libxml2-dev libxslt1-dev zlib1g-dev zlib1g pkg-config
 
       - name: Update gems
         run: |
