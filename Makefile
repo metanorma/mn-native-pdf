@@ -4,6 +4,7 @@ SRCDIR := sources
 DESTDIR := documents
 SRC := $(patsubst mn-samples-iso/documents/%,sources/%,$(wildcard mn-samples-iso/documents/*.xml)) \
 	$(patsubst mn-samples-itu/documents/%,sources/itu-%,$(wildcard mn-samples-itu/documents/*.xml)) \
+	$(patsubst mn-samples-iec/documents/%,sources/%,$(wildcard mn-samples-iec/documents/*.xml)) \
 	$(patsubst mn-samples-un/documents/%,sources/un-%,$(wildcard mn-samples-un/documents/*.xml))
 PDF := $(patsubst sources/%,documents/%,$(patsubst %.xml,%.pdf,$(SRC)))
 HTML := $(patsubst sources/%,documents/%,$(patsubst %.xml,%.html,$(SRC)))
@@ -24,6 +25,9 @@ mn2pdf.jar:
 	curl -sSL ${MN2PDF_DOWNLOAD_PATH} -o mn2pdf.jar
 
 sources/iso-%: mn-samples-iso/documents/iso-%
+	cp $< $@
+
+sources/iec-%: mn-samples-iec/documents/iec-%
 	cp $< $@
 
 sources/itu-%: mn-samples-itu/documents/%
