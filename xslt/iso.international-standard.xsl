@@ -74,7 +74,7 @@
 	</xsl:variable>
 	
 	<xsl:template match="/">
-		<fo:root xmlns:fo="http://www.w3.org/1999/XSL/Format" font-family="Cambria, FreeSerif, HanSans, NanumGothic, DroidSans" font-size="11pt" xml:lang="{$lang}"> <!-- alternatives: SimSun -->
+		<fo:root xmlns:fo="http://www.w3.org/1999/XSL/Format" font-family="Cambria, Times New Roman, Cambria Math, HanSans" font-size="11pt" xml:lang="{$lang}"> <!-- alternatives: SimSun -->
 			<fo:layout-master-set>
 				<!-- cover page -->
 				<fo:simple-page-master master-name="cover-page" page-width="{$pageWidth}" page-height="{$pageHeight}">

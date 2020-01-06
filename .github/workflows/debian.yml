@@ -22,7 +22,7 @@ jobs:
 
       - name: Install fonts
         run: |
-          apt-get -y install fonts-freefont-ttf fonts-droid-fallback
+          apt-get -y install fonts-freefont-ttf
 
           # We need to do this to install mscorefonts
           apt-add-repository -y contrib

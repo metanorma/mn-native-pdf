@@ -110,30 +110,6 @@ the location of this file.
 				<font kerning="yes" embed-url="file://${MN_PDF_FONT_PATH}/truetype/vista/meiryob.ttc" sub-font="Meiryo Bold Italic">
 					<font-triplet name="Meiryo Bold" style="italic" weight="bold"/>
 				</font>
-				<!-- for missing characters in cambria, and for Hebrew glyphs -->
-				<font kerning="yes" embed-url="file://${MN_PDF_FONT_PATH}/truetype/freefont/FreeSerif.ttf">
-					<font-triplet name="FreeSerif" style="normal" weight="normal"/>
-				</font>
-				<font kerning="yes" embed-url="file://${MN_PDF_FONT_PATH}/truetype/freefont/FreeSerifBold.ttf">
-					<font-triplet name="FreeSerif" style="normal" weight="bold"/>
-				</font>
-				<font kerning="yes" embed-url="file://${MN_PDF_FONT_PATH}/truetype/freefont/FreeSerifItalic.ttf">
-					<font-triplet name="FreeSerif" style="italic" weight="normal"/>
-				</font>
-				<font kerning="yes" embed-url="file://${MN_PDF_FONT_PATH}/truetype/freefont/FreeSerifBoldItalic.ttf">
-					<font-triplet name="FreeSerif" style="italic" weight="bold"/>
-				</font>
-				<!-- for Korean glyphs -->
-				<font kerning="yes" embed-url="file://${MN_PDF_FONT_PATH}/truetype/nanum/NanumGothic.ttf">
-					<font-triplet name="NanumGothic" style="normal" weight="normal"/>
-				</font>
-				<font kerning="yes" embed-url="file://${MN_PDF_FONT_PATH}/truetype/nanum/NanumGothicBold.ttf">
-					<font-triplet name="NanumGothic" style="normal" weight="bold"/>
-				</font>
-				<!-- for Japanese glyphs -->
-				<font kerning="yes" embed-url="file://${MN_PDF_FONT_PATH}/truetype/droid/DroidSansFallbackFull.ttf">
-					<font-triplet name="DroidSans" style="normal" weight="normal"/>
-				</font>
 				<font kerning="yes" embed-url="file://${MN_PDF_FONT_PATH}/truetype/msttcorefonts/arial.ttf">
 					<font-triplet name="Arial" style="normal" weight="normal"/>
 				</font>
