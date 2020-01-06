@@ -1,0 +1,69 @@
+name: debian
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    container: debian
+    steps:
+      - uses: actions/checkout@master
+
+      - name: Use Ruby
+        uses: actions/setup-ruby@v1
+        with:
+          ruby-version: 2.6
+          architecture: 'x64'
+
+      - name: Update gems
+        run: |
+          gem install bundler -v 2.0.2
+          bundle install --jobs 4 --retry 3
+
+      - name: Install yq
+        run: |
+          sudo snap install yq
+
+      # cabextract for fonts, gettext-base for envsubst, libxml2-utils for xmllint
+      - name: Setup prerequisites
+        run: |
+          sudo apt-get update
+          sudo apt-get -y install gettext-base cabextract wget p7zip-full libxml2-utils curl
+
+          sudo apt-get -y install software-properties-common gcc ruby ruby-dev libffi-dev make libxml2-dev
+
+          # Install fonts
+          sudo apt-get -y install fonts-freefont-ttf fonts-nanum fonts-droid-fallback
+
+          # We need to do this to install mscorefonts
+          sudo apt-add-repository contrib
+          sudo apt-get update
+          echo ttf-mscorefonts-installer msttcorefonts/accepted-mscorefonts-eula select true | sudo debconf-set-selections
+          sudo apt-get install -y ttf-mscorefonts-installer
+
+      - name: Setup Cambria fonts
+        run: |
+          curl -Ls https://raw.githubusercontent.com/metanorma/vista-fonts-installer/master/vista-fonts-installer.sh | sudo bash
+
+      - name: Setup CJK fonts
+        run: |
+          mkdir -p /usr/share/fonts/truetype/adobe
+          pushd $(mktemp -d)
+          curl -Ls https://github.com/Pal3love/Source-Han-TrueType/raw/master/SourceHanSans.7z -o hansans.7z
+          7za x hansans.7z
+          mv *.ttc /usr/share/fonts/truetype/adobe
+          popd
+
+      - name: Update submodules
+        run: |
+          make update-init update-modules
+
+      - name: Compile output
+        env:
+          MN_PDF_FONT_PATH: /usr/share/fonts/
+        run: |
+          make all published
