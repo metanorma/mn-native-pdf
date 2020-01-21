@@ -58,6 +58,5 @@ jobs:
         env:
           MN_PDF_FONT_PATH: /usr/share/fonts/
         run: |
-          xalan_exec() { xalan -out "$1" -in "$2" -xsl "$3"; }
-          export -f xalan_exec | bash
+          bash -c "xalan_exec() { xalan -out "$1" -in "$2" -xsl "$3"; } && export -f xalan_exec"
           make all published
