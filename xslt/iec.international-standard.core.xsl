@@ -5,6 +5,8 @@
 	
 	<xsl:include href="./common.xsl"/>
 	
+	<xsl:variable name="namespace">iec</xsl:variable>
+	
 	<xsl:variable name="pageWidth" select="'210mm'"/>
 	<xsl:variable name="pageHeight" select="'297mm'"/>
 
@@ -796,7 +798,7 @@
 			<p id="_8e5cf917-f75a-4a49-b0aa-1714cb6cf954">Formerly denoted as 15 % (m/m).</p>
 		</fn>
 	-->
-	<xsl:template match="iec:p/iec:fn">
+	<xsl:template match="iec:p/iec:fn" priority="2">
 		<fo:footnote>
 			<xsl:variable name="number">
 				<xsl:number level="any" count="iec:p/iec:fn"/>
@@ -893,7 +895,7 @@
 	</xsl:template>
 	
 	<xsl:template match="iec:figure/iec:name"/>
-	<xsl:template match="iec:figure/iec:fn"/>
+	<xsl:template match="iec:figure/iec:fn" priority="2"/>
 	<xsl:template match="iec:figure/iec:note"/>
 	
 	

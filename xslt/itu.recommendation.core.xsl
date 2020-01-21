@@ -5,6 +5,8 @@
 
 	<xsl:include href="./common.xsl"/>
 	
+	<xsl:variable name="namespace">itu</xsl:variable>
+	
 	<xsl:variable name="pageWidth" select="'210mm'"/>
 	<xsl:variable name="pageHeight" select="'297mm'"/>
 
@@ -1012,7 +1014,7 @@
 		</xsl:choose>
 	</xsl:template>
 
-	<xsl:template match="itu:p/itu:fn">
+	<xsl:template match="itu:p/itu:fn" priority="2">
 		<fo:footnote>
 			<xsl:variable name="number">
 				<xsl:number level="any" count="itu:p/itu:fn"/>
@@ -1037,7 +1039,7 @@
 	</xsl:template>
 	
 	
-	<xsl:template match="*[local-name()='tt']">
+	<xsl:template match="*[local-name()='tt']" priority="2">
 		<xsl:variable name="element-name">
 			<xsl:choose>
 				<xsl:when test="normalize-space(ancestor::itu:p[1]//text()[not(parent::itu:tt)]) != ''">fo:inline</xsl:when>
@@ -1084,7 +1086,7 @@
 	</xsl:template>
 	
 	<xsl:template match="itu:figure/itu:name"/>
-	<xsl:template match="itu:figure/itu:fn"/>
+	<xsl:template match="itu:figure/itu:fn" priority="2"/>
 	<xsl:template match="itu:figure/itu:note"/>
 
 	<!-- itu:figure/itu:image -->
