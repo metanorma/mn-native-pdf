@@ -18,7 +18,7 @@ jobs:
           apt-get -y install gettext-base cabextract wget p7zip-full libxml2-utils curl \
             software-properties-common gcc ruby ruby-dev libffi-dev libsass-dev make \
             libxml2-dev libxslt1-dev zlib1g-dev zlib1g pkg-config g++ default-jre gnupg \
-            git xalan
+            git
 
       - name: Install fonts
         run: |

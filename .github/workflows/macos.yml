@@ -39,9 +39,6 @@ jobs:
           # Install yq
           brew install yq
 
-          # Install xalan
-          brew install xalan-c
-
       - name: Install Microsoft Vista fonts
         run: |
           export MN_PDF_FONT_PATH=${GITHUB_WORKSPACE}/fonts
@@ -83,13 +80,17 @@ jobs:
         run: |
           make update-init update-modules
 
+      - name: Setup Xalan
+        run: |
+          curl -Ls http://us.mirrors.quenda.co/apache/xalan/xalan-j/binaries/xalan-j_2_7_2-bin.zip -o xalan-j.zip
+          unzip xalan-j.zip "*.jar"
+          mv xalan-j_2_7_2/*.jar $(pwd)
+
       - name: Compile output
         run: |
           export MN_PDF_FONT_PATH=${GITHUB_WORKSPACE}/fonts
 
           ls -alR ${MN_PDF_FONT_PATH}
-          xalan_exec() { xalan -o "$1" "$2" "$3"; }
-          export -f xalan_exec
           make all
           mv documents published
 
