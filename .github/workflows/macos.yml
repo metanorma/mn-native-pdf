@@ -89,6 +89,7 @@ jobs:
 
           ls -alR ${MN_PDF_FONT_PATH}
           xalan_exec() { xalan-c -o "$1" "$2" "$3"; }
+          export -f xalan_exec
           make all
           mv documents published
 
