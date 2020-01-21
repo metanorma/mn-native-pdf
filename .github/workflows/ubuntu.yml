@@ -23,7 +23,7 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get -y install gettext-base cabextract wget p7zip-full libxml2-utils curl \
-            software-properties-common gcc ruby ruby-dev libffi-dev make libxml2-dev libxslt1-dev
+            software-properties-common gcc ruby ruby-dev libffi-dev make libxml2-dev libxslt1-dev xalan
 
           # Install fonts
           # If necessary

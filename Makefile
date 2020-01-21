@@ -48,7 +48,10 @@ documents/%.pdf: sources/%.xml pdf_fonts_config.xml mn2pdf.jar | documents
 	OUTFILE=$@; \
 	MN_FLAVOR=$$(xmllint --xpath 'name(*)' $${FILENAME} | cut -d '-' -f 1); \
 	DOCTYPE=$$(xmllint --xpath "//*[local-name()='doctype']/text()" $${FILENAME}); \
+	XSLT_PATH_CORE=${XSLT_PATH_BASE}/$${MN_FLAVOR}.$${DOCTYPE}.core.xsl; \
+	XSLT_PATH_MERGE=${XSLT_PATH_BASE}/merge.xsl; \
 	XSLT_PATH=${XSLT_PATH_BASE}/$${MN_FLAVOR}.$${DOCTYPE}.xsl; \
+	xalan  -o $$XSLT_PATH $$XSLT_PATH_CORE $$XSLT_PATH_MERGE; \
   java -jar mn2pdf.jar pdf_fonts_config.xml $$FILENAME $$XSLT_PATH $$OUTFILE
 
 # This document is currently broken
