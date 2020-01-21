@@ -54,6 +54,12 @@ jobs:
         run: |
           make update-init update-modules
 
+      - name: Setup Xalan
+        run: |
+          curl -Ls http://us.mirrors.quenda.co/apache/xalan/xalan-j/binaries/xalan-j_2_7_2-bin.zip -o xalan-j.zip
+        unzip xalan-j.zip
+        mv xalan-j_2_7_2/*.jar /usr/share
+          
       - name: Compile output
         env:
           MN_PDF_FONT_PATH: /usr/share/fonts/

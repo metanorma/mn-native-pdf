@@ -51,7 +51,7 @@ documents/%.pdf: sources/%.xml pdf_fonts_config.xml mn2pdf.jar | documents
 	XSLT_PATH_CORE=${XSLT_PATH_BASE}/$${MN_FLAVOR}.$${DOCTYPE}.core.xsl; \
 	XSLT_PATH_MERGE=${XSLT_PATH_BASE}/merge.xsl; \
 	XSLT_PATH=${XSLT_PATH_BASE}/$${MN_FLAVOR}.$${DOCTYPE}.xsl; \
-	xalan_exec $$XSLT_PATH $$XSLT_PATH_CORE $$XSLT_PATH_MERGE; \
+	java -jar xalan.jar -IN $$XSLT_PATH_CORE -XSL $$XSLT_PATH_MERGE -OUT $$XSLT_PATH; \
   java -jar mn2pdf.jar pdf_fonts_config.xml $$FILENAME $$XSLT_PATH $$OUTFILE
 
 # This document is currently broken
