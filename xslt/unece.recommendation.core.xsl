@@ -4,6 +4,8 @@
 	<xsl:output version="1.0" method="xml" encoding="UTF-8" indent="no"/>
 
 	<xsl:include href="./common.xsl"/>
+
+	<xsl:variable name="namespace">unece-rec</xsl:variable>
 	
 	<xsl:variable name="pageWidth" select="'210mm'"/>
 	<xsl:variable name="pageHeight" select="'297mm'"/>
@@ -658,7 +660,7 @@
 		<xsl:value-of select="."/>
 	</xsl:template>
 	
-	<xsl:template match="un:title/un:fn | un:p/un:fn[not(ancestor::un:table)]">
+	<xsl:template match="un:title/un:fn | un:p/un:fn[not(ancestor::un:table)]" priority="2">
 		<fo:footnote keep-with-previous.within-line="always">
 			<xsl:variable name="number">
 				<xsl:number level="any" count="un:fn[not(ancestor::un:table)]"/>
@@ -1055,7 +1057,7 @@
 	<xsl:template match="un:figure/un:name" mode="process">
 		<xsl:apply-templates/>
 	</xsl:template>
-	<xsl:template match="un:figure/un:fn"/>
+	<xsl:template match="un:figure/un:fn" priority="2"/>
 	<xsl:template match="un:figure/un:note"/>
 
 	

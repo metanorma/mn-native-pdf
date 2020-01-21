@@ -4,6 +4,8 @@
 	<xsl:output method="xml" encoding="UTF-8" indent="no"/>
 	
 	<xsl:include href="./common.xsl"/>
+
+	<xsl:variable name="namespace">iso</xsl:variable>
 	
 	<xsl:variable name="pageWidth" select="'210mm'"/>
 	<xsl:variable name="pageHeight" select="'297mm'"/>
@@ -951,7 +953,7 @@
 			<p id="_8e5cf917-f75a-4a49-b0aa-1714cb6cf954">Formerly denoted as 15 % (m/m).</p>
 		</fn>
 	-->
-	<xsl:template match="iso:p/iso:fn">
+	<xsl:template match="iso:p/iso:fn" priority="2">
 		<fo:footnote>
 			<xsl:variable name="number">
 				<xsl:number level="any" count="iso:p/iso:fn"/>
@@ -1043,7 +1045,7 @@
 	</xsl:template>
 	
 	<xsl:template match="iso:figure/iso:name"/>
-	<xsl:template match="iso:figure/iso:fn"/>
+	<xsl:template match="iso:figure/iso:fn" priority="2"/>
 	<xsl:template match="iso:figure/iso:note"/>
 	
 	
