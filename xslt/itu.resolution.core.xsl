@@ -1,1 +1,1 @@
-itu.recommendation.xsl
+itu.recommendation.core.xsl
