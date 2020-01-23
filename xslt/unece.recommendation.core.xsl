@@ -264,7 +264,7 @@
 												<xsl:if test="@section != '' and not(@display-section = 'false')"> <!--   -->
 													<fo:inline padding-right="3mm">
 														<xsl:value-of select="substring-after(@section, 'Annex')"/>
-														<xsl:text> </xsl:text>
+														<xsl:text>: </xsl:text>
 													</fo:inline>
 												</xsl:if>
 												<xsl:value-of select="text()"/><xsl:text> </xsl:text>
@@ -321,6 +321,8 @@
 			<!-- Back Page -->
 			<fo:page-sequence master-reference="cover-page" force-page-count="no-force">
 				<fo:flow flow-name="xsl-region-body">
+            <fo:block>&#xA0;</fo:block>
+            <fo:block break-after="page"/>
 					<fo:block-container absolute-position="fixed" left="0mm" top="72mm">
 							<fo:block>
 							<fo:external-graphic src="{concat('data:image/png;base64,', normalize-space($Image-Back))}" width="210mm" content-height="scale-to-fit" scaling="uniform" fox:alt-text="Image Front"/>
@@ -606,7 +608,7 @@
 			<xsl:attribute name="text-align">
 				<xsl:choose>
 					<xsl:when test="@align"><xsl:value-of select="@align"/></xsl:when>
-					<xsl:otherwise>left</xsl:otherwise>
+					<xsl:otherwise>justify</xsl:otherwise>
 				</xsl:choose>
 			</xsl:attribute>
 			<!-- <xsl:choose>
@@ -922,7 +924,7 @@
 						<xsl:attribute name="margin-top">12pt</xsl:attribute>
 						<xsl:attribute name="margin-bottom">16pt</xsl:attribute>
 					</xsl:if>
-					<xsl:value-of select="$section"/>
+					<xsl:value-of select="$section"/><xsl:text>:</xsl:text>
 					<xsl:value-of select="$linebreak"/>
 					<xsl:apply-templates />
 				</fo:block>
@@ -1467,7 +1469,7 @@
 						<xsl:when test="$level = 1">
 							<xsl:text>Annex  </xsl:text>
 							<xsl:number format="I" level="any" count="un:annex"/>
-							<xsl:text>: </xsl:text>
+							<!-- <xsl:text>: </xsl:text> -->
 						</xsl:when>
 						<xsl:otherwise>
 							<xsl:variable name="annex_id" select="ancestor::un:annex/@id"/>
