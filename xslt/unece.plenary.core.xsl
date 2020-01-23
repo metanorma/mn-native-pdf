@@ -35,7 +35,7 @@
 				
 				<!-- Document pages -->
 				<fo:simple-page-master master-name="document" page-width="{$pageWidth}" page-height="{$pageHeight}">
-					<fo:region-body margin-top="25mm" margin-bottom="10mm" margin-left="30mm" margin-right="19mm"/>
+					<fo:region-body margin-top="25mm" margin-bottom="11mm" margin-left="30mm" margin-right="19mm"/>
 					<fo:region-before region-name="header" extent="25mm"/>
 					<fo:region-after region-name="footer" extent="10mm"/>
 					<fo:region-start region-name="left" extent="30mm"/>
@@ -73,7 +73,7 @@
 			</fo:declarations>
 			
 			<!-- Cover Page -->
-			<fo:page-sequence master-reference="cover-page" force-page-count="no-force">				
+			<fo:page-sequence master-reference="cover-page" force-page-count="even">				
 				<fo:flow flow-name="xsl-region-body">
 					<fo:block-container border-bottom="0.5pt solid black" margin-bottom="16pt" height="4mm">
 						<fo:block text-align-last="justify" >
