@@ -11,16 +11,15 @@
 	<xsl:variable name="pageHeight" select="'297mm'"/>
 
 	<xsl:variable name="copyrightText" select="concat('© ISO ', iso:iso-standard/iso:bibdata/iso:copyright/iso:from ,' – All rights reserved')"/>
-  <!-- <xsl:variable name="lang-1st-letter" select="concat('(', translate(substring(iso:iso-standard/iso:bibdata/iso:language,1,1),$lower, $upper), ')')"/> -->
-  <xsl:variable name="lang-1st-letter" select="''"/>
+  
+	<xsl:variable name="lang-1st-letter_tmp" select="substring-before(substring-after(/iso:iso-standard/iso:bibdata/iso:docidentifier[@type = 'iso-with-lang'], '('), ')')"/>
+	<xsl:variable name="lang-1st-letter" select="concat('(', $lang-1st-letter_tmp , ')')"/>
+  
 	<xsl:variable name="ISOname" select="concat(/iso:iso-standard/iso:bibdata/iso:docidentifier, ':', /iso:iso-standard/iso:bibdata/iso:copyright/iso:from , $lang-1st-letter)"/>
 	
 	<!-- Information and documentation — Codes for transcription systems  -->
-	<!-- <xsl:variable name="title-en" select="concat(/iso:iso-standard/iso:bibdata/iso:title[@language = 'en' and @type = 'title-intro'], ' &#x2014; ' ,/iso:iso-standard/iso:bibdata/iso:title[@language = 'en' and @type = 'title-main'])"/> -->
 	<xsl:variable name="title-en" select="/iso:iso-standard/iso:bibdata/iso:title[@language = 'en' and @type = 'main']"/>
-	<!-- <xsl:variable name="title-fr" select="concat(/iso:iso-standard/iso:bibdata/iso:title[@language = 'fr' and @type = 'title-intro'],  ' &#x2014; ' ,/iso:iso-standard/iso:bibdata/iso:title[@language = 'fr' and @type = 'title-main'])"/> -->
 	<xsl:variable name="title-fr" select="/iso:iso-standard/iso:bibdata/iso:title[@language = 'fr' and @type = 'main']"/>
-
 	<xsl:variable name="title-intro" select="/iso:iso-standard/iso:bibdata/iso:title[@language = 'en' and @type = 'title-intro']"/>
 	<xsl:variable name="title-main" select="/iso:iso-standard/iso:bibdata/iso:title[@language = 'en' and @type = 'title-main']"/>
 	<xsl:variable name="part" select="/iso:iso-standard/iso:bibdata/iso:ext/iso:structuredidentifier/iso:project-number/@part"/>
@@ -125,6 +124,14 @@
 						<fo:conditional-page-master-reference odd-or-even="odd" master-reference="odd"/>
 					</fo:repeatable-page-master-alternatives>
 				</fo:page-sequence-master>
+				
+				<fo:simple-page-master master-name="last-page" page-width="{$pageWidth}" page-height="{$pageHeight}">
+					<fo:region-body margin-top="27.4mm" margin-bottom="13mm" margin-left="19mm" margin-right="19mm"/>
+					<fo:region-before/>
+					<fo:region-after region-name="last-page-footer" extent="13mm"/>
+					<fo:region-start region-name="left-region" extent="19mm"/>
+					<fo:region-end region-name="right-region" extent="19mm"/>
+				</fo:simple-page-master>
 			</fo:layout-master-set>
 
 			<fo:declarations>
@@ -177,83 +184,83 @@
 												<fo:block><xsl:value-of select="$ISOname"/></fo:block>
 												<fo:block>&#xA0;</fo:block>
 												<fo:block>&#xA0;</fo:block>
-												<fo:block><xsl:value-of select="concat('© ISO ', iso:iso-standard/iso:bibdata/iso:copyright/iso:from)"/></fo:block>
+												<fo:block><fo:inline font-size="9pt">©</fo:inline><xsl:value-of select="concat(' ISO ', iso:iso-standard/iso:bibdata/iso:copyright/iso:from)"/></fo:block>
 											</fo:block>
 										</fo:table-cell>
 									</fo:table-row>
 								</fo:table-body>
 							</fo:table>
-					</fo:static-content>
-					<fo:flow flow-name="xsl-region-body">
-						<fo:block-container>
-							<fo:table table-layout="fixed" width="100%" font-size="24pt" line-height="1" margin-bottom="35mm">
-								<fo:table-column column-width="60%"/>
-								<fo:table-column column-width="40%"/>
-								<fo:table-body>
-									<fo:table-row>
-										<fo:table-cell>
-											<fo:block text-align="left">
-												<xsl:variable name="doctype" select="/iso:iso-standard/iso:bibdata/iso:ext/iso:doctype"/>
-												<xsl:value-of select="translate(translate($doctype,'-',' '), $lower,$upper)"/>
-											</fo:block>
-										</fo:table-cell>
-										<fo:table-cell>
-											<fo:block text-align="right" font-weight="bold" margin-bottom="13mm">
-												<xsl:value-of select="/iso:iso-standard/iso:bibdata/iso:docidentifier[@type = 'iso']"/>
-											</fo:block>
-										</fo:table-cell>
-									</fo:table-row>
-									<fo:table-row>
-										<fo:table-cell number-columns-spanned="2" font-size="10pt" line-height="1.2">
-											<fo:block text-align="right">
-												<xsl:variable name="edition" select="/iso:iso-standard/iso:bibdata/iso:edition"/>
-												<xsl:choose>
-													<xsl:when test="$edition = 1">First</xsl:when>
-													<xsl:when test="$edition = 2">Second</xsl:when>
-													<xsl:when test="$edition = 3">Third</xsl:when>
-													<xsl:otherwise><xsl:value-of select="$edition"/></xsl:otherwise>
-												</xsl:choose>
-												<xsl:text> edition</xsl:text>
-												<xsl:value-of select="$linebreak"/>
-												<xsl:value-of select="/iso:iso-standard/iso:bibdata/iso:version/iso:revision-date"/></fo:block>
-										</fo:table-cell>
-									</fo:table-row>
-								</fo:table-body>
-							</fo:table>
-							
-							<fo:block-container border-top="1mm double black" line-height="1.1">
-								<fo:block margin-right="40mm">
-								<fo:block font-size="18pt" font-weight="bold" margin-top="12pt">
-									<xsl:value-of select="$title-intro"/>
-									<xsl:text> — </xsl:text>
-									<xsl:value-of select="$title-main"/>
-									<xsl:if test="$part != ''">
+						</fo:static-content>
+						<fo:flow flow-name="xsl-region-body">
+							<fo:block-container>
+								<fo:table table-layout="fixed" width="100%" font-size="24pt" line-height="1" margin-bottom="35mm">
+									<fo:table-column column-width="60%"/>
+									<fo:table-column column-width="40%"/>
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell>
+												<fo:block text-align="left">
+													<xsl:variable name="doctype" select="/iso:iso-standard/iso:bibdata/iso:ext/iso:doctype"/>
+													<xsl:value-of select="translate(translate($doctype,'-',' '), $lower,$upper)"/>
+												</fo:block>
+											</fo:table-cell>
+											<fo:table-cell>
+												<fo:block text-align="right" font-weight="bold" margin-bottom="13mm">
+													<xsl:value-of select="/iso:iso-standard/iso:bibdata/iso:docidentifier[@type = 'iso']"/>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+										<fo:table-row>
+											<fo:table-cell number-columns-spanned="2" font-size="10pt" line-height="1.2">
+												<fo:block text-align="right">
+													<xsl:variable name="edition" select="/iso:iso-standard/iso:bibdata/iso:edition"/>
+													<xsl:choose>
+														<xsl:when test="$edition = 1">First</xsl:when>
+														<xsl:when test="$edition = 2">Second</xsl:when>
+														<xsl:when test="$edition = 3">Third</xsl:when>
+														<xsl:otherwise><xsl:value-of select="$edition"/></xsl:otherwise>
+													</xsl:choose>
+													<xsl:text> edition</xsl:text>
+													<xsl:value-of select="$linebreak"/>
+													<xsl:value-of select="/iso:iso-standard/iso:bibdata/iso:version/iso:revision-date"/></fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+								
+								<fo:block-container border-top="1mm double black" line-height="1.1">
+									<fo:block margin-right="40mm">
+									<fo:block font-size="18pt" font-weight="bold" margin-top="12pt">
+										<xsl:value-of select="$title-intro"/>
 										<xsl:text> — </xsl:text>
-										<fo:block font-weight="normal" margin-top="6pt">
-											<xsl:text>Part </xsl:text><xsl:value-of select="$part"/>
+										<xsl:value-of select="$title-main"/>
+										<xsl:if test="$part != ''">
+											<xsl:text> — </xsl:text>
+											<fo:block font-weight="normal" margin-top="6pt">
+												<xsl:text>Part </xsl:text><xsl:value-of select="$part"/>
+												<xsl:text>:</xsl:text>
+											</fo:block>
+										</xsl:if>
+										<xsl:value-of select="$title-part"/>
+									</fo:block>
+												
+									<fo:block font-size="9pt"><xsl:value-of select="$linebreak"/></fo:block>
+									<fo:block font-size="11pt" font-style="italic" line-height="1.5">
+										<xsl:value-of select="/iso:iso-standard/iso:bibdata/iso:title[@language = 'fr' and @type = 'title-intro']"/>
+										<xsl:text> — </xsl:text>
+										<xsl:value-of select="/iso:iso-standard/iso:bibdata/iso:title[@language = 'fr' and @type = 'title-main']"/>
+										<xsl:if test="$part != ''">
+											<xsl:text> — </xsl:text>
+											<xsl:text>Partie </xsl:text>
+											<xsl:value-of select="$part"/>
 											<xsl:text>:</xsl:text>
-										</fo:block>
-									</xsl:if>
-									<xsl:value-of select="$title-part"/>
-								</fo:block>
-											
-								<fo:block font-size="12pt"><xsl:value-of select="$linebreak"/></fo:block>
-								<fo:block font-size="11pt" font-style="italic" line-height="1.5">
-									<xsl:value-of select="/iso:iso-standard/iso:bibdata/iso:title[@language = 'fr' and @type = 'title-intro']"/>
-									<xsl:text> — </xsl:text>
-									<xsl:value-of select="/iso:iso-standard/iso:bibdata/iso:title[@language = 'fr' and @type = 'title-main']"/>
-									<xsl:if test="$part != ''">
-										<xsl:text> — </xsl:text>
-										<xsl:text>Partie </xsl:text>
-										<xsl:value-of select="$part"/>
-										<xsl:text>:</xsl:text>
-									</xsl:if>
-									<xsl:value-of select="/iso:iso-standard/iso:bibdata/iso:title[@language = 'fr' and @type = 'title-part']"/>
-								</fo:block>
-								</fo:block>
+										</xsl:if>
+										<xsl:value-of select="/iso:iso-standard/iso:bibdata/iso:title[@language = 'fr' and @type = 'title-part']"/>
+									</fo:block>
+									</fo:block>
+								</fo:block-container>
 							</fo:block-container>
-						</fo:block-container>
-					</fo:flow>
+						</fo:flow>
 					</fo:page-sequence>
 				</xsl:when>
 				<xsl:otherwise>
@@ -384,15 +391,15 @@
 				<xsl:call-template name="insertHeaderFooter">
 					<xsl:with-param name="font-weight">normal</xsl:with-param>
 				</xsl:call-template>
-				<fo:flow flow-name="xsl-region-body">
+				<fo:flow flow-name="xsl-region-body" line-height="115%">
 					<xsl:if test="/iso:iso-standard/iso:boilerplate/iso:copyright-statement">
 					
 						<fo:block-container height="250mm" display-align="after">
-							<fo:block>
+							<fo:block margin-bottom="3mm">
 								<fo:external-graphic src="{concat('data:image/png;base64,', normalize-space($Image-Attention))}" width="14mm" content-height="13mm" content-width="scale-to-fit" scaling="uniform" fox:alt-text="Image {@alt}"/>
-								<fo:inline padding-left="5mm" font-size="12pt" font-weight="bold">COPYRIGHT PROTECTED DOCUMENT</fo:inline>
-								<!-- <xsl:value-of select="$linebreak"/> -->
-								<fo:block>&#xA0;</fo:block>
+								<fo:inline padding-left="6mm" font-size="12pt" font-weight="bold">COPYRIGHT PROTECTED DOCUMENT</fo:inline>
+							</fo:block>
+							<fo:block line-height="90%">
 								<fo:block font-size="9pt" text-align="justify">
 									<xsl:apply-templates select="/iso:iso-standard/iso:boilerplate/iso:copyright-statement"/>
 								</fo:block>
@@ -403,11 +410,11 @@
 					
 					<fo:block-container font-weight="bold">
 						
-						<fo:block text-align-last="justify" font-size="16pt" margin-bottom="15.5pt">
+						<fo:block text-align-last="justify" font-size="16pt" margin-top="10pt" margin-bottom="18pt">
 							<fo:inline font-size="16pt" font-weight="bold">Contents</fo:inline>
 							<fo:inline keep-together.within-line="always">
 								<fo:leader leader-pattern="space"/>
-								<fo:inline font-size="10pt">Page</fo:inline>
+								<fo:inline font-weight="normal" font-size="10pt">Page</fo:inline>
 							</fo:inline>
 						</fo:block>
 						
@@ -431,6 +438,7 @@
 									<xsl:attribute name="provisional-distance-between-starts">
 										<xsl:choose>
 											<!-- skip 0 section without subsections -->
+											<xsl:when test="@level &gt;= 3"><xsl:value-of select="$margin-left * 1.2"/>mm</xsl:when>
 											<xsl:when test="@section != '' and not(@display-section = 'false')"><xsl:value-of select="$margin-left"/>mm</xsl:when>
 											<xsl:otherwise>0mm</xsl:otherwise>
 										</xsl:choose>
@@ -544,12 +552,28 @@
 						
 						<!-- Bibliography -->
 						<xsl:apply-templates select="/iso:iso-standard/iso:bibliography/iso:references[position() &gt; 1]"/>
+						
+						<fo:block id="lastBlock" font-size="1pt">&#xA0;</fo:block>
 					</fo:block>
 					
 				</fo:flow>
 			</fo:page-sequence>
 			
-			
+			<xsl:if test="$isPublished = 'true'">
+				<fo:page-sequence master-reference="last-page" force-page-count="no-force">
+					<fo:static-content flow-name="last-page-footer" font-size="10pt">
+						<fo:block font-size="9pt"><xsl:value-of select="$copyrightText"/></fo:block>
+					</fo:static-content>
+					<fo:flow flow-name="xsl-region-body">
+						<fo:block-container height="252mm" display-align="after">
+							<fo:block-container border-top="1mm double black">
+								<fo:block font-size="12pt" font-weight="bold" padding-top="3mm" padding-bottom="1mm">ICS&#xA0;&#xA0;67.060</fo:block>
+								<fo:block font-size="9pt">Price based on <fo:page-number-citation ref-id="lastBlock"/> pages</fo:block>
+							</fo:block-container>
+						</fo:block-container>
+					</fo:flow>
+				</fo:page-sequence>
+			</xsl:if>
 		</fo:root>
 	</xsl:template> 
 
@@ -751,9 +775,7 @@
 	<!-- Foreword, Introduction -->
 	<xsl:template match="iso:iso-standard/iso:preface/*">
 		<fo:block break-after="page"/>
-		<!-- <fo:block> -->
-			<xsl:apply-templates />
-		<!-- </fo:block> -->
+		<xsl:apply-templates />
 	</xsl:template>
 	
 
@@ -874,12 +896,18 @@
 					<xsl:attribute name="font-weight">bold</xsl:attribute>
 					<xsl:attribute name="margin-top"> <!-- margin-top -->
 						<xsl:choose>
+							<xsl:when test="ancestor::iso:preface">8pt</xsl:when>
 							<xsl:when test="$level = 2 and ancestor::annex">18pt</xsl:when>
 							<xsl:when test="$level = '' or $level = 1">6pt</xsl:when><!-- 13.5pt -->
 							<xsl:otherwise>12pt</xsl:otherwise>
 						</xsl:choose>
 					</xsl:attribute>
-					<xsl:attribute name="margin-bottom">12pt</xsl:attribute>
+					<xsl:attribute name="margin-bottom">
+						<xsl:choose>
+							<xsl:when test="ancestor::iso:preface">18pt</xsl:when>
+							<xsl:otherwise>12pt</xsl:otherwise>
+						</xsl:choose>
+					</xsl:attribute>
 					<xsl:attribute name="keep-with-next">always</xsl:attribute>		
 					
 					
