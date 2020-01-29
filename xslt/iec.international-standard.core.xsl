@@ -827,7 +827,7 @@
 	</xsl:template>
 	
 	<xsl:template match="iec:dd/iec:p">
-		<fo:block margin-bottom="10pt"><xsl:apply-templates /></fo:block>
+		<fo:block margin-top="5pt" margin-bottom="10pt"><xsl:apply-templates /></fo:block>
 	</xsl:template>
 	
 	<xsl:template match="iec:review">
@@ -1103,7 +1103,7 @@
 	
 	
 	<xsl:template match="iec:termexample">
-		<fo:block margin-bottom="10pt">
+		<fo:block margin-top="14pt" margin-bottom="10pt">
 			<fo:inline padding-right="10mm">EXAMPLE</fo:inline>
 			<xsl:apply-templates />
 		</fo:block>
@@ -1333,6 +1333,7 @@
 		<xsl:choose>
 			<xsl:when test="@type ='clause'">Clause </xsl:when>
 			<xsl:when test="@type ='annex'">Annex </xsl:when>
+			<xsl:when test="@type ='table'">Table </xsl:when>
 			<xsl:otherwise><xsl:value-of select="@type"/></xsl:otherwise>
 		</xsl:choose>
 		<xsl:text> </xsl:text><xsl:value-of select="iec:referenceFrom"/>
@@ -1350,6 +1351,12 @@
 	
 	<xsl:template match="iec:formula/iec:dt/iec:stem">
 		<fo:inline>
+			<xsl:apply-templates />
+		</fo:inline>
+	</xsl:template>
+	
+	<xsl:template match="iec:admitted/iec:stem">
+		<fo:inline padding-left="6mm">
 			<xsl:apply-templates />
 		</fo:inline>
 	</xsl:template>
