@@ -239,6 +239,7 @@
 						<xsl:attribute name="font-family">Times New Roman</xsl:attribute>
 						<xsl:attribute name="font-size">12pt</xsl:attribute>
 					</xsl:if>
+					<xsl:attribute name="margin-bottom">12pt</xsl:attribute>
 				</xsl:if>
 				<xsl:if test="$namespace = 'unece-rec'">
 					<xsl:if test="ancestor::*[local-name()='sections']">
@@ -296,7 +297,7 @@
 						<xsl:for-each select="*[local-name()='thead']//*[local-name()='tr']">
 							<xsl:variable name="words">
 								<xsl:call-template name="tokenize">
-									<xsl:with-param name="text" select="translate(*[local-name()='th'][$curr-col],'- —', '   ')"/>
+									<xsl:with-param name="text" select="translate(*[local-name()='th'][$curr-col],'- —:', '    ')"/>
 								</xsl:call-template>
 							</xsl:variable>
 							<xsl:variable name="max_length">
@@ -311,7 +312,7 @@
 						<xsl:for-each select="*[local-name()='tbody']//*[local-name()='tr']">
 							<xsl:variable name="words">
 								<xsl:call-template name="tokenize">
-									<xsl:with-param name="text" select="translate(*[local-name()='td'][$curr-col],'- —', '   ')"/>
+									<xsl:with-param name="text" select="translate(*[local-name()='td'][$curr-col],'- —:', '    ')"/>
 								</xsl:call-template>
 							</xsl:variable>
 							<xsl:variable name="max_length">
@@ -329,7 +330,7 @@
 						<xsl:for-each select="xalan:nodeset($table)//tr">
 							<xsl:variable name="words">
 								<xsl:call-template name="tokenize">
-									<xsl:with-param name="text" select="translate(td[$curr-col],'- —', '   ')"/>
+									<xsl:with-param name="text" select="translate(td[$curr-col],'- —:', '    ')"/>
 								</xsl:call-template>
 							</xsl:variable>
 							<xsl:variable name="max_length">
@@ -541,6 +542,11 @@
 					<xsl:attribute name="padding-top">1mm</xsl:attribute>
 				</xsl:if>
 			</xsl:if>
+			<xsl:if test="$namespace = 'nist'">
+				<xsl:if test="ancestor::*[local-name()='thead']">
+					<xsl:attribute name="font-weight">normal</xsl:attribute>
+				</xsl:if>
+			</xsl:if>
 			<xsl:if test="@colspan">
 				<xsl:attribute name="number-columns-spanned">
 					<xsl:value-of select="@colspan"/>
@@ -613,9 +619,17 @@
 						<xsl:if test="$namespace = 'iso' or $namespace = 'iec'">
 							<xsl:attribute name="alignment-baseline">hanging</xsl:attribute>
 						</xsl:if>
+						<xsl:if test="$namespace = 'nist'">
+							<xsl:attribute name="font-size">10pt</xsl:attribute>
+						</xsl:if>
 						<xsl:value-of select="@reference"/>
 					</fo:inline>
-					<xsl:apply-templates />
+					<fo:inline>
+						<xsl:if test="$namespace = 'nist'">
+							<xsl:attribute name="font-size">10pt</xsl:attribute>
+						</xsl:if>
+						<xsl:apply-templates />
+					</fo:inline>
 				</fo:block>
 			</xsl:if>
 		</xsl:for-each>
@@ -667,14 +681,24 @@
 									<fo:table-cell>
 										<fo:block>
 											<fo:inline font-size="80%" padding-right="5mm" vertical-align="super" id="{@id}">
+												<xsl:if test="$namespace = 'iec'">
+													<xsl:attribute name="font-family">Times New Roman</xsl:attribute>
+													<xsl:attribute name="baseline-shift">65%</xsl:attribute>
+												</xsl:if>
 												<xsl:value-of select="@reference"/>
 											</fo:inline>
 										</fo:block>
 									</fo:table-cell>
 									<fo:table-cell>
 										<fo:block text-align="justify" margin-bottom="12pt">
+											<xsl:if test="$namespace = 'iec'">
+												<xsl:attribute name="margin-top">5pt</xsl:attribute>
+											</xsl:if>
 											<xsl:if test="normalize-space($key_iso) = 'true'">
 												<xsl:attribute name="margin-bottom">0</xsl:attribute>
+											</xsl:if>
+											<xsl:if test="$namespace = 'iec'">
+												<xsl:attribute name="margin-bottom">10pt</xsl:attribute>
 											</xsl:if>
 											<xsl:apply-templates />
 										</fo:block>
@@ -731,20 +755,35 @@
 		
 		<xsl:choose>
 			<xsl:when test="$parent = 'formula' and count(*[local-name()='dt']) = 1"> <!-- only one component -->
-				<fo:block margin-bottom="12pt">
-					<xsl:if test="$namespace = 'iso' or $namespace = 'iec'">
-						<xsl:attribute name="margin-bottom">0</xsl:attribute>
-					</xsl:if>
-					<xsl:text>where </xsl:text>
-					<xsl:apply-templates select="*[local-name()='dt']/*"/>
-					<xsl:text></xsl:text>
-					<xsl:apply-templates select="*[local-name()='dd']/*" mode="inline"/>
-				</fo:block>
+				<xsl:if test="$namespace = 'iec'">
+					<fo:block margin-bottom="15pt">
+						<xsl:text>where </xsl:text>
+					</fo:block>
+					<fo:block>
+						<xsl:apply-templates select="*[local-name()='dt']/*"/>
+						<xsl:text> </xsl:text>
+						<xsl:apply-templates select="*[local-name()='dd']/*" mode="inline"/>
+					</fo:block>
+				</xsl:if>
+				<xsl:if test="$namespace = 'iso' or $namespace = 'itu' or $namespace = 'unece' or $namespace = 'unece-rec'  or $namespace = 'nist' or $namespace = 'csd'">
+					<fo:block margin-bottom="12pt">
+						<xsl:if test="$namespace = 'iso' or $namespace = 'iec'">
+							<xsl:attribute name="margin-bottom">0</xsl:attribute>
+						</xsl:if>
+						<xsl:text>where </xsl:text>
+						<xsl:apply-templates select="*[local-name()='dt']/*"/>
+						<xsl:text></xsl:text>
+						<xsl:apply-templates select="*[local-name()='dd']/*" mode="inline"/>
+					</fo:block>
+				</xsl:if>
 			</xsl:when>
 			<xsl:when test="$parent = 'formula'"> <!-- a few components -->
 				<fo:block margin-bottom="12pt">
-					<xsl:if test="$namespace = 'iso' or $namespace = 'iec'">
+					<xsl:if test="$namespace = 'iso' ">
 						<xsl:attribute name="margin-bottom">6pt</xsl:attribute>
+					</xsl:if>
+					<xsl:if test="$namespace = 'iec'">
+						<xsl:attribute name="margin-bottom">10pt</xsl:attribute>
 					</xsl:if>
 					<xsl:text>where</xsl:text>
 				</fo:block>
@@ -925,6 +964,9 @@
 				<fo:block margin-top="6pt">
 					<xsl:if test="normalize-space($key_iso) = 'true'">
 						<xsl:attribute name="margin-top">0</xsl:attribute>
+						<xsl:if test="$namespace = 'iec'">
+							<xsl:attribute name="margin-top">5pt</xsl:attribute>
+						</xsl:if>
 					</xsl:if>
 					<xsl:if test="$namespace = 'nist'">
 						<xsl:attribute name="margin-top">0</xsl:attribute>
