@@ -239,6 +239,7 @@
 						<xsl:attribute name="font-family">Times New Roman</xsl:attribute>
 						<xsl:attribute name="font-size">12pt</xsl:attribute>
 					</xsl:if>
+					<xsl:attribute name="margin-bottom">12pt</xsl:attribute>
 				</xsl:if>
 				<xsl:if test="$namespace = 'unece-rec'">
 					<xsl:if test="ancestor::*[local-name()='sections']">
@@ -296,7 +297,7 @@
 						<xsl:for-each select="*[local-name()='thead']//*[local-name()='tr']">
 							<xsl:variable name="words">
 								<xsl:call-template name="tokenize">
-									<xsl:with-param name="text" select="translate(*[local-name()='th'][$curr-col],'- —', '   ')"/>
+									<xsl:with-param name="text" select="translate(*[local-name()='th'][$curr-col],'- —:', '    ')"/>
 								</xsl:call-template>
 							</xsl:variable>
 							<xsl:variable name="max_length">
@@ -311,7 +312,7 @@
 						<xsl:for-each select="*[local-name()='tbody']//*[local-name()='tr']">
 							<xsl:variable name="words">
 								<xsl:call-template name="tokenize">
-									<xsl:with-param name="text" select="translate(*[local-name()='td'][$curr-col],'- —', '   ')"/>
+									<xsl:with-param name="text" select="translate(*[local-name()='td'][$curr-col],'- —:', '    ')"/>
 								</xsl:call-template>
 							</xsl:variable>
 							<xsl:variable name="max_length">
@@ -329,7 +330,7 @@
 						<xsl:for-each select="xalan:nodeset($table)//tr">
 							<xsl:variable name="words">
 								<xsl:call-template name="tokenize">
-									<xsl:with-param name="text" select="translate(td[$curr-col],'- —', '   ')"/>
+									<xsl:with-param name="text" select="translate(td[$curr-col],'- —:', '    ')"/>
 								</xsl:call-template>
 							</xsl:variable>
 							<xsl:variable name="max_length">
@@ -541,6 +542,11 @@
 					<xsl:attribute name="padding-top">1mm</xsl:attribute>
 				</xsl:if>
 			</xsl:if>
+			<xsl:if test="$namespace = 'nist'">
+				<xsl:if test="ancestor::*[local-name()='thead']">
+					<xsl:attribute name="font-weight">normal</xsl:attribute>
+				</xsl:if>
+			</xsl:if>
 			<xsl:if test="@colspan">
 				<xsl:attribute name="number-columns-spanned">
 					<xsl:value-of select="@colspan"/>
@@ -613,9 +619,17 @@
 						<xsl:if test="$namespace = 'iso' or $namespace = 'iec'">
 							<xsl:attribute name="alignment-baseline">hanging</xsl:attribute>
 						</xsl:if>
+						<xsl:if test="$namespace = 'nist'">
+							<xsl:attribute name="font-size">10pt</xsl:attribute>
+						</xsl:if>
 						<xsl:value-of select="@reference"/>
 					</fo:inline>
-					<xsl:apply-templates />
+					<fo:inline>
+						<xsl:if test="$namespace = 'nist'">
+							<xsl:attribute name="font-size">10pt</xsl:attribute>
+						</xsl:if>
+						<xsl:apply-templates />
+					</fo:inline>
 				</fo:block>
 			</xsl:if>
 		</xsl:for-each>
