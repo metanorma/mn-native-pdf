@@ -1420,14 +1420,15 @@
 	</xsl:template>
 	
 	<xsl:template match="iso:xref">
-		<fo:basic-link internal-destination="{@target}" fox:alt-text="{@target}">
-			<xsl:variable name="section" select="xalan:nodeset($contents)//item[@id = current()/@target]/@section"/>
+		<xsl:variable name="target" select="normalize-space(@target)"/>
+		<fo:basic-link internal-destination="{$target}" fox:alt-text="{$target}">
+			<xsl:variable name="section" select="xalan:nodeset($contents)//item[@id = $target]/@section"/>
 			<xsl:if test="not(starts-with($section, 'Figure') or starts-with($section, 'Table'))">
 				<xsl:attribute name="color">blue</xsl:attribute>
 				<xsl:attribute name="text-decoration">underline</xsl:attribute>
 			</xsl:if>
-			<xsl:variable name="type" select="xalan:nodeset($contents)//item[@id = current()/@target]/@type"/>
-			<xsl:variable name="root" select="xalan:nodeset($contents)//item[@id = current()/@target]/@root"/>
+			<xsl:variable name="type" select="xalan:nodeset($contents)//item[@id = $target]/@type"/>
+			<xsl:variable name="root" select="xalan:nodeset($contents)//item[@id =$target]/@root"/>
 			<xsl:choose>
 				<xsl:when test="$type = 'clause' and $root != 'annex'">Clause </xsl:when><!-- and not (ancestor::annex) -->
 				<xsl:otherwise></xsl:otherwise> <!-- <xsl:value-of select="$type"/> -->
