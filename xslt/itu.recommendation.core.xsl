@@ -360,28 +360,13 @@
 					
 					<fo:block break-after="page"/>
 					
-					<!-- Foreword, Introduction -->
-					<!-- <xsl:apply-templates select="/itu:itu-standard/itu:preface/node()"/> -->
-					
 					<!-- FOREWORD -->
-					<fo:block-container font-size="11pt" text-align="justify">
-						<!-- for future fixing issue https://github.com/metanorma/mn-native-pdf/issues/24 -->
-						<!-- <xsl:apply-templates select="/itu:itu-standard/itu:preface/itu:foreword"/>
-						<xsl:apply-templates select="/itu:itu-standard/itu:preface/itu:clause"/>
-						<xsl:if test="/itu:itu-standard/itu:preface/itu:abstract">
-							<fo:block font-family="Arial" text-align="center" font-weight="bold" margin-bottom="12pt">Abstract</fo:block>
-							<xsl:apply-templates select="/itu:itu-standard/itu:preface/itu:abstract"/>
-						</xsl:if> -->
-						
+					<fo:block font-size="11pt" text-align="justify">
 						<xsl:apply-templates select="/itu:itu-standard/itu:boilerplate/itu:legal-statement"/>
-						
 						<xsl:apply-templates select="/itu:itu-standard/itu:boilerplate/itu:license-statement"/>
-						
 						<xsl:apply-templates select="/itu:itu-standard/itu:boilerplate/itu:copyright-statement"/>
-						
-											
-					</fo:block-container>
-			
+					</fo:block>
+					
 					<xsl:text disable-output-escaping="yes">&lt;!--</xsl:text>
 						DEBUG
 						contents=<xsl:copy-of select="xalan:nodeset($contents)"/>
