@@ -17,7 +17,6 @@ This repository pilots native PDF capabilities of Metanorma using XML-FO via Apa
 
 You will need `mn2pdf`, `envsubst`, `make` and a number of fonts.
 
-
 === On macOS
 
 [source,sh]
@@ -72,10 +71,18 @@ ls -alR ${MN_PDF_FONT_PATH}
 
 ----
 
+Generating XSLT layouts (will be created under `xslt/`):
+
+[source,sh]
+----
+make xslts
+----
+
 Building the document is then easy:
 
 [source,sh]
 ----
+
 export MN_PDF_FONT_PATH=$(pwd)/fonts
 make all
 
@@ -97,6 +104,14 @@ sudo apt-get install ttf-mscorefonts-installer
 
 # Setup Cambria fonts
 curl -Ls https://raw.githubusercontent.com/metanorma/vista-fonts-installer/master/vista-fonts-installer.sh | sudo bash
+----
+
+
+Generating XSLT layouts (will be created under `xslt/`):
+
+[source,sh]
+----
+make xslts
 ----
 
 
