@@ -11,6 +11,13 @@ HTML := $(patsubst sources/%,documents/%,$(patsubst %.xml,%.html,$(SRC)))
 DOC := $(patsubst sources/%,documents/%,$(patsubst %.xml,%.doc,$(SRC)))
 RXL := $(patsubst sources/%,documents/%,$(patsubst %.xml,%.rxl,$(SRC)))
 XSLT_PATH_BASE := $(shell pwd)/xslt
+XSLT_GENERATED := xslt/iec.international-standard.xsl \
+	xslt/iso.international-standard.xsl \
+	xslt/itu.recommendation.xsl \
+	xslt/itu.resolution.xsl \
+	xslt/unece.plenary.xsl \
+	xslt/unece.recommendation.xsl
+
 MN2PDF_DOWNLOAD_PATH := https://github.com/metanorma/mn2pdf/releases/download/v1.0.0/mn2pdf-1.0.jar
 
 ifdef MN_PDF_FONT_PATH
@@ -19,15 +26,22 @@ else
 	MN_PDF_FONT_PATH := $(pwd)/fonts
 endif
 
-all: documents.html
+all: xslts documents.html
+
+xslts: $(XSLT_GENERATED)
 
 mn2pdf.jar:
 	curl -sSL ${MN2PDF_DOWNLOAD_PATH} -o mn2pdf.jar
 
-xalan.jar:
+xalan:
+	mkdir -p $@
+
+xalan/xalan.jar: | xalan
+	pushd xalan; \
 	TMPDIR=$$(mktemp -d); \
-	curl -sSL http://archive.apache.org/dist/xalan/xalan-j/binaries/xalan-j_2_7_1-bin-2jars.tar.gz -o $$TMPDIR/xalan.tar.gz; \
-	tar xz --strip-components=1 -f $$TMPDIR/xalan.tar.gz xalan-j_2_7_1/xalan.jar
+	curl -sSL http://archive.apache.org/dist/xalan/xalan-j/binaries/xalan-j_2_7_2-bin-2jars.tar.gz -o $$TMPDIR/xalan.tar.gz; \
+	tar xz --strip-components=1 -f $$TMPDIR/xalan.tar.gz xalan-j_2_7_2/*.jar; \
+	popd
 
 sources/iso-%: mn-samples-iso/documents/iso-%
 	cp $< $@
@@ -47,16 +61,21 @@ documents:
 documents/%: sources/% | documents
 	cp $< $@
 
-documents/%.pdf: sources/%.xml pdf_fonts_config.xml mn2pdf.jar xalan.jar | documents
+documents/%.pdf: sources/%.xml pdf_fonts_config.xml mn2pdf.jar | documents
 	FILENAME=$<; \
 	OUTFILE=$@; \
 	MN_FLAVOR=$$(xmllint --xpath 'name(*)' $${FILENAME} | cut -d '-' -f 1); \
 	DOCTYPE=$$(xmllint --xpath "//*[local-name()='doctype']/text()" $${FILENAME}); \
-	XSLT_PATH_CORE=${XSLT_PATH_BASE}/$${MN_FLAVOR}.$${DOCTYPE}.core.xsl; \
-	XSLT_PATH_MERGE=${XSLT_PATH_BASE}/merge.xsl; \
 	XSLT_PATH=${XSLT_PATH_BASE}/$${MN_FLAVOR}.$${DOCTYPE}.xsl; \
-	java -jar xalan.jar -IN $$XSLT_PATH_CORE -XSL $$XSLT_PATH_MERGE -OUT $$XSLT_PATH; \
   java -jar mn2pdf.jar pdf_fonts_config.xml $$FILENAME $$XSLT_PATH $$OUTFILE
+
+xslt:
+	mkdir -p $@
+
+xslt/%.xsl: xslt_src/%.core.xsl xslt_src/merge.xsl xalan/xalan.jar | xslt
+	XSLT_PATH_CORE=$<; \
+	XSLT_PATH_MERGE=xslt_src/merge.xsl; \
+	java -jar xalan/xalan.jar -IN $$XSLT_PATH_CORE -XSL $$XSLT_PATH_MERGE -OUT $@
 
 # This document is currently broken
 documents/itu-D-REC-D.19-201003-E.pdf:
@@ -82,7 +101,7 @@ distclean: clean
 
 clean:
 	rm -f pdf_fonts_config.xml
-	rm -rf documents
+	rm -rf documents xslt
 
 update-init:
 	git submodule update --init
@@ -97,4 +116,4 @@ published: documents.html
 	cp $< published/index.html; \
 	if [ -d "images" ]; then cp -a images published; fi
 
-.PHONY: all clean update-init update-modules bundle publish
+.PHONY: all clean update-init update-modules bundle publish xslts
