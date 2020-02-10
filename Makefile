@@ -40,7 +40,7 @@ xalan/xalan.jar: | xalan
 	pushd xalan; \
 	TMPDIR=$$(mktemp -d); \
 	curl -sSL http://archive.apache.org/dist/xalan/xalan-j/binaries/xalan-j_2_7_2-bin-2jars.tar.gz -o $$TMPDIR/xalan.tar.gz; \
-	tar xz --strip-components=1 -f $$TMPDIR/xalan.tar.gz xalan-j_2_7_2/*.jar; \
+	tar xz --strip-components=1 -f $$TMPDIR/xalan.tar.gz xalan-j_2_7_2/{xalan,xercesImpl,xml-apis,xsltc}.jar; \
 	popd
 
 sources/iso-%: mn-samples-iso/documents/iso-%
