@@ -24,6 +24,11 @@ all: documents.html
 mn2pdf.jar:
 	curl -sSL ${MN2PDF_DOWNLOAD_PATH} -o mn2pdf.jar
 
+xalan.jar:
+	TMPDIR=$$(mktemp -d); \
+	curl -sSL http://archive.apache.org/dist/xalan/xalan-j/binaries/xalan-j_2_7_1-bin-2jars.tar.gz -o $$TMPDIR/xalan.tar.gz; \
+	tar xz --strip-components=1 -f $$TMPDIR/xalan.tar.gz xalan-j_2_7_1/xalan.jar
+
 sources/iso-%: mn-samples-iso/documents/iso-%
 	cp $< $@
 
@@ -42,7 +47,7 @@ documents:
 documents/%: sources/% | documents
 	cp $< $@
 
-documents/%.pdf: sources/%.xml pdf_fonts_config.xml mn2pdf.jar | documents
+documents/%.pdf: sources/%.xml pdf_fonts_config.xml mn2pdf.jar xalan.jar | documents
 	FILENAME=$<; \
 	OUTFILE=$@; \
 	MN_FLAVOR=$$(xmllint --xpath 'name(*)' $${FILENAME} | cut -d '-' -f 1); \
