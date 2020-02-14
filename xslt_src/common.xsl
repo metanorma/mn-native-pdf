@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:fo="http://www.w3.org/1999/XSL/Format" xmlns:iso="https://www.metanorma.org/ns/iso" xmlns:iec="https://www.metanorma.org/ns/iec" xmlns:itu="https://www.metanorma.org/ns/itu" xmlns:nist="https://www.metanorma.org/ns/nist" xmlns:un="https://www.metanorma.org/ns/unece" xmlns:csd="https://www.metanorma.org/ns/csd" xmlns:mathml="http://www.w3.org/1998/Math/MathML" xmlns:xalan="http://xml.apache.org/xalan"  xmlns:fox="http://xmlgraphics.apache.org/fop/extensions" version="1.0">
+<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:fo="http://www.w3.org/1999/XSL/Format" xmlns:iso="https://www.metanorma.com/ns/iso" xmlns:iec="https://www.metanorma.com/ns/iec" xmlns:itu="https://www.metanorma.com/ns/itu" xmlns:nist="https://www.metanorma.com/ns/nist" xmlns:un="https://www.metanorma.com/ns/unece" xmlns:csd="https://www.metanorma.com/ns/csd" xmlns:mathml="http://www.w3.org/1998/Math/MathML" xmlns:xalan="http://xml.apache.org/xalan"  xmlns:fox="http://xmlgraphics.apache.org/fop/extensions" version="1.0">
 	
 	<xsl:variable name="lower">abcdefghijklmnopqrstuvwxyz</xsl:variable> 
 	<xsl:variable name="upper">ABCDEFGHIJKLMNOPQRSTUVWXYZ</xsl:variable>
