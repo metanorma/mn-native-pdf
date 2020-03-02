@@ -875,7 +875,6 @@
 							<xsl:attribute name="margin-left">-2.5mm</xsl:attribute>
 						</xsl:if>
 					</xsl:if>
-					
 					<!-- create virtual html table for dl/[dt and dd] -->
 					<xsl:variable name="html-table">
 						<xsl:variable name="ns" select="substring-before(name(/*), '-')"/>
@@ -1022,6 +1021,9 @@
 					<xsl:if test="$namespace = 'nist'">
 						<xsl:attribute name="margin-top">0</xsl:attribute>
 						<xsl:attribute name="margin-bottom">12pt</xsl:attribute>
+					</xsl:if>
+					<xsl:if test="$namespace = 'csd'">
+						<xsl:attribute name="margin-left">7mm</xsl:attribute>
 					</xsl:if>
 					<xsl:apply-templates />
 				</fo:block>
