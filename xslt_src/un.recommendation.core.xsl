@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:fo="http://www.w3.org/1999/XSL/Format" xmlns:un="https://www.metanorma.org/ns/unece" xmlns:mathml="http://www.w3.org/1998/Math/MathML" xmlns:xalan="http://xml.apache.org/xalan" xmlns:fox="http://xmlgraphics.apache.org/fop/extensions" version="1.0">
+<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:fo="http://www.w3.org/1999/XSL/Format" xmlns:un="https://www.metanorma.org/ns/un" xmlns:mathml="http://www.w3.org/1998/Math/MathML" xmlns:xalan="http://xml.apache.org/xalan" xmlns:fox="http://xmlgraphics.apache.org/fop/extensions" version="1.0">
 
 	<xsl:output version="1.0" method="xml" encoding="UTF-8" indent="no"/>
 
@@ -12,8 +12,8 @@
 
 	<xsl:variable name="contents">
 		<contents>
-			<xsl:apply-templates select="/un:unece-standard/un:sections/*" mode="contents"/>
-			<xsl:apply-templates select="/un:unece-standard/un:annex" mode="contents"/>
+			<xsl:apply-templates select="/un:un-standard/un:sections/*" mode="contents"/>
+			<xsl:apply-templates select="/un:un-standard/un:annex" mode="contents"/>
 		</contents>
 	</xsl:variable>
 	
@@ -21,14 +21,14 @@
 		<xsl:call-template name="getLang"/>
 	</xsl:variable>	
 
-	<xsl:variable name="title" select="/un:unece-standard/un:bibdata/un:title[@language = 'en' and @type = 'main']"/>
+	<xsl:variable name="title" select="/un:un-standard/un:bibdata/un:title[@language = 'en' and @type = 'main']"/>
 	
-	<xsl:variable name="doctype" select="/un:unece-standard/un:bibdata/un:ext/un:doctype"/>
+	<xsl:variable name="doctype" select="/un:un-standard/un:bibdata/un:ext/un:doctype"/>
 
 	<xsl:variable name="doctypenumber">
 		<xsl:value-of select="translate(substring($doctype, 1, 1), $lower, $upper)"/><xsl:value-of select="substring($doctype, 2)"/>
 		<xsl:text> No. </xsl:text>
-		<xsl:value-of select="/un:unece-standard/un:bibdata/un:docnumber"/>
+		<xsl:value-of select="/un:un-standard/un:bibdata/un:docnumber"/>
 	</xsl:variable>
 	
 	<xsl:template match="/">
@@ -86,11 +86,20 @@
 					<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
 						<rdf:Description rdf:about="" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:pdf="http://ns.adobe.com/pdf/1.3/">
 						<!-- Dublin Core properties go here -->
-							<dc:title><xsl:value-of select="$title"/></dc:title>
+							<dc:title>
+								<xsl:choose>
+									<xsl:when test="$title != ''">
+										<xsl:value-of select="$title"/>
+									</xsl:when>
+									<xsl:otherwise>
+										<xsl:text>&#xA0;</xsl:text>
+									</xsl:otherwise>
+								</xsl:choose>
+							</dc:title>
 							<dc:creator></dc:creator>
 							<dc:description>
 								<xsl:variable name="abstract">
-									<xsl:copy-of select="/un:unece-standard/un:preface/un:abstract//text()"/>
+									<xsl:copy-of select="/un:un-standard/un:preface/un:abstract//text()"/>
 								</xsl:variable>
 								<xsl:value-of select="normalize-space($abstract)"/>
 							</dc:description>
@@ -126,12 +135,12 @@
 					</fo:block-container>
 					<fo:block-container absolute-position="fixed" left="67mm" top="205mm" width="115mm" height="40mm" text-align="right" display-align="after">
 						<fo:block font-family="Arial" font-size="15pt" font-weight="bold" color="rgb(0, 174, 241)">
-							<xsl:value-of select="/un:unece-standard/un:bibdata/un:ext/un:editorialgroup/un:committee"/>
+							<xsl:value-of select="/un:un-standard/un:bibdata/un:ext/un:editorialgroup/un:committee"/>
 						</fo:block>
 					</fo:block-container>
 					<fo:block text-align="right">
 						<fo:block font-family="Arial Black" font-size="19pt" margin-top="2mm" letter-spacing="1pt">
-							<xsl:value-of select="/un:unece-standard/un:bibdata/un:contributor/un:organization/un:name"/>
+							<xsl:value-of select="/un:un-standard/un:bibdata/un:contributor/un:organization/un:name"/>
 						</fo:block>
 						<fo:block font-family="Arial" font-size="24.5pt" font-weight="bold" margin-top="19mm" margin-right="3mm">
 							<xsl:value-of select="$title"/>
@@ -159,7 +168,7 @@
 							<xsl:text>United Nations</xsl:text>
 							<xsl:value-of select="$linebreak"/>
 							<xsl:text>New York and Geneva, </xsl:text>
-							<xsl:value-of select="/un:unece-standard/un:bibdata/un:copyright/un:from"/>
+							<xsl:value-of select="/un:un-standard/un:bibdata/un:copyright/un:from"/>
 						</fo:block>
 					</fo:block-container>
 					
@@ -172,23 +181,8 @@
 				<xsl:call-template name="insertHeaderPreface"/>
 				<fo:flow flow-name="xsl-region-body" line-height="115%" text-align="justify">
 					<fo:block>
-						<fo:block font-size="14pt" font-weight="bold" margin-top="28pt" margin-bottom="34pt">Note</fo:block>
-						<fo:block margin-bottom="12pt">The designations employed and the presentation of the material in this publication do not imply the expression of any opinion whatsoever on the part of the Secretariat of the United Nations concerning the legal status of any country, territory, city or area, or of its authorities, or concerning the delimitation of its frontiers or boundaries.</fo:block>
-						<fo:block font-size="12pt" font-weight="bold" text-align="center" margin-top="36pt" margin-bottom="16pt">The United Nations Centre for Trade Facilitation and Electronic Business (UN/CEFACT)</fo:block>
-						<fo:block font-size="12pt" font-weight="bold" text-align="center" margin-bottom="26pt">Simple, Transparent and Effective Processes for Global Commerce</fo:block>
-						<fo:block margin-bottom="12pt">UN/CEFACT’s mission is to improve the ability of business, trade and administrative organizations, from developed, developing and transitional economies, to exchange products and relevant services effectively. Its principal focus is on facilitating national and international transactions, through the simplification and harmonization of processes, procedures and information flows, and so contribute to the growth of global commerce.</fo:block>
-						<fo:block margin-bottom="96pt">Participation in UN/CEFACT is open to experts from United Nations Member States, Intergovernmental Organizations and Non-Governmental Organizations recognised by the United Nations Economic and Social Council (ECOSOC). Through this participation of government and business representatives from around the world, UN/CEFACT has developed a range of trade facilitation and e-business standards, recommendations and tools that are approved within a broad intergovernmental process and implemented globally.</fo:block>
-						<fo:block text-align="center" font-size="12pt" font-weight="bold" margin-bottom="96pt">www.unece.org/cefact</fo:block>
-					</fo:block>
-					
-					<fo:block font-size="12pt" text-align="center" margin-bottom="32pt"><fo:inline padding-left="8mm" padding-right="8mm" padding-top="1mm" padding-bottom="1mm" border="1pt solid black">ECE/TRADE/437</fo:inline></fo:block>
-					
-					<fo:block text-align="center">
-						<xsl:text>Copyright © United Nations 2017</xsl:text>
-						<xsl:value-of select="$linebreak"/>
-						<xsl:text>All rights reserved worldwide</xsl:text>
-						<xsl:value-of select="$linebreak"/>
-						<xsl:text>United Nations publication issued by the Economic Commission for Europe</xsl:text>
+						<xsl:apply-templates select="/un:un-standard/un:boilerplate/un:legal-statement"/>
+						<xsl:apply-templates select="/un:un-standard/un:boilerplate/un:copyright-statement"/>
 					</fo:block>
 				</fo:flow>
 			</fo:page-sequence>
@@ -205,7 +199,7 @@
 				<xsl:call-template name="insertFooter"/>
 				<fo:flow flow-name="xsl-region-body" text-align="justify">
 					<fo:block>
-						<xsl:apply-templates select="/un:unece-standard/un:preface/*"/>
+						<xsl:apply-templates select="/un:un-standard/un:preface/*"/>
 					</fo:block>
 				</fo:flow>
 			</fo:page-sequence>
@@ -303,16 +297,14 @@
 					<xsl:text disable-output-escaping="yes"> --&gt;</xsl:text>
 					
 					<fo:block>
-						<xsl:apply-templates select="/un:unece-standard/un:sections/*"/>
-						<xsl:apply-templates select="/un:unece-standard/un:annex"/>
+						<xsl:apply-templates select="/un:un-standard/un:sections/*"/>
+						<xsl:apply-templates select="/un:un-standard/un:annex"/>
 					</fo:block>
 					
 					
 					<fo:block-container margin-left="50mm" width="30mm" border-bottom="1pt solid black">
 						<fo:block>&#xA0;</fo:block>
 					</fo:block-container>
-					
-					
 					
 				</fo:flow>
 			</fo:page-sequence>
@@ -328,51 +320,8 @@
 							<fo:external-graphic src="{concat('data:image/png;base64,', normalize-space($Image-Back))}" width="210mm" content-height="scale-to-fit" scaling="uniform" fox:alt-text="Image Front"/>
 						</fo:block>
 					</fo:block-container>
-					<fo:block-container absolute-position="fixed" font-family="Arial" font-size="10pt" top="238mm" left="20mm" line-height="110%">
-						<fo:block>Information Service</fo:block>
-						<fo:block>United Nations Economic Commission for Europe</fo:block>
-						<fo:block margin-top="5mm">Palais des Nations</fo:block>
-						<fo:block>CH - 1211 Geneva 10, Switzerland</fo:block>
-						<fo:block>
-							<fo:table table-layout="fixed" width="100mm">
-								<fo:table-column column-width="21mm"/>
-								<fo:table-column column-width="79mm"/>
-								<fo:table-body>
-									<fo:table-row>
-										<fo:table-cell>
-											<fo:block>Telephone:</fo:block>
-										</fo:table-cell>
-										<fo:table-cell>
-											<fo:block>+41(0)22 917 44 44</fo:block>
-										</fo:table-cell>
-									</fo:table-row>
-									<fo:table-row>
-										<fo:table-cell>
-											<fo:block>Fax:</fo:block>
-										</fo:table-cell>
-										<fo:table-cell>
-											<fo:block>+41(0)22 917 05 05</fo:block>
-										</fo:table-cell>
-									</fo:table-row>
-									<fo:table-row>
-										<fo:table-cell>
-											<fo:block>E-mail:</fo:block>
-										</fo:table-cell>
-										<fo:table-cell>
-											<fo:block>info.ece@unece.org</fo:block>
-										</fo:table-cell>
-									</fo:table-row>
-									<fo:table-row>
-										<fo:table-cell>
-											<fo:block>Website:</fo:block>
-										</fo:table-cell>
-										<fo:table-cell>
-											<fo:block>http://www.unece.org</fo:block>
-										</fo:table-cell>
-									</fo:table-row>
-								</fo:table-body>
-							</fo:table>
-						</fo:block>
+					<fo:block-container absolute-position="fixed" font-family="Arial" font-size="10pt" top="240mm" left="20mm" line-height="110%">
+						<xsl:apply-templates select="/un:un-standard/un:boilerplate/un:feedback-statement"/>
 					</fo:block-container>
 				</fo:flow>
 			</fo:page-sequence>
@@ -386,7 +335,7 @@
 		<xsl:apply-templates mode="contents"/>
 	</xsl:template>
 	
-	<xsl:template match="un:unece-standard/un:sections/*" mode="contents">
+	<xsl:template match="un:un-standard/un:sections/*" mode="contents">
 		<xsl:apply-templates mode="contents"/>
 	</xsl:template>
 	
@@ -486,7 +435,7 @@
 					<xsl:when test="ancestor::un:annex">
 						<xsl:choose>
 							<xsl:when test="count(//un:annex) = 1">
-								<xsl:value-of select="/un:unece-standard/un:bibdata/un:ext/un:structuredidentifier/un:annexid"/><xsl:number format="-1" level="any" count="un:annex//un:figure"/>
+								<xsl:value-of select="/un:un-standard/un:bibdata/un:ext/un:structuredidentifier/un:annexid"/><xsl:number format="-1" level="any" count="un:annex//un:figure"/>
 							</xsl:when>
 							<xsl:otherwise>
 								<xsl:number format="A.1-1" level="multiple" count="un:annex | un:figure"/>
@@ -598,6 +547,111 @@
 	<!-- ============================= -->
 	<!-- ============================= -->
 		
+		
+		
+	<xsl:template match="un:legal-statement//un:clause/un:title">
+		<fo:block font-weight="bold">
+			<xsl:choose>
+				<xsl:when test="text() = 'Note'">
+					<xsl:attribute name="font-size">14pt</xsl:attribute>
+					<xsl:attribute name="margin-top">28pt</xsl:attribute>
+					<xsl:attribute name="margin-bottom">34pt</xsl:attribute>
+					<xsl:apply-templates />
+				</xsl:when>
+				<xsl:otherwise>
+					<xsl:attribute name="font-size">12pt</xsl:attribute>
+					<xsl:attribute name="text-align">center</xsl:attribute>
+					<xsl:attribute name="margin-top">36pt</xsl:attribute>
+					<xsl:attribute name="margin-bottom">26pt</xsl:attribute>
+					<xsl:apply-templates />
+				</xsl:otherwise>
+			</xsl:choose>
+		</fo:block>
+	</xsl:template>
+		
+	<xsl:template match="un:legal-statement//un:clause//un:title//un:br" priority="2">
+		<fo:block margin-bottom="16pt">&#xA0;</fo:block>
+	</xsl:template>
+	
+	<xsl:template match="un:legal-statement//un:clause//un:p">
+		<fo:block margin-bottom="12pt">
+			<xsl:if test="@align">
+				<xsl:attribute name="text-align"><xsl:value-of select="@align"/></xsl:attribute>
+				<xsl:if test="@align = 'center'">
+					<xsl:attribute name="font-size">12pt</xsl:attribute>
+					<xsl:attribute name="font-weight">bold</xsl:attribute>
+					<xsl:attribute name="margin-top">96pt</xsl:attribute>
+					<xsl:attribute name="margin-bottom">96pt</xsl:attribute>
+				</xsl:if>
+			</xsl:if>
+			<xsl:apply-templates />
+		</fo:block>
+	</xsl:template>
+		
+		<xsl:template match="un:copyright-statement//un:clause//un:p">
+			<xsl:variable name="num"><xsl:number/></xsl:variable>
+			<fo:block>
+				<xsl:choose>
+					<xsl:when test="$num = 1">
+						<!-- ECE/TRADE/437 -->
+						<fo:block font-size="12pt" text-align="center" margin-bottom="32pt"><fo:inline padding-left="8mm" padding-right="8mm" padding-top="1mm" padding-bottom="1mm" border="1pt solid black"><xsl:apply-templates /></fo:inline></fo:block>
+					</xsl:when>
+					<xsl:otherwise>
+						<fo:block text-align="center">
+							<xsl:apply-templates />
+						</fo:block>
+					</xsl:otherwise>
+				</xsl:choose>
+			</fo:block>
+		</xsl:template>
+		
+		<xsl:template match="un:feedback-statement//un:clause">
+			<xsl:apply-templates />
+			<xsl:call-template name="show_fs_table"/>
+		</xsl:template>
+		
+		<xsl:template match="un:feedback-statement//un:clause//un:p">
+			<fo:block>
+				<xsl:if test="@id = 'boilerplate-feedback-address'">
+					<xsl:attribute name="margin-top">5mm</xsl:attribute>
+				</xsl:if>
+				<xsl:apply-templates />
+			</fo:block>
+		</xsl:template>
+		
+		<xsl:template match="un:feedback-statement//un:clause//un:p//un:link"/>
+	
+		<xsl:template name="show_fs_table">
+			<fo:block>
+				<fo:table table-layout="fixed" width="100mm">
+					<fo:table-column column-width="21mm"/>
+					<fo:table-column column-width="79mm"/>
+					<fo:table-body>
+						<xsl:for-each select="//un:feedback-statement//un:clause//un:p//un:link">
+							<fo:table-row>
+								<fo:table-cell>
+									<fo:block>
+										<xsl:choose>
+											<xsl:when test="contains(@target, '@')">E-mail:</xsl:when>
+											<xsl:when test="contains(@target, 'http')">Website:</xsl:when>
+											<xsl:otherwise>Telephone:</xsl:otherwise>
+										</xsl:choose>
+									</fo:block>
+								</fo:table-cell>
+								<fo:table-cell>
+									<fo:block><xsl:apply-templates /></fo:block>
+								</fo:table-cell>
+							</fo:table-row>
+						</xsl:for-each>
+					</fo:table-body>
+				</fo:table>
+			</fo:block>
+		</xsl:template>
+
+						
+	
+					
+					
 		
 	<!-- ============================= -->
 	<!-- PARAGRAPHS                                    -->
@@ -815,7 +869,7 @@
 	<!-- ============================= -->	
 	
 	
-	<xsl:template match="un:unece-standard/un:sections/*">
+	<xsl:template match="un:un-standard/un:sections/*">
 		<fo:block break-after="page"/>
 		<xsl:variable name="num"><xsl:number /></xsl:variable>
 		<fo:block>
@@ -831,7 +885,7 @@
 	</xsl:template>
 	
 	
-	<xsl:template match="/un:unece-standard/un:annex">
+	<xsl:template match="/un:un-standard/un:annex">
 		<fo:block break-after="page"/>
 		<xsl:variable name="num"><xsl:number /></xsl:variable>
 		
@@ -1020,7 +1074,7 @@
 						<xsl:when test="ancestor::un:annex">
 							<xsl:choose>
 								<xsl:when test="count(//un:annex) = 1">
-									<xsl:value-of select="/un:unece-standard/un:bibdata/un:ext/un:structuredidentifier/un:annexid"/><xsl:number format="-1" level="any" count="un:annex//un:figure"/>
+									<xsl:value-of select="/un:un-standard/un:bibdata/un:ext/un:structuredidentifier/un:annexid"/><xsl:number format="-1" level="any" count="un:annex//un:figure"/>
 								</xsl:when>
 								<xsl:otherwise>
 									<xsl:number format="A-1-1" level="multiple" count="un:annex | un:figure"/>
