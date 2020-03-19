@@ -28,8 +28,7 @@ endif
 
 all: xslts documents.html
 
-#xslts: $(XSLT_GENERATED)
-xslts: xslt/iec.international-standard.xsl xslt/iso.international-standard.xsl xslt/itu.recommendation.xsl xslt/itu.resolution.xsl xslt/un.plenary.xsl xslt/un.recommendation.xsl
+xslts: $(XSLT_GENERATED)
 
 mn2pdf.jar:
 	curl -sSL ${MN2PDF_DOWNLOAD_PATH} -o mn2pdf.jar
