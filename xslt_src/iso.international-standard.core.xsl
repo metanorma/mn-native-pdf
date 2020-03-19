@@ -75,6 +75,7 @@
 	</xsl:variable>
 	
 	<xsl:template match="/">
+		<xsl:message>INFO: Document namespace: '<xsl:value-of select="namespace-uri(/*)"/>'</xsl:message>
 		<fo:root xmlns:fo="http://www.w3.org/1999/XSL/Format" font-family="Cambria, Times New Roman, Cambria Math, HanSans" font-size="11pt" xml:lang="{$lang}"> <!-- alternatives: SimSun -->
 			<fo:layout-master-set>
 				<!-- cover page -->
