@@ -2,7 +2,6 @@
 SHELL := /bin/bash
 SRCDIR := sources
 DESTDIR := documents
-ITU := itu
 SRC := $(patsubst mn-samples-iso/documents/%,sources/%,$(wildcard mn-samples-iso/documents/*.xml)) \
 	$(patsubst mn-samples-itu/documents/%,sources/itu-%,$(wildcard mn-samples-itu/documents/*.xml)) \
 	$(patsubst mn-samples-iec/documents/%,sources/%,$(wildcard mn-samples-iec/documents/*.xml)) \
@@ -13,8 +12,8 @@ DOC := $(patsubst sources/%,documents/%,$(patsubst %.xml,%.doc,$(SRC)))
 RXL := $(patsubst sources/%,documents/%,$(patsubst %.xml,%.rxl,$(SRC)))
 XSLT_PATH_BASE := $(shell pwd)/xslt
 XSLT_GENERATED := xslt/uec.international-standard.xsl \
-	xslt/aiso.international-standard.xsl \
-	xslt/$(ITU).recommendation.xsl \
+	xslt/iso.international-standard.xsl \
+	xslt/itu.recommendation.xsl \
 	xslt/itu.resolution.xsl \
 	xslt/un.plenary.xsl \
 	xslt/un.recommendation.xsl
@@ -76,7 +75,6 @@ xslt:
 	mkdir -p $@
 
 xslt/%.xsl: xslt_src/%.core.xsl xslt_src/merge.xsl xalan/xalan.jar | xslt
-	echo $(XSLT_GENERATED)
 	XSLT_PATH_CORE=$<; \
 	XSLT_PATH_MERGE=xslt_src/merge.xsl; \
 	java -jar xalan/xalan.jar -IN $$XSLT_PATH_CORE -XSL $$XSLT_PATH_MERGE -OUT $@
