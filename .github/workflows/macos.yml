@@ -31,7 +31,7 @@ jobs:
           brew link --force gettext
 
           # Install cabextract
-#          brew install cabextract
+          # brew install cabextract
 
           # Install p7zip
           brew install p7zip
