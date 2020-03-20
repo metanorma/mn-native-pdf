@@ -12,7 +12,7 @@ DOC := $(patsubst sources/%,documents/%,$(patsubst %.xml,%.doc,$(SRC)))
 RXL := $(patsubst sources/%,documents/%,$(patsubst %.xml,%.rxl,$(SRC)))
 XSLT_PATH_BASE := $(shell pwd)/xslt
 XSLT_GENERATED := xslt/uec.international-standard.xsl \
-	xslt/uso.international-standard.xsl \
+	xslt/iso.international-standard.xsl \
 	xslt/un.plenary.xsl \
 	xslt/un.recommendation.xsl
 
