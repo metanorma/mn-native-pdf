@@ -2,6 +2,7 @@
 SHELL := /bin/bash
 SRCDIR := sources
 DESTDIR := documents
+ITU := itu
 SRC := $(patsubst mn-samples-iso/documents/%,sources/%,$(wildcard mn-samples-iso/documents/*.xml)) \
 	$(patsubst mn-samples-itu/documents/%,sources/itu-%,$(wildcard mn-samples-itu/documents/*.xml)) \
 	$(patsubst mn-samples-iec/documents/%,sources/%,$(wildcard mn-samples-iec/documents/*.xml)) \
@@ -13,7 +14,7 @@ RXL := $(patsubst sources/%,documents/%,$(patsubst %.xml,%.rxl,$(SRC)))
 XSLT_PATH_BASE := $(shell pwd)/xslt
 XSLT_GENERATED := xslt/uec.international-standard.xsl \
 	xslt/aiso.international-standard.xsl \
-	xslt/itu.recommendation.xsl \
+	xslt/$(ITU).recommendation.xsl \
 	xslt/itu.resolution.xsl \
 	xslt/un.plenary.xsl \
 	xslt/un.recommendation.xsl
