@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:fo="http://www.w3.org/1999/XSL/Format" xmlns:un="https://open.ribose.com/standards/unece" xmlns:mathml="http://www.w3.org/1998/Math/MathML" xmlns:xalan="http://xml.apache.org/xalan" xmlns:fox="http://xmlgraphics.apache.org/fop/extensions" version="1.0">
+<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:fo="http://www.w3.org/1999/XSL/Format" xmlns:un="https://www.metanorma.org/ns/un" xmlns:mathml="http://www.w3.org/1998/Math/MathML" xmlns:xalan="http://xml.apache.org/xalan" xmlns:fox="http://xmlgraphics.apache.org/fop/extensions" version="1.0">
 
 	<xsl:output version="1.0" method="xml" encoding="UTF-8" indent="no"/>
 
@@ -12,14 +12,16 @@
 
 	<xsl:variable name="contents">
 		<contents>
-			<xsl:apply-templates select="/un:unece-standard/un:sections/*" mode="contents"/>
-			<xsl:apply-templates select="/un:unece-standard/un:annex" mode="contents"/>
+			<xsl:apply-templates select="/un:un-standard/un:sections/*" mode="contents"/>
+			<xsl:apply-templates select="/un:un-standard/un:annex" mode="contents"/>
 		</contents>
 	</xsl:variable>
 	
 	<xsl:variable name="lang">
 		<xsl:call-template name="getLang"/>
 	</xsl:variable>
+
+	<xsl:variable name="title" select="/un:un-standard/un:bibdata/un:title[@language = 'en' and @type = 'main']"/>
 	
 	<xsl:template match="/">
 		<fo:root xmlns:fo="http://www.w3.org/1999/XSL/Format" font-family="Times New Roman, Cambria Math, HanSans" font-size="10.5pt" xml:lang="{$lang}">
@@ -53,11 +55,20 @@
 					<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
 						<rdf:Description rdf:about="" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:pdf="http://ns.adobe.com/pdf/1.3/">
 						<!-- Dublin Core properties go here -->
-							<dc:title><xsl:value-of select="/un:unece-standard/un:bibdata/un:title[@language = 'en' and @type = 'main']"/></dc:title>
+							<dc:title>
+								<xsl:choose>
+									<xsl:when test="$title != ''">
+										<xsl:value-of select="$title"/>
+									</xsl:when>
+									<xsl:otherwise>
+										<xsl:text>&#xA0;</xsl:text>
+									</xsl:otherwise>
+								</xsl:choose>
+							</dc:title>
 							<dc:creator></dc:creator>
 							<dc:description>
 								<xsl:variable name="abstract">
-									<xsl:copy-of select="/un:unece-standard/un:preface/un:abstract//text()"/>
+									<xsl:copy-of select="/un:un-standard/un:preface/un:abstract//text()"/>
 								</xsl:variable>
 								<xsl:value-of select="normalize-space($abstract)"/>
 							</dc:description>
@@ -81,7 +92,7 @@
 							<xsl:text>United Nations</xsl:text>
 							<fo:inline keep-together.within-line="always" padding-right="32mm">
 								<fo:leader leader-pattern="space"/>
-								<xsl:value-of select="/un:unece-standard/un:bibdata/un:docidentifier"/>
+								<xsl:value-of select="/un:un-standard/un:bibdata/un:docidentifier"/>
 							</fo:inline>
 						</fo:block>
 					</fo:block-container>
@@ -100,7 +111,7 @@
 									</fo:table-cell>
 									<fo:table-cell display-align="after">
 										<fo:block font-size="10pt">
-											<xsl:text>Distr.: </xsl:text><xsl:value-of select="/un:unece-standard/un:bibdata/un:ext/un:distribution"/>
+											<xsl:text>Distr.: </xsl:text><xsl:value-of select="/un:un-standard/un:bibdata/un:ext/un:distribution"/>
 										</fo:block>
 									</fo:table-cell>
 								</fo:table-row>
@@ -113,7 +124,7 @@
 									</fo:table-cell>
 									<fo:table-cell display-align="after">
 										<fo:block font-size="10pt" margin-bottom="12pt">
-											<xsl:value-of select="/un:unece-standard/un:bibdata/un:version/un:revision-date"/>
+											<xsl:value-of select="/un:un-standard/un:bibdata/un:version/un:revision-date"/>
 										</fo:block>
 									</fo:table-cell>
 								</fo:table-row>
@@ -124,30 +135,30 @@
 					<fo:block-container font-weight="bold" border-top="2.25pt solid black" border-bottom="2.25pt solid black">
 						<fo:block padding-top="0.5mm" margin-bottom="12pt">Economic Commision for Europe</fo:block>
 						<fo:block margin-bottom="12pt">UNECE Executive Committee</fo:block>
-						<fo:block margin-bottom="12pt"><xsl:value-of select="/un:unece-standard/un:bibdata/un:ext/un:editorialgroup/un:committee"/></fo:block>
+						<fo:block margin-bottom="12pt"><xsl:value-of select="/un:un-standard/un:bibdata/un:ext/un:editorialgroup/un:committee"/></fo:block>
 						<fo:block margin-bottom="10pt">&#xA0;</fo:block>
 					</fo:block-container>
 					<fo:block font-weight="bold" padding-top="0.5mm" margin-bottom="12pt">
 						<!-- Example: 24 -> Twenty-fourth session -->
 						<xsl:call-template name="number-to-words">
-							<xsl:with-param name="number" select="/un:unece-standard/un:bibdata/un:ext/un:session/un:number"/>
+							<xsl:with-param name="number" select="/un:un-standard/un:bibdata/un:ext/un:session/un:number"/>
 							<xsl:with-param name="first" select="'true'"/>
 						</xsl:call-template>
 						<xsl:text>session</xsl:text>
 					</fo:block>
-					<fo:block margin-bottom="12pt"><xsl:value-of select="/un:unece-standard/un:bibdata/un:ext/un:session/un:date"/></fo:block>
-					<fo:block margin-bottom="12pt"><xsl:value-of select="/un:unece-standard/un:bibdata/un:docidentifier"/></fo:block>
+					<fo:block margin-bottom="12pt"><xsl:value-of select="/un:un-standard/un:bibdata/un:ext/un:session/un:date"/></fo:block>
+					<fo:block margin-bottom="12pt"><xsl:value-of select="/un:un-standard/un:bibdata/un:docidentifier"/></fo:block>
 					<fo:block margin-bottom="12pt">&#xA0;</fo:block>
 					<fo:block-container font-weight="bold" margin-left="25mm">
 						<fo:block margin-left="-25mm">
 							<fo:block font-size="16pt" margin-bottom="12pt">
-								<xsl:value-of select="/un:unece-standard/un:bibdata/un:title[@language = 'en' and @type = 'main']"/>
+								<xsl:value-of select="$title"/>
 							</fo:block>
 							<fo:block margin-bottom="12pt">
-								<xsl:value-of select="/un:unece-standard/un:bibdata/un:title[@language = 'en' and @type = 'subtitle']"/>
+								<xsl:value-of select="/un:un-standard/un:bibdata/un:title[@language = 'en' and @type = 'subtitle']"/>
 							</fo:block>
 							<fo:block margin-bottom="12pt">
-								<xsl:text>Developed in Collaboration with </xsl:text><xsl:value-of select="/un:unece-standard/un:bibdata/un:ext/un:session/un:collaborator"/>
+								<xsl:text>Developed in Collaboration with </xsl:text><xsl:value-of select="/un:un-standard/un:bibdata/un:ext/un:session/un:collaborator"/>
 							</fo:block>
 						</fo:block>
 					</fo:block-container>
@@ -169,7 +180,7 @@
 										<fo:block>&#xA0;</fo:block>
 									</fo:table-cell>
 									<fo:table-cell padding-bottom="-12pt" padding-right="3mm">
-										<fo:block line-height="115%"><xsl:apply-templates select="/un:unece-standard/un:preface/un:abstract"/></fo:block>
+										<fo:block line-height="115%"><xsl:apply-templates select="/un:un-standard/un:preface/un:abstract"/></fo:block>
 									</fo:table-cell>
 								</fo:table-row>
 							</fo:table-body>
@@ -180,7 +191,7 @@
 					<fo:block margin-bottom="12pt">&#xA0;</fo:block>
 					<fo:block margin-bottom="12pt">&#xA0;</fo:block>
 					<fo:block margin-bottom="12pt">&#xA0;</fo:block>
-					<fo:block><xsl:value-of select="/un:unece-standard/un:bibdata/un:ext/un:session/un:id"/></fo:block>
+					<fo:block><xsl:value-of select="/un:un-standard/un:bibdata/un:ext/un:session/un:id"/></fo:block>
 				</fo:flow>
 			</fo:page-sequence>
 			<!-- End Cover Page -->
@@ -202,8 +213,8 @@
 					<xsl:text disable-output-escaping="yes">--&gt;</xsl:text>
 					
 					<fo:block>
-						<xsl:apply-templates select="/un:unece-standard/un:sections/*"/>
-						<xsl:apply-templates select="/un:unece-standard/un:annex"/>
+						<xsl:apply-templates select="/un:un-standard/un:sections/*"/>
+						<xsl:apply-templates select="/un:un-standard/un:annex"/>
 					</fo:block>
 					
 					
@@ -227,7 +238,7 @@
 		<xsl:apply-templates mode="contents"/>
 	</xsl:template>
 	
-	<xsl:template match="un:unece-standard/un:sections/*" mode="contents">
+	<xsl:template match="un:un-standard/un:sections/*" mode="contents">
 		<xsl:apply-templates mode="contents"/>
 	</xsl:template>
 	
@@ -325,7 +336,7 @@
 					<xsl:when test="ancestor::un:annex">
 						<xsl:choose>
 							<xsl:when test="count(//un:annex) = 1">
-								<xsl:value-of select="/un:unece-standard/un:bibdata/un:ext/un:structuredidentifier/un:annexid"/><xsl:number format="-1" level="any" count="un:annex//un:figure"/>
+								<xsl:value-of select="/un:un-standard/un:bibdata/un:ext/un:structuredidentifier/un:annexid"/><xsl:number format="-1" level="any" count="un:annex//un:figure"/>
 							</xsl:when>
 							<xsl:otherwise>
 								<xsl:number format="A.1-1" level="multiple" count="un:annex | un:figure"/>
@@ -648,7 +659,7 @@
 	<!-- ============================= -->	
 	
 	
-	<xsl:template match="un:unece-standard/un:sections/*">
+	<xsl:template match="un:un-standard/un:sections/*">
 		<xsl:variable name="num"><xsl:number /></xsl:variable>
 		<fo:block>
 			<xsl:if test="$num = 1">
@@ -663,7 +674,7 @@
 	</xsl:template>
 	
 	
-	<xsl:template match="/un:unece-standard/un:annex">
+	<xsl:template match="/un:un-standard/un:annex">
 		<fo:block break-after="page"/>
 		<xsl:variable name="num"><xsl:number /></xsl:variable>
 		
@@ -835,7 +846,7 @@
 					<xsl:when test="ancestor::un:annex">
 						<xsl:choose>
 							<xsl:when test="count(//un:annex) = 1">
-								<xsl:value-of select="/un:unece-standard/un:bibdata/un:ext/un:structuredidentifier/un:annexid"/><xsl:number format="-1" level="any" count="un:annex//un:figure"/>
+								<xsl:value-of select="/un:un-standard/un:bibdata/un:ext/un:structuredidentifier/un:annexid"/><xsl:number format="-1" level="any" count="un:annex//un:figure"/>
 							</xsl:when>
 							<xsl:otherwise>
 								<xsl:number format="A-1-1" level="multiple" count="un:annex | un:figure"/>
@@ -1192,7 +1203,7 @@
 		<fo:static-content flow-name="header">
 			<fo:block-container height="25mm" display-align="before">
 				<fo:block font-weight="bold" padding-top="12.5mm" text-align="center">
-					<xsl:value-of select="/un:unece-standard/un:bibdata/un:docidentifier"/>
+					<xsl:value-of select="/un:un-standard/un:bibdata/un:docidentifier"/>
 				</fo:block>
 				<fo:block-container  border-bottom="0.5pt solid black">
 					<fo:block>&#xA0;</fo:block>
