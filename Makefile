@@ -13,11 +13,12 @@ RXL := $(patsubst sources/%,documents/%,$(patsubst %.xml,%.rxl,$(SRC)))
 XSLT_PATH_BASE := $(shell pwd)/xslt
 XSLT_GENERATED := xslt/uec.international-standard.xsl \
 	xslt/uso.international-standard.xsl \
-	xslt/utu.recommendation.xsl \
-	xslt/utu.resolution.xsl \
 	xslt/un.plenary.xsl \
 	xslt/un.recommendation.xsl
 
+#	xslt/utu.recommendation.xsl \
+#	xslt/utu.resolution.xsl \
+	
 MN2PDF_DOWNLOAD_PATH := https://github.com/metanorma/mn2pdf/releases/download/v1.0.0/mn2pdf-1.0.jar
 
 ifdef MN_PDF_FONT_PATH
