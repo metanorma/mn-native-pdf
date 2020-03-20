@@ -76,6 +76,7 @@ xslt:
 	mkdir -p $@
 
 xslt/%.xsl: xslt_src/%.core.xsl xslt_src/merge.xsl xalan/xalan.jar | xslt
+	echo $(XSLT_GENERATED)
 	XSLT_PATH_CORE=$<; \
 	XSLT_PATH_MERGE=xslt_src/merge.xsl; \
 	java -jar xalan/xalan.jar -IN $$XSLT_PATH_CORE -XSL $$XSLT_PATH_MERGE -OUT $@
