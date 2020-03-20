@@ -1569,25 +1569,5 @@
 		</xsl:variable>
 		<xsl:value-of select="$section"/>
 	</xsl:template>
-
-	<xsl:template name="capitalizeWords">
-		<xsl:param name="str" />
-		<xsl:variable name="str2" select="translate($str, '-', ' ')"/>
-		<xsl:choose>
-			<xsl:when test="contains($str2, ' ')">
-				<xsl:variable name="substr" select="substring-before($str2, ' ')"/>
-				<xsl:value-of select="translate(substring($substr, 1, 1), $lower, $upper)"/>
-				<xsl:value-of select="substring($substr, 2)"/>
-				<xsl:text> </xsl:text>
-				<xsl:call-template name="capitalizeWords">
-					<xsl:with-param name="str" select="substring-after($str2, ' ')"/>
-				</xsl:call-template>
-			</xsl:when>
-			<xsl:otherwise>
-				<xsl:value-of select="translate(substring($str2, 1, 1), $lower, $upper)"/>
-				<xsl:value-of select="substring($str2, 2)"/>
-			</xsl:otherwise>
-		</xsl:choose>
-	</xsl:template>
 	
 </xsl:stylesheet>
