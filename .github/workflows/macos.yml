@@ -31,7 +31,7 @@ jobs:
           brew link --force gettext
 
           # Install cabextract
-          brew install cabextract
+#          brew install cabextract
 
           # Install p7zip
           brew install p7zip
@@ -77,7 +77,8 @@ jobs:
           export MN_PDF_FONT_PATH=${GITHUB_WORKSPACE}/fonts
 
           ls -alR ${MN_PDF_FONT_PATH}
-          make all
+					ls -alR ${GITHUB_WORKSPACE}
+          make all published
 #          mv documents published
 
       - uses: actions/upload-artifact@master
