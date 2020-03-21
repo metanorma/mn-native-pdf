@@ -94,6 +94,7 @@ pdf_fonts_config.xml: pdf_fonts_config.xml.in
 	envsubst < pdf_fonts_config.xml.in > pdf_fonts_config.xml
 
 distclean: clean
+	rm -rf xalan
 	rm -f mn2pdf.jar
 
 clean:
