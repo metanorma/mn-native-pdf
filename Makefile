@@ -62,6 +62,9 @@ documents/%: sources/% | documents
 documents/itu-D-REC-D.19-201003-E.pdf:
 	echo "### skipping $@"
 
+documents/itu-T-Editing-Guidelines-201602.pdf:
+	echo "### skipping $@"
+
 documents/%.pdf: sources/%.xml mn2pdf.jar | documents
 	FILENAME=$<; \
 	OUTFILE=$@; \
