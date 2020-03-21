@@ -22,7 +22,7 @@ jobs:
       - name: Setup prerequisites
         run: |
           sudo apt-get update
-          sudo apt-get -y install gettext-base cabextract wget p7zip-full libxml2-utils curl \
+          sudo apt-get -y install gettext-base cabextract wget libxml2-utils curl \
             software-properties-common gcc ruby ruby-dev libffi-dev make libxml2-dev libxslt1-dev
 
           # Install fonts
@@ -33,15 +33,6 @@ jobs:
       - name: Setup Cambria fonts
         run: |
           curl -Ls https://raw.githubusercontent.com/metanorma/vista-fonts-installer/master/vista-fonts-installer.sh | sudo bash
-
-      - name: Setup CJK fonts
-        run: |
-          mkdir -p /usr/share/fonts/truetype/adobe
-          pushd $(mktemp -d)
-          curl -Ls https://github.com/Pal3love/Source-Han-TrueType/raw/master/SourceHanSans.7z -o hansans.7z
-          7za x hansans.7z
-          mv *.ttc /usr/share/fonts/truetype/adobe
-          popd
 
       - name: Update gems
         run: |

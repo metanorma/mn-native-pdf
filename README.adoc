@@ -27,9 +27,6 @@ brew link --force gettext
 
 # Install cabextract
 brew install cabextract
-
-# Install p7zip
-brew install p7zip
 ----
 
 [source,sh]
@@ -40,15 +37,6 @@ export MN_PDF_FONT_PATH=$(pwd)/.fonts
 export MS_FONT_PATH=${MN_PDF_FONT_PATH}/truetype/vista
 export RENAME_FONTS=false
 curl -Ls https://raw.githubusercontent.com/metanorma/vista-fonts-installer/master/vista-fonts-installer.sh | bash
-
-# Install CJK fonts
-mkdir -p ${MN_PDF_FONT_PATH}/truetype/adobe/
-
-pushd $(mktemp -d)
-curl -Ls https://github.com/Pal3love/Source-Han-TrueType/raw/master/SourceHanSans.7z -o hansans.7z
-7za x hansans.7z
-mv *.ttc ${MN_PDF_FONT_PATH}/truetype/adobe/
-popd
 
 # Install Microsoft Core fonts
 mkdir -p ${MN_PDF_FONT_PATH}/truetype/msttcorefonts

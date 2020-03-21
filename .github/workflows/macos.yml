@@ -20,7 +20,7 @@ jobs:
 
       - name: Update gems
         run: |
-          gem install bundler -v 2.0.2
+          gem install bundler
           bundle install --jobs 4 --retry 3
 
       # cabextract for fonts, gettext-base for envsubst
@@ -33,9 +33,6 @@ jobs:
           # Install cabextract
           brew install cabextract
 
-          # Install p7zip
-          brew install p7zip
-
           # Install yq
           brew install yq
 
@@ -45,17 +42,6 @@ jobs:
           export MS_FONT_PATH=${MN_PDF_FONT_PATH}/truetype/vista
           export RENAME_FONTS=false
           curl -Ls https://raw.githubusercontent.com/metanorma/vista-fonts-installer/master/vista-fonts-installer.sh | bash
-
-      - name: Install Chinese fonts
-        run: |
-          export MN_PDF_FONT_PATH=${GITHUB_WORKSPACE}/fonts
-          mkdir -p ${MN_PDF_FONT_PATH}/truetype/adobe/
-
-          pushd $(mktemp -d)
-          curl -Ls https://github.com/Pal3love/Source-Han-TrueType/raw/master/SourceHanSans.7z -o hansans.7z
-          7za x hansans.7z
-          mv *.ttc ${MN_PDF_FONT_PATH}/truetype/adobe/
-          popd
 
       - name: Install Microsoft Core Fonts
         run: |

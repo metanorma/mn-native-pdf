@@ -18,7 +18,7 @@ XSLT_GENERATED := xslt/iec.international-standard.xsl \
 	xslt/un.plenary.xsl \
 	xslt/un.recommendation.xsl
 
-MN2PDF_DOWNLOAD_PATH := https://github.com/metanorma/mn2pdf/releases/download/v1.0.0/mn2pdf-1.0.jar
+MN2PDF_DOWNLOAD_PATH := https://github.com/metanorma/mn2pdf/releases/download/v1.3/mn2pdf-1.3.jar
 
 ifdef MN_PDF_FONT_PATH
 	MN_PDF_FONT_PATH := $(MN_PDF_FONT_PATH)
@@ -69,10 +69,7 @@ documents/%.pdf: sources/%.xml pdf_fonts_config.xml mn2pdf.jar | documents
 	XSLT_PATH=${XSLT_PATH_BASE}/$${MN_FLAVOR}.$${DOCTYPE}.xsl; \
   java -jar mn2pdf.jar pdf_fonts_config.xml $$FILENAME $$XSLT_PATH $$OUTFILE
 
-xslt:
-	mkdir -p $@
-
-xslt/%.xsl: xslt_src/%.core.xsl xslt_src/merge.xsl xalan/xalan.jar | xslt
+xslt/%.xsl: xslt_src/%.core.xsl xslt_src/merge.xsl xalan/xalan.jar
 	XSLT_PATH_CORE=$<; \
 	XSLT_PATH_MERGE=xslt_src/merge.xsl; \
 	java -jar xalan/xalan.jar -IN $$XSLT_PATH_CORE -XSL $$XSLT_PATH_MERGE -OUT $@
@@ -100,8 +97,8 @@ distclean: clean
 	rm -f mn2pdf.jar
 
 clean:
-	rm -f pdf_fonts_config.xml
-	rm -rf documents xslt
+	rm -f pdf_fonts_config.xml xslt/*
+	rm -rf documents
 
 update-init:
 	git submodule update --init
