@@ -58,6 +58,9 @@ documents:
 documents/%: sources/% | documents
 	cp $< $@
 
+# This document is currently broken
+documents/itu-D-REC-D.19-201003-E.pdf:
+
 documents/%.pdf: sources/%.xml mn2pdf.jar | documents
 	FILENAME=$<; \
 	OUTFILE=$@; \
@@ -70,9 +73,6 @@ xslt/%.xsl: xslt_src/%.core.xsl xslt_src/merge.xsl xalan/xalan.jar
 	XSLT_PATH_CORE=$<; \
 	XSLT_PATH_MERGE=xslt_src/merge.xsl; \
 	java -jar xalan/xalan.jar -IN $$XSLT_PATH_CORE -XSL $$XSLT_PATH_MERGE -OUT $@
-
-# This document is currently broken
-documents/itu-D-REC-D.19-201003-E.pdf:
 
 documents.rxl: $(HTML) $(DOC) $(RXL) $(PDF) | bundle
 	bundle exec relaton concatenate \
