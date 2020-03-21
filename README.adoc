@@ -56,14 +56,6 @@ ln -s /System/Library/Fonts/Supplemental/Courier\ New\ Bold.ttf ${MN_PDF_FONT_PA
 ln -s /System/Library/Fonts/Supplemental/Courier\ New\ Bold\ Italic.ttf ${MN_PDF_FONT_PATH}/truetype/msttcorefonts/courbi.ttf
 
 ls -alR ${MN_PDF_FONT_PATH}
-
-# Install Xalan
-pushd xalan
-TMPDIR=$$(mktemp -d)
-curl -sSL http://archive.apache.org/dist/xalan/xalan-j/binaries/xalan-j_2_7_2-bin-2jars.tar.gz -o $$TMPDIR/xalan.tar.gz
-tar xz --strip-components=1 -f $$TMPDIR/xalan.tar.gz xalan-j_2_7_2/*.jar
-popd
-
 ----
 
 Generating XSLT layouts (will be created under `xslt/`):
@@ -99,13 +91,6 @@ sudo apt-get install ttf-mscorefonts-installer
 
 # Setup Cambria fonts
 curl -Ls https://raw.githubusercontent.com/metanorma/vista-fonts-installer/master/vista-fonts-installer.sh | sudo bash
-
-# Install Xalan
-pushd xalan
-TMPDIR=$$(mktemp -d)
-curl -sSL http://archive.apache.org/dist/xalan/xalan-j/binaries/xalan-j_2_7_2-bin-2jars.tar.gz -o $$TMPDIR/xalan.tar.gz
-tar xz --strip-components=1 -f $$TMPDIR/xalan.tar.gz xalan-j_2_7_2/*.jar
-popd
 ----
 
 
