@@ -5,6 +5,7 @@ DESTDIR := documents
 SRC := $(patsubst mn-samples-iso/documents/%,sources/%,$(wildcard mn-samples-iso/documents/*.xml)) \
 	$(patsubst mn-samples-itu/documents/%,sources/itu-%,$(wildcard mn-samples-itu/documents/*.xml)) \
 	$(patsubst mn-samples-iec/documents/%,sources/%,$(wildcard mn-samples-iec/documents/*.xml)) \
+	$(patsubst mn-samples-ogc/documents/%,sources/%,$(wildcard mn-samples-ogc/documents/*.xml)) \
 	$(patsubst mn-samples-un/documents/%,sources/un-%,$(wildcard mn-samples-un/documents/*.xml))
 PDF := $(patsubst sources/%,documents/%,$(patsubst %.xml,%.pdf,$(SRC)))
 HTML := $(patsubst sources/%,documents/%,$(patsubst %.xml,%.html,$(SRC)))
@@ -15,6 +16,13 @@ XSLT_GENERATED := xslt/iec.international-standard.xsl \
 	xslt/iso.international-standard.xsl \
 	xslt/itu.recommendation.xsl \
 	xslt/itu.resolution.xsl \
+	xslt/ogc.community-standard.xsl \
+	xslt/ogc.engineering-report.xsl \
+	xslt/ogc.policy.xsl \
+	xslt/ogc.reference-model.xsl \
+	xslt/ogc.release-notes.xsl \
+	xslt/ogc.standard.xsl \
+	xslt/ogc.user-guide.xsl \
 	xslt/un.plenary.xsl \
 	xslt/un.recommendation.xsl
 
@@ -50,6 +58,9 @@ sources/itu-%: mn-samples-itu/documents/%
 	cp $< $@
 
 sources/un-%: mn-samples-un/documents/%
+	cp $< $@
+
+sources/ogc-%: mn-samples-ogc/documents/%
 	cp $< $@
 
 documents:
