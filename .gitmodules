@@ -17,3 +17,8 @@
 [submodule "mn-samples-ogc"]
 	path = mn-samples-ogc
 	url = https://github.com/metanorma/mn-samples-ogc
+	branch = gh-pages
+[submodule "mn-samples-cc"]
+	path = mn-samples-cc
+	url = https://github.com/metanorma/mn-samples-cc
+	branch = gh-pages
