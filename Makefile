@@ -60,6 +60,7 @@ documents/%: sources/% | documents
 
 # This document is currently broken
 documents/itu-D-REC-D.19-201003-E.pdf:
+	echo "### skipping $@"
 
 documents/%.pdf: sources/%.xml mn2pdf.jar | documents
 	FILENAME=$<; \
