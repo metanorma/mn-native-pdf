@@ -86,14 +86,10 @@ bundle:
 documents.html: documents.rxl
 	bundle exec relaton xml2html documents.rxl
 
-#pdf_fonts_config.xml: pdf_fonts_config.xml.in
-#	MN_PDF_FONT_PATH=${MN_PDF_FONT_PATH}; \
-#	envsubst < pdf_fonts_config.xml.in > pdf_fonts_config.xml
-
 distclean: clean
 	rm -rf xalan
 	rm -f mn2pdf.jar
-#pdf_fonts_config.xml
+
 clean:
 	rm -f xslt/*
 	rm -rf documents
