@@ -58,13 +58,13 @@ documents:
 documents/%: sources/% | documents
 	cp $< $@
 
-documents/%.pdf: sources/%.xml pdf_fonts_config.xml mn2pdf.jar | documents
+documents/%.pdf: sources/%.xml mn2pdf.jar | documents
 	FILENAME=$<; \
 	OUTFILE=$@; \
 	MN_FLAVOR=$$(xmllint --xpath 'name(*)' $${FILENAME} | cut -d '-' -f 1); \
 	DOCTYPE=$$(xmllint --xpath "//*[local-name()='doctype']/text()" $${FILENAME}); \
 	XSLT_PATH=${XSLT_PATH_BASE}/$${MN_FLAVOR}.$${DOCTYPE}.xsl; \
-  java -jar mn2pdf.jar pdf_fonts_config.xml $$FILENAME $$XSLT_PATH $$OUTFILE
+  java -jar mn2pdf.jar ${MN_PDF_FONT_PATH} $$FILENAME $$XSLT_PATH $$OUTFILE
 
 xslt/%.xsl: xslt_src/%.core.xsl xslt_src/merge.xsl xalan/xalan.jar
 	XSLT_PATH_CORE=$<; \
@@ -86,16 +86,16 @@ bundle:
 documents.html: documents.rxl
 	bundle exec relaton xml2html documents.rxl
 
-pdf_fonts_config.xml: pdf_fonts_config.xml.in
-	MN_PDF_FONT_PATH=${MN_PDF_FONT_PATH}; \
-	envsubst < pdf_fonts_config.xml.in > pdf_fonts_config.xml
+#pdf_fonts_config.xml: pdf_fonts_config.xml.in
+#	MN_PDF_FONT_PATH=${MN_PDF_FONT_PATH}; \
+#	envsubst < pdf_fonts_config.xml.in > pdf_fonts_config.xml
 
 distclean: clean
 	rm -rf xalan
 	rm -f mn2pdf.jar
-
+#pdf_fonts_config.xml
 clean:
-	rm -f pdf_fonts_config.xml xslt/*
+	rm -f xslt/*
 	rm -rf documents
 
 update-init:
