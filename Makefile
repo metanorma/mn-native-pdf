@@ -6,7 +6,8 @@ SRC := $(patsubst mn-samples-iso/documents/%,sources/%,$(wildcard mn-samples-iso
 	$(patsubst mn-samples-itu/documents/%,sources/itu-%,$(wildcard mn-samples-itu/documents/*.xml)) \
 	$(patsubst mn-samples-iec/documents/%,sources/%,$(wildcard mn-samples-iec/documents/*.xml)) \
 	$(patsubst mn-samples-ogc/documents/%,sources/ogc-%,$(wildcard mn-samples-ogc/documents/*.xml)) \
-	$(patsubst mn-samples-un/documents/%,sources/un-%,$(wildcard mn-samples-un/documents/*.xml))
+	$(patsubst mn-samples-un/documents/%,sources/un-%,$(wildcard mn-samples-un/documents/*.xml)) \
+	$(patsubst mn-samples-cc/documents/%,sources/%,$(wildcard mn-samples-cc/documents/*.xml))
 PDF := $(patsubst sources/%,documents/%,$(patsubst %.xml,%.pdf,$(SRC)))
 HTML := $(patsubst sources/%,documents/%,$(patsubst %.xml,%.html,$(SRC)))
 DOC := $(patsubst sources/%,documents/%,$(patsubst %.xml,%.doc,$(SRC)))
@@ -25,7 +26,8 @@ XSLT_GENERATED := xslt/iec.international-standard.xsl \
 	xslt/ogc.user-guide.xsl \
 	xslt/ogc.test-suite.xsl \
 	xslt/un.plenary.xsl \
-	xslt/un.recommendation.xsl
+	xslt/un.recommendation.xsl \
+	xslt/csd.standard.xsl
 
 MN2PDF_DOWNLOAD_PATH := https://github.com/metanorma/mn2pdf/releases/download/v1.3/mn2pdf-1.3.jar
 
@@ -64,10 +66,13 @@ sources/un-%: mn-samples-un/documents/%
 sources/ogc-%: mn-samples-ogc/documents/%
 	cp $< $@
 
+sources/cc-%: mn-samples-cc/documents/cc-%
+	cp $< $@
+
 documents:
 	mkdir -p $@
 
-documents/%: sources/% | documents
+documents/%.xml: sources/%.xml | documents
 	cp $< $@
 
 # This document is currently broken
