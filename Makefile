@@ -33,10 +33,7 @@ xslts: $(XSLT_GENERATED)
 mn2pdf.jar:
 	curl -sSL ${MN2PDF_DOWNLOAD_PATH} -o mn2pdf.jar
 
-xalan:
-	mkdir -p $@
-
-xalan/xalan.jar: | xalan
+xalan/xalan.jar:
 	pushd xalan; \
 	TMPDIR=$$(mktemp -d); \
 	curl -sSL http://archive.apache.org/dist/xalan/xalan-j/binaries/xalan-j_2_7_2-bin-2jars.tar.gz -o $$TMPDIR/xalan.tar.gz; \

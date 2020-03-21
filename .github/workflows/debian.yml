@@ -36,19 +36,13 @@ jobs:
 
       - name: Update gems
         run: |
-          gem install bundler -v 2.0.2
+          gem install bundler
           bundle config build.nokogiri --use-system-libraries
           bundle install --jobs 4 --retry 3
 
       - name: Update submodules
         run: |
           make update-init update-modules
-
-      - name: Setup Xalan
-        run: |
-          curl -Ls http://us.mirrors.quenda.co/apache/xalan/xalan-j/binaries/xalan-j_2_7_2-bin.zip -o xalan-j.zip
-          unzip xalan-j.zip "*.jar"
-          mv xalan-j_2_7_2/*.jar $(pwd)
 
       - name: Compile output
         env:
