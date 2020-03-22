@@ -16,4 +16,4 @@
 	branch = gh-pages
 [submodule "mn-samples-ogc"]
 	path = mn-samples-ogc
-	url = git@github.com:metanorma/mn-samples-ogc.git
+	url = https://github.com/metanorma/mn-samples-ogc
