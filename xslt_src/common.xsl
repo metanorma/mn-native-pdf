@@ -1286,9 +1286,18 @@
 
 	<xsl:template name="add-zero-spaces-equal">
 		<xsl:param name="text" select="."/>
+		<xsl:variable name="zero-space-after-equals">==========</xsl:variable>
 		<xsl:variable name="zero-space-after-equal">=</xsl:variable>
 		<xsl:variable name="zero-space">&#x200B;</xsl:variable>
 		<xsl:choose>
+			<xsl:when test="contains($text, $zero-space-after-equals)">
+				<xsl:value-of select="substring-before($text, $zero-space-after-equals)"/>
+				<xsl:value-of select="$zero-space-after-equals"/>
+				<xsl:value-of select="$zero-space"/>
+				<xsl:call-template name="add-zero-spaces-equal">
+					<xsl:with-param name="text" select="substring-after($text, $zero-space-after-equals)"/>
+				</xsl:call-template>
+			</xsl:when>
 			<xsl:when test="contains($text, $zero-space-after-equal)">
 				<xsl:value-of select="substring-before($text, $zero-space-after-equal)"/>
 				<xsl:value-of select="$zero-space-after-equal"/>
