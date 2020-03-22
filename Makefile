@@ -69,6 +69,12 @@ documents:
 documents/%.html:
 	echo "### skipping $@"
 
+documents/%.doc:
+	echo "### skipping $@"
+
+documents/%.rxl:
+	echo "### skipping $@"
+
 documents/%.xml: sources/%.xml | documents
 	cp $< $@
 
