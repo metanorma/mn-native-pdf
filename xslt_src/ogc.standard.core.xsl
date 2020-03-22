@@ -20,6 +20,7 @@
 		<xsl:value-of select="/ogc:ogc-standard/ogc:bibdata/ogc:contributor/ogc:organization/ogc:name"/>
 	</xsl:variable>
 	
+	<xsl:variable name="doctitle" select="/ogc:ogc-standard/ogc:bibdata/ogc:title[@language = 'en']"/>
 
 	<xsl:variable name="doctype">
 		<xsl:call-template name="capitalizeWords">
@@ -101,6 +102,7 @@
 	</xsl:variable>
 	
 	<xsl:template match="/">
+		<xsl:message>INFO: Document namespace: '<xsl:value-of select="namespace-uri(/*)"/>'</xsl:message>
 		<fo:root xmlns:fo="http://www.w3.org/1999/XSL/Format" font-family="Times New Roman, Cambria Math, HanSans" font-size="10.5pt" xml:lang="{$lang}">
 			<fo:layout-master-set>
 				<!-- Cover page -->
@@ -180,7 +182,16 @@
 					<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
 						<rdf:Description rdf:about="" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:pdf="http://ns.adobe.com/pdf/1.3/">
 						<!-- Dublin Core properties go here -->
-							<dc:title><xsl:value-of select="/ogc:ogc-standard/ogc:bibdata/ogc:title[@language = 'en']"/></dc:title>
+							<dc:title>
+								<xsl:choose>
+									<xsl:when test="$doctitle != ''">
+										<xsl:value-of select="$doctitle"/>
+									</xsl:when>
+									<xsl:otherwise>
+										<xsl:text>&#xA0;</xsl:text>
+									</xsl:otherwise>
+								</xsl:choose>
+							</dc:title>
 							<dc:creator></dc:creator>
 							<dc:description>
 								<xsl:variable name="abstract">
@@ -282,7 +293,7 @@
 						</fo:block>
 					</fo:block>
 					<fo:block font-size="24pt" font-weight="bold" text-align="center" margin-top="15pt" line-height="115%">
-						<xsl:text>OGC </xsl:text><xsl:value-of select="/ogc:ogc-standard/ogc:bibdata/ogc:title[@language = 'en']" />
+						<xsl:text>OGC </xsl:text><xsl:value-of select="$doctitle" />
 					</fo:block>
 					<fo:block margin-bottom="12pt">&#xA0;</fo:block>
 					<!-- Copyright notice -->
@@ -343,7 +354,7 @@
 				<fo:flow flow-name="xsl-region-body">
 					<xsl:text disable-output-escaping="yes">&lt;!--</xsl:text>
 						DEBUG
-						contents=<xsl:copy-of select="xalan:nodeset($contents)"/> 
+						contents=<!-- <xsl:copy-of select="xalan:nodeset($contents)"/> --> 
 					<xsl:text disable-output-escaping="yes">--&gt;</xsl:text>
 					
 					<xsl:apply-templates select="/ogc:ogc-standard/ogc:boilerplate/ogc:license-statement"/>
@@ -486,7 +497,7 @@
 				</xsl:call-template>
 				<fo:flow flow-name="xsl-region-body">
 					<fo:block font-size="16pt" font-weight="bold" margin-bottom="18pt">
-						<xsl:value-of select="/ogc:ogc-standard/ogc:bibdata/ogc:title[@language = 'en']"/>
+						<xsl:value-of select="$doctitle"/>
 					</fo:block>
 					
 					<fo:block line-height="125%">
