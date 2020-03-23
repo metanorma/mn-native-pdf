@@ -1,3 +1,5 @@
 .DS_Store
 pdf_fonts_config.xml
 mn2pdf.jar
+xslt/*.xsl
+xalan/*.jar
