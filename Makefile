@@ -29,12 +29,6 @@ XSLT_GENERATED := xslt/iec.international-standard.xsl \
 
 MN2PDF_DOWNLOAD_PATH := https://github.com/metanorma/mn2pdf/releases/download/v1.4/mn2pdf-1.4.jar
 
-#ifdef MN_PDF_FONT_PATH
-#	MN_PDF_FONT_PATH := $(MN_PDF_FONT_PATH)
-#else
-#	MN_PDF_FONT_PATH := $(pwd)/fonts
-#endif
-
 all: xslts documents.html
 
 xslts: $(XSLT_GENERATED)

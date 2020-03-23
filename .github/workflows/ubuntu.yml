@@ -45,8 +45,6 @@ jobs:
           make update-init update-modules
 
       - name: Compile output
-        #env:
-        #  MN_PDF_FONT_PATH: /usr/share/fonts/
         run: |
           make all published
 
