@@ -72,14 +72,14 @@ sources/cc-%: mn-samples-cc/documents/cc-%
 documents:
 	mkdir -p $@
 
-documents/%.html:
-	echo "### skipping $@"
+documents/%.html: sources/%.html | documents
+	cp $< $@
 
-documents/%.doc:
-	echo "### skipping $@"
+documents/%.doc: sources/%.doc | documents
+	cp $< $@
 
-documents/%.rxl:
-	echo "### skipping $@"
+documents/%.rxl: sources/%.rxl | documents
+	cp $< $@
 
 documents/%.xml: sources/%.xml | documents
 	cp $< $@
