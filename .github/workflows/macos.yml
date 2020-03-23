@@ -38,8 +38,6 @@ jobs:
 
       - name: Install Microsoft Vista fonts
         run: |
-          export MN_PDF_FONT_PATH=${GITHUB_WORKSPACE}/fonts
-          export MS_FONT_PATH=${MN_PDF_FONT_PATH}/truetype/vista
           export RENAME_FONTS=false
           curl -Ls https://raw.githubusercontent.com/metanorma/vista-fonts-installer/master/vista-fonts-installer.sh | bash
 
@@ -49,9 +47,6 @@ jobs:
 
       - name: Compile output
         run: |
-          export MN_PDF_FONT_PATH=${GITHUB_WORKSPACE}/fonts
-
-          ls -alR ${MN_PDF_FONT_PATH}
           make all
           mv documents published
 

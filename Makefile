@@ -27,13 +27,7 @@ XSLT_GENERATED := xslt/iec.international-standard.xsl \
 	xslt/un.plenary.xsl \
 	xslt/un.recommendation.xsl
 
-MN2PDF_DOWNLOAD_PATH := https://github.com/metanorma/mn2pdf/releases/download/v1.3/mn2pdf-1.3.jar
-
-ifdef MN_PDF_FONT_PATH
-	MN_PDF_FONT_PATH := $(MN_PDF_FONT_PATH)
-else
-	MN_PDF_FONT_PATH := $(pwd)/fonts
-endif
+MN2PDF_DOWNLOAD_PATH := https://github.com/metanorma/mn2pdf/releases/download/v1.4/mn2pdf-1.4.jar
 
 all: xslts documents.html
 
@@ -89,7 +83,7 @@ documents/%.pdf: sources/%.xml mn2pdf.jar | documents
 	MN_FLAVOR=$$(xmllint --xpath 'name(*)' $${FILENAME} | cut -d '-' -f 1); \
 	DOCTYPE=$$(xmllint --xpath "//*[local-name()='doctype']/text()" $${FILENAME}); \
 	XSLT_PATH=${XSLT_PATH_BASE}/$${MN_FLAVOR}.$${DOCTYPE}.xsl; \
-  java -jar mn2pdf.jar ${MN_PDF_FONT_PATH} $$FILENAME $$XSLT_PATH $$OUTFILE
+  java -jar mn2pdf.jar --xml-file $$FILENAME --xsl-file $$XSLT_PATH --pdf-file $$OUTFILE
 
 xslt/%.xsl: xslt_src/%.core.xsl xslt_src/merge.xsl xalan/xalan.jar
 	XSLT_PATH_CORE=$<; \
