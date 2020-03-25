@@ -16,7 +16,10 @@ jobs:
           java-version: 1.8
 
       - name: Setup prerequisites
-        run: choco install --no-progress make gnuwin32-coreutils.install curl xsltproc
+        run: |
+          choco install --no-progress make gnuwin32-coreutils.install curl xsltproc unzip
+          make --version
+          curl --version
 
       - uses: actions/checkout@master
 
@@ -28,14 +31,14 @@ jobs:
 
       - name: Update submodules
         run: |
-          make update-init update-modules
+          make -f Makefile.win update-init update-modules
 
       - name: Build
         run: |
-          make all SHELL=cmd
+          make -f Makefile.win all
 
       - name: Run tests
         env:
           MN_PDF_FONT_PATH: C:\Windows\Fonts
         run: |
-          make test SHELL=cmd
+          make -f Makefile.win test

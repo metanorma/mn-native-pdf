@@ -1,0 +1,139 @@
+#!make
+SHELL := cmd
+SRCDIR := sources
+DESTDIR := documents
+SRC := $(patsubst mn-samples-iso/documents/%,sources/%,$(wildcard mn-samples-iso/documents/*.xml)) \
+	$(patsubst mn-samples-itu/documents/%,sources/itu-%,$(wildcard mn-samples-itu/documents/*.xml)) \
+	$(patsubst mn-samples-iec/documents/%,sources/%,$(wildcard mn-samples-iec/documents/*.xml)) \
+	$(patsubst mn-samples-ogc/documents/%,sources/ogc-%,$(wildcard mn-samples-ogc/documents/*.xml)) \
+	$(patsubst mn-samples-un/documents/%,sources/un-%,$(wildcard mn-samples-un/documents/*.xml)) \
+	$(patsubst mn-samples-cc/documents/%,sources/%,$(wildcard mn-samples-cc/documents/*.xml))
+PDF := $(patsubst sources/%,documents/%,$(patsubst %.xml,%.pdf,$(SRC)))
+HTML := $(patsubst sources/%,documents/%,$(patsubst %.xml,%.html,$(SRC)))
+DOC := $(patsubst sources/%,documents/%,$(patsubst %.xml,%.doc,$(SRC)))
+RXL := $(patsubst sources/%,documents/%,$(patsubst %.xml,%.rxl,$(SRC)))
+XSLT_PATH_BASE := ${CURDIR}/xslt
+XSLT_GENERATED := xslt/iec.international-standard.xsl \
+	xslt/iso.international-standard.xsl \
+	xslt/itu.recommendation.xsl \
+	xslt/itu.resolution.xsl \
+	xslt/ogc.community-standard.xsl \
+	xslt/ogc.engineering-report.xsl \
+	xslt/ogc.policy.xsl \
+	xslt/ogc.reference-model.xsl \
+	xslt/ogc.release-notes.xsl \
+	xslt/ogc.standard.xsl \
+	xslt/ogc.user-guide.xsl \
+	xslt/ogc.test-suite.xsl \
+	xslt/un.plenary.xsl \
+	xslt/un.recommendation.xsl \
+	xslt/csd.standard.xsl
+
+MN2PDF_DOWNLOAD_PATH := https://github.com/metanorma/mn2pdf/releases/download/v1.4/mn2pdf-1.4.jar
+
+all: xslts documents.html
+
+xslts: $(XSLT_GENERATED)
+
+mn2pdf.jar:
+	curl -sSL ${MN2PDF_DOWNLOAD_PATH} -o mn2pdf.jar
+
+xalan/xalan.jar:
+	curl -sSL http://archive.apache.org/dist/xalan/xalan-j/binaries/xalan-j_2_7_2-bin-2jars.zip -o $(TMP)/xalan.zip
+	unzip -p $(TMP)/xalan.zip xalan-j_2_7_2/serializer.jar > xalan\serializer.jar
+	unzip -p $(TMP)/xalan.zip xalan-j_2_7_2/xalan.jar > xalan\xalan.jar
+	unzip -p $(TMP)/xalan.zip xalan-j_2_7_2/xercesImpl.jar > xalan\xercesImpl.jar
+	unzip -p $(TMP)/xalan.zip xalan-j_2_7_2/xml-apis.jar > xalan\xml-apis.jar
+	unzip -p $(TMP)/xalan.zip xalan-j_2_7_2/xsltc.jar > xalan\xsltc.jar
+
+sources/iso-%: mn-samples-iso/documents/iso-%
+	cp $< $@
+
+sources/iec-%: mn-samples-iec/documents/iec-%
+	cp $< $@
+
+sources/itu-%: mn-samples-itu/documents/%
+	cp $< $@
+
+sources/un-%: mn-samples-un/documents/%
+	cp $< $@
+
+sources/ogc-%: mn-samples-ogc/documents/%
+	cp $< $@
+
+sources/cc-%: mn-samples-cc/documents/cc-%
+	cp $< $@
+
+documents:
+	mkdir -p $@
+
+documents/%.html: sources/%.html | documents
+	cp $< $@
+
+documents/%.doc: sources/%.doc | documents
+	cp $< $@
+
+documents/%.rxl: sources/%.rxl | documents
+	cp $< $@
+
+documents/%.xml: sources/%.xml | documents
+	cp $< $@
+
+# This document is currently broken
+documents/itu-D-REC-D.19-201003-E.pdf:
+	echo "### skipping $@"
+
+documents/itu-T-Editing-Guidelines-201602.pdf:
+	echo "### skipping $@"
+
+documents/itu-T-REC-A.8-200810-I!!MSW-E.pdf:
+	echo "### skipping $@"
+
+documents/itu-Z.100-201811-AnnF1.pdf:
+	echo "### skipping $@"
+
+documents/%.pdf: sources/%.xml mn2pdf.jar | documents
+	xmllint --xpath "name(*)" $< | cut -d "-" -f 1 > MN_FLAVOR.txt
+	xmllint --xpath "//*[local-name()='doctype']/text()" $< > DOCTYPE.txt
+	cmd /V /C "set /p MN_FLAVOR=<MN_FLAVOR.txt & set /p DOCTYPE=<DOCTYPE.txt & java -jar mn2pdf.jar --xml-file $< --xsl-file ${XSLT_PATH_BASE}/!MN_FLAVOR!.!DOCTYPE!.xsl --pdf-file $@"
+
+xslt/%.xsl: xslt_src/%.core.xsl xslt_src/merge.xsl xalan/xalan.jar
+	java -jar xalan/xalan.jar -IN $< -XSL xslt_src/merge.xsl -OUT $@
+	echo -----
+	cat $(subst /,\,$@)
+	echo -----
+
+documents.rxl: $(HTML) $(DOC) $(RXL) $(PDF) | bundle
+	bundle exec relaton concatenate \
+	  -t "mn2pdf samples" \
+		-g "Metanorma" \
+		documents $@
+
+bundle:
+	bundle
+
+documents.html: documents.rxl
+	bundle exec relaton xml2html documents.rxl
+
+distclean: clean
+	rm -rf xalan
+	rm -f mn2pdf.jar
+
+clean:
+	rm -f xslt/*
+	rm -rf documents
+
+update-init:
+	git submodule update --init
+
+update-modules:
+	git submodule foreach git pull origin gh-pages
+
+publish: published
+published: documents.html
+	mkdir -p published & \
+	cp -a documents $@/ & \
+	cp $< published/index.html
+	if exist "images" ( cp -a images published )
+
+.PHONY: all clean update-init update-modules bundle publish xslts
