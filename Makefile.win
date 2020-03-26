@@ -131,8 +131,8 @@ update-modules:
 
 publish: published
 published: documents.html
-	mkdir -p published & \
-	cp -a documents $@/ & \
+	md published
+	cp -a documents $@/
 	cp $< published/index.html
 	if exist "images" ( cp -a images published )
 

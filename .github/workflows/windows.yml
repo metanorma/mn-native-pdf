@@ -17,11 +17,20 @@ jobs:
 
       - name: Setup prerequisites
         run: |
-          choco install --no-progress make gnuwin32-coreutils.install curl xsltproc unzip
+          choco install --no-progress make gnuwin32-coreutils.install curl xsltproc unzip grep
           make --version
           curl --version
 
       - uses: actions/checkout@master
+
+      - name: Fix soft links
+        shell: pwsh
+        run: |
+          git ls-files -s xslt_src | grep "^12" | cut -f2 | % {
+            $linkPath = Resolve-Path -Path $_
+            $targetFileName = Join-Path -Path $(Split-Path -Path $linkPath -Parent) -ChildPath $(Get-Content $linkPath -Raw)
+            Copy-Item $targetFileName -Destination $linkPath
+          }
 
       - name: Update gems
         run: |
@@ -35,10 +44,9 @@ jobs:
 
       - name: Build
         run: |
-          make -f Makefile.win all
+          make -f Makefile.win all published
 
-      - name: Run tests
-        env:
-          MN_PDF_FONT_PATH: C:\Windows\Fonts
-        run: |
-          make -f Makefile.win test
+      - uses: actions/upload-artifact@master
+        with:
+          name: published-windows
+          path: published
