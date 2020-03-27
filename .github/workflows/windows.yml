@@ -40,11 +40,11 @@ jobs:
 
       - name: Update submodules
         run: |
-          make -f Makefile.win update-init update-modules
+          make update-init update-modules
 
       - name: Build
         run: |
-          make -f Makefile.win all published
+          make all published
 
       - uses: actions/upload-artifact@master
         with:

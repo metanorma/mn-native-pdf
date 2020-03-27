@@ -1,5 +1,9 @@
 #!make
+ifeq ($(OS),Windows_NT)
+SHELL := cmd
+else
 SHELL := /bin/bash
+endif
 SRCDIR := sources
 DESTDIR := documents
 SRC := $(patsubst mn-samples-iso/documents/%,sources/%,$(wildcard mn-samples-iso/documents/*.xml)) \
@@ -12,7 +16,7 @@ PDF := $(patsubst sources/%,documents/%,$(patsubst %.xml,%.pdf,$(SRC)))
 HTML := $(patsubst sources/%,documents/%,$(patsubst %.xml,%.html,$(SRC)))
 DOC := $(patsubst sources/%,documents/%,$(patsubst %.xml,%.doc,$(SRC)))
 RXL := $(patsubst sources/%,documents/%,$(patsubst %.xml,%.rxl,$(SRC)))
-XSLT_PATH_BASE := $(shell pwd)/xslt
+XSLT_PATH_BASE := ${CURDIR}/xslt
 XSLT_GENERATED := xslt/iec.international-standard.xsl \
 	xslt/iso.international-standard.xsl \
 	xslt/itu.recommendation.xsl \
@@ -39,11 +43,20 @@ mn2pdf.jar:
 	curl -sSL ${MN2PDF_DOWNLOAD_PATH} -o mn2pdf.jar
 
 xalan/xalan.jar:
+ifeq ($(OS),Windows_NT)
+	curl -sSL http://archive.apache.org/dist/xalan/xalan-j/binaries/xalan-j_2_7_2-bin-2jars.zip -o $(TMP)/xalan.zip
+	unzip -p $(TMP)/xalan.zip xalan-j_2_7_2/serializer.jar > xalan\serializer.jar
+	unzip -p $(TMP)/xalan.zip xalan-j_2_7_2/xalan.jar > xalan\xalan.jar
+	unzip -p $(TMP)/xalan.zip xalan-j_2_7_2/xercesImpl.jar > xalan\xercesImpl.jar
+	unzip -p $(TMP)/xalan.zip xalan-j_2_7_2/xml-apis.jar > xalan\xml-apis.jar
+	unzip -p $(TMP)/xalan.zip xalan-j_2_7_2/xsltc.jar > xalan\xsltc.jar
+else
 	pushd xalan; \
 	TMPDIR=$$(mktemp -d); \
 	curl -sSL http://archive.apache.org/dist/xalan/xalan-j/binaries/xalan-j_2_7_2-bin-2jars.tar.gz -o $$TMPDIR/xalan.tar.gz; \
 	tar xz --strip-components=1 -f $$TMPDIR/xalan.tar.gz xalan-j_2_7_2/{serializer,xalan,xercesImpl,xml-apis,xsltc}.jar; \
 	popd
+endif
 
 sources/iso-%: mn-samples-iso/documents/iso-%
 	cp $< $@
@@ -92,17 +105,20 @@ documents/itu-Z.100-201811-AnnF1.pdf:
 	echo "### skipping $@"
 
 documents/%.pdf: sources/%.xml mn2pdf.jar | documents
+ifeq ($(OS),Windows_NT)
+	xmllint --xpath "name(*)" $< | cut -d "-" -f 1 > MN_FLAVOR.txt
+	xmllint --xpath "//*[local-name()='doctype']/text()" $< > DOCTYPE.txt
+	cmd /V /C "set /p MN_FLAVOR=<MN_FLAVOR.txt & set /p DOCTYPE=<DOCTYPE.txt & java -jar mn2pdf.jar --xml-file $< --xsl-file ${XSLT_PATH_BASE}/!MN_FLAVOR!.!DOCTYPE!.xsl --pdf-file $@"
+else
 	FILENAME=$<; \
-	OUTFILE=$@; \
 	MN_FLAVOR=$$(xmllint --xpath 'name(*)' $${FILENAME} | cut -d '-' -f 1); \
 	DOCTYPE=$$(xmllint --xpath "//*[local-name()='doctype']/text()" $${FILENAME}); \
 	XSLT_PATH=${XSLT_PATH_BASE}/$${MN_FLAVOR}.$${DOCTYPE}.xsl; \
-	java -jar mn2pdf.jar --xml-file $$FILENAME --xsl-file $$XSLT_PATH --pdf-file $$OUTFILE
+	java -jar mn2pdf.jar --xml-file $$FILENAME --xsl-file $$XSLT_PATH --pdf-file $@
+endif
 
 xslt/%.xsl: xslt_src/%.core.xsl xslt_src/merge.xsl xalan/xalan.jar
-	XSLT_PATH_CORE=$<; \
-	XSLT_PATH_MERGE=xslt_src/merge.xsl; \
-	java -jar xalan/xalan.jar -IN $$XSLT_PATH_CORE -XSL $$XSLT_PATH_MERGE -OUT $@
+	java -jar xalan/xalan.jar -IN $< -XSL xslt_src/merge.xsl -OUT $@
 
 documents.rxl: $(HTML) $(DOC) $(RXL) $(PDF) | bundle
 	bundle exec relaton concatenate \
@@ -132,9 +148,13 @@ update-modules:
 
 publish: published
 published: documents.html
-	mkdir -p published && \
+	mkdir published && \
 	cp -a documents $@/ && \
-	cp $< published/index.html; \
+	cp $< published/index.html
+ifeq ($(OS),Windows_NT)
+	if exist "images" ( cp -a images published )
+else
 	if [ -d "images" ]; then cp -a images published; fi
+endif
 
 .PHONY: all clean update-init update-modules bundle publish xslts
