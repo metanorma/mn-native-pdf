@@ -174,8 +174,9 @@
 						</xsl:if>
 					</fo:block>
 				</xsl:if>
-				
-				<xsl:call-template name="fn_name_display"/>
+				<xsl:if test="$namespace = 'iso' or $namespace = 'iec' or $namespace = 'itu' or  $namespace = 'unece-rec' or $namespace = 'unece' or $namespace = 'csd' or $namespace = 'ogc'">
+					<xsl:call-template name="fn_name_display"/>
+				</xsl:if>
 			</xsl:otherwise>
 		</xsl:choose>
 		
