@@ -551,14 +551,7 @@
 		<xsl:param name="sectionNum"/>
 		<!-- sectionNum=<xsl:value-of select="$sectionNum"/> -->
 		<xsl:variable name="id">
-			<xsl:choose>
-				<xsl:when test="../@id">
-					<xsl:value-of select="../@id"/>
-				</xsl:when>
-				<xsl:otherwise>
-					<xsl:value-of select="text()"/>
-				</xsl:otherwise>
-			</xsl:choose>
+			<xsl:call-template name="getId"/>
 		</xsl:variable>
 		
 		<xsl:variable name="level">
@@ -1000,14 +993,7 @@
 	<xsl:template match="itu:title">
 		<xsl:param name="sectionNum"/>
 		<xsl:variable name="id">
-			<xsl:choose>
-				<xsl:when test="../@id">
-					<xsl:value-of select="../@id"/>
-				</xsl:when>
-				<xsl:otherwise>
-					<xsl:value-of select="text()"/>
-				</xsl:otherwise>
-			</xsl:choose>
+			<xsl:call-template name="getId"/>
 		</xsl:variable>
 		
 		<xsl:variable name="parent-name"  select="local-name(..)"/>
@@ -2291,6 +2277,17 @@
 				<xsl:with-param name="text" select="substring($text, 2)"/>
 			</xsl:call-template>
 		</xsl:if>
+	</xsl:template>
+
+	<xsl:template name="getId">
+		<xsl:choose>
+			<xsl:when test="../@id">
+				<xsl:value-of select="../@id"/>
+			</xsl:when>
+			<xsl:otherwise>
+				<xsl:value-of select="concat(local-name(..), '_', text())"/>
+			</xsl:otherwise>
+		</xsl:choose>
 	</xsl:template>
 	
 </xsl:stylesheet>
