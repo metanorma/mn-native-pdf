@@ -138,14 +138,15 @@ distclean: clean
 	rm -f mn2pdf.jar
 
 clean:
-	rm -f xslt/*
+	rm -f $(XSLT_GENERATED)
 	rm -rf documents
 
 update-init:
 	git submodule update --init
 
 update-modules:
-	git submodule foreach git pull origin gh-pages
+	git submodule foreach git fetch origin gh-pages; \
+	git submodule foreach git reset --hard origin/gh-pages
 
 publish: published
 published: documents.html
