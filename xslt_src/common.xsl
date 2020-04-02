@@ -103,7 +103,9 @@
 						</xsl:if>
 						<xsl:if test="$namespace = 'unece'">
 							<xsl:attribute name="font-weight">normal</xsl:attribute>
-							<xsl:attribute name="font-size">11pt</xsl:attribute>
+							<xsl:attribute name="font-style">italic</xsl:attribute>
+							<xsl:attribute name="font-size">10pt</xsl:attribute>
+							<xsl:attribute name="text-align">left</xsl:attribute>
 						</xsl:if>
 						<xsl:if test="$namespace = 'ogc'">
 							<xsl:attribute name="font-weight">normal</xsl:attribute>
@@ -167,7 +169,8 @@
 						</xsl:choose>
 						<xsl:if test="*[local-name()='name']">
 							<xsl:if test="$namespace = 'unece-rec'"><xsl:text>. </xsl:text></xsl:if>
-							<xsl:if test="$namespace = 'iso' or $namespace = 'iec' or $namespace = 'itu' or  $namespace = 'nist' or $namespace = 'unece' or $namespace = 'csd' or $namespace = 'ogc'">
+							<xsl:if test="$namespace = 'unece'">: </xsl:if>
+							<xsl:if test="$namespace = 'iso' or $namespace = 'iec' or $namespace = 'itu' or  $namespace = 'nist' or $namespace = 'csd' or $namespace = 'ogc'">
 								<xsl:text> — </xsl:text>
 							</xsl:if>
 							<xsl:apply-templates select="*[local-name()='name']" mode="process"/>
@@ -229,8 +232,11 @@
 			<xsl:if test="$namespace = 'itu' or $namespace = 'nist'">
 				<xsl:attribute name="space-after">6pt</xsl:attribute>
 			</xsl:if>
-			<xsl:if test="$namespace = 'unece' or $namespace = 'unece-rec'">
+			<xsl:if test="$namespace = 'unece-rec'">
 				<xsl:attribute name="space-after">12pt</xsl:attribute>
+			</xsl:if>
+			<xsl:if test="$namespace = 'unece'">
+				<xsl:attribute name="space-after">18pt</xsl:attribute>
 			</xsl:if>
 			<xsl:if test="$namespace = 'itu'">
 				<xsl:attribute name="margin-left">0mm</xsl:attribute>
@@ -274,7 +280,11 @@
 						<xsl:attribute name="font-size">10pt</xsl:attribute>
 					</xsl:if>
 				</xsl:if>
-				<xsl:if test="$namespace = 'iso' or $namespace = 'iec' or $namespace = 'itu' or $namespace = 'unece' or $namespace = 'csd' or $namespace = 'ogc'">
+				<xsl:if test="$namespace = 'unece'">
+					<xsl:attribute name="border-top">0.5pt solid black</xsl:attribute>
+					<xsl:attribute name="font-size">8pt</xsl:attribute>
+				</xsl:if>
+				<xsl:if test="$namespace = 'iso' or $namespace = 'iec' or $namespace = 'itu' or $namespace = 'csd' or $namespace = 'ogc'">
 					<xsl:attribute name="font-size">10pt</xsl:attribute>
 				</xsl:if>
 				
@@ -504,6 +514,11 @@
 						<xsl:attribute name="border-right">solid black 1pt</xsl:attribute>
 					</xsl:if>
 				</xsl:if>
+				<xsl:if test="$namespace = 'unece'">
+					<xsl:if test="not(*[local-name()='th'])">
+						<xsl:attribute name="min-height">8mm</xsl:attribute>
+					</xsl:if>
+				</xsl:if>
 			<xsl:apply-templates />
 		</fo:table-row>
 	</xsl:template>
@@ -543,6 +558,16 @@
 					</xsl:if>
 				</xsl:if>
 			</xsl:if>
+			<xsl:if test="$namespace = 'unece'">
+				<xsl:attribute name="display-align">center</xsl:attribute>
+				<xsl:attribute name="font-style">italic</xsl:attribute>
+				<xsl:attribute name="font-weight">normal</xsl:attribute>
+				<xsl:attribute name="padding-top">2mm</xsl:attribute>
+				<xsl:attribute name="padding-left">2mm</xsl:attribute>
+				<xsl:attribute name="border">solid black 0pt</xsl:attribute>
+				<xsl:attribute name="border-top">solid black 0.2pt</xsl:attribute>
+				<xsl:attribute name="border-bottom">solid black 1.5pt</xsl:attribute>
+			</xsl:if>
 			<xsl:if test="@colspan">
 				<xsl:attribute name="number-columns-spanned">
 					<xsl:value-of select="@colspan"/>
@@ -581,6 +606,14 @@
 					<xsl:attribute name="border">solid black 0pt</xsl:attribute>
 					<xsl:attribute name="padding-top">1mm</xsl:attribute>
 				</xsl:if>
+			</xsl:if>
+			<xsl:if test="$namespace = 'unece'">
+				<xsl:attribute name="display-align">before</xsl:attribute>
+				<xsl:attribute name="padding-left">0mm</xsl:attribute>
+				<xsl:attribute name="padding-top">2mm</xsl:attribute>
+				<xsl:attribute name="padding-bottom">1mm</xsl:attribute>
+				<xsl:attribute name="border">solid black 0pt</xsl:attribute>
+				<xsl:attribute name="border-bottom">solid black 1.5pt</xsl:attribute>
 			</xsl:if>
 			<xsl:if test="$namespace = 'nist'">
 				<xsl:if test="ancestor::*[local-name()='thead']">
