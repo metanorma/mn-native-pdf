@@ -34,7 +34,7 @@ XSLT_GENERATED := xslt/iec.international-standard.xsl \
 	xslt/un.recommendation.xsl \
 	xslt/csd.standard.xsl
 
-MN2PDF_DOWNLOAD_PATH := https://github.com/metanorma/mn2pdf/releases/download/v1.5/mn2pdf-1.5.jar
+MN2PDF_DOWNLOAD_PATH := https://github.com/metanorma/mn2pdf/releases/download/v1.6/mn2pdf-1.6.jar
 
 all: xslts documents.html
 
