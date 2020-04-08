@@ -30,6 +30,7 @@
 	<xsl:variable name="stage-name">
 		<xsl:choose>
 			<xsl:when test="$stage = 50 and $substage = 0">final-draft</xsl:when>
+			<xsl:when test="$stage = 60 and $substage = 0">proof</xsl:when>
 			<xsl:otherwise></xsl:otherwise>
 		</xsl:choose>
 	</xsl:variable>
@@ -53,12 +54,12 @@
 	
 	<xsl:variable name="document-master-reference">
 		<xsl:choose>
-			<xsl:when test="$stage-name = 'final-draft'">-publishedISO</xsl:when>
+			<xsl:when test="$stage-name != ''">-publishedISO</xsl:when>
 			<xsl:otherwise></xsl:otherwise>
 		</xsl:choose>
 	</xsl:variable>
 	
-	
+	<xsl:variable name="proof-text">PROOF/ÉPREUVE</xsl:variable>
 	<!-- Example:
 		<item level="1" id="Foreword" display="true">Foreword</item>
 		<item id="term-script" display="false">3.2</item>
@@ -246,7 +247,7 @@
 			
 			<!-- cover page -->
 			<xsl:choose>
-				<xsl:when test="$stage-name = 'final-draft'">
+				<xsl:when test="$stage-name != ''">
 					<fo:page-sequence master-reference="cover-page-publishedISO" force-page-count="no-force">
 						<fo:static-content flow-name="cover-page-footer" font-size="10pt">
 							<fo:table table-layout="fixed" width="100%">
@@ -256,22 +257,26 @@
 								<fo:table-body>
 									<fo:table-row>
 										<fo:table-cell font-size="6.5pt" text-align="justify" display-align="before">
-											<fo:block margin-top="-8mm" margin-bottom="1.5mm">
-												<xsl:text>RECIPIENTS OF THIS DRAFT ARE INVITED TO
-																	SUBMIT, WITH THEIR COMMENTS, NOTIFICATION
-																	OF ANY RELEVANT PATENT RIGHTS OF WHICH
-																	THEY ARE AWARE AND TO PROVIDE SUPPORTING
-																	DOCUMENTATION.</xsl:text>
-											</fo:block>
 											<fo:block>
-												<xsl:text>IN ADDITION TO THEIR EVALUATION AS
-														BEING ACCEPTABLE FOR INDUSTRIAL, TECHNOLOGICAL,
-														COMMERCIAL AND USER PURPOSES,
-														DRAFT INTERNATIONAL STANDARDS MAY ON
-														OCCASION HAVE TO BE CONSIDERED IN THE
-														LIGHT OF THEIR POTENTIAL TO BECOME STANDARDS
-														TO WHICH REFERENCE MAY BE MADE IN
-														NATIONAL REGULATIONS.</xsl:text>
+												<xsl:if test="$stage-name = 'final-draft'">
+													<fo:block margin-top="-8mm" margin-bottom="1.5mm">
+														<xsl:text>RECIPIENTS OF THIS DRAFT ARE INVITED TO
+																			SUBMIT, WITH THEIR COMMENTS, NOTIFICATION
+																			OF ANY RELEVANT PATENT RIGHTS OF WHICH
+																			THEY ARE AWARE AND TO PROVIDE SUPPORTING
+																			DOCUMENTATION.</xsl:text>
+													</fo:block>
+													<fo:block>
+														<xsl:text>IN ADDITION TO THEIR EVALUATION AS
+																BEING ACCEPTABLE FOR INDUSTRIAL, TECHNOLOGICAL,
+																COMMERCIAL AND USER PURPOSES,
+																DRAFT INTERNATIONAL STANDARDS MAY ON
+																OCCASION HAVE TO BE CONSIDERED IN THE
+																LIGHT OF THEIR POTENTIAL TO BECOME STANDARDS
+																TO WHICH REFERENCE MAY BE MADE IN
+																NATIONAL REGULATIONS.</xsl:text>
+													</fo:block>
+												</xsl:if>
 											</fo:block>
 										</fo:table-cell>
 										<fo:table-cell>
@@ -314,10 +319,12 @@
 									<fo:table-column column-width="67.5mm"/>
 									<fo:table-column column-width="45.5mm"/>
 									<fo:table-body>
-										<fo:table-row height="72mm">
+										<fo:table-row>
 											<fo:table-cell>
 												<fo:block font-size="18pt">
-													FINAL<xsl:value-of select="$linebreak"/>DRAFT
+													<xsl:if test="$stage-name = 'final-draft'">
+														FINAL<xsl:value-of select="$linebreak"/>DRAFT
+													</xsl:if>
 												</fo:block>
 											</fo:table-cell>
 											<fo:table-cell>
@@ -332,21 +339,24 @@
 												</fo:block>
 											</fo:table-cell>
 										</fo:table-row>
-										<!-- <fo:table-row>
+										<fo:table-row height="42mm">
 											<fo:table-cell number-columns-spanned="3" font-size="10pt" line-height="1.2">
 												<fo:block text-align="right">
 													<xsl:variable name="edition" select="/iso:iso-standard/iso:bibdata/iso:edition"/>
-													<xsl:choose>
-														<xsl:when test="$edition = 1">First</xsl:when>
-														<xsl:when test="$edition = 2">Second</xsl:when>
-														<xsl:when test="$edition = 3">Third</xsl:when>
-														<xsl:otherwise><xsl:value-of select="$edition"/></xsl:otherwise>
-													</xsl:choose>
-													<xsl:text> edition</xsl:text>
-													<xsl:value-of select="$linebreak"/>
-													<xsl:value-of select="/iso:iso-standard/iso:bibdata/iso:version/iso:revision-date"/></fo:block>
+													<xsl:if test="$stage-name = 'proof'">
+														<xsl:choose>
+															<xsl:when test="$edition = 1">First</xsl:when>
+															<xsl:when test="$edition = 2">Second</xsl:when>
+															<xsl:when test="$edition = 3">Third</xsl:when>
+															<xsl:otherwise><xsl:value-of select="$edition"/></xsl:otherwise>
+														</xsl:choose>
+														<xsl:text> edition</xsl:text>
+													</xsl:if>
+													<!-- <xsl:value-of select="$linebreak"/>
+													<xsl:value-of select="/iso:iso-standard/iso:bibdata/iso:version/iso:revision-date"/> -->
+													</fo:block>
 											</fo:table-cell>
-										</fo:table-row> -->
+										</fo:table-row>
 									</fo:table-body>
 								</fo:table>
 								
@@ -356,20 +366,24 @@
 									<fo:table-column column-width="7.5mm"/>
 									<fo:table-column column-width="112.5mm"/>
 									<fo:table-body>
-										<fo:table-row>
+										<fo:table-row> <!--  border="1pt solid black" height="150mm"  -->
 											<fo:table-cell font-size="11pt">
-												<fo:block-container border="0.5mm solid black" width="51mm">
-													<fo:block margin="2mm">
-														<fo:block margin-bottom="8pt">ISO/TC <fo:inline font-weight="bold"><xsl:value-of select="/iso:iso-standard/iso:bibdata/iso:ext/iso:editorialgroup/iso:technical-committee/@number"/></fo:inline></fo:block>
-														<fo:block margin-bottom="6pt">Secretariat: <xsl:value-of select="/iso:iso-standard/iso:bibdata/iso:ext/iso:editorialgroup/iso:secretariat"/></fo:block>
-														<fo:block margin-bottom="6pt">Voting begins on:<xsl:value-of select="$linebreak"/>
-															<fo:inline font-weight="bold">2018</fo:inline>-xx-xx
-														</fo:block>
-														<fo:block>Voting terminates on:<xsl:value-of select="$linebreak"/>
-															<fo:inline font-weight="bold">2018</fo:inline>-xx-xx
-														</fo:block>
-													</fo:block>
-												</fo:block-container>
+												<fo:block>
+													<xsl:if test="$stage-name = 'final-draft'">
+														<fo:block-container border="0.5mm solid black" width="51mm">
+															<fo:block margin="2mm">
+																	<fo:block margin-bottom="8pt">ISO/TC <fo:inline font-weight="bold"><xsl:value-of select="/iso:iso-standard/iso:bibdata/iso:ext/iso:editorialgroup/iso:technical-committee/@number"/></fo:inline></fo:block>
+																	<fo:block margin-bottom="6pt">Secretariat: <xsl:value-of select="/iso:iso-standard/iso:bibdata/iso:ext/iso:editorialgroup/iso:secretariat"/></fo:block>
+																	<fo:block margin-bottom="6pt">Voting begins on:<xsl:value-of select="$linebreak"/>
+																		<fo:inline font-weight="bold">2018</fo:inline>-xx-xx
+																	</fo:block>
+																	<fo:block>Voting terminates on:<xsl:value-of select="$linebreak"/>
+																		<fo:inline font-weight="bold">2018</fo:inline>-xx-xx
+																	</fo:block>
+															</fo:block>
+														</fo:block-container>
+													</xsl:if>
+												</fo:block>
 											</fo:table-cell>
 											<fo:table-cell>
 												<fo:block>&#xA0;</fo:block>
@@ -410,6 +424,13 @@
 										</fo:table-row>
 									</fo:table-body>
 								</fo:table>
+							</fo:block-container>
+							<fo:block-container position="absolute" left="60mm" top="222mm" height="25mm" display-align="after">
+								<fo:block>
+									<xsl:if test="$stage-name = 'proof'">
+										<fo:block font-size="39pt" font-weight="bold"><xsl:value-of select="$proof-text"/></fo:block>
+									</xsl:if>
+								</fo:block>
 							</fo:block-container>
 						</fo:flow>
 					</fo:page-sequence>
@@ -741,8 +762,6 @@
 				<fo:flow flow-name="xsl-region-body">
 				
 					
-					
-					
 					<fo:block-container>
 						<!-- Information and documentation — Codes for transcription systems -->
 						<!-- <fo:block font-size="16pt" font-weight="bold" margin-bottom="18pt">
@@ -804,7 +823,28 @@
 				<fo:page-sequence master-reference="last-page" force-page-count="no-force">
 					<xsl:call-template name="insertHeaderEven"/>
 					<fo:static-content flow-name="last-page-footer" font-size="10pt">
-						<fo:block font-size="9pt"><xsl:value-of select="$copyrightText"/></fo:block>
+						<fo:table table-layout="fixed" width="100%">
+							<fo:table-column column-width="33%"/>
+							<fo:table-column column-width="33%"/>
+							<fo:table-column column-width="34%"/>
+							<fo:table-body>
+								<fo:table-row>
+									<fo:table-cell display-align="center">
+										<fo:block font-size="9pt"><xsl:value-of select="$copyrightText"/></fo:block>
+									</fo:table-cell>
+									<fo:table-cell>
+										<fo:block font-size="11pt" font-weight="bold" text-align="center">
+											<xsl:if test="$stage-name = 'proof'">
+												<xsl:value-of select="$proof-text"/>
+											</xsl:if>
+										</fo:block>
+									</fo:table-cell>
+									<fo:table-cell>
+										<fo:block>&#xA0;</fo:block>
+									</fo:table-cell>
+								</fo:table-row>
+							</fo:table-body>
+						</fo:table>
 					</fo:static-content>
 					<fo:flow flow-name="xsl-region-body">
 						<fo:block-container height="252mm" display-align="after">
@@ -812,6 +852,7 @@
 								<fo:block font-size="12pt" font-weight="bold" padding-top="3.5mm" padding-bottom="0.5mm">
 									<xsl:choose>
 										<xsl:when test="$stage-name = 'final-draft'">ICS&#xA0;&#xA0;01.140.30</xsl:when>
+										<xsl:when test="$stage-name = 'proof'">ICS&#xA0;&#xA0;35.240.63</xsl:when>
 										<xsl:otherwise>ICS&#xA0;&#xA0;67.060</xsl:otherwise>
 									</xsl:choose>
 									</fo:block>
@@ -1806,14 +1847,22 @@
 		<fo:static-content flow-name="footer-even">
 			<fo:block-container> <!--  display-align="after" -->
 				<fo:table table-layout="fixed" width="100%">
-					<fo:table-column column-width="50%"/>
-					<fo:table-column column-width="50%"/>
+					<fo:table-column column-width="33%"/>
+					<fo:table-column column-width="33%"/>
+					<fo:table-column column-width="34%"/>
 					<fo:table-body>
 						<fo:table-row>
-							<fo:table-cell padding-top="0mm" font-size="11pt" font-weight="{$font-weight}">
+							<fo:table-cell display-align="center" padding-top="0mm" font-size="11pt" font-weight="{$font-weight}">
 								<fo:block><fo:page-number/></fo:block>
 							</fo:table-cell>
-							<fo:table-cell padding-top="0mm"  font-size="9pt">
+							<fo:table-cell display-align="center">
+								<fo:block font-size="11pt" font-weight="bold" text-align="center">
+									<xsl:if test="$stage-name = 'proof'">
+										<xsl:value-of select="$proof-text"/>
+									</xsl:if>
+								</fo:block>
+							</fo:table-cell>
+							<fo:table-cell display-align="center" padding-top="0mm"  font-size="9pt">
 								<fo:block text-align="right"><xsl:value-of select="$copyrightText"/></fo:block>
 							</fo:table-cell>
 						</fo:table-row>
@@ -1845,14 +1894,22 @@
 		<fo:static-content flow-name="footer-odd">
 			<fo:block-container> <!--  display-align="after" -->
 				<fo:table table-layout="fixed" width="100%">
-					<fo:table-column column-width="50%"/>
-					<fo:table-column column-width="50%"/>
+					<fo:table-column column-width="33%"/>
+					<fo:table-column column-width="33%"/>
+					<fo:table-column column-width="34%"/>
 					<fo:table-body>
 						<fo:table-row>
-							<fo:table-cell padding-top="0mm" font-size="9pt">
+							<fo:table-cell display-align="center" padding-top="0mm" font-size="9pt">
 								<fo:block><xsl:value-of select="$copyrightText"/></fo:block>
 							</fo:table-cell>
-							<fo:table-cell padding-top="0mm" font-size="11pt" font-weight="{$font-weight}">
+							<fo:table-cell display-align="center">
+								<fo:block font-size="11pt" font-weight="bold" text-align="center">
+									<xsl:if test="$stage-name = 'proof'">
+										<xsl:value-of select="$proof-text"/>
+									</xsl:if>
+								</fo:block>
+							</fo:table-cell>
+							<fo:table-cell display-align="center" padding-top="0mm" font-size="11pt" font-weight="{$font-weight}">
 								<fo:block text-align="right"><fo:page-number/></fo:block>
 							</fo:table-cell>
 						</fo:table-row>
@@ -1864,7 +1921,7 @@
 	<xsl:template name="insertHeaderEven">
 		<fo:static-content flow-name="header-even">
 			<fo:block-container height="24mm" display-align="before">
-				<fo:block  font-size="12pt" font-weight="bold" padding-top="12.5mm"><xsl:value-of select="$ISOname"/></fo:block>
+				<fo:block font-size="12pt" font-weight="bold" padding-top="12.5mm"><xsl:value-of select="$ISOname"/></fo:block>
 			</fo:block-container>
 		</fo:static-content>
 	</xsl:template>
