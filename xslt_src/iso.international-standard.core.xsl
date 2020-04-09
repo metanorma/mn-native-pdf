@@ -29,6 +29,10 @@
 	<xsl:variable name="substage" select="number(/iso:iso-standard/iso:bibdata/iso:status/iso:substage)"/>	
 	<xsl:variable name="stage-name">
 		<xsl:choose>
+			<xsl:when test="$stage = 0 and $substage = 0">draft</xsl:when> <!-- NWIP (NP) -->
+			<xsl:when test="$stage = 10 and $substage = 0">draft</xsl:when> <!-- AWI -->
+			<xsl:when test="$stage = 20 and $substage = 0">draft</xsl:when> <!-- WD -->
+			<xsl:when test="$stage = 30 and $substage = 0">draft</xsl:when> <!-- CD -->
 			<xsl:when test="$stage = 40 and $substage = 0">draft</xsl:when>
 			<xsl:when test="$stage = 50 and $substage = 0">final-draft</xsl:when>
 			<xsl:when test="$stage = 60 and $substage = 0">proof</xsl:when>
