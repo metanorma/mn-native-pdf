@@ -29,6 +29,7 @@
 	<xsl:variable name="substage" select="number(/iso:iso-standard/iso:bibdata/iso:status/iso:substage)"/>	
 	<xsl:variable name="stage-name">
 		<xsl:choose>
+			<xsl:when test="$stage = 40 and $substage = 0">draft</xsl:when>
 			<xsl:when test="$stage = 50 and $substage = 0">final-draft</xsl:when>
 			<xsl:when test="$stage = 60 and $substage = 0">proof</xsl:when>
 			<xsl:when test="$stage &gt;=60">published</xsl:when>
@@ -258,10 +259,16 @@
 								<fo:table-column column-width="112.5mm"/>
 								<fo:table-body>
 									<fo:table-row>
-										<fo:table-cell font-size="6.5pt" text-align="justify" display-align="before">
-											<fo:block>
-												<xsl:if test="$stage-name = 'final-draft'">
-													<fo:block margin-top="-8mm" margin-bottom="1.5mm">
+										<fo:table-cell font-size="6.5pt" text-align="justify" display-align="after" padding-bottom="8mm"><!-- before -->
+											<!-- margin-top="-30mm"  -->
+											<fo:block margin-top="-100mm">
+												<xsl:if test="$stage-name = 'draft'">
+													<fo:block margin-bottom="1.5mm">
+														<xsl:text>THIS DOCUMENT IS A DRAFT CIRCULATED FOR COMMENT AND APPROVAL. IT IS THEREFORE SUBJECT TO CHANGE AND MAY NOT BE REFERRED TO AS AN INTERNATIONAL STANDARD UNTIL PUBLISHED AS SUCH.</xsl:text>
+													</fo:block>
+												</xsl:if>
+												<xsl:if test="$stage-name = 'final-draft' or $stage-name = 'draft'">
+													<fo:block margin-bottom="1.5mm">
 														<xsl:text>RECIPIENTS OF THIS DRAFT ARE INVITED TO
 																			SUBMIT, WITH THEIR COMMENTS, NOTIFICATION
 																			OF ANY RELEVANT PATENT RIGHTS OF WHICH
@@ -338,9 +345,8 @@
 										<fo:table-row>
 											<fo:table-cell>
 												<fo:block font-size="18pt">
-													<xsl:if test="$stage-name = 'final-draft'">
-														FINAL<xsl:value-of select="$linebreak"/>DRAFT
-													</xsl:if>
+													<xsl:if test="$stage-name = 'draft'">DRAFT</xsl:if>
+													<xsl:if test="$stage-name = 'final-draft'">FINAL<xsl:value-of select="$linebreak"/>DRAFT</xsl:if>
 												</fo:block>
 											</fo:table-cell>
 											<fo:table-cell>
@@ -1895,7 +1901,7 @@
 			<fo:block-container margin-top="13mm" height="9mm" width="172mm" border-top="0.5mm solid black" border-bottom="0.5mm solid black" display-align="center" background-color="white">
 				<fo:block text-align-last="justify" font-size="12pt" font-weight="bold">
 					<xsl:variable name="doctype" select="/iso:iso-standard/iso:bibdata/iso:ext/iso:doctype"/>
-					<xsl:if test="$stage-name = 'final-draft'">
+					<xsl:if test="$stage-name = 'final-draft' or $stage-name = 'draft'">
 						<fo:inline><xsl:value-of select="translate(translate($stage-name,'-',' '), $lower,$upper)"/></fo:inline>
 						<xsl:text>&#xA0;</xsl:text>
 					</xsl:if>
