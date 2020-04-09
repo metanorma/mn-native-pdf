@@ -21,9 +21,12 @@
 	<xsl:variable name="title-en" select="/iso:iso-standard/iso:bibdata/iso:title[@language = 'en' and @type = 'main']"/>
 	<xsl:variable name="title-fr" select="/iso:iso-standard/iso:bibdata/iso:title[@language = 'fr' and @type = 'main']"/>
 	<xsl:variable name="title-intro" select="/iso:iso-standard/iso:bibdata/iso:title[@language = 'en' and @type = 'title-intro']"/>
+	<xsl:variable name="title-intro-fr" select="/iso:iso-standard/iso:bibdata/iso:title[@language = 'fr' and @type = 'title-intro']"/>
 	<xsl:variable name="title-main" select="/iso:iso-standard/iso:bibdata/iso:title[@language = 'en' and @type = 'title-main']"/>
+	<xsl:variable name="title-main-fr" select="/iso:iso-standard/iso:bibdata/iso:title[@language = 'fr' and @type = 'title-main']"/>
 	<xsl:variable name="part" select="/iso:iso-standard/iso:bibdata/iso:ext/iso:structuredidentifier/iso:project-number/@part"/>
 	<xsl:variable name="title-part" select="/iso:iso-standard/iso:bibdata/iso:title[@language = 'en' and @type = 'title-part']"/>
+	<xsl:variable name="title-part-fr" select="/iso:iso-standard/iso:bibdata/iso:title[@language = 'fr' and @type = 'title-part']"/>
 	
 	<xsl:variable name="stage" select="number(/iso:iso-standard/iso:bibdata/iso:status/iso:stage)"/>
 	<xsl:variable name="substage" select="number(/iso:iso-standard/iso:bibdata/iso:status/iso:substage)"/>	
@@ -422,31 +425,45 @@
 												<fo:block-container border-top="1mm double black" line-height="1.1">
 													<fo:block margin-right="5mm">
 														<fo:block font-size="18pt" font-weight="bold" margin-top="12pt">
-															<xsl:value-of select="$title-intro"/>
-															<xsl:text> — </xsl:text>
-															<xsl:value-of select="$title-main"/>
-															<xsl:if test="$part != ''">
+															
+															<xsl:if test="normalize-space($title-intro) != ''">
+																<xsl:value-of select="$title-intro"/>
 																<xsl:text> — </xsl:text>
-																<fo:block font-weight="normal" margin-top="6pt">
-																	<xsl:text>Part </xsl:text><xsl:value-of select="$part"/>
-																	<xsl:text>:</xsl:text>
-																</fo:block>
 															</xsl:if>
-															<xsl:value-of select="$title-part"/>
+															
+															<xsl:value-of select="$title-main"/>
+															
+															<xsl:if test="normalize-space($title-part) != ''">
+																<xsl:if test="$part != ''">
+																	<xsl:text> — </xsl:text>
+																	<fo:block font-weight="normal" margin-top="6pt">
+																		<xsl:text>Part </xsl:text><xsl:value-of select="$part"/>
+																		<xsl:text>:</xsl:text>
+																	</fo:block>
+																</xsl:if>
+																<xsl:value-of select="$title-part"/>
+															</xsl:if>
 														</fo:block>
 																	
 														<fo:block font-size="9pt"><xsl:value-of select="$linebreak"/></fo:block>
 														<fo:block font-size="11pt" font-style="italic" line-height="1.5">
-															<xsl:value-of select="/iso:iso-standard/iso:bibdata/iso:title[@language = 'fr' and @type = 'title-intro']"/>
-															<xsl:text> — </xsl:text>
-															<xsl:value-of select="/iso:iso-standard/iso:bibdata/iso:title[@language = 'fr' and @type = 'title-main']"/>
-															<xsl:if test="$part != ''">
+															
+															<xsl:if test="normalize-space($title-intro-fr) != ''">
+																<xsl:value-of select="$title-intro-fr"/>
 																<xsl:text> — </xsl:text>
-																<xsl:text>Partie </xsl:text>
-																<xsl:value-of select="$part"/>
-																<xsl:text>:</xsl:text>
 															</xsl:if>
-															<xsl:value-of select="/iso:iso-standard/iso:bibdata/iso:title[@language = 'fr' and @type = 'title-part']"/>
+															
+															<xsl:value-of select="$title-main-fr"/>
+															
+															<xsl:if test="normalize-space($title-part-fr) != ''">
+																<xsl:if test="$part != ''">
+																	<xsl:text> — </xsl:text>
+																	<xsl:text>Partie </xsl:text>
+																	<xsl:value-of select="$part"/>
+																	<xsl:text>:</xsl:text>
+																</xsl:if>
+																<xsl:value-of select="$title-part-fr"/>
+															</xsl:if>
 														</fo:block>
 													</fo:block>
 												</fo:block-container>
@@ -532,31 +549,45 @@
 								<fo:block-container border-top="1mm double black" line-height="1.1">
 									<fo:block margin-right="40mm">
 									<fo:block font-size="18pt" font-weight="bold" margin-top="12pt">
-										<xsl:value-of select="$title-intro"/>
-										<xsl:text> — </xsl:text>
-										<xsl:value-of select="$title-main"/>
-										<xsl:if test="$part != ''">
+									
+										<xsl:if test="normalize-space($title-intro) != ''">
+											<xsl:value-of select="$title-intro"/>
 											<xsl:text> — </xsl:text>
-											<fo:block font-weight="normal" margin-top="6pt">
-												<xsl:text>Part </xsl:text><xsl:value-of select="$part"/>
-												<xsl:text>:</xsl:text>
-											</fo:block>
 										</xsl:if>
-										<xsl:value-of select="$title-part"/>
+										
+										<xsl:value-of select="$title-main"/>
+										
+										<xsl:if test="normalize-space($title-part) != ''">
+											<xsl:if test="$part != ''">
+												<xsl:text> — </xsl:text>
+												<fo:block font-weight="normal" margin-top="6pt">
+													<xsl:text>Part </xsl:text><xsl:value-of select="$part"/>
+													<xsl:text>:</xsl:text>
+												</fo:block>
+											</xsl:if>
+											<xsl:value-of select="$title-part"/>
+										</xsl:if>
 									</fo:block>
 												
 									<fo:block font-size="9pt"><xsl:value-of select="$linebreak"/></fo:block>
 									<fo:block font-size="11pt" font-style="italic" line-height="1.5">
-										<xsl:value-of select="/iso:iso-standard/iso:bibdata/iso:title[@language = 'fr' and @type = 'title-intro']"/>
-										<xsl:text> — </xsl:text>
-										<xsl:value-of select="/iso:iso-standard/iso:bibdata/iso:title[@language = 'fr' and @type = 'title-main']"/>
-										<xsl:if test="$part != ''">
+										
+										<xsl:if test="normalize-space($title-intro-fr) != ''">
+											<xsl:value-of select="$title-intro-fr"/>
 											<xsl:text> — </xsl:text>
-											<xsl:text>Partie </xsl:text>
-											<xsl:value-of select="$part"/>
-											<xsl:text>:</xsl:text>
 										</xsl:if>
-										<xsl:value-of select="/iso:iso-standard/iso:bibdata/iso:title[@language = 'fr' and @type = 'title-part']"/>
+										
+										<xsl:value-of select="$title-main-fr"/>
+
+										<xsl:if test="normalize-space($title-part-fr) != ''">
+											<xsl:if test="$part != ''">
+												<xsl:text> — </xsl:text>
+												<xsl:text>Partie </xsl:text>
+												<xsl:value-of select="$part"/>
+												<xsl:text>:</xsl:text>
+											</xsl:if>
+											<xsl:value-of select="$title-part-fr"/>
+										</xsl:if>
 									</fo:block>
 									</fo:block>
 								</fo:block-container>
@@ -641,32 +672,45 @@
 							<fo:block-container font-size="16pt">
 								<!-- Information and documentation — Codes for transcription systems  -->
 									<fo:block font-weight="bold">
-										<xsl:value-of select="$title-intro"/>
-										<xsl:text> — </xsl:text>
-										<xsl:value-of select="$title-main"/>
-										<xsl:if test="$part != ''">
+									
+										<xsl:if test="normalize-space($title-intro) != ''">
+											<xsl:value-of select="$title-intro"/>
 											<xsl:text> — </xsl:text>
-											<fo:block font-weight="normal" margin-top="6pt">
-												<xsl:text>Part </xsl:text><xsl:value-of select="$part"/>
-												<xsl:text>:</xsl:text>
-											</fo:block>
 										</xsl:if>
-										<xsl:value-of select="$title-part"/>
+										
+										<xsl:value-of select="$title-main"/>
+										
+										<xsl:if test="normalize-space($title-part) != ''">
+											<xsl:if test="$part != ''">
+												<xsl:text> — </xsl:text>
+												<fo:block font-weight="normal" margin-top="6pt">
+													<xsl:text>Part </xsl:text><xsl:value-of select="$part"/>
+													<xsl:text>:</xsl:text>
+												</fo:block>
+											</xsl:if>
+											<xsl:value-of select="$title-part"/>
+										</xsl:if>
 									</fo:block>
 									
 									<fo:block font-size="12pt"><xsl:value-of select="$linebreak"/></fo:block>
 									<fo:block>
-										<xsl:value-of select="/iso:iso-standard/iso:bibdata/iso:title[@language = 'fr' and @type = 'title-intro']"/>
-										<xsl:text> — </xsl:text>
-										<xsl:value-of select="/iso:iso-standard/iso:bibdata/iso:title[@language = 'fr' and @type = 'title-main']"/>
-										<xsl:if test="$part != ''">
+										<xsl:if test="normalize-space($title-intro-fr) != ''">
+											<xsl:value-of select="$title-intro-fr"/>
 											<xsl:text> — </xsl:text>
-											<fo:block margin-top="6pt" font-weight="normal">
-												<xsl:text>Partie </xsl:text><xsl:value-of select="$part"/>
-												<xsl:text>:</xsl:text>
-											</fo:block>
 										</xsl:if>
-										<xsl:value-of select="/iso:iso-standard/iso:bibdata/iso:title[@language = 'fr' and @type = 'title-part']"/>
+										
+										<xsl:value-of select="$title-main-fr"/>
+										
+										<xsl:if test="normalize-space($title-part-fr) != ''">
+											<xsl:if test="$part != ''">
+												<xsl:text> — </xsl:text>
+												<fo:block margin-top="6pt" font-weight="normal">
+													<xsl:text>Partie </xsl:text><xsl:value-of select="$part"/>
+													<xsl:text>:</xsl:text>
+												</fo:block>
+											</xsl:if>
+											<xsl:value-of select="$title-part-fr"/>
+										</xsl:if>
 									</fo:block>
 							</fo:block-container>
 							<fo:block font-size="11pt" margin-bottom="8pt"><xsl:value-of select="$linebreak"/></fo:block>
@@ -800,15 +844,21 @@
 						 -->
 						<fo:block font-size="18pt" font-weight="bold" margin-top="12pt" margin-bottom="18pt">
 							<fo:block>
-								<xsl:value-of select="$title-intro"/>
-								<xsl:text> — </xsl:text>
-								<xsl:value-of select="$title-main"/>
-								<xsl:if test="$part != ''">
+								<xsl:if test="normalize-space($title-intro) != ''">
+									<xsl:value-of select="$title-intro"/>
 									<xsl:text> — </xsl:text>
-									<fo:block font-weight="normal" margin-top="12pt">
-										<xsl:text>Part </xsl:text><xsl:value-of select="$part"/>
-										<xsl:text>:</xsl:text>
-									</fo:block>
+								</xsl:if>
+								
+								<xsl:value-of select="$title-main"/>
+								
+								<xsl:if test="normalize-space($title-part) != ''">
+									<xsl:if test="$part != ''">
+										<xsl:text> — </xsl:text>
+										<fo:block font-weight="normal" margin-top="12pt">
+											<xsl:text>Part </xsl:text><xsl:value-of select="$part"/>
+											<xsl:text>:</xsl:text>
+										</fo:block>
+									</xsl:if>
 								</xsl:if>
 							</fo:block>
 							<fo:block>
