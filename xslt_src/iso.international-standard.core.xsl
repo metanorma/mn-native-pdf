@@ -30,18 +30,31 @@
 	
 	<xsl:variable name="stage" select="number(/iso:iso-standard/iso:bibdata/iso:status/iso:stage)"/>
 	<xsl:variable name="substage" select="number(/iso:iso-standard/iso:bibdata/iso:status/iso:substage)"/>	
+	<xsl:variable name="iteration" select="number(/iso:iso-standard/iso:bibdata/iso:status/iso:iteration)"/>	
 	<xsl:variable name="stage-name">
 		<xsl:choose>
-			<xsl:when test="$stage = 0 and $substage = 0">draft</xsl:when> <!-- NWIP (NP) -->
-			<xsl:when test="$stage = 10 and $substage = 0">draft</xsl:when> <!-- AWI -->
-			<xsl:when test="$stage = 20 and $substage = 0">draft</xsl:when> <!-- WD -->
-			<xsl:when test="$stage = 30 and $substage = 0">draft</xsl:when> <!-- CD -->
-			<xsl:when test="$stage = 40 and $substage = 0">draft</xsl:when>
-			<xsl:when test="$stage = 50 and $substage = 0">final-draft</xsl:when>
+			<!--  and $substage = 0 -->
+			<xsl:when test="$stage = 0">nwip</xsl:when> <!-- NWIP (NP) -->
+			<xsl:when test="$stage = 10">awi</xsl:when>
+			<xsl:when test="$stage = 20">wd</xsl:when>
+			<xsl:when test="$stage = 30">cd</xsl:when>
+			<xsl:when test="$stage = 40">draft</xsl:when>
+			<xsl:when test="$stage = 50">final-draft</xsl:when>
 			<xsl:when test="$stage = 60 and $substage = 0">proof</xsl:when>
 			<xsl:when test="$stage &gt;=60">published</xsl:when>
 			<xsl:otherwise></xsl:otherwise>
 		</xsl:choose>
+	</xsl:variable>
+	
+	<!-- UPPERCASED stage name -->
+	<xsl:variable name="stage-name-uc">
+		<item name="nwip" show="true" shortname="DRAFT">NEW WORK ITEM PROPOSAL DRAFT</item>
+		<item name="awi" show="true" shortname="DRAFT">APPROVED WORK ITEM</item>
+		<item name="wd" show="true" shortname="DRAFT">WORKING DRAFT</item>
+		<item name="cd" show="true" shortname="DRAFT">COMMITTEE DRAFT</item>
+		<item name="draft" show="true" shortname="DRAFT">DRAFT</item>
+		<item name="final-draft" show="true" shortname="FINAL DRAFT">FINAL DRAFT</item>
+		<item name="proof">PROOF</item>
 	</xsl:variable>
 	
 	<!-- 
@@ -269,12 +282,12 @@
 										<fo:table-cell font-size="6.5pt" text-align="justify" display-align="after" padding-bottom="8mm"><!-- before -->
 											<!-- margin-top="-30mm"  -->
 											<fo:block margin-top="-100mm">
-												<xsl:if test="$stage-name = 'draft'">
+												<xsl:if test="$stage-name = 'draft' or $stage-name = 'nwip' or $stage-name = 'awi' or $stage-name = 'wd' or $stage-name = 'cd'">
 													<fo:block margin-bottom="1.5mm">
 														<xsl:text>THIS DOCUMENT IS A DRAFT CIRCULATED FOR COMMENT AND APPROVAL. IT IS THEREFORE SUBJECT TO CHANGE AND MAY NOT BE REFERRED TO AS AN INTERNATIONAL STANDARD UNTIL PUBLISHED AS SUCH.</xsl:text>
 													</fo:block>
 												</xsl:if>
-												<xsl:if test="$stage-name = 'final-draft' or $stage-name = 'draft'">
+												<xsl:if test="$stage-name = 'final-draft' or $stage-name = 'draft' or $stage-name = 'nwip' or $stage-name = 'awi' or $stage-name = 'wd' or $stage-name = 'cd'">
 													<fo:block margin-bottom="1.5mm">
 														<xsl:text>RECIPIENTS OF THIS DRAFT ARE INVITED TO
 																			SUBMIT, WITH THEIR COMMENTS, NOTIFICATION
@@ -352,8 +365,13 @@
 										<fo:table-row>
 											<fo:table-cell>
 												<fo:block font-size="18pt">
-													<xsl:if test="$stage-name = 'draft'">DRAFT</xsl:if>
-													<xsl:if test="$stage-name = 'final-draft'">FINAL<xsl:value-of select="$linebreak"/>DRAFT</xsl:if>
+													<xsl:variable name="stgname" select="xalan:nodeset($stage-name-uc)/item[@name = $stage-name and @show = 'true']/text()"/>
+													<xsl:value-of select="translate($stgname, ' ', $linebreak)"/>
+													<xsl:if test="number($iteration) = $iteration and ($stage-name = 'nwip' or $stage-name = 'awi' or $stage-name = 'wd' or $stage-name = 'cd')"> <!-- not NaN -->
+														<xsl:text>&#xA0;</xsl:text><xsl:value-of select="$iteration"/>
+													</xsl:if>
+													<!-- <xsl:if test="$stage-name = 'draft'">DRAFT</xsl:if>
+													<xsl:if test="$stage-name = 'final-draft'">FINAL<xsl:value-of select="$linebreak"/>DRAFT</xsl:if> -->
 												</fo:block>
 											</fo:table-cell>
 											<fo:table-cell>
@@ -1955,8 +1973,12 @@
 			<fo:block-container margin-top="13mm" height="9mm" width="172mm" border-top="0.5mm solid black" border-bottom="0.5mm solid black" display-align="center" background-color="white">
 				<fo:block text-align-last="justify" font-size="12pt" font-weight="bold">
 					<xsl:variable name="doctype" select="/iso:iso-standard/iso:bibdata/iso:ext/iso:doctype"/>
-					<xsl:if test="$stage-name = 'final-draft' or $stage-name = 'draft'">
-						<fo:inline><xsl:value-of select="translate(translate($stage-name,'-',' '), $lower,$upper)"/></fo:inline>
+					
+					<xsl:variable name="stgname" select="xalan:nodeset($stage-name-uc)/item[@name = $stage-name and @show = 'true']/@shortname"/>
+					<xsl:if test="$stgname != ''">
+					<!-- <xsl:if test="$stage-name = 'final-draft' or $stage-name = 'draft'"> -->
+						<!-- <fo:inline><xsl:value-of select="translate(translate($stage-name,'-',' '), $lower,$upper)"/></fo:inline> -->
+						<fo:inline><xsl:value-of select="$stgname"/></fo:inline>
 						<xsl:text>&#xA0;</xsl:text>
 					</xsl:if>
 					<fo:inline><xsl:value-of select="translate(translate($doctype,'-',' '), $lower,$upper)"/></fo:inline>
