@@ -66,7 +66,7 @@
 	
 	<xsl:template match="/">
 		<xsl:message>INFO: Document namespace: '<xsl:value-of select="namespace-uri(/*)"/>'</xsl:message>
-		<fo:root xmlns:fo="http://www.w3.org/1999/XSL/Format" font-family="Arial" font-size="10pt" xml:lang="{$lang}">
+		<fo:root xmlns:fo="http://www.w3.org/1999/XSL/Format" font-family="AzoSans" font-size="10pt" xml:lang="{$lang}">
 			<fo:layout-master-set>
 				<!-- Cover page -->
 				<fo:simple-page-master master-name="cover-page" page-width="{$pageWidth}" page-height="{$pageHeight}">
@@ -913,7 +913,7 @@
 				</fo:basic-link>
 			</fo:inline>
 			<fo:footnote-body>
-				<fo:block font-size="10pt" margin-bottom="12pt" font-weight="normal" text-indent="0" start-indent="0" color="rgb(168, 170, 173)" text-align="left">
+				<fo:block font-family="AzoSans-Light" font-size="10pt" margin-bottom="12pt" font-weight="normal" text-indent="0" start-indent="0" color="rgb(168, 170, 173)" text-align="left">
 					<fo:inline id="footnote_{@reference}" keep-with-next.within-line="always" font-size="60%" vertical-align="super">
 						<xsl:value-of select="$number "/><!-- + count(//csa:bibitem/csa:note) -->
 					</fo:inline>
@@ -1064,7 +1064,7 @@
 				</fo:basic-link>
 			</fo:inline>
 			<fo:footnote-body>
-				<fo:block font-size="10pt" margin-bottom="12pt" start-indent="0pt" color="rgb(168, 170, 173)">
+				<fo:block font-family="AzoSans-Light" font-size="10pt" margin-bottom="12pt" start-indent="0pt" color="rgb(168, 170, 173)">
 					<fo:inline id="footnote_{../@id}" keep-with-next.within-line="always" font-size="60%" vertical-align="super"><!-- baseline-shift="30%" padding-right="9mm"  alignment-baseline="hanging" -->
 						<xsl:value-of select="$number"/><!-- <xsl:text>)</xsl:text> -->
 					</fo:inline>
@@ -1689,7 +1689,7 @@
 			</fo:block-container>
 		</fo:static-content>
 		<fo:static-content flow-name="footer">
-			<fo:block-container font-size="10.1pt" height="100%" display-align="after"> <!-- 11.5pt -->
+			<fo:block-container font-family="AzoSans-Light" font-size="10.1pt" height="100%" display-align="after"> <!-- 11.5pt -->
 				<fo:block padding-bottom="13mm" text-align="right" color="rgb(144, 144, 144)">
 					<fo:inline padding-right="7mm"><xsl:value-of select="$copyright" /></fo:inline>
 					<fo:page-number/>
