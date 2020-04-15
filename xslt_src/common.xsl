@@ -7,11 +7,7 @@
 	<xsl:variable name="en_chars" select="concat($lower,$upper,',.`1234567890-=~!@#$%^*()_+[]{}\|?/')"/>
 	
 	<xsl:variable name="linebreak" select="'&#x2028;'"/>
-	
-	<xsl:variable name="thinspace" select="'&#x2009;'"/>
-	<xsl:variable name="nonbreakhyphen" select="'&#x2011;'"/>
-	
-	
+		
 	<xsl:template match="text()">
 		<xsl:value-of select="."/>
 	</xsl:template>
@@ -21,10 +17,7 @@
 	</xsl:template>
 	
 	<xsl:template match="*[local-name()='td']//text() | *[local-name()='th']//text()" priority="1">
-		<xsl:variable name="content">
-			<xsl:call-template name="add-zero-spaces"/>
-		</xsl:variable>
-		<xsl:value-of select="translate($content, concat($thinspace, $nonbreakhyphen), ' -')"/>
+		<xsl:call-template name="add-zero-spaces"/>
 	</xsl:template>
 	
 
