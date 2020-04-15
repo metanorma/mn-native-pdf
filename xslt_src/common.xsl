@@ -9,6 +9,8 @@
 	<xsl:variable name="linebreak" select="'&#x2028;'"/>
 	
 	<xsl:variable name="thinspace" select="'&#x2009;'"/>
+	<xsl:variable name="nonbreakhyphen" select="'&#x2011;'"/>
+	
 	
 	<xsl:template match="text()">
 		<xsl:value-of select="."/>
@@ -22,7 +24,7 @@
 		<xsl:variable name="content">
 			<xsl:call-template name="add-zero-spaces"/>
 		</xsl:variable>
-		<xsl:value-of select="translate($content, $thinspace, ' ')"/>
+		<xsl:value-of select="translate($content, concat($thinspace, $nonbreakhyphen), ' -')"/>
 	</xsl:template>
 	
 
