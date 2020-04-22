@@ -78,7 +78,7 @@
 				
 				<!-- odd pages -->
 				<fo:simple-page-master master-name="odd" page-width="{$pageWidth}" page-height="{$pageHeight}">
-					<fo:region-body margin-top="31mm" margin-bottom="15mm" margin-left="25mm" margin-right="25mm"/>
+					<fo:region-body margin-top="30mm" margin-bottom="15mm" margin-left="25mm" margin-right="25mm"/>
 					<fo:region-before region-name="header-odd" extent="31mm"/> 
 					<fo:region-after region-name="footer" extent="15mm"/>
 					<fo:region-start region-name="left-region" extent="25mm"/>
@@ -86,7 +86,7 @@
 				</fo:simple-page-master>
 				<!-- even pages -->
 				<fo:simple-page-master master-name="even" page-width="{$pageWidth}" page-height="{$pageHeight}">
-					<fo:region-body margin-top="31mm" margin-bottom="15mm" margin-left="25mm" margin-right="25mm"/>
+					<fo:region-body margin-top="30mm" margin-bottom="15mm" margin-left="25mm" margin-right="25mm"/>
 					<fo:region-before region-name="header-even" extent="31mm"/>
 					<fo:region-after region-name="footer" extent="15mm"/>
 					<fo:region-start region-name="left-region" extent="25mm"/>
@@ -118,7 +118,16 @@
 					<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
 						<rdf:Description rdf:about="" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:pdf="http://ns.adobe.com/pdf/1.3/">
 						<!-- Dublin Core properties go here -->
-							<dc:title><xsl:value-of select="$title-en"/></dc:title>
+							<dc:title>
+								<xsl:choose>
+									<xsl:when test="$title-en != ''">
+										<xsl:value-of select="$title-en"/>
+									</xsl:when>
+									<xsl:otherwise>
+										<xsl:text>&#xA0;</xsl:text>
+									</xsl:otherwise>
+								</xsl:choose>
+							</dc:title>
 							<dc:creator></dc:creator>
 							<dc:description>
 								<xsl:variable name="abstract">
@@ -586,24 +595,25 @@ plus récente, un corrigendum ou amendement peut avoir été publié.</fo:block>
 
 					<fo:block break-after="page"/>
 					
-					<fo:block-container font-size="12pt" text-align="center">
+					<fo:block-container font-size="12pt" text-align="center" margin-bottom="18pt">
 						<fo:block><xsl:value-of select="$organization"/></fo:block>
-						<fo:block>____________</fo:block>
+						<fo:block>___________</fo:block>
 						<fo:block>&#xa0;</fo:block>
 						<fo:block font-weight="bold">
 							<xsl:value-of select="translate($title-intro, $lower, $upper)"/>
 							<xsl:text> — </xsl:text>
 							<xsl:value-of select="translate($title-main, $lower, $upper)"/>
-							<xsl:if test="$part != ''">
+							<xsl:if test="$title-part != ''">
 								<xsl:text> — </xsl:text>
 								<fo:block>&#xa0;</fo:block>
 								<fo:block>
-									<xsl:text>Part </xsl:text><xsl:value-of select="$part"/>
-									<xsl:text>:</xsl:text>
+									<xsl:if test="$part != ''">
+										<xsl:text>Part </xsl:text><xsl:value-of select="$part"/>
+										<xsl:text>: </xsl:text>
+									</xsl:if>
 									<xsl:value-of select="$title-part"/>
 								</fo:block>
 							</xsl:if>
-							<fo:block>&#xa0;</fo:block>
 						</fo:block>
 					</fo:block-container>
 					
@@ -631,12 +641,14 @@ plus récente, un corrigendum ou amendement peut avoir été publié.</fo:block>
 							<xsl:value-of select="translate($title-intro, $lower, $upper)"/>
 							<xsl:text> — </xsl:text>
 							<xsl:value-of select="translate($title-main, $lower, $upper)"/>
-							<xsl:if test="$part != ''">
+							<xsl:if test="$title-part != ''">
 								<xsl:text> — </xsl:text>
 								<fo:block>&#xa0;</fo:block>
 								<fo:block>
+									<xsl:if test="$part != ''">
 									<xsl:text>Part </xsl:text><xsl:value-of select="$part"/>
-									<xsl:text>:</xsl:text>
+									<xsl:text>: </xsl:text>
+									</xsl:if>
 									<xsl:value-of select="$title-part"/>
 								</fo:block>
 							</xsl:if>
@@ -1058,9 +1070,11 @@ plus récente, un corrigendum ou amendement peut avoir été publié.</fo:block>
 	
 	<xsl:template match="iec:iec-standard/iec:preface/iec:foreword" priority="2">
 		<fo:block id="{iec:title}" margin-bottom="10pt" font-size="12pt" text-align="center">
-			<xsl:value-of select="translate(iec:title, $lower, $upper)"/>
+			<xsl:call-template name="addLetterSpacing">
+				<xsl:with-param name="text" select="translate(iec:title, $lower, $upper)"/>
+			</xsl:call-template>
 		</fo:block>
-		<fo:block font-size="8pt" text-align="justify" margin-left="6.3mm">
+		<fo:block font-size="8.2pt" text-align="justify"> <!--  margin-left="6.3mm" -->
 			<xsl:apply-templates select="/iec:iec-standard/iec:boilerplate/iec:legal-statement/*"/>
 		</fo:block>
 		<fo:block>
@@ -1276,7 +1290,8 @@ plus récente, un corrigendum ou amendement peut avoir été publié.</fo:block>
 			<xsl:choose>
 				<xsl:when test="$inline = 'true'">fo:inline</xsl:when>
 				<xsl:when test="../@inline-header = 'true' and $previous-element = 'title'">fo:inline</xsl:when> <!-- first paragraph after inline title -->
-				<xsl:when test="local-name(..) = 'admonition'">fo:block</xsl:when>
+				<xsl:when test="local-name(..) = 'admonition' and $previous-element = 'p'">fo:block</xsl:when>
+				<xsl:when test="local-name(..) = 'admonition'">fo:inline</xsl:when>
 				<xsl:otherwise>fo:block</xsl:otherwise>
 			</xsl:choose>
 		</xsl:variable>
@@ -1292,7 +1307,16 @@ plus récente, un corrigendum ou amendement peut avoir été publié.</fo:block>
 						</xsl:choose>
 					</xsl:attribute>
 					<xsl:attribute name="margin-top">5pt</xsl:attribute>
-					<xsl:attribute name="margin-bottom">10pt</xsl:attribute>
+					<xsl:attribute name="margin-bottom">12pt</xsl:attribute>
+					<xsl:if test="local-name(following-sibling::*[1])= 'table'">
+						<xsl:attribute name="margin-bottom">6pt</xsl:attribute>
+					</xsl:if>
+					<xsl:if test="ancestor::iec:admonition">
+						<xsl:attribute name="margin-bottom">6pt</xsl:attribute>
+					</xsl:if>
+					<xsl:if test="ancestor::iec:admonition and not(following-sibling::iec:p)">
+						<xsl:attribute name="margin-bottom">0pt</xsl:attribute>
+					</xsl:if>
 					<xsl:apply-templates />
 				</xsl:element>
 			</xsl:when>
@@ -1479,10 +1503,10 @@ plus récente, un corrigendum ou amendement peut avoir été publié.</fo:block>
 	
 	
 	<xsl:template match="iec:ul | iec:ol">
-		<fo:list-block provisional-distance-between-starts="7mm">
-			<xsl:if test="local-name() = 'ul'">
+		<fo:list-block provisional-distance-between-starts="6mm">
+			<!-- <xsl:if test="local-name() = 'ul'">
 				<xsl:attribute name="margin-left">6mm</xsl:attribute>
-			</xsl:if>
+			</xsl:if> -->
 			<xsl:if test="ancestor::iec:legal-statement">
 				<xsl:attribute name="provisional-distance-between-starts">5mm</xsl:attribute>
 			</xsl:if>
@@ -1494,7 +1518,7 @@ plus récente, un corrigendum ou amendement peut avoir été publié.</fo:block>
 		<fo:list-item>
 			<fo:list-item-label end-indent="label-end()">
 				<xsl:if test="local-name(..) = 'ul'">
-					<xsl:attribute name="font-size">12pt</xsl:attribute>
+					<xsl:attribute name="font-size">10pt</xsl:attribute>
 				</xsl:if>
 				<fo:block>
 					<xsl:choose>
@@ -1522,7 +1546,10 @@ plus récente, un corrigendum ou amendement peut avoir été publié.</fo:block>
 	</xsl:template>
 	
 	<xsl:template match="iec:li/iec:p">
-		<fo:block margin-bottom="0pt">
+		<fo:block margin-bottom="6pt">
+			<xsl:if test="ancestor::iec:ul">
+				<xsl:attribute name="margin-bottom">3pt</xsl:attribute>
+			</xsl:if>
 			<xsl:if test="ancestor::iec:legal-statement">
 				<xsl:attribute name="margin-bottom">5pt</xsl:attribute>
 			</xsl:if>
@@ -1862,13 +1889,27 @@ plus récente, un corrigendum ou amendement peut avoir été publié.</fo:block>
 	</xsl:template>
 	
 	<xsl:template match="iec:admonition">
-		<fo:block font-weight="bold">
+		<fo:block-container border="0.5pt solid black" margin-left="-2mm" margin-right="-2mm" space-before="18pt">
+			<fo:block-container margin-left="0mm" margin-right="0mm" font-weight="bold" padding="1mm" padding-top="2mm">
+				<fo:block text-align="justify">
+					<fo:inline><xsl:value-of select="translate(@type, $lower, $upper)"/> – </fo:inline>
+					<xsl:apply-templates />
+				</fo:block>
+			</fo:block-container>
+		</fo:block-container>
+		<!-- <fo:block font-weight="bold">
 			<fo:block  text-align="center" margin-top="5pt" margin-bottom="10pt">
 				<xsl:value-of select="translate(@type, $lower, $upper)"/>
 			</fo:block>
-			<!-- <xsl:text> — </xsl:text> -->
 			<xsl:apply-templates />
-		</fo:block>
+		</fo:block> -->
+	</xsl:template>
+	
+	<xsl:template match="iec:admonition//iec:p//text()">
+		<xsl:call-template name="addLetterSpacing">
+			<xsl:with-param name="text" select="."/>
+			
+		</xsl:call-template>
 	</xsl:template>
 	
 	<xsl:template match="iec:formula/iec:dt/iec:stem">
@@ -1923,7 +1964,7 @@ plus récente, un corrigendum ou amendement peut avoir été publié.</fo:block>
 	
 	<xsl:template name="insertHeaderFooter">
 		<fo:static-content flow-name="header-even">
-			<fo:block-container height="29mm" padding-top="21mm">
+			<fo:block-container height="29mm" padding-top="20mm">
 				<fo:table table-layout="fixed" width="100%">
 					<fo:table-column column-width="45%"/>
 					<fo:table-column column-width="10%"/>
@@ -1948,7 +1989,7 @@ plus récente, un corrigendum ou amendement peut avoir été publié.</fo:block>
 		</fo:static-content>
 		
 		<fo:static-content flow-name="header-odd">
-			<fo:block-container height="29mm" padding-top="21mm">
+			<fo:block-container height="29mm" padding-top="20mm">
 				<fo:table table-layout="fixed" width="100%">
 					<fo:table-column column-width="45%"/>
 					<fo:table-column column-width="10%"/>
