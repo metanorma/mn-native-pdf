@@ -679,14 +679,14 @@ plus récente, un corrigendum ou amendement peut avoir été publié.</fo:block>
 						
 						 <!-- main sections -->
 						  <!-- *[position() &gt; 1] -->
-						<xsl:apply-templates select="/iec:iec-standard/iec:sections/*[local-name() != 'terms' and not(@id='_scope')][1]">
+						<xsl:apply-templates select="/iec:iec-standard/iec:sections/*[local-name() != 'terms' and not(@id='_scope')]">
 							<xsl:with-param name="sectionNumSkew" select="count(/iec:iec-standard/iec:sections/iec:clause[@id='_scope']) +
 																																			count(/iec:iec-standard/iec:bibliography/iec:references[@id = '_normative_references' or @id = '_references']) +
 																																			count(/iec:iec-standard/iec:sections/iec:terms)"/>
 						</xsl:apply-templates>
 						
 						<!-- Annex(s) -->
-						<!-- <xsl:apply-templates select="/iec:iec-standard/iec:annex"/> -->
+						<xsl:apply-templates select="/iec:iec-standard/iec:annex"/>
 						
 						<!-- Bibliography -->
 						<xsl:apply-templates select="/iec:iec-standard/iec:bibliography/iec:references[not(@id = '_normative_references' or @id = '_references')]"/>
@@ -1024,7 +1024,8 @@ plus récente, un corrigendum ou amendement peut avoir été publié.</fo:block>
 		<xsl:param name="sectionNum" />
 		<item level="" id="{@id}" display="false" type="formula">
 			<xsl:attribute name="section">
-				<xsl:text>Formula (</xsl:text><xsl:number format="A.1" level="multiple" count="iec:annex | iec:formula"/><xsl:text>)</xsl:text>
+				<!-- Formula -->
+				<xsl:text>Equation (</xsl:text><xsl:number format="A.1" level="multiple" count="iec:annex | iec:formula"/><xsl:text>)</xsl:text>
 			</xsl:attribute>
 			<xsl:attribute name="parentsection">
 				<xsl:for-each select="parent::*[1]/iec:title">
@@ -1220,6 +1221,7 @@ plus récente, un corrigendum ou amendement peut avoir été publié.</fo:block>
 		<xsl:variable name="font-size">
 			<xsl:choose>
 				<xsl:when test="ancestor::iec:sections and $level = 1">11pt</xsl:when>
+				<xsl:when test="ancestor::iec:annex and $level &lt;= 2">11pt</xsl:when>
 				<xsl:when test="ancestor::iec:references[not (preceding-sibling::iec:references)]">11pt</xsl:when>
 				<xsl:otherwise>10pt</xsl:otherwise>
 			</xsl:choose>
@@ -1243,10 +1245,9 @@ plus récente, un corrigendum ou amendement peut avoir été publié.</fo:block>
 		
 		<xsl:choose>
 			<xsl:when test="$parent-name = 'annex'">
-				<fo:block id="{$id}" font-size="12pt" font-weight="bold" text-align="center" margin-bottom="10pt" keep-with-next="always">
+				<fo:block id="{$id}" font-size="12pt" font-weight="bold" text-align="center" margin-bottom="32pt" keep-with-next="always">
 					<xsl:value-of select="$section"/>
 					<xsl:if test=" ../@obligation">
-						<xsl:value-of select="$linebreak"/>
 						<xsl:value-of select="$linebreak"/>
 						<fo:inline font-weight="normal">(<xsl:value-of select="../@obligation"/>)</fo:inline>
 					</xsl:if>
@@ -1269,6 +1270,15 @@ plus récente, un corrigendum ou amendement peut avoir été publié.</fo:block>
 				</fo:block>
 			</xsl:when>
 			<xsl:otherwise>
+			
+				<xsl:variable name="padding-right">
+					<xsl:choose>
+						<xsl:when test="$level = 2 and ancestor::iec:annex">6mm</xsl:when>
+						<xsl:when test="$level = 2">7mm</xsl:when>
+						<xsl:otherwise>5mm</xsl:otherwise>
+					</xsl:choose>
+				</xsl:variable>
+					
 				<xsl:element name="{$element-name}">
 					<xsl:attribute name="id"><xsl:value-of select="$id"/></xsl:attribute>
 					<xsl:attribute name="font-size">
@@ -1280,6 +1290,7 @@ plus récente, un corrigendum ou amendement peut avoir été publié.</fo:block>
 						<xsl:attribute name="keep-with-next">always</xsl:attribute>		
 						<xsl:attribute name="space-before"> <!-- margin-top -->
 							<xsl:choose>
+								<xsl:when test="$level = 2 and ancestor::iec:annex">22pt</xsl:when>
 								<xsl:when test="$level &gt;= 2 and ancestor::iec:annex">5pt</xsl:when>
 								<xsl:when test="$level = '' or $level = 1">18pt</xsl:when><!-- 13.5pt -->
 								<xsl:otherwise>10pt</xsl:otherwise>
@@ -1288,27 +1299,39 @@ plus récente, un corrigendum ou amendement peut avoir été publié.</fo:block>
 						<xsl:attribute name="margin-bottom">
 							<xsl:choose>
 								<xsl:when test="$level = '' or $level = 1">14pt</xsl:when>
+								<xsl:when test="$level = 2 and ancestor::iec:annex">14pt</xsl:when>
 								<xsl:otherwise>5pt</xsl:otherwise>
 							</xsl:choose>
 						</xsl:attribute>
+						
+						<fo:inline>
+							<xsl:if test="$section != ''">
+								<xsl:attribute name="padding-right">
+									<xsl:value-of select="$padding-right"/>
+								</xsl:attribute>
+							</xsl:if>
+							<xsl:value-of select="$section"/>
+						</fo:inline>
+						<xsl:apply-templates />
 					</xsl:if>
 					
-						<xsl:value-of select="$section"/>
+					<xsl:if test="$element-name = 'fo:inline'">
 						<xsl:if test="$section != ''">
-							<xsl:choose>
-								<xsl:when test="$level = 2">
-									<fo:inline padding-right="6mm">&#xA0;</fo:inline>
-								</xsl:when>
-								<xsl:otherwise>
-									<fo:inline padding-right="4mm">&#xA0;</fo:inline>
-								</xsl:otherwise>
-							</xsl:choose>
+							<xsl:attribute name="padding-right">
+								<xsl:value-of select="$padding-right"/>
+							</xsl:attribute>
 						</xsl:if>
-				
-						<xsl:apply-templates />
-						
-						
+						<xsl:value-of select="$section"/>					
+					</xsl:if>
 				</xsl:element>
+				
+				
+					<xsl:if test="$element-name = 'fo:inline'">
+						<fo:inline font-size="{$font-size}" font-weight="bold">
+							<xsl:apply-templates />
+						</fo:inline>
+						
+					</xsl:if>
 				
 				<!-- <xsl:if test="$element-name = 'fo:inline' and not(following-sibling::iec:p)">
 					<fo:block> 
@@ -1962,7 +1985,7 @@ plus récente, un corrigendum ou amendement peut avoir été publié.</fo:block>
 	</xsl:template>
 	
 	<xsl:template match="iec:admonition">
-		<fo:block-container border="0.5pt solid black" margin-left="-2mm" margin-right="-2mm" space-before="18pt">
+		<fo:block-container border="0.5pt solid black" margin-left="-2mm" margin-right="-2mm" space-before="18pt" space-after="12pt">
 			<fo:block-container margin-left="0mm" margin-right="0mm" font-weight="bold" padding="1mm" padding-top="2mm">
 				<fo:block text-align="justify">
 					<fo:inline><xsl:value-of select="translate(@type, $lower, $upper)"/> – </fo:inline>
@@ -2004,7 +2027,7 @@ plus récente, un corrigendum ou amendement peut avoir été publié.</fo:block>
 				<fo:table-body>
 					<fo:table-row>
 						<fo:table-cell display-align="center">
-							<fo:block text-align="left"> <!-- margin-left="5mm" -->
+							<fo:block text-align="center"> <!-- left margin-left="5mm" -->
 								<xsl:apply-templates />
 							</fo:block>
 						</fo:table-cell>

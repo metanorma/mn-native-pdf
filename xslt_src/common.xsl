@@ -863,6 +863,9 @@
 				<fo:table width="95%" table-layout="fixed">
 					<xsl:if test="normalize-space($key_iso) = 'true'">
 						<xsl:attribute name="font-size">10pt</xsl:attribute>
+						<xsl:if test="$namespace = 'iec'">
+							<xsl:attribute name="font-size">8pt</xsl:attribute>
+						</xsl:if>
 					</xsl:if>
 					<fo:table-column column-width="15%"/>
 					<fo:table-column column-width="85%"/>
@@ -875,7 +878,7 @@
 										<fo:block>
 											<fo:inline font-size="80%" padding-right="5mm" vertical-align="super" id="{@id}">
 												<xsl:if test="$namespace = 'iec'">
-													<xsl:attribute name="font-family">Times New Roman</xsl:attribute>
+													<!-- <xsl:attribute name="font-family">Times New Roman</xsl:attribute> -->
 													<xsl:attribute name="baseline-shift">65%</xsl:attribute>
 												</xsl:if>
 												<xsl:value-of select="@reference"/>
@@ -998,7 +1001,7 @@
 					</xsl:if>
 					<xsl:if test="$namespace = 'iec'">
 						<xsl:attribute name="font-size">8pt</xsl:attribute>
-						<xsl:attribute name="margin-bottom">6pt</xsl:attribute>
+						<xsl:attribute name="margin-bottom">8pt</xsl:attribute>
 					</xsl:if>
 					<xsl:text>Key</xsl:text>
 				</fo:block>
