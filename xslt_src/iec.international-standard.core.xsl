@@ -679,17 +679,17 @@ plus récente, un corrigendum ou amendement peut avoir été publié.</fo:block>
 						
 						 <!-- main sections -->
 						  <!-- *[position() &gt; 1] -->
-						<!-- <xsl:apply-templates select="/iec:iec-standard/iec:sections/*[local-name() != 'terms' and not(@id='_scope')]">
+						<xsl:apply-templates select="/iec:iec-standard/iec:sections/*[local-name() != 'terms' and not(@id='_scope')][1]">
 							<xsl:with-param name="sectionNumSkew" select="count(/iec:iec-standard/iec:sections/iec:clause[@id='_scope']) +
 																																			count(/iec:iec-standard/iec:bibliography/iec:references[@id = '_normative_references' or @id = '_references']) +
 																																			count(/iec:iec-standard/iec:sections/iec:terms)"/>
-						</xsl:apply-templates> -->
+						</xsl:apply-templates>
 						
 						<!-- Annex(s) -->
 						<!-- <xsl:apply-templates select="/iec:iec-standard/iec:annex"/> -->
 						
 						<!-- Bibliography -->
-						<xsl:apply-templates select="/iec:iec-standard/iec:bibliography/iec:references[not(@id = '_normative_references' or @id = '_references')]"/>
+						<!-- <xsl:apply-templates select="/iec:iec-standard/iec:bibliography/iec:references[not(@id = '_normative_references' or @id = '_references')]"/> -->
 					</fo:block>
 					
 				</fo:flow>
@@ -1343,6 +1343,9 @@ plus récente, un corrigendum ou amendement peut avoir été publié.</fo:block>
 					<xsl:if test="ancestor::iec:definition">
 						<xsl:attribute name="margin-top">1pt</xsl:attribute>
 					</xsl:if>
+					<xsl:if test="ancestor::iec:dl">
+						<xsl:attribute name="margin-top">0pt</xsl:attribute>
+					</xsl:if>
 					<xsl:attribute name="margin-bottom">12pt</xsl:attribute>
 					<xsl:if test="local-name(following-sibling::*[1])= 'table'">
 						<xsl:attribute name="margin-bottom">6pt</xsl:attribute>
@@ -1352,6 +1355,9 @@ plus récente, un corrigendum ou amendement peut avoir été publié.</fo:block>
 					</xsl:if>
 					<xsl:if test="ancestor::iec:admonition and not(following-sibling::iec:p)">
 						<xsl:attribute name="margin-bottom">0pt</xsl:attribute>
+					</xsl:if>
+					<xsl:if test="ancestor::iec:dl">
+						<xsl:attribute name="margin-bottom">5pt</xsl:attribute>
 					</xsl:if>
 					<xsl:apply-templates />
 				</xsl:element>
@@ -1409,7 +1415,7 @@ plus récente, un corrigendum ou amendement peut avoir été publié.</fo:block>
 	</xsl:template>
 	
 	<xsl:template match="iec:dd/iec:p">
-		<fo:block margin-top="5pt" margin-bottom="10pt"><xsl:apply-templates /></fo:block>
+		<fo:block margin-bottom="5pt"><xsl:apply-templates /></fo:block>
 	</xsl:template>
 	
 	<xsl:template match="iec:review">

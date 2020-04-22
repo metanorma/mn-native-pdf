@@ -1113,10 +1113,13 @@
 		<fo:table-row>
 			<fo:table-cell>
 				<fo:block margin-top="6pt">
+					<xsl:if test="$namespace = 'iec'">
+						<xsl:attribute name="margin-top">0pt</xsl:attribute>
+					</xsl:if>
 					<xsl:if test="normalize-space($key_iso) = 'true'">
 						<xsl:attribute name="margin-top">0</xsl:attribute>
 						<xsl:if test="$namespace = 'iec'">
-							<xsl:attribute name="margin-top">5pt</xsl:attribute>
+							<xsl:attribute name="margin-top">0pt</xsl:attribute>
 						</xsl:if>
 					</xsl:if>
 					<xsl:if test="$namespace = 'nist'">
