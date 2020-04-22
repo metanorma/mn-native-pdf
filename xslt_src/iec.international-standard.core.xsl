@@ -487,7 +487,7 @@ plus récente, un corrigendum ou amendement peut avoir été publié.</fo:block>
 						<xsl:for-each select="xalan:nodeset($contents)//item[@display = 'true']
 																																													[@level &lt;= 3]
 																																													[not(@level = 2 and starts-with(@section, '0'))]"><!-- skip clause from preface -->
-							<fo:block text-align-last="justify"> <!-- font-family="Helvetica"  -->
+							<fo:block text-align-last="justify">
 								<xsl:if test="@level = 1">
 									<xsl:attribute name="margin-bottom">5pt</xsl:attribute>
 								</xsl:if>
