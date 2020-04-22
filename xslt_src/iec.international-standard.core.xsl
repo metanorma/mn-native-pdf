@@ -576,7 +576,7 @@ plus récente, un corrigendum ou amendement peut avoir été publié.</fo:block>
 						<xsl:if test="xalan:nodeset($contents)//item[@type = 'table']">
 							<fo:block margin-bottom="5pt">&#xA0;</fo:block>
 							<!-- <fo:block margin-top="5pt" margin-bottom="10pt">&#xA0;</fo:block> -->
-							<xsl:for-each select="xalan:nodeset($contents)//item[@type = 'table']">
+							<xsl:for-each select="xalan:nodeset($contents)//item[@type = 'table' and @display = 'true']">
 								<fo:block text-align-last="justify" margin-bottom="5pt" margin-left="8mm" text-indent="-8mm">
 									<fo:basic-link internal-destination="{@id}"  fox:alt-text="{@section}">
 										<xsl:value-of select="@section"/>
@@ -672,10 +672,10 @@ plus récente, un corrigendum ou amendement peut avoir été publié.</fo:block>
 						</xsl:apply-templates>
 						
 						<!-- Terms and definitions -->
-						<!-- <xsl:apply-templates select="/iec:iec-standard/iec:sections/iec:terms">
+						<xsl:apply-templates select="/iec:iec-standard/iec:sections/iec:terms">
 							<xsl:with-param name="sectionNum" select="count(/iec:iec-standard/iec:sections/iec:clause[@id='_scope']) +
 																																			count(/iec:iec-standard/iec:bibliography/iec:references[@id = '_normative_references' or @id = '_references']) + 1"/>
-						</xsl:apply-templates> -->
+						</xsl:apply-templates>
 						
 						 <!-- main sections -->
 						  <!-- *[position() &gt; 1] -->
@@ -689,7 +689,7 @@ plus récente, un corrigendum ou amendement peut avoir été publié.</fo:block>
 						<!-- <xsl:apply-templates select="/iec:iec-standard/iec:annex"/> -->
 						
 						<!-- Bibliography -->
-						<!-- <xsl:apply-templates select="/iec:iec-standard/iec:bibliography/iec:references[not(@id = '_normative_references' or @id = '_references')]"/> -->
+						<xsl:apply-templates select="/iec:iec-standard/iec:bibliography/iec:references[not(@id = '_normative_references' or @id = '_references')]"/>
 					</fo:block>
 					
 				</fo:flow>
@@ -986,7 +986,10 @@ plus récente, un corrigendum ou amendement peut avoir été publié.</fo:block>
 	<xsl:template match="iec:table" mode="contents">
 		<xsl:param name="sectionNum" />
 		<xsl:variable name="annex-id" select="ancestor::iec:annex/@id"/>
-		<item level="" id="{@id}" display="false" type="table">
+		<item level="" id="{@id}" display="true" type="table">
+			<xsl:if test="ancestor::iec:preface">
+				<xsl:attribute name="display">false</xsl:attribute>
+			</xsl:if>
 			<xsl:attribute name="section">
 				<xsl:text>Table </xsl:text>
 				<xsl:choose>
@@ -1003,7 +1006,10 @@ plus récente, un corrigendum ou amendement peut avoir été publié.</fo:block>
 						<!-- <xsl:number format="1" level="any" count="*[local-name()='table'][not(ancestor::*[local-name()='annex'])]"/> -->
 						<!-- <xsl:number format="1" level="any" count="*[not(local-name()='annex') and not(local-name()='executivesummary')]//*[local-name()='table'][not(@unnumbered) or @unnumbered != 'true']"/> -->
 						<xsl:number format="1" level="any" count="//*[local-name()='table']
-																																								[not(ancestor::*[local-name()='annex']) and not(ancestor::*[local-name()='executivesummary'])]
+																																								[not(ancestor::*[local-name()='annex'])
+																																								 and not(ancestor::*[local-name()='executivesummary'])
+																																								 and not(ancestor::*[local-name()='bibdata'])
+																																								 and not(ancestor::*[local-name()='preface'])]
 																																								[not(@unnumbered) or @unnumbered != 'true']"/>
 					</xsl:otherwise>
 				</xsl:choose>
@@ -1359,6 +1365,10 @@ plus récente, un corrigendum ou amendement peut avoir été publié.</fo:block>
 					<xsl:if test="ancestor::iec:dl">
 						<xsl:attribute name="margin-bottom">5pt</xsl:attribute>
 					</xsl:if>
+					 <!-- Key -->
+					<!-- <xsl:if test="ancestor::iec:dl and ancestor::iec:figure">
+						<xsl:attribute name="margin-bottom">10pt</xsl:attribute>
+					</xsl:if> -->
 					<xsl:apply-templates />
 				</xsl:element>
 			</xsl:when>
@@ -1416,6 +1426,10 @@ plus récente, un corrigendum ou amendement peut avoir été publié.</fo:block>
 	
 	<xsl:template match="iec:dd/iec:p">
 		<fo:block margin-bottom="5pt"><xsl:apply-templates /></fo:block>
+	</xsl:template>
+	
+	<xsl:template match="iec:dd/iec:p[ancestor::iec:figure]">
+		<fo:block margin-bottom="10pt"><xsl:apply-templates /></fo:block>
 	</xsl:template>
 	
 	<xsl:template match="iec:review">
@@ -1898,7 +1912,18 @@ plus récente, un corrigendum ou amendement peut avoir été publié.</fo:block>
 	
 	<xsl:template match="iec:note/iec:p" name="note">
 		<fo:block margin-top="5pt" margin-bottom="5pt" font-size="8pt">
-			<fo:inline padding-right="6mm">NOTE</fo:inline>
+			<xsl:if test="../following-sibling::iec:note">
+				<xsl:attribute name="margin-bottom">9pt</xsl:attribute>
+			</xsl:if>
+			<fo:inline padding-right="6mm">
+				<xsl:text>NOTE </xsl:text>
+				<xsl:if test="ancestor::iec:figure">
+					<xsl:variable name="id" select="ancestor::iec:figure[1]/@id"/>
+					<xsl:if test="count(//iec:note[ancestor::*[@id = $id]]) &gt; 1">
+						<xsl:number count="iec:note[ancestor::*[@id = $id]]" level="any"/>
+					</xsl:if>
+				</xsl:if>
+			</fo:inline>
 			<xsl:apply-templates />
 		</fo:block>
 	</xsl:template>
