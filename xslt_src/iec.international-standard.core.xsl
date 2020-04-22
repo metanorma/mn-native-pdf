@@ -69,7 +69,7 @@
 			</xsl:apply-templates>
 			
 			<xsl:apply-templates select="/iec:iec-standard/iec:annex" mode="contents"/>
-			<xsl:apply-templates select="/iec:iec-standard/iec:bibliography/iec:references[position() &gt; 1]" mode="contents"/> <!-- @id = '_bibliography' -->
+			<xsl:apply-templates select="/iec:iec-standard/iec:bibliography/iec:references[not(@id = '_normative_references' or @id = '_references')]" mode="contents"/> <!-- @id = '_bibliography' -->
 			
 		</contents>
 	</xsl:variable>
@@ -118,11 +118,15 @@
 					</fo:repeatable-page-master-alternatives>
 				</fo:page-sequence-master>
 				
+				<fo:simple-page-master master-name="blank-page" page-width="{$pageWidth}" page-height="{$pageHeight}">
+					<fo:region-body margin-top="107mm" margin-bottom="0mm" margin-left="18mm" margin-right="0mm"/>
+				</fo:simple-page-master>
+				
 				<fo:simple-page-master master-name="last-page" page-width="{$pageWidth}" page-height="{$pageHeight}">
-				<fo:region-body margin-top="107mm" margin-bottom="0mm" margin-left="18mm" margin-right="0mm" background-color="rgb(236, 236, 236)"/>
-				<fo:region-before region-name="header" extent="107mm"/> 
-				<fo:region-start region-name="left-region" extent="18mm"/>
-			</fo:simple-page-master>
+					<fo:region-body margin-top="107mm" margin-bottom="0mm" margin-left="18mm" margin-right="0mm" background-color="rgb(236, 236, 236)"/>
+					<fo:region-before region-name="header" extent="107mm"/> 
+					<fo:region-start region-name="left-region" extent="18mm"/>
+				</fo:simple-page-master>
 			</fo:layout-master-set>
 
 
@@ -591,7 +595,6 @@ plus récente, un corrigendum ou amendement peut avoir été publié.</fo:block>
 
 					</fo:block-container>
 					
-
 					<fo:block break-after="page"/>
 					
 					<fo:block-container font-size="12pt" text-align="center" margin-bottom="18pt">
@@ -669,10 +672,10 @@ plus récente, un corrigendum ou amendement peut avoir été publié.</fo:block>
 						</xsl:apply-templates>
 						
 						<!-- Terms and definitions -->
-						<xsl:apply-templates select="/iec:iec-standard/iec:sections/iec:terms">
+						<!-- <xsl:apply-templates select="/iec:iec-standard/iec:sections/iec:terms">
 							<xsl:with-param name="sectionNum" select="count(/iec:iec-standard/iec:sections/iec:clause[@id='_scope']) +
 																																			count(/iec:iec-standard/iec:bibliography/iec:references[@id = '_normative_references' or @id = '_references']) + 1"/>
-						</xsl:apply-templates>
+						</xsl:apply-templates> -->
 						
 						 <!-- main sections -->
 						  <!-- *[position() &gt; 1] -->
@@ -686,9 +689,15 @@ plus récente, un corrigendum ou amendement peut avoir été publié.</fo:block>
 						<!-- <xsl:apply-templates select="/iec:iec-standard/iec:annex"/> -->
 						
 						<!-- Bibliography -->
-						<!-- <xsl:apply-templates select="/iec:iec-standard/iec:bibliography/iec:references[position() &gt; 1]"/> -->
+						<xsl:apply-templates select="/iec:iec-standard/iec:bibliography/iec:references[not(@id = '_normative_references' or @id = '_references')]"/>
 					</fo:block>
 					
+				</fo:flow>
+			</fo:page-sequence>
+			
+			<fo:page-sequence master-reference="blank-page">
+				<fo:flow flow-name="xsl-region-body">
+					<fo:block>&#xA0;</fo:block>
 				</fo:flow>
 			</fo:page-sequence>
 			
@@ -1184,9 +1193,9 @@ plus récente, un corrigendum ou amendement peut avoir été publié.</fo:block>
 		<xsl:param name="sectionNum"/>
 		
 		<xsl:variable name="parent-name"  select="local-name(..)"/>
-		<xsl:variable name="references_num_current">
+		<!-- <xsl:variable name="references_num_current">
 			<xsl:number level="any" count="iec:references"/>
-		</xsl:variable>
+		</xsl:variable> -->
 		
 		<xsl:variable name="id">
 			<xsl:call-template name="getId"/>
@@ -1240,9 +1249,12 @@ plus récente, un corrigendum ou amendement peut avoir été publié.</fo:block>
 					<xsl:apply-templates />
 				</fo:block>
 			</xsl:when>
-			<xsl:when test="$parent-name = 'references' and $references_num_current != 1"> <!-- Bibliography -->
-				<fo:block id="{$id}" font-family="Times New Roman" font-size="24pt" font-weight="bold" margin-bottom="12pt" keep-with-next="always">
-					<xsl:apply-templates />
+			<xsl:when test="$parent-name = 'references' and not(../@id = '_normative_references' or ../@id = '_references')"> <!-- Bibliography -->
+				<fo:block id="{$id}" font-size="12pt" text-align="center" margin-bottom="12pt" keep-with-next="always">
+					<xsl:call-template name="addLetterSpacing">
+						<xsl:with-param name="text" select="."/>
+					</xsl:call-template>
+					<!-- <xsl:apply-templates /> -->
 				</fo:block>
 			</xsl:when>
 			<xsl:when test="$parent-name = 'introduction'">
@@ -1697,21 +1709,24 @@ plus récente, un corrigendum ou amendement peut avoir été publié.</fo:block>
 
 	
 	<!-- <xsl:template match="iec:references[@id = '_bibliography']"> -->
-	<xsl:template match="iec:references[position() &gt; 1]">
+	<xsl:template match="iec:references[not(@id = '_normative_references' or @id = '_references')]">
 		<fo:block break-after="page"/>
-			<xsl:apply-templates />
+		<xsl:apply-templates />
+		<fo:block-container text-align="center" margin-top="10mm">
+			<fo:block>_____________</fo:block>
+		</fo:block-container>
 	</xsl:template>
 
 
 	<!-- Example: [1] ISO 9:1995, Information and documentation – Transliteration of Cyrillic characters into Latin characters – Slavic and non-Slavic languages -->
 	<!-- <xsl:template match="iec:references[@id = '_bibliography']/iec:bibitem"> -->
-	<xsl:template match="iec:references[position() &gt; 1]/iec:bibitem">
-		<fo:list-block margin-top="5pt" margin-bottom="10pt" provisional-distance-between-starts="12mm">
+	<xsl:template match="iec:references[not(@id = '_normative_references' or @id = '_references')]/iec:bibitem">
+		<fo:list-block margin-top="5pt" margin-bottom="14pt" provisional-distance-between-starts="0mm"> <!-- provisional-distance-between-starts="12mm" -->
 			<fo:list-item>
 				<fo:list-item-label end-indent="label-end()">
 					<fo:block>
 						<fo:inline id="{@id}">
-							<xsl:number format="[1]"/>
+							<!-- <xsl:number format="[1]"/> -->
 						</fo:inline>
 					</fo:block>
 				</fo:list-item-label>
@@ -1739,10 +1754,10 @@ plus récente, un corrigendum ou amendement peut avoir été publié.</fo:block>
 	</xsl:template>
 	
 	<!-- <xsl:template match="iec:references[@id = '_bibliography']/iec:bibitem" mode="contents"/> -->
-	<xsl:template match="iec:references[position() &gt; 1]/iec:bibitem" mode="contents"/>
+	<xsl:template match="iec:references[not(@id = '_normative_references' or @id = '_references')]/iec:bibitem" mode="contents"/>
 	
 	<!-- <xsl:template match="iec:references[@id = '_bibliography']/iec:bibitem/iec:title"> -->
-	<xsl:template match="iec:references[position() &gt; 1]/iec:bibitem/iec:title">
+	<xsl:template match="iec:references[not(@id = '_normative_references' or @id = '_references')]/iec:bibitem/iec:title">
 		<fo:inline font-style="italic">
 			<xsl:apply-templates />
 		</fo:inline>
@@ -1935,7 +1950,6 @@ plus récente, un corrigendum ou amendement peut avoir été publié.</fo:block>
 	<xsl:template match="iec:admonition//iec:p//text()">
 		<xsl:call-template name="addLetterSpacing">
 			<xsl:with-param name="text" select="."/>
-			
 		</xsl:call-template>
 	</xsl:template>
 	
