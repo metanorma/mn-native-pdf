@@ -26,10 +26,76 @@
 	<xsl:variable name="part" select="/iec:iec-standard/iec:bibdata/iec:ext/iec:structuredidentifier/iec:project-number/@part"/>
 	<xsl:variable name="title-part" select="/iec:iec-standard/iec:bibdata/iec:title[@language = 'en' and @type = 'title-part']"/>
 	<xsl:variable name="title-part-fr" select="/iec:iec-standard/iec:bibdata/iec:title[@language = 'fr' and @type = 'title-part']"/>
+
+	<xsl:variable name="doctype" select="/iec:iec-standard/iec:bibdata/iec:ext/iec:doctype"/>
+	<xsl:variable name="doctype_uppercased" select="translate(translate($doctype,'-',' '), $lower,$upper)"/>
 	
 	<xsl:variable name="organization" select="translate(/iec:iec-standard/iec:bibdata/iec:contributor/iec:organization/iec:name, $lower, $upper)"/>
 	
 	<xsl:variable name="publisher" select="translate(/iec:iec-standard/iec:bibdata/iec:contributor[iec:role/@type = 'publisher']/iec:organization/iec:name, $lower, $upper)"/>
+	
+	<xsl:variable name="stage" select="number(/iec:iec-standard/iec:bibdata/iec:status/iec:stage)"/>
+	<xsl:variable name="stage-abbrev" select="normalize-space(/iec:iec-standard/iec:bibdata/iec:status/iec:stage/@abbreviation)"/>
+	<xsl:variable name="stage-fullname" select="normalize-space(/iec:iec-standard/iec:bibdata/iec:ext/iec:stagename)"/>
+	<xsl:variable name="substage" select="number(/iec:iec-standard/iec:bibdata/iec:status/iec:substage)"/>	
+	<xsl:variable name="stage-name">
+		<xsl:choose>
+			<xsl:when test="$stage-abbrev != ''">
+				<xsl:value-of select="$stage-abbrev"/>
+			</xsl:when>
+			<xsl:when test="$stage = 0">NWIP</xsl:when> <!-- NWIP (NP, PWI) -->
+			<xsl:when test="$stage = 10">AWI</xsl:when>
+			<xsl:when test="$stage = 20">WD</xsl:when>
+			<xsl:when test="$stage = 30">CD</xsl:when>
+			<xsl:when test="$stage = 40">DIS</xsl:when>
+			<xsl:when test="$stage = 50">FDIS</xsl:when>
+			<xsl:when test="$stage = 60 and $substage = 0">IS</xsl:when>
+			<xsl:when test="$stage &gt;= 60">published</xsl:when>
+			<xsl:otherwise></xsl:otherwise>
+		</xsl:choose>
+	</xsl:variable>
+	
+	<!-- UPPERCASED stage name -->
+	<xsl:variable name="stage-name-uppercased">
+		<xsl:if test="$stage-fullname != '' and $stage-abbrev != ''">
+			<item name="{$stage-abbrev}">
+				<xsl:if test="$stage-abbrev = 'NWIP' or 'AWI' or 'WD' or 'CD' or 'DIS' or 'FDIS'">
+					<xsl:attribute name="show">true</xsl:attribute>
+					<xsl:attribute name="shortname">DRAFT</xsl:attribute>
+				</xsl:if>
+				<xsl:if test="$stage-abbrev = 'FDIS'">
+					<xsl:attribute name="shortname">PRE-RELEASE VERSION (FDIS)</xsl:attribute>
+				</xsl:if>
+				<xsl:value-of select="translate($stage-fullname, $lower, $upper)"/>
+			</item>
+		</xsl:if>
+		<item name="NWIP" show="true" shortname="DRAFT">NEW WORK ITEM PROPOSAL DRAFT</item>
+		<item name="AWI" show="true" shortname="DRAFT">APPROVED WORK ITEM</item>
+		<item name="WD" show="true" shortname="DRAFT">WORKING DRAFT</item>
+		<item name="CD" show="true" shortname="DRAFT">COMMITTEE DRAFT</item>
+		<item name="DIS" show="true" shortname="DRAFT">DRAFT</item>
+		<item name="FDIS" show="true" shortname="FINAL DRAFT">PRE-RELEASE VERSION (FDIS)</item>
+		<item name="IS">PROOF</item>
+	</xsl:variable>
+	<xsl:variable name="isPublished">
+		<xsl:choose>
+			<xsl:when test="string($stage) = 'NaN'">false</xsl:when>
+			<xsl:when test="$stage &gt;=60">true</xsl:when>
+			<xsl:when test="normalize-space($stage-name) != ''">true</xsl:when>
+			<xsl:otherwise>false</xsl:otherwise>
+		</xsl:choose>
+	</xsl:variable>
+	
+	<xsl:variable name="doctype_name">
+		<xsl:choose>
+			<xsl:when test="normalize-space(xalan:nodeset($stage-name-uppercased)/item[@name = $stage-name and @show = 'true']/text()) != ''">
+				<xsl:value-of select="xalan:nodeset($stage-name-uppercased)/item[@name = $stage-name and @show = 'true']/text()"/>
+			</xsl:when>
+			<xsl:otherwise>
+				<xsl:value-of select="$doctype_uppercased"/>
+			</xsl:otherwise>
+		</xsl:choose>
+	</xsl:variable>
 	
 	<!-- Example:
 		<item level="1" id="Foreword" display="true">Foreword</item>
@@ -37,11 +103,6 @@
 	-->
 	<xsl:variable name="contents">
 		<contents>
-		
-						
-						
-		
-		
 		
 			<xsl:apply-templates select="/iec:iec-standard/iec:preface/node()" mode="contents"/>
 				<!-- <xsl:with-param name="sectionNum" select="'0'"/>
@@ -95,9 +156,16 @@
 					<fo:region-end region-name="right-region" extent="20.5mm"/>
 				</fo:simple-page-master>
 				
+				<fo:simple-page-master master-name="cover-FDIS" page-width="{$pageWidth}" page-height="{$pageHeight}">
+					<fo:region-body margin-top="17.5mm" margin-bottom="5mm" margin-left="18mm" margin-right="19mm"/>
+					<fo:region-before region-name="header" extent="17.5mm"/> 
+					<fo:region-start region-name="left-region" extent="18mm"/>
+					<fo:region-end region-name="right-region" extent="19mm"/>
+				</fo:simple-page-master>
+				
 				<!-- odd pages -->
 				<fo:simple-page-master master-name="odd" page-width="{$pageWidth}" page-height="{$pageHeight}">
-					<fo:region-body margin-top="30mm" margin-bottom="15mm" margin-left="25mm" margin-right="25mm"/>
+					<fo:region-body margin-top="31mm" margin-bottom="15mm" margin-left="25mm" margin-right="25mm"/>
 					<fo:region-before region-name="header-odd" extent="31mm"/> 
 					<fo:region-after region-name="footer" extent="15mm"/>
 					<fo:region-start region-name="left-region" extent="25mm"/>
@@ -105,7 +173,7 @@
 				</fo:simple-page-master>
 				<!-- even pages -->
 				<fo:simple-page-master master-name="even" page-width="{$pageWidth}" page-height="{$pageHeight}">
-					<fo:region-body margin-top="30mm" margin-bottom="15mm" margin-left="25mm" margin-right="25mm"/>
+					<fo:region-body margin-top="31mm" margin-bottom="15mm" margin-left="25mm" margin-right="25mm"/>
 					<fo:region-before region-name="header-even" extent="31mm"/>
 					<fo:region-after region-name="footer" extent="15mm"/>
 					<fo:region-start region-name="left-region" extent="25mm"/>
@@ -168,275 +236,282 @@
 					</rdf:RDF>
 				</x:xmpmeta>
 			</fo:declarations>
+
+			<xsl:if test="$stage &gt;= 60">
 			
-			<!-- 1st Cover Page -->
-			<fo:page-sequence master-reference="cover">
-				<fo:static-content flow-name="left-region" >
-					<fo:block-container reference-orientation="90">
-						<fo:block font-size="7pt" margin-left="0.5mm" margin-top="5mm">Example: IEC 61000-4-5:2014-05(en-fr)</fo:block>
-					</fo:block-container>
-				</fo:static-content>
-				<fo:flow flow-name="xsl-region-body">
-					<fo:block-container absolute-position="fixed" left="18mm" top="107mm">
-							<fo:block>
-							<fo:external-graphic src="{concat('data:image/png;base64,', normalize-space($Image-Cover-Background))}" width="192mm" content-height="scale-to-fit" scaling="uniform" fox:alt-text="Image Front"/>
-						</fo:block>
-					</fo:block-container>
-					<xsl:call-template name="insertCoverPart1"/>
-				</fo:flow>
-			</fo:page-sequence>
-			
-			<!-- 2nd Cover Page -->
-			<fo:page-sequence master-reference="cover">
-				<fo:flow flow-name="xsl-region-body">
-					<fo:block-container margin-left="7mm" margin-right="4.5mm" border="0.5pt solid black" margin-top="7mm">
-						<fo:block-container margin-left="2.5mm" margin-right="2.5mm" margin-top="1mm" margin-bottom="1mm">
-							<fo:block-container margin-left="0mm" margin-right="0mm">
-								<fo:table table-layout="fixed" width="100%">
-									<fo:table-column column-width="20mm"/>
-									<fo:table-column column-width="130mm"/>
-									<fo:table-body>
-										<fo:table-row>
-											<fo:table-cell>
-												<fo:block>
-													<fo:external-graphic src="{concat('data:image/png;base64,', normalize-space($Image-Attention))}" width="17.8mm" content-height="scale-to-fit" scaling="uniform" fox:alt-text="Image Front"/>
-												</fo:block>
-											</fo:table-cell>
-											<fo:table-cell font-size="10pt" font-weight="bold" display-align="after">
-												<fo:block margin-bottom="3pt">THIS PUBLICATION IS COPYRIGHT PROTECTED</fo:block>
-												<fo:block margin-bottom="10pt">
-													<!-- Example: Copyright © 2014 IEC, Geneva, Switzerland -->
-													<xsl:apply-templates select="/iec:iec-standard/iec:boilerplate/iec:copyright-statement/iec:clause/iec:p[@id = 'boilerplate-year']"/>
-												</fo:block>
-											</fo:table-cell>
-										</fo:table-row>
-									</fo:table-body>
-								</fo:table>
-								<fo:block font-size="8pt">
-									<fo:block margin-bottom="8pt" text-align="justify">
-									<!-- Example: All rights reserved. Unless otherwise specified, no part of this publication may be reproduced or utilized in any form
-or by any means, electronic or mechanical, including photocopying and microfilm, without permission in writing from
-either IEC or IEC's member National Committee in the country of the requester. If you have any questions about IEC
-copyright or have an enquiry about obtaining additional rights to this publication, please contact the address below or
-your local IEC member National Committee for further information. -->
-									<xsl:apply-templates select="/iec:iec-standard/iec:boilerplate/iec:copyright-statement/iec:clause/iec:p[@id = 'boilerplate-message']"/>
-									</fo:block>
-									<fo:block margin-bottom="8pt" text-align="justify">Droits de reproduction réservés. Sauf indication contraire, aucune partie de cette publication ne peut être reproduite
-ni utilisée sous quelque forme que ce soit et par aucun procédé, électronique ou mécanique, y compris la photocopie
-et les microfilms, sans l'accord écrit de l'IEC ou du Comité national de l'IEC du pays du demandeur. Si vous avez des
-questions sur le copyright de l'IEC ou si vous désirez obtenir des droits supplémentaires sur cette publication, utilisez
-les coordonnées ci-après ou contactez le Comité national de l'IEC de votre pays de résidence.</fo:block>
-								
-									<xsl:variable name="telpos" select="count(/iec:iec-standard/iec:boilerplate/iec:copyright-statement/iec:clause/iec:p[@id = 'boilerplate-address']/text()[contains(., 'Tel.')]/preceding-sibling::node())"/>
+				<!-- 1st Cover Page -->
+				<fo:page-sequence master-reference="cover" force-page-count="no-force">
+					<fo:static-content flow-name="left-region" >
+						<fo:block-container reference-orientation="90">
+							<fo:block font-size="7pt" margin-left="0.5mm" margin-top="5mm">Example: IEC 61000-4-5:2014-05(en-fr)</fo:block>
+						</fo:block-container>
+					</fo:static-content>
+					<fo:flow flow-name="xsl-region-body">
+						<fo:block-container absolute-position="fixed" left="18mm" top="107mm">
+								<fo:block>
+								<fo:external-graphic src="{concat('data:image/png;base64,', normalize-space($Image-Cover-Background))}" width="192mm" content-height="scale-to-fit" scaling="uniform" fox:alt-text="Image Front"/>
+							</fo:block>
+						</fo:block-container>
+						<xsl:call-template name="insertCoverPart1"/>
+					</fo:flow>
+				</fo:page-sequence>
+				
+				<!-- 2nd Cover Page -->
+				<fo:page-sequence master-reference="cover" force-page-count="no-force">
+					<fo:flow flow-name="xsl-region-body">
+						<fo:block-container margin-left="7mm" margin-right="4.5mm" border="0.5pt solid black" margin-top="7mm">
+							<fo:block-container margin-left="2.5mm" margin-right="2.5mm" margin-top="1mm" margin-bottom="1mm">
+								<fo:block-container margin-left="0mm" margin-right="0mm">
 									<fo:table table-layout="fixed" width="100%">
-										<fo:table-column column-width="59mm"/>
-										<fo:table-column column-width="90mm"/>
+										<fo:table-column column-width="20mm"/>
+										<fo:table-column column-width="130mm"/>
 										<fo:table-body>
 											<fo:table-row>
 												<fo:table-cell>
 													<fo:block>
-														<!-- Example: IEC Central Office
-															3, rue de Varembé
-															CH-1211 Geneva 20
-															Switzerland -->
-														<xsl:apply-templates select="/iec:iec-standard/iec:boilerplate/iec:copyright-statement/iec:clause/iec:p[@id = 'boilerplate-name']" mode="coverpage"/>
-														<xsl:choose>
-															<xsl:when test="$telpos != 0">
-																<xsl:apply-templates select="/iec:iec-standard/iec:boilerplate/iec:copyright-statement/iec:clause/iec:p[@id = 'boilerplate-address']/node()[position() &lt; $telpos]" mode="coverpage"/>
-															</xsl:when>
-															<xsl:otherwise>
-																<xsl:apply-templates select="/iec:iec-standard/iec:boilerplate/iec:copyright-statement/iec:clause/iec:p[@id = 'boilerplate-address']" mode="coverpage"/>
-															</xsl:otherwise>
-														</xsl:choose>
+														<fo:external-graphic src="{concat('data:image/png;base64,', normalize-space($Image-Attention))}" width="17.8mm" content-height="scale-to-fit" scaling="uniform" fox:alt-text="Image Front"/>
 													</fo:block>
 												</fo:table-cell>
-												<fo:table-cell>
-													<fo:block>
-														<!-- Example: Tel.: +41 22 919 02 11
-														 Fax: +41 22 919 0
-														 info@iec.ch
-														www.iec.ch -->
-														<xsl:choose>
-															<xsl:when test="$telpos != 0">
-																<xsl:apply-templates select="/iec:iec-standard/iec:boilerplate/iec:copyright-statement/iec:clause/iec:p[@id = 'boilerplate-address']/node()[position() &gt; $telpos]" mode="coverpage"/>
-															</xsl:when>
-															<xsl:otherwise>&#xA0;</xsl:otherwise>
-														</xsl:choose>
+												<fo:table-cell font-size="10pt" font-weight="bold" display-align="after">
+													<fo:block margin-bottom="3pt">THIS PUBLICATION IS COPYRIGHT PROTECTED</fo:block>
+													<fo:block margin-bottom="10pt">
+														<!-- Example: Copyright © 2014 IEC, Geneva, Switzerland -->
+														<xsl:apply-templates select="/iec:iec-standard/iec:boilerplate/iec:copyright-statement/iec:clause/iec:p[@id = 'boilerplate-year']"/>
 													</fo:block>
 												</fo:table-cell>
 											</fo:table-row>
 										</fo:table-body>
 									</fo:table>
-								
-								</fo:block>
+									<fo:block font-size="8pt">
+										<fo:block margin-bottom="8pt" text-align="justify">
+										<!-- Example: All rights reserved. Unless otherwise specified, no part of this publication may be reproduced or utilized in any form
+	or by any means, electronic or mechanical, including photocopying and microfilm, without permission in writing from
+	either IEC or IEC's member National Committee in the country of the requester. If you have any questions about IEC
+	copyright or have an enquiry about obtaining additional rights to this publication, please contact the address below or
+	your local IEC member National Committee for further information. -->
+										<xsl:apply-templates select="/iec:iec-standard/iec:boilerplate/iec:copyright-statement/iec:clause/iec:p[@id = 'boilerplate-message']"/>
+										</fo:block>
+										<fo:block margin-bottom="8pt" text-align="justify">Droits de reproduction réservés. Sauf indication contraire, aucune partie de cette publication ne peut être reproduite
+	ni utilisée sous quelque forme que ce soit et par aucun procédé, électronique ou mécanique, y compris la photocopie
+	et les microfilms, sans l'accord écrit de l'IEC ou du Comité national de l'IEC du pays du demandeur. Si vous avez des
+	questions sur le copyright de l'IEC ou si vous désirez obtenir des droits supplémentaires sur cette publication, utilisez
+	les coordonnées ci-après ou contactez le Comité national de l'IEC de votre pays de résidence.</fo:block>
+									
+										<xsl:variable name="telpos" select="count(/iec:iec-standard/iec:boilerplate/iec:copyright-statement/iec:clause/iec:p[@id = 'boilerplate-address']/text()[contains(., 'Tel.')]/preceding-sibling::node())"/>
+										<fo:table table-layout="fixed" width="100%">
+											<fo:table-column column-width="59mm"/>
+											<fo:table-column column-width="90mm"/>
+											<fo:table-body>
+												<fo:table-row>
+													<fo:table-cell>
+														<fo:block>
+															<!-- Example: IEC Central Office
+																3, rue de Varembé
+																CH-1211 Geneva 20
+																Switzerland -->
+															<xsl:apply-templates select="/iec:iec-standard/iec:boilerplate/iec:copyright-statement/iec:clause/iec:p[@id = 'boilerplate-name']" mode="coverpage"/>
+															<xsl:choose>
+																<xsl:when test="$telpos != 0">
+																	<xsl:apply-templates select="/iec:iec-standard/iec:boilerplate/iec:copyright-statement/iec:clause/iec:p[@id = 'boilerplate-address']/node()[position() &lt; $telpos]" mode="coverpage"/>
+																</xsl:when>
+																<xsl:otherwise>
+																	<xsl:apply-templates select="/iec:iec-standard/iec:boilerplate/iec:copyright-statement/iec:clause/iec:p[@id = 'boilerplate-address']" mode="coverpage"/>
+																</xsl:otherwise>
+															</xsl:choose>
+														</fo:block>
+													</fo:table-cell>
+													<fo:table-cell>
+														<fo:block>
+															<!-- Example: Tel.: +41 22 919 02 11
+															 Fax: +41 22 919 0
+															 info@iec.ch
+															www.iec.ch -->
+															<xsl:choose>
+																<xsl:when test="$telpos != 0">
+																	<xsl:apply-templates select="/iec:iec-standard/iec:boilerplate/iec:copyright-statement/iec:clause/iec:p[@id = 'boilerplate-address']/node()[position() &gt; $telpos]" mode="coverpage"/>
+																</xsl:when>
+																<xsl:otherwise>&#xA0;</xsl:otherwise>
+															</xsl:choose>
+														</fo:block>
+													</fo:table-cell>
+												</fo:table-row>
+											</fo:table-body>
+										</fo:table>
+									
+									</fo:block>
+								</fo:block-container>
 							</fo:block-container>
 						</fo:block-container>
-					</fo:block-container>
-					
-					<fo:block-container margin-left="7mm" margin-right="4.5mm" margin-top="6pt">
-						<fo:block-container font-size="8pt" text-align="justify" margin-left="0mm" margin-right="0mm">
-							
-							<fo:block font-weight="bold">About the IEC</fo:block>
-							<fo:block margin-bottom="6pt">The International Electrotechnical Commission (IEC) is the leading global organization that prepares and publishes
-	International Standards for all electrical, electronic and related technologies.</fo:block>
 						
-						<fo:block font-weight="bold">About IEC publications</fo:block>
-						<fo:block margin-bottom="6pt">The technical content of IEC publications is kept under constant review by the IEC. Please make sure that you have the
-	latest edition, a corrigenda or an amendment might have been published.</fo:block>
+						<fo:block-container margin-left="7mm" margin-right="4.5mm" margin-top="6pt">
+							<fo:block-container font-size="8pt" text-align="justify" margin-left="0mm" margin-right="0mm">
+								
+								<fo:block font-weight="bold">About the IEC</fo:block>
+								<fo:block margin-bottom="6pt">The International Electrotechnical Commission (IEC) is the leading global organization that prepares and publishes
+		International Standards for all electrical, electronic and related technologies.</fo:block>
 							
-							<fo:table table-layout="fixed" width="100%" margin-bottom="12pt">
-								<fo:table-column column-width="82mm"/>
-								<fo:table-column column-width="78mm"/>
-								<fo:table-body>
-									<fo:table-row border-bottom="0.5pt solid black">
-										<fo:table-cell padding-right="5mm">
-											<fo:block font-weight="bold">IEC Catalogue - <fo:inline color="blue">webstore.iec.ch/catalogue</fo:inline></fo:block>
-											<fo:block margin-bottom="6pt">
-												<xsl:text>The stand-alone application for consulting the entire
-												bibliographical information on IEC International Standards,
-												Technical Specifications, Technical Reports and other
-												documents. Available for PC, Mac OS, Android Tablets and
-												iPad.</xsl:text>
-											</fo:block>
-											<fo:block font-weight="bold">IEC publications search - <fo:inline color="blue">www.iec.ch/searchpub</fo:inline></fo:block>
-											<fo:block margin-bottom="6pt">
-												<xsl:text>The advanced search enables to find IEC publications by a
-												variety of criteria (reference number, text, technical
-												committee,…). It also gives information on projects, replaced
-												and withdrawn publications.</xsl:text>
-											</fo:block>
-											<fo:block font-weight="bold">IEC Just Published - <fo:inline color="blue">webstore.iec.ch/justpublished</fo:inline></fo:block>
-											<fo:block margin-bottom="6pt">
-												<xsl:text>Stay up to date on all new IEC publications. Just Published
-												details all new publications released. Available online and
-												also once a month by email.</xsl:text>
-											</fo:block>
-										</fo:table-cell>
-										<fo:table-cell>
-											<fo:block font-weight="bold">Electropedia - <fo:inline color="blue">www.electropedia.org</fo:inline></fo:block>
-											<fo:block margin-bottom="6pt">
-												<xsl:text>The world's leading online dictionary of electronic and
-													electrical terms containing more than 30 000 terms and
-													definitions in English and French, with equivalent terms in 14
-													additional languages. Also known as the International
-													Electrotechnical Vocabulary (IEV) online.</xsl:text>
-											</fo:block>
-											<fo:block font-weight="bold">IEC Glossary - <fo:inline color="blue">std.iec.ch/glossary</fo:inline></fo:block>
-											<fo:block margin-bottom="6pt">
-												<xsl:text>More than 55 000 electrotechnical terminology entries in
-													English and French extracted from the Terms and Definitions
-													clause of IEC publications issued since 2002. Some entries
-													have been collected from earlier publications of IEC TC 37,
-													77, 86 and CISPR.</xsl:text>
-											</fo:block>
-											<fo:block font-weight="bold">IEC Customer Service Centre - <fo:inline color="blue">webstore.iec.ch/csc</fo:inline></fo:block>
-											<fo:block margin-bottom="6pt">
-												<xsl:text>If you wish to give us your feedback on this publication or
-													need further assistance, please contact the Customer Service
-													Centre: </xsl:text><fo:inline color="blue">csc@iec.ch</fo:inline>.
-											</fo:block>
-										</fo:table-cell>
-									</fo:table-row>
-								</fo:table-body>
-							</fo:table>
-							<fo:block font-weight="bold">A propos de l'IEC</fo:block>
-								<fo:block margin-bottom="6pt">La Commission Electrotechnique Internationale (IEC) est la première organisation mondiale qui élabore et publie des
-Normes internationales pour tout ce qui a trait à l'électricité, à l'électronique et aux technologies apparentées.</fo:block>
-							
-							<fo:block font-weight="bold">A propos des publications IEC</fo:block>
-							<fo:block margin-bottom="6pt">Le contenu technique des publications IEC est constamment revu. Veuillez vous assurer que vous possédez l’édition la
-plus récente, un corrigendum ou amendement peut avoir été publié.</fo:block>
+							<fo:block font-weight="bold">About IEC publications</fo:block>
+							<fo:block margin-bottom="6pt">The technical content of IEC publications is kept under constant review by the IEC. Please make sure that you have the
+		latest edition, a corrigenda or an amendment might have been published.</fo:block>
+								
+								<fo:table table-layout="fixed" width="100%" margin-bottom="12pt">
+									<fo:table-column column-width="82mm"/>
+									<fo:table-column column-width="78mm"/>
+									<fo:table-body>
+										<fo:table-row border-bottom="0.5pt solid black">
+											<fo:table-cell padding-right="5mm">
+												<fo:block font-weight="bold">IEC Catalogue - <fo:inline color="blue">webstore.iec.ch/catalogue</fo:inline></fo:block>
+												<fo:block margin-bottom="6pt">
+													<xsl:text>The stand-alone application for consulting the entire
+													bibliographical information on IEC International Standards,
+													Technical Specifications, Technical Reports and other
+													documents. Available for PC, Mac OS, Android Tablets and
+													iPad.</xsl:text>
+												</fo:block>
+												<fo:block font-weight="bold">IEC publications search - <fo:inline color="blue">www.iec.ch/searchpub</fo:inline></fo:block>
+												<fo:block margin-bottom="6pt">
+													<xsl:text>The advanced search enables to find IEC publications by a
+													variety of criteria (reference number, text, technical
+													committee,…). It also gives information on projects, replaced
+													and withdrawn publications.</xsl:text>
+												</fo:block>
+												<fo:block font-weight="bold">IEC Just Published - <fo:inline color="blue">webstore.iec.ch/justpublished</fo:inline></fo:block>
+												<fo:block margin-bottom="6pt">
+													<xsl:text>Stay up to date on all new IEC publications. Just Published
+													details all new publications released. Available online and
+													also once a month by email.</xsl:text>
+												</fo:block>
+											</fo:table-cell>
+											<fo:table-cell>
+												<fo:block font-weight="bold">Electropedia - <fo:inline color="blue">www.electropedia.org</fo:inline></fo:block>
+												<fo:block margin-bottom="6pt">
+													<xsl:text>The world's leading online dictionary of electronic and
+														electrical terms containing more than 30 000 terms and
+														definitions in English and French, with equivalent terms in 14
+														additional languages. Also known as the International
+														Electrotechnical Vocabulary (IEV) online.</xsl:text>
+												</fo:block>
+												<fo:block font-weight="bold">IEC Glossary - <fo:inline color="blue">std.iec.ch/glossary</fo:inline></fo:block>
+												<fo:block margin-bottom="6pt">
+													<xsl:text>More than 55 000 electrotechnical terminology entries in
+														English and French extracted from the Terms and Definitions
+														clause of IEC publications issued since 2002. Some entries
+														have been collected from earlier publications of IEC TC 37,
+														77, 86 and CISPR.</xsl:text>
+												</fo:block>
+												<fo:block font-weight="bold">IEC Customer Service Centre - <fo:inline color="blue">webstore.iec.ch/csc</fo:inline></fo:block>
+												<fo:block margin-bottom="6pt">
+													<xsl:text>If you wish to give us your feedback on this publication or
+														need further assistance, please contact the Customer Service
+														Centre: </xsl:text><fo:inline color="blue">csc@iec.ch</fo:inline>.
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+								<fo:block font-weight="bold">A propos de l'IEC</fo:block>
+									<fo:block margin-bottom="6pt">La Commission Electrotechnique Internationale (IEC) est la première organisation mondiale qui élabore et publie des
+	Normes internationales pour tout ce qui a trait à l'électricité, à l'électronique et aux technologies apparentées.</fo:block>
+								
+								<fo:block font-weight="bold">A propos des publications IEC</fo:block>
+								<fo:block margin-bottom="6pt">Le contenu technique des publications IEC est constamment revu. Veuillez vous assurer que vous possédez l’édition la
+	plus récente, un corrigendum ou amendement peut avoir été publié.</fo:block>
 
-							<fo:table table-layout="fixed" width="100%">
-								<fo:table-column column-width="82mm"/>
-								<fo:table-column column-width="78mm"/>
-								<fo:table-body>
-									<fo:table-row>
-										<fo:table-cell padding-right="5mm">
-											<fo:block font-weight="bold">Catalogue IEC - <fo:inline color="blue">webstore.iec.ch/catalogue</fo:inline></fo:block>
-											<fo:block margin-bottom="6pt">
-												<xsl:text>Application autonome pour consulter tous les renseignements
-													bibliographiques sur les Normes internationales,
-													Spécifications techniques, Rapports techniques et autres
-													documents de l'IEC. Disponible pour PC, Mac OS, tablettes
-													Android et iPad.</xsl:text>
-											</fo:block>
-											<fo:block font-weight="bold">Recherche de publications IEC - <fo:inline color="blue">www.iec.ch/searchpub</fo:inline></fo:block>
-											<fo:block margin-bottom="6pt">
-												<xsl:text>La recherche avancée permet de trouver des publications IEC
-													en utilisant différents critères (numéro de référence, texte,
-													comité d’études,…). Elle donne aussi des informations sur les
-													projets et les publications remplacées ou retirées.</xsl:text>
-											</fo:block>
-											<fo:block font-weight="bold">IEC Just Published - <fo:inline color="blue">webstore.iec.ch/justpublished</fo:inline></fo:block>
-											<fo:block margin-bottom="6pt">
-												<xsl:text>Restez informé sur les nouvelles publications IEC. Just
-													Published détaille les nouvelles publications parues.
-													Disponible en ligne et aussi une fois par mois par email.</xsl:text>
-											</fo:block>
-										</fo:table-cell>
-										<fo:table-cell>
-											<fo:block font-weight="bold">Electropedia - <fo:inline color="blue">www.electropedia.org</fo:inline></fo:block>
-											<fo:block margin-bottom="6pt">
-												<xsl:text>Le premier dictionnaire en ligne de termes électroniques et
-													électriques. Il contient plus de 30 000 termes et définitions en
-													anglais et en français, ainsi que les termes équivalents dans
-													14 langues additionnelles. Egalement appelé Vocabulaire
-													Electrotechnique International (IEV) en ligne.</xsl:text>
-											</fo:block>
-											<fo:block font-weight="bold">Glossaire IEC - <fo:inline color="blue">std.iec.ch/glossary</fo:inline></fo:block>
-											<fo:block margin-bottom="6pt">
-												<xsl:text>Plus de 55 000 entrées terminologiques électrotechniques, en
-													anglais et en français, extraites des articles Termes et
-													Définitions des publications IEC parues depuis 2002. Plus
-													certaines entrées antérieures extraites des publications des
-													CE 37, 77, 86 et CISPR de l'IEC.</xsl:text>
-											</fo:block>
-											<fo:block font-weight="bold">Service Clients - <fo:inline color="blue">webstore.iec.ch/csc</fo:inline></fo:block>
-											<fo:block margin-bottom="6pt">
-												<xsl:text>Si vous désirez nous donner des commentaires sur cette
-														publication ou si vous avez des questions contactez-nous: </xsl:text><fo:inline color="blue">csc@iec.ch</fo:inline>.
-											</fo:block>
-										</fo:table-cell>
-									</fo:table-row>
-								</fo:table-body>
-							</fo:table>
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="82mm"/>
+									<fo:table-column column-width="78mm"/>
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell padding-right="5mm">
+												<fo:block font-weight="bold">Catalogue IEC - <fo:inline color="blue">webstore.iec.ch/catalogue</fo:inline></fo:block>
+												<fo:block margin-bottom="6pt">
+													<xsl:text>Application autonome pour consulter tous les renseignements
+														bibliographiques sur les Normes internationales,
+														Spécifications techniques, Rapports techniques et autres
+														documents de l'IEC. Disponible pour PC, Mac OS, tablettes
+														Android et iPad.</xsl:text>
+												</fo:block>
+												<fo:block font-weight="bold">Recherche de publications IEC - <fo:inline color="blue">www.iec.ch/searchpub</fo:inline></fo:block>
+												<fo:block margin-bottom="6pt">
+													<xsl:text>La recherche avancée permet de trouver des publications IEC
+														en utilisant différents critères (numéro de référence, texte,
+														comité d’études,…). Elle donne aussi des informations sur les
+														projets et les publications remplacées ou retirées.</xsl:text>
+												</fo:block>
+												<fo:block font-weight="bold">IEC Just Published - <fo:inline color="blue">webstore.iec.ch/justpublished</fo:inline></fo:block>
+												<fo:block margin-bottom="6pt">
+													<xsl:text>Restez informé sur les nouvelles publications IEC. Just
+														Published détaille les nouvelles publications parues.
+														Disponible en ligne et aussi une fois par mois par email.</xsl:text>
+												</fo:block>
+											</fo:table-cell>
+											<fo:table-cell>
+												<fo:block font-weight="bold">Electropedia - <fo:inline color="blue">www.electropedia.org</fo:inline></fo:block>
+												<fo:block margin-bottom="6pt">
+													<xsl:text>Le premier dictionnaire en ligne de termes électroniques et
+														électriques. Il contient plus de 30 000 termes et définitions en
+														anglais et en français, ainsi que les termes équivalents dans
+														14 langues additionnelles. Egalement appelé Vocabulaire
+														Electrotechnique International (IEV) en ligne.</xsl:text>
+												</fo:block>
+												<fo:block font-weight="bold">Glossaire IEC - <fo:inline color="blue">std.iec.ch/glossary</fo:inline></fo:block>
+												<fo:block margin-bottom="6pt">
+													<xsl:text>Plus de 55 000 entrées terminologiques électrotechniques, en
+														anglais et en français, extraites des articles Termes et
+														Définitions des publications IEC parues depuis 2002. Plus
+														certaines entrées antérieures extraites des publications des
+														CE 37, 77, 86 et CISPR de l'IEC.</xsl:text>
+												</fo:block>
+												<fo:block font-weight="bold">Service Clients - <fo:inline color="blue">webstore.iec.ch/csc</fo:inline></fo:block>
+												<fo:block margin-bottom="6pt">
+													<xsl:text>Si vous désirez nous donner des commentaires sur cette
+															publication ou si vous avez des questions contactez-nous: </xsl:text><fo:inline color="blue">csc@iec.ch</fo:inline>.
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block-container>
 						</fo:block-container>
-					</fo:block-container>
-				</fo:flow>
-			</fo:page-sequence>
+					</fo:flow>
+				</fo:page-sequence>
+			</xsl:if>
 			
-			
-			<!-- 3rd Cover Page -->
-			<fo:page-sequence master-reference="cover">
-				<fo:flow flow-name="xsl-region-body">
-					<xsl:call-template name="insertCoverPart1" />
-					<fo:block-container absolute-position="fixed" left="26.5mm" top="214mm" width="163mm">
-							<fo:block font-size="9pt" color="{$color_blue}" margin-bottom="8pt" line-height="150%">
-								<fo:block-container width="40mm">
-									<fo:block>
-										<xsl:value-of select="$publisher"/>
+			<xsl:if test="$stage &gt;= 60 or $stage-name = 'FDIS'">
+				<!-- 3rd Cover Page -->
+				<fo:page-sequence master-reference="cover" force-page-count="no-force">
+					<fo:flow flow-name="xsl-region-body">
+						<xsl:call-template name="insertCoverPart1" />
+						<fo:block-container absolute-position="fixed" left="26.5mm" top="214mm" width="163mm">
+							<fo:block-container height="32mm" display-align="after">
+								<fo:block font-size="9pt" color="{$color_blue}" line-height="150%">
+									<fo:block-container width="40mm">
+										<fo:block>
+											<xsl:value-of select="$publisher"/>
+										</fo:block>
+									</fo:block-container>
+								</fo:block>
+								<xsl:if test="/iec:iec-standard/iec:bibdata/iec:title[@language = 'fr']">
+									<fo:block font-size="9pt" line-height="150%" margin-top="8pt">
+										<fo:block-container width="40mm">
+											<fo:block>
+												<xsl:value-of select="'COMMISSION ELECTROTECHNIQUE INTERNATIONALE'"/>
+											</fo:block>
+										</fo:block-container>
 									</fo:block>
-								</fo:block-container>
-							</fo:block>
-							<fo:block font-size="9pt" line-height="150%">
-								<!-- COMMISSION
-								ELECTROTECHNIQUE
-								INTERNATIONALE -->
-								<fo:block-container width="40mm">
-									<fo:block>
-										<xsl:value-of select="'COMMISSION ELECTROTECHNIQUE INTERNATIONALE'"/>
-									</fo:block>
-								</fo:block-container>
-							</fo:block>
+								</xsl:if>
+							</fo:block-container>
+							
 							<fo:table table-layout="fixed" width="102%" margin-top="-9mm" margin-bottom="2mm">
 								<fo:table-column column-width="148mm"/>
 								<fo:table-column column-width="16mm"/>
 								<fo:table-body>
 									<fo:table-row border-bottom="0.5pt solid {$color_gray}" height="16mm">
 										<fo:table-cell font-size="8pt" text-align="right" display-align="center">
-											<fo:block color="{$color_blue}" margin-bottom="3pt">PRICE CODE</fo:block>
-											<fo:block>CODE PRIX</fo:block>
+											<fo:block>
+												<fo:block color="{$color_blue}" margin-bottom="3pt">PRICE CODE</fo:block>
+												<fo:block>CODE PRIX</fo:block>
+											</fo:block>
 										</fo:table-cell>
 										<fo:table-cell font-size="25pt" font-weight="bold" color="{$color_gray}" text-align="right" display-align="center">
 											<fo:block padding-top="1mm">XC</fo:block>
@@ -454,19 +529,315 @@ plus récente, un corrigendum ou amendement peut avoir été publié.</fo:block>
 							</fo:block>
 							<fo:block-container margin-left="1.5mm">
 								<fo:block-container margin-left="0mm">
-									<fo:block-container border="0.5pt solid black" font-size="10pt" margin-top="8mm" font-weight="bold" padding="1.5mm" padding-bottom="1mm" width="102%">
-										<fo:block margin-bottom="3pt">Warning! Make sure that you obtained this publication from an authorized distributor.</fo:block>
-										<fo:block>Attention! Veuillez vous assurer que vous avez obtenu cette publication via un distributeur agréé.</fo:block>
+									<fo:block-container border="0.5pt solid black" font-size="10pt" margin-top="8mm" font-weight="bold" padding-left="1.5mm" padding-top="0.5mm" width="102%" height="11mm" display-align="center">
+										<fo:block>Warning! Make sure that you obtained this publication from an authorized distributor.</fo:block>
+										<xsl:if test="/iec:iec-standard/iec:bibdata/iec:title[@language = 'fr']">
+											<fo:block margin-top="3pt">Attention! Veuillez vous assurer que vous avez obtenu cette publication via un distributeur agréé.</fo:block>
+										</xsl:if>
 									</fo:block-container>
 								</fo:block-container>
 							</fo:block-container>
 							<fo:block font-size="6pt" margin-top="6mm" margin-left="1mm">
 								<fo:block>® Registered trademark of the International Electrotechnical Commission</fo:block>
-								<fo:block margin-left="2mm">Marque déposée de la Commission Electrotechnique Internationale</fo:block>
+								<xsl:if test="/iec:iec-standard/iec:bibdata/iec:title[@language = 'fr']">
+									<fo:block margin-left="2mm">Marque déposée de la Commission Electrotechnique Internationale</fo:block>
+								</xsl:if>
 							</fo:block>
-					</fo:block-container>
-				</fo:flow>
-			</fo:page-sequence>
+						</fo:block-container>
+					</fo:flow>
+				</fo:page-sequence>
+			</xsl:if>
+			
+			<xsl:if test="$stage-name = 'FDIS'">
+				<fo:page-sequence master-reference="cover-FDIS" force-page-count="no-force">
+					<fo:flow flow-name="xsl-region-body">
+						
+						<fo:block text-align-last="justify" margin-left="-0.5mm">
+							<fo:external-graphic src="{concat('data:image/png;base64,', normalize-space($Image-Logo-IEC))}" width="18mm" content-height="scale-to-fit" scaling="uniform" fox:alt-text="Image Logo IEC"/>
+							<fo:inline font-size="8pt" padding-left="0.5mm" color="{$color_blue}">®</fo:inline>
+							<fo:inline keep-together.within-line="always" font-size="18pt" font-weight="bold" baseline-shift="10mm"><fo:leader leader-pattern="space"/>
+								<xsl:text>Ex: 34D/1511/FDIS</xsl:text>
+								<xsl:text>&#xA0;</xsl:text>
+							</fo:inline>
+						</fo:block>
+						<fo:block font-size="10pt" text-align="right" margin-top="-2mm" margin-bottom="8pt">
+							<xsl:call-template name="addLetterSpacing">
+								<xsl:with-param name="text" select="'FINAL DRAFT INTERNATIONAL STANDARD (FDIS)'"/>
+							</xsl:call-template>
+							<xsl:text>&#xA0;</xsl:text>
+						</fo:block>
+						<fo:block-container margin-left="57mm">
+							<fo:block-container margin-left="0mm">
+								<fo:table table-layout="fixed" width="118mm" background-color="rgb(219, 229, 241)">
+									<fo:table-column column-width="50%"/>
+									<fo:table-column column-width="50%"/>
+									<fo:table-body>
+										<fo:table-row height="12mm">
+											<fo:table-cell number-columns-spanned="2" border="1.5pt solid white" padding="1.5mm" padding-bottom="0mm">
+												<fo:block font-size="6.5pt" margin-bottom="6pt">
+													<xsl:call-template name="addLetterSpacingSmallCaps">
+														<xsl:with-param name="text" select="'Project number:'"/>
+													</xsl:call-template>
+												</fo:block>
+												<fo:block font-size="9pt" font-weight="bold">
+													<xsl:call-template name="addLetterSpacing">
+														<xsl:with-param name="text">IEC 60598-2-1 ED2</xsl:with-param>
+													</xsl:call-template>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+										<fo:table-row height="12mm">
+											<fo:table-cell border="1.5pt solid white" padding="1.5mm" padding-bottom="0mm">
+												<fo:block font-size="6.5pt" margin-bottom="6pt">
+													<xsl:call-template name="addLetterSpacingSmallCaps">
+														<xsl:with-param name="text" select="'Date of circulation:'"/>
+													</xsl:call-template>
+												</fo:block>
+												<fo:block font-size="9pt" font-weight="bold">
+													<xsl:call-template name="addLetterSpacing">
+														<xsl:with-param name="text">2019-10-25</xsl:with-param>
+													</xsl:call-template>
+												</fo:block>
+											</fo:table-cell>
+											<fo:table-cell border="1.5pt solid white" padding="1.5mm" padding-bottom="0mm">
+												<fo:block font-size="6.5pt" margin-bottom="6pt">
+													<xsl:call-template name="addLetterSpacingSmallCaps">
+														<xsl:with-param name="text" select="'Closing date for voting:'"/>
+													</xsl:call-template>
+												</fo:block>
+												<fo:block font-size="9pt" font-weight="bold">
+													<xsl:call-template name="addLetterSpacing">
+														<xsl:with-param name="text">2019-12-06</xsl:with-param>
+													</xsl:call-template>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+										<fo:table-row height="12mm">
+											<fo:table-cell number-columns-spanned="2" border="1.5pt solid white" padding="1.5mm" padding-bottom="0mm">
+												<fo:block font-size="6.5pt" margin-bottom="6pt">
+													<xsl:call-template name="addLetterSpacingSmallCaps">
+														<xsl:with-param name="text" select="'Supersedes documents:'"/>
+													</xsl:call-template>
+												</fo:block>
+												<fo:block font-size="9pt" font-weight="bold">
+													<xsl:call-template name="addLetterSpacing">
+														<xsl:with-param name="text">34D/1450/CDV,34D/1484/RVC</xsl:with-param>
+													</xsl:call-template>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block-container>
+						</fo:block-container>
+						
+						<fo:block-container margin-left="-2mm" margin-right="-2mm" margin-top="5mm">
+							<fo:block-container margin-left="0mm" margin-right="0mm">
+								<xsl:variable name="border-color">rgb(221, 213, 213)</xsl:variable>
+								<fo:table table-layout="fixed" width="100%" border="1.5pt solid {$border-color}">
+									<fo:table-column column-width="50%"/>
+									<fo:table-column column-width="50%"/>
+									<fo:table-body>
+										<fo:table-row height="4mm">
+											<fo:table-cell number-columns-spanned="2" border="1.5pt solid {$border-color}" padding="1.5mm" padding-bottom="0mm">
+												<fo:block font-size="6.5pt">
+													<fo:inline font-size="8pt">IEC SC 34D : </fo:inline>
+													<xsl:call-template name="addLetterSpacingSmallCaps">
+														<xsl:with-param name="text" select="'Luminaires'"/>
+													</xsl:call-template>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+										<fo:table-row height="12mm">
+											<fo:table-cell border="1.5pt solid {$border-color}" padding="1.5mm" padding-bottom="0mm">
+												<fo:block font-size="6.5pt" margin-bottom="6pt">
+													<xsl:call-template name="addLetterSpacingSmallCaps">
+														<xsl:with-param name="text" select="'Secretariat:'"/>
+													</xsl:call-template>
+												</fo:block>
+												<fo:block font-size="9pt">
+													<xsl:call-template name="addLetterSpacing">
+														<xsl:with-param name="text" select="'United Kingdom'"/>
+													</xsl:call-template>
+												</fo:block>
+											</fo:table-cell>
+											<fo:table-cell border="1.5pt solid {$border-color}" padding="1.5mm" padding-bottom="0mm">
+												<fo:block font-size="6.5pt" margin-bottom="6pt">
+													<xsl:call-template name="addLetterSpacingSmallCaps">
+														<xsl:with-param name="text" select="'Secretary:'"/>
+													</xsl:call-template>
+												</fo:block>
+												<fo:block font-size="9pt">
+													<xsl:call-template name="addLetterSpacing">
+														<xsl:with-param name="text" select="'Ms Shanti Conn'"/>
+													</xsl:call-template>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+										<fo:table-row height="12mm">
+											<fo:table-cell border="1.5pt solid {$border-color}" padding="1.5mm" padding-bottom="0mm">
+												<fo:block font-size="6.5pt" margin-bottom="6pt">
+													<xsl:call-template name="addLetterSpacingSmallCaps">
+														<xsl:with-param name="text" select="'Of interest to the following committees:'"/>
+													</xsl:call-template>
+												</fo:block>
+											</fo:table-cell>
+											<fo:table-cell border="1.5pt solid {$border-color}" padding="1.5mm" padding-bottom="0mm">
+												<fo:block font-size="6.5pt" margin-bottom="6pt">
+													<xsl:call-template name="addLetterSpacingSmallCaps">
+														<xsl:with-param name="text" select="'horizontal standard:'"/>
+													</xsl:call-template>
+												</fo:block>
+												<fo:block>
+													<xsl:call-template name="insertCheckBoxOff"/>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+										<fo:table-row height="10mm">
+											<fo:table-cell padding="1.5mm" padding-bottom="0mm">
+												<fo:block font-size="6.5pt" margin-bottom="4pt">
+													<xsl:call-template name="addLetterSpacingSmallCaps">
+														<xsl:with-param name="text" select="'Functions concerned:'"/>
+													</xsl:call-template>
+												</fo:block>
+												<fo:block font-size="6.5pt">
+													<xsl:call-template name="insertCheckBoxOff"/>
+													<xsl:call-template name="addLetterSpacingSmallCaps">
+														<xsl:with-param name="text" select="'EMC'"/>
+													</xsl:call-template>
+													<fo:inline padding-right="33mm">&#xA0;</fo:inline>
+													<xsl:call-template name="insertCheckBoxOff"/>
+													<xsl:call-template name="addLetterSpacingSmallCaps">
+														<xsl:with-param name="text" select="'Environment'"/>
+													</xsl:call-template>
+												</fo:block>
+											</fo:table-cell>
+											<fo:table-cell padding="1.5mm" padding-bottom="0mm">
+												<fo:block font-size="6.5pt" margin-bottom="4pt">&#xA0;</fo:block>
+												<fo:block font-size="6.5pt">
+													<xsl:call-template name="insertCheckBoxOff"/>
+													<xsl:call-template name="addLetterSpacingSmallCaps">
+														<xsl:with-param name="text" select="'Quality assurance'"/>
+													</xsl:call-template>
+													<fo:inline padding-right="13mm">&#xA0;</fo:inline>
+													<xsl:call-template name="insertCheckBoxOn"/>
+													<xsl:call-template name="addLetterSpacingSmallCaps">
+														<xsl:with-param name="text" select="'Safety'"/>
+													</xsl:call-template>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+										<fo:table-row >
+											<fo:table-cell border="1.5pt solid {$border-color}" padding="1.5mm" padding-bottom="0mm">
+												<fo:block font-size="6.5pt" margin-bottom="12pt">
+													<xsl:call-template name="insertCheckBoxOn"/>
+													<xsl:call-template name="addLetterSpacingSmallCaps">
+														<xsl:with-param name="text" select="'Submitted for CENELEC parallel voting'"/>
+													</xsl:call-template>
+												</fo:block>
+												<fo:block font-size="8pt" font-weight="bold" margin-bottom="10pt">
+													<xsl:call-template name="addLetterSpacing">
+														<xsl:with-param name="text" select="'Attention IEC-CENELEC parallel voting'"/>
+													</xsl:call-template>
+													</fo:block>
+												<fo:block font-size="8pt" margin-bottom="10pt" text-align="justify">
+													<xsl:call-template name="addLetterSpacing">
+														<xsl:with-param name="text" select="'The attention of IEC National Committees, members of CENELEC, is drawn to the fact that this Final Draft International Standard (FDIS) is submitted for parallel voting.'"/>
+													</xsl:call-template>
+												</fo:block>
+												<fo:block font-size="8pt" margin-bottom="10pt">
+													<xsl:call-template name="addLetterSpacing">
+														<xsl:with-param name="text" select="'The CENELEC members are invited to vote through the CENELEC online voting system.'"/>
+													</xsl:call-template>
+												</fo:block>
+											</fo:table-cell>
+											<fo:table-cell border="1.5pt solid {$border-color}" padding="1.5mm" padding-bottom="0mm">
+												<fo:block font-size="6.5pt" margin-bottom="6pt">
+													<xsl:call-template name="insertCheckBoxOff"/>
+													<xsl:call-template name="addLetterSpacingSmallCaps">
+														<xsl:with-param name="text" select="'Not submitted for CENELEC parallel voting'"/>
+													</xsl:call-template>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block-container>
+						</fo:block-container>
+						
+						<fo:block-container font-size="8pt" background-color="rgb(236, 232, 232)" margin-top="5mm" padding="2mm" text-align="justify" border="1.5pt solid white">
+							<fo:block margin-bottom="6pt">
+								<xsl:call-template name="addLetterSpacing">
+									<xsl:with-param name="text">This document is a draft distributed for approval. It may not be referred to as an International Standard until published as such.</xsl:with-param>
+								</xsl:call-template>
+							</fo:block>
+							<fo:block margin-bottom="6pt">
+								<xsl:call-template name="addLetterSpacing">
+									<xsl:with-param name="text">In addition to their evaluation as being acceptable for industrial, technological, commercial and user purposes, Final Draft International Standards may on occasion have to be considered in the light of their potential to become standards to which reference may be made in national regulations.</xsl:with-param>
+								</xsl:call-template>
+							</fo:block>
+							<fo:block>
+								<xsl:call-template name="addLetterSpacing">
+									<xsl:with-param name="text"> Recipients of this document are invited to submit, with their comments, notification of any relevant patent rights of which they are aware and to provide supporting documentation.</xsl:with-param>
+								</xsl:call-template>
+							</fo:block>
+						</fo:block-container>
+						
+						<fo:block-container background-color="rgb(219, 229, 241)" margin-top="4mm" padding="2mm" padding-top="1mm" border="1.5pt solid white">
+							<fo:block font-size="6.5pt" margin-bottom="6pt">
+								<xsl:call-template name="addLetterSpacingSmallCaps">
+									<xsl:with-param name="text">Title:</xsl:with-param>
+								</xsl:call-template>
+							</fo:block>
+							<fo:block font-size="9pt" font-weight="bold">
+								<xsl:call-template name="addLetterSpacing">
+									<xsl:with-param name="text"><xsl:value-of select="/iec:iec-standard/iec:bibdata/iec:title[@language = 'en' and @type = 'main']"/></xsl:with-param>
+								</xsl:call-template>
+							</fo:block>
+						</fo:block-container>
+						
+						<fo:block-container border="1.5 solid" border-color="rgb(221, 213, 213)" height="6.5mm" padding="1mm" margin-top="3mm" display-align="center">
+							<fo:block font-size="6.5pt">
+								<xsl:call-template name="addLetterSpacing">
+									<xsl:with-param name="text">
+										<xsl:text>PROPOSED STABILITY DATE: </xsl:text>
+									</xsl:with-param>
+								</xsl:call-template>
+								<fo:inline font-size="9pt">2023</fo:inline>
+							</fo:block>
+						</fo:block-container>
+						
+						<fo:block-container border="1.5 solid" border-color="rgb(221, 213, 213)" height="13mm" padding="1mm" margin-top="3mm">
+							<fo:block font-size="6.5pt">
+								<xsl:call-template name="addLetterSpacingSmallCaps">
+									<xsl:with-param name="text">Note from TC/SC officers:</xsl:with-param>
+								</xsl:call-template>
+							</fo:block>
+						</fo:block-container>
+								
+						<fo:block-container background-color="rgb(236, 232, 232)" margin-top="7mm" padding="2mm" border="1.5pt solid white">
+							<fo:block font-size="8pt" margin-bottom="6pt">
+								<fo:inline font-weight="bold">
+									<xsl:call-template name="addLetterSpacing">
+										<xsl:with-param name="text">
+											<xsl:text>Copyright © 2019 International Electrotechnical Commission, IEC</xsl:text>
+										</xsl:with-param>
+									</xsl:call-template>
+								</fo:inline>
+								<fo:inline>
+									<xsl:call-template name="addLetterSpacing">
+										<xsl:with-param name="text">
+											<xsl:text>. All rights reserved. It is permitted to download this electronic file, to make a copy and to print out the content for the sole purpose of preparing National Committee positions. You may not copy or "mirror" the file or printed version of the document, or any part of it, for any other purpose without permission in writing from IEC.</xsl:text>
+										</xsl:with-param>
+									</xsl:call-template>
+								</fo:inline>
+							</fo:block>
+						</fo:block-container>
+						
+					</fo:flow>
+				</fo:page-sequence>
+			</xsl:if>
+			
 			
 			<fo:page-sequence master-reference="document" format="1" initial-page-number="2" force-page-count="no-force">
 				<xsl:call-template name="insertHeaderFooter"/>
@@ -661,6 +1032,7 @@ plus récente, un corrigendum ou amendement peut avoir été publié.</fo:block>
 					<!-- Clause(s) -->
 					<fo:block>
 					
+						
 						<!-- Scope -->
 						<xsl:apply-templates select="/iec:iec-standard/iec:sections/iec:clause[@id='_scope']">
 							<xsl:with-param name="sectionNum" select="'1'"/>
@@ -690,55 +1062,57 @@ plus récente, un corrigendum ou amendement peut avoir été publié.</fo:block>
 						
 						<!-- Bibliography -->
 						<xsl:apply-templates select="/iec:iec-standard/iec:bibliography/iec:references[not(@id = '_normative_references' or @id = '_references')]"/>
+						
 					</fo:block>
 					
 				</fo:flow>
 			</fo:page-sequence>
 			
-			<fo:page-sequence master-reference="blank-page">
-				<fo:flow flow-name="xsl-region-body">
-					<fo:block>&#xA0;</fo:block>
-				</fo:flow>
-			</fo:page-sequence>
-			
-			<fo:page-sequence master-reference="last-page">
-				<fo:flow flow-name="xsl-region-body">
-					<fo:block-container margin-left="20mm" margin-top="19mm">
-						<fo:block-container margin-left="0mm" margin-top="0mm">
-							<fo:block font-size="11pt" color="{$color_blue}" margin-bottom="12pt" line-height="150%">
-								<fo:block-container width="40mm">
-									<fo:block>
-										<xsl:value-of select="$publisher"/>
-									</fo:block>
-								</fo:block-container>
-							</fo:block>
-							<fo:block font-size="9pt" line-height="150%">
-								<!-- Example:
-								3, rue de Varembé
-								PO Box 131
-								CH-1211 Geneva 20
-								Switzerland
-								
-								Tel: + 41 22 919 02 11
-								Fax: + 41 22 919 03 00
-								info@iec.ch
-								www.iec.ch -->
-								<xsl:variable name="telpos" select="count(/iec:iec-standard/iec:boilerplate/iec:copyright-statement/iec:clause/iec:p[@id = 'boilerplate-address']/text()[contains(., 'Tel.')]/preceding-sibling::node())"/>
-								<xsl:choose>
-									<xsl:when test="$telpos != 0">
-										<xsl:apply-templates select="/iec:iec-standard/iec:boilerplate/iec:copyright-statement/iec:clause/iec:p[@id = 'boilerplate-address']/node()[position() &lt;= $telpos]" mode="coverpage"/>
-										<xsl:apply-templates select="/iec:iec-standard/iec:boilerplate/iec:copyright-statement/iec:clause/iec:p[@id = 'boilerplate-address']/node()[position() &gt;= $telpos]" mode="coverpage"/>
-									</xsl:when>
-									<xsl:otherwise>
-										<xsl:apply-templates select="/iec:iec-standard/iec:boilerplate/iec:copyright-statement/iec:clause/iec:p[@id = 'boilerplate-address']" mode="coverpage"/>
-									</xsl:otherwise>
-								</xsl:choose>
-							</fo:block>
+			<xsl:if test="$stage &gt;= 60">
+				<fo:page-sequence master-reference="blank-page">
+					<fo:flow flow-name="xsl-region-body">
+						<fo:block>&#xA0;</fo:block>
+					</fo:flow>
+				</fo:page-sequence>
+				
+				<fo:page-sequence master-reference="last-page">
+					<fo:flow flow-name="xsl-region-body">
+						<fo:block-container margin-left="20mm" margin-top="19mm">
+							<fo:block-container margin-left="0mm" margin-top="0mm">
+								<fo:block font-size="11pt" color="{$color_blue}" margin-bottom="12pt" line-height="150%">
+									<fo:block-container width="42mm">
+										<fo:block>
+											<xsl:value-of select="$publisher"/>
+										</fo:block>
+									</fo:block-container>
+								</fo:block>
+								<fo:block font-size="9pt" line-height="150%">
+									<!-- Example:
+									3, rue de Varembé
+									PO Box 131
+									CH-1211 Geneva 20
+									Switzerland
+									
+									Tel: + 41 22 919 02 11
+									Fax: + 41 22 919 03 00
+									info@iec.ch
+									www.iec.ch -->
+									<xsl:variable name="telpos" select="count(/iec:iec-standard/iec:boilerplate/iec:copyright-statement/iec:clause/iec:p[@id = 'boilerplate-address']/text()[contains(., 'Tel.')]/preceding-sibling::node())"/>
+									<xsl:choose>
+										<xsl:when test="$telpos != 0">
+											<xsl:apply-templates select="/iec:iec-standard/iec:boilerplate/iec:copyright-statement/iec:clause/iec:p[@id = 'boilerplate-address']/node()[position() &lt;= $telpos]" mode="coverpage"/>
+											<xsl:apply-templates select="/iec:iec-standard/iec:boilerplate/iec:copyright-statement/iec:clause/iec:p[@id = 'boilerplate-address']/node()[position() &gt;= $telpos]" mode="coverpage"/>
+										</xsl:when>
+										<xsl:otherwise>
+											<xsl:apply-templates select="/iec:iec-standard/iec:boilerplate/iec:copyright-statement/iec:clause/iec:p[@id = 'boilerplate-address']" mode="coverpage"/>
+										</xsl:otherwise>
+									</xsl:choose>
+								</fo:block>
+							</fo:block-container>
 						</fo:block-container>
-					</fo:block-container>
-				</fo:flow>
-			</fo:page-sequence>
-			
+					</fo:flow>
+				</fo:page-sequence>
+			</xsl:if>
 		</fo:root>
 	</xsl:template> 
 
@@ -760,22 +1134,38 @@ plus récente, un corrigendum ou amendement peut avoir été publié.</fo:block>
 			</fo:inline>
 			<fo:block>&#xA0;</fo:block>
 		</fo:block>
-		<fo:block-container font-size="30pt" font-weight="bold" width="100mm" margin-left="7.5mm" line-height="115%">
+		<fo:block-container font-size="30pt" font-weight="bold" height="56mm" margin-left="7.5mm" line-height="115%">
 			<fo:block-container margin-left="0mm">
-				<fo:block color="{$color_blue}" margin-bottom="16pt">
-					<xsl:text>INTERNATIONAL STANDARD</xsl:text>
-				</fo:block>
-				<fo:block color="{$color_gray}">
-					<xsl:text>NORME INTERNATIONALE</xsl:text>
-				</fo:block>
+				<fo:block-container height="25mm"  display-align="after">
+					<xsl:if test="$stage &gt;= 60">
+						<xsl:attribute name="width">100mm</xsl:attribute>
+					</xsl:if>
+					<fo:block color="{$color_blue}">
+						<xsl:value-of select="$doctype_name"/>
+					</fo:block>
+				</fo:block-container> 
+				<xsl:if test="/iec:iec-standard/iec:bibdata/iec:title[@language = 'fr']">
+					<fo:block-container height="26mm" margin-top="10pt" display-align="after">
+						<xsl:if test="$stage &gt;= 60">
+							<xsl:attribute name="width">100mm</xsl:attribute>
+						</xsl:if>
+						<fo:block color="{$color_gray}">
+							<xsl:if test="$stage &gt;= 60">
+								<xsl:text>NORME INTERNATIONALE</xsl:text>
+							</xsl:if>
+						</fo:block>
+					</fo:block-container>
+				</xsl:if>
 			</fo:block-container>
 		</fo:block-container>
 		<fo:block-container margin-left="8mm">
 			<fo:block-container margin-left="0mm">
-				<fo:block text-align="right" margin-top="-3mm" margin-right="-1mm">
-					<fo:external-graphic src="{concat('data:image/png;base64,', normalize-space($Image-Colour-Inside))}" width="19mm" content-height="scale-to-fit" scaling="uniform" fox:alt-text="Image Logo IEC"/>
-				</fo:block>
-				<fo:block-container border-bottom="0.5pt solid {$color_gray}" margin-top="6mm" margin-bottom="16pt">
+				<fo:block-container height="6mm">
+					<fo:block text-align="right" margin-top="-4.5mm" margin-right="-1mm">
+						<fo:external-graphic src="{concat('data:image/png;base64,', normalize-space($Image-Colour-Inside))}" width="19mm" content-height="scale-to-fit" scaling="uniform" fox:alt-text="Image Logo IEC"/>
+					</fo:block>
+				</fo:block-container>
+				<fo:block-container border-bottom="0.5pt solid {$color_gray}" margin-top="4mm" margin-bottom="16pt" height="14mm" display-align="center">
 					<fo:block font-size="10pt" color="{$color_blue}" margin-bottom="4pt">
 						Example: BASIC EMC PUBLICATION
 						<!-- HORIZONTAL STANDARD -->
@@ -784,10 +1174,12 @@ plus récente, un corrigendum ou amendement peut avoir été publié.</fo:block>
 						Basic Environment Publication
 						Basic Quality Assurance Publication -->
 					</fo:block>
-					<fo:block font-size="10pt" margin-bottom="10pt">
-						Example: PUBLICATION FONDAMENTALE EN CEM
-						<!-- NORME HORIZONTALE -->
-					</fo:block>
+					<xsl:if test="/iec:iec-standard/iec:bibdata/iec:title[@language = 'fr']">
+						<fo:block font-size="10pt" margin-bottom="10pt">
+							Example: PUBLICATION FONDAMENTALE EN CEM
+							<!-- NORME HORIZONTALE -->
+						</fo:block>
+					</xsl:if>
 				</fo:block-container>
 			</fo:block-container>
 		</fo:block-container>
@@ -1432,7 +1824,7 @@ plus récente, un corrigendum ou amendement peut avoir été publié.</fo:block>
 			</fo:inline>
 			<fo:footnote-body>
 				<fo:block font-size="8pt" margin-bottom="5pt">
-					<fo:inline id="footnote_{@reference}" keep-with-next.within-line="always" baseline-shift="15%"> <!-- padding-right="3mm" font-size="60%"  alignment-baseline="hanging" -->
+					<fo:inline id="footnote_{@reference}" keep-with-next.within-line="always" baseline-shift="15%" padding-right="3mm"> <!-- padding-right="3mm" font-size="60%"  alignment-baseline="hanging" -->
 						<xsl:value-of select="$number + count(//iec:bibitem/iec:note)"/><!-- <xsl:text>)</xsl:text> -->
 					</fo:inline>
 					<xsl:for-each select="iec:p">
@@ -1570,7 +1962,7 @@ plus récente, un corrigendum ou amendement peut avoir été publié.</fo:block>
 			</fo:inline>
 			<fo:footnote-body>
 				<fo:block font-size="8pt" margin-bottom="5pt">
-					<fo:inline id="footnote_{../@id}" keep-with-next.within-line="always" baseline-shift="15%"><!-- padding-right="9mm" alignment-baseline="hanging"  font-size="60%"  -->
+					<fo:inline id="footnote_{../@id}" keep-with-next.within-line="always" baseline-shift="15%" padding-right="3mm"><!-- padding-right="9mm" alignment-baseline="hanging"  font-size="60%"  -->
 						<xsl:value-of select="$number"/><!-- <xsl:text>)</xsl:text> -->
 					</fo:inline>
 					<xsl:apply-templates />
@@ -1767,10 +2159,9 @@ plus récente, un corrigendum ou amendement peut avoir été publié.</fo:block>
 		<fo:list-block margin-top="5pt" margin-bottom="14pt" provisional-distance-between-starts="0mm"> <!-- provisional-distance-between-starts="12mm" -->
 			<fo:list-item>
 				<fo:list-item-label end-indent="label-end()">
-					<fo:block>
-						<fo:inline id="{@id}">
+					<fo:block font-size="1pt">
+						<fo:inline id="{@id}">&#xA0;</fo:inline>
 							<!-- <xsl:number format="[1]"/> -->
-						</fo:inline>
 					</fo:block>
 				</fo:list-item-label>
 				<fo:list-item-body start-indent="body-start()">
@@ -1831,8 +2222,10 @@ plus récente, un corrigendum ou amendement peut avoir été publié.</fo:block>
 	</xsl:template>
 	
 	<xsl:template match="iec:appendix">
-		<fo:block font-weight="bold" margin-top="5pt" margin-bottom="5pt">
-			<fo:inline padding-right="5mm">Appendix <xsl:number /></fo:inline>
+		<fo:block id="{@id}" font-weight="bold" margin-top="5pt" margin-bottom="5pt">
+			<xsl:if test="not(iec:title)">
+				<fo:inline padding-right="5mm">Appendix <xsl:number /></fo:inline>
+			</xsl:if>
 			<xsl:apply-templates select="iec:title" mode="process"/>
 		</fo:block>
 		<xsl:apply-templates />
@@ -2059,7 +2452,7 @@ plus récente, un corrigendum ou amendement peut avoir été publié.</fo:block>
 	
 	<xsl:template name="insertHeaderFooter">
 		<fo:static-content flow-name="header-even">
-			<fo:block-container height="29mm" padding-top="20mm">
+			<fo:block-container height="25mm" display-align="after">
 				<fo:table table-layout="fixed" width="100%">
 					<fo:table-column column-width="45%"/>
 					<fo:table-column column-width="10%"/>
@@ -2084,7 +2477,7 @@ plus récente, un corrigendum ou amendement peut avoir été publié.</fo:block>
 		</fo:static-content>
 		
 		<fo:static-content flow-name="header-odd">
-			<fo:block-container height="29mm" padding-top="20mm">
+			<fo:block-container height="25mm" display-align="after">
 				<fo:table table-layout="fixed" width="100%">
 					<fo:table-column column-width="45%"/>
 					<fo:table-column column-width="10%"/>
@@ -2242,6 +2635,14 @@ plus récente, un corrigendum ou amendement peut avoir été publié.</fo:block>
 		<xsl:text>iVBORw0KGgoAAAANSUhEUgAAALAAAACwCAMAAACYaRRsAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyZpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuNi1jMDE0IDc5LjE1Njc5NywgMjAxNC8wOC8yMC0wOTo1MzowMiAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENDIDIwMTQgKFdpbmRvd3MpIiB4bXBNTTpJbnN0YW5jZUlEPSJ4bXAuaWlkOjM2QzMxMjRFODMyMTExRUE5REU4QURFODg4M0Q4MUY5IiB4bXBNTTpEb2N1bWVudElEPSJ4bXAuZGlkOjM2QzMxMjRGODMyMTExRUE5REU4QURFODg4M0Q4MUY5Ij4gPHhtcE1NOkRlcml2ZWRGcm9tIHN0UmVmOmluc3RhbmNlSUQ9InhtcC5paWQ6MzZDMzEyNEM4MzIxMTFFQTlERThBREU4ODgzRDgxRjkiIHN0UmVmOmRvY3VtZW50SUQ9InhtcC5kaWQ6MzZDMzEyNEQ4MzIxMTFFQTlERThBREU4ODgzRDgxRjkiLz4gPC9yZGY6RGVzY3JpcHRpb24+IDwvcmRmOlJERj4gPC94OnhtcG1ldGE+IDw/eHBhY2tldCBlbmQ9InIiPz4OezhpAAADAFBMVEXV1dWq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</xsl:text>
 	</xsl:variable>
 	
+	<xsl:variable name="Image-Checkbox-Off">
+		<xsl:text>iVBORw0KGgoAAAANSUhEUgAAAI0AAACOCAYAAAAMyosLAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyZpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuNi1jMDE0IDc5LjE1Njc5NywgMjAxNC8wOC8yMC0wOTo1MzowMiAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENDIDIwMTQgKFdpbmRvd3MpIiB4bXBNTTpJbnN0YW5jZUlEPSJ4bXAuaWlkOjM2MzRENjRGODU3MjExRUE5RkQyRkE5NzIzRTI4RUFEIiB4bXBNTTpEb2N1bWVudElEPSJ4bXAuZGlkOjM2MzRENjUwODU3MjExRUE5RkQyRkE5NzIzRTI4RUFEIj4gPHhtcE1NOkRlcml2ZWRGcm9tIHN0UmVmOmluc3RhbmNlSUQ9InhtcC5paWQ6MzYzNEQ2NEQ4NTcyMTFFQTlGRDJGQTk3MjNFMjhFQUQiIHN0UmVmOmRvY3VtZW50SUQ9InhtcC5kaWQ6MzYzNEQ2NEU4NTcyMTFFQTlGRDJGQTk3MjNFMjhFQUQiLz4gPC9yZGY6RGVzY3JpcHRpb24+IDwvcmRmOlJERj4gPC94OnhtcG1ldGE+IDw/eHBhY2tldCBlbmQ9InIiPz78pthEAAABJUlEQVR42uzaQQqAMAxE0Yx4/yuPXqFFEOU9yLKb8MmqmZkOLDisANEgGkSDaBANiAbRIBpEg2hANIiGt5y7D9vG+r4tydYPB5cG0SAaRINoEA2IBtEgGkSDaEA0iAbRIBpEA6JBNIgG0SAaRAOiQTSIBtEgGhANokE0iAbRgGgQDaJBNIgGRINoEA2iQTSIBkSDaBANokE0IBpEg2gQDaIB0SAaRINoEA2IBtEgGkSDaBANiAbRIBpEg2hANIgG0SAaRAOiQTSIBtEgGhANokE0iAbRIBoQDaJBNIgG0YBoEA2iQTSIBkSDaBANokE0iAZEg2gQDaJBNCAaRINoEA2iAdHwjNxTa8ClQTSIBtEgGhANokE0iAbRgGgQDaJBNPzTJcAA8X0HG4p2/doAAAAASUVORK5CYII=</xsl:text>
+	</xsl:variable>
+	
+	<xsl:variable name="Image-Checkbox-On">
+		<xsl:text>iVBORw0KGgoAAAANSUhEUgAAAI0AAACOCAYAAAAMyosLAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyZpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuNi1jMDE0IDc5LjE1Njc5NywgMjAxNC8wOC8yMC0wOTo1MzowMiAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENDIDIwMTQgKFdpbmRvd3MpIiB4bXBNTTpJbnN0YW5jZUlEPSJ4bXAuaWlkOkE0MTI1QTRDODU3MjExRUE5RERDQzVDRTBEOTcxRkJCIiB4bXBNTTpEb2N1bWVudElEPSJ4bXAuZGlkOkE0MTI1QTREODU3MjExRUE5RERDQzVDRTBEOTcxRkJCIj4gPHhtcE1NOkRlcml2ZWRGcm9tIHN0UmVmOmluc3RhbmNlSUQ9InhtcC5paWQ6QTQxMjVBNEE4NTcyMTFFQTlERENDNUNFMEQ5NzFGQkIiIHN0UmVmOmRvY3VtZW50SUQ9InhtcC5kaWQ6QTQxMjVBNEI4NTcyMTFFQTlERENDNUNFMEQ5NzFGQkIiLz4gPC9yZGY6RGVzY3JpcHRpb24+IDwvcmRmOlJERj4gPC94OnhtcG1ldGE+IDw/eHBhY2tldCBlbmQ9InIiPz6RsmjcAAADa0lEQVR42uzdvZHCQBBEYUEiRIFDPGREEJiQAB6JUATCHcb5x8/udPe8VyVTFJK+Amd3tFqW5bEQvdCaW0CgIdAQaAg0BBoi0BBoCDQEGgINEWgINFTZ45vHfr9//LZwaByHw+Hx7We8DPhA4GSDGYMGONFgxqEBTiyYsWiAEwlmPBrgxIF5H812uwVOTzDvo7nf78AxBnO9XuejeX5Z4PiCeZ5bggY4vmBK0QDHE0w5GuD4gZFAAxwvMDJogOMDRgoNcDzAyKEBjj4YSTTA0QYjiwY4umCk0QBHE4w8GuDogbFAAxwtMDZogKMDxgoNcDTA2KEBTj0YSzTAqQVji6Y7nEow1mi6wqkGY4+mGxwFMBFousBRARODJh2OEpgoNKlw1MDEoUmDowgmEk0KHFUwsWjc4SiDiUbjCkcdTDwaNzgOYFqgcYHjAqYNGnU4TmBaoVGF4wamHRo1OI5gWqJRgeMKpi2aajjOYFqjqYLjDqY9mtlwEsCAZiKcFDCgmQQnCQxoJsBJAwOawXASwYBmIJxUMKAZBCcZDGgGwNntdtFgQDMITjIY0BTDcQQDmkI4rmBAUwTHGQxoCuC4gwHNB3A2m83L1365XCKu/91nv+78Fvvz+bzcbreXzzsej0v3Wv7SfPrOx4TBSvw9TQSTAgc0k8EkwAFNARh3OKApAuMMBzRfBnM6neJHuYFmwIq79BmAoBm04i4ZDmgGLtFMhQOawUs0E+GAZsKa3jQ4oJm0pjcJTns0MxeBp8BpjaZi10ACnLZoKreZuMNpiUZhX5IznHZolDayucJphUZx56MjnDZolLfKusFpgcZhb7UTnHg0TpvxXeBEo3Gc3uAAJxaN87gPdTiRaBLmwyjDiUOTNFBIFU4UmsQJVIpwYtAkjyxTgxOBJn3GnRocezQdwKjBsUbTCYwSHFs0HcGowLFE0xmMAhw7NICph2OFBjAacGzQAEYHjgUawGjBkUcDGD040mgAowlHFg1gdOFIogGMNhw5NIDRhyOFBjAecGTQAMYHjgQawHjBKUcDGD84pWgA4wmnDA1gfOGUoAGMN5zpaADjD2c6GsD4w5FGA5g4OIABjhAawMTCAQxwBNAAJhvO6k8O0X9bcwsINAQaAg2BhkBDBBoCDYGGQEOgIQINgYZAQzb9CDAARIJQBNxDBDAAAAAASUVORK5CYII=</xsl:text>
+	</xsl:variable>
+	
 	<xsl:template name="addLetterSpacing">
 		<xsl:param name="text"/>
 		<xsl:param name="letter-spacing" select="'0.15'"/>
@@ -2255,5 +2656,41 @@ plus récente, un corrigendum ou amendement peut avoir été publié.</fo:block>
 		</xsl:if>
 	</xsl:template>
 
+	<xsl:template name="addLetterSpacingSmallCaps">
+		<xsl:param name="text"/>
+		<xsl:param name="letter-spacing" select="'0.15'"/>
+		<xsl:if test="string-length($text) &gt; 0">
+			<xsl:variable name="char" select="substring($text,1,1)"/>
+			<xsl:variable name="upperCase" select="translate($char, $lower, $upper)"/>
+			<xsl:choose>
+				<xsl:when test="$char=$upperCase">
+					<fo:inline font-size="{100 div 0.75}%">
+						<fo:inline padding-right="{$letter-spacing}mm"><xsl:value-of select="$upperCase"/></fo:inline>
+					</fo:inline>
+				</xsl:when>
+				<xsl:otherwise>
+					<fo:inline padding-right="{$letter-spacing}mm"><xsl:value-of select="$upperCase"/></fo:inline>
+				</xsl:otherwise>
+			</xsl:choose>
+			<xsl:if test="string-length($text) &gt; 1">
+				<xsl:call-template name="addLetterSpacingSmallCaps">
+					<xsl:with-param name="text" select="substring($text,2)"/>
+					<xsl:with-param name="letter-spacing" select="$letter-spacing"/>
+				</xsl:call-template>
+			</xsl:if>
+		</xsl:if>
+	</xsl:template>
+	
+	<xsl:template name="insertCheckBoxOff">
+		<fo:inline padding-right="1mm" padding-bottom="0.25mm">
+			<fo:external-graphic src="{concat('data:image/png;base64,', normalize-space($Image-Checkbox-Off))}" width="2.5mm" content-height="scale-to-fit" scaling="uniform" fox:alt-text="Checkbox off"/>
+		</fo:inline>
+	</xsl:template>
+	
+	<xsl:template name="insertCheckBoxOn">
+		<fo:inline padding-right="1mm" padding-bottom="0.25mm">
+			<fo:external-graphic src="{concat('data:image/png;base64,', normalize-space($Image-Checkbox-On))}" width="2.5mm" content-height="scale-to-fit" scaling="uniform" fox:alt-text="Checkbox off"/>
+		</fo:inline>
+	</xsl:template>
 	
 </xsl:stylesheet>
