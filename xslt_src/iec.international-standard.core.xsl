@@ -46,6 +46,7 @@
 			<xsl:when test="$stage = 0">NWIP</xsl:when> <!-- NWIP (NP, PWI) -->
 			<xsl:when test="$stage = 10">AWI</xsl:when>
 			<xsl:when test="$stage = 20">WD</xsl:when>
+			<xsl:when test="$stage = 30 and $substage = 20">CDV</xsl:when>
 			<xsl:when test="$stage = 30">CD</xsl:when>
 			<xsl:when test="$stage = 40">DIS</xsl:when>
 			<xsl:when test="$stage = 50">FDIS</xsl:when>
@@ -73,6 +74,7 @@
 		<item name="AWI" show="true" shortname="DRAFT">APPROVED WORK ITEM</item>
 		<item name="WD" show="true" shortname="DRAFT">WORKING DRAFT</item>
 		<item name="CD" show="true" shortname="DRAFT">COMMITTEE DRAFT</item>
+		<item name="CDV" show="true" shortname="DRAFT">COMMITTEE DRAFT FOR VOTE (CDV)</item>
 		<item name="DIS" show="true" shortname="DRAFT">DRAFT</item>
 		<item name="FDIS" show="true" shortname="FINAL DRAFT">PRE-RELEASE VERSION (FDIS)</item>
 		<item name="IS">PROOF</item>
@@ -157,8 +159,9 @@
 				</fo:simple-page-master>
 				
 				<fo:simple-page-master master-name="cover-FDIS" page-width="{$pageWidth}" page-height="{$pageHeight}">
-					<fo:region-body margin-top="17.5mm" margin-bottom="5mm" margin-left="18mm" margin-right="19mm"/>
+					<fo:region-body margin-top="17.5mm" margin-bottom="29mm" margin-left="18mm" margin-right="19mm"/>
 					<fo:region-before region-name="header" extent="17.5mm"/> 
+					<fo:region-after region-name="footer-FDIS" extent="29mm"/> 
 					<fo:region-start region-name="left-region" extent="18mm"/>
 					<fo:region-end region-name="right-region" extent="19mm"/>
 				</fo:simple-page-master>
@@ -548,22 +551,52 @@
 				</fo:page-sequence>
 			</xsl:if>
 			
-			<xsl:if test="$stage-name = 'FDIS'">
+			<xsl:if test="$stage-name = 'FDIS' or $stage-name = 'CDV'">
+				<!-- circulation cover page -->
 				<fo:page-sequence master-reference="cover-FDIS" force-page-count="no-force">
+					<fo:static-content flow-name="footer-FDIS">
+						<fo:block-container background-color="rgb(236, 232, 232)" padding="2mm" border="1.5pt solid white">
+							<fo:block font-size="8pt" margin-bottom="6pt">
+								<fo:inline font-weight="bold">
+									<xsl:call-template name="addLetterSpacing">
+										<xsl:with-param name="text">
+											<xsl:text>Copyright © 2019 International Electrotechnical Commission, IEC</xsl:text>
+										</xsl:with-param>
+									</xsl:call-template>
+								</fo:inline>
+								<fo:inline>
+									<xsl:call-template name="addLetterSpacing">
+										<xsl:with-param name="text">
+											<xsl:text>. All rights reserved. It is permitted to download this electronic file, to make a copy and to print out the content for the sole purpose of preparing National Committee positions. You may not copy or "mirror" the file or printed version of the document, or any part of it, for any other purpose without permission in writing from IEC.</xsl:text>
+										</xsl:with-param>
+									</xsl:call-template>
+								</fo:inline>
+							</fo:block>
+						</fo:block-container>
+					</fo:static-content>
 					<fo:flow flow-name="xsl-region-body">
 						
 						<fo:block text-align-last="justify" margin-left="-0.5mm">
 							<fo:external-graphic src="{concat('data:image/png;base64,', normalize-space($Image-Logo-IEC))}" width="18mm" content-height="scale-to-fit" scaling="uniform" fox:alt-text="Image Logo IEC"/>
-							<fo:inline font-size="8pt" padding-left="0.5mm" color="{$color_blue}">®</fo:inline>
+							<xsl:if test="$stage-name != 'CDV'">
+								<fo:inline font-size="8pt" padding-left="0.5mm" color="{$color_blue}">®</fo:inline>
+							</xsl:if>
 							<fo:inline keep-together.within-line="always" font-size="18pt" font-weight="bold" baseline-shift="10mm"><fo:leader leader-pattern="space"/>
 								<xsl:text>Ex: 34D/1511/FDIS</xsl:text>
 								<xsl:text>&#xA0;</xsl:text>
 							</fo:inline>
 						</fo:block>
 						<fo:block font-size="10pt" text-align="right" margin-top="-2mm" margin-bottom="8pt">
-							<xsl:call-template name="addLetterSpacing">
-								<xsl:with-param name="text" select="'FINAL DRAFT INTERNATIONAL STANDARD (FDIS)'"/>
-							</xsl:call-template>
+							<xsl:if test="$stage-name = 'FDIS'">
+								<xsl:call-template name="addLetterSpacing">
+									<xsl:with-param name="text" select="'FINAL DRAFT INTERNATIONAL STANDARD (FDIS)'"/>
+								</xsl:call-template>
+							</xsl:if>
+							<xsl:if test="$stage-name = 'CDV'">
+								<xsl:call-template name="addLetterSpacing">
+									<xsl:with-param name="text" select="'COMMITTEE DRAFT FOR VOTE (CDV)'"/>
+								</xsl:call-template>
+							</xsl:if>
 							<xsl:text>&#xA0;</xsl:text>
 						</fo:block>
 						<fo:block-container margin-left="57mm">
@@ -684,13 +717,31 @@
 											</fo:table-cell>
 											<fo:table-cell border="1.5pt solid {$border-color}" padding="1.5mm" padding-bottom="0mm">
 												<fo:block font-size="6.5pt" margin-bottom="6pt">
-													<xsl:call-template name="addLetterSpacingSmallCaps">
-														<xsl:with-param name="text" select="'horizontal standard:'"/>
-													</xsl:call-template>
+													<xsl:if test="$stage-name = 'FDIS'">
+														<xsl:call-template name="addLetterSpacingSmallCaps">
+															<xsl:with-param name="text" select="'horizontal standard:'"/>
+														</xsl:call-template>
+													</xsl:if>
+													<xsl:if test="$stage-name = 'CDV'">
+														<xsl:call-template name="addLetterSpacingSmallCaps">
+															<xsl:with-param name="text" select="'Proposed horizontal standard:'"/>
+														</xsl:call-template>
+													</xsl:if>
 												</fo:block>
 												<fo:block>
 													<xsl:call-template name="insertCheckBoxOff"/>
 												</fo:block>
+												<xsl:if test="$stage-name = 'CDV'">
+													<fo:block-container background-color="rgb(236, 232, 232)" margin-left="-2mm" margin-right="-2mm">
+														<fo:block-container margin-left="1mm" margin-right="1mm">
+															<fo:block font-size="8pt" padding="2mm">
+																<xsl:call-template name="addLetterSpacing">
+																	<xsl:with-param name="text" select="'Other TC/SCs are requested to indicate their interest, if any, in this CDV to the secretary.'"/>
+																</xsl:call-template>
+															</fo:block>
+														</fo:block-container>
+													</fo:block-container>
+												</xsl:if>
 											</fo:table-cell>
 										</fo:table-row>
 										<fo:table-row height="10mm">
@@ -713,7 +764,7 @@
 												</fo:block>
 											</fo:table-cell>
 											<fo:table-cell padding="1.5mm" padding-bottom="0mm">
-												<fo:block font-size="6.5pt" margin-bottom="4pt">&#xA0;</fo:block>
+												<fo:block font-size="6.5pt" margin-bottom="6pt">&#xA0;</fo:block>
 												<fo:block font-size="6.5pt">
 													<xsl:call-template name="insertCheckBoxOff"/>
 													<xsl:call-template name="addLetterSpacingSmallCaps">
@@ -739,11 +790,20 @@
 													<xsl:call-template name="addLetterSpacing">
 														<xsl:with-param name="text" select="'Attention IEC-CENELEC parallel voting'"/>
 													</xsl:call-template>
-													</fo:block>
+												</fo:block>
+												
+												
 												<fo:block font-size="8pt" margin-bottom="10pt" text-align="justify">
-													<xsl:call-template name="addLetterSpacing">
-														<xsl:with-param name="text" select="'The attention of IEC National Committees, members of CENELEC, is drawn to the fact that this Final Draft International Standard (FDIS) is submitted for parallel voting.'"/>
-													</xsl:call-template>
+													<xsl:if test="$stage-name = 'FDIS'">
+														<xsl:call-template name="addLetterSpacing">
+															<xsl:with-param name="text" select="'The attention of IEC National Committees, members of CENELEC, is drawn to the fact that this Final Draft International Standard (FDIS) is submitted for parallel voting.'"/>
+														</xsl:call-template>
+													</xsl:if>
+													<xsl:if test="$stage-name = 'CDV'">
+														<xsl:call-template name="addLetterSpacing">
+															<xsl:with-param name="text" select="'The attention of IEC National Committees, members of CENELEC, is drawn to the fact that this Committee Draft for Vote (CDV) is submitted for parallel voting.'"/>
+														</xsl:call-template>
+													</xsl:if>
 												</fo:block>
 												<fo:block font-size="8pt" margin-bottom="10pt">
 													<xsl:call-template name="addLetterSpacing">
@@ -766,21 +826,35 @@
 						</fo:block-container>
 						
 						<fo:block-container font-size="8pt" background-color="rgb(236, 232, 232)" margin-top="5mm" padding="2mm" text-align="justify" border="1.5pt solid white">
-							<fo:block margin-bottom="6pt">
-								<xsl:call-template name="addLetterSpacing">
-									<xsl:with-param name="text">This document is a draft distributed for approval. It may not be referred to as an International Standard until published as such.</xsl:with-param>
-								</xsl:call-template>
-							</fo:block>
-							<fo:block margin-bottom="6pt">
-								<xsl:call-template name="addLetterSpacing">
-									<xsl:with-param name="text">In addition to their evaluation as being acceptable for industrial, technological, commercial and user purposes, Final Draft International Standards may on occasion have to be considered in the light of their potential to become standards to which reference may be made in national regulations.</xsl:with-param>
-								</xsl:call-template>
-							</fo:block>
-							<fo:block>
-								<xsl:call-template name="addLetterSpacing">
-									<xsl:with-param name="text"> Recipients of this document are invited to submit, with their comments, notification of any relevant patent rights of which they are aware and to provide supporting documentation.</xsl:with-param>
-								</xsl:call-template>
-							</fo:block>
+							<xsl:if test="$stage-name = 'FDIS'">
+								<fo:block margin-bottom="6pt">
+									<xsl:call-template name="addLetterSpacing">
+										<xsl:with-param name="text">This document is a draft distributed for approval. It may not be referred to as an International Standard until published as such.</xsl:with-param>
+									</xsl:call-template>
+								</fo:block>
+								<fo:block margin-bottom="6pt">
+									<xsl:call-template name="addLetterSpacing">
+										<xsl:with-param name="text">In addition to their evaluation as being acceptable for industrial, technological, commercial and user purposes, Final Draft International Standards may on occasion have to be considered in the light of their potential to become standards to which reference may be made in national regulations.</xsl:with-param>
+									</xsl:call-template>
+								</fo:block>
+								<fo:block>
+									<xsl:call-template name="addLetterSpacing">
+										<xsl:with-param name="text"> Recipients of this document are invited to submit, with their comments, notification of any relevant patent rights of which they are aware and to provide supporting documentation.</xsl:with-param>
+									</xsl:call-template>
+								</fo:block>
+							</xsl:if>
+							<xsl:if test="$stage-name = 'CDV'">
+								<fo:block margin-bottom="6pt">
+									<xsl:call-template name="addLetterSpacing">
+										<xsl:with-param name="text">This document is still under study and subject to change. It should not be used for reference purposes.</xsl:with-param>
+									</xsl:call-template>
+								</fo:block>
+								<fo:block margin-bottom="6pt">
+									<xsl:call-template name="addLetterSpacing">
+										<xsl:with-param name="text">Recipients of this document are invited to submit, with their comments, notification of any relevant patent rights of which they are aware and to provide supporting documentation.</xsl:with-param>
+									</xsl:call-template>
+								</fo:block>
+							</xsl:if>
 						</fo:block-container>
 						
 						<fo:block-container background-color="rgb(219, 229, 241)" margin-top="4mm" padding="2mm" padding-top="1mm" border="1.5pt solid white">
@@ -796,43 +870,48 @@
 							</fo:block>
 						</fo:block-container>
 						
-						<fo:block-container border="1.5 solid" border-color="rgb(221, 213, 213)" height="6.5mm" padding="1mm" margin-top="3mm" display-align="center">
-							<fo:block font-size="6.5pt">
-								<xsl:call-template name="addLetterSpacing">
-									<xsl:with-param name="text">
-										<xsl:text>PROPOSED STABILITY DATE: </xsl:text>
-									</xsl:with-param>
-								</xsl:call-template>
-								<fo:inline font-size="9pt">2023</fo:inline>
-							</fo:block>
-						</fo:block-container>
+						<xsl:if test="$stage-name = 'FDIS'">
+							<fo:block-container border="1.5 solid" border-color="rgb(221, 213, 213)" height="6.5mm" padding="1mm" margin-top="3mm" display-align="center">
+								<fo:block font-size="6.5pt">
+									<xsl:call-template name="addLetterSpacing">
+										<xsl:with-param name="text">
+											<xsl:text>PROPOSED STABILITY DATE: </xsl:text>
+										</xsl:with-param>
+									</xsl:call-template>
+									<fo:inline font-size="9pt">2023</fo:inline>
+								</fo:block>
+							</fo:block-container>
+						</xsl:if>
 						
 						<fo:block-container border="1.5 solid" border-color="rgb(221, 213, 213)" height="13mm" padding="1mm" margin-top="3mm">
-							<fo:block font-size="6.5pt">
+							<fo:block font-size="6.5pt" margin-bottom="6pt">
 								<xsl:call-template name="addLetterSpacingSmallCaps">
 									<xsl:with-param name="text">Note from TC/SC officers:</xsl:with-param>
 								</xsl:call-template>
 							</fo:block>
+							<!-- <fo:block font-size="9pt">This FDIS is the result of the discussion between the IEC SC21A experts WG 3 during the meeting held in</fo:block> -->
 						</fo:block-container>
 								
-						<fo:block-container background-color="rgb(236, 232, 232)" margin-top="7mm" padding="2mm" border="1.5pt solid white">
-							<fo:block font-size="8pt" margin-bottom="6pt">
-								<fo:inline font-weight="bold">
+						
+						
+						<xsl:if test="$stage-name = 'FDIS'">
+							<fo:block-container  font-size="9pt" border="1.5 solid" border-color="rgb(221, 213, 213)" height="13mm" padding="1mm" margin-top="3mm">
+								<fo:block margin-bottom="6pt">
+									<xsl:call-template name="addLetterSpacing">
+											<xsl:with-param name="text">
+												<xsl:text>Chicago (USA) on April 9th</xsl:text>
+											</xsl:with-param>
+										</xsl:call-template>
+									</fo:block>
+								<fo:block>
 									<xsl:call-template name="addLetterSpacing">
 										<xsl:with-param name="text">
-											<xsl:text>Copyright © 2019 International Electrotechnical Commission, IEC</xsl:text>
+											<xsl:text>This document is also of interest for ISO/ TC114/ WG1 Requirements for Watch batteries</xsl:text>
 										</xsl:with-param>
 									</xsl:call-template>
-								</fo:inline>
-								<fo:inline>
-									<xsl:call-template name="addLetterSpacing">
-										<xsl:with-param name="text">
-											<xsl:text>. All rights reserved. It is permitted to download this electronic file, to make a copy and to print out the content for the sole purpose of preparing National Committee positions. You may not copy or "mirror" the file or printed version of the document, or any part of it, for any other purpose without permission in writing from IEC.</xsl:text>
-										</xsl:with-param>
-									</xsl:call-template>
-								</fo:inline>
-							</fo:block>
-						</fo:block-container>
+								</fo:block>
+							</fo:block-container>
+						</xsl:if>
 						
 					</fo:flow>
 				</fo:page-sequence>
@@ -2682,14 +2761,14 @@
 	</xsl:template>
 	
 	<xsl:template name="insertCheckBoxOff">
-		<fo:inline padding-right="1mm" padding-bottom="0.25mm">
-			<fo:external-graphic src="{concat('data:image/png;base64,', normalize-space($Image-Checkbox-Off))}" width="2.5mm" content-height="scale-to-fit" scaling="uniform" fox:alt-text="Checkbox off"/>
+		<fo:inline padding-right="1mm">
+			<fo:external-graphic src="{concat('data:image/png;base64,', normalize-space($Image-Checkbox-Off))}" width="2.5mm" content-height="scale-to-fit" scaling="uniform" fox:alt-text="Checkbox off" baseline-shift="-5%"/>
 		</fo:inline>
 	</xsl:template>
 	
 	<xsl:template name="insertCheckBoxOn">
-		<fo:inline padding-right="1mm" padding-bottom="0.25mm">
-			<fo:external-graphic src="{concat('data:image/png;base64,', normalize-space($Image-Checkbox-On))}" width="2.5mm" content-height="scale-to-fit" scaling="uniform" fox:alt-text="Checkbox off"/>
+		<fo:inline padding-right="1mm">
+			<fo:external-graphic src="{concat('data:image/png;base64,', normalize-space($Image-Checkbox-On))}" width="2.5mm" content-height="scale-to-fit" scaling="uniform" fox:alt-text="Checkbox off" baseline-shift="-5%"/>
 		</fo:inline>
 	</xsl:template>
 	
