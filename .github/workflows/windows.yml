@@ -43,6 +43,9 @@ jobs:
           make update-init update-modules
 
       - name: Build
+        env:
+          GITHUB_USERNAME: ${{ github.actor }}
+          GITHUB_TOKEN: ${{ github.token }}
         run: |
           make all published
 

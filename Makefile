@@ -32,16 +32,18 @@ XSLT_GENERATED := xslt/iec.international-standard.xsl \
 	xslt/ogc.other.xsl \
 	xslt/un.plenary.xsl \
 	xslt/un.recommendation.xsl \
-	xslt/csd.standard.xsl
+	xslt/csd.standard.xsl \
+	xslt/rsd.standard.xsl
 
 MN2PDF_DOWNLOAD_PATH := https://github.com/metanorma/mn2pdf/releases/download/v1.8/mn2pdf-1.8.jar
+# MN2PDF_DOWNLOAD_PATH := https://maven.pkg.github.com/metanorma/mn2pdf/com/metanorma/fop/mn2pdf/1.7/mn2pdf-1.7.jar
 
 all: xslts documents.html
 
 xslts: $(XSLT_GENERATED)
 
 mn2pdf.jar:
-	curl -sSL ${MN2PDF_DOWNLOAD_PATH} -o mn2pdf.jar
+	curl -sSL --user ${GITHUB_USERNAME}:${GITHUB_TOKEN} ${MN2PDF_DOWNLOAD_PATH} -o mn2pdf.jar
 
 xalan/xalan.jar:
 ifeq ($(OS),Windows_NT)
@@ -100,6 +102,9 @@ documents/%.xml: sources/%.xml | documents
 #	echo "### skipping $@"
 
 documents/itu-T-REC-A.8-200810-I!!MSW-E.pdf:
+	echo "### skipping $@"
+
+documents/un-ECE_AGAT_2020_INF1.pdf:
 	echo "### skipping $@"
 
 #documents/itu-Z.100-201811-AnnF1.pdf:
