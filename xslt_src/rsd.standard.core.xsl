@@ -165,14 +165,14 @@
 					<fo:block font-size="22pt" font-weight="bold" margin-bottom="12pt"><xsl:value-of select="$doctitle"/></fo:block>
 					<fo:block font-size="22pt" margin-bottom="14pt">&#xA0;</fo:block>
 					<fo:block font-size="22pt" margin-bottom="14pt">&#xA0;</fo:block>
-					<fo:block font-size="22pt" margin-bottom="14pt">&#xA0;</fo:block>
+					<fo:block font-size="22pt" margin-bottom="6pt">&#xA0;</fo:block>
 					
-					<fo:block font-family="Calibri" font-size="13pt">
-						<fo:block margin-bottom="12pt">Ronald Tse</fo:block>
-						<fo:block margin-bottom="12pt">Wai Kit Wong</fo:block>
-						<fo:block margin-bottom="12pt">Daniel Wyatt</fo:block>
-						<fo:block margin-bottom="12pt">Nickolay Olshevsky</fo:block>
-						<fo:block margin-bottom="12pt">Jeffrey Lau</fo:block>
+					<fo:block font-family="SourceSerifPro" font-size="12pt" line-height="230%">
+						<fo:block>Ronald Tse</fo:block>
+						<fo:block>Wai Kit Wong</fo:block>
+						<fo:block>Daniel Wyatt</fo:block>
+						<fo:block>Nickolay Olshevsky</fo:block>
+						<fo:block>Jeffrey Lau</fo:block>
 					</fo:block>
 					<fo:block margin-top="24pt" font-size="22pt" margin-left="1mm">
 						<fo:external-graphic src="{concat('data:image/png;base64,', normalize-space($rnp-Logo))}" width="28.8mm" content-height="scale-to-fit" scaling="uniform" fox:alt-text="rnp Logo"/><!--  vertical-align="middle" -->
@@ -962,7 +962,7 @@
 			<xsl:for-each select="rsd:note//rsd:p">
 				<xsl:call-template name="note"/>
 			</xsl:for-each>
-			<fo:block font-family="Arial" font-size="11pt" font-weight="bold" text-align="center" margin-top="12pt" margin-bottom="6pt" keep-with-previous="always">
+			<fo:block font-family="SourceSansPro" font-size="12pt" font-weight="bold" text-align="center" margin-top="12pt" margin-bottom="6pt" keep-with-previous="always">
 				
 				<xsl:choose>
 					<xsl:when test="ancestor::rsd:annex">
@@ -1003,7 +1003,7 @@
 	
 	
 	<xsl:template match="rsd:bibitem">
-		<fo:block font-family="Arial" id="{@id}" margin-bottom="12pt" start-indent="12mm" text-indent="-12mm">
+		<fo:block font-family="SourceSansPro" font-size="11pt" id="{@id}" margin-bottom="12pt" start-indent="12mm" text-indent="-12mm">
 			<xsl:if test=".//rsd:fn">
 				<xsl:attribute name="line-height-shift-adjustment">disregard-shifts</xsl:attribute>
 			</xsl:if>
@@ -1294,7 +1294,7 @@
 	
 	
 	<xsl:template match="rsd:termexample">
-		<fo:block font-family="Arial" font-size="10pt" margin-bottom="12pt">
+		<fo:block font-family="SourceSansPro" font-size="11pt" margin-bottom="12pt">
 			<fo:inline padding-right="10mm">EXAMPLE</fo:inline>
 			<xsl:apply-templates />
 		</fo:block>
@@ -1365,7 +1365,7 @@
 	</xsl:template>
 	
 	<xsl:template match="rsd:appendix//rsd:example">
-		<fo:block font-family="Arial" font-size="10pt" margin-bottom="12pt">
+		<fo:block font-family="SourceSansPro" font-size="11pt" margin-bottom="12pt">
 			<xsl:text>EXAMPLE</xsl:text>
 			<xsl:if test="rsd:name">
 				<xsl:text> — </xsl:text><xsl:apply-templates select="rsd:name" mode="process"/>
@@ -1441,7 +1441,7 @@
 	</xsl:template>
 
 	<xsl:template match="rsd:sourcecode">
-		<fo:block font-family="Courier" font-size="10pt" margin-bottom="6pt" keep-with-next="always" line-height="113%">
+		<fo:block font-family="SourceCodePro" font-size="10pt" margin-bottom="6pt" keep-with-next="always" line-height="113%">
 			<xsl:choose>
 				<xsl:when test="@lang = 'en'"></xsl:when>
 				<xsl:otherwise>
@@ -1462,7 +1462,7 @@
 						<xsl:value-of select="/rsd:nist-standard/rsd:bibdata/rsd:ext/rsd:structuredidentifier/rsd:annexid"/><xsl:number format="-1" level="any" count="rsd:annex//rsd:sourcecode"/>
 					</xsl:when>
 					<xsl:otherwise>
-						<fo:block font-family="Arial" font-size="11pt" font-weight="bold" text-align="center" margin-bottom="12pt">
+						<fo:block font-family="SourceSansPro" font-size="12pt" font-weight="bold" text-align="center" margin-bottom="12pt">
 							<xsl:text>Figure </xsl:text>
 							<xsl:number format="A." level="multiple" count="rsd:annex"/>
 							<xsl:number format="1" level="any" count="rsd:sourcecode[ancestor::rsd:annex/@id = $id_annex and not(@unnumbered='true') and not(ancestor::rsd:example)]"/>
@@ -1475,7 +1475,7 @@
 				</xsl:choose>
 			</xsl:when>
 			<xsl:otherwise>
-				<fo:block font-family="Arial" font-size="11pt" font-weight="bold" text-align="center" margin-bottom="12pt">
+				<fo:block font-family="SourceSansPro" font-size="12pt" font-weight="bold" text-align="center" margin-bottom="12pt">
 					<xsl:text>Figure </xsl:text>
 					<xsl:number format="1" level="any" count="rsd:sourcecode[not(@unnumbered='true') and not(ancestor::rsd:example)] | rsd:figure"/>
 					<xsl:if test="rsd:name">
@@ -1497,10 +1497,16 @@
 	</xsl:template>
 	
 	
-		<xsl:template match="rsd:sourcecode/rsd:name"/>
+	<xsl:template match="rsd:sourcecode/rsd:name"/>
+	
+	<xsl:template match="rsd:tt" priority="2">
+		<fo:inline font-family="SourceCodePro" font-size="10pt">
+			<xsl:apply-templates />
+		</fo:inline>
+	</xsl:template>
 	
 	<xsl:template match="rsd:example">
-		<fo:block font-family="Arial" font-size="10pt" margin-top="12pt" margin-bottom="12pt" font-weight="bold" keep-with-next="always">
+		<fo:block font-family="SourceSansPro" font-size="11pt" margin-top="12pt" margin-bottom="12pt" font-weight="bold" keep-with-next="always">
 			<xsl:text>EXAMPLE</xsl:text>
 			<xsl:choose>
 				<xsl:when test="following-sibling::rsd:example or preceding-sibling::rsd:example">
