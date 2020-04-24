@@ -46,9 +46,10 @@
 			<xsl:when test="$stage = 0">NWIP</xsl:when> <!-- NWIP (NP, PWI) -->
 			<xsl:when test="$stage = 10">AWI</xsl:when>
 			<xsl:when test="$stage = 20">WD</xsl:when>
-			<xsl:when test="$stage = 30 and $substage = 20">CDV</xsl:when>
+			<!-- <xsl:when test="$stage = 30 and $substage = 20">CDV</xsl:when> -->
 			<xsl:when test="$stage = 30">CD</xsl:when>
-			<xsl:when test="$stage = 40">DIS</xsl:when>
+			<!-- <xsl:when test="$stage = 40">DIS</xsl:when> -->
+			<xsl:when test="$stage = 40">CDV</xsl:when>
 			<xsl:when test="$stage = 50">FDIS</xsl:when>
 			<xsl:when test="$stage = 60 and $substage = 0">IS</xsl:when>
 			<xsl:when test="$stage &gt;= 60">published</xsl:when>
@@ -90,6 +91,9 @@
 	
 	<xsl:variable name="doctype_name">
 		<xsl:choose>
+			<xsl:when test="normalize-space(/iec:iec-standard/iec:bibdata/iec:ext/iec:stagename) != ''">
+				<xsl:value-of select="translate(/iec:iec-standard/iec:bibdata/iec:ext/iec:stagename, $lower, $upper)"/>
+			</xsl:when>
 			<xsl:when test="normalize-space(xalan:nodeset($stage-name-uppercased)/item[@name = $stage-name and @show = 'true']/text()) != ''">
 				<xsl:value-of select="xalan:nodeset($stage-name-uppercased)/item[@name = $stage-name and @show = 'true']/text()"/>
 			</xsl:when>
@@ -246,7 +250,9 @@
 				<fo:page-sequence master-reference="cover" force-page-count="no-force">
 					<fo:static-content flow-name="left-region" >
 						<fo:block-container reference-orientation="90">
-							<fo:block font-size="7pt" margin-left="0.5mm" margin-top="5mm">Example: IEC 61000-4-5:2014-05(en-fr)</fo:block>
+							<fo:block font-size="7pt" margin-left="0.5mm" margin-top="5mm">
+								<xsl:value-of select="/iec:iec-standard/iec:bibdata/iec:docidentifier[@type = 'iso-with-lang']"/>
+							</fo:block>
 						</fo:block-container>
 					</fo:static-content>
 					<fo:flow flow-name="xsl-region-body">
@@ -523,9 +529,14 @@
 								</fo:table-body>
 							</fo:table>
 							<fo:block font-size="8pt" text-align-last="justify">
-								<!-- <xsl:value-of select="/iec:iec-standard/iec:bibdata/iec:ics"/> -->
-								<xsl:text>Example: ICS 33.100.20</xsl:text>
+								<xsl:for-each select="/iec:iec-standard/iec:bibdata/iec:ext/iec:ics">
+									<xsl:if test="position() = 1">ICS </xsl:if>
+									<xsl:value-of select="iec:code"/>
+									<xsl:if test="position() != last()"><xsl:text> </xsl:text></xsl:if>
+								</xsl:for-each>
+								<xsl:text>&#xA0;</xsl:text>
 								<fo:inline keep-together.within-line="always"><fo:leader leader-pattern="space"/>
+									<xsl:text>&#xA0;</xsl:text>
 									<!-- <xsl:value-of select="/iec:iec-standard/iec:bibdata/iec:isbn"/> -->
 									<xsl:text>Example: ISBN 978-2-8322-1532-6</xsl:text>
 								</fo:inline>
@@ -614,7 +625,7 @@
 												</fo:block>
 												<fo:block font-size="9pt" font-weight="bold">
 													<xsl:call-template name="addLetterSpacing">
-														<xsl:with-param name="text">IEC 60598-2-1 ED2</xsl:with-param>
+														<xsl:with-param name="text"><xsl:value-of select="/iec:iec-standard/iec:bibdata/iec:ext/iec:structuredidentifier/iec:project-number"/></xsl:with-param>
 													</xsl:call-template>
 												</fo:block>
 											</fo:table-cell>
@@ -628,7 +639,7 @@
 												</fo:block>
 												<fo:block font-size="9pt" font-weight="bold">
 													<xsl:call-template name="addLetterSpacing">
-														<xsl:with-param name="text">2019-10-25</xsl:with-param>
+														<xsl:with-param name="text"><xsl:value-of select="/iec:iec-standard/iec:bibdata/iec:date[@type ='circulated']/iec:on"/></xsl:with-param>
 													</xsl:call-template>
 												</fo:block>
 											</fo:table-cell>
@@ -653,8 +664,14 @@
 													</xsl:call-template>
 												</fo:block>
 												<fo:block font-size="9pt" font-weight="bold">
+													<xsl:variable name="supersedes_documents">
+														<xsl:for-each select="/iec:iec-standard/iec:bibdata/iec:relation[@type='supersedes']/iec:bibitem/iec:docnumber">
+															<xsl:value-of select="."/>
+															<xsl:if test="position() != last()">,</xsl:if>
+														</xsl:for-each>
+													</xsl:variable>
 													<xsl:call-template name="addLetterSpacing">
-														<xsl:with-param name="text">34D/1450/CDV,34D/1484/RVC</xsl:with-param>
+														<xsl:with-param name="text"><xsl:value-of select="$supersedes_documents"/></xsl:with-param>
 													</xsl:call-template>
 												</fo:block>
 											</fo:table-cell>
@@ -673,11 +690,23 @@
 									<fo:table-body>
 										<fo:table-row height="4mm">
 											<fo:table-cell number-columns-spanned="2" border="1.5pt solid {$border-color}" padding="1.5mm" padding-bottom="0mm">
-												<fo:block font-size="6.5pt">
-													<fo:inline font-size="8pt">IEC SC 34D : </fo:inline>
-													<xsl:call-template name="addLetterSpacingSmallCaps">
-														<xsl:with-param name="text" select="'Luminaires'"/>
-													</xsl:call-template>
+												<fo:block>
+													<xsl:if test="/iec:iec-standard/iec:bibdata/iec:ext/iec:editorialgroup/iec:subcommittee">
+														<fo:block font-size="6.5pt">
+															<fo:inline font-size="8pt">IEC SC <xsl:value-of select="/iec:iec-standard/iec:bibdata/iec:ext/iec:editorialgroup/iec:subcommittee/@number"/> : </fo:inline>
+															<xsl:call-template name="addLetterSpacingSmallCaps">
+																<xsl:with-param name="text" select="/iec:iec-standard/iec:bibdata/iec:ext/iec:editorialgroup/iec:subcommittee"/>
+															</xsl:call-template>
+														</fo:block>
+													</xsl:if>
+													<xsl:if test="/iec:iec-standard/iec:bibdata/iec:ext/iec:editorialgroup/iec:technical-committee">
+														<fo:block font-size="6.5pt">
+															<fo:inline font-size="8pt">IEC TC <xsl:value-of select="/iec:iec-standard/iec:bibdata/iec:ext/iec:editorialgroup/iec:technical-committee/@number"/> : </fo:inline>
+															<xsl:call-template name="addLetterSpacingSmallCaps">
+																<xsl:with-param name="text" select="/iec:iec-standard/iec:bibdata/iec:ext/iec:editorialgroup/iec:technical-committee"/>
+															</xsl:call-template>
+														</fo:block>
+													</xsl:if>
 												</fo:block>
 											</fo:table-cell>
 										</fo:table-row>
@@ -690,7 +719,7 @@
 												</fo:block>
 												<fo:block font-size="9pt">
 													<xsl:call-template name="addLetterSpacing">
-														<xsl:with-param name="text" select="'United Kingdom'"/>
+														<xsl:with-param name="text" select="/iec:iec-standard/iec:bibdata/iec:ext/iec:editorialgroup/iec:secretariat"/>
 													</xsl:call-template>
 												</fo:block>
 											</fo:table-cell>
@@ -1509,7 +1538,6 @@
 	</xsl:template>
 	<!-- ============================= -->
 	<!-- ============================= -->
-	
 	
 	<xsl:template match="iec:license-statement//iec:title">
 		<fo:block text-align="center" font-weight="bold">
