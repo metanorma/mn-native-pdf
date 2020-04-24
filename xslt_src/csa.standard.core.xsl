@@ -1474,7 +1474,7 @@
 	</xsl:template>
 
 	<xsl:template match="csa:sourcecode">
-		<fo:block font-family="Courier" font-size="10pt" margin-bottom="6pt" keep-with-next="always" line-height="113%">
+		<fo:block font-family="SourceCodePro" font-size="10pt" margin-bottom="6pt" keep-with-next="always" line-height="113%">
 			<xsl:choose>
 				<xsl:when test="@lang = 'en'"></xsl:when>
 				<xsl:otherwise>
@@ -1529,8 +1529,13 @@
 		</xsl:call-template>
 	</xsl:template>
 	
+	<xsl:template match="csa:sourcecode/csa:name"/>
 	
-		<xsl:template match="csa:sourcecode/csa:name"/>
+	<xsl:template match="csa:tt" priority="2">
+		<fo:inline font-family="SourceCodePro" font-size="10pt">
+			<xsl:apply-templates />
+		</fo:inline>
+	</xsl:template>
 	
 	<xsl:template match="csa:example">
 		<fo:block font-size="10pt" margin-top="12pt" margin-bottom="12pt" font-weight="bold" keep-with-next="always">
