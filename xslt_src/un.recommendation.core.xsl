@@ -32,7 +32,7 @@
 	</xsl:variable>
 	
 	<xsl:template match="/">
-		<fo:root xmlns:fo="http://www.w3.org/1999/XSL/Format" font-family="Times New Roman, Cambria Math, HanSans" font-size="10pt" xml:lang="{$lang}">
+		<fo:root xmlns:fo="http://www.w3.org/1999/XSL/Format" font-family="Times New Roman, HanSans" font-size="10pt" xml:lang="{$lang}">
 			<fo:layout-master-set>
 				<!-- Cover page -->
 				<fo:simple-page-master master-name="cover-page" page-width="{$pageWidth}" page-height="{$pageHeight}">
@@ -1281,7 +1281,7 @@
 	</xsl:template>
 	
 	<xsl:template match="mathml:math">
-		<fo:inline font-family="Cambria Math">
+		<fo:inline>
 			<fo:instream-foreign-object> 
 				<xsl:copy-of select="."/>
 			</fo:instream-foreign-object>
