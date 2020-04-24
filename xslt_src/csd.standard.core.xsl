@@ -49,7 +49,7 @@
 	</xsl:variable>
 	
 	<xsl:template match="/">
-		<fo:root xmlns:fo="http://www.w3.org/1999/XSL/Format" font-family="Arial, Times New Roman, Cambria Math, HanSans" font-size="10.5pt" xml:lang="{$lang}">
+		<fo:root xmlns:fo="http://www.w3.org/1999/XSL/Format" font-family="SourceSansPro, HanSans" font-size="10.5pt" xml:lang="{$lang}">
 			<fo:layout-master-set>
 				<!-- Cover page -->
 				<fo:simple-page-master master-name="cover-page" page-width="{$pageWidth}" page-height="{$pageHeight}">
@@ -1261,7 +1261,7 @@
 	</xsl:template>
 
 	<xsl:template match="csd:sourcecode">
-		<fo:block font-family="Courier" font-size="10pt" margin-bottom="6pt" keep-with-next="always">
+		<fo:block font-family="SourceCodePro" font-size="10pt" margin-bottom="6pt" keep-with-next="always">
 			<xsl:choose>
 				<xsl:when test="@lang = 'en'"></xsl:when>
 				<xsl:otherwise>
@@ -1274,6 +1274,12 @@
 			<xsl:text>Figure </xsl:text>
 			<xsl:number format="1" level="any"/>
 		</fo:block>
+	</xsl:template>
+	
+	<xsl:template match="csd:tt" priority="2">
+		<fo:inline font-family="SourceCodePro" font-size="10pt">
+			<xsl:apply-templates />
+		</fo:inline>
 	</xsl:template>
 	
 	<xsl:template match="csd:example">
