@@ -26,7 +26,7 @@
 	<xsl:variable name="id" select="/un:un-standard/un:bibdata/un:ext/un:session/un:id"/>
 	
 	<xsl:template match="/">
-		<fo:root xmlns:fo="http://www.w3.org/1999/XSL/Format" font-family="Times New Roman, HanSans" font-size="10pt" xml:lang="{$lang}">
+		<fo:root xmlns:fo="http://www.w3.org/1999/XSL/Format" font-family="Times New Roman, STIX2Math, HanSans" font-size="10pt" xml:lang="{$lang}">
 			<fo:layout-master-set>
 				<!-- Cover page -->
 				<fo:simple-page-master master-name="cover-page" page-width="{$pageWidth}" page-height="{$pageHeight}">
@@ -1209,14 +1209,6 @@
 	
 	<xsl:template match="un:formula" mode="process">
 		<xsl:call-template name="formula"/>
-	</xsl:template>
-	
-	<xsl:template match="mathml:math">
-		<fo:inline>
-			<fo:instream-foreign-object> 
-				<xsl:copy-of select="."/>
-			</fo:instream-foreign-object>
-		</fo:inline>
 	</xsl:template>
 	
 	<xsl:template match="un:example">

@@ -1635,4 +1635,12 @@
 		</xsl:choose>
 	</xsl:template>
 	
+	<xsl:template match="mathml:math">
+		<fo:inline font-family="STIX2Math">
+			<fo:instream-foreign-object fox:alt-text="Math"> 
+				<xsl:copy-of select="."/>
+			</fo:instream-foreign-object>
+		</fo:inline>
+	</xsl:template>
+	
 </xsl:stylesheet>
