@@ -62,7 +62,7 @@
 	
 	<xsl:template match="/">
 		<xsl:message>INFO: Document namespace: '<xsl:value-of select="namespace-uri(/*)"/>'</xsl:message>
-		<fo:root xmlns:fo="http://www.w3.org/1999/XSL/Format" font-family="Times New Roman, Cambria Math" font-size="12pt" xml:lang="{$lang}">
+		<fo:root xmlns:fo="http://www.w3.org/1999/XSL/Format" font-family="Times New Roman, STIX2Math" font-size="12pt" xml:lang="{$lang}">
 			<fo:layout-master-set>
 				<!-- cover page -->
 				<fo:simple-page-master master-name="cover-page" page-width="{$pageWidth}" page-height="{$pageHeight}">
@@ -1488,11 +1488,8 @@
 		<xsl:call-template name="formula"/>
 	</xsl:template>
 	
-	<xsl:template match="mathml:math">
-		<!-- <fo:inline font-size="12pt" color="red">
-			MathML: 
-		</fo:inline> -->
-		<fo:inline font-family="Cambria Math" font-size="11pt">
+	<xsl:template match="mathml:math" priority="2">
+		<fo:inline font-family="STIX2Math" font-size="11pt">
 			<fo:instream-foreign-object fox:alt-text="Math"> 
 				<xsl:copy-of select="."/>
 			</fo:instream-foreign-object>

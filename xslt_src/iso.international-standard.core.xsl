@@ -137,7 +137,7 @@
 	
 	<xsl:template match="/">
 		<xsl:message>INFO: Document namespace: '<xsl:value-of select="namespace-uri(/*)"/>'</xsl:message>
-		<fo:root xmlns:fo="http://www.w3.org/1999/XSL/Format" font-family="Cambria, Times New Roman, Cambria Math, HanSans" font-size="11pt" xml:lang="{$lang}"> <!-- alternatives: SimSun -->
+		<fo:root xmlns:fo="http://www.w3.org/1999/XSL/Format" font-family="Cambria, Times New Roman, Cambria Math, HanSans" font-size="11pt" xml:lang="{$lang}"> <!--   -->
 			<fo:layout-master-set>
 				
 				<!-- cover page -->
@@ -1936,13 +1936,12 @@
 		<fo:inline><xsl:apply-templates /></fo:inline>
 	</xsl:template>
 	
-	<xsl:template match="mathml:math">
-		<!-- <fo:inline font-size="12pt" color="red">
-			MathML issue! <xsl:apply-templates />
-		</fo:inline> -->
-		<fo:instream-foreign-object fox:alt-text="Math">
-			<xsl:copy-of select="."/>
-		</fo:instream-foreign-object>
+	<xsl:template match="mathml:math" priority="2">
+		<fo:inline font-family="Cambria Math">
+			<fo:instream-foreign-object fox:alt-text="Math">
+				<xsl:copy-of select="."/>
+			</fo:instream-foreign-object>
+		</fo:inline>
 	</xsl:template>
 	
 	<xsl:template match="iso:xref">

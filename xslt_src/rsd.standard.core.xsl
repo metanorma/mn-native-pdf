@@ -67,7 +67,7 @@
 	
 	<xsl:template match="/">
 		<xsl:message>INFO: Document namespace: '<xsl:value-of select="namespace-uri(/*)"/>'</xsl:message>
-		<fo:root xmlns:fo="http://www.w3.org/1999/XSL/Format" font-family="SourceSansPro-Light" font-size="10.5pt" xml:lang="{$lang}">
+		<fo:root xmlns:fo="http://www.w3.org/1999/XSL/Format" font-family="SourceSansPro-Light, STIX2Math" font-size="10.5pt" xml:lang="{$lang}">
 			<fo:layout-master-set>
 				
 				<fo:simple-page-master master-name="odd" page-width="{$pageWidth}" page-height="{$pageHeight}">
@@ -1407,11 +1407,6 @@
 		<fo:inline><xsl:apply-templates /></fo:inline>
 	</xsl:template>
 	
-	<xsl:template match="mathml:math">
-		<fo:instream-foreign-object fox:alt-text="Math">
-			<xsl:copy-of select="."/>
-		</fo:instream-foreign-object>
-	</xsl:template>
 	
 	<xsl:template match="rsd:xref">
 		<fo:basic-link color="{$color-link}" internal-destination="{@target}" fox:alt-text="{@target}">
