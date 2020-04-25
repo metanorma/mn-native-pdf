@@ -32,7 +32,7 @@
 	</xsl:variable>
 	
 	<xsl:template match="/">
-		<fo:root xmlns:fo="http://www.w3.org/1999/XSL/Format" font-family="Times New Roman, HanSans" font-size="10pt" xml:lang="{$lang}">
+		<fo:root xmlns:fo="http://www.w3.org/1999/XSL/Format" font-family="Times New Roman, STIX2Math, HanSans" font-size="10pt" xml:lang="{$lang}">
 			<fo:layout-master-set>
 				<!-- Cover page -->
 				<fo:simple-page-master master-name="cover-page" page-width="{$pageWidth}" page-height="{$pageHeight}">
@@ -1279,15 +1279,7 @@
 	<xsl:template match="un:formula" mode="process">
 		<xsl:call-template name="formula"/>
 	</xsl:template>
-	
-	<xsl:template match="mathml:math">
-		<fo:inline>
-			<fo:instream-foreign-object> 
-				<xsl:copy-of select="."/>
-			</fo:instream-foreign-object>
-		</fo:inline>
-	</xsl:template>
-	
+		
 	<xsl:template match="un:example">
 		<fo:block id="{@id}" font-size="10pt" font-weight="bold" margin-bottom="12pt">EXAMPLE</fo:block>
 		<fo:block font-size="11pt" margin-top="12pt" margin-bottom="12pt" margin-left="15mm" >
