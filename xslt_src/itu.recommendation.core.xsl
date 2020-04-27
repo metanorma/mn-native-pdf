@@ -882,36 +882,23 @@
 		</xsl:variable>
 		<xsl:choose>
 			<xsl:when test="local-name(..) = 'ul'">&#x2013;</xsl:when> <!-- dash &#x2014; -->
-			<xsl:otherwise> <!-- for ordered lists -->
+			<xsl:otherwise>
+				<!-- for Ordered Lists -->
 				<xsl:choose>
 					<xsl:when test="../@type = 'arabic'">
 						<xsl:number format="a)"/>
 					</xsl:when>
-					<xsl:when test="ancestor::*[itu:annex]">
-						<!-- <xsl:variable name="level">
-							<xsl:number level="multiple" count="itu:ol"/>
-						</xsl:variable> -->
-						<xsl:choose>
-							<xsl:when test="../@class = 'steps'">
-								<xsl:number format="1)"/>
-							</xsl:when>
-							<xsl:when test="$level = 1">
-								<xsl:number format="a)"/>
-							</xsl:when>
-							<xsl:when test="$level = 2">
-								<xsl:number format="i)"/>
-							</xsl:when>
-							<xsl:otherwise>
-								<xsl:number format="1.)"/>
-							</xsl:otherwise>
-						</xsl:choose>
-						
-					</xsl:when>
 					<xsl:when test="../@class = 'steps'">
 						<xsl:number format="1)"/>
 					</xsl:when>
+					<xsl:when test="$level = 1">
+						<xsl:number format="a)"/>
+					</xsl:when>
+					<xsl:when test="$level = 2">
+						<xsl:number format="i)"/>
+					</xsl:when>
 					<xsl:otherwise>
-						<xsl:number format="1."/>
+						<xsl:number format="1.)"/>
 					</xsl:otherwise>
 				</xsl:choose>
 			</xsl:otherwise>
