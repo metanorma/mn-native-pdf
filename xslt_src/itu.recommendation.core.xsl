@@ -859,6 +859,7 @@
 	</xsl:template>
 
 	<xsl:template match="itu:li" mode="contents">
+		<xsl:param name="sectionNum" />
 		<item level="" id="{@id}" display="false" type="li">
 			<xsl:attribute name="section">
 				<xsl:call-template name="getListItemFormat"/>
