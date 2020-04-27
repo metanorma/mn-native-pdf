@@ -1008,12 +1008,16 @@
 				<xsl:when test="itu:docidentifier[@type = 'metanorma']">
 					<xsl:value-of select="itu:docidentifier[@type = 'metanorma']"/>
 					<xsl:text> </xsl:text>
+					<xsl:if test="itu:docidentifier[not(@type) or not(@type = 'metanorma')]">
+						<xsl:value-of select="itu:docidentifier[not(@type) or not(@type = 'metanorma')]"/>
+						<xsl:text>, </xsl:text>
+					</xsl:if>
 				</xsl:when>
 				<xsl:otherwise>
 					<fo:inline padding-right="5mm">
 						<xsl:text>[</xsl:text>
 							<xsl:value-of select="itu:docidentifier"/>
-						<xsl:text>]</xsl:text>
+						<xsl:text>] </xsl:text>
 					</fo:inline>
 					<xsl:value-of select="itu:docidentifier"/>
 					<xsl:if test="itu:title">
@@ -1021,7 +1025,7 @@
 					</xsl:if>
 				</xsl:otherwise>
 			</xsl:choose>
-				
+			
 			<xsl:if test="itu:title">
 				<fo:inline font-style="italic">
 						<xsl:choose>
@@ -1467,6 +1471,9 @@
 			<xsl:if test="local-name(..) = 'formattedref' or ancestor::itu:preface">
 				<xsl:attribute name="font-family">Arial</xsl:attribute>
 				<xsl:attribute name="font-size">8pt</xsl:attribute>
+				<xsl:if test="local-name(..) = 'formattedref'">
+					<xsl:attribute name="text-decoration">underline</xsl:attribute>
+				</xsl:if>
 			</xsl:if>
 			<fo:basic-link external-destination="{@target}" fox:alt-text="{@target}">
 				<xsl:choose>
@@ -1700,7 +1707,14 @@
 				<xsl:attribute name="vertical-align">super</xsl:attribute>
 			</xsl:if>
 			<fo:basic-link internal-destination="{@bibitemid}" color="blue" text-decoration="underline" fox:alt-text="{@citeas}">
-				<xsl:text>[</xsl:text><xsl:value-of select="@citeas" disable-output-escaping="yes"/><xsl:text>]</xsl:text>
+				<xsl:choose>
+					<xsl:when test="contains(@citeas, '[')">
+						<xsl:value-of select="@citeas" disable-output-escaping="yes"/>
+					</xsl:when>
+					<xsl:otherwise>
+						<xsl:text>[</xsl:text><xsl:value-of select="@citeas" disable-output-escaping="yes"/><xsl:text>]</xsl:text>
+					</xsl:otherwise>
+				</xsl:choose>
 				<xsl:if test="itu:locality">
 					<xsl:text>, </xsl:text>
 					<xsl:choose>
@@ -2288,7 +2302,7 @@
 						</xsl:when>
 						<xsl:when test="$level &gt;= 2">
 							<xsl:variable name="num">
-								<xsl:number format=".1" level="multiple" count="itu:clause/itu:clause | itu:clause/itu:terms | itu:terms/itu:term | itu:clause/itu:term"/>
+								<xsl:number format=".1" level="multiple" count="itu:clause/itu:clause | itu:clause/itu:terms | itu:terms/itu:term | itu:clause/itu:term | itu:clause/itu:definitions"/>
 							</xsl:variable>
 							<xsl:value-of select="concat($sectionNum, $num)"/>
 						</xsl:when>
