@@ -102,6 +102,10 @@
 	</xsl:variable>
 	
 	<xsl:variable name="proof-text">PROOF/ÉPREUVE</xsl:variable>
+
+	<xsl:variable name="title-figure">
+		<xsl:text>Figure </xsl:text>
+	</xsl:variable>
 	
 	<!-- Example:
 		<item level="1" id="Foreword" display="true">Foreword</item>
@@ -1210,7 +1214,8 @@
 	<xsl:template match="iso:figure" mode="contents">
 		<item level="" id="{@id}" display="false">
 			<xsl:attribute name="section">
-				<xsl:text>Figure </xsl:text><xsl:number format="A.1-1" level="multiple" count="iso:annex | iso:figure"/>
+				<xsl:call-template name="getFigureNumber"/>
+				<!-- <xsl:text>Figure </xsl:text><xsl:number format="A.1-1" level="multiple" count="iso:annex | iso:figure"/> -->
 			</xsl:attribute>
 		</item>
 	</xsl:template>
@@ -1544,24 +1549,20 @@
 	<xsl:template match="text()">
 		<xsl:value-of select="."/>
 	</xsl:template>
-	
-
 
 	<xsl:template match="iso:image">
 		<fo:block-container text-align="center">
 			<fo:block>
 				<fo:external-graphic src="{@src}" fox:alt-text="Image {@alt}"/>
 			</fo:block>
-			<fo:block font-weight="bold" margin-top="12pt" margin-bottom="12pt">Figure <xsl:number format="1" level="any"/></fo:block>
+			<fo:block font-weight="bold" margin-top="12pt" margin-bottom="12pt">
+				<xsl:value-of select="$title-figure"/>
+				<xsl:call-template name="getFigureNumber"/>
+			</fo:block>
 		</fo:block-container>
-		
 	</xsl:template>
 
 	<xsl:template match="iso:figure">
-		<xsl:variable name="title">
-			<xsl:text>Figure </xsl:text>
-		</xsl:variable>
-		
 		<fo:block-container id="{@id}">
 			<fo:block>
 				<xsl:apply-templates />
@@ -1571,23 +1572,7 @@
 				<xsl:call-template name="note"/>
 			</xsl:for-each>
 			<fo:block font-weight="bold" text-align="center" margin-top="12pt" margin-bottom="12pt" keep-with-previous="always">
-				
-				<xsl:choose>
-					<xsl:when test="ancestor::iso:annex">
-						<xsl:choose>
-							<xsl:when test="local-name(..) = 'figure'">
-								<xsl:number format="a) "/>
-							</xsl:when>
-							<xsl:otherwise>
-								<xsl:value-of select="$title"/><xsl:number format="A.1-1" level="multiple" count="iso:annex | iso:figure"/>
-							</xsl:otherwise>
-						</xsl:choose>
-						
-					</xsl:when>
-					<xsl:otherwise>
-						<xsl:value-of select="$title"/><xsl:number format="1" level="any"/>
-					</xsl:otherwise>
-				</xsl:choose>
+				<xsl:call-template name="getFigureNumber"/>
 				<xsl:if test="iso:name">
 					<xsl:if test="not(local-name(..) = 'figure')">
 						<xsl:text> — </xsl:text>
@@ -1598,6 +1583,24 @@
 		</fo:block-container>
 	</xsl:template>
 	
+	<xsl:template name="getFigureNumber">
+		<xsl:choose>
+			<xsl:when test="ancestor::iso:annex">
+				<xsl:choose>
+					<xsl:when test="local-name(..) = 'figure'">
+						<xsl:number format="a) "/>
+					</xsl:when>
+					<xsl:otherwise>
+						<xsl:value-of select="$title-figure"/><xsl:number format="A.1-1" level="multiple" count="iso:annex | iso:figure"/>
+					</xsl:otherwise>
+				</xsl:choose>
+			</xsl:when>
+			<xsl:otherwise>
+				<xsl:value-of select="$title-figure"/><xsl:number format="1" level="any"/>
+			</xsl:otherwise>
+		</xsl:choose>
+	</xsl:template>
+	
 	<xsl:template match="iso:figure/iso:name"/>
 	<xsl:template match="iso:figure/iso:fn" priority="2"/>
 	<xsl:template match="iso:figure/iso:note"/>
@@ -1605,11 +1608,9 @@
 	
 	<xsl:template match="iso:figure/iso:image">
 		<fo:block text-align="center">
-			<fo:external-graphic src="{@src}" content-width="100%" content-height="scale-to-fit" scaling="uniform" fox:alt-text="Image {@alt}"/> <!-- content-width="75%"  -->
+			<fo:external-graphic src="{@src}" width="100%" content-height="scale-to-fit" content-width="scale-to-fit" scaling="uniform" fox:alt-text="Image {@alt}"/> 
 		</fo:block>
 	</xsl:template>
-	
-	
 	
 	
 	<xsl:template match="iso:bibitem">
@@ -1664,10 +1665,15 @@
 		<fo:list-block provisional-distance-between-starts="7mm">
 			<xsl:apply-templates />
 		</fo:list-block>
+		<xsl:for-each select="./iso:note//iso:p">
+			<xsl:call-template name="note"/>
+		</xsl:for-each>
 	</xsl:template>
 	
+	<xsl:template match="iso:ul//iso:note |  iso:ol//iso:note"/>
+	
 	<xsl:template match="iso:li">
-		<fo:list-item>
+		<fo:list-item id="{@id}">
 			<fo:list-item-label end-indent="label-end()">
 				<fo:block>
 					<xsl:choose>
@@ -1690,6 +1696,7 @@
 			</fo:list-item-label>
 			<fo:list-item-body start-indent="body-start()">
 				<xsl:apply-templates />
+				<xsl:apply-templates select=".//iso:note" mode="process"/>
 			</fo:list-item-body>
 		</fo:list-item>
 	</xsl:template>
