@@ -28,9 +28,9 @@ jobs:
           echo ttf-mscorefonts-installer msttcorefonts/accepted-mscorefonts-eula select true | debconf-set-selections
           apt-get install -y ttf-mscorefonts-installer
 
-#      - name: Setup Cambria fonts
-#        run: |
-#          curl -Ls https://raw.githubusercontent.com/metanorma/vista-fonts-installer/master/vista-fonts-installer.sh | bash
+      - name: Setup Cambria fonts
+        run: |
+          curl -Ls https://raw.githubusercontent.com/metanorma/vista-fonts-installer/master/vista-fonts-installer.sh | bash
 
       - uses: actions/checkout@master
 
