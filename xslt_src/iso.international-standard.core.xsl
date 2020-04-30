@@ -1628,7 +1628,7 @@
 	
 	<xsl:template match="iso:figure/iso:image">
 		<fo:block text-align="center">
-			<fo:external-graphic src="{@src}" width="100%" content-height="scale-to-fit" content-width="scale-to-fit" scaling="uniform" fox:alt-text="Image {@alt}"/> 
+			<fo:external-graphic src="{@src}" width="100%" content-height="scale-to-fit" scaling="uniform" fox:alt-text="Image {@alt}"/> 
 		</fo:block>
 	</xsl:template>
 	
