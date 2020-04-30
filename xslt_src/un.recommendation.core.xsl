@@ -7,6 +7,7 @@
 
 	<xsl:variable name="namespace">unece-rec</xsl:variable>
 	
+	<xsl:variable name="debug">false</xsl:variable>
 	<xsl:variable name="pageWidth" select="'210mm'"/>
 	<xsl:variable name="pageHeight" select="'297mm'"/>
 
@@ -291,10 +292,12 @@
 				<xsl:call-template name="insertFooter"/>
 				<fo:flow flow-name="xsl-region-body">
 					
-					<xsl:text disable-output-escaping="yes">&lt;!--</xsl:text>
-						DEBUG
-						contents=<xsl:copy-of select="xalan:nodeset($contents)"/>
-					<xsl:text disable-output-escaping="yes"> --&gt;</xsl:text>
+					<xsl:if test="$debug = 'true'">
+						<xsl:text disable-output-escaping="yes">&lt;!--</xsl:text>
+							DEBUG
+							contents=<xsl:copy-of select="xalan:nodeset($contents)"/>
+						<xsl:text disable-output-escaping="yes"> --&gt;</xsl:text>
+					</xsl:if>
 					
 					<fo:block>
 						<xsl:apply-templates select="/un:un-standard/un:sections/*"/>
@@ -414,7 +417,7 @@
 			<xsl:attribute name="parent">
 				<xsl:if test="ancestor::un:annex">annex</xsl:if>
 			</xsl:attribute>
-			<xsl:apply-templates/>
+			<xsl:apply-templates />
 		</item>
 		
 		<xsl:apply-templates mode="contents"/>
