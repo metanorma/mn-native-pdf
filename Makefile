@@ -151,7 +151,7 @@ update-init:
 	git submodule update --init
 
 update-modules:
-	git submodule foreach git fetch origin gh-pages; \
+	git submodule foreach git fetch origin gh-pages
 	git submodule foreach git reset --hard origin/gh-pages
 
 publish: published
