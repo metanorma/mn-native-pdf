@@ -95,18 +95,14 @@ documents/%.rxl: sources/%.rxl | documents
 documents/%.xml: sources/%.xml | documents
 	cp $< $@
 
-# This document is currently broken
-# documents/itu-D-REC-D.19-201003-E.pdf:
-# 	echo "### skipping $@"
-
-#documents/itu-T-Editing-Guidelines-201602.pdf:
-#	echo "### skipping $@"
 
 #documents/itu-T-REC-A.8-200810-I!!MSW-E.pdf:
 #	echo "### skipping $@"
 
-#documents/un-ECE_AGAT_2020_INF1.pdf:
-#	echo "### skipping $@"
+# This document is currently broken
+#un.agenda.xsl required
+documents/un-ECE_AGAT_2020_INF1.pdf:
+	echo "### skipping $@"
 
 #documents/itu-Z.100-201811-AnnF1.pdf:
 #	echo "### skipping $@"
