@@ -7,6 +7,7 @@
 	
 	<xsl:variable name="namespace">itu</xsl:variable>
 	
+	<xsl:variable name="debug">false</xsl:variable>
 	<xsl:variable name="pageWidth" select="'210mm'"/>
 	<xsl:variable name="pageHeight" select="'297mm'"/>
 
@@ -368,10 +369,12 @@
 						<xsl:apply-templates select="/itu:itu-standard/itu:boilerplate/itu:copyright-statement"/>
 					</fo:block>
 					
-					<xsl:text disable-output-escaping="yes">&lt;!--</xsl:text>
-						DEBUG
-						contents=<xsl:copy-of select="xalan:nodeset($contents)"/>
-					<xsl:text disable-output-escaping="yes">--&gt;</xsl:text>
+					<xsl:if test="$debug = 'true'">
+						<xsl:text disable-output-escaping="yes">&lt;!--</xsl:text>
+							DEBUG
+							contents=<xsl:copy-of select="xalan:nodeset($contents)"/>
+						<xsl:text disable-output-escaping="yes">--&gt;</xsl:text>
+					</xsl:if>
 					
 					<xsl:if test="xalan:nodeset($contents)//item">
 						<fo:block break-after="page"/>
@@ -1327,10 +1330,14 @@
 				</xsl:if>
 				<xsl:if test="itu:name">
 					<xsl:text> — </xsl:text>
-					<xsl:value-of select="itu:name"/>
+					<xsl:apply-templates select="itu:name" mode="process"/>
 				</xsl:if>
 			</fo:block>
 		</fo:block-container>
+	</xsl:template>
+	
+	<xsl:template match="itu:figure/itu:name" mode="process">
+		<xsl:apply-templates />
 	</xsl:template>
 	
 	<xsl:template match="itu:figure/itu:name"/>
