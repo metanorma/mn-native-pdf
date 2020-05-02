@@ -969,6 +969,9 @@
 	<xsl:template match="itu:note/itu:p" name="note">
 		<xsl:variable name="id" select="ancestor::*[local-name() = 'clause'][1]/@id"/>
 		<fo:block font-size="11pt" space-before="4pt" text-align="justify">
+			<xsl:if test="ancestor::itu:figure">
+				<xsl:attribute name="keep-with-previous">always</xsl:attribute>
+			</xsl:if>
 			<xsl:text>NOTE </xsl:text>
 			<!-- <xsl:if test="../following-sibling::itu:note or ../preceding-sibling::itu:note"> -->
 			<xsl:if test="count(//itu:note[ancestor::*[local-name() = 'clause'][1][@id = $id] and not (ancestor::itu:table)]) &gt; 1">
