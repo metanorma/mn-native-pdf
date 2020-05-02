@@ -1473,7 +1473,7 @@
 					</xsl:if>
 					<xsl:if test="local-name(..) = 'ul'">
 						<xsl:attribute name="margin-left">15mm</xsl:attribute>
-						<xsl:if test="count(ancestor::itu:ol) &gt; 1 or count(ancestor::itu:ul) &gt; 1">
+						<xsl:if test="count(ancestor::itu:ol) + count(ancestor::itu:ul) &gt; 1">
 							<xsl:attribute name="margin-left">7mm</xsl:attribute>
 						</xsl:if>
 					</xsl:if>
