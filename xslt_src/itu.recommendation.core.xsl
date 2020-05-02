@@ -884,6 +884,7 @@
 			<xsl:value-of select="string-length($numtmp) - string-length(translate($numtmp, '.', '')) + 1"/>
 		</xsl:variable>
 		<xsl:choose>
+			<xsl:when test="local-name(..) = 'ul' and itu:ul and local-name(../../..) != 'ul'">•</xsl:when> <!-- dash &#x2014; -->
 			<xsl:when test="local-name(..) = 'ul'">&#x2013;</xsl:when> <!-- dash &#x2014; -->
 			<xsl:otherwise>
 				<!-- for Ordered Lists -->
@@ -1444,6 +1445,9 @@
 					</xsl:if>
 					<xsl:if test="local-name(..) = 'ul'">
 						<xsl:attribute name="margin-left">15mm</xsl:attribute>
+						<xsl:if test="count(ancestor::itu:ol) &gt; 1 or count(ancestor::itu:ul) &gt; 1">
+							<xsl:attribute name="margin-left">7mm</xsl:attribute>
+						</xsl:if>
 					</xsl:if>
 					<fo:block-container margin-left="0mm">
 						<xsl:apply-templates />
