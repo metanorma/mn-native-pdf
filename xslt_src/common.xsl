@@ -448,10 +448,10 @@
 	<xsl:template match="*[local-name()='thead']"/>
 
 	<xsl:template match="*[local-name()='thead']" mode="process">
-		<!-- <fo:table-header font-weight="bold">
+		<!-- font-weight="bold" -->
+		<fo:table-header>
 			<xsl:apply-templates />
-		</fo:table-header> -->
-		<xsl:apply-templates />
+		</fo:table-header>
 	</xsl:template>
 	
 	<xsl:template match="*[local-name()='tfoot']"/>
@@ -477,9 +477,10 @@
 				</xsl:otherwise>
 			</xsl:choose>
 		</xsl:variable>
-	
+		
+		<xsl:apply-templates select="../*[local-name()='thead']" mode="process"/>
+		
 		<fo:table-body>
-			<xsl:apply-templates select="../*[local-name()='thead']" mode="process"/>
 			<xsl:apply-templates />
 			<xsl:apply-templates select="../*[local-name()='tfoot']" mode="process"/>
 			<!-- if there are note(s) or fn(s) then create footer row -->
