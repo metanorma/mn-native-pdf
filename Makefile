@@ -30,6 +30,7 @@ XSLT_GENERATED := xslt/iec.international-standard.xsl \
 	xslt/ogc.standard.xsl \
 	xslt/ogc.user-guide.xsl \
 	xslt/ogc.test-suite.xsl \
+	xslt/ogc.white-paper.xsl \
 	xslt/ogc.other.xsl \
 	xslt/un.plenary.xsl \
 	xslt/un.recommendation.xsl \
