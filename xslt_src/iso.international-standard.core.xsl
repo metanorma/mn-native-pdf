@@ -478,22 +478,22 @@
 														<fo:block>&#xA0;</fo:block>
 													</fo:table-cell>
 													<fo:table-cell>
-														<fo:block>
+														<fo:block font-weight="bold">
 															<xsl:choose>
 																<xsl:when test="/iso:iso-standard/iso:bibdata/iso:date[@type = 'vote-started']/iso:on">
-																	<fo:inline font-weight="bold"><xsl:value-of select="/iso:iso-standard/iso:bibdata/iso:date[@type = 'vote-started']/iso:on"/></fo:inline>
+																	<xsl:value-of select="/iso:iso-standard/iso:bibdata/iso:date[@type = 'vote-started']/iso:on"/>
 																</xsl:when>
-																<xsl:otherwise><fo:inline font-weight="bold">XXXX</fo:inline>-xx-xx</xsl:otherwise>
+																<xsl:otherwise>YYYY-MM-DD</xsl:otherwise>
 															</xsl:choose>
 														</fo:block>
 													</fo:table-cell>
 													<fo:table-cell>
-														<fo:block>
+														<fo:block font-weight="bold">
 															<xsl:choose>
 																<xsl:when test="/iso:iso-standard/iso:bibdata/iso:date[@type = 'vote-ended']/iso:on">
-																	<fo:inline font-weight="bold"><xsl:value-of select="/iso:iso-standard/iso:bibdata/iso:date[@type = 'vote-ended']/iso:on"/></fo:inline>
+																	<xsl:value-of select="/iso:iso-standard/iso:bibdata/iso:date[@type = 'vote-ended']/iso:on"/>
 																</xsl:when>
-																<xsl:otherwise><fo:inline font-weight="bold">XXXX</fo:inline>-xx-xx</xsl:otherwise>
+																<xsl:otherwise>YYYY-MM-DD</xsl:otherwise>
 															</xsl:choose>
 														</fo:block>
 													</fo:table-cell>
@@ -638,20 +638,24 @@
 																			<fo:block margin-bottom="8pt">ISO/TC <fo:inline font-weight="bold"><xsl:value-of select="/iso:iso-standard/iso:bibdata/iso:ext/iso:editorialgroup/iso:technical-committee/@number"/></fo:inline></fo:block>
 																			<fo:block margin-bottom="6pt">Secretariat: <xsl:value-of select="/iso:iso-standard/iso:bibdata/iso:ext/iso:editorialgroup/iso:secretariat"/></fo:block>
 																			<fo:block margin-bottom="6pt">Voting begins on:<xsl:value-of select="$linebreak"/>
-																				<xsl:choose>
-																					<xsl:when test="/iso:iso-standard/iso:bibdata/iso:date[@type = 'vote-started']/iso:on">
-																						<fo:inline font-weight="bold"><xsl:value-of select="/iso:iso-standard/iso:bibdata/iso:date[@type = 'vote-started']/iso:on"/></fo:inline>
-																					</xsl:when>
-																					<xsl:otherwise><fo:inline font-weight="bold">XXXX</fo:inline>-xx-xx</xsl:otherwise>
-																				</xsl:choose>
+																				<fo:inline font-weight="bold">
+																					<xsl:choose>
+																						<xsl:when test="/iso:iso-standard/iso:bibdata/iso:date[@type = 'vote-started']/iso:on">
+																							<xsl:value-of select="/iso:iso-standard/iso:bibdata/iso:date[@type = 'vote-started']/iso:on"/>
+																						</xsl:when>
+																						<xsl:otherwise>YYYY-MM-DD</xsl:otherwise>
+																					</xsl:choose>
+																				</fo:inline>
 																			</fo:block>
 																			<fo:block>Voting terminates on:<xsl:value-of select="$linebreak"/>
-																				<xsl:choose>
-																					<xsl:when test="/iso:iso-standard/iso:bibdata/iso:date[@type = 'vote-ended']/iso:on">
-																						<fo:inline font-weight="bold"><xsl:value-of select="/iso:iso-standard/iso:bibdata/iso:date[@type = 'vote-ended']/iso:on"/></fo:inline>
-																					</xsl:when>
-																					<xsl:otherwise><fo:inline font-weight="bold">XXXX</fo:inline>-xx-xx</xsl:otherwise>
-																				</xsl:choose>
+																				<fo:inline font-weight="bold">
+																					<xsl:choose>
+																						<xsl:when test="/iso:iso-standard/iso:bibdata/iso:date[@type = 'vote-ended']/iso:on">
+																							<xsl:value-of select="/iso:iso-standard/iso:bibdata/iso:date[@type = 'vote-ended']/iso:on"/>
+																						</xsl:when>
+																						<xsl:otherwise>YYYY-MM-DD</xsl:otherwise>
+																					</xsl:choose>
+																				</fo:inline>
 																			</fo:block>
 																	</fo:block>
 																</fo:block-container>
@@ -894,12 +898,8 @@
 								
 								<fo:block margin-bottom="100pt">
 									<xsl:text>Secretariat: </xsl:text>
-									<xsl:choose>
-										<xsl:when test="/iso:iso-standard/iso:bibdata/iso:ext/iso:editorialgroup/iso:secretariat">
-											<xsl:value-of select="/iso:iso-standard/iso:bibdata/iso:ext/iso:editorialgroup/iso:secretariat"/>
-										</xsl:when>
-										<xsl:otherwise>XXXX</xsl:otherwise>
-									</xsl:choose>
+									<xsl:value-of select="/iso:iso-standard/iso:bibdata/iso:ext/iso:editorialgroup/iso:secretariat"/>
+									<xsl:text>&#xA0;</xsl:text>
 								</fo:block>
 									
 								
