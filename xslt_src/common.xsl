@@ -234,11 +234,11 @@
 			</xsl:call-template>
 		</xsl:variable>
 		
-		<xsl:variable name="colwidths2">
+		<!-- <xsl:variable name="colwidths2">
 			<xsl:call-template name="calculate-column-widths">
 				<xsl:with-param name="cols-count" select="$cols-count"/>
 			</xsl:call-template>
-		</xsl:variable>
+		</xsl:variable> -->
 		
 		<!-- cols-count=<xsl:copy-of select="$cols-count"/>
 		colwidthsNew=<xsl:copy-of select="$colwidths"/>
@@ -277,6 +277,10 @@
 				<xsl:attribute name="margin-right">0mm</xsl:attribute>
 				<xsl:attribute name="space-after">12pt</xsl:attribute>
 			</xsl:if>
+			<xsl:if test="$namespace = 'iso'">
+				<xsl:attribute name="margin-left">0mm</xsl:attribute>
+				<xsl:attribute name="margin-right">0mm</xsl:attribute>
+			</xsl:if>
 			<fo:table id="{@id}" table-layout="fixed" width="100%" margin-left="{$margin-left}mm" margin-right="{$margin-left}mm" table-omit-footer-at-break="true">
 				<xsl:if test="$namespace = 'iso'">
 					<xsl:attribute name="border">1.5pt solid black</xsl:attribute>
@@ -285,6 +289,10 @@
 					<xsl:attribute name="border">0.5pt solid black</xsl:attribute>
 				</xsl:if>
 				<xsl:if test="$namespace = 'itu'">
+					<xsl:attribute name="margin-left">0mm</xsl:attribute>
+					<xsl:attribute name="margin-right">0mm</xsl:attribute>
+				</xsl:if>
+				<xsl:if test="$namespace = 'iso'">
 					<xsl:attribute name="margin-left">0mm</xsl:attribute>
 					<xsl:attribute name="margin-right">0mm</xsl:attribute>
 				</xsl:if>
