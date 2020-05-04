@@ -22,21 +22,21 @@ XSLT_GENERATED := xslt/iec.international-standard.xsl \
 	xslt/itu.recommendation.xsl \
 	xslt/itu.recommendation-annex.xsl \
 	xslt/itu.resolution.xsl \
-	xslt/ogc.community-standard.xsl \
-	xslt/ogc.engineering-report.xsl \
-	xslt/ogc.policy.xsl \
-	xslt/ogc.reference-model.xsl \
-	xslt/ogc.release-notes.xsl \
-	xslt/ogc.standard.xsl \
-	xslt/ogc.user-guide.xsl \
-	xslt/ogc.test-suite.xsl \
-	xslt/ogc.white-paper.xsl \
 	xslt/ogc.abstract-specification-topic.xsl \
 	xslt/ogc.best-practice.xsl \
 	xslt/ogc.change-request-supporting-document.xsl \
 	xslt/ogc.community-practice.xsl \
+	xslt/ogc.community-standard.xsl \
 	xslt/ogc.discussion-paper.xsl \
+	xslt/ogc.engineering-report.xsl \
 	xslt/ogc.other.xsl \
+	xslt/ogc.policy.xsl \
+	xslt/ogc.reference-model.xsl \
+	xslt/ogc.release-notes.xsl \
+	xslt/ogc.standard.xsl \
+	xslt/ogc.test-suite.xsl \
+	xslt/ogc.user-guide.xsl \
+	xslt/ogc.white-paper.xsl \
 	xslt/un.plenary.xsl \
 	xslt/un.recommendation.xsl \
 	xslt/csd.standard.xsl \
