@@ -277,7 +277,7 @@
 				<xsl:attribute name="margin-right">0mm</xsl:attribute>
 				<xsl:attribute name="space-after">12pt</xsl:attribute>
 			</xsl:if>
-			<fo:table id="{@id}" table-layout="fixed" width="100%" margin-left="{$margin-left}mm" margin-right="{$margin-left}mm">
+			<fo:table id="{@id}" table-layout="fixed" width="100%" margin-left="{$margin-left}mm" margin-right="{$margin-left}mm" table-omit-footer-at-break="true">
 				<xsl:if test="$namespace = 'iso'">
 					<xsl:attribute name="border">1.5pt solid black</xsl:attribute>
 				</xsl:if>
@@ -460,70 +460,90 @@
 		<xsl:apply-templates/>
 	</xsl:template>
 	
+	<xsl:template name="insertTableFooter">
+		<xsl:variable name="isNoteOrFnExist" select="../*[local-name()='note'] or ..//*[local-name()='fn'][local-name(..) != 'name']"/>
+		<xsl:if test="../*[local-name()='tfoot'] or
+										$isNoteOrFnExist = 'true'">
+		
+			<fo:table-footer>
+			
+				<xsl:apply-templates select="../*[local-name()='tfoot']" mode="process"/>
+				
+				<!-- if there are note(s) or fn(s) then create footer row -->
+				<xsl:if test="$isNoteOrFnExist = 'true'">
+				
+					<xsl:variable name="cols-count">
+						<xsl:choose>
+							<xsl:when test="../*[local-name()='thead']">
+								<!-- <xsl:value-of select="count(../*[local-name()='thead']/*[local-name()='tr']/*[local-name()='th'])"/> -->
+								<xsl:call-template name="calculate-columns-numbers">
+									<xsl:with-param name="table-row" select="../*[local-name()='thead']/*[local-name()='tr'][1]"/>
+								</xsl:call-template>
+							</xsl:when>
+							<xsl:otherwise>
+								<!-- <xsl:value-of select="count(./*[local-name()='tr'][1]/*[local-name()='td'])"/> -->
+								<xsl:call-template name="calculate-columns-numbers">
+									<xsl:with-param name="table-row" select="./*[local-name()='tr'][1]"/>
+								</xsl:call-template>
+							</xsl:otherwise>
+						</xsl:choose>
+					</xsl:variable>
+				
+					<fo:table-row>
+						<fo:table-cell border="solid black 1pt" padding-left="1mm" padding-right="1mm" padding-top="1mm" number-columns-spanned="{$cols-count}">
+							<xsl:if test="$namespace = 'iso'">
+								<xsl:attribute name="border-top">solid black 0pt</xsl:attribute>
+							</xsl:if>
+							<xsl:if test="$namespace = 'iec'">
+								<xsl:attribute name="border">solid black 0.5pt</xsl:attribute>
+							</xsl:if>
+							<xsl:if test="$namespace = 'itu'">
+								<xsl:if test="ancestor::*[local-name()='preface']">
+									<xsl:attribute name="border">solid black 0pt</xsl:attribute>
+								</xsl:if>
+							</xsl:if>
+							<!-- fn will be processed inside 'note' processing -->
+							<xsl:if test="$namespace = 'iec'">
+								<xsl:if test="../*[local-name()='note']">
+									<fo:block margin-bottom="6pt">&#xA0;</fo:block>
+								</xsl:if>
+							</xsl:if>
+							
+							<xsl:apply-templates select="../*[local-name()='note']" mode="process"/>
+							
+							<!-- horizontal row separator -->
+							<xsl:if test="$namespace = 'iec'">
+								<xsl:if test="../*[local-name()='note']">
+									<fo:block-container border-top="0.5pt solid black" padding-left="1mm" padding-right="1mm">
+										<fo:block font-size="1pt">&#xA0;</fo:block>
+									</fo:block-container>
+								</xsl:if>
+							</xsl:if>
+							
+							<!-- fn processing -->
+							<xsl:call-template name="fn_display" />
+							
+						</fo:table-cell>
+					</fo:table-row>
+					
+				</xsl:if>
+			</fo:table-footer>
+		
+		</xsl:if>
+	</xsl:template>
+	
 	<xsl:template match="*[local-name()='tbody']">
-		<xsl:variable name="cols-count">
-			<xsl:choose>
-				<xsl:when test="../*[local-name()='thead']">
-					<!-- <xsl:value-of select="count(../*[local-name()='thead']/*[local-name()='tr']/*[local-name()='th'])"/> -->
-					<xsl:call-template name="calculate-columns-numbers">
-						<xsl:with-param name="table-row" select="../*[local-name()='thead']/*[local-name()='tr'][1]"/>
-					</xsl:call-template>
-				</xsl:when>
-				<xsl:otherwise>
-					<!-- <xsl:value-of select="count(./*[local-name()='tr'][1]/*[local-name()='td'])"/> -->
-					<xsl:call-template name="calculate-columns-numbers">
-						<xsl:with-param name="table-row" select="./*[local-name()='tr'][1]"/>
-					</xsl:call-template>
-				</xsl:otherwise>
-			</xsl:choose>
-		</xsl:variable>
 		
 		<xsl:apply-templates select="../*[local-name()='thead']" mode="process"/>
 		
+		<xsl:call-template name="insertTableFooter"/>
+		
 		<fo:table-body>
 			<xsl:apply-templates />
-			<xsl:apply-templates select="../*[local-name()='tfoot']" mode="process"/>
-			<!-- if there are note(s) or fn(s) then create footer row -->
-			<xsl:if test="../*[local-name()='note'] or ..//*[local-name()='fn'][local-name(..) != 'name']">
-				<fo:table-row>
-					<fo:table-cell border="solid black 1pt" padding-left="1mm" padding-right="1mm" padding-top="1mm" number-columns-spanned="{$cols-count}">
-						<xsl:if test="$namespace = 'iso'">
-							<xsl:attribute name="border-top">solid black 0pt</xsl:attribute>
-						</xsl:if>
-						<xsl:if test="$namespace = 'iec'">
-							<xsl:attribute name="border">solid black 0.5pt</xsl:attribute>
-						</xsl:if>
-						<xsl:if test="$namespace = 'itu'">
-							<xsl:if test="ancestor::*[local-name()='preface']">
-								<xsl:attribute name="border">solid black 0pt</xsl:attribute>
-							</xsl:if>
-						</xsl:if>
-						<!-- fn will be processed inside 'note' processing -->
-						<xsl:if test="$namespace = 'iec'">
-							<xsl:if test="../*[local-name()='note']">
-								<fo:block margin-bottom="6pt">&#xA0;</fo:block>
-							</xsl:if>
-						</xsl:if>
-						
-						<xsl:apply-templates select="../*[local-name()='note']" mode="process"/>
-						
-						<!-- horizontal row separator -->
-						<xsl:if test="$namespace = 'iec'">
-							<xsl:if test="../*[local-name()='note']">
-								<fo:block-container border-top="0.5pt solid black" padding-left="1mm" padding-right="1mm">
-									<fo:block font-size="1pt">&#xA0;</fo:block>
-								</fo:block-container>
-							</xsl:if>
-						</xsl:if>
-						
-						<!-- fn processing -->
-						<xsl:call-template name="fn_display" />
-						
-					</fo:table-cell>
-				</fo:table-row>
-				
-			</xsl:if>
+			<!-- <xsl:apply-templates select="../*[local-name()='tfoot']" mode="process"/> -->
+		
 		</fo:table-body>
+		
 	</xsl:template>
 	
 <!--	

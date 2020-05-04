@@ -31,21 +31,20 @@
 	<xsl:variable name="title-part" select="/iso:iso-standard/iso:bibdata/iso:title[@language = 'en' and @type = 'title-part']"/>
 	<xsl:variable name="title-part-fr" select="/iso:iso-standard/iso:bibdata/iso:title[@language = 'fr' and @type = 'title-part']"/>
 
-	<xsl:variable name="doctype" select="/iso:iso-standard/iso:bibdata/iso:ext/iso:doctype"/>
-	<xsl:variable name="doctype_uppercased" select="translate(translate($doctype,'-',' '), $lower,$upper)"/>
+	<xsl:variable name="doctype_uppercased" select="translate(translate(/iso:iso-standard/iso:bibdata/iso:ext/iso:doctype,'-',' '), $lower,$upper)"/>
 	
 	<xsl:variable name="stage" select="number(/iso:iso-standard/iso:bibdata/iso:status/iso:stage)"/>
-	<xsl:variable name="stage-abbreviation" select="normalize-space(/iso:iso-standard/iso:bibdata/iso:status/iso:stage/@abbreviation)"/>
-	<xsl:variable name="stage-fullname" select="translate(normalize-space(/iso:iso-standard/iso:bibdata/iso:ext/iso:stagename), $lower, $upper)"/>	
 	<xsl:variable name="substage" select="number(/iso:iso-standard/iso:bibdata/iso:status/iso:substage)"/>	
-	<xsl:variable name="iteration" select="number(/iso:iso-standard/iso:bibdata/iso:status/iso:iteration)"/>	
-	<xsl:variable name="stage-name">
+	<xsl:variable name="stagename" select="normalize-space(/iso:iso-standard/iso:bibdata/iso:ext/iso:stagename)"/>
+	<xsl:variable name="abbreviation" select="normalize-space(/iso:iso-standard/iso:bibdata/iso:status/iso:stage/@abbreviation)"/>
+		
+	<xsl:variable name="stage-abbreviation">
 		<xsl:choose>
-			<xsl:when test="$stage-abbreviation != ''">
-				<xsl:value-of select="$stage-abbreviation"/>
+			<xsl:when test="$abbreviation != ''">
+				<xsl:value-of select="$abbreviation"/>
 			</xsl:when>
-			<!--  and $substage = 0 -->
-			<xsl:when test="$stage = 0">NWIP</xsl:when> <!-- NWIP (NP, PWI) -->
+			<xsl:when test="$stage = 0 and $substage = 0">PWI</xsl:when>
+			<xsl:when test="$stage = 0">NWIP</xsl:when> <!-- NWIP (NP) -->
 			<xsl:when test="$stage = 10">AWI</xsl:when>
 			<xsl:when test="$stage = 20">WD</xsl:when>
 			<xsl:when test="$stage = 30">CD</xsl:when>
@@ -56,64 +55,59 @@
 			<xsl:otherwise></xsl:otherwise>
 		</xsl:choose>
 	</xsl:variable>
-	
-	<!-- UPPERCASED stage name -->
-	<xsl:variable name="stage-name-uppercased">
-		<xsl:if test="$stage-fullname != '' and $stage-abbreviation != ''">
-			<item name="{$stage-abbreviation}">
-				<xsl:choose>
-					<xsl:when test="$stage-abbreviation = 'PWI' or $stage-abbreviation = 'NWIP' or $stage-abbreviation = 'NP'">
-						<xsl:attribute name="show">true</xsl:attribute>
-						<xsl:attribute name="header">PRELIMINARY WORK ITEM</xsl:attribute>
-						<xsl:attribute name="shortname"><xsl:value-of select="$stage-fullname"/></xsl:attribute>
-					</xsl:when>
-					<xsl:when test="$stage-abbreviation = 'AWI'">
-						<xsl:attribute name="show">true</xsl:attribute>
-						<xsl:attribute name="header"><xsl:value-of select="$stage-fullname"/></xsl:attribute>
-						<xsl:attribute name="shortname"><xsl:value-of select="$stage-fullname"/></xsl:attribute>
-					</xsl:when>
-					<xsl:when test="$stage-abbreviation = 'WD'">
-						<xsl:attribute name="show">true</xsl:attribute>
-						<xsl:attribute name="header"><xsl:value-of select="$stage-fullname"/></xsl:attribute>
-						<xsl:attribute name="shortname"><xsl:value-of select="$stage-fullname"/></xsl:attribute>
-					</xsl:when>
-					<xsl:when test="$stage-abbreviation = 'CD'">
-						<xsl:attribute name="show">true</xsl:attribute>
-						<xsl:attribute name="header"><xsl:value-of select="$stage-fullname"/></xsl:attribute>
-						<xsl:attribute name="shortname"><xsl:value-of select="$stage-fullname"/></xsl:attribute>
-					</xsl:when>
-					<xsl:when test="$stage-abbreviation = 'DIS'">
-						<xsl:attribute name="show">true</xsl:attribute>
-						<xsl:attribute name="header"><xsl:value-of select="$stage-fullname"/></xsl:attribute>
-						<xsl:attribute name="shortname">DRAFT</xsl:attribute>
-					</xsl:when>
-					<xsl:when test="$stage-abbreviation = 'FDIS'">
-						<xsl:attribute name="show">true</xsl:attribute>
-						<xsl:attribute name="header"><xsl:value-of select="$stage-fullname"/></xsl:attribute>
-						<xsl:attribute name="shortname">FINAL DRAFT</xsl:attribute>
-					</xsl:when>
-					<xsl:otherwise>
-						<xsl:attribute name="show">true</xsl:attribute>
-						<xsl:attribute name="header"><xsl:value-of select="$stage-fullname"/></xsl:attribute>
-						<xsl:attribute name="shortname"><xsl:value-of select="$stage-fullname"/></xsl:attribute>
-					</xsl:otherwise>
-				</xsl:choose>
-				<xsl:if test="$stage-abbreviation = 'PRF'">
-					<xsl:attribute name="show">false</xsl:attribute>
-				</xsl:if>
-				<xsl:value-of select="$stage-fullname"/>
-			</item>
-		</xsl:if>
-		<item name="NWIP" show="true" header="PRELIMINARY WORK ITEM" shortname="NEW WORK ITEM PROPOSAL">NEW WORK ITEM PROPOSAL</item>
-		<item name="PWI" show="true" header="PRELIMINARY WORK ITEM" shortname="PRELIMINARY WORK ITEM">PRELIMINARY WORK ITEM</item>		
-		<item name="NP" show="true" header="PRELIMINARY WORK ITEM" shortname="NEW WORK ITEM PROPOSAL">NEW WORK ITEM PROPOSAL</item>
-		<item name="AWI" show="true" header="APPROVED WORK ITEM" shortname="APPROVED WORK ITEM">APPROVED WORK ITEM</item>
-		<item name="WD" show="true" header="WORKING DRAFT" shortname="WORKING DRAFT">WORKING DRAFT</item>
-		<item name="CD" show="true" header="COMMITTEE DRAFT" shortname="COMMITTEE DRAFT">COMMITTEE DRAFT</item>
-		<item name="DIS" show="true" header="DRAFT INTERNATIONAL STANDARD" shortname="DRAFT">DRAFT INTERNATIONAL STANDARD</item>
-		<item name="FDIS" show="true" header="FINAL DRAFT INTERNATIONAL STANDARD" shortname="FINAL DRAFT">FINAL DRAFT INTERNATIONAL STANDARD</item>
-		<item name="PRF">PROOF</item>
+
+	<xsl:variable name="stage-fullname-uppercased">
+		<xsl:choose>
+			<xsl:when test="$stagename != ''">
+				<xsl:value-of select="translate($stagename, $lower, $upper)"/>
+			</xsl:when>
+			<xsl:when test="$stage-abbreviation = 'NWIP' or
+															$stage-abbreviation = 'NP'">NEW WORK ITEM PROPOSAL</xsl:when>
+			<xsl:when test="$stage-abbreviation = 'PWI'">PRELIMINARY WORK ITEM</xsl:when>
+			<xsl:when test="$stage-abbreviation = 'AWI'">APPROVED WORK ITEM</xsl:when>
+			<xsl:when test="$stage-abbreviation = 'WD'">WORKING DRAFT</xsl:when>
+			<xsl:when test="$stage-abbreviation = 'CD'">COMMITTEE DRAFT</xsl:when>
+			<xsl:when test="$stage-abbreviation = 'DIS'">DRAFT INTERNATIONAL STANDARD</xsl:when>
+			<xsl:when test="$stage-abbreviation = 'FDIS'">FINAL DRAFT INTERNATIONAL STANDARD</xsl:when>
+			<xsl:otherwise><xsl:value-of select="$doctype_uppercased"/></xsl:otherwise>
+		</xsl:choose>
 	</xsl:variable>
+	
+	<xsl:variable name="stagename-header-firstpage">
+		<xsl:choose>
+			<!-- <xsl:when test="$stage-abbreviation = 'PWI' or 
+														$stage-abbreviation = 'NWIP' or 
+														$stage-abbreviation = 'NP'">PRELIMINARY WORK ITEM</xsl:when> -->
+			<xsl:when test="$stage-abbreviation = 'PRF'"><xsl:value-of select="$doctype_uppercased"/></xsl:when>
+			<xsl:otherwise>
+				<xsl:value-of select="$stage-fullname-uppercased"/>
+			</xsl:otherwise>
+		</xsl:choose>
+	</xsl:variable>
+	
+	<xsl:variable name="stagename-header-coverpage">
+		<xsl:choose>
+			<xsl:when test="$stage-abbreviation = 'DIS'">DRAFT</xsl:when>
+			<xsl:when test="$stage-abbreviation = 'FDIS'">FINAL DRAFT</xsl:when>
+			<xsl:when test="$stage-abbreviation = 'PRF'"></xsl:when>
+			<xsl:when test="$stage-abbreviation = 'IS'"></xsl:when>
+			<xsl:otherwise>
+				<xsl:value-of select="$stage-fullname-uppercased"/>
+			</xsl:otherwise>
+		</xsl:choose>
+	</xsl:variable>
+	
+	<!-- UPPERCASED stage name -->	
+	<!-- <item name="NWIP" show="true" header="PRELIMINARY WORK ITEM" shortname="NEW WORK ITEM PROPOSAL">NEW WORK ITEM PROPOSAL</item>
+	<item name="PWI" show="true" header="PRELIMINARY WORK ITEM" shortname="PRELIMINARY WORK ITEM">PRELIMINARY WORK ITEM</item>		
+	<item name="NP" show="true" header="PRELIMINARY WORK ITEM" shortname="NEW WORK ITEM PROPOSAL">NEW WORK ITEM PROPOSAL</item>
+	<item name="AWI" show="true" header="APPROVED WORK ITEM" shortname="APPROVED WORK ITEM">APPROVED WORK ITEM</item>
+	<item name="WD" show="true" header="WORKING DRAFT" shortname="WORKING DRAFT">WORKING DRAFT</item>
+	<item name="CD" show="true" header="COMMITTEE DRAFT" shortname="COMMITTEE DRAFT">COMMITTEE DRAFT</item>
+	<item name="DIS" show="true" header="DRAFT INTERNATIONAL STANDARD" shortname="DRAFT">DRAFT INTERNATIONAL STANDARD</item>
+	<item name="FDIS" show="true" header="FINAL DRAFT INTERNATIONAL STANDARD" shortname="FINAL DRAFT">FINAL DRAFT INTERNATIONAL STANDARD</item>
+	<item name="PRF">PROOF</item> -->
+	
 	
 	<!-- 
 		<status>
@@ -127,14 +121,14 @@
 		<xsl:choose>
 			<xsl:when test="string($stage) = 'NaN'">false</xsl:when>
 			<xsl:when test="$stage &gt;=60">true</xsl:when>
-			<xsl:when test="normalize-space($stage-name) != ''">true</xsl:when>
+			<xsl:when test="normalize-space($stage-abbreviation) != ''">true</xsl:when>
 			<xsl:otherwise>false</xsl:otherwise>
 		</xsl:choose>
 	</xsl:variable>
 	
 	<xsl:variable name="document-master-reference">
 		<xsl:choose>
-			<xsl:when test="$stage-name != ''">-publishedISO</xsl:when>
+			<xsl:when test="$stage-abbreviation != ''">-publishedISO</xsl:when>
 			<xsl:otherwise></xsl:otherwise>
 		</xsl:choose>
 	</xsl:variable>
@@ -332,7 +326,7 @@
 			
 			<!-- cover page -->
 			<xsl:choose>
-				<xsl:when test="$stage-name != ''">
+				<xsl:when test="$stage-abbreviation != ''">
 					<fo:page-sequence master-reference="cover-page-publishedISO" force-page-count="no-force">
 						<fo:static-content flow-name="cover-page-footer" font-size="10pt">
 							<fo:table table-layout="fixed" width="100%">
@@ -344,12 +338,25 @@
 										<fo:table-cell font-size="6.5pt" text-align="justify" display-align="after" padding-bottom="8mm"><!-- before -->
 											<!-- margin-top="-30mm"  -->
 											<fo:block margin-top="-100mm">
-												<xsl:if test="$stage-name = 'DIS' or $stage-name = 'NWIP' or $stage-name = 'NP' or $stage-name = 'AWI' or $stage-name = 'WD' or $stage-name = 'CD'">
+												<xsl:if test="$stage-abbreviation = 'DIS' or 
+																					$stage-abbreviation = 'NWIP' or 
+																					$stage-abbreviation = 'NP' or 
+																					$stage-abbreviation = 'PWI' or 
+																					$stage-abbreviation = 'AWI' or 
+																					$stage-abbreviation = 'WD' or 
+																					$stage-abbreviation = 'CD'">
 													<fo:block margin-bottom="1.5mm">
 														<xsl:text>THIS DOCUMENT IS A DRAFT CIRCULATED FOR COMMENT AND APPROVAL. IT IS THEREFORE SUBJECT TO CHANGE AND MAY NOT BE REFERRED TO AS AN INTERNATIONAL STANDARD UNTIL PUBLISHED AS SUCH.</xsl:text>
 													</fo:block>
 												</xsl:if>
-												<xsl:if test="$stage-name = 'FDIS' or $stage-name = 'DIS' or $stage-name = 'NWIP' or $stage-name = 'NP' or $stage-name = 'AWI' or $stage-name = 'WD' or $stage-name = 'CD'">
+												<xsl:if test="$stage-abbreviation = 'FDIS' or 
+																					$stage-abbreviation = 'DIS' or 
+																					$stage-abbreviation = 'NWIP' or 
+																					$stage-abbreviation = 'NP' or 
+																					$stage-abbreviation = 'PWI' or 
+																					$stage-abbreviation = 'AWI' or 
+																					$stage-abbreviation = 'WD' or 
+																					$stage-abbreviation = 'CD'">
 													<fo:block margin-bottom="1.5mm">
 														<xsl:text>RECIPIENTS OF THIS DRAFT ARE INVITED TO
 																			SUBMIT, WITH THEIR COMMENTS, NOTIFICATION
@@ -374,7 +381,7 @@
 											<fo:block>&#xA0;</fo:block>
 										</fo:table-cell>
 										<fo:table-cell>
-											<xsl:if test="$stage-name = 'DIS'">
+											<xsl:if test="$stage-abbreviation = 'DIS'">
 												<fo:block-container margin-top="-15mm" margin-bottom="7mm" margin-left="1mm">
 													<fo:block font-size="9pt" border="0.5pt solid black" fox:border-radius="5pt" padding-left="2mm" padding-top="2mm" padding-bottom="2mm">
 														<xsl:text>This document is circulated as received from the committee secretariat.</xsl:text>
@@ -426,13 +433,12 @@
 						</fo:static-content>
 						
 						<xsl:choose>
-							<xsl:when test="$stage-name = 'DIS'">
+							<!-- COVER PAGE for DIS document only -->
+							<xsl:when test="$stage-abbreviation = 'DIS'">
 								<fo:flow flow-name="xsl-region-body">
 									<fo:block-container>
 										<fo:block margin-top="-1mm" font-size="20pt" text-align="right">
-											<xsl:value-of select="xalan:nodeset($stage-name-uppercased)/item[@name = $stage-name and @show = 'true']/text()"/>
-											<!-- <xsl:text>&#xA0;</xsl:text>
-											<xsl:value-of select="$doctype_uppercased"/> -->
+											<xsl:value-of select="$stage-fullname-uppercased"/>											
 										</fo:block>
 										<fo:block font-size="20pt" font-weight="bold" text-align="right">
 											<xsl:value-of select="/iso:iso-standard/iso:bibdata/iso:docidentifier[@type = 'iso']"/>
@@ -472,10 +478,24 @@
 														<fo:block>&#xA0;</fo:block>
 													</fo:table-cell>
 													<fo:table-cell>
-														<fo:block><fo:inline font-weight="bold">2018</fo:inline>-xx-xx</fo:block>
+														<fo:block>
+															<xsl:choose>
+																<xsl:when test="/iso:iso-standard/iso:bibdata/iso:date[@type = 'vote-started']/iso:on">
+																	<fo:inline font-weight="bold"><xsl:value-of select="/iso:iso-standard/iso:bibdata/iso:date[@type = 'vote-started']/iso:on"/></fo:inline>
+																</xsl:when>
+																<xsl:otherwise><fo:inline font-weight="bold">XXXX</fo:inline>-xx-xx</xsl:otherwise>
+															</xsl:choose>
+														</fo:block>
 													</fo:table-cell>
 													<fo:table-cell>
-														<fo:block><fo:inline font-weight="bold">2018</fo:inline>-xx-xx</fo:block>
+														<fo:block>
+															<xsl:choose>
+																<xsl:when test="/iso:iso-standard/iso:bibdata/iso:date[@type = 'vote-ended']/iso:on">
+																	<fo:inline font-weight="bold"><xsl:value-of select="/iso:iso-standard/iso:bibdata/iso:date[@type = 'vote-ended']/iso:on"/></fo:inline>
+																</xsl:when>
+																<xsl:otherwise><fo:inline font-weight="bold">XXXX</fo:inline>-xx-xx</xsl:otherwise>
+															</xsl:choose>
+														</fo:block>
 													</fo:table-cell>
 												</fo:table-row>
 											</fo:table-body>
@@ -540,6 +560,7 @@
 							</xsl:when>
 							<xsl:otherwise>
 						
+								<!-- COVER PAGE  for all documents except DIS -->
 								<fo:flow flow-name="xsl-region-body">
 									<fo:block-container>
 										<fo:table table-layout="fixed" width="100%" font-size="24pt" line-height="1"> <!-- margin-bottom="35mm" -->
@@ -550,9 +571,19 @@
 												<fo:table-row>
 													<fo:table-cell>
 														<fo:block font-size="18pt">
-															<xsl:variable name="stgname" select="xalan:nodeset($stage-name-uppercased)/item[@name = $stage-name and @show = 'true']/@shortname"/>
-															<xsl:value-of select="translate($stgname, ' ', $linebreak)"/>
-															<xsl:if test="number($iteration) = $iteration and ($stage-name = 'NWIP' or $stage-name = 'NP' or $stage-name = 'AWI' or $stage-name = 'WD' or $stage-name = 'CD')"> <!-- not NaN -->
+															
+															<xsl:value-of select="translate($stagename-header-coverpage, ' ', $linebreak)"/>
+															
+															<!-- if there is iteration number, then print it -->
+															<xsl:variable name="iteration" select="number(/iso:iso-standard/iso:bibdata/iso:status/iso:iteration)"/>	
+															
+															<xsl:if test="number($iteration) = $iteration and 
+																																							($stage-abbreviation = 'NWIP' or 
+																																							$stage-abbreviation = 'NP' or 
+																																							$stage-abbreviation = 'PWI' or 
+																																							$stage-abbreviation = 'AWI' or 
+																																							$stage-abbreviation = 'WD' or 
+																																							$stage-abbreviation = 'CD')">
 																<xsl:text>&#xA0;</xsl:text><xsl:value-of select="$iteration"/>
 															</xsl:if>
 															<!-- <xsl:if test="$stage-name = 'draft'">DRAFT</xsl:if>
@@ -573,17 +604,14 @@
 												<fo:table-row height="42mm">
 													<fo:table-cell number-columns-spanned="3" font-size="10pt" line-height="1.2">
 														<fo:block text-align="right">
-															<xsl:variable name="edition" select="/iso:iso-standard/iso:bibdata/iso:edition"/>
-															<xsl:if test="$stage-name = 'PRF' or $stage-name = 'published'">
-																<xsl:choose>
-																	<xsl:when test="$edition = 1">First</xsl:when>
-																	<xsl:when test="$edition = 2">Second</xsl:when>
-																	<xsl:when test="$edition = 3">Third</xsl:when>
-																	<xsl:otherwise><xsl:value-of select="$edition"/></xsl:otherwise>
-																</xsl:choose>
-																<xsl:text> edition</xsl:text>
+															
+															<xsl:if test="$stage-abbreviation = 'PRF' or 
+																								$stage-abbreviation = 'IS' or 
+																								$stage-abbreviation = 'published'">
+																<xsl:call-template name="printEdition"/>
 															</xsl:if>
-															<xsl:if test="$stage-name = 'published'">
+															<xsl:if test="$stage-abbreviation = 'IS' or 
+																								$stage-abbreviation = 'published'">
 																<xsl:value-of select="$linebreak"/>
 																<xsl:value-of select="substring(/iso:iso-standard/iso:bibdata/iso:version/iso:revision-date,1, 7)"/>
 															</xsl:if>
@@ -604,16 +632,26 @@
 												<fo:table-row> <!--  border="1pt solid black" height="150mm"  -->
 													<fo:table-cell font-size="11pt">
 														<fo:block>
-															<xsl:if test="$stage-name = 'FDIS'">
+															<xsl:if test="$stage-abbreviation = 'FDIS'">
 																<fo:block-container border="0.5mm solid black" width="51mm">
 																	<fo:block margin="2mm">
 																			<fo:block margin-bottom="8pt">ISO/TC <fo:inline font-weight="bold"><xsl:value-of select="/iso:iso-standard/iso:bibdata/iso:ext/iso:editorialgroup/iso:technical-committee/@number"/></fo:inline></fo:block>
 																			<fo:block margin-bottom="6pt">Secretariat: <xsl:value-of select="/iso:iso-standard/iso:bibdata/iso:ext/iso:editorialgroup/iso:secretariat"/></fo:block>
 																			<fo:block margin-bottom="6pt">Voting begins on:<xsl:value-of select="$linebreak"/>
-																				<fo:inline font-weight="bold">2018</fo:inline>-xx-xx
+																				<xsl:choose>
+																					<xsl:when test="/iso:iso-standard/iso:bibdata/iso:date[@type = 'vote-started']/iso:on">
+																						<fo:inline font-weight="bold"><xsl:value-of select="/iso:iso-standard/iso:bibdata/iso:date[@type = 'vote-started']/iso:on"/></fo:inline>
+																					</xsl:when>
+																					<xsl:otherwise><fo:inline font-weight="bold">XXXX</fo:inline>-xx-xx</xsl:otherwise>
+																				</xsl:choose>
 																			</fo:block>
 																			<fo:block>Voting terminates on:<xsl:value-of select="$linebreak"/>
-																				<fo:inline font-weight="bold">2018</fo:inline>-xx-xx
+																				<xsl:choose>
+																					<xsl:when test="/iso:iso-standard/iso:bibdata/iso:date[@type = 'vote-ended']/iso:on">
+																						<fo:inline font-weight="bold"><xsl:value-of select="/iso:iso-standard/iso:bibdata/iso:date[@type = 'vote-ended']/iso:on"/></fo:inline>
+																					</xsl:when>
+																					<xsl:otherwise><fo:inline font-weight="bold">XXXX</fo:inline>-xx-xx</xsl:otherwise>
+																				</xsl:choose>
 																			</fo:block>
 																	</fo:block>
 																</fo:block-container>
@@ -676,7 +714,7 @@
 									</fo:block-container>
 									<fo:block-container position="absolute" left="60mm" top="222mm" height="25mm" display-align="after">
 										<fo:block>
-											<xsl:if test="$stage-name = 'PRF'">
+											<xsl:if test="$stage-abbreviation = 'PRF'">
 												<fo:block font-size="39pt" font-weight="bold"><xsl:value-of select="$proof-text"/></fo:block>
 											</xsl:if>
 										</fo:block>
@@ -736,14 +774,7 @@
 										<fo:table-row>
 											<fo:table-cell number-columns-spanned="2" font-size="10pt" line-height="1.2">
 												<fo:block text-align="right">
-													<xsl:variable name="edition" select="/iso:iso-standard/iso:bibdata/iso:edition"/>
-													<xsl:choose>
-														<xsl:when test="$edition = 1">First</xsl:when>
-														<xsl:when test="$edition = 2">Second</xsl:when>
-														<xsl:when test="$edition = 3">Third</xsl:when>
-														<xsl:otherwise><xsl:value-of select="$edition"/></xsl:otherwise>
-													</xsl:choose>
-													<xsl:text> edition</xsl:text>
+													<xsl:call-template name="printEdition"/>
 													<xsl:value-of select="$linebreak"/>
 													<xsl:value-of select="/iso:iso-standard/iso:bibdata/iso:version/iso:revision-date"/></fo:block>
 											</fo:table-cell>
@@ -1121,7 +1152,7 @@
 									</fo:table-cell>
 									<fo:table-cell>
 										<fo:block font-size="11pt" font-weight="bold" text-align="center">
-											<xsl:if test="$stage-name = 'PRF'">
+											<xsl:if test="$stage-abbreviation = 'PRF'">
 												<xsl:value-of select="$proof-text"/>
 											</xsl:if>
 										</fo:block>
@@ -2177,7 +2208,7 @@
 							</fo:table-cell>
 							<fo:table-cell display-align="center">
 								<fo:block font-size="11pt" font-weight="bold" text-align="center">
-									<xsl:if test="$stage-name = 'PRF'">
+									<xsl:if test="$stage-abbreviation = 'PRF'">
 										<xsl:value-of select="$proof-text"/>
 									</xsl:if>
 								</fo:block>
@@ -2194,16 +2225,8 @@
 			<fo:block-container margin-top="13mm" height="9mm" width="172mm" border-top="0.5mm solid black" border-bottom="0.5mm solid black" display-align="center" background-color="white">
 				<fo:block text-align-last="justify" font-size="12pt" font-weight="bold">
 					
-					<xsl:variable name="stgname" select="normalize-space(xalan:nodeset($stage-name-uppercased)/item[@name = $stage-name and @show = 'true']/@header)"/>
-					<xsl:if test="$stgname != ''">
-					<!-- <xsl:if test="$stage-name = 'final-draft' or $stage-name = 'draft'"> -->
-						<!-- <fo:inline><xsl:value-of select="translate(translate($stage-name,'-',' '), $lower,$upper)"/></fo:inline> -->
-						<fo:inline><xsl:value-of select="$stgname"/></fo:inline>
-						<!-- <xsl:text>&#xA0;</xsl:text> -->
-					</xsl:if>
-					<xsl:if test="$stgname = ''">
-						<fo:inline><xsl:value-of select="$doctype_uppercased"/></fo:inline>
-					</xsl:if>
+					<xsl:value-of select="$stagename-header-firstpage"/>
+					
 					<fo:inline keep-together.within-line="always">
 						<fo:leader leader-pattern="space"/>
 						<fo:inline><xsl:value-of select="$ISOname"/></fo:inline>
@@ -2229,7 +2252,7 @@
 							</fo:table-cell>
 							<fo:table-cell display-align="center">
 								<fo:block font-size="11pt" font-weight="bold" text-align="center">
-									<xsl:if test="$stage-name = 'PRF'">
+									<xsl:if test="$stage-abbreviation = 'PRF'">
 										<xsl:value-of select="$proof-text"/>
 									</xsl:if>
 								</fo:block>
@@ -2954,4 +2977,103 @@
 			ubYJPnswvSFSFVBu3ryZJ5fj+e+//wVuVmgt0lkFPgAAAABJRU5ErkJggg==
 		</xsl:text>
 	</xsl:variable>
+	
+		<xsl:template name="number-to-words">
+		<xsl:param name="number" />
+		<xsl:variable name="words">
+			<words>
+				<word cardinal="1">One-</word>
+				<word ordinal="1">First </word>
+				<word cardinal="2">Two-</word>
+				<word ordinal="2">Second </word>
+				<word cardinal="3">Three-</word>
+				<word ordinal="3">Third </word>
+				<word cardinal="4">Four-</word>
+				<word ordinal="4">Fourth </word>
+				<word cardinal="5">Five-</word>
+				<word ordinal="5">Fifth </word>
+				<word cardinal="6">Six-</word>
+				<word ordinal="6">Sixth </word>
+				<word cardinal="7">Seven-</word>
+				<word ordinal="7">Seventh </word>
+				<word cardinal="8">Eight-</word>
+				<word ordinal="8">Eighth </word>
+				<word cardinal="9">Nine-</word>
+				<word ordinal="9">Ninth </word>
+				<word ordinal="10">Tenth </word>
+				<word ordinal="11">Eleventh </word>
+				<word ordinal="12">Twelfth </word>
+				<word ordinal="13">Thirteenth </word>
+				<word ordinal="14">Fourteenth </word>
+				<word ordinal="15">Fifteenth </word>
+				<word ordinal="16">Sixteenth </word>
+				<word ordinal="17">Seventeenth </word>
+				<word ordinal="18">Eighteenth </word>
+				<word ordinal="19">Nineteenth </word>
+				<word cardinal="20">Twenty-</word>
+				<word ordinal="20">Twentieth </word>
+				<word cardinal="30">Thirty-</word>
+				<word ordinal="30">Thirtieth </word>
+				<word cardinal="40">Forty-</word>
+				<word ordinal="40">Fortieth </word>
+				<word cardinal="50">Fifty-</word>
+				<word ordinal="50">Fiftieth </word>
+				<word cardinal="60">Sixty-</word>
+				<word ordinal="60">Sixtieth </word>
+				<word cardinal="70">Seventy-</word>
+				<word ordinal="70">Seventieth </word>
+				<word cardinal="80">Eighty-</word>
+				<word ordinal="80">Eightieth </word>
+				<word cardinal="90">Ninety-</word>
+				<word ordinal="90">Ninetieth </word>
+				<word cardinal="100">Hundred-</word>
+				<word ordinal="100">Hundredth </word>
+			</words>
+		</xsl:variable>
+
+		<xsl:variable name="ordinal" select="xalan:nodeset($words)//word[@ordinal = $number]/text()"/>
+
+		<xsl:choose>
+			<xsl:when test="$ordinal != ''">
+				<xsl:value-of select="$ordinal"/>
+			</xsl:when>
+			<xsl:otherwise>
+				<xsl:choose>
+					<xsl:when test="$number &lt; 100">
+						<xsl:variable name="decade" select="concat(substring($number,1,1), '0')"/>
+						<xsl:variable name="digit" select="substring($number,2)"/>
+						<xsl:value-of select="xalan:nodeset($words)//word[@cardinal = $decade]/text()"/>
+						<xsl:value-of select="xalan:nodeset($words)//word[@ordinal = $digit]/text()"/>
+					</xsl:when>
+					<xsl:otherwise>
+						<!-- more 100 -->
+						<xsl:variable name="hundred" select="substring($number,1,1)"/>
+						<xsl:variable name="digits" select="number(substring($number,2))"/>
+						<xsl:value-of select="xalan:nodeset($words)//word[@cardinal = $hundred]/text()"/>
+						<xsl:value-of select="xalan:nodeset($words)//word[@cardinal = '100']/text()"/>
+						<xsl:call-template name="number-to-words">
+							<xsl:with-param name="number" select="$digits"/>
+						</xsl:call-template>
+					</xsl:otherwise>
+				</xsl:choose>
+			</xsl:otherwise>
+		</xsl:choose>
+	</xsl:template>
+	
+	<xsl:template name="printEdition">
+		<xsl:variable name="edition" select="normalize-space(/iso:iso-standard/iso:bibdata/iso:edition)"/>
+		<xsl:text>&#xA0;</xsl:text>
+		<xsl:choose>
+			<xsl:when test="number($edition) = $edition">
+				<xsl:call-template name="number-to-words">
+					<xsl:with-param name="number" select="$edition"/>
+				</xsl:call-template>
+			</xsl:when>
+			<xsl:when test="$edition != ''">
+				<xsl:value-of select="$edition"/>
+			</xsl:when>
+		</xsl:choose>
+		<xsl:if test="$edition != ''"><xsl:text> edition</xsl:text></xsl:if>
+	</xsl:template>
+	
 </xsl:stylesheet>
