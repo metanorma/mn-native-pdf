@@ -1257,9 +1257,9 @@
 				<xsl:text>[SOURCE: </xsl:text>
 				<fo:inline text-decoration="underline" color="{$color-link}">
 					<xsl:value-of select="rsd:origin/@citeas"/>
-					<xsl:if test="rsd:origin/rsd:locality/rsd:referenceFrom">
-						<xsl:text>, </xsl:text><xsl:value-of select="rsd:origin/rsd:locality/rsd:referenceFrom"/>
-					</xsl:if>
+					
+					<xsl:apply-templates select="rsd:origin/rsd:localityStack"/>
+					
 				</fo:inline>
 			</fo:basic-link>
 			<xsl:apply-templates select="rsd:modification"/>
@@ -1349,10 +1349,7 @@
 	<xsl:template match="rsd:source">
 		<fo:basic-link internal-destination="{@bibitemid}" fox:alt-text="{@citeas}">
 			<xsl:value-of select="@citeas" disable-output-escaping="yes"/>
-			<xsl:if test="rsd:locality">
-				<xsl:text>, </xsl:text>
-				<xsl:apply-templates select="rsd:locality"/>
-			</xsl:if>
+			<xsl:apply-templates select="rsd:localityStack"/>
 		</fo:basic-link>
 	</xsl:template>
 	
@@ -1570,15 +1567,7 @@
 				</xsl:when>
 				<xsl:otherwise></xsl:otherwise>
 			</xsl:choose>
-			<xsl:if test="rsd:locality">
-				<xsl:text>, </xsl:text>
-				<!-- <xsl:choose>
-						<xsl:when test="rsd:locality/@type = 'section'">Section </xsl:when>
-						<xsl:when test="rsd:locality/@type = 'clause'">Clause </xsl:when>
-						<xsl:otherwise></xsl:otherwise>
-					</xsl:choose> -->
-					<xsl:apply-templates select="rsd:locality"/>
-			</xsl:if>
+			<xsl:apply-templates select="rsd:localityStack"/>
 			<xsl:apply-templates select="text()"/>
 		</fo:basic-link>
 	</xsl:template>

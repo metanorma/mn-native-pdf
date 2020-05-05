@@ -1224,9 +1224,9 @@
 				<xsl:text>[SOURCE: </xsl:text>
 				<fo:inline text-decoration="underline" color="{$color-link}">
 					<xsl:value-of select="csa:origin/@citeas"/>
-					<xsl:if test="csa:origin/csa:locality/csa:referenceFrom">
-						<xsl:text>, </xsl:text><xsl:value-of select="csa:origin/csa:locality/csa:referenceFrom"/>
-					</xsl:if>
+          
+					<xsl:apply-templates select="csa:origin/csa:localityStack"/>
+					
 				</fo:inline>
 			</fo:basic-link>
 			<xsl:apply-templates select="csa:modification"/>
@@ -1382,10 +1382,7 @@
 	<xsl:template match="csa:source">
 		<fo:basic-link internal-destination="{@bibitemid}" fox:alt-text="{@citeas}">
 			<xsl:value-of select="@citeas" disable-output-escaping="yes"/>
-			<xsl:if test="csa:locality">
-				<xsl:text>, </xsl:text>
-				<xsl:apply-templates select="csa:locality"/>
-			</xsl:if>
+			<xsl:apply-templates select="csa:localityStack"/>
 		</fo:basic-link>
 	</xsl:template>
 	
@@ -1591,15 +1588,7 @@
 				</xsl:when>
 				<xsl:otherwise></xsl:otherwise>
 			</xsl:choose>
-			<xsl:if test="csa:locality">
-				<xsl:text>, </xsl:text>
-				<!-- <xsl:choose>
-						<xsl:when test="csa:locality/@type = 'section'">Section </xsl:when>
-						<xsl:when test="csa:locality/@type = 'clause'">Clause </xsl:when>
-						<xsl:otherwise></xsl:otherwise>
-					</xsl:choose> -->
-					<xsl:apply-templates select="csa:locality"/>
-			</xsl:if>
+			<xsl:apply-templates select="csa:localityStack"/>
 			<xsl:apply-templates select="text()"/>
 		</fo:basic-link>
 	</xsl:template>
