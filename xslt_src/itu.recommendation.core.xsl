@@ -1744,16 +1744,19 @@
 						<xsl:text>[</xsl:text><xsl:value-of select="@citeas" disable-output-escaping="yes"/><xsl:text>]</xsl:text>
 					</xsl:otherwise>
 				</xsl:choose>
-				<xsl:if test="itu:locality">
-					<xsl:text>, </xsl:text>
-					<xsl:choose>
-						<xsl:when test="itu:locality/@type = 'section'">Section </xsl:when>
-						<xsl:otherwise></xsl:otherwise>
-					</xsl:choose>
-					<xsl:apply-templates select="itu:locality"/>
-				</xsl:if>
+				
+				<xsl:apply-templates select="itu:localityStack"/>
+				
 			</fo:basic-link>
 		</fo:inline>
+	</xsl:template>
+	
+	<xsl:template match="itu:locality">
+		<xsl:choose>
+			<xsl:when test="@type ='section'">Section</xsl:when>
+			<xsl:otherwise></xsl:otherwise>
+		</xsl:choose>
+		<xsl:value-of select="itu:referenceFrom"/>
 	</xsl:template>
 	
 	<xsl:template match="itu:references[position() &gt; 1]">

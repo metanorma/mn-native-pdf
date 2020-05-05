@@ -1466,9 +1466,9 @@
 				<xsl:text>[SOURCE: </xsl:text>
 				<fo:inline color="blue" text-decoration="underline">
 					<xsl:value-of select="ogc:origin/@citeas"/>
-					<xsl:if test="ogc:origin/ogc:locality/ogc:referenceFrom">
-						<xsl:text>, </xsl:text><xsl:value-of select="ogc:origin/ogc:locality/ogc:referenceFrom"/>
-					</xsl:if>
+					
+					<xsl:apply-templates select="ogc:origin/ogc:localityStack"/>
+					
 				</fo:inline>
 			</fo:basic-link>
 			<xsl:apply-templates select="ogc:modification"/>
@@ -1634,10 +1634,7 @@
 	<xsl:template match="ogc:source">
 		<fo:basic-link internal-destination="{@bibitemid}" fox:alt-text="{@citeas}">
 			<xsl:value-of select="@citeas" disable-output-escaping="yes"/>
-			<xsl:if test="ogc:locality">
-				<xsl:text>, </xsl:text>
-				<xsl:apply-templates select="ogc:locality"/>
-			</xsl:if>
+			<xsl:apply-templates select="ogc:localityStack"/>
 		</fo:basic-link>
 	</xsl:template>
 	
@@ -1846,15 +1843,7 @@
 				</xsl:when>
 				<xsl:otherwise></xsl:otherwise>
 			</xsl:choose>
-			<xsl:if test="ogc:locality">
-				<xsl:text>, </xsl:text>
-				<!-- <xsl:choose>
-						<xsl:when test="ogc:locality/@type = 'section'">Section </xsl:when>
-						<xsl:when test="ogc:locality/@type = 'clause'">Clause </xsl:when>
-						<xsl:otherwise></xsl:otherwise>
-					</xsl:choose> -->
-					<xsl:apply-templates select="ogc:locality"/>
-			</xsl:if>
+			<xsl:apply-templates select="ogc:localityStack"/>
 			<xsl:apply-templates select="text()"/>
 		</fo:basic-link>
 	</xsl:template>

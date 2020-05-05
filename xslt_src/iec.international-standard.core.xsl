@@ -2202,9 +2202,7 @@
 			<fo:basic-link internal-destination="{iec:origin/@bibitemid}" fox:alt-text="{iec:origin/@citeas}">
 				<xsl:text>[SOURCE: </xsl:text>
 				<xsl:value-of select="iec:origin/@citeas"/>
-				<xsl:if test="iec:origin/iec:locality/iec:referenceFrom">
-					<xsl:text>, </xsl:text><xsl:value-of select="iec:origin/iec:locality/iec:referenceFrom"/>
-				</xsl:if>
+				<xsl:apply-templates select="iec:origin/iec:localityStack"/>
 			</fo:basic-link>
 			<xsl:apply-templates select="iec:modification"/>
 			<xsl:text>]</xsl:text>
@@ -2326,10 +2324,7 @@
 	<xsl:template match="iec:source">
 		<fo:basic-link internal-destination="{@bibitemid}" fox:alt-text="{@citeas}">
 			<xsl:value-of select="@citeas" disable-output-escaping="yes"/>
-			<xsl:if test="iec:locality">
-				<xsl:text>, </xsl:text>
-				<xsl:apply-templates select="iec:locality"/>
-			</xsl:if>
+			<xsl:apply-templates select="iec:localityStack"/>
 		</fo:basic-link>
 	</xsl:template>
 	
@@ -2458,17 +2453,8 @@
 				<xsl:attribute name="keep-with-previous.within-line">always</xsl:attribute>
 				<xsl:attribute name="vertical-align">super</xsl:attribute>
 			</xsl:if>
-			
 			<xsl:value-of select="@citeas" disable-output-escaping="yes"/>
-			<xsl:if test="iec:locality">
-				<xsl:text>, </xsl:text>
-				<!-- <xsl:choose>
-						<xsl:when test="iec:locality/@type = 'section'">Section </xsl:when>
-						<xsl:when test="iec:locality/@type = 'clause'">Clause </xsl:when>
-						<xsl:otherwise></xsl:otherwise>
-					</xsl:choose> -->
-					<xsl:apply-templates select="iec:locality"/>
-			</xsl:if>
+			<xsl:apply-templates select="iec:localityStack"/>
 		</fo:basic-link>
 	</xsl:template>
 	

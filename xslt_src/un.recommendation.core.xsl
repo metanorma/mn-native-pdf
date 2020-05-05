@@ -1311,16 +1311,17 @@
 				<xsl:attribute name="text-decoration">underline</xsl:attribute>
 			</xsl:if> -->
 			<xsl:text>[</xsl:text><xsl:value-of select="@citeas" disable-output-escaping="yes"/><xsl:text>]</xsl:text>
-			<xsl:if test="un:locality">
-				<xsl:text>, </xsl:text>
-				<xsl:choose>
-					<xsl:when test="un:locality/@type = 'section'">Section </xsl:when>
-					<xsl:when test="un:locality/@type = 'clause'">Clause </xsl:when>
-					<xsl:otherwise></xsl:otherwise>
-				</xsl:choose>
-				<xsl:apply-templates select="un:locality"/>
-			</xsl:if>
+			<xsl:apply-templates select="un:localityStack"/>
 		</fo:basic-link>
+	</xsl:template>
+	
+	<xsl:template match="un:locality">
+		<xsl:choose>
+			<xsl:when test="@type = 'section'">Section </xsl:when>
+			<xsl:when test="@type = 'clause'">Clause </xsl:when>
+			<xsl:otherwise></xsl:otherwise>
+		</xsl:choose>
+		<xsl:text> </xsl:text><xsl:value-of select="un:referenceFrom"/>
 	</xsl:template>
 	
 	

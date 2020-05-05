@@ -1049,9 +1049,9 @@
 			<fo:basic-link internal-destination="{csd:origin/@bibitemid}" fox:alt-text="{csd:origin/@citeas}">
 				<xsl:text>[SOURCE: </xsl:text>
 				<xsl:value-of select="csd:origin/@citeas"/>
-				<xsl:if test="csd:origin/csd:locality/csd:referenceFrom">
-					<xsl:text>, </xsl:text><xsl:value-of select="csd:origin/csd:locality/csd:referenceFrom"/>
-				</xsl:if>
+				
+				<xsl:apply-templates select="csd:origin/csd:localityStack"/>
+				
 			</fo:basic-link>
 			<xsl:apply-templates select="csd:modification"/>
 			<xsl:text>]</xsl:text>
@@ -1172,10 +1172,7 @@
 	<xsl:template match="csd:source">
 		<fo:basic-link internal-destination="{@bibitemid}" fox:alt-text="{@citeas}">
 			<xsl:value-of select="@citeas" disable-output-escaping="yes"/>
-			<xsl:if test="csd:locality">
-				<xsl:text>, </xsl:text>
-				<xsl:apply-templates select="csd:locality"/>
-			</xsl:if>
+			<xsl:apply-templates select="csd:localityStack"/>
 		</fo:basic-link>
 	</xsl:template>
 	
@@ -1324,15 +1321,7 @@
 				</xsl:when>
 				<xsl:otherwise></xsl:otherwise>
 			</xsl:choose>
-			<xsl:if test="csd:locality">
-				<xsl:text>, </xsl:text>
-				<!-- <xsl:choose>
-						<xsl:when test="csd:locality/@type = 'section'">Section </xsl:when>
-						<xsl:when test="csd:locality/@type = 'clause'">Clause </xsl:when>
-						<xsl:otherwise></xsl:otherwise>
-					</xsl:choose> -->
-					<xsl:apply-templates select="csd:locality"/>
-			</xsl:if>
+			<xsl:apply-templates select="csd:localityStack"/>
 		</fo:basic-link>
 	</xsl:template>
 	

@@ -2077,9 +2077,7 @@
 	<xsl:template match="iso:source">
 		<fo:basic-link internal-destination="{@bibitemid}" fox:alt-text="{@citeas}">
 			<xsl:value-of select="@citeas" disable-output-escaping="yes"/>
-			
 			<xsl:apply-templates select="iso:localityStack"/>
-			
 		</fo:basic-link>
 	</xsl:template>
 	
@@ -2242,14 +2240,6 @@
 			<xsl:value-of select="@citeas" disable-output-escaping="yes"/>
 			<xsl:apply-templates select="iso:localityStack"/>
 		</fo:basic-link>
-	</xsl:template>
-	
-	<xsl:template match="iso:localityStack">
-		<xsl:for-each select="iso:locality">
-			<xsl:if test="position() =1"><xsl:text>, </xsl:text></xsl:if>
-			<xsl:apply-templates select="."/>
-			<xsl:if test="position() != last()"><xsl:text>; </xsl:text></xsl:if>
-		</xsl:for-each>
 	</xsl:template>
 	
 	<xsl:template match="iso:locality">

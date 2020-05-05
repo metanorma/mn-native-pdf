@@ -1701,5 +1701,13 @@
 			</fo:instream-foreign-object>
 		</fo:inline>
 	</xsl:template>
+
+	<xsl:template match="*[local-name()='localityStack']">
+		<xsl:for-each select="*[local-name()='locality']">
+			<xsl:if test="position() =1"><xsl:text>, </xsl:text></xsl:if>
+			<xsl:apply-templates select="."/>
+			<xsl:if test="position() != last()"><xsl:text>; </xsl:text></xsl:if>
+		</xsl:for-each>
+	</xsl:template>
 	
 </xsl:stylesheet>
