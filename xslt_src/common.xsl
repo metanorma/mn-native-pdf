@@ -37,9 +37,9 @@
 		<xsl:if test="$namespace = 'itu'">
 			<fo:block space-before="18pt">&#xA0;</fo:block>				
 		</xsl:if>
-		<xsl:if test="$namespace = 'iso'">
+		<!-- <xsl:if test="$namespace = 'iso'">
 			<fo:block space-before="6pt">&#xA0;</fo:block>				
-		</xsl:if>
+		</xsl:if> -->
 		<xsl:if test="$namespace = 'iec'">
 			<xsl:if test="not(ancestor::*[local-name() = 'preface'])">
 				<!-- <fo:block space-before="2pt">&#xA0;</fo:block>				 -->
@@ -95,6 +95,9 @@
 				</xsl:if>
 				<xsl:if test="$namespace = 'iso' or $namespace = 'iec' or $namespace = 'itu' or  $namespace = 'nist' or $namespace = 'unece' or $namespace = 'csd' or $namespace = 'ogc'">
 					<fo:block font-weight="bold" text-align="center" margin-bottom="6pt" keep-with-next="always">
+						<xsl:if test="$namespace = 'iso'">
+							<xsl:attribute name="margin-top">12pt</xsl:attribute>
+						</xsl:if>
 						<xsl:if test="$namespace = 'iec'">
 							<xsl:if test="ancestor::*[local-name() = 'preface']">
 								<xsl:attribute name="visibility">hidden</xsl:attribute>
@@ -132,7 +135,11 @@
 								<xsl:text>ES-</xsl:text><xsl:number format="1" count="*[local-name()='executivesummary']//*[local-name()='table'][not(@unnumbered) or @unnumbered != 'true']"/>
 							</xsl:when>
 							<xsl:when test="ancestor::*[local-name()='annex']">
-								<xsl:if test="$namespace = 'iso' or $namespace = 'iec' or $namespace = 'ogc'">
+								<xsl:if test="$namespace = 'iso'">
+									<xsl:variable name="annex-id" select="ancestor::iso:annex/@id"/>
+									<xsl:number format="A." count="*[local-name()='annex']"/><xsl:number format="1" level="any" count="iso:table[(not(@unnumbered) or @unnumbered != 'true') and ancestor::iso:annex[@id = $annex-id]]"/>
+								</xsl:if>
+								<xsl:if test="$namespace = 'iec' or $namespace = 'ogc'">
 									<xsl:number format="A." count="*[local-name()='annex']"/><xsl:number format="1"/>
 								</xsl:if>
 								<xsl:if test="$namespace = 'itu'">
@@ -280,6 +287,7 @@
 			<xsl:if test="$namespace = 'iso'">
 				<xsl:attribute name="margin-left">0mm</xsl:attribute>
 				<xsl:attribute name="margin-right">0mm</xsl:attribute>
+				<xsl:attribute name="margin-bottom">8pt</xsl:attribute>
 			</xsl:if>
 			<fo:table id="{@id}" table-layout="fixed" width="100%" margin-left="{$margin-left}mm" margin-right="{$margin-left}mm" table-omit-footer-at-break="true">
 				<xsl:if test="$namespace = 'iso'">
@@ -768,13 +776,13 @@
 				</xsl:if>
 				<fo:inline padding-right="2mm">
 					<xsl:text>NOTE </xsl:text>
-					<xsl:if test="$namespace = 'itu' or $namespace = 'iec' or $namespace = 'ogc'">
+					<xsl:if test="$namespace = 'iso' or $namespace = 'itu' or $namespace = 'iec' or $namespace = 'ogc'">
 						<xsl:variable name="id" select="ancestor::*[local-name() = 'table'][1]/@id"/>
 						<xsl:if test="count(//*[local-name()='note'][ancestor::*[@id = $id]]) &gt; 1">
 							<xsl:number count="*[local-name()='note'][ancestor::*[@id = $id]]" level="any"/>
 						</xsl:if>
 					</xsl:if>
-					<xsl:if test="$namespace = 'iso' or  $namespace = 'nist' or $namespace = 'unece'  or $namespace = 'unece-rec' or $namespace = 'csd'">
+					<xsl:if test="$namespace = 'nist' or $namespace = 'unece'  or $namespace = 'unece-rec' or $namespace = 'csd'">
 						<xsl:number format="1 "/>
 					</xsl:if>
 				</fo:inline>
@@ -1044,6 +1052,7 @@
 					<xsl:if test="$parent = 'formula'">
 						<xsl:attribute name="margin-left">4mm</xsl:attribute>
 					</xsl:if>
+					<xsl:attribute name="margin-top">12pt</xsl:attribute>
 				</xsl:if>
 				<xsl:if test="$namespace = 'itu'">
 					<xsl:if test="local-name(..) = 'li'">
@@ -1202,6 +1211,9 @@
 		<fo:table-row>
 			<fo:table-cell>
 				<fo:block margin-top="6pt">
+					<xsl:if test="$namespace = 'iso'">
+						<xsl:attribute name="margin-top">0pt</xsl:attribute>
+					</xsl:if>
 					<xsl:if test="$namespace = 'iec'">
 						<xsl:attribute name="margin-top">0pt</xsl:attribute>
 					</xsl:if>

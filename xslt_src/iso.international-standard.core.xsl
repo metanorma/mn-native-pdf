@@ -132,6 +132,13 @@
 			<xsl:otherwise></xsl:otherwise>
 		</xsl:choose>
 	</xsl:variable>
+
+	<xsl:variable name="force-page-count-preface">
+		<xsl:choose>
+			<xsl:when test="$document-master-reference != ''">end-on-even</xsl:when>
+			<xsl:otherwise>no-force</xsl:otherwise>
+		</xsl:choose>
+	</xsl:variable>
 	
 	<xsl:variable name="proof-text">PROOF/ÉPREUVE</xsl:variable>
 
@@ -271,12 +278,22 @@
 					<fo:region-start region-name="left-region" extent="12.5mm"/>
 					<fo:region-end region-name="right-region" extent="25mm"/>
 				</fo:simple-page-master>
+				<fo:simple-page-master master-name="blankpage" page-width="{$pageWidth}" page-height="{$pageHeight}">
+					<fo:region-body margin-top="27.4mm" margin-bottom="13mm" margin-left="12.5mm" margin-right="25mm"/>
+					<fo:region-before region-name="header" extent="27.4mm"/>
+					<fo:region-after region-name="footer" extent="13mm"/>
+					<fo:region-start region-name="left" extent="12.5mm"/>
+					<fo:region-end region-name="right" extent="25mm"/>
+				</fo:simple-page-master>
 				<fo:page-sequence-master master-name="preface-publishedISO">
 					<fo:repeatable-page-master-alternatives>
+						<fo:conditional-page-master-reference master-reference="blankpage" blank-or-not-blank="blank" />
 						<fo:conditional-page-master-reference odd-or-even="even" master-reference="even-publishedISO"/>
 						<fo:conditional-page-master-reference odd-or-even="odd" master-reference="odd-publishedISO"/>
 					</fo:repeatable-page-master-alternatives>
 				</fo:page-sequence-master>
+				
+				
 				<fo:page-sequence-master master-name="document-publishedISO">
 					<fo:repeatable-page-master-alternatives>
 						<fo:conditional-page-master-reference master-reference="first-publishedISO" page-position="first"/>
@@ -968,7 +985,7 @@
 				</xsl:otherwise>
 			</xsl:choose>	
 			
-			<fo:page-sequence master-reference="preface{$document-master-reference}" format="i" force-page-count="no-force">
+			<fo:page-sequence master-reference="preface{$document-master-reference}" format="i" force-page-count="{$force-page-count-preface}">
 				<xsl:call-template name="insertHeaderFooter">
 					<xsl:with-param name="font-weight">normal</xsl:with-param>
 				</xsl:call-template>
@@ -1083,7 +1100,7 @@
 							<xsl:value-of select="$title-en"/>
 						</fo:block>
 						 -->
-						<fo:block font-size="18pt" font-weight="bold" margin-top="40pt" margin-bottom="18pt" line-height="1.1">
+						<fo:block font-size="18pt" font-weight="bold" margin-top="40pt" margin-bottom="20pt" line-height="1.1">
 							<fo:block>
 								<xsl:if test="normalize-space($title-intro) != ''">
 									<xsl:value-of select="$title-intro"/>
@@ -1095,7 +1112,7 @@
 								<xsl:if test="normalize-space($title-part) != ''">
 									<xsl:if test="$part != ''">
 										<xsl:text> — </xsl:text>
-										<fo:block font-weight="normal" margin-top="12pt">
+										<fo:block font-weight="normal" margin-top="12pt" line-height="1.1">
 											<xsl:text>Part </xsl:text><xsl:value-of select="$part"/>
 											<xsl:text>:</xsl:text>
 										</fo:block>
@@ -1116,13 +1133,13 @@
 							<xsl:with-param name="sectionNum" select="'1'"/>
 						</xsl:apply-templates>
 
-						<fo:block space-before="27pt">&#xA0;</fo:block>
+						<!-- <fo:block space-before="27pt">&#xA0;</fo:block> -->
 						 <!-- Normative references  -->
 						<xsl:apply-templates select="/iso:iso-standard/iso:bibliography/iso:references[1]">
 							<xsl:with-param name="sectionNum" select="'2'"/>
 						</xsl:apply-templates>
 						
-						<fo:block space-before="18pt">&#xA0;</fo:block>
+						<!-- <fo:block space-before="18pt">&#xA0;</fo:block> -->
 						 <!-- main sections -->
 						<xsl:apply-templates select="/iso:iso-standard/iso:sections/*[position() &gt; 1]">
 							<xsl:with-param name="sectionNumSkew" select="'1'"/>
@@ -1330,8 +1347,6 @@
 		</item>
 	</xsl:template>
 	
-	
-	
 	<xsl:template match="iso:formula" mode="contents">
 		<item level="" id="{@id}" display="false">
 			<xsl:attribute name="section">
@@ -1339,6 +1354,46 @@
 			</xsl:attribute>
 		</item>
 	</xsl:template>
+	
+	<xsl:template match="iso:li" mode="contents">
+		<xsl:param name="sectionNum" />
+		<item level="" id="{@id}" display="false" type="li">
+			<xsl:attribute name="section">
+				<xsl:call-template name="getListItemFormat"/>
+			</xsl:attribute>
+			<xsl:attribute name="parent_section">
+				<xsl:for-each select="ancestor::*[not(local-name() = 'p' or local-name() = 'ol')][1]">
+					<xsl:call-template name="getSection">
+						<xsl:with-param name="sectionNum" select="$sectionNum"/>
+					</xsl:call-template>
+				</xsl:for-each>
+			</xsl:attribute>
+		</item>
+		<xsl:apply-templates mode="contents">
+			<xsl:with-param name="sectionNum" select="$sectionNum"/>
+		</xsl:apply-templates>
+	</xsl:template>
+
+	<xsl:template name="getListItemFormat">
+		<xsl:choose>
+			<xsl:when test="local-name(..) = 'ul'">&#x2014;</xsl:when> <!-- dash -->
+			<xsl:otherwise> <!-- for ordered lists -->
+				<xsl:choose>
+					<xsl:when test="../@type = 'arabic'">
+						<xsl:number format="a)"/>
+					</xsl:when>
+					<xsl:when test="../@type = 'alphabet'">
+						<xsl:number format="a)"/>
+					</xsl:when>
+					<xsl:otherwise>
+						<xsl:number format="1."/>
+					</xsl:otherwise>
+				</xsl:choose>
+			</xsl:otherwise>
+		</xsl:choose>
+	</xsl:template>
+
+	
 	<!-- ============================= -->
 	<!-- ============================= -->
 	
@@ -1473,7 +1528,7 @@
 		<xsl:variable name="font-size">
 			<xsl:choose>
 				<xsl:when test="ancestor::iso:annex and $level = 2">13pt</xsl:when>
-				<xsl:when test="ancestor::iso:annex and $level = 3">11pt</xsl:when>
+				<xsl:when test="ancestor::iso:annex and $level = 3">12pt</xsl:when>
 				<xsl:when test="ancestor::iso:preface">16pt</xsl:when>
 				<xsl:when test="$level = 2">12pt</xsl:when>
 				<xsl:when test="$level &gt;= 3">11pt</xsl:when>
@@ -1513,15 +1568,17 @@
 					<xsl:attribute name="margin-top"> <!-- margin-top -->
 						<xsl:choose>
 							<xsl:when test="ancestor::iso:preface">8pt</xsl:when>
-							<xsl:when test="$level = 2 and ancestor::annex">18pt</xsl:when>
-							<xsl:when test="$level = '' or $level = 1">6pt</xsl:when><!-- 13.5pt -->
+							<xsl:when test="$level = 2 and ancestor::iso:annex">18pt</xsl:when>
+							<xsl:when test="$level = 1">18pt</xsl:when>
+							<xsl:when test="$level = ''">6pt</xsl:when><!-- 13.5pt -->
 							<xsl:otherwise>12pt</xsl:otherwise>
 						</xsl:choose>
 					</xsl:attribute>
 					<xsl:attribute name="margin-bottom">
 						<xsl:choose>
 							<xsl:when test="ancestor::iso:preface">18pt</xsl:when>
-							<xsl:otherwise>12pt</xsl:otherwise>
+							<!-- <xsl:otherwise>12pt</xsl:otherwise> -->
+							<xsl:otherwise>8pt</xsl:otherwise>
 						</xsl:choose>
 					</xsl:attribute>
 					<xsl:attribute name="keep-with-next">always</xsl:attribute>		
@@ -1573,6 +1630,8 @@
 				<xsl:choose>
 					<!-- <xsl:when test="ancestor::iso:preface">justify</xsl:when> -->
 					<xsl:when test="@align"><xsl:value-of select="@align"/></xsl:when>
+					<xsl:when test="ancestor::iso:td/@align"><xsl:value-of select="ancestor::iso:td/@align"/></xsl:when>
+					<xsl:when test="ancestor::iso:th/@align"><xsl:value-of select="ancestor::iso:th/@align"/></xsl:when>
 					<xsl:otherwise>justify</xsl:otherwise><!-- left -->
 				</xsl:choose>
 			</xsl:attribute>
@@ -1590,6 +1649,18 @@
 		<xsl:if test="$inline = 'true'">
 			<fo:block>&#xA0;</fo:block>
 		</xsl:if>
+	</xsl:template>
+	
+	<xsl:template match="iso:li//iso:p//text()">
+		<xsl:choose>
+			<xsl:when test="contains(., '&#x9;')">
+				<fo:inline white-space="pre"><xsl:value-of select="."/></fo:inline>
+			</xsl:when>
+			<xsl:otherwise>
+				<xsl:value-of select="."/>
+			</xsl:otherwise>
+		</xsl:choose>
+		
 	</xsl:template>
 	
 	<!--
@@ -1759,8 +1830,8 @@
 				</fo:basic-link>
 			</fo:inline>
 			<fo:footnote-body>
-				<fo:block font-size="10pt" margin-bottom="12pt">
-					<fo:inline id="footnote_{../@id}" keep-with-next.within-line="always" alignment-baseline="hanging" padding-right="9mm"><!-- font-size="60%"  -->
+				<fo:block font-size="10pt" margin-bottom="4pt" start-indent="0pt">
+					<fo:inline id="footnote_{../@id}" keep-with-next.within-line="always" alignment-baseline="hanging" padding-right="3mm"><!-- font-size="60%"  -->
 						<xsl:value-of select="$number"/><xsl:text>)</xsl:text>
 					</fo:inline>
 					<xsl:apply-templates />
@@ -1772,7 +1843,7 @@
 	
 	
 	<xsl:template match="iso:ul | iso:ol">
-		<fo:list-block provisional-distance-between-starts="7mm">
+		<fo:list-block provisional-distance-between-starts="7mm" margin-top="8pt"> <!-- margin-bottom="8pt" -->
 			<xsl:apply-templates />
 		</fo:list-block>
 		<xsl:for-each select="./iso:note//iso:p">
@@ -1786,22 +1857,7 @@
 		<fo:list-item id="{@id}">
 			<fo:list-item-label end-indent="label-end()">
 				<fo:block>
-					<xsl:choose>
-						<xsl:when test="local-name(..) = 'ul'">&#x2014;</xsl:when> <!-- dash -->
-						<xsl:otherwise> <!-- for ordered lists -->
-							<xsl:choose>
-								<xsl:when test="../@type = 'arabic'">
-									<xsl:number format="a)"/>
-								</xsl:when>
-								<xsl:when test="../@type = 'alphabet'">
-									<xsl:number format="a)"/>
-								</xsl:when>
-								<xsl:otherwise>
-									<xsl:number format="1."/>
-								</xsl:otherwise>
-							</xsl:choose>
-						</xsl:otherwise>
-					</xsl:choose>
+					<xsl:call-template name="getListItemFormat"/>
 				</fo:block>
 			</fo:list-item-label>
 			<fo:list-item-body start-indent="body-start()">
@@ -1826,12 +1882,27 @@
 		</fo:inline>
 	</xsl:template>
 	
+	<xsl:template match="iso:term">
+		<xsl:param name="sectionNum"/>
+		<fo:block margin-bottom="10pt">
+			<xsl:apply-templates>
+				<xsl:with-param name="sectionNum" select="$sectionNum"/>
+			</xsl:apply-templates>
+		</fo:block>
+	</xsl:template>
+	
 	<xsl:template match="iso:preferred">
 		<xsl:param name="sectionNum"/>
 		<fo:block line-height="1.1">
 			<fo:block font-weight="bold" keep-with-next="always">
 				<fo:inline id="{../@id}">
-					<xsl:value-of select="$sectionNum"/>.<xsl:number count="iso:term"/>
+					<xsl:variable name="section">
+						<xsl:call-template name="getSection">
+							<xsl:with-param name="sectionNum" select="$sectionNum"/>
+						</xsl:call-template>
+					</xsl:variable>
+					<xsl:value-of select="$section"/>
+					<!-- <xsl:value-of select="$sectionNum"/>.<xsl:number count="iso:term"/> -->
 				</fo:inline>
 			</fo:block>
 			<fo:block font-weight="bold" keep-with-next="always">
@@ -1865,14 +1936,17 @@
 	</xsl:template>
 	
 	<xsl:template match="iso:termsource">
-		<fo:block margin-bottom="8pt" keep-with-previous="always">
+		<fo:block margin-bottom="8pt"> <!-- keep-with-previous="always" -->
 			<!-- Example: [SOURCE: ISO 5127:2017, 3.1.6.02] -->
 			<fo:basic-link internal-destination="{iso:origin/@bibitemid}" fox:alt-text="{iso:origin/@citeas}">
 				<xsl:text>[SOURCE: </xsl:text>
 				<xsl:value-of select="iso:origin/@citeas"/>
-				<xsl:if test="iso:origin/iso:locality/iso:referenceFrom">
+				
+				<xsl:apply-templates select="iso:origin/iso:localityStack"/>
+				
+				<!-- <xsl:if test="iso:origin/iso:locality/iso:referenceFrom">
 					<xsl:text>, </xsl:text><xsl:value-of select="iso:origin/iso:locality/iso:referenceFrom"/>
-				</xsl:if>
+				</xsl:if> -->
 			</fo:basic-link>
 			<xsl:apply-templates select="iso:modification"/>
 			<xsl:text>]</xsl:text>
@@ -1888,7 +1962,7 @@
 	</xsl:template>
 	
 	<xsl:template match="iso:termnote">
-		<fo:block font-size="10pt" margin-top="8pt" margin-bottom="12pt">
+		<fo:block font-size="10pt" margin-top="8pt" margin-bottom="8pt" text-align="justify">
 			<xsl:text>Note </xsl:text>
 			<xsl:number />
 			<xsl:text> to entry: </xsl:text>
@@ -1898,6 +1972,10 @@
 	
 	<xsl:template match="iso:termnote/iso:p">
 		<fo:inline><xsl:apply-templates/></fo:inline>
+		<!-- <xsl:if test="following-sibling::* and not(following-sibling::iso:p)">
+			<xsl:value-of select="$linebreak"/>
+			<xsl:value-of select="$linebreak"/>
+		</xsl:if> -->
 	</xsl:template>
 	
 	<xsl:template match="iso:domain">
@@ -1906,8 +1984,13 @@
 	
 	
 	<xsl:template match="iso:termexample">
-		<fo:block font-size="10pt" margin-top="8pt" margin-bottom="12pt">
-			<fo:inline padding-right="10mm">EXAMPLE <xsl:number /></fo:inline>
+		<fo:block font-size="10pt" margin-top="8pt" margin-bottom="8pt"  text-align="justify">
+			<fo:inline padding-right="5mm">
+				<xsl:text>EXAMPLE </xsl:text>
+				<xsl:if test="count(ancestor::iso:term[1]//iso:termexample) &gt; 1">
+					<xsl:number />
+				</xsl:if>
+			</fo:inline>
 			<xsl:apply-templates />
 		</fo:block>
 	</xsl:template>
@@ -1947,9 +2030,11 @@
 						<xsl:if test="iso:docidentifier">
 							<xsl:choose>
 								<xsl:when test="iso:docidentifier/@type = 'metanorma'"/>
-								<xsl:otherwise><fo:inline><xsl:value-of select="iso:docidentifier"/>, </fo:inline></xsl:otherwise>
+								<xsl:otherwise><fo:inline><xsl:value-of select="iso:docidentifier"/></fo:inline></xsl:otherwise>
 							</xsl:choose>
 						</xsl:if>
+						<xsl:apply-templates select="iso:note"/>
+						<xsl:if test="iso:docidentifier">, </xsl:if>
 						<xsl:choose>
 							<xsl:when test="iso:title[@type = 'main' and @language = 'en']">
 								<xsl:apply-templates select="iso:title[@type = 'main' and @language = 'en']"/>
@@ -1992,10 +2077,9 @@
 	<xsl:template match="iso:source">
 		<fo:basic-link internal-destination="{@bibitemid}" fox:alt-text="{@citeas}">
 			<xsl:value-of select="@citeas" disable-output-escaping="yes"/>
-			<xsl:if test="iso:locality">
-				<xsl:text>, </xsl:text>
-				<xsl:apply-templates select="iso:locality"/>
-			</xsl:if>
+			
+			<xsl:apply-templates select="iso:localityStack"/>
+			
 		</fo:basic-link>
 	</xsl:template>
 	
@@ -2008,10 +2092,14 @@
 	</xsl:template>
 	
 	<xsl:template match="iso:appendix//iso:example">
-		<fo:block font-size="10pt" margin-top="8pt" margin-bottom="12pt">
-			<xsl:text>EXAMPLE</xsl:text>
+		<fo:block font-size="10pt" margin-top="8pt" margin-bottom="8pt">
+			<xsl:variable name="claims_id" select="ancestor::iso:clause[1]/@id"/>
+			<xsl:text>EXAMPLE </xsl:text>
+			<xsl:if test="count(ancestor::iso:clause[1]//iso:example) &gt; 1">
+					<xsl:number count="iso:example[ancestor::iso:clause[@id = $claims_id]]" level="any"/><xsl:text> </xsl:text>
+				</xsl:if>
 			<xsl:if test="iso:name">
-				<xsl:text> — </xsl:text><xsl:apply-templates select="iso:name" mode="process"/>
+				<xsl:text>— </xsl:text><xsl:apply-templates select="iso:name" mode="process"/>
 			</xsl:if>
 		</fo:block>
 		<xsl:apply-templates />
@@ -2062,17 +2150,35 @@
 	</xsl:template>
 	
 	<xsl:template match="iso:xref">
+		<xsl:param name="sectionNum"/>
+		
 		<xsl:variable name="target" select="normalize-space(@target)"/>
 		<fo:basic-link internal-destination="{$target}" fox:alt-text="{$target}">
 			<xsl:variable name="section" select="xalan:nodeset($contents)//item[@id = $target]/@section"/>
-			<xsl:if test="not(starts-with($section, 'Figure') or starts-with($section, 'Table'))">
+			<!-- <xsl:if test="not(starts-with($section, 'Figure') or starts-with($section, 'Table'))"> -->
 				<xsl:attribute name="color">blue</xsl:attribute>
 				<xsl:attribute name="text-decoration">underline</xsl:attribute>
-			</xsl:if>
+			<!-- </xsl:if> -->
 			<xsl:variable name="type" select="xalan:nodeset($contents)//item[@id = $target]/@type"/>
 			<xsl:variable name="root" select="xalan:nodeset($contents)//item[@id =$target]/@root"/>
+			<xsl:variable name="level" select="xalan:nodeset($contents)//item[@id =$target]/@level"/>
 			<xsl:choose>
-				<xsl:when test="$type = 'clause' and $root != 'annex'">Clause </xsl:when><!-- and not (ancestor::annex) -->
+				<xsl:when test="$type = 'clause' and $root != 'annex' and $level = 1">Clause </xsl:when><!-- and not (ancestor::annex) -->
+				<xsl:when test="$type = 'li'">
+					<xsl:attribute name="color">black</xsl:attribute>
+					<xsl:attribute name="text-decoration">none</xsl:attribute>
+					<xsl:variable name="parent_section" select="xalan:nodeset($contents)//item[@id =$target]/@parent_section"/>
+					<xsl:variable name="currentSection">
+						<xsl:call-template name="getSection"/>
+					</xsl:variable>
+					<xsl:if test="not(contains($parent_section, $currentSection))">
+						<fo:basic-link internal-destination="{$target}" fox:alt-text="{$target}">
+							<xsl:attribute name="color">blue</xsl:attribute>
+							<xsl:attribute name="text-decoration">underline</xsl:attribute>
+							<xsl:value-of select="$parent_section"/><xsl:text> </xsl:text>
+						</fo:basic-link>
+					</xsl:if>
+				</xsl:when>
 				<xsl:otherwise></xsl:otherwise> <!-- <xsl:value-of select="$type"/> -->
 			</xsl:choose>
 			<xsl:value-of select="$section"/>
@@ -2092,20 +2198,35 @@
 	</xsl:template>
 	
 	<xsl:template match="iso:example/iso:p">
-		<fo:block font-size="10pt" margin-top="8pt" margin-bottom="12pt">
-			<fo:inline padding-right="9mm">EXAMPLE</fo:inline>
+		<fo:block font-size="10pt" margin-top="8pt" margin-bottom="8pt">
+			<!-- <xsl:if test="ancestor::iso:li">
+				<xsl:attribute name="font-size">11pt</xsl:attribute>
+			</xsl:if> -->
+			<xsl:variable name="claims_id" select="ancestor::iso:clause[1]/@id"/>
+			<fo:inline padding-right="5mm">
+				<xsl:text>EXAMPLE </xsl:text>
+				<xsl:if test="count(ancestor::iso:clause[1]//iso:example) &gt; 1">
+					<xsl:number count="iso:example[ancestor::iso:clause[@id = $claims_id]]" level="any"/>
+				</xsl:if>
+			</fo:inline>
 			<xsl:apply-templates />
 		</fo:block>
 	</xsl:template>
 	
 	<xsl:template match="iso:note/iso:p" name="note">
-		<fo:block font-size="10pt" margin-top="8pt" margin-bottom="12pt">
-			<fo:inline padding-right="6mm">NOTE</fo:inline>
+		<fo:block font-size="10pt" margin-top="8pt" margin-bottom="12pt" text-align="justify">
+			<xsl:variable name="claims_id" select="ancestor::iso:clause[1]/@id"/>
+			<fo:inline padding-right="6mm">
+				<xsl:text>NOTE </xsl:text>
+				<xsl:if test="count(ancestor::iso:clause[1]//iso:note) &gt; 1">
+					<xsl:number count="iso:note[ancestor::iso:clause[@id = $claims_id]]" level="any"/>
+				</xsl:if>
+			</fo:inline>
 			<xsl:apply-templates />
 		</fo:block>
 	</xsl:template>
 
-	<!-- <eref type="inline" bibitemid="ISO20483" citeas="ISO 20483:2013"><locality type="annex"><referenceFrom>C</referenceFrom></locality></eref> -->
+	<!-- <eref type="inline" bibitemid="IEC60050-113" citeas="IEC 60050-113:2011"><localityStack><locality type="clause"><referenceFrom>113-01-12</referenceFrom></locality></localityStack></eref> -->
 	<xsl:template match="iso:eref">
 		<fo:basic-link internal-destination="{@bibitemid}" fox:alt-text="{@citeas}"> <!-- font-size="9pt" color="blue" vertical-align="super" -->
 			<xsl:if test="@type = 'footnote'">
@@ -2114,28 +2235,27 @@
 				<xsl:attribute name="keep-with-previous.within-line">always</xsl:attribute>
 				<xsl:attribute name="vertical-align">super</xsl:attribute>
 			</xsl:if>
-			<xsl:if test="@type = 'inline'">
-				<xsl:attribute name="color">blue</xsl:attribute>
-				<xsl:attribute name="text-decoration">underline</xsl:attribute>
-			</xsl:if>
 			<!-- <xsl:if test="@type = 'inline'">
+				<xsl:attribute name="color">blue</xsl:attribute>
 				<xsl:attribute name="text-decoration">underline</xsl:attribute>
 			</xsl:if> -->
 			<xsl:value-of select="@citeas" disable-output-escaping="yes"/>
-			<xsl:if test="iso:locality">
-				<xsl:text>, </xsl:text>
-				<!-- <xsl:choose>
-						<xsl:when test="iso:locality/@type = 'section'">Section </xsl:when>
-						<xsl:when test="iso:locality/@type = 'clause'">Clause </xsl:when>
-						<xsl:otherwise></xsl:otherwise>
-					</xsl:choose> -->
-					<xsl:apply-templates select="iso:locality"/>
-			</xsl:if>
+			<xsl:apply-templates select="iso:localityStack"/>
 		</fo:basic-link>
+	</xsl:template>
+	
+	<xsl:template match="iso:localityStack">
+		<xsl:for-each select="iso:locality">
+			<xsl:if test="position() =1"><xsl:text>, </xsl:text></xsl:if>
+			<xsl:apply-templates select="."/>
+			<xsl:if test="position() != last()"><xsl:text>; </xsl:text></xsl:if>
+		</xsl:for-each>
 	</xsl:template>
 	
 	<xsl:template match="iso:locality">
 		<xsl:choose>
+			<xsl:when test="ancestor::iso:termsource"></xsl:when>
+			<xsl:when test="@type ='clause' and ancestor::iso:eref"></xsl:when>
 			<xsl:when test="@type ='clause'">Clause </xsl:when>
 			<xsl:when test="@type ='annex'">Annex </xsl:when>
 			<xsl:otherwise><xsl:value-of select="@type"/></xsl:otherwise>
@@ -2334,7 +2454,8 @@
 																																										iso:clause/iso:term |  
 																																										iso:terms/iso:clause |
 																																										iso:terms/iso:definitions |
-																																										iso:definitions/iso:clause"/>
+																																										iso:definitions/iso:clause |
+																																										iso:clause/iso:definitions"/>
 							</xsl:variable>
 							<xsl:value-of select="concat($sectionNum, $num)"/>
 						</xsl:when>
@@ -2369,9 +2490,10 @@
 							</xsl:choose>
 						</xsl:when>
 						<xsl:otherwise>
+							<xsl:variable name="annexid" select="normalize-space(/iso:iso-standard/iso:bibdata/iso:ext/iso:structuredidentifier/iso:annexid)"/>
 							<xsl:choose>
-								<xsl:when test="count(//iso:annex) = 1">
-									<xsl:value-of select="/iso:iso-standard/iso:bibdata/iso:ext/iso:structuredidentifier/iso:annexid"/><xsl:number format=".1" level="multiple" count="iso:clause"/>
+								<xsl:when test="count(//iso:annex) = 1 and $annexid != ''">
+									<xsl:value-of select="$annexid"/><xsl:number format=".1" level="multiple" count="iso:clause"/>
 								</xsl:when>
 								<xsl:otherwise>
 									<xsl:number format="A.1" level="multiple" count="iso:annex | iso:clause"/>
