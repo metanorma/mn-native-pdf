@@ -3,6 +3,9 @@
 
 	<xsl:output method="xml" encoding="UTF-8" indent="no"/>
 	
+	<xsl:param name="svg_images"/>
+	<xsl:variable name="images" select="document($svg_images)"/>
+	
 	<xsl:include href="./common.xsl"/>
 
 	<xsl:key name="kfn" match="iso:p/iso:fn" use="@reference"/>
@@ -51,6 +54,7 @@
 			<xsl:when test="$stage = 40">DIS</xsl:when>
 			<xsl:when test="$stage = 50">FDIS</xsl:when>
 			<xsl:when test="$stage = 60 and $substage = 0">PRF</xsl:when>
+			<xsl:when test="$stage = 60 and $substage = 60">IS</xsl:when>
 			<xsl:when test="$stage &gt;=60">published</xsl:when>
 			<xsl:otherwise></xsl:otherwise>
 		</xsl:choose>
@@ -621,17 +625,21 @@
 												<fo:table-row height="42mm">
 													<fo:table-cell number-columns-spanned="3" font-size="10pt" line-height="1.2">
 														<fo:block text-align="right">
-															
 															<xsl:if test="$stage-abbreviation = 'PRF' or 
 																								$stage-abbreviation = 'IS' or 
 																								$stage-abbreviation = 'published'">
 																<xsl:call-template name="printEdition"/>
 															</xsl:if>
-															<xsl:if test="$stage-abbreviation = 'IS' or 
-																								$stage-abbreviation = 'published'">
-																<xsl:value-of select="$linebreak"/>
-																<xsl:value-of select="substring(/iso:iso-standard/iso:bibdata/iso:version/iso:revision-date,1, 7)"/>
-															</xsl:if>
+															<xsl:choose>
+																<xsl:when test="$stage-abbreviation = 'IS'">
+																	<xsl:value-of select="$linebreak"/>
+																	<xsl:value-of select="/iso:iso-standard/iso:bibdata/iso:date[@type = 'published']"/>
+																</xsl:when>
+																<xsl:when test="$stage-abbreviation = 'published'">
+																	<xsl:value-of select="$linebreak"/>
+																	<xsl:value-of select="substring(/iso:iso-standard/iso:bibdata/iso:version/iso:revision-date,1, 7)"/>
+																</xsl:when>
+															</xsl:choose>
 															<!-- <xsl:value-of select="$linebreak"/>
 															<xsl:value-of select="/iso:iso-standard/iso:bibdata/iso:version/iso:revision-date"/> -->
 															</fo:block>
@@ -1789,7 +1797,17 @@
 	
 	<xsl:template match="iso:figure/iso:image">
 		<fo:block text-align="center">
-			<fo:external-graphic src="{@src}" width="100%" content-height="scale-to-fit" scaling="uniform" fox:alt-text="Image {@alt}"/> 
+			<xsl:variable name="src">
+				<xsl:choose>
+					<xsl:when test="@mimetype = 'image/svg+xml' and $images/images/image[@id = current()/@id]">
+						<xsl:value-of select="$images/images/image[@id = current()/@id]/@src"/>
+					</xsl:when>
+					<xsl:otherwise>
+						<xsl:value-of select="@src"/>
+					</xsl:otherwise>
+				</xsl:choose>
+			</xsl:variable>		
+			<fo:external-graphic  src="{$src}" width="100%" content-height="scale-to-fit" scaling="uniform" fox:alt-text="Image {@alt}"/>  <!-- src="{@src}" -->
 		</fo:block>
 	</xsl:template>
 	
