@@ -1845,7 +1845,7 @@
 			<xsl:variable name="number">
 				<xsl:number level="any" count="iso:bibitem/iso:note"/>
 			</xsl:variable>
-			<fo:inline font-size="85%" keep-with-previous.within-line="always" vertical-align="super"> <!--60% -->
+			<fo:inline font-size="8pt" keep-with-previous.within-line="always" baseline-shift="30%"> <!--85% vertical-align="super"-->
 				<fo:basic-link internal-destination="footnote_{../@id}" fox:alt-text="footnote {$number}">
 					<xsl:value-of select="$number"/><xsl:text>)</xsl:text>
 				</fo:basic-link>
@@ -2258,8 +2258,18 @@
 				<xsl:attribute name="color">blue</xsl:attribute>
 				<xsl:attribute name="text-decoration">underline</xsl:attribute>
 			</xsl:if> -->
-			<xsl:value-of select="@citeas" disable-output-escaping="yes"/>
+			
+			<xsl:choose>
+				<xsl:when test="@citeas and normalize-space(text()) = ''">
+					<xsl:value-of select="@citeas" disable-output-escaping="yes"/>
+				</xsl:when>
+				<xsl:when test="@bibitemid and normalize-space(text()) = ''">
+					<xsl:value-of select="//iso:bibitem[@id = current()/@bibitemid]/iso:docidentifier"/>
+				</xsl:when>
+				<xsl:otherwise></xsl:otherwise>
+			</xsl:choose>
 			<xsl:apply-templates select="iso:localityStack"/>
+			<xsl:apply-templates select="text()"/>
 		</fo:basic-link>
 	</xsl:template>
 	
@@ -2269,6 +2279,7 @@
 			<xsl:when test="@type ='clause' and ancestor::iso:eref"></xsl:when>
 			<xsl:when test="@type ='clause'">Clause </xsl:when>
 			<xsl:when test="@type ='annex'">Annex </xsl:when>
+			<xsl:when test="@type ='table'">Table </xsl:when>
 			<xsl:otherwise><xsl:value-of select="@type"/></xsl:otherwise>
 		</xsl:choose>
 		<xsl:text> </xsl:text><xsl:value-of select="iso:referenceFrom"/>
