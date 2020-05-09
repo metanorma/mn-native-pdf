@@ -3,6 +3,9 @@
 
 	<xsl:output method="xml" encoding="UTF-8" indent="no"/>
 	
+	<xsl:param name="svg_images"/>
+	<xsl:variable name="images" select="document($svg_images)"/>
+	
 	<xsl:include href="./common.xsl"/>
 
 	<xsl:key name="kfn" match="iso:p/iso:fn" use="@reference"/>
@@ -18,8 +21,9 @@
 	<xsl:variable name="lang-1st-letter_tmp" select="substring-before(substring-after(/iso:iso-standard/iso:bibdata/iso:docidentifier[@type = 'iso-with-lang'], '('), ')')"/>
 	<xsl:variable name="lang-1st-letter" select="concat('(', $lang-1st-letter_tmp , ')')"/>
   
-	<xsl:variable name="ISOname" select="concat(/iso:iso-standard/iso:bibdata/iso:docidentifier, ':', /iso:iso-standard/iso:bibdata/iso:copyright/iso:from , $lang-1st-letter)"/>
-	
+	<!-- <xsl:variable name="ISOname" select="concat(/iso:iso-standard/iso:bibdata/iso:docidentifier, ':', /iso:iso-standard/iso:bibdata/iso:copyright/iso:from , $lang-1st-letter)"/> -->
+	<xsl:variable name="ISOname" select="/iso:iso-standard/iso:bibdata/iso:docidentifier[@type = 'iso-reference']"/>
+
 	<!-- Information and documentation — Codes for transcription systems  -->
 	<xsl:variable name="title-en" select="/iso:iso-standard/iso:bibdata/iso:title[@language = 'en' and @type = 'main']"/>
 	<xsl:variable name="title-fr" select="/iso:iso-standard/iso:bibdata/iso:title[@language = 'fr' and @type = 'main']"/>
@@ -51,6 +55,7 @@
 			<xsl:when test="$stage = 40">DIS</xsl:when>
 			<xsl:when test="$stage = 50">FDIS</xsl:when>
 			<xsl:when test="$stage = 60 and $substage = 0">PRF</xsl:when>
+			<xsl:when test="$stage = 60 and $substage = 60">IS</xsl:when>
 			<xsl:when test="$stage &gt;=60">published</xsl:when>
 			<xsl:otherwise></xsl:otherwise>
 		</xsl:choose>
@@ -433,7 +438,9 @@
 															<fo:table-cell  display-align="center">
 																<fo:block text-align="right">
 																	<fo:block>Reference number</fo:block>
-																	<fo:block><xsl:value-of select="$ISOname"/></fo:block>
+																	<fo:block>
+																		<xsl:value-of select="$ISOname"/>																		
+																	</fo:block>
 																	<fo:block>&#xA0;</fo:block>
 																	<fo:block>&#xA0;</fo:block>
 																	<fo:block><fo:inline font-size="9pt">©</fo:inline><xsl:value-of select="concat(' ISO ', iso:iso-standard/iso:bibdata/iso:copyright/iso:from)"/></fo:block>
@@ -621,17 +628,21 @@
 												<fo:table-row height="42mm">
 													<fo:table-cell number-columns-spanned="3" font-size="10pt" line-height="1.2">
 														<fo:block text-align="right">
-															
 															<xsl:if test="$stage-abbreviation = 'PRF' or 
 																								$stage-abbreviation = 'IS' or 
 																								$stage-abbreviation = 'published'">
 																<xsl:call-template name="printEdition"/>
 															</xsl:if>
-															<xsl:if test="$stage-abbreviation = 'IS' or 
-																								$stage-abbreviation = 'published'">
-																<xsl:value-of select="$linebreak"/>
-																<xsl:value-of select="substring(/iso:iso-standard/iso:bibdata/iso:version/iso:revision-date,1, 7)"/>
-															</xsl:if>
+															<xsl:choose>
+																<xsl:when test="$stage-abbreviation = 'IS'">
+																	<xsl:value-of select="$linebreak"/>
+																	<xsl:value-of select="/iso:iso-standard/iso:bibdata/iso:date[@type = 'published']"/>
+																</xsl:when>
+																<xsl:when test="$stage-abbreviation = 'published'">
+																	<xsl:value-of select="$linebreak"/>
+																	<xsl:value-of select="substring(/iso:iso-standard/iso:bibdata/iso:version/iso:revision-date,1, 7)"/>
+																</xsl:when>
+															</xsl:choose>
 															<!-- <xsl:value-of select="$linebreak"/>
 															<xsl:value-of select="/iso:iso-standard/iso:bibdata/iso:version/iso:revision-date"/> -->
 															</fo:block>
@@ -1789,7 +1800,17 @@
 	
 	<xsl:template match="iso:figure/iso:image">
 		<fo:block text-align="center">
-			<fo:external-graphic src="{@src}" width="100%" content-height="scale-to-fit" scaling="uniform" fox:alt-text="Image {@alt}"/> 
+			<xsl:variable name="src">
+				<xsl:choose>
+					<xsl:when test="@mimetype = 'image/svg+xml' and $images/images/image[@id = current()/@id]">
+						<xsl:value-of select="$images/images/image[@id = current()/@id]/@src"/>
+					</xsl:when>
+					<xsl:otherwise>
+						<xsl:value-of select="@src"/>
+					</xsl:otherwise>
+				</xsl:choose>
+			</xsl:variable>		
+			<fo:external-graphic  src="{$src}" width="100%" content-height="scale-to-fit" scaling="uniform" fox:alt-text="Image {@alt}"/>  <!-- src="{@src}" -->
 		</fo:block>
 	</xsl:template>
 	
@@ -1824,7 +1845,7 @@
 			<xsl:variable name="number">
 				<xsl:number level="any" count="iso:bibitem/iso:note"/>
 			</xsl:variable>
-			<fo:inline font-size="85%" keep-with-previous.within-line="always" vertical-align="super"> <!--60% -->
+			<fo:inline font-size="8pt" keep-with-previous.within-line="always" baseline-shift="30%"> <!--85% vertical-align="super"-->
 				<fo:basic-link internal-destination="footnote_{../@id}" fox:alt-text="footnote {$number}">
 					<xsl:value-of select="$number"/><xsl:text>)</xsl:text>
 				</fo:basic-link>
@@ -2237,8 +2258,18 @@
 				<xsl:attribute name="color">blue</xsl:attribute>
 				<xsl:attribute name="text-decoration">underline</xsl:attribute>
 			</xsl:if> -->
-			<xsl:value-of select="@citeas" disable-output-escaping="yes"/>
+			
+			<xsl:choose>
+				<xsl:when test="@citeas and normalize-space(text()) = ''">
+					<xsl:value-of select="@citeas" disable-output-escaping="yes"/>
+				</xsl:when>
+				<xsl:when test="@bibitemid and normalize-space(text()) = ''">
+					<xsl:value-of select="//iso:bibitem[@id = current()/@bibitemid]/iso:docidentifier"/>
+				</xsl:when>
+				<xsl:otherwise></xsl:otherwise>
+			</xsl:choose>
 			<xsl:apply-templates select="iso:localityStack"/>
+			<xsl:apply-templates select="text()"/>
 		</fo:basic-link>
 	</xsl:template>
 	
@@ -2248,6 +2279,7 @@
 			<xsl:when test="@type ='clause' and ancestor::iso:eref"></xsl:when>
 			<xsl:when test="@type ='clause'">Clause </xsl:when>
 			<xsl:when test="@type ='annex'">Annex </xsl:when>
+			<xsl:when test="@type ='table'">Table </xsl:when>
 			<xsl:otherwise><xsl:value-of select="@type"/></xsl:otherwise>
 		</xsl:choose>
 		<xsl:text> </xsl:text><xsl:value-of select="iso:referenceFrom"/>

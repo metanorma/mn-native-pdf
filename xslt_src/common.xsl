@@ -1290,7 +1290,7 @@
 	</xsl:template>
 
 	<xsl:template match="*[local-name()='dd']/*[local-name()='p']" mode="inline">
-		<fo:inline><xsl:apply-templates /></fo:inline>
+		<fo:inline><xsl:text> </xsl:text><xsl:apply-templates /></fo:inline>
 	</xsl:template>
 	
 	<xsl:template match="*[local-name()='em']">
