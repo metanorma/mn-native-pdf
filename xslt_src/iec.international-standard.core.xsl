@@ -97,10 +97,7 @@
 				<xsl:with-param name="sectionNum" select="count(/iec:iec-standard/iec:sections/iec:clause[@id='_scope']) +
 																																count(/iec:iec-standard/iec:bibliography/iec:references[@id = '_normative_references' or @id = '_references']) + 1"/>
 			</xsl:apply-templates>
-			<!-- @id != '_scope' -->
-			<!-- <xsl:apply-templates select="/iec:iec-standard/iec:sections/*[position() &gt; 1]" mode="contents"> 
-				<xsl:with-param name="sectionNumSkew" select="'1'"/>
-			</xsl:apply-templates> -->
+			
 			<xsl:apply-templates select="/iec:iec-standard/iec:sections/*[local-name() != 'terms' and not(@id='_scope')]" mode="contents">
 				<xsl:with-param name="sectionNumSkew" select="count(/iec:iec-standard/iec:sections/iec:clause[@id='_scope']) +
 																																count(/iec:iec-standard/iec:bibliography/iec:references[@id = '_normative_references' or @id = '_references']) +
@@ -1372,8 +1369,8 @@
 		<xsl:variable name="sectionNum_">
 			<xsl:choose>
 				<xsl:when test="$sectionNum"><xsl:value-of select="$sectionNum"/></xsl:when>
-				<xsl:when test="$sectionNumSkew != 0">
-					<xsl:variable name="number"><xsl:number count="*"/></xsl:variable> <!-- iec:sections/iec:clause | iec:sections/iec:terms -->
+				<xsl:when test="$sectionNumSkew != 0">					
+					<xsl:variable name="number"><xsl:number count="iec:sections/*[local-name() != 'terms' and not(@id='_scope')]"/></xsl:variable><!-- <xsl:number count="*"/> -->
 					<xsl:value-of select="$number + $sectionNumSkew"/>
 				</xsl:when>
 				<xsl:otherwise>
@@ -1646,7 +1643,8 @@
 				<xsl:choose>
 					<xsl:when test="$sectionNum"><xsl:value-of select="$sectionNum"/></xsl:when>
 					<xsl:when test="$sectionNumSkew != 0">
-						<xsl:variable name="number"><xsl:number count="iec:sections/iec:clause | iec:sections/iec:terms"/></xsl:variable>
+						<!-- <xsl:variable name="number"><xsl:number count="iec:sections/iec:clause | iec:sections/iec:terms"/></xsl:variable> -->
+						<xsl:variable name="number"><xsl:number count="iec:sections/*[local-name() != 'terms' and not(@id='_scope')]"/></xsl:variable>
 						<xsl:value-of select="$number + $sectionNumSkew"/>
 					</xsl:when>
 				</xsl:choose>
