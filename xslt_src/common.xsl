@@ -131,6 +131,7 @@
 						</xsl:if>
 						<xsl:if test="$namespace = 'gb'">
 							<xsl:attribute name="font-family">SimHei</xsl:attribute>
+							<xsl:attribute name="font-weight">normal</xsl:attribute>
 							<xsl:attribute name="margin-bottom">12pt</xsl:attribute>
 						</xsl:if>
 						<xsl:text>Table </xsl:text>
@@ -144,8 +145,8 @@
 									<xsl:number format="A." count="*[local-name()='annex']"/><xsl:number format="1" level="any" count="iso:table[(not(@unnumbered) or @unnumbered != 'true') and ancestor::iso:annex[@id = $annex-id]]"/>
 								</xsl:if>
 								<xsl:if test="$namespace = 'gb'">
-									<xsl:variable name="annex-id" select="ancestor::iso:annex/@id"/>
-									<xsl:number format="A." count="*[local-name()='annex']"/><xsl:number format="1" level="any" count="*[local-name()='table'][(not(@unnumbered) or @unnumbered != 'true') and ancestor::iso:annex[@id = $annex-id]]"/>
+									<xsl:variable name="annex-id" select="ancestor::gb:annex/@id"/>
+									<xsl:number format="A." count="*[local-name()='annex']"/><xsl:number format="1" level="any" count="*[local-name()='table'][(not(@unnumbered) or @unnumbered != 'true') and ancestor::gb:annex[@id = $annex-id]]"/>
 								</xsl:if>
 								<xsl:if test="$namespace = 'iec' or $namespace = 'ogc'">
 									<xsl:number format="A." count="*[local-name()='annex']"/><xsl:number format="1"/>
@@ -1112,6 +1113,10 @@
 						<xsl:attribute name="font-size">8pt</xsl:attribute>
 						<xsl:attribute name="margin-bottom">8pt</xsl:attribute>
 					</xsl:if>
+					<xsl:if test="$namespace = 'gb'">
+						<xsl:attribute name="margin-bottom">0pt</xsl:attribute>
+						<xsl:attribute name="text-indent">7.4mm</xsl:attribute>
+					</xsl:if>
 					<xsl:text>Key</xsl:text>
 				</fo:block>
 			</xsl:when>
@@ -1144,6 +1149,9 @@
 					</xsl:if>
 					<xsl:if test="$namespace = 'gb'">
 							<xsl:attribute name="margin-left">7.4mm</xsl:attribute>
+							<xsl:if test="$parent = 'figure' and  (not(../@class) or ../@class !='pseudocode')">
+								<xsl:attribute name="margin-left">15mm</xsl:attribute>
+							</xsl:if>
 						</xsl:if>
 					<!-- create virtual html table for dl/[dt and dd] -->
 					<xsl:variable name="html-table">
