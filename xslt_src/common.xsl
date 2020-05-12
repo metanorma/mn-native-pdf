@@ -93,7 +93,7 @@
 						</fo:block>
 					</xsl:if>
 				</xsl:if>
-				<xsl:if test="$namespace = 'iso' or $namespace = 'iec' or $namespace = 'itu' or  $namespace = 'nist' or $namespace = 'unece' or $namespace = 'csd' or $namespace = 'ogc'">
+				<xsl:if test="$namespace = 'iso' or $namespace = 'iec' or $namespace = 'itu' or  $namespace = 'nist' or $namespace = 'unece' or $namespace = 'csd' or $namespace = 'ogc'  or $namespace = 'gb'">
 					<fo:block font-weight="bold" text-align="center" margin-bottom="6pt" keep-with-next="always">
 						<xsl:if test="$namespace = 'iso'">
 							<xsl:attribute name="margin-top">12pt</xsl:attribute>
@@ -129,6 +129,10 @@
 							<xsl:attribute name="font-weight">normal</xsl:attribute>
 							<xsl:attribute name="font-size">11pt</xsl:attribute>
 						</xsl:if>
+						<xsl:if test="$namespace = 'gb'">
+							<xsl:attribute name="font-family">SimHei</xsl:attribute>
+							<xsl:attribute name="margin-bottom">12pt</xsl:attribute>
+						</xsl:if>
 						<xsl:text>Table </xsl:text>
 						<xsl:choose>
 							<xsl:when test="ancestor::*[local-name()='executivesummary']"> <!-- NIST -->
@@ -138,6 +142,10 @@
 								<xsl:if test="$namespace = 'iso'">
 									<xsl:variable name="annex-id" select="ancestor::iso:annex/@id"/>
 									<xsl:number format="A." count="*[local-name()='annex']"/><xsl:number format="1" level="any" count="iso:table[(not(@unnumbered) or @unnumbered != 'true') and ancestor::iso:annex[@id = $annex-id]]"/>
+								</xsl:if>
+								<xsl:if test="$namespace = 'gb'">
+									<xsl:variable name="annex-id" select="ancestor::iso:annex/@id"/>
+									<xsl:number format="A." count="*[local-name()='annex']"/><xsl:number format="1" level="any" count="*[local-name()='table'][(not(@unnumbered) or @unnumbered != 'true') and ancestor::iso:annex[@id = $annex-id]]"/>
 								</xsl:if>
 								<xsl:if test="$namespace = 'iec' or $namespace = 'ogc'">
 									<xsl:number format="A." count="*[local-name()='annex']"/><xsl:number format="1"/>
@@ -187,7 +195,7 @@
 																																						and not(ancestor::*[local-name()='preface'])]
 																																						[not(@unnumbered) or @unnumbered != 'true']"/>
 								</xsl:if>
-								<xsl:if test="$namespace = 'iso' or $namespace = 'itu' or $namespace = 'nist' or $namespace = 'csd' or $namespace = 'ogc' or $namespace = 'unece' or $namespace = 'unece-rec'">
+								<xsl:if test="$namespace = 'iso' or $namespace = 'itu' or $namespace = 'nist' or $namespace = 'csd' or $namespace = 'ogc' or $namespace = 'unece' or $namespace = 'unece-rec' $namespace = 'gb'">
 									<xsl:number format="A." count="*[local-name()='annex']"/>
 									<xsl:number format="1" level="any" count="//*[local-name()='table']
 																																										[not(ancestor::*[local-name()='annex']) 
@@ -200,14 +208,14 @@
 						<xsl:if test="*[local-name()='name']">
 							<xsl:if test="$namespace = 'unece-rec'"><xsl:text>. </xsl:text></xsl:if>
 							<xsl:if test="$namespace = 'unece'">: </xsl:if>
-							<xsl:if test="$namespace = 'iso' or $namespace = 'iec' or $namespace = 'itu' or  $namespace = 'nist' or $namespace = 'csd' or $namespace = 'ogc'">
+							<xsl:if test="$namespace = 'iso' or $namespace = 'iec' or $namespace = 'itu' or  $namespace = 'nist' or $namespace = 'csd' or $namespace = 'ogc' or $namespace = 'gb'">
 								<xsl:text> — </xsl:text>
 							</xsl:if>
 							<xsl:apply-templates select="*[local-name()='name']" mode="process"/>
 						</xsl:if>
 					</fo:block>
 				</xsl:if>
-				<xsl:if test="$namespace = 'iso' or $namespace = 'iec' or $namespace = 'itu' or  $namespace = 'unece-rec' or $namespace = 'unece' or $namespace = 'csd' or $namespace = 'ogc'">
+				<xsl:if test="$namespace = 'iso' or $namespace = 'iec' or $namespace = 'itu' or  $namespace = 'unece-rec' or $namespace = 'unece' or $namespace = 'csd' or $namespace = 'ogc' or $namespace = 'gb'">
 					<xsl:call-template name="fn_name_display"/>
 				</xsl:if>
 			</xsl:otherwise>
@@ -332,7 +340,7 @@
 					<xsl:attribute name="border-top">0.5pt solid black</xsl:attribute>
 					<xsl:attribute name="font-size">8pt</xsl:attribute>
 				</xsl:if>
-				<xsl:if test="$namespace = 'iso' or $namespace = 'itu' or $namespace = 'csd' or $namespace = 'ogc'">
+				<xsl:if test="$namespace = 'iso' or $namespace = 'itu' or $namespace = 'csd' or $namespace = 'ogc' or $namespace = 'gb'">
 					<xsl:attribute name="font-size">10pt</xsl:attribute>
 				</xsl:if>
 				<xsl:if test="$namespace = 'iec'">
@@ -351,6 +359,11 @@
 				</xsl:for-each>
 				<xsl:apply-templates />
 			</fo:table>
+			
+			<xsl:if test="$namespace = 'gb'">
+				<xsl:apply-templates select="*[local-name()='note']" mode="process"/>
+			</xsl:if>
+			
 		</fo:block-container>
 	</xsl:template>
 
@@ -516,7 +529,7 @@
 				
 					<fo:table-row>
 						<fo:table-cell border="solid black 1pt" padding-left="1mm" padding-right="1mm" padding-top="1mm" number-columns-spanned="{$cols-count}">
-							<xsl:if test="$namespace = 'iso'">
+							<xsl:if test="$namespace = 'iso' or $namespace = 'gb'">
 								<xsl:attribute name="border-top">solid black 0pt</xsl:attribute>
 							</xsl:if>
 							<xsl:if test="$namespace = 'iec'">
@@ -534,7 +547,10 @@
 								</xsl:if>
 							</xsl:if>
 							
-							<xsl:apply-templates select="../*[local-name()='note']" mode="process"/>
+							<!-- except gb -->
+							<xsl:if test="$namespace = 'iso' or $namespace = 'iec' or $namespace = 'itu' or $namespace = 'unece' or $namespace = 'unece-rec' or $namespace = 'nist' or $namespace = 'ogc' or $namespace = 'rsd' or $namespace = 'csa' or $namespace = 'csd'">
+								<xsl:apply-templates select="../*[local-name()='note']" mode="process"/>
+							</xsl:if>
 							
 							<!-- horizontal row separator -->
 							<xsl:if test="$namespace = 'iec'">
@@ -621,6 +637,10 @@
 						<xsl:attribute name="border-left">solid black 0.5pt</xsl:attribute>
 						<xsl:attribute name="border-right">solid black 0.5pt</xsl:attribute>
 					</xsl:if>
+				</xsl:if>
+				<xsl:if test="$namespace = 'gb'">
+					<xsl:attribute name="min-height">0mm</xsl:attribute>
+					<xsl:attribute name="line-height">110%</xsl:attribute>
 				</xsl:if>
 				<xsl:if test="$namespace = 'unece'">
 					<xsl:if test="not(*[local-name()='th'])">
@@ -716,6 +736,12 @@
 					<xsl:attribute name="border">solid black 0</xsl:attribute>
 				</xsl:if>
 			</xsl:if>
+			<xsl:if test="$namespace = 'gb'">
+				<xsl:if test="ancestor::*[local-name() = 'tfoot']">
+					<xsl:attribute name="border-bottom">solid black 0</xsl:attribute>
+				</xsl:if>
+			</xsl:if>
+			
 			<xsl:if test="$namespace = 'iec'">
 				<xsl:attribute name="border">solid black 0.5pt</xsl:attribute>
 				<xsl:if test="ancestor::*[local-name()='preface']">
@@ -779,18 +805,28 @@
 					<xsl:attribute name="font-size">9pt</xsl:attribute>
 					<xsl:attribute name="margin-bottom">6pt</xsl:attribute>
 				</xsl:if>
+				<xsl:if test="$namespace = 'gb'">
+					<xsl:attribute name="font-size">9pt</xsl:attribute>
+					<xsl:attribute name="text-align">center</xsl:attribute>
+					<xsl:attribute name="margin-bottom">6pt</xsl:attribute>
+				</xsl:if>
 				<xsl:if test="$namespace = 'iec'">
 					<xsl:attribute name="font-size">8pt</xsl:attribute>
 					<xsl:attribute name="margin-bottom">6pt</xsl:attribute>
 				</xsl:if>
 				<fo:inline padding-right="2mm">
+					<xsl:if test="$namespace = 'gb'">
+						<xsl:attribute name="font-family">SimHei</xsl:attribute>
+					</xsl:if>
 					<xsl:text>NOTE </xsl:text>
-					<xsl:if test="$namespace = 'iso' or $namespace = 'itu' or $namespace = 'iec' or $namespace = 'ogc'">
+					<xsl:if test="$namespace = 'iso' or $namespace = 'itu' or $namespace = 'iec' or $namespace = 'ogc'  or $namespace = 'gb'">
 						<xsl:variable name="id" select="ancestor::*[local-name() = 'table'][1]/@id"/>
 						<xsl:if test="count(//*[local-name()='note'][ancestor::*[@id = $id]]) &gt; 1">
 							<xsl:number count="*[local-name()='note'][ancestor::*[@id = $id]]" level="any"/>
 						</xsl:if>
+						<xsl:if test="$namespace = 'gb'"><xsl:text>:</xsl:text></xsl:if>
 					</xsl:if>
+					
 					<xsl:if test="$namespace = 'nist' or $namespace = 'unece'  or $namespace = 'unece-rec' or $namespace = 'csd'">
 						<xsl:number format="1 "/>
 					</xsl:if>
@@ -833,6 +869,11 @@
 						<xsl:attribute name="font-size">9pt</xsl:attribute>
 						<xsl:attribute name="margin-bottom">6pt</xsl:attribute>
 					</xsl:if>
+					<xsl:if test="$namespace = 'gb'">
+						<xsl:attribute name="text-indent">7.4mm</xsl:attribute>
+						<xsl:attribute name="margin-bottom">0pt</xsl:attribute>
+						<xsl:attribute name="line-height">130%</xsl:attribute>
+					</xsl:if>
 					<xsl:if test="$namespace = 'iec'">
 						<xsl:attribute name="font-size">8pt</xsl:attribute>
 						<xsl:attribute name="margin-bottom">6pt</xsl:attribute>
@@ -840,7 +881,7 @@
 						<xsl:attribute name="margin-left">6mm</xsl:attribute>
 					</xsl:if>
 					<fo:inline font-size="80%" padding-right="5mm" id="{@id}">
-						<xsl:if test="$namespace = 'itu' or  $namespace = 'nist' or $namespace = 'unece' or $namespace = 'unece-rec'  or $namespace = 'csd' or $namespace = 'ogc'">
+						<xsl:if test="$namespace = 'itu' or  $namespace = 'nist' or $namespace = 'unece' or $namespace = 'unece-rec'  or $namespace = 'csd' or $namespace = 'ogc' or $namespace = 'gb'">
 							<xsl:attribute name="vertical-align">super</xsl:attribute>
 						</xsl:if>
 						<xsl:if test="$namespace = 'iso'">
@@ -849,6 +890,9 @@
 						<xsl:if test="$namespace = 'iec'">
 							<xsl:attribute name="baseline-shift">30%</xsl:attribute>
 							<xsl:attribute name="font-size">70%</xsl:attribute>
+						</xsl:if>
+						<xsl:if test="$namespace = 'gb'">
+							<xsl:attribute name="font-size">50%</xsl:attribute>							
 						</xsl:if>
 						<xsl:if test="$namespace = 'itu'">
 							<xsl:attribute name="padding-right">3mm</xsl:attribute>
@@ -895,7 +939,7 @@
 	
 	<xsl:template name="fn_display_figure">
 		<xsl:variable name="key_iso">
-			<xsl:if test="$namespace = 'iso' or $namespace = 'iec'">true</xsl:if> <!-- and (not(@class) or @class !='pseudocode') -->
+			<xsl:if test="$namespace = 'iso' or $namespace = 'iec'  or $namespace = 'gb'">true</xsl:if> <!-- and (not(@class) or @class !='pseudocode') -->
 		</xsl:variable>
 		<xsl:variable name="references">
 			<xsl:for-each select=".//*[local-name()='fn']">
@@ -966,6 +1010,11 @@
 					<xsl:attribute name="baseline-shift">15%</xsl:attribute>
 				</xsl:if>
 			</xsl:if>
+			<xsl:if test="$namespace = 'gb'">
+				<xsl:attribute name="font-size">50%</xsl:attribute>
+				<xsl:attribute name="font-weight">normal</xsl:attribute>
+				<xsl:attribute name="vertical-align">super</xsl:attribute>
+			</xsl:if>
 			<xsl:if test="$namespace = 'itu' or $namespace = 'nist' or $namespace = 'ogc'">
 				<xsl:attribute name="vertical-align">super</xsl:attribute>
 				<xsl:attribute name="color">blue</xsl:attribute>
@@ -996,19 +1045,29 @@
 		<xsl:variable name="parent" select="local-name(..)"/>
 		
 		<xsl:variable name="key_iso">
-			<xsl:if test="$namespace = 'iso' or $namespace = 'iec'">
+			<xsl:if test="$namespace = 'iso' or $namespace = 'iec'  or $namespace = 'gb'">
 				<xsl:if test="$parent = 'figure' or $parent = 'formula'">true</xsl:if>
 			</xsl:if> <!-- and  (not(../@class) or ../@class !='pseudocode') -->
 		</xsl:variable>
 		
 		<xsl:choose>
 			<xsl:when test="$parent = 'formula' and count(*[local-name()='dt']) = 1"> <!-- only one component -->
-				<xsl:if test="$namespace = 'iec'">
-					<fo:block margin-bottom="15pt" text-align="left">
+				<xsl:if test="$namespace = 'iec' or $namespace = 'gb'">
+					<fo:block text-align="left">
+						<xsl:if test="$namespace = 'iec'">
+							<xsl:attribute name="margin-bottom">15pt</xsl:attribute>
+						</xsl:if>
+						<xsl:if test="$namespace = 'gb'">
+							<xsl:attribute name="margin-left">7.4mm</xsl:attribute>
+						</xsl:if>
 						<xsl:text>where </xsl:text>
 					</fo:block>
 					<fo:block>
+						<xsl:if test="$namespace = 'gb'">
+							<xsl:attribute name="text-indent">7.4mm</xsl:attribute>
+						</xsl:if>
 						<xsl:apply-templates select="*[local-name()='dt']/*"/>
+						<xsl:if test="$namespace = 'gb'">—</xsl:if>
 						<xsl:text> </xsl:text>
 						<xsl:apply-templates select="*[local-name()='dd']/*" mode="inline"/>
 					</fo:block>
@@ -1017,7 +1076,7 @@
 					<fo:block margin-bottom="12pt" text-align="left">
 						<xsl:if test="$namespace = 'iso' or $namespace = 'iec'">
 							<xsl:attribute name="margin-bottom">0</xsl:attribute>
-						</xsl:if>
+						</xsl:if>						
 						<xsl:text>where </xsl:text>
 						<xsl:apply-templates select="*[local-name()='dt']/*"/>
 						<xsl:text></xsl:text>
@@ -1036,6 +1095,10 @@
 					<xsl:if test="$namespace = 'itu'">
 						<xsl:attribute name="margin-bottom">6pt</xsl:attribute>
 					</xsl:if>
+					<xsl:if test="$namespace = 'gb'">
+							<xsl:attribute name="margin-left">7.4mm</xsl:attribute>
+							<xsl:attribute name="margin-bottom">0pt</xsl:attribute>
+						</xsl:if>
 					<xsl:text>where</xsl:text>
 				</fo:block>
 			</xsl:when>
@@ -1073,13 +1136,15 @@
 						<xsl:attribute name="margin-left">5mm</xsl:attribute>
 					</xsl:if>
 				</xsl:if>
-				
 				<fo:block>
 					<xsl:if test="$namespace = 'nist'">
 						<xsl:if test="not(.//*[local-name()='dt']//*[local-name()='stem'])">
 							<xsl:attribute name="margin-left">-2.5mm</xsl:attribute>
 						</xsl:if>
 					</xsl:if>
+					<xsl:if test="$namespace = 'gb'">
+							<xsl:attribute name="margin-left">7.4mm</xsl:attribute>
+						</xsl:if>
 					<!-- create virtual html table for dl/[dt and dd] -->
 					<xsl:variable name="html-table">
 						<xsl:variable name="ns" select="substring-before(name(/*), '-')"/>
@@ -1099,6 +1164,9 @@
 					<!-- colwidths=<xsl:value-of select="$colwidths"/> -->
 					
 					<fo:table width="95%" table-layout="fixed">
+						<xsl:if test="$namespace = 'gb'">
+							<xsl:attribute name="margin-left">-3.7mm</xsl:attribute>
+						</xsl:if>
 						<xsl:choose>
 							<xsl:when test="normalize-space($key_iso) = 'true' and $parent = 'formula'">
 								<!-- <xsl:attribute name="font-size">11pt</xsl:attribute> -->
@@ -1195,7 +1263,7 @@
 						<xsl:apply-templates select="following-sibling::*[local-name()='dd'][1]" mode="process"/>
 					</xsl:if>
 				</xsl:if>
-				<xsl:if test="$namespace = 'iso' or $namespace = 'iec' or $namespace = 'itu' or $namespace = 'unece' or $namespace = 'unece-rec'  or $namespace = 'csd' or $namespace = 'ogc'">
+				<xsl:if test="$namespace = 'iso' or $namespace = 'iec' or $namespace = 'itu' or $namespace = 'unece' or $namespace = 'unece-rec'  or $namespace = 'csd' or $namespace = 'ogc' or $namespace = 'gb'">
 					<xsl:apply-templates select="following-sibling::*[local-name()='dd'][1]" mode="process"/>
 				</xsl:if>
 			</td>
@@ -1240,6 +1308,11 @@
 						<xsl:attribute name="margin-left">7mm</xsl:attribute>
 					</xsl:if>
 					<xsl:apply-templates />
+					<xsl:if test="$namespace = 'gb'">
+						<xsl:if test="ancestor::*[local-name()='formula']">
+							<xsl:text>—</xsl:text>
+						</xsl:if>
+					</xsl:if>
 				</fo:block>
 			</fo:table-cell>
 			<fo:table-cell>
@@ -1252,7 +1325,7 @@
 							<xsl:apply-templates select="following-sibling::*[local-name()='dd'][1]" mode="process"/>
 						</xsl:if>
 					</xsl:if>
-					<xsl:if test="$namespace = 'iso' or $namespace = 'iec' or $namespace = 'itu' or $namespace = 'unece' or $namespace = 'unece-rec'  or $namespace = 'csd' or $namespace = 'ogc'">
+					<xsl:if test="$namespace = 'iso' or $namespace = 'iec' or $namespace = 'itu' or $namespace = 'unece' or $namespace = 'unece-rec'  or $namespace = 'csd' or $namespace = 'ogc' or $namespace = 'gb'">
 						<xsl:apply-templates select="following-sibling::*[local-name()='dd'][1]" mode="process"/>
 					</xsl:if>
 				</fo:block>
