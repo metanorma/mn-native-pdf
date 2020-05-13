@@ -10,6 +10,8 @@
 	<xsl:variable name="pageWidth" select="'210mm'"/>
 	<xsl:variable name="pageHeight" select="'297mm'"/>
 
+	<xsl:variable name="debug">false</xsl:variable>
+	
 	<xsl:variable name="contents">
 		<contents>
 			<xsl:apply-templates select="/un:un-standard/un:sections/*" mode="contents"/>
@@ -265,10 +267,12 @@
 				<xsl:call-template name="insertHeaderFooter"/>
 				<fo:flow flow-name="xsl-region-body">
 					
-					<xsl:text disable-output-escaping="yes">&lt;!--</xsl:text>
-						DEBUG
-						contents=<xsl:copy-of select="xalan:nodeset($contents)"/>
-					<xsl:text disable-output-escaping="yes">--&gt;</xsl:text>
+					<xsl:if test="$debug = 'true'">
+						<xsl:text disable-output-escaping="yes">&lt;!--</xsl:text>
+							DEBUG
+							contents=<xsl:copy-of select="xalan:nodeset($contents)"/>
+						<xsl:text disable-output-escaping="yes">--&gt;</xsl:text>
+					</xsl:if>
 					
 					<fo:block>
 						<xsl:apply-templates select="/un:un-standard/un:sections/*"/>
@@ -722,20 +726,13 @@
 		</fo:block>
 	</xsl:template>
 	
-	<xsl:template match="un:link">
-		<fo:basic-link external-destination="{@target}" fox:alt-text="{@target}"> <!-- color="blue" text-decoration="underline"  -->
+	<xsl:template match="un:link" priority="2">
+		<fo:inline>
 			<xsl:if test="ancestor::un:fn and string-length(@target) &gt; 110">
 				<xsl:attribute name="font-size">8pt</xsl:attribute>
 			</xsl:if>
-			<xsl:choose>
-				<xsl:when test="normalize-space(.) = ''">
-					<xsl:value-of select="@target"/>
-				</xsl:when>
-				<xsl:otherwise>
-					<xsl:apply-templates />
-				</xsl:otherwise>
-			</xsl:choose>
-		</fo:basic-link>
+			<xsl:call-template name="link"/>
+		</fo:inline>
 	</xsl:template>
 	
 	<xsl:template match="un:xref">

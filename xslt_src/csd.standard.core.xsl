@@ -8,6 +8,8 @@
 
 	<xsl:variable name="namespace">csd</xsl:variable>
 	
+	<xsl:variable name="debug">false</xsl:variable>
+	
 	<xsl:variable name="copyright">
 		<xsl:text>© The Calendaring and Scheduling Consortium, Inc. </xsl:text>
 		<xsl:value-of select="/csd:csd-standard/csd:bibdata/csd:copyright/csd:from"/>
@@ -233,36 +235,31 @@
 				</fo:static-content>
 				<xsl:call-template name="insertHeaderFooter"/>
 				<fo:flow flow-name="xsl-region-body">
-					<xsl:text disable-output-escaping="yes">&lt;!--</xsl:text>
-						DEBUG
-						contents=<xsl:copy-of select="xalan:nodeset($contents)"/>
-					<xsl:text disable-output-escaping="yes">--&gt;</xsl:text>
+					
+					<xsl:if test="$debug = 'true'">
+						<xsl:text disable-output-escaping="yes">&lt;!--</xsl:text>
+							DEBUG
+							contents=<xsl:copy-of select="xalan:nodeset($contents)"/>
+						<xsl:text disable-output-escaping="yes">--&gt;</xsl:text>
+					</xsl:if>
 					
 					<fo:block margin-bottom="15pt">&#xA0;</fo:block>
 					<fo:block margin-bottom="14pt">
 						<xsl:text>© </xsl:text>
 						<xsl:value-of select="/csd:csd-standard/csd:bibdata/csd:copyright/csd:from"/>
-						<xsl:text>  The Calendaring and Scheduling Consortium, Inc.</xsl:text>
+						<xsl:text> </xsl:text>
+						<fo:inline>
+							<xsl:apply-templates select="/csd:csd-standard/csd:boilerplate/csd:feedback-statement/csd:clause/csd:p[@id = 'boilerplate-name']"/>
+						</fo:inline>
 					</fo:block>
 					<fo:block margin-bottom="12pt">
-						<xsl:text>All rights reserved. Unless otherwise specified, no part of this publication may be reproduced or utilized otherwise in any form or by any means, electronic or mechanical, including photocopying, or posting on the internet or an intranet, without prior written permission. Permission can be requested from the address below. </xsl:text>
+						<xsl:apply-templates select="/csd:csd-standard/csd:boilerplate/csd:legal-statement"/>
 					</fo:block>
 					<fo:block margin-bottom="12pt">
-						<xsl:text>The Calendaring and Scheduling Consortium, Inc.</xsl:text>
+						<xsl:apply-templates select="/csd:csd-standard/csd:boilerplate/csd:feedback-statement/csd:clause/csd:p[@id = 'boilerplate-name']"/>
 					</fo:block>
 					<fo:block>
-						<xsl:text>4390 Chaffin Lane</xsl:text>
-						<xsl:value-of select="$linebreak"/>
-						<xsl:text>McKinleyville</xsl:text>
-						<xsl:value-of select="$linebreak"/>
-						<xsl:text>California 95519</xsl:text>
-						<xsl:value-of select="$linebreak"/>
-						<xsl:text>United States of America</xsl:text>
-						<xsl:value-of select="$linebreak"/>
-						<xsl:value-of select="$linebreak"/>
-						<fo:basic-link external-destination="copyright@calconnect.org" color="blue" text-decoration="underline" fox:alt-text="copyright@calconnect.org">copyright@calconnect.org</fo:basic-link>
-						<xsl:value-of select="$linebreak"/>
-						<fo:basic-link external-destination="www.calconnect.org" color="blue" text-decoration="underline" fox:alt-text="www.calconnect.org">www.calconnect.org</fo:basic-link>
+						<xsl:apply-templates select="/csd:csd-standard/csd:boilerplate/csd:feedback-statement/csd:clause/csd:p[@id = 'boilerplate-address']"/>
 					</fo:block>
 					
 					<fo:block break-after="page"/>
@@ -694,41 +691,10 @@
 							</xsl:choose>
 						</xsl:if>
 						<xsl:apply-templates />
-				</xsl:element>
-		
-		
-		<xsl:choose>
-			<xsl:when test="$parent-name = 'annex2'">
-				<fo:block id="{$id}" font-size="16pt" font-weight="bold" text-align="center" margin-bottom="12pt" keep-with-next="always">
-					<xsl:value-of select="$section"/>
-					<xsl:if test=" ../@obligation">
-						<xsl:value-of select="$linebreak"/>
-						<fo:inline font-weight="normal">(<xsl:value-of select="../@obligation"/>)</fo:inline>
-					</xsl:if>
-					<fo:block margin-top="18pt" margin-bottom="48pt"><xsl:apply-templates /></fo:block>
-				</fo:block>
-			</xsl:when>
-			<xsl:when test="$parent-name = 'references2' and $references_num_current != 1"> <!-- Bibliography -->
-				<fo:block id="{$id}" font-size="16pt" font-weight="bold" color="{$color}" text-align="center" margin-top="6pt" margin-bottom="36pt" keep-with-next="always">
-					<xsl:apply-templates />
-				</fo:block>
-			</xsl:when>
-			
-			<xsl:otherwise>
-				
-				
-				<!-- <xsl:if test="$element-name = 'fo:inline' and not(following-sibling::csd:p)">
-					<fo:block > 
-						<xsl:value-of select="$linebreak"/>
-					</fo:block>
-				</xsl:if> -->
-			</xsl:otherwise>
-		</xsl:choose>
-		
+				</xsl:element>		
 	</xsl:template>
 	
 
-	
 	<xsl:template match="csd:p">
 		<xsl:param name="inline" select="'false'"/>
 		<xsl:variable name="previous-element" select="local-name(preceding-sibling::*[1])"/>
@@ -737,6 +703,7 @@
 				<xsl:when test="$inline = 'true'">fo:inline</xsl:when>
 				<xsl:when test="../@inline-header = 'true' and $previous-element = 'title'">fo:inline</xsl:when> <!-- first paragraph after inline title -->
 				<xsl:when test="local-name(..) = 'admonition'">fo:inline</xsl:when>
+				<xsl:when test="@id = 'boilerplate-name'">fo:inline</xsl:when>
 				<xsl:otherwise>fo:block</xsl:otherwise>
 			</xsl:choose>
 		</xsl:variable>
@@ -974,22 +941,7 @@
 			</fo:list-item-body>
 		</fo:list-item>
 	</xsl:template>
-	
-	<xsl:template match="csd:link">
-		<fo:inline>
-			<fo:basic-link external-destination="{@target}" color="blue" text-decoration="underline" fox:alt-text="{@target}">
-				<xsl:choose>
-					<xsl:when test="normalize-space(.) = ''">
-						<xsl:value-of select="@target"/>
-					</xsl:when>
-					<xsl:otherwise>
-						<xsl:apply-templates />
-					</xsl:otherwise>
-				</xsl:choose>
-			</fo:basic-link>
-		</fo:inline>
-	</xsl:template>
-	
+		
 	<xsl:template match="csd:preferred">
 		<xsl:param name="sectionNum"/>
 		<xsl:variable name="section">

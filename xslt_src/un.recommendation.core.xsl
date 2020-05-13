@@ -622,7 +622,7 @@
 			</fo:block>
 		</xsl:template>
 		
-		<xsl:template match="un:feedback-statement//un:clause//un:p//un:link"/>
+		<xsl:template match="un:feedback-statement//un:clause//un:p//un:link" priority="2"/>
 	
 		<xsl:template name="show_fs_table">
 			<fo:block>
@@ -818,20 +818,7 @@
 			<xsl:apply-templates />
 		</fo:block>
 	</xsl:template>
-	
-	<xsl:template match="un:link">
-		<fo:basic-link external-destination="{@target}" fox:alt-text="{@target}">
-			<xsl:choose>
-				<xsl:when test="normalize-space(.) = ''">
-					<xsl:value-of select="@target"/>
-				</xsl:when>
-				<xsl:otherwise>
-					<xsl:apply-templates />
-				</xsl:otherwise>
-			</xsl:choose>
-		</fo:basic-link>
-	</xsl:template>
-	
+		
 	<xsl:template match="un:xref">
 		<xsl:variable name="section" select="xalan:nodeset($contents)//item[@id = current()/@target]/@section"/>
 		<xsl:variable name="type" select="xalan:nodeset($contents)//item[@id = current()/@target]/@type"/>
