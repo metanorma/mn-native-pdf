@@ -8,6 +8,8 @@
 
 	<xsl:variable name="namespace">rsd</xsl:variable>
 	
+	<xsl:variable name="debug">false</xsl:variable>
+	
 	<xsl:variable name="copyright">
 	<xsl:value-of select="/rsd:rsd-standard/rsd:boilerplate/rsd:copyright-statement/rsd:clause[1]"/>
 	<xsl:text> – All rights reserved</xsl:text>
@@ -1182,22 +1184,7 @@
 			</fo:list-item-body>
 		</fo:list-item>
 	</xsl:template>
-	
-	<xsl:template match="rsd:link">
-		<fo:inline>
-			<fo:basic-link external-destination="{@target}" text-decoration="underline" fox:alt-text="{@target}" color="{$color-link}">
-				<xsl:choose>
-					<xsl:when test="normalize-space(.) = ''">
-						<xsl:value-of select="@target"/>
-					</xsl:when>
-					<xsl:otherwise>
-						<xsl:apply-templates />
-					</xsl:otherwise>
-				</xsl:choose>
-			</fo:basic-link>
-		</fo:inline>
-	</xsl:template>
-	
+		
 	<xsl:template match="rsd:preferred">
 		<xsl:param name="sectionNum"/>
 		<xsl:variable name="section">

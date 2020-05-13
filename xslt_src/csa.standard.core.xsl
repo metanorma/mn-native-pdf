@@ -7,6 +7,8 @@
 	<xsl:variable name="pageHeight" select="'279.4mm'"/>
 
 	<xsl:variable name="namespace">csa</xsl:variable>
+
+	<xsl:variable name="debug">false</xsl:variable>
 	
 	<xsl:variable name="copyright">
 		<xsl:text>© Copyright </xsl:text>
@@ -180,10 +182,13 @@
 				</fo:static-content>
 				<xsl:call-template name="insertHeaderFooter"/>
 				<fo:flow flow-name="xsl-region-body">
-					<xsl:text disable-output-escaping="yes">&lt;!--</xsl:text>
-						DEBUG
-						contents=<!-- <xsl:copy-of select="xalan:nodeset($contents)"/> --> 
-					<xsl:text disable-output-escaping="yes">--&gt;</xsl:text>
+				
+					<xsl:if test="$debug = 'true'">
+						<xsl:text disable-output-escaping="yes">&lt;!--</xsl:text>
+							DEBUG
+							contents=<!-- <xsl:copy-of select="xalan:nodeset($contents)"/> --> 
+						<xsl:text disable-output-escaping="yes">--&gt;</xsl:text>
+					</xsl:if>
 					
 					<fo:block>
 						<fo:block>The permanent and official location for Cloud Security Alliance DevSecOps is</fo:block>
@@ -1148,21 +1153,6 @@
 				<xsl:apply-templates />
 			</fo:list-item-body>
 		</fo:list-item>
-	</xsl:template>
-	
-	<xsl:template match="csa:link">
-		<fo:inline>
-			<fo:basic-link external-destination="{@target}" text-decoration="underline" fox:alt-text="{@target}" color="{$color-link}">
-				<xsl:choose>
-					<xsl:when test="normalize-space(.) = ''">
-						<xsl:value-of select="@target"/>
-					</xsl:when>
-					<xsl:otherwise>
-						<xsl:apply-templates />
-					</xsl:otherwise>
-				</xsl:choose>
-			</fo:basic-link>
-		</fo:inline>
 	</xsl:template>
 	
 	<xsl:template match="csa:preferred">

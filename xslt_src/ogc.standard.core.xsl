@@ -7,6 +7,8 @@
 	<xsl:variable name="pageHeight" select="'297mm'"/>
 
 	<xsl:variable name="namespace">ogc</xsl:variable>
+
+	<xsl:variable name="debug">false</xsl:variable>
 	
 	<xsl:variable name="copyright">
 		<xsl:text>© Open Geospatial Consortium </xsl:text>
@@ -352,10 +354,13 @@
 				</fo:static-content>
 				<xsl:call-template name="insertHeaderFooter"/>
 				<fo:flow flow-name="xsl-region-body">
-					<xsl:text disable-output-escaping="yes">&lt;!--</xsl:text>
-						DEBUG
-						contents=<!-- <xsl:copy-of select="xalan:nodeset($contents)"/> --> 
-					<xsl:text disable-output-escaping="yes">--&gt;</xsl:text>
+				
+					<xsl:if test="$debug = 'true'">
+						<xsl:text disable-output-escaping="yes">&lt;!--</xsl:text>
+							DEBUG
+							contents=<!-- <xsl:copy-of select="xalan:nodeset($contents)"/> --> 
+						<xsl:text disable-output-escaping="yes">--&gt;</xsl:text>
+					</xsl:if>
 					
 					<xsl:apply-templates select="/ogc:ogc-standard/ogc:boilerplate/ogc:license-statement"/>
 					<xsl:apply-templates select="/ogc:ogc-standard/ogc:boilerplate/ogc:feedback-statement"/>
@@ -1392,20 +1397,6 @@
 		</fo:list-item>
 	</xsl:template>
 	
-	<xsl:template match="ogc:link">
-		<fo:inline>
-			<fo:basic-link external-destination="{@target}" color="blue" text-decoration="underline" fox:alt-text="{@target}">
-				<xsl:choose>
-					<xsl:when test="normalize-space(.) = ''">
-						<xsl:value-of select="@target"/>
-					</xsl:when>
-					<xsl:otherwise>
-						<xsl:apply-templates />
-					</xsl:otherwise>
-				</xsl:choose>
-			</fo:basic-link>
-		</fo:inline>
-	</xsl:template>
 	
 	<xsl:template match="ogc:preferred">
 		<xsl:param name="sectionNum"/>

@@ -1495,7 +1495,7 @@
 		</fo:block>
 	</xsl:template>
 	
-	<xsl:template match="itu:link">
+	<xsl:template match="itu:link" priority="2">
 		<fo:inline color="blue">
 			<xsl:if test="local-name(..) = 'formattedref' or ancestor::itu:preface">
 				<xsl:attribute name="font-family">Arial</xsl:attribute>
@@ -1504,16 +1504,7 @@
 					<xsl:attribute name="text-decoration">underline</xsl:attribute>
 				</xsl:if>
 			</xsl:if>
-			<fo:basic-link external-destination="{@target}" fox:alt-text="{@target}">
-				<xsl:choose>
-					<xsl:when test="normalize-space(.) = ''">
-						<xsl:value-of select="@target"/>
-					</xsl:when>
-					<xsl:otherwise>
-						<xsl:apply-templates />
-					</xsl:otherwise>
-				</xsl:choose>
-			</fo:basic-link>
+			<xsl:call-template name="link"/>
 		</fo:inline>
 	</xsl:template>
 	
