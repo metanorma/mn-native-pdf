@@ -1888,21 +1888,6 @@
 		</fo:list-item>
 	</xsl:template>
 	
-	<xsl:template match="iso:link">
-		<fo:inline>
-			<fo:basic-link external-destination="{@target}" color="blue" text-decoration="underline" fox:alt-text="{@target}">
-				<xsl:choose>
-					<xsl:when test="normalize-space(.) = ''">
-						<xsl:value-of select="@target"/>
-					</xsl:when>
-					<xsl:otherwise>
-						<xsl:apply-templates />
-					</xsl:otherwise>
-				</xsl:choose>
-			</fo:basic-link>
-		</fo:inline>
-	</xsl:template>
-	
 	<xsl:template match="iso:term">
 		<xsl:param name="sectionNum"/>
 		<fo:block margin-bottom="10pt">
