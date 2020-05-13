@@ -8,6 +8,29 @@
 	
 	<xsl:variable name="linebreak" select="'&#x2028;'"/>
 	
+	<xsl:attribute-set name="link-style">
+		<xsl:if test="$namespace = 'iso' or $namespace = 'csd' or $namespace = 'ogc' or $namespace = 'rsd'">
+			<xsl:attribute name="color">blue</xsl:attribute>
+			<xsl:attribute name="text-decoration">underline</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'csa'">
+			<xsl:attribute name="color">rgb(33, 94, 159)</xsl:attribute>
+			<xsl:attribute name="text-decoration">underline</xsl:attribute>
+		</xsl:if>
+	</xsl:attribute-set>
+	
+	<xsl:variable name="title-note">
+		<xsl:if test="$namespace = 'iso' or $namespace = 'iec' or $namespace = 'itu' or $namespace = 'unece' or $namespace = 'unece-rec' or $namespace = 'nist' or $namespace = 'ogc' or $namespace = 'rsd' or $namespace = 'csa' or $namespace = 'csd'">
+			<xsl:text>NOTE </xsl:text>
+		</xsl:if>
+		<xsl:if test="$namespace = 'gb'">
+			<xsl:choose>
+				<xsl:when test="//[local-name()='bibdata'][1]/[local-name()='language'][1] = 'zh'">注 </xsl:when>
+				<xsl:otherwise><xsl:text>NOTE </xsl:text></xsl:otherwise>
+			</xsl:choose>
+		</xsl:if>
+	</xsl:variable>
+	
 	<xsl:template match="text()">
 		<xsl:value-of select="."/>
 	</xsl:template>
@@ -134,7 +157,17 @@
 							<xsl:attribute name="font-weight">normal</xsl:attribute>
 							<xsl:attribute name="margin-bottom">12pt</xsl:attribute>
 						</xsl:if>
-						<xsl:text>Table </xsl:text>
+						
+						<xsl:if test="$namespace = 'iso' or $namespace = 'iec' or $namespace = 'itu' or $namespace = 'unece' or $namespace = 'unece-rec' or $namespace = 'nist' or $namespace = 'ogc' or $namespace = 'rsd' or $namespace = 'csa' or $namespace = 'csd'">
+							<xsl:text>Table </xsl:text>
+						</xsl:if>							
+						<xsl:if test="$namespace = 'gb'">
+							<xsl:choose>
+								<xsl:when test="//[local-name()='bibdata'][1]/[local-name()='language'][1] = 'zh'">表 </xsl:when>
+								<xsl:otherwise><xsl:text>Table </xsl:text></xsl:otherwise>
+							</xsl:choose>
+						</xsl:if>
+						
 						<xsl:choose>
 							<xsl:when test="ancestor::*[local-name()='executivesummary']"> <!-- NIST -->
 								<xsl:text>ES-</xsl:text><xsl:number format="1" count="*[local-name()='executivesummary']//*[local-name()='table'][not(@unnumbered) or @unnumbered != 'true']"/>
@@ -819,7 +852,7 @@
 					<xsl:if test="$namespace = 'gb'">
 						<xsl:attribute name="font-family">SimHei</xsl:attribute>
 					</xsl:if>
-					<xsl:text>NOTE </xsl:text>
+					<xsl:value-of select="$title-note"/>
 					<xsl:if test="$namespace = 'iso' or $namespace = 'itu' or $namespace = 'iec' or $namespace = 'ogc'  or $namespace = 'gb'">
 						<xsl:variable name="id" select="ancestor::*[local-name() = 'table'][1]/@id"/>
 						<xsl:if test="count(//*[local-name()='note'][ancestor::*[@id = $id]]) &gt; 1">
@@ -1249,7 +1282,7 @@
 					<xsl:if test="normalize-space($key_iso) = 'true'">
 						<xsl:attribute name="margin-top">0</xsl:attribute>
 					</xsl:if>
-					NOTE
+					<xsl:value-of select="$title-note"/>
 				</fo:block>
 			</fo:table-cell>
 			<fo:table-cell>
@@ -1789,6 +1822,38 @@
 			<xsl:apply-templates select="."/>
 			<xsl:if test="position() != last()"><xsl:text>; </xsl:text></xsl:if>
 		</xsl:for-each>
+	</xsl:template>
+
+	<xsl:template match="*[local-name()='link']" name="link">
+		<xsl:variable name="target">
+			<xsl:choose>
+				<xsl:when test="starts-with(normalize-space(@target), 'mailto:')">
+					<xsl:value-of select="normalize-space(substring-after(@target, 'mailto:'))"/>
+				</xsl:when>
+				<xsl:otherwise>
+					<xsl:value-of select="normalize-space(@target)"/>
+				</xsl:otherwise>
+			</xsl:choose>
+		</xsl:variable>
+		<fo:inline xsl:use-attribute-sets="link-style">
+			<xsl:choose>
+				<xsl:when test="$target = ''">
+					<xsl:apply-templates />
+				</xsl:when>
+				<xsl:otherwise>
+					<fo:basic-link external-destination="{@target}" fox:alt-text="{@target}">
+						<xsl:choose>
+							<xsl:when test="normalize-space(.) = ''">
+								<xsl:value-of select="$target"/>
+							</xsl:when>
+							<xsl:otherwise>
+								<xsl:apply-templates />
+							</xsl:otherwise>
+						</xsl:choose>
+					</fo:basic-link>
+				</xsl:otherwise>
+			</xsl:choose>
+		</fo:inline>
 	</xsl:template>
 	
 </xsl:stylesheet>
