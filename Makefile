@@ -11,7 +11,8 @@ SRC := $(patsubst mn-samples-iso/documents/%,sources/%,$(wildcard mn-samples-iso
 	$(patsubst mn-samples-iec/documents/%,sources/%,$(wildcard mn-samples-iec/documents/*.xml)) \
 	$(patsubst mn-samples-ogc/documents/%,sources/ogc-%,$(wildcard mn-samples-ogc/documents/*.xml)) \
 	$(patsubst mn-samples-un/documents/%,sources/un-%,$(wildcard mn-samples-un/documents/*.xml)) \
-	$(patsubst mn-samples-cc/documents/%,sources/%,$(wildcard mn-samples-cc/documents/*.xml))
+	$(patsubst mn-samples-cc/documents/%,sources/%,$(wildcard mn-samples-cc/documents/*.xml)) \
+	$(patsubst mn-samples-gb/documents/%,sources/%,$(wildcard mn-samples-gb/documents/*.xml))
 PDF := $(patsubst sources/%,documents/%,$(patsubst %.xml,%.pdf,$(SRC)))
 HTML := $(patsubst sources/%,documents/%,$(patsubst %.xml,%.html,$(SRC)))
 DOC := $(patsubst sources/%,documents/%,$(patsubst %.xml,%.doc,$(SRC)))
@@ -41,9 +42,10 @@ XSLT_GENERATED := xslt/iec.international-standard.xsl \
 	xslt/un.recommendation.xsl \
 	xslt/csd.standard.xsl \
 	xslt/csa.standard.xsl \
-	xslt/rsd.standard.xsl
+	xslt/rsd.standard.xsl \
+	xslt/gb.standard.xsl
 
-MN2PDF_DOWNLOAD_PATH := https://github.com/metanorma/mn2pdf/releases/download/v1.14/mn2pdf-1.14.jar
+MN2PDF_DOWNLOAD_PATH := https://github.com/metanorma/mn2pdf/releases/download/v1.15/mn2pdf-1.15.jar
 # MN2PDF_DOWNLOAD_PATH := https://maven.pkg.github.com/metanorma/mn2pdf/com/metanorma/fop/mn2pdf/1.7/mn2pdf-1.7.jar
 
 all: xslts documents.html
@@ -85,6 +87,9 @@ sources/ogc-%: mn-samples-ogc/documents/%
 	cp $< $@
 
 sources/cc-%: mn-samples-cc/documents/cc-%
+	cp $< $@
+
+sources/cc-%: mn-samples-gb/documents/%
 	cp $< $@
 
 documents:
