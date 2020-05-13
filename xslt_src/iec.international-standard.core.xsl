@@ -2141,21 +2141,6 @@
 		</fo:block>
 	</xsl:template>
 	
-	<xsl:template match="iec:link">
-		<fo:inline>
-			<fo:basic-link external-destination="{@target}" fox:alt-text="{@target}">
-				<xsl:choose>
-					<xsl:when test="normalize-space(.) = ''">
-						<xsl:value-of select="@target"/>
-					</xsl:when>
-					<xsl:otherwise>
-						<xsl:apply-templates />
-					</xsl:otherwise>
-				</xsl:choose>
-			</fo:basic-link>
-		</fo:inline>
-	</xsl:template>
-	
 	<xsl:template match="iec:preferred">
 		<xsl:param name="sectionNum"/>
 		<fo:block line-height="1.1" space-before="14pt">
