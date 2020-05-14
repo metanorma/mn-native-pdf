@@ -24,8 +24,8 @@
 	branch = gh-pages
 [submodule "mn-samples-gb"]
 	path = mn-samples-gb
-	url = git@github.com:metanorma/mn-samples-gb.git
+	url = https://github.com/metanorma/mn-samples-gb
 	branch = gh-pages
 [submodule "mn-samples-iho"]
 	path = mn-samples-iho
-	url = git@github.com:metanorma/mn-samples-iho.git
+	url = https://github.com/metanorma/mn-samples-iho
