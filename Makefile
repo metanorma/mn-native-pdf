@@ -90,7 +90,7 @@ sources/ogc-%: mn-samples-ogc/documents/%
 sources/cc-%: mn-samples-cc/documents/cc-%
 	cp $< $@
 
-sources/cc-%: mn-samples-gb/documents/%
+sources/gb-%: mn-samples-gb/documents/%
 	cp $< $@
 
 documents:
