@@ -22,3 +22,10 @@
 	path = mn-samples-cc
 	url = https://github.com/metanorma/mn-samples-cc
 	branch = gh-pages
+[submodule "mn-samples-gb"]
+	path = mn-samples-gb
+	url = git@github.com:metanorma/mn-samples-gb.git
+	branch = gh-pages
+[submodule "mn-samples-iho"]
+	path = mn-samples-iho
+	url = git@github.com:metanorma/mn-samples-iho.git
