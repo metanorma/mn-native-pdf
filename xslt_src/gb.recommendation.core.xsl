@@ -12,7 +12,7 @@
 	
 	<xsl:variable name="namespace">gb</xsl:variable>
 	
-	<xsl:variable name="debug">true</xsl:variable>
+	<xsl:variable name="debug">false</xsl:variable>
 	<xsl:variable name="pageWidth" select="'210mm'"/>
 	<xsl:variable name="pageHeight" select="'297mm'"/>
 
@@ -1838,7 +1838,6 @@
 							</xsl:choose>
 						</xsl:when>
 						<xsl:otherwise>
-							<xsl:variable name="annexid" select="normalize-space(/gb:gb-standard/gb:bibdata/gb:ext/gb:structuredidentifier/gb:annexid)"/>
 							<xsl:choose>
 								<xsl:when test="count(//gb:annex) = 1 and $annexid != ''">
 									<xsl:value-of select="$annexid"/><xsl:number format=".1" level="multiple" count="gb:clause"/>
