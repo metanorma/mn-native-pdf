@@ -2,7 +2,7 @@
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:fo="http://www.w3.org/1999/XSL/Format" xmlns:iso="https://www.metanorma.org/ns/iso" xmlns:iec="https://www.metanorma.org/ns/iec" xmlns:itu="https://www.metanorma.org/ns/itu" xmlns:nist="https://www.metanorma.org/ns/nist" xmlns:un="https://www.metanorma.org/ns/un" xmlns:csd="https://www.metanorma.org/ns/csd" xmlns:ogc="https://www.metanorma.org/ns/ogc" xmlns:mathml="http://www.w3.org/1998/Math/MathML" xmlns:xalan="http://xml.apache.org/xalan"  xmlns:fox="http://xmlgraphics.apache.org/fop/extensions" version="1.0">
 
 	<xsl:variable name="title-table">
-		<xsl:if test="$namespace = 'iso' or $namespace = 'iec' or $namespace = 'itu' or $namespace = 'unece' or $namespace = 'unece-rec' or $namespace = 'nist' or $namespace = 'ogc' or $namespace = 'rsd' or $namespace = 'csa' or $namespace = 'csd'">
+		<xsl:if test="$namespace = 'iso' or $namespace = 'iec' or $namespace = 'itu' or $namespace = 'unece' or $namespace = 'unece-rec' or $namespace = 'nist' or $namespace = 'ogc' or $namespace = 'rsd' or $namespace = 'csa' or $namespace = 'csd' or $namespace = 'm3d'">
 			<xsl:text>Table </xsl:text>
 		</xsl:if>							
 		<xsl:if test="$namespace = 'gb'">
@@ -14,7 +14,7 @@
 	</xsl:variable>
 	
 	<xsl:variable name="title-note">
-		<xsl:if test="$namespace = 'iso' or $namespace = 'iec' or $namespace = 'itu' or $namespace = 'unece' or $namespace = 'unece-rec' or $namespace = 'nist' or $namespace = 'ogc' or $namespace = 'rsd' or $namespace = 'csa' or $namespace = 'csd'">
+		<xsl:if test="$namespace = 'iso' or $namespace = 'iec' or $namespace = 'itu' or $namespace = 'unece' or $namespace = 'unece-rec' or $namespace = 'nist' or $namespace = 'ogc' or $namespace = 'rsd' or $namespace = 'csa' or $namespace = 'csd' or $namespace = 'm3d'">
 			<xsl:text>NOTE </xsl:text>
 		</xsl:if>
 		<xsl:if test="$namespace = 'gb'">
@@ -26,7 +26,7 @@
 	</xsl:variable>
 
 	<xsl:variable name="title-figure">
-		<xsl:if test="$namespace = 'iso' or $namespace = 'iec' or $namespace = 'itu' or $namespace = 'unece' or $namespace = 'unece-rec' or $namespace = 'nist' or $namespace = 'ogc' or $namespace = 'rsd' or $namespace = 'csa' or $namespace = 'csd'">
+		<xsl:if test="$namespace = 'iso' or $namespace = 'iec' or $namespace = 'itu' or $namespace = 'unece' or $namespace = 'unece-rec' or $namespace = 'nist' or $namespace = 'ogc' or $namespace = 'rsd' or $namespace = 'csa' or $namespace = 'csd' or $namespace = 'm3d'">
 			<xsl:text>Figure </xsl:text>
 		</xsl:if>
 		<xsl:if test="$namespace = 'gb'">
@@ -38,7 +38,7 @@
 	</xsl:variable>
 	
 	<xsl:variable name="title-example">
-		<xsl:if test="$namespace = 'iso' or $namespace = 'iec' or $namespace = 'itu' or $namespace = 'unece' or $namespace = 'unece-rec' or $namespace = 'nist' or $namespace = 'ogc' or $namespace = 'rsd' or $namespace = 'csa' or $namespace = 'csd'">
+		<xsl:if test="$namespace = 'iso' or $namespace = 'iec' or $namespace = 'itu' or $namespace = 'unece' or $namespace = 'unece-rec' or $namespace = 'nist' or $namespace = 'ogc' or $namespace = 'rsd' or $namespace = 'csa' or $namespace = 'csd' or $namespace = 'm3d'">
 			<xsl:text>EXAMPLE </xsl:text>
 		</xsl:if>
 		<xsl:if test="$namespace = 'gb'">
@@ -50,7 +50,7 @@
 	</xsl:variable>
 	
 	<xsl:variable name="title-annex">
-		<xsl:if test="$namespace = 'iso' or $namespace = 'iec' or $namespace = 'itu' or $namespace = 'unece' or $namespace = 'unece-rec' or $namespace = 'nist' or $namespace = 'ogc' or $namespace = 'rsd' or $namespace = 'csa' or $namespace = 'csd'">
+		<xsl:if test="$namespace = 'iso' or $namespace = 'iec' or $namespace = 'itu' or $namespace = 'unece' or $namespace = 'unece-rec' or $namespace = 'nist' or $namespace = 'ogc' or $namespace = 'rsd' or $namespace = 'csa' or $namespace = 'csd' or $namespace = 'm3d'">
 			<xsl:text>Annex </xsl:text>
 		</xsl:if>
 		<xsl:if test="$namespace = 'gb'">
@@ -62,7 +62,7 @@
 	</xsl:variable>
 	
 	<xsl:variable name="title-clause">
-		<xsl:if test="$namespace = 'iso' or $namespace = 'iec' or $namespace = 'itu' or $namespace = 'unece' or $namespace = 'unece-rec' or $namespace = 'nist' or $namespace = 'ogc' or $namespace = 'rsd' or $namespace = 'csa' or $namespace = 'csd'">
+		<xsl:if test="$namespace = 'iso' or $namespace = 'iec' or $namespace = 'itu' or $namespace = 'unece' or $namespace = 'unece-rec' or $namespace = 'nist' or $namespace = 'ogc' or $namespace = 'rsd' or $namespace = 'csa' or $namespace = 'csd' or $namespace = 'm3d'">
 			<xsl:text>Annex </xsl:text>
 		</xsl:if>
 		<xsl:if test="$namespace = 'gb'">
@@ -85,7 +85,7 @@
 	<xsl:variable name="linebreak" select="'&#x2028;'"/>
 		
 	<xsl:attribute-set name="link-style">
-		<xsl:if test="$namespace = 'iso' or $namespace = 'csd' or $namespace = 'ogc' or $namespace = 'rsd'">
+		<xsl:if test="$namespace = 'iso' or $namespace = 'csd' or $namespace = 'ogc' or $namespace = 'rsd' or or $namespace = 'm3d'">
 			<xsl:attribute name="color">blue</xsl:attribute>
 			<xsl:attribute name="text-decoration">underline</xsl:attribute>
 		</xsl:if>
@@ -180,7 +180,7 @@
 						</fo:block>
 					</xsl:if>
 				</xsl:if>
-				<xsl:if test="$namespace = 'iso' or $namespace = 'iec' or $namespace = 'itu' or  $namespace = 'nist' or $namespace = 'unece' or $namespace = 'csd' or $namespace = 'ogc'  or $namespace = 'gb'">
+				<xsl:if test="$namespace = 'iso' or $namespace = 'iec' or $namespace = 'itu' or  $namespace = 'nist' or $namespace = 'unece' or $namespace = 'csd' or $namespace = 'ogc'  or $namespace = 'gb' or $namespace = 'm3d'">
 					<fo:block font-weight="bold" text-align="center" margin-bottom="6pt" keep-with-next="always">
 						<xsl:if test="$namespace = 'iso'">
 							<xsl:attribute name="margin-top">12pt</xsl:attribute>
@@ -286,7 +286,7 @@
 																																						and not(ancestor::*[local-name()='preface'])]
 																																						[not(@unnumbered) or @unnumbered != 'true']"/>
 								</xsl:if>
-								<xsl:if test="$namespace = 'iso' or $namespace = 'itu' or $namespace = 'nist' or $namespace = 'csd' or $namespace = 'ogc' or $namespace = 'unece' or $namespace = 'unece-rec' $namespace = 'gb'">
+								<xsl:if test="$namespace = 'iso' or $namespace = 'itu' or $namespace = 'nist' or $namespace = 'csd' or $namespace = 'ogc' or $namespace = 'unece' or $namespace = 'unece-rec' $namespace = 'gb' or $namespace = 'm3d'">
 									<xsl:number format="A." count="*[local-name()='annex']"/>
 									<xsl:number format="1" level="any" count="//*[local-name()='table']
 																																										[not(ancestor::*[local-name()='annex']) 
@@ -299,14 +299,14 @@
 						<xsl:if test="*[local-name()='name']">
 							<xsl:if test="$namespace = 'unece-rec'"><xsl:text>. </xsl:text></xsl:if>
 							<xsl:if test="$namespace = 'unece'">: </xsl:if>
-							<xsl:if test="$namespace = 'iso' or $namespace = 'iec' or $namespace = 'itu' or  $namespace = 'nist' or $namespace = 'csd' or $namespace = 'ogc' or $namespace = 'gb'">
+							<xsl:if test="$namespace = 'iso' or $namespace = 'iec' or $namespace = 'itu' or  $namespace = 'nist' or $namespace = 'csd' or $namespace = 'ogc' or $namespace = 'gb' or $namespace = 'm3d'">
 								<xsl:text> — </xsl:text>
 							</xsl:if>
 							<xsl:apply-templates select="*[local-name()='name']" mode="process"/>
 						</xsl:if>
 					</fo:block>
 				</xsl:if>
-				<xsl:if test="$namespace = 'iso' or $namespace = 'iec' or $namespace = 'itu' or  $namespace = 'unece-rec' or $namespace = 'unece' or $namespace = 'csd' or $namespace = 'ogc' or $namespace = 'gb'">
+				<xsl:if test="$namespace = 'iso' or $namespace = 'iec' or $namespace = 'itu' or  $namespace = 'unece-rec' or $namespace = 'unece' or $namespace = 'csd' or $namespace = 'ogc' or $namespace = 'gb' or $namespace = 'm3d'">
 					<xsl:call-template name="fn_name_display"/>
 				</xsl:if>
 			</xsl:otherwise>
@@ -639,7 +639,7 @@
 							</xsl:if>
 							
 							<!-- except gb -->
-							<xsl:if test="$namespace = 'iso' or $namespace = 'iec' or $namespace = 'itu' or $namespace = 'unece' or $namespace = 'unece-rec' or $namespace = 'nist' or $namespace = 'ogc' or $namespace = 'rsd' or $namespace = 'csa' or $namespace = 'csd'">
+							<xsl:if test="$namespace = 'iso' or $namespace = 'iec' or $namespace = 'itu' or $namespace = 'unece' or $namespace = 'unece-rec' or $namespace = 'nist' or $namespace = 'ogc' or $namespace = 'rsd' or $namespace = 'csa' or $namespace = 'csd' or $namespace = 'm3d'">
 								<xsl:apply-templates select="../*[local-name()='note']" mode="process"/>
 							</xsl:if>
 							
@@ -910,7 +910,7 @@
 						<xsl:attribute name="font-family">SimHei</xsl:attribute>
 					</xsl:if>
 					<xsl:value-of select="$title-note"/>
-					<xsl:if test="$namespace = 'iso' or $namespace = 'itu' or $namespace = 'iec' or $namespace = 'ogc'  or $namespace = 'gb'">
+					<xsl:if test="$namespace = 'iso' or $namespace = 'itu' or $namespace = 'iec' or $namespace = 'ogc'  or $namespace = 'gb' or $namespace = 'm3d'">
 						<xsl:variable name="id" select="ancestor::*[local-name() = 'table'][1]/@id"/>
 						<xsl:if test="count(//*[local-name()='note'][ancestor::*[@id = $id]]) &gt; 1">
 							<xsl:number count="*[local-name()='note'][ancestor::*[@id = $id]]" level="any"/>
@@ -972,7 +972,7 @@
 						<xsl:attribute name="margin-left">6mm</xsl:attribute>
 					</xsl:if>
 					<fo:inline font-size="80%" padding-right="5mm" id="{@id}">
-						<xsl:if test="$namespace = 'itu' or  $namespace = 'nist' or $namespace = 'unece' or $namespace = 'unece-rec'  or $namespace = 'csd' or $namespace = 'ogc' or $namespace = 'gb'">
+						<xsl:if test="$namespace = 'itu' or  $namespace = 'nist' or $namespace = 'unece' or $namespace = 'unece-rec'  or $namespace = 'csd' or $namespace = 'ogc' or $namespace = 'gb' or $namespace = 'm3d'">
 							<xsl:attribute name="vertical-align">super</xsl:attribute>
 						</xsl:if>
 						<xsl:if test="$namespace = 'iso'">
@@ -1163,7 +1163,7 @@
 						<xsl:apply-templates select="*[local-name()='dd']/*" mode="inline"/>
 					</fo:block>
 				</xsl:if>
-				<xsl:if test="$namespace = 'iso' or $namespace = 'itu' or $namespace = 'unece' or $namespace = 'unece-rec'  or $namespace = 'nist' or $namespace = 'csd' or $namespace = 'ogc'">
+				<xsl:if test="$namespace = 'iso' or $namespace = 'itu' or $namespace = 'unece' or $namespace = 'unece-rec'  or $namespace = 'nist' or $namespace = 'csd' or $namespace = 'ogc' or $namespace = 'm3d'">
 					<fo:block margin-bottom="12pt" text-align="left">
 						<xsl:if test="$namespace = 'iso' or $namespace = 'iec'">
 							<xsl:attribute name="margin-bottom">0</xsl:attribute>
@@ -1361,7 +1361,7 @@
 						<xsl:apply-templates select="following-sibling::*[local-name()='dd'][1]" mode="process"/>
 					</xsl:if>
 				</xsl:if>
-				<xsl:if test="$namespace = 'iso' or $namespace = 'iec' or $namespace = 'itu' or $namespace = 'unece' or $namespace = 'unece-rec'  or $namespace = 'csd' or $namespace = 'ogc' or $namespace = 'gb'">
+				<xsl:if test="$namespace = 'iso' or $namespace = 'iec' or $namespace = 'itu' or $namespace = 'unece' or $namespace = 'unece-rec'  or $namespace = 'csd' or $namespace = 'ogc' or $namespace = 'gb' or $namespace = 'm3d'">
 					<xsl:apply-templates select="following-sibling::*[local-name()='dd'][1]" mode="process"/>
 				</xsl:if>
 			</td>
@@ -1423,7 +1423,7 @@
 							<xsl:apply-templates select="following-sibling::*[local-name()='dd'][1]" mode="process"/>
 						</xsl:if>
 					</xsl:if>
-					<xsl:if test="$namespace = 'iso' or $namespace = 'iec' or $namespace = 'itu' or $namespace = 'unece' or $namespace = 'unece-rec'  or $namespace = 'csd' or $namespace = 'ogc' or $namespace = 'gb'">
+					<xsl:if test="$namespace = 'iso' or $namespace = 'iec' or $namespace = 'itu' or $namespace = 'unece' or $namespace = 'unece-rec'  or $namespace = 'csd' or $namespace = 'ogc' or $namespace = 'gb' or $namespace = 'm3d'">
 						<xsl:apply-templates select="following-sibling::*[local-name()='dd'][1]" mode="process"/>
 					</xsl:if>
 				</fo:block>
@@ -1912,5 +1912,42 @@
 			</xsl:choose>
 		</fo:inline>
 	</xsl:template>
+
+	<!-- convert YYYY-MM-DD to 'Month YYYY' or 'Month DD, YYYY' -->
+	<xsl:template name="convertDate">
+		<xsl:param name="date"/>
+		<xsl:param name="format" select="'short'"/>
+		<xsl:variable name="year" select="substring($date, 1, 4)"/>
+		<xsl:variable name="month" select="substring($date, 6, 2)"/>
+		<xsl:variable name="day" select="substring($date, 9, 2)"/>
+		<xsl:variable name="monthStr">
+			<xsl:choose>
+				<xsl:when test="$month = '01'">January</xsl:when>
+				<xsl:when test="$month = '02'">February</xsl:when>
+				<xsl:when test="$month = '03'">March</xsl:when>
+				<xsl:when test="$month = '04'">April</xsl:when>
+				<xsl:when test="$month = '05'">May</xsl:when>
+				<xsl:when test="$month = '06'">June</xsl:when>
+				<xsl:when test="$month = '07'">July</xsl:when>
+				<xsl:when test="$month = '08'">August</xsl:when>
+				<xsl:when test="$month = '09'">September</xsl:when>
+				<xsl:when test="$month = '10'">October</xsl:when>
+				<xsl:when test="$month = '11'">November</xsl:when>
+				<xsl:when test="$month = '12'">December</xsl:when>
+			</xsl:choose>
+		</xsl:variable>
+		<xsl:variable name="result">
+			<xsl:choose>
+				<xsl:when test="$format = 'short' or $day = ''">
+					<xsl:value-of select="normalize-space(concat($monthStr, ' ', $year))"/>
+				</xsl:when>
+				<xsl:otherwise>
+					<xsl:value-of select="normalize-space(concat($monthStr, ' ', $day, ', ' , $year))"/>
+				</xsl:otherwise>
+			</xsl:choose>
+		</xsl:variable>
+		<xsl:value-of select="$result"/>
+	</xsl:template>
+
 	
 </xsl:stylesheet>
