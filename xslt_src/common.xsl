@@ -25,6 +25,54 @@
 		</xsl:if>
 	</xsl:variable>
 
+	<xsl:variable name="title-figure">
+		<xsl:if test="$namespace = 'iso' or $namespace = 'iec' or $namespace = 'itu' or $namespace = 'unece' or $namespace = 'unece-rec' or $namespace = 'nist' or $namespace = 'ogc' or $namespace = 'rsd' or $namespace = 'csa' or $namespace = 'csd'">
+			<xsl:text>Figure </xsl:text>
+		</xsl:if>
+		<xsl:if test="$namespace = 'gb'">
+			<xsl:choose>
+				<xsl:when test="$language = 'zh'">图 </xsl:when>
+				<xsl:otherwise>Figure </xsl:otherwise>
+			</xsl:choose>
+		</xsl:if>
+	</xsl:variable>
+	
+	<xsl:variable name="title-example">
+		<xsl:if test="$namespace = 'iso' or $namespace = 'iec' or $namespace = 'itu' or $namespace = 'unece' or $namespace = 'unece-rec' or $namespace = 'nist' or $namespace = 'ogc' or $namespace = 'rsd' or $namespace = 'csa' or $namespace = 'csd'">
+			<xsl:text>EXAMPLE </xsl:text>
+		</xsl:if>
+		<xsl:if test="$namespace = 'gb'">
+			<xsl:choose>
+				<xsl:when test="$language = 'zh'"><xsl:text>示例 </xsl:text></xsl:when>
+				<xsl:otherwise><xsl:text>EXAMPLE </xsl:text></xsl:otherwise>
+			</xsl:choose>
+		</xsl:if>
+	</xsl:variable>
+	
+	<xsl:variable name="title-annex">
+		<xsl:if test="$namespace = 'iso' or $namespace = 'iec' or $namespace = 'itu' or $namespace = 'unece' or $namespace = 'unece-rec' or $namespace = 'nist' or $namespace = 'ogc' or $namespace = 'rsd' or $namespace = 'csa' or $namespace = 'csd'">
+			<xsl:text>Annex </xsl:text>
+		</xsl:if>
+		<xsl:if test="$namespace = 'gb'">
+			<xsl:choose>
+				<xsl:when test="$language = 'zh'"><xsl:text>附件 </xsl:text></xsl:when>
+				<xsl:otherwise><xsl:text>Annex </xsl:text></xsl:otherwise>
+			</xsl:choose>
+		</xsl:if>
+	</xsl:variable>
+	
+	<xsl:variable name="title-clause">
+		<xsl:if test="$namespace = 'iso' or $namespace = 'iec' or $namespace = 'itu' or $namespace = 'unece' or $namespace = 'unece-rec' or $namespace = 'nist' or $namespace = 'ogc' or $namespace = 'rsd' or $namespace = 'csa' or $namespace = 'csd'">
+			<xsl:text>Annex </xsl:text>
+		</xsl:if>
+		<xsl:if test="$namespace = 'gb'">
+			<xsl:choose>
+				<xsl:when test="$language = 'zh'"><xsl:text>条 </xsl:text></xsl:when>
+				<xsl:otherwise><xsl:text>Clause </xsl:text></xsl:otherwise>
+			</xsl:choose>
+		</xsl:if>
+	</xsl:variable>
+	
 	<xsl:variable name="title-key">Key</xsl:variable>
 	
 	<xsl:variable name="title-where">where </xsl:variable>
