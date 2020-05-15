@@ -29,33 +29,6 @@
 	
 	<xsl:variable name="language" select="/gb:gb-standard/gb:bibdata/gb:language"/>
 	
-	<xsl:variable name="title-figure">
-		<xsl:choose>
-			<xsl:when test="$language = 'zh'">图 </xsl:when>
-			<xsl:otherwise>Figure </xsl:otherwise>
-		</xsl:choose>
-	</xsl:variable>
-	
-	<xsl:variable name="title-example">
-		<xsl:choose>
-			<xsl:when test="$language = 'zh'"><xsl:text>示例 </xsl:text></xsl:when>
-			<xsl:otherwise><xsl:text>EXAMPLE </xsl:text></xsl:otherwise>
-		</xsl:choose>
-	</xsl:variable>
-
-	<xsl:variable name="title-annex">
-		<xsl:choose>
-			<xsl:when test="$language = 'zh'"><xsl:text>附件 </xsl:text></xsl:when>
-			<xsl:otherwise><xsl:text>Annex </xsl:text></xsl:otherwise>
-		</xsl:choose>
-	</xsl:variable>
-	
-	<xsl:variable name="title-clause">
-		<xsl:choose>
-			<xsl:when test="$language = 'zh'"><xsl:text>条 </xsl:text></xsl:when>
-			<xsl:otherwise><xsl:text>Clause </xsl:text></xsl:otherwise>
-		</xsl:choose>
-	</xsl:variable>
 		
 	<!-- Example:
 		<item level="1" id="Foreword" display="true">Foreword</item>
