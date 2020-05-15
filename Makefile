@@ -12,6 +12,8 @@ SRC := $(patsubst mn-samples-iso/documents/%,sources/%,$(wildcard mn-samples-iso
 	$(patsubst mn-samples-ogc/documents/%,sources/ogc-%,$(wildcard mn-samples-ogc/documents/*.xml)) \
 	$(patsubst mn-samples-un/documents/%,sources/un-%,$(wildcard mn-samples-un/documents/*.xml)) \
 	$(patsubst mn-samples-cc/documents/%,sources/%,$(wildcard mn-samples-cc/documents/*.xml)) \
+	$(patsubst mn-samples-m3aawg/documents/%,sources/m3a-%,$(wildcard mn-samples-m3aawg/documents/*.xml)) \
+	$(patsubst mn-samples-cc/documents/%,sources/%,$(wildcard mn-samples-cc/documents/*.xml)) \
 	$(patsubst mn-samples-gb/documents/%,sources/gb-%,$(wildcard mn-samples-gb/documents/*.xml))
 
 PDF := $(patsubst sources/%,documents/%,$(patsubst %.xml,%.pdf,$(SRC)))
@@ -44,6 +46,7 @@ XSLT_GENERATED := xslt/iec.international-standard.xsl \
 	xslt/csd.standard.xsl \
 	xslt/csa.standard.xsl \
 	xslt/rsd.standard.xsl \
+	xslt/m3d.report.xsl \
 	xslt/gb.recommendation.xsl
 
 MN2PDF_DOWNLOAD_PATH := https://github.com/metanorma/mn2pdf/releases/download/v1.16/mn2pdf-1.16.jar
@@ -88,6 +91,9 @@ sources/ogc-%: mn-samples-ogc/documents/%
 	cp $< $@
 
 sources/cc-%: mn-samples-cc/documents/cc-%
+	cp $< $@
+
+sources/m3a-%: mn-samples-m3aawg/documents/m3a-%
 	cp $< $@
 
 sources/gb-%: mn-samples-gb/documents/%
