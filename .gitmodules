@@ -32,3 +32,4 @@
 [submodule "mn-samples-m3aawg"]
 	path = mn-samples-m3aawg
 	url = https://github.com/metanorma/mn-samples-m3aawg
+	branch = gh-pages
