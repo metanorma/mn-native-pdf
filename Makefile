@@ -93,7 +93,7 @@ sources/ogc-%: mn-samples-ogc/documents/%
 sources/cc-%: mn-samples-cc/documents/cc-%
 	cp $< $@
 
-sources/m3a-%: mn-samples-m3aawg/documents/m3a-%
+sources/m3a-%: mn-samples-m3aawg/documents/%
 	cp $< $@
 
 sources/gb-%: mn-samples-gb/documents/%
