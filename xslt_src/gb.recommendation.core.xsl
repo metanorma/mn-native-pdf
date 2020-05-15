@@ -56,14 +56,7 @@
 			<xsl:otherwise><xsl:text>Clause </xsl:text></xsl:otherwise>
 		</xsl:choose>
 	</xsl:variable>
-	
-	<xsl:variable name="title-table">
-		<xsl:choose>
-			<xsl:when test="$language = 'zh'"><xsl:text>表 </xsl:text></xsl:when>
-			<xsl:otherwise><xsl:text>Table </xsl:text></xsl:otherwise>
-		</xsl:choose>
-	</xsl:variable>
-	
+		
 	<!-- Example:
 		<item level="1" id="Foreword" display="true">Foreword</item>
 		<item id="term-script" display="false">3.2</item>

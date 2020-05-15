@@ -1,5 +1,33 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:fo="http://www.w3.org/1999/XSL/Format" xmlns:iso="https://www.metanorma.org/ns/iso" xmlns:iec="https://www.metanorma.org/ns/iec" xmlns:itu="https://www.metanorma.org/ns/itu" xmlns:nist="https://www.metanorma.org/ns/nist" xmlns:un="https://www.metanorma.org/ns/un" xmlns:csd="https://www.metanorma.org/ns/csd" xmlns:ogc="https://www.metanorma.org/ns/ogc" xmlns:mathml="http://www.w3.org/1998/Math/MathML" xmlns:xalan="http://xml.apache.org/xalan"  xmlns:fox="http://xmlgraphics.apache.org/fop/extensions" version="1.0">
+
+	<xsl:variable name="title-table">
+		<xsl:if test="$namespace = 'iso' or $namespace = 'iec' or $namespace = 'itu' or $namespace = 'unece' or $namespace = 'unece-rec' or $namespace = 'nist' or $namespace = 'ogc' or $namespace = 'rsd' or $namespace = 'csa' or $namespace = 'csd'">
+			<xsl:text>Table </xsl:text>
+		</xsl:if>							
+		<xsl:if test="$namespace = 'gb'">
+			<xsl:choose>
+				<xsl:when test="$lang = 'zh'">表 </xsl:when>
+				<xsl:otherwise><xsl:text>Table </xsl:text></xsl:otherwise>
+			</xsl:choose>
+		</xsl:if>
+	</xsl:variable>
+	
+	<xsl:variable name="title-note">
+		<xsl:if test="$namespace = 'iso' or $namespace = 'iec' or $namespace = 'itu' or $namespace = 'unece' or $namespace = 'unece-rec' or $namespace = 'nist' or $namespace = 'ogc' or $namespace = 'rsd' or $namespace = 'csa' or $namespace = 'csd'">
+			<xsl:text>NOTE </xsl:text>
+		</xsl:if>
+		<xsl:if test="$namespace = 'gb'">
+			<xsl:choose>
+				<xsl:when test="$lang = 'zh'">注 </xsl:when>
+				<xsl:otherwise><xsl:text>NOTE </xsl:text></xsl:otherwise>
+			</xsl:choose>
+		</xsl:if>
+	</xsl:variable>
+
+	<xsl:variable name="title-key">Key</xsl:variable>
+	
+	<xsl:variable name="title-where">where </xsl:variable>
 	
 	<xsl:variable name="lower">abcdefghijklmnopqrstuvwxyz</xsl:variable> 
 	<xsl:variable name="upper">ABCDEFGHIJKLMNOPQRSTUVWXYZ</xsl:variable>
@@ -18,18 +46,6 @@
 			<xsl:attribute name="text-decoration">underline</xsl:attribute>
 		</xsl:if>
 	</xsl:attribute-set>
-	
-	<xsl:variable name="title-note">
-		<xsl:if test="$namespace = 'iso' or $namespace = 'iec' or $namespace = 'itu' or $namespace = 'unece' or $namespace = 'unece-rec' or $namespace = 'nist' or $namespace = 'ogc' or $namespace = 'rsd' or $namespace = 'csa' or $namespace = 'csd'">
-			<xsl:text>NOTE </xsl:text>
-		</xsl:if>
-		<xsl:if test="$namespace = 'gb'">
-			<xsl:choose>
-				<xsl:when test="$lang = 'zh'">注 </xsl:when>
-				<xsl:otherwise><xsl:text>NOTE </xsl:text></xsl:otherwise>
-			</xsl:choose>
-		</xsl:if>
-	</xsl:variable>
 	
 	<xsl:template match="text()">
 		<xsl:value-of select="."/>
@@ -83,8 +99,8 @@
 							<xsl:if test="$namespace = 'unece'">
 								<xsl:attribute name="font-weight">normal</xsl:attribute>
 								<xsl:attribute name="font-size">11pt</xsl:attribute>
-							</xsl:if>
-							<xsl:text>Table </xsl:text>
+							</xsl:if>							
+							<xsl:value-of select="$title-table"/>
 							<xsl:choose>
 								<xsl:when test="ancestor::*[local-name()='executivesummary']"> <!-- NIST -->
 									<xsl:text>ES-</xsl:text><xsl:number format="1" count="*[local-name()='executivesummary']//*[local-name()='table'][not(@unnumbered) or @unnumbered != 'true']"/>
@@ -158,15 +174,8 @@
 							<xsl:attribute name="margin-bottom">12pt</xsl:attribute>
 						</xsl:if>
 						
-						<xsl:if test="$namespace = 'iso' or $namespace = 'iec' or $namespace = 'itu' or $namespace = 'unece' or $namespace = 'unece-rec' or $namespace = 'nist' or $namespace = 'ogc' or $namespace = 'rsd' or $namespace = 'csa' or $namespace = 'csd'">
-							<xsl:text>Table </xsl:text>
-						</xsl:if>							
-						<xsl:if test="$namespace = 'gb'">
-							<xsl:choose>
-								<xsl:when test="$lang = 'zh'">表 </xsl:when>
-								<xsl:otherwise><xsl:text>Table </xsl:text></xsl:otherwise>
-							</xsl:choose>
-						</xsl:if>
+						<xsl:value-of select="$title-table"/>
+						
 						
 						<xsl:choose>
 							<xsl:when test="ancestor::*[local-name()='executivesummary']"> <!-- NIST -->
@@ -1093,8 +1102,8 @@
 						</xsl:if>
 						<xsl:if test="$namespace = 'gb'">
 							<xsl:attribute name="margin-left">7.4mm</xsl:attribute>
-						</xsl:if>
-						<xsl:text>where </xsl:text>
+						</xsl:if>						
+						<xsl:value-of select="$title-where"/>
 					</fo:block>
 					<fo:block>
 						<xsl:if test="$namespace = 'gb'">
@@ -1111,7 +1120,7 @@
 						<xsl:if test="$namespace = 'iso' or $namespace = 'iec'">
 							<xsl:attribute name="margin-bottom">0</xsl:attribute>
 						</xsl:if>						
-						<xsl:text>where </xsl:text>
+						<xsl:value-of select="$title-where"/>
 						<xsl:apply-templates select="*[local-name()='dt']/*"/>
 						<xsl:text></xsl:text>
 						<xsl:apply-templates select="*[local-name()='dd']/*" mode="inline"/>
@@ -1130,10 +1139,10 @@
 						<xsl:attribute name="margin-bottom">6pt</xsl:attribute>
 					</xsl:if>
 					<xsl:if test="$namespace = 'gb'">
-							<xsl:attribute name="margin-left">7.4mm</xsl:attribute>
-							<xsl:attribute name="margin-bottom">0pt</xsl:attribute>
-						</xsl:if>
-					<xsl:text>where</xsl:text>
+						<xsl:attribute name="margin-left">7.4mm</xsl:attribute>
+						<xsl:attribute name="margin-bottom">0pt</xsl:attribute>
+					</xsl:if>					
+					<xsl:value-of select="$title-where"/>
 				</fo:block>
 			</xsl:when>
 			<xsl:when test="$parent = 'figure' and  (not(../@class) or ../@class !='pseudocode')">
@@ -1150,7 +1159,7 @@
 						<xsl:attribute name="margin-bottom">0pt</xsl:attribute>
 						<xsl:attribute name="text-indent">7.4mm</xsl:attribute>
 					</xsl:if>
-					<xsl:text>Key</xsl:text>
+					<xsl:value-of select="$title-key"/>
 				</fo:block>
 			</xsl:when>
 		</xsl:choose>
