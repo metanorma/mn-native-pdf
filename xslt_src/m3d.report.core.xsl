@@ -61,8 +61,7 @@
 					<fo:region-end region-name="cover-right-region" extent="22mm"/>
 				</fo:simple-page-master>
 				
-				<!-- contents pages -->
-				<!-- odd pages -->
+				<!-- contents pages -->				
 				<fo:simple-page-master master-name="page" page-width="{$pageWidth}" page-height="{$pageHeight}">
 					<fo:region-body margin-top="20mm" margin-bottom="23mm" margin-left="17.3mm" margin-right="17.3mm"/>
 					<fo:region-before region-name="header" extent="35mm"/>
@@ -71,9 +70,18 @@
 					<fo:region-end region-name="right-region" extent="17.3mm"/>
 				</fo:simple-page-master>
 				
+				<fo:simple-page-master master-name="last" page-width="{$pageWidth}" page-height="{$pageHeight}">
+					<fo:region-body margin-top="20mm" margin-bottom="53mm" margin-left="17.3mm" margin-right="17.3mm"/>
+					<fo:region-before region-name="header" extent="35mm"/>
+					<fo:region-after region-name="footer-last" extent="53mm"/>
+					<fo:region-start region-name="left-region" extent="17.3mm"/>
+					<fo:region-end region-name="right-region" extent="17.3mm"/>
+				</fo:simple-page-master>
+				
 				<fo:page-sequence-master master-name="document">
 					<fo:repeatable-page-master-alternatives>
 						<fo:conditional-page-master-reference page-position="first" master-reference="cover"/>
+						<fo:conditional-page-master-reference page-position="last" master-reference="last"/>
 						<fo:conditional-page-master-reference page-position="any" master-reference="page"/>
 					</fo:repeatable-page-master-alternatives>
 				</fo:page-sequence-master>
@@ -110,7 +118,7 @@
 				</x:xmpmeta>
 			</fo:declarations>
 			
-			<fo:page-sequence master-reference="document" force-page-count="no-force">				
+			<fo:page-sequence master-reference="document" force-page-count="no-force">
 			
 				<fo:static-content flow-name="cover-header">
 					<fo:block-container height="18mm" border-bottom="0.5pt solid red">
@@ -147,9 +155,40 @@
 							<fo:leader font-weight="normal" leader-pattern="space"/>
 							<fo:inline font-size="9pt"><fo:page-number /></fo:inline>
 						</fo:block>
-					</fo:block-container>
+					</fo:block-container>				
 				</fo:static-content>
 
+				<fo:static-content flow-name="footer-last">
+					<fo:block-container height="53mm" border-top="0.5pt solid rgb(103, 141, 207)" display-align="after">
+						<fo:block-container padding-bottom="16mm">
+							<fo:block text-align="justify">
+								<fo:inline>As with all M3AAWG documents that we publish, please check the M3AAWG website (<fo:inline color="blue" text-decoration="underline">www.m3aawg.org</fo:inline>) for updates to this paper.</fo:inline>
+							</fo:block>
+							<fo:block>&#xA0;</fo:block>
+							<fo:block>&#xA0;</fo:block>						
+							<fo:block>
+								<xsl:text>© </xsl:text>
+								<xsl:value-of select="/m3d:m3d-standard/m3d:bibdata/m3d:copyright/m3d:from"/>
+								<xsl:text> copyright by the </xsl:text>
+								<xsl:value-of select="/m3d:m3d-standard/m3d:bibdata/m3d:copyright/m3d:owner/m3d:organization/m3d:name"/>
+								<xsl:text> (</xsl:text>
+								<xsl:value-of select="/m3d:m3d-standard/m3d:bibdata/m3d:copyright/m3d:owner/m3d:organization/m3d:abbreviation"/>
+								<xsl:text>)</xsl:text>							
+							</fo:block>
+							<fo:block font-size="10pt">
+								<fo:block text-align-last="justify" margin-top="2mm">
+									<fo:inline font-weight="bold">
+										<fo:inline>M<fo:inline font-size="6.5pt" vertical-align="super">3</fo:inline>AAWG </fo:inline>
+										<xsl:value-of select="$title-en"/>								
+									</fo:inline>
+									<fo:leader font-weight="normal" leader-pattern="space"/>
+									<fo:inline font-size="9pt"><fo:page-number /></fo:inline>
+								</fo:block>
+							</fo:block>
+						</fo:block-container>
+					</fo:block-container>
+				</fo:static-content>
+				
 				<fo:flow flow-name="xsl-region-body">
 					<fo:block-container font-weight="bold" text-align="center">
 						<!-- Messaging, Malware and Mobile Anti-Abuse Working Group -->
@@ -221,6 +260,9 @@
 														<xsl:when test="@section = '0'">
 															<xsl:value-of select="text()"/>
 														</xsl:when>
+														<xsl:when test="@type = 'references' and @section = ''">
+															<xsl:value-of select="text()"/>
+														</xsl:when>
 														<xsl:when test="@level = 1">
 															<xsl:value-of select="@section"/>
 														</xsl:when>
@@ -237,6 +279,7 @@
 												<fo:basic-link internal-destination="{@id}" fox:alt-text="{text()}">
 													<xsl:choose>
 														<xsl:when test="@section = '0'"></xsl:when>
+														<xsl:when test="@type = 'references' and @section = ''"></xsl:when>
 														<xsl:otherwise>
 															<xsl:value-of select="text()"/>
 														</xsl:otherwise>
@@ -289,7 +332,7 @@
 					
 					<!-- Bibliography -->
 					<xsl:apply-templates select="/m3d:m3d-standard/m3d:bibliography/m3d:references[position() &gt; 1]"/>
-					
+				
 				</fo:flow>
 			</fo:page-sequence>
 			
@@ -475,7 +518,7 @@
 						<xsl:number format="a)"/>
 					</xsl:when>
 					<xsl:when test="../@type = 'alphabet'">
-						<xsl:number format="a)"/>
+						<xsl:number format="1)"/>
 					</xsl:when>
 					<xsl:otherwise>
 						<xsl:number format="1."/>
@@ -537,7 +580,7 @@
 		</xsl:variable>
 		<fo:block margin-top="6pt" margin-bottom="6pt" keep-with-next="always">
 			<fo:inline>
-				<xsl:value-of select="$section"/><xsl:text>.</xsl:text>
+				<xsl:value-of select="$section"/><!-- <xsl:text>.</xsl:text> -->
 			</fo:inline>			
 		</fo:block>
 		<xsl:apply-templates>
@@ -591,8 +634,8 @@
 				</fo:block>
 			</xsl:when>
 			<xsl:when test="$parent-name = 'annex'">
-				<fo:block id="{$id}" font-size="{$font-size}"  text-align="center" margin-bottom="12pt" keep-with-next="always">
-					<!-- <xsl:value-of select="$section"/> -->
+				<fo:block id="{$id}" font-size="{$font-size}" font-weight="bold" text-align="center" margin-bottom="12pt" keep-with-next="always">
+					<xsl:value-of select="$section"/>
 					<xsl:if test=" ../@obligation">
 						<xsl:value-of select="$linebreak"/>
 						<fo:inline font-weight="normal">
@@ -606,11 +649,12 @@
 					<fo:block margin-top="14pt" margin-bottom="24pt"><xsl:apply-templates /></fo:block>
 				</fo:block>
 			</xsl:when>
-			<xsl:when test="$parent-name = 'references' and $references_num_current != 1"> <!-- Bibliography -->
+			 <!-- Bibliography -->
+			<!-- <xsl:when test="$parent-name = 'references' and $references_num_current != 1">
 				<fo:block id="{$id}" text-align="center" margin-top="6pt" margin-bottom="16pt" keep-with-next="always">
 					<xsl:apply-templates />
 				</fo:block>
-			</xsl:when>
+			</xsl:when> -->
 			
 			<xsl:otherwise>
 				<xsl:element name="{$element-name}">
@@ -636,7 +680,7 @@
 					<xsl:attribute name="keep-with-next">always</xsl:attribute>		
 					
 					<xsl:choose>
-						<xsl:when test="ancestor::m3d:sections or 
+						<xsl:when test="(ancestor::m3d:sections and $level = 1) or 
 																($parent-name = 'references' and $references_num_current = 1)">
 							<fo:table table-layout="fixed" width="100%">
 								<fo:table-column column-width="25mm"/>
@@ -656,6 +700,10 @@
 									</fo:table-row>
 								</fo:table-body>
 							</fo:table>
+						</xsl:when>
+						<xsl:when test="ancestor::m3d:sections or ancestor::m3d:annex">
+							<fo:inline padding-right="3mm"><xsl:value-of select="$section"/></fo:inline>
+							<xsl:apply-templates />
 						</xsl:when>
 						<xsl:otherwise>
 							<xsl:apply-templates />
@@ -958,7 +1006,7 @@
 						</xsl:call-template>
 					</xsl:for-each>
 				</xsl:variable>
-				<xsl:value-of select="$section"/><xsl:text>.</xsl:text>
+				<xsl:value-of select="$section"/><!-- <xsl:text>.</xsl:text> -->
 			</fo:inline>
 		</fo:block>
 		<fo:block>
@@ -1049,29 +1097,15 @@
 	</xsl:template>
 	
 	<xsl:template match="m3d:termnote">
-		<fo:block-container margin-top="4pt" line-height="125%">
-			<fo:block-container margin-left="0mm">
-				<fo:table table-layout="fixed" width="100%">
-					<fo:table-column column-width="27mm"/>
-					<fo:table-column column-width="138mm"/>
-					<fo:table-body>
-						<fo:table-row>
-							<fo:table-cell>
-								<fo:block>
-									<xsl:text>Note </xsl:text>
-										<xsl:number />
-									<xsl:text> to entry: </xsl:text>
-								</fo:block>
-							</fo:table-cell>
-							<fo:table-cell>
-								<fo:block>
-									<xsl:apply-templates />
-								</fo:block>
-							</fo:table-cell>
-						</fo:table-row>
-					</fo:table-body>
-				</fo:table>
-			</fo:block-container>
+		<fo:block-container margin-left="0mm" margin-top="4pt" line-height="125%">
+			<fo:block>
+				<fo:inline padding-right="1mm">
+					<xsl:text>Note </xsl:text>
+						<xsl:number />
+					<xsl:text> to entry: </xsl:text>
+				</fo:inline>
+				<xsl:apply-templates />
+			</fo:block>
 		</fo:block-container>
 	</xsl:template>
 	
@@ -1086,7 +1120,7 @@
 	
 	<xsl:template match="m3d:termexample">
 		<fo:block margin-top="14pt" margin-bottom="14pt"  text-align="justify">
-			<fo:inline padding-right="1mm">
+			<fo:inline padding-right="1mm" font-weight="bold">
 				<xsl:value-of select="$title-example"/>
 				<xsl:if test="count(ancestor::m3d:term[1]//m3d:termexample) &gt; 1">
 					<xsl:number />
@@ -1200,7 +1234,7 @@
 	</xsl:template>
 	
 	<xsl:template match="m3d:appendix//m3d:example">
-		<fo:block  margin-top="8pt" margin-bottom="8pt">
+		<fo:block  margin-top="8pt" margin-bottom="8pt" font-weight="bold">
 			<xsl:variable name="claims_id" select="ancestor::m3d:clause[1]/@id"/>
 			<xsl:value-of select="$title-example"/>
 			<xsl:if test="count(ancestor::m3d:clause[1]//m3d:example) &gt; 1">
@@ -1298,7 +1332,7 @@
 	</xsl:template>
 
 	<xsl:template match="m3d:sourcecode">
-		<fo:block font-family="Courier" font-weight="bold" margin-bottom="12pt">
+		<fo:block font-family="Courier" margin-bottom="12pt">
 			<xsl:choose>
 				<xsl:when test="@lang = 'en'"></xsl:when>
 				<xsl:otherwise>
@@ -1312,7 +1346,7 @@
 	<xsl:template match="m3d:example/m3d:p">
 		<fo:block margin-top="8pt" margin-bottom="8pt">
 			<xsl:variable name="claims_id" select="ancestor::m3d:clause[1]/@id"/>
-			<fo:inline padding-right="5mm">
+			<fo:inline padding-right="5mm" font-weight="bold">
 				<xsl:value-of select="$title-example"/>
 				<xsl:if test="count(ancestor::m3d:clause[1]//m3d:example) &gt; 1">
 					<xsl:number count="m3d:example[ancestor::m3d:clause[@id = $claims_id]]" level="any"/>
@@ -1324,31 +1358,17 @@
 	
 	<xsl:template match="m3d:note/m3d:p" name="note">
 		<xsl:variable name="claims_id" select="ancestor::m3d:clause[1]/@id"/>
-		<fo:block-container margin-top="4pt" line-height="125%">
-			<fo:block-container margin-left="0mm">
-				<fo:table table-layout="fixed" width="100%">
-					<fo:table-column column-width="10mm"/>
-					<fo:table-column column-width="155mm"/>
-					<fo:table-body>
-						<fo:table-row>
-							<fo:table-cell>
-								<fo:block>
-									<xsl:text>NOTE</xsl:text>									
-									<xsl:if test="count(ancestor::m3d:clause[1]//m3d:note) &gt; 1">
-										<xsl:text> </xsl:text><xsl:number count="m3d:note[ancestor::m3d:clause[@id = $claims_id]]" level="any"/>
-									</xsl:if>
-									<xsl:text>:</xsl:text>
-								</fo:block>
-							</fo:table-cell>
-							<fo:table-cell>
-								<fo:block text-align="justify">
-									<xsl:apply-templates />
-								</fo:block>
-							</fo:table-cell>
-						</fo:table-row>
-					</fo:table-body>
-				</fo:table>
-			</fo:block-container>
+		<fo:block-container margin-left="0mm" margin-top="4pt" line-height="125%">
+			<fo:block>
+				<fo:inline padding-right="5mm" font-weight="bold">
+					<xsl:value-of select="$title-note"/>
+					<xsl:if test="count(ancestor::m3d:clause[1]//m3d:note) &gt; 1">
+						<xsl:text> </xsl:text><xsl:number count="m3d:note[ancestor::m3d:clause[@id = $claims_id]]" level="any"/>
+					</xsl:if>
+					<xsl:text>:</xsl:text>
+				</fo:inline>
+				<xsl:apply-templates />
+			</fo:block>
 		</fo:block-container>
 	</xsl:template>
 
@@ -1496,7 +1516,9 @@
 				</xsl:when>
 				<xsl:when test="ancestor::m3d:sections">
 					<!-- 1, 2, 3, 4, ... from main section (not annex, bibliography, ...) -->
-					<xsl:text>Section </xsl:text>
+					<xsl:if test="$level = 1">
+						<xsl:text>Section </xsl:text>
+					</xsl:if>
 					<xsl:choose>
 						<xsl:when test="$level = 1">
 							<xsl:value-of select="$sectionNum"/><xsl:text>.</xsl:text>
@@ -1512,7 +1534,7 @@
 																																										m3d:definitions/m3d:clause |
 																																										m3d:clause/m3d:definitions"/>
 							</xsl:variable>
-							<xsl:value-of select="concat($sectionNum, $num)"/>
+							<xsl:value-of select="concat($sectionNum, $num)"/><xsl:text>.</xsl:text>
 						</xsl:when>
 						<xsl:otherwise>
 							<!-- z<xsl:value-of select="$sectionNum"/>z -->
