@@ -1498,11 +1498,9 @@
 	<xsl:template match="itu:link" priority="2">
 		<fo:inline color="blue">
 			<xsl:if test="local-name(..) = 'formattedref' or ancestor::itu:preface">
-				<xsl:attribute name="font-family">Arial</xsl:attribute>
-				<xsl:attribute name="font-size">8pt</xsl:attribute>
-				<xsl:if test="local-name(..) = 'formattedref'">
-					<xsl:attribute name="text-decoration">underline</xsl:attribute>
-				</xsl:if>
+				<xsl:attribute name="text-decoration">underline</xsl:attribute>
+				<!-- <xsl:attribute name="font-family">Arial</xsl:attribute>
+				<xsl:attribute name="font-size">8pt</xsl:attribute> -->
 			</xsl:if>
 			<xsl:call-template name="link"/>
 		</fo:inline>

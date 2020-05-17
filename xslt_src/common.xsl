@@ -971,6 +971,12 @@
 						<xsl:attribute name="text-indent">-6mm</xsl:attribute>
 						<xsl:attribute name="margin-left">6mm</xsl:attribute>
 					</xsl:if>
+					<xsl:if test="$namespace = 'itu'">
+						<xsl:attribute name="margin-bottom">2pt</xsl:attribute>
+						<xsl:attribute name="line-height-shift-adjustment">disregard-shifts</xsl:attribute>
+						<xsl:attribute name="text-indent">-5mm</xsl:attribute>
+						<xsl:attribute name="start-indent">5mm</xsl:attribute>
+					</xsl:if>
 					<fo:inline font-size="80%" padding-right="5mm" id="{@id}">
 						<xsl:if test="$namespace = 'itu' or  $namespace = 'nist' or $namespace = 'unece' or $namespace = 'unece-rec'  or $namespace = 'csd' or $namespace = 'ogc' or $namespace = 'gb' or $namespace = 'm3d'">
 							<xsl:attribute name="vertical-align">super</xsl:attribute>
@@ -987,6 +993,7 @@
 						</xsl:if>
 						<xsl:if test="$namespace = 'itu'">
 							<xsl:attribute name="padding-right">3mm</xsl:attribute>
+							<xsl:attribute name="font-size">70%</xsl:attribute>
 						</xsl:if>
 						<xsl:if test="$namespace = 'nist'">
 							<xsl:attribute name="font-size">10pt</xsl:attribute>
