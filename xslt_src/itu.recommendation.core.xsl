@@ -52,8 +52,6 @@
 			<xsl:apply-templates select="/itu:itu-standard/itu:annex" mode="contents"/>
 			<xsl:apply-templates select="/itu:itu-standard/itu:bibliography/itu:references[position() != 1]" mode="contents"/> <!-- @id = 'bibliography' -->
 			
-			<xsl:apply-templates select="//itu3" mode="contents"/>
-			
 			<xsl:apply-templates select="//itu:table" mode="contents"/>
 			
 		</contents>
@@ -132,7 +130,7 @@
 					<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
 						<rdf:Description rdf:about="" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:pdf="http://ns.adobe.com/pdf/1.3/">
 						<!-- Dublin Core properties go here -->
-							<dc:title><xsl:value-of select="/itu:itu-standard/itu:bibdata/itu:title[@type='main']"/></dc:title>
+							<dc:title><xsl:value-of select="/itu:itu-standard/itu:bibdata/itu:title[@type='main']"/>&#xA0;</dc:title>
 							<dc:creator><xsl:value-of select="/itu:iso-standard/itu:bibdata/itu:contributor[itu:role/@type='author']/itu:organization/itu:name"/></dc:creator>
 							<dc:description>
 								<xsl:variable name="abstract">
@@ -182,12 +180,12 @@
 							<fo:table-column column-width="35.8mm"/>
 							<fo:table-column column-width="67mm"/>
 							<fo:table-body>
-								<fo:table-row height="42.5mm">
+								<fo:table-row height="37.5mm"> <!-- 42.5mm -->
 									<fo:table-cell>
 										<fo:block>&#xA0;</fo:block>
 									</fo:table-cell>
 									<fo:table-cell number-columns-spanned="3">
-										<fo:block font-family="Arial" font-size="13pt" font-weight="bold" color="gray" margin-top="16pt"> <!-- letter-spacing="4pt", Helvetica for letter-spacing working -->
+										<fo:block font-family="Arial" font-size="13pt" font-weight="bold" color="gray"> <!--  margin-top="16pt" letter-spacing="4pt", Helvetica for letter-spacing working -->
 											<fo:block><xsl:value-of select="$linebreak"/></fo:block>
 											<xsl:call-template name="addLetterSpacing">
 												<xsl:with-param name="text" select="/itu:itu-standard/itu:bibdata/itu:contributor[itu:role/@type='author']/itu:organization/itu:name"/>
@@ -238,29 +236,31 @@
 										</fo:block>
 									</fo:table-cell>
 								</fo:table-row>
-								<fo:table-row height="59mm">
+								<fo:table-row height="64mm"> <!-- 59mm -->
 									<fo:table-cell>
 										<fo:block>&#xA0;</fo:block>
 									</fo:table-cell>
-									<fo:table-cell font-size="16pt" number-columns-spanned="3" border-bottom="0.5mm solid black" padding-right="2mm">
-										<fo:block >
-											<xsl:if test="normalize-space(/itu:itu-standard/itu:bibdata/itu:series[@type = 'main']) != ''">
-												<xsl:variable name="title">
-													<xsl:text>Series </xsl:text>
-													<xsl:value-of select="/itu:itu-standard/itu:bibdata/itu:series[@type = 'main']"/>
-												</xsl:variable>
-												<xsl:value-of select="translate($title, $lower, $upper)"/>
-											</xsl:if>
-										</fo:block>
-										<xsl:if test="/itu:itu-standard/itu:bibdata/itu:series">
-											<fo:block margin-top="6pt">
-												<xsl:value-of select="/itu:itu-standard/itu:bibdata/itu:series[@type = 'secondary']"/>
-												<xsl:if test="normalize-space(/itu:itu-standard/itu:bibdata/itu:series[@type = 'tertiary']) != ''">
-													<xsl:text> — </xsl:text>
-													<xsl:value-of select="/itu:itu-standard/itu:bibdata/itu:series[@type = 'tertiary']"/>
+									<fo:table-cell font-size="16pt" number-columns-spanned="3" border-bottom="0.5mm solid black" padding-right="2mm" display-align="after">
+										<fo:block padding-bottom="7mm">
+											<fo:block text-transform="uppercase">
+												<xsl:if test="normalize-space(/itu:itu-standard/itu:bibdata/itu:series[@type = 'main']) != ''">
+													<xsl:variable name="title">
+														<xsl:text>Series </xsl:text>
+														<xsl:value-of select="/itu:itu-standard/itu:bibdata/itu:series[@type = 'main']"/>
+													</xsl:variable>
+													<xsl:value-of select="$title"/>												
 												</xsl:if>
 											</fo:block>
-										</xsl:if>
+											<xsl:if test="/itu:itu-standard/itu:bibdata/itu:series">
+												<fo:block margin-top="6pt">
+													<xsl:value-of select="/itu:itu-standard/itu:bibdata/itu:series[@type = 'secondary']"/>
+													<xsl:if test="normalize-space(/itu:itu-standard/itu:bibdata/itu:series[@type = 'tertiary']) != ''">
+														<xsl:text> — </xsl:text>
+														<xsl:value-of select="/itu:itu-standard/itu:bibdata/itu:series[@type = 'tertiary']"/>
+													</xsl:if>
+												</fo:block>
+											</xsl:if>
+										</fo:block>
 									</fo:table-cell>
 								</fo:table-row>
 								<fo:table-row height="40mm">
@@ -1472,10 +1472,10 @@
 						<xsl:attribute name="margin-left">18mm</xsl:attribute>
 					</xsl:if>
 					<xsl:if test="local-name(..) = 'ul'">
-						<xsl:attribute name="margin-left">15mm</xsl:attribute>
-						<xsl:if test="count(ancestor::itu:ol) + count(ancestor::itu:ul) &gt; 1">
+						<xsl:attribute name="margin-left">7mm</xsl:attribute><!-- 15mm -->
+						<!-- <xsl:if test="count(ancestor::itu:ol) + count(ancestor::itu:ul) &gt; 1">
 							<xsl:attribute name="margin-left">7mm</xsl:attribute>
-						</xsl:if>
+						</xsl:if> -->
 					</xsl:if>
 					<fo:block-container margin-left="0mm">
 						<xsl:apply-templates />
