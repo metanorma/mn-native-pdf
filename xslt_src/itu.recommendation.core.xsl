@@ -1610,13 +1610,13 @@
 		
 		<fo:basic-link internal-destination="{@target}" color="blue" text-decoration="underline" fox:alt-text="{@target}">
 			<xsl:variable name="type" select="xalan:nodeset($contents)//item[@id = current()/@target]/@type"/>
+			<xsl:variable name="level" select="xalan:nodeset($contents)//item[@id =current()/@target]/@level"/>
 			<xsl:choose>
-				<xsl:when test="$type = 'clause'">Clause </xsl:when><!-- and not (ancestor::annex) -->
+				<xsl:when test="($type = 'clause' or $type = 'term') and $level = 1">Clause </xsl:when><!-- and not (ancestor::annex) -->
 				<xsl:when test="$type = 'example'">Example </xsl:when>
 				<xsl:when test="$type = 'figure'"></xsl:when>
 				<xsl:when test="$type = 'formula'"></xsl:when>
 				<xsl:when test="$type = 'table'"></xsl:when>
-				<xsl:when test="$type = 'term'">Clause </xsl:when>
 				<xsl:when test="$type = 'note'"><xsl:text>Note </xsl:text><xsl:value-of select="xalan:nodeset($contents)//item[@id = current()/@target]/text()"/></xsl:when>
 					
 				<xsl:otherwise></xsl:otherwise> <!-- <xsl:value-of select="$type"/> -->
@@ -1629,8 +1629,10 @@
 					</xsl:variable>
 					<xsl:if test="not(contains($section, $currentSection))">
 						<xsl:text>in </xsl:text>
-						<xsl:value-of select="xalan:nodeset($contents)//item[@id = current()/@target]/@parent"/>
-						<xsl:text> </xsl:text>
+						<xsl:if test="$level = 1">
+							<xsl:value-of select="xalan:nodeset($contents)//item[@id = current()/@target]/@parent"/>
+							<xsl:text> </xsl:text>
+						</xsl:if>
 						<xsl:value-of select="$section"/>
 					</xsl:if>
 				</xsl:when>
@@ -1646,8 +1648,10 @@
 					</xsl:variable>
 					<xsl:if test="not(contains($section, $currentSection))">
 						<xsl:text> in </xsl:text>
-						<xsl:value-of select="xalan:nodeset($contents)//item[@id = current()/@target]/@parent"/>
-						<xsl:text> </xsl:text>
+						<xsl:if test="$level = 1">
+							<xsl:value-of select="xalan:nodeset($contents)//item[@id = current()/@target]/@parent"/>
+							<xsl:text> </xsl:text>
+						</xsl:if>
 						<xsl:value-of select="$section"/>
 					</xsl:if>
 				</xsl:when>
@@ -1661,7 +1665,10 @@
 						<xsl:call-template name="getSection"/>
 					</xsl:variable>
 					<xsl:if test="not(contains($section, $currentSection))">
-						<xsl:text> in Clause </xsl:text>
+						<xsl:text> in </xsl:text>
+						<xsl:if test="$level = 1">
+							<xsl:text>Clause </xsl:text>
+						</xsl:if>
 						<xsl:value-of select="$section"/>
 					</xsl:if>
 				</xsl:when>
