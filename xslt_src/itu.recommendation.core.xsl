@@ -1612,7 +1612,8 @@
 			<xsl:variable name="type" select="xalan:nodeset($contents)//item[@id = current()/@target]/@type"/>
 			<xsl:variable name="level" select="xalan:nodeset($contents)//item[@id =current()/@target]/@level"/>
 			<xsl:choose>
-				<xsl:when test="($type = 'clause' or $type = 'term') and $level = 1">Clause </xsl:when><!-- and not (ancestor::annex) -->
+				<xsl:when test="($type = 'clause' or $type = 'term') and $level = 1"><xsl:value-of select="$title-clause"/></xsl:when><!-- and not (ancestor::annex) -->
+				<xsl:when test="($type = 'clause' or $type = 'term') and $level &gt; 1"><xsl:value-of select="translate($title-clause, $upper, $lower)"/></xsl:when>
 				<xsl:when test="$type = 'example'">Example </xsl:when>
 				<xsl:when test="$type = 'figure'"></xsl:when>
 				<xsl:when test="$type = 'formula'"></xsl:when>
@@ -1666,9 +1667,10 @@
 					</xsl:variable>
 					<xsl:if test="not(contains($section, $currentSection))">
 						<xsl:text> in </xsl:text>
-						<xsl:if test="$level = 1">
-							<xsl:text>Clause </xsl:text>
-						</xsl:if>
+						<xsl:choose>
+							<xsl:when test="$level = 1"><xsl:value-of select="$title-clause"/></xsl:when>
+							<xsl:when test="$level &gt; 1"><xsl:value-of select="translate($title-clause, $upper, $lower)"/></xsl:when>
+						</xsl:choose>
 						<xsl:value-of select="$section"/>
 					</xsl:if>
 				</xsl:when>
@@ -1763,6 +1765,30 @@
 			<xsl:apply-templates />
 	</xsl:template>
 
+	<xsl:template match="itu:quote">
+		<fo:block margin-top="6pt" margin-left="12mm" margin-right="12mm">
+			<xsl:apply-templates select=".//itu:p"/>
+		</fo:block>
+		<xsl:if test="itu:author or itu:source">
+			<fo:block text-align="right">
+				<!-- — ISO, ISO 7301:2011, Clause 1 -->
+				<xsl:text>— </xsl:text>
+				<xsl:value-of select="itu:author"/>
+				<xsl:if test="itu:author and itu:source">
+					<xsl:text>, </xsl:text>
+				</xsl:if>
+				<xsl:apply-templates select="itu:source"/>
+			</fo:block>
+		</xsl:if>
+	</xsl:template>
+	
+	<xsl:template match="itu:source">
+		<fo:basic-link internal-destination="{@bibitemid}" fox:alt-text="{@citeas}">
+			<xsl:value-of select="@citeas" disable-output-escaping="yes"/>
+			<xsl:apply-templates select="itu:localityStack"/>
+		</fo:basic-link>
+	</xsl:template>
+	
 	<xsl:template match="itu:sourcecode">
 		<fo:block font-family="Courier" font-size="10pt" margin-top="6pt" margin-bottom="6pt">
 			<xsl:choose>

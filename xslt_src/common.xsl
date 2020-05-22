@@ -63,7 +63,7 @@
 	
 	<xsl:variable name="title-clause">
 		<xsl:if test="$namespace = 'iso' or $namespace = 'iec' or $namespace = 'itu' or $namespace = 'unece' or $namespace = 'unece-rec' or $namespace = 'nist' or $namespace = 'ogc' or $namespace = 'rsd' or $namespace = 'csa' or $namespace = 'csd' or $namespace = 'm3d'">
-			<xsl:text>Annex </xsl:text>
+			<xsl:text>Clause </xsl:text>
 		</xsl:if>
 		<xsl:if test="$namespace = 'gb'">
 			<xsl:choose>
@@ -75,7 +75,7 @@
 	
 	<xsl:variable name="title-key">Key</xsl:variable>
 	
-	<xsl:variable name="title-where">where </xsl:variable>
+	<xsl:variable name="title-where">where</xsl:variable>
 	
 	<xsl:variable name="lower">abcdefghijklmnopqrstuvwxyz</xsl:variable> 
 	<xsl:variable name="upper">ABCDEFGHIJKLMNOPQRSTUVWXYZ</xsl:variable>
@@ -224,78 +224,9 @@
 						
 						<xsl:value-of select="$title-table"/>
 						
+						<xsl:call-template name="getTableNumber"/>
+
 						
-						<xsl:choose>
-							<xsl:when test="ancestor::*[local-name()='executivesummary']"> <!-- NIST -->
-								<xsl:text>ES-</xsl:text><xsl:number format="1" count="*[local-name()='executivesummary']//*[local-name()='table'][not(@unnumbered) or @unnumbered != 'true']"/>
-							</xsl:when>
-							<xsl:when test="ancestor::*[local-name()='annex']">
-								<xsl:if test="$namespace = 'iso'">
-									<xsl:variable name="annex-id" select="ancestor::iso:annex/@id"/>
-									<xsl:number format="A." count="*[local-name()='annex']"/><xsl:number format="1" level="any" count="iso:table[(not(@unnumbered) or @unnumbered != 'true') and ancestor::iso:annex[@id = $annex-id]]"/>
-								</xsl:if>
-								<xsl:if test="$namespace = 'gb'">
-									<xsl:variable name="annex-id" select="ancestor::gb:annex/@id"/>
-									<xsl:number format="A." count="*[local-name()='annex']"/><xsl:number format="1" level="any" count="*[local-name()='table'][(not(@unnumbered) or @unnumbered != 'true') and ancestor::gb:annex[@id = $annex-id]]"/>
-								</xsl:if>
-								<xsl:if test="$namespace = 'iec' or $namespace = 'ogc'">
-									<xsl:number format="A." count="*[local-name()='annex']"/><xsl:number format="1"/>
-								</xsl:if>
-								<xsl:if test="$namespace = 'itu'">
-									<xsl:choose>
-										<xsl:when test="ancestor::itu:annex[@obligation = 'informative']">
-											<xsl:variable name="annex-id" select="ancestor::itu:annex/@id"/>
-											<!-- Table in Appendix -->
-											<xsl:number format="I-" count="itu:annex[@obligation = 'informative']"/>
-											<xsl:number format="1" level="any" count="itu:table[(not(@unnumbered) or @unnumbered != 'true') and ancestor::itu:annex[@id = $annex-id]]"/>
-										</xsl:when>
-										<!-- Table in Annex -->
-										<xsl:when test="ancestor::itu:annex[not(@obligation) or @obligation != 'informative']">
-											<xsl:variable name="annex-id" select="ancestor::itu:annex/@id"/>
-											<xsl:number format="A-" count="itu:annex[not(@obligation) or @obligation != 'informative']"/>
-											<xsl:number format="1" level="any" count="itu:table[(not(@unnumbered) or @unnumbered != 'true') and ancestor::itu:annex[@id = $annex-id]]"/>
-										</xsl:when>
-									</xsl:choose>
-								</xsl:if>
-								<xsl:if test="$namespace = 'nist'">
-									<xsl:variable name="annex-id" select="ancestor::*[local-name()='annex']/@id"/>
-									<xsl:number format="A-" count="*[local-name()='annex']"/>
-									<xsl:number format="1" level="any" count="*[local-name()='table'][not(@unnumbered) or @unnumbered != 'true'][ancestor::*[local-name()='annex'][@id = $annex-id]]"/>
-								</xsl:if>
-								<xsl:if test="$namespace = 'unece-rec'">
-									<!-- <xsl:variable name="annex-id" select="ancestor::*[local-name()='annex']/@id"/>
-									<xsl:number format="I." count="*[local-name()='annex']"/> -->
-									<xsl:text>A</xsl:text> <!-- 'A' means Annex -->
-									<xsl:number format="1" level="any" count="*[local-name()='table'][not(@unnumbered) or @unnumbered != 'true'][ancestor::*[local-name()='annex']]"/> <!-- [@id = $annex-id] -->
-								</xsl:if>
-								<xsl:if test="$namespace = 'unece'">
-									<xsl:variable name="annex-id" select="ancestor::*[local-name()='annex']/@id"/>
-									<xsl:number format="I." count="*[local-name()='annex']"/>
-									<xsl:number format="1" level="any" count="*[local-name()='table'][not(@unnumbered) or @unnumbered != 'true'][ancestor::*[local-name()='annex'][@id = $annex-id]]"/>
-								</xsl:if>
-								<xsl:if test="$namespace = 'csd'">
-									<xsl:number format="A-1" level="multiple" count="*[local-name()='annex'] | *[local-name()='table'][not(@unnumbered) or @unnumbered != 'true'] "/>
-								</xsl:if>
-							</xsl:when>
-							<xsl:otherwise>
-								<xsl:if test="$namespace = 'iec'">
-									<xsl:number format="1" level="any" count="//*[local-name()='table']
-																																						[not(ancestor::*[local-name()='annex']) 
-																																						and not(ancestor::*[local-name()='executivesummary'])
-																																						and not(ancestor::*[local-name()='bibdata'])
-																																						and not(ancestor::*[local-name()='preface'])]
-																																						[not(@unnumbered) or @unnumbered != 'true']"/>
-								</xsl:if>
-								<xsl:if test="$namespace = 'iso' or $namespace = 'itu' or $namespace = 'nist' or $namespace = 'csd' or $namespace = 'ogc' or $namespace = 'unece' or $namespace = 'unece-rec' $namespace = 'gb' or $namespace = 'm3d'">
-									<xsl:number format="A." count="*[local-name()='annex']"/>
-									<xsl:number format="1" level="any" count="//*[local-name()='table']
-																																										[not(ancestor::*[local-name()='annex']) 
-																																										and not(ancestor::*[local-name()='executivesummary'])
-																																										and not(ancestor::*[local-name()='bibdata'])]
-																																										[not(@unnumbered) or @unnumbered != 'true']"/>
-									</xsl:if>
-							</xsl:otherwise>
-						</xsl:choose>
 						<xsl:if test="*[local-name()='name']">
 							<xsl:if test="$namespace = 'unece-rec'"><xsl:text>. </xsl:text></xsl:if>
 							<xsl:if test="$namespace = 'unece'">: </xsl:if>
@@ -458,6 +389,81 @@
 		</fo:block-container>
 	</xsl:template>
 
+	
+	<xsl:template name="getTableNumber">
+		<xsl:choose>
+			<xsl:when test="ancestor::*[local-name()='executivesummary']"> <!-- NIST -->
+				<xsl:text>ES-</xsl:text><xsl:number format="1" count="*[local-name()='executivesummary']//*[local-name()='table'][not(@unnumbered) or @unnumbered != 'true']"/>
+			</xsl:when>
+			<xsl:when test="ancestor::*[local-name()='annex']">
+				<xsl:if test="$namespace = 'iso'">
+					<xsl:variable name="annex-id" select="ancestor::iso:annex/@id"/>
+					<xsl:number format="A." count="*[local-name()='annex']"/><xsl:number format="1" level="any" count="iso:table[(not(@unnumbered) or @unnumbered != 'true') and ancestor::iso:annex[@id = $annex-id]]"/>
+				</xsl:if>
+				<xsl:if test="$namespace = 'gb'">
+					<xsl:variable name="annex-id" select="ancestor::gb:annex/@id"/>
+					<xsl:number format="A." count="*[local-name()='annex']"/><xsl:number format="1" level="any" count="*[local-name()='table'][(not(@unnumbered) or @unnumbered != 'true') and ancestor::gb:annex[@id = $annex-id]]"/>
+				</xsl:if>
+				<xsl:if test="$namespace = 'iec' or $namespace = 'ogc'">
+					<xsl:number format="A." count="*[local-name()='annex']"/><xsl:number format="1"/>
+				</xsl:if>
+				<xsl:if test="$namespace = 'itu'">
+					<xsl:choose>
+						<xsl:when test="ancestor::itu:annex[@obligation = 'informative']">
+							<xsl:variable name="annex-id" select="ancestor::itu:annex/@id"/>
+							<!-- Table in Appendix -->
+							<xsl:number format="I-" count="itu:annex[@obligation = 'informative']"/>
+							<xsl:number format="1" level="any" count="itu:table[(not(@unnumbered) or @unnumbered != 'true') and ancestor::itu:annex[@id = $annex-id]]"/>
+						</xsl:when>
+						<!-- Table in Annex -->
+						<xsl:when test="ancestor::itu:annex[not(@obligation) or @obligation != 'informative']">
+							<xsl:variable name="annex-id" select="ancestor::itu:annex/@id"/>
+							<xsl:number format="A-" count="itu:annex[not(@obligation) or @obligation != 'informative']"/>
+							<xsl:number format="1" level="any" count="itu:table[(not(@unnumbered) or @unnumbered != 'true') and ancestor::itu:annex[@id = $annex-id]]"/>
+						</xsl:when>
+					</xsl:choose>
+				</xsl:if>
+				<xsl:if test="$namespace = 'nist'">
+					<xsl:variable name="annex-id" select="ancestor::*[local-name()='annex']/@id"/>
+					<xsl:number format="A-" count="*[local-name()='annex']"/>
+					<xsl:number format="1" level="any" count="*[local-name()='table'][not(@unnumbered) or @unnumbered != 'true'][ancestor::*[local-name()='annex'][@id = $annex-id]]"/>
+				</xsl:if>
+				<xsl:if test="$namespace = 'unece-rec'">
+					<!-- <xsl:variable name="annex-id" select="ancestor::*[local-name()='annex']/@id"/>
+					<xsl:number format="I." count="*[local-name()='annex']"/> -->
+					<xsl:text>A</xsl:text> <!-- 'A' means Annex -->
+					<xsl:number format="1" level="any" count="*[local-name()='table'][not(@unnumbered) or @unnumbered != 'true'][ancestor::*[local-name()='annex']]"/> <!-- [@id = $annex-id] -->
+				</xsl:if>
+				<xsl:if test="$namespace = 'unece'">
+					<xsl:variable name="annex-id" select="ancestor::*[local-name()='annex']/@id"/>
+					<xsl:number format="I." count="*[local-name()='annex']"/>
+					<xsl:number format="1" level="any" count="*[local-name()='table'][not(@unnumbered) or @unnumbered != 'true'][ancestor::*[local-name()='annex'][@id = $annex-id]]"/>
+				</xsl:if>
+				<xsl:if test="$namespace = 'csd'">
+					<xsl:number format="A-1" level="multiple" count="*[local-name()='annex'] | *[local-name()='table'][not(@unnumbered) or @unnumbered != 'true'] "/>
+				</xsl:if>
+			</xsl:when>
+			<xsl:otherwise>
+				<xsl:if test="$namespace = 'iec'">
+					<xsl:number format="1" level="any" count="//*[local-name()='table']
+																																		[not(ancestor::*[local-name()='annex']) 
+																																		and not(ancestor::*[local-name()='executivesummary'])
+																																		and not(ancestor::*[local-name()='bibdata'])
+																																		and not(ancestor::*[local-name()='preface'])]
+																																		[not(@unnumbered) or @unnumbered != 'true']"/>
+				</xsl:if>
+				<xsl:if test="$namespace = 'iso' or $namespace = 'itu' or $namespace = 'nist' or $namespace = 'csd' or $namespace = 'ogc' or $namespace = 'unece' or $namespace = 'unece-rec' $namespace = 'gb' or $namespace = 'm3d'">
+					<xsl:number format="A." count="*[local-name()='annex']"/>
+					<xsl:number format="1" level="any" count="//*[local-name()='table']
+																																						[not(ancestor::*[local-name()='annex']) 
+																																						and not(ancestor::*[local-name()='executivesummary'])
+																																						and not(ancestor::*[local-name()='bibdata'])]
+																																						[not(@unnumbered) or @unnumbered != 'true']"/>
+					</xsl:if>
+			</xsl:otherwise>
+		</xsl:choose>
+	</xsl:template>
+	
 	<xsl:template match="*[local-name()='table']/*[local-name()='name']"/>
 	<xsl:template match="*[local-name()='table']/*[local-name()='name']" mode="process">
 		<xsl:apply-templates />
@@ -1175,7 +1181,7 @@
 						<xsl:if test="$namespace = 'iso' or $namespace = 'iec'">
 							<xsl:attribute name="margin-bottom">0</xsl:attribute>
 						</xsl:if>						
-						<xsl:value-of select="$title-where"/>
+						<xsl:value-of select="$title-where"/><xsl:text>&#xA0;</xsl:text>
 						<xsl:apply-templates select="*[local-name()='dt']/*"/>
 						<xsl:text></xsl:text>
 						<xsl:apply-templates select="*[local-name()='dd']/*" mode="inline"/>
@@ -1197,7 +1203,7 @@
 						<xsl:attribute name="margin-left">7.4mm</xsl:attribute>
 						<xsl:attribute name="margin-bottom">0pt</xsl:attribute>
 					</xsl:if>					
-					<xsl:value-of select="$title-where"/>
+					<xsl:value-of select="$title-where"/><xsl:if test="$namespace = 'itu'">:</xsl:if>
 				</fo:block>
 			</xsl:when>
 			<xsl:when test="$parent = 'figure' and  (not(../@class) or ../@class !='pseudocode')">
@@ -1229,6 +1235,7 @@
 					<xsl:attribute name="margin-top">12pt</xsl:attribute>
 				</xsl:if>
 				<xsl:if test="$namespace = 'itu'">
+					<xsl:attribute name="margin-left">7.4mm</xsl:attribute>
 					<xsl:if test="local-name(..) = 'li'">
 						<xsl:attribute name="margin-left">-4mm</xsl:attribute>
 					</xsl:if>
