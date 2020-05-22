@@ -75,7 +75,7 @@
 	
 	<xsl:variable name="title-key">Key</xsl:variable>
 	
-	<xsl:variable name="title-where">where </xsl:variable>
+	<xsl:variable name="title-where">where</xsl:variable>
 	
 	<xsl:variable name="lower">abcdefghijklmnopqrstuvwxyz</xsl:variable> 
 	<xsl:variable name="upper">ABCDEFGHIJKLMNOPQRSTUVWXYZ</xsl:variable>
@@ -1175,7 +1175,7 @@
 						<xsl:if test="$namespace = 'iso' or $namespace = 'iec'">
 							<xsl:attribute name="margin-bottom">0</xsl:attribute>
 						</xsl:if>						
-						<xsl:value-of select="$title-where"/>
+						<xsl:value-of select="$title-where"/><xsl:text>&#xA0;</xsl:text>
 						<xsl:apply-templates select="*[local-name()='dt']/*"/>
 						<xsl:text></xsl:text>
 						<xsl:apply-templates select="*[local-name()='dd']/*" mode="inline"/>
@@ -1197,7 +1197,7 @@
 						<xsl:attribute name="margin-left">7.4mm</xsl:attribute>
 						<xsl:attribute name="margin-bottom">0pt</xsl:attribute>
 					</xsl:if>					
-					<xsl:value-of select="$title-where"/>
+					<xsl:value-of select="$title-where"/><xsl:if test="$namespace = 'itu'">:</xsl:if>
 				</fo:block>
 			</xsl:when>
 			<xsl:when test="$parent = 'figure' and  (not(../@class) or ../@class !='pseudocode')">
@@ -1229,6 +1229,7 @@
 					<xsl:attribute name="margin-top">12pt</xsl:attribute>
 				</xsl:if>
 				<xsl:if test="$namespace = 'itu'">
+					<xsl:attribute name="margin-left">7.4mm</xsl:attribute>
 					<xsl:if test="local-name(..) = 'li'">
 						<xsl:attribute name="margin-left">-4mm</xsl:attribute>
 					</xsl:if>
