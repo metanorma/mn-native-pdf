@@ -1612,7 +1612,8 @@
 			<xsl:variable name="type" select="xalan:nodeset($contents)//item[@id = current()/@target]/@type"/>
 			<xsl:variable name="level" select="xalan:nodeset($contents)//item[@id =current()/@target]/@level"/>
 			<xsl:choose>
-				<xsl:when test="($type = 'clause' or $type = 'term') and $level = 1">Clause </xsl:when><!-- and not (ancestor::annex) -->
+				<xsl:when test="($type = 'clause' or $type = 'term') and $level = 1"><xsl:value-of select="$title-clause"/></xsl:when><!-- and not (ancestor::annex) -->
+				<xsl:when test="($type = 'clause' or $type = 'term') and $level &gt; 1"><xsl:value-of select="translate($title-clause, $upper, $lower)"/></xsl:when>
 				<xsl:when test="$type = 'example'">Example </xsl:when>
 				<xsl:when test="$type = 'figure'"></xsl:when>
 				<xsl:when test="$type = 'formula'"></xsl:when>
@@ -1666,9 +1667,10 @@
 					</xsl:variable>
 					<xsl:if test="not(contains($section, $currentSection))">
 						<xsl:text> in </xsl:text>
-						<xsl:if test="$level = 1">
-							<xsl:text>Clause </xsl:text>
-						</xsl:if>
+						<xsl:choose>
+							<xsl:when test="$level = 1"><xsl:value-of select="$title-clause"/></xsl:when>
+							<xsl:when test="$level &gt; 1"><xsl:value-of select="translate($title-clause, $upper, $lower)"/></xsl:when>
+						</xsl:choose>
 						<xsl:value-of select="$section"/>
 					</xsl:if>
 				</xsl:when>
