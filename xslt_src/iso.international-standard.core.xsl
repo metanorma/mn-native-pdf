@@ -1975,7 +1975,7 @@
 	</xsl:template>
 	
 	<xsl:template match="iso:domain">
-		<fo:inline>&lt;<xsl:apply-templates/>&gt;</fo:inline>
+		<fo:inline>&lt;<xsl:apply-templates/>&gt;</fo:inline><xsl:text> </xsl:text>
 	</xsl:template>
 	
 	
