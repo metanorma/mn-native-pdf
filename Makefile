@@ -133,7 +133,6 @@ ifeq ($(OS),Windows_NT)
 	xmllint --xpath "//*[local-name()='doctype']/text()" $< > DOCTYPE.txt
 	cat DOCTYPE.txt
 	dir D:\a\mn-native-pdf\mn-native-pdf\xslt
-	dir D:\
 	cmd /V /C "set /p MN_FLAVOR=<MN_FLAVOR.txt & set /p DOCTYPE=<DOCTYPE.txt & java -Xss5m -Xmx1024m -jar mn2pdf.jar --xml-file $< --xsl-file ${XSLT_PATH_BASE}/!MN_FLAVOR!.!DOCTYPE!.xsl --pdf-file $@"
 else
 	FILENAME=$<; \
