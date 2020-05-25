@@ -42,6 +42,7 @@ XSLT_GENERATED := xslt/iec.international-standard.xsl \
 	xslt/ogc.user-guide.xsl \
 	xslt/ogc.white-paper.xsl \
 	xslt/un.plenary.xsl \
+	xslt/un.plenary-attachment.xsl \
 	xslt/un.recommendation.xsl \
 	xslt/csd.standard.xsl \
 	xslt/csa.standard.xsl \
@@ -128,8 +129,8 @@ documents/un-ECE_AGAT_2020_INF1.pdf:
 
 documents/%.pdf: sources/%.xml mn2pdf.jar | documents
 ifeq ($(OS),Windows_NT)
-	xmllint --xpath "name(*)" $< | cut -d "-" -f 1 > MN_FLAVOR.txt
-	xmllint --xpath "//*[local-name()='doctype']/text()" $< > DOCTYPE.txt
+	powershell -Command "$$doc = [xml](Get-Content $<); $$doc.SelectNodes(\"*\").get_name()" | cut -d "-" -f 1 > MN_FLAVOR.txt
+	powershell -Command "$$doc = [xml](Get-Content $<); $$doc.SelectNodes(\"//*[local-name()='doctype']\").'#text'" > DOCTYPE.txt
 	cmd /V /C "set /p MN_FLAVOR=<MN_FLAVOR.txt & set /p DOCTYPE=<DOCTYPE.txt & java -Xss5m -Xmx1024m -jar mn2pdf.jar --xml-file $< --xsl-file ${XSLT_PATH_BASE}/!MN_FLAVOR!.!DOCTYPE!.xsl --pdf-file $@"
 else
 	FILENAME=$<; \
