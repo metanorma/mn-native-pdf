@@ -128,13 +128,12 @@ documents/un-ECE_AGAT_2020_INF1.pdf:
 
 documents/%.pdf: sources/%.xml mn2pdf.jar | documents
 ifeq ($(OS),Windows_NT)
-	xmllint --huge --xpath "name(*)" $< | cut -d "-" -f 1 > MN_FLAVOR.txt
-	powershell -Command "$doc = [xml](Get-Content $<); $doc.SelectNodes(\"*\").get_name()" | cut -d "-" -f 1 > MN_FLAVOR2.txt
-	ls -l
+	xmllint --huge --xpath "name(*)" $< | cut -d "-" -f 1 > MN_FLAVOR2.txt
+	powershell -Command "$$doc = [xml](Get-Content $<); $$doc.SelectNodes(\"*\").get_name()" | cut -d "-" -f 1 > MN_FLAVOR.txt
 	cat MN_FLAVOR.txt
 	cat MN_FLAVOR2.txt
-	xmllint --huge --xpath "//*[local-name()='doctype']/text()" $< > DOCTYPE.txt
-	powershell -Command "$doc = [xml](Get-Content $<); $doc.SelectNodes(\"//*[local-name()='doctype']\").'#text'" > DOCTYPE2.txt
+	xmllint --huge --xpath "//*[local-name()='doctype']/text()" $< > DOCTYPE2.txt
+	powershell -Command "$$doc = [xml](Get-Content $<); $$doc.SelectNodes(\"//*[local-name()='doctype']\").'#text'" > DOCTYPE.txt
 	ls -l
 	cat DOCTYPE.txt
 	cat DOCTYPE2.txt
