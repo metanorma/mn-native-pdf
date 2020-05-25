@@ -17,7 +17,7 @@ jobs:
 
       - name: Setup prerequisites
         run: |
-          choco install --no-progress make gnuwin32-coreutils.install curl xsltproc unzip grep
+          choco install --no-progress make gnuwin32-coreutils.install curl xsltproc xmlstarlet unzip grep
           make --version
           curl --version
 
