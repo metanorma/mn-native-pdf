@@ -128,7 +128,7 @@ documents/un-ECE_AGAT_2020_INF1.pdf:
 
 documents/%.pdf: sources/%.xml mn2pdf.jar | documents
 ifeq ($(OS),Windows_NT)
-	xmllint --sax1 --xpath "name(*)" $< | cut -d "-" -f 1 > MN_FLAVOR.txt
+	xmllint --huge --xpath "name(*)" $< | cut -d "-" -f 1 > MN_FLAVOR.txt
 	ls -l
 	cat MN_FLAVOR.txt
 	xmllint --huge --xpath "//*[local-name()='doctype']/text()" $< > DOCTYPE.txt
