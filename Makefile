@@ -128,14 +128,12 @@ documents/un-ECE_AGAT_2020_INF1.pdf:
 
 documents/%.pdf: sources/%.xml mn2pdf.jar | documents
 ifeq ($(OS),Windows_NT)
-	xml --version
+	xmllint --sax1 --xpath "name(*)" $< | cut -d "-" -f 1 > MN_FLAVOR.txt
 	ls -l
-	ls -l sources
-	xml sel --template --value-of "name(*)" $< | cut -d "-" -f 1 > MN_FLAVOR.txt
 	cat MN_FLAVOR.txt
-	xml sel --template --value-of "//*[local-name()='doctype']/text()" $< > DOCTYPE.txt
+	xmllint --huge --xpath "//*[local-name()='doctype']/text()" $< > DOCTYPE.txt
+	ls -l
 	cat DOCTYPE.txt
-	dir D:\a\mn-native-pdf\mn-native-pdf\xslt
 	cmd /V /C "set /p MN_FLAVOR=<MN_FLAVOR.txt & set /p DOCTYPE=<DOCTYPE.txt & java -Xss5m -Xmx1024m -jar mn2pdf.jar --xml-file $< --xsl-file ${XSLT_PATH_BASE}/!MN_FLAVOR!.!DOCTYPE!.xsl --pdf-file $@"
 else
 	FILENAME=$<; \
