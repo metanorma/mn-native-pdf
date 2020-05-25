@@ -1,0 +1,35 @@
+[submodule "mn-samples-itu"]
+	path = mn-samples-itu
+	url = https://github.com/metanorma/mn-samples-itu
+	branch = gh-pages
+[submodule "mn-samples-iso"]
+	path = mn-samples-iso
+	url = https://github.com/metanorma/mn-samples-iso
+	branch = gh-pages
+[submodule "mn-samples-iec"]
+	path = mn-samples-iec
+	url = https://github.com/metanorma/mn-samples-iec
+	branch = gh-pages
+[submodule "mn-samples-un"]
+	path = mn-samples-un
+	url = https://github.com/metanorma/mn-samples-un
+	branch = gh-pages
+[submodule "mn-samples-ogc"]
+	path = mn-samples-ogc
+	url = https://github.com/metanorma/mn-samples-ogc
+	branch = gh-pages
+[submodule "mn-samples-cc"]
+	path = mn-samples-cc
+	url = https://github.com/metanorma/mn-samples-cc
+	branch = gh-pages
+[submodule "mn-samples-gb"]
+	path = mn-samples-gb
+	url = https://github.com/metanorma/mn-samples-gb
+	branch = gh-pages
+[submodule "mn-samples-iho"]
+	path = mn-samples-iho
+	url = https://github.com/metanorma/mn-samples-iho
+[submodule "mn-samples-m3aawg"]
+	path = mn-samples-m3aawg
+	url = https://github.com/metanorma/mn-samples-m3aawg
+	branch = gh-pages
