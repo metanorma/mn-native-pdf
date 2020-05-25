@@ -128,6 +128,7 @@ documents/un-ECE_AGAT_2020_INF1.pdf:
 
 documents/%.pdf: sources/%.xml mn2pdf.jar | documents
 ifeq ($(OS),Windows_NT)
+	xml --version
 	xml sel --template --value-of "name(*)" $< | cut -d "-" -f 1 > MN_FLAVOR.txt
 	cat MN_FLAVOR.txt
 	xml sel --template --value-of "//*[local-name()='doctype']/text()" $< > DOCTYPE.txt
