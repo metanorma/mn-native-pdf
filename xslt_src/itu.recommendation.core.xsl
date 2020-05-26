@@ -627,7 +627,7 @@
 	<xsl:template match="itu:figure" mode="contents">
 		<xsl:param name="sectionNum" />
 		<item level="" id="{@id}" display="false" type="figure">
-			<xsl:variable name="title">Figure </xsl:variable>
+			<xsl:variable name="title" select="$title-figure"/>
 			<xsl:attribute name="section">
 				<xsl:call-template name="getSection">
 					<xsl:with-param name="sectionNum" select="$sectionNum"/>
@@ -636,6 +636,11 @@
 				<xsl:call-template name="getItemNumber">
 					<xsl:with-param name="brackets" select="'false'"/>
 				</xsl:call-template> -->
+			</xsl:attribute>
+			<xsl:attribute name="topsection">
+				<xsl:call-template name="getTopSection">
+					<xsl:with-param name="sectionNum" select="$sectionNum"/>
+				</xsl:call-template>
 			</xsl:attribute>
 			<xsl:value-of select="$title"/>
 			<xsl:call-template name="getItemNumber">
@@ -650,13 +655,18 @@
 	<xsl:template match="itu:table" mode="contents">
 		<xsl:param name="sectionNum" />
 		<item level="" id="{@id}" display="false" type="table">
-			<xsl:variable name="title">Table </xsl:variable>
+			<xsl:variable name="title" select="$title-table"/>
 			<xsl:attribute name="section">
 				<xsl:call-template name="getSection">
 					<xsl:with-param name="sectionNum" select="$sectionNum"/>
 				</xsl:call-template>
 				<!-- <xsl:text>Table </xsl:text>
 				<xsl:call-template name="getItemNumber"/> -->
+			</xsl:attribute>
+			<xsl:attribute name="topsection">
+				<xsl:call-template name="getTopSection">
+					<xsl:with-param name="sectionNum" select="$sectionNum"/>
+				</xsl:call-template>
 			</xsl:attribute>
 			<xsl:value-of select="$title"/>
 			<xsl:call-template name="getItemNumber">
@@ -678,13 +688,14 @@
 					<xsl:otherwise>Equation </xsl:otherwise>
 				</xsl:choose>
 			</xsl:variable>
-			<xsl:attribute name="section">
+			<xsl:variable name="section">
 				<xsl:call-template name="getSection">
 					<xsl:with-param name="sectionNum" select="$sectionNum"/>
 				</xsl:call-template>
-				<!-- <xsl:value-of select="$title"/>
-				<xsl:call-template name="getItemNumber"/> -->
-			</xsl:attribute>
+			</xsl:variable>
+			<xsl:attribute name="section">
+				<xsl:value-of select="$section"/>				
+			</xsl:attribute>			
 			<xsl:variable name="parent-element" select="local-name(..)"/>
 			<xsl:attribute name="parent">
 				<xsl:choose>
@@ -699,6 +710,11 @@
 			</xsl:variable>
 			<xsl:attribute name="number">
 				<xsl:value-of select="$itemNumber"/>
+			</xsl:attribute>
+			<xsl:attribute name="topsection">
+				<xsl:call-template name="getTopSection">
+					<xsl:with-param name="sectionNum" select="$sectionNum"/>
+				</xsl:call-template>
 			</xsl:attribute>
 			<xsl:value-of select="$title"/>
 			<xsl:value-of select="$itemNumber"/>
@@ -800,6 +816,11 @@
 					<xsl:otherwise></xsl:otherwise>
 				</xsl:choose>
 			</xsl:attribute>
+			<xsl:attribute name="topsection">
+				<xsl:call-template name="getTopSection">
+					<xsl:with-param name="sectionNum" select="$sectionNum"/>
+				</xsl:call-template>
+			</xsl:attribute>
 		</item>
 		<xsl:apply-templates mode="contents">
 			<xsl:with-param name="sectionNum" select="$sectionNum"/>
@@ -818,6 +839,11 @@
 			</xsl:call-template>
 		</xsl:variable>
 		<item level="" id="{@id}" display="false" type="note" section="{$section}">
+			<xsl:attribute name="topsection">
+				<xsl:call-template name="getTopSection">
+					<xsl:with-param name="sectionNum" select="$sectionNum"/>
+				</xsl:call-template>
+			</xsl:attribute>
 			<xsl:number/>
 		</item>
 		<xsl:apply-templates mode="contents">
@@ -825,23 +851,6 @@
 		</xsl:apply-templates>
 	</xsl:template>
 	
-	<xsl:template match="itu:termnote" mode="contents">
-		<xsl:param name="sectionNum" />
-		<xsl:variable name="level">
-			<xsl:call-template name="getLevel"/>
-		</xsl:variable>
-		<xsl:variable name="section">
-			<xsl:call-template name="getSection">
-				<xsl:with-param name="sectionNum" select="$sectionNum"/>
-			</xsl:call-template>
-		</xsl:variable>
-		<item level="" id="{@id}" display="false" type="note" section="{$section}">
-			<xsl:number/>
-		</item>
-		<xsl:apply-templates mode="contents">
-			<xsl:with-param name="sectionNum" select="$sectionNum"/>
-		</xsl:apply-templates>
-	</xsl:template>
 	
 	<xsl:template match="itu:note" mode="contents">
 		<xsl:param name="sectionNum" />
@@ -856,6 +865,11 @@
 			</xsl:for-each>
 		</xsl:variable>
 		<item level="" id="{@id}" display="false" type="note" section="{$section}">
+			<xsl:attribute name="topsection">
+				<xsl:call-template name="getTopSection">
+					<xsl:with-param name="sectionNum" select="$sectionNum"/>
+				</xsl:call-template>
+			</xsl:attribute>
 			<xsl:number/>
 		</item>
 		<xsl:apply-templates mode="contents">
@@ -912,6 +926,18 @@
 			</xsl:otherwise>
 		</xsl:choose>
 	</xsl:template>
+
+	<xsl:template match="itu:xref" mode="contents">
+		<xsl:param name="sectionNum" />
+		<item level="" id="{generate-id()}" display="false" type="xref">
+			
+			<xsl:attribute name="topsection">
+				<xsl:call-template name="getTopSection">
+					<xsl:with-param name="sectionNum" select="$sectionNum"/>
+				</xsl:call-template>
+			</xsl:attribute>
+		</item>		
+	</xsl:template>
 	
 	<!-- ============================= -->
 	<!-- ============================= -->
@@ -954,6 +980,7 @@
 	<!-- PARAGRAPHS                                    -->
 	<!-- ============================= -->	
 	<xsl:template match="itu:p | itu:sections/itu:p">
+		<xsl:param name="sectionNum"/>
 		<fo:block margin-top="6pt">
 			<xsl:attribute name="text-align">
 				<xsl:choose>
@@ -961,7 +988,9 @@
 					<xsl:otherwise>justify</xsl:otherwise>
 				</xsl:choose>
 			</xsl:attribute>
-			<xsl:apply-templates />
+			<xsl:apply-templates>
+				<xsl:with-param name="sectionNum" select="$sectionNum"/>
+			</xsl:apply-templates>
 		</fo:block>
 	</xsl:template>
 
@@ -976,8 +1005,8 @@
 		<fo:block font-size="11pt" space-before="4pt" text-align="justify">
 			<xsl:if test="ancestor::itu:figure">
 				<xsl:attribute name="keep-with-previous">always</xsl:attribute>
-			</xsl:if>
-			<xsl:text>NOTE </xsl:text>
+			</xsl:if>			
+			<xsl:value-of select="$title-note"/>
 			<!-- <xsl:if test="../following-sibling::itu:note or ../preceding-sibling::itu:note"> -->
 			<xsl:if test="count(//itu:note[ancestor::*[local-name() = 'clause'][1][@id = $id] and not (ancestor::itu:table)]) &gt; 1">
 				<xsl:number count="itu:note[ancestor::*[local-name() = 'clause'][1][@id = $id] and not (ancestor::itu:table)]" level="any"/>
@@ -1356,10 +1385,13 @@
 						<xsl:with-param name="brackets" select="'false'"/>
 					</xsl:call-template>
 				</xsl:variable>
-				<xsl:if test="$itemnumber != ''">
-					<xsl:text>Figure </xsl:text>
-					<xsl:value-of select="$itemnumber"/>
-				</xsl:if>
+				<xsl:choose>
+					<xsl:when test="local-name(*) = 'figure' and normalize-space(itu:name) = ''"></xsl:when><!-- don't show 'Figure' for outer figure without name -->
+					<xsl:when test="$itemnumber != ''">						
+						<xsl:value-of select="$title-figure"/>
+						<xsl:value-of select="$itemnumber"/>
+					</xsl:when>
+				</xsl:choose>
 				<xsl:if test="itu:name">
 					<xsl:text> — </xsl:text>
 					<xsl:apply-templates select="itu:name" mode="process"/>
@@ -1423,8 +1455,8 @@
 	
 	
 	<xsl:template match="itu:annex2//itu:note/itu:p">
-		<fo:block font-size="11pt" margin-top="4pt">
-			<xsl:text>NOTE </xsl:text>
+		<fo:block font-size="11pt" margin-top="4pt">			
+			<xsl:value-of select="$title-note"/>
 			<!-- <xsl:if test="../following-sibling::itu:note or ../preceding-sibling::itu:note"> -->
 				<xsl:number count="itu:note"/><xsl:text> </xsl:text>
 			<!-- </xsl:if> -->
@@ -1446,8 +1478,8 @@
 	<xsl:template match="itu:ul//itu:note |  itu:ol//itu:note"/>
 	<xsl:template match="itu:ul//itu:note/itu:p  | itu:ol//itu:note/itu:p" mode="process">
 		<xsl:variable name="id" select="ancestor::*[local-name() = 'clause'][1]/@id"/>
-		<fo:block font-size="11pt" margin-top="4pt">
-			<xsl:text>NOTE </xsl:text>
+		<fo:block font-size="11pt" margin-top="4pt">			
+			<xsl:value-of select="$title-note"/>
 			<!-- <xsl:if test="../following-sibling::itu:note or ../preceding-sibling::itu:note"> -->
 			<xsl:if test="count(//itu:note[ancestor::*[@id = $id] and not (ancestor::itu:table)]) &gt; 1">
 				<xsl:number count="itu:note[ancestor::*[@id = $id] and not (ancestor::itu:table)]" level="any"/>
@@ -1511,8 +1543,8 @@
 	
 
 	<xsl:template match="itu:termnote">
-		<fo:block id="{@id}" margin-top="4pt">
-			<xsl:text>NOTE </xsl:text>
+		<fo:block id="{@id}" margin-top="4pt">			
+			<xsl:value-of select="$title-note"/>
 				<xsl:if test="following-sibling::itu:termnote or preceding-sibling::itu:termnote">
 					<xsl:number/><xsl:text> </xsl:text>
 				</xsl:if>
@@ -1605,6 +1637,9 @@
 		<xsl:param name="sectionNum"/>
 		
 		<xsl:variable name="section" select="xalan:nodeset($contents)//item[@id = current()/@target]/@section"/>
+		<xsl:variable name="topsection" select="xalan:nodeset($contents)//item[@id = current()/@target]/@topsection"/>
+		<xsl:variable name="xref_id" select="generate-id()"/>
+		<xsl:variable name="xreftopsection" select="xalan:nodeset($contents)//item[@id = $xref_id]/@topsection"/>
 		
 		<xsl:variable name="text" select="xalan:nodeset($contents)//item[@id = current()/@target]/text()"/>
 		
@@ -1644,10 +1679,12 @@
 				
 				<xsl:when test="$type = 'formula'">
 					<xsl:value-of select="$text"/>
-					<xsl:variable name="currentSection">
+					<!-- <xsl:variable name="currentSection">
 						<xsl:call-template name="getSection"/>
-					</xsl:variable>
-					<xsl:if test="not(contains($section, $currentSection))">
+					</xsl:variable>					
+					
+					<xsl:if test="not(contains($section, $currentSection))"> -->
+					<xsl:if test="$topsection != $xreftopsection">
 						<xsl:text> in </xsl:text>
 						<xsl:if test="$level = 1">
 							<xsl:value-of select="xalan:nodeset($contents)//item[@id = current()/@target]/@parent"/>
@@ -2361,6 +2398,14 @@
 							<xsl:variable name="num">
 								<xsl:number format=".1" level="multiple" count="itu:clause/itu:clause | itu:clause/itu:terms | itu:terms/itu:term | itu:clause/itu:term | itu:clause/itu:definitions"/>
 							</xsl:variable>
+							<!-- <xsl:variable name="sectionNum_">
+								<xsl:choose>
+									<xsl:when test="normalize-space($sectionNum) = ''"><xsl:number format="1"  count="itu:sections/*"/></xsl:when>
+									<xsl:otherwise>
+										<xsl:value-of select="$sectionNum"/>
+									</xsl:otherwise>
+								</xsl:choose>
+							</xsl:variable> -->
 							<xsl:value-of select="concat($sectionNum, $num)"/>
 						</xsl:when>
 						<xsl:otherwise>
@@ -2436,6 +2481,24 @@
 			</xsl:when>
 			<xsl:otherwise>
 				<xsl:value-of select="concat(local-name(..), '_', text())"/>
+			</xsl:otherwise>
+		</xsl:choose>
+	</xsl:template>
+
+	<xsl:template name="getTopSection">
+		<xsl:param name="sectionNum" />
+		<xsl:variable name="section">
+			<xsl:call-template name="getSection">
+				<xsl:with-param name="sectionNum" select="$sectionNum"/>
+			</xsl:call-template>
+		</xsl:variable>
+		<xsl:variable name="topsection_" select="normalize-space(translate($section, '().-','    '))"/>
+		<xsl:choose>
+			<xsl:when test="contains($topsection_, ' ')">
+				<xsl:value-of select="substring-before($topsection_, ' ')"/>
+			</xsl:when>
+			<xsl:otherwise>
+				<xsl:value-of select="$topsection_"/>
 			</xsl:otherwise>
 		</xsl:choose>
 	</xsl:template>
