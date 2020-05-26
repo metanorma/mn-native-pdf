@@ -6,7 +6,8 @@ SHELL := /bin/bash
 endif
 SRCDIR := sources
 DESTDIR := documents
-SRC := $(patsubst mn-samples-iso/documents/%,sources/%,$(wildcard mn-samples-iso/documents/*.xml)) \
+SRC := $(patsubst mn-samples-iso/documents/amendment/%,sources/iso-%,$(wildcard mn-samples-iso/documents/amendment/*.xml)) \
+	$(patsubst mn-samples-iso/documents/international-standard/%,sources/%,$(wildcard mn-samples-iso/documents/international-standard/*.xml)) \
 	$(patsubst mn-samples-itu/documents/%,sources/itu-%,$(wildcard mn-samples-itu/documents/*.xml)) \
 	$(patsubst mn-samples-iec/documents/%,sources/%,$(wildcard mn-samples-iec/documents/*.xml)) \
 	$(patsubst mn-samples-ogc/documents/%,sources/ogc-%,$(wildcard mn-samples-ogc/documents/*.xml)) \
@@ -76,7 +77,7 @@ else
 	popd
 endif
 
-sources/iso-%: mn-samples-iso/documents/iso-%
+sources/iso-%: mn-samples-iso/documents/international-standard/iso-% mn-samples-iso/documents/amendment/%
 	cp $< $@
 
 sources/iec-%: mn-samples-iec/documents/iec-%
