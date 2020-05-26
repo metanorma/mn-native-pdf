@@ -24,6 +24,7 @@ RXL := $(patsubst sources/%,documents/%,$(patsubst %.xml,%.rxl,$(SRC)))
 XSLT_PATH_BASE := ${CURDIR}/xslt
 XSLT_GENERATED := xslt/iec.international-standard.xsl \
 	xslt/iso.international-standard.xsl \
+	xslt/iso.amendment.xsl \
 	xslt/itu.recommendation.xsl \
 	xslt/itu.recommendation-annex.xsl \
 	xslt/itu.resolution.xsl \
