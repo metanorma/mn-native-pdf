@@ -77,7 +77,10 @@ else
 	popd
 endif
 
-sources/iso-%: mn-samples-iso/documents/international-standard/iso-% mn-samples-iso/documents/amendment/%
+sources/iso-%: mn-samples-iso/documents/international-standard/iso-%
+	cp $< $@
+
+sources/iso-%: mn-samples-iso/documents/amendment/%
 	cp $< $@
 
 sources/iec-%: mn-samples-iec/documents/iec-%
