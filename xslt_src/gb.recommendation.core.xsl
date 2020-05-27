@@ -1565,18 +1565,6 @@
 			<xsl:value-of select="$section"/>
       </fo:basic-link>
 	</xsl:template>
-
-	<xsl:template match="gb:sourcecode">
-		<fo:block font-family="Courier" font-size="9pt" margin-bottom="12pt">
-			<xsl:choose>
-				<xsl:when test="@lang = 'en'"></xsl:when>
-				<xsl:otherwise>
-					<xsl:attribute name="white-space">pre</xsl:attribute>
-				</xsl:otherwise>
-			</xsl:choose>
-			<xsl:apply-templates/>
-		</fo:block>
-	</xsl:template>
 	
 	<xsl:template match="gb:example/gb:p">
 		<fo:block font-size="10pt" margin-top="8pt" margin-bottom="8pt">

@@ -1825,19 +1825,7 @@
 			<xsl:apply-templates select="itu:localityStack"/>
 		</fo:basic-link>
 	</xsl:template>
-	
-	<xsl:template match="itu:sourcecode">
-		<fo:block font-family="Courier" font-size="10pt" margin-top="6pt" margin-bottom="6pt">
-			<xsl:choose>
-				<xsl:when test="@lang = 'en'"/>
-				<xsl:otherwise>
-					<xsl:attribute name="white-space">pre</xsl:attribute>
-				</xsl:otherwise>
-			</xsl:choose>
-			<xsl:apply-templates/>
-		</fo:block>
-	</xsl:template>
-	
+		
 	<xsl:template name="insertHeaderFooter">
 		<fo:static-content flow-name="footer-even" font-family="Times New Roman" font-size="11pt">
 			<fo:block-container height="19mm" display-align="after">

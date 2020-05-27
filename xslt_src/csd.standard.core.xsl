@@ -1201,16 +1201,8 @@
       </fo:basic-link>
 	</xsl:template>
 
-	<xsl:template match="csd:sourcecode">
-		<fo:block font-family="SourceCodePro" font-size="10pt" margin-bottom="6pt" keep-with-next="always">
-			<xsl:choose>
-				<xsl:when test="@lang = 'en'"></xsl:when>
-				<xsl:otherwise>
-					<xsl:attribute name="white-space">pre</xsl:attribute>
-				</xsl:otherwise>
-			</xsl:choose>
-			<xsl:apply-templates/>
-		</fo:block>
+	<xsl:template match="csd:sourcecode" priority="2">
+		<xsl:call-template name="sourcecode"/>
 		<fo:block font-size="11pt" font-weight="bold" text-align="center" margin-bottom="12pt">
 			<xsl:text>Figure </xsl:text>
 			<xsl:number format="1" level="any"/>

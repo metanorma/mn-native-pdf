@@ -1404,15 +1404,7 @@
 			<xsl:apply-templates />
 		</fo:block>
 	</xsl:template>
-	
-	<xsl:template match="un:sourcecode">
-		<fo:block font-family="Courier" font-size="10pt" margin-top="6pt" margin-bottom="6pt">
-			<xsl:attribute name="white-space">pre</xsl:attribute>
-			<xsl:attribute name="wrap-option">wrap</xsl:attribute>
-			<xsl:apply-templates/>
-		</fo:block>
-	</xsl:template>
-	
+		
 	<xsl:template match="un:references">
 		<fo:block>
 			<xsl:if test="not(un:title)">

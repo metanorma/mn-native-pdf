@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:fo="http://www.w3.org/1999/XSL/Format" xmlns:iso="https://www.metanorma.org/ns/iso" xmlns:iec="https://www.metanorma.org/ns/iec" xmlns:itu="https://www.metanorma.org/ns/itu" xmlns:nist="https://www.metanorma.org/ns/nist" xmlns:un="https://www.metanorma.org/ns/un" xmlns:csd="https://www.metanorma.org/ns/csd" xmlns:ogc="https://www.metanorma.org/ns/ogc" xmlns:mathml="http://www.w3.org/1998/Math/MathML" xmlns:xalan="http://xml.apache.org/xalan"  xmlns:fox="http://xmlgraphics.apache.org/fop/extensions" version="1.0">
+<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:fo="http://www.w3.org/1999/XSL/Format" xmlns:mathml="http://www.w3.org/1998/Math/MathML" xmlns:xalan="http://xml.apache.org/xalan"  xmlns:fox="http://xmlgraphics.apache.org/fop/extensions" version="1.0">
 
 	<xsl:variable name="title-table">
 		<xsl:if test="$namespace = 'iso' or $namespace = 'iec' or $namespace = 'itu' or $namespace = 'unece' or $namespace = 'unece-rec' or $namespace = 'nist' or $namespace = 'ogc' or $namespace = 'rsd' or $namespace = 'csa' or $namespace = 'csd' or $namespace = 'm3d'">
@@ -93,6 +93,53 @@
 			<xsl:attribute name="color">rgb(33, 94, 159)</xsl:attribute>
 			<xsl:attribute name="text-decoration">underline</xsl:attribute>
 		</xsl:if>
+	</xsl:attribute-set>
+
+	<xsl:attribute-set name="sourcecode-style">
+		<xsl:if test="$namespace = 'iso' or $namespace = 'gb'">
+			<xsl:attribute name="font-family">Courier</xsl:attribute>
+			<xsl:attribute name="font-size">9pt</xsl:attribute>
+			<xsl:attribute name="margin-bottom">12pt</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'csa' or $namespace = 'rsd'">
+			<xsl:attribute name="font-family">SourceCodePro</xsl:attribute>
+			<xsl:attribute name="font-size">10pt</xsl:attribute>
+			<xsl:attribute name="margin-bottom">6pt</xsl:attribute>
+			<xsl:attribute name="keep-with-next">always</xsl:attribute>
+			<xsl:attribute name="line-height">113%</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'csd'">
+			<xsl:attribute name="font-family">SourceCodePro</xsl:attribute>
+			<xsl:attribute name="font-size">10pt</xsl:attribute>
+			<xsl:attribute name="margin-bottom">6pt</xsl:attribute>
+			<xsl:attribute name="keep-with-next">always</xsl:attribute>					
+		</xsl:if>
+		<xsl:if test="$namespace = 'iec'">
+			<xsl:attribute name="font-family">Courier</xsl:attribute>
+			<xsl:attribute name="font-size">9pt</xsl:attribute>
+			<xsl:attribute name="margin-top">5pt</xsl:attribute>
+			<xsl:attribute name="margin-bottom">5pt</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'itu' or $namespace = 'nist' or $namespace = 'unece' or $namespace = 'unece-rec'">
+			<xsl:attribute name="font-family">Courier</xsl:attribute>
+			<xsl:attribute name="font-size">10pt</xsl:attribute>
+			<xsl:attribute name="margin-top">6pt</xsl:attribute>
+			<xsl:attribute name="margin-bottom">6pt</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'm3d'">
+			<xsl:attribute name="font-family">Courier</xsl:attribute>			
+			<xsl:attribute name="margin-bottom">12pt</xsl:attribute>
+		</xsl:if>		
+		<xsl:if test="$namespace = 'ogc'">
+			<xsl:attribute name="font-family">Courier</xsl:attribute>
+			<xsl:attribute name="font-size">10pt</xsl:attribute>
+			<xsl:attribute name="margin-bottom">6pt</xsl:attribute>
+			<xsl:attribute name="keep-with-next">always</xsl:attribute>
+			<xsl:attribute name="line-height">113%</xsl:attribute>
+		</xsl:if>
+		
+		
+		
 	</xsl:attribute-set>
 	
 	<xsl:template match="text()">
@@ -397,8 +444,8 @@
 			</xsl:when>
 			<xsl:when test="ancestor::*[local-name()='annex']">
 				<xsl:if test="$namespace = 'iso'">
-					<xsl:variable name="annex-id" select="ancestor::iso:annex/@id"/>
-					<xsl:number format="A." count="*[local-name()='annex']"/><xsl:number format="1" level="any" count="iso:table[(not(@unnumbered) or @unnumbered != 'true') and ancestor::iso:annex[@id = $annex-id]]"/>
+					<xsl:variable name="annex-id" select="ancestor::*[local-name()='annex']/@id"/>
+					<xsl:number format="A." count="*[local-name()='annex']"/><xsl:number format="1" level="any" count="*[local-name()='table'][(not(@unnumbered) or @unnumbered != 'true') and ancestor::*[local-name()='annex'][@id = $annex-id]]"/>
 				</xsl:if>
 				<xsl:if test="$namespace = 'gb'">
 					<xsl:variable name="annex-id" select="ancestor::gb:annex/@id"/>
@@ -409,17 +456,17 @@
 				</xsl:if>
 				<xsl:if test="$namespace = 'itu'">
 					<xsl:choose>
-						<xsl:when test="ancestor::itu:annex[@obligation = 'informative']">
-							<xsl:variable name="annex-id" select="ancestor::itu:annex/@id"/>
+						<xsl:when test="ancestor::*[local-name()='annex'][@obligation = 'informative']">
+							<xsl:variable name="annex-id" select="ancestor::*[local-name()='annex']/@id"/>
 							<!-- Table in Appendix -->
-							<xsl:number format="I-" count="itu:annex[@obligation = 'informative']"/>
-							<xsl:number format="1" level="any" count="itu:table[(not(@unnumbered) or @unnumbered != 'true') and ancestor::itu:annex[@id = $annex-id]]"/>
+							<xsl:number format="I-" count="*[local-name()='annex'][@obligation = 'informative']"/>
+							<xsl:number format="1" level="any" count="*[local-name()='table'][(not(@unnumbered) or @unnumbered != 'true') and ancestor::*[local-name()='annex'][@id = $annex-id]]"/>
 						</xsl:when>
 						<!-- Table in Annex -->
-						<xsl:when test="ancestor::itu:annex[not(@obligation) or @obligation != 'informative']">
-							<xsl:variable name="annex-id" select="ancestor::itu:annex/@id"/>
-							<xsl:number format="A-" count="itu:annex[not(@obligation) or @obligation != 'informative']"/>
-							<xsl:number format="1" level="any" count="itu:table[(not(@unnumbered) or @unnumbered != 'true') and ancestor::itu:annex[@id = $annex-id]]"/>
+						<xsl:when test="ancestor::*[local-name()='annex'][not(@obligation) or @obligation != 'informative']">
+							<xsl:variable name="annex-id" select="ancestor::*[local-name()='annex']/@id"/>
+							<xsl:number format="A-" count="*[local-name()='annex'][not(@obligation) or @obligation != 'informative']"/>
+							<xsl:number format="1" level="any" count="*[local-name()='table'][(not(@unnumbered) or @unnumbered != 'true') and ancestor::*[local-name()='annex'][@id = $annex-id]]"/>
 						</xsl:when>
 					</xsl:choose>
 				</xsl:if>
@@ -1929,6 +1976,19 @@
 		</fo:inline>
 	</xsl:template>
 
+	<xsl:template match="*[local-name()='sourcecode']" name="sourcecode">
+		<fo:block xsl:use-attribute-sets="sourcecode-style">
+			<!-- <xsl:choose>
+				<xsl:when test="@lang = 'en'"></xsl:when>
+				<xsl:otherwise> -->
+					<xsl:attribute name="white-space">pre</xsl:attribute>
+					<xsl:attribute name="wrap-option">wrap</xsl:attribute>
+				<!-- </xsl:otherwise>
+			</xsl:choose> -->
+			<xsl:apply-templates/>
+		</fo:block>
+	</xsl:template>
+	
 	<!-- convert YYYY-MM-DD to 'Month YYYY' or 'Month DD, YYYY' -->
 	<xsl:template name="convertDate">
 		<xsl:param name="date"/>

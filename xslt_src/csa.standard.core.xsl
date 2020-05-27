@@ -1455,17 +1455,8 @@
       </fo:basic-link>
 	</xsl:template>
 
-	<xsl:template match="csa:sourcecode">
-		<fo:block font-family="SourceCodePro" font-size="10pt" margin-bottom="6pt" keep-with-next="always" line-height="113%">
-			<xsl:choose>
-				<xsl:when test="@lang = 'en'"></xsl:when>
-				<xsl:otherwise>
-					<xsl:attribute name="white-space">pre</xsl:attribute>
-					<xsl:attribute name="wrap-option">wrap</xsl:attribute>
-				</xsl:otherwise>
-			</xsl:choose>
-			<xsl:apply-templates/>
-		</fo:block>
+	<xsl:template match="csa:sourcecode" priority="2">
+		<xsl:call-template name="sourcecode"/>		
 		<xsl:choose>
 			<xsl:when test="@unnumbered='true'"></xsl:when>
 			<xsl:when test="ancestor::csa:example"/>
