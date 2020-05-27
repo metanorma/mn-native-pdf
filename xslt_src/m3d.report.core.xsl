@@ -1330,18 +1330,6 @@
 			<xsl:value-of select="$section"/>
       </fo:basic-link>
 	</xsl:template>
-
-	<xsl:template match="m3d:sourcecode">
-		<fo:block font-family="Courier" margin-bottom="12pt">
-			<xsl:choose>
-				<xsl:when test="@lang = 'en'"></xsl:when>
-				<xsl:otherwise>
-					<xsl:attribute name="white-space">pre</xsl:attribute>
-				</xsl:otherwise>
-			</xsl:choose>
-			<xsl:apply-templates/>
-		</fo:block>
-	</xsl:template>
 	
 	<xsl:template match="m3d:example/m3d:p">
 		<fo:block margin-top="8pt" margin-bottom="8pt">

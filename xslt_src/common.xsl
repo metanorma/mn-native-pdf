@@ -1,5 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:fo="http://www.w3.org/1999/XSL/Format" xmlns:iso="https://www.metanorma.org/ns/iso" xmlns:iec="https://www.metanorma.org/ns/iec" xmlns:itu="https://www.metanorma.org/ns/itu" xmlns:nist="https://www.metanorma.org/ns/nist" xmlns:un="https://www.metanorma.org/ns/un" xmlns:csd="https://www.metanorma.org/ns/csd" xmlns:ogc="https://www.metanorma.org/ns/ogc" xmlns:mathml="http://www.w3.org/1998/Math/MathML" xmlns:xalan="http://xml.apache.org/xalan"  xmlns:fox="http://xmlgraphics.apache.org/fop/extensions" version="1.0">
+<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" 
+											xmlns:fo="http://www.w3.org/1999/XSL/Format"
+											xmlns:mathml="http://www.w3.org/1998/Math/MathML" 
+											xmlns:xalan="http://xml.apache.org/xalan"  
+											xmlns:fox="http://xmlgraphics.apache.org/fop/extensions" 
+											xmlns:java="http://xml.apache.org/xalan/java" 
+											exclude-result-prefixes="java"
+											version="1.0">
 
 	<xsl:variable name="title-table">
 		<xsl:if test="$namespace = 'iso' or $namespace = 'iec' or $namespace = 'itu' or $namespace = 'unece' or $namespace = 'unece-rec' or $namespace = 'nist' or $namespace = 'ogc' or $namespace = 'rsd' or $namespace = 'csa' or $namespace = 'csd' or $namespace = 'm3d'">
@@ -94,6 +101,53 @@
 			<xsl:attribute name="text-decoration">underline</xsl:attribute>
 		</xsl:if>
 	</xsl:attribute-set>
+
+	<xsl:attribute-set name="sourcecode-style">
+		<xsl:if test="$namespace = 'iso' or $namespace = 'gb'">
+			<xsl:attribute name="font-family">Courier</xsl:attribute>
+			<xsl:attribute name="font-size">9pt</xsl:attribute>
+			<xsl:attribute name="margin-bottom">12pt</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'csa' or $namespace = 'rsd'">
+			<xsl:attribute name="font-family">SourceCodePro</xsl:attribute>
+			<xsl:attribute name="font-size">10pt</xsl:attribute>
+			<xsl:attribute name="margin-bottom">6pt</xsl:attribute>
+			<xsl:attribute name="keep-with-next">always</xsl:attribute>
+			<xsl:attribute name="line-height">113%</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'csd'">
+			<xsl:attribute name="font-family">SourceCodePro</xsl:attribute>
+			<xsl:attribute name="font-size">10pt</xsl:attribute>
+			<xsl:attribute name="margin-bottom">6pt</xsl:attribute>
+			<xsl:attribute name="keep-with-next">always</xsl:attribute>					
+		</xsl:if>
+		<xsl:if test="$namespace = 'iec'">
+			<xsl:attribute name="font-family">Courier</xsl:attribute>
+			<xsl:attribute name="font-size">9pt</xsl:attribute>
+			<xsl:attribute name="margin-top">5pt</xsl:attribute>
+			<xsl:attribute name="margin-bottom">5pt</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'itu' or $namespace = 'nist' or $namespace = 'unece' or $namespace = 'unece-rec'">
+			<xsl:attribute name="font-family">Courier</xsl:attribute>
+			<xsl:attribute name="font-size">10pt</xsl:attribute>
+			<xsl:attribute name="margin-top">6pt</xsl:attribute>
+			<xsl:attribute name="margin-bottom">6pt</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'm3d'">
+			<xsl:attribute name="font-family">Courier</xsl:attribute>			
+			<xsl:attribute name="margin-bottom">12pt</xsl:attribute>
+		</xsl:if>		
+		<xsl:if test="$namespace = 'ogc'">
+			<xsl:attribute name="font-family">Courier</xsl:attribute>
+			<xsl:attribute name="font-size">10pt</xsl:attribute>
+			<xsl:attribute name="margin-bottom">6pt</xsl:attribute>
+			<xsl:attribute name="keep-with-next">always</xsl:attribute>
+			<xsl:attribute name="line-height">113%</xsl:attribute>
+		</xsl:if>
+		
+		
+		
+	</xsl:attribute-set>
 	
 	<xsl:template match="text()">
 		<xsl:value-of select="."/>
@@ -104,7 +158,8 @@
 	</xsl:template>
 	
 	<xsl:template match="*[local-name()='td']//text() | *[local-name()='th']//text() | *[local-name()='dt']//text() | *[local-name()='dd']//text()" priority="1">
-		<xsl:call-template name="add-zero-spaces"/>
+		<!-- <xsl:call-template name="add-zero-spaces"/> -->
+		<xsl:call-template name="add-zero-spaces-java"/>
 	</xsl:template>
 	
 
@@ -371,7 +426,7 @@
 				</xsl:if>
 				<xsl:for-each select="xalan:nodeset($colwidths)//column">
 					<xsl:choose>
-						<xsl:when test=". = 1">
+						<xsl:when test=". = 1 or . = 0">
 							<fo:table-column column-width="proportional-column-width(2)"/>
 						</xsl:when>
 						<xsl:otherwise>
@@ -397,8 +452,8 @@
 			</xsl:when>
 			<xsl:when test="ancestor::*[local-name()='annex']">
 				<xsl:if test="$namespace = 'iso'">
-					<xsl:variable name="annex-id" select="ancestor::iso:annex/@id"/>
-					<xsl:number format="A." count="*[local-name()='annex']"/><xsl:number format="1" level="any" count="iso:table[(not(@unnumbered) or @unnumbered != 'true') and ancestor::iso:annex[@id = $annex-id]]"/>
+					<xsl:variable name="annex-id" select="ancestor::*[local-name()='annex']/@id"/>
+					<xsl:number format="A." count="*[local-name()='annex']"/><xsl:number format="1" level="any" count="*[local-name()='table'][(not(@unnumbered) or @unnumbered != 'true') and ancestor::*[local-name()='annex'][@id = $annex-id]]"/>
 				</xsl:if>
 				<xsl:if test="$namespace = 'gb'">
 					<xsl:variable name="annex-id" select="ancestor::gb:annex/@id"/>
@@ -409,17 +464,17 @@
 				</xsl:if>
 				<xsl:if test="$namespace = 'itu'">
 					<xsl:choose>
-						<xsl:when test="ancestor::itu:annex[@obligation = 'informative']">
-							<xsl:variable name="annex-id" select="ancestor::itu:annex/@id"/>
+						<xsl:when test="ancestor::*[local-name()='annex'][@obligation = 'informative']">
+							<xsl:variable name="annex-id" select="ancestor::*[local-name()='annex']/@id"/>
 							<!-- Table in Appendix -->
-							<xsl:number format="I-" count="itu:annex[@obligation = 'informative']"/>
-							<xsl:number format="1" level="any" count="itu:table[(not(@unnumbered) or @unnumbered != 'true') and ancestor::itu:annex[@id = $annex-id]]"/>
+							<xsl:number format="I-" count="*[local-name()='annex'][@obligation = 'informative']"/>
+							<xsl:number format="1" level="any" count="*[local-name()='table'][(not(@unnumbered) or @unnumbered != 'true') and ancestor::*[local-name()='annex'][@id = $annex-id]]"/>
 						</xsl:when>
 						<!-- Table in Annex -->
-						<xsl:when test="ancestor::itu:annex[not(@obligation) or @obligation != 'informative']">
-							<xsl:variable name="annex-id" select="ancestor::itu:annex/@id"/>
-							<xsl:number format="A-" count="itu:annex[not(@obligation) or @obligation != 'informative']"/>
-							<xsl:number format="1" level="any" count="itu:table[(not(@unnumbered) or @unnumbered != 'true') and ancestor::itu:annex[@id = $annex-id]]"/>
+						<xsl:when test="ancestor::*[local-name()='annex'][not(@obligation) or @obligation != 'informative']">
+							<xsl:variable name="annex-id" select="ancestor::*[local-name()='annex']/@id"/>
+							<xsl:number format="A-" count="*[local-name()='annex'][not(@obligation) or @obligation != 'informative']"/>
+							<xsl:number format="1" level="any" count="*[local-name()='table'][(not(@unnumbered) or @unnumbered != 'true') and ancestor::*[local-name()='annex'][@id = $annex-id]]"/>
 						</xsl:when>
 					</xsl:choose>
 				</xsl:if>
@@ -488,7 +543,7 @@
 		<xsl:if test="$curr-col &lt;= $cols-count">
 			<xsl:variable name="widths">
 				<xsl:choose>
-					<xsl:when test="not($table)">
+					<xsl:when test="not($table)"><!-- this branch is not using in production, for debug only -->
 						<xsl:for-each select="*[local-name()='thead']//*[local-name()='tr']">
 							<xsl:variable name="words">
 								<xsl:call-template name="tokenize">
@@ -527,9 +582,16 @@
 								<xsl:apply-templates select="td[$curr-col]" mode="td_text"/>
 							</xsl:variable>
 							<xsl:variable name="words">
+								<xsl:variable name="string_with_added_zerospaces">
+									<xsl:call-template name="add-zero-spaces-java">
+										<xsl:with-param name="text" select="$td_text"/>
+									</xsl:call-template>
+								</xsl:variable>
 								<xsl:call-template name="tokenize">
 									<!-- <xsl:with-param name="text" select="translate(td[$curr-col],'- —:', '    ')"/> -->
-									<xsl:with-param name="text" select="translate(normalize-space($td_text),'- —:', '    ')"/>
+									<!-- 2009 thinspace -->
+									<!-- <xsl:with-param name="text" select="translate(normalize-space($td_text),'- —:', '    ')"/> -->
+									<xsl:with-param name="text" select="normalize-space(translate($string_with_added_zerospaces, '&#x200B;', ' '))"/>
 								</xsl:call-template>
 							</xsl:variable>
 							<xsl:variable name="max_length">
@@ -576,6 +638,15 @@
 		<xsl:variable name="zero-space">&#x200B;</xsl:variable>
 		<xsl:value-of select="translate(., $zero-space, ' ')"/><xsl:text> </xsl:text>
 	</xsl:template>
+	
+	<xsl:template match="*[local-name()='termsource']" mode="td_text">
+		<xsl:value-of select="*[local-name()='origin']/@citeas"/>
+	</xsl:template>
+	
+	<xsl:template match="*[local-name()='link']" mode="td_text">
+		<xsl:value-of select="@target"/>
+	</xsl:template>
+
 	
 	<!-- for debug purpose only -->
 	<xsl:template match="*[local-name()='table2']"/>
@@ -1314,7 +1385,7 @@
 									<xsl:otherwise>
 										<xsl:for-each select="xalan:nodeset($colwidths)//column">
 											<xsl:choose>
-												<xsl:when test=". = 1">
+												<xsl:when test=". = 1 or . = 0">
 													<fo:table-column column-width="proportional-column-width(2)"/>
 												</xsl:when>
 												<xsl:otherwise>
@@ -1610,6 +1681,13 @@
 		</xsl:for-each>
 	</xsl:template>
 
+	
+	<xsl:template name="add-zero-spaces-java">
+		<xsl:param name="text" select="."/>
+		<!-- add zero-width space (#x200B) after characters: dash, dot, colon, equal, underscore, em dash, thin space  -->
+		<xsl:value-of select="java:replaceAll(java:java.lang.String.new($text),'(-|\.|:|=|_|—| )','$1&#x200B;')"/>
+	</xsl:template>​
+	
 	<!-- add zero space after dash character (for table's entries) -->
 	<xsl:template name="add-zero-spaces">
 		<xsl:param name="text" select="."/>
@@ -1929,6 +2007,19 @@
 		</fo:inline>
 	</xsl:template>
 
+	<xsl:template match="*[local-name()='sourcecode']" name="sourcecode">
+		<fo:block xsl:use-attribute-sets="sourcecode-style">
+			<!-- <xsl:choose>
+				<xsl:when test="@lang = 'en'"></xsl:when>
+				<xsl:otherwise> -->
+					<xsl:attribute name="white-space">pre</xsl:attribute>
+					<xsl:attribute name="wrap-option">wrap</xsl:attribute>
+				<!-- </xsl:otherwise>
+			</xsl:choose> -->
+			<xsl:apply-templates/>
+		</fo:block>
+	</xsl:template>
+	
 	<!-- convert YYYY-MM-DD to 'Month YYYY' or 'Month DD, YYYY' -->
 	<xsl:template name="convertDate">
 		<xsl:param name="date"/>

@@ -2390,18 +2390,6 @@
       </fo:basic-link>
 	</xsl:template>
 
-	<xsl:template match="iec:sourcecode">
-		<fo:block font-family="Courier" font-size="9pt" margin-top="5pt" margin-bottom="5pt">
-			<xsl:choose>
-				<xsl:when test="@lang = 'en'"></xsl:when>
-				<xsl:otherwise>
-					<xsl:attribute name="white-space">pre</xsl:attribute>
-				</xsl:otherwise>
-			</xsl:choose>
-			<xsl:apply-templates/>
-		</fo:block>
-	</xsl:template>
-	
 	<xsl:template match="iec:example/iec:p">
 		<fo:block>
 			<fo:inline padding-right="9mm">EXAMPLE</fo:inline>
