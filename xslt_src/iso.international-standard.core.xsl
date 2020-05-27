@@ -1,5 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:fo="http://www.w3.org/1999/XSL/Format" xmlns:iso="https://www.metanorma.org/ns/iso" xmlns:mathml="http://www.w3.org/1998/Math/MathML" xmlns:xalan="http://xml.apache.org/xalan" xmlns:fox="http://xmlgraphics.apache.org/fop/extensions" version="1.0">
+<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" 
+											xmlns:fo="http://www.w3.org/1999/XSL/Format" 
+											xmlns:iso="https://www.metanorma.org/ns/iso" 
+											xmlns:mathml="http://www.w3.org/1998/Math/MathML" 
+											xmlns:xalan="http://xml.apache.org/xalan" 
+											xmlns:fox="http://xmlgraphics.apache.org/fop/extensions" 
+											xmlns:java="http://xml.apache.org/xalan/java" 
+											exclude-result-prefixes="java"
+											version="1.0">
 
 	<xsl:output method="xml" encoding="UTF-8" indent="no"/>
 	
@@ -1455,7 +1463,7 @@
 		<xsl:param name="sectionNum"/>
 		<xsl:param name="sectionNumSkew" select="0"/>
 		<fo:block>
-			<xsl:variable name="pos"><xsl:number count="iso:sections/iso:clause | iso:sections/iso:terms"/></xsl:variable>
+			<xsl:variable name="pos"><xsl:number count="*"/></xsl:variable> <!-- iso:sections/iso:clause | iso:sections/iso:terms | iso:sections/iso:definitions -->
 			<xsl:if test="$pos &gt;= 2">
 				<xsl:attribute name="space-before">18pt</xsl:attribute>
 			</xsl:if>
@@ -1464,7 +1472,7 @@
 				<xsl:choose>
 					<xsl:when test="$sectionNum"><xsl:value-of select="$sectionNum"/></xsl:when>
 					<xsl:when test="$sectionNumSkew != 0">
-						<xsl:variable name="number"><xsl:number count="iso:sections/iso:clause | iso:sections/iso:terms"/></xsl:variable>
+						<xsl:variable name="number"><xsl:number count="*"/></xsl:variable> <!--iso:sections/iso:clause | iso:sections/iso:terms | iso:sections/iso:definitions -->
 						<xsl:value-of select="$number + $sectionNumSkew"/>
 					</xsl:when>
 				</xsl:choose>
