@@ -418,7 +418,7 @@
 				</xsl:if>
 				<xsl:for-each select="xalan:nodeset($colwidths)//column">
 					<xsl:choose>
-						<xsl:when test=". = 1">
+						<xsl:when test=". = 1 or . = 0">
 							<fo:table-column column-width="proportional-column-width(2)"/>
 						</xsl:when>
 						<xsl:otherwise>
@@ -623,6 +623,15 @@
 		<xsl:variable name="zero-space">&#x200B;</xsl:variable>
 		<xsl:value-of select="translate(., $zero-space, ' ')"/><xsl:text> </xsl:text>
 	</xsl:template>
+	
+	<xsl:template match="*[local-name()='termsource']" mode="td_text">
+		<xsl:value-of select="*[local-name()='origin']/@citeas"/>
+	</xsl:template>
+	
+	<xsl:template match="*[local-name()='link']" mode="td_text">
+		<xsl:value-of select="@target"/>
+	</xsl:template>
+
 	
 	<!-- for debug purpose only -->
 	<xsl:template match="*[local-name()='table2']"/>
@@ -1361,7 +1370,7 @@
 									<xsl:otherwise>
 										<xsl:for-each select="xalan:nodeset($colwidths)//column">
 											<xsl:choose>
-												<xsl:when test=". = 1">
+												<xsl:when test=". = 1 or . = 0">
 													<fo:table-column column-width="proportional-column-width(2)"/>
 												</xsl:when>
 												<xsl:otherwise>
