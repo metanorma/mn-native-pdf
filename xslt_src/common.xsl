@@ -1,5 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:fo="http://www.w3.org/1999/XSL/Format" xmlns:mathml="http://www.w3.org/1998/Math/MathML" xmlns:xalan="http://xml.apache.org/xalan"  xmlns:fox="http://xmlgraphics.apache.org/fop/extensions" version="1.0">
+<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" 
+											xmlns:fo="http://www.w3.org/1999/XSL/Format"
+											xmlns:mathml="http://www.w3.org/1998/Math/MathML" 
+											xmlns:xalan="http://xml.apache.org/xalan"  
+											xmlns:fox="http://xmlgraphics.apache.org/fop/extensions" 
+											xmlns:java="http://xml.apache.org/xalan/java" 
+											exclude-result-prefixes="java"
+											version="1.0">
 
 	<xsl:variable name="title-table">
 		<xsl:if test="$namespace = 'iso' or $namespace = 'iec' or $namespace = 'itu' or $namespace = 'unece' or $namespace = 'unece-rec' or $namespace = 'nist' or $namespace = 'ogc' or $namespace = 'rsd' or $namespace = 'csa' or $namespace = 'csd' or $namespace = 'm3d'">
@@ -151,7 +158,8 @@
 	</xsl:template>
 	
 	<xsl:template match="*[local-name()='td']//text() | *[local-name()='th']//text() | *[local-name()='dt']//text() | *[local-name()='dd']//text()" priority="1">
-		<xsl:call-template name="add-zero-spaces"/>
+		<!-- <xsl:call-template name="add-zero-spaces"/> -->
+		<xsl:call-template name="add-zero-spaces-java"/>
 	</xsl:template>
 	
 
@@ -535,7 +543,7 @@
 		<xsl:if test="$curr-col &lt;= $cols-count">
 			<xsl:variable name="widths">
 				<xsl:choose>
-					<xsl:when test="not($table)">
+					<xsl:when test="not($table)"><!-- this branch is not using in production, for debug only -->
 						<xsl:for-each select="*[local-name()='thead']//*[local-name()='tr']">
 							<xsl:variable name="words">
 								<xsl:call-template name="tokenize">
@@ -574,9 +582,16 @@
 								<xsl:apply-templates select="td[$curr-col]" mode="td_text"/>
 							</xsl:variable>
 							<xsl:variable name="words">
+								<xsl:variable name="string_with_added_zerospaces">
+									<xsl:call-template name="add-zero-spaces-java">
+										<xsl:with-param name="text" select="$td_text"/>
+									</xsl:call-template>
+								</xsl:variable>
 								<xsl:call-template name="tokenize">
 									<!-- <xsl:with-param name="text" select="translate(td[$curr-col],'- —:', '    ')"/> -->
-									<xsl:with-param name="text" select="translate(normalize-space($td_text),'- —:', '    ')"/>
+									<!-- 2009 thinspace -->
+									<!-- <xsl:with-param name="text" select="translate(normalize-space($td_text),'- —:', '    ')"/> -->
+									<xsl:with-param name="text" select="normalize-space(translate($string_with_added_zerospaces, '&#x200B;', ' '))"/>
 								</xsl:call-template>
 							</xsl:variable>
 							<xsl:variable name="max_length">
@@ -1666,6 +1681,13 @@
 		</xsl:for-each>
 	</xsl:template>
 
+	
+	<xsl:template name="add-zero-spaces-java">
+		<xsl:param name="text" select="."/>
+		<!-- add zero-width space (#x200B) after characters: dash, dot, colon, equal, underscore, em dash, thin space  -->
+		<xsl:value-of select="java:replaceAll(java:java.lang.String.new($text),'(-|\.|:|=|_|—| )','$1&#x200B;')"/>
+	</xsl:template>​
+	
 	<!-- add zero space after dash character (for table's entries) -->
 	<xsl:template name="add-zero-spaces">
 		<xsl:param name="text" select="."/>
