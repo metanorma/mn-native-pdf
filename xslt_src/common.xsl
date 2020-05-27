@@ -1235,8 +1235,10 @@
 					<xsl:attribute name="margin-top">12pt</xsl:attribute>
 				</xsl:if>
 				<xsl:if test="$namespace = 'itu'">
-					<xsl:attribute name="margin-left">7.4mm</xsl:attribute>
-					<xsl:if test="local-name(..) = 'li'">
+					<xsl:if test="$parent = 'figure' or $parent = 'formula'">
+						<xsl:attribute name="margin-left">7.4mm</xsl:attribute>
+					</xsl:if>
+					<xsl:if test="$parent = 'li'">
 						<xsl:attribute name="margin-left">-4mm</xsl:attribute>
 					</xsl:if>
 				</xsl:if>
