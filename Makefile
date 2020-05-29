@@ -54,13 +54,14 @@ XSLT_GENERATED := xslt/iec.international-standard.xsl \
 
 MN2PDF_DOWNLOAD_PATH := https://github.com/metanorma/mn2pdf/releases/download/v1.16/mn2pdf-1.16.jar
 # MN2PDF_DOWNLOAD_PATH := https://maven.pkg.github.com/metanorma/mn2pdf/com/metanorma/fop/mn2pdf/1.7/mn2pdf-1.7.jar
+MN2PDF_EXECUTABLE := $(notdir $(MN2PDF_DOWNLOAD_PATH))
 
 all: xslts documents.html
 
 xslts: $(XSLT_GENERATED)
 
-mn2pdf.jar:
-	curl -sSL --user ${GITHUB_USERNAME}:${GITHUB_TOKEN} ${MN2PDF_DOWNLOAD_PATH} -o mn2pdf.jar
+$(MN2PDF_EXECUTABLE):
+	curl -sSL --user ${GITHUB_USERNAME}:${GITHUB_TOKEN} ${MN2PDF_DOWNLOAD_PATH} -o $(MN2PDF_EXECUTABLE)
 
 xalan/xalan.jar:
 ifeq ($(OS),Windows_NT)
@@ -132,17 +133,17 @@ documents/un-ECE_AGAT_2020_INF1.pdf:
 #documents/itu-Z.100-201811-AnnF1.pdf:
 #	echo "### skipping $@"
 
-documents/%.pdf: sources/%.xml mn2pdf.jar | documents
+documents/%.pdf: sources/%.xml $(MN2PDF_EXECUTABLE) | documents
 ifeq ($(OS),Windows_NT)
 	powershell -Command "$$doc = [xml](Get-Content $<); $$doc.SelectNodes(\"*\").get_name()" | cut -d "-" -f 1 > MN_FLAVOR.txt
 	powershell -Command "$$doc = [xml](Get-Content $<); $$doc.SelectNodes(\"//*[local-name()='doctype']\").'#text'" > DOCTYPE.txt
-	cmd /V /C "set /p MN_FLAVOR=<MN_FLAVOR.txt & set /p DOCTYPE=<DOCTYPE.txt & java -Xss5m -Xmx1024m -jar mn2pdf.jar --xml-file $< --xsl-file ${XSLT_PATH_BASE}/!MN_FLAVOR!.!DOCTYPE!.xsl --pdf-file $@"
+	cmd /V /C "set /p MN_FLAVOR=<MN_FLAVOR.txt & set /p DOCTYPE=<DOCTYPE.txt & java -Xss5m -Xmx1024m -jar $(MN2PDF_EXECUTABLE) --xml-file $< --xsl-file ${XSLT_PATH_BASE}/!MN_FLAVOR!.!DOCTYPE!.xsl --pdf-file $@"
 else
 	FILENAME=$<; \
 	MN_FLAVOR=$$(xmllint --xpath 'name(*)' $${FILENAME} | cut -d '-' -f 1); \
 	DOCTYPE=$$(xmllint --xpath "//*[local-name()='doctype']/text()" $${FILENAME}); \
 	XSLT_PATH=${XSLT_PATH_BASE}/$${MN_FLAVOR}.$${DOCTYPE}.xsl; \
-	java -Xss5m -Xmx1024m -jar mn2pdf.jar --xml-file $$FILENAME --xsl-file $$XSLT_PATH --pdf-file $@
+	java -Xss5m -Xmx1024m -jar $(MN2PDF_EXECUTABLE) --xml-file $$FILENAME --xsl-file $$XSLT_PATH --pdf-file $@
 endif
 
 xslt/%.xsl: xslt_src/%.core.xsl xslt_src/merge.xsl xalan/xalan.jar
@@ -161,8 +162,8 @@ documents.html: documents.rxl
 	bundle exec relaton xml2html documents.rxl
 
 distclean: clean
-	rm -rf xalan
-	rm -f mn2pdf.jar
+	rm -rf xalan/*
+	rm -f $(MN2PDF_EXECUTABLE)
 
 clean:
 	rm -f $(XSLT_GENERATED)
