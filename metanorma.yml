@@ -1,7 +1,7 @@
 ---
 metanorma:
   deploy:
-    email: "travis-ci@metanorma.org"
+    email: "ci@metanorma.org"
 relaton:
   collection:
     name: mn2pdf samples
