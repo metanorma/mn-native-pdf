@@ -7,7 +7,7 @@ endif
 SRCDIR := sources
 DESTDIR := documents
 SRC := $(patsubst mn-samples-iso/documents/amendment/%,sources/iso-%,$(wildcard mn-samples-iso/documents/amendment/*.xml)) \
-	$(patsubst mn-samples-iso/documents/international-standard/%,sources/%,$(wildcard mn-samples-iso/documents/international-standard/*.xml)) \
+	$(patsubst mn-samples-iso/documents/international-standard/%,sources/iso-%,$(wildcard mn-samples-iso/documents/international-standard/*.xml)) \
 	$(patsubst mn-samples-itu/documents/%,sources/itu-%,$(wildcard mn-samples-itu/documents/*.xml)) \
 	$(patsubst mn-samples-iec/documents/%,sources/%,$(wildcard mn-samples-iec/documents/*.xml)) \
 	$(patsubst mn-samples-ogc/documents/%,sources/ogc-%,$(wildcard mn-samples-ogc/documents/*.xml)) \
@@ -50,7 +50,7 @@ XSLT_GENERATED := xslt/iec.international-standard.xsl \
 	xslt/csd.standard.xsl \
 	xslt/csa.standard.xsl \
 	xslt/rsd.standard.xsl \
-  xslt/m3d.report.xsl \
+	xslt/m3d.report.xsl \
 	xslt/gb.recommendation.xsl \
 	xslt/iho.specification.xsl \
 	xslt/iho.standard.xsl
@@ -82,7 +82,7 @@ else
 	popd
 endif
 
-sources/iso-%: mn-samples-iso/documents/international-standard/iso-%
+sources/iso-%: mn-samples-iso/documents/international-standard/%
 	cp $< $@
 
 sources/iso-%: mn-samples-iso/documents/amendment/%
