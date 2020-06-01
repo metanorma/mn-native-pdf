@@ -52,8 +52,6 @@
 			<xsl:apply-templates select="/itu:itu-standard/itu:annex" mode="contents"/>
 			<xsl:apply-templates select="/itu:itu-standard/itu:bibliography/itu:references[position() != 1]" mode="contents"/> <!-- @id = 'bibliography' -->
 			
-			<xsl:apply-templates select="//itu3" mode="contents"/>
-			
 			<xsl:apply-templates select="//itu:table" mode="contents"/>
 			
 		</contents>
@@ -132,7 +130,7 @@
 					<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
 						<rdf:Description rdf:about="" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:pdf="http://ns.adobe.com/pdf/1.3/">
 						<!-- Dublin Core properties go here -->
-							<dc:title><xsl:value-of select="/itu:itu-standard/itu:bibdata/itu:title[@type='main']"/></dc:title>
+							<dc:title><xsl:value-of select="/itu:itu-standard/itu:bibdata/itu:title[@type='main']"/>&#xA0;</dc:title>
 							<dc:creator><xsl:value-of select="/itu:iso-standard/itu:bibdata/itu:contributor[itu:role/@type='author']/itu:organization/itu:name"/></dc:creator>
 							<dc:description>
 								<xsl:variable name="abstract">
@@ -182,12 +180,12 @@
 							<fo:table-column column-width="35.8mm"/>
 							<fo:table-column column-width="67mm"/>
 							<fo:table-body>
-								<fo:table-row height="42.5mm">
+								<fo:table-row height="37.5mm"> <!-- 42.5mm -->
 									<fo:table-cell>
 										<fo:block>&#xA0;</fo:block>
 									</fo:table-cell>
 									<fo:table-cell number-columns-spanned="3">
-										<fo:block font-family="Arial" font-size="13pt" font-weight="bold" color="gray" margin-top="16pt"> <!-- letter-spacing="4pt", Helvetica for letter-spacing working -->
+										<fo:block font-family="Arial" font-size="13pt" font-weight="bold" color="gray"> <!--  margin-top="16pt" letter-spacing="4pt", Helvetica for letter-spacing working -->
 											<fo:block><xsl:value-of select="$linebreak"/></fo:block>
 											<xsl:call-template name="addLetterSpacing">
 												<xsl:with-param name="text" select="/itu:itu-standard/itu:bibdata/itu:contributor[itu:role/@type='author']/itu:organization/itu:name"/>
@@ -238,29 +236,31 @@
 										</fo:block>
 									</fo:table-cell>
 								</fo:table-row>
-								<fo:table-row height="59mm">
+								<fo:table-row height="64mm"> <!-- 59mm -->
 									<fo:table-cell>
 										<fo:block>&#xA0;</fo:block>
 									</fo:table-cell>
-									<fo:table-cell font-size="16pt" number-columns-spanned="3" border-bottom="0.5mm solid black" padding-right="2mm">
-										<fo:block >
-											<xsl:if test="normalize-space(/itu:itu-standard/itu:bibdata/itu:series[@type = 'main']) != ''">
-												<xsl:variable name="title">
-													<xsl:text>Series </xsl:text>
-													<xsl:value-of select="/itu:itu-standard/itu:bibdata/itu:series[@type = 'main']"/>
-												</xsl:variable>
-												<xsl:value-of select="translate($title, $lower, $upper)"/>
-											</xsl:if>
-										</fo:block>
-										<xsl:if test="/itu:itu-standard/itu:bibdata/itu:series">
-											<fo:block margin-top="6pt">
-												<xsl:value-of select="/itu:itu-standard/itu:bibdata/itu:series[@type = 'secondary']"/>
-												<xsl:if test="normalize-space(/itu:itu-standard/itu:bibdata/itu:series[@type = 'tertiary']) != ''">
-													<xsl:text> — </xsl:text>
-													<xsl:value-of select="/itu:itu-standard/itu:bibdata/itu:series[@type = 'tertiary']"/>
+									<fo:table-cell font-size="16pt" number-columns-spanned="3" border-bottom="0.5mm solid black" padding-right="2mm" display-align="after">
+										<fo:block padding-bottom="7mm">
+											<fo:block text-transform="uppercase">
+												<xsl:if test="normalize-space(/itu:itu-standard/itu:bibdata/itu:series[@type = 'main']) != ''">
+													<xsl:variable name="title">
+														<xsl:text>Series </xsl:text>
+														<xsl:value-of select="/itu:itu-standard/itu:bibdata/itu:series[@type = 'main']"/>
+													</xsl:variable>
+													<xsl:value-of select="$title"/>												
 												</xsl:if>
 											</fo:block>
-										</xsl:if>
+											<xsl:if test="/itu:itu-standard/itu:bibdata/itu:series">
+												<fo:block margin-top="6pt">
+													<xsl:value-of select="/itu:itu-standard/itu:bibdata/itu:series[@type = 'secondary']"/>
+													<xsl:if test="normalize-space(/itu:itu-standard/itu:bibdata/itu:series[@type = 'tertiary']) != ''">
+														<xsl:text> — </xsl:text>
+														<xsl:value-of select="/itu:itu-standard/itu:bibdata/itu:series[@type = 'tertiary']"/>
+													</xsl:if>
+												</fo:block>
+											</xsl:if>
+										</fo:block>
 									</fo:table-cell>
 								</fo:table-row>
 								<fo:table-row height="40mm">
@@ -627,7 +627,7 @@
 	<xsl:template match="itu:figure" mode="contents">
 		<xsl:param name="sectionNum" />
 		<item level="" id="{@id}" display="false" type="figure">
-			<xsl:variable name="title">Figure </xsl:variable>
+			<xsl:variable name="title" select="$title-figure"/>
 			<xsl:attribute name="section">
 				<xsl:call-template name="getSection">
 					<xsl:with-param name="sectionNum" select="$sectionNum"/>
@@ -636,6 +636,11 @@
 				<xsl:call-template name="getItemNumber">
 					<xsl:with-param name="brackets" select="'false'"/>
 				</xsl:call-template> -->
+			</xsl:attribute>
+			<xsl:attribute name="topsection">
+				<xsl:call-template name="getTopSection">
+					<xsl:with-param name="sectionNum" select="$sectionNum"/>
+				</xsl:call-template>
 			</xsl:attribute>
 			<xsl:value-of select="$title"/>
 			<xsl:call-template name="getItemNumber">
@@ -650,13 +655,18 @@
 	<xsl:template match="itu:table" mode="contents">
 		<xsl:param name="sectionNum" />
 		<item level="" id="{@id}" display="false" type="table">
-			<xsl:variable name="title">Table </xsl:variable>
+			<xsl:variable name="title" select="$title-table"/>
 			<xsl:attribute name="section">
 				<xsl:call-template name="getSection">
 					<xsl:with-param name="sectionNum" select="$sectionNum"/>
 				</xsl:call-template>
 				<!-- <xsl:text>Table </xsl:text>
 				<xsl:call-template name="getItemNumber"/> -->
+			</xsl:attribute>
+			<xsl:attribute name="topsection">
+				<xsl:call-template name="getTopSection">
+					<xsl:with-param name="sectionNum" select="$sectionNum"/>
+				</xsl:call-template>
 			</xsl:attribute>
 			<xsl:value-of select="$title"/>
 			<xsl:call-template name="getItemNumber">
@@ -678,13 +688,14 @@
 					<xsl:otherwise>Equation </xsl:otherwise>
 				</xsl:choose>
 			</xsl:variable>
-			<xsl:attribute name="section">
+			<xsl:variable name="section">
 				<xsl:call-template name="getSection">
 					<xsl:with-param name="sectionNum" select="$sectionNum"/>
 				</xsl:call-template>
-				<!-- <xsl:value-of select="$title"/>
-				<xsl:call-template name="getItemNumber"/> -->
-			</xsl:attribute>
+			</xsl:variable>
+			<xsl:attribute name="section">
+				<xsl:value-of select="$section"/>				
+			</xsl:attribute>			
 			<xsl:variable name="parent-element" select="local-name(..)"/>
 			<xsl:attribute name="parent">
 				<xsl:choose>
@@ -699,6 +710,11 @@
 			</xsl:variable>
 			<xsl:attribute name="number">
 				<xsl:value-of select="$itemNumber"/>
+			</xsl:attribute>
+			<xsl:attribute name="topsection">
+				<xsl:call-template name="getTopSection">
+					<xsl:with-param name="sectionNum" select="$sectionNum"/>
+				</xsl:call-template>
 			</xsl:attribute>
 			<xsl:value-of select="$title"/>
 			<xsl:value-of select="$itemNumber"/>
@@ -800,6 +816,11 @@
 					<xsl:otherwise></xsl:otherwise>
 				</xsl:choose>
 			</xsl:attribute>
+			<xsl:attribute name="topsection">
+				<xsl:call-template name="getTopSection">
+					<xsl:with-param name="sectionNum" select="$sectionNum"/>
+				</xsl:call-template>
+			</xsl:attribute>
 		</item>
 		<xsl:apply-templates mode="contents">
 			<xsl:with-param name="sectionNum" select="$sectionNum"/>
@@ -818,6 +839,11 @@
 			</xsl:call-template>
 		</xsl:variable>
 		<item level="" id="{@id}" display="false" type="note" section="{$section}">
+			<xsl:attribute name="topsection">
+				<xsl:call-template name="getTopSection">
+					<xsl:with-param name="sectionNum" select="$sectionNum"/>
+				</xsl:call-template>
+			</xsl:attribute>
 			<xsl:number/>
 		</item>
 		<xsl:apply-templates mode="contents">
@@ -825,23 +851,6 @@
 		</xsl:apply-templates>
 	</xsl:template>
 	
-	<xsl:template match="itu:termnote" mode="contents">
-		<xsl:param name="sectionNum" />
-		<xsl:variable name="level">
-			<xsl:call-template name="getLevel"/>
-		</xsl:variable>
-		<xsl:variable name="section">
-			<xsl:call-template name="getSection">
-				<xsl:with-param name="sectionNum" select="$sectionNum"/>
-			</xsl:call-template>
-		</xsl:variable>
-		<item level="" id="{@id}" display="false" type="note" section="{$section}">
-			<xsl:number/>
-		</item>
-		<xsl:apply-templates mode="contents">
-			<xsl:with-param name="sectionNum" select="$sectionNum"/>
-		</xsl:apply-templates>
-	</xsl:template>
 	
 	<xsl:template match="itu:note" mode="contents">
 		<xsl:param name="sectionNum" />
@@ -856,6 +865,11 @@
 			</xsl:for-each>
 		</xsl:variable>
 		<item level="" id="{@id}" display="false" type="note" section="{$section}">
+			<xsl:attribute name="topsection">
+				<xsl:call-template name="getTopSection">
+					<xsl:with-param name="sectionNum" select="$sectionNum"/>
+				</xsl:call-template>
+			</xsl:attribute>
 			<xsl:number/>
 		</item>
 		<xsl:apply-templates mode="contents">
@@ -912,6 +926,18 @@
 			</xsl:otherwise>
 		</xsl:choose>
 	</xsl:template>
+
+	<xsl:template match="itu:xref" mode="contents">
+		<xsl:param name="sectionNum" />
+		<item level="" id="{generate-id()}" display="false" type="xref">
+			
+			<xsl:attribute name="topsection">
+				<xsl:call-template name="getTopSection">
+					<xsl:with-param name="sectionNum" select="$sectionNum"/>
+				</xsl:call-template>
+			</xsl:attribute>
+		</item>		
+	</xsl:template>
 	
 	<!-- ============================= -->
 	<!-- ============================= -->
@@ -954,6 +980,7 @@
 	<!-- PARAGRAPHS                                    -->
 	<!-- ============================= -->	
 	<xsl:template match="itu:p | itu:sections/itu:p">
+		<xsl:param name="sectionNum"/>
 		<fo:block margin-top="6pt">
 			<xsl:attribute name="text-align">
 				<xsl:choose>
@@ -961,7 +988,9 @@
 					<xsl:otherwise>justify</xsl:otherwise>
 				</xsl:choose>
 			</xsl:attribute>
-			<xsl:apply-templates />
+			<xsl:apply-templates>
+				<xsl:with-param name="sectionNum" select="$sectionNum"/>
+			</xsl:apply-templates>
 		</fo:block>
 	</xsl:template>
 
@@ -976,8 +1005,8 @@
 		<fo:block font-size="11pt" space-before="4pt" text-align="justify">
 			<xsl:if test="ancestor::itu:figure">
 				<xsl:attribute name="keep-with-previous">always</xsl:attribute>
-			</xsl:if>
-			<xsl:text>NOTE </xsl:text>
+			</xsl:if>			
+			<xsl:value-of select="$title-note"/>
 			<!-- <xsl:if test="../following-sibling::itu:note or ../preceding-sibling::itu:note"> -->
 			<xsl:if test="count(//itu:note[ancestor::*[local-name() = 'clause'][1][@id = $id] and not (ancestor::itu:table)]) &gt; 1">
 				<xsl:number count="itu:note[ancestor::*[local-name() = 'clause'][1][@id = $id] and not (ancestor::itu:table)]" level="any"/>
@@ -1356,10 +1385,13 @@
 						<xsl:with-param name="brackets" select="'false'"/>
 					</xsl:call-template>
 				</xsl:variable>
-				<xsl:if test="$itemnumber != ''">
-					<xsl:text>Figure </xsl:text>
-					<xsl:value-of select="$itemnumber"/>
-				</xsl:if>
+				<xsl:choose>
+					<xsl:when test="local-name(*) = 'figure' and normalize-space(itu:name) = ''"></xsl:when><!-- don't show 'Figure' for outer figure without name -->
+					<xsl:when test="$itemnumber != ''">						
+						<xsl:value-of select="$title-figure"/>
+						<xsl:value-of select="$itemnumber"/>
+					</xsl:when>
+				</xsl:choose>
 				<xsl:if test="itu:name">
 					<xsl:text> — </xsl:text>
 					<xsl:apply-templates select="itu:name" mode="process"/>
@@ -1423,8 +1455,8 @@
 	
 	
 	<xsl:template match="itu:annex2//itu:note/itu:p">
-		<fo:block font-size="11pt" margin-top="4pt">
-			<xsl:text>NOTE </xsl:text>
+		<fo:block font-size="11pt" margin-top="4pt">			
+			<xsl:value-of select="$title-note"/>
 			<!-- <xsl:if test="../following-sibling::itu:note or ../preceding-sibling::itu:note"> -->
 				<xsl:number count="itu:note"/><xsl:text> </xsl:text>
 			<!-- </xsl:if> -->
@@ -1446,8 +1478,8 @@
 	<xsl:template match="itu:ul//itu:note |  itu:ol//itu:note"/>
 	<xsl:template match="itu:ul//itu:note/itu:p  | itu:ol//itu:note/itu:p" mode="process">
 		<xsl:variable name="id" select="ancestor::*[local-name() = 'clause'][1]/@id"/>
-		<fo:block font-size="11pt" margin-top="4pt">
-			<xsl:text>NOTE </xsl:text>
+		<fo:block font-size="11pt" margin-top="4pt">			
+			<xsl:value-of select="$title-note"/>
 			<!-- <xsl:if test="../following-sibling::itu:note or ../preceding-sibling::itu:note"> -->
 			<xsl:if test="count(//itu:note[ancestor::*[@id = $id] and not (ancestor::itu:table)]) &gt; 1">
 				<xsl:number count="itu:note[ancestor::*[@id = $id] and not (ancestor::itu:table)]" level="any"/>
@@ -1472,10 +1504,13 @@
 						<xsl:attribute name="margin-left">18mm</xsl:attribute>
 					</xsl:if>
 					<xsl:if test="local-name(..) = 'ul'">
-						<xsl:attribute name="margin-left">15mm</xsl:attribute>
-						<xsl:if test="count(ancestor::itu:ol) + count(ancestor::itu:ul) &gt; 1">
-							<xsl:attribute name="margin-left">7mm</xsl:attribute>
+						<xsl:attribute name="margin-left">7mm</xsl:attribute><!-- 15mm -->
+						<xsl:if test="ancestor::itu:table">
+							<xsl:attribute name="margin-left">4.5mm</xsl:attribute>
 						</xsl:if>
+						<!-- <xsl:if test="count(ancestor::itu:ol) + count(ancestor::itu:ul) &gt; 1">
+							<xsl:attribute name="margin-left">7mm</xsl:attribute>
+						</xsl:if> -->
 					</xsl:if>
 					<fo:block-container margin-left="0mm">
 						<xsl:apply-templates />
@@ -1498,11 +1533,9 @@
 	<xsl:template match="itu:link" priority="2">
 		<fo:inline color="blue">
 			<xsl:if test="local-name(..) = 'formattedref' or ancestor::itu:preface">
-				<xsl:attribute name="font-family">Arial</xsl:attribute>
-				<xsl:attribute name="font-size">8pt</xsl:attribute>
-				<xsl:if test="local-name(..) = 'formattedref'">
-					<xsl:attribute name="text-decoration">underline</xsl:attribute>
-				</xsl:if>
+				<xsl:attribute name="text-decoration">underline</xsl:attribute>
+				<!-- <xsl:attribute name="font-family">Arial</xsl:attribute>
+				<xsl:attribute name="font-size">8pt</xsl:attribute> -->
 			</xsl:if>
 			<xsl:call-template name="link"/>
 		</fo:inline>
@@ -1510,8 +1543,8 @@
 	
 
 	<xsl:template match="itu:termnote">
-		<fo:block id="{@id}" margin-top="4pt">
-			<xsl:text>NOTE </xsl:text>
+		<fo:block id="{@id}" margin-top="4pt">			
+			<xsl:value-of select="$title-note"/>
 				<xsl:if test="following-sibling::itu:termnote or preceding-sibling::itu:termnote">
 					<xsl:number/><xsl:text> </xsl:text>
 				</xsl:if>
@@ -1604,18 +1637,22 @@
 		<xsl:param name="sectionNum"/>
 		
 		<xsl:variable name="section" select="xalan:nodeset($contents)//item[@id = current()/@target]/@section"/>
+		<xsl:variable name="topsection" select="xalan:nodeset($contents)//item[@id = current()/@target]/@topsection"/>
+		<xsl:variable name="xref_id" select="generate-id()"/>
+		<xsl:variable name="xreftopsection" select="xalan:nodeset($contents)//item[@id = $xref_id]/@topsection"/>
 		
 		<xsl:variable name="text" select="xalan:nodeset($contents)//item[@id = current()/@target]/text()"/>
 		
 		<fo:basic-link internal-destination="{@target}" color="blue" text-decoration="underline" fox:alt-text="{@target}">
 			<xsl:variable name="type" select="xalan:nodeset($contents)//item[@id = current()/@target]/@type"/>
+			<xsl:variable name="level" select="xalan:nodeset($contents)//item[@id =current()/@target]/@level"/>
 			<xsl:choose>
-				<xsl:when test="$type = 'clause'">Clause </xsl:when><!-- and not (ancestor::annex) -->
+				<xsl:when test="($type = 'clause' or $type = 'term') and $level = 1"><xsl:value-of select="$title-clause"/></xsl:when><!-- and not (ancestor::annex) -->
+				<xsl:when test="($type = 'clause' or $type = 'term') and $level &gt; 1"><xsl:value-of select="translate($title-clause, $upper, $lower)"/></xsl:when>
 				<xsl:when test="$type = 'example'">Example </xsl:when>
 				<xsl:when test="$type = 'figure'"></xsl:when>
 				<xsl:when test="$type = 'formula'"></xsl:when>
 				<xsl:when test="$type = 'table'"></xsl:when>
-				<xsl:when test="$type = 'term'">Clause </xsl:when>
 				<xsl:when test="$type = 'note'"><xsl:text>Note </xsl:text><xsl:value-of select="xalan:nodeset($contents)//item[@id = current()/@target]/text()"/></xsl:when>
 					
 				<xsl:otherwise></xsl:otherwise> <!-- <xsl:value-of select="$type"/> -->
@@ -1628,8 +1665,10 @@
 					</xsl:variable>
 					<xsl:if test="not(contains($section, $currentSection))">
 						<xsl:text>in </xsl:text>
-						<xsl:value-of select="xalan:nodeset($contents)//item[@id = current()/@target]/@parent"/>
-						<xsl:text> </xsl:text>
+						<xsl:if test="$level = 1">
+							<xsl:value-of select="xalan:nodeset($contents)//item[@id = current()/@target]/@parent"/>
+							<xsl:text> </xsl:text>
+						</xsl:if>
 						<xsl:value-of select="$section"/>
 					</xsl:if>
 				</xsl:when>
@@ -1640,13 +1679,17 @@
 				
 				<xsl:when test="$type = 'formula'">
 					<xsl:value-of select="$text"/>
-					<xsl:variable name="currentSection">
+					<!-- <xsl:variable name="currentSection">
 						<xsl:call-template name="getSection"/>
-					</xsl:variable>
-					<xsl:if test="not(contains($section, $currentSection))">
+					</xsl:variable>					
+					
+					<xsl:if test="not(contains($section, $currentSection))"> -->
+					<xsl:if test="$topsection != $xreftopsection">
 						<xsl:text> in </xsl:text>
-						<xsl:value-of select="xalan:nodeset($contents)//item[@id = current()/@target]/@parent"/>
-						<xsl:text> </xsl:text>
+						<xsl:if test="$level = 1">
+							<xsl:value-of select="xalan:nodeset($contents)//item[@id = current()/@target]/@parent"/>
+							<xsl:text> </xsl:text>
+						</xsl:if>
 						<xsl:value-of select="$section"/>
 					</xsl:if>
 				</xsl:when>
@@ -1660,7 +1703,11 @@
 						<xsl:call-template name="getSection"/>
 					</xsl:variable>
 					<xsl:if test="not(contains($section, $currentSection))">
-						<xsl:text> in Clause </xsl:text>
+						<xsl:text> in </xsl:text>
+						<xsl:choose>
+							<xsl:when test="$level = 1"><xsl:value-of select="$title-clause"/></xsl:when>
+							<xsl:when test="$level &gt; 1"><xsl:value-of select="translate($title-clause, $upper, $lower)"/></xsl:when>
+						</xsl:choose>
 						<xsl:value-of select="$section"/>
 					</xsl:if>
 				</xsl:when>
@@ -1755,18 +1802,30 @@
 			<xsl:apply-templates />
 	</xsl:template>
 
-	<xsl:template match="itu:sourcecode">
-		<fo:block font-family="Courier" font-size="10pt" margin-top="6pt" margin-bottom="6pt">
-			<xsl:choose>
-				<xsl:when test="@lang = 'en'"/>
-				<xsl:otherwise>
-					<xsl:attribute name="white-space">pre</xsl:attribute>
-				</xsl:otherwise>
-			</xsl:choose>
-			<xsl:apply-templates/>
+	<xsl:template match="itu:quote">
+		<fo:block margin-top="6pt" margin-left="12mm" margin-right="12mm">
+			<xsl:apply-templates select=".//itu:p"/>
 		</fo:block>
+		<xsl:if test="itu:author or itu:source">
+			<fo:block text-align="right">
+				<!-- — ISO, ISO 7301:2011, Clause 1 -->
+				<xsl:text>— </xsl:text>
+				<xsl:value-of select="itu:author"/>
+				<xsl:if test="itu:author and itu:source">
+					<xsl:text>, </xsl:text>
+				</xsl:if>
+				<xsl:apply-templates select="itu:source"/>
+			</fo:block>
+		</xsl:if>
 	</xsl:template>
 	
+	<xsl:template match="itu:source">
+		<fo:basic-link internal-destination="{@bibitemid}" fox:alt-text="{@citeas}">
+			<xsl:value-of select="@citeas" disable-output-escaping="yes"/>
+			<xsl:apply-templates select="itu:localityStack"/>
+		</fo:basic-link>
+	</xsl:template>
+		
 	<xsl:template name="insertHeaderFooter">
 		<fo:static-content flow-name="footer-even" font-family="Times New Roman" font-size="11pt">
 			<fo:block-container height="19mm" display-align="after">
@@ -2327,6 +2386,14 @@
 							<xsl:variable name="num">
 								<xsl:number format=".1" level="multiple" count="itu:clause/itu:clause | itu:clause/itu:terms | itu:terms/itu:term | itu:clause/itu:term | itu:clause/itu:definitions"/>
 							</xsl:variable>
+							<!-- <xsl:variable name="sectionNum_">
+								<xsl:choose>
+									<xsl:when test="normalize-space($sectionNum) = ''"><xsl:number format="1"  count="itu:sections/*"/></xsl:when>
+									<xsl:otherwise>
+										<xsl:value-of select="$sectionNum"/>
+									</xsl:otherwise>
+								</xsl:choose>
+							</xsl:variable> -->
 							<xsl:value-of select="concat($sectionNum, $num)"/>
 						</xsl:when>
 						<xsl:otherwise>
@@ -2402,6 +2469,24 @@
 			</xsl:when>
 			<xsl:otherwise>
 				<xsl:value-of select="concat(local-name(..), '_', text())"/>
+			</xsl:otherwise>
+		</xsl:choose>
+	</xsl:template>
+
+	<xsl:template name="getTopSection">
+		<xsl:param name="sectionNum" />
+		<xsl:variable name="section">
+			<xsl:call-template name="getSection">
+				<xsl:with-param name="sectionNum" select="$sectionNum"/>
+			</xsl:call-template>
+		</xsl:variable>
+		<xsl:variable name="topsection_" select="normalize-space(translate($section, '().-','    '))"/>
+		<xsl:choose>
+			<xsl:when test="contains($topsection_, ' ')">
+				<xsl:value-of select="substring-before($topsection_, ' ')"/>
+			</xsl:when>
+			<xsl:otherwise>
+				<xsl:value-of select="$topsection_"/>
 			</xsl:otherwise>
 		</xsl:choose>
 	</xsl:template>

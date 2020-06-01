@@ -6,13 +6,18 @@ SHELL := /bin/bash
 endif
 SRCDIR := sources
 DESTDIR := documents
-SRC := $(patsubst mn-samples-iso/documents/%,sources/%,$(wildcard mn-samples-iso/documents/*.xml)) \
+SRC := $(patsubst mn-samples-iso/documents/amendment/%,sources/iso-%,$(wildcard mn-samples-iso/documents/amendment/*.xml)) \
+	$(patsubst mn-samples-iso/documents/international-standard/%,sources/%,$(wildcard mn-samples-iso/documents/international-standard/*.xml)) \
 	$(patsubst mn-samples-itu/documents/%,sources/itu-%,$(wildcard mn-samples-itu/documents/*.xml)) \
 	$(patsubst mn-samples-iec/documents/%,sources/%,$(wildcard mn-samples-iec/documents/*.xml)) \
 	$(patsubst mn-samples-ogc/documents/%,sources/ogc-%,$(wildcard mn-samples-ogc/documents/*.xml)) \
 	$(patsubst mn-samples-un/documents/%,sources/un-%,$(wildcard mn-samples-un/documents/*.xml)) \
 	$(patsubst mn-samples-cc/documents/%,sources/%,$(wildcard mn-samples-cc/documents/*.xml)) \
-	$(patsubst mn-samples-iho/documents/%,sources/iho-%,$(wildcard mn-samples-iho/documents/*.xml))
+	$(patsubst mn-samples-m3aawg/documents/%,sources/m3a-%,$(wildcard mn-samples-m3aawg/documents/*.xml)) \
+	$(patsubst mn-samples-cc/documents/%,sources/%,$(wildcard mn-samples-cc/documents/*.xml)) \
+	$(patsubst mn-samples-gb/documents/%,sources/gb-%,$(wildcard mn-samples-gb/documents/*.xml)) \
+  $(patsubst mn-samples-iho/documents/%,sources/iho-%,$(wildcard mn-samples-iho/documents/*.xml))
+
 PDF := $(patsubst sources/%,documents/%,$(patsubst %.xml,%.pdf,$(SRC)))
 HTML := $(patsubst sources/%,documents/%,$(patsubst %.xml,%.html,$(SRC)))
 DOC := $(patsubst sources/%,documents/%,$(patsubst %.xml,%.doc,$(SRC)))
@@ -20,6 +25,7 @@ RXL := $(patsubst sources/%,documents/%,$(patsubst %.xml,%.rxl,$(SRC)))
 XSLT_PATH_BASE := ${CURDIR}/xslt
 XSLT_GENERATED := xslt/iec.international-standard.xsl \
 	xslt/iso.international-standard.xsl \
+	xslt/iso.amendment.xsl \
 	xslt/itu.recommendation.xsl \
 	xslt/itu.recommendation-annex.xsl \
 	xslt/itu.resolution.xsl \
@@ -39,22 +45,26 @@ XSLT_GENERATED := xslt/iec.international-standard.xsl \
 	xslt/ogc.user-guide.xsl \
 	xslt/ogc.white-paper.xsl \
 	xslt/un.plenary.xsl \
+	xslt/un.plenary-attachment.xsl \
 	xslt/un.recommendation.xsl \
 	xslt/csd.standard.xsl \
 	xslt/csa.standard.xsl \
 	xslt/rsd.standard.xsl \
+  xslt/m3d.report.xsl \
+	xslt/gb.recommendation.xsl \
 	xslt/iho.specification.xsl \
 	xslt/iho.standard.xsl
 
 MN2PDF_DOWNLOAD_PATH := https://github.com/metanorma/mn2pdf/releases/download/v1.17/mn2pdf-1.17.jar
 # MN2PDF_DOWNLOAD_PATH := https://maven.pkg.github.com/metanorma/mn2pdf/com/metanorma/fop/mn2pdf/1.7/mn2pdf-1.7.jar
+MN2PDF_EXECUTABLE := $(notdir $(MN2PDF_DOWNLOAD_PATH))
 
 all: xslts documents.html
 
 xslts: $(XSLT_GENERATED)
 
-mn2pdf.jar:
-	curl -sSL --user ${GITHUB_USERNAME}:${GITHUB_TOKEN} ${MN2PDF_DOWNLOAD_PATH} -o mn2pdf.jar
+$(MN2PDF_EXECUTABLE):
+	curl -sSL --user ${GITHUB_USERNAME}:${GITHUB_TOKEN} ${MN2PDF_DOWNLOAD_PATH} -o $(MN2PDF_EXECUTABLE)
 
 xalan/xalan.jar:
 ifeq ($(OS),Windows_NT)
@@ -72,7 +82,10 @@ else
 	popd
 endif
 
-sources/iso-%: mn-samples-iso/documents/iso-%
+sources/iso-%: mn-samples-iso/documents/international-standard/iso-%
+	cp $< $@
+
+sources/iso-%: mn-samples-iso/documents/amendment/%
 	cp $< $@
 
 sources/iec-%: mn-samples-iec/documents/iec-%
@@ -90,9 +103,14 @@ sources/ogc-%: mn-samples-ogc/documents/%
 sources/cc-%: mn-samples-cc/documents/cc-%
 	cp $< $@
 
-sources/iho-%: mn-samples-iho/documents/%
+sources/m3a-%: mn-samples-m3aawg/documents/%
 	cp $< $@
 
+sources/gb-%: mn-samples-gb/documents/%
+	cp $< $@
+
+sources/iho-%: mn-samples-iho/documents/%
+	cp $< $@
 
 documents:
 	mkdir -p $@
@@ -121,17 +139,17 @@ documents/un-ECE_AGAT_2020_INF1.pdf:
 #documents/itu-Z.100-201811-AnnF1.pdf:
 #	echo "### skipping $@"
 
-documents/%.pdf: sources/%.xml mn2pdf.jar | documents
+documents/%.pdf: sources/%.xml $(MN2PDF_EXECUTABLE) | documents
 ifeq ($(OS),Windows_NT)
-	xmllint --xpath "name(*)" $< | cut -d "-" -f 1 > MN_FLAVOR.txt
-	xmllint --xpath "//*[local-name()='doctype']/text()" $< > DOCTYPE.txt
-	cmd /V /C "set /p MN_FLAVOR=<MN_FLAVOR.txt & set /p DOCTYPE=<DOCTYPE.txt & java -Xss5m -Xmx1024m -jar mn2pdf.jar --xml-file $< --xsl-file ${XSLT_PATH_BASE}/!MN_FLAVOR!.!DOCTYPE!.xsl --pdf-file $@"
+	powershell -Command "$$doc = [xml](Get-Content $<); $$doc.SelectNodes(\"*\").get_name()" | cut -d "-" -f 1 > MN_FLAVOR.txt
+	powershell -Command "$$doc = [xml](Get-Content $<); $$doc.SelectNodes(\"//*[local-name()='doctype']\").'#text'" > DOCTYPE.txt
+	cmd /V /C "set /p MN_FLAVOR=<MN_FLAVOR.txt & set /p DOCTYPE=<DOCTYPE.txt & java -Xss5m -Xmx1024m -jar $(MN2PDF_EXECUTABLE) --xml-file $< --xsl-file ${XSLT_PATH_BASE}/!MN_FLAVOR!.!DOCTYPE!.xsl --pdf-file $@"
 else
 	FILENAME=$<; \
 	MN_FLAVOR=$$(xmllint --xpath 'name(*)' $${FILENAME} | cut -d '-' -f 1); \
 	DOCTYPE=$$(xmllint --xpath "//*[local-name()='doctype']/text()" $${FILENAME}); \
 	XSLT_PATH=${XSLT_PATH_BASE}/$${MN_FLAVOR}.$${DOCTYPE}.xsl; \
-	java -Xss5m -Xmx1024m -jar mn2pdf.jar --xml-file $$FILENAME --xsl-file $$XSLT_PATH --pdf-file $@
+	java -Xss5m -Xmx1024m -jar $(MN2PDF_EXECUTABLE) --xml-file $$FILENAME --xsl-file $$XSLT_PATH --pdf-file $@
 endif
 
 xslt/%.xsl: xslt_src/%.core.xsl xslt_src/merge.xsl xalan/xalan.jar
@@ -150,8 +168,8 @@ documents.html: documents.rxl
 	bundle exec relaton xml2html documents.rxl
 
 distclean: clean
-	rm -rf xalan
-	rm -f mn2pdf.jar
+	rm -rf xalan/*
+	rm -f $(MN2PDF_EXECUTABLE)
 
 clean:
 	rm -f $(XSLT_GENERATED)
