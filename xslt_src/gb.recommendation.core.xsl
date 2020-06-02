@@ -144,7 +144,9 @@
 								</xsl:variable>
 								<xsl:value-of select="normalize-space($abstract)"/>
 							</dc:description>
-							<pdf:Keywords></pdf:Keywords>
+							<pdf:Keywords>
+								<xsl:call-template name="insertKeywords"/>
+							</pdf:Keywords>
 						</rdf:Description>
 						<rdf:Description rdf:about=""
 								xmlns:xmp="http://ns.adobe.com/xap/1.0/">

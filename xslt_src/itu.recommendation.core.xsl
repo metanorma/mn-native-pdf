@@ -139,14 +139,7 @@
 								<xsl:value-of select="normalize-space($abstract)"/>
 							</dc:description>
 							<pdf:Keywords>
-								<xsl:for-each select="/itu:itu-standard/itu:bibdata//itu:keyword">
-								<xsl:sort data-type="text" order="ascending"/>
-								<xsl:apply-templates/>
-								<xsl:choose>
-									<xsl:when test="position() != last()">, </xsl:when>
-									<xsl:otherwise>.</xsl:otherwise>
-								</xsl:choose>
-							</xsl:for-each>
+								<xsl:call-template name="insertKeywords"/>
 							</pdf:Keywords>
 						</rdf:Description>
 						<rdf:Description rdf:about=""
@@ -351,14 +344,7 @@
 							<xsl:text>Keywords</xsl:text>
 						</fo:block>
 						<fo:block>
-							<xsl:for-each select="/itu:itu-standard/itu:bibdata//itu:keyword">
-								<xsl:sort data-type="text" order="ascending"/>
-								<xsl:apply-templates/>
-								<xsl:choose>
-									<xsl:when test="position() != last()">, </xsl:when>
-									<xsl:otherwise>.</xsl:otherwise>
-								</xsl:choose>
-							</xsl:for-each>
+							<xsl:call-template name="insertKeywords"/>
 						</fo:block>
 					</xsl:if>
 					

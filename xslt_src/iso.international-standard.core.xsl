@@ -343,7 +343,9 @@
 								</xsl:variable>
 								<xsl:value-of select="normalize-space($abstract)"/>
 							</dc:description>
-							<pdf:Keywords></pdf:Keywords>
+							<pdf:Keywords>
+								<xsl:call-template name="insertKeywords"/>
+							</pdf:Keywords>
 						</rdf:Description>
 						<rdf:Description rdf:about=""
 								xmlns:xmp="http://ns.adobe.com/xap/1.0/">
@@ -1219,6 +1221,14 @@
 										<xsl:otherwise>ICS&#xA0;&#xA0;67.060</xsl:otherwise>
 									</xsl:choose> -->
 									</fo:block>
+								<xsl:if test="/iso:iso-standard/iso:bibdata/iso:keyword">
+									<fo:block font-size="9pt" margin-bottom="6pt">
+										<fo:inline font-weight="bold"><xsl:value-of select="$title-descriptors"/>: </fo:inline>
+										<xsl:call-template name="insertKeywords">
+											<xsl:with-param name="sorting">no</xsl:with-param>
+										</xsl:call-template>
+									</fo:block>
+								</xsl:if>
 								<fo:block font-size="9pt">Price based on <fo:page-number-citation ref-id="lastBlock"/> pages</fo:block>
 							</fo:block-container>
 						</fo:block-container>
@@ -2393,7 +2403,7 @@
 																																										iso:clause/iso:term |  
 																																										iso:terms/iso:clause |
 																																										iso:terms/iso:definitions |
-																																										iso:definitions/iso:clause |
+																																										iso:definitions/iso:clause |																																										
 																																										iso:clause/iso:definitions"/>
 							</xsl:variable>
 							<xsl:value-of select="concat($sectionNum, $num)"/>

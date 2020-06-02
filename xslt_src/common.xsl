@@ -96,6 +96,8 @@
 	
 	<xsl:variable name="title-where">where</xsl:variable>
 	
+	<xsl:variable name="title-descriptors">Descriptors</xsl:variable>
+	
 	<xsl:variable name="lower">abcdefghijklmnopqrstuvwxyz</xsl:variable> 
 	<xsl:variable name="upper">ABCDEFGHIJKLMNOPQRSTUVWXYZ</xsl:variable>
 
@@ -2204,5 +2206,39 @@
 		<xsl:value-of select="$result"/>
 	</xsl:template>
 
+	<xsl:template name="insertKeywords">
+		<xsl:param name="sorting" select="'true'"/>
+		<xsl:param name="charAtEnd" select="'.'"/>
+		<xsl:param name="charDelim" select="', '"/>
+		<xsl:choose>
+			<xsl:when test="$sorting = 'true' or $sorting = 'yes'">
+				<xsl:for-each select="/*/*[local-name() = 'bibdata']//*[local-name() = 'keyword']">
+					<xsl:sort data-type="text" order="ascending"/>
+					<xsl:call-template name="insertKeyword">
+						<xsl:with-param name="charAtEnd" select="$charAtEnd"/>
+						<xsl:with-param name="charDelim" select="$charDelim"/>
+					</xsl:call-template>
+				</xsl:for-each>
+			</xsl:when>
+			<xsl:otherwise>
+				<xsl:for-each select="/*/*[local-name() = 'bibdata']//*[local-name() = 'keyword']">
+					<xsl:call-template name="insertKeyword">
+						<xsl:with-param name="charAtEnd" select="$charAtEnd"/>
+						<xsl:with-param name="charDelim" select="$charDelim"/>
+					</xsl:call-template>
+				</xsl:for-each>
+			</xsl:otherwise>
+		</xsl:choose>
+	</xsl:template>
+	
+	<xsl:template name="insertKeyword">
+		<xsl:param name="charAtEnd"/>
+		<xsl:param name="charDelim"/>
+		<xsl:apply-templates/>
+		<xsl:choose>
+			<xsl:when test="position() != last()"><xsl:value-of select="$charDelim"/></xsl:when>
+			<xsl:otherwise><xsl:value-of select="$charAtEnd"/></xsl:otherwise>
+		</xsl:choose>
+	</xsl:template>
 	
 </xsl:stylesheet>

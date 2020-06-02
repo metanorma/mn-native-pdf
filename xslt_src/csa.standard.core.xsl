@@ -115,14 +115,7 @@
 								<xsl:value-of select="normalize-space($abstract)"/>
 							</dc:description>
 							<pdf:Keywords>
-								<xsl:for-each select="/csa:csa-standard/csa:bibdata//csa:keyword">
-									<xsl:sort data-type="text" order="ascending"/>
-									<xsl:apply-templates/>
-									<xsl:choose>
-										<xsl:when test="position() != last()">, </xsl:when>
-										<xsl:otherwise>.</xsl:otherwise>
-									</xsl:choose>
-								</xsl:for-each>
+								<xsl:call-template name="insertKeywords"/>
 							</pdf:Keywords>
 						</rdf:Description>
 						<rdf:Description rdf:about=""
@@ -681,11 +674,15 @@
 			<xsl:text>Keywords</xsl:text>
 		</fo:block>
 		<fo:block margin-bottom="12pt">The following are keywords to be used by search engines and document catalogues.</fo:block>
-		<fo:block margin-bottom="12pt">
-			<xsl:for-each select="/csa:csa-standard/csa:bibdata/csa:keyword">
+		<fo:block margin-bottom="12pt">		
+			<xsl:call-template name="insertKeywords">
+				<xsl:with-param name="sorting">no</xsl:with-param>
+				<xsl:with-param name="charAtEnd"></xsl:with-param>
+			</xsl:call-template>		
+			<!-- <xsl:for-each select="/csa:csa-standard/csa:bibdata/csa:keyword">
 				<xsl:value-of select="."/>
 				<xsl:if test="position() != last()">, </xsl:if>
-			</xsl:for-each>
+			</xsl:for-each> -->
 		</fo:block>
 	</xsl:template>
 	<!-- Submitting Organizations -->
