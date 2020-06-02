@@ -2403,7 +2403,8 @@
 																																										iso:clause/iso:term |  
 																																										iso:terms/iso:clause |
 																																										iso:terms/iso:definitions |
-																																										iso:definitions/iso:clause |																																										
+																																										iso:definitions/iso:clause |
+																																										iso:definitions/iso:definitions |
 																																										iso:clause/iso:definitions"/>
 							</xsl:variable>
 							<xsl:value-of select="concat($sectionNum, $num)"/>
