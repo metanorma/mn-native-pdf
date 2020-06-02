@@ -7,7 +7,7 @@ endif
 SRCDIR := sources
 DESTDIR := documents
 SRC := $(patsubst mn-samples-iso/documents/amendment/%,sources/iso-%,$(wildcard mn-samples-iso/documents/amendment/*.xml)) \
-	$(patsubst mn-samples-iso/documents/international-standard/%,sources/%,$(wildcard mn-samples-iso/documents/international-standard/*.xml)) \
+	$(patsubst mn-samples-iso/documents/international-standard/%,sources/iso-%,$(wildcard mn-samples-iso/documents/international-standard/*.xml)) \
 	$(patsubst mn-samples-itu/documents/%,sources/itu-%,$(wildcard mn-samples-itu/documents/*.xml)) \
 	$(patsubst mn-samples-iec/documents/%,sources/%,$(wildcard mn-samples-iec/documents/*.xml)) \
 	$(patsubst mn-samples-ogc/documents/%,sources/ogc-%,$(wildcard mn-samples-ogc/documents/*.xml)) \
@@ -15,7 +15,8 @@ SRC := $(patsubst mn-samples-iso/documents/amendment/%,sources/iso-%,$(wildcard 
 	$(patsubst mn-samples-cc/documents/%,sources/%,$(wildcard mn-samples-cc/documents/*.xml)) \
 	$(patsubst mn-samples-m3aawg/documents/%,sources/m3a-%,$(wildcard mn-samples-m3aawg/documents/*.xml)) \
 	$(patsubst mn-samples-cc/documents/%,sources/%,$(wildcard mn-samples-cc/documents/*.xml)) \
-	$(patsubst mn-samples-gb/documents/%,sources/gb-%,$(wildcard mn-samples-gb/documents/*.xml))
+	$(patsubst mn-samples-gb/documents/%,sources/gb-%,$(wildcard mn-samples-gb/documents/*.xml)) \
+  $(patsubst mn-samples-iho/documents/%,sources/iho-%,$(wildcard mn-samples-iho/documents/*.xml))
 
 PDF := $(patsubst sources/%,documents/%,$(patsubst %.xml,%.pdf,$(SRC)))
 HTML := $(patsubst sources/%,documents/%,$(patsubst %.xml,%.html,$(SRC)))
@@ -50,9 +51,11 @@ XSLT_GENERATED := xslt/iec.international-standard.xsl \
 	xslt/csa.standard.xsl \
 	xslt/rsd.standard.xsl \
 	xslt/m3d.report.xsl \
-	xslt/gb.recommendation.xsl
+	xslt/gb.recommendation.xsl \
+	xslt/iho.specification.xsl \
+	xslt/iho.standard.xsl
 
-MN2PDF_DOWNLOAD_PATH := https://github.com/metanorma/mn2pdf/releases/download/v1.16/mn2pdf-1.16.jar
+MN2PDF_DOWNLOAD_PATH := https://github.com/metanorma/mn2pdf/releases/download/v1.17/mn2pdf-1.17.jar
 # MN2PDF_DOWNLOAD_PATH := https://maven.pkg.github.com/metanorma/mn2pdf/com/metanorma/fop/mn2pdf/1.7/mn2pdf-1.7.jar
 MN2PDF_EXECUTABLE := $(notdir $(MN2PDF_DOWNLOAD_PATH))
 
@@ -79,7 +82,7 @@ else
 	popd
 endif
 
-sources/iso-%: mn-samples-iso/documents/international-standard/iso-%
+sources/iso-%: mn-samples-iso/documents/international-standard/%
 	cp $< $@
 
 sources/iso-%: mn-samples-iso/documents/amendment/%
@@ -104,6 +107,9 @@ sources/m3a-%: mn-samples-m3aawg/documents/%
 	cp $< $@
 
 sources/gb-%: mn-samples-gb/documents/%
+	cp $< $@
+
+sources/iho-%: mn-samples-iho/documents/%
 	cp $< $@
 
 documents:
