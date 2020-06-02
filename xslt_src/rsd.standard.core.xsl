@@ -1340,35 +1340,6 @@
 		</fo:basic-link>
 	</xsl:template>
 	
-	<xsl:template match="rsd:appendix">
-		<fo:block font-size="12pt" font-weight="bold" margin-top="12pt" margin-bottom="12pt">
-			<fo:inline padding-right="5mm">Appendix <xsl:number /></fo:inline>
-			<xsl:apply-templates select="rsd:title" mode="process"/>
-		</fo:block>
-		<xsl:apply-templates />
-	</xsl:template>
-	
-	<xsl:template match="rsd:appendix//rsd:example">
-		<fo:block font-family="SourceSansPro" font-size="11pt" margin-bottom="12pt">
-			<xsl:text>EXAMPLE</xsl:text>
-			<xsl:if test="rsd:name">
-				<xsl:text> — </xsl:text><xsl:apply-templates select="rsd:name" mode="process"/>
-			</xsl:if>
-		</fo:block>
-		<xsl:apply-templates />
-	</xsl:template>
-	
-	<xsl:template match="rsd:appendix//rsd:example/rsd:name"/>
-	<xsl:template match="rsd:appendix//rsd:example/rsd:name" mode="process">
-		<fo:inline><xsl:apply-templates /></fo:inline>
-	</xsl:template>
-	
-	
-	<xsl:template match="rsd:appendix/rsd:title"/>
-	<xsl:template match="rsd:appendix/rsd:title" mode="process">
-		<fo:inline><xsl:apply-templates /></fo:inline>
-	</xsl:template>
-	
 	
 	<xsl:template match="rsd:xref">
 		<fo:basic-link color="{$color-link}" internal-destination="{@target}" fox:alt-text="{@target}">

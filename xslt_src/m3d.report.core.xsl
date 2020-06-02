@@ -1225,37 +1225,6 @@
 		</fo:basic-link>
 	</xsl:template>
 	
-	<xsl:template match="m3d:appendix">
-		<fo:block font-weight="bold" margin-top="12pt" margin-bottom="12pt">
-			<fo:inline padding-right="5mm">Appendix <xsl:number /></fo:inline>
-			<xsl:apply-templates select="m3d:title" mode="process"/>
-		</fo:block>
-		<xsl:apply-templates />
-	</xsl:template>
-	
-	<xsl:template match="m3d:appendix//m3d:example">
-		<fo:block  margin-top="8pt" margin-bottom="8pt" font-weight="bold">
-			<xsl:variable name="claims_id" select="ancestor::m3d:clause[1]/@id"/>
-			<xsl:value-of select="$title-example"/>
-			<xsl:if test="count(ancestor::m3d:clause[1]//m3d:example) &gt; 1">
-					<xsl:number count="m3d:example[ancestor::m3d:clause[@id = $claims_id]]" level="any"/><xsl:text> </xsl:text>
-				</xsl:if>
-			<xsl:if test="m3d:name">
-				<xsl:text>— </xsl:text><xsl:apply-templates select="m3d:name" mode="process"/>
-			</xsl:if>
-		</fo:block>
-		<xsl:apply-templates />
-	</xsl:template>
-	
-	<xsl:template match="m3d:appendix//m3d:example/m3d:name"/>
-	<xsl:template match="m3d:appendix//m3d:example/m3d:name" mode="process">
-		<fo:inline><xsl:apply-templates /></fo:inline>
-	</xsl:template>
-		
-	<xsl:template match="m3d:appendix/m3d:title"/>
-	<xsl:template match="m3d:appendix/m3d:title" mode="process">
-		<fo:inline><xsl:apply-templates /></fo:inline>
-	</xsl:template>
 	
 	<xsl:template match="mathml:math" priority="2">
 		<fo:inline font-family="Cambria Math">

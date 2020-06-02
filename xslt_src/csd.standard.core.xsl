@@ -1128,35 +1128,6 @@
 		</fo:basic-link>
 	</xsl:template>
 	
-	<xsl:template match="csd:appendix">
-		<fo:block font-size="12pt" font-weight="bold" margin-top="12pt" margin-bottom="12pt">
-			<fo:inline padding-right="5mm">Appendix <xsl:number /></fo:inline>
-			<xsl:apply-templates select="csd:title" mode="process"/>
-		</fo:block>
-		<xsl:apply-templates />
-	</xsl:template>
-	
-	<xsl:template match="csd:appendix//csd:example">
-		<fo:block font-size="10pt" margin-bottom="12pt">
-			<xsl:text>EXAMPLE</xsl:text>
-			<xsl:if test="csd:name">
-				<xsl:text> — </xsl:text><xsl:apply-templates select="csd:name" mode="process"/>
-			</xsl:if>
-		</fo:block>
-		<xsl:apply-templates />
-	</xsl:template>
-	
-	<xsl:template match="csd:appendix//csd:example/csd:name"/>
-	<xsl:template match="csd:appendix//csd:example/csd:name" mode="process">
-		<fo:inline><xsl:apply-templates /></fo:inline>
-	</xsl:template>
-		
-
-	<xsl:template match="csd:appendix/csd:title"/>
-	<xsl:template match="csd:appendix/csd:title" mode="process">
-		<fo:inline><xsl:apply-templates /></fo:inline>
-	</xsl:template>
-	
 	
 	<xsl:template match="csd:xref">
 		<fo:basic-link internal-destination="{@target}" fox:alt-text="{@target}">

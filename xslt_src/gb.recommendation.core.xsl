@@ -1460,39 +1460,7 @@
 		</fo:basic-link>
 	</xsl:template>
 	
-	<xsl:template match="gb:appendix">
-		<fo:block font-size="12pt" font-weight="bold" margin-top="12pt" margin-bottom="12pt">
-			<fo:inline padding-right="5mm">Appendix <xsl:number /></fo:inline>
-			<xsl:apply-templates select="gb:title" mode="process"/>
-		</fo:block>
-		<xsl:apply-templates />
-	</xsl:template>
-	
-	<xsl:template match="gb:appendix//gb:example">
-		<fo:block font-size="10pt" margin-top="8pt" margin-bottom="8pt">
-			<xsl:variable name="claims_id" select="ancestor::gb:clause[1]/@id"/>
-			<xsl:value-of select="$title-example"/>
-			<xsl:if test="count(ancestor::gb:clause[1]//gb:example) &gt; 1">
-					<xsl:number count="gb:example[ancestor::gb:clause[@id = $claims_id]]" level="any"/><xsl:text> </xsl:text>
-				</xsl:if>
-			<xsl:if test="gb:name">
-				<xsl:text>— </xsl:text><xsl:apply-templates select="gb:name" mode="process"/>
-			</xsl:if>
-		</fo:block>
-		<xsl:apply-templates />
-	</xsl:template>
-	
-	<xsl:template match="gb:appendix//gb:example/gb:name"/>
-	<xsl:template match="gb:appendix//gb:example/gb:name" mode="process">
-		<fo:inline><xsl:apply-templates /></fo:inline>
-	</xsl:template>
-		
-	
-	<xsl:template match="gb:appendix/gb:title"/>
-	<xsl:template match="gb:appendix/gb:title" mode="process">
-		<fo:inline><xsl:apply-templates /></fo:inline>
-	</xsl:template>
-	
+
 	<xsl:template match="mathml:math" priority="2">
 		<fo:inline font-family="Cambria Math">
 			<fo:instream-foreign-object fox:alt-text="Math">

@@ -1628,35 +1628,7 @@
 			<xsl:apply-templates select="ogc:localityStack"/>
 		</fo:basic-link>
 	</xsl:template>
-	
-	<xsl:template match="ogc:appendix">
-		<fo:block font-size="12pt" font-weight="bold" margin-top="12pt" margin-bottom="12pt">
-			<fo:inline padding-right="5mm">Appendix <xsl:number /></fo:inline>
-			<xsl:apply-templates select="ogc:title" mode="process"/>
-		</fo:block>
-		<xsl:apply-templates />
-	</xsl:template>
-	
-	<xsl:template match="ogc:appendix//ogc:example">
-		<fo:block font-size="10pt" margin-bottom="12pt">
-			<xsl:text>EXAMPLE</xsl:text>
-			<xsl:if test="ogc:name">
-				<xsl:text> — </xsl:text><xsl:apply-templates select="ogc:name" mode="process"/>
-			</xsl:if>
-		</fo:block>
-		<xsl:apply-templates />
-	</xsl:template>
-	
-	<xsl:template match="ogc:appendix//ogc:example/ogc:name"/>
-	<xsl:template match="ogc:appendix//ogc:example/ogc:name" mode="process">
-		<fo:inline><xsl:apply-templates /></fo:inline>
-	</xsl:template>
 		
-	<xsl:template match="ogc:appendix/ogc:title"/>
-	<xsl:template match="ogc:appendix/ogc:title" mode="process">
-		<fo:inline><xsl:apply-templates /></fo:inline>
-	</xsl:template>
-	
 	
 	<xsl:template match="ogc:xref">
 		<fo:basic-link internal-destination="{@target}" fox:alt-text="{@target}">
