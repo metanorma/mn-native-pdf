@@ -1651,30 +1651,7 @@
 	<xsl:template match="ogc:appendix//ogc:example/ogc:name" mode="process">
 		<fo:inline><xsl:apply-templates /></fo:inline>
 	</xsl:template>
-	
-	<xsl:template match="ogc:callout">		
-			<fo:basic-link internal-destination="{@target}" fox:alt-text="{@target}">&lt;<xsl:apply-templates />&gt;</fo:basic-link>
-	</xsl:template>
-	
-	<xsl:template match="ogc:annotation">
-		<fo:block>
-			
-		</fo:block>
-		<xsl:apply-templates />
-	</xsl:template>
-	
-	<xsl:template match="ogc:annotation/text()"/>
-	
-	<xsl:template match="ogc:annotation/ogc:p">
-		<xsl:variable name="annotation-id" select="../@id"/>
-		<xsl:variable name="callout" select="//*[@target = $annotation-id]/text()"/>
-		<fo:block id="{$annotation-id}">
-			<xsl:value-of select="concat('&lt;', $callout, '&gt; ')"/>
-			<xsl:apply-templates />
-		</fo:block>
-	</xsl:template>
-	
-	
+		
 	<xsl:template match="ogc:appendix/ogc:title"/>
 	<xsl:template match="ogc:appendix/ogc:title" mode="process">
 		<fo:inline><xsl:apply-templates /></fo:inline>

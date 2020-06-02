@@ -2115,31 +2115,6 @@
 		<fo:inline><xsl:apply-templates /></fo:inline>
 	</xsl:template>
 	
-	<!-- <xsl:template match="iso:callout/text()">	
-		<fo:basic-link internal-destination="{@target}"><fo:inline>&lt;<xsl:apply-templates />&gt;</fo:inline></fo:basic-link>
-	</xsl:template> -->
-	<xsl:template match="iso:callout">		
-			<fo:basic-link internal-destination="{@target}" fox:alt-text="{@target}">&lt;<xsl:apply-templates />&gt;</fo:basic-link>
-	</xsl:template>
-	
-	<xsl:template match="iso:annotation">
-		<fo:block>
-			
-		</fo:block>
-		<xsl:apply-templates />
-	</xsl:template>
-	
-	<xsl:template match="iso:annotation/text()"/>
-	
-	<xsl:template match="iso:annotation/iso:p">
-		<xsl:variable name="annotation-id" select="../@id"/>
-		<xsl:variable name="callout" select="//*[@target = $annotation-id]/text()"/>
-		<fo:block id="{$annotation-id}">
-			<xsl:value-of select="concat('&lt;', $callout, '&gt; ')"/>
-			<xsl:apply-templates />
-		</fo:block>
-	</xsl:template>
-	
 	
 	<xsl:template match="iso:appendix/iso:title"/>
 	<xsl:template match="iso:appendix/iso:title" mode="process">
@@ -2485,8 +2460,7 @@
 								</xsl:otherwise>
 							</xsl:choose>
 						</xsl:when>
-						<xsl:otherwise>
-							<xsl:variable name="annexid" select="normalize-space(/iso:iso-standard/iso:bibdata/iso:ext/iso:structuredidentifier/iso:annexid)"/>
+						<xsl:otherwise>							
 							<xsl:choose>
 								<xsl:when test="count(//iso:annex) = 1 and $annexid != ''">
 									<xsl:value-of select="$annexid"/><xsl:number format=".1" level="multiple" count="iso:clause"/>

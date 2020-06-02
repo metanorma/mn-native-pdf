@@ -1373,28 +1373,6 @@
 	<xsl:template match="iho:modification/iho:p">
 		<fo:inline><xsl:apply-templates/></fo:inline>
 	</xsl:template>
-
-	<xsl:template match="iho:callout">		
-			<fo:basic-link internal-destination="{@target}" fox:alt-text="{@target}">&lt;<xsl:apply-templates />&gt;</fo:basic-link>
-	</xsl:template>
-	
-	<xsl:template match="iho:annotation">
-		<fo:block>
-			
-		</fo:block>
-		<xsl:apply-templates />
-	</xsl:template>
-	
-	<xsl:template match="iho:annotation/text()"/>
-	
-	<xsl:template match="iho:annotation/iho:p">
-		<xsl:variable name="annotation-id" select="../@id"/>
-		<xsl:variable name="callout" select="//*[@target = $annotation-id]/text()"/>
-		<fo:block id="{$annotation-id}">
-			<xsl:value-of select="concat('&lt;', $callout, '&gt; ')"/>
-			<xsl:apply-templates />
-		</fo:block>
-	</xsl:template>
 	
 	<xsl:template match="iho:locality">
 		<xsl:choose>

@@ -2069,6 +2069,32 @@
 		<fo:inline id="{@id}"></fo:inline>
 	</xsl:template>
 
+	<xsl:template match="*[local-name() = 'callout']">		
+		<fo:basic-link internal-destination="{@target}" fox:alt-text="{@target}">&lt;<xsl:apply-templates />&gt;</fo:basic-link>
+	</xsl:template>
+	
+	<xsl:template match="*[local-name() = 'annotation']">
+		<xsl:variable name="annotation-id" select="@id"/>
+		<xsl:variable name="callout" select="//*[@target = $annotation-id]/text()"/>		
+		<fo:block id="{$annotation-id}" white-space="nowrap">			
+			<fo:inline>				
+				<xsl:apply-templates>
+					<xsl:with-param name="callout" select="concat('&lt;', $callout, '&gt; ')"/>
+				</xsl:apply-templates>
+			</fo:inline>
+		</fo:block>		
+	</xsl:template>	
+
+	<xsl:template match="*[local-name() = 'annotation']/*[local-name() = 'p']">
+		<xsl:param name="callout"/>
+		<fo:inline id="{@id}">
+			<!-- for first p in annotation, put <x> -->
+			<xsl:if test="not(preceding-sibling::*[local-name() = 'p'])"><xsl:value-of select="$callout"/></xsl:if>
+			<xsl:apply-templates />
+		</fo:inline>		
+	</xsl:template>
+
+	
 	
 	<!-- convert YYYY-MM-DD to 'Month YYYY' or 'Month DD, YYYY' -->
 	<xsl:template name="convertDate">
