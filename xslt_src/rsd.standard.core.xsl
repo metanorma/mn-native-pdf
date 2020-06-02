@@ -133,14 +133,7 @@
 								<xsl:value-of select="normalize-space($abstract)"/>
 							</dc:description>
 							<pdf:Keywords>
-								<xsl:for-each select="/rsd:rsd-standard/rsd:bibdata//rsd:keyword">
-									<xsl:sort data-type="text" order="ascending"/>
-									<xsl:apply-templates/>
-									<xsl:choose>
-										<xsl:when test="position() != last()">, </xsl:when>
-										<xsl:otherwise>.</xsl:otherwise>
-									</xsl:choose>
-								</xsl:for-each>
+								<xsl:call-template name="insertKeywords"/>
 							</pdf:Keywords>
 						</rdf:Description>
 						<rdf:Description rdf:about=""
@@ -680,10 +673,14 @@
 		</fo:block>
 		<fo:block margin-bottom="12pt">The following are keywords to be used by search engines and document catalogues.</fo:block>
 		<fo:block margin-bottom="12pt">
-			<xsl:for-each select="/rsd:rsd-standard/rsd:bibdata/rsd:keyword">
+			<xsl:call-template name="insertKeywords">
+				<xsl:with-param name="sorting">no</xsl:with-param>
+				<xsl:with-param name="charAtEnd"></xsl:with-param>
+			</xsl:call-template>
+			<!-- <xsl:for-each select="/rsd:rsd-standard/rsd:bibdata/rsd:keyword">
 				<xsl:value-of select="."/>
 				<xsl:if test="position() != last()">, </xsl:if>
-			</xsl:for-each>
+			</xsl:for-each> -->
 		</fo:block>
 	</xsl:template>
 	<!-- Submitting Organizations -->
@@ -1338,57 +1335,6 @@
 			<xsl:value-of select="@citeas" disable-output-escaping="yes"/>
 			<xsl:apply-templates select="rsd:localityStack"/>
 		</fo:basic-link>
-	</xsl:template>
-	
-	<xsl:template match="rsd:appendix">
-		<fo:block font-size="12pt" font-weight="bold" margin-top="12pt" margin-bottom="12pt">
-			<fo:inline padding-right="5mm">Appendix <xsl:number /></fo:inline>
-			<xsl:apply-templates select="rsd:title" mode="process"/>
-		</fo:block>
-		<xsl:apply-templates />
-	</xsl:template>
-	
-	<xsl:template match="rsd:appendix//rsd:example">
-		<fo:block font-family="SourceSansPro" font-size="11pt" margin-bottom="12pt">
-			<xsl:text>EXAMPLE</xsl:text>
-			<xsl:if test="rsd:name">
-				<xsl:text> — </xsl:text><xsl:apply-templates select="rsd:name" mode="process"/>
-			</xsl:if>
-		</fo:block>
-		<xsl:apply-templates />
-	</xsl:template>
-	
-	<xsl:template match="rsd:appendix//rsd:example/rsd:name"/>
-	<xsl:template match="rsd:appendix//rsd:example/rsd:name" mode="process">
-		<fo:inline><xsl:apply-templates /></fo:inline>
-	</xsl:template>
-	
-	<xsl:template match="rsd:callout">		
-			<fo:basic-link internal-destination="{@target}" fox:alt-text="{@target}">&lt;<xsl:apply-templates />&gt;</fo:basic-link>
-	</xsl:template>
-	
-	<xsl:template match="rsd:annotation">
-		<fo:block>
-			
-		</fo:block>
-		<xsl:apply-templates />
-	</xsl:template>
-	
-	<xsl:template match="rsd:annotation/text()"/>
-	
-	<xsl:template match="rsd:annotation/rsd:p">
-		<xsl:variable name="annotation-id" select="../@id"/>
-		<xsl:variable name="callout" select="//*[@target = $annotation-id]/text()"/>
-		<fo:block id="{$annotation-id}">
-			<xsl:value-of select="concat('&lt;', $callout, '&gt; ')"/>
-			<xsl:apply-templates />
-		</fo:block>
-	</xsl:template>
-	
-	
-	<xsl:template match="rsd:appendix/rsd:title"/>
-	<xsl:template match="rsd:appendix/rsd:title" mode="process">
-		<fo:inline><xsl:apply-templates /></fo:inline>
 	</xsl:template>
 	
 	

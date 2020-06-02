@@ -146,7 +146,9 @@
 								</xsl:variable>
 								<xsl:value-of select="normalize-space($abstract)"/>
 							</dc:description>
-							<pdf:Keywords></pdf:Keywords>
+							<pdf:Keywords>
+								<xsl:call-template name="insertKeywords"/>
+							</pdf:Keywords>
 						</rdf:Description>
 						<rdf:Description rdf:about=""
 								xmlns:xmp="http://ns.adobe.com/xap/1.0/">
@@ -1126,60 +1128,6 @@
 			<xsl:value-of select="@citeas" disable-output-escaping="yes"/>
 			<xsl:apply-templates select="csd:localityStack"/>
 		</fo:basic-link>
-	</xsl:template>
-	
-	<xsl:template match="csd:appendix">
-		<fo:block font-size="12pt" font-weight="bold" margin-top="12pt" margin-bottom="12pt">
-			<fo:inline padding-right="5mm">Appendix <xsl:number /></fo:inline>
-			<xsl:apply-templates select="csd:title" mode="process"/>
-		</fo:block>
-		<xsl:apply-templates />
-	</xsl:template>
-	
-	<xsl:template match="csd:appendix//csd:example">
-		<fo:block font-size="10pt" margin-bottom="12pt">
-			<xsl:text>EXAMPLE</xsl:text>
-			<xsl:if test="csd:name">
-				<xsl:text> — </xsl:text><xsl:apply-templates select="csd:name" mode="process"/>
-			</xsl:if>
-		</fo:block>
-		<xsl:apply-templates />
-	</xsl:template>
-	
-	<xsl:template match="csd:appendix//csd:example/csd:name"/>
-	<xsl:template match="csd:appendix//csd:example/csd:name" mode="process">
-		<fo:inline><xsl:apply-templates /></fo:inline>
-	</xsl:template>
-	
-	<!-- <xsl:template match="csd:callout/text()">	
-		<fo:basic-link internal-destination="{@target}"><fo:inline>&lt;<xsl:apply-templates />&gt;</fo:inline></fo:basic-link>
-	</xsl:template> -->
-	<xsl:template match="csd:callout">		
-			<fo:basic-link internal-destination="{@target}" fox:alt-text="{@target}">&lt;<xsl:apply-templates />&gt;</fo:basic-link>
-	</xsl:template>
-	
-	<xsl:template match="csd:annotation">
-		<fo:block>
-			
-		</fo:block>
-		<xsl:apply-templates />
-	</xsl:template>
-	
-	<xsl:template match="csd:annotation/text()"/>
-	
-	<xsl:template match="csd:annotation/csd:p">
-		<xsl:variable name="annotation-id" select="../@id"/>
-		<xsl:variable name="callout" select="//*[@target = $annotation-id]/text()"/>
-		<fo:block id="{$annotation-id}">
-			<xsl:value-of select="concat('&lt;', $callout, '&gt; ')"/>
-			<xsl:apply-templates />
-		</fo:block>
-	</xsl:template>
-	
-	
-	<xsl:template match="csd:appendix/csd:title"/>
-	<xsl:template match="csd:appendix/csd:title" mode="process">
-		<fo:inline><xsl:apply-templates /></fo:inline>
 	</xsl:template>
 	
 	

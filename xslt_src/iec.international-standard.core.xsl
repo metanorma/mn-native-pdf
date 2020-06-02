@@ -1,5 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:fo="http://www.w3.org/1999/XSL/Format" xmlns:iec="https://www.metanorma.org/ns/iec" xmlns:mathml="http://www.w3.org/1998/Math/MathML" xmlns:xalan="http://xml.apache.org/xalan" xmlns:fox="http://xmlgraphics.apache.org/fop/extensions" version="1.0">
+<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" 
+											xmlns:fo="http://www.w3.org/1999/XSL/Format" 
+											xmlns:iec="https://www.metanorma.org/ns/iec" 
+											xmlns:mathml="http://www.w3.org/1998/Math/MathML" 
+											xmlns:xalan="http://xml.apache.org/xalan" 
+											xmlns:fox="http://xmlgraphics.apache.org/fop/extensions" 
+											version="1.0">
 
 	<xsl:output method="xml" encoding="UTF-8" indent="no"/>
 	
@@ -202,7 +208,9 @@
 								</xsl:variable>
 								<xsl:value-of select="normalize-space($abstract)"/>
 							</dc:description>
-							<pdf:Keywords></pdf:Keywords>
+							<pdf:Keywords>
+								<xsl:call-template name="insertKeywords"/>
+							</pdf:Keywords>
 						</rdf:Description>
 						<rdf:Description rdf:about=""
 								xmlns:xmp="http://ns.adobe.com/xap/1.0/">
@@ -2309,62 +2317,6 @@
 			<xsl:value-of select="@citeas" disable-output-escaping="yes"/>
 			<xsl:apply-templates select="iec:localityStack"/>
 		</fo:basic-link>
-	</xsl:template>
-	
-	<xsl:template match="iec:appendix">
-		<fo:block id="{@id}" font-weight="bold" margin-top="5pt" margin-bottom="5pt">
-			<xsl:if test="not(iec:title)">
-				<fo:inline padding-right="5mm">Appendix <xsl:number /></fo:inline>
-			</xsl:if>
-			<xsl:apply-templates select="iec:title" mode="process"/>
-		</fo:block>
-		<xsl:apply-templates />
-	</xsl:template>
-	
-	<xsl:template match="iec:appendix//iec:example">
-		<fo:block margin-top="14pt" margin-bottom="14pt">
-			<xsl:text>EXAMPLE</xsl:text>
-			<xsl:if test="iec:name">
-				<xsl:text> — </xsl:text><xsl:apply-templates select="iec:name" mode="process"/>
-			</xsl:if>
-		</fo:block>
-		<xsl:apply-templates />
-	</xsl:template>
-	
-	<xsl:template match="iec:appendix//iec:example/iec:name"/>
-	<xsl:template match="iec:appendix//iec:example/iec:name" mode="process">
-		<fo:inline><xsl:apply-templates /></fo:inline>
-	</xsl:template>
-	
-	<!-- <xsl:template match="iec:callout/text()">	
-		<fo:basic-link internal-destination="{@target}"><fo:inline>&lt;<xsl:apply-templates />&gt;</fo:inline></fo:basic-link>
-	</xsl:template> -->
-	<xsl:template match="iec:callout">		
-			<fo:basic-link internal-destination="{@target}" fox:alt-text="{@target}">&lt;<xsl:apply-templates />&gt;</fo:basic-link>
-	</xsl:template>
-	
-	<xsl:template match="iec:annotation">
-		<fo:block>
-			
-		</fo:block>
-		<xsl:apply-templates />
-	</xsl:template>
-	
-	<xsl:template match="iec:annotation/text()"/>
-	
-	<xsl:template match="iec:annotation/iec:p">
-		<xsl:variable name="annotation-id" select="../@id"/>
-		<xsl:variable name="callout" select="//*[@target = $annotation-id]/text()"/>
-		<fo:block id="{$annotation-id}">
-			<xsl:value-of select="concat('&lt;', $callout, '&gt; ')"/>
-			<xsl:apply-templates />
-		</fo:block>
-	</xsl:template>
-	
-	
-	<xsl:template match="iec:appendix/iec:title"/>
-	<xsl:template match="iec:appendix/iec:title" mode="process">
-		<fo:inline><xsl:apply-templates /></fo:inline>
 	</xsl:template>
 	
 	

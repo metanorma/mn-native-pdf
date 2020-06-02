@@ -96,6 +96,8 @@
 	
 	<xsl:variable name="title-where">where</xsl:variable>
 	
+	<xsl:variable name="title-descriptors">Descriptors</xsl:variable>
+	
 	<xsl:variable name="lower">abcdefghijklmnopqrstuvwxyz</xsl:variable> 
 	<xsl:variable name="upper">ABCDEFGHIJKLMNOPQRSTUVWXYZ</xsl:variable>
 
@@ -162,6 +164,43 @@
 			<xsl:attribute name="margin-bottom">6pt</xsl:attribute>
 			<xsl:attribute name="keep-with-next">always</xsl:attribute>
 			<xsl:attribute name="line-height">113%</xsl:attribute>
+		</xsl:if>
+	</xsl:attribute-set>
+	
+	<xsl:attribute-set name="appendix-style">
+		<xsl:if test="$namespace = 'iso' or $namespace = 'ogc' or $namespace = 'm3d' or $namespace = 'gb' or $namespace = 'csd'">		
+			<xsl:attribute name="font-size">12pt</xsl:attribute>
+			<xsl:attribute name="font-weight">bold</xsl:attribute>
+			<xsl:attribute name="margin-top">12pt</xsl:attribute>
+			<xsl:attribute name="margin-bottom">12pt</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'iec'">			
+			<xsl:attribute name="font-weight">bold</xsl:attribute>
+			<xsl:attribute name="margin-top">5pt</xsl:attribute>
+			<xsl:attribute name="margin-bottom">5pt</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'rsd'">
+			<xsl:attribute name="font-size">12pt</xsl:attribute>
+			<xsl:attribute name="font-family">SourceSansPro</xsl:attribute>
+			<xsl:attribute name="margin-top">12pt</xsl:attribute>
+			<xsl:attribute name="margin-bottom">12pt</xsl:attribute>
+		</xsl:if>
+	</xsl:attribute-set>
+	
+	<xsl:attribute-set name="appendix-example-style">
+		<xsl:if test="$namespace = 'iso' or $namespace = 'ogc' or $namespace = 'm3d' or $namespace = 'gb' or $namespace = 'csd'">
+			<xsl:attribute name="font-size">10pt</xsl:attribute>			
+			<xsl:attribute name="margin-top">8pt</xsl:attribute>
+			<xsl:attribute name="margin-bottom">8pt</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'iec'">
+			<xsl:attribute name="margin-top">14pt</xsl:attribute>
+			<xsl:attribute name="margin-bottom">14pt</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'rsd'">
+			<xsl:attribute name="font-family">SourceSansPro</xsl:attribute>
+			<xsl:attribute name="font-size">11pt</xsl:attribute>			
+			<xsl:attribute name="margin-bottom">12pt</xsl:attribute>
 		</xsl:if>
 	</xsl:attribute-set>
 	
@@ -2070,6 +2109,67 @@
 	</xsl:template>
 
 	
+	<xsl:template match="*[local-name()='appendix']">
+		<fo:block id="{@id}" xsl:use-attribute-sets="appendix-style">
+			<fo:inline padding-right="5mm"><xsl:value-of select="$title-appendix"/> <xsl:number /></fo:inline>
+			<xsl:apply-templates select="*[local-name()='title']" mode="process"/>
+		</fo:block>
+		<xsl:apply-templates />
+	</xsl:template>
+
+	<xsl:template match="*[local-name()='appendix']/*[local-name()='title']"/>
+	<xsl:template match="*[local-name()='appendix']/*[local-name()='title']" mode="process">
+		<fo:inline><xsl:apply-templates /></fo:inline>
+	</xsl:template>
+	
+	
+	<xsl:template match="*[local-name()='appendix']//*[local-name()='example']">
+		<fo:block xsl:use-attribute-sets="appendix-example-style">
+			<xsl:variable name="claims_id" select="ancestor::*[local-name()='clause'][1]/@id"/>
+			<xsl:value-of select="$title-example"/>
+			<xsl:if test="count(ancestor::*[local-name()='clause'][1]//*[local-name()='example']) &gt; 1">
+					<xsl:number count="*[local-name()='example'][ancestor::*[local-name()='clause'][@id = $claims_id]]" level="any"/><xsl:text> </xsl:text>
+				</xsl:if>
+			<xsl:if test="*[local-name()='name']">
+				<xsl:text>— </xsl:text><xsl:apply-templates select="*[local-name()='name']" mode="process"/>
+			</xsl:if>
+		</fo:block>
+		<xsl:apply-templates />
+	</xsl:template>
+	
+	<xsl:template match="*[local-name()='appendix']//*[local-name()='example']/*[local-name()='name']"/>
+	<xsl:template match="*[local-name()='appendix']//*[local-name()='example']/*[local-name()='name']" mode="process">
+		<fo:inline><xsl:apply-templates /></fo:inline>
+	</xsl:template>
+	
+	
+	<xsl:template match="*[local-name() = 'callout']">		
+		<fo:basic-link internal-destination="{@target}" fox:alt-text="{@target}">&lt;<xsl:apply-templates />&gt;</fo:basic-link>
+	</xsl:template>
+	
+	<xsl:template match="*[local-name() = 'annotation']">
+		<xsl:variable name="annotation-id" select="@id"/>
+		<xsl:variable name="callout" select="//*[@target = $annotation-id]/text()"/>		
+		<fo:block id="{$annotation-id}" white-space="nowrap">			
+			<fo:inline>				
+				<xsl:apply-templates>
+					<xsl:with-param name="callout" select="concat('&lt;', $callout, '&gt; ')"/>
+				</xsl:apply-templates>
+			</fo:inline>
+		</fo:block>		
+	</xsl:template>	
+
+	<xsl:template match="*[local-name() = 'annotation']/*[local-name() = 'p']">
+		<xsl:param name="callout"/>
+		<fo:inline id="{@id}">
+			<!-- for first p in annotation, put <x> -->
+			<xsl:if test="not(preceding-sibling::*[local-name() = 'p'])"><xsl:value-of select="$callout"/></xsl:if>
+			<xsl:apply-templates />
+		</fo:inline>		
+	</xsl:template>
+
+	
+	
 	<!-- convert YYYY-MM-DD to 'Month YYYY' or 'Month DD, YYYY' -->
 	<xsl:template name="convertDate">
 		<xsl:param name="date"/>
@@ -2106,5 +2206,39 @@
 		<xsl:value-of select="$result"/>
 	</xsl:template>
 
+	<xsl:template name="insertKeywords">
+		<xsl:param name="sorting" select="'true'"/>
+		<xsl:param name="charAtEnd" select="'.'"/>
+		<xsl:param name="charDelim" select="', '"/>
+		<xsl:choose>
+			<xsl:when test="$sorting = 'true' or $sorting = 'yes'">
+				<xsl:for-each select="/*/*[local-name() = 'bibdata']//*[local-name() = 'keyword']">
+					<xsl:sort data-type="text" order="ascending"/>
+					<xsl:call-template name="insertKeyword">
+						<xsl:with-param name="charAtEnd" select="$charAtEnd"/>
+						<xsl:with-param name="charDelim" select="$charDelim"/>
+					</xsl:call-template>
+				</xsl:for-each>
+			</xsl:when>
+			<xsl:otherwise>
+				<xsl:for-each select="/*/*[local-name() = 'bibdata']//*[local-name() = 'keyword']">
+					<xsl:call-template name="insertKeyword">
+						<xsl:with-param name="charAtEnd" select="$charAtEnd"/>
+						<xsl:with-param name="charDelim" select="$charDelim"/>
+					</xsl:call-template>
+				</xsl:for-each>
+			</xsl:otherwise>
+		</xsl:choose>
+	</xsl:template>
+	
+	<xsl:template name="insertKeyword">
+		<xsl:param name="charAtEnd"/>
+		<xsl:param name="charDelim"/>
+		<xsl:apply-templates/>
+		<xsl:choose>
+			<xsl:when test="position() != last()"><xsl:value-of select="$charDelim"/></xsl:when>
+			<xsl:otherwise><xsl:value-of select="$charAtEnd"/></xsl:otherwise>
+		</xsl:choose>
+	</xsl:template>
 	
 </xsl:stylesheet>
