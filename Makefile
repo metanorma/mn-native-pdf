@@ -6,17 +6,17 @@ SHELL := /bin/bash
 endif
 SRCDIR := sources
 DESTDIR := documents
-SRC := $(patsubst mn-samples-iso/documents/amendment/%,sources/iso-%,$(wildcard mn-samples-iso/documents/amendment/*.xml)) \
-	$(patsubst mn-samples-iso/documents/international-standard/%,sources/iso-%,$(wildcard mn-samples-iso/documents/international-standard/*.xml)) \
+SRC := $(patsubst mn-samples-iso/documents/international-standard/%,sources/iso-is-%,$(wildcard mn-samples-iso/documents/international-standard/*.xml)) \
+	$(patsubst mn-samples-iso/documents/amendment/%,sources/iso-amendment-%,$(wildcard mn-samples-iso/documents/amendment/*.xml)) \
 	$(patsubst mn-samples-itu/documents/%,sources/itu-%,$(wildcard mn-samples-itu/documents/*.xml)) \
 	$(patsubst mn-samples-iec/documents/%,sources/%,$(wildcard mn-samples-iec/documents/*.xml)) \
 	$(patsubst mn-samples-ogc/documents/%,sources/ogc-%,$(wildcard mn-samples-ogc/documents/*.xml)) \
 	$(patsubst mn-samples-un/documents/%,sources/un-%,$(wildcard mn-samples-un/documents/*.xml)) \
 	$(patsubst mn-samples-cc/documents/%,sources/%,$(wildcard mn-samples-cc/documents/*.xml)) \
-	$(patsubst mn-samples-m3aawg/documents/%,sources/m3a-%,$(wildcard mn-samples-m3aawg/documents/*.xml)) \
+	$(patsubst mn-samples-m3aawg/documents/best-practice/%,sources/m3d-bp-%,$(wildcard mn-samples-m3aawg/documents/**/*.xml)) \
 	$(patsubst mn-samples-cc/documents/%,sources/%,$(wildcard mn-samples-cc/documents/*.xml)) \
 	$(patsubst mn-samples-gb/documents/%,sources/gb-%,$(wildcard mn-samples-gb/documents/*.xml)) \
-  $(patsubst mn-samples-iho/documents/%,sources/iho-%,$(wildcard mn-samples-iho/documents/*.xml))
+	$(patsubst mn-samples-iho/documents/%,sources/iho-%,$(wildcard mn-samples-iho/documents/*.xml))
 
 PDF := $(patsubst sources/%,documents/%,$(patsubst %.xml,%.pdf,$(SRC)))
 HTML := $(patsubst sources/%,documents/%,$(patsubst %.xml,%.html,$(SRC)))
@@ -61,10 +61,13 @@ MN2PDF_EXECUTABLE := $(notdir $(MN2PDF_DOWNLOAD_PATH))
 
 all: xslts documents.html
 
+targets:
+	echo "$(PDF)"
+
 xslts: $(XSLT_GENERATED)
 
 $(MN2PDF_EXECUTABLE):
-	curl -sSL --user ${GITHUB_USERNAME}:${GITHUB_TOKEN} ${MN2PDF_DOWNLOAD_PATH} -o $(MN2PDF_EXECUTABLE)
+	curl -sSL ${MN2PDF_DOWNLOAD_PATH} -o $(MN2PDF_EXECUTABLE)
 
 xalan/xalan.jar:
 ifeq ($(OS),Windows_NT)
@@ -82,10 +85,10 @@ else
 	popd
 endif
 
-sources/iso-%: mn-samples-iso/documents/international-standard/%
+sources/iso-is-%: mn-samples-iso/documents/international-standard/%
 	cp $< $@
 
-sources/iso-%: mn-samples-iso/documents/amendment/%
+sources/iso-amendment-%: mn-samples-iso/documents/amendment/%
 	cp $< $@
 
 sources/iec-%: mn-samples-iec/documents/iec-%
@@ -103,7 +106,7 @@ sources/ogc-%: mn-samples-ogc/documents/%
 sources/cc-%: mn-samples-cc/documents/cc-%
 	cp $< $@
 
-sources/m3a-%: mn-samples-m3aawg/documents/%
+sources/m3d-bp-%: mn-samples-m3aawg/documents/best-practice/%
 	cp $< $@
 
 sources/gb-%: mn-samples-gb/documents/%
