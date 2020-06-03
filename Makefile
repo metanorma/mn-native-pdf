@@ -64,7 +64,7 @@ all: xslts documents.html
 targets:
 	echo "$(PDF)"
 
-xslts: $(XSLT_GENERATED)
+xslts: xsltsclean $(XSLT_GENERATED)
 
 $(MN2PDF_EXECUTABLE):
 	curl -sSL ${MN2PDF_DOWNLOAD_PATH} -o $(MN2PDF_EXECUTABLE)
@@ -174,9 +174,11 @@ distclean: clean
 	rm -rf xalan/*
 	rm -f $(MN2PDF_EXECUTABLE)
 
-clean:
-	rm -f $(XSLT_GENERATED)
+clean: xsltsclean
 	rm -rf documents
+
+xsltsclean:
+	rm -f $(XSLT_GENERATED)
 
 update-init:
 	git submodule update --init
