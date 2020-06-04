@@ -1849,11 +1849,7 @@
 		<fo:block>&#xA0;</fo:block>
 		<fo:block break-after="page"/>
 	</xsl:template>
-	
-	<xsl:template match="ogc:bookmark">
-		<fo:inline id="{@id}"></fo:inline>
-	</xsl:template>
-	
+		
 	<xsl:template name="insertHeaderFooter">
 		<xsl:param name="pagenum-font-weight" select="'normal'"/>
 		<fo:static-content flow-name="header-even">

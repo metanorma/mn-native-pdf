@@ -1569,11 +1569,7 @@
 		<fo:block>&#xA0;</fo:block>
 		<fo:block break-after="page"/>
 	</xsl:template>
-	
-	<xsl:template match="rsd:bookmark">
-		<fo:inline id="{@id}"></fo:inline>
-	</xsl:template>
-	
+		
 	<xsl:template name="insertHeaderFooter">
 		<xsl:param name="font-weight" select="'bold'"/>
 		<fo:static-content flow-name="header-odd">
