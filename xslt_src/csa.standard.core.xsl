@@ -1593,11 +1593,7 @@
 		<fo:block>&#xA0;</fo:block>
 		<fo:block break-after="page"/>
 	</xsl:template>
-	
-	<xsl:template match="csa:bookmark">
-		<fo:inline id="{@id}"></fo:inline>
-	</xsl:template>
-	
+		
 	<xsl:template name="insertHeaderFooter">
 		<fo:static-content flow-name="header">
 			<fo:block-container height="2.5mm" background-color="{$color-header-document}">
