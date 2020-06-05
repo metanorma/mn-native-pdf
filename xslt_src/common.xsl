@@ -98,6 +98,15 @@
 	
 	<xsl:variable name="title-descriptors">Descriptors</xsl:variable>
 	
+	<xsl:variable name="title-part-en">Part </xsl:variable>
+	<xsl:variable name="title-part-fr">Partie </xsl:variable>
+	
+	<xsl:variable name="title-note-to-entry">Note # to entry: </xsl:variable>
+	
+	<xsl:variable name="title-modified">modified</xsl:variable>
+	
+	<xsl:variable name="title-source">SOURCE</xsl:variable>
+	
 	<xsl:variable name="lower">abcdefghijklmnopqrstuvwxyz</xsl:variable> 
 	<xsl:variable name="upper">ABCDEFGHIJKLMNOPQRSTUVWXYZ</xsl:variable>
 
