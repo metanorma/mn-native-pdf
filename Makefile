@@ -181,7 +181,7 @@ xsltsclean:
 	rm -f $(XSLT_GENERATED)
 
 update:
-	git pull origin master
+	git pull origin master --allow-unrelated-histories
 
 update-init:
 	git submodule update --init
