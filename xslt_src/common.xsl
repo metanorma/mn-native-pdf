@@ -11,7 +11,7 @@
 	<xsl:variable name="title-table">
 		<xsl:if test="$namespace = 'iso' or $namespace = 'iec' or $namespace = 'itu' or $namespace = 'unece' or $namespace = 'unece-rec' or $namespace = 'nist' or $namespace = 'ogc' or $namespace = 'rsd' or $namespace = 'csa' or $namespace = 'csd' or $namespace = 'm3d' or $namespace = 'iho'">
 			<xsl:text>Table </xsl:text>
-		</xsl:if>							
+		</xsl:if>
 		<xsl:if test="$namespace = 'gb'">
 			<xsl:choose>
 				<xsl:when test="$lang = 'zh'">表 </xsl:when>
@@ -266,7 +266,7 @@
 							<xsl:if test="$namespace = 'unece'">
 								<xsl:attribute name="font-weight">normal</xsl:attribute>
 								<xsl:attribute name="font-size">11pt</xsl:attribute>
-							</xsl:if>							
+							</xsl:if>
 							<xsl:value-of select="$title-table"/>
 							<xsl:choose>
 								<xsl:when test="ancestor::*[local-name()='executivesummary']"> <!-- NIST -->
@@ -450,6 +450,9 @@
 			<fo:table id="{@id}" table-layout="fixed" width="100%" margin-left="{$margin-left}mm" margin-right="{$margin-left}mm" table-omit-footer-at-break="true">
 				<xsl:if test="$namespace = 'iso'">
 					<xsl:attribute name="border">1.5pt solid black</xsl:attribute>
+					<xsl:if test="*[local-name()='thead']">
+						<xsl:attribute name="border-top">1pt solid black</xsl:attribute>
+					</xsl:if>
 				</xsl:if>
 				<xsl:if test="$namespace = 'iec'">
 					<xsl:attribute name="border">0.5pt solid black</xsl:attribute>
@@ -731,8 +734,30 @@
 	<xsl:template match="*[local-name()='thead']"/>
 
 	<xsl:template match="*[local-name()='thead']" mode="process">
+		<xsl:param name="cols-count"/>
 		<!-- font-weight="bold" -->
-		<fo:table-header>
+		<fo:table-header>			
+			<xsl:if test="$namespace = 'iso'">
+				<fo:table-row>
+					<fo:table-cell number-columns-spanned="{$cols-count}"> <!-- border-left="1pt solid white" border-right="1pt solid white" border-top="1pt solid white" -->
+						<fo:block text-align="center" font-size="11pt" font-weight="bold">
+							<!-- (continued) -->
+							<fo:block-container position="absolute" top="-7mm">
+								<fo:block>
+									<fo:retrieve-table-marker retrieve-class-name="table_continued" 
+										retrieve-position-within-table="first-starting" 
+										retrieve-boundary-within-table="table-fragment"/>
+								</fo:block>
+							</fo:block-container>
+							
+						</fo:block>
+						<!-- <fo:block>fn_name_display
+							<xsl:call-template name="fn_name_display"/>
+						</fo:block> -->
+						
+					</fo:table-cell>
+				</fo:table-row>
+			</xsl:if>
 			<xsl:apply-templates />
 		</fo:table-header>
 	</xsl:template>
@@ -744,6 +769,7 @@
 	</xsl:template>
 	
 	<xsl:template name="insertTableFooter">
+		<xsl:param name="cols-count" />
 		<xsl:variable name="isNoteOrFnExist" select="../*[local-name()='note'] or ..//*[local-name()='fn'][local-name(..) != 'name']"/>
 		<xsl:if test="../*[local-name()='tfoot'] or
 										$isNoteOrFnExist = 'true'">
@@ -755,22 +781,7 @@
 				<!-- if there are note(s) or fn(s) then create footer row -->
 				<xsl:if test="$isNoteOrFnExist = 'true'">
 				
-					<xsl:variable name="cols-count">
-						<xsl:choose>
-							<xsl:when test="../*[local-name()='thead']">
-								<!-- <xsl:value-of select="count(../*[local-name()='thead']/*[local-name()='tr']/*[local-name()='th'])"/> -->
-								<xsl:call-template name="calculate-columns-numbers">
-									<xsl:with-param name="table-row" select="../*[local-name()='thead']/*[local-name()='tr'][1]"/>
-								</xsl:call-template>
-							</xsl:when>
-							<xsl:otherwise>
-								<!-- <xsl:value-of select="count(./*[local-name()='tr'][1]/*[local-name()='td'])"/> -->
-								<xsl:call-template name="calculate-columns-numbers">
-									<xsl:with-param name="table-row" select="./*[local-name()='tr'][1]"/>
-								</xsl:call-template>
-							</xsl:otherwise>
-						</xsl:choose>
-					</xsl:variable>
+					
 				
 					<fo:table-row>
 						<fo:table-cell border="solid black 1pt" padding-left="1mm" padding-right="1mm" padding-top="1mm" number-columns-spanned="{$cols-count}">
@@ -820,9 +831,28 @@
 	
 	<xsl:template match="*[local-name()='tbody']">
 		
-		<xsl:apply-templates select="../*[local-name()='thead']" mode="process"/>
+		<xsl:variable name="cols-count">
+			<xsl:choose>
+				<xsl:when test="../*[local-name()='thead']">					
+					<xsl:call-template name="calculate-columns-numbers">
+						<xsl:with-param name="table-row" select="../*[local-name()='thead']/*[local-name()='tr'][1]"/>
+					</xsl:call-template>
+				</xsl:when>
+				<xsl:otherwise>					
+					<xsl:call-template name="calculate-columns-numbers">
+						<xsl:with-param name="table-row" select="./*[local-name()='tr'][1]"/>
+					</xsl:call-template>
+				</xsl:otherwise>
+			</xsl:choose>
+		</xsl:variable>
 		
-		<xsl:call-template name="insertTableFooter"/>
+		<xsl:apply-templates select="../*[local-name()='thead']" mode="process">
+			<xsl:with-param name="cols-count" select="$cols-count"/>
+		</xsl:apply-templates>
+		
+		<xsl:call-template name="insertTableFooter">
+			<xsl:with-param name="cols-count" select="$cols-count"/>
+		</xsl:call-template>
 		
 		<fo:table-body>
 			<xsl:apply-templates />
@@ -1023,6 +1053,21 @@
 				</xsl:attribute>
 			</xsl:if>
 			<fo:block>
+				<xsl:if test="$namespace = 'iso'">
+					<xsl:variable name="row_number">
+						<xsl:number format="1" count="*[local-name() = 'tr'] | *[local-name() = 'th']"/>
+					</xsl:variable>
+					<fo:marker marker-class-name="table_continued">						
+						<xsl:if test="$row_number &gt; 1">
+								<fo:inline>
+									<xsl:value-of select="$title-table"/>									
+									<xsl:call-template name="getTableNumber"/>
+									<xsl:text> </xsl:text>
+									<fo:inline font-style="italic" font-weight="normal">(continued)</fo:inline>
+								</fo:inline>
+						</xsl:if>
+					</fo:marker>
+				</xsl:if>				
 				<xsl:apply-templates />
 			</fo:block>
 			<!-- <xsl:choose>
@@ -1334,7 +1379,7 @@
 					<fo:block margin-bottom="12pt" text-align="left">
 						<xsl:if test="$namespace = 'iso' or $namespace = 'iec'">
 							<xsl:attribute name="margin-bottom">0</xsl:attribute>
-						</xsl:if>						
+						</xsl:if>
 						<xsl:value-of select="$title-where"/><xsl:text>&#xA0;</xsl:text>
 						<xsl:apply-templates select="*[local-name()='dt']/*"/>
 						<xsl:text></xsl:text>
@@ -1356,7 +1401,7 @@
 					<xsl:if test="$namespace = 'gb'">
 						<xsl:attribute name="margin-left">7.4mm</xsl:attribute>
 						<xsl:attribute name="margin-bottom">0pt</xsl:attribute>
-					</xsl:if>					
+					</xsl:if>
 					<xsl:value-of select="$title-where"/><xsl:if test="$namespace = 'itu'">:</xsl:if>
 				</fo:block>
 			</xsl:when>
@@ -1590,7 +1635,7 @@
 						<xsl:if test="ancestor::*[local-name()='formula']">
 							<xsl:text>—</xsl:text>
 						</xsl:if>
-					</xsl:if>					
+					</xsl:if>
 				</fo:block>
 			</fo:table-cell>
 			<fo:table-cell>
