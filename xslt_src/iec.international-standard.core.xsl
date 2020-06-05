@@ -31,9 +31,8 @@
 	<xsl:variable name="title-main" select="/iec:iec-standard/iec:bibdata/iec:title[@language = 'en' and @type = 'title-main']"/>
 	<xsl:variable name="title-main-fr" select="/iec:iec-standard/iec:bibdata/iec:title[@language = 'fr' and @type = 'title-main']"/>
 	<xsl:variable name="part" select="/iec:iec-standard/iec:bibdata/iec:ext/iec:structuredidentifier/iec:project-number/@part"/>
-	<xsl:variable name="title-part" select="/iec:iec-standard/iec:bibdata/iec:title[@language = 'en' and @type = 'title-part']"/>
-	<xsl:variable name="title-part-fr" select="/iec:iec-standard/iec:bibdata/iec:title[@language = 'fr' and @type = 'title-part']"/>
-
+	
+	
 	<xsl:variable name="doctype_uppercased" select="translate(translate(/iec:iec-standard/iec:bibdata/iec:ext/iec:doctype,'-',' '), $lower,$upper)"/>
 	
 	<xsl:variable name="organization" select="translate(/iec:iec-standard/iec:bibdata/iec:contributor/iec:organization/iec:name, $lower, $upper)"/>
@@ -1082,7 +1081,9 @@
 							<xsl:value-of select="translate($title-intro, $lower, $upper)"/>
 							<xsl:text> — </xsl:text>
 							<xsl:value-of select="translate($title-main, $lower, $upper)"/>
-							<xsl:if test="$title-part != ''">
+							
+							<xsl:variable name="part-en" select="/iec:iec-standard/iec:bibdata/iec:title[@language = 'en' and @type = 'title-part']"/>
+							<xsl:if test="$part-en != ''">
 								<xsl:text> — </xsl:text>
 								<fo:block>&#xa0;</fo:block>
 								<fo:block>
@@ -1090,7 +1091,7 @@
 										<xsl:text>Part </xsl:text><xsl:value-of select="$part"/>
 										<xsl:text>: </xsl:text>
 									</xsl:if>
-									<xsl:value-of select="$title-part"/>
+									<xsl:value-of select="$part-en"/>
 								</fo:block>
 							</xsl:if>
 						</fo:block>
@@ -1120,7 +1121,8 @@
 							<xsl:value-of select="translate($title-intro, $lower, $upper)"/>
 							<xsl:text> — </xsl:text>
 							<xsl:value-of select="translate($title-main, $lower, $upper)"/>
-							<xsl:if test="$title-part != ''">
+							<xsl:variable name="part-en" select="/iec:iec-standard/iec:bibdata/iec:title[@language = 'en' and @type = 'title-part']"/>
+							<xsl:if test="$part-en != ''">
 								<xsl:text> — </xsl:text>
 								<fo:block>&#xa0;</fo:block>
 								<fo:block>
@@ -1128,7 +1130,7 @@
 										<xsl:text>Part </xsl:text><xsl:value-of select="$part"/>
 										<xsl:text>: </xsl:text>
 									</xsl:if>
-									<xsl:value-of select="$title-part"/>
+									<xsl:value-of select="$part-en"/>
 								</fo:block>
 							</xsl:if>
 							<fo:block>&#xa0;</fo:block>
@@ -1313,14 +1315,15 @@
 						<xsl:text> — </xsl:text>
 						<xsl:value-of select="$title-main"/>
 					</xsl:if>
-					<xsl:if test="$title-part != ''">
+					<xsl:variable name="part-en" select="/iec:iec-standard/iec:bibdata/iec:title[@language = 'en' and @type = 'title-part']"/>
+					<xsl:if test="$part-en != ''">
 						<xsl:text> — </xsl:text>
 						<xsl:value-of select="$linebreak"/>
 						<xsl:if test="$part != ''">
 							<xsl:text>Part </xsl:text><xsl:value-of select="$part"/>
 							<xsl:text>: </xsl:text>
 						</xsl:if>
-						<xsl:value-of select="$title-part"/>
+						<xsl:value-of select="$part-en"/>
 					</xsl:if>
 				</fo:block>
 				<fo:block font-size="12pt" font-weight="bold">
@@ -1332,14 +1335,15 @@
 						<xsl:text> — </xsl:text>
 						<xsl:value-of select="$title-main-fr"/>
 					</xsl:if>
-					<xsl:if test="$title-part-fr != ''">
+					<xsl:variable name="part-fr" select="/iec:iec-standard/iec:bibdata/iec:title[@language = 'fr' and @type = 'title-part']"/>
+					<xsl:if test="$part-fr != ''">
 						<xsl:text> — </xsl:text>
 						<xsl:value-of select="$linebreak"/>
 						<xsl:if test="$part != ''">
 							<xsl:text>Part </xsl:text><xsl:value-of select="$part"/>
 							<xsl:text>: </xsl:text>
 						</xsl:if>
-						<xsl:value-of select="$title-part-fr"/>
+						<xsl:value-of select="$part-fr"/>
 					</xsl:if>
 				</fo:block>
 			</fo:block-container>
