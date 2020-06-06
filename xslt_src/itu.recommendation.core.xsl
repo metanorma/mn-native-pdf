@@ -1,5 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:fo="http://www.w3.org/1999/XSL/Format" xmlns:itu="https://www.metanorma.org/ns/itu" xmlns:mathml="http://www.w3.org/1998/Math/MathML" xmlns:xalan="http://xml.apache.org/xalan" xmlns:fox="http://xmlgraphics.apache.org/fop/extensions" version="1.0">
+<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" 
+											xmlns:fo="http://www.w3.org/1999/XSL/Format" 
+											xmlns:itu="https://www.metanorma.org/ns/itu" 
+											xmlns:mathml="http://www.w3.org/1998/Math/MathML" 
+											xmlns:xalan="http://xml.apache.org/xalan" 
+											xmlns:fox="http://xmlgraphics.apache.org/fop/extensions" 
+											xmlns:java="http://xml.apache.org/xalan/java" 
+											exclude-result-prefixes="java"
+											version="1.0">
 
 	<xsl:output method="xml" encoding="UTF-8" indent="no"/>
 
@@ -971,6 +979,12 @@
 			<xsl:attribute name="text-align">
 				<xsl:choose>
 					<xsl:when test="@align"><xsl:value-of select="@align"/></xsl:when>
+					<xsl:when test="ancestor::*[1][local-name() = 'td']/@align">
+						<xsl:value-of select="ancestor::*[1][local-name() = 'td']/@align"/>
+					</xsl:when>
+					<xsl:when test="ancestor::*[1][local-name() = 'th']/@align">
+						<xsl:value-of select="ancestor::*[1][local-name() = 'th']/@align"/>
+					</xsl:when>
 					<xsl:otherwise>justify</xsl:otherwise>
 				</xsl:choose>
 			</xsl:attribute>
@@ -1447,18 +1461,6 @@
 	<xsl:template match="itu:docidentifier"/>
 	
 	
-	
-	<xsl:template match="itu:annex2//itu:note/itu:p">
-		<fo:block font-size="11pt" margin-top="4pt">			
-			<xsl:value-of select="$title-note"/>
-			<!-- <xsl:if test="../following-sibling::itu:note or ../preceding-sibling::itu:note"> -->
-				<xsl:number count="itu:note"/><xsl:text> </xsl:text>
-			<!-- </xsl:if> -->
-			<xsl:text>– </xsl:text>
-			<xsl:apply-templates />
-		</fo:block>
-	</xsl:template>
-	
 	<xsl:template match="itu:ul | itu:ol | itu:sections/itu:ul | itu:sections/itu:ol">
 		<xsl:if test="preceding-sibling::*[1][local-name() = 'title']">
 			<fo:block padding-top="-8pt" font-size="1pt">&#xA0;</fo:block>
@@ -1470,6 +1472,11 @@
 	</xsl:template>
 	
 	<xsl:template match="itu:ul//itu:note |  itu:ol//itu:note"/>
+	<xsl:template match="itu:ul//itu:note  | itu:ol//itu:note" mode="process">
+		<fo:block id="{@id}">
+			<xsl:apply-templates mode="process"/>
+		</fo:block>
+	</xsl:template>
 	<xsl:template match="itu:ul//itu:note/itu:p  | itu:ol//itu:note/itu:p" mode="process">
 		<xsl:variable name="id" select="ancestor::*[local-name() = 'clause'][1]/@id"/>
 		<fo:block font-size="11pt" margin-top="4pt">			
@@ -1515,7 +1522,7 @@
 		</fo:list-item>
 	</xsl:template>
 	
-	<xsl:template match="itu:li//itu:p">
+	<xsl:template match="itu:li//itu:p[not(parent::itu:dd)]">
 		<fo:block margin-bottom="0pt"> <!-- margin-bottom="6pt" -->
 			<!-- <xsl:if test="local-name(ancestor::itu:li[1]/..) = 'ul'">
 				<xsl:attribute name="margin-bottom">0pt</xsl:attribute>
@@ -1581,7 +1588,7 @@
 	
 	<xsl:template match="itu:formula" name="formula">
 		<xsl:param name="sectionNum" />
-		<fo:block id="{@id}" margin-top="6pt"> <!--  text-align="center" -->
+		<fo:block id="{@id}" margin-top="6pt" margin-bottom="6pt"> <!--  text-align="center" -->
 			<xsl:apply-templates />
 			<fo:inline keep-together.within-line="always">
 			</fo:inline>
