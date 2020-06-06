@@ -341,7 +341,7 @@
 							<xsl:value-of select="$linebreak"/>
 						</fo:block>
 						<fo:block font-weight="bold" margin-top="18pt" margin-bottom="18pt">
-							<xsl:text>Keywords</xsl:text>
+							<xsl:value-of select="$title-keywords"/>
 						</fo:block>
 						<fo:block>
 							<xsl:call-template name="insertKeywords"/>
@@ -367,8 +367,8 @@
 					<xsl:if test="xalan:nodeset($contents)//item">
 						<fo:block break-after="page"/>
 						<fo:block-container >
-							<fo:block margin-top="6pt" text-align="center" font-weight="bold">Table of Contents</fo:block>
-							<fo:block margin-top="6pt" text-align="right" font-weight="bold">Page</fo:block>
+							<fo:block margin-top="6pt" text-align="center" font-weight="bold"><xsl:value-of select="$title-toc"/></fo:block>
+							<fo:block margin-top="6pt" text-align="right" font-weight="bold"><xsl:value-of select="$title-page"/></fo:block>
 							
 								<xsl:for-each select="xalan:nodeset($contents)//item">
 									<xsl:if test="@display = 'true'">
@@ -670,8 +670,8 @@
 		<item level="" id="{@id}" display="false" type="formula">
 			<xsl:variable name="title">
 				<xsl:choose>
-					<xsl:when test="@inequality = 'true'">Inequality </xsl:when>
-					<xsl:otherwise>Equation </xsl:otherwise>
+					<xsl:when test="@inequality = 'true'"><xsl:value-of select="$title-inequality"/></xsl:when>
+					<xsl:otherwise><xsl:value-of select="$title-equation"/></xsl:otherwise>
 				</xsl:choose>
 			</xsl:variable>
 			<xsl:variable name="section">
@@ -685,7 +685,7 @@
 			<xsl:variable name="parent-element" select="local-name(..)"/>
 			<xsl:attribute name="parent">
 				<xsl:choose>
-					<xsl:when test="$parent-element = 'clause'">Clause</xsl:when>
+					<xsl:when test="$parent-element = 'clause'"><xsl:value-of select="normalize-space($title-clause)"/></xsl:when>
 					<xsl:otherwise></xsl:otherwise>
 				</xsl:choose>
 			</xsl:attribute>
@@ -798,7 +798,7 @@
 		<item level="" id="{@id}" display="false" type="example" section="{$section}">
 			<xsl:attribute name="parent">
 				<xsl:choose>
-					<xsl:when test="$parent-element = 'clause'">Clause</xsl:when>
+					<xsl:when test="$parent-element = 'clause'"><xsl:value-of select="normalize-space($title-clause)"/></xsl:when>
 					<xsl:otherwise></xsl:otherwise>
 				</xsl:choose>
 			</xsl:attribute>
@@ -1256,7 +1256,15 @@
 				<xsl:apply-templates />
 			</fo:inline>
 			<xsl:if test="../itu:termsource/itu:origin">
-				<xsl:text> [</xsl:text><xsl:value-of select="../itu:termsource/itu:origin/@citeas"/><xsl:text>]</xsl:text>
+				<xsl:variable name="citeas" select="../itu:termsource/itu:origin/@citeas"/>
+				<xsl:choose>
+					<xsl:when test="contains($citeas, '[')">
+						<xsl:text> </xsl:text><xsl:value-of select="$citeas" disable-output-escaping="yes"/>
+					</xsl:when>
+					<xsl:otherwise>
+						<xsl:text> [</xsl:text><xsl:value-of select="$citeas"/><xsl:text>]</xsl:text>
+					</xsl:otherwise>
+				</xsl:choose>
 			</xsl:if>
 			<xsl:text>: </xsl:text>
 			<xsl:apply-templates select="following-sibling::itu:definition/node()" mode="process"/> <!--   -->
@@ -1734,8 +1742,8 @@
 	</xsl:template>
 	
 	<xsl:template match="itu:example/itu:name">
-		<fo:block font-weight="bold">
-			<xsl:text>EXAMPLE</xsl:text>
+		<fo:block font-weight="bold">			
+			<xsl:value-of select="normalize-space($title-example)"/>
 			<xsl:if test="count(ancestor::itu:clause[1]/itu:example) &gt; 1">
 				<xsl:text> </xsl:text><xsl:number count="itu:example"/>
 			</xsl:if>
@@ -2389,8 +2397,8 @@
 				</xsl:when>
 				<xsl:when test="ancestor::itu:annex[@obligation = 'informative']">
 					<xsl:choose>
-						<xsl:when test="$level = 1">
-							<xsl:text>Appendix  </xsl:text>
+						<xsl:when test="$level = 1">							
+							<xsl:value-of select="$title-appendix"/><xsl:text> </xsl:text>
 							<xsl:number format="I" level="any" count="itu:annex[@obligation = 'informative']"/>
 						</xsl:when>
 						<xsl:otherwise>
@@ -2400,8 +2408,8 @@
 				</xsl:when>
 				<xsl:when test="ancestor::itu:annex[not(@obligation) or @obligation != 'informative']">
 					<xsl:choose>
-						<xsl:when test="$level = 1">
-							<xsl:text>Annex </xsl:text>
+						<xsl:when test="$level = 1">							
+							<xsl:value-of select="$title-annex"/>
 							<xsl:choose>
 								<xsl:when test="count(//itu:annex) = 1">
 									<xsl:choose>
