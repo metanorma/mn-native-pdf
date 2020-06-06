@@ -56,6 +56,11 @@
 		</xsl:if>
 	</xsl:variable>
 	
+	<xsl:variable name="title-inequality">Inequality </xsl:variable>
+	
+	<xsl:variable name="title-equation">Equation </xsl:variable>
+	
+	
 	<xsl:variable name="title-annex">
 		<xsl:if test="$namespace = 'iso' or $namespace = 'iec' or $namespace = 'itu' or $namespace = 'unece' or $namespace = 'unece-rec' or $namespace = 'nist' or $namespace = 'ogc' or $namespace = 'rsd' or $namespace = 'csa' or $namespace = 'csd' or $namespace = 'm3d' or $namespace = 'iho'">
 			<xsl:text>Annex </xsl:text>
@@ -90,7 +95,10 @@
 	
 	<xsl:variable name="title-toc">
 		<xsl:if test="$namespace = 'iho'">Contents </xsl:if>
+		<xsl:if test="$namespace = 'itu'">Table of Contents</xsl:if>
 	</xsl:variable>
+	
+	<xsl:variable name="title-page">Page</xsl:variable>
 	
 	<xsl:variable name="title-key">Key</xsl:variable>
 	
@@ -106,6 +114,8 @@
 	<xsl:variable name="title-modified">modified</xsl:variable>
 	
 	<xsl:variable name="title-source">SOURCE</xsl:variable>
+	
+	<xsl:variable name="title-keywords">Keywords</xsl:variable>
 	
 	<xsl:variable name="lower">abcdefghijklmnopqrstuvwxyz</xsl:variable> 
 	<xsl:variable name="upper">ABCDEFGHIJKLMNOPQRSTUVWXYZ</xsl:variable>
@@ -1438,8 +1448,8 @@
 						<xsl:attribute name="margin-left">7.4mm</xsl:attribute>
 					</xsl:if>
 					<xsl:if test="$parent = 'li'">
-						<xsl:attribute name="margin-left">-4mm</xsl:attribute>
-					</xsl:if>
+						<!-- <xsl:attribute name="margin-left">-4mm</xsl:attribute> -->						
+					</xsl:if>					
 				</xsl:if>
 				<xsl:if test="$namespace = 'nist'">
 					<xsl:if test="not(.//*[local-name()='dt']//*[local-name()='stem'])">
@@ -1571,6 +1581,7 @@
 		</fo:table-row>
 	</xsl:template>
 	
+	<!-- virtual html table for dl/[dt and dd]  -->
 	<xsl:template match="*[local-name()='dt']" mode="dl">
 		<tr>
 			<td>
@@ -1606,6 +1617,11 @@
 		
 		<fo:table-row>
 			<fo:table-cell>
+				<xsl:if test="$namespace = 'itu'">
+					<xsl:if test="ancestor::*[1][local-name() = 'dl']/preceding-sibling::*[1][local-name() = 'formula']">						
+						<xsl:attribute name="padding-right">3mm</xsl:attribute>
+					</xsl:if>
+				</xsl:if>
 				<fo:block margin-top="6pt">
 					<xsl:if test="$namespace = 'iso'">
 						<xsl:attribute name="margin-top">0pt</xsl:attribute>
@@ -1630,6 +1646,12 @@
 						<xsl:attribute name="margin-top">0pt</xsl:attribute>
 						<xsl:attribute name="margin-bottom">12pt</xsl:attribute>
 					</xsl:if>
+					<xsl:if test="$namespace = 'itu'">
+						<xsl:if test="ancestor::*[1][local-name() = 'dl']/preceding-sibling::*[1][local-name() = 'formula']">
+							<xsl:attribute name="text-align">right</xsl:attribute>							
+						</xsl:if>
+					</xsl:if>
+					
 					<xsl:apply-templates />
 					<xsl:if test="$namespace = 'gb'">
 						<xsl:if test="ancestor::*[local-name()='formula']">
