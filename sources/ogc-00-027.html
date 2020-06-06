@@ -1,0 +1,1744 @@
+
+<!DOCTYPE html>
+<html xmlns:epub="http://www.idpf.org/2007/ops" lang="en" xml:lang="en">
+  <head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><style>
+  <!--
+html, body, div, span, applet, object, iframe,
+h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+a, abbr, acronym, address, big, cite, code,
+del, dfn, em, img, ins, kbd, q, s, samp,
+small, strike, strong, sub, sup, tt, var,
+b, u, i, center,
+ol, ul, li,
+fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td,
+article, aside, canvas, details, embed,
+figure, figcaption, footer, header, hgroup,
+menu, nav, output, ruby, section, summary,
+time, mark, audio, video {
+  margin: 0;
+  padding: 0; }
+
+html, body, div, span, applet, object, iframe,
+h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+a, abbr, acronym, address, big, cite, code,
+del, dfn, em, img, ins, kbd, q, s, samp,
+small, strike, strong, sub, sup, tt, var,
+b, u, i, center,
+dl, dt, dd, ol, ul, li,
+fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td,
+article, aside, canvas, details, embed,
+figure, figcaption, footer, header, hgroup,
+menu, nav, output, ruby, section, summary,
+time, mark, audio, video {
+  border: 0;
+  font-size: 100%; }
+
+html, body, div, span, applet, object, iframe,
+h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+a, abbr, acronym, address, big, cite, code,
+del, dfn, em, img, ins, kbd, q, s, samp,
+small, strike, strong, tt, var,
+b, u, i, center,
+dl, dd, ol, ul, li,
+fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td,
+article, aside, canvas, details, embed,
+figure, figcaption, footer, header, hgroup,
+menu, nav, output, ruby, section, summary,
+time, mark, audio, video {
+  vertical-align: baseline; }
+
+html, body, div, span, applet, object, iframe,
+p, blockquote,
+a, abbr, acronym, address, big, cite,
+del, dfn, em, img, ins, q, s,
+small, strike, strong, sub, sup, var,
+b, u, i, center,
+dl, dt, dd, ol, ul, li,
+fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td,
+article, aside, canvas, details, embed,
+figure, figcaption, footer, header, hgroup,
+menu, nav, output, ruby, section, summary,
+time, mark, audio, video {
+  font-family: "Overpass", sans-serif; }
+
+code, pre, tt, kbd, samp {
+  font-family: "Space Mono", monospace;
+  font-variant-ligatures: none; }
+
+code *, pre *, tt *, kbd *, samp * {
+  font-family: "Space Mono", monospace !important;
+  font-variant-ligatures: none; }
+
+article, aside, details, figcaption, figure,
+footer, header, hgroup, menu, nav, section {
+  display: block; }
+
+table {
+  border-collapse: collapse;
+  border-spacing: 0; }
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: "Overpass", sans-serif; }
+
+blockquote, q {
+  quotes: none; }
+  blockquote:before, blockquote:after, q:before, q:after {
+    content: '';
+    content: none; }
+
+.h2Annex {
+  font-family: "Overpass", sans-serif; }
+
+dl {
+  display: grid;
+  grid-template-columns: max-content auto; }
+  dl dt p, dl dd p {
+    margin-top: 0; }
+  dl dt {
+    grid-column-start: 1; }
+  dl dd {
+    grid-column-start: 2; }
+
+b, strong {
+  font-weight: bold; }
+
+div.document-stage-band, div.document-type-band {
+  background-color: #333333; }
+
+#standard-band {
+  background-color: #3D9970; }
+
+#standard {
+  border-bottom: solid 3px #3D9970; }
+
+#abstract-specification-topic-band {
+  background-color: #3D9970; }
+
+#abstract-specification-topic {
+  border-bottom: solid 3px #3D9970; }
+
+#reference-model-band {
+  background-color: #3D9970; }
+
+#reference-model {
+  border-bottom: solid 3px #3D9970; }
+
+#best-practice-band {
+  background-color: #39CCCC; }
+
+#best-practice {
+  border-bottom: solid 3px #39CCCC; }
+
+#discussion-paper-band {
+  background-color: #39CCCC; }
+
+#discussion-paper {
+  border-bottom: solid 3px #39CCCC; }
+
+#white-paper-band {
+  background-color: #39CCCC; }
+
+#white-paper {
+  border-bottom: solid 3px #39CCCC; }
+
+#engineering-report-band {
+  background-color: #39CCCC; }
+
+#engineering-report {
+  border-bottom: solid 3px #39CCCC; }
+
+#release-notes-band {
+  background-color: #FFDC00; }
+
+#release-notes {
+  border-bottom: solid 3px #FFDC00; }
+
+#user-guide-band {
+  background-color: #FFDC00; }
+
+#user-guide {
+  border-bottom: solid 3px #FFDC00; }
+
+#community-practice-band {
+  background-color: #FF851B; }
+
+#community-practice {
+  border-bottom: solid 3px #FF851B; }
+
+#community-standard-band {
+  background-color: #FF851B; }
+
+#community-standard {
+  border-bottom: solid 3px #FF851B; }
+
+#other-band {
+  background-color: #0074D9; }
+
+#other {
+  border-bottom: solid 3px #0074D9; }
+
+#policy-band {
+  background-color: #0074D9; }
+
+#policy {
+  border-bottom: solid 3px #0074D9; }
+
+#change-request-supporting-document-band {
+  background-color: #0074D9; }
+
+#change-request-supporting-document {
+  border-bottom: solid 3px #0074D9; }
+
+#test-suite-band {
+  background-color: #001F3F; }
+
+#test-suite {
+  border-bottom: solid 3px #001F3F; }
+
+#candidate-band {
+  background-color: #8B9EB7; }
+
+#candidate {
+  border-bottom: solid 3px #8B9EB7; }
+
+#working-draft-band {
+  background-color: #8B9EB7; }
+
+#working-draft {
+  border-bottom: solid 3px #8B9EB7; }
+
+#proposal-band {
+  background-color: #8B9EB7; }
+
+#proposal {
+  border-bottom: solid 3px #8B9EB7; }
+
+#oab-review-band {
+  background-color: #8B9EB7; }
+
+#oab-review {
+  border-bottom: solid 3px #8B9EB7; }
+
+#committee-draft-band {
+  background-color: #8B9EB7; }
+
+#committee-draft {
+  border-bottom: solid 3px #8B9EB7; }
+
+#swg-draft-band {
+  background-color: #8B9EB7; }
+
+#swg-draft {
+  border-bottom: solid 3px #8B9EB7; }
+
+#public-rfc-band {
+  background-color: #48a0e7; }
+
+#public-rfc {
+  border-bottom: solid 3px #48a0e7; }
+
+#tc-vote-band {
+  background-color: #fd06fd; }
+
+#tc-vote {
+  border-bottom: solid 3px #fd06fd; }
+
+#published-band {
+  background-color: #9abd48; }
+
+#published {
+  border-bottom: solid 3px #9abd48; }
+
+#deprecated-band {
+  background-color: #7e0d13; }
+
+#deprecated {
+  border-bottom: solid 3px #7e0d13; }
+
+#retired-band {
+  background-color: #7e0d13; }
+
+#retired {
+  border-bottom: solid 3px #7e0d13; }
+
+body {
+  margin-left: auto;
+  margin-right: auto;
+  max-width: 100%;
+  font-size: 16px;
+  font-weight: 300;
+  line-height: 1.5;
+  color: #00335b;
+  background-color: #f6f8fa; }
+  body main {
+    margin: 0 3em 0 6em; }
+  @media screen and (min-width: 768px) {
+    body {
+      padding-left: 360px; } }
+  @media print {
+    body {
+      padding-left: 0; } }
+
+dl {
+  grid-template-columns: minmax(0, 1fr) 93%; }
+  dl pre {
+    overflow-x: scroll; }
+
+#toc ul {
+  margin: 0;
+  padding: 0;
+  list-style: none; }
+  #toc ul li a {
+    padding: 5px 10px; }
+  #toc ul a {
+    color: #00335b;
+    text-decoration: none;
+    display: block; }
+    #toc ul a:hover {
+      box-shadow: none;
+      color: white; }
+
+#toc .h2 {
+  padding-left: 30px; }
+
+#toc .h3 {
+  padding-left: 50px; }
+
+#toc .toc-active, #toc li:hover {
+  background: #00335b;
+  box-shadow: inset -5px 0px 10px -5px #00335b !important; }
+  #toc .toc-active a, #toc li:hover a {
+    color: white; }
+
+@media print {
+  #toc .toc-active, #toc li:hover {
+    background: white;
+    box-shadow: none !important; }
+  #toc .toc-active a {
+    color: #00335b; }
+  #toc li:hover a {
+    color: black; } }
+
+#toc li a {
+  font-size: 14px; }
+
+#toc li:before {
+  content: " ";
+  display: none; }
+
+#toc .toc-active, #toc li:hover {
+  font-weight: 600; }
+
+#toc li:hover a {
+  background: none;
+  box-shadow: none; }
+
+@media screen and (min-width: 768px) {
+  nav {
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    width: 323px;
+    font-size: 0.9em;
+    overflow: auto;
+    padding: 0 0 0 45px;
+    background-color: #f1f8ff; } }
+
+@media print {
+  nav {
+    position: relative;
+    width: auto;
+    font-size: 0.9em;
+    overflow: auto;
+    padding: 0;
+    margin-right: 0;
+    background-color: white; } }
+
+@media screen and (min-width: 768px) {
+  nav {
+    marign-right: 30px; } }
+
+@media screen and (min-width: 768px) {
+  #toggle {
+    position: fixed;
+    height: 100%;
+    width: 30px;
+    background-color: #00335b;
+    color: white !important;
+    cursor: pointer;
+    z-index: 100; }
+    #toggle span {
+      text-align: center;
+      width: 100%;
+      position: absolute;
+      top: 50%;
+      transform: translate(0, -50%); } }
+
+@media screen and (max-width: 768px) {
+  #toggle {
+    display: none; } }
+
+@media print {
+  #toggle {
+    display: none; } }
+
+.rule {
+  width: 100%;
+  height: 1px;
+  background-color: #00335b;
+  margin: 2em 0; }
+  @media screen and (min-width: 768px) {
+    .rule.toc {
+      display: none; } }
+
+@media screen and (min-width: 768px) {
+  h1.toc-contents {
+    margin-top: 1em; }
+  ul#toc-list {
+    padding: 0;
+    margin: 0; } }
+
+#toc-list ul {
+  margin-bottom: 0.25em; }
+
+#toc-list li {
+  list-style-type: none; }
+
+.figure {
+  line-height: 1.6em;
+  padding: 1.5em;
+  margin: 2em 0 1em 0;
+  overflow: auto; }
+  .figure .FigureTitle, .figure .figure-title {
+    font-weight: 700;
+    font-size: 1em;
+    text-align: center; }
+  .figure > img {
+    margin-left: auto;
+    margin-right: auto;
+    display: block;
+    max-width: 100%;
+    height: auto; }
+
+.document-stage-band {
+  left: 0;
+  top: 0;
+  height: 100%;
+  position: fixed;
+  display: block;
+  z-index: 101;
+  box-shadow: -5px 0px 10px #1d1d1d; }
+  .document-stage-band > :first-child {
+    position: relative;
+    width: 25px;
+    font-weight: 300;
+    height: 160px;
+    color: white;
+    text-transform: uppercase;
+    font-size: 0.9em;
+    font-weight: 400;
+    letter-spacing: 0.05em;
+    margin: 0;
+    margin-left: 6px;
+    writing-mode: tb-rl;
+    -webkit-transform: rotate(180deg);
+    -moz-transform: rotate(180deg);
+    -o-transform: rotate(180deg);
+    white-space: nowrap;
+    display: block;
+    bottom: 0; }
+  @media print {
+    .document-stage-band {
+      display: none; } }
+
+.document-type-band {
+  left: 0;
+  top: 180px;
+  height: 100%;
+  position: fixed;
+  display: block;
+  z-index: 102; }
+  .document-type-band > :first-child {
+    position: relative;
+    width: 25px;
+    font-weight: 400;
+    color: white;
+    text-transform: uppercase;
+    font-size: 0.9em;
+    font-weight: 400;
+    letter-spacing: 0.05em;
+    margin: 0;
+    margin-left: 6px;
+    writing-mode: tb-rl;
+    -webkit-transform: rotate(180deg);
+    -moz-transform: rotate(180deg);
+    -o-transform: rotate(180deg);
+    white-space: nowrap;
+    display: block;
+    bottom: 0; }
+  @media print {
+    .document-type-band {
+      display: none; } }
+  .document-type-band .document-type {
+    top: 20px; }
+
+#governance-band p.document-type {
+  font-weight: 400;
+  height: 230px !important; }
+
+#standard-band p {
+  height: 135px; }
+
+#proposal-band p {
+  height: 150px; }
+
+#standard-band,
+#published-band {
+  color: #7ba812; }
+
+#standard,
+#published {
+  color: #9ABD48; }
+
+.coverpage-maturity, .coverpage-stage {
+  font-family: "Overpass", sans-serif;
+  font-weight: 400;
+  font-size: 1.3em;
+  margin: 0 0 2em 0;
+  text-transform: uppercase; }
+
+.icon-svg {
+  width: 100%;
+  color: #5ecf86; }
+
+.wrapper-top {
+  background: #00335b;
+  background: linear-gradient(130deg, #00335b 45%, #f1f8ff 100%);
+  color: #ffffff;
+  padding: 5em 0;
+  width: 100%; }
+
+.wrapper-top-bottom {
+  width: 0;
+  height: 0;
+  border-top: 100px solid #00335b;
+  border-right: 100px solid transparent;
+  position: absolute; }
+
+.coverpage-metadata {
+  margin-top: 35px;
+  padding-top: 15px;
+  margin-right: 25px;
+  border-top: solid 1px white; }
+
+.coverpage-metadata,
+.coverpage-alt-formats {
+  font-size: 12px;
+  font-family: "Overpass", sans-serif;
+  margin-left: 1em;
+  text-align: left; }
+  .coverpage-metadata span,
+  .coverpage-alt-formats span {
+    display: block;
+    text-align: left; }
+    .coverpage-metadata span a,
+    .coverpage-alt-formats span a {
+      color: white; }
+      .coverpage-metadata span a:hover,
+      .coverpage-alt-formats span a:hover {
+        text-decoration: underline;
+        background: none;
+        box-shadow: none !important;
+        font-weight: 400; }
+  .coverpage-metadata .value,
+  .coverpage-alt-formats .value {
+    font-size: 15px;
+    margin-bottom: 15px; }
+  .coverpage-metadata .label,
+  .coverpage-alt-formats .label {
+    font-size: 12px;
+    padding: 0; }
+
+.coverpage-alt-formats span {
+  display: inline;
+  text-align: left; }
+  .coverpage-alt-formats span a {
+    padding-right: 5px; }
+
+.coverpage-title {
+  padding-bottom: 0.5em;
+  font-family: "Overpass", sans-serif;
+  font-weight: 100;
+  padding-left: 1em;
+  padding-right: 1em; }
+  .coverpage-title span {
+    font-family: "Overpass", sans-serif;
+    font-size: 1.8em;
+    line-height: 1; }
+
+.docstage-box table {
+  width: auto; }
+
+.docstage-box th {
+  background-color: #93c0d6; }
+
+.docstage-box td {
+  vertical-align: top;
+  background-color: #daeef3;
+  padding: 0.5em;
+  border: 0; }
+
+.docstage-box th:first-child {
+  border-radius: 1em 0 0 0; }
+
+.docstage-box th:last-child {
+  border-radius: 0 1em 0 0; }
+
+.docstage-box tr:first-child {
+  border-radius: 0 0 0 1em; }
+
+.docstage-box tr:last-child {
+  border-radius: 0 1em 0 0; }
+
+.docstage-box tr:last-child > td:first-child {
+  border-radius: 0 0 0 1em; }
+
+.docstage-box tr:last-child > td:last-child {
+  border-radius: 0 0 1em 0; }
+
+.WordSection11 {
+  padding: 0 2em 0 3em; }
+
+.info-section {
+  padding: 0 2em 0 5em; }
+
+.prefatory-section {
+  padding: 0 3em 0 6em; }
+
+.zzSTDTitle1, .MsoCommentText {
+  display: none; }
+
+.coverpage {
+  text-align: center;
+  padding-left: 1.5em; }
+
+.coverpage-logo span, .coverpage-tc-name span {
+  font-family: "Overpass", sans-serif;
+  text-transform: none;
+  font-weight: 300;
+  margin-left: 1em; }
+
+.coverpage-tc-name {
+  font-size: 1.2em;
+  line-height: 1.2em;
+  margin: 0.25em 0; }
+
+.copyright {
+  padding: 1em;
+  font-size: 0.9em;
+  text-align: left; }
+
+/* Document Identity */
+.coverpage-doc-identity {
+  font-size: 2em;
+  line-height: 2em; }
+
+.coverpage-title .title-second {
+  display: none; }
+
+.coverpage-stage-block {
+  font-family: "Overpass", sans-serif;
+  font-weight: 600;
+  font-size: 1.25em;
+  margin: 2em 0em 2em 0em;
+  text-transform: uppercase; }
+
+.authors {
+  margin-top: 2em; }
+  .authors span {
+    display: block;
+    line-height: 2; }
+  .authors span.roletag {
+    display: inline-block;
+    font-size: 12px;
+    color: #00335b;
+    background-color: white;
+    padding: 2px 5px;
+    margin-left: 7px;
+    border-radius: 5px; }
+
+/* Draft Warning */
+.coverpage-warning {
+  border: #f36f36 solid 2px;
+  color: #f36f36 !important;
+  margin: 1em 2em;
+  color: #2e81c2;
+  padding: 2em 1em 1em 1em;
+  border-radius: 25px; }
+  .coverpage-warning h1 {
+    font-family: "Overpass", sans-serif;
+    font-weight: 300;
+    text-transform: uppercase;
+    font-size: 1.2em; }
+
+@media print {
+  .document-info, .copyright {
+    page-break-before: always; }
+  .coverpage {
+    height: 23cm; }
+  .info-section {
+    display: none; }
+  .wrapper-top {
+    top: 0;
+    padding-top: 4cm;
+    padding-bottom: 4cm; }
+  .wrapper-top-bottom {
+    margin-top: -5px;
+    display: none; } }
+
+p {
+  margin-top: 1em;
+  margin-bottom: 1em; }
+
+h1, h2, h3, h4, h5, h6 {
+  color: #00335b;
+  font-weight: 400;
+  margin-top: 1.6em;
+  margin-bottom: 0.3em; }
+
+h1 {
+  font-size: 1.8em;
+  text-transform: uppercase;
+  margin-top: 2em; }
+  h1 #content {
+    margin-top: 2em; }
+
+h2 {
+  margin-top: 1.3em;
+  font-size: 1.7em;
+  font-weight: 300; }
+  h2 p {
+    display: inline; }
+
+h3 {
+  margin-top: 1.3em;
+  font-size: 1.5em;
+  font-weight: 100; }
+
+h4 {
+  font-size: 1.4em; }
+
+.contact-info {
+  padding: 2em;
+  margin-top: 5em;
+  width: 280px;
+  text-align: left;
+  border: #00335b solid 2px;
+  color: #00335b !important;
+  border-radius: 25px; }
+  .contact-info a:hover {
+    text-decoration: underline;
+    background: none;
+    box-shadow: 0 0 0 0; }
+  .contact-info a, .contact-info a:hover {
+    color: #00335b; }
+  .contact-info p, .contact-info a {
+    font-family: "Space Mono", monospace;
+    font-variant-ligatures: none;
+    font-weight: 400; }
+  .contact-info #boilerplate-name {
+    font-weight: 700;
+    font-size: 1.2em;
+    margin-bottom: 0; }
+  .contact-info #boilerplate-address {
+    font-size: 1em;
+    line-height: 1.3em;
+    margin-top: 0; }
+
+ul, ol {
+  margin-left: 1.2em; }
+
+ul > li {
+  list-style: none; }
+  ul > li:before {
+    content: "\2014";
+    display: inline-block;
+    width: 1em;
+    margin-left: -1em; }
+  ul > li p:first-child {
+    display: inline; }
+  ul > li:first-child {
+    margin-top: 1em; }
+
+span.keyword {
+  font-weight: 600; }
+
+/* Tables */
+table {
+  width: 100%;
+  font-weight: 300;
+  margin: 1em 0 2em 0;
+  margin-left: auto;
+  margin-right: auto;
+  padding-right: 2em;
+  /*color: #010d16;*/ }
+  table, table th, table td {
+    border: 1px solid black;
+    font-size: 0.95em; }
+  table th, table td {
+    padding: 1em; }
+  table td.header {
+    font-weigth: 400; }
+  table thead tr th {
+    background-color: #5d99d6; }
+  table td, table th {
+    padding: 1em; }
+  table td.header {
+    font-weight: 400; }
+
+.docstage-box table,
+.docstage-box table th,
+.docstage-box table td {
+  border: none; }
+
+table.recommendtest {
+  width: 100%;
+  font-weight: 300;
+  margin: 1em 0 2em 0;
+  margin-left: auto;
+  margin-right: auto;
+  padding-right: 2em;
+  color: #010d16; }
+  table.recommendtest, table.recommendtest th, table.recommendtest td {
+    border: none !important;
+    font-size: 0.95em; }
+  table.recommendtest th, table.recommendtest td {
+    padding: 1em; }
+  table.recommendtest td.header {
+    font-weigth: 400; }
+  table.recommendtest tr:nth-child(even) {
+    background: #ffffff; }
+  table.recommendtest tr:nth-child(odd) {
+    background: #ffffff; }
+  table.recommendtest thead tr th {
+    background-color: #5d99d6; }
+  table.recommendtest td, table.recommendtest th {
+    padding: 1em; }
+  table.recommendtest td.header {
+    font-weight: 400; }
+
+td > p:first-child, th > p:first-child {
+  margin-top: 0em; }
+
+td > p:last-child, th > p:last-child {
+  margin-bottom: 0em; }
+
+p.TableTitle {
+  text-align: center;
+  margin-top: 2.5em;
+  font-weight: 400; }
+
+/* Terms */
+.TermNum, .Terms, .AltTerms {
+  color: #00335b;
+  font-weight: 300;
+  font-family: "Overpass", sans-serif; }
+
+h2.TermNum {
+  margin-bottom: 0; }
+
+p.AltTerms {
+  font-size: 24px;
+  margin-top: 1em; }
+
+/* Links, selection */
+a, a:visited {
+  text-decoration: none;
+  color: #2e81c2; }
+
+a:hover {
+  color: #00335b;
+  background: white;
+  box-shadow: 3px 0 0 white, -3px 0 0 white; }
+
+::selection,
+::-moz-selection {
+  background: white;
+  color: #00335b; }
+
+/* Bibliograhy */
+p.Biblio, p.NormRef {
+  margin-top: 1em;
+  margin-left: 2em; }
+
+/* Blocks */
+.SourceTitle {
+  font-weight: 700;
+  font-size: 1em;
+  text-align: center; }
+
+pre {
+  font-family: "Space Mono", monospace;
+  font-variant-ligatures: none;
+  background-color: #f7f7f7;
+  font-size: 0.8em;
+  line-height: 1.6em;
+  padding: 1.5em;
+  margin: 2em 0 1em 0;
+  overflow-y: auto;
+  overflow-x: scroll;
+  font-family: "Space Mono", monospace;
+  font-variant-ligatures: none; }
+
+.Admonition {
+  padding: 1em 1.2em 1.2em 1.2em;
+  margin: 1em 0 1em 0;
+  background-color: #fcad88;
+  border-top: 10px solid #eb5a06;
+  color: #290404; }
+  .Admonition .AdmonitionTitle {
+    font-weight: 700;
+    font-size: 1em;
+    text-align: center; }
+  .Admonition.Important {
+    background-color: #f58cff;
+    color: #5d1364;
+    border-top: 10px solid #9503a8; }
+  .Admonition.Warning {
+    background-color: #ff989d;
+    color: #270204;
+    border-top: 10px solid #e4010c; }
+  .Admonition p, .Admonition.Important p, .Admonition.Warning p {
+    margin: 0; }
+
+.figure, pre, .pseudocode {
+  background-color: #e1eef1;
+  color: #424242;
+  font-size: 0.8em; }
+
+.Note {
+  background-color: #fff8bb;
+  color: #7d760b;
+  padding: 1.2em;
+  margin: 1em 0 1em 0; }
+  .Note p {
+    margin: 0; }
+
+.example {
+  background-color: #e1eef1;
+  color: #424242;
+  padding: 1.2em;
+  margin: 2em 0 1em 0;
+  padding-left: 2em; }
+  .example .example-title {
+    font-weight: 700;
+    text-transform: uppercase;
+    margin-top: 0;
+    margin-left: -1.5em; }
+  .example pre, .example .pseudocode {
+    background: none; }
+
+.Quote {
+  background-color: #e1eef1;
+  font-style: italic;
+  width: 80%;
+  padding: 1.5em;
+  margin-top: 2em;
+  margin-left: auto;
+  margin-right: auto; }
+
+.formula {
+  background-color: #f6f6f6;
+  padding: 1.5em;
+  margin-top: 2em;
+  text-align: center; }
+
+.recommend .RecommendationTitle, .recommendtest .RecommendationTitle {
+  font-weight: 700;
+  font-size: 1em;
+  text-align: center; }
+
+.require .RecommendationTitle, .requiretest .RecommendationTitle {
+  font-weight: 700;
+  font-size: 1em;
+  text-align: center; }
+
+.permission .RecommendationTitle, .permissiontest .RecommendationTitle {
+  font-weight: 700;
+  font-size: 1em;
+  text-align: center; }
+
+.RecommendationTestTitle {
+  font-weight: 700;
+  font-size: 1em;
+  text-align: center; }
+
+/*
+.recommend {
+  &, .example_label {
+    background-color: #f8ffbd;
+  }
+  .example_label {
+    font-weight: bold;
+  }
+}
+
+.permission {
+  &, .example_label {
+    background-color: #cdfdbe;
+  }
+  .example_label {
+    font-weight: bold;
+  }
+}
+
+.require {
+  &, .example_label {
+    background-color: #d3e6ff;
+  }
+  .example_label {
+    font-weight: bold;
+  }
+}
+*/
+.recommend .RecommendationTitle {
+  font-weight: 700;
+  font-size: 1em;
+  text-align: center; }
+
+.require .RecommendationTitle {
+  font-weight: 700;
+  font-size: 1em;
+  text-align: center; }
+
+.permission .RecommendationTitle {
+  font-weight: 700;
+  font-size: 1em;
+  text-align: center; }
+
+tbody td.recommend p.RecommendationTitle, tbody td.recommend p.RecommendationTitle, tbody td.recommend p.RecommendationTitle {
+  font-weight: normal;
+  text-align: left; }
+
+#myBtn {
+  font-family: "Space Mono", monospace;
+  font-variant-ligatures: none;
+  display: none;
+  position: fixed;
+  bottom: 20px;
+  right: 30px;
+  z-index: 99;
+  font-size: 12px;
+  border: none;
+  outline: none;
+  background-color: #00335b;
+  opacity: 0.15;
+  color: white;
+  cursor: pointer;
+  padding: 10px 15px 10px 15px;
+  border-radius: 4px; }
+  #myBtn:hover {
+    opacity: 1; }
+  @media print {
+    #myBtn {
+      display: none; } }
+
+a.anchorjs-link:hover {
+  background: none;
+  color: #2e81c2;
+  box-shadow: none; }
+
+@page {
+  margin: 2cm 1cm; }
+
+@media print {
+  h1, h2, h3, h4 {
+    page-break-after: avoid;
+    margin-top: 1.2em; }
+  h1 {
+    font-size: 1.5em;
+    line-height: 1.5; }
+    h1.content {
+      margin-top: 2em;
+      line-height: 2.5em; }
+  h2 {
+    font-size: 1.2em; }
+  h3 {
+    font-size: 1em; }
+  .prefatory-section {
+    page-break-before: always; }
+  .note, .pseudocode {
+    page-break-inside: avoid; }
+  .Note {
+    background-color: #fff495;
+    color: #47430c;
+    padding: 5px;
+    margin: 2em 0 1em 0; }
+    .Note p {
+      padding: 0 5px 0 5px; }
+  nav {
+    line-height: 1; } }
+
+/* Footnotes */
+a.footnote-number {
+  vertical-align: super;
+  font-size: 0.8em; }
+
+.footnote {
+  font-size: 0.9em; }
+
+-->
+</style><title>Conformance Test Guidelines for OpenGIS Catalog Services Specification for CORBA</title>
+<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+
+<!--TOC script import-->
+<script type="text/javascript" src="https://cdn.rawgit.com/jgallen23/toc/0.3.2/dist/toc.min.js"></script>
+<script type="text/javascript">function toclevel() { return "h1:not(:empty):not(.TermNum):not(.noTOC),h2:not(:empty):not(.TermNum):not(.noTOC)";}
+</script>
+
+<!--Google fonts-->
+  <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i|Space+Mono:400,700" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css?family=Overpass:300,300i,600,900" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css?family=Teko:300,400,500" rel="stylesheet" />
+
+<!--Font awesome import for the link icon-->
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.8/css/solid.css" integrity="sha384-v2Tw72dyUXeU3y4aM2Y0tBJQkGfplr39mxZqlTBDUZAb9BGoC40+rdFCG0m10lXk" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.8/css/fontawesome.css" integrity="sha384-q3jl8XQu1OpdLgGFvNRnPdj5VIlCvgsDQTQB6owSOHWlAurxul7f+JpUOVdAiJ5P" crossorigin="anonymous" />
+<style class="anchorjs"></style>
+</head>
+  <body lang="EN-US" link="blue" vlink="#954F72" xml:lang="EN-US" class="container">
+    <div class="title-section"><div class="document-stage-band" id="published-band">
+    <p class="document-stage">Published</p>
+</div>
+
+<div class="document-type-band" id="test-suite-band">
+    <p class="document-type">OGC Test Suite</p>
+</div>
+
+
+
+  <div id="toggle"> <span>&#x2022;</span> </div>
+
+  <header>
+
+<!--<div class="WordSection1">-->
+  <div class="coverpage">
+    <div class="wrapper-top">
+
+  <div class="coverpage-doc-identity">
+
+    <div class="coverpage-title">
+      <span class="title-first">Conformance Test Guidelines for OpenGIS Catalog Services Specification for CORBA</span>
+      <!--<span class="title-second"></span>-->
+    </div>
+  </div>
+
+  <div class="coverpage-logo">
+    <span>Open Geospatial Consortium</span>
+  </div>
+
+  <!--
+  <div class="coverpage-tc-name">
+    <span>Technical</span>
+  </div>
+  -->
+
+  <div class="authors">
+    
+    
+    <span>Laura Diaz <span class="roletag">Editor</span></span>
+    
+    <span>Bart van der Eijnden <span class="roletag">Editor</span></span>
+    
+    <span>Barend Gehrels <span class="roletag">Editor</span></span>
+    
+    
+  </div>
+
+    <div class="coverpage-metadata">
+      <span class="label">Submission Date: </span> <span class="value">XXX</span>
+      <span class="label">Approval Date: </span> <span class="value">XXX</span>
+      <span class="label">Publication Date: </span> <span class="value">XXX</span>
+      <span class="label">External identifier of this OGC&#xAE; document: <span class="docnumber value"></span></span>
+      <span class="label">Internal identifier of this OGC&#xAE; document: <span class="docnumber value">00-027</span></span>
+      
+      
+    </div>
+
+    <div class="coverpage-alt-formats">
+      
+      <span class="label">Version: </span> <span class="value">1.0</span><br />
+      
+    
+    </div>
+
+  </div>
+
+    <div class="wrapper-top-bottom"></div>
+
+  <div class="WordSection11">
+  <div class="coverpage-stage-block">
+    <span class="coverpage-stage" id="test-suite">OGC Test Suite</span>
+  </div>
+
+  <div class="coverpage-stage-block">
+    <p><span class="coverpage-maturity" id="published">Published</span></p>
+  </div>
+</div>
+
+  <div class="coverpage-warning">
+    <div class="boilerplate-legal">
+
+    <div><h1 class="IntroTitle">Warning</h1>
+
+      <p id="_5cbb293f-a451-4139-9378-436fa6ed4a4f">This document is not an OGC Standard. This document is an OGC Test Suite and is therefore not an official position of the OGC membership. It is distributed for review and comment. It is subject to change without notice and may not be referred to as an OGC Standard.</p>
+      <p id="_33d27e11-270d-4a9a-9e5f-2b1ed583f5cb">Further, an OGC Test Suite should not be referenced as required or mandatory technology in procurements.</p>
+    </div>
+
+
+  </div>
+ </div>
+
+<div class="docstage-box">
+  <table>
+    <tr><td>Document number:</td><td>00-027</td></tr>
+    <tr><td>Document type:</td><td>OGC Test Suite</td></tr>
+    <tr><td align="right">Document subtype:</td><td align="right"></td></tr>
+    <tr><td align="right">Document stage:</td><td align="right">Published</td></tr>
+    <tr><td align="right">Document language:</td><td align="right">English</td></tr>
+  </table>
+</div>
+
+<div class="info-section">
+<div class="copyright">
+  <div class="boilerplate-copyright">
+    <div><h1 class="IntroTitle">Copyright notice</h1>
+
+
+      <p id="_4e46cf29-6490-4ef7-8dcb-90b42aabdb5c">Copyright
+        &#xA9; 2020 Open Geospatial Consortium<br />
+        To obtain additional rights of use, visit
+        <a href="http://www.opengeospatial.org/legal/">http://www.opengeospatial.org/legal/</a></p>
+    </div>
+    <div><h1 class="IntroTitle">Note</h1>
+
+      <p id="_30cc2b81-e5fe-464f-a2d2-a67c3da66dbb">Attention is drawn to the possibility that some of the elements of this document may be the subject of patent rights. The Open Geospatial Consortium shall not be held responsible for identifying any or all such patent rights.</p>
+
+      <p id="_0c77898f-5911-40de-a5ff-83085a5133ff">Recipients of this document are requested to submit, with their comments, notification of any relevant patent claims or other intellectual property rights of which they may be aware that might be infringed by any implementation of the standard set forth in this document, and to provide supporting documentation.</p>
+    </div>
+  </div>
+
+</div>
+
+<div class="rule"></div>
+</div>
+  </div>
+
+
+</header>
+
+      <p>&#xA0;</p>
+    </div>
+    <br />
+    <div class="prefatory-section"><div class="license">
+  <div class="boilerplate-license">
+    <div><h1 class="IntroTitle">License Agreement</h1>
+
+
+      <p id="_b28b0ca1-4cee-49dd-ada5-38afa22214bc">Permission is hereby granted by the Open Geospatial
+        Consortium, (&#x201C;Licensor&#x201D;), free of charge and subject to the terms set
+        forth below, to any person obtaining a copy of this Intellectual Property and
+        any associated documentation, to deal in the Intellectual Property without
+        restriction (except as set forth below), including without limitation the
+        rights to implement, use, copy, modify, merge, publish, distribute, and/or
+        sublicense copies of the Intellectual Property, and to permit persons to whom
+        the Intellectual Property is furnished to do so, provided that all copyright notices
+        on the intellectual property are retained intact and that each person to whom
+        the Intellectual Property is furnished agrees to the terms of this Agreement.</p>
+
+      <p id="_b14bb84d-7121-4e59-83e7-f944eb1cb191">If you modify the Intellectual Property, all copies of
+        the modified Intellectual Property must include, in addition to the above
+        copyright notice, a notice that the Intellectual Property includes
+        modifications that have not been approved or adopted by LICENSOR.</p>
+
+      <p id="_ee025c9a-ba2f-435a-974e-ea202eb9ba84">THIS LICENSE IS A COPYRIGHT LICENSE ONLY, AND DOES NOT
+        CONVEY ANY RIGHTS UNDER ANY PATENTS THAT MAY BE IN FORCE ANYWHERE IN THE WORLD.</p>
+
+      <p id="_8ded17d8-22f3-44c5-8ebc-8b1857566c38">THE INTELLECTUAL PROPERTY IS PROVIDED &#x201C;AS
+        IS&#x201D;, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT
+        LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE,
+        AND NONINFRINGEMENT OF THIRD PARTY RIGHTS. THE COPYRIGHT HOLDER OR HOLDERS
+        INCLUDED IN THIS NOTICE DO NOT WARRANT THAT THE FUNCTIONS CONTAINED IN THE
+        INTELLECTUAL PROPERTY WILL MEET YOUR REQUIREMENTS OR THAT THE OPERATION OF THE
+        INTELLECTUAL PROPERTY WILL BE UNINTERRUPTED OR ERROR FREE. ANY USE OF THE
+        INTELLECTUAL PROPERTY SHALL BE MADE ENTIRELY AT THE USER&#x2019;S OWN RISK. IN NO
+        EVENT SHALL THE COPYRIGHT HOLDER OR ANY CONTRIBUTOR OF INTELLECTUAL PROPERTY
+        RIGHTS TO THE INTELLECTUAL PROPERTY BE LIABLE FOR ANY CLAIM, OR ANY DIRECT,
+        SPECIAL, INDIRECT OR CONSEQUENTIAL DAMAGES, OR ANY DAMAGES WHATSOEVER RESULTING
+        FROM ANY ALLEGED INFRINGEMENT OR ANY LOSS OF USE, DATA OR PROFITS, WHETHER IN
+        AN ACTION OF CONTRACT, NEGLIGENCE OR UNDER ANY OTHER LEGAL THEORY, ARISING OUT
+        OF OR IN CONNECTION WITH THE IMPLEMENTATION, USE, COMMERCIALIZATION OR
+        PERFORMANCE OF THIS INTELLECTUAL PROPERTY.</p>
+
+      <p id="_c8c1fcd3-aebd-4ee9-9d7c-c4504e501335">This license is effective until terminated. You may
+        terminate it at any time by destroying the Intellectual Property together with
+        all copies in any form. The license will also terminate if you fail to comply
+        with any term or condition of this Agreement. Except as provided in the
+        following sentence, no such termination of this license shall require the
+        termination of any third party end-user sublicense to the Intellectual Property
+        which is in force as of the date of notice of such termination. In addition,
+        should the Intellectual Property, or the operation of the Intellectual
+        Property, infringe, or in LICENSOR&#x2019;s sole opinion be
+        likely to infringe, any patent, copyright, trademark or other right of a third
+        party, you agree that LICENSOR, in its sole discretion, may terminate this
+        license without any compensation or liability to you, your licensees or any
+        other party. You agree upon termination of any kind to destroy or cause to be
+        destroyed the Intellectual Property together with all copies in any form,
+        whether held by you or by any third party.</p>
+
+      <p id="_e4a1598d-a965-4708-8d8e-2091fe304a90">Except as contained in this notice, the name of
+        LICENSOR or of any other holder of a copyright in all or part of the Intellectual
+        Property shall not be used in advertising or otherwise to promote the sale, use
+        or other dealings in this Intellectual Property without prior written
+        authorization of LICENSOR or such copyright holder. LICENSOR is and shall at
+        all times be the sole entity that may authorize you or any third party to use
+        certification marks, trademarks or other special designations to indicate
+        compliance with any LICENSOR standards or specifications.</p>
+
+      <p id="_c924d767-4fc1-43e3-865c-4ebbcdf2082d"> This Agreement is
+        governed by the laws of the Commonwealth of Massachusetts. The application to
+        this Agreement of the United Nations Convention on Contracts for the
+        International Sale of Goods is hereby expressly excluded. In the event any
+        provision of this Agreement shall be deemed unenforceable, void or invalid, such
+        provision shall be modified so as to make it valid and enforceable, and as so
+        modified the entire Agreement shall remain in full force and effect. No
+        decision, action or inaction by LICENSOR shall be construed to be a waiver of
+        any rights or remedies available to it.</p>
+
+      <p id="_c86ecb6a-df54-4b0b-85d8-6612f3697cbd">None of the Intellectual Property or underlying information or technology may be downloaded or otherwise exported or reexported in violation of U.S. export laws and regulations. In addition, you are responsible for complying with any local laws in your jurisdiction which may impact your right to import, export or use the Intellectual Property, and you represent that you have complied with any regulations or registration procedures required by applicable law to make this license enforceable.</p>
+    </div>
+  </div>
+
+
+
+</div>
+
+<nav>
+  <h1 id="content">Contents</h1>
+  <div id="toc"><ul><li class="h1"><a href="#toc0">      i.&#xA0; Submitting Organizations</a></li><li class="h1"><a href="#toc1">      ii.&#xA0; Submission Contact Points</a></li><li class="h1"><a href="#toc2">      iii.&#xA0; Editors</a></li><li class="h1"><a href="#toc3">      iv.&#xA0; Document Conventions</a></li><li class="h1"><a href="#toc4">      1.&#xA0; Overview</a></li><li class="h1"><a href="#toc5">      2.&#xA0; Background</a></li><li class="h2"><a href="#toc6">      2.1.&#xA0; Catalog Services Implementation Specification</a></li><li class="h2"><a href="#toc7">      2.2.&#xA0; CG_CatalogService Interface</a></li><li class="h2"><a href="#toc8">      2.3.&#xA0; CG_Discovery Interface</a></li><li class="h1"><a href="#toc9">      3.&#xA0; Environment and setup of the Catalog Certification program</a></li><li class="h2"><a href="#toc10">      3.1.&#xA0; Setting up the environment</a></li><li class="h2"><a href="#toc11">      3.2.&#xA0; Setting up the server</a></li><li class="h2"><a href="#toc12">      3.3.&#xA0; Running the client</a></li><li class="h1"><a href="#toc13">      4.&#xA0; Description of the test procedures</a></li><li class="h2"><a href="#toc14">      4.1.&#xA0; Introduction</a></li><li class="h2"><a href="#toc15">      4.2.&#xA0; Operations of the <tt>CG_CatalogService</tt> interface</a></li><li class="h2"><a href="#toc16">      4.3.&#xA0; Operations of the CG_Discovery interface</a></li><li class="h1"><a href="#toc17">      Annex A (informative)  Metadata Database in XML Format</a></li></ul></div>
+
+</nav>
+
+
+<div class="rule toc"></div>
+
+      <p>&#xA0;</p>
+    </div>
+    <br />
+    <main class="main-section"><button onclick="topFunction()" id="myBtn" title="Go to top">Top</button>
+      <div class="authority">
+  
+  
+
+  
+
+
+
+
+
+</div>
+      <div class="Section3">
+        <h1 class="IntroTitle" id="toc0">i.&#xA0; Submitting Organizations</h1>
+        <p>The following organizations submitted this Document to the Open Geospatial Consortium (OGC):</p>
+        <ul>
+          <li>Geodan Holding bv, the Netherlands</li>
+        </ul>
+      </div>
+      <div class="Section3" id="_submission_contact_points">
+        <h1 class="IntroTitle" id="toc1">ii.&#xA0; Submission Contact Points</h1>
+        <p id="_094b6545-707b-41ae-b60d-96403575aa11">All questions about the submission should be directed to:</p>
+        <p id="_22f72ed0-f61f-4f5e-888a-90b87d3e4392">Barend Gehrels<br />
+Geodan SDT bv, the Netherlands<br />
+tel: +31 73 692 5151<br />
+fax: +31 73 692 5150<br />
+E-mail: <a href="mailto:barend@geodan.nl">barend@geodan.nl</a><br />
+<a href="http://www.geodan.nl">http://www.geodan.nl</a></p>
+      </div>
+      <div class="Section3" id="_editors">
+        <h1 class="IntroTitle" id="toc2">iii.&#xA0; Editors</h1>
+        <p id="_ac43f124-628a-40e4-bba0-4c469903d242">The following editors contributed to this document</p>
+        <p id="_aa17659a-6f2e-4ede-886a-c55451799e7f">Laura Diaz, on behalf of Geodan Holding bv<br />
+University of Valencia, Spain<br />
+E-mail: <a href="mailto:laudiaz2@alumni.uv.es">laudiaz2@alumni.uv.es</a><br />
+<a href="http://www.uv.es">http://www.uv.es</a></p>
+        <p id="_da440112-5a91-4de6-bd40-bd38d53c89b8">Bart van der Eijnden<br />
+Geodan SDT bv, the Netherlands<br />
+tel: +31 73 692 5151<br />
+fax: +31 73 692 5150<br />
+E-mail: <a href="mailto:bart@geodan.nl">bart@geodan.nl</a><br />
+<a href="http://www.geodan.nl">http://www.geodan.nl</a></p>
+        <p id="_70d98ba8-7b04-4f55-8654-ddfecde06886">Barend Gehrels<br />
+Geodan SDT bv, the Netherlands<br />
+tel: +31 73 692 5151<br />
+fax: +31 73 692 5150<br />
+E-mail: <a href="mailto:barend@geodan.nl">barend@geodan.nl</a><br />
+<a href="http://www.geodan.nl">http://www.geodan.nl</a></p>
+      </div>
+      <div class="Section3" id="_document_conventions">
+        <h1 class="IntroTitle" id="toc3">iv.&#xA0; Document Conventions</h1>
+        <p id="_9fb0fac7-2602-42bc-899d-6f03a1a84a78">The Courier New font has been used to indicate code segments.</p>
+      </div>
+      <p class="zzSTDTitle1">Conformance Test Guidelines for OpenGIS Catalog Services Specification for CORBA</p>
+      <div id="_overview">
+        <h1 id="toc4">1.&#xA0; Overview</h1>
+        <p id="_5f322fc5-d1de-46d8-891d-9ce9cc4afaa9">This document describes the guidelines that the Open GIS Consortium will use for testing software implementations with respect to conformance to its specification entitled Revision 1.0.</p>
+        <p id="_7775ec96-9de4-4e75-ae67-a15e90b35b96">The Open GIS Consortium, Inc. (OGC) maintains a brand (in the form of a certification mark) that cannot be used in connection with a software product by any organization unless it has submitted a software product to OGC&#x2019;s conformance test, successfully completed this test, and received a certificate stating such success. Organizations that have earned the certification mark may use it in ways defined within this document. This set of rules ensures that users who buy products that are branded can be sure that the products carrying the certification mark have been submitted to a test. The primary purpose of the conformance test is to protect the value of the OpenGIS&#xAE; brand as an element of OGC&#x2019;s program to promote interoperability between diverse geoprocessing systems.</p>
+        <p id="_4dc21e8a-61a6-4300-b2cb-ca969e6b8d39">This document contains the following:</p>
+        <ul id="_fa688c11-395c-4f87-93f5-d5a0bc56e939">
+<li>
+<p id="_6b39bb14-3619-4cbe-8f20-91e8967f7d58">An outline on the background of Catalog Services;</p>
+</li>
+<li>
+<p id="_e05c9a1d-79c8-4fdd-850b-f3c8b2a0774f">A general description of how to configure the environment for the Catalog Certification Program;</p>
+</li>
+<li>
+<p id="_efd76e00-c934-457e-81c9-97bc919d6413">A description of the testing procedures of the Catalog Certification Program.</p>
+</li>
+</ul>
+      </div>
+      <div id="background">
+        <h1 id="toc5">2.&#xA0; Background</h1>
+        <div id="_catalog_services_implementation_specification"><h2 id="toc6">2.1.&#xA0; Catalog Services Implementation Specification</h2><p id="_4e236791-0318-4231-bf17-bfe52b2e4f87">According to the OpenGIS Catalog Services Implementation Specification, OGC Catalog servers have three kinds of services:</p>
+<ul id="_74052818-0972-4550-bcb2-031b12c613ff">
+<li>
+<p id="_faf8e58f-cf30-44b6-bfe8-482d06bc9715">
+<b>Discovery Service;</b>
+</p>
+</li>
+<li>
+<p id="_c7f9a068-d217-4e1f-bd3b-b4c34cda74fc">
+<b>Access Service;</b>
+</p>
+</li>
+<li>
+<p id="_16881d66-ea82-45c4-bce3-a84547a7d5e1">
+<b>Management Service.</b>
+</p>
+</li>
+</ul>
+<p id="_b7dfba27-c594-486c-9190-837bfbb555e6">Discovery Services are those services which allow a client to locate metadata that describe data. Access Services provide the client with methods to request services on the data. Access Services have been divided into two types: Direct Access and Brokered Access. Management Services define methods for a client to change the metadata held by a catalog.</p>
+<p id="_7005ad6c-a833-49ad-b107-6632dba351f0">The Discovery Service has to be provided by all Application Servers claiming compliance with the OGC Catalog Interface. The Access and Management Services are optional for an OGC compliant catalog.</p>
+<p id="_b6f0cf18-cdf5-4aec-9e46-ecdda911878c">The Catalog Services General Model provides the standards of compliance for specific implementation communities, in a profile-based way. There are different profiles for each Distributed Computing Platform, like CORBA, OLEDB and WWW. The test program is specific for CORBA in combination with a coarse-grained interface. This means that the client and server have very little knowledge of each other. Therefore, the interface in this environment must be flexible, well-defined and simple.</p>
+<p id="_96304524-cc79-4cad-8746-afa783c3d6c0">As specified in the Coarse-Grained General Interface Model there are four major interfaces, <tt>CG_CatalogService</tt>, <tt>CG_Discovery</tt>, <tt>CG_Access</tt> and <tt>CG_Manager</tt>. These interfaces allow the discovery, access and management of geospatial data and services. The above-mentioned model has been based on the concept of interface operations passing Request-Response Message Pairs between a client and a server. Stated another way, the Coarse-Grained architecture uses a messaging-based structure to describe the access and invocation of Catalog services.</p>
+<p id="_d6b05080-fbfd-447d-b997-945d6e30ce75">The Catalog Certification Program is centered on the <tt>CG_Discovery</tt> interface, it will test all the functionality supported by the discovery service as well as all the functionality of the <tt>CG_CatalogService</tt> interface. The Catalog Certification Program focuses on these two interfaces because as said before the Access and Management Service are optional.</p></div>
+        <div id="_cg_catalogservice_interface"><h2 id="toc7">2.2.&#xA0; CG_CatalogService Interface</h2><p id="_f9b17082-a2ca-4a16-8989-d4582058a3af">Server level interfaces provide access to the services that support the establishment and management of a user session through operations. The operations included in this interface that have to be supported by all servers are listed in <a href="#fig1">Figure 1</a>. The <tt>InitSession</tt> operation generates a unique identifier used to track the context of a session. To terminate a session, the <tt>TerminateSession</tt> operation can be used. The <tt>Status</tt> operation checks the status of a currently pending request. To terminate a request, the <tt>Cancel</tt> operation should be used. The <tt>ExplainServer</tt> operation lists all conventions and services available during the current session.</p>
+<p id="_a34fe05b-0872-41cf-9745-d371cc244fa7">In the current version of the Catalog Certification Program only synchronous requests are considered. This rules out the possibility to test for the <tt>CancelRequest</tt> and <tt>Status</tt> operation.</p></div>
+        <div id="_cg_discovery_interface"><h2 id="toc8">2.3.&#xA0; CG_Discovery Interface</h2><p id="_ce62bea5-4a14-4ecc-b644-94f538fecf56">The <tt>CG_Discovery</tt> Interface provides users with a way to discover what data, services and other resources are available to them. This interface does not provide access to the resources themselves. The operations provided by this interface can be deducted from <a href="#fig1">Figure 1</a>. The <tt>Query</tt> operation searches for data on or services from a given catalog server and may return records from the result set. The <tt>Present</tt> operation retrieves records from a result set created by issuing a query. To get an explanation of the data model of the catalog the <tt>ExplainCollection</tt> operation can be used.</p>
+<div id="fig1" class="figure">
+
+<img src="data:image/gif;base64,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" height="217" width="606" alt="" />
+<p class="FigureTitle" style="text-align:center;">Figure 1&#xA0;&#x2014; The Coarse-Grained (CG) General Interface Model.</p></div></div>
+      </div>
+      <div id="_environment_and_setup_of_the_catalog_certification_program">
+        <h1 id="toc9">3.&#xA0; Environment and setup of the Catalog Certification program</h1>
+        <div id="_setting_up_the_environment"><h2 id="toc10">3.1.&#xA0; Setting up the environment</h2><p id="_fced67e8-360f-4220-a044-486d5ea56fae">The Catalog Certification Program has been developed with JDK 1.2.2. The code is in a single file called <tt>catalogCertification.java</tt>. The module <tt>OGC_CatalogService</tt> has been defined in one <tt>idl</tt> file (<tt>ogc_cat.idl</tt>), the idl file contains all definitions, i.e. the message definitions and the required interfaces.</p>
+<p id="_01810303-8ac8-4265-8565-e092c7192d9b">To translate the idl file to Java classes, the file ij.bat has been written. This batch file uses <tt>idl2java</tt> of VisiBroker for Java 3.4. To compile all Java classes of the module <tt>OGC_CatalogService</tt> and the <tt>catalogCertification.java</tt> file, the <tt>cj.bat</tt> file has been provided. These two compilation procedures are only necessary if the version of ORB for Java differs from that in VisiBroker for Java 3.4.</p></div>
+        <div id="_setting_up_the_server"><h2 id="toc11">3.2.&#xA0; Setting up the server</h2>
+
+<p id="_ee294432-cfa7-4ba6-9603-38aceb1f315c">For performing the conformance test, the server should be started and it should write an IOR file. The IOR file is used by the Catalog Certification Program to obtain a reference to the server. For a distributed query two servers should be started.</p>
+</div>
+        <div id="_running_the_client"><h2 id="toc12">3.3.&#xA0; Running the client</h2>
+
+<p id="_fe533537-c07a-4ca5-bd6c-f0066ab78f1f">The Catalog Certification Program functions like a client. To start the Catalog Certification Program, run the <tt>catalogCertification</tt> file.</p>
+</div>
+      </div>
+      <div id="_description_of_the_test_procedures">
+        <h1 id="toc13">4.&#xA0; Description of the test procedures</h1>
+        <div id="_introduction"><h2 id="toc14">4.1.&#xA0; Introduction</h2><p id="_434fda35-33ee-46e0-9636-63839d5091ce">This section details the tests that have to be executed to test all the operations mentioned in <a href="#background">Clause 2</a>. In order to test the operations, a default query is sent to the catalog server being tested. The database is a known XML (eXtendable Markup Language) file. The retrieved results will be compared with the expected results. A series of queries, applying multiple aspects of the Query Language, will be tested.</p>
+<p id="_6111a75e-4ee8-4099-97e4-d997e9247d9f">To test for a distributed search, two servers are used using both the sample XML file.</p>
+<p id="_2ddead0d-fce6-47d9-9d9a-7046ec367be8">An example of the database with metadata is given in <a href="#appendixA">Annex A</a>. If a server is not capable of using a database in XML format, the XML file should be ported to a supported format.</p></div>
+        <div id="_operations_of_the_cg_catalogservice_interface"><h2 id="toc15">4.2.&#xA0; Operations of the <tt>CG_CatalogService</tt> interface</h2><div id="_testing_the_initsession_operation"><h3>4.2.1.&#xA0; Testing the InitSession operation</h3><p id="_0bbd9590-d56c-48dc-9154-83e98c2e245e">In order to test whether or not the InitSession operation is supported by the server, the Catalog Certification Program follows the following steps:</p>
+<ol type="a" id="_5405c10a-d9c4-49e0-b8a3-175817f5b346">
+<li>
+<p id="_dc4ab760-edef-4ead-bf7c-940cb0aad7b2">It tries to read the default IOR (Interoperable Object Reference) file, which contains the address of the catalog server;</p>
+</li>
+<li>
+<p id="_6afd8a48-11cd-4278-b855-1da613855d79">It initializes the ORB (Object Request Broker);</p>
+</li>
+<li>
+<p id="_c9339245-04fa-4a16-bd43-8841ab7842e8">It creates a reference to the catalog server;</p>
+</li>
+<li>
+<p id="_f391c261-2dcf-4867-9359-99a7e29bb84b">If step 3 has been successful, it creates an <tt>InitSession</tt> request and invokes this method on the server;</p>
+</li>
+<li>
+<p id="_a2cf9495-8d7c-47fa-993f-f4f48fdcb5eb">It retrieves the identifier, which will be used in the current session.</p>
+</li>
+</ol>
+<p id="_3e8cd5e2-bff1-45c2-ba74-cebbcb4a416a">If any of these steps fail, the <tt>InitSession</tt> operation is not supported by the server being tested.</p></div>
+<div id="_testing_the_terminatesession_operation"><h3>4.2.2.&#xA0; Testing the <tt>TerminateSession</tt> operation</h3><p id="_c1b204b1-43f0-4a78-8233-3aa9cee3b5ee">The Catalog Certification Program tests whether or not the identifier of the session and the reference to the catalog server exist. If these two constraints are met, the <tt>TerminateSession</tt> method is invoked and a <tt>TerminateSession</tt> response is sent by the server.</p>
+<p id="_374c28d4-9f43-41fa-8f4f-95386fe88437">If the status of the <tt>TerminateSession</tt> response is successful and no exception has been raised, the <tt>TerminateSession</tt> operation is considered supported. In order to be compliant with the specification, the server should send a successful status when the session has been terminated in a correct way.</p></div>
+<div id="_testing_the_explainserver_operation"><h3>4.2.3.&#xA0; Testing the <tt>ExplainServer</tt> operation</h3>
+
+<p id="_c4f1718c-b88e-48ec-998f-97bf9d6a6174">For invoking this method on the catalog server, the <tt>capabilities</tt> field in the request is filled with all the <tt>ctAllSupportedRequest</tt>. After invoking this method, the server returns a response, which should contain a list of all the capabilities supported by the server. There is no <i>status</i> in the ExplainServer response. The Catalog Certification Program works as follows: if the catalog server sends an empty list or if an exception is raised during the process of testing, the ExplainServer operation will be considered not supported. For a full compliance the server should return a list of all capabilities that are supported, the correct capabilities are specified in the OpenGIS Catalog Services Implementation Specification as <tt>CG_CapabilityType</tt>. At least the <tt>OGC_Common</tt> <tt>QueryLanguage</tt> should be supported, the contents of the other capability types can not be tested.</p>
+</div></div>
+        <div id="_operations_of_the_cg_discovery_interface"><h2 id="toc16">4.3.&#xA0; Operations of the CG_Discovery interface</h2><div id="query"><h3>4.3.1.&#xA0; Query</h3><p id="_46d6eb09-1923-43b1-8840-5cb24eaffce5">A query is built by combining a set of parameters in a request. For some parameters there is no viable way to test if their different values are working or they are part of an asynchronous operation. To overcome this problem, their value is fixed in the request (<tt>iteratorsize=100</tt>, <tt>cursor=0</tt>, <tt>asynchronous=false</tt>, <tt>maxlevel=2</tt>, <tt>presentation=full</tt>, <tt>entrytype=collection</tt>).</p>
+<p id="_694e951b-428c-4095-b065-e8f442d9a59c">There is a general approach for testing the operations, although some of them differ slightly from this general approach. The general approach can be described as:</p>
+<ul id="_04e6a530-5664-4bb0-bb8a-dc4d7b808d58">
+<li>
+<p id="_9f4166aa-44cb-474b-9f11-b6041f5e3d0b">if a general exception occurs during the <i>query</i> call, the capability which is being tested at that moment will be considered <i>not tested</i>;</p>
+</li>
+<li>
+<p id="_5cfc9d37-edbc-4664-898d-4154f19fbd13">if a successful status of the response has been retrieved, the capability will be considered <i>supported</i>;</p>
+</li>
+<li>
+<p id="_4a77a383-5e18-4328-9046-6af01fb24a88">if an unsuccessful status has been retrieved, it depends on the capability if it is considered not supported or not tested.</p>
+</li>
+</ul>
+<p id="_3a264f82-edf2-4297-85e9-8987810d0364">If, during the initial invocation of the query operation, a general exception is raised or an invalid status is returned, the query operation will be considered as not supported. This test checks the results retrieved in NV format (name-value pairs). If the NV format is not supported by the server, the query method will only be considered supported if no exception has been raised during a call with another format and if the retrieved status is successful. The parameters tested and their possible values are shown in <a href="#fig2">Figure 2</a>:</p>
+<div id="fig2" class="figure">
+
+<img src="data:image/gif;base64,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" height="400" width="678" alt="" />
+<p class="FigureTitle" style="text-align:center;">Figure 2&#xA0;&#x2014; Outline of the parameters (boxes) involved in the Query operation and their possible values (circles).</p></div>
+<div id="_collectionname"><h4>4.3.1.1.&#xA0; CollectionName</h4><p id="_c645f482-ace7-4ee6-b451-89f52fc70c2e">The <tt>CollectionName</tt> parameter can have two possible values:</p>
+<ul id="_a334ce59-bbd0-43cf-b383-ed153695c8a5">
+<li>
+<p id="_9561a212-61f7-42e4-bc1b-8f07f3ce708f"><tt>CollectionID</tt>: this parameter value combination is considered successful if, after invoking the query method, the status returned is success and there are no problems with reading the string that this field contains;</p>
+</li>
+<li>
+<p id="_8b628246-27f7-4717-bae7-d3388535a1e4"><tt>CollectionName</tt>: the same procedure is followed as with CollectionID.</p>
+</li>
+</ul>
+<p id="_b2e5bf3a-2839-47e3-84fa-f9feb224b397">When the query method is invoked there are several parameters in the request and there is no way to know which parameter is failing if an unsuccessful status is retrieved. If a general exception occurs during the remote call this capability will not be tested, as we do not know for sure which parameter is causing the exception.</p></div>
+<div id="_querylanguage"><h4>4.3.1.2.&#xA0; QueryLanguage</h4><p id="_65f3b6d6-4915-4570-937c-140539fea216">While testing this parameter, the <tt>ReturnFormat</tt> is set to <tt>NV</tt>, the <tt>QueryScope</tt> is <tt>local</tt> and the <tt>ResultType</tt> equals <tt>results</tt>. This means this part of the test depends strongly on the success of the NV format. For the <tt>QueryLanguage</tt> parameter two values are valid:</p>
+<ul id="_9db4c13c-95d6-4327-b30b-bbc7a60bd9b2">
+<li>
+<p id="_ee354397-527f-461e-842b-12c52756002c"><tt>OGC_Common</tt>: if an exception is returned, this capability will be considered as not tested. If the response status is unsuccessful, the capability is considered not supported. If none of the above failures occurs, and if the retrieved number of hits is correct, the capability will be considered supported;</p>
+</li>
+<li>
+<p id="_9c5ad302-e53c-4d80-bb33-a0d2d1ea0ee7"><tt>Z3950_TypeOne</tt>: the same procedure applies to this language as to the <tt>OGC_Common</tt> language.</p>
+</li>
+</ul></div>
+<div id="messageformat"><h4>4.3.1.3.&#xA0; MessageFormat</h4><p id="_96c9a09c-d373-4eea-b1bb-6da3e45be0ce">In order to test the different values of this parameter, the <tt>QueryScope</tt> is set to <tt>local</tt>, the <tt>ResultType</tt> is <tt>results</tt> and the <tt>QueryLanguage</tt> <tt>OGC_Common</tt>. The series of queries is invoked in combination with the following values of MessageFormat:</p>
+<ul id="_c68394de-4de1-44bc-818d-55fec01216af">
+<li>
+<p id="_63d9559e-9dc9-4f08-9a8f-d6a7462feab1">XML: if an exception is raised during invocation of the query method or if the status is unsuccessful, this capability (<tt>MessageFormat=XML</tt>) will not be tested. Otherwise, the program will test if the return format is the correct one. First of all the program will compare if the <tt>returnFormat</tt> field in the request matches the <tt>retrieveData.encoding</tt> field in the response. After this, the retrieved string will be read and searched for <tt>&lt;?xml</tt>. If both conditions are met, the capability will be considered supported;</p>
+</li>
+<li>
+<p id="_88c3c4c5-2060-4ff8-a359-a0e23261e159">HTML: the same applies to this format, only in this case the string is searched for <tt>&lt;html&gt;</tt> and <tt>&lt;/html&gt;</tt>;</p>
+</li>
+<li>
+<p id="_49519461-7a09-4c2b-901b-900173e47f76">TXT: the same applies here, but in this case, the string cannot be searched for a specific substring, so it can only be tried to read the string;</p>
+</li>
+<li>
+<p id="_29c09601-57ef-4a71-aa4f-bfa2b8aaa2f4">NV: the same applies, it will be tried to read the retrieved NV values, if the number of NV pairs matches the correct number of hits, this capability is considered supported.</p>
+</li>
+</ul></div>
+<div id="_number_of_hits_retrieved"><h4>4.3.1.4.&#xA0; Number of hits retrieved</h4>
+
+<p id="_ef0b4ce5-e6b4-48df-9ad3-429802c28802">To test this parameter, the <tt>QueryScope</tt> is <tt>local</tt>, the <tt>ResultType</tt> equals <tt>results</tt>, the <tt>MessageFormat</tt> is <tt>NV</tt> and the <tt>QueryLanguage</tt> is set to <tt>OGC_Common</tt>. If the NV format is not supported by the server, it&#x2019;s not possible to test if the field containing the number of hits in the response is working. The only thing that is tested for is whether or not this field contains the number of hits found in the search which should equal the number of NV pairs (it doesn&#x2019;t have to be the correct number of hits which is to be expected, but it can be). If an exception occurs or if the status is unsuccessful, this capability will not be tested.</p>
+</div>
+<div id="sortorder"><h4>4.3.1.5.&#xA0; SortOrder</h4><p id="_b682daeb-0b5d-49aa-98ac-c77890db9263">Again, the <tt>QueryScope</tt> is set to <tt>local</tt>, the <tt>ResultType</tt> is <tt>results</tt>, the <tt>MessageFormat</tt> equals <tt>NV</tt> and the <tt>language</tt> is <tt>OGC_Common</tt>. The <tt>SortOrder</tt> has two possible values: ascending or descending. The sort order should always be used in conjunction with a <tt>SortField</tt>, like in the following example:</p>
+<pre id="_1bdf597e-a9ca-471f-8aa9-8900e7f85d8d" class="prettyprint ">sortField[0] = OGC_CatalogService.CG_SortField ("title", OGC_CatalogService.CG_SortOrder.ascending)</pre><p class="SourceTitle" style="text-align:center;">Figure 3</p>
+
+<p id="_d0d90d92-20b4-4537-9c65-0525d043d86a">In this example the Catalog Certification program will test whether or not the results are ordered by title in an ascending way. The possibility of testing this capability depends on the support of the NV format. If an exception occurs, this capability will not be tested. If the status is successful and the NV format is supported, the sorting order will be checked using an array.</p></div>
+<div id="_resulttype"><h4>4.3.1.6.&#xA0; ResultType</h4><p id="_22cac140-2244-4d29-ad63-6c781a98eb76">There is no easy way to test this parameter, it is difficult to know if a query call is failing due to the query method itself or due to another capability. There are four different values possible for the parameter <tt>ResultType</tt>, they are:</p>
+<ul id="_fa303d97-fb45-4fff-9245-ace564f370e0">
+<li>
+<p id="_e7fb5876-da4c-4f42-a0ae-35615658a846">Results: if an exception is raised or a status is unsuccessful, the results capability will be considered not supported. In order to be considered supported, the test should work for one or more of the formats. When the Catalog Certification Program invokes the query method for testing the NV format, it will test the results too. If a general exception occurs, the status obtained will be the status obtained with another format. If the status is unsuccessful or if the retrieved number of hits doesn&#x2019;t match the correct number of hits, this capability will be considered unsupported;</p>
+</li>
+<li>
+<p id="_56a4b711-9559-4fa3-af92-6b2b6dd506a0">Validate: if an exception is raised or if an unsuccessful status is retrieved, this capability will be considered not supported. Otherwise, the program will test if the <tt>retrieveData</tt> field in the response is empty (this should be the case because only a validation should be performed). Testing if the field is empty is done using the txt format and looking for an empty string <tt>""</tt>;</p>
+</li>
+<li>
+<p id="_3fc67633-71cc-43c0-993d-0aad9bbd0a22">Hits: testing this capability is almost equivalent to the Validate test. In addition, the number of hits is checked;</p>
+</li>
+<li>
+<p id="_404ae280-90b9-4e47-91e4-3eb8b72d5df1"><tt>ResultSetID</tt>: this capability is tested equivalent to the Validate test with one addition: the program also checks whether or not the <tt>collectionID</tt> field is filled.</p>
+</li>
+</ul></div>
+<div id="_queryscope"><h4>4.3.1.7.&#xA0; QueryScope</h4><p id="_7a395cef-458b-4460-88a5-a14268c388d5">The <tt>MessageFormat</tt> is fixed as <tt>NV</tt>, the <tt>ResultType</tt> as <tt>results</tt>. The two options for <tt>QueryScope</tt> are:</p>
+<ul id="_8e665cea-e9da-45a8-9a6d-36bf8679696d">
+<li>
+<p id="_933ea2a6-b15c-45ec-995b-0c055ca121aa">Local: if an exception occurs during the invocation of the query method, this capability will not be tested. If the status is successful and the correct number of hits is retrieved, this capability will be considered as supported;</p>
+</li>
+<li>
+<p id="_a6fa9407-eaf4-4fc0-a377-974cb29ca59d">Distributed: because of the use of 2 servers during the test of the distributed query, the correct number of hits should be 2 times the correct number of hits using a local scope.</p>
+</li>
+</ul></div>
+<div id="_geographicboundingbox"><h4>4.3.1.8.&#xA0; GeographicBoundingBox</h4><p id="_c0c87f20-59f3-483b-913c-4cfcf5a506fb">The <tt>QueryScope</tt> is local, the <tt>MessageFormat</tt> equals <tt>NV</tt> and the <tt>ResultType</tt> <tt>results</tt>. The <tt>queryExpression</tt> used is given by:</p>
+<pre id="_5f76d921-c9ec-4637-8387-287816c06233" class="prettyprint ">queryExpression=OGC_CatalogService.CG_QueryExpression("intersects(GeographicBoundingBox,envelope(40.71,-24.17,71.26,27.63))","", OGC_CatalogService.CG_QueryLanguage.OGC_Common)</pre><p class="SourceTitle" style="text-align:center;">Figure 4</p>
+
+<p id="_f32e81a2-8147-4200-84f6-1ecad01868f5">The correct number of hits for this query, with respect to the standard metadata datbase, is 2. If an exception occurs, this capability will be considered not tested. If the status of the response is invalid or if the returned number of NV pairs doesn&#x2019;t match the expected number of hits, this capability is considered not supported.</p></div>
+<div id="_invalid_query_request"><h4>4.3.1.9.&#xA0; Invalid query request</h4>
+
+<p id="_bc42f29d-c5ab-4102-b7cd-88a18e80fb81">This capability will show if the server is able to detect an invalid query and act in the right way. The <tt>MessageFormat</tt> is again of the <tt>NV</tt> type. The query which is invoked is: <tt>abstract lkdd 'river%'</tt>. The server has to return an exception or an invalid status in order to consider this capability as supported.</p>
+</div></div>
+<div id="_present"><h3>4.3.2.&#xA0; Present</h3><p id="_d5bc94ec-0a54-4431-9e4c-e18f59c092b6">In order to test for this operation of the <tt>CG_Discovery</tt> interface, some parameters have to be fixed in the request, these are: <tt>Iteratorsize(100)</tt>, <tt>Cursor(0)</tt>, <tt>Presentation(full)</tt> and <tt>ResultSetID(ResultSetID sent by the query)</tt>. Other parameters and their possible values are shown in <a href="#fig3">Figure 5</a>.</p>
+<p id="_c501254e-db68-4703-bd24-4a7a044999e8">The general approach which applies to the testing of the capabilities of present is equal to the general approach of the query method (see <a href="#query">Clause 4.3.1</a>). First of all the Catalog Certification Program will set the <tt>Present</tt> capability to not supported but in case one of the calls was successful the capability will be considered supported. If a successful status is retrieved, the last check will be using the NV format, i.e., the program will check if the functionality of this method is working testing the results retrieved with NV format. If the NV format is working the present capability will be shown as supported if the number of hits retrieved is the number of hits expected by the test.</p>
+<div id="fig3" class="figure">
+
+<img src="data:image/gif;base64,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" height="376" width="353" alt="" />
+<p class="FigureTitle" style="text-align:center;">Figure 5&#xA0;&#x2014; Parameters (in boxes) and their possible values (in circles) of the present operation of the CG_Discovery interface.</p></div>
+<div id="_messageformat"><h4>4.3.2.1.&#xA0; MessageFormat</h4><p id="_78353ae4-3a65-47b4-945c-b1ae8590c5c8">The possible values for this parameter are equivalent to those of the query method:</p>
+<ul id="_0241452e-9b90-4209-b471-ab4520a24eb0">
+<li>
+<p id="_26753dca-7994-4da5-92d7-142594ec2c29">XML: the same applies here as for the MessageFormat of the query method (<a href="#messageformat">Clause 4.3.1.3</a>);</p>
+</li>
+<li>
+<p id="_8199063b-75f5-48ff-95e5-24e44c37f9d3">HTML: idem;</p>
+</li>
+<li>
+<p id="_21fee74d-2b99-41af-8d8c-ac02d22fac2b">TXT: idem;</p>
+</li>
+<li>
+<p id="_fb307b66-a346-41af-8168-823b90bd3864">NV: idem.</p>
+</li>
+</ul></div>
+<div id="_number_of_hits_retrieved_2"><h4>4.3.2.2.&#xA0; Number of hits retrieved</h4>
+
+<p id="_5f9a7d12-af46-4d32-8cf1-010df0b6ff55">The field containing the number of hits has to have a value equivalent to the number of NV pairs. After invocation of the present method, no exception should be raised and a successful status should be returned. In this case, this capability will be considered supported.</p>
+</div>
+<div id="_sortorder"><h4>4.3.2.3.&#xA0; SortOrder</h4><p id="_1394bfca-34fc-417e-9024-9df971aae678">There are two options for this parameter: <tt>ascending</tt> and <tt>descending</tt>. If the NV format in present is working, this parameter can be tested. The same applies here as to <tt>SortOrder</tt> of the query method (<a href="#sortorder">Clause 4.3.1.5</a>).</p>
+<div id="fig4" class="figure">
+
+<img src="data:image/gif;base64,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" height="302" width="312" alt="" />
+<p class="FigureTitle" style="text-align:center;">Figure 6&#xA0;&#x2014; The parameters (in boxes) and their possible values (in circles) of the ExplainCollection method.</p></div></div></div>
+<div id="_explaincollection"><h3>4.3.3.&#xA0; ExplainCollection</h3><p id="_7605524f-5abc-4243-a08d-1b8b4f1b8d57">The <tt>ExplainCollection</tt> is the last operation of the <tt>CG_Discovery</tt> interface to be detailed. In order to test this operation, the following parameters are fixed:</p>
+<ul id="_f7cf4455-b6eb-45d9-9e45-33781beddc54">
+<li>
+<p id="_a2639e04-9186-4977-9cb3-6ac93ef71e95">
+<tt>collectionID.collectionID("")</tt>
+</p>
+</li>
+<li>
+<p id="_5330b70b-c7db-4322-b3c1-ab7bf8f1e3cb">
+<tt>AttributeCategory = OGC_CatalogService.CG_AttributeCategory.both</tt>
+</p>
+</li>
+</ul>
+<p id="_7081273a-09d9-4b62-a0f6-fcad51a5fc14">There is no viable way to test all the parameters of this method. Both the <tt>CG_ExplainCollectionRequest</tt> and the <tt>CG_ExplainCollectionResponse</tt> contain parameters which cannot be tested. The parameters that are tested are shown in <a href="#fig4">Figure 6</a>. If a general exception is raised during the remote call the different parameters will be considered not tested. The overall <tt>ExplainCollection</tt> capability will first be set to not supported, if one of the submethods is supported, the overall capability is also set to supported. Because of the combination of parameters it&#x2019;s difficult to render a probable cause of a failure.</p>
+<div id="_collectionname_2"><h4>4.3.3.1.&#xA0; CollectionName</h4><p id="_4e982544-e4e4-403e-be5b-ca76eb84a429">As with the query method, the <tt>CollectionName</tt> can have a value of:</p>
+<ul id="_9c1c03e8-d0a8-456a-b6d8-90f1c1f2e86b">
+<li>
+<p id="_c1db351f-4169-44fd-ba54-48de6dac5dcc"><tt>CollectionID</tt>: if it&#x2019;s possible to read the string that this field contains and if the status is successful, this capability will be considered supported;</p>
+</li>
+<li>
+<p id="_a04d0d98-dd90-4197-9836-fe59be3abcfb"><tt>CollectionName</tt>: the same applies here as to <tt>CollectionID</tt>.</p>
+</li>
+</ul></div>
+<div id="_format"><h4>4.3.3.2.&#xA0; Format</h4><p id="_6bcdc59c-6941-4632-b40a-a9a4e593ecab">As with <tt>Query</tt> and <tt>Present</tt>, the format can be one of the following options:</p>
+<ul id="_608051e3-3265-4eba-9208-d149272e3367">
+<li>
+<p id="_cde66844-a17a-400a-a7d3-365bf6eda347">XML: in this case there is no <tt>retrievedData</tt> field in the response sent by the server, so the only way to test for this capability is to check whether or not the status is successful;</p>
+</li>
+<li>
+<p id="_5abc51d9-a284-4058-82e9-81aca1e112d5">HTML: the same applies here as to XML;</p>
+</li>
+<li>
+<p id="_80e1fb3a-ad37-4aa7-9a3b-20702f1fd75e">TXT: idem;</p>
+</li>
+<li>
+<p id="_bc1cd779-7008-4589-a09f-e83f040365c2">NV: idem.</p>
+</li>
+</ul></div>
+<div id="_parameters_not_tested"><h4>4.3.3.3.&#xA0; Parameters not tested</h4>
+
+<p id="_363a7f42-3e17-47ab-850b-34966a6b3071">The <tt>attributeCategory</tt> could be tested in the same way the format is, i.e., testing if the status is successful but there is no way to know if the <tt>queriable</tt> or <tt>presentable</tt> attributes are working in a correct way. The <tt>dataModel</tt> attribute is not tested for because it&#x2019;s impossible to test the information each database contains.</p>
+</div></div></div>
+      </div>
+      <br />
+      <div id="appendixA" class="Section3">
+        <h1 class="Annex" id="toc17"><b>Annex A</b><br />(informative) <br /><b>Metadata Database in XML Format</b></h1>
+        <p id="_6ee58998-de67-4e39-bcef-24e0639fb2b4">The XML file required for a good operation of the Catalog Certification Program is:</p>
+        <pre id="_4a99e31e-ce15-4072-8258-7bc77f009602" class="prettyprint lang-xml">&lt;?xml version="1.0"?&gt;<br />&lt;Database&gt;<br />&#xA0; &lt;Metadata&gt;<br />&#xA0;&#xA0;&#xA0; &lt;Title&gt;Provinces of the Netherlands&lt;/Title&gt;<br />&#xA0;&#xA0;&#xA0; &lt;Abstract&gt;This dataset contains the 12 provinces which make up the Netherlands&lt;/Abstract&gt;<br />&#xA0;&#xA0;&#xA0; &lt;GeographicBoundingBox&gt;<br />&#xA0;&#xA0;&#xA0;&#xA0;&#xA0; &lt;westBoundLongitude&gt;1.34&lt;/westBoundLongitude&gt;<br />&#xA0;&#xA0;&#xA0;&#xA0;&#xA0; &lt;eastBoundLongitude&gt;5.00&lt;/eastBoundLongitude&gt;<br />&#xA0;&#xA0;&#xA0;&#xA0;&#xA0; &lt;northBoundLatitude&gt;70.50&lt;/northBoundLatitude&gt;<br />&#xA0;&#xA0;&#xA0;&#xA0;&#xA0; &lt;southBoundLatitude&gt;20.70&lt;/southBoundLatitude&gt;<br />&#xA0;&#xA0;&#xA0; &lt;/GeographicBoundingBox&gt;<br />&#xA0; &lt;/Metadata&gt;<br />&#xA0; &lt;Metadata&gt;<br />&#xA0;&#xA0;&#xA0; &lt;Title&gt;Communities of the Netherlands&lt;/Title&gt;<br />&#xA0;&#xA0;&#xA0; &lt;Abstract&gt;This metadata describes the geographic file containing the municipalities of the netherlands&lt;/Abstract&gt;<br />&#xA0;&#xA0;&#xA0; &lt;GeographicBoundingBox&gt;<br />&#xA0;&#xA0;&#xA0;&#xA0;&#xA0; &lt;westBoundLongitude&gt;3.34&lt;/westBoundLongitude&gt;<br />&#xA0;&#xA0;&#xA0;&#xA0;&#xA0; &lt;eastBoundLongitude&gt;7.22&lt;/eastBoundLongitude&gt;<br />&#xA0;&#xA0;&#xA0;&#xA0;&#xA0; &lt;northBoundLatitude&gt;53.54&lt;/northBoundLatitude&gt;<br />&#xA0;&#xA0;&#xA0;&#xA0;&#xA0; &lt;southBoundLatitude&gt;50.74&lt;/southBoundLatitude&gt;<br />&#xA0;&#xA0;&#xA0; &lt;/GeographicBoundingBox&gt;<br />&#xA0; &lt;/Metadata&gt;<br />&#xA0; &lt;Metadata&gt;<br />&#xA0;&#xA0;&#xA0; &lt;Title&gt;Railroads of the Netherlands&lt;/Title&gt;<br />&#xA0;&#xA0;&#xA0; &lt;Abstract&gt;This dataset contains the railroads of the Netherlands&lt;/Abstract&gt;<br />&#xA0;&#xA0;&#xA0; &lt;GeographicBoundingBox&gt;<br />&#xA0;&#xA0;&#xA0;&#xA0;&#xA0; &lt;westBoundLongitude&gt;2.50&lt;/westBoundLongitude&gt;<br />&#xA0;&#xA0;&#xA0;&#xA0;&#xA0; &lt;eastBoundLongitude&gt;10.00&lt;/eastBoundLongitude&gt;<br />&#xA0;&#xA0;&#xA0;&#xA0;&#xA0; &lt;northBoundLatitude&gt;25.75&lt;/northBoundLatitude&gt;<br />&#xA0;&#xA0;&#xA0;&#xA0;&#xA0; &lt;southBoundLatitude&gt;50.75&lt;/southBoundLatitude&gt;<br />&#xA0;&#xA0;&#xA0; &lt;/GeographicBoundingBox&gt;<br />&#xA0; &lt;/Metadata&gt;<br />&#xA0; &lt;Metadata&gt;<br />&#xA0;&#xA0;&#xA0; &lt;Title&gt;Railroad stations of the Netherlands&lt;/Title&gt;<br />&#xA0;&#xA0;&#xA0; &lt;Abstract&gt;This dataset contains the railroad stations of the Netherlands&lt;/Abstract&gt;<br />&#xA0;&#xA0;&#xA0; &lt;GeographicBoundingBox&gt;<br />&#xA0;&#xA0;&#xA0;&#xA0;&#xA0; &lt;westBoundLongitude&gt;1.90&lt;/westBoundLongitude&gt;<br />&#xA0;&#xA0;&#xA0;&#xA0;&#xA0; &lt;eastBoundLongitude&gt;3.60&lt;/eastBoundLongitude&gt;<br />&#xA0;&#xA0;&#xA0;&#xA0;&#xA0; &lt;northBoundLatitude&gt;73.55&lt;/northBoundLatitude&gt;<br />&#xA0;&#xA0;&#xA0;&#xA0;&#xA0; &lt;southBoundLatitude&gt;70.75&lt;/southBoundLatitude&gt;<br />&#xA0;&#xA0;&#xA0; &lt;/GeographicBoundingBox&gt;<br />&#xA0; &lt;/Metadata&gt;<br />&#xA0; &lt;Metadata&gt;<br />&#xA0;&#xA0;&#xA0; &lt;Title&gt;Nuts areas of Europe&lt;/Title&gt;<br />&#xA0;&#xA0;&#xA0; &lt;Abstract&gt;This dataset contains the NUTS-regions of Europe&lt;/Abstract&gt;<br />&#xA0;&#xA0;&#xA0; &lt;GeographicBoundingBox&gt;<br />&#xA0;&#xA0;&#xA0;&#xA0;&#xA0; &lt;westBoundLongitude&gt;-25.15&lt;/westBoundLongitude&gt;<br />&#xA0;&#xA0;&#xA0;&#xA0;&#xA0; &lt;eastBoundLongitude&gt;25.70&lt;/eastBoundLongitude&gt;<br />&#xA0;&#xA0;&#xA0;&#xA0;&#xA0; &lt;northBoundLatitude&gt;50.25&lt;/northBoundLatitude&gt;<br />&#xA0;&#xA0;&#xA0;&#xA0;&#xA0; &lt;southBoundLatitude&gt;10.65&lt;/southBoundLatitude&gt;<br />&#xA0;&#xA0;&#xA0; &lt;/GeographicBoundingBox&gt;<br />&#xA0; &lt;/Metadata&gt;<br />&#xA0; &lt;Metadata&gt;<br />&#xA0;&#xA0;&#xA0; &lt;Title&gt;Countries of Europe&lt;/Title&gt;<br />&#xA0;&#xA0;&#xA0; &lt;Abstract&gt;This dataset contains the countries of Europe&lt;/Abstract&gt;<br />&#xA0;&#xA0;&#xA0; &lt;GeographicBoundingBox&gt;<br />&#xA0;&#xA0;&#xA0;&#xA0;&#xA0; &lt;westBoundLongitude&gt;-24.17&lt;/westBoundLongitude&gt;<br />&#xA0;&#xA0;&#xA0;&#xA0;&#xA0; &lt;eastBoundLongitude&gt;40.71&lt;/eastBoundLongitude&gt;<br />&#xA0;&#xA0;&#xA0;&#xA0;&#xA0; &lt;northBoundLatitude&gt;71.26&lt;/northBoundLatitude&gt;<br />&#xA0;&#xA0;&#xA0;&#xA0;&#xA0; &lt;southBoundLatitude&gt;27.63&lt;/southBoundLatitude&gt;<br />&#xA0;&#xA0;&#xA0;&#xA0;&#xA0; &lt;/GeographicBoundingBox&gt;<br />&#xA0; &lt;/Metadata&gt;<br />&#xA0; &lt;Metadata&gt;<br />&#xA0;&#xA0;&#xA0; &lt;Title&gt;Rivers of Europe&lt;/Title&gt;<br />&#xA0;&#xA0;&#xA0; &lt;Abstract&gt;This dataset contains the Rivers of Europe&lt;/Abstract&gt;<br />&#xA0;&#xA0;&#xA0; &lt;GeographicBoundingBox&gt;<br />&#xA0;&#xA0;&#xA0;&#xA0;&#xA0; &lt;westBoundLongitude&gt;-24.17&lt;/westBoundLongitude&gt;<br />&#xA0;&#xA0;&#xA0;&#xA0;&#xA0; &lt;eastBoundLongitude&gt;40.71&lt;/eastBoundLongitude&gt;<br />&#xA0;&#xA0;&#xA0;&#xA0;&#xA0; &lt;northBoundLatitude&gt;71.26&lt;/northBoundLatitude&gt;<br />&#xA0;&#xA0;&#xA0;&#xA0;&#xA0; &lt;southBoundLatitude&gt;27.63&lt;/southBoundLatitude&gt;<br />&#xA0;&#xA0;&#xA0; &lt;/GeographicBoundingBox&gt;<br />&#xA0; &lt;/Metadata&gt;<br />&#xA0; &lt;Metadata&gt;<br />&#xA0;&#xA0;&#xA0; &lt;Title&gt;Mountains of Italy&lt;/Title&gt;<br />&#xA0;&#xA0;&#xA0; &lt;Abstract&gt;This dataset contains the mountains of Italy&lt;/Abstract&gt;<br />&#xA0;&#xA0;&#xA0; &lt;GeographicBoundingBox&gt;<br />&#xA0;&#xA0;&#xA0;&#xA0;&#xA0; &lt;westBoundLongitude&gt;2.15&lt;/westBoundLongitude&gt;<br />&#xA0;&#xA0;&#xA0;&#xA0;&#xA0; &lt;eastBoundLongitude&gt;8.70&lt;/eastBoundLongitude&gt;<br />&#xA0;&#xA0;&#xA0;&#xA0;&#xA0; &lt;northBoundLatitude&gt;20.25&lt;/northBoundLatitude&gt;<br />&#xA0;&#xA0;&#xA0;&#xA0;&#xA0; &lt;southBoundLatitude&gt;1.05&lt;/southBoundLatitude&gt;<br />&#xA0;&#xA0;&#xA0; &lt;/GeographicBoundingBox&gt;<br />&#xA0; &lt;/Metadata&gt;<br />&lt;/Database&gt;</pre>
+        <p class="SourceTitle" style="text-align:center;">Figure A.1</p>
+      </div>
+    </main>
+  <script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    asciimath2jax: { delimiters: [['(#(', ')#)']] }
+ });
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=MML_HTMLorMML-full" async="async"></script>
+<script src="https://cdn.rawgit.com/google/code-prettify/master/loader/run_prettify.js"></script>  <script>
+    $("#toc").on('click', 'li', function(e) {
+    $(this).parent().find('li.toc-active').removeClass('toc-active');
+    $(this).addClass('toc-active');
+});
+  </script>
+
+<script>
+  //TOC toggle animation
+$('#toggle').on('click', function(){
+    if( $('nav').is(':visible') ) {
+        $('nav').animate({ 'left': '-353px' }, 'slow', function(){
+            $('nav').hide();
+        });
+        $('.container').animate({ 'padding-left': '31px' }, 'slow');
+    }
+    else {
+        $('nav').show();
+        $('nav').animate({ 'left': '0px' }, 'slow');
+        $('.container').animate({ 'padding-left': '360px' }, 'slow');
+    }
+});
+</script>
+
+<script>
+    // Scroll to top button
+    window.onscroll = function() {scrollFunction()};
+    
+    function scrollFunction() {
+        if (document.body.scrollTop > 100 || document.documentElement.scrollTop > 100) {
+            document.getElementById("myBtn").style.display = "block";
+        } else {
+            document.getElementById("myBtn").style.display = "none";
+        }
+    }
+    
+    // When the user clicks on the button, scroll to the top of the document
+    function topFunction() {
+        document.body.scrollTop = 0;
+        document.documentElement.scrollTop = 0;
+    }
+    </script>
+
+  <script>
+// @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&dn=expat.txt Expat
+//
+// AnchorJS - v4.2.2 - 2020-04-20
+// https://www.bryanbraun.com/anchorjs/
+// Copyright (c) 2020 Bryan Braun; Licensed MIT
+//
+// @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&dn=expat.txt Expat
+!function(A,e){"use strict";"function"==typeof define&&define.amd?define([],e):"object"==typeof module&&module.exports?module.exports=e():(A.AnchorJS=e(),A.anchors=new A.AnchorJS)}(this,function(){"use strict";return function(A){function f(A){A.icon=A.hasOwnProperty("icon")?A.icon:"",A.visible=A.hasOwnProperty("visible")?A.visible:"hover",A.placement=A.hasOwnProperty("placement")?A.placement:"right",A.ariaLabel=A.hasOwnProperty("ariaLabel")?A.ariaLabel:"Anchor",A.class=A.hasOwnProperty("class")?A.class:"",A.base=A.hasOwnProperty("base")?A.base:"",A.truncate=A.hasOwnProperty("truncate")?Math.floor(A.truncate):64,A.titleText=A.hasOwnProperty("titleText")?A.titleText:""}function p(A){var e;if("string"==typeof A||A instanceof String)e=[].slice.call(document.querySelectorAll(A));else{if(!(Array.isArray(A)||A instanceof NodeList))throw new Error("The selector provided to AnchorJS was invalid.");e=[].slice.call(A)}return e}this.options=A||{},this.elements=[],f(this.options),this.isTouchDevice=function(){return!!("ontouchstart"in window||window.DocumentTouch&&document instanceof DocumentTouch)},this.add=function(A){var e,t,i,n,o,s,a,r,c,h,l,u,d=[];if(f(this.options),"touch"===(l=this.options.visible)&&(l=this.isTouchDevice()?"always":"hover"),0===(e=p(A=A||"h2, h3, h4, h5, h6")).length)return this;for(!function(){if(null!==document.head.querySelector("style.anchorjs"))return;var A,e=document.createElement("style");e.className="anchorjs",e.appendChild(document.createTextNode("")),void 0===(A=document.head.querySelector('[rel="stylesheet"],style'))?document.head.appendChild(e):document.head.insertBefore(e,A);e.sheet.insertRule(".anchorjs-link{opacity:0;text-decoration:none;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}",e.sheet.cssRules.length),e.sheet.insertRule(":hover>.anchorjs-link,.anchorjs-link:focus{opacity:1}",e.sheet.cssRules.length),e.sheet.insertRule("[data-anchorjs-icon]::after{content:attr(data-anchorjs-icon)}",e.sheet.cssRules.length),e.sheet.insertRule('@font-face{font-family:anchorjs-icons;src:url(data:n/a;base64,AAEAAAALAIAAAwAwT1MvMg8yG2cAAAE4AAAAYGNtYXDp3gC3AAABpAAAAExnYXNwAAAAEAAAA9wAAAAIZ2x5ZlQCcfwAAAH4AAABCGhlYWQHFvHyAAAAvAAAADZoaGVhBnACFwAAAPQAAAAkaG10eASAADEAAAGYAAAADGxvY2EACACEAAAB8AAAAAhtYXhwAAYAVwAAARgAAAAgbmFtZQGOH9cAAAMAAAAAunBvc3QAAwAAAAADvAAAACAAAQAAAAEAAHzE2p9fDzz1AAkEAAAAAADRecUWAAAAANQA6R8AAAAAAoACwAAAAAgAAgAAAAAAAAABAAADwP/AAAACgAAA/9MCrQABAAAAAAAAAAAAAAAAAAAAAwABAAAAAwBVAAIAAAAAAAIAAAAAAAAAAAAAAAAAAAAAAAMCQAGQAAUAAAKZAswAAACPApkCzAAAAesAMwEJAAAAAAAAAAAAAAAAAAAAARAAAAAAAAAAAAAAAAAAAAAAQAAg//0DwP/AAEADwABAAAAAAQAAAAAAAAAAAAAAIAAAAAAAAAIAAAACgAAxAAAAAwAAAAMAAAAcAAEAAwAAABwAAwABAAAAHAAEADAAAAAIAAgAAgAAACDpy//9//8AAAAg6cv//f///+EWNwADAAEAAAAAAAAAAAAAAAAACACEAAEAAAAAAAAAAAAAAAAxAAACAAQARAKAAsAAKwBUAAABIiYnJjQ3NzY2MzIWFxYUBwcGIicmNDc3NjQnJiYjIgYHBwYUFxYUBwYGIwciJicmNDc3NjIXFhQHBwYUFxYWMzI2Nzc2NCcmNDc2MhcWFAcHBgYjARQGDAUtLXoWOR8fORYtLTgKGwoKCjgaGg0gEhIgDXoaGgkJBQwHdR85Fi0tOAobCgoKOBoaDSASEiANehoaCQkKGwotLXoWOR8BMwUFLYEuehYXFxYugC44CQkKGwo4GkoaDQ0NDXoaShoKGwoFBe8XFi6ALjgJCQobCjgaShoNDQ0NehpKGgobCgoKLYEuehYXAAAADACWAAEAAAAAAAEACAAAAAEAAAAAAAIAAwAIAAEAAAAAAAMACAAAAAEAAAAAAAQACAAAAAEAAAAAAAUAAQALAAEAAAAAAAYACAAAAAMAAQQJAAEAEAAMAAMAAQQJAAIABgAcAAMAAQQJAAMAEAAMAAMAAQQJAAQAEAAMAAMAAQQJAAUAAgAiAAMAAQQJAAYAEAAMYW5jaG9yanM0MDBAAGEAbgBjAGgAbwByAGoAcwA0ADAAMABAAAAAAwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAH//wAP) format("truetype")}',e.sheet.cssRules.length)}(),t=document.querySelectorAll("[id]"),i=[].map.call(t,function(A){return A.id}),o=0;o<e.length;o++)if(this.hasAnchorJSLink(e[o]))d.push(o);else{if(e[o].hasAttribute("id"))n=e[o].getAttribute("id");else if(e[o].hasAttribute("data-anchor-id"))n=e[o].getAttribute("data-anchor-id");else{for(c=r=this.urlify(e[o].textContent),a=0;void 0!==s&&(c=r+"-"+a),a+=1,-1!==(s=i.indexOf(c)););s=void 0,i.push(c),e[o].setAttribute("id",c),n=c}(h=document.createElement("a")).className="anchorjs-link "+this.options.class,h.setAttribute("aria-label",this.options.ariaLabel),h.setAttribute("data-anchorjs-icon",this.options.icon),this.options.titleText&&(h.title=this.options.titleText),u=document.querySelector("base")?window.location.pathname+window.location.search:"",u=this.options.base||u,h.href=u+"#"+n,"always"===l&&(h.style.opacity="1"),""===this.options.icon&&(h.style.font="1em/1 anchorjs-icons","left"===this.options.placement&&(h.style.lineHeight="inherit")),"left"===this.options.placement?(h.style.position="absolute",h.style.marginLeft="-1em",h.style.paddingRight="0.5em",e[o].insertBefore(h,e[o].firstChild)):(h.style.paddingLeft="0.375em",e[o].appendChild(h))}for(o=0;o<d.length;o++)e.splice(d[o]-o,1);return this.elements=this.elements.concat(e),this},this.remove=function(A){for(var e,t,i=p(A),n=0;n<i.length;n++)(t=i[n].querySelector(".anchorjs-link"))&&(-1!==(e=this.elements.indexOf(i[n]))&&this.elements.splice(e,1),i[n].removeChild(t));return this},this.removeAll=function(){this.remove(this.elements)},this.urlify=function(A){return this.options.truncate||f(this.options),A.trim().replace(/
+</html>
+/gi,"").replace(/[& +$,:;=?@"#{}|^~[`%!'<>\]\.\/\(\)\*\\n\t\b\v]/g,"-").replace(/-{2,}/g,"-").substring(0,this.options.truncate).replace(/^-+|-+$/gm,"").toLowerCase()},this.hasAnchorJSLink=function(A){var e=A.firstChild&&-1<(" "+A.firstChild.className+" ").indexOf(" anchorjs-link "),t=A.lastChild&&-1<(" "+A.lastChild.className+" ").indexOf(" anchorjs-link ");return e||t||!1}}});
+// @license-end
+  </script>
+  <script>
+/*
+  $(document).ready(function() {
+          $('[id^=toc]').each(function ()
+          {
+             var currentToc = $(this);
+       var url = window.location.href;
+             currentToc.wrap("<a href='" + url + "#" + currentToc.attr("id") + "' </a>");
+          });
+});
+*/
+  anchors.options = {
+  placement: 'left'
+};
+anchors.add('h1, h2, h3, h4');
+</script>
+
+
+</body>
+</html>
