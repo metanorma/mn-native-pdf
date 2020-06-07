@@ -64,7 +64,7 @@ all: xslts documents.html
 targets:
 	echo "$(PDF)"
 
-xslts: xsltsclean update $(XSLT_GENERATED)
+xslts: xsltsclean $(XSLT_GENERATED)
 
 $(MN2PDF_EXECUTABLE):
 	curl -sSL ${MN2PDF_DOWNLOAD_PATH} -o $(MN2PDF_EXECUTABLE)
@@ -173,9 +173,6 @@ clean: xsltsclean
 
 xsltsclean:
 	rm -f $(XSLT_GENERATED)
-
-update:
-	git pull origin master
 
 update-init:
 	git submodule update --init
