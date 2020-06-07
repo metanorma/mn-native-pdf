@@ -131,16 +131,10 @@ documents/%.xml: sources/%.xml | documents
 	cp $< $@
 
 
-#documents/itu-T-REC-A.8-200810-I!!MSW-E.pdf:
-#	echo "### skipping $@"
-
 # This document is currently broken
 #un.agenda.xsl required
 documents/un-ECE_AGAT_2020_INF1.pdf:
 	echo "### skipping $@"
-
-#documents/itu-Z.100-201811-AnnF1.pdf:
-#	echo "### skipping $@"
 
 documents/%.pdf: sources/%.xml $(MN2PDF_EXECUTABLE) | documents
 ifeq ($(OS),Windows_NT)
@@ -187,7 +181,8 @@ update-init:
 	git submodule update --init
 
 update-modules:
-	git submodule foreach git fetch origin gh-pages
+	git submodule foreach git fetch origin gh-pages; \
+	git submodule foreach git checkout gh-pages; \
 	git submodule foreach git reset --hard origin/gh-pages
 
 publish: published
