@@ -1,5 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:fo="http://www.w3.org/1999/XSL/Format" xmlns:csa="https://www.metanorma.org/ns/csa" xmlns:mathml="http://www.w3.org/1998/Math/MathML" xmlns:xalan="http://xml.apache.org/xalan" xmlns:fox="http://xmlgraphics.apache.org/fop/extensions" version="1.0">
+<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" 
+											xmlns:fo="http://www.w3.org/1999/XSL/Format" 
+											xmlns:csa="https://www.metanorma.org/ns/csa" 
+											xmlns:mathml="http://www.w3.org/1998/Math/MathML" 
+											xmlns:xalan="http://xml.apache.org/xalan" 
+											xmlns:fox="http://xmlgraphics.apache.org/fop/extensions" 
+											xmlns:java="http://xml.apache.org/xalan/java" 
+											exclude-result-prefixes="java"
+											version="1.0">
 
 	<xsl:output version="1.0" method="xml" encoding="UTF-8" indent="yes"/>
 
@@ -87,45 +95,7 @@
 				
 			</fo:layout-master-set>
 			
-			<fo:declarations>
-				<pdf:catalog xmlns:pdf="http://xmlgraphics.apache.org/fop/extensions/pdf">
-						<pdf:dictionary type="normal" key="ViewerPreferences">
-							<pdf:boolean key="DisplayDocTitle">true</pdf:boolean>
-						</pdf:dictionary>
-					</pdf:catalog>
-				<x:xmpmeta xmlns:x="adobe:ns:meta/">
-					<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-						<rdf:Description rdf:about="" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:pdf="http://ns.adobe.com/pdf/1.3/">
-						<!-- Dublin Core properties go here -->
-							<dc:title>
-								<xsl:choose>
-									<xsl:when test="$doctitle != ''">
-										<xsl:value-of select="$doctitle"/>
-									</xsl:when>
-									<xsl:otherwise>
-										<xsl:text>&#xA0;</xsl:text>
-									</xsl:otherwise>
-								</xsl:choose>
-							</dc:title>
-							<dc:creator></dc:creator>
-							<dc:description>
-								<xsl:variable name="abstract">
-									<xsl:copy-of select="/csa:csa-standard/csa:bibdata/csa:abstract//text()"/>
-								</xsl:variable>
-								<xsl:value-of select="normalize-space($abstract)"/>
-							</dc:description>
-							<pdf:Keywords>
-								<xsl:call-template name="insertKeywords"/>
-							</pdf:Keywords>
-						</rdf:Description>
-						<rdf:Description rdf:about=""
-								xmlns:xmp="http://ns.adobe.com/xap/1.0/">
-							<!-- XMP properties go here -->
-							<xmp:CreatorTool></xmp:CreatorTool>
-						</rdf:Description>
-					</rdf:RDF>
-				</x:xmpmeta>
-			</fo:declarations>
+			<xsl:call-template name="addPDFUAmeta"/>
 			
 			<!-- Cover Page -->
 			<fo:page-sequence master-reference="cover-page" force-page-count="no-force">				

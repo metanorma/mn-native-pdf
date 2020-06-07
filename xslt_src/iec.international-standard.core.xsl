@@ -5,6 +5,8 @@
 											xmlns:mathml="http://www.w3.org/1998/Math/MathML" 
 											xmlns:xalan="http://xml.apache.org/xalan" 
 											xmlns:fox="http://xmlgraphics.apache.org/fop/extensions" 
+											xmlns:java="http://xml.apache.org/xalan/java" 
+											exclude-result-prefixes="java"
 											version="1.0">
 
 	<xsl:output method="xml" encoding="UTF-8" indent="no"/>
@@ -22,10 +24,6 @@
   <xsl:variable name="lang-1st-letter" select="''"/>
 	<xsl:variable name="ISOname" select="/iec:iec-standard/iec:bibdata/iec:docidentifier[@type='iso']"/>
 	
-	<!-- Information and documentation — Codes for transcription systems  -->
-	<xsl:variable name="title-en" select="/iec:iec-standard/iec:bibdata/iec:title[@language = 'en' and @type = 'main']"/>
-	<xsl:variable name="title-fr" select="/iec:iec-standard/iec:bibdata/iec:title[@language = 'fr' and @type = 'main']"/>
-
 	<xsl:variable name="title-intro" select="/iec:iec-standard/iec:bibdata/iec:title[@language = 'en' and @type = 'title-intro']"/>
 	<xsl:variable name="title-intro-fr" select="/iec:iec-standard/iec:bibdata/iec:title[@language = 'fr' and @type = 'title-intro']"/>
 	<xsl:variable name="title-main" select="/iec:iec-standard/iec:bibdata/iec:title[@language = 'en' and @type = 'title-main']"/>
@@ -178,47 +176,7 @@
 				</fo:simple-page-master>
 			</fo:layout-master-set>
 
-
-			
-			<fo:declarations>
-				<pdf:catalog xmlns:pdf="http://xmlgraphics.apache.org/fop/extensions/pdf">
-						<pdf:dictionary type="normal" key="ViewerPreferences">
-							<pdf:boolean key="DisplayDocTitle">true</pdf:boolean>
-						</pdf:dictionary>
-					</pdf:catalog>
-				<x:xmpmeta xmlns:x="adobe:ns:meta/">
-					<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-						<rdf:Description rdf:about="" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:pdf="http://ns.adobe.com/pdf/1.3/">
-						<!-- Dublin Core properties go here -->
-							<dc:title>
-								<xsl:choose>
-									<xsl:when test="$title-en != ''">
-										<xsl:value-of select="$title-en"/>
-									</xsl:when>
-									<xsl:otherwise>
-										<xsl:text>&#xA0;</xsl:text>
-									</xsl:otherwise>
-								</xsl:choose>
-							</dc:title>
-							<dc:creator></dc:creator>
-							<dc:description>
-								<xsl:variable name="abstract">
-									<xsl:copy-of select="/iec:iec-standard/iec:bibliography/iec:references/iec:bibitem/iec:abstract[@language = 'en']//text()"/>
-								</xsl:variable>
-								<xsl:value-of select="normalize-space($abstract)"/>
-							</dc:description>
-							<pdf:Keywords>
-								<xsl:call-template name="insertKeywords"/>
-							</pdf:Keywords>
-						</rdf:Description>
-						<rdf:Description rdf:about=""
-								xmlns:xmp="http://ns.adobe.com/xap/1.0/">
-							<!-- XMP properties go here -->
-							<xmp:CreatorTool></xmp:CreatorTool>
-						</rdf:Description>
-					</rdf:RDF>
-				</x:xmpmeta>
-			</fo:declarations>
+			<xsl:call-template name="addPDFUAmeta"/>
 
 			<!-- For 'Published' documents insert two cover pages -->
 			<xsl:if test="$stage &gt;= 60">

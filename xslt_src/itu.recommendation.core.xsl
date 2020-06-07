@@ -128,36 +128,7 @@
 				</fo:page-sequence-master>
 			</fo:layout-master-set>
 
-			<fo:declarations>
-				<pdf:catalog xmlns:pdf="http://xmlgraphics.apache.org/fop/extensions/pdf">
-						<pdf:dictionary type="normal" key="ViewerPreferences">
-							<pdf:boolean key="DisplayDocTitle">true</pdf:boolean>
-						</pdf:dictionary>
-					</pdf:catalog>
-				<x:xmpmeta xmlns:x="adobe:ns:meta/">
-					<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-						<rdf:Description rdf:about="" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:pdf="http://ns.adobe.com/pdf/1.3/">
-						<!-- Dublin Core properties go here -->
-							<dc:title><xsl:value-of select="/itu:itu-standard/itu:bibdata/itu:title[@type='main']"/>&#xA0;</dc:title>
-							<dc:creator><xsl:value-of select="/itu:iso-standard/itu:bibdata/itu:contributor[itu:role/@type='author']/itu:organization/itu:name"/></dc:creator>
-							<dc:description>
-								<xsl:variable name="abstract">
-									<xsl:copy-of select="/itu:itu-standard/itu:bibdata/itu:abstract//text()"/>
-								</xsl:variable>
-								<xsl:value-of select="normalize-space($abstract)"/>
-							</dc:description>
-							<pdf:Keywords>
-								<xsl:call-template name="insertKeywords"/>
-							</pdf:Keywords>
-						</rdf:Description>
-						<rdf:Description rdf:about=""
-								xmlns:xmp="http://ns.adobe.com/xap/1.0/">
-							<!-- XMP properties go here -->
-							<xmp:CreatorTool></xmp:CreatorTool>
-						</rdf:Description>
-					</rdf:RDF>
-				</x:xmpmeta>
-			</fo:declarations>
+			<xsl:call-template name="addPDFUAmeta"/>
 			
 			<!-- cover page -->
 			<fo:page-sequence master-reference="cover-page">
