@@ -999,6 +999,12 @@
 		</fo:block-container>		
 	</xsl:template>
 
+	<xsl:template match="iho:formula">
+		<fo:wrapper id="{@id}">
+			<xsl:apply-templates />
+		</fo:wrapper>
+	</xsl:template>
+	
 	<xsl:template match="iho:formula/iho:dt/iho:stem">
 		<fo:inline>
 			<xsl:apply-templates />
@@ -1006,7 +1012,7 @@
 	</xsl:template>
 	
 	<xsl:template match="iho:formula/iho:stem">
-		<fo:block id="{../@id}" margin-top="6pt" margin-bottom="12pt" text-align="center">
+		<fo:block margin-top="6pt" margin-bottom="12pt" text-align="center">
 			<xsl:apply-templates />						
 		</fo:block>
 	</xsl:template>
@@ -1240,7 +1246,7 @@
 		
 	<xsl:template match="iho:term">
 		<xsl:param name="sectionNum"/>
-		<fo:block margin-bottom="10pt">
+		<fo:block  id="{@id}" margin-bottom="10pt">
 			<xsl:apply-templates>
 				<xsl:with-param name="sectionNum" select="$sectionNum"/>
 			</xsl:apply-templates>
@@ -1251,7 +1257,7 @@
 		<xsl:param name="sectionNum"/>
 		<fo:block line-height="1.1">
 			<fo:block font-weight="bold" keep-with-next="always">
-				<fo:inline id="{../@id}">
+				<fo:inline>
 					<xsl:variable name="section">
 						<xsl:call-template name="getSection">
 							<xsl:with-param name="sectionNum" select="$sectionNum"/>

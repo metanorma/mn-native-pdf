@@ -1121,6 +1121,15 @@
 			</fo:list-item-body>
 		</fo:list-item>
 	</xsl:template>
+
+	<xsl:template match="csa:term">
+		<xsl:param name="sectionNum"/>
+		<fo:wrapper id="{@id}">
+			<xsl:apply-templates>
+				<xsl:with-param name="sectionNum" select="$sectionNum"/>
+			</xsl:apply-templates>
+		</fo:wrapper>
+	</xsl:template>
 	
 	<xsl:template match="csa:preferred">
 		<xsl:param name="sectionNum"/>
@@ -1140,7 +1149,7 @@
 		</xsl:variable>
 		<fo:block font-size="{$font-size}">
 			<fo:block font-weight="bold" keep-with-next="always">
-				<fo:inline id="{../@id}">
+				<fo:inline>
 					<xsl:value-of select="$section"/><xsl:text>.</xsl:text>
 				</fo:inline>
 			</fo:block>
@@ -1514,6 +1523,12 @@
 		
 	</xsl:template>
 	
+	<xsl:template match="csa:formula">
+		<fo:wrapper id="{@id}">
+			<xsl:apply-templates />
+		</fo:wrapper>
+	</xsl:template>
+	
 	<xsl:template match="csa:formula/csa:dt/csa:stem">
 		<fo:inline>
 			<xsl:apply-templates />
@@ -1521,7 +1536,7 @@
 	</xsl:template>
 	
 	<xsl:template match="csa:formula/csa:stem">
-		<fo:block id="{../@id}" margin-top="6pt" margin-bottom="12pt">
+		<fo:block margin-top="6pt" margin-bottom="12pt">
 			<fo:table table-layout="fixed" width="100%">
 				<fo:table-column column-width="95%"/>
 				<fo:table-column column-width="5%"/>

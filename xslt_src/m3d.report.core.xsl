@@ -1334,6 +1334,12 @@
 		</fo:block>
 	</xsl:template>
 	
+	<xsl:template match="m3d:formula">
+		<fo:wrapper id="{@id}">
+			<xsl:apply-templates />
+		</fo:wrapper>
+	</xsl:template>
+	
 	<xsl:template match="m3d:formula/m3d:dt/m3d:stem">
 		<fo:inline>
 			<xsl:apply-templates />
@@ -1341,7 +1347,7 @@
 	</xsl:template>
 	
 	<xsl:template match="m3d:formula/m3d:stem">
-		<fo:block id="{../@id}" margin-top="14pt" margin-bottom="14pt">
+		<fo:block margin-top="14pt" margin-bottom="14pt">
 			<fo:table table-layout="fixed" width="170mm">
 				<fo:table-column column-width="165mm"/>
 				<fo:table-column column-width="5mm"/>

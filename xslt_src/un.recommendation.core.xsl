@@ -1297,7 +1297,7 @@
 		</fo:block>
 	</xsl:template>
 	<xsl:template match="un:term" mode="table">
-		<fo:table-row>
+		<fo:table-row id="{@id}">
 			<fo:table-cell padding-right="1mm">
 				<fo:block margin-bottom="12pt">
 					<xsl:apply-templates select="un:preferred"/>
@@ -1311,7 +1311,7 @@
 		</fo:table-row>
 	</xsl:template>
 	<xsl:template match="un:preferred">
-		<fo:inline id="{../@id}">
+		<fo:inline>
 			<xsl:apply-templates />
 		</fo:inline>
 	</xsl:template>

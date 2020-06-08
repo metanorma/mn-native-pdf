@@ -1602,6 +1602,12 @@
 		</fo:block>
 	</xsl:template>
 	
+	<xsl:template match="gb:formula">
+		<fo:wrapper id="{@id}">
+			<xsl:apply-templates />
+		</fo:wrapper>
+	</xsl:template>
+	
 	<xsl:template match="gb:formula/gb:dt/gb:stem">
 		<fo:inline>
 			<xsl:apply-templates />
@@ -1609,7 +1615,7 @@
 	</xsl:template>
 	
 	<xsl:template match="gb:formula/gb:stem">
-		<fo:block id="{../@id}" font-size="11pt" margin-top="14pt" margin-bottom="14pt">
+		<fo:block font-size="11pt" margin-top="14pt" margin-bottom="14pt">
 			<fo:table table-layout="fixed" width="170mm">
 				<fo:table-column column-width="165mm"/>
 				<fo:table-column column-width="5mm"/>

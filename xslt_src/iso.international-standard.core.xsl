@@ -1848,7 +1848,7 @@
 	
 	<xsl:template match="iso:term">
 		<xsl:param name="sectionNum"/>
-		<fo:block margin-bottom="10pt">
+		<fo:block id="{@id}" margin-bottom="10pt">
 			<xsl:apply-templates>
 				<xsl:with-param name="sectionNum" select="$sectionNum"/>
 			</xsl:apply-templates>
@@ -1859,7 +1859,7 @@
 		<xsl:param name="sectionNum"/>
 		<fo:block line-height="1.1">
 			<fo:block font-weight="bold" keep-with-next="always">
-				<fo:inline id="{../@id}">
+				<fo:inline>
 					<xsl:variable name="section">
 						<xsl:call-template name="getSection">
 							<xsl:with-param name="sectionNum" select="$sectionNum"/>
