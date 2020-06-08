@@ -1804,13 +1804,13 @@
 				<xsl:number level="any" count="iso:bibitem/iso:note"/>
 			</xsl:variable>
 			<fo:inline font-size="8pt" keep-with-previous.within-line="always" baseline-shift="30%"> <!--85% vertical-align="super"-->
-				<fo:basic-link internal-destination="footnote_{../@id}" fox:alt-text="footnote {$number}">
+				<fo:basic-link internal-destination="{generate-id()}" fox:alt-text="footnote {$number}">
 					<xsl:value-of select="$number"/><xsl:text>)</xsl:text>
 				</fo:basic-link>
 			</fo:inline>
 			<fo:footnote-body>
 				<fo:block font-size="10pt" margin-bottom="4pt" start-indent="0pt">
-					<fo:inline id="footnote_{../@id}" keep-with-next.within-line="always" alignment-baseline="hanging" padding-right="3mm"><!-- font-size="60%"  -->
+					<fo:inline id="{generate-id()}" keep-with-next.within-line="always" alignment-baseline="hanging" padding-right="3mm"><!-- font-size="60%"  -->
 						<xsl:value-of select="$number"/><xsl:text>)</xsl:text>
 					</fo:inline>
 					<xsl:apply-templates />
@@ -2174,6 +2174,12 @@
 		</fo:block>
 	</xsl:template>
 	
+	<xsl:template match="iso:formula">
+		<fo:wrapper id="{@id}">
+			<xsl:apply-templates />
+		</fo:wrapper>
+	</xsl:template>
+	
 	<xsl:template match="iso:formula/iso:dt/iso:stem">
 		<fo:inline>
 			<xsl:apply-templates />
@@ -2181,7 +2187,7 @@
 	</xsl:template>
 	
 	<xsl:template match="iso:formula/iso:stem">
-		<fo:block id="{../@id}" margin-top="6pt" margin-bottom="12pt">
+		<fo:block margin-top="6pt" margin-bottom="12pt">
 			<fo:table table-layout="fixed" width="100%">
 				<fo:table-column column-width="95%"/>
 				<fo:table-column column-width="5%"/>

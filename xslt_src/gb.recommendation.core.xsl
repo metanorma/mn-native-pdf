@@ -1131,13 +1131,13 @@
 				<xsl:number level="any" count="gb:bibitem/gb:note"/>
 			</xsl:variable>
 			<fo:inline font-size="50%" keep-with-previous.within-line="always" baseline-shift="30%">
-				<fo:basic-link internal-destination="footnote_{../@id}" fox:alt-text="footnote {$number}">
+				<fo:basic-link internal-destination="{generate-id()}" fox:alt-text="footnote {$number}">
 					<xsl:value-of select="$number"/>
 				</fo:basic-link>
 			</fo:inline>
 			<fo:footnote-body>
 				<fo:block font-size="9pt" margin-bottom="4pt" start-indent="0pt" text-indent="7.4mm">
-					<fo:inline font-size="50%" id="footnote_{../@id}" keep-with-next.within-line="always" baseline-shift="30%"><!-- alignment-baseline="hanging" font-size="60%"  -->
+					<fo:inline font-size="50%" id="{generate-id()}" keep-with-next.within-line="always" baseline-shift="30%"><!-- alignment-baseline="hanging" font-size="60%"  -->
 						<xsl:value-of select="$number"/>
 					</fo:inline>
 					<xsl:apply-templates />

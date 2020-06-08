@@ -278,14 +278,7 @@
 	<!-- Any node with title element - clause, definition, annex,... -->
 	<xsl:template match="un:title | un:preferred" mode="contents">
 		<xsl:variable name="id">
-			<xsl:choose>
-				<xsl:when test="../@id">
-					<xsl:value-of select="../@id"/>
-				</xsl:when>
-				<xsl:otherwise>
-					<xsl:value-of select="text()"/>
-				</xsl:otherwise>
-			</xsl:choose>
+			<xsl:call-template name="getId"/>			
 		</xsl:variable>
 		
 		<xsl:variable name="level">
@@ -792,14 +785,7 @@
 	
 	<xsl:template match="un:title">
 		<xsl:variable name="id">
-			<xsl:choose>
-				<xsl:when test="../@id">
-					<xsl:value-of select="../@id"/>
-				</xsl:when>
-				<xsl:otherwise>
-					<xsl:value-of select="text()"/>
-				</xsl:otherwise>
-			</xsl:choose>
+			<xsl:call-template name="getId"/>			
 		</xsl:variable>
 		
 		<xsl:variable name="level">

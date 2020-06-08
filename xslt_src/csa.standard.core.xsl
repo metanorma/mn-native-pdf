@@ -1031,13 +1031,13 @@
 				</xsl:choose>
 			</xsl:variable>
 			<fo:inline font-size="65%" keep-with-previous.within-line="always" vertical-align="super"> <!--  60% baseline-shift="35%"   -->
-				<fo:basic-link internal-destination="footnote_{../@id}" fox:alt-text="footnote {$number}">
+				<fo:basic-link internal-destination="{generate-id()}" fox:alt-text="footnote {$number}">
 					<xsl:value-of select="$number"/><!-- <xsl:text>)</xsl:text> -->
 				</fo:basic-link>
 			</fo:inline>
 			<fo:footnote-body>
 				<fo:block font-family="AzoSans-Light" font-size="10pt" margin-bottom="12pt" start-indent="0pt" color="rgb(168, 170, 173)">
-					<fo:inline id="footnote_{../@id}" keep-with-next.within-line="always" font-size="60%" vertical-align="super"><!-- baseline-shift="30%" padding-right="9mm"  alignment-baseline="hanging" -->
+					<fo:inline id="{generate-id()}" keep-with-next.within-line="always" font-size="60%" vertical-align="super"><!-- baseline-shift="30%" padding-right="9mm"  alignment-baseline="hanging" -->
 						<xsl:value-of select="$number"/><!-- <xsl:text>)</xsl:text> -->
 					</fo:inline>
 					<xsl:apply-templates />

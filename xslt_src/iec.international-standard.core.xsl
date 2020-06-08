@@ -2036,13 +2036,13 @@
 				<xsl:number level="any" count="iec:bibitem/iec:note"/>
 			</xsl:variable>
 			<fo:inline font-size="8pt" keep-with-previous.within-line="always"  baseline-shift="15%" > <!--font-size="85%"  vertical-align="super"60% -->
-				<fo:basic-link internal-destination="footnote_{../@id}" fox:alt-text="footnote {$number}">
+				<fo:basic-link internal-destination="{generate-id()}" fox:alt-text="footnote {$number}">
 					<xsl:value-of select="$number"/><!-- <xsl:text>)</xsl:text> -->
 				</fo:basic-link>
 			</fo:inline>
 			<fo:footnote-body>
 				<fo:block font-size="8pt" margin-bottom="5pt">
-					<fo:inline id="footnote_{../@id}" keep-with-next.within-line="always" baseline-shift="15%" padding-right="3mm"><!-- padding-right="9mm" alignment-baseline="hanging"  font-size="60%"  -->
+					<fo:inline id="{generate-id()}" keep-with-next.within-line="always" baseline-shift="15%" padding-right="3mm"><!-- padding-right="9mm" alignment-baseline="hanging"  font-size="60%"  -->
 						<xsl:value-of select="$number"/><!-- <xsl:text>)</xsl:text> -->
 					</fo:inline>
 					<xsl:apply-templates />
