@@ -1396,38 +1396,6 @@
 		</fo:static-content>
 	</xsl:template>
 	
-	<xsl:template name="getId">
-		<xsl:choose>
-			<xsl:when test="../@id">
-				<xsl:value-of select="../@id"/>
-			</xsl:when>
-			<xsl:otherwise>
-				<xsl:value-of select="text()"/>
-			</xsl:otherwise>
-		</xsl:choose>
-	</xsl:template>
-
-	<xsl:template name="getLevel">
-		<xsl:variable name="level_total" select="count(ancestor::*)"/>
-		<xsl:variable name="level">
-			<xsl:choose>
-				<xsl:when test="ancestor::iho:preface">
-					<xsl:value-of select="$level_total - 2"/>
-				</xsl:when>
-				<xsl:when test="ancestor::iho:sections">
-					<xsl:value-of select="$level_total - 2"/>
-				</xsl:when>
-				<xsl:when test="ancestor::iho:bibliography">
-					<xsl:value-of select="$level_total - 2"/>
-				</xsl:when>
-				<xsl:when test="local-name(ancestor::*[1]) = 'annex'">1</xsl:when>
-				<xsl:otherwise>
-					<xsl:value-of select="$level_total - 1"/>
-				</xsl:otherwise>
-			</xsl:choose>
-		</xsl:variable>
-		<xsl:value-of select="$level"/>
-	</xsl:template>
 
 	<xsl:template name="getSection">
 		<xsl:param name="sectionNum"/>

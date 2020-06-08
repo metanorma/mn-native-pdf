@@ -1375,40 +1375,6 @@
 	<xsl:template match="m3d:br" priority="2">
 		<xsl:value-of select="$linebreak"/>
 	</xsl:template>
-	
-
-	<xsl:template name="getId">
-		<xsl:choose>
-			<xsl:when test="../@id">
-				<xsl:value-of select="../@id"/>
-			</xsl:when>
-			<xsl:otherwise>
-				<xsl:value-of select="text()"/>
-			</xsl:otherwise>
-		</xsl:choose>
-	</xsl:template>
-
-	<xsl:template name="getLevel">
-		<xsl:variable name="level_total" select="count(ancestor::*)"/>
-		<xsl:variable name="level">
-			<xsl:choose>
-				<xsl:when test="ancestor::m3d:preface">
-					<xsl:value-of select="$level_total - 2"/>
-				</xsl:when>
-				<xsl:when test="ancestor::m3d:sections">
-					<xsl:value-of select="$level_total - 2"/>
-				</xsl:when>
-				<xsl:when test="ancestor::m3d:bibliography">
-					<xsl:value-of select="$level_total - 2"/>
-				</xsl:when>
-				<xsl:when test="local-name(ancestor::*[1]) = 'annex'">1</xsl:when>
-				<xsl:otherwise>
-					<xsl:value-of select="$level_total - 1"/>
-				</xsl:otherwise>
-			</xsl:choose>
-		</xsl:variable>
-		<xsl:value-of select="$level"/>
-	</xsl:template>
 
 	<xsl:template name="getSection">
 		<xsl:param name="sectionNum"/>
