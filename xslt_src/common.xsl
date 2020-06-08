@@ -511,9 +511,9 @@
 					<xsl:attribute name="font-size">8pt</xsl:attribute>
 				</xsl:if>
 				<xsl:if test="$namespace = 'iho'">				
-				<xsl:attribute name="margin-left">0mm</xsl:attribute>
-				<xsl:attribute name="margin-right">0mm</xsl:attribute>
-			</xsl:if>
+					<xsl:attribute name="margin-left">0mm</xsl:attribute>
+					<xsl:attribute name="margin-right">0mm</xsl:attribute>
+				</xsl:if>
 				<xsl:for-each select="xalan:nodeset($colwidths)//column">
 					<xsl:choose>
 						<xsl:when test=". = 1 or . = 0">
@@ -524,7 +524,16 @@
 						</xsl:otherwise>
 					</xsl:choose>
 				</xsl:for-each>
-				<xsl:apply-templates />
+				
+				<xsl:choose>
+					<xsl:when test="not(*[local-name()='tbody']) and *[local-name()='thead']">
+						<xsl:apply-templates select="*[local-name()='thead']" mode="process_tbody"/>
+					</xsl:when>
+					<xsl:otherwise>
+						<xsl:apply-templates />
+					</xsl:otherwise>
+				</xsl:choose>
+				
 			</fo:table>
 			
 			<xsl:if test="$namespace = 'gb'">
@@ -770,6 +779,12 @@
 			</xsl:if>
 			<xsl:apply-templates />
 		</fo:table-header>
+	</xsl:template>
+	
+	<xsl:template match="*[local-name()='thead']" mode="process_tbody">		
+		<fo:table-body>
+			<xsl:apply-templates />
+		</fo:table-body>
 	</xsl:template>
 	
 	<xsl:template match="*[local-name()='tfoot']"/>
