@@ -1415,15 +1415,7 @@
 						</xsl:when>
 						<xsl:when test="$level &gt;= 2">
 							<xsl:variable name="num">
-								<xsl:number format=".1" level="multiple" count="iho:clause/iho:clause | 
-																																										iho:clause/iho:terms | 
-																																										iho:terms/iho:term | 
-																																										iho:clause/iho:term |  
-																																										iho:terms/iho:clause |
-																																										iho:terms/iho:definitions |
-																																										iho:definitions/iho:clause |
-																																										iho:clause/iho:definitions |
-																																										iho:clause/iho:references"/>
+								<xsl:call-template name="getSubSection"/>
 							</xsl:variable>
 							<xsl:value-of select="concat($sectionNum, $num)"/><xsl:text>.</xsl:text>
 						</xsl:when>

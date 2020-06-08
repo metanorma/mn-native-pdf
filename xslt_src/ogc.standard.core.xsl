@@ -1896,7 +1896,7 @@
 						</xsl:when>
 						<xsl:when test="$level &gt;= 2">
 							<xsl:variable name="num">
-								<xsl:number format=".1" level="multiple" count="ogc:clause/ogc:clause | ogc:clause/ogc:terms | ogc:terms/ogc:term | ogc:clause/ogc:term | ogc:clause/ogc:definitions | ogc:definitions/ogc:definitions | ogc:terms/ogc:definitions"/>
+								<xsl:call-template name="getSubSection"/>								
 							</xsl:variable>
 							<xsl:value-of select="concat($sectionNum, $num)"/>
 						</xsl:when>

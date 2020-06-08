@@ -1599,7 +1599,7 @@
 						</xsl:when>
 						<xsl:when test="$level &gt;= 2">
 							<xsl:variable name="num">
-								<xsl:number format=".1" level="multiple" count="csa:clause/csa:clause | csa:clause/csa:terms | csa:terms/csa:term | csa:clause/csa:term | csa:clause/csa:definitions | csa:definitions/csa:definitions | csa:terms/csa:definitions"/>
+								<xsl:call-template name="getSubSection"/>								
 							</xsl:variable>
 							<xsl:value-of select="concat($sectionNum, $num)"/>
 						</xsl:when>

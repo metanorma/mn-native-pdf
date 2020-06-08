@@ -1694,14 +1694,7 @@
 						</xsl:when>
 						<xsl:when test="$level &gt;= 2">
 							<xsl:variable name="num">
-								<xsl:number format=".1" level="multiple" count="gb:clause/gb:clause | 
-																																										gb:clause/gb:terms | 
-																																										gb:terms/gb:term | 
-																																										gb:clause/gb:term |  
-																																										gb:terms/gb:clause |
-																																										gb:terms/gb:definitions |
-																																										gb:definitions/gb:clause |
-																																										gb:clause/gb:definitions"/>
+								<xsl:call-template name="getSubSection"/>								
 							</xsl:variable>
 							<xsl:value-of select="concat($sectionNum, $num)"/>
 						</xsl:when>

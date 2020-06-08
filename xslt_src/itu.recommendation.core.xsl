@@ -2338,7 +2338,7 @@
 						</xsl:when>
 						<xsl:when test="$level &gt;= 2">
 							<xsl:variable name="num">
-								<xsl:number format=".1" level="multiple" count="itu:clause/itu:clause | itu:clause/itu:terms | itu:terms/itu:term | itu:clause/itu:term | itu:clause/itu:definitions"/>
+								<xsl:call-template name="getSubSection"/>								
 							</xsl:variable>
 							<!-- <xsl:variable name="sectionNum_">
 								<xsl:choose>

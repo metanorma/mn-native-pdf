@@ -1403,14 +1403,7 @@
 						</xsl:when>
 						<xsl:when test="$level &gt;= 2">
 							<xsl:variable name="num">
-								<xsl:number format=".1" level="multiple" count="m3d:clause/m3d:clause | 
-																																										m3d:clause/m3d:terms | 
-																																										m3d:terms/m3d:term | 
-																																										m3d:clause/m3d:term |  
-																																										m3d:terms/m3d:clause |
-																																										m3d:terms/m3d:definitions |
-																																										m3d:definitions/m3d:clause |
-																																										m3d:clause/m3d:definitions"/>
+								<xsl:call-template name="getSubSection"/>								
 							</xsl:variable>
 							<xsl:value-of select="concat($sectionNum, $num)"/><xsl:text>.</xsl:text>
 						</xsl:when>
