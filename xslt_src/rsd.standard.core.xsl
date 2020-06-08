@@ -1,5 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:fo="http://www.w3.org/1999/XSL/Format" xmlns:rsd="https://www.metanorma.org/ns/rsd" xmlns:mathml="http://www.w3.org/1998/Math/MathML" xmlns:xalan="http://xml.apache.org/xalan" xmlns:fox="http://xmlgraphics.apache.org/fop/extensions" version="1.0">
+<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" 
+											xmlns:fo="http://www.w3.org/1999/XSL/Format" 
+											xmlns:rsd="https://www.metanorma.org/ns/rsd" 
+											xmlns:mathml="http://www.w3.org/1998/Math/MathML" 
+											xmlns:xalan="http://xml.apache.org/xalan" 
+											xmlns:fox="http://xmlgraphics.apache.org/fop/extensions" 
+											xmlns:java="http://xml.apache.org/xalan/java" 
+											exclude-result-prefixes="java"
+											version="1.0">
 
 	<xsl:output version="1.0" method="xml" encoding="UTF-8" indent="no"/>
 
@@ -100,50 +108,10 @@
 						<fo:conditional-page-master-reference odd-or-even="odd" master-reference="odd"/>
 						<fo:conditional-page-master-reference odd-or-even="even" master-reference="even"/>
 					</fo:repeatable-page-master-alternatives>
-				</fo:page-sequence-master>
-				
-				
+				</fo:page-sequence-master>				
 			</fo:layout-master-set>
 			
-			<fo:declarations>
-				<pdf:catalog xmlns:pdf="http://xmlgraphics.apache.org/fop/extensions/pdf">
-						<pdf:dictionary type="normal" key="ViewerPreferences">
-							<pdf:boolean key="DisplayDocTitle">true</pdf:boolean>
-						</pdf:dictionary>
-					</pdf:catalog>
-				<x:xmpmeta xmlns:x="adobe:ns:meta/">
-					<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-						<rdf:Description rdf:about="" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:pdf="http://ns.adobe.com/pdf/1.3/">
-						<!-- Dublin Core properties go here -->
-							<dc:title>
-								<xsl:choose>
-									<xsl:when test="$doctitle != ''">
-										<xsl:value-of select="$doctitle"/>
-									</xsl:when>
-									<xsl:otherwise>
-										<xsl:text>&#xA0;</xsl:text>
-									</xsl:otherwise>
-								</xsl:choose>
-							</dc:title>
-							<dc:creator></dc:creator>
-							<dc:description>
-								<xsl:variable name="abstract">
-									<xsl:copy-of select="/rsd:rsd-standard/rsd:bibdata/rsd:abstract//text()"/>
-								</xsl:variable>
-								<xsl:value-of select="normalize-space($abstract)"/>
-							</dc:description>
-							<pdf:Keywords>
-								<xsl:call-template name="insertKeywords"/>
-							</pdf:Keywords>
-						</rdf:Description>
-						<rdf:Description rdf:about=""
-								xmlns:xmp="http://ns.adobe.com/xap/1.0/">
-							<!-- XMP properties go here -->
-							<xmp:CreatorTool></xmp:CreatorTool>
-						</rdf:Description>
-					</rdf:RDF>
-				</x:xmpmeta>
-			</fo:declarations>
+			<xsl:call-template name="addPDFUAmeta"/>
 			
 			<fo:page-sequence master-reference="document" format="i" force-page-count="end-on-even">
 				<fo:static-content flow-name="xsl-footnote-separator">
@@ -1061,13 +1029,13 @@
 				</xsl:choose>
 			</xsl:variable>
 			<fo:inline font-size="65%" keep-with-previous.within-line="always" vertical-align="super"> <!--  60% baseline-shift="35%"   -->
-				<fo:basic-link internal-destination="footnote_{../@id}" fox:alt-text="footnote {$number}">
+				<fo:basic-link internal-destination="{generate-id()}" fox:alt-text="footnote {$number}">
 					<xsl:value-of select="$number"/><!-- <xsl:text>)</xsl:text> -->
 				</fo:basic-link>
 			</fo:inline>
 			<fo:footnote-body>
 				<fo:block font-size="10pt" margin-bottom="12pt" start-indent="0pt" color="rgb(168, 170, 173)">
-					<fo:inline id="footnote_{../@id}" keep-with-next.within-line="always" font-size="60%" vertical-align="super"><!-- baseline-shift="30%" padding-right="9mm"  alignment-baseline="hanging" -->
+					<fo:inline id="{generate-id()}" keep-with-next.within-line="always" font-size="60%" vertical-align="super"><!-- baseline-shift="30%" padding-right="9mm"  alignment-baseline="hanging" -->
 						<xsl:value-of select="$number"/><!-- <xsl:text>)</xsl:text> -->
 					</fo:inline>
 					<xsl:apply-templates />
@@ -1181,7 +1149,16 @@
 			</fo:list-item-body>
 		</fo:list-item>
 	</xsl:template>
-		
+	
+	<xsl:template match="rsd:term">
+		<xsl:param name="sectionNum"/>
+		<fo:wrapper id="{@id}">
+			<xsl:apply-templates>
+				<xsl:with-param name="sectionNum" select="$sectionNum"/>
+			</xsl:apply-templates>
+		</fo:wrapper>
+	</xsl:template>
+	
 	<xsl:template match="rsd:preferred">
 		<xsl:param name="sectionNum"/>
 		<xsl:variable name="section">
@@ -1200,7 +1177,7 @@
 		</xsl:variable>
 		<fo:block font-size="{$font-size}">
 			<fo:block font-weight="bold" keep-with-next="always">
-				<fo:inline id="{../@id}">
+				<fo:inline>
 					<xsl:value-of select="$section"/><xsl:text>.</xsl:text>
 				</fo:inline>
 			</fo:block>
@@ -1520,6 +1497,12 @@
 		
 	</xsl:template>
 	
+	<xsl:template match="rsd:formula">
+		<fo:wrapper id="{@id}">
+			<xsl:apply-templates />
+		</fo:wrapper>
+	</xsl:template>
+	
 	<xsl:template match="rsd:formula/rsd:dt/rsd:stem">
 		<fo:inline>
 			<xsl:apply-templates />
@@ -1527,7 +1510,7 @@
 	</xsl:template>
 	
 	<xsl:template match="rsd:formula/rsd:stem">
-		<fo:block id="{../@id}" margin-top="6pt" margin-bottom="12pt">
+		<fo:block margin-top="6pt" margin-bottom="12pt">
 			<fo:table table-layout="fixed" width="100%">
 				<fo:table-column column-width="95%"/>
 				<fo:table-column column-width="5%"/>
@@ -1610,39 +1593,7 @@
 		</fo:static-content>
 	</xsl:template>
 
-	<xsl:template name="getId">
-		<xsl:choose>
-			<xsl:when test="../@id">
-				<xsl:value-of select="../@id"/>
-			</xsl:when>
-			<xsl:otherwise>
-				<xsl:value-of select="text()"/>
-			</xsl:otherwise>
-		</xsl:choose>
-	</xsl:template>
-
-	<xsl:template name="getLevel">
-		<xsl:variable name="level_total" select="count(ancestor::*)"/>
-		<xsl:variable name="level">
-			<xsl:choose>
-				<xsl:when test="ancestor::rsd:preface">
-					<xsl:value-of select="$level_total - 2"/>
-				</xsl:when>
-				<xsl:when test="ancestor::rsd:sections">
-					<xsl:value-of select="$level_total - 2"/>
-				</xsl:when>
-				<xsl:when test="ancestor::rsd:bibliography">
-					<xsl:value-of select="$level_total - 2"/>
-				</xsl:when>
-				<xsl:when test="local-name(ancestor::*[1]) = 'annex'">1</xsl:when>
-				<xsl:otherwise>
-					<xsl:value-of select="$level_total - 1"/>
-				</xsl:otherwise>
-			</xsl:choose>
-		</xsl:variable>
-		<xsl:value-of select="$level"/>
-	</xsl:template>
-
+	
 	<xsl:template name="getSection">
 		<xsl:param name="sectionNum"/>
 		<xsl:variable name="level">
@@ -1661,7 +1612,7 @@
 						</xsl:when>
 						<xsl:when test="$level &gt;= 2">
 							<xsl:variable name="num">
-								<xsl:number format=".1" level="multiple" count="rsd:clause/rsd:clause | rsd:clause/rsd:terms | rsd:terms/rsd:term | rsd:clause/rsd:term | rsd:clause/rsd:definitions | rsd:definitions/rsd:definitions | rsd:terms/rsd:definitions"/>
+								<xsl:call-template name="getSubSection"/>								
 							</xsl:variable>
 							<xsl:value-of select="concat($sectionNum, $num)"/>
 						</xsl:when>

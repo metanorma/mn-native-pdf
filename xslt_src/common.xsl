@@ -2316,5 +2316,131 @@
 			<xsl:otherwise><xsl:value-of select="$charAtEnd"/></xsl:otherwise>
 		</xsl:choose>
 	</xsl:template>
+
+	<xsl:template name="addPDFUAmeta">
+		<fo:declarations>
+			<pdf:catalog xmlns:pdf="http://xmlgraphics.apache.org/fop/extensions/pdf">
+					<pdf:dictionary type="normal" key="ViewerPreferences">
+						<pdf:boolean key="DisplayDocTitle">true</pdf:boolean>
+					</pdf:dictionary>
+				</pdf:catalog>
+			<x:xmpmeta xmlns:x="adobe:ns:meta/">
+				<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+					<rdf:Description rdf:about="" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:pdf="http://ns.adobe.com/pdf/1.3/">
+					<!-- Dublin Core properties go here -->
+						<dc:title>
+							<xsl:variable name="title">
+								<xsl:if test="$namespace = 'iso' or $namespace = 'gb' or $namespace = 'iec' or $namespace = 'nist' or $namespace = 'unece' or $namespace = 'unece-rec'">
+									<xsl:value-of select="/*/*[local-name() = 'bibdata']/*[local-name() = 'title'][@language = 'en' and @type = 'main']"/>
+								</xsl:if>
+								<xsl:if test="$namespace = 'iho' or $namespace = 'csa' or $namespace = 'csd' or $namespace = 'rsd' or $namespace = 'ogc'">								
+									<xsl:value-of select="/*/*[local-name() = 'bibdata']/*[local-name() = 'title'][@language = 'en']"/>
+								</xsl:if>
+								<xsl:if test="$namespace = 'm3d'">
+									<xsl:value-of select="/*/*[local-name() = 'bibdata']/*[local-name() = 'title']"/>
+								</xsl:if>
+								<xsl:if test="$namespace = 'itu'">
+									<xsl:value-of select="/*/*[local-name() = 'bibdata']/*[local-name() = 'title'][@type='main']"/>
+								</xsl:if>								
+							</xsl:variable>
+							<xsl:choose>
+								<xsl:when test="normalize-space($title) != ''">
+									<xsl:value-of select="$title"/>
+								</xsl:when>
+								<xsl:otherwise>
+									<xsl:text>&#xA0;</xsl:text>
+								</xsl:otherwise>
+							</xsl:choose>							
+						</dc:title>
+						<dc:creator>
+							<xsl:if test="$namespace = 'iso' or $namespace = 'itu' or $namespace = 'gb' or $namespace = 'iho' or $namespace = 'm3d'">
+								<xsl:value-of select="/*/*[local-name() = 'bibdata']/*[local-name() = 'contributor'][*[local-name() = 'role']/@type='author']/*[local-name() = 'organization']/*[local-name() = 'name']"/>
+							</xsl:if>
+							<xsl:if test="$namespace = 'nist'">
+								<xsl:for-each select="/*/*[local-name() = 'bibdata']/*[local-name() = 'contributor'][*[local-name() = 'role']/@type='author']">
+									<xsl:value-of select="*[local-name() = 'person']/*[local-name() = 'name']/*[local-name() = 'completename']"/>
+									<xsl:if test="position() != last()">; </xsl:if>
+								</xsl:for-each>
+							</xsl:if>
+						</dc:creator>
+						<dc:description>
+							<xsl:variable name="abstract">
+								<xsl:if test="$namespace = 'iso' or $namespace = 'csd' or $namespace = 'gb' or $namespace = 'iho'">
+									<xsl:copy-of select="/*/*[local-name() = 'bibliography']/*[local-name() = 'references']/*[local-name() = 'bibitem']/*[local-name() = 'abstract']//text()"/>
+								</xsl:if>
+								<xsl:if test="$namespace = 'iec'">
+									<xsl:copy-of select="/*/*[local-name() = 'bibliography']/*[local-name() = 'references']/*[local-name() = 'bibitem']/*[local-name() = 'abstract'][@language = 'en']//text()"/>
+								</xsl:if>
+								<xsl:if test="$namespace = 'nist' or $namespace = 'unece' or $namespace = 'unece-rec'">
+									<xsl:copy-of select="/*/*[local-name() = 'preface']/*[local-name() = 'abstract']//text()"/>									
+								</xsl:if>
+								<xsl:if test="$namespace = 'itu' or $namespace = 'rsd' or $namespace = 'ogc' or $namespace = 'csa'">
+									<xsl:copy-of select="/*/*[local-name() = 'bibdata']/*[local-name() = 'abstract']//text()"/>									
+								</xsl:if>
+							</xsl:variable>
+							<xsl:value-of select="normalize-space($abstract)"/>
+						</dc:description>
+						<pdf:Keywords>
+							<xsl:call-template name="insertKeywords"/>
+						</pdf:Keywords>
+					</rdf:Description>
+					<rdf:Description rdf:about=""
+							xmlns:xmp="http://ns.adobe.com/xap/1.0/">
+						<!-- XMP properties go here -->
+						<xmp:CreatorTool></xmp:CreatorTool>
+					</rdf:Description>
+				</rdf:RDF>
+			</x:xmpmeta>
+		</fo:declarations>
+	</xsl:template>
+	
+	<xsl:template name="getId">
+		<xsl:choose>
+			<xsl:when test="../@id">
+				<xsl:value-of select="../@id"/>
+			</xsl:when>
+			<xsl:otherwise>
+				<!-- <xsl:value-of select="concat(local-name(..), '_', text())"/> -->
+				<xsl:value-of select="concat(generate-id(..), '_', text())"/>
+			</xsl:otherwise>
+		</xsl:choose>
+	</xsl:template>
+	
+	<xsl:template name="getLevel">
+		<xsl:variable name="level_total" select="count(ancestor::*)"/>
+		<xsl:variable name="level">
+			<xsl:choose>
+				<xsl:when test="ancestor::*[local-name() = 'preface']">
+					<xsl:value-of select="$level_total - 2"/>
+				</xsl:when>
+				<xsl:when test="ancestor::*[local-name() = 'sections']">
+					<xsl:value-of select="$level_total - 2"/>
+				</xsl:when>
+				<xsl:when test="ancestor::*[local-name() = 'bibliography']">
+					<xsl:value-of select="$level_total - 2"/>
+				</xsl:when>
+				<xsl:when test="local-name(ancestor::*[1]) = 'annex'">1</xsl:when>
+				<xsl:otherwise>
+					<xsl:value-of select="$level_total - 1"/>
+				</xsl:otherwise>
+			</xsl:choose>
+		</xsl:variable>
+		<xsl:value-of select="$level"/>
+	</xsl:template>
+
+	<xsl:template name="getSubSection">
+		<xsl:number format=".1" 
+										level="multiple" 
+										count="*[local-name() = 'clause']/*[local-name() = 'clause'] | 
+																*[local-name() = 'clause']/*[local-name() = 'terms'] | 
+																*[local-name() = 'terms']/*[local-name() = 'term'] | 
+																*[local-name() = 'clause']/*[local-name() = 'term'] |  
+																*[local-name() = 'terms']/*[local-name() = 'clause'] |
+																*[local-name() = 'terms']/*[local-name() = 'definitions'] |
+																*[local-name() = 'definitions']/*[local-name() = 'clause'] |
+																*[local-name() = 'clause']/*[local-name() = 'definitions'] |
+																*[local-name() = 'definitions']/*[local-name() = 'definitions'] |
+																*[local-name() = 'clause']/*[local-name() = 'references']"/>
+	</xsl:template>
 	
 </xsl:stylesheet>

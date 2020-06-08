@@ -5,6 +5,8 @@
 											xmlns:mathml="http://www.w3.org/1998/Math/MathML" 
 											xmlns:xalan="http://xml.apache.org/xalan" 
 											xmlns:fox="http://xmlgraphics.apache.org/fop/extensions" 
+											xmlns:java="http://xml.apache.org/xalan/java" 
+											exclude-result-prefixes="java"
 											version="1.0">
 
 	<xsl:output method="xml" encoding="UTF-8" indent="no"/>
@@ -22,10 +24,6 @@
   <xsl:variable name="lang-1st-letter" select="''"/>
 	<xsl:variable name="ISOname" select="/iec:iec-standard/iec:bibdata/iec:docidentifier[@type='iso']"/>
 	
-	<!-- Information and documentation — Codes for transcription systems  -->
-	<xsl:variable name="title-en" select="/iec:iec-standard/iec:bibdata/iec:title[@language = 'en' and @type = 'main']"/>
-	<xsl:variable name="title-fr" select="/iec:iec-standard/iec:bibdata/iec:title[@language = 'fr' and @type = 'main']"/>
-
 	<xsl:variable name="title-intro" select="/iec:iec-standard/iec:bibdata/iec:title[@language = 'en' and @type = 'title-intro']"/>
 	<xsl:variable name="title-intro-fr" select="/iec:iec-standard/iec:bibdata/iec:title[@language = 'fr' and @type = 'title-intro']"/>
 	<xsl:variable name="title-main" select="/iec:iec-standard/iec:bibdata/iec:title[@language = 'en' and @type = 'title-main']"/>
@@ -178,47 +176,7 @@
 				</fo:simple-page-master>
 			</fo:layout-master-set>
 
-
-			
-			<fo:declarations>
-				<pdf:catalog xmlns:pdf="http://xmlgraphics.apache.org/fop/extensions/pdf">
-						<pdf:dictionary type="normal" key="ViewerPreferences">
-							<pdf:boolean key="DisplayDocTitle">true</pdf:boolean>
-						</pdf:dictionary>
-					</pdf:catalog>
-				<x:xmpmeta xmlns:x="adobe:ns:meta/">
-					<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-						<rdf:Description rdf:about="" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:pdf="http://ns.adobe.com/pdf/1.3/">
-						<!-- Dublin Core properties go here -->
-							<dc:title>
-								<xsl:choose>
-									<xsl:when test="$title-en != ''">
-										<xsl:value-of select="$title-en"/>
-									</xsl:when>
-									<xsl:otherwise>
-										<xsl:text>&#xA0;</xsl:text>
-									</xsl:otherwise>
-								</xsl:choose>
-							</dc:title>
-							<dc:creator></dc:creator>
-							<dc:description>
-								<xsl:variable name="abstract">
-									<xsl:copy-of select="/iec:iec-standard/iec:bibliography/iec:references/iec:bibitem/iec:abstract[@language = 'en']//text()"/>
-								</xsl:variable>
-								<xsl:value-of select="normalize-space($abstract)"/>
-							</dc:description>
-							<pdf:Keywords>
-								<xsl:call-template name="insertKeywords"/>
-							</pdf:Keywords>
-						</rdf:Description>
-						<rdf:Description rdf:about=""
-								xmlns:xmp="http://ns.adobe.com/xap/1.0/">
-							<!-- XMP properties go here -->
-							<xmp:CreatorTool></xmp:CreatorTool>
-						</rdf:Description>
-					</rdf:RDF>
-				</x:xmpmeta>
-			</fo:declarations>
+			<xsl:call-template name="addPDFUAmeta"/>
 
 			<!-- For 'Published' documents insert two cover pages -->
 			<xsl:if test="$stage &gt;= 60">
@@ -2078,13 +2036,13 @@
 				<xsl:number level="any" count="iec:bibitem/iec:note"/>
 			</xsl:variable>
 			<fo:inline font-size="8pt" keep-with-previous.within-line="always"  baseline-shift="15%" > <!--font-size="85%"  vertical-align="super"60% -->
-				<fo:basic-link internal-destination="footnote_{../@id}" fox:alt-text="footnote {$number}">
+				<fo:basic-link internal-destination="{generate-id()}" fox:alt-text="footnote {$number}">
 					<xsl:value-of select="$number"/><!-- <xsl:text>)</xsl:text> -->
 				</fo:basic-link>
 			</fo:inline>
 			<fo:footnote-body>
 				<fo:block font-size="8pt" margin-bottom="5pt">
-					<fo:inline id="footnote_{../@id}" keep-with-next.within-line="always" baseline-shift="15%" padding-right="3mm"><!-- padding-right="9mm" alignment-baseline="hanging"  font-size="60%"  -->
+					<fo:inline id="{generate-id()}" keep-with-next.within-line="always" baseline-shift="15%" padding-right="3mm"><!-- padding-right="9mm" alignment-baseline="hanging"  font-size="60%"  -->
 						<xsl:value-of select="$number"/><!-- <xsl:text>)</xsl:text> -->
 					</fo:inline>
 					<xsl:apply-templates />
@@ -2153,11 +2111,20 @@
 		</fo:block>
 	</xsl:template>
 	
+	<xsl:template match="iec:term">
+		<xsl:param name="sectionNum"/>
+		<fo:wrapper id="{@id}">
+			<xsl:apply-templates>
+				<xsl:with-param name="sectionNum" select="$sectionNum"/>
+			</xsl:apply-templates>
+		</fo:wrapper>
+	</xsl:template>
+	
 	<xsl:template match="iec:preferred">
 		<xsl:param name="sectionNum"/>
 		<fo:block line-height="1.1" space-before="14pt">
 			<fo:block font-weight="bold" keep-with-next="always">
-				<fo:inline id="{../@id}">
+				<fo:inline>
 					<xsl:value-of select="$sectionNum"/>.<xsl:number count="iec:term"/>
 				</fo:inline>
 			</fo:block>
@@ -2418,6 +2385,12 @@
 		</xsl:call-template>
 	</xsl:template>
 	
+	<xsl:template match="iec:formula">
+		<fo:wrapper id="{@id}">
+			<xsl:apply-templates />
+		</fo:wrapper>
+	</xsl:template>
+	
 	<xsl:template match="iec:formula/iec:dt/iec:stem">
 		<fo:inline>
 			<xsl:apply-templates />
@@ -2431,7 +2404,7 @@
 	</xsl:template>
 	
 	<xsl:template match="iec:formula/iec:stem">
-		<fo:block id="{../@id}" margin-top="6pt" margin-bottom="12pt">
+		<fo:block margin-top="6pt" margin-bottom="12pt">
 			<fo:table table-layout="fixed" width="100%">
 				<fo:table-column column-width="95%"/>
 				<fo:table-column column-width="5%"/>
@@ -2520,38 +2493,6 @@
 		</fo:static-content>
 	</xsl:template>
 
-	<xsl:template name="getId">
-		<xsl:choose>
-			<xsl:when test="../@id">
-				<xsl:value-of select="../@id"/>
-			</xsl:when>
-			<xsl:otherwise>
-				<xsl:value-of select="text()"/>
-			</xsl:otherwise>
-		</xsl:choose>
-	</xsl:template>
-
-	<xsl:template name="getLevel">
-		<xsl:variable name="level_total" select="count(ancestor::*)"/>
-		<xsl:variable name="level">
-			<xsl:choose>
-				<xsl:when test="ancestor::iec:preface">
-					<xsl:value-of select="$level_total - 2"/>
-				</xsl:when>
-				<xsl:when test="ancestor::iec:sections">
-					<xsl:value-of select="$level_total - 2"/>
-				</xsl:when>
-				<xsl:when test="ancestor::iec:bibliography">
-					<xsl:value-of select="$level_total - 2"/>
-				</xsl:when>
-				<xsl:when test="local-name(ancestor::*[1]) = 'annex'">1</xsl:when>
-				<xsl:otherwise>
-					<xsl:value-of select="$level_total - 1"/>
-				</xsl:otherwise>
-			</xsl:choose>
-		</xsl:variable>
-		<xsl:value-of select="$level"/>
-	</xsl:template>
 
 	<xsl:template name="getSection">
 		<xsl:param name="sectionNum"/>
@@ -2571,7 +2512,7 @@
 						</xsl:when>
 						<xsl:when test="$level &gt;= 2">
 							<xsl:variable name="num">
-								<xsl:number format=".1" level="multiple" count="iec:clause/iec:clause | iec:clause/iec:terms | iec:terms/iec:term | iec:clause/iec:term"/>
+								<xsl:call-template name="getSubSection"/>								
 							</xsl:variable>
 							<xsl:value-of select="concat($sectionNum, $num)"/>
 						</xsl:when>

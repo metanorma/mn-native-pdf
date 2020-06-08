@@ -134,47 +134,9 @@
 							<fo:conditional-page-master-reference odd-or-even="odd" master-reference="odd-landscape"/>
 						</fo:repeatable-page-master-alternatives>
 					</fo:page-sequence-master>
-
-						
 				</fo:layout-master-set>
 				
-				<fo:declarations>
-					<pdf:catalog xmlns:pdf="http://xmlgraphics.apache.org/fop/extensions/pdf">
-							<pdf:dictionary type="normal" key="ViewerPreferences">
-								<pdf:boolean key="DisplayDocTitle">true</pdf:boolean>
-							</pdf:dictionary>
-						</pdf:catalog>
-					<x:xmpmeta xmlns:x="adobe:ns:meta/">
-						<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-							<rdf:Description rdf:about="" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:pdf="http://ns.adobe.com/pdf/1.3/">
-							<!-- Dublin Core properties go here -->
-								<dc:title>
-									<xsl:choose>
-										<xsl:when test="normalize-space($title-en) != ''">
-											<xsl:value-of select="$title-en"/>
-										</xsl:when>
-										<xsl:otherwise>&#xA0;</xsl:otherwise>
-									</xsl:choose>
-								</dc:title>
-								<dc:creator><xsl:value-of select="/iho:iho-standard/iho:bibdata/iho:contributor[iho:role/@type='author']/iho:organization/iho:name"/></dc:creator>
-								<dc:description>
-									<xsl:variable name="abstract">
-										<xsl:copy-of select="/iho:iho-standard/iho:bibliography/iho:references/iho:bibitem/iho:abstract//text()"/>
-									</xsl:variable>
-									<xsl:value-of select="normalize-space($abstract)"/>
-								</dc:description>
-								<pdf:Keywords>
-									<xsl:call-template name="insertKeywords"/>
-								</pdf:Keywords>
-							</rdf:Description>
-							<rdf:Description rdf:about=""
-									xmlns:xmp="http://ns.adobe.com/xap/1.0/">
-								<!-- XMP properties go here -->
-								<xmp:CreatorTool></xmp:CreatorTool>
-							</rdf:Description>
-						</rdf:RDF>
-					</x:xmpmeta>
-				</fo:declarations>
+				<xsl:call-template name="addPDFUAmeta"/>
 				
 				<!-- =========================== -->
 				<!-- Cover Page -->
@@ -1037,6 +999,12 @@
 		</fo:block-container>		
 	</xsl:template>
 
+	<xsl:template match="iho:formula">
+		<fo:wrapper id="{@id}">
+			<xsl:apply-templates />
+		</fo:wrapper>
+	</xsl:template>
+	
 	<xsl:template match="iho:formula/iho:dt/iho:stem">
 		<fo:inline>
 			<xsl:apply-templates />
@@ -1044,7 +1012,7 @@
 	</xsl:template>
 	
 	<xsl:template match="iho:formula/iho:stem">
-		<fo:block id="{../@id}" margin-top="6pt" margin-bottom="12pt" text-align="center">
+		<fo:block margin-top="6pt" margin-bottom="12pt" text-align="center">
 			<xsl:apply-templates />						
 		</fo:block>
 	</xsl:template>
@@ -1190,13 +1158,13 @@
 				<xsl:number level="any" count="iho:bibitem/iho:note"/>
 			</xsl:variable>
 			<fo:inline font-size="8pt" keep-with-previous.within-line="always" baseline-shift="30%"> <!--85% vertical-align="super"-->
-				<fo:basic-link internal-destination="footnote_{../@id}" fox:alt-text="footnote {$number}">
+				<fo:basic-link internal-destination="{generate-id()}" fox:alt-text="footnote {$number}">
 					<xsl:value-of select="$number"/><xsl:text>)</xsl:text>
 				</fo:basic-link>
 			</fo:inline>
 			<fo:footnote-body>
 				<fo:block font-size="10pt" margin-bottom="4pt" start-indent="0pt">
-					<fo:inline id="footnote_{../@id}" keep-with-next.within-line="always" alignment-baseline="hanging" padding-right="3mm"><!-- font-size="60%"  -->
+					<fo:inline id="{generate-id()}" keep-with-next.within-line="always" alignment-baseline="hanging" padding-right="3mm"><!-- font-size="60%"  -->
 						<xsl:value-of select="$number"/><xsl:text>)</xsl:text>
 					</fo:inline>
 					<xsl:apply-templates />
@@ -1278,7 +1246,7 @@
 		
 	<xsl:template match="iho:term">
 		<xsl:param name="sectionNum"/>
-		<fo:block margin-bottom="10pt">
+		<fo:block  id="{@id}" margin-bottom="10pt">
 			<xsl:apply-templates>
 				<xsl:with-param name="sectionNum" select="$sectionNum"/>
 			</xsl:apply-templates>
@@ -1289,7 +1257,7 @@
 		<xsl:param name="sectionNum"/>
 		<fo:block line-height="1.1">
 			<fo:block font-weight="bold" keep-with-next="always">
-				<fo:inline id="{../@id}">
+				<fo:inline>
 					<xsl:variable name="section">
 						<xsl:call-template name="getSection">
 							<xsl:with-param name="sectionNum" select="$sectionNum"/>
@@ -1434,38 +1402,6 @@
 		</fo:static-content>
 	</xsl:template>
 	
-	<xsl:template name="getId">
-		<xsl:choose>
-			<xsl:when test="../@id">
-				<xsl:value-of select="../@id"/>
-			</xsl:when>
-			<xsl:otherwise>
-				<xsl:value-of select="text()"/>
-			</xsl:otherwise>
-		</xsl:choose>
-	</xsl:template>
-
-	<xsl:template name="getLevel">
-		<xsl:variable name="level_total" select="count(ancestor::*)"/>
-		<xsl:variable name="level">
-			<xsl:choose>
-				<xsl:when test="ancestor::iho:preface">
-					<xsl:value-of select="$level_total - 2"/>
-				</xsl:when>
-				<xsl:when test="ancestor::iho:sections">
-					<xsl:value-of select="$level_total - 2"/>
-				</xsl:when>
-				<xsl:when test="ancestor::iho:bibliography">
-					<xsl:value-of select="$level_total - 2"/>
-				</xsl:when>
-				<xsl:when test="local-name(ancestor::*[1]) = 'annex'">1</xsl:when>
-				<xsl:otherwise>
-					<xsl:value-of select="$level_total - 1"/>
-				</xsl:otherwise>
-			</xsl:choose>
-		</xsl:variable>
-		<xsl:value-of select="$level"/>
-	</xsl:template>
 
 	<xsl:template name="getSection">
 		<xsl:param name="sectionNum"/>
@@ -1485,15 +1421,7 @@
 						</xsl:when>
 						<xsl:when test="$level &gt;= 2">
 							<xsl:variable name="num">
-								<xsl:number format=".1" level="multiple" count="iho:clause/iho:clause | 
-																																										iho:clause/iho:terms | 
-																																										iho:terms/iho:term | 
-																																										iho:clause/iho:term |  
-																																										iho:terms/iho:clause |
-																																										iho:terms/iho:definitions |
-																																										iho:definitions/iho:clause |
-																																										iho:clause/iho:definitions |
-																																										iho:clause/iho:references"/>
+								<xsl:call-template name="getSubSection"/>
 							</xsl:variable>
 							<xsl:value-of select="concat($sectionNum, $num)"/><xsl:text>.</xsl:text>
 						</xsl:when>

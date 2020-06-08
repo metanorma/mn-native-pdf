@@ -1,5 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:fo="http://www.w3.org/1999/XSL/Format" xmlns:gb="https://www.metanorma.org/ns/gb" xmlns:mathml="http://www.w3.org/1998/Math/MathML" xmlns:xalan="http://xml.apache.org/xalan" xmlns:fox="http://xmlgraphics.apache.org/fop/extensions" version="1.0">
+<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" 
+											xmlns:fo="http://www.w3.org/1999/XSL/Format" 
+											xmlns:gb="https://www.metanorma.org/ns/gb"
+											xmlns:mathml="http://www.w3.org/1998/Math/MathML" 
+											xmlns:xalan="http://xml.apache.org/xalan" 
+											xmlns:fox="http://xmlgraphics.apache.org/fop/extensions" 
+											xmlns:java="http://xml.apache.org/xalan/java" 
+											exclude-result-prefixes="java"
+											version="1.0">
 
 	<xsl:output method="xml" encoding="UTF-8" indent="no"/>
 	
@@ -126,36 +134,7 @@
 				</fo:page-sequence-master>	
 			</fo:layout-master-set>
 
-			<fo:declarations>
-				<pdf:catalog xmlns:pdf="http://xmlgraphics.apache.org/fop/extensions/pdf">
-						<pdf:dictionary type="normal" key="ViewerPreferences">
-							<pdf:boolean key="DisplayDocTitle">true</pdf:boolean>
-						</pdf:dictionary>
-					</pdf:catalog>
-				<x:xmpmeta xmlns:x="adobe:ns:meta/">
-					<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-						<rdf:Description rdf:about="" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:pdf="http://ns.adobe.com/pdf/1.3/">
-						<!-- Dublin Core properties go here -->
-							<dc:title><xsl:value-of select="/gb:gb-standard/gb:bibdata/gb:title[@language = 'en' and @type = 'main']"/>&#xA0;</dc:title>
-							<dc:creator><xsl:value-of select="/gb:gb-standard/gb:bibdata/gb:contributor[gb:role/@type='author']/gb:organization/gb:name"/></dc:creator>
-							<dc:description>
-								<xsl:variable name="abstract">
-									<xsl:copy-of select="/gb:gb-standard/gb:bibliography/gb:references/gb:bibitem/gb:abstract//text()"/>
-								</xsl:variable>
-								<xsl:value-of select="normalize-space($abstract)"/>
-							</dc:description>
-							<pdf:Keywords>
-								<xsl:call-template name="insertKeywords"/>
-							</pdf:Keywords>
-						</rdf:Description>
-						<rdf:Description rdf:about=""
-								xmlns:xmp="http://ns.adobe.com/xap/1.0/">
-							<!-- XMP properties go here -->
-							<xmp:CreatorTool></xmp:CreatorTool>
-						</rdf:Description>
-					</rdf:RDF>
-				</x:xmpmeta>
-			</fo:declarations>
+			<xsl:call-template name="addPDFUAmeta"/>
 			
 			<fo:page-sequence master-reference="cover" force-page-count="no-force">
 				<fo:flow flow-name="xsl-region-body">
@@ -1152,13 +1131,13 @@
 				<xsl:number level="any" count="gb:bibitem/gb:note"/>
 			</xsl:variable>
 			<fo:inline font-size="50%" keep-with-previous.within-line="always" baseline-shift="30%">
-				<fo:basic-link internal-destination="footnote_{../@id}" fox:alt-text="footnote {$number}">
+				<fo:basic-link internal-destination="{generate-id()}" fox:alt-text="footnote {$number}">
 					<xsl:value-of select="$number"/>
 				</fo:basic-link>
 			</fo:inline>
 			<fo:footnote-body>
 				<fo:block font-size="9pt" margin-bottom="4pt" start-indent="0pt" text-indent="7.4mm">
-					<fo:inline font-size="50%" id="footnote_{../@id}" keep-with-next.within-line="always" baseline-shift="30%"><!-- alignment-baseline="hanging" font-size="60%"  -->
+					<fo:inline font-size="50%" id="{generate-id()}" keep-with-next.within-line="always" baseline-shift="30%"><!-- alignment-baseline="hanging" font-size="60%"  -->
 						<xsl:value-of select="$number"/>
 					</fo:inline>
 					<xsl:apply-templates />
@@ -1623,6 +1602,12 @@
 		</fo:block>
 	</xsl:template>
 	
+	<xsl:template match="gb:formula">
+		<fo:wrapper id="{@id}">
+			<xsl:apply-templates />
+		</fo:wrapper>
+	</xsl:template>
+	
 	<xsl:template match="gb:formula/gb:dt/gb:stem">
 		<fo:inline>
 			<xsl:apply-templates />
@@ -1630,7 +1615,7 @@
 	</xsl:template>
 	
 	<xsl:template match="gb:formula/gb:stem">
-		<fo:block id="{../@id}" font-size="11pt" margin-top="14pt" margin-bottom="14pt">
+		<fo:block font-size="11pt" margin-top="14pt" margin-bottom="14pt">
 			<fo:table table-layout="fixed" width="170mm">
 				<fo:table-column column-width="165mm"/>
 				<fo:table-column column-width="5mm"/>
@@ -1696,38 +1681,6 @@
 		</fo:static-content>
 	</xsl:template>
 	
-	<xsl:template name="getId">
-		<xsl:choose>
-			<xsl:when test="../@id">
-				<xsl:value-of select="../@id"/>
-			</xsl:when>
-			<xsl:otherwise>
-				<xsl:value-of select="text()"/>
-			</xsl:otherwise>
-		</xsl:choose>
-	</xsl:template>
-
-	<xsl:template name="getLevel">
-		<xsl:variable name="level_total" select="count(ancestor::*)"/>
-		<xsl:variable name="level">
-			<xsl:choose>
-				<xsl:when test="ancestor::gb:preface">
-					<xsl:value-of select="$level_total - 2"/>
-				</xsl:when>
-				<xsl:when test="ancestor::gb:sections">
-					<xsl:value-of select="$level_total - 2"/>
-				</xsl:when>
-				<xsl:when test="ancestor::gb:bibliography">
-					<xsl:value-of select="$level_total - 2"/>
-				</xsl:when>
-				<xsl:when test="local-name(ancestor::*[1]) = 'annex'">1</xsl:when>
-				<xsl:otherwise>
-					<xsl:value-of select="$level_total - 1"/>
-				</xsl:otherwise>
-			</xsl:choose>
-		</xsl:variable>
-		<xsl:value-of select="$level"/>
-	</xsl:template>
 
 	<xsl:template name="getSection">
 		<xsl:param name="sectionNum"/>
@@ -1747,14 +1700,7 @@
 						</xsl:when>
 						<xsl:when test="$level &gt;= 2">
 							<xsl:variable name="num">
-								<xsl:number format=".1" level="multiple" count="gb:clause/gb:clause | 
-																																										gb:clause/gb:terms | 
-																																										gb:terms/gb:term | 
-																																										gb:clause/gb:term |  
-																																										gb:terms/gb:clause |
-																																										gb:terms/gb:definitions |
-																																										gb:definitions/gb:clause |
-																																										gb:clause/gb:definitions"/>
+								<xsl:call-template name="getSubSection"/>								
 							</xsl:variable>
 							<xsl:value-of select="concat($sectionNum, $num)"/>
 						</xsl:when>
