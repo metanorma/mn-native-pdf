@@ -181,8 +181,8 @@
 			<fo:page-sequence master-reference="document-preface-master" force-page-count="even" line-height="115%">
 				<xsl:call-template name="insertHeaderPreface"/>
 				<fo:flow flow-name="xsl-region-body" text-align="justify">
-					<fo:block font-size="14pt" margin-top="4pt" margin-bottom="8pt">Contents</fo:block>
-					<fo:block font-size="9pt" text-align="right" font-style="italic" margin-bottom="6pt">Page</fo:block>
+					<fo:block font-size="14pt" margin-top="4pt" margin-bottom="8pt"><xsl:value-of select="$title-toc"/></fo:block>
+					<fo:block font-size="9pt" text-align="right" font-style="italic" margin-bottom="6pt"><xsl:value-of select="$title-page"/></fo:block>
 					<fo:block>
 						<xsl:for-each select="xalan:nodeset($contents)//item[not(@type = 'table') and not(@type = 'figure') and not (@type = 'annex' or @parent = 'annex')]">
 							<xsl:if test="@display = 'true' and @level &lt;= 3">
@@ -366,7 +366,7 @@
 						<xsl:when test="ancestor::un:annex">
 							<xsl:choose>
 								<xsl:when test="$level = 1">
-									<xsl:text>Annex  </xsl:text>
+									<xsl:value-of select="$title-annex"/>
 									<xsl:number format="I" level="any" count="un:annex"/>
 								</xsl:when>
 								<xsl:otherwise>
@@ -399,7 +399,7 @@
 	<xsl:template match="un:figure" mode="contents">
 		<item level="" id="{@id}" type="figure">
 			<xsl:attribute name="section">
-				<xsl:text>Figure </xsl:text>
+				<xsl:value-of select="$title-figure"/>
 				<xsl:choose>
 					<xsl:when test="ancestor::un:annex">
 						<xsl:choose>
@@ -431,7 +431,7 @@
 		<xsl:variable name="annex-id" select="ancestor::un:annex/@id"/>
 		<item level="" id="{@id}" display="false" type="table">
 			<xsl:attribute name="section">
-				<xsl:text>Table </xsl:text>
+				<xsl:value-of select="$title-table"/>
 				<xsl:choose>
 					<xsl:when test="ancestor::*[local-name()='executivesummary']"> <!-- NIST -->
 							<xsl:text>ES-</xsl:text><xsl:number format="1" count="*[local-name()='executivesummary']//*[local-name()='table']"/>
@@ -455,7 +455,7 @@
 	<xsl:template match="un:formula" mode="contents">
 		<item level="" id="{@id}" display="false">
 			<xsl:attribute name="section">
-				<xsl:text>Formula (</xsl:text><xsl:number format="A.1" level="multiple" count="un:annex | un:formula"/><xsl:text>)</xsl:text>
+				<xsl:value-of select="$title-formula"/><xsl:text>(</xsl:text><xsl:number format="A.1" level="multiple" count="un:annex | un:formula"/><xsl:text>)</xsl:text>
 			</xsl:attribute>
 		</item>
 	</xsl:template>
@@ -484,7 +484,7 @@
 		<item level="" id="{@id}" display="false" type="Terms">
 			<xsl:if test="ancestor::un:annex">
 				<xsl:attribute name="section">
-					<xsl:text>Appendix </xsl:text><xsl:number format="A" count="un:annex"/>
+					<xsl:value-of select="$title-appendix"/><xsl:number format="A" count="un:annex"/>
 				</xsl:attribute>
 			</xsl:if>
 		</item>
@@ -494,7 +494,7 @@
 		<item level="" id="{@id}" display="false" type="References">
 			<xsl:if test="ancestor::un:annex">
 				<xsl:attribute name="section">
-					<xsl:text>Appendix </xsl:text><xsl:number format="A" count="un:annex"/>
+					<xsl:value-of select="$title-appendix"/><xsl:number format="A" count="un:annex"/>
 				</xsl:attribute>
 			</xsl:if>
 		</item>
@@ -506,7 +506,7 @@
 				<xsl:variable name="num">
 					<xsl:number />
 				</xsl:variable>
-				<xsl:text>Box </xsl:text><xsl:value-of select="$num"/>
+				<xsl:value-of select="$title-box"/><xsl:value-of select="$num"/>
 			</xsl:attribute>
 		</item>
 	</xsl:template>
@@ -724,7 +724,7 @@
 	<xsl:template match="un:ul//un:note |  un:ol//un:note"/>
 	<xsl:template match="un:ul//un:note/un:p  | un:ol//un:note/un:p" mode="process">
 		<fo:block font-size="11pt" margin-top="4pt">
-			<xsl:text>NOTE </xsl:text>
+			<xsl:value-of select="$title-note"/>
 			<xsl:if test="../following-sibling::un:note or ../preceding-sibling::un:note">
 					<xsl:number count="un:note"/><xsl:text> </xsl:text>
 				</xsl:if>
@@ -803,7 +803,7 @@
 				<xsl:variable name="num">
 					<xsl:number />
 				</xsl:variable>
-				<xsl:text>Box </xsl:text><xsl:value-of select="$num"/><xsl:text>. </xsl:text><xsl:apply-templates select="un:name" mode="process"/>
+				<xsl:value-of select="$title-box"/><xsl:value-of select="$num"/><xsl:text>. </xsl:text><xsl:apply-templates select="un:name" mode="process"/>
 			</fo:block>
 			<fo:block margin-left="29mm" margin-right="34mm">
 				<xsl:apply-templates />
@@ -947,7 +947,7 @@
 	<xsl:template match="un:recommendation">
 		<fo:block margin-left="20mm">
 			<fo:block font-weight="bold">
-				<xsl:text>Recommendation </xsl:text>
+				<xsl:value-of select="$title-recommendation"/>
 				<xsl:choose>
 					<xsl:when test="ancestor::un:sections">
 						<xsl:number level="any" count="un:sections//un:recommendation"/>
@@ -1018,7 +1018,7 @@
 			</xsl:if>
 			<xsl:if test="un:name">
 				<fo:block text-align="center" font-size="9pt" margin-bottom="6pt" keep-with-next="always" keep-together.within-column="always">
-					<xsl:text>Figure </xsl:text>
+					<xsl:value-of select="$title-figure"/>
 					<xsl:choose>
 						<xsl:when test="ancestor::un:annex">
 							<xsl:choose>
@@ -1173,12 +1173,12 @@
 	
 	<xsl:template match="un:termnote">
 		<fo:block margin-top="4pt">
-			<xsl:text>NOTE </xsl:text>
-				<xsl:if test="following-sibling::un:termnote or preceding-sibling::un:termnote">
-					<xsl:number/><xsl:text> </xsl:text>
-				</xsl:if>
-				<xsl:text>– </xsl:text>
-				<xsl:apply-templates />
+			<xsl:value-of select="$title-note"/>
+			<xsl:if test="following-sibling::un:termnote or preceding-sibling::un:termnote">
+				<xsl:number/><xsl:text> </xsl:text>
+			</xsl:if>
+			<xsl:text>– </xsl:text>
+			<xsl:apply-templates />
 		</fo:block>
 	</xsl:template>
 
@@ -1230,7 +1230,7 @@
 	</xsl:template>
 		
 	<xsl:template match="un:example">
-		<fo:block id="{@id}" font-size="10pt" font-weight="bold" margin-bottom="12pt">EXAMPLE</fo:block>
+		<fo:block id="{@id}" font-size="10pt" font-weight="bold" margin-bottom="12pt"><xsl:value-of select="$title-example"/></fo:block>
 		<fo:block font-size="11pt" margin-top="12pt" margin-bottom="12pt" margin-left="15mm" >
 			<xsl:apply-templates />
 		</fo:block>
@@ -1263,8 +1263,8 @@
 	
 	<xsl:template match="un:locality">
 		<xsl:choose>
-			<xsl:when test="@type = 'section'">Section </xsl:when>
-			<xsl:when test="@type = 'clause'">Clause </xsl:when>
+			<xsl:when test="@type = 'section'"><xsl:value-of select="$title-section"/></xsl:when>
+			<xsl:when test="@type = 'clause'"><xsl:value-of select="$title-clause"/></xsl:when>
 			<xsl:otherwise></xsl:otherwise>
 		</xsl:choose>
 		<xsl:text> </xsl:text><xsl:value-of select="un:referenceFrom"/>
@@ -1433,7 +1433,7 @@
 				<xsl:when test="ancestor::un:annex">
 					<xsl:choose>
 						<xsl:when test="$level = 1">
-							<xsl:text>Annex  </xsl:text>
+							<xsl:value-of select="$title-annex"/>
 							<xsl:number format="I" level="any" count="un:annex"/>
 							<!-- <xsl:text>: </xsl:text> -->
 						</xsl:when>

@@ -38,7 +38,7 @@
 		</xsl:if>
 		<xsl:if test="$namespace = 'gb'">
 			<xsl:choose>
-				<xsl:when test="$language = 'zh'">图 </xsl:when>
+				<xsl:when test="$lang = 'zh'">图 </xsl:when>
 				<xsl:otherwise>Figure </xsl:otherwise>
 			</xsl:choose>
 		</xsl:if>
@@ -50,11 +50,15 @@
 		</xsl:if>
 		<xsl:if test="$namespace = 'gb'">
 			<xsl:choose>
-				<xsl:when test="$language = 'zh'"><xsl:text>示例 </xsl:text></xsl:when>
+				<xsl:when test="$lang = 'zh'"><xsl:text>示例 </xsl:text></xsl:when>
 				<xsl:otherwise><xsl:text>EXAMPLE </xsl:text></xsl:otherwise>
 			</xsl:choose>
 		</xsl:if>
 	</xsl:variable>
+	
+	<xsl:variable name="title-example-xref">Example </xsl:variable>
+	
+	<xsl:variable name="title-section">Section </xsl:variable>
 	
 	<xsl:variable name="title-inequality">Inequality </xsl:variable>
 	
@@ -67,7 +71,7 @@
 		</xsl:if>
 		<xsl:if test="$namespace = 'gb'">
 			<xsl:choose>
-				<xsl:when test="$language = 'zh'"><xsl:text>附件 </xsl:text></xsl:when>
+				<xsl:when test="$lang = 'zh'"><xsl:text>附件 </xsl:text></xsl:when>
 				<xsl:otherwise><xsl:text>Annex </xsl:text></xsl:otherwise>
 			</xsl:choose>
 		</xsl:if>
@@ -83,19 +87,38 @@
 		</xsl:if>
 		<xsl:if test="$namespace = 'gb'">
 			<xsl:choose>
-				<xsl:when test="$language = 'zh'"><xsl:text>条 </xsl:text></xsl:when>
+				<xsl:when test="$lang = 'zh'"><xsl:text>条 </xsl:text></xsl:when>
 				<xsl:otherwise><xsl:text>Clause </xsl:text></xsl:otherwise>
 			</xsl:choose>
 		</xsl:if>
 	</xsl:variable>
 	
 	<xsl:variable name="title-edition">
-		<xsl:text>Edition </xsl:text>
+		<xsl:if test="$namespace = 'iso' or $namespace = 'iec' or $namespace = 'itu' or $namespace = 'unece' or $namespace = 'unece-rec' or $namespace = 'nist' or $namespace = 'csd' or $namespace = 'iho'">
+			<xsl:text>Edition </xsl:text>
+		</xsl:if>
+		<xsl:if test="$namespace = 'csa' or $namespace = 'm3d' or $namespace = 'ogc' or $namespace = 'rsd'">
+			<xsl:text>Version</xsl:text>
+		</xsl:if>
+	</xsl:variable>
+	
+	<xsl:variable name="title-formula">
+		<xsl:text>Formula </xsl:text>
 	</xsl:variable>
 	
 	<xsl:variable name="title-toc">
-		<xsl:if test="$namespace = 'iho'">Contents </xsl:if>
-		<xsl:if test="$namespace = 'itu'">Table of Contents</xsl:if>
+		<xsl:if test="$namespace = 'iso' or $namespace = 'iho' or $namespace = 'csd' or $namespace = 'rsd' or $namespace = 'ogc' or $namespace = 'unece-rec'">
+			<xsl:text>Contents </xsl:text>
+		</xsl:if>
+		<xsl:if test="$namespace = 'itu' or $namespace = 'csa' or $namespace = 'm3d' or $namespace = 'nist'">
+			<xsl:text>Table of Contents</xsl:text>
+		</xsl:if>
+		<xsl:if test="$namespace = 'gb'">
+			<xsl:choose>
+				<xsl:when test="$lang = 'zh'"><xsl:text>目次</xsl:text></xsl:when>
+				<xsl:otherwise><xsl:text>Table of contents</xsl:text></xsl:otherwise>
+			</xsl:choose>
+		</xsl:if>
 	</xsl:variable>
 	
 	<xsl:variable name="title-page">Page</xsl:variable>
@@ -106,17 +129,138 @@
 	
 	<xsl:variable name="title-descriptors">Descriptors</xsl:variable>
 	
-	<xsl:variable name="title-part-en">Part </xsl:variable>
-	<xsl:variable name="title-part-fr">Partie </xsl:variable>
+	<xsl:variable name="title-part-en">
+		<xsl:if test="$namespace = 'iso'">
+			<xsl:text>Part #:</xsl:text>
+		</xsl:if>
+		<xsl:if test="$namespace = 'iec' or $namespace = 'gb'">
+			<xsl:text>Part #: </xsl:text>
+		</xsl:if>
+	</xsl:variable>
+	<xsl:variable name="title-part-fr">
+		<xsl:if test="$namespace = 'iso'">
+			<xsl:text>Partie #:</xsl:text>
+		</xsl:if>
+		<xsl:if test="$namespace = 'iec' or $namespace = 'gb'">
+			<xsl:text>Partie #:  </xsl:text>
+		</xsl:if>
+	</xsl:variable>
+	<xsl:variable name="title-part-zh">第 # 部分:</xsl:variable>
 	
-	<xsl:variable name="title-note-to-entry">Note # to entry: </xsl:variable>
+	<xsl:variable name="title-note-to-entry">
+		<xsl:if test="$namespace = 'iso' or $namespace = 'iec' or $namespace = 'itu' or $namespace = 'unece' or $namespace = 'unece-rec' or $namespace = 'nist' or $namespace = 'ogc' or $namespace = 'rsd' or $namespace = 'csa' or $namespace = 'csd' or $namespace = 'm3d' or $namespace = 'iho'">
+			<xsl:text>Note # to entry: </xsl:text>
+		</xsl:if>
+		<xsl:if test="$namespace = 'gb'">
+			<xsl:choose>
+				<xsl:when test="$lang = 'zh'">
+					<xsl:text>注#: </xsl:text>					
+				</xsl:when>
+				<xsl:otherwise>
+					<xsl:text>Note # to entry: </xsl:text>
+				</xsl:otherwise>
+			</xsl:choose>
+		</xsl:if>
+	</xsl:variable>
 	
-	<xsl:variable name="title-modified">modified</xsl:variable>
+	<xsl:variable name="title-modified">
+		<xsl:if test="$namespace = 'iso' or $namespace = 'iec' or $namespace = 'itu' or $namespace = 'unece' or $namespace = 'unece-rec' or $namespace = 'nist' or $namespace = 'ogc' or $namespace = 'rsd' or $namespace = 'csa' or $namespace = 'csd' or $namespace = 'm3d' or $namespace = 'iho'">
+			<xsl:text>modified</xsl:text>
+		</xsl:if>
+		<xsl:if test="$namespace = 'gb'">
+			<xsl:choose>
+				<xsl:when test="$lang = 'zh'"><xsl:text>改写</xsl:text></xsl:when>
+				<xsl:otherwise><xsl:text>modified</xsl:text></xsl:otherwise>
+			</xsl:choose>
+		</xsl:if>
+	</xsl:variable>
 	
 	<xsl:variable name="title-source">SOURCE</xsl:variable>
 	
 	<xsl:variable name="title-keywords">Keywords</xsl:variable>
 	
+	<xsl:variable name="title-deprecated">DEPRECATED</xsl:variable>
+	
+	<xsl:variable name="title-submitting-organizations">Submitting Organizations</xsl:variable>
+	
+	<xsl:variable name="title-list-tables">List of Tables</xsl:variable>
+	
+	<xsl:variable name="title-list-figures">List of Figures</xsl:variable>
+	
+	<xsl:variable name="title-recommendation">Recommendation </xsl:variable>
+	
+	<xsl:variable name="title-acknowledgements">Acknowledgements</xsl:variable>
+	
+	<xsl:variable name="title-abstract">Abstract</xsl:variable>
+	
+	<xsl:variable name="title-summary">Summary</xsl:variable>
+	
+	<xsl:variable name="title-in">in </xsl:variable>
+	
+	<xsl:variable name="title-box">Box </xsl:variable>
+	
+	<xsl:variable name="title-partly-supercedes">
+		<xsl:choose>
+			<xsl:when test="$lang = 'zh'"><xsl:text>部分代替 </xsl:text></xsl:when>
+			<xsl:otherwise><xsl:text>Partly Supercedes </xsl:text></xsl:otherwise>
+		</xsl:choose>
+	</xsl:variable>
+	
+	<xsl:variable name="title-completion-date">
+		<xsl:choose>
+			<xsl:when test="$lang = 'zh'"><xsl:text>本稿完成日期</xsl:text></xsl:when>
+			<xsl:otherwise><xsl:text>Completion date for this manuscript</xsl:text></xsl:otherwise>
+		</xsl:choose>
+	</xsl:variable>
+	
+	<xsl:variable name="title-issuance-date">
+		<xsl:choose>
+			<xsl:when test="$lang = 'zh'"><xsl:text># 发布</xsl:text></xsl:when>
+			<xsl:otherwise><xsl:text>Issuance Date: #</xsl:text></xsl:otherwise>
+		</xsl:choose>
+	</xsl:variable>
+	
+	<xsl:variable name="title-implementation-date">
+		<xsl:choose>
+			<xsl:when test="$lang = 'zh'"><xsl:text># 实施</xsl:text></xsl:when>
+			<xsl:otherwise><xsl:text>Implementation Date: #</xsl:text></xsl:otherwise>
+		</xsl:choose>
+	</xsl:variable>
+
+	<xsl:variable name="title-obligation-normative">
+		<xsl:choose>
+			<xsl:when test="$lang = 'zh'">
+				<xsl:text>规范性附录</xsl:text>
+			</xsl:when>
+			<xsl:otherwise>
+				<xsl:text>normative</xsl:text>				
+			</xsl:otherwise>
+		</xsl:choose>
+	</xsl:variable>
+	
+	<xsl:variable name="title-caution">
+		<xsl:choose>
+			<xsl:when test="$lang = 'zh'">
+				<xsl:text>注意</xsl:text>
+			</xsl:when>
+			<xsl:otherwise>
+				<xsl:text>CAUTION</xsl:text>				
+			</xsl:otherwise>
+		</xsl:choose>
+	</xsl:variable>
+	
+	<xsl:variable name="title-warning">
+		<xsl:choose>
+			<xsl:when test="$lang = 'zh'">
+				<xsl:text>警告</xsl:text>
+			</xsl:when>
+			<xsl:otherwise>
+				<xsl:text>WARNING</xsl:text>				
+			</xsl:otherwise>
+		</xsl:choose>
+	</xsl:variable>
+	
+		
 	<xsl:variable name="lower">abcdefghijklmnopqrstuvwxyz</xsl:variable> 
 	<xsl:variable name="upper">ABCDEFGHIJKLMNOPQRSTUVWXYZ</xsl:variable>
 
@@ -2259,7 +2403,13 @@
 		</fo:inline>		
 	</xsl:template>
 
-	
+	<xsl:template match="*[local-name() = 'modification']">
+		<xsl:choose>
+			<xsl:when test="$lang = 'zh'"><xsl:text>、</xsl:text><xsl:value-of select="$title-modified"/><xsl:text>—</xsl:text></xsl:when>
+			<xsl:otherwise><xsl:text>, </xsl:text><xsl:value-of select="$title-modified"/><xsl:text> — </xsl:text></xsl:otherwise>
+		</xsl:choose>
+		<xsl:apply-templates/>
+	</xsl:template>	
 	
 	<!-- convert YYYY-MM-DD to 'Month YYYY' or 'Month DD, YYYY' -->
 	<xsl:template name="convertDate">

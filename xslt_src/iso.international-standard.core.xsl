@@ -927,8 +927,9 @@
 											<xsl:if test="$part != ''">
 												<xsl:text> — </xsl:text>
 												<fo:block margin-top="6pt" font-weight="normal">
-													<xsl:value-of select="$title-part-fr"/><xsl:value-of select="$part"/>
-													<xsl:text>:</xsl:text>
+													<xsl:value-of select="java:replaceAll(java:java.lang.String.new($title-part-fr),'#',$part)"/>
+													<!-- <xsl:value-of select="$title-part-fr"/><xsl:value-of select="$part"/>
+													<xsl:text>:</xsl:text> -->
 												</fo:block>
 											</xsl:if>
 											<xsl:value-of select="$part-fr"/>
@@ -978,10 +979,10 @@
 					<fo:block-container font-weight="bold">
 						
 						<fo:block text-align-last="justify" font-size="16pt" margin-top="10pt" margin-bottom="18pt">
-							<fo:inline font-size="16pt" font-weight="bold">Contents</fo:inline>
+							<fo:inline font-size="16pt" font-weight="bold"><xsl:value-of select="$title-toc"/></fo:inline>
 							<fo:inline keep-together.within-line="always">
 								<fo:leader leader-pattern="space"/>
-								<fo:inline font-weight="normal" font-size="10pt">Page</fo:inline>
+								<fo:inline font-weight="normal" font-size="10pt"><xsl:value-of select="$title-page"/></fo:inline>
 							</fo:inline>
 						</fo:block>
 						
@@ -1083,9 +1084,10 @@
 									<xsl:if test="$part != ''">
 										<xsl:text> — </xsl:text>
 										<fo:block font-weight="normal" margin-top="12pt" line-height="1.1">
-											<xsl:value-of select="$title-part-en"/>
+											<xsl:value-of select="java:replaceAll(java:java.lang.String.new($title-part-en),'#',$part)"/>
+											<!-- <xsl:value-of select="$title-part-en"/>
 											<xsl:value-of select="$part"/>
-											<xsl:text>:</xsl:text>
+											<xsl:text>:</xsl:text> -->
 										</fo:block>
 									</xsl:if>
 								</xsl:if>
@@ -1295,8 +1297,7 @@
 	<xsl:template match="iso:figure" mode="contents">
 		<item level="" id="{@id}" display="false">
 			<xsl:attribute name="section">
-				<xsl:call-template name="getFigureNumber"/>
-				<!-- <xsl:text>Figure </xsl:text><xsl:number format="A.1-1" level="multiple" count="iso:annex | iso:figure"/> -->
+				<xsl:call-template name="getFigureNumber"/>				
 			</xsl:attribute>
 		</item>
 	</xsl:template>
@@ -1317,7 +1318,7 @@
 	<xsl:template match="iso:formula" mode="contents">
 		<item level="" id="{@id}" display="false">
 			<xsl:attribute name="section">
-				<xsl:text>Formula (</xsl:text><xsl:number format="A.1" level="multiple" count="iso:annex | iso:formula"/><xsl:text>)</xsl:text>
+				<xsl:value-of select="$title-formula"/><xsl:text>(</xsl:text><xsl:number format="A.1" level="multiple" count="iso:annex | iso:formula"/><xsl:text>)</xsl:text>
 			</xsl:attribute>
 		</item>
 	</xsl:template>
@@ -1882,7 +1883,7 @@
 	</xsl:template>
 	
 	<xsl:template match="iso:deprecates">
-		<fo:block>DEPRECATED: <xsl:apply-templates /></fo:block>
+		<fo:block><xsl:value-of select="$title-deprecated"/>: <xsl:apply-templates /></fo:block>
 	</xsl:template>
 	
 	<xsl:template match="iso:definition[preceding-sibling::iso:domain]">
@@ -1919,10 +1920,7 @@
 		</fo:block>
 	</xsl:template>
 	
-	<xsl:template match="iso:modification">
-		<xsl:text>, </xsl:text><xsl:value-of select="$title-modified"/><xsl:text> — </xsl:text>
-		<xsl:apply-templates/>
-	</xsl:template>
+	
 	<xsl:template match="iso:modification/iso:p">
 		<fo:inline><xsl:apply-templates/></fo:inline>
 	</xsl:template>
@@ -3074,7 +3072,7 @@
 				<xsl:value-of select="$edition"/>
 			</xsl:when>
 		</xsl:choose>
-		<xsl:if test="$edition != ''"><xsl:text> edition</xsl:text></xsl:if>
+		<xsl:if test="$edition != ''"><xsl:text> </xsl:text><xsl:value-of select="translate($title-edition, $upper, $lower)"/></xsl:if>
 	</xsl:template>
 
 	<xsl:template name="printTitlePartFr">
@@ -3082,9 +3080,10 @@
 		<xsl:if test="normalize-space($part-fr) != ''">
 			<xsl:if test="$part != ''">
 				<xsl:text> — </xsl:text>
-				<xsl:value-of select="$title-part-fr"/>
+				<xsl:value-of select="java:replaceAll(java:java.lang.String.new($title-part-fr),'#',$part)"/>
+				<!-- <xsl:value-of select="$title-part-fr"/>
 				<xsl:value-of select="$part"/>
-				<xsl:text>:</xsl:text>
+				<xsl:text>:</xsl:text> -->
 			</xsl:if>
 			<xsl:value-of select="$part-fr"/>
 		</xsl:if>
@@ -3096,9 +3095,10 @@
 			<xsl:if test="$part != ''">
 				<xsl:text> — </xsl:text>
 				<fo:block font-weight="normal" margin-top="6pt">
-					<xsl:value-of select="$title-part-en"/>
+					<xsl:value-of select="java:replaceAll(java:java.lang.String.new($title-part-en),'#',$part)"/>
+					<!-- <xsl:value-of select="$title-part-en"/>
 					<xsl:value-of select="$part"/>
-					<xsl:text>:</xsl:text>
+					<xsl:text>:</xsl:text> -->
 				</fo:block>
 			</xsl:if>
 			<xsl:value-of select="$part-en"/>

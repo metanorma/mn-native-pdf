@@ -147,7 +147,7 @@
 						<xsl:value-of select="/rsd:rsd-standard/rsd:bibdata/rsd:docidentifier[@type = 'rsd']"/>
 						<xsl:text>:</xsl:text>
 						<xsl:value-of select="/rsd:rsd-standard/rsd:bibdata/rsd:copyright/rsd:from"/>
-						<xsl:text>, Version </xsl:text>
+						<xsl:text>, </xsl:text><xsl:value-of select="$title-edition"/><xsl:text> </xsl:text>						
 						<xsl:value-of select="/rsd:rsd-standard/rsd:bibdata/rsd:edition"/>
 					</fo:block>
 					
@@ -173,7 +173,7 @@
 					
 					<fo:block break-after="page"/>
 					
-					<fo:block font-size="14pt" font-weight="bold" margin-bottom="15.5pt">Contents</fo:block>
+					<fo:block font-size="14pt" font-weight="bold" margin-bottom="15.5pt"><xsl:value-of select="$title-toc"/></fo:block>
 					<fo:block font-weight="bold" line-height="125%">
 						<xsl:for-each select="xalan:nodeset($contents)//item[@display = 'true' and @level &lt;= 2]">
 							<fo:block>
@@ -441,7 +441,7 @@
 			<xsl:number format="i" value="$sectionNum"/>
 		</xsl:variable>
 		<item id="keywords" level="1" section="{$section}" display-section="true" display="true" type="abstract" root="preface">
-			<xsl:text>Keywords</xsl:text>
+			<xsl:value-of select="$title-keywords"/>
 		</item>
 	</xsl:template>
 	<!-- Submitting Organizations -->
@@ -451,7 +451,7 @@
 			<xsl:number format="i" value="$sectionNum"/>
 		</xsl:variable>
 		<item id="submitting_orgs" level="1" section="{$section}" display-section="true" display="true" type="abstract" root="preface">
-			<xsl:text>Submitting Organizations</xsl:text>
+			<xsl:value-of select="$title-submitting-organizations"/>
 		</item>
 	</xsl:template>
 	
@@ -459,7 +459,7 @@
 		<xsl:param name="sectionNum" />
 		<item level="" id="{@id}" type="figure">
 			<xsl:attribute name="section">
-				<xsl:text>Figure </xsl:text>
+				<xsl:value-of select="$title-figure"/>
 				<xsl:choose>
 					<xsl:when test="ancestor::rsd:annex">
 						<xsl:choose>
@@ -494,7 +494,7 @@
 		<xsl:variable name="annex-id" select="ancestor::rsd:annex/@id"/>
 		<item level="" id="{@id}" display="false" type="table">
 			<xsl:attribute name="section">
-				<xsl:text>Table </xsl:text>
+				<xsl:value-of select="$title-table"/>
 				<xsl:choose>
 					<xsl:when test="ancestor::*[local-name()='executivesummary']">
 							<xsl:text>ES-</xsl:text><xsl:number format="1" count="*[local-name()='executivesummary']//*[local-name()='table'][not(@unnumbered='true')]"/>
@@ -517,7 +517,7 @@
 	<xsl:template match="rsd:formula" mode="contents">
 		<item level="" id="{@id}" display="false">
 			<xsl:attribute name="section">
-				<xsl:text>Formula (</xsl:text><xsl:number format="A.1" level="multiple" count="rsd:annex | rsd:formula"/><xsl:text>)</xsl:text>
+				<xsl:value-of select="$title-formula"/><xsl:text>(</xsl:text><xsl:number format="A.1" level="multiple" count="rsd:annex | rsd:formula"/><xsl:text>)</xsl:text>
 			</xsl:attribute>
 		</item>
 	</xsl:template>
@@ -535,7 +535,7 @@
 	
 	<xsl:template match="/rsd:rsd-standard/rsd:bibdata/rsd:edition">
 		<fo:block margin-bottom="12pt">
-			<xsl:text>Version: </xsl:text>
+			<xsl:value-of select="$title-edition"/><xsl:text>: </xsl:text>
 			<xsl:value-of select="."/><xsl:text> </xsl:text>
 		</fo:block>
 	</xsl:template>
@@ -637,7 +637,7 @@
 		<xsl:param name="sectionNum" select="'1'"/>
 		<fo:block id="keywords" font-size="13pt" font-weight="bold" margin-top="13.5pt" margin-bottom="12pt" color="rgb(14, 26, 133)">
 			<xsl:number format="i." value="$sectionNum"/><fo:inline padding-right="2mm">&#xA0;</fo:inline>
-			<xsl:text>Keywords</xsl:text>
+			<xsl:value-of select="$title-keywords"/>
 		</fo:block>
 		<fo:block margin-bottom="12pt">The following are keywords to be used by search engines and document catalogues.</fo:block>
 		<fo:block margin-bottom="12pt">
@@ -656,7 +656,7 @@
 		<xsl:param name="sectionNum" select="'1'"/>
 		<fo:block id="submitting_orgs" font-size="13pt" font-weight="bold" color="rgb(14, 26, 133)" margin-top="13.5pt" margin-bottom="12pt">
 			<xsl:number format="i." value="$sectionNum"/><fo:inline padding-right="3mm">&#xA0;</fo:inline>
-			<xsl:text>Submitting Organizations</xsl:text>
+			<xsl:value-of select="$title-submitting-organizations"/>
 		</fo:block>
 		<fo:block margin-bottom="12pt"> </fo:block>
 		<fo:list-block provisional-distance-between-starts="6.5mm" margin-bottom="12pt" line-height="115%">
@@ -916,11 +916,7 @@
 		</fo:block>
 	</xsl:template>
 
-	<xsl:template match="rsd:figure">
-		<xsl:variable name="title">
-			<xsl:text>Figure </xsl:text>
-		</xsl:variable>
-		
+	<xsl:template match="rsd:figure">		
 		<fo:block-container id="{@id}">
 			<fo:block>
 				<xsl:apply-templates />
@@ -938,13 +934,13 @@
 								<xsl:number format="a) "/>
 							</xsl:when>
 							<xsl:otherwise>
-								<xsl:value-of select="$title"/><xsl:number format="A.1-1" level="multiple" count="rsd:annex | rsd:figure"/>
+								<xsl:value-of select="$title-figure"/><xsl:number format="A.1-1" level="multiple" count="rsd:annex | rsd:figure"/>
 							</xsl:otherwise>
 						</xsl:choose>
 						
 					</xsl:when>
 					<xsl:otherwise>
-						<xsl:value-of select="$title"/><xsl:number format="1" level="any" count="rsd:sourcecode[not(@unnumbered='true') and not(ancestor::rsd:example)] | rsd:figure"/>
+						<xsl:value-of select="$title-figure"/><xsl:number format="1" level="any" count="rsd:sourcecode[not(@unnumbered='true') and not(ancestor::rsd:example)] | rsd:figure"/>
 					</xsl:otherwise>
 				</xsl:choose>
 				<xsl:if test="rsd:name">
@@ -1194,7 +1190,7 @@
 	</xsl:template>
 	
 	<xsl:template match="rsd:deprecates">
-		<fo:block>DEPRECATED: <xsl:apply-templates /></fo:block>
+		<fo:block><xsl:value-of select="$title-deprecated"/>: <xsl:apply-templates /></fo:block>
 	</xsl:template>
 	
 	<xsl:template match="rsd:definition[preceding-sibling::rsd:domain]">
@@ -1215,7 +1211,9 @@
 		<fo:block margin-bottom="12pt" keep-with-previous="always">
 			<!-- Example: [SOURCE: ISO 5127:2017, 3.1.6.02] -->
 			<fo:basic-link internal-destination="{rsd:origin/@bibitemid}" fox:alt-text="{rsd:origin/@citeas}">
-				<xsl:text>[SOURCE: </xsl:text>
+				<xsl:text>[</xsl:text>
+				<xsl:value-of select="$title-source"/>
+				<xsl:text>: </xsl:text>
 				<fo:inline text-decoration="underline" color="{$color-link}">
 					<xsl:value-of select="rsd:origin/@citeas"/>
 					
@@ -1228,19 +1226,14 @@
 		</fo:block>
 	</xsl:template>
 	
-	<xsl:template match="rsd:modification">
-		<xsl:text>, modified — </xsl:text>
-		<xsl:apply-templates/>
-	</xsl:template>
 	<xsl:template match="rsd:modification/rsd:p">
 		<fo:inline><xsl:apply-templates/></fo:inline>
 	</xsl:template>
 	
 	<xsl:template match="rsd:termnote">
 		<fo:block font-size="10pt" margin-bottom="12pt">
-			<xsl:text>Note </xsl:text>
-			<xsl:number />
-			<xsl:text> to entry: </xsl:text>
+			<xsl:variable name="num"><xsl:number /></xsl:variable>			
+			<xsl:value-of select="java:replaceAll(java:java.lang.String.new($title-note-to-entry),'#',$num)"/>
 			<xsl:apply-templates />
 		</fo:block>
 	</xsl:template>
@@ -1256,7 +1249,7 @@
 	
 	<xsl:template match="rsd:termexample">
 		<fo:block font-family="SourceSansPro" font-size="11pt" margin-bottom="12pt">
-			<fo:inline padding-right="10mm">EXAMPLE</fo:inline>
+			<fo:inline padding-right="10mm"><xsl:value-of select="normalize-space($title-example)"/></fo:inline>
 			<xsl:apply-templates />
 		</fo:block>
 	</xsl:template>
@@ -1331,9 +1324,9 @@
 				</xsl:when>
 				<xsl:otherwise>
 					<xsl:choose>
-						<xsl:when test="$type = 'clause' and $root != 'annex'">Clause </xsl:when><!-- and not (ancestor::annex) -->
-						<xsl:when test="$type = 'term' and ($root = 'clause' or $root = 'terms')">Clause </xsl:when>
-						<xsl:when test="$type = 'clause' and $root = 'annex'">Annex </xsl:when>
+						<xsl:when test="$type = 'clause' and $root != 'annex'"><xsl:value-of select="$title-clause"/></xsl:when><!-- and not (ancestor::annex) -->
+						<xsl:when test="$type = 'term' and ($root = 'clause' or $root = 'terms')"><xsl:value-of select="$title-clause"/></xsl:when>
+						<xsl:when test="$type = 'clause' and $root = 'annex'"><xsl:value-of select="$title-annex"/></xsl:when>
 						<xsl:otherwise></xsl:otherwise> <!-- <xsl:value-of select="$type"/> -->
 					</xsl:choose>
 					<xsl:value-of select="$section"/>
@@ -1356,7 +1349,7 @@
 					</xsl:when>
 					<xsl:otherwise>
 						<fo:block font-family="SourceSansPro" font-size="12pt" font-weight="bold" text-align="center" margin-bottom="12pt">
-							<xsl:text>Figure </xsl:text>
+							<xsl:value-of select="$title-figure"/>
 							<xsl:number format="A." level="multiple" count="rsd:annex"/>
 							<xsl:number format="1" level="any" count="rsd:sourcecode[ancestor::rsd:annex/@id = $id_annex and not(@unnumbered='true') and not(ancestor::rsd:example)]"/>
 							<xsl:if test="rsd:name">
@@ -1369,7 +1362,7 @@
 			</xsl:when>
 			<xsl:otherwise>
 				<fo:block font-family="SourceSansPro" font-size="12pt" font-weight="bold" text-align="center" margin-bottom="12pt">
-					<xsl:text>Figure </xsl:text>
+					<xsl:value-of select="$title-figure"/>
 					<xsl:number format="1" level="any" count="rsd:sourcecode[not(@unnumbered='true') and not(ancestor::rsd:example)] | rsd:figure"/>
 					<xsl:if test="rsd:name">
 						<xsl:text> — </xsl:text>
@@ -1400,7 +1393,7 @@
 	
 	<xsl:template match="rsd:example">
 		<fo:block font-family="SourceSansPro" font-size="11pt" margin-top="12pt" margin-bottom="12pt" font-weight="bold" keep-with-next="always">
-			<xsl:text>EXAMPLE</xsl:text>
+			<xsl:value-of select="normalize-space($title-example)"/>
 			<xsl:choose>
 				<xsl:when test="following-sibling::rsd:example or preceding-sibling::rsd:example">
 					<xsl:number format=" 1"/>
@@ -1441,7 +1434,7 @@
 			</xsl:if>
 			<xsl:variable name="clauseid" select="ancestor::rsd:clause[1]/@id"/>
 			<fo:inline padding-right="4mm">
-				<xsl:text>NOTE </xsl:text>
+				<xsl:value-of select="$title-note"/>
 				<xsl:if test="count(//rsd:note[ancestor::rsd:clause[1][@id = $clauseid]]) &gt; 1">
 					<xsl:number count="rsd:note[ancestor::rsd:clause[1][@id = $clauseid]]" level="any"/>
 				</xsl:if>
@@ -1475,8 +1468,8 @@
 	
 	<xsl:template match="rsd:locality">
 		<xsl:choose>
-			<xsl:when test="@type ='clause'">Clause </xsl:when>
-			<xsl:when test="@type ='annex'">Annex </xsl:when>
+			<xsl:when test="@type ='clause'"><xsl:value-of select="$title-clause"/></xsl:when>
+			<xsl:when test="@type ='annex'"><xsl:value-of select="$title-annex"/></xsl:when>
 			<xsl:otherwise><xsl:value-of select="@type"/></xsl:otherwise>
 		</xsl:choose>
 		<xsl:text> </xsl:text><xsl:value-of select="rsd:referenceFrom"/>
@@ -1636,7 +1629,7 @@
 				<xsl:when test="ancestor::rsd:annex">
 					<xsl:choose>
 						<xsl:when test="$level = 1">
-							<xsl:text>Annex </xsl:text>
+							<xsl:value-of select="$title-annex"/>
 							<xsl:choose>
 								<xsl:when test="count(//rsd:annex) = 1">
 									<xsl:value-of select="/rsd:rsd-standard/rsd:bibdata/rsd:ext/rsd:structuredidentifier/rsd:annexid"/>

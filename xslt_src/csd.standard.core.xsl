@@ -247,7 +247,7 @@
 					<fo:block break-after="page"/>
 					
 					<fo:block-container font-weight="bold" line-height="115%">
-						<fo:block font-size="14pt"  margin-bottom="15.5pt">Contents</fo:block>
+						<fo:block font-size="14pt"  margin-bottom="15.5pt"><xsl:value-of select="$title-toc"/></fo:block>
 						
 						<xsl:for-each select="xalan:nodeset($contents)//item[@display = 'true' and @level &lt;= 2][not(@level = 2 and starts-with(@section, '0'))]"><!-- skip clause from preface -->
 							
@@ -447,7 +447,7 @@
 	<xsl:template match="csd:figure" mode="contents">
 		<item level="" id="{@id}" display="false">
 			<xsl:attribute name="section">
-				<xsl:text>Figure </xsl:text><xsl:number format="A.1-1" level="multiple" count="csd:annex | csd:figure"/>
+				<xsl:value-of select="$title-figure"/><xsl:number format="A.1-1" level="multiple" count="csd:annex | csd:figure"/>
 			</xsl:attribute>
 		</item>
 	</xsl:template>
@@ -458,7 +458,7 @@
 		<xsl:variable name="annex-id" select="ancestor::csd:annex/@id"/>
 		<item level="" id="{@id}" display="false" type="table">
 			<xsl:attribute name="section">
-				<xsl:text>Table </xsl:text>
+				<xsl:value-of select="$title-table"/>
 				<xsl:choose>
 					<xsl:when test="ancestor::*[local-name()='executivesummary']"> <!-- NIST -->
 							<xsl:text>ES-</xsl:text><xsl:number format="1" count="*[local-name()='executivesummary']//*[local-name()='table']"/>
@@ -482,7 +482,7 @@
 	<xsl:template match="csd:formula" mode="contents">
 		<item level="" id="{@id}" display="false">
 			<xsl:attribute name="section">
-				<xsl:text>Formula (</xsl:text><xsl:number format="A.1" level="multiple" count="csd:annex | csd:formula"/><xsl:text>)</xsl:text>
+				<xsl:value-of select="$title-formula"/><xsl:text>(</xsl:text><xsl:number format="A.1" level="multiple" count="csd:annex | csd:formula"/><xsl:text>)</xsl:text>
 			</xsl:attribute>
 		</item>
 	</xsl:template>
@@ -769,16 +769,12 @@
 			<fo:block>
 				<fo:external-graphic src="{@src}" fox:alt-text="Image {@alt}"/>
 			</fo:block>
-			<fo:block font-weight="bold" margin-top="12pt" margin-bottom="12pt">Figure <xsl:number format="1" level="any"/></fo:block>
+			<fo:block font-weight="bold" margin-top="12pt" margin-bottom="12pt"><xsl:value-of select="$title-figure"/><xsl:number format="1" level="any"/></fo:block>
 		</fo:block-container>
 		
 	</xsl:template>
 
-	<xsl:template match="csd:figure">
-		<xsl:variable name="title">
-			<xsl:text>Figure </xsl:text>
-		</xsl:variable>
-		
+	<xsl:template match="csd:figure">		
 		<fo:block-container id="{@id}">
 			<fo:block>
 				<xsl:apply-templates />
@@ -796,13 +792,13 @@
 								<xsl:number format="a) "/>
 							</xsl:when>
 							<xsl:otherwise>
-								<xsl:value-of select="$title"/><xsl:number format="A.1-1" level="multiple" count="csd:annex | csd:figure"/>
+								<xsl:value-of select="$title-figure"/><xsl:number format="A.1-1" level="multiple" count="csd:annex | csd:figure"/>
 							</xsl:otherwise>
 						</xsl:choose>
 						
 					</xsl:when>
 					<xsl:otherwise>
-						<xsl:value-of select="$title"/><xsl:number format="1" level="any"/>
+						<xsl:value-of select="$title-figure"/><xsl:number format="1" level="any"/>
 					</xsl:otherwise>
 				</xsl:choose>
 				<xsl:if test="csd:name">
@@ -970,7 +966,7 @@
 	</xsl:template>
 	
 	<xsl:template match="csd:deprecates">
-		<fo:block>DEPRECATED: <xsl:apply-templates /></fo:block>
+		<fo:block><xsl:value-of select="$title-deprecated"/>: <xsl:apply-templates /></fo:block>
 	</xsl:template>
 	
 	<xsl:template match="csd:definition[preceding-sibling::csd:domain]">
@@ -991,7 +987,9 @@
 		<fo:block margin-bottom="8pt" keep-with-previous="always">
 			<!-- Example: [SOURCE: ISO 5127:2017, 3.1.6.02] -->
 			<fo:basic-link internal-destination="{csd:origin/@bibitemid}" fox:alt-text="{csd:origin/@citeas}">
-				<xsl:text>[SOURCE: </xsl:text>
+				<xsl:text>[</xsl:text>
+				<xsl:value-of select="$title-source"/>
+				<xsl:text>: </xsl:text>
 				<xsl:value-of select="csd:origin/@citeas"/>
 				
 				<xsl:apply-templates select="csd:origin/csd:localityStack"/>
@@ -1002,19 +1000,14 @@
 		</fo:block>
 	</xsl:template>
 	
-	<xsl:template match="csd:modification">
-		<xsl:text>, modified — </xsl:text>
-		<xsl:apply-templates/>
-	</xsl:template>
 	<xsl:template match="csd:modification/csd:p">
 		<fo:inline><xsl:apply-templates/></fo:inline>
 	</xsl:template>
 	
 	<xsl:template match="csd:termnote">
 		<fo:block font-size="10pt" margin-bottom="12pt">
-			<xsl:text>Note </xsl:text>
-			<xsl:number />
-			<xsl:text> to entry: </xsl:text>
+			<xsl:variable name="num"><xsl:number /></xsl:variable>			
+			<xsl:value-of select="java:replaceAll(java:java.lang.String.new($title-note-to-entry),'#',$num)"/>			
 			<xsl:apply-templates />
 		</fo:block>
 	</xsl:template>
@@ -1030,7 +1023,7 @@
 	
 	<xsl:template match="csd:termexample">
 		<fo:block font-size="10pt" margin-bottom="12pt">
-			<fo:inline padding-right="10mm">EXAMPLE</fo:inline>
+			<fo:inline padding-right="10mm"><xsl:value-of select="normalize-space($title-example)"/></fo:inline>
 			<xsl:apply-templates />
 		</fo:block>
 	</xsl:template>
@@ -1131,8 +1124,8 @@
 			<xsl:variable name="type" select="xalan:nodeset($contents)//item[@id = current()/@target]/@type"/>
 			<xsl:variable name="root" select="xalan:nodeset($contents)//item[@id = current()/@target]/@root"/>
 			<xsl:choose>
-				<xsl:when test="$type = 'clause' and $root != 'annex'">Clause </xsl:when><!-- and not (ancestor::annex) -->
-				<xsl:when test="$type = 'term' and $root = 'clause'">Clause </xsl:when>
+				<xsl:when test="$type = 'clause' and $root != 'annex'"><xsl:value-of select="$title-clause"/></xsl:when><!-- and not (ancestor::annex) -->
+				<xsl:when test="$type = 'term' and $root = 'clause'"><xsl:value-of select="$title-clause"/></xsl:when>
 				<xsl:otherwise></xsl:otherwise> <!-- <xsl:value-of select="$type"/> -->
 			</xsl:choose>
 			<xsl:value-of select="$section"/>
@@ -1142,7 +1135,7 @@
 	<xsl:template match="csd:sourcecode" priority="2">
 		<xsl:call-template name="sourcecode"/>
 		<fo:block font-size="11pt" font-weight="bold" text-align="center" margin-bottom="12pt">
-			<xsl:text>Figure </xsl:text>
+			<xsl:value-of select="$title-figure"/>
 			<xsl:number format="1" level="any"/>
 		</fo:block>
 	</xsl:template>
@@ -1155,7 +1148,7 @@
 	
 	<xsl:template match="csd:example">
 		<fo:block font-size="10pt" margin-bottom="12pt" font-weight="bold" keep-with-next="always">
-			<xsl:text>EXAMPLE</xsl:text>
+			<xsl:value-of select="normalize-space($title-example)"/>
 			<xsl:if test="following-sibling::csd:example or preceding-sibling::csd:example">
 				<xsl:number format=" 1"/>
 			</xsl:if>
@@ -1173,7 +1166,7 @@
 	
 	<xsl:template match="csd:note/csd:p" name="note">
 		<fo:block font-size="10pt" margin-bottom="12pt">
-			<fo:inline padding-right="6mm">NOTE <xsl:number count="csd:note"/></fo:inline>
+			<fo:inline padding-right="6mm"><xsl:value-of select="$title-note"/><xsl:number count="csd:note"/></fo:inline>
 			<xsl:apply-templates />
 		</fo:block>
 	</xsl:template>
@@ -1209,8 +1202,8 @@
 	
 	<xsl:template match="csd:locality">
 		<xsl:choose>
-			<xsl:when test="@type ='clause'">Clause </xsl:when>
-			<xsl:when test="@type ='annex'">Annex </xsl:when>
+			<xsl:when test="@type ='clause'"><xsl:value-of select="$title-clause"/></xsl:when>
+			<xsl:when test="@type ='annex'"><xsl:value-of select="$title-annex"/></xsl:when>
 			<xsl:otherwise><xsl:value-of select="@type"/></xsl:otherwise>
 		</xsl:choose>
 		<xsl:text> </xsl:text><xsl:value-of select="csd:referenceFrom"/>
@@ -1371,7 +1364,7 @@
 				<xsl:when test="ancestor::csd:annex">
 					<xsl:choose>
 						<xsl:when test="$level = 1">
-							<xsl:text>Annex </xsl:text>
+							<xsl:value-of select="$title-annex"/>
 							<xsl:choose>
 								<xsl:when test="count(//csd:annex) = 1">
 									<xsl:value-of select="/csd:csd-standard/csd:bibdata/csd:ext/csd:structuredidentifier/csd:annexid"/>
