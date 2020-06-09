@@ -108,7 +108,7 @@
 	
 	<xsl:variable name="title-toc">
 		<xsl:if test="$namespace = 'iso' or $namespace = 'iho' or $namespace = 'csd' or $namespace = 'rsd' or $namespace = 'ogc' or $namespace = 'unece-rec'">
-			<xsl:text>Contents </xsl:text>
+			<xsl:text>Contents</xsl:text>
 		</xsl:if>
 		<xsl:if test="$namespace = 'itu' or $namespace = 'csa' or $namespace = 'm3d' or $namespace = 'nist'">
 			<xsl:text>Table of Contents</xsl:text>
