@@ -500,7 +500,7 @@
 	<xsl:template match="iho:formula" mode="contents">
 		<item level="" id="{@id}" display="false">
 			<xsl:attribute name="section">
-				<xsl:value-of select="$title-formula"/><xsl:text>(</xsl:text><xsl:number format="A.1" level="multiple" count="iho:annex | iho:formula"/><xsl:text>)</xsl:text>
+				<xsl:value-of select="$title-formula"/><xsl:number format="(A.1)" level="multiple" count="iho:annex | iho:formula"/>
 			</xsl:attribute>
 		</item>
 	</xsl:template>

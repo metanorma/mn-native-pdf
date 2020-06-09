@@ -606,7 +606,7 @@
 	<xsl:template match="gb:formula" mode="contents">
 		<item level="" id="{@id}" display="false">
 			<xsl:attribute name="section">
-				<xsl:value-of select="$title-formula"/><xsl:text>(</xsl:text><xsl:number format="A.1" level="multiple" count="gb:annex | gb:formula"/><xsl:text>)</xsl:text>
+				<xsl:value-of select="$title-formula"/><xsl:number format="(A.1)" level="multiple" count="gb:annex | gb:formula"/>
 			</xsl:attribute>
 		</item>
 	</xsl:template>
@@ -1560,10 +1560,10 @@
 							<fo:block text-align="left">
 								<xsl:choose>
 									<xsl:when test="ancestor::gb:annex">
-										<xsl:text>(</xsl:text><xsl:number format="A.1" level="multiple" count="gb:annex | gb:formula"/><xsl:text>)</xsl:text>
+										<xsl:number format="(A.1)" level="multiple" count="gb:annex | gb:formula"/>
 									</xsl:when>
 									<xsl:otherwise> <!-- not(ancestor::gb:annex) -->
-										<xsl:text>(</xsl:text><xsl:number level="any" count="gb:formula"/><xsl:text>)</xsl:text>
+										<xsl:number format="(1)" level="any" count="gb:formula"/>
 									</xsl:otherwise>
 								</xsl:choose>
 							</fo:block>

@@ -517,7 +517,7 @@
 	<xsl:template match="rsd:formula" mode="contents">
 		<item level="" id="{@id}" display="false">
 			<xsl:attribute name="section">
-				<xsl:value-of select="$title-formula"/><xsl:text>(</xsl:text><xsl:number format="A.1" level="multiple" count="rsd:annex | rsd:formula"/><xsl:text>)</xsl:text>
+				<xsl:value-of select="$title-formula"/><xsl:number format="(A.1)" level="multiple" count="rsd:annex | rsd:formula"/>
 			</xsl:attribute>
 		</item>
 	</xsl:template>
@@ -1518,7 +1518,7 @@
 							<fo:block text-align="right">
 								<xsl:choose>
 									<xsl:when test="ancestor::rsd:annex">
-										<xsl:text>(</xsl:text><xsl:number format="A.1" level="multiple" count="rsd:annex | rsd:formula"/><xsl:text>)</xsl:text>
+										<xsl:number format="(A.1)" level="multiple" count="rsd:annex | rsd:formula"/>
 									</xsl:when>
 									<xsl:otherwise> <!-- not(ancestor::rsd:annex) -->
 										<!-- <xsl:text>(</xsl:text><xsl:number level="any" count="rsd:formula"/><xsl:text>)</xsl:text> -->

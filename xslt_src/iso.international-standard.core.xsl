@@ -1318,7 +1318,7 @@
 	<xsl:template match="iso:formula" mode="contents">
 		<item level="" id="{@id}" display="false">
 			<xsl:attribute name="section">
-				<xsl:value-of select="$title-formula"/><xsl:text>(</xsl:text><xsl:number format="A.1" level="multiple" count="iso:annex | iso:formula"/><xsl:text>)</xsl:text>
+				<xsl:value-of select="$title-formula"/><xsl:number format="(A.1)" level="multiple" count="iso:annex | iso:formula"/>
 			</xsl:attribute>
 		</item>
 	</xsl:template>
@@ -2200,7 +2200,7 @@
 							<fo:block text-align="right">
 								<xsl:choose>
 									<xsl:when test="ancestor::iso:annex">
-										<xsl:text>(</xsl:text><xsl:number format="A.1" level="multiple" count="iso:annex | iso:formula"/><xsl:text>)</xsl:text>
+										<xsl:number format="(A.1)" level="multiple" count="iso:annex | iso:formula"/>
 									</xsl:when>
 									<xsl:otherwise> <!-- not(ancestor::iso:annex) -->
 										<!-- <xsl:text>(</xsl:text><xsl:number level="any" count="iso:formula"/><xsl:text>)</xsl:text> -->

@@ -411,7 +411,7 @@
 	<xsl:template match="un:formula" mode="contents">
 		<item level="" id="{@id}" display="false">
 			<xsl:attribute name="section">
-				<xsl:value-of select="$title-formula"/><xsl:text>(</xsl:text><xsl:number format="A.1" level="multiple" count="un:annex | un:formula"/><xsl:text>)</xsl:text>
+				<xsl:value-of select="$title-formula"/><xsl:number format="(A.1)" level="multiple" count="un:annex | un:formula"/>
 			</xsl:attribute>
 		</item>
 	</xsl:template>
@@ -1144,7 +1144,7 @@
 						<fo:table-cell> <!--  display-align="center" -->
 							<fo:block text-align="right">
 								<xsl:if test="not(ancestor::un:annex)">
-									<xsl:text>(</xsl:text><xsl:number level="any"/><xsl:text>)</xsl:text>
+									<xsl:number format="(1)" level="any"/>
 								</xsl:if>
 								<xsl:if test="ancestor::un:annex">
 									<xsl:variable name="annex-id" select="ancestor::un:annex/@id"/>

@@ -1501,7 +1501,7 @@
 		<item level="" id="{@id}" display="false" type="formula">
 			<xsl:attribute name="section">
 				<!-- Formula -->
-				<xsl:value-of select="$title-equation"/><xsl:text>(</xsl:text><xsl:number format="A.1" level="multiple" count="iec:annex | iec:formula"/><xsl:text>)</xsl:text>
+				<xsl:value-of select="$title-equation"/><xsl:number format="(A.1)" level="multiple" count="iec:annex | iec:formula"/>
 			</xsl:attribute>
 			<xsl:attribute name="parentsection">
 				<xsl:for-each select="parent::*[1]/iec:title">
@@ -2417,7 +2417,7 @@
 							<fo:block text-align="right" margin-right="-10mm">
 								<xsl:choose>
 									<xsl:when test="ancestor::iec:annex">
-										<xsl:text>(</xsl:text><xsl:number format="A.1" level="multiple" count="iec:annex | iec:formula"/><xsl:text>)</xsl:text>
+										<xsl:number format="(A.1)" level="multiple" count="iec:annex | iec:formula"/>
 									</xsl:when>
 									<xsl:otherwise> <!-- not(ancestor::iec:annex) -->
 										<xsl:text>(</xsl:text><xsl:number level="any" count="iec:formula"/><xsl:text>)</xsl:text>

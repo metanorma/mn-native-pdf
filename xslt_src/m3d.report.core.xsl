@@ -466,7 +466,7 @@
 	<xsl:template match="m3d:formula" mode="contents">
 		<item level="" id="{@id}" display="false">
 			<xsl:attribute name="section">
-				<xsl:value-of select="$title-formula"/><xsl:text>(</xsl:text><xsl:number format="A.1" level="multiple" count="m3d:annex | m3d:formula"/><xsl:text>)</xsl:text>
+				<xsl:value-of select="$title-formula"/><xsl:number format="(A.1)" level="multiple" count="m3d:annex | m3d:formula"/>
 			</xsl:attribute>
 		</item>
 	</xsl:template>
@@ -620,10 +620,8 @@
 					<xsl:if test=" ../@obligation">
 						<xsl:value-of select="$linebreak"/>
 						<fo:inline font-weight="normal">
-							<xsl:text>(</xsl:text>
-							<xsl:variable name="obligation" select="../@obligation"/>
-							<xsl:value-of select="$obligation"/>
-							
+							<xsl:text>(</xsl:text>							
+							<xsl:value-of select="../@obligation"/>
 							<xsl:text>)</xsl:text>
 						</fo:inline>
 					</xsl:if>
@@ -1358,7 +1356,7 @@
 							<fo:block text-align="left">
 								<xsl:choose>
 									<xsl:when test="ancestor::m3d:annex">
-										<xsl:text>(</xsl:text><xsl:number format="A.1" level="multiple" count="m3d:annex | m3d:formula"/><xsl:text>)</xsl:text>
+										<xsl:number format="(A.1)" level="multiple" count="m3d:annex | m3d:formula"/>
 									</xsl:when>
 									<xsl:otherwise> <!-- not(ancestor::m3d:annex) -->
 										<xsl:text>(</xsl:text><xsl:number level="any" count="m3d:formula"/><xsl:text>)</xsl:text>

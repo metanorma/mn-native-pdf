@@ -756,7 +756,7 @@
 	<xsl:template match="ogc:formula" mode="contents">
 		<item level="" id="{@id}" display="false">
 			<xsl:attribute name="section">
-				<xsl:value-of select="$title-formula"/><xsl:text>(</xsl:text><xsl:number format="A.1" level="multiple" count="ogc:annex | ogc:formula"/><xsl:text>)</xsl:text>
+				<xsl:value-of select="$title-formula"/><xsl:number format="(A.1)" level="multiple" count="ogc:annex | ogc:formula"/>
 			</xsl:attribute>
 		</item>
 	</xsl:template>
@@ -1800,7 +1800,7 @@
 							<fo:block text-align="right">
 								<xsl:choose>
 									<xsl:when test="ancestor::ogc:annex">
-										<xsl:text>(</xsl:text><xsl:number format="A.1" level="multiple" count="ogc:annex | ogc:formula"/><xsl:text>)</xsl:text>
+										<xsl:number format="(A.1)" level="multiple" count="ogc:annex | ogc:formula"/>
 									</xsl:when>
 									<xsl:otherwise> <!-- not(ancestor::ogc:annex) -->
 										<!-- <xsl:text>(</xsl:text><xsl:number level="any" count="ogc:formula"/><xsl:text>)</xsl:text> -->
