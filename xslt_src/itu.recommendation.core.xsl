@@ -198,7 +198,7 @@
 									<fo:table-cell text-align="right">
 										<xsl:if test="/itu:itu-standard/itu:bibdata/itu:ext/itu:structuredidentifier/itu:annexid">
 											<fo:block font-size="18pt" font-weight="bold">
-												<xsl:text>Annex </xsl:text><xsl:value-of select="/itu:itu-standard/itu:bibdata/itu:ext/itu:structuredidentifier/itu:annexid"/>
+												<xsl:value-of select="$title-annex"/><xsl:value-of select="/itu:itu-standard/itu:bibdata/itu:ext/itu:structuredidentifier/itu:annexid"/>
 											</fo:block>
 										</xsl:if>
 										<fo:block font-size="14pt">
@@ -285,7 +285,7 @@
 											<xsl:text>&#xA0;&#xA0;</xsl:text>
 											<xsl:value-of select="/itu:itu-standard/itu:bibdata/itu:ext/itu:structuredidentifier/itu:docnumber"/>
 											<xsl:if test="/itu:itu-standard/itu:bibdata/itu:ext/itu:structuredidentifier/itu:annexid">
-												<xsl:text> — Annex </xsl:text><xsl:value-of select="/itu:itu-standard/itu:bibdata/itu:ext/itu:structuredidentifier/itu:annexid"/>
+												<xsl:text> — </xsl:text><xsl:value-of select="$title-annex"/><xsl:value-of select="/itu:itu-standard/itu:bibdata/itu:ext/itu:structuredidentifier/itu:annexid"/>
 											</xsl:if>
 										</fo:block>
 									</fo:table-cell>
@@ -596,11 +596,7 @@
 			<xsl:attribute name="section">
 				<xsl:call-template name="getSection">
 					<xsl:with-param name="sectionNum" select="$sectionNum"/>
-				</xsl:call-template>
-				<!-- <xsl:text>Figure </xsl:text>
-				<xsl:call-template name="getItemNumber">
-					<xsl:with-param name="brackets" select="'false'"/>
-				</xsl:call-template> -->
+				</xsl:call-template>				
 			</xsl:attribute>
 			<xsl:attribute name="topsection">
 				<xsl:call-template name="getTopSection">
@@ -624,9 +620,7 @@
 			<xsl:attribute name="section">
 				<xsl:call-template name="getSection">
 					<xsl:with-param name="sectionNum" select="$sectionNum"/>
-				</xsl:call-template>
-				<!-- <xsl:text>Table </xsl:text>
-				<xsl:call-template name="getItemNumber"/> -->
+				</xsl:call-template>				
 			</xsl:attribute>
 			<xsl:attribute name="topsection">
 				<xsl:call-template name="getTopSection">
@@ -918,8 +912,8 @@
 			<xsl:value-of select="$linebreak"/>
 			<xsl:value-of select="$linebreak"/>
 		</fo:block>
-		<fo:block font-weight="bold" margin-top="18pt" margin-bottom="18pt">
-			<xsl:text>Summary</xsl:text>
+		<fo:block font-weight="bold" margin-top="18pt" margin-bottom="18pt">			
+			<xsl:value-of select="$title-summary"/>
 		</fo:block>
 		<xsl:apply-templates />
 	</xsl:template>
@@ -1629,7 +1623,7 @@
 			<xsl:choose>
 				<xsl:when test="($type = 'clause' or $type = 'term') and $level = 1"><xsl:value-of select="$title-clause"/></xsl:when><!-- and not (ancestor::annex) -->
 				<xsl:when test="($type = 'clause' or $type = 'term') and $level &gt; 1"><xsl:value-of select="translate($title-clause, $upper, $lower)"/></xsl:when>
-				<xsl:when test="$type = 'example'">Example </xsl:when>
+				<xsl:when test="$type = 'example'"><xsl:value-of select="$title-example-xref"/></xsl:when>
 				<xsl:when test="$type = 'figure'"></xsl:when>
 				<xsl:when test="$type = 'formula'"></xsl:when>
 				<xsl:when test="$type = 'table'"></xsl:when>
@@ -1643,8 +1637,8 @@
 					<xsl:variable name="currentSection">
 						<xsl:call-template name="getSection"/>
 					</xsl:variable>
-					<xsl:if test="not(contains($section, $currentSection))">
-						<xsl:text>in </xsl:text>
+					<xsl:if test="not(contains($section, $currentSection))">						
+						<xsl:value-of select="$title-in"/>
 						<xsl:if test="$level = 1">
 							<xsl:value-of select="xalan:nodeset($contents)//item[@id = current()/@target]/@parent"/>
 							<xsl:text> </xsl:text>
@@ -1665,7 +1659,8 @@
 					
 					<xsl:if test="not(contains($section, $currentSection))"> -->
 					<xsl:if test="$topsection != $xreftopsection">
-						<xsl:text> in </xsl:text>
+						<xsl:text> </xsl:text>
+						<xsl:value-of select="$title-in"/>
 						<xsl:if test="$level = 1">
 							<xsl:value-of select="xalan:nodeset($contents)//item[@id = current()/@target]/@parent"/>
 							<xsl:text> </xsl:text>
@@ -1683,7 +1678,8 @@
 						<xsl:call-template name="getSection"/>
 					</xsl:variable>
 					<xsl:if test="not(contains($section, $currentSection))">
-						<xsl:text> in </xsl:text>
+						<xsl:text> </xsl:text>
+						<xsl:value-of select="$title-in"/>
 						<xsl:choose>
 							<xsl:when test="$level = 1"><xsl:value-of select="$title-clause"/></xsl:when>
 							<xsl:when test="$level &gt; 1"><xsl:value-of select="translate($title-clause, $upper, $lower)"/></xsl:when>
@@ -1771,7 +1767,7 @@
 	
 	<xsl:template match="itu:locality">
 		<xsl:choose>
-			<xsl:when test="@type ='section'">Section</xsl:when>
+			<xsl:when test="@type ='section'"><xsl:value-of select="normalize-space($title-section)"/></xsl:when>
 			<xsl:otherwise></xsl:otherwise>
 		</xsl:choose>
 		<xsl:value-of select="itu:referenceFrom"/>

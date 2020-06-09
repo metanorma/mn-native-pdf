@@ -1046,8 +1046,9 @@
 								<fo:block>&#xa0;</fo:block>
 								<fo:block>
 									<xsl:if test="$part != ''">
-										<xsl:text>Part </xsl:text><xsl:value-of select="$part"/>
-										<xsl:text>: </xsl:text>
+										<xsl:value-of select="java:replaceAll(java:java.lang.String.new($title-part-en),'#',$part)"/>
+										<!-- <xsl:text>Part </xsl:text><xsl:value-of select="$part"/>
+										<xsl:text>: </xsl:text> -->
 									</xsl:if>
 									<xsl:value-of select="$part-en"/>
 								</fo:block>
@@ -1085,8 +1086,9 @@
 								<fo:block>&#xa0;</fo:block>
 								<fo:block>
 									<xsl:if test="$part != ''">
-										<xsl:text>Part </xsl:text><xsl:value-of select="$part"/>
-										<xsl:text>: </xsl:text>
+										<xsl:value-of select="java:replaceAll(java:java.lang.String.new($title-part-en),'#',$part)"/>
+										<!-- <xsl:text>Part </xsl:text><xsl:value-of select="$part"/>
+										<xsl:text>: </xsl:text> -->
 									</xsl:if>
 									<xsl:value-of select="$part-en"/>
 								</fo:block>
@@ -1188,8 +1190,8 @@
 			<fo:inline font-size="8pt" padding-left="0.5mm" color="rgb(88, 88, 90)">®</fo:inline>
 			<fo:inline keep-together.within-line="always" font-size="25pt" font-weight="bold" color="{$color_gray}" border-bottom="0.5pt solid {$color_gray}" padding-bottom="3.5mm" baseline-shift="5.5mm"><fo:leader leader-pattern="space"/><xsl:value-of select="/iec:iec-standard/iec:bibdata/iec:docidentifier[@type = 'iso']"/></fo:inline>
 		</fo:block>
-		<fo:block font-size="10.5pt" text-align="right" margin-top="0.5mm">
-			<xsl:text>Edition </xsl:text>
+		<fo:block font-size="10.5pt" text-align="right" margin-top="0.5mm">			
+			<xsl:value-of select="$title-edition"/>
 			<fo:inline>
 				<xsl:value-of select="/iec:iec-standard/iec:bibdata/iec:edition"/>
 				<xsl:if test="not(contains(/iec:iec-standard/iec:bibdata/iec:edition, '.'))">.0</xsl:if>
@@ -1278,8 +1280,9 @@
 						<xsl:text> — </xsl:text>
 						<xsl:value-of select="$linebreak"/>
 						<xsl:if test="$part != ''">
-							<xsl:text>Part </xsl:text><xsl:value-of select="$part"/>
-							<xsl:text>: </xsl:text>
+							<xsl:value-of select="java:replaceAll(java:java.lang.String.new($title-part-en),'#',$part)"/>
+							<!-- <xsl:text>Part </xsl:text><xsl:value-of select="$part"/>
+							<xsl:text>: </xsl:text> -->
 						</xsl:if>
 						<xsl:value-of select="$part-en"/>
 					</xsl:if>
@@ -1298,8 +1301,9 @@
 						<xsl:text> — </xsl:text>
 						<xsl:value-of select="$linebreak"/>
 						<xsl:if test="$part != ''">
-							<xsl:text>Part </xsl:text><xsl:value-of select="$part"/>
-							<xsl:text>: </xsl:text>
+							<xsl:value-of select="java:replaceAll(java:java.lang.String.new($title-part-en),'#',$part)"/>
+							<!-- <xsl:text>Part </xsl:text><xsl:value-of select="$part"/>
+							<xsl:text>: </xsl:text> -->
 						</xsl:if>
 						<xsl:value-of select="$part-fr"/>
 					</xsl:if>
@@ -1427,7 +1431,7 @@
 		</xsl:apply-templates>
 		<item level="" id="{@id}" display="false" type="figure">
 			<xsl:attribute name="section">
-				<xsl:text>Figure </xsl:text>
+				<xsl:value-of select="$title-figure"/>
 				<xsl:choose>
 					<xsl:when test="ancestor::iec:annex">
 						<xsl:choose>
@@ -1463,7 +1467,7 @@
 				<xsl:attribute name="display">false</xsl:attribute>
 			</xsl:if>
 			<xsl:attribute name="section">
-				<xsl:text>Table </xsl:text>
+				<xsl:value-of select="$title-table"/>
 				<xsl:choose>
 					<xsl:when test="ancestor::*[local-name()='executivesummary']"> <!-- NIST -->
 							<xsl:text>ES-</xsl:text><xsl:number format="1" count="*[local-name()='executivesummary']//*[local-name()='table']"/>
@@ -1497,7 +1501,7 @@
 		<item level="" id="{@id}" display="false" type="formula">
 			<xsl:attribute name="section">
 				<!-- Formula -->
-				<xsl:text>Equation (</xsl:text><xsl:number format="A.1" level="multiple" count="iec:annex | iec:formula"/><xsl:text>)</xsl:text>
+				<xsl:value-of select="$title-equation"/><xsl:number format="(A.1)" level="multiple" count="iec:annex | iec:formula"/>
 			</xsl:attribute>
 			<xsl:attribute name="parentsection">
 				<xsl:for-each select="parent::*[1]/iec:title">
@@ -1944,16 +1948,12 @@
 			<fo:block>
 				<fo:external-graphic src="{@src}" fox:alt-text="Image"/>
 			</fo:block>
-			<fo:block font-weight="bold" margin-top="12pt" margin-bottom="12pt">Figure <xsl:number format="1" level="any"/></fo:block>
+			<fo:block font-weight="bold" margin-top="12pt" margin-bottom="12pt"><xsl:value-of select="$title-figure"/><xsl:number format="1" level="any"/></fo:block>
 		</fo:block-container>
 		
 	</xsl:template>
 
-	<xsl:template match="iec:figure">
-		<xsl:variable name="title">
-			<xsl:text>Figure </xsl:text>
-		</xsl:variable>
-		
+	<xsl:template match="iec:figure">		
 		<fo:block-container id="{@id}">
 			<fo:block>
 				<xsl:apply-templates />
@@ -1972,13 +1972,13 @@
 								<xsl:number format="a) "/>
 							</xsl:when>
 							<xsl:otherwise> -->
-								<xsl:value-of select="$title"/><xsl:number format="A.1-1" level="multiple" count="iec:annex | iec:figure"/>
+								<xsl:value-of select="$title-figure"/><xsl:number format="A.1-1" level="multiple" count="iec:annex | iec:figure"/>
 							<!-- </xsl:otherwise>
 						</xsl:choose> -->
 						
 					</xsl:when>
 					<xsl:otherwise>
-						<xsl:value-of select="$title"/><xsl:number format="1" level="any"/>
+						<xsl:value-of select="$title-figure"/><xsl:number format="1" level="any"/>
 					</xsl:otherwise>
 				</xsl:choose>
 				<xsl:if test="iec:name">
@@ -2141,7 +2141,7 @@
 	</xsl:template>
 	
 	<xsl:template match="iec:deprecates">
-		<fo:block font-size="8pt" margin-top="5pt" margin-bottom="5pt">DEPRECATED: <xsl:apply-templates /></fo:block>
+		<fo:block font-size="8pt" margin-top="5pt" margin-bottom="5pt"><xsl:value-of select="$title-deprecated"/>: <xsl:apply-templates /></fo:block>
 	</xsl:template>
 	
 	<xsl:template match="iec:definition[preceding-sibling::iec:domain]">
@@ -2162,7 +2162,9 @@
 		<fo:block margin-bottom="8pt" keep-with-previous="always">
 			<!-- Example: [SOURCE: ISO 5127:2017, 3.1.6.02] -->
 			<fo:basic-link internal-destination="{iec:origin/@bibitemid}" fox:alt-text="{iec:origin/@citeas}">
-				<xsl:text>[SOURCE: </xsl:text>
+				<xsl:text>[</xsl:text>
+				<xsl:value-of select="$title-source"/>
+				<xsl:text>: </xsl:text>
 				<xsl:value-of select="iec:origin/@citeas"/>
 				<xsl:apply-templates select="iec:origin/iec:localityStack"/>
 			</fo:basic-link>
@@ -2171,19 +2173,15 @@
 		</fo:block>
 	</xsl:template>
 	
-	<xsl:template match="iec:modification">
-		<xsl:text>, modified — </xsl:text>
-		<xsl:apply-templates/>
-	</xsl:template>
+
 	<xsl:template match="iec:modification/iec:p">
 		<fo:inline><xsl:apply-templates/></fo:inline>
 	</xsl:template>
 	
 	<xsl:template match="iec:termnote">
-		<fo:block font-size="8pt" margin-top="5pt" margin-bottom="5pt">
-			<xsl:text>Note </xsl:text>
-			<xsl:number />
-			<xsl:text> to entry: </xsl:text>
+		<fo:block font-size="8pt" margin-top="5pt" margin-bottom="5pt">			
+			<xsl:variable name="num"><xsl:number /></xsl:variable>			
+			<xsl:value-of select="java:replaceAll(java:java.lang.String.new($title-note-to-entry),'#',$num)"/>
 			<xsl:apply-templates />
 		</fo:block>
 	</xsl:template>
@@ -2199,7 +2197,7 @@
 	
 	<xsl:template match="iec:termexample">
 		<fo:block margin-top="14pt" margin-bottom="10pt">
-			<fo:inline padding-right="10mm">EXAMPLE</fo:inline>
+			<fo:inline padding-right="10mm"><xsl:value-of select="normalize-space($title-example)"/></fo:inline>
 			<xsl:apply-templates />
 		</fo:block>
 	</xsl:template>
@@ -2298,7 +2296,7 @@
 			<xsl:variable name="root" select="xalan:nodeset($contents)//item[@id = current()/@target]/@root"/>
 			<xsl:variable name="parentsection" select="xalan:nodeset($contents)//item[@id = current()/@target]/@parentsection"/>
 			<xsl:choose>
-				<xsl:when test="$type = 'clause' and $root != 'annex'">Clause </xsl:when><!-- and not (ancestor::annex) -->
+				<xsl:when test="$type = 'clause' and $root != 'annex'"><xsl:value-of select="$title-clause"/></xsl:when><!-- and not (ancestor::annex) -->
 				<xsl:otherwise></xsl:otherwise> <!-- <xsl:value-of select="$type"/> -->
 			</xsl:choose>
 			<xsl:variable name="currentsection">
@@ -2315,7 +2313,7 @@
 
 	<xsl:template match="iec:example/iec:p">
 		<fo:block>
-			<fo:inline padding-right="9mm">EXAMPLE</fo:inline>
+			<fo:inline padding-right="9mm"><xsl:value-of select="normalize-space($title-example)"/></fo:inline>
 			<xsl:apply-templates />
 		</fo:block>
 	</xsl:template>
@@ -2326,7 +2324,7 @@
 				<xsl:attribute name="margin-bottom">9pt</xsl:attribute>
 			</xsl:if>
 			<fo:inline padding-right="6mm">
-				<xsl:text>NOTE </xsl:text>
+				<xsl:value-of select="$title-note"/>
 				<xsl:if test="ancestor::iec:figure">
 					<xsl:variable name="id" select="ancestor::iec:figure[1]/@id"/>
 					<xsl:if test="count(//iec:note[ancestor::*[@id = $id]]) &gt; 1">
@@ -2354,9 +2352,9 @@
 	
 	<xsl:template match="iec:locality">
 		<xsl:choose>
-			<xsl:when test="@type ='clause'">Clause </xsl:when>
-			<xsl:when test="@type ='annex'">Annex </xsl:when>
-			<xsl:when test="@type ='table'">Table </xsl:when>
+			<xsl:when test="@type ='clause'"><xsl:value-of select="$title-clause"/></xsl:when>
+			<xsl:when test="@type ='annex'"><xsl:value-of select="$title-annex"/></xsl:when>
+			<xsl:when test="@type ='table'"><xsl:value-of select="$title-table"/></xsl:when>
 			<xsl:otherwise><xsl:value-of select="@type"/></xsl:otherwise>
 		</xsl:choose>
 		<xsl:text> </xsl:text><xsl:value-of select="iec:referenceFrom"/>
@@ -2419,7 +2417,7 @@
 							<fo:block text-align="right" margin-right="-10mm">
 								<xsl:choose>
 									<xsl:when test="ancestor::iec:annex">
-										<xsl:text>(</xsl:text><xsl:number format="A.1" level="multiple" count="iec:annex | iec:formula"/><xsl:text>)</xsl:text>
+										<xsl:number format="(A.1)" level="multiple" count="iec:annex | iec:formula"/>
 									</xsl:when>
 									<xsl:otherwise> <!-- not(ancestor::iec:annex) -->
 										<xsl:text>(</xsl:text><xsl:number level="any" count="iec:formula"/><xsl:text>)</xsl:text>
@@ -2535,7 +2533,7 @@
 				<xsl:when test="ancestor::iec:annex">
 					<xsl:choose>
 						<xsl:when test="$level = 1">
-							<xsl:text>Annex </xsl:text>
+							<xsl:value-of select="$title-annex"/>
 							<xsl:choose>
 								<xsl:when test="count(//iec:annex) = 1">
 									<xsl:value-of select="/iec:iec-standard/iec:bibdata/iec:ext/iec:structuredidentifier/iec:annexid"/>

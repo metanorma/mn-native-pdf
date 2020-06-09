@@ -190,7 +190,7 @@
 						</fo:block>
 						<!-- Version 1.0  -->
 						<fo:block font-size="12pt" margin-bottom="6pt">
-							<xsl:text>Version: </xsl:text>
+							<xsl:value-of select="$title-edition"/><xsl:text>: </xsl:text>
 							<xsl:variable name="edition" select="/m3d:m3d-standard/m3d:bibdata/m3d:edition"/>
 							<xsl:choose>
 								<xsl:when test="contains($edition, '.')">
@@ -227,7 +227,7 @@
 					
 					<!-- Table of content -->
 					<fo:block-container>
-						<fo:block font-size="12pt" font-weight="bold" text-decoration="underline" margin-bottom="4pt">Table of Contents</fo:block>
+						<fo:block font-size="12pt" font-weight="bold" text-decoration="underline" margin-bottom="4pt"><xsl:value-of select="$title-toc"/></fo:block>
 						<fo:table table-layout="fixed" width="100%" font-size="10pt">
 							<fo:table-column column-width="25mm"/>
 							<fo:table-column column-width="155mm"/>
@@ -466,7 +466,7 @@
 	<xsl:template match="m3d:formula" mode="contents">
 		<item level="" id="{@id}" display="false">
 			<xsl:attribute name="section">
-				<xsl:text>Formula (</xsl:text><xsl:number format="A.1" level="multiple" count="m3d:annex | m3d:formula"/><xsl:text>)</xsl:text>
+				<xsl:value-of select="$title-formula"/><xsl:number format="(A.1)" level="multiple" count="m3d:annex | m3d:formula"/>
 			</xsl:attribute>
 		</item>
 	</xsl:template>
@@ -620,10 +620,8 @@
 					<xsl:if test=" ../@obligation">
 						<xsl:value-of select="$linebreak"/>
 						<fo:inline font-weight="normal">
-							<xsl:text>(</xsl:text>
-							<xsl:variable name="obligation" select="../@obligation"/>
-							<xsl:value-of select="$obligation"/>
-							
+							<xsl:text>(</xsl:text>							
+							<xsl:value-of select="../@obligation"/>
 							<xsl:text>)</xsl:text>
 						</fo:inline>
 					</xsl:if>
@@ -1027,7 +1025,7 @@
 		<xsl:param name="sectionNum"/>		
 		<fo:inline>
 			<xsl:if test="not(preceding-sibling::*[1][local-name() = 'deprecates'])">
-				<fo:inline>DEPRECATED: </fo:inline>
+				<fo:inline><xsl:value-of select="$title-deprecated"/>: </fo:inline>
 			</xsl:if>
 			<xsl:apply-templates />
 		</fo:inline>
@@ -1066,10 +1064,7 @@
 		</fo:block>
 	</xsl:template>
 	
-	<xsl:template match="m3d:modification">
-		<xsl:text>, modified — </xsl:text>
-		<xsl:apply-templates/>
-	</xsl:template>
+
 	<xsl:template match="m3d:modification/m3d:p">
 		<xsl:apply-templates/>
 	</xsl:template>
@@ -1081,9 +1076,8 @@
 		<fo:block-container margin-left="0mm" margin-top="4pt" line-height="125%">
 			<fo:block>
 				<fo:inline padding-right="1mm">
-					<xsl:text>Note </xsl:text>
-						<xsl:number />
-					<xsl:text> to entry: </xsl:text>
+					<xsl:variable name="num"><xsl:number /></xsl:variable>			
+					<xsl:value-of select="java:replaceAll(java:java.lang.String.new($title-note-to-entry),'#',$num)"/>					
 				</fo:inline>
 				<xsl:apply-templates />
 			</fo:block>
@@ -1362,7 +1356,7 @@
 							<fo:block text-align="left">
 								<xsl:choose>
 									<xsl:when test="ancestor::m3d:annex">
-										<xsl:text>(</xsl:text><xsl:number format="A.1" level="multiple" count="m3d:annex | m3d:formula"/><xsl:text>)</xsl:text>
+										<xsl:number format="(A.1)" level="multiple" count="m3d:annex | m3d:formula"/>
 									</xsl:when>
 									<xsl:otherwise> <!-- not(ancestor::m3d:annex) -->
 										<xsl:text>(</xsl:text><xsl:number level="any" count="m3d:formula"/><xsl:text>)</xsl:text>
@@ -1393,7 +1387,7 @@
 		<xsl:variable name="section">
 			<xsl:choose>
 				<xsl:when test="ancestor::m3d:bibliography and $references_num_current = 1"><!-- Normative references -->
-					<xsl:text>Section </xsl:text><xsl:value-of select="$sectionNum"/><xsl:text>.</xsl:text>
+					<xsl:value-of select="$title-section"/><xsl:value-of select="$sectionNum"/><xsl:text>.</xsl:text>
 				</xsl:when>
 				<xsl:when test="ancestor::m3d:bibliography">
 					<xsl:value-of select="$sectionNum"/>
@@ -1401,7 +1395,7 @@
 				<xsl:when test="ancestor::m3d:sections">
 					<!-- 1, 2, 3, 4, ... from main section (not annex, bibliography, ...) -->
 					<xsl:if test="$level = 1">
-						<xsl:text>Section </xsl:text>
+						<xsl:value-of select="$title-section"/>
 					</xsl:if>
 					<xsl:choose>
 						<xsl:when test="$level = 1">
@@ -1422,7 +1416,7 @@
 					<xsl:variable name="annexid" select="normalize-space(/m3d:m3d-standard/m3d:bibdata/m3d:ext/m3d:structuredidentifier/m3d:annexid)"/>
 					<xsl:choose>
 						<xsl:when test="$level = 1">
-							<xsl:text>Annex </xsl:text>							
+							<xsl:value-of select="$title-annex"/>
 							<xsl:choose>
 								<xsl:when test="count(//m3d:annex) = 1 and $annexid != ''">
 									<xsl:value-of select="$annexid"/>

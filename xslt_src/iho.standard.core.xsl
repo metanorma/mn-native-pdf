@@ -500,7 +500,7 @@
 	<xsl:template match="iho:formula" mode="contents">
 		<item level="" id="{@id}" display="false">
 			<xsl:attribute name="section">
-				<xsl:text>Formula (</xsl:text><xsl:number format="A.1" level="multiple" count="iho:annex | iho:formula"/><xsl:text>)</xsl:text>
+				<xsl:value-of select="$title-formula"/><xsl:number format="(A.1)" level="multiple" count="iho:annex | iho:formula"/>
 			</xsl:attribute>
 		</item>
 	</xsl:template>
@@ -975,7 +975,9 @@
 		<fo:block margin-bottom="12pt"> 
 			<!-- Example:[SOURCE: [3]] -->
 			<fo:basic-link internal-destination="{iho:origin/@bibitemid}" fox:alt-text="{iho:origin/@citeas}">
-				<xsl:text>[SOURCE: </xsl:text>
+				<xsl:text>[</xsl:text>
+				<xsl:value-of select="$title-source"/>
+				<xsl:text>: </xsl:text>
 				<fo:inline color="blue" text-decoration="underline"><xsl:value-of select="iho:origin/@citeas"/></fo:inline>
 				
 				<xsl:apply-templates select="iho:origin/iho:localityStack"/>
@@ -1280,7 +1282,7 @@
 	</xsl:template>
 	
 	<xsl:template match="iho:deprecates">
-		<fo:block>DEPRECATED: <xsl:apply-templates /></fo:block>
+		<fo:block><xsl:value-of select="$title-deprecated"/>: <xsl:apply-templates /></fo:block>
 	</xsl:template>
 	
 	<xsl:template match="iho:definition[preceding-sibling::iho:domain]">
@@ -1300,7 +1302,7 @@
 	<xsl:template match="iho:termexample">
 		<fo:block font-size="10pt" margin-top="8pt" margin-bottom="8pt"  text-align="justify">
 			<fo:inline padding-right="5mm">
-				<xsl:text>EXAMPLE </xsl:text>
+				<xsl:value-of select="$title-example"/>
 				<xsl:if test="count(ancestor::iho:term[1]//iho:termexample) &gt; 1">
 					<xsl:number />
 				</xsl:if>
@@ -1320,10 +1322,9 @@
 	</xsl:template>
 	
 	<xsl:template match="iho:termnote">
-		<fo:block font-size="10pt" margin-top="8pt" margin-bottom="8pt" text-align="justify">
-			<xsl:text>Note </xsl:text>
-			<xsl:number />
-			<xsl:text> to entry: </xsl:text>
+		<fo:block font-size="10pt" margin-top="8pt" margin-bottom="8pt" text-align="justify">			
+			<xsl:variable name="num"><xsl:number /></xsl:variable>			
+			<xsl:value-of select="java:replaceAll(java:java.lang.String.new($title-note-to-entry),'#',$num)"/>
 			<xsl:apply-templates />
 		</fo:block>
 	</xsl:template>
@@ -1336,10 +1337,7 @@
 		</xsl:if> -->
 	</xsl:template>
 	
-	<xsl:template match="iho:modification">
-		<xsl:text>, modified — </xsl:text>
-		<xsl:apply-templates/>
-	</xsl:template>
+
 	<xsl:template match="iho:modification/iho:p">
 		<fo:inline><xsl:apply-templates/></fo:inline>
 	</xsl:template>

@@ -226,14 +226,7 @@
 							</fo:block>
 							<!-- Partly Supercedes GB/T 88021-2016 -->
 							<fo:block margin-top="2.85pt">
-								<xsl:choose>
-									<xsl:when test="$language = 'zh'">
-										<xsl:text>部分代替 </xsl:text>
-									</xsl:when>
-									<xsl:otherwise>
-										<xsl:text>Partly Supercedes </xsl:text>
-									</xsl:otherwise>
-								</xsl:choose>
+								<xsl:value-of select="$title-partly-supercedes"/>								
 								<xsl:value-of select="/gb:gb-standard/gb:bibdata/gb:relation[@type='obsoletes']/gb:bibitem/gb:docidentifier"/>
 							</fo:block>
 						</fo:block>
@@ -292,10 +285,7 @@
 						</fo:block>
 						<fo:block margin-top="9.05pt">
 							<xsl:text>（</xsl:text>
-							<xsl:choose>
-								<xsl:when test="$language = 'zh'">本稿完成日期</xsl:when>
-								<xsl:otherwise>Completion date for this manuscript</xsl:otherwise>
-							</xsl:choose>
+							<xsl:value-of select="$title-completion-date"/>							
 							<xsl:text>: </xsl:text>
 								<xsl:value-of select="/gb:gb-standard/gb:bibdata/gb:version/gb:revision-date"/>
 							<xsl:text>)</xsl:text>
@@ -303,24 +293,14 @@
 					</fo:block-container>
 					<fo:block-container position="absolute" left="0mm" top="239mm" width="170mm" border-bottom="1pt solid black">
 						<fo:block font-family="SimHei" font-size="14pt" text-align-last="justify" margin-bottom="2.5mm">
-							<xsl:if test="$language = 'en'">
-								<xsl:text>Issuance Date: </xsl:text>
-							</xsl:if>
-							<xsl:value-of select="/gb:gb-standard/gb:bibdata/gb:date[@type='issued']/gb:on"/>
-							<xsl:if test="$language = 'zh'">
-								<xsl:text> 发布</xsl:text>
-							</xsl:if>
+							<xsl:value-of select="java:replaceAll(java:java.lang.String.new($title-issuance-date),'#',/gb:gb-standard/gb:bibdata/gb:date[@type='issued']/gb:on)"/>
 							
 							<fo:inline keep-together.within-line="always">
 								<fo:leader  leader-pattern="space"/>
 							</fo:inline>
-							<xsl:if test="$language = 'en'">
-								<xsl:text>Implementation Date: </xsl:text>
-							</xsl:if>
-							<xsl:value-of select="/gb:gb-standard/gb:bibdata/gb:date[@type='implemented']/gb:on"/>
-							<xsl:if test="$language = 'zh'">
-								<xsl:text> 实施</xsl:text>
-							</xsl:if>
+							
+							<xsl:value-of select="java:replaceAll(java:java.lang.String.new($title-implementation-date),'#',/gb:gb-standard/gb:bibdata/gb:date[@type='implemented']/gb:on)"/>
+							
 						</fo:block>
 					</fo:block-container>
 					<fo:block break-after="page"/>
@@ -336,10 +316,7 @@
 					<fo:block-container>
 						
 						<fo:block font-family="SimHei" font-size="16pt" margin-top="6pt" margin-bottom="32pt" text-align="center">
-							<xsl:choose>
-								<xsl:when test="$language = 'zh'"><xsl:text>目次</xsl:text></xsl:when>
-								<xsl:otherwise><xsl:text>Table of contents</xsl:text></xsl:otherwise>
-							</xsl:choose>
+							<xsl:value-of select="$title-toc"/>
 						</fo:block>
 						
 						<xsl:if test="$debug = 'true'">
@@ -478,14 +455,10 @@
 			<xsl:if test="$part != ''">
 				<xsl:choose>
 					<xsl:when test="$lang = 'zh'">
-						<xsl:text>第 </xsl:text>
-						<xsl:value-of select="$part"/>
-						<xsl:text> 部分:</xsl:text>
+						<xsl:value-of select="java:replaceAll(java:java.lang.String.new($title-part-zh),'#',$part)"/>
 					</xsl:when>
 					<xsl:otherwise>
-						<xsl:text>Part </xsl:text>
-						<xsl:value-of select="$part"/>
-						<xsl:text>: </xsl:text>
+						<xsl:value-of select="java:replaceAll(java:java.lang.String.new($title-part-en),'#',$part)"/>
 					</xsl:otherwise>
 				</xsl:choose>
 			</xsl:if>
@@ -583,16 +556,9 @@
 				<xsl:if test="local-name(..) = 'annex'">
 					<xsl:variable name="obligation" select="../@obligation"/>
 					<xsl:choose>
-						<xsl:when test="$language = 'zh'">
-							<xsl:choose>
-								<xsl:when test="$obligation = 'normative'">规范性附录</xsl:when>
-								<xsl:otherwise><xsl:value-of select="$obligation"/></xsl:otherwise>
-							</xsl:choose>
-						</xsl:when>
-						<xsl:otherwise>
-							<xsl:value-of select="$obligation"/>
-						</xsl:otherwise>
-					</xsl:choose>			
+						<xsl:when test="$obligation = 'normative'"><xsl:value-of select="$title-obligation-normative"/></xsl:when>
+						<xsl:otherwise><xsl:value-of select="$obligation"/></xsl:otherwise>
+					</xsl:choose>					
 				</xsl:if>
 			</xsl:attribute>
 			<xsl:value-of select="."/>
@@ -640,7 +606,7 @@
 	<xsl:template match="gb:formula" mode="contents">
 		<item level="" id="{@id}" display="false">
 			<xsl:attribute name="section">
-				<xsl:text>Formula (</xsl:text><xsl:number format="A.1" level="multiple" count="gb:annex | gb:formula"/><xsl:text>)</xsl:text>
+				<xsl:value-of select="$title-formula"/><xsl:number format="(A.1)" level="multiple" count="gb:annex | gb:formula"/>
 			</xsl:attribute>
 		</item>
 	</xsl:template>
@@ -841,16 +807,9 @@
 							<xsl:text>(</xsl:text>
 							<xsl:variable name="obligation" select="../@obligation"/>
 							<xsl:choose>
-								<xsl:when test="$language = 'zh'">
-									<xsl:choose>
-										<xsl:when test="$obligation = 'normative'">规范性附录</xsl:when>
-										<xsl:otherwise><xsl:value-of select="$obligation"/></xsl:otherwise>
-									</xsl:choose>
-								</xsl:when>
-								<xsl:otherwise>
-									<xsl:value-of select="$obligation"/>
-								</xsl:otherwise>
-							</xsl:choose>			
+								<xsl:when test="$obligation = 'normative'"><xsl:value-of select="$title-obligation-normative"/></xsl:when>
+								<xsl:otherwise><xsl:value-of select="$obligation"/></xsl:otherwise>
+							</xsl:choose>							
 							<xsl:text>)</xsl:text>
 						</fo:inline>
 					</xsl:if>
@@ -1235,7 +1194,7 @@
 		<fo:inline font-size="11pt">
 			<xsl:if test="not(preceding-sibling::*[1][local-name() = 'deprecates'])">
 				<xsl:attribute name="padding-left">7.4mm</xsl:attribute>
-				<fo:inline>DEPRECATED: </fo:inline>
+				<fo:inline><xsl:value-of select="$title-deprecated"/>: </fo:inline>
 			</xsl:if>
 			<xsl:apply-templates />
 		</fo:inline>
@@ -1274,14 +1233,7 @@
 		</fo:block>
 	</xsl:template>
 	
-	<xsl:template match="gb:modification">
-		<xsl:choose>
-			<xsl:when test="$language = 'zh'">、改写—</xsl:when>
-			<xsl:otherwise><xsl:text>, modified — </xsl:text></xsl:otherwise>
-		</xsl:choose>
-		
-		<xsl:apply-templates/>
-	</xsl:template>
+
 	<xsl:template match="gb:modification/gb:p">
 		<xsl:apply-templates/>
 	</xsl:template>
@@ -1299,18 +1251,8 @@
 						<fo:table-row>
 							<fo:table-cell>
 								<fo:block font-family="SimHei">
-									<xsl:choose>
-										<xsl:when test="$language = 'zh'">
-											<xsl:text>注</xsl:text>
-											<xsl:number />
-											<xsl:text>： </xsl:text>
-										</xsl:when>
-										<xsl:otherwise>
-											<xsl:text>Note </xsl:text>
-											<xsl:number />
-											<xsl:text> to entry: </xsl:text>
-										</xsl:otherwise>
-									</xsl:choose>
+									<xsl:variable name="num"><xsl:number /></xsl:variable>			
+									<xsl:value-of select="java:replaceAll(java:java.lang.String.new($title-note-to-entry),'#',$num)"/>									
 								</fo:block>
 							</fo:table-cell>
 							<fo:table-cell>
@@ -1517,14 +1459,7 @@
 						<fo:table-row>
 							<fo:table-cell>
 								<fo:block font-family="SimHei">
-									<xsl:choose>
-										<xsl:when test="$language = 'zh'">
-											<xsl:text>注</xsl:text>
-										</xsl:when>
-										<xsl:otherwise>
-											<xsl:text>NOTE</xsl:text>
-										</xsl:otherwise>
-									</xsl:choose>
+									<xsl:value-of select="normalize-space($title-note)"/>									
 									<xsl:if test="count(ancestor::gb:clause[1]//gb:note) &gt; 1">
 										<xsl:text> </xsl:text><xsl:number count="gb:note[ancestor::gb:clause[@id = $claims_id]]" level="any"/>
 									</xsl:if>
@@ -1587,15 +1522,10 @@
 	<xsl:template match="gb:admonition">
 		<fo:block font-family="SimHei" text-align="center" margin-bottom="12pt" font-weight="bold">
 			<xsl:choose>
-				<xsl:when test="$language = 'zh'">
-					<xsl:choose>
-						<xsl:when test="@type = 'caution'">注意</xsl:when>
-						<xsl:when test="@type = 'warning'">警告</xsl:when>
-						<xsl:otherwise><xsl:value-of select="translate(@type, $lower, $upper)"/></xsl:otherwise>
-					</xsl:choose>
-				</xsl:when>
+				<xsl:when test="@type = 'caution'"><xsl:value-of select="$title-caution"/></xsl:when>
+				<xsl:when test="@type = 'warning'"><xsl:value-of select="$title-warning"/></xsl:when>
 				<xsl:otherwise><xsl:value-of select="translate(@type, $lower, $upper)"/></xsl:otherwise>
-			</xsl:choose>
+			</xsl:choose>			
 		</fo:block>
 		<fo:block font-weight="bold">
 			<xsl:apply-templates />
@@ -1630,10 +1560,10 @@
 							<fo:block text-align="left">
 								<xsl:choose>
 									<xsl:when test="ancestor::gb:annex">
-										<xsl:text>(</xsl:text><xsl:number format="A.1" level="multiple" count="gb:annex | gb:formula"/><xsl:text>)</xsl:text>
+										<xsl:number format="(A.1)" level="multiple" count="gb:annex | gb:formula"/>
 									</xsl:when>
 									<xsl:otherwise> <!-- not(ancestor::gb:annex) -->
-										<xsl:text>(</xsl:text><xsl:number level="any" count="gb:formula"/><xsl:text>)</xsl:text>
+										<xsl:number format="(1)" level="any" count="gb:formula"/>
 									</xsl:otherwise>
 								</xsl:choose>
 							</fo:block>
@@ -1713,10 +1643,7 @@
 					<xsl:variable name="annexid" select="normalize-space(/gb:gb-standard/gb:bibdata/gb:ext/gb:structuredidentifier/gb:annexid)"/>
 					<xsl:choose>
 						<xsl:when test="$level = 1">
-							<xsl:choose>
-								<xsl:when test="$language = 'zh'"><xsl:text>附 件 </xsl:text></xsl:when>
-								<xsl:otherwise><xsl:text>Annex </xsl:text></xsl:otherwise>
-							</xsl:choose>
+							<xsl:value-of select="$title-annex"/>							
 							<xsl:choose>
 								<xsl:when test="count(//gb:annex) = 1 and $annexid != ''">
 									<xsl:value-of select="$annexid"/>

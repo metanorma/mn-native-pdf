@@ -333,7 +333,7 @@
 					<fo:block break-after="page"/>
 					
 					<fo:block-container font-weight="bold" line-height="115%">
-						<fo:block font-size="14pt" margin-top="2pt"  margin-bottom="15.5pt">Contents</fo:block>
+						<fo:block font-size="14pt" margin-top="2pt"  margin-bottom="15.5pt"><xsl:value-of select="$title-toc"/></fo:block>
 						
 						<xsl:for-each select="xalan:nodeset($contents)//item[@display = 'true' and @level &lt;= 2]"><!-- skip clause from preface [not(@level = 2 and starts-with(@section, '0'))] -->
 							
@@ -382,7 +382,7 @@
 						<xsl:if test="xalan:nodeset($contents)//item[@type = 'table']">
 							<fo:block font-size="12pt">&#xA0;</fo:block>
 							<fo:block font-size="12pt">&#xA0;</fo:block>
-							<fo:block font-size="14pt" font-weight="bold" space-before="48pt" margin-bottom="15.5pt">List of Tables</fo:block>
+							<fo:block font-size="14pt" font-weight="bold" space-before="48pt" margin-bottom="15.5pt"><xsl:value-of select="$title-list-tables"/></fo:block>
 							<xsl:for-each select="xalan:nodeset($contents)//item[@type = 'table']">
 								<fo:block text-align-last="justify" margin-top="6pt">
 									<fo:basic-link internal-destination="{@id}" fox:alt-text="{@section}">
@@ -404,7 +404,7 @@
 						<xsl:if test="xalan:nodeset($contents)//item[@type = 'figure']">
 							<fo:block font-size="12pt">&#xA0;</fo:block>
 							<fo:block font-size="12pt">&#xA0;</fo:block>
-							<fo:block font-size="14pt" font-weight="bold" space-before="48pt" margin-bottom="15.5pt">List of Figures</fo:block>
+							<fo:block font-size="14pt" font-weight="bold" space-before="48pt" margin-bottom="15.5pt"><xsl:value-of select="$title-list-figures"/></fo:block>
 							<xsl:for-each select="xalan:nodeset($contents)//item[@type = 'figure']">
 								<fo:block text-align-last="justify" margin-top="6pt">
 									<fo:basic-link internal-destination="{@id}" fox:alt-text="{@section}">
@@ -680,7 +680,7 @@
 			<xsl:number format="i" value="$sectionNum"/>
 		</xsl:variable>
 		<item id="keywords" level="1" section="{$section}" display-section="true" display="true" type="abstract" root="preface">
-			<xsl:text>Keywords</xsl:text>
+			<xsl:value-of select="$title-keywords"/>
 		</item>
 	</xsl:template>
 	<!-- Submitting Organizations -->
@@ -690,7 +690,7 @@
 			<xsl:number format="i" value="$sectionNum"/>
 		</xsl:variable>
 		<item id="submitting_orgs" level="1" section="{$section}" display-section="true" display="true" type="abstract" root="preface">
-			<xsl:text>Submitting Organizations</xsl:text>
+			<xsl:value-of select="$title-submitting-organizations"/>
 		</item>
 	</xsl:template>
 	
@@ -698,7 +698,7 @@
 		<xsl:param name="sectionNum" />
 		<item level="" id="{@id}" type="figure">
 			<xsl:attribute name="section">
-				<xsl:text>Figure </xsl:text>
+				<xsl:value-of select="$title-figure"/>
 				<xsl:choose>
 					<xsl:when test="ancestor::ogc:annex">
 						<xsl:choose>
@@ -733,7 +733,7 @@
 		<xsl:variable name="annex-id" select="ancestor::ogc:annex/@id"/>
 		<item level="" id="{@id}" display="false" type="table">
 			<xsl:attribute name="section">
-				<xsl:text>Table </xsl:text>
+				<xsl:value-of select="$title-table"/>
 				<xsl:choose>
 					<xsl:when test="ancestor::*[local-name()='executivesummary']">
 							<xsl:text>ES-</xsl:text><xsl:number format="1" count="*[local-name()='executivesummary']//*[local-name()='table'][not(@unnumbered='true')]"/>
@@ -756,7 +756,7 @@
 	<xsl:template match="ogc:formula" mode="contents">
 		<item level="" id="{@id}" display="false">
 			<xsl:attribute name="section">
-				<xsl:text>Formula (</xsl:text><xsl:number format="A.1" level="multiple" count="ogc:annex | ogc:formula"/><xsl:text>)</xsl:text>
+				<xsl:value-of select="$title-formula"/><xsl:number format="(A.1)" level="multiple" count="ogc:annex | ogc:formula"/>
 			</xsl:attribute>
 		</item>
 	</xsl:template>
@@ -774,7 +774,7 @@
 	
 	<xsl:template match="/ogc:ogc-standard/ogc:bibdata/ogc:edition">
 		<fo:block margin-bottom="12pt">
-			<xsl:text>Version: </xsl:text>
+			<xsl:value-of select="$title-edition"/><xsl:text>: </xsl:text>
 			<xsl:value-of select="."/><xsl:text> </xsl:text>
 		</fo:block>
 	</xsl:template>
@@ -898,7 +898,7 @@
 		<xsl:param name="sectionNum" select="'1'"/>
 		<fo:block id="keywords" font-size="13pt" font-weight="bold" margin-top="13.5pt" margin-bottom="12pt" color="rgb(14, 26, 133)">
 			<xsl:number format="i." value="$sectionNum"/><fo:inline padding-right="2mm">&#xA0;</fo:inline>
-			<xsl:text>Keywords</xsl:text>
+			<xsl:value-of select="$title-keywords"/>
 		</fo:block>
 		<fo:block margin-bottom="12pt">The following are keywords to be used by search engines and document catalogues.</fo:block>
 		<fo:block margin-bottom="12pt">
@@ -917,7 +917,7 @@
 		<xsl:param name="sectionNum" select="'1'"/>
 		<fo:block id="submitting_orgs" font-size="13pt" font-weight="bold" color="rgb(14, 26, 133)" margin-top="13.5pt" margin-bottom="12pt">
 			<xsl:number format="i." value="$sectionNum"/><fo:inline padding-right="3mm">&#xA0;</fo:inline>
-			<xsl:text>Submitting Organizations</xsl:text>
+			<xsl:value-of select="$title-submitting-organizations"/>
 		</fo:block>
 		<fo:block margin-bottom="12pt">The following organizations submitted this Document to the Open Geospatial Consortium (OGC):</fo:block>
 		<fo:list-block provisional-distance-between-starts="6.5mm" margin-bottom="12pt" line-height="115%">
@@ -1181,10 +1181,6 @@
 	</xsl:template>
 
 	<xsl:template match="ogc:figure">
-		<xsl:variable name="title">
-			<xsl:text>Figure </xsl:text>
-		</xsl:variable>
-		
 		<fo:block-container id="{@id}">
 			<fo:block>
 				<xsl:apply-templates />
@@ -1202,13 +1198,13 @@
 								<xsl:number format="a) "/>
 							</xsl:when>
 							<xsl:otherwise>
-								<xsl:value-of select="$title"/><xsl:number format="A.1-1" level="multiple" count="ogc:annex | ogc:figure"/>
+								<xsl:value-of select="$title-figure"/><xsl:number format="A.1-1" level="multiple" count="ogc:annex | ogc:figure"/>
 							</xsl:otherwise>
 						</xsl:choose>
 						
 					</xsl:when>
 					<xsl:otherwise>
-						<xsl:value-of select="$title"/><xsl:number format="1" level="any" count="ogc:sourcecode[not(@unnumbered='true') and not(ancestor::ogc:example)] | ogc:figure"/>
+						<xsl:value-of select="$title-figure"/><xsl:number format="1" level="any" count="ogc:sourcecode[not(@unnumbered='true') and not(ancestor::ogc:example)] | ogc:figure"/>
 					</xsl:otherwise>
 				</xsl:choose>
 				<xsl:if test="ogc:name">
@@ -1408,7 +1404,7 @@
 	</xsl:template>
 	
 	<xsl:template match="ogc:deprecates">
-		<fo:block>DEPRECATED: <xsl:apply-templates /></fo:block>
+		<fo:block><xsl:value-of select="$title-deprecated"/>: <xsl:apply-templates /></fo:block>
 	</xsl:template>
 	
 	<xsl:template match="ogc:definition[preceding-sibling::ogc:domain]">
@@ -1429,7 +1425,9 @@
 		<fo:block margin-bottom="12pt" keep-with-previous="always">
 			<!-- Example: [SOURCE: ISO 5127:2017, 3.1.6.02] -->
 			<fo:basic-link internal-destination="{ogc:origin/@bibitemid}" fox:alt-text="{ogc:origin/@citeas}">
-				<xsl:text>[SOURCE: </xsl:text>
+				<xsl:text>[</xsl:text>
+				<xsl:value-of select="$title-source"/>
+				<xsl:text>: </xsl:text>
 				<fo:inline color="blue" text-decoration="underline">
 					<xsl:value-of select="ogc:origin/@citeas"/>
 					
@@ -1442,19 +1440,15 @@
 		</fo:block>
 	</xsl:template>
 	
-	<xsl:template match="ogc:modification">
-		<xsl:text>, modified — </xsl:text>
-		<xsl:apply-templates/>
-	</xsl:template>
+
 	<xsl:template match="ogc:modification/ogc:p">
 		<fo:inline><xsl:apply-templates/></fo:inline>
 	</xsl:template>
 	
 	<xsl:template match="ogc:termnote">
 		<fo:block font-size="10pt" margin-bottom="12pt">
-			<xsl:text>Note </xsl:text>
-			<xsl:number />
-			<xsl:text> to entry: </xsl:text>
+			<xsl:variable name="num"><xsl:number /></xsl:variable>			
+			<xsl:value-of select="java:replaceAll(java:java.lang.String.new($title-note-to-entry),'#',$num)"/>			
 			<xsl:apply-templates />
 		</fo:block>
 	</xsl:template>
@@ -1470,7 +1464,7 @@
 	
 	<xsl:template match="ogc:termexample">
 		<fo:block font-size="10pt" margin-bottom="12pt">
-			<fo:inline padding-right="10mm">EXAMPLE</fo:inline>
+			<fo:inline padding-right="10mm"><xsl:value-of select="normalize-space($title-example)"/></fo:inline>
 			<xsl:apply-templates />
 		</fo:block>
 	</xsl:template>
@@ -1621,9 +1615,9 @@
 				</xsl:when>
 				<xsl:otherwise>
 					<xsl:choose>
-						<xsl:when test="$type = 'clause' and $root != 'annex'">Clause </xsl:when><!-- and not (ancestor::annex) -->
-						<xsl:when test="$type = 'term' and ($root = 'clause' or $root = 'terms')">Clause </xsl:when>
-						<xsl:when test="$type = 'clause' and $root = 'annex'">Annex </xsl:when>
+						<xsl:when test="$type = 'clause' and $root != 'annex'"><xsl:value-of select="$title-clause"/></xsl:when><!-- and not (ancestor::annex) -->
+						<xsl:when test="$type = 'term' and ($root = 'clause' or $root = 'terms')"><xsl:value-of select="$title-clause"/></xsl:when>
+						<xsl:when test="$type = 'clause' and $root = 'annex'"><xsl:value-of select="$title-annex"/></xsl:when>
 						<xsl:otherwise></xsl:otherwise> <!-- <xsl:value-of select="$type"/> -->
 					</xsl:choose>
 					<xsl:value-of select="$section"/>
@@ -1646,7 +1640,7 @@
 					</xsl:when>
 					<xsl:otherwise>
 						<fo:block font-size="11pt" font-weight="bold" text-align="center" margin-bottom="12pt">
-							<xsl:text>Figure </xsl:text>
+							<xsl:value-of select="$title-figure"/>
 							<xsl:number format="A." level="multiple" count="ogc:annex"/>
 							<xsl:number format="1" level="any" count="ogc:sourcecode[ancestor::ogc:annex/@id = $id_annex and not(@unnumbered='true') and not(ancestor::ogc:example)]"/>
 							<xsl:if test="ogc:name">
@@ -1659,7 +1653,7 @@
 			</xsl:when>
 			<xsl:otherwise>
 				<fo:block font-size="11pt" font-weight="bold" text-align="center" margin-bottom="12pt">
-					<xsl:text>Figure </xsl:text>
+					<xsl:value-of select="$title-figure"/>
 					<xsl:number format="1" level="any" count="ogc:sourcecode[not(@unnumbered='true') and not(ancestor::ogc:example)] | ogc:figure"/>
 					<xsl:if test="ogc:name">
 						<xsl:text> — </xsl:text>
@@ -1684,7 +1678,7 @@
 	
 	<xsl:template match="ogc:example">
 		<fo:block font-size="10pt" margin-top="12pt" margin-bottom="12pt" font-weight="bold" keep-with-next="always">
-			<xsl:text>EXAMPLE</xsl:text>
+			<xsl:value-of select="normalize-space($title-example)"/>
 			<xsl:if test="following-sibling::ogc:example or preceding-sibling::ogc:example">
 				<xsl:number format=" 1"/>
 			</xsl:if>
@@ -1715,7 +1709,7 @@
 			</xsl:if>
 			<xsl:variable name="clauseid" select="ancestor::ogc:clause[1]/@id"/>
 			<fo:inline padding-right="4mm">
-				<xsl:text>NOTE </xsl:text>
+				<xsl:value-of select="$title-note"/>
 				<xsl:if test="count(//ogc:note[ancestor::ogc:clause[1][@id = $clauseid]]) &gt; 1">
 					<xsl:number count="ogc:note[ancestor::ogc:clause[1][@id = $clauseid]]" level="any"/>
 				</xsl:if>
@@ -1756,8 +1750,8 @@
 	
 	<xsl:template match="ogc:locality">
 		<xsl:choose>
-			<xsl:when test="@type ='clause'">Clause </xsl:when>
-			<xsl:when test="@type ='annex'">Annex </xsl:when>
+			<xsl:when test="@type ='clause'"><xsl:value-of select="$title-clause"/></xsl:when>
+			<xsl:when test="@type ='annex'"><xsl:value-of select="$title-annex"/></xsl:when>
 			<xsl:otherwise><xsl:value-of select="@type"/></xsl:otherwise>
 		</xsl:choose>
 		<xsl:text> </xsl:text><xsl:value-of select="ogc:referenceFrom"/>
@@ -1806,7 +1800,7 @@
 							<fo:block text-align="right">
 								<xsl:choose>
 									<xsl:when test="ancestor::ogc:annex">
-										<xsl:text>(</xsl:text><xsl:number format="A.1" level="multiple" count="ogc:annex | ogc:formula"/><xsl:text>)</xsl:text>
+										<xsl:number format="(A.1)" level="multiple" count="ogc:annex | ogc:formula"/>
 									</xsl:when>
 									<xsl:otherwise> <!-- not(ancestor::ogc:annex) -->
 										<!-- <xsl:text>(</xsl:text><xsl:number level="any" count="ogc:formula"/><xsl:text>)</xsl:text> -->
@@ -1934,7 +1928,7 @@
 				<xsl:when test="ancestor::ogc:annex">
 					<xsl:choose>
 						<xsl:when test="$level = 1">
-							<xsl:text>Annex </xsl:text>
+							<xsl:value-of select="$title-annex"/>
 							<xsl:choose>
 								<xsl:when test="count(//ogc:annex) = 1">
 									<xsl:value-of select="/ogc:ogc-standard/ogc:bibdata/ogc:ext/ogc:structuredidentifier/ogc:annexid"/>
