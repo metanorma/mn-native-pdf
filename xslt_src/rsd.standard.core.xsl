@@ -1148,11 +1148,11 @@
 	
 	<xsl:template match="rsd:term">
 		<xsl:param name="sectionNum"/>
-		<fo:wrapper id="{@id}">
+		<fo:block id="{@id}">
 			<xsl:apply-templates>
 				<xsl:with-param name="sectionNum" select="$sectionNum"/>
 			</xsl:apply-templates>
-		</fo:wrapper>
+		</fo:block>
 	</xsl:template>
 	
 	<xsl:template match="rsd:preferred">
@@ -1491,9 +1491,9 @@
 	</xsl:template>
 	
 	<xsl:template match="rsd:formula">
-		<fo:wrapper id="{@id}">
+		<fo:block id="{@id}">
 			<xsl:apply-templates />
-		</fo:wrapper>
+		</fo:block>
 	</xsl:template>
 	
 	<xsl:template match="rsd:formula/rsd:dt/rsd:stem">

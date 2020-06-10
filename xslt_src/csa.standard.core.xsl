@@ -1120,11 +1120,11 @@
 
 	<xsl:template match="csa:term">
 		<xsl:param name="sectionNum"/>
-		<fo:wrapper id="{@id}">
+		<fo:block id="{@id}">
 			<xsl:apply-templates>
 				<xsl:with-param name="sectionNum" select="$sectionNum"/>
 			</xsl:apply-templates>
-		</fo:wrapper>
+		</fo:block>
 	</xsl:template>
 	
 	<xsl:template match="csa:preferred">
@@ -1517,9 +1517,9 @@
 	</xsl:template>
 	
 	<xsl:template match="csa:formula">
-		<fo:wrapper id="{@id}">
+		<fo:block id="{@id}">
 			<xsl:apply-templates />
-		</fo:wrapper>
+		</fo:block>
 	</xsl:template>
 	
 	<xsl:template match="csa:formula/csa:dt/csa:stem">

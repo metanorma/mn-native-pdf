@@ -1362,11 +1362,11 @@
 	
 	<xsl:template match="ogc:term">
 		<xsl:param name="sectionNum"/>
-		<fo:wrapper id="{@id}">
+		<fo:block id="{@id}">
 			<xsl:apply-templates>
 				<xsl:with-param name="sectionNum" select="$sectionNum"/>
 			</xsl:apply-templates>
-		</fo:wrapper>
+		</fo:block>
 	</xsl:template>
 	
 	<xsl:template match="ogc:preferred">
@@ -1773,9 +1773,9 @@
 	</xsl:template>
 	
 	<xsl:template match="ogc:formula">
-		<fo:wrapper id="{@id}">
+		<fo:block id="{@id}">
 			<xsl:apply-templates />
-		</fo:wrapper>
+		</fo:block>
 	</xsl:template>
 	
 	<xsl:template match="ogc:formula/ogc:dt/ogc:stem">

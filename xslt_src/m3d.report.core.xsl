@@ -1329,9 +1329,9 @@
 	</xsl:template>
 	
 	<xsl:template match="m3d:formula">
-		<fo:wrapper id="{@id}">
+		<fo:block id="{@id}">
 			<xsl:apply-templates />
-		</fo:wrapper>
+		</fo:block>
 	</xsl:template>
 	
 	<xsl:template match="m3d:formula/m3d:dt/m3d:stem">

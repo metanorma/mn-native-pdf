@@ -1533,9 +1533,9 @@
 	</xsl:template>
 	
 	<xsl:template match="gb:formula">
-		<fo:wrapper id="{@id}">
+		<fo:block id="{@id}">
 			<xsl:apply-templates />
-		</fo:wrapper>
+		</fo:block>
 	</xsl:template>
 	
 	<xsl:template match="gb:formula/gb:dt/gb:stem">

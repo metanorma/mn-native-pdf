@@ -1002,9 +1002,9 @@
 	</xsl:template>
 
 	<xsl:template match="iho:formula">
-		<fo:wrapper id="{@id}">
+		<fo:block id="{@id}">
 			<xsl:apply-templates />
-		</fo:wrapper>
+		</fo:block>
 	</xsl:template>
 	
 	<xsl:template match="iho:formula/iho:dt/iho:stem">
