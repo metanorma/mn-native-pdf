@@ -1340,7 +1340,7 @@
 	
 	<xsl:template match="csa:source">
 		<fo:basic-link internal-destination="{@bibitemid}" fox:alt-text="{@citeas}">
-			<xsl:value-of select="@citeas" disable-output-escaping="yes"/>
+			<xsl:value-of select="@citeas"/> <!--  disable-output-escaping="yes" -->
 			<xsl:apply-templates select="csa:localityStack"/>
 		</fo:basic-link>
 	</xsl:template>
@@ -1480,7 +1480,7 @@
 			</xsl:if>
 			<xsl:choose>
 				<xsl:when test="@citeas and normalize-space(text()) = ''">
-					<xsl:value-of select="@citeas" disable-output-escaping="yes"/>
+					<xsl:value-of select="@citeas"/> <!--  disable-output-escaping="yes" -->
 				</xsl:when>
 				<xsl:when test="@bibitemid and normalize-space(text()) = ''">
 					<xsl:value-of select="//csa:bibitem[@id = current()/@bibitemid]/csa:docidentifier"/>

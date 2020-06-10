@@ -1108,7 +1108,7 @@
 	
 	<xsl:template match="csd:source">
 		<fo:basic-link internal-destination="{@bibitemid}" fox:alt-text="{@citeas}">
-			<xsl:value-of select="@citeas" disable-output-escaping="yes"/>
+			<xsl:value-of select="@citeas"/> <!--  disable-output-escaping="yes" -->
 			<xsl:apply-templates select="csd:localityStack"/>
 		</fo:basic-link>
 	</xsl:template>
@@ -1189,7 +1189,7 @@
 			</xsl:if> -->
 			<xsl:choose>
 				<xsl:when test="@citeas">
-					<xsl:value-of select="@citeas" disable-output-escaping="yes"/>
+					<xsl:value-of select="@citeas"/> <!--  disable-output-escaping="yes" -->
 				</xsl:when>
 				<xsl:when test="@bibitemid">
 					<xsl:value-of select="//csd:bibitem[@id = current()/@bibitemid]/csd:docidentifier"/>

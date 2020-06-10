@@ -2053,7 +2053,8 @@
 		</fo:block>
 		<fo:block text-align="right">
 			<!-- — ISO, ISO 7301:2011, Clause 1 -->
-			<xsl:text>— </xsl:text><xsl:value-of select="iso:author"/>
+			<xsl:apply-templates select="iso:author"/>
+			<!-- <xsl:text>— </xsl:text><xsl:value-of select="iso:author"/> -->
 			<xsl:if test="iso:source">
 				<xsl:text>, </xsl:text>
 				<xsl:apply-templates select="iso:source"/>
@@ -2061,9 +2062,13 @@
 		</fo:block>
 	</xsl:template>
 	
+	<xsl:template match="iso:quote/iso:author">
+		<xsl:text>— </xsl:text><xsl:apply-templates/>
+	</xsl:template>
+	
 	<xsl:template match="iso:source">
 		<fo:basic-link internal-destination="{@bibitemid}" fox:alt-text="{@citeas}">
-			<xsl:value-of select="@citeas" disable-output-escaping="yes"/>
+			<xsl:value-of select="@citeas"/> <!--  disable-output-escaping="yes" -->
 			<xsl:apply-templates select="iso:localityStack"/>
 		</fo:basic-link>
 	</xsl:template>
@@ -2158,7 +2163,7 @@
 			
 			<xsl:choose>
 				<xsl:when test="@citeas and normalize-space(text()) = ''">
-					<xsl:value-of select="@citeas" disable-output-escaping="yes"/>
+					<xsl:value-of select="@citeas"/> <!--  disable-output-escaping="yes" -->
 				</xsl:when>
 				<xsl:when test="@bibitemid and normalize-space(text()) = ''">
 					<xsl:value-of select="//iso:bibitem[@id = current()/@bibitemid]/iso:docidentifier"/>

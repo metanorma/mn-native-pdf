@@ -1302,7 +1302,7 @@
 	
 	<xsl:template match="rsd:source">
 		<fo:basic-link internal-destination="{@bibitemid}" fox:alt-text="{@citeas}">
-			<xsl:value-of select="@citeas" disable-output-escaping="yes"/>
+			<xsl:value-of select="@citeas"/> <!--  disable-output-escaping="yes" -->
 			<xsl:apply-templates select="rsd:localityStack"/>
 		</fo:basic-link>
 	</xsl:template>
@@ -1454,7 +1454,7 @@
 			</xsl:if>
 			<xsl:choose>
 				<xsl:when test="@citeas and normalize-space(text()) = ''">
-					<xsl:value-of select="@citeas" disable-output-escaping="yes"/>
+					<xsl:value-of select="@citeas"/> <!--  disable-output-escaping="yes" -->
 				</xsl:when>
 				<xsl:when test="@bibitemid and normalize-space(text()) = ''">
 					<xsl:value-of select="//rsd:bibitem[@id = current()/@bibitemid]/rsd:docidentifier"/>
