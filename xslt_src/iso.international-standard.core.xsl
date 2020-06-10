@@ -1719,7 +1719,7 @@
 				<fo:external-graphic src="{@src}" fox:alt-text="Image {@alt}"/>
 			</fo:block>
 			<fo:block font-weight="bold" margin-top="12pt" margin-bottom="12pt">
-				<xsl:value-of select="$title-figure"/>
+				<!-- <xsl:value-of select="$title-figure"/> -->
 				<xsl:call-template name="getFigureNumber"/>
 			</fo:block>
 		</fo:block-container>
@@ -1735,9 +1735,12 @@
 				<xsl:call-template name="note"/>
 			</xsl:for-each>
 			<fo:block font-weight="bold" text-align="center" margin-top="12pt" margin-bottom="12pt" keep-with-previous="always">
-				<xsl:call-template name="getFigureNumber"/>
+				<xsl:variable name="figureNumber">
+					<xsl:call-template name="getFigureNumber"/>
+				</xsl:variable>
+				<xsl:value-of select="$figureNumber"/>
 				<xsl:if test="iso:name">
-					<xsl:if test="not(local-name(..) = 'figure')">
+					<xsl:if test="not(local-name(..) = 'figure') and normalize-space($figureNumber) != ''">
 						<xsl:text> — </xsl:text>
 					</xsl:if>
 					<xsl:value-of select="iso:name"/>
@@ -1748,6 +1751,7 @@
 	
 	<xsl:template name="getFigureNumber">
 		<xsl:choose>
+			<xsl:when test="$doctype = 'amendment'"></xsl:when>
 			<xsl:when test="ancestor::iso:annex">
 				<xsl:choose>
 					<xsl:when test="local-name(..) = 'figure'">
