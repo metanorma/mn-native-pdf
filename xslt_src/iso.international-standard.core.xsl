@@ -1319,7 +1319,9 @@
 		<item level="" id="{@id}" display="false">
 			<xsl:attribute name="section">
 				<xsl:value-of select="$title-formula"/>
-				<xsl:call-template name="getFormulaNumber"/>				
+				<xsl:call-template name="getFormulaNumber">
+					<xsl:with-param name="display" select="not(@unnumbered = 'true')"/>
+				</xsl:call-template>
 			</xsl:attribute>
 		</item>
 	</xsl:template>
@@ -2199,7 +2201,9 @@
 						</fo:table-cell>
 						<fo:table-cell display-align="center">
 							<fo:block text-align="right">
-								<xsl:call-template name="getFormulaNumber"/>
+								<xsl:call-template name="getFormulaNumber">
+									<xsl:with-param name="display" select="not(../@unnumbered = 'true')"/>
+								</xsl:call-template>
 							</fo:block>
 						</fo:table-cell>
 					</fo:table-row>
@@ -3100,14 +3104,17 @@
 	</xsl:template>
 
 	<xsl:template name="getFormulaNumber">
-		<xsl:choose>
-			<xsl:when test="ancestor::iso:annex">
-				<xsl:number format="(A.1)" level="multiple" count="iso:annex | iso:formula"/>
-			</xsl:when>
-			<xsl:otherwise> <!-- not(ancestor::iso:annex) -->
-				<!-- <xsl:text>(</xsl:text><xsl:number level="any" count="iso:formula"/><xsl:text>)</xsl:text> -->
-			</xsl:otherwise>
-		</xsl:choose>
+		<xsl:param name="display" select="'true'"/>		
+		<xsl:if test="$display = 'true'">
+			<xsl:choose>
+				<xsl:when test="ancestor::iso:annex">
+					<xsl:number format="(A.1)" level="multiple" count="iso:annex | iso:formula[not(@unnumbered='true')]"/>
+				</xsl:when>
+				<xsl:otherwise> <!-- not(ancestor::iso:annex) -->
+					<xsl:text>(</xsl:text><xsl:number level="any" count="iso:formula[not(@unnumbered='true')]"/><xsl:text>)</xsl:text>				
+				</xsl:otherwise>
+			</xsl:choose>
+		</xsl:if>
 	</xsl:template>
 	
 </xsl:stylesheet>
