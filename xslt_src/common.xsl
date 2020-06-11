@@ -1420,6 +1420,36 @@
 				</fn>
 			</xsl:for-each>
 		</xsl:variable>
+		
+		<!-- current hierarchy is 'figure' element -->
+		<xsl:variable name="following_dl_colwidths">
+			<xsl:if test="*[local-name() = 'dl']"><!-- if there is a 'dl', then set the same columns width as for 'dl' -->
+				<xsl:variable name="html-table">
+					<xsl:variable name="ns" select="substring-before(name(/*), '-')"/>
+					<xsl:element name="{$ns}:table">
+						<xsl:for-each select="*[local-name() = 'dl'][1]">
+							<tbody>
+								<xsl:apply-templates mode="dl"/>
+							</tbody>
+						</xsl:for-each>
+					</xsl:element>
+				</xsl:variable>
+				
+				<xsl:call-template name="calculate-column-widths">
+					<xsl:with-param name="cols-count" select="2"/>
+					<xsl:with-param name="table" select="$html-table"/>
+				</xsl:call-template>
+				
+			</xsl:if>
+		</xsl:variable>
+		
+		
+		<xsl:variable name="maxlength_dt">
+			<xsl:for-each select="*[local-name() = 'dl'][1]">
+				<xsl:call-template name="getMaxLength_dt"/>			
+			</xsl:for-each>
+		</xsl:variable>
+		
 		<xsl:if test="xalan:nodeset($references)//fn">
 			<fo:block>
 				<fo:table width="95%" table-layout="fixed">
@@ -1429,8 +1459,19 @@
 							<xsl:attribute name="font-size">8pt</xsl:attribute>
 						</xsl:if>
 					</xsl:if>
-					<fo:table-column column-width="15%"/>
-					<fo:table-column column-width="85%"/>
+					<xsl:choose>
+						<!-- if there 'dl', then set same columns width -->
+						<xsl:when test="xalan:nodeset($following_dl_colwidths)//column">
+							<xsl:call-template name="setColumnWidth_dl">
+								<xsl:with-param name="colwidths" select="$following_dl_colwidths"/>								
+								<xsl:with-param name="maxlength_dt" select="$maxlength_dt"/>								
+							</xsl:call-template>
+						</xsl:when>
+						<xsl:otherwise>
+							<fo:table-column column-width="15%"/>
+							<fo:table-column column-width="85%"/>
+						</xsl:otherwise>
+					</xsl:choose>
 					<fo:table-body>
 						<xsl:for-each select="xalan:nodeset($references)//fn">
 							<xsl:variable name="reference" select="@reference"/>
@@ -1631,25 +1672,8 @@
 						</xsl:if>
 					</xsl:if>
 					<xsl:if test="$namespace = 'iho'">
-					<xsl:attribute name="margin-left">-3.5mm</xsl:attribute>
-				</xsl:if>
-					<!-- create virtual html table for dl/[dt and dd] -->
-					<xsl:variable name="html-table">
-						<xsl:variable name="ns" select="substring-before(name(/*), '-')"/>
-						<xsl:element name="{$ns}:table">
-							<tbody>
-								<xsl:apply-templates mode="dl"/>
-							</tbody>
-						</xsl:element>
-					</xsl:variable>
-					<!-- html-table<xsl:copy-of select="$html-table"/> -->
-					<xsl:variable name="colwidths">
-						<xsl:call-template name="calculate-column-widths">
-							<xsl:with-param name="cols-count" select="2"/>
-							<xsl:with-param name="table" select="$html-table"/>
-						</xsl:call-template>
-					</xsl:variable>
-					<!-- colwidths=<xsl:value-of select="$colwidths"/> -->
+						<xsl:attribute name="margin-left">-3.5mm</xsl:attribute>
+					</xsl:if>
 					
 					<fo:table width="95%" table-layout="fixed">
 						<xsl:if test="$namespace = 'gb'">
@@ -1666,42 +1690,30 @@
 								</xsl:if>
 							</xsl:when>
 						</xsl:choose>
-						<xsl:choose>
-							<xsl:when test="ancestor::*[local-name()='dl']"><!-- second level, i.e. inlined table -->
-								<fo:table-column column-width="50%"/>
-								<fo:table-column column-width="50%"/>
-							</xsl:when>
-							<xsl:otherwise>
-								<xsl:choose>
-									<!-- <xsl:when test="xalan:nodeset($colwidths)/column[1] div xalan:nodeset($colwidths)/column[2] &gt; 1.7">
-										<fo:table-column column-width="60%"/>
-										<fo:table-column column-width="40%"/>
-									</xsl:when> -->
-									<xsl:when test="xalan:nodeset($colwidths)/column[1] div xalan:nodeset($colwidths)/column[2] &gt; 1.3">
-										<fo:table-column column-width="50%"/>
-										<fo:table-column column-width="50%"/>
-									</xsl:when>
-									<xsl:when test="xalan:nodeset($colwidths)/column[1] div xalan:nodeset($colwidths)/column[2] &gt; 0.5">
-										<fo:table-column column-width="40%"/>
-										<fo:table-column column-width="60%"/>
-									</xsl:when>
-									<xsl:otherwise>
-										<xsl:for-each select="xalan:nodeset($colwidths)//column">
-											<xsl:choose>
-												<xsl:when test=". = 1 or . = 0">
-													<fo:table-column column-width="proportional-column-width(2)"/>
-												</xsl:when>
-												<xsl:otherwise>
-													<fo:table-column column-width="proportional-column-width({.})"/>
-												</xsl:otherwise>
-											</xsl:choose>
-										</xsl:for-each>
-									</xsl:otherwise>
-								</xsl:choose>
-								<!-- <fo:table-column column-width="15%"/>
-								<fo:table-column column-width="85%"/> -->
-							</xsl:otherwise>
-						</xsl:choose>
+						<!-- create virtual html table for dl/[dt and dd] -->
+						<xsl:variable name="html-table">
+							<xsl:variable name="ns" select="substring-before(name(/*), '-')"/>
+							<xsl:element name="{$ns}:table">
+								<tbody>
+									<xsl:apply-templates mode="dl"/>
+								</tbody>
+							</xsl:element>
+						</xsl:variable>
+						<!-- html-table<xsl:copy-of select="$html-table"/> -->
+						<xsl:variable name="colwidths">
+							<xsl:call-template name="calculate-column-widths">
+								<xsl:with-param name="cols-count" select="2"/>
+								<xsl:with-param name="table" select="$html-table"/>
+							</xsl:call-template>
+						</xsl:variable>
+						<!-- colwidths=<xsl:value-of select="$colwidths"/> -->
+						<xsl:variable name="maxlength_dt">							
+							<xsl:call-template name="getMaxLength_dt"/>							
+						</xsl:variable>
+						<xsl:call-template name="setColumnWidth_dl">
+							<xsl:with-param name="colwidths" select="$colwidths"/>							
+							<xsl:with-param name="maxlength_dt" select="$maxlength_dt"/>
+						</xsl:call-template>
 						<fo:table-body>
 							<xsl:apply-templates>
 								<xsl:with-param name="key_iso" select="normalize-space($key_iso)"/>
@@ -1711,6 +1723,61 @@
 				</fo:block>
 			</fo:block>
 		</xsl:if>
+	</xsl:template>
+	
+	
+	<xsl:template name="setColumnWidth_dl">
+		<xsl:param name="colwidths"/>		
+		<xsl:param name="maxlength_dt"/>
+		<xsl:choose>
+			<xsl:when test="ancestor::*[local-name()='dl']"><!-- second level, i.e. inlined table -->
+				<fo:table-column column-width="50%"/>
+				<fo:table-column column-width="50%"/>
+			</xsl:when>
+			<xsl:otherwise>
+				<xsl:choose>					
+					<xsl:when test="normalize-space($maxlength_dt) != '' and number($maxlength_dt) &lt;= 5"> <!-- if dt contains short text like t90, a, etc -->
+						<fo:table-column column-width="10%"/>
+						<fo:table-column column-width="90%"/>
+					</xsl:when>
+					<!-- <xsl:when test="xalan:nodeset($colwidths)/column[1] div xalan:nodeset($colwidths)/column[2] &gt; 1.7">
+						<fo:table-column column-width="60%"/>
+						<fo:table-column column-width="40%"/>
+					</xsl:when> -->
+					<xsl:when test="xalan:nodeset($colwidths)/column[1] div xalan:nodeset($colwidths)/column[2] &gt; 1.3">
+						<fo:table-column column-width="50%"/>
+						<fo:table-column column-width="50%"/>
+					</xsl:when>
+					<xsl:when test="xalan:nodeset($colwidths)/column[1] div xalan:nodeset($colwidths)/column[2] &gt; 0.5">
+						<fo:table-column column-width="40%"/>
+						<fo:table-column column-width="60%"/>
+					</xsl:when>
+					<xsl:otherwise>
+						<xsl:for-each select="xalan:nodeset($colwidths)//column">
+							<xsl:choose>
+								<xsl:when test=". = 1 or . = 0">
+									<fo:table-column column-width="proportional-column-width(2)"/>
+								</xsl:when>
+								<xsl:otherwise>
+									<fo:table-column column-width="proportional-column-width({.})"/>
+								</xsl:otherwise>
+							</xsl:choose>
+						</xsl:for-each>
+					</xsl:otherwise>
+				</xsl:choose>
+				<!-- <fo:table-column column-width="15%"/>
+				<fo:table-column column-width="85%"/> -->
+			</xsl:otherwise>
+		</xsl:choose>
+	</xsl:template>
+	
+	<xsl:template name="getMaxLength_dt">
+		<xsl:for-each select="*[local-name()='dt']">
+			<xsl:sort select="string-length(normalize-space(.))" data-type="number" order="descending"/>
+			<xsl:if test="position() = 1">
+				<xsl:value-of select="string-length(normalize-space(.))"/>
+			</xsl:if>
+		</xsl:for-each>
 	</xsl:template>
 	
 	<xsl:template match="*[local-name()='dl']/*[local-name()='note']">
