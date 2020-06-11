@@ -1362,11 +1362,11 @@
 	
 	<xsl:template match="ogc:term">
 		<xsl:param name="sectionNum"/>
-		<fo:wrapper id="{@id}">
+		<fo:block id="{@id}">
 			<xsl:apply-templates>
 				<xsl:with-param name="sectionNum" select="$sectionNum"/>
 			</xsl:apply-templates>
-		</fo:wrapper>
+		</fo:block>
 	</xsl:template>
 	
 	<xsl:template match="ogc:preferred">
@@ -1593,7 +1593,7 @@
 	
 	<xsl:template match="ogc:source">
 		<fo:basic-link internal-destination="{@bibitemid}" fox:alt-text="{@citeas}">
-			<xsl:value-of select="@citeas" disable-output-escaping="yes"/>
+			<xsl:value-of select="@citeas"/> <!--  disable-output-escaping="yes" -->
 			<xsl:apply-templates select="ogc:localityStack"/>
 		</fo:basic-link>
 	</xsl:template>
@@ -1736,7 +1736,7 @@
 			</xsl:if> -->
 			<xsl:choose>
 				<xsl:when test="@citeas and normalize-space(text()) = ''">
-					<xsl:value-of select="@citeas" disable-output-escaping="yes"/>
+					<xsl:value-of select="@citeas"/> <!--  disable-output-escaping="yes" -->
 				</xsl:when>
 				<xsl:when test="@bibitemid and normalize-space(text()) = ''">
 					<xsl:value-of select="//ogc:bibitem[@id = current()/@bibitemid]/ogc:docidentifier"/>
@@ -1773,9 +1773,9 @@
 	</xsl:template>
 	
 	<xsl:template match="ogc:formula">
-		<fo:wrapper id="{@id}">
+		<fo:block id="{@id}">
 			<xsl:apply-templates />
-		</fo:wrapper>
+		</fo:block>
 	</xsl:template>
 	
 	<xsl:template match="ogc:formula/ogc:dt/ogc:stem">

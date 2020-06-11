@@ -1208,11 +1208,11 @@
 	
 	<xsl:template match="itu:term">
 		<xsl:param name="sectionNum"/>
-		<fo:wrapper id="{@id}">
+		<fo:block id="{@id}">
 			<xsl:apply-templates>
 				<xsl:with-param name="sectionNum" select="$sectionNum"/>
 			</xsl:apply-templates>
-		</fo:wrapper>
+		</fo:block>
 	</xsl:template>
 	
 	<xsl:template match="itu:preferred">
@@ -1246,7 +1246,7 @@
 				<xsl:variable name="citeas" select="../itu:termsource/itu:origin/@citeas"/>
 				<xsl:choose>
 					<xsl:when test="contains($citeas, '[')">
-						<xsl:text> </xsl:text><xsl:value-of select="$citeas" disable-output-escaping="yes"/>
+						<xsl:text> </xsl:text><xsl:value-of select="$citeas"/> <!--  disable-output-escaping="yes" -->
 					</xsl:when>
 					<xsl:otherwise>
 						<xsl:text> [</xsl:text><xsl:value-of select="$citeas"/><xsl:text>]</xsl:text>
@@ -1752,10 +1752,10 @@
 			<fo:basic-link internal-destination="{@bibitemid}" color="blue" text-decoration="underline" fox:alt-text="{@citeas}">
 				<xsl:choose>
 					<xsl:when test="contains(@citeas, '[')">
-						<xsl:value-of select="@citeas" disable-output-escaping="yes"/>
+						<xsl:value-of select="@citeas"/> <!--  disable-output-escaping="yes" -->
 					</xsl:when>
 					<xsl:otherwise>
-						<xsl:text>[</xsl:text><xsl:value-of select="@citeas" disable-output-escaping="yes"/><xsl:text>]</xsl:text>
+						<xsl:text>[</xsl:text><xsl:value-of select="@citeas"/><xsl:text>]</xsl:text> <!--  disable-output-escaping="yes" -->
 					</xsl:otherwise>
 				</xsl:choose>
 				
@@ -1797,7 +1797,7 @@
 	
 	<xsl:template match="itu:source">
 		<fo:basic-link internal-destination="{@bibitemid}" fox:alt-text="{@citeas}">
-			<xsl:value-of select="@citeas" disable-output-escaping="yes"/>
+			<xsl:value-of select="@citeas"/> <!--  disable-output-escaping="yes" -->
 			<xsl:apply-templates select="itu:localityStack"/>
 		</fo:basic-link>
 	</xsl:template>

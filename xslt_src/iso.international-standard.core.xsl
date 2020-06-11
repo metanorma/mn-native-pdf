@@ -39,7 +39,8 @@
 	<xsl:variable name="title-main-fr" select="/iso:iso-standard/iso:bibdata/iso:title[@language = 'fr' and @type = 'title-main']"/>
 	<xsl:variable name="part" select="/iso:iso-standard/iso:bibdata/iso:ext/iso:structuredidentifier/iso:project-number/@part"/>
 	
-	<xsl:variable name="doctype_uppercased" select="translate(translate(/iso:iso-standard/iso:bibdata/iso:ext/iso:doctype,'-',' '), $lower,$upper)"/>
+	<xsl:variable name="doctype" select="/iso:iso-standard/iso:bibdata/iso:ext/iso:doctype"/>	 
+	<xsl:variable name="doctype_uppercased" select="translate(translate($doctype,'-',' '), $lower,$upper)"/>
 	
 	<xsl:variable name="stage" select="number(/iso:iso-standard/iso:bibdata/iso:status/iso:stage)"/>
 	<xsl:variable name="substage" select="number(/iso:iso-standard/iso:bibdata/iso:status/iso:substage)"/>	
@@ -972,81 +973,91 @@
 									<xsl:apply-templates select="/iso:iso-standard/iso:boilerplate/iso:copyright-statement"/>
 								</fo:block>
 							</fo:block>
-						</fo:block-container>
-						<fo:block break-after="page"/>
+						</fo:block-container>						
 					</xsl:if>
 					
-					<fo:block-container font-weight="bold">
+					
+					<xsl:choose>
+						<xsl:when test="$doctype = 'amendment'"></xsl:when><!-- ToC shouldn't be generated in amendments. -->
 						
-						<fo:block text-align-last="justify" font-size="16pt" margin-top="10pt" margin-bottom="18pt">
-							<fo:inline font-size="16pt" font-weight="bold"><xsl:value-of select="$title-toc"/></fo:inline>
-							<fo:inline keep-together.within-line="always">
-								<fo:leader leader-pattern="space"/>
-								<fo:inline font-weight="normal" font-size="10pt"><xsl:value-of select="$title-page"/></fo:inline>
-							</fo:inline>
-						</fo:block>
-						
-						<xsl:if test="$debug = 'true'">
-							<xsl:text disable-output-escaping="yes">&lt;!--</xsl:text>
-								DEBUG
-								contents=<xsl:copy-of select="xalan:nodeset($contents)"/>
-							<xsl:text disable-output-escaping="yes">--&gt;</xsl:text>
-						</xsl:if>
-						
-						<xsl:variable name="margin-left">12</xsl:variable>
-						<xsl:for-each select="xalan:nodeset($contents)//item[@display = 'true'][not(@level = 2 and starts-with(@section, '0'))]"><!-- skip clause from preface -->
-							
-							<fo:block>
-								<xsl:if test="@level = 1">
-									<xsl:attribute name="margin-top">5pt</xsl:attribute>
+						<xsl:otherwise>
+							<xsl:if test="/iso:iso-standard/iso:boilerplate/iso:copyright-statement">
+								<fo:block break-after="page"/>
+							</xsl:if>
+							<fo:block-container font-weight="bold">
+								
+								<fo:block text-align-last="justify" font-size="16pt" margin-top="10pt" margin-bottom="18pt">
+									<fo:inline font-size="16pt" font-weight="bold"><xsl:value-of select="$title-toc"/></fo:inline>
+									<fo:inline keep-together.within-line="always">
+										<fo:leader leader-pattern="space"/>
+										<fo:inline font-weight="normal" font-size="10pt"><xsl:value-of select="$title-page"/></fo:inline>
+									</fo:inline>
+								</fo:block>
+								
+								<xsl:if test="$debug = 'true'">
+									<xsl:text disable-output-escaping="yes">&lt;!--</xsl:text>
+										DEBUG
+										contents=<xsl:copy-of select="xalan:nodeset($contents)"/>
+									<xsl:text disable-output-escaping="yes">--&gt;</xsl:text>
 								</xsl:if>
-								<xsl:if test="@level = 3">
-									<xsl:attribute name="margin-top">-0.7pt</xsl:attribute>
-								</xsl:if>
-								<fo:list-block>
-									<xsl:attribute name="margin-left"><xsl:value-of select="$margin-left * (@level - 1)"/>mm</xsl:attribute>
-									<xsl:if test="@level &gt;= 2">
-										<xsl:attribute name="font-weight">normal</xsl:attribute>
-									</xsl:if>
-									<xsl:attribute name="provisional-distance-between-starts">
-										<xsl:choose>
-											<!-- skip 0 section without subsections -->
-											<xsl:when test="@level &gt;= 3"><xsl:value-of select="$margin-left * 1.2"/>mm</xsl:when>
-											<xsl:when test="@section != '' and not(@display-section = 'false')"><xsl:value-of select="$margin-left"/>mm</xsl:when>
-											<xsl:otherwise>0mm</xsl:otherwise>
-										</xsl:choose>
-									</xsl:attribute>
-									<fo:list-item>
-										<fo:list-item-label end-indent="label-end()">
-											<fo:block>
-												<xsl:if test="@section and not(@display-section = 'false')"> <!-- output below   -->
-													<xsl:value-of select="@section"/>
-												</xsl:if>
-											</fo:block>
-										</fo:list-item-label>
-											<fo:list-item-body start-indent="body-start()">
-												<fo:block text-align-last="justify" margin-left="12mm" text-indent="-12mm">
-													<fo:basic-link internal-destination="{@id}" fox:alt-text="{text()}">
-														<xsl:if test="@section and @display-section = 'false'">
-															<xsl:value-of select="@section"/><xsl:text> </xsl:text>
+								
+								<xsl:variable name="margin-left">12</xsl:variable>
+								<xsl:for-each select="xalan:nodeset($contents)//item[@display = 'true'][not(@level = 2 and starts-with(@section, '0'))]"><!-- skip clause from preface -->
+									
+									<fo:block>
+										<xsl:if test="@level = 1">
+											<xsl:attribute name="margin-top">5pt</xsl:attribute>
+										</xsl:if>
+										<xsl:if test="@level = 3">
+											<xsl:attribute name="margin-top">-0.7pt</xsl:attribute>
+										</xsl:if>
+										<fo:list-block>
+											<xsl:attribute name="margin-left"><xsl:value-of select="$margin-left * (@level - 1)"/>mm</xsl:attribute>
+											<xsl:if test="@level &gt;= 2">
+												<xsl:attribute name="font-weight">normal</xsl:attribute>
+											</xsl:if>
+											<xsl:attribute name="provisional-distance-between-starts">
+												<xsl:choose>
+													<!-- skip 0 section without subsections -->
+													<xsl:when test="@level &gt;= 3"><xsl:value-of select="$margin-left * 1.2"/>mm</xsl:when>
+													<xsl:when test="@section != '' and not(@display-section = 'false')"><xsl:value-of select="$margin-left"/>mm</xsl:when>
+													<xsl:otherwise>0mm</xsl:otherwise>
+												</xsl:choose>
+											</xsl:attribute>
+											<fo:list-item>
+												<fo:list-item-label end-indent="label-end()">
+													<fo:block>
+														<xsl:if test="@section and not(@display-section = 'false')"> <!-- output below   -->
+															<xsl:value-of select="@section"/>
 														</xsl:if>
-														<xsl:if test="@addon != ''">
-															<fo:inline font-weight="normal">(<xsl:value-of select="@addon"/>)</fo:inline>
-														</xsl:if>
-														<xsl:text> </xsl:text><xsl:value-of select="text()"/>
-														<fo:inline keep-together.within-line="always">
-															<fo:leader font-size="9pt" font-weight="normal" leader-pattern="dots"/>
-															<fo:inline><fo:page-number-citation ref-id="{@id}"/></fo:inline>
-														</fo:inline>
-													</fo:basic-link>
-												</fo:block>
-											</fo:list-item-body>
-									</fo:list-item>
-								</fo:list-block>
-							</fo:block>
-							
-						</xsl:for-each>
-					</fo:block-container>
+													</fo:block>
+												</fo:list-item-label>
+												<fo:list-item-body start-indent="body-start()">
+													<fo:block text-align-last="justify" margin-left="12mm" text-indent="-12mm">
+														<fo:basic-link internal-destination="{@id}" fox:alt-text="{text()}">
+															<xsl:if test="@section and @display-section = 'false'">
+																<xsl:value-of select="@section"/><xsl:text> </xsl:text>
+															</xsl:if>
+															<xsl:if test="@addon != ''">
+																<fo:inline font-weight="normal">(<xsl:value-of select="@addon"/>)</fo:inline>
+															</xsl:if>
+															<xsl:text> </xsl:text><xsl:value-of select="text()"/>
+															<fo:inline keep-together.within-line="always">
+																<fo:leader font-size="9pt" font-weight="normal" leader-pattern="dots"/>
+																<fo:inline><fo:page-number-citation ref-id="{@id}"/></fo:inline>
+															</fo:inline>
+														</fo:basic-link>
+													</fo:block>
+												</fo:list-item-body>
+											</fo:list-item>
+										</fo:list-block>
+									</fo:block>
+									
+								</xsl:for-each>
+							</fo:block-container>
+						</xsl:otherwise>
+					</xsl:choose>
+					
 					<!-- Foreword, Introduction -->
 					<xsl:apply-templates select="/iso:iso-standard/iso:preface/node()"/>
 						
@@ -1318,7 +1329,10 @@
 	<xsl:template match="iso:formula" mode="contents">
 		<item level="" id="{@id}" display="false">
 			<xsl:attribute name="section">
-				<xsl:value-of select="$title-formula"/><xsl:number format="(A.1)" level="multiple" count="iso:annex | iso:formula"/>
+				<xsl:value-of select="$title-formula"/>
+				<xsl:call-template name="getFormulaNumber">
+					<xsl:with-param name="display" select="not(@unnumbered = 'true')"/>
+				</xsl:call-template>
 			</xsl:attribute>
 		</item>
 	</xsl:template>
@@ -1705,7 +1719,7 @@
 				<fo:external-graphic src="{@src}" fox:alt-text="Image {@alt}"/>
 			</fo:block>
 			<fo:block font-weight="bold" margin-top="12pt" margin-bottom="12pt">
-				<xsl:value-of select="$title-figure"/>
+				<!-- <xsl:value-of select="$title-figure"/> -->
 				<xsl:call-template name="getFigureNumber"/>
 			</fo:block>
 		</fo:block-container>
@@ -1721,9 +1735,12 @@
 				<xsl:call-template name="note"/>
 			</xsl:for-each>
 			<fo:block font-weight="bold" text-align="center" margin-top="12pt" margin-bottom="12pt" keep-with-previous="always">
-				<xsl:call-template name="getFigureNumber"/>
+				<xsl:variable name="figureNumber">
+					<xsl:call-template name="getFigureNumber"/>
+				</xsl:variable>
+				<xsl:value-of select="$figureNumber"/>
 				<xsl:if test="iso:name">
-					<xsl:if test="not(local-name(..) = 'figure')">
+					<xsl:if test="not(local-name(..) = 'figure') and normalize-space($figureNumber) != ''">
 						<xsl:text> — </xsl:text>
 					</xsl:if>
 					<xsl:value-of select="iso:name"/>
@@ -1734,6 +1751,7 @@
 	
 	<xsl:template name="getFigureNumber">
 		<xsl:choose>
+			<xsl:when test="$doctype = 'amendment'"></xsl:when>
 			<xsl:when test="ancestor::iso:annex">
 				<xsl:choose>
 					<xsl:when test="local-name(..) = 'figure'">
@@ -2035,7 +2053,8 @@
 		</fo:block>
 		<fo:block text-align="right">
 			<!-- — ISO, ISO 7301:2011, Clause 1 -->
-			<xsl:text>— </xsl:text><xsl:value-of select="iso:author"/>
+			<xsl:apply-templates select="iso:author"/>
+			<!-- <xsl:text>— </xsl:text><xsl:value-of select="iso:author"/> -->
 			<xsl:if test="iso:source">
 				<xsl:text>, </xsl:text>
 				<xsl:apply-templates select="iso:source"/>
@@ -2043,9 +2062,13 @@
 		</fo:block>
 	</xsl:template>
 	
+	<xsl:template match="iso:quote/iso:author">
+		<xsl:text>— </xsl:text><xsl:apply-templates/>
+	</xsl:template>
+	
 	<xsl:template match="iso:source">
 		<fo:basic-link internal-destination="{@bibitemid}" fox:alt-text="{@citeas}">
-			<xsl:value-of select="@citeas" disable-output-escaping="yes"/>
+			<xsl:value-of select="@citeas"/> <!--  disable-output-escaping="yes" -->
 			<xsl:apply-templates select="iso:localityStack"/>
 		</fo:basic-link>
 	</xsl:template>
@@ -2140,7 +2163,7 @@
 			
 			<xsl:choose>
 				<xsl:when test="@citeas and normalize-space(text()) = ''">
-					<xsl:value-of select="@citeas" disable-output-escaping="yes"/>
+					<xsl:value-of select="@citeas"/> <!--  disable-output-escaping="yes" -->
 				</xsl:when>
 				<xsl:when test="@bibitemid and normalize-space(text()) = ''">
 					<xsl:value-of select="//iso:bibitem[@id = current()/@bibitemid]/iso:docidentifier"/>
@@ -2173,9 +2196,9 @@
 	</xsl:template>
 	
 	<xsl:template match="iso:formula">
-		<fo:wrapper id="{@id}">
+		<fo:block id="{@id}">
 			<xsl:apply-templates />
-		</fo:wrapper>
+		</fo:block>
 	</xsl:template>
 	
 	<xsl:template match="iso:formula/iso:dt/iso:stem">
@@ -2198,14 +2221,9 @@
 						</fo:table-cell>
 						<fo:table-cell display-align="center">
 							<fo:block text-align="right">
-								<xsl:choose>
-									<xsl:when test="ancestor::iso:annex">
-										<xsl:number format="(A.1)" level="multiple" count="iso:annex | iso:formula"/>
-									</xsl:when>
-									<xsl:otherwise> <!-- not(ancestor::iso:annex) -->
-										<!-- <xsl:text>(</xsl:text><xsl:number level="any" count="iso:formula"/><xsl:text>)</xsl:text> -->
-									</xsl:otherwise>
-								</xsl:choose>
+								<xsl:call-template name="getFormulaNumber">
+									<xsl:with-param name="display" select="not(../@unnumbered = 'true')"/>
+								</xsl:call-template>
 							</fo:block>
 						</fo:table-cell>
 					</fo:table-row>
@@ -3104,6 +3122,19 @@
 			<xsl:value-of select="$part-en"/>
 		</xsl:if>
 	</xsl:template>
-	
+
+	<xsl:template name="getFormulaNumber">
+		<xsl:param name="display" select="'true'"/>		
+		<xsl:if test="$display = 'true'">
+			<xsl:choose>
+				<xsl:when test="ancestor::iso:annex">
+					<xsl:number format="(A.1)" level="multiple" count="iso:annex | iso:formula[not(@unnumbered='true')]"/>
+				</xsl:when>
+				<xsl:otherwise> <!-- not(ancestor::iso:annex) -->
+					<xsl:text>(</xsl:text><xsl:number level="any" count="iso:formula[not(@unnumbered='true')]"/><xsl:text>)</xsl:text>				
+				</xsl:otherwise>
+			</xsl:choose>
+		</xsl:if>
+	</xsl:template>
 	
 </xsl:stylesheet>

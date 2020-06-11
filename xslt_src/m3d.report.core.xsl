@@ -1195,7 +1195,7 @@
 	
 	<xsl:template match="m3d:source">
 		<fo:basic-link internal-destination="{@bibitemid}" fox:alt-text="{@citeas}">
-			<xsl:value-of select="@citeas" disable-output-escaping="yes"/>
+			<xsl:value-of select="@citeas"/> <!--  disable-output-escaping="yes" -->
 			<xsl:apply-templates select="m3d:localityStack"/>
 		</fo:basic-link>
 	</xsl:template>
@@ -1294,7 +1294,7 @@
 			
 			<xsl:choose>
 				<xsl:when test="@citeas and normalize-space(text()) = ''">
-					<xsl:value-of select="@citeas" disable-output-escaping="yes"/>
+					<xsl:value-of select="@citeas"/> <!--  disable-output-escaping="yes" -->
 				</xsl:when>
 				<xsl:when test="@bibitemid and normalize-space(text()) = ''">
 					<xsl:value-of select="//m3d:bibitem[@id = current()/@bibitemid]/m3d:docidentifier"/>
@@ -1329,9 +1329,9 @@
 	</xsl:template>
 	
 	<xsl:template match="m3d:formula">
-		<fo:wrapper id="{@id}">
+		<fo:block id="{@id}">
 			<xsl:apply-templates />
-		</fo:wrapper>
+		</fo:block>
 	</xsl:template>
 	
 	<xsl:template match="m3d:formula/m3d:dt/m3d:stem">

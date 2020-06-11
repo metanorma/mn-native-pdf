@@ -1195,7 +1195,7 @@
 			<xsl:if test="@type = 'inline'">
 				<xsl:attribute name="text-decoration">underline</xsl:attribute>
 			</xsl:if>
-			<xsl:text>[</xsl:text><xsl:value-of select="@citeas" disable-output-escaping="yes"/><xsl:text>]</xsl:text>
+			<xsl:text>[</xsl:text><xsl:value-of select="@citeas"/><xsl:text>]</xsl:text> <!--  disable-output-escaping="yes" -->
 			
 			<xsl:apply-templates select="un:localityStack"/>
 			
