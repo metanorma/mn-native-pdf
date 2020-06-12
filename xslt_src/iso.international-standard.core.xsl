@@ -40,8 +40,8 @@
 	<xsl:variable name="part" select="/iso:iso-standard/iso:bibdata/iso:ext/iso:structuredidentifier/iso:project-number/@part"/>
 	
 	<xsl:variable name="doctype" select="/iso:iso-standard/iso:bibdata/iso:ext/iso:doctype"/>	 
-	<xsl:variable name="doctype_uppercased" select="translate(translate($doctype,'-',' '), $lower,$upper)"/>
-	
+	<xsl:variable name="doctype_uppercased" select="java:toUpperCase(java:java.lang.String.new(translate($doctype,'-',' ')))"/>
+	 	
 	<xsl:variable name="stage" select="number(/iso:iso-standard/iso:bibdata/iso:status/iso:stage)"/>
 	<xsl:variable name="substage" select="number(/iso:iso-standard/iso:bibdata/iso:status/iso:substage)"/>	
 	<xsl:variable name="stagename" select="normalize-space(/iso:iso-standard/iso:bibdata/iso:ext/iso:stagename)"/>
@@ -68,8 +68,8 @@
 
 	<xsl:variable name="stage-fullname-uppercased">
 		<xsl:choose>
-			<xsl:when test="$stagename != ''">
-				<xsl:value-of select="translate($stagename, $lower, $upper)"/>
+			<xsl:when test="$stagename != ''">				
+				<xsl:value-of select="java:toUpperCase(java:java.lang.String.new($stagename))"/>
 			</xsl:when>
 			<xsl:when test="$stage-abbreviation = 'NWIP' or
 															$stage-abbreviation = 'NP'">NEW WORK ITEM PROPOSAL</xsl:when>
@@ -2188,8 +2188,8 @@
 	</xsl:template>
 	
 	<xsl:template match="iso:admonition">
-		<fo:block margin-bottom="12pt" font-weight="bold"> <!-- text-align="center"  -->
-			<xsl:value-of select="translate(@type, $lower, $upper)"/>
+		<fo:block margin-bottom="12pt" font-weight="bold"> <!-- text-align="center"  -->			
+			<xsl:value-of select="java:toUpperCase(java:java.lang.String.new(@type))"/>
 			<xsl:text> — </xsl:text>
 			<xsl:apply-templates />
 		</fo:block>
@@ -3090,7 +3090,7 @@
 				<xsl:value-of select="$edition"/>
 			</xsl:when>
 		</xsl:choose>
-		<xsl:if test="$edition != ''"><xsl:text> </xsl:text><xsl:value-of select="translate($title-edition, $upper, $lower)"/></xsl:if>
+		<xsl:if test="$edition != ''"><xsl:text> </xsl:text><xsl:value-of select="java:toLowerCase(java:java.lang.String.new($title-edition))"/></xsl:if>
 	</xsl:template>
 
 	<xsl:template name="printTitlePartFr">

@@ -26,12 +26,14 @@
 
 	<xsl:variable name="part" select="normalize-space(/gb:gb-standard/gb:bibdata/gb:ext/gb:structuredidentifier/gb:project-number/@part)"/>
 	
-	<xsl:variable name="standard-name">
-		<xsl:variable name="gbscope" select="/gb:gb-standard/gb:bibdata/gb:ext/gb:gbtype/gb:gbscope"/>
-		<xsl:value-of select="translate(substring($gbscope, 1, 1), $lower, $upper)"/><xsl:value-of select="substring($gbscope, 2)"/>
-		<xsl:text> standard (</xsl:text>
-		<xsl:variable name="gbmandate" select="/gb:gb-standard/gb:bibdata/gb:ext/gb:gbtype/gb:gbmandate"/>
-		<xsl:value-of select="translate(substring($gbmandate, 1, 1), $lower, $upper)"/><xsl:value-of select="substring($gbmandate, 2)"/>
+	<xsl:variable name="standard-name">			
+		<xsl:call-template name="capitalize">
+			<xsl:with-param name="str" select="/gb:gb-standard/gb:bibdata/gb:ext/gb:gbtype/gb:gbscope"/>
+		</xsl:call-template>
+		<xsl:text> standard (</xsl:text>		
+		<xsl:call-template name="capitalize">
+			<xsl:with-param name="str" select="/gb:gb-standard/gb:bibdata/gb:ext/gb:gbtype/gb:gbmandate"/>
+		</xsl:call-template>
 		<xsl:text>)</xsl:text>
 	</xsl:variable>
 	
@@ -155,7 +157,7 @@
 					<!-- GB Logo -->
 					<fo:block-container position="absolute" top="3mm" left="119mm"> <!-- top="8mm"  -->
 						<fo:block>
-							<xsl:variable name="gbprefix" select="normalize-space(translate(/gb:gb-standard/gb:bibdata/gb:ext/gb:gbtype/gb:gbprefix, $upper, $lower))"/>
+							<xsl:variable name="gbprefix" select="normalize-space(java:toLowerCase(java:java.lang.String.new(/gb:gb-standard/gb:bibdata/gb:ext/gb:gbtype/gb:gbprefix)))"/>							
 							<xsl:choose>
 								<xsl:when test="$gbprefix = 'db' or $gbprefix = '81'">
 									<fo:instream-foreign-object fox:alt-text="Logo">
@@ -1524,7 +1526,7 @@
 			<xsl:choose>
 				<xsl:when test="@type = 'caution'"><xsl:value-of select="$title-caution"/></xsl:when>
 				<xsl:when test="@type = 'warning'"><xsl:value-of select="$title-warning"/></xsl:when>
-				<xsl:otherwise><xsl:value-of select="translate(@type, $lower, $upper)"/></xsl:otherwise>
+				<xsl:otherwise><xsl:value-of select="java:toUpperCase(java:java.lang.String.new(@type))"/></xsl:otherwise>
 			</xsl:choose>			
 		</fo:block>
 		<fo:block font-weight="bold">

@@ -1211,7 +1211,7 @@
 	
 	<xsl:template match="csd:admonition">
 		<fo:block margin-bottom="12pt" font-weight="bold"> <!-- text-align="center"  -->
-			<xsl:value-of select="translate(@type, $lower, $upper)"/>
+			<xsl:value-of select="java:toUpperCase(java:java.lang.String.new(@type))"/>
 			<xsl:text> — </xsl:text>
 			<xsl:apply-templates />
 		</fo:block>

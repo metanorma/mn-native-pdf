@@ -34,8 +34,10 @@
 	
 	<xsl:variable name="doctype" select="/un:un-standard/un:bibdata/un:ext/un:doctype"/>
 
-	<xsl:variable name="doctypenumber">
-		<xsl:value-of select="translate(substring($doctype, 1, 1), $lower, $upper)"/><xsl:value-of select="substring($doctype, 2)"/>
+	<xsl:variable name="doctypenumber">		
+		<xsl:call-template name="capitalize">
+			<xsl:with-param name="str" select="$doctype"/>
+		</xsl:call-template>
 		<xsl:text> No. </xsl:text>
 		<xsl:value-of select="/un:un-standard/un:bibdata/un:docnumber"/>
 	</xsl:variable>

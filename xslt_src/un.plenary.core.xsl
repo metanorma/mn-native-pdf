@@ -143,7 +143,7 @@
 								<xsl:value-of select="/un:un-standard/un:bibdata/un:ext/un:session/un:date"/>
 							</fo:block>
 							<fo:block font-weight="normal">
-								<xsl:text>Item 1 of the </xsl:text><xsl:value-of select="translate(/un:un-standard/un:sections/un:clause[1]/un:title, $upper, $lower)"/>
+								<xsl:text>Item 1 of the </xsl:text><xsl:value-of select="java:toLowerCase(java:java.lang.String.new(/un:un-standard/un:sections/un:clause[1]/un:title))"/>
 							</fo:block>
 							<fo:block>
 								<xsl:value-of select="translate(/un:un-standard/un:sections/un:clause[1]/un:ol[1]/un:li[1]/un:p[1], '.', '')"/>
@@ -1394,8 +1394,8 @@
 					<xsl:choose>
 						<xsl:when test="$level = 1">
 							<xsl:choose>
-								<xsl:when test="local-name() = 'title'">									
-									<xsl:value-of select="translate($title-annex, $lower, $upper)"/>
+								<xsl:when test="local-name() = 'title'">
+									<xsl:value-of select="java:toUpperCase(java:java.lang.String.new($title-annex))"/>
 									<xsl:number format="A" level="any" count="un:annex"/>
 								</xsl:when>
 								<xsl:otherwise><xsl:value-of select="normalize-space($title-annex)"/></xsl:otherwise>
@@ -1499,8 +1499,10 @@
 				</xsl:choose>
 			</xsl:variable>
 			<xsl:choose>
-				<xsl:when test="$first = 'true'">
-					<xsl:value-of select="translate(substring($value, 1, 1), $lower, $upper)"/><xsl:value-of select="substring($value, 2)"/>
+				<xsl:when test="$first = 'true'">					
+					<xsl:call-template name="capitalize">
+						<xsl:with-param name="str" select="$value"/>
+					</xsl:call-template>
 				</xsl:when>
 				<xsl:otherwise>
 					<xsl:value-of select="$value"/>
@@ -1536,8 +1538,8 @@
 	</xsl:template>
 
 	<xsl:template name="getLanguage">
-		<xsl:param name="lang"/>
-		<xsl:variable name="language" select="translate($lang, $upper, $lower)"/>
+		<xsl:param name="lang"/>		
+		<xsl:variable name="language" select="java:toLowerCase(java:java.lang.String.new($lang))"/>
 		<xsl:choose>
 			<xsl:when test="$language = 'en'">English</xsl:when>
 			<xsl:when test="$language = 'de'">Deutsch</xsl:when>

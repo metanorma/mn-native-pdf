@@ -402,8 +402,10 @@
 				</xsl:if>
 				<xsl:choose>
 					<xsl:when test="not(csa:title)">
-						<xsl:variable name="name" select="local-name()"/>
-						<xsl:value-of select="translate(substring($name, 1, 1), $lower, $upper)"/><xsl:value-of select="substring($name, 2)"/>
+						<xsl:variable name="name" select="local-name()"/>						
+						<xsl:call-template name="capitalize">
+							<xsl:with-param name="str" select="$name"/>
+						</xsl:call-template>
 					</xsl:when>
 					<xsl:otherwise>
 						<xsl:value-of select="csa:title"/>
@@ -630,8 +632,10 @@
 			</xsl:variable>
 			<fo:block id="{$id}" font-size="13pt" font-weight="bold" margin-bottom="12pt" color="rgb(14, 26, 133)">
 				<xsl:number format="i." value="$sectionNum"/><fo:inline padding-right="3mm">&#xA0;</fo:inline>
-				<xsl:variable name="name" select="local-name()"/>
-				<xsl:value-of select="translate(substring($name, 1, 1), $lower, $upper)"/><xsl:value-of select="substring($name, 2)"/>
+				<xsl:variable name="name" select="local-name()"/>				
+				<xsl:call-template name="capitalize">
+					<xsl:with-param name="str" select="$name"/>
+				</xsl:call-template>
 			</fo:block>
 		</xsl:if>
 		<xsl:apply-templates />
@@ -1504,8 +1508,8 @@
 	<xsl:template match="csa:admonition">
 		<fo:block-container border="0.5pt solid rgb(79, 129, 189)" color="rgb(79, 129, 189)" margin-left="16mm" margin-right="16mm" margin-bottom="12pt">
 			<fo:block-container margin-left="0mm" margin-right="0mm" padding="2mm" padding-top="3mm">
-				<fo:block font-size="11pt" margin-bottom="6pt" font-weight="bold" font-style="italic" text-align="center">
-					<xsl:value-of select="translate(@type, $lower, $upper)"/>
+				<fo:block font-size="11pt" margin-bottom="6pt" font-weight="bold" font-style="italic" text-align="center">					
+					<xsl:value-of select="java:toUpperCase(java:java.lang.String.new(@type))"/>
 				</fo:block>
 				<fo:block font-style="italic">
 					<xsl:apply-templates />
