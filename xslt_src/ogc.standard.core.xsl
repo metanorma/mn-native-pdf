@@ -1110,10 +1110,13 @@
 			</xsl:attribute>
 			<xsl:attribute name="space-after">
 				<xsl:choose>
-					<xsl:when test="ancestor::ogc:li">0pt</xsl:when>
+					<xsl:when test="ancestor::ogc:li">0pt</xsl:when>					
 					<xsl:otherwise>12pt</xsl:otherwise>
 				</xsl:choose>
 			</xsl:attribute>
+			<xsl:if test="ancestor::ogc:dd and not(ancestor::ogc:table)">
+				<xsl:attribute name="margin-bottom">6pt</xsl:attribute>
+			</xsl:if>
 			<xsl:attribute name="line-height">115%</xsl:attribute>
 			<xsl:apply-templates />
 		</xsl:element>
@@ -1135,7 +1138,10 @@
 			<p id="_8e5cf917-f75a-4a49-b0aa-1714cb6cf954">Formerly denoted as 15 % (m/m).</p>
 		</fn>
 	-->
-	<xsl:template match="ogc:title/ogc:fn | ogc:p/ogc:fn[not(ancestor::ogc:table)]" priority="2">
+	<xsl:template match="ogc:title/ogc:fn | 
+																ogc:p/ogc:fn[not(ancestor::ogc:table)] | 
+																ogc:p/*/ogc:fn[not(ancestor::ogc:table)] |
+																ogc:sourcecode/ogc:fn[not(ancestor::ogc:table)]" priority="2">
 		<fo:footnote keep-with-previous.within-line="always">
 			<xsl:variable name="number" select="@reference"/>
 			
