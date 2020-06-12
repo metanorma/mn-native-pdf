@@ -1877,7 +1877,10 @@
 							<xsl:attribute name="text-align">right</xsl:attribute>							
 						</xsl:if>
 					</xsl:if>
-					
+					<xsl:if test="$namespace = 'ogc'">
+						<xsl:attribute name="margin-top">0pt</xsl:attribute>
+						<xsl:attribute name="margin-bottom">6pt</xsl:attribute>
+					</xsl:if>
 					<xsl:apply-templates />
 					<xsl:if test="$namespace = 'gb'">
 						<xsl:if test="ancestor::*[local-name()='formula']">
