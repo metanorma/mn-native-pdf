@@ -991,8 +991,8 @@
 	<xsl:template match="iho:admonition">
 		<fo:block-container border="0.5pt solid rgb(79, 129, 189)" color="rgb(79, 129, 189)" margin-left="16mm" margin-right="16mm" margin-bottom="12pt">
 			<fo:block-container margin-left="0mm" margin-right="0mm" padding="2mm" padding-top="3mm">
-				<fo:block font-size="11pt" margin-bottom="6pt" font-weight="bold" font-style="italic" text-align="center">
-					<xsl:value-of select="translate(@type, $lower, $upper)"/>
+				<fo:block font-size="11pt" margin-bottom="6pt" font-weight="bold" font-style="italic" text-align="center">					
+					<xsl:value-of select="java:toUpperCase(java:java.lang.String.new(@type))"/>
 				</fo:block>
 				<fo:block font-style="italic">
 					<xsl:apply-templates />

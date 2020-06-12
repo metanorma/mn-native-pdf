@@ -30,13 +30,12 @@
 	<xsl:variable name="title-main-fr" select="/iec:iec-standard/iec:bibdata/iec:title[@language = 'fr' and @type = 'title-main']"/>
 	<xsl:variable name="part" select="/iec:iec-standard/iec:bibdata/iec:ext/iec:structuredidentifier/iec:project-number/@part"/>
 	
-	
-	<xsl:variable name="doctype_uppercased" select="translate(translate(/iec:iec-standard/iec:bibdata/iec:ext/iec:doctype,'-',' '), $lower,$upper)"/>
-	
-	<xsl:variable name="organization" select="translate(/iec:iec-standard/iec:bibdata/iec:contributor/iec:organization/iec:name, $lower, $upper)"/>
-	
-	<xsl:variable name="publisher" select="translate(/iec:iec-standard/iec:bibdata/iec:contributor[iec:role/@type = 'publisher']/iec:organization/iec:name, $lower, $upper)"/>
-	
+	<xsl:variable name="doctype_uppercased" select="java:toUpperCase(java:java.lang.String.new(translate(/iec:iec-standard/iec:bibdata/iec:ext/iec:doctype,'-',' ')))"/>
+	 
+	<xsl:variable name="organization" select="java:toUpperCase(java:java.lang.String.new(/iec:iec-standard/iec:bibdata/iec:contributor/iec:organization/iec:name))"/>
+	 	
+	<xsl:variable name="publisher" select="java:toUpperCase(java:java.lang.String.new(/iec:iec-standard/iec:bibdata/iec:contributor[iec:role/@type = 'publisher']/iec:organization/iec:name))"/>
+		
 	<xsl:variable name="stage" select="number(/iec:iec-standard/iec:bibdata/iec:status/iec:stage)"/>
 	<xsl:variable name="substage" select="number(/iec:iec-standard/iec:bibdata/iec:status/iec:substage)"/>	
 	<xsl:variable name="stagename" select="normalize-space(/iec:iec-standard/iec:bibdata/iec:ext/iec:stagename)"/>
@@ -61,8 +60,8 @@
 	
 	<xsl:variable name="stage-fullname-uppercased">
 		<xsl:choose>
-			<xsl:when test="$stagename != ''">
-				<xsl:value-of select="translate($stagename, $lower, $upper)"/>
+			<xsl:when test="$stagename != ''">				
+				<xsl:value-of select="java:toUpperCase(java:java.lang.String.new($stagename))"/>
 			</xsl:when>
 			<xsl:when test="$stage-abbreviation = 'NWIP' or
 															$stage-abbreviation = 'NP'">NEW WORK ITEM PROPOSAL</xsl:when>
@@ -1035,10 +1034,10 @@
 						<fo:block><xsl:value-of select="$organization"/></fo:block>
 						<fo:block>___________</fo:block>
 						<fo:block>&#xa0;</fo:block>
-						<fo:block font-weight="bold">
-							<xsl:value-of select="translate($title-intro, $lower, $upper)"/>
-							<xsl:text> — </xsl:text>
-							<xsl:value-of select="translate($title-main, $lower, $upper)"/>
+						<fo:block font-weight="bold">							
+							<xsl:value-of select="java:toUpperCase(java:java.lang.String.new($title-intro))"/>
+							<xsl:text> — </xsl:text>							
+							<xsl:value-of select="java:toUpperCase(java:java.lang.String.new($title-main))"/>
 							
 							<xsl:variable name="part-en" select="/iec:iec-standard/iec:bibdata/iec:title[@language = 'en' and @type = 'title-part']"/>
 							<xsl:if test="$part-en != ''">
@@ -1076,10 +1075,10 @@
 						<!-- <fo:block><xsl:value-of select="$organization"/></fo:block>
 						<fo:block>____________</fo:block>
 						<fo:block>&#xa0;</fo:block> -->
-						<fo:block font-weight="bold">
-							<xsl:value-of select="translate($title-intro, $lower, $upper)"/>
-							<xsl:text> — </xsl:text>
-							<xsl:value-of select="translate($title-main, $lower, $upper)"/>
+						<fo:block font-weight="bold">							
+							<xsl:value-of select="java:toUpperCase(java:java.lang.String.new($title-intro))"/>
+							<xsl:text> — </xsl:text>							
+							<xsl:value-of select="java:toUpperCase(java:java.lang.String.new($title-main))"/>
 							<xsl:variable name="part-en" select="/iec:iec-standard/iec:bibdata/iec:title[@language = 'en' and @type = 'title-part']"/>
 							<xsl:if test="$part-en != ''">
 								<xsl:text> — </xsl:text>
@@ -1408,8 +1407,8 @@
 				<xsl:if test="local-name(..) = 'annex'"><xsl:value-of select="../@obligation"/></xsl:if>
 			</xsl:attribute>
 			<xsl:choose>
-				<xsl:when test="ancestor::iec:preface">
-					<xsl:value-of select="translate(., $lower, $upper)"/>
+				<xsl:when test="ancestor::iec:preface">					
+					<xsl:value-of select="java:toUpperCase(java:java.lang.String.new(.))"/>
 				</xsl:when>
 				<xsl:otherwise>
 					<xsl:value-of select="."/>
@@ -1571,7 +1570,7 @@
 	<xsl:template match="iec:iec-standard/iec:preface/iec:foreword" priority="2">
 		<fo:block id="{@id}" margin-bottom="12pt" font-size="12pt" text-align="center">
 			<xsl:call-template name="addLetterSpacing">
-				<xsl:with-param name="text" select="translate(iec:title, $lower, $upper)"/>
+				<xsl:with-param name="text" select="java:toUpperCase(java:java.lang.String.new(iec:title))"/>
 			</xsl:call-template>
 		</fo:block>
 		<fo:block font-size="8.2pt" text-align="justify"> <!--  margin-left="6.3mm" -->
@@ -1586,7 +1585,7 @@
 		<fo:block break-after="page"/>
 		<fo:block id="{@id}" margin-bottom="12pt" font-size="12pt" text-align="center">
 			<xsl:call-template name="addLetterSpacing">
-				<xsl:with-param name="text" select="translate(iec:title, $lower, $upper)"/>
+				<xsl:with-param name="text" select="java:toUpperCase(java:java.lang.String.new(iec:title))"/>
 			</xsl:call-template>
 		</fo:block>
 		<fo:block>
@@ -1741,8 +1740,8 @@
 				</fo:block>
 			</xsl:when>
 			<xsl:when test="$parent-name = 'introduction'">
-				<fo:block id="{$id}" font-size="12pt" text-align="center" margin-bottom="10pt">
-					<xsl:value-of select="translate(text(), $lower, $upper)"/>
+				<fo:block id="{$id}" font-size="12pt" text-align="center" margin-bottom="10pt">					
+					<xsl:value-of select="java:toUpperCase(java:java.lang.String.new(text()))"/>
 				</fo:block>
 			</xsl:when>
 			<xsl:otherwise>
@@ -2364,7 +2363,7 @@
 		<fo:block-container border="0.5pt solid black" margin-left="-2mm" margin-right="-2mm" space-before="18pt" space-after="12pt">
 			<fo:block-container margin-left="0mm" margin-right="0mm" font-weight="bold" padding="1mm" padding-top="2mm">
 				<fo:block text-align="justify">
-					<fo:inline><xsl:value-of select="translate(@type, $lower, $upper)"/> – </fo:inline>
+					<fo:inline><xsl:value-of select="java:toUpperCase(java:java.lang.String.new(@type))"/> – </fo:inline>
 					<xsl:apply-templates />
 				</fo:block>
 			</fo:block-container>
@@ -2618,7 +2617,7 @@
 		<xsl:param name="letter-spacing" select="'0.15'"/>
 		<xsl:if test="string-length($text) &gt; 0">
 			<xsl:variable name="char" select="substring($text,1,1)"/>
-			<xsl:variable name="upperCase" select="translate($char, $lower, $upper)"/>
+			<xsl:variable name="upperCase" select="java:toUpperCase(java:java.lang.String.new($char))"/>			
 			<xsl:choose>
 				<xsl:when test="$char=$upperCase">
 					<fo:inline font-size="{100 div 0.75}%">

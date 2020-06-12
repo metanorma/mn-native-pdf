@@ -1320,8 +1320,8 @@
 	</xsl:template>
 	
 	<xsl:template match="m3d:admonition">
-		<fo:block text-align="center" margin-bottom="12pt" font-weight="bold">
-			<xsl:value-of select="translate(@type, $lower, $upper)"/>
+		<fo:block text-align="center" margin-bottom="12pt" font-weight="bold">			
+			<xsl:value-of select="java:toUpperCase(java:java.lang.String.new(@type))"/>
 		</fo:block>
 		<fo:block font-weight="bold">
 			<xsl:apply-templates />
