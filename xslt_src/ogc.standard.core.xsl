@@ -334,6 +334,11 @@
 					<fo:block break-after="page"/>
 					
 					<fo:block-container font-weight="bold" line-height="115%">
+						<xsl:variable name="title-toc">
+							<xsl:call-template name="getTitle">
+								<xsl:with-param name="name" select="'title-toc'"/>
+							</xsl:call-template>
+						</xsl:variable>
 						<fo:block font-size="14pt" margin-top="2pt"  margin-bottom="15.5pt"><xsl:value-of select="$title-toc"/></fo:block>
 						
 						<xsl:for-each select="xalan:nodeset($contents)//item[@display = 'true' and @level &lt;= 2]"><!-- skip clause from preface [not(@level = 2 and starts-with(@section, '0'))] -->
@@ -383,6 +388,11 @@
 						<xsl:if test="xalan:nodeset($contents)//item[@type = 'table']">
 							<fo:block font-size="12pt">&#xA0;</fo:block>
 							<fo:block font-size="12pt">&#xA0;</fo:block>
+							<xsl:variable name="title-list-tables">
+								<xsl:call-template name="getTitle">
+									<xsl:with-param name="name" select="'title-list-tables'"/>
+								</xsl:call-template>
+							</xsl:variable>
 							<fo:block font-size="14pt" font-weight="bold" space-before="48pt" margin-bottom="15.5pt"><xsl:value-of select="$title-list-tables"/></fo:block>
 							<xsl:for-each select="xalan:nodeset($contents)//item[@type = 'table']">
 								<fo:block text-align-last="justify" margin-top="6pt">
@@ -405,6 +415,11 @@
 						<xsl:if test="xalan:nodeset($contents)//item[@type = 'figure']">
 							<fo:block font-size="12pt">&#xA0;</fo:block>
 							<fo:block font-size="12pt">&#xA0;</fo:block>
+							<xsl:variable name="title-list-figures">
+								<xsl:call-template name="getTitle">
+									<xsl:with-param name="name" select="'title-list-figures'"/>
+								</xsl:call-template>
+							</xsl:variable>
 							<fo:block font-size="14pt" font-weight="bold" space-before="48pt" margin-bottom="15.5pt"><xsl:value-of select="$title-list-figures"/></fo:block>
 							<xsl:for-each select="xalan:nodeset($contents)//item[@type = 'figure']">
 								<fo:block text-align-last="justify" margin-top="6pt">
@@ -683,6 +698,11 @@
 			<xsl:number format="i" value="$sectionNum"/>
 		</xsl:variable>
 		<item id="keywords" level="1" section="{$section}" display-section="true" display="true" type="abstract" root="preface">
+			<xsl:variable name="title-keywords">
+				<xsl:call-template name="getTitle">
+					<xsl:with-param name="name" select="'title-keywords'"/>
+				</xsl:call-template>
+			</xsl:variable>
 			<xsl:value-of select="$title-keywords"/>
 		</item>
 	</xsl:template>
@@ -693,6 +713,11 @@
 			<xsl:number format="i" value="$sectionNum"/>
 		</xsl:variable>
 		<item id="submitting_orgs" level="1" section="{$section}" display-section="true" display="true" type="abstract" root="preface">
+			<xsl:variable name="title-submitting-organizations">
+				<xsl:call-template name="getTitle">
+					<xsl:with-param name="name" select="'title-submitting-organizations'"/>
+				</xsl:call-template>
+			</xsl:variable>
 			<xsl:value-of select="$title-submitting-organizations"/>
 		</item>
 	</xsl:template>
@@ -701,6 +726,11 @@
 		<xsl:param name="sectionNum" />
 		<item level="" id="{@id}" type="figure">
 			<xsl:attribute name="section">
+				<xsl:variable name="title-figure">
+					<xsl:call-template name="getTitle">
+						<xsl:with-param name="name" select="'title-figure'"/>
+					</xsl:call-template>
+				</xsl:variable>
 				<xsl:value-of select="$title-figure"/>
 				<xsl:choose>
 					<xsl:when test="ancestor::ogc:annex">
@@ -736,6 +766,11 @@
 		<xsl:variable name="annex-id" select="ancestor::ogc:annex/@id"/>
 		<item level="" id="{@id}" display="false" type="table">
 			<xsl:attribute name="section">
+				<xsl:variable name="title-table">
+					<xsl:call-template name="getTitle">
+						<xsl:with-param name="name" select="'title-table'"/>
+					</xsl:call-template>
+				</xsl:variable>
 				<xsl:value-of select="$title-table"/>
 				<xsl:choose>
 					<xsl:when test="ancestor::*[local-name()='executivesummary']">
@@ -759,6 +794,11 @@
 	<xsl:template match="ogc:formula" mode="contents">
 		<item level="" id="{@id}" display="false">
 			<xsl:attribute name="section">
+				<xsl:variable name="title-formula">
+					<xsl:call-template name="getTitle">
+						<xsl:with-param name="name" select="'title-formula'"/>
+					</xsl:call-template>
+				</xsl:variable>
 				<xsl:value-of select="$title-formula"/><xsl:number format="(A.1)" level="multiple" count="ogc:annex | ogc:formula"/>
 			</xsl:attribute>
 		</item>
@@ -777,6 +817,11 @@
 	
 	<xsl:template match="/ogc:ogc-standard/ogc:bibdata/ogc:edition">
 		<fo:block margin-bottom="12pt">
+			<xsl:variable name="title-edition">
+				<xsl:call-template name="getTitle">
+					<xsl:with-param name="name" select="'title-edition'"/>
+				</xsl:call-template>
+			</xsl:variable>
 			<xsl:value-of select="$title-edition"/><xsl:text>: </xsl:text>
 			<xsl:value-of select="."/><xsl:text> </xsl:text>
 		</fo:block>
@@ -903,6 +948,11 @@
 		<xsl:param name="sectionNum" select="'1'"/>
 		<fo:block id="keywords" font-size="13pt" font-weight="bold" margin-top="13.5pt" margin-bottom="12pt" color="rgb(14, 26, 133)">
 			<xsl:number format="i." value="$sectionNum"/><fo:inline padding-right="2mm">&#xA0;</fo:inline>
+			<xsl:variable name="title-keywords">
+				<xsl:call-template name="getTitle">
+					<xsl:with-param name="name" select="'title-keywords'"/>
+				</xsl:call-template>
+			</xsl:variable>
 			<xsl:value-of select="$title-keywords"/>
 		</fo:block>
 		<fo:block margin-bottom="12pt">The following are keywords to be used by search engines and document catalogues.</fo:block>
@@ -922,6 +972,11 @@
 		<xsl:param name="sectionNum" select="'1'"/>
 		<fo:block id="submitting_orgs" font-size="13pt" font-weight="bold" color="rgb(14, 26, 133)" margin-top="13.5pt" margin-bottom="12pt">
 			<xsl:number format="i." value="$sectionNum"/><fo:inline padding-right="3mm">&#xA0;</fo:inline>
+			<xsl:variable name="title-submitting-organizations">
+				<xsl:call-template name="getTitle">
+					<xsl:with-param name="name" select="'title-submitting-organizations'"/>
+				</xsl:call-template>
+			</xsl:variable>
 			<xsl:value-of select="$title-submitting-organizations"/>
 		</fo:block>
 		<fo:block margin-bottom="12pt">The following organizations submitted this Document to the Open Geospatial Consortium (OGC):</fo:block>
@@ -1201,7 +1256,11 @@
 				<xsl:call-template name="note"/>
 			</xsl:for-each>
 			<fo:block font-size="11pt" font-weight="bold" text-align="center" margin-top="12pt" margin-bottom="6pt" keep-with-previous="always">
-				
+				<xsl:variable name="title-figure">
+					<xsl:call-template name="getTitle">
+						<xsl:with-param name="name" select="'title-figure'"/>
+					</xsl:call-template>
+				</xsl:variable>
 				<xsl:choose>
 					<xsl:when test="ancestor::ogc:annex">
 						<xsl:choose>
@@ -1415,6 +1474,11 @@
 	</xsl:template>
 	
 	<xsl:template match="ogc:deprecates">
+		<xsl:variable name="title-deprecated">
+			<xsl:call-template name="getTitle">
+				<xsl:with-param name="name" select="'title-deprecated'"/>
+			</xsl:call-template>
+		</xsl:variable>
 		<fo:block><xsl:value-of select="$title-deprecated"/>: <xsl:apply-templates /></fo:block>
 	</xsl:template>
 	
@@ -1437,6 +1501,11 @@
 			<!-- Example: [SOURCE: ISO 5127:2017, 3.1.6.02] -->
 			<fo:basic-link internal-destination="{ogc:origin/@bibitemid}" fox:alt-text="{ogc:origin/@citeas}">
 				<xsl:text>[</xsl:text>
+				<xsl:variable name="title-source">
+					<xsl:call-template name="getTitle">
+						<xsl:with-param name="name" select="'title-source'"/>
+					</xsl:call-template>
+				</xsl:variable>
 				<xsl:value-of select="$title-source"/>
 				<xsl:text>: </xsl:text>
 				<fo:inline color="blue" text-decoration="underline">
@@ -1458,7 +1527,12 @@
 	
 	<xsl:template match="ogc:termnote">
 		<fo:block font-size="10pt" margin-bottom="12pt">
-			<xsl:variable name="num"><xsl:number /></xsl:variable>			
+			<xsl:variable name="num"><xsl:number /></xsl:variable>
+			<xsl:variable name="title-note-to-entry">
+				<xsl:call-template name="getTitle">
+					<xsl:with-param name="name" select="'title-note-to-entry'"/>
+				</xsl:call-template>
+			</xsl:variable>
 			<xsl:value-of select="java:replaceAll(java:java.lang.String.new($title-note-to-entry),'#',$num)"/>			
 			<xsl:apply-templates />
 		</fo:block>
@@ -1475,6 +1549,11 @@
 	
 	<xsl:template match="ogc:termexample">
 		<fo:block font-size="10pt" margin-bottom="12pt">
+			<xsl:variable name="title-example">
+				<xsl:call-template name="getTitle">
+					<xsl:with-param name="name" select="'title-example'"/>
+				</xsl:call-template>
+			</xsl:variable>
 			<fo:inline padding-right="10mm"><xsl:value-of select="normalize-space($title-example)"/></fo:inline>
 			<xsl:apply-templates />
 		</fo:block>
@@ -1619,6 +1698,17 @@
 			<!-- </xsl:if> -->
 			<xsl:variable name="type" select="xalan:nodeset($contents)//item[@id = current()/@target]/@type"/>
 			<xsl:variable name="root" select="xalan:nodeset($contents)//item[@id = current()/@target]/@root"/>
+
+			<xsl:variable name="title-clause">
+				<xsl:call-template name="getTitle">
+					<xsl:with-param name="name" select="'title-clause'"/>
+				</xsl:call-template>
+			</xsl:variable>
+			<xsl:variable name="title-annex">
+				<xsl:call-template name="getTitle">
+					<xsl:with-param name="name" select="'title-annex'"/>
+				</xsl:call-template>
+			</xsl:variable>
 			
 			<xsl:choose>
 				<xsl:when test="normalize-space(.) != ''">
@@ -1639,12 +1729,17 @@
 
 	<xsl:template match="ogc:sourcecode" priority="2">
 		<xsl:call-template name="sourcecode"/>		
+		<xsl:variable name="title-figure">
+			<xsl:call-template name="getTitle">
+				<xsl:with-param name="name" select="'title-figure'"/>
+			</xsl:call-template>
+		</xsl:variable>
 		<xsl:choose>
 			<xsl:when test="@unnumbered='true'"></xsl:when>
 			<xsl:when test="ancestor::ogc:example"/>
 			<xsl:when test="ancestor::ogc:td"/>
 			<xsl:when test="ancestor::ogc:annex">
-				<xsl:variable name="id_annex" select="ancestor::ogc:annex/@id"/>
+				<xsl:variable name="id_annex" select="ancestor::ogc:annex/@id"/>				
 				<xsl:choose>
 					<xsl:when test="count(//ogc:annex) = 1">
 						<xsl:value-of select="/ogc:nist-standard/ogc:bibdata/ogc:ext/ogc:structuredidentifier/ogc:annexid"/><xsl:number format="-1" level="any" count="ogc:annex//ogc:sourcecode"/>
@@ -1689,6 +1784,11 @@
 	
 	<xsl:template match="ogc:example">
 		<fo:block font-size="10pt" margin-top="12pt" margin-bottom="12pt" font-weight="bold" keep-with-next="always">
+			<xsl:variable name="title-example">
+				<xsl:call-template name="getTitle">
+					<xsl:with-param name="name" select="'title-example'"/>
+				</xsl:call-template>
+			</xsl:variable>
 			<xsl:value-of select="normalize-space($title-example)"/>
 			<xsl:if test="following-sibling::ogc:example or preceding-sibling::ogc:example">
 				<xsl:number format=" 1"/>
@@ -1720,6 +1820,11 @@
 			</xsl:if>
 			<xsl:variable name="clauseid" select="ancestor::ogc:clause[1]/@id"/>
 			<fo:inline padding-right="4mm">
+				<xsl:variable name="title-note">
+					<xsl:call-template name="getTitle">
+						<xsl:with-param name="name" select="'title-note'"/>
+					</xsl:call-template>
+				</xsl:variable>
 				<xsl:value-of select="$title-note"/>
 				<xsl:if test="count(//ogc:note[ancestor::ogc:clause[1][@id = $clauseid]]) &gt; 1">
 					<xsl:number count="ogc:note[ancestor::ogc:clause[1][@id = $clauseid]]" level="any"/>
@@ -1760,6 +1865,16 @@
 	</xsl:template>
 	
 	<xsl:template match="ogc:locality">
+		<xsl:variable name="title-clause">
+			<xsl:call-template name="getTitle">
+				<xsl:with-param name="name" select="'title-clause'"/>
+			</xsl:call-template>
+		</xsl:variable>
+		<xsl:variable name="title-annex">
+			<xsl:call-template name="getTitle">
+				<xsl:with-param name="name" select="'title-annex'"/>
+			</xsl:call-template>
+		</xsl:variable>
 		<xsl:choose>
 			<xsl:when test="@type ='clause'"><xsl:value-of select="$title-clause"/></xsl:when>
 			<xsl:when test="@type ='annex'"><xsl:value-of select="$title-annex"/></xsl:when>
@@ -1939,6 +2054,11 @@
 				<xsl:when test="ancestor::ogc:annex">
 					<xsl:choose>
 						<xsl:when test="$level = 1">
+							<xsl:variable name="title-annex">
+								<xsl:call-template name="getTitle">
+									<xsl:with-param name="name" select="'title-annex'"/>
+								</xsl:call-template>
+							</xsl:variable>
 							<xsl:value-of select="$title-annex"/>
 							<xsl:choose>
 								<xsl:when test="count(//ogc:annex) = 1">

@@ -8,13 +8,232 @@
 											exclude-result-prefixes="java"
 											version="1.0">
 
-	<xsl:variable name="title-table">
+	<xsl:variable name="titles" select="xalan:nodeset($titles_)"/>
+	
+	<xsl:variable name="titles_">
+		
+		<title-table lang="en">Table </title-table>
+		<title-table lang="fr">Tableau </title-table>
+		<xsl:if test="$namespace = 'iso' or $namespace = 'iec' or $namespace = 'itu' or $namespace = 'unece' or $namespace = 'unece-rec' or $namespace = 'nist' or $namespace = 'ogc' or $namespace = 'rsd' or $namespace = 'csa' or $namespace = 'csd' or $namespace = 'm3d' or $namespace = 'iho'">			
+			<title-table lang="zh">Table </title-table>
+		</xsl:if>
+		<xsl:if test="$namespace = 'gb'">			
+			<title-table lang="zh">表 </title-table>
+		</xsl:if>
+	
+		<title-note lang="en">NOTE </title-note>
+		<title-note lang="fr">NOTE </title-note>
 		<xsl:if test="$namespace = 'iso' or $namespace = 'iec' or $namespace = 'itu' or $namespace = 'unece' or $namespace = 'unece-rec' or $namespace = 'nist' or $namespace = 'ogc' or $namespace = 'rsd' or $namespace = 'csa' or $namespace = 'csd' or $namespace = 'm3d' or $namespace = 'iho'">
-			<xsl:text>Table </xsl:text>
+			<title-note lang="zh">NOTE </title-note>
+		</xsl:if>
+		<xsl:if test="$namespace = 'gb'">
+			<title-note lang="zh">注 </title-note>
+		</xsl:if>
+		
+		<title-figure lang="en">Figure </title-figure>
+		<title-figure lang="fr">Figure </title-figure>
+		<xsl:if test="$namespace = 'iso' or $namespace = 'iec' or $namespace = 'itu' or $namespace = 'unece' or $namespace = 'unece-rec' or $namespace = 'nist' or $namespace = 'ogc' or $namespace = 'rsd' or $namespace = 'csa' or $namespace = 'csd' or $namespace = 'm3d' or $namespace = 'iho'">
+			<title-figure lang="zh">Figure </title-figure>
+		</xsl:if>
+		<xsl:if test="$namespace = 'gb'">
+			<title-figure lang="zh">图 </title-figure>				
+		</xsl:if>
+		
+		<title-example lang="en">EXAMPLE </title-example>
+		<title-example lang="fr">EXEMPLE </title-example>
+		<xsl:if test="$namespace = 'iso' or $namespace = 'iec' or $namespace = 'itu' or $namespace = 'unece' or $namespace = 'unece-rec' or $namespace = 'nist' or $namespace = 'ogc' or $namespace = 'rsd' or $namespace = 'csa' or $namespace = 'csd' or $namespace = 'm3d' or $namespace = 'iho'">
+			<title-example lang="zh">EXAMPLE </title-example>
+		</xsl:if>
+		<xsl:if test="$namespace = 'gb'">
+			<title-example lang="zh">示例 </title-example>				
+		</xsl:if>
+		
+		<title-example-xref lang="en">Example </title-example-xref>
+		<title-example-xref lang="fr">Exemple </title-example-xref>
+			
+		<title-section lang="en">Section </title-section>
+		<title-section lang="fr">Section </title-section>
+		
+		<title-inequality lang="en">Inequality </title-inequality>
+		<title-inequality lang="fr">Inequality </title-inequality>
+		
+		<title-equation lang="en">Equation </title-equation>
+		<title-equation lang="fr">Equation </title-equation>
+				
+		<title-annex lang="en">Annex </title-annex>
+		<title-annex lang="fr">Annexe </title-annex>
+		<xsl:if test="$namespace = 'iso' or $namespace = 'iec' or $namespace = 'itu' or $namespace = 'unece' or $namespace = 'unece-rec' or $namespace = 'nist' or $namespace = 'ogc' or $namespace = 'rsd' or $namespace = 'csa' or $namespace = 'csd' or $namespace = 'm3d' or $namespace = 'iho'">
+			<title-annex lang="zh">Annex </title-annex>
+		</xsl:if>
+		<xsl:if test="$namespace = 'gb'">
+			<title-annex lang="zh">附件 </title-annex>			
+		</xsl:if>
+		
+		<title-appendix lang="en">Appendix </title-appendix>
+		<title-appendix lang="fr">Appendix </title-appendix>
+			
+		<title-clause lang="en">Clause </title-clause>
+		<title-clause lang="fr">Article </title-clause>
+		<xsl:if test="$namespace = 'iso' or $namespace = 'iec' or $namespace = 'itu' or $namespace = 'unece' or $namespace = 'unece-rec' or $namespace = 'nist' or $namespace = 'ogc' or $namespace = 'rsd' or $namespace = 'csa' or $namespace = 'csd' or $namespace = 'm3d' or $namespace = 'iho'">
+			<title-clause lang="zh">Clause </title-clause>
+		</xsl:if>
+		<xsl:if test="$namespace = 'gb'">
+			<title-clause lang="zh">条 </title-clause>			
+		</xsl:if>
+		
+		<title-edition lang="en">
+			<xsl:if test="$namespace = 'iso' or $namespace = 'iec' or $namespace = 'itu' or $namespace = 'unece' or $namespace = 'unece-rec' or $namespace = 'nist' or $namespace = 'csd' or $namespace = 'iho'">
+				<xsl:text>Edition </xsl:text>
+			</xsl:if>
+			<xsl:if test="$namespace = 'csa' or $namespace = 'm3d' or $namespace = 'ogc' or $namespace = 'rsd'">
+				<xsl:text>Version</xsl:text>
+			</xsl:if>
+		</title-edition>
+		
+		<title-formula lang="en">Formula </title-formula>
+		<title-formula lang="fr">Formula </title-formula>
+		
+		<title-toc lang="en">
+			<xsl:if test="$namespace = 'iso' or $namespace = 'iec' or $namespace = 'iho' or $namespace = 'csd' or $namespace = 'rsd' or $namespace = 'ogc' or $namespace = 'unece-rec'">
+				<xsl:text>Contents</xsl:text>
+			</xsl:if>
+			<xsl:if test="$namespace = 'itu' or $namespace = 'csa' or $namespace = 'm3d' or $namespace = 'nist'">
+				<xsl:text>Table of Contents</xsl:text>
+			</xsl:if>
+			<xsl:if test="$namespace = 'gb'">
+				<xsl:text>Table of contents</xsl:text>
+			</xsl:if>
+		</title-toc>
+		<title-toc lang="fr">Sommaire</title-toc>
+		<xsl:if test="$namespace = 'iso' or $namespace = 'iec' or $namespace = 'itu' or $namespace = 'unece' or $namespace = 'unece-rec' or $namespace = 'nist' or $namespace = 'ogc' or $namespace = 'rsd' or $namespace = 'csa' or $namespace = 'csd' or $namespace = 'm3d' or $namespace = 'iho'">
+			<title-toc lang="zh">Contents</title-toc>
+		</xsl:if>
+		<xsl:if test="$namespace = 'gb'">
+			<title-toc lang="zh">目次</title-toc>			
+		</xsl:if>
+		
+		<title-page lang="en">Page</title-page>
+		<title-page lang="fr">Page</title-page>
+		
+		<title-key lang="en">Key</title-key>
+		<title-key lang="fr">Légende</title-key>
+			
+		<title-where lang="en">where</title-where>
+		<title-where lang="fr">où</title-where>
+					
+		<title-descriptors lang="en">Descriptors</title-descriptors>
+		
+		<title-part lang="en">
+			<xsl:if test="$namespace = 'iso'">
+				<xsl:text>Part #:</xsl:text>
+			</xsl:if>
+			<xsl:if test="$namespace = 'iec' or $namespace = 'gb'">
+				<xsl:text>Part #: </xsl:text>
+			</xsl:if>
+		</title-part>
+		<title-part lang="fr">
+			<xsl:if test="$namespace = 'iso'">
+				<xsl:text>Partie #:</xsl:text>
+			</xsl:if>
+			<xsl:if test="$namespace = 'iec' or $namespace = 'gb'">
+				<xsl:text>Partie #:  </xsl:text>
+			</xsl:if>
+		</title-part>		
+		<title-part lang="zh">第 # 部分:</title-part>
+		
+		<title-note-to-entry lang="en">Note # to entry: </title-note-to-entry>
+		<title-note-to-entry lang="fr">Note # à l'article: </title-note-to-entry>
+		<xsl:if test="$namespace = 'iso' or $namespace = 'iec' or $namespace = 'itu' or $namespace = 'unece' or $namespace = 'unece-rec' or $namespace = 'nist' or $namespace = 'ogc' or $namespace = 'rsd' or $namespace = 'csa' or $namespace = 'csd' or $namespace = 'm3d' or $namespace = 'iho'">
+			<title-note-to-entry lang="zh">Note # to entry: </title-note-to-entry>
+		</xsl:if>
+		<xsl:if test="$namespace = 'gb'">
+			<title-note-to-entry lang="zh">注#: </title-note-to-entry>				
+		</xsl:if>
+		
+		<title-modified lang="en">modified</title-modified>
+		<title-modified lang="fr">modifiée</title-modified>
+		<xsl:if test="$namespace = 'iso' or $namespace = 'iec' or $namespace = 'itu' or $namespace = 'unece' or $namespace = 'unece-rec' or $namespace = 'nist' or $namespace = 'ogc' or $namespace = 'rsd' or $namespace = 'csa' or $namespace = 'csd' or $namespace = 'm3d' or $namespace = 'iho'">
+			<title-modified lang="zh">modified</title-modified>
+		</xsl:if>
+		<xsl:if test="$namespace = 'gb'">
+			<title-modified lang="zh">改写</title-modified>			
+		</xsl:if>
+		
+		<title-source lang="en">SOURCE</title-source>
+		
+		<title-keywords lang="en">Keywords</title-keywords>
+		
+		<title-deprecated lang="en">DEPRECATED</title-deprecated>
+		<title-deprecated lang="fr">DEPRECATED</title-deprecated>
+		
+		<title-submitting-organizations lang="en">Submitting Organizations</title-submitting-organizations>
+		
+		<title-list-tables lang="en">List of Tables</title-list-tables>
+		
+		<title-list-figures lang="en">List of Figures</title-list-figures>
+		
+		<title-recommendation lang="en">Recommendation </title-recommendation>
+		
+		<title-acknowledgements lang="en">Acknowledgements</title-acknowledgements>
+		
+		<title-abstract lang="en">Abstract</title-abstract>
+		
+		<title-summary lang="en">Summary</title-summary>
+		
+		<title-in lang="en">in </title-in>
+		
+		<title-box lang="en">Box </title-box>
+		
+		<title-partly-supercedes lang="en">Partly Supercedes </title-partly-supercedes>
+		<title-partly-supercedes lang="zh">部分代替 </title-partly-supercedes>
+		
+		<title-completion-date lang="en">Completion date for this manuscript</title-completion-date>
+		<title-completion-date lang="zh">本稿完成日期</title-completion-date>
+		
+		<title-issuance-date lang="en">Issuance Date: #</title-issuance-date>
+		<title-issuance-date lang="zh"># 发布</title-issuance-date>
+		
+		<title-implementation-date lang="en">Implementation Date: #</title-implementation-date>
+		<title-implementation-date lang="zh"># 实施</title-implementation-date>
+
+		<title-obligation-normative lang="en">normative</title-obligation-normative>
+		<title-obligation-normative lang="zh">规范性附录</title-obligation-normative>
+		
+		<title-caution lang="en">CAUTION</title-caution>
+		<title-caution lang="zh">注意</title-caution>
+			
+		<title-warning lang="en">WARNING</title-warning>
+		<title-warning lang="zh">警告</title-warning>
+			
+	</xsl:variable>
+	
+	<xsl:template name="getTitle">
+		<xsl:param name="name"/>
+		<xsl:variable name="lang">
+			<xsl:call-template name="getLang"/>
+		</xsl:variable>
+		<xsl:variable name="title_" select="$titles/*[local-name() = $name][@lang = $lang]"/>
+		<xsl:choose>
+			<xsl:when test="normalize-space($title_) != ''">
+				<xsl:value-of select="$title_"/>
+			</xsl:when>
+			<xsl:otherwise>
+				<xsl:value-of select="$titles/*[local-name() = $name][@lang = 'en']"/>
+			</xsl:otherwise>
+		</xsl:choose>
+	</xsl:template>
+	
+											
+<!-- 	<xsl:variable name="title-table">
+		<xsl:if test="$namespace = 'iso' or $namespace = 'iec' or $namespace = 'itu' or $namespace = 'unece' or $namespace = 'unece-rec' or $namespace = 'nist' or $namespace = 'ogc' or $namespace = 'rsd' or $namespace = 'csa' or $namespace = 'csd' or $namespace = 'm3d' or $namespace = 'iho'">
+			<xsl:choose>
+				<xsl:when test="$lang = 'fr'"><xsl:text>Tableau </xsl:text></xsl:when>
+				<xsl:otherwise><xsl:text>Table </xsl:text></xsl:otherwise>
+			</xsl:choose>
 		</xsl:if>
 		<xsl:if test="$namespace = 'gb'">
 			<xsl:choose>
-				<xsl:when test="$lang = 'zh'">表 </xsl:when>
+				<xsl:when test="$lang = 'zh'"><xsl:text>表 </xsl:text></xsl:when>
 				<xsl:otherwise><xsl:text>Table </xsl:text></xsl:otherwise>
 			</xsl:choose>
 		</xsl:if>
@@ -26,7 +245,7 @@
 		</xsl:if>
 		<xsl:if test="$namespace = 'gb'">
 			<xsl:choose>
-				<xsl:when test="$lang = 'zh'">注 </xsl:when>
+				<xsl:when test="$lang = 'zh'"><xsl:text>注 </xsl:text></xsl:when>
 				<xsl:otherwise><xsl:text>NOTE </xsl:text></xsl:otherwise>
 			</xsl:choose>
 		</xsl:if>
@@ -38,7 +257,7 @@
 		</xsl:if>
 		<xsl:if test="$namespace = 'gb'">
 			<xsl:choose>
-				<xsl:when test="$lang = 'zh'">图 </xsl:when>
+				<xsl:when test="$lang = 'zh'"><xsl:text>图 </xsl:text></xsl:when>
 				<xsl:otherwise>Figure </xsl:otherwise>
 			</xsl:choose>
 		</xsl:if>
@@ -46,7 +265,10 @@
 	
 	<xsl:variable name="title-example">
 		<xsl:if test="$namespace = 'iso' or $namespace = 'iec' or $namespace = 'itu' or $namespace = 'unece' or $namespace = 'unece-rec' or $namespace = 'nist' or $namespace = 'ogc' or $namespace = 'rsd' or $namespace = 'csa' or $namespace = 'csd' or $namespace = 'm3d' or $namespace = 'iho'">
-			<xsl:text>EXAMPLE </xsl:text>
+			<xsl:choose>
+				<xsl:when test="$lang = 'fr'"><xsl:text>EXEMPLE </xsl:text></xsl:when>
+				<xsl:otherwise><xsl:text>EXAMPLE </xsl:text></xsl:otherwise>
+			</xsl:choose>
 		</xsl:if>
 		<xsl:if test="$namespace = 'gb'">
 			<xsl:choose>
@@ -56,7 +278,12 @@
 		</xsl:if>
 	</xsl:variable>
 	
-	<xsl:variable name="title-example-xref">Example </xsl:variable>
+	<xsl:variable name="title-example-xref">
+		<xsl:choose>
+			<xsl:when test="$lang = 'fr'"><xsl:text>Exemple </xsl:text></xsl:when>
+			<xsl:otherwise><xsl:text>Example </xsl:text></xsl:otherwise>
+		</xsl:choose>		
+	</xsl:variable>
 	
 	<xsl:variable name="title-section">Section </xsl:variable>
 	
@@ -67,7 +294,10 @@
 	
 	<xsl:variable name="title-annex">
 		<xsl:if test="$namespace = 'iso' or $namespace = 'iec' or $namespace = 'itu' or $namespace = 'unece' or $namespace = 'unece-rec' or $namespace = 'nist' or $namespace = 'ogc' or $namespace = 'rsd' or $namespace = 'csa' or $namespace = 'csd' or $namespace = 'm3d' or $namespace = 'iho'">
-			<xsl:text>Annex </xsl:text>
+			<xsl:choose>
+				<xsl:when test="$lang = 'fr'"><xsl:text>Annexe </xsl:text></xsl:when>
+				<xsl:otherwise><xsl:text>Annex </xsl:text></xsl:otherwise>
+			</xsl:choose>
 		</xsl:if>
 		<xsl:if test="$namespace = 'gb'">
 			<xsl:choose>
@@ -83,7 +313,10 @@
 	
 	<xsl:variable name="title-clause">
 		<xsl:if test="$namespace = 'iso' or $namespace = 'iec' or $namespace = 'itu' or $namespace = 'unece' or $namespace = 'unece-rec' or $namespace = 'nist' or $namespace = 'ogc' or $namespace = 'rsd' or $namespace = 'csa' or $namespace = 'csd' or $namespace = 'm3d' or $namespace = 'iho'">
-			<xsl:text>Clause </xsl:text>
+			<xsl:choose>
+				<xsl:when test="$lang = 'fr'"><xsl:text>Article </xsl:text></xsl:when>
+				<xsl:otherwise><xsl:text>Clause </xsl:text></xsl:otherwise>
+			</xsl:choose>
 		</xsl:if>
 		<xsl:if test="$namespace = 'gb'">
 			<xsl:choose>
@@ -107,8 +340,11 @@
 	</xsl:variable>
 	
 	<xsl:variable name="title-toc">
-		<xsl:if test="$namespace = 'iso' or $namespace = 'iho' or $namespace = 'csd' or $namespace = 'rsd' or $namespace = 'ogc' or $namespace = 'unece-rec'">
-			<xsl:text>Contents</xsl:text>
+		<xsl:if test="$namespace = 'iso' or $namespace = 'iec' or $namespace = 'iho' or $namespace = 'csd' or $namespace = 'rsd' or $namespace = 'ogc' or $namespace = 'unece-rec'">
+			<xsl:choose>
+				<xsl:when test="$lang = 'fr'"><xsl:text>Sommaire</xsl:text></xsl:when>
+				<xsl:otherwise><xsl:text>Contents</xsl:text></xsl:otherwise>
+			</xsl:choose>
 		</xsl:if>
 		<xsl:if test="$namespace = 'itu' or $namespace = 'csa' or $namespace = 'm3d' or $namespace = 'nist'">
 			<xsl:text>Table of Contents</xsl:text>
@@ -123,9 +359,19 @@
 	
 	<xsl:variable name="title-page">Page</xsl:variable>
 	
-	<xsl:variable name="title-key">Key</xsl:variable>
+	<xsl:variable name="title-key">
+		<xsl:choose>
+			<xsl:when test="$lang = 'fr'"><xsl:text>Légende</xsl:text></xsl:when>
+			<xsl:otherwise><xsl:text>Key</xsl:text></xsl:otherwise>
+		</xsl:choose>
+	</xsl:variable>
 	
-	<xsl:variable name="title-where">where</xsl:variable>
+	<xsl:variable name="title-where">
+		<xsl:choose>
+			<xsl:when test="$lang = 'fr'"><xsl:text>où</xsl:text></xsl:when>
+			<xsl:otherwise><xsl:text>where</xsl:text></xsl:otherwise>
+		</xsl:choose>		
+	</xsl:variable>
 	
 	<xsl:variable name="title-descriptors">Descriptors</xsl:variable>
 	
@@ -149,7 +395,10 @@
 	
 	<xsl:variable name="title-note-to-entry">
 		<xsl:if test="$namespace = 'iso' or $namespace = 'iec' or $namespace = 'itu' or $namespace = 'unece' or $namespace = 'unece-rec' or $namespace = 'nist' or $namespace = 'ogc' or $namespace = 'rsd' or $namespace = 'csa' or $namespace = 'csd' or $namespace = 'm3d' or $namespace = 'iho'">
-			<xsl:text>Note # to entry: </xsl:text>
+			<xsl:choose>
+				<xsl:when test="$lang = 'fr'"><xsl:text>Note # à l'article: </xsl:text></xsl:when>
+				<xsl:otherwise><xsl:text>Note # to entry: </xsl:text></xsl:otherwise>
+			</xsl:choose>
 		</xsl:if>
 		<xsl:if test="$namespace = 'gb'">
 			<xsl:choose>
@@ -165,7 +414,10 @@
 	
 	<xsl:variable name="title-modified">
 		<xsl:if test="$namespace = 'iso' or $namespace = 'iec' or $namespace = 'itu' or $namespace = 'unece' or $namespace = 'unece-rec' or $namespace = 'nist' or $namespace = 'ogc' or $namespace = 'rsd' or $namespace = 'csa' or $namespace = 'csd' or $namespace = 'm3d' or $namespace = 'iho'">
-			<xsl:text>modified</xsl:text>
+			<xsl:choose>
+				<xsl:when test="$lang = 'fr'"><xsl:text>modifiée</xsl:text></xsl:when>
+				<xsl:otherwise><xsl:text>modified</xsl:text></xsl:otherwise>
+			</xsl:choose>
 		</xsl:if>
 		<xsl:if test="$namespace = 'gb'">
 			<xsl:choose>
@@ -258,7 +510,7 @@
 				<xsl:text>WARNING</xsl:text>				
 			</xsl:otherwise>
 		</xsl:choose>
-	</xsl:variable>
+	</xsl:variable> -->
 	
 		
 	<xsl:variable name="lower">abcdefghijklmnopqrstuvwxyz</xsl:variable> 
@@ -421,6 +673,11 @@
 								<xsl:attribute name="font-weight">normal</xsl:attribute>
 								<xsl:attribute name="font-size">11pt</xsl:attribute>
 							</xsl:if>
+							<xsl:variable name="title-table">
+								<xsl:call-template name="getTitle">
+									<xsl:with-param name="name" select="'title-table'"/>
+								</xsl:call-template>
+							</xsl:variable>
 							<xsl:value-of select="$title-table"/>
 							<xsl:choose>
 								<xsl:when test="ancestor::*[local-name()='executivesummary']"> <!-- NIST -->
@@ -498,7 +755,11 @@
 							<xsl:attribute name="font-weight">normal</xsl:attribute>
 							<xsl:attribute name="font-size">11pt</xsl:attribute>							
 						</xsl:if>
-						
+						<xsl:variable name="title-table">
+							<xsl:call-template name="getTitle">
+								<xsl:with-param name="name" select="'title-table'"/>
+							</xsl:call-template>
+						</xsl:variable>
 						<xsl:value-of select="$title-table"/>
 						
 						<xsl:call-template name="getTableNumber"/>
@@ -1229,6 +1490,11 @@
 					<fo:marker marker-class-name="table_continued">						
 						<xsl:if test="$row_number &gt; 1">
 								<fo:inline>
+									<xsl:variable name="title-table">
+										<xsl:call-template name="getTitle">
+											<xsl:with-param name="name" select="'title-table'"/>
+										</xsl:call-template>
+									</xsl:variable>
 									<xsl:value-of select="$title-table"/>									
 									<xsl:call-template name="getTableNumber"/>
 									<xsl:text> </xsl:text>
@@ -1283,6 +1549,11 @@
 					<xsl:if test="$namespace = 'iho'">
 						<xsl:attribute name="font-size">11pt</xsl:attribute>					
 					</xsl:if>
+					<xsl:variable name="title-note">
+						<xsl:call-template name="getTitle">
+							<xsl:with-param name="name" select="'title-note'"/>
+						</xsl:call-template>
+					</xsl:variable>
 					<xsl:value-of select="$title-note"/>
 					<xsl:if test="$namespace = 'iso' or $namespace = 'itu' or $namespace = 'iec' or $namespace = 'ogc'  or $namespace = 'gb' or $namespace = 'm3d' or $namespace = 'iho'">
 						<xsl:variable name="id" select="ancestor::*[local-name() = 'table'][1]/@id"/>
@@ -1573,6 +1844,11 @@
 						<xsl:if test="$namespace = 'gb'">
 							<xsl:attribute name="margin-left">7.4mm</xsl:attribute>
 						</xsl:if>
+						<xsl:variable name="title-where">
+							<xsl:call-template name="getTitle">
+								<xsl:with-param name="name" select="'title-where'"/>
+							</xsl:call-template>
+						</xsl:variable>
 						<xsl:value-of select="$title-where"/>
 					</fo:block>
 					<fo:block>
@@ -1590,6 +1866,11 @@
 						<xsl:if test="$namespace = 'iso' or $namespace = 'iec'">
 							<xsl:attribute name="margin-bottom">0</xsl:attribute>
 						</xsl:if>
+						<xsl:variable name="title-where">
+							<xsl:call-template name="getTitle">
+								<xsl:with-param name="name" select="'title-where'"/>
+							</xsl:call-template>
+						</xsl:variable>
 						<xsl:value-of select="$title-where"/><xsl:text>&#xA0;</xsl:text>
 						<xsl:apply-templates select="*[local-name()='dt']/*"/>
 						<xsl:text></xsl:text>
@@ -1612,6 +1893,11 @@
 						<xsl:attribute name="margin-left">7.4mm</xsl:attribute>
 						<xsl:attribute name="margin-bottom">0pt</xsl:attribute>
 					</xsl:if>
+					<xsl:variable name="title-where">
+						<xsl:call-template name="getTitle">
+							<xsl:with-param name="name" select="'title-where'"/>
+						</xsl:call-template>
+					</xsl:variable>
 					<xsl:value-of select="$title-where"/><xsl:if test="$namespace = 'itu'">:</xsl:if>
 				</fo:block>
 			</xsl:when>
@@ -1629,6 +1915,11 @@
 						<xsl:attribute name="margin-bottom">0pt</xsl:attribute>
 						<xsl:attribute name="text-indent">7.4mm</xsl:attribute>
 					</xsl:if>
+					<xsl:variable name="title-key">
+						<xsl:call-template name="getTitle">
+							<xsl:with-param name="name" select="'title-key'"/>
+						</xsl:call-template>
+					</xsl:variable>
 					<xsl:value-of select="$title-key"/>
 				</fo:block>
 			</xsl:when>
@@ -1796,6 +2087,11 @@
 					<xsl:if test="normalize-space($key_iso) = 'true'">
 						<xsl:attribute name="margin-top">0</xsl:attribute>
 					</xsl:if>
+					<xsl:variable name="title-note">
+						<xsl:call-template name="getTitle">
+							<xsl:with-param name="name" select="'title-note'"/>
+						</xsl:call-template>
+					</xsl:variable>
 					<xsl:value-of select="$title-note"/>
 				</fo:block>
 			</fo:table-cell>
@@ -2429,6 +2725,11 @@
 	
 	<xsl:template match="*[local-name()='appendix']">
 		<fo:block id="{@id}" xsl:use-attribute-sets="appendix-style">
+			<xsl:variable name="title-appendix">
+				<xsl:call-template name="getTitle">
+					<xsl:with-param name="name" select="'title-appendix'"/>
+				</xsl:call-template>
+			</xsl:variable>
 			<fo:inline padding-right="5mm"><xsl:value-of select="$title-appendix"/> <xsl:number /></fo:inline>
 			<xsl:apply-templates select="*[local-name()='title']" mode="process"/>
 		</fo:block>
@@ -2444,6 +2745,11 @@
 	<xsl:template match="*[local-name()='appendix']//*[local-name()='example']">
 		<fo:block xsl:use-attribute-sets="appendix-example-style">
 			<xsl:variable name="claims_id" select="ancestor::*[local-name()='clause'][1]/@id"/>
+			<xsl:variable name="title-example">
+				<xsl:call-template name="getTitle">
+					<xsl:with-param name="name" select="'title-example'"/>
+				</xsl:call-template>
+			</xsl:variable>
 			<xsl:value-of select="$title-example"/>
 			<xsl:if test="count(ancestor::*[local-name()='clause'][1]//*[local-name()='example']) &gt; 1">
 					<xsl:number count="*[local-name()='example'][ancestor::*[local-name()='clause'][@id = $claims_id]]" level="any"/><xsl:text> </xsl:text>
@@ -2487,6 +2793,11 @@
 	</xsl:template>
 
 	<xsl:template match="*[local-name() = 'modification']">
+		<xsl:variable name="title-modified">
+			<xsl:call-template name="getTitle">
+				<xsl:with-param name="name" select="'title-modified'"/>
+			</xsl:call-template>
+		</xsl:variable>
 		<xsl:choose>
 			<xsl:when test="$lang = 'zh'"><xsl:text>、</xsl:text><xsl:value-of select="$title-modified"/><xsl:text>—</xsl:text></xsl:when>
 			<xsl:otherwise><xsl:text>, </xsl:text><xsl:value-of select="$title-modified"/><xsl:text> — </xsl:text></xsl:otherwise>
@@ -2691,4 +3002,18 @@
 																*[local-name() = 'clause']/*[local-name() = 'references']"/>
 	</xsl:template>
 	
+	<xsl:template name="split">
+		<xsl:param name="pText" select="."/>
+		<xsl:param name="sep" select="','"/>
+		<xsl:if test="string-length($pText) >0">
+		<item>
+			<xsl:value-of select="normalize-space(substring-before(concat($pText, ','), $sep))"/>
+		</item>
+		<xsl:call-template name="split">
+			<xsl:with-param name="pText" select="substring-after($pText, $sep)"/>
+			<xsl:with-param name="sep" select="$sep"/>
+		</xsl:call-template>
+		</xsl:if>
+	 </xsl:template>
+ 
 </xsl:stylesheet>

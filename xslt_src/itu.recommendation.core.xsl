@@ -199,6 +199,11 @@
 									<fo:table-cell text-align="right">
 										<xsl:if test="/itu:itu-standard/itu:bibdata/itu:ext/itu:structuredidentifier/itu:annexid">
 											<fo:block font-size="18pt" font-weight="bold">
+											<xsl:variable name="title-annex">
+													<xsl:call-template name="getTitle">
+														<xsl:with-param name="name" select="'title-annex'"/>
+													</xsl:call-template>
+												</xsl:variable>
 												<xsl:value-of select="$title-annex"/><xsl:value-of select="/itu:itu-standard/itu:bibdata/itu:ext/itu:structuredidentifier/itu:annexid"/>
 											</fo:block>
 										</xsl:if>
@@ -286,6 +291,11 @@
 											<xsl:text>&#xA0;&#xA0;</xsl:text>
 											<xsl:value-of select="/itu:itu-standard/itu:bibdata/itu:ext/itu:structuredidentifier/itu:docnumber"/>
 											<xsl:if test="/itu:itu-standard/itu:bibdata/itu:ext/itu:structuredidentifier/itu:annexid">
+												<xsl:variable name="title-annex">
+													<xsl:call-template name="getTitle">
+														<xsl:with-param name="name" select="'title-annex'"/>
+													</xsl:call-template>
+												</xsl:variable>
 												<xsl:text> — </xsl:text><xsl:value-of select="$title-annex"/><xsl:value-of select="/itu:itu-standard/itu:bibdata/itu:ext/itu:structuredidentifier/itu:annexid"/>
 											</xsl:if>
 										</fo:block>
@@ -321,6 +331,11 @@
 							<xsl:value-of select="$linebreak"/>
 						</fo:block>
 						<fo:block font-weight="bold" margin-top="18pt" margin-bottom="18pt">
+							<xsl:variable name="title-keywords">
+								<xsl:call-template name="getTitle">
+									<xsl:with-param name="name" select="'title-keywords'"/>
+								</xsl:call-template>
+							</xsl:variable>
 							<xsl:value-of select="$title-keywords"/>
 						</fo:block>
 						<fo:block>
@@ -347,6 +362,16 @@
 					<xsl:if test="xalan:nodeset($contents)//item">
 						<fo:block break-after="page"/>
 						<fo:block-container >
+							<xsl:variable name="title-toc">
+								<xsl:call-template name="getTitle">
+									<xsl:with-param name="name" select="'title-toc'"/>
+								</xsl:call-template>
+							</xsl:variable>
+							<xsl:variable name="title-page">
+								<xsl:call-template name="getTitle">
+									<xsl:with-param name="name" select="'title-page'"/>
+								</xsl:call-template>
+							</xsl:variable>
 							<fo:block margin-top="6pt" text-align="center" font-weight="bold"><xsl:value-of select="$title-toc"/></fo:block>
 							<fo:block margin-top="6pt" text-align="right" font-weight="bold"><xsl:value-of select="$title-page"/></fo:block>
 							
@@ -593,6 +618,11 @@
 	<xsl:template match="itu:figure" mode="contents">
 		<xsl:param name="sectionNum" />
 		<item level="" id="{@id}" display="false" type="figure">
+			<xsl:variable name="title-figure">
+				<xsl:call-template name="getTitle">
+					<xsl:with-param name="name" select="'title-figure'"/>
+				</xsl:call-template>
+			</xsl:variable>
 			<xsl:variable name="title" select="$title-figure"/>
 			<xsl:attribute name="section">
 				<xsl:call-template name="getSection">
@@ -617,6 +647,11 @@
 	<xsl:template match="itu:table" mode="contents">
 		<xsl:param name="sectionNum" />
 		<item level="" id="{@id}" display="false" type="table">
+			<xsl:variable name="title-table">
+				<xsl:call-template name="getTitle">
+					<xsl:with-param name="name" select="'title-table'"/>
+				</xsl:call-template>
+			</xsl:variable>
 			<xsl:variable name="title" select="$title-table"/>
 			<xsl:attribute name="section">
 				<xsl:call-template name="getSection">
@@ -642,6 +677,16 @@
 	<xsl:template match="itu:formula" mode="contents">
 		<xsl:param name="sectionNum" />
 		<item level="" id="{@id}" display="false" type="formula">
+			<xsl:variable name="title-inequality">
+				<xsl:call-template name="getTitle">
+					<xsl:with-param name="name" select="'title-inequality'"/>
+				</xsl:call-template>
+			</xsl:variable>
+			<xsl:variable name="title-equation">
+				<xsl:call-template name="getTitle">
+					<xsl:with-param name="name" select="'title-equation'"/>
+				</xsl:call-template>
+			</xsl:variable>
 			<xsl:variable name="title">
 				<xsl:choose>
 					<xsl:when test="@inequality = 'true'"><xsl:value-of select="$title-inequality"/></xsl:when>
@@ -658,6 +703,11 @@
 			</xsl:attribute>			
 			<xsl:variable name="parent-element" select="local-name(..)"/>
 			<xsl:attribute name="parent">
+				<xsl:variable name="title-clause">
+					<xsl:call-template name="getTitle">
+						<xsl:with-param name="name" select="'title-clause'"/>
+					</xsl:call-template>
+				</xsl:variable>
 				<xsl:choose>
 					<xsl:when test="$parent-element = 'clause'"><xsl:value-of select="normalize-space($title-clause)"/></xsl:when>
 					<xsl:otherwise></xsl:otherwise>
@@ -771,6 +821,11 @@
 		<xsl:variable name="parent-element" select="local-name(..)"/>
 		<item level="" id="{@id}" display="false" type="example" section="{$section}">
 			<xsl:attribute name="parent">
+				<xsl:variable name="title-clause">
+					<xsl:call-template name="getTitle">
+						<xsl:with-param name="name" select="'title-clause'"/>
+					</xsl:call-template>
+				</xsl:variable>
 				<xsl:choose>
 					<xsl:when test="$parent-element = 'clause'"><xsl:value-of select="normalize-space($title-clause)"/></xsl:when>
 					<xsl:otherwise></xsl:otherwise>
@@ -914,6 +969,11 @@
 			<xsl:value-of select="$linebreak"/>
 		</fo:block>
 		<fo:block font-weight="bold" margin-top="18pt" margin-bottom="18pt">			
+			<xsl:variable name="title-summary">
+				<xsl:call-template name="getTitle">
+					<xsl:with-param name="name" select="'title-summary'"/>
+				</xsl:call-template>
+			</xsl:variable>
 			<xsl:value-of select="$title-summary"/>
 		</fo:block>
 		<xsl:apply-templates />
@@ -971,7 +1031,12 @@
 		<fo:block font-size="11pt" space-before="4pt" text-align="justify">
 			<xsl:if test="ancestor::itu:figure">
 				<xsl:attribute name="keep-with-previous">always</xsl:attribute>
-			</xsl:if>			
+			</xsl:if>
+			<xsl:variable name="title-note">
+				<xsl:call-template name="getTitle">
+					<xsl:with-param name="name" select="'title-note'"/>
+				</xsl:call-template>
+			</xsl:variable>
 			<xsl:value-of select="$title-note"/>
 			<!-- <xsl:if test="../following-sibling::itu:note or ../preceding-sibling::itu:note"> -->
 			<xsl:if test="count(//itu:note[ancestor::*[local-name() = 'clause'][1][@id = $id] and not (ancestor::itu:table)]) &gt; 1">
@@ -1370,6 +1435,11 @@
 				<xsl:choose>
 					<xsl:when test="local-name(*) = 'figure' and normalize-space(itu:name) = ''"></xsl:when><!-- don't show 'Figure' for outer figure without name -->
 					<xsl:when test="$itemnumber != ''">						
+						<xsl:variable name="title-figure">
+							<xsl:call-template name="getTitle">
+								<xsl:with-param name="name" select="'title-figure'"/>
+							</xsl:call-template>
+						</xsl:variable>
 						<xsl:value-of select="$title-figure"/>
 						<xsl:value-of select="$itemnumber"/>
 					</xsl:when>
@@ -1454,6 +1524,11 @@
 	<xsl:template match="itu:ul//itu:note/itu:p  | itu:ol//itu:note/itu:p" mode="process">
 		<xsl:variable name="id" select="ancestor::*[local-name() = 'clause'][1]/@id"/>
 		<fo:block font-size="11pt" margin-top="4pt">			
+			<xsl:variable name="title-note">
+				<xsl:call-template name="getTitle">
+					<xsl:with-param name="name" select="'title-note'"/>
+				</xsl:call-template>
+			</xsl:variable>
 			<xsl:value-of select="$title-note"/>
 			<!-- <xsl:if test="../following-sibling::itu:note or ../preceding-sibling::itu:note"> -->
 			<xsl:if test="count(//itu:note[ancestor::*[@id = $id] and not (ancestor::itu:table)]) &gt; 1">
@@ -1519,6 +1594,11 @@
 
 	<xsl:template match="itu:termnote">
 		<fo:block id="{@id}" margin-top="4pt">			
+			<xsl:variable name="title-note">
+				<xsl:call-template name="getTitle">
+					<xsl:with-param name="name" select="'title-note'"/>
+				</xsl:call-template>
+			</xsl:variable>
 			<xsl:value-of select="$title-note"/>
 				<xsl:if test="following-sibling::itu:termnote or preceding-sibling::itu:termnote">
 					<xsl:number/><xsl:text> </xsl:text>
@@ -1621,6 +1701,18 @@
 		<fo:basic-link internal-destination="{@target}" color="blue" text-decoration="underline" fox:alt-text="{@target}">
 			<xsl:variable name="type" select="xalan:nodeset($contents)//item[@id = current()/@target]/@type"/>
 			<xsl:variable name="level" select="xalan:nodeset($contents)//item[@id =current()/@target]/@level"/>
+			
+			<xsl:variable name="title-clause">
+				<xsl:call-template name="getTitle">
+					<xsl:with-param name="name" select="'title-clause'"/>
+				</xsl:call-template>
+			</xsl:variable>
+			<xsl:variable name="title-example-xref">
+				<xsl:call-template name="getTitle">
+					<xsl:with-param name="name" select="'title-example-xref'"/>
+				</xsl:call-template>
+			</xsl:variable>
+			
 			<xsl:choose>
 				<xsl:when test="($type = 'clause' or $type = 'term') and $level = 1"><xsl:value-of select="$title-clause"/></xsl:when><!-- and not (ancestor::annex) -->
 				<xsl:when test="($type = 'clause' or $type = 'term') and $level &gt; 1"><xsl:value-of select="java:toLowerCase(java:java.lang.String.new($title-clause))"/></xsl:when>
@@ -1633,12 +1725,19 @@
 				<xsl:otherwise></xsl:otherwise> <!-- <xsl:value-of select="$type"/> -->
 			</xsl:choose>
 			
+			<xsl:variable name="title-in">
+				<xsl:call-template name="getTitle">
+					<xsl:with-param name="name" select="'title-in'"/>
+				</xsl:call-template>
+			</xsl:variable>
+			
 			<xsl:choose>
 				<xsl:when test="$type = 'example'">
 					<xsl:variable name="currentSection">
 						<xsl:call-template name="getSection"/>
 					</xsl:variable>
 					<xsl:if test="not(contains($section, $currentSection))">						
+						
 						<xsl:value-of select="$title-in"/>
 						<xsl:if test="$level = 1">
 							<xsl:value-of select="xalan:nodeset($contents)//item[@id = current()/@target]/@parent"/>
@@ -1660,7 +1759,7 @@
 					
 					<xsl:if test="not(contains($section, $currentSection))"> -->
 					<xsl:if test="$topsection != $xreftopsection">
-						<xsl:text> </xsl:text>
+						<xsl:text> </xsl:text>						
 						<xsl:value-of select="$title-in"/>
 						<xsl:if test="$level = 1">
 							<xsl:value-of select="xalan:nodeset($contents)//item[@id = current()/@target]/@parent"/>
@@ -1726,6 +1825,11 @@
 	
 	<xsl:template match="itu:example/itu:name">
 		<fo:block font-weight="bold">			
+			<xsl:variable name="title-example">
+				<xsl:call-template name="getTitle">
+					<xsl:with-param name="name" select="'title-example'"/>
+				</xsl:call-template>
+			</xsl:variable>
 			<xsl:value-of select="normalize-space($title-example)"/>
 			<xsl:if test="count(ancestor::itu:clause[1]/itu:example) &gt; 1">
 				<xsl:text> </xsl:text><xsl:number count="itu:example"/>
@@ -1767,6 +1871,11 @@
 	</xsl:template>
 	
 	<xsl:template match="itu:locality">
+		<xsl:variable name="title-section">
+			<xsl:call-template name="getTitle">
+				<xsl:with-param name="name" select="'title-section'"/>
+			</xsl:call-template>
+		</xsl:variable>
 		<xsl:choose>
 			<xsl:when test="@type ='section'"><xsl:value-of select="normalize-space($title-section)"/></xsl:when>
 			<xsl:otherwise></xsl:otherwise>
@@ -2363,6 +2472,11 @@
 				<xsl:when test="ancestor::itu:annex[@obligation = 'informative']">
 					<xsl:choose>
 						<xsl:when test="$level = 1">							
+							<xsl:variable name="title-appendix">
+								<xsl:call-template name="getTitle">
+									<xsl:with-param name="name" select="'title-appendix'"/>
+								</xsl:call-template>
+							</xsl:variable>
 							<xsl:value-of select="$title-appendix"/><xsl:text> </xsl:text>
 							<xsl:number format="I" level="any" count="itu:annex[@obligation = 'informative']"/>
 						</xsl:when>
@@ -2374,6 +2488,11 @@
 				<xsl:when test="ancestor::itu:annex[not(@obligation) or @obligation != 'informative']">
 					<xsl:choose>
 						<xsl:when test="$level = 1">							
+							<xsl:variable name="title-annex">
+								<xsl:call-template name="getTitle">
+									<xsl:with-param name="name" select="'title-annex'"/>
+								</xsl:call-template>
+							</xsl:variable>
 							<xsl:value-of select="$title-annex"/>
 							<xsl:choose>
 								<xsl:when test="count(//itu:annex) = 1">

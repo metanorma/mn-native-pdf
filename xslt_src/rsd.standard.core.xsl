@@ -147,6 +147,11 @@
 						<xsl:value-of select="/rsd:rsd-standard/rsd:bibdata/rsd:docidentifier[@type = 'rsd']"/>
 						<xsl:text>:</xsl:text>
 						<xsl:value-of select="/rsd:rsd-standard/rsd:bibdata/rsd:copyright/rsd:from"/>
+						<xsl:variable name="title-edition">
+							<xsl:call-template name="getTitle">
+								<xsl:with-param name="name" select="'title-edition'"/>
+							</xsl:call-template>
+						</xsl:variable>
 						<xsl:text>, </xsl:text><xsl:value-of select="$title-edition"/><xsl:text> </xsl:text>						
 						<xsl:value-of select="/rsd:rsd-standard/rsd:bibdata/rsd:edition"/>
 					</fo:block>
@@ -173,6 +178,11 @@
 					
 					<fo:block break-after="page"/>
 					
+					<xsl:variable name="title-toc">
+						<xsl:call-template name="getTitle">
+							<xsl:with-param name="name" select="'title-toc'"/>
+						</xsl:call-template>
+					</xsl:variable>
 					<fo:block font-size="14pt" font-weight="bold" margin-bottom="15.5pt"><xsl:value-of select="$title-toc"/></fo:block>
 					<fo:block font-weight="bold" line-height="125%">
 						<xsl:for-each select="xalan:nodeset($contents)//item[@display = 'true' and @level &lt;= 2]">
@@ -443,6 +453,11 @@
 			<xsl:number format="i" value="$sectionNum"/>
 		</xsl:variable>
 		<item id="keywords" level="1" section="{$section}" display-section="true" display="true" type="abstract" root="preface">
+			<xsl:variable name="title-keywords">
+				<xsl:call-template name="getTitle">
+					<xsl:with-param name="name" select="'title-keywords'"/>
+				</xsl:call-template>
+			</xsl:variable>
 			<xsl:value-of select="$title-keywords"/>
 		</item>
 	</xsl:template>
@@ -453,6 +468,11 @@
 			<xsl:number format="i" value="$sectionNum"/>
 		</xsl:variable>
 		<item id="submitting_orgs" level="1" section="{$section}" display-section="true" display="true" type="abstract" root="preface">
+			<xsl:variable name="title-submitting-organizations">
+				<xsl:call-template name="getTitle">
+					<xsl:with-param name="name" select="'title-submitting-organizations'"/>
+				</xsl:call-template>
+			</xsl:variable>
 			<xsl:value-of select="$title-submitting-organizations"/>
 		</item>
 	</xsl:template>
@@ -461,6 +481,11 @@
 		<xsl:param name="sectionNum" />
 		<item level="" id="{@id}" type="figure">
 			<xsl:attribute name="section">
+				<xsl:variable name="title-figure">
+					<xsl:call-template name="getTitle">
+						<xsl:with-param name="name" select="'title-figure'"/>
+					</xsl:call-template>
+				</xsl:variable>
 				<xsl:value-of select="$title-figure"/>
 				<xsl:choose>
 					<xsl:when test="ancestor::rsd:annex">
@@ -496,6 +521,11 @@
 		<xsl:variable name="annex-id" select="ancestor::rsd:annex/@id"/>
 		<item level="" id="{@id}" display="false" type="table">
 			<xsl:attribute name="section">
+				<xsl:variable name="title-table">
+					<xsl:call-template name="getTitle">
+						<xsl:with-param name="name" select="'title-table'"/>
+					</xsl:call-template>
+				</xsl:variable>
 				<xsl:value-of select="$title-table"/>
 				<xsl:choose>
 					<xsl:when test="ancestor::*[local-name()='executivesummary']">
@@ -519,6 +549,11 @@
 	<xsl:template match="rsd:formula" mode="contents">
 		<item level="" id="{@id}" display="false">
 			<xsl:attribute name="section">
+				<xsl:variable name="title-formula">
+					<xsl:call-template name="getTitle">
+						<xsl:with-param name="name" select="'title-formula'"/>
+					</xsl:call-template>
+				</xsl:variable>
 				<xsl:value-of select="$title-formula"/><xsl:number format="(A.1)" level="multiple" count="rsd:annex | rsd:formula"/>
 			</xsl:attribute>
 		</item>
@@ -537,6 +572,11 @@
 	
 	<xsl:template match="/rsd:rsd-standard/rsd:bibdata/rsd:edition">
 		<fo:block margin-bottom="12pt">
+			<xsl:variable name="title-edition">
+				<xsl:call-template name="getTitle">
+					<xsl:with-param name="name" select="'title-edition'"/>
+				</xsl:call-template>
+			</xsl:variable>
 			<xsl:value-of select="$title-edition"/><xsl:text>: </xsl:text>
 			<xsl:value-of select="."/><xsl:text> </xsl:text>
 		</fo:block>
@@ -641,6 +681,11 @@
 		<xsl:param name="sectionNum" select="'1'"/>
 		<fo:block id="keywords" font-size="13pt" font-weight="bold" margin-top="13.5pt" margin-bottom="12pt" color="rgb(14, 26, 133)">
 			<xsl:number format="i." value="$sectionNum"/><fo:inline padding-right="2mm">&#xA0;</fo:inline>
+			<xsl:variable name="title-keywords">
+				<xsl:call-template name="getTitle">
+					<xsl:with-param name="name" select="'title-keywords'"/>
+				</xsl:call-template>
+			</xsl:variable>
 			<xsl:value-of select="$title-keywords"/>
 		</fo:block>
 		<fo:block margin-bottom="12pt">The following are keywords to be used by search engines and document catalogues.</fo:block>
@@ -660,6 +705,11 @@
 		<xsl:param name="sectionNum" select="'1'"/>
 		<fo:block id="submitting_orgs" font-size="13pt" font-weight="bold" color="rgb(14, 26, 133)" margin-top="13.5pt" margin-bottom="12pt">
 			<xsl:number format="i." value="$sectionNum"/><fo:inline padding-right="3mm">&#xA0;</fo:inline>
+			<xsl:variable name="title-submitting-organizations">
+				<xsl:call-template name="getTitle">
+					<xsl:with-param name="name" select="'title-submitting-organizations'"/>
+				</xsl:call-template>
+			</xsl:variable>
 			<xsl:value-of select="$title-submitting-organizations"/>
 		</fo:block>
 		<fo:block margin-bottom="12pt"> </fo:block>
@@ -930,7 +980,11 @@
 				<xsl:call-template name="note"/>
 			</xsl:for-each>
 			<fo:block font-family="SourceSansPro" font-size="12pt" font-weight="bold" text-align="center" margin-top="12pt" margin-bottom="6pt" keep-with-previous="always">
-				
+				<xsl:variable name="title-figure">
+					<xsl:call-template name="getTitle">
+						<xsl:with-param name="name" select="'title-figure'"/>
+					</xsl:call-template>
+				</xsl:variable>
 				<xsl:choose>
 					<xsl:when test="ancestor::rsd:annex">
 						<xsl:choose>
@@ -1194,6 +1248,11 @@
 	</xsl:template>
 	
 	<xsl:template match="rsd:deprecates">
+		<xsl:variable name="title-deprecated">
+			<xsl:call-template name="getTitle">
+				<xsl:with-param name="name" select="'title-deprecated'"/>
+			</xsl:call-template>
+		</xsl:variable>
 		<fo:block><xsl:value-of select="$title-deprecated"/>: <xsl:apply-templates /></fo:block>
 	</xsl:template>
 	
@@ -1216,6 +1275,11 @@
 			<!-- Example: [SOURCE: ISO 5127:2017, 3.1.6.02] -->
 			<fo:basic-link internal-destination="{rsd:origin/@bibitemid}" fox:alt-text="{rsd:origin/@citeas}">
 				<xsl:text>[</xsl:text>
+				<xsl:variable name="title-source">
+					<xsl:call-template name="getTitle">
+						<xsl:with-param name="name" select="'title-source'"/>
+					</xsl:call-template>
+				</xsl:variable>
 				<xsl:value-of select="$title-source"/>
 				<xsl:text>: </xsl:text>
 				<fo:inline text-decoration="underline" color="{$color-link}">
@@ -1236,7 +1300,12 @@
 	
 	<xsl:template match="rsd:termnote">
 		<fo:block font-size="10pt" margin-bottom="12pt">
-			<xsl:variable name="num"><xsl:number /></xsl:variable>			
+			<xsl:variable name="num"><xsl:number /></xsl:variable>
+			<xsl:variable name="title-note-to-entry">
+				<xsl:call-template name="getTitle">
+					<xsl:with-param name="name" select="'title-note-to-entry'"/>
+				</xsl:call-template>
+			</xsl:variable>
 			<xsl:value-of select="java:replaceAll(java:java.lang.String.new($title-note-to-entry),'#',$num)"/>
 			<xsl:apply-templates />
 		</fo:block>
@@ -1253,6 +1322,11 @@
 	
 	<xsl:template match="rsd:termexample">
 		<fo:block font-family="SourceSansPro" font-size="11pt" margin-bottom="12pt">
+			<xsl:variable name="title-example">
+				<xsl:call-template name="getTitle">
+					<xsl:with-param name="name" select="'title-example'"/>
+				</xsl:call-template>
+			</xsl:variable>
 			<fo:inline padding-right="10mm"><xsl:value-of select="normalize-space($title-example)"/></fo:inline>
 			<xsl:apply-templates />
 		</fo:block>
@@ -1322,6 +1396,17 @@
 			<xsl:variable name="type" select="xalan:nodeset($contents)//item[@id = current()/@target]/@type"/>
 			<xsl:variable name="root" select="xalan:nodeset($contents)//item[@id = current()/@target]/@root"/>
 			
+			<xsl:variable name="title-clause">
+				<xsl:call-template name="getTitle">
+					<xsl:with-param name="name" select="'title-clause'"/>
+				</xsl:call-template>
+			</xsl:variable>
+			<xsl:variable name="title-annex">
+				<xsl:call-template name="getTitle">
+					<xsl:with-param name="name" select="'title-annex'"/>
+				</xsl:call-template>
+			</xsl:variable>
+			
 			<xsl:choose>
 				<xsl:when test="normalize-space(.) != ''">
 					<xsl:apply-templates/>
@@ -1341,18 +1426,24 @@
 
 	<xsl:template match="rsd:sourcecode" priority="2">
 		<xsl:call-template name="sourcecode"/>		
+		<xsl:variable name="title-figure">
+			<xsl:call-template name="getTitle">
+				<xsl:with-param name="name" select="'title-figure'"/>
+			</xsl:call-template>
+		</xsl:variable>
 		<xsl:choose>
 			<xsl:when test="@unnumbered='true'"></xsl:when>
 			<xsl:when test="ancestor::rsd:example"/>
 			<xsl:when test="ancestor::rsd:td"/>
 			<xsl:when test="ancestor::rsd:annex">
 				<xsl:variable name="id_annex" select="ancestor::rsd:annex/@id"/>
+				
 				<xsl:choose>
 					<xsl:when test="count(//rsd:annex) = 1">
 						<xsl:value-of select="/rsd:nist-standard/rsd:bibdata/rsd:ext/rsd:structuredidentifier/rsd:annexid"/><xsl:number format="-1" level="any" count="rsd:annex//rsd:sourcecode"/>
 					</xsl:when>
 					<xsl:otherwise>
-						<fo:block font-family="SourceSansPro" font-size="12pt" font-weight="bold" text-align="center" margin-bottom="12pt">
+						<fo:block font-family="SourceSansPro" font-size="12pt" font-weight="bold" text-align="center" margin-bottom="12pt">							
 							<xsl:value-of select="$title-figure"/>
 							<xsl:number format="A." level="multiple" count="rsd:annex"/>
 							<xsl:number format="1" level="any" count="rsd:sourcecode[ancestor::rsd:annex/@id = $id_annex and not(@unnumbered='true') and not(ancestor::rsd:example)]"/>
@@ -1397,6 +1488,11 @@
 	
 	<xsl:template match="rsd:example">
 		<fo:block font-family="SourceSansPro" font-size="11pt" margin-top="12pt" margin-bottom="12pt" font-weight="bold" keep-with-next="always">
+			<xsl:variable name="title-example">
+				<xsl:call-template name="getTitle">
+					<xsl:with-param name="name" select="'title-example'"/>
+				</xsl:call-template>
+			</xsl:variable>
 			<xsl:value-of select="normalize-space($title-example)"/>
 			<xsl:choose>
 				<xsl:when test="following-sibling::rsd:example or preceding-sibling::rsd:example">
@@ -1438,6 +1534,11 @@
 			</xsl:if>
 			<xsl:variable name="clauseid" select="ancestor::rsd:clause[1]/@id"/>
 			<fo:inline padding-right="4mm">
+				<xsl:variable name="title-note">
+					<xsl:call-template name="getTitle">
+						<xsl:with-param name="name" select="'title-note'"/>
+					</xsl:call-template>
+				</xsl:variable>
 				<xsl:value-of select="$title-note"/>
 				<xsl:if test="count(//rsd:note[ancestor::rsd:clause[1][@id = $clauseid]]) &gt; 1">
 					<xsl:number count="rsd:note[ancestor::rsd:clause[1][@id = $clauseid]]" level="any"/>
@@ -1471,6 +1572,16 @@
 	</xsl:template>
 	
 	<xsl:template match="rsd:locality">
+		<xsl:variable name="title-clause">
+			<xsl:call-template name="getTitle">
+				<xsl:with-param name="name" select="'title-clause'"/>
+			</xsl:call-template>
+		</xsl:variable>
+		<xsl:variable name="title-annex">
+			<xsl:call-template name="getTitle">
+				<xsl:with-param name="name" select="'title-annex'"/>
+			</xsl:call-template>
+		</xsl:variable>
 		<xsl:choose>
 			<xsl:when test="@type ='clause'"><xsl:value-of select="$title-clause"/></xsl:when>
 			<xsl:when test="@type ='annex'"><xsl:value-of select="$title-annex"/></xsl:when>
@@ -1633,6 +1744,11 @@
 				<xsl:when test="ancestor::rsd:annex">
 					<xsl:choose>
 						<xsl:when test="$level = 1">
+							<xsl:variable name="title-annex">
+								<xsl:call-template name="getTitle">
+									<xsl:with-param name="name" select="'title-annex'"/>
+								</xsl:call-template>
+							</xsl:variable>
 							<xsl:value-of select="$title-annex"/>
 							<xsl:choose>
 								<xsl:when test="count(//rsd:annex) = 1">

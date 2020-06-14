@@ -183,7 +183,17 @@
 			<fo:page-sequence master-reference="document-preface-master" force-page-count="even" line-height="115%">
 				<xsl:call-template name="insertHeaderPreface"/>
 				<fo:flow flow-name="xsl-region-body" text-align="justify">
+					<xsl:variable name="title-toc">
+						<xsl:call-template name="getTitle">
+							<xsl:with-param name="name" select="'title-toc'"/>
+						</xsl:call-template>
+					</xsl:variable>
 					<fo:block font-size="14pt" margin-top="4pt" margin-bottom="8pt"><xsl:value-of select="$title-toc"/></fo:block>
+					<xsl:variable name="title-page">
+						<xsl:call-template name="getTitle">
+							<xsl:with-param name="name" select="'title-page'"/>
+						</xsl:call-template>
+					</xsl:variable>
 					<fo:block font-size="9pt" text-align="right" font-style="italic" margin-bottom="6pt"><xsl:value-of select="$title-page"/></fo:block>
 					<fo:block>
 						<xsl:for-each select="xalan:nodeset($contents)//item[not(@type = 'table') and not(@type = 'figure') and not (@type = 'annex' or @parent = 'annex')]">
@@ -368,6 +378,11 @@
 						<xsl:when test="ancestor::un:annex">
 							<xsl:choose>
 								<xsl:when test="$level = 1">
+									<xsl:variable name="title-annex">
+										<xsl:call-template name="getTitle">
+											<xsl:with-param name="name" select="'title-annex'"/>
+										</xsl:call-template>
+									</xsl:variable>
 									<xsl:value-of select="$title-annex"/>
 									<xsl:number format="I" level="any" count="un:annex"/>
 								</xsl:when>
@@ -401,6 +416,11 @@
 	<xsl:template match="un:figure" mode="contents">
 		<item level="" id="{@id}" type="figure">
 			<xsl:attribute name="section">
+				<xsl:variable name="title-figure">
+					<xsl:call-template name="getTitle">
+						<xsl:with-param name="name" select="'title-figure'"/>
+					</xsl:call-template>
+				</xsl:variable>
 				<xsl:value-of select="$title-figure"/>
 				<xsl:choose>
 					<xsl:when test="ancestor::un:annex">
@@ -433,6 +453,11 @@
 		<xsl:variable name="annex-id" select="ancestor::un:annex/@id"/>
 		<item level="" id="{@id}" display="false" type="table">
 			<xsl:attribute name="section">
+				<xsl:variable name="title-table">
+					<xsl:call-template name="getTitle">
+						<xsl:with-param name="name" select="'title-table'"/>
+					</xsl:call-template>
+				</xsl:variable>
 				<xsl:value-of select="$title-table"/>
 				<xsl:choose>
 					<xsl:when test="ancestor::*[local-name()='executivesummary']"> <!-- NIST -->
@@ -457,6 +482,11 @@
 	<xsl:template match="un:formula" mode="contents">
 		<item level="" id="{@id}" display="false">
 			<xsl:attribute name="section">
+				<xsl:variable name="title-formula">
+					<xsl:call-template name="getTitle">
+						<xsl:with-param name="name" select="'title-formula'"/>
+					</xsl:call-template>
+				</xsl:variable>
 				<xsl:value-of select="$title-formula"/><xsl:number format="(A.1)" level="multiple" count="un:annex | un:formula"/>
 			</xsl:attribute>
 		</item>
@@ -486,6 +516,11 @@
 		<item level="" id="{@id}" display="false" type="Terms">
 			<xsl:if test="ancestor::un:annex">
 				<xsl:attribute name="section">
+					<xsl:variable name="title-appendix">
+						<xsl:call-template name="getTitle">
+							<xsl:with-param name="name" select="'title-appendix'"/>
+						</xsl:call-template>
+					</xsl:variable>
 					<xsl:value-of select="$title-appendix"/><xsl:number format="A" count="un:annex"/>
 				</xsl:attribute>
 			</xsl:if>
@@ -496,6 +531,11 @@
 		<item level="" id="{@id}" display="false" type="References">
 			<xsl:if test="ancestor::un:annex">
 				<xsl:attribute name="section">
+					<xsl:variable name="title-appendix">
+						<xsl:call-template name="getTitle">
+							<xsl:with-param name="name" select="'title-appendix'"/>
+						</xsl:call-template>
+					</xsl:variable>
 					<xsl:value-of select="$title-appendix"/><xsl:number format="A" count="un:annex"/>
 				</xsl:attribute>
 			</xsl:if>
@@ -507,6 +547,11 @@
 			<xsl:attribute name="section">
 				<xsl:variable name="num">
 					<xsl:number />
+				</xsl:variable>
+				<xsl:variable name="title-box">
+					<xsl:call-template name="getTitle">
+						<xsl:with-param name="name" select="'title-box'"/>
+					</xsl:call-template>
 				</xsl:variable>
 				<xsl:value-of select="$title-box"/><xsl:value-of select="$num"/>
 			</xsl:attribute>
@@ -726,6 +771,11 @@
 	<xsl:template match="un:ul//un:note |  un:ol//un:note"/>
 	<xsl:template match="un:ul//un:note/un:p  | un:ol//un:note/un:p" mode="process">
 		<fo:block font-size="11pt" margin-top="4pt">
+			<xsl:variable name="title-note">
+				<xsl:call-template name="getTitle">
+					<xsl:with-param name="name" select="'title-note'"/>
+				</xsl:call-template>
+			</xsl:variable>
 			<xsl:value-of select="$title-note"/>
 			<xsl:if test="../following-sibling::un:note or ../preceding-sibling::un:note">
 					<xsl:number count="un:note"/><xsl:text> </xsl:text>
@@ -804,6 +854,11 @@
 			<fo:block id="{@id}" font-weight="bold" margin-left="20mm" margin-right="25mm" text-align="center" margin-top="6pt" margin-bottom="12pt" keep-with-next="always">
 				<xsl:variable name="num">
 					<xsl:number />
+				</xsl:variable>
+				<xsl:variable name="title-box">
+					<xsl:call-template name="getTitle">
+						<xsl:with-param name="name" select="'title-box'"/>
+					</xsl:call-template>
 				</xsl:variable>
 				<xsl:value-of select="$title-box"/><xsl:value-of select="$num"/><xsl:text>. </xsl:text><xsl:apply-templates select="un:name" mode="process"/>
 			</fo:block>
@@ -949,6 +1004,11 @@
 	<xsl:template match="un:recommendation">
 		<fo:block margin-left="20mm">
 			<fo:block font-weight="bold">
+				<xsl:variable name="title-recommendation">
+					<xsl:call-template name="getTitle">
+						<xsl:with-param name="name" select="'title-recommendation'"/>
+					</xsl:call-template>
+				</xsl:variable>
 				<xsl:value-of select="$title-recommendation"/>
 				<xsl:choose>
 					<xsl:when test="ancestor::un:sections">
@@ -1020,6 +1080,11 @@
 			</xsl:if>
 			<xsl:if test="un:name">
 				<fo:block text-align="center" font-size="9pt" margin-bottom="6pt" keep-with-next="always" keep-together.within-column="always">
+					<xsl:variable name="title-figure">
+						<xsl:call-template name="getTitle">
+							<xsl:with-param name="name" select="'title-figure'"/>
+						</xsl:call-template>
+					</xsl:variable>
 					<xsl:value-of select="$title-figure"/>
 					<xsl:choose>
 						<xsl:when test="ancestor::un:annex">
@@ -1175,6 +1240,11 @@
 	
 	<xsl:template match="un:termnote">
 		<fo:block margin-top="4pt">
+			<xsl:variable name="title-note">
+				<xsl:call-template name="getTitle">
+					<xsl:with-param name="name" select="'title-note'"/>
+				</xsl:call-template>
+			</xsl:variable>
 			<xsl:value-of select="$title-note"/>
 			<xsl:if test="following-sibling::un:termnote or preceding-sibling::un:termnote">
 				<xsl:number/><xsl:text> </xsl:text>
@@ -1232,6 +1302,11 @@
 	</xsl:template>
 		
 	<xsl:template match="un:example">
+		<xsl:variable name="title-example">
+			<xsl:call-template name="getTitle">
+				<xsl:with-param name="name" select="'title-example'"/>
+			</xsl:call-template>
+		</xsl:variable>
 		<fo:block id="{@id}" font-size="10pt" font-weight="bold" margin-bottom="12pt"><xsl:value-of select="$title-example"/></fo:block>
 		<fo:block font-size="11pt" margin-top="12pt" margin-bottom="12pt" margin-left="15mm" >
 			<xsl:apply-templates />
@@ -1264,6 +1339,16 @@
 	</xsl:template>
 	
 	<xsl:template match="un:locality">
+		<xsl:variable name="title-section">
+			<xsl:call-template name="getTitle">
+				<xsl:with-param name="name" select="'title-section'"/>
+			</xsl:call-template>
+		</xsl:variable>
+		<xsl:variable name="title-clause">
+			<xsl:call-template name="getTitle">
+				<xsl:with-param name="name" select="'title-clause'"/>
+			</xsl:call-template>
+		</xsl:variable>
 		<xsl:choose>
 			<xsl:when test="@type = 'section'"><xsl:value-of select="$title-section"/></xsl:when>
 			<xsl:when test="@type = 'clause'"><xsl:value-of select="$title-clause"/></xsl:when>
@@ -1435,6 +1520,11 @@
 				<xsl:when test="ancestor::un:annex">
 					<xsl:choose>
 						<xsl:when test="$level = 1">
+							<xsl:variable name="title-annex">
+								<xsl:call-template name="getTitle">
+									<xsl:with-param name="name" select="'title-annex'"/>
+								</xsl:call-template>
+							</xsl:variable>
 							<xsl:value-of select="$title-annex"/>
 							<xsl:number format="I" level="any" count="un:annex"/>
 							<!-- <xsl:text>: </xsl:text> -->
