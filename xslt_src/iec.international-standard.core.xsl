@@ -90,7 +90,35 @@
 		<item id="term-script" display="false">3.2</item>
 	-->
 	<xsl:variable name="contents">
-		<xsl:call-template name="generateContents"/>
+		<xsl:variable name="docid">
+			<xsl:call-template name="getDocumentId"/>
+		</xsl:variable>
+		<doc id="{$docid}">
+			<xsl:call-template name="generateContents"/>
+		</doc>
+		
+		<xsl:for-each select="xalan:nodeset($additionalXMLsArray)/*">
+			<xsl:for-each select="document(.)">
+				<xsl:variable name="lang">
+					<xsl:call-template name="getLang"/>
+				</xsl:variable>	
+				<xsl:variable name="document">
+					<xsl:apply-templates mode="change_id">
+						<xsl:with-param name="lang" select="$lang"/>
+					</xsl:apply-templates>
+				</xsl:variable>						
+				<xsl:for-each select="xalan:nodeset($document)">
+					<xsl:variable name="docid">
+						<xsl:call-template name="getDocumentId"/>
+					</xsl:variable>
+					<doc id="{$docid}">
+						<xsl:call-template name="generateContents"/>
+					</doc>
+				</xsl:for-each>
+			</xsl:for-each>
+		</xsl:for-each>
+		
+		
 	</xsl:variable>
 
 	<xsl:template name="generateContents">
@@ -915,7 +943,20 @@
 				<xsl:call-template name="insertHeaderFooter"/>
 				<fo:flow flow-name="xsl-region-body">
 					
-					<xsl:call-template name="insertTOCpages"/>
+					<xsl:variable name="docid">
+						<xsl:call-template name="getDocumentId"/>
+					</xsl:variable>
+					
+					<xsl:if test="$debug = 'true'">
+						<xsl:text disable-output-escaping="yes">&lt;!--</xsl:text>
+							DEBUG
+							contents=<xsl:copy-of select="xalan:nodeset($contents)"/>
+						<xsl:text disable-output-escaping="yes">--&gt;</xsl:text>
+					</xsl:if>
+					
+					<xsl:call-template name="insertTOCpages">
+						<xsl:with-param name="contents" select="xalan:nodeset($contents)/doc[@id = $docid]"/>
+					</xsl:call-template>
 					
 					<xsl:call-template name="insertPrefacepages"/>
 					
@@ -925,12 +966,11 @@
 			
 			<xsl:call-template name="insertBodypages"/>
 				
-					
+				
+				
+			<!-- Test=<xsl:copy-of select="$additionalDocs"/> Test -->
 			<xsl:for-each select="xalan:nodeset($additionalXMLsArray)/*">
-<!-- 						
-				<fo:block>
-					XML=<xsl:value-of select="."/>
-				</fo:block> -->
+
 				<xsl:for-each select="document(.)">
 					<xsl:variable name="lang">
 						<xsl:call-template name="getLang"/>
@@ -941,22 +981,19 @@
 						</xsl:apply-templates>
 					</xsl:variable>
 					
-					<!-- lang=<xsl:value-of select="$lang"/>
-					doc=<xsl:copy-of select="$document"/> -->
-					<!-- title_toc_en=<xsl:value-of select="$titles/title-toc[@lang='en']"/>
-						titles=<xsl:copy-of select="$titles"/> -->
-						
+
 					<xsl:for-each select="xalan:nodeset($document)">
 					
 						<fo:page-sequence master-reference="document" force-page-count="no-force">
 							<xsl:call-template name="insertHeaderFooter"/>
 							<fo:flow flow-name="xsl-region-body">
 								
-								<xsl:variable name="contents">
-									<xsl:call-template name="generateContents"/>
+								<xsl:variable name="docid">
+									<xsl:call-template name="getDocumentId"/>
 								</xsl:variable>
+						
 								<xsl:call-template name="insertTOCpages">
-									<xsl:with-param name="contents" select="$contents"/>
+									<xsl:with-param name="contents" select="xalan:nodeset($contents)/doc[@id = $docid]"/>
 								</xsl:call-template>
 								
 								<xsl:call-template name="insertPrefacepages">
@@ -1160,7 +1197,7 @@
 	</xsl:template>
 	
 	<xsl:template name="insertTOCpages">
-		<xsl:param name="contents" select="$contents"/>
+		<xsl:param name="contents"/>
 		<fo:block-container>
 			<fo:block font-size="12pt" text-align="center" margin-bottom="22pt">
 				<xsl:variable name="title-toc">
@@ -1172,13 +1209,6 @@
 					<xsl:with-param name="text" select="java:toUpperCase(java:java.lang.String.new($title-toc))"/>
 				</xsl:call-template>
 			</fo:block>
-			
-			<xsl:if test="$debug = 'true'">
-				<xsl:text disable-output-escaping="yes">&lt;!--</xsl:text>
-					DEBUG
-					contents=<xsl:copy-of select="xalan:nodeset($contents)"/>
-				<xsl:text disable-output-escaping="yes">--&gt;</xsl:text>
-			</xsl:if>
 			
 			<xsl:for-each select="xalan:nodeset($contents)//item[@display = 'true']
 																																										[@level &lt;= 3]
@@ -2427,9 +2457,15 @@
 	
 	
 	<xsl:template match="iec:xref">
-		<xsl:variable name="contents">
-			<xsl:call-template name="generateContents"/>
+	
+		<xsl:variable name="docid">
+			<xsl:call-template name="getDocumentId"/>
 		</xsl:variable>
+		<xsl:variable name="contents" select="xalan:nodeset($contents)/doc[@id = $docid]"/>
+		<!-- 	<xsl:call-template name="generateContents"/>
+		</xsl:variable>
+		 -->
+		
 		<xsl:variable name="section" select="xalan:nodeset($contents)//item[@id = current()/@target]/@section"/>
 		<fo:basic-link internal-destination="{@target}" fox:alt-text="{$section}">
 			<xsl:variable name="type" select="xalan:nodeset($contents)//item[@id = current()/@target]/@type"/>
@@ -2837,7 +2873,7 @@
 	<xsl:template match="@*" mode="change_id">
 		<xsl:param name="lang"/>
 		<xsl:choose>
-			<xsl:when test="local-name() = 'id'">
+			<xsl:when test="local-name() = 'id' or local-name() = 'bibitemid'">
 				<xsl:attribute name="{local-name()}">
 					<xsl:value-of select="."/>_<xsl:value-of select="$lang"/>
 				</xsl:attribute>
