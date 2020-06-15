@@ -2873,18 +2873,14 @@
 	<xsl:template match="@*" mode="change_id">
 		<xsl:param name="lang"/>
 		<xsl:choose>
-			<xsl:when test="local-name() = 'id' or local-name() = 'bibitemid'">
+			<xsl:when test="local-name() = 'id' or 
+														local-name() = 'bibitemid' or
+														(local-name() = 'target' and local-name(..) = 'xref')">
 				<xsl:attribute name="{local-name()}">
 					<xsl:value-of select="."/>_<xsl:value-of select="$lang"/>
 				</xsl:attribute>
-			</xsl:when>
-			<xsl:when test="local-name() = 'target' and local-name(..) = 'xref'">
-				<xsl:attribute name="{local-name()}">
-					<xsl:value-of select="."/>_<xsl:value-of select="$lang"/>
-				</xsl:attribute>
-			</xsl:when>
-			<xsl:otherwise>
-				<!-- <xsl:attribute name="{local-name()}"><xsl:value-of select="."/></xsl:attribute> -->
+			</xsl:when>			
+			<xsl:otherwise>				
 				<xsl:copy>
 					<xsl:apply-templates select="@*" mode="change_id">
 						<xsl:with-param name="lang" select="$lang"/>
@@ -2894,12 +2890,12 @@
 		</xsl:choose>
 	</xsl:template>
 	<!-- DEBUG ONLY -->
-	<xsl:template match="iec:title" mode="change_id">
+	<!-- <xsl:template match="iec:title" mode="change_id">
 		<xsl:copy>
 			<xsl:apply-templates select="@*" mode="change_id">
 				<xsl:with-param name="lang" select="$lang"/>
 			</xsl:apply-templates>FR <xsl:apply-templates mode="change_id"/>
 		</xsl:copy>
-	</xsl:template>
+	</xsl:template> -->
 	
 </xsl:stylesheet>
