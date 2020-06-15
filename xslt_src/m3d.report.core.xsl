@@ -190,6 +190,11 @@
 						</fo:block>
 						<!-- Version 1.0  -->
 						<fo:block font-size="12pt" margin-bottom="6pt">
+							<xsl:variable name="title-edition">
+								<xsl:call-template name="getTitle">
+									<xsl:with-param name="name" select="'title-edition'"/>
+								</xsl:call-template>
+							</xsl:variable>
 							<xsl:value-of select="$title-edition"/><xsl:text>: </xsl:text>
 							<xsl:variable name="edition" select="/m3d:m3d-standard/m3d:bibdata/m3d:edition"/>
 							<xsl:choose>
@@ -227,6 +232,11 @@
 					
 					<!-- Table of content -->
 					<fo:block-container>
+						<xsl:variable name="title-toc">
+							<xsl:call-template name="getTitle">
+								<xsl:with-param name="name" select="'title-toc'"/>
+							</xsl:call-template>
+						</xsl:variable>
 						<fo:block font-size="12pt" font-weight="bold" text-decoration="underline" margin-bottom="4pt"><xsl:value-of select="$title-toc"/></fo:block>
 						<fo:table table-layout="fixed" width="100%" font-size="10pt">
 							<fo:table-column column-width="25mm"/>
@@ -444,6 +454,11 @@
 		<xsl:variable name="annex-id" select="ancestor::m3d:annex/@id"/>
 		<item level="" id="{@id}" display="false" type="table">
 			<xsl:attribute name="section">
+				<xsl:variable name="title-table">
+					<xsl:call-template name="getTitle">
+						<xsl:with-param name="name" select="'title-table'"/>
+					</xsl:call-template>
+				</xsl:variable>
 				<xsl:value-of select="$title-table"/>
 				<xsl:choose>
 					<xsl:when test="ancestor::*[local-name()='executivesummary']"> <!-- NIST -->
@@ -466,6 +481,11 @@
 	<xsl:template match="m3d:formula" mode="contents">
 		<item level="" id="{@id}" display="false">
 			<xsl:attribute name="section">
+				<xsl:variable name="title-formula">
+					<xsl:call-template name="getTitle">
+						<xsl:with-param name="name" select="'title-formula'"/>
+					</xsl:call-template>
+				</xsl:variable>
 				<xsl:value-of select="$title-formula"/><xsl:number format="(A.1)" level="multiple" count="m3d:annex | m3d:formula"/>
 			</xsl:attribute>
 		</item>
@@ -829,6 +849,11 @@
 				<fo:external-graphic src="{@src}" fox:alt-text="Image {@alt}"/>
 			</fo:block>
 			<fo:block margin-top="12pt" margin-bottom="12pt">
+				<xsl:variable name="title-figure">
+					<xsl:call-template name="getTitle">
+						<xsl:with-param name="name" select="'title-figure'"/>
+					</xsl:call-template>
+				</xsl:variable>
 				<xsl:value-of select="$title-figure"/>
 				<xsl:call-template name="getFigureNumber"/>
 			</fo:block>
@@ -857,6 +882,11 @@
 	</xsl:template>
 	
 	<xsl:template name="getFigureNumber">
+		<xsl:variable name="title-figure">
+			<xsl:call-template name="getTitle">
+				<xsl:with-param name="name" select="'title-figure'"/>
+			</xsl:call-template>
+		</xsl:variable>
 		<xsl:choose>
 			<xsl:when test="ancestor::m3d:annex">
 				<xsl:value-of select="$title-figure"/><xsl:number format="A.1-1" level="multiple" count="m3d:annex | m3d:figure"/>
@@ -1025,6 +1055,11 @@
 		<xsl:param name="sectionNum"/>		
 		<fo:inline>
 			<xsl:if test="not(preceding-sibling::*[1][local-name() = 'deprecates'])">
+				<xsl:variable name="title-deprecated">
+					<xsl:call-template name="getTitle">
+						<xsl:with-param name="name" select="'title-deprecated'"/>
+					</xsl:call-template>
+				</xsl:variable>
 				<fo:inline><xsl:value-of select="$title-deprecated"/>: </fo:inline>
 			</xsl:if>
 			<xsl:apply-templates />
@@ -1076,7 +1111,12 @@
 		<fo:block-container margin-left="0mm" margin-top="4pt" line-height="125%">
 			<fo:block>
 				<fo:inline padding-right="1mm">
-					<xsl:variable name="num"><xsl:number /></xsl:variable>			
+					<xsl:variable name="num"><xsl:number /></xsl:variable>
+					<xsl:variable name="title-note-to-entry">
+						<xsl:call-template name="getTitle">
+							<xsl:with-param name="name" select="'title-note-to-entry'"/>
+						</xsl:call-template>
+					</xsl:variable>
 					<xsl:value-of select="java:replaceAll(java:java.lang.String.new($title-note-to-entry),'#',$num)"/>					
 				</fo:inline>
 				<xsl:apply-templates />
@@ -1096,6 +1136,11 @@
 	<xsl:template match="m3d:termexample">
 		<fo:block margin-top="14pt" margin-bottom="14pt"  text-align="justify">
 			<fo:inline padding-right="1mm" font-weight="bold">
+				<xsl:variable name="title-example">
+					<xsl:call-template name="getTitle">
+						<xsl:with-param name="name" select="'title-example'"/>
+					</xsl:call-template>
+				</xsl:variable>
 				<xsl:value-of select="$title-example"/>
 				<xsl:if test="count(ancestor::m3d:term[1]//m3d:termexample) &gt; 1">
 					<xsl:number />
@@ -1222,6 +1267,18 @@
 			<xsl:variable name="type" select="xalan:nodeset($contents)//item[@id = $target]/@type"/>
 			<xsl:variable name="root" select="xalan:nodeset($contents)//item[@id =$target]/@root"/>
 			<xsl:variable name="level" select="xalan:nodeset($contents)//item[@id =$target]/@level"/>
+			
+			<xsl:variable name="title-clause">
+				<xsl:call-template name="getTitle">
+					<xsl:with-param name="name" select="'title-clause'"/>
+				</xsl:call-template>
+			</xsl:variable>
+			<xsl:variable name="title-annex">
+				<xsl:call-template name="getTitle">
+					<xsl:with-param name="name" select="'title-annex'"/>
+				</xsl:call-template>
+			</xsl:variable>
+			
 			<xsl:choose>
 				<xsl:when test="$type = 'clause' and $root != 'annex' and $level = 1"><xsl:value-of select="$title-clause"/></xsl:when><!-- and not (ancestor::annex) -->
 				<xsl:when test="$type = 'clause' and $root = 'annex'"><xsl:value-of select="$title-annex"/></xsl:when>
@@ -1253,6 +1310,11 @@
 		<fo:block margin-top="8pt" margin-bottom="8pt">
 			<xsl:variable name="claims_id" select="ancestor::m3d:clause[1]/@id"/>
 			<fo:inline padding-right="5mm" font-weight="bold">
+				<xsl:variable name="title-example">
+					<xsl:call-template name="getTitle">
+						<xsl:with-param name="name" select="'title-example'"/>
+					</xsl:call-template>
+				</xsl:variable>
 				<xsl:value-of select="$title-example"/>
 				<xsl:if test="count(ancestor::m3d:clause[1]//m3d:example) &gt; 1">
 					<xsl:number count="m3d:example[ancestor::m3d:clause[@id = $claims_id]]" level="any"/>
@@ -1267,6 +1329,11 @@
 		<fo:block-container margin-left="0mm" margin-top="4pt" line-height="125%">
 			<fo:block>
 				<fo:inline padding-right="5mm" font-weight="bold">
+					<xsl:variable name="title-note">
+						<xsl:call-template name="getTitle">
+							<xsl:with-param name="name" select="'title-note'"/>
+						</xsl:call-template>
+					</xsl:variable>
 					<xsl:value-of select="$title-note"/>
 					<xsl:if test="count(ancestor::m3d:clause[1]//m3d:note) &gt; 1">
 						<xsl:text> </xsl:text><xsl:number count="m3d:note[ancestor::m3d:clause[@id = $claims_id]]" level="any"/>
@@ -1307,6 +1374,21 @@
 	</xsl:template>
 	
 	<xsl:template match="m3d:locality">
+		<xsl:variable name="title-clause">
+			<xsl:call-template name="getTitle">
+				<xsl:with-param name="name" select="'title-clause'"/>
+			</xsl:call-template>
+		</xsl:variable>
+		<xsl:variable name="title-annex">
+			<xsl:call-template name="getTitle">
+				<xsl:with-param name="name" select="'title-annex'"/>
+			</xsl:call-template>
+		</xsl:variable>
+		<xsl:variable name="title-table">
+			<xsl:call-template name="getTitle">
+				<xsl:with-param name="name" select="'title-table'"/>
+			</xsl:call-template>
+		</xsl:variable>
 		<xsl:choose>
 			<xsl:when test="@type ='section' and ancestor::m3d:termsource">SOURCE Section </xsl:when>
 			<xsl:when test="ancestor::m3d:termsource"></xsl:when>
@@ -1385,6 +1467,11 @@
 			<xsl:number level="any" count="m3d:references"/>
 		</xsl:variable>
 		<xsl:variable name="section">
+			<xsl:variable name="title-section">
+				<xsl:call-template name="getTitle">
+					<xsl:with-param name="name" select="'title-section'"/>
+				</xsl:call-template>
+			</xsl:variable>
 			<xsl:choose>
 				<xsl:when test="ancestor::m3d:bibliography and $references_num_current = 1"><!-- Normative references -->
 					<xsl:value-of select="$title-section"/><xsl:value-of select="$sectionNum"/><xsl:text>.</xsl:text>
@@ -1416,6 +1503,11 @@
 					<xsl:variable name="annexid" select="normalize-space(/m3d:m3d-standard/m3d:bibdata/m3d:ext/m3d:structuredidentifier/m3d:annexid)"/>
 					<xsl:choose>
 						<xsl:when test="$level = 1">
+							<xsl:variable name="title-annex">
+								<xsl:call-template name="getTitle">
+									<xsl:with-param name="name" select="'title-annex'"/>
+								</xsl:call-template>
+							</xsl:variable>
 							<xsl:value-of select="$title-annex"/>
 							<xsl:choose>
 								<xsl:when test="count(//m3d:annex) = 1 and $annexid != ''">
