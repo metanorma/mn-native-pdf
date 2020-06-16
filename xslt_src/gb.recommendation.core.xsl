@@ -939,9 +939,13 @@
 			<xsl:attribute name="text-indent">
 				<xsl:choose>
 					<xsl:when test="parent::gb:li">0mm</xsl:when>
+					<xsl:when test="parent::gb:dd">0mm</xsl:when>
 					<xsl:otherwise>7.4mm</xsl:otherwise>
 				</xsl:choose>
 			</xsl:attribute>
+			<xsl:if test="parent::gb:dd and ancestor::*[local-name()='formula']">
+				<xsl:text>— </xsl:text>
+			</xsl:if>
 			<xsl:apply-templates />
 		</xsl:element>
 		<xsl:if test="$element-name = 'fo:inline' and not($inline = 'true') and not(local-name(..) = 'admonition')">
