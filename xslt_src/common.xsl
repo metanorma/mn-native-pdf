@@ -1894,11 +1894,11 @@
 						<xsl:attribute name="margin-bottom">6pt</xsl:attribute>
 					</xsl:if>
 					<xsl:apply-templates />
-					<xsl:if test="$namespace = 'gb'">
+					<!-- <xsl:if test="$namespace = 'gb'">
 						<xsl:if test="ancestor::*[local-name()='formula']">
 							<xsl:text>—</xsl:text>
 						</xsl:if>
-					</xsl:if>
+					</xsl:if> -->
 				</fo:block>
 			</fo:table-cell>
 			<fo:table-cell>
