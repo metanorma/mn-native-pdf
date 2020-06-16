@@ -1116,9 +1116,27 @@
 							<fo:block>
 								<xsl:value-of select="$part-en"/>
 							</fo:block>
+							
+							<xsl:variable name="title-amd" select="/iso:iso-standard/iso:bibdata/iso:title[@language = 'en' and @type = 'title-amd']"/>
+							<xsl:if test="$doctype = 'amendment' and normalize-space($title-amd) != ''">
+								<fo:block font-weight="normal" margin-top="12pt" line-height="1.1">
+									<xsl:variable name="title-amendment">
+										<xsl:call-template name="getTitle">
+											<xsl:with-param name="name" select="'title-amendment'"/>
+										</xsl:call-template>
+									</xsl:variable>
+									<xsl:value-of select="$title-amendment"/>
+									<xsl:variable name="amendment-number" select="/iso:iso-standard/iso:bibdata/iso:ext/iso:structuredidentifier/iso:project-number/@amendment"/>
+									<xsl:if test="normalize-space($amendment-number) != ''">
+										<xsl:text> </xsl:text><xsl:value-of select="$amendment-number"/>
+									</xsl:if>
+									<xsl:text>: </xsl:text>
+									<xsl:value-of select="$title-amd"/>
+								</fo:block>
+							</xsl:if>
+						
 						</fo:block>
 					
-						
 					</fo:block-container>
 					<!-- Clause(s) -->
 					<fo:block>
@@ -1551,6 +1569,11 @@
 		</xsl:variable>
 		
 		<xsl:choose>
+			<xsl:when test="$doctype = 'amendment'">
+				<fo:block id="{$id}" font-size="11pt" font-style="italic" margin-bottom="12pt" keep-with-next="always">
+					<xsl:apply-templates />
+				</fo:block>
+			</xsl:when>
 			<xsl:when test="$parent-name = 'annex'">
 				<fo:block id="{$id}" font-size="16pt" font-weight="bold" text-align="center" margin-bottom="12pt" keep-with-next="always">
 					<xsl:value-of select="$section"/>

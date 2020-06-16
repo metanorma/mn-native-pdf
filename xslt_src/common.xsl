@@ -204,7 +204,8 @@
 			
 		<title-warning lang="en">WARNING</title-warning>
 		<title-warning lang="zh">警告</title-warning>
-			
+		
+		<title-amendment lang="en">AMENDMENT</title-amendment>
 	</xsl:variable>
 	
 	<xsl:template name="getTitle">
@@ -1613,7 +1614,7 @@
 				</fo:block>
 			</xsl:when>
 			<xsl:when test="$parent = 'figure' and  (not(../@class) or ../@class !='pseudocode')">
-				<fo:block font-weight="bold" text-align="left" margin-bottom="12pt">
+				<fo:block font-weight="bold" text-align="left" margin-bottom="12pt" keep-with-next="always">
 					<xsl:if test="$namespace = 'iso'">
 						<xsl:attribute name="font-size">10pt</xsl:attribute>
 						<xsl:attribute name="margin-bottom">0</xsl:attribute>
@@ -1737,7 +1738,11 @@
 				<fo:table-column column-width="50%"/>
 			</xsl:when>
 			<xsl:otherwise>
-				<xsl:choose>					
+				<xsl:choose>
+					<xsl:when test="normalize-space($maxlength_dt) != '' and number($maxlength_dt) &lt;= 2"> <!-- if dt contains short text like t90, a, etc -->
+						<fo:table-column column-width="5%"/>
+						<fo:table-column column-width="95%"/>
+					</xsl:when>
 					<xsl:when test="normalize-space($maxlength_dt) != '' and number($maxlength_dt) &lt;= 5"> <!-- if dt contains short text like t90, a, etc -->
 						<fo:table-column column-width="10%"/>
 						<fo:table-column column-width="90%"/>
