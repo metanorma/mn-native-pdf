@@ -17,7 +17,7 @@ SRC := $(patsubst mn-samples-iso/documents/international-standard/%,sources/iso-
 	$(patsubst mn-samples-cc/documents/%,sources/%,$(wildcard mn-samples-cc/documents/*.xml)) \
 	$(patsubst mn-samples-gb/documents/%,sources/gb-%,$(wildcard mn-samples-gb/documents/*.xml)) \
 	$(patsubst mn-samples-iho/documents/%,sources/iho-%,$(wildcard mn-samples-iho/documents/*.xml))
-
+ 
 PDF := $(patsubst sources/%,documents/%,$(patsubst %.xml,%.pdf,$(SRC)))
 HTML := $(patsubst sources/%,documents/%,$(patsubst %.xml,%.html,$(SRC)))
 DOC := $(patsubst sources/%,documents/%,$(patsubst %.xml,%.doc,$(SRC)))
@@ -117,6 +117,9 @@ sources/iho-%: mn-samples-iho/documents/%
 
 documents:
 	mkdir -p $@
+
+documents/%.presentation.html:
+	echo "### skipping $@"
 
 documents/%.html: sources/%.html | documents
 	cp $< $@
