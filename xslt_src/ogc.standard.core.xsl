@@ -27,7 +27,7 @@
 		<xsl:text>© </xsl:text>
 		<xsl:value-of select="/ogc:ogc-standard/ogc:bibdata/ogc:copyright/ogc:from"/>
 		<xsl:text> </xsl:text>
-		<xsl:value-of select="/ogc:ogc-standard/ogc:bibdata/ogc:contributor/ogc:organization/ogc:name"/>
+		<xsl:value-of select="/ogc:ogc-standard/ogc:bibdata/ogc:contributor[ogc:role/@type = 'publisher']/ogc:organization/ogc:name"/>
 	</xsl:variable>
 	
 	<xsl:variable name="doctitle" select="/ogc:ogc-standard/ogc:bibdata/ogc:title[@language = 'en']"/>
