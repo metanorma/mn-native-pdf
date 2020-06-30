@@ -1261,6 +1261,17 @@
 					<xsl:if test="$namespace = 'iho'">
 						<xsl:attribute name="font-size">11pt</xsl:attribute>					
 					</xsl:if>
+					<xsl:if test="$namespace = 'unece'  or $namespace = 'unece-rec'">
+						<xsl:if test="@type = 'source' or @type = 'abbreviation'">
+							<xsl:attribute name="font-size">9pt</xsl:attribute>							
+							<fo:inline>
+								<xsl:call-template name="capitalize">
+									<xsl:with-param name="str" select="@type"/>
+								</xsl:call-template>
+								<xsl:text>: </xsl:text>
+							</fo:inline>
+						</xsl:if>
+					</xsl:if>
 					<xsl:variable name="title-note">
 						<xsl:call-template name="getTitle">
 							<xsl:with-param name="name" select="'title-note'"/>

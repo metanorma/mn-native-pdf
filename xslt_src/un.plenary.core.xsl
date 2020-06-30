@@ -775,9 +775,12 @@
 			<fo:block id="{@id}" font-weight="bold" margin-left="6mm" margin-right="6mm" keep-with-next="always">
 				<xsl:value-of select="$title-box"/><xsl:number /><xsl:text>: </xsl:text><xsl:apply-templates select="un:name" mode="process"/>
 			</fo:block>
-			<fo:block margin-left="5mm" margin-right="5mm">
-				<xsl:apply-templates />
-			</fo:block>
+			<!-- <fo:block margin-left="5mm" margin-right="5mm"> -->
+			<fo:block-container margin-left="2mm" margin-right="2mm">
+				<fo:block-container margin-left="0mm" margin-right="0mm">
+					<xsl:apply-templates />
+				</fo:block-container>
+			</fo:block-container>
 		</fo:block-container>
 		<fo:block margin-bottom="4pt">&#xA0;</fo:block>
 	</xsl:template>
@@ -1165,6 +1168,17 @@
 
 	<xsl:template match="un:note/un:p | un:annex//un:note/un:p" name="note">
 		<fo:block font-size="10pt" space-after="12pt" text-indent="0">
+			<xsl:if test="../@type = 'source' or ../@type = 'abbreviation'">
+				<xsl:attribute name="font-size">9pt</xsl:attribute>
+				<xsl:attribute name="text-align">justify</xsl:attribute>
+				<xsl:attribute name="padding-top">0mm</xsl:attribute>
+				<fo:inline>
+					<xsl:call-template name="capitalize">
+						<xsl:with-param name="str" select="../@type"/>
+					</xsl:call-template>
+					<xsl:text>: </xsl:text>
+				</fo:inline>
+			</xsl:if>
 			<xsl:variable name="title-note">
 				<xsl:call-template name="getTitle">
 					<xsl:with-param name="name" select="'title-note'"/>
