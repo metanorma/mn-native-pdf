@@ -130,6 +130,9 @@ documents/%.presentation.rxl:
 documents/%.presentation.xml:
 	echo "### skipping $@"
 
+documents/%.presentation.pdf:
+	echo "### skipping $@"
+
 documents/%.html: sources/%.html | documents
 	cp $< $@
 
@@ -147,6 +150,7 @@ documents/%.xml: sources/%.xml | documents
 #un.agenda.xsl required
 documents/un-ECE_AGAT_2020_INF1.pdf:
 	echo "### skipping $@"
+
 
 documents/%.pdf: sources/%.xml $(MN2PDF_EXECUTABLE) | documents
 ifeq ($(OS),Windows_NT)
