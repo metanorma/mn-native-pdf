@@ -121,6 +121,15 @@ documents:
 documents/%.presentation.html:
 	echo "### skipping $@"
 
+documents/%.presentation.doc:
+	echo "### skipping $@"
+
+documents/%.presentation.rxl:
+	echo "### skipping $@"
+
+documents/%.presentation.xml:
+	echo "### skipping $@"
+
 documents/%.html: sources/%.html | documents
 	cp $< $@
 
