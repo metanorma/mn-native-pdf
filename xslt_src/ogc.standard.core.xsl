@@ -1811,7 +1811,7 @@
 		<xsl:template match="ogc:sourcecode/ogc:name"/>
 	
 	<xsl:template match="ogc:example">
-		<fo:block font-size="10pt" margin-top="12pt" margin-bottom="12pt" font-weight="bold" keep-with-next="always">
+		<fo:block font-size="10pt" text-align="center" margin-top="12pt" margin-bottom="12pt" font-weight="bold" keep-with-next="always">
 			<xsl:variable name="title-example">
 				<xsl:call-template name="getTitle">
 					<xsl:with-param name="name" select="'title-example'"/>
