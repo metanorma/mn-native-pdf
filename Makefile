@@ -121,6 +121,9 @@ documents:
 documents/%.presentation.html:
 	echo "### skipping $@"
 
+documents/%.sts.html:
+	echo "### skipping $@"
+
 documents/%.presentation.doc:
 	echo "### skipping $@"
 
