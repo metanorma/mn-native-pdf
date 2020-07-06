@@ -57,6 +57,7 @@
 			<xsl:apply-templates select="/ogc:ogc-standard/ogc:preface/ogc:foreword" mode="contents">
 				<xsl:with-param name="sectionNum" select="count(/ogc:ogc-standard/ogc:preface/ogc:abstract) + 
 																																				count (/ogc:ogc-standard/ogc:bibdata/ogc:keyword[1])+ 1"/>
+																																				
 			</xsl:apply-templates>
 			<xsl:apply-templates select="/ogc:ogc-standard/ogc:preface/ogc:introduction" mode="contents"/>
 			<xsl:apply-templates select="/ogc:ogc-standard/ogc:bibdata/ogc:contributor[ogc:role/@type='author'][1]/ogc:organization/ogc:name" mode="contents">
@@ -70,6 +71,20 @@
 																																				count(/ogc:ogc-standard/ogc:preface/ogc:foreword) +
 																																				count(/ogc:ogc-standard/ogc:bibdata/ogc:contributor[ogc:role/@type='author'][1]/ogc:organization/ogc:name) + 1"/>
 			</xsl:apply-templates>
+			
+			<xsl:apply-templates select="/ogc:ogc-standard/ogc:preface/*[local-name() != 'abstract' and 
+																																										local-name() != 'foreword' and 
+																																										local-name() != 'introduction' and
+																																										local-name() != 'submitters']" mode="contents">
+				<xsl:with-param name="sectionNumSkew" select="count(/ogc:ogc-standard/ogc:preface/ogc:abstract) + 																																				
+																																				count (/ogc:ogc-standard/ogc:bibdata/ogc:keyword[1])+ 
+																																				count(/ogc:ogc-standard/ogc:preface/ogc:foreword) +
+																																				count(/ogc:ogc-standard/ogc:preface/ogc:introduction) +
+																																				count(/ogc:ogc-standard/ogc:bibdata/ogc:contributor[ogc:role/@type='author'][1]/ogc:organization/ogc:name) +
+																																				count(/ogc:ogc-standard/ogc:preface/ogc:submitters)"/>
+			</xsl:apply-templates>
+			
+			
 			
 			<xsl:apply-templates select="/ogc:ogc-standard/ogc:sections/ogc:clause[@id='_scope']" mode="contents">
 				<xsl:with-param name="sectionNum" select="'1'"/>
@@ -359,7 +374,7 @@
 					<fo:block>&#xA0;</fo:block>
 					<fo:block break-after="page"/>
 					
-					<fo:block-container font-weight="bold" line-height="115%">
+					<fo:block-container font-weight="bold" line-height="115%" margin-bottom="36pt">
 						<xsl:variable name="title-toc">
 							<xsl:call-template name="getTitle">
 								<xsl:with-param name="name" select="'title-toc'"/>
@@ -490,6 +505,18 @@
 																																						count(/ogc:ogc-standard/ogc:bibdata/ogc:contributor[ogc:role/@type='author'][1]/ogc:organization/ogc:name) + 1"/>
 					</xsl:apply-templates>
 					
+					<xsl:apply-templates select="/ogc:ogc-standard/ogc:preface/*[local-name() != 'abstract' and 
+																																											local-name() != 'foreword' and 
+																																											local-name() != 'introduction' and
+																																											local-name() != 'submitters']">
+						<xsl:with-param name="sectionNumSkew" select="count(/ogc:ogc-standard/ogc:preface/ogc:abstract) + 																																				
+																																						count (/ogc:ogc-standard/ogc:bibdata/ogc:keyword[1])+ 
+																																						count(/ogc:ogc-standard/ogc:preface/ogc:foreword) +
+																																						count(/ogc:ogc-standard/ogc:preface/ogc:introduction) +
+																																						count(/ogc:ogc-standard/ogc:bibdata/ogc:contributor[ogc:role/@type='author'][1]/ogc:organization/ogc:name) +
+																																						count(/ogc:ogc-standard/ogc:preface/ogc:submitters)"/>
+					</xsl:apply-templates>
+					
 					
 				</fo:flow>
 			</fo:page-sequence>
@@ -617,6 +644,25 @@
 		</xsl:apply-templates>
 	</xsl:template>
 	
+	<xsl:template match="ogc:ogc-standard/ogc:preface/ogc:clause" mode="contents">
+		<xsl:param name="sectionNum"/>
+		<xsl:param name="sectionNumSkew" select="0"/>
+		<xsl:variable name="sectionNum_">
+			<xsl:choose>
+				<xsl:when test="$sectionNum"><xsl:value-of select="$sectionNum"/></xsl:when>
+				<xsl:when test="$sectionNumSkew != 0">
+					<xsl:variable name="number"><xsl:number count="ogc:clause"/></xsl:variable>
+					<xsl:value-of select="$number + $sectionNumSkew"/>
+				</xsl:when>
+				<xsl:otherwise>
+					<xsl:number count="*"/>
+				</xsl:otherwise>
+			</xsl:choose>
+		</xsl:variable>
+		<xsl:apply-templates mode="contents">
+			<xsl:with-param name="sectionNum" select="$sectionNum_"/>
+		</xsl:apply-templates>
+	</xsl:template>
 	
 	<!-- Any node with title element - clause, definition, annex,... -->
 	<xsl:template match="ogc:title | ogc:preferred" mode="contents">
@@ -1057,6 +1103,25 @@
 		</fo:block>
 	</xsl:template>
 	
+	<xsl:template match="ogc:ogc-standard/ogc:preface/ogc:clause">
+		<xsl:param name="sectionNum"/>
+		<xsl:param name="sectionNumSkew" select="0"/>
+		<xsl:variable name="sectionNum_">
+			<xsl:choose>
+				<xsl:when test="$sectionNum"><xsl:value-of select="$sectionNum"/></xsl:when>
+				<xsl:when test="$sectionNumSkew != 0">
+					<xsl:variable name="number"><xsl:number count="ogc:clause"/></xsl:variable>
+					<xsl:value-of select="$number + $sectionNumSkew"/>
+				</xsl:when>
+				<xsl:otherwise>
+					<xsl:number count="*"/>
+				</xsl:otherwise>
+			</xsl:choose>
+		</xsl:variable>
+		<xsl:apply-templates>
+			<xsl:with-param name="sectionNum" select="$sectionNum_"/>
+		</xsl:apply-templates>
+	</xsl:template>
 
 	
 	<xsl:template match="ogc:clause//ogc:clause[not(ogc:title)]">
@@ -2111,15 +2176,13 @@
 				</xsl:when>
 				<xsl:when test="ancestor::ogc:preface"> <!-- if preface and there is clause(s) -->
 					<xsl:choose>
-						<xsl:when test="$level = 1 and ancestor::ogc:foreword">
+						<xsl:when test="$level = 1"> <!--  and ancestor::ogc:foreword -->
 							<xsl:number format="i" value="$sectionNum"/>
 						</xsl:when>
-						<xsl:when test="$level = 1 and  ..//ogc:clause">0</xsl:when>
+						<!-- <xsl:when test="$level = 1 and  ..//ogc:clause">0</xsl:when> -->
 						<xsl:when test="$level &gt;= 2">
-							<xsl:variable name="num">
-								<xsl:number format=".1" level="multiple" count="ogc:clause"/>
-							</xsl:variable>
-							<xsl:value-of select="concat('0', $num)"/>
+							<xsl:number format="i.1" level="multiple" count="ogc:clause"/>
+							<!-- <xsl:value-of select="concat('0', $num)"/> -->
 						</xsl:when>
 						<xsl:otherwise>
 							<!-- z<xsl:value-of select="$sectionNum"/>z -->
