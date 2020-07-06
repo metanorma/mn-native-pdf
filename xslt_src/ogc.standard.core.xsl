@@ -725,7 +725,7 @@
 		
 	</xsl:template>
 	
-	<xsl:template match="ogc:ogc-standard/ogc:preface/*" mode="contents">
+	<xsl:template match="ogc:ogc-standard/ogc:preface/*[not(local-name() = 'clause')]" mode="contents">
 		<xsl:param name="sectionNum" select="'1'"/>
 		<xsl:variable name="section">
 			<xsl:number format="i" value="$sectionNum"/>
@@ -831,7 +831,6 @@
 		</item>
 	</xsl:template>
 
-	
 	
 	<xsl:template match="ogc:table[not(@unnumbered='true')]" mode="contents">
 		<xsl:param name="sectionNum" />
@@ -2034,7 +2033,6 @@
 			</fo:inline>
 		</fo:block>
 	</xsl:template>
-	
 	
 	<xsl:template match="ogc:br" priority="2">
 		<!-- <fo:block>&#xA0;</fo:block> -->
