@@ -967,7 +967,9 @@
 				</xsl:call-template>				
 			</fo:block>
 		</xsl:if>
-		<xsl:apply-templates />
+		<xsl:apply-templates>
+			<xsl:with-param name="sectionNum" select="$sectionNum"/>
+		</xsl:apply-templates>
 	</xsl:template>
 	<!-- Keywords -->
 	<xsl:template match="/ogc:ogc-standard/ogc:bibdata/ogc:keyword">
@@ -2109,6 +2111,9 @@
 				</xsl:when>
 				<xsl:when test="ancestor::ogc:preface"> <!-- if preface and there is clause(s) -->
 					<xsl:choose>
+						<xsl:when test="$level = 1 and ancestor::ogc:foreword">
+							<xsl:number format="i" value="$sectionNum"/>
+						</xsl:when>
 						<xsl:when test="$level = 1 and  ..//ogc:clause">0</xsl:when>
 						<xsl:when test="$level &gt;= 2">
 							<xsl:variable name="num">
