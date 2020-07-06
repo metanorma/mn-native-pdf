@@ -273,10 +273,32 @@
 							<fo:table-body>
 								<fo:table-row height="9mm">
 									<fo:table-cell>
+										<fo:block>Document number: </fo:block>
+									</fo:table-cell>
+									<fo:table-cell>
+										<fo:block>
+											<xsl:value-of select="/ogc:ogc-standard/ogc:bibdata/ogc:docnumber"/>											
+										</fo:block>
+									</fo:table-cell>
+								</fo:table-row>
+								<fo:table-row height="9mm">
+									<fo:table-cell>
 										<fo:block>Document type: </fo:block>
 									</fo:table-cell>
 									<fo:table-cell>
 										<fo:block line-height-shift-adjustment="disregard-shifts">OGC<fo:inline font-size="65%" vertical-align="super">®</fo:inline><xsl:text> </xsl:text><xsl:value-of select="$doctype"/></fo:block>
+									</fo:table-cell>
+								</fo:table-row>
+								<fo:table-row height="9mm">
+									<fo:table-cell>
+										<fo:block>Document subtype: </fo:block>
+									</fo:table-cell>
+									<fo:table-cell>
+										<fo:block>
+											<xsl:call-template name="capitalizeWords">
+												<xsl:with-param name="str" select="/ogc:ogc-standard/ogc:bibdata/ogc:ext/ogc:docsubtype"/>
+											</xsl:call-template>
+										</fo:block>
 									</fo:table-cell>
 								</fo:table-row>
 								<fo:table-row height="9mm">
@@ -297,7 +319,11 @@
 										<fo:block>Document language: </fo:block>
 									</fo:table-cell>
 									<fo:table-cell>
-										<fo:block><xsl:value-of select="$lang"/></fo:block>
+										<fo:block>
+											<xsl:call-template name="getLanguage">
+												<xsl:with-param name="lang" select="$lang"/>
+											</xsl:call-template>											
+										</fo:block>
 									</fo:table-cell>
 								</fo:table-row>
 							</fo:table-body>
