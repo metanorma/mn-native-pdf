@@ -112,7 +112,7 @@
 	</xsl:variable>
 	
 	<xsl:template match="/">
-		<xsl:message>INFO: Document namespace: '<xsl:value-of select="namespace-uri(/*)"/>'</xsl:message>
+		<xsl:call-template name="namespaceCheck"/>		
 		<fo:root xmlns:fo="http://www.w3.org/1999/XSL/Format" font-family="Times New Roman, STIX2Math, HanSans" font-size="10.5pt" xml:lang="{$lang}">
 			<fo:layout-master-set>
 				<!-- Cover page -->
@@ -258,7 +258,7 @@
 						</fo:block>
 					</fo:block>
 					<fo:block font-size="24pt" font-weight="bold" text-align="center" margin-top="15pt" line-height="115%">
-						<xsl:text>OGC </xsl:text><xsl:value-of select="$doctitle" />
+						<xsl:value-of select="$doctitle" />
 					</fo:block>
 					<fo:block margin-bottom="12pt">&#xA0;</fo:block>
 					<!-- Copyright notice -->
@@ -861,7 +861,7 @@
 			<xsl:attribute name="text-align">
 				<xsl:choose>
 					<xsl:when test="@align"><xsl:value-of select="@align"/></xsl:when>
-					<xsl:otherwise>left</xsl:otherwise>
+					<xsl:otherwise>center</xsl:otherwise>
 				</xsl:choose>
 			</xsl:attribute>
 			<xsl:apply-templates />
