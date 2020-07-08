@@ -1645,17 +1645,6 @@
 		<xsl:variable name="result" select="normalize-space(concat($day, ' ', $monthStr, ' ', $year))"/>
 		<xsl:value-of select="$result"/>
 	</xsl:template>
-
-	<xsl:template name="getLanguage">
-		<xsl:param name="lang"/>		
-		<xsl:variable name="language" select="java:toLowerCase(java:java.lang.String.new($lang))"/>
-		<xsl:choose>
-			<xsl:when test="$language = 'en'">English</xsl:when>
-			<xsl:when test="$language = 'de'">Deutsch</xsl:when>
-			<xsl:when test="$language = 'cn'">Chinese</xsl:when>
-			<xsl:otherwise><xsl:value-of select="$language"/></xsl:otherwise>
-		</xsl:choose>
-	</xsl:template>
 	
 	<xsl:variable name="Image-Logo">
 		<xsl:text>

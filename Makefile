@@ -121,16 +121,28 @@ documents:
 documents/%.presentation.html:
 	echo "### skipping $@"
 
+documents/%.sts.html:
+	echo "### skipping $@"
+
 documents/%.presentation.doc:
 	echo "### skipping $@"
 
+documents/%.sts.doc:
+	echo "### skipping $@"
+
 documents/%.presentation.rxl:
+	echo "### skipping $@"
+
+documents/%.sts.rxl:
 	echo "### skipping $@"
 
 documents/%.presentation.xml:
 	echo "### skipping $@"
 
 documents/%.presentation.pdf:
+	echo "### skipping $@"
+
+documents/%.sts.pdf:
 	echo "### skipping $@"
 
 documents/%.html: sources/%.html | documents
@@ -151,6 +163,25 @@ documents/%.xml: sources/%.xml | documents
 documents/un-ECE_AGAT_2020_INF1.pdf:
 	echo "### skipping $@"
 
+#mn-samples-cc repository issue
+documents/cc-18011.html:
+	echo "### skipping $@"
+
+documents/cc-18011.doc:
+	echo "### skipping $@"
+
+documents/cc-18011.rxl:
+	echo "### skipping $@"
+
+documents/m3d-bp-document.html:
+	echo "### skipping $@"
+
+documents/m3d-bp-document.doc:
+	echo "### skipping $@"
+
+documents/m3d-bp-document.rxl:
+	echo "### skipping $@"
+
 
 documents/%.pdf: sources/%.xml $(MN2PDF_EXECUTABLE) | documents
 ifeq ($(OS),Windows_NT)
@@ -160,9 +191,9 @@ ifeq ($(OS),Windows_NT)
 else
 	FILENAME=$<; \
 	MN_FLAVOR=$$(xmllint --xpath 'name(*)' $${FILENAME} | cut -d '-' -f 1); \
-	DOCTYPE=$$(xmllint --xpath "//*[local-name()='doctype']/text()" $${FILENAME}); \
+	DOCTYPE=$$(xmllint --xpath "(//*[local-name()='doctype'])[1]/text()" $${FILENAME}); \
 	XSLT_PATH=${XSLT_PATH_BASE}/$${MN_FLAVOR}.$${DOCTYPE}.xsl; \
-	java -Xss5m -Xmx1024m -jar $(MN2PDF_EXECUTABLE) --xml-file $$FILENAME --xsl-file $$XSLT_PATH --pdf-file $@
+	java -Xss5m -Xmx1024m -jar $(MN2PDF_EXECUTABLE) --xml-file $$FILENAME --xsl-file $$XSLT_PATH --pdf-file $@	
 endif
 
 xslt/%.xsl: xslt_src/%.core.xsl xslt_src/merge.xsl xalan/xalan.jar

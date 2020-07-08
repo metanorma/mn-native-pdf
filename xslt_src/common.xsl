@@ -2746,5 +2746,62 @@
 	<xsl:template name="getDocumentId">		
 		<xsl:call-template name="getLang"/><xsl:value-of select="//*[local-name() = 'p'][1]/@id"/>
 	</xsl:template>
+
+	<xsl:template name="namespaceCheck">
+		<xsl:variable name="documentNS" select="namespace-uri(/*)"/>
+		<xsl:variable name="XSLNS">			
+			<xsl:if test="$namespace = 'iso'">
+				<xsl:value-of select="document('')//*/namespace::iso"/>
+			</xsl:if>
+			<xsl:if test="$namespace = 'iec'">
+				<xsl:value-of select="document('')//*/namespace::iec"/>
+			</xsl:if>
+			<xsl:if test="$namespace = 'itu'">
+				<xsl:value-of select="document('')//*/namespace::itu"/>
+			</xsl:if>
+			<xsl:if test="$namespace = 'unece' or $namespace = 'unece-rec'">
+				<xsl:value-of select="document('')//*/namespace::unece"/>
+			</xsl:if>
+			<xsl:if test="$namespace = 'nist'">
+				<xsl:value-of select="document('')//*/namespace::nist"/>
+			</xsl:if>
+			<xsl:if test="$namespace = 'ogc'">
+				<xsl:value-of select="document('')//*/namespace::ogc"/>
+			</xsl:if>
+			<xsl:if test="$namespace = 'rsd'">
+				<xsl:value-of select="document('')//*/namespace::rsd"/>
+			</xsl:if>
+			<xsl:if test="$namespace = 'csa'">
+				<xsl:value-of select="document('')//*/namespace::csa"/>
+			</xsl:if>
+			<xsl:if test="$namespace = 'csd'">
+				<xsl:value-of select="document('')//*/namespace::csd"/>
+			</xsl:if>
+			<xsl:if test="$namespace = 'm3d'">
+				<xsl:value-of select="document('')//*/namespace::m3d"/>
+			</xsl:if>
+			<xsl:if test="$namespace = 'iho'">
+				<xsl:value-of select="document('')//*/namespace::iho"/>
+			</xsl:if>			
+			<xsl:if test="$namespace = 'gb'">
+				<xsl:value-of select="document('')//*/namespace::gb"/>
+			</xsl:if>			
+		</xsl:variable>
+		<xsl:if test="$documentNS != $XSLNS">
+			<xsl:message>[WARNING]: Document namespace: '<xsl:value-of select="$documentNS"/>' doesn't equal to xslt namespace '<xsl:value-of select="$XSLNS"/>'</xsl:message>
+		</xsl:if>
+	</xsl:template>
+ 
+	<xsl:template name="getLanguage">
+		<xsl:param name="lang"/>		
+		<xsl:variable name="language" select="java:toLowerCase(java:java.lang.String.new($lang))"/>
+		<xsl:choose>
+			<xsl:when test="$language = 'en'">English</xsl:when>
+			<xsl:when test="$language = 'fr'">French</xsl:when>
+			<xsl:when test="$language = 'de'">Deutsch</xsl:when>
+			<xsl:when test="$language = 'cn'">Chinese</xsl:when>
+			<xsl:otherwise><xsl:value-of select="$language"/></xsl:otherwise>
+		</xsl:choose>
+	</xsl:template>
  
 </xsl:stylesheet>
