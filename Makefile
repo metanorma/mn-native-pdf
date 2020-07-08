@@ -167,7 +167,19 @@ documents/un-ECE_AGAT_2020_INF1.pdf:
 documents/cc-18011.html:
 	echo "### skipping $@"
 
+documents/cc-18011.doc:
+	echo "### skipping $@"
+
+documents/cc-18011.rxl:
+	echo "### skipping $@"
+
 documents/m3d-bp-document.html:
+	echo "### skipping $@"
+
+documents/m3d-bp-document.doc:
+	echo "### skipping $@"
+
+documents/m3d-bp-document.rxl:
 	echo "### skipping $@"
 
 
