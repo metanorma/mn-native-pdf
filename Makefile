@@ -158,6 +158,10 @@ documents/un-ECE_AGAT_2020_INF1.pdf:
 documents/cc-18011.html:
 	echo "### skipping $@"
 
+documents/m3d-bp-document.html:
+	echo "### skipping $@"
+
+
 documents/%.pdf: sources/%.xml $(MN2PDF_EXECUTABLE) | documents
 ifeq ($(OS),Windows_NT)
 	powershell -Command "$$doc = [xml](Get-Content $<); $$doc.SelectNodes(\"*\").get_name()" | cut -d "-" -f 1 > MN_FLAVOR.txt
