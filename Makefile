@@ -154,6 +154,9 @@ documents/%.xml: sources/%.xml | documents
 documents/un-ECE_AGAT_2020_INF1.pdf:
 	echo "### skipping $@"
 
+#mn-samples-cc repository issue
+documents/cc-18011.html:
+	echo "### skipping $@"
 
 documents/%.pdf: sources/%.xml $(MN2PDF_EXECUTABLE) | documents
 ifeq ($(OS),Windows_NT)
