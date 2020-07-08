@@ -127,13 +127,22 @@ documents/%.sts.html:
 documents/%.presentation.doc:
 	echo "### skipping $@"
 
+documents/%.sts.doc:
+	echo "### skipping $@"
+
 documents/%.presentation.rxl:
+	echo "### skipping $@"
+
+documents/%.sts.rxl:
 	echo "### skipping $@"
 
 documents/%.presentation.xml:
 	echo "### skipping $@"
 
 documents/%.presentation.pdf:
+	echo "### skipping $@"
+
+documents/%.sts.pdf:
 	echo "### skipping $@"
 
 documents/%.html: sources/%.html | documents
