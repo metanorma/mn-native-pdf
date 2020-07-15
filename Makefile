@@ -24,36 +24,67 @@ DOC := $(patsubst sources/%,documents/%,$(patsubst %.xml,%.doc,$(SRC)))
 RXL := $(patsubst sources/%,documents/%,$(patsubst %.xml,%.rxl,$(SRC)))
 XSLT_PATH_BASE := ${CURDIR}/xslt
 XSLT_GENERATED := xslt/iec.international-standard.xsl \
+	xslt/iec.international-standard.presentation.xsl \
 	xslt/iso.international-standard.xsl \
+	xslt/iso.international-standard.presentation.xsl \
 	xslt/iso.amendment.xsl \
+	xslt/iso.amendment.presentation.xsl \
 	xslt/itu.recommendation.xsl \
+	xslt/itu.recommendation.presentation.xsl \
 	xslt/itu.recommendation-annex.xsl \
+	xslt/itu.recommendation-annex.presentation.xsl \
 	xslt/itu.resolution.xsl \
+	xslt/itu.resolution.presentation.xsl \
 	xslt/ogc.abstract-specification-topic.xsl \
+	xslt/ogc.abstract-specification-topic.presentation.xsl \
 	xslt/ogc.best-practice.xsl \
+	xslt/ogc.best-practice.presentation.xsl \
 	xslt/ogc.change-request-supporting-document.xsl \
+	xslt/ogc.change-request-supporting-document.presentation.xsl \
 	xslt/ogc.community-practice.xsl \
+	xslt/ogc.community-practice.presentation.xsl \
 	xslt/ogc.community-standard.xsl \
+	xslt/ogc.community-standard.presentation.xsl \
 	xslt/ogc.discussion-paper.xsl \
+	xslt/ogc.discussion-paper.presentation.xsl \
 	xslt/ogc.engineering-report.xsl \
+	xslt/ogc.engineering-report.presentation.xsl \
 	xslt/ogc.other.xsl \
+	xslt/ogc.other.presentation.xsl \
 	xslt/ogc.policy.xsl \
+	xslt/ogc.policy.presentation.xsl \
 	xslt/ogc.reference-model.xsl \
+	xslt/ogc.reference-model.presentation.xsl \
 	xslt/ogc.release-notes.xsl \
+	xslt/ogc.release-notes.presentation.xsl \
 	xslt/ogc.standard.xsl \
+	xslt/ogc.standard.presentation.xsl \
 	xslt/ogc.test-suite.xsl \
+	xslt/ogc.test-suite.presentation.xsl \
 	xslt/ogc.user-guide.xsl \
+	xslt/ogc.user-guide.presentation.xsl \
 	xslt/ogc.white-paper.xsl \
+	xslt/ogc.white-paper.presentation.xsl \
 	xslt/un.plenary.xsl \
+	xslt/un.plenary.presentation.xsl \
 	xslt/un.plenary-attachment.xsl \
+	xslt/un.plenary-attachment.presentation.xsl \
 	xslt/un.recommendation.xsl \
+	xslt/un.recommendation.presentation.xsl \
 	xslt/csd.standard.xsl \
+	xslt/csd.standard.presentation.xsl \
 	xslt/csa.standard.xsl \
+	xslt/csa.standard.presentation.xsl \
 	xslt/rsd.standard.xsl \
+	xslt/rsd.standard.presentation.xsl \
 	xslt/m3d.report.xsl \
+	xslt/m3d.report.presentation.xsl \
 	xslt/gb.recommendation.xsl \
+	xslt/gb.recommendation.presentation.xsl \
 	xslt/iho.specification.xsl \
-	xslt/iho.standard.xsl
+	xslt/iho.specification.presentation.xsl \
+	xslt/iho.standard.xsl \
+	xslt/iho.standard.presentation.xsl
 
 MN2PDF_DOWNLOAD_PATH := https://github.com/metanorma/mn2pdf/releases/download/v1.18/mn2pdf-1.18.jar
 # MN2PDF_DOWNLOAD_PATH := https://maven.pkg.github.com/metanorma/mn2pdf/com/metanorma/fop/mn2pdf/1.7/mn2pdf-1.7.jar
@@ -136,11 +167,11 @@ documents/%.presentation.rxl:
 documents/%.sts.rxl:
 	echo "### skipping $@"
 
-documents/%.presentation.xml:
-	echo "### skipping $@"
+#documents/%.presentation.xml:
+#	echo "### skipping $@"
 
-documents/%.presentation.pdf:
-	echo "### skipping $@"
+#documents/%.presentation.pdf:
+#	echo "### skipping $@"
 
 documents/%.sts.pdf:
 	echo "### skipping $@"
@@ -193,6 +224,19 @@ else
 	MN_FLAVOR=$$(xmllint --xpath 'name(*)' $${FILENAME} | cut -d '-' -f 1); \
 	DOCTYPE=$$(xmllint --xpath "(//*[local-name()='doctype'])[1]/text()" $${FILENAME}); \
 	XSLT_PATH=${XSLT_PATH_BASE}/$${MN_FLAVOR}.$${DOCTYPE}.xsl; \
+	java -Xss5m -Xmx1024m -jar $(MN2PDF_EXECUTABLE) --xml-file $$FILENAME --xsl-file $$XSLT_PATH --pdf-file $@	
+endif
+
+documents/%.presentation.pdf: sources/%.presentation.xml $(MN2PDF_EXECUTABLE) | documents
+ifeq ($(OS),Windows_NT)
+	powershell -Command "$$doc = [xml](Get-Content $<); $$doc.SelectNodes(\"*\").get_name()" | cut -d "-" -f 1 > MN_FLAVOR.txt
+	powershell -Command "$$doc = [xml](Get-Content $<); $$doc.SelectNodes(\"//*[local-name()='doctype']\").'#text'" > DOCTYPE.txt
+	cmd /V /C "set /p MN_FLAVOR=<MN_FLAVOR.txt & set /p DOCTYPE=<DOCTYPE.txt & java -Xss5m -Xmx1024m -jar $(MN2PDF_EXECUTABLE) --xml-file $< --xsl-file ${XSLT_PATH_BASE}/!MN_FLAVOR!.!DOCTYPE!.presentation.xsl --pdf-file $@"
+else
+	FILENAME=$<; \
+	MN_FLAVOR=$$(xmllint --xpath 'name(*)' $${FILENAME} | cut -d '-' -f 1); \
+	DOCTYPE=$$(xmllint --xpath "(//*[local-name()='doctype'])[1]/text()" $${FILENAME}); \
+	XSLT_PATH=${XSLT_PATH_BASE}/$${MN_FLAVOR}.$${DOCTYPE}.presentation.xsl; \
 	java -Xss5m -Xmx1024m -jar $(MN2PDF_EXECUTABLE) --xml-file $$FILENAME --xsl-file $$XSLT_PATH --pdf-file $@	
 endif
 
