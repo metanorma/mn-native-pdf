@@ -194,6 +194,9 @@ documents/%.xml: sources/%.xml | documents
 documents/un-ECE_AGAT_2020_INF1.pdf:
 	echo "### skipping $@"
 
+documents/un-ECE_AGAT_2020_INF1.presentation.pdf:
+	echo "### skipping $@"
+
 #mn-samples-cc repository issue
 documents/cc-18011.html:
 	echo "### skipping $@"
