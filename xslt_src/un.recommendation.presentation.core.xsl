@@ -1285,16 +1285,7 @@
 						</fo:table-cell>
 						<fo:table-cell> <!--  display-align="center" -->
 							<fo:block text-align="right">
-								<xsl:if test="not(ancestor::un:annex)">
-									<xsl:number format="(1)" level="any"/>
-								</xsl:if>
-								<xsl:if test="ancestor::un:annex">
-									<xsl:variable name="annex-id" select="ancestor::un:annex/@id"/>
-									<xsl:text>(</xsl:text>
-									<xsl:number format="A-" count="un:annex"/>
-									<xsl:number format="1" level="any" count="un:formula[ancestor::un:annex[@id = $annex-id]]"/>
-									<xsl:text>)</xsl:text>
-								</xsl:if>
+								<xsl:apply-templates select="un:name" mode="formula"/>
 							</fo:block>
 						</fo:table-cell>
 					</fo:table-row>
@@ -1304,6 +1295,7 @@
 			</fo:inline>
 		</fo:block>
 	</xsl:template>
+	
 	
 	<xsl:template match="un:formula" mode="process">
 		<xsl:call-template name="formula"/>

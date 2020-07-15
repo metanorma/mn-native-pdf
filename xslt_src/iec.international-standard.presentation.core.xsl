@@ -2560,11 +2560,6 @@
 		</fo:block>
 	</xsl:template>
 	
-	<xsl:template match="iec:formula/iec:dt/iec:stem">
-		<fo:inline>
-			<xsl:apply-templates />
-		</fo:inline>
-	</xsl:template>
 	
 	<xsl:template match="iec:admitted/iec:stem">
 		<fo:inline> <!-- padding-left="6mm" -->
@@ -2586,21 +2581,12 @@
 						</fo:table-cell>
 						<fo:table-cell display-align="center">
 							<fo:block text-align="right" margin-right="-10mm">
-								<xsl:choose>
-									<xsl:when test="ancestor::iec:annex">
-										<xsl:number format="(A.1)" level="multiple" count="iec:annex | iec:formula"/>
-									</xsl:when>
-									<xsl:otherwise> <!-- not(ancestor::iec:annex) -->
-										<xsl:text>(</xsl:text><xsl:number level="any" count="iec:formula"/><xsl:text>)</xsl:text>
-									</xsl:otherwise>
-								</xsl:choose>
+								<xsl:apply-templates select="../iec:name" mode="formula"/>
 							</fo:block>
 						</fo:table-cell>
 					</fo:table-row>
 				</fo:table-body>
-			</fo:table>
-			<fo:inline keep-together.within-line="always">
-			</fo:inline>
+			</fo:table>			
 		</fo:block>
 	</xsl:template>
 	

@@ -2555,11 +2555,30 @@
 					<xsl:attribute name="color">black</xsl:attribute>
 					<xsl:attribute name="text-decoration">none</xsl:attribute>					
 				</xsl:if>
-			</xsl:if>
-			
+			</xsl:if>			
 			<xsl:apply-templates />
 		</fo:basic-link>
 	</xsl:template>
+	
+	<!-- ====== -->
+	<!-- formula -->
+	<!-- ====== -->
+	<xsl:template match="*[local-name() = 'formula']/*[local-name() = 'dt']/*[local-name() = 'stem']">
+		<fo:inline>
+			<xsl:apply-templates />
+		</fo:inline>
+	</xsl:template>
+	
+	<xsl:template match="*[local-name() = 'formula']/*[local-name() = 'name']"/>
+	
+	<xsl:template match="*[local-name() = 'formula']/*[local-name() = 'name']" mode="formula">
+		<xsl:if test="normalize-space() != ''">
+			<xsl:text>(</xsl:text><xsl:apply-templates /><xsl:text>)</xsl:text>
+		</xsl:if>
+	</xsl:template>
+	<!-- ====== -->
+	<!-- ====== -->
+	
 	
 	<!-- convert YYYY-MM-DD to 'Month YYYY' or 'Month DD, YYYY' -->
 	<xsl:template name="convertDate">

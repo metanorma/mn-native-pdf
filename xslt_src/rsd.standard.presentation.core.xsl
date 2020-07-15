@@ -1573,12 +1573,6 @@
 		</fo:block>
 	</xsl:template>
 	
-	<xsl:template match="rsd:formula/rsd:dt/rsd:stem">
-		<fo:inline>
-			<xsl:apply-templates />
-		</fo:inline>
-	</xsl:template>
-	
 	<xsl:template match="rsd:formula/rsd:stem">
 		<fo:block margin-top="6pt" margin-bottom="12pt">
 			<fo:table table-layout="fixed" width="100%">
@@ -1593,21 +1587,12 @@
 						</fo:table-cell>
 						<fo:table-cell display-align="center">
 							<fo:block text-align="right">
-								<xsl:choose>
-									<xsl:when test="ancestor::rsd:annex">
-										<xsl:number format="(A.1)" level="multiple" count="rsd:annex | rsd:formula"/>
-									</xsl:when>
-									<xsl:otherwise> <!-- not(ancestor::rsd:annex) -->
-										<!-- <xsl:text>(</xsl:text><xsl:number level="any" count="rsd:formula"/><xsl:text>)</xsl:text> -->
-									</xsl:otherwise>
-								</xsl:choose>
+								<xsl:apply-templates select="../rsd:name" mode="formula"/>
 							</fo:block>
 						</fo:table-cell>
 					</fo:table-row>
 				</fo:table-body>
-			</fo:table>
-			<fo:inline keep-together.within-line="always">
-			</fo:inline>
+			</fo:table>			
 		</fo:block>
 	</xsl:template>
 	

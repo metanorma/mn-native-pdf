@@ -1643,9 +1643,7 @@
 	<xsl:template match="itu:formula" name="formula">
 		<xsl:param name="sectionNum" />
 		<fo:block id="{@id}" margin-top="6pt" margin-bottom="6pt"> <!--  text-align="center" -->
-			<xsl:apply-templates />
-			<fo:inline keep-together.within-line="always">
-			</fo:inline>
+			<xsl:apply-templates />			
 		</fo:block>
 	</xsl:template>
 	
@@ -1662,7 +1660,8 @@
 					</fo:table-cell>
 					<fo:table-cell display-align="center">
 						<fo:block text-align="right" margin-left="0mm">
-							<xsl:value-of select="xalan:nodeset($contents)//item[@id = current()/ancestor::itu:formula[1]/@id]/@number"/>
+							<!-- <xsl:value-of select="xalan:nodeset($contents)//item[@id = current()/ancestor::itu:formula[1]/@id]/@number"/> -->
+							<xsl:apply-templates select="../itu:name" mode="formula"/>
 							<!-- <xsl:call-template name="getItemNumber">
 								<xsl:with-param name="sectionNum" select="$sectionNum"/>
 							</xsl:call-template> -->
@@ -1672,6 +1671,7 @@
 			</fo:table-body>
 		</fo:table>
 	</xsl:template>
+	
 	
 	<xsl:template match="itu:formula" mode="process">
 		<xsl:param name="sectionNum" />

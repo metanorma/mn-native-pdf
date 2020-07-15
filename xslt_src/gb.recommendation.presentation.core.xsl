@@ -1611,12 +1611,7 @@
 		</fo:block>
 	</xsl:template>
 	
-	<xsl:template match="gb:formula/gb:dt/gb:stem">
-		<fo:inline>
-			<xsl:apply-templates />
-		</fo:inline>
-	</xsl:template>
-	
+
 	<xsl:template match="gb:formula/gb:stem">
 		<fo:block font-size="11pt" margin-top="14pt" margin-bottom="14pt">
 			<fo:table table-layout="fixed" width="170mm">
@@ -1631,23 +1626,15 @@
 						</fo:table-cell>
 						<fo:table-cell display-align="center">
 							<fo:block text-align="left">
-								<xsl:choose>
-									<xsl:when test="ancestor::gb:annex">
-										<xsl:number format="(A.1)" level="multiple" count="gb:annex | gb:formula"/>
-									</xsl:when>
-									<xsl:otherwise> <!-- not(ancestor::gb:annex) -->
-										<xsl:number format="(1)" level="any" count="gb:formula"/>
-									</xsl:otherwise>
-								</xsl:choose>
+								<xsl:apply-templates select="../gb:name" mode="formula"/>
 							</fo:block>
 						</fo:table-cell>
 					</fo:table-row>
 				</fo:table-body>
-			</fo:table>
-			<fo:inline keep-together.within-line="always">
-			</fo:inline>
+			</fo:table>			
 		</fo:block>
 	</xsl:template>
+	
 	
 	<xsl:template match="gb:br" priority="2">
 		<!-- <fo:block>&#xA0;</fo:block> -->

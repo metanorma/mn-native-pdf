@@ -1365,11 +1365,6 @@
 		</fo:block>
 	</xsl:template>
 	
-	<xsl:template match="m3d:formula/m3d:dt/m3d:stem">
-		<fo:inline>
-			<xsl:apply-templates />
-		</fo:inline>
-	</xsl:template>
 	
 	<xsl:template match="m3d:formula/m3d:stem">
 		<fo:block margin-top="14pt" margin-bottom="14pt">
@@ -1385,14 +1380,7 @@
 						</fo:table-cell>
 						<fo:table-cell display-align="center">
 							<fo:block text-align="left">
-								<xsl:choose>
-									<xsl:when test="ancestor::m3d:annex">
-										<xsl:number format="(A.1)" level="multiple" count="m3d:annex | m3d:formula"/>
-									</xsl:when>
-									<xsl:otherwise> <!-- not(ancestor::m3d:annex) -->
-										<xsl:text>(</xsl:text><xsl:number level="any" count="m3d:formula"/><xsl:text>)</xsl:text>
-									</xsl:otherwise>
-								</xsl:choose>
+								<xsl:apply-templates select="../m3d:name" mode="formula"/>
 							</fo:block>
 						</fo:table-cell>
 					</fo:table-row>
@@ -1402,6 +1390,7 @@
 			</fo:inline>
 		</fo:block>
 	</xsl:template>
+	
 	
 	<xsl:template match="m3d:br" priority="2">
 		<xsl:value-of select="$linebreak"/>

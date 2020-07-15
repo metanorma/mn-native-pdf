@@ -2264,11 +2264,6 @@
 		</fo:block>
 	</xsl:template>
 	
-	<xsl:template match="iso:formula/iso:dt/iso:stem">
-		<fo:inline>
-			<xsl:apply-templates />
-		</fo:inline>
-	</xsl:template>
 	
 	<xsl:template match="iso:formula/iso:stem">
 		<fo:block margin-top="6pt" margin-bottom="12pt">
@@ -2284,9 +2279,7 @@
 						</fo:table-cell>
 						<fo:table-cell display-align="center">
 							<fo:block text-align="right">
-								<xsl:call-template name="getFormulaNumber">
-									<xsl:with-param name="display" select="not(../@unnumbered = 'true')"/>
-								</xsl:call-template>
+								<xsl:apply-templates select="../iso:name" mode="formula"/>
 							</fo:block>
 						</fo:table-cell>
 					</fo:table-row>
@@ -2296,6 +2289,7 @@
 			</fo:inline>
 		</fo:block>
 	</xsl:template>
+	
 	
 	
 	<xsl:template match="iso:br" priority="2">

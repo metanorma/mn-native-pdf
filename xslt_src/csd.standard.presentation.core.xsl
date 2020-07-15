@@ -1291,11 +1291,6 @@
 		</fo:block>
 	</xsl:template>
 	
-	<xsl:template match="csd:formula/csd:dt/csd:stem">
-		<fo:inline>
-			<xsl:apply-templates />
-		</fo:inline>
-	</xsl:template>
 	
 	<xsl:template match="csd:formula/csd:stem">
 		<fo:block margin-top="6pt" margin-bottom="12pt">
@@ -1311,21 +1306,12 @@
 						</fo:table-cell>
 						<fo:table-cell display-align="center">
 							<fo:block text-align="right">
-								<xsl:choose>
-									<xsl:when test="ancestor::csd:annex">
-										<xsl:number format="(A.1)" level="multiple" count="csd:annex | csd:formula"/>
-									</xsl:when>
-									<xsl:otherwise> <!-- not(ancestor::csd:annex) -->
-										<!-- <xsl:text>(</xsl:text><xsl:number level="any" count="csd:formula"/><xsl:text>)</xsl:text> -->
-									</xsl:otherwise>
-								</xsl:choose>
+								<xsl:apply-templates select="../csd:name" mode="formula"/>
 							</fo:block>
 						</fo:table-cell>
 					</fo:table-row>
 				</fo:table-body>
-			</fo:table>
-			<fo:inline keep-together.within-line="always">
-			</fo:inline>
+			</fo:table>			
 		</fo:block>
 	</xsl:template>
 	

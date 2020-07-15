@@ -1957,12 +1957,7 @@
 			<xsl:apply-templates />
 		</fo:block>
 	</xsl:template>
-	
-	<xsl:template match="ogc:formula/ogc:dt/ogc:stem">
-		<fo:inline>
-			<xsl:apply-templates />
-		</fo:inline>
-	</xsl:template>
+
 	
 	<xsl:template match="ogc:formula/ogc:stem">
 		<fo:block margin-top="6pt" margin-bottom="12pt">
@@ -1978,23 +1973,15 @@
 						</fo:table-cell>
 						<fo:table-cell display-align="center">
 							<fo:block text-align="right">
-								<xsl:choose>
-									<xsl:when test="ancestor::ogc:annex">
-										<xsl:number format="(A.1)" level="multiple" count="ogc:annex | ogc:formula"/>
-									</xsl:when>
-									<xsl:otherwise> <!-- not(ancestor::ogc:annex) -->
-										<!-- <xsl:text>(</xsl:text><xsl:number level="any" count="ogc:formula"/><xsl:text>)</xsl:text> -->
-									</xsl:otherwise>
-								</xsl:choose>
+								<xsl:apply-templates select="../ogc:name" mode="formula"/>
 							</fo:block>
 						</fo:table-cell>
 					</fo:table-row>
 				</fo:table-body>
-			</fo:table>
-			<fo:inline keep-together.within-line="always">
-			</fo:inline>
+			</fo:table>			
 		</fo:block>
 	</xsl:template>
+	
 	
 	<xsl:template match="ogc:br" priority="2">
 		<!-- <fo:block>&#xA0;</fo:block> -->

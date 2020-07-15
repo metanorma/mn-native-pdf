@@ -1052,11 +1052,6 @@
 		</fo:block>
 	</xsl:template>
 	
-	<xsl:template match="iho:formula/iho:dt/iho:stem">
-		<fo:inline>
-			<xsl:apply-templates />
-		</fo:inline>
-	</xsl:template>
 	
 	<xsl:template match="iho:formula/iho:stem">
 		<fo:block margin-top="6pt" margin-bottom="12pt" text-align="center">
