@@ -1090,7 +1090,7 @@
 	</xsl:template>
 
 	
-	<xsl:template match="iho:xref">
+	<xsl:template match="iho:xref" priority="2">
 		<xsl:param name="sectionNum"/>
 		
 		<xsl:variable name="target" select="normalize-space(@target)"/>

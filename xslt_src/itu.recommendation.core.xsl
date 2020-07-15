@@ -71,7 +71,7 @@
 	</xsl:variable>
 	
 	<xsl:template match="/">
-		<xsl:message>INFO: Document namespace: '<xsl:value-of select="namespace-uri(/*)"/>'</xsl:message>
+		<xsl:call-template name="namespaceCheck"/>
 		<fo:root xmlns:fo="http://www.w3.org/1999/XSL/Format" font-family="Times New Roman, STIX2Math" font-size="12pt" xml:lang="{$lang}">
 			<fo:layout-master-set>
 				<!-- cover page -->
@@ -1688,7 +1688,7 @@
 		</fo:inline>
 	</xsl:template>
 	
-	<xsl:template match="itu:xref">
+	<xsl:template match="itu:xref" priority="2">
 		<xsl:param name="sectionNum"/>
 		
 		<xsl:variable name="section" select="xalan:nodeset($contents)//item[@id = current()/@target]/@section"/>

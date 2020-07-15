@@ -71,7 +71,7 @@
 	</xsl:variable>
 	
 	<xsl:template match="/">
-		<xsl:message>INFO: Document namespace: '<xsl:value-of select="namespace-uri(/*)"/>'</xsl:message>
+		<xsl:call-template name="namespaceCheck"/>
 		<fo:root xmlns:fo="http://www.w3.org/1999/XSL/Format" font-family="SimSun" font-size="10.5pt" xml:lang="{$lang}"> <!--   -->
 			<fo:layout-master-set>
 				
@@ -1468,7 +1468,7 @@
 		</fo:inline>
 	</xsl:template>
 	
-	<xsl:template match="gb:xref">
+	<xsl:template match="gb:xref" priority="2">
 		<xsl:param name="sectionNum"/>
 		
 		<xsl:variable name="target" select="normalize-space(@target)"/>

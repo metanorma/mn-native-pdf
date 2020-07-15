@@ -43,6 +43,7 @@
 	</xsl:variable>
 	
 	<xsl:template match="/">
+		<xsl:call-template name="namespaceCheck"/>
 		<fo:root xmlns:fo="http://www.w3.org/1999/XSL/Format" font-family="Times New Roman, STIX2Math, HanSans" font-size="10pt" xml:lang="{$lang}">
 			<fo:layout-master-set>
 				<!-- Cover page -->
@@ -837,7 +838,7 @@
 		</fo:block>
 	</xsl:template>
 		
-	<xsl:template match="un:xref">
+	<xsl:template match="un:xref" priority="2">
 		<xsl:variable name="section" select="xalan:nodeset($contents)//item[@id = current()/@target]/@section"/>
 		<xsl:variable name="type" select="xalan:nodeset($contents)//item[@id = current()/@target]/@type"/>
 		<fo:basic-link internal-destination="{@target}" fox:alt-text="{@target}">

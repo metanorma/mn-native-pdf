@@ -127,7 +127,7 @@
 	</xsl:variable>
 	
 	<xsl:template match="/">
-		<xsl:call-template name="namespaceCheck"/>		
+		<xsl:call-template name="namespaceCheck"/>
 		<fo:root xmlns:fo="http://www.w3.org/1999/XSL/Format" font-family="Times New Roman, STIX2Math, HanSans" font-size="10.5pt" xml:lang="{$lang}">
 			<fo:layout-master-set>
 				<!-- Cover page -->
@@ -1781,7 +1781,7 @@
 	</xsl:template>
 		
 	
-	<xsl:template match="ogc:xref">
+	<xsl:template match="ogc:xref" priority="2">
 		<fo:basic-link internal-destination="{@target}" fox:alt-text="{@target}">
 			<xsl:variable name="section" select="xalan:nodeset($contents)//item[@id = current()/@target]/@section"/>
 			<!-- <xsl:if test="not(starts-with($section, 'Figure') or starts-with($section, 'Table'))"> -->
