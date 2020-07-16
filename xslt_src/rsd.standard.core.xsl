@@ -1386,7 +1386,7 @@
 	</xsl:template>
 	
 	
-	<xsl:template match="rsd:xref"  priority="2">
+	<xsl:template match="rsd:xref">
 		<fo:basic-link color="{$color-link}" internal-destination="{@target}" fox:alt-text="{@target}">
 			<xsl:variable name="section" select="xalan:nodeset($contents)//item[@id = current()/@target]/@section"/>
 			<!-- <xsl:if test="not(starts-with($section, 'Figure') or starts-with($section, 'Table'))"> -->
@@ -1605,19 +1605,19 @@
 		
 	</xsl:template>
 	
-	<xsl:template match="rsd:formula" priority="2">
+	<xsl:template match="rsd:formula">
 		<fo:block id="{@id}">
 			<xsl:apply-templates />
 		</fo:block>
 	</xsl:template>
 	
-	<xsl:template match="rsd:formula/rsd:dt/rsd:stem" priority="2">
+	<xsl:template match="rsd:formula/rsd:dt/rsd:stem">
 		<fo:inline>
 			<xsl:apply-templates />
 		</fo:inline>
 	</xsl:template>
 	
-	<xsl:template match="rsd:formula/rsd:stem" priority="2">
+	<xsl:template match="rsd:formula/rsd:stem">
 		<fo:block margin-top="6pt" margin-bottom="12pt">
 			<fo:table table-layout="fixed" width="100%">
 				<fo:table-column column-width="95%"/>

@@ -127,7 +127,7 @@
 	</xsl:variable>
 	
 	<xsl:template match="/">
-		<xsl:call-template name="namespaceCheck"/>
+		<xsl:call-template name="namespaceCheck"/>		
 		<fo:root xmlns:fo="http://www.w3.org/1999/XSL/Format" font-family="Times New Roman, STIX2Math, HanSans" font-size="10.5pt" xml:lang="{$lang}">
 			<fo:layout-master-set>
 				<!-- Cover page -->
@@ -1781,7 +1781,7 @@
 	</xsl:template>
 		
 	
-	<xsl:template match="ogc:xref" priority="2">
+	<xsl:template match="ogc:xref">
 		<fo:basic-link internal-destination="{@target}" fox:alt-text="{@target}">
 			<xsl:variable name="section" select="xalan:nodeset($contents)//item[@id = current()/@target]/@section"/>
 			<!-- <xsl:if test="not(starts-with($section, 'Figure') or starts-with($section, 'Table'))"> -->
@@ -1990,19 +1990,19 @@
 		
 	</xsl:template>
 	
-	<xsl:template match="ogc:formula" priority="2">
+	<xsl:template match="ogc:formula">
 		<fo:block id="{@id}">
 			<xsl:apply-templates />
 		</fo:block>
 	</xsl:template>
 	
-	<xsl:template match="ogc:formula/ogc:dt/ogc:stem" priority="2">
+	<xsl:template match="ogc:formula/ogc:dt/ogc:stem">
 		<fo:inline>
 			<xsl:apply-templates />
 		</fo:inline>
 	</xsl:template>
 	
-	<xsl:template match="ogc:formula/ogc:stem" priority="2">
+	<xsl:template match="ogc:formula/ogc:stem">
 		<fo:block margin-top="6pt" margin-bottom="12pt">
 			<fo:table table-layout="fixed" width="100%">
 				<fo:table-column column-width="95%"/>

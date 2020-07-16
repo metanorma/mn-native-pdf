@@ -63,7 +63,7 @@
 	</xsl:variable>
 	
 	<xsl:template match="/">
-		
+		<xsl:call-template name="namespaceCheck"/>
 		<xsl:variable name="xslfo">		
 			<fo:root xmlns:fo="http://www.w3.org/1999/XSL/Format" font-family="Helvetica Neue, Cambria Math" font-size="12pt" xml:lang="{$lang}">
 				<fo:layout-master-set>
@@ -1046,19 +1046,19 @@
 		</fo:block-container>		
 	</xsl:template>
 
-	<xsl:template match="iho:formula" priority="2">
+	<xsl:template match="iho:formula">
 		<fo:block id="{@id}">
 			<xsl:apply-templates />
 		</fo:block>
 	</xsl:template>
 	
-	<xsl:template match="iho:formula/iho:dt/iho:stem" priority="2">
+	<xsl:template match="iho:formula/iho:dt/iho:stem">
 		<fo:inline>
 			<xsl:apply-templates />
 		</fo:inline>
 	</xsl:template>
 	
-	<xsl:template match="iho:formula/iho:stem" priority="2">
+	<xsl:template match="iho:formula/iho:stem">
 		<fo:block margin-top="6pt" margin-bottom="12pt" text-align="center">
 			<xsl:apply-templates />						
 		</fo:block>
@@ -1090,7 +1090,7 @@
 	</xsl:template>
 
 	
-	<xsl:template match="iho:xref" priority="2">
+	<xsl:template match="iho:xref">
 		<xsl:param name="sectionNum"/>
 		
 		<xsl:variable name="target" select="normalize-space(@target)"/>

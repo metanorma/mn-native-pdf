@@ -1164,7 +1164,7 @@
 	</xsl:template>
 	
 	
-	<xsl:template match="csd:xref" priority="2">
+	<xsl:template match="csd:xref">
 		<fo:basic-link internal-destination="{@target}" fox:alt-text="{@target}">
 			<xsl:variable name="section" select="xalan:nodeset($contents)//item[@id = current()/@target]/@section"/>
 			<xsl:if test="not(starts-with($section, 'Figure') or starts-with($section, 'Table'))">
@@ -1298,19 +1298,19 @@
 		</fo:block>
 	</xsl:template>
 	
-	<xsl:template match="csd:formula" priority="2">
+	<xsl:template match="csd:formula">
 		<fo:block id="{@id}">
 			<xsl:apply-templates />
 		</fo:block>
 	</xsl:template>
 	
-	<xsl:template match="csd:formula/csd:dt/csd:stem" priority="2">
+	<xsl:template match="csd:formula/csd:dt/csd:stem">
 		<fo:inline>
 			<xsl:apply-templates />
 		</fo:inline>
 	</xsl:template>
 	
-	<xsl:template match="csd:formula/csd:stem" priority="2">
+	<xsl:template match="csd:formula/csd:stem">
 		<fo:block margin-top="6pt" margin-bottom="12pt">
 			<fo:table table-layout="fixed" width="100%">
 				<fo:table-column column-width="95%"/>

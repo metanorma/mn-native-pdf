@@ -2155,7 +2155,7 @@
 		</fo:inline>
 	</xsl:template>
 	
-	<xsl:template match="iso:xref" priority="2">
+	<xsl:template match="iso:xref">
 		<xsl:param name="sectionNum"/>
 		
 		<xsl:variable name="target" select="normalize-space(@target)"/>
@@ -2300,19 +2300,19 @@
 		</fo:block>
 	</xsl:template>
 	
-	<xsl:template match="iso:formula" priority="2">
+	<xsl:template match="iso:formula">
 		<fo:block id="{@id}">
 			<xsl:apply-templates />
 		</fo:block>
 	</xsl:template>
 	
-	<xsl:template match="iso:formula/iso:dt/iso:stem" priority="2">
+	<xsl:template match="iso:formula/iso:dt/iso:stem">
 		<fo:inline>
 			<xsl:apply-templates />
 		</fo:inline>
 	</xsl:template>
 	
-	<xsl:template match="iso:formula/iso:stem" priority="2">
+	<xsl:template match="iso:formula/iso:stem">
 		<fo:block margin-top="6pt" margin-bottom="12pt">
 			<fo:table table-layout="fixed" width="100%">
 				<fo:table-column column-width="95%"/>

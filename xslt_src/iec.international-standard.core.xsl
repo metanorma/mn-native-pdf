@@ -2457,7 +2457,7 @@
 	</xsl:template>
 	
 	
-	<xsl:template match="iec:xref" priority="2">
+	<xsl:template match="iec:xref">
 	
 		<xsl:variable name="docid">
 			<xsl:call-template name="getDocumentId"/>
@@ -2590,25 +2590,25 @@
 		</xsl:call-template>
 	</xsl:template>
 	
-	<xsl:template match="iec:formula" priority="2">
+	<xsl:template match="iec:formula">
 		<fo:block id="{@id}">
 			<xsl:apply-templates />
 		</fo:block>
 	</xsl:template>
 	
-	<xsl:template match="iec:formula/iec:dt/iec:stem" priority="2">
+	<xsl:template match="iec:formula/iec:dt/iec:stem">
 		<fo:inline>
 			<xsl:apply-templates />
 		</fo:inline>
 	</xsl:template>
 	
-	<xsl:template match="iec:admitted/iec:stem" priority="2">
+	<xsl:template match="iec:admitted/iec:stem">
 		<fo:inline> <!-- padding-left="6mm" -->
 			<xsl:apply-templates />
 		</fo:inline>
 	</xsl:template>
 	
-	<xsl:template match="iec:formula/iec:stem" priority="2">
+	<xsl:template match="iec:formula/iec:stem">
 		<fo:block margin-top="6pt" margin-bottom="12pt">
 			<fo:table table-layout="fixed" width="100%">
 				<fo:table-column column-width="95%"/>

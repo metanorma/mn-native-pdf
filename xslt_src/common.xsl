@@ -331,16 +331,6 @@
 		</xsl:if>
 	</xsl:attribute-set>
 	
-	<xsl:attribute-set name="xref-style">
-		<xsl:if test="$namespace = 'csa'">
-			<xsl:attribute name="text-decoration">underline</xsl:attribute>
-		</xsl:if>
-		<xsl:if test="$namespace = 'iho' or $namespace = 'iso' or $namespace = 'itu' or $namespace = 'nist' or $namespace = 'ogc' or $namespace = 'rsd'">
-			<xsl:attribute name="color">blue</xsl:attribute>
-			<xsl:attribute name="text-decoration">underline</xsl:attribute>
-		</xsl:if>		
-	</xsl:attribute-set>
-	
 	<xsl:template match="text()">
 		<xsl:value-of select="."/>
 	</xsl:template>
@@ -2541,44 +2531,6 @@
 		</xsl:choose>
 		<xsl:apply-templates/>
 	</xsl:template>	
-
-	<xsl:template match="*[local-name() = 'xref']">
-		<fo:basic-link internal-destination="{@target}" fox:alt-text="{@target}" xsl:use-attribute-sets="xref-style">
-			<xsl:if test="$namespace = 'iho' or $namespace = 'iso'">
-				<xsl:variable name="target" select="normalize-space(@target)"/>
-				<xsl:variable name="parent_section" select="xalan:nodeset($contents)//item[@id =$target]/@parent_section"/>
-				<xsl:variable name="currentSection">
-					<xsl:call-template name="getSection"/>
-				</xsl:variable>			
-				<xsl:variable name="type" select="xalan:nodeset($contents)//item[@id = $target]/@type"/>
-				<xsl:if test="$type = 'li' and contains($parent_section, $currentSection)">
-					<xsl:attribute name="color">black</xsl:attribute>
-					<xsl:attribute name="text-decoration">none</xsl:attribute>					
-				</xsl:if>
-			</xsl:if>			
-			<xsl:apply-templates />
-		</fo:basic-link>
-	</xsl:template>
-	
-	<!-- ====== -->
-	<!-- formula -->
-	<!-- ====== -->
-	<xsl:template match="*[local-name() = 'formula']/*[local-name() = 'dt']/*[local-name() = 'stem']">
-		<fo:inline>
-			<xsl:apply-templates />
-		</fo:inline>
-	</xsl:template>
-	
-	<xsl:template match="*[local-name() = 'formula']/*[local-name() = 'name']"/>
-	
-	<xsl:template match="*[local-name() = 'formula']/*[local-name() = 'name']" mode="formula">
-		<xsl:if test="normalize-space() != ''">
-			<xsl:text>(</xsl:text><xsl:apply-templates /><xsl:text>)</xsl:text>
-		</xsl:if>
-	</xsl:template>
-	<!-- ====== -->
-	<!-- ====== -->
-	
 	
 	<!-- convert YYYY-MM-DD to 'Month YYYY' or 'Month DD, YYYY' -->
 	<xsl:template name="convertDate">

@@ -1254,7 +1254,7 @@
 		</fo:inline>
 	</xsl:template>
 	
-	<xsl:template match="m3d:xref" priority="2">
+	<xsl:template match="m3d:xref">
 		<xsl:param name="sectionNum"/>
 		
 		<xsl:variable name="target" select="normalize-space(@target)"/>
@@ -1410,19 +1410,19 @@
 		</fo:block>
 	</xsl:template>
 	
-	<xsl:template match="m3d:formula" priority="2">
+	<xsl:template match="m3d:formula">
 		<fo:block id="{@id}">
 			<xsl:apply-templates />
 		</fo:block>
 	</xsl:template>
 	
-	<xsl:template match="m3d:formula/m3d:dt/m3d:stem" priority="2">
+	<xsl:template match="m3d:formula/m3d:dt/m3d:stem">
 		<fo:inline>
 			<xsl:apply-templates />
 		</fo:inline>
 	</xsl:template>
 	
-	<xsl:template match="m3d:formula/m3d:stem" priority="2">
+	<xsl:template match="m3d:formula/m3d:stem">
 		<fo:block margin-top="14pt" margin-bottom="14pt">
 			<fo:table table-layout="fixed" width="170mm">
 				<fo:table-column column-width="165mm"/>

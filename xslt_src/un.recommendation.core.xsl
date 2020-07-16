@@ -838,7 +838,7 @@
 		</fo:block>
 	</xsl:template>
 		
-	<xsl:template match="un:xref" priority="2">
+	<xsl:template match="un:xref">
 		<xsl:variable name="section" select="xalan:nodeset($contents)//item[@id = current()/@target]/@section"/>
 		<xsl:variable name="type" select="xalan:nodeset($contents)//item[@id = current()/@target]/@type"/>
 		<fo:basic-link internal-destination="{@target}" fox:alt-text="{@target}">
@@ -1277,7 +1277,7 @@
 	</xsl:template>
 	
 	
-	<xsl:template match="un:formula" name="formula" priority="2">
+	<xsl:template match="un:formula" name="formula">
 		<fo:block id="{@id}" margin-top="6pt">
 			<fo:table table-layout="fixed" width="100%">
 				<fo:table-column column-width="95%"/>
