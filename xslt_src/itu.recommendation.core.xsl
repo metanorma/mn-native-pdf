@@ -674,7 +674,7 @@
 	</xsl:template>
 	
 	
-	<xsl:template match="itu3" mode="contents">
+	<xsl:template match="itu:formula" mode="contents">
 		<xsl:param name="sectionNum" />
 		<item level="" id="{@id}" display="false" type="formula">
 			<xsl:variable name="title-inequality">
@@ -1640,7 +1640,7 @@
 		</xsl:apply-templates>
 	</xsl:template>
 	
-	<xsl:template match="itu:formula" name="formula" priority="2">
+	<xsl:template match="itu:formula" name="formula">
 		<xsl:param name="sectionNum" />
 		<fo:block id="{@id}" margin-top="6pt" margin-bottom="6pt"> <!--  text-align="center" -->
 			<xsl:apply-templates />
@@ -1649,7 +1649,7 @@
 		</fo:block>
 	</xsl:template>
 	
-	<xsl:template match="itu:formula/itu:stem" priority="2">
+	<xsl:template match="itu:formula/itu:stem">
 		<fo:table table-layout="fixed" width="100%">
 			<fo:table-column column-width="95%"/>
 			<fo:table-column column-width="5%"/>
@@ -1688,7 +1688,7 @@
 		</fo:inline>
 	</xsl:template>
 	
-	<xsl:template match="itu:xref" priority="2">
+	<xsl:template match="itu:xref">
 		<xsl:param name="sectionNum"/>
 		
 		<xsl:variable name="section" select="xalan:nodeset($contents)//item[@id = current()/@target]/@section"/>
