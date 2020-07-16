@@ -1655,19 +1655,19 @@
 		</fo:block>
 	</xsl:template>
 	
-	<xsl:template match="gb:formula">
+	<xsl:template match="gb:formula" priority="2">
 		<fo:block id="{@id}">
 			<xsl:apply-templates />
 		</fo:block>
 	</xsl:template>
 	
-	<xsl:template match="gb:formula/gb:dt/gb:stem">
+	<xsl:template match="gb:formula/gb:dt/gb:stem" priority="2">
 		<fo:inline>
 			<xsl:apply-templates />
 		</fo:inline>
 	</xsl:template>
 	
-	<xsl:template match="gb:formula/gb:stem">
+	<xsl:template match="gb:formula/gb:stem" priority="2">
 		<fo:block font-size="11pt" margin-top="14pt" margin-bottom="14pt">
 			<fo:table table-layout="fixed" width="170mm">
 				<fo:table-column column-width="165mm"/>

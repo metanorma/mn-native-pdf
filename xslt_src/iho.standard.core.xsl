@@ -1046,19 +1046,19 @@
 		</fo:block-container>		
 	</xsl:template>
 
-	<xsl:template match="iho:formula">
+	<xsl:template match="iho:formula" priority="2">
 		<fo:block id="{@id}">
 			<xsl:apply-templates />
 		</fo:block>
 	</xsl:template>
 	
-	<xsl:template match="iho:formula/iho:dt/iho:stem">
+	<xsl:template match="iho:formula/iho:dt/iho:stem" priority="2">
 		<fo:inline>
 			<xsl:apply-templates />
 		</fo:inline>
 	</xsl:template>
 	
-	<xsl:template match="iho:formula/iho:stem">
+	<xsl:template match="iho:formula/iho:stem" priority="2">
 		<fo:block margin-top="6pt" margin-bottom="12pt" text-align="center">
 			<xsl:apply-templates />						
 		</fo:block>

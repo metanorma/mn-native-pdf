@@ -2590,25 +2590,25 @@
 		</xsl:call-template>
 	</xsl:template>
 	
-	<xsl:template match="iec:formula">
+	<xsl:template match="iec:formula" priority="2">
 		<fo:block id="{@id}">
 			<xsl:apply-templates />
 		</fo:block>
 	</xsl:template>
 	
-	<xsl:template match="iec:formula/iec:dt/iec:stem">
+	<xsl:template match="iec:formula/iec:dt/iec:stem" priority="2">
 		<fo:inline>
 			<xsl:apply-templates />
 		</fo:inline>
 	</xsl:template>
 	
-	<xsl:template match="iec:admitted/iec:stem">
+	<xsl:template match="iec:admitted/iec:stem" priority="2">
 		<fo:inline> <!-- padding-left="6mm" -->
 			<xsl:apply-templates />
 		</fo:inline>
 	</xsl:template>
 	
-	<xsl:template match="iec:formula/iec:stem">
+	<xsl:template match="iec:formula/iec:stem" priority="2">
 		<fo:block margin-top="6pt" margin-bottom="12pt">
 			<fo:table table-layout="fixed" width="100%">
 				<fo:table-column column-width="95%"/>

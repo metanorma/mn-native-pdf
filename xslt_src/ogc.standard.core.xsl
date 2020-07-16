@@ -1990,19 +1990,19 @@
 		
 	</xsl:template>
 	
-	<xsl:template match="ogc:formula">
+	<xsl:template match="ogc:formula" priority="2">
 		<fo:block id="{@id}">
 			<xsl:apply-templates />
 		</fo:block>
 	</xsl:template>
 	
-	<xsl:template match="ogc:formula/ogc:dt/ogc:stem">
+	<xsl:template match="ogc:formula/ogc:dt/ogc:stem" priority="2">
 		<fo:inline>
 			<xsl:apply-templates />
 		</fo:inline>
 	</xsl:template>
 	
-	<xsl:template match="ogc:formula/ogc:stem">
+	<xsl:template match="ogc:formula/ogc:stem" priority="2">
 		<fo:block margin-top="6pt" margin-bottom="12pt">
 			<fo:table table-layout="fixed" width="100%">
 				<fo:table-column column-width="95%"/>

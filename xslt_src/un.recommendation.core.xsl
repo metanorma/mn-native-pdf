@@ -1277,7 +1277,7 @@
 	</xsl:template>
 	
 	
-	<xsl:template match="un:formula" name="formula">
+	<xsl:template match="un:formula" name="formula" priority="2">
 		<fo:block id="{@id}" margin-top="6pt">
 			<fo:table table-layout="fixed" width="100%">
 				<fo:table-column column-width="95%"/>
