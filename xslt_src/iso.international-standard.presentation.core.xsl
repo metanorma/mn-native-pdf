@@ -1927,19 +1927,10 @@
 		</fo:block>
 	</xsl:template>
 	
-	<xsl:template match="iso:preferred">
-		<xsl:param name="sectionNum"/>
+	<xsl:template match="iso:preferred">		
 		<fo:block line-height="1.1">
 			<fo:block font-weight="bold" keep-with-next="always">
-				<fo:inline>
-					<xsl:variable name="section">
-						<xsl:call-template name="getSection">
-							<xsl:with-param name="sectionNum" select="$sectionNum"/>
-						</xsl:call-template>
-					</xsl:variable>
-					<xsl:value-of select="$section"/>
-					<!-- <xsl:value-of select="$sectionNum"/>.<xsl:number count="iso:term"/> -->
-				</fo:inline>
+				<xsl:apply-templates select="ancestor::iso:term/iso:name" mode="presentation"/>				
 			</fo:block>
 			<fo:block font-weight="bold" keep-with-next="always">
 				<xsl:apply-templates />

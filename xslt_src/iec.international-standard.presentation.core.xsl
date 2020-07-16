@@ -2272,9 +2272,7 @@
 		<xsl:param name="sectionNum"/>
 		<fo:block line-height="1.1" space-before="14pt">
 			<fo:block font-weight="bold" keep-with-next="always">
-				<fo:inline>
-					<xsl:value-of select="$sectionNum"/>.<xsl:number count="iec:term"/>
-				</fo:inline>
+				<xsl:apply-templates select="ancestor::iec:term/iec:name" mode="presentation"/>				
 			</fo:block>
 			<fo:block font-weight="bold" keep-with-next="always">
 				<xsl:apply-templates />

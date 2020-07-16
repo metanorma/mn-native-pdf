@@ -1007,16 +1007,7 @@
 	<xsl:template match="m3d:term">
 		<xsl:param name="sectionNum"/>
 		<fo:block id="{@id}" keep-with-next="always" margin-top="10pt" margin-bottom="8pt" line-height="1.1">
-			<fo:inline>
-				<xsl:variable name="section">
-					<xsl:for-each select="*[1]">
-						<xsl:call-template name="getSection">
-							<xsl:with-param name="sectionNum" select="$sectionNum"/>
-						</xsl:call-template>
-					</xsl:for-each>
-				</xsl:variable>
-				<xsl:value-of select="$section"/><!-- <xsl:text>.</xsl:text> -->
-			</fo:inline>
+			<xsl:apply-templates select="m3d:name" mode="presentation"/>
 		</fo:block>
 		<fo:block>
 			<xsl:apply-templates>

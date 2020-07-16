@@ -1214,12 +1214,6 @@
 	</xsl:template>
 	
 	<xsl:template match="rsd:preferred">
-		<xsl:param name="sectionNum"/>
-		<xsl:variable name="section">
-			<xsl:call-template name="getSection">
-				<xsl:with-param name="sectionNum" select="$sectionNum"/>
-			</xsl:call-template>
-		</xsl:variable>
 		<xsl:variable name="level">
 			<xsl:call-template name="getLevel"/>
 		</xsl:variable>
@@ -1231,9 +1225,7 @@
 		</xsl:variable>
 		<fo:block font-size="{$font-size}">
 			<fo:block font-weight="bold" keep-with-next="always">
-				<fo:inline>
-					<xsl:value-of select="$section"/><xsl:text>.</xsl:text>
-				</fo:inline>
+				<xsl:apply-templates select="ancestor::rsd:term/rsd:name" mode="presentation"/>
 			</fo:block>
 			<fo:block font-weight="bold" keep-with-next="always" line-height="1">
 				<xsl:apply-templates />

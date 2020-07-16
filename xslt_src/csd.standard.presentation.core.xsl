@@ -960,13 +960,7 @@
 		</fo:block>
 	</xsl:template>
 	
-	<xsl:template match="csd:preferred">
-		<xsl:param name="sectionNum"/>
-		<xsl:variable name="section">
-			<xsl:call-template name="getSection">
-				<xsl:with-param name="sectionNum" select="$sectionNum"/>
-			</xsl:call-template>
-		</xsl:variable>
+	<xsl:template match="csd:preferred">		
 		<xsl:variable name="level">
 			<xsl:call-template name="getLevel"/>
 		</xsl:variable>
@@ -978,10 +972,7 @@
 		</xsl:variable>
 		<fo:block font-size="{$font-size}" line-height="1.1">
 			<fo:block font-weight="bold" keep-with-next="always">
-				<fo:inline>
-					<xsl:value-of select="$section"/><xsl:text>.</xsl:text>
-					<!-- <xsl:value-of select="$sectionNum"/>.<xsl:number count="csd:term"/> -->
-				</fo:inline>
+				<xsl:apply-templates select="ancestor::csd:term/csd:name" mode="presentation"/>	
 			</fo:block>
 			<fo:block font-weight="bold" keep-with-next="always">
 				<xsl:apply-templates />

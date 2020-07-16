@@ -1268,12 +1268,10 @@
 		</fo:block>
 	</xsl:template>
 	
-	<xsl:template match="itu:preferred">
-		<xsl:param name="sectionNum"/>
+	<xsl:template match="itu:preferred">		
 		<!-- DEBUG need -->
 		<fo:block space-before="6pt" text-align="justify">
-			<fo:inline padding-right="5mm" font-weight="bold">
-				<!-- <xsl:value-of select="$sectionNum"/><xsl:number format=".1" level="multiple" count="itu:clause/itu:clause | itu:clause/itu:terms | itu:terms/itu:term"/> -->
+			<fo:inline padding-right="5mm" font-weight="bold">				
 				<xsl:variable name="level">
 					<xsl:call-template name="getLevel"/>
 				</xsl:variable>
@@ -1285,12 +1283,7 @@
 						<xsl:otherwise>5mm</xsl:otherwise>
 					</xsl:choose>
 				</xsl:attribute>
-				<xsl:variable name="section">
-					<xsl:call-template name="getSection">
-						<xsl:with-param name="sectionNum" select="$sectionNum"/>
-					</xsl:call-template>
-				</xsl:variable>
-				<xsl:value-of select="$section"/>
+				<xsl:apply-templates select="ancestor::itu:term/itu:name" mode="presentation"/>
 			</fo:inline>
 			<fo:inline font-weight="bold">
 				<xsl:apply-templates />

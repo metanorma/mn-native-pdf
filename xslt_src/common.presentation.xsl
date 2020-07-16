@@ -2585,6 +2585,26 @@
 	<!-- ====== -->
 	
 	
+	<!-- ====== -->
+	<!-- term      -->	
+	<!-- ====== -->
+	<xsl:template match="*[local-name() = 'term']/*[local-name() = 'name']"/>	
+	
+	<xsl:template match="*[local-name() = 'term']/*[local-name() = 'name']" mode="presentation">
+		<xsl:if test="normalize-space() != ''">
+			<fo:inline>
+				<xsl:apply-templates />
+				<xsl:if test="$namespace = 'csa' or $namespace = 'csd' or $namespace = 'gb' or $namespace = 'ogc'">
+					<xsl:text>.</xsl:text>
+				</xsl:if>
+			</fo:inline>
+		</xsl:if>
+	</xsl:template>
+	<!-- ====== -->
+	<!-- ====== -->
+	
+	
+	
 	<!-- convert YYYY-MM-DD to 'Month YYYY' or 'Month DD, YYYY' -->
 	<xsl:template name="convertDate">
 		<xsl:param name="date"/>
