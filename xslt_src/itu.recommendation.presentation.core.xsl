@@ -1026,25 +1026,12 @@
 		</fo:block>
 	</xsl:template>
 	
-	<xsl:template match="itu:note/itu:p" name="note">
-		<xsl:variable name="id" select="ancestor::*[local-name() = 'clause'][1]/@id"/>
+	<xsl:template match="itu:note/itu:p" name="note">		
 		<fo:block font-size="11pt" space-before="4pt" text-align="justify">
 			<xsl:if test="ancestor::itu:figure">
 				<xsl:attribute name="keep-with-previous">always</xsl:attribute>
 			</xsl:if>
-			<xsl:variable name="title-note">
-				<xsl:call-template name="getTitle">
-					<xsl:with-param name="name" select="'title-note'"/>
-				</xsl:call-template>
-			</xsl:variable>
-			<xsl:value-of select="$title-note"/>
-			<!-- <xsl:if test="../following-sibling::itu:note or ../preceding-sibling::itu:note"> -->
-			<xsl:if test="count(//itu:note[ancestor::*[local-name() = 'clause'][1][@id = $id] and not (ancestor::itu:table)]) &gt; 1">
-				<xsl:number count="itu:note[ancestor::*[local-name() = 'clause'][1][@id = $id] and not (ancestor::itu:table)]" level="any"/>
-			</xsl:if>
-				<!-- <xsl:number count="itu:note"/> --><xsl:text> </xsl:text>
-			<!-- </xsl:if> -->
-			<xsl:text>– </xsl:text>
+			<xsl:apply-templates select="../itu:name" mode="presentation"/>			
 			<xsl:apply-templates />
 		</fo:block>
 	</xsl:template>
@@ -1521,22 +1508,9 @@
 			<xsl:apply-templates mode="process"/>
 		</fo:block>
 	</xsl:template>
-	<xsl:template match="itu:ul//itu:note/itu:p  | itu:ol//itu:note/itu:p" mode="process">
-		<xsl:variable name="id" select="ancestor::*[local-name() = 'clause'][1]/@id"/>
+	<xsl:template match="itu:ul//itu:note/itu:p  | itu:ol//itu:note/itu:p" mode="process">		
 		<fo:block font-size="11pt" margin-top="4pt">			
-			<xsl:variable name="title-note">
-				<xsl:call-template name="getTitle">
-					<xsl:with-param name="name" select="'title-note'"/>
-				</xsl:call-template>
-			</xsl:variable>
-			<xsl:value-of select="$title-note"/>
-			<!-- <xsl:if test="../following-sibling::itu:note or ../preceding-sibling::itu:note"> -->
-			<xsl:if test="count(//itu:note[ancestor::*[@id = $id] and not (ancestor::itu:table)]) &gt; 1">
-				<xsl:number count="itu:note[ancestor::*[@id = $id] and not (ancestor::itu:table)]" level="any"/>
-			</xsl:if>
-				<!-- <xsl:number count="itu:note"/> --><xsl:text> </xsl:text>
-			<!-- </xsl:if> -->
-			<xsl:text>– </xsl:text>
+			<xsl:apply-templates select="../itu:name" mode="presentation"/>			
 			<xsl:apply-templates />
 		</fo:block>
 	</xsl:template>
@@ -1594,17 +1568,8 @@
 
 	<xsl:template match="itu:termnote">
 		<fo:block id="{@id}" margin-top="4pt">			
-			<xsl:variable name="title-note">
-				<xsl:call-template name="getTitle">
-					<xsl:with-param name="name" select="'title-note'"/>
-				</xsl:call-template>
-			</xsl:variable>
-			<xsl:value-of select="$title-note"/>
-				<xsl:if test="following-sibling::itu:termnote or preceding-sibling::itu:termnote">
-					<xsl:number/><xsl:text> </xsl:text>
-				</xsl:if>
-				<xsl:text>– </xsl:text>
-				<xsl:apply-templates />
+			<xsl:apply-templates select="itu:name" mode="presentation"/>
+			<xsl:apply-templates />
 		</fo:block>
 	</xsl:template>
 	<xsl:template match="itu:termnote/itu:p">
@@ -1659,12 +1624,8 @@
 						</fo:block>
 					</fo:table-cell>
 					<fo:table-cell display-align="center">
-						<fo:block text-align="right" margin-left="0mm">
-							<!-- <xsl:value-of select="xalan:nodeset($contents)//item[@id = current()/ancestor::itu:formula[1]/@id]/@number"/> -->
-							<xsl:apply-templates select="../itu:name" mode="formula"/>
-							<!-- <xsl:call-template name="getItemNumber">
-								<xsl:with-param name="sectionNum" select="$sectionNum"/>
-							</xsl:call-template> -->
+						<fo:block text-align="right" margin-left="0mm">							
+							<xsl:apply-templates select="../itu:name" mode="presentation"/>							
 						</fo:block>
 					</fo:table-cell>
 				</fo:table-row>

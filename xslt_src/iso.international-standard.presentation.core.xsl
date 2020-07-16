@@ -2008,16 +2008,7 @@
 	
 	<xsl:template match="iso:termnote">
 		<fo:block font-size="10pt" margin-top="8pt" margin-bottom="8pt" text-align="justify">
-			<!-- <xsl:text>Note </xsl:text>
-			<xsl:number />
-			<xsl:text> to entry: </xsl:text> -->
-			<xsl:variable name="num"><xsl:number /></xsl:variable>			
-			<xsl:variable name="title-note-to-entry">
-				<xsl:call-template name="getTitle">
-					<xsl:with-param name="name" select="'title-note-to-entry'"/>
-				</xsl:call-template>
-			</xsl:variable>
-			<xsl:value-of select="java:replaceAll(java:java.lang.String.new($title-note-to-entry),'#',$num)"/>
+			<xsl:apply-templates select="iso:name" mode="presentation"/>			
 			<xsl:apply-templates />
 		</fo:block>
 	</xsl:template>
@@ -2178,18 +2169,9 @@
 	</xsl:template>
 	
 	<xsl:template match="iso:note/iso:p" name="note">
-		<fo:block font-size="10pt" margin-top="8pt" margin-bottom="12pt" text-align="justify">
-			<xsl:variable name="claims_id" select="ancestor::iso:clause[1]/@id"/>
+		<fo:block font-size="10pt" margin-top="8pt" margin-bottom="12pt" text-align="justify">			
 			<fo:inline padding-right="6mm">				
-				<xsl:variable name="title-note">
-					<xsl:call-template name="getTitle">
-						<xsl:with-param name="name" select="'title-note'"/>
-					</xsl:call-template>
-				</xsl:variable>
-				<xsl:value-of select="$title-note"/>
-				<xsl:if test="count(ancestor::iso:clause[1]//iso:note) &gt; 1">
-					<xsl:number count="iso:note[ancestor::iso:clause[@id = $claims_id]]" level="any"/>
-				</xsl:if>
+				<xsl:apply-templates select="../iso:name" mode="presentation"/>				
 			</fo:inline>
 			<xsl:apply-templates />
 		</fo:block>
@@ -2279,7 +2261,7 @@
 						</fo:table-cell>
 						<fo:table-cell display-align="center">
 							<fo:block text-align="right">
-								<xsl:apply-templates select="../iso:name" mode="formula"/>
+								<xsl:apply-templates select="../iso:name" mode="presentation"/>
 							</fo:block>
 						</fo:table-cell>
 					</fo:table-row>

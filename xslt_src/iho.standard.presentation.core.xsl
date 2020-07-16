@@ -957,18 +957,9 @@
 		<fo:block font-size="11pt" margin-top="8pt" margin-bottom="12pt" text-align="justify">
 			<xsl:if test="ancestor::iho:td">
 				<xsl:attribute name="font-size">12pt</xsl:attribute>
-			</xsl:if>
-			<xsl:variable name="claims_id" select="ancestor::iho:clause[1]/@id"/>
+			</xsl:if>			
 			<fo:inline font-size="11pt" padding-right="2mm">
-				<xsl:variable name="title-note">
-					<xsl:call-template name="getTitle">
-						<xsl:with-param name="name" select="'title-note'"/>
-					</xsl:call-template>
-				</xsl:variable>
-				<xsl:value-of select="$title-note"/>
-				<xsl:if test="count(ancestor::iho:clause[1]//iho:note) &gt; 1">
-					<xsl:number count="iho:note[ancestor::iho:clause[@id = $claims_id]]" level="any"/>
-				</xsl:if>
+				<xsl:apply-templates select="../iho:name" mode="presentation"/>				
 			</fo:inline>
 			<xsl:apply-templates />
 		</fo:block>
@@ -1342,13 +1333,7 @@
 	
 	<xsl:template match="iho:termnote">
 		<fo:block font-size="10pt" margin-top="8pt" margin-bottom="8pt" text-align="justify">			
-			<xsl:variable name="num"><xsl:number /></xsl:variable>
-			<xsl:variable name="title-note-to-entry">
-				<xsl:call-template name="getTitle">
-					<xsl:with-param name="name" select="'title-note-to-entry'"/>
-				</xsl:call-template>
-			</xsl:variable>
-			<xsl:value-of select="java:replaceAll(java:java.lang.String.new($title-note-to-entry),'#',$num)"/>
+			<xsl:apply-templates select="iho:name" mode="presentation"/>
 			<xsl:apply-templates />
 		</fo:block>
 	</xsl:template>

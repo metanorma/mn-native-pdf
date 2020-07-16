@@ -21,15 +21,6 @@
 			<title-table lang="zh">表 </title-table>
 		</xsl:if>
 	
-		<title-note lang="en">NOTE </title-note>
-		<title-note lang="fr">NOTE </title-note>
-		<xsl:if test="$namespace = 'iso' or $namespace = 'iec' or $namespace = 'itu' or $namespace = 'unece' or $namespace = 'unece-rec' or $namespace = 'nist' or $namespace = 'ogc' or $namespace = 'rsd' or $namespace = 'csa' or $namespace = 'csd' or $namespace = 'm3d' or $namespace = 'iho'">
-			<title-note lang="zh">NOTE </title-note>
-		</xsl:if>
-		<xsl:if test="$namespace = 'gb'">
-			<title-note lang="zh">注 </title-note>
-		</xsl:if>
-		
 		<title-figure lang="en">Figure </title-figure>
 		<title-figure lang="fr">Figure </title-figure>
 		<xsl:if test="$namespace = 'iso' or $namespace = 'iec' or $namespace = 'itu' or $namespace = 'unece' or $namespace = 'unece-rec' or $namespace = 'nist' or $namespace = 'ogc' or $namespace = 'rsd' or $namespace = 'csa' or $namespace = 'csd' or $namespace = 'm3d' or $namespace = 'iho'">
@@ -140,15 +131,6 @@
 			</xsl:if>
 		</title-part>		
 		<title-part lang="zh">第 # 部分:</title-part>
-		
-		<title-note-to-entry lang="en">Note # to entry: </title-note-to-entry>
-		<title-note-to-entry lang="fr">Note # à l'article: </title-note-to-entry>
-		<xsl:if test="$namespace = 'iso' or $namespace = 'iec' or $namespace = 'itu' or $namespace = 'unece' or $namespace = 'unece-rec' or $namespace = 'nist' or $namespace = 'ogc' or $namespace = 'rsd' or $namespace = 'csa' or $namespace = 'csd' or $namespace = 'm3d' or $namespace = 'iho'">
-			<title-note-to-entry lang="zh">Note # to entry: </title-note-to-entry>
-		</xsl:if>
-		<xsl:if test="$namespace = 'gb'">
-			<title-note-to-entry lang="zh">注#: </title-note-to-entry>				
-		</xsl:if>
 		
 		<title-modified lang="en">modified</title-modified>
 		<title-modified lang="fr">modifiée</title-modified>
@@ -1282,30 +1264,9 @@
 							</fo:inline>
 						</xsl:if>
 					</xsl:if>
-					<xsl:choose>
-						<xsl:when test="*[local-name() = 'name']">
-							<xsl:apply-templates select="*[local-name() = 'name']" mode="presentation"/>
-						</xsl:when>
-						<xsl:otherwise>
-							<xsl:variable name="title-note">
-								<xsl:call-template name="getTitle">
-									<xsl:with-param name="name" select="'title-note'"/>
-								</xsl:call-template>
-							</xsl:variable>
-							<xsl:value-of select="$title-note"/>
-							<xsl:if test="$namespace = 'iso' or $namespace = 'itu' or $namespace = 'iec' or $namespace = 'ogc'  or $namespace = 'gb' or $namespace = 'm3d' or $namespace = 'iho'">
-								<xsl:variable name="id" select="ancestor::*[local-name() = 'table'][1]/@id"/>
-								<xsl:if test="count(//*[local-name()='note'][ancestor::*[@id = $id]]) &gt; 1">
-									<xsl:number count="*[local-name()='note'][ancestor::*[@id = $id]]" level="any"/>
-								</xsl:if>
-								<xsl:if test="$namespace = 'gb'"><xsl:text>:</xsl:text></xsl:if>
-							</xsl:if>
-							
-							<xsl:if test="$namespace = 'nist' or $namespace = 'unece'  or $namespace = 'unece-rec' or $namespace = 'csd'">
-								<xsl:number format="1 "/>
-							</xsl:if>
-						</xsl:otherwise>
-					</xsl:choose>
+				
+					<xsl:apply-templates select="*[local-name() = 'name']" mode="presentation"/>
+						
 				</fo:inline>
 				<xsl:apply-templates mode="process"/>
 			</fo:block>
@@ -1833,19 +1794,7 @@
 					<xsl:if test="normalize-space($key_iso) = 'true'">
 						<xsl:attribute name="margin-top">0</xsl:attribute>
 					</xsl:if>
-					<xsl:choose>
-						<xsl:when test="*[local-name() = 'name']">
-							<xsl:apply-templates select="*[local-name() = 'name']" mode="presentation"/>
-						</xsl:when>
-						<xsl:otherwise>
-							<xsl:variable name="title-note">
-								<xsl:call-template name="getTitle">
-									<xsl:with-param name="name" select="'title-note'"/>
-								</xsl:call-template>
-							</xsl:variable>
-							<xsl:value-of select="$title-note"/>
-						</xsl:otherwise>
-					</xsl:choose>
+					<xsl:apply-templates select="*[local-name() = 'name']" mode="presentation"/>
 				</fo:block>
 			</fo:table-cell>
 			<fo:table-cell>
@@ -2603,16 +2552,35 @@
 	<xsl:template match="*[local-name() = 'note']/*[local-name() = 'name'] |
 														*[local-name() = 'termnote']/*[local-name() = 'name']"/>	
 	
-	<xsl:template match="*[local-name() = 'note']/*[local-name() = 'name'] |
-																*[local-name() = 'termnote']/*[local-name() = 'name']" mode="presentation">
+	<xsl:template match="*[local-name() = 'note']/*[local-name() = 'name']" mode="presentation">
+		<xsl:param name="sfx"/>
+		<xsl:variable name="suffix">
+			<xsl:choose>
+				<xsl:when test="$sfx != ''">
+					<xsl:value-of select="$sfx"/>					
+				</xsl:when>
+				<xsl:otherwise>
+					<xsl:if test="$namespace = 'gb' or $namespace = 'rsd' or $namespace = 'ogc'">
+						<xsl:text>:</xsl:text>
+					</xsl:if>
+					<xsl:if test="$namespace = 'itu' or $namespace = 'nist' or $namespace = 'unece-rec' or $namespace = 'unece'">				
+						<xsl:text> – </xsl:text>
+					</xsl:if>
+				</xsl:otherwise>
+			</xsl:choose>
+		</xsl:variable>
 		<xsl:if test="normalize-space() != ''">
 			<xsl:apply-templates />
-			<xsl:if test="$namespace = 'gb'">
-				<xsl:text>:</xsl:text>
-			</xsl:if>
+			<xsl:value-of select="$suffix"/>
 		</xsl:if>
 	</xsl:template>
 	
+	<xsl:template match="*[local-name() = 'termnote']/*[local-name() = 'name']" mode="presentation">
+		<xsl:if test="normalize-space() != ''">
+			<xsl:apply-templates />
+			<xsl:text>: </xsl:text>
+		</xsl:if>
+	</xsl:template>
 	<!-- ====== -->
 	<!-- ====== -->
 	

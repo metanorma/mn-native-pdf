@@ -1111,13 +1111,7 @@
 		<fo:block-container margin-left="0mm" margin-top="4pt" line-height="125%">
 			<fo:block>
 				<fo:inline padding-right="1mm">
-					<xsl:variable name="num"><xsl:number /></xsl:variable>
-					<xsl:variable name="title-note-to-entry">
-						<xsl:call-template name="getTitle">
-							<xsl:with-param name="name" select="'title-note-to-entry'"/>
-						</xsl:call-template>
-					</xsl:variable>
-					<xsl:value-of select="java:replaceAll(java:java.lang.String.new($title-note-to-entry),'#',$num)"/>					
+					<xsl:apply-templates select="m3d:name" mode="presentation"/>
 				</fo:inline>
 				<xsl:apply-templates />
 			</fo:block>
@@ -1278,16 +1272,9 @@
 		<fo:block-container margin-left="0mm" margin-top="4pt" line-height="125%">
 			<fo:block>
 				<fo:inline padding-right="5mm" font-weight="bold">
-					<xsl:variable name="title-note">
-						<xsl:call-template name="getTitle">
-							<xsl:with-param name="name" select="'title-note'"/>
-						</xsl:call-template>
-					</xsl:variable>
-					<xsl:value-of select="$title-note"/>
-					<xsl:if test="count(ancestor::m3d:clause[1]//m3d:note) &gt; 1">
-						<xsl:text> </xsl:text><xsl:number count="m3d:note[ancestor::m3d:clause[@id = $claims_id]]" level="any"/>
-					</xsl:if>
-					<xsl:text>:</xsl:text>
+					<xsl:apply-templates select="../m3d:name" mode="presentation">
+						<xsl:with-param name="sfx" select="':'"/>
+					</xsl:apply-templates>					
 				</fo:inline>
 				<xsl:apply-templates />
 			</fo:block>
@@ -1380,7 +1367,7 @@
 						</fo:table-cell>
 						<fo:table-cell display-align="center">
 							<fo:block text-align="left">
-								<xsl:apply-templates select="../m3d:name" mode="formula"/>
+								<xsl:apply-templates select="../m3d:name" mode="presentation"/>
 							</fo:block>
 						</fo:table-cell>
 					</fo:table-row>

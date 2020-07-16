@@ -2338,13 +2338,7 @@
 	
 	<xsl:template match="iec:termnote">
 		<fo:block font-size="8pt" margin-top="5pt" margin-bottom="5pt">			
-			<xsl:variable name="num"><xsl:number /></xsl:variable>		
-			<xsl:variable name="title-note-to-entry">
-				<xsl:call-template name="getTitle">
-					<xsl:with-param name="name" select="'title-note-to-entry'"/>
-				</xsl:call-template>
-			</xsl:variable>
-			<xsl:value-of select="java:replaceAll(java:java.lang.String.new($title-note-to-entry),'#',$num)"/>
+			<xsl:apply-templates select="iec:name" mode="presentation"/>			
 			<xsl:apply-templates />
 		</fo:block>
 	</xsl:template>
@@ -2475,18 +2469,7 @@
 				<xsl:attribute name="margin-bottom">9pt</xsl:attribute>
 			</xsl:if>
 			<fo:inline padding-right="6mm">
-				<xsl:variable name="title-note">
-					<xsl:call-template name="getTitle">
-						<xsl:with-param name="name" select="'title-note'"/>
-					</xsl:call-template>
-				</xsl:variable>
-				<xsl:value-of select="$title-note"/>
-				<xsl:if test="ancestor::iec:figure">
-					<xsl:variable name="id" select="ancestor::iec:figure[1]/@id"/>
-					<xsl:if test="count(//iec:note[ancestor::*[@id = $id]]) &gt; 1">
-						<xsl:number count="iec:note[ancestor::*[@id = $id]]" level="any"/>
-					</xsl:if>
-				</xsl:if>
+				<xsl:apply-templates select="../iec:name" mode="presentation"/>				
 			</fo:inline>
 			<xsl:apply-templates />
 		</fo:block>
@@ -2581,7 +2564,7 @@
 						</fo:table-cell>
 						<fo:table-cell display-align="center">
 							<fo:block text-align="right" margin-right="-10mm">
-								<xsl:apply-templates select="../iec:name" mode="formula"/>
+								<xsl:apply-templates select="../iec:name" mode="presentation"/>
 							</fo:block>
 						</fo:table-cell>
 					</fo:table-row>

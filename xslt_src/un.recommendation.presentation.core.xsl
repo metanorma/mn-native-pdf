@@ -771,17 +771,8 @@
 	
 	<xsl:template match="un:ul//un:note |  un:ol//un:note"/>
 	<xsl:template match="un:ul//un:note/un:p  | un:ol//un:note/un:p" mode="process">
-		<fo:block font-size="11pt" margin-top="4pt">
-			<xsl:variable name="title-note">
-				<xsl:call-template name="getTitle">
-					<xsl:with-param name="name" select="'title-note'"/>
-				</xsl:call-template>
-			</xsl:variable>
-			<xsl:value-of select="$title-note"/>
-			<xsl:if test="../following-sibling::un:note or ../preceding-sibling::un:note">
-					<xsl:number count="un:note"/><xsl:text> </xsl:text>
-				</xsl:if>
-			<xsl:text>– </xsl:text>
+		<fo:block font-size="11pt" margin-top="4pt">			
+			<xsl:apply-templates select="../un:name" mode="presentation"/>
 			<xsl:apply-templates />
 		</fo:block>
 	</xsl:template>
@@ -1228,36 +1219,21 @@
 				<xsl:if test="../@type = 'source' or ../@type = 'abbreviation'">
 					<xsl:attribute name="font-size">9pt</xsl:attribute>
 					<xsl:attribute name="text-align">justify</xsl:attribute>
-					<xsl:attribute name="padding-top">0mm</xsl:attribute>
-					<fo:inline>
-						<xsl:call-template name="capitalize">
-							<xsl:with-param name="str" select="../@type"/>
-						</xsl:call-template>
-						<xsl:text>: </xsl:text>
-					</fo:inline>
+					<xsl:attribute name="padding-top">0mm</xsl:attribute>					
 				</xsl:if>
-				<!-- <fo:inline padding-right="4mm"><xsl:text>NOTE </xsl:text>
-				<xsl:if test="../following-sibling::un:note or ../preceding-sibling::un:note">
-						<xsl:number count="un:note"/><xsl:text> </xsl:text>
-					</xsl:if>
-				</fo:inline> -->
+				<fo:inline>
+					<xsl:apply-templates select="../un:name" mode="presentation">
+						<xsl:with-param name="sfx" select="': '"/>
+					</xsl:apply-templates>
+				</fo:inline>
 				<xsl:apply-templates />
 			</fo:block>
 		</fo:block-container>
 	</xsl:template>	
 	
 	<xsl:template match="un:termnote">
-		<fo:block margin-top="4pt">
-			<xsl:variable name="title-note">
-				<xsl:call-template name="getTitle">
-					<xsl:with-param name="name" select="'title-note'"/>
-				</xsl:call-template>
-			</xsl:variable>
-			<xsl:value-of select="$title-note"/>
-			<xsl:if test="following-sibling::un:termnote or preceding-sibling::un:termnote">
-				<xsl:number/><xsl:text> </xsl:text>
-			</xsl:if>
-			<xsl:text>– </xsl:text>
+		<fo:block margin-top="4pt">			
+			<xsl:apply-templates select="un:name" mode="presentation"/>
 			<xsl:apply-templates />
 		</fo:block>
 	</xsl:template>
@@ -1285,7 +1261,7 @@
 						</fo:table-cell>
 						<fo:table-cell> <!--  display-align="center" -->
 							<fo:block text-align="right">
-								<xsl:apply-templates select="un:name" mode="formula"/>
+								<xsl:apply-templates select="un:name" mode="presentation"/>
 							</fo:block>
 						</fo:table-cell>
 					</fo:table-row>

@@ -1317,13 +1317,7 @@
 						<fo:table-row>
 							<fo:table-cell>
 								<fo:block font-family="SimHei">
-									<xsl:variable name="num"><xsl:number /></xsl:variable>			
-									<xsl:variable name="title-note-to-entry">
-										<xsl:call-template name="getTitle">
-											<xsl:with-param name="name" select="'title-note-to-entry'"/>
-										</xsl:call-template>
-									</xsl:variable>
-									<xsl:value-of select="java:replaceAll(java:java.lang.String.new($title-note-to-entry),'#',$num)"/>									
+									<xsl:apply-templates select="gb:name" mode="presentation"/>									
 								</fo:block>
 							</fo:table-cell>
 							<fo:table-cell>
@@ -1491,8 +1485,7 @@
 		</fo:block>
 	</xsl:template>
 	
-	<xsl:template match="gb:note/gb:p" name="note">
-		<xsl:variable name="claims_id" select="ancestor::gb:clause[1]/@id"/>
+	<xsl:template match="gb:note/gb:p" name="note">		
 		<fo:block-container font-size="9pt" margin-left="7.4mm" margin-top="4pt" line-height="125%">
 			<fo:block-container margin-left="0mm">
 				<fo:table table-layout="fixed" width="100%">
@@ -1502,16 +1495,7 @@
 						<fo:table-row>
 							<fo:table-cell>
 								<fo:block font-family="SimHei">
-									<xsl:variable name="title-note">
-										<xsl:call-template name="getTitle">
-											<xsl:with-param name="name" select="'title-note'"/>
-										</xsl:call-template>
-									</xsl:variable>
-									<xsl:value-of select="normalize-space($title-note)"/>									
-									<xsl:if test="count(ancestor::gb:clause[1]//gb:note) &gt; 1">
-										<xsl:text> </xsl:text><xsl:number count="gb:note[ancestor::gb:clause[@id = $claims_id]]" level="any"/>
-									</xsl:if>
-									<xsl:text>:</xsl:text>
+									<xsl:apply-templates select="../gb:name" mode="presentation"/>
 								</fo:block>
 							</fo:table-cell>
 							<fo:table-cell>
@@ -1626,7 +1610,7 @@
 						</fo:table-cell>
 						<fo:table-cell display-align="center">
 							<fo:block text-align="left">
-								<xsl:apply-templates select="../gb:name" mode="formula"/>
+								<xsl:apply-templates select="../gb:name" mode="presentation"/>
 							</fo:block>
 						</fo:table-cell>
 					</fo:table-row>

@@ -1046,13 +1046,7 @@
 	
 	<xsl:template match="csd:termnote">
 		<fo:block font-size="10pt" margin-bottom="12pt">
-			<xsl:variable name="num"><xsl:number /></xsl:variable>
-			<xsl:variable name="title-note-to-entry">
-				<xsl:call-template name="getTitle">
-					<xsl:with-param name="name" select="'title-note-to-entry'"/>
-				</xsl:call-template>
-			</xsl:variable>
-			<xsl:value-of select="java:replaceAll(java:java.lang.String.new($title-note-to-entry),'#',$num)"/>			
+			<xsl:apply-templates select="csd:name" mode="presentation"/>			
 			<xsl:apply-templates />
 		</fo:block>
 	</xsl:template>
@@ -1219,12 +1213,9 @@
 	
 	<xsl:template match="csd:note/csd:p" name="note">
 		<fo:block font-size="10pt" margin-bottom="12pt">
-			<xsl:variable name="title-note">
-				<xsl:call-template name="getTitle">
-					<xsl:with-param name="name" select="'title-note'"/>
-				</xsl:call-template>
-			</xsl:variable>
-			<fo:inline padding-right="6mm"><xsl:value-of select="$title-note"/><xsl:number count="csd:note"/></fo:inline>
+			<fo:inline padding-right="6mm">
+				<xsl:apply-templates select="../csd:name" mode="presentation"/>
+			</fo:inline>
 			<xsl:apply-templates />
 		</fo:block>
 	</xsl:template>
@@ -1306,7 +1297,7 @@
 						</fo:table-cell>
 						<fo:table-cell display-align="center">
 							<fo:block text-align="right">
-								<xsl:apply-templates select="../csd:name" mode="formula"/>
+								<xsl:apply-templates select="../csd:name" mode="presentation"/>
 							</fo:block>
 						</fo:table-cell>
 					</fo:table-row>

@@ -1272,13 +1272,7 @@
 	
 	<xsl:template match="csa:termnote">
 		<fo:block font-size="10pt" margin-bottom="12pt">
-			<xsl:variable name="num"><xsl:number /></xsl:variable>			
-			<xsl:variable name="title-note-to-entry">
-				<xsl:call-template name="getTitle">
-					<xsl:with-param name="name" select="'title-note-to-entry'"/>
-				</xsl:call-template>
-			</xsl:variable>
-			<xsl:value-of select="java:replaceAll(java:java.lang.String.new($title-note-to-entry),'#',$num)"/>			
+			<xsl:apply-templates select="csa:name" mode="presentation"/>			
 			<xsl:apply-templates />
 		</fo:block>
 	</xsl:template>
@@ -1517,18 +1511,9 @@
 		<fo:block font-size="10pt" margin-top="12pt" margin-bottom="12pt" line-height="115%">
 			<xsl:if test="ancestor::csa:ul or ancestor::csa:ol and not(ancestor::csa:note[1]/following-sibling::*)">
 				<xsl:attribute name="margin-bottom">0pt</xsl:attribute>
-			</xsl:if>
-			<xsl:variable name="clauseid" select="ancestor::csa:clause[1]/@id"/>
+			</xsl:if>			
 			<fo:inline padding-right="4mm">
-				<xsl:variable name="title-note">
-					<xsl:call-template name="getTitle">
-						<xsl:with-param name="name" select="'title-note'"/>
-					</xsl:call-template>
-				</xsl:variable>
-				<xsl:value-of select="$title-note"/>
-				<xsl:if test="count(//csa:note[ancestor::csa:clause[1][@id = $clauseid]]) &gt; 1">
-					<xsl:number count="csa:note[ancestor::csa:clause[1][@id = $clauseid]]" level="any"/>
-				</xsl:if>
+				<xsl:apply-templates select="../csa:name" mode="presentation"/>				
 			</fo:inline>
 			<xsl:apply-templates />
 		</fo:block>
@@ -1611,7 +1596,7 @@
 						</fo:table-cell>
 						<fo:table-cell display-align="center">
 							<fo:block text-align="right">
-								<xsl:apply-templates select="../csa:name" mode="formula"/>
+								<xsl:apply-templates select="../csa:name" mode="presentation"/>
 							</fo:block>
 						</fo:table-cell>
 					</fo:table-row>
