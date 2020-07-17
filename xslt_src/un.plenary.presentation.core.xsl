@@ -815,7 +815,7 @@
 						<xsl:call-template name="getSection"/>
 					</xsl:for-each>
 				</xsl:variable>
-				<fo:block id="{@id}" font-size="14pt" font-weight="bold" space-before="3pt" margin-bottom="18pt" keep-with-next="always">
+				<fo:block font-size="14pt" font-weight="bold" space-before="3pt" margin-bottom="18pt" keep-with-next="always">
 					<xsl:value-of select="$section"/>
 				</fo:block>
 			</xsl:if>
