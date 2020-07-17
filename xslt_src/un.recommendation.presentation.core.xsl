@@ -915,7 +915,7 @@
 				<xsl:otherwise>12pt</xsl:otherwise>
 			</xsl:choose>
 		</xsl:variable>
-		<fo:block id="{$id}" font-size="{$font-size}" font-weight="bold" margin-top="30pt" margin-bottom="16pt" keep-with-next="always">
+		<fo:block font-size="{$font-size}" font-weight="bold" margin-top="30pt" margin-bottom="16pt" keep-with-next="always">
 			<xsl:apply-templates />
 		</fo:block>
 	</xsl:template>
