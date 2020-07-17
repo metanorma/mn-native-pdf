@@ -859,14 +859,14 @@
 		</xsl:variable>
 		<xsl:choose>
 			<xsl:when test="$level = 1">
-				<fo:block id="{$id}" font-size="{$font-size}" font-weight="bold" space-before="3pt" keep-with-next="always">					
+				<fo:block font-size="{$font-size}" font-weight="bold" space-before="3pt" keep-with-next="always">					
 					<fo:block margin-bottom="12pt">
 						<xsl:apply-templates />
 					</fo:block>
 				</fo:block>
 			</xsl:when>
 			<xsl:otherwise>			
-				<fo:block id="{$id}" font-size="{$font-size}" font-weight="bold" margin-left="1mm" space-before="3pt" margin-bottom="6pt" keep-with-next="always">
+				<fo:block font-size="{$font-size}" font-weight="bold" margin-left="1mm" space-before="3pt" margin-bottom="6pt" keep-with-next="always">
 					<xsl:apply-templates />
 				</fo:block>
 			</xsl:otherwise>
