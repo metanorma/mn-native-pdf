@@ -624,34 +624,24 @@
 		<xsl:apply-templates />
 	</xsl:template>
 	
-	<xsl:template match="iho:clause//iho:clause[not(iho:title)]">
-		<xsl:param name="sectionNum"/>
-		<xsl:variable name="section">
-			<xsl:call-template name="getSection">
-				<xsl:with-param name="sectionNum" select="$sectionNum"/>
-			</xsl:call-template>
-		</xsl:variable>
-		
-		<fo:block margin-top="3pt" ><!-- margin-bottom="6pt" -->
-			<fo:inline font-weight="bold" padding-right="3mm">
-				<xsl:value-of select="$section"/><!-- <xsl:number format=".1 "  level="multiple" count="iho:clause/iho:clause" /> -->
-			</fo:inline>
-			<xsl:apply-templates>
-				<xsl:with-param name="sectionNum" select="$sectionNum"/>
-				<xsl:with-param name="inline" select="'true'"/>
-			</xsl:apply-templates>
+
+	<!-- ====== -->
+	<!-- title      -->
+	<!-- ====== -->
+	
+	<xsl:template match="iho:annex/iho:title">
+		<fo:block font-size="13pt" font-weight="bold" text-align="center" margin-bottom="12pt" keep-with-next="always">			
+			<xsl:apply-templates />
 		</fo:block>
 	</xsl:template>
-
-	
+		
+	<xsl:template match="iho:references[position() &gt; 1]/iho:title">
+		<fo:block font-size="16pt" font-weight="bold" text-align="center" margin-top="6pt" margin-bottom="36pt" keep-with-next="always">
+			<xsl:apply-templates />
+		</fo:block>
+	</xsl:template>
 		
 	<xsl:template match="iho:title">
-		<xsl:param name="sectionNum"/>
-		
-		<xsl:variable name="parent-name"  select="local-name(..)"/>
-		<xsl:variable name="references_num_current">
-			<xsl:number level="any" count="iho:references"/>
-		</xsl:variable>
 		
 		<xsl:variable name="id">
 			<xsl:call-template name="getId"/>
@@ -660,13 +650,7 @@
 		<xsl:variable name="level">
 			<xsl:call-template name="getLevel"/>
 		</xsl:variable>
-		
-		<xsl:variable name="section">
-			<xsl:call-template name="getSection">
-				<xsl:with-param name="sectionNum" select="$sectionNum"/>
-			</xsl:call-template>
-		</xsl:variable>
-		
+	
 		<xsl:variable name="font-size">
 			<xsl:choose>
 				<xsl:when test="$level = 1">13pt</xsl:when>
@@ -688,75 +672,39 @@
 			</xsl:choose>
 		</xsl:variable>
 		
-		<xsl:choose>
-			<xsl:when test="$parent-name = 'annex'">
-				<fo:block id="{$id}" font-size="13pt" font-weight="bold" text-align="center" margin-bottom="12pt" keep-with-next="always">
-					<xsl:value-of select="$section"/>
-					<xsl:value-of select="$linebreak"/>
-					<!-- <xsl:if test=" ../@obligation">
-						<xsl:value-of select="$linebreak"/>
-						<fo:inline font-weight="normal">(<xsl:value-of select="../@obligation"/>)</fo:inline>
-					</xsl:if> -->
-					<xsl:apply-templates />
-				</fo:block>
-			</xsl:when>
-			<xsl:when test="$parent-name = 'references' and $references_num_current != 1"> <!-- Bibliography -->
-				<fo:block id="{$id}" font-size="16pt" font-weight="bold" text-align="center" margin-top="6pt" margin-bottom="36pt" keep-with-next="always">
-					<xsl:apply-templates />
-				</fo:block>
-			</xsl:when>
+	
+		<xsl:element name="{$element-name}">
+			<xsl:attribute name="id"><xsl:value-of select="$id"/></xsl:attribute>
+			<xsl:attribute name="font-size"><xsl:value-of select="$font-size"/></xsl:attribute>
+			<!-- <xsl:attribute name="font-weight">bold</xsl:attribute> -->
+			<xsl:attribute name="space-before"> <!-- margin-top -->
+				<xsl:choose>
+					<xsl:when test="$level = 1">13.5pt</xsl:when>
+					<xsl:when test="$level &gt;= 2">3pt</xsl:when>
+					<xsl:when test="ancestor::iho:preface">8pt</xsl:when>
+					<xsl:when test="$level = 2 and ancestor::iho:annex">18pt</xsl:when>
+					<xsl:when test="$level = 1">18pt</xsl:when>
+					<xsl:when test="$level = ''">6pt</xsl:when><!-- 13.5pt -->
+					<xsl:otherwise>12pt</xsl:otherwise>
+				</xsl:choose>
+			</xsl:attribute>
+			<xsl:attribute name="margin-bottom">12pt</xsl:attribute>
+				
+			<xsl:attribute name="keep-with-next">always</xsl:attribute>		
 			
-			<xsl:otherwise>
-				<xsl:element name="{$element-name}">
-					<xsl:attribute name="id"><xsl:value-of select="$id"/></xsl:attribute>
-					<xsl:attribute name="font-size"><xsl:value-of select="$font-size"/></xsl:attribute>
-					<!-- <xsl:attribute name="font-weight">bold</xsl:attribute> -->
-					<xsl:attribute name="space-before"> <!-- margin-top -->
-						<xsl:choose>
-							<xsl:when test="$level = 1">13.5pt</xsl:when>
-							<xsl:when test="$level &gt;= 2">3pt</xsl:when>
-							<xsl:when test="ancestor::iho:preface">8pt</xsl:when>
-							<xsl:when test="$level = 2 and ancestor::iho:annex">18pt</xsl:when>
-							<xsl:when test="$level = 1">18pt</xsl:when>
-							<xsl:when test="$level = ''">6pt</xsl:when><!-- 13.5pt -->
-							<xsl:otherwise>12pt</xsl:otherwise>
-						</xsl:choose>
-					</xsl:attribute>
-					<xsl:attribute name="margin-bottom">12pt</xsl:attribute>
-						
-					<xsl:attribute name="keep-with-next">always</xsl:attribute>		
-					
-					
-						<!-- DEBUG level=<xsl:value-of select="$level"/>x -->
-						<!-- section=<xsl:value-of select="$sectionNum"/> -->
-						<!-- <xsl:if test="$sectionNum"> -->
-						<xsl:value-of select="$section"/>
-						<xsl:if test="$section != ''">
-							<xsl:choose>
-								<xsl:when test="$level = 2">
-									<fo:inline padding-right="2mm">&#xA0;</fo:inline>
-								</xsl:when>
-								<xsl:when test="$level = 3">
-									<fo:inline padding-right="2mm">&#xA0;</fo:inline>
-								</xsl:when>
-								<xsl:otherwise>
-									<fo:inline padding-right="3mm">&#xA0;</fo:inline>
-								</xsl:otherwise>
-							</xsl:choose>
-						</xsl:if>
-				
-						<xsl:apply-templates />
-				</xsl:element>
-				
-				<xsl:if test="$element-name = 'fo:inline' and not(following-sibling::iho:p)">
-					<fo:block > <!-- margin-bottom="12pt" -->
-						<xsl:value-of select="$linebreak"/>
-					</fo:block>
-				</xsl:if>
-			</xsl:otherwise>
-		</xsl:choose>
+			<xsl:apply-templates />
+		</xsl:element>
+		
+		<xsl:if test="$element-name = 'fo:inline' and not(following-sibling::iho:p)">
+			<fo:block > <!-- margin-bottom="12pt" -->
+				<xsl:value-of select="$linebreak"/>
+			</fo:block>
+		</xsl:if>
 		
 	</xsl:template>
+	<!-- ====== -->
+	<!-- ====== -->
+	
 	
 	<xsl:template match="iho:p">
 		<xsl:param name="inline" select="'false'"/>
@@ -1077,31 +1025,39 @@
 	
 	<xsl:template match="iho:annex">
 		<fo:block break-after="page"/>		
-		<xsl:if test="not(iho:title)">
-			<fo:block id="{@id}" font-size="13pt" font-weight="bold" text-align="center" margin-bottom="12pt" keep-with-next="always">
-				<xsl:choose>
-					<xsl:when test="@obligation = 'informative'">
-						<xsl:variable name="title-appendix">
-							<xsl:call-template name="getTitle">
-								<xsl:with-param name="name" select="'title-appendix'"/>
-							</xsl:call-template>
-						</xsl:variable>
-						<xsl:value-of select="$title-appendix"/>
-						<xsl:number format="1" level="any" count="iho:annex[@obligation = 'informative']"/>
-					</xsl:when>
-					<xsl:otherwise>
-						<xsl:variable name="title-annex">
-							<xsl:call-template name="getTitle">
-								<xsl:with-param name="name" select="'title-annex'"/>
-							</xsl:call-template>
-						</xsl:variable>
-						<xsl:value-of select="$title-annex"/>
-						<xsl:number format="A" level="any" count="iho:annex[not(@obligation = 'informative')]"/>
-					</xsl:otherwise>
-				</xsl:choose>
-			</fo:block>
-		</xsl:if>					
-		<xsl:apply-templates />
+		<fo:block id="{@id}">
+			<xsl:if test="not(iho:title)">
+				<fo:block font-size="13pt" font-weight="bold" text-align="center" margin-bottom="12pt" keep-with-next="always">
+					<xsl:choose>
+						<xsl:when test="@obligation = 'informative'">
+							<xsl:variable name="title-appendix">
+								<xsl:call-template name="getTitle">
+									<xsl:with-param name="name" select="'title-appendix'"/>
+								</xsl:call-template>
+							</xsl:variable>
+							<xsl:value-of select="$title-appendix"/>
+							<xsl:number format="1" level="any" count="iho:annex[@obligation = 'informative']"/>
+						</xsl:when>
+						<xsl:otherwise>
+							<xsl:variable name="title-annex">
+								<xsl:call-template name="getTitle">
+									<xsl:with-param name="name" select="'title-annex'"/>
+								</xsl:call-template>
+							</xsl:variable>
+							<xsl:value-of select="$title-annex"/>
+							<xsl:number format="A" level="any" count="iho:annex[not(@obligation = 'informative')]"/>
+						</xsl:otherwise>
+					</xsl:choose>
+				</fo:block>
+			</xsl:if>					
+			<xsl:apply-templates />
+		</fo:block>
+	</xsl:template>
+		
+	<xsl:template match="iho:references[position() &gt; 1]">
+		<fo:block id="{@id}">
+			<xsl:apply-templates />
+		</fo:block>
 	</xsl:template>
 		
 	<!-- Example: [1]	IHO S-100, Universal Hydrographic Data Model v4.0.0, December 2018 (Encoding, Feature Catalogue) -->	

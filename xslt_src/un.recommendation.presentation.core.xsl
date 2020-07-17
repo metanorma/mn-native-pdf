@@ -892,7 +892,7 @@
 			</fo:block-container>
 			<fo:block margin-bottom="12pt">&#xA0;</fo:block> -->
 		
-		<fo:block>
+		<fo:block id="{@id}">
 			<xsl:if test="$num = 1">
 				<xsl:attribute name="margin-top">3pt</xsl:attribute>
 			</xsl:if>

@@ -778,31 +778,30 @@
 	</xsl:template>
 	
 	
-	<xsl:template match="gb:clause//gb:clause[not(gb:title)]">
-		<xsl:param name="sectionNum"/>
-		<xsl:variable name="section">
-			<xsl:call-template name="getSection">
-				<xsl:with-param name="sectionNum" select="$sectionNum"/>
-			</xsl:call-template>
-		</xsl:variable>
-		<fo:block margin-top="6pt" margin-bottom="6pt" keep-with-next="always">
-			<fo:inline font-family="SimHei">
-				<xsl:value-of select="$section"/><xsl:text>.</xsl:text>
-			</fo:inline>			
+	<!-- ====== -->
+	<!-- title      -->
+	<!-- ====== -->
+	
+	<xsl:template match="gb:annex/gb:title">
+		<xsl:variable name="font-family">
+			<xsl:choose>
+				<xsl:when test="ancestor::gb:annex and $level &gt;= 3">SimSun</xsl:when>
+				<xsl:otherwise>SimHei</xsl:otherwise>
+			</xsl:choose>
+		</xsl:variable>		
+		<fo:block font-family="{$font-family}" font-size="10.5pt"  text-align="center" margin-bottom="24pt" keep-with-next="always">			
+			<xsl:apply-templates />
 		</fo:block>
-		<xsl:apply-templates>
-			<xsl:with-param name="sectionNum" select="$sectionNum"/>
-		</xsl:apply-templates>
 	</xsl:template>
 	
+	<!-- Bibliography -->
+	<xsl:template match="gb:references[position() &gt; 1]/gb:title">
+		<fo:block font-family="SimHei" text-align="center" margin-top="6pt" margin-bottom="16pt" keep-with-next="always">
+			<xsl:apply-templates />
+		</fo:block>
+	</xsl:template>
 	
 	<xsl:template match="gb:title">
-		<xsl:param name="sectionNum"/>
-		
-		<xsl:variable name="parent-name"  select="local-name(..)"/>
-		<xsl:variable name="references_num_current">
-			<xsl:number level="any" count="gb:references"/>
-		</xsl:variable>
 		
 		<xsl:variable name="id">
 			<xsl:call-template name="getId"/>
@@ -810,12 +809,6 @@
 		
 		<xsl:variable name="level">
 			<xsl:call-template name="getLevel"/>
-		</xsl:variable>
-		
-		<xsl:variable name="section">
-			<xsl:call-template name="getSection">
-				<xsl:with-param name="sectionNum" select="$sectionNum"/>
-			</xsl:call-template>
 		</xsl:variable>
 		
 		<xsl:variable name="font-family">
@@ -839,82 +832,55 @@
 			</xsl:choose>
 		</xsl:variable>
 		
-		<xsl:choose>
-			<xsl:when test="$parent-name = 'annex'">
-				<fo:block id="{$id}" font-family="{$font-family}" font-size="{$font-size}"  text-align="center" margin-bottom="12pt" keep-with-next="always">
-					<xsl:value-of select="$section"/>
-					<xsl:if test=" ../@obligation">
-						<xsl:value-of select="$linebreak"/>
-						<fo:inline font-weight="normal">
-							<xsl:text>(</xsl:text>
-							<xsl:variable name="obligation" select="../@obligation"/>
-							<xsl:variable name="title-obligation-normative">
-								<xsl:call-template name="getTitle">
-									<xsl:with-param name="name" select="'title-obligation-normative'"/>
-								</xsl:call-template>
-							</xsl:variable>
-							<xsl:choose>
-								<xsl:when test="$obligation = 'normative'"><xsl:value-of select="$title-obligation-normative"/></xsl:when>
-								<xsl:otherwise><xsl:value-of select="$obligation"/></xsl:otherwise>
-							</xsl:choose>							
-							<xsl:text>)</xsl:text>
-						</fo:inline>
-					</xsl:if>
-					<fo:block margin-top="14pt" margin-bottom="24pt"><xsl:apply-templates /></fo:block>
-				</fo:block>
-			</xsl:when>
-			<xsl:when test="$parent-name = 'references' and $references_num_current != 1"> <!-- Bibliography -->
-				<fo:block id="{$id}" font-family="{$font-family}" text-align="center" margin-top="6pt" margin-bottom="16pt" keep-with-next="always">
-					<xsl:apply-templates />
-				</fo:block>
-			</xsl:when>
+		<xsl:element name="{$element-name}">
+			<xsl:attribute name="id"><xsl:value-of select="$id"/></xsl:attribute>
+			<xsl:attribute name="font-size"><xsl:value-of select="$font-size"/></xsl:attribute>
+			<xsl:attribute name="font-family"><xsl:value-of select="$font-family"/></xsl:attribute>
+			<xsl:attribute name="margin-top">
+				<xsl:choose>
+					<xsl:when test="ancestor::gb:preface">8pt</xsl:when>
+					<xsl:when test="$level = 2 and ancestor::gb:annex">10pt</xsl:when>
+					<xsl:when test="$level = 1">16pt</xsl:when>
+					<xsl:when test="$level = ''">6pt</xsl:when>
+					<xsl:when test="$level &gt;= 3">6pt</xsl:when>
+					<xsl:otherwise>12pt</xsl:otherwise>
+				</xsl:choose>
+			</xsl:attribute>
+			<xsl:attribute name="margin-bottom">
+				<xsl:choose>
+					<xsl:when test="ancestor::gb:preface">24pt</xsl:when>
+					<xsl:when test="$level = 1">16pt</xsl:when>
+					<xsl:when test="$level &gt;= 3">6pt</xsl:when>
+					<xsl:otherwise>8pt</xsl:otherwise>
+				</xsl:choose>
+			</xsl:attribute>
 			
-			<xsl:otherwise>
-				<xsl:element name="{$element-name}">
-					<xsl:attribute name="id"><xsl:value-of select="$id"/></xsl:attribute>
-					<xsl:attribute name="font-size"><xsl:value-of select="$font-size"/></xsl:attribute>
-					<xsl:attribute name="font-family"><xsl:value-of select="$font-family"/></xsl:attribute>
-					<xsl:attribute name="margin-top">
-						<xsl:choose>
-							<xsl:when test="ancestor::gb:preface">8pt</xsl:when>
-							<xsl:when test="$level = 2 and ancestor::gb:annex">10pt</xsl:when>
-							<xsl:when test="$level = 1">16pt</xsl:when>
-							<xsl:when test="$level = ''">6pt</xsl:when>
-							<xsl:otherwise>12pt</xsl:otherwise>
-						</xsl:choose>
-					</xsl:attribute>
-					<xsl:attribute name="margin-bottom">
-						<xsl:choose>
-							<xsl:when test="ancestor::gb:preface">24pt</xsl:when>
-							<xsl:when test="$level = 1">16pt</xsl:when>
-							<xsl:otherwise>8pt</xsl:otherwise>
-						</xsl:choose>
-					</xsl:attribute>
-					<xsl:attribute name="keep-with-next">always</xsl:attribute>		
-					<xsl:if test="ancestor::gb:preface">
-						<xsl:attribute name="text-align">center</xsl:attribute>
-						<xsl:attribute name="font-family">SimHei</xsl:attribute>
-					</xsl:if>
-					<xsl:if test="$element-name = 'fo:inline'">
-						<xsl:attribute name="padding-left">7.4mm</xsl:attribute>
-					</xsl:if>
-						
-					<xsl:value-of select="$section"/>
-					<xsl:if test="$section != ''">.&#x3000;</xsl:if>
-					
-					<xsl:apply-templates />
-				</xsl:element>
+			
+			<xsl:attribute name="keep-with-next">always</xsl:attribute>		
+			<xsl:if test="ancestor::gb:preface">
+				<xsl:attribute name="text-align">center</xsl:attribute>
+				<xsl:attribute name="font-family">SimHei</xsl:attribute>
+			</xsl:if>
+			<xsl:if test="$element-name = 'fo:inline'">
+				<xsl:attribute name="padding-left">7.4mm</xsl:attribute>
+			</xsl:if>
 				
-				<xsl:if test="$element-name = 'fo:inline' and not(following-sibling::gb:p)">
-					<!-- <fo:block> -->
-						<xsl:value-of select="$linebreak"/>
-					<!-- </fo:block> -->
-				</xsl:if>
-			</xsl:otherwise>
-		</xsl:choose>		
-	</xsl:template>
+			<!-- <xsl:value-of select="$section"/>
+			<xsl:if test="$section != ''">.&#x3000;</xsl:if> -->
+			
+			<xsl:apply-templates />
+		</xsl:element>
+		
+		<xsl:if test="$element-name = 'fo:inline' and not(following-sibling::gb:p)">
+			<!-- <fo:block> -->
+				<xsl:value-of select="$linebreak"/>
+			<!-- </fo:block> -->
+		</xsl:if>
+					
+	</xsl:template>	
+	<!-- ====== -->
+	<!-- ====== -->
 	
-
 	
 	<xsl:template match="gb:p">
 		<xsl:param name="inline" select="'false'"/>
@@ -1357,14 +1323,18 @@
 	
 	<xsl:template match="gb:annex">
 		<fo:block break-after="page"/>
-		<xsl:apply-templates />
+		<fo:block id="{@id}">
+			<xsl:apply-templates />
+		</fo:block>
 	</xsl:template>
 
 	
 	<!-- <xsl:template match="gb:references[@id = '_bibliography']"> -->
 	<xsl:template match="gb:references[position() &gt; 1]">
 		<fo:block break-after="page"/>
-		<xsl:apply-templates />
+		<fo:block id="{@id}">
+			<xsl:apply-templates />
+		</fo:block>
 		<fo:block-container text-align="center">
 			<fo:block-container margin-left="63mm" width="42mm" border-bottom="2pt solid black">
 				<fo:block>&#xA0;</fo:block>

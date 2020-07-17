@@ -213,6 +213,7 @@
 	<xsl:variable name="en_chars" select="concat($lower,$upper,',.`1234567890-=~!@#$%^*()_+[]{}\|?/')"/>
 	
 	<xsl:variable name="linebreak" select="'&#x2028;'"/>
+	
 		
 	<xsl:attribute-set name="link-style">
 		<xsl:if test="$namespace = 'iso' or $namespace = 'csd' or $namespace = 'ogc' or $namespace = 'rsd' or or $namespace = 'm3d' or $namespace = 'iho'">
@@ -2604,6 +2605,76 @@
 	<!-- ====== -->
 	
 	
+	<xsl:template match="*[local-name() = 'tab']">
+		<!-- zero-space char -->
+		<xsl:variable name="depth" select="../@depth"/>
+		
+		<xsl:variable name="padding">
+			<xsl:if test="$namespace = 'iec'">
+				<xsl:choose>
+					<xsl:when test="$depth = 2 and ancestor::iec:annex">6</xsl:when>
+					<xsl:when test="$depth = 2">7</xsl:when>
+					<xsl:otherwise>5</xsl:otherwise>
+				</xsl:choose>
+			</xsl:if>
+			<xsl:if test="$namespace = 'csd'">
+				<xsl:choose>
+					<xsl:when test="$depth &gt;= 3">3</xsl:when>
+					<xsl:when test="$depth = 1">3</xsl:when>
+					<xsl:otherwise>2</xsl:otherwise>
+				</xsl:choose>
+			</xsl:if>
+			<xsl:if test="$namespace = 'gb'">2</xsl:if>
+			<xsl:if test="$namespace = 'iho'">
+				<xsl:choose>
+					<xsl:when test="$depth = 2">3</xsl:when>
+					<xsl:when test="$depth = 3">3</xsl:when>
+					<xsl:otherwise>4</xsl:otherwise>
+				</xsl:choose>
+			</xsl:if>
+			<xsl:if test="$namespace = 'iso'">
+				<xsl:choose>
+					<xsl:when test="$depth = 2">3</xsl:when>
+					<xsl:otherwise>4</xsl:otherwise>
+				</xsl:choose>
+			</xsl:if>
+			<xsl:if test="$namespace = 'itu'">
+				<xsl:choose>
+					<xsl:when test="$depth = 5">7</xsl:when>
+					<xsl:when test="$depth = 4">10</xsl:when>
+					<xsl:when test="$depth = 3">6</xsl:when>
+					<xsl:when test="$depth = 2">9</xsl:when>
+					<xsl:otherwise>12</xsl:otherwise>
+				</xsl:choose>
+			</xsl:if>
+			<xsl:if test="$namespace = 'm3d'">
+				<xsl:variable name="level">
+					<xsl:call-template name="getLevel"/>
+				</xsl:variable>
+				<xsl:variable name="parent-name"  select="local-name(..)"/>
+				<xsl:variable name="references_num_current">
+					<xsl:number level="any" count="m3d:references"/>
+				</xsl:variable>
+				<xsl:choose>
+					<xsl:when test="(ancestor::m3d:sections and $level = 1) or 
+															($parent-name = 'references' and $references_num_current = 1)">25</xsl:when>
+					<xsl:when test="ancestor::m3d:sections or ancestor::m3d:annex">3</xsl:when>						
+				</xsl:choose>
+			</xsl:if>
+		</xsl:variable>
+		
+		<xsl:variable name="padding-right">
+			<xsl:choose>
+				<xsl:when test="normalize-space($padding) = ''">0</xsl:when>
+				<xsl:otherwise>
+					<xsl:value-of select="$padding"/>
+				</xsl:otherwise>
+			</xsl:choose>
+		</xsl:variable>
+		
+		<fo:inline padding-right="{$padding-right}mm">&#x200B;</fo:inline>
+	</xsl:template>
+	
 	
 	<!-- convert YYYY-MM-DD to 'Month YYYY' or 'Month DD, YYYY' -->
 	<xsl:template name="convertDate">
@@ -2766,25 +2837,32 @@
 	</xsl:template>
 	
 	<xsl:template name="getLevel">
-		<xsl:variable name="level_total" select="count(ancestor::*)"/>
-		<xsl:variable name="level">
-			<xsl:choose>
-				<xsl:when test="ancestor::*[local-name() = 'preface']">
-					<xsl:value-of select="$level_total - 2"/>
-				</xsl:when>
-				<xsl:when test="ancestor::*[local-name() = 'sections']">
-					<xsl:value-of select="$level_total - 2"/>
-				</xsl:when>
-				<xsl:when test="ancestor::*[local-name() = 'bibliography']">
-					<xsl:value-of select="$level_total - 2"/>
-				</xsl:when>
-				<xsl:when test="local-name(ancestor::*[1]) = 'annex'">1</xsl:when>
-				<xsl:otherwise>
-					<xsl:value-of select="$level_total - 1"/>
-				</xsl:otherwise>
-			</xsl:choose>
-		</xsl:variable>
-		<xsl:value-of select="$level"/>
+		<xsl:choose>
+			<xsl:when test="normalize-space(@depth) != ''">
+				<xsl:value-of select="@depth"/>
+			</xsl:when>
+			<xsl:otherwise>
+				<xsl:variable name="level_total" select="count(ancestor::*)"/>
+				<xsl:variable name="level">
+					<xsl:choose>
+						<xsl:when test="ancestor::*[local-name() = 'preface']">
+							<xsl:value-of select="$level_total - 2"/>
+						</xsl:when>
+						<xsl:when test="ancestor::*[local-name() = 'sections']">
+							<xsl:value-of select="$level_total - 2"/>
+						</xsl:when>
+						<xsl:when test="ancestor::*[local-name() = 'bibliography']">
+							<xsl:value-of select="$level_total - 2"/>
+						</xsl:when>
+						<xsl:when test="local-name(ancestor::*[1]) = 'annex'">1</xsl:when>
+						<xsl:otherwise>
+							<xsl:value-of select="$level_total - 1"/>
+						</xsl:otherwise>
+					</xsl:choose>
+				</xsl:variable>
+				<xsl:value-of select="$level"/>
+			</xsl:otherwise>
+		</xsl:choose>
 	</xsl:template>
 
 	<xsl:template name="getSubSection">

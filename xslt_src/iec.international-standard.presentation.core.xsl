@@ -1718,13 +1718,8 @@
 	
 	<xsl:template match="iec:iec-standard/iec:preface/iec:introduction" priority="2">
 		<fo:block break-after="page"/>
-		<fo:block id="{@id}" margin-bottom="12pt" font-size="12pt" text-align="center">
-			<xsl:call-template name="addLetterSpacing">
-				<xsl:with-param name="text" select="java:toUpperCase(java:java.lang.String.new(iec:title))"/>
-			</xsl:call-template>
-		</fo:block>
-		<fo:block>
-			<xsl:apply-templates select="*[not(local-name() = 'title')]"/>
+		<fo:block id="{@id}">
+			<xsl:apply-templates />
 		</fo:block>
 	</xsl:template>
 	
@@ -1777,7 +1772,12 @@
 		</fo:block>
 	</xsl:template>
 	
-	<xsl:template match="iec:clause//iec:clause[not(iec:title)]">
+	<xsl:template match="iec:clause//iec:clause">
+		<fo:block space-after="10pt">
+			<xsl:apply-templates/>
+		</fo:block>
+	</xsl:template>
+	<!-- <xsl:template match="iec:clause//iec:clause[not(iec:title)]">
 		<xsl:param name="sectionNum"/>
 		<xsl:variable name="section">
 			<xsl:call-template name="getSection">
@@ -1790,29 +1790,46 @@
 		</fo:block>
 		<fo:block margin-bottom="10pt">
 			<xsl:apply-templates>
-				<xsl:with-param name="sectionNum" select="$sectionNum"/>
-				<!-- <xsl:with-param name="inline" select="'true'"/> -->
+				<xsl:with-param name="sectionNum" select="$sectionNum"/>				
 			</xsl:apply-templates>
 		</fo:block>
-		<!-- <fo:block margin-top="3pt" >
-			<fo:inline font-weight="bold" padding-right="3mm">
-				<xsl:value-of select="$section"/>
-			</fo:inline>
-			<xsl:apply-templates>
-				<xsl:with-param name="sectionNum" select="$sectionNum"/>
-				<xsl:with-param name="inline" select="'true'"/>
-			</xsl:apply-templates>
-		</fo:block> -->
+		
+	</xsl:template> -->
+	
+	<!-- ====== -->
+	<!-- title      -->
+	<!-- ====== -->
+	<xsl:template match="iec:introduction/iec:title">
+		<fo:block font-size="12pt" text-align="center" margin-bottom="12pt">
+			<xsl:apply-templates />
+		</fo:block>
+	</xsl:template>
+	<xsl:template match="iec:introduction/iec:title/text()">
+		<xsl:call-template name="addLetterSpacing">
+			<xsl:with-param name="text" select="java:toUpperCase(java:java.lang.String.new(.))"/>
+		</xsl:call-template>			
+	</xsl:template>
+	
+	<xsl:template match="iec:annex/iec:title">
+		<fo:block font-size="12pt" text-align="center" margin-bottom="32pt" keep-with-next="always">
+			<xsl:apply-templates />
+		</fo:block>
+	</xsl:template>
+	
+	<!-- Bibliography -->
+	<xsl:template match="iec:references[not(starts-with(@id, '_normative_references') or starts-with(@id, '_references'))]/iec:title">
+		<fo:block font-size="12pt" text-align="center" margin-bottom="12pt" keep-with-next="always">
+			<xsl:apply-templates />			
+		</fo:block>
+	</xsl:template>
+	<xsl:template match="iec:references[not(starts-with(@id, '_normative_references') or starts-with(@id, '_references'))]/iec:title/text()">
+		<xsl:call-template name="addLetterSpacing">
+			<xsl:with-param name="text" select="."/>
+		</xsl:call-template>
 	</xsl:template>
 	
 	
 	<xsl:template match="iec:title">
-		<xsl:param name="sectionNum"/>
-		
-		<xsl:variable name="parent-name"  select="local-name(..)"/>
-		<!-- <xsl:variable name="references_num_current">
-			<xsl:number level="any" count="iec:references"/>
-		</xsl:variable> -->
 		
 		<xsl:variable name="id">
 			<xsl:call-template name="getId"/>
@@ -1821,13 +1838,7 @@
 		<xsl:variable name="level">
 			<xsl:call-template name="getLevel"/>
 		</xsl:variable>
-		
-		<xsl:variable name="section">
-			<xsl:call-template name="getSection">
-				<xsl:with-param name="sectionNum" select="$sectionNum"/>
-			</xsl:call-template>
-		</xsl:variable>
-		
+				
 		<xsl:variable name="font-size">
 			<xsl:choose>
 				<xsl:when test="ancestor::iec:sections and $level = 1">11pt</xsl:when>
@@ -1836,123 +1847,38 @@
 				<xsl:otherwise>10pt</xsl:otherwise>
 			</xsl:choose>
 		</xsl:variable>
-			<!-- <xsl:choose>
-				<xsl:when test="ancestor::iec:annex and $level = 1">12pt</xsl:when>
-				<xsl:when test="ancestor::iec:annex and $level &gt;= 2">10pt</xsl:when>
-				<xsl:when test="ancestor::iec:preface">16pt</xsl:when>
-				<xsl:when test="$level = 2">12pt</xsl:when>
-				<xsl:when test="$level &gt;= 3">11pt</xsl:when>
-				<xsl:otherwise>13pt</xsl:otherwise>
-			</xsl:choose>
-		</xsl:variable> -->
-		
-		<xsl:variable name="element-name">
-			<xsl:choose>
-				<xsl:when test="../@inline-header = 'true'">fo:inline</xsl:when>
-				<xsl:otherwise>fo:block</xsl:otherwise>
-			</xsl:choose>
-		</xsl:variable>
-		
+			
 		<xsl:choose>
-			<xsl:when test="$parent-name = 'annex'">
-				<fo:block id="{$id}" font-size="12pt" font-weight="bold" text-align="center" margin-bottom="32pt" keep-with-next="always">
-					<xsl:value-of select="$section"/>
-					<xsl:if test=" ../@obligation">
-						<xsl:value-of select="$linebreak"/>
-						<fo:inline font-weight="normal">(<xsl:value-of select="../@obligation"/>)</fo:inline>
-					</xsl:if>
-					<xsl:value-of select="$linebreak"/>
-					<xsl:value-of select="$linebreak"/>
+			<xsl:when test="../@inline-header = 'true'">
+				<fo:inline id="{$id}" font-size="{$font-size}" font-weight="bold">
 					<xsl:apply-templates />
-				</fo:block>
-			</xsl:when>
-			<xsl:when test="$parent-name = 'references' and not(starts-with(../@id,  '_normative_references') or starts-with(../@id, '_references'))"> <!-- Bibliography -->
-				<fo:block id="{$id}" font-size="12pt" text-align="center" margin-bottom="12pt" keep-with-next="always">
-					<xsl:call-template name="addLetterSpacing">
-						<xsl:with-param name="text" select="."/>
-					</xsl:call-template>
-					<!-- <xsl:apply-templates /> -->
-				</fo:block>
-			</xsl:when>
-			<xsl:when test="$parent-name = 'introduction'">
-				<fo:block id="{$id}" font-size="12pt" text-align="center" margin-bottom="10pt">					
-					<xsl:value-of select="java:toUpperCase(java:java.lang.String.new(text()))"/>
-				</fo:block>
+				</fo:inline>
 			</xsl:when>
 			<xsl:otherwise>
-			
-				<xsl:variable name="padding-right">
-					<xsl:choose>
-						<xsl:when test="$level = 2 and ancestor::iec:annex">6mm</xsl:when>
-						<xsl:when test="$level = 2">7mm</xsl:when>
-						<xsl:otherwise>5mm</xsl:otherwise>
-					</xsl:choose>
-				</xsl:variable>
-					
-				<xsl:element name="{$element-name}">
-					<xsl:attribute name="id"><xsl:value-of select="$id"/></xsl:attribute>
-					<xsl:attribute name="font-size">
-						<xsl:value-of select="$font-size"/>
+				<fo:block  id="{$id}" font-size="{$font-size}" font-weight="bold" keep-with-next="always">
+					<xsl:attribute name="space-before"> <!-- margin-top -->
+						<xsl:choose>
+							<xsl:when test="$level = 2 and ancestor::iec:annex">22pt</xsl:when>
+							<xsl:when test="$level &gt;= 2 and ancestor::iec:annex">5pt</xsl:when>
+							<xsl:when test="$level &gt;= 3">5pt</xsl:when>
+							<xsl:when test="$level = '' or $level = 1">18pt</xsl:when><!-- 13.5pt -->
+							<xsl:otherwise>10pt</xsl:otherwise>
+						</xsl:choose>
 					</xsl:attribute>
-					<xsl:attribute name="font-weight">bold</xsl:attribute>
-					
-					<xsl:if test="$element-name = 'fo:block'">
-						<xsl:attribute name="keep-with-next">always</xsl:attribute>		
-						<xsl:attribute name="space-before"> <!-- margin-top -->
-							<xsl:choose>
-								<xsl:when test="$level = 2 and ancestor::iec:annex">22pt</xsl:when>
-								<xsl:when test="$level &gt;= 2 and ancestor::iec:annex">5pt</xsl:when>
-								<xsl:when test="$level = '' or $level = 1">18pt</xsl:when><!-- 13.5pt -->
-								<xsl:otherwise>10pt</xsl:otherwise>
-							</xsl:choose>
-						</xsl:attribute>
-						<xsl:attribute name="margin-bottom">
-							<xsl:choose>
-								<xsl:when test="$level = '' or $level = 1">14pt</xsl:when>
-								<xsl:when test="$level = 2 and ancestor::iec:annex">14pt</xsl:when>
-								<xsl:otherwise>5pt</xsl:otherwise>
-							</xsl:choose>
-						</xsl:attribute>
-						
-						<fo:inline>
-							<xsl:if test="$section != ''">
-								<xsl:attribute name="padding-right">
-									<xsl:value-of select="$padding-right"/>
-								</xsl:attribute>
-							</xsl:if>
-							<xsl:value-of select="$section"/>
-						</fo:inline>
-						<xsl:apply-templates />
-					</xsl:if>
-					
-					<xsl:if test="$element-name = 'fo:inline'">
-						<xsl:if test="$section != ''">
-							<xsl:attribute name="padding-right">
-								<xsl:value-of select="$padding-right"/>
-							</xsl:attribute>
-						</xsl:if>
-						<xsl:value-of select="$section"/>					
-					</xsl:if>
-				</xsl:element>
-				
-				
-					<xsl:if test="$element-name = 'fo:inline'">
-						<fo:inline font-size="{$font-size}" font-weight="bold">
-							<xsl:apply-templates />
-						</fo:inline>
-						
-					</xsl:if>
-				
-				<!-- <xsl:if test="$element-name = 'fo:inline' and not(following-sibling::iec:p)">
-					<fo:block> 
-						<xsl:value-of select="$linebreak"/>
-					</fo:block>
-				</xsl:if> -->
+					<xsl:attribute name="margin-bottom">
+						<xsl:choose>
+							<xsl:when test="$level = '' or $level = 1">14pt</xsl:when>
+							<xsl:when test="$level = 2 and ancestor::iec:annex">14pt</xsl:when>
+							<xsl:otherwise>5pt</xsl:otherwise>
+						</xsl:choose>
+					</xsl:attribute>					
+					<xsl:apply-templates />
+				</fo:block>
 			</xsl:otherwise>
 		</xsl:choose>
-		
 	</xsl:template>
-	
+	<!-- ====== -->
+	<!-- ====== -->
 
 	
 	<xsl:template match="iec:p">
@@ -2369,14 +2295,18 @@
 	
 	<xsl:template match="iec:annex">
 		<fo:block break-after="page"/>
-		<xsl:apply-templates />
+		<fo:block id="{@id}">
+			<xsl:apply-templates />
+		</fo:block>
 	</xsl:template>
 
 	
 	<!-- <xsl:template match="iec:references[@id = '_bibliography']"> -->
 	<xsl:template match="iec:references[not(starts-with(@id, '_normative_references') or starts-with(@id, '_references'))]">
 		<fo:block break-after="page"/>
-		<xsl:apply-templates />
+		<fo:block id="{@id}">
+			<xsl:apply-templates />
+		</fo:block>
 		<fo:block-container text-align="center" margin-top="10mm">
 			<fo:block>_____________</fo:block>
 		</fo:block-container>

@@ -766,35 +766,26 @@
 		</fo:block>
 	</xsl:template>
 	
-
 	
-	<xsl:template match="csa:clause//csa:clause[not(csa:title)]">
-		<xsl:param name="sectionNum"/>
-		<xsl:variable name="section">
-			<xsl:call-template name="getSection">
-				<xsl:with-param name="sectionNum" select="$sectionNum"/>
-			</xsl:call-template>
+	<!-- ====== -->
+	<!-- title      -->
+	<!-- ====== -->	
+	<xsl:template match="csa:annex/csa:title">
+		<xsl:variable name="level">
+			<xsl:call-template name="getLevel"/>
 		</xsl:variable>
-		
-		<fo:block margin-top="3pt" >
-			<fo:inline font-weight="bold" padding-right="3mm">
-				<xsl:value-of select="$section"/>
-			</fo:inline>
-			<xsl:apply-templates>
-				<xsl:with-param name="sectionNum" select="$sectionNum"/>
-				<xsl:with-param name="inline" select="'true'"/>
-			</xsl:apply-templates>
-		</fo:block>
+		<xsl:variable name="color">
+			<xsl:choose>
+				<xsl:when test="$level &gt;= 2">rgb(3, 115, 200)</xsl:when>
+				<xsl:otherwise>black</xsl:otherwise>
+			</xsl:choose>
+		</xsl:variable>
+		<fo:block font-size="12pt" text-align="center" margin-bottom="12pt" keep-with-next="always" color="{$color}">
+			<xsl:apply-templates />
+		</fo:block>		
 	</xsl:template>
 	
-	
 	<xsl:template match="csa:title">
-		<xsl:param name="sectionNum"/>
-		
-		<xsl:variable name="parent-name"  select="local-name(..)"/>
-		<xsl:variable name="references_num_current">
-			<xsl:number level="any" count="csa:references"/>
-		</xsl:variable>
 		
 		<xsl:variable name="id">
 			<xsl:call-template name="getId"/>
@@ -802,12 +793,6 @@
 		
 		<xsl:variable name="level">
 			<xsl:call-template name="getLevel"/>
-		</xsl:variable>
-		
-		<xsl:variable name="section">
-			<xsl:call-template name="getSection">
-				<xsl:with-param name="sectionNum" select="$sectionNum"/>
-			</xsl:call-template>
 		</xsl:variable>
 		
 		<xsl:variable name="font-size">
@@ -843,42 +828,29 @@
 			</xsl:choose>
 		</xsl:variable>
 		
-		<xsl:choose>
-			<xsl:when test="$parent-name = 'annex'">
-				<fo:block id="{$id}" font-size="12pt" font-weight="{$font-weight}" text-align="center" margin-bottom="12pt" keep-with-next="always" color="{$color}">
-					<xsl:value-of select="$section"/>
-					<xsl:if test=" ../@obligation">
-						<xsl:value-of select="$linebreak"/>
-						<fo:inline font-weight="normal">(<xsl:value-of select="../@obligation"/>)</fo:inline>
-					</xsl:if>
-					<xsl:value-of select="$linebreak"/>
-					<xsl:apply-templates />
-				</fo:block>
-			</xsl:when>
-			<xsl:otherwise>
-				<xsl:element name="{$element-name}">
-					<xsl:attribute name="id"><xsl:value-of select="$id"/></xsl:attribute>
-					<xsl:attribute name="font-size"><xsl:value-of select="$font-size"/></xsl:attribute>
-					<xsl:attribute name="font-weight"><xsl:value-of select="$font-weight"/></xsl:attribute>
-					<xsl:attribute name="space-before">13.5pt</xsl:attribute>
-					<xsl:attribute name="margin-bottom">12pt</xsl:attribute>
-					<xsl:attribute name="keep-with-next">always</xsl:attribute>		
-					<xsl:attribute name="color"><xsl:value-of select="$color"/></xsl:attribute>
-					<xsl:attribute name="line-height">120%</xsl:attribute>
-					
-					<xsl:if test="$level = 2">
-						<fo:inline padding-right="1mm">							
-							<fo:external-graphic src="{concat('data:image/png;base64,', normalize-space($Title-Image))}" width="15mm" content-height="scale-to-fit" scaling="uniform" fox:alt-text="Image {@alt}" vertical-align="middle"/>
-						</fo:inline>
-					</xsl:if>
-					
-					<xsl:apply-templates />
-				</xsl:element>
-			</xsl:otherwise>
-		</xsl:choose>
+		<xsl:element name="{$element-name}">
+			<xsl:attribute name="id"><xsl:value-of select="$id"/></xsl:attribute>
+			<xsl:attribute name="font-size"><xsl:value-of select="$font-size"/></xsl:attribute>
+			<xsl:attribute name="font-weight"><xsl:value-of select="$font-weight"/></xsl:attribute>
+			<xsl:attribute name="space-before">13.5pt</xsl:attribute>
+			<xsl:attribute name="margin-bottom">12pt</xsl:attribute>
+			<xsl:attribute name="keep-with-next">always</xsl:attribute>		
+			<xsl:attribute name="color"><xsl:value-of select="$color"/></xsl:attribute>
+			<xsl:attribute name="line-height">120%</xsl:attribute>
+			
+			<xsl:if test="$level = 2">
+				<fo:inline padding-right="1mm">							
+					<fo:external-graphic src="{concat('data:image/png;base64,', normalize-space($Title-Image))}" width="15mm" content-height="scale-to-fit" scaling="uniform" fox:alt-text="Image {@alt}" vertical-align="middle"/>
+				</fo:inline>
+			</xsl:if>
+			
+			<xsl:apply-templates />
+			
+		</xsl:element>
 		
 	</xsl:template>
-	
+	<!-- ====== -->
+	<!-- ====== -->
 	
 	<xsl:template match="csa:p">
 		<xsl:param name="inline" select="'false'"/>
@@ -1297,7 +1269,9 @@
 	
 	<xsl:template match="csa:annex">
 		<fo:block break-after="page"/>
-		<xsl:apply-templates />
+		<fo:block id="{@id}">
+			<xsl:apply-templates />
+		</fo:block>
 	</xsl:template>
 
 	

@@ -1139,18 +1139,38 @@
 		</fo:block>
 	</xsl:template>
 	
+	<!-- ====== -->
+	<!-- title      -->
+	<!-- ====== -->	
+	<xsl:template match="itu:annex/itu:title">
+		<fo:block  font-size="14pt" font-weight="bold" text-align="center" margin-bottom="18pt">			
+			<fo:block><xsl:apply-templates /></fo:block>
+			<fo:block font-size="12pt" font-weight="normal" margin-top="6pt">
+				<xsl:choose>
+					<xsl:when test="parent::*[@obligation = 'informative']">
+						<xsl:text>(This appendix does not form an integral part of this Recommendation.)</xsl:text>
+					</xsl:when>
+					<xsl:otherwise>
+						<xsl:text>(This annex forms an integral part of this Recommendation.)</xsl:text>
+					</xsl:otherwise>
+				</xsl:choose>
+			</fo:block>
+		</fo:block>
+	</xsl:template>
+	
+	<!-- Bibliography -->
+	<xsl:template match="itu:references[position() &gt; 1]/itu:title">
+		<fo:block font-size="14pt" font-weight="bold" text-align="center" margin-bottom="18pt">
+				<xsl:apply-templates />
+			</fo:block>
+	</xsl:template>
+	
 	<xsl:template match="itu:title">
-		<xsl:param name="sectionNum"/>
 
 		<xsl:variable name="id">
 			<xsl:call-template name="getId"/>
 		</xsl:variable>
 		
-		<xsl:variable name="parent-name"  select="local-name(..)"/>
-		<xsl:variable name="references_num_current">
-			<xsl:number level="any" count="itu:references"/>
-		</xsl:variable>
-			
 		<xsl:variable name="level">
 			<xsl:call-template name="getLevel"/>
 		</xsl:variable>
@@ -1178,55 +1198,10 @@
 			</xsl:choose>
 		</xsl:variable>
 		
-		<xsl:variable name="section">
-			<xsl:call-template name="getSection">
-				<xsl:with-param name="sectionNum" select="$sectionNum"/>
-			</xsl:call-template>
-		</xsl:variable>
-				
-		<xsl:choose>
-			<xsl:when test="$parent-name = 'annex'">
-				<fo:block id="{$id}" font-size="14pt" font-weight="bold" text-align="center" margin-bottom="18pt">
-					<fo:block margin-bottom="18pt">
-						<fo:inline id="{@id}"><xsl:value-of select="$section"/></fo:inline>
-					</fo:block>
-					<fo:block><xsl:apply-templates /></fo:block>
-					<fo:block font-size="12pt" font-weight="normal" margin-top="6pt">
-						<xsl:choose>
-							<xsl:when test="parent::*[@obligation = 'informative']">
-								<xsl:text>(This appendix does not form an integral part of this Recommendation.)</xsl:text>
-							</xsl:when>
-							<xsl:otherwise>
-								<xsl:text>(This annex forms an integral part of this Recommendation.)</xsl:text>
-							</xsl:otherwise>
-						</xsl:choose>
-					</fo:block>
-				</fo:block>
-			</xsl:when>
-			<xsl:when test="$parent-name = 'references' and $references_num_current != 1">
-				<fo:block id="{$id}" font-size="14pt" font-weight="bold" text-align="center" margin-bottom="18pt">
-					<xsl:apply-templates />
-				</fo:block>
-			</xsl:when>
-			<xsl:otherwise>
-				<fo:block id="{$id}" font-size="{$font-size}" font-weight="bold" space-before="{$space-before}" space-after="{$space-after}" keep-with-next="always">
-					<xsl:value-of select="$section"/>
-					<fo:inline>
-						<xsl:attribute name="padding-right">
-							<xsl:choose>
-								<xsl:when test="$level = 5">6mm</xsl:when>
-								<xsl:when test="$level = 4">9mm</xsl:when>
-								<xsl:when test="$level = 3">5mm</xsl:when>
-								<xsl:when test="$level = 2">8mm</xsl:when>
-								<xsl:otherwise>11mm</xsl:otherwise>
-							</xsl:choose>
-						</xsl:attribute>
-						<xsl:text>&#xA0;</xsl:text>
-					</fo:inline>
-					<xsl:apply-templates />
-				</fo:block>
-			</xsl:otherwise>
-		</xsl:choose>
+		<fo:block id="{$id}" font-size="{$font-size}" font-weight="bold" space-before="{$space-before}" space-after="{$space-after}" keep-with-next="always">			
+			<xsl:apply-templates />
+		</fo:block>
+			
 	</xsl:template>
 	
 	
@@ -1235,6 +1210,9 @@
 			<xsl:apply-templates />
 		</fo:block>
 	</xsl:template>
+	
+	<!-- ====== -->
+	<!-- ====== -->
 	
 	<xsl:template match="itu:legal-statement//itu:p | itu:license-statement//itu:p">
 		<fo:block margin-top="6pt">
@@ -1572,9 +1550,10 @@
 	
 	<xsl:template match="itu:annex">
 		<fo:block break-after="page"/>
-		<xsl:apply-templates />
+		<fo:block id="{@id}">
+			<xsl:apply-templates />
+		</fo:block>
 	</xsl:template>
-	
 	
 	<xsl:template match="itu:annex/itu:clause">
 		<xsl:apply-templates />
@@ -1711,7 +1690,9 @@
 	
 	<xsl:template match="itu:references[position() &gt; 1]">
 		<fo:block break-after="page"/>
+		<fo:block id="{@id}">
 			<xsl:apply-templates />
+		</fo:block>
 	</xsl:template>
 
 	<xsl:template match="itu:quote">

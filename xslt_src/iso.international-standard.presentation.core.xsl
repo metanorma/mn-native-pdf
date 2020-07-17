@@ -1506,48 +1506,47 @@
 		</fo:block>
 	</xsl:template>
 	
-
 	
-	<xsl:template match="iso:clause//iso:clause[not(iso:title)]">
-		<xsl:param name="sectionNum"/>
-		<xsl:variable name="section">
-			<xsl:call-template name="getSection">
-				<xsl:with-param name="sectionNum" select="$sectionNum"/>
-			</xsl:call-template>
-		</xsl:variable>
-		
-		<fo:block margin-top="3pt" ><!-- margin-bottom="6pt" -->
-			<fo:inline font-weight="bold" padding-right="3mm">
-				<xsl:value-of select="$section"/><!-- <xsl:number format=".1 "  level="multiple" count="iso:clause/iso:clause" /> -->
-			</fo:inline>
-			<xsl:apply-templates>
-				<xsl:with-param name="sectionNum" select="$sectionNum"/>
-				<xsl:with-param name="inline" select="'true'"/>
-			</xsl:apply-templates>
-		</fo:block>
+	
+	<!-- ====== -->
+	<!-- title      -->
+	<!-- ====== -->
+	
+	<xsl:template match="iso:annex/iso:title">
+		<xsl:choose>
+			<xsl:when test="$doctype = 'amendment'">
+				<xsl:call-template name="titleAmendment"/>				
+			</xsl:when>
+			<xsl:otherwise>
+				<fo:block font-size="16pt" font-weight="bold" text-align="center" margin-bottom="48pt" keep-with-next="always">
+					<xsl:apply-templates />
+				</fo:block>
+			</xsl:otherwise>
+		</xsl:choose>
 	</xsl:template>
 	
+	<!-- Bibliography -->
+	<xsl:template match="iso:references[position() &gt; 1]/iso:title">
+		<xsl:choose>
+			<xsl:when test="$doctype = 'amendment'">
+				<xsl:call-template name="titleAmendment"/>				
+			</xsl:when>
+			<xsl:otherwise>
+				<fo:block font-size="16pt" font-weight="bold" text-align="center" margin-top="6pt" margin-bottom="36pt" keep-with-next="always">
+					<xsl:apply-templates />
+				</fo:block>
+			</xsl:otherwise>
+		</xsl:choose>
+	</xsl:template>
 	
 	<xsl:template match="iso:title">
-		<xsl:param name="sectionNum"/>
-		
-		<xsl:variable name="parent-name"  select="local-name(..)"/>
-		<xsl:variable name="references_num_current">
-			<xsl:number level="any" count="iso:references"/>
-		</xsl:variable>
-		
+	
 		<xsl:variable name="id">
 			<xsl:call-template name="getId"/>
 		</xsl:variable>
 		
 		<xsl:variable name="level">
 			<xsl:call-template name="getLevel"/>
-		</xsl:variable>
-		
-		<xsl:variable name="section">
-			<xsl:call-template name="getSection">
-				<xsl:with-param name="sectionNum" select="$sectionNum"/>
-			</xsl:call-template>
 		</xsl:variable>
 		
 		<xsl:variable name="font-size">
@@ -1574,21 +1573,6 @@
 					<xsl:apply-templates />
 				</fo:block>
 			</xsl:when>
-			<xsl:when test="$parent-name = 'annex'">
-				<fo:block id="{$id}" font-size="16pt" font-weight="bold" text-align="center" margin-bottom="12pt" keep-with-next="always">
-					<xsl:value-of select="$section"/>
-					<xsl:if test=" ../@obligation">
-						<xsl:value-of select="$linebreak"/>
-						<fo:inline font-weight="normal">(<xsl:value-of select="../@obligation"/>)</fo:inline>
-					</xsl:if>
-					<fo:block margin-top="18pt" margin-bottom="48pt"><xsl:apply-templates /></fo:block>
-				</fo:block>
-			</xsl:when>
-			<xsl:when test="$parent-name = 'references' and $references_num_current != 1"> <!-- Bibliography -->
-				<fo:block id="{$id}" font-size="16pt" font-weight="bold" text-align="center" margin-top="6pt" margin-bottom="36pt" keep-with-next="always">
-					<xsl:apply-templates />
-				</fo:block>
-			</xsl:when>
 			
 			<xsl:otherwise>
 				<xsl:element name="{$element-name}">
@@ -1600,6 +1584,7 @@
 							<xsl:when test="ancestor::iso:preface">8pt</xsl:when>
 							<xsl:when test="$level = 2 and ancestor::iso:annex">18pt</xsl:when>
 							<xsl:when test="$level = 1">18pt</xsl:when>
+							<xsl:when test="$level &gt;= 3">3pt</xsl:when>
 							<xsl:when test="$level = ''">6pt</xsl:when><!-- 13.5pt -->
 							<xsl:otherwise>12pt</xsl:otherwise>
 						</xsl:choose>
@@ -1612,24 +1597,8 @@
 						</xsl:choose>
 					</xsl:attribute>
 					<xsl:attribute name="keep-with-next">always</xsl:attribute>		
-					
-					
-						<!-- DEBUG level=<xsl:value-of select="$level"/>x -->
-						<!-- section=<xsl:value-of select="$sectionNum"/> -->
-						<!-- <xsl:if test="$sectionNum"> -->
-						<xsl:value-of select="$section"/>
-						<xsl:if test="$section != ''">
-							<xsl:choose>
-								<xsl:when test="$level = 2">
-									<fo:inline padding-right="2mm">&#xA0;</fo:inline>
-								</xsl:when>
-								<xsl:otherwise>
-									<fo:inline padding-right="3mm">&#xA0;</fo:inline>
-								</xsl:otherwise>
-							</xsl:choose>
-						</xsl:if>
-				
-						<xsl:apply-templates />
+						
+					<xsl:apply-templates />
 				</xsl:element>
 				
 				<xsl:if test="$element-name = 'fo:inline' and not(following-sibling::iso:p)">
@@ -1642,6 +1611,17 @@
 		
 	</xsl:template>
 	
+	<xsl:template name="titleAmendment">
+		<xsl:variable name="id">
+			<xsl:call-template name="getId"/>
+		</xsl:variable>
+		<fo:block id="{$id}" font-size="11pt" font-style="italic" margin-bottom="12pt" keep-with-next="always">
+			<xsl:apply-templates />
+		</fo:block>
+	</xsl:template>
+	
+	<!-- ====== -->
+	<!-- ====== -->
 
 	
 	<xsl:template match="iso:p">
@@ -2041,14 +2021,17 @@
 	
 	<xsl:template match="iso:annex">
 		<fo:block break-after="page"/>
-		<xsl:apply-templates />
+		<fo:block id="{@id}">
+			<xsl:apply-templates />
+		</fo:block>
 	</xsl:template>
-
 	
 	<!-- <xsl:template match="iso:references[@id = '_bibliography']"> -->
 	<xsl:template match="iso:references[position() &gt; 1]">
 		<fo:block break-after="page"/>
+		<fo:block id="{@id}">
 			<xsl:apply-templates />
+		</fo:block>
 	</xsl:template>
 
 

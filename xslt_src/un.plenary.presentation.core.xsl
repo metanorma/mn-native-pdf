@@ -797,6 +797,7 @@
 	
 	<xsl:template match="/un:un-standard/un:annex">
 		<fo:block break-after="page"/>
+		
 		<xsl:variable name="num"><xsl:number /></xsl:variable>
 		
 			<!-- <fo:block-container border-bottom="0.5pt solid black">
@@ -804,7 +805,7 @@
 			</fo:block-container>
 			<fo:block margin-bottom="12pt">&#xA0;</fo:block> -->
 		
-		<fo:block>
+		<fo:block id="{@id}">
 			<xsl:if test="$num = 1">
 				<xsl:attribute name="margin-top">3pt</xsl:attribute>
 			</xsl:if>
