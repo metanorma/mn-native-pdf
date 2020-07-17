@@ -824,20 +824,66 @@
 	</xsl:template>
 	
 	
-	<xsl:template match="un:title">
-		<xsl:variable name="id">
-			<xsl:call-template name="getId"/>			
+	<!-- ====== -->
+	<!-- title      -->
+	<!-- ====== -->
+	
+	<xsl:template match="un:preface//un:title">	
+		<xsl:variable name="level">
+			<xsl:call-template name="getLevel"/>
 		</xsl:variable>
+		<xsl:variable name="font-size">
+			<xsl:choose>
+				<xsl:when test="$level = 1">14pt</xsl:when>				
+				<xsl:when test="$level = 2">12pt</xsl:when>
+				<xsl:when test="$level = 3">10pt</xsl:when>
+				<xsl:otherwise>11pt</xsl:otherwise>
+			</xsl:choose>
+		</xsl:variable>
+		<fo:block font-size="{$font-size}" font-weight="bold" margin-top="3pt" margin-bottom="16pt" keep-with-next="always">
+			<xsl:apply-templates />
+		</fo:block>
+	</xsl:template>
+	
+	<xsl:template match="un:annex//un:title">
+		<xsl:variable name="level">
+			<xsl:call-template name="getLevel"/>
+		</xsl:variable>
+		<xsl:variable name="font-size">
+			<xsl:choose>				
+				<xsl:when test="$level = 1">12pt</xsl:when>
+				<xsl:when test="$level = 2">10pt</xsl:when>				
+				<xsl:when test="$level = 3">10pt</xsl:when>
+				<xsl:otherwise>11pt</xsl:otherwise>
+			</xsl:choose>
+		</xsl:variable>
+		<xsl:choose>
+			<xsl:when test="$level = 1">
+				<fo:block id="{$id}" font-size="{$font-size}" font-weight="bold" space-before="3pt" keep-with-next="always">					
+					<fo:block margin-bottom="12pt">
+						<xsl:apply-templates />
+					</fo:block>
+				</fo:block>
+			</xsl:when>
+			<xsl:otherwise>			
+				<fo:block id="{$id}" font-size="{$font-size}" font-weight="bold" margin-left="1mm" space-before="3pt" margin-bottom="6pt" keep-with-next="always">
+					<xsl:apply-templates />
+				</fo:block>
+			</xsl:otherwise>
+		</xsl:choose>
+	</xsl:template>
+	
+	<xsl:template match="un:title">
+		<xsl:variable name="id"/>
+			<!-- <xsl:call-template name="getId"/>			
+		</xsl:variable> -->
 		
 		<xsl:variable name="level">
 			<xsl:call-template name="getLevel"/>
 		</xsl:variable>
 		
 		<xsl:variable name="font-size">
-			<xsl:choose>
-				<xsl:when test="$level = 1 and ancestor::un:preface">14pt</xsl:when>
-				<xsl:when test="$level = 1 and ancestor::un:annex">12pt</xsl:when>
-				<xsl:when test="$level = 2 and ancestor::un:annex">10pt</xsl:when>
+			<xsl:choose>				
 				<xsl:when test="$level = 1">14pt</xsl:when>
 				<xsl:when test="$level = 2">12pt</xsl:when>
 				<xsl:when test="$level = 3">10pt</xsl:when>
@@ -845,37 +891,12 @@
 			</xsl:choose>
 		</xsl:variable>
 		
-		<xsl:variable name="section">
-			<xsl:call-template name="getSection"/>
-		</xsl:variable>
-				
-		<xsl:choose>
-			<xsl:when test="ancestor::un:preface">
-				<fo:block id="{$id}" font-size="{$font-size}" font-weight="bold" margin-top="3pt" margin-bottom="16pt" keep-with-next="always">
-					<xsl:apply-templates />
-				</fo:block>
-			</xsl:when>
+		
+		<xsl:choose>			
 			<xsl:when test="ancestor::un:sections and $level = 1">
 				<fo:block-container margin-left="-16mm">
 					<fo:block id="{$id}" font-size="{$font-size}" font-weight="bold" margin-left="16mm" space-before="16pt" margin-bottom="13pt" keep-with-next="always">
-						<fo:table table-layout="fixed" width="100%">
-							<fo:table-column column-width="16mm"/>
-							<fo:table-column column-width="130mm"/>
-							<fo:table-body>
-								<fo:table-row>
-									<fo:table-cell>
-										<fo:block text-align="center">
-											<xsl:value-of select="$section"/>
-										</fo:block>
-									</fo:table-cell>
-									<fo:table-cell>
-										<fo:block>
-											<xsl:apply-templates />
-										</fo:block>
-									</fo:table-cell>
-								</fo:table-row>
-							</fo:table-body>
-						</fo:table>
+						<xsl:apply-templates />
 					</fo:block>
 				</fo:block-container>
 			</xsl:when>
@@ -891,45 +912,19 @@
 						<xsl:attribute name="margin-left">1mm</xsl:attribute>
 						<xsl:attribute name="margin-bottom">6pt</xsl:attribute>
 					</xsl:if>
-					<fo:list-block provisional-distance-between-starts="8mm">
-						<fo:list-item>
-							<fo:list-item-label end-indent="label-end()">
-								<fo:block>
-									<xsl:value-of select="$section"/>
-								</fo:block>
-							</fo:list-item-label>
-							<fo:list-item-body start-indent="body-start()">
-								<fo:block>
-									<xsl:apply-templates />
-								</fo:block>
-							</fo:list-item-body>
-						</fo:list-item>
-					</fo:list-block>
-				</fo:block>
-			</xsl:when>
-			<xsl:when test="ancestor::un:annex and $level = 1">
-				<fo:block id="{$id}" font-size="{$font-size}" font-weight="bold" space-before="3pt" keep-with-next="always">
-					<fo:block margin-bottom="18pt">
-						<xsl:value-of select="$section"/>
-					</fo:block>
-					<fo:block margin-bottom="12pt">
-						<xsl:apply-templates />
-					</fo:block>
-				</fo:block>
-			</xsl:when>
-			<xsl:when test="ancestor::un:annex and $level &gt;= 2">
-				<fo:block id="{$id}" font-size="{$font-size}" font-weight="bold" margin-left="1mm" space-before="3pt" margin-bottom="6pt" keep-with-next="always">
 					<xsl:apply-templates />
 				</fo:block>
-			</xsl:when>
+			</xsl:when>			
 			<xsl:otherwise>
-				<fo:block id="{$id}" font-size="{$font-size}" font-weight="bold" text-align="left" keep-with-next="always">
-						<fo:inline><xsl:value-of select="$section"/></fo:inline>
-						<xsl:apply-templates />
-					</fo:block>
+				<fo:block id="{$id}" font-size="{$font-size}" font-weight="bold" text-align="left" keep-with-next="always">						
+					<xsl:apply-templates />
+				</fo:block>
 			</xsl:otherwise>
 		</xsl:choose>
 	</xsl:template>
+	<!-- ====== -->
+	<!-- ====== -->
+	
 	
 	<!-- ============================ -->
 	<!-- for further use -->

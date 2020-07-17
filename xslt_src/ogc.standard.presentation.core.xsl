@@ -44,6 +44,8 @@
 		<xsl:text>:</xsl:text>
 		<xsl:value-of select="/ogc:ogc-standard/ogc:bibdata/ogc:copyright/ogc:from"/>
 	</xsl:variable>
+
+	<xsl:variable name="color" select="'rgb(14, 26, 133)'"/>
 	
 	<xsl:variable name="contents">
 		<contents>
@@ -1143,26 +1145,24 @@
 	</xsl:template>
 	
 	
+	<!-- ====== -->
+	<!-- title      -->
+	<!-- ====== -->
+	
+	<xsl:template match="ogc:annex/ogc:title">
+		<fo:block font-size="12pt" text-align="center" margin-bottom="12pt" keep-with-next="always" color="{$color}">			
+			<xsl:apply-templates />
+		</fo:block>
+	</xsl:template>
+	
 	<xsl:template match="ogc:title">
-		<xsl:param name="sectionNum"/>
 		
-		<xsl:variable name="parent-name"  select="local-name(..)"/>
-		<xsl:variable name="references_num_current">
-			<xsl:number level="any" count="ogc:references"/>
-		</xsl:variable>
-		
-		<xsl:variable name="id">
-			<xsl:call-template name="getId"/>
-		</xsl:variable>
+		<xsl:variable name="id"/>
+			<!-- <xsl:call-template name="getId"/>			
+		</xsl:variable> -->
 		
 		<xsl:variable name="level">
 			<xsl:call-template name="getLevel"/>
-		</xsl:variable>
-		
-		<xsl:variable name="section">
-			<xsl:call-template name="getSection">
-				<xsl:with-param name="sectionNum" select="$sectionNum"/>
-			</xsl:call-template>
 		</xsl:variable>
 		
 		<xsl:variable name="font-size">
@@ -1184,59 +1184,20 @@
 			</xsl:choose>
 		</xsl:variable>
 		
-		<xsl:variable name="color" select="'rgb(14, 26, 133)'"/>
-		
-		<xsl:choose>
-			<xsl:when test="$parent-name = 'annex'">
-				<fo:block id="{$id}" font-size="12pt" font-weight="bold" text-align="center" margin-bottom="12pt" keep-with-next="always" color="{$color}">
-					<xsl:value-of select="$section"/>
-					<xsl:if test=" ../@obligation">
-						<xsl:value-of select="$linebreak"/>
-						<fo:inline font-weight="normal">(<xsl:value-of select="../@obligation"/>)</fo:inline>
-					</xsl:if>
-					<xsl:value-of select="$linebreak"/>
-					<xsl:apply-templates />
-				</fo:block>
-			</xsl:when>
-			<xsl:otherwise>
-				<xsl:element name="{$element-name}">
-					<xsl:attribute name="id"><xsl:value-of select="$id"/></xsl:attribute>
-					<xsl:attribute name="font-size"><xsl:value-of select="$font-size"/></xsl:attribute>
-					<xsl:attribute name="font-weight">bold</xsl:attribute>
-					<xsl:attribute name="space-before">13.5pt</xsl:attribute>
-					<xsl:attribute name="margin-bottom">12pt</xsl:attribute>
-					<xsl:attribute name="keep-with-next">always</xsl:attribute>		
-					<xsl:attribute name="color"><xsl:value-of select="$color"/></xsl:attribute>
-					<xsl:if test="$section != ''">
-						<xsl:if test="$section != '0'">
-							<xsl:value-of select="$section"/><xsl:text>.</xsl:text>
-							<xsl:choose>
-								<xsl:when test="$level &gt;= 5"/>
-								<xsl:when test="$level &gt;= 4">
-									<fo:inline padding-right="4mm">&#xA0;</fo:inline>
-								</xsl:when>
-								<xsl:when test="$level &gt;= 3 and ancestor::ogc:terms">
-									<fo:inline padding-right="2mm">&#xA0;</fo:inline>
-								</xsl:when>
-								<xsl:when test="$level &gt;= 2">
-									<fo:inline padding-right="3mm">&#xA0;</fo:inline>
-								</xsl:when>
-								<xsl:when test="$level = 1">
-									<fo:inline padding-right="3mm">&#xA0;</fo:inline>
-								</xsl:when>
-								<xsl:otherwise>
-									<fo:inline padding-right="1mm">&#xA0;</fo:inline>
-								</xsl:otherwise>
-							</xsl:choose>
-						</xsl:if>
-					</xsl:if>
-					<xsl:apply-templates />
-				</xsl:element>
-			</xsl:otherwise>
-		</xsl:choose>
-		
+		<xsl:element name="{$element-name}">
+			<xsl:attribute name="id"><xsl:value-of select="$id"/></xsl:attribute>
+			<xsl:attribute name="font-size"><xsl:value-of select="$font-size"/></xsl:attribute>
+			<xsl:attribute name="font-weight">bold</xsl:attribute>
+			<xsl:attribute name="space-before">13.5pt</xsl:attribute>
+			<xsl:attribute name="margin-bottom">12pt</xsl:attribute>
+			<xsl:attribute name="keep-with-next">always</xsl:attribute>		
+			<xsl:attribute name="color"><xsl:value-of select="$color"/></xsl:attribute>			
+			<xsl:apply-templates />
+		</xsl:element>
+			
 	</xsl:template>
-	
+	<!-- ====== -->
+	<!-- ====== -->
 	
 	<xsl:template match="ogc:p">
 		<xsl:param name="inline" select="'false'"/>
@@ -1508,7 +1469,9 @@
 				</fo:block>
 			</fo:list-item-label>
 			<fo:list-item-body start-indent="body-start()" line-height-shift-adjustment="disregard-shifts">
-				<xsl:apply-templates />
+				<fo:block>
+					<xsl:apply-templates />
+				</fo:block>
 			</fo:list-item-body>
 		</fo:list-item>
 	</xsl:template>
@@ -1653,7 +1616,7 @@
 	<!-- [position() &gt; 1] -->
 	<xsl:template match="ogc:references[@id != '_normative_references' and @id != '_references'  and @id != 'references']">
 		<fo:block break-after="page"/>
-		<fo:block line-height="120%">
+		<fo:block id="{@id}" line-height="120%">
 			<xsl:apply-templates />
 		</fo:block>
 	</xsl:template>

@@ -2607,16 +2607,13 @@
 	
 	<xsl:template match="*[local-name() = 'tab']">
 		<!-- zero-space char -->
-		<xsl:variable name="depth" select="../@depth"/>
+		<xsl:variable name="depth">
+			<xsl:call-template name="getLevel">
+				<xsl:with-param name="depth" select="../@depth"/>
+			</xsl:call-template>
+		</xsl:variable>
 		
-		<xsl:variable name="padding">
-			<xsl:if test="$namespace = 'iec'">
-				<xsl:choose>
-					<xsl:when test="$depth = 2 and ancestor::iec:annex">6</xsl:when>
-					<xsl:when test="$depth = 2">7</xsl:when>
-					<xsl:otherwise>5</xsl:otherwise>
-				</xsl:choose>
-			</xsl:if>
+		<xsl:variable name="padding">			
 			<xsl:if test="$namespace = 'csd'">
 				<xsl:choose>
 					<xsl:when test="$depth &gt;= 3">3</xsl:when>
@@ -2625,6 +2622,13 @@
 				</xsl:choose>
 			</xsl:if>
 			<xsl:if test="$namespace = 'gb'">2</xsl:if>
+			<xsl:if test="$namespace = 'iec'">
+				<xsl:choose>
+					<xsl:when test="$depth = 2 and ancestor::iec:annex">6</xsl:when>
+					<xsl:when test="$depth = 2">7</xsl:when>
+					<xsl:otherwise>5</xsl:otherwise>
+				</xsl:choose>
+			</xsl:if>
 			<xsl:if test="$namespace = 'iho'">
 				<xsl:choose>
 					<xsl:when test="$depth = 2">3</xsl:when>
@@ -2647,20 +2651,47 @@
 					<xsl:otherwise>12</xsl:otherwise>
 				</xsl:choose>
 			</xsl:if>
-			<xsl:if test="$namespace = 'm3d'">
-				<xsl:variable name="level">
-					<xsl:call-template name="getLevel"/>
-				</xsl:variable>
-				<xsl:variable name="parent-name"  select="local-name(..)"/>
+			<xsl:if test="$namespace = 'm3d'">								
 				<xsl:variable name="references_num_current">
 					<xsl:number level="any" count="m3d:references"/>
 				</xsl:variable>
 				<xsl:choose>
-					<xsl:when test="(ancestor::m3d:sections and $level = 1) or 
-															($parent-name = 'references' and $references_num_current = 1)">25</xsl:when>
+					<xsl:when test="(ancestor::m3d:sections and $depth = 1) or 
+															(local-name(..) = 'references' and $references_num_current = 1)">25</xsl:when>
 					<xsl:when test="ancestor::m3d:sections or ancestor::m3d:annex">3</xsl:when>						
 				</xsl:choose>
 			</xsl:if>
+			<xsl:if test="$namespace = 'nist'">				
+				<xsl:choose>
+					<xsl:when test="$depth = 1 and local-name(..) != 'annex'">7.5</xsl:when>										
+					<xsl:otherwise>4</xsl:otherwise>
+				</xsl:choose>
+			</xsl:if>
+			<xsl:if test="$namespace = 'ogc'">
+				<xsl:choose>
+					<xsl:when test="$depth &gt;= 5"/>
+					<xsl:when test="$depth &gt;= 4">5</xsl:when>
+					<xsl:when test="$depth &gt;= 3 and ancestor::ogc:terms">3</xsl:when>
+					<xsl:when test="$depth &gt;= 2">4</xsl:when>
+					<xsl:when test="$depth = 1">4</xsl:when>
+					<xsl:otherwise>2</xsl:otherwise>
+				</xsl:choose>
+			</xsl:if>
+			<xsl:if test="$namespace = 'rsd'">3.5</xsl:if>
+			<xsl:if test="$namespace = 'unece'">
+				<xsl:choose>
+					<xsl:when test="ancestor::un:sections and $depth = 1">12</xsl:when>
+					<xsl:when test="ancestor::un:sections">8</xsl:when>					
+				</xsl:choose>
+			</xsl:if>
+			<xsl:if test="$namespace = 'unece-rec'">
+				<xsl:choose>
+					<xsl:when test="ancestor::un:annex and $depth &gt;= 2">9.5</xsl:when>
+					<xsl:when test="ancestor::un:sections">9.5</xsl:when>
+				</xsl:choose>
+			</xsl:if>
+			
+			
 		</xsl:variable>
 		
 		<xsl:variable name="padding-right">
@@ -2673,6 +2704,7 @@
 		</xsl:variable>
 		
 		<fo:inline padding-right="{$padding-right}mm">&#x200B;</fo:inline>
+		
 	</xsl:template>
 	
 	
@@ -2837,9 +2869,13 @@
 	</xsl:template>
 	
 	<xsl:template name="getLevel">
+		<xsl:param name="depth"/>
 		<xsl:choose>
 			<xsl:when test="normalize-space(@depth) != ''">
 				<xsl:value-of select="@depth"/>
+			</xsl:when>
+			<xsl:when test="normalize-space($depth) != ''">
+				<xsl:value-of select="$depth"/>
 			</xsl:when>
 			<xsl:otherwise>
 				<xsl:variable name="level_total" select="count(ancestor::*)"/>

@@ -762,48 +762,34 @@
 		</fo:block>
 	</xsl:template>
 	
-
 	
-	<xsl:template match="rsd:clause//rsd:clause[not(rsd:title)]">
-		<xsl:param name="sectionNum"/>
-		<xsl:variable name="section">
-			<xsl:call-template name="getSection">
-				<xsl:with-param name="sectionNum" select="$sectionNum"/>
-			</xsl:call-template>
-		</xsl:variable>
-		
-		<fo:block margin-top="3pt" >
-			<fo:inline font-weight="bold" padding-right="3mm">
-				<xsl:value-of select="$section"/>
-			</fo:inline>
-			<xsl:apply-templates>
-				<xsl:with-param name="sectionNum" select="$sectionNum"/>
-				<xsl:with-param name="inline" select="'true'"/>
-			</xsl:apply-templates>
-		</fo:block>
-	</xsl:template>
+	<!-- ====== -->
+	<!-- title      -->
+	<!-- ====== -->
 	
-	
-	<xsl:template match="rsd:title">
-		<xsl:param name="sectionNum"/>
-		
-		<xsl:variable name="parent-name"  select="local-name(..)"/>
-		<xsl:variable name="references_num_current">
-			<xsl:number level="any" count="rsd:references"/>
-		</xsl:variable>
-		
-		<xsl:variable name="id">
-			<xsl:call-template name="getId"/>
-		</xsl:variable>
-		
+	<xsl:template match="rsd:annex/rsd:title">
 		<xsl:variable name="level">
 			<xsl:call-template name="getLevel"/>
 		</xsl:variable>
+		<xsl:variable name="color">
+			<xsl:choose>
+				<xsl:when test="$level &gt;= 1">rgb(14, 26, 133)</xsl:when>
+				<xsl:otherwise>black</xsl:otherwise>
+			</xsl:choose>
+		</xsl:variable>
+		<fo:block font-size="12pt" text-align="center" margin-bottom="12pt" keep-with-next="always" color="{$color}">			
+			<xsl:apply-templates />
+		</fo:block>
+	</xsl:template>
+	
+	<xsl:template match="rsd:title">
 		
-		<xsl:variable name="section">
-			<xsl:call-template name="getSection">
-				<xsl:with-param name="sectionNum" select="$sectionNum"/>
-			</xsl:call-template>
+		<xsl:variable name="id"/>
+			<!-- <xsl:call-template name="getId"/>			
+		</xsl:variable> -->
+		
+		<xsl:variable name="level">
+			<xsl:call-template name="getLevel"/>
 		</xsl:variable>
 		
 		<xsl:variable name="font-size">
@@ -817,13 +803,7 @@
 				<xsl:otherwise>16pt</xsl:otherwise>
 			</xsl:choose>
 		</xsl:variable>
-		
-		<xsl:variable name="font-weight">
-			<xsl:choose>
-				<xsl:when test="$level = 1">bold</xsl:when>
-				<xsl:otherwise>bold</xsl:otherwise>
-			</xsl:choose>
-		</xsl:variable>
+	
 		
 		<xsl:variable name="element-name">
 			<xsl:choose>
@@ -839,42 +819,24 @@
 			</xsl:choose>
 		</xsl:variable>
 		
-		<xsl:choose>
-			<xsl:when test="$parent-name = 'annex'">
-				<fo:block id="{$id}" font-size="12pt" font-weight="{$font-weight}" text-align="center" margin-bottom="12pt" keep-with-next="always" color="{$color}">
-					<xsl:value-of select="$section"/>
-					<xsl:if test=" ../@obligation">
-						<xsl:value-of select="$linebreak"/>
-						<fo:inline font-weight="normal">(<xsl:value-of select="../@obligation"/>)</fo:inline>
-					</xsl:if>
-					<xsl:value-of select="$linebreak"/>
-					<xsl:apply-templates />
-				</fo:block>
-			</xsl:when>
-			<xsl:otherwise>
-				<xsl:element name="{$element-name}">
-					<xsl:attribute name="id"><xsl:value-of select="$id"/></xsl:attribute>
-					<xsl:attribute name="font-size"><xsl:value-of select="$font-size"/></xsl:attribute>
-					<xsl:attribute name="font-weight"><xsl:value-of select="$font-weight"/></xsl:attribute>
-					<xsl:attribute name="space-before">13.5pt</xsl:attribute>
-					<xsl:attribute name="margin-bottom">12pt</xsl:attribute>
-					<xsl:attribute name="keep-with-next">always</xsl:attribute>		
-					<xsl:attribute name="color"><xsl:value-of select="$color"/></xsl:attribute>
-					<xsl:attribute name="line-height">125%</xsl:attribute>
-					
-					<xsl:if test="$section != ''">
-						<fo:inline padding-right="3.5mm">
-							<xsl:value-of select="$section"/><xsl:text>.</xsl:text>
-						</fo:inline>
-					</xsl:if>
-					
-					<xsl:apply-templates />
-				</xsl:element>
-			</xsl:otherwise>
-		</xsl:choose>
 		
+		<xsl:element name="{$element-name}">
+			<xsl:attribute name="id"><xsl:value-of select="$id"/></xsl:attribute>
+			<xsl:attribute name="font-size"><xsl:value-of select="$font-size"/></xsl:attribute>
+			<xsl:attribute name="font-weight">bold</xsl:attribute>
+			<xsl:attribute name="space-before">13.5pt</xsl:attribute>
+			<xsl:attribute name="margin-bottom">12pt</xsl:attribute>
+			<xsl:attribute name="keep-with-next">always</xsl:attribute>		
+			<xsl:attribute name="color"><xsl:value-of select="$color"/></xsl:attribute>
+			<xsl:attribute name="line-height">125%</xsl:attribute>
+			
+			<xsl:apply-templates />
+			
+		</xsl:element>
+			
 	</xsl:template>
-	
+	<!-- ====== -->
+	<!-- ====== -->
 	
 	<xsl:template match="rsd:p">
 		<xsl:param name="inline" select="'false'"/>
@@ -1334,7 +1296,7 @@
 	<!-- [position() &gt; 1] -->
 	<xsl:template match="rsd:references[@id != '_normative_references' and @id != '_references']">
 		<fo:block break-after="page"/>
-		<fo:block >
+		<fo:block id="{@id}">
 			<xsl:apply-templates />
 		</fo:block>
 	</xsl:template>

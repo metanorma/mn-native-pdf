@@ -594,9 +594,9 @@
 	<!-- ====== -->	
 	
 	<xsl:template match="m3d:boilerplate//m3d:title">
-		<xsl:variable name="id">
-			<xsl:call-template name="getId"/>
-		</xsl:variable>
+		<xsl:variable name="id"/>
+			<!-- <xsl:call-template name="getId"/>			
+		</xsl:variable> -->
 		<fo:block id="{$id}" font-size="14pt" font-weight="bold" text-align="center" margin-top="12pt" margin-bottom="15.5pt" keep-with-next="always">
 			<xsl:apply-templates />
 		</fo:block>
@@ -621,9 +621,9 @@
 	
 	<xsl:template match="m3d:title">
 		
-		<xsl:variable name="id">
-			<xsl:call-template name="getId"/>
-		</xsl:variable>
+		<xsl:variable name="id"/>
+			<!-- <xsl:call-template name="getId"/>			
+		</xsl:variable> -->
 		
 		<xsl:variable name="level">
 			<xsl:call-template name="getLevel"/>
