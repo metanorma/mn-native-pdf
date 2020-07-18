@@ -1300,7 +1300,7 @@
 				<xsl:for-each select="//iec:table[@id and iec:name]">
 					<fo:block text-align-last="justify" margin-bottom="5pt" margin-left="8mm" text-indent="-8mm">
 						<fo:basic-link internal-destination="{@id}"  fox:alt-text="Table {@id}">
-							<xsl:apply-templates select="iec:name" mode="presentation"/>
+							<xsl:apply-templates select="iec:name" mode="contents"/>
 							<fo:inline keep-together.within-line="always">
 								<fo:leader leader-pattern="dots"/>
 								<fo:page-number-citation ref-id="{@id}"/>
