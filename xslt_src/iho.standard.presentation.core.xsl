@@ -1188,22 +1188,7 @@
 	<xsl:template match="iho:domain">
 		<fo:inline>&lt;<xsl:apply-templates/>&gt;</fo:inline><xsl:text> </xsl:text>
 	</xsl:template>
-	
-	<xsl:template match="iho:termnote">
-		<fo:block font-size="10pt" margin-top="8pt" margin-bottom="8pt" text-align="justify">			
-			<xsl:apply-templates select="iho:name" mode="presentation"/>
-			<xsl:apply-templates />
-		</fo:block>
-	</xsl:template>
-	
-	<xsl:template match="iho:termnote/iho:p">
-		<fo:inline><xsl:apply-templates/></fo:inline>
-		<!-- <xsl:if test="following-sibling::* and not(following-sibling::iho:p)">
-			<xsl:value-of select="$linebreak"/>
-			<xsl:value-of select="$linebreak"/>
-		</xsl:if> -->
-	</xsl:template>
-	
+		
 
 	<xsl:template match="iho:modification/iho:p">
 		<fo:inline><xsl:apply-templates/></fo:inline>

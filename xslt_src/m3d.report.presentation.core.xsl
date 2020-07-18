@@ -979,7 +979,7 @@
 		<xsl:apply-templates/>
 	</xsl:template>
 	
-	<xsl:template match="m3d:termnote">
+	<xsl:template match="m3d:termnote" priority="2">
 		<fo:block-container margin-left="0mm" margin-top="4pt" line-height="125%">
 			<fo:block>
 				<fo:inline padding-right="1mm">
@@ -990,9 +990,6 @@
 		</fo:block-container>
 	</xsl:template>
 	
-	<xsl:template match="m3d:termnote/m3d:p">
-		<fo:inline><xsl:apply-templates/></fo:inline>		
-	</xsl:template>
 	
 	<xsl:template match="m3d:domain">
 		<fo:inline>&lt;<xsl:apply-templates/>&gt; </fo:inline>

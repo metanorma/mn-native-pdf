@@ -1453,17 +1453,7 @@
 		<fo:inline><xsl:apply-templates/></fo:inline>
 	</xsl:template>
 	
-	<xsl:template match="ogc:termnote">
-		<fo:block font-size="10pt" margin-bottom="12pt">
-			<xsl:apply-templates select="ogc:name" mode="presentation"/>			
-			<xsl:apply-templates />
-		</fo:block>
-	</xsl:template>
-	
-	<xsl:template match="ogc:termnote/ogc:p">
-		<fo:inline><xsl:apply-templates/></fo:inline>
-	</xsl:template>
-	
+
 	<xsl:template match="ogc:domain">
 		<fo:inline>&lt;<xsl:apply-templates/>&gt;</fo:inline>
 	</xsl:template>

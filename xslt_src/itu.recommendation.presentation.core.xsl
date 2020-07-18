@@ -651,56 +651,7 @@
 		</xsl:apply-templates>
 	</xsl:template>
 	
-	<!-- terms - term -  termnote  -->
-	<xsl:template match="itu:termnote" mode="contents">
-		<xsl:param name="sectionNum" />
-		<xsl:variable name="level">
-			<xsl:call-template name="getLevel"/>
-		</xsl:variable>
-		<xsl:variable name="section">
-			<xsl:call-template name="getSection">
-				<xsl:with-param name="sectionNum" select="$sectionNum"/>
-			</xsl:call-template>
-		</xsl:variable>
-		<item level="" id="{@id}" display="false" type="note" section="{$section}">
-			<xsl:attribute name="topsection">
-				<xsl:call-template name="getTopSection">
-					<xsl:with-param name="sectionNum" select="$sectionNum"/>
-				</xsl:call-template>
-			</xsl:attribute>
-			<xsl:number/>
-		</item>
-		<xsl:apply-templates mode="contents">
-			<xsl:with-param name="sectionNum" select="$sectionNum"/>
-		</xsl:apply-templates>
-	</xsl:template>
 	
-	
-	<xsl:template match="itu:note" mode="contents">
-		<xsl:param name="sectionNum" />
-		<xsl:variable name="level">
-			<xsl:call-template name="getLevel"/>
-		</xsl:variable>
-		<xsl:variable name="section">
-			<xsl:for-each select="ancestor::itu:clause[1]/*[1]">
-				<xsl:call-template name="getSection">
-					<xsl:with-param name="sectionNum" select="$sectionNum"/>
-				</xsl:call-template>
-			</xsl:for-each>
-		</xsl:variable>
-		<item level="" id="{@id}" display="false" type="note" section="{$section}">
-			<xsl:attribute name="topsection">
-				<xsl:call-template name="getTopSection">
-					<xsl:with-param name="sectionNum" select="$sectionNum"/>
-				</xsl:call-template>
-			</xsl:attribute>
-			<xsl:number/>
-		</item>
-		<xsl:apply-templates mode="contents">
-			<xsl:with-param name="sectionNum" select="$sectionNum"/>
-		</xsl:apply-templates>
-	</xsl:template>
-
 	<xsl:template match="itu:li" mode="contents">
 		<xsl:param name="sectionNum" />
 		<item level="" id="{@id}" display="false" type="li">
@@ -1317,17 +1268,6 @@
 			</xsl:if>
 			<xsl:call-template name="link"/>
 		</fo:inline>
-	</xsl:template>
-	
-
-	<xsl:template match="itu:termnote">
-		<fo:block id="{@id}" margin-top="4pt">			
-			<xsl:apply-templates select="itu:name" mode="presentation"/>
-			<xsl:apply-templates />
-		</fo:block>
-	</xsl:template>
-	<xsl:template match="itu:termnote/itu:p">
-		<xsl:apply-templates />
 	</xsl:template>
 	
 	

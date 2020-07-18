@@ -21,15 +21,7 @@
 			<title-table lang="zh">表 </title-table>
 		</xsl:if>
 	
-		<title-figure lang="en">Figure </title-figure>
-		<title-figure lang="fr">Figure </title-figure>
-		<xsl:if test="$namespace = 'iso' or $namespace = 'iec' or $namespace = 'itu' or $namespace = 'unece' or $namespace = 'unece-rec' or $namespace = 'nist' or $namespace = 'ogc' or $namespace = 'rsd' or $namespace = 'csa' or $namespace = 'csd' or $namespace = 'm3d' or $namespace = 'iho'">
-			<title-figure lang="zh">Figure </title-figure>
-		</xsl:if>
-		<xsl:if test="$namespace = 'gb'">
-			<title-figure lang="zh">图 </title-figure>				
-		</xsl:if>
-		
+	
 		<title-example lang="en">EXAMPLE </title-example>
 		<title-example lang="fr">EXEMPLE </title-example>
 		<xsl:if test="$namespace = 'iso' or $namespace = 'iec' or $namespace = 'itu' or $namespace = 'unece' or $namespace = 'unece-rec' or $namespace = 'nist' or $namespace = 'ogc' or $namespace = 'rsd' or $namespace = 'csa' or $namespace = 'csd' or $namespace = 'm3d' or $namespace = 'iho'">
@@ -322,6 +314,28 @@
 			<xsl:attribute name="color">blue</xsl:attribute>
 			<xsl:attribute name="text-decoration">underline</xsl:attribute>
 		</xsl:if>		
+	</xsl:attribute-set>
+	
+	<xsl:attribute-set name="termnote-style">		
+		<xsl:if test="$namespace = 'csa' or $namespace = 'csd' or $namespace = 'ogc' or $namespace = 'rsd'">
+			<xsl:attribute name="font-size">10pt</xsl:attribute>			
+			<xsl:attribute name="margin-bottom">12pt</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'iec'">
+			<xsl:attribute name="font-size">8pt</xsl:attribute>
+			<xsl:attribute name="margin-top">5pt</xsl:attribute>
+			<xsl:attribute name="margin-bottom">5pt</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'iho' or $namespace = 'iso'">
+			<xsl:attribute name="font-size">10pt</xsl:attribute>
+			<xsl:attribute name="margin-top">8pt</xsl:attribute>
+			<xsl:attribute name="margin-bottom">8pt</xsl:attribute>
+			<xsl:attribute name="text-align">justify</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'itu' or $namespace = 'nist' or $namespace = 'unece' or $namespace = 'unece-rec'">			
+			<xsl:attribute name="margin-top">4pt</xsl:attribute>			
+		</xsl:if>
+		
 	</xsl:attribute-set>
 	
 	<xsl:template match="text()">
@@ -2538,6 +2552,16 @@
 	<!-- note      -->
 	<!-- termnote -->
 	<!-- ====== -->
+	
+	<xsl:template match="*[local-name() = 'termnote']">
+		<fo:block id="{@id}" xsl:use-attribute-sets="termnote-style">			
+			<xsl:apply-templates select="*[local-name() = 'name']" mode="presentation"/>			
+			<xsl:apply-templates />
+		</fo:block>
+	</xsl:template>
+	
+
+	
 	<xsl:template match="*[local-name() = 'note']/*[local-name() = 'name'] |
 														*[local-name() = 'termnote']/*[local-name() = 'name']"/>	
 	
@@ -2570,6 +2594,11 @@
 			<xsl:text>: </xsl:text>
 		</xsl:if>
 	</xsl:template>
+	
+	<xsl:template match="*[local-name() = 'termnote']/*[local-name() = 'p']">
+		<fo:inline><xsl:apply-templates/></fo:inline>
+	</xsl:template>
+	
 	<!-- ====== -->
 	<!-- ====== -->
 	

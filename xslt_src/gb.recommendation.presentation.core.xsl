@@ -1182,7 +1182,7 @@
 		<xsl:apply-templates/>
 	</xsl:template>
 	
-	<xsl:template match="gb:termnote">
+	<xsl:template match="gb:termnote" priority="2">
 		<fo:block-container font-size="9pt" margin-left="7.4mm" margin-top="4pt" line-height="125%">
 			<fo:block-container margin-left="0mm">
 				<fo:table table-layout="fixed" width="100%">
@@ -1207,9 +1207,7 @@
 		</fo:block-container>
 	</xsl:template>
 	
-	<xsl:template match="gb:termnote/gb:p">
-		<fo:inline><xsl:apply-templates/></fo:inline>		
-	</xsl:template>
+
 	
 	<xsl:template match="gb:domain">
 		<fo:inline padding-left="7.4mm">&lt;<xsl:apply-templates/>&gt; </fo:inline>

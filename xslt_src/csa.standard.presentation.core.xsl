@@ -1125,17 +1125,7 @@
 	<xsl:template match="csa:modification/csa:p">
 		<fo:inline><xsl:apply-templates/></fo:inline>
 	</xsl:template>
-	
-	<xsl:template match="csa:termnote">
-		<fo:block font-size="10pt" margin-bottom="12pt">
-			<xsl:apply-templates select="csa:name" mode="presentation"/>			
-			<xsl:apply-templates />
-		</fo:block>
-	</xsl:template>
-	
-	<xsl:template match="csa:termnote/csa:p">
-		<fo:inline><xsl:apply-templates/></fo:inline>
-	</xsl:template>
+
 	
 	<xsl:template match="csa:domain">
 		<fo:inline>&lt;<xsl:apply-templates/>&gt;</fo:inline>

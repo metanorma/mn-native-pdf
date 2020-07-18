@@ -1142,16 +1142,7 @@
 		<fo:inline><xsl:apply-templates/></fo:inline>
 	</xsl:template>
 	
-	<xsl:template match="rsd:termnote">
-		<fo:block font-size="10pt" margin-bottom="12pt">
-			<xsl:apply-templates select="rsd:name" mode="presentation"/>			
-			<xsl:apply-templates />
-		</fo:block>
-	</xsl:template>
-	
-	<xsl:template match="rsd:termnote/rsd:p">
-		<fo:inline><xsl:apply-templates/></fo:inline>
-	</xsl:template>
+
 	
 	<xsl:template match="rsd:domain">
 		<fo:inline>&lt;<xsl:apply-templates/>&gt;</fo:inline>

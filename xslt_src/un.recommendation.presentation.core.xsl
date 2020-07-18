@@ -1133,17 +1133,6 @@
 		</fo:block-container>
 	</xsl:template>	
 	
-	<xsl:template match="un:termnote">
-		<fo:block margin-top="4pt">			
-			<xsl:apply-templates select="un:name" mode="presentation"/>
-			<xsl:apply-templates />
-		</fo:block>
-	</xsl:template>
-
-	<xsl:template match="un:termnote/un:p">
-		<xsl:apply-templates />
-	</xsl:template>
-	
 	
 	<xsl:template match="un:formula" name="formula">
 		<fo:block id="{@id}" margin-top="6pt">

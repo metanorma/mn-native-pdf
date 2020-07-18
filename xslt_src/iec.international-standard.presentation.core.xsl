@@ -2110,16 +2110,6 @@
 		<fo:inline><xsl:apply-templates/></fo:inline>
 	</xsl:template>
 	
-	<xsl:template match="iec:termnote">
-		<fo:block font-size="8pt" margin-top="5pt" margin-bottom="5pt">			
-			<xsl:apply-templates select="iec:name" mode="presentation"/>			
-			<xsl:apply-templates />
-		</fo:block>
-	</xsl:template>
-	
-	<xsl:template match="iec:termnote/iec:p">
-		<fo:inline><xsl:apply-templates/></fo:inline>
-	</xsl:template>
 	
 	<xsl:template match="iec:domain">
 		<fo:inline>&lt;<xsl:apply-templates/>&gt;</fo:inline>
