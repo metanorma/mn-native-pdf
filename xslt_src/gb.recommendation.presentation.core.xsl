@@ -60,9 +60,6 @@
 			<xsl:apply-templates select="/gb:gb-standard/gb:annex" mode="contents"/>
 			<xsl:apply-templates select="/gb:gb-standard/gb:bibliography/gb:references[position() &gt; 1]" mode="contents"/> <!-- @id = '_bibliography' -->
 			
-			<xsl:apply-templates select="//gb:figure" mode="contents"/>
-			
-			<xsl:apply-templates select="//gb:table" mode="contents"/>
 		</contents>
 	</xsl:variable>
 	
@@ -603,56 +600,6 @@
 	</xsl:template>
 	
 	
-	<xsl:template match="gb:figure" mode="contents">
-		<item level="" id="{@id}" display="false">
-			<xsl:attribute name="section">
-				<xsl:call-template name="getFigureNumber"/>
-			</xsl:attribute>
-		</item>
-	</xsl:template>
-	
-	<xsl:template match="gb:table" mode="contents">
-		<xsl:param name="sectionNum" />
-		<xsl:variable name="annex-id" select="ancestor::gb:annex/@id"/>
-		<item level="" id="{@id}" display="false" type="table">
-			<xsl:attribute name="section">
-				<xsl:variable name="title-table">
-					<xsl:call-template name="getTitle">
-						<xsl:with-param name="name" select="'title-table'"/>
-					</xsl:call-template>
-				</xsl:variable>
-				<xsl:value-of select="$title-table"/>
-				<xsl:choose>
-					<xsl:when test="ancestor::*[local-name()='executivesummary']"> <!-- NIST -->
-							<xsl:text>ES-</xsl:text><xsl:number format="1" count="*[local-name()='executivesummary']//*[local-name()='table']"/>
-						</xsl:when>
-					<xsl:when test="ancestor::*[local-name()='annex']">
-						<xsl:number format="A-" count="gb:annex"/>
-						<xsl:number format="1" level="any" count="gb:table[ancestor::gb:annex[@id = $annex-id]]"/>
-					</xsl:when>
-					<xsl:otherwise>
-						<!-- <xsl:number format="1"/> -->
-						<xsl:number format="1" level="any" count="*[local-name()='sections']//*[local-name()='table']"/>
-					</xsl:otherwise>
-				</xsl:choose>
-			</xsl:attribute>
-			<xsl:value-of select="gb:name/text()"/>
-		</item>
-	</xsl:template>
-	
-	<xsl:template match="gb:formula" mode="contents">
-		<item level="" id="{@id}" display="false">
-			<xsl:attribute name="section">
-				<xsl:variable name="title-formula">
-					<xsl:call-template name="getTitle">
-						<xsl:with-param name="name" select="'title-formula'"/>
-					</xsl:call-template>
-				</xsl:variable>
-				<xsl:value-of select="$title-formula"/><xsl:number format="(A.1)" level="multiple" count="gb:annex | gb:formula"/>
-			</xsl:attribute>
-		</item>
-	</xsl:template>
-	
 	<xsl:template match="gb:li" mode="contents">
 		<xsl:param name="sectionNum" />
 		<item level="" id="{@id}" display="false" type="li">
@@ -783,9 +730,12 @@
 	<!-- ====== -->
 	
 	<xsl:template match="gb:annex/gb:title">
+		<xsl:variable name="level">
+			<xsl:call-template name="getLevel"/>
+		</xsl:variable>
 		<xsl:variable name="font-family">
 			<xsl:choose>
-				<xsl:when test="ancestor::gb:annex and $level &gt;= 3">SimSun</xsl:when>
+				<xsl:when test="$level &gt;= 3">SimSun</xsl:when>
 				<xsl:otherwise>SimHei</xsl:otherwise>
 			</xsl:choose>
 		</xsl:variable>		
@@ -1015,15 +965,7 @@
 			<fo:block>
 				<fo:external-graphic src="{@src}" fox:alt-text="Image {@alt}"/>
 			</fo:block>
-			<fo:block font-family="SimHei" margin-top="12pt" margin-bottom="12pt">
-				<xsl:variable name="title-figure">
-					<xsl:call-template name="getTitle">
-						<xsl:with-param name="name" select="'title-figure'"/>
-					</xsl:call-template>
-				</xsl:variable>
-				<xsl:value-of select="$title-figure"/>
-				<xsl:call-template name="getFigureNumber"/>
-			</fo:block>
+			<xsl:apply-templates select="gb:name" mode="presentation"/>
 		</fo:block-container>
 	</xsl:template>
 
@@ -1036,35 +978,11 @@
 			<xsl:for-each select="gb:note//gb:p">
 				<xsl:call-template name="note"/>
 			</xsl:for-each>
-			<fo:block font-family="SimHei" text-align="center" margin-top="12pt" margin-bottom="12pt" keep-with-previous="always">
-				<xsl:call-template name="getFigureNumber"/>
-				<xsl:if test="gb:name">
-					<!-- <xsl:if test="not(local-name(..) = 'figure')"> -->
-						<xsl:text> — </xsl:text>
-					<!-- </xsl:if> -->
-					<xsl:value-of select="gb:name"/>
-				</xsl:if>
-			</fo:block>
+			<xsl:apply-templates select="gb:name" mode="presentation"/>
 		</fo:block-container>
 	</xsl:template>
 	
-	<xsl:template name="getFigureNumber">
-		<xsl:variable name="title-figure">
-			<xsl:call-template name="getTitle">
-				<xsl:with-param name="name" select="'title-figure'"/>
-			</xsl:call-template>
-		</xsl:variable>
-		<xsl:choose>
-			<xsl:when test="ancestor::gb:annex">
-				<xsl:value-of select="$title-figure"/><xsl:number format="A.1-1" level="multiple" count="gb:annex | gb:figure"/>
-			</xsl:when>
-			<xsl:otherwise>
-				<xsl:value-of select="$title-figure"/><xsl:number format="1" level="any"/>
-			</xsl:otherwise>
-		</xsl:choose>
-	</xsl:template>
-	
-	<xsl:template match="gb:figure/gb:name"/>
+
 	<xsl:template match="gb:figure/gb:fn" priority="2"/>
 	<xsl:template match="gb:figure/gb:note"/>
 	

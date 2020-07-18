@@ -55,10 +55,6 @@
 			<xsl:apply-templates select="/iho:iho-standard/iho:annex" mode="contents"/>
 			<xsl:apply-templates select="/iho:iho-standard/iho:bibliography/iho:references[position() &gt; 1]" mode="contents"/> <!-- @id = '_bibliography' -->
 			
-			<xsl:apply-templates select="//iho:figure" mode="contents"/>
-			
-			<xsl:apply-templates select="//iho:table" mode="contents"/>
-			
 		</contents>
 	</xsl:variable>
 	
@@ -492,44 +488,7 @@
 	</xsl:template>
 	
 
-	<xsl:template match="iho:figure" mode="contents">
-		<item level="" id="{@id}" display="false">
-			<xsl:attribute name="section">
-				<xsl:call-template name="getFigureNumber"/>				
-			</xsl:attribute>
-		</item>
-	</xsl:template>
-	
-	<xsl:template match="iho:table" mode="contents">
-		<xsl:param name="sectionNum" />
-		<xsl:variable name="annex-id" select="ancestor::iho:annex/@id"/>
-		<item level="" id="{@id}" display="false" type="table">
-			<xsl:attribute name="section">
-				<xsl:variable name="title-table">
-					<xsl:call-template name="getTitle">
-						<xsl:with-param name="name" select="'title-table'"/>
-					</xsl:call-template>
-				</xsl:variable>
-				<xsl:value-of select="$title-table"/>
-				<xsl:call-template name="getTableNumber"/>
-			</xsl:attribute>
-			<xsl:value-of select="iho:name/text()"/>
-		</item>
-	</xsl:template>
-	
-	<xsl:template match="iho:formula" mode="contents">
-		<item level="" id="{@id}" display="false">
-			<xsl:attribute name="section">
-				<xsl:variable name="title-formula">
-					<xsl:call-template name="getTitle">
-						<xsl:with-param name="name" select="'title-formula'"/>
-					</xsl:call-template>
-				</xsl:variable>
-				<xsl:value-of select="$title-formula"/><xsl:number format="(A.1)" level="multiple" count="iho:annex | iho:formula"/>
-			</xsl:attribute>
-		</item>
-	</xsl:template>
-	
+
 	<xsl:template match="iho:li" mode="contents">
 		<xsl:param name="sectionNum" />
 		<item level="" id="{@id}" display="false" type="li">
@@ -827,23 +786,10 @@
 			<xsl:for-each select="iho:note//iho:p">
 				<xsl:call-template name="note"/>
 			</xsl:for-each>
-			<fo:block font-size="11pt" font-weight="bold" text-align="center" margin-top="6pt" margin-bottom="6pt" keep-with-previous="always">
-				<xsl:call-template name="getFigureNumber"/>
-				<xsl:if test="iho:name">
-					<xsl:if test="not(local-name(..) = 'figure') and not(ancestor::iho:example)">
-						<xsl:text> — </xsl:text>
-					</xsl:if>
-					<xsl:apply-templates select="iho:name" mode="figure_name"/>
-				</xsl:if>
-			</fo:block>
+			<xsl:apply-templates select="iho:name" mode="presentation"/>
 		</fo:block-container>
 	</xsl:template>
 	
-	<xsl:template match="iho:figure/iho:name" mode="figure_name">
-		<xsl:apply-templates />
-	</xsl:template>
-	
-	<xsl:template match="iho:figure/iho:name"/>
 	<xsl:template match="iho:figure/iho:fn" priority="2"/>
 	<xsl:template match="iho:figure/iho:note"/>
 	
@@ -863,43 +809,7 @@
 		</fo:block>
 	</xsl:template>
 	
-	<xsl:template name="getFigureNumber">
-		<xsl:variable name="title-figure">
-			<xsl:call-template name="getTitle">
-				<xsl:with-param name="name" select="'title-figure'"/>
-			</xsl:call-template>
-		</xsl:variable>
-		<xsl:choose>
-			<xsl:when test="ancestor::iho:annex">
-				<xsl:choose>
-					<xsl:when test="local-name(..) = 'figure'">
-						<xsl:number format="a) "/>
-					</xsl:when>
-					<xsl:otherwise>
-						<xsl:value-of select="$title-figure"/>
-						
-						<xsl:variable name="annex_id" select="ancestor::iho:annex[1]/@id"/>							
-						<xsl:choose>
-							<xsl:when test="ancestor::iho:annex/@obligation = 'informative'">
-								<xsl:number format="1." count="iho:annex[@obligation = 'informative']"/>
-								<xsl:number format="1"  level="any" count="iho:figure[ancestor::iho:annex[@id = $annex_id]]"/>
-								<!-- <xsl:number format="1.1" level="multiple" count="iho:annex[@obligation = 'informative'] | iho:figure"/>								 -->
-							</xsl:when>
-							<xsl:otherwise>
-								<xsl:number format="A." level="any" count="iho:annex[not(@obligation = 'informative')]"/>
-								<xsl:number format="1"  level="any" count="iho:figure[ancestor::iho:annex[@id = $annex_id]]"/>								
-								<!-- <xsl:number format="A.1" level="multiple" count="iho:annex[not(@obligation = 'informative')] | iho:figure"/>								 -->
-							</xsl:otherwise>
-						</xsl:choose>
-					</xsl:otherwise>
-				</xsl:choose>
-			</xsl:when>
-			<xsl:when test="ancestor::iho:example"/>
-			<xsl:otherwise>
-				<xsl:value-of select="$title-figure"/><xsl:number format="1" level="any" count="iho:figure"/>
-			</xsl:otherwise>
-		</xsl:choose>
-	</xsl:template>
+
 	
 	<xsl:template match="iho:note/iho:p" name="note">
 		<fo:block font-size="11pt" margin-top="8pt" margin-bottom="12pt" text-align="justify">

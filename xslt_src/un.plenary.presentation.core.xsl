@@ -363,84 +363,7 @@
 		<xsl:apply-templates mode="contents"/>
 	</xsl:template>
 
-	
-	<xsl:template match="un:figure" mode="contents">
-		<item level="" id="{@id}" type="figure">
-			<xsl:attribute name="section">
-				<xsl:variable name="title-figure">
-					<xsl:call-template name="getTitle">
-						<xsl:with-param name="name" select="'title-figure'"/>
-					</xsl:call-template>
-				</xsl:variable>
-				<xsl:value-of select="$title-figure"/>
-				<xsl:choose>
-					<xsl:when test="ancestor::un:annex">
-						<xsl:choose>
-							<xsl:when test="count(//un:annex) = 1">
-								<xsl:value-of select="/un:un-standard/un:bibdata/un:ext/un:structuredidentifier/un:annexid"/><xsl:number format="-1" level="any" count="un:annex//un:figure"/>
-							</xsl:when>
-							<xsl:otherwise>
-								<xsl:number format="A.1-1" level="multiple" count="un:annex | un:figure"/>
-							</xsl:otherwise>
-						</xsl:choose>		
-					</xsl:when>
-					<xsl:when test="ancestor::un:figure">
-						<xsl:for-each select="parent::*[1]">
-							<xsl:number format="1" level="any" count="un:figure[not(parent::un:figure)]"/>
-						</xsl:for-each>
-						<xsl:number format="-a"  count="un:figure"/>
-					</xsl:when>
-					<xsl:otherwise>
-						<xsl:number format="1" level="any" count="un:figure[not(parent::un:figure)]"/>
-						<!-- <xsl:number format="1.1-1" level="multiple" count="un:annex | un:figure"/> -->
-					</xsl:otherwise>
-				</xsl:choose>
-			</xsl:attribute>
-			<xsl:value-of select="un:name"/>
-		</item>
-	</xsl:template>
-	
-	<xsl:template match="un:table" mode="contents">
-		<xsl:variable name="annex-id" select="ancestor::un:annex/@id"/>
-		<item level="" id="{@id}" display="false" type="table">
-			<xsl:attribute name="section">
-				<xsl:variable name="title-table">
-					<xsl:call-template name="getTitle">
-						<xsl:with-param name="name" select="'title-table'"/>
-					</xsl:call-template>
-				</xsl:variable>
-				<xsl:value-of select="$title-table"/>
-				<xsl:choose>
-					<xsl:when test="ancestor::*[local-name()='executivesummary']"> <!-- NIST -->
-							<xsl:text>ES-</xsl:text><xsl:number format="1" count="*[local-name()='executivesummary']//*[local-name()='table']"/>
-						</xsl:when>
-					<xsl:when test="ancestor::*[local-name()='annex']">
-						<xsl:number format="I." count="un:annex"/>
-						<xsl:number format="1" level="any" count="un:table[ancestor::un:annex[@id = $annex-id]]"/>
-					</xsl:when>
-					<xsl:otherwise>
-						<!-- <xsl:number format="1"/> -->
-						<xsl:number format="1" level="any" count="*[local-name()='sections']//*[local-name()='table']"/>
-					</xsl:otherwise>
-				</xsl:choose>
-			</xsl:attribute>
-			<xsl:apply-templates select="un:name"/>
-		</item>
-	</xsl:template>
-	
-	
-	<xsl:template match="un:formula" mode="contents">
-		<item level="" id="{@id}" display="false">
-			<xsl:attribute name="section">
-				<xsl:variable name="title-formula">
-					<xsl:call-template name="getTitle">
-						<xsl:with-param name="name" select="'title-formula'"/>
-					</xsl:call-template>
-				</xsl:variable>
-				<xsl:value-of select="$title-formula"/><xsl:number format="(A.1)" level="multiple" count="un:annex | un:formula"/>
-			</xsl:attribute>
-		</item>
-	</xsl:template>
+
 
 	<xsl:template match="un:example" mode="contents">
 		<xsl:variable name="level">
@@ -1004,43 +927,8 @@
 		<fo:block-container id="{@id}">
 			<fo:block>
 				<xsl:apply-templates />
-			</fo:block>
-			<xsl:if test="un:name">
-				<fo:block text-align="center" margin-bottom="6pt" keep-with-previous="always">
-					<xsl:variable name="title-figure">
-						<xsl:call-template name="getTitle">
-							<xsl:with-param name="name" select="'title-figure'"/>
-						</xsl:call-template>
-					</xsl:variable>
-					<xsl:value-of select="$title-figure"/>
-					<xsl:choose>
-						<xsl:when test="ancestor::un:annex">
-							<xsl:choose>
-								<xsl:when test="count(//un:annex) = 1">
-									<xsl:value-of select="/un:un-standard/un:bibdata/un:ext/un:structuredidentifier/un:annexid"/><xsl:number format="-1" level="any" count="un:annex//un:figure"/>
-								</xsl:when>
-								<xsl:otherwise>
-									<xsl:number format="A-1-1" level="multiple" count="un:annex | un:figure"/>
-								</xsl:otherwise>
-							</xsl:choose>		
-						</xsl:when>
-						<xsl:when test="ancestor::un:figure">
-							<xsl:for-each select="parent::*[1]">
-								<xsl:number format="1" level="any" count="un:figure[not(parent::un:figure)]"/>
-							</xsl:for-each>
-							<xsl:number format="-a"  count="un:figure"/>
-						</xsl:when>
-						<xsl:otherwise>
-							<xsl:number format="1" level="any" count="un:figure[not(parent::un:figure)]"/>
-						</xsl:otherwise>
-					</xsl:choose>
-					<xsl:if test="un:name">
-						<xsl:text>: </xsl:text>
-						<xsl:apply-templates select="un:name" mode="process"/>
-					</xsl:if>
-				</fo:block>
-			</xsl:if>
-			
+			</fo:block>			
+			<xsl:apply-templates select="un:name" mode="presentation"/>
 			<!-- <xsl:call-template name="fn_display_figure"/> -->
 			<xsl:for-each select="un:note//un:p">
 				<xsl:call-template name="note"/>
@@ -1048,10 +936,6 @@
 		</fo:block-container>
 	</xsl:template>
 	
-	<xsl:template match="un:figure/un:name"/>
-	<xsl:template match="un:figure/un:name" mode="process">
-		<xsl:apply-templates/>
-	</xsl:template>
 	<xsl:template match="un:figure/un:fn" priority="2"/>
 	<xsl:template match="un:figure/un:note"/>
 

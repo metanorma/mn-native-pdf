@@ -428,7 +428,7 @@
 							</fo:block>
 						</xsl:for-each>
 						
-						<xsl:if test="xalan:nodeset($contents)//item[@type = 'table']">
+						<xsl:if test="//ogc:table[ogc:name]">
 							<fo:block font-size="12pt">&#xA0;</fo:block>
 							<fo:block font-size="12pt">&#xA0;</fo:block>
 							<xsl:variable name="title-list-tables">
@@ -437,15 +437,10 @@
 								</xsl:call-template>
 							</xsl:variable>
 							<fo:block font-size="14pt" font-weight="bold" space-before="48pt" margin-bottom="15.5pt"><xsl:value-of select="$title-list-tables"/></fo:block>
-							<xsl:for-each select="xalan:nodeset($contents)//item[@type = 'table']">
+							<xsl:for-each select="//ogc:table[ogc:name]">
 								<fo:block text-align-last="justify" margin-top="6pt">
 									<fo:basic-link internal-destination="{@id}" fox:alt-text="{@section}">
-										<xsl:value-of select="@section"/>
-										<xsl:if test="text() != ''">
-											<xsl:text> — </xsl:text>
-											<xsl:value-of select="text()"/>
-										</xsl:if>
-										<xsl:text> </xsl:text>
+										<xsl:apply-templates select="ogc:name" mode="contents"/>										
 										<fo:inline keep-together.within-line="always">
 											<fo:leader leader-pattern="dots"/>
 											<fo:page-number-citation ref-id="{@id}"/>
@@ -455,7 +450,7 @@
 							</xsl:for-each>
 						</xsl:if>
 						
-						<xsl:if test="xalan:nodeset($contents)//item[@type = 'figure']">
+						<xsl:if test="//ogc:figure[ogc:name]">
 							<fo:block font-size="12pt">&#xA0;</fo:block>
 							<fo:block font-size="12pt">&#xA0;</fo:block>
 							<xsl:variable name="title-list-figures">
@@ -464,15 +459,10 @@
 								</xsl:call-template>
 							</xsl:variable>
 							<fo:block font-size="14pt" font-weight="bold" space-before="48pt" margin-bottom="15.5pt"><xsl:value-of select="$title-list-figures"/></fo:block>
-							<xsl:for-each select="xalan:nodeset($contents)//item[@type = 'figure']">
+							<xsl:for-each select="//ogc:figure[ogc:name]">
 								<fo:block text-align-last="justify" margin-top="6pt">
 									<fo:basic-link internal-destination="{@id}" fox:alt-text="{@section}">
-										<xsl:value-of select="@section"/>
-										<xsl:if test="text() != ''">
-											<xsl:text> — </xsl:text>
-											<xsl:value-of select="text()"/>
-										</xsl:if>
-										<xsl:text> </xsl:text>
+										<xsl:apply-templates select="ogc:name" mode="contents"/>										
 										<fo:inline keep-together.within-line="always">
 											<fo:leader leader-pattern="dots"/>
 											<fo:page-number-citation ref-id="{@id}"/>
@@ -796,86 +786,6 @@
 		</item>
 	</xsl:template>
 	
-	<xsl:template match="ogc:figure" mode="contents">
-		<xsl:param name="sectionNum" />
-		<item level="" id="{@id}" type="figure">
-			<xsl:attribute name="section">
-				<xsl:variable name="title-figure">
-					<xsl:call-template name="getTitle">
-						<xsl:with-param name="name" select="'title-figure'"/>
-					</xsl:call-template>
-				</xsl:variable>
-				<xsl:value-of select="$title-figure"/>
-				<xsl:choose>
-					<xsl:when test="ancestor::ogc:annex">
-						<xsl:choose>
-							<xsl:when test="count(//ogc:annex) = 1">
-								<xsl:value-of select="/ogc:nist-standard/ogc:bibdata/ogc:ext/ogc:structuredidentifier/ogc:annexid"/><xsl:number format="-1" level="any" count="ogc:annex//ogc:figure"/>
-							</xsl:when>
-							<xsl:otherwise>
-								<xsl:number format="A.1-1" level="multiple" count="ogc:annex | ogc:figure"/>
-							</xsl:otherwise>
-						</xsl:choose>
-					</xsl:when>
-					<xsl:when test="ancestor::ogc:figure">
-						<xsl:for-each select="parent::*[1]">
-							<xsl:number format="1" level="any" count="ogc:figure[not(parent::ogc:figure)]"/>
-						</xsl:for-each>
-						<xsl:number format="-a"  count="ogc:figure"/>
-					</xsl:when>
-					<xsl:otherwise>
-						<xsl:number format="1" level="any" count="ogc:figure[not(parent::ogc:figure)] | ogc:sourcecode[not(@unnumbered = 'true') and not(ancestor::ogc:example)]"/>
-						<!-- <xsl:number format="1.1-1" level="multiple" count="ogc:annex | ogc:figure"/> -->
-					</xsl:otherwise>
-				</xsl:choose>
-			</xsl:attribute>
-			<xsl:value-of select="ogc:name"/>
-		</item>
-	</xsl:template>
-
-	
-	<xsl:template match="ogc:table[not(@unnumbered='true')]" mode="contents">
-		<xsl:param name="sectionNum" />
-		<xsl:variable name="annex-id" select="ancestor::ogc:annex/@id"/>
-		<item level="" id="{@id}" display="false" type="table">
-			<xsl:attribute name="section">
-				<xsl:variable name="title-table">
-					<xsl:call-template name="getTitle">
-						<xsl:with-param name="name" select="'title-table'"/>
-					</xsl:call-template>
-				</xsl:variable>
-				<xsl:value-of select="$title-table"/>
-				<xsl:choose>
-					<xsl:when test="ancestor::*[local-name()='executivesummary']">
-							<xsl:text>ES-</xsl:text><xsl:number format="1" count="*[local-name()='executivesummary']//*[local-name()='table'][not(@unnumbered='true')]"/>
-						</xsl:when>
-					<xsl:when test="ancestor::*[local-name()='annex']">
-						<xsl:number format="A-" count="ogc:annex"/>
-						<xsl:number format="1" level="any" count="ogc:table[ancestor::ogc:annex[@id = $annex-id]][not(@unnumbered='true')]"/>
-					</xsl:when>
-					<xsl:otherwise>
-						<xsl:number format="1" level="any" count="*[local-name()='sections']//*[local-name()='table'][not(@unnumbered='true')] | *[local-name()='preface']//*[local-name()='table'][not(@unnumbered='true')]"/>
-					</xsl:otherwise>
-				</xsl:choose>
-			</xsl:attribute>
-			<xsl:value-of select="ogc:name/text()"/>
-		</item>
-	</xsl:template>
-	
-	
-	
-	<xsl:template match="ogc:formula" mode="contents">
-		<item level="" id="{@id}" display="false">
-			<xsl:attribute name="section">
-				<xsl:variable name="title-formula">
-					<xsl:call-template name="getTitle">
-						<xsl:with-param name="name" select="'title-formula'"/>
-					</xsl:call-template>
-				</xsl:variable>
-				<xsl:value-of select="$title-formula"/><xsl:number format="(A.1)" level="multiple" count="ogc:annex | ogc:formula"/>
-			</xsl:attribute>
-		</item>
-	</xsl:template>
 	
 	<xsl:template match="ogc:fn" mode="contents"/>
 	<!-- ============================= -->
@@ -1308,39 +1218,10 @@
 			<xsl:for-each select="ogc:note//ogc:p">
 				<xsl:call-template name="note"/>
 			</xsl:for-each>
-			<fo:block font-size="11pt" font-weight="bold" text-align="center" margin-top="12pt" margin-bottom="6pt" keep-with-previous="always">
-				<xsl:variable name="title-figure">
-					<xsl:call-template name="getTitle">
-						<xsl:with-param name="name" select="'title-figure'"/>
-					</xsl:call-template>
-				</xsl:variable>
-				<xsl:choose>
-					<xsl:when test="ancestor::ogc:annex">
-						<xsl:choose>
-							<xsl:when test="local-name(..) = 'figure'">
-								<xsl:number format="a) "/>
-							</xsl:when>
-							<xsl:otherwise>
-								<xsl:value-of select="$title-figure"/><xsl:number format="A.1-1" level="multiple" count="ogc:annex | ogc:figure"/>
-							</xsl:otherwise>
-						</xsl:choose>
-						
-					</xsl:when>
-					<xsl:otherwise>
-						<xsl:value-of select="$title-figure"/><xsl:number format="1" level="any" count="ogc:sourcecode[not(@unnumbered='true') and not(ancestor::ogc:example)] | ogc:figure"/>
-					</xsl:otherwise>
-				</xsl:choose>
-				<xsl:if test="ogc:name">
-					<xsl:if test="not(local-name(..) = 'figure')">
-						<xsl:text> — </xsl:text>
-					</xsl:if>
-					<xsl:value-of select="ogc:name"/>
-				</xsl:if>
-			</fo:block>
+			<xsl:apply-templates select="ogc:name" mode="presentation"/>
 		</fo:block-container>
 	</xsl:template>
 	
-	<xsl:template match="ogc:figure/ogc:name"/>
 	<xsl:template match="ogc:figure/ogc:fn"/>
 	<xsl:template match="ogc:figure/ogc:note"/>
 	

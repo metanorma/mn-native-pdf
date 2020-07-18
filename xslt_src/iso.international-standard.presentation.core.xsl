@@ -173,9 +173,6 @@
 			<xsl:apply-templates select="/iso:iso-standard/iso:annex" mode="contents"/>
 			<xsl:apply-templates select="/iso:iso-standard/iso:bibliography/iso:references[position() &gt; 1]" mode="contents"/> <!-- @id = '_bibliography' -->
 			
-			<xsl:apply-templates select="//iso:figure" mode="contents"/>
-			
-			<xsl:apply-templates select="//iso:table" mode="contents"/>
 			
 		</contents>
 	</xsl:variable>
@@ -1338,48 +1335,7 @@
 	</xsl:template>
 	
 	
-	<xsl:template match="iso:figure" mode="contents">
-		<item level="" id="{@id}" display="false">
-			<xsl:attribute name="section">
-				<xsl:call-template name="getFigureNumber"/>				
-			</xsl:attribute>
-		</item>
-	</xsl:template>
-	
-	
-	<xsl:template match="iso:table" mode="contents">
-		<xsl:param name="sectionNum" />
-		<xsl:variable name="annex-id" select="ancestor::iso:annex/@id"/>
-		<item level="" id="{@id}" display="false" type="table">
-			<xsl:attribute name="section">				
-				<xsl:variable name="title-table">
-					<xsl:call-template name="getTitle">
-						<xsl:with-param name="name" select="'title-table'"/>
-					</xsl:call-template>
-				</xsl:variable>
-				<xsl:value-of select="$title-table"/>
-				<xsl:call-template name="getTableNumber"/>
-			</xsl:attribute>
-			<xsl:value-of select="iso:name/text()"/>
-		</item>
-	</xsl:template>
-	
-	<xsl:template match="iso:formula" mode="contents">
-		<item level="" id="{@id}" display="false">
-			<xsl:attribute name="section">
-				<xsl:variable name="title-formula">
-					<xsl:call-template name="getTitle">
-						<xsl:with-param name="name" select="'title-formula'"/>
-					</xsl:call-template>
-				</xsl:variable>
-				<xsl:value-of select="$title-formula"/>
-				<xsl:call-template name="getFormulaNumber">
-					<xsl:with-param name="display" select="not(@unnumbered = 'true')"/>
-				</xsl:call-template>
-			</xsl:attribute>
-		</item>
-	</xsl:template>
-	
+
 	<xsl:template match="iso:li" mode="contents">
 		<xsl:param name="sectionNum" />
 		<item level="" id="{@id}" display="false" type="li">
@@ -1746,10 +1702,7 @@
 			<fo:block>
 				<fo:external-graphic src="{@src}" fox:alt-text="Image {@alt}"/>
 			</fo:block>
-			<fo:block font-weight="bold" margin-top="12pt" margin-bottom="12pt">
-				<!-- <xsl:value-of select="$title-figure"/> -->
-				<xsl:call-template name="getFigureNumber"/>
-			</fo:block>
+			<xsl:apply-templates select="iso:name" mode="presentation"/>			
 		</fo:block-container>
 	</xsl:template>
 
@@ -1762,46 +1715,11 @@
 			<xsl:for-each select="iso:note//iso:p">
 				<xsl:call-template name="note"/>
 			</xsl:for-each>
-			<fo:block font-weight="bold" text-align="center" margin-top="12pt" margin-bottom="12pt" keep-with-previous="always">
-				<xsl:variable name="figureNumber">
-					<xsl:call-template name="getFigureNumber"/>
-				</xsl:variable>
-				<xsl:value-of select="$figureNumber"/>
-				<xsl:if test="iso:name">
-					<xsl:if test="not(local-name(..) = 'figure') and normalize-space($figureNumber) != ''">
-						<xsl:text> — </xsl:text>
-					</xsl:if>
-					<xsl:value-of select="iso:name"/>
-				</xsl:if>
-			</fo:block>
+			<xsl:apply-templates select="iso:name" mode="presentation"/>
 		</fo:block-container>
 	</xsl:template>
 	
-	<xsl:template name="getFigureNumber">
-		<xsl:variable name="title-figure">
-			<xsl:call-template name="getTitle">
-				<xsl:with-param name="name" select="'title-figure'"/>
-			</xsl:call-template>
-		</xsl:variable>
-		<xsl:choose>
-			<xsl:when test="$doctype = 'amendment'"></xsl:when>
-			<xsl:when test="ancestor::iso:annex">
-				<xsl:choose>
-					<xsl:when test="local-name(..) = 'figure'">
-						<xsl:number format="a) "/>
-					</xsl:when>
-					<xsl:otherwise>
-						<xsl:value-of select="$title-figure"/><xsl:number format="A.1-1" level="multiple" count="iso:annex | iso:figure"/>
-					</xsl:otherwise>
-				</xsl:choose>
-			</xsl:when>
-			<xsl:otherwise>
-				<xsl:value-of select="$title-figure"/><xsl:number format="1" level="any"/>
-			</xsl:otherwise>
-		</xsl:choose>
-	</xsl:template>
-	
-	<xsl:template match="iso:figure/iso:name"/>
+
 	<xsl:template match="iso:figure/iso:fn" priority="2"/>
 	<xsl:template match="iso:figure/iso:note"/>
 	

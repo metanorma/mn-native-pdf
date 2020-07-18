@@ -2604,6 +2604,94 @@
 	<!-- ====== -->
 	<!-- ====== -->
 	
+	<!-- ====== -->
+	<!-- figure      -->	
+	<!-- ====== -->
+	<xsl:template match="*[local-name() = 'figure']/*[local-name() = 'name']"/>	
+	
+	<xsl:template match="*[local-name() = 'figure']/*[local-name() = 'name'] | 
+														*[local-name() = 'table']/*[local-name() = 'name']" mode="contents">
+		<xsl:apply-templates/>
+		<xsl:text> </xsl:text>
+	</xsl:template>
+	
+	<xsl:template match="*[local-name() = 'figure']/*[local-name() = 'name'] |
+								*[local-name() = 'image']/*[local-name() = 'name']" mode="presentation">
+		<xsl:if test="normalize-space() != ''">			
+			<xsl:if test="$namespace = 'csa'">
+				<fo:block font-size="11pt" font-weight="bold" text-align="center" margin-top="12pt" margin-bottom="6pt" keep-with-previous="always">
+					<xsl:apply-templates/>
+				</fo:block>
+			</xsl:if>
+			<xsl:if test="$namespace = 'csd'">
+				<fo:block font-weight="bold" text-align="center" margin-top="12pt" margin-bottom="12pt" keep-with-previous="always">
+					<xsl:apply-templates/>
+				</fo:block>
+			</xsl:if>
+			<xsl:if test="$namespace = 'gb'">
+				<fo:block font-family="SimHei" text-align="center" margin-top="12pt" margin-bottom="12pt" keep-with-previous="always">
+					<xsl:apply-templates/>
+				</fo:block>
+			</xsl:if>
+			<xsl:if test="$namespace = 'iec'">
+				<fo:block font-weight="bold" text-align="center" margin-top="12pt" margin-bottom="12pt" keep-with-previous="always">
+					<xsl:apply-templates/>
+				</fo:block>
+			</xsl:if>
+			<xsl:if test="$namespace = 'iho'">
+				<fo:block font-size="11pt" font-weight="bold" text-align="center" margin-top="6pt" margin-bottom="6pt" keep-with-previous="always">
+					<xsl:apply-templates/>
+				</fo:block>
+			</xsl:if>
+			<xsl:if test="$namespace = 'iso'">
+				<fo:block font-weight="bold" text-align="center" margin-top="12pt" margin-bottom="12pt" keep-with-previous="always">
+					<xsl:apply-templates/>
+				</fo:block>
+			</xsl:if>
+			<xsl:if test="$namespace = 'itu'">
+				<fo:block font-weight="bold" text-align="center" margin-top="6pt" margin-bottom="6pt" keep-with-previous="always">
+					<xsl:apply-templates/>
+				</fo:block>
+			</xsl:if>
+			<xsl:if test="$namespace = 'm3d'">
+				<fo:block text-align="center" margin-top="12pt" margin-bottom="12pt" keep-with-previous="always">
+					<xsl:apply-templates/>
+				</fo:block>
+			</xsl:if>
+			<xsl:if test="$namespace = 'nist'">
+				<fo:block font-weight="bold" text-align="center" space-before="6pt" margin-bottom="6pt" keep-with-previous="always">
+					<xsl:if test="nist:dl">
+						<xsl:attribute name="space-before">12pt</xsl:attribute>
+					</xsl:if>
+					<xsl:apply-templates/>
+				</fo:block>
+			</xsl:if>			
+			<xsl:if test="$namespace = 'ogc'">
+				<fo:block font-size="11pt" font-weight="bold" text-align="center" margin-top="12pt" margin-bottom="6pt" keep-with-previous="always">
+					<xsl:apply-templates/>
+				</fo:block>
+			</xsl:if>
+			<xsl:if test="$namespace = 'rsd'">
+				<fo:block font-family="SourceSansPro" font-size="12pt" font-weight="bold" text-align="center" margin-top="12pt" margin-bottom="6pt" keep-with-previous="always">
+					<xsl:apply-templates/>
+				</fo:block>
+			</xsl:if>
+			<xsl:if test="$namespace = 'unece'">
+				<fo:block text-align="center" margin-bottom="6pt" keep-with-previous="always">
+					<xsl:apply-templates/>
+				</fo:block>
+			</xsl:if>
+			<xsl:if test="$namespace = 'unece-rec'">
+				<fo:block text-align="center" font-size="9pt" margin-bottom="6pt" keep-with-next="always" keep-together.within-column="always">
+					<xsl:apply-templates/>
+				</fo:block>
+			</xsl:if>
+			
+		</xsl:if>
+	</xsl:template>
+	<!-- ====== -->
+	<!-- ====== -->
+
 	
 	<xsl:template match="*[local-name() = 'tab']">
 		<!-- zero-space char -->

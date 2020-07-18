@@ -477,87 +477,6 @@
 		</item>
 	</xsl:template>
 	
-	<xsl:template match="rsd:figure" mode="contents">
-		<xsl:param name="sectionNum" />
-		<item level="" id="{@id}" type="figure">
-			<xsl:attribute name="section">
-				<xsl:variable name="title-figure">
-					<xsl:call-template name="getTitle">
-						<xsl:with-param name="name" select="'title-figure'"/>
-					</xsl:call-template>
-				</xsl:variable>
-				<xsl:value-of select="$title-figure"/>
-				<xsl:choose>
-					<xsl:when test="ancestor::rsd:annex">
-						<xsl:choose>
-							<xsl:when test="count(//rsd:annex) = 1">
-								<xsl:value-of select="/rsd:nist-standard/rsd:bibdata/rsd:ext/rsd:structuredidentifier/rsd:annexid"/><xsl:number format="-1" level="any" count="rsd:annex//rsd:figure"/>
-							</xsl:when>
-							<xsl:otherwise>
-								<xsl:number format="A.1-1" level="multiple" count="rsd:annex | rsd:figure"/>
-							</xsl:otherwise>
-						</xsl:choose>
-					</xsl:when>
-					<xsl:when test="ancestor::rsd:figure">
-						<xsl:for-each select="parent::*[1]">
-							<xsl:number format="1" level="any" count="rsd:figure[not(parent::rsd:figure)]"/>
-						</xsl:for-each>
-						<xsl:number format="-a"  count="rsd:figure"/>
-					</xsl:when>
-					<xsl:otherwise>
-						<xsl:number format="1" level="any" count="rsd:figure[not(parent::rsd:figure)] | rsd:sourcecode[not(@unnumbered = 'true') and not(ancestor::rsd:example)]"/>
-						<!-- <xsl:number format="1.1-1" level="multiple" count="rsd:annex | rsd:figure"/> -->
-					</xsl:otherwise>
-				</xsl:choose>
-			</xsl:attribute>
-			<xsl:value-of select="rsd:name"/>
-		</item>
-	</xsl:template>
-
-	
-	
-	<xsl:template match="rsd:table[not(@unnumbered='true')]" mode="contents">
-		<xsl:param name="sectionNum" />
-		<xsl:variable name="annex-id" select="ancestor::rsd:annex/@id"/>
-		<item level="" id="{@id}" display="false" type="table">
-			<xsl:attribute name="section">
-				<xsl:variable name="title-table">
-					<xsl:call-template name="getTitle">
-						<xsl:with-param name="name" select="'title-table'"/>
-					</xsl:call-template>
-				</xsl:variable>
-				<xsl:value-of select="$title-table"/>
-				<xsl:choose>
-					<xsl:when test="ancestor::*[local-name()='executivesummary']">
-							<xsl:text>ES-</xsl:text><xsl:number format="1" count="*[local-name()='executivesummary']//*[local-name()='table'][not(@unnumbered='true')]"/>
-						</xsl:when>
-					<xsl:when test="ancestor::*[local-name()='annex']">
-						<xsl:number format="A-" count="rsd:annex"/>
-						<xsl:number format="1" level="any" count="rsd:table[ancestor::rsd:annex[@id = $annex-id]][not(@unnumbered='true')]"/>
-					</xsl:when>
-					<xsl:otherwise>
-						<xsl:number format="1" level="any" count="*[local-name()='sections']//*[local-name()='table'][not(@unnumbered='true')] | *[local-name()='preface']//*[local-name()='table'][not(@unnumbered='true')]"/>
-					</xsl:otherwise>
-				</xsl:choose>
-			</xsl:attribute>
-			<xsl:value-of select="rsd:name/text()"/>
-		</item>
-	</xsl:template>
-	
-	
-	
-	<xsl:template match="rsd:formula" mode="contents">
-		<item level="" id="{@id}" display="false">
-			<xsl:attribute name="section">
-				<xsl:variable name="title-formula">
-					<xsl:call-template name="getTitle">
-						<xsl:with-param name="name" select="'title-formula'"/>
-					</xsl:call-template>
-				</xsl:variable>
-				<xsl:value-of select="$title-formula"/><xsl:number format="(A.1)" level="multiple" count="rsd:annex | rsd:formula"/>
-			</xsl:attribute>
-		</item>
-	</xsl:template>
 	
 	<xsl:template match="rsd:fn" mode="contents"/>
 	<!-- ============================= -->
@@ -941,39 +860,10 @@
 			<xsl:for-each select="rsd:note//rsd:p">
 				<xsl:call-template name="note"/>
 			</xsl:for-each>
-			<fo:block font-family="SourceSansPro" font-size="12pt" font-weight="bold" text-align="center" margin-top="12pt" margin-bottom="6pt" keep-with-previous="always">
-				<xsl:variable name="title-figure">
-					<xsl:call-template name="getTitle">
-						<xsl:with-param name="name" select="'title-figure'"/>
-					</xsl:call-template>
-				</xsl:variable>
-				<xsl:choose>
-					<xsl:when test="ancestor::rsd:annex">
-						<xsl:choose>
-							<xsl:when test="local-name(..) = 'figure'">
-								<xsl:number format="a) "/>
-							</xsl:when>
-							<xsl:otherwise>
-								<xsl:value-of select="$title-figure"/><xsl:number format="A.1-1" level="multiple" count="rsd:annex | rsd:figure"/>
-							</xsl:otherwise>
-						</xsl:choose>
-						
-					</xsl:when>
-					<xsl:otherwise>
-						<xsl:value-of select="$title-figure"/><xsl:number format="1" level="any" count="rsd:sourcecode[not(@unnumbered='true') and not(ancestor::rsd:example)] | rsd:figure"/>
-					</xsl:otherwise>
-				</xsl:choose>
-				<xsl:if test="rsd:name">
-					<xsl:if test="not(local-name(..) = 'figure')">
-						<xsl:text> — </xsl:text>
-					</xsl:if>
-					<xsl:value-of select="rsd:name"/>
-				</xsl:if>
-			</fo:block>
+			<xsl:apply-templates select="rsd:name" mode="presentation"/>
 		</fo:block-container>
 	</xsl:template>
 	
-	<xsl:template match="rsd:figure/rsd:name"/>
 	<xsl:template match="rsd:figure/rsd:fn"/>
 	<xsl:template match="rsd:figure/rsd:note"/>
 	

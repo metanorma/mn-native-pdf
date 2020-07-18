@@ -1280,17 +1280,12 @@
 				</fo:block>
 			</xsl:for-each>
 			
-			<xsl:if test="xalan:nodeset($contents)//item[@type = 'figure']">
-				<fo:block margin-bottom="5pt">&#xA0;</fo:block>
-				<!-- <fo:block margin-top="5pt" margin-bottom="10pt">&#xA0;</fo:block> -->
-				<xsl:for-each select="xalan:nodeset($contents)//item[@type = 'figure']">
+			<xsl:if test="//iec:figure[iec:name]">
+				<fo:block margin-bottom="5pt">&#xA0;</fo:block>				
+				<xsl:for-each select="//iec:figure[iec:name]">					
 					<fo:block text-align-last="justify" margin-bottom="5pt" margin-left="8mm" text-indent="-8mm">
-						<fo:basic-link internal-destination="{@id}"  fox:alt-text="{@section}">
-							<xsl:value-of select="@section"/>
-							<xsl:if test="text() != ''">
-								<xsl:text> – </xsl:text>
-								<xsl:value-of select="text()"/><xsl:text> </xsl:text>
-							</xsl:if>
+						<fo:basic-link internal-destination="{@id}"  fox:alt-text="Figure {@id}">
+							<xsl:apply-templates select="iec:name" mode="contents"/>
 							<fo:inline keep-together.within-line="always">
 								<fo:leader leader-pattern="dots"/>
 								<fo:page-number-citation ref-id="{@id}"/>
@@ -1300,17 +1295,12 @@
 				</xsl:for-each>
 			</xsl:if>
 			
-			<xsl:if test="xalan:nodeset($contents)//item[@type = 'table']">
-				<fo:block margin-bottom="5pt">&#xA0;</fo:block>
-				<!-- <fo:block margin-top="5pt" margin-bottom="10pt">&#xA0;</fo:block> -->
-				<xsl:for-each select="xalan:nodeset($contents)//item[@type = 'table' and @display = 'true']">
+			<xsl:if test="//iec:table[iec:name]">
+				<fo:block margin-bottom="5pt">&#xA0;</fo:block>				
+				<xsl:for-each select="//iec:table[iec:name]">
 					<fo:block text-align-last="justify" margin-bottom="5pt" margin-left="8mm" text-indent="-8mm">
-						<fo:basic-link internal-destination="{@id}"  fox:alt-text="{@section}">
-							<xsl:value-of select="@section"/>
-							<xsl:if test="text() != ''">
-								<xsl:text> – </xsl:text>
-								<xsl:value-of select="text()"/><xsl:text> </xsl:text>
-							</xsl:if>
+						<fo:basic-link internal-destination="{@id}"  fox:alt-text="Table {@id}">
+							<xsl:apply-templates select="iec:name" mode="presentation"/>
 							<fo:inline keep-together.within-line="always">
 								<fo:leader leader-pattern="dots"/>
 								<fo:page-number-citation ref-id="{@id}"/>
@@ -1319,7 +1309,7 @@
 					</fo:block>
 				</xsl:for-each>
 			</xsl:if>
-
+			
 		</fo:block-container>
 	</xsl:template>
 	
@@ -1542,110 +1532,7 @@
 		
 	</xsl:template>
 	
-	
-	<xsl:template match="iec:figure" mode="contents">
-		<xsl:param name="sectionNum"/>
-		<xsl:apply-templates mode="contents">
-			<xsl:with-param name="sectionNum" select="$sectionNum"/>
-		</xsl:apply-templates>
-		<item level="" id="{@id}" display="false" type="figure">
-			<xsl:attribute name="section">
-				<xsl:variable name="title-figure">
-					<xsl:call-template name="getTitle">
-						<xsl:with-param name="name" select="'title-figure'"/>
-					</xsl:call-template>
-				</xsl:variable>
-				<xsl:value-of select="$title-figure"/>
-				<xsl:choose>
-					<xsl:when test="ancestor::iec:annex">
-						<xsl:choose>
-							<xsl:when test="count(//iec:annex) = 1">
-								<xsl:value-of select="/iec:iec-standard/iec:bibdata/iec:ext/iec:structuredidentifier/iec:annexid"/><xsl:number format="-1" level="any" count="iec:annex//iec:figure"/>
-							</xsl:when>
-							<xsl:otherwise>
-								<xsl:number format="A.1-1" level="multiple" count="iec:annex | iec:figure"/>
-							</xsl:otherwise>
-						</xsl:choose>		
-					</xsl:when>
-					<xsl:when test="ancestor::iec:figure">
-						<xsl:for-each select="parent::*[1]">
-							<xsl:number format="1" level="any" count="iec:figure[not(parent::iec:figure)]"/>
-						</xsl:for-each>
-						<xsl:number format="-a"  count="iec:figure"/>
-					</xsl:when>
-					<xsl:otherwise>
-						<xsl:number format="1" level="any" count="iec:figure[not(parent::iec:figure)]"/>
-					</xsl:otherwise>
-				</xsl:choose>
-			</xsl:attribute>
-			<xsl:value-of select="iec:name"/>
-		</item>
-	</xsl:template>
-	
-	
-	<xsl:template match="iec:table" mode="contents">
-		<xsl:param name="sectionNum" />
-		<xsl:variable name="annex-id" select="ancestor::iec:annex/@id"/>
-		<item level="" id="{@id}" display="true" type="table">
-			<xsl:if test="ancestor::iec:preface">
-				<xsl:attribute name="display">false</xsl:attribute>
-			</xsl:if>
-			<xsl:attribute name="section">
-				<xsl:variable name="title-table">
-					<xsl:call-template name="getTitle">
-						<xsl:with-param name="name" select="'title-table'"/>
-					</xsl:call-template>
-				</xsl:variable>
-				<xsl:value-of select="$title-table"/>
-				<xsl:choose>
-					<xsl:when test="ancestor::*[local-name()='executivesummary']"> <!-- NIST -->
-							<xsl:text>ES-</xsl:text><xsl:number format="1" count="*[local-name()='executivesummary']//*[local-name()='table']"/>
-						</xsl:when>
-					<xsl:when test="ancestor::*[local-name()='annex']">
-						<xsl:number format="A." count="iec:annex"/>
-						<xsl:number format="1" level="any" count="iec:table[ancestor::iec:annex[@id = $annex-id]]"/>
-					</xsl:when>
-					<xsl:otherwise>
-						<!-- <xsl:number format="1"/> -->
-						<!-- <xsl:number format="1" level="any" count="*[local-name()='sections']//*[local-name()='table']"/> -->
-						<!-- <xsl:number format="1" level="any" count="*[local-name()='table'][not(ancestor::*[local-name()='annex'])]"/> -->
-						<!-- <xsl:number format="1" level="any" count="*[not(local-name()='annex') and not(local-name()='executivesummary')]//*[local-name()='table'][not(@unnumbered) or @unnumbered != 'true']"/> -->
-						<xsl:number format="1" level="any" count="//*[local-name()='table']
-																																								[not(ancestor::*[local-name()='annex'])
-																																								 and not(ancestor::*[local-name()='executivesummary'])
-																																								 and not(ancestor::*[local-name()='bibdata'])
-																																								 and not(ancestor::*[local-name()='preface'])]
-																																								[not(@unnumbered) or @unnumbered != 'true']"/>
-					</xsl:otherwise>
-				</xsl:choose>
-			</xsl:attribute>
-			<xsl:value-of select="iec:name/text()"/>
-		</item>
-	</xsl:template>
-	
-	
-	
-	<xsl:template match="iec:formula" mode="contents">
-		<xsl:param name="sectionNum" />
-		<item level="" id="{@id}" display="false" type="formula">
-			<xsl:attribute name="section">
-				<!-- Formula -->
-				<xsl:variable name="title-equation">
-					<xsl:call-template name="getTitle">
-						<xsl:with-param name="name" select="'title-equation'"/>
-					</xsl:call-template>
-				</xsl:variable>
-				<xsl:value-of select="$title-equation"/><xsl:number format="(A.1)" level="multiple" count="iec:annex | iec:formula"/>
-			</xsl:attribute>
-			<xsl:attribute name="parentsection">
-				<xsl:for-each select="parent::*[1]/iec:title">
-					<xsl:call-template name="getSection">
-						<xsl:with-param name="sectionNum" select="$sectionNum"/>
-					</xsl:call-template>
-				</xsl:for-each>
-			</xsl:attribute>
-		</item>
-	</xsl:template>
+
 	<!-- ============================= -->
 	<!-- ============================= -->
 	
@@ -2010,13 +1897,8 @@
 		<fo:block-container text-align="center">
 			<fo:block>
 				<fo:external-graphic src="{@src}" fox:alt-text="Image"/>
-			</fo:block>
-			<xsl:variable name="title-figure">
-				<xsl:call-template name="getTitle">
-					<xsl:with-param name="name" select="'title-figure'"/>
-				</xsl:call-template>
-			</xsl:variable>
-			<fo:block font-weight="bold" margin-top="12pt" margin-bottom="12pt"><xsl:value-of select="$title-figure"/><xsl:number format="1" level="any"/></fo:block>
+			</fo:block>			
+			<xsl:apply-templates select="iec:name" mode="presentation"/>			
 		</fo:block-container>
 		
 	</xsl:template>
@@ -2030,42 +1912,10 @@
 			<xsl:for-each select="iec:note//iec:p">
 				<xsl:call-template name="note"/>
 			</xsl:for-each>
-			<fo:block font-weight="bold" text-align="center" margin-top="12pt" margin-bottom="12pt" keep-with-previous="always">
-				<xsl:variable name="title-figure">
-					<xsl:call-template name="getTitle">
-						<xsl:with-param name="name" select="'title-figure'"/>
-					</xsl:call-template>
-				</xsl:variable>
-				<xsl:choose>
-					<xsl:when test="ancestor::iec:annex">
-						
-						<!-- <xsl:choose>
-							
-							<xsl:when test="local-name(..) = 'figure'">
-								<xsl:number format="a) "/>
-							</xsl:when>
-							<xsl:otherwise> -->
-							
-								<xsl:value-of select="$title-figure"/><xsl:number format="A.1-1" level="multiple" count="iec:annex | iec:figure"/>
-							<!-- </xsl:otherwise>
-						</xsl:choose> -->
-						
-					</xsl:when>
-					<xsl:otherwise>
-						<xsl:value-of select="$title-figure"/><xsl:number format="1" level="any"/>
-					</xsl:otherwise>
-				</xsl:choose>
-				<xsl:if test="iec:name">
-					<!-- <xsl:if test="not(local-name(..) = 'figure')"> -->
-						<xsl:text> — </xsl:text>
-					<!-- </xsl:if> -->
-					<xsl:value-of select="iec:name"/>
-				</xsl:if>
-			</fo:block>
+			<xsl:apply-templates select="iec:name" mode="presentation"/>
 		</fo:block-container>
 	</xsl:template>
 	
-	<xsl:template match="iec:figure/iec:name"/>
 	<xsl:template match="iec:figure/iec:fn" priority="2"/>
 	<xsl:template match="iec:figure/iec:note"/>
 	

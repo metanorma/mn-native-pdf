@@ -45,9 +45,7 @@
 			<xsl:apply-templates select="/m3d:m3d-standard/m3d:annex" mode="contents"/>
 			<xsl:apply-templates select="/m3d:m3d-standard/m3d:bibliography/m3d:references[position() &gt; 1]" mode="contents"/> <!-- @id = '_bibliography' -->
 			
-			<xsl:apply-templates select="//m3d:figure" mode="contents"/>
-			
-			<xsl:apply-templates select="//m3d:table" mode="contents"/>
+
 		</contents>
 	</xsl:variable>
 	
@@ -441,56 +439,6 @@
 	</xsl:template>
 	
 	
-	<xsl:template match="m3d:figure" mode="contents">
-		<item level="" id="{@id}" display="false">
-			<xsl:attribute name="section">
-				<xsl:call-template name="getFigureNumber"/>
-			</xsl:attribute>
-		</item>
-	</xsl:template>
-	
-	<xsl:template match="m3d:table" mode="contents">
-		<xsl:param name="sectionNum" />
-		<xsl:variable name="annex-id" select="ancestor::m3d:annex/@id"/>
-		<item level="" id="{@id}" display="false" type="table">
-			<xsl:attribute name="section">
-				<xsl:variable name="title-table">
-					<xsl:call-template name="getTitle">
-						<xsl:with-param name="name" select="'title-table'"/>
-					</xsl:call-template>
-				</xsl:variable>
-				<xsl:value-of select="$title-table"/>
-				<xsl:choose>
-					<xsl:when test="ancestor::*[local-name()='executivesummary']"> <!-- NIST -->
-							<xsl:text>ES-</xsl:text><xsl:number format="1" count="*[local-name()='executivesummary']//*[local-name()='table']"/>
-						</xsl:when>
-					<xsl:when test="ancestor::*[local-name()='annex']">
-						<xsl:number format="A-" count="m3d:annex"/>
-						<xsl:number format="1" level="any" count="m3d:table[ancestor::m3d:annex[@id = $annex-id]]"/>
-					</xsl:when>
-					<xsl:otherwise>
-						<!-- <xsl:number format="1"/> -->
-						<xsl:number format="1" level="any" count="*[local-name()='sections']//*[local-name()='table']"/>
-					</xsl:otherwise>
-				</xsl:choose>
-			</xsl:attribute>
-			<xsl:value-of select="m3d:name/text()"/>
-		</item>
-	</xsl:template>
-	
-	<xsl:template match="m3d:formula" mode="contents">
-		<item level="" id="{@id}" display="false">
-			<xsl:attribute name="section">
-				<xsl:variable name="title-formula">
-					<xsl:call-template name="getTitle">
-						<xsl:with-param name="name" select="'title-formula'"/>
-					</xsl:call-template>
-				</xsl:variable>
-				<xsl:value-of select="$title-formula"/><xsl:number format="(A.1)" level="multiple" count="m3d:annex | m3d:formula"/>
-			</xsl:attribute>
-		</item>
-	</xsl:template>
-	
 	<xsl:template match="m3d:li" mode="contents">
 		<xsl:param name="sectionNum" />
 		<item level="" id="{@id}" display="false" type="li">
@@ -813,15 +761,7 @@
 			<fo:block>
 				<fo:external-graphic src="{@src}" fox:alt-text="Image {@alt}"/>
 			</fo:block>
-			<fo:block margin-top="12pt" margin-bottom="12pt">
-				<xsl:variable name="title-figure">
-					<xsl:call-template name="getTitle">
-						<xsl:with-param name="name" select="'title-figure'"/>
-					</xsl:call-template>
-				</xsl:variable>
-				<xsl:value-of select="$title-figure"/>
-				<xsl:call-template name="getFigureNumber"/>
-			</fo:block>
+			<xsl:apply-templates select="m3d:name" mode="presentation"/>
 		</fo:block-container>
 	</xsl:template>
 
@@ -834,35 +774,11 @@
 			<xsl:for-each select="m3d:note//m3d:p">
 				<xsl:call-template name="note"/>
 			</xsl:for-each>
-			<fo:block text-align="center" margin-top="12pt" margin-bottom="12pt" keep-with-previous="always">
-				<xsl:call-template name="getFigureNumber"/>
-				<xsl:if test="m3d:name">
-					<!-- <xsl:if test="not(local-name(..) = 'figure')"> -->
-						<xsl:text> — </xsl:text>
-					<!-- </xsl:if> -->
-					<xsl:value-of select="m3d:name"/>
-				</xsl:if>
-			</fo:block>
+			<xsl:apply-templates select="m3d:name" mode="presentation"/>
 		</fo:block-container>
 	</xsl:template>
 	
-	<xsl:template name="getFigureNumber">
-		<xsl:variable name="title-figure">
-			<xsl:call-template name="getTitle">
-				<xsl:with-param name="name" select="'title-figure'"/>
-			</xsl:call-template>
-		</xsl:variable>
-		<xsl:choose>
-			<xsl:when test="ancestor::m3d:annex">
-				<xsl:value-of select="$title-figure"/><xsl:number format="A.1-1" level="multiple" count="m3d:annex | m3d:figure"/>
-			</xsl:when>
-			<xsl:otherwise>
-				<xsl:value-of select="$title-figure"/><xsl:number format="1" level="any"/>
-			</xsl:otherwise>
-		</xsl:choose>
-	</xsl:template>
-	
-	<xsl:template match="m3d:figure/m3d:name"/>
+
 	<xsl:template match="m3d:figure/m3d:fn" priority="2"/>
 	<xsl:template match="m3d:figure/m3d:note"/>
 	

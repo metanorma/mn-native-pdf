@@ -459,87 +459,7 @@
 		</item>
 	</xsl:template>
 	
-	<xsl:template match="csa:figure" mode="contents">
-		<xsl:param name="sectionNum" />
-		<item level="" id="{@id}" type="figure">
-			<xsl:attribute name="section">
-				<xsl:variable name="title-figure">
-						<xsl:call-template name="getTitle">
-							<xsl:with-param name="name" select="'title-figure'"/>
-						</xsl:call-template>
-					</xsl:variable>
-				<xsl:value-of select="$title-figure"/>
-				<xsl:choose>
-					<xsl:when test="ancestor::csa:annex">
-						<xsl:choose>
-							<xsl:when test="count(//csa:annex) = 1">
-								<xsl:value-of select="/csa:nist-standard/csa:bibdata/csa:ext/csa:structuredidentifier/csa:annexid"/><xsl:number format="-1" level="any" count="csa:annex//csa:figure"/>
-							</xsl:when>
-							<xsl:otherwise>
-								<xsl:number format="A.1-1" level="multiple" count="csa:annex | csa:figure"/>
-							</xsl:otherwise>
-						</xsl:choose>
-					</xsl:when>
-					<xsl:when test="ancestor::csa:figure">
-						<xsl:for-each select="parent::*[1]">
-							<xsl:number format="1" level="any" count="csa:figure[not(parent::csa:figure)]"/>
-						</xsl:for-each>
-						<xsl:number format="-a"  count="csa:figure"/>
-					</xsl:when>
-					<xsl:otherwise>
-						<xsl:number format="1" level="any" count="csa:figure[not(parent::csa:figure)] | csa:sourcecode[not(@unnumbered = 'true') and not(ancestor::csa:example)]"/>
-						<!-- <xsl:number format="1.1-1" level="multiple" count="csa:annex | csa:figure"/> -->
-					</xsl:otherwise>
-				</xsl:choose>
-			</xsl:attribute>
-			<xsl:value-of select="csa:name"/>
-		</item>
-	</xsl:template>
 
-	
-	
-	<xsl:template match="csa:table[not(@unnumbered='true')]" mode="contents">
-		<xsl:param name="sectionNum" />
-		<xsl:variable name="annex-id" select="ancestor::csa:annex/@id"/>
-		<item level="" id="{@id}" display="false" type="table">
-			<xsl:attribute name="section">
-				<xsl:variable name="title-table">
-					<xsl:call-template name="getTitle">
-						<xsl:with-param name="name" select="'title-table'"/>
-					</xsl:call-template>
-				</xsl:variable>
-				<xsl:value-of select="$title-table"/>
-				<xsl:choose>
-					<xsl:when test="ancestor::*[local-name()='executivesummary']">
-							<xsl:text>ES-</xsl:text><xsl:number format="1" count="*[local-name()='executivesummary']//*[local-name()='table'][not(@unnumbered='true')]"/>
-						</xsl:when>
-					<xsl:when test="ancestor::*[local-name()='annex']">
-						<xsl:number format="A-" count="csa:annex"/>
-						<xsl:number format="1" level="any" count="csa:table[ancestor::csa:annex[@id = $annex-id]][not(@unnumbered='true')]"/>
-					</xsl:when>
-					<xsl:otherwise>
-						<xsl:number format="1" level="any" count="*[local-name()='sections']//*[local-name()='table'][not(@unnumbered='true')] | *[local-name()='preface']//*[local-name()='table'][not(@unnumbered='true')]"/>
-					</xsl:otherwise>
-				</xsl:choose>
-			</xsl:attribute>
-			<xsl:value-of select="csa:name/text()"/>
-		</item>
-	</xsl:template>
-	
-	
-	
-	<xsl:template match="csa:formula" mode="contents">
-		<item level="" id="{@id}" display="false">
-			<xsl:attribute name="section">
-				<xsl:variable name="title-formula">
-					<xsl:call-template name="getTitle">
-						<xsl:with-param name="name" select="'title-formula'"/>
-					</xsl:call-template>
-				</xsl:variable>
-				<xsl:value-of select="$title-formula"/><xsl:number format="(A.1)" level="multiple" count="csa:annex | csa:formula"/>
-			</xsl:attribute>
-		</item>
-	</xsl:template>
 	
 	<xsl:template match="csa:fn" mode="contents"/>
 	<!-- ============================= -->
@@ -955,39 +875,11 @@
 			<xsl:for-each select="csa:note//csa:p">
 				<xsl:call-template name="note"/>
 			</xsl:for-each>
-			<fo:block font-size="11pt" font-weight="bold" text-align="center" margin-top="12pt" margin-bottom="6pt" keep-with-previous="always">
-				<xsl:variable name="title-figure">
-					<xsl:call-template name="getTitle">
-						<xsl:with-param name="name" select="'title-figure'"/>
-					</xsl:call-template>
-				</xsl:variable>
-				<xsl:choose>
-					<xsl:when test="ancestor::csa:annex">
-						<xsl:choose>
-							<xsl:when test="local-name(..) = 'figure'">
-								<xsl:number format="a) "/>
-							</xsl:when>
-							<xsl:otherwise>
-								<xsl:value-of select="$title-figure"/><xsl:number format="A.1-1" level="multiple" count="csa:annex | csa:figure"/>
-							</xsl:otherwise>
-						</xsl:choose>
-						
-					</xsl:when>
-					<xsl:otherwise>
-						<xsl:value-of select="$title-figure"/><xsl:number format="1" level="any" count="csa:sourcecode[not(@unnumbered='true') and not(ancestor::csa:example)] | csa:figure"/>
-					</xsl:otherwise>
-				</xsl:choose>
-				<xsl:if test="csa:name">
-					<xsl:if test="not(local-name(..) = 'figure')">
-						<xsl:text> — </xsl:text>
-					</xsl:if>
-					<xsl:value-of select="csa:name"/>
-				</xsl:if>
-			</fo:block>
+			<xsl:apply-templates select="csa:name" mode="presentation"/>
 		</fo:block-container>
 	</xsl:template>
 	
-	<xsl:template match="csa:figure/csa:name"/>
+	
 	<xsl:template match="csa:figure/csa:fn"/>
 	<xsl:template match="csa:figure/csa:note"/>
 	
