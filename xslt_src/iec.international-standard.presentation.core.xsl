@@ -2115,24 +2115,7 @@
 		<fo:inline>&lt;<xsl:apply-templates/>&gt;</fo:inline>
 	</xsl:template>
 	
-	
-	<xsl:template match="iec:termexample">
-		<fo:block margin-top="14pt" margin-bottom="10pt">
-			<xsl:variable name="title-example">
-				<xsl:call-template name="getTitle">
-					<xsl:with-param name="name" select="'title-example'"/>
-				</xsl:call-template>
-			</xsl:variable>
-			<fo:inline padding-right="10mm"><xsl:value-of select="normalize-space($title-example)"/></fo:inline>
-			<xsl:apply-templates />
-		</fo:block>
-	</xsl:template>
-	
-	<xsl:template match="iec:termexample/iec:p">
-		<fo:inline><xsl:apply-templates/></fo:inline>
-	</xsl:template>
-
-	
+		
 	<xsl:template match="iec:annex">
 		<fo:block break-after="page"/>
 		<fo:block id="{@id}">

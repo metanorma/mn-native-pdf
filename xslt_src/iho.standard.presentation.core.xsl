@@ -1162,28 +1162,6 @@
 		</fo:block>
 	</xsl:template>
 
-	<xsl:template match="iho:termexample">
-		<fo:block font-size="10pt" margin-top="8pt" margin-bottom="8pt"  text-align="justify">
-			<fo:inline padding-right="5mm">
-				<xsl:variable name="title-example">
-					<xsl:call-template name="getTitle">
-						<xsl:with-param name="name" select="'title-example'"/>
-					</xsl:call-template>
-				</xsl:variable>
-				<xsl:value-of select="$title-example"/>
-				<xsl:if test="count(ancestor::iho:term[1]//iho:termexample) &gt; 1">
-					<xsl:number />
-				</xsl:if>
-			</fo:inline>
-			<xsl:apply-templates />
-		</fo:block>
-	</xsl:template>
-	
-	<xsl:template match="iho:termexample/iho:p">
-		<fo:inline><xsl:apply-templates/></fo:inline>
-	</xsl:template>
-
-
 	
 	<xsl:template match="iho:domain">
 		<fo:inline>&lt;<xsl:apply-templates/>&gt;</fo:inline><xsl:text> </xsl:text>

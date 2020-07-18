@@ -1213,28 +1213,6 @@
 		<fo:inline padding-left="7.4mm">&lt;<xsl:apply-templates/>&gt; </fo:inline>
 	</xsl:template>
 	
-	
-	<xsl:template match="gb:termexample">
-		<fo:block font-size="9pt" margin-top="14pt" margin-bottom="14pt"  text-align="justify">
-			<fo:inline padding-right="1mm" font-family="SimHei">
-				<xsl:variable name="title-example">
-					<xsl:call-template name="getTitle">
-						<xsl:with-param name="name" select="'title-example'"/>
-					</xsl:call-template>
-				</xsl:variable>
-				<xsl:value-of select="$title-example"/>
-				<xsl:if test="count(ancestor::gb:term[1]//gb:termexample) &gt; 1">
-					<xsl:number />
-				</xsl:if>
-				<xsl:text>:</xsl:text>
-			</fo:inline>
-			<xsl:apply-templates />
-		</fo:block>
-	</xsl:template>
-	
-	<xsl:template match="gb:termexample/gb:p">
-		<fo:inline><xsl:apply-templates/></fo:inline>
-	</xsl:template>
 
 	
 	<xsl:template match="gb:annex">

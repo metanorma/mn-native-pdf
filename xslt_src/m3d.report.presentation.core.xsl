@@ -996,28 +996,6 @@
 	</xsl:template>
 	
 	
-	<xsl:template match="m3d:termexample">
-		<fo:block margin-top="14pt" margin-bottom="14pt"  text-align="justify">
-			<fo:inline padding-right="1mm" font-weight="bold">
-				<xsl:variable name="title-example">
-					<xsl:call-template name="getTitle">
-						<xsl:with-param name="name" select="'title-example'"/>
-					</xsl:call-template>
-				</xsl:variable>
-				<xsl:value-of select="$title-example"/>
-				<xsl:if test="count(ancestor::m3d:term[1]//m3d:termexample) &gt; 1">
-					<xsl:number />
-				</xsl:if>
-				<xsl:text>:</xsl:text>
-			</fo:inline>
-			<xsl:apply-templates />
-		</fo:block>
-	</xsl:template>
-	
-	<xsl:template match="m3d:termexample/m3d:p">
-		<fo:inline><xsl:apply-templates/></fo:inline>
-	</xsl:template>
-
 	
 	<xsl:template match="m3d:annex">
 		<fo:block break-after="page"/>

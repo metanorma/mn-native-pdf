@@ -269,6 +269,58 @@
 		</xsl:if>
 	</xsl:attribute-set>
 	
+	<xsl:attribute-set name="termexample-style">
+		<xsl:if test="$namespace = 'iec'">
+			<xsl:attribute name="margin-top">14pt</xsl:attribute>
+			<xsl:attribute name="margin-bottom">10pt</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'csa' or $namespace = 'csd' or $namespace = 'ogc'">
+			<xsl:attribute name="font-size">10pt</xsl:attribute>
+			<xsl:attribute name="margin-bottom">12pt</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'gb'">
+			<xsl:attribute name="font-size">9pt</xsl:attribute>
+			<xsl:attribute name="margin-top">14pt</xsl:attribute>
+			<xsl:attribute name="margin-bottom">14pt</xsl:attribute>
+			<xsl:attribute name="text-align">justify</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'iho' or $namespace = 'iso'">
+			<xsl:attribute name="font-size">10pt</xsl:attribute>
+			<xsl:attribute name="margin-top">8pt</xsl:attribute>
+			<xsl:attribute name="margin-bottom">8pt</xsl:attribute>
+			<xsl:attribute name="text-align">justify</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'm3d'">			
+			<xsl:attribute name="margin-top">14pt</xsl:attribute>
+			<xsl:attribute name="margin-bottom">14pt</xsl:attribute>
+			<xsl:attribute name="text-align">justify</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'rsd'">			
+			<xsl:attribute name="font-family">SourceSansPro</xsl:attribute>
+			<xsl:attribute name="font-size">11pt</xsl:attribute>
+			<xsl:attribute name="margin-bottom">12pt</xsl:attribute>
+		</xsl:if>
+		
+	</xsl:attribute-set>
+
+	<xsl:attribute-set name="termexample-name-style">
+		<xsl:if test="$namespace = 'csa' or $namespace = 'csd' or $namespace = 'iec' or $namespace = 'ogc' or $namespace = 'rsd'">
+			<xsl:attribute name="padding-right">10mm</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'gb'">
+			<xsl:attribute name="padding-right">1mm</xsl:attribute>
+			<xsl:attribute name="font-family">SimHei</xsl:attribute>			
+		</xsl:if>
+		<xsl:if test="$namespace = 'iho' or $namespace = 'iso'">
+			<xsl:attribute name="padding-right">5mm</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'm3d'">
+			<xsl:attribute name="padding-right">1mm</xsl:attribute>
+			<xsl:attribute name="font-weight">bold</xsl:attribute>			
+		</xsl:if>
+		
+	</xsl:attribute-set>
+	
 	<xsl:attribute-set name="appendix-style">
 		<xsl:if test="$namespace = 'iso' or $namespace = 'ogc' or $namespace = 'm3d' or $namespace = 'gb' or $namespace = 'csd'">		
 			<xsl:attribute name="font-size">12pt</xsl:attribute>
@@ -276,7 +328,7 @@
 			<xsl:attribute name="margin-top">12pt</xsl:attribute>
 			<xsl:attribute name="margin-bottom">12pt</xsl:attribute>
 		</xsl:if>
-		<xsl:if test="$namespace = 'iec'">			
+		<xsl:if test="$namespace = 'iec'">
 			<xsl:attribute name="font-weight">bold</xsl:attribute>
 			<xsl:attribute name="margin-top">5pt</xsl:attribute>
 			<xsl:attribute name="margin-bottom">5pt</xsl:attribute>
@@ -2712,8 +2764,7 @@
 
 	<!-- ====== -->
 	<!-- sourcecode   -->	
-	<!-- ====== -->
-	
+	<!-- ====== -->	
 	<xsl:template match="*[local-name()='sourcecode']" name="sourcecode">
 		<fo:block xsl:use-attribute-sets="sourcecode-style">
 			<!-- <xsl:choose>
@@ -2750,8 +2801,36 @@
 				<xsl:apply-templates/>
 			</fo:block>
 		</xsl:if>
+	</xsl:template>	
+	<!-- ====== -->
+	<!-- ====== -->
+	
+	
+	<!-- ====== -->
+	<!-- termexample   -->	
+	<!-- ====== -->	
+	
+		<xsl:template match="*[local-name() = 'termexample']">
+		<fo:block xsl:use-attribute-sets="termexample-style">			
+			<xsl:apply-templates select="*[local-name()='name']" mode="presentation"/>			
+			<xsl:apply-templates />
+		</fo:block>
 	</xsl:template>
 	
+	
+	<xsl:template match="*[local-name() = 'termexample']/*[local-name() = 'name']"/>	
+	
+	<xsl:template match="*[local-name() = 'termexample']/*[local-name() = 'name']" mode="presentation">
+		<xsl:if test="normalize-space() != ''">
+			<fo:inline xsl:use-attribute-sets="termexample-name-style">
+				<xsl:apply-templates />
+			</fo:inline>
+		</xsl:if>
+	</xsl:template>
+	
+	<xsl:template match="*[local-name() = 'termexample']/*[local-name() = 'p']">
+		<fo:inline><xsl:apply-templates/></fo:inline>
+	</xsl:template>
 	
 	<!-- ====== -->
 	<!-- ====== -->
