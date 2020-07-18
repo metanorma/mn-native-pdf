@@ -428,7 +428,7 @@
 							</fo:block>
 						</xsl:for-each>
 						
-						<xsl:if test="//ogc:table[ogc:name]">
+						<xsl:if test="//ogc:table[@id and ogc:name]">
 							<fo:block font-size="12pt">&#xA0;</fo:block>
 							<fo:block font-size="12pt">&#xA0;</fo:block>
 							<xsl:variable name="title-list-tables">
@@ -437,7 +437,7 @@
 								</xsl:call-template>
 							</xsl:variable>
 							<fo:block font-size="14pt" font-weight="bold" space-before="48pt" margin-bottom="15.5pt"><xsl:value-of select="$title-list-tables"/></fo:block>
-							<xsl:for-each select="//ogc:table[ogc:name]">
+							<xsl:for-each select="//ogc:table[@id and ogc:name]">
 								<fo:block text-align-last="justify" margin-top="6pt">
 									<fo:basic-link internal-destination="{@id}" fox:alt-text="{@section}">
 										<xsl:apply-templates select="ogc:name" mode="contents"/>										
@@ -450,7 +450,7 @@
 							</xsl:for-each>
 						</xsl:if>
 						
-						<xsl:if test="//ogc:figure[ogc:name]">
+						<xsl:if test="//ogc:figure[@id and ogc:name]">
 							<fo:block font-size="12pt">&#xA0;</fo:block>
 							<fo:block font-size="12pt">&#xA0;</fo:block>
 							<xsl:variable name="title-list-figures">
@@ -459,7 +459,7 @@
 								</xsl:call-template>
 							</xsl:variable>
 							<fo:block font-size="14pt" font-weight="bold" space-before="48pt" margin-bottom="15.5pt"><xsl:value-of select="$title-list-figures"/></fo:block>
-							<xsl:for-each select="//ogc:figure[ogc:name]">
+							<xsl:for-each select="//ogc:figure[@id and ogc:name]">
 								<fo:block text-align-last="justify" margin-top="6pt">
 									<fo:basic-link internal-destination="{@id}" fox:alt-text="{@section}">
 										<xsl:apply-templates select="ogc:name" mode="contents"/>										

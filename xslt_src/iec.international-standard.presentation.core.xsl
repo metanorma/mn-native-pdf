@@ -1280,9 +1280,9 @@
 				</fo:block>
 			</xsl:for-each>
 			
-			<xsl:if test="//iec:figure[iec:name]">
+			<xsl:if test="//iec:figure[@id and iec:name]">
 				<fo:block margin-bottom="5pt">&#xA0;</fo:block>				
-				<xsl:for-each select="//iec:figure[iec:name]">					
+				<xsl:for-each select="//iec:figure[@id and iec:name]">					
 					<fo:block text-align-last="justify" margin-bottom="5pt" margin-left="8mm" text-indent="-8mm">
 						<fo:basic-link internal-destination="{@id}"  fox:alt-text="Figure {@id}">
 							<xsl:apply-templates select="iec:name" mode="contents"/>
@@ -1295,9 +1295,9 @@
 				</xsl:for-each>
 			</xsl:if>
 			
-			<xsl:if test="//iec:table[iec:name]">
+			<xsl:if test="//iec:table[@id and iec:name]">
 				<fo:block margin-bottom="5pt">&#xA0;</fo:block>				
-				<xsl:for-each select="//iec:table[iec:name]">
+				<xsl:for-each select="//iec:table[@id and iec:name]">
 					<fo:block text-align-last="justify" margin-bottom="5pt" margin-left="8mm" text-indent="-8mm">
 						<fo:basic-link internal-destination="{@id}"  fox:alt-text="Table {@id}">
 							<xsl:apply-templates select="iec:name" mode="presentation"/>
