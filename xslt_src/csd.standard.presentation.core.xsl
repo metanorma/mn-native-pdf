@@ -1010,19 +1010,7 @@
       </fo:basic-link>
 	</xsl:template>
 
-	<xsl:template match="csd:sourcecode" priority="2">
-		<xsl:call-template name="sourcecode"/>
-		<fo:block font-size="11pt" font-weight="bold" text-align="center" margin-bottom="12pt">
-			<xsl:variable name="title-figure">
-				<xsl:call-template name="getTitle">
-					<xsl:with-param name="name" select="'title-figure'"/>
-				</xsl:call-template>
-			</xsl:variable>
-			<xsl:value-of select="$title-figure"/>
-			<xsl:number format="1" level="any"/>
-		</fo:block>
-	</xsl:template>
-	
+
 	<xsl:template match="csd:tt" priority="2">
 		<fo:inline font-family="SourceCodePro" font-size="10pt">
 			<xsl:apply-templates />

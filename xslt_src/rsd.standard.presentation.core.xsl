@@ -1226,62 +1226,6 @@
 	</xsl:template>
 	
 	
-	<xsl:template match="rsd:sourcecode" priority="2">
-		<xsl:call-template name="sourcecode"/>		
-		<xsl:variable name="title-figure">
-			<xsl:call-template name="getTitle">
-				<xsl:with-param name="name" select="'title-figure'"/>
-			</xsl:call-template>
-		</xsl:variable>
-		<xsl:choose>
-			<xsl:when test="@unnumbered='true'"></xsl:when>
-			<xsl:when test="ancestor::rsd:example"/>
-			<xsl:when test="ancestor::rsd:td"/>
-			<xsl:when test="ancestor::rsd:annex">
-				<xsl:variable name="id_annex" select="ancestor::rsd:annex/@id"/>
-				
-				<xsl:choose>
-					<xsl:when test="count(//rsd:annex) = 1">
-						<xsl:value-of select="/rsd:nist-standard/rsd:bibdata/rsd:ext/rsd:structuredidentifier/rsd:annexid"/><xsl:number format="-1" level="any" count="rsd:annex//rsd:sourcecode"/>
-					</xsl:when>
-					<xsl:otherwise>
-						<fo:block font-family="SourceSansPro" font-size="12pt" font-weight="bold" text-align="center" margin-bottom="12pt">							
-							<xsl:value-of select="$title-figure"/>
-							<xsl:number format="A." level="multiple" count="rsd:annex"/>
-							<xsl:number format="1" level="any" count="rsd:sourcecode[ancestor::rsd:annex/@id = $id_annex and not(@unnumbered='true') and not(ancestor::rsd:example)]"/>
-							<xsl:if test="rsd:name">
-								<xsl:text> — </xsl:text>
-								<xsl:apply-templates select="rsd:name/node()"/>
-							</xsl:if>
-						</fo:block>
-					</xsl:otherwise>
-				</xsl:choose>
-			</xsl:when>
-			<xsl:otherwise>
-				<fo:block font-family="SourceSansPro" font-size="12pt" font-weight="bold" text-align="center" margin-bottom="12pt">
-					<xsl:value-of select="$title-figure"/>
-					<xsl:number format="1" level="any" count="rsd:sourcecode[not(@unnumbered='true') and not(ancestor::rsd:example)] | rsd:figure"/>
-					<xsl:if test="rsd:name">
-						<xsl:text> — </xsl:text>
-						<xsl:apply-templates select="rsd:name/node()"/>
-					</xsl:if>
-				</fo:block>
-			</xsl:otherwise>
-		</xsl:choose>
-	</xsl:template>
-	
-	<xsl:template match="rsd:sourcecode/text()">
-		<xsl:variable name="text">
-			<xsl:call-template name="add-zero-spaces-equal"/>
-		</xsl:variable>
-		<xsl:call-template name="add-zero-spaces">
-			<xsl:with-param name="text" select="$text"/>
-		</xsl:call-template>
-	</xsl:template>
-	
-	
-	<xsl:template match="rsd:sourcecode/rsd:name"/>
-	
 	<xsl:template match="rsd:tt" priority="2">
 		<fo:inline font-family="SourceCodePro" font-size="10pt">
 			<xsl:apply-templates />

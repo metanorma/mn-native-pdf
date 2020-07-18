@@ -1612,61 +1612,6 @@
 		</fo:basic-link>
 	</xsl:template>
 		
-
-	<xsl:template match="ogc:sourcecode" priority="2">
-		<xsl:call-template name="sourcecode"/>		
-		<xsl:variable name="title-figure">
-			<xsl:call-template name="getTitle">
-				<xsl:with-param name="name" select="'title-figure'"/>
-			</xsl:call-template>
-		</xsl:variable>
-		<xsl:choose>
-			<xsl:when test="@unnumbered='true'"></xsl:when>
-			<xsl:when test="ancestor::ogc:example"/>
-			<xsl:when test="ancestor::ogc:td"/>
-			<xsl:when test="ancestor::ogc:annex">
-				<xsl:variable name="id_annex" select="ancestor::ogc:annex/@id"/>				
-				<xsl:choose>
-					<xsl:when test="count(//ogc:annex) = 1">
-						<xsl:value-of select="/ogc:nist-standard/ogc:bibdata/ogc:ext/ogc:structuredidentifier/ogc:annexid"/><xsl:number format="-1" level="any" count="ogc:annex//ogc:sourcecode"/>
-					</xsl:when>
-					<xsl:otherwise>
-						<fo:block font-size="11pt" font-weight="bold" text-align="center" margin-bottom="12pt">
-							<xsl:value-of select="$title-figure"/>
-							<xsl:number format="A." level="multiple" count="ogc:annex"/>
-							<xsl:number format="1" level="any" count="ogc:sourcecode[ancestor::ogc:annex/@id = $id_annex and not(@unnumbered='true') and not(ancestor::ogc:example)]"/>
-							<xsl:if test="ogc:name">
-								<xsl:text> — </xsl:text>
-								<xsl:apply-templates select="ogc:name/*"/>
-							</xsl:if>
-						</fo:block>
-					</xsl:otherwise>
-				</xsl:choose>
-			</xsl:when>
-			<xsl:otherwise>
-				<fo:block font-size="11pt" font-weight="bold" text-align="center" margin-bottom="12pt">
-					<xsl:value-of select="$title-figure"/>
-					<xsl:number format="1" level="any" count="ogc:sourcecode[not(@unnumbered='true') and not(ancestor::ogc:example)] | ogc:figure"/>
-					<xsl:if test="ogc:name">
-						<xsl:text> — </xsl:text>
-						<xsl:apply-templates select="ogc:name/*"/>
-					</xsl:if>
-				</fo:block>
-			</xsl:otherwise>
-		</xsl:choose>
-	</xsl:template>
-	
-	<xsl:template match="ogc:sourcecode/text()">
-		<xsl:variable name="text">
-			<xsl:call-template name="add-zero-spaces-equal"/>
-		</xsl:variable>
-		<xsl:call-template name="add-zero-spaces">
-			<xsl:with-param name="text" select="$text"/>
-		</xsl:call-template>
-	</xsl:template>
-	
-	
-		<xsl:template match="ogc:sourcecode/ogc:name"/>
 	
 	<xsl:template match="ogc:example">
 		<fo:block font-size="10pt" text-align="center" margin-top="12pt" margin-bottom="12pt" font-weight="bold" keep-with-next="always">

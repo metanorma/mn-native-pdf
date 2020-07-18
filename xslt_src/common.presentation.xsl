@@ -2408,18 +2408,6 @@
 		</fo:inline>
 	</xsl:template>
 
-	<xsl:template match="*[local-name()='sourcecode']" name="sourcecode">
-		<fo:block xsl:use-attribute-sets="sourcecode-style">
-			<!-- <xsl:choose>
-				<xsl:when test="@lang = 'en'"></xsl:when>
-				<xsl:otherwise> -->
-					<xsl:attribute name="white-space">pre</xsl:attribute>
-					<xsl:attribute name="wrap-option">wrap</xsl:attribute>
-				<!-- </xsl:otherwise>
-			</xsl:choose> -->
-			<xsl:apply-templates/>
-		</fo:block>
-	</xsl:template>
 
 	<xsl:template match="*[local-name()='bookmark']">
 		<fo:inline id="{@id}"></fo:inline>
@@ -2510,7 +2498,7 @@
 
 	<xsl:template match="*[local-name() = 'xref']">
 		<fo:basic-link internal-destination="{@target}" fox:alt-text="{@target}" xsl:use-attribute-sets="xref-style">
-			<xsl:if test="$namespace = 'iho' or $namespace = 'iso'">
+			<xsl:if test="$namespace = 'iho1' or $namespace = 'iso1'">
 				<xsl:variable name="target" select="normalize-space(@target)"/>
 				<xsl:variable name="parent_section" select="xalan:nodeset($contents)//item[@id =$target]/@parent_section"/>
 				<xsl:variable name="currentSection">
@@ -2605,7 +2593,7 @@
 	<!-- ====== -->
 	
 	<!-- ====== -->
-	<!-- figure      -->	
+	<!-- figure     -->	
 	<!-- ====== -->
 	<xsl:template match="*[local-name() = 'figure']/*[local-name() = 'name']"/>	
 	
@@ -2692,6 +2680,52 @@
 	<!-- ====== -->
 	<!-- ====== -->
 
+
+	<!-- ====== -->
+	<!-- sourcecode   -->	
+	<!-- ====== -->
+	
+	<xsl:template match="*[local-name()='sourcecode']" name="sourcecode">
+		<fo:block xsl:use-attribute-sets="sourcecode-style">
+			<!-- <xsl:choose>
+				<xsl:when test="@lang = 'en'"></xsl:when>
+				<xsl:otherwise> -->
+					<xsl:attribute name="white-space">pre</xsl:attribute>
+					<xsl:attribute name="wrap-option">wrap</xsl:attribute>
+				<!-- </xsl:otherwise>
+			</xsl:choose> -->
+			<xsl:apply-templates/>
+			<xsl:apply-templates select="*[local-name()='name']" mode="presentation"/>
+		</fo:block>
+	</xsl:template>
+
+	<xsl:template match="*[local-name()='sourcecode']/text()">
+		<xsl:variable name="text">
+			<xsl:call-template name="add-zero-spaces-equal"/>
+		</xsl:variable>
+		<xsl:call-template name="add-zero-spaces">
+			<xsl:with-param name="text" select="$text"/>
+		</xsl:call-template>
+	</xsl:template>
+	
+	<xsl:template match="*[local-name() = 'sourcecode']/*[local-name() = 'name']"/>	
+	
+	
+	<xsl:template match="*[local-name() = 'sourcecode']/*[local-name() = 'name']" mode="presentation">
+		<xsl:if test="normalize-space() != ''">		
+			<fo:block font-size="11pt" font-weight="bold" text-align="center" margin-bottom="12pt">
+				<xsl:if test="$namespace = 'rsd'">
+					<xsl:attribute name="font-size">12pt</xsl:attribute>
+					<xsl:attribute name="font-family">SourceSansPro</xsl:attribute>
+				</xsl:if>
+				<xsl:apply-templates/>
+			</fo:block>
+		</xsl:if>
+	</xsl:template>
+	
+	
+	<!-- ====== -->
+	<!-- ====== -->
 	
 	<xsl:template match="*[local-name() = 'tab']">
 		<!-- zero-space char -->

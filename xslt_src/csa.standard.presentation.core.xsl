@@ -1274,60 +1274,7 @@
 			<xsl:apply-templates select="csa:localityStack"/>
 		</fo:basic-link>
 	</xsl:template>
-		
-	<xsl:template match="csa:sourcecode" priority="2">
-		<xsl:call-template name="sourcecode"/>		
-		<xsl:variable name="title-figure">
-			<xsl:call-template name="getTitle">
-				<xsl:with-param name="name" select="'title-figure'"/>
-			</xsl:call-template>
-		</xsl:variable>
-		<xsl:choose>
-			<xsl:when test="@unnumbered='true'"></xsl:when>
-			<xsl:when test="ancestor::csa:example"/>
-			<xsl:when test="ancestor::csa:td"/>
-			<xsl:when test="ancestor::csa:annex">
-				<xsl:variable name="id_annex" select="ancestor::csa:annex/@id"/>
-				<xsl:choose>
-					<xsl:when test="count(//csa:annex) = 1">
-						<xsl:value-of select="/csa:nist-standard/csa:bibdata/csa:ext/csa:structuredidentifier/csa:annexid"/><xsl:number format="-1" level="any" count="csa:annex//csa:sourcecode"/>
-					</xsl:when>
-					<xsl:otherwise>
-						<fo:block font-size="11pt" font-weight="bold" text-align="center" margin-bottom="12pt">						
-							<xsl:value-of select="$title-figure"/>
-							<xsl:number format="A." level="multiple" count="csa:annex"/>
-							<xsl:number format="1" level="any" count="csa:sourcecode[ancestor::csa:annex/@id = $id_annex and not(@unnumbered='true') and not(ancestor::csa:example)]"/>
-							<xsl:if test="csa:name">
-								<xsl:text> — </xsl:text>
-								<xsl:apply-templates select="csa:name/*"/>
-							</xsl:if>
-						</fo:block>
-					</xsl:otherwise>
-				</xsl:choose>
-			</xsl:when>
-			<xsl:otherwise>
-				<fo:block font-size="11pt" font-weight="bold" text-align="center" margin-bottom="12pt">
-					<xsl:value-of select="$title-figure"/>
-					<xsl:number format="1" level="any" count="csa:sourcecode[not(@unnumbered='true') and not(ancestor::csa:example)] | csa:figure"/>
-					<xsl:if test="csa:name">
-						<xsl:text> — </xsl:text>
-						<xsl:apply-templates select="csa:name/*"/>
-					</xsl:if>
-				</fo:block>
-			</xsl:otherwise>
-		</xsl:choose>
-	</xsl:template>
-	
-	<xsl:template match="csa:sourcecode/text()">
-		<xsl:variable name="text">
-			<xsl:call-template name="add-zero-spaces-equal"/>
-		</xsl:variable>
-		<xsl:call-template name="add-zero-spaces">
-			<xsl:with-param name="text" select="$text"/>
-		</xsl:call-template>
-	</xsl:template>
-	
-	<xsl:template match="csa:sourcecode/csa:name"/>
+
 	
 	<xsl:template match="csa:tt" priority="2">
 		<fo:inline font-family="SourceCodePro" font-size="10pt">
