@@ -1099,24 +1099,6 @@
 		</fo:inline>
 	</xsl:template>
 	
-
-	<xsl:template match="m3d:example/m3d:p">
-		<fo:block margin-top="8pt" margin-bottom="8pt">
-			<xsl:variable name="claims_id" select="ancestor::m3d:clause[1]/@id"/>
-			<fo:inline padding-right="5mm" font-weight="bold">
-				<xsl:variable name="title-example">
-					<xsl:call-template name="getTitle">
-						<xsl:with-param name="name" select="'title-example'"/>
-					</xsl:call-template>
-				</xsl:variable>
-				<xsl:value-of select="$title-example"/>
-				<xsl:if test="count(ancestor::m3d:clause[1]//m3d:example) &gt; 1">
-					<xsl:number count="m3d:example[ancestor::m3d:clause[@id = $claims_id]]" level="any"/>
-				</xsl:if>
-			</fo:inline>
-			<xsl:apply-templates />
-		</fo:block>
-	</xsl:template>
 	
 	<xsl:template match="m3d:note/m3d:p" name="note">
 		<xsl:variable name="claims_id" select="ancestor::m3d:clause[1]/@id"/>

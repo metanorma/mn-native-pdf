@@ -2201,19 +2201,6 @@
 		</fo:basic-link>
 	</xsl:template>
 	
-	
-	<xsl:template match="iec:example/iec:p">
-		<fo:block>
-			<xsl:variable name="title-example">
-				<xsl:call-template name="getTitle">
-					<xsl:with-param name="name" select="'title-example'"/>
-				</xsl:call-template>
-			</xsl:variable>
-			<fo:inline padding-right="9mm"><xsl:value-of select="normalize-space($title-example)"/></fo:inline>
-			<xsl:apply-templates />
-		</fo:block>
-	</xsl:template>
-	
 	<xsl:template match="iec:note/iec:p" name="note">
 		<fo:block margin-top="5pt" margin-bottom="5pt" font-size="8pt">
 			<xsl:if test="../following-sibling::iec:note">

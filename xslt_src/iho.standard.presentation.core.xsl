@@ -1036,37 +1036,9 @@
 		</fo:footnote>
 	</xsl:template>
 	
-	<xsl:template match="iho:example">
-		<fo:block font-size="11pt" margin-top="8pt" margin-bottom="12pt">			
-			<xsl:variable name="claims_id" select="ancestor::iho:clause[1]/@id"/>
-			<fo:block margin-bottom="12pt" font-weight="bold">
-				<fo:inline padding-right="5mm">	
-					<xsl:variable name="title-example">
-						<xsl:call-template name="getTitle">
-							<xsl:with-param name="name" select="'title-example'"/>
-						</xsl:call-template>
-					</xsl:variable>
-					<xsl:value-of select="$title-example"/>
-					<xsl:choose>
-						<xsl:when test="iho:name">
-							<xsl:text>— </xsl:text><xsl:apply-templates select="iho:name" mode="example"/>
-						</xsl:when>
-						<!-- <xsl:when test="count(ancestor::iho:clause[1]//iho:example) &gt; 1">
-							<xsl:number count="iho:example[ancestor::iho:clause[@id = $claims_id]]" level="any"/>
-						</xsl:when> -->
-					</xsl:choose>
-				</fo:inline>
-			</fo:block>
-			<xsl:apply-templates />
-		</fo:block>
-	</xsl:template>
 	
-	<xsl:template match="iho:example/iho:name"/>
-	<xsl:template match="iho:example/iho:name" mode="example">
-		<fo:inline><xsl:apply-templates /></fo:inline>
-	</xsl:template>
 	
-	<xsl:template match="iho:example/iho:p">
+	<xsl:template match="iho:example/iho:p" priority="2">
 			<fo:block-container font-size="11pt" margin-left="12.7mm">
 				<fo:block-container margin-left="0mm">
 					<fo:block>

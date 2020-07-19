@@ -615,42 +615,6 @@
 	</xsl:template>
 
 
-		
-	<xsl:template match="itu:example" mode="contents">
-		<xsl:param name="sectionNum" />
-		<xsl:variable name="level">
-			<xsl:call-template name="getLevel"/>
-		</xsl:variable>
-		<xsl:variable name="section">
-			<xsl:call-template name="getSection">
-				<xsl:with-param name="sectionNum" select="$sectionNum"/>
-			</xsl:call-template>
-		</xsl:variable>
-		
-		<xsl:variable name="parent-element" select="local-name(..)"/>
-		<item level="" id="{@id}" display="false" type="example" section="{$section}">
-			<xsl:attribute name="parent">
-				<xsl:variable name="title-clause">
-					<xsl:call-template name="getTitle">
-						<xsl:with-param name="name" select="'title-clause'"/>
-					</xsl:call-template>
-				</xsl:variable>
-				<xsl:choose>
-					<xsl:when test="$parent-element = 'clause'"><xsl:value-of select="normalize-space($title-clause)"/></xsl:when>
-					<xsl:otherwise></xsl:otherwise>
-				</xsl:choose>
-			</xsl:attribute>
-			<xsl:attribute name="topsection">
-				<xsl:call-template name="getTopSection">
-					<xsl:with-param name="sectionNum" select="$sectionNum"/>
-				</xsl:call-template>
-			</xsl:attribute>
-		</item>
-		<xsl:apply-templates mode="contents">
-			<xsl:with-param name="sectionNum" select="$sectionNum"/>
-		</xsl:apply-templates>
-	</xsl:template>
-	
 	
 	<xsl:template match="itu:li" mode="contents">
 		<xsl:param name="sectionNum" />
@@ -1344,34 +1308,6 @@
 		</fo:inline>
 	</xsl:template>
 	
-
-	<xsl:template match="itu:example">
-		<fo:block id="{@id}" font-size="10pt" margin-top="12pt">
-			<xsl:apply-templates />
-		</fo:block>
-	</xsl:template>
-	
-	<xsl:template match="itu:example/itu:name">
-		<fo:block font-weight="bold">			
-			<xsl:variable name="title-example">
-				<xsl:call-template name="getTitle">
-					<xsl:with-param name="name" select="'title-example'"/>
-				</xsl:call-template>
-			</xsl:variable>
-			<xsl:value-of select="normalize-space($title-example)"/>
-			<xsl:if test="count(ancestor::itu:clause[1]/itu:example) &gt; 1">
-				<xsl:text> </xsl:text><xsl:number count="itu:example"/>
-			</xsl:if>
-			<xsl:text> — </xsl:text>
-			<xsl:apply-templates />
-		</fo:block>
-	</xsl:template>
-	
-	<xsl:template match="itu:example/itu:p">
-		<fo:block font-size="10pt" margin-top="12pt" margin-bottom="12pt">
-			<xsl:apply-templates />
-		</fo:block>
-	</xsl:template>
 	
 
 	<xsl:template match="itu:eref">

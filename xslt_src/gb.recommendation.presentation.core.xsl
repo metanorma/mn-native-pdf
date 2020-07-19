@@ -1319,27 +1319,6 @@
 	
 
 	
-	<xsl:template match="gb:example/gb:p">
-		<fo:block font-size="10pt" margin-top="8pt" margin-bottom="8pt">
-			<!-- <xsl:if test="ancestor::gb:li">
-				<xsl:attribute name="font-size">11pt</xsl:attribute>
-			</xsl:if> -->
-			<xsl:variable name="claims_id" select="ancestor::gb:clause[1]/@id"/>
-			<fo:inline padding-right="5mm">
-				<xsl:variable name="title-example">
-					<xsl:call-template name="getTitle">
-						<xsl:with-param name="name" select="'title-example'"/>
-					</xsl:call-template>
-				</xsl:variable>
-				<xsl:value-of select="$title-example"/>
-				<xsl:if test="count(ancestor::gb:clause[1]//gb:example) &gt; 1">
-					<xsl:number count="gb:example[ancestor::gb:clause[@id = $claims_id]]" level="any"/>
-				</xsl:if>
-			</fo:inline>
-			<xsl:apply-templates />
-		</fo:block>
-	</xsl:template>
-	
 	<xsl:template match="gb:note/gb:p" name="note">		
 		<fo:block-container font-size="9pt" margin-left="7.4mm" margin-top="4pt" line-height="125%">
 			<fo:block-container margin-left="0mm">

@@ -1587,36 +1587,6 @@
 	</xsl:template>
 		
 	
-	<xsl:template match="ogc:example">
-		<fo:block font-size="10pt" text-align="center" margin-top="12pt" margin-bottom="12pt" font-weight="bold" keep-with-next="always">
-			<xsl:variable name="title-example">
-				<xsl:call-template name="getTitle">
-					<xsl:with-param name="name" select="'title-example'"/>
-				</xsl:call-template>
-			</xsl:variable>
-			<xsl:value-of select="normalize-space($title-example)"/>
-			<xsl:if test="following-sibling::ogc:example or preceding-sibling::ogc:example">
-				<xsl:number format=" 1"/>
-			</xsl:if>
-			<xsl:if test="ogc:name">
-				<xsl:text> — </xsl:text>
-				<xsl:apply-templates select="ogc:name/node()"/>
-			</xsl:if>
-		</fo:block>
-		<fo:block  font-size="10pt" margin-left="12.5mm" margin-right="12.5mm">
-			<xsl:apply-templates />
-		</fo:block>
-	</xsl:template>
-	
-	<xsl:template match="ogc:example/ogc:name"/>
-	
-	<xsl:template match="ogc:example/ogc:p">
-		<fo:block  margin-bottom="14pt">
-			<xsl:apply-templates />
-		</fo:block>
-	</xsl:template>
-	
-	
 	
 	<xsl:template match="ogc:note/ogc:p" name="note">
 		<fo:block font-size="10pt" margin-top="12pt" margin-bottom="12pt" line-height="115%">

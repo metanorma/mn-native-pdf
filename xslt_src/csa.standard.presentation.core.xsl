@@ -1254,35 +1254,7 @@
 			<xsl:apply-templates />
 		</fo:inline>
 	</xsl:template>
-	
-	<xsl:template match="csa:example">
-		<fo:block font-size="10pt" margin-top="12pt" margin-bottom="12pt" font-weight="bold" keep-with-next="always">			
-			<xsl:variable name="title-example">
-				<xsl:call-template name="getTitle">
-					<xsl:with-param name="name" select="'title-example'"/>
-				</xsl:call-template>
-			</xsl:variable>
-			<xsl:value-of select="$title-example"/>
-			<xsl:if test="following-sibling::csa:example or preceding-sibling::csa:example">
-				<xsl:number format=" 1"/>
-			</xsl:if>
-			<xsl:if test="csa:name">
-				<xsl:text> — </xsl:text>
-				<xsl:apply-templates select="csa:name/node()"/>
-			</xsl:if>
-		</fo:block>
-		<fo:block  font-size="10pt" margin-left="12.5mm" margin-right="12.5mm">
-			<xsl:apply-templates />
-		</fo:block>
-	</xsl:template>
-	
-	<xsl:template match="csa:example/csa:name"/>
-	
-	<xsl:template match="csa:example/csa:p">
-		<fo:block  margin-bottom="14pt">
-			<xsl:apply-templates />
-		</fo:block>
-	</xsl:template>
+
 	
 	
 	<xsl:template match="csa:note/csa:p" name="note">

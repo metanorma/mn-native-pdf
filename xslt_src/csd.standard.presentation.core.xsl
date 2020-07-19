@@ -990,28 +990,6 @@
 		</fo:inline>
 	</xsl:template>
 	
-	<xsl:template match="csd:example">
-		<fo:block font-size="10pt" margin-bottom="12pt" font-weight="bold" keep-with-next="always">
-			<xsl:variable name="title-example">
-				<xsl:call-template name="getTitle">
-					<xsl:with-param name="name" select="'title-example'"/>
-				</xsl:call-template>
-			</xsl:variable>
-			<xsl:value-of select="normalize-space($title-example)"/>
-			<xsl:if test="following-sibling::csd:example or preceding-sibling::csd:example">
-				<xsl:number format=" 1"/>
-			</xsl:if>
-		</fo:block>
-		<fo:block  font-size="10pt" margin-left="12.5mm">
-			<xsl:apply-templates />
-		</fo:block>
-	</xsl:template>
-	
-	<xsl:template match="csd:example/csd:p">
-		<fo:block  margin-bottom="14pt">
-			<xsl:apply-templates />
-		</fo:block>
-	</xsl:template>
 	
 	<xsl:template match="csd:note/csd:p" name="note">
 		<fo:block font-size="10pt" margin-bottom="12pt">
