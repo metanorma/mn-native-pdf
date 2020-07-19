@@ -857,33 +857,7 @@
 			<xsl:apply-templates />
 		</fo:block>
 	</xsl:template>
-	
-	<xsl:template match="csd:termsource">
-		<fo:block margin-bottom="8pt" keep-with-previous="always">
-			<!-- Example: [SOURCE: ISO 5127:2017, 3.1.6.02] -->
-			<fo:basic-link internal-destination="{csd:origin/@bibitemid}" fox:alt-text="{csd:origin/@citeas}">
-				<xsl:text>[</xsl:text>
-				<xsl:variable name="title-source">
-					<xsl:call-template name="getTitle">
-						<xsl:with-param name="name" select="'title-source'"/>
-					</xsl:call-template>
-				</xsl:variable>
-				<xsl:value-of select="$title-source"/>
-				<xsl:text>: </xsl:text>
-				<xsl:value-of select="csd:origin/@citeas"/>
-				
-				<xsl:apply-templates select="csd:origin/csd:localityStack"/>
-				
-			</fo:basic-link>
-			<xsl:apply-templates select="csd:modification"/>
-			<xsl:text>]</xsl:text>
-		</fo:block>
-	</xsl:template>
-	
-	<xsl:template match="csd:modification/csd:p">
-		<fo:inline><xsl:apply-templates/></fo:inline>
-	</xsl:template>
-	
+
 		
 	<xsl:template match="csd:domain">
 		<fo:inline>&lt;<xsl:apply-templates/>&gt;</fo:inline>

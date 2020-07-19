@@ -414,25 +414,6 @@
 	</xsl:template>
 
 
-	<xsl:template match="un:example" mode="contents">
-		<xsl:variable name="level">
-			<xsl:call-template name="getLevel"/>
-		</xsl:variable>
-		<xsl:variable name="section">
-			<xsl:call-template name="getSection"/>
-		</xsl:variable>
-		
-		<xsl:variable name="parent-element" select="local-name(..)"/>
-		<item level="" id="{@id}" display="false" type="Example" section="{$section}">
-			<xsl:attribute name="parent">
-				<xsl:choose>
-					<xsl:when test="$parent-element = 'clause'">Clause</xsl:when>
-					<xsl:otherwise></xsl:otherwise>
-				</xsl:choose>
-			</xsl:attribute>
-		</item>
-		<xsl:apply-templates mode="contents"/>
-	</xsl:template>
 	
 	<xsl:template match="un:terms" mode="contents">
 		<item level="" id="{@id}" display="false" type="Terms">
@@ -1168,26 +1149,7 @@
 		<xsl:call-template name="formula"/>
 	</xsl:template>
 		
-	<xsl:template match="un:example">
-		<xsl:variable name="title-example">
-			<xsl:call-template name="getTitle">
-				<xsl:with-param name="name" select="'title-example'"/>
-			</xsl:call-template>
-		</xsl:variable>
-		<fo:block id="{@id}" font-size="10pt" font-weight="bold" margin-bottom="12pt"><xsl:value-of select="$title-example"/></fo:block>
-		<fo:block font-size="11pt" margin-top="12pt" margin-bottom="12pt" margin-left="15mm" >
-			<xsl:apply-templates />
-		</fo:block>
-	</xsl:template>
-	<xsl:template match="un:example/un:p">
-		<xsl:variable name="num"><xsl:number/></xsl:variable>
-		<fo:block margin-bottom="12pt">
-			<xsl:if test="$num = 1">
-				<xsl:attribute name="margin-left">5mm</xsl:attribute>
-			</xsl:if>
-			<xsl:apply-templates />
-		</fo:block>
-	</xsl:template>
+
 	
 	<xsl:template match="un:eref">
 		<fo:basic-link internal-destination="{@bibitemid}" fox:alt-text="{@citeas}">

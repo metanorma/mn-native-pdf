@@ -1865,36 +1865,9 @@
 		</fo:block>
 	</xsl:template>
 	
-	<xsl:template match="iso:termsource">
-		<fo:block margin-bottom="8pt"> <!-- keep-with-previous="always" -->
-			<!-- Example: [SOURCE: ISO 5127:2017, 3.1.6.02] -->
-			<fo:basic-link internal-destination="{iso:origin/@bibitemid}" fox:alt-text="{iso:origin/@citeas}">
-				<xsl:text>[</xsl:text>
-				<xsl:variable name="title-source">
-					<xsl:call-template name="getTitle">
-						<xsl:with-param name="name" select="'title-source'"/>
-					</xsl:call-template>
-				</xsl:variable>
-				<xsl:value-of select="$title-source"/>
-				<xsl:text>: </xsl:text>
-				<xsl:value-of select="iso:origin/@citeas"/>
-				
-				<xsl:apply-templates select="iso:origin/iso:localityStack"/>
-				
-				<!-- <xsl:if test="iso:origin/iso:locality/iso:referenceFrom">
-					<xsl:text>, </xsl:text><xsl:value-of select="iso:origin/iso:locality/iso:referenceFrom"/>
-				</xsl:if> -->
-			</fo:basic-link>
-			<xsl:apply-templates select="iso:modification"/>
-			<xsl:text>]</xsl:text>
-		</fo:block>
-	</xsl:template>
+
 	
-	
-	<xsl:template match="iso:modification/iso:p">
-		<fo:inline><xsl:apply-templates/></fo:inline>
-	</xsl:template>
-	
+
 	
 	<xsl:template match="iso:domain">
 		<fo:inline>&lt;<xsl:apply-templates/>&gt;</fo:inline><xsl:text> </xsl:text>

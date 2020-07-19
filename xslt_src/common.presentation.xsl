@@ -588,6 +588,37 @@
 		</xsl:if>
 		
 	</xsl:attribute-set>
+
+	<xsl:attribute-set name="termsource-style">
+		<xsl:if test="$namespace = 'csa' or $namespace = 'ogc' or $namespace = 'rsd'">
+			<xsl:attribute name="margin-bottom">12pt</xsl:attribute>
+			<xsl:attribute name="keep-with-previous">always</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'csd' or $namespace = 'iec'">
+			<xsl:attribute name="margin-bottom">8pt</xsl:attribute>
+			<xsl:attribute name="keep-with-previous">always</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'gb'">
+			<xsl:attribute name="text-indent">7.4mm</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'iho'">
+			<xsl:attribute name="margin-bottom">12pt</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'iso'">
+			<xsl:attribute name="margin-bottom">8pt</xsl:attribute>
+		</xsl:if>
+	</xsl:attribute-set>
+	
+	<xsl:attribute-set name="origin-style">
+		<xsl:if test="$namespace = 'csa'">
+			<xsl:attribute name="color">rgb(33, 94, 159)</xsl:attribute>
+			<xsl:attribute name="text-decoration">underline</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'iho' or $namespace = 'ogc' or $namespace = 'rsd'">
+			<xsl:attribute name="color">blue</xsl:attribute>
+			<xsl:attribute name="text-decoration">underline</xsl:attribute>
+		</xsl:if>
+	</xsl:attribute-set>
 	
 	<xsl:template match="text()">
 		<xsl:value-of select="."/>
@@ -2426,13 +2457,7 @@
 		</fo:inline>
 	</xsl:template>
 
-	<xsl:template match="*[local-name()='localityStack']">
-		<xsl:for-each select="*[local-name()='locality']">
-			<xsl:if test="position() =1"><xsl:text>, </xsl:text></xsl:if>
-			<xsl:apply-templates select="."/>
-			<xsl:if test="position() != last()"><xsl:text>; </xsl:text></xsl:if>
-		</xsl:for-each>
-	</xsl:template>
+	<xsl:template match="*[local-name()='localityStack']"/>
 
 	<xsl:template match="*[local-name()='link']" name="link">
 		<xsl:variable name="target">
@@ -2903,6 +2928,56 @@
 	</xsl:template>
 	<!-- ====== -->
 	<!-- ====== -->
+
+
+	<!-- ====== -->
+	<!-- termsource -->	
+	<!-- origin -->	
+	<!-- modification -->	
+	<!-- ====== -->
+	<xsl:template match="*[local-name() = 'termsource']">
+		<fo:block xsl:use-attribute-sets="termsource-style">
+			<!-- Example: [SOURCE: ISO 5127:2017, 3.1.6.02] -->			
+			<xsl:text>[</xsl:text>
+			<xsl:apply-templates />			
+			<xsl:text>]</xsl:text>
+		</fo:block>
+	</xsl:template>
+	
+	<xsl:template match="*[local-name() = 'termsource']/text()">
+		<xsl:if test="normalize-space() != ''">
+			<xsl:value-of select="."/>
+		</xsl:if>
+	</xsl:template>
+	
+	<xsl:template match="*[local-name() = 'origin']">
+		<fo:basic-link internal-destination="{@bibitemid}" fox:alt-text="{text()}">
+			<xsl:if test="$namespace = 'csa' or 
+											$namespace = 'csd' or 
+											$namespace = 'iho' or 
+											$namespace = 'iec' or 
+											$namespace = 'iso' or 
+											$namespace = 'ogc' or 
+											$namespace = 'rsd'">
+				<xsl:call-template name="getTitle">
+					<xsl:with-param name="name" select="'title-source'"/>
+				</xsl:call-template>
+				<xsl:text>: </xsl:text>
+			</xsl:if>
+			<fo:inline xsl:use-attribute-sets="origin-style">
+				<xsl:apply-templates/>
+			</fo:inline>
+			</fo:basic-link>
+	</xsl:template>
+	
+	<xsl:template match="*[local-name() = 'modification']/*[local-name() = 'p']">
+		<fo:inline><xsl:apply-templates /></fo:inline>
+	</xsl:template>
+	
+	<!-- ====== -->
+	<!-- ====== -->
+
+
 	
 	<xsl:template match="*[local-name() = 'tab']">
 		<!-- zero-space char -->

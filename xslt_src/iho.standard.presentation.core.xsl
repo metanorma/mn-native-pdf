@@ -860,27 +860,7 @@
 		</xsl:choose>		
 	</xsl:template>
 	
-	<xsl:template match="iho:termsource">
-		<fo:block margin-bottom="12pt"> 
-			<!-- Example:[SOURCE: [3]] -->
-			<fo:basic-link internal-destination="{iho:origin/@bibitemid}" fox:alt-text="{iho:origin/@citeas}">
-				<xsl:text>[</xsl:text>
-				<xsl:variable name="title-source">
-					<xsl:call-template name="getTitle">
-						<xsl:with-param name="name" select="'title-source'"/>
-					</xsl:call-template>
-				</xsl:variable>
-				<xsl:value-of select="$title-source"/>
-				<xsl:text>: </xsl:text>
-				<fo:inline color="blue" text-decoration="underline"><xsl:value-of select="iho:origin/@citeas"/></fo:inline>
-				
-				<xsl:apply-templates select="iho:origin/iho:localityStack"/>
-				
-			</fo:basic-link>
-			<xsl:apply-templates select="iho:modification"/>
-			<xsl:text>]</xsl:text>
-		</fo:block>
-	</xsl:template>
+	
 	
 	<xsl:template match="iho:admonition">
 		<fo:block-container border="0.5pt solid rgb(79, 129, 189)" color="rgb(79, 129, 189)" margin-left="16mm" margin-right="16mm" margin-bottom="12pt">
@@ -1140,9 +1120,6 @@
 	</xsl:template>
 		
 
-	<xsl:template match="iho:modification/iho:p">
-		<fo:inline><xsl:apply-templates/></fo:inline>
-	</xsl:template>
 	
 	<xsl:template match="iho:locality">
 		<xsl:variable name="title-clause">

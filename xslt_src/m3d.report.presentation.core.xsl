@@ -956,28 +956,7 @@
 		</fo:block>
 	</xsl:template>
 	
-	<xsl:template match="m3d:termsource">
-		<fo:block>
-			<!-- Example: [SOURCE: ISO 5127:2017, 3.1.6.02] -->
-			<fo:basic-link internal-destination="{m3d:origin/@bibitemid}" fox:alt-text="{m3d:origin/@citeas}">
-				<xsl:text>[</xsl:text> <!-- SOURCE:  -->
-				<xsl:value-of select="m3d:origin/@citeas"/>
-				
-				<xsl:apply-templates select="m3d:origin/m3d:localityStack"/>
-				
-			</fo:basic-link>
-			<xsl:apply-templates select="m3d:modification"/>
-			<xsl:text>]</xsl:text>
-		</fo:block>
-	</xsl:template>
-	
 
-	<xsl:template match="m3d:modification/m3d:p">
-		<xsl:apply-templates/>
-	</xsl:template>
-	<xsl:template match="m3d:modification/text()">
-		<xsl:apply-templates/>
-	</xsl:template>
 	
 	<xsl:template match="m3d:termnote" priority="2">
 		<fo:block-container margin-left="0mm" margin-top="4pt" line-height="125%">

@@ -2085,31 +2085,6 @@
 		</fo:block>
 	</xsl:template>
 	
-	<xsl:template match="iec:termsource">
-		<fo:block margin-bottom="8pt" keep-with-previous="always">
-			<!-- Example: [SOURCE: ISO 5127:2017, 3.1.6.02] -->
-			<fo:basic-link internal-destination="{iec:origin/@bibitemid}" fox:alt-text="{iec:origin/@citeas}">
-				<xsl:text>[</xsl:text>
-				<xsl:variable name="title-source">
-					<xsl:call-template name="getTitle">
-						<xsl:with-param name="name" select="'title-source'"/>
-					</xsl:call-template>
-				</xsl:variable>
-				<xsl:value-of select="$title-source"/>
-				<xsl:text>: </xsl:text>
-				<xsl:value-of select="iec:origin/@citeas"/>
-				<xsl:apply-templates select="iec:origin/iec:localityStack"/>
-			</fo:basic-link>
-			<xsl:apply-templates select="iec:modification"/>
-			<xsl:text>]</xsl:text>
-		</fo:block>
-	</xsl:template>
-	
-
-	<xsl:template match="iec:modification/iec:p">
-		<fo:inline><xsl:apply-templates/></fo:inline>
-	</xsl:template>
-	
 	
 	<xsl:template match="iec:domain">
 		<fo:inline>&lt;<xsl:apply-templates/>&gt;</fo:inline>

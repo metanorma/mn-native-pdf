@@ -1098,34 +1098,6 @@
 		</fo:block>
 	</xsl:template>
 	
-	<xsl:template match="csa:termsource">
-		<fo:block margin-bottom="12pt" keep-with-previous="always">
-			<!-- Example: [SOURCE: ISO 5127:2017, 3.1.6.02] -->
-			<fo:basic-link internal-destination="{csa:origin/@bibitemid}" fox:alt-text="{csa:origin/@citeas}">
-				<xsl:text>[</xsl:text>
-				<xsl:variable name="title-source">
-					<xsl:call-template name="getTitle">
-						<xsl:with-param name="name" select="'title-source'"/>
-					</xsl:call-template>
-				</xsl:variable>
-				<xsl:value-of select="$title-source"/>
-				<xsl:text>: </xsl:text>
-				<fo:inline text-decoration="underline" color="{$color-link}">
-					<xsl:value-of select="csa:origin/@citeas"/>
-          
-					<xsl:apply-templates select="csa:origin/csa:localityStack"/>
-					
-				</fo:inline>
-			</fo:basic-link>
-			<xsl:apply-templates select="csa:modification"/>
-			<xsl:text>]</xsl:text>
-		</fo:block>
-	</xsl:template>
-	
-	<xsl:template match="csa:modification/csa:p">
-		<fo:inline><xsl:apply-templates/></fo:inline>
-	</xsl:template>
-
 	
 	<xsl:template match="csa:domain">
 		<fo:inline>&lt;<xsl:apply-templates/>&gt;</fo:inline>

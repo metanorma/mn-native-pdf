@@ -1159,28 +1159,7 @@
 		</fo:block>
 	</xsl:template>
 	
-	<xsl:template match="gb:termsource">
-		<fo:block text-indent="7.4mm"> 
-			<!-- Example: [SOURCE: ISO 5127:2017, 3.1.6.02] -->
-			<fo:basic-link internal-destination="{gb:origin/@bibitemid}" fox:alt-text="{gb:origin/@citeas}">
-				<xsl:text>[</xsl:text> <!-- SOURCE:  -->
-				<xsl:value-of select="gb:origin/@citeas"/>
-				
-				<xsl:apply-templates select="gb:origin/gb:localityStack"/>
-				
-			</fo:basic-link>
-			<xsl:apply-templates select="gb:modification"/>
-			<xsl:text>]</xsl:text>
-		</fo:block>
-	</xsl:template>
-	
 
-	<xsl:template match="gb:modification/gb:p">
-		<xsl:apply-templates/>
-	</xsl:template>
-	<xsl:template match="gb:modification/text()">
-		<xsl:apply-templates/>
-	</xsl:template>
 	
 	<xsl:template match="gb:termnote" priority="2">
 		<fo:block-container font-size="9pt" margin-left="7.4mm" margin-top="4pt" line-height="125%">

@@ -1424,35 +1424,6 @@
 		</fo:block>
 	</xsl:template>
 	
-	<xsl:template match="ogc:termsource">
-		<fo:block margin-bottom="12pt" keep-with-previous="always">
-			<!-- Example: [SOURCE: ISO 5127:2017, 3.1.6.02] -->
-			<fo:basic-link internal-destination="{ogc:origin/@bibitemid}" fox:alt-text="{ogc:origin/@citeas}">
-				<xsl:text>[</xsl:text>
-				<xsl:variable name="title-source">
-					<xsl:call-template name="getTitle">
-						<xsl:with-param name="name" select="'title-source'"/>
-					</xsl:call-template>
-				</xsl:variable>
-				<xsl:value-of select="$title-source"/>
-				<xsl:text>: </xsl:text>
-				<fo:inline color="blue" text-decoration="underline">
-					<xsl:value-of select="ogc:origin/@citeas"/>
-					
-					<xsl:apply-templates select="ogc:origin/ogc:localityStack"/>
-					
-				</fo:inline>
-			</fo:basic-link>
-			<xsl:apply-templates select="ogc:modification"/>
-			<xsl:text>]</xsl:text>
-		</fo:block>
-	</xsl:template>
-	
-
-	<xsl:template match="ogc:modification/ogc:p">
-		<fo:inline><xsl:apply-templates/></fo:inline>
-	</xsl:template>
-	
 
 	<xsl:template match="ogc:domain">
 		<fo:inline>&lt;<xsl:apply-templates/>&gt;</fo:inline>
