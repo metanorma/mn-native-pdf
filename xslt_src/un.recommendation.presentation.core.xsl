@@ -1150,41 +1150,7 @@
 	</xsl:template>
 		
 
-	
-	<xsl:template match="un:eref">
-		<fo:basic-link internal-destination="{@bibitemid}" fox:alt-text="{@citeas}">
-			<xsl:if test="@type = 'footnote'">
-				<xsl:attribute name="keep-together.within-line">always</xsl:attribute>
-				<xsl:attribute name="font-size">80%</xsl:attribute>
-				<xsl:attribute name="keep-with-previous.within-line">always</xsl:attribute>
-				<xsl:attribute name="vertical-align">super</xsl:attribute>
-			</xsl:if>
-			<!-- <xsl:if test="@type = 'inline'">
-				<xsl:attribute name="text-decoration">underline</xsl:attribute>
-			</xsl:if> -->
-			<xsl:text>[</xsl:text><xsl:value-of select="@citeas"/><xsl:text>]</xsl:text> <!--  disable-output-escaping="yes" -->
-			<xsl:apply-templates select="un:localityStack"/>
-		</fo:basic-link>
-	</xsl:template>
-	
-	<xsl:template match="un:locality">
-		<xsl:variable name="title-section">
-			<xsl:call-template name="getTitle">
-				<xsl:with-param name="name" select="'title-section'"/>
-			</xsl:call-template>
-		</xsl:variable>
-		<xsl:variable name="title-clause">
-			<xsl:call-template name="getTitle">
-				<xsl:with-param name="name" select="'title-clause'"/>
-			</xsl:call-template>
-		</xsl:variable>
-		<xsl:choose>
-			<xsl:when test="@type = 'section'"><xsl:value-of select="$title-section"/></xsl:when>
-			<xsl:when test="@type = 'clause'"><xsl:value-of select="$title-clause"/></xsl:when>
-			<xsl:otherwise></xsl:otherwise>
-		</xsl:choose>
-		<xsl:text> </xsl:text><xsl:value-of select="un:referenceFrom"/>
-	</xsl:template>
+
 	
 	
 	<xsl:template match="un:terms[un:term[un:preferred and un:definition]]">

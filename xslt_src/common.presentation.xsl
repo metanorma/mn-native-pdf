@@ -566,6 +566,20 @@
 			<xsl:attribute name="text-decoration">underline</xsl:attribute>
 		</xsl:if>		
 	</xsl:attribute-set>
+
+	<xsl:attribute-set name="eref-style">
+		<xsl:if test="$namespace = 'csa'">
+			<xsl:attribute name="color">rgb(33, 94, 159)</xsl:attribute>
+			<xsl:attribute name="text-decoration">underline</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'csd' or $namespace = 'itu' or $namespace = 'ogc' or $namespace = 'rsd'">
+			<xsl:attribute name="color">blue</xsl:attribute>
+			<xsl:attribute name="text-decoration">underline</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'nist-cswp' or $namespace = 'nist-sp' or $namespace = 'unece'">
+			<xsl:attribute name="color">blue</xsl:attribute>
+		</xsl:if>
+	</xsl:attribute-set>
 	
 	<xsl:attribute-set name="termnote-style">		
 		<xsl:if test="$namespace = 'csa' or $namespace = 'csd' or $namespace = 'ogc' or $namespace = 'rsd'">
@@ -3079,12 +3093,60 @@
 		<xsl:text>— </xsl:text>
 		<xsl:apply-templates />
 	</xsl:template>
-	
-	
-	
 	<!-- ====== -->
 	<!-- ====== -->
 
+
+	<!-- ====== -->
+	<!-- eref -->	
+	<!-- source -->	
+	<!-- author  -->	
+	<!-- ====== -->
+	<xsl:template match="*[local-name() = 'eref']">
+		<fo:inline xsl:use-attribute-sets="eref-style">
+			<xsl:if test="@type = 'footnote'">
+				<xsl:if test="$namespace = 'csa' or $namespace = 'csd' or $namespace = 'iec' or $namespace = 'iho' or $namespace = 'itu' or $namespace = 'iso' or 
+													$namespace = 'nist-cswp' or
+													$namespace = 'nist-sp' or
+													$namespace = 'ogc' or 
+													$namespace = 'rsd' or 
+													$namespace = 'unece' or 
+													$namespace = 'unece-rec'">
+					<xsl:attribute name="keep-together.within-line">always</xsl:attribute>
+					<xsl:attribute name="font-size">80%</xsl:attribute>
+					<xsl:attribute name="keep-with-previous.within-line">always</xsl:attribute>
+					<xsl:attribute name="vertical-align">super</xsl:attribute>
+				</xsl:if>					
+				<xsl:if test="$namespace = 'gb' or $namespace = 'm3d'">
+					<xsl:attribute name="keep-together.within-line">always</xsl:attribute>
+					<xsl:attribute name="font-size">50%</xsl:attribute>
+					<xsl:attribute name="keep-with-previous.within-line">always</xsl:attribute>
+					<xsl:attribute name="vertical-align">super</xsl:attribute>
+				</xsl:if>
+			</xsl:if>	
+		
+			<fo:basic-link internal-destination="{@bibitemid}" fox:alt-text="{@citeas}">
+					
+				<xsl:if test="@type = 'inline'">
+					<xsl:if test="$namespace = 'csd' or $namespace = 'iho' or $namespace = 'ogc'">
+						<xsl:attribute name="color">blue</xsl:attribute>
+						<xsl:attribute name="text-decoration">underline</xsl:attribute>
+					</xsl:if>
+					<xsl:if test="$namespace = 'nist-cswp' or 
+														$namespace = 'nist-sp' or 
+														$namespace = 'unece'">
+						<xsl:attribute name="text-decoration">underline</xsl:attribute>
+					</xsl:if>
+				</xsl:if>
+			
+			
+				<xsl:apply-templates />
+			</fo:basic-link>
+		</fo:inline>
+	</xsl:template>
+	
+	<!-- ====== -->
+	<!-- ====== -->
 	
 	<xsl:template match="*[local-name() = 'tab']">
 		<!-- zero-space char -->

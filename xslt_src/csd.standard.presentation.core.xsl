@@ -944,53 +944,7 @@
 		</fo:block>
 	</xsl:template>
 
-	<!-- <eref type="inline" bibitemid="ISO20483" citeas="ISO 20483:2013"><locality type="annex"><referenceFrom>C</referenceFrom></locality></eref> -->
-	<xsl:template match="csd:eref">
-		<fo:basic-link internal-destination="{@bibitemid}" fox:alt-text="{@citeas}" color="blue" text-decoration="underline"> <!-- font-size="9pt" color="blue" vertical-align="super" -->
-			<xsl:if test="@type = 'footnote'">
-				<xsl:attribute name="keep-together.within-line">always</xsl:attribute>
-				<xsl:attribute name="font-size">80%</xsl:attribute>
-				<xsl:attribute name="keep-with-previous.within-line">always</xsl:attribute>
-				<xsl:attribute name="vertical-align">super</xsl:attribute>
-			</xsl:if>
-			<xsl:if test="@type = 'inline'">
-				<xsl:attribute name="color">blue</xsl:attribute>
-				<xsl:attribute name="text-decoration">underline</xsl:attribute>
-			</xsl:if>
-			<!-- <xsl:if test="@type = 'inline'">
-				<xsl:attribute name="text-decoration">underline</xsl:attribute>
-			</xsl:if> -->
-			<xsl:choose>
-				<xsl:when test="@citeas">
-					<xsl:value-of select="@citeas"/> <!--  disable-output-escaping="yes" -->
-				</xsl:when>
-				<xsl:when test="@bibitemid">
-					<xsl:value-of select="//csd:bibitem[@id = current()/@bibitemid]/csd:docidentifier"/>
-				</xsl:when>
-				<xsl:otherwise></xsl:otherwise>
-			</xsl:choose>
-			<xsl:apply-templates select="csd:localityStack"/>
-		</fo:basic-link>
-	</xsl:template>
-	
-	<xsl:template match="csd:locality">
-		<xsl:variable name="title-clause">
-			<xsl:call-template name="getTitle">
-				<xsl:with-param name="name" select="'title-clause'"/>
-			</xsl:call-template>
-		</xsl:variable>
-		<xsl:variable name="title-annex">
-			<xsl:call-template name="getTitle">
-				<xsl:with-param name="name" select="'title-annex'"/>
-			</xsl:call-template>
-		</xsl:variable>
-		<xsl:choose>
-			<xsl:when test="@type ='clause'"><xsl:value-of select="$title-clause"/></xsl:when>
-			<xsl:when test="@type ='annex'"><xsl:value-of select="$title-annex"/></xsl:when>
-			<xsl:otherwise><xsl:value-of select="@type"/></xsl:otherwise>
-		</xsl:choose>
-		<xsl:text> </xsl:text><xsl:value-of select="csd:referenceFrom"/>
-	</xsl:template>
+
 	
 	<xsl:template match="csd:admonition">
 		<fo:block margin-bottom="12pt" font-weight="bold"> <!-- text-align="center"  -->

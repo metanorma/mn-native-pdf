@@ -1302,42 +1302,6 @@
 	
 	
 
-	<xsl:template match="itu:eref">
-		<fo:inline>
-			<xsl:if test="@type = 'footnote'">
-				<xsl:attribute name="keep-together.within-line">always</xsl:attribute>
-				<xsl:attribute name="font-size">80%</xsl:attribute>
-				<xsl:attribute name="keep-with-previous.within-line">always</xsl:attribute>
-				<xsl:attribute name="vertical-align">super</xsl:attribute>
-			</xsl:if>
-			<fo:basic-link internal-destination="{@bibitemid}" color="blue" text-decoration="underline" fox:alt-text="{@citeas}">
-				<xsl:choose>
-					<xsl:when test="contains(@citeas, '[')">
-						<xsl:value-of select="@citeas"/> <!--  disable-output-escaping="yes" -->
-					</xsl:when>
-					<xsl:otherwise>
-						<xsl:text>[</xsl:text><xsl:value-of select="@citeas"/><xsl:text>]</xsl:text> <!--  disable-output-escaping="yes" -->
-					</xsl:otherwise>
-				</xsl:choose>
-				
-				<xsl:apply-templates select="itu:localityStack"/>
-				
-			</fo:basic-link>
-		</fo:inline>
-	</xsl:template>
-	
-	<xsl:template match="itu:locality">
-		<xsl:variable name="title-section">
-			<xsl:call-template name="getTitle">
-				<xsl:with-param name="name" select="'title-section'"/>
-			</xsl:call-template>
-		</xsl:variable>
-		<xsl:choose>
-			<xsl:when test="@type ='section'"><xsl:value-of select="normalize-space($title-section)"/></xsl:when>
-			<xsl:otherwise></xsl:otherwise>
-		</xsl:choose>
-		<xsl:value-of select="itu:referenceFrom"/>
-	</xsl:template>
 	
 	<xsl:template match="itu:references[position() &gt; 1]">
 		<fo:block break-after="page"/>

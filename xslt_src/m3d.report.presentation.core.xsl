@@ -1063,61 +1063,7 @@
 		</fo:block-container>
 	</xsl:template>
 
-	<!-- <eref type="inline" bibitemid="IEC60050-113" citeas="IEC 60050-113:2011"><localityStack><locality type="clause"><referenceFrom>113-01-12</referenceFrom></locality></localityStack></eref> -->
-	<xsl:template match="m3d:eref">
-		<fo:basic-link internal-destination="{@bibitemid}" fox:alt-text="{@citeas}"> <!-- font-size="9pt" color="blue" vertical-align="super" -->
-			<xsl:if test="@type = 'footnote'">
-				<xsl:attribute name="keep-together.within-line">always</xsl:attribute>
-				<xsl:attribute name="font-size">50%</xsl:attribute>
-				<xsl:attribute name="keep-with-previous.within-line">always</xsl:attribute>
-				<xsl:attribute name="vertical-align">super</xsl:attribute>
-			</xsl:if>
-			<!-- <xsl:if test="@type = 'inline'">
-				<xsl:attribute name="color">blue</xsl:attribute>
-				<xsl:attribute name="text-decoration">underline</xsl:attribute>
-			</xsl:if> -->
-			
-			<xsl:choose>
-				<xsl:when test="@citeas and normalize-space(text()) = ''">
-					<xsl:value-of select="@citeas"/> <!--  disable-output-escaping="yes" -->
-				</xsl:when>
-				<xsl:when test="@bibitemid and normalize-space(text()) = ''">
-					<xsl:value-of select="//m3d:bibitem[@id = current()/@bibitemid]/m3d:docidentifier"/>
-				</xsl:when>
-				<xsl:otherwise></xsl:otherwise>
-			</xsl:choose>
-			<xsl:apply-templates select="m3d:localityStack"/>
-			<xsl:apply-templates select="text()"/>
-		</fo:basic-link>
-	</xsl:template>
-	
-	<xsl:template match="m3d:locality">
-		<xsl:variable name="title-clause">
-			<xsl:call-template name="getTitle">
-				<xsl:with-param name="name" select="'title-clause'"/>
-			</xsl:call-template>
-		</xsl:variable>
-		<xsl:variable name="title-annex">
-			<xsl:call-template name="getTitle">
-				<xsl:with-param name="name" select="'title-annex'"/>
-			</xsl:call-template>
-		</xsl:variable>
-		<xsl:variable name="title-table">
-			<xsl:call-template name="getTitle">
-				<xsl:with-param name="name" select="'title-table'"/>
-			</xsl:call-template>
-		</xsl:variable>
-		<xsl:choose>
-			<xsl:when test="@type ='section' and ancestor::m3d:termsource">SOURCE Section </xsl:when>
-			<xsl:when test="ancestor::m3d:termsource"></xsl:when>
-			<xsl:when test="@type ='clause' and ancestor::m3d:eref"></xsl:when>
-			<xsl:when test="@type ='clause'"><xsl:value-of select="$title-clause"/></xsl:when>
-			<xsl:when test="@type ='annex'"><xsl:value-of select="$title-annex"/></xsl:when>
-			<xsl:when test="@type ='table'"><xsl:value-of select="$title-table"/></xsl:when>
-			<xsl:otherwise><xsl:value-of select="@type"/></xsl:otherwise>
-		</xsl:choose>
-		<xsl:text> </xsl:text><xsl:value-of select="m3d:referenceFrom"/>
-	</xsl:template>
+
 	
 	<xsl:template match="m3d:admonition">
 		<fo:block text-align="center" margin-bottom="12pt" font-weight="bold">			

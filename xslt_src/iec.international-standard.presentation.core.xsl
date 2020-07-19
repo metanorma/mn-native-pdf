@@ -2160,44 +2160,7 @@
 		</fo:block>
 	</xsl:template>
 
-	<!-- <eref type="inline" bibitemid="ISO20483" citeas="ISO 20483:2013"><locality type="annex"><referenceFrom>C</referenceFrom></locality></eref> -->
-	<xsl:template match="iec:eref">
-		<fo:basic-link internal-destination="{@bibitemid}" fox:alt-text="{@citeas}">
-			<xsl:if test="@type = 'footnote'">
-				<xsl:attribute name="keep-together.within-line">always</xsl:attribute>
-				<xsl:attribute name="font-size">80%</xsl:attribute>
-				<xsl:attribute name="keep-with-previous.within-line">always</xsl:attribute>
-				<xsl:attribute name="vertical-align">super</xsl:attribute>
-			</xsl:if>
-			<xsl:value-of select="@citeas"/> <!--  disable-output-escaping="yes" -->
-			<xsl:apply-templates select="iec:localityStack"/>
-		</fo:basic-link>
-	</xsl:template>
-	
-	<xsl:template match="iec:locality">
-		<xsl:variable name="title-clause">
-			<xsl:call-template name="getTitle">
-				<xsl:with-param name="name" select="'title-clause'"/>
-			</xsl:call-template>
-		</xsl:variable>
-		<xsl:variable name="title-annex">
-			<xsl:call-template name="getTitle">
-				<xsl:with-param name="name" select="'title-annex'"/>
-			</xsl:call-template>
-		</xsl:variable>
-		<xsl:variable name="title-table">
-			<xsl:call-template name="getTitle">
-				<xsl:with-param name="name" select="'title-table'"/>
-			</xsl:call-template>
-		</xsl:variable>
-		<xsl:choose>
-			<xsl:when test="@type ='clause'"><xsl:value-of select="$title-clause"/></xsl:when>
-			<xsl:when test="@type ='annex'"><xsl:value-of select="$title-annex"/></xsl:when>
-			<xsl:when test="@type ='table'"><xsl:value-of select="$title-table"/></xsl:when>
-			<xsl:otherwise><xsl:value-of select="@type"/></xsl:otherwise>
-		</xsl:choose>
-		<xsl:text> </xsl:text><xsl:value-of select="iec:referenceFrom"/>
-	</xsl:template>
+
 	
 	<xsl:template match="iec:admonition">
 		<fo:block-container border="0.5pt solid black" margin-left="-2mm" margin-right="-2mm" space-before="18pt" space-after="12pt">

@@ -1291,61 +1291,7 @@
 		</fo:block-container>
 	</xsl:template>
 
-	<!-- <eref type="inline" bibitemid="IEC60050-113" citeas="IEC 60050-113:2011"><localityStack><locality type="clause"><referenceFrom>113-01-12</referenceFrom></locality></localityStack></eref> -->
-	<xsl:template match="gb:eref">
-		<fo:basic-link internal-destination="{@bibitemid}" fox:alt-text="{@citeas}"> <!-- font-size="9pt" color="blue" vertical-align="super" -->
-			<xsl:if test="@type = 'footnote'">
-				<xsl:attribute name="keep-together.within-line">always</xsl:attribute>
-				<xsl:attribute name="font-size">50%</xsl:attribute>
-				<xsl:attribute name="keep-with-previous.within-line">always</xsl:attribute>
-				<xsl:attribute name="vertical-align">super</xsl:attribute>
-			</xsl:if>
-			<!-- <xsl:if test="@type = 'inline'">
-				<xsl:attribute name="color">blue</xsl:attribute>
-				<xsl:attribute name="text-decoration">underline</xsl:attribute>
-			</xsl:if> -->
-			
-			<xsl:choose>
-				<xsl:when test="@citeas and normalize-space(text()) = ''">
-					<xsl:value-of select="@citeas"/> <!--  disable-output-escaping="yes" -->
-				</xsl:when>
-				<xsl:when test="@bibitemid and normalize-space(text()) = ''">
-					<xsl:value-of select="//gb:bibitem[@id = current()/@bibitemid]/gb:docidentifier"/>
-				</xsl:when>
-				<xsl:otherwise></xsl:otherwise>
-			</xsl:choose>
-			<xsl:apply-templates select="gb:localityStack"/>
-			<xsl:apply-templates select="text()"/>
-		</fo:basic-link>
-	</xsl:template>
-	
-	<xsl:template match="gb:locality">
-		<xsl:variable name="title-clause">
-			<xsl:call-template name="getTitle">
-				<xsl:with-param name="name" select="'title-clause'"/>
-			</xsl:call-template>
-		</xsl:variable>
-		<xsl:variable name="title-annex">
-			<xsl:call-template name="getTitle">
-				<xsl:with-param name="name" select="'title-annex'"/>
-			</xsl:call-template>
-		</xsl:variable>
-		<xsl:variable name="title-table">
-			<xsl:call-template name="getTitle">
-				<xsl:with-param name="name" select="'title-table'"/>
-			</xsl:call-template>
-		</xsl:variable>
-		<xsl:choose>
-			<xsl:when test="@type ='section' and ancestor::gb:termsource">SOURCE Section </xsl:when>
-			<xsl:when test="ancestor::gb:termsource"></xsl:when>
-			<xsl:when test="@type ='clause' and ancestor::gb:eref"></xsl:when>
-			<xsl:when test="@type ='clause'"><xsl:value-of select="$title-clause"/></xsl:when>
-			<xsl:when test="@type ='annex'"><xsl:value-of select="$title-annex"/></xsl:when>
-			<xsl:when test="@type ='table'"><xsl:value-of select="$title-table"/></xsl:when>
-			<xsl:otherwise><xsl:value-of select="@type"/></xsl:otherwise>
-		</xsl:choose>
-		<xsl:text> </xsl:text><xsl:value-of select="gb:referenceFrom"/>
-	</xsl:template>
+
 	
 	<xsl:template match="gb:admonition">
 		<xsl:variable name="title-caution">
