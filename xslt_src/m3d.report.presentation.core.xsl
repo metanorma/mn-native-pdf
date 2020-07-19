@@ -885,18 +885,7 @@
 	</xsl:template>
 	
 	
-	<xsl:template match="m3d:term">
-		<xsl:param name="sectionNum"/>
-		<fo:block id="{@id}" keep-with-next="always" margin-top="10pt" margin-bottom="8pt" line-height="1.1">
-			<xsl:apply-templates select="m3d:name" mode="presentation"/>
-		</fo:block>
-		<fo:block>
-			<xsl:apply-templates>
-				<xsl:with-param name="sectionNum" select="$sectionNum"/>
-			</xsl:apply-templates>
-		</fo:block>
-	</xsl:template>
-	
+
 	<xsl:template match="m3d:preferred">
 		<xsl:param name="sectionNum"/>
 

@@ -1081,17 +1081,6 @@
 	</xsl:template>
 	
 	
-	<xsl:template match="gb:term">
-		<xsl:param name="sectionNum"/>
-		<fo:block id="{@id}" font-family="SimHei" font-size="11pt" keep-with-next="always" margin-top="10pt" margin-bottom="8pt" line-height="1.1">
-			<xsl:apply-templates select="gb:name" mode="presentation"/>
-		</fo:block>
-		<fo:block>
-			<xsl:apply-templates>
-				<xsl:with-param name="sectionNum" select="$sectionNum"/>
-			</xsl:apply-templates>
-		</fo:block>
-	</xsl:template>
 	
 	<xsl:template match="gb:preferred">
 		<xsl:param name="sectionNum"/>

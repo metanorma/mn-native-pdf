@@ -1816,14 +1816,7 @@
 		</fo:list-item>
 	</xsl:template>
 	
-	<xsl:template match="iso:term">
-		<xsl:param name="sectionNum"/>
-		<fo:block id="{@id}" margin-bottom="10pt">
-			<xsl:apply-templates>
-				<xsl:with-param name="sectionNum" select="$sectionNum"/>
-			</xsl:apply-templates>
-		</fo:block>
-	</xsl:template>
+	
 	
 	<xsl:template match="iso:preferred">		
 		<fo:block line-height="1.1">

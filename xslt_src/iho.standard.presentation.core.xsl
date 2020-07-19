@@ -1039,15 +1039,7 @@
 	<xsl:template match="iho:index"/>
 	
 	<xsl:template match="iho:review"/>
-		
-	<xsl:template match="iho:term">
-		<xsl:param name="sectionNum"/>
-		<fo:block  id="{@id}" margin-bottom="10pt">
-			<xsl:apply-templates>
-				<xsl:with-param name="sectionNum" select="$sectionNum"/>
-			</xsl:apply-templates>
-		</fo:block>
-	</xsl:template>
+	
 	
 	<xsl:template match="iho:preferred">
 		<xsl:param name="sectionNum"/>

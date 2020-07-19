@@ -665,6 +665,12 @@
 			<xsl:attribute name="text-decoration">underline</xsl:attribute>
 		</xsl:if>
 	</xsl:attribute-set>
+
+	<xsl:attribute-set name="term-style">
+		<xsl:if test="$namespace = 'iho' or $namespace = 'iso'">
+			<xsl:attribute name="margin-bottom">10pt</xsl:attribute>
+		</xsl:if>
+	</xsl:attribute-set>
 	
 	<xsl:template match="text()">
 		<xsl:value-of select="."/>
@@ -2704,6 +2710,24 @@
 	<!-- ====== -->
 	<!-- term      -->	
 	<!-- ====== -->
+	
+	<xsl:template match="*[local-name() = 'term']">
+		<fo:block id="{@id}" >		
+			<xsl:if test="$namespace = 'gb'">
+				<fo:block font-family="SimHei" font-size="11pt" keep-with-next="always" margin-top="10pt" margin-bottom="8pt" line-height="1.1">
+					<xsl:apply-templates select="gb:name" mode="presentation"/>
+				</fo:block>
+			</xsl:if>
+			<xsl:if test="$namespace = 'm3d'">
+				<fo:block keep-with-next="always" margin-top="10pt" margin-bottom="8pt" line-height="1.1">
+					<xsl:apply-templates select="m3d:name" mode="presentation"/>
+				</fo:block>
+			</xsl:if>
+			
+			<xsl:apply-templates />
+		</fo:block>
+	</xsl:template>
+	
 	<xsl:template match="*[local-name() = 'term']/*[local-name() = 'name']"/>	
 	
 	<xsl:template match="*[local-name() = 'term']/*[local-name() = 'name']" mode="presentation">

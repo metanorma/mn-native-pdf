@@ -1366,14 +1366,7 @@
 		</fo:list-item>
 	</xsl:template>
 	
-	<xsl:template match="ogc:term">
-		<xsl:param name="sectionNum"/>
-		<fo:block id="{@id}">
-			<xsl:apply-templates>
-				<xsl:with-param name="sectionNum" select="$sectionNum"/>
-			</xsl:apply-templates>
-		</fo:block>
-	</xsl:template>
+
 	
 	<xsl:template match="ogc:preferred">		
 		<xsl:variable name="level">

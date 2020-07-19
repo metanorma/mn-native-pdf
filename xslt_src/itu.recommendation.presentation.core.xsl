@@ -961,14 +961,6 @@
 		</fo:block>
 	</xsl:template>
 	
-	<xsl:template match="itu:term">
-		<xsl:param name="sectionNum"/>
-		<fo:block id="{@id}">
-			<xsl:apply-templates>
-				<xsl:with-param name="sectionNum" select="$sectionNum"/>
-			</xsl:apply-templates>
-		</fo:block>
-	</xsl:template>
 	
 	<xsl:template match="itu:preferred">		
 		<!-- DEBUG need -->
