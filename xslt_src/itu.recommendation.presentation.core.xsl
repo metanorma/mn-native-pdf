@@ -1354,29 +1354,7 @@
 		</fo:block>
 	</xsl:template>
 
-	<xsl:template match="itu:quote">
-		<fo:block margin-top="6pt" margin-left="12mm" margin-right="12mm">
-			<xsl:apply-templates select=".//itu:p"/>
-		</fo:block>
-		<xsl:if test="itu:author or itu:source">
-			<fo:block text-align="right">
-				<!-- — ISO, ISO 7301:2011, Clause 1 -->
-				<xsl:text>— </xsl:text>
-				<xsl:value-of select="itu:author"/>
-				<xsl:if test="itu:author and itu:source">
-					<xsl:text>, </xsl:text>
-				</xsl:if>
-				<xsl:apply-templates select="itu:source"/>
-			</fo:block>
-		</xsl:if>
-	</xsl:template>
 	
-	<xsl:template match="itu:source">
-		<fo:basic-link internal-destination="{@bibitemid}" fox:alt-text="{@citeas}">
-			<xsl:value-of select="@citeas"/> <!--  disable-output-escaping="yes" -->
-			<xsl:apply-templates select="itu:localityStack"/>
-		</fo:basic-link>
-	</xsl:template>
 		
 	<xsl:template name="insertHeaderFooter">
 		<fo:static-content flow-name="footer-even" font-family="Times New Roman" font-size="11pt">

@@ -1048,27 +1048,8 @@
 		</fo:inline>
 	</xsl:template>
 
-	<xsl:template match="m3d:quote">
-		<fo:block margin-top="12pt" margin-left="12mm" margin-right="12mm">
-			<xsl:apply-templates select=".//m3d:p"/>
-		</fo:block>
-		<fo:block text-align="right">
-			<!-- — ISO, ISO 7301:2011, Clause 1 -->
-			<xsl:text>— </xsl:text><xsl:value-of select="m3d:author"/>
-			<xsl:if test="m3d:source">
-				<xsl:text>, </xsl:text>
-				<xsl:apply-templates select="m3d:source"/>
-			</xsl:if>
-		</fo:block>
-	</xsl:template>
-	
-	<xsl:template match="m3d:source">
-		<fo:basic-link internal-destination="{@bibitemid}" fox:alt-text="{@citeas}">
-			<xsl:value-of select="@citeas"/> <!--  disable-output-escaping="yes" -->
-			<xsl:apply-templates select="m3d:localityStack"/>
-		</fo:basic-link>
-	</xsl:template>
-	
+
+
 	
 	<xsl:template match="mathml:math" priority="2">
 		<fo:inline font-family="Cambria Math">

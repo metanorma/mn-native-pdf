@@ -2155,26 +2155,6 @@
 		</fo:inline>
 	</xsl:template>
 
-	<xsl:template match="iec:quote">
-		<fo:block margin-top="5pt" margin-bottom="10pt" margin-left="12mm" margin-right="12mm">
-			<xsl:apply-templates select=".//iec:p"/>
-			<fo:block text-align="right" margin-top="15pt">
-				<!-- — ISO, ISO 7301:2011, Clause 1 -->
-				<xsl:text>— </xsl:text><xsl:value-of select="iec:author"/>
-				<xsl:if test="iec:source">
-					<xsl:text>, </xsl:text>
-					<xsl:apply-templates select="iec:source"/>
-				</xsl:if>
-			</fo:block>
-		</fo:block>
-	</xsl:template>
-	
-	<xsl:template match="iec:source">
-		<fo:basic-link internal-destination="{@bibitemid}" fox:alt-text="{@citeas}">
-			<xsl:value-of select="@citeas"/> <!--  disable-output-escaping="yes" -->
-			<xsl:apply-templates select="iec:localityStack"/>
-		</fo:basic-link>
-	</xsl:template>
 	
 	<xsl:template match="iec:note/iec:p" name="note">
 		<fo:block margin-top="5pt" margin-bottom="5pt" font-size="8pt">

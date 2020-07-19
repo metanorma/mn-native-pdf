@@ -888,30 +888,6 @@
 		</fo:block>
 	</xsl:template>
 	
-	<xsl:template match="iho:quote">
-		<fo:block margin-left="12.5mm" margin-right="14mm">
-			<xsl:apply-templates select=".//iho:p"/>
-		</fo:block>
-		<xsl:if test="iho:author or iho:source">
-			<fo:block text-align="right">
-				<xsl:if test="iho:author">
-					<!-- — ISO, ISO 7301:2011, Clause 1 -->
-					<xsl:text>— </xsl:text><xsl:value-of select="iho:author"/>
-				</xsl:if>
-				<xsl:if test="iho:source">
-					<xsl:text>, </xsl:text>
-					<xsl:apply-templates select="iho:source"/>
-				</xsl:if>
-			</fo:block>
-		</xsl:if>
-	</xsl:template>
-	
-	<xsl:template match="iho:source">
-		<fo:basic-link internal-destination="{@bibitemid}" fox:alt-text="{@citeas}">
-			<xsl:value-of select="@citeas"/> <!--  disable-output-escaping="yes" -->
-			<xsl:apply-templates select="iho:localityStack"/>
-		</fo:basic-link>
-	</xsl:template>
 	
 	<xsl:template match="iho:annex">
 		<fo:block break-after="page"/>		

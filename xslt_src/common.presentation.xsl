@@ -589,6 +589,52 @@
 		
 	</xsl:attribute-set>
 
+	<xsl:attribute-set name="quote-style">		
+		<xsl:if test="$namespace = 'csa' or $namespace = 'ogc' or $namespace = 'rsd'">
+			<xsl:attribute name="margin-top">12pt</xsl:attribute>
+			<xsl:attribute name="margin-left">13mm</xsl:attribute>
+			<xsl:attribute name="margin-right">12mm</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'csd' or $namespace = 'gb' or $namespace = 'iso' or $namespace = 'm3d'">
+			<xsl:attribute name="margin-top">12pt</xsl:attribute>
+			<xsl:attribute name="margin-left">12mm</xsl:attribute>
+			<xsl:attribute name="margin-right">12mm</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'iec'">
+			<xsl:attribute name="margin-top">5pt</xsl:attribute>
+			<xsl:attribute name="margin-bottom">10pt</xsl:attribute>
+			<xsl:attribute name="margin-left">12mm</xsl:attribute>
+			<xsl:attribute name="margin-right">12mm</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'iho'">			
+			<xsl:attribute name="margin-left">12.5mm</xsl:attribute>
+			<xsl:attribute name="margin-right">14mm</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'itu'">
+			<xsl:attribute name="margin-top">6pt</xsl:attribute>
+			<xsl:attribute name="margin-left">12mm</xsl:attribute>
+			<xsl:attribute name="margin-right">12mm</xsl:attribute>
+		</xsl:if>
+		
+	</xsl:attribute-set>
+	
+	
+	<xsl:attribute-set name="quote-source-style">		
+		<xsl:if test="$namespace = 'csa' or $namespace = 'ogc' or $namespace = 'rsd'">
+			<xsl:attribute name="text-align">right</xsl:attribute>
+			<xsl:attribute name="margin-right">25mm</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'csd' or $namespace = 'gb' or $namespace = 'iho' or $namespace = 'iso' or $namespace = 'itu' or $namespace = 'm3d'">
+			<xsl:attribute name="text-align">right</xsl:attribute>			
+		</xsl:if>		
+		<xsl:if test="$namespace = 'iec'">
+			<xsl:attribute name="text-align">right</xsl:attribute>
+			<xsl:attribute name="margin-top">15pt</xsl:attribute>
+			<xsl:attribute name="margin-left">12mm</xsl:attribute>
+			<xsl:attribute name="margin-right">12mm</xsl:attribute>			 
+		</xsl:if>		
+	</xsl:attribute-set>
+
 	<xsl:attribute-set name="termsource-style">
 		<xsl:if test="$namespace = 'csa' or $namespace = 'ogc' or $namespace = 'rsd'">
 			<xsl:attribute name="margin-bottom">12pt</xsl:attribute>
@@ -2933,7 +2979,7 @@
 	<!-- ====== -->
 	<!-- termsource -->	
 	<!-- origin -->	
-	<!-- modification -->	
+	<!-- modification -->		
 	<!-- ====== -->
 	<xsl:template match="*[local-name() = 'termsource']">
 		<fo:block xsl:use-attribute-sets="termsource-style">
@@ -2951,7 +2997,7 @@
 	</xsl:template>
 	
 	<xsl:template match="*[local-name() = 'origin']">
-		<fo:basic-link internal-destination="{@bibitemid}" fox:alt-text="{text()}">
+		<fo:basic-link internal-destination="{@bibitemid}" fox:alt-text="{@citeas}">
 			<xsl:if test="$namespace = 'csa' or 
 											$namespace = 'csd' or 
 											$namespace = 'iho' or 
@@ -2972,11 +3018,48 @@
 	
 	<xsl:template match="*[local-name() = 'modification']/*[local-name() = 'p']">
 		<fo:inline><xsl:apply-templates /></fo:inline>
-	</xsl:template>
-	
+	</xsl:template>	
 	<!-- ====== -->
 	<!-- ====== -->
 
+
+	<!-- ====== -->
+	<!-- qoute -->	
+	<!-- source -->	
+	<!-- author  -->	
+	<!-- ====== -->
+	<xsl:template match="*[local-name() = 'quote']">
+		
+		<fo:block xsl:use-attribute-sets="quote-style">
+			<xsl:apply-templates select=".//*[local-name() = 'p']"/>
+		</fo:block>
+		<xsl:if test="*[local-name() = 'author'] or *[local-name() = 'source']">
+			<fo:block xsl:use-attribute-sets="quote-source-style">
+				<!-- — ISO, ISO 7301:2011, Clause 1 -->
+				<xsl:apply-templates select="*[local-name() = 'author']"/>
+				<xsl:apply-templates select="*[local-name() = 'source']"/>				
+			</fo:block>
+		</xsl:if>
+	</xsl:template>
+	
+	<xsl:template match="*[local-name() = 'source']">
+		<xsl:if test="../*[local-name() = 'author']">
+			<xsl:text>, </xsl:text>
+		</xsl:if>
+		<fo:basic-link internal-destination="{@bibitemid}" fox:alt-text="{@citeas}">
+			<xsl:apply-templates />
+		</fo:basic-link>
+	</xsl:template>
+	
+	<xsl:template match="*[local-name() = 'author']">
+		<xsl:text>— </xsl:text>
+		<xsl:apply-templates />
+	</xsl:template>
+	
+	
+	
+	<!-- ====== -->
+	<!-- ====== -->
 
 	
 	<xsl:template match="*[local-name() = 'tab']">

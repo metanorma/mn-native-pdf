@@ -1260,20 +1260,20 @@
 		</fo:table-cell>
 	</xsl:template>
 	
-	<xsl:template match="un:quote">
+	<xsl:template match="un:quote" priority="2">
 		<fo:block-container margin-left="7mm" margin-right="7mm">
 			<xsl:apply-templates />
 			<xsl:apply-templates select="un:author" mode="process"/>
 		</fo:block-container>
 	</xsl:template>
 	
-	<xsl:template match="un:quote/un:author"/>
-	<xsl:template match="un:quote/un:p">
+	<xsl:template match="un:quote/un:author" priority="2"/>
+	<xsl:template match="un:quote/un:p" priority="2">
 		<fo:block text-align="justify" margin-bottom="12pt">
 			<xsl:apply-templates/>
 		</fo:block>
 	</xsl:template>
-	<xsl:template match="un:quote/un:author" mode="process">
+	<xsl:template match="un:quote/un:author" mode="process" priority="2">
 		<fo:block text-align="right" margin-left="0.5in" margin-right="0.5in">
 			<fo:inline>— </fo:inline>
 			<xsl:apply-templates />

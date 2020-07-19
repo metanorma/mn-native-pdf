@@ -1266,27 +1266,6 @@
 		</fo:inline>
 	</xsl:template>
 
-	<xsl:template match="gb:quote">
-		<fo:block margin-top="12pt" margin-left="12mm" margin-right="12mm">
-			<xsl:apply-templates select=".//gb:p"/>
-		</fo:block>
-		<fo:block text-align="right">
-			<!-- — ISO, ISO 7301:2011, Clause 1 -->
-			<xsl:text>— </xsl:text><xsl:value-of select="gb:author"/>
-			<xsl:if test="gb:source">
-				<xsl:text>, </xsl:text>
-				<xsl:apply-templates select="gb:source"/>
-			</xsl:if>
-		</fo:block>
-	</xsl:template>
-	
-	<xsl:template match="gb:source">
-		<fo:basic-link internal-destination="{@bibitemid}" fox:alt-text="{@citeas}">
-			<xsl:value-of select="@citeas"/> <!--  disable-output-escaping="yes" -->
-			<xsl:apply-templates select="gb:localityStack"/>
-		</fo:basic-link>
-	</xsl:template>
-	
 
 	<xsl:template match="mathml:math" priority="2">
 		<fo:inline font-family="Cambria Math">

@@ -1147,31 +1147,6 @@
 		</fo:inline>
 	</xsl:template>
 
-	<xsl:template match="rsd:quote">
-		<fo:block margin-top="12pt" margin-left="13mm" margin-right="12mm">
-			<xsl:apply-templates select=".//rsd:p"/>
-		</fo:block>
-		<xsl:if test="rsd:author or rsd:source">
-			<fo:block text-align="right" margin-right="25mm">
-				<!-- — ISO, ISO 7301:2011, Clause 1 -->
-				<xsl:if test="rsd:author">
-					<xsl:text>— </xsl:text><xsl:value-of select="rsd:author"/>
-				</xsl:if>
-				<xsl:if test="rsd:source">
-					<xsl:text>, </xsl:text>
-					<xsl:apply-templates select="rsd:source"/>
-				</xsl:if>
-			</fo:block>
-		</xsl:if>
-	</xsl:template>
-	
-	<xsl:template match="rsd:source">
-		<fo:basic-link internal-destination="{@bibitemid}" fox:alt-text="{@citeas}">
-			<xsl:value-of select="@citeas"/> <!--  disable-output-escaping="yes" -->
-			<xsl:apply-templates select="rsd:localityStack"/>
-		</fo:basic-link>
-	</xsl:template>
-	
 	
 	<xsl:template match="rsd:tt" priority="2">
 		<fo:inline font-family="SourceCodePro" font-size="10pt">

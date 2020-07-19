@@ -924,27 +924,6 @@
 			<xsl:apply-templates />
 		</fo:inline>
 	</xsl:template>
-
-	<xsl:template match="csd:quote">
-		<fo:block margin-top="12pt" margin-left="12mm" margin-right="12mm">
-			<xsl:apply-templates select=".//csd:p"/>
-		</fo:block>
-		<fo:block text-align="right">
-			<!-- — ISO, ISO 7301:2011, Clause 1 -->
-			<xsl:text>— </xsl:text><xsl:value-of select="csd:author"/>
-			<xsl:if test="csd:source">
-				<xsl:text>, </xsl:text>
-				<xsl:apply-templates select="csd:source"/>
-			</xsl:if>
-		</fo:block>
-	</xsl:template>
-	
-	<xsl:template match="csd:source">
-		<fo:basic-link internal-destination="{@bibitemid}" fox:alt-text="{@citeas}">
-			<xsl:value-of select="@citeas"/> <!--  disable-output-escaping="yes" -->
-			<xsl:apply-templates select="csd:localityStack"/>
-		</fo:basic-link>
-	</xsl:template>
 	
 	
 	<xsl:template match="csd:xref" priority="2">

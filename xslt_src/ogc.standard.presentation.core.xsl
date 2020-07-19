@@ -1532,30 +1532,7 @@
 		</fo:inline>
 	</xsl:template>
 
-	<xsl:template match="ogc:quote">
-		<fo:block margin-top="12pt" margin-left="13mm" margin-right="12mm">
-			<xsl:apply-templates select=".//ogc:p"/>
-		</fo:block>
-		<xsl:if test="ogc:author or ogc:source">
-			<fo:block text-align="right" margin-right="25mm">
-				<!-- — ISO, ISO 7301:2011, Clause 1 -->
-				<xsl:if test="ogc:author">
-					<xsl:text>— </xsl:text><xsl:value-of select="ogc:author"/>
-				</xsl:if>
-				<xsl:if test="ogc:source">
-					<xsl:text>, </xsl:text>
-					<xsl:apply-templates select="ogc:source"/>
-				</xsl:if>
-			</fo:block>
-		</xsl:if>
-	</xsl:template>
-	
-	<xsl:template match="ogc:source">
-		<fo:basic-link internal-destination="{@bibitemid}" fox:alt-text="{@citeas}">
-			<xsl:value-of select="@citeas"/> <!--  disable-output-escaping="yes" -->
-			<xsl:apply-templates select="ogc:localityStack"/>
-		</fo:basic-link>
-	</xsl:template>
+
 		
 	
 	

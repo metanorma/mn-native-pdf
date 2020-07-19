@@ -1195,31 +1195,6 @@
 		</fo:inline>
 	</xsl:template>
 
-	<xsl:template match="csa:quote">
-		<fo:block margin-top="12pt" margin-left="13mm" margin-right="12mm">
-			<xsl:apply-templates select=".//csa:p"/>
-		</fo:block>
-		<xsl:if test="csa:author or csa:source">
-			<fo:block text-align="right" margin-right="25mm">
-				<!-- — ISO, ISO 7301:2011, Clause 1 -->
-				<xsl:if test="csa:author">
-					<xsl:text>— </xsl:text><xsl:value-of select="csa:author"/>
-				</xsl:if>
-				<xsl:if test="csa:source">
-					<xsl:text>, </xsl:text>
-					<xsl:apply-templates select="csa:source"/>
-				</xsl:if>
-			</fo:block>
-		</xsl:if>
-	</xsl:template>
-	
-	<xsl:template match="csa:source">
-		<fo:basic-link internal-destination="{@bibitemid}" fox:alt-text="{@citeas}">
-			<xsl:value-of select="@citeas"/> <!--  disable-output-escaping="yes" -->
-			<xsl:apply-templates select="csa:localityStack"/>
-		</fo:basic-link>
-	</xsl:template>
-
 	
 	<xsl:template match="csa:tt" priority="2">
 		<fo:inline font-family="SourceCodePro" font-size="10pt">
