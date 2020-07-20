@@ -2958,6 +2958,10 @@
 	
 	<!-- ====== -->
 	<!-- ====== -->
+	<xsl:template match="*[local-name() = 'title']" mode="contents_item">
+		<xsl:apply-templates/>
+		<xsl:text> </xsl:text>
+	</xsl:template>
 
 
 	<!-- ====== -->
