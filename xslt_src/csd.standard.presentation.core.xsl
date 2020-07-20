@@ -11,6 +11,9 @@
 
 	<xsl:output version="1.0" method="xml" encoding="UTF-8" indent="no"/>
 
+	<xsl:param name="svg_images"/>
+	<xsl:variable name="images" select="document($svg_images)"/>
+	
 	<xsl:variable name="pageWidth" select="'210mm'"/>
 	<xsl:variable name="pageHeight" select="'297mm'"/>
 
@@ -668,38 +671,6 @@
 	</xsl:template>
 	
 
-
-	<xsl:template match="csd:image">
-		<fo:block-container text-align="center">
-			<fo:block>
-				<fo:external-graphic src="{@src}" fox:alt-text="Image {@alt}"/>
-			</fo:block>			
-			<xsl:apply-templates select="csd:name" mode="presentation"/>
-		</fo:block-container>		
-	</xsl:template>
-
-	<xsl:template match="csd:figure">		
-		<fo:block-container id="{@id}">
-			<fo:block>
-				<xsl:apply-templates />
-			</fo:block>
-			<xsl:call-template name="fn_display_figure"/>
-			<xsl:for-each select="csd:note//csd:p">
-				<xsl:call-template name="note"/>
-			</xsl:for-each>
-			<xsl:apply-templates select="csd:name" mode="presentation"/>
-		</fo:block-container>
-	</xsl:template>
-	
-	<xsl:template match="csd:figure/csd:fn"/>
-	<xsl:template match="csd:figure/csd:note"/>
-	
-	
-	<xsl:template match="csd:figure/csd:image">
-		<fo:block text-align="center">
-			<fo:external-graphic src="{@src}" content-width="100%" content-height="scale-to-fit" scaling="uniform" fox:alt-text="Image {@alt}"/> <!-- content-width="75%"  -->
-		</fo:block>
-	</xsl:template>
 	
 	
 	<xsl:template match="csd:bibitem">

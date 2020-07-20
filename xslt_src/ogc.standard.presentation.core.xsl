@@ -10,7 +10,10 @@
 											version="1.0">
 
 	<xsl:output version="1.0" method="xml" encoding="UTF-8" indent="no"/>
-
+	
+	<xsl:param name="svg_images"/>
+	<xsl:variable name="images" select="document($svg_images)"/>
+	
 	<xsl:variable name="pageWidth" select="'210mm'"/>
 	<xsl:variable name="pageHeight" select="'297mm'"/>
 
@@ -1203,35 +1206,6 @@
 	</xsl:template>
 	
 
-	<xsl:template match="ogc:image"> <!-- only for without outer figure -->
-		<fo:block margin-top="12pt" margin-bottom="6pt">
-			<fo:external-graphic src="{@src}" width="100%" content-height="scale-to-fit" scaling="uniform" fox:alt-text="Image {@alt}"/> <!-- content-width="75%"  -->
-		</fo:block>
-	</xsl:template>
-
-	<xsl:template match="ogc:figure">
-		<fo:block-container id="{@id}">
-			<fo:block>
-				<xsl:apply-templates />
-			</fo:block>
-			<xsl:call-template name="fn_display_figure"/>
-			<xsl:for-each select="ogc:note//ogc:p">
-				<xsl:call-template name="note"/>
-			</xsl:for-each>
-			<xsl:apply-templates select="ogc:name" mode="presentation"/>
-		</fo:block-container>
-	</xsl:template>
-	
-	<xsl:template match="ogc:figure/ogc:fn"/>
-	<xsl:template match="ogc:figure/ogc:note"/>
-	
-	
-	<xsl:template match="ogc:figure/ogc:image">
-		<fo:block text-align="center">
-			<fo:external-graphic src="{@src}" width="100%" content-height="scale-to-fit" scaling="uniform" fox:alt-text="Image {@alt}"/> <!-- content-width="75%"  -->
-		</fo:block>
-	</xsl:template>
-	
 	
 	<xsl:template match="ogc:bibitem">
 		<fo:block id="{@id}" margin-bottom="12pt" start-indent="12mm" text-indent="-12mm" line-height="115%">

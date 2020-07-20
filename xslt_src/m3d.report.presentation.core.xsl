@@ -756,48 +756,7 @@
 		<xsl:value-of select="."/>
 	</xsl:template>
 
-	<xsl:template match="m3d:image">
-		<fo:block-container text-align="center">
-			<fo:block>
-				<fo:external-graphic src="{@src}" fox:alt-text="Image {@alt}"/>
-			</fo:block>
-			<xsl:apply-templates select="m3d:name" mode="presentation"/>
-		</fo:block-container>
-	</xsl:template>
 
-	<xsl:template match="m3d:figure">
-		<fo:block-container id="{@id}">
-			<fo:block>
-				<xsl:apply-templates />
-			</fo:block>
-			<xsl:call-template name="fn_display_figure"/>
-			<xsl:for-each select="m3d:note//m3d:p">
-				<xsl:call-template name="note"/>
-			</xsl:for-each>
-			<xsl:apply-templates select="m3d:name" mode="presentation"/>
-		</fo:block-container>
-	</xsl:template>
-	
-
-	<xsl:template match="m3d:figure/m3d:fn" priority="2"/>
-	<xsl:template match="m3d:figure/m3d:note"/>
-	
-	
-	<xsl:template match="m3d:figure/m3d:image">
-		<fo:block text-align="center">
-			<xsl:variable name="src">
-				<xsl:choose>
-					<xsl:when test="@mimetype = 'image/svg+xml' and $images/images/image[@id = current()/@id]">
-						<xsl:value-of select="$images/images/image[@id = current()/@id]/@src"/>
-					</xsl:when>
-					<xsl:otherwise>
-						<xsl:value-of select="@src"/>
-					</xsl:otherwise>
-				</xsl:choose>
-			</xsl:variable>		
-			<fo:external-graphic  src="{$src}" width="100%" content-height="100%" content-width="scale-to-fit" scaling="uniform" fox:alt-text="Image {@alt}"/>  <!-- src="{@src}" -->
-		</fo:block>
-	</xsl:template>
 	
 	
 	<xsl:template match="m3d:bibitem">

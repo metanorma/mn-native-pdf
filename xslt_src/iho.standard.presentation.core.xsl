@@ -777,38 +777,6 @@
 	</xsl:template>
 
 
-	<xsl:template match="iho:figure">
-		<fo:block-container id="{@id}">
-			<fo:block>
-				<xsl:apply-templates />
-			</fo:block>
-			<xsl:call-template name="fn_display_figure"/>
-			<xsl:for-each select="iho:note//iho:p">
-				<xsl:call-template name="note"/>
-			</xsl:for-each>
-			<xsl:apply-templates select="iho:name" mode="presentation"/>
-		</fo:block-container>
-	</xsl:template>
-	
-	<xsl:template match="iho:figure/iho:fn" priority="2"/>
-	<xsl:template match="iho:figure/iho:note"/>
-	
-	<xsl:template match="iho:image">
-		<fo:block text-align="center">
-			<xsl:variable name="src">
-				<xsl:choose>
-					<xsl:when test="@mimetype = 'image/svg+xml' and $images/images/image[@id = current()/@id]">
-						<xsl:value-of select="$images/images/image[@id = current()/@id]/@src"/>
-					</xsl:when>
-					<xsl:otherwise>
-						<xsl:value-of select="@src"/>
-					</xsl:otherwise>
-				</xsl:choose>
-			</xsl:variable>		
-			<fo:external-graphic  src="{$src}" width="100%" content-height="scale-to-fit" scaling="uniform" fox:alt-text="Image {@alt}"/>  <!-- src="{@src}" -->
-		</fo:block>
-	</xsl:template>
-	
 
 	
 	<xsl:template match="iho:note/iho:p" name="note">

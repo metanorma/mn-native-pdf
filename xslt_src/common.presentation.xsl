@@ -686,6 +686,64 @@
 		</xsl:if>
 	</xsl:attribute-set>
 	
+	<xsl:attribute-set name="image-style">
+		<xsl:attribute name="text-align">center</xsl:attribute>
+		<xsl:if test="$namespace = 'ogc'">
+			<xsl:attribute name="space-before">12pt</xsl:attribute>
+			<xsl:attribute name="space-after">6pt"</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'unece'">
+			<xsl:attribute name="margin-bottom">12pt</xsl:attribute>
+			<xsl:attribute name="keep-with-next">always</xsl:attribute>
+			<xsl:attribute name="border">2pt solid black</xsl:attribute>			
+		</xsl:if>
+		<xsl:if test="$namespace = 'unece-rec'">
+			<xsl:attribute name="margin-bottom">12pt</xsl:attribute>
+			<xsl:attribute name="keep-with-next">always</xsl:attribute>			
+		</xsl:if>
+		
+	</xsl:attribute-set>
+
+	<xsl:attribute-set name="figure-pseudocode-p-style">
+		<xsl:if test="$namespace = 'itu'">
+			<xsl:attribute name="font-size">10pt"</xsl:attribute>
+			<xsl:attribute name="margin-top">6pt"</xsl:attribute>
+			<xsl:attribute name="margin-bottom">6pt"</xsl:attribute>
+		</xsl:if>
+	</xsl:attribute-set>
+
+ 
+	
+	<xsl:attribute-set name="image-graphic-style">
+		<xsl:if test="$namespace = 'csa' or $namespace = 'csd' or $namespace = 'iho' or $namespace = 'iso' or 
+											$namespace = 'ogc' or
+											$namespace = 'rsd' or 
+											$namespace = 'unece-rec'">
+			<xsl:attribute name="width">100%</xsl:attribute>
+			<xsl:attribute name="content-height">scale-to-fit</xsl:attribute>
+			<xsl:attribute name="scaling">uniform</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'gb' or $namespace = 'm3d' or $namespace = 'unece'">
+			<xsl:attribute name="width">100%</xsl:attribute>
+			<xsl:attribute name="content-height">100%</xsl:attribute>
+			<xsl:attribute name="content-width">scale-to-fit</xsl:attribute>
+			<xsl:attribute name="scaling">uniform</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'iec'">
+			<xsl:attribute name="width">75%</xsl:attribute>
+			<xsl:attribute name="content-height">scale-to-fit</xsl:attribute>
+			<xsl:attribute name="scaling">uniform</xsl:attribute>			
+		</xsl:if>
+		<xsl:if test="$namespace = 'itu' or $namespace = 'nist-cswp' or $namespace = 'nist-sp'">
+			<xsl:attribute name="width">75%</xsl:attribute>
+			<xsl:attribute name="content-height">100%</xsl:attribute>
+			<xsl:attribute name="content-width">scale-to-fit</xsl:attribute>
+			<xsl:attribute name="scaling">uniform</xsl:attribute>			
+		</xsl:if>		
+
+	</xsl:attribute-set>
+	
+	
 	<xsl:template match="text()">
 		<xsl:value-of select="."/>
 	</xsl:template>
@@ -2758,8 +2816,60 @@
 	<!-- ====== -->
 	
 	<!-- ====== -->
-	<!-- figure     -->	
+	<!-- figure    -->
+	<!-- image    -->
 	<!-- ====== -->
+	
+	<xsl:template match="*[local-name() = 'figure']">
+		<fo:block-container id="{@id}">
+			<fo:block>
+				<xsl:apply-templates />
+			</fo:block>
+			<xsl:call-template name="fn_display_figure"/>
+			<xsl:for-each select="*[local-name() = 'note']//*[local-name() = 'p']">
+				<xsl:call-template name="note"/>
+			</xsl:for-each>
+			<xsl:apply-templates select="*[local-name() = 'name']" mode="presentation"/>
+		</fo:block-container>
+	</xsl:template>
+	
+	<xsl:template match="*[local-name() = 'figure'][@class = 'pseudocode']">
+		<fo:block id="{@id}">
+			<xsl:apply-templates />
+		</fo:block>
+	</xsl:template>
+	
+		<xsl:template match="*[local-name() = 'figure'][@class = 'pseudocode']//*[local-name() = 'p']">
+		<fo:block xsl:use-attribute-sets="figure-pseudocode-p-style">
+			<xsl:apply-templates />
+		</fo:block>
+	</xsl:template>
+
+	
+	<xsl:template match="*[local-name() = 'image']">
+		<fo:block xsl:use-attribute-sets="image-style">
+			<xsl:if test="$namespace = 'unece-rec'">
+				<xsl:if test="ancestor::un:admonition">
+					<xsl:attribute name="margin-top">-12mm</xsl:attribute>
+					<xsl:attribute name="margin-bottom">6pt</xsl:attribute>
+				</xsl:if>
+			</xsl:if>
+			
+			<xsl:variable name="src">
+				<xsl:choose>
+					<xsl:when test="@mimetype = 'image/svg+xml' and $images/images/image[@id = current()/@id]">
+						<xsl:value-of select="$images/images/image[@id = current()/@id]/@src"/>
+					</xsl:when>
+					<xsl:otherwise>
+						<xsl:value-of select="@src"/>
+					</xsl:otherwise>
+				</xsl:choose>
+			</xsl:variable>
+			
+			<fo:external-graphic src="{$src}" fox:alt-text="Image {@alt}" xsl:use-attribute-sets="image-graphic-style"/>
+		</fo:block>
+	</xsl:template>
+	
 	<xsl:template match="*[local-name() = 'figure']/*[local-name() = 'name']"/>	
 	
 	<xsl:template match="*[local-name() = 'figure']/*[local-name() = 'name'] | 
@@ -2842,6 +2952,10 @@
 			
 		</xsl:if>
 	</xsl:template>
+	
+	<xsl:template match="*[local-name() = 'figure']/*[local-name() = 'fn']" priority="2"/>
+	<xsl:template match="*[local-name() = 'figure']/*[local-name() = 'note']"/>
+	
 	<!-- ====== -->
 	<!-- ====== -->
 

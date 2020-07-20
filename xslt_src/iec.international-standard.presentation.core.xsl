@@ -11,6 +11,9 @@
 
 	<xsl:output method="xml" encoding="UTF-8" indent="no"/>
 	
+	<xsl:param name="svg_images"/>
+	<xsl:variable name="images" select="document($svg_images)"/>
+	
 	<xsl:include href="./common.xsl"/>
 	
 	<xsl:param name="additionalXMLs" select="''"/> <!-- iec-rice.fr.xml  -->
@@ -1892,42 +1895,6 @@
 	</xsl:template>
 	
 
-
-	<xsl:template match="iec:image">
-		<fo:block-container text-align="center">
-			<fo:block>
-				<fo:external-graphic src="{@src}" fox:alt-text="Image"/>
-			</fo:block>			
-			<xsl:apply-templates select="iec:name" mode="presentation"/>			
-		</fo:block-container>
-		
-	</xsl:template>
-
-	<xsl:template match="iec:figure">		
-		<fo:block-container id="{@id}">
-			<fo:block>
-				<xsl:apply-templates />
-			</fo:block>
-			<xsl:call-template name="fn_display_figure"/>
-			<xsl:for-each select="iec:note//iec:p">
-				<xsl:call-template name="note"/>
-			</xsl:for-each>
-			<xsl:apply-templates select="iec:name" mode="presentation"/>
-		</fo:block-container>
-	</xsl:template>
-	
-	<xsl:template match="iec:figure/iec:fn" priority="2"/>
-	<xsl:template match="iec:figure/iec:note"/>
-	
-	
-	<xsl:template match="iec:figure/iec:image">
-		<fo:block text-align="center">
-			<fo:external-graphic src="{@src}" width="75%" content-height="scale-to-fit" scaling="uniform" fox:alt-text="Image"/> <!-- content-width="100%"  -->
-		</fo:block>
-	</xsl:template>
-	
-	
-	
 	
 	<xsl:template match="iec:bibitem">
 		<fo:block id="{@id}" margin-top="5pt" margin-bottom="10pt"> <!-- letter-spacing="0.4pt" -->
