@@ -2806,7 +2806,7 @@
 		<xsl:if test="normalize-space() != ''">
 			<fo:inline>
 				<xsl:apply-templates />
-				<xsl:if test="$namespace = 'csa' or $namespace = 'csd' or $namespace = 'gb' or $namespace = 'ogc'">
+				<xsl:if test="$namespace = 'gb' or $namespace = 'ogc'">
 					<xsl:text>.</xsl:text>
 				</xsl:if>
 			</fo:inline>
@@ -2959,10 +2959,24 @@
 	<!-- ====== -->
 	<!-- ====== -->
 	<xsl:template match="*[local-name() = 'title']" mode="contents_item">
-		<xsl:apply-templates/>
+		<xsl:apply-templates mode="contents_item"/>
 		<xsl:text> </xsl:text>
 	</xsl:template>
 
+	<xsl:template name="getSection">
+		<xsl:value-of select="*[local-name() = 'title']/*[local-name() = 'tab'][1]/preceding-sibling::node()"/>
+	</xsl:template>
+
+	<xsl:template name="getName">
+		<xsl:choose>
+			<xsl:when test="*[local-name() = 'title']/*[local-name() = 'tab']">
+				<xsl:copy-of select="*[local-name() = 'title']/*[local-name() = 'tab'][1]/following-sibling::node()"/>
+			</xsl:when>
+			<xsl:otherwise>
+				<xsl:copy-of select="*[local-name() = 'title']"/>
+			</xsl:otherwise>
+		</xsl:choose>
+	</xsl:template>
 
 	<!-- ====== -->
 	<!-- sourcecode   -->	
@@ -3542,6 +3556,9 @@
 				<xsl:variable name="level_total" select="count(ancestor::*)"/>
 				<xsl:variable name="level">
 					<xsl:choose>
+						<xsl:when test="parent::*[local-name() = 'preface']">
+							<xsl:value-of select="$level_total - 1"/>
+						</xsl:when>
 						<xsl:when test="ancestor::*[local-name() = 'preface']">
 							<xsl:value-of select="$level_total - 2"/>
 						</xsl:when>

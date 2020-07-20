@@ -19,7 +19,7 @@
 
 	<xsl:variable name="namespace">csa</xsl:variable>
 
-	<xsl:variable name="debug">true</xsl:variable>
+	<xsl:variable name="debug">false</xsl:variable>
 	
 	<xsl:variable name="copyright">
 		<xsl:text>© Copyright </xsl:text>
@@ -218,7 +218,8 @@
 											</fo:list-item-label>
 											<fo:list-item-body start-indent="body-start()">
 												<fo:block text-align-last="justify" margin-left="12mm" text-indent="-12mm">
-													<fo:basic-link internal-destination="{@id}" fox:alt-text="{text()}">														
+													<fo:basic-link internal-destination="{@id}" fox:alt-text="{text()}">
+														<xsl:value-of select="@section"/>
 														<xsl:apply-templates />
 														<fo:inline keep-together.within-line="always">
 															<fo:leader leader-pattern="dots"/>
@@ -281,19 +282,28 @@
 		</xsl:variable>
 		<xsl:variable name="display">
 			<xsl:choose>
-				<xsl:when test="local-name() = 'bibitem'">false</xsl:when>
-				<xsl:when test="local-name() = 'term'">false</xsl:when>				
+				<xsl:when test="ancestor-or-self::csa:bibitem">false</xsl:when>
+				<xsl:when test="ancestor-or-self::csa:term">false</xsl:when>
 				<xsl:when test="$level &gt;= 3">false</xsl:when>				
 				<xsl:otherwise>true</xsl:otherwise>
 			</xsl:choose>
 		</xsl:variable>
 		
 		<xsl:if test="$display = 'true'">		
-			<item id="{@id}" level="{$level}">
-				<xsl:apply-templates select="csa:title" mode="contents_item"/>
+		
+			<xsl:variable name="section">
+				<xsl:call-template name="getSection"/>
+			</xsl:variable>
+			
+			<xsl:variable name="title">
+				<xsl:call-template name="getName"/>
+			</xsl:variable>
+			
+			<item id="{@id}" level="{$level}" section="{$section}">
+				<xsl:apply-templates select="xalan:nodeset($title)" mode="contents_item"/>
 			</item>
-			<xsl:apply-templates mode="contents" />
-		</xsl:if>		
+			<xsl:apply-templates  mode="contents" />
+		</xsl:if>
 	</xsl:template>
 
 	<xsl:template match="csa:fn" mode="contents"/>

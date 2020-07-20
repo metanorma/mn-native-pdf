@@ -36,18 +36,17 @@
 	<xsl:variable name="contents">
 		<contents>
 			<xsl:apply-templates select="/csd:csd-standard/csd:preface/node()" mode="contents"/>
-				<!-- <xsl:with-param name="sectionNum" select="'0'"/>
-			</xsl:apply-templates> -->
-			<xsl:apply-templates select="/csd:csd-standard/csd:sections/csd:clause[1]" mode="contents"> <!-- [@id = '_scope'] -->
-				<xsl:with-param name="sectionNum" select="'1'"/>
-			</xsl:apply-templates>
-			<xsl:apply-templates select="/csd:csd-standard/csd:bibliography/csd:references[1]" mode="contents"> <!-- [@id = '_normative_references'] -->
-				<xsl:with-param name="sectionNum" select="'2'"/>
-			</xsl:apply-templates>
-			<xsl:apply-templates select="/csd:csd-standard/csd:sections/*[position() &gt; 1]" mode="contents"> <!-- @id != '_scope' -->
-				<xsl:with-param name="sectionNumSkew" select="'1'"/>
-			</xsl:apply-templates>
+
+			<xsl:apply-templates select="/csd:csd-standard/csd:sections/csd:clause[1]" mode="contents"/> <!-- [@id = '_scope'] -->
+
+			<!-- Normative references -->
+			<xsl:apply-templates select="/csd:csd-standard/csd:bibliography/csd:references[1]" mode="contents"/> <!-- [@id = '_normative_references'] -->
+
+			<xsl:apply-templates select="/csd:csd-standard/csd:sections/*[position() &gt; 1]" mode="contents"/> <!-- @id != '_scope' -->
+
 			<xsl:apply-templates select="/csd:csd-standard/csd:annex" mode="contents"/>
+			
+			<!-- Bibliography -->
 			<xsl:apply-templates select="/csd:csd-standard/csd:bibliography/csd:references[position() &gt; 1]" mode="contents"/> <!-- @id = '_bibliography' -->
 			
 		</contents>
@@ -71,13 +70,6 @@
 				</fo:simple-page-master>
 				
 				<!-- Document pages -->
-				<!-- <fo:simple-page-master master-name="document" page-width="{$pageWidth}" page-height="{$pageHeight}">
-					<fo:region-body margin-top="23.5mm" margin-bottom="10mm" margin-left="19mm" margin-right="19mm"/>
-					<fo:region-before extent="23.5mm"/>
-					<fo:region-after extent="10mm"/>
-					<fo:region-start extent="19mm"/>
-					<fo:region-end extent="19mm"/>
-				</fo:simple-page-master> -->
 				
 				<!-- Preface odd pages -->
 				<fo:simple-page-master master-name="odd-preface" page-width="{$pageWidth}" page-height="{$pageHeight}">
@@ -254,38 +246,39 @@
 						</xsl:variable>
 						<fo:block font-size="14pt"  margin-bottom="15.5pt"><xsl:value-of select="$title-toc"/></fo:block>
 						
-						<xsl:for-each select="xalan:nodeset($contents)//item[@display = 'true' and @level &lt;= 2][not(@level = 2 and starts-with(@section, '0'))]"><!-- skip clause from preface -->
+						<xsl:for-each select="xalan:nodeset($contents)//item"><!-- [not(@level = 2 and starts-with(@section, '0'))] skip clause from preface -->
 							
 							<fo:block>
 								<xsl:if test="@level = 1">
 									<xsl:attribute name="margin-top">6pt</xsl:attribute>
 								</xsl:if>
+								
+								
 								<fo:list-block>
 									<xsl:attribute name="provisional-distance-between-starts">
 										<xsl:choose>
 											<!-- skip 0 section without subsections -->
-											<xsl:when test="@section != '' and not(@display-section = 'false')">8mm</xsl:when>
+											<xsl:when test="@section != ''">8mm</xsl:when> <!-- and not(@display-section = 'false') -->
 											<xsl:otherwise>0mm</xsl:otherwise>
 										</xsl:choose>
 									</xsl:attribute>
 									<fo:list-item>
 										<fo:list-item-label end-indent="label-end()">
-											<fo:block>
-												<xsl:if test="@section and not(@display-section = 'false')"> <!-- output below   -->
-													<xsl:value-of select="@section"/><xsl:text>.</xsl:text>
-												</xsl:if>
+											<fo:block>												
+												<xsl:value-of select="@section"/>
 											</fo:block>
 										</fo:list-item-label>
 										<fo:list-item-body start-indent="body-start()">
 											<fo:block text-align-last="justify" margin-left="12mm" text-indent="-12mm">
 												<fo:basic-link internal-destination="{@id}" fox:alt-text="{text()}">
-													<xsl:if test="@section and @display-section = 'false'">
+													<!-- <xsl:if test="@section and @display-section = 'false'">
 														<xsl:value-of select="@section"/><xsl:text> </xsl:text>
 													</xsl:if>
 													<xsl:if test="@addon != ''">
 														<xsl:text>(</xsl:text><xsl:value-of select="@addon"/><xsl:text>)</xsl:text>
 													</xsl:if>
-													<xsl:text> </xsl:text><xsl:value-of select="text()"/>
+													<xsl:text> </xsl:text><xsl:value-of select="text()"/> -->
+													<xsl:apply-templates />
 													<fo:inline keep-together.within-line="always">
 														<fo:leader leader-pattern="dots"/>
 														<fo:inline><fo:page-number-citation ref-id="{@id}"/></fo:inline>
@@ -319,20 +312,17 @@
 						<xsl:value-of select="/csd:csd-standard/csd:bibdata/csd:title[@language = 'en']"/>
 					</fo:block>
 					<fo:block>
-						<xsl:apply-templates select="/csd:csd-standard/csd:sections/csd:clause[1]"> <!-- Scope -->
-							<xsl:with-param name="sectionNum" select="'1'"/>
-						</xsl:apply-templates>
+						<xsl:apply-templates select="/csd:csd-standard/csd:sections/csd:clause[1]" /> <!-- Scope -->
+							
 						<!-- Normative references  -->
-						<xsl:apply-templates select="/csd:csd-standard/csd:bibliography/csd:references[1]">
-							<xsl:with-param name="sectionNum" select="'2'"/>
-						</xsl:apply-templates>
+						<xsl:apply-templates select="/csd:csd-standard/csd:bibliography/csd:references[1]" />
 						
 						<!-- Other Sections -->
-						<xsl:apply-templates select="/csd:csd-standard/csd:sections/*[position() &gt; 1]">
-							<xsl:with-param name="sectionNumSkew" select="'1'"/>
-						</xsl:apply-templates>
+						<xsl:apply-templates select="/csd:csd-standard/csd:sections/*[position() &gt; 1]" />							
 						
 						<xsl:apply-templates select="/csd:csd-standard/csd:annex"/>
+						
+						<!-- Bibliography -->
 						<xsl:apply-templates select="/csd:csd-standard/csd:bibliography/csd:references[position() &gt; 1]" />
 						
 					</fo:block>
@@ -344,53 +334,65 @@
 		</fo:root>
 	</xsl:template> 
 
-	<!-- for pass the paremeter 'sectionNum' over templates, like 'tunnel' parameter in XSLT 2.0 -->
 	<xsl:template match="node()">
-		<xsl:param name="sectionNum"/>
-		<xsl:param name="sectionNumSkew"/>
-		<xsl:apply-templates>
-			<xsl:with-param name="sectionNum" select="$sectionNum"/>
-			<xsl:with-param name="sectionNumSkew" select="$sectionNumSkew"/>
-		</xsl:apply-templates>
+		<xsl:apply-templates />
 	</xsl:template>
 	
 	<!-- ============================= -->
 	<!-- CONTENTS                                       -->
 	<!-- ============================= -->
-	<xsl:template match="node()" mode="contents">
-		<xsl:param name="sectionNum"/>
-		<xsl:param name="sectionNumSkew"/>
-		<xsl:apply-templates mode="contents">
-			<xsl:with-param name="sectionNum" select="$sectionNum"/>
-			<xsl:with-param name="sectionNumSkew" select="$sectionNumSkew"/>
-		</xsl:apply-templates>
+	<xsl:template match="node()" mode="contents">		
+		<xsl:apply-templates mode="contents" />			
 	</xsl:template>
 
-	
-	<!-- calculate main section number (1,2,3) and pass it deep into templates -->
-	<!-- it's necessary, because there is itu:bibliography/itu:references from other section, but numbering should be sequental -->
-	<xsl:template match="csd:csd-standard/csd:sections/*" mode="contents">
-		<xsl:param name="sectionNum"/>
-		<xsl:param name="sectionNumSkew" select="0"/>
-		<xsl:variable name="sectionNum_">
+	<!-- element with title -->
+	<xsl:template match="*[csd:title]" mode="contents">
+		<xsl:variable name="level">
+			<xsl:call-template name="getLevel">
+				<xsl:with-param name="depth" select="csd:title/@depth"/>
+			</xsl:call-template>
+		</xsl:variable>
+		
+		<xsl:variable name="display">
 			<xsl:choose>
-				<xsl:when test="$sectionNum"><xsl:value-of select="$sectionNum"/></xsl:when>
-				<xsl:when test="$sectionNumSkew != 0">
-					<xsl:variable name="number"><xsl:number count="*"/></xsl:variable> <!-- csd:sections/csd:clause | csd:sections/csd:terms -->
-					<xsl:value-of select="$number + $sectionNumSkew"/>
-				</xsl:when>
-				<xsl:otherwise>
-					<xsl:number count="*"/>
-				</xsl:otherwise>
+				<xsl:when test="ancestor-or-self::csd:bibitem">false</xsl:when>
+				<xsl:when test="ancestor-or-self::csd:term">false</xsl:when>				
+				<xsl:when test="$level &gt; 2">false</xsl:when>
+				<xsl:otherwise>true</xsl:otherwise>
 			</xsl:choose>
 		</xsl:variable>
-		<xsl:apply-templates mode="contents">
-			<xsl:with-param name="sectionNum" select="$sectionNum_"/>
-		</xsl:apply-templates>
+		
+		<xsl:variable name="section">
+			<xsl:call-template name="getSection"/>
+		</xsl:variable>
+		
+		<xsl:variable name="title">
+			<xsl:call-template name="getName"/>			
+		</xsl:variable>
+		
+		<xsl:if test="$display = 'true'">		
+		
+			<xsl:variable name="section">
+				<xsl:call-template name="getSection"/>
+			</xsl:variable>
+			
+			<xsl:variable name="title">
+				<xsl:call-template name="getName"/>
+			</xsl:variable>
+			
+			<item id="{@id}" level="{$level}" section="{$section}">
+				<xsl:apply-templates select="xalan:nodeset($title)" mode="contents_item"/>
+			</item>
+			<xsl:apply-templates  mode="contents" />
+		</xsl:if>	
+		
 	</xsl:template>
 	
+	
+	
+	
 	<!-- Any node with title element - clause, definition, annex,... -->
-	<xsl:template match="csd:title | csd:preferred" mode="contents">
+	<xsl:template match="csd:title | csd:preferred" mode="contents2">
 		<xsl:param name="sectionNum"/>
 		<!-- sectionNum=<xsl:value-of select="$sectionNum"/> -->
 		<xsl:variable name="id">
@@ -510,31 +512,15 @@
 	
 	<!-- clause, terms, clause, ...-->
 	<xsl:template match="csd:csd-standard/csd:sections/*">
-		<xsl:param name="sectionNum"/>
-		<xsl:param name="sectionNumSkew" select="0"/>
+		
 		<fo:block>
 			<xsl:variable name="pos"><xsl:number count="csd:sections/csd:clause | csd:sections/csd:terms"/></xsl:variable>
 			<xsl:if test="$pos &gt;= 2">
 				<xsl:attribute name="space-before">18pt</xsl:attribute>
 			</xsl:if>
-			<!-- pos=<xsl:value-of select="$pos" /> -->
-			<xsl:variable name="sectionNum_">
-				<xsl:choose>
-					<xsl:when test="$sectionNum"><xsl:value-of select="$sectionNum"/></xsl:when>
-					<xsl:when test="$sectionNumSkew != 0">
-						<xsl:variable name="number"><xsl:number count="csd:sections/csd:clause | csd:sections/csd:terms"/></xsl:variable>
-						<xsl:value-of select="$number + $sectionNumSkew"/>
-					</xsl:when>
-				</xsl:choose>
-			</xsl:variable>
-			<xsl:if test="not(csd:title)">
-				<fo:block margin-top="3pt" margin-bottom="12pt">
-					<xsl:value-of select="$sectionNum_"/><xsl:number format=".1 " level="multiple" count="csd:clause" />
-				</fo:block>
-			</xsl:if>
-			<xsl:apply-templates>
-				<xsl:with-param name="sectionNum" select="$sectionNum_"/>
-			</xsl:apply-templates>
+			
+			<xsl:apply-templates />
+				
 		</fo:block>
 	</xsl:template>
 	
@@ -1016,7 +1002,7 @@
 
 
 
-	<xsl:template name="getSection">
+	<xsl:template name="getSection2">
 		<xsl:param name="sectionNum"/>
 		<xsl:variable name="level">
 			<xsl:call-template name="getLevel"/>
