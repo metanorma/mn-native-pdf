@@ -48,25 +48,16 @@
 		
 			<xsl:apply-templates select="/rsd:rsd-standard/rsd:preface/rsd:introduction" mode="contents"/>
 					
-			<xsl:apply-templates select="/rsd:rsd-standard/rsd:sections/rsd:clause[@id='_scope']" mode="contents">
-				<xsl:with-param name="sectionNum" select="'1'"/>
-			</xsl:apply-templates>
+			<xsl:apply-templates select="/rsd:rsd-standard/rsd:sections/rsd:clause[@id='_scope']" mode="contents" />
 				
 			<!-- Normative references  -->
-			<xsl:apply-templates select="/rsd:rsd-standard/rsd:bibliography/rsd:references[@id = '_normative_references' or @id = '_references']" mode="contents">
-				<xsl:with-param name="sectionNum" select="count(/rsd:rsd-standard/rsd:sections/rsd:clause[@id='_scope']) + 1"/>
-			</xsl:apply-templates>
+			<xsl:apply-templates select="/rsd:rsd-standard/rsd:bibliography/rsd:references[@id = '_normative_references' or @id = '_references']" mode="contents" />
 		
-			<xsl:apply-templates select="/rsd:rsd-standard/rsd:sections/rsd:terms" mode="contents"> <!-- Terms and definitions -->
-				<xsl:with-param name="sectionNum" select="count(/rsd:rsd-standard/rsd:sections/rsd:clause[@id='_scope']) + 
-																																				count(/rsd:rsd-standard/rsd:bibliography/rsd:references[@id = '_normative_references' or @id = '_references']) + 1"/>
-			</xsl:apply-templates>
+			<xsl:apply-templates select="/rsd:rsd-standard/rsd:sections/rsd:terms" mode="contents" /> <!-- Terms and definitions -->
 				
-			<xsl:apply-templates select="/rsd:rsd-standard/rsd:sections/*[local-name() != 'terms' and not(@id='_scope') ]" mode="contents">
-				<xsl:with-param name="sectionNumSkew" select="count(/rsd:rsd-standard/rsd:sections/rsd:clause[@id='_scope']) + 
-																																				count(/rsd:rsd-standard/rsd:bibliography/rsd:references[@id = '_normative_references' or @id = '_references']) +
-																																				count(/rsd:rsd-standard/rsd:sections/rsd:terms)"/>	
-			</xsl:apply-templates>
+				
+			<xsl:apply-templates select="/rsd:rsd-standard/rsd:sections/*[local-name() != 'terms' and not(@id='_scope') ]" mode="contents" />
+				
 				
 			<xsl:apply-templates select="/rsd:rsd-standard/rsd:annex" mode="contents"/>
 			<xsl:apply-templates select="/rsd:rsd-standard/rsd:bibliography/rsd:references[@id != '_normative_references' and @id != '_references']" mode="contents"/>
@@ -188,7 +179,7 @@
 					</xsl:variable>
 					<fo:block font-size="14pt" font-weight="bold" margin-bottom="15.5pt"><xsl:value-of select="$title-toc"/></fo:block>
 					<fo:block font-weight="bold" line-height="125%">
-						<xsl:for-each select="xalan:nodeset($contents)//item[@display = 'true' and @level &lt;= 2]">
+						<xsl:for-each select="xalan:nodeset($contents)//item">
 							<fo:block>
 								<xsl:if test="@level = 1">
 									<xsl:attribute name="margin-top">6pt</xsl:attribute>
@@ -197,28 +188,22 @@
 									<xsl:attribute name="provisional-distance-between-starts">
 										<xsl:choose>
 											<!-- skip 0 section without subsections -->
-											<xsl:when test="@section != '' and not(@display-section = 'false')">7.5mm</xsl:when>
+											<xsl:when test="@section != ''">7.5mm</xsl:when>
 											<xsl:otherwise>0mm</xsl:otherwise>
 										</xsl:choose>
 									</xsl:attribute>
 									<fo:list-item>
 										<fo:list-item-label end-indent="label-end()">
-											<fo:block>
-												<xsl:if test="@section and not(@display-section = 'false')"> <!-- output below   -->
-													<xsl:value-of select="@section"/><xsl:text>.</xsl:text>
-												</xsl:if>
+											<fo:block>												
+												<xsl:value-of select="@section"/>
 											</fo:block>
 										</fo:list-item-label>
 										<fo:list-item-body start-indent="body-start()">
 											<fo:block text-align-last="justify" margin-left="12mm" text-indent="-12mm">
 												<fo:basic-link internal-destination="{@id}" fox:alt-text="{text()}">
-													<xsl:if test="@section and @display-section = 'false' and not(@section = '0')">
-														<xsl:value-of select="@section"/><xsl:text> </xsl:text>
-													</xsl:if>
-													<xsl:if test="@addon != ''">
-														<xsl:text>(</xsl:text><xsl:value-of select="@addon"/><xsl:text>)</xsl:text>
-													</xsl:if>
-													<xsl:text> </xsl:text><xsl:value-of select="text()"/>
+												
+													<xsl:apply-templates />
+													
 													<fo:inline keep-together.within-line="always">
 														<fo:leader leader-pattern="dots"/>
 														<fo:inline><fo:page-number-citation ref-id="{@id}"/></fo:inline>
@@ -256,24 +241,16 @@
 					
 						<xsl:apply-templates select="/rsd:rsd-standard/rsd:preface/rsd:introduction" mode="introduction"/>
 					
-						<xsl:apply-templates select="/rsd:rsd-standard/rsd:sections/rsd:clause[@id='_scope']">
-							<xsl:with-param name="sectionNum" select="'1'"/>
-						</xsl:apply-templates>
+						<xsl:apply-templates select="/rsd:rsd-standard/rsd:sections/rsd:clause[@id='_scope']" />							
 						
-						<xsl:apply-templates select="/rsd:rsd-standard/rsd:bibliography/rsd:references[@id = '_normative_references' or @id = '_references']">
-							<xsl:with-param name="sectionNum" select="count(/rsd:rsd-standard/rsd:sections/rsd:clause[@id='_scope']) + 1"/>
-						</xsl:apply-templates>
+						<!-- Normative references -->
+						<xsl:apply-templates select="/rsd:rsd-standard/rsd:bibliography/rsd:references[@id = '_normative_references' or @id = '_references']" />
 					
-						<xsl:apply-templates select="/rsd:rsd-standard/rsd:sections/rsd:terms"> <!-- Terms and definitions -->
-							<xsl:with-param name="sectionNum" select="count(/rsd:rsd-standard/rsd:sections/rsd:clause[@id='_scope']) + 
-																																							count(/rsd:rsd-standard/rsd:bibliography/rsd:references[@id = '_normative_references' or @id = '_references']) + 1"/>
-						</xsl:apply-templates>
+						<xsl:apply-templates select="/rsd:rsd-standard/rsd:sections/rsd:terms" /> <!-- Terms and definitions -->
 							
-						<xsl:apply-templates select="/rsd:rsd-standard/rsd:sections/*[local-name() != 'terms' and not(@id='_scope') ]">
-							<xsl:with-param name="sectionNumSkew" select="count(/rsd:rsd-standard/rsd:sections/rsd:clause[@id='_scope']) + 
-																																							count(/rsd:rsd-standard/rsd:bibliography/rsd:references[@id = '_normative_references' or @id = '_references']) +
-																																							count(/rsd:rsd-standard/rsd:sections/rsd:terms)"/>	
-						</xsl:apply-templates>
+							
+						<xsl:apply-templates select="/rsd:rsd-standard/rsd:sections/*[local-name() != 'terms' and not(@id='_scope') ]" />
+							
 						
 						<xsl:apply-templates select="/rsd:rsd-standard/rsd:annex"/>
 						<xsl:apply-templates select="/rsd:rsd-standard/rsd:bibliography/rsd:references[@id != '_normative_references' and @id != '_references']" />
@@ -285,200 +262,58 @@
 		</fo:root>
 	</xsl:template> 
 
-	<!-- for pass the paremeter 'sectionNum' over templates, like 'tunnel' parameter in XSLT 2.0 -->
-	<xsl:template match="node()">
-		<xsl:param name="sectionNum"/>
-		<xsl:param name="sectionNumSkew"/>
-		<xsl:apply-templates>
-			<xsl:with-param name="sectionNum" select="$sectionNum"/>
-			<xsl:with-param name="sectionNumSkew" select="$sectionNumSkew"/>
-		</xsl:apply-templates>
+
+	<xsl:template match="node()">		
+		<xsl:apply-templates />			
 	</xsl:template>
 	
 	<!-- ============================= -->
 	<!-- CONTENTS                                       -->
 	<!-- ============================= -->
-	<xsl:template match="node()" mode="contents">
-		<xsl:param name="sectionNum"/>
-		<xsl:param name="sectionNumSkew"/>
-		<xsl:apply-templates mode="contents">
-			<xsl:with-param name="sectionNum" select="$sectionNum"/>
-			<xsl:with-param name="sectionNumSkew" select="$sectionNumSkew"/>
-		</xsl:apply-templates>
+	<xsl:template match="node()" mode="contents">		
+		<xsl:apply-templates mode="contents" />			
 	</xsl:template>
 
-	
-	<!-- calculate main section number (1,2,3) and pass it deep into templates -->
-	<!-- it's necessary, because there is itu:bibliography/itu:references from other section, but numbering should be sequental -->
-	<xsl:template match="rsd:rsd-standard/rsd:sections/*" mode="contents">
-		<xsl:param name="sectionNum"/>
-		<xsl:param name="sectionNumSkew" select="0"/>
-		<xsl:variable name="sectionNum_">
-			<xsl:choose>
-				<xsl:when test="$sectionNum"><xsl:value-of select="$sectionNum"/></xsl:when>
-				<xsl:when test="$sectionNumSkew != 0">
-					<xsl:variable name="number"><xsl:number count="rsd:sections/rsd:clause[not(@id='_scope') and not(@id='conformance') and not(@id='_conformance')]"/></xsl:variable> <!-- * rsd:sections/rsd:clause | rsd:sections/rsd:terms -->
-					<xsl:value-of select="$number + $sectionNumSkew"/>
-				</xsl:when>
-				<xsl:otherwise>
-					<xsl:number count="*"/>
-				</xsl:otherwise>
-			</xsl:choose>
-		</xsl:variable>
-		<xsl:apply-templates mode="contents">
-			<xsl:with-param name="sectionNum" select="$sectionNum_"/>
-		</xsl:apply-templates>
-	</xsl:template>
-	<xsl:template match="rsd:rsd-standard/rsd:sections/rsd:terms" mode="contents">
-		<xsl:param name="sectionNum"/>
-		<xsl:param name="sectionNumSkew" select="0"/>
-		<xsl:variable name="sectionNum_">
-			<xsl:choose>
-				<xsl:when test="$sectionNum"><xsl:value-of select="$sectionNum"/></xsl:when>
-				<xsl:when test="$sectionNumSkew != 0">
-					<xsl:variable name="number"><xsl:number count="*"/></xsl:variable> <!-- rsd:sections/rsd:clause | rsd:sections/rsd:terms -->
-					<xsl:value-of select="$number + $sectionNumSkew"/>
-				</xsl:when>
-				<xsl:otherwise>
-					<xsl:number count="*"/>
-				</xsl:otherwise>
-			</xsl:choose>
-		</xsl:variable>
-		<xsl:apply-templates mode="contents">
-			<xsl:with-param name="sectionNum" select="$sectionNum_"/>
-		</xsl:apply-templates>
-	</xsl:template>
-	
-	
-	<!-- Any node with title element - clause, definition, annex,... -->
-	<xsl:template match="rsd:title | rsd:preferred" mode="contents">
-		<xsl:param name="sectionNum"/>
-		<xsl:variable name="id">
-			<xsl:call-template name="getId"/>
-		</xsl:variable>
-		
+
+	<!-- element with title -->
+	<xsl:template match="*[rsd:title]" mode="contents">
 		<xsl:variable name="level">
-			<xsl:call-template name="getLevel"/>
-		</xsl:variable>
-		
-		<xsl:variable name="section">
-			<xsl:call-template name="getSection">
-				<xsl:with-param name="sectionNum" select="$sectionNum"/>
+			<xsl:call-template name="getLevel">
+				<xsl:with-param name="depth" select="rsd:title/@depth"/>
 			</xsl:call-template>
 		</xsl:variable>
 		
 		<xsl:variable name="display">
 			<xsl:choose>
-				<xsl:when test="ancestor::rsd:bibitem">false</xsl:when>
-				<xsl:when test="ancestor::rsd:term">false</xsl:when>
-				<xsl:when test="ancestor::rsd:annex and $level &gt;= 3">false</xsl:when>
-				<xsl:when test="$level &lt;= 3">true</xsl:when>
-				<xsl:otherwise>false</xsl:otherwise>
-			</xsl:choose>
-		</xsl:variable>
-		
-		<xsl:variable name="display-section">
-			<xsl:choose>
-				<xsl:when test="ancestor::rsd:annex and $level &gt;= 2">true</xsl:when>
-				<xsl:when test="ancestor::rsd:annex">false</xsl:when>
-				<xsl:when test="$section = '0'">false</xsl:when>
+				<xsl:when test="ancestor-or-self::rsd:bibitem">false</xsl:when>
+				<xsl:when test="ancestor-or-self::rsd:term">false</xsl:when>				
+				<xsl:when test="$level &gt;= 3">false</xsl:when>
 				<xsl:otherwise>true</xsl:otherwise>
 			</xsl:choose>
 		</xsl:variable>
 		
-		<xsl:variable name="type">
-			<xsl:value-of select="local-name(..)"/>
-		</xsl:variable>
-
-		<xsl:variable name="root">
-			<xsl:choose>
-				<xsl:when test="ancestor::rsd:annex">annex</xsl:when>
-				<xsl:when test="ancestor::rsd:clause">clause</xsl:when>
-				<xsl:when test="ancestor::rsd:terms">terms</xsl:when>
-			</xsl:choose>
-		</xsl:variable>
 		
-		<item id="{$id}" level="{$level}" section="{$section}" display-section="{$display-section}" display="{$display}" type="{$type}" root="{$root}">
-			<xsl:attribute name="addon">
-				<xsl:if test="local-name(..) = 'annex'"><xsl:value-of select="../@obligation"/></xsl:if>
-			</xsl:attribute>
-			<xsl:apply-templates />
-		</item>
+		<xsl:if test="$display = 'true'">		
 		
-		<xsl:apply-templates mode="contents">
-			<xsl:with-param name="sectionNum" select="$sectionNum"/>
-		</xsl:apply-templates>
-		
-	</xsl:template>
-	
-	<xsl:template match="rsd:rsd-standard/rsd:preface/*" mode="contents">
-		<xsl:param name="sectionNum" select="'1'"/>
-		<xsl:variable name="section">
-			<xsl:number format="i" value="$sectionNum"/>
-		</xsl:variable>
-		<xsl:variable name="id">
-			<xsl:choose>
-				<xsl:when test="@id">
-					<xsl:value-of select="@id"/>
-				</xsl:when>
-				<xsl:otherwise>
-					<xsl:value-of select="local-name()"/>
-				</xsl:otherwise>
-			</xsl:choose>
-		</xsl:variable>
-		<xsl:if test="not(rsd:title)">
-			<item id="{$id}" level="1" section="{$section}" display-section="true" display="true" type="abstract" root="preface">
-				<xsl:if test="local-name() = 'foreword'">
-					<xsl:attribute name="display">false</xsl:attribute>
-				</xsl:if>
-				<xsl:choose>
-					<xsl:when test="not(rsd:title)">
-						<xsl:variable name="name" select="local-name()"/>						
-						<xsl:call-template name="capitalize">
-							<xsl:with-param name="str" select="$name"/>
-						</xsl:call-template>
-					</xsl:when>
-					<xsl:otherwise>
-						<xsl:value-of select="rsd:title"/>
-					</xsl:otherwise>
-				</xsl:choose>
+			<xsl:variable name="section">
+				<xsl:call-template name="getSection"/>
+			</xsl:variable>
+			
+			<xsl:variable name="title">
+				<xsl:call-template name="getName"/>
+			</xsl:variable>
+			
+			<xsl:variable name="type">
+				<xsl:value-of select="local-name()"/>
+			</xsl:variable>
+			
+			<item id="{@id}" level="{$level}" section="{$section}" type="{$type}">
+				<xsl:apply-templates select="xalan:nodeset($title)" mode="contents_item"/>
 			</item>
-		</xsl:if>
-		<xsl:apply-templates mode="contents">
-			<xsl:with-param name="sectionNum" select="$sectionNum"/>
-		</xsl:apply-templates>
-	</xsl:template>
-	
-	<!-- Keywords -->
-	<xsl:template match="/rsd:rsd-standard/rsd:bibdata/rsd:keyword" mode="contents">
-		<xsl:param name="sectionNum" select="'1'"/>
-		<xsl:variable name="section">
-			<xsl:number format="i" value="$sectionNum"/>
-		</xsl:variable>
-		<item id="keywords" level="1" section="{$section}" display-section="true" display="true" type="abstract" root="preface">
-			<xsl:variable name="title-keywords">
-				<xsl:call-template name="getTitle">
-					<xsl:with-param name="name" select="'title-keywords'"/>
-				</xsl:call-template>
-			</xsl:variable>
-			<xsl:value-of select="$title-keywords"/>
-		</item>
-	</xsl:template>
-	<!-- Submitting Organizations -->
-	<xsl:template match="/rsd:rsd-standard/rsd:bibdata/rsd:contributor[rsd:role/@type='author']/rsd:organization/rsd:name" mode="contents">
-		<xsl:param name="sectionNum" select="'1'"/>
-		<xsl:variable name="section">
-			<xsl:number format="i" value="$sectionNum"/>
-		</xsl:variable>
-		<item id="submitting_orgs" level="1" section="{$section}" display-section="true" display="true" type="abstract" root="preface">
-			<xsl:variable name="title-submitting-organizations">
-				<xsl:call-template name="getTitle">
-					<xsl:with-param name="name" select="'title-submitting-organizations'"/>
-				</xsl:call-template>
-			</xsl:variable>
-			<xsl:value-of select="$title-submitting-organizations"/>
-		</item>
-	</xsl:template>
+			<xsl:apply-templates  mode="contents" />
+		</xsl:if>	
+		
+	</xsl:template>	
 	
 	
 	<xsl:template match="rsd:fn" mode="contents"/>
@@ -567,120 +402,24 @@
 		<xsl:apply-templates select="current()"/>
 	</xsl:template>
 	<!-- Preface -->
-	<xsl:template match="rsd:rsd-standard/rsd:preface/rsd:foreword" mode="preface">
-		<xsl:param name="sectionNum"/>
+	<xsl:template match="rsd:rsd-standard/rsd:preface/rsd:foreword" mode="preface">		
 		<fo:block break-after="page"/>
-		<xsl:apply-templates select="current()">
-			<xsl:with-param name="sectionNum" select="$sectionNum"/>
-		</xsl:apply-templates>
+		<xsl:apply-templates select="current()" />			
 	</xsl:template>
-	<!-- Abstract, Preface -->
-	<xsl:template match="rsd:rsd-standard/rsd:preface/*">
-		<xsl:param name="sectionNum" select="'1'"/>
-		<xsl:if test="not(rsd:title)">
-			<xsl:variable name="id">
-				<xsl:choose>
-					<xsl:when test="@id">
-						<xsl:value-of select="@id"/>
-					</xsl:when>
-					<xsl:otherwise>
-						<xsl:value-of select="local-name()"/>
-					</xsl:otherwise>
-				</xsl:choose>
-			</xsl:variable>
-			<fo:block id="{$id}" font-size="13pt" font-weight="bold" margin-bottom="12pt" color="rgb(14, 26, 133)">
-				<xsl:number format="i." value="$sectionNum"/><fo:inline padding-right="3mm">&#xA0;</fo:inline>
-				<xsl:variable name="name" select="local-name()"/>				
-				<xsl:call-template name="capitalize">
-					<xsl:with-param name="str" select="$name"/>
-				</xsl:call-template>
-			</fo:block>
-		</xsl:if>
-		<xsl:apply-templates />
-	</xsl:template>
-	<!-- Keywords -->
-	<xsl:template match="/rsd:rsd-standard/rsd:bibdata/rsd:keyword">
-		<xsl:param name="sectionNum" select="'1'"/>
-		<fo:block id="keywords" font-size="13pt" font-weight="bold" margin-top="13.5pt" margin-bottom="12pt" color="rgb(14, 26, 133)">
-			<xsl:number format="i." value="$sectionNum"/><fo:inline padding-right="2mm">&#xA0;</fo:inline>
-			<xsl:variable name="title-keywords">
-				<xsl:call-template name="getTitle">
-					<xsl:with-param name="name" select="'title-keywords'"/>
-				</xsl:call-template>
-			</xsl:variable>
-			<xsl:value-of select="$title-keywords"/>
-		</fo:block>
-		<fo:block margin-bottom="12pt">The following are keywords to be used by search engines and document catalogues.</fo:block>
-		<fo:block margin-bottom="12pt">
-			<xsl:call-template name="insertKeywords">
-				<xsl:with-param name="sorting">no</xsl:with-param>
-				<xsl:with-param name="charAtEnd"></xsl:with-param>
-			</xsl:call-template>
-			<!-- <xsl:for-each select="/rsd:rsd-standard/rsd:bibdata/rsd:keyword">
-				<xsl:value-of select="."/>
-				<xsl:if test="position() != last()">, </xsl:if>
-			</xsl:for-each> -->
-		</fo:block>
-	</xsl:template>
-	<!-- Submitting Organizations -->
-	<xsl:template match="/rsd:rsd-standard/rsd:bibdata/rsd:contributor[rsd:role/@type='author']/rsd:organization/rsd:name">
-		<xsl:param name="sectionNum" select="'1'"/>
-		<fo:block id="submitting_orgs" font-size="13pt" font-weight="bold" color="rgb(14, 26, 133)" margin-top="13.5pt" margin-bottom="12pt">
-			<xsl:number format="i." value="$sectionNum"/><fo:inline padding-right="3mm">&#xA0;</fo:inline>
-			<xsl:variable name="title-submitting-organizations">
-				<xsl:call-template name="getTitle">
-					<xsl:with-param name="name" select="'title-submitting-organizations'"/>
-				</xsl:call-template>
-			</xsl:variable>
-			<xsl:value-of select="$title-submitting-organizations"/>
-		</fo:block>
-		<fo:block margin-bottom="12pt"> </fo:block>
-		<fo:list-block provisional-distance-between-starts="6.5mm" margin-bottom="12pt" line-height="115%">
-			<xsl:for-each select="/rsd:rsd-standard/rsd:bibdata/rsd:contributor[rsd:role/@type='author']/rsd:organization/rsd:name">
-				<fo:list-item>
-					<fo:list-item-label end-indent="label-end()">
-						<fo:block>&#x2014;</fo:block>
-					</fo:list-item-label>
-					<fo:list-item-body start-indent="body-start()" line-height-shift-adjustment="disregard-shifts">
-						<fo:block>
-							<xsl:apply-templates />
-						</fo:block>
-					</fo:list-item-body>
-				</fo:list-item>
-			</xsl:for-each>
-		</fo:list-block>
-	</xsl:template>
+	
+
 
 	
 	<!-- clause, terms, clause, ...-->
-	<xsl:template match="rsd:rsd-standard/rsd:sections/*">
-		<xsl:param name="sectionNum"/>
-		<xsl:param name="sectionNumSkew" select="0"/>
+	<xsl:template match="rsd:rsd-standard/rsd:sections/*">		
 		<fo:block>
 			<xsl:variable name="pos"><xsl:number count="rsd:sections/rsd:clause[not(@id='_scope') and not(@id='conformance') and not(@id='_conformance')]"/></xsl:variable> <!--  | rsd:sections/rsd:terms -->
 			<xsl:if test="$pos &gt;= 2">
 				<xsl:attribute name="space-before">18pt</xsl:attribute>
 			</xsl:if>
-			<xsl:variable name="sectionNum_">
-				<xsl:choose>
-					<xsl:when test="$sectionNum"><xsl:value-of select="$sectionNum"/></xsl:when>
-					<xsl:when test="$sectionNumSkew != 0">
-						<xsl:variable name="number"><xsl:number count="rsd:sections/rsd:clause[not(@id='_scope') and not(@id='conformance') and not(@id='_conformance')]"/></xsl:variable> <!--  | rsd:sections/rsd:terms -->
-						<xsl:value-of select="$number + $sectionNumSkew"/>
-					</xsl:when>
-					<xsl:otherwise>
-						<xsl:number count="*"/>
-					</xsl:otherwise>
-				</xsl:choose>
-			</xsl:variable>
-			<xsl:if test="not(rsd:title)">
-				<fo:block margin-top="3pt" margin-bottom="12pt">
-					<xsl:value-of select="$sectionNum_"/><xsl:number format=".1 " level="multiple" count="rsd:clause[not(@id='_scope') and not(@id='conformance') and not(@id='_conformance')]" />
-				</fo:block>
-			</xsl:if>
-			<xsl:apply-templates>
-				<xsl:with-param name="sectionNum" select="$sectionNum_"/>
-			</xsl:apply-templates>
+			
+			<xsl:apply-templates />
+				
 		</fo:block>
 	</xsl:template>
 	
