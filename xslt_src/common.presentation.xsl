@@ -11,24 +11,6 @@
 	<xsl:variable name="titles" select="xalan:nodeset($titles_)"/>
 	
 	<xsl:variable name="titles_">
-		
-		<title-table lang="en">Table </title-table>
-		<title-table lang="fr">Tableau </title-table>
-		<xsl:if test="$namespace = 'iso' or $namespace = 'iec' or $namespace = 'itu' or $namespace = 'unece' or $namespace = 'unece-rec' or $namespace = 'nist-cswp'  or $namespace = 'nist-sp' or $namespace = 'ogc' or $namespace = 'rsd' or $namespace = 'csa' or $namespace = 'csd' or $namespace = 'm3d' or $namespace = 'iho'">			
-			<title-table lang="zh">Table </title-table>
-		</xsl:if>
-		<xsl:if test="$namespace = 'gb'">			
-			<title-table lang="zh">表 </title-table>
-		</xsl:if>
-	
-		<title-section lang="en">Section </title-section>
-		<title-section lang="fr">Section </title-section>
-		
-		<title-inequality lang="en">Inequality </title-inequality>
-		<title-inequality lang="fr">Inequality </title-inequality>
-		
-		<title-equation lang="en">Equation </title-equation>
-		<title-equation lang="fr">Equation </title-equation>
 				
 		<title-annex lang="en">Annex </title-annex>
 		<title-annex lang="fr">Annexe </title-annex>
@@ -42,14 +24,6 @@
 		<title-appendix lang="en">Appendix </title-appendix>
 		<title-appendix lang="fr">Appendix </title-appendix>
 			
-		<title-clause lang="en">Clause </title-clause>
-		<title-clause lang="fr">Article </title-clause>
-		<xsl:if test="$namespace = 'iso' or $namespace = 'iec' or $namespace = 'itu' or $namespace = 'unece' or $namespace = 'unece-rec' or $namespace = 'nist-cswp'  or $namespace = 'nist-sp' or $namespace = 'ogc' or $namespace = 'rsd' or $namespace = 'csa' or $namespace = 'csd' or $namespace = 'm3d' or $namespace = 'iho'">
-			<title-clause lang="zh">Clause </title-clause>
-		</xsl:if>
-		<xsl:if test="$namespace = 'gb'">
-			<title-clause lang="zh">条 </title-clause>			
-		</xsl:if>
 		
 		<title-edition lang="en">
 			<xsl:if test="$namespace = 'iso' or $namespace = 'iec' or $namespace = 'itu' or $namespace = 'unece' or $namespace = 'unece-rec' or $namespace = 'nist-cswp'  or $namespace = 'nist-sp' or $namespace = 'csd' or $namespace = 'iho'">
@@ -60,9 +34,7 @@
 			</xsl:if>
 		</title-edition>
 		
-		<title-formula lang="en">Formula </title-formula>
-		<title-formula lang="fr">Formula </title-formula>
-		
+
 		<title-toc lang="en">
 			<xsl:if test="$namespace = 'iso' or $namespace = 'iec' or $namespace = 'iho' or $namespace = 'csd' or $namespace = 'rsd' or $namespace = 'ogc' or $namespace = 'unece-rec'">
 				<xsl:text>Contents</xsl:text>
@@ -126,9 +98,7 @@
 		
 		<title-deprecated lang="en">DEPRECATED</title-deprecated>
 		<title-deprecated lang="fr">DEPRECATED</title-deprecated>
-		
-		<title-submitting-organizations lang="en">Submitting Organizations</title-submitting-organizations>
-		
+				
 		<title-list-tables lang="en">List of Tables</title-list-tables>
 		
 		<title-list-figures lang="en">List of Figures</title-list-figures>
