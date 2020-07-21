@@ -18,7 +18,7 @@
 
 	<xsl:variable name="namespace">unece-rec</xsl:variable>
 	
-	<xsl:variable name="debug">false</xsl:variable>
+	<xsl:variable name="debug">true</xsl:variable>
 	<xsl:variable name="pageWidth" select="'210mm'"/>
 	<xsl:variable name="pageHeight" select="'297mm'"/>
 
@@ -200,34 +200,65 @@
 					</xsl:variable>
 					<fo:block font-size="9pt" text-align="right" font-style="italic" margin-bottom="6pt"><xsl:value-of select="$title-page"/></fo:block>
 					<fo:block>
-						<xsl:for-each select="xalan:nodeset($contents)//item[not(@type = 'table') and not(@type = 'figure') and not (@type = 'annex' or @parent = 'annex')]">
-							<xsl:if test="@display = 'true' and @level &lt;= 3">
+						<xsl:for-each select="xalan:nodeset($contents)//item[not (@type = 'annex' or @parent = 'annex')]">
+							
+							<fo:block>
+								
+								<fo:block text-align-last="justify" margin-left="12mm" text-indent="-12mm">
+									<xsl:if test="@level = 2 and @section != ''">
+										<xsl:attribute name="margin-left">20mm</xsl:attribute>										
+									</xsl:if>
+									<xsl:if test="@level &gt;= 3 and @section != ''">
+										<xsl:attribute name="margin-left">28mm</xsl:attribute>										
+									</xsl:if>
+									<fo:basic-link internal-destination="{@id}" fox:alt-text="{text()}">
+										<xsl:if test="@section != ''">
+											<fo:inline>
+												<xsl:attribute name="padding-right">
+													<xsl:choose>
+														<xsl:when test="@level = 1">4mm</xsl:when>
+														<xsl:when test="@level = 2">5mm</xsl:when>
+														<xsl:otherwise>4mm</xsl:otherwise>
+													</xsl:choose>
+												</xsl:attribute>
+												<xsl:value-of select="@section"/>												
+											</fo:inline>
+										</xsl:if>
+										
+										<xsl:apply-templates />
+										
+										<fo:inline keep-together.within-line="always">
+											<fo:leader leader-pattern="dots"/>
+											<fo:page-number-citation ref-id="{@id}"/>
+										</fo:inline>
+									</fo:basic-link>
+								</fo:block>
+							</fo:block>
+							
+						</xsl:for-each>
+						
+						<xsl:if test="xalan:nodeset($contents)//item[@type = 'annex']">
+							<fo:block text-align="center" margin-top="12pt" margin-bottom="12pt">ANNEXES</fo:block>
+							<xsl:for-each select="xalan:nodeset($contents)//item[@type = 'annex']">
 								<fo:block>
-									
 									<fo:block text-align-last="justify" margin-left="12mm" text-indent="-12mm">
-										<xsl:if test="@level = 2 and @section != ''">
-											<xsl:attribute name="margin-left">20mm</xsl:attribute>
-											<!-- <xsl:attribute name="text-indent">-24mm</xsl:attribute> -->
-										</xsl:if>
-										<xsl:if test="@level &gt;= 3 and @section != ''">
-											<xsl:attribute name="margin-left">28mm</xsl:attribute>
-											<!-- <xsl:attribute name="text-indent">-24mm</xsl:attribute> -->
-										</xsl:if>
 										<fo:basic-link internal-destination="{@id}" fox:alt-text="{text()}">
-											<xsl:if test="@section != '' and not(@display-section = 'false')"> <!--   -->
-												<fo:inline>
-													<xsl:attribute name="padding-right">
-														<xsl:choose>
-															<xsl:when test="@level = 1">4mm</xsl:when>
-															<xsl:when test="@level = 2">5mm</xsl:when>
-															<xsl:otherwise>4mm</xsl:otherwise>
-														</xsl:choose>
-													</xsl:attribute>
-													<xsl:value-of select="@section"/>
-													<xsl:text>. </xsl:text>
+											<xsl:if test="@section != ''">
+												<fo:inline padding-right="3mm">
+													<xsl:choose>
+														<xsl:when test="contains(@section, 'Annex')">
+															<xsl:value-of select="substring-after(@section, 'Annex')"/>
+															<xsl:text>: </xsl:text>
+														</xsl:when>
+														<xsl:otherwise>
+															<xsl:value-of select="@section"/>
+														</xsl:otherwise>
+													</xsl:choose>
 												</fo:inline>
 											</xsl:if>
-											<xsl:value-of select="text()"/><xsl:text> </xsl:text>
+											
+											<xsl:apply-templates />
+											
 											<fo:inline keep-together.within-line="always">
 												<fo:leader leader-pattern="dots"/>
 												<fo:page-number-citation ref-id="{@id}"/>
@@ -235,31 +266,6 @@
 										</fo:basic-link>
 									</fo:block>
 								</fo:block>
-							</xsl:if>
-						</xsl:for-each>
-						
-						<xsl:if test="xalan:nodeset($contents)//item[@type = 'annex']">
-							<fo:block text-align="center" margin-top="12pt" margin-bottom="12pt">ANNEXES</fo:block>
-							<xsl:for-each select="xalan:nodeset($contents)//item[@type = 'annex']">
-								<xsl:if test="@display = 'true' and @level = 1">
-									<fo:block>
-										<fo:block text-align-last="justify" margin-left="12mm" text-indent="-12mm">
-											<fo:basic-link internal-destination="{@id}" fox:alt-text="{text()}">
-												<xsl:if test="@section != '' and not(@display-section = 'false')"> <!--   -->
-													<fo:inline padding-right="3mm">
-														<xsl:value-of select="substring-after(@section, 'Annex')"/>
-														<xsl:text>: </xsl:text>
-													</fo:inline>
-												</xsl:if>
-												<xsl:value-of select="text()"/><xsl:text> </xsl:text>
-												<fo:inline keep-together.within-line="always">
-													<fo:leader leader-pattern="dots"/>
-													<fo:page-number-citation ref-id="{@id}"/>
-												</fo:inline>
-											</fo:basic-link>
-										</fo:block>
-									</fo:block>
-								</xsl:if>
 							</xsl:for-each>
 						</xsl:if>
 							
@@ -285,7 +291,7 @@
 						<xsl:text disable-output-escaping="yes">&lt;!--</xsl:text>
 							DEBUG
 							contents=<xsl:copy-of select="xalan:nodeset($contents)"/>
-						<xsl:text disable-output-escaping="yes"> --&gt;</xsl:text>
+						<xsl:text disable-output-escaping="yes">--&gt;</xsl:text>
 					</xsl:if>
 					
 					<fo:block>
@@ -332,8 +338,51 @@
 	</xsl:template>
 	
 	
+	<!-- element with title -->
+	<xsl:template match="*[un:title]" mode="contents">
+		<xsl:variable name="level">
+			<xsl:call-template name="getLevel">
+				<xsl:with-param name="depth" select="un:title/@depth"/>
+			</xsl:call-template>
+		</xsl:variable>
+		
+		
+		<xsl:variable name="display">
+			<xsl:choose>
+				<xsl:when test="ancestor-or-self::un:bibitem">false</xsl:when>
+				<xsl:when test="ancestor-or-self::un:term">false</xsl:when>
+				<xsl:when test="ancestor-or-self::un:annex and $level &gt;= 2">false</xsl:when>
+				<xsl:when test="$level &gt; 3">false</xsl:when>
+				<xsl:when test="@inline-header='true'">false</xsl:when>
+				<xsl:otherwise>true</xsl:otherwise>
+			</xsl:choose>
+		</xsl:variable>
+		
+		
+		<xsl:if test="$display = 'true'">		
+		
+			<xsl:variable name="section">
+				<xsl:call-template name="getSection"/>
+			</xsl:variable>
+			
+			<xsl:variable name="title">
+				<xsl:call-template name="getName"/>
+			</xsl:variable>
+			
+			<xsl:variable name="type">
+				<xsl:value-of select="local-name()"/>
+			</xsl:variable>
+			
+			<item id="{@id}" level="{$level}" section="{$section}" type="{$type}">
+				<xsl:apply-templates select="xalan:nodeset($title)" mode="contents_item"/>
+			</item>
+			<xsl:apply-templates  mode="contents" />
+		</xsl:if>	
+		
+	</xsl:template>
+	
 	<!-- Any node with title element - clause, definition, annex,... -->
-	<xsl:template match="un:title | un:preferred" mode="contents">
+	<xsl:template match="un:title | un:preferred" mode="contents2">
 		<xsl:variable name="id">
 			<xsl:call-template name="getId"/>			
 		</xsl:variable>
@@ -417,52 +466,6 @@
 	</xsl:template>
 
 
-	
-	<xsl:template match="un:terms" mode="contents">
-		<item level="" id="{@id}" display="false" type="Terms">
-			<xsl:if test="ancestor::un:annex">
-				<xsl:attribute name="section">
-					<xsl:variable name="title-appendix">
-						<xsl:call-template name="getTitle">
-							<xsl:with-param name="name" select="'title-appendix'"/>
-						</xsl:call-template>
-					</xsl:variable>
-					<xsl:value-of select="$title-appendix"/><xsl:number format="A" count="un:annex"/>
-				</xsl:attribute>
-			</xsl:if>
-		</item>
-	</xsl:template>
-	
-	<xsl:template match="un:references" mode="contents">
-		<item level="" id="{@id}" display="false" type="References">
-			<xsl:if test="ancestor::un:annex">
-				<xsl:attribute name="section">
-					<xsl:variable name="title-appendix">
-						<xsl:call-template name="getTitle">
-							<xsl:with-param name="name" select="'title-appendix'"/>
-						</xsl:call-template>
-					</xsl:variable>
-					<xsl:value-of select="$title-appendix"/><xsl:number format="A" count="un:annex"/>
-				</xsl:attribute>
-			</xsl:if>
-		</item>
-	</xsl:template>
-	
-	<xsl:template match="un:admonition" mode="contents">
-		<item level="" id="{@id}" display="false" type="Box">
-			<xsl:attribute name="section">
-				<xsl:variable name="num">
-					<xsl:number />
-				</xsl:variable>
-				<xsl:variable name="title-box">
-					<xsl:call-template name="getTitle">
-						<xsl:with-param name="name" select="'title-box'"/>
-					</xsl:call-template>
-				</xsl:variable>
-				<xsl:value-of select="$title-box"/><xsl:value-of select="$num"/>
-			</xsl:attribute>
-		</item>
-	</xsl:template>
 	
 	<xsl:template match="un:fn" mode="contents"/>
 	
@@ -778,11 +781,8 @@
 		<fo:block>
 			<xsl:if test="$num = 1">
 				<xsl:attribute name="margin-top">3pt</xsl:attribute>
-			</xsl:if>
-			<xsl:variable name="sectionNum"><xsl:number count="*"/></xsl:variable>
-			<xsl:apply-templates>
-				<xsl:with-param name="sectionNum" select="$sectionNum"/>
-			</xsl:apply-templates>
+			</xsl:if>			
+			<xsl:apply-templates />				
 		</fo:block>
 		<!--  -->
 	</xsl:template>

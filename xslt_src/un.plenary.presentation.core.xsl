@@ -25,9 +25,7 @@
 	<xsl:variable name="debug">false</xsl:variable>
 	
 	<xsl:variable name="contents">
-		<contents>
-			<xsl:apply-templates select="/un:un-standard/un:sections/*" mode="contents"/>
-			<xsl:apply-templates select="/un:un-standard/un:annex" mode="contents"/>
+		<contents>			
 		</contents>
 	</xsl:variable>
 	
@@ -267,156 +265,7 @@
 		</fo:root>
 	</xsl:template> 
 
-	<!-- ============================= -->
-	<!-- CONTENTS                                       -->
-	<!-- ============================= -->
-	<xsl:template match="node()" mode="contents">
-		<xsl:apply-templates mode="contents"/>
-	</xsl:template>
-	
-	<xsl:template match="un:un-standard/un:sections/*" mode="contents">
-		<xsl:apply-templates mode="contents"/>
-	</xsl:template>
-	
-	
-	<!-- Any node with title element - clause, definition, annex,... -->
-	<xsl:template match="un:title | un:preferred" mode="contents">
-		<xsl:variable name="id">
-			<xsl:call-template name="getId"/>			
-		</xsl:variable>
-		
-		<xsl:variable name="level">
-			<xsl:call-template name="getLevel"/>
-		</xsl:variable>
-		
-		<!-- <xsl:message>
-			level=<xsl:value-of select="$level"/>=<xsl:value-of select="."/>
-		</xsl:message> -->
-		
-		<xsl:variable name="section">
-			<xsl:call-template name="getSection"/>
-		</xsl:variable>
-			
-		
-		<xsl:variable name="type">
-			<xsl:value-of select="local-name(..)"/>
-		</xsl:variable>
-		
-		<item id="{$id}" level="{$level}" section="{$section}" display="false" type="{$type}">
-			<xsl:if test="$type = 'clause'">
-				<xsl:attribute name="section">
-					<xsl:variable name="title-clause">
-						<xsl:call-template name="getTitle">
-							<xsl:with-param name="name" select="'title-clause'"/>
-						</xsl:call-template>
-					</xsl:variable>
-					<xsl:value-of select="$title-clause"/>
-					<xsl:choose>
-						<xsl:when test="ancestor::un:sections">
-							<!-- 1, 2, 3, 4, ... from main section (not annex ...) -->
-							<xsl:choose>
-								<xsl:when test="$level = 1">
-									<xsl:number format="I" count="//un:sections/un:clause"/>
-								</xsl:when>
-								<xsl:when test="$level = 2">
-									<xsl:number format="I." count="//un:sections/un:clause"/>
-									<xsl:number format="A" count="//un:sections/un:clause/un:clause[un:title]"/>
-								</xsl:when>
-								<xsl:when test="$level &gt;= 3">
-									<xsl:number format="I." count="//un:sections/un:clause"/>
-									<xsl:number format="A." count="//un:sections/un:clause/un:clause[un:title]"/>
-									<xsl:number format="1" count="//un:sections/un:clause/un:clause/un:clause[un:title]"/>
-								</xsl:when>
-								<xsl:otherwise>
-								</xsl:otherwise>
-							</xsl:choose>
-						</xsl:when>
-						<xsl:when test="ancestor::un:annex">
-							<xsl:choose>
-								<xsl:when test="$level = 1">
-									<xsl:variable name="title-annex">
-										<xsl:call-template name="getTitle">
-											<xsl:with-param name="name" select="'title-annex'"/>
-										</xsl:call-template>
-									</xsl:variable>
-									<xsl:value-of select="$title-annex"/>
-									<xsl:number format="A" level="any" count="un:annex"/>
-								</xsl:when>
-								<xsl:otherwise>
-									<xsl:variable name="annex_id" select="ancestor::un:annex/@id"/>
-									<xsl:number format="1." count="//un:annex[@id = $annex_id]/un:clause[un:title]"/>
-								</xsl:otherwise>
-							</xsl:choose>
-						</xsl:when>
-						<xsl:otherwise>
-						</xsl:otherwise>
-					</xsl:choose>
-				</xsl:attribute>
-				
-			</xsl:if>
-			<xsl:value-of select="."/>
-		</item>
-		
-		<xsl:apply-templates mode="contents"/>
-	</xsl:template>
-	
-	<xsl:template match="un:bibitem" mode="contents"/>
 
-	<xsl:template match="un:references" mode="contents">
-		<xsl:apply-templates mode="contents"/>
-	</xsl:template>
-
-
-	
-	<xsl:template match="un:terms" mode="contents">
-		<item level="" id="{@id}" display="false" type="Terms">
-			<xsl:if test="ancestor::un:annex">
-				<xsl:attribute name="section">
-					<xsl:variable name="title-appendix">
-						<xsl:call-template name="getTitle">
-							<xsl:with-param name="name" select="'title-appendix'"/>
-						</xsl:call-template>
-					</xsl:variable>
-					<xsl:value-of select="$title-appendix"/><xsl:number format="A" count="un:annex"/>
-				</xsl:attribute>
-			</xsl:if>
-		</item>
-	</xsl:template>
-	
-	<xsl:template match="un:references" mode="contents">
-		<item level="" id="{@id}" display="false" type="References">
-			<xsl:if test="ancestor::un:annex">
-				<xsl:attribute name="section">
-					<xsl:variable name="title-appendix">
-						<xsl:call-template name="getTitle">
-							<xsl:with-param name="name" select="'title-appendix'"/>
-						</xsl:call-template>
-					</xsl:variable>
-					<xsl:value-of select="$title-appendix"/><xsl:number format="A" count="un:annex"/>
-				</xsl:attribute>
-			</xsl:if>
-		</item>
-	</xsl:template>
-	
-	<xsl:template match="un:admonition" mode="contents">
-		<item level="" id="{@id}" display="false" type="Box">
-			<xsl:attribute name="section">
-				<xsl:variable name="num">
-					<xsl:number />
-				</xsl:variable>
-				<xsl:variable name="title-box">
-					<xsl:call-template name="getTitle">
-						<xsl:with-param name="name" select="'title-box'"/>
-					</xsl:call-template>
-				</xsl:variable>
-				<xsl:value-of select="$title-box"/><xsl:value-of select="$num"/>
-			</xsl:attribute>
-		</item>
-	</xsl:template>
-	
-	<!-- ============================= -->
-	<!-- ============================= -->
-		
 		
 	<!-- ============================= -->
 	<!-- PARAGRAPHS                                    -->
@@ -691,13 +540,9 @@
 		<fo:block>
 			<xsl:if test="$num = 1">
 				<xsl:attribute name="margin-top">20pt</xsl:attribute>
-			</xsl:if>
-			<xsl:variable name="sectionNum"><xsl:number count="*"/></xsl:variable>
-			<xsl:apply-templates>
-				<xsl:with-param name="sectionNum" select="$sectionNum"/>
-			</xsl:apply-templates>
-		</fo:block>
-		<!--  -->
+			</xsl:if>			
+			<xsl:apply-templates />				
+		</fo:block>		
 	</xsl:template>
 	
 	
