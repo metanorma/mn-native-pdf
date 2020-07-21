@@ -1410,7 +1410,7 @@
 		<xsl:apply-templates mode="contents" />			
 	</xsl:template>
 	
-		<!-- element with title -->
+	<!-- element with title -->
 	<xsl:template match="*[iec:title]" mode="contents">
 		<xsl:variable name="level">
 			<xsl:call-template name="getLevel">
