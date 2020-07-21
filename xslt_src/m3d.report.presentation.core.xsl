@@ -969,9 +969,6 @@
 	</xsl:template>
 	
 	
-	<xsl:template match="m3d:br" priority="2">
-		<xsl:value-of select="$linebreak"/>
-	</xsl:template>
 
 
 	<xsl:variable name="Image-M3AAWG-Logo">

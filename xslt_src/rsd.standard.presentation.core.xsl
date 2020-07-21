@@ -919,11 +919,7 @@
 		</fo:block>
 	</xsl:template>
 	
-	
-	<xsl:template match="rsd:br" priority="2">
-		<!-- <fo:block>&#xA0;</fo:block> -->
-		<xsl:value-of select="$linebreak"/>
-	</xsl:template>
+
 	
 	<xsl:template match="rsd:pagebreak">
 		<fo:block break-after="page"/>

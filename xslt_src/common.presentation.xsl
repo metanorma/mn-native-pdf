@@ -3570,21 +3570,7 @@
 		</xsl:choose>
 	</xsl:template>
 
-	<xsl:template name="getSubSection">
-		<xsl:number format=".1" 
-										level="multiple" 
-										count="*[local-name() = 'clause']/*[local-name() = 'clause'] | 
-																*[local-name() = 'clause']/*[local-name() = 'terms'] | 
-																*[local-name() = 'terms']/*[local-name() = 'term'] | 
-																*[local-name() = 'clause']/*[local-name() = 'term'] |  
-																*[local-name() = 'terms']/*[local-name() = 'clause'] |
-																*[local-name() = 'terms']/*[local-name() = 'definitions'] |
-																*[local-name() = 'definitions']/*[local-name() = 'clause'] |
-																*[local-name() = 'clause']/*[local-name() = 'definitions'] |
-																*[local-name() = 'definitions']/*[local-name() = 'definitions'] |
-																*[local-name() = 'clause']/*[local-name() = 'references']"/>
-	</xsl:template>
-	
+\	
 	<xsl:template name="split">
 		<xsl:param name="pText" select="."/>
 		<xsl:param name="sep" select="','"/>

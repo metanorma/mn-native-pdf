@@ -940,11 +940,6 @@
 		</fo:block>
 	</xsl:template>
 	
-
-	<xsl:template match="csa:br" priority="2">
-		<!-- <fo:block>&#xA0;</fo:block> -->
-		<xsl:value-of select="$linebreak"/>
-	</xsl:template>
 	
 	<xsl:template match="csa:pagebreak">
 		<fo:block break-after="page"/>

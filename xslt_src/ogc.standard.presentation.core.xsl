@@ -1148,10 +1148,6 @@
 	</xsl:template>
 	
 	
-	<xsl:template match="ogc:br" priority="2">
-		<!-- <fo:block>&#xA0;</fo:block> -->
-		<xsl:value-of select="$linebreak"/>
-	</xsl:template>
 	
 	<xsl:template match="ogc:pagebreak">
 		<fo:block break-after="page"/>

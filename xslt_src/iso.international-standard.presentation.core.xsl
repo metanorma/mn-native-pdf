@@ -1858,12 +1858,7 @@
 		</fo:block>
 	</xsl:template>
 	
-	
-	
-	<xsl:template match="iso:br" priority="2">
-		<!-- <fo:block>&#xA0;</fo:block> -->
-		<xsl:value-of select="$linebreak"/>
-	</xsl:template>
+
 	
 	<xsl:template name="insertHeaderFooter">
 		<xsl:param name="font-weight" select="'bold'"/>

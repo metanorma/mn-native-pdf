@@ -1194,11 +1194,7 @@
 		</fo:block>
 	</xsl:template>
 	
-	
-	<xsl:template match="gb:br" priority="2">
-		<!-- <fo:block>&#xA0;</fo:block> -->
-		<xsl:value-of select="$linebreak"/>
-	</xsl:template>
+
 	
 	<xsl:template name="insertHeaderFooter">
 		<fo:static-content flow-name="header">
