@@ -20,7 +20,7 @@
 	
 	<xsl:variable name="namespace">itu</xsl:variable>
 	
-	<xsl:variable name="debug">true</xsl:variable>
+	<xsl:variable name="debug">false</xsl:variable>
 	<xsl:variable name="pageWidth" select="'210mm'"/>
 	<xsl:variable name="pageHeight" select="'297mm'"/>
 	
@@ -532,67 +532,7 @@
 		
 	</xsl:template>
 	
-	<!-- Any node with title element - clause, definition, annex,... -->
-	<xsl:template match="itu:title | itu:preferred" mode="contents2">
-		<xsl:param name="sectionNum"/>
-		<!-- sectionNum=<xsl:value-of select="$sectionNum"/> -->
-		<xsl:variable name="id">
-			<xsl:call-template name="getId"/>
-		</xsl:variable>
-		
-		<xsl:variable name="level">
-			<xsl:call-template name="getLevel"/>
-		</xsl:variable>
-		
-		<!-- <xsl:message>
-			level=<xsl:value-of select="$level"/>=<xsl:value-of select="."/>
-		</xsl:message> -->
-		
-		<xsl:variable name="section">
-			<xsl:call-template name="getSection">
-				<xsl:with-param name="sectionNum" select="$sectionNum"/>
-			</xsl:call-template>
-		</xsl:variable>
-			
-		<xsl:variable name="display">
-			<xsl:choose>
-				<!-- <xsl:when test="ancestor::itu:annex">true</xsl:when> -->
-				
-			</xsl:choose>
-		</xsl:variable>
-		
-		<xsl:variable name="type">
-			<xsl:value-of select="local-name(..)"/>
-		</xsl:variable>
-		
-		<item id="{$id}" level="{$level}" section="{$section}" display="{$display}" type="{$type}">
-			<xsl:value-of select="."/>
-		</item>
-		
-		<xsl:apply-templates mode="contents">
-			<xsl:with-param name="sectionNum" select="$sectionNum"/>
-		</xsl:apply-templates>
-	</xsl:template>
-	
-<!-- 	<xsl:template match="itu:clause[not(itu:title)]" mode="contents">
-		<xsl:param name="sectionNum"/>
-		<xsl:variable name="level">
-			<xsl:call-template name="getLevel"/>
-		</xsl:variable>
-		<xsl:variable name="section">
-			<xsl:for-each select="*[1]">
-				<xsl:call-template name="getSection">
-					<xsl:with-param name="sectionNum" select="$sectionNum"/>
-				</xsl:call-template>
-			</xsl:for-each>
-		</xsl:variable>
-		<item id="{@id}" level="{$level}" section="{$section}" display="false" type="clause">
-			<xsl:value-of select="."/>
-		</item>
-		<xsl:apply-templates mode="contents">
-			<xsl:with-param name="sectionNum" select="$sectionNum"/>
-		</xsl:apply-templates>
-	</xsl:template> -->
+
 	
 	<xsl:template match="itu:bibitem" mode="contents"/>
 
