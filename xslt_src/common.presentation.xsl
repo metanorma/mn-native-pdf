@@ -690,7 +690,7 @@
 		<xsl:attribute name="text-align">center</xsl:attribute>
 		<xsl:if test="$namespace = 'ogc'">
 			<xsl:attribute name="space-before">12pt</xsl:attribute>
-			<xsl:attribute name="space-after">6pt"</xsl:attribute>
+			<xsl:attribute name="space-after">6pt</xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'unece'">
 			<xsl:attribute name="margin-bottom">12pt</xsl:attribute>
@@ -706,9 +706,9 @@
 
 	<xsl:attribute-set name="figure-pseudocode-p-style">
 		<xsl:if test="$namespace = 'itu'">
-			<xsl:attribute name="font-size">10pt"</xsl:attribute>
-			<xsl:attribute name="margin-top">6pt"</xsl:attribute>
-			<xsl:attribute name="margin-bottom">6pt"</xsl:attribute>
+			<xsl:attribute name="font-size">10pt</xsl:attribute>
+			<xsl:attribute name="margin-top">6pt</xsl:attribute>
+			<xsl:attribute name="margin-bottom">6pt</xsl:attribute>
 		</xsl:if>
 	</xsl:attribute-set>
 
