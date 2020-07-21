@@ -20,7 +20,7 @@
 	
 	<xsl:variable name="namespace">gb</xsl:variable>
 	
-	<xsl:variable name="debug">false</xsl:variable>
+	<xsl:variable name="debug">true</xsl:variable>
 	<xsl:variable name="pageWidth" select="'210mm'"/>
 	<xsl:variable name="pageHeight" select="'297mm'"/>
 
@@ -48,16 +48,16 @@
 		<contents>
 			<xsl:apply-templates select="/gb:gb-standard/gb:preface/node()" mode="contents"/>
 				
-			<xsl:apply-templates select="/gb:gb-standard/gb:sections/gb:clause[1]" mode="contents"> <!-- [@id = '_scope'] -->
-				<xsl:with-param name="sectionNum" select="'1'"/>
-			</xsl:apply-templates>
-			<xsl:apply-templates select="/gb:gb-standard/gb:bibliography/gb:references[1]" mode="contents"> <!-- [@id = '_normative_references'] -->
-				<xsl:with-param name="sectionNum" select="'2'"/>
-			</xsl:apply-templates>
-			<xsl:apply-templates select="/gb:gb-standard/gb:sections/*[position() &gt; 1]" mode="contents"> <!-- @id != '_scope' -->
-				<xsl:with-param name="sectionNumSkew" select="'1'"/>
-			</xsl:apply-templates>
+			<xsl:apply-templates select="/gb:gb-standard/gb:sections/gb:clause[1]" mode="contents" /> <!-- [@id = '_scope'] -->
+				
+			<!-- Normative references -->
+			<xsl:apply-templates select="/gb:gb-standard/gb:bibliography/gb:references[1]" mode="contents" /> <!-- [@id = '_normative_references'] -->
+				
+			<xsl:apply-templates select="/gb:gb-standard/gb:sections/*[position() &gt; 1]" mode="contents" /> <!-- @id != '_scope' -->
+				
 			<xsl:apply-templates select="/gb:gb-standard/gb:annex" mode="contents"/>
+			
+			<!-- Bibliography -->
 			<xsl:apply-templates select="/gb:gb-standard/gb:bibliography/gb:references[position() &gt; 1]" mode="contents"/> <!-- @id = '_bibliography' -->
 			
 		</contents>
@@ -352,17 +352,14 @@
 						
 						<fo:block line-height="220%">
 							<xsl:variable name="margin-left">12</xsl:variable>
-							<xsl:for-each select="xalan:nodeset($contents)//item[@display = 'true'][not(@level = 2 and starts-with(@section, '0'))]"><!-- skip clause from preface -->							
+							<xsl:for-each select="xalan:nodeset($contents)//item"><!-- [@display = 'true'][not(@level = 2 and starts-with(@section, '0'))] skip clause from preface -->							
 								<fo:block text-align-last="justify">
 									<xsl:if test="@level =2">
 										<xsl:attribute name="margin-left">3.7mm</xsl:attribute>
 									</xsl:if>
 									<fo:basic-link internal-destination="{@id}" fox:alt-text="{text()}">
-										<xsl:if test="normalize-space(@section) != '' and not(@display-section = 'false')">
-											<fo:inline>
-												<xsl:if test="@type = 'annex' and @level = 1">
-													<xsl:attribute name="font-weight">bold</xsl:attribute>
-												</xsl:if>
+										<xsl:if test="normalize-space(@section) != ''">
+											<fo:inline>												
 												<xsl:value-of select="@section"/>											
 											</fo:inline>
 											<xsl:if test="not(@type = 'annex' and @level = 1)">
@@ -372,12 +369,7 @@
 												<xsl:text>&#xA0;</xsl:text>
 											</xsl:if>
 										</xsl:if>
-										<xsl:if test="@addon != ''">
-											<fo:inline font-weight="normal">(<xsl:value-of select="@addon"/>)</fo:inline>
-											<xsl:text>&#xA0;</xsl:text>
-										</xsl:if>
-										<xsl:value-of select="text()"/>
-										<xsl:text> </xsl:text>
+										<xsl:apply-templates />
 										<fo:inline keep-together.within-line="always">
 											<fo:leader font-weight="normal" leader-pattern="dots"/>
 											<fo:inline><fo:page-number-citation ref-id="{@id}"/></fo:inline>
@@ -415,19 +407,13 @@
 							</xsl:call-template>
 						</fo:block>
 					
-						<xsl:apply-templates select="/gb:gb-standard/gb:sections/gb:clause[1]"> <!-- Scope -->
-							<xsl:with-param name="sectionNum" select="'1'"/>
-						</xsl:apply-templates>
+						<xsl:apply-templates select="/gb:gb-standard/gb:sections/gb:clause[1]" /> <!-- Scope -->
 						
 						<!-- Normative references  -->
-						<xsl:apply-templates select="/gb:gb-standard/gb:bibliography/gb:references[1]">
-							<xsl:with-param name="sectionNum" select="'2'"/>
-						</xsl:apply-templates>
+						<xsl:apply-templates select="/gb:gb-standard/gb:bibliography/gb:references[1]" />
 						
 						<!-- Main sections -->
-						<xsl:apply-templates select="/gb:gb-standard/gb:sections/*[position() &gt; 1]">
-							<xsl:with-param name="sectionNumSkew" select="'1'"/>
-						</xsl:apply-templates>
+						<xsl:apply-templates select="/gb:gb-standard/gb:sections/*[position() &gt; 1]" />
 						
 						<!-- Annex(s) -->
 						<xsl:apply-templates select="/gb:gb-standard/gb:annex"/>
@@ -490,135 +476,58 @@
 		</xsl:if>		
 	</xsl:template>	
 	
-	<!-- for pass the paremeter 'sectionNum' over templates, like 'tunnel' parameter in XSLT 2.0 -->
-	<xsl:template match="node()">
-		<xsl:param name="sectionNum"/>
-		<xsl:param name="sectionNumSkew"/>
-		<xsl:apply-templates>
-			<xsl:with-param name="sectionNum" select="$sectionNum"/>
-			<xsl:with-param name="sectionNumSkew" select="$sectionNumSkew"/>
-		</xsl:apply-templates>
+	<xsl:template match="node()">		
+		<xsl:apply-templates />			
 	</xsl:template>
 	
 	<!-- ============================= -->
 	<!-- CONTENTS                                       -->
 	<!-- ============================= -->
-	<xsl:template match="node()" mode="contents">
-		<xsl:param name="sectionNum"/>
-		<xsl:param name="sectionNumSkew"/>
-		<xsl:apply-templates mode="contents">
-			<xsl:with-param name="sectionNum" select="$sectionNum"/>
-			<xsl:with-param name="sectionNumSkew" select="$sectionNumSkew"/>
-		</xsl:apply-templates>
+	<xsl:template match="node()" mode="contents">		
+		<xsl:apply-templates mode="contents" />			
 	</xsl:template>
 
-	
-	<!-- calculate main section number (1,2,3) and pass it deep into templates -->
-	<!-- it's necessary, because there is itu:bibliography/itu:references from other section, but numbering should be sequental -->
-	<xsl:template match="gb:gb-standard/gb:sections/*" mode="contents">
-		<xsl:param name="sectionNum"/>
-		<xsl:param name="sectionNumSkew" select="0"/>
-		<xsl:variable name="sectionNum_">
-			<xsl:choose>
-				<xsl:when test="$sectionNum"><xsl:value-of select="$sectionNum"/></xsl:when>
-				<xsl:when test="$sectionNumSkew != 0">
-					<xsl:variable name="number"><xsl:number count="*"/></xsl:variable> <!-- gb:sections/gb:clause | gb:sections/gb:terms -->
-					<xsl:value-of select="$number + $sectionNumSkew"/>
-				</xsl:when>
-				<xsl:otherwise>
-					<xsl:number count="*"/>
-				</xsl:otherwise>
-			</xsl:choose>
-		</xsl:variable>
-		<xsl:apply-templates mode="contents">
-			<xsl:with-param name="sectionNum" select="$sectionNum_"/>
-		</xsl:apply-templates>
-	</xsl:template>
-	
-	<!-- Any node with title element - clause, definition, annex,... -->
-	<xsl:template match="gb:title | gb:preferred" mode="contents">
-		<xsl:param name="sectionNum"/>
-		<!-- sectionNum=<xsl:value-of select="$sectionNum"/> -->
-		<xsl:variable name="id">
-			<xsl:call-template name="getId"/>
-		</xsl:variable>
-		
+	<!-- element with title -->
+	<xsl:template match="*[gb:title]" mode="contents">
 		<xsl:variable name="level">
-			<xsl:call-template name="getLevel"/>
-		</xsl:variable>
-		
-		<xsl:variable name="section">
-			<xsl:call-template name="getSection">
-				<xsl:with-param name="sectionNum" select="$sectionNum"/>
+			<xsl:call-template name="getLevel">
+				<xsl:with-param name="depth" select="gb:title/@depth"/>
 			</xsl:call-template>
 		</xsl:variable>
 		
 		<xsl:variable name="display">
 			<xsl:choose>
-				<xsl:when test="ancestor::gb:bibitem">false</xsl:when>
-				<xsl:when test="ancestor::gb:term">false</xsl:when>
+				<xsl:when test="ancestor-or-self::gb:bibitem">false</xsl:when>
+				<xsl:when test="ancestor-or-self::gb:term">false</xsl:when>
 				<xsl:when test="ancestor::gb:annex and $level &gt;= 3">false</xsl:when>
 				<xsl:when test="$level &lt;= 3">true</xsl:when>
 				<xsl:otherwise>false</xsl:otherwise>
 			</xsl:choose>
 		</xsl:variable>
 		
-		<xsl:variable name="display-section">true</xsl:variable>
+		<xsl:if test="$display = 'true'">		
 		
-		<xsl:variable name="type">
-			<xsl:value-of select="local-name(..)"/>
-		</xsl:variable>
-
-		<xsl:variable name="root">
-			<xsl:choose>
-				<xsl:when test="ancestor::gb:annex">annex</xsl:when>
-			</xsl:choose>
-		</xsl:variable>
-		
-		<item id="{$id}" level="{$level}" section="{$section}" display-section="{$display-section}" display="{$display}" type="{$type}" root="{$root}">
-			<xsl:attribute name="addon">
-				<xsl:if test="local-name(..) = 'annex'">
-					<xsl:variable name="obligation" select="../@obligation"/>
-					<xsl:variable name="title-obligation-normative">
-						<xsl:call-template name="getTitle">
-							<xsl:with-param name="name" select="'title-obligation-normative'"/>
-						</xsl:call-template>
-					</xsl:variable>
-					<xsl:choose>
-						<xsl:when test="$obligation = 'normative'"><xsl:value-of select="$title-obligation-normative"/></xsl:when>
-						<xsl:otherwise><xsl:value-of select="$obligation"/></xsl:otherwise>
-					</xsl:choose>					
-				</xsl:if>
-			</xsl:attribute>
-			<xsl:value-of select="."/>
-		</item>
-		
-		<xsl:apply-templates mode="contents">
-			<xsl:with-param name="sectionNum" select="$sectionNum"/>
-		</xsl:apply-templates>
+			<xsl:variable name="section">
+				<xsl:call-template name="getSection"/>
+			</xsl:variable>
+			
+			<xsl:variable name="title">
+				<xsl:call-template name="getName"/>
+			</xsl:variable>
+			
+			<xsl:variable name="type">
+				<xsl:value-of select="local-name()"/>
+			</xsl:variable>
+			
+			<item id="{@id}" level="{$level}" section="{$section}" type="{$type}">
+				<xsl:apply-templates select="xalan:nodeset($title)" mode="contents_item"/>
+			</item>
+			<xsl:apply-templates  mode="contents" />
+		</xsl:if>	
 		
 	</xsl:template>
 	
 	
-	<xsl:template match="gb:li" mode="contents">
-		<xsl:param name="sectionNum" />
-		<item level="" id="{@id}" display="false" type="li">
-			<xsl:attribute name="section">
-				<xsl:call-template name="getListItemFormat"/>
-			</xsl:attribute>
-			<xsl:attribute name="parent_section">
-				<xsl:for-each select="ancestor::*[not(local-name() = 'p' or local-name() = 'ol')][1]">
-					<xsl:call-template name="getSection">
-						<xsl:with-param name="sectionNum" select="$sectionNum"/>
-					</xsl:call-template>
-				</xsl:for-each>
-			</xsl:attribute>
-		</item>
-		<xsl:apply-templates mode="contents">
-			<xsl:with-param name="sectionNum" select="$sectionNum"/>
-		</xsl:apply-templates>
-	</xsl:template>
-
 	<xsl:template name="getListItemFormat">
 		<xsl:choose>
 			<xsl:when test="local-name(..) = 'ul'">&#x2014;</xsl:when> <!-- dash -->
@@ -695,32 +604,15 @@
 	
 	
 	<!-- clause, terms, clause, ...-->
-	<xsl:template match="gb:gb-standard/gb:sections/*">
-		<xsl:param name="sectionNum"/>
-		<xsl:param name="sectionNumSkew" select="0"/>
+	<xsl:template match="gb:gb-standard/gb:sections/*">		
 		<fo:block>
 			<xsl:variable name="pos"><xsl:number count="gb:sections/gb:clause | gb:sections/gb:terms"/></xsl:variable>
 			<xsl:if test="$pos &gt;= 2">
 				<xsl:attribute name="space-before">18pt</xsl:attribute>
 			</xsl:if>
-			<!-- pos=<xsl:value-of select="$pos" /> -->
-			<xsl:variable name="sectionNum_">
-				<xsl:choose>
-					<xsl:when test="$sectionNum"><xsl:value-of select="$sectionNum"/></xsl:when>
-					<xsl:when test="$sectionNumSkew != 0">
-						<xsl:variable name="number"><xsl:number count="gb:sections/gb:clause | gb:sections/gb:terms"/></xsl:variable>
-						<xsl:value-of select="$number + $sectionNumSkew"/>
-					</xsl:when>
-				</xsl:choose>
-			</xsl:variable>
-			<xsl:if test="not(gb:title)">
-				<fo:block margin-top="3pt" margin-bottom="12pt">
-					<xsl:value-of select="$sectionNum_"/><xsl:number format=".1 " level="multiple" count="gb:clause" />
-				</fo:block>
-			</xsl:if>
-			<xsl:apply-templates>
-				<xsl:with-param name="sectionNum" select="$sectionNum_"/>
-			</xsl:apply-templates>
+			
+			<xsl:apply-templates />
+				
 		</fo:block>
 	</xsl:template>
 	
@@ -1041,8 +933,7 @@
 	
 	
 	<xsl:template match="gb:preferred">
-		<xsl:param name="sectionNum"/>
-
+		
 		<fo:inline font-family="SimHei" font-size="11pt">
 			<xsl:if test="not(preceding-sibling::*[1][local-name() = 'preferred'])">
 				<xsl:attribute name="padding-left">7.4mm</xsl:attribute>
@@ -1057,7 +948,6 @@
 	</xsl:template>
 	
 	<xsl:template match="gb:admitted">
-		<xsl:param name="sectionNum"/>
 		
 		<fo:inline font-size="11pt">
 			<xsl:if test="not(preceding-sibling::*[1][local-name() = 'admitted'])">
@@ -1073,7 +963,7 @@
 	</xsl:template>
 	
 	<xsl:template match="gb:deprecates">
-		<xsl:param name="sectionNum"/>		
+		
 		<fo:inline font-size="11pt">
 			<xsl:if test="not(preceding-sibling::*[1][local-name() = 'deprecates'])">
 				<xsl:attribute name="padding-left">7.4mm</xsl:attribute>
@@ -1340,85 +1230,6 @@
 		</fo:static-content>
 	</xsl:template>
 	
-
-	<xsl:template name="getSection">
-		<xsl:param name="sectionNum"/>
-		<xsl:variable name="level">
-			<xsl:call-template name="getLevel"/>
-		</xsl:variable>
-		<xsl:variable name="section">
-			<xsl:choose>
-				<xsl:when test="ancestor::gb:bibliography">
-					<xsl:value-of select="$sectionNum"/>
-				</xsl:when>
-				<xsl:when test="ancestor::gb:sections">
-					<!-- 1, 2, 3, 4, ... from main section (not annex, bibliography, ...) -->
-					<xsl:choose>
-						<xsl:when test="$level = 1">
-							<xsl:value-of select="$sectionNum"/>
-						</xsl:when>
-						<xsl:when test="$level &gt;= 2">
-							<xsl:variable name="num">
-								<xsl:call-template name="getSubSection"/>								
-							</xsl:variable>
-							<xsl:value-of select="concat($sectionNum, $num)"/>
-						</xsl:when>
-						<xsl:otherwise>
-							<!-- z<xsl:value-of select="$sectionNum"/>z -->
-						</xsl:otherwise>
-					</xsl:choose>
-				</xsl:when>				
-				<xsl:when test="ancestor::gb:annex">
-					<xsl:variable name="annexid" select="normalize-space(/gb:gb-standard/gb:bibdata/gb:ext/gb:structuredidentifier/gb:annexid)"/>
-					<xsl:choose>
-						<xsl:when test="$level = 1">
-							<xsl:variable name="title-annex">
-								<xsl:call-template name="getTitle">
-									<xsl:with-param name="name" select="'title-annex'"/>
-								</xsl:call-template>
-							</xsl:variable>
-							<xsl:value-of select="$title-annex"/>							
-							<xsl:choose>
-								<xsl:when test="count(//gb:annex) = 1 and $annexid != ''">
-									<xsl:value-of select="$annexid"/>
-								</xsl:when>
-								<xsl:otherwise>
-									<xsl:number format="A" level="any" count="gb:annex"/>
-								</xsl:otherwise>
-							</xsl:choose>
-						</xsl:when>
-						<xsl:otherwise>
-							<xsl:choose>
-								<xsl:when test="count(//gb:annex) = 1 and $annexid != ''">
-									<xsl:value-of select="$annexid"/><xsl:number format=".1" level="multiple" count="gb:clause"/>
-								</xsl:when>
-								<xsl:otherwise>
-									<xsl:number format="A.1" level="multiple" count="gb:annex | gb:clause"/>
-								</xsl:otherwise>
-							</xsl:choose>
-						</xsl:otherwise>
-					</xsl:choose>
-				</xsl:when>
-				<xsl:when test="ancestor::gb:preface"> <!-- if preface and there is clause(s) -->
-					<xsl:choose>
-						<xsl:when test="$level = 1 and  ..//gb:clause">0</xsl:when>
-						<xsl:when test="$level &gt;= 2">
-							<xsl:variable name="num">
-								<xsl:number format=".1" level="multiple" count="gb:clause"/>
-							</xsl:variable>
-							<xsl:value-of select="concat('0', $num)"/>
-						</xsl:when>
-						<xsl:otherwise>
-							<!-- z<xsl:value-of select="$sectionNum"/>z -->
-						</xsl:otherwise>
-					</xsl:choose>
-				</xsl:when>
-				<xsl:otherwise>
-				</xsl:otherwise>
-			</xsl:choose>
-		</xsl:variable>
-		<xsl:value-of select="$section"/>
-	</xsl:template>
 
 	
 	<xsl:template name="addLetterSpacing">

@@ -306,7 +306,7 @@
 		</xsl:if>
 	</xsl:template>
 
-	<xsl:template match="csa:fn" mode="contents"/>
+
 	<!-- ============================= -->
 	<!-- ============================= -->
 		

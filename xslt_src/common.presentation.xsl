@@ -2978,6 +2978,20 @@
 		</xsl:choose>
 	</xsl:template>
 
+	<xsl:template match="*[local-name() = 'fn']" mode="contents"/>
+	<xsl:template match="*[local-name() = 'fn']" mode="contents_item"/>
+
+	<xsl:template match="*[local-name() = 'strong']" mode="contents_item">
+		<xsl:copy-of select="."/>
+		<!-- <fo:inline font-weight="bold">
+			<xsl:apply-templates />
+		</fo:inline> -->
+	</xsl:template>
+
+	<xsl:template match="*[local-name() = 'br']" mode="contents_item">
+		<xsl:text> </xsl:text>
+	</xsl:template>
+
 	<!-- ====== -->
 	<!-- sourcecode   -->	
 	<!-- ====== -->	

@@ -362,14 +362,6 @@
 			</xsl:choose>
 		</xsl:variable>
 		
-		<xsl:variable name="section">
-			<xsl:call-template name="getSection"/>
-		</xsl:variable>
-		
-		<xsl:variable name="title">
-			<xsl:call-template name="getName"/>			
-		</xsl:variable>
-		
 		<xsl:if test="$display = 'true'">		
 		
 			<xsl:variable name="section">
@@ -385,68 +377,6 @@
 			</item>
 			<xsl:apply-templates  mode="contents" />
 		</xsl:if>	
-		
-	</xsl:template>
-	
-	
-	
-	
-	<!-- Any node with title element - clause, definition, annex,... -->
-	<xsl:template match="csd:title | csd:preferred" mode="contents2">
-		<xsl:param name="sectionNum"/>
-		<!-- sectionNum=<xsl:value-of select="$sectionNum"/> -->
-		<xsl:variable name="id">
-			<xsl:call-template name="getId"/>
-		</xsl:variable>
-		
-		<xsl:variable name="level">
-			<xsl:call-template name="getLevel"/>
-		</xsl:variable>
-		
-		<xsl:variable name="section">
-			<xsl:call-template name="getSection">
-				<xsl:with-param name="sectionNum" select="$sectionNum"/>
-			</xsl:call-template>
-		</xsl:variable>
-		
-		<xsl:variable name="display">
-			<xsl:choose>
-				<xsl:when test="ancestor::csd:bibitem">false</xsl:when>
-				<xsl:when test="ancestor::csd:term">false</xsl:when>
-				<xsl:when test="ancestor::csd:annex and $level &gt;= 2">false</xsl:when>
-				<xsl:when test="$level &lt;= 3">true</xsl:when>
-				<xsl:otherwise>false</xsl:otherwise>
-			</xsl:choose>
-		</xsl:variable>
-		
-		<xsl:variable name="display-section">
-			<xsl:choose>
-				<xsl:when test="ancestor::csd:annex">false</xsl:when>
-				<xsl:otherwise>true</xsl:otherwise>
-			</xsl:choose>
-		</xsl:variable>
-		
-		<xsl:variable name="type">
-			<xsl:value-of select="local-name(..)"/>
-		</xsl:variable>
-
-		<xsl:variable name="root">
-			<xsl:choose>
-				<xsl:when test="ancestor::csd:annex">annex</xsl:when>
-				<xsl:when test="ancestor::csd:clause">clause</xsl:when>
-			</xsl:choose>
-		</xsl:variable>
-		
-		<item id="{$id}" level="{$level}" section="{$section}" display-section="{$display-section}" display="{$display}" type="{$type}" root="{$root}">
-			<xsl:attribute name="addon">
-				<xsl:if test="local-name(..) = 'annex'"><xsl:value-of select="../@obligation"/></xsl:if>
-			</xsl:attribute>
-			<xsl:value-of select="."/>
-		</item>
-		
-		<xsl:apply-templates mode="contents">
-			<xsl:with-param name="sectionNum" select="$sectionNum"/>
-		</xsl:apply-templates>
 		
 	</xsl:template>
 	
@@ -1000,96 +930,5 @@
 		</fo:static-content>
 	</xsl:template>
 
-
-
-	<xsl:template name="getSection2">
-		<xsl:param name="sectionNum"/>
-		<xsl:variable name="level">
-			<xsl:call-template name="getLevel"/>
-		</xsl:variable>
-		<xsl:variable name="section">
-			<xsl:choose>
-				<xsl:when test="ancestor::csd:bibliography">
-					<xsl:value-of select="$sectionNum"/>
-				</xsl:when>
-				<xsl:when test="ancestor::csd:sections">
-					<!-- 1, 2, 3, 4, ... from main section (not annex, bibliography, ...) -->
-					<xsl:choose>
-						<xsl:when test="$level = 1">
-							<xsl:value-of select="$sectionNum"/>
-						</xsl:when>
-						<xsl:when test="$level &gt;= 2">
-							<xsl:variable name="num">
-								<xsl:call-template name="getSubSection"/>								
-							</xsl:variable>
-							<xsl:value-of select="concat($sectionNum, $num)"/>
-						</xsl:when>
-						<xsl:otherwise>
-							<!-- z<xsl:value-of select="$sectionNum"/>z -->
-						</xsl:otherwise>
-					</xsl:choose>
-					<!-- <xsl:text>.</xsl:text> -->
-				</xsl:when>
-				<!-- <xsl:when test="ancestor::csd:annex[@obligation = 'informative']">
-					<xsl:choose>
-						<xsl:when test="$level = 1">
-							<xsl:text>Annex  </xsl:text>
-							<xsl:number format="I" level="any" count="csd:annex[@obligation = 'informative']"/>
-						</xsl:when>
-						<xsl:otherwise>
-							<xsl:number format="I.1" level="multiple" count="csd:annex[@obligation = 'informative'] | csd:clause"/>
-						</xsl:otherwise>
-					</xsl:choose>
-				</xsl:when> -->
-				<xsl:when test="ancestor::csd:annex">
-					<xsl:choose>
-						<xsl:when test="$level = 1">
-							<xsl:variable name="title-annex">
-								<xsl:call-template name="getTitle">
-									<xsl:with-param name="name" select="'title-annex'"/>
-								</xsl:call-template>
-							</xsl:variable>
-							<xsl:value-of select="$title-annex"/>
-							<xsl:choose>
-								<xsl:when test="count(//csd:annex) = 1">
-									<xsl:value-of select="/csd:csd-standard/csd:bibdata/csd:ext/csd:structuredidentifier/csd:annexid"/>
-								</xsl:when>
-								<xsl:otherwise>
-									<xsl:number format="A." level="any" count="csd:annex"/>
-								</xsl:otherwise>
-							</xsl:choose>
-						</xsl:when>
-						<xsl:otherwise>
-							<xsl:choose>
-								<xsl:when test="count(//csd:annex) = 1">
-									<xsl:value-of select="/csd:csd-standard/csd:bibdata/csd:ext/csd:structuredidentifier/csd:annexid"/><xsl:number format=".1" level="multiple" count="csd:clause"/>
-								</xsl:when>
-								<xsl:otherwise>
-									<xsl:number format="A.1." level="multiple" count="csd:annex | csd:clause"/>
-								</xsl:otherwise>
-							</xsl:choose>
-						</xsl:otherwise>
-					</xsl:choose>
-				</xsl:when>
-				<xsl:when test="ancestor::csd:preface"> <!-- if preface and there is clause(s) -->
-					<xsl:choose>
-						<xsl:when test="$level = 1 and  ..//csd:clause">0</xsl:when>
-						<xsl:when test="$level &gt;= 2">
-							<xsl:variable name="num">
-								<xsl:number format=".1." level="multiple" count="csd:clause"/>
-							</xsl:variable>
-							<xsl:value-of select="concat('0', $num)"/>
-						</xsl:when>
-						<xsl:otherwise>
-							<!-- z<xsl:value-of select="$sectionNum"/>z -->
-						</xsl:otherwise>
-					</xsl:choose>
-				</xsl:when>
-				<xsl:otherwise>
-				</xsl:otherwise>
-			</xsl:choose>
-		</xsl:variable>
-		<xsl:value-of select="$section"/>
-	</xsl:template>
 	
 </xsl:stylesheet>

@@ -1204,58 +1204,6 @@
 		</fo:static-content>
 	</xsl:template>
 
-	<xsl:template name="getSection">
-		<xsl:variable name="level">
-			<xsl:call-template name="getLevel"/>
-		</xsl:variable>
-		
-		<xsl:variable name="section">
-			<xsl:choose>
-				
-				<xsl:when test="ancestor::un:sections">
-					<!-- 1, 2, 3, 4, ... from main section (not annex ...) -->
-					<xsl:choose>
-						<xsl:when test="$level = 1">
-							<xsl:number format="I." count="//un:sections/un:clause"/>
-						</xsl:when>
-						<xsl:when test="$level = 2">
-							<xsl:number format="A." count="//un:sections/un:clause/un:clause[un:title]"/>
-						</xsl:when>
-						<xsl:when test="$level &gt;= 3">
-							<xsl:number format="1." count="//un:sections/un:clause/un:clause/un:clause[un:title]"/>
-						</xsl:when>
-						<xsl:otherwise>
-						</xsl:otherwise>
-					</xsl:choose>
-				</xsl:when>
-				<xsl:when test="ancestor::un:annex">
-					<xsl:choose>
-						<xsl:when test="$level = 1">
-							<xsl:variable name="title-annex">
-								<xsl:call-template name="getTitle">
-									<xsl:with-param name="name" select="'title-annex'"/>
-								</xsl:call-template>
-							</xsl:variable>
-							<xsl:choose>
-								<xsl:when test="local-name() = 'title'">
-									<xsl:value-of select="java:toUpperCase(java:java.lang.String.new($title-annex))"/>
-									<xsl:number format="A" level="any" count="un:annex"/>
-								</xsl:when>
-								<xsl:otherwise><xsl:value-of select="normalize-space($title-annex)"/></xsl:otherwise>
-							</xsl:choose>
-						</xsl:when>
-						<xsl:otherwise>
-							<xsl:variable name="annex_id" select="ancestor::un:annex/@id"/>
-							<xsl:number format="1." count="//un:annex[@id = $annex_id]/un:clause[un:title]"/>
-						</xsl:otherwise>
-					</xsl:choose>
-				</xsl:when>
-				<xsl:otherwise>
-				</xsl:otherwise>
-			</xsl:choose>
-		</xsl:variable>
-		<xsl:value-of select="$section"/>
-	</xsl:template>	
 
 	<xsl:template name="number-to-words">
 		<xsl:param name="number" />
