@@ -3582,6 +3582,7 @@
 						<xsl:when test="ancestor::*[local-name() = 'bibliography']">
 							<xsl:value-of select="$level_total - 2"/>
 						</xsl:when>
+						<xsl:when test="local-name() = 'annex'">1</xsl:when>
 						<xsl:when test="local-name(ancestor::*[1]) = 'annex'">1</xsl:when>
 						<xsl:otherwise>
 							<xsl:value-of select="$level_total - 1"/>

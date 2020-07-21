@@ -20,7 +20,7 @@
 	
 	<xsl:variable name="namespace">gb</xsl:variable>
 	
-	<xsl:variable name="debug">true</xsl:variable>
+	<xsl:variable name="debug">false</xsl:variable>
 	<xsl:variable name="pageWidth" select="'210mm'"/>
 	<xsl:variable name="pageHeight" select="'297mm'"/>
 
