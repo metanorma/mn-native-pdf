@@ -3576,11 +3576,17 @@
 						<xsl:when test="ancestor::*[local-name() = 'preface']">
 							<xsl:value-of select="$level_total - 2"/>
 						</xsl:when>
+						<!-- <xsl:when test="parent::*[local-name() = 'sections']">
+							<xsl:value-of select="$level_total - 1"/>
+						</xsl:when> -->
 						<xsl:when test="ancestor::*[local-name() = 'sections']">
-							<xsl:value-of select="$level_total - 2"/>
+							<xsl:value-of select="$level_total - 1"/>
 						</xsl:when>
 						<xsl:when test="ancestor::*[local-name() = 'bibliography']">
-							<xsl:value-of select="$level_total - 2"/>
+							<xsl:value-of select="$level_total - 1"/>
+						</xsl:when>
+						<xsl:when test="ancestor::*[local-name() = 'annex']">
+							<xsl:value-of select="$level_total"/>
 						</xsl:when>
 						<xsl:when test="local-name() = 'annex'">1</xsl:when>
 						<xsl:when test="local-name(ancestor::*[1]) = 'annex'">1</xsl:when>
