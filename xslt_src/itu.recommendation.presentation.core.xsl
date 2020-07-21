@@ -1089,8 +1089,8 @@
 		<xsl:apply-templates />			
 	</xsl:template> -->
 	
-	<xsl:template match="itu:formula" name="formula">
-		<fo:block id="{@id}" margin-top="6pt" margin-bottom="6pt"> <!--  text-align="center" -->
+	<xsl:template match="itu:formula" name="formula" priority="2">
+		<fo:block id="{@id}" margin-top="6pt" margin-bottom="6pt">
 			<xsl:apply-templates />			
 		</fo:block>
 	</xsl:template>

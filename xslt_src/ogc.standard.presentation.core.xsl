@@ -1116,14 +1116,8 @@
 		
 		
 	</xsl:template>
-	
-	<xsl:template match="ogc:formula">
-		<fo:block id="{@id}">
-			<xsl:apply-templates />
-		</fo:block>
-	</xsl:template>
 
-	
+
 	<xsl:template match="ogc:formula/ogc:stem">
 		<fo:block margin-top="6pt" margin-bottom="12pt">
 			<fo:table table-layout="fixed" width="100%">

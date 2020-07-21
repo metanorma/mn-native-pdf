@@ -2676,7 +2676,14 @@
 	
 	<!-- ====== -->
 	<!-- formula  -->
-	<!-- ====== -->
+	<!-- ====== -->	
+	<xsl:template match="*[local-name() = 'csa:formula']">
+		<fo:block id="{@id}">
+			<xsl:apply-templates />
+		</fo:block>
+	</xsl:template>
+
+	
 	<xsl:template match="*[local-name() = 'formula']/*[local-name() = 'dt']/*[local-name() = 'stem']">
 		<fo:inline>
 			<xsl:apply-templates />

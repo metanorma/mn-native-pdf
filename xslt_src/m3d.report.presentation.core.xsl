@@ -936,12 +936,6 @@
 		</fo:block>
 	</xsl:template>
 	
-	<xsl:template match="m3d:formula">
-		<fo:block id="{@id}">
-			<xsl:apply-templates />
-		</fo:block>
-	</xsl:template>
-	
 	
 	<xsl:template match="m3d:formula/m3d:stem">
 		<fo:block margin-top="14pt" margin-bottom="14pt">
@@ -962,9 +956,7 @@
 						</fo:table-cell>
 					</fo:table-row>
 				</fo:table-body>
-			</fo:table>
-			<fo:inline keep-together.within-line="always">
-			</fo:inline>
+			</fo:table>			
 		</fo:block>
 	</xsl:template>
 	

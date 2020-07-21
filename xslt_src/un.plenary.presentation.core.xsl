@@ -859,7 +859,7 @@
 	</xsl:template>	
 
 	
-	<xsl:template match="un:formula" name="formula">
+	<xsl:template match="un:formula" name="formula" priority="2">
 		<fo:block id="{@id}" margin-top="6pt">
 			<fo:table table-layout="fixed" width="100%">
 				<fo:table-column column-width="95%"/>
@@ -882,9 +882,7 @@
 						</fo:table-cell>
 					</fo:table-row>
 				</fo:table-body>
-			</fo:table>
-			<fo:inline keep-together.within-line="always">
-			</fo:inline>
+			</fo:table>			
 		</fo:block>
 	</xsl:template>
 	

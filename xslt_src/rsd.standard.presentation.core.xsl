@@ -890,12 +890,8 @@
 		
 	</xsl:template>
 	
-	<xsl:template match="rsd:formula">
-		<fo:block id="{@id}">
-			<xsl:apply-templates />
-		</fo:block>
-	</xsl:template>
-	
+
+
 	<xsl:template match="rsd:formula/rsd:stem">
 		<fo:block margin-top="6pt" margin-bottom="12pt">
 			<fo:table table-layout="fixed" width="100%">

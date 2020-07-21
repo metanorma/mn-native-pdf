@@ -2034,11 +2034,6 @@
 		</xsl:call-template>
 	</xsl:template>
 	
-	<xsl:template match="iec:formula">
-		<fo:block id="{@id}">
-			<xsl:apply-templates />
-		</fo:block>
-	</xsl:template>
 	
 	
 	<xsl:template match="iec:admitted/iec:stem">
@@ -2055,7 +2050,7 @@
 				<fo:table-body>
 					<fo:table-row>
 						<fo:table-cell display-align="center">
-							<fo:block text-align="center"> <!-- left margin-left="5mm" -->
+							<fo:block text-align="center">
 								<xsl:apply-templates />
 							</fo:block>
 						</fo:table-cell>

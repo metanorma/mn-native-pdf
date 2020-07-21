@@ -1826,13 +1826,7 @@
 		</fo:block>
 	</xsl:template>
 	
-	<xsl:template match="iso:formula">
-		<fo:block id="{@id}">
-			<xsl:apply-templates />
-		</fo:block>
-	</xsl:template>
-	
-	
+
 	<xsl:template match="iso:formula/iso:stem">
 		<fo:block margin-top="6pt" margin-bottom="12pt">
 			<fo:table table-layout="fixed" width="100%">
@@ -1852,9 +1846,7 @@
 						</fo:table-cell>
 					</fo:table-row>
 				</fo:table-body>
-			</fo:table>
-			<fo:inline keep-together.within-line="always">
-			</fo:inline>
+			</fo:table>			
 		</fo:block>
 	</xsl:template>
 	
@@ -2092,18 +2084,5 @@
 		</xsl:if>
 	</xsl:template>
 
-	<xsl:template name="getFormulaNumber">
-		<xsl:param name="display" select="'true'"/>		
-		<xsl:if test="$display = 'true'">
-			<xsl:choose>
-				<xsl:when test="ancestor::iso:annex">
-					<xsl:number format="(A.1)" level="multiple" count="iso:annex | iso:formula[not(@unnumbered='true')]"/>
-				</xsl:when>
-				<xsl:otherwise> <!-- not(ancestor::iso:annex) -->
-					<xsl:text>(</xsl:text><xsl:number level="any" count="iso:formula[not(@unnumbered='true')]"/><xsl:text>)</xsl:text>				
-				</xsl:otherwise>
-			</xsl:choose>
-		</xsl:if>
-	</xsl:template>
 	
 </xsl:stylesheet>

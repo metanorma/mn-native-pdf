@@ -1164,12 +1164,6 @@
 		</fo:block>
 	</xsl:template>
 	
-	<xsl:template match="gb:formula">
-		<fo:block id="{@id}">
-			<xsl:apply-templates />
-		</fo:block>
-	</xsl:template>
-	
 
 	<xsl:template match="gb:formula/gb:stem">
 		<fo:block font-size="11pt" margin-top="14pt" margin-bottom="14pt">

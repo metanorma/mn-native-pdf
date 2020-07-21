@@ -841,12 +841,7 @@
 		</fo:block>
 	</xsl:template>
 	
-	<xsl:template match="csd:formula">
-		<fo:block id="{@id}">
-			<xsl:apply-templates />
-		</fo:block>
-	</xsl:template>
-	
+
 	
 	<xsl:template match="csd:formula/csd:stem">
 		<fo:block margin-top="6pt" margin-bottom="12pt">

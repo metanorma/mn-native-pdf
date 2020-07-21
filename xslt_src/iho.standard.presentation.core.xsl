@@ -692,13 +692,7 @@
 		</fo:block-container>		
 	</xsl:template>
 
-	<xsl:template match="iho:formula">
-		<fo:block id="{@id}">
-			<xsl:apply-templates />
-		</fo:block>
-	</xsl:template>
-	
-	
+
 	<xsl:template match="iho:formula/iho:stem">
 		<fo:block margin-top="6pt" margin-bottom="12pt" text-align="center">
 			<xsl:apply-templates />						
