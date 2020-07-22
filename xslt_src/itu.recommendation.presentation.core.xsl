@@ -874,7 +874,7 @@
 				</xsl:choose>
 			</xsl:if>
 			<xsl:text>: </xsl:text>
-			<xsl:apply-templates select="following-sibling::itu:definition/node()" mode="process"/> <!--   -->
+			<xsl:apply-templates select="following-sibling::itu:definition/node()" mode="process"/>			
 		</fo:block>
 		<!-- <xsl:if test="following-sibling::itu:table">
 			<fo:block space-after="18pt">&#xA0;</fo:block>
@@ -882,7 +882,7 @@
 	</xsl:template>
 	
 	<xsl:template match="itu:definition/itu:p"/>
-	<xsl:template match="itu:definition/itu:formula"/>
+	<xsl:template match="itu:definition/itu:formula" priority="2"/>
 	
 	<xsl:template match="itu:definition/itu:p" mode="process">
 		<xsl:choose>
@@ -1089,7 +1089,7 @@
 		<xsl:apply-templates />			
 	</xsl:template> -->
 	
-	<xsl:template match="itu:formula" name="formula" priority="2">
+	<xsl:template match="itu:formula" name="formula">
 		<fo:block id="{@id}" margin-top="6pt" margin-bottom="6pt">
 			<xsl:apply-templates />			
 		</fo:block>

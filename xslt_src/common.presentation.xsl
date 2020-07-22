@@ -2677,7 +2677,7 @@
 	<!-- ====== -->
 	<!-- formula  -->
 	<!-- ====== -->	
-	<xsl:template match="*[local-name() = 'csa:formula']">
+	<xsl:template match="*[local-name() = 'formula']">
 		<fo:block id="{@id}">
 			<xsl:apply-templates />
 		</fo:block>
