@@ -430,38 +430,9 @@
 		</fo:block>
 	</xsl:template>
 	
-	<!-- Foreword, Introduction -->
-	<xsl:template match="csd:csd-standard/csd:preface/*">
-		<fo:block break-after="page"/>
-		<!-- <fo:block> -->
-			<xsl:apply-templates />
-		<!-- </fo:block> -->
-	</xsl:template>
-	
 
-	
-	<!-- clause, terms, clause, ...-->
-	<xsl:template match="csd:csd-standard/csd:sections/*">
-		
-		<fo:block>
-			<xsl:variable name="pos"><xsl:number count="csd:sections/csd:clause | csd:sections/csd:terms"/></xsl:variable>
-			<xsl:if test="$pos &gt;= 2">
-				<xsl:attribute name="space-before">18pt</xsl:attribute>
-			</xsl:if>
-			
-			<xsl:apply-templates />
-				
-		</fo:block>
-	</xsl:template>
-	
-
-	
 	
 	<xsl:template match="csd:title">
-	
-		<xsl:variable name="id"/>
-			<!-- <xsl:call-template name="getId"/>			
-		</xsl:variable> -->
 		
 		<xsl:variable name="level">
 			<xsl:call-template name="getLevel"/>
@@ -487,7 +458,6 @@
 		<xsl:variable name="color" select="'rgb(14, 26, 133)'"/>
 		
 		<xsl:element name="{$element-name}">
-			<xsl:attribute name="id"><xsl:value-of select="$id"/></xsl:attribute>
 			<xsl:attribute name="font-size"><xsl:value-of select="$font-size"/></xsl:attribute>
 			<xsl:attribute name="font-weight">bold</xsl:attribute>			
 			<xsl:attribute name="margin-bottom">12pt</xsl:attribute>
@@ -701,7 +671,9 @@
 	<!-- <xsl:template match="csd:references[@id = '_bibliography']"> -->
 	<xsl:template match="csd:references[position() &gt; 1]">
 		<fo:block break-after="page"/>
+		<fo:block id="{@id}">
 			<xsl:apply-templates />
+		</fo:block>
 	</xsl:template>
 
 

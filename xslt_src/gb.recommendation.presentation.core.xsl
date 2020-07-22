@@ -498,9 +498,8 @@
 		<xsl:variable name="display">
 			<xsl:choose>
 				<xsl:when test="ancestor-or-self::gb:bibitem">false</xsl:when>
-				<xsl:when test="ancestor-or-self::gb:term">false</xsl:when>
-				<xsl:when test="ancestor::gb:annex and $level &gt;= 3">false</xsl:when>
-				<xsl:when test="$level &lt;= 3">true</xsl:when>
+				<xsl:when test="ancestor-or-self::gb:term">false</xsl:when>				
+				<xsl:when test="$level &lt;= 2">true</xsl:when>
 				<xsl:otherwise>false</xsl:otherwise>
 			</xsl:choose>
 		</xsl:variable>
@@ -596,26 +595,6 @@
 		</fo:block>
 	</xsl:template>
 	
-	<!-- Foreword, Introduction -->
-	<xsl:template match="gb:gb-standard/gb:preface/*">
-		<fo:block break-after="page"/>
-		<xsl:apply-templates />
-	</xsl:template>
-	
-	
-	<!-- clause, terms, clause, ...-->
-	<xsl:template match="gb:gb-standard/gb:sections/*">		
-		<fo:block>
-			<xsl:variable name="pos"><xsl:number count="gb:sections/gb:clause | gb:sections/gb:terms"/></xsl:variable>
-			<xsl:if test="$pos &gt;= 2">
-				<xsl:attribute name="space-before">18pt</xsl:attribute>
-			</xsl:if>
-			
-			<xsl:apply-templates />
-				
-		</fo:block>
-	</xsl:template>
-	
 	
 	<!-- ====== -->
 	<!-- title      -->
@@ -645,10 +624,6 @@
 	
 	<xsl:template match="gb:title">
 		
-		<xsl:variable name="id"/>
-			<!-- <xsl:call-template name="getId"/>			
-		</xsl:variable> -->
-		
 		<xsl:variable name="level">
 			<xsl:call-template name="getLevel"/>
 		</xsl:variable>
@@ -675,7 +650,6 @@
 		</xsl:variable>
 		
 		<xsl:element name="{$element-name}">
-			<xsl:attribute name="id"><xsl:value-of select="$id"/></xsl:attribute>
 			<xsl:attribute name="font-size"><xsl:value-of select="$font-size"/></xsl:attribute>
 			<xsl:attribute name="font-family"><xsl:value-of select="$font-family"/></xsl:attribute>
 			<xsl:attribute name="margin-top">
@@ -684,7 +658,7 @@
 					<xsl:when test="$level = 2 and ancestor::gb:annex">10pt</xsl:when>
 					<xsl:when test="$level = 1">16pt</xsl:when>
 					<xsl:when test="$level = ''">6pt</xsl:when>
-					<xsl:when test="$level &gt;= 3">6pt</xsl:when>
+					<xsl:when test="$level &gt;= 5">6pt</xsl:when>
 					<xsl:otherwise>12pt</xsl:otherwise>
 				</xsl:choose>
 			</xsl:attribute>
@@ -692,7 +666,7 @@
 				<xsl:choose>
 					<xsl:when test="ancestor::gb:preface">24pt</xsl:when>
 					<xsl:when test="$level = 1">16pt</xsl:when>
-					<xsl:when test="$level &gt;= 3">6pt</xsl:when>
+					<xsl:when test="$level &gt;= 5">6pt</xsl:when>
 					<xsl:otherwise>8pt</xsl:otherwise>
 				</xsl:choose>
 			</xsl:attribute>

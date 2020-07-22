@@ -787,12 +787,12 @@
 	</xsl:attribute-set>
 	
 	<xsl:attribute-set name="tt-style">
-		<xsl:if test="$namespace  = 'csa' or $namespace  = 'csd' or $namespace  = 'rsd'">
+		<xsl:if test="$namespace = 'csa' or $namespace = 'csd' or $namespace = 'rsd'">
 			<xsl:attribute name="font-family">SourceCodePro</xsl:attribute>
 			<xsl:attribute name="font-size">10pt</xsl:attribute>
 		</xsl:if>
-		<xsl:if test="$namespace  = 'gb' or $namespace  = 'iec' or $namespace  = 'iho' or $namespace  = 'iso' or $namespace  = 'm3d' or 
-										 $namespace  = 'ogc'">
+		<xsl:if test="$namespace = 'gb' or $namespace = 'iec' or $namespace = 'iho' or $namespace = 'iso' or $namespace = 'm3d' or 
+										 $namespace = 'ogc'">
 			<xsl:attribute name="font-family">Courier</xsl:attribute>
 			<xsl:attribute name="font-size">10pt</xsl:attribute>			
 		</xsl:if>
@@ -828,10 +828,10 @@
 
 
 	<xsl:attribute-set name="definition-style">
-		<xsl:if test="$namespace  = 'csa' or $namespace  = 'ogc' or $namespace  = 'rsd'">
+		<xsl:if test="$namespace = 'csa' or $namespace = 'ogc' or $namespace = 'rsd'">
 			<xsl:attribute name="space-after">6pt</xsl:attribute>
 		</xsl:if>
-		<xsl:if test="$namespace  = 'csd' or $namespace  = 'iec' or $namespace  = 'iho' or $namespace  = 'iso'">
+		<xsl:if test="$namespace = 'csd' or $namespace = 'iec' or $namespace = 'iho' or $namespace = 'iso'">
 			<xsl:attribute name="margin-bottom">6pt</xsl:attribute>
 		</xsl:if>
 	</xsl:attribute-set>
@@ -2890,8 +2890,14 @@
 	<!-- term      -->	
 	<!-- ====== -->
 	
+	<xsl:template match="*[local-name() = 'terms']">
+		<fo:block id="{@id}">
+			<xsl:apply-templates />
+		</fo:block>
+	</xsl:template>
+	
 	<xsl:template match="*[local-name() = 'term']">
-		<fo:block id="{@id}" >		
+		<fo:block id="{@id}">
 			<xsl:if test="$namespace = 'gb'">
 				<fo:block font-family="SimHei" font-size="11pt" keep-with-next="always" margin-top="10pt" margin-bottom="8pt" line-height="1.1">
 					<xsl:apply-templates select="gb:name" mode="presentation"/>
@@ -3006,7 +3012,7 @@
 	<!-- ====== -->
 	<xsl:template match="*[local-name() = 'title']" mode="contents_item">
 		<xsl:apply-templates mode="contents_item"/>
-		<xsl:text> </xsl:text>
+		<!-- <xsl:text> </xsl:text> -->
 	</xsl:template>
 
 	<xsl:template name="getSection">
@@ -3040,9 +3046,9 @@
 	<!-- ====== -->	
 	<xsl:template match="*[local-name()='sourcecode']" name="sourcecode">
 		<fo:block xsl:use-attribute-sets="sourcecode-style">			
-			<xsl:apply-templates/>
-			<xsl:apply-templates select="*[local-name()='name']" mode="presentation"/>
+			<xsl:apply-templates/>			
 		</fo:block>
+		<xsl:apply-templates select="*[local-name()='name']" mode="presentation"/>
 	</xsl:template>
 
 	<xsl:template match="*[local-name()='sourcecode']/text()">
@@ -3125,7 +3131,7 @@
 			</xsl:variable>
 			
 			<xsl:choose>
-				<xsl:when test="$element = 'block'">
+				<xsl:when test="normalize-space($element) = 'block'">
 					<fo:block xsl:use-attribute-sets="example-style">
 						<xsl:apply-templates/>
 					</fo:block>
@@ -3159,15 +3165,14 @@
 												$namespace = 'iec' or 
 												$namespace = 'iso' or 
 												$namespace = 'm3d'">inline</xsl:if>
-		</xsl:variable>
-		
+		</xsl:variable>		
 		<xsl:choose>
 			<xsl:when test="ancestor::*[local-name() = 'appendix']">
 				<fo:inline>
 					<xsl:apply-templates/>
 				</fo:inline>
 			</xsl:when>
-			<xsl:when test="$element = 'block'">
+			<xsl:when test="normalize-space($element) = 'block'">
 				<fo:block xsl:use-attribute-sets="example-name-style">
 					<xsl:apply-templates/>
 				</fo:block>
@@ -3239,6 +3244,13 @@
 	<xsl:template match="*[local-name() = 'modification']/*[local-name() = 'p']">
 		<fo:inline><xsl:apply-templates /></fo:inline>
 	</xsl:template>	
+	
+	<xsl:template match="*[local-name() = 'modification']/text()">
+		<xsl:if test="normalize-space() != ''">
+			<xsl:value-of select="."/>
+		</xsl:if>
+	</xsl:template>
+	
 	<!-- ====== -->
 	<!-- ====== -->
 
@@ -3338,7 +3350,8 @@
 			</xsl:call-template>
 		</xsl:variable>
 		
-		<xsl:variable name="padding">			
+		<xsl:variable name="padding">
+			<xsl:if test="$namespace = 'csa'">2</xsl:if>
 			<xsl:if test="$namespace = 'csd'">
 				<xsl:choose>
 					<xsl:when test="$depth &gt;= 3">3</xsl:when>
@@ -3346,7 +3359,7 @@
 					<xsl:otherwise>2</xsl:otherwise>
 				</xsl:choose>
 			</xsl:if>
-			<xsl:if test="$namespace = 'gb'">2</xsl:if>
+			<xsl:if test="$namespace = 'gb'">3</xsl:if>
 			<xsl:if test="$namespace = 'iec'">
 				<xsl:choose>
 					<xsl:when test="$depth = 2 and ancestor::iec:annex">6</xsl:when>
@@ -3423,7 +3436,7 @@
 			<xsl:choose>
 				<xsl:when test="normalize-space($padding) = ''">0</xsl:when>
 				<xsl:otherwise>
-					<xsl:value-of select="$padding"/>
+					<xsl:value-of select="normalize-space($padding)"/>
 				</xsl:otherwise>
 			</xsl:choose>
 		</xsl:variable>
@@ -3460,7 +3473,7 @@
 	<!-- definition -->
 	<!-- ========== -->
 	<xsl:template match="*[local-name() = 'definition']">
-		<fo:block space-after="6pt" xsl:use-attribute-sets="definition-style">
+		<fo:block xsl:use-attribute-sets="definition-style">
 			<xsl:apply-templates />
 		</fo:block>
 	</xsl:template>
@@ -3468,12 +3481,68 @@
 	<xsl:template match="*[local-name() = 'definition'][preceding-sibling::*[local-name() = 'domain']]">
 		<xsl:apply-templates />
 	</xsl:template>
-	<xsl:template match="*[local-name() = 'definition'][preceding-sibling::*[local-name() = 'domain']]/csa:p">
+	<xsl:template match="*[local-name() = 'definition'][preceding-sibling::*[local-name() = 'domain']]/*[local-name() = 'p']">
 		<fo:inline> <xsl:apply-templates /></fo:inline>
 		<fo:block>&#xA0;</fo:block>
 	</xsl:template>
 	<!-- ========== -->
 	<!-- ========== -->
+	
+	
+	<!-- main sections -->
+	<xsl:template match="/*/*[local-name() = 'sections']/*" priority="2">
+		<fo:block id="{@id}">
+			<xsl:if test="$namespace = 'csa'">
+				<xsl:variable name="pos"><xsl:number count="csa:sections/csa:clause[not(@id='_scope') and not(@id='conformance') and not(@id='_conformance')]"/></xsl:variable>
+				<xsl:if test="$pos &gt;= 2">
+					<xsl:attribute name="space-before">18pt</xsl:attribute>
+				</xsl:if>
+			</xsl:if>
+			<xsl:if test="$namespace = 'csd'">
+				<xsl:variable name="pos"><xsl:number count="csd:sections/csd:clause | csd:sections/csd:terms"/></xsl:variable>
+				<xsl:if test="$pos &gt;= 2">
+					<xsl:attribute name="space-before">18pt</xsl:attribute>
+				</xsl:if>
+			</xsl:if>
+			<xsl:if test="$namespace = 'gb'">
+				<xsl:variable name="pos"><xsl:number count="gb:sections/gb:clause | gb:sections/gb:terms"/></xsl:variable>
+				<xsl:if test="$pos &gt;= 2">
+					<xsl:attribute name="space-before">18pt</xsl:attribute>
+				</xsl:if>
+			</xsl:if>
+			
+			<xsl:apply-templates />
+		</fo:block>
+	</xsl:template>
+	
+	<xsl:template match="/*/*[local-name() = 'preface']/*" priority="2">
+		<fo:block break-after="page"/>
+		<fo:block id="{@id}">
+			<xsl:apply-templates />
+		</fo:block>
+	</xsl:template>
+
+
+
+	
+	<xsl:template match="*[local-name() = 'clause']">
+		<fo:block id="{@id}">
+			<xsl:apply-templates />
+		</fo:block>
+	</xsl:template>
+	
+	<xsl:template match="*[local-name() = 'definitions']">
+		<fo:block id="{@id}">
+			<xsl:apply-templates />
+		</fo:block>
+	</xsl:template>
+	
+	<xsl:template match="/*/*[local-name() = 'bibliography']/*[local-name() = 'references'][@id = '_normative_references' or @id = '_references']">
+		<fo:block id="{@id}">
+			<xsl:apply-templates />
+		</fo:block>
+	</xsl:template>
+	
 	
 	
 	<xsl:template match="*[local-name() = 'annex']">
@@ -3495,6 +3564,11 @@
 		<!-- comment 2019-11-29 -->
 		<!-- <fo:block font-weight="bold">Review:</fo:block>
 		<xsl:apply-templates /> -->
+	</xsl:template>
+
+	<xsl:template match="*[local-name() = 'name']/text()">
+		<!-- 0xA0 to space replacement -->
+		<xsl:value-of select="java:replaceAll(java:java.lang.String.new(.),' ',' ')"/>
 	</xsl:template>
 	
 	<!-- convert YYYY-MM-DD to 'Month YYYY' or 'Month DD, YYYY' -->

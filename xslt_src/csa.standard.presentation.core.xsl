@@ -56,7 +56,7 @@
 	<xsl:variable name="contents">
 		<contents>
 		
-			<xsl:apply-templates select="/csa:csa-standard/csa:preface/csa:introduction" mode="contents"/>
+			<xsl:apply-templates select="/csa:csa-standard/csa:preface/*" mode="contents"/>
 					
 			<xsl:apply-templates select="/csa:csa-standard/csa:sections/csa:clause[@id='_scope']" mode="contents"/>
 				
@@ -219,7 +219,7 @@
 											<fo:list-item-body start-indent="body-start()">
 												<fo:block text-align-last="justify" margin-left="12mm" text-indent="-12mm">
 													<fo:basic-link internal-destination="{@id}" fox:alt-text="{text()}">
-														<xsl:value-of select="@section"/>
+														<fo:inline padding-right="2mm"><xsl:value-of select="@section"/></fo:inline>
 														<xsl:apply-templates />
 														<fo:inline keep-together.within-line="always">
 															<fo:leader leader-pattern="dots"/>
@@ -384,23 +384,6 @@
 	</xsl:template>
 	
 	
-	<!-- Introduction -->
-	<xsl:template match="csa:csa-standard/csa:preface/*">
-		<fo:block break-after="page"/>
-		<xsl:apply-templates />
-	</xsl:template>
-
-	
-	<!-- clause, terms, clause, ...-->
-	<xsl:template match="csa:csa-standard/csa:sections/*">				
-		<fo:block>
-			<xsl:variable name="pos"><xsl:number count="csa:sections/csa:clause[not(@id='_scope') and not(@id='conformance') and not(@id='_conformance')]"/></xsl:variable>
-			<xsl:if test="$pos &gt;= 2">
-				<xsl:attribute name="space-before">18pt</xsl:attribute>
-			</xsl:if>
-			<xsl:apply-templates />
-		</fo:block>
-	</xsl:template>
 	
 	
 	<!-- ====== -->
@@ -422,11 +405,7 @@
 	</xsl:template>
 	
 	<xsl:template match="csa:title">
-		
-		<xsl:variable name="id"/>
-			<!-- <xsl:call-template name="getId"/>			
-		</xsl:variable> -->
-		
+
 		<xsl:variable name="level">
 			<xsl:call-template name="getLevel"/>
 		</xsl:variable>
@@ -464,8 +443,7 @@
 			</xsl:choose>
 		</xsl:variable>
 		
-		<xsl:element name="{$element-name}">
-			<xsl:attribute name="id"><xsl:value-of select="$id"/></xsl:attribute>
+		<xsl:element name="{$element-name}">			
 			<xsl:attribute name="font-size"><xsl:value-of select="$font-size"/></xsl:attribute>
 			<xsl:attribute name="font-weight"><xsl:value-of select="$font-weight"/></xsl:attribute>
 			<xsl:attribute name="space-before">13.5pt</xsl:attribute>
@@ -740,7 +718,7 @@
 	<!-- [position() &gt; 1] -->
 	<xsl:template match="csa:references[@id != '_normative_references' and @id != '_references']">
 		<fo:block break-after="page"/>
-		<fo:block line-height="145%">
+		<fo:block id="{@id}" line-height="145%">
 			<xsl:apply-templates />
 		</fo:block>
 	</xsl:template>
