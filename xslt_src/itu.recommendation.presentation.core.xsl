@@ -724,12 +724,6 @@
 	<!-- ============================= -->
 	
 	
-	<xsl:template match="text()">
-		<xsl:value-of select="."/>
-	</xsl:template>
-	
-
-	
 
 	<xsl:template match="itu:clause[@id='draft-warning']/itu:title" mode="caution">
 		<fo:block font-size="16pt" font-family="Times New Roman" font-style="italic" font-weight="bold" text-align="center">
@@ -881,10 +875,10 @@
 		</xsl:if> -->
 	</xsl:template>
 	
-	<xsl:template match="itu:definition/itu:p"/>
+	<xsl:template match="itu:definition/itu:p" priority="2"/>
 	<xsl:template match="itu:definition/itu:formula" priority="2"/>
 	
-	<xsl:template match="itu:definition/itu:p" mode="process">
+	<xsl:template match="itu:definition/itu:p" mode="process" priority="2">
 		<xsl:choose>
 			<xsl:when test="position() = 1">
 				<fo:inline>
@@ -1061,13 +1055,7 @@
 		</fo:inline>
 	</xsl:template>
 	
-	
-	<xsl:template match="itu:annex">
-		<fo:block break-after="page"/>
-		<fo:block id="{@id}">
-			<xsl:apply-templates />
-		</fo:block>
-	</xsl:template>
+
 	
 	<xsl:template match="itu:annex/itu:clause">
 		<xsl:apply-templates />

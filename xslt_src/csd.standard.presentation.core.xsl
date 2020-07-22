@@ -576,18 +576,6 @@
 		<xsl:apply-templates />
 	</xsl:template>
 	
-	<xsl:template match="csd:review">
-		<!-- comment 2019-11-29 -->
-		<!-- <fo:block font-weight="bold">Review:</fo:block>
-		<xsl:apply-templates /> -->
-	</xsl:template>
-
-	<xsl:template match="text()">
-		<xsl:value-of select="."/>
-	</xsl:template>
-	
-
-	
 	
 	<xsl:template match="csd:bibitem">
 		<fo:block id="{@id}" margin-bottom="6pt"> <!-- 12 pt -->
@@ -707,49 +695,9 @@
 		</fo:block>
 	</xsl:template>
 	
-	<xsl:template match="csd:admitted">
-		<fo:block>
-			<xsl:apply-templates />
-		</fo:block>
-	</xsl:template>
-	
-	<xsl:template match="csd:deprecates">
-		<xsl:variable name="title-deprecated">
-			<xsl:call-template name="getTitle">
-				<xsl:with-param name="name" select="'title-deprecated'"/>
-			</xsl:call-template>
-		</xsl:variable>
-		<fo:block><xsl:value-of select="$title-deprecated"/>: <xsl:apply-templates /></fo:block>
-	</xsl:template>
-	
-	<xsl:template match="csd:definition[preceding-sibling::csd:domain]">
-		<xsl:apply-templates />
-	</xsl:template>
-	<xsl:template match="csd:definition[preceding-sibling::csd:domain]/csd:p">
-		<fo:inline> <xsl:apply-templates /></fo:inline>
-		<fo:block>&#xA0;</fo:block>
-	</xsl:template>
-	
-	<xsl:template match="csd:definition">
-		<fo:block margin-bottom="6pt">
-			<xsl:apply-templates />
-		</fo:block>
-	</xsl:template>
 
-		
-	<xsl:template match="csd:domain">
-		<fo:inline>&lt;<xsl:apply-templates/>&gt;</fo:inline>
-	</xsl:template>
-	
 
-	<xsl:template match="csd:annex">
-		<fo:block break-after="page"/>
-		<fo:block id="{@id}">
-			<xsl:apply-templates />
-		</fo:block>
-	</xsl:template>
 
-	
 	<!-- <xsl:template match="csd:references[@id = '_bibliography']"> -->
 	<xsl:template match="csd:references[position() &gt; 1]">
 		<fo:block break-after="page"/>
@@ -815,11 +763,6 @@
 	</xsl:template>
 
 
-	<xsl:template match="csd:tt" priority="2">
-		<fo:inline font-family="SourceCodePro" font-size="10pt">
-			<xsl:apply-templates />
-		</fo:inline>
-	</xsl:template>
 	
 	
 	<xsl:template match="csd:note/csd:p" name="note">

@@ -176,6 +176,8 @@
 	</xsl:attribute-set>
 
 	<xsl:attribute-set name="sourcecode-style">
+		<xsl:attribute name="white-space">pre</xsl:attribute>
+		<xsl:attribute name="wrap-option">wrap</xsl:attribute>
 		<xsl:if test="$namespace = 'iso' or $namespace = 'gb'">
 			<xsl:attribute name="font-family">Courier</xsl:attribute>
 			<xsl:attribute name="font-size">9pt</xsl:attribute>
@@ -655,6 +657,77 @@
 			<xsl:attribute name="margin-bottom">10pt</xsl:attribute>
 		</xsl:if>
 	</xsl:attribute-set>
+
+	<xsl:attribute-set name="figure-name-style">
+		<xsl:if test="$namespace = 'csa' or $namespace = 'ogc'">
+			<xsl:attribute name="font-size">11pt</xsl:attribute>
+			<xsl:attribute name="font-weight">bold</xsl:attribute>
+			<xsl:attribute name="text-align">center</xsl:attribute>
+			<xsl:attribute name="margin-top">12pt</xsl:attribute>
+			<xsl:attribute name="margin-bottom">6pt</xsl:attribute>
+			<xsl:attribute name="keep-with-previous">always</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'csd' or $namespace = 'iec' or $namespace = 'iso'">			
+			<xsl:attribute name="font-weight">bold</xsl:attribute>
+			<xsl:attribute name="text-align">center</xsl:attribute>
+			<xsl:attribute name="margin-top">12pt</xsl:attribute>
+			<xsl:attribute name="margin-bottom">12pt</xsl:attribute>
+			<xsl:attribute name="keep-with-previous">always</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'gb'">			
+			<xsl:attribute name="font-family">SimHei</xsl:attribute>
+			<xsl:attribute name="text-align">center</xsl:attribute>
+			<xsl:attribute name="margin-top">12pt</xsl:attribute>
+			<xsl:attribute name="margin-bottom">12pt</xsl:attribute>
+			<xsl:attribute name="keep-with-previous">always</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'iho'">
+			<xsl:attribute name="font-size">11pt</xsl:attribute>
+			<xsl:attribute name="font-weight">bold</xsl:attribute>
+			<xsl:attribute name="text-align">center</xsl:attribute>
+			<xsl:attribute name="margin-top">6pt</xsl:attribute>
+			<xsl:attribute name="margin-bottom">6pt</xsl:attribute>
+			<xsl:attribute name="keep-with-previous">always</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'itu' or $namespace = 'nist-cswp'  or $namespace = 'nist-sp'">			
+			<xsl:attribute name="font-weight">bold</xsl:attribute>
+			<xsl:attribute name="text-align">center</xsl:attribute>
+			<xsl:attribute name="margin-top">6pt</xsl:attribute>
+			<xsl:attribute name="margin-bottom">6pt</xsl:attribute>
+			<xsl:attribute name="keep-with-previous">always</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'm3d'">			
+			<xsl:attribute name="text-align">center</xsl:attribute>
+			<xsl:attribute name="margin-top">12pt</xsl:attribute>
+			<xsl:attribute name="margin-bottom">12pt</xsl:attribute>
+			<xsl:attribute name="keep-with-previous">always</xsl:attribute>
+		</xsl:if>
+		
+		<xsl:if test="$namespace = 'rsd'">
+			<xsl:attribute name="font-family">SourceSansPro</xsl:attribute>
+			<xsl:attribute name="font-size">12pt</xsl:attribute>
+			<xsl:attribute name="font-weight">bold</xsl:attribute>
+			<xsl:attribute name="text-align">center</xsl:attribute>
+			<xsl:attribute name="margin-top">12pt</xsl:attribute>
+			<xsl:attribute name="margin-bottom">6pt</xsl:attribute>
+			<xsl:attribute name="keep-with-previous">always</xsl:attribute>
+		</xsl:if>
+		
+		<xsl:if test="$namespace = 'unece'">
+			<xsl:attribute name="text-align">center</xsl:attribute>
+			<xsl:attribute name="margin-bottom">6pt</xsl:attribute>
+			<xsl:attribute name="keep-with-previous">always</xsl:attribute>
+		</xsl:if>
+		
+		<xsl:if test="$namespace = 'unece-rec'">
+			<xsl:attribute name="text-align">center</xsl:attribute>
+			<xsl:attribute name="font-size">9pt</xsl:attribute>
+			<xsl:attribute name="margin-bottom">6pt</xsl:attribute>
+			<xsl:attribute name="keep-with-next">always</xsl:attribute>
+			<xsl:attribute name="keep-together.within-column">always</xsl:attribute>
+		</xsl:if>
+		
+	</xsl:attribute-set>
 	
 	<xsl:attribute-set name="image-style">
 		<xsl:attribute name="text-align">center</xsl:attribute>
@@ -711,6 +784,56 @@
 			<xsl:attribute name="scaling">uniform</xsl:attribute>			
 		</xsl:if>		
 
+	</xsl:attribute-set>
+	
+	<xsl:attribute-set name="tt-style">
+		<xsl:if test="$namespace  = 'csa' or $namespace  = 'csd' or $namespace  = 'rsd'">
+			<xsl:attribute name="font-family">SourceCodePro</xsl:attribute>
+			<xsl:attribute name="font-size">10pt</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace  = 'gb' or $namespace  = 'iec' or $namespace  = 'iho' or $namespace  = 'iso' or $namespace  = 'm3d' or 
+										 $namespace  = 'ogc'">
+			<xsl:attribute name="font-family">Courier</xsl:attribute>
+			<xsl:attribute name="font-size">10pt</xsl:attribute>			
+		</xsl:if>
+	</xsl:attribute-set>
+
+	<xsl:attribute-set name="sourcecode-name-style">
+		<xsl:attribute name="font-size">11pt</xsl:attribute>
+		<xsl:attribute name="font-weight">bold</xsl:attribute>
+		<xsl:attribute name="text-align">center</xsl:attribute>
+		<xsl:attribute name="margin-bottom">12pt</xsl:attribute>
+	</xsl:attribute-set>
+
+	<xsl:attribute-set name="domain-style">
+		<xsl:if test="$namespace = 'gb'">
+			<xsl:attribute name="padding-left">7.4mm</xsl:attribute>
+		</xsl:if>		
+	</xsl:attribute-set>
+
+	<xsl:attribute-set name="admitted-style">
+		<xsl:if test="$namespace = 'ogc'">
+			<xsl:attribute name="font-size">11pt</xsl:attribute>
+		</xsl:if>
+	
+	</xsl:attribute-set>
+
+	<xsl:attribute-set name="deprecates-style">
+		<xsl:if test="$namespace = 'iec'">
+			<xsl:attribute name="font-size">8pt</xsl:attribute>
+			<xsl:attribute name="margin-bottom">5pt</xsl:attribute>
+			<xsl:attribute name="margin-bottom">12pt</xsl:attribute>
+		</xsl:if>
+	</xsl:attribute-set>
+
+
+	<xsl:attribute-set name="definition-style">
+		<xsl:if test="$namespace  = 'csa' or $namespace  = 'ogc' or $namespace  = 'rsd'">
+			<xsl:attribute name="space-after">6pt</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace  = 'csd' or $namespace  = 'iec' or $namespace  = 'iho' or $namespace  = 'iso'">
+			<xsl:attribute name="margin-bottom">6pt</xsl:attribute>
+		</xsl:if>
 	</xsl:attribute-set>
 	
 	
@@ -2147,7 +2270,7 @@
 	</xsl:template>
 	
 	<xsl:template match="*[local-name()='tt']">
-		<fo:inline font-family="Courier" font-size="10pt">			
+		<fo:inline xsl:use-attribute-sets="tt-style">
 			<xsl:apply-templates />
 		</fo:inline>
 	</xsl:template>
@@ -2690,6 +2813,13 @@
 		</fo:inline>
 	</xsl:template>
 	
+	<xsl:template match="*[local-name() = 'admitted']/*[local-name() = 'stem']">
+		<fo:inline>
+			<xsl:apply-templates />
+		</fo:inline>
+	</xsl:template>
+
+	
 	<xsl:template match="*[local-name() = 'formula']/*[local-name() = 'name']"/>
 	
 	<xsl:template match="*[local-name() = 'formula']/*[local-name() = 'name']" mode="presentation">
@@ -2783,9 +2913,9 @@
 		<xsl:if test="normalize-space() != ''">
 			<fo:inline>
 				<xsl:apply-templates />
-				<xsl:if test="$namespace = 'gb' or $namespace = 'ogc'">
+				<!-- <xsl:if test="$namespace = 'gb' or $namespace = 'ogc'">
 					<xsl:text>.</xsl:text>
-				</xsl:if>
+				</xsl:if> -->
 			</fo:inline>
 		</xsl:if>
 	</xsl:template>
@@ -2858,75 +2988,14 @@
 	<xsl:template match="*[local-name() = 'figure']/*[local-name() = 'name'] |
 								*[local-name() = 'image']/*[local-name() = 'name']" mode="presentation">
 		<xsl:if test="normalize-space() != ''">			
-			<xsl:if test="$namespace = 'csa'">
-				<fo:block font-size="11pt" font-weight="bold" text-align="center" margin-top="12pt" margin-bottom="6pt" keep-with-previous="always">
-					<xsl:apply-templates/>
-				</fo:block>
-			</xsl:if>
-			<xsl:if test="$namespace = 'csd'">
-				<fo:block font-weight="bold" text-align="center" margin-top="12pt" margin-bottom="12pt" keep-with-previous="always">
-					<xsl:apply-templates/>
-				</fo:block>
-			</xsl:if>
-			<xsl:if test="$namespace = 'gb'">
-				<fo:block font-family="SimHei" text-align="center" margin-top="12pt" margin-bottom="12pt" keep-with-previous="always">
-					<xsl:apply-templates/>
-				</fo:block>
-			</xsl:if>
-			<xsl:if test="$namespace = 'iec'">
-				<fo:block font-weight="bold" text-align="center" margin-top="12pt" margin-bottom="12pt" keep-with-previous="always">
-					<xsl:apply-templates/>
-				</fo:block>
-			</xsl:if>
-			<xsl:if test="$namespace = 'iho'">
-				<fo:block font-size="11pt" font-weight="bold" text-align="center" margin-top="6pt" margin-bottom="6pt" keep-with-previous="always">
-					<xsl:apply-templates/>
-				</fo:block>
-			</xsl:if>
-			<xsl:if test="$namespace = 'iso'">
-				<fo:block font-weight="bold" text-align="center" margin-top="12pt" margin-bottom="12pt" keep-with-previous="always">
-					<xsl:apply-templates/>
-				</fo:block>
-			</xsl:if>
-			<xsl:if test="$namespace = 'itu'">
-				<fo:block font-weight="bold" text-align="center" margin-top="6pt" margin-bottom="6pt" keep-with-previous="always">
-					<xsl:apply-templates/>
-				</fo:block>
-			</xsl:if>
-			<xsl:if test="$namespace = 'm3d'">
-				<fo:block text-align="center" margin-top="12pt" margin-bottom="12pt" keep-with-previous="always">
-					<xsl:apply-templates/>
-				</fo:block>
-			</xsl:if>
-			<xsl:if test="$namespace = 'nist-cswp'  or $namespace = 'nist-sp'">
-				<fo:block font-weight="bold" text-align="center" space-before="6pt" margin-bottom="6pt" keep-with-previous="always">
+			<fo:block xsl:use-attribute-sets="figure-name-style">
+				<xsl:if test="$namespace = 'nist-cswp'  or $namespace = 'nist-sp'">
 					<xsl:if test="nist:dl">
 						<xsl:attribute name="space-before">12pt</xsl:attribute>
 					</xsl:if>
-					<xsl:apply-templates/>
-				</fo:block>
-			</xsl:if>			
-			<xsl:if test="$namespace = 'ogc'">
-				<fo:block font-size="11pt" font-weight="bold" text-align="center" margin-top="12pt" margin-bottom="6pt" keep-with-previous="always">
-					<xsl:apply-templates/>
-				</fo:block>
-			</xsl:if>
-			<xsl:if test="$namespace = 'rsd'">
-				<fo:block font-family="SourceSansPro" font-size="12pt" font-weight="bold" text-align="center" margin-top="12pt" margin-bottom="6pt" keep-with-previous="always">
-					<xsl:apply-templates/>
-				</fo:block>
-			</xsl:if>
-			<xsl:if test="$namespace = 'unece'">
-				<fo:block text-align="center" margin-bottom="6pt" keep-with-previous="always">
-					<xsl:apply-templates/>
-				</fo:block>
-			</xsl:if>
-			<xsl:if test="$namespace = 'unece-rec'">
-				<fo:block text-align="center" font-size="9pt" margin-bottom="6pt" keep-with-next="always" keep-together.within-column="always">
-					<xsl:apply-templates/>
-				</fo:block>
-			</xsl:if>
-			
+				</xsl:if>
+				<xsl:apply-templates/>
+			</fo:block>
 		</xsl:if>
 	</xsl:template>
 	
@@ -2959,10 +3028,7 @@
 	<xsl:template match="*[local-name() = 'fn']" mode="contents_item"/>
 
 	<xsl:template match="*[local-name() = 'strong']" mode="contents_item">
-		<xsl:copy-of select="."/>
-		<!-- <fo:inline font-weight="bold">
-			<xsl:apply-templates />
-		</fo:inline> -->
+		<xsl:copy-of select="."/>		
 	</xsl:template>
 
 	<xsl:template match="*[local-name() = 'br']" mode="contents_item">
@@ -2973,14 +3039,7 @@
 	<!-- sourcecode   -->	
 	<!-- ====== -->	
 	<xsl:template match="*[local-name()='sourcecode']" name="sourcecode">
-		<fo:block xsl:use-attribute-sets="sourcecode-style">
-			<!-- <xsl:choose>
-				<xsl:when test="@lang = 'en'"></xsl:when>
-				<xsl:otherwise> -->
-					<xsl:attribute name="white-space">pre</xsl:attribute>
-					<xsl:attribute name="wrap-option">wrap</xsl:attribute>
-				<!-- </xsl:otherwise>
-			</xsl:choose> -->
+		<fo:block xsl:use-attribute-sets="sourcecode-style">			
 			<xsl:apply-templates/>
 			<xsl:apply-templates select="*[local-name()='name']" mode="presentation"/>
 		</fo:block>
@@ -3000,7 +3059,7 @@
 	
 	<xsl:template match="*[local-name() = 'sourcecode']/*[local-name() = 'name']" mode="presentation">
 		<xsl:if test="normalize-space() != ''">		
-			<fo:block font-size="11pt" font-weight="bold" text-align="center" margin-bottom="12pt">
+			<fo:block xsl:use-attribute-sets="sourcecode-name-style">
 				<xsl:if test="$namespace = 'rsd'">
 					<xsl:attribute name="font-size">12pt</xsl:attribute>
 					<xsl:attribute name="font-family">SourceSansPro</xsl:attribute>
@@ -3373,6 +3432,70 @@
 		
 	</xsl:template>
 	
+	<xsl:template match="*[local-name() = 'domain']">
+		<fo:inline xsl:use-attribute-sets="domain-style">&lt;<xsl:apply-templates/>&gt;</fo:inline>
+		<xsl:text> </xsl:text>
+	</xsl:template>
+	
+	<xsl:template match="*[local-name() = 'admitted']">
+		<fo:block xsl:use-attribute-sets="admitted-style">
+			<xsl:apply-templates />
+		</fo:block>
+	</xsl:template>
+	
+	<xsl:template match="*[local-name() = 'deprecates']">
+		<xsl:variable name="title-deprecated">
+			<xsl:call-template name="getTitle">
+				<xsl:with-param name="name" select="'title-deprecated'"/>
+			</xsl:call-template>
+		</xsl:variable>
+		<fo:block xsl:use-attribute-sets="deprecates-style">
+			<xsl:value-of select="$title-deprecated"/>: <xsl:apply-templates />
+		</fo:block>
+	</xsl:template>
+
+
+	
+	<!-- ========== -->
+	<!-- definition -->
+	<!-- ========== -->
+	<xsl:template match="*[local-name() = 'definition']">
+		<fo:block space-after="6pt" xsl:use-attribute-sets="definition-style">
+			<xsl:apply-templates />
+		</fo:block>
+	</xsl:template>
+	
+	<xsl:template match="*[local-name() = 'definition'][preceding-sibling::*[local-name() = 'domain']]">
+		<xsl:apply-templates />
+	</xsl:template>
+	<xsl:template match="*[local-name() = 'definition'][preceding-sibling::*[local-name() = 'domain']]/csa:p">
+		<fo:inline> <xsl:apply-templates /></fo:inline>
+		<fo:block>&#xA0;</fo:block>
+	</xsl:template>
+	<!-- ========== -->
+	<!-- ========== -->
+	
+	
+	<xsl:template match="*[local-name() = 'annex']">
+		<fo:block break-after="page"/>
+		<fo:block id="{@id}">
+			<xsl:if test="$namespace = 'unece' or $namespace = 'unece-rec'">
+				<xsl:variable name="num"><xsl:number /></xsl:variable>
+				<xsl:if test="$num = 1">
+					<xsl:attribute name="margin-top">3pt</xsl:attribute>
+				</xsl:if>
+			</xsl:if>
+			
+			<xsl:apply-templates />
+		</fo:block>
+	</xsl:template>
+	
+	
+	<xsl:template match="*[local-name() = 'review']">
+		<!-- comment 2019-11-29 -->
+		<!-- <fo:block font-weight="bold">Review:</fo:block>
+		<xsl:apply-templates /> -->
+	</xsl:template>
 	
 	<!-- convert YYYY-MM-DD to 'Month YYYY' or 'Month DD, YYYY' -->
 	<xsl:template name="convertDate">

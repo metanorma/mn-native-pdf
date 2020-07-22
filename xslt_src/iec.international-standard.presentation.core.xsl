@@ -1766,16 +1766,7 @@
 		<fo:block margin-bottom="10pt"><xsl:apply-templates /></fo:block>
 	</xsl:template>
 	
-	<xsl:template match="iec:review">
-		<!-- comment 2019-11-29 -->
-		<!-- <fo:block font-weight="bold">Review:</fo:block>
-		<xsl:apply-templates /> -->
-	</xsl:template>
 
-	<xsl:template match="text()">
-		<xsl:value-of select="."/>
-	</xsl:template>
-	
 
 	
 	<xsl:template match="iec:bibitem">
@@ -1897,49 +1888,11 @@
 		</fo:block>
 	</xsl:template>
 	
-	<xsl:template match="iec:admitted">
-		<fo:block>
-			<xsl:apply-templates />
-		</fo:block>
-	</xsl:template>
-	
-	<xsl:template match="iec:deprecates">
-		<xsl:variable name="title-deprecated">
-			<xsl:call-template name="getTitle">
-				<xsl:with-param name="name" select="'title-deprecated'"/>
-			</xsl:call-template>
-		</xsl:variable>
-		<fo:block font-size="8pt" margin-top="5pt" margin-bottom="5pt"><xsl:value-of select="$title-deprecated"/>: <xsl:apply-templates /></fo:block>
-	</xsl:template>
-	
-	<xsl:template match="iec:definition[preceding-sibling::iec:domain]">
-		<xsl:apply-templates />
-	</xsl:template>
-	<xsl:template match="iec:definition[preceding-sibling::iec:domain]/iec:p">
-		<fo:inline> <xsl:apply-templates /></fo:inline>
-		<fo:block>&#xA0;</fo:block>
-	</xsl:template>
-	
-	<xsl:template match="iec:definition">
-		<fo:block margin-bottom="6pt">
-			<xsl:apply-templates />
-		</fo:block>
-	</xsl:template>
-	
-	
-	<xsl:template match="iec:domain">
-		<fo:inline>&lt;<xsl:apply-templates/>&gt;</fo:inline>
-	</xsl:template>
-	
-		
-	<xsl:template match="iec:annex">
-		<fo:block break-after="page"/>
-		<fo:block id="{@id}">
-			<xsl:apply-templates />
-		</fo:block>
-	</xsl:template>
 
 	
+	
+
+
 	<!-- <xsl:template match="iec:references[@id = '_bibliography']"> -->
 	<xsl:template match="iec:references[not(starts-with(@id, '_normative_references') or starts-with(@id, '_references'))]">
 		<fo:block break-after="page"/>
@@ -2036,11 +1989,6 @@
 	
 	
 	
-	<xsl:template match="iec:admitted/iec:stem">
-		<fo:inline> <!-- padding-left="6mm" -->
-			<xsl:apply-templates />
-		</fo:inline>
-	</xsl:template>
 	
 	<xsl:template match="iec:formula/iec:stem">
 		<fo:block margin-top="6pt" margin-bottom="12pt">

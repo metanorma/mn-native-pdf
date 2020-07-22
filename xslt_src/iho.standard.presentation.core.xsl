@@ -699,37 +699,7 @@
 		</fo:block>
 	</xsl:template>
 	
-	
-	<xsl:template match="iho:annex">
-		<fo:block break-after="page"/>		
-		<fo:block id="{@id}">
-			<xsl:if test="not(iho:title)">
-				<fo:block font-size="13pt" font-weight="bold" text-align="center" margin-bottom="12pt" keep-with-next="always">
-					<xsl:choose>
-						<xsl:when test="@obligation = 'informative'">
-							<xsl:variable name="title-appendix">
-								<xsl:call-template name="getTitle">
-									<xsl:with-param name="name" select="'title-appendix'"/>
-								</xsl:call-template>
-							</xsl:variable>
-							<xsl:value-of select="$title-appendix"/>
-							<xsl:number format="1" level="any" count="iho:annex[@obligation = 'informative']"/>
-						</xsl:when>
-						<xsl:otherwise>
-							<xsl:variable name="title-annex">
-								<xsl:call-template name="getTitle">
-									<xsl:with-param name="name" select="'title-annex'"/>
-								</xsl:call-template>
-							</xsl:variable>
-							<xsl:value-of select="$title-annex"/>
-							<xsl:number format="A" level="any" count="iho:annex[not(@obligation = 'informative')]"/>
-						</xsl:otherwise>
-					</xsl:choose>
-				</fo:block>
-			</xsl:if>					
-			<xsl:apply-templates />
-		</fo:block>
-	</xsl:template>
+
 		
 	<xsl:template match="iho:references[position() &gt; 1]">
 		<fo:block id="{@id}">
@@ -824,8 +794,6 @@
 	<!-- https://github.com/metanorma/mn-native-pdf/issues/214 -->
 	<xsl:template match="iho:index"/>
 	
-	<xsl:template match="iho:review"/>
-	
 	
 	<xsl:template match="iho:preferred">
 
@@ -839,42 +807,8 @@
 		</fo:block>
 	</xsl:template>
 	
-	<xsl:template match="iho:admitted">
-		<fo:block>
-			<xsl:apply-templates />
-		</fo:block>
-	</xsl:template>
-	
-	<xsl:template match="iho:deprecates">
-		<xsl:variable name="title-deprecated">
-			<xsl:call-template name="getTitle">
-				<xsl:with-param name="name" select="'title-deprecated'"/>
-			</xsl:call-template>
-		</xsl:variable>
-		<fo:block><xsl:value-of select="$title-deprecated"/>: <xsl:apply-templates /></fo:block>
-	</xsl:template>
-	
-	<xsl:template match="iho:definition[preceding-sibling::iho:domain]">
-		<xsl:apply-templates />
-	</xsl:template>
-	<xsl:template match="iho:definition[preceding-sibling::iho:domain]/iho:p">
-		<fo:inline> <xsl:apply-templates /></fo:inline>
-		<fo:block>&#xA0;</fo:block>
-	</xsl:template>
-	
-	<xsl:template match="iho:definition">
-		<fo:block margin-bottom="6pt">
-			<xsl:apply-templates />
-		</fo:block>
-	</xsl:template>
 
-	
-	<xsl:template match="iho:domain">
-		<fo:inline>&lt;<xsl:apply-templates/>&gt;</fo:inline><xsl:text> </xsl:text>
-	</xsl:template>
-		
 
-	
 
 	<xsl:template name="insertHeaderFooter">		
 		<xsl:param name="font-weight" select="'bold'"/>				

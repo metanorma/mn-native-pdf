@@ -842,17 +842,7 @@
 		<xsl:apply-templates />
 	</xsl:template>
 	
-	<xsl:template match="gb:review">
-		<!-- comment 2019-11-29 -->
-		<!-- <fo:block font-weight="bold">Review:</fo:block>
-		<xsl:apply-templates /> -->
-	</xsl:template>
-
-	<xsl:template match="text()">
-		<xsl:value-of select="."/>
-	</xsl:template>
-
-
+	
 	
 	<xsl:template match="gb:bibitem">
 		<fo:block id="{@id}" font-size="11pt" margin-bottom="12pt" text-indent="-11.7mm" margin-left="11.7mm"> <!-- 12 pt -->
@@ -932,7 +922,7 @@
 	
 	
 	
-	<xsl:template match="gb:preferred">
+	<xsl:template match="gb:preferred" priority="2">
 		
 		<fo:inline font-family="SimHei" font-size="11pt">
 			<xsl:if test="not(preceding-sibling::*[1][local-name() = 'preferred'])">
@@ -947,7 +937,7 @@
 
 	</xsl:template>
 	
-	<xsl:template match="gb:admitted">
+	<xsl:template match="gb:admitted" priority="2">
 		
 		<fo:inline font-size="11pt">
 			<xsl:if test="not(preceding-sibling::*[1][local-name() = 'admitted'])">
@@ -962,8 +952,8 @@
 			
 	</xsl:template>
 	
-	<xsl:template match="gb:deprecates">
-		
+	
+	<xsl:template match="gb:deprecates" priority="2">		
 		<fo:inline font-size="11pt">
 			<xsl:if test="not(preceding-sibling::*[1][local-name() = 'deprecates'])">
 				<xsl:attribute name="padding-left">7.4mm</xsl:attribute>
@@ -978,22 +968,7 @@
 		</fo:inline>
 		<xsl:if test="not(following-sibling::*[1][local-name() = 'deprecates'])">
 			<xsl:value-of select="$linebreak"/>
-		</xsl:if>
-		
-	</xsl:template>
-	
-	<xsl:template match="gb:definition[preceding-sibling::gb:domain]">
-		<xsl:apply-templates />
-	</xsl:template>
-	<xsl:template match="gb:definition[preceding-sibling::gb:domain]/gb:p">
-		<fo:inline> <xsl:apply-templates /></fo:inline>
-		<fo:block>&#xA0;</fo:block>
-	</xsl:template>
-	
-	<xsl:template match="gb:definition">
-		<fo:block>
-			<xsl:apply-templates />
-		</fo:block>
+		</xsl:if>		
 	</xsl:template>
 	
 
@@ -1024,21 +999,7 @@
 	</xsl:template>
 	
 
-	
-	<xsl:template match="gb:domain">
-		<fo:inline padding-left="7.4mm">&lt;<xsl:apply-templates/>&gt; </fo:inline>
-	</xsl:template>
-	
 
-	
-	<xsl:template match="gb:annex">
-		<fo:block break-after="page"/>
-		<fo:block id="{@id}">
-			<xsl:apply-templates />
-		</fo:block>
-	</xsl:template>
-
-	
 	<!-- <xsl:template match="gb:references[@id = '_bibliography']"> -->
 	<xsl:template match="gb:references[position() &gt; 1]">
 		<fo:block break-after="page"/>

@@ -1591,16 +1591,6 @@
 		<xsl:apply-templates />
 	</xsl:template>
 	
-	<xsl:template match="iso:review">
-		<!-- comment 2019-11-29 -->
-		<!-- <fo:block font-weight="bold">Review:</fo:block>
-		<xsl:apply-templates /> -->
-	</xsl:template>
-
-	<xsl:template match="text()">
-		<xsl:value-of select="."/>
-	</xsl:template>
-
 	
 	
 	<xsl:template match="iso:bibitem">
@@ -1691,51 +1681,7 @@
 		</fo:block>
 	</xsl:template>
 	
-	<xsl:template match="iso:admitted">
-		<fo:block>
-			<xsl:apply-templates />
-		</fo:block>
-	</xsl:template>
-	
-	<xsl:template match="iso:deprecates">
-		<xsl:variable name="title-deprecated">
-			<xsl:call-template name="getTitle">
-				<xsl:with-param name="name" select="'title-deprecated'"/>
-			</xsl:call-template>
-		</xsl:variable>
-		<fo:block><xsl:value-of select="$title-deprecated"/>: <xsl:apply-templates /></fo:block>
-	</xsl:template>
-	
-	<xsl:template match="iso:definition[preceding-sibling::iso:domain]">
-		<xsl:apply-templates />
-	</xsl:template>
-	<xsl:template match="iso:definition[preceding-sibling::iso:domain]/iso:p">
-		<fo:inline> <xsl:apply-templates /></fo:inline>
-		<fo:block>&#xA0;</fo:block>
-	</xsl:template>
-	
-	<xsl:template match="iso:definition">
-		<fo:block margin-bottom="6pt">
-			<xsl:apply-templates />
-		</fo:block>
-	</xsl:template>
-	
 
-	
-
-	
-	<xsl:template match="iso:domain">
-		<fo:inline>&lt;<xsl:apply-templates/>&gt;</fo:inline><xsl:text> </xsl:text>
-	</xsl:template>
-	
-	
-	
-	<xsl:template match="iso:annex">
-		<fo:block break-after="page"/>
-		<fo:block id="{@id}">
-			<xsl:apply-templates />
-		</fo:block>
-	</xsl:template>
 	
 	<!-- <xsl:template match="iso:references[@id = '_bibliography']"> -->
 	<xsl:template match="iso:references[position() &gt; 1]">

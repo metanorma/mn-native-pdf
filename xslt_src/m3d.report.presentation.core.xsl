@@ -651,17 +651,6 @@
 		<xsl:apply-templates />
 	</xsl:template>
 	
-	<xsl:template match="m3d:review">
-		<!-- comment 2019-11-29 -->
-		<!-- <fo:block font-weight="bold">Review:</fo:block>
-		<xsl:apply-templates /> -->
-	</xsl:template>
-
-	<xsl:template match="text()">
-		<xsl:value-of select="."/>
-	</xsl:template>
-
-
 	
 	
 	<xsl:template match="m3d:bibitem">
@@ -761,52 +750,7 @@
 		</xsl:if>
 
 	</xsl:template>
-	
-	<xsl:template match="m3d:admitted">
-		
-		<fo:inline>
-			<xsl:apply-templates />
-		</fo:inline>
-		
-		<xsl:if test="not(following-sibling::*[1][local-name() = 'admitted'])">
-			<xsl:value-of select="$linebreak"/>
-		</xsl:if>
-			
-	</xsl:template>
-	
-	<xsl:template match="m3d:deprecates">
-		
-		<fo:inline>
-			<xsl:if test="not(preceding-sibling::*[1][local-name() = 'deprecates'])">
-				<xsl:variable name="title-deprecated">
-					<xsl:call-template name="getTitle">
-						<xsl:with-param name="name" select="'title-deprecated'"/>
-					</xsl:call-template>
-				</xsl:variable>
-				<fo:inline><xsl:value-of select="$title-deprecated"/>: </fo:inline>
-			</xsl:if>
-			<xsl:apply-templates />
-		</fo:inline>
-		<xsl:if test="not(following-sibling::*[1][local-name() = 'deprecates'])">
-			<xsl:value-of select="$linebreak"/>
-		</xsl:if>
-		
-	</xsl:template>
-	
-	<xsl:template match="m3d:definition[preceding-sibling::m3d:domain]">
-		<xsl:apply-templates />
-	</xsl:template>
-	<xsl:template match="m3d:definition[preceding-sibling::m3d:domain]/m3d:p">
-		<fo:inline> <xsl:apply-templates /></fo:inline>
-		<fo:block>&#xA0;</fo:block>
-	</xsl:template>
-	
-	<xsl:template match="m3d:definition">
-		<fo:block>
-			<xsl:apply-templates />
-		</fo:block>
-	</xsl:template>
-	
+
 
 	
 	<xsl:template match="m3d:termnote" priority="2">
@@ -820,19 +764,7 @@
 		</fo:block-container>
 	</xsl:template>
 	
-	
-	<xsl:template match="m3d:domain">
-		<fo:inline>&lt;<xsl:apply-templates/>&gt; </fo:inline>
-	</xsl:template>
-	
-	
-	
-	<xsl:template match="m3d:annex">
-		<fo:block break-after="page"/>
-		<fo:block id="{@id}">
-			<xsl:apply-templates />
-		</fo:block>
-	</xsl:template>
+
 
 	
 	<!-- <xsl:template match="m3d:references[@id = '_bibliography']"> -->

@@ -780,16 +780,6 @@
 		</fo:block>
 	</xsl:template>
 	
-	<xsl:template match="ogc:review">
-		<!-- comment 2019-11-29 -->
-		<!-- <fo:block font-weight="bold">Review:</fo:block>
-		<xsl:apply-templates /> -->
-	</xsl:template>
-
-	<xsl:template match="text()">
-		<xsl:value-of select="."/>
-	</xsl:template>
-	
 
 	
 	<xsl:template match="ogc:bibitem">
@@ -947,48 +937,8 @@
 		</fo:block>
 	</xsl:template>
 	
-	<xsl:template match="ogc:admitted">
-		<fo:block font-size="11pt">
-			<xsl:apply-templates />
-		</fo:block>
-	</xsl:template>
-	
-	<xsl:template match="ogc:deprecates">
-		<xsl:variable name="title-deprecated">
-			<xsl:call-template name="getTitle">
-				<xsl:with-param name="name" select="'title-deprecated'"/>
-			</xsl:call-template>
-		</xsl:variable>
-		<fo:block><xsl:value-of select="$title-deprecated"/>: <xsl:apply-templates /></fo:block>
-	</xsl:template>
-	
-	<xsl:template match="ogc:definition[preceding-sibling::ogc:domain]">
-		<xsl:apply-templates />
-	</xsl:template>
-	<xsl:template match="ogc:definition[preceding-sibling::ogc:domain]/ogc:p">
-		<fo:inline> <xsl:apply-templates /></fo:inline>
-		<fo:block>&#xA0;</fo:block>
-	</xsl:template>
-	
-	<xsl:template match="ogc:definition">
-		<fo:block space-after="6pt">
-			<xsl:apply-templates />
-		</fo:block>
-	</xsl:template>
-	
-
-	<xsl:template match="ogc:domain">
-		<fo:inline>&lt;<xsl:apply-templates/>&gt;</fo:inline>
-	</xsl:template>
-	
 
 	
-	<xsl:template match="ogc:annex">
-		<fo:block break-after="page"/>
-		<fo:block id="{@id}">
-			<xsl:apply-templates />
-		</fo:block>
-	</xsl:template>
 
 	
 	<!-- [position() &gt; 1] -->

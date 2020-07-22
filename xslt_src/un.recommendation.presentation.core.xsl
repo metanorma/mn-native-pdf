@@ -637,9 +637,7 @@
 		</fo:list-block>
 	</xsl:template>
 	
-	<xsl:template match="text()">
-		<xsl:value-of select="."/>
-	</xsl:template>
+	
 	
 	<xsl:template match="un:title/un:fn | un:p/un:fn[not(ancestor::un:table)]" priority="2">
 		<fo:footnote keep-with-previous.within-line="always">
@@ -788,22 +786,6 @@
 	</xsl:template>
 	
 	
-	<xsl:template match="/un:un-standard/un:annex">
-		<fo:block break-after="page"/>
-		<xsl:variable name="num"><xsl:number /></xsl:variable>
-		
-			<!-- <fo:block-container border-bottom="0.5pt solid black">
-				<fo:block>&#xA0;</fo:block>
-			</fo:block-container>
-			<fo:block margin-bottom="12pt">&#xA0;</fo:block> -->
-		
-		<fo:block id="{@id}">
-			<xsl:if test="$num = 1">
-				<xsl:attribute name="margin-top">3pt</xsl:attribute>
-			</xsl:if>
-			<xsl:apply-templates />
-		</fo:block>
-	</xsl:template>
 	
 	<!-- ====== -->
 	<!-- title      -->
@@ -1165,7 +1147,7 @@
 			<xsl:apply-templates />
 		</fo:inline>
 	</xsl:template>
-	<xsl:template match="un:definition/un:p">
+	<xsl:template match="un:definition/un:p" priority="2">
 		<fo:block>
 			<xsl:apply-templates />
 		</fo:block>
