@@ -821,8 +821,8 @@
 	<xsl:attribute-set name="deprecates-style">
 		<xsl:if test="$namespace = 'iec'">
 			<xsl:attribute name="font-size">8pt</xsl:attribute>
+			<xsl:attribute name="margin-top">5pt</xsl:attribute>
 			<xsl:attribute name="margin-bottom">5pt</xsl:attribute>
-			<xsl:attribute name="margin-bottom">12pt</xsl:attribute>
 		</xsl:if>
 	</xsl:attribute-set>
 
@@ -2716,12 +2716,6 @@
 	
 	<xsl:template match="*[local-name()='appendix']">
 		<fo:block id="{@id}" xsl:use-attribute-sets="appendix-style">
-			<xsl:variable name="title-appendix">
-				<xsl:call-template name="getTitle">
-					<xsl:with-param name="name" select="'title-appendix'"/>
-				</xsl:call-template>
-			</xsl:variable>
-			<fo:inline padding-right="5mm"><xsl:value-of select="$title-appendix"/> <xsl:number /></fo:inline>
 			<xsl:apply-templates select="*[local-name()='title']" mode="process"/>
 		</fo:block>
 		<xsl:apply-templates />
@@ -2733,7 +2727,7 @@
 	</xsl:template>
 	
 	
-	<xsl:template match="*[local-name()='appendix']//*[local-name()='example']">
+	<xsl:template match="*[local-name()='appendix']//*[local-name()='example']" priority="2">
 		<fo:block id="{@id}" xsl:use-attribute-sets="appendix-example-style">			
 			<xsl:apply-templates select="*[local-name()='name']" mode="presentation"/>
 		</fo:block>
@@ -3032,6 +3026,10 @@
 
 	<xsl:template match="*[local-name() = 'fn']" mode="contents"/>
 	<xsl:template match="*[local-name() = 'fn']" mode="contents_item"/>
+
+	<xsl:template match="*[local-name() = 'tab']" mode="contents_item">
+		<xsl:text> </xsl:text>
+	</xsl:template>
 
 	<xsl:template match="*[local-name() = 'strong']" mode="contents_item">
 		<xsl:copy-of select="."/>		
@@ -3362,6 +3360,7 @@
 			<xsl:if test="$namespace = 'gb'">3</xsl:if>
 			<xsl:if test="$namespace = 'iec'">
 				<xsl:choose>
+					<xsl:when test="parent::iec:appendix">5</xsl:when>
 					<xsl:when test="$depth = 2 and ancestor::iec:annex">6</xsl:when>
 					<xsl:when test="$depth = 2">7</xsl:when>
 					<xsl:otherwise>5</xsl:otherwise>

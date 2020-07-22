@@ -26,7 +26,7 @@
 	
 	<xsl:variable name="namespace">iec</xsl:variable>
 	
-	<xsl:variable name="debug">false</xsl:variable>
+	<xsl:variable name="debug">true</xsl:variable>
 	<xsl:variable name="pageWidth" select="'210mm'"/>
 	<xsl:variable name="pageHeight" select="'297mm'"/>
 
@@ -1245,7 +1245,7 @@
 								<fo:list-item>
 									<fo:list-item-label end-indent="label-end()">
 										<fo:block>
-											<xsl:value-of select="@section"/>
+											<xsl:value-of select="@section"/>											
 										</fo:block>
 									</fo:list-item-label>
 									<fo:list-item-body start-indent="body-start()">
@@ -1256,7 +1256,8 @@
 												</xsl:variable>
 												<xsl:call-template name="addLetterSpacing">
 													<xsl:with-param name="text" select="$title"/>
-												</xsl:call-template>												
+												</xsl:call-template>
+												<xsl:text> </xsl:text>
 												<fo:inline keep-together.within-line="always">
 													<fo:leader leader-pattern="dots"/>
 													<fo:inline><fo:page-number-citation ref-id="{@id}"/></fo:inline>
@@ -1418,31 +1419,46 @@
 			</xsl:call-template>
 		</xsl:variable>
 		
+		<xsl:variable name="section">
+			<xsl:call-template name="getSection"/>
+		</xsl:variable>
+		
+		<xsl:variable name="type">
+			<xsl:value-of select="local-name()"/>
+		</xsl:variable>
+	
 		<xsl:variable name="display">
 			<xsl:choose>
 				<xsl:when test="ancestor-or-self::iec:bibitem">false</xsl:when>
 				<xsl:when test="ancestor-or-self::iec:term">false</xsl:when>				
-				<xsl:when test="$level &lt;= 3">true</xsl:when>
-				<xsl:otherwise>false</xsl:otherwise>
+				<xsl:when test="$level &gt; 3">false</xsl:when>
+				<xsl:when test="$section = '' and $type = 'clause'">false</xsl:when><!-- don't show clause with number only in title -->
+				<xsl:otherwise>true</xsl:otherwise>
 			</xsl:choose>
 		</xsl:variable>
 		
 		<xsl:if test="$display = 'true'">		
 		
-			<xsl:variable name="section">
-				<xsl:call-template name="getSection"/>
-			</xsl:variable>
-			
 			<xsl:variable name="title">
 				<xsl:call-template name="getName"/>
 			</xsl:variable>
 			
-			<xsl:variable name="type">
-				<xsl:value-of select="local-name()"/>
-			</xsl:variable>
-			
 			<item id="{@id}" level="{$level}" section="{$section}" type="{$type}">
-				<xsl:apply-templates select="xalan:nodeset($title)" mode="contents_item"/>
+				<xsl:if test="$type ='appendix'">
+					<xsl:attribute name="section"></xsl:attribute>
+				</xsl:if>
+				<xsl:choose>
+					<xsl:when test="$type = 'foreword' or $type = 'introduction'">
+						<xsl:value-of select="java:toUpperCase(java:java.lang.String.new($title))"/>
+					</xsl:when>
+					<xsl:when test="$type = 'appendix'">
+						<xsl:apply-templates select="iec:title" mode="contents_item"/>
+					</xsl:when>
+					<xsl:otherwise>
+						<xsl:apply-templates select="xalan:nodeset($title)" mode="contents_item"/>
+					</xsl:otherwise>
+				</xsl:choose>
+				
 			</item>
 			<xsl:apply-templates  mode="contents" />
 		</xsl:if>	
@@ -1507,7 +1523,7 @@
 	</xsl:template>
 	
 	
-	<xsl:template match="iec:iec-standard/iec:preface/iec:foreword" priority="2">
+	<xsl:template match="iec:iec-standard/iec:preface/iec:foreword" priority="3">
 		<fo:block id="{@id}" margin-bottom="12pt" font-size="12pt" text-align="center">
 			<xsl:call-template name="addLetterSpacing">
 				<xsl:with-param name="text" select="java:toUpperCase(java:java.lang.String.new(iec:title))"/>
@@ -1521,31 +1537,22 @@
 		</fo:block>
 	</xsl:template>
 	
-	<xsl:template match="iec:iec-standard/iec:preface/iec:introduction" priority="2">
+<!-- 	<xsl:template match="iec:iec-standard/iec:preface/iec:introduction" priority="3">
 		<fo:block break-after="page"/>
 		<fo:block id="{@id}">
 			<xsl:apply-templates />
 		</fo:block>
-	</xsl:template>
+	</xsl:template> -->
 	
-	<!-- Foreword, Introduction -->
-	<xsl:template match="iec:iec-standard/iec:preface/*">
-		<fo:block break-after="page"/>
-		<fo:block>
-			<xsl:apply-templates />
-		</fo:block>
-	</xsl:template>
 	
-
-	
-	<xsl:template match="iec:annex//iec:clause">		
-		<fo:block margin-top="5pt" margin-bottom="10pt" text-align="justify">
+	<xsl:template match="iec:annex//iec:clause" priority="2">		
+		<fo:block id="{@id}" margin-top="5pt" margin-bottom="10pt" text-align="justify">
 			<xsl:apply-templates />				
 		</fo:block>
 	</xsl:template>
 	
-	<xsl:template match="iec:clause//iec:clause">
-		<fo:block space-after="10pt">
+	<xsl:template match="iec:clause//iec:clause" priority="2">
+		<fo:block id="{@id}" space-after="10pt">
 			<xsl:apply-templates/>
 		</fo:block>
 	</xsl:template>
@@ -1603,10 +1610,6 @@
 	
 	<xsl:template match="iec:title">
 		
-		<xsl:variable name="id"/>
-			<!-- <xsl:call-template name="getId"/>			
-		</xsl:variable> -->
-		
 		<xsl:variable name="level">
 			<xsl:call-template name="getLevel"/>
 		</xsl:variable>
@@ -1622,17 +1625,17 @@
 			
 		<xsl:choose>
 			<xsl:when test="../@inline-header = 'true'">
-				<fo:inline id="{$id}" font-size="{$font-size}" font-weight="bold">
+				<fo:inline font-size="{$font-size}" font-weight="bold">
 					<xsl:apply-templates />
 				</fo:inline>
 			</xsl:when>
 			<xsl:otherwise>
-				<fo:block  id="{$id}" font-size="{$font-size}" font-weight="bold" keep-with-next="always">
+				<fo:block font-size="{$font-size}" font-weight="bold" keep-with-next="always">
 					<xsl:attribute name="space-before"> <!-- margin-top -->
 						<xsl:choose>
 							<xsl:when test="$level = 2 and ancestor::iec:annex">22pt</xsl:when>
 							<xsl:when test="$level &gt;= 2 and ancestor::iec:annex">5pt</xsl:when>
-							<xsl:when test="$level &gt;= 3">5pt</xsl:when>
+							<!-- <xsl:when test="$level &gt;= 4">5pt</xsl:when> -->
 							<xsl:when test="$level = '' or $level = 1">18pt</xsl:when><!-- 13.5pt -->
 							<xsl:otherwise>10pt</xsl:otherwise>
 						</xsl:choose>
@@ -1952,9 +1955,9 @@
 	
 	<xsl:template match="iec:note/iec:p" name="note">
 		<fo:block margin-top="5pt" margin-bottom="5pt" font-size="8pt">
-			<xsl:if test="../following-sibling::iec:note">
+			<!-- <xsl:if test="../following-sibling::iec:note"> -->
 				<xsl:attribute name="margin-bottom">9pt</xsl:attribute>
-			</xsl:if>
+			<!-- </xsl:if> -->
 			<fo:inline padding-right="6mm">
 				<xsl:apply-templates select="../iec:name" mode="presentation"/>				
 			</fo:inline>
