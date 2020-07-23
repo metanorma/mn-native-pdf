@@ -1236,11 +1236,20 @@
 			</xsl:call-template>
 		</xsl:variable>
 		
+		<xsl:variable name="section">
+			<xsl:call-template name="getSection"/>
+		</xsl:variable>
+		
+		<xsl:variable name="type">
+			<xsl:value-of select="local-name()"/>
+		</xsl:variable>
+			
 		<xsl:variable name="display">
 			<xsl:choose>
 				<xsl:when test="ancestor-or-self::iso:bibitem">false</xsl:when>
 				<xsl:when test="ancestor-or-self::iso:term">false</xsl:when>
 				<xsl:when test="ancestor-or-self::iso:annex and $level &gt;= 2">false</xsl:when>
+				<xsl:when test="$section = '' and $type = 'clause'">false</xsl:when>
 				<xsl:when test="$level &lt;= 3">true</xsl:when>
 				<xsl:otherwise>false</xsl:otherwise>
 			</xsl:choose>
@@ -1249,16 +1258,8 @@
 		
 		<xsl:if test="$display = 'true'">		
 		
-			<xsl:variable name="section">
-				<xsl:call-template name="getSection"/>
-			</xsl:variable>
-			
 			<xsl:variable name="title">
 				<xsl:call-template name="getName"/>
-			</xsl:variable>
-			
-			<xsl:variable name="type">
-				<xsl:value-of select="local-name()"/>
 			</xsl:variable>
 			
 			<xsl:variable name="root">
@@ -1345,28 +1346,8 @@
 		</fo:block>
 	</xsl:template>
 	
-	<!-- Foreword, Introduction -->
-	<xsl:template match="iso:iso-standard/iso:preface/*">
-		<fo:block break-after="page"/>
-		<xsl:apply-templates />
-	</xsl:template>
-	
 
-	
-	<!-- clause, terms, clause, ...-->
-	<xsl:template match="iso:iso-standard/iso:sections/*">		
-		<fo:block>
-			<xsl:variable name="pos"><xsl:number count="*"/></xsl:variable> <!-- iso:sections/iso:clause | iso:sections/iso:terms | iso:sections/iso:definitions -->
-			<xsl:if test="$pos &gt;= 2">
-				<xsl:attribute name="space-before">18pt</xsl:attribute>
-			</xsl:if>
-			
-			<xsl:apply-templates />
-				
-		</fo:block>
-	</xsl:template>
-	
-	
+
 	
 	<!-- ====== -->
 	<!-- title      -->
@@ -1378,7 +1359,7 @@
 				<xsl:call-template name="titleAmendment"/>				
 			</xsl:when>
 			<xsl:otherwise>
-				<fo:block font-size="16pt" font-weight="bold" text-align="center" margin-bottom="48pt" keep-with-next="always">
+				<fo:block font-size="16pt" text-align="center" margin-bottom="48pt" keep-with-next="always">
 					<xsl:apply-templates />
 				</fo:block>
 			</xsl:otherwise>
@@ -1401,10 +1382,6 @@
 	
 	<xsl:template match="iso:title">
 	
-		<xsl:variable name="id"/>
-			<!-- <xsl:call-template name="getId"/>			
-		</xsl:variable> -->
-		
 		<xsl:variable name="level">
 			<xsl:call-template name="getLevel"/>
 		</xsl:variable>
@@ -1429,14 +1406,13 @@
 		
 		<xsl:choose>
 			<xsl:when test="$doctype = 'amendment'">
-				<fo:block id="{$id}" font-size="11pt" font-style="italic" margin-bottom="12pt" keep-with-next="always">
+				<fo:block font-size="11pt" font-style="italic" margin-bottom="12pt" keep-with-next="always">
 					<xsl:apply-templates />
 				</fo:block>
 			</xsl:when>
 			
 			<xsl:otherwise>
 				<xsl:element name="{$element-name}">
-					<xsl:attribute name="id"><xsl:value-of select="$id"/></xsl:attribute>
 					<xsl:attribute name="font-size"><xsl:value-of select="$font-size"/></xsl:attribute>
 					<xsl:attribute name="font-weight">bold</xsl:attribute>
 					<xsl:attribute name="margin-top"> <!-- margin-top -->
@@ -1472,10 +1448,10 @@
 	</xsl:template>
 	
 	<xsl:template name="titleAmendment">
-		<xsl:variable name="id">
+		<!-- <xsl:variable name="id">
 			<xsl:call-template name="getId"/>
-		</xsl:variable>
-		<fo:block id="{$id}" font-size="11pt" font-style="italic" margin-bottom="12pt" keep-with-next="always">
+		</xsl:variable> id="{$id}"  -->
+		<fo:block font-size="11pt" font-style="italic" margin-bottom="12pt" keep-with-next="always">
 			<xsl:apply-templates />
 		</fo:block>
 	</xsl:template>

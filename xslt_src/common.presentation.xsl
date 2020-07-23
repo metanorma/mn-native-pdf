@@ -729,6 +729,13 @@
 		
 	</xsl:attribute-set>
 	
+	<xsl:attribute-set name="formula-style">
+		<xsl:if test="$namespace = 'itu'">
+			<xsl:attribute name="margin-top">6pt</xsl:attribute>
+			<xsl:attribute name="margin-bottom">6pt</xsl:attribute>			
+		</xsl:if>
+	</xsl:attribute-set>
+	
 	<xsl:attribute-set name="image-style">
 		<xsl:attribute name="text-align">center</xsl:attribute>
 		<xsl:if test="$namespace = 'ogc'">
@@ -1558,7 +1565,8 @@
 						<xsl:attribute name="font-family">SimHei</xsl:attribute>
 					</xsl:if>
 					<xsl:if test="$namespace = 'iho'">
-						<xsl:attribute name="font-size">11pt</xsl:attribute>					
+						<xsl:attribute name="font-size">11pt</xsl:attribute>
+						<xsl:attribute name="padding-right">3mm</xsl:attribute>
 					</xsl:if>
 					<xsl:if test="$namespace = 'unece'  or $namespace = 'unece-rec'">
 						<xsl:if test="@type = 'source' or @type = 'abbreviation'">
@@ -2794,8 +2802,8 @@
 	<!-- ====== -->
 	<!-- formula  -->
 	<!-- ====== -->	
-	<xsl:template match="*[local-name() = 'formula']">
-		<fo:block id="{@id}">
+	<xsl:template match="*[local-name() = 'formula']" name="formula">
+		<fo:block id="{@id}" xsl:use-attribute-sets="formula-style">
 			<xsl:apply-templates />
 		</fo:block>
 	</xsl:template>
@@ -2866,9 +2874,25 @@
 	</xsl:template>
 	
 	<xsl:template match="*[local-name() = 'termnote']/*[local-name() = 'name']" mode="presentation">
+		<xsl:param name="sfx"/>
+		<xsl:variable name="suffix">
+			<xsl:choose>
+				<xsl:when test="$sfx != ''">
+					<xsl:value-of select="$sfx"/>					
+				</xsl:when>
+				<xsl:otherwise>
+					<xsl:if test="$namespace = 'gb' or $namespace = 'rsd' or $namespace = 'ogc'">
+						<xsl:text>:</xsl:text>
+					</xsl:if>
+					<xsl:if test="$namespace = 'itu' or $namespace = 'nist-cswp'  or $namespace = 'nist-sp' or $namespace = 'unece-rec' or $namespace = 'unece'">				
+						<xsl:text> – </xsl:text>
+					</xsl:if>
+				</xsl:otherwise>
+			</xsl:choose>
+		</xsl:variable>
 		<xsl:if test="normalize-space() != ''">
 			<xsl:apply-templates />
-			<xsl:text>: </xsl:text>
+			<xsl:value-of select="$suffix"/>
 		</xsl:if>
 	</xsl:template>
 	
@@ -3490,7 +3514,8 @@
 	
 	<!-- main sections -->
 	<xsl:template match="/*/*[local-name() = 'sections']/*" priority="2">
-		<fo:block id="{@id}">
+		<fo:block>
+			<xsl:call-template name="setId"/>
 			<xsl:if test="$namespace = 'csa'">
 				<xsl:variable name="pos"><xsl:number count="csa:sections/csa:clause[not(@id='_scope') and not(@id='conformance') and not(@id='_conformance')]"/></xsl:variable>
 				<xsl:if test="$pos &gt;= 2">
@@ -3509,14 +3534,20 @@
 					<xsl:attribute name="space-before">18pt</xsl:attribute>
 				</xsl:if>
 			</xsl:if>
-			
+			<xsl:if test="$namespace = 'iso'">
+				<xsl:variable name="pos"><xsl:number count="*"/></xsl:variable>
+				<xsl:if test="$pos &gt;= 2">
+					<xsl:attribute name="space-before">18pt</xsl:attribute>
+				</xsl:if>
+			</xsl:if>
 			<xsl:apply-templates />
 		</fo:block>
 	</xsl:template>
 	
 	<xsl:template match="/*/*[local-name() = 'preface']/*" priority="2">
 		<fo:block break-after="page"/>
-		<fo:block id="{@id}">
+		<fo:block>
+			<xsl:call-template name="setId"/>
 			<xsl:apply-templates />
 		</fo:block>
 	</xsl:template>
@@ -3525,7 +3556,8 @@
 
 	
 	<xsl:template match="*[local-name() = 'clause']">
-		<fo:block id="{@id}">
+		<fo:block>
+			<xsl:call-template name="setId"/>			
 			<xsl:apply-templates />
 		</fo:block>
 	</xsl:template>
@@ -3847,6 +3879,19 @@
 			<xsl:when test="$language = 'cn'">Chinese</xsl:when>
 			<xsl:otherwise><xsl:value-of select="$language"/></xsl:otherwise>
 		</xsl:choose>
+	</xsl:template>
+
+	<xsl:template name="setId">
+		<xsl:attribute name="id">
+			<xsl:choose>
+				<xsl:when test="@id">
+					<xsl:value-of select="@id"/>
+				</xsl:when>
+				<xsl:otherwise>
+					<xsl:value-of select="generate-id()"/>
+				</xsl:otherwise>
+			</xsl:choose>					
+		</xsl:attribute>
 	</xsl:template>
  
 </xsl:stylesheet>

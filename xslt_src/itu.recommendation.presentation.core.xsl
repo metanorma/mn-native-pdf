@@ -501,30 +501,32 @@
 			</xsl:call-template>
 		</xsl:variable>
 		
+		<xsl:variable name="section">
+			<xsl:call-template name="getSection"/>
+		</xsl:variable>
+		
+		<xsl:variable name="type">
+			<xsl:value-of select="local-name()"/>
+		</xsl:variable>
+			
 		<xsl:variable name="display">
 			<xsl:choose>
 				<xsl:when test="ancestor-or-self::itu:bibitem">false</xsl:when>
 				<xsl:when test="ancestor-or-self::itu:term">false</xsl:when>
-				<xsl:when test="$level &gt;= 3">false</xsl:when>			
+				<xsl:when test="$level &gt;= 3">false</xsl:when>
+				<xsl:when test="$section = '' and $type = 'clause' and $level &gt;= 2">false</xsl:when>
 				<xsl:otherwise>true</xsl:otherwise>
 			</xsl:choose>
 		</xsl:variable>
 		
 		<xsl:if test="$display = 'true'">		
-		
-			<xsl:variable name="section">
-				<xsl:call-template name="getSection"/>
-			</xsl:variable>
 			
 			<xsl:variable name="title">
 				<xsl:call-template name="getName"/>
 			</xsl:variable>
 			
-			<xsl:variable name="type">
-				<xsl:value-of select="local-name()"/>
-			</xsl:variable>
-			
-			<item id="{@id}" level="{$level}" section="{$section}" type="{$type}">
+			<item level="{$level}" section="{$section}" type="{$type}">
+				<xsl:call-template name="setId"/>
 				<xsl:apply-templates select="xalan:nodeset($title)" mode="contents_item"/>
 			</item>
 			<xsl:apply-templates  mode="contents" />
@@ -590,7 +592,7 @@
 	<!-- ============================= -->
 	
 	<!-- Summary -->
-	<xsl:template match="itu:itu-standard/itu:preface/itu:abstract[@id = '_summary']">
+	<xsl:template match="itu:itu-standard/itu:preface/itu:abstract[@id = '_summary']" priority="3">
 		<fo:block font-size="12pt">
 			<xsl:value-of select="$linebreak"/>
 			<xsl:value-of select="$linebreak"/>
@@ -606,7 +608,7 @@
 		<xsl:apply-templates />
 	</xsl:template>
 	
-	<xsl:template match="itu:preface/itu:clause">
+	<xsl:template match="itu:preface/itu:clause" priority="3">
 		<fo:block font-size="12pt">
 			<xsl:value-of select="$linebreak"/>
 			<xsl:value-of select="$linebreak"/>
@@ -614,7 +616,7 @@
 		<xsl:apply-templates />
 	</xsl:template>
 	
-	<xsl:template match="itu:preface//itu:title">
+	<xsl:template match="itu:preface//itu:title" priority="3">
 		<fo:block font-weight="bold" margin-top="18pt" margin-bottom="18pt">
 			<xsl:apply-templates />
 		</fo:block>
@@ -764,10 +766,6 @@
 	</xsl:template>
 	
 	<xsl:template match="itu:title">
-
-		<xsl:variable name="id"/>
-			<!-- <xsl:call-template name="getId"/>			
-		</xsl:variable> -->
 		
 		<xsl:variable name="level">
 			<xsl:call-template name="getLevel"/>
@@ -796,7 +794,7 @@
 			</xsl:choose>
 		</xsl:variable>
 		
-		<fo:block id="{$id}" font-size="{$font-size}" font-weight="bold" space-before="{$space-before}" space-after="{$space-after}" keep-with-next="always">			
+		<fo:block font-size="{$font-size}" font-weight="bold" space-before="{$space-before}" space-after="{$space-after}" keep-with-next="always">			
 			<xsl:apply-templates />
 		</fo:block>
 			
@@ -998,6 +996,7 @@
 			<xsl:apply-templates mode="process"/>
 		</fo:block>
 	</xsl:template>
+	<xsl:template match="itu:ul//itu:note/itu:name  | itu:ol//itu:note/itu:name" mode="process"/>
 	<xsl:template match="itu:ul//itu:note/itu:p  | itu:ol//itu:note/itu:p" mode="process">		
 		<fo:block font-size="11pt" margin-top="4pt">			
 			<xsl:apply-templates select="../itu:name" mode="presentation"/>			
@@ -1076,12 +1075,7 @@
 		</fo:block>
 		<xsl:apply-templates />			
 	</xsl:template> -->
-	
-	<xsl:template match="itu:formula" name="formula">
-		<fo:block id="{@id}" margin-top="6pt" margin-bottom="6pt">
-			<xsl:apply-templates />			
-		</fo:block>
-	</xsl:template>
+
 	
 	<xsl:template match="itu:formula/itu:stem">
 		<fo:table table-layout="fixed" width="100%">

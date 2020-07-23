@@ -425,13 +425,6 @@
 		<xsl:apply-templates />			
 	</xsl:template>
 	
-	
-	<!-- Foreword, Introduction -->
-	<xsl:template match="iho:iho-standard/iho:preface/*">
-		<fo:block break-after="page"/>
-		<xsl:apply-templates />
-	</xsl:template>
-	
 
 	<!-- ====== -->
 	<!-- title      -->
@@ -450,10 +443,6 @@
 	</xsl:template>
 		
 	<xsl:template match="iho:title">
-		
-		<xsl:variable name="id"/>
-			<!-- <xsl:call-template name="getId"/>			
-		</xsl:variable> -->
 		
 		<xsl:variable name="level">
 			<xsl:call-template name="getLevel"/>
@@ -482,7 +471,6 @@
 		
 	
 		<xsl:element name="{$element-name}">
-			<xsl:attribute name="id"><xsl:value-of select="$id"/></xsl:attribute>
 			<xsl:attribute name="font-size"><xsl:value-of select="$font-size"/></xsl:attribute>
 			<!-- <xsl:attribute name="font-weight">bold</xsl:attribute> -->
 			<xsl:attribute name="space-before"> <!-- margin-top -->
@@ -633,7 +621,7 @@
 			<xsl:if test="ancestor::iho:td">
 				<xsl:attribute name="font-size">12pt</xsl:attribute>
 			</xsl:if>			
-			<fo:inline font-size="11pt" padding-right="2mm">
+			<fo:inline font-size="11pt" padding-right="3mm">
 				<xsl:apply-templates select="../iho:name" mode="presentation"/>				
 			</fo:inline>
 			<xsl:apply-templates />
