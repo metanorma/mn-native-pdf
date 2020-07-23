@@ -271,7 +271,7 @@
 	<!-- PARAGRAPHS                                    -->
 	<!-- ============================= -->	
 	
-	<xsl:template match="un:preface/un:abstract">
+	<xsl:template match="un:preface/un:abstract" priority="3">
 		<fo:block>
 			<fo:table table-layout="fixed" width="100%" border="0.5pt solid black">
 				<fo:table-column column-width="19mm"/>
@@ -310,7 +310,7 @@
 		</fo:block>
 	</xsl:template>
 	
-	<xsl:template match="un:abstract//un:p" priority="2">
+	<xsl:template match="un:abstract//un:p" priority="3">
 		<fo:block margin-bottom="6pt">
 			<xsl:attribute name="text-align">
 				<xsl:choose>
@@ -322,7 +322,7 @@
 		</fo:block>
 	</xsl:template>
 	
-	<xsl:template match="un:preface//un:p">
+	<xsl:template match="un:preface//un:p" priority="2">
 		<fo:block margin-bottom="12pt">
 			<xsl:attribute name="text-align">
 				<xsl:choose>
@@ -531,23 +531,14 @@
 	<!-- ============================= -->	
 	<!-- ============================= -->	
 	
-	
-	<xsl:template match="un:un-standard/un:sections/*">
-		<xsl:variable name="num"><xsl:number /></xsl:variable>
-		<fo:block>
-			<xsl:if test="$num = 1">
-				<xsl:attribute name="margin-top">20pt</xsl:attribute>
-			</xsl:if>			
-			<xsl:apply-templates />				
-		</fo:block>		
-	</xsl:template>
+
 	
 	
 	<!-- ====== -->
 	<!-- title      -->
 	<!-- ====== -->
 	
-	<xsl:template match="un:preface//un:title">	
+	<xsl:template match="un:preface//un:title" priority="3">	
 		<xsl:variable name="level">
 			<xsl:call-template name="getLevel"/>
 		</xsl:variable>
@@ -593,10 +584,7 @@
 	</xsl:template>
 	
 	<xsl:template match="un:title">
-		<xsl:variable name="id"/>
-			<!-- <xsl:call-template name="getId"/>			
-		</xsl:variable> -->
-		
+
 		<xsl:variable name="level">
 			<xsl:call-template name="getLevel"/>
 		</xsl:variable>
@@ -614,13 +602,13 @@
 		<xsl:choose>			
 			<xsl:when test="ancestor::un:sections and $level = 1">
 				<fo:block-container margin-left="-16mm">
-					<fo:block id="{$id}" font-size="{$font-size}" font-weight="bold" margin-left="16mm" space-before="16pt" margin-bottom="13pt" keep-with-next="always">
+					<fo:block font-size="{$font-size}" font-weight="bold" margin-left="16mm" space-before="16pt" margin-bottom="13pt" keep-with-next="always">
 						<xsl:apply-templates />
 					</fo:block>
 				</fo:block-container>
 			</xsl:when>
 			<xsl:when test="ancestor::un:sections">
-				<fo:block id="{$id}" font-size="{$font-size}" font-weight="bold" space-before="16pt" margin-bottom="13pt" text-indent="-8mm" keep-with-next="always">
+				<fo:block font-size="{$font-size}" font-weight="bold" space-before="16pt" margin-bottom="13pt" text-indent="-8mm" keep-with-next="always">
 					<xsl:if test="$level = 2">
 						<xsl:attribute name="margin-left">1mm</xsl:attribute>
 						<xsl:attribute name="space-before">12pt</xsl:attribute>
@@ -635,7 +623,7 @@
 				</fo:block>
 			</xsl:when>			
 			<xsl:otherwise>
-				<fo:block id="{$id}" font-size="{$font-size}" font-weight="bold" text-align="left" keep-with-next="always">						
+				<fo:block font-size="{$font-size}" font-weight="bold" text-align="left" keep-with-next="always">						
 					<xsl:apply-templates />
 				</fo:block>
 			</xsl:otherwise>
@@ -648,31 +636,7 @@
 	<!-- ============================ -->
 	<!-- for further use -->
 	<!-- ============================ -->
-	<xsl:template match="un:recommendation">
-		<fo:block margin-left="20mm">
-			<fo:block font-weight="bold">
-				<xsl:variable name="title-recommendation">
-					<xsl:call-template name="getTitle">
-						<xsl:with-param name="name" select="'title-recommendation'"/>
-					</xsl:call-template>
-				</xsl:variable>
-				<xsl:value-of select="$title-recommendation"/>
-				<xsl:choose>
-					<xsl:when test="ancestor::un:sections">
-						<xsl:number level="any" count="un:sections//un:recommendation"/>
-					</xsl:when>
-					<xsl:when test="ancestor::*[local-name()='annex']">
-						<xsl:variable name="annex-id" select="ancestor::*[local-name()='annex']/@id"/>
-						<xsl:number format="A-" count="un:annex"/>
-						<xsl:number format="1" level="any" count="un:recommendation[ancestor::un:annex[@id = $annex-id]]"/>						
-						<!-- <xsl:number format="A-1" level="multiple" count="un:annex | un:recommendation"/> -->
-					</xsl:when>
-				</xsl:choose>
-				<xsl:text>:</xsl:text>
-			</fo:block>
-			<xsl:apply-templates />
-		</fo:block>
-	</xsl:template>
+
 	
 	
 	<xsl:template match="un:bibitem">
@@ -827,7 +791,7 @@
 	</xsl:template>	
 
 	
-	<xsl:template match="un:formula" name="formula" priority="2">
+	<xsl:template match="un:formula" name="formula-un" priority="2">
 		<fo:block id="{@id}" margin-top="6pt">
 			<fo:table table-layout="fixed" width="100%">
 				<fo:table-column column-width="95%"/>
@@ -856,13 +820,13 @@
 	
 	
 	<xsl:template match="un:formula" mode="process">
-		<xsl:call-template name="formula"/>
+		<xsl:call-template name="formula-un"/>
 	</xsl:template>
 	
 
 	
 	
-	<xsl:template match="un:terms[un:term[un:preferred and un:definition]]">
+	<xsl:template match="un:terms[un:term[un:preferred and un:definition]]" priority="3">
 		<fo:block id="{@id}">
 			<fo:table width="100%" table-layout="fixed">
 				<fo:table-column column-width="22%"/>
@@ -887,7 +851,7 @@
 			</fo:table-cell>
 		</fo:table-row>
 	</xsl:template>
-	<xsl:template match="un:preferred">
+	<xsl:template match="un:preferred" priority="2">
 		<fo:inline>
 			<xsl:apply-templates />
 		</fo:inline>

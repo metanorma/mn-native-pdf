@@ -619,6 +619,13 @@
 		</fo:block>
 	</xsl:template>
 	
+	<xsl:template match="/*/*[local-name() = 'preface']/*" priority="3">		
+		<fo:block>
+			<xsl:call-template name="setId"/>
+			<xsl:apply-templates />
+		</fo:block>
+	</xsl:template>
+	
 	<xsl:template match="ogc:ogc-standard/ogc:preface/*" mode="preface">
 		<xsl:if test="local-name() = 'introduction' or 
 											local-name() = 'abstract' or 
@@ -629,17 +636,6 @@
 	</xsl:template>
 	
 
-	
-	<!-- clause, terms, clause, ...-->
-	<xsl:template match="ogc:ogc-standard/ogc:sections/*">		
-		<fo:block>
-			<xsl:variable name="pos"><xsl:number count="ogc:sections/ogc:clause[not(@id='_scope') and not(@id='conformance') and not(@id='_conformance')]"/></xsl:variable> <!--  | ogc:sections/ogc:terms -->
-			<xsl:if test="$pos &gt;= 2">
-				<xsl:attribute name="space-before">18pt</xsl:attribute>
-			</xsl:if>
-			<xsl:apply-templates />				
-		</fo:block>
-	</xsl:template>
 	
 
 	
@@ -654,10 +650,6 @@
 	</xsl:template>
 	
 	<xsl:template match="ogc:title">
-		
-		<xsl:variable name="id"/>
-			<!-- <xsl:call-template name="getId"/>			
-		</xsl:variable> -->
 		
 		<xsl:variable name="level">
 			<xsl:call-template name="getLevel"/>
@@ -683,7 +675,6 @@
 		</xsl:variable>
 		
 		<xsl:element name="{$element-name}">
-			<xsl:attribute name="id"><xsl:value-of select="$id"/></xsl:attribute>
 			<xsl:attribute name="font-size"><xsl:value-of select="$font-size"/></xsl:attribute>
 			<xsl:attribute name="font-weight">bold</xsl:attribute>
 			<xsl:attribute name="space-before">13.5pt</xsl:attribute>

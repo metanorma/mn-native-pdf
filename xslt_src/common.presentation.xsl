@@ -227,6 +227,19 @@
 			<xsl:attribute name="line-height">113%</xsl:attribute>
 		</xsl:if>
 	</xsl:attribute-set>
+
+	<xsl:attribute-set name="recommendation-style">
+		<xsl:if test="$namespace = 'nist-sp'">
+			<xsl:attribute name="margin-left">20mm</xsl:attribute>
+		</xsl:if>
+	</xsl:attribute-set>
+	
+	<xsl:attribute-set name="recommendation-name-style">
+		<xsl:if test="$namespace = 'nist-sp'">
+			<xsl:attribute name="font-weight">bold</xsl:attribute>
+			<xsl:attribute name="keep-with-next">always</xsl:attribute>
+		</xsl:if>
+	</xsl:attribute-set>
 	
 	<xsl:attribute-set name="termexample-style">
 		<xsl:if test="$namespace = 'iec'">
@@ -3099,11 +3112,36 @@
 	<!-- ====== -->
 	<!-- ====== -->
 	
+	<!-- ====== -->
+	<!-- recommendation -->	
+	<!-- ====== -->
+	<xsl:template match="*[local-name() = 'recommendation']">
+		<fo:block id="{@id}" xsl:use-attribute-sets="recommendation-style">			
+			<xsl:apply-templates select="*[local-name()='name']" mode="presentation"/>
+			<xsl:apply-templates />
+		</fo:block>
+	</xsl:template>
+	
+	<xsl:template match="*[local-name() = 'recommendation']/*[local-name() = 'name']"/>	
+	
+	<xsl:template match="*[local-name() = 'recommendation']/*[local-name() = 'name']" mode="presentation">
+		<xsl:if test="normalize-space() != ''">
+			<fo:block xsl:use-attribute-sets="recommendation-name-style">
+				<xsl:apply-templates />
+				<xsl:if test="$namespace = 'nist-sp'">
+					<xsl:text>:</xsl:text>
+				</xsl:if>
+			</fo:block>
+		</xsl:if>
+	</xsl:template>
+	
+	<!-- ====== -->
+	<!-- ====== -->
 	
 	<!-- ====== -->
 	<!-- termexample -->	
 	<!-- ====== -->
-		<xsl:template match="*[local-name() = 'termexample']">
+	<xsl:template match="*[local-name() = 'termexample']">
 		<fo:block id="{@id}" xsl:use-attribute-sets="termexample-style">			
 			<xsl:apply-templates select="*[local-name()='name']" mode="presentation"/>
 			<xsl:apply-templates />
@@ -3417,12 +3455,23 @@
 					<xsl:number level="any" count="m3d:references"/>
 				</xsl:variable>
 				<xsl:choose>
-					<xsl:when test="(ancestor::m3d:sections and $depth = 1) or 
-															(local-name(..) = 'references' and $references_num_current = 1)">25</xsl:when>
-					<xsl:when test="ancestor::m3d:sections or ancestor::m3d:annex">3</xsl:when>						
+					<xsl:when test="(ancestor-or-self::m3d:sections and $depth = 1) or 
+															(local-name() = 'references' and $references_num_current = 1)">25</xsl:when>
+					<xsl:when test="ancestor-or-self::m3d:sections or ancestor-or-self::m3d:annex">3</xsl:when>						
+					<xsl:otherwise>
+						<xsl:value-of select="$references_num_current"/>
+					</xsl:otherwise>
 				</xsl:choose>
 			</xsl:if>
-			<xsl:if test="$namespace = 'nist-cswp'  or $namespace = 'nist-sp'">				
+			<xsl:if test="$namespace = 'nist-sp'">
+				<xsl:choose>
+					<xsl:when test="ancestor-or-self::nist:annex and $depth &gt;= 2">1</xsl:when>
+					<xsl:when test="$depth = 1 and local-name(..) != 'annex'">5</xsl:when>
+					<xsl:otherwise>1</xsl:otherwise>
+				</xsl:choose>
+			</xsl:if>
+			
+			<xsl:if test="$namespace = 'nist-cswp'">				
 				<xsl:choose>
 					<xsl:when test="$depth = 1 and local-name(..) != 'annex'">7.5</xsl:when>										
 					<xsl:otherwise>4</xsl:otherwise>
@@ -3514,6 +3563,9 @@
 	
 	<!-- main sections -->
 	<xsl:template match="/*/*[local-name() = 'sections']/*" priority="2">
+		<xsl:if test="$namespace = 'm3d' or $namespace = 'unece-rec'">
+				<fo:block break-after="page"/>
+		</xsl:if>
 		<fo:block>
 			<xsl:call-template name="setId"/>
 			<xsl:if test="$namespace = 'csa'">
@@ -3540,8 +3592,46 @@
 					<xsl:attribute name="space-before">18pt</xsl:attribute>
 				</xsl:if>
 			</xsl:if>
+			<xsl:if test="$namespace = 'm3d'">
+				<xsl:variable name="pos"><xsl:number count="m3d:sections/m3d:clause | m3d:sections/m3d:terms"/></xsl:variable>
+				<xsl:if test="$pos &gt;= 2">
+					<xsl:attribute name="space-before">18pt</xsl:attribute>
+				</xsl:if>
+			</xsl:if>			
+			<xsl:if test="$namespace = 'rsd'">
+				<xsl:variable name="pos"><xsl:number count="rsd:sections/rsd:clause[not(@id='_scope') and not(@id='conformance') and not(@id='_conformance')]"/></xsl:variable> <!--  | rsd:sections/rsd:terms -->
+				<xsl:if test="$pos &gt;= 2">
+					<xsl:attribute name="space-before">18pt</xsl:attribute>
+				</xsl:if>
+			</xsl:if>
+			<xsl:if test="$namespace = 'ogc'">
+				<xsl:variable name="pos"><xsl:number count="ogc:sections/ogc:clause[not(@id='_scope') and not(@id='conformance') and not(@id='_conformance')]"/></xsl:variable> <!--  | ogc:sections/ogc:terms -->
+				<xsl:if test="$pos &gt;= 2">
+					<xsl:attribute name="space-before">18pt</xsl:attribute>
+				</xsl:if>
+			</xsl:if>			
+			<xsl:if test="$namespace = 'unece'">
+				<xsl:variable name="num"><xsl:number /></xsl:variable>
+				<xsl:if test="$num = 1">
+					<xsl:attribute name="margin-top">20pt</xsl:attribute>
+				</xsl:if>
+			</xsl:if>
+			<xsl:if test="$namespace = 'unece-rec'">
+				<xsl:variable name="num"><xsl:number /></xsl:variable>
+				<xsl:if test="$num = 1">
+					<xsl:attribute name="margin-top">3pt</xsl:attribute>
+				</xsl:if>
+			</xsl:if>
+			
 			<xsl:apply-templates />
 		</fo:block>
+		
+		<xsl:if test="$namespace = 'nist-cswp' or $namespace = 'nist-sp'">
+				<xsl:if test="position() != last()">
+					<fo:block break-after="page"/>
+				</xsl:if>
+		</xsl:if>
+		
 	</xsl:template>
 	
 	<xsl:template match="/*/*[local-name() = 'preface']/*" priority="2">
@@ -3569,6 +3659,9 @@
 	</xsl:template>
 	
 	<xsl:template match="/*/*[local-name() = 'bibliography']/*[local-name() = 'references'][@id = '_normative_references' or @id = '_references']">
+		<xsl:if test="$namespace = 'nist-cswp'">
+			<fo:block break-after="page"/>
+		</xsl:if>
 		<fo:block id="{@id}">
 			<xsl:apply-templates />
 		</fo:block>
@@ -3790,6 +3883,9 @@
 						<xsl:when test="ancestor::*[local-name() = 'bibliography']">
 							<xsl:value-of select="$level_total - 1"/>
 						</xsl:when>
+						<xsl:when test="parent::*[local-name() = 'annex']">
+							<xsl:value-of select="$level_total - 1"/>
+						</xsl:when>
 						<xsl:when test="ancestor::*[local-name() = 'annex']">
 							<xsl:value-of select="$level_total"/>
 						</xsl:when>
@@ -3805,7 +3901,7 @@
 		</xsl:choose>
 	</xsl:template>
 
-\	
+
 	<xsl:template name="split">
 		<xsl:param name="pText" select="."/>
 		<xsl:param name="sep" select="','"/>

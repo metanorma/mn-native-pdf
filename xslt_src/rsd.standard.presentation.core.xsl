@@ -408,20 +408,6 @@
 	</xsl:template>
 	
 
-
-	
-	<!-- clause, terms, clause, ...-->
-	<xsl:template match="rsd:rsd-standard/rsd:sections/*">		
-		<fo:block>
-			<xsl:variable name="pos"><xsl:number count="rsd:sections/rsd:clause[not(@id='_scope') and not(@id='conformance') and not(@id='_conformance')]"/></xsl:variable> <!--  | rsd:sections/rsd:terms -->
-			<xsl:if test="$pos &gt;= 2">
-				<xsl:attribute name="space-before">18pt</xsl:attribute>
-			</xsl:if>
-			
-			<xsl:apply-templates />
-				
-		</fo:block>
-	</xsl:template>
 	
 	
 	<!-- ====== -->
@@ -444,10 +430,6 @@
 	</xsl:template>
 	
 	<xsl:template match="rsd:title">
-		
-		<xsl:variable name="id"/>
-			<!-- <xsl:call-template name="getId"/>			
-		</xsl:variable> -->
 		
 		<xsl:variable name="level">
 			<xsl:call-template name="getLevel"/>
@@ -482,7 +464,6 @@
 		
 		
 		<xsl:element name="{$element-name}">
-			<xsl:attribute name="id"><xsl:value-of select="$id"/></xsl:attribute>
 			<xsl:attribute name="font-size"><xsl:value-of select="$font-size"/></xsl:attribute>
 			<xsl:attribute name="font-weight">bold</xsl:attribute>
 			<xsl:attribute name="space-before">13.5pt</xsl:attribute>
