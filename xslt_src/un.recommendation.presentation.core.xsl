@@ -122,10 +122,15 @@
 						<fo:block font-family="Arial Black" font-size="19pt" margin-top="2mm" letter-spacing="1pt">
 							<xsl:value-of select="/un:un-standard/un:bibdata/un:contributor/un:organization/un:name"/>
 						</fo:block>
-						<fo:block font-family="Arial" font-size="24.5pt" font-weight="bold" margin-top="19mm" margin-right="3mm">
+					</fo:block>
+					<fo:block-container absolute-position="fixed" left="50mm" top="30mm" width="139mm" height="40mm" text-align="right" display-align="after">
+						<fo:block font-family="Arial" font-size="24.5pt" font-weight="bold" margin-right="3mm"> <!-- margin-top="19mm" -->
+							<xsl:if test="string-length($title) &gt; 70">
+								<xsl:attribute name="font-size">22pt</xsl:attribute>
+							</xsl:if>
 							<xsl:value-of select="$title"/>
 						</fo:block>
-					</fo:block>
+					</fo:block-container>
 				</fo:flow>
 			</fo:page-sequence>
 			<!-- End Cover Page -->
@@ -382,83 +387,14 @@
 		
 	</xsl:template>
 	
-	<!-- Any node with title element - clause, definition, annex,... -->
-	<xsl:template match="un:title | un:preferred" mode="contents2">
-		<xsl:variable name="id">
-			<xsl:call-template name="getId"/>			
-		</xsl:variable>
-		
-		<xsl:variable name="level">
-			<xsl:call-template name="getLevel"/>
-		</xsl:variable>
-		
-		<!-- <xsl:message>
-			level=<xsl:value-of select="$level"/>=<xsl:value-of select="."/>
-		</xsl:message> -->
-		
-		<xsl:variable name="section">
-			<xsl:call-template name="getSection"/>
-		</xsl:variable>
-			
-		
-		<xsl:variable name="type">
-			<xsl:value-of select="local-name(..)"/>
-		</xsl:variable>
-		
-		<item id="{$id}" level="{$level}" section="{$section}" display="true" type="{$type}">
-			<xsl:if test="$type = 'clause'">
-				<xsl:attribute name="section">
-					<!-- <xsl:text>Clause </xsl:text> -->
-					<xsl:choose>
-						<xsl:when test="ancestor::un:sections">
-							<!-- 1, 2, 3, 4, ... from main section (not annex ...) -->
-							<xsl:choose>
-								<xsl:when test="$level = 1">
-									<xsl:number format="I" count="//un:sections/un:clause"/>
-								</xsl:when>
-								<xsl:when test="$level = 2">
-									<!-- <xsl:number format="I." count="//un:sections/un:clause"/> -->
-									<xsl:number format="A" count="//un:sections/un:clause/un:clause[un:title]"/>
-								</xsl:when>
-								<xsl:when test="$level &gt;= 3">
-									<!-- <xsl:number format="I." count="//un:sections/un:clause"/>
-									<xsl:number format="A." count="//un:sections/un:clause/un:clause[un:title]"/> -->
-									<xsl:number format="1" count="//un:sections/un:clause/un:clause/un:clause[un:title]"/>
-								</xsl:when>
-								<xsl:otherwise>
-								</xsl:otherwise>
-							</xsl:choose>
-						</xsl:when>
-						<xsl:when test="ancestor::un:annex">
-							<xsl:choose>
-								<xsl:when test="$level = 1">
-									<xsl:variable name="title-annex">
-										<xsl:call-template name="getTitle">
-											<xsl:with-param name="name" select="'title-annex'"/>
-										</xsl:call-template>
-									</xsl:variable>
-									<xsl:value-of select="$title-annex"/>
-									<xsl:number format="I" level="any" count="un:annex"/>
-								</xsl:when>
-								<xsl:otherwise>
-									<xsl:variable name="annex_id" select="ancestor::un:annex/@id"/>
-									<xsl:number format="1." count="//un:annex[@id = $annex_id]/un:clause[un:title]"/>
-								</xsl:otherwise>
-							</xsl:choose>
-						</xsl:when>
-						<xsl:otherwise>
-						</xsl:otherwise>
-					</xsl:choose>
-				</xsl:attribute>
-			</xsl:if>
-			<xsl:attribute name="parent">
-				<xsl:if test="ancestor::un:annex">annex</xsl:if>
-			</xsl:attribute>
-			<xsl:apply-templates />
-		</item>
-		
-		<xsl:apply-templates mode="contents"/>
+	<xsl:template match="un:strong" mode="contents_item" priority="2">
+		<xsl:apply-templates mode="contents_item"/>
 	</xsl:template>
+	
+	<xsl:template match="un:br" mode="contents_item" priority="2">
+		<fo:inline>&#xA0;</fo:inline>
+	</xsl:template>
+
 	
 	<xsl:template match="un:bibitem" mode="contents"/>
 
@@ -531,7 +467,7 @@
 			</fo:block>
 		</xsl:template>
 		
-		<xsl:template match="un:feedback-statement//un:clause">
+		<xsl:template match="un:feedback-statement//un:clause" priority="2">
 			<xsl:apply-templates />
 			<xsl:call-template name="show_fs_table"/>
 		</xsl:template>
@@ -590,57 +526,59 @@
 					<xsl:when test="@align"><xsl:value-of select="@align"/></xsl:when>
 					<xsl:otherwise>justify</xsl:otherwise>
 				</xsl:choose>
-			</xsl:attribute>
-			<!-- <xsl:choose>
-				<xsl:when test="ancestor::un:sections">
-					<fo:inline padding-right="10mm"><xsl:number format="1. " level="any" count="un:sections//un:clause/un:p"/></fo:inline>
-				</xsl:when>
-				<xsl:when test="ancestor::un:annex">
-					<xsl:variable name="annex_id" select="ancestor::un:annex/@id"/>
-					<fo:inline padding-right="10mm"><xsl:number format="1. " level="any" count="un:annex[@id = $annex_id]//un:clause/un:p"/></fo:inline>
-				</xsl:when>
-			</xsl:choose> -->
+			</xsl:attribute>			
 			<xsl:apply-templates />
 		</fo:block>
 	</xsl:template>
 	
-	<xsl:template match="un:p">
-		<fo:list-block provisional-distance-between-starts="10mm" margin-bottom="6pt">
-			<!-- <xsl:if test="ancestor::un:annex">
-				<xsl:attribute name="provisional-distance-between-starts">0mm</xsl:attribute>
-			</xsl:if> -->
+	<xsl:template match="un:clause[@inline-header = 'true']" priority="3">
+		<fo:list-block provisional-distance-between-starts="10mm" space-after="6pt">				
+			<xsl:call-template name="setId"/>
 			<xsl:attribute name="text-align">
 				<xsl:choose>
-					<xsl:when test="@align"><xsl:value-of select="@align"/></xsl:when>
+					<xsl:when test="child::*/@align"><xsl:value-of select="child::*/@align"/></xsl:when>
 					<xsl:otherwise>justify</xsl:otherwise>
 				</xsl:choose>
 			</xsl:attribute>
 			<fo:list-item>
 				<fo:list-item-label end-indent="label-end()">
 					<fo:block>
-						<xsl:choose>
-							<xsl:when test="ancestor::un:sections">
-								<xsl:number format="1. " level="any" count="un:sections//un:clause/un:p"/>
-							</xsl:when>
-							<xsl:when test="ancestor::un:annex">
-								<xsl:variable name="annex_id" select="ancestor::un:annex/@id"/>
-								<xsl:number format="1. " level="any" count="un:annex[@id = $annex_id]//un:clause/un:p"/>
-							</xsl:when>
-						</xsl:choose>
+						<xsl:apply-templates select="un:title" mode="inline-header"/>
 					</fo:block>
 				</fo:list-item-label>
 				<fo:list-item-body text-indent="body-start()">
 					<fo:block>
-						<xsl:text> </xsl:text><xsl:apply-templates />
+						<xsl:apply-templates />
 					</fo:block>
 				</fo:list-item-body>
 			</fo:list-item>
-		</fo:list-block>
+		</fo:list-block>		
 	</xsl:template>
 	
+	<xsl:template match="un:title" mode="inline-header">
+		<fo:inline>
+			<xsl:apply-templates />
+		</fo:inline>
+	</xsl:template>
 	
+	<xsl:template match="un:p">
+		<fo:block>
+			<xsl:if test="following-sibling::*">
+				<xsl:attribute name="margin-bottom">6pt</xsl:attribute>
+			</xsl:if>
+			<xsl:attribute name="text-align">
+				<xsl:choose>
+					<xsl:when test="@align"><xsl:value-of select="@align"/></xsl:when>
+					<xsl:otherwise>justify</xsl:otherwise>
+				</xsl:choose>
+			</xsl:attribute>
+			<xsl:apply-templates />
+		</fo:block>
+	</xsl:template>
 	
-	<xsl:template match="un:title/un:fn | un:p/un:fn[not(ancestor::un:table)]" priority="2">
+
+	<!-- un:fn[not(ancestor::un:un-standard)] means fn element in virtual variable $title -->
+	<xsl:template match="un:title//un:fn | un:p/un:fn[not(ancestor::un:table)]" priority="2">
 		<fo:footnote keep-with-previous.within-line="always">
 			<xsl:variable name="number">
 				<xsl:number level="any" count="un:fn[not(ancestor::un:table)]"/>
@@ -670,7 +608,7 @@
 	</xsl:template>
 	
 	<xsl:template match="un:ul | un:ol">
-		<fo:list-block margin-left="7mm" provisional-distance-between-starts="3mm">
+		<fo:list-block provisional-distance-between-starts="3mm" margin-left="7mm" text-indent="0mm">
 			<xsl:apply-templates />
 		</fo:list-block>
 		<xsl:apply-templates select="./un:note" mode="process"/>
@@ -741,19 +679,10 @@
 		<fo:block break-after="page"/>
 		<fo:block-container border="0.25pt solid black" margin-top="7mm" margin-left="-9mm" margin-right="-14mm" padding-top="3mm">
 			<fo:block id="{@id}" font-weight="bold" margin-left="20mm" margin-right="25mm" text-align="center" margin-top="6pt" margin-bottom="12pt" keep-with-next="always">
-				<xsl:variable name="num">
-					<xsl:number />
-				</xsl:variable>
-				<xsl:variable name="title-box">
-					<xsl:call-template name="getTitle">
-						<xsl:with-param name="name" select="'title-box'"/>
-					</xsl:call-template>
-				</xsl:variable>
-				<xsl:value-of select="$title-box"/><xsl:value-of select="$num"/><xsl:text>. </xsl:text><xsl:apply-templates select="un:name" mode="process"/>
+				<xsl:apply-templates select="un:name" mode="process"/>
 			</fo:block>
-			<!-- <fo:block margin-left="29mm" margin-right="34mm"> -->
 			<fo:block-container margin-left="20mm" margin-right="20mm">
-				<fo:block-container margin-left="0mm" margin-right="0mm">
+				<fo:block-container margin-left="0mm" margin-right="0mm" text-indent="0mm">
 					<xsl:apply-templates />
 				</fo:block-container>
 			</fo:block-container>
@@ -796,7 +725,7 @@
 		</fo:block>
 	</xsl:template>
 	
-	<xsl:template match="un:annex//un:title">
+	<xsl:template match="un:annex//un:title" priority="3">
 		<xsl:variable name="level">
 			<xsl:call-template name="getLevel"/>
 		</xsl:variable>
@@ -807,6 +736,7 @@
 				<xsl:otherwise>12pt</xsl:otherwise>
 			</xsl:choose>
 		</xsl:variable>
+		
 		<xsl:choose>
 			<xsl:when test="$level = 1">
 				<fo:block font-size="{$font-size}" font-weight="bold" space-before="3pt" margin-top="12pt" margin-bottom="16pt" keep-with-next="always" line-height="18pt">					
@@ -814,19 +744,20 @@
 				</fo:block>
 			</xsl:when>
 			<xsl:when test="$level &gt;= 2">
-				<fo:block font-size="{$font-size}" font-weight="bold" space-before="3pt" margin-bottom="12pt" margin-left="-9.5mm" line-height="108%" keep-with-next="always"> <!-- line-height="14.5pt" text-indent="-9.5mm" -->
-					
+				<fo:block font-size="{$font-size}" font-weight="bold" space-before="3pt" margin-bottom="12pt" margin-left="-9.5mm" line-height="108%" keep-with-next="always"> <!-- line-height="14.5pt" text-indent="-9.5mm" -->					
 					<xsl:if test="$level = 2">
 						<xsl:attribute name="margin-top">16pt</xsl:attribute>
 					</xsl:if>
 					<xsl:if test="$level = 3">
 						<xsl:attribute name="margin-top">16pt</xsl:attribute>
 					</xsl:if>
-					<xsl:apply-templates />					
+					<xsl:call-template name="insertTitleAsListItem"/>
 				</fo:block>
 			</xsl:when>
 		</xsl:choose>
 	</xsl:template>
+	
+	<xsl:template match="un:title[parent::un:clause[@inline-header = 'true']]" priority="3"/>
 	
 	<xsl:template match="un:title">
 
@@ -842,12 +773,9 @@
 			</xsl:choose>
 		</xsl:variable>
 		
-		<xsl:variable name="section">
-			<xsl:call-template name="getSection"/>
-		</xsl:variable>
+		
 				
-		<xsl:choose>
-			
+		<xsl:choose>			
 			<xsl:when test="ancestor::un:sections">
 				<fo:block font-size="{$font-size}" font-weight="bold" space-before="3pt" margin-bottom="12pt" margin-left="-9.5mm" line-height="108%" keep-with-next="always"> <!-- line-height="14.5pt" text-indent="-9.5mm" -->
 					<xsl:if test="$level = 1">
@@ -861,7 +789,7 @@
 					<xsl:if test="$level = 3">
 						<xsl:attribute name="margin-top">16pt</xsl:attribute>
 					</xsl:if>
-					<xsl:apply-templates />
+					<xsl:call-template name="insertTitleAsListItem"/>
 				</fo:block>
 			</xsl:when>
 			
@@ -874,6 +802,9 @@
 	</xsl:template>
 	<!-- ====== -->
 	<!-- ====== -->
+	
+	
+	
 	
 	<!-- ============================ -->
 	<!-- for further use -->
@@ -908,22 +839,6 @@
 	</xsl:template>
 	
 	
-	<xsl:template match="*[local-name()='tt']">
-		<xsl:variable name="element-name">
-			<xsl:choose>
-				<xsl:when test="normalize-space(ancestor::un:p[1]//text()[not(parent::un:tt)]) != ''">fo:inline</xsl:when>
-				<xsl:otherwise>fo:block</xsl:otherwise>
-			</xsl:choose>
-		</xsl:variable>
-		<xsl:element name="{$element-name}">
-			<xsl:attribute name="font-family">Courier</xsl:attribute>
-			<xsl:attribute name="font-size">10pt</xsl:attribute>
-			<xsl:attribute name="text-align">center</xsl:attribute>
-			<xsl:apply-templates />
-		</xsl:element>
-	</xsl:template>
-
-
 	<xsl:template match="un:figure" priority="2">
 		<fo:block-container id="{@id}">
 			<xsl:if test="ancestor::un:admonition">				
@@ -1075,101 +990,6 @@
 	</xsl:template>
 		
 
-
-	
-	
-	<xsl:template match="un:terms[un:term[un:preferred and un:definition]]" priority="3">
-		<fo:block id="{@id}">
-			<fo:table width="100%" table-layout="fixed">
-				<fo:table-column column-width="22%"/>
-				<fo:table-column column-width="78%"/>
-				<fo:table-body>
-					<xsl:apply-templates mode="table"/>
-				</fo:table-body>
-			</fo:table>
-		</fo:block>
-	</xsl:template>
-	<xsl:template match="un:term" mode="table">
-		<fo:table-row id="{@id}">
-			<fo:table-cell padding-right="1mm">
-				<fo:block margin-bottom="12pt">
-					<xsl:apply-templates select="un:preferred"/>
-				</fo:block>
-			</fo:table-cell>
-			<fo:table-cell>
-				<fo:block margin-bottom="12pt">
-					<xsl:apply-templates select="un:*[local-name(.) != 'preferred']"/>
-				</fo:block>
-			</fo:table-cell>
-		</fo:table-row>
-	</xsl:template>
-	<xsl:template match="un:preferred" priority="2">
-		<fo:inline>
-			<xsl:apply-templates />
-		</fo:inline>
-	</xsl:template>
-	<xsl:template match="un:definition/un:p" priority="2">
-		<fo:block>
-			<xsl:apply-templates />
-		</fo:block>
-	</xsl:template>
-	
-	<xsl:template match="un:errata">
-		<!-- <row>
-					<date>05-07-2013</date>
-					<type>Editorial</type>
-					<change>Changed CA-9 Priority Code from P1 to P2 in <xref target="tabled2"/>.</change>
-					<pages>D-3</pages>
-				</row>
-		-->
-		<fo:table table-layout="fixed" width="100%" font-size="10pt" border="1pt solid black">
-			<fo:table-column column-width="20mm"/>
-			<fo:table-column column-width="23mm"/>
-			<fo:table-column column-width="107mm"/>
-			<fo:table-column column-width="15mm"/>
-			<fo:table-body>
-				<fo:table-row font-family="Arial" text-align="center" font-weight="bold" background-color="black" color="white">
-					<fo:table-cell border="1pt solid black"><fo:block>Date</fo:block></fo:table-cell>
-					<fo:table-cell border="1pt solid black"><fo:block>Type</fo:block></fo:table-cell>
-					<fo:table-cell border="1pt solid black"><fo:block>Change</fo:block></fo:table-cell>
-					<fo:table-cell border="1pt solid black"><fo:block>Pages</fo:block></fo:table-cell>
-				</fo:table-row>
-				<xsl:apply-templates />
-			</fo:table-body>
-		</fo:table>
-	</xsl:template>
-	
-	<xsl:template match="un:errata/un:row">
-		<fo:table-row>
-			<xsl:apply-templates />
-		</fo:table-row>
-	</xsl:template>
-	
-	<xsl:template match="un:errata/un:row/*">
-		<fo:table-cell border="1pt solid black" padding-left="1mm" padding-top="0.5mm">
-			<fo:block><xsl:apply-templates /></fo:block>
-		</fo:table-cell>
-	</xsl:template>
-	
-	<xsl:template match="un:quote" priority="2">
-		<fo:block-container margin-left="7mm" margin-right="7mm">
-			<xsl:apply-templates />
-			<xsl:apply-templates select="un:author" mode="process"/>
-		</fo:block-container>
-	</xsl:template>
-	
-	<xsl:template match="un:quote/un:author" priority="2"/>
-	<xsl:template match="un:quote/un:p" priority="2">
-		<fo:block text-align="justify" margin-bottom="12pt">
-			<xsl:apply-templates/>
-		</fo:block>
-	</xsl:template>
-	<xsl:template match="un:quote/un:author" mode="process" priority="2">
-		<fo:block text-align="right" margin-left="0.5in" margin-right="0.5in">
-			<fo:inline>— </fo:inline>
-			<xsl:apply-templates />
-		</fo:block>
-	</xsl:template>
 		
 	<xsl:template match="un:references">
 		<fo:block>

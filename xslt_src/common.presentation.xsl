@@ -113,8 +113,6 @@
 		
 		<title-in lang="en">in </title-in>
 		
-		<title-box lang="en">Box </title-box>
-		
 		<title-partly-supercedes lang="en">Partly Supercedes </title-partly-supercedes>
 		<title-partly-supercedes lang="zh">部分代替 </title-partly-supercedes>
 		
@@ -495,6 +493,7 @@
 			<xsl:attribute name="font-style">italic</xsl:attribute>
 			<xsl:attribute name="font-size">10pt</xsl:attribute>
 			<xsl:attribute name="text-align">left</xsl:attribute>
+			<xsl:attribute name="text-indent">0mm</xsl:attribute>
 		</xsl:if>		
 		<xsl:if test="$namespace = 'unece-rec'">
 			<xsl:attribute name="font-weight">bold</xsl:attribute>
@@ -502,6 +501,7 @@
 			<xsl:attribute name="margin-top">12pt</xsl:attribute>
 			<xsl:attribute name="margin-bottom">0pt</xsl:attribute>
 			<xsl:attribute name="keep-with-next">always</xsl:attribute>
+			<xsl:attribute name="text-indent">0mm</xsl:attribute>
 		</xsl:if>
 	</xsl:attribute-set>
 	
@@ -947,7 +947,7 @@
 				<xsl:attribute name="space-after">12pt</xsl:attribute>
 			</xsl:if>
 			<xsl:if test="$namespace = 'unece'">
-				<xsl:attribute name="space-after">18pt</xsl:attribute>
+				<xsl:attribute name="margin-bottom">18pt</xsl:attribute>
 			</xsl:if>
 			<xsl:if test="$namespace = 'itu'">
 				<xsl:attribute name="margin-left">0mm</xsl:attribute>
@@ -1417,14 +1417,12 @@
 				<xsl:attribute name="background-color">black</xsl:attribute>
 				<xsl:attribute name="color">white</xsl:attribute>
 			</xsl:if>
-			<xsl:if test="$namespace = 'unece-rec'">
+			<xsl:if test="$namespace = 'unece-rec'">				
 				<xsl:if test="ancestor::*[local-name()='sections']">
 					<xsl:attribute name="border">solid black 0pt</xsl:attribute>
 					<xsl:attribute name="display-align">before</xsl:attribute>
 					<xsl:attribute name="padding-top">1mm</xsl:attribute>
 				</xsl:if>
-			</xsl:if>
-			<xsl:if test="$namespace = 'unece-rec'">
 				<xsl:if test="ancestor::*[local-name()='annex']">
 					<xsl:attribute name="font-weight">normal</xsl:attribute>
 					<xsl:attribute name="padding-top">1mm</xsl:attribute>
@@ -1435,6 +1433,7 @@
 						<xsl:attribute name="font-weight">bold</xsl:attribute>
 					</xsl:if>
 				</xsl:if>
+				<xsl:attribute name="text-indent">0mm</xsl:attribute>
 			</xsl:if>
 			<xsl:if test="$namespace = 'unece'">
 				<xsl:attribute name="display-align">center</xsl:attribute>
@@ -1445,6 +1444,7 @@
 				<xsl:attribute name="border">solid black 0pt</xsl:attribute>
 				<xsl:attribute name="border-top">solid black 0.2pt</xsl:attribute>
 				<xsl:attribute name="border-bottom">solid black 1.5pt</xsl:attribute>
+				<xsl:attribute name="text-indent">0mm</xsl:attribute>
 			</xsl:if>
 			<xsl:if test="@colspan">
 				<xsl:attribute name="number-columns-spanned">
@@ -1494,8 +1494,9 @@
 			<xsl:if test="$namespace = 'unece-rec'">
 				<xsl:if test="ancestor::*[local-name()='sections']">
 					<xsl:attribute name="border">solid black 0pt</xsl:attribute>
-					<xsl:attribute name="padding-top">1mm</xsl:attribute>
+					<xsl:attribute name="padding-top">1mm</xsl:attribute>					
 				</xsl:if>
+				<xsl:attribute name="text-indent">0mm</xsl:attribute>
 			</xsl:if>
 			<xsl:if test="$namespace = 'unece'">
 				<xsl:attribute name="display-align">before</xsl:attribute>
@@ -1504,6 +1505,7 @@
 				<xsl:attribute name="padding-bottom">1mm</xsl:attribute>
 				<xsl:attribute name="border">solid black 0pt</xsl:attribute>
 				<xsl:attribute name="border-bottom">solid black 1.5pt</xsl:attribute>
+				<xsl:attribute name="text-indent">0mm</xsl:attribute>
 			</xsl:if>
 			<xsl:if test="$namespace = 'nist-cswp'  or $namespace = 'nist-sp'">
 				<xsl:if test="ancestor::*[local-name()='thead']">
@@ -1584,12 +1586,12 @@
 					<xsl:if test="$namespace = 'unece'  or $namespace = 'unece-rec'">
 						<xsl:if test="@type = 'source' or @type = 'abbreviation'">
 							<xsl:attribute name="font-size">9pt</xsl:attribute>							
-							<fo:inline>
+							<!-- <fo:inline>
 								<xsl:call-template name="capitalize">
 									<xsl:with-param name="str" select="@type"/>
 								</xsl:call-template>
 								<xsl:text>: </xsl:text>
-							</fo:inline>
+							</fo:inline> -->
 						</xsl:if>
 					</xsl:if>
 				
@@ -1601,7 +1603,7 @@
 		
 	</xsl:template>
 	
-	<xsl:template match="*[local-name()='table']/*[local-name()='note']/*[local-name()='name']" mode="process"/><!-- commended, because processed in mode="presentation" -->
+	<xsl:template match="*[local-name()='table']/*[local-name()='note']/*[local-name()='name']" mode="process" /><!-- commended, because processed in mode="presentation" -->
 	
 	<xsl:template match="*[local-name()='table']/*[local-name()='note']/*[local-name()='p']" mode="process">
 		<xsl:apply-templates/>
@@ -3056,11 +3058,52 @@
 				<xsl:copy-of select="*[local-name() = 'title']/*[local-name() = 'tab'][1]/following-sibling::node()"/>
 			</xsl:when>
 			<xsl:otherwise>
-				<xsl:copy-of select="*[local-name() = 'title']"/>
+				<xsl:copy-of select="*[local-name() = 'title']/node()"/>
 			</xsl:otherwise>
 		</xsl:choose>
 	</xsl:template>
-
+	
+	<xsl:template name="insertTitleAsListItem">
+		<xsl:param name="provisional-distance-between-starts" select="'9.5mm'"/>
+		<xsl:variable name="section">						
+			<xsl:for-each select="..">
+				<xsl:call-template name="getSection"/>
+			</xsl:for-each>
+		</xsl:variable>							
+		<fo:list-block provisional-distance-between-starts="{$provisional-distance-between-starts}">						
+			<fo:list-item>
+				<fo:list-item-label end-indent="label-end()">
+					<fo:block>
+						<xsl:value-of select="$section"/>
+					</fo:block>
+				</fo:list-item-label>
+				<fo:list-item-body start-indent="body-start()">
+					<fo:block>						
+						<xsl:choose>
+							<xsl:when test="*[local-name() = 'tab']">
+								<xsl:apply-templates select="*[local-name() = 'tab'][1]/following-sibling::node()"/>
+							</xsl:when>
+							<xsl:otherwise>
+								<xsl:apply-templates />
+							</xsl:otherwise>
+						</xsl:choose>
+					</fo:block>
+				</fo:list-item-body>
+			</fo:list-item>
+		</fo:list-block>
+	</xsl:template>
+	
+	<xsl:template name="extractTitle">
+		<xsl:choose>
+				<xsl:when test="*[local-name() = 'tab']">
+					<xsl:apply-templates select="*[local-name() = 'tab'][1]/following-sibling::node()"/>
+				</xsl:when>
+				<xsl:otherwise>
+					<xsl:apply-templates />
+				</xsl:otherwise>
+			</xsl:choose>
+	</xsl:template>
+	
 	<xsl:template match="*[local-name() = 'fn']" mode="contents"/>
 	<xsl:template match="*[local-name() = 'fn']" mode="contents_item"/>
 
@@ -3069,7 +3112,9 @@
 	</xsl:template>
 
 	<xsl:template match="*[local-name() = 'strong']" mode="contents_item">
-		<xsl:copy-of select="."/>		
+		<xsl:copy>
+			<xsl:apply-templates mode="contents_item"/>
+		</xsl:copy>		
 	</xsl:template>
 
 	<xsl:template match="*[local-name() = 'br']" mode="contents_item">
@@ -3694,6 +3739,50 @@
 		<!-- 0xA0 to space replacement -->
 		<xsl:value-of select="java:replaceAll(java:java.lang.String.new(.),' ',' ')"/>
 	</xsl:template>
+	
+	
+	<!-- ============ -->
+	<!-- errata -->
+	<!-- ============ -->
+	<xsl:template match="*[local-name() = 'errata']">
+		<!-- <row>
+					<date>05-07-2013</date>
+					<type>Editorial</type>
+					<change>Changed CA-9 Priority Code from P1 to P2 in <xref target="tabled2"/>.</change>
+					<pages>D-3</pages>
+				</row>
+		-->
+		<fo:table table-layout="fixed" width="100%" font-size="10pt" border="1pt solid black">
+			<fo:table-column column-width="20mm"/>
+			<fo:table-column column-width="23mm"/>
+			<fo:table-column column-width="107mm"/>
+			<fo:table-column column-width="15mm"/>
+			<fo:table-body>
+				<fo:table-row font-family="Arial" text-align="center" font-weight="bold" background-color="black" color="white">
+					<fo:table-cell border="1pt solid black"><fo:block>Date</fo:block></fo:table-cell>
+					<fo:table-cell border="1pt solid black"><fo:block>Type</fo:block></fo:table-cell>
+					<fo:table-cell border="1pt solid black"><fo:block>Change</fo:block></fo:table-cell>
+					<fo:table-cell border="1pt solid black"><fo:block>Pages</fo:block></fo:table-cell>
+				</fo:table-row>
+				<xsl:apply-templates />
+			</fo:table-body>
+		</fo:table>
+	</xsl:template>
+	
+	<xsl:template match="*[local-name() = 'errata']/*[local-name() = 'row']">
+		<fo:table-row>
+			<xsl:apply-templates />
+		</fo:table-row>
+	</xsl:template>
+
+	<xsl:template match="*[local-name() = 'errata']/*[local-name() = 'row']/*">
+		<fo:table-cell border="1pt solid black" padding-left="1mm" padding-top="0.5mm">
+			<fo:block><xsl:apply-templates /></fo:block>
+		</fo:table-cell>
+	</xsl:template>
+	
+	<!-- ============ -->
+	<!-- ============ -->
 	
 	<!-- convert YYYY-MM-DD to 'Month YYYY' or 'Month DD, YYYY' -->
 	<xsl:template name="convertDate">

@@ -344,13 +344,65 @@
 	</xsl:template>
 	
 	
+	<xsl:template match="un:clause[@inline-header = 'true']" priority="3">
+		<fo:block-container margin-left="1mm">
+			<fo:block-container margin-left="0mm">
+				<fo:list-block provisional-distance-between-starts="9mm">				
+					<xsl:call-template name="setId"/>
+					<xsl:attribute name="text-align">
+						<xsl:choose>
+							<xsl:when test="child::*/@align"><xsl:value-of select="child::*/@align"/></xsl:when>
+							<xsl:otherwise>justify</xsl:otherwise>
+						</xsl:choose>
+					</xsl:attribute>
+					<fo:list-item>
+						<fo:list-item-label end-indent="label-end()">
+							<fo:block>
+								<xsl:apply-templates select="un:title" mode="inline-header"/>
+							</fo:block>
+						</fo:list-item-label>
+						<fo:list-item-body text-indent="body-start()">
+							<fo:block>
+								<xsl:apply-templates />
+							</fo:block>
+						</fo:list-item-body>
+					</fo:list-item>
+				</fo:list-block>		
+			</fo:block-container>
+		</fo:block-container>
+	</xsl:template>
+	
+	<xsl:template match="un:title" mode="inline-header">
+		<fo:inline>
+			<xsl:apply-templates />
+		</fo:inline>
+	</xsl:template>
+	
+	
 	<xsl:template match="un:p[ancestor::un:table]">
 		<fo:block>
 			<xsl:apply-templates />
 		</fo:block>
 	</xsl:template>
 	
-	<xsl:template match="un:p">
+	<xsl:template match="un:p" priority="3">
+		
+				<fo:block margin-bottom="6pt" line-height="122%">
+					<xsl:if test="following-sibling::*">
+						<xsl:attribute name="margin-bottom">6pt</xsl:attribute>
+					</xsl:if>
+					<xsl:attribute name="text-align">
+						<xsl:choose>
+							<xsl:when test="@align"><xsl:value-of select="@align"/></xsl:when>
+							<xsl:otherwise>justify</xsl:otherwise>
+						</xsl:choose>
+					</xsl:attribute>
+					<xsl:apply-templates />
+				</fo:block>
+			
+	</xsl:template>
+	
+	<xsl:template match="un:p2">
 		<fo:block-container margin-left="1mm">
 			<fo:block margin-left="-1mm">
 				<fo:list-block provisional-distance-between-starts="9mm" margin-bottom="6pt" line-height="122%">
@@ -418,7 +470,7 @@
 	</xsl:template>
 	
 	<xsl:template match="un:ul | un:ol">
-		<fo:block-container margin-left="8mm">
+		<fo:block-container margin-left="8mm"  text-indent="0mm">
 			<fo:list-block provisional-distance-between-starts="3mm" margin-left="-8mm">
 				<xsl:apply-templates />
 			</fo:list-block>
@@ -496,20 +548,14 @@
 	</xsl:template>
 	
 	
-	<xsl:template match="un:admonition">
-		<xsl:variable name="title-box">
-			<xsl:call-template name="getTitle">
-				<xsl:with-param name="name" select="'title-box'"/>
-			</xsl:call-template>
-		</xsl:variable>
-		<fo:block text-align="center" font-style="italic" keep-with-next="always" margin-bottom="6pt">
-			<xsl:value-of select="$title-box"/><xsl:number /><xsl:text>: </xsl:text><xsl:apply-templates select="un:name" mode="process"/>
+	<xsl:template match="un:admonition">		
+		<fo:block text-align="center" font-style="italic" keep-with-next="always" margin-bottom="6pt">			
+			<xsl:apply-templates select="un:name" mode="process"/>
 		</fo:block>
 		<fo:block-container border="0.25pt solid black" margin-left="-3mm" margin-right="-3mm" padding-top="4mm">
 			<fo:block id="{@id}" font-weight="bold" margin-left="6mm" margin-right="6mm" keep-with-next="always">
-				<xsl:value-of select="$title-box"/><xsl:number /><xsl:text>: </xsl:text><xsl:apply-templates select="un:name" mode="process"/>
+				<xsl:apply-templates select="un:name" mode="process"/>
 			</fo:block>
-			<!-- <fo:block margin-left="5mm" margin-right="5mm"> -->
 			<fo:block-container margin-left="2mm" margin-right="2mm">
 				<fo:block-container margin-left="0mm" margin-right="0mm">
 					<xsl:apply-templates />
@@ -583,6 +629,8 @@
 		</xsl:choose>
 	</xsl:template>
 	
+	<xsl:template match="un:title[parent::un:clause[@inline-header = 'true']]" priority="3"/>
+	
 	<xsl:template match="un:title">
 
 		<xsl:variable name="level">
@@ -603,7 +651,29 @@
 			<xsl:when test="ancestor::un:sections and $level = 1">
 				<fo:block-container margin-left="-16mm">
 					<fo:block font-size="{$font-size}" font-weight="bold" margin-left="16mm" space-before="16pt" margin-bottom="13pt" keep-with-next="always">
-						<xsl:apply-templates />
+						<fo:table table-layout="fixed" width="100%">
+							<fo:table-column column-width="16mm"/>
+							<fo:table-column column-width="130mm"/>
+							<fo:table-body>
+								<fo:table-row>
+									<fo:table-cell>
+										<xsl:variable name="section">						
+											<xsl:for-each select="..">
+												<xsl:call-template name="getSection"/>
+											</xsl:for-each>
+										</xsl:variable>
+										<fo:block text-align="center">
+											<xsl:value-of select="$section"/>
+										</fo:block>
+									</fo:table-cell>
+									<fo:table-cell>
+										<fo:block>
+											<xsl:call-template name="extractTitle"/>
+										</fo:block>
+									</fo:table-cell>
+								</fo:table-row>
+							</fo:table-body>
+						</fo:table>
 					</fo:block>
 				</fo:block-container>
 			</xsl:when>
@@ -619,7 +689,9 @@
 						<xsl:attribute name="margin-left">1mm</xsl:attribute>
 						<xsl:attribute name="margin-bottom">6pt</xsl:attribute>
 					</xsl:if>
-					<xsl:apply-templates />
+					<xsl:call-template name="insertTitleAsListItem">
+						<xsl:with-param name="provisional-distance-between-starts" select="'8mm'"/>
+					</xsl:call-template>
 				</fo:block>
 			</xsl:when>			
 			<xsl:otherwise>
@@ -666,22 +738,6 @@
 		<xsl:text>, </xsl:text><xsl:apply-templates />
 	</xsl:template>
 	
-	
-	<xsl:template match="*[local-name()='tt']">
-		<xsl:variable name="element-name">
-			<xsl:choose>
-				<xsl:when test="normalize-space(ancestor::un:p[1]//text()[not(parent::un:tt)]) != ''">fo:inline</xsl:when>
-				<xsl:otherwise>fo:block</xsl:otherwise>
-			</xsl:choose>
-		</xsl:variable>
-		<xsl:element name="{$element-name}">
-			<xsl:attribute name="font-family">Courier</xsl:attribute>
-			<xsl:attribute name="font-size">10pt</xsl:attribute>
-			<xsl:attribute name="text-align">center</xsl:attribute>
-			<xsl:apply-templates />
-		</xsl:element>
-	</xsl:template>
-
 
 	<xsl:template match="un:figure" priority="2">
 		<fo:block-container id="{@id}">
@@ -774,8 +830,8 @@
 	</xsl:template>
 	<xsl:template match="un:docidentifier"/>
 
-	<xsl:template match="un:note/un:p | un:annex//un:note/un:p" name="note">
-		<fo:block font-size="10pt" space-after="12pt" text-indent="0">
+	<xsl:template match="un:note/un:p | un:annex//un:note/un:p" name="note" priority="3">
+		<fo:block font-size="10pt" margin-bottom="12pt" text-indent="0">
 			<xsl:if test="../@type = 'source' or ../@type = 'abbreviation'">
 				<xsl:attribute name="font-size">9pt</xsl:attribute>
 				<xsl:attribute name="text-align">justify</xsl:attribute>
@@ -824,100 +880,6 @@
 	</xsl:template>
 	
 
-	
-	
-	<xsl:template match="un:terms[un:term[un:preferred and un:definition]]" priority="3">
-		<fo:block id="{@id}">
-			<fo:table width="100%" table-layout="fixed">
-				<fo:table-column column-width="22%"/>
-				<fo:table-column column-width="78%"/>
-				<fo:table-body>
-					<xsl:apply-templates mode="table"/>
-				</fo:table-body>
-			</fo:table>
-		</fo:block>
-	</xsl:template>
-	<xsl:template match="un:term" mode="table">
-		<fo:table-row id="{@id}">
-			<fo:table-cell padding-right="1mm">
-				<fo:block margin-bottom="12pt">
-					<xsl:apply-templates select="un:preferred"/>
-				</fo:block>
-			</fo:table-cell>
-			<fo:table-cell>
-				<fo:block margin-bottom="12pt">
-					<xsl:apply-templates select="un:*[local-name(.) != 'preferred']"/>
-				</fo:block>
-			</fo:table-cell>
-		</fo:table-row>
-	</xsl:template>
-	<xsl:template match="un:preferred" priority="2">
-		<fo:inline>
-			<xsl:apply-templates />
-		</fo:inline>
-	</xsl:template>
-	<xsl:template match="un:definition/un:p" priority="2">
-		<fo:block>
-			<xsl:apply-templates />
-		</fo:block>
-	</xsl:template>
-	
-	<xsl:template match="un:errata">
-		<!-- <row>
-					<date>05-07-2013</date>
-					<type>Editorial</type>
-					<change>Changed CA-9 Priority Code from P1 to P2 in <xref target="tabled2"/>.</change>
-					<pages>D-3</pages>
-				</row>
-		-->
-		<fo:table table-layout="fixed" width="100%" font-size="10pt" border="1pt solid black">
-			<fo:table-column column-width="20mm"/>
-			<fo:table-column column-width="23mm"/>
-			<fo:table-column column-width="107mm"/>
-			<fo:table-column column-width="15mm"/>
-			<fo:table-body>
-				<fo:table-row font-family="Arial" text-align="center" font-weight="bold" background-color="black" color="white">
-					<fo:table-cell border="1pt solid black"><fo:block>Date</fo:block></fo:table-cell>
-					<fo:table-cell border="1pt solid black"><fo:block>Type</fo:block></fo:table-cell>
-					<fo:table-cell border="1pt solid black"><fo:block>Change</fo:block></fo:table-cell>
-					<fo:table-cell border="1pt solid black"><fo:block>Pages</fo:block></fo:table-cell>
-				</fo:table-row>
-				<xsl:apply-templates />
-			</fo:table-body>
-		</fo:table>
-	</xsl:template>
-	
-	<xsl:template match="un:errata/un:row">
-		<fo:table-row>
-			<xsl:apply-templates />
-		</fo:table-row>
-	</xsl:template>
-	
-	<xsl:template match="un:errata/un:row/*">
-		<fo:table-cell border="1pt solid black" padding-left="1mm" padding-top="0.5mm">
-			<fo:block><xsl:apply-templates /></fo:block>
-		</fo:table-cell>
-	</xsl:template>
-	
-	<xsl:template match="un:quote" priority="2">
-		<fo:block-container margin-left="7mm" margin-right="7mm">
-			<xsl:apply-templates />
-			<xsl:apply-templates select="un:author" mode="process"/>
-		</fo:block-container>
-	</xsl:template>
-	
-	<xsl:template match="un:quote/un:author" priority="2"/>
-	<xsl:template match="un:quote/un:p" priority="2">
-		<fo:block text-align="justify" margin-bottom="12pt">
-			<xsl:apply-templates/>
-		</fo:block>
-	</xsl:template>
-	<xsl:template match="un:quote/un:author" mode="process" priority="2">
-		<fo:block text-align="right" margin-left="0.5in" margin-right="0.5in">
-			<fo:inline>— </fo:inline>
-			<xsl:apply-templates />
-		</fo:block>
-	</xsl:template>
 		
 	<xsl:template match="un:references">
 		<fo:block>
@@ -929,7 +891,7 @@
 	</xsl:template>
 	
 	<xsl:template match="un:dl" priority="2">
-		<fo:block line-height="122%" margin-bottom="6pt">
+		<fo:block line-height="122%" margin-bottom="6pt" text-indent="0mm" text-align="justify">
 			<xsl:apply-templates />
 		</fo:block>
 	</xsl:template>
@@ -946,7 +908,7 @@
 		<fo:inline><xsl:apply-templates /></fo:inline>
 	</xsl:template>
 	
-	<xsl:template match="un:dd//un:p">
+	<xsl:template match="un:dd//un:p" priority="3">
 		<fo:inline><xsl:apply-templates /></fo:inline>
 	</xsl:template>
 	<!-- ============================ -->
