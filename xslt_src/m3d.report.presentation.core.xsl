@@ -735,6 +735,11 @@
 		</fo:block-container>
 	</xsl:template>
 	
+	<xsl:template match="m3d:example/m3d:p" priority="2">
+		<fo:inline xsl:use-attribute-sets="example-p-style">
+			<xsl:apply-templates />
+		</fo:inline>
+	</xsl:template>
 
 
 	

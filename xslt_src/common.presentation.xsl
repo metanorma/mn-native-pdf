@@ -301,6 +301,11 @@
 			<xsl:attribute name="margin-top">8pt</xsl:attribute>
 			<xsl:attribute name="margin-bottom">8pt</xsl:attribute>
 		</xsl:if>
+		<xsl:if test="$namespace = 'ogc' or $namespace = 'rsd'">
+			<xsl:attribute name="font-size">10pt</xsl:attribute>			
+			<xsl:attribute name="margin-left">12.5mm</xsl:attribute>
+			<xsl:attribute name="margin-right">12.5mm</xsl:attribute>			
+		</xsl:if>
 		<xsl:if test="$namespace = 'nist-cswp'">
 			<xsl:attribute name="font-size">11pt</xsl:attribute>
 			<xsl:attribute name="margin-top">12pt</xsl:attribute>
@@ -409,10 +414,7 @@
 		<xsl:if test="$namespace = 'nist-cswp'">
 			<xsl:attribute name="margin-bottom">12pt</xsl:attribute>
 		</xsl:if>
-		<xsl:if test="$namespace = 'ogc' or $namespace = 'rsd'">
-			<xsl:attribute name="font-size">10pt</xsl:attribute>
-			<xsl:attribute name="margin-left">12.5mm</xsl:attribute>
-			<xsl:attribute name="margin-right">12.5mm</xsl:attribute>			
+		<xsl:if test="$namespace = 'ogc' or $namespace = 'rsd'">			
 			<xsl:attribute name="margin-bottom">14pt</xsl:attribute>
 		</xsl:if>
 		
@@ -702,10 +704,16 @@
 			<xsl:attribute name="margin-bottom">6pt</xsl:attribute>
 			<xsl:attribute name="keep-with-previous">always</xsl:attribute>
 		</xsl:if>
-		<xsl:if test="$namespace = 'itu' or $namespace = 'nist-cswp'  or $namespace = 'nist-sp'">			
+		<xsl:if test="$namespace = 'itu' or $namespace = 'nist-sp'">			
 			<xsl:attribute name="font-weight">bold</xsl:attribute>
 			<xsl:attribute name="text-align">center</xsl:attribute>
 			<xsl:attribute name="margin-top">6pt</xsl:attribute>
+			<xsl:attribute name="margin-bottom">6pt</xsl:attribute>
+			<xsl:attribute name="keep-with-previous">always</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'nist-cswp'">
+			<xsl:attribute name="font-weight">bold</xsl:attribute>
+			<xsl:attribute name="text-align">center</xsl:attribute>			
 			<xsl:attribute name="margin-bottom">6pt</xsl:attribute>
 			<xsl:attribute name="keep-with-previous">always</xsl:attribute>
 		</xsl:if>
@@ -3216,6 +3224,7 @@
 	
 	<xsl:template match="*[local-name() = 'example']">
 		<fo:block id="{@id}">
+			
 			<xsl:apply-templates select="*[local-name()='name']" mode="presentation"/>
 			
 			<xsl:variable name="element">
@@ -3224,15 +3233,15 @@
 													$namespace = 'gb' or 
 													$namespace = 'iso' or 
 													$namespace = 'iho' or 
-													$namespace = 'itu' or 
-													$namespace = 'm3d' or 
+													$namespace = 'itu'  or 
 													$namespace = 'nist-cswp' or 
 													$namespace = 'nist-sp'or 
 													$namespace = 'ogc' or 
 													$namespace = 'rsd' or 
 													$namespace = 'unece' or 
 													$namespace = 'unece-rec'">block</xsl:if>
-				<xsl:if test="$namespace = 'iec' or ">inline</xsl:if>
+				<xsl:if test="$namespace = 'iec' or 
+													$namespace = 'm3d'">inline</xsl:if>
 			</xsl:variable>
 			
 			<xsl:choose>
@@ -3501,11 +3510,8 @@
 				</xsl:variable>
 				<xsl:choose>
 					<xsl:when test="(ancestor-or-self::m3d:sections and $depth = 1) or 
-															(local-name() = 'references' and $references_num_current = 1)">25</xsl:when>
-					<xsl:when test="ancestor-or-self::m3d:sections or ancestor-or-self::m3d:annex">3</xsl:when>						
-					<xsl:otherwise>
-						<xsl:value-of select="$references_num_current"/>
-					</xsl:otherwise>
+															(local-name(../..) = 'references' and $references_num_current = 1)">25</xsl:when>
+					<xsl:when test="ancestor-or-self::m3d:sections or ancestor-or-self::m3d:annex">3</xsl:when>
 				</xsl:choose>
 			</xsl:if>
 			<xsl:if test="$namespace = 'nist-sp'">
