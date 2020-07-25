@@ -2286,7 +2286,7 @@
 		</xsl:for-each>
 	</xsl:template>
 	
-	<xsl:template match="*[local-name()='dl']/*[local-name()='note']">
+	<xsl:template match="*[local-name()='dl']/*[local-name()='note']" priority="2">
 		<xsl:param name="key_iso"/>
 		
 		<!-- <tr>
