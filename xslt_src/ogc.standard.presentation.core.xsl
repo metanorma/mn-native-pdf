@@ -818,7 +818,7 @@
 	</xsl:template>
 	
 	
-	<xsl:template match="ogc:bibitem/ogc:note">
+	<xsl:template match="ogc:bibitem/ogc:note" priority="2">
 		<fo:footnote>
 			<xsl:variable name="number">
 				<xsl:choose>
@@ -897,7 +897,7 @@
 		</fo:list-item>
 	</xsl:template>
 	
-	<xsl:template match="ogc:ul/ogc:note | ogc:ol/ogc:note">
+	<xsl:template match="ogc:ul/ogc:note | ogc:ol/ogc:note" priority="2">
 		<fo:list-item font-size="10pt">
 			<fo:list-item-label><fo:block></fo:block></fo:list-item-label>
 			<fo:list-item-body>
@@ -1034,7 +1034,7 @@
 		
 	
 	
-	<xsl:template match="ogc:note/ogc:p" name="note">
+<!-- 	<xsl:template match="ogc:note/ogc:p" name="note">
 		<fo:block font-size="10pt" margin-top="12pt" margin-bottom="12pt" line-height="115%">
 			<xsl:if test="ancestor::ogc:ul or ancestor::ogc:ol and not(ancestor::ogc:note[1]/following-sibling::*)">
 				<xsl:attribute name="margin-bottom">0pt</xsl:attribute>
@@ -1044,7 +1044,7 @@
 			</fo:inline>
 			<xsl:apply-templates />
 		</fo:block>
-	</xsl:template>
+	</xsl:template> -->
 
 
 	

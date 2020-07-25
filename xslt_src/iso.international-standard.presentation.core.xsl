@@ -1019,7 +1019,7 @@
 										</xsl:if>
 										<fo:list-block>
 											<xsl:attribute name="margin-left"><xsl:value-of select="$margin-left * (@level - 1)"/>mm</xsl:attribute>
-											<xsl:if test="@level &gt;= 2">
+											<xsl:if test="@level &gt;= 2 or @type = 'annex'">
 												<xsl:attribute name="font-weight">normal</xsl:attribute>
 											</xsl:if>
 											<xsl:attribute name="provisional-distance-between-starts">
@@ -1433,7 +1433,9 @@
 						</xsl:choose>
 					</xsl:attribute>
 					<xsl:attribute name="keep-with-next">always</xsl:attribute>		
-						
+					<xsl:if test="$element-name = 'fo:inline'">
+						<xsl:attribute name="padding-right">2mm</xsl:attribute>
+					</xsl:if>
 					<xsl:apply-templates />
 				</xsl:element>
 				
@@ -1596,7 +1598,7 @@
 	</xsl:template>
 	
 	
-	<xsl:template match="iso:bibitem/iso:note">
+	<xsl:template match="iso:bibitem/iso:note" priority="2">
 		<fo:footnote>
 			<xsl:variable name="number">
 				<xsl:number level="any" count="iso:bibitem/iso:note"/>
@@ -1623,12 +1625,12 @@
 		<fo:list-block provisional-distance-between-starts="7mm" margin-top="8pt"> <!-- margin-bottom="8pt" -->
 			<xsl:apply-templates />
 		</fo:list-block>
-		<xsl:for-each select="./iso:note//iso:p">
+		<xsl:for-each select="./iso:note">
 			<xsl:call-template name="note"/>
 		</xsl:for-each>
 	</xsl:template>
 	
-	<xsl:template match="iso:ul//iso:note |  iso:ol//iso:note"/>
+	<xsl:template match="iso:ul//iso:note |  iso:ol//iso:note" priority="2"/>
 	
 	<xsl:template match="iso:li">
 		<fo:list-item id="{@id}">
@@ -1729,7 +1731,7 @@
 	
 	
 	
-	<xsl:template match="iso:note/iso:p" name="note">
+	<xsl:template match="iso:note2/iso:p" name="note2">
 		<fo:block font-size="10pt" margin-top="8pt" margin-bottom="12pt" text-align="justify">			
 			<fo:inline padding-right="6mm">				
 				<xsl:apply-templates select="../iso:name" mode="presentation"/>				

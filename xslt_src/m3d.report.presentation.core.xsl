@@ -649,7 +649,7 @@
 	</xsl:template>
 	
 	
-	<xsl:template match="m3d:bibitem/m3d:note">
+	<xsl:template match="m3d:bibitem/m3d:note" priority="2">
 		<fo:footnote>
 			<xsl:variable name="number">
 				<xsl:number level="any" count="m3d:bibitem/m3d:note"/>
@@ -681,14 +681,14 @@
 					</xsl:if>			
 					<xsl:apply-templates />
 				</fo:list-block>
-				<xsl:for-each select="./m3d:note//m3d:p">
+				<xsl:for-each select="./m3d:note">
 					<xsl:call-template name="note"/>
 				</xsl:for-each>
 			</fo:block-container>
 		</fo:block-container>
 	</xsl:template>
 	
-	<xsl:template match="m3d:ul//m3d:note |  m3d:ol//m3d:note"/>
+	<xsl:template match="m3d:ul//m3d:note |  m3d:ol//m3d:note" priority="2"/>
 	
 	<xsl:template match="m3d:li">
 		<fo:list-item id="{@id}">
@@ -819,10 +819,10 @@
 	</xsl:template>
 	
 	
-	<xsl:template match="m3d:note/m3d:p" name="note">		
+<!-- 	<xsl:template match="m3d:note/m3d:p" name="note">		
 		<fo:block-container margin-left="0mm" margin-top="4pt" line-height="125%">
 			<fo:block>
-				<fo:inline padding-right="5mm" font-weight="bold">
+				<fo:inline >
 					<xsl:apply-templates select="../m3d:name" mode="presentation">
 						<xsl:with-param name="sfx" select="':'"/>
 					</xsl:apply-templates>					
@@ -830,7 +830,7 @@
 				<xsl:apply-templates />
 			</fo:block>
 		</fo:block-container>
-	</xsl:template>
+	</xsl:template> -->
 
 
 	

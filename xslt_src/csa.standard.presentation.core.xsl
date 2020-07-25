@@ -589,7 +589,7 @@
 	</xsl:template>
 	
 	
-	<xsl:template match="csa:bibitem/csa:note">
+	<xsl:template match="csa:bibitem/csa:note" priority="2">
 		<fo:footnote>
 			<xsl:variable name="number">
 				<xsl:choose>
@@ -684,7 +684,7 @@
 		</fo:list-item>
 	</xsl:template>
 	
-	<xsl:template match="csa:ul/csa:note | csa:ol/csa:note">
+	<xsl:template match="csa:ul/csa:note | csa:ol/csa:note" priority="2">
 		<fo:list-item font-size="10pt">
 			<fo:list-item-label><fo:block></fo:block></fo:list-item-label>
 			<fo:list-item-body>
@@ -798,19 +798,6 @@
 		</fo:inline>
 	</xsl:template>
 
-	
-	<xsl:template match="csa:note/csa:p" name="note">
-		<fo:block font-size="10pt" margin-top="12pt" margin-bottom="12pt" line-height="115%">
-			<xsl:if test="ancestor::csa:ul or ancestor::csa:ol and not(ancestor::csa:note[1]/following-sibling::*)">
-				<xsl:attribute name="margin-bottom">0pt</xsl:attribute>
-			</xsl:if>			
-			<fo:inline padding-right="4mm">
-				<xsl:apply-templates select="../csa:name" mode="presentation"/>				
-			</fo:inline>
-			<xsl:apply-templates />
-		</fo:block>
-	</xsl:template>
-
 
 	
 	<xsl:template match="csa:admonition">
@@ -824,8 +811,6 @@
 				</fo:block>
 			</fo:block-container>
 		</fo:block-container>
-		
-		
 	</xsl:template>
 	
 		

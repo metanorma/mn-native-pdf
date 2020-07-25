@@ -843,7 +843,7 @@
 	</xsl:template>
 	
 	
-	<xsl:template match="gb:bibitem/gb:note">
+	<xsl:template match="gb:bibitem/gb:note" priority="2">
 		<fo:footnote>
 			<xsl:variable name="number">
 				<xsl:number level="any" count="gb:bibitem/gb:note"/>
@@ -873,12 +873,12 @@
 			</xsl:if>			
 			<xsl:apply-templates />
 		</fo:list-block>
-		<xsl:for-each select="./gb:note//gb:p">
+		<xsl:for-each select="./gb:note">
 			<xsl:call-template name="note"/>
 		</xsl:for-each>
 	</xsl:template>
 	
-	<xsl:template match="gb:ul//gb:note |  gb:ol//gb:note"/>
+	<xsl:template match="gb:ul//gb:note |  gb:ol//gb:note" priority="2"/>
 	
 	<xsl:template match="gb:li">
 		<fo:list-item id="{@id}">
@@ -1047,32 +1047,6 @@
 		</fo:inline>
 	</xsl:template>
 	
-
-	
-	<xsl:template match="gb:note/gb:p" name="note">		
-		<fo:block-container font-size="9pt" margin-left="7.4mm" margin-top="4pt" line-height="125%">
-			<fo:block-container margin-left="0mm">
-				<fo:table table-layout="fixed" width="100%">
-					<fo:table-column column-width="10mm"/>
-					<fo:table-column column-width="155mm"/>
-					<fo:table-body>
-						<fo:table-row>
-							<fo:table-cell>
-								<fo:block font-family="SimHei">
-									<xsl:apply-templates select="../gb:name" mode="presentation"/>
-								</fo:block>
-							</fo:table-cell>
-							<fo:table-cell>
-								<fo:block text-align="justify">
-									<xsl:apply-templates />
-								</fo:block>
-							</fo:table-cell>
-						</fo:table-row>
-					</fo:table-body>
-				</fo:table>
-			</fo:block-container>
-		</fo:block-container>
-	</xsl:template>
 
 
 	

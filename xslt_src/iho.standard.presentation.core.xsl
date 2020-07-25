@@ -608,37 +608,6 @@
 		<xsl:apply-templates />
 	</xsl:template>
 
-
-	<xsl:template match="iho:note" name="note">
-		<fo:block xsl:use-attribute-sets="note-style">
-			<xsl:if test="$namespace = 'iho'">
-				<xsl:if test="ancestor::iho:td">
-					<xsl:attribute name="font-size">12pt</xsl:attribute>
-				</xsl:if>
-			</xsl:if>
-			<fo:inline xsl:use-attribute-sets="note-name-style">
-				<xsl:apply-templates select="iho:name" mode="presentation"/>				
-			</fo:inline>
-			<xsl:apply-templates />
-		</fo:block>
-	</xsl:template>
-	
-	<xsl:template match="iho:note/iho:p">
-		<xsl:variable name="num"><xsl:number/></xsl:variable>
-		<xsl:choose>
-			<xsl:when test="$num = 1">
-				<fo:inline xsl:use-attribute-sets="note-p-style">
-					<xsl:apply-templates />
-				</fo:inline>
-			</xsl:when>
-			<xsl:otherwise>
-				<fo:block xsl:use-attribute-sets="note-p-style">			
-					<xsl:apply-templates />
-				</fo:block>
-			</xsl:otherwise>
-		</xsl:choose>
-	</xsl:template>
-	
 	
 	<xsl:template match="iho:ul | iho:ol">
 		<fo:list-block provisional-distance-between-starts="6mm">
@@ -649,7 +618,21 @@
 		</xsl:for-each>
 	</xsl:template>
 	
-	<xsl:template match="iho:ul//iho:note |  iho:ol//iho:note"/>
+	<xsl:template match="iho:ul//iho:note |  iho:ol//iho:note" priority="2"/>
+	<xsl:template match="iho:ul//iho:note  | iho:ol//iho:note" mode="process">
+		<fo:block id="{@id}">
+			<xsl:apply-templates select="iho:name" mode="presentation"/>
+			<xsl:apply-templates mode="process"/>
+		</fo:block>
+	</xsl:template>
+	<xsl:template match="iho:ul//iho:note/iho:name  | iho:ol//iho:note/iho:name" mode="process"/>
+	<xsl:template match="iho:ul//iho:note/iho:p  | iho:ol//iho:note/iho:p" mode="process">		
+		<fo:block font-size="11pt" margin-top="4pt">
+			<xsl:apply-templates />
+		</fo:block>
+	</xsl:template>
+
+	
 	
 	<xsl:template match="iho:li">
 		<fo:list-item id="{@id}" margin-bottom="12pt">
@@ -658,9 +641,9 @@
 					<xsl:call-template name="getListItemFormat"/>
 				</fo:block>
 			</fo:list-item-label>
-			<fo:list-item-body start-indent="body-start()">
-				<xsl:apply-templates />
-				<xsl:apply-templates select=".//iho:note" mode="process"/>
+			<fo:list-item-body start-indent="body-start()">				
+				<xsl:apply-templates />				
+				<xsl:apply-templates select=".//iho:note" mode="process"/>				
 			</fo:list-item-body>
 		</fo:list-item>
 	</xsl:template>
@@ -751,7 +734,7 @@
 		</fo:inline>
 	</xsl:template>
 	
-	<xsl:template match="iho:bibitem/iho:note">
+	<xsl:template match="iho:bibitem/iho:note" priority="2">
 		<fo:footnote>
 			<xsl:variable name="number">
 				<xsl:number level="any" count="iho:bibitem/iho:note"/>
@@ -775,7 +758,7 @@
 	
 	
 	<xsl:template match="iho:example/iho:p" priority="2">
-			<fo:block-container font-size="11pt" margin-left="12.7mm">
+			<fo:block-container xsl:use-attribute-sets="example-p-style">
 				<fo:block-container margin-left="0mm">
 					<fo:block>
 						<xsl:apply-templates />

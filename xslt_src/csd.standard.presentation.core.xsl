@@ -577,7 +577,7 @@
 	</xsl:template>
 	
 	
-	<xsl:template match="csd:bibitem/csd:note">
+	<xsl:template match="csd:bibitem/csd:note" priority="2">
 		<fo:footnote>
 			<xsl:variable name="number">
 				<xsl:choose>
@@ -732,18 +732,6 @@
 			</xsl:if>
 			<xsl:apply-templates />			
       </fo:basic-link>
-	</xsl:template>
-
-
-	
-	
-	<xsl:template match="csd:note/csd:p" name="note">
-		<fo:block font-size="10pt" margin-bottom="12pt">
-			<fo:inline padding-right="6mm">
-				<xsl:apply-templates select="../csd:name" mode="presentation"/>
-			</fo:inline>
-			<xsl:apply-templates />
-		</fo:block>
 	</xsl:template>
 
 

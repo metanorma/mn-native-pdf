@@ -18,7 +18,7 @@
 
 	<xsl:variable name="namespace">unece-rec</xsl:variable>
 	
-	<xsl:variable name="debug">true</xsl:variable>
+	<xsl:variable name="debug">false</xsl:variable>
 	<xsl:variable name="pageWidth" select="'210mm'"/>
 	<xsl:variable name="pageHeight" select="'297mm'"/>
 
@@ -614,7 +614,7 @@
 		<xsl:apply-templates select="./un:note" mode="process"/>
 	</xsl:template>
 	
-	<xsl:template match="un:ul//un:note |  un:ol//un:note"/>
+	<xsl:template match="un:ul//un:note |  un:ol//un:note" priority="2"/>
 	<xsl:template match="un:ul//un:note/un:p  | un:ol//un:note/un:p" mode="process">
 		<fo:block font-size="11pt" margin-top="4pt">			
 			<xsl:apply-templates select="../un:name" mode="presentation"/>
@@ -850,7 +850,7 @@
 				<xsl:apply-templates />
 			</fo:block>
 			<xsl:call-template name="fn_display_figure"/>
-			<xsl:for-each select="un:note//un:p">
+			<xsl:for-each select="un:note">
 				<xsl:call-template name="note"/>
 			</xsl:for-each>
 		</fo:block-container>
@@ -935,26 +935,6 @@
 	</xsl:template>
 	<xsl:template match="un:docidentifier"/>
 
-	<xsl:template match="un:note/un:p | un:annex//un:note/un:p" name="note">
-		<fo:block-container margin-top="3pt" border-top="0.1mm solid black" space-after="12pt" >
-			<xsl:if test="../@type = 'source' or ../@type = 'abbreviation'">
-				<xsl:attribute name="border-top">0pt solid black</xsl:attribute>
-			</xsl:if>
-			<fo:block font-size="10pt" text-indent="0" padding-top="1.5mm">
-				<xsl:if test="../@type = 'source' or ../@type = 'abbreviation'">
-					<xsl:attribute name="font-size">9pt</xsl:attribute>
-					<xsl:attribute name="text-align">justify</xsl:attribute>
-					<xsl:attribute name="padding-top">0mm</xsl:attribute>					
-				</xsl:if>
-				<fo:inline>
-					<xsl:apply-templates select="../un:name" mode="presentation">
-						<xsl:with-param name="sfx" select="': '"/>
-					</xsl:apply-templates>
-				</fo:inline>
-				<xsl:apply-templates />
-			</fo:block>
-		</fo:block-container>
-	</xsl:template>	
 	
 	
 	<xsl:template match="un:formula" name="formula-un" priority="2">

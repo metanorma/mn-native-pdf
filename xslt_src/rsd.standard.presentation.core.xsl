@@ -606,7 +606,7 @@
 	</xsl:template>
 	
 	
-	<xsl:template match="rsd:bibitem/rsd:note">
+	<xsl:template match="rsd:bibitem/rsd:note" priority="2">
 		<fo:footnote>
 			<xsl:variable name="number">
 				<xsl:choose>
@@ -731,7 +731,7 @@
 		</fo:list-item>
 	</xsl:template>
 	
-	<xsl:template match="rsd:ul/rsd:note | rsd:ol/rsd:note">
+	<xsl:template match="rsd:ul/rsd:note | rsd:ol/rsd:note" priority="2">
 		<fo:list-item font-size="10pt">
 			<fo:list-item-label><fo:block></fo:block></fo:list-item-label>
 			<fo:list-item-body>
@@ -783,7 +783,7 @@
 
 	
 	
-	<xsl:template match="rsd:note/rsd:p" name="note">
+<!-- 	<xsl:template match="rsd:note/rsd:p" name="note">
 		<fo:block font-size="10pt" margin-top="12pt" margin-bottom="12pt" line-height="115%">
 			<xsl:if test="ancestor::rsd:ul or ancestor::rsd:ol and not(ancestor::rsd:note[1]/following-sibling::*)">
 				<xsl:attribute name="margin-bottom">0pt</xsl:attribute>
@@ -794,7 +794,7 @@
 			<xsl:apply-templates />
 		</fo:block>
 	</xsl:template>
-
+ -->
 
 	
 	<xsl:template match="rsd:admonition">

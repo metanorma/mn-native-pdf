@@ -533,6 +533,14 @@
 		</xsl:if>	
 		
 	</xsl:template>
+
+	<xsl:template match="itu:strong" mode="contents_item" priority="2">
+		<xsl:apply-templates mode="contents_item"/>
+	</xsl:template>
+	
+	<xsl:template match="itu:br" mode="contents_item" priority="2">
+		<fo:inline>&#xA0;</fo:inline>
+	</xsl:template>
 	
 
 	
@@ -646,7 +654,7 @@
 		</fo:block>
 	</xsl:template>
 
-	<xsl:template match="itu:note">
+<!-- 	<xsl:template match="itu:note">
 		<fo:block id="{@id}">
 			<xsl:apply-templates />
 		</fo:block>
@@ -660,7 +668,7 @@
 			<xsl:apply-templates select="../itu:name" mode="presentation"/>			
 			<xsl:apply-templates />
 		</fo:block>
-	</xsl:template>
+	</xsl:template> -->
 	
 	
 	<!-- ============================= -->
@@ -990,16 +998,16 @@
 		<xsl:apply-templates select="./itu:note" mode="process"/>
 	</xsl:template>
 	
-	<xsl:template match="itu:ul//itu:note |  itu:ol//itu:note"/>
+	<xsl:template match="itu:ul//itu:note |  itu:ol//itu:note" priority="2"/>
 	<xsl:template match="itu:ul//itu:note  | itu:ol//itu:note" mode="process">
 		<fo:block id="{@id}">
+			<xsl:apply-templates select="../itu:name" mode="presentation"/>
 			<xsl:apply-templates mode="process"/>
 		</fo:block>
 	</xsl:template>
 	<xsl:template match="itu:ul//itu:note/itu:name  | itu:ol//itu:note/itu:name" mode="process"/>
 	<xsl:template match="itu:ul//itu:note/itu:p  | itu:ol//itu:note/itu:p" mode="process">		
 		<fo:block font-size="11pt" margin-top="4pt">			
-			<xsl:apply-templates select="../itu:name" mode="presentation"/>			
 			<xsl:apply-templates />
 		</fo:block>
 	</xsl:template>
@@ -1055,10 +1063,10 @@
 	</xsl:template>
 	
 
-	
+<!-- 	
 	<xsl:template match="itu:annex/itu:clause">
 		<xsl:apply-templates />
-	</xsl:template>
+	</xsl:template> -->
 	
 	<!-- Clause without title -->
 <!-- 	<xsl:template match="itu:clause[not(itu:title)]">
@@ -1112,8 +1120,12 @@
 	</xsl:template>
 	
 	
-
-	
+	<xsl:template match="itu:references[1]">
+		<fo:block id="{@id}">
+			<xsl:apply-templates />
+		</fo:block>
+	</xsl:template>
+		
 	<xsl:template match="itu:references[position() &gt; 1]">
 		<fo:block break-after="page"/>
 		<fo:block id="{@id}">
