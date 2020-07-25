@@ -726,7 +726,9 @@
 				</fo:block>
 			</fo:list-item-label>
 			<fo:list-item-body start-indent="body-start()" line-height-shift-adjustment="disregard-shifts">
-				<xsl:apply-templates />
+				<fo:block>
+					<xsl:apply-templates />
+				</fo:block>
 			</fo:list-item-body>
 		</fo:list-item>
 	</xsl:template>
@@ -735,7 +737,10 @@
 		<fo:list-item font-size="10pt">
 			<fo:list-item-label><fo:block></fo:block></fo:list-item-label>
 			<fo:list-item-body>
-				<xsl:apply-templates />
+				<fo:block>
+					<xsl:apply-templates select="rsd:name" mode="presentation"/>
+					<xsl:apply-templates />
+				</fo:block>
 			</fo:list-item-body>
 		</fo:list-item>
 	</xsl:template>

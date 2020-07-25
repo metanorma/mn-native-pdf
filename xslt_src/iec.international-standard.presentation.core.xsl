@@ -1861,7 +1861,9 @@
 				</fo:block>
 			</fo:list-item-label>
 			<fo:list-item-body start-indent="body-start()">
-				<xsl:apply-templates />
+				<fo:block>
+					<xsl:apply-templates />
+				</fo:block>
 			</fo:list-item-body>
 		</fo:list-item>
 	</xsl:template>

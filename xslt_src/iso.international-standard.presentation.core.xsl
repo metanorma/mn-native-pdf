@@ -1640,8 +1640,10 @@
 				</fo:block>
 			</fo:list-item-label>
 			<fo:list-item-body start-indent="body-start()">
-				<xsl:apply-templates />
-				<xsl:apply-templates select=".//iso:note" mode="process"/>
+				<fo:block>
+					<xsl:apply-templates />
+					<xsl:apply-templates select=".//iso:note" mode="process"/>
+				</fo:block>
 			</fo:list-item-body>
 		</fo:list-item>
 	</xsl:template>
@@ -1729,17 +1731,6 @@
 		</fo:inline>
 	</xsl:template>
 	
-	
-	
-	<xsl:template match="iso:note2/iso:p" name="note2">
-		<fo:block font-size="10pt" margin-top="8pt" margin-bottom="12pt" text-align="justify">			
-			<fo:inline padding-right="6mm">				
-				<xsl:apply-templates select="../iso:name" mode="presentation"/>				
-			</fo:inline>
-			<xsl:apply-templates />
-		</fo:block>
-	</xsl:template>
-
 
 	
 	<xsl:template match="iso:admonition">

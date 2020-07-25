@@ -1034,8 +1034,10 @@
 						</xsl:if> -->
 					</xsl:if>
 					<fo:block-container margin-left="0mm">
-						<xsl:apply-templates />
-						<xsl:apply-templates select=".//itu:note" mode="process"/>
+						<fo:block>
+							<xsl:apply-templates />
+							<xsl:apply-templates select=".//itu:note" mode="process"/>
+						</fo:block>
 					</fo:block-container>
 				</fo:block-container>
 			</fo:list-item-body>

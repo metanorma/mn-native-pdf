@@ -641,9 +641,11 @@
 					<xsl:call-template name="getListItemFormat"/>
 				</fo:block>
 			</fo:list-item-label>
-			<fo:list-item-body start-indent="body-start()">				
-				<xsl:apply-templates />				
-				<xsl:apply-templates select=".//iho:note" mode="process"/>				
+			<fo:list-item-body start-indent="body-start()">
+				<fo:block>
+					<xsl:apply-templates />
+					<xsl:apply-templates select=".//iho:note" mode="process"/>
+				</fo:block>
 			</fo:list-item-body>
 		</fo:list-item>
 	</xsl:template>

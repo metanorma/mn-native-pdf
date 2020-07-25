@@ -861,7 +861,7 @@
 	</xsl:template>
 	
 	<xsl:template match="ogc:li">
-		<fo:list-item>
+		<fo:list-item id="{@id}">
 			<fo:list-item-label end-indent="label-end()">
 				<fo:block>
 					<xsl:choose>
@@ -901,7 +901,10 @@
 		<fo:list-item font-size="10pt">
 			<fo:list-item-label><fo:block></fo:block></fo:list-item-label>
 			<fo:list-item-body>
-				<xsl:apply-templates />
+				<fo:block>
+					<xsl:apply-templates select="ogc:name" mode="presentation"/>
+					<xsl:apply-templates />
+				</fo:block>
 			</fo:list-item-body>
 		</fo:list-item>
 	</xsl:template>
