@@ -570,27 +570,51 @@
 
 
 	<xsl:attribute-set name="note-style">
+		<xsl:if test="$namespace = 'gb'">
+			<xsl:attribute name="font-size">9pt</xsl:attribute>
+			<xsl:attribute name="margin-left">7.4mm</xsl:attribute>
+			<xsl:attribute name="margin-top">4pt</xsl:attribute>
+			<xsl:attribute name="line-height">125%</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'iec'">
+			<xsl:attribute name="font-size">8pt</xsl:attribute>
+			<xsl:attribute name="margin-top">5pt</xsl:attribute>
+			<xsl:attribute name="margin-bottom">9pt</xsl:attribute>
+		</xsl:if>		
 		<xsl:if test="$namespace = 'iho'">
 			<xsl:attribute name="font-size">11pt</xsl:attribute>
 			<xsl:attribute name="margin-top">8pt</xsl:attribute>
 			<xsl:attribute name="margin-bottom">12pt</xsl:attribute>
 			<xsl:attribute name="text-align">justify</xsl:attribute>
-		</xsl:if>
+		</xsl:if>		
 	</xsl:attribute-set>
 	
 	<xsl:attribute-set name="note-name-style">
+		<xsl:if test="$namespace = 'gb'">
+			<xsl:attribute name="font-family">SimHei</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'iec'">
+			<xsl:attribute name="padding-right">6mm</xsl:attribute>
+		</xsl:if>
 		<xsl:if test="$namespace = 'iho'">
 			<xsl:attribute name="font-size">11pt</xsl:attribute>
-			<xsl:attribute name="padding-right">3mm</xsl:attribute>			
+			<xsl:attribute name="padding-right">2mm</xsl:attribute>
 		</xsl:if>
 	</xsl:attribute-set>
 	
 	<xsl:attribute-set name="note-p-style">
+		<xsl:if test="$namespace = 'gb'">
+			<xsl:attribute name="margin-top">4pt</xsl:attribute>
+			<xsl:attribute name="line-height">125%</xsl:attribute>
+			<xsl:attribute name="text-align">justify</xsl:attribute>			
+		</xsl:if>
+		<xsl:if test="$namespace = 'iec'">
+			<xsl:attribute name="font-size">8pt</xsl:attribute>
+			<xsl:attribute name="margin-top">5pt</xsl:attribute>
+		</xsl:if>		
 		<xsl:if test="$namespace = 'iho'">			
-			<xsl:attribute name="font-size">11pt</xsl:attribute>
 			<xsl:attribute name="margin-top">8pt</xsl:attribute>
-			<xsl:attribute name="margin-bottom">8pt</xsl:attribute>
-			<xsl:attribute name="text-align">justify</xsl:attribute>
+			<xsl:attribute name="margin-bottom">8pt</xsl:attribute>			
 		</xsl:if>
 	</xsl:attribute-set>
 	
@@ -1588,7 +1612,7 @@
 	</xsl:template>
 	
 	
-	<xsl:template match="*[local-name()='table']/*[local-name()='note']"/>
+	<xsl:template match="*[local-name()='table']/*[local-name()='note']" priority="2"/>
 	<xsl:template match="*[local-name()='table']/*[local-name()='note']" mode="process">
 		
 		
@@ -2887,9 +2911,71 @@
 	<!-- termnote -->
 	<!-- ====== -->
 	
+	<xsl:template match="*[local-name() = 'note']" name="note">
+	
+		<fo:block-container xsl:use-attribute-sets="note-style">
+			<fo:block-container margin-left="0mm">
+				<xsl:if test="$namespace = 'gb'">
+					<fo:table table-layout="fixed" width="100%">
+						<fo:table-column column-width="10mm"/>
+						<fo:table-column column-width="155mm"/>
+						<fo:table-body>
+							<fo:table-row>
+								<fo:table-cell>
+									<fo:block font-family="SimHei" xsl:use-attribute-sets="note-name-style">
+										<xsl:apply-templates select="gb:name" mode="presentation"/>
+									</fo:block>
+								</fo:table-cell>
+								<fo:table-cell>
+									<fo:block text-align="justify">
+										<xsl:apply-templates />
+									</fo:block>
+								</fo:table-cell>
+							</fo:table-row>
+						</fo:table-body>
+					</fo:table>
+				</xsl:if>
+				
+				<xsl:if test="$namespace = 'iho'">
+					<xsl:if test="ancestor::iho:td">
+						<xsl:attribute name="font-size">12pt</xsl:attribute>
+					</xsl:if>
+				</xsl:if>
+				
+				<xsl:if test="$namespace = 'iec' or $namespace = 'iho'">
+					<fo:block>
+						<fo:inline xsl:use-attribute-sets="note-name-style">
+							<xsl:apply-templates select="*[local-name() = 'name']" mode="presentation"/>
+						</fo:inline>
+						<xsl:apply-templates />
+					</fo:block>
+				</xsl:if>
+				
+			</fo:block-container>
+		</fo:block-container>
+		
+	</xsl:template>
+	
+	<xsl:template match="*[local-name() = 'note']/*[local-name() = 'p']">
+		<xsl:variable name="num"><xsl:number/></xsl:variable>
+		<xsl:choose>
+			<xsl:when test="$num = 1">
+				<fo:inline xsl:use-attribute-sets="note-p-style">
+					<xsl:apply-templates />
+				</fo:inline>
+			</xsl:when>
+			<xsl:otherwise>
+				<fo:block xsl:use-attribute-sets="note-p-style">			
+					<xsl:apply-templates />
+				</fo:block>
+			</xsl:otherwise>
+		</xsl:choose>
+	</xsl:template>
+	
+	
 	<xsl:template match="*[local-name() = 'termnote']">
 		<fo:block id="{@id}" xsl:use-attribute-sets="termnote-style">			
-			<xsl:apply-templates select="*[local-name() = 'name']" mode="presentation"/>			
+			<xsl:apply-templates select="*[local-name() = 'name']" mode="presentation"/>
 			<xsl:apply-templates />
 		</fo:block>
 	</xsl:template>
@@ -2930,7 +3016,7 @@
 					<xsl:value-of select="$sfx"/>					
 				</xsl:when>
 				<xsl:otherwise>
-					<xsl:if test="$namespace = 'gb' or $namespace = 'rsd' or $namespace = 'ogc'">
+					<xsl:if test="$namespace = 'gb' or $namespace = 'iec' or $namespace = 'rsd' or $namespace = 'ogc'">
 						<xsl:text>:</xsl:text>
 					</xsl:if>
 					<xsl:if test="$namespace = 'itu' or $namespace = 'nist-cswp'  or $namespace = 'nist-sp' or $namespace = 'unece-rec' or $namespace = 'unece'">				
@@ -3600,8 +3686,29 @@
 			</xsl:choose>
 		</xsl:variable>
 		
-		<fo:inline padding-right="{$padding-right}mm">&#x200B;</fo:inline>
+		<xsl:choose>
+			<xsl:when test="../../@inline-header = 'true'">
+				<fo:inline font-size="90%">
+					<xsl:call-template name="insertNonBreakSpaces">
+						<xsl:with-param name="count" select="$padding-right"/>
+					</xsl:call-template>
+				</fo:inline>
+			</xsl:when>
+			<xsl:otherwise>
+				<fo:inline padding-right="{$padding-right}mm">&#x200B;</fo:inline>
+			</xsl:otherwise>
+		</xsl:choose>
 		
+	</xsl:template>
+	
+	<xsl:template name="insertNonBreakSpaces">
+		<xsl:param name="count"/>
+		<xsl:if test="$count &gt; 0">
+			<xsl:text>&#xA0;</xsl:text>
+			<xsl:call-template name="insertNonBreakSpaces">
+				<xsl:with-param name="count" select="$count - 1"/>
+			</xsl:call-template>
+		</xsl:if>
 	</xsl:template>
 	
 	<xsl:template match="*[local-name() = 'domain']">

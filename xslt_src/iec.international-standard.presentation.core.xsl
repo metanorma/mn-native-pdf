@@ -26,7 +26,7 @@
 	
 	<xsl:variable name="namespace">iec</xsl:variable>
 	
-	<xsl:variable name="debug">true</xsl:variable>
+	<xsl:variable name="debug">false</xsl:variable>
 	<xsl:variable name="pageWidth" select="'210mm'"/>
 	<xsl:variable name="pageHeight" select="'297mm'"/>
 
@@ -1797,7 +1797,7 @@
 	</xsl:template>
 	
 	
-	<xsl:template match="iec:bibitem/iec:note">
+	<xsl:template match="iec:bibitem/iec:note" priority="2">
 		<fo:footnote>
 			<xsl:variable name="number">
 				<xsl:number level="any" count="iec:bibitem/iec:note"/>
@@ -1952,18 +1952,6 @@
 		</fo:inline>
 	</xsl:template>
 
-	
-	<xsl:template match="iec:note/iec:p" name="note">
-		<fo:block margin-top="5pt" margin-bottom="5pt" font-size="8pt">
-			<!-- <xsl:if test="../following-sibling::iec:note"> -->
-				<xsl:attribute name="margin-bottom">9pt</xsl:attribute>
-			<!-- </xsl:if> -->
-			<fo:inline padding-right="6mm">
-				<xsl:apply-templates select="../iec:name" mode="presentation"/>				
-			</fo:inline>
-			<xsl:apply-templates />
-		</fo:block>
-	</xsl:template>
 
 
 	
