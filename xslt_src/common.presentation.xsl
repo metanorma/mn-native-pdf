@@ -567,8 +567,34 @@
 			<xsl:attribute name="color">blue</xsl:attribute>
 		</xsl:if>
 	</xsl:attribute-set>
+
+
+	<xsl:attribute-set name="note-style">
+		<xsl:if test="$namespace = 'iho'">
+			<xsl:attribute name="font-size">11pt</xsl:attribute>
+			<xsl:attribute name="margin-top">8pt</xsl:attribute>
+			<xsl:attribute name="margin-bottom">12pt</xsl:attribute>
+			<xsl:attribute name="text-align">justify</xsl:attribute>
+		</xsl:if>
+	</xsl:attribute-set>
 	
-	<xsl:attribute-set name="termnote-style">		
+	<xsl:attribute-set name="note-name-style">
+		<xsl:if test="$namespace = 'iho'">
+			<xsl:attribute name="font-size">11pt</xsl:attribute>
+			<xsl:attribute name="padding-right">3mm</xsl:attribute>			
+		</xsl:if>
+	</xsl:attribute-set>
+	
+	<xsl:attribute-set name="note-p-style">
+		<xsl:if test="$namespace = 'iho'">			
+			<xsl:attribute name="font-size">11pt</xsl:attribute>
+			<xsl:attribute name="margin-top">8pt</xsl:attribute>
+			<xsl:attribute name="margin-bottom">8pt</xsl:attribute>
+			<xsl:attribute name="text-align">justify</xsl:attribute>
+		</xsl:if>
+	</xsl:attribute-set>
+	
+	<xsl:attribute-set name="termnote-style">
 		<xsl:if test="$namespace = 'csa' or $namespace = 'csd' or $namespace = 'ogc' or $namespace = 'rsd'">
 			<xsl:attribute name="font-size">10pt</xsl:attribute>			
 			<xsl:attribute name="margin-bottom">12pt</xsl:attribute>
@@ -2980,7 +3006,7 @@
 				<xsl:apply-templates />
 			</fo:block>
 			<xsl:call-template name="fn_display_figure"/>
-			<xsl:for-each select="*[local-name() = 'note']//*[local-name() = 'p']">
+			<xsl:for-each select="*[local-name() = 'note']">
 				<xsl:call-template name="note"/>
 			</xsl:for-each>
 			<xsl:apply-templates select="*[local-name() = 'name']" mode="presentation"/>
@@ -3223,7 +3249,7 @@
 	<!-- ====== -->
 	
 	<xsl:template match="*[local-name() = 'example']">
-		<fo:block id="{@id}">
+		<fo:block id="{@id}" xsl:use-attribute-sets="example-style">
 			
 			<xsl:apply-templates select="*[local-name()='name']" mode="presentation"/>
 			
@@ -3246,12 +3272,12 @@
 			
 			<xsl:choose>
 				<xsl:when test="normalize-space($element) = 'block'">
-					<fo:block xsl:use-attribute-sets="example-style">
+					<fo:block>
 						<xsl:apply-templates/>
 					</fo:block>
 				</xsl:when>
 				<xsl:otherwise>
-					<fo:inline xsl:use-attribute-sets="example-style">
+					<fo:inline>
 						<xsl:apply-templates/>
 					</fo:inline>
 				</xsl:otherwise>
@@ -3323,9 +3349,19 @@
 	<xsl:template match="*[local-name() = 'termsource']">
 		<fo:block xsl:use-attribute-sets="termsource-style">
 			<!-- Example: [SOURCE: ISO 5127:2017, 3.1.6.02] -->			
-			<xsl:text>[</xsl:text>
-			<xsl:apply-templates />			
-			<xsl:text>]</xsl:text>
+			<xsl:variable name="termsource_text">
+				<xsl:apply-templates />
+			</xsl:variable>
+			<xsl:choose>
+				<xsl:when test="starts-with(normalize-space($termsource_text), '[')">
+					<xsl:apply-templates />
+				</xsl:when>
+				<xsl:otherwise>
+					<xsl:text>[</xsl:text>
+					<xsl:apply-templates />
+					<xsl:text>]</xsl:text>
+				</xsl:otherwise>
+			</xsl:choose>
 		</fo:block>
 	</xsl:template>
 	
@@ -3729,9 +3765,8 @@
 					<xsl:attribute name="margin-top">3pt</xsl:attribute>
 				</xsl:if>
 			</xsl:if>
-			
-			<xsl:apply-templates />
 		</fo:block>
+		<xsl:apply-templates />
 	</xsl:template>
 	
 	
@@ -3746,6 +3781,7 @@
 		<xsl:value-of select="java:replaceAll(java:java.lang.String.new(.),' ',' ')"/>
 	</xsl:template>
 	
+
 	
 	<!-- ============ -->
 	<!-- errata -->

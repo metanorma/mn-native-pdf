@@ -16,7 +16,8 @@
 	
 	<xsl:include href="./common.xsl"/>
 
-	<xsl:key name="kfn" match="iho:fn[local-name(..) = 'p' or local-name(..) = 'title']" use="@reference"/>
+	<!-- <xsl:key name="kfn" match="iho:fn[local-name(..) = 'p' or local-name(..) = 'title']" use="@reference"/> -->
+	<xsl:key name="kfn" match="iho:fn[local-name(..) = 'p' or ancestor::*[local-name() = 'title']]" use="@reference"/>
 	
 	<xsl:variable name="namespace">iho</xsl:variable>
 	
@@ -452,12 +453,7 @@
 			<xsl:choose>
 				<xsl:when test="$level = 1">13pt</xsl:when>
 				<xsl:when test="$level = 2">12pt</xsl:when>
-				<xsl:when test="$level &gt;= 3">11pt</xsl:when>
-				<!-- <xsl:when test="ancestor::iho:annex and $level = 2">13pt</xsl:when>
-				<xsl:when test="ancestor::iho:annex and $level = 3">12pt</xsl:when>
-				<xsl:when test="ancestor::iho:preface">16pt</xsl:when>
-				<xsl:when test="$level = 2">12pt</xsl:when>
-				<xsl:when test="$level &gt;= 3">11pt</xsl:when> -->
+				<xsl:when test="$level &gt;= 3">11pt</xsl:when>				
 				<xsl:otherwise>12pt</xsl:otherwise>
 			</xsl:choose>
 		</xsl:variable>
@@ -471,9 +467,8 @@
 		
 	
 		<xsl:element name="{$element-name}">
-			<xsl:attribute name="font-size"><xsl:value-of select="$font-size"/></xsl:attribute>
-			<!-- <xsl:attribute name="font-weight">bold</xsl:attribute> -->
-			<xsl:attribute name="space-before"> <!-- margin-top -->
+			<xsl:attribute name="font-size"><xsl:value-of select="$font-size"/></xsl:attribute>			
+			<xsl:attribute name="space-before">
 				<xsl:choose>
 					<xsl:when test="$level = 1">13.5pt</xsl:when>
 					<xsl:when test="$level &gt;= 2">3pt</xsl:when>
@@ -561,7 +556,7 @@
 
 	<xsl:variable name="p_fn">
 		<!-- <xsl:for-each select="//iho:p/iho:fn[generate-id(.)=generate-id(key('kfn',@reference)[1])]"> -->
-		<xsl:for-each select="//iho:fn[local-name(..) = 'p' or local-name(..) = 'title'][generate-id(.)=generate-id(key('kfn',@reference)[1])]">
+		<xsl:for-each select="//iho:fn[local-name(..) = 'p' or ancestor::*[local-name() = 'title']][generate-id(.)=generate-id(key('kfn',@reference)[1])]">
 			<!-- copy unique fn -->
 			<fn gen_id="{generate-id(.)}">
 				<xsl:copy-of select="@*"/>
@@ -571,7 +566,7 @@
 	</xsl:variable>
 	
 	<!-- iho:p/iho:fn -->
-	<xsl:template match="iho:fn[local-name(..) = 'p' or local-name(..) = 'title']" priority="2">
+	<xsl:template match="iho:fn[local-name(..) = 'p' or ancestor::*[local-name() = 'title']]" priority="2">
 		<xsl:variable name="gen_id" select="generate-id(.)"/>
 		<xsl:variable name="reference" select="@reference"/>
 		<xsl:variable name="number">
@@ -614,18 +609,34 @@
 	</xsl:template>
 
 
-
-	
-	<xsl:template match="iho:note/iho:p" name="note">
-		<fo:block font-size="11pt" margin-top="8pt" margin-bottom="12pt" text-align="justify">
-			<xsl:if test="ancestor::iho:td">
-				<xsl:attribute name="font-size">12pt</xsl:attribute>
-			</xsl:if>			
-			<fo:inline font-size="11pt" padding-right="3mm">
-				<xsl:apply-templates select="../iho:name" mode="presentation"/>				
+	<xsl:template match="iho:note" name="note">
+		<fo:block xsl:use-attribute-sets="note-style">
+			<xsl:if test="$namespace = 'iho'">
+				<xsl:if test="ancestor::iho:td">
+					<xsl:attribute name="font-size">12pt</xsl:attribute>
+				</xsl:if>
+			</xsl:if>
+			<fo:inline xsl:use-attribute-sets="note-name-style">
+				<xsl:apply-templates select="iho:name" mode="presentation"/>				
 			</fo:inline>
 			<xsl:apply-templates />
 		</fo:block>
+	</xsl:template>
+	
+	<xsl:template match="iho:note/iho:p">
+		<xsl:variable name="num"><xsl:number/></xsl:variable>
+		<xsl:choose>
+			<xsl:when test="$num = 1">
+				<fo:inline xsl:use-attribute-sets="note-p-style">
+					<xsl:apply-templates />
+				</fo:inline>
+			</xsl:when>
+			<xsl:otherwise>
+				<fo:block xsl:use-attribute-sets="note-p-style">			
+					<xsl:apply-templates />
+				</fo:block>
+			</xsl:otherwise>
+		</xsl:choose>
 	</xsl:template>
 	
 	
@@ -633,7 +644,7 @@
 		<fo:list-block provisional-distance-between-starts="6mm">
 			<xsl:apply-templates />
 		</fo:list-block>
-		<xsl:for-each select="./iho:note//iho:p">
+		<xsl:for-each select="./iho:note">
 			<xsl:call-template name="note"/>
 		</xsl:for-each>
 	</xsl:template>
@@ -689,7 +700,7 @@
 	
 
 		
-	<xsl:template match="iho:references[position() &gt; 1]">
+	<xsl:template match="iho:references"><!-- [position() &gt; 1] -->
 		<fo:block id="{@id}">
 			<xsl:apply-templates />
 		</fo:block>
