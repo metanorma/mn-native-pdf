@@ -952,11 +952,11 @@
 	<!-- Example: [1] ISO 9:1995, Information and documentation – Transliteration of Cyrillic characters into Latin characters – Slavic and non-Slavic languages -->
 	<!-- <xsl:template match="ogc:references[@id = '_bibliography']/ogc:bibitem"> [position() &gt; 1] -->
 	<xsl:template match="ogc:references[@id != '_normative_references' and @id != '_references' and @id != 'references']/ogc:bibitem">
-		<fo:list-block margin-bottom="12pt" provisional-distance-between-starts="12mm">
+		<fo:list-block id="{@id}" margin-bottom="12pt" provisional-distance-between-starts="12mm">
 			<fo:list-item>
 				<fo:list-item-label end-indent="label-end()">
 					<fo:block>
-						<fo:inline id="{@id}">
+						<fo:inline>
 							<xsl:number format="[1]"/>
 						</fo:inline>
 					</fo:block>
@@ -1034,20 +1034,6 @@
 	</xsl:template>
 
 
-		
-	
-	
-<!-- 	<xsl:template match="ogc:note/ogc:p" name="note">
-		<fo:block font-size="10pt" margin-top="12pt" margin-bottom="12pt" line-height="115%">
-			<xsl:if test="ancestor::ogc:ul or ancestor::ogc:ol and not(ancestor::ogc:note[1]/following-sibling::*)">
-				<xsl:attribute name="margin-bottom">0pt</xsl:attribute>
-			</xsl:if>			
-			<fo:inline padding-right="4mm">
-				<xsl:apply-templates select="../ogc:name" mode="presentation"/>				
-			</fo:inline>
-			<xsl:apply-templates />
-		</fo:block>
-	</xsl:template> -->
 
 
 	

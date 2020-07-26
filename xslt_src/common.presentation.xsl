@@ -226,16 +226,93 @@
 		</xsl:if>
 	</xsl:attribute-set>
 
+
+	<xsl:attribute-set name="permission-style">
+		<xsl:if test="$namespace = 'ogc'">
+			<xsl:attribute name="margin-top">6pt</xsl:attribute>
+		</xsl:if>
+	</xsl:attribute-set>
+
+	<xsl:attribute-set name="permission-name-style">
+		<xsl:if test="$namespace = 'ogc'">
+			<xsl:attribute name="font-size">11pt</xsl:attribute>
+			<xsl:attribute name="font-weight">bold</xsl:attribute>
+			<xsl:attribute name="text-align">center</xsl:attribute>			
+			<xsl:attribute name="padding-top">0.5mm</xsl:attribute>
+			<xsl:attribute name="padding-bottom">1mm</xsl:attribute>
+			<xsl:attribute name="margin-bottom">1mm</xsl:attribute>
+			<xsl:attribute name="background-color">rgb(165,165,165)</xsl:attribute>
+			<xsl:attribute name="keep-with-next">always</xsl:attribute>
+		</xsl:if>
+	</xsl:attribute-set>
+
+	<xsl:attribute-set name="permission-label-style">
+		<xsl:if test="$namespace = 'ogc'">
+			<xsl:attribute name="margin-bottom">12pt</xsl:attribute>
+		</xsl:if>
+	</xsl:attribute-set>
+
+	<xsl:attribute-set name="requirement-style">
+		<xsl:if test="$namespace = 'ogc'">
+			<xsl:attribute name="margin-top">6pt</xsl:attribute>
+		</xsl:if>
+	</xsl:attribute-set>
+
+	<xsl:attribute-set name="requirement-name-style">
+		<xsl:if test="$namespace = 'ogc'">
+			<xsl:attribute name="font-size">11pt</xsl:attribute>
+			<xsl:attribute name="font-weight">bold</xsl:attribute>
+			<xsl:attribute name="text-align">center</xsl:attribute>			
+			<xsl:attribute name="padding-top">0.5mm</xsl:attribute>
+			<xsl:attribute name="padding-bottom">1mm</xsl:attribute>
+			<xsl:attribute name="margin-bottom">1mm</xsl:attribute>
+			<xsl:attribute name="background-color">rgb(165,165,165)</xsl:attribute>
+			<xsl:attribute name="keep-with-next">always</xsl:attribute>
+		</xsl:if>
+	</xsl:attribute-set>
+
+	<xsl:attribute-set name="requirement-label-style">
+		<xsl:if test="$namespace = 'ogc'">
+			<xsl:attribute name="margin-bottom">12pt</xsl:attribute>
+		</xsl:if>
+	</xsl:attribute-set>
+
+	<xsl:attribute-set name="requirement-subject-style">
+	</xsl:attribute-set>
+	
+	<xsl:attribute-set name="requirement-inherit-style">
+	</xsl:attribute-set>
+	
+
 	<xsl:attribute-set name="recommendation-style">
+		<xsl:if test="$namespace = 'ogc'">
+			<xsl:attribute name="margin-top">6pt</xsl:attribute>
+		</xsl:if>
 		<xsl:if test="$namespace = 'nist-sp'">
 			<xsl:attribute name="margin-left">20mm</xsl:attribute>
 		</xsl:if>
 	</xsl:attribute-set>
 	
 	<xsl:attribute-set name="recommendation-name-style">
+		<xsl:if test="$namespace = 'ogc'">
+			<xsl:attribute name="font-size">11pt</xsl:attribute>
+			<xsl:attribute name="font-weight">bold</xsl:attribute>
+			<xsl:attribute name="text-align">center</xsl:attribute>			
+			<xsl:attribute name="padding-top">0.5mm</xsl:attribute>
+			<xsl:attribute name="padding-bottom">1mm</xsl:attribute>
+			<xsl:attribute name="margin-bottom">1mm</xsl:attribute>
+			<xsl:attribute name="background-color">rgb(165,165,165)</xsl:attribute>
+			<xsl:attribute name="keep-with-next">always</xsl:attribute>
+		</xsl:if>
 		<xsl:if test="$namespace = 'nist-sp'">
 			<xsl:attribute name="font-weight">bold</xsl:attribute>
 			<xsl:attribute name="keep-with-next">always</xsl:attribute>
+		</xsl:if>
+	</xsl:attribute-set>
+	
+	<xsl:attribute-set name="recommendation-label-style">
+		<xsl:if test="$namespace = 'ogc'">
+			<xsl:attribute name="margin-bottom">12pt</xsl:attribute>
 		</xsl:if>
 	</xsl:attribute-set>
 	
@@ -3438,9 +3515,97 @@
 	<!-- ====== -->
 	<!-- ====== -->
 	
-	<!-- ====== -->
-	<!-- recommendation -->	
-	<!-- ====== -->
+	<!-- ========== -->
+	<!-- permission -->	
+	<!-- ========== -->		
+	<xsl:template match="*[local-name() = 'permission']">
+		<fo:block id="{@id}" xsl:use-attribute-sets="permission-style">			
+			<xsl:apply-templates select="*[local-name()='name']" mode="presentation"/>
+			<xsl:apply-templates />
+		</fo:block>
+	</xsl:template>
+	
+	<xsl:template match="*[local-name() = 'permission']/*[local-name() = 'name']"/>	
+	<xsl:template match="*[local-name() = 'permission']/*[local-name() = 'name']" mode="presentation">
+		<xsl:if test="normalize-space() != ''">
+			<fo:block xsl:use-attribute-sets="permission-name-style">
+				<xsl:apply-templates />
+				<xsl:if test="$namespace = 'ogc'">
+					<xsl:text>:</xsl:text>
+				</xsl:if>
+			</fo:block>
+		</xsl:if>
+	</xsl:template>
+	
+	<xsl:template match="*[local-name() = 'permission']/*[local-name() = 'label']">
+		<fo:block xsl:use-attribute-sets="permission-label-style">
+			<xsl:apply-templates />
+		</fo:block>
+	</xsl:template>
+	<!-- ========== -->
+	<!-- ========== -->
+	
+	<!-- ========== -->
+	<!-- requirement -->
+<!-- ========== -->
+	<xsl:template match="*[local-name() = 'requirement']">
+		<fo:block id="{@id}" xsl:use-attribute-sets="requirement-style">			
+			<xsl:apply-templates select="*[local-name()='name']" mode="presentation"/>
+			<xsl:apply-templates select="*[local-name()='label']" mode="presentation"/>
+			<xsl:apply-templates select="@obligation" mode="presentation"/>
+			<xsl:apply-templates select="*[local-name()='subject']" mode="presentation"/>
+			<xsl:apply-templates />
+		</fo:block>
+	</xsl:template>
+	
+	<xsl:template match="*[local-name() = 'requirement']/*[local-name() = 'name']"/>	
+	<xsl:template match="*[local-name() = 'requirement']/*[local-name() = 'name']" mode="presentation">
+		<xsl:if test="normalize-space() != ''">
+			<fo:block xsl:use-attribute-sets="requirement-name-style">
+				<xsl:if test="$namespace = 'ogc'">
+					<xsl:if test="../@type = 'class'">
+						<xsl:attribute name="background-color">white</xsl:attribute>
+					</xsl:if>
+				</xsl:if>
+				<xsl:apply-templates />
+				<xsl:if test="$namespace = 'ogc'">
+					<xsl:text>:</xsl:text>
+				</xsl:if>
+			</fo:block>
+		</xsl:if>
+	</xsl:template>
+	
+	<xsl:template match="*[local-name() = 'requirement']/*[local-name() = 'label']"/>
+	<xsl:template match="*[local-name() = 'requirement']/*[local-name() = 'label']" mode="presentation">
+		<fo:block xsl:use-attribute-sets="requirement-label-style">
+			<xsl:apply-templates />
+		</fo:block>
+	</xsl:template>
+	
+	<xsl:template match="*[local-name() = 'requirement']/@obligation" mode="presentation">
+			<fo:block>
+				<fo:inline padding-right="3mm">Obligation</fo:inline><xsl:value-of select="."/>
+			</fo:block>
+	</xsl:template>
+	
+	<xsl:template match="*[local-name() = 'requirement']/*[local-name() = 'subject']"/>
+	<xsl:template match="*[local-name() = 'requirement']/*[local-name() = 'subject']" mode="presentation">
+		<fo:block xsl:use-attribute-sets="requirement-subject-style">
+			<xsl:text>Target Type </xsl:text><xsl:apply-templates />
+		</fo:block>
+	</xsl:template>
+	
+	<xsl:template match="*[local-name() = 'requirement']/*[local-name() = 'inherit']">
+		<fo:block xsl:use-attribute-sets="requirement-inherit-style">
+			<xsl:text>Dependency </xsl:text><xsl:apply-templates />
+		</fo:block>
+	</xsl:template>
+	<!-- ========== -->
+	<!-- ========== -->
+	
+	<!-- ========== -->
+	<!-- recommendation -->
+	<!-- ========== -->
 	<xsl:template match="*[local-name() = 'recommendation']">
 		<fo:block id="{@id}" xsl:use-attribute-sets="recommendation-style">			
 			<xsl:apply-templates select="*[local-name()='name']" mode="presentation"/>
@@ -3449,7 +3614,6 @@
 	</xsl:template>
 	
 	<xsl:template match="*[local-name() = 'recommendation']/*[local-name() = 'name']"/>	
-	
 	<xsl:template match="*[local-name() = 'recommendation']/*[local-name() = 'name']" mode="presentation">
 		<xsl:if test="normalize-space() != ''">
 			<fo:block xsl:use-attribute-sets="recommendation-name-style">
@@ -3461,8 +3625,13 @@
 		</xsl:if>
 	</xsl:template>
 	
-	<!-- ====== -->
-	<!-- ====== -->
+	<xsl:template match="*[local-name() = 'recommendation']/*[local-name() = 'label']">
+		<fo:block xsl:use-attribute-sets="recommendation-label-style">
+			<xsl:apply-templates />
+		</fo:block>
+	</xsl:template>
+	<!-- ========== -->
+	<!-- ========== -->
 	
 	<!-- ====== -->
 	<!-- termexample -->	
