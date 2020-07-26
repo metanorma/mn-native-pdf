@@ -2760,7 +2760,7 @@
 				<xsl:value-of select="document('')//*/namespace::itu"/>
 			</xsl:if>
 			<xsl:if test="$namespace = 'unece' or $namespace = 'unece-rec'">
-				<xsl:value-of select="document('')//*/namespace::unece"/>
+				<xsl:value-of select="document('')//*/namespace::un"/>
 			</xsl:if>
 			<xsl:if test="$namespace = 'nist'">
 				<xsl:value-of select="document('')//*/namespace::nist"/>
