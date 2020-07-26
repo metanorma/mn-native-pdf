@@ -1973,7 +1973,7 @@
 			<xsl:if test="$namespace = 'iso' or $namespace = 'iec'  or $namespace = 'gb'">true</xsl:if> <!-- and (not(@class) or @class !='pseudocode') -->
 		</xsl:variable>
 		<xsl:variable name="references">
-			<xsl:for-each select=".//*[local-name()='fn']">
+			<xsl:for-each select=".//*[local-name()='fn'][not(parent::*[local-name()='name'])]">
 				<fn reference="{@reference}" id="{@reference}_{ancestor::*[@id][1]/@id}">
 					<xsl:apply-templates />
 				</fn>
@@ -3381,9 +3381,14 @@
 														*[local-name() = 'permission']/*[local-name() = 'name'] |
 														*[local-name() = 'recommendation']/*[local-name() = 'name'] |
 														*[local-name() = 'requirement']/*[local-name() = 'name']" mode="contents">
-		<xsl:apply-templates/>
+		<xsl:apply-templates mode="contents"/>
 		<xsl:text> </xsl:text>
 	</xsl:template>
+	
+	<xsl:template match="text()" mode="contents">
+		<xsl:value-of select="."/>
+	</xsl:template>
+	
 	
 	<xsl:template match="*[local-name() = 'figure']/*[local-name() = 'name'] |
 								*[local-name() = 'image']/*[local-name() = 'name']" mode="presentation">

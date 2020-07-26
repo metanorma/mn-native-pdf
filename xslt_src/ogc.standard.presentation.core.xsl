@@ -545,8 +545,6 @@
 		
 	</xsl:template>
 	
-	
-	<xsl:template match="ogc:fn" mode="contents"/>
 	<!-- ============================= -->
 	<!-- ============================= -->
 	
@@ -763,7 +761,8 @@
 			<p id="_8e5cf917-f75a-4a49-b0aa-1714cb6cf954">Formerly denoted as 15 % (m/m).</p>
 		</fn>
 	-->
-	<xsl:template match="ogc:title/ogc:fn | 
+	<xsl:template match="ogc:title//ogc:fn | 
+																ogc:name//ogc:fn | 
 																ogc:p/ogc:fn[not(ancestor::ogc:table)] | 
 																ogc:p/*/ogc:fn[not(ancestor::ogc:table)] |
 																ogc:sourcecode/ogc:fn[not(ancestor::ogc:table)]" priority="2">

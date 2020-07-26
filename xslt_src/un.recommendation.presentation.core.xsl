@@ -401,10 +401,6 @@
 	<xsl:template match="un:references" mode="contents">
 		<xsl:apply-templates mode="contents"/>
 	</xsl:template>
-
-
-	
-	<xsl:template match="un:fn" mode="contents"/>
 	
 	<!-- ============================= -->
 	<!-- ============================= -->
