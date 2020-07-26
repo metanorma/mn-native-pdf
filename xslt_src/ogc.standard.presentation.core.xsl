@@ -386,7 +386,7 @@
 							<fo:block font-size="14pt" font-weight="bold" space-before="48pt" margin-bottom="15.5pt"><xsl:value-of select="$title-list-tables"/></fo:block>
 							<xsl:for-each select="//ogc:table[@id and ogc:name]">
 								<fo:block text-align-last="justify" margin-top="6pt">
-									<fo:basic-link internal-destination="{@id}" fox:alt-text="{@section}">
+									<fo:basic-link internal-destination="{@id}" fox:alt-text="{ogc:name}">
 										<xsl:apply-templates select="ogc:name" mode="contents"/>										
 										<fo:inline keep-together.within-line="always">
 											<fo:leader leader-pattern="dots"/>
@@ -408,7 +408,7 @@
 							<fo:block font-size="14pt" font-weight="bold" space-before="48pt" margin-bottom="15.5pt"><xsl:value-of select="$title-list-figures"/></fo:block>
 							<xsl:for-each select="//ogc:figure[@id and ogc:name]">
 								<fo:block text-align-last="justify" margin-top="6pt">
-									<fo:basic-link internal-destination="{@id}" fox:alt-text="{@section}">
+									<fo:basic-link internal-destination="{@id}" fox:alt-text="{ogc:name}">
 										<xsl:apply-templates select="ogc:name" mode="contents"/>										
 										<fo:inline keep-together.within-line="always">
 											<fo:leader leader-pattern="dots"/>
@@ -418,6 +418,29 @@
 								</fo:block>
 							</xsl:for-each>
 						</xsl:if>
+						
+						<xsl:if test="//ogc:permission[@id and ogc:name] or //ogc:recommendation[@id and ogc:name] or //ogc:requirement[@id and ogc:name]">
+							<fo:block font-size="12pt">&#xA0;</fo:block>
+							<fo:block font-size="12pt">&#xA0;</fo:block>
+							<xsl:variable name="title-list-recommendations">
+								<xsl:call-template name="getTitle">
+									<xsl:with-param name="name" select="'title-list-recommendations'"/>
+								</xsl:call-template>
+							</xsl:variable>
+							<fo:block font-size="14pt" font-weight="bold" space-before="48pt" margin-bottom="15.5pt"><xsl:value-of select="$title-list-recommendations"/></fo:block>
+							<xsl:for-each select="//ogc:permission[@id and ogc:name] | //ogc:recommendation[@id and ogc:name] | //ogc:requirement[@id and ogc:name]">
+								<fo:block text-align-last="justify" margin-top="6pt">
+									<fo:basic-link internal-destination="{@id}" fox:alt-text="{ogc:name}">
+										<xsl:apply-templates select="ogc:name" mode="contents"/>										
+										<fo:inline keep-together.within-line="always">
+											<fo:leader leader-pattern="dots"/>
+											<fo:page-number-citation ref-id="{@id}"/>
+										</fo:inline>
+									</fo:basic-link>
+								</fo:block>
+							</xsl:for-each>
+						</xsl:if>
+						
 						
 					</fo:block-container>
 					

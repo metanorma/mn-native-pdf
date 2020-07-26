@@ -103,7 +103,7 @@
 		
 		<title-list-figures lang="en">List of Figures</title-list-figures>
 		
-		<title-recommendation lang="en">Recommendation </title-recommendation>
+		<title-list-recommendations lang="en">List of Recommendations</title-list-recommendations>
 		
 		<title-acknowledgements lang="en">Acknowledgements</title-acknowledgements>
 		
@@ -3377,7 +3377,10 @@
 	<xsl:template match="*[local-name() = 'figure']/*[local-name() = 'name']"/>	
 	
 	<xsl:template match="*[local-name() = 'figure']/*[local-name() = 'name'] | 
-														*[local-name() = 'table']/*[local-name() = 'name']" mode="contents">
+														*[local-name() = 'table']/*[local-name() = 'name'] |
+														*[local-name() = 'permission']/*[local-name() = 'name'] |
+														*[local-name() = 'recommendation']/*[local-name() = 'name'] |
+														*[local-name() = 'requirement']/*[local-name() = 'name']" mode="contents">
 		<xsl:apply-templates/>
 		<xsl:text> </xsl:text>
 	</xsl:template>
