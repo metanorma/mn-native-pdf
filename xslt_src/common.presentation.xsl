@@ -20,11 +20,7 @@
 		<xsl:if test="$namespace = 'gb'">
 			<title-annex lang="zh">附件 </title-annex>			
 		</xsl:if>
-		
-		<title-appendix lang="en">Appendix </title-appendix>
-		<title-appendix lang="fr">Appendix </title-appendix>
-			
-		
+				
 		<title-edition lang="en">
 			<xsl:if test="$namespace = 'iso' or $namespace = 'iec' or $namespace = 'itu' or $namespace = 'unece' or $namespace = 'unece-rec' or $namespace = 'nist-cswp'  or $namespace = 'nist-sp' or $namespace = 'csd' or $namespace = 'iho'">
 				<xsl:text>Edition </xsl:text>
@@ -2570,7 +2566,7 @@
 		</fo:inline>
 	</xsl:template>
 
-	<xsl:template match="*[local-name()='strong']">
+	<xsl:template match="*[local-name()='strong'] | *[local-name()='b']">
 		<fo:inline font-weight="bold">
 			<xsl:apply-templates />
 		</fo:inline>
@@ -4065,7 +4061,12 @@
 			</xsl:choose>
 		</xsl:variable>
 		
+		<xsl:variable name="language" select="//*[local-name()='bibdata']//*[local-name()='language']"/>
+		
 		<xsl:choose>
+			<xsl:when test="$language = 'zh'">
+				<fo:inline>&#x3000;</fo:inline>
+			</xsl:when>
 			<xsl:when test="../../@inline-header = 'true'">
 				<fo:inline font-size="90%">
 					<xsl:call-template name="insertNonBreakSpaces">
