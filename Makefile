@@ -84,7 +84,11 @@ XSLT_GENERATED := xslt/iec.international-standard.xsl \
 	xslt/iho.specification.xsl \
 	xslt/iho.specification.presentation.xsl \
 	xslt/iho.standard.xsl \
-	xslt/iho.standard.presentation.xsl
+	xslt/iho.standard.presentation.xsl \
+	xslt/nist.cswp.xsl \
+	xslt/nist.cswp.presentation.xsl \
+	xslt/nist.sp.xsl \
+	xslt/nist.sp.presentation.xsl 
 
 MN2PDF_DOWNLOAD_PATH := https://github.com/metanorma/mn2pdf/releases/download/v1.18/mn2pdf-1.18.jar
 # MN2PDF_DOWNLOAD_PATH := https://maven.pkg.github.com/metanorma/mn2pdf/com/metanorma/fop/mn2pdf/1.7/mn2pdf-1.7.jar
