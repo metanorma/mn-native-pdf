@@ -1434,7 +1434,14 @@
 					</xsl:attribute>
 					<xsl:attribute name="keep-with-next">always</xsl:attribute>		
 					<xsl:if test="$element-name = 'fo:inline'">
-						<xsl:attribute name="padding-right">2mm</xsl:attribute>
+						<xsl:choose>
+							<xsl:when test="$lang = 'zh'">
+								<xsl:value-of select="$tab_zh"/>
+							</xsl:when>
+							<xsl:otherwise>
+								<xsl:attribute name="padding-right">2mm</xsl:attribute>
+							</xsl:otherwise>
+						</xsl:choose>						
 					</xsl:if>
 					<xsl:apply-templates />
 				</xsl:element>

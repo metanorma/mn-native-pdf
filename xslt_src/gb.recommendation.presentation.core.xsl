@@ -362,12 +362,7 @@
 											<fo:inline>												
 												<xsl:value-of select="@section"/>											
 											</fo:inline>
-											<xsl:if test="not(@type = 'annex' and @level = 1)">
-												<xsl:text>.&#x3000;</xsl:text>
-											</xsl:if>
-											<xsl:if test="@type = 'annex' and @level = 1">
-												<xsl:text>&#xA0;</xsl:text>
-											</xsl:if>
+											<xsl:value-of select="$tab_zh"/>											
 										</xsl:if>
 										<xsl:apply-templates />
 										<fo:inline keep-together.within-line="always">
@@ -549,6 +544,9 @@
 	<!-- ============================= -->
 	<!-- ============================= -->
 	
+	<xsl:template match="*[local-name() = 'tab']" priority="2">
+		<fo:inline><xsl:value-of select="$tab_zh"/></fo:inline>
+	</xsl:template>
 	
 	<xsl:template match="gb:license-statement//gb:title">
 		<fo:block text-align="center" font-weight="bold">
@@ -628,9 +626,17 @@
 			<xsl:call-template name="getLevel"/>
 		</xsl:variable>
 		
+		<xsl:variable name="element-name">
+			<xsl:choose>
+				<xsl:when test="../@inline-header = 'true'">fo:inline</xsl:when>
+				<xsl:otherwise>fo:block</xsl:otherwise>
+			</xsl:choose>
+		</xsl:variable>
+		
 		<xsl:variable name="font-family">
 			<xsl:choose>
 				<xsl:when test="ancestor::gb:annex and $level &gt;= 3">SimSun</xsl:when>
+				<xsl:when test="$element-name = 'fo:inline'">SimSun</xsl:when>
 				<xsl:otherwise>SimHei</xsl:otherwise>
 			</xsl:choose>
 		</xsl:variable>
@@ -642,12 +648,7 @@
 			</xsl:choose>
 		</xsl:variable>
 		
-		<xsl:variable name="element-name">
-			<xsl:choose>
-				<xsl:when test="../@inline-header = 'true'">fo:inline</xsl:when>
-				<xsl:otherwise>fo:block</xsl:otherwise>
-			</xsl:choose>
-		</xsl:variable>
+		
 		
 		<xsl:element name="{$element-name}">
 			<xsl:attribute name="font-size"><xsl:value-of select="$font-size"/></xsl:attribute>
@@ -678,13 +679,16 @@
 				<xsl:attribute name="font-family">SimHei</xsl:attribute>
 			</xsl:if>
 			<xsl:if test="$element-name = 'fo:inline'">
-				<xsl:attribute name="padding-left">7.4mm</xsl:attribute>
+				<xsl:attribute name="padding-left">7.4mm</xsl:attribute>				
+				<xsl:attribute name="font-weight">bold</xsl:attribute>				
 			</xsl:if>
-				
-			<!-- <xsl:value-of select="$section"/>
-			<xsl:if test="$section != ''">.&#x3000;</xsl:if> -->
-			
+
 			<xsl:apply-templates />
+			
+			<xsl:if test="$element-name = 'fo:inline'">
+				<xsl:value-of select="$tab_zh"/>
+			</xsl:if>
+			
 		</xsl:element>
 		
 		<xsl:if test="$element-name = 'fo:inline' and not(following-sibling::gb:p)">
@@ -698,14 +702,11 @@
 	<!-- ====== -->
 	
 	
-	<xsl:template match="gb:p">
-		<xsl:param name="inline" select="'false'"/>
+	<xsl:template match="gb:p">		
 		<xsl:variable name="previous-element" select="local-name(preceding-sibling::*[1])"/>
 		<xsl:variable name="element-name">
-			<xsl:choose>
-				<xsl:when test="$inline = 'true'">fo:inline</xsl:when>
-				<xsl:when test="../@inline-header = 'true' and $previous-element = 'title'">fo:inline</xsl:when> <!-- first paragraph after inline title -->
-				<!-- <xsl:when test="local-name(..) = 'admonition'">fo:inline</xsl:when> -->
+			<xsl:choose>				
+				<xsl:when test="../@inline-header = 'true' and $previous-element = 'title'">fo:inline</xsl:when> <!-- first paragraph after inline title -->				
 				<xsl:otherwise>fo:block</xsl:otherwise>
 			</xsl:choose>
 		</xsl:variable>
@@ -715,7 +716,7 @@
 					<xsl:when test="@align"><xsl:value-of select="@align"/></xsl:when>
 					<xsl:when test="ancestor::gb:td/@align"><xsl:value-of select="ancestor::gb:td/@align"/></xsl:when>
 					<xsl:when test="ancestor::gb:th/@align"><xsl:value-of select="ancestor::gb:th/@align"/></xsl:when>
-					<xsl:otherwise>justify</xsl:otherwise><!-- left -->
+					<xsl:otherwise>justify</xsl:otherwise>
 				</xsl:choose>
 			</xsl:attribute>
 			<xsl:attribute name="text-indent">
@@ -730,8 +731,9 @@
 			</xsl:if>
 			<xsl:apply-templates />
 		</xsl:element>
-		<xsl:if test="$element-name = 'fo:inline' and not($inline = 'true') and not(local-name(..) = 'admonition')">
-			<xsl:choose>
+		<xsl:if test="$element-name = 'fo:inline' and not(local-name(..) = 'admonition')">
+			<xsl:value-of select="$linebreak"/>
+			<!-- <xsl:choose>
 				<xsl:when test="ancestor::gb:annex">
 					<xsl:value-of select="$linebreak"/>
 				</xsl:when>
@@ -740,11 +742,8 @@
 						<xsl:value-of select="$linebreak"/>
 					</fo:block>
 				</xsl:otherwise>
-			</xsl:choose>
-		</xsl:if>
-		<xsl:if test="$inline = 'true'">
-			<fo:block>&#xA0;</fo:block>
-		</xsl:if>
+			</xsl:choose> -->
+		</xsl:if>		
 	</xsl:template>
 	
 	<xsl:template match="gb:li//gb:p//text()">
@@ -904,7 +903,7 @@
 			<xsl:if test="not(preceding-sibling::*[1][local-name() = 'preferred'])">
 				<xsl:attribute name="padding-left">7.4mm</xsl:attribute>
 			</xsl:if>
-			<xsl:apply-templates /><xsl:text>&#x3000;</xsl:text>
+			<xsl:apply-templates /><xsl:value-of select="$tab_zh"/>
 		</fo:inline>
 		
 		<xsl:if test="not(following-sibling::*[1][local-name() = 'preferred'])">
@@ -919,7 +918,7 @@
 			<xsl:if test="not(preceding-sibling::*[1][local-name() = 'admitted'])">
 				<xsl:attribute name="padding-left">7.4mm</xsl:attribute>
 			</xsl:if>			
-			<xsl:apply-templates /><xsl:text>&#x3000;</xsl:text>
+			<xsl:apply-templates /><xsl:value-of select="$tab_zh"/>
 		</fo:inline>
 		
 		<xsl:if test="not(following-sibling::*[1][local-name() = 'admitted'])">

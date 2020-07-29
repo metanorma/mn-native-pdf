@@ -133,6 +133,8 @@
 		<title-amendment lang="en">AMENDMENT</title-amendment>
 	</xsl:variable>
 	
+	<xsl:variable name="tab_zh">&#x3000;</xsl:variable>
+	
 	<xsl:template name="getTitle">
 		<xsl:param name="name"/>
 		<xsl:variable name="lang">
@@ -680,6 +682,7 @@
 			<xsl:attribute name="font-size">9pt</xsl:attribute>
 			<xsl:attribute name="margin-left">7.4mm</xsl:attribute>
 			<xsl:attribute name="margin-top">4pt</xsl:attribute>
+			<xsl:attribute name="margin-bottom">4pt</xsl:attribute>
 			<xsl:attribute name="line-height">125%</xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'iec'">
@@ -4065,7 +4068,7 @@
 		
 		<xsl:choose>
 			<xsl:when test="$language = 'zh'">
-				<fo:inline>&#x3000;</fo:inline>
+				<fo:inline><xsl:value-of select="$tab_zh"/></fo:inline>
 			</xsl:when>
 			<xsl:when test="../../@inline-header = 'true'">
 				<fo:inline font-size="90%">
