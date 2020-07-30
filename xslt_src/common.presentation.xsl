@@ -1136,6 +1136,48 @@
 	</xsl:attribute-set>
 	
 	
+	<xsl:template name="processPrefaceSectionsDefault_Contents">
+		<xsl:apply-templates select="/*/*[local-name()='preface']/*[local-name()='abstract']" mode="contents"/>
+		<xsl:apply-templates select="/*/*[local-name()='preface']/*[local-name()='foreword']" mode="contents"/>
+		<xsl:apply-templates select="/*/*[local-name()='preface']/*[local-name()='introduction']" mode="contents"/>
+		<xsl:apply-templates select="/*/*[local-name()='preface']/*[local-name() != 'abstract' and local-name() != 'foreword' and local-name() != 'introduction' and local-name() != 'acknowledgements']" mode="contents"/>
+		<xsl:apply-templates select="/*/*[local-name()='preface']/*[local-name()='acknowledgements']" mode="contents"/>
+	</xsl:template>
+	
+	<xsl:template name="processMainSectionsDefault_Contents">
+		<xsl:apply-templates select="/*/*[local-name()='sections']/*[local-name()='clause'][@type='scope']" mode="contents"/>			
+		<!-- Normative references  -->
+		<xsl:apply-templates select="/*/*[local-name()='bibliography']/*[local-name()='references'][@normative='true']" mode="contents"/>	
+		<!-- Terms and definitions -->
+		<xsl:apply-templates select="/*/*[local-name()='sections']/*[local-name()='terms']" mode="contents"/>
+		<xsl:apply-templates select="/*/*[local-name()='sections']/*[local-name()='definitions']" mode="contents"/>
+		<xsl:apply-templates select="/*/*[local-name()='sections']/*[local-name() != 'terms' and local-name() != 'definitions' and not(@type='scope')]" mode="contents"/>			
+		<xsl:apply-templates select="/*/*[local-name()='annex']" mode="contents"/>		
+		<!-- Bibliography -->
+		<xsl:apply-templates select="/*/*[local-name()='bibliography']/*[local-name()='references'][not(@normative='true')]" mode="contents"/>
+	</xsl:template>
+
+	<xsl:template name="processPrefaceSectionsDefault">
+		<xsl:apply-templates select="/*/*[local-name()='preface']/*[local-name()='abstract']" />
+		<xsl:apply-templates select="/*/*[local-name()='preface']/*[local-name()='foreword']" />
+		<xsl:apply-templates select="/*/*[local-name()='preface']/*[local-name()='introduction']" />
+		<xsl:apply-templates select="/*/*[local-name()='preface']/*[local-name() != 'abstract' and local-name() != 'foreword' and local-name() != 'introduction' and local-name() != 'acknowledgements']" />
+		<xsl:apply-templates select="/*/*[local-name()='preface']/*[local-name()='acknowledgements']" />
+	</xsl:template>
+	
+	<xsl:template name="processMainSectionsDefault">			
+		<xsl:apply-templates select="/*/*[local-name()='sections']/*[local-name()='clause'][@type='scope']" />
+		<!-- Normative references  -->
+		<xsl:apply-templates select="/*/*[local-name()='bibliography']/*[local-name()='references'][@normative='true']" />
+		<!-- Terms and definitions -->
+		<xsl:apply-templates select="/*/*[local-name()='sections']/*[local-name()='terms']" />
+		<xsl:apply-templates select="/*/*[local-name()='sections']/*[local-name()='definitions']" />
+		<xsl:apply-templates select="/*/*[local-name()='sections']/*[local-name() != 'terms' and local-name() != 'definitions' and not(@type='scope')]" />
+		<xsl:apply-templates select="/*/*[local-name()='annex']" />
+		<!-- Bibliography -->
+		<xsl:apply-templates select="/*/*[local-name()='bibliography']/*[local-name()='references'][not(@normative='true')]" />
+	</xsl:template>	
+	
 	<xsl:template match="text()">
 		<xsl:value-of select="."/>
 	</xsl:template>
