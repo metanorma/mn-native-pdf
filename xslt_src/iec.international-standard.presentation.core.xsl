@@ -1561,12 +1561,12 @@
 	</xsl:template>
 	
 	<!-- Bibliography -->
-	<xsl:template match="iec:references[not(starts-with(@id, '_normative_references') or starts-with(@id, '_references'))]/iec:title">
+	<xsl:template match="iec:references[not(@normative='true')]/iec:title">
 		<fo:block font-size="12pt" text-align="center" margin-bottom="12pt" keep-with-next="always">
 			<xsl:apply-templates />			
 		</fo:block>
 	</xsl:template>
-	<xsl:template match="iec:references[not(starts-with(@id, '_normative_references') or starts-with(@id, '_references'))]/iec:title/text()">
+	<xsl:template match="iec:references[not(@normative='true')]/iec:title/text()">
 		<xsl:call-template name="addLetterSpacing">
 			<xsl:with-param name="text" select="."/>
 		</xsl:call-template>
@@ -1864,7 +1864,7 @@
 
 
 	<!-- <xsl:template match="iec:references[@id = '_bibliography']"> -->
-	<xsl:template match="iec:references[not(starts-with(@id, '_normative_references') or starts-with(@id, '_references'))]">
+	<xsl:template match="iec:references[not(@normative='true')]">
 		<fo:block break-after="page"/>
 		<fo:block id="{@id}">
 			<xsl:apply-templates />
@@ -1877,7 +1877,7 @@
 
 	<!-- Example: [1] ISO 9:1995, Information and documentation – Transliteration of Cyrillic characters into Latin characters – Slavic and non-Slavic languages -->
 	<!-- <xsl:template match="iec:references[@id = '_bibliography']/iec:bibitem"> -->
-	<xsl:template match="iec:references[not(starts-with(@id, '_normative_references') or starts-with(@id, '_references'))]/iec:bibitem">
+	<xsl:template match="iec:references[not(@normative='true')]/iec:bibitem">
 		<fo:list-block margin-top="5pt" margin-bottom="14pt" provisional-distance-between-starts="0mm"> <!-- provisional-distance-between-starts="12mm" -->
 			<fo:list-item>
 				<fo:list-item-label end-indent="label-end()">
@@ -1910,10 +1910,10 @@
 	</xsl:template>
 	
 	<!-- <xsl:template match="iec:references[@id = '_bibliography']/iec:bibitem" mode="contents"/> -->
-	<xsl:template match="iec:references[not(starts-with(@id, '_normative_references') or starts-with(@id, '_references'))]/iec:bibitem" mode="contents"/>
+	<xsl:template match="iec:references[not(@normative='true')]/iec:bibitem" mode="contents"/>
 	
 	<!-- <xsl:template match="iec:references[@id = '_bibliography']/iec:bibitem/iec:title"> -->
-	<xsl:template match="iec:references[not(starts-with(@id, '_normative_references') or starts-with(@id, '_references'))]/iec:bibitem/iec:title">
+	<xsl:template match="iec:references[not(@normative='true')]/iec:bibitem/iec:title">
 		<fo:inline font-style="italic">
 			<xsl:apply-templates />
 		</fo:inline>

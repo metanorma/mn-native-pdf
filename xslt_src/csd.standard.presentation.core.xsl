@@ -640,7 +640,7 @@
 
 
 	<!-- <xsl:template match="csd:references[@id = '_bibliography']"> -->
-	<xsl:template match="csd:references[position() &gt; 1]">
+	<xsl:template match="csd:references[not(@normative='true')]">
 		<fo:block break-after="page"/>
 		<fo:block id="{@id}">
 			<xsl:apply-templates />
@@ -650,7 +650,7 @@
 
 	<!-- Example: [1] ISO 9:1995, Information and documentation – Transliteration of Cyrillic characters into Latin characters – Slavic and non-Slavic languages -->
 	<!-- <xsl:template match="csd:references[@id = '_bibliography']/csd:bibitem"> -->
-	<xsl:template match="csd:references[position() &gt; 1]/csd:bibitem">
+	<xsl:template match="csd:references[not(@normative='true')]/csd:bibitem">
 		<fo:list-block margin-bottom="12pt" provisional-distance-between-starts="12mm">
 			<fo:list-item>
 				<fo:list-item-label end-indent="label-end()">
@@ -685,10 +685,10 @@
 	</xsl:template>
 	
 	<!-- <xsl:template match="csd:references[@id = '_bibliography']/csd:bibitem" mode="contents"/> -->
-	<xsl:template match="csd:references[position() &gt; 1]/csd:bibitem" mode="contents"/>
+	<xsl:template match="csd:references[not(@normative='true')]/csd:bibitem" mode="contents"/>
 	
 	<!-- <xsl:template match="csd:references[@id = '_bibliography']/csd:bibitem/csd:title"> -->
-	<xsl:template match="csd:references[position() &gt; 1]/csd:bibitem/csd:title">
+	<xsl:template match="csd:references[not(@normative='true')]/csd:bibitem/csd:title">
 		<fo:inline font-style="italic">
 			<xsl:apply-templates />
 		</fo:inline>

@@ -590,7 +590,7 @@
 	</xsl:template>
 	
 	<!-- Bibliography -->
-	<xsl:template match="gb:references[position() &gt; 1]/gb:title">
+	<xsl:template match="gb:references[not(@normative='true')]/gb:title">
 		<fo:block font-family="SimHei" text-align="center" margin-top="6pt" margin-bottom="16pt" keep-with-next="always">
 			<xsl:apply-templates />
 		</fo:block>
@@ -752,13 +752,13 @@
 					<fo:inline font-size="60%" keep-with-previous.within-line="always" vertical-align="super">
 						<fo:basic-link internal-destination="footnote_{@reference}_{$number}" fox:alt-text="footnote {@reference} {$number}">
 							<!-- <xsl:value-of select="@reference"/> -->
-							<xsl:value-of select="$number + count(//gb:bibitem[ancestor::gb:references[@id='_normative_references' or not(preceding-sibling::gb:references)]]/gb:note)"/>
+							<xsl:value-of select="$number + count(//gb:bibitem[ancestor::gb:references[@normative='true' or not(preceding-sibling::gb:references)]]/gb:note)"/>
 						</fo:basic-link>
 					</fo:inline>
 					<fo:footnote-body>
 						<fo:block font-size="9pt" margin-bottom="12pt">
 							<fo:inline font-size="50%" id="footnote_{@reference}_{$number}" keep-with-next.within-line="always" vertical-align="super">
-								<xsl:value-of select="$number + count(//gb:bibitem[ancestor::gb:references[@id='_normative_references' or not(preceding-sibling::gb:references)]]/gb:note)"/>
+								<xsl:value-of select="$number + count(//gb:bibitem[ancestor::gb:references[@normative='true' or not(preceding-sibling::gb:references)]]/gb:note)"/>
 							</fo:inline>
 							<xsl:for-each select="gb:p">
 									<xsl:apply-templates />
@@ -942,7 +942,7 @@
 
 
 	<!-- <xsl:template match="gb:references[@id = '_bibliography']"> -->
-	<xsl:template match="gb:references[position() &gt; 1]">
+	<xsl:template match="gb:references[not(@normative='true')]">
 		<fo:block break-after="page"/>
 		<fo:block id="{@id}">
 			<xsl:apply-templates />
@@ -957,7 +957,7 @@
 
 	<!-- Example: [1] ISO 9:1995, Information and documentation – Transliteration of Cyrillic characters into Latin characters – Slavic and non-Slavic languages -->
 	<!-- <xsl:template match="gb:references[@id = '_bibliography']/gb:bibitem"> -->
-	<xsl:template match="gb:references[position() &gt; 1]/gb:bibitem">
+	<xsl:template match="gb:references[not(@normative='true')]/gb:bibitem">
 		<fo:list-block font-size="11pt" margin-bottom="12pt" provisional-distance-between-starts="12mm">
 			<fo:list-item>
 				<fo:list-item-label end-indent="label-end()">
@@ -996,10 +996,10 @@
 	</xsl:template>
 	
 	<!-- <xsl:template match="gb:references[@id = '_bibliography']/gb:bibitem" mode="contents"/> -->
-	<xsl:template match="gb:references[position() &gt; 1]/gb:bibitem" mode="contents"/>
+	<xsl:template match="gb:references[not(@normative='true')]/gb:bibitem" mode="contents"/>
 	
 	<!-- <xsl:template match="gb:references[@id = '_bibliography']/gb:bibitem/gb:title"> -->
-	<xsl:template match="gb:references[position() &gt; 1]/gb:bibitem/gb:title">
+	<xsl:template match="gb:references[not(@normative='true')]/gb:bibitem/gb:title">
 		<fo:inline font-style="italic">
 			<xsl:apply-templates />
 		</fo:inline>

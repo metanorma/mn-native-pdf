@@ -445,7 +445,7 @@
 		</fo:block>
 	</xsl:template>
 		
-	<xsl:template match="iho:references[position() &gt; 1]/iho:title">
+	<xsl:template match="iho:bibliography/iho:references[not(@normative='true')]/iho:title">
 		<fo:block font-size="16pt" font-weight="bold" text-align="center" margin-top="6pt" margin-bottom="36pt" keep-with-next="always">
 			<xsl:apply-templates />
 		</fo:block>
@@ -587,13 +587,13 @@
 					<fo:inline font-size="70%" keep-with-previous.within-line="always" vertical-align="super"> <!--  -->
 						<fo:basic-link internal-destination="footnote_{@reference}_{$number}" fox:alt-text="footnote {@reference} {$number}">
 							<!-- <xsl:value-of select="@reference"/> -->
-							<xsl:value-of select="$number + count(//iho:bibitem[ancestor::iho:references[@id='_normative_references']]/iho:note)"/>
+							<xsl:value-of select="$number + count(//iho:bibitem[ancestor::iho:references[@normative='true']]/iho:note)"/>
 						</fo:basic-link>
 					</fo:inline>
 					<fo:footnote-body>
 						<fo:block font-size="10pt" margin-bottom="12pt">
 							<fo:inline id="footnote_{@reference}_{$number}" font-size="60%" vertical-align="super" keep-with-next.within-line="always" padding-right="1mm"> <!-- font-size="60%"  alignment-baseline="hanging" -->
-								<xsl:value-of select="$number + count(//iho:bibitem[ancestor::iho:references[@id='_normative_references']]/iho:note)"/>
+								<xsl:value-of select="$number + count(//iho:bibitem[ancestor::iho:references[@normative='true']]/iho:note)"/>
 							</fo:inline>
 							<xsl:for-each select="iho:p">
 									<xsl:apply-templates />
