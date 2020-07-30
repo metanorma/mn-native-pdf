@@ -46,20 +46,8 @@
 	-->
 	<xsl:variable name="contents">
 		<contents>
-			<xsl:apply-templates select="/gb:gb-standard/gb:preface/node()" mode="contents"/>
-				
-			<xsl:apply-templates select="/gb:gb-standard/gb:sections/gb:clause[1]" mode="contents" /> <!-- [@id = '_scope'] -->
-				
-			<!-- Normative references -->
-			<xsl:apply-templates select="/gb:gb-standard/gb:bibliography/gb:references[1]" mode="contents" /> <!-- [@id = '_normative_references'] -->
-				
-			<xsl:apply-templates select="/gb:gb-standard/gb:sections/*[position() &gt; 1]" mode="contents" /> <!-- @id != '_scope' -->
-				
-			<xsl:apply-templates select="/gb:gb-standard/gb:annex" mode="contents"/>
-			
-			<!-- Bibliography -->
-			<xsl:apply-templates select="/gb:gb-standard/gb:bibliography/gb:references[position() &gt; 1]" mode="contents"/> <!-- @id = '_bibliography' -->
-			
+			<xsl:call-template name="processPrefaceSectionsDefault_Contents"/>
+			<xsl:call-template name="processMainSectionsDefault_Contents"/>
 		</contents>
 	</xsl:variable>
 	
@@ -378,8 +366,8 @@
 					</fo:block-container>
 					
 					<!-- Foreword, Introduction -->
-					<fo:block line-height="150%">
-						<xsl:apply-templates select="/gb:gb-standard/gb:preface/node()"/>
+					<fo:block line-height="150%">						
+						<xsl:call-template name="processPrefaceSectionsDefault"/>						
 					</fo:block>
 					
 				</fo:flow>
@@ -402,19 +390,7 @@
 							</xsl:call-template>
 						</fo:block>
 					
-						<xsl:apply-templates select="/gb:gb-standard/gb:sections/gb:clause[1]" /> <!-- Scope -->
-						
-						<!-- Normative references  -->
-						<xsl:apply-templates select="/gb:gb-standard/gb:bibliography/gb:references[1]" />
-						
-						<!-- Main sections -->
-						<xsl:apply-templates select="/gb:gb-standard/gb:sections/*[position() &gt; 1]" />
-						
-						<!-- Annex(s) -->
-						<xsl:apply-templates select="/gb:gb-standard/gb:annex"/>
-						
-						<!-- Bibliography -->
-						<xsl:apply-templates select="/gb:gb-standard/gb:bibliography/gb:references[position() &gt; 1]"/>
+						<xsl:call-template name="processMainSectionsDefault"/>
 						
 					</fo:block>
 				</fo:flow>
@@ -732,17 +708,7 @@
 			<xsl:apply-templates />
 		</xsl:element>
 		<xsl:if test="$element-name = 'fo:inline' and not(local-name(..) = 'admonition')">
-			<xsl:value-of select="$linebreak"/>
-			<!-- <xsl:choose>
-				<xsl:when test="ancestor::gb:annex">
-					<xsl:value-of select="$linebreak"/>
-				</xsl:when>
-				<xsl:otherwise>
-					<fo:block margin-bottom="12pt">
-						<xsl:value-of select="$linebreak"/>
-					</fo:block>
-				</xsl:otherwise>
-			</xsl:choose> -->
+			<xsl:value-of select="$linebreak"/>			
 		</xsl:if>		
 	</xsl:template>
 	
