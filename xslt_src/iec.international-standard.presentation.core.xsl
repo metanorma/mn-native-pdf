@@ -126,24 +126,8 @@
 
 	<xsl:template name="generateContents">
 		<contents>
-		
-			<xsl:apply-templates select="/iec:iec-standard/iec:preface/node()" mode="contents"/>
-			
-			<xsl:apply-templates select="/iec:iec-standard/iec:sections/iec:clause[starts-with(@id, '_scope')]" mode="contents" /> <!-- [@id = '_scope'] -->
-				
-			<!-- Normative references -->
-			<xsl:apply-templates select="/iec:iec-standard/iec:bibliography/iec:references[starts-with(@id, '_normative_references') or starts-with(@id, '_references')]" mode="contents" /> <!-- [@id = '_normative_references'] -->
-			
-			<!-- Terms and definitions -->
-			<xsl:apply-templates select="/iec:iec-standard/iec:sections/iec:terms" mode="contents" />
-			
-			<xsl:apply-templates select="/iec:iec-standard/iec:sections/*[local-name() != 'terms' and not(starts-with(@id, '_scope'))]" mode="contents" />
-			
-			<xsl:apply-templates select="/iec:iec-standard/iec:annex" mode="contents"/>
-			
-			<!-- Bibliography -->
-			<xsl:apply-templates select="/iec:iec-standard/iec:bibliography/iec:references[not(starts-with(@id, '_normative_references') or starts-with(@id, '_references'))]" mode="contents"/> <!-- @id = '_bibliography' -->
-			
+			<xsl:call-template name="processPrefaceSectionsDefault_Contents"/>
+			<xsl:call-template name="processMainSectionsDefault_Contents"/>
 		</contents>
 	</xsl:template>
 	
@@ -1331,7 +1315,7 @@
 		</fo:block-container>
 		
 		<!-- Foreword, Introduction -->
-		<xsl:apply-templates select="/iec:iec-standard/iec:preface/*"/>
+		<xsl:call-template name="processPrefaceSectionsDefault"/>
 	</xsl:template>
 	
 	
@@ -1371,28 +1355,9 @@
 					</fo:block>
 				</fo:block-container>
 				
-				<!-- Clause(s) -->
-				<fo:block>
-				
-					
-					<!-- Scope -->
-					<xsl:apply-templates select="/iec:iec-standard/iec:sections/iec:clause[starts-with(@id, '_scope')]" />
-						
-					 <!-- Normative references  -->
-					<xsl:apply-templates select="/iec:iec-standard/iec:bibliography/iec:references[starts-with(@id, '_normative_references') or starts-with(@id, '_references')]" />
-					
-					<!-- Terms and definitions -->
-					<xsl:apply-templates select="/iec:iec-standard/iec:sections/iec:terms" />						
-					
-					 <!-- main sections -->						
-					<xsl:apply-templates select="/iec:iec-standard/iec:sections/*[local-name() != 'terms' and not(starts-with(@id, '_scope'))]" />
-						
-					<!-- Annex(s) -->
-					<xsl:apply-templates select="/iec:iec-standard/iec:annex"/>
-					
-					<!-- Bibliography -->
-					<xsl:apply-templates select="/iec:iec-standard/iec:bibliography/iec:references[not(starts-with(@id, '_normative_references') or starts-with(@id, '_references'))]"/>
-					
+				<!-- Main sections -->
+				<fo:block>				
+					<xsl:call-template name="processMainSectionsDefault"/>					
 				</fo:block>
 				
 			</fo:flow>
