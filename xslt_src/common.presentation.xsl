@@ -1146,6 +1146,7 @@
 	
 	<xsl:template name="processMainSectionsDefault_Contents">
 		<xsl:apply-templates select="/*/*[local-name()='sections']/*[local-name()='clause'][@type='scope']" mode="contents"/>			
+		
 		<!-- Normative references  -->
 		<xsl:apply-templates select="/*/*[local-name()='bibliography']/*[local-name()='references'][@normative='true']" mode="contents"/>	
 		<!-- Terms and definitions -->
@@ -1167,6 +1168,11 @@
 	
 	<xsl:template name="processMainSectionsDefault">			
 		<xsl:apply-templates select="/*/*[local-name()='sections']/*[local-name()='clause'][@type='scope']" />
+		<xsl:if test="$namespace = 'm3d'">
+			<xsl:if test="/*/*[local-name()='bibliography']/*[local-name()='references'][@normative='true']">
+			<fo:block break-after="page"/>			
+			</xsl:if>
+		</xsl:if>
 		<!-- Normative references  -->
 		<xsl:apply-templates select="/*/*[local-name()='bibliography']/*[local-name()='references'][@normative='true']" />
 		<!-- Terms and definitions -->
