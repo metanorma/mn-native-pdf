@@ -53,26 +53,32 @@
 	<xsl:variable name="contents">
 		<contents>
 		
-			<!-- Abstract, Keywords, Preface, Submitting Organizations, Submitters -->
+			<!-- Abstract, Keywords, Preface, Submitting Organizations, Submitters -->			
+			<!-- <xsl:apply-templates select="/ogc:ogc-standard/ogc:preface/*" mode="contents"/> -->
+			<xsl:apply-templates select="/ogc:ogc-standard/ogc:preface/ogc:abstract" mode="contents"/>
+			<xsl:apply-templates select="/ogc:ogc-standard/ogc:preface/ogc:clause[@type = 'keyword']" mode="contents"/>
+			<xsl:apply-templates select="/ogc:ogc-standard/ogc:preface/ogc:foreword" mode="contents"/>
+			<xsl:apply-templates select="/ogc:ogc-standard/ogc:preface/ogc:introduction" mode="contents"/>
+			<xsl:apply-templates select="/ogc:ogc-standard/ogc:preface/ogc:clause[@type = 'submitting_orgs']" mode="contents"/>
+			<xsl:apply-templates select="/ogc:ogc-standard/ogc:preface/ogc:submitters" mode="contents"/>
+			<xsl:apply-templates select="/ogc:ogc-standard/ogc:preface/ogc:clause[not(@type = 'submitting_orgs') and not(@type = 'keyword')]" mode="contents"/>
+			<xsl:apply-templates select="/ogc:ogc-standard/ogc:preface/ogc:acknowledgements" mode="contents"/>
 			
-			<xsl:apply-templates select="/ogc:ogc-standard/ogc:preface/*" mode="contents"/>
 			
-			<xsl:apply-templates select="/ogc:ogc-standard/ogc:sections/ogc:clause[@id='_scope']" mode="contents" />
-				
-			<xsl:apply-templates select="/ogc:ogc-standard/ogc:sections/ogc:clause[@id='conformance' or @id='_conformance']" mode="contents" />
-				
+			<xsl:apply-templates select="/ogc:ogc-standard/ogc:sections/ogc:clause[@type='scope']" mode="contents" />				
+			<xsl:apply-templates select="/ogc:ogc-standard/ogc:sections/ogc:clause[@type='conformance']" mode="contents" />				
 			<!-- Normative references  -->
-			<xsl:apply-templates select="/ogc:ogc-standard/ogc:bibliography/ogc:references[@id = '_normative_references' or @id = '_references' or @id = 'references']" mode="contents" />
-			
+			<xsl:apply-templates select="/ogc:ogc-standard/ogc:bibliography/ogc:references[@normative='true']" mode="contents" />			
 			<!-- Terms and definitions -->
 			<xsl:apply-templates select="/ogc:ogc-standard/ogc:sections/ogc:terms" mode="contents" />
+			<xsl:apply-templates select="/ogc:ogc-standard/ogc:sections/ogc:definitions" mode="contents" />
 		
-			<xsl:apply-templates select="/ogc:ogc-standard/ogc:sections/*[local-name() != 'terms' and not(@id='_scope') and not(@id='conformance') and not(@id='_conformance')]" mode="contents" />
+			<xsl:apply-templates select="/ogc:ogc-standard/ogc:sections/ogc:clause[not(@type='scope') and not(@type='conformance')]" mode="contents" />
 
 			<xsl:apply-templates select="/ogc:ogc-standard/ogc:annex" mode="contents"/>
 			
 			<!-- Bibliography -->
-			<xsl:apply-templates select="/ogc:ogc-standard/ogc:bibliography/ogc:references[@id != '_normative_references' and @id != '_references' and @id != 'references']" mode="contents"/> <!-- [position() &gt; 1] -->
+			<xsl:apply-templates select="/ogc:ogc-standard/ogc:bibliography/ogc:references[not(@normative='true')]" mode="contents"/>
 			
 			
 		</contents>
@@ -445,8 +451,26 @@
 					</fo:block-container>
 					
 					<!-- Abstract, Keywords, Preface, Submitting Organizations, Submitters -->
-					<xsl:apply-templates select="/ogc:ogc-standard/ogc:preface/*" mode="preface"/>
-						
+					<!-- <xsl:apply-templates select="/ogc:ogc-standard/ogc:preface/*" mode="preface"/> -->
+					<xsl:if test="/ogc:ogc-standard/ogc:preface/ogc:abstract">
+						<fo:block break-after="page"/>
+					</xsl:if>
+					<xsl:apply-templates select="/ogc:ogc-standard/ogc:preface/ogc:abstract" />
+					<xsl:apply-templates select="/ogc:ogc-standard/ogc:preface/ogc:clause[@type = 'keyword']" />
+					<xsl:if test="/ogc:ogc-standard/ogc:preface/ogc:foreword">
+						<fo:block break-after="page"/>
+					</xsl:if>
+					<xsl:apply-templates select="/ogc:ogc-standard/ogc:preface/ogc:foreword" />					
+					<xsl:if test="/ogc:ogc-standard/ogc:preface/ogc:introduction">
+						<fo:block break-after="page"/>
+					</xsl:if>
+					<xsl:apply-templates select="/ogc:ogc-standard/ogc:preface/ogc:introduction" />
+					
+					<xsl:apply-templates select="/ogc:ogc-standard/ogc:preface/ogc:clause[@type = 'submitting_orgs']" />
+					<xsl:apply-templates select="/ogc:ogc-standard/ogc:preface/ogc:submitters" />
+					<xsl:apply-templates select="/ogc:ogc-standard/ogc:preface/ogc:clause[not(@type = 'submitting_orgs') and not(@type = 'keyword')]" />
+					<xsl:apply-templates select="/ogc:ogc-standard/ogc:preface/ogc:acknowledgements" />
+					
 				</fo:flow>
 			</fo:page-sequence>
 			
@@ -468,22 +492,23 @@
 					
 					<fo:block line-height="125%">
 					
-						<xsl:apply-templates select="/ogc:ogc-standard/ogc:sections/ogc:clause[@id='_scope']" />
+						<xsl:apply-templates select="/ogc:ogc-standard/ogc:sections/ogc:clause[@type='scope']" />
 						
-						<xsl:apply-templates select="/ogc:ogc-standard/ogc:sections/ogc:clause[@id='conformance' or @id='_conformance']" />
+						<xsl:apply-templates select="/ogc:ogc-standard/ogc:sections/ogc:clause[@type='conformance']" />
 						
 						<!-- Normative references  -->
-						<xsl:apply-templates select="/ogc:ogc-standard/ogc:bibliography/ogc:references[@id = '_normative_references' or @id = '_references' or @id = 'references']" />
+						<xsl:apply-templates select="/ogc:ogc-standard/ogc:bibliography/ogc:references[@normative='true']" />
 
 						<!-- Terms and definitions -->
-						<xsl:apply-templates select="/ogc:ogc-standard/ogc:sections/ogc:terms" />
+						<xsl:apply-templates select="/ogc:ogc-standard/ogc:sections/ogc:terms" />						
+						<xsl:apply-templates select="/ogc:ogc-standard/ogc:sections/ogc:definitions" />
 						
-						<xsl:apply-templates select="/ogc:ogc-standard/ogc:sections/*[local-name() != 'terms' and not(@id='_scope') and not(@id='conformance') and not(@id='_conformance')]" />
+						<xsl:apply-templates select="/ogc:ogc-standard/ogc:sections/ogc:clause[not(@type='scope') and not(@type='conformance')]" />
 						
 						<xsl:apply-templates select="/ogc:ogc-standard/ogc:annex"/>
 						
 						<!-- Bibliography -->
-						<xsl:apply-templates select="/ogc:ogc-standard/ogc:bibliography/ogc:references[@id != '_normative_references' and @id != '_references' and @id != 'references']" /> <!-- [position() &gt; 1] -->
+						<xsl:apply-templates select="/ogc:ogc-standard/ogc:bibliography/ogc:references[not(@normative='true')]" /> 
 						
 					</fo:block>
 				</fo:flow>
@@ -647,18 +672,6 @@
 		</fo:block>
 	</xsl:template>
 	
-	<xsl:template match="ogc:ogc-standard/ogc:preface/*" mode="preface">
-		<xsl:if test="local-name() = 'introduction' or 
-											local-name() = 'abstract' or 
-											local-name() = 'foreword'">
-			<fo:block break-after="page"/>
-		</xsl:if>
-		<xsl:apply-templates select="current()"/>
-	</xsl:template>
-	
-
-	
-
 	
 	<!-- ====== -->
 	<!-- title      -->
@@ -958,7 +971,7 @@
 
 	
 	<!-- [position() &gt; 1] -->
-	<xsl:template match="ogc:references[@id != '_normative_references' and @id != '_references'  and @id != 'references']">
+	<xsl:template match="ogc:references[not(@normative='true')]">
 		<fo:block break-after="page"/>
 		<fo:block id="{@id}" line-height="120%">
 			<xsl:apply-templates />
@@ -973,7 +986,7 @@
 
 	<!-- Example: [1] ISO 9:1995, Information and documentation – Transliteration of Cyrillic characters into Latin characters – Slavic and non-Slavic languages -->
 	<!-- <xsl:template match="ogc:references[@id = '_bibliography']/ogc:bibitem"> [position() &gt; 1] -->
-	<xsl:template match="ogc:references[@id != '_normative_references' and @id != '_references' and @id != 'references']/ogc:bibitem">
+	<xsl:template match="ogc:references[not(@normative='true')]/ogc:bibitem">
 		<fo:list-block id="{@id}" margin-bottom="12pt" provisional-distance-between-starts="12mm">
 			<fo:list-item>
 				<fo:list-item-label end-indent="label-end()">
@@ -1046,10 +1059,10 @@
 	</xsl:template>
 	
 	<!-- <xsl:template match="ogc:references[@id = '_bibliography']/ogc:bibitem" mode="contents"/> [position() &gt; 1] -->
-	<xsl:template match="ogc:references[@id != '_normative_references' and @id != '_references' and @id != 'references']/ogc:bibitem" mode="contents"/>
+	<xsl:template match="ogc:references[not(@normative='true')]/ogc:bibitem" mode="contents"/>
 	
 	<!-- <xsl:template match="ogc:references[@id = '_bibliography']/ogc:bibitem/ogc:title"> [position() &gt; 1]-->
-	<xsl:template match="ogc:references[@id != '_normative_references' and  @id != '_references' and @id != 'references']/ogc:bibitem/ogc:title">
+	<xsl:template match="ogc:references[not(@normative='true')]/ogc:bibitem/ogc:title">
 		<fo:inline font-style="italic">
 			<xsl:apply-templates />
 		</fo:inline>
