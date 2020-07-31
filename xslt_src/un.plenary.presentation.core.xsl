@@ -249,9 +249,19 @@
 						<xsl:text disable-output-escaping="yes">--&gt;</xsl:text>
 					</xsl:if>
 					
+					<!-- Preface Pages (except Abstract, that showed in Summary on cover page`) -->
+					<xsl:if test="/un:un-standard/un:preface/*[not(local-name() = 'abstract')]">
+						<xsl:apply-templates select="/*/*[local-name()='preface']/*[local-name()='foreword']" />
+						<xsl:apply-templates select="/*/*[local-name()='preface']/*[local-name()='introduction']" />
+						<xsl:apply-templates select="/*/*[local-name()='preface']/*[local-name() != 'abstract' and local-name() != 'foreword' and local-name() != 'introduction' and local-name() != 'acknowledgements']" />
+						<xsl:apply-templates select="/*/*[local-name()='preface']/*[local-name()='acknowledgements']" />
+						<fo:block break-after="page"/>
+					</xsl:if>
+					
 					<fo:block>
 						<xsl:apply-templates select="/un:un-standard/un:sections/*"/>
 						<xsl:apply-templates select="/un:un-standard/un:annex"/>
+						<xsl:apply-templates select="/un:un-standard/un:bibliography/un:references"/>
 					</fo:block>
 					
 					<fo:block-container margin-left="50mm" width="30mm" border-bottom="0.5pt solid black" margin-top="12pt" keep-with-previous="always">

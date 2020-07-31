@@ -26,6 +26,7 @@
 		<contents>
 			<xsl:apply-templates select="/un:un-standard/un:sections/*" mode="contents"/>
 			<xsl:apply-templates select="/un:un-standard/un:annex" mode="contents"/>
+			<xsl:apply-templates select="/un:un-standard/un:bibliography/un:references" mode="contents"/>
 		</contents>
 	</xsl:variable>
 	
@@ -183,8 +184,8 @@
 				<xsl:call-template name="insertHeaderPreface"/>
 				<xsl:call-template name="insertFooter"/>
 				<fo:flow flow-name="xsl-region-body" text-align="justify">
-					<fo:block>
-						<xsl:apply-templates select="/un:un-standard/un:preface/*"/>
+					<fo:block>						
+						<xsl:call-template name="processPrefaceSectionsDefault"/>
 					</fo:block>
 				</fo:flow>
 			</fo:page-sequence>
@@ -303,6 +304,7 @@
 					<fo:block>
 						<xsl:apply-templates select="/un:un-standard/un:sections/*"/>
 						<xsl:apply-templates select="/un:un-standard/un:annex"/>
+						<xsl:apply-templates select="/un:un-standard/un:bibliography/un:references"/>
 					</fo:block>
 					
 					
