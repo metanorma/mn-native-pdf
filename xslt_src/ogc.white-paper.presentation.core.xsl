@@ -731,7 +731,7 @@
 
 	
 	<!-- [position() &gt; 1] -->
-	<xsl:template match="ogc:references[@id != '_normative_references' and @id != '_references'  and @id != 'references']">
+	<xsl:template match="ogc:references[not(@normative='true')]">
 		<fo:block break-after="page"/>
 		<fo:block id="{@id}" line-height="120%">
 			<xsl:apply-templates />
@@ -746,7 +746,7 @@
 
 	<!-- Example: [1] ISO 9:1995, Information and documentation – Transliteration of Cyrillic characters into Latin characters – Slavic and non-Slavic languages -->
 	<!-- <xsl:template match="ogc:references[@id = '_bibliography']/ogc:bibitem"> [position() &gt; 1] -->
-	<xsl:template match="ogc:references[@id != '_normative_references' and @id != '_references' and @id != 'references']/ogc:bibitem">
+	<xsl:template match="ogc:references[not(@normative='true')]/ogc:bibitem">
 		<fo:list-block id="{@id}" margin-bottom="12pt" provisional-distance-between-starts="12mm">
 			<fo:list-item>
 				<fo:list-item-label end-indent="label-end()">
@@ -819,10 +819,10 @@
 	</xsl:template>
 	
 	<!-- <xsl:template match="ogc:references[@id = '_bibliography']/ogc:bibitem" mode="contents"/> [position() &gt; 1] -->
-	<xsl:template match="ogc:references[@id != '_normative_references' and @id != '_references' and @id != 'references']/ogc:bibitem" mode="contents"/>
+	<xsl:template match="ogc:references[not(@normative='true')]/ogc:bibitem" mode="contents"/>
 	
 	<!-- <xsl:template match="ogc:references[@id = '_bibliography']/ogc:bibitem/ogc:title"> [position() &gt; 1]-->
-	<xsl:template match="ogc:references[@id != '_normative_references' and  @id != '_references' and @id != 'references']/ogc:bibitem/ogc:title">
+	<xsl:template match="ogc:references[not(@normative='true')]/ogc:bibitem/ogc:title">
 		<fo:inline font-style="italic">
 			<xsl:apply-templates />
 		</fo:inline>

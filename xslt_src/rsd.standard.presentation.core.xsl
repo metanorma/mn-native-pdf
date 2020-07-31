@@ -46,21 +46,14 @@
 	<xsl:variable name="contents">
 		<contents>
 		
+			<xsl:apply-templates select="/rsd:rsd-standard/rsd:preface/rsd:abstract" mode="contents"/>
+			<xsl:apply-templates select="/rsd:rsd-standard/rsd:preface/rsd:foreword" mode="contents"/>
+			<xsl:apply-templates select="/rsd:rsd-standard/rsd:preface/rsd:executivesummary" mode="contents"/>
 			<xsl:apply-templates select="/rsd:rsd-standard/rsd:preface/rsd:introduction" mode="contents"/>
+			<xsl:apply-templates select="/rsd:rsd-standard/rsd:preface/rsd:clause" mode="contents"/>
+			<xsl:apply-templates select="/rsd:rsd-standard/rsd:preface/rsd:acknowledgements" mode="contents"/>
 					
-			<xsl:apply-templates select="/rsd:rsd-standard/rsd:sections/rsd:clause[@id='_scope']" mode="contents" />
-				
-			<!-- Normative references  -->
-			<xsl:apply-templates select="/rsd:rsd-standard/rsd:bibliography/rsd:references[@id = '_normative_references' or @id = '_references']" mode="contents" />
-		
-			<xsl:apply-templates select="/rsd:rsd-standard/rsd:sections/rsd:terms" mode="contents" /> <!-- Terms and definitions -->
-				
-				
-			<xsl:apply-templates select="/rsd:rsd-standard/rsd:sections/*[local-name() != 'terms' and not(@id='_scope') ]" mode="contents" />
-				
-				
-			<xsl:apply-templates select="/rsd:rsd-standard/rsd:annex" mode="contents"/>
-			<xsl:apply-templates select="/rsd:rsd-standard/rsd:bibliography/rsd:references[@id != '_normative_references' and @id != '_references']" mode="contents"/>
+			<xsl:call-template name="processMainSectionsDefault_Contents"/>
 			
 		</contents>
 	</xsl:variable>
@@ -239,21 +232,14 @@
 					
 						<fo:block font-size="16pt" font-weight="bold" margin-bottom="18pt"><xsl:value-of select="$doctitle"/></fo:block>
 					
-						<xsl:apply-templates select="/rsd:rsd-standard/rsd:preface/rsd:introduction" mode="introduction"/>
+						<xsl:apply-templates select="/rsd:rsd-standard/rsd:preface/rsd:abstract" />
+						<xsl:apply-templates select="/rsd:rsd-standard/rsd:preface/rsd:foreword" />
+						<xsl:apply-templates select="/rsd:rsd-standard/rsd:preface/rsd:executivesummary" />
+						<xsl:apply-templates select="/rsd:rsd-standard/rsd:preface/rsd:introduction" />
+						<xsl:apply-templates select="/rsd:rsd-standard/rsd:preface/rsd:clause" />
+						<xsl:apply-templates select="/rsd:rsd-standard/rsd:preface/rsd:acknowledgements" />
 					
-						<xsl:apply-templates select="/rsd:rsd-standard/rsd:sections/rsd:clause[@id='_scope']" />							
-						
-						<!-- Normative references -->
-						<xsl:apply-templates select="/rsd:rsd-standard/rsd:bibliography/rsd:references[@id = '_normative_references' or @id = '_references']" />
-					
-						<xsl:apply-templates select="/rsd:rsd-standard/rsd:sections/rsd:terms" /> <!-- Terms and definitions -->
-							
-							
-						<xsl:apply-templates select="/rsd:rsd-standard/rsd:sections/*[local-name() != 'terms' and not(@id='_scope') ]" />
-							
-						
-						<xsl:apply-templates select="/rsd:rsd-standard/rsd:annex"/>
-						<xsl:apply-templates select="/rsd:rsd-standard/rsd:bibliography/rsd:references[@id != '_normative_references' and @id != '_references']" />
+						<xsl:call-template name="processMainSectionsDefault"/>
 						
 					</fo:block>
 				</fo:flow>
@@ -388,25 +374,6 @@
 		</fo:block>
 	</xsl:template>
 		
-	
-	<!-- Introduction -->
-	<xsl:template match="rsd:rsd-standard/rsd:preface/rsd:introduction" mode="introduction">
-		<fo:block break-after="page"/>
-		<xsl:apply-templates select="current()"/>
-	</xsl:template>
-	<!-- Abstract -->
-	<xsl:template match="rsd:rsd-standard/rsd:preface/rsd:abstract" mode="abstract">
-		<fo:block break-after="page"/>
-		<xsl:apply-templates select="current()"/>
-	</xsl:template>
-	<!-- Preface -->
-	<xsl:template match="rsd:rsd-standard/rsd:preface/rsd:foreword" mode="preface">		
-		<fo:block break-after="page"/>
-		<xsl:apply-templates select="current()" />			
-	</xsl:template>
-	
-
-	
 	
 	<!-- ====== -->
 	<!-- title      -->
@@ -633,7 +600,7 @@
 	</xsl:template>
 	
 	
-	<xsl:template match="rsd:references[@id != '_normative_references' and @id != '_references']/rsd:bibitem">
+	<xsl:template match="rsd:references[not(@normative='true')]/rsd:bibitem">
 		<fo:list-block margin-bottom="12pt" provisional-distance-between-starts="12mm">
 			<fo:list-item>
 				<fo:list-item-label end-indent="label-end()">
@@ -768,17 +735,17 @@
 
 	
 	<!-- [position() &gt; 1] -->
-	<xsl:template match="rsd:references[@id != '_normative_references' and @id != '_references']">
+	<xsl:template match="rsd:references[not(@normative='true')]">
 		<fo:block break-after="page"/>
 		<fo:block id="{@id}">
 			<xsl:apply-templates />
 		</fo:block>
 	</xsl:template>
 
-	<xsl:template match="rsd:references[@id != '_normative_references' and @id != '_references']/rsd:bibitem" mode="contents"/>
+	<xsl:template match="rsd:references[not(@normative='true')]/rsd:bibitem" mode="contents"/>
 	
 	<!-- <xsl:template match="rsd:references[@id = '_bibliography']/rsd:bibitem/rsd:title"> [position() &gt; 1]-->
-	<xsl:template match="rsd:references[@id != '_normative_references' and  @id != '_references']/rsd:bibitem/rsd:title">
+	<xsl:template match="rsd:references[not(@normative='true')]/rsd:bibitem/rsd:title">
 		<fo:inline font-style="italic">
 			<xsl:apply-templates />
 		</fo:inline>
