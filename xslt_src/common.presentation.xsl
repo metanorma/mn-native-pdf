@@ -1184,8 +1184,10 @@
 		<!-- Normative references  -->
 		<xsl:apply-templates select="/*/*[local-name()='bibliography']/*[local-name()='references'][@normative='true']" mode="contents"/>	
 		<!-- Terms and definitions -->
-		<xsl:apply-templates select="/*/*[local-name()='sections']/*[local-name()='terms'] | /*/*[local-name()='sections']/*[local-name()='clause'][.//*[local-name()='terms']]" mode="contents"/>
-		<xsl:apply-templates select="/*/*[local-name()='sections']/*[local-name()='definitions'] | /*/*[local-name()='sections']/*[local-name()='clause'][.//*[local-name()='definitions']]" mode="contents"/>
+		<xsl:apply-templates select="/*/*[local-name()='sections']/*[local-name()='terms'] | 
+																						/*/*[local-name()='sections']/*[local-name()='clause'][.//*[local-name()='terms']] |
+																						/*/*[local-name()='sections']/*[local-name()='definitions'] | 
+																						/*/*[local-name()='sections']/*[local-name()='clause'][.//*[local-name()='definitions']]" mode="contents"/>		
 		<!-- Another main sections -->
 		<xsl:apply-templates select="/*/*[local-name()='sections']/*[local-name() != 'terms' and 
 																																														local-name() != 'definitions' and 
@@ -1215,8 +1217,10 @@
 		<!-- Normative references  -->
 		<xsl:apply-templates select="/*/*[local-name()='bibliography']/*[local-name()='references'][@normative='true']" />
 		<!-- Terms and definitions -->
-		<xsl:apply-templates select="/*/*[local-name()='sections']/*[local-name()='terms'] | /*/*[local-name()='sections']/*[local-name()='clause'][.//*[local-name()='terms']]" />
-		<xsl:apply-templates select="/*/*[local-name()='sections']/*[local-name()='definitions'] | /*/*[local-name()='sections']/*[local-name()='clause'][.//*[local-name()='definitions']]" />
+		<xsl:apply-templates select="/*/*[local-name()='sections']/*[local-name()='terms'] | 
+																						/*/*[local-name()='sections']/*[local-name()='clause'][.//*[local-name()='terms']] |
+																						/*/*[local-name()='sections']/*[local-name()='definitions'] | 
+																						/*/*[local-name()='sections']/*[local-name()='clause'][.//*[local-name()='definitions']]" />
 		<!-- Another main sections -->
 		<xsl:apply-templates select="/*/*[local-name()='sections']/*[local-name() != 'terms' and 
 																																														local-name() != 'definitions' and 
