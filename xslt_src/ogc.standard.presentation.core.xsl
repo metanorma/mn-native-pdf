@@ -425,7 +425,8 @@
 							</xsl:for-each>
 						</xsl:if>
 						
-						<xsl:if test="//ogc:permission[@id and ogc:name] or //ogc:recommendation[@id and ogc:name] or //ogc:requirement[@id and ogc:name]">
+						<!-- <xsl:if test="//ogc:permission[@id and ogc:name] or //ogc:recommendation[@id and ogc:name] or //ogc:requirement[@id and ogc:name]"> -->
+						<xsl:if test="//ogc:table[.//ogc:p[@class = 'RecommendationTitle']]">
 							<fo:block font-size="12pt">&#xA0;</fo:block>
 							<fo:block font-size="12pt">&#xA0;</fo:block>
 							<xsl:variable name="title-list-recommendations">
@@ -434,10 +435,12 @@
 								</xsl:call-template>
 							</xsl:variable>
 							<fo:block font-size="14pt" font-weight="bold" space-before="48pt" margin-bottom="15.5pt"><xsl:value-of select="$title-list-recommendations"/></fo:block>
-							<xsl:for-each select="//ogc:permission[@id and ogc:name] | //ogc:recommendation[@id and ogc:name] | //ogc:requirement[@id and ogc:name]">
+							<!-- <xsl:for-each select="//ogc:permission[@id and ogc:name] | //ogc:recommendation[@id and ogc:name] | //ogc:requirement[@id and ogc:name]"> -->
+							<xsl:for-each select="//ogc:table[.//ogc:p[@class = 'RecommendationTitle']]">
+								<xsl:variable name="table_id" select="@id"/>									
 								<fo:block text-align-last="justify" margin-top="6pt">
-									<fo:basic-link internal-destination="{@id}" fox:alt-text="{ogc:name}">
-										<xsl:apply-templates select="ogc:name" mode="contents"/>										
+									<fo:basic-link internal-destination="{@id}" fox:alt-text="{.//ogc:p[@class = 'RecommendationTitle'][1]/text()}">
+										<xsl:apply-templates select=".//ogc:p[@class = 'RecommendationTitle'][ancestor::ogc:table[1][@id= $table_id]]/node()"/>
 										<fo:inline keep-together.within-line="always">
 											<fo:leader leader-pattern="dots"/>
 											<fo:page-number-citation ref-id="{@id}"/>
@@ -884,7 +887,7 @@
 	
 	
 	<xsl:template match="ogc:ul | ogc:ol">
-		<fo:list-block provisional-distance-between-starts="6.5mm" margin-bottom="12pt" line-height="115%">
+		<fo:list-block provisional-distance-between-starts="6.5mm" space-after="12pt" line-height="115%">
 			<xsl:if test="ancestor::ogc:ul | ancestor::ogc:ol">
 				<xsl:attribute name="margin-bottom">0pt</xsl:attribute>
 			</xsl:if>
@@ -966,9 +969,6 @@
 		</fo:block>
 	</xsl:template>
 	
-
-	
-
 	
 	<!-- [position() &gt; 1] -->
 	<xsl:template match="ogc:references[not(@normative='true')]">

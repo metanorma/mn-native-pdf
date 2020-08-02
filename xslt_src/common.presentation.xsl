@@ -1798,6 +1798,14 @@
 
 	<xsl:template match="*[local-name()='th']">
 		<fo:table-cell text-align="{@align}" font-weight="bold" border="solid black 1pt" padding-left="1mm" display-align="center">
+			<xsl:attribute name="text-align">
+				<xsl:choose>
+					<xsl:when test="@align">
+						<xsl:value-of select="@align"/>
+					</xsl:when>
+					<xsl:otherwise>center</xsl:otherwise>
+				</xsl:choose>
+			</xsl:attribute>
 			<xsl:if test="$namespace = 'iso' or $namespace = 'iec'">
 				<xsl:attribute name="padding-top">1mm</xsl:attribute>
 			</xsl:if>
@@ -1878,6 +1886,14 @@
 	
 	<xsl:template match="*[local-name()='td']">
 		<fo:table-cell text-align="{@align}" display-align="center" border="solid black 1pt" padding-left="1mm">
+			<xsl:attribute name="text-align">
+				<xsl:choose>
+					<xsl:when test="@align">
+						<xsl:value-of select="@align"/>
+					</xsl:when>
+					<xsl:otherwise>left</xsl:otherwise>
+				</xsl:choose>
+			</xsl:attribute>
 			<xsl:if test="$namespace = 'iso' or $namespace = 'iec' or $namespace = 'iho'"> <!--  and ancestor::*[local-name() = 'thead'] -->
 				<xsl:attribute name="padding-top">0.5mm</xsl:attribute>
 			</xsl:if>
@@ -3791,6 +3807,139 @@
 	<!-- ========== -->
 	<!-- ========== -->
 	
+	<!-- ========== -->
+	<!-- requirement, recommendation, permission table -->
+	<xsl:template match="*[local-name() = 'table'][@class = 'recommendation' or @class='requirement' or @class='permission']">
+		<fo:block-container margin-left="0mm" margin-right="0mm" margin-bottom="12pt">
+			<fo:block-container margin-left="0mm" margin-right="0mm">
+				<fo:table id="{@id}" table-layout="fixed" width="100%" border="0pt solid black">					
+					<xsl:variable name="simple-table">	
+						<xsl:call-template  name="getSimpleTable"/>			
+					</xsl:variable>					
+					<xsl:variable name="cols-count" select="count(xalan:nodeset($simple-table)//tr[1]/td)"/>
+					<xsl:if test="$cols-count = 2 and not(ancestor::*[local-name()='table'])">
+						<fo:table-column column-width="35mm"/>
+						<fo:table-column column-width="115mm"/>
+					</xsl:if>
+					<xsl:apply-templates mode="requirement"/>
+				</fo:table>
+				<!-- fn processing -->
+				<xsl:if test=".//*[local-name() = 'fn']">
+					<xsl:for-each select="*[local-name() = 'tbody']">
+						<fo:block font-size="90%" border-bottom="1.pt solid black">
+							<xsl:call-template name="fn_display" />
+						</fo:block>
+					</xsl:for-each>
+				</xsl:if>
+			</fo:block-container>
+		</fo:block-container>
+	</xsl:template>
+	
+	<xsl:template match="*[local-name()='thead']" mode="requirement">		
+		<fo:table-header>			
+			<xsl:apply-templates mode="requirement"/>
+		</fo:table-header>
+	</xsl:template>
+	
+	<xsl:template match="*[local-name()='tbody']" mode="requirement">		
+		<fo:table-body>
+			<xsl:apply-templates mode="requirement"/>
+		</fo:table-body>
+	</xsl:template>
+	
+	<xsl:template match="*[local-name()='tr']" mode="requirement">
+		<fo:table-row>			
+			<xsl:apply-templates mode="requirement"/>
+		</fo:table-row>
+	</xsl:template>
+	
+	
+	<xsl:template match="*[local-name()='th']" mode="requirement">
+		<fo:table-cell text-align="{@align}">
+			<xsl:attribute name="text-align">
+				<xsl:choose>
+					<xsl:when test="@align">
+						<xsl:value-of select="@align"/>
+					</xsl:when>
+					<xsl:otherwise>center</xsl:otherwise>
+				</xsl:choose>
+			</xsl:attribute>
+			<xsl:if test="@colspan">
+				<xsl:attribute name="number-columns-spanned">
+					<xsl:value-of select="@colspan"/>
+				</xsl:attribute>
+			</xsl:if>
+			<xsl:if test="@rowspan">
+				<xsl:attribute name="number-rows-spanned">
+					<xsl:value-of select="@rowspan"/>
+				</xsl:attribute>
+			</xsl:if>
+			
+			<xsl:if test="ancestor::*[local-name()='table']/@type = 'recommend'">
+				<xsl:attribute name="padding-top">0.5mm</xsl:attribute>
+				<xsl:attribute name="background-color">rgb(165, 165, 165)</xsl:attribute>				
+			</xsl:if>
+			<xsl:if test="ancestor::*[local-name()='table']/@type = 'recommendtest'">
+				<xsl:attribute name="padding-top">0.5mm</xsl:attribute>
+				<xsl:attribute name="background-color">rgb(201, 201, 201)</xsl:attribute>				
+			</xsl:if>
+			
+			<fo:block>
+				<xsl:apply-templates />
+			</fo:block>
+		</fo:table-cell>
+	</xsl:template>
+	
+	
+	<xsl:template match="*[local-name()='td']" mode="requirement">
+		<fo:table-cell text-align="{@align}">
+			<xsl:attribute name="text-align">
+				<xsl:choose>
+					<xsl:when test="@align">
+						<xsl:value-of select="@align"/>
+					</xsl:when>
+					<xsl:otherwise>left</xsl:otherwise>
+				</xsl:choose>
+			</xsl:attribute>
+			<xsl:if test="@colspan">
+				<xsl:attribute name="number-columns-spanned">
+					<xsl:value-of select="@colspan"/>
+				</xsl:attribute>
+			</xsl:if>
+			<xsl:if test="@rowspan">
+				<xsl:attribute name="number-rows-spanned">
+					<xsl:value-of select="@rowspan"/>
+				</xsl:attribute>
+			</xsl:if>
+			
+			<xsl:if test="ancestor::*[local-name()='table']/@type = 'recommend'">
+				<xsl:attribute name="padding-left">0.5mm</xsl:attribute>
+				<xsl:attribute name="padding-top">0.5mm</xsl:attribute>
+				<xsl:if test="parent::*[local-name()='tr']/preceding-sibling::*[local-name()='tr'] and not(*[local-name()='table'])"> <!-- 2nd line and below -->
+					<xsl:attribute name="background-color">rgb(201, 201, 201)</xsl:attribute>					
+				</xsl:if>
+			</xsl:if>
+			
+			<fo:block>			
+				<xsl:apply-templates />
+			</fo:block>			
+		</fo:table-cell>
+	</xsl:template>
+	
+	<xsl:template match="*[local-name() = 'p'][@class='RecommendationTitle' or @class = 'RecommendationTestTitle']" priority="2">
+		<fo:block font-size="11pt" font-weight="bold" text-align="center" margin-bottom="4pt">
+			<xsl:apply-templates />
+		</fo:block>
+	</xsl:template>
+	
+	<xsl:template match="*[local-name() = 'p'][ancestor::*[local-name() = 'table'][@class = 'recommendation' or @class='requirement' or @class='permission']]">
+		<fo:block margin-bottom="10pt">
+			<xsl:apply-templates />
+		</fo:block>
+	</xsl:template>
+	
+	<!-- ========== -->
+	
 	<!-- ====== -->
 	<!-- termexample -->	
 	<!-- ====== -->
@@ -4256,7 +4405,7 @@
 		<fo:block>
 			<xsl:call-template name="setId"/>
 			<xsl:if test="$namespace = 'csa'">
-				<xsl:variable name="pos"><xsl:number count="csa:sections/csa:clause[not(@id='_scope') and not(@id='conformance') and not(@id='_conformance')]"/></xsl:variable>
+				<xsl:variable name="pos"><xsl:number count="csa:sections/csa:clause[not(@type='scope') and not(@type='conformance')]"/></xsl:variable>
 				<xsl:if test="$pos &gt;= 2">
 					<xsl:attribute name="space-before">18pt</xsl:attribute>
 				</xsl:if>
@@ -4286,13 +4435,13 @@
 				</xsl:if>
 			</xsl:if>			
 			<xsl:if test="$namespace = 'rsd'">
-				<xsl:variable name="pos"><xsl:number count="rsd:sections/rsd:clause[not(@id='_scope') and not(@id='conformance') and not(@id='_conformance')]"/></xsl:variable> <!--  | rsd:sections/rsd:terms -->
+				<xsl:variable name="pos"><xsl:number count="rsd:sections/rsd:clause[not(@type='scope') and not(@type='conformance')]"/></xsl:variable> <!--  | rsd:sections/rsd:terms -->
 				<xsl:if test="$pos &gt;= 2">
 					<xsl:attribute name="space-before">18pt</xsl:attribute>
 				</xsl:if>
 			</xsl:if>
 			<xsl:if test="$namespace = 'ogc' or $namespace = 'ogc-white-paper'">
-				<xsl:variable name="pos"><xsl:number count="ogc:sections/ogc:clause[not(@id='_scope') and not(@id='conformance') and not(@id='_conformance')]"/></xsl:variable> <!--  | ogc:sections/ogc:terms -->
+				<xsl:variable name="pos"><xsl:number count="ogc:sections/ogc:clause[not(@type='scope') and not(@type='conformance')]"/></xsl:variable> <!--  | ogc:sections/ogc:terms -->
 				<xsl:if test="$pos &gt;= 2">
 					<xsl:attribute name="space-before">18pt</xsl:attribute>
 				</xsl:if>
@@ -4345,7 +4494,7 @@
 		</fo:block>
 	</xsl:template>
 	
-	<xsl:template match="/*/*[local-name() = 'bibliography']/*[local-name() = 'references'][@id = '_normative_references' or @id = '_references']">
+	<xsl:template match="/*/*[local-name() = 'bibliography']/*[local-name() = 'references'][@normative='true']">
 		<xsl:if test="$namespace = 'nist-cswp'">
 			<fo:block break-after="page"/>
 		</xsl:if>
