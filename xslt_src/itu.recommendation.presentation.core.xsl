@@ -324,7 +324,7 @@
 						</fo:block>
 					</fo:block-container>
 					<!-- Summary, History ... -->
-					<xsl:apply-templates select="/itu:itu-standard/itu:preface/node()"/>
+					<xsl:call-template name="processPrefaceSectionsDefault"/>
 					
 					<!-- Keywords -->
 					<xsl:if test="/itu:itu-standard/itu:bibdata/itu:keyword">
@@ -767,7 +767,7 @@
 	</xsl:template>
 	
 	<!-- Bibliography -->
-	<xsl:template match="itu:references[position() &gt; 1]/itu:title">
+	<xsl:template match="itu:references[not(@normative='true')]/itu:title">
 		<fo:block font-size="14pt" font-weight="bold" text-align="center" margin-bottom="18pt">
 				<xsl:apply-templates />
 			</fo:block>
@@ -1122,13 +1122,13 @@
 	</xsl:template>
 	
 	
-	<xsl:template match="itu:references[1]">
+	<xsl:template match="itu:references[@normative='true']">
 		<fo:block id="{@id}">
 			<xsl:apply-templates />
 		</fo:block>
 	</xsl:template>
 		
-	<xsl:template match="itu:references[position() &gt; 1]">
+	<xsl:template match="itu:references[not(@normative='true')]">
 		<fo:block break-after="page"/>
 		<fo:block id="{@id}">
 			<xsl:apply-templates />

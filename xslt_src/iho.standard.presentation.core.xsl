@@ -39,24 +39,8 @@
 	-->
 	<xsl:variable name="contents">
 		<contents>
-			<xsl:apply-templates select="/iho:iho-standard/iho:preface/*" mode="contents" />
-				
-			<xsl:apply-templates select="/iho:iho-standard/iho:sections/*" mode="contents" /> <!-- iho:clause[1] [@id = '_scope'] -->
-				
-			<!-- [@id = '_normative_references'] -->
-			<!-- <xsl:apply-templates select="/iho:iho-standard/iho:bibliography/iho:references[1]" mode="contents"> 
-				<xsl:with-param name="sectionNum" select="'2'"/>
-			</xsl:apply-templates> -->
-			<!-- @id != '_scope' -->
-		<!-- 	<xsl:apply-templates select="/iho:iho-standard/iho:sections/*[position() &gt; 1]" mode="contents"> 
-				<xsl:with-param name="sectionNumSkew" select="'1'"/>
-			</xsl:apply-templates> -->
-			<xsl:apply-templates select="/iho:iho-standard/iho:annex" mode="contents"/>
-			
-			
-			<!-- Bibliography -->
-			<xsl:apply-templates select="/iho:iho-standard/iho:bibliography/iho:references[position() &gt; 1]" mode="contents"/> <!-- @id = '_bibliography' -->
-			
+			<xsl:call-template name="processPrefaceSectionsDefault_Contents"/>
+			<xsl:call-template name="processMainSectionsDefault_Contents"/>			
 		</contents>
 	</xsl:variable>
 	
@@ -286,7 +270,7 @@
 						</fo:block-container>
 						
 						<!-- Foreword, Introduction -->
-						<xsl:apply-templates select="/iho:iho-standard/iho:preface/*"/>
+						<xsl:call-template name="processPrefaceSectionsDefault"/>
 						
 					</fo:flow>
 				</fo:page-sequence>
@@ -311,9 +295,13 @@
 							
 							<fo:block font-size="16pt" font-weight="bold" margin-bottom="18pt"><xsl:value-of select="$title-en"/></fo:block>
 							
-							<xsl:apply-templates select="/iho:iho-standard/iho:sections/*"/>
-							
-
+							<xsl:apply-templates select="/*/*[local-name()='sections']/*[local-name()='clause'][@type='scope']" />
+							<!-- Normative references  -->
+							<xsl:apply-templates select="/*/*[local-name()='bibliography']/*[local-name()='references'][@normative='true']" />
+							<!-- Terms and definitions -->
+							<xsl:apply-templates select="/*/*[local-name()='sections']/*[local-name()='terms']" />
+							<xsl:apply-templates select="/*/*[local-name()='sections']/*[local-name()='definitions']" />
+							<xsl:apply-templates select="/*/*[local-name()='sections']/*[local-name() != 'terms' and local-name() != 'definitions' and not(@type='scope')]" />
 							
 						</fo:block-container>
 					</fo:flow>
@@ -328,12 +316,32 @@
 						</fo:static-content>
 						<xsl:call-template name="insertHeaderFooter"/>
 						<fo:flow flow-name="xsl-region-body">
-							<fo:block-container>
-								<xsl:apply-templates select="/iho:iho-standard/iho:annex"/>
+							<fo:block-container>								
+								<xsl:apply-templates select="/*/*[local-name()='annex']" />
 							</fo:block-container>
 						</fo:flow>
 					</fo:page-sequence>
 				</xsl:if>
+				
+				<xsl:if test="/*/*[local-name()='bibliography']/*[local-name()='references'][not(@normative='true')]">
+					<fo:page-sequence master-reference="document">
+						<fo:static-content flow-name="xsl-footnote-separator">
+							<fo:block>
+								<fo:leader leader-pattern="rule" leader-length="30%"/>
+							</fo:block>
+						</fo:static-content>
+						<xsl:call-template name="insertHeaderFooter"/>
+						<fo:flow flow-name="xsl-region-body">
+							<fo:block-container>								
+								<!-- Bibliography -->
+								<xsl:apply-templates select="/*/*[local-name()='bibliography']/*[local-name()='references'][not(@normative='true')]" />
+							</fo:block-container>
+						</fo:flow>
+					</fo:page-sequence>
+				</xsl:if>
+				
+				
+				
 				<!-- =========================== -->
 				<!-- End Document Pages -->
 				<!-- =========================== -->
@@ -437,7 +445,7 @@
 		</fo:block>
 	</xsl:template>
 		
-	<xsl:template match="iho:references[position() &gt; 1]/iho:title">
+	<xsl:template match="iho:bibliography/iho:references[not(@normative='true')]/iho:title">
 		<fo:block font-size="16pt" font-weight="bold" text-align="center" margin-top="6pt" margin-bottom="36pt" keep-with-next="always">
 			<xsl:apply-templates />
 		</fo:block>
@@ -579,13 +587,13 @@
 					<fo:inline font-size="70%" keep-with-previous.within-line="always" vertical-align="super"> <!--  -->
 						<fo:basic-link internal-destination="footnote_{@reference}_{$number}" fox:alt-text="footnote {@reference} {$number}">
 							<!-- <xsl:value-of select="@reference"/> -->
-							<xsl:value-of select="$number + count(//iho:bibitem[ancestor::iho:references[@id='_normative_references']]/iho:note)"/>
+							<xsl:value-of select="$number + count(//iho:bibitem[ancestor::iho:references[@normative='true']]/iho:note)"/>
 						</fo:basic-link>
 					</fo:inline>
 					<fo:footnote-body>
 						<fo:block font-size="10pt" margin-bottom="12pt">
 							<fo:inline id="footnote_{@reference}_{$number}" font-size="60%" vertical-align="super" keep-with-next.within-line="always" padding-right="1mm"> <!-- font-size="60%"  alignment-baseline="hanging" -->
-								<xsl:value-of select="$number + count(//iho:bibitem[ancestor::iho:references[@id='_normative_references']]/iho:note)"/>
+								<xsl:value-of select="$number + count(//iho:bibitem[ancestor::iho:references[@normative='true']]/iho:note)"/>
 							</fo:inline>
 							<xsl:for-each select="iho:p">
 									<xsl:apply-templates />

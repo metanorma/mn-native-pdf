@@ -35,20 +35,8 @@
 	
 	<xsl:variable name="contents">
 		<contents>
-			<xsl:apply-templates select="/csd:csd-standard/csd:preface/node()" mode="contents"/>
-
-			<xsl:apply-templates select="/csd:csd-standard/csd:sections/csd:clause[1]" mode="contents"/> <!-- [@id = '_scope'] -->
-
-			<!-- Normative references -->
-			<xsl:apply-templates select="/csd:csd-standard/csd:bibliography/csd:references[1]" mode="contents"/> <!-- [@id = '_normative_references'] -->
-
-			<xsl:apply-templates select="/csd:csd-standard/csd:sections/*[position() &gt; 1]" mode="contents"/> <!-- @id != '_scope' -->
-
-			<xsl:apply-templates select="/csd:csd-standard/csd:annex" mode="contents"/>
-			
-			<!-- Bibliography -->
-			<xsl:apply-templates select="/csd:csd-standard/csd:bibliography/csd:references[position() &gt; 1]" mode="contents"/> <!-- @id = '_bibliography' -->
-			
+			<xsl:call-template name="processPrefaceSectionsDefault_Contents"/>
+			<xsl:call-template name="processMainSectionsDefault_Contents"/>
 		</contents>
 	</xsl:variable>
 	
@@ -270,14 +258,7 @@
 										</fo:list-item-label>
 										<fo:list-item-body start-indent="body-start()">
 											<fo:block text-align-last="justify" margin-left="12mm" text-indent="-12mm">
-												<fo:basic-link internal-destination="{@id}" fox:alt-text="{text()}">
-													<!-- <xsl:if test="@section and @display-section = 'false'">
-														<xsl:value-of select="@section"/><xsl:text> </xsl:text>
-													</xsl:if>
-													<xsl:if test="@addon != ''">
-														<xsl:text>(</xsl:text><xsl:value-of select="@addon"/><xsl:text>)</xsl:text>
-													</xsl:if>
-													<xsl:text> </xsl:text><xsl:value-of select="text()"/> -->
+												<fo:basic-link internal-destination="{@id}" fox:alt-text="{text()}">													
 													<xsl:apply-templates />
 													<fo:inline keep-together.within-line="always">
 														<fo:leader leader-pattern="dots"/>
@@ -292,8 +273,8 @@
 						</xsl:for-each>
 					</fo:block-container>
 					
-					<!-- Foreword, Introduction -->
-					<xsl:apply-templates select="/csd:csd-standard/csd:preface/node()"/>
+					<!-- Foreword, Introduction -->					
+					<xsl:call-template name="processPrefaceSectionsDefault"/>
 					
 				</fo:flow>
 			</fo:page-sequence>
@@ -312,19 +293,7 @@
 						<xsl:value-of select="/csd:csd-standard/csd:bibdata/csd:title[@language = 'en']"/>
 					</fo:block>
 					<fo:block>
-						<xsl:apply-templates select="/csd:csd-standard/csd:sections/csd:clause[1]" /> <!-- Scope -->
-							
-						<!-- Normative references  -->
-						<xsl:apply-templates select="/csd:csd-standard/csd:bibliography/csd:references[1]" />
-						
-						<!-- Other Sections -->
-						<xsl:apply-templates select="/csd:csd-standard/csd:sections/*[position() &gt; 1]" />							
-						
-						<xsl:apply-templates select="/csd:csd-standard/csd:annex"/>
-						
-						<!-- Bibliography -->
-						<xsl:apply-templates select="/csd:csd-standard/csd:bibliography/csd:references[position() &gt; 1]" />
-						
+						<xsl:call-template name="processMainSectionsDefault"/>
 					</fo:block>
 				</fo:flow>
 			</fo:page-sequence>
@@ -671,7 +640,7 @@
 
 
 	<!-- <xsl:template match="csd:references[@id = '_bibliography']"> -->
-	<xsl:template match="csd:references[position() &gt; 1]">
+	<xsl:template match="csd:references[not(@normative='true')]">
 		<fo:block break-after="page"/>
 		<fo:block id="{@id}">
 			<xsl:apply-templates />
@@ -681,7 +650,7 @@
 
 	<!-- Example: [1] ISO 9:1995, Information and documentation – Transliteration of Cyrillic characters into Latin characters – Slavic and non-Slavic languages -->
 	<!-- <xsl:template match="csd:references[@id = '_bibliography']/csd:bibitem"> -->
-	<xsl:template match="csd:references[position() &gt; 1]/csd:bibitem">
+	<xsl:template match="csd:references[not(@normative='true')]/csd:bibitem">
 		<fo:list-block margin-bottom="12pt" provisional-distance-between-starts="12mm">
 			<fo:list-item>
 				<fo:list-item-label end-indent="label-end()">
@@ -716,10 +685,10 @@
 	</xsl:template>
 	
 	<!-- <xsl:template match="csd:references[@id = '_bibliography']/csd:bibitem" mode="contents"/> -->
-	<xsl:template match="csd:references[position() &gt; 1]/csd:bibitem" mode="contents"/>
+	<xsl:template match="csd:references[not(@normative='true')]/csd:bibitem" mode="contents"/>
 	
 	<!-- <xsl:template match="csd:references[@id = '_bibliography']/csd:bibitem/csd:title"> -->
-	<xsl:template match="csd:references[position() &gt; 1]/csd:bibitem/csd:title">
+	<xsl:template match="csd:references[not(@normative='true')]/csd:bibitem/csd:title">
 		<fo:inline font-style="italic">
 			<xsl:apply-templates />
 		</fo:inline>

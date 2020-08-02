@@ -27,51 +27,12 @@
 		<xsl:text>, Cloud Security Alliance. All rights reserved.</xsl:text>
 	</xsl:variable>
 	
-	<xsl:variable name="color-header-cover">rgb(55, 243, 244)</xsl:variable>
 	<xsl:variable name="color-header-document">rgb(79, 201, 204)</xsl:variable>
-	<xsl:variable name="color-link">rgb(33, 94, 159)</xsl:variable>
-	
-	<xsl:variable name="copyright_short">
-		<xsl:text>© </xsl:text>
-		<xsl:value-of select="/csa:csa-standard/csa:bibdata/csa:copyright/csa:from"/>
-		<xsl:text> </xsl:text>
-		<xsl:value-of select="/csa:csa-standard/csa:bibdata/csa:contributor/csa:organization/csa:name"/>
-	</xsl:variable>
-	
-	<xsl:variable name="doctitle" select="/csa:csa-standard/csa:bibdata/csa:title[@language = 'en']"/>
-
-	<xsl:variable name="doctype">
-		<xsl:call-template name="capitalizeWords">
-			<xsl:with-param name="str" select="/csa:csa-standard/csa:bibdata/csa:ext/csa:doctype"/>
-		</xsl:call-template>
-	</xsl:variable>
-	
-	<xsl:variable name="header">
-		<xsl:text>Open Geospatial Consortium </xsl:text>
-		<xsl:value-of select="/csa:csa-standard/csa:bibdata/csa:docidentifier[@type = 'csa-internal']"/>
-		<xsl:text>:</xsl:text>
-		<xsl:value-of select="/csa:csa-standard/csa:bibdata/csa:copyright/csa:from"/>
-	</xsl:variable>
 	
 	<xsl:variable name="contents">
-		<contents>
-		
-			<xsl:apply-templates select="/csa:csa-standard/csa:preface/*" mode="contents"/>
-					
-			<xsl:apply-templates select="/csa:csa-standard/csa:sections/csa:clause[@id='_scope']" mode="contents"/>
-				
-			<!-- Normative references  -->
-			<xsl:apply-templates select="/csa:csa-standard/csa:bibliography/csa:references[@id = '_normative_references' or @id = '_references']" mode="contents"/>
-		
-			<xsl:apply-templates select="/csa:csa-standard/csa:sections/csa:terms" mode="contents"/> <!-- Terms and definitions -->
-				
-			<xsl:apply-templates select="/csa:csa-standard/csa:sections/*[local-name() != 'terms' and not(@id='_scope') and not(@id='conformance') and not(@id='_conformance')]" mode="contents"/>
-				
-			<xsl:apply-templates select="/csa:csa-standard/csa:annex" mode="contents"/>
-			
-			<!-- Bibliography -->
-			<xsl:apply-templates select="/csa:csa-standard/csa:bibliography/csa:references[@id != '_normative_references' and @id != '_references']" mode="contents"/>
-			
+		<contents>		
+			<xsl:call-template name="processPrefaceSectionsDefault_Contents"/>
+			<xsl:call-template name="processMainSectionsDefault_Contents"/>
 		</contents>
 	</xsl:variable>
 	
@@ -110,7 +71,7 @@
 					</fo:block>
 				</fo:static-content>
 				<fo:static-content flow-name="cover-page-header">
-					<fo:block-container height="2.5mm" background-color="{$color-header-cover}">
+					<fo:block-container height="2.5mm" background-color="rgb(55, 243, 244)">
 						<fo:block font-size="1pt">&#xA0;</fo:block>
 					</fo:block-container>
 					<fo:block-container position="absolute" top="2.5mm" height="{279.4 - 2.5}mm" width="100%" background-color="rgb(80, 203, 205)">
@@ -122,7 +83,7 @@
 					
 					<fo:block-container width="136mm" margin-bottom="12pt">
 						<fo:block font-size="36pt" font-weight="bold" color="rgb(54, 59, 74)">
-							<xsl:value-of select="$doctitle" />
+							<xsl:value-of select="/csa:csa-standard/csa:bibdata/csa:title[@language = 'en']" />
 						</fo:block>
 					</fo:block-container>
 					
@@ -238,20 +199,8 @@
 					<fo:block break-after="page"/>
 					
 					<fo:block line-height="145%">
-						<xsl:apply-templates select="/csa:csa-standard/csa:preface/*"/>
-					
-						<xsl:apply-templates select="/csa:csa-standard/csa:sections/csa:clause[@id='_scope']"/>
-							
-						<!-- Normative references  -->
-						<xsl:apply-templates select="/csa:csa-standard/csa:bibliography/csa:references[@id = '_normative_references' or @id = '_references']"/>
-					
-						<xsl:apply-templates select="/csa:csa-standard/csa:sections/csa:terms"/> <!-- Terms and definitions -->
-							
-						<xsl:apply-templates select="/csa:csa-standard/csa:sections/*[local-name() != 'terms' and not(@id='_scope') and not(@id='conformance') and not(@id='_conformance')]"/>
-							
-						<xsl:apply-templates select="/csa:csa-standard/csa:annex"/>
-						<xsl:apply-templates select="/csa:csa-standard/csa:bibliography/csa:references[@id != '_normative_references' and @id != '_references']" />
-						
+						<xsl:call-template name="processPrefaceSectionsDefault"/>					
+						<xsl:call-template name="processMainSectionsDefault"/>
 					</fo:block>
 					
 					
@@ -721,7 +670,7 @@
 	
 
 	<!-- [position() &gt; 1] -->
-	<xsl:template match="csa:references[@id != '_normative_references' and @id != '_references']">
+	<xsl:template match="csa:references[not(@normative='true')]">
 		<fo:block break-after="page"/>
 		<fo:block id="{@id}" line-height="145%">
 			<xsl:apply-templates />
@@ -731,7 +680,7 @@
 
 	<!-- Example: [1] ISO 9:1995, Information and documentation – Transliteration of Cyrillic characters into Latin characters – Slavic and non-Slavic languages -->
 	<!-- <xsl:template match="csa:references[@id = '_bibliography']/csa:bibitem"> [position() &gt; 1] -->
-	<xsl:template match="csa:references[@id != '_normative_references' and @id != '_references']/csa:bibitem">
+	<xsl:template match="csa:references[not(@normative='true')]/csa:bibitem">
 		<fo:block margin-bottom="12pt" line-height="145%">
 			<fo:inline id="{@id}">
 				<xsl:number format="[1]"/>
@@ -794,10 +743,10 @@
 	</xsl:template>
 	
 	<!-- <xsl:template match="csa:references[@id = '_bibliography']/csa:bibitem" mode="contents"/> [position() &gt; 1] -->
-	<xsl:template match="csa:references[@id != '_normative_references' and @id != '_references']/csa:bibitem" mode="contents"/>
+	<xsl:template match="csa:references[not(@normative='true')]/csa:bibitem" mode="contents"/>
 	
 	<!-- <xsl:template match="csa:references[@id = '_bibliography']/csa:bibitem/csa:title"> [position() &gt; 1]-->
-	<xsl:template match="csa:references[@id != '_normative_references' and  @id != '_references']/csa:bibitem/csa:title">
+	<xsl:template match="csa:references[not(@normative='true')]/csa:bibitem/csa:title">
 		<fo:inline font-style="italic">
 			<xsl:apply-templates />
 		</fo:inline>

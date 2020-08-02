@@ -31,21 +31,8 @@
 	-->
 	<xsl:variable name="contents">
 		<contents>
-			<xsl:apply-templates select="/m3d:m3d-standard/m3d:preface/node()" mode="contents"/>
-				
-			<xsl:apply-templates select="/m3d:m3d-standard/m3d:sections/m3d:clause[1]" mode="contents" /> <!-- [@id = '_scope'] -->
-				
-			<!-- Normative references -->
-			<xsl:apply-templates select="/m3d:m3d-standard/m3d:bibliography/m3d:references[1]" mode="contents" /> <!-- [@id = '_normative_references'] -->
-				
-			<xsl:apply-templates select="/m3d:m3d-standard/m3d:sections/*[position() &gt; 1]" mode="contents" /> <!-- @id != '_scope' -->
-				
-			<xsl:apply-templates select="/m3d:m3d-standard/m3d:annex" mode="contents"/>
-			
-			<!-- Bibliography -->
-			<xsl:apply-templates select="/m3d:m3d-standard/m3d:bibliography/m3d:references[position() &gt; 1]" mode="contents"/> <!-- @id = '_bibliography' -->
-			
-
+			<xsl:call-template name="processPrefaceSectionsDefault_Contents"/>
+			<xsl:call-template name="processMainSectionsDefault_Contents"/>
 		</contents>
 	</xsl:variable>
 	
@@ -294,29 +281,14 @@
 					</fo:block>
 					
 					<!-- Foreword, Introduction -->
-					<fo:block>
-						<xsl:apply-templates select="/m3d:m3d-standard/m3d:preface/node()"/>
+					<fo:block>						
+						<xsl:call-template name="processPrefaceSectionsDefault"/>
 					</fo:block>
 					
 					<fo:block break-after="page"/>
 					
-					<xsl:apply-templates select="/m3d:m3d-standard/m3d:sections/m3d:clause[1]" /> <!-- Scope -->
+					<xsl:call-template name="processMainSectionsDefault"/>
 					
-					<!-- Normative references  -->
-					<xsl:if test="/m3d:m3d-standard/m3d:bibliography/m3d:references[1]">
-						<fo:block break-after="page"/>
-						<xsl:apply-templates select="/m3d:m3d-standard/m3d:bibliography/m3d:references[1]" />							
-					</xsl:if>
-
-					<!-- Main sections -->
-					<xsl:apply-templates select="/m3d:m3d-standard/m3d:sections/*[position() &gt; 1]" />
-						
-					<!-- Annex(s) -->
-					<xsl:apply-templates select="/m3d:m3d-standard/m3d:annex"/>
-					
-					<!-- Bibliography -->
-					<xsl:apply-templates select="/m3d:m3d-standard/m3d:bibliography/m3d:references[position() &gt; 1]"/>
-				
 				</fo:flow>
 			</fo:page-sequence>
 			
@@ -593,13 +565,13 @@
 					<fo:inline font-size="7pt" keep-with-previous.within-line="always" vertical-align="super">
 						<fo:basic-link internal-destination="footnote_{@reference}_{$number}" fox:alt-text="footnote {@reference} {$number}">
 							<!-- <xsl:value-of select="@reference"/> -->
-							<xsl:value-of select="$number + count(//m3d:bibitem[ancestor::m3d:references[@id='_normative_references' or not(preceding-sibling::m3d:references)]]/m3d:note)"/>
+							<xsl:value-of select="$number + count(//m3d:bibitem[ancestor::m3d:references[@normative='true' or not(preceding-sibling::m3d:references)]]/m3d:note)"/>
 						</fo:basic-link>
 					</fo:inline>
 					<fo:footnote-body>
 						<fo:block font-size="9pt" margin-bottom="12pt">
 							<fo:inline font-size="6pt" id="footnote_{@reference}_{$number}" keep-with-next.within-line="always" vertical-align="super" padding-right="1mm">
-								<xsl:value-of select="$number + count(//m3d:bibitem[ancestor::m3d:references[@id='_normative_references' or not(preceding-sibling::m3d:references)]]/m3d:note)"/>
+								<xsl:value-of select="$number + count(//m3d:bibitem[ancestor::m3d:references[@normative='true' or not(preceding-sibling::m3d:references)]]/m3d:note)"/>
 							</fo:inline>
 							<xsl:for-each select="m3d:p">
 									<xsl:apply-templates />
@@ -746,7 +718,7 @@
 
 	
 	<!-- <xsl:template match="m3d:references[@id = '_bibliography']"> -->
-	<xsl:template match="m3d:references[position() &gt; 1]">
+	<xsl:template match="m3d:references[not(@normative='true')]">
 		<fo:block break-after="page"/>
 		<fo:block id="{@id}">
 			<xsl:apply-templates />
@@ -761,7 +733,7 @@
 
 	<!-- Example: [1] ISO 9:1995, Information and documentation – Transliteration of Cyrillic characters into Latin characters – Slavic and non-Slavic languages -->
 	<!-- <xsl:template match="m3d:references[@id = '_bibliography']/m3d:bibitem"> -->
-	<xsl:template match="m3d:references[position() &gt; 1]/m3d:bibitem">
+	<xsl:template match="m3d:references[not(@normative='true')]/m3d:bibitem">
 		<fo:list-block margin-bottom="12pt" provisional-distance-between-starts="12mm">
 			<fo:list-item>
 				<fo:list-item-label end-indent="label-end()">
@@ -800,10 +772,10 @@
 	</xsl:template>
 	
 	<!-- <xsl:template match="m3d:references[@id = '_bibliography']/m3d:bibitem" mode="contents"/> -->
-	<xsl:template match="m3d:references[position() &gt; 1]/m3d:bibitem" mode="contents"/>
+	<xsl:template match="m3d:references[not(@normative='true')]/m3d:bibitem" mode="contents"/>
 	
 	<!-- <xsl:template match="m3d:references[@id = '_bibliography']/m3d:bibitem/m3d:title"> -->
-	<xsl:template match="m3d:references[position() &gt; 1]/m3d:bibitem/m3d:title">
+	<xsl:template match="m3d:references[not(@normative='true')]/m3d:bibitem/m3d:title">
 		<fo:inline font-style="italic">
 			<xsl:apply-templates />
 		</fo:inline>
