@@ -1387,7 +1387,7 @@
 		</xsl:variable>
 		
 		<xsl:choose>
-			<xsl:when test="$doctype = 'amendment'">
+			<xsl:when test="$doctype = 'amendment' and not(ancestor::iso:preface)">
 				<fo:block font-size="11pt" font-style="italic" margin-bottom="12pt" keep-with-next="always">
 					<xsl:apply-templates />
 				</fo:block>
