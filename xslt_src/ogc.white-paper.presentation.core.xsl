@@ -30,6 +30,7 @@
 	</xsl:attribute-set>
 	
 	<xsl:attribute-set name="title-depth1-style" use-attribute-sets="title-toc-style">		
+		<xsl:attribute name="font-family">Lato</xsl:attribute>
 		<xsl:attribute name="color">rgb(59, 56, 56)</xsl:attribute>
 		<xsl:attribute name="margin-top">18pt</xsl:attribute>
 		<xsl:attribute name="margin-bottom">18pt</xsl:attribute>
@@ -37,6 +38,7 @@
 	</xsl:attribute-set>
 	
 	<xsl:attribute-set name="title-depth2-style">
+		<xsl:attribute name="font-family">Lato</xsl:attribute>
 		<xsl:attribute name="font-size">18pt</xsl:attribute>
 		<xsl:attribute name="color">rgb(21, 43, 77)</xsl:attribute>
 		<xsl:attribute name="margin-top">12pt</xsl:attribute>
@@ -46,6 +48,7 @@
 	</xsl:attribute-set>
 	
 	<xsl:attribute-set name="title-depth3-style">
+		<xsl:attribute name="font-family">Lato</xsl:attribute>
 		<xsl:attribute name="font-size">12pt</xsl:attribute>
 		<xsl:attribute name="font-weight">bold</xsl:attribute>
 		<xsl:attribute name="color">rgb(21, 43, 77)</xsl:attribute>
@@ -126,7 +129,7 @@
 						</fo:block-container>
 					</fo:block-container>
 					
-					<fo:block font-size="14pt" font-style="italic" margin-top="6pt" color="rgb(21, 43, 77)">
+					<fo:block font-family="Lato Light" font-size="14pt" font-style="italic" margin-top="6pt" color="rgb(21, 43, 77)">
 						<xsl:text>Additional context, inspirational quote, etc. fits into this subheading area</xsl:text>
 					</fo:block>
 					
@@ -169,7 +172,7 @@
 					
 					<fo:block break-after="page"/>
 					
-					<fo:block-container line-height="1.08">
+					<fo:block-container line-height="1.08" font-family="Lato">
 						<fo:block xsl:use-attribute-sets="title-toc-style">
 							<xsl:text>Table of Contents</xsl:text>
 						</fo:block>
@@ -341,7 +344,7 @@
 	</xsl:template>
 	
 	<xsl:template match="ogc:license-statement//ogc:title">
-		<fo:block text-align="center" font-weight="bold" margin-top="4pt">
+		<fo:block font-family="Lato" text-align="center" font-weight="bold" margin-top="4pt">
 			<xsl:apply-templates />
 		</fo:block>
 	</xsl:template>
@@ -374,7 +377,7 @@
 	</xsl:template>
 		
 	<xsl:template match="ogc:copyright-statement//ogc:title | ogc:legal-statement//ogc:title">
-		<fo:block text-align="center" font-weight="bold" >
+		<fo:block font-family="Lato" text-align="center" font-weight="bold" >
 			<xsl:apply-templates/>
 		</fo:block>
 	</xsl:template>
@@ -446,7 +449,7 @@
 						</fo:inline>
 					</xsl:when>
 					<xsl:otherwise>
-						<fo:inline>
+						<fo:inline font-family="Lato">
 							<xsl:apply-templates />
 						</fo:inline>
 					</xsl:otherwise>
@@ -470,7 +473,7 @@
 						</fo:block>
 					</xsl:when>
 					<xsl:otherwise>
-						<fo:block>
+						<fo:block font-family="Lato">
 							<xsl:apply-templates />
 						</fo:block>
 					</xsl:otherwise>
