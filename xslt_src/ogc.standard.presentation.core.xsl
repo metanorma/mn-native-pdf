@@ -506,7 +506,7 @@
 						<xsl:apply-templates select="/ogc:ogc-standard/ogc:sections/ogc:terms" />						
 						<xsl:apply-templates select="/ogc:ogc-standard/ogc:sections/ogc:definitions" />
 						
-						<xsl:apply-templates select="/ogc:ogc-standard/ogc:sections2/ogc:clause[not(@type='scope') and not(@type='conformance')]" />
+						<xsl:apply-templates select="/ogc:ogc-standard/ogc:sections/ogc:clause[not(@type='scope') and not(@type='conformance')]" />
 						
 						<xsl:apply-templates select="/ogc:ogc-standard/ogc:annex"/>
 						
