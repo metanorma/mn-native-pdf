@@ -4676,6 +4676,17 @@
 					
 					<xsl:apply-templates select="*[local-name() = 'note']"/>
 					
+					<xsl:variable name="isDraft">
+						<xsl:variable name="stage" select="normalize-space(*[local-name() = 'status']/*[local-name() = 'stage'])"/>						
+						<xsl:if test="*[local-name() = 'contributor'][*[local-name() = 'role']/@type = 'publisher']/*[local-name() = 'organization'][*[local-name() = 'name']/text() = 'Open Geospatial Consortium'] and
+											$stage != '' and
+											$stage != 'published' and $stage != 'deprecated' and $stage != 'retired'">true</xsl:if>
+					</xsl:variable>	 
+					
+					<xsl:if test="$isDraft = 'true'">
+						<xsl:text> (Draft)</xsl:text>
+					</xsl:if>
+					
 					<xsl:text>, </xsl:text>
 					
 					<xsl:choose>
@@ -4749,10 +4760,10 @@
 	</xsl:template>
 	
 	<xsl:template name="renderDate">		
-			<xsl:if test="*[local-name() = 'on']">
+			<xsl:if test="normalize-space(*[local-name() = 'on']) != ''">
 				<xsl:value-of select="*[local-name() = 'on']"/>
 			</xsl:if>
-			<xsl:if test="*[local-name() = 'from']">
+			<xsl:if test="normalize-space(*[local-name() = 'from']) != ''">
 				<xsl:value-of select="concat(*[local-name() = 'from'], '–', *[local-name() = 'to'])"/>
 			</xsl:if>
 	</xsl:template>
