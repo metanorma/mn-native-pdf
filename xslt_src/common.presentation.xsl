@@ -3811,22 +3811,30 @@
 	<!-- requirement, recommendation, permission table -->
 	<xsl:template match="*[local-name() = 'table'][@class = 'recommendation' or @class='requirement' or @class='permission']">
 		<fo:block-container margin-left="0mm" margin-right="0mm" margin-bottom="12pt">
+			<xsl:if test="ancestor::*[local-name() = 'table'][@class = 'recommendation' or @class='requirement' or @class='permission']">
+				<xsl:attribute name="margin-bottom">0pt</xsl:attribute>
+			</xsl:if>
 			<fo:block-container margin-left="0mm" margin-right="0mm">
-				<fo:table id="{@id}" table-layout="fixed" width="100%" border="0pt solid black">					
+				<fo:table id="{@id}" table-layout="fixed" width="100%" border="1pt solid black">
+					<xsl:if test="ancestor::*[local-name() = 'table'][@class = 'recommendation' or @class='requirement' or @class='permission']">
+						<xsl:attribute name="border">0.5pt solid black</xsl:attribute>
+					</xsl:if>
 					<xsl:variable name="simple-table">	
 						<xsl:call-template  name="getSimpleTable"/>			
 					</xsl:variable>					
 					<xsl:variable name="cols-count" select="count(xalan:nodeset($simple-table)//tr[1]/td)"/>
 					<xsl:if test="$cols-count = 2 and not(ancestor::*[local-name()='table'])">
-						<fo:table-column column-width="35mm"/>
-						<fo:table-column column-width="115mm"/>
+						<!-- <fo:table-column column-width="35mm"/>
+						<fo:table-column column-width="115mm"/> -->
+						<fo:table-column column-width="25%"/>
+						<fo:table-column column-width="75%"/>
 					</xsl:if>
 					<xsl:apply-templates mode="requirement"/>
 				</fo:table>
 				<!-- fn processing -->
 				<xsl:if test=".//*[local-name() = 'fn']">
 					<xsl:for-each select="*[local-name() = 'tbody']">
-						<fo:block font-size="90%" border-bottom="1.pt solid black">
+						<fo:block font-size="90%" border-bottom="1pt solid black">
 							<xsl:call-template name="fn_display" />
 						</fo:block>
 					</xsl:for-each>
@@ -3848,51 +3856,17 @@
 	</xsl:template>
 	
 	<xsl:template match="*[local-name()='tr']" mode="requirement">
-		<fo:table-row>			
+		<fo:table-row height="7mm">
+			<xsl:if test="parent::*[local-name()='thead'] and not(ancestor::*[local-name() = 'table'][@class = 'recommendation' or @class='requirement' or @class='permission'])">
+				<xsl:attribute name="border">1pt solid black</xsl:attribute>
+			</xsl:if>
 			<xsl:apply-templates mode="requirement"/>
 		</fo:table-row>
 	</xsl:template>
 	
 	
 	<xsl:template match="*[local-name()='th']" mode="requirement">
-		<fo:table-cell text-align="{@align}">
-			<xsl:attribute name="text-align">
-				<xsl:choose>
-					<xsl:when test="@align">
-						<xsl:value-of select="@align"/>
-					</xsl:when>
-					<xsl:otherwise>center</xsl:otherwise>
-				</xsl:choose>
-			</xsl:attribute>
-			<xsl:if test="@colspan">
-				<xsl:attribute name="number-columns-spanned">
-					<xsl:value-of select="@colspan"/>
-				</xsl:attribute>
-			</xsl:if>
-			<xsl:if test="@rowspan">
-				<xsl:attribute name="number-rows-spanned">
-					<xsl:value-of select="@rowspan"/>
-				</xsl:attribute>
-			</xsl:if>
-			
-			<xsl:if test="ancestor::*[local-name()='table']/@type = 'recommend'">
-				<xsl:attribute name="padding-top">0.5mm</xsl:attribute>
-				<xsl:attribute name="background-color">rgb(165, 165, 165)</xsl:attribute>				
-			</xsl:if>
-			<xsl:if test="ancestor::*[local-name()='table']/@type = 'recommendtest'">
-				<xsl:attribute name="padding-top">0.5mm</xsl:attribute>
-				<xsl:attribute name="background-color">rgb(201, 201, 201)</xsl:attribute>				
-			</xsl:if>
-			
-			<fo:block>
-				<xsl:apply-templates />
-			</fo:block>
-		</fo:table-cell>
-	</xsl:template>
-	
-	
-	<xsl:template match="*[local-name()='td']" mode="requirement">
-		<fo:table-cell text-align="{@align}">
+		<fo:table-cell text-align="{@align}" display-align="center" padding="1mm" padding-left="2mm" border="0.5pt solid black">
 			<xsl:attribute name="text-align">
 				<xsl:choose>
 					<xsl:when test="@align">
@@ -3912,13 +3886,55 @@
 				</xsl:attribute>
 			</xsl:if>
 			
-			<xsl:if test="ancestor::*[local-name()='table']/@type = 'recommend'">
-				<xsl:attribute name="padding-left">0.5mm</xsl:attribute>
+			<!-- <xsl:if test="ancestor::*[local-name()='table']/@type = 'recommend'">
 				<xsl:attribute name="padding-top">0.5mm</xsl:attribute>
-				<xsl:if test="parent::*[local-name()='tr']/preceding-sibling::*[local-name()='tr'] and not(*[local-name()='table'])"> <!-- 2nd line and below -->
+				<xsl:attribute name="background-color">rgb(165, 165, 165)</xsl:attribute>				
+			</xsl:if>
+			<xsl:if test="ancestor::*[local-name()='table']/@type = 'recommendtest'">
+				<xsl:attribute name="padding-top">0.5mm</xsl:attribute>
+				<xsl:attribute name="background-color">rgb(201, 201, 201)</xsl:attribute>				
+			</xsl:if> -->
+			
+			<fo:block>
+				<xsl:apply-templates />
+			</fo:block>
+		</fo:table-cell>
+	</xsl:template>
+	
+	
+	<xsl:template match="*[local-name()='td']" mode="requirement">
+		<fo:table-cell text-align="{@align}" display-align="center" padding="1mm" padding-left="2mm" border="0.5pt solid black">
+			<xsl:if test="*[local-name() = 'table'][@class = 'recommendation' or @class='requirement' or @class='permission']">
+				<xsl:attribute name="padding">0mm</xsl:attribute>
+				<xsl:attribute name="padding-left">0mm</xsl:attribute>
+			</xsl:if>
+			<xsl:attribute name="text-align">
+				<xsl:choose>
+					<xsl:when test="@align">
+						<xsl:value-of select="@align"/>
+					</xsl:when>
+					<xsl:otherwise>left</xsl:otherwise>
+				</xsl:choose>
+			</xsl:attribute>
+			<xsl:if test="@colspan">
+				<xsl:attribute name="number-columns-spanned">
+					<xsl:value-of select="@colspan"/>
+				</xsl:attribute>
+			</xsl:if>
+			<xsl:if test="@rowspan">
+				<xsl:attribute name="number-rows-spanned">
+					<xsl:value-of select="@rowspan"/>
+				</xsl:attribute>
+			</xsl:if>
+			
+			<!-- <xsl:if test="ancestor::*[local-name()='table']/@type = 'recommend'">
+				<xsl:attribute name="padding-left">0.5mm</xsl:attribute>
+				<xsl:attribute name="padding-top">0.5mm</xsl:attribute>				 
+				<xsl:if test="parent::*[local-name()='tr']/preceding-sibling::*[local-name()='tr'] and not(*[local-name()='table'])">
 					<xsl:attribute name="background-color">rgb(201, 201, 201)</xsl:attribute>					
 				</xsl:if>
-			</xsl:if>
+			</xsl:if> -->
+			<!-- 2nd line and below -->
 			
 			<fo:block>			
 				<xsl:apply-templates />
@@ -3927,13 +3943,13 @@
 	</xsl:template>
 	
 	<xsl:template match="*[local-name() = 'p'][@class='RecommendationTitle' or @class = 'RecommendationTestTitle']" priority="2">
-		<fo:block font-size="11pt" font-weight="bold" text-align="center" margin-bottom="4pt">
+		<fo:block font-size="11pt" font-weight="bold" > <!-- margin-bottom="4pt" text-align="center"  -->
 			<xsl:apply-templates />
 		</fo:block>
 	</xsl:template>
 	
-	<xsl:template match="*[local-name() = 'p'][ancestor::*[local-name() = 'table'][@class = 'recommendation' or @class='requirement' or @class='permission']]">
-		<fo:block margin-bottom="10pt">
+	<xsl:template match="*[local-name() = 'p2'][ancestor::*[local-name() = 'table'][@class = 'recommendation' or @class='requirement' or @class='permission']]">
+		<fo:block> <!-- margin-bottom="10pt" -->
 			<xsl:apply-templates />
 		</fo:block>
 	</xsl:template>
@@ -4576,7 +4592,7 @@
 	<!-- ============ -->
 
 	<xsl:template name="processBibitem">
-		<xsl:if test="$namespace = 'ogc'">
+		<xsl:if test="$namespace = 'ogc' or $namespace = 'ogc-white-paper'">
 			<xsl:choose>
 				<xsl:when test="*[local-name() = 'formattedref']">
 					<xsl:apply-templates select="*[local-name() = 'formattedref']"/>
