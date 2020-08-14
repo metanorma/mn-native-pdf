@@ -4574,6 +4574,196 @@
 	
 	<!-- ============ -->
 	<!-- ============ -->
+
+	<xsl:template name="processBibitem">
+		<xsl:if test="$namespace = 'ogc'">
+			<xsl:choose>
+				<xsl:when test="*[local-name() = 'formattedref']">
+					<xsl:apply-templates select="*[local-name() = 'formattedref']"/>
+				</xsl:when>
+				<xsl:otherwise>
+					<xsl:variable name="personalAuthors">
+						<xsl:for-each select="*[local-name() = 'contributor'][*[local-name() = 'role']/@type='author']/*[local-name() = 'person']">
+							<xsl:call-template name="processPersonalAuthor"/>
+						</xsl:for-each>
+						<xsl:if test="not(*[local-name() = 'contributor'][*[local-name() = 'role']/@type='author']/*[local-name() = 'person'])">
+							<xsl:for-each select="*[local-name() = 'contributor'][*[local-name() = 'role']/@type='editor']/*[local-name() = 'person']">
+								<xsl:call-template name="processPersonalAuthor"/>
+							</xsl:for-each>
+						</xsl:if>
+					</xsl:variable>
+					
+					<xsl:variable name="city" select="*[local-name() = 'place']"/>
+					<xsl:variable name="year">
+						<xsl:choose>
+							<xsl:when test="*[local-name() = 'date'][@type = 'published']">
+								<xsl:for-each select="*[local-name() = 'date'][@type = 'published']">
+									<xsl:call-template name="renderDate"/>									
+								</xsl:for-each>								
+							</xsl:when>
+							<xsl:when test="*[local-name() = 'date'][@type = 'issued']">
+								<xsl:for-each select="*[local-name() = 'date'][@type = 'issued']">
+									<xsl:call-template name="renderDate"/>									
+								</xsl:for-each>
+							</xsl:when>
+							<xsl:when test="*[local-name() = 'date'][@type = 'circulated']">
+								<xsl:for-each select="*[local-name() = 'date'][@type = 'circulated']">
+									<xsl:call-template name="renderDate"/>									
+								</xsl:for-each>								
+							</xsl:when>
+							<xsl:otherwise>
+								<xsl:for-each select="*[local-name() = 'date']">
+									<xsl:call-template name="renderDate"/>
+								</xsl:for-each>
+							</xsl:otherwise>
+						</xsl:choose>
+					</xsl:variable>
+					
+					<xsl:variable name="uri" select="*[local-name() = 'uri']"/>
+					
+					
+					<!-- citation structure:
+					{personal names | organisation}: {document identifier}, {title}. {publisher}, {city} ({year})
+					-->
+					
+					<!-- Author(s) -->
+					<xsl:choose>
+						<xsl:when test="xalan:nodeset($personalAuthors)//author">
+							<xsl:for-each select="xalan:nodeset($personalAuthors)//author">
+								<xsl:apply-templates />
+								<xsl:if test="position() != last()">, </xsl:if>
+							</xsl:for-each>
+							<xsl:text>: </xsl:text>
+						</xsl:when>
+						<xsl:when test="*[local-name() = 'contributor'][*[local-name() = 'role']/@type = 'publisher']/*[local-name() = 'organization']/*[local-name() = 'abbreviation']">
+							<xsl:for-each select="*[local-name() = 'contributor'][*[local-name() = 'role']/@type = 'publisher']/*[local-name() = 'organization']/*[local-name() = 'abbreviation']">
+								<xsl:value-of select="."/>
+								<xsl:if test="position() != last()">/</xsl:if>
+							</xsl:for-each>
+							<xsl:text>: </xsl:text>
+						</xsl:when>
+						<xsl:when test="*[local-name() = 'contributor'][*[local-name() = 'role']/@type = 'publisher']/*[local-name() = 'organization']/*[local-name() = 'name']">									
+							<xsl:for-each select="*[local-name() = 'contributor'][*[local-name() = 'role']/@type = 'publisher']/*[local-name() = 'organization']/*[local-name() = 'name']">
+								<xsl:value-of select="."/>
+								<xsl:if test="position() != last()">, </xsl:if>
+							</xsl:for-each>
+							<xsl:text>: </xsl:text>
+						</xsl:when>
+					</xsl:choose>
+					
+					
+					<xsl:variable name="document_identifier">
+						<xsl:variable name="_doc_ident" select="*[local-name() = 'docidentifier'][not(@type = 'DOI' or @type = 'metanorma' or @type = 'ISSN' or @type = 'ISBN' or @type = 'rfc-anchor')]"/>
+						<xsl:choose>
+							<xsl:when test="normalize-space($_doc_ident) != ''">
+								<xsl:variable name="type" select="*[local-name() = 'docidentifier'][not(@type = 'DOI' or @type = 'metanorma' or @type = 'ISSN' or @type = 'ISBN' or @type = 'rfc-anchor')]/@type"/>
+								<xsl:if test="$type != '' and not(contains($_doc_ident, $type))">
+									<xsl:value-of select="$type"/><xsl:text> </xsl:text>
+								</xsl:if>
+								<xsl:value-of select="$_doc_ident"/>
+							</xsl:when>
+							<xsl:otherwise>
+								<xsl:variable name="type" select="*[local-name() = 'docidentifier'][not(@type = 'metanorma')]/@type"/>
+								<xsl:if test="$type != ''">
+									<xsl:value-of select="$type"/><xsl:text> </xsl:text>
+								</xsl:if>
+								<xsl:value-of select="*[local-name() = 'docidentifier'][not(@type = 'metanorma')]"/>
+							</xsl:otherwise>
+						</xsl:choose>								
+					</xsl:variable>
+					
+					<xsl:value-of select="$document_identifier"/>
+					
+					<xsl:apply-templates select="*[local-name() = 'note']"/>
+					
+					<xsl:text>, </xsl:text>
+					
+					<xsl:choose>
+						<xsl:when test="*[local-name() = 'title'][@type = 'main' and @language = 'en']">
+							<xsl:apply-templates select="*[local-name() = 'title'][@type = 'main' and @language = 'en']"/>
+						</xsl:when>
+						<xsl:otherwise>
+							<xsl:apply-templates select="*[local-name() = 'title']"/>
+						</xsl:otherwise>
+					</xsl:choose>
+					
+					<xsl:text>. </xsl:text>
+					
+					<xsl:if test="*[local-name() = 'contributor'][*[local-name() = 'role']/@type = 'publisher']/*[local-name() = 'organization']/*[local-name() = 'name']">									
+						<xsl:for-each select="*[local-name() = 'contributor'][*[local-name() = 'role']/@type = 'publisher']/*[local-name() = 'organization']/*[local-name() = 'name']">
+							<xsl:value-of select="."/>
+							<xsl:if test="position() != last()">, </xsl:if>
+						</xsl:for-each>
+						<xsl:if test="normalize-space($city) != ''">, </xsl:if>
+					</xsl:if>
+					
+					<xsl:value-of select="$city"/>
+					
+					<xsl:if test="(*[local-name() = 'contributor'][*[local-name() = 'role']/@type = 'publisher']/*[local-name() = 'organization']/*[local-name() = 'name'] or normalize-space($city) != '') and normalize-space($year) != ''">
+						<xsl:text> </xsl:text>
+					</xsl:if>
+					
+					<xsl:if test="normalize-space($year) != ''">
+						<xsl:text>(</xsl:text>
+						<xsl:value-of select="$year"/>
+						<xsl:text>). </xsl:text>
+					</xsl:if>
+					
+					<xsl:if test="normalize-space($uri) != ''">
+						<xsl:text> </xsl:text>
+						<fo:basic-link external-destination="{$uri}" fox:alt-text="{$uri}">
+							<xsl:value-of select="$uri"/>
+						</fo:basic-link>
+					</xsl:if>
+					
+				</xsl:otherwise>
+			</xsl:choose>
+		</xsl:if>
+	</xsl:template>
+	
+	<xsl:template name="processPersonalAuthor">
+		<xsl:choose>
+			<xsl:when test="*[local-name() = 'name']/*[local-name() = 'completename']">
+				<author>
+					<xsl:apply-templates select="*[local-name() = 'name']/*[local-name() = 'completename']"/>
+				</author>
+			</xsl:when>
+			<xsl:when test="*[local-name() = 'name']/*[local-name() = 'surname'] and *[local-name() = 'name']/*[local-name() = 'initial']">
+				<author>
+					<xsl:apply-templates select="*[local-name() = 'name']/*[local-name() = 'surname']"/>
+					<xsl:text> </xsl:text>
+					<xsl:apply-templates select="*[local-name() = 'name']/*[local-name() = 'initial']" mode="strip"/>
+				</author>
+			</xsl:when>
+			<xsl:when test="*[local-name() = 'name']/*[local-name() = 'surname'] and *[local-name() = 'name']/*[local-name() = 'forename']">
+				<author>
+					<xsl:apply-templates select="*[local-name() = 'name']/*[local-name() = 'surname']"/>
+					<xsl:text> </xsl:text>
+					<xsl:apply-templates select="*[local-name() = 'name']/*[local-name() = 'forename']" mode="strip"/>
+				</author>
+			</xsl:when>
+			<xsl:otherwise>
+				<xsl:apply-templates />
+			</xsl:otherwise>
+		</xsl:choose>
+	</xsl:template>
+	
+	<xsl:template name="renderDate">		
+			<xsl:if test="*[local-name() = 'on']">
+				<xsl:value-of select="*[local-name() = 'on']"/>
+			</xsl:if>
+			<xsl:if test="*[local-name() = 'from']">
+				<xsl:value-of select="concat(*[local-name() = 'from'], '–', *[local-name() = 'to'])"/>
+			</xsl:if>
+	</xsl:template>
+	
+	<xsl:template match="*[local-name() = 'name']/*[local-name() = 'initial']/text()" mode="strip">
+		<xsl:value-of select="translate(.,'. ','')"/>
+	</xsl:template>
+	
+	<xsl:template match="*[local-name() = 'name']/*[local-name() = 'forename']/text()" mode="strip">
+		<xsl:value-of select="substring(.,1,1)"/>
+	</xsl:template>
 	
 	<!-- convert YYYY-MM-DD to 'Month YYYY' or 'Month DD, YYYY' -->
 	<xsl:template name="convertDate">
