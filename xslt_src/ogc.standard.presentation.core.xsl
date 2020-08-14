@@ -815,43 +815,8 @@
 		<fo:block id="{@id}" margin-bottom="12pt" start-indent="12mm" text-indent="-12mm" line-height="115%">
 			<xsl:if test=".//ogc:fn">
 				<xsl:attribute name="line-height-shift-adjustment">disregard-shifts</xsl:attribute>
-			</xsl:if>
-			<xsl:choose>
-				<xsl:when test="ogc:formattedref">
-					<xsl:apply-templates select="ogc:formattedref"/>
-				</xsl:when>
-				<xsl:otherwise>
-					<xsl:for-each select="ogc:contributor[ogc:role/@type='publisher']/ogc:organization/ogc:name">
-						<xsl:apply-templates />
-						<xsl:if test="position() != last()">, </xsl:if>
-						<xsl:if test="position() = last()">: </xsl:if>
-					</xsl:for-each>
-						<!-- ogc:docidentifier -->
-					<xsl:if test="ogc:docidentifier">
-						<xsl:value-of select="ogc:docidentifier/@type"/><xsl:text> </xsl:text>
-						<xsl:value-of select="ogc:docidentifier"/>
-					</xsl:if>
-					<xsl:apply-templates select="ogc:note"/>
-					<xsl:if test="ogc:docidentifier">, </xsl:if>
-					<fo:inline font-style="italic">
-						<xsl:choose>
-							<xsl:when test="ogc:title[@type = 'main' and @language = 'en']">
-								<xsl:value-of select="ogc:title[@type = 'main' and @language = 'en']"/><xsl:text>. </xsl:text>
-							</xsl:when>
-							<xsl:otherwise>
-								<xsl:value-of select="ogc:title"/><xsl:text>. </xsl:text>
-							</xsl:otherwise>
-						</xsl:choose>
-					</fo:inline>
-					<xsl:for-each select="ogc:contributor[ogc:role/@type='publisher']/ogc:organization/ogc:name">
-						<xsl:apply-templates />
-						<xsl:if test="position() != last()">, </xsl:if>
-					</xsl:for-each>
-					<xsl:if test="ogc:date[@type='published']/ogc:on">
-						<xsl:text>(</xsl:text><xsl:value-of select="ogc:date[@type='published']/ogc:on"/><xsl:text>)</xsl:text>
-					</xsl:if>
-			</xsl:otherwise>
-			</xsl:choose>
+			</xsl:if>			
+			<xsl:call-template name="processBibitem"/>			
 		</fo:block>
 	</xsl:template>
 	
@@ -984,8 +949,7 @@
 		</fo:block>
 	</xsl:template>
 
-	<!-- Example: [1] ISO 9:1995, Information and documentation – Transliteration of Cyrillic characters into Latin characters – Slavic and non-Slavic languages -->
-	<!-- <xsl:template match="ogc:references[@id = '_bibliography']/ogc:bibitem"> [position() &gt; 1] -->
+	<!-- Example: [1] ISO 9:1995, Information and documentation – Transliteration of Cyrillic characters into Latin characters – Slavic and non-Slavic languages -->	
 	<xsl:template match="ogc:references[not(@normative='true')]/ogc:bibitem">
 		<fo:list-block id="{@id}" margin-bottom="12pt" provisional-distance-between-starts="12mm">
 			<fo:list-item>
@@ -998,80 +962,23 @@
 				</fo:list-item-label>
 				<fo:list-item-body start-indent="body-start()">
 					<fo:block>
-						
-						<xsl:if test="not(ogc:formattedref)">
-							<xsl:choose>
-								<xsl:when test="ogc:contributor[ogc:role/@type='publisher']/ogc:organization/ogc:abbreviation">
-									<xsl:for-each select="ogc:contributor[ogc:role/@type='publisher']/ogc:organization/ogc:abbreviation">
-										<xsl:value-of select="."/>
-										<xsl:if test="position() != last()">/</xsl:if>
-									</xsl:for-each>
-									<xsl:text>: </xsl:text>
-								</xsl:when>
-								<xsl:when test="ogc:contributor[ogc:role/@type='publisher']/ogc:organization/ogc:name">
-									<xsl:value-of select="ogc:contributor[ogc:role/@type='publisher']/ogc:organization/ogc:name"/>
-									<xsl:text>: </xsl:text>
-								</xsl:when>
-							</xsl:choose>
-							
-						</xsl:if>
-						
-						<xsl:if test="ogc:docidentifier">
-							<xsl:choose>
-								<xsl:when test="ogc:docidentifier/@type = 'ISO' and ogc:formattedref"/>
-								<xsl:when test="ogc:docidentifier/@type = 'OGC' and ogc:formattedref"/>
-								<xsl:otherwise><fo:inline>
-									<xsl:if test="ogc:docidentifier/@type = 'OGC'">OGC </xsl:if>
-									<xsl:value-of select="ogc:docidentifier"/><xsl:apply-templates select="ogc:note"/>, </fo:inline></xsl:otherwise>
-							</xsl:choose>
-						</xsl:if>
-						
-					
-						
-						<xsl:choose>
-							<xsl:when test="ogc:title[@type = 'main' and @language = 'en']">
-								<xsl:apply-templates select="ogc:title[@type = 'main' and @language = 'en']"/>
-							</xsl:when>
-							<xsl:otherwise>
-								<xsl:apply-templates select="ogc:title"/>
-							</xsl:otherwise>
-						</xsl:choose>
-						<xsl:if test="ogc:contributor[ogc:role/@type='publisher']/ogc:organization/ogc:name">
-							<xsl:text>, </xsl:text>
-							<xsl:for-each select="ogc:contributor[ogc:role/@type='publisher']/ogc:organization/ogc:name">
-								<xsl:if test="position() != last()">and </xsl:if>
-								<xsl:value-of select="."/>
-							</xsl:for-each>
-							
-						</xsl:if>
-						<xsl:if test="ogc:place">
-							<xsl:text>, </xsl:text>
-							<xsl:value-of select="ogc:place"/>
-						</xsl:if>
-						<xsl:if test="ogc:date[@type='published']/ogc:on">
-							<xsl:text> (</xsl:text><xsl:value-of select="ogc:date[@type='published']/ogc:on"/><xsl:text>).</xsl:text>
-						</xsl:if>
-						<xsl:apply-templates select="ogc:formattedref"/>
+						<xsl:call-template name="processBibitem"/>
 					</fo:block>
 				</fo:list-item-body>
 			</fo:list-item>
 		</fo:list-block>
 	</xsl:template>
 	
-	<!-- <xsl:template match="ogc:references[@id = '_bibliography']/ogc:bibitem" mode="contents"/> [position() &gt; 1] -->
+
 	<xsl:template match="ogc:references[not(@normative='true')]/ogc:bibitem" mode="contents"/>
 	
-	<!-- <xsl:template match="ogc:references[@id = '_bibliography']/ogc:bibitem/ogc:title"> [position() &gt; 1]-->
-	<xsl:template match="ogc:references[not(@normative='true')]/ogc:bibitem/ogc:title">
+	<xsl:template match="ogc:bibitem/ogc:title">
 		<fo:inline font-style="italic">
 			<xsl:apply-templates />
 		</fo:inline>
 	</xsl:template>
 
 
-
-
-	
 	<xsl:template match="ogc:admonition">
 		<fo:block-container border="0.5pt solid rgb(79, 129, 189)" color="rgb(79, 129, 189)" margin-left="16mm" margin-right="16mm" margin-bottom="12pt">
 			<fo:block-container margin-left="0mm" margin-right="0mm" padding="2mm" padding-top="3mm">
