@@ -87,7 +87,9 @@ XSLT_GENERATED := xslt/iec.international-standard.xsl \
 	xslt/iho.standard.xsl \
 	xslt/iho.standard.presentation.xsl \
 	xslt/mpfd.standards.xsl \
-	xslt/mpfd.standards.presentation.xsl 
+	xslt/mpfd.standards.presentation.xsl \
+	xslt/mpfd.circular.xsl \
+	xslt/mpfd.circular.presentation.xsl 
 #	xslt/nist.cswp.xsl \
 #	xslt/nist.cswp.presentation.xsl \
 #	xslt/nist.sp.xsl \
