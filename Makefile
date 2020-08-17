@@ -16,7 +16,8 @@ SRC := $(patsubst mn-samples-iso/documents/international-standard/%,sources/iso-
 	$(patsubst mn-samples-m3aawg/documents/best-practice/%,sources/m3d-bp-%,$(wildcard mn-samples-m3aawg/documents/**/*.xml)) \
 	$(patsubst mn-samples-cc/documents/%,sources/%,$(wildcard mn-samples-cc/documents/*.xml)) \
 	$(patsubst mn-samples-gb/documents/%,sources/gb-%,$(wildcard mn-samples-gb/documents/*.xml)) \
-	$(patsubst mn-samples-iho/documents/%,sources/iho-%,$(wildcard mn-samples-iho/documents/*.xml))
+	$(patsubst mn-samples-iho/documents/%,sources/iho-%,$(wildcard mn-samples-iho/documents/*.xml)) \
+	$(patsubst mn-samples-mpfa/documents/%,sources/%,$(wildcard mn-samples-mpfa/documents/*.xml))
  
 PDF := $(patsubst sources/%,documents/%,$(patsubst %.xml,%.pdf,$(SRC)))
 HTML := $(patsubst sources/%,documents/%,$(patsubst %.xml,%.html,$(SRC)))
@@ -85,10 +86,12 @@ XSLT_GENERATED := xslt/iec.international-standard.xsl \
 	xslt/iho.specification.presentation.xsl \
 	xslt/iho.standard.xsl \
 	xslt/iho.standard.presentation.xsl \
-	xslt/nist.cswp.xsl \
-	xslt/nist.cswp.presentation.xsl \
-	xslt/nist.sp.xsl \
-	xslt/nist.sp.presentation.xsl 
+	xslt/mpfd.standards.xsl \
+	xslt/mpfd.standards.presentation.xsl 
+#	xslt/nist.cswp.xsl \
+#	xslt/nist.cswp.presentation.xsl \
+#	xslt/nist.sp.xsl \
+#	xslt/nist.sp.presentation.xsl 
 
 MN2PDF_DOWNLOAD_PATH := https://github.com/metanorma/mn2pdf/releases/download/v1.18/mn2pdf-1.18.jar
 # MN2PDF_DOWNLOAD_PATH := https://maven.pkg.github.com/metanorma/mn2pdf/com/metanorma/fop/mn2pdf/1.7/mn2pdf-1.7.jar
@@ -148,6 +151,9 @@ sources/gb-%: mn-samples-gb/documents/%
 	cp $< $@
 
 sources/iho-%: mn-samples-iho/documents/%
+	cp $< $@
+
+sources/mpfd-%: mn-samples-mpfa/documents/%
 	cp $< $@
 
 documents:
