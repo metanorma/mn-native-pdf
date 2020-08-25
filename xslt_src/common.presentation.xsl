@@ -2643,18 +2643,18 @@
 					<xsl:if test="$namespace = 'itu'">
 						<xsl:attribute name="text-align">justify</xsl:attribute>
 					</xsl:if>
-					<xsl:if test="$namespace = 'nist-cswp'  or $namespace = 'nist-sp'">
+					<!-- <xsl:if test="$namespace = 'nist-cswp'  or $namespace = 'nist-sp'">
 						<xsl:if test="local-name(*[1]) != 'stem'">
 							<xsl:apply-templates select="following-sibling::*[local-name()='dd'][1]" mode="process"/>
 						</xsl:if>
-					</xsl:if>
-					<xsl:if test="$namespace = 'iso' or $namespace = 'iec' or $namespace = 'itu' or $namespace = 'unece' or $namespace = 'unece-rec'  or $namespace = 'csd' or $namespace = 'ogc' or $namespace = 'ogc-white-paper' or $namespace = 'gb' or $namespace = 'm3d' or $namespace = 'iho' or $namespace = 'mpfd'">
+					</xsl:if> -->
+					<xsl:if test="$namespace = 'iso' or $namespace = 'iec' or $namespace = 'itu' or $namespace = 'unece' or $namespace = 'unece-rec'  or $namespace = 'csd' or $namespace = 'ogc' or $namespace = 'ogc-white-paper' or $namespace = 'gb' or $namespace = 'm3d' or $namespace = 'iho' or $namespace = 'mpfd' or $namespace = 'nist-cswp'  or $namespace = 'nist-sp'">
 						<xsl:apply-templates select="following-sibling::*[local-name()='dd'][1]" mode="process"/>
 					</xsl:if>
 				</fo:block>
 			</fo:table-cell>
 		</fo:table-row>
-		<xsl:if test="$namespace = 'nist-cswp'  or $namespace = 'nist-sp'">
+		<!-- <xsl:if test="$namespace = 'nist-cswp'  or $namespace = 'nist-sp'">
 			<xsl:if test="local-name(*[1]) = 'stem'">
 				<fo:table-row>
 				<fo:table-cell>
@@ -2672,7 +2672,7 @@
 				</fo:table-cell>
 			</fo:table-row>
 			</xsl:if>
-		</xsl:if>
+		</xsl:if> -->
 	</xsl:template>
 	
 	<xsl:template match="*[local-name()='dd']" mode="dl"/>
@@ -4511,7 +4511,7 @@
 	</xsl:template>
 	
 	<xsl:template match="/*/*[local-name() = 'bibliography']/*[local-name() = 'references'][@normative='true']">
-		<xsl:if test="$namespace = 'nist-cswp'">
+		<xsl:if test="$namespace = 'nist-sp' or $namespace = 'nist-cswp'">
 			<fo:block break-after="page"/>
 		</xsl:if>
 		<fo:block id="{@id}">
