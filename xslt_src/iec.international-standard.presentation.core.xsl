@@ -1859,11 +1859,6 @@
 	</xsl:template>
 	
 
-	
-	
-
-
-	<!-- <xsl:template match="iec:references[@id = '_bibliography']"> -->
 	<xsl:template match="iec:references[not(@normative='true')]">
 		<fo:block break-after="page"/>
 		<fo:block id="{@id}">
@@ -1876,14 +1871,12 @@
 
 
 	<!-- Example: [1] ISO 9:1995, Information and documentation – Transliteration of Cyrillic characters into Latin characters – Slavic and non-Slavic languages -->
-	<!-- <xsl:template match="iec:references[@id = '_bibliography']/iec:bibitem"> -->
 	<xsl:template match="iec:references[not(@normative='true')]/iec:bibitem">
-		<fo:list-block margin-top="5pt" margin-bottom="14pt" provisional-distance-between-starts="0mm"> <!-- provisional-distance-between-starts="12mm" -->
+		<fo:list-block margin-top="5pt" margin-bottom="14pt" provisional-distance-between-starts="12mm"> <!-- provisional-distance-between-starts="0mm" -->
 			<fo:list-item>
 				<fo:list-item-label end-indent="label-end()">
-					<fo:block font-size="1pt">
-						<fo:inline id="{@id}">&#xA0;</fo:inline>
-							<!-- <xsl:number format="[1]"/> -->
+					<fo:block id="{@id}">
+							<xsl:number format="[1]"/>
 					</fo:block>
 				</fo:list-item-label>
 				<fo:list-item-body start-indent="body-start()">
@@ -1909,10 +1902,8 @@
 		</fo:list-block>
 	</xsl:template>
 	
-	<!-- <xsl:template match="iec:references[@id = '_bibliography']/iec:bibitem" mode="contents"/> -->
 	<xsl:template match="iec:references[not(@normative='true')]/iec:bibitem" mode="contents"/>
 	
-	<!-- <xsl:template match="iec:references[@id = '_bibliography']/iec:bibitem/iec:title"> -->
 	<xsl:template match="iec:references[not(@normative='true')]/iec:bibitem/iec:title">
 		<fo:inline font-style="italic">
 			<xsl:apply-templates />
