@@ -89,7 +89,13 @@ XSLT_GENERATED := xslt/iec.international-standard.xsl \
 	xslt/mpfd.standards.xsl \
 	xslt/mpfd.standards.presentation.xsl \
 	xslt/mpfd.circular.xsl \
-	xslt/mpfd.circular.presentation.xsl 
+	xslt/mpfd.circular.presentation.xsl \
+	xslt/mpfd.compliance-standards-for-mpf-trustees.xsl \
+	xslt/mpfd.compliance-standards-for-mpf-trustees.presentation.xsl \
+	xslt/mpfd.guidelines.xsl \
+	xslt/mpfd.guidelines.presentation.xsl \
+	xslt/mpfd.supervision-of-mpf-intermediaries.xsl \
+	xslt/mpfd.supervision-of-mpf-intermediaries.presentation.xsl
 #	xslt/nist.cswp.xsl \
 #	xslt/nist.cswp.presentation.xsl \
 #	xslt/nist.sp.xsl \
