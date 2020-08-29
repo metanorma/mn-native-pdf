@@ -24,6 +24,8 @@
 	<xsl:variable name="pageWidth" select="'210mm'"/>
 	<xsl:variable name="pageHeight" select="'297mm'"/>
 
+	<xsl:variable name="docidentifierISO" select="/iso:iso-standard/iso:bibdata/iso:docidentifier[@type = 'iso'] | /iso:iso-standard/iso:bibdata/iso:docidentifier[@type = 'ISO']"/>
+
 	<xsl:variable name="copyrightText" select="concat('© ISO ', iso:iso-standard/iso:bibdata/iso:copyright/iso:from ,' – All rights reserved')"/>
   
 	<xsl:variable name="lang-1st-letter_tmp" select="substring-before(substring-after(/iso:iso-standard/iso:bibdata/iso:docidentifier[@type = 'iso-with-lang'], '('), ')')"/>
@@ -422,7 +424,7 @@
 											<xsl:value-of select="$stage-fullname-uppercased"/>											
 										</fo:block>
 										<fo:block font-size="20pt" font-weight="bold" text-align="right">
-											<xsl:value-of select="/iso:iso-standard/iso:bibdata/iso:docidentifier[@type = 'iso']"/>
+											<xsl:value-of select="$docidentifierISO"/>
 										</fo:block>
 										
 										
@@ -573,7 +575,7 @@
 													</fo:table-cell>
 													<fo:table-cell>
 														<fo:block text-align="right" font-weight="bold" margin-bottom="13mm">
-															<xsl:value-of select="/iso:iso-standard/iso:bibdata/iso:docidentifier[@type = 'iso']"/>
+															<xsl:value-of select="$docidentifierISO"/>
 														</fo:block>
 													</fo:table-cell>
 												</fo:table-row>
@@ -586,11 +588,11 @@
 																<xsl:call-template name="printEdition"/>
 															</xsl:if>
 															<xsl:choose>
-																<xsl:when test="$stage-abbreviation = 'IS'">
+																<xsl:when test="$stage-abbreviation = 'IS' and /iso:iso-standard/iso:bibdata/iso:date[@type = 'published']">
 																	<xsl:value-of select="$linebreak"/>
 																	<xsl:value-of select="/iso:iso-standard/iso:bibdata/iso:date[@type = 'published']"/>
-																</xsl:when>
-																<xsl:when test="$stage-abbreviation = 'published'">
+																</xsl:when>																
+																<xsl:when test="$stage-abbreviation = 'IS' or $stage-abbreviation = 'published'">
 																	<xsl:value-of select="$linebreak"/>
 																	<xsl:value-of select="substring(/iso:iso-standard/iso:bibdata/iso:version/iso:revision-date,1, 7)"/>
 																</xsl:when>
@@ -745,7 +747,7 @@
 											</fo:table-cell>
 											<fo:table-cell>
 												<fo:block text-align="right" font-weight="bold" margin-bottom="13mm">
-													<xsl:value-of select="/iso:iso-standard/iso:bibdata/iso:docidentifier[@type = 'iso']"/>
+													<xsl:value-of select="$docidentifierISO"/>
 												</fo:block>
 											</fo:table-cell>
 										</fo:table-row>
@@ -922,7 +924,7 @@
 							</fo:block-container>
 							<fo:block font-size="11pt" margin-bottom="8pt"><xsl:value-of select="$linebreak"/></fo:block>
 							<fo:block-container font-size="40pt" text-align="center" margin-bottom="12pt" border="0.5pt solid black">
-								<xsl:variable name="stage-title" select="substring-after(substring-before(/iso:iso-standard/iso:bibdata/iso:docidentifier[@type = 'iso'], ' '), '/')"/>
+								<xsl:variable name="stage-title" select="substring-after(substring-before($docidentifierISO, ' '), '/')"/>
 								<fo:block padding-top="2mm"><xsl:value-of select="$stage-title"/><xsl:text> stage</xsl:text></fo:block>
 							</fo:block-container>
 							<fo:block><xsl:value-of select="$linebreak"/></fo:block>
