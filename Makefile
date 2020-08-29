@@ -16,7 +16,8 @@ SRC := $(patsubst mn-samples-iso/documents/international-standard/%,sources/iso-
 	$(patsubst mn-samples-m3aawg/documents/best-practice/%,sources/m3d-bp-%,$(wildcard mn-samples-m3aawg/documents/**/*.xml)) \
 	$(patsubst mn-samples-cc/documents/%,sources/%,$(wildcard mn-samples-cc/documents/*.xml)) \
 	$(patsubst mn-samples-gb/documents/%,sources/gb-%,$(wildcard mn-samples-gb/documents/*.xml)) \
-	$(patsubst mn-samples-iho/documents/%,sources/iho-%,$(wildcard mn-samples-iho/documents/*.xml))
+	$(patsubst mn-samples-iho/documents/%,sources/iho-%,$(wildcard mn-samples-iho/documents/*.xml)) \
+	$(patsubst mn-samples-mpfa/documents/%,sources/%,$(wildcard mn-samples-mpfa/documents/*.xml))
  
 PDF := $(patsubst sources/%,documents/%,$(patsubst %.xml,%.pdf,$(SRC)))
 HTML := $(patsubst sources/%,documents/%,$(patsubst %.xml,%.html,$(SRC)))
@@ -85,6 +86,16 @@ XSLT_GENERATED := xslt/iec.international-standard.xsl \
 	xslt/iho.specification.presentation.xsl \
 	xslt/iho.standard.xsl \
 	xslt/iho.standard.presentation.xsl \
+	xslt/mpfd.standards.xsl \
+	xslt/mpfd.standards.presentation.xsl \
+	xslt/mpfd.circular.xsl \
+	xslt/mpfd.circular.presentation.xsl \
+	xslt/mpfd.compliance-standards-for-mpf-trustees.xsl \
+	xslt/mpfd.compliance-standards-for-mpf-trustees.presentation.xsl \
+	xslt/mpfd.guidelines.xsl \
+	xslt/mpfd.guidelines.presentation.xsl \
+	xslt/mpfd.supervision-of-mpf-intermediaries.xsl \
+	xslt/mpfd.supervision-of-mpf-intermediaries.presentation.xsl \
 	xslt/nist.cswp.xsl \
 	xslt/nist.cswp.presentation.xsl \
 	xslt/nist.sp.xsl \
@@ -148,6 +159,9 @@ sources/gb-%: mn-samples-gb/documents/%
 	cp $< $@
 
 sources/iho-%: mn-samples-iho/documents/%
+	cp $< $@
+
+sources/mpfd-%: mn-samples-mpfa/documents/mpfd-%
 	cp $< $@
 
 documents:
