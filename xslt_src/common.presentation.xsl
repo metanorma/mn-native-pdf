@@ -161,8 +161,12 @@
 	
 		
 	<xsl:attribute-set name="link-style">
-		<xsl:if test="$namespace = 'iso' or $namespace = 'csd' or $namespace = 'ogc' or $namespace = 'ogc-white-paper' or $namespace = 'rsd' or or $namespace = 'm3d' or $namespace = 'iho' or $namespace = 'mpfd'">
+		<xsl:if test="$namespace = 'iso' or $namespace = 'csd' or $namespace = 'ogc-white-paper' or $namespace = 'rsd' or or $namespace = 'm3d' or $namespace = 'iho' or $namespace = 'mpfd'">
 			<xsl:attribute name="color">blue</xsl:attribute>
+			<xsl:attribute name="text-decoration">underline</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'ogc'">
+			<xsl:attribute name="color">rgb(33, 55, 92)</xsl:attribute>
 			<xsl:attribute name="text-decoration">underline</xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'csa'">
