@@ -1,4 +1,4 @@
-1#!make
+#!make
 ifeq ($(OS),Windows_NT)
 SHELL := cmd
 else
