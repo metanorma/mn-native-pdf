@@ -155,7 +155,7 @@
 					<!-- background color -->
 					<fo:block-container absolute-position="fixed" left="0" top="0">
             <fo:block>
-              <fo:instream-foreign-object content-height="{$pageHeight}">
+              <fo:instream-foreign-object content-height="{$pageHeight}" fox:alt-text="Background color">
                 <svg xmlns="http://www.w3.org/2000/svg" version="1.0" width="215.9mm" height="279.4mm">
                   <rect width="215.9mm" height="279.4mm" style="fill:rgb(33,55,92);stroke-width:0;fill-opacity:0.85"/>
                 </svg>
@@ -223,7 +223,7 @@
 						</fo:block-container>
 					</fo:block-container>
 
-					<fo:block-container absolute-position="fixed" left="16.5mm" top="220mm" height="44mm" width="180mm" display-align="after" font-size="10pt">
+					<fo:block-container absolute-position="fixed" left="16.5mm" top="204mm" height="60mm" width="180mm" display-align="after" font-size="10pt">
 						<fo:block line-height="140%">
 							<xsl:apply-templates select="/ogc:ogc-standard/ogc:bibdata/ogc:edition"/>
 							<fo:block>
@@ -282,7 +282,7 @@
 					<!-- crossing lines -->					
 					<fo:block-container absolute-position="fixed" width="{$pageWidth}" height="{$pageHeight}">
 						<fo:block>
-							<fo:instream-foreign-object content-height="{$pageHeight}" content-width="{$pageWidth}">
+							<fo:instream-foreign-object content-height="{$pageHeight}" content-width="{$pageWidth}" fox:alt-text="Crossing lines">
 								<svg viewBox="0 0 2159 2794" xmlns="http://www.w3.org/2000/svg" width="{$pageWidth}" height="{$pageHeight}">
 									<line x1="230" y1="0" x2="2159" y2="490" stroke="{$color_lightorange}"/>
 									<line x1="0" y1="395" x2="820" y2="0" stroke="{$color_lightorange}"/>
@@ -315,7 +315,7 @@
 					<!-- crossing lines -->					
 					<fo:block-container absolute-position="fixed" width="{$pageWidth}" height="{$pageHeight}">
 						<fo:block>
-							<fo:instream-foreign-object content-height="{$pageHeight}" content-width="{$pageWidth}">
+							<fo:instream-foreign-object content-height="{$pageHeight}" content-width="{$pageWidth}" fox:alt-text="Crossing lines">
 								<svg viewBox="0 0 2159 2794" xmlns="http://www.w3.org/2000/svg" width="{$pageWidth}" height="{$pageHeight}">
 									<line x1="0" y1="545" x2="2084" y2="0" stroke="{$color_lightorange}"/>
 									<line x1="0" y1="1374" x2="355" y2="0" stroke="{$color_lightorange}"/>
@@ -575,6 +575,10 @@
 	<xsl:template match="text()" priority="1">
 		<xsl:value-of select="translate(., $thinspace, ' ')"/>
 	</xsl:template>
+	
+	<xsl:template match="text()" priority="1" mode="contents">
+		<xsl:value-of select="translate(., $thinspace, ' ')"/>
+	</xsl:template>
 
 	<xsl:template match="*[local-name()='td']//text() | *[local-name()='th']//text()" priority="2">
 		<xsl:variable name="content">
@@ -598,7 +602,7 @@
 				<!-- background color -->
 				<fo:block-container absolute-position="fixed" left="0" top="0">
 					<fo:block>
-						<fo:instream-foreign-object content-height="{$pageHeight}">
+						<fo:instream-foreign-object content-height="{$pageHeight}" fox:alt-text="Background color">
 							<svg xmlns="http://www.w3.org/2000/svg" version="1.0" width="{$pageWidth}" height="{$pageHeight}">
 								<rect width="215.9mm" height="279.4mm" style="fill:rgb(33,55,92);stroke-width:0;fill-opacity:1"/>
 							</svg>
@@ -843,10 +847,18 @@
 										<fo:table-cell>
 											<fo:block space-before="36pt">
 												<xsl:variable name="title">
-													<xsl:call-template name="extractTitle"/>
+													<!-- <xsl:call-template name="extractTitle"/> -->
 													<!-- <xsl:for-each select="..">
 														<xsl:call-template name="getName"/>
 													</xsl:for-each> -->
+													<xsl:choose>
+														<xsl:when test="*[local-name() = 'tab']">
+															<xsl:copy-of select="*[local-name() = 'tab'][1]/following-sibling::node()"/>
+														</xsl:when>
+														<xsl:otherwise>
+															<xsl:copy-of select="."/>
+														</xsl:otherwise>
+													</xsl:choose>
 												</xsl:variable>
 												<xsl:call-template name="insertSectionTitle">
 													<xsl:with-param name="title" select="$title"/>
@@ -863,11 +875,11 @@
 			<xsl:when test="$level = 2">
 				<fo:block space-before="24pt" margin-bottom="10pt">
 					<xsl:attribute name="keep-with-next">always</xsl:attribute>		
-					<xsl:variable name="title">
+					<!-- <xsl:variable name="title">
 						<xsl:apply-templates/>
-					</xsl:variable>
+					</xsl:variable> -->
 					<xsl:call-template name="insertSectionTitle">
-						<xsl:with-param name="title" select="$title"/>
+						<xsl:with-param name="title" select="."/>
 					</xsl:call-template>
 				</fo:block>
 			</xsl:when>
@@ -944,7 +956,7 @@
 																ogc:name//ogc:fn | 
 																ogc:p/ogc:fn[not(ancestor::ogc:table)] | 
 																ogc:p/*/ogc:fn[not(ancestor::ogc:table)] |
-																ogc:sourcecode/ogc:fn[not(ancestor::ogc:table)]" priority="2">
+																ogc:sourcecode/ogc:fn[not(ancestor::ogc:table)]" priority="2" name="fn">
 		<fo:footnote keep-with-previous.within-line="always">
 			<xsl:variable name="number" select="@reference"/>
 			
@@ -954,7 +966,7 @@
 				</fo:basic-link>
 			</fo:inline>
 			<fo:footnote-body>
-				<fo:block font-size="10pt" margin-bottom="12pt" font-weight="normal" text-indent="0" start-indent="0" color="{$color_main}" text-align="justify">
+				<fo:block font-size="10pt" margin-bottom="12pt" font-weight="normal" text-indent="0" start-indent="0" color="{$color_main}" line-height="124%" text-align="justify">
 					<fo:inline id="footnote_{@reference}" keep-with-next.within-line="always" font-size="60%" vertical-align="super"> <!-- baseline-shift="30%" padding-right="3mm" font-size="60%"  alignment-baseline="hanging" -->
 						<xsl:value-of select="$number "/><!-- + count(//ogc:bibitem/ogc:note) -->
 					</fo:inline>
@@ -1110,7 +1122,8 @@
 			<xsl:call-template name="addLetterSpacing">
 				<xsl:with-param name="text" select="java:toUpperCase(java:java.lang.String.new($kind))"/>
 			</xsl:call-template>			
-		</fo:inline>			
+		</fo:inline>
+		<fo:inline padding-right="2mm">&#xA0;</fo:inline>
 	</xsl:template>
 	
 	
@@ -1308,7 +1321,7 @@
 		
 		<!-- orange circle 14mm -->
 		<fo:block>
-			<fo:instream-foreign-object content-height="14mm" content-width="14mm">
+			<fo:instream-foreign-object content-height="14mm" content-width="14mm"  fox:alt-text="Circle">
 				<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xml:space="preserve" style="shape-rendering:geometricPrecision; text-rendering:geometricPrecision; image-rendering:optimizeQuality; fill-rule:evenodd; clip-rule:evenodd"
 				viewBox="0 0 500 500">
 					<g id="UrTavla">
@@ -1324,7 +1337,7 @@
 	<xsl:template name="insertCrossingLines">
 		<fo:block-container absolute-position="fixed" width="{$pageWidth}" height="{$pageHeight}">
 			<fo:block>
-				<fo:instream-foreign-object content-height="{$pageHeight}" content-width="{$pageWidth}">
+				<fo:instream-foreign-object content-height="{$pageHeight}" content-width="{$pageWidth}" fox:alt-text="Crossing lines">
 					<svg viewBox="0 0 2159 2794" xmlns="http://www.w3.org/2000/svg" width="{$pageWidth}" height="{$pageHeight}">
 						<line x1="0" y1="300" x2="2159" y2="675" stroke="{$color_orange}" />
 						<line x1="1215" y1="0" x2="2159" y2="1380" stroke="{$color_orange}" />
@@ -1369,18 +1382,45 @@
 		<xsl:text> </xsl:text>
 	</xsl:template>
 	
+	<xsl:template match="ogc:fn" mode="titlebig">		
+	</xsl:template>
+	
 	<xsl:template name="insertSectionTitle">
 		<xsl:param name="title"/>
 		<fo:block>
 			<fo:block font-size="18pt" color="{$color_blue}" keep-with-next="always" line-height="150%">
-				<xsl:call-template name="addLetterSpacing">
-					<xsl:with-param name="text" select="java:toUpperCase(java:java.lang.String.new($title))"/>
-					<xsl:with-param name="letter-spacing" select="0.6"/>
-				</xsl:call-template>
+				<xsl:apply-templates select="xalan:nodeset($title)" mode="titlesmall"/>
 			</fo:block>
 			<xsl:call-template name="insertOrangeHorizontalLine"/>
 		</fo:block>		
 	</xsl:template>
+	
+	<xsl:template match="text()" mode="titlesmall">
+		<xsl:call-template name="addLetterSpacing">
+				<xsl:with-param name="text" select="java:toUpperCase(java:java.lang.String.new(.))"/>
+				<xsl:with-param name="letter-spacing" select="0.6"/>
+			</xsl:call-template>
+	</xsl:template>
+	
+	<xsl:template match="ogc:strong" mode="titlesmall">
+		<xsl:apply-templates mode="titlesmall"/>		
+	</xsl:template>
+	
+	<xsl:template match="ogc:em" mode="titlesmall">
+		<fo:inline font-style="italic"><xsl:apply-templates mode="titlesmall"/></fo:inline>
+	</xsl:template>
+	
+	<xsl:template match="ogc:fn" mode="titlesmall">
+		<xsl:call-template name="fn"/>
+	</xsl:template>
+	<xsl:template match="ogc:tab " mode="titlesmall">
+		<xsl:apply-templates select="."/>
+	</xsl:template>
+	
+	<xsl:template match="ogc:br" mode="titlesmall">
+		<xsl:value-of select="$linebreak"/>
+	</xsl:template>
+	
 	
 	<xsl:template name="insertOrangeHorizontalLine">		
 		<fo:block-container width="12.7mm" border-top="1pt solid {$color_orange}" margin-top="3mm">

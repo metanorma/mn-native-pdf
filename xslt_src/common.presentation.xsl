@@ -88,7 +88,14 @@
 			<title-modified lang="zh">改写</title-modified>			
 		</xsl:if>
 		
-		<title-source lang="en">SOURCE</title-source>
+		<title-source lang="en">
+			<xsl:if test="$namespace = 'gb' or $namespace = 'iso' or $namespace = 'iec' or $namespace = 'itu' or $namespace = 'unece' or $namespace = 'unece-rec' or $namespace = 'nist-cswp'  or $namespace = 'nist-sp' or $namespace = 'ogc-white-paper' or $namespace = 'rsd' or $namespace = 'csa' or $namespace = 'csd' or $namespace = 'm3d' or $namespace = 'iho' or $namespace = 'mpfd'">
+				<xsl:text>SOURCE</xsl:text>
+			</xsl:if>			
+			 <xsl:if test="$namespace = 'ogc'">
+				<xsl:text>Source</xsl:text>
+			 </xsl:if>
+		</title-source>
 		
 		<title-keywords lang="en">Keywords</title-keywords>
 		
@@ -166,8 +173,8 @@
 			<xsl:attribute name="text-decoration">underline</xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'ogc'">
-			<!-- <xsl:attribute name="color">rgb(33, 55, 92)</xsl:attribute>
-			<xsl:attribute name="text-decoration">underline</xsl:attribute> -->
+			<!-- <xsl:attribute name="color">rgb(33, 55, 92)</xsl:attribute> -->
+			<xsl:attribute name="text-decoration">underline</xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'csa'">
 			<xsl:attribute name="color">rgb(33, 94, 159)</xsl:attribute>
@@ -687,7 +694,9 @@
 		<xsl:if test="$namespace = 'iho' or $namespace = 'iso' or $namespace = 'itu' or $namespace = 'nist-cswp'  or $namespace = 'nist-sp' or $namespace = 'ogc-white-paper' or $namespace = 'rsd' or $namespace = 'mpfd'">
 			<xsl:attribute name="color">blue</xsl:attribute>
 			<xsl:attribute name="text-decoration">underline</xsl:attribute>
-		</xsl:if>		
+		</xsl:if>
+		<xsl:if test="$namespace = 'ogc'">
+		</xsl:if>
 	</xsl:attribute-set>
 
 	<xsl:attribute-set name="eref-style">
@@ -695,9 +704,11 @@
 			<xsl:attribute name="color">rgb(33, 94, 159)</xsl:attribute>
 			<xsl:attribute name="text-decoration">underline</xsl:attribute>
 		</xsl:if>
-		<xsl:if test="$namespace = 'csd' or $namespace = 'itu' or $namespace = 'ogc' or $namespace = 'ogc-white-paper' or $namespace = 'rsd' or $namespace = 'mpfd'">
+		<xsl:if test="$namespace = 'csd' or $namespace = 'itu' or $namespace = 'ogc-white-paper' or $namespace = 'rsd' or $namespace = 'mpfd'">
 			<xsl:attribute name="color">blue</xsl:attribute>
 			<xsl:attribute name="text-decoration">underline</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'ogc'">
 		</xsl:if>
 		<xsl:if test="$namespace = 'nist-cswp' or $namespace = 'nist-sp' or $namespace = 'unece'">
 			<xsl:attribute name="color">blue</xsl:attribute>
@@ -871,7 +882,7 @@
 	</xsl:attribute-set>
 	
 	<xsl:attribute-set name="termnote-style">
-		<xsl:if test="$namespace = 'csa' or $namespace = 'csd' or $namespace = 'ogc' or $namespace = 'ogc-white-paper' or $namespace = 'rsd'">
+		<xsl:if test="$namespace = 'csa' or $namespace = 'csd' or $namespace = 'ogc-white-paper' or $namespace = 'rsd'">
 			<xsl:attribute name="font-size">10pt</xsl:attribute>			
 			<xsl:attribute name="margin-bottom">12pt</xsl:attribute>
 		</xsl:if>
@@ -889,7 +900,17 @@
 		<xsl:if test="$namespace = 'itu' or $namespace = 'nist-cswp'  or $namespace = 'nist-sp' or $namespace = 'unece' or $namespace = 'unece-rec'">			
 			<xsl:attribute name="margin-top">4pt</xsl:attribute>			
 		</xsl:if>
-		
+		<xsl:if test="$namespace = 'ogc'">			
+			<xsl:attribute name="margin-top">12pt</xsl:attribute>			
+			<xsl:attribute name="margin-bottom">12pt</xsl:attribute>						
+		</xsl:if>
+	</xsl:attribute-set>
+
+	<xsl:attribute-set name="termnote-name-style">		
+		<xsl:if test="$namespace = 'ogc'">
+			<xsl:attribute name="font-weight">bold</xsl:attribute>
+			<xsl:attribute name="padding-right">1mm</xsl:attribute>
+		</xsl:if>		
 	</xsl:attribute-set>
 
 	<xsl:attribute-set name="quote-style">		
@@ -968,9 +989,11 @@
 			<xsl:attribute name="color">rgb(33, 94, 159)</xsl:attribute>
 			<xsl:attribute name="text-decoration">underline</xsl:attribute>
 		</xsl:if>
-		<xsl:if test="$namespace = 'iho' or $namespace = 'ogc' or $namespace = 'ogc-white-paper' or $namespace = 'rsd'">
+		<xsl:if test="$namespace = 'iho' or $namespace = 'ogc-white-paper' or $namespace = 'rsd'">
 			<xsl:attribute name="color">blue</xsl:attribute>
 			<xsl:attribute name="text-decoration">underline</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'ogc'">
 		</xsl:if>
 	</xsl:attribute-set>
 
@@ -1155,9 +1178,13 @@
 			<xsl:attribute name="font-size">10pt</xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'gb' or $namespace = 'iec' or $namespace = 'iho' or $namespace = 'iso' or $namespace = 'm3d' or 
-										 $namespace = 'ogc' or $namespace = 'ogc-white-paper'">
+										 $namespace = 'ogc-white-paper'">
 			<xsl:attribute name="font-family">Courier</xsl:attribute>
 			<xsl:attribute name="font-size">10pt</xsl:attribute>			
+		</xsl:if>
+		<xsl:if test="$namespace = 'ogc'">
+			<xsl:attribute name="font-family">FiraCode</xsl:attribute>
+			<xsl:attribute name="font-size">10pt</xsl:attribute>
 		</xsl:if>
 	</xsl:attribute-set>
 
@@ -1166,6 +1193,7 @@
 		<xsl:attribute name="font-weight">bold</xsl:attribute>
 		<xsl:attribute name="text-align">center</xsl:attribute>
 		<xsl:attribute name="margin-bottom">12pt</xsl:attribute>
+		<xsl:attribute name="keep-with-previous">always</xsl:attribute>
 	</xsl:attribute-set>
 
 	<xsl:attribute-set name="domain-style">
@@ -3447,7 +3475,9 @@
 	
 	<xsl:template match="*[local-name() = 'termnote']">
 		<fo:block id="{@id}" xsl:use-attribute-sets="termnote-style">			
-			<xsl:apply-templates select="*[local-name() = 'name']" mode="presentation"/>
+			<fo:inline xsl:use-attribute-sets="termnote-name-style">
+				<xsl:apply-templates select="*[local-name() = 'name']" mode="presentation"/>
+			</fo:inline>
 			<xsl:apply-templates />
 		</fo:block>
 	</xsl:template>
@@ -3731,11 +3761,11 @@
 		<xsl:apply-templates select="*[local-name()='name']" mode="presentation"/>
 	</xsl:template>
 
-	<xsl:template match="*[local-name()='sourcecode']/text()">
+	<xsl:template match="*[local-name()='sourcecode']/text()" priority="2">
 		<xsl:variable name="text">
 			<xsl:call-template name="add-zero-spaces-equal"/>
 		</xsl:variable>
-		<xsl:call-template name="add-zero-spaces">
+		<xsl:call-template name="add-zero-spaces-java">
 			<xsl:with-param name="text" select="$text"/>
 		</xsl:call-template>
 	</xsl:template>
@@ -4200,14 +4230,19 @@
 			<xsl:variable name="termsource_text">
 				<xsl:apply-templates />
 			</xsl:variable>
+			
 			<xsl:choose>
 				<xsl:when test="starts-with(normalize-space($termsource_text), '[')">
 					<xsl:apply-templates />
 				</xsl:when>
-				<xsl:otherwise>
-					<xsl:text>[</xsl:text>
-					<xsl:apply-templates />
-					<xsl:text>]</xsl:text>
+				<xsl:otherwise>					
+					<xsl:if test="$namespace = 'gb' or $namespace = 'iso' or $namespace = 'iec' or $namespace = 'itu' or $namespace = 'unece' or $namespace = 'unece-rec' or $namespace = 'nist-cswp'  or $namespace = 'nist-sp' or $namespace = 'ogc-white-paper' or $namespace = 'rsd' or $namespace = 'csa' or $namespace = 'csd' or $namespace = 'm3d' or $namespace = 'iho'">
+						<xsl:text>[</xsl:text>
+					</xsl:if>
+					<xsl:apply-templates />					
+					<xsl:if test="$namespace = 'gb' or $namespace = 'iso' or $namespace = 'iec' or $namespace = 'itu' or $namespace = 'unece' or $namespace = 'unece-rec' or $namespace = 'nist-cswp'  or $namespace = 'nist-sp' or $namespace = 'ogc-white-paper' or $namespace = 'rsd' or $namespace = 'csa' or $namespace = 'csd' or $namespace = 'm3d' or $namespace = 'iho'">
+						<xsl:text>]</xsl:text>
+					</xsl:if>
 				</xsl:otherwise>
 			</xsl:choose>
 		</fo:block>
@@ -4228,10 +4263,16 @@
 											$namespace = 'iso' or 
 											$namespace = 'ogc' or $namespace = 'ogc-white-paper' or 
 											$namespace = 'rsd' or $namespace = 'mpfd'">
-				<xsl:call-template name="getTitle">
-					<xsl:with-param name="name" select="'title-source'"/>
-				</xsl:call-template>
-				<xsl:text>: </xsl:text>
+				<fo:inline>
+					<xsl:if test="$namespace = 'ogc'">
+						<xsl:attribute name="font-weight">bold</xsl:attribute>
+						<xsl:attribute name="padding-right">1mm</xsl:attribute>
+					</xsl:if>
+					<xsl:call-template name="getTitle">
+						<xsl:with-param name="name" select="'title-source'"/>
+					</xsl:call-template>
+					<xsl:text>: </xsl:text>
+				</fo:inline>
 			</xsl:if>
 			<fo:inline xsl:use-attribute-sets="origin-style">
 				<xsl:apply-templates/>
@@ -4320,9 +4361,11 @@
 			<fo:basic-link internal-destination="{@bibitemid}" fox:alt-text="{@citeas}">
 					
 				<xsl:if test="@type = 'inline'">
-					<xsl:if test="$namespace = 'csd' or $namespace = 'iho' or $namespace = 'ogc' or $namespace = 'ogc-white-paper' or $namespace = 'mpfd'">
+					<xsl:if test="$namespace = 'csd' or $namespace = 'iho' or $namespace = 'ogc-white-paper' or $namespace = 'mpfd'">
 						<xsl:attribute name="color">blue</xsl:attribute>
 						<xsl:attribute name="text-decoration">underline</xsl:attribute>
+					</xsl:if>
+					<xsl:if test="$namespace = 'ogc'">
 					</xsl:if>
 					<xsl:if test="$namespace = 'nist-cswp' or 
 														$namespace = 'nist-sp' or 
