@@ -1,0 +1,59 @@
+name: macos
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+
+jobs:
+  build:
+    runs-on: macos-latest
+    steps:
+      - name: Use Ruby
+        uses: actions/setup-ruby@v1
+        with:
+          ruby-version: 2.6
+          architecture: 'x64'
+
+      - uses: actions/checkout@master
+
+      - name: Update gems
+        run: |
+          gem install bundler
+          bundle install --jobs 4 --retry 3
+
+      # cabextract for fonts, gettext-base for envsubst
+      - name: Setup prerequisites
+        run: |
+          # Install `envsubst`
+          brew install gettext
+          brew link --force gettext
+
+          # Install cabextract
+          brew install cabextract
+
+          # Install yq
+          brew install yq
+
+      - name: Install Microsoft Vista fonts
+        run: |
+          export RENAME_FONTS=false
+          curl -Ls https://raw.githubusercontent.com/metanorma/vista-fonts-installer/master/vista-fonts-installer.sh | bash
+
+      - name: Update submodules
+        run: |
+          make update-init update-modules
+
+      - name: Compile output
+        env:
+          GITHUB_USERNAME: ${{ github.actor }}
+          GITHUB_TOKEN: ${{ github.token }}
+        run: |
+          make all
+          mv documents published
+
+      - uses: actions/upload-artifact@master
+        with:
+          name: published-macos
+          path: published
