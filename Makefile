@@ -89,17 +89,18 @@ XSLT_GENERATED := xslt/iec.international-standard.xsl \
 	xslt/mpfd.standards.xsl \
 	xslt/mpfd.standards.presentation.xsl \
 	xslt/mpfd.circular.xsl \
-	xslt/mpfd.circular.presentation.xsl \
-	xslt/mpfd.compliance-standards-for-mpf-trustees.xsl \
-	xslt/mpfd.compliance-standards-for-mpf-trustees.presentation.xsl \
-	xslt/mpfd.guidelines.xsl \
-	xslt/mpfd.guidelines.presentation.xsl \
-	xslt/mpfd.supervision-of-mpf-intermediaries.xsl \
-	xslt/mpfd.supervision-of-mpf-intermediaries.presentation.xsl \
-	xslt/nist.cswp.xsl \
-	xslt/nist.cswp.presentation.xsl \
-	xslt/nist.sp.xsl \
-	xslt/nist.sp.presentation.xsl 
+	xslt/mpfd.circular.presentation.xsl
+#	\
+#	xslt/mpfd.compliance-standards-for-mpf-trustees.xsl \
+#	xslt/mpfd.compliance-standards-for-mpf-trustees.presentation.xsl \
+#	xslt/mpfd.guidelines.xsl \
+#	xslt/mpfd.guidelines.presentation.xsl \
+#	xslt/mpfd.supervision-of-mpf-intermediaries.xsl \
+#	xslt/mpfd.supervision-of-mpf-intermediaries.presentation.xsl \
+#	xslt/nist.cswp.xsl \
+#	xslt/nist.cswp.presentation.xsl \
+#	xslt/nist.sp.xsl \
+#	xslt/nist.sp.presentation.xsl 
 
 MN2PDF_DOWNLOAD_PATH := https://github.com/metanorma/mn2pdf/releases/download/v1.20/mn2pdf-1.20.jar
 # MN2PDF_DOWNLOAD_PATH := https://maven.pkg.github.com/metanorma/mn2pdf/com/metanorma/fop/mn2pdf/1.7/mn2pdf-1.7.jar
@@ -234,6 +235,30 @@ documents/m3d-bp-document.doc:
 documents/m3d-bp-document.rxl:
 	echo "### skipping $@"
 
+
+documents/mpfd-bpn.pdf:
+	echo "### skipping $@"
+	
+documents/mpfd-bpn.presentation.pdf:
+	echo "### skipping $@"
+
+documents/mpfd-compliance.pdf:
+	echo "### skipping $@"
+
+documents/mpfd-compliance.presentation.pdf:
+	echo "### skipping $@"
+
+documents/mpfd-guidelines.pdf:
+	echo "### skipping $@"
+
+documents/mpfd-guidelines.presentation.pdf:
+	echo "### skipping $@"
+
+documents/mpfd-standards.pdf:
+	echo "### skipping $@"
+
+documents/mpfd-standards.presentation.pdf:
+	echo "### skipping $@"
 
 documents/%.pdf: sources/%.xml $(MN2PDF_EXECUTABLE) | documents
 ifeq ($(OS),Windows_NT)
