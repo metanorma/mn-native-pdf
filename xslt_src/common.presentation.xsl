@@ -1964,12 +1964,25 @@
 					<xsl:value-of select="@rowspan"/>
 				</xsl:attribute>
 			</xsl:if>
+			<xsl:call-template name="display-align" />
 			<fo:block>
 				<xsl:apply-templates />
 			</fo:block>
 		</fo:table-cell>
 	</xsl:template>
 	
+	<xsl:template name="display-align">
+		<xsl:if test="@valign">
+			<xsl:attribute name="display-align">
+				<xsl:choose>
+					<xsl:when test="@valign = 'top'">before</xsl:when>
+					<xsl:when test="@valign = 'middle'">center</xsl:when>
+					<xsl:when test="@valign = 'bottom'">after</xsl:when>
+					<xsl:otherwise>before</xsl:otherwise>
+				</xsl:choose>					
+			</xsl:attribute>
+		</xsl:if>
+	</xsl:template>
 	
 	<xsl:template match="*[local-name()='td']">
 		<fo:table-cell text-align="{@align}" display-align="center" border="solid black 1pt" padding-left="1mm">
@@ -2045,6 +2058,7 @@
 					<xsl:value-of select="@rowspan"/>
 				</xsl:attribute>
 			</xsl:if>
+			<xsl:call-template name="display-align" />
 			<fo:block>
 				<xsl:if test="$namespace = 'iso'">
 					<xsl:variable name="row_number">
@@ -3990,6 +4004,7 @@
 					<xsl:value-of select="@rowspan"/>
 				</xsl:attribute>
 			</xsl:if>
+			<xsl:call-template name="display-align" />
 			
 			<!-- <xsl:if test="ancestor::*[local-name()='table']/@type = 'recommend'">
 				<xsl:attribute name="padding-top">0.5mm</xsl:attribute>
@@ -4034,6 +4049,7 @@
 					<xsl:value-of select="@rowspan"/>
 				</xsl:attribute>
 			</xsl:if>
+			<xsl:call-template name="display-align" />
 			
 			<!-- <xsl:if test="ancestor::*[local-name()='table']/@type = 'recommend'">
 				<xsl:attribute name="padding-left">0.5mm</xsl:attribute>
