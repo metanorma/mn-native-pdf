@@ -290,10 +290,11 @@ xslt/%.xsl: xslt_src/%.core.xsl xslt_src/merge.xsl xalan/xalan.jar
 	java -jar xalan/xalan.jar -IN $< -XSL xslt_src/merge.xsl -OUT $@ -PARAM xslfile $<
 
 documents.rxl: $(HTML) $(DOC) $(RXL) $(PDF) | bundle
-	bundle exec relaton concatenate \
-	  -t "mn2pdf samples" \
-		-g "Metanorma" \
-		documents $@
+	echo "### skipping $@"
+#	bundle exec relaton concatenate \
+#	  -t "mn2pdf samples" \
+#		-g "Metanorma" \
+#		documents $@
 
 bundle:
 	bundle
