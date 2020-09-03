@@ -300,7 +300,8 @@ bundle:
 	bundle
 
 documents.html: documents.rxl
-	bundle exec relaton xml2html documents.rxl
+#	bundle exec relaton xml2html documents.rxl
+	bundle exec documents.rxl
 
 distclean: clean
 	rm -rf xalan/*
