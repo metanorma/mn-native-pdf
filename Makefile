@@ -324,8 +324,9 @@ update-modules:
 publish: published
 published: documents.html
 	mkdir published && \
-	cp -a documents $@/ && \
-	cp $< published/index.html
+	cp -a documents $@/
+# && \
+#	cp $< published/index.html
 ifeq ($(OS),Windows_NT)
 	if exist "images" ( cp -a images published )
 else
