@@ -80,7 +80,11 @@
 			<xsl:when test="$stage-abbreviation = 'AWI'">APPROVED WORK ITEM</xsl:when>
 			<xsl:when test="$stage-abbreviation = 'WD'">WORKING DRAFT</xsl:when>
 			<xsl:when test="$stage-abbreviation = 'CD'">COMMITTEE DRAFT</xsl:when>
+			<xsl:when test="$stage-abbreviation = 'CD-TSTR'">COMMITTEE DRAFT</xsl:when>
 			<xsl:when test="$stage-abbreviation = 'CDV'">COMMITTEE DRAFT FOR VOTE</xsl:when>
+			<xsl:when test="$stage-abbreviation = 'DTS'">DRAFT TECHNICAL SPECIFICATION</xsl:when>
+			<xsl:when test="$stage-abbreviation = 'DTR'">DRAFT TECHNICAL REPORT</xsl:when>
+			<xsl:when test="$stage-abbreviation = 'DPAS'">DRAFT PUBLICLY AVAILABLE SPECIFICATION</xsl:when>
 			<xsl:when test="$stage-abbreviation = 'DIS'">DRAFT INTERNATIONAL STANDARD</xsl:when>
 			<xsl:when test="$stage-abbreviation = 'FDIS'">FINAL DRAFT INTERNATIONAL STANDARD</xsl:when>
 			<xsl:otherwise><xsl:value-of select="$doctype_uppercased"/></xsl:otherwise>
@@ -525,6 +529,10 @@
 												$stage-abbreviation = 'WD' or 
 												$stage-abbreviation = 'CD' or 
 												$stage-abbreviation = 'CDV' or 
+												$stage-abbreviation = 'CD-TSTR' or 
+												$stage-abbreviation = 'DTS' or 
+												$stage-abbreviation = 'DTR' or 
+												$stage-abbreviation = 'DPAS' or 
 												$stage-abbreviation = 'FDIS'">
 				<!-- circulation cover page -->
 				<fo:page-sequence master-reference="cover-FDIS" force-page-count="no-force">
@@ -702,119 +710,132 @@
 												</fo:block>
 											</fo:table-cell>
 										</fo:table-row>
-										<fo:table-row height="12mm">
+										<fo:table-row height="12mm">											
 											<fo:table-cell border="1.5pt solid {$border-color}" padding="1.5mm" padding-bottom="0mm">
+												<xsl:if test="not($stage-abbreviation = 'FDIS' or $stage-abbreviation = 'CDV' or $stage-abbreviation = 'CD')">
+													<xsl:attribute name="number-columns-spanned">2</xsl:attribute>
+												</xsl:if>
 												<fo:block font-size="6.5pt" margin-bottom="6pt">
 													<xsl:call-template name="addLetterSpacingSmallCaps">
 														<xsl:with-param name="text" select="'Of interest to the following committees:'"/>
 													</xsl:call-template>
 												</fo:block>
 											</fo:table-cell>
-											<fo:table-cell border="1.5pt solid {$border-color}" padding="1.5mm" padding-bottom="0mm">
-												<fo:block font-size="6.5pt" margin-bottom="6pt">
-													<xsl:if test="$stage-abbreviation = 'FDIS'">
-														<xsl:call-template name="addLetterSpacingSmallCaps">
-															<xsl:with-param name="text" select="'horizontal standard:'"/>
-														</xsl:call-template>
-													</xsl:if>
-													<xsl:if test="$stage-abbreviation = 'CDV'">
-														<xsl:call-template name="addLetterSpacingSmallCaps">
-															<xsl:with-param name="text" select="'Proposed horizontal standard:'"/>
-														</xsl:call-template>
-													</xsl:if>
-												</fo:block>
-												<fo:block>
-													<xsl:call-template name="insertCheckBoxOff"/>
-												</fo:block>
-												<xsl:if test="$stage-abbreviation = 'CDV'">
-													<fo:block-container background-color="rgb(236, 232, 232)" margin-left="-2mm" margin-right="-2mm">
-														<fo:block-container margin-left="1mm" margin-right="1mm">
-															<fo:block font-size="8pt" padding="2mm">
-																<xsl:call-template name="addLetterSpacing">
-																	<xsl:with-param name="text" select="'Other TC/SCs are requested to indicate their interest, if any, in this CDV to the secretary.'"/>
-																</xsl:call-template>
-															</fo:block>
+											<xsl:if test="$stage-abbreviation = 'FDIS' or $stage-abbreviation = 'CDV' or $stage-abbreviation = 'CD'">
+												<fo:table-cell border="1.5pt solid {$border-color}" padding="1.5mm" padding-bottom="0mm">
+													<fo:block font-size="6.5pt" margin-bottom="6pt">
+														<xsl:if test="$stage-abbreviation = 'FDIS'">
+															<xsl:call-template name="addLetterSpacingSmallCaps">
+																<xsl:with-param name="text" select="'horizontal standard:'"/>
+															</xsl:call-template>
+														</xsl:if>
+														<xsl:if test="$stage-abbreviation = 'CDV' or $stage-abbreviation = 'CD'">
+															<xsl:call-template name="addLetterSpacingSmallCaps">
+																<xsl:with-param name="text" select="'Proposed horizontal standard:'"/>
+															</xsl:call-template>
+														</xsl:if>
+													</fo:block>
+													
+													<fo:block>
+														<xsl:call-template name="insertCheckBoxOff"/>
+													</fo:block>
+													
+													<xsl:if test="$stage-abbreviation = 'CDV' or $stage-abbreviation = 'CD'">
+														<fo:block-container background-color="rgb(236, 232, 232)" margin-left="-2mm" margin-right="-2mm">
+															<fo:block-container margin-left="1mm" margin-right="1mm">
+																<fo:block font-size="8pt" padding="2mm">
+																	<xsl:call-template name="addLetterSpacing">
+																		<xsl:with-param name="text" select="'Other TC/SCs are requested to indicate their interest, if any, in this CDV to the secretary.'"/>
+																	</xsl:call-template>
+																</fo:block>
+															</fo:block-container>
 														</fo:block-container>
-													</fo:block-container>
-												</xsl:if>
-											</fo:table-cell>
-										</fo:table-row>
-										<fo:table-row height="10mm">
-											<fo:table-cell padding="1.5mm" padding-bottom="0mm">
-												<fo:block font-size="6.5pt" margin-bottom="4pt">
-													<xsl:call-template name="addLetterSpacingSmallCaps">
-														<xsl:with-param name="text" select="'Functions concerned:'"/>
-													</xsl:call-template>
-												</fo:block>
-												<fo:block font-size="6.5pt">
-													<xsl:call-template name="insertCheckBoxOff"/>
-													<xsl:call-template name="addLetterSpacingSmallCaps">
-														<xsl:with-param name="text" select="'EMC'"/>
-													</xsl:call-template>
-													<fo:inline padding-right="33mm">&#xA0;</fo:inline>
-													<xsl:call-template name="insertCheckBoxOff"/>
-													<xsl:call-template name="addLetterSpacingSmallCaps">
-														<xsl:with-param name="text" select="'Environment'"/>
-													</xsl:call-template>
-												</fo:block>
-											</fo:table-cell>
-											<fo:table-cell padding="1.5mm" padding-bottom="0mm">
-												<fo:block font-size="6.5pt" margin-bottom="6pt">&#xA0;</fo:block>
-												<fo:block font-size="6.5pt">
-													<xsl:call-template name="insertCheckBoxOff"/>
-													<xsl:call-template name="addLetterSpacingSmallCaps">
-														<xsl:with-param name="text" select="'Quality assurance'"/>
-													</xsl:call-template>
-													<fo:inline padding-right="13mm">&#xA0;</fo:inline>
-													<xsl:call-template name="insertCheckBoxOn"/>
-													<xsl:call-template name="addLetterSpacingSmallCaps">
-														<xsl:with-param name="text" select="'Safety'"/>
-													</xsl:call-template>
-												</fo:block>
-											</fo:table-cell>
-										</fo:table-row>
-										<fo:table-row >
-											<fo:table-cell border="1.5pt solid {$border-color}" padding="1.5mm" padding-bottom="0mm">
-												<fo:block font-size="6.5pt" margin-bottom="12pt">
-													<xsl:call-template name="insertCheckBoxOn"/>
-													<xsl:call-template name="addLetterSpacingSmallCaps">
-														<xsl:with-param name="text" select="'Submitted for CENELEC parallel voting'"/>
-													</xsl:call-template>
-												</fo:block>
-												<fo:block font-size="8pt" font-weight="bold" margin-bottom="10pt">
-													<xsl:call-template name="addLetterSpacing">
-														<xsl:with-param name="text" select="'Attention IEC-CENELEC parallel voting'"/>
-													</xsl:call-template>
-												</fo:block>
-												
-												
-												<fo:block font-size="8pt" margin-bottom="10pt" text-align="justify">
-													<xsl:if test="$stage-abbreviation = 'FDIS'">
-														<xsl:call-template name="addLetterSpacing">
-															<xsl:with-param name="text" select="'The attention of IEC National Committees, members of CENELEC, is drawn to the fact that this Final Draft International Standard (FDIS) is submitted for parallel voting.'"/>
-														</xsl:call-template>
 													</xsl:if>
-													<xsl:if test="$stage-abbreviation = 'CDV'">
-														<xsl:call-template name="addLetterSpacing">
-															<xsl:with-param name="text" select="'The attention of IEC National Committees, members of CENELEC, is drawn to the fact that this Committee Draft for Vote (CDV) is submitted for parallel voting.'"/>
-														</xsl:call-template>
-													</xsl:if>
-												</fo:block>
-												<fo:block font-size="8pt" margin-bottom="10pt">
-													<xsl:call-template name="addLetterSpacing">
-														<xsl:with-param name="text" select="'The CENELEC members are invited to vote through the CENELEC online voting system.'"/>
-													</xsl:call-template>
-												</fo:block>
-											</fo:table-cell>
-											<fo:table-cell border="1.5pt solid {$border-color}" padding="1.5mm" padding-bottom="0mm">
-												<fo:block font-size="6.5pt" margin-bottom="6pt">
-													<xsl:call-template name="insertCheckBoxOff"/>
-													<xsl:call-template name="addLetterSpacingSmallCaps">
-														<xsl:with-param name="text" select="'Not submitted for CENELEC parallel voting'"/>
-													</xsl:call-template>
-												</fo:block>
-											</fo:table-cell>
+												</fo:table-cell>
+											</xsl:if>
 										</fo:table-row>
+										
+										<xsl:if test="not($stage-abbreviation = 'DPAS')">
+											<fo:table-row height="10mm">
+												<fo:table-cell padding="1.5mm" padding-bottom="0mm">
+													<fo:block font-size="6.5pt" margin-bottom="4pt">
+														<xsl:call-template name="addLetterSpacingSmallCaps">
+															<xsl:with-param name="text" select="'Functions concerned:'"/>
+														</xsl:call-template>
+													</fo:block>
+													<fo:block font-size="6.5pt">
+														<xsl:call-template name="insertCheckBoxOff"/>
+														<xsl:call-template name="addLetterSpacingSmallCaps">
+															<xsl:with-param name="text" select="'EMC'"/>
+														</xsl:call-template>
+														<fo:inline padding-right="33mm">&#xA0;</fo:inline>
+														<xsl:call-template name="insertCheckBoxOff"/>
+														<xsl:call-template name="addLetterSpacingSmallCaps">
+															<xsl:with-param name="text" select="'Environment'"/>
+														</xsl:call-template>
+													</fo:block>
+												</fo:table-cell>
+												<fo:table-cell padding="1.5mm" padding-bottom="0mm">
+													<fo:block font-size="6.5pt" margin-bottom="6pt">&#xA0;</fo:block>
+													<fo:block font-size="6.5pt">
+														<xsl:call-template name="insertCheckBoxOff"/>
+														<xsl:call-template name="addLetterSpacingSmallCaps">
+															<xsl:with-param name="text" select="'Quality assurance'"/>
+														</xsl:call-template>
+														<fo:inline padding-right="13mm">&#xA0;</fo:inline>
+														<xsl:call-template name="insertCheckBoxOn"/>
+														<xsl:call-template name="addLetterSpacingSmallCaps">
+															<xsl:with-param name="text" select="'Safety'"/>
+														</xsl:call-template>
+													</fo:block>
+												</fo:table-cell>
+											</fo:table-row>
+										</xsl:if>
+										
+										<xsl:if test="not($stage-abbreviation = 'CD' or $stage-abbreviation = 'CD-TSTR' or $stage-abbreviation = 'DTS' or $stage-abbreviation = 'DTR' or $stage-abbreviation = 'DPAS')">
+										
+											<fo:table-row >
+												<fo:table-cell border="1.5pt solid {$border-color}" padding="1.5mm" padding-bottom="0mm">
+													<fo:block font-size="6.5pt" margin-bottom="12pt">
+														<xsl:call-template name="insertCheckBoxOn"/>
+														<xsl:call-template name="addLetterSpacingSmallCaps">
+															<xsl:with-param name="text" select="'Submitted for CENELEC parallel voting'"/>
+														</xsl:call-template>
+													</fo:block>
+													<fo:block font-size="8pt" font-weight="bold" margin-bottom="10pt">
+														<xsl:call-template name="addLetterSpacing">
+															<xsl:with-param name="text" select="'Attention IEC-CENELEC parallel voting'"/>
+														</xsl:call-template>
+													</fo:block>
+													
+													<fo:block font-size="8pt" margin-bottom="10pt" text-align="justify">
+														<xsl:if test="$stage-abbreviation = 'FDIS'">
+															<xsl:call-template name="addLetterSpacing">
+																<xsl:with-param name="text" select="'The attention of IEC National Committees, members of CENELEC, is drawn to the fact that this Final Draft International Standard (FDIS) is submitted for parallel voting.'"/>
+															</xsl:call-template>
+														</xsl:if>
+														<xsl:if test="$stage-abbreviation = 'CDV'">
+															<xsl:call-template name="addLetterSpacing">
+																<xsl:with-param name="text" select="'The attention of IEC National Committees, members of CENELEC, is drawn to the fact that this Committee Draft for Vote (CDV) is submitted for parallel voting.'"/>
+															</xsl:call-template>
+														</xsl:if>
+													</fo:block>
+													<fo:block font-size="8pt" margin-bottom="10pt">
+														<xsl:call-template name="addLetterSpacing">
+															<xsl:with-param name="text" select="'The CENELEC members are invited to vote through the CENELEC online voting system.'"/>
+														</xsl:call-template>
+													</fo:block>
+												</fo:table-cell>
+												<fo:table-cell border="1.5pt solid {$border-color}" padding="1.5mm" padding-bottom="0mm">
+													<fo:block font-size="6.5pt" margin-bottom="6pt">
+														<xsl:call-template name="insertCheckBoxOff"/>
+														<xsl:call-template name="addLetterSpacingSmallCaps">
+															<xsl:with-param name="text" select="'Not submitted for CENELEC parallel voting'"/>
+														</xsl:call-template>
+													</fo:block>
+												</fo:table-cell>
+											</fo:table-row>
+										</xsl:if>
 									</fo:table-body>
 								</fo:table>
 							</fo:block-container>
@@ -844,7 +865,11 @@
 															$stage-abbreviation = 'AWI' or 
 															$stage-abbreviation = 'WD' or 
 															$stage-abbreviation = 'CD' or 
-															$stage-abbreviation = 'CDV'">
+															$stage-abbreviation = 'CDV' or
+															$stage-abbreviation = 'CD-TSTR' or 
+															$stage-abbreviation = 'DTS' or 
+															$stage-abbreviation = 'DTR' or 
+															$stage-abbreviation = 'DPAS'">
 								<fo:block margin-bottom="6pt">
 									<xsl:call-template name="addLetterSpacing">
 										<xsl:with-param name="text">This document is still under study and subject to change. It should not be used for reference purposes.</xsl:with-param>
@@ -871,7 +896,7 @@
 							</fo:block>
 						</fo:block-container>
 						
-						<xsl:if test="$stage-abbreviation = 'FDIS'">
+						<xsl:if test="$stage-abbreviation = 'FDIS' or $stage-abbreviation = 'CDV' or $stage-abbreviation = 'DTS' or $stage-abbreviation = 'DTR' or $stage-abbreviation = 'DPAS'">
 							<fo:block-container border="1.5 solid" border-color="rgb(221, 213, 213)" height="6.5mm" padding="1mm" margin-top="3mm" display-align="center">
 								<fo:block font-size="6.5pt">
 									<xsl:call-template name="addLetterSpacing">
