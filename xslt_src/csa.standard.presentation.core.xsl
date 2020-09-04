@@ -143,16 +143,57 @@
 					</xsl:variable>
 					<fo:block font-size="26pt" margin-bottom="18pt"><xsl:value-of select="$title-acknowledgements"/></fo:block>
 
-					<fo:block font-size="18pt" font-weight="bold" margin-bottom="12pt" color="rgb(3, 115, 200)">Lead Authors:</fo:block>
-					<fo:block>Ronald Tse</fo:block>
-					<fo:block font-size="18pt" font-weight="bold" margin-top="16pt" margin-bottom="12pt" color="rgb(3, 115, 200)">Contributors:</fo:block>
-					<fo:block>Michael Roza</fo:block>
-					<fo:block>Sean Heide</fo:block>
-					<fo:block>David Lewis</fo:block>
-					<fo:block>Eric Gauthier</fo:block>
-					<fo:block font-size="18pt" font-weight="bold" margin-top="16pt" margin-bottom="12pt" color="rgb(3, 115, 200)">CSA Staff:</fo:block>
-					<fo:block>Sean Heide</fo:block>
+					<xsl:variable name="persons">
+						<xsl:for-each select="/csa:csa-standard/csa:bibdata/csa:contributor[csa:person]">
+							<contributor>
+								<xsl:attribute name="type">
+									<xsl:choose>
+										<xsl:when test="csa:role/@type='author'">
+											<xsl:value-of select="csa:role/csa:description"/>
+										</xsl:when>
+										<xsl:otherwise>
+											<xsl:value-of select="csa:role/@type"/>
+										</xsl:otherwise>
+									</xsl:choose>
+								</xsl:attribute>
+								<xsl:value-of select="csa:person/csa:name/csa:completename"/>
+							</contributor>
+						</xsl:for-each>
+					</xsl:variable>
 					
+					<xsl:variable name="contributors">
+						<contributor title="Author" pluraltitle="Authors">full-author</contributor>
+						<contributor title="Contributor" pluraltitle="Contributors">contributor</contributor>
+						<contributor title="Staff" pluraltitle="Staff">staff</contributor>
+						<contributor title="Reviewer" pluraltitle="Reviewers">reviewer</contributor>
+						<contributor title="Editor" pluraltitle="Editors">editor</contributor>
+					</xsl:variable>
+					
+					<!-- The sequence of author types is: full-author (omitted), Contributor, Staff, Reviewer -->
+						
+					<xsl:for-each select="xalan:nodeset($contributors)/*">
+						<xsl:variable name="type" select="."/>
+						<xsl:variable name="title" select="@title"/>
+						<xsl:variable name="pluraltitle" select="@pluraltitle"/>
+						<xsl:for-each select="xalan:nodeset($persons)/contributor[@type = $type]">
+							<xsl:if test="position() = 1">
+								<fo:block font-size="18pt" font-weight="bold" margin-top="16pt" margin-bottom="12pt" color="rgb(3, 115, 200)">									
+									<xsl:choose>
+										<xsl:when test="following-sibling::contributor[@type = $type]">
+											<xsl:value-of select="$pluraltitle"/>
+										</xsl:when>
+										<xsl:otherwise>
+											<xsl:value-of select="$title"/>
+										</xsl:otherwise>
+									</xsl:choose>									
+									<xsl:text>:</xsl:text>
+								</fo:block>
+							</xsl:if>
+							<fo:block><xsl:value-of select="."/></fo:block>
+						</xsl:for-each>
+					</xsl:for-each>
+					
+
 					<fo:block break-after="page"/>
 
 					<fo:block-container font-size="12pt" line-height="170%" color="rgb(7, 72, 156)">
