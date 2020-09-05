@@ -236,29 +236,29 @@ documents/m3d-bp-document.rxl:
 	echo "### skipping $@"
 
 
-documents/mpfd-bpn.pdf:
-	echo "### skipping $@"
+#documents/mpfd-bpn.pdf:
+#	echo "### skipping $@"
 	
-documents/mpfd-bpn.presentation.pdf:
-	echo "### skipping $@"
+#documents/mpfd-bpn.presentation.pdf:
+#	echo "### skipping $@"
 
-documents/mpfd-compliance.pdf:
-	echo "### skipping $@"
+#documents/mpfd-compliance.pdf:
+#	echo "### skipping $@"
 
-documents/mpfd-compliance.presentation.pdf:
-	echo "### skipping $@"
+#documents/mpfd-compliance.presentation.pdf:
+#	echo "### skipping $@"
 
-documents/mpfd-guidelines.pdf:
-	echo "### skipping $@"
+#documents/mpfd-guidelines.pdf:
+#	echo "### skipping $@"
 
-documents/mpfd-guidelines.presentation.pdf:
-	echo "### skipping $@"
+#documents/mpfd-guidelines.presentation.pdf:
+#	echo "### skipping $@"
 
-documents/mpfd-standards.pdf:
-	echo "### skipping $@"
+#documents/mpfd-standards.pdf:
+#	echo "### skipping $@"
 
-documents/mpfd-standards.presentation.pdf:
-	echo "### skipping $@"
+#documents/mpfd-standards.presentation.pdf:
+#	echo "### skipping $@"
 
 documents/%.pdf: sources/%.xml $(MN2PDF_EXECUTABLE) | documents
 ifeq ($(OS),Windows_NT)
