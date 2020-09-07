@@ -138,7 +138,13 @@
 		<title-warning lang="zh">警告</title-warning>
 		
 		<title-amendment lang="en">AMENDMENT</title-amendment>
+		
+		<title-continued  lang="en">(continued)</title-continued>
+		<title-continued  lang="fr">(continué)</title-continued>
+		
 	</xsl:variable>
+
+	
 	
 	<xsl:variable name="tab_zh">&#x3000;</xsl:variable>
 	
@@ -598,9 +604,10 @@
 			<xsl:attribute name="font-size">11pt</xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'iso'">
+			<xsl:attribute name="font-size">11pt</xsl:attribute>
 			<xsl:attribute name="font-weight">bold</xsl:attribute>
 			<xsl:attribute name="text-align">center</xsl:attribute>
-			<xsl:attribute name="margin-top">12pt</xsl:attribute>
+			<!-- <xsl:attribute name="margin-top">12pt</xsl:attribute> -->
 			<xsl:attribute name="margin-bottom">6pt</xsl:attribute>			
 		</xsl:if>		
 		<xsl:if test="$namespace = 'nist-cswp'  or $namespace = 'nist-sp'">
@@ -1318,9 +1325,8 @@
 			<fo:block>&#xA0;</fo:block>				
 		</xsl:if>
 		
-		
-		<xsl:if test="$namespace = 'csa' or $namespace = 'csd' or $namespace = 'gb' or $namespace = 'iec' or $namespace = 'iho' or 
-											$namespace = 'iso' or 
+		<!-- $namespace = 'iso' or  -->
+		<xsl:if test="$namespace = 'csa' or $namespace = 'csd' or $namespace = 'gb' or $namespace = 'iec' or $namespace = 'iho' or 											
 											$namespace = 'itu' or 
 											$namespace = 'm3d' or 
 											$namespace = 'nist-cswp' or 
@@ -1333,7 +1339,7 @@
 			<xsl:apply-templates select="*[local-name()='name']" mode="presentation"/>
 		</xsl:if>
 				
-		<xsl:if test="$namespace = 'iso' or $namespace = 'iec' or $namespace = 'itu' or  $namespace = 'unece-rec' or $namespace = 'unece' or $namespace = 'csd' or $namespace = 'ogc' or $namespace = 'ogc-white-paper' or $namespace = 'gb' or $namespace = 'm3d' or $namespace = 'iho' or $namespace = 'mpfd'">
+		<xsl:if test="$namespace = 'iec' or $namespace = 'itu' or  $namespace = 'unece-rec' or $namespace = 'unece' or $namespace = 'csd' or $namespace = 'ogc' or $namespace = 'ogc-white-paper' or $namespace = 'gb' or $namespace = 'm3d' or $namespace = 'iho' or $namespace = 'mpfd'">
 			<xsl:call-template name="fn_name_display"/>
 		</xsl:if>
 			
@@ -1410,6 +1416,7 @@
 				<xsl:attribute name="space-after">12pt</xsl:attribute>
 			</xsl:if>			
 			<xsl:if test="$namespace = 'iso'">
+				<xsl:attribute name="margin-top">12pt</xsl:attribute>
 				<xsl:attribute name="margin-left">0mm</xsl:attribute>
 				<xsl:attribute name="margin-right">0mm</xsl:attribute>
 				<xsl:attribute name="margin-bottom">8pt</xsl:attribute>
@@ -1490,6 +1497,7 @@
 					<xsl:attribute name="border-top">2pt solid black</xsl:attribute>
 					<xsl:attribute name="border-bottom">2pt solid black</xsl:attribute>
 				</xsl:if>
+				
 				<xsl:for-each select="xalan:nodeset($colwidths)//column">
 					<xsl:choose>
 						<xsl:when test=". = 1 or . = 0">
@@ -1529,8 +1537,11 @@
 	<xsl:template match="*[local-name()='table']/*[local-name() = 'name']" mode="presentation">
 		<xsl:if test="normalize-space() != ''">
 			<fo:block xsl:use-attribute-sets="table-name-style">
-				<xsl:apply-templates />
-			</fo:block>			
+				<xsl:if test="$namespace = 'iso'">
+					<xsl:attribute name="margin-bottom">0pt</xsl:attribute>
+				</xsl:if>
+				<xsl:apply-templates />				
+			</fo:block>
 		</xsl:if>
 	</xsl:template>
 	
@@ -1666,30 +1677,31 @@
 	<xsl:template match="*[local-name()='thead']" mode="process">
 		<xsl:param name="cols-count"/>
 		<!-- font-weight="bold" -->
-		<fo:table-header>			
-			<xsl:if test="$namespace = 'iso'">
-				<fo:table-row>
-					<fo:table-cell number-columns-spanned="{$cols-count}"> <!-- border-left="1pt solid white" border-right="1pt solid white" border-top="1pt solid white" -->
-						<fo:block text-align="center" font-size="11pt" font-weight="bold">
-							<!-- (continued) -->
-							<fo:block-container position="absolute" top="-7mm">
-								<fo:block>
-									<fo:retrieve-table-marker retrieve-class-name="table_continued" 
-										retrieve-position-within-table="first-starting" 
-										retrieve-boundary-within-table="table-fragment"/>
-								</fo:block>
-							</fo:block-container>
-							
-						</fo:block>
-						<!-- <fo:block>fn_name_display
-							<xsl:call-template name="fn_name_display"/>
-						</fo:block> -->
-						
-					</fo:table-cell>
-				</fo:table-row>
-			</xsl:if>
+		<fo:table-header>
+			<xsl:if test="$namespace = 'iso'">				
+				<xsl:call-template name="table-header-title">
+					<xsl:with-param name="cols-count" select="$cols-count"/>
+				</xsl:call-template>				
+			</xsl:if>			
 			<xsl:apply-templates />
 		</fo:table-header>
+	</xsl:template>
+	
+	<xsl:template name="table-header-title">
+		<xsl:param name="cols-count"/>		
+		<!-- row for title -->
+		<fo:table-row>
+			<fo:table-cell number-columns-spanned="{$cols-count}" border-left="1.5pt solid white" border-right="1.5pt solid white" border-top="1.5pt solid white" border-bottom="1.5pt solid black">
+				<xsl:apply-templates select="ancestor::*[local-name()='table']/*[local-name()='name']" mode="presentation"/>
+				<xsl:for-each select="ancestor::*[local-name()='table'][1]">
+					<xsl:call-template name="fn_name_display"/>
+				</xsl:for-each>				
+				<fo:block text-align="right" font-style="italic">
+					<xsl:text>&#xA0;</xsl:text>
+					<fo:retrieve-table-marker retrieve-class-name="table_continued"/>
+				</fo:block>
+			</fo:table-cell>
+		</fo:table-row>
 	</xsl:template>
 	
 	<xsl:template match="*[local-name()='thead']" mode="process_tbody">		
@@ -1784,6 +1796,17 @@
 			</xsl:choose>
 		</xsl:variable>
 		
+		<xsl:if test="$namespace = 'iso'">
+			<!-- if there isn't 'thead' and there is a table's title -->
+			<xsl:if test="not(ancestor::*[local-name()='table']/*[local-name()='thead']) and ancestor::*[local-name()='table']/*[local-name()='name']">
+				<fo:table-header>
+					<xsl:call-template name="table-header-title">
+						<xsl:with-param name="cols-count" select="$cols-count"/>
+					</xsl:call-template>
+				</fo:table-header>
+			</xsl:if>
+		</xsl:if>
+		
 		<xsl:apply-templates select="../*[local-name()='thead']" mode="process">
 			<xsl:with-param name="cols-count" select="$cols-count"/>
 		</xsl:apply-templates>
@@ -1793,6 +1816,30 @@
 		</xsl:call-template>
 		
 		<fo:table-body>
+			<xsl:if test="$namespace = 'iso'">				
+				<xsl:variable name="title_continued">
+					<xsl:call-template name="getTitle">
+						<xsl:with-param name="name" select="'title-continued'"/>
+					</xsl:call-template>
+				</xsl:variable>				
+				<fo:table-row height="0" keep-with-next.within-page="always">
+					<fo:table-cell>
+						<fo:marker marker-class-name="table_continued" />							
+						<fo:block/>
+					</fo:table-cell>
+				</fo:table-row>
+				<fo:table-row height="0" keep-with-next.within-page="always">
+					<fo:table-cell>
+						 <fo:marker marker-class-name="table_continued">
+								<!-- <fo:inline font-style="italic" font-weight="normal"> -->
+									<xsl:value-of select="$title_continued"/>
+							 <!-- </fo:inline> -->
+						 </fo:marker>
+						 <fo:block/>
+					</fo:table-cell>
+				</fo:table-row>
+			</xsl:if>
+
 			<xsl:apply-templates />
 			<!-- <xsl:apply-templates select="../*[local-name()='tfoot']" mode="process"/> -->
 		
@@ -2059,20 +2106,7 @@
 				</xsl:attribute>
 			</xsl:if>
 			<xsl:call-template name="display-align" />
-			<fo:block>
-				<xsl:if test="$namespace = 'iso'">
-					<xsl:variable name="row_number">
-						<xsl:number format="1" count="*[local-name() = 'tr'] | *[local-name() = 'th']"/>
-					</xsl:variable>
-					<fo:marker marker-class-name="table_continued">						
-						<xsl:if test="$row_number &gt; 1">
-								<fo:inline>
-									<xsl:apply-templates select="ancestor::*[local-name() = 'table']/*[local-name() = 'name']" mode="contents"/>									
-									<fo:inline font-style="italic" font-weight="normal">(continued)</fo:inline>
-								</fo:inline>
-						</xsl:if>
-					</fo:marker>
-				</xsl:if>				
+			<fo:block>								
 				<xsl:apply-templates />
 			</fo:block>			
 		</fo:table-cell>
