@@ -1721,8 +1721,12 @@
 	
 	<xsl:template match="mathml:math" priority="2">
 		<fo:inline font-family="Cambria Math">
+			<xsl:variable name="mathml">
+				<xsl:apply-templates select="." mode="mathml"/>
+			</xsl:variable>
 			<fo:instream-foreign-object fox:alt-text="Math">
-				<xsl:copy-of select="."/>
+				<!-- <xsl:copy-of select="."/> -->
+				<xsl:copy-of select="xalan:nodeset($mathml)"/>
 			</fo:instream-foreign-object>
 		</fo:inline>
 	</xsl:template>
