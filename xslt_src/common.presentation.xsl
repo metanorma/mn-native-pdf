@@ -3222,10 +3222,27 @@
 	
 	<xsl:template match="mathml:math">
 		<fo:inline font-family="STIX2Math">
-			<fo:instream-foreign-object fox:alt-text="Math"> 
-				<xsl:copy-of select="."/>
-			</fo:instream-foreign-object>
+			<xsl:variable name="mathml">
+				<xsl:apply-templates select="." mode="mathml"/>
+			</xsl:variable>
+			<fo:instream-foreign-object fox:alt-text="Math">
+				<!-- <xsl:copy-of select="."/> -->
+				<xsl:copy-of select="xalan:nodeset($mathml)"/>
+			</fo:instream-foreign-object>			
 		</fo:inline>
+	</xsl:template>
+
+	<xsl:template match="@*|node()" mode="mathml">
+		<xsl:copy>
+				<xsl:apply-templates select="@*|node()" mode="mathml"/>
+		</xsl:copy>
+	</xsl:template>
+
+	<xsl:template match="mathml:mtext" mode="mathml">
+		<xsl:copy>
+			<!-- replace start and end spaces to non-break space -->
+			<xsl:value-of select="java:replaceAll(java:java.lang.String.new(.),'(^ )|( $)','&#xA0;')"/>
+		</xsl:copy>
 	</xsl:template>
 
 	<xsl:template match="*[local-name()='localityStack']"/>
