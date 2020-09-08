@@ -699,7 +699,13 @@
 		</fo:block>
 	</xsl:template>
 		
-	<!-- Example: [1]	IHO S-100, Universal Hydrographic Data Model v4.0.0, December 2018 (Encoding, Feature Catalogue) -->	
+	
+	<!-- IHO documents:
+			"[1] S57 edition 3.1: IHO Transfer Standard for Digital Hydrographic Data, International Hydrographic Organization (www.iho.int)”
+			[{number}] {docID} edition {edition}: {title}, {author/organization}
+			
+			Non-IHO documents:
+			Provide title and publisher -->
 	<xsl:template match="iho:bibitem">
 		<fo:list-block margin-bottom="12pt" provisional-distance-between-starts="12mm" line-height="115%">
 			<fo:list-item>
@@ -712,36 +718,32 @@
 				</fo:list-item-label>
 				<fo:list-item-body start-indent="body-start()">
 					<fo:block>
-						<xsl:variable name="docidentifier">
-							<xsl:if test="iho:docidentifier">
-								<xsl:choose>
-									<xsl:when test="iho:docidentifier/@type = 'metanorma'"/>
-									<xsl:otherwise><xsl:value-of select="iho:docidentifier"/></xsl:otherwise>
-								</xsl:choose>
-							</xsl:if>
-						</xsl:variable>
-						<xsl:value-of select="$docidentifier"/>
-						<xsl:apply-templates select="iho:note"/>
-						<xsl:if test="normalize-space($docidentifier) != ''">, </xsl:if>
-						<xsl:choose>
-							<xsl:when test="iho:title[@type = 'main' and @language = 'en']">
-								<xsl:apply-templates select="iho:title[@type = 'main' and @language = 'en']"/>
-							</xsl:when>
-							<xsl:otherwise>
-								<xsl:apply-templates select="iho:title"/>
-							</xsl:otherwise>
-						</xsl:choose>
-						<xsl:apply-templates select="iho:formattedref"/>
+						<xsl:call-template name="processBibitem"/>						
 					</fo:block>
 				</fo:list-item-body>
 			</fo:list-item>
 		</fo:list-block>
 	</xsl:template>	
 	
+	<xsl:template match="iho:bibitem/iho:edition">
+		<xsl:text> edition </xsl:text>
+		<xsl:value-of select="."/>
+	</xsl:template>
+	
 	<xsl:template match="iho:bibitem/iho:title">
 		<fo:inline font-style="italic">
 			<xsl:apply-templates />
 		</fo:inline>
+	</xsl:template>
+	
+	<xsl:template match="iho:bibitem/iho:uri">
+		<xsl:text> (</xsl:text>
+		<fo:inline xsl:use-attribute-sets="link-style">
+			<fo:basic-link external-destination="." fox:alt-text=".">
+				<xsl:value-of select="."/>							
+			</fo:basic-link>
+		</fo:inline>
+		<xsl:text>)</xsl:text>
 	</xsl:template>
 	
 	<xsl:template match="iho:bibitem/iho:note" priority="2">
