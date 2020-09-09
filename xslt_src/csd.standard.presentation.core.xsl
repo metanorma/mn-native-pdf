@@ -576,7 +576,7 @@
 	
 	
 	
-	<xsl:template match="csd:ul | csd:ol">
+	<xsl:template match="csd:ul | csd:ol" mode="ul_ol">
 		<fo:list-block provisional-distance-between-starts="6.5mm" margin-bottom="12pt">
 			<xsl:if test="ancestor::csd:ol">
 				<xsl:attribute name="margin-bottom">0pt</xsl:attribute>

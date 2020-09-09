@@ -609,7 +609,7 @@
 	
 	
 	
-	<xsl:template match="csa:ul | csa:ol">
+	<xsl:template match="csa:ul | csa:ol" mode="ul_ol">
 		<xsl:choose>
 			<xsl:when test="not(ancestor::csa:ul) and not(ancestor::csa:ol)">
 				<fo:block-container border-left="0.75mm solid {$color-header-document}" margin-left="1mm" margin-bottom="12pt">

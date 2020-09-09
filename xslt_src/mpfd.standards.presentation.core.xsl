@@ -550,7 +550,7 @@
 	
 	
 	
-	<xsl:template match="mpfd:ul | mpfd:ol">
+	<xsl:template match="mpfd:ul | mpfd:ol" mode="ul_ol">
 		<fo:block-container margin-left="0mm">
 			<xsl:variable name="margin-left">
 				<xsl:variable name="countAncestorLists" select="count(ancestor::mpfd:ul) + count(ancestor::mpfd:ol)"/>					 
@@ -595,7 +595,9 @@
 		</fo:list-item>
 	</xsl:template>
 	
-	
+	<xsl:template match="mpfd:note" mode="process">
+		<xsl:call-template name="note"/>
+	</xsl:template>
 
 	
 	<xsl:template match="mpfd:preferred">		

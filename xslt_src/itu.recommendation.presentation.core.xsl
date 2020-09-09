@@ -988,7 +988,7 @@
 	<xsl:template match="itu:docidentifier"/>
 	
 	
-	<xsl:template match="itu:ul | itu:ol | itu:sections/itu:ul | itu:sections/itu:ol">
+	<xsl:template match="itu:ul | itu:ol | itu:sections/itu:ul | itu:sections/itu:ol" mode="ul_ol">
 		<xsl:if test="preceding-sibling::*[1][local-name() = 'title']">
 			<fo:block padding-top="-8pt" font-size="1pt">&#xA0;</fo:block>
 		</xsl:if>
@@ -1001,15 +1001,19 @@
 	<xsl:template match="itu:ul//itu:note |  itu:ol//itu:note" priority="2"/>
 	<xsl:template match="itu:ul//itu:note  | itu:ol//itu:note" mode="process">
 		<fo:block id="{@id}">
-			<xsl:apply-templates select="../itu:name" mode="presentation"/>
+			<xsl:apply-templates select="itu:name" mode="presentation"/>
 			<xsl:apply-templates mode="process"/>
 		</fo:block>
 	</xsl:template>
-	<xsl:template match="itu:ul//itu:note/itu:name  | itu:ol//itu:note/itu:name" mode="process"/>
-	<xsl:template match="itu:ul//itu:note/itu:p  | itu:ol//itu:note/itu:p" mode="process">		
+	<xsl:template match="itu:ul//itu:note/itu:name  | itu:ol//itu:note/itu:name" mode="process" priority="2"/>
+	<xsl:template match="itu:ul//itu:note/itu:p  | itu:ol//itu:note/itu:p" mode="process" priority="2">		
 		<fo:block font-size="11pt" margin-top="4pt">			
 			<xsl:apply-templates />
 		</fo:block>
+	</xsl:template>
+	
+	<xsl:template match="itu:ul//itu:note/*  | itu:ol//itu:note/*" mode="process">
+		<xsl:apply-templates select="."/>
 	</xsl:template>
 	
 	<xsl:template match="itu:li">

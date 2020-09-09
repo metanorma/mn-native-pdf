@@ -635,7 +635,7 @@
 
 	
 	
-	<xsl:template match="rsd:ul | rsd:ol">
+	<xsl:template match="rsd:ul | rsd:ol" mode="ul_ol">
 		<xsl:choose>
 			<xsl:when test="not(ancestor::rsd:ul) and not(ancestor::rsd:ol)">
 				<fo:block padding-bottom="12pt">
