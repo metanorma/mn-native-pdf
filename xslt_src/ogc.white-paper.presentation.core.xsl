@@ -611,7 +611,7 @@
 	
 	
 	
-	<xsl:template match="ogc:ul | ogc:ol">
+	<xsl:template match="ogc:ul | ogc:ol" mode="ul_ol">
 		<fo:list-block provisional-distance-between-starts="6.5mm" margin-bottom="12pt" line-height="115%">
 			<xsl:if test="ancestor::ogc:ul | ancestor::ogc:ol">
 				<xsl:attribute name="margin-bottom">0pt</xsl:attribute>

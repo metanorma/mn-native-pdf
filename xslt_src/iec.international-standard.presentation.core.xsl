@@ -1810,7 +1810,7 @@
 	
 	
 	
-	<xsl:template match="iec:ul | iec:ol">
+	<xsl:template match="iec:ul | iec:ol" mode="ul_ol">
 		<fo:list-block provisional-distance-between-starts="6mm" margin-bottom="12pt">
 			<xsl:if test="ancestor::iec:ul or ancestor::iec:ol">
 				<xsl:attribute name="margin-bottom">0pt</xsl:attribute>

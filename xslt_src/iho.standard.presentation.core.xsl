@@ -617,7 +617,7 @@
 	</xsl:template>
 
 	
-	<xsl:template match="iho:ul | iho:ol">
+	<xsl:template match="iho:ul | iho:ol" mode="ul_ol">
 		<fo:list-block provisional-distance-between-starts="6mm">
 			<xsl:apply-templates />
 		</fo:list-block>
@@ -633,13 +633,16 @@
 			<xsl:apply-templates mode="process"/>
 		</fo:block>
 	</xsl:template>
-	<xsl:template match="iho:ul//iho:note/iho:name  | iho:ol//iho:note/iho:name" mode="process"/>
-	<xsl:template match="iho:ul//iho:note/iho:p  | iho:ol//iho:note/iho:p" mode="process">		
+	<xsl:template match="iho:ul//iho:note/iho:name  | iho:ol//iho:note/iho:name" mode="process" priority="2"/>
+	<xsl:template match="iho:ul//iho:note/iho:p  | iho:ol//iho:note/iho:p" mode="process" priority="2">		
 		<fo:block font-size="11pt" margin-top="4pt">
 			<xsl:apply-templates />
 		</fo:block>
 	</xsl:template>
 
+	<xsl:template match="iho:ul//iho:note/* | iho:ol//iho:note/*" mode="process">		
+		<xsl:apply-templates select="."/>
+	</xsl:template>
 	
 	
 	<xsl:template match="iho:li">

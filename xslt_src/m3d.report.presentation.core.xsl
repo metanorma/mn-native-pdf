@@ -644,7 +644,7 @@
 	
 	
 	
-	<xsl:template match="m3d:ul | m3d:ol">
+	<xsl:template match="m3d:ul | m3d:ol" mode="ul_ol">
 		<fo:block-container margin-left="6mm">
 			<fo:block-container margin-left="0mm">
 				<fo:list-block margin-bottom="12pt" provisional-distance-between-starts="6mm"> <!--   margin-bottom="8pt" -->
@@ -682,7 +682,9 @@
 		</fo:list-item>
 	</xsl:template>
 	
-	
+	<xsl:template match="m3d:note" mode="process">
+		<xsl:call-template name="note"/>
+	</xsl:template>
 
 	<xsl:template match="m3d:preferred">
 
@@ -824,9 +826,9 @@
 	
 	<xsl:template match="m3d:formula/m3d:stem">
 		<fo:block margin-top="14pt" margin-bottom="14pt">
-			<fo:table table-layout="fixed" width="170mm">
-				<fo:table-column column-width="165mm"/>
-				<fo:table-column column-width="5mm"/>
+			<fo:table table-layout="fixed" width="100%"> <!-- 170mm -->
+				<fo:table-column column-width="95%"/> <!-- 165mm -->
+				<fo:table-column column-width="5%"/> <!-- 5mm -->
 				<fo:table-body>
 					<fo:table-row>
 						<fo:table-cell display-align="center">

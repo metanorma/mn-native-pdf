@@ -1612,7 +1612,7 @@
 	
 	
 	
-	<xsl:template match="iso:ul | iso:ol">
+	<xsl:template match="iso:ul | iso:ol" mode="ul_ol">
 		<fo:list-block provisional-distance-between-starts="7mm" margin-top="8pt"> <!-- margin-bottom="8pt" -->
 			<xsl:apply-templates />
 		</fo:list-block>
@@ -1639,7 +1639,9 @@
 		</fo:list-item>
 	</xsl:template>
 	
-	
+	<xsl:template match="iso:note" mode="process">
+		<xsl:call-template name="note"/>
+	</xsl:template>
 	
 	<xsl:template match="iso:preferred">		
 		<fo:block line-height="1.1">

@@ -1026,7 +1026,7 @@
 	
 	
 	
-	<xsl:template match="ogc:ul | ogc:ol">
+	<xsl:template match="ogc:ul | ogc:ol" mode="ul_ol">
 		<fo:block-container margin-left="13mm">
 			<fo:block-container margin-left="0mm">
 				<fo:list-block provisional-distance-between-starts="12mm" space-after="12pt" line-height="115%">

@@ -831,7 +831,7 @@
 	
 	
 	
-	<xsl:template match="gb:ul | gb:ol">
+	<xsl:template match="gb:ul | gb:ol" mode="ul_ol">
 		<fo:list-block margin-bottom="12pt" margin-left="7.4mm" provisional-distance-between-starts="4mm"> <!--   margin-bottom="8pt" -->
 			<xsl:if test="local-name() = 'ol'">
 				<xsl:attribute name="provisional-distance-between-starts">7mm</xsl:attribute>
@@ -861,6 +861,9 @@
 		</fo:list-item>
 	</xsl:template>
 	
+	<xsl:template match="gb:note" mode="process">
+		<xsl:call-template name="note"/>
+	</xsl:template>
 	
 	
 	<xsl:template match="gb:preferred" priority="2">
@@ -1046,10 +1049,13 @@
 	
 
 	<xsl:template match="gb:formula/gb:stem">
-		<fo:block font-size="11pt" margin-top="14pt" margin-bottom="14pt">
-			<fo:table table-layout="fixed" width="170mm">
-				<fo:table-column column-width="165mm"/>
-				<fo:table-column column-width="5mm"/>
+		<fo:block margin-top="14pt" margin-bottom="14pt">
+			<xsl:if test="not(ancestor::*[local-name()='note'])">
+				<xsl:attribute name="font-size">11pt</xsl:attribute>
+			</xsl:if>
+			<fo:table table-layout="fixed" width="100%"> <!-- width="170mm" -->
+				<fo:table-column column-width="95%"/><!-- 165mm -->
+				<fo:table-column column-width="5%"/> <!-- 5mm -->
 				<fo:table-body>
 					<fo:table-row>
 						<fo:table-cell display-align="center">
