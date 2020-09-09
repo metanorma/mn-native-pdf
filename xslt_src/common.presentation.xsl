@@ -1331,7 +1331,7 @@
 											$namespace = 'mpfd' or">
 			<xsl:apply-templates select="*[local-name()='name']" mode="presentation"/>
 		</xsl:if>
-				
+
 		<xsl:if test="$namespace = 'iec' or $namespace = 'itu' or $namespace = 'unece-rec' or $namespace = 'unece' or $namespace = 'csd' or $namespace = 'ogc' or $namespace = 'ogc-white-paper' or $namespace = 'gb' or $namespace = 'm3d' or $namespace = 'iho' or $namespace = 'mpfd'">
 			<xsl:call-template name="fn_name_display"/>
 		</xsl:if>
