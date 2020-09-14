@@ -26,6 +26,14 @@
 	
 	<xsl:variable name="contents">
 		<contents>			
+			<xsl:apply-templates select="/*/*[local-name()='preface']/*[local-name()='foreword']" mode="contents"/>
+			<xsl:apply-templates select="/*/*[local-name()='preface']/*[local-name()='introduction']" mode="contents"/>
+			<xsl:apply-templates select="/*/*[local-name()='preface']/*[local-name() != 'abstract' and local-name() != 'foreword' and local-name() != 'introduction' and local-name() != 'acknowledgements']" mode="contents"/>
+			<xsl:apply-templates select="/*/*[local-name()='preface']/*[local-name()='acknowledgements']" mode="contents"/>
+			
+			<xsl:apply-templates select="/un:un-standard/un:sections/*" mode="contents"/>
+			<xsl:apply-templates select="/un:un-standard/un:annex" mode="contents"/>
+			<xsl:apply-templates select="/un:un-standard/un:bibliography/un:references" mode="contents"/>
 		</contents>
 	</xsl:variable>
 	
@@ -75,6 +83,10 @@
 			</fo:layout-master-set>
 			
 			<xsl:call-template name="addPDFUAmeta"/>
+			
+			<xsl:call-template name="addBookmarks">
+				<xsl:with-param name="contents" select="$contents"/>
+			</xsl:call-template>
 			
 			<!-- Cover Page -->
 			<fo:page-sequence master-reference="cover-page" force-page-count="no-force">				
@@ -183,22 +195,24 @@
 						</fo:block>
 						
 						<fo:block padding-top="1mm">
-							<fo:instream-foreign-object fox:alt-text="Barcode">
-								<barcode:barcode
-											xmlns:barcode="http://barcode4j.krysalis.org/ns"
-											message="{$code}">
-									<barcode:code39>
-										<barcode:height>8.5mm</barcode:height>
-										<barcode:module-width>0.24mm</barcode:module-width>
-										<barcode:human-readable>
-											<barcode:placement>none</barcode:placement>
-											<!--<barcode:pattern>* _ _ _ _ _ _ _ _ _ *</barcode:pattern>
-											<barcode:font-name>Arial</barcode:font-name>
-											<barcode:font-size>9.7pt</barcode:font-size> -->
-										</barcode:human-readable>
-									</barcode:code39>
-								</barcode:barcode>
-							</fo:instream-foreign-object>
+							<xsl:if test="normalize-space($code) != ''">
+								<fo:instream-foreign-object fox:alt-text="Barcode">
+									<barcode:barcode
+												xmlns:barcode="http://barcode4j.krysalis.org/ns"
+												message="{$code}">
+										<barcode:code39>
+											<barcode:height>8.5mm</barcode:height>
+											<barcode:module-width>0.24mm</barcode:module-width>
+											<barcode:human-readable>
+												<barcode:placement>none</barcode:placement>
+												<!--<barcode:pattern>* _ _ _ _ _ _ _ _ _ *</barcode:pattern>
+												<barcode:font-name>Arial</barcode:font-name>
+												<barcode:font-size>9.7pt</barcode:font-size> -->
+											</barcode:human-readable>
+										</barcode:code39>
+									</barcode:barcode>
+								</fo:instream-foreign-object>
+							</xsl:if>
 						</fo:block>
 						<fo:block padding-top="-0.8mm" text-align="left" font-family="Arial" font-size="8pt" letter-spacing="1.8mm">
 							<xsl:value-of select="concat('*', $code, '*')"/>
@@ -212,16 +226,18 @@
 					</fo:block-container>
 					<fo:block-container absolute-position="fixed" left="170mm" top="253mm">
 						<fo:block>
-							<fo:instream-foreign-object fox:alt-text="Barcode">
-								<barcode:barcode
-											xmlns:barcode="http://barcode4j.krysalis.org/ns"
-											message="{concat('http://undocs.org/', /un:un-standard/un:bibdata/un:ext/un:session/un:id)}">
-									<barcode:qr>
-										<barcode:module-width>0.55mm</barcode:module-width>
-										<barcode:ec-level>M</barcode:ec-level>
-									</barcode:qr>
-								</barcode:barcode>
-							</fo:instream-foreign-object>
+							<xsl:if test="normalize-space(/un:un-standard/un:bibdata/un:ext/un:session/un:id) != ''">
+								<fo:instream-foreign-object fox:alt-text="Barcode">
+									<barcode:barcode
+												xmlns:barcode="http://barcode4j.krysalis.org/ns"
+												message="{concat('http://undocs.org/', /un:un-standard/un:bibdata/un:ext/un:session/un:id)}">
+										<barcode:qr>
+											<barcode:module-width>0.55mm</barcode:module-width>
+											<barcode:ec-level>M</barcode:ec-level>
+										</barcode:qr>
+									</barcode:barcode>
+								</fo:instream-foreign-object>
+							</xsl:if>
 						</fo:block>
 					</fo:block-container>
 					
@@ -275,6 +291,65 @@
 		</fo:root>
 	</xsl:template> 
 
+
+
+	<!-- ============================= -->
+	<!-- CONTENTS                                       -->
+	<!-- ============================= -->
+	<xsl:template match="node()" mode="contents">		
+		<xsl:apply-templates mode="contents" />			
+	</xsl:template>
+
+	<!-- element with title -->
+	<xsl:template match="*[un:title]" mode="contents">
+		<xsl:variable name="level">
+			<xsl:call-template name="getLevel">
+				<xsl:with-param name="depth" select="un:title/@depth"/>
+			</xsl:call-template>
+		</xsl:variable>
+		
+		<xsl:variable name="display">
+			<xsl:choose>				
+				<xsl:when test="$level &gt; 3">false</xsl:when>
+				<xsl:otherwise>true</xsl:otherwise>
+			</xsl:choose>
+		</xsl:variable>
+		
+		<xsl:variable name="skip">
+			<xsl:choose>
+				<xsl:when test="ancestor-or-self::un:bibitem">true</xsl:when>
+				<xsl:when test="ancestor-or-self::un:term">true</xsl:when>
+				<xsl:when test="@inline-header = 'true'">true</xsl:when>
+				<xsl:otherwise>false</xsl:otherwise>
+			</xsl:choose>
+		</xsl:variable>
+		
+		<xsl:if test="$skip = 'false'">		
+		
+			<xsl:variable name="section">
+				<xsl:call-template name="getSection"/>
+			</xsl:variable>
+			
+			<xsl:variable name="title">
+				<xsl:call-template name="getName"/>
+			</xsl:variable>
+			
+			<xsl:variable name="type">
+				<xsl:value-of select="local-name()"/>
+			</xsl:variable>
+			
+			<item id="{@id}" level="{$level}" section="{$section}" type="{$type}" display="{$display}">
+				<title>
+					<xsl:apply-templates select="xalan:nodeset($title)" mode="contents_item"/>
+				</title>
+				<xsl:apply-templates mode="contents" />
+			</item>
+		</xsl:if>	
+		
+	</xsl:template>
+	<xsl:template match="un:references[not(@normative='true')]/un:bibitem" mode="contents"/>
+	<!-- ============================= -->
+	<!-- ============================= -->
 
 		
 	<!-- ============================= -->

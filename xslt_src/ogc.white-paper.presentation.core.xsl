@@ -116,6 +116,10 @@
 			
 			<xsl:call-template name="addPDFUAmeta"/>
 			
+			<xsl:call-template name="addBookmarks">
+				<xsl:with-param name="contents" select="$contents"/>
+			</xsl:call-template>
+			
 			<!-- Cover Page -->
 			<fo:page-sequence master-reference="document" force-page-count="no-force">				
 				<xsl:call-template name="insertHeaderFooter"/>					
@@ -177,10 +181,13 @@
 							<xsl:text>Table of Contents</xsl:text>
 						</fo:block>
 						<xsl:variable name="margin-left">3.9</xsl:variable>
-						<xsl:for-each select="xalan:nodeset($contents)//item">
+						<xsl:for-each select="xalan:nodeset($contents)//item[@display = 'true']">
 							<fo:block margin-top="8pt" margin-bottom="5pt" margin-left="{(@level - 1) * $margin-left}mm" text-align-last="justify">
-								<fo:basic-link internal-destination="{@id}" fox:alt-text="{text()}">									
-									<xsl:apply-templates />
+								<fo:basic-link internal-destination="{@id}" fox:alt-text="{title}">
+									<xsl:if test="@section != ''">
+										<xsl:value-of select="@section"/><xsl:text> </xsl:text>
+									</xsl:if>
+									<xsl:apply-templates select="title"/>
 									<fo:inline keep-together.within-line="always">
 										<fo:leader leader-pattern="dots"/>
 										<fo:inline><fo:page-number-citation ref-id="{@id}"/></fo:inline>
@@ -291,15 +298,21 @@
 		</xsl:variable>
 		
 		<xsl:variable name="display">
-			<xsl:choose>
-				<xsl:when test="ancestor-or-self::ogc:bibitem">false</xsl:when>
-				<xsl:when test="ancestor-or-self::ogc:term">false</xsl:when>				
+			<xsl:choose>				
 				<xsl:when test="$level &gt; 3">false</xsl:when>
 				<xsl:otherwise>true</xsl:otherwise>
 			</xsl:choose>
 		</xsl:variable>
 		
-		<xsl:if test="$display = 'true'">		
+		<xsl:variable name="skip">
+			<xsl:choose>
+				<xsl:when test="ancestor-or-self::ogc:bibitem">true</xsl:when>
+				<xsl:when test="ancestor-or-self::ogc:term">true</xsl:when>				
+				<xsl:otherwise>false</xsl:otherwise>
+			</xsl:choose>
+		</xsl:variable>
+		
+		<xsl:if test="$skip = 'false'">		
 		
 			<xsl:variable name="section">
 				<xsl:call-template name="getSection"/>
@@ -313,10 +326,12 @@
 				<xsl:value-of select="local-name()"/>
 			</xsl:variable>
 			
-			<item id="{@id}" level="{$level}" section="{$section}" type="{$type}">
-				<xsl:apply-templates select="ogc:title" mode="contents_item"/>
+			<item id="{@id}" level="{$level}" section="{$section}" type="{$type}" display="{$display}">
+				<title>
+					<xsl:apply-templates select="xalan:nodeset($title)" mode="contents_item"/>
+				</title>
+				<xsl:apply-templates mode="contents" />
 			</item>
-			<xsl:apply-templates mode="contents" />
 		</xsl:if>	
 		
 	</xsl:template>

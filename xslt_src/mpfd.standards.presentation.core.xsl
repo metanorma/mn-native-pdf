@@ -105,6 +105,10 @@
 
 			<xsl:call-template name="addPDFUAmeta"/>
 			
+			<xsl:call-template name="addBookmarks">
+				<xsl:with-param name="contents" select="$contents"/>
+			</xsl:call-template>
+			
 			<fo:page-sequence master-reference="cover" force-page-count="no-force">
 				<fo:static-content flow-name="cover-header">
 					<fo:block-container height="100%">						
@@ -180,7 +184,7 @@
 						</xsl:variable>						
 						<fo:block font-size="14pt" margin-bottom="15.5pt"><xsl:value-of select="$title-toc"/></fo:block>						
 						<fo:block line-height="115%">
-							<xsl:for-each select="xalan:nodeset($contents)//item">									
+							<xsl:for-each select="xalan:nodeset($contents)//item[@display = 'true']">
 								<fo:block>
 									<xsl:if test="@level = 1">
 										<xsl:attribute name="margin-top">6pt</xsl:attribute>
@@ -202,8 +206,8 @@
 											</fo:list-item-label>
 												<fo:list-item-body start-indent="body-start()">
 													<fo:block text-align-last="justify">															
-														<fo:basic-link internal-destination="{@id}" fox:alt-text="text()">
-															<xsl:apply-templates />
+														<fo:basic-link internal-destination="{@id}" fox:alt-text="{title}">
+															<xsl:apply-templates select="title"/>
 															<fo:inline keep-together.within-line="always">
 																<fo:leader leader-pattern="dots"/>
 																<fo:page-number-citation ref-id="{@id}"/>
@@ -283,25 +287,34 @@
 		</xsl:variable>
 			
 		<xsl:variable name="display">
-			<xsl:choose>
-				<xsl:when test="ancestor-or-self::mpfd:bibitem">false</xsl:when>
-				<xsl:when test="ancestor-or-self::mpfd:term">false</xsl:when>
+			<xsl:choose>				
 				<xsl:when test="$level &gt;= 3">false</xsl:when>				
 				<xsl:otherwise>true</xsl:otherwise>
 			</xsl:choose>
 		</xsl:variable>
 		
-		<xsl:if test="$display = 'true'">		
+		<xsl:variable name="skip">
+			<xsl:choose>
+				<xsl:when test="ancestor-or-self::mpfd:bibitem">true</xsl:when>
+				<xsl:when test="ancestor-or-self::mpfd:term">true</xsl:when>				
+				<xsl:otherwise>false</xsl:otherwise>
+			</xsl:choose>
+		</xsl:variable>
+		
+		<xsl:if test="$skip = 'false'">		
 			
 			<xsl:variable name="title">
 				<xsl:call-template name="getName"/>
 			</xsl:variable>
 			
-			<item level="{$level}" section="{$section}" type="{$type}">
+			<item level="{$level}" section="{$section}" type="{$type}" display="{$display}">
 				<xsl:call-template name="setId"/>
-				<xsl:apply-templates select="xalan:nodeset($title)" mode="contents_item"/>
+				<title>
+					<xsl:apply-templates select="xalan:nodeset($title)" mode="contents_item"/>
+				</title>
+				<xsl:apply-templates  mode="contents" />
 			</item>
-			<xsl:apply-templates  mode="contents" />
+			
 		</xsl:if>	
 		
 	</xsl:template>
