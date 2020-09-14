@@ -26,6 +26,14 @@
 	
 	<xsl:variable name="contents">
 		<contents>			
+			<xsl:apply-templates select="/*/*[local-name()='preface']/*[local-name()='foreword']" mode="contents"/>
+			<xsl:apply-templates select="/*/*[local-name()='preface']/*[local-name()='introduction']" mode="contents"/>
+			<xsl:apply-templates select="/*/*[local-name()='preface']/*[local-name() != 'abstract' and local-name() != 'foreword' and local-name() != 'introduction' and local-name() != 'acknowledgements']" mode="contents"/>
+			<xsl:apply-templates select="/*/*[local-name()='preface']/*[local-name()='acknowledgements']" mode="contents"/>
+			
+			<xsl:apply-templates select="/un:un-standard/un:sections/*" mode="contents"/>
+			<xsl:apply-templates select="/un:un-standard/un:annex" mode="contents"/>
+			<xsl:apply-templates select="/un:un-standard/un:bibliography/un:references" mode="contents"/>
 		</contents>
 	</xsl:variable>
 	
@@ -75,6 +83,10 @@
 			</fo:layout-master-set>
 			
 			<xsl:call-template name="addPDFUAmeta"/>
+			
+			<xsl:call-template name="addBookmarks">
+				<xsl:with-param name="contents" select="$contents"/>
+			</xsl:call-template>
 			
 			<!-- Cover Page -->
 			<fo:page-sequence master-reference="cover-page" force-page-count="no-force">				
@@ -279,6 +291,65 @@
 		</fo:root>
 	</xsl:template> 
 
+
+
+	<!-- ============================= -->
+	<!-- CONTENTS                                       -->
+	<!-- ============================= -->
+	<xsl:template match="node()" mode="contents">		
+		<xsl:apply-templates mode="contents" />			
+	</xsl:template>
+
+	<!-- element with title -->
+	<xsl:template match="*[un:title]" mode="contents">
+		<xsl:variable name="level">
+			<xsl:call-template name="getLevel">
+				<xsl:with-param name="depth" select="un:title/@depth"/>
+			</xsl:call-template>
+		</xsl:variable>
+		
+		<xsl:variable name="display">
+			<xsl:choose>				
+				<xsl:when test="$level &gt; 3">false</xsl:when>
+				<xsl:otherwise>true</xsl:otherwise>
+			</xsl:choose>
+		</xsl:variable>
+		
+		<xsl:variable name="skip">
+			<xsl:choose>
+				<xsl:when test="ancestor-or-self::un:bibitem">true</xsl:when>
+				<xsl:when test="ancestor-or-self::un:term">true</xsl:when>
+				<xsl:when test="@inline-header = 'true'">true</xsl:when>
+				<xsl:otherwise>false</xsl:otherwise>
+			</xsl:choose>
+		</xsl:variable>
+		
+		<xsl:if test="$skip = 'false'">		
+		
+			<xsl:variable name="section">
+				<xsl:call-template name="getSection"/>
+			</xsl:variable>
+			
+			<xsl:variable name="title">
+				<xsl:call-template name="getName"/>
+			</xsl:variable>
+			
+			<xsl:variable name="type">
+				<xsl:value-of select="local-name()"/>
+			</xsl:variable>
+			
+			<item id="{@id}" level="{$level}" section="{$section}" type="{$type}" display="{$display}">
+				<title>
+					<xsl:apply-templates select="xalan:nodeset($title)" mode="contents_item"/>
+				</title>
+				<xsl:apply-templates mode="contents" />
+			</item>
+		</xsl:if>	
+		
+	</xsl:template>
+	<xsl:template match="un:references[not(@normative='true')]/un:bibitem" mode="contents"/>
+	<!-- ============================= -->
+	<!-- ============================= -->
 
 		
 	<!-- ============================= -->

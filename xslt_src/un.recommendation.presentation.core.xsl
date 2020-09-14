@@ -94,6 +94,9 @@
 			
 			<xsl:call-template name="addPDFUAmeta"/>
 			
+			<xsl:call-template name="addBookmarks">
+				<xsl:with-param name="contents" select="$contents"/>
+			</xsl:call-template>
 			
 			<!-- Cover Page -->
 			<fo:page-sequence master-reference="cover-page" force-page-count="even">
@@ -206,7 +209,7 @@
 					</xsl:variable>
 					<fo:block font-size="9pt" text-align="right" font-style="italic" margin-bottom="6pt"><xsl:value-of select="$title-page"/></fo:block>
 					<fo:block>
-						<xsl:for-each select="xalan:nodeset($contents)//item[not (@type = 'annex' or @parent = 'annex')]">
+						<xsl:for-each select="xalan:nodeset($contents)//item[not (@type = 'annex' or @parent = 'annex') and @display = 'true']">
 							
 							<fo:block>
 								
@@ -217,7 +220,7 @@
 									<xsl:if test="@level &gt;= 3 and @section != ''">
 										<xsl:attribute name="margin-left">28mm</xsl:attribute>										
 									</xsl:if>
-									<fo:basic-link internal-destination="{@id}" fox:alt-text="{text()}">
+									<fo:basic-link internal-destination="{@id}" fox:alt-text="{title}">
 										<xsl:if test="@section != ''">
 											<fo:inline>
 												<xsl:attribute name="padding-right">
@@ -231,7 +234,7 @@
 											</fo:inline>
 										</xsl:if>
 										
-										<xsl:apply-templates />
+										<xsl:apply-templates select="title"/>
 										<xsl:text> </xsl:text>
 										
 										<fo:inline keep-together.within-line="always">
@@ -244,12 +247,12 @@
 							
 						</xsl:for-each>
 						
-						<xsl:if test="xalan:nodeset($contents)//item[@type = 'annex']">
+						<xsl:if test="xalan:nodeset($contents)//item[@type = 'annex' and @display = 'true']">
 							<fo:block text-align="center" margin-top="12pt" margin-bottom="12pt">ANNEXES</fo:block>
-							<xsl:for-each select="xalan:nodeset($contents)//item[@type = 'annex']">
+							<xsl:for-each select="xalan:nodeset($contents)//item[@type = 'annex' and @display = 'true']">
 								<fo:block>
 									<fo:block text-align-last="justify" margin-left="12mm" text-indent="-12mm">
-										<fo:basic-link internal-destination="{@id}" fox:alt-text="{text()}">
+										<fo:basic-link internal-destination="{@id}" fox:alt-text="{@section}">
 											<xsl:if test="@section != ''">
 												<fo:inline padding-right="3mm">
 													<xsl:choose>
@@ -358,9 +361,7 @@
 		
 		
 		<xsl:variable name="display">
-			<xsl:choose>
-				<xsl:when test="ancestor-or-self::un:bibitem">false</xsl:when>
-				<xsl:when test="ancestor-or-self::un:term">false</xsl:when>
+			<xsl:choose>				
 				<xsl:when test="ancestor-or-self::un:annex and $level &gt;= 2">false</xsl:when>
 				<xsl:when test="$level &gt; 3">false</xsl:when>
 				<xsl:when test="@inline-header='true'">false</xsl:when>
@@ -368,6 +369,14 @@
 			</xsl:choose>
 		</xsl:variable>
 		
+		<xsl:variable name="skip">
+			<xsl:choose>
+				<xsl:when test="ancestor-or-self::un:bibitem">true</xsl:when>
+				<xsl:when test="ancestor-or-self::un:term">true</xsl:when>
+				<xsl:when test="@inline-header='true'">true</xsl:when>
+				<xsl:otherwise>false</xsl:otherwise>
+			</xsl:choose>
+		</xsl:variable>
 		
 		<xsl:if test="$display = 'true'">		
 		
@@ -383,10 +392,13 @@
 				<xsl:value-of select="local-name()"/>
 			</xsl:variable>
 			
-			<item id="{@id}" level="{$level}" section="{$section}" type="{$type}">
-				<xsl:apply-templates select="xalan:nodeset($title)" mode="contents_item"/>
+			<item id="{@id}" level="{$level}" section="{$section}" type="{$type}" display="{$display}">
+				<title>
+					<xsl:apply-templates select="xalan:nodeset($title)" mode="contents_item"/>
+				</title>
+				<xsl:apply-templates  mode="contents" />
 			</item>
-			<xsl:apply-templates  mode="contents" />
+			
 		</xsl:if>	
 		
 	</xsl:template>

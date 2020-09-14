@@ -26,7 +26,7 @@
 	
 	<xsl:variable name="namespace">iec</xsl:variable>
 	
-	<xsl:variable name="debug">false</xsl:variable>
+	<xsl:variable name="debug">true</xsl:variable>
 	<xsl:variable name="pageWidth" select="'210mm'"/>
 	<xsl:variable name="pageHeight" select="'297mm'"/>
 
@@ -100,7 +100,7 @@
 		<xsl:variable name="docid">
 			<xsl:call-template name="getDocumentId"/>
 		</xsl:variable>
-		<doc id="{$docid}">
+		<doc id="{$docid}" lang="{$lang}">
 			<xsl:call-template name="generateContents"/>
 		</doc>
 		
@@ -118,7 +118,7 @@
 					<xsl:variable name="docid">
 						<xsl:call-template name="getDocumentId"/>
 					</xsl:variable>
-					<doc id="{$docid}">
+					<doc id="{$docid}" lang="{$lang}">
 						<xsl:call-template name="generateContents"/>
 					</doc>
 				</xsl:for-each>
@@ -200,6 +200,10 @@
 			</fo:layout-master-set>
 
 			<xsl:call-template name="addPDFUAmeta"/>
+
+			<xsl:call-template name="addBookmarks">
+				<xsl:with-param name="contents" select="$contents"/>
+			</xsl:call-template>
 
 			<!-- For 'Published' documents insert two cover pages -->
 			<xsl:if test="$stage &gt;= 60">
@@ -1215,7 +1219,7 @@
 				</xsl:call-template>
 			</fo:block>
 			
-			<xsl:for-each select="xalan:nodeset($contents)//item"><!-- [@display = 'true']
+			<xsl:for-each select="xalan:nodeset($contents)//item[@display = 'true']"><!-- [@display = 'true']
 																																										[@level &lt;= 3]
 																																										[not(@level = 2 and starts-with(@section, '0'))] skip clause from preface -->
 				<fo:block text-align-last="justify">
@@ -1259,9 +1263,9 @@
 									</fo:list-item-label>
 									<fo:list-item-body start-indent="body-start()">
 										<fo:block text-align-last="justify">
-											<fo:basic-link internal-destination="{@id}" fox:alt-text="{text()}">
+											<fo:basic-link internal-destination="{@id}" fox:alt-text="{title}">
 												<xsl:variable name="title">
-													<xsl:apply-templates />
+													<xsl:apply-templates select="title"/>
 												</xsl:variable>
 												<xsl:call-template name="addLetterSpacing">
 													<xsl:with-param name="text" select="$title"/>
@@ -1418,39 +1422,48 @@
 		</xsl:variable>
 	
 		<xsl:variable name="display">
-			<xsl:choose>
-				<xsl:when test="ancestor-or-self::iec:bibitem">false</xsl:when>
-				<xsl:when test="ancestor-or-self::iec:term">false</xsl:when>				
+			<xsl:choose>				
 				<xsl:when test="$level &gt; 3">false</xsl:when>
 				<xsl:when test="$section = '' and $type = 'clause'">false</xsl:when><!-- don't show clause with number only in title -->
 				<xsl:otherwise>true</xsl:otherwise>
 			</xsl:choose>
 		</xsl:variable>
 		
-		<xsl:if test="$display = 'true'">		
+		
+		<xsl:variable name="skip">
+			<xsl:choose>
+				<xsl:when test="ancestor-or-self::iec:bibitem">true</xsl:when>
+				<xsl:when test="ancestor-or-self::iec:term">true</xsl:when>				
+				<xsl:otherwise>false</xsl:otherwise>
+			</xsl:choose>
+		</xsl:variable>
+
+		<xsl:if test="$skip = 'false'">		
 		
 			<xsl:variable name="title">
 				<xsl:call-template name="getName"/>
 			</xsl:variable>
 			
-			<item id="{@id}" level="{$level}" section="{$section}" type="{$type}">
+			<item id="{@id}" level="{$level}" section="{$section}" type="{$type}" display="{$display}">
 				<xsl:if test="$type ='appendix'">
 					<xsl:attribute name="section"></xsl:attribute>
 				</xsl:if>
-				<xsl:choose>
-					<xsl:when test="$type = 'foreword' or $type = 'introduction'">
-						<xsl:value-of select="java:toUpperCase(java:java.lang.String.new($title))"/>
-					</xsl:when>
-					<xsl:when test="$type = 'appendix'">
-						<xsl:apply-templates select="iec:title" mode="contents_item"/>
-					</xsl:when>
-					<xsl:otherwise>
-						<xsl:apply-templates select="xalan:nodeset($title)" mode="contents_item"/>
-					</xsl:otherwise>
-				</xsl:choose>
-				
+				<title>
+					<xsl:choose>
+						<xsl:when test="$type = 'foreword' or $type = 'introduction'">
+							<xsl:value-of select="java:toUpperCase(java:java.lang.String.new($title))"/>
+						</xsl:when>
+						<xsl:when test="$type = 'appendix'">
+							<xsl:apply-templates select="iec:title" mode="contents_item"/>
+						</xsl:when>
+						<xsl:otherwise>
+							<xsl:apply-templates select="xalan:nodeset($title)" mode="contents_item"/>
+						</xsl:otherwise>
+					</xsl:choose>
+				</title>
+				<xsl:apply-templates  mode="contents" />
 			</item>
-			<xsl:apply-templates  mode="contents" />
+			
 		</xsl:if>	
 		
 	</xsl:template>
