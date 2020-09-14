@@ -183,22 +183,24 @@
 						</fo:block>
 						
 						<fo:block padding-top="1mm">
-							<fo:instream-foreign-object fox:alt-text="Barcode">
-								<barcode:barcode
-											xmlns:barcode="http://barcode4j.krysalis.org/ns"
-											message="{$code}">
-									<barcode:code39>
-										<barcode:height>8.5mm</barcode:height>
-										<barcode:module-width>0.24mm</barcode:module-width>
-										<barcode:human-readable>
-											<barcode:placement>none</barcode:placement>
-											<!--<barcode:pattern>* _ _ _ _ _ _ _ _ _ *</barcode:pattern>
-											<barcode:font-name>Arial</barcode:font-name>
-											<barcode:font-size>9.7pt</barcode:font-size> -->
-										</barcode:human-readable>
-									</barcode:code39>
-								</barcode:barcode>
-							</fo:instream-foreign-object>
+							<xsl:if test="normalize-space($code) != ''">
+								<fo:instream-foreign-object fox:alt-text="Barcode">
+									<barcode:barcode
+												xmlns:barcode="http://barcode4j.krysalis.org/ns"
+												message="{$code}">
+										<barcode:code39>
+											<barcode:height>8.5mm</barcode:height>
+											<barcode:module-width>0.24mm</barcode:module-width>
+											<barcode:human-readable>
+												<barcode:placement>none</barcode:placement>
+												<!--<barcode:pattern>* _ _ _ _ _ _ _ _ _ *</barcode:pattern>
+												<barcode:font-name>Arial</barcode:font-name>
+												<barcode:font-size>9.7pt</barcode:font-size> -->
+											</barcode:human-readable>
+										</barcode:code39>
+									</barcode:barcode>
+								</fo:instream-foreign-object>
+							</xsl:if>
 						</fo:block>
 						<fo:block padding-top="-0.8mm" text-align="left" font-family="Arial" font-size="8pt" letter-spacing="1.8mm">
 							<xsl:value-of select="concat('*', $code, '*')"/>
@@ -212,16 +214,18 @@
 					</fo:block-container>
 					<fo:block-container absolute-position="fixed" left="170mm" top="253mm">
 						<fo:block>
-							<fo:instream-foreign-object fox:alt-text="Barcode">
-								<barcode:barcode
-											xmlns:barcode="http://barcode4j.krysalis.org/ns"
-											message="{concat('http://undocs.org/', /un:un-standard/un:bibdata/un:ext/un:session/un:id)}">
-									<barcode:qr>
-										<barcode:module-width>0.55mm</barcode:module-width>
-										<barcode:ec-level>M</barcode:ec-level>
-									</barcode:qr>
-								</barcode:barcode>
-							</fo:instream-foreign-object>
+							<xsl:if test="normalize-space(/un:un-standard/un:bibdata/un:ext/un:session/un:id) != ''">
+								<fo:instream-foreign-object fox:alt-text="Barcode">
+									<barcode:barcode
+												xmlns:barcode="http://barcode4j.krysalis.org/ns"
+												message="{concat('http://undocs.org/', /un:un-standard/un:bibdata/un:ext/un:session/un:id)}">
+										<barcode:qr>
+											<barcode:module-width>0.55mm</barcode:module-width>
+											<barcode:ec-level>M</barcode:ec-level>
+										</barcode:qr>
+									</barcode:barcode>
+								</fo:instream-foreign-object>
+							</xsl:if>
 						</fo:block>
 					</fo:block-container>
 					
