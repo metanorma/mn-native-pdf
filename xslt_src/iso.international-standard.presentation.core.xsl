@@ -574,7 +574,14 @@
 													</fo:table-cell>
 													<fo:table-cell>
 														<fo:block text-align="left">
-															<xsl:value-of select="$doctype_uppercased"/>
+															<xsl:choose>
+																<xsl:when test="$doctype = 'amendment'">
+																	<xsl:value-of select="java:toUpperCase(java:java.lang.String.new(translate(/iso:iso-standard/iso:bibdata/iso:ext/iso:updates-document-type,'-',' ')))"/>
+																</xsl:when>
+																<xsl:otherwise>
+																	<xsl:value-of select="$doctype_uppercased"/>
+																</xsl:otherwise>
+															</xsl:choose>
 														</fo:block>
 													</fo:table-cell>
 													<fo:table-cell>
@@ -588,6 +595,7 @@
 														<fo:block text-align="right">
 															<xsl:if test="$stage-abbreviation = 'PRF' or 
 																								$stage-abbreviation = 'IS' or 
+																								$stage-abbreviation = 'D' or 
 																								$stage-abbreviation = 'published'">
 																<xsl:call-template name="printEdition"/>
 															</xsl:if>
@@ -595,17 +603,43 @@
 																<xsl:when test="$stage-abbreviation = 'IS' and /iso:iso-standard/iso:bibdata/iso:date[@type = 'published']">
 																	<xsl:value-of select="$linebreak"/>
 																	<xsl:value-of select="/iso:iso-standard/iso:bibdata/iso:date[@type = 'published']"/>
-																</xsl:when>																
+																</xsl:when>
+																<xsl:when test="($stage-abbreviation = 'IS' or $stage-abbreviation = 'D') and /iso:iso-standard/iso:bibdata/iso:date[@type = 'created']">
+																	<xsl:value-of select="$linebreak"/>
+																	<xsl:value-of select="/iso:iso-standard/iso:bibdata/iso:date[@type = 'created']"/>
+																</xsl:when>
 																<xsl:when test="$stage-abbreviation = 'IS' or $stage-abbreviation = 'published'">
 																	<xsl:value-of select="$linebreak"/>
 																	<xsl:value-of select="substring(/iso:iso-standard/iso:bibdata/iso:version/iso:revision-date,1, 7)"/>
 																</xsl:when>
 															</xsl:choose>
-															<!-- <xsl:value-of select="$linebreak"/>
-															<xsl:value-of select="/iso:iso-standard/iso:bibdata/iso:version/iso:revision-date"/> -->
+														</fo:block>
+														<!-- <xsl:value-of select="$linebreak"/>
+														<xsl:value-of select="/iso:iso-standard/iso:bibdata/iso:version/iso:revision-date"/> -->
+														<xsl:if test="$doctype = 'amendment'">
+															<fo:block text-align="right" margin-right="0.5mm">
+																<fo:block font-weight="bold" margin-top="4pt">
+																	<xsl:variable name="title-amendment">
+																		<xsl:call-template name="getTitle">
+																			<xsl:with-param name="name" select="'title-amendment'"/>
+																		</xsl:call-template>
+																	</xsl:variable>
+																	<xsl:value-of select="$title-amendment"/><xsl:text> </xsl:text>
+																	<xsl:variable name="amendment-number" select="/iso:iso-standard/iso:bibdata/iso:ext/iso:structuredidentifier/iso:project-number/@amendment"/>
+																	<xsl:if test="normalize-space($amendment-number) != ''">
+																		<xsl:value-of select="$amendment-number"/><xsl:text> </xsl:text>
+																	</xsl:if>
+																</fo:block>
+																<fo:block>
+																	<xsl:if test="/iso:iso-standard/iso:bibdata/iso:date[@type = 'updated']">																		
+																	<xsl:value-of select="/iso:iso-standard/iso:bibdata/iso:date[@type = 'updated']"/>
+																	</xsl:if>
+																</fo:block>
 															</fo:block>
+														</xsl:if>
 													</fo:table-cell>
 												</fo:table-row>
+												
 											</fo:table-body>
 										</fo:table>
 										
@@ -674,6 +708,12 @@
 																		</xsl:if>
 																		<xsl:value-of select="$title-part"/>
 																	</xsl:if> -->
+																	<xsl:variable name="title-amd" select="/iso:iso-standard/iso:bibdata/iso:title[@language = 'en' and @type = 'title-amd']"/>
+																	<xsl:if test="$doctype = 'amendment' and normalize-space($title-amd) != ''">
+																		<fo:block margin-right="-5mm" margin-top="12pt">
+																			<xsl:call-template name="printAmendmentTitle"/>
+																		</fo:block>
+																	</xsl:if>
 																</fo:block>
 																			
 																<fo:block font-size="9pt"><xsl:value-of select="$linebreak"/></fo:block>
@@ -687,6 +727,15 @@
 																	<xsl:value-of select="$title-main-fr"/>
 																	
 																	<xsl:call-template name="printTitlePartFr"/>
+																	
+																	<xsl:variable name="title-amd" select="/iso:iso-standard/iso:bibdata/iso:title[@language = 'fr' and @type = 'title-amd']"/>
+																	<xsl:if test="$doctype = 'amendment' and normalize-space($title-amd) != ''">
+																		<fo:block margin-right="-5mm" margin-top="6pt">
+																			<xsl:call-template name="printAmendmentTitle">
+																				<xsl:with-param name="lang" select="'fr'"/>
+																			</xsl:call-template>
+																		</fo:block>
+																	</xsl:if>
 																	
 																</fo:block>
 															</fo:block>
@@ -1102,19 +1151,8 @@
 							
 							<xsl:variable name="title-amd" select="/iso:iso-standard/iso:bibdata/iso:title[@language = 'en' and @type = 'title-amd']"/>
 							<xsl:if test="$doctype = 'amendment' and normalize-space($title-amd) != ''">
-								<fo:block font-weight="normal" margin-top="12pt" line-height="1.1">
-									<xsl:variable name="title-amendment">
-										<xsl:call-template name="getTitle">
-											<xsl:with-param name="name" select="'title-amendment'"/>
-										</xsl:call-template>
-									</xsl:variable>
-									<xsl:value-of select="$title-amendment"/>
-									<xsl:variable name="amendment-number" select="/iso:iso-standard/iso:bibdata/iso:ext/iso:structuredidentifier/iso:project-number/@amendment"/>
-									<xsl:if test="normalize-space($amendment-number) != ''">
-										<xsl:text> </xsl:text><xsl:value-of select="$amendment-number"/>
-									</xsl:if>
-									<xsl:text>: </xsl:text>
-									<xsl:value-of select="$title-amd"/>
+								<fo:block margin-top="12pt">
+									<xsl:call-template name="printAmendmentTitle"/>
 								</fo:block>
 							</xsl:if>
 						
@@ -1207,6 +1245,27 @@
 
 	<xsl:template match="node()">		
 		<xsl:apply-templates />			
+	</xsl:template>
+	
+	<xsl:template name="printAmendmentTitle">
+		<xsl:param name="lang" select="'en'"/>
+		<xsl:variable name="title-amd" select="/iso:iso-standard/iso:bibdata/iso:title[@language = $lang and @type = 'title-amd']"/>
+		<xsl:if test="$doctype = 'amendment' and normalize-space($title-amd) != ''">
+			<fo:block font-weight="normal" line-height="1.1">
+				<xsl:variable name="title-amendment">
+					<xsl:call-template name="getTitle">
+						<xsl:with-param name="name" select="'title-amendment'"/>
+					</xsl:call-template>
+				</xsl:variable>
+				<xsl:value-of select="$title-amendment"/>
+				<xsl:variable name="amendment-number" select="/iso:iso-standard/iso:bibdata/iso:ext/iso:structuredidentifier/iso:project-number/@amendment"/>
+				<xsl:if test="normalize-space($amendment-number) != ''">
+					<xsl:text> </xsl:text><xsl:value-of select="$amendment-number"/>
+				</xsl:if>
+				<xsl:text>: </xsl:text>
+				<xsl:value-of select="$title-amd"/>
+			</fo:block>
+		</xsl:if>
 	</xsl:template>
 	
 	<!-- ============================= -->
