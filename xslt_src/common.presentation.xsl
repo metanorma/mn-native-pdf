@@ -38,7 +38,7 @@
 		
 
 		<title-toc lang="en">
-			<xsl:if test="$namespace = 'iso' or $namespace = 'iec' or $namespace = 'iho' or $namespace = 'csd' or $namespace = 'rsd' or $namespace = 'ogc' or $namespace = 'ogc-white-paper' or $namespace = 'unece-rec' or $namespace = 'mpfd' or $namespace = 'bipm'">
+			<xsl:if test="$namespace = 'iso' or $namespace = 'iec' or $namespace = 'iho' or $namespace = 'csd' or $namespace = 'rsd' or $namespace = 'ogc' or $namespace = 'ogc-white-paper' or $namespace = 'unece-rec' or $namespace = 'mpfd'">
 				<xsl:text>Contents</xsl:text>
 			</xsl:if>
 			<xsl:if test="$namespace = 'itu' or $namespace = 'csa' or $namespace = 'm3d' or $namespace = 'nist-cswp'  or $namespace = 'nist-sp'">
@@ -47,8 +47,18 @@
 			<xsl:if test="$namespace = 'gb'">
 				<xsl:text>Table of contents</xsl:text>
 			</xsl:if>
+			<xsl:if test="$namespace = 'bipm'">
+				<xsl:text>Table of contents</xsl:text>
+			</xsl:if>
 		</title-toc>
-		<title-toc lang="fr">Sommaire</title-toc>
+		<title-toc lang="fr">
+			<xsl:if test="$namespace = 'iso' or $namespace = 'iec' or $namespace = 'iho' or $namespace = 'csd' or $namespace = 'rsd' or $namespace = 'ogc' or $namespace = 'ogc-white-paper' or $namespace = 'unece-rec' or $namespace = 'mpfd' or $namespace = 'itu' or $namespace = 'csa' or $namespace = 'm3d' or $namespace = 'nist-cswp'  or $namespace = 'nist-sp' or $namespace = 'gb'">
+				<xsl:text>Sommaire</xsl:text>
+			</xsl:if>
+			<xsl:if test="$namespace = 'bipm'">
+				<xsl:text>Table des matières</xsl:text>
+			</xsl:if>
+			</title-toc>
 		<xsl:if test="$namespace = 'iso' or $namespace = 'iec' or $namespace = 'itu' or $namespace = 'unece' or $namespace = 'unece-rec' or $namespace = 'nist-cswp'  or $namespace = 'nist-sp' or $namespace = 'ogc' or $namespace = 'ogc-white-paper' or $namespace = 'rsd' or $namespace = 'csa' or $namespace = 'csd' or $namespace = 'm3d' or $namespace = 'iho' or $namespace = 'bipm'">
 			<title-toc lang="zh">Contents</title-toc>
 		</xsl:if>
@@ -654,10 +664,15 @@
 			<xsl:attribute name="keep-with-next">always</xsl:attribute>
 			<xsl:attribute name="text-indent">0mm</xsl:attribute>
 		</xsl:if>
-		<xsl:if test="$namespace = 'mpfd'">			
+		<xsl:if test="$namespace = 'mpfd'">
 			<xsl:attribute name="text-align">center</xsl:attribute>
 			<xsl:attribute name="margin-bottom">6pt</xsl:attribute>
 			<xsl:attribute name="font-size">11pt</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'bipm'">
+			<xsl:attribute name="font-weight">bold</xsl:attribute>
+			<xsl:attribute name="text-align">left</xsl:attribute>
+			<xsl:attribute name="margin-top">12pt</xsl:attribute>
 		</xsl:if>
 	</xsl:attribute-set>
 
@@ -1437,6 +1452,11 @@
 				<xsl:attribute name="margin-left">0mm</xsl:attribute>
 				<xsl:attribute name="margin-right">0mm</xsl:attribute>
 			</xsl:if>
+			<xsl:if test="$namespace = 'bipm'">
+				<xsl:attribute name="space-after">12pt</xsl:attribute>
+				<xsl:attribute name="margin-left">0mm</xsl:attribute>
+				<xsl:attribute name="margin-right">0mm</xsl:attribute>
+			</xsl:if>
 			<fo:table id="{@id}" table-layout="fixed" width="100%" margin-left="{$margin-left}mm" margin-right="{$margin-left}mm" table-omit-footer-at-break="true">
 				<xsl:if test="$namespace = 'iso'">
 					<xsl:attribute name="border">1.5pt solid black</xsl:attribute>
@@ -1503,7 +1523,13 @@
 					<xsl:attribute name="border-top">2pt solid black</xsl:attribute>
 					<xsl:attribute name="border-bottom">2pt solid black</xsl:attribute>
 				</xsl:if>
-				
+				<xsl:if test="$namespace = 'bipm'">					
+					<xsl:attribute name="font-size">10pt</xsl:attribute>
+					<xsl:attribute name="border-top">0.5pt solid black</xsl:attribute>
+					<xsl:attribute name="border-bottom">0.5pt solid black</xsl:attribute>
+					<xsl:attribute name="margin-left">0mm</xsl:attribute>
+					<xsl:attribute name="margin-right">0mm</xsl:attribute>
+				</xsl:if>
 				<xsl:for-each select="xalan:nodeset($colwidths)//column">
 					<xsl:choose>
 						<xsl:when test=". = 1 or . = 0">
@@ -1925,6 +1951,9 @@
 							<xsl:attribute name="background-color">rgb(252, 246, 222)</xsl:attribute>
 						</xsl:if>
 					</xsl:if>
+					<xsl:if test="$namespace = 'bipm'">
+						<xsl:attribute name="height">8mm</xsl:attribute>
+					</xsl:if>
 				</xsl:if>				
 				
 			<xsl:apply-templates />
@@ -1963,8 +1992,7 @@
 				<xsl:attribute name="color">white</xsl:attribute>
 			</xsl:if>
 			<xsl:if test="$namespace = 'ogc'">				
-				<xsl:attribute name="border">solid black 0pt</xsl:attribute>
-				
+				<xsl:attribute name="border">solid black 0pt</xsl:attribute>				
 			</xsl:if>
 			<xsl:if test="$namespace = 'ogc-white-paper'">
 				<xsl:attribute name="padding">1mm</xsl:attribute>
@@ -2005,7 +2033,14 @@
 			</xsl:if>
 			<xsl:if test="$namespace = 'mpfd'">								
 				<xsl:attribute name="border-top">solid black 2pt</xsl:attribute>
-				<xsl:attribute name="border-bottom">solid black 2pt</xsl:attribute>				
+				<xsl:attribute name="border-bottom">solid black 2pt</xsl:attribute>
+			</xsl:if>
+			<xsl:if test="$namespace = 'bipm'">
+				<xsl:attribute name="font-weight">normal</xsl:attribute>
+				<xsl:attribute name="border">solid black 0pt</xsl:attribute>				
+				<xsl:attribute name="border-top">solid black 0.5pt</xsl:attribute>
+				<xsl:attribute name="border-bottom">solid black 0.5pt</xsl:attribute>
+				<xsl:attribute name="height">10mm</xsl:attribute>
 			</xsl:if>
 			<xsl:if test="@colspan">
 				<xsl:attribute name="number-columns-spanned">
@@ -2100,6 +2135,9 @@
 				<xsl:if test="ancestor::*[local-name()='thead']">
 					<xsl:attribute name="font-weight">normal</xsl:attribute>
 				</xsl:if>
+			</xsl:if>
+			<xsl:if test="$namespace = 'bipm'">
+				<xsl:attribute name="border">solid 0pt white</xsl:attribute>
 			</xsl:if>
 			<xsl:if test="@colspan">
 				<xsl:attribute name="number-columns-spanned">
@@ -5574,11 +5612,11 @@
 						</dc:description>
 						<pdf:Keywords>
 							<xsl:call-template name="insertKeywords"/>
-						</pdf:Keywords>
+						</pdf:Keywords>						
 					</rdf:Description>
 					<rdf:Description rdf:about=""
 							xmlns:xmp="http://ns.adobe.com/xap/1.0/">
-						<!-- XMP properties go here -->
+						<!-- XMP properties go here -->						
 						<xmp:CreatorTool></xmp:CreatorTool>
 					</rdf:Description>
 				</rdf:RDF>
