@@ -23,7 +23,9 @@
 	
 	<xsl:variable name="copyrightYear" select="/bipm:bipm-standard/bipm:bibdata/bipm:copyright/bipm:from"/>
 	
+	<xsl:variable name="title-en-cover" select="/bipm:bipm-standard/bipm:bibdata/bipm:title[@language = 'en' and @type='cover']"/>
 	<xsl:variable name="title-en" select="/bipm:bipm-standard/bipm:bibdata/bipm:title[@language = 'en' and @type='main']"/>
+	<xsl:variable name="title-fr-cover" select="/bipm:bipm-standard/bipm:bibdata/bipm:title[@language = 'fr' and @type='cover']"/>
 	<xsl:variable name="title-fr" select="/bipm:bipm-standard/bipm:bibdata/bipm:title[@language = 'fr' and @type='main']"/>
 	
 	<xsl:variable name="contents">
@@ -155,7 +157,7 @@
 						
 							<xsl:variable name="titleParts-fr">
 								<xsl:call-template name="splitTitle">
-									<xsl:with-param name="pText" select="$title-fr"/>
+									<xsl:with-param name="pText" select="$title-fr-cover"/>
 									<xsl:with-param name="sep" select="' '"/>
 								</xsl:call-template>
 							</xsl:variable>
@@ -195,7 +197,7 @@
 								</fo:inline>
 							</fo:block> -->
 							
-							<xsl:variable name="title-en_" select="java:replaceAll(java:java.lang.String.new($title-en),'( (of )| (and )| (or ))','#$2')"/>
+							<xsl:variable name="title-en_" select="java:replaceAll(java:java.lang.String.new($title-en-cover),'( (of )| (and )| (or ))','#$2')"/>
 							<!-- <xsl:variable name="title-en" select="$title-en_"/> -->
 						
 							<xsl:variable name="titleParts-en">
@@ -309,8 +311,7 @@
 					</fo:block-container>
 					
 					<fo:block-container font-size="18pt" font-weight="bold" text-align="center">
-						<fo:block><xsl:value-of select="$title-fr"/></fo:block>
-						<fo:block>(SI)</fo:block>
+						<fo:block><xsl:value-of select="$title-fr"/></fo:block>						
 					</fo:block-container>
 					
 					<fo:block-container absolute-position="fixed" left="69.5mm" top="241mm" width="99mm">						
@@ -329,24 +330,13 @@
 							<fo:block>&#xA0;</fo:block>
 							<fo:block>&#xA0;</fo:block>
 							<fo:block>&#xA0;</fo:block>							
-							<fo:block text-align="right"><xsl:value-of select="/bipm:bipm-standard/bipm:bibdata/bipm:version"/></fo:block>						
+							<fo:block text-align="right"><xsl:value-of select="/bipm:bipm-standard/bipm:bibdata/bipm:version/bipm:draft"/></fo:block>						
 						</fo:block>
 					</fo:block-container>
 					
 					<fo:block break-after="page"/>
 					
-					<fo:block font-size="10.6pt" font-family="Times New Roman">
-						<fo:block text-decoration="underline" margin-bottom="6pt">Note concernant les droits d’auteur</fo:block>
-						<fo:block text-align="justify" line-height="135%">La Brochure sur le SI est distribuée selon les termes et conditions de la licence Creative
-							Commons Attribution 4.0 International (							
-							<fo:inline color="blue" text-decoration="underline">
-								<fo:basic-link external-destination="http://creativecommons.org/licenses/by/4.0/" fox:alt-text="http://creativecommons.org/licenses/by/4.0/">http://creativecommons.org/licenses/by/4.0/</fo:basic-link>
-							</fo:inline>
-							), qui permet l’utilisation sans restriction, la distribution et la reproduction sur quelque support
-							que soit, sous réserve de mentionner dûment l’auteur ou les auteurs originaux ainsi que la
-							source de l’oeuvre, d’intégrer un lien vers la licence Creative Commons et d’indiquer si des
-							modifications ont été effectuées.</fo:block>
-					</fo:block>
+					<xsl:apply-templates select="/bipm:bipm-standard/bipm:boilerplate/bipm:license-statement"/>
 					
 					<fo:block-container absolute-position="fixed" top="200mm" height="69mm" font-family="Times New Roman" text-align="center" display-align="after">
 						<xsl:apply-templates select="/bipm:bipm-standard/bipm:boilerplate/bipm:feedback-statement"/>
@@ -678,6 +668,40 @@
 			<xsl:text></xsl:text>
 		</fo:inline>
 	</xsl:template>
+
+	<xsl:template match="bipm:license-statement">
+		<fo:block font-size="10.6pt" font-family="Times New Roman">
+			<xsl:apply-templates />
+		</fo:block>
+	</xsl:template>
+
+	<xsl:template match="bipm:license-statement//bipm:title">
+		<fo:block text-decoration="underline" margin-bottom="6pt">
+			<xsl:apply-templates />
+		</fo:block>
+	</xsl:template>
+
+	<xsl:template match="bipm:license-statement//bipm:p">
+		<fo:block text-align="justify" line-height="135%">
+			<xsl:apply-templates />
+		</fo:block>
+	</xsl:template>
+	
+	<xsl:template match="bipm:license-statement//bipm:link">
+		<fo:inline color="blue" text-decoration="underline">
+				<fo:basic-link external-destination="{@target}" fox:alt-text="{@target}">
+					<xsl:choose>
+						<xsl:when test="normalize-space(.) != ''">
+							<xsl:apply-templates/>
+						</xsl:when>
+						<xsl:otherwise>
+							<xsl:value-of select="@target"/>
+						</xsl:otherwise>						
+					</xsl:choose>
+				</fo:basic-link>
+			</fo:inline>
+	</xsl:template>
+	
 
 	<xsl:template match="bipm:feedback-statement">
 		<fo:block font-size="10pt" line-height="125%">
