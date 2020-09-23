@@ -673,6 +673,9 @@
 			<xsl:attribute name="font-weight">bold</xsl:attribute>
 			<xsl:attribute name="text-align">left</xsl:attribute>
 			<xsl:attribute name="margin-top">12pt</xsl:attribute>
+			<xsl:attribute name="margin-left">25mm</xsl:attribute>
+			<xsl:attribute name="text-indent">-25mm</xsl:attribute>
+			<xsl:attribute name="margin-bottom">6pt</xsl:attribute>			
 		</xsl:if>
 	</xsl:attribute-set>
 
@@ -1345,6 +1348,10 @@
 			<fo:block>&#xA0;</fo:block>				
 		</xsl:if>
 		
+		<xsl:if test="$namespace = 'bipm'">
+			<fo:block>&#xA0;</fo:block>				
+		</xsl:if>
+		
 		<!-- $namespace = 'iso' or  -->
 		<xsl:if test="$namespace = 'csa' or $namespace = 'csd' or $namespace = 'gb' or $namespace = 'iec' or $namespace = 'iho' or 											
 											$namespace = 'itu' or 
@@ -1529,6 +1536,7 @@
 					<xsl:attribute name="border-bottom">0.5pt solid black</xsl:attribute>
 					<xsl:attribute name="margin-left">0mm</xsl:attribute>
 					<xsl:attribute name="margin-right">0mm</xsl:attribute>
+					<xsl:attribute name="margin-bottom">12pt</xsl:attribute>
 				</xsl:if>
 				<xsl:for-each select="xalan:nodeset($colwidths)//column">
 					<xsl:choose>
@@ -1783,6 +1791,9 @@
 								</xsl:if>
 							</xsl:if>
 							<xsl:if test="$namespace = 'ogc'">
+								<xsl:attribute name="border">solid black 0pt</xsl:attribute>
+							</xsl:if>
+							<xsl:if test="$namespace = 'bipm'">
 								<xsl:attribute name="border">solid black 0pt</xsl:attribute>
 							</xsl:if>
 							<!-- except gb -->
@@ -2040,7 +2051,8 @@
 				<xsl:attribute name="border">solid black 0pt</xsl:attribute>				
 				<xsl:attribute name="border-top">solid black 0.5pt</xsl:attribute>
 				<xsl:attribute name="border-bottom">solid black 0.5pt</xsl:attribute>
-				<xsl:attribute name="height">10mm</xsl:attribute>
+				<xsl:attribute name="height">8mm</xsl:attribute>
+				<xsl:attribute name="padding-top">2mm</xsl:attribute>
 			</xsl:if>
 			<xsl:if test="@colspan">
 				<xsl:attribute name="number-columns-spanned">
@@ -2138,6 +2150,13 @@
 			</xsl:if>
 			<xsl:if test="$namespace = 'bipm'">
 				<xsl:attribute name="border">solid 0pt white</xsl:attribute>
+				<xsl:variable name="rownum"><xsl:number count="*[local-name()='tr']"/></xsl:variable>
+				<xsl:if test="$rownum = 1">
+					<xsl:attribute name="padding-top">3mm</xsl:attribute>
+				</xsl:if>
+				<xsl:if test="not(ancestor::*[local-name()='tr']/following-sibling::*[local-name()='tr'])"> <!-- last row -->
+					<xsl:attribute name="padding-bottom">2mm</xsl:attribute>
+				</xsl:if>
 			</xsl:if>
 			<xsl:if test="@colspan">
 				<xsl:attribute name="number-columns-spanned">
@@ -2178,6 +2197,10 @@
 				<xsl:if test="$namespace = 'iho'">
 					<xsl:attribute name="font-size">12pt</xsl:attribute>					
 				</xsl:if>
+				<xsl:if test="$namespace = 'bipm'">					
+					<xsl:attribute name="text-align">justify</xsl:attribute>
+				</xsl:if>
+				
 				<fo:inline padding-right="2mm">
 					<xsl:if test="$namespace = 'gb'">
 						<xsl:attribute name="font-family">SimHei</xsl:attribute>
@@ -4870,7 +4893,7 @@
 				</xsl:choose>
 			</xsl:if>
 			<xsl:if test="$namespace = 'mpfd'">3</xsl:if>
-			
+			<xsl:if test="$namespace = 'bipm'">8</xsl:if>
 		</xsl:variable>
 		
 		<xsl:variable name="padding-right">
