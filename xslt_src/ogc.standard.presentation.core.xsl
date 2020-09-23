@@ -1119,8 +1119,13 @@
 	
 	<xsl:template match="ogc:preferred | ogc:deprecated | ogc:admitted" priority="2"/>
 	
-	<xsl:template match="ogc:preferred | ogc:deprecated | ogc:admitted" mode="term_name">						
-		<fo:inline font-size="18pt" padding-right="3mm"><xsl:apply-templates /></fo:inline>
+	<xsl:template match="ogc:preferred" mode="term_name">						
+		<fo:inline font-size="18pt" padding-right="3mm"><xsl:apply-templates /></fo:inline>		
+		<fo:inline padding-right="2mm">&#xA0;</fo:inline>
+	</xsl:template>
+	
+	<xsl:template match="ogc:deprecated | ogc:admitted" mode="term_name">						
+		<fo:inline font-size="18pt" padding-right="3mm"><xsl:apply-templates /></fo:inline>		
 		<fo:inline font-size="11pt" padding="1mm" padding-bottom="0.5mm" baseline-shift="25%">
 			<xsl:variable name="kind" select="local-name()"/>
 			<xsl:attribute name="background-color">
@@ -1136,7 +1141,6 @@
 		</fo:inline>
 		<fo:inline padding-right="2mm">&#xA0;</fo:inline>
 	</xsl:template>
-	
 	
 	<!-- [position() &gt; 1] -->
 	<xsl:template match="ogc:references[not(@normative='true')]">
