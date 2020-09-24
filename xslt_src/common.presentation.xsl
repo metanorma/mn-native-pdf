@@ -432,7 +432,10 @@
 			<xsl:attribute name="margin-left">12.5mm</xsl:attribute>			
 			<xsl:attribute name="margin-right">12.5mm</xsl:attribute>			
 		</xsl:if>
-		
+		<xsl:if test="$namespace = 'bipm'">
+			<xsl:attribute name="margin-top">6pt</xsl:attribute>
+			<xsl:attribute name="margin-bottom">6pt</xsl:attribute>
+		</xsl:if>
 	</xsl:attribute-set>
 
 	<xsl:attribute-set name="example-body-style">
@@ -528,7 +531,9 @@
 			<xsl:attribute name="margin-bottom">12pt</xsl:attribute>
 			<xsl:attribute name="keep-with-next">always</xsl:attribute>
 		</xsl:if>
-		
+		<xsl:if test="$namespace = 'bipm'">
+			<xsl:attribute name="font-style">italic</xsl:attribute>
+		</xsl:if>
 	</xsl:attribute-set>
 
 	<xsl:attribute-set name="example-p-style">
@@ -2899,6 +2904,10 @@
 						<xsl:attribute name="margin-top">0pt</xsl:attribute>
 						<xsl:attribute name="margin-bottom">6pt</xsl:attribute>
 					</xsl:if>
+					<xsl:if test="$namespace = 'bipm'">
+						<xsl:attribute name="margin-top">0pt</xsl:attribute>
+						<xsl:attribute name="margin-bottom">6pt</xsl:attribute>
+					</xsl:if>
 					<xsl:apply-templates />
 					<!-- <xsl:if test="$namespace = 'gb'">
 						<xsl:if test="ancestor::*[local-name()='formula']">
@@ -4934,7 +4943,12 @@
 				</xsl:choose>
 			</xsl:if>
 			<xsl:if test="$namespace = 'mpfd'">3</xsl:if>
-			<xsl:if test="$namespace = 'bipm'">8</xsl:if>
+			<xsl:if test="$namespace = 'bipm'">
+				<xsl:choose>
+					<xsl:when test="ancestor::bipm:annex">2</xsl:when>
+					<xsl:otherwise>8</xsl:otherwise>
+				</xsl:choose>
+			</xsl:if>
 		</xsl:variable>
 		
 		<xsl:variable name="padding-right">

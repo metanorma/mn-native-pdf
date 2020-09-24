@@ -40,6 +40,7 @@
 	</xsl:variable>
 	
 	
+	
 	<xsl:template match="/">
 		<xsl:call-template name="namespaceCheck"/>
 		<fo:root xmlns:fo="http://www.w3.org/1999/XSL/Format" xsl:use-attribute-sets="root-style" xml:lang="{$lang}">
@@ -397,6 +398,7 @@
 				
 			</fo:page-sequence>
 			
+			<xsl:apply-templates select="/bipm:bipm-standard/bipm:preface/bipm:clause" mode="sections" />
 			
 			<!-- Document Pages -->
 			
@@ -448,20 +450,16 @@
 			</fo:page-sequence>
 			
 			
-			<xsl:apply-templates select="/bipm:bipm-standard2/bipm:annex" mode="sections"/>
-			
-			
-			
+			<xsl:apply-templates select="/bipm:bipm-standard/bipm:annex" mode="sections"/>
 			
 			<!-- Bibliography -->
-			<xsl:apply-templates select="/bipm:bipm-standard2/bipm:bibliography/bipm:references[not(@normative='true')]" mode="sections"/> 
+			<xsl:apply-templates select="/bipm:bipm-standard/bipm:bibliography/bipm:references[not(@normative='true')]" mode="sections"/> 
 			
 			<!-- End Document Pages -->
 			
 			
 			
-			
-			<xsl:call-template name="insertIndexPages"/>
+			<!-- <xsl:call-template name="insertIndexPages"/> -->
 			
 			<!-- 3 Pages with BIPM Metro logo -->
 			<fo:page-sequence master-reference="document" force-page-count="no-force">
@@ -638,6 +636,7 @@
 	
 	<xsl:template match="node()" mode="sections">
 		<fo:page-sequence master-reference="document" force-page-count="no-force">
+			<xsl:call-template name="insertFootnoteSeparator"/>
 			<xsl:call-template name="insertHeaderFooter"/>
 			<fo:flow flow-name="xsl-region-body">
 				<fo:block line-height="125%">
@@ -749,7 +748,7 @@
 		<fo:block-container margin-left="-14mm" font-family="Arial" font-size="{$font-size}" font-weight="bold" keep-with-next="always" line-height="145%">				
 			<xsl:attribute name="margin-bottom">
 				<xsl:choose>
-					<xsl:when test="$level = 1 and (parent::bipm:annex or parent::bipm:abstract)">84pt</xsl:when>
+					<xsl:when test="$level = 1 and (parent::bipm:annex or parent::bipm:abstract or ancestor::bipm:preface)">84pt</xsl:when>
 					<!-- <xsl:when test="$level = 1">24pt</xsl:when> -->
 					<xsl:when test="$level = 2">10pt</xsl:when>						
 					<xsl:otherwise>6pt</xsl:otherwise>
@@ -775,7 +774,7 @@
 					</fo:marker>
 				</xsl:if>
 				<xsl:choose>
-					<xsl:when test="*[local-name() = 'tab']"><!-- split number and title -->					
+					<xsl:when test="*[local-name() = 'tab'] and not(parent::bipm:annex)"><!-- split number and title -->					
 						<fo:table table-layout="fixed" width="100%">
 							<fo:table-column column-width="14mm"/>
 							<fo:table-column column-width="136mm"/>
@@ -787,7 +786,7 @@
 										</fo:block>
 									</fo:table-cell>
 									<fo:table-cell>
-										<fo:block>
+										<fo:block line-height-shift-adjustment="disregard-shifts">
 											<xsl:call-template name="extractTitle"/>
 										</fo:block>
 									</fo:table-cell>
@@ -823,7 +822,7 @@
 
 	
 
-	<xsl:template match="bipm:sections/bipm:clause | bipm:preface/bipm:abstract" priority="3">
+	<xsl:template match="bipm:sections/bipm:clause | bipm:preface/bipm:abstract | bipm:annex" priority="3">
 		<fo:table table-layout="fixed" width="173.5mm">
 			<xsl:call-template name="setId"/>
 			<fo:table-column column-width="137mm"/>
@@ -862,7 +861,7 @@
 		</fo:table-row>
 	</xsl:template>
 	
-	<xsl:template match="bipm:sections/bipm:clause/*" mode="clause_table">
+	<xsl:template match="bipm:sections/bipm:clause/* | bipm:annex/*" mode="clause_table">
 		<fo:table-row>
 			<fo:table-cell>
 				<fo:block>					
@@ -889,8 +888,9 @@
 	</xsl:template>
 
 	<!-- skip, because it process in note_side template -->
-	<xsl:template match="bipm:sections//bipm:note" priority="3"/> <!-- [not(ancestor::bipm:table)] -->
 	<xsl:template match="bipm:preface/bipm:abstract//bipm:note[not(ancestor::bipm:table)]" priority="3"/>
+	<xsl:template match="bipm:sections//bipm:note | bipm:annex//bipm:note" priority="3"/> <!-- [not(ancestor::bipm:table)] -->
+	
 	
 	<xsl:template match="bipm:note" mode="note_side">
 		<fo:block>
@@ -921,7 +921,7 @@
 				</fo:basic-link>
 			</fo:inline>
 			<fo:footnote-body>
-				<fo:block font-size="10pt" margin-bottom="12pt" font-weight="normal" text-indent="0" start-indent="0" line-height="124%" text-align="justify">
+				<fo:block font-size="9pt" margin-bottom="12pt" font-weight="normal" text-indent="0" start-indent="0" line-height="124%" text-align="justify">
 					<fo:inline id="footnote_{@reference}" keep-with-next.within-line="always" font-size="60%" vertical-align="super"> <!-- baseline-shift="30%" padding-right="3mm" font-size="60%"  alignment-baseline="hanging" -->
 						<xsl:value-of select="$number "/><!-- + count(//bipm:bibitem/bipm:note) -->
 					</fo:inline>
@@ -942,6 +942,7 @@
 
 	<xsl:template match="bipm:p">
 		<xsl:param name="inline" select="'false'"/>
+		
 		<xsl:variable name="previous-element" select="local-name(preceding-sibling::*[1])"/>
 		<xsl:variable name="element-name">
 			<xsl:choose>
@@ -951,6 +952,7 @@
 				<xsl:otherwise>fo:block</xsl:otherwise>
 			</xsl:choose>
 		</xsl:variable>
+		
 		<xsl:element name="{$element-name}">
 			<xsl:attribute name="id">
 				<xsl:value-of select="@id"/>
@@ -966,10 +968,13 @@
 				<xsl:attribute name="margin-bottom">6pt</xsl:attribute>
 			</xsl:if>			
 			<xsl:if test="ancestor::bipm:dd and not(ancestor::bipm:table)">
-				<xsl:attribute name="margin-bottom">4pt</xsl:attribute>
+				<!-- <xsl:attribute name="margin-bottom">4pt</xsl:attribute> -->
 			</xsl:if>
 			<xsl:if test="parent::bipm:li">
 				<xsl:attribute name="margin-bottom">0pt</xsl:attribute>
+			</xsl:if>
+			<xsl:if test="@align = 'center'">
+				<xsl:attribute name="keep-with-next">always</xsl:attribute>
 			</xsl:if>
 			<xsl:apply-templates />
 		</xsl:element>
@@ -1083,6 +1088,27 @@
 						</fo:block>
 				</xsl:otherwise>
 			</xsl:choose>
+		</fo:block>
+	</xsl:template>
+
+	<xsl:template match="bipm:example" priority="2">
+		<fo:block margin-top="6pt"  margin-bottom="6pt">
+			<fo:table table-layout="fixed" width="100%">
+				<fo:table-column column-width="27.5mm"/>
+				<fo:table-column column-width="108mm"/>
+				<fo:table-body>
+					<fo:table-row>
+						<fo:table-cell>
+							<fo:block><xsl:apply-templates select="*[local-name()='name']" mode="presentation"/></fo:block>
+						</fo:table-cell>
+						<fo:table-cell>
+							<fo:block>
+								<xsl:apply-templates/>
+							</fo:block>
+						</fo:table-cell>
+					</fo:table-row>
+				</fo:table-body>
+			</fo:table>
 		</fo:block>
 	</xsl:template>
 
