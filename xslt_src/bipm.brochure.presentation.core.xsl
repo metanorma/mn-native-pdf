@@ -21,28 +21,98 @@
 
 	<xsl:variable name="debug">false</xsl:variable>
 	
-	<xsl:variable name="copyrightYear" select="/bipm:bipm-standard/bipm:bibdata/bipm:copyright/bipm:from"/>
+	<xsl:variable name="copyrightYear" select="//bipm:bipm-standard/bipm:bibdata/bipm:copyright/bipm:from"/>
 	
-	<xsl:variable name="title-en-cover" select="/bipm:bipm-standard/bipm:bibdata/bipm:title[@language = 'en' and @type='cover']"/>
-	<xsl:variable name="title-en" select="/bipm:bipm-standard/bipm:bibdata/bipm:title[@language = 'en' and @type='main']"/>
-	<xsl:variable name="title-fr-cover" select="/bipm:bipm-standard/bipm:bibdata/bipm:title[@language = 'fr' and @type='cover']"/>
-	<xsl:variable name="title-fr" select="/bipm:bipm-standard/bipm:bibdata/bipm:title[@language = 'fr' and @type='main']"/>
+	<xsl:variable name="title-en-cover" select="//bipm:bipm-standard/bipm:bibdata/bipm:title[@language = 'en' and @type='cover']"/>
+	<xsl:variable name="title-en" select="//bipm:bipm-standard/bipm:bibdata/bipm:title[@language = 'en' and @type='main']"/>
+	<xsl:variable name="title-fr-cover" select="//bipm:bipm-standard/bipm:bibdata/bipm:title[@language = 'fr' and @type='cover']"/>
+	<xsl:variable name="title-fr" select="//bipm:bipm-standard/bipm:bibdata/bipm:title[@language = 'fr' and @type='main']"/>
 	
-	<xsl:variable name="contents">
+	<!-- <xsl:variable name="contents">
 		<contents>
 			<xsl:call-template name="processPrefaceSectionsDefault_Contents"/>
 			<xsl:call-template name="processMainSectionsDefault_Contents"/>
 		</contents>
-	</xsl:variable>
+	</xsl:variable> -->
 
 	<xsl:variable name="lang">
 		<xsl:call-template name="getLang"/>
 	</xsl:variable>
+
+	<xsl:variable name="root-element" select="local-name(/*)"/>
+
+	<xsl:variable name="contents">
+	
+		
+		
+		<xsl:choose>
+			<xsl:when test="$root-element = 'metanorma-collection'">				
+				<xsl:for-each select="//bipm:bipm-standard">
+					<xsl:variable name="lang" select="*[local-name()='bibdata']//*[local-name()='language']"/>
+					<xsl:variable name="document">
+						<xsl:apply-templates select="." mode="change_id">
+							<xsl:with-param name="lang" select="$lang"/>
+						</xsl:apply-templates>
+					</xsl:variable>				
+					<xsl:for-each select="xalan:nodeset($document)">
+						<xsl:variable name="docid">
+							<xsl:call-template name="getDocumentId"/>
+						</xsl:variable>
+						<doc id="{$docid}" lang="{$lang}">
+							<xsl:call-template name="generateContents"/>
+						</doc>
+					</xsl:for-each>				
+				</xsl:for-each>
+			</xsl:when>			
+			<xsl:otherwise>
+				<xsl:variable name="docid">
+					<xsl:call-template name="getDocumentId"/>
+				</xsl:variable>
+				<doc id="{$docid}" lang="{$lang}">
+					<xsl:call-template name="generateContents"/>
+				</doc>
+			</xsl:otherwise>
+		</xsl:choose>
+	
+	
+		
+<!-- 		
+		
+		<xsl:for-each select="xalan:nodeset($additionalXMLsArray)/*">
+			<xsl:for-each select="document(.)">
+				
+				<xsl:variable name="document">
+					<xsl:apply-templates mode="change_id">
+						<xsl:with-param name="lang" select="$lang"/>
+					</xsl:apply-templates>
+				</xsl:variable>						
+				<xsl:for-each select="xalan:nodeset($document)">
+					<xsl:variable name="docid">
+						<xsl:call-template name="getDocumentId"/>
+					</xsl:variable>
+					<doc id="{$docid}" lang="{$lang}">
+						<xsl:call-template name="generateContents"/>
+					</doc>
+				</xsl:for-each>
+			</xsl:for-each>
+		</xsl:for-each>
+ -->		
+		
+	</xsl:variable>
+
+
+	
+
+	<xsl:template name="generateContents">
+		<contents>
+			<xsl:call-template name="processPrefaceSectionsDefault_Contents"/>
+			<xsl:call-template name="processMainSectionsDefault_Contents"/>
+		</contents>
+	</xsl:template>
 	
 	
 	
 	<xsl:template match="/">
-		<xsl:call-template name="namespaceCheck"/>
 		<fo:root xmlns:fo="http://www.w3.org/1999/XSL/Format" xsl:use-attribute-sets="root-style" xml:lang="{$lang}">
 			<fo:layout-master-set>
 				<!-- Cover page -->
@@ -110,382 +180,427 @@
 				
 			</fo:layout-master-set>
 			
+			
 			<xsl:call-template name="addPDFUAmeta"/>
 			
 			<xsl:call-template name="addBookmarks">
 				<xsl:with-param name="contents" select="$contents"/>
 			</xsl:call-template>
-			
-			<!-- Cover Page -->
-			<fo:page-sequence master-reference="cover-page" force-page-count="even">
-				
-				<fo:flow flow-name="xsl-region-body">
-				
-					<xsl:if test="$debug = 'true'">
-						<xsl:text disable-output-escaping="yes">&lt;!--</xsl:text>
-							DEBUG
-							contents=<xsl:copy-of select="xalan:nodeset($contents)"/>
-						<xsl:text disable-output-escaping="yes">--&gt;</xsl:text>
-					</xsl:if>
-				
-					<!-- background color -->
-					<fo:block-container absolute-position="fixed" left="0" top="-1mm">
-            <fo:block>
-              <fo:instream-foreign-object content-height="{$pageHeight}" fox:alt-text="Background color">
-                <svg xmlns="http://www.w3.org/2000/svg" version="1.0" width="{$pageWidth}" height="{$pageHeight}">
-                  <rect width="{$pageWidth}" height="{$pageHeight}" style="fill:rgb(214,226,239);stroke-width:0"/>
-                </svg>
-              </fo:instream-foreign-object>
-            </fo:block>
-          </fo:block-container>
-				
-					<!-- BIPM logo -->
-					<fo:block-container absolute-position="fixed" left="12.8mm" top="12.2mm">
-						<fo:block>
-							<fo:external-graphic src="{concat('data:image/png;base64,', normalize-space($Image-Logo-BIPM))}" width="35mm" content-height="scale-to-fit" scaling="uniform" fox:alt-text="Image Logo"/>
-						</fo:block>
-					</fo:block-container>
-					
-					<!-- SI logo -->
-					<fo:block-container absolute-position="fixed" left="166.5mm" top="253mm">
-						<fo:block>
-							<fo:external-graphic src="{concat('data:image/png;base64,', normalize-space($Image-Logo-SI))}" width="32mm" content-height="scale-to-fit" scaling="uniform" fox:alt-text="Image Logo"/>
-						</fo:block>
-					</fo:block-container>
-					
-					<fo:block-container height="100%" display-align="center" border="0pt solid black"><!--  -->
-						<fo:block font-family="WorkSans" font-size="50pt" line-height="115%">
-						
-							<xsl:variable name="titleParts-fr">
-								<xsl:call-template name="splitTitle">
-									<xsl:with-param name="pText" select="$title-fr-cover"/>
-									<xsl:with-param name="sep" select="' '"/>
-								</xsl:call-template>
-							</xsl:variable>
-							
-							<xsl:variable name="titleSplitted-fr">							
-								<xsl:call-template name="splitByParts">
-									<xsl:with-param name="items" select="$titleParts-fr"/>
-									<xsl:with-param name="mergeEach" select="round(count(xalan:nodeset($titleParts-fr)/item) div 4 + 0.49)"/> <!--   -->
-								</xsl:call-template>
-							</xsl:variable>
-							
-							<xsl:variable name="editionFO">
-								<xsl:apply-templates select="/bipm:bipm-standard/bipm:bibdata/bipm:edition"/>
-							</xsl:variable>
-							
-							<xsl:for-each select="xalan:nodeset($titleSplitted-fr)/part">
-								<fo:block font-weight="{100 * position()}">
-									<xsl:value-of select="."/>
-									<xsl:if test="position() = last()">
-										<fo:inline font-size="11.7pt" font-weight="normal" padding-left="5mm" baseline-shift="15%" line-height="125%">
-											<xsl:copy-of select="$editionFO"/>
-											<xsl:text> </xsl:text>
-											<xsl:value-of select="$copyrightYear"/>
-										</fo:inline>
-									</xsl:if>
-								</fo:block>
-							</xsl:for-each>
-						
-							<!-- <fo:block font-weight="100">Le</fo:block>
-							<fo:block font-weight="200">Système</fo:block>
-							<fo:block font-weight="300">international</fo:block>
-							<fo:block font-weight="normal">d’unités<fo:inline font-size="11.7pt" padding-left="5mm" baseline-shift="15%">
-								<xsl:apply-templates select="/bipm:bipm-standard/bipm:bibdata/bipm:edition"/>
-							
-									<xsl:text> </xsl:text>
-									<xsl:value-of select="$copyrightYear"/>
-								</fo:inline>
-							</fo:block> -->
-							
-							<xsl:variable name="title-en_" select="java:replaceAll(java:java.lang.String.new($title-en-cover),'( (of )| (and )| (or ))','#$2')"/>
-							<!-- <xsl:variable name="title-en" select="$title-en_"/> -->
-						
-							<xsl:variable name="titleParts-en">
-								<xsl:call-template name="splitTitle">
-									<xsl:with-param name="pText" select="$title-en_"/>
-									<xsl:with-param name="sep" select="' '"/>
-								</xsl:call-template>
-							</xsl:variable>
-							
-							<xsl:variable name="titleSplitted-en">							
-								<xsl:call-template name="splitByParts">
-									<xsl:with-param name="items" select="$titleParts-en"/>
-									<xsl:with-param name="mergeEach" select="round(count(xalan:nodeset($titleParts-en)/item) div 4 + 0.49)"/> <!--   -->
-								</xsl:call-template>
-							</xsl:variable>
-							
-							<fo:block text-align="right">
-								<xsl:for-each select="xalan:nodeset($titleSplitted-en)/part">
-									<fo:block font-weight="{400 + 100 * position()}">
-										<xsl:value-of select="translate(., '#', ' ')"/>									
-									</fo:block>
-								</xsl:for-each>
-							</fo:block>
-							
-							
-							<!-- <fo:block text-align="right">
-								<fo:block font-weight="500">The</fo:block>
-								<fo:block font-weight="600">International</fo:block>
-								<fo:block font-weight="bold">System of</fo:block>
-								<fo:block font-weight="800">Units</fo:block>
-							</fo:block> -->
-						</fo:block>
-					</fo:block-container>
-					
-				</fo:flow>
-			</fo:page-sequence>
-			<!-- End Cover Page -->
-			
-			<!-- Title Page -->
-			<fo:page-sequence master-reference="title-page" format="1" initial-page-number="1" force-page-count="even">
-				<fo:flow flow-name="xsl-region-body" font-family="Arial">
-					<fo:block-container font-size="12pt" font-weight="bold" width="55mm">
-						<fo:block>
-							<xsl:call-template name="add-letter-spacing">
-								<xsl:with-param name="text" select="$title-fr"/>
-								<xsl:with-param name="letter-spacing" select="0.09"/>
-							</xsl:call-template>
-						</fo:block>
-						<!-- <fo:block>
-							<xsl:call-template name="add-letter-spacing">
-								<xsl:with-param name="text" select="'d’unités (SI)'"/>
-								<xsl:with-param name="letter-spacing" select="0.09"/>
-							</xsl:call-template>
-						</fo:block> -->
-						<fo:block font-size="10pt">
-							<fo:block margin-bottom="6pt">&#xA0;</fo:block>
-							<fo:block margin-bottom="6pt">&#xA0;</fo:block>
-							<fo:block margin-bottom="6pt">&#xA0;</fo:block>
-							<fo:block margin-bottom="6pt" line-height="2.4">&#xA0;</fo:block>							
-						</fo:block>
-					</fo:block-container>
-					
-					<fo:block font-size="10pt" margin-bottom="3pt">
-						<xsl:call-template name="add-letter-spacing">
-							<xsl:with-param name="text" select="'English version'"/>
-							<xsl:with-param name="letter-spacing" select="0.09"/>
-						</xsl:call-template>
-					</fo:block>
-					
-					<fo:block-container font-size="12pt" font-weight="bold" border-top="0.5pt solid black" padding-top="2mm" width="45mm">						
-						<fo:block>
-							<xsl:call-template name="add-letter-spacing">
-								<xsl:with-param name="text" select="$title-en"/>
-								<xsl:with-param name="letter-spacing" select="0.09"/>
-							</xsl:call-template>
-						</fo:block>						
-						<!-- <fo:block>
-							<xsl:call-template name="add-letter-spacing">
-								<xsl:with-param name="text" select="'System of Units (SI)'"/>
-								<xsl:with-param name="letter-spacing" select="0.09"/>
-							</xsl:call-template>
-						</fo:block> -->
-					</fo:block-container>
-				</fo:flow>
-			</fo:page-sequence>
-			
-			
-			<!-- Document pages -->
-			<fo:page-sequence master-reference="document" force-page-count="no-force">
-				<xsl:call-template name="insertFootnoteSeparator"/>
-				<fo:flow flow-name="xsl-region-body" font-family="Arial">
-					
-					<fo:block-container font-size="12pt" font-weight="bold" border-top="1pt solid black" width="82mm" margin-top="2mm" padding-top="2mm">						
-						<fo:block-container width="45mm">
-							<fo:block>
-								<xsl:value-of select="/bipm:bipm-standard/bipm:bibdata/bipm:contributor[bipm:role/@type='publisher']/bipm:organization/bipm:name"/>
-							</fo:block>						
-						</fo:block-container>
-					</fo:block-container>
-					
-					<fo:block-container font-size="12pt" line-height="130%">
-						<fo:block margin-bottom="10pt" >&#xA0;</fo:block>
-						<fo:block margin-bottom="10pt" >&#xA0;</fo:block>
-						<fo:block margin-bottom="10pt" >&#xA0;</fo:block>
-						<fo:block margin-bottom="10pt" >&#xA0;</fo:block>
-						<fo:block margin-bottom="10pt" >&#xA0;</fo:block>
-						<fo:block margin-bottom="10pt" >&#xA0;</fo:block>
-						<fo:block margin-bottom="10pt" >&#xA0;</fo:block>
-						<fo:block margin-bottom="10pt" >&#xA0;</fo:block>
-						<fo:block margin-bottom="10pt" >&#xA0;</fo:block>
-					</fo:block-container>
-					
-					<fo:block-container font-size="18pt" font-weight="bold" text-align="center">
-						<fo:block><xsl:value-of select="$title-fr"/></fo:block>						
-					</fo:block-container>
-					
-					<fo:block-container absolute-position="fixed" left="69.5mm" top="241mm" width="99mm">						
-						<fo:block-container font-size="9pt" border-bottom="1pt solid black" width="68mm" text-align="center" margin-bottom="14pt">
-							<fo:block font-weight="bold" margin-bottom="2.5mm">
-								<fo:inline padding-right="10mm">
-									<xsl:apply-templates select="/bipm:bipm-standard/bipm:bibdata/bipm:edition">
-										<xsl:with-param name="font-size" select="'70%'"/>
-										<xsl:with-param name="baseline-shift" select="'45%'"/>
-									</xsl:apply-templates>
-								</fo:inline>
-								<xsl:value-of select="$copyrightYear"/>
-							</fo:block>
-						</fo:block-container>
-						<fo:block font-size="9pt">
-							<fo:block>&#xA0;</fo:block>
-							<fo:block>&#xA0;</fo:block>
-							<fo:block>&#xA0;</fo:block>							
-							<fo:block text-align="right"><xsl:value-of select="/bipm:bipm-standard/bipm:bibdata/bipm:version/bipm:draft"/></fo:block>						
-						</fo:block>
-					</fo:block-container>
-					
-					<fo:block break-after="page"/>
-					
-					<xsl:apply-templates select="/bipm:bipm-standard/bipm:boilerplate/bipm:license-statement"/>
-					
-					<fo:block-container absolute-position="fixed" top="200mm" height="69mm" font-family="Times New Roman" text-align="center" display-align="after">
-						<xsl:apply-templates select="/bipm:bipm-standard/bipm:boilerplate/bipm:feedback-statement"/>
-						<fo:block margin-top="15mm">ISBN 978-92-822-2272-0</fo:block>
-					</fo:block-container>
-					
-				</fo:flow>
-			</fo:page-sequence>
-			
-			<fo:page-sequence master-reference="document" force-page-count="no-force">
-				<xsl:call-template name="insertFootnoteSeparator"/>
-				<xsl:call-template name="insertHeaderFooter"/>
-				<fo:flow flow-name="xsl-region-body">
-					<fo:block line-height="135%">
-						<xsl:apply-templates select="/bipm:bipm-standard/bipm:preface/bipm:abstract" />
-					</fo:block>
-				</fo:flow>
-			</fo:page-sequence>
-			
-			
-			<fo:page-sequence master-reference="document" force-page-count="no-force">
-				<xsl:call-template name="insertFootnoteSeparator"/>
-				<xsl:call-template name="insertHeaderFooter"/>
-				<fo:flow flow-name="xsl-region-body">
-				
-					<fo:block-container margin-left="-18mm"  margin-right="-1mm">
-						<fo:block-container margin-left="0mm" margin-right="0mm">							
-							<fo:block font-family="Arial" font-size="16pt" font-weight="bold" text-align-last="justify" margin-bottom="84pt">
-								<xsl:variable name="title-toc">
-									<xsl:call-template name="getTitle">
-										<xsl:with-param name="name" select="'title-toc'"/>
-									</xsl:call-template>
-								</xsl:variable>
-								<fo:marker marker-class-name="header-title"><xsl:value-of select="$title-toc"/></fo:marker>
-								<fo:inline><xsl:value-of select="$title-fr"/></fo:inline>
-								<fo:inline keep-together.within-line="always">
-									<fo:leader leader-pattern="space"/>
-									<fo:inline>
-										<xsl:value-of select="$title-toc"/>
-									</fo:inline>
-								</fo:inline>
-							</fo:block>
-						</fo:block-container>
-					</fo:block-container>
-				
-					<fo:block-container line-height="135%">
-						<fo:block>
-							<xsl:for-each select="xalan:nodeset($contents)//item[@display='true' and not(@type = 'annex') and not(@parent = 'annex')]">								
-								<xsl:call-template name="insertContentItem"/>								
-							</xsl:for-each>
-							<xsl:for-each select="xalan:nodeset($contents)//item[@display='true' and (@type = 'annex' or (@level = 2 and @parent = 'annex'))]">								
-								<xsl:call-template name="insertContentItem"/>								
-							</xsl:for-each>
-						</fo:block>
-					</fo:block-container>
-			
-				</fo:flow>
-				
-			</fo:page-sequence>
-			
-			<xsl:apply-templates select="/bipm:bipm-standard/bipm:preface/bipm:clause" mode="sections" />
-			
-			<!-- Document Pages -->
-			
-			<xsl:apply-templates select="/bipm:bipm-standard/bipm:sections/*" mode="sections" />
-			
-			
-			
-			<!-- Normative references  -->
-			<xsl:apply-templates select="/bipm:bipm-standard/bipm:bibliography/bipm:references[@normative='true']" mode="sections"/>
 
+			<!-- <contents>
+				<xsl:copy-of select="$contents"/>
+			</contents> -->
 			
-			<!-- Table of Contents for Annexes -->
-			<fo:page-sequence master-reference="document" force-page-count="no-force">
-				<xsl:call-template name="insertHeaderFooter"/>
-				<fo:flow flow-name="xsl-region-body">
-				
-					<fo:block-container margin-left="-18mm"  margin-right="-1mm">
-						<fo:block-container margin-left="0mm" margin-right="0mm">							
-							<fo:block font-family="Arial" font-size="16pt" font-weight="bold" text-align-last="justify" margin-bottom="84pt">
-								<xsl:variable name="title-toc">
-									<xsl:call-template name="getTitle">
-										<xsl:with-param name="name" select="'title-toc'"/>
-									</xsl:call-template>
-								</xsl:variable>
-								<fo:marker marker-class-name="header-title"><xsl:value-of select="$title-toc"/></fo:marker>
-								<fo:inline><xsl:value-of select="$title-fr"/></fo:inline>
-								<fo:inline keep-together.within-line="always">
-									<fo:leader leader-pattern="space"/>
-									<fo:inline>
-										<xsl:value-of select="$title-toc"/>
-									</fo:inline>
-								</fo:inline>
-							</fo:block>
-						</fo:block-container>
-					</fo:block-container>
-				
-					<fo:block-container line-height="130%">
-						<fo:block>
-							<xsl:for-each select="xalan:nodeset($contents)//item[@display='true' and @type = 'annex']">
-								
-								<xsl:call-template name="insertContentItem"/>
-								
-							</xsl:for-each>
-						</fo:block>
-					</fo:block-container>
-			
-				</fo:flow>
-				
-			</fo:page-sequence>
-			
-			
-			<xsl:apply-templates select="/bipm:bipm-standard/bipm:annex" mode="sections"/>
-			
-			<!-- Bibliography -->
-			<xsl:apply-templates select="/bipm:bipm-standard/bipm:bibliography/bipm:references[not(@normative='true')]" mode="sections"/> 
-			
-			<!-- End Document Pages -->
-			
-			
-			
-			<!-- <xsl:call-template name="insertIndexPages"/> -->
-			
-			<!-- 3 Pages with BIPM Metro logo -->
-			<fo:page-sequence master-reference="document" force-page-count="no-force">
-				<fo:flow flow-name="xsl-region-body">
-					<fo:block>&#xA0;</fo:block>
-					<fo:block break-after="page"/>
+			<xsl:choose>
+				<xsl:when test="$root-element = 'metanorma-collection'">
 					
-					<!-- <xsl:call-template name="insert_Logo-BIPM-Metro"/> -->
-					<fo:block-container absolute-position="fixed" left="47mm" top="67mm">
-						<fo:block>
-							<fo:external-graphic src="{concat('data:image/png;base64,', normalize-space($Image-Logo-BIPM-Metro))}" width="118.6mm" content-height="scale-to-fit" scaling="uniform" fox:alt-text="Image Logo"/>
-						</fo:block>
-					</fo:block-container>
-					
-					
-
-					
-					<fo:block break-after="page"/>
-					<fo:block>&#xA0;</fo:block>
-				</fo:flow>
-			</fo:page-sequence>
-			
+					<xsl:for-each select="//*[local-name() = 'doc-container']/bipm:bipm-standard">
+						<xsl:variable name="lang" select="*[local-name()='bibdata']//*[local-name()='language']"/>						
+						<!-- change id to prevent identical id -->						
+						<xsl:variable name="current_document">							
+							<xsl:apply-templates select="." mode="change_id">
+								<xsl:with-param name="lang" select="$lang"/>
+							</xsl:apply-templates>
+						</xsl:variable>
+						
+						<!-- <test>
+							<xsl:copy-of select="$current_document"/>
+						</test> -->
+						
+						<xsl:apply-templates select="xalan:nodeset($current_document)" mode="bipm-standard"/>
+					</xsl:for-each>
+				</xsl:when>			
+				<xsl:otherwise>			
+					<xsl:apply-templates select="." mode="bipm-standard"/>
+				</xsl:otherwise>
+			</xsl:choose>
 			
 			
 		</fo:root>
 	</xsl:template>
+	
+	<xsl:template match="bipm:bipm-standard"/>
+	<xsl:template match="bipm:bipm-standard" mode="bipm-standard">
+		<xsl:variable name="curr_xml">
+			<xsl:copy-of select="."/>
+		</xsl:variable>
+		<xsl:for-each select="xalan:nodeset($curr_xml)">
+			<xsl:call-template name="namespaceCheck"/>
+		</xsl:for-each>
+		<!-- Cover Page -->
+		<fo:page-sequence master-reference="cover-page" force-page-count="even">
+			
+			<fo:flow flow-name="xsl-region-body">
+			
+				<xsl:if test="$debug = 'true'">
+					<xsl:text disable-output-escaping="yes">&lt;!--</xsl:text>
+						DEBUG
+						contents=<xsl:copy-of select="xalan:nodeset($contents)"/>
+					<xsl:text disable-output-escaping="yes">--&gt;</xsl:text>
+				</xsl:if>
+			
+				<!-- background color -->
+				<fo:block-container absolute-position="fixed" left="0" top="-1mm">
+					<fo:block>
+						<fo:instream-foreign-object content-height="{$pageHeight}" fox:alt-text="Background color">
+							<svg xmlns="http://www.w3.org/2000/svg" version="1.0" width="{$pageWidth}" height="{$pageHeight}">
+								<rect width="{$pageWidth}" height="{$pageHeight}" style="fill:rgb(214,226,239);stroke-width:0"/>
+							</svg>
+						</fo:instream-foreign-object>
+					</fo:block>
+				</fo:block-container>
+			
+				<!-- BIPM logo -->
+				<fo:block-container absolute-position="fixed" left="12.8mm" top="12.2mm">
+					<fo:block>
+						<fo:external-graphic src="{concat('data:image/png;base64,', normalize-space($Image-Logo-BIPM))}" width="35mm" content-height="scale-to-fit" scaling="uniform" fox:alt-text="Image Logo"/>
+					</fo:block>
+				</fo:block-container>
+				
+				<!-- SI logo -->
+				<fo:block-container absolute-position="fixed" left="166.5mm" top="253mm">
+					<fo:block>
+						<fo:external-graphic src="{concat('data:image/png;base64,', normalize-space($Image-Logo-SI))}" width="32mm" content-height="scale-to-fit" scaling="uniform" fox:alt-text="Image Logo"/>
+					</fo:block>
+				</fo:block-container>
+				
+				<fo:block-container height="100%" display-align="center" border="0pt solid black"><!--  -->
+					<fo:block font-family="WorkSans" font-size="50pt" line-height="115%">
+					
+						<xsl:variable name="titleParts-fr">
+							<xsl:call-template name="splitTitle">
+								<xsl:with-param name="pText" select="$title-fr-cover"/>
+								<xsl:with-param name="sep" select="' '"/>
+							</xsl:call-template>
+						</xsl:variable>
+						
+						<xsl:variable name="titleSplitted-fr">							
+							<xsl:call-template name="splitByParts">
+								<xsl:with-param name="items" select="$titleParts-fr"/>
+								<xsl:with-param name="mergeEach" select="round(count(xalan:nodeset($titleParts-fr)/item) div 4 + 0.49)"/> <!--   -->
+							</xsl:call-template>
+						</xsl:variable>
+						
+						<xsl:variable name="editionFO">
+							<xsl:apply-templates select="bipm:bibdata/bipm:edition"/>
+						</xsl:variable>
+						
+						<xsl:for-each select="xalan:nodeset($titleSplitted-fr)/part">
+							<fo:block font-weight="{100 * position()}">
+								<xsl:value-of select="."/>
+								<xsl:if test="position() = last()">
+									<fo:inline font-size="11.7pt" font-weight="normal" padding-left="5mm" baseline-shift="15%" line-height="125%">
+										<xsl:copy-of select="$editionFO"/>
+										<xsl:text> </xsl:text>
+										<xsl:value-of select="$copyrightYear"/>
+									</fo:inline>
+								</xsl:if>
+							</fo:block>
+						</xsl:for-each>
+					
+						<!-- <fo:block font-weight="100">Le</fo:block>
+						<fo:block font-weight="200">Système</fo:block>
+						<fo:block font-weight="300">international</fo:block>
+						<fo:block font-weight="normal">d’unités<fo:inline font-size="11.7pt" padding-left="5mm" baseline-shift="15%">
+							<xsl:apply-templates select="/bipm:bipm-standard/bipm:bibdata/bipm:edition"/>
+						
+								<xsl:text> </xsl:text>
+								<xsl:value-of select="$copyrightYear"/>
+							</fo:inline>
+						</fo:block> -->
+						
+						<xsl:variable name="title-en_" select="java:replaceAll(java:java.lang.String.new($title-en-cover),'( (of )| (and )| (or ))','#$2')"/>
+						<!-- <xsl:variable name="title-en" select="$title-en_"/> -->
+					
+						<xsl:variable name="titleParts-en">
+							<xsl:call-template name="splitTitle">
+								<xsl:with-param name="pText" select="$title-en_"/>
+								<xsl:with-param name="sep" select="' '"/>
+							</xsl:call-template>
+						</xsl:variable>
+						
+						<xsl:variable name="titleSplitted-en">							
+							<xsl:call-template name="splitByParts">
+								<xsl:with-param name="items" select="$titleParts-en"/>
+								<xsl:with-param name="mergeEach" select="round(count(xalan:nodeset($titleParts-en)/item) div 4 + 0.49)"/> <!--   -->
+							</xsl:call-template>
+						</xsl:variable>
+						
+						<fo:block text-align="right">
+							<xsl:for-each select="xalan:nodeset($titleSplitted-en)/part">
+								<fo:block font-weight="{400 + 100 * position()}">
+									<xsl:value-of select="translate(., '#', ' ')"/>									
+								</fo:block>
+							</xsl:for-each>
+						</fo:block>
+						
+						
+						<!-- <fo:block text-align="right">
+							<fo:block font-weight="500">The</fo:block>
+							<fo:block font-weight="600">International</fo:block>
+							<fo:block font-weight="bold">System of</fo:block>
+							<fo:block font-weight="800">Units</fo:block>
+						</fo:block> -->
+					</fo:block>
+				</fo:block-container>
+				
+			</fo:flow>
+		</fo:page-sequence>
+		<!-- End Cover Page -->
+		
+		<!-- Title Page -->
+		<fo:page-sequence master-reference="title-page" format="1" initial-page-number="1" force-page-count="even">
+			<fo:flow flow-name="xsl-region-body" font-family="Arial">
+				<fo:block-container font-size="12pt" font-weight="bold" width="55mm">
+					<fo:block>
+						<xsl:call-template name="add-letter-spacing">
+							<xsl:with-param name="text" select="$title-fr"/>
+							<xsl:with-param name="letter-spacing" select="0.09"/>
+						</xsl:call-template>
+					</fo:block>
+					<!-- <fo:block>
+						<xsl:call-template name="add-letter-spacing">
+							<xsl:with-param name="text" select="'d’unités (SI)'"/>
+							<xsl:with-param name="letter-spacing" select="0.09"/>
+						</xsl:call-template>
+					</fo:block> -->
+					<fo:block font-size="10pt">
+						<fo:block margin-bottom="6pt">&#xA0;</fo:block>
+						<fo:block margin-bottom="6pt">&#xA0;</fo:block>
+						<fo:block margin-bottom="6pt">&#xA0;</fo:block>
+						<fo:block margin-bottom="6pt" line-height="2.4">&#xA0;</fo:block>							
+					</fo:block>
+				</fo:block-container>
+				
+				<fo:block font-size="10pt" margin-bottom="3pt">
+					<xsl:call-template name="add-letter-spacing">
+						<xsl:with-param name="text" select="'English version'"/>
+						<xsl:with-param name="letter-spacing" select="0.09"/>
+					</xsl:call-template>
+				</fo:block>
+				
+				<fo:block-container font-size="12pt" font-weight="bold" border-top="0.5pt solid black" padding-top="2mm" width="45mm">						
+					<fo:block>
+						<xsl:call-template name="add-letter-spacing">
+							<xsl:with-param name="text" select="$title-en"/>
+							<xsl:with-param name="letter-spacing" select="0.09"/>
+						</xsl:call-template>
+					</fo:block>						
+					<!-- <fo:block>
+						<xsl:call-template name="add-letter-spacing">
+							<xsl:with-param name="text" select="'System of Units (SI)'"/>
+							<xsl:with-param name="letter-spacing" select="0.09"/>
+						</xsl:call-template>
+					</fo:block> -->
+				</fo:block-container>
+			</fo:flow>
+		</fo:page-sequence>
+		
+		
+		<!-- Document pages -->
+		<fo:page-sequence master-reference="document" force-page-count="no-force">
+			<xsl:call-template name="insertFootnoteSeparator"/>
+			<fo:flow flow-name="xsl-region-body" font-family="Arial">
+				
+				<fo:block-container font-size="12pt" font-weight="bold" border-top="1pt solid black" width="82mm" margin-top="2mm" padding-top="2mm">						
+					<fo:block-container width="45mm">
+						<fo:block>
+							<xsl:value-of select="bipm:bibdata/bipm:contributor[bipm:role/@type='publisher']/bipm:organization/bipm:name"/>
+						</fo:block>						
+					</fo:block-container>
+				</fo:block-container>
+				
+				<fo:block-container font-size="12pt" line-height="130%">
+					<fo:block margin-bottom="10pt" >&#xA0;</fo:block>
+					<fo:block margin-bottom="10pt" >&#xA0;</fo:block>
+					<fo:block margin-bottom="10pt" >&#xA0;</fo:block>
+					<fo:block margin-bottom="10pt" >&#xA0;</fo:block>
+					<fo:block margin-bottom="10pt" >&#xA0;</fo:block>
+					<fo:block margin-bottom="10pt" >&#xA0;</fo:block>
+					<fo:block margin-bottom="10pt" >&#xA0;</fo:block>
+					<fo:block margin-bottom="10pt" >&#xA0;</fo:block>
+					<fo:block margin-bottom="10pt" >&#xA0;</fo:block>
+				</fo:block-container>
+				
+				<fo:block-container font-size="18pt" font-weight="bold" text-align="center">
+					<fo:block><xsl:value-of select="$title-fr"/></fo:block>						
+				</fo:block-container>
+				
+				<fo:block-container absolute-position="fixed" left="69.5mm" top="241mm" width="99mm">						
+					<fo:block-container font-size="9pt" border-bottom="1pt solid black" width="68mm" text-align="center" margin-bottom="14pt">
+						<fo:block font-weight="bold" margin-bottom="2.5mm">
+							<fo:inline padding-right="10mm">
+								<xsl:apply-templates select="bipm:bibdata/bipm:edition">
+									<xsl:with-param name="font-size" select="'70%'"/>
+									<xsl:with-param name="baseline-shift" select="'45%'"/>
+								</xsl:apply-templates>
+							</fo:inline>
+							<xsl:value-of select="$copyrightYear"/>
+						</fo:block>
+					</fo:block-container>
+					<fo:block font-size="9pt">
+						<fo:block>&#xA0;</fo:block>
+						<fo:block>&#xA0;</fo:block>
+						<fo:block>&#xA0;</fo:block>							
+						<fo:block text-align="right"><xsl:value-of select="bipm:bibdata/bipm:version/bipm:draft"/></fo:block>						
+					</fo:block>
+				</fo:block-container>
+				
+				<fo:block break-after="page"/>
+				
+				<xsl:apply-templates select="bipm:boilerplate/bipm:license-statement"/>
+				
+				<fo:block-container absolute-position="fixed" top="200mm" height="69mm" font-family="Times New Roman" text-align="center" display-align="after">
+					<xsl:apply-templates select="bipm:boilerplate/bipm:feedback-statement"/>
+					<fo:block margin-top="15mm">ISBN 978-92-822-2272-0</fo:block>
+				</fo:block-container>
+				
+			</fo:flow>
+		</fo:page-sequence>
+		
+		<fo:page-sequence master-reference="document" force-page-count="no-force">
+			<xsl:call-template name="insertFootnoteSeparator"/>
+			<xsl:call-template name="insertHeaderFooter"/>
+			<fo:flow flow-name="xsl-region-body">
+				<fo:block line-height="135%">
+					<xsl:apply-templates select="bipm:preface/bipm:abstract" />
+				</fo:block>
+			</fo:flow>
+		</fo:page-sequence>
+		
+		<xsl:variable name="docid">
+			<xsl:call-template name="getDocumentId"/>
+		</xsl:variable>
+		
+		<fo:page-sequence master-reference="document" force-page-count="no-force">
+			<xsl:call-template name="insertFootnoteSeparator"/>
+			<xsl:call-template name="insertHeaderFooter"/>
+			<fo:flow flow-name="xsl-region-body">
+			
+				<fo:block-container margin-left="-18mm"  margin-right="-1mm">
+					<fo:block-container margin-left="0mm" margin-right="0mm">							
+						<fo:block font-family="Arial" font-size="16pt" font-weight="bold" text-align-last="justify" margin-bottom="84pt">
+							<xsl:variable name="title-toc">
+								<xsl:call-template name="getTitle">
+									<xsl:with-param name="name" select="'title-toc'"/>
+								</xsl:call-template>
+							</xsl:variable>
+							<fo:marker marker-class-name="header-title"><xsl:value-of select="$title-toc"/></fo:marker>
+							<fo:inline><xsl:value-of select="$title-fr"/></fo:inline>
+							<fo:inline keep-together.within-line="always">
+								<fo:leader leader-pattern="space"/>
+								<fo:inline>
+									<xsl:value-of select="$title-toc"/>
+								</fo:inline>
+							</fo:inline>
+						</fo:block>
+					</fo:block-container>
+				</fo:block-container>
+			
+				<fo:block-container line-height="135%">
+					<fo:block>
+						<!-- <xsl:copy-of select="$contents"/> -->
+						
+						<xsl:for-each select="xalan:nodeset($contents)/doc[@id = $docid]//item[@display='true' and not(@type = 'annex') and not(@parent = 'annex')]">								
+							<xsl:call-template name="insertContentItem"/>								
+						</xsl:for-each>
+						<xsl:for-each select="xalan:nodeset($contents)/doc[@id = $docid]//item[@display='true' and (@type = 'annex' or (@level = 2 and @parent = 'annex'))]">								
+							<xsl:call-template name="insertContentItem"/>								
+						</xsl:for-each>
+					</fo:block>
+				</fo:block-container>
+		
+			</fo:flow>
+			
+		</fo:page-sequence>
+		
+		<xsl:apply-templates select="bipm:preface/bipm:clause" mode="sections" />
+		
+		<!-- Document Pages -->
+		
+		<xsl:apply-templates select="bipm:sections/*" mode="sections" />
+		
+		
+		
+		<!-- Normative references  -->
+		<xsl:apply-templates select="bipm:bibliography/bipm:references[@normative='true']" mode="sections"/>
+
+		
+		<!-- Table of Contents for Annexes -->
+		<fo:page-sequence master-reference="document" force-page-count="no-force">
+			<xsl:call-template name="insertHeaderFooter"/>
+			<fo:flow flow-name="xsl-region-body">
+			
+				<fo:block-container margin-left="-18mm"  margin-right="-1mm">
+					<fo:block-container margin-left="0mm" margin-right="0mm">							
+						<fo:block font-family="Arial" font-size="16pt" font-weight="bold" text-align-last="justify" margin-bottom="84pt">
+							<xsl:variable name="title-toc">
+								<xsl:call-template name="getTitle">
+									<xsl:with-param name="name" select="'title-toc'"/>
+								</xsl:call-template>
+							</xsl:variable>
+							<fo:marker marker-class-name="header-title"><xsl:value-of select="$title-toc"/></fo:marker>
+							<fo:inline><xsl:value-of select="$title-fr"/></fo:inline>
+							<fo:inline keep-together.within-line="always">
+								<fo:leader leader-pattern="space"/>
+								<fo:inline>
+									<xsl:value-of select="$title-toc"/>
+								</fo:inline>
+							</fo:inline>
+						</fo:block>
+					</fo:block-container>
+				</fo:block-container>
+			
+				<fo:block-container line-height="130%">
+					<fo:block>
+						<xsl:for-each select="xalan:nodeset($contents)/doc[@id = $docid]//item[@display='true' and @type = 'annex']">
+							
+							<xsl:call-template name="insertContentItem"/>
+							
+						</xsl:for-each>
+					</fo:block>
+				</fo:block-container>
+		
+			</fo:flow>
+			
+		</fo:page-sequence>
+		
+		
+		<xsl:apply-templates select="bipm:annex" mode="sections"/>
+		
+		<!-- Bibliography -->
+		<xsl:apply-templates select="bipm:bibliography/bipm:references[not(@normative='true')]" mode="sections"/> 
+		
+		<!-- End Document Pages -->
+		
+		
+		
+		<!-- <xsl:call-template name="insertIndexPages"/> -->
+		
+		<!-- 3 Pages with BIPM Metro logo -->
+		<fo:page-sequence master-reference="document" force-page-count="no-force">
+			<fo:flow flow-name="xsl-region-body">
+				<fo:block>&#xA0;</fo:block>
+				<fo:block break-after="page"/>
+				
+				<!-- <xsl:call-template name="insert_Logo-BIPM-Metro"/> -->
+				<fo:block-container absolute-position="fixed" left="47mm" top="67mm">
+					<fo:block>
+						<fo:external-graphic src="{concat('data:image/png;base64,', normalize-space($Image-Logo-BIPM-Metro))}" width="118.6mm" content-height="scale-to-fit" scaling="uniform" fox:alt-text="Image Logo"/>
+					</fo:block>
+				</fo:block-container>
+				
+				
+
+				
+				<fo:block break-after="page"/>
+				<fo:block>&#xA0;</fo:block>
+			</fo:flow>
+		</fo:page-sequence>
+		
+	</xsl:template>
+	
+	
 	
 	<xsl:template name="insertContentItem">
 		<fo:block>
@@ -646,7 +761,7 @@
 		</fo:page-sequence>
 	</xsl:template>
 	
-	<xsl:template match="/bipm:bipm-standard/bipm:bibdata/bipm:edition">
+	<xsl:template match="bipm:bipm-standard/bipm:bibdata/bipm:edition">
 		<xsl:param name="font-size" select="'65%'"/>
 		<xsl:param name="baseline-shift" select="'30%'"/>
 		<fo:inline>
@@ -914,15 +1029,15 @@
 																bipm:sourcecode/bipm:fn[not(ancestor::bipm:table)]" priority="2" name="fn">
 		<fo:footnote keep-with-previous.within-line="always">
 			<xsl:variable name="number" select="@reference"/>
-			
+			<xsl:variable name="lang" select="ancestor::bipm:bipm-standard/*[local-name()='bibdata']//*[local-name()='language']"/>
 			<fo:inline font-size="65%" keep-with-previous.within-line="always" vertical-align="super">
-				<fo:basic-link internal-destination="footnote_{@reference}" fox:alt-text="footnote {@reference}">
+				<fo:basic-link internal-destination="{$lang}_footnote_{@reference}" fox:alt-text="footnote {@reference}">
 					<xsl:value-of select="$number"/><!--  + count(//bipm:bibitem/bipm:note) -->
 				</fo:basic-link>
 			</fo:inline>
 			<fo:footnote-body>
 				<fo:block font-size="9pt" margin-bottom="12pt" font-weight="normal" text-indent="0" start-indent="0" line-height="124%" text-align="justify">
-					<fo:inline id="footnote_{@reference}" keep-with-next.within-line="always" font-size="60%" vertical-align="super"> <!-- baseline-shift="30%" padding-right="3mm" font-size="60%"  alignment-baseline="hanging" -->
+					<fo:inline id="{$lang}_footnote_{@reference}" keep-with-next.within-line="always" font-size="60%" vertical-align="super"> <!-- baseline-shift="30%" padding-right="3mm" font-size="60%"  alignment-baseline="hanging" -->
 						<xsl:value-of select="$number "/><!-- + count(//bipm:bibitem/bipm:note) -->
 					</fo:inline>
 					<xsl:for-each select="bipm:p">
@@ -1352,6 +1467,33 @@
 		</xsl:if>		
 	</xsl:template>
 
-
+	<xsl:template match="node()" mode="change_id">
+		<xsl:param name="lang"/>
+		<xsl:copy>
+			<xsl:apply-templates select="@*|node()" mode="change_id">
+				<xsl:with-param name="lang" select="$lang"/>
+			</xsl:apply-templates>
+		</xsl:copy>
+	</xsl:template>
+	
+	<xsl:template match="@*" mode="change_id">
+		<xsl:param name="lang"/>
+		<xsl:choose>
+			<xsl:when test="local-name() = 'id' or 
+														local-name() = 'bibitemid' or
+														(local-name() = 'target' and local-name(..) = 'xref')">
+				<xsl:attribute name="{local-name()}">
+					<xsl:value-of select="."/>_<xsl:value-of select="$lang"/>
+				</xsl:attribute>
+			</xsl:when>			
+			<xsl:otherwise>				
+				<xsl:copy>
+					<xsl:apply-templates select="@*" mode="change_id">
+						<xsl:with-param name="lang" select="$lang"/>
+					</xsl:apply-templates>
+				</xsl:copy>
+			</xsl:otherwise>
+		</xsl:choose>
+	</xsl:template>
 	
 </xsl:stylesheet>

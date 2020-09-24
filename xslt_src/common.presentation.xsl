@@ -2390,7 +2390,20 @@
 		<xsl:variable name="following_dl_colwidths">
 			<xsl:if test="*[local-name() = 'dl']"><!-- if there is a 'dl', then set the same columns width as for 'dl' -->
 				<xsl:variable name="html-table">
-					<xsl:variable name="ns" select="substring-before(name(/*), '-')"/>
+					<xsl:variable name="doc_ns">
+						<xsl:if test="$namespace = 'bipm'">bipm</xsl:if>
+					</xsl:variable>
+					<xsl:variable name="ns">
+						<xsl:choose>
+							<xsl:when test="normalize-space($doc_ns)  != ''">
+								<xsl:value-of select="normalize-space($doc_ns)"/>
+							</xsl:when>
+							<xsl:otherwise>
+								<xsl:value-of select="substring-before(name(/*), '-')"/>
+							</xsl:otherwise>
+						</xsl:choose>
+					</xsl:variable>
+					<!-- <xsl:variable name="ns" select="substring-before(name(/*), '-')"/> -->
 					<xsl:element name="{$ns}:table">
 						<xsl:for-each select="*[local-name() = 'dl'][1]">
 							<tbody>
@@ -2706,7 +2719,20 @@
 								</xsl:choose>
 								<!-- create virtual html table for dl/[dt and dd] -->
 								<xsl:variable name="html-table">
-									<xsl:variable name="ns" select="substring-before(name(/*), '-')"/>
+									<xsl:variable name="doc_ns">
+										<xsl:if test="$namespace = 'bipm'">bipm</xsl:if>
+									</xsl:variable>
+									<xsl:variable name="ns">
+										<xsl:choose>
+											<xsl:when test="normalize-space($doc_ns)  != ''">
+												<xsl:value-of select="normalize-space($doc_ns)"/>
+											</xsl:when>
+											<xsl:otherwise>
+												<xsl:value-of select="substring-before(name(/*), '-')"/>
+											</xsl:otherwise>
+										</xsl:choose>
+									</xsl:variable>
+									<!-- <xsl:variable name="ns" select="substring-before(name(/*), '-')"/> -->
 									<xsl:element name="{$ns}:table">
 										<tbody>
 											<xsl:apply-templates mode="dl"/>
@@ -5638,8 +5664,11 @@
 					<!-- Dublin Core properties go here -->
 						<dc:title>
 							<xsl:variable name="title">
-								<xsl:if test="$namespace = 'iso' or $namespace = 'gb' or $namespace = 'iec' or $namespace = 'nist-cswp'  or $namespace = 'nist-sp' or $namespace = 'unece' or $namespace = 'unece-rec' or $namespace = 'bipm'">
+								<xsl:if test="$namespace = 'iso' or $namespace = 'gb' or $namespace = 'iec' or $namespace = 'nist-cswp'  or $namespace = 'nist-sp' or $namespace = 'unece' or $namespace = 'unece-rec'">
 									<xsl:value-of select="/*/*[local-name() = 'bibdata']/*[local-name() = 'title'][@language = 'en' and @type = 'main']"/>
+								</xsl:if>
+								<xsl:if test="$namespace = 'bipm'">
+									<xsl:value-of select="//*[local-name() = 'bibdata'][@type='standard']/*[local-name() = 'title'][@language = 'en' and @type = 'main']"/>
 								</xsl:if>
 								<xsl:if test="$namespace = 'iho' or $namespace = 'csa' or $namespace = 'csd' or $namespace = 'rsd' or $namespace = 'ogc' or $namespace = 'ogc-white-paper' or $namespace = 'mpfd'">								
 									<xsl:value-of select="/*/*[local-name() = 'bibdata']/*[local-name() = 'title'][@language = 'en']"/>
@@ -5661,8 +5690,11 @@
 							</xsl:choose>							
 						</dc:title>
 						<dc:creator>
-							<xsl:if test="$namespace = 'iso' or $namespace = 'itu' or $namespace = 'gb' or $namespace = 'iho' or $namespace = 'm3d' or $namespace = 'bipm'">
+							<xsl:if test="$namespace = 'iso' or $namespace = 'itu' or $namespace = 'gb' or $namespace = 'iho' or $namespace = 'm3d'">
 								<xsl:value-of select="/*/*[local-name() = 'bibdata']/*[local-name() = 'contributor'][*[local-name() = 'role']/@type='author']/*[local-name() = 'organization']/*[local-name() = 'name']"/>
+							</xsl:if>
+							<xsl:if test="$namespace = 'bipm'">
+								<xsl:value-of select="//*[local-name() = 'bibdata'][@type='standard']/*[local-name() = 'contributor'][*[local-name() = 'role']/@type='author']/*[local-name() = 'organization']/*[local-name() = 'name']"/>
 							</xsl:if>
 							<xsl:if test="$namespace = 'nist-cswp'  or $namespace = 'nist-sp'">
 								<xsl:for-each select="/*/*[local-name() = 'bibdata']/*[local-name() = 'contributor'][*[local-name() = 'role']/@type='author']">
@@ -5673,7 +5705,7 @@
 						</dc:creator>
 						<dc:description>
 							<xsl:variable name="abstract">
-								<xsl:if test="$namespace = 'iso' or $namespace = 'csd' or $namespace = 'gb' or $namespace = 'iho' or $namespace = 'bipm'">
+								<xsl:if test="$namespace = 'iso' or $namespace = 'csd' or $namespace = 'gb' or $namespace = 'iho'">
 									<xsl:copy-of select="/*/*[local-name() = 'bibliography']/*[local-name() = 'references']/*[local-name() = 'bibitem']/*[local-name() = 'abstract']//text()"/>
 								</xsl:if>
 								<xsl:if test="$namespace = 'iec'">
@@ -5684,6 +5716,9 @@
 								</xsl:if>
 								<xsl:if test="$namespace = 'itu' or $namespace = 'rsd' or $namespace = 'ogc' or $namespace = 'ogc-white-paper' or $namespace = 'csa'">
 									<xsl:copy-of select="/*/*[local-name() = 'bibdata']/*[local-name() = 'abstract']//text()"/>									
+								</xsl:if>
+								<xsl:if test="$namespace = 'bipm'">
+									<xsl:copy-of select="//*[local-name() = 'bibdata'][@type='standard']/*[local-name() = 'abstract']//text()"/>									
 								</xsl:if>
 							</xsl:variable>
 							<xsl:value-of select="normalize-space($abstract)"/>
