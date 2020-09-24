@@ -1176,7 +1176,7 @@
 											$namespace = 'ogc' or $namespace = 'ogc-white-paper' or
 											$namespace = 'rsd' or 
 											$namespace = 'unece-rec' or 
-											$namespace = 'mpfd'">
+											$namespace = 'mpfd' or $namespace = 'bipm'">
 			<xsl:attribute name="width">100%</xsl:attribute>
 			<xsl:attribute name="content-height">scale-to-fit</xsl:attribute>
 			<xsl:attribute name="scaling">uniform</xsl:attribute>
@@ -1530,8 +1530,10 @@
 					<xsl:attribute name="border-top">2pt solid black</xsl:attribute>
 					<xsl:attribute name="border-bottom">2pt solid black</xsl:attribute>
 				</xsl:if>
-				<xsl:if test="$namespace = 'bipm'">					
-					<xsl:attribute name="font-size">10pt</xsl:attribute>
+				<xsl:if test="$namespace = 'bipm'">
+					<xsl:if test="not(ancestor::*[local-name()='note'])">
+						<xsl:attribute name="font-size">10pt</xsl:attribute>
+					</xsl:if>
 					<xsl:attribute name="border-top">0.5pt solid black</xsl:attribute>
 					<xsl:attribute name="border-bottom">0.5pt solid black</xsl:attribute>
 					<xsl:attribute name="margin-left">0mm</xsl:attribute>
@@ -1796,10 +1798,24 @@
 							<xsl:if test="$namespace = 'bipm'">
 								<xsl:attribute name="border">solid black 0pt</xsl:attribute>
 							</xsl:if>
-							<!-- except gb -->
-							<xsl:if test="$namespace = 'iso' or $namespace = 'iec' or $namespace = 'itu' or $namespace = 'unece' or $namespace = 'unece-rec' or $namespace = 'nist-cswp'  or $namespace = 'nist-sp' or $namespace = 'ogc' or $namespace = 'ogc-white-paper' or $namespace = 'rsd' or $namespace = 'csa' or $namespace = 'csd' or $namespace = 'm3d' or $namespace = 'iho' or $namespace = 'mpfd' or $namespace = 'bipm'">
+							<!-- except gb and bipm -->
+							<xsl:if test="$namespace = 'iso' or $namespace = 'iec' or $namespace = 'itu' or $namespace = 'unece' or $namespace = 'unece-rec' or $namespace = 'nist-cswp'  or $namespace = 'nist-sp' or $namespace = 'ogc' or $namespace = 'ogc-white-paper' or $namespace = 'rsd' or $namespace = 'csa' or $namespace = 'csd' or $namespace = 'm3d' or $namespace = 'iho' or $namespace = 'mpfd'">
 								<xsl:apply-templates select="../*[local-name()='note']" mode="process"/>
 							</xsl:if>
+							
+							<xsl:if test="$namespace = 'bipm'">
+								<xsl:choose>
+									<xsl:when test="ancestor::*[local-name()='preface']">
+										<!-- show Note under table in preface (ex. abstract) sections -->
+										<xsl:apply-templates select="../*[local-name()='note']" mode="process"/>
+									</xsl:when>
+									<xsl:otherwise>
+										<!-- empty, because notes show at page side in main sections -->
+									<fo:block/>
+									</xsl:otherwise>
+								</xsl:choose>
+							</xsl:if>
+							
 							
 							<!-- horizontal row separator -->
 							<xsl:if test="$namespace = 'iec'">
@@ -2281,8 +2297,13 @@
 						<xsl:attribute name="text-indent">-5mm</xsl:attribute>
 						<xsl:attribute name="start-indent">5mm</xsl:attribute>
 					</xsl:if>
+					<xsl:if test="$namespace = 'bipm'">
+						<xsl:attribute name="font-size">9pt</xsl:attribute>
+						<xsl:attribute name="text-indent">-6.5mm</xsl:attribute>
+						<xsl:attribute name="margin-left">6.5mm</xsl:attribute>
+					</xsl:if>
 					<fo:inline font-size="80%" padding-right="5mm" id="{@id}">
-						<xsl:if test="$namespace = 'itu' or $namespace = 'nist-cswp'  or $namespace = 'nist-sp' or $namespace = 'unece' or $namespace = 'unece-rec'  or $namespace = 'csd' or $namespace = 'ogc' or $namespace = 'ogc-white-paper' or $namespace = 'gb' or $namespace = 'm3d' or $namespace = 'iho' or $namespace = 'bipm'">
+						<xsl:if test="$namespace = 'itu' or $namespace = 'nist-cswp'  or $namespace = 'nist-sp' or $namespace = 'unece' or $namespace = 'unece-rec'  or $namespace = 'csd' or $namespace = 'ogc' or $namespace = 'ogc-white-paper' or $namespace = 'gb' or $namespace = 'm3d' or $namespace = 'iho'">
 							<xsl:attribute name="vertical-align">super</xsl:attribute>
 						</xsl:if>
 						<xsl:if test="$namespace = 'iso'">
@@ -2302,7 +2323,16 @@
 						<xsl:if test="$namespace = 'nist-cswp'  or $namespace = 'nist-sp'">
 							<xsl:attribute name="font-size">10pt</xsl:attribute>
 						</xsl:if>
+						<xsl:if test="$namespace = 'bipm'">
+							<xsl:attribute name="font-style">italic</xsl:attribute>
+							
+							<xsl:attribute name="padding-right">2.5mm</xsl:attribute>
+							<fo:inline font-style="normal">(</fo:inline>
+						</xsl:if>
 						<xsl:value-of select="@reference"/>
+						<xsl:if test="$namespace = 'bipm'">
+							<fo:inline font-style="normal">)</fo:inline>
+						</xsl:if>
 						<xsl:if test="$namespace = 'itu'">
 							<!-- <xsl:if test="@preface = 'true'"> -->
 								<xsl:text>)</xsl:text>
@@ -2461,12 +2491,17 @@
 			<xsl:if test="$namespace = 'ogc'">
 				<xsl:attribute name="vertical-align">super</xsl:attribute>
 			</xsl:if>
-			<xsl:if test="$namespace = 'itu' or $namespace = 'nist-cswp'  or $namespace = 'nist-sp' or $namespace = 'ogc-white-paper' or $namespace = 'bipm'">
+			<xsl:if test="$namespace = 'itu' or $namespace = 'nist-cswp'  or $namespace = 'nist-sp' or $namespace = 'ogc-white-paper'">
 				<xsl:attribute name="vertical-align">super</xsl:attribute>
 				<xsl:attribute name="color">blue</xsl:attribute>
 			</xsl:if>
 			<xsl:if test="$namespace = 'nist-cswp'  or $namespace = 'nist-sp' or $namespace = 'ogc-white-paper'">
 				<xsl:attribute name="text-decoration">underline</xsl:attribute>
+			</xsl:if>
+			<xsl:if test="$namespace = 'bipm'">
+				<xsl:attribute name="font-size">70%</xsl:attribute>
+				<xsl:attribute name="vertical-align">super</xsl:attribute>
+				<xsl:attribute name="font-style">italic</xsl:attribute>
 			</xsl:if>
 			<fo:basic-link internal-destination="{@reference}_{ancestor::*[@id][1]/@id}" fox:alt-text="{@reference}"> <!-- @reference   | ancestor::*[local-name()='clause'][1]/@id-->
 				<xsl:if test="$namespace = 'ogc' or $namespace = 'ogc-white-paper'">
@@ -2475,7 +2510,13 @@
 						<xsl:value-of select="ancestor::*[local-name()='table'][1]/@id"/>
 					</xsl:attribute>
 				</xsl:if>
+				<xsl:if test="$namespace = 'bipm'">
+					<fo:inline font-style="normal">&#xA0;(</fo:inline>
+				</xsl:if>
 				<xsl:value-of select="@reference"/>
+				<xsl:if test="$namespace = 'bipm'">
+					<fo:inline font-style="normal">)</fo:inline>
+				</xsl:if>
 			</fo:basic-link>
 		</fo:inline>
 	</xsl:template>
