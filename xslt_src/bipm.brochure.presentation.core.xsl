@@ -15,7 +15,7 @@
 	<xsl:variable name="images" select="document($svg_images)"/>
 	
 	<xsl:param name="initial_page_number"/>
-	<xsl:param name="docnum"/>
+	<xsl:param name="doc_split_by_language" select="'fr'"/>
 	
 	<xsl:variable name="pageWidth" select="'210mm'"/>
 	<xsl:variable name="pageHeight" select="'297mm'"/>
@@ -26,9 +26,8 @@
 	
 	<xsl:variable name="copyrightYear" select="//bipm:bipm-standard/bipm:bibdata/bipm:copyright/bipm:from"/>
 	
-	<xsl:variable name="title-en-cover" select="//bipm:bipm-standard/bipm:bibdata/bipm:title[@language = 'en' and @type='cover']"/>
-	<xsl:variable name="title-en" select="//bipm:bipm-standard/bipm:bibdata/bipm:title[@language = 'en' and @type='main']"/>
-	<xsl:variable name="title-fr-cover" select="//bipm:bipm-standard/bipm:bibdata/bipm:title[@language = 'fr' and @type='cover']"/>
+	<xsl:variable name="doc_first_language" select="(//bipm:bipm-standard)[1]/bipm:bibdata/bipm:language"/>
+	
 	<xsl:variable name="title-fr" select="//bipm:bipm-standard/bipm:bibdata/bipm:title[@language = 'fr' and @type='main']"/>
 	
 	<!-- <xsl:variable name="contents">
@@ -52,9 +51,9 @@
 			<xsl:when test="$root-element = 'metanorma-collection'">
 			
 				<xsl:choose>
-					<xsl:when test="$docnum = ''"><!-- all documents -->
+					<xsl:when test="$doc_split_by_language = ''"><!-- all documents -->
 						<xsl:for-each select="//bipm:bipm-standard">
-							<xsl:variable name="lang" select="*[local-name()='bibdata']//*[local-name()='language']"/>
+							<xsl:variable name="lang" select="*[local-name()='bibdata']/*[local-name()='language']"/>
 							<xsl:variable name="num"><xsl:number level="any" count="bipm:bipm-standard"/></xsl:variable>
 							<xsl:variable name="current_document">
 								<xsl:apply-templates select="." mode="change_id">
@@ -72,8 +71,8 @@
 						</xsl:for-each>
 					</xsl:when>
 					<xsl:otherwise>
-						<xsl:for-each select="(//bipm:bipm-standard)[$docnum]">
-							<xsl:variable name="lang" select="*[local-name()='bibdata']//*[local-name()='language']"/>
+						<xsl:for-each select="(//bipm:bipm-standard)[*[local-name()='bibdata']/*[local-name()='language'] = $doc_split_by_language]">
+							<xsl:variable name="lang" select="*[local-name()='bibdata']/*[local-name()='language']"/>
 							<xsl:variable name="num"><xsl:number level="any" count="bipm:bipm-standard"/></xsl:variable>
 							<xsl:variable name="current_document">
 								<xsl:apply-templates select="." mode="change_id">
@@ -104,28 +103,6 @@
 		</xsl:choose>
 	
 	
-		
-<!-- 		
-		
-		<xsl:for-each select="xalan:nodeset($additionalXMLsArray)/*">
-			<xsl:for-each select="document(.)">
-				
-				<xsl:variable name="document">
-					<xsl:apply-templates mode="change_id">
-						<xsl:with-param name="lang" select="$lang"/>
-					</xsl:apply-templates>
-				</xsl:variable>						
-				<xsl:for-each select="xalan:nodeset($document)">
-					<xsl:variable name="docid">
-						<xsl:call-template name="getDocumentId"/>
-					</xsl:variable>
-					<doc id="{$docid}" lang="{$lang}">
-						<xsl:call-template name="generateContents"/>
-					</doc>
-				</xsl:for-each>
-			</xsl:for-each>
-		</xsl:for-each>
- -->		
 		
 	</xsl:variable>
 
@@ -230,7 +207,7 @@
 					
 					
 					<xsl:choose>
-						<xsl:when test="$docnum = ''"><!-- all documents -->
+						<xsl:when test="$doc_split_by_language = ''"><!-- all documents -->
 							<xsl:for-each select="//bipm:bipm-standard">
 								<xsl:variable name="lang" select="*[local-name()='bibdata']//*[local-name()='language']"/>						
 								<xsl:variable name="num"><xsl:number level="any" count="bipm:bipm-standard"/></xsl:variable>
@@ -248,7 +225,7 @@
 							</xsl:for-each>
 						</xsl:when>
 						<xsl:otherwise>
-							<xsl:for-each select="(//bipm:bipm-standard)[$docnum]">
+							<xsl:for-each select="(//bipm:bipm-standard)[*[local-name()='bibdata']/*[local-name()='language'] = $doc_split_by_language]">
 								<xsl:variable name="lang" select="*[local-name()='bibdata']//*[local-name()='language']"/>						
 								<xsl:variable name="num"><xsl:number level="any" count="bipm:bipm-standard"/></xsl:variable>
 								<!-- change id to prevent identical id in different documents in one container -->						
@@ -409,10 +386,10 @@
 					<fo:block>
 						<!-- <xsl:copy-of select="$contents"/> -->
 						
-						<xsl:for-each select="xalan:nodeset($contents)/doc[@id = $docid]//item[@display='true' and not(@type = 'annex') and not(@parent = 'annex')]">								
+						<xsl:for-each select="xalan:nodeset($contents)/doc2[@id = $docid]//item[@display='true' and not(@type = 'annex') and not(@parent = 'annex')]">								
 							<xsl:call-template name="insertContentItem"/>								
 						</xsl:for-each>
-						<xsl:for-each select="xalan:nodeset($contents)/doc[@id = $docid]//item[@display='true' and (@type = 'annex' or (@level = 2 and @parent = 'annex'))]">								
+						<xsl:for-each select="xalan:nodeset($contents)/doc2[@id = $docid]//item[@display='true' and (@type = 'annex' or (@level = 2 and @parent = 'annex'))]">								
 							<xsl:call-template name="insertContentItem"/>								
 						</xsl:for-each>
 					</fo:block>
@@ -422,11 +399,11 @@
 			
 		</fo:page-sequence>
 		
-		<xsl:apply-templates select="bipm:preface/bipm:clause" mode="sections" />
+		<xsl:apply-templates select="bipm:preface2/bipm:clause" mode="sections" />
 		
 		<!-- Document Pages -->
 		
-		<xsl:apply-templates select="bipm:sections/*" mode="sections" />
+		<xsl:apply-templates select="bipm:sections2/*" mode="sections" />
 		
 		
 		
@@ -461,7 +438,7 @@
 			
 				<fo:block-container line-height="130%">
 					<fo:block>
-						<xsl:for-each select="xalan:nodeset($contents)/doc[@id = $docid]//item[@display='true' and @type = 'annex']">
+						<xsl:for-each select="xalan:nodeset($contents)/doc2[@id = $docid]//item[@display='true' and @type = 'annex']">
 							
 							<xsl:call-template name="insertContentItem"/>
 							
@@ -474,7 +451,7 @@
 		</fo:page-sequence>
 		
 		
-		<xsl:apply-templates select="bipm:annex" mode="sections"/>
+		<xsl:apply-templates select="bipm:annex2" mode="sections"/>
 		
 		<!-- Bibliography -->
 		<xsl:apply-templates select="bipm:bibliography/bipm:references[not(@normative='true')]" mode="sections"/> 
@@ -482,7 +459,7 @@
 		<!-- End Document Pages -->
 		
 		
-		<xsl:if test="($docnum = '' and $curr_docnum = 1) or $docnum = 1">
+		<xsl:if test="($doc_split_by_language = '' and $curr_docnum = 1) or $doc_split_by_language = $doc_first_language">
 			<xsl:call-template name="insertSeparatorPage"/>
 		</xsl:if>
 		
@@ -526,15 +503,16 @@
 					
 						<xsl:variable name="languages">
 							<xsl:choose>
-								<xsl:when test="$docnum = ''"><!-- all documents -->
+								<xsl:when test="$doc_split_by_language = ''"><!-- all documents -->
 									<xsl:for-each select="//bipm:bipm-standard/bipm:bibdata">
 										<lang><xsl:value-of select="bipm:language"/></lang>
 									</xsl:for-each>
 								</xsl:when>
 								<xsl:otherwise>
-									<xsl:for-each select="(//bipm:bipm-standard)[$docnum]/bipm:bibdata">
+									<!-- <xsl:for-each select="(//bipm:bipm-standard)[$docnum]/bipm:bibdata">
 										<lang><xsl:value-of select="bipm:language"/></lang>
-									</xsl:for-each>
+									</xsl:for-each> -->
+									<lang><xsl:value-of select="$doc_split_by_language"/></lang>
 								</xsl:otherwise>
 							</xsl:choose>
 						</xsl:variable>
@@ -627,6 +605,7 @@
 				
 				<fo:block-container font-size="12pt" font-weight="bold" border-top="0.5pt solid black" padding-top="2mm" width="45mm">						
 					<fo:block>
+						<xsl:variable name="title-en" select="//bipm:bipm-standard/bipm:bibdata/bipm:title[@language = 'en' and @type='main']"/>
 						<xsl:call-template name="add-letter-spacing">
 							<xsl:with-param name="text" select="$title-en"/>
 							<xsl:with-param name="letter-spacing" select="0.09"/>
