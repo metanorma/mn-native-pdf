@@ -443,7 +443,7 @@
 			
 				<fo:block-container line-height="130%">
 					<fo:block>
-						<xsl:for-each select="xalan:nodeset($contents)/doc2[@id = $docid]//item[@display='true' and @type = 'annex']">
+						<xsl:for-each select="xalan:nodeset($contents)/doc[@id = $docid]//item[@display='true' and @type = 'annex']">
 							
 							<xsl:call-template name="insertContentItem"/>
 							
@@ -551,7 +551,7 @@
 							</xsl:variable>
 							<xsl:variable name="font-weight-initial">
 								<xsl:choose>
-									<xsl:when test="position() = 1">100</xsl:when>
+									<xsl:when test="position() = 1">0</xsl:when>
 									<xsl:otherwise>400</xsl:otherwise>
 								</xsl:choose>
 							</xsl:variable>
@@ -560,7 +560,7 @@
 									<xsl:attribute name="text-align">right</xsl:attribute>
 								</xsl:if>
 								<xsl:for-each select="xalan:nodeset($titleSplitted)/part">
-									<fo:block font-weight="{100 * position()}">										
+									<fo:block font-weight="{$font-weight-initial + 100 * position()}">										
 										<xsl:value-of select="translate(., '#', ' ')"/>
 										<xsl:if test="$title_num = 1 and position() = last()">
 											<fo:inline font-size="11.7pt" font-weight="normal" padding-left="5mm" baseline-shift="15%" line-height="125%">
