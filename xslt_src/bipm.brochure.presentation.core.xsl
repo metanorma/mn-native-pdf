@@ -15,12 +15,17 @@
 	<xsl:variable name="images" select="document($svg_images)"/>
 	
 	<xsl:param name="initial_page_number"/>
-	<xsl:param name="doc_split_by_language" select="'fr'"/>
+	<xsl:param name="doc_split_by_language"/>
 	
 	<xsl:variable name="pageWidth" select="'210mm'"/>
 	<xsl:variable name="pageHeight" select="'297mm'"/>
 
 	<xsl:variable name="namespace">bipm</xsl:variable>
+
+	<!-- DON'T DELETE IT -->
+	<!-- IT USES for mn2pdf -->
+	<xsl:variable name="coverpages_count">2</xsl:variable><!-- DON'T DELETE IT -->
+	
 
 	<xsl:variable name="debug">false</xsl:variable>
 	
@@ -386,10 +391,10 @@
 					<fo:block>
 						<!-- <xsl:copy-of select="$contents"/> -->
 						
-						<xsl:for-each select="xalan:nodeset($contents)/doc2[@id = $docid]//item[@display='true' and not(@type = 'annex') and not(@parent = 'annex')]">								
+						<xsl:for-each select="xalan:nodeset($contents)/doc[@id = $docid]//item[@display='true' and not(@type = 'annex') and not(@parent = 'annex')]">								
 							<xsl:call-template name="insertContentItem"/>								
 						</xsl:for-each>
-						<xsl:for-each select="xalan:nodeset($contents)/doc2[@id = $docid]//item[@display='true' and (@type = 'annex' or (@level = 2 and @parent = 'annex'))]">								
+						<xsl:for-each select="xalan:nodeset($contents)/doc[@id = $docid]//item[@display='true' and (@type = 'annex' or (@level = 2 and @parent = 'annex'))]">								
 							<xsl:call-template name="insertContentItem"/>								
 						</xsl:for-each>
 					</fo:block>
@@ -399,11 +404,11 @@
 			
 		</fo:page-sequence>
 		
-		<xsl:apply-templates select="bipm:preface2/bipm:clause" mode="sections" />
+		<xsl:apply-templates select="bipm:preface/bipm:clause" mode="sections" />
 		
 		<!-- Document Pages -->
 		
-		<xsl:apply-templates select="bipm:sections2/*" mode="sections" />
+		<xsl:apply-templates select="bipm:sections/*" mode="sections" />
 		
 		
 		
@@ -451,7 +456,7 @@
 		</fo:page-sequence>
 		
 		
-		<xsl:apply-templates select="bipm:annex2" mode="sections"/>
+		<xsl:apply-templates select="bipm:annex" mode="sections"/>
 		
 		<!-- Bibliography -->
 		<xsl:apply-templates select="bipm:bibliography/bipm:references[not(@normative='true')]" mode="sections"/> 
@@ -579,6 +584,7 @@
 	
 	<xsl:template name="insertInternalCoverPage">
 		<fo:page-sequence master-reference="title-page" format="1" initial-page-number="1" force-page-count="even">
+			
 			<fo:flow flow-name="xsl-region-body" font-family="Arial">
 				<fo:block-container font-size="12pt" font-weight="bold" width="55mm">
 					<fo:block>
