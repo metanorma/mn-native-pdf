@@ -97,7 +97,7 @@ XSLT_GENERATED := xslt/iec.international-standard.xsl \
 	xslt/mpfd.supervision-of-mpf-intermediaries.xsl \
 	xslt/mpfd.supervision-of-mpf-intermediaries.presentation.xsl
 
-MN2PDF_DOWNLOAD_PATH := https://github.com/metanorma/mn2pdf/releases/download/v1.21/mn2pdf-1.21.jar
+MN2PDF_DOWNLOAD_PATH := https://github.com/metanorma/mn2pdf/releases/download/v1.22/mn2pdf-1.22.jar
 # MN2PDF_DOWNLOAD_PATH := https://maven.pkg.github.com/metanorma/mn2pdf/com/metanorma/fop/mn2pdf/1.7/mn2pdf-1.7.jar
 MN2PDF_EXECUTABLE := $(notdir $(MN2PDF_DOWNLOAD_PATH))
 
