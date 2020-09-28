@@ -672,12 +672,12 @@
 				<fo:block>&#xA0;</fo:block>
 				<fo:block break-after="page"/>
 				
-				<!-- <xsl:call-template name="insert_Logo-BIPM-Metro"/> -->
-				<fo:block-container absolute-position="fixed" left="47mm" top="67mm">
+				<xsl:call-template name="insert_Logo-BIPM-Metro"/>
+				<!-- <fo:block-container absolute-position="fixed" left="47mm" top="67mm">
 					<fo:block>
 						<fo:external-graphic src="{concat('data:image/png;base64,', normalize-space($Image-Logo-BIPM-Metro))}" width="118.6mm" content-height="scale-to-fit" scaling="uniform" fox:alt-text="Image Logo"/>
 					</fo:block>
-				</fo:block-container>
+				</fo:block-container> -->
 				
 				<fo:block break-after="page"/>
 				<fo:block>&#xA0;</fo:block>
