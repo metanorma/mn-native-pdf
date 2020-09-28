@@ -38,16 +38,13 @@
 		
 
 		<title-toc lang="en">
-			<xsl:if test="$namespace = 'iso' or $namespace = 'iec' or $namespace = 'iho' or $namespace = 'csd' or $namespace = 'rsd' or $namespace = 'ogc' or $namespace = 'ogc-white-paper' or $namespace = 'unece-rec' or $namespace = 'mpfd'">
+			<xsl:if test="$namespace = 'iso' or $namespace = 'iec' or $namespace = 'iho' or $namespace = 'csd' or $namespace = 'rsd' or $namespace = 'ogc' or $namespace = 'ogc-white-paper' or $namespace = 'unece-rec' or $namespace = 'mpfd' or $namespace = 'bipm'">
 				<xsl:text>Contents</xsl:text>
 			</xsl:if>
 			<xsl:if test="$namespace = 'itu' or $namespace = 'csa' or $namespace = 'm3d' or $namespace = 'nist-cswp'  or $namespace = 'nist-sp'">
 				<xsl:text>Table of Contents</xsl:text>
 			</xsl:if>
 			<xsl:if test="$namespace = 'gb'">
-				<xsl:text>Table of contents</xsl:text>
-			</xsl:if>
-			<xsl:if test="$namespace = 'bipm'">
 				<xsl:text>Table of contents</xsl:text>
 			</xsl:if>
 		</title-toc>
@@ -196,7 +193,7 @@
 	</xsl:attribute-set>
 		
 	<xsl:attribute-set name="link-style">
-		<xsl:if test="$namespace = 'iso' or $namespace = 'csd' or $namespace = 'ogc-white-paper' or $namespace = 'rsd' or or $namespace = 'm3d' or $namespace = 'iho' or $namespace = 'mpfd' or $namespace = 'bipm'">
+		<xsl:if test="$namespace = 'iso' or $namespace = 'csd' or $namespace = 'ogc-white-paper' or $namespace = 'rsd' or or $namespace = 'm3d' or $namespace = 'iho' or $namespace = 'mpfd'">
 			<xsl:attribute name="color">blue</xsl:attribute>
 			<xsl:attribute name="text-decoration">underline</xsl:attribute>
 		</xsl:if>

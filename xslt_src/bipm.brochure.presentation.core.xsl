@@ -279,11 +279,18 @@
 		</xsl:copy>
 		<xsl:apply-templates mode="flatxml"/>
 	</xsl:template>
-	<xsl:template match="bipm:clause/bipm:note" mode="flatxml"><!-- envelope standalone note in p -->
-		<p>
+	<xsl:template match="bipm:clause/*[count(following-sibling::*) = 1 and following-sibling::*[local-name() = 'note']]" mode="flatxml"> <!--   -->
+		<xsl:copy>
+			<xsl:apply-templates select="@*|node()" mode="flatxml"/>
+			<xsl:copy-of select="following-sibling::*[local-name() = 'note']"/>
+		</xsl:copy>		
+	</xsl:template>
+	<xsl:template match="bipm:clause/bipm:note[count(following-sibling::*) = 0]" mode="flatxml"/>
+		<!-- envelope standalone note in p -->
+		<!-- <p>
 			<xsl:copy-of select="."/>
 		</p>
-	</xsl:template>
+	</xsl:template> -->
 	<xsl:template match="bipm:preface/bipm:clause" mode="flatxml">
 		<xsl:copy-of select="."/>
 	</xsl:template>
@@ -298,6 +305,8 @@
 		<xsl:for-each select="xalan:nodeset($curr_xml)">
 			<xsl:call-template name="namespaceCheck"/>
 		</xsl:for-each>
+		
+		<xsl:variable name="curr_lang" select="bipm:bibdata/bipm:language"/>
 		
 		<xsl:if test="$debug = 'true'">
 			<xsl:text disable-output-escaping="yes">&lt;!--</xsl:text>
@@ -341,7 +350,9 @@
 				</fo:block-container>
 				
 				<fo:block-container font-size="18pt" font-weight="bold" text-align="center">
-					<fo:block><xsl:value-of select="$title-fr"/></fo:block>						
+					<fo:block>						
+						<xsl:value-of select="//bipm:bipm-standard/bipm:bibdata/bipm:title[@language = $curr_lang and @type='main']"/>
+					</fo:block>	
 				</fo:block-container>
 				
 				<fo:block-container absolute-position="fixed" left="69.5mm" top="241mm" width="99mm">						
@@ -351,6 +362,7 @@
 								<xsl:apply-templates select="bipm:bibdata/bipm:edition">
 									<xsl:with-param name="font-size" select="'70%'"/>
 									<xsl:with-param name="baseline-shift" select="'45%'"/>
+									<xsl:with-param name="curr_lang" select="$curr_lang"/>
 								</xsl:apply-templates>
 							</fo:inline>
 							<xsl:value-of select="$copyrightYear"/>
@@ -406,7 +418,7 @@
 								</xsl:call-template>
 							</xsl:variable>
 							<fo:marker marker-class-name="header-title"><xsl:value-of select="$title-toc"/></fo:marker>
-							<fo:inline><xsl:value-of select="$title-fr"/></fo:inline>
+							<fo:inline><xsl:value-of select="//bipm:bipm-standard/bipm:bibdata/bipm:title[@language = $curr_lang and @type='main']"/></fo:inline>
 							<fo:inline keep-together.within-line="always">
 								<fo:leader leader-pattern="space"/>
 								<fo:inline>
@@ -848,6 +860,7 @@
 	<xsl:template match="bipm:bipm-standard/bipm:bibdata/bipm:edition">
 		<xsl:param name="font-size" select="'65%'"/>
 		<xsl:param name="baseline-shift" select="'30%'"/>
+		<xsl:param name="curr_lang" select="'fr'"/>
 		<fo:inline>
 			<xsl:variable name="title-edition">
 				<xsl:call-template name="getTitle">
@@ -857,9 +870,22 @@
 			<xsl:value-of select="."/>
 			<fo:inline font-size="{$font-size}" baseline-shift="{$baseline-shift}">
 				<xsl:choose>
-					<xsl:when test=". = '1'">re</xsl:when>
-					<xsl:otherwise>e</xsl:otherwise>
+					<xsl:when test="$curr_lang = 'fr'">
+						<xsl:choose>					
+							<xsl:when test=". = '1'">re</xsl:when>
+							<xsl:otherwise>e</xsl:otherwise>
+						</xsl:choose>
+					</xsl:when>
+					<xsl:otherwise>
+						<xsl:choose>					
+							<xsl:when test=". = '1'">st</xsl:when>
+							<xsl:when test=". = '2'">nd</xsl:when>
+							<xsl:when test=". = '3'">rd</xsl:when>
+							<xsl:otherwise>th</xsl:otherwise>
+						</xsl:choose>
+					</xsl:otherwise>
 				</xsl:choose>
+				
 			</fo:inline>
 			<xsl:text> </xsl:text>			
 			<xsl:value-of select="java:toLowerCase(java:java.lang.String.new($title-edition))"/>
@@ -1111,12 +1137,12 @@
 	</xsl:template>
 	
 	
-	<xsl:template match="bipm:sections/bipm:clause | bipm:annex" priority="3">
-		<fo:table table-layout="fixed" width="176mm" line-height="135%">
+	<xsl:template match="bipm:sections/bipm:clause | bipm:annex/bipm:clause" priority="3">
+		<fo:table table-layout="fixed" width="174mm" line-height="135%">
 			<xsl:call-template name="setId"/>
 			<fo:table-column column-width="137mm"/>
 			<fo:table-column column-width="5mm"/>
-			<fo:table-column column-width="34mm"/>
+			<fo:table-column column-width="32mm"/>
 			<fo:table-body>
 			
 				<xsl:variable name="rows">
@@ -1183,7 +1209,7 @@
 	</xsl:template>
 	
 	
-	<xsl:template match="bipm:sections/bipm:clause/* | bipm:annex/*" mode="clause_table">
+	<xsl:template match="bipm:sections/bipm:clause/* | bipm:annex/bipm:clause/*" mode="clause_table">
 		<xsl:param name="rows"/>
 		
 		
@@ -1191,8 +1217,8 @@
 		
 	
 	
-		<fo:table-row > <!-- border="1pt solid black" -->
-			<fo:table-cell > <!-- border="1pt solid black" -->
+		<fo:table-row> <!-- border="1pt solid black" -->
+			<fo:table-cell> <!-- border="1pt solid black" -->
 				<fo:block>					
 					<xsl:apply-templates select="."/>
 				</fo:block>
