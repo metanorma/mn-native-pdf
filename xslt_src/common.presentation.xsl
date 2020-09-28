@@ -190,7 +190,7 @@
 	
 	<xsl:attribute-set name="root-style">
 		<xsl:if test="$namespace = 'bipm'">
-			<xsl:attribute name="font-family">Times New Roman, STIX2Math, HanSans</xsl:attribute>
+			<xsl:attribute name="font-family">Times New Roman, STIX Two Math, HanSans</xsl:attribute>
 			<xsl:attribute name="font-size">10.5pt</xsl:attribute>
 		</xsl:if>
 	</xsl:attribute-set>
@@ -1539,8 +1539,10 @@
 					<xsl:if test="not(ancestor::*[local-name()='note'])">
 						<xsl:attribute name="font-size">10pt</xsl:attribute>
 					</xsl:if>
-					<xsl:attribute name="border-top">0.5pt solid black</xsl:attribute>
-					<xsl:attribute name="border-bottom">0.5pt solid black</xsl:attribute>
+					<xsl:if test="not(ancestor::*[local-name()='preface']) and not(ancestor::*[local-name()='note'])">
+						<xsl:attribute name="border-top">0.5pt solid black</xsl:attribute>
+						<xsl:attribute name="border-bottom">0.5pt solid black</xsl:attribute>
+					</xsl:if>
 					<xsl:attribute name="margin-left">0mm</xsl:attribute>
 					<xsl:attribute name="margin-right">0mm</xsl:attribute>
 					<xsl:attribute name="margin-bottom">12pt</xsl:attribute>
@@ -2220,6 +2222,7 @@
 				</xsl:if>
 				<xsl:if test="$namespace = 'bipm'">					
 					<xsl:attribute name="text-align">justify</xsl:attribute>
+					<xsl:attribute name="margin-top">18pt</xsl:attribute>
 				</xsl:if>
 				
 				<fo:inline padding-right="2mm">
@@ -2241,10 +2244,16 @@
 							</fo:inline> -->
 						</xsl:if>
 					</xsl:if>
-				
+					<xsl:if test="$namespace = 'bipm'">
+						<xsl:attribute name="font-size">10pt</xsl:attribute>						
+						<xsl:attribute name="text-decoration">underline</xsl:attribute>
+					</xsl:if>
 					<xsl:apply-templates select="*[local-name() = 'name']" mode="presentation"/>
 						
 				</fo:inline>
+				<xsl:if test="$namespace = 'bipm'">
+					<fo:block>&#xA0;</fo:block>
+				</xsl:if>
 				<xsl:apply-templates mode="process"/>
 			</fo:block>
 		
@@ -2306,6 +2315,7 @@
 						<xsl:attribute name="font-size">9pt</xsl:attribute>
 						<xsl:attribute name="text-indent">-6.5mm</xsl:attribute>
 						<xsl:attribute name="margin-left">6.5mm</xsl:attribute>
+						<xsl:attribute name="margin-bottom">0pt</xsl:attribute>
 					</xsl:if>
 					<fo:inline font-size="80%" padding-right="5mm" id="{@id}">
 						<xsl:if test="$namespace = 'itu' or $namespace = 'nist-cswp'  or $namespace = 'nist-sp' or $namespace = 'unece' or $namespace = 'unece-rec'  or $namespace = 'csd' or $namespace = 'ogc' or $namespace = 'ogc-white-paper' or $namespace = 'gb' or $namespace = 'm3d' or $namespace = 'iho'">
@@ -2348,7 +2358,8 @@
 						<xsl:if test="$namespace = 'nist-cswp'  or $namespace = 'nist-sp'">
 							<xsl:attribute name="font-size">10pt</xsl:attribute>
 						</xsl:if>
-						<xsl:apply-templates />
+						<!-- <xsl:apply-templates /> -->
+						<xsl:copy-of select="./node()"/>
 					</fo:inline>
 				</fo:block>
 			</xsl:if>
@@ -2477,7 +2488,8 @@
 											<xsl:if test="$namespace = 'iec'">
 												<xsl:attribute name="margin-bottom">10pt</xsl:attribute>
 											</xsl:if>
-											<xsl:apply-templates />
+											<!-- <xsl:apply-templates /> -->
+											<xsl:copy-of select="./node()"/>
 										</fo:block>
 									</fo:table-cell>
 								</fo:table-row>
@@ -3445,7 +3457,7 @@
 	</xsl:template>
 	
 	<xsl:template match="mathml:math">
-		<fo:inline font-family="STIX2Math">
+		<fo:inline font-family="STIX Two Math"> <!--  -->
 			<xsl:variable name="mathml">
 				<xsl:apply-templates select="." mode="mathml"/>
 			</xsl:variable>
@@ -3765,7 +3777,7 @@
 					<xsl:value-of select="$sfx"/>					
 				</xsl:when>
 				<xsl:otherwise>
-					<xsl:if test="$namespace = 'gb' or $namespace = 'm3d' or $namespace = 'rsd' or $namespace = 'ogc' or $namespace = 'unece-rec' or $namespace = 'unece'">
+					<xsl:if test="$namespace = 'gb' or $namespace = 'm3d' or $namespace = 'rsd' or $namespace = 'ogc' or $namespace = 'unece-rec' or $namespace = 'unece'  or $namespace = 'bipm'">
 						<xsl:text>:</xsl:text>
 					</xsl:if>
 					<xsl:if test="$namespace = 'itu' or $namespace = 'nist-cswp'  or $namespace = 'nist-sp'">				
@@ -5207,6 +5219,9 @@
 					<xsl:if test="$namespace = 'gb'">
 						<xsl:attribute name="margin-left">0mm</xsl:attribute>
 					</xsl:if>
+					<xsl:if test="$namespace = 'bipm'">
+						<xsl:attribute name="margin-left">0mm</xsl:attribute>
+					</xsl:if>
 					<fo:block-container margin-left="0mm">
 						<fo:block>
 							<xsl:apply-templates select="." mode="ul_ol"/>
@@ -5725,11 +5740,11 @@
 						</dc:description>
 						<pdf:Keywords>
 							<xsl:call-template name="insertKeywords"/>
-						</pdf:Keywords>						
+						</pdf:Keywords>
 					</rdf:Description>
 					<rdf:Description rdf:about=""
 							xmlns:xmp="http://ns.adobe.com/xap/1.0/">
-						<!-- XMP properties go here -->						
+						<!-- XMP properties go here -->
 						<xmp:CreatorTool></xmp:CreatorTool>
 					</rdf:Description>
 				</rdf:RDF>

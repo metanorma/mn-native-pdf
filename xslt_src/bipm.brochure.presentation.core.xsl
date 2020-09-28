@@ -250,8 +250,13 @@
 					
 					
 				</xsl:when>			
-				<xsl:otherwise>			
-					<xsl:apply-templates select="bipm:bipm-standard" mode="bipm-standard">
+				<xsl:otherwise>
+				
+					<xsl:variable name="flatxml">
+						<xsl:apply-templates mode="flatxml"/>
+					</xsl:variable>
+				
+					<xsl:apply-templates select="xalan:nodeset($flatxml)/bipm:bipm-standard" mode="bipm-standard">
 						<xsl:with-param name="curr_docnum" select="1"/>
 					</xsl:apply-templates>
 				</xsl:otherwise>
@@ -260,6 +265,29 @@
 			
 		</fo:root>
 	</xsl:template>
+	
+	<!-- flat xml for fit notes at page sides -->
+	<xsl:template match="@*|node()" mode="flatxml">
+		<xsl:copy>
+				<xsl:apply-templates select="@*|node()" mode="flatxml"/>
+		</xsl:copy>
+	</xsl:template>	
+	<!-- flat clauses from 2nd level -->
+	<xsl:template match="bipm:clause[not(parent::bipm:sections) and not(parent::bipm:annex) and not(parent::bipm:abstract) and not(ancestor::bipm:boilerplate)]" mode="flatxml">
+		<xsl:copy>
+			<xsl:apply-templates select="@*" mode="flatxml"/>
+		</xsl:copy>
+		<xsl:apply-templates mode="flatxml"/>
+	</xsl:template>
+	<xsl:template match="bipm:clause/bipm:note" mode="flatxml"><!-- envelope standalone note in p -->
+		<p>
+			<xsl:copy-of select="."/>
+		</p>
+	</xsl:template>
+	<xsl:template match="bipm:preface/bipm:clause" mode="flatxml">
+		<xsl:copy-of select="."/>
+	</xsl:template>
+	
 	
 	<xsl:template match="bipm:bipm-standard"/>
 	<xsl:template match="bipm:bipm-standard" mode="bipm-standard">
@@ -342,7 +370,7 @@
 				
 				<fo:block-container absolute-position="fixed" top="200mm" height="69mm" font-family="Times New Roman" text-align="center" display-align="after">
 					<xsl:apply-templates select="bipm:boilerplate/bipm:feedback-statement"/>
-					<fo:block margin-top="15mm">ISBN 978-92-822-2272-0</fo:block>
+					<!-- <fo:block margin-top="15mm">ISBN 978-92-822-2272-0</fo:block> -->
 				</fo:block-container>
 				
 			</fo:flow>
@@ -357,6 +385,8 @@
 				</fo:block>
 			</fo:flow>
 		</fo:page-sequence>
+
+
 		
 		<xsl:variable name="docid">
 			<xsl:call-template name="getDocumentId"/>
@@ -367,7 +397,7 @@
 			<xsl:call-template name="insertHeaderFooter"/>
 			<fo:flow flow-name="xsl-region-body">
 			
-				<fo:block-container margin-left="-18mm"  margin-right="-1mm">
+				<fo:block-container margin-left="-14mm"  margin-right="0mm">
 					<fo:block-container margin-left="0mm" margin-right="0mm">							
 						<fo:block font-family="Arial" font-size="16pt" font-weight="bold" text-align-last="justify" margin-bottom="84pt">
 							<xsl:variable name="title-toc">
@@ -404,7 +434,10 @@
 			
 		</fo:page-sequence>
 		
+		
 		<xsl:apply-templates select="bipm:preface/bipm:clause" mode="sections" />
+		
+		
 		
 		<!-- Document Pages -->
 		
@@ -417,7 +450,7 @@
 
 		
 		<!-- Table of Contents for Annexes -->
-		<fo:page-sequence master-reference="document" force-page-count="no-force">
+		<!-- <fo:page-sequence master-reference="document" force-page-count="no-force">
 			<xsl:call-template name="insertHeaderFooter"/>
 			<fo:flow flow-name="xsl-region-body">
 			
@@ -453,7 +486,7 @@
 		
 			</fo:flow>
 			
-		</fo:page-sequence>
+		</fo:page-sequence> -->
 		
 		
 		<xsl:apply-templates select="bipm:annex" mode="sections"/>
@@ -509,9 +542,17 @@
 						<xsl:variable name="languages">
 							<xsl:choose>
 								<xsl:when test="$doc_split_by_language = ''"><!-- all documents -->
-									<xsl:for-each select="//bipm:bipm-standard/bipm:bibdata">
-										<lang><xsl:value-of select="bipm:language"/></lang>
-									</xsl:for-each>
+									<xsl:choose>
+										<xsl:when test="count(//bipm:bipm-standard) = 1">											
+												<lang>fr</lang>
+												<lang>en</lang>											
+										</xsl:when>
+										<xsl:otherwise>
+											<xsl:for-each select="//bipm:bipm-standard/bipm:bibdata">
+												<lang><xsl:value-of select="bipm:language"/></lang>
+											</xsl:for-each>
+										</xsl:otherwise>
+									</xsl:choose>
 								</xsl:when>
 								<xsl:otherwise>
 									<!-- <xsl:for-each select="(//bipm:bipm-standard)[$docnum]/bipm:bibdata">
@@ -903,15 +944,15 @@
 			</xsl:choose>
 		</xsl:variable>
 		
-		<fo:block-container margin-left="-14mm" font-family="Arial" font-size="{$font-size}" font-weight="bold" keep-with-next="always" line-height="145%">				
+		<fo:block-container margin-left="-14mm" font-family="Arial" font-size="{$font-size}" font-weight="bold" keep-with-next="always"  line-height="130%">				 <!-- line-height="145%" -->
 			<xsl:attribute name="margin-bottom">
 				<xsl:choose>
 					<xsl:when test="$level = 1 and (parent::bipm:annex or parent::bipm:abstract or ancestor::bipm:preface)">84pt</xsl:when>
-					<!-- <xsl:when test="$level = 1">24pt</xsl:when> -->
+					<xsl:when test="$level = 1">6pt</xsl:when>
 					<xsl:when test="$level = 2">10pt</xsl:when>						
 					<xsl:otherwise>6pt</xsl:otherwise>
 				</xsl:choose>
-			</xsl:attribute>
+			</xsl:attribute>			
 			<xsl:if test="$level = 2">
 				<xsl:attribute name="margin-top">24pt</xsl:attribute>
 			</xsl:if>
@@ -978,70 +1019,251 @@
 	<!-- ====== -->
 	<!-- ====== -->
 
-	
 
-	<xsl:template match="bipm:sections/bipm:clause | bipm:preface/bipm:abstract | bipm:annex" priority="3">
+	<xsl:template match="bipm:preface/bipm:abstract" priority="3">
 		<fo:table table-layout="fixed" width="173.5mm">
 			<xsl:call-template name="setId"/>
 			<fo:table-column column-width="137mm"/>
 			<fo:table-column column-width="2.5mm"/>
 			<fo:table-column column-width="34mm"/>
 			<fo:table-body>
-				<xsl:apply-templates mode="clause_table" />
+			
+				<xsl:variable name="rows">
+					<xsl:for-each select="*">
+						<xsl:variable name="position" select="position()"/>
+						<!-- if this is  first element -->
+						<xsl:variable name="isFirstRow" select="not(preceding-sibling::*)"/>  
+						<!--  first element without note -->					
+						<xsl:variable name="isFirstCellAfterNote" select="$isFirstRow = true() or count(preceding-sibling::*[1][.//bipm:note]) = 1"/>					
+						<xsl:variable name="curr_id" select="generate-id()"/>						
+						<xsl:variable name="rowsUntilNote" select="count(following-sibling::*[.//bipm:note[not(ancestor::bipm:table)]][1]/preceding-sibling::*[preceding-sibling::*[generate-id() = $curr_id]])"/>
+						
+						<xsl:if test="$isFirstCellAfterNote = true()">
+							<num span_start="{$position}" span_num="{$rowsUntilNote + 2}" display-align="after">
+								<xsl:if test="count(following-sibling::*[.//bipm:note[not(ancestor::bipm:table)]]) = 0"><!-- if there aren't notes more, then set -1 -->
+									<xsl:attribute name="span_start"><xsl:value-of select="$position"/>_no_more_notes</xsl:attribute>
+								</xsl:if>
+								<xsl:if test="count(following-sibling::*[.//bipm:note[not(ancestor::bipm:table)]]) = 1"> <!-- if there is only one note, then set -1, because notes will be display near accoring text-->							
+									<xsl:attribute name="span_start"><xsl:value-of select="$position"/>_last_note</xsl:attribute>
+								</xsl:if>
+							</num>
+						</xsl:if>
+						<xsl:if test=".//bipm:note[not(ancestor::bipm:table)] and count(following-sibling::*[.//bipm:note[not(ancestor::bipm:table)]]) = 0"> <!-- if current row there is note, and no more notes below -->
+							<num span_start="{$position}" span_num="{count(following-sibling::*) + 1}" display-align="before"/>
+						</xsl:if>
+						<xsl:if test=".//bipm:note[not(ancestor::bipm:table)] and following-sibling::*[1][.//bipm:note[not(ancestor::bipm:table)]] and preceding-sibling::*[1][.//bipm:note[not(ancestor::bipm:table)]]">
+							<num span_start="{$position}" span_num="1" display-align="before"/>
+						</xsl:if>
+						
+					</xsl:for-each>
+				</xsl:variable>
+				<xsl:apply-templates mode="clause_table">
+					<xsl:with-param name="rows" select="$rows"/>
+				</xsl:apply-templates>
 			</fo:table-body>
 		</fo:table>
 	</xsl:template>
+	
 
 
 	<xsl:template match="bipm:preface/bipm:abstract/*" mode="clause_table">
+		<xsl:param name="rows"/>
+		
+		<xsl:variable name="current_row"><xsl:number count="*"/></xsl:variable>
+		
 		<fo:table-row>
-			<fo:table-cell>
+			<fo:table-cell>				
 				<fo:block>					
 					<xsl:apply-templates select="."/>
 				</fo:block>
 			</fo:table-cell>
 			<fo:table-cell><fo:block>&#xA0;</fo:block></fo:table-cell>
-			<xsl:choose>
-				<xsl:when test=".//bipm:note[not(ancestor::bipm:table)]">
-					<fo:table-cell font-size="8pt" line-height="120%">
-						<xsl:variable name="curr_id" select="@id"/>						
-						<xsl:attribute name="number-rows-spanned">
-							<xsl:value-of select="count(following-sibling::*[.//bipm:note][1]/preceding-sibling::*[preceding-sibling::*[@id = $curr_id]]) + 1"/>
-						</xsl:attribute>
-						<fo:block>
-							<xsl:for-each select=".//bipm:note[not(ancestor::bipm:table)] ">
-								<xsl:apply-templates select="." mode="note_side"/>
-							</xsl:for-each>
-						</fo:block>
-					</fo:table-cell>
-				</xsl:when>
-			</xsl:choose>			
+			
+			<xsl:if test="xalan:nodeset($rows)/num[@span_start = $current_row]">
+				<fo:table-cell font-size="8pt" line-height="120%" display-align="before">										
+					<xsl:attribute name="display-align">
+						<xsl:value-of select="xalan:nodeset($rows)/num[@span_start = $current_row]/@display-align"/>
+					</xsl:attribute>
+					<xsl:variable name="number-rows-spanned" select="xalan:nodeset($rows)/num[@span_start = $current_row]/@span_num"/>
+					<xsl:attribute name="number-rows-spanned">
+						<xsl:value-of select="$number-rows-spanned"/>
+					</xsl:attribute>
+					
+					<xsl:variable name="start_row" select="$current_row"/>
+					<fo:block>
+						<xsl:for-each select="ancestor::bipm:abstract/*[position() &gt;= $start_row and position() &lt; ($start_row + $number-rows-spanned)]//bipm:note[not(ancestor::bipm:table)]">
+							<xsl:apply-templates select="." mode="note_side"/>
+						</xsl:for-each>
+					</fo:block>
+					
+					<!-- DEBUG -->
+					<!-- <fo:block font-size="6pt" color="red">
+						<fo:block>current_row=<xsl:value-of select="$current_row"/></fo:block>						
+							<fo:block>span_start=<xsl:value-of select="$start_row"/></fo:block>
+						<fo:block>span_num=<xsl:value-of select="$number-rows-spanned"/></fo:block>						
+					</fo:block>					 -->
+				</fo:table-cell>
+				
+			</xsl:if>
+			
+			
 		</fo:table-row>
 	</xsl:template>
 	
+	
+	<xsl:template match="bipm:sections/bipm:clause | bipm:annex" priority="3">
+		<fo:table table-layout="fixed" width="176mm" line-height="135%">
+			<xsl:call-template name="setId"/>
+			<fo:table-column column-width="137mm"/>
+			<fo:table-column column-width="5mm"/>
+			<fo:table-column column-width="34mm"/>
+			<fo:table-body>
+			
+				<xsl:variable name="rows">
+					<xsl:for-each select="*">
+						<xsl:variable name="position" select="position()"/>
+						<!-- if this is  first element -->
+						<xsl:variable name="isFirstRow" select="not(preceding-sibling::*)"/>  
+						<!--  first element without note -->					
+						<xsl:variable name="isFirstCellAfterNote" select="$isFirstRow = true() or count(preceding-sibling::*[1][.//bipm:note]) = 1"/>					
+						<xsl:variable name="curr_id" select="generate-id()"/>						
+						<xsl:variable name="rowsUntilNote" select="count(following-sibling::*[.//bipm:note][1]/preceding-sibling::*[preceding-sibling::*[generate-id() = $curr_id]])"/>
+						
+						<num display-align="after">
+							<xsl:if test="$isFirstCellAfterNote = true()">
+								<xsl:attribute name="span_start">
+									<xsl:value-of select="$position"/>
+								</xsl:attribute>
+								<xsl:attribute name="span_num">
+									<xsl:value-of select="$rowsUntilNote + 2"/>
+								</xsl:attribute>								
+								<xsl:if test="count(following-sibling::*[.//bipm:note]) = 0"><!-- if there aren't notes more, then set -1 -->
+									<xsl:attribute name="span_start"><xsl:value-of select="$position"/>_no_more_notes</xsl:attribute>
+								</xsl:if>
+								<xsl:if test="count(following-sibling::*[.//bipm:note]) = 1"> <!-- if there is only one note, then set -1, because notes will be display near accoring text-->							
+									<xsl:attribute name="span_start"><xsl:value-of select="$position"/>_last_note</xsl:attribute>
+								</xsl:if>								
+							</xsl:if>
+							
+							<xsl:if test=".//bipm:note and count(following-sibling::*[.//bipm:note]) = 0"> <!-- if current row there is note, and no more notes below -->
+								<xsl:attribute name="span_start">
+									<xsl:value-of select="$position"/>
+								</xsl:attribute>
+								<xsl:attribute name="span_num">
+									<xsl:value-of select="count(following-sibling::*) + 1"/>
+								</xsl:attribute>
+								<xsl:attribute name="display-align">before</xsl:attribute>
+							</xsl:if>
+							
+							<xsl:if test=".//bipm:note and following-sibling::*[1][.//bipm:note] and preceding-sibling::*[1][.//bipm:note]">								
+								<xsl:attribute name="span_start">
+									<xsl:value-of select="$position"/>
+								</xsl:attribute>
+								<xsl:attribute name="span_num">1</xsl:attribute>
+								<xsl:attribute name="display-align">before</xsl:attribute>
+							</xsl:if>
+							
+							<xsl:if test=".//bipm:note and preceding-sibling::*[1][.//bipm:note] and not(following-sibling::*[1][.//bipm:note])">
+								<xsl:attribute name="span_start">
+									<xsl:value-of select="$position"/>
+								</xsl:attribute>
+								<xsl:attribute name="span_num">1</xsl:attribute>
+								<xsl:attribute name="display-align">before</xsl:attribute>
+							</xsl:if>
+						</num>
+					</xsl:for-each>
+				</xsl:variable>
+				
+				<xsl:apply-templates mode="clause_table">
+					<xsl:with-param name="rows" select="$rows"/>
+				</xsl:apply-templates>
+					
+			</fo:table-body>
+		</fo:table>
+	</xsl:template>
+	
+	
 	<xsl:template match="bipm:sections/bipm:clause/* | bipm:annex/*" mode="clause_table">
-		<fo:table-row>
-			<fo:table-cell>
+		<xsl:param name="rows"/>
+		
+		
+		<xsl:variable name="current_row"><xsl:number count="*"/></xsl:variable>
+		
+	
+	
+		<fo:table-row > <!-- border="1pt solid black" -->
+			<fo:table-cell > <!-- border="1pt solid black" -->
 				<fo:block>					
 					<xsl:apply-templates select="."/>
 				</fo:block>
 			</fo:table-cell>
 			<fo:table-cell><fo:block>&#xA0;</fo:block></fo:table-cell>
+			
+			
+			<!-- DEBUG -->
+			<!-- <fo:table-cell font-size="8pt" line-height="120%" display-align="before" padding-bottom="6pt">
+					
+					<xsl:variable name="number-rows-spanned" select="xalan:nodeset($rows)/num[@span_start = $current_row]/@span_num"/>
+					
+					
+					<xsl:variable name="start_row" select="$current_row"/>					
+					
+					<xsl:if test=".//bipm:note">
+						<fo:block>Note</fo:block>
+					</xsl:if>
+					<fo:block font-size="6pt" color="red">
+						<fo:block>current_row=<xsl:value-of select="$current_row"/></fo:block>													
+						<xsl:for-each select="xalan:nodeset($rows)/num">
+							<fo:block>span_start=<xsl:value-of select="@span_start"/></fo:block>
+							<fo:block>span_num=<xsl:value-of select="@span_num"/></fo:block>
+						</xsl:for-each>						
+					</fo:block>					
+					
+					
+					
+				
+				</fo:table-cell> -->
+			
+			
+			<xsl:if test="xalan:nodeset($rows)/num[@span_start = $current_row]">
+				<fo:table-cell font-size="8pt" line-height="120%" display-align="before" padding-bottom="6pt">
+					<xsl:attribute name="display-align">
+						<xsl:value-of select="xalan:nodeset($rows)/num[@span_start = $current_row]/@display-align"/>
+					</xsl:attribute>
+					<xsl:variable name="number-rows-spanned" select="xalan:nodeset($rows)/num[@span_start = $current_row]/@span_num"/>
+					<xsl:attribute name="number-rows-spanned">
+						<xsl:value-of select="$number-rows-spanned"/>
+					</xsl:attribute>
+					
+					<xsl:variable name="start_row" select="$current_row"/>
+					<fo:block>
+						<!-- <fo:block>display-align=<xsl:value-of select="xalan:nodeset($rows)/num[@span_start = $current_row]/@display-align"/></fo:block> -->
+						<xsl:for-each select="ancestor::*[1]/*[position() &gt;= $start_row and position() &lt; ($start_row + $number-rows-spanned)]//bipm:note">
+							
+							<xsl:apply-templates select="." mode="note_side"/>
+						</xsl:for-each>
+					</fo:block>
+				
+				</fo:table-cell>
+			</xsl:if>
+			
+			
+			<!-- 
 			<xsl:choose>
-				<xsl:when test=".//bipm:note"> <!-- [not(ancestor::bipm:table)] -->
+				<xsl:when test=".//bipm:note">
 					<fo:table-cell font-size="8pt" line-height="120%">
 						<xsl:variable name="curr_id" select="@id"/>						
 						<xsl:attribute name="number-rows-spanned">
 							<xsl:value-of select="count(following-sibling::*[.//bipm:note][1]/preceding-sibling::*[preceding-sibling::*[@id = $curr_id]]) + 1"/>
 						</xsl:attribute>
 						<fo:block>
-							<xsl:for-each select=".//bipm:note"><!-- [not(ancestor::bipm:table)] -->
+							<xsl:for-each select=".//bipm:note">
 								<xsl:apply-templates select="." mode="note_side"/>
 							</xsl:for-each>
 						</fo:block>
 					</fo:table-cell>
 				</xsl:when>
-			</xsl:choose>			
+			</xsl:choose>			 -->
 		</fo:table-row>
 	</xsl:template>
 
@@ -1160,6 +1382,9 @@
 					<xsl:if test="following-sibling::*[1][local-name() = 'ul' or local-name() = 'ol']">
 						<xsl:attribute name="margin-bottom">0pt</xsl:attribute>
 					</xsl:if>
+					<xsl:if test="ancestor::bipm:note">
+						<xsl:attribute name="provisional-distance-between-starts">0mm</xsl:attribute>
+					</xsl:if>
 					<xsl:apply-templates />
 				</fo:list-block>
 			</fo:block-container>
@@ -1199,6 +1424,10 @@
 					<xsl:if test="local-name(..) = 'ol'">
 						<xsl:attribute name="margin-bottom">6pt</xsl:attribute>
 					</xsl:if>
+					<xsl:if test="ancestor::bipm:note">
+						<xsl:attribute name="text-indent">3mm</xsl:attribute>
+					</xsl:if>
+					
 					<xsl:apply-templates />
 				</fo:block>
 			</fo:list-item-body>
