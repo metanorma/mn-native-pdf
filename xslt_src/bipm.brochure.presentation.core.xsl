@@ -299,9 +299,9 @@
 	
 	<!-- flat lists -->
 	<xsl:template match="bipm:ul | bipm:ol" mode="flatxml" priority="2">
-		<xsl:copy>
+		<!-- <xsl:copy>
 			<xsl:copy-of select="@*"/>			
-		</xsl:copy>
+		</xsl:copy> -->
 		<xsl:apply-templates mode="flatxml_list"/>
 	</xsl:template>
 
@@ -350,6 +350,7 @@
 	
 	<xsl:template name="setListItemLabel">
 		<xsl:choose>
+			<xsl:when test="local-name(..) = 'ul' and ../ancestor::bipm:ul">&#x2014;</xsl:when> <!-- &#x2014; dash -->
 			<xsl:when test="local-name(..) = 'ul'">•</xsl:when> <!-- &#x2014; dash -->
 			<xsl:otherwise> <!-- for ordered lists -->
 				<xsl:choose>
@@ -1476,14 +1477,17 @@
 	</xsl:template>
 
 
-	<xsl:template match="bipm:ul | bipm:ol" mode="ul_ol">
-		<!-- <xsl:apply-templates /> -->
-		<fo:block id="{@id}"/>		
+	<xsl:template match="bipm:ul | bipm:ol" mode="ul_ol">		
+		<!-- <fo:block id="{@id}"/>		 -->
+		<xsl:apply-templates /><!-- for second level -->
 	</xsl:template>
 	
 	<!-- process list item as individual list --> <!-- flat list -->
 	<xsl:template match="bipm:li">
 		<fo:block-container margin-left="0mm">
+			<xsl:if test="ancestor::bipm:li">
+				<xsl:attribute name="margin-left">7mm</xsl:attribute>
+			</xsl:if>
 			<fo:block-container margin-left="0mm">
 				<fo:list-block provisional-distance-between-starts="8mm">
 					<xsl:if test="not(following-sibling::*[1][local-name() = 'li'])"> <!-- last item -->
