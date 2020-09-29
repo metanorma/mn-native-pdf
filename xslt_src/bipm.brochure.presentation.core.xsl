@@ -256,6 +256,8 @@
 						<xsl:apply-templates mode="flatxml"/>
 					</xsl:variable>
 				
+					<!-- flatxml=<xsl:copy-of select="$flatxml"/> -->
+				
 					<xsl:apply-templates select="xalan:nodeset($flatxml)/bipm:bipm-standard" mode="bipm-standard">
 						<xsl:with-param name="curr_docnum" select="1"/>
 					</xsl:apply-templates>
@@ -293,6 +295,82 @@
 	</xsl:template> -->
 	<xsl:template match="bipm:preface/bipm:clause" mode="flatxml">
 		<xsl:copy-of select="."/>
+	</xsl:template>
+	
+	<!-- flat lists -->
+	<xsl:template match="bipm:ul | bipm:ol" mode="flatxml" priority="2">
+		<xsl:copy>
+			<xsl:copy-of select="@*"/>			
+		</xsl:copy>
+		<xsl:apply-templates mode="flatxml_list"/>
+	</xsl:template>
+
+	<xsl:template match="@*|node()" mode="flatxml_list">
+		<xsl:copy>
+				<xsl:apply-templates select="@*|node()" mode="flatxml_list"/>
+		</xsl:copy>
+	</xsl:template>	
+	
+	
+	<!-- <xsl:template match="bipm:li[last()]" mode="flatxml_list">
+		<xsl:copy>
+			<xsl:apply-templates select="@*" mode="flatxml_list"/>
+			<xsl:attribute name="list_type">
+				<xsl:value-of select="local-name(..)"/>
+			</xsl:attribute>
+			<xsl:attribute name="label">
+				<xsl:call-template name="setListItemLabel"/>
+			</xsl:attribute>
+			<xsl:apply-templates select="node()" mode="flatxml_list"/>
+			<xsl:copy-of select="following-sibling::*"/>
+		</xsl:copy>		
+	</xsl:template> -->
+	
+	<!-- copy 'ol' 'ul' properties to each 'li' -->
+	<!-- move note for list into latest 'li' -->
+	<xsl:template match="bipm:li" mode="flatxml_list">
+		<xsl:copy>
+			<xsl:apply-templates select="@*" mode="flatxml_list"/>
+			<xsl:attribute name="list_type">
+				<xsl:value-of select="local-name(..)"/>
+			</xsl:attribute>
+			<xsl:attribute name="label">
+				<xsl:call-template name="setListItemLabel"/>
+			</xsl:attribute>
+			<xsl:apply-templates mode="flatxml_list"/>
+			<xsl:if test="not(following-sibling::*[local-name() = 'li'])"><!-- move note for list into latest 'li' -->
+				<xsl:copy-of select="following-sibling::*"/>
+			</xsl:if>
+		</xsl:copy>
+	</xsl:template>
+	
+	<!-- remove latest element (after li), because they moved into latest 'li' -->
+	<xsl:template match="bipm:ul/*[not(local-name() = 'li') and not(following-sibling::*[local-name() = 'li'])]" mode="flatxml_list"/>
+	<xsl:template match="bipm:ol/*[not(local-name() = 'li') and not(following-sibling::*[local-name() = 'li'])]" mode="flatxml_list"/>
+	
+	<xsl:template name="setListItemLabel">
+		<xsl:choose>
+			<xsl:when test="local-name(..) = 'ul'">•</xsl:when> <!-- &#x2014; dash -->
+			<xsl:otherwise> <!-- for ordered lists -->
+				<xsl:choose>
+					<xsl:when test="../@type = 'arabic'">
+						<xsl:number format="1."/>
+					</xsl:when>
+					<xsl:when test="../@type = 'alphabet'">
+						<xsl:number format="a)"/>
+					</xsl:when>
+					<xsl:when test="../@type = 'alphabet_upper'">
+						<xsl:number format="A)"/>
+					</xsl:when>
+					<xsl:when test="../@type = 'roman'">
+						<xsl:number format="i)"/>
+					</xsl:when>
+					<xsl:otherwise>
+						<xsl:number format="1)"/>
+					</xsl:otherwise>
+				</xsl:choose>
+			</xsl:otherwise>
+		</xsl:choose>
 	</xsl:template>
 	
 	
@@ -1399,68 +1477,77 @@
 
 
 	<xsl:template match="bipm:ul | bipm:ol" mode="ul_ol">
-		<fo:block-container margin-left="0mm">
-			<fo:block-container margin-left="0mm">
-				<fo:list-block provisional-distance-between-starts="8mm" margin-bottom="6pt"> <!-- line-height="115%" -->
-					<xsl:if test="ancestor::bipm:ul | ancestor::bipm:ol">
-						<xsl:attribute name="margin-bottom">0pt</xsl:attribute>
-					</xsl:if>
-					<xsl:if test="following-sibling::*[1][local-name() = 'ul' or local-name() = 'ol']">
-						<xsl:attribute name="margin-bottom">0pt</xsl:attribute>
-					</xsl:if>
-					<xsl:if test="ancestor::bipm:note">
-						<xsl:attribute name="provisional-distance-between-starts">0mm</xsl:attribute>
-					</xsl:if>
-					<xsl:apply-templates />
-				</fo:list-block>
-			</fo:block-container>
-		</fo:block-container>
+		<!-- <xsl:apply-templates /> -->
+		<fo:block id="{@id}"/>		
 	</xsl:template>
 	
+	<!-- process list item as individual list --> <!-- flat list -->
 	<xsl:template match="bipm:li">
-		<fo:list-item id="{@id}">
-			<fo:list-item-label end-indent="label-end()">
-				<fo:block>
-					<xsl:choose>
-						<xsl:when test="local-name(..) = 'ul'"><fo:inline font-size="14pt" baseline-shift="-15%">•</fo:inline></xsl:when> <!-- &#x2014; dash -->
-						<xsl:otherwise> <!-- for ordered lists -->
-							<xsl:choose>
-								<xsl:when test="../@type = 'arabic'">
-									<xsl:number format="1."/>
-								</xsl:when>
-								<xsl:when test="../@type = 'alphabet'">
-									<xsl:number format="a)"/>
-								</xsl:when>
-								<xsl:when test="../@type = 'alphabet_upper'">
-									<xsl:number format="A)"/>
-								</xsl:when>
-								<xsl:when test="../@type = 'roman'">
-									<xsl:number format="i)"/>
-								</xsl:when>
-								<xsl:otherwise>
-									<xsl:number format="1)"/>
-								</xsl:otherwise>
-							</xsl:choose>
-						</xsl:otherwise>
-					</xsl:choose>
-				</fo:block>
-			</fo:list-item-label>
-			<fo:list-item-body start-indent="body-start()" line-height-shift-adjustment="disregard-shifts">
-				<fo:block margin-bottom="0pt">
-					<xsl:if test="local-name(..) = 'ol'">
+		<fo:block-container margin-left="0mm">
+			<fo:block-container margin-left="0mm">
+				<fo:list-block provisional-distance-between-starts="8mm">
+					<xsl:if test="not(following-sibling::*[1][local-name() = 'li'])"> <!-- last item -->
 						<xsl:attribute name="margin-bottom">6pt</xsl:attribute>
+						<xsl:if test="../ancestor::bipm:ul | ../ancestor::bipm:ol">
+							<xsl:attribute name="margin-bottom">0pt</xsl:attribute>
+						</xsl:if>
+						<xsl:if test="../following-sibling::*[1][local-name() = 'ul' or local-name() = 'ol']">
+							<xsl:attribute name="margin-bottom">0pt</xsl:attribute>
+						</xsl:if>
 					</xsl:if>
-					<xsl:if test="ancestor::bipm:note">
-						<xsl:attribute name="text-indent">3mm</xsl:attribute>
+					<xsl:if test="../ancestor::bipm:note">
+						<xsl:attribute name="provisional-distance-between-starts">0mm</xsl:attribute>
 					</xsl:if>
-					
-					<xsl:apply-templates />
-				</fo:block>
-			</fo:list-item-body>
-		</fo:list-item>
+	
+					<fo:list-item id="{@id}">
+						<fo:list-item-label end-indent="label-end()">
+							<fo:block>
+								<xsl:value-of select="@label"/>
+								<!-- <xsl:choose>
+									<xsl:when test="@list_type = 'ul'"><fo:inline font-size="14pt" baseline-shift="-15%">•</fo:inline></xsl:when>
+									<xsl:otherwise>
+										<xsl:choose>
+											<xsl:when test="../@type = 'arabic'">
+												<xsl:number format="1."/>
+											</xsl:when>
+											<xsl:when test="../@type = 'alphabet'">
+												<xsl:number format="a)"/>
+											</xsl:when>
+											<xsl:when test="../@type = 'alphabet_upper'">
+												<xsl:number format="A)"/>
+											</xsl:when>
+											<xsl:when test="../@type = 'roman'">
+												<xsl:number format="i)"/>
+											</xsl:when>
+											<xsl:otherwise>
+												<xsl:number format="1)"/>
+											</xsl:otherwise>
+										</xsl:choose>
+									</xsl:otherwise>
+								</xsl:choose> -->
+							</fo:block>
+						</fo:list-item-label>
+						<fo:list-item-body start-indent="body-start()" line-height-shift-adjustment="disregard-shifts">
+							<fo:block margin-bottom="0pt">
+								<xsl:if test="@list_type = 'ol'">
+									<xsl:attribute name="margin-bottom">6pt</xsl:attribute>
+								</xsl:if>
+								<xsl:if test="ancestor::bipm:note">
+									<xsl:attribute name="text-indent">3mm</xsl:attribute>
+								</xsl:if>
+								
+								<xsl:apply-templates />
+							</fo:block>
+						</fo:list-item-body>
+					</fo:list-item>
+				</fo:list-block>
+		
+			</fo:block-container>
+		</fo:block-container>
+		
 	</xsl:template>
 
-	<xsl:template match="bipm:ul/bipm:note | bipm:ol/bipm:note" priority="2">
+	<xsl:template match="bipm:ul2/bipm:note | bipm:ol2/bipm:note" priority="2">
 		<fo:list-item>
 			<fo:list-item-label><fo:block></fo:block></fo:list-item-label>
 			<fo:list-item-body>
