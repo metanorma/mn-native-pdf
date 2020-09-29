@@ -526,7 +526,7 @@
 		</fo:page-sequence>
 		
 		
-		<xsl:apply-templates select="bipm:preface/bipm:clause" mode="sections" />
+		<xsl:apply-templates select="bipm:preface/*[not(local-name() = 'abstract')]" mode="sections" /> <!-- bipm:clause -->
 		
 		
 		
