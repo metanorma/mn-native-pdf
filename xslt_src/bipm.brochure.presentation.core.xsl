@@ -1175,7 +1175,7 @@
 				</xsl:variable>
 				<!-- rows_with_notes<xsl:copy-of select="$rows_with_notes"/> -->
 				
-				<xsl:variable name="rows">
+				<xsl:variable name="rows3">
 					<xsl:for-each select="xalan:nodeset($rows_with_notes)/row_num">
 						<xsl:variable name="num" select="number(.)"/>
 						<xsl:choose>
@@ -1192,6 +1192,23 @@
 						</xsl:choose>
 					</xsl:for-each>
 				</xsl:variable>
+				
+				<xsl:variable name="rows">					
+					<xsl:for-each select="xalan:nodeset($rows_with_notes)/row_num">
+						<xsl:variable name="num" select="number(.)"/>
+						<xsl:choose>						
+							<xsl:when test="position() = last()">
+								<num span_start="{$num}" span_num="{$total_rows - $num + 1}" display-align="before"/>
+							</xsl:when>
+							<xsl:otherwise><!-- 2nd, 3rd, ... Nth-1 -->		
+								<xsl:variable name="next_num" select="number(following-sibling::*/text())"/>
+								<num span_start="{$num}" span_num="{$next_num - $num}" display-align="before"/>
+							</xsl:otherwise>
+						</xsl:choose>
+					</xsl:for-each>
+				</xsl:variable>
+				
+				
 				<!-- rows=<xsl:copy-of select="$rows"/> -->
 				
 				<xsl:apply-templates mode="clause_table">
@@ -1335,7 +1352,7 @@
 				</xsl:variable>
 				<!-- rows_with_notes<xsl:copy-of select="$rows_with_notes"/> -->
 				
-				<xsl:variable name="rows">
+				<xsl:variable name="rows3">
 					<xsl:for-each select="xalan:nodeset($rows_with_notes)/row_num">
 						<xsl:variable name="num" select="number(.)"/>
 						<xsl:choose>
@@ -1352,6 +1369,22 @@
 						</xsl:choose>
 					</xsl:for-each>
 				</xsl:variable>
+				
+				<xsl:variable name="rows">					
+					<xsl:for-each select="xalan:nodeset($rows_with_notes)/row_num">
+						<xsl:variable name="num" select="number(.)"/>
+						<xsl:choose>						
+							<xsl:when test="position() = last()">
+								<num span_start="{$num}" span_num="{$total_rows - $num + 1}" display-align="before"/>
+							</xsl:when>
+							<xsl:otherwise><!-- 2nd, 3rd, ... Nth-1 -->		
+								<xsl:variable name="next_num" select="number(following-sibling::*/text())"/>
+								<num span_start="{$num}" span_num="{$next_num - $num}" display-align="before"/>
+							</xsl:otherwise>
+						</xsl:choose>
+					</xsl:for-each>
+				</xsl:variable>
+				
 				<!-- rows=<xsl:copy-of select="$rows"/> -->
 				
 				
