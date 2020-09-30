@@ -25,12 +25,13 @@ jobs:
 
       - name: Fix soft links
         shell: pwsh
+#            $targetFileName = Join-Path -Path $(Split-Path -Path $linkPath -Parent) -ChildPath $(Get-Content $linkPath -Raw)
         run: |
           git ls-files -s xslt_src | grep "^12" | cut -f2 | % {
             Write-Host "xslt_path= $_"
             $linkPath = Resolve-Path -Path $_
             Write-Host "linkPath= $linkPath"
-#            $targetFileName = Join-Path -Path $(Split-Path -Path $linkPath -Parent) -ChildPath $(Get-Content $linkPath -Raw)
+
             Write-Host "targetFileName: $(Get-Content $linkPath -Raw -First 1)"
             Copy-Item $targetFileName -Destination $linkPath
           }
