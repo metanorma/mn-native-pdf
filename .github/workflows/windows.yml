@@ -27,8 +27,11 @@ jobs:
         shell: pwsh
         run: |
           git ls-files -s xslt_src | grep "^12" | cut -f2 | % {
+            Write-Host "xslt_path: $_"
             $linkPath = Resolve-Path -Path $_
+            Write-Host $linkPath
             $targetFileName = Join-Path -Path $(Split-Path -Path $linkPath -Parent) -ChildPath $(Get-Content $linkPath -Raw)
+            Write-Host $targetFileName
             Copy-Item $targetFileName -Destination $linkPath
           }
 
