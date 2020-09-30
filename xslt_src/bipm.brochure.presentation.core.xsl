@@ -850,6 +850,7 @@
 				<xsl:attribute name="provisional-distance-between-starts">
 					<xsl:choose>
 						<xsl:when test="@section = '' or @level &gt; 3">0mm</xsl:when>
+						<xsl:when test="@level = 2 and @parent = 'annex'">0mm</xsl:when>
 						<xsl:when test="@level = 2">8mm</xsl:when>
 						<xsl:when test="@type = 'annex' and @level = 1">25mm</xsl:when>
 						<xsl:otherwise>7mm</xsl:otherwise>
@@ -859,7 +860,7 @@
 				<fo:list-item>
 					<fo:list-item-label end-indent="label-end()">
 						<fo:block>
-							<xsl:if test="@level &lt; =2">
+							<xsl:if test="@level = 1 or (@level = 2 and not(@parent = 'annex'))">
 								<xsl:value-of select="@section"/>
 							</xsl:if>
 							<fo:inline font-size="10pt" color="white">Z</fo:inline> <!-- for baseline alignment in string -->
@@ -1070,8 +1071,10 @@
 		<xsl:variable name="font-size">
 			<xsl:choose>
 				<xsl:when test="$level = 1">16pt</xsl:when>
+				<xsl:when test="$level = 2 and ancestor::bipm:annex">10.5pt</xsl:when>
 				<xsl:when test="$level = 2">14pt</xsl:when>
-				<xsl:when test="$level = 3">12pt</xsl:when>				
+				<xsl:when test="$level = 3 and ancestor::bipm:annex">10pt</xsl:when>
+				<xsl:when test="$level = 3">12pt</xsl:when>
 				<xsl:otherwise>11pt</xsl:otherwise>
 			</xsl:choose>
 		</xsl:variable>
@@ -1089,17 +1092,20 @@
 				<xsl:choose>
 					<xsl:when test="$level = 1 and (parent::bipm:annex or parent::bipm:abstract or ancestor::bipm:preface)">84pt</xsl:when>
 					<xsl:when test="$level = 1">6pt</xsl:when>
-					<xsl:when test="$level = 2">10pt</xsl:when>						
+					<xsl:when test="$level = 2 and ancestor::bipm:annex">0pt</xsl:when>
+					<xsl:when test="$level = 2">10pt</xsl:when>
 					<xsl:otherwise>6pt</xsl:otherwise>
 				</xsl:choose>
 			</xsl:attribute>			
 			<xsl:if test="$level = 2">
 				<xsl:attribute name="margin-top">24pt</xsl:attribute>
 			</xsl:if>
-			<xsl:if test="$level = 3">
+			<xsl:if test="$level = 3 and not(ancestor::bipm:annex)">
 				<xsl:attribute name="margin-top">20pt</xsl:attribute>
 			</xsl:if>
+			
 			<fo:block-container margin-left="0mm">
+				
 				<xsl:if test="$level = 1">
 					<fo:marker marker-class-name="header-title">
 						<xsl:choose>
@@ -1112,8 +1118,9 @@
 						</xsl:choose>
 					</fo:marker>
 				</xsl:if>
+				
 				<xsl:choose>
-					<xsl:when test="*[local-name() = 'tab'] and not(parent::bipm:annex)"><!-- split number and title -->					
+					<xsl:when test="*[local-name() = 'tab'] and not(ancestor::bipm:annex)"><!-- split number and title -->					
 						<fo:table table-layout="fixed" width="100%">
 							<fo:table-column column-width="14mm"/>
 							<fo:table-column column-width="136mm"/>
@@ -1135,7 +1142,25 @@
 					</xsl:when>
 					<xsl:otherwise>
 						<fo:block>
-							<xsl:apply-templates />
+							<xsl:choose>
+								<xsl:when test="ancestor::bipm:annex and $level &gt;= 2">
+									<xsl:if test="$level = 3">
+										<xsl:attribute name="margin-left">14mm</xsl:attribute>
+										<fo:inline padding-right="2.5mm" baseline-shift="15%">
+											<fo:instream-foreign-object content-height="2mm" content-width="2mm"  fox:alt-text="Quad">
+													<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xml:space="preserve"
+													viewBox="0 0 2 2">
+														<rect x="0" y="0" width="2" height="2" fill="black"  />
+													</svg>
+												</fo:instream-foreign-object>	
+										</fo:inline>
+									</xsl:if>
+									<xsl:call-template name="extractTitle"/>
+								</xsl:when>
+								<xsl:otherwise>
+									<xsl:apply-templates />
+								</xsl:otherwise>
+							</xsl:choose>
 						</fo:block>
 					</xsl:otherwise>
 				</xsl:choose>
