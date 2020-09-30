@@ -31,7 +31,7 @@ jobs:
             $linkPath = Resolve-Path -Path $_
             Write-Host "linkPath= $linkPath"
 #            $targetFileName = Join-Path -Path $(Split-Path -Path $linkPath -Parent) -ChildPath $(Get-Content $linkPath -Raw)
-            Write-Host "$targetFileName: $(Get-Content $linkPath -Raw -First 1)"
+            Write-Host "targetFileName: $(Get-Content $linkPath -Raw -First 1)"
             Copy-Item $targetFileName -Destination $linkPath
           }
 
