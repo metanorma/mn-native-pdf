@@ -1092,7 +1092,7 @@
 				<xsl:choose>
 					<xsl:when test="$level = 1 and (parent::bipm:annex or parent::bipm:abstract or ancestor::bipm:preface)">84pt</xsl:when>
 					<xsl:when test="$level = 1">6pt</xsl:when>
-					<xsl:when test="$level = 2 and ancestor::bipm:annex">0pt</xsl:when>
+					<xsl:when test="$level = 2 and ancestor::bipm:annex">6pt</xsl:when>
 					<xsl:when test="$level = 2">10pt</xsl:when>
 					<xsl:otherwise>6pt</xsl:otherwise>
 				</xsl:choose>
