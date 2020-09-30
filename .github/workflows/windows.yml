@@ -32,7 +32,7 @@ jobs:
             $linkPath = Resolve-Path -Path $_
             Write-Host "linkPath= $linkPath"
 
-            Write-Host "targetFileName: $(Get-Content $linkPath -Raw -First 1)"
+            Write-Host "targetFileName: $(Get-Content $linkPath -First 1)"
             Copy-Item $targetFileName -Destination $linkPath
           }
 
