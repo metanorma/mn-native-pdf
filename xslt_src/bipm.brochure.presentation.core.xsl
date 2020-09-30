@@ -204,7 +204,7 @@
 			
 			
 			<xsl:call-template name="insertCoverPage"/>
-			<xsl:call-template name="insertInternalCoverPage"/>
+			<xsl:call-template name="insertInnerCoverPage"/>
 			
 			
 			<xsl:choose>
@@ -631,31 +631,12 @@
 					<fo:block font-family="WorkSans" font-size="50pt" line-height="115%">
 					
 						<xsl:variable name="languages">
-							<xsl:choose>
-								<xsl:when test="$doc_split_by_language = ''"><!-- all documents -->
-									<xsl:choose>
-										<xsl:when test="count(//bipm:bipm-standard) = 1">											
-												<lang>fr</lang>
-												<lang>en</lang>											
-										</xsl:when>
-										<xsl:otherwise>
-											<xsl:for-each select="//bipm:bipm-standard/bipm:bibdata">
-												<lang><xsl:value-of select="bipm:language"/></lang>
-											</xsl:for-each>
-										</xsl:otherwise>
-									</xsl:choose>
-								</xsl:when>
-								<xsl:otherwise>
-									<!-- <xsl:for-each select="(//bipm:bipm-standard)[$docnum]/bipm:bibdata">
-										<lang><xsl:value-of select="bipm:language"/></lang>
-									</xsl:for-each> -->
-									<lang><xsl:value-of select="$doc_split_by_language"/></lang>
-								</xsl:otherwise>
-							</xsl:choose>
-						</xsl:variable>
-						
+							<xsl:call-template name="getLanguages"/>
+						</xsl:variable>						
 						<xsl:variable name="editionFO">
-							<xsl:apply-templates select="(//bipm:bipm-standard)[1]/bipm:bibdata/bipm:edition"/>
+							<xsl:apply-templates select="(//bipm:bipm-standard)[1]/bipm:bibdata/bipm:edition">
+								<xsl:with-param name="curr_lang" select="xalan:nodeset($languages)/lang[1]"/>
+							</xsl:apply-templates>
 						</xsl:variable>
 						
 						<xsl:variable name="titles">
@@ -714,42 +695,69 @@
 		</fo:page-sequence>	
 	</xsl:template>
 	
-	<xsl:template name="insertInternalCoverPage">
+	<xsl:template name="insertInnerCoverPage">
 		<fo:page-sequence master-reference="title-page" format="1" initial-page-number="1" force-page-count="even">
 			
 			<fo:flow flow-name="xsl-region-body" font-family="Arial">
-				<fo:block-container font-size="12pt" font-weight="bold" width="55mm">
-					<fo:block>
-						<xsl:call-template name="add-letter-spacing">
-							<xsl:with-param name="text" select="$title-fr"/>
-							<xsl:with-param name="letter-spacing" select="0.09"/>
-						</xsl:call-template>
-					</fo:block>					
-					
-					<fo:block font-size="10pt">
-						<fo:block margin-bottom="6pt">&#xA0;</fo:block>
-						<fo:block margin-bottom="6pt">&#xA0;</fo:block>
-						<fo:block margin-bottom="6pt">&#xA0;</fo:block>
-						<fo:block margin-bottom="6pt" line-height="2.4">&#xA0;</fo:block>							
-					</fo:block>
-				</fo:block-container>
+			
+				<xsl:variable name="languages">
+					<xsl:call-template name="getLanguages"/>
+				</xsl:variable>
+			
+				<xsl:variable name="titles">
+					<xsl:for-each select="(//bipm:bipm-standard)[1]/bipm:bibdata/bipm:title">
+						<xsl:copy-of select="."/>
+					</xsl:for-each>
+				</xsl:variable>
+			
+				<xsl:for-each select="xalan:nodeset($languages)/lang">
+					<xsl:variable name="curr_lang" select="."/>
+					<xsl:variable name="title" select="xalan:nodeset($titles)//bipm:title[@language = $curr_lang and @type='main']"/>
+					<xsl:choose>
+						<xsl:when test="position() = 1">				
+							<fo:block-container font-size="12pt" font-weight="bold" width="55mm">
+									<fo:block>
+										<xsl:call-template name="add-letter-spacing">
+											<xsl:with-param name="text" select="$title"/>
+											<xsl:with-param name="letter-spacing" select="0.09"/>
+										</xsl:call-template>
+									</fo:block>									
+									<fo:block font-size="10pt">
+										<fo:block margin-bottom="6pt">&#xA0;</fo:block>
+										<fo:block margin-bottom="6pt">&#xA0;</fo:block>
+										<fo:block margin-bottom="6pt">&#xA0;</fo:block>
+										<fo:block margin-bottom="6pt" line-height="2.4">&#xA0;</fo:block>							
+									</fo:block>
+								</fo:block-container>
+							</xsl:when>
+							<xsl:otherwise>
+								<fo:block font-size="10pt" margin-bottom="3pt">
+									<xsl:variable name="lang_version">
+										<xsl:call-template name="getLangVersion">
+											<xsl:with-param name="lang" select="$curr_lang"/>
+										</xsl:call-template>
+									</xsl:variable>
+									<xsl:call-template name="add-letter-spacing">
+										<xsl:with-param name="text" select="normalize-space($lang_version)"/>
+										<xsl:with-param name="letter-spacing" select="0.09"/>
+									</xsl:call-template>
+								</fo:block>
+								<fo:block-container font-size="12pt" font-weight="bold" border-top="0.5pt solid black" padding-top="2mm" width="45mm">						
+									<fo:block>										
+										<xsl:call-template name="add-letter-spacing">
+											<xsl:with-param name="text" select="$title"/>
+											<xsl:with-param name="letter-spacing" select="0.09"/>
+										</xsl:call-template>
+									</fo:block>
+								</fo:block-container>
+							</xsl:otherwise>
+							
+						</xsl:choose>
+					</xsl:for-each>
 				
-				<fo:block font-size="10pt" margin-bottom="3pt">
-					<xsl:call-template name="add-letter-spacing">
-						<xsl:with-param name="text" select="'English version'"/>
-						<xsl:with-param name="letter-spacing" select="0.09"/>
-					</xsl:call-template>
-				</fo:block>
 				
-				<fo:block-container font-size="12pt" font-weight="bold" border-top="0.5pt solid black" padding-top="2mm" width="45mm">						
-					<fo:block>
-						<xsl:variable name="title-en" select="//bipm:bipm-standard/bipm:bibdata/bipm:title[@language = 'en' and @type='main']"/>
-						<xsl:call-template name="add-letter-spacing">
-							<xsl:with-param name="text" select="$title-en"/>
-							<xsl:with-param name="letter-spacing" select="0.09"/>
-						</xsl:call-template>
-					</fo:block>
-				</fo:block-container>
+				
+				
 			</fo:flow>
 		</fo:page-sequence>
 		
@@ -776,6 +784,32 @@
 		</fo:page-sequence>
 	</xsl:template>
 		
+	<xsl:template name="getLanguages">
+		<xsl:choose>
+			<xsl:when test="$doc_split_by_language = ''"><!-- all documents -->
+				<xsl:for-each select="//bipm:bipm-standard/bipm:bibdata">
+					<lang><xsl:value-of select="bipm:language"/></lang>
+				</xsl:for-each>
+				<!-- <xsl:choose>
+					<xsl:when test="count(//bipm:bipm-standard) = 1">											
+							<lang>fr</lang>
+							<lang>en</lang>											
+					</xsl:when>
+					<xsl:otherwise>
+						<xsl:for-each select="//bipm:bipm-standard/bipm:bibdata">
+							<lang><xsl:value-of select="bipm:language"/></lang>
+						</xsl:for-each>
+					</xsl:otherwise>
+				</xsl:choose> -->
+			</xsl:when>
+			<xsl:otherwise>
+				<!-- <xsl:for-each select="(//bipm:bipm-standard)[$docnum]/bipm:bibdata">
+					<lang><xsl:value-of select="bipm:language"/></lang>
+				</xsl:for-each> -->
+				<lang><xsl:value-of select="$doc_split_by_language"/></lang>
+			</xsl:otherwise>
+		</xsl:choose>
+	</xsl:template>
 		
 	<xsl:template name="insertContentItem">
 		<fo:block>
@@ -944,6 +978,7 @@
 			<xsl:variable name="title-edition">
 				<xsl:call-template name="getTitle">
 					<xsl:with-param name="name" select="'title-edition'"/>
+					<xsl:with-param name="lang" select="$curr_lang"/>
 				</xsl:call-template>
 			</xsl:variable>
 			<xsl:value-of select="."/>

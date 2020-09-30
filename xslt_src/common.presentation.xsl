@@ -163,10 +163,19 @@
 	
 	<xsl:template name="getTitle">
 		<xsl:param name="name"/>
-		<xsl:variable name="lang">
-			<xsl:call-template name="getLang"/>
+		<xsl:param name="lang"/>
+		<xsl:variable name="lang_">
+			<xsl:choose>
+				<xsl:when test="$lang != ''">
+					<xsl:value-of select="$lang"/>
+				</xsl:when>
+				<xsl:otherwise>
+					<xsl:call-template name="getLang"/>
+				</xsl:otherwise>
+			</xsl:choose>
 		</xsl:variable>
-		<xsl:variable name="title_" select="$titles/*[local-name() = $name][@lang = $lang]"/>
+		<xsl:variable name="language" select="normalize-space($lang_)"/>
+		<xsl:variable name="title_" select="$titles/*[local-name() = $name][@lang = $language]"/>
 		<xsl:choose>
 			<xsl:when test="normalize-space($title_) != ''">
 				<xsl:value-of select="$title_"/>
@@ -3974,18 +3983,9 @@
 									<fo:bookmark internal-destination="{contents/item[1]/@id}" starting-state="hide">
 										<fo:bookmark-title>
 											<xsl:variable name="bookmark-title_">
-												<xsl:choose>
-													<xsl:when test="@lang = 'en'">
-														<xsl:if test="$namespace = 'iec'">English</xsl:if>
-														<xsl:if test="$namespace = 'bipm'">English version</xsl:if>
-														</xsl:when>
-													<xsl:when test="@lang = 'fr'">
-														<xsl:if test="$namespace = 'iec'">Français</xsl:if>
-														<xsl:if test="$namespace = 'bipm'">Version française</xsl:if>
-													</xsl:when>
-													<xsl:when test="@lang = 'de'">Deutsche</xsl:when>
-													<xsl:otherwise><xsl:value-of select="@lang"/> version</xsl:otherwise>
-												</xsl:choose>
+												<xsl:call-template name="getLangVersion">
+													<xsl:with-param name="lang" select="@lang"/>
+												</xsl:call-template>
 											</xsl:variable>
 											<xsl:choose>
 												<xsl:when test="normalize-space($bookmark-title_) != ''">
@@ -4070,6 +4070,22 @@
 				
 			</fo:bookmark-tree>
 		</xsl:if>
+	</xsl:template>
+	
+	<xsl:template name="getLangVersion">
+		<xsl:param name="lang"/>
+		<xsl:choose>
+			<xsl:when test="$lang = 'en'">
+				<xsl:if test="$namespace = 'iec'">English</xsl:if>
+				<xsl:if test="$namespace = 'bipm'">English version</xsl:if>
+				</xsl:when>
+			<xsl:when test="$lang = 'fr'">
+				<xsl:if test="$namespace = 'iec'">Français</xsl:if>
+				<xsl:if test="$namespace = 'bipm'">Version française</xsl:if>
+			</xsl:when>
+			<xsl:when test="$lang = 'de'">Deutsche</xsl:when>
+			<xsl:otherwise><xsl:value-of select="$lang"/> version</xsl:otherwise>
+		</xsl:choose>
 	</xsl:template>
 	
 	<xsl:template match="item" mode="bookmark">
