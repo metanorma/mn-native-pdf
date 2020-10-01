@@ -1410,6 +1410,7 @@
 				<xsl:with-param name="table" select="$simple-table"/>
 			</xsl:call-template>
 		</xsl:variable>
+		<!-- colwidths=<xsl:copy-of select="$colwidths"/> -->
 		
 		<!-- <xsl:variable name="colwidths2">
 			<xsl:call-template name="calculate-column-widths">
@@ -1656,6 +1657,13 @@
 						<xsl:for-each select="xalan:nodeset($table)//tr">
 							<xsl:variable name="td_text">
 								<xsl:apply-templates select="td[$curr-col]" mode="td_text"/>
+								
+								<!-- <xsl:if test="$namespace = 'bipm'">
+									<xsl:for-each select="*[local-name()='td'][$curr-col]//*[local-name()='math']">									
+										<word><xsl:value-of select="normalize-space(.)"/></word>
+									</xsl:for-each>
+								</xsl:if> -->
+								
 							</xsl:variable>
 							<xsl:variable name="words">
 								<xsl:variable name="string_with_added_zerospaces">
@@ -1723,6 +1731,10 @@
 		<xsl:value-of select="@target"/>
 	</xsl:template>
 
+	<xsl:template match="*[local-name()='math']" mode="td_text">
+		<xsl:variable name="math_text" select="normalize-space(.)"/>
+		<xsl:value-of select="translate($math_text, ' ', '#')"/><!-- mathml images as one 'word' without spaces -->
+	</xsl:template>
 	
 	<!-- for debug purpose only -->
 	<xsl:template match="*[local-name()='table2']"/>
