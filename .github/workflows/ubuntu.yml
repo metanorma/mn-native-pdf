@@ -1,0 +1,79 @@
+name: ubuntu
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@master
+
+      - name: Use Ruby
+        uses: actions/setup-ruby@v1
+        with:
+          ruby-version: 2.6
+          architecture: 'x64'
+
+      # cabextract for fonts, gettext-base for envsubst, libxml2-utils for xmllint
+      - name: Setup prerequisites
+        run: |
+          sudo apt-get update
+          sudo apt-get -y install gettext-base cabextract wget libxml2-utils curl \
+            software-properties-common gcc ruby ruby-dev libffi-dev make libxml2-dev libxslt1-dev
+
+          # Install fonts
+          # If necessary
+          echo ttf-mscorefonts-installer msttcorefonts/accepted-mscorefonts-eula select true | sudo debconf-set-selections
+          sudo apt-get install -y ttf-mscorefonts-installer
+
+      - name: Setup Cambria fonts
+        run: |
+          curl -Ls https://raw.githubusercontent.com/metanorma/vista-fonts-installer/master/vista-fonts-installer.sh | sudo bash
+
+      - name: Update gems
+        run: |
+          gem install bundler
+          bundle config build.nokogiri --use-system-libraries
+          bundle install --jobs 4 --retry 3
+
+      - name: Update submodules
+        run: |
+          make update-init update-modules
+
+      - name: Compile output
+        env:
+          GITHUB_USERNAME: ${{ github.actor }}
+          GITHUB_TOKEN: ${{ github.token }}
+        run: |
+          make all published
+
+      - uses: actions/upload-artifact@master
+        with:
+          name: published-ubuntu
+          path: published
+
+
+  deploy-gh-pages:
+    if: github.ref == 'refs/heads/master'
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+    - uses: actions/checkout@master
+    - uses: actions/download-artifact@master
+      with:
+        name: published-ubuntu
+        path: published
+
+    - name: GitHub Pages action
+      uses: docker://peaceiris/gh-pages:v2
+      with:
+        emptyCommits: false
+        forceOrphan: true
+      env:
+        ACTIONS_DEPLOY_KEY: ${{ secrets.GH_DEPLOY_KEY }}
+        PUBLISH_BRANCH: gh-pages
+        PUBLISH_DIR: ./published
