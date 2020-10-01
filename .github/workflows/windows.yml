@@ -28,9 +28,14 @@ jobs:
         run: |
           git ls-files -s xslt_src | grep "^12" | cut -f2 | % {
             $linkPath = Resolve-Path -Path $_
-            $targetFileName = Join-Path -Path $(Split-Path -Path $linkPath -Parent) -ChildPath $(Get-Content $linkPath -Raw)
-            Copy-Item $targetFileName -Destination $linkPath
+            If ((Get-Item $linkPath).length -gt 0kb) {
+              Write-Host "Restore symlink: $linkPath"
+              $targetFileName = Join-Path -Path $(Split-Path -Path $linkPath -Parent) -ChildPath $(Get-Content $linkPath -Raw)
+              Copy-Item $targetFileName -Destination $linkPath
+            }
           }
+
+
 
       - name: Update gems
         run: |
