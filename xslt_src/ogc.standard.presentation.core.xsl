@@ -21,18 +21,6 @@
 
 	<xsl:variable name="debug">false</xsl:variable>
 	
-	<xsl:variable name="copyright">
-		<xsl:text>© Open Geospatial Consortium </xsl:text>
-		<xsl:value-of select="/ogc:ogc-standard/ogc:bibdata/ogc:copyright/ogc:from"/>
-		<xsl:text> – All rights reserved</xsl:text>
-	</xsl:variable>
-	<xsl:variable name="copyright_short">
-		<xsl:text>© </xsl:text>
-		<xsl:value-of select="/ogc:ogc-standard/ogc:bibdata/ogc:copyright/ogc:from"/>
-		<xsl:text> </xsl:text>
-		<xsl:value-of select="/ogc:ogc-standard/ogc:bibdata/ogc:contributor[ogc:role/@type = 'publisher']/ogc:organization/ogc:name"/>
-	</xsl:variable>
-	
 	<xsl:variable name="docnumber" select="java:toUpperCase(java:java.lang.String.new(/ogc:ogc-standard/ogc:bibdata/ogc:docnumber))"/>
 	<xsl:variable name="doctitle" select="/ogc:ogc-standard/ogc:bibdata/ogc:title[@language = 'en']"/>
 
@@ -42,13 +30,8 @@
 		</xsl:call-template>
 	</xsl:variable>
 	
-	<xsl:variable name="header">
-		<xsl:text>Open Geospatial Consortium </xsl:text>
-		<xsl:value-of select="/ogc:ogc-standard/ogc:bibdata/ogc:docidentifier[@type = 'ogc-internal']"/>
-		<xsl:text>:</xsl:text>
-		<xsl:value-of select="/ogc:ogc-standard/ogc:bibdata/ogc:copyright/ogc:from"/>
-	</xsl:variable>
-
+	<xsl:variable name="copyright-owner" select="java:toUpperCase(java:java.lang.String.new(/ogc:ogc-standard/ogc:bibdata/ogc:copyright/ogc:owner/ogc:organization/ogc:name))"/>
+	
 	<xsl:variable name="color_main">rgb(88, 89, 91)</xsl:variable>
 	<xsl:variable name="color_orange">rgb(237, 193, 35)</xsl:variable>
 	<xsl:variable name="color_lightorange">rgb(246, 223, 140)</xsl:variable>
@@ -94,7 +77,7 @@
 	
 	<xsl:template match="/">
 		<xsl:call-template name="namespaceCheck"/>
-		<fo:root xmlns:fo="http://www.w3.org/1999/XSL/Format" font-family="Lato, STIX2Math, HanSans" font-size="11pt" color="{$color_main}" xml:lang="{$lang}">
+		<fo:root xmlns:fo="http://www.w3.org/1999/XSL/Format" font-family="Lato, STIX Two Math, HanSans" font-size="11pt" color="{$color_main}" xml:lang="{$lang}">
 			<fo:layout-master-set>
 				<!-- Cover page -->
 				<fo:simple-page-master master-name="cover-page" page-width="{$pageWidth}" page-height="{$pageHeight}">
@@ -138,13 +121,6 @@
 					<fo:block>
 						<fo:leader leader-pattern="rule" leader-length="30%"/>
 					</fo:block>
-				</fo:static-content>
-				<fo:static-content flow-name="cover-page-header" font-size="10pt">
-					<fo:block-container height="23.5mm" display-align="before">
-						<fo:block padding-top="12.5mm">
-							<xsl:value-of select="$copyright"/>
-						</fo:block>
-					</fo:block-container>
 				</fo:static-content>
 					
 				<fo:flow flow-name="xsl-region-body" color="white">
@@ -1119,8 +1095,13 @@
 	
 	<xsl:template match="ogc:preferred | ogc:deprecated | ogc:admitted" priority="2"/>
 	
-	<xsl:template match="ogc:preferred | ogc:deprecated | ogc:admitted" mode="term_name">						
-		<fo:inline font-size="18pt" padding-right="3mm"><xsl:apply-templates /></fo:inline>
+	<xsl:template match="ogc:preferred" mode="term_name">						
+		<fo:inline font-size="18pt" padding-right="3mm"><xsl:apply-templates /></fo:inline>		
+		<fo:inline padding-right="2mm">&#xA0;</fo:inline>
+	</xsl:template>
+	
+	<xsl:template match="ogc:deprecated | ogc:admitted" mode="term_name">						
+		<fo:inline font-size="18pt" padding-right="3mm"><xsl:apply-templates /></fo:inline>		
 		<fo:inline font-size="11pt" padding="1mm" padding-bottom="0.5mm" baseline-shift="25%">
 			<xsl:variable name="kind" select="local-name()"/>
 			<xsl:attribute name="background-color">
@@ -1136,7 +1117,6 @@
 		</fo:inline>
 		<fo:inline padding-right="2mm">&#xA0;</fo:inline>
 	</xsl:template>
-	
 	
 	<!-- [position() &gt; 1] -->
 	<xsl:template match="ogc:references[not(@normative='true')]">
@@ -1260,7 +1240,7 @@
 								<fo:block>									
 									<fo:inline font-weight="bold">
 										<xsl:call-template name="addLetterSpacing">
-											<xsl:with-param name="text" select="'OPEN GEOSPATIAL CONSORTIUM '"/>
+											<xsl:with-param name="text" select="concat($copyright-owner, ' ')"/>
 											<xsl:with-param name="letter-spacing" select="0.2"/>
 										</xsl:call-template>
 									</fo:inline>

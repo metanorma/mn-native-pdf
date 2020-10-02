@@ -74,7 +74,7 @@
 	
 	<xsl:template match="/">
 		<xsl:call-template name="namespaceCheck"/>
-		<fo:root xmlns:fo="http://www.w3.org/1999/XSL/Format" font-family="Times New Roman, STIX2Math" font-size="12pt" xml:lang="{$lang}">
+		<fo:root xmlns:fo="http://www.w3.org/1999/XSL/Format" font-family="Times New Roman, STIX Two Math" font-size="12pt" xml:lang="{$lang}">
 			<fo:layout-master-set>
 				<!-- cover page -->
 				<fo:simple-page-master master-name="cover-page" page-width="{$pageWidth}" page-height="{$pageHeight}">
@@ -1131,7 +1131,7 @@
 	</xsl:template>
 	
 	<xsl:template match="mathml:math" priority="2">
-		<fo:inline font-family="STIX2Math" font-size="11pt">
+		<fo:inline font-family="STIX Two Math" font-size="11pt">
 			<xsl:variable name="mathml">
 				<xsl:apply-templates select="." mode="mathml"/>
 			</xsl:variable>
