@@ -195,8 +195,9 @@
 									</xsl:call-template>									
 								</fo:block>
 								<fo:block font-size="12pt" font-weight="bold">
+									<xsl:variable name="stage" select="java:toUpperCase(java:java.lang.String.new(//ogc:local_bibdata/ogc:status/ogc:stage))"/>
 									<xsl:call-template name="addLetterSpacing">
-										<xsl:with-param name="text" select="'APPROVED'"/>
+										<xsl:with-param name="text" select="$stage"/>
 									</xsl:call-template>
 								</fo:block>
 							</fo:block>
