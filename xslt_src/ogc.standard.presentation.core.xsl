@@ -871,11 +871,20 @@
 			<xsl:when test="$level = 2">
 				<fo:block space-before="24pt" margin-bottom="10pt">
 					<xsl:attribute name="keep-with-next">always</xsl:attribute>		
-					<!-- <xsl:variable name="title">
-						<xsl:apply-templates/>
-					</xsl:variable> -->
+					<xsl:variable name="title">							
+						<xsl:choose>
+							<xsl:when test="*[local-name() = 'tab']">
+								<xsl:copy-of select="*[local-name() = 'tab'][1]/following-sibling::node()"/>
+							</xsl:when>
+							<xsl:otherwise>
+								<xsl:copy-of select="."/>
+							</xsl:otherwise>
+						</xsl:choose>
+					</xsl:variable>
+					<xsl:variable name="section"  select="*[local-name() = 'tab'][1]/preceding-sibling::node()"/>					
 					<xsl:call-template name="insertSectionTitle">
-						<xsl:with-param name="title" select="."/>
+						<xsl:with-param name="section" select="$section"/>
+						<xsl:with-param name="title" select="$title"/>
 					</xsl:call-template>
 				</fo:block>
 			</xsl:when>
@@ -1386,9 +1395,18 @@
 	</xsl:template>
 	
 	<xsl:template name="insertSectionTitle">
+		<xsl:param name="section"/>
 		<xsl:param name="title"/>
 		<fo:block>
 			<fo:block font-size="18pt" color="{$color_blue}" keep-with-next="always" line-height="150%">
+				<xsl:if test="$section != ''">
+					<fo:inline padding-right="2mm">
+						<xsl:call-template name="addLetterSpacing">
+							<xsl:with-param name="text" select="$section"/>
+							<xsl:with-param name="letter-spacing" select="0.6"/>
+						</xsl:call-template>						
+					</fo:inline>
+				</xsl:if>
 				<xsl:apply-templates select="xalan:nodeset($title)" mode="titlesmall"/>
 			</fo:block>
 			<xsl:call-template name="insertOrangeHorizontalLine"/>
@@ -1397,9 +1415,9 @@
 	
 	<xsl:template match="text()" mode="titlesmall">
 		<xsl:call-template name="addLetterSpacing">
-				<xsl:with-param name="text" select="java:toUpperCase(java:java.lang.String.new(.))"/>
-				<xsl:with-param name="letter-spacing" select="0.6"/>
-			</xsl:call-template>
+			<xsl:with-param name="text" select="java:toUpperCase(java:java.lang.String.new(.))"/>
+			<xsl:with-param name="letter-spacing" select="0.6"/>
+		</xsl:call-template>
 	</xsl:template>
 	
 	<xsl:template match="ogc:strong" mode="titlesmall">
