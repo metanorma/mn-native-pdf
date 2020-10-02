@@ -96,6 +96,7 @@ XSLT_GENERATED := xslt/iec.international-standard.xsl \
 	xslt/mpfd.guidelines.presentation.xsl \
 	xslt/mpfd.supervision-of-mpf-intermediaries.xsl \
 	xslt/mpfd.supervision-of-mpf-intermediaries.presentation.xsl \
+	xslt/bipm.brochure.presentation.xsl \
 	xslt/nist.cswp.xsl \
 	xslt/nist.cswp.presentation.xsl \
 	xslt/nist.sp.xsl \
