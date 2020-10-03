@@ -425,7 +425,15 @@
 								<fo:flow flow-name="xsl-region-body">
 									<fo:block-container>
 										<fo:block margin-top="-1mm" font-size="20pt" text-align="right">
-											<xsl:value-of select="$stage-fullname-uppercased"/>											
+											<xsl:value-of select="$stage-fullname-uppercased"/>
+											<!-- <xsl:if test="$doctype = 'amendment'">
+												<xsl:variable name="title-amendment">
+													<xsl:call-template name="getTitle">
+														<xsl:with-param name="name" select="'title-amendment'"/>
+													</xsl:call-template>
+												</xsl:variable>
+												<xsl:text> </xsl:text><xsl:value-of select="$title-amendment"/>
+											</xsl:if> -->
 										</fo:block>
 										<fo:block font-size="20pt" font-weight="bold" text-align="right">
 											<xsl:value-of select="$docidentifierISO"/>
@@ -500,16 +508,13 @@
 
 													<xsl:call-template name="printTitlePartEn"/>
 													
-													<!-- <xsl:if test="normalize-space($title-part) != ''">
-														<xsl:if test="$part != ''">
-															<xsl:text> — </xsl:text>
-															<fo:block font-weight="normal" margin-top="6pt">
-																<xsl:text>Part </xsl:text><xsl:value-of select="$part"/>
-																<xsl:text>:</xsl:text>
-															</fo:block>
-														</xsl:if>
-														<xsl:value-of select="$title-part"/>
-													</xsl:if> -->
+													<xsl:variable name="title-amd" select="/iso:iso-standard/iso:bibdata/iso:title[@language = 'en' and @type = 'title-amd']"/>
+													<xsl:if test="$doctype = 'amendment' and normalize-space($title-amd) != ''">
+														<fo:block margin-top="12pt">
+															<xsl:call-template name="printAmendmentTitle"/>
+														</fo:block>
+													</xsl:if>
+													
 												</fo:block>
 															
 												<fo:block font-size="9pt"><xsl:value-of select="$linebreak"/></fo:block>
@@ -523,6 +528,15 @@
 													<xsl:value-of select="$title-main-fr"/>
 
 													<xsl:call-template name="printTitlePartFr"/>
+													
+													<xsl:variable name="title-amd" select="/iso:iso-standard/iso:bibdata/iso:title[@language = 'fr' and @type = 'title-amd']"/>
+														<xsl:if test="$doctype = 'amendment' and normalize-space($title-amd) != ''">
+															<fo:block margin-top="6pt">
+																<xsl:call-template name="printAmendmentTitle">
+																	<xsl:with-param name="lang" select="'fr'"/>
+																</xsl:call-template>
+															</fo:block>
+														</xsl:if>
 													
 												</fo:block>
 											</fo:block>
