@@ -1033,8 +1033,14 @@
 	
 	<xsl:template match="ogc:ul | ogc:ol" mode="ul_ol">
 		<fo:block-container margin-left="13mm">
+			<xsl:if test="ancestor::ogc:table">
+				<xsl:attribute name="margin-left">1.5mm</xsl:attribute>
+			</xsl:if>
 			<fo:block-container margin-left="0mm">
 				<fo:list-block provisional-distance-between-starts="12mm" space-after="12pt" line-height="115%">
+					<xsl:if test="ancestor::ogc:table">
+						<xsl:attribute name="provisional-distance-between-starts">5mm</xsl:attribute>
+					</xsl:if>
 					<xsl:if test="ancestor::ogc:ul | ancestor::ogc:ol">
 						<xsl:attribute name="margin-bottom">0pt</xsl:attribute>
 					</xsl:if>
