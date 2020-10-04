@@ -565,7 +565,7 @@
 		<xsl:value-of select="translate(., $thinspace, ' ')"/>
 	</xsl:template>
 	
-	<xsl:template match="text()" priority="1" mode="contents">
+	<xsl:template match="text()" priority="3" mode="contents">
 		<xsl:value-of select="translate(., $thinspace, ' ')"/>
 	</xsl:template>
 

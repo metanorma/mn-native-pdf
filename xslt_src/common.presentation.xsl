@@ -1983,22 +1983,22 @@
 								<xsl:attribute name="border">solid black 0pt</xsl:attribute>
 							</xsl:if>
 							<!-- except gb and bipm -->
-							<xsl:if test="$namespace = 'iso' or $namespace = 'iec' or $namespace = 'itu' or $namespace = 'unece' or $namespace = 'unece-rec' or $namespace = 'nist-cswp'  or $namespace = 'nist-sp' or $namespace = 'ogc' or $namespace = 'ogc-white-paper' or $namespace = 'rsd' or $namespace = 'csa' or $namespace = 'csd' or $namespace = 'm3d' or $namespace = 'iho' or $namespace = 'mpfd'">
+							<xsl:if test="$namespace = 'iso' or $namespace = 'iec' or $namespace = 'itu' or $namespace = 'unece' or $namespace = 'unece-rec' or $namespace = 'nist-cswp'  or $namespace = 'nist-sp' or $namespace = 'ogc' or $namespace = 'ogc-white-paper' or $namespace = 'rsd' or $namespace = 'csa' or $namespace = 'csd' or $namespace = 'm3d' or $namespace = 'iho' or $namespace = 'mpfd' or $namespace = 'bipm'">
 								<xsl:apply-templates select="../*[local-name()='note']" mode="process"/>
 							</xsl:if>
 							
-							<xsl:if test="$namespace = 'bipm'">
+							<!-- <xsl:if test="$namespace = 'bipm'">
 								<xsl:choose>
 									<xsl:when test="ancestor::*[local-name()='preface']">
-										<!-- show Note under table in preface (ex. abstract) sections -->
+										show Note under table in preface (ex. abstract) sections
 										<xsl:apply-templates select="../*[local-name()='note']" mode="process"/>
 									</xsl:when>
 									<xsl:otherwise>
-										<!-- empty, because notes show at page side in main sections -->
+										empty, because notes show at page side in main sections
 									<fo:block/>
 									</xsl:otherwise>
 								</xsl:choose>
-							</xsl:if>
+							</xsl:if> -->
 							
 							
 							<!-- horizontal row separator -->
