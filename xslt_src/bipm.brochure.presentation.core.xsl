@@ -32,15 +32,6 @@
 	<xsl:variable name="copyrightYear" select="//bipm:bipm-standard/bipm:bibdata/bipm:copyright/bipm:from"/>
 	
 	<xsl:variable name="doc_first_language" select="(//bipm:bipm-standard)[1]/bipm:bibdata/bipm:language"/>
-	
-	<xsl:variable name="title-fr" select="//bipm:bipm-standard/bipm:bibdata/bipm:title[@language = 'fr' and @type='main']"/>
-	
-	<!-- <xsl:variable name="contents">
-		<contents>
-			<xsl:call-template name="processPrefaceSectionsDefault_Contents"/>
-			<xsl:call-template name="processMainSectionsDefault_Contents"/>
-		</contents>
-	</xsl:variable> -->
 
 	<xsl:variable name="lang">
 		<xsl:call-template name="getLang"/>
@@ -49,8 +40,6 @@
 	<xsl:variable name="root-element" select="local-name(/*)"/>
 
 	<xsl:variable name="contents">
-	
-		
 		
 		<xsl:choose>
 			<xsl:when test="$root-element = 'metanorma-collection'">
@@ -648,7 +637,7 @@
 						<xsl:for-each select="xalan:nodeset($languages)/lang">
 							<xsl:variable name="title_num" select="position()"/>							
 							<xsl:variable name="curr_lang" select="."/>
-							<xsl:variable name="title-cover" select="xalan:nodeset($titles)//bipm:title[@language = $curr_lang and @type='cover']"/>							
+							<xsl:variable name="title-cover" select="xalan:nodeset($titles)//bipm:title[@language = $curr_lang and @type='main']"/>							
 							<xsl:variable name="title-cover_" select="java:replaceAll(java:java.lang.String.new($title-cover),'( (of )| (and )| (or ))','#$2')"/>
 							<xsl:variable name="titleParts">
 								<xsl:call-template name="splitTitle">
@@ -712,7 +701,7 @@
 			
 				<xsl:for-each select="xalan:nodeset($languages)/lang">
 					<xsl:variable name="curr_lang" select="."/>
-					<xsl:variable name="title" select="xalan:nodeset($titles)//bipm:title[@language = $curr_lang and @type='main']"/>
+					<xsl:variable name="title" select="xalan:nodeset($titles)//bipm:title[@language = $curr_lang and @type='cover']"/>
 					<xsl:choose>
 						<xsl:when test="position() = 1">				
 							<fo:block-container font-size="12pt" font-weight="bold" width="55mm">
@@ -1285,8 +1274,8 @@
 		
 		<xsl:variable name="current_row"><xsl:number count="*"/></xsl:variable>
 		
-		<fo:table-row>
-			<fo:table-cell>				
+		<fo:table-row >
+			<fo:table-cell  >				
 				<fo:block>					
 					<xsl:apply-templates select="."/>
 				</fo:block>
@@ -1405,7 +1394,7 @@
 				
 				<xsl:variable name="rows_with_notes">					
 					<xsl:for-each select="*">						
-						<xsl:if test=".//bipm:note">
+						<xsl:if test=".//bipm:note[not(ancestor::bipm:table)]">
 							<row_num><xsl:value-of select="position()"/></row_num>
 						</xsl:if>
 					</xsl:for-each>
