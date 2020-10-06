@@ -72,6 +72,9 @@
 		<xsl:call-template name="getLang"/>
 	</xsl:variable>
 	
+	<xsl:variable name="isAmendment" select="normalize-space(/itu:itu-standard/itu:local_bibdata/itu:ext/itu:structuredidentifier/itu:amendment)"/>
+	<xsl:variable name="isCorrigendum" select="normalize-space(/itu:itu-standard/itu:local_bibdata/itu:ext/itu:structuredidentifier/itu:corrigendum)"/>
+	
 	<xsl:template match="/">
 		<xsl:call-template name="namespaceCheck"/>
 		<fo:root xmlns:fo="http://www.w3.org/1999/XSL/Format" font-family="Times New Roman, STIX Two Math" font-size="12pt" xml:lang="{$lang}">
@@ -213,6 +216,16 @@
 												<xsl:value-of select="$title-annex"/><xsl:value-of select="/itu:itu-standard/itu:bibdata/itu:ext/itu:structuredidentifier/itu:annexid"/>
 											</fo:block>
 										</xsl:if>
+										<xsl:if test="$isAmendment != ''">
+											<fo:block font-size="18pt" font-weight="bold">
+												<xsl:value-of select="$isAmendment"/>
+											</fo:block>
+										</xsl:if>
+										<xsl:if test="$isCorrigendum != ''">
+											<fo:block font-size="18pt" font-weight="bold">
+												<xsl:value-of select="$isCorrigendum"/>
+											</fo:block>
+										</xsl:if>
 										<fo:block font-size="14pt">
 											<xsl:call-template name="formatDate">
 												<xsl:with-param name="date" select="/itu:itu-standard/itu:bibdata/itu:date[@type = 'published']/itu:on"/>
@@ -253,7 +266,7 @@
 									</fo:table-cell>
 									<fo:table-cell font-size="18pt" number-columns-spanned="3">
 										<fo:block padding-right="2mm" margin-top="6pt">
-											<xsl:if test="not(/itu:itu-standard/itu:bibdata/itu:title[@type = 'annex' and @language = 'en'])">
+											<xsl:if test="not(/itu:itu-standard/itu:bibdata/itu:title[@type = 'annex' and @language = 'en']) and $isAmendment = '' and $isCorrigendum = ''">
 												<xsl:attribute name="font-weight">bold</xsl:attribute>
 											</xsl:if>
 											<xsl:value-of select="/itu:itu-standard/itu:bibdata/itu:title[@type = 'main' and @language = 'en']"/>
@@ -263,6 +276,24 @@
 												<xsl:value-of select="."/>
 											</fo:block>
 										</xsl:for-each>
+										<xsl:if test="$isAmendment != ''">
+											<fo:block padding-right="2mm" margin-top="6pt" font-weight="bold">
+												<xsl:value-of select="$isAmendment"/>
+												<xsl:if test="/itu:itu-standard/itu:bibdata/itu:title[@type = 'amendment']">
+													<xsl:text>: </xsl:text>
+													<xsl:value-of select="/itu:itu-standard/itu:bibdata/itu:title[@type = 'amendment']"/>
+												</xsl:if>
+											</fo:block>
+										</xsl:if>
+										<xsl:if test="$isCorrigendum != ''">
+											<fo:block padding-right="2mm" margin-top="6pt" font-weight="bold">
+												<xsl:value-of select="$isCorrigendum"/>
+												<xsl:if test="/itu:itu-standard/itu:bibdata/itu:title[@type = 'corrigendum']">
+													<xsl:text>: </xsl:text>
+													<xsl:value-of select="/itu:itu-standard/itu:bibdata/itu:title[@type = 'corrigendum']"/>
+												</xsl:if>
+											</fo:block>
+										</xsl:if>
 									</fo:table-cell>
 								</fo:table-row>
 								<fo:table-row height="40mm">
