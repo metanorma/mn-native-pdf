@@ -226,6 +226,8 @@
 									<xsl:apply-templates select="xalan:nodeset($current_document)" mode="flatxml"/>
 								</xsl:variable>
 								
+								<!-- flatxml=<xsl:copy-of select="$flatxml"/> -->
+								
 								<xsl:apply-templates select="xalan:nodeset($flatxml)/bipm:bipm-standard" mode="bipm-standard">
 									<xsl:with-param name="curr_docnum" select="$num"/>
 								</xsl:apply-templates>
@@ -334,7 +336,8 @@
 	</xsl:template> -->
 	
 	<!-- copy 'ol' 'ul' properties to each 'li' -->
-	<!-- move note for list into latest 'li' -->
+	<!-- move note for list (list level note)  into latest 'li' -->
+	<!-- move note for list (list level note)  into first 'li' -->
 	<xsl:template match="bipm:li" mode="flatxml_list">
 		<xsl:copy>
 			<xsl:apply-templates select="@*" mode="flatxml_list"/>
@@ -345,9 +348,17 @@
 				<xsl:call-template name="setListItemLabel"/>
 			</xsl:attribute>
 			<xsl:apply-templates mode="flatxml_list"/>
-			<xsl:if test="not(following-sibling::*[local-name() = 'li'])"><!-- move note for list into latest 'li' -->
-				<xsl:copy-of select="following-sibling::*"/>
+			
+			<!-- move note for list (list level note) into first 'li' -->
+			<!-- if current li is first -->
+			<xsl:if test="not(preceding-sibling::*[local-name() = 'li'])">
+				<xsl:copy-of select="following-sibling::bipm:li[last()]/following-sibling::*"/>
 			</xsl:if>
+			
+			<!-- move note for list (list level note) into latest 'li' -->
+			<!-- <xsl:if test="not(following-sibling::*[local-name() = 'li'])">
+				<xsl:copy-of select="following-sibling::*"/>
+			</xsl:if> -->
 		</xsl:copy>
 	</xsl:template>
 	
@@ -1346,7 +1357,7 @@
 				</xsl:variable>
 				<!-- rows_with_notes<xsl:copy-of select="$rows_with_notes"/> -->
 				
-				<xsl:variable name="rows3">
+				<xsl:variable name="rows">
 					<xsl:for-each select="xalan:nodeset($rows_with_notes)/row_num">
 						<xsl:variable name="num" select="number(.)"/>
 						<xsl:choose>
@@ -1364,7 +1375,7 @@
 					</xsl:for-each>
 				</xsl:variable>
 				
-				<xsl:variable name="rows">					
+				<xsl:variable name="rows3">					
 					<xsl:for-each select="xalan:nodeset($rows_with_notes)/row_num">
 						<xsl:variable name="num" select="number(.)"/>
 						<xsl:choose>						
