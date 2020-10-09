@@ -1736,7 +1736,7 @@
 	</xsl:template>
 	
 
-	<xsl:template match="bipm:p">
+	<xsl:template match="bipm:p" name="p">
 		<xsl:param name="inline" select="'false'"/>
 		
 		<xsl:variable name="previous-element" select="local-name(preceding-sibling::*[1])"/>
@@ -1760,9 +1760,12 @@
 					<xsl:otherwise>justify</xsl:otherwise>
 				</xsl:choose>
 			</xsl:attribute>
-			<xsl:if test="not(ancestor::bipm:table)">				
+			<xsl:if test="not(ancestor::bipm:table)">
 				<xsl:attribute name="margin-bottom">6pt</xsl:attribute>
-			</xsl:if>			
+			</xsl:if>
+			<xsl:if test="ancestor::bipm:table and ancestor::bipm:preface">
+				<xsl:attribute name="margin-bottom">12pt</xsl:attribute>
+			</xsl:if>
 			<xsl:if test="ancestor::bipm:dd and not(ancestor::bipm:table)">
 				<!-- <xsl:attribute name="margin-bottom">4pt</xsl:attribute> -->
 			</xsl:if>
@@ -1785,6 +1788,10 @@
 		<xsl:if test="$inline = 'true'">
 			<fo:block>&#xA0;</fo:block>
 		</xsl:if>
+	</xsl:template>
+
+	<xsl:template match="*[local-name()='table']/*[local-name()='note']/*[local-name()='p']" mode="process" priority="2">
+		<xsl:call-template name="p"/>
 	</xsl:template>
 
 
@@ -1817,7 +1824,13 @@
 					<fo:list-item id="{@id}">
 						<fo:list-item-label end-indent="label-end()">
 							<fo:block>
-								<xsl:value-of select="@label"/>
+								<fo:inline>
+									<xsl:if test="@list_type = 'ul'">
+										<xsl:attribute name="font-size">15pt</xsl:attribute>
+										<!-- <xsl:attribute name="baseline-shift">-10%</xsl:attribute> -->
+									</xsl:if>
+									<xsl:value-of select="@label"/>
+								</fo:inline>
 								<!-- <xsl:choose>
 									<xsl:when test="@list_type = 'ul'"><fo:inline font-size="14pt" baseline-shift="-15%">•</fo:inline></xsl:when>
 									<xsl:otherwise>
