@@ -1775,6 +1775,7 @@
 			<xsl:if test="@align = 'center'">
 				<xsl:attribute name="keep-with-next">always</xsl:attribute>
 			</xsl:if>
+			<xsl:attribute name="line-height-shift-adjustment">disregard-shifts</xsl:attribute>
 			<xsl:apply-templates />
 		</xsl:element>
 		<xsl:if test="$element-name = 'fo:inline' and not($inline = 'true') and not(local-name(..) = 'admonition')">
