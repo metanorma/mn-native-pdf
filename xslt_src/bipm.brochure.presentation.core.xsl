@@ -2058,12 +2058,33 @@
 		</fo:block-container>
 	</xsl:template>
 
-	<!-- ToC in Appendix -->
-	<xsl:template match="bipm:xref[@pagenumber='true']" priority="2">
+
+	<xsl:template match="bipm:xref" priority="2">		
 		<fo:basic-link internal-destination="{@target}" fox:alt-text="{@target}">
-			<fo:inline font-weight="bold"><fo:page-number-citation ref-id="{@target}"/></fo:inline>
+			<xsl:choose>
+				<xsl:when test="@pagenumber='true'"><!-- ToC in Appendix -->
+					<fo:inline font-weight="bold"><fo:page-number-citation ref-id="{@target}"/></fo:inline>
+				</xsl:when>
+				<xsl:when test="starts-with(normalize-space(following-sibling::node()[1]), ')')">										
+					<!-- add , see p. N -->				
+					<!-- add , voir p. N -->
+					<xsl:apply-templates />
+					<xsl:variable name="curr_lang" select="ancestor::bipm:bipm-standard/bipm:bibdata/bipm:language"/>
+					<xsl:text>, </xsl:text>
+					<xsl:choose>
+						<xsl:when test="$curr_lang = 'fr'">voir</xsl:when>
+						<xsl:otherwise>see</xsl:otherwise>
+					</xsl:choose>
+					<xsl:text> p. </xsl:text>
+					<fo:page-number-citation ref-id="{@target}"/>					
+				</xsl:when>
+				<xsl:otherwise>
+					<fo:inline><xsl:apply-templates /></fo:inline>
+				</xsl:otherwise>
+			</xsl:choose>
 		</fo:basic-link>
 	</xsl:template>
+	
 
 	<xsl:template name="insertHeaderFooter">
 		<!-- <xsl:variable name="header-title">Le BIPM et la Convention du Mètre</xsl:variable> -->
