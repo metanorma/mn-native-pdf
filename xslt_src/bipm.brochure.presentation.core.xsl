@@ -293,13 +293,47 @@
 		</xsl:copy>
 		<xsl:apply-templates mode="flatxml"/>
 	</xsl:template>
-	<xsl:template match="bipm:clause/*[count(following-sibling::*) = 1 and following-sibling::*[local-name() = 'note']]" mode="flatxml"> <!--   -->
+	
+	<!-- move clause/note inside title, p, ul or ol -->
+	<xsl:template match="bipm:clause/*[local-name() != 'quote' and local-name() != 'note' and local-name() != 'clause'][last()]" mode="flatxml">
+		<xsl:copy>
+			<xsl:apply-templates select="@*|node()" mode="flatxml"/>
+			<!-- <xsl:copy-of select="following-sibling::*[local-name() = 'note']"/> -->
+			<xsl:for-each select="following-sibling::*[local-name() = 'note']">
+				<xsl:call-template name="change_note_kind"/>
+			</xsl:for-each>
+		</xsl:copy>	
+	</xsl:template>
+	
+	<!-- <xsl:template match="bipm:clause2/*[count(following-sibling::*) = 1 and following-sibling::*[local-name() = 'note']]" mode="flatxml">
 		<xsl:copy>
 			<xsl:apply-templates select="@*|node()" mode="flatxml"/>
 			<xsl:copy-of select="following-sibling::*[local-name() = 'note']"/>
 		</xsl:copy>		
+	</xsl:template> -->
+	
+	<!-- <xsl:template match="bipm:clause/bipm:note[count(following-sibling::*) = 0]" mode="flatxml"/> -->
+	<xsl:template match="bipm:clause/bipm:note[count(following-sibling::*[local-name() != 'clause' and local-name() != 'note']) = 0]" mode="flatxml" priority="2"/>
+	
+	
+	<xsl:template match="bipm:note" name="change_note_kind" mode="flatxml">
+		<xsl:variable name="element">
+			<xsl:choose>
+				<xsl:when test="ancestor::bipm:quote">note</xsl:when>
+				<xsl:when test="ancestor::bipm:preface and ancestor::bipm:table">note</xsl:when>
+				<xsl:otherwise>note_side</xsl:otherwise>
+			</xsl:choose>
+		</xsl:variable>
+		<!-- <xsl:copy> -->
+		<xsl:element name="{$element}" namespace="https://www.metanorma.org/ns/bipm">
+			<xsl:if test="ancestor::bipm:quote">
+				<xsl:attribute name="parent-type">quote</xsl:attribute>				
+			</xsl:if>
+			<xsl:apply-templates select="@*|node()" mode="flatxml"/>
+		</xsl:element>
+		<!-- </xsl:copy> -->
 	</xsl:template>
-	<xsl:template match="bipm:clause/bipm:note[count(following-sibling::*) = 0]" mode="flatxml"/>
+	
 		<!-- envelope standalone note in p -->
 		<!-- <p>
 			<xsl:copy-of select="."/>
@@ -363,7 +397,20 @@
 			<!-- move note for list (list level note) into first 'li' -->
 			<!-- if current li is first -->
 			<xsl:if test="not(preceding-sibling::*[local-name() = 'li'])">
-				<xsl:copy-of select="following-sibling::bipm:li[last()]/following-sibling::*"/>
+				<!-- <xsl:copy-of select="following-sibling::bipm:li[last()]/following-sibling::*"/> -->
+				
+				
+				<xsl:for-each select="following-sibling::bipm:li[last()]/following-sibling::*">
+					<xsl:choose>
+						<xsl:when test="local-name() = 'note'">
+							<xsl:call-template name="change_note_kind"/>
+						</xsl:when>
+						<xsl:otherwise>
+							<xsl:copy-of select="."/>
+						</xsl:otherwise>
+					</xsl:choose>
+				</xsl:for-each>
+				
 			</xsl:if>
 			
 			<!-- move note for list (list level note) into latest 'li' -->
@@ -1361,7 +1408,8 @@
 				
 				<xsl:variable name="rows_with_notes">					
 					<xsl:for-each select="*">						
-						<xsl:if test=".//bipm:note[not(ancestor::bipm:table)]">
+						<!-- <xsl:if test=".//bipm:note[not(ancestor::bipm:table)]"> -->
+						<xsl:if test=".//bipm:note_side"> <!-- virtual element note_side -->
 							<row_num><xsl:value-of select="position()"/></row_num>
 						</xsl:if>
 					</xsl:for-each>
@@ -1444,7 +1492,8 @@
 					<xsl:variable name="start_row" select="$current_row"/>
 					<xsl:variable name="end_row" select="$current_row + $number-rows-spanned"/>
 					<fo:block>
-						<xsl:for-each select="ancestor::bipm:abstract/*[position() &gt;= $start_row and position() &lt; $end_row]//bipm:note[not(ancestor::bipm:table)]">
+						<!-- <xsl:for-each select="ancestor::bipm:abstract/*[position() &gt;= $start_row and position() &lt; $end_row]//bipm:note[not(ancestor::bipm:table)]"> -->
+						<xsl:for-each select="ancestor::bipm:abstract/*[position() &gt;= $start_row and position() &lt; $end_row]//bipm:note_side">
 							<xsl:apply-templates select="." mode="note_side"/>
 						</xsl:for-each>
 					</fo:block>
@@ -1540,7 +1589,8 @@
 						
 						<xsl:variable name="rows_with_notes">					
 							<xsl:for-each select="*">						
-								<xsl:if test=".//bipm:note[not(ancestor::bipm:table)]">
+								<!-- <xsl:if test=".//bipm:note[not(ancestor::bipm:table)]"> -->
+								<xsl:if test=".//bipm:note_side[not(ancestor::bipm:table)]"> <!-- virtual element note_side -->
 									<row_num><xsl:value-of select="position()"/></row_num>
 								</xsl:if>
 							</xsl:for-each>
@@ -1659,7 +1709,8 @@
 					
 					<fo:block>
 						<!-- <fo:block>display-align=<xsl:value-of select="xalan:nodeset($rows)/num[@span_start = $current_row]/@display-align"/></fo:block> -->
-						<xsl:for-each select="ancestor::*[1]/*[position() &gt;= $start_row and position() &lt; $end_row]//bipm:note">
+						<!-- <xsl:for-each select="ancestor::*[1]/*[position() &gt;= $start_row and position() &lt; $end_row]//bipm:note"> -->
+						<xsl:for-each select="ancestor::*[1]/*[position() &gt;= $start_row and position() &lt; $end_row]//bipm:note_side">
 							
 							<xsl:apply-templates select="." mode="note_side"/>
 						</xsl:for-each>
@@ -1689,8 +1740,12 @@
 	</xsl:template>
 
 	<!-- skip, because it process in note_side template -->
-	<xsl:template match="bipm:preface/bipm:abstract//bipm:note[not(ancestor::bipm:table)]" priority="3"/>
-	<xsl:template match="bipm:sections//bipm:note | bipm:annex//bipm:note" priority="3">
+	<!-- <xsl:template match="bipm:preface/bipm:abstract//bipm:note[not(ancestor::bipm:table)]" priority="3"/> -->
+	<xsl:template match="bipm:preface/bipm:abstract//bipm:note_side[not(ancestor::bipm:table)]" priority="3"/>
+	
+	
+	<!-- <xsl:template match="bipm:sections//bipm:note | bipm:annex//bipm:note" priority="3"> -->
+	<xsl:template match="bipm:sections//bipm:note_side | bipm:annex//bipm:note_side" priority="3">
 		<xsl:if test="$independentAppendix != ''">
 			<fo:block>
 				<xsl:apply-templates />
@@ -1699,13 +1754,16 @@
 	</xsl:template> <!-- [not(ancestor::bipm:table)] -->
 	
 	
-	<xsl:template match="bipm:note" mode="note_side">
+	<!-- <xsl:template match="bipm:note" mode="note_side"> -->
+	<xsl:template match="bipm:note_side" mode="note_side">
 		<fo:block>
 			<xsl:apply-templates mode="note_side"/>
 		</fo:block>
 	</xsl:template>
-	<xsl:template match="bipm:note/bipm:name" mode="note_side" priority="2"/>	
-	<xsl:template match="bipm:note/*" mode="note_side">
+	<!-- <xsl:template match="bipm:note/bipm:name" mode="note_side" priority="2"/>	 -->
+	<xsl:template match="bipm:note_side/bipm:name" mode="note_side" priority="2"/>	
+	<!-- <xsl:template match="bipm:note/*" mode="note_side"> -->
+	<xsl:template match="bipm:note_side/*" mode="note_side">
 		<xsl:apply-templates select="."/>
 	</xsl:template>
 
@@ -1837,7 +1895,8 @@
 							<xsl:attribute name="margin-bottom">0pt</xsl:attribute>
 						</xsl:if>
 					</xsl:if>
-					<xsl:if test="../ancestor::bipm:note">
+					<!-- <xsl:if test="../ancestor::bipm:note"> -->
+					<xsl:if test="../ancestor::bipm:note_side">
 						<xsl:attribute name="provisional-distance-between-starts">0mm</xsl:attribute>
 					</xsl:if>
 	
@@ -1880,7 +1939,8 @@
 								<xsl:if test="@list_type = 'ol'">
 									<xsl:attribute name="margin-bottom">6pt</xsl:attribute>
 								</xsl:if>
-								<xsl:if test="ancestor::bipm:note">
+								<!-- <xsl:if test="ancestor::bipm:note"> -->
+								<xsl:if test="ancestor::bipm:note_side">
 									<xsl:attribute name="text-indent">3mm</xsl:attribute>
 								</xsl:if>
 								
