@@ -280,7 +280,10 @@
 	<!-- flat xml for fit notes at page sides -->
 	<xsl:template match="@*|node()" mode="flatxml">
 		<xsl:copy>
-				<xsl:apply-templates select="@*|node()" mode="flatxml"/>
+			<xsl:if test="ancestor::bipm:quote">
+				<xsl:attribute name="parent-type">quote</xsl:attribute>				
+			</xsl:if>
+			<xsl:apply-templates select="@*|node()" mode="flatxml"/>
 		</xsl:copy>
 	</xsl:template>	
 	<!-- flat clauses from 2nd level -->
@@ -305,6 +308,11 @@
 	<xsl:template match="bipm:preface/bipm:clause" mode="flatxml">
 		<xsl:copy-of select="."/>
 	</xsl:template>
+	
+	<xsl:template match="bipm:quote" mode="flatxml" priority="2">
+		<xsl:apply-templates mode="flatxml"/>
+	</xsl:template>
+	
 	
 	<!-- flat lists -->
 	<xsl:template match="bipm:ul | bipm:ol" mode="flatxml" priority="2">
@@ -347,6 +355,9 @@
 			<xsl:attribute name="label">
 				<xsl:call-template name="setListItemLabel"/>
 			</xsl:attribute>
+			<xsl:if test="ancestor::bipm:quote">
+				<xsl:attribute name="parent-type">quote</xsl:attribute>				
+			</xsl:if>
 			<xsl:apply-templates mode="flatxml_list"/>
 			
 			<!-- move note for list (list level note) into first 'li' -->
@@ -1775,6 +1786,10 @@
 			<xsl:if test="@align = 'center'">
 				<xsl:attribute name="keep-with-next">always</xsl:attribute>
 			</xsl:if>
+			<xsl:if test="@parent-type = 'quote'">
+				<xsl:attribute name="font-family">Arial</xsl:attribute>
+				<xsl:attribute name="font-size">9pt</xsl:attribute>
+			</xsl:if>
 			<xsl:attribute name="line-height-shift-adjustment">disregard-shifts</xsl:attribute>
 			<xsl:apply-templates />
 		</xsl:element>
@@ -1806,6 +1821,10 @@
 		<fo:block-container margin-left="0mm">
 			<xsl:if test="ancestor::bipm:li">
 				<xsl:attribute name="margin-left">7mm</xsl:attribute>
+			</xsl:if>
+			<xsl:if test="@parent-type = 'quote'">
+				<xsl:attribute name="font-family">Arial</xsl:attribute>
+				<xsl:attribute name="font-size">9pt</xsl:attribute>
 			</xsl:if>
 			<fo:block-container margin-left="0mm">
 				<fo:list-block provisional-distance-between-starts="8mm">

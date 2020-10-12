@@ -1503,6 +1503,10 @@
 					<xsl:attribute name="font-size">10pt</xsl:attribute>
 				</xsl:if>
 				<xsl:attribute name="margin-bottom">12pt</xsl:attribute>
+				<xsl:if test="@parent-type = 'quote'">
+					<xsl:attribute name="font-family">Arial</xsl:attribute>
+					<xsl:attribute name="font-size">9pt</xsl:attribute>
+				</xsl:if>
 			</xsl:if>
 			
 			
