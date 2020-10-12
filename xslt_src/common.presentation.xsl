@@ -1554,7 +1554,7 @@
 					<attribute name="border-bottom">2pt solid black</attribute>
 				</xsl:if>				
 				<xsl:if test="$namespace = 'bipm'">					
-					<xsl:if test="not(ancestor::*[local-name()='preface']) and not(ancestor::*[local-name()='note'])">
+					<xsl:if test="not(ancestor::*[local-name()='preface']) and not(ancestor::*[local-name()='note']) and not(ancestor::*[local-name() = 'annex'] and .//*[local-name() = 'xref'][@pagenumber])">
 						<attribute name="border-top">0.5pt solid black</attribute>
 						<attribute name="border-bottom">0.5pt solid black</attribute>
 					</xsl:if>
@@ -2164,10 +2164,10 @@
 						<xsl:if test="$number mod 2 = 0">
 							<xsl:attribute name="background-color">rgb(252, 246, 222)</xsl:attribute>
 						</xsl:if>
-					</xsl:if>
-					<xsl:if test="$namespace = 'bipm'">
-						<xsl:attribute name="height">8mm</xsl:attribute>
-					</xsl:if>
+					</xsl:if>					
+				</xsl:if>
+				<xsl:if test="$namespace = 'bipm'">
+					<xsl:attribute name="height">8mm</xsl:attribute>
 				</xsl:if>
 				
 			<xsl:apply-templates />
@@ -2256,6 +2256,10 @@
 				<xsl:attribute name="border-bottom">solid black 0.5pt</xsl:attribute>
 				<xsl:attribute name="height">8mm</xsl:attribute>
 				<xsl:attribute name="padding-top">2mm</xsl:attribute>
+				<xsl:if test="ancestor::*[local-name() = 'annex'] and ancestor::*[local-name() = 'table']//*[local-name() = 'xref'][@pagenumber]"><!-- for Annex ToC -->
+					<xsl:attribute name="border-top">solid black 0pt</xsl:attribute>
+					<xsl:attribute name="border-bottom">solid black 0pt</xsl:attribute>
+				</xsl:if>
 			</xsl:if>
 			<xsl:if test="@colspan">
 				<xsl:attribute name="number-columns-spanned">

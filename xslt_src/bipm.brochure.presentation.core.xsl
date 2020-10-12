@@ -2041,8 +2041,8 @@
 
 	<xsl:template match="bipm:pagebreak">
 		<fo:block break-after="page"/>
-		<fo:block>&#xA0;</fo:block>
-		<fo:block break-after="page"/>
+		<!-- <fo:block>&#xA0;</fo:block>
+		<fo:block break-after="page"/> -->
 	</xsl:template>
 
 	<xsl:template match="bipm:admonition">
@@ -2056,6 +2056,13 @@
 				</fo:block>
 			</fo:block-container>
 		</fo:block-container>
+	</xsl:template>
+
+	<!-- ToC in Appendix -->
+	<xsl:template match="bipm:xref[@pagenumber='true']" priority="2">
+		<fo:basic-link internal-destination="{@target}" fox:alt-text="{@target}">
+			<fo:inline font-weight="bold"><fo:page-number-citation ref-id="{@target}"/></fo:inline>
+		</fo:basic-link>
 	</xsl:template>
 
 	<xsl:template name="insertHeaderFooter">
