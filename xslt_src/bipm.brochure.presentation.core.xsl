@@ -285,7 +285,8 @@
 			</xsl:if>
 			<xsl:apply-templates select="@*|node()" mode="flatxml"/>
 		</xsl:copy>
-	</xsl:template>	
+	</xsl:template>
+
 	<!-- flat clauses from 2nd level -->
 	<xsl:template match="bipm:clause[not(parent::bipm:sections) and not(parent::bipm:annex) and not(parent::bipm:abstract) and not(ancestor::bipm:boilerplate)]" mode="flatxml">
 		<xsl:copy>
@@ -332,6 +333,18 @@
 			<xsl:apply-templates select="@*|node()" mode="flatxml"/>
 		</xsl:element>
 		<!-- </xsl:copy> -->
+	</xsl:template>
+	
+	<xsl:template match="bipm:fn[ancestor::bipm:quote]" mode="flatxml">
+		<xsl:element name="note_side" namespace="https://www.metanorma.org/ns/bipm">
+			<xsl:apply-templates mode="flatxml"/>
+		</xsl:element>
+	</xsl:template>
+	
+	<xsl:template match="bipm:fn[ancestor::bipm:quote]" mode="flatxml_list">
+		<xsl:element name="note_side" namespace="https://www.metanorma.org/ns/bipm">
+			<xsl:apply-templates mode="flatxml_list"/>
+		</xsl:element>
 	</xsl:template>
 	
 		<!-- envelope standalone note in p -->
@@ -1341,6 +1354,9 @@
 									</xsl:choose>									
 								</xsl:otherwise>
 							</xsl:choose>
+							<xsl:if test=".//bipm:note_side">
+								<fo:inline>*</fo:inline>
+							</xsl:if>
 						</fo:block>
 					</xsl:otherwise>
 				</xsl:choose>
@@ -1757,6 +1773,7 @@
 	<!-- <xsl:template match="bipm:note" mode="note_side"> -->
 	<xsl:template match="bipm:note_side" mode="note_side">
 		<fo:block line-height-shift-adjustment="disregard-shifts">
+			<xsl:if test="ancestor::bipm:title"><fo:inline>* </fo:inline></xsl:if>
 			<xsl:apply-templates mode="note_side"/>
 		</fo:block>
 	</xsl:template>
