@@ -335,6 +335,7 @@
 		<!-- </xsl:copy> -->
 	</xsl:template>
 	
+	
 	<xsl:template match="bipm:fn[ancestor::bipm:quote]" mode="flatxml">
 		<xsl:element name="note_side" namespace="https://www.metanorma.org/ns/bipm">
 			<xsl:apply-templates mode="flatxml"/>
@@ -1903,7 +1904,14 @@
 	</xsl:template>
 
 	<xsl:template match="*[local-name()='table']/*[local-name()='note']/*[local-name()='p']" mode="process" priority="2">
-		<xsl:call-template name="p"/>
+		<xsl:choose>
+			<xsl:when test="ancestor::bipm:preface">
+				<xsl:call-template name="p"/>
+			</xsl:when>
+			<xsl:otherwise>
+				<xsl:apply-templates />
+			</xsl:otherwise>
+		</xsl:choose>		
 	</xsl:template>
 
 
@@ -2184,6 +2192,32 @@
 		</fo:basic-link>
 	</xsl:template>
 	
+	<xsl:template match="bipm:note[not(ancestor::bipm:preface)]/bipm:name" priority="2"  mode="presentation">
+		<xsl:choose>
+			<xsl:when test="not(../preceding-sibling::bipm:note) and not((../following-sibling::bipm:note))">
+				<xsl:variable name="curr_lang" select="ancestor::bipm:bipm-standard/bipm:bibdata/bipm:language"/>
+				<xsl:choose>
+					<xsl:when test="$curr_lang = 'fr'">Remarque: </xsl:when>
+					<xsl:otherwise>Note: </xsl:otherwise>
+				</xsl:choose>
+			</xsl:when>
+			<!-- <xsl:when test="../preceding-sibling::*[1][local-name = 'note'] or following-sibling::*[1][local-name = 'note']">
+				<xsl:number/><xsl:text>. </xsl:text>
+			</xsl:when> -->
+			<xsl:when test="ancestor::bipm:table and count(ancestor::bipm:table//bipm:note) &gt; 0">
+				<xsl:variable name="table_id" select="ancestor::bipm:table/@id"/>
+				<xsl:number count="//bipm:table[@id = $table_id]//bipm:note"/><xsl:text>. </xsl:text>
+			</xsl:when>
+		</xsl:choose>
+	</xsl:template>
+
+	<xsl:template match="*[local-name() = 'note']/*[local-name() = 'p']" priority="3">
+		<fo:inline xsl:use-attribute-sets="note-p-style">
+			<xsl:apply-templates />
+		</fo:inline>
+		<fo:inline><xsl:value-of select="$linebreak"/></fo:inline>
+		
+	</xsl:template>
 
 	<xsl:template name="insertHeaderFooter">
 		<!-- <xsl:variable name="header-title">Le BIPM et la Convention du Mètre</xsl:variable> -->

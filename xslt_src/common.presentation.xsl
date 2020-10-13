@@ -1887,6 +1887,9 @@
 							<xsl:if test="$namespace = 'bipm'">
 								<xsl:attribute name="border">solid black 0pt</xsl:attribute>
 							</xsl:if>
+							
+							
+							
 							<!-- except gb -->
 							<xsl:if test="$namespace = 'iso' or $namespace = 'iec' or $namespace = 'itu' or $namespace = 'unece' or $namespace = 'unece-rec' or $namespace = 'nist-cswp'  or $namespace = 'nist-sp' or $namespace = 'ogc' or $namespace = 'ogc-white-paper' or $namespace = 'rsd' or $namespace = 'csa' or $namespace = 'csd' or $namespace = 'm3d' or $namespace = 'iho' or $namespace = 'mpfd' or $namespace = 'bipm'">
 								<xsl:apply-templates select="../*[local-name()='note']" mode="process"/>
@@ -1991,6 +1994,20 @@
 							<xsl:if test="$namespace = 'bipm'">
 								<xsl:attribute name="border">solid black 0pt</xsl:attribute>
 							</xsl:if>
+							
+							
+							<xsl:if test="$namespace = 'bipm'">
+								<xsl:if test="count(ancestor::bipm:table//*[local-name()='note']) &gt; 1">
+									<fo:block font-weight="bold">
+										<xsl:variable name="curr_lang" select="ancestor::bipm:bipm-standard/bipm:bibdata/bipm:language"/>
+										<xsl:choose>
+											<xsl:when test="$curr_lang = 'fr'">Remarques</xsl:when>
+											<xsl:otherwise>Notes</xsl:otherwise>
+										</xsl:choose>
+									</fo:block>
+								</xsl:if>
+							</xsl:if>
+							
 							<!-- except gb  -->
 							<xsl:if test="$namespace = 'iso' or $namespace = 'iec' or $namespace = 'itu' or $namespace = 'unece' or $namespace = 'unece-rec' or $namespace = 'nist-cswp'  or $namespace = 'nist-sp' or $namespace = 'ogc' or $namespace = 'ogc-white-paper' or $namespace = 'rsd' or $namespace = 'csa' or $namespace = 'csd' or $namespace = 'm3d' or $namespace = 'iho' or $namespace = 'mpfd' or $namespace = 'bipm'">
 								<xsl:apply-templates select="../*[local-name()='note']" mode="process"/>
@@ -2411,7 +2428,12 @@
 				</xsl:if>
 				<xsl:if test="$namespace = 'bipm'">					
 					<xsl:attribute name="text-align">justify</xsl:attribute>
-					<xsl:attribute name="margin-top">18pt</xsl:attribute>
+					<xsl:attribute name="margin-bottom">0pt</xsl:attribute>
+					<xsl:if test="ancestor::bipm:preface">
+						<xsl:attribute name="margin-top">18pt</xsl:attribute>
+						<xsl:attribute name="margin-bottom">12pt</xsl:attribute>
+					</xsl:if>
+					
 				</xsl:if>
 				
 				<fo:inline padding-right="2mm">
@@ -2434,14 +2456,18 @@
 						</xsl:if>
 					</xsl:if>
 					<xsl:if test="$namespace = 'bipm'">
-						<xsl:attribute name="font-size">10pt</xsl:attribute>						
-						<xsl:attribute name="text-decoration">underline</xsl:attribute>
+						<xsl:attribute name="font-size">10pt</xsl:attribute>
+						<xsl:if test="ancestor::bipm:preface">
+							<xsl:attribute name="text-decoration">underline</xsl:attribute>
+						</xsl:if>
 					</xsl:if>
 					<xsl:apply-templates select="*[local-name() = 'name']" mode="presentation"/>
 						
 				</fo:inline>
 				<xsl:if test="$namespace = 'bipm'">
-					<fo:block>&#xA0;</fo:block>
+					<xsl:if test="ancestor::bipm:preface">
+						<fo:block>&#xA0;</fo:block>
+					</xsl:if>
 				</xsl:if>
 				<xsl:apply-templates mode="process"/>
 			</fo:block>
