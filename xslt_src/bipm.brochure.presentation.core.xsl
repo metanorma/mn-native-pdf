@@ -288,7 +288,8 @@
 	</xsl:template>
 
 	<!-- flat clauses from 2nd level -->
-	<xsl:template match="bipm:clause[not(parent::bipm:sections) and not(parent::bipm:annex) and not(parent::bipm:abstract) and not(ancestor::bipm:boilerplate)]" mode="flatxml">
+	<!-- <xsl:template match="bipm:clause[not(parent::bipm:sections) and not(parent::bipm:annex) and not(parent::bipm:abstract) and not(ancestor::bipm:boilerplate)]" mode="flatxml"> -->
+	<xsl:template match="bipm:clause[not(parent::bipm:sections) and not(parent::bipm:annex) and not(parent::bipm:preface) and not(ancestor::bipm:boilerplate)]" mode="flatxml">
 		<xsl:copy>
 			<xsl:apply-templates select="@*" mode="flatxml"/>
 		</xsl:copy>
@@ -353,7 +354,7 @@
 			<xsl:copy-of select="."/>
 		</p>
 	</xsl:template> -->
-	<xsl:template match="bipm:preface/bipm:clause" mode="flatxml">
+	<xsl:template match="bipm:preface/bipm:clause[position() &gt; 1]" mode="flatxml">
 		<xsl:copy-of select="."/>
 	</xsl:template>
 	
@@ -554,7 +555,7 @@
 						<fo:block-container absolute-position="fixed" top="200mm" height="69mm" font-family="Times New Roman" text-align="center" display-align="after">
 							<xsl:apply-templates select="bipm:boilerplate/bipm:feedback-statement"/>
 							<fo:block margin-top="15mm">
-								<xsl:value-of select="bipm:bibdata/bipm:docidentifier[@type='ISBN']"/>
+								<xsl:text>ISBN </xsl:text><xsl:value-of select="bipm:bibdata/bipm:docidentifier[@type='ISBN']"/>
 							</fo:block>
 						</fo:block-container>
 						
@@ -566,7 +567,8 @@
 					<xsl:call-template name="insertHeaderFooter"/>
 					<fo:flow flow-name="xsl-region-body">
 						<fo:block line-height="135%">
-							<xsl:apply-templates select="bipm:preface/bipm:abstract" />
+							<!-- <xsl:apply-templates select="bipm:preface/bipm:abstract" /> -->
+							<xsl:apply-templates select="bipm:preface/*[1]" />
 						</fo:block>
 					</fo:flow>
 				</fo:page-sequence>
@@ -620,7 +622,8 @@
 				</fo:page-sequence>
 				
 				
-				<xsl:apply-templates select="bipm:preface/*[not(local-name() = 'abstract')]" mode="sections" /> <!-- bipm:clause -->
+				<!-- <xsl:apply-templates select="bipm:preface/*[not(local-name() = 'abstract')]" mode="sections" /> --> <!-- bipm:clause -->
+				<xsl:apply-templates select="bipm:preface/*[position() &gt; 1]" mode="sections" /> <!-- bipm:clause -->
 				
 				
 				
@@ -1384,7 +1387,8 @@
 	<!-- ====== -->
 
 
-	<xsl:template match="bipm:preface/bipm:abstract" priority="3">
+	<!-- <xsl:template match="bipm:preface/bipm:abstract" priority="3"> -->
+	<xsl:template match="bipm:preface/*[1]" priority="3">
 		<fo:table table-layout="fixed" width="173.5mm">
 			<xsl:call-template name="setId"/>
 			<fo:table-column column-width="137mm"/>
@@ -1480,7 +1484,8 @@
 	
 
 
-	<xsl:template match="bipm:preface/bipm:abstract/*" mode="clause_table">
+	<!-- <xsl:template match="bipm:preface/bipm:abstract/*" mode="clause_table"> -->
+	<xsl:template match="bipm:preface/*[1]/*" mode="clause_table">
 		<xsl:param name="rows"/>
 		
 		<xsl:variable name="current_row"><xsl:number count="*"/></xsl:variable>
@@ -1512,7 +1517,8 @@
 					<xsl:variable name="end_row" select="$current_row + $number-rows-spanned"/>
 					<fo:block>
 						<!-- <xsl:for-each select="ancestor::bipm:abstract/*[position() &gt;= $start_row and position() &lt; $end_row]//bipm:note[not(ancestor::bipm:table)]"> -->
-						<xsl:for-each select="ancestor::bipm:abstract/*[position() &gt;= $start_row and position() &lt; $end_row]//bipm:note_side">
+						<!-- <xsl:for-each select="ancestor::bipm:abstract/*[position() &gt;= $start_row and position() &lt; $end_row]//bipm:note_side"> -->
+						<xsl:for-each select="ancestor::bipm:preface/*[1]/*[position() &gt;= $start_row and position() &lt; $end_row]//bipm:note_side">
 							<xsl:apply-templates select="." mode="note_side"/>
 						</xsl:for-each>
 					</fo:block>
@@ -1760,7 +1766,8 @@
 
 	<!-- skip, because it process in note_side template -->
 	<!-- <xsl:template match="bipm:preface/bipm:abstract//bipm:note[not(ancestor::bipm:table)]" priority="3"/> -->
-	<xsl:template match="bipm:preface/bipm:abstract//bipm:note_side" priority="3"/>
+	<!-- <xsl:template match="bipm:preface/bipm:abstract//bipm:note_side" priority="3"/> -->
+	<xsl:template match="bipm:preface/*[1]//bipm:note_side" priority="3"/>
 	
 	
 	<!-- <xsl:template match="bipm:sections//bipm:note | bipm:annex//bipm:note" priority="3"> -->
