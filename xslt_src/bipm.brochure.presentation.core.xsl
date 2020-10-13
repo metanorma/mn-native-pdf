@@ -553,7 +553,9 @@
 						
 						<fo:block-container absolute-position="fixed" top="200mm" height="69mm" font-family="Times New Roman" text-align="center" display-align="after">
 							<xsl:apply-templates select="bipm:boilerplate/bipm:feedback-statement"/>
-							<!-- <fo:block margin-top="15mm">ISBN 978-92-822-2272-0</fo:block> -->
+							<fo:block margin-top="15mm">
+								<xsl:value-of select="bipm:bibdata/bipm:docidentifier[@type='ISBN']"/>
+							</fo:block>
 						</fo:block-container>
 						
 					</fo:flow>
