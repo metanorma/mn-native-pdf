@@ -1590,7 +1590,7 @@
 						<xsl:variable name="rows_with_notes">					
 							<xsl:for-each select="*">						
 								<!-- <xsl:if test=".//bipm:note[not(ancestor::bipm:table)]"> -->
-								<xsl:if test=".//bipm:note_side[not(ancestor::bipm:table)]"> <!-- virtual element note_side -->
+								<xsl:if test=".//bipm:note_side"> <!-- virtual element note_side --> <!-- [not(ancestor::bipm:table)] -->
 									<row_num><xsl:value-of select="position()"/></row_num>
 								</xsl:if>
 							</xsl:for-each>
@@ -1741,7 +1741,7 @@
 
 	<!-- skip, because it process in note_side template -->
 	<!-- <xsl:template match="bipm:preface/bipm:abstract//bipm:note[not(ancestor::bipm:table)]" priority="3"/> -->
-	<xsl:template match="bipm:preface/bipm:abstract//bipm:note_side[not(ancestor::bipm:table)]" priority="3"/>
+	<xsl:template match="bipm:preface/bipm:abstract//bipm:note_side" priority="3"/>
 	
 	
 	<!-- <xsl:template match="bipm:sections//bipm:note | bipm:annex//bipm:note" priority="3"> -->
@@ -1756,7 +1756,7 @@
 	
 	<!-- <xsl:template match="bipm:note" mode="note_side"> -->
 	<xsl:template match="bipm:note_side" mode="note_side">
-		<fo:block>
+		<fo:block line-height-shift-adjustment="disregard-shifts">
 			<xsl:apply-templates mode="note_side"/>
 		</fo:block>
 	</xsl:template>
@@ -1765,6 +1765,23 @@
 	<!-- <xsl:template match="bipm:note/*" mode="note_side"> -->
 	<xsl:template match="bipm:note_side/*" mode="note_side">
 		<xsl:apply-templates select="."/>
+	</xsl:template>
+
+
+	<xsl:template match="*[local-name() = 'note_side']/*[local-name() = 'p']">
+		<xsl:variable name="num"><xsl:number/></xsl:variable>
+		<xsl:choose>
+			<xsl:when test="$num = 1">
+				<fo:inline xsl:use-attribute-sets="note-p-style">
+					<xsl:apply-templates />
+				</fo:inline>
+			</xsl:when>
+			<xsl:otherwise>
+				<fo:block xsl:use-attribute-sets="note-p-style">						
+					<xsl:apply-templates />
+				</fo:block>
+			</xsl:otherwise>
+		</xsl:choose>
 	</xsl:template>
 
 	<!--
@@ -1778,16 +1795,19 @@
 																bipm:p/*/bipm:fn[not(ancestor::bipm:table)] |
 																bipm:sourcecode/bipm:fn[not(ancestor::bipm:table)]" priority="2" name="fn">
 		<fo:footnote keep-with-previous.within-line="always">
-			<xsl:variable name="number" select="@reference"/>
+			<xsl:variable name="number"> <!-- select="@reference"/> -->
+				<xsl:number count="bipm:fn[not(ancestor::bipm:table)]" level="any"/>
+			</xsl:variable>
+			<xsl:variable name="gen_id" select="generate-id()"/>
 			<xsl:variable name="lang" select="ancestor::bipm:bipm-standard/*[local-name()='bibdata']//*[local-name()='language']"/>
 			<fo:inline font-size="65%" keep-with-previous.within-line="always" vertical-align="super">
-				<fo:basic-link internal-destination="{$lang}_footnote_{@reference}" fox:alt-text="footnote {@reference}">
+				<fo:basic-link internal-destination="{$lang}_footnote_{@reference}_{$number}_{$gen_id}" fox:alt-text="footnote {@reference}">
 					<xsl:value-of select="$number"/><!--  + count(//bipm:bibitem/bipm:note) -->
 				</fo:basic-link>
 			</fo:inline>
 			<fo:footnote-body>
 				<fo:block font-size="9pt" margin-bottom="12pt" font-weight="normal" text-indent="0" start-indent="0" line-height="124%" text-align="justify">
-					<fo:inline id="{$lang}_footnote_{@reference}" keep-with-next.within-line="always" font-size="60%" vertical-align="super" padding-right="1mm"> <!-- baseline-shift="30%" padding-right="3mm" font-size="60%"  alignment-baseline="hanging" -->
+					<fo:inline id="{$lang}_footnote_{@reference}_{$number}_{$gen_id}" keep-with-next.within-line="always" font-size="60%" vertical-align="super" padding-right="1mm"> <!-- baseline-shift="30%" padding-right="3mm" font-size="60%"  alignment-baseline="hanging" -->
 						<xsl:value-of select="$number "/><!-- + count(//bipm:bibitem/bipm:note) -->
 					</fo:inline>
 					<xsl:for-each select="bipm:p">
@@ -1847,6 +1867,7 @@
 			<xsl:if test="@parent-type = 'quote'">
 				<xsl:attribute name="font-family">Arial</xsl:attribute>
 				<xsl:attribute name="font-size">9pt</xsl:attribute>
+				<xsl:attribute name="line-height">130%</xsl:attribute>
 			</xsl:if>
 			<xsl:attribute name="line-height-shift-adjustment">disregard-shifts</xsl:attribute>
 			<xsl:apply-templates />
@@ -1883,6 +1904,7 @@
 			<xsl:if test="@parent-type = 'quote'">
 				<xsl:attribute name="font-family">Arial</xsl:attribute>
 				<xsl:attribute name="font-size">9pt</xsl:attribute>
+				<xsl:attribute name="line-height">130%</xsl:attribute>
 			</xsl:if>
 			<fo:block-container margin-left="0mm">
 				<fo:list-block provisional-distance-between-starts="8mm">
@@ -1896,7 +1918,7 @@
 						</xsl:if>
 					</xsl:if>
 					<!-- <xsl:if test="../ancestor::bipm:note"> -->
-					<xsl:if test="../ancestor::bipm:note_side">
+					<xsl:if test="ancestor::bipm:note_side">
 						<xsl:attribute name="provisional-distance-between-starts">0mm</xsl:attribute>
 					</xsl:if>
 	

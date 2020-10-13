@@ -825,6 +825,9 @@
 			<xsl:attribute name="border-top">0.1mm solid black</xsl:attribute>
 			<xsl:attribute name="margin-bottom">12pt</xsl:attribute>
 		</xsl:if>
+		<xsl:if test="$namespace = 'bipm'">
+			<xsl:attribute name="margin-bottom">12pt</xsl:attribute>
+		</xsl:if>
 	</xsl:attribute-set>
 	
 	<xsl:variable name="note-body-indent">10mm</xsl:variable>
@@ -918,7 +921,9 @@
 			<xsl:attribute name="margin-bottom">12pt</xsl:attribute>
 			<xsl:attribute name="text-indent">0</xsl:attribute>			
 		</xsl:if>
-		
+		<xsl:if test="$namespace = 'bipm'">
+			<xsl:attribute name="text-align">justify</xsl:attribute>
+		</xsl:if>
 	</xsl:attribute-set>
 	
 	<xsl:attribute-set name="termnote-style">
@@ -1499,7 +1504,7 @@
 				<xsl:attribute name="space-after">12pt</xsl:attribute>
 				<xsl:attribute name="margin-left">0mm</xsl:attribute>
 				<xsl:attribute name="margin-right">0mm</xsl:attribute>
-				<xsl:if test="not(ancestor::*[local-name()='note'])">
+				<xsl:if test="not(ancestor::*[local-name()='note_side'])">
 					<xsl:attribute name="font-size">10pt</xsl:attribute>
 				</xsl:if>
 				<xsl:attribute name="margin-bottom">12pt</xsl:attribute>
@@ -1554,7 +1559,7 @@
 					<attribute name="border-bottom">2pt solid black</attribute>
 				</xsl:if>				
 				<xsl:if test="$namespace = 'bipm'">					
-					<xsl:if test="not(ancestor::*[local-name()='preface']) and not(ancestor::*[local-name()='note']) and not(ancestor::*[local-name() = 'annex'] and .//*[local-name() = 'xref'][@pagenumber])">
+					<xsl:if test="not(ancestor::*[local-name()='preface']) and not(ancestor::*[local-name()='note_side']) and not(ancestor::*[local-name() = 'annex'] and .//*[local-name() = 'xref'][@pagenumber])">
 						<attribute name="border-top">0.5pt solid black</attribute>
 						<attribute name="border-bottom">0.5pt solid black</attribute>
 					</xsl:if>
@@ -1882,23 +1887,23 @@
 							<xsl:if test="$namespace = 'bipm'">
 								<xsl:attribute name="border">solid black 0pt</xsl:attribute>
 							</xsl:if>
-							<!-- except gb and bipm -->
-							<xsl:if test="$namespace = 'iso' or $namespace = 'iec' or $namespace = 'itu' or $namespace = 'unece' or $namespace = 'unece-rec' or $namespace = 'nist-cswp'  or $namespace = 'nist-sp' or $namespace = 'ogc' or $namespace = 'ogc-white-paper' or $namespace = 'rsd' or $namespace = 'csa' or $namespace = 'csd' or $namespace = 'm3d' or $namespace = 'iho' or $namespace = 'mpfd'">
+							<!-- except gb -->
+							<xsl:if test="$namespace = 'iso' or $namespace = 'iec' or $namespace = 'itu' or $namespace = 'unece' or $namespace = 'unece-rec' or $namespace = 'nist-cswp'  or $namespace = 'nist-sp' or $namespace = 'ogc' or $namespace = 'ogc-white-paper' or $namespace = 'rsd' or $namespace = 'csa' or $namespace = 'csd' or $namespace = 'm3d' or $namespace = 'iho' or $namespace = 'mpfd' or $namespace = 'bipm'">
 								<xsl:apply-templates select="../*[local-name()='note']" mode="process"/>
 							</xsl:if>
 							
-							<xsl:if test="$namespace = 'bipm'">
+							<!-- show Note under table in preface (ex. abstract) sections -->
+							<!-- empty, because notes show at page side in main sections -->
+							<!-- <xsl:if test="$namespace = 'bipm'">
 								<xsl:choose>
-									<xsl:when test="ancestor::*[local-name()='preface']">
-										<!-- show Note under table in preface (ex. abstract) sections -->
+									<xsl:when test="ancestor::*[local-name()='preface']">										
 										<xsl:apply-templates select="../*[local-name()='note']" mode="process"/>
 									</xsl:when>
-									<xsl:otherwise>
-										<!-- empty, because notes show at page side in main sections -->
+									<xsl:otherwise>										
 									<fo:block/>
 									</xsl:otherwise>
 								</xsl:choose>
-							</xsl:if>
+							</xsl:if> -->
 							
 							
 							<!-- horizontal row separator -->
@@ -1986,7 +1991,7 @@
 							<xsl:if test="$namespace = 'bipm'">
 								<xsl:attribute name="border">solid black 0pt</xsl:attribute>
 							</xsl:if>
-							<!-- except gb and bipm -->
+							<!-- except gb  -->
 							<xsl:if test="$namespace = 'iso' or $namespace = 'iec' or $namespace = 'itu' or $namespace = 'unece' or $namespace = 'unece-rec' or $namespace = 'nist-cswp'  or $namespace = 'nist-sp' or $namespace = 'ogc' or $namespace = 'ogc-white-paper' or $namespace = 'rsd' or $namespace = 'csa' or $namespace = 'csd' or $namespace = 'm3d' or $namespace = 'iho' or $namespace = 'mpfd' or $namespace = 'bipm'">
 								<xsl:apply-templates select="../*[local-name()='note']" mode="process"/>
 							</xsl:if>
@@ -2166,9 +2171,9 @@
 						</xsl:if>
 					</xsl:if>					
 				</xsl:if>
-				<xsl:if test="$namespace = 'bipm'">
+				<!-- <xsl:if test="$namespace = 'bipm'">
 					<xsl:attribute name="height">8mm</xsl:attribute>
-				</xsl:if>
+				</xsl:if> -->
 				
 			<xsl:apply-templates />
 		</fo:table-row>
@@ -3906,6 +3911,15 @@
 								<xsl:attribute name="font-size">9pt</xsl:attribute>
 								<xsl:attribute name="text-align">justify</xsl:attribute>
 								<xsl:attribute name="padding-top">0mm</xsl:attribute>					
+							</xsl:if>
+						</xsl:if>
+						
+						<xsl:if test="$namespace = 'bipm'">
+							<xsl:if test="@parent-type = 'quote'">
+								<xsl:attribute name="font-family">Arial</xsl:attribute>
+								<xsl:attribute name="font-size">9pt</xsl:attribute>
+								<xsl:attribute name="line-height">130%</xsl:attribute>
+								<xsl:attribute name="text-align">justify</xsl:attribute>
 							</xsl:if>
 						</xsl:if>
 						
