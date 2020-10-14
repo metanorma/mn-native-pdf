@@ -566,9 +566,12 @@
 						
 						<fo:block-container absolute-position="fixed" top="200mm" height="69mm" font-family="Times New Roman" text-align="center" display-align="after">
 							<xsl:apply-templates select="bipm:boilerplate/bipm:feedback-statement"/>
-							<fo:block margin-top="15mm">
-								<xsl:text>ISBN </xsl:text><xsl:value-of select="bipm:bibdata/bipm:docidentifier[@type='ISBN']"/>
-							</fo:block>
+							<xsl:variable name="ISBN" select="normalize-space(bipm:bibdata/bipm:docidentifier[@type='ISBN'])"/>
+							<xsl:if test="$ISBN != ''">
+								<fo:block margin-top="15mm">
+									<xsl:text>ISBN </xsl:text><xsl:value-of select="$ISBN"/>
+								</fo:block>
+							</xsl:if>
 						</fo:block-container>
 						
 					</fo:flow>
