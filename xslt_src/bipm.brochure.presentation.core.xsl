@@ -361,11 +361,7 @@
 		</xsl:element>
 	</xsl:template>
 	
-		<!-- envelope standalone note in p -->
-		<!-- <p>
-			<xsl:copy-of select="."/>
-		</p>
-	</xsl:template> -->
+		
 	<xsl:template match="bipm:preface/bipm:clause[position() &gt; 1]" mode="flatxml">
 		<xsl:copy-of select="."/>
 	</xsl:template>
@@ -390,19 +386,6 @@
 	</xsl:template>	
 	
 	
-	<!-- <xsl:template match="bipm:li[last()]" mode="flatxml_list">
-		<xsl:copy>
-			<xsl:apply-templates select="@*" mode="flatxml_list"/>
-			<xsl:attribute name="list_type">
-				<xsl:value-of select="local-name(..)"/>
-			</xsl:attribute>
-			<xsl:attribute name="label">
-				<xsl:call-template name="setListItemLabel"/>
-			</xsl:attribute>
-			<xsl:apply-templates select="node()" mode="flatxml_list"/>
-			<xsl:copy-of select="following-sibling::*"/>
-		</xsl:copy>		
-	</xsl:template> -->
 	
 	<!-- copy 'ol' 'ul' properties to each 'li' -->
 	<!-- move note for list (list level note)  into latest 'li' -->
@@ -413,9 +396,9 @@
 			<xsl:attribute name="list_type">
 				<xsl:value-of select="local-name(..)"/>
 			</xsl:attribute>
-			<xsl:attribute name="label">
-				<xsl:call-template name="setListItemLabel"/>
-			</xsl:attribute>
+			<!-- <xsl:attribute name="label"> -->
+			<xsl:call-template name="setListItemLabel"/>
+			<!-- </xsl:attribute> -->
 			<xsl:if test="ancestor::bipm:quote">
 				<xsl:attribute name="parent-type">quote</xsl:attribute>				
 			</xsl:if>
@@ -452,30 +435,38 @@
 	<xsl:template match="bipm:ol/*[not(local-name() = 'li') and not(following-sibling::*[local-name() = 'li'])]" mode="flatxml_list"/>
 	
 	<xsl:template name="setListItemLabel">
+		<xsl:attribute name="label">
+			<xsl:choose>
+				<xsl:when test="local-name(..) = 'ul' and ../ancestor::bipm:ul">&#x2212;</xsl:when> <!-- &#x2212; - minus sign.  &#x2014; - dash -->
+				<xsl:when test="local-name(..) = 'ul'">•</xsl:when> <!-- &#x2014; dash -->
+				<xsl:otherwise> <!-- for ordered lists -->
+					<xsl:choose>
+						<xsl:when test="../@type = 'arabic'">
+							<xsl:number format="1."/>
+						</xsl:when>
+						<xsl:when test="../@type = 'alphabet'">
+							<xsl:number format="a)"/>
+						</xsl:when>
+						<xsl:when test="../@type = 'alphabet_upper'">
+							<xsl:number format="A)"/>
+						</xsl:when>
+						<xsl:when test="../@type = 'roman'">
+							<xsl:number format="i)"/>
+						</xsl:when>
+						<xsl:otherwise>
+							<xsl:number format="1)"/>
+						</xsl:otherwise>
+					</xsl:choose>
+				</xsl:otherwise>
+			</xsl:choose>
+		</xsl:attribute>
 		<xsl:choose>
-			<xsl:when test="local-name(..) = 'ul' and ../ancestor::bipm:ul">&#x2014;</xsl:when> <!-- &#x2014; dash -->
-			<xsl:when test="local-name(..) = 'ul'">•</xsl:when> <!-- &#x2014; dash -->
-			<xsl:otherwise> <!-- for ordered lists -->
-				<xsl:choose>
-					<xsl:when test="../@type = 'arabic'">
-						<xsl:number format="1."/>
-					</xsl:when>
-					<xsl:when test="../@type = 'alphabet'">
-						<xsl:number format="a)"/>
-					</xsl:when>
-					<xsl:when test="../@type = 'alphabet_upper'">
-						<xsl:number format="A)"/>
-					</xsl:when>
-					<xsl:when test="../@type = 'roman'">
-						<xsl:number format="i)"/>
-					</xsl:when>
-					<xsl:otherwise>
-						<xsl:number format="1)"/>
-					</xsl:otherwise>
-				</xsl:choose>
-			</xsl:otherwise>
+			<xsl:when test="local-name(..) = 'ul' and ../ancestor::bipm:ul"></xsl:when> <!-- &#x2014; dash -->
+			<xsl:when test="local-name(..) = 'ul'">
+				<xsl:attribute name="font-size">15pt</xsl:attribute>
+			</xsl:when>
 		</xsl:choose>
-	</xsl:template>
+</xsl:template>
 	
 	
 	<xsl:template match="bipm:bipm-standard"/>
@@ -2088,7 +2079,7 @@
 	<xsl:template match="bipm:li">
 		<fo:block-container margin-left="0mm">
 			<xsl:if test="ancestor::bipm:li">
-				<xsl:attribute name="margin-left">7mm</xsl:attribute>
+				<xsl:attribute name="margin-left">6.5mm</xsl:attribute><!-- 8 mm -->
 			</xsl:if>
 			<xsl:if test="@parent-type = 'quote'">
 				<xsl:attribute name="font-family">Arial</xsl:attribute>
@@ -2096,7 +2087,7 @@
 				<xsl:attribute name="line-height">130%</xsl:attribute>
 			</xsl:if>
 			<fo:block-container margin-left="0mm">
-				<fo:list-block provisional-distance-between-starts="8mm">
+				<fo:list-block provisional-distance-between-starts="6.5mm"> <!-- 8 mm -->
 					<xsl:if test="not(following-sibling::*[1][local-name() = 'li'])"> <!-- last item -->
 						<xsl:attribute name="margin-bottom">6pt</xsl:attribute>
 						<xsl:if test="../ancestor::bipm:ul | ../ancestor::bipm:ol">
@@ -2115,8 +2106,10 @@
 						<fo:list-item-label end-indent="label-end()">
 							<fo:block>
 								<fo:inline>
-									<xsl:if test="@list_type = 'ul'">
-										<xsl:attribute name="font-size">15pt</xsl:attribute>
+									<!-- <xsl:if test="@list_type = 'ul'">
+										<xsl:attribute name="font-size">15pt</xsl:attribute> -->
+									<xsl:if test="@font-size">
+										<xsl:attribute name="font-size"><xsl:value-of select="@font-size"/></xsl:attribute>									
 										<!-- <xsl:attribute name="baseline-shift">-10%</xsl:attribute> -->
 									</xsl:if>
 									<xsl:value-of select="@label"/>
