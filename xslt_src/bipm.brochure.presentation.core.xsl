@@ -635,7 +635,7 @@
 				
 				<!-- Document Pages -->
 				
-				<xsl:apply-templates select="bipm:sections/*" mode="sections" />
+				<xsl:apply-templates select="bipm:sections2/*" mode="sections" />
 				
 				
 				
@@ -1398,7 +1398,7 @@
 				<xsl:when test="$level = 2 and ancestor::bipm:annex">10.5pt</xsl:when>
 				<xsl:when test="$level = 2">14pt</xsl:when>
 				<xsl:when test="$level = 3 and ancestor::bipm:annex">10pt</xsl:when>
-				<xsl:when test="$level = 4 and ancestor::bipm:annex">9pt</xsl:when>
+				<!-- <xsl:when test="$level = 4 and ancestor::bipm:annex">9pt</xsl:when> -->
 				<xsl:when test="$level = 3">12pt</xsl:when>
 				<xsl:otherwise>11pt</xsl:otherwise>
 			</xsl:choose>
@@ -1491,8 +1491,8 @@
 										</fo:inline>
 									</xsl:if>
 									<xsl:if test="$level = 4">
-										<xsl:attribute name="margin-left">14mm</xsl:attribute>
-										<xsl:attribute name="text-align">center</xsl:attribute>
+										<!-- <xsl:attribute name="margin-left">14mm</xsl:attribute> -->
+										<!-- <xsl:attribute name="text-align">center</xsl:attribute> -->
 									</xsl:if>
 									<xsl:call-template name="extractTitle"/>
 								</xsl:when>
@@ -1791,10 +1791,21 @@
 							</xsl:for-each>
 						</xsl:variable>
 						
-						<xsl:variable name="rows">					
+						<xsl:variable name="rows">
+							
+							<xsl:variable name="first_num" select="normalize-space(xalan:nodeset($rows_with_notes)/row_num[1])"/>
+							<xsl:choose>
+								<xsl:when test="$first_num = ''">
+									<num span_start="1" span_num="{$total_rows}" display-align="before"/>
+								</xsl:when>
+								<xsl:when test="number($first_num) != 1">
+									<num span_start="1" span_num="{$first_num -1}" display-align="before"/>
+								</xsl:when>
+							</xsl:choose>
+							
 							<xsl:for-each select="xalan:nodeset($rows_with_notes)/row_num">
 								<xsl:variable name="num" select="number(.)"/>
-								<xsl:choose>						
+								<xsl:choose>								
 									<xsl:when test="position() = last()">
 										<num span_start="{$num}" span_num="{$total_rows - $num + 1}" display-align="before"/>
 									</xsl:when>
@@ -1809,9 +1820,64 @@
 						<!-- rows=<xsl:copy-of select="$rows"/> -->
 						
 						
-						<xsl:apply-templates mode="clause_table">
+						
+						<!-- updated strategy: consolidated show all block with note, instead of spanned rows -->
+						
+						<xsl:variable name="clauses">
+							<xsl:copy-of select="./*"/> <!-- /* -->
+						</xsl:variable>
+						<!-- currid=<xsl:value-of select="@id"/>
+						clause=<xsl:copy-of select="$clauses"/> -->
+						
+						<xsl:for-each select="xalan:nodeset($rows)/num">
+							<xsl:variable name="start_row" select="@span_start"/>
+							<xsl:variable name="end_row" select="@span_start + @span_num - 1"/>
+							<!-- start_row=<xsl:value-of select="$start_row"/>
+							end_row=<xsl:value-of select="$end_row"/> -->
+							
+							<fo:table-row>
+								<fo:table-cell>
+									<fo:block>
+										<!-- begin -->
+										<xsl:for-each select="xalan:nodeset($clauses)/*[position() &gt;= number($start_row) and position() &lt;= $end_row]">
+											<fo:block>
+												clause=<xsl:copy-of select="."/>
+												<xsl:apply-templates select="."/>
+											</fo:block>
+										</xsl:for-each>
+										<!-- <xsl:apply-templates select="*[position() &gt;= $start_row and position() &lt;= $end_row]" />										 -->
+										<!-- end -->
+									</fo:block>
+								</fo:table-cell>
+								<fo:table-cell><fo:block>&#xA0;</fo:block></fo:table-cell> <!-- <fo:block/> <fo:block>&#xA0;</fo:block> -->
+								
+								<fo:table-cell font-size="8pt" line-height="120%" display-align="before" padding-bottom="6pt">
+									<xsl:attribute name="display-align">
+										<xsl:value-of select="@display-align"/>
+									</xsl:attribute>
+										
+										<fo:block>
+											<!-- <fo:block>display-align=<xsl:value-of select="xalan:nodeset($rows)/num[@span_start = $current_row]/@display-align"/></fo:block> -->
+											<!-- <xsl:for-each select="ancestor::*[1]/*[position() &gt;= $start_row and position() &lt; $end_row]//bipm:note"> -->
+											<xsl:for-each select="xalan:nodeset($clauses)/*[position() &gt;= $start_row and position() &lt;= $end_row]//bipm:note_side">												
+												<xsl:apply-templates select="." mode="note_side"/>
+											</xsl:for-each>
+										</fo:block>
+								</fo:table-cell>
+								
+								
+							</fo:table-row>
+							
+							
+							<!-- <xsl:with-param name="rows" select="$rows"/>
+						</xsl:apply-templates> -->
+							
+						</xsl:for-each>
+						
+						
+						<!-- <xsl:apply-templates mode="clause_table">
 							<xsl:with-param name="rows" select="$rows"/>
-						</xsl:apply-templates>
+						</xsl:apply-templates> -->
 							
 					</fo:table-body>
 				</fo:table>
@@ -1827,7 +1893,7 @@
 		
 	</xsl:template>
 	
-	
+
 	<xsl:template match="bipm:sections/bipm:clause/* | bipm:annex/bipm:clause/*" mode="clause_table">
 		<xsl:param name="rows"/>
 		
