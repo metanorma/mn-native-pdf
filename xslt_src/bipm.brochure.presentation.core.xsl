@@ -1398,6 +1398,7 @@
 				<xsl:when test="$level = 2 and ancestor::bipm:annex">10.5pt</xsl:when>
 				<xsl:when test="$level = 2">14pt</xsl:when>
 				<xsl:when test="$level = 3 and ancestor::bipm:annex">10pt</xsl:when>
+				<xsl:when test="$level = 4 and ancestor::bipm:annex">9pt</xsl:when>
 				<xsl:when test="$level = 3">12pt</xsl:when>
 				<xsl:otherwise>11pt</xsl:otherwise>
 			</xsl:choose>
@@ -1488,6 +1489,10 @@
 													</svg>
 												</fo:instream-foreign-object>	
 										</fo:inline>
+									</xsl:if>
+									<xsl:if test="$level = 4">
+										<xsl:attribute name="margin-left">14mm</xsl:attribute>
+										<xsl:attribute name="text-align">center</xsl:attribute>
 									</xsl:if>
 									<xsl:call-template name="extractTitle"/>
 								</xsl:when>
@@ -1831,12 +1836,24 @@
 		
 	
 		<fo:table-row> <!-- border="1pt solid black" -->
+			<xsl:if test="local-name() = 'clause'">
+				<!-- <xsl:attribute name="border">1pt solid red</xsl:attribute> -->
+				<!-- <xsl:attribute name="keep-with-next.within-page">always</xsl:attribute> -->
+			</xsl:if>
+			<xsl:if test="local-name() = 'title'">
+				<!-- <xsl:attribute name="border">1pt solid green</xsl:attribute> -->
+				<!-- <xsl:attribute name="keep-with-next.within-page">always</xsl:attribute> -->
+			</xsl:if>
 			<fo:table-cell> <!-- border="1pt solid black" -->
+				<!-- <xsl:if test="local-name() = 'title'">					
+					<xsl:attribute name="keep-with-next.within-page">always</xsl:attribute>
+				</xsl:if> -->
 				<fo:block>					
 					<xsl:apply-templates select="."/>
+					<!-- <xsl:if test="local-name() = 'title'"><xsl:text> keep-with-next.within-page="always"</xsl:text></xsl:if> -->
 				</fo:block>
 			</fo:table-cell>
-			<fo:table-cell><fo:block>&#xA0;</fo:block></fo:table-cell>
+			<fo:table-cell><fo:block>&#xA0;</fo:block></fo:table-cell> <!-- <fo:block/> <fo:block>&#xA0;</fo:block> -->
 			
 			
 			<!-- DEBUG -->
