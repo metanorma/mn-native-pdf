@@ -98,8 +98,8 @@
 		
 	</xsl:variable>
 
-	<!-- <xsl:variable name="independentAppendix" select="normalize-space(/bipm:bipm-standard/bipm:bibdata/bipm:ext/bipm:structuredidentifier/bipm:appendix)"/> -->
-	<xsl:variable name="independentAppendix" select="normalize-space(/bipm:bipm-standard/bipm:bibdata/bipm:title[@type = 'appendix'])"/>
+	<xsl:variable name="independentAppendix" select="normalize-space(/bipm:bipm-standard/bipm:bibdata/bipm:ext/bipm:structuredidentifier/bipm:appendix)"/>
+	<!-- <xsl:variable name="independentAppendix" select="normalize-space(/bipm:bipm-standard/bipm:bibdata/bipm:title[@type = 'appendix'])"/> -->
 	
 
 	<xsl:template name="generateContents">
@@ -755,7 +755,7 @@
 							</fo:block>
 							<fo:block>&#xA0;</fo:block>
 							<fo:block font-size="9pt">
-								<xsl:value-of select="/bipm:bipm-standard/bipm:bibdata/bipm:ext/bipm:editorialgroup/bipm:committee"/>
+								<xsl:value-of select="/bipm:bipm-standard/bipm:bibdata/bipm:ext/bipm:editorialgroup/bipm:committee/bipm:variant[@language = $curr_lang]"/>
 							</fo:block>
 						</fo:block-container>
 						
@@ -911,8 +911,8 @@
 				<xsl:variable name="weight-bold">500</xsl:variable>
 				
 				<fo:block-container absolute-position="fixed" left="12.5mm" top="60mm" >
-					<fo:block font-size="22.2pt" font-weight="{$weight-normal}">Le Système international d’unités</fo:block>
-					<fo:block font-size="22.2pt" font-weight="{$weight-bold}" margin-top="1mm">The International System of Units</fo:block>					
+					<fo:block font-size="22.2pt" font-weight="{$weight-normal}"><xsl:value-of select="/bipm:bipm-standard/bipm:bibdata/bipm:title[@language = 'fr' and @type = 'main']"/></fo:block>
+					<fo:block font-size="22.2pt" font-weight="{$weight-bold}" margin-top="1mm"><xsl:value-of select="/bipm:bipm-standard/bipm:bibdata/bipm:title[@language = 'en' and @type = 'main']"/></fo:block>					
 					<xsl:variable name="edition_str">édition</xsl:variable>
 						<!-- <xsl:choose>
 							<xsl:when test="$lang = 'fr'">édition</xsl:when>
@@ -962,10 +962,10 @@
 					</fo:block>
 				</fo:block-container> -->
 				
-				<fo:block-container absolute-position="fixed" left="12mm" top="242mm" height="42mm" display-align="after">
+				<fo:block-container absolute-position="fixed" left="12mm" top="242mm" height="42mm" width="140mm" display-align="after">
 					<fo:block font-size="12pt">
-						<fo:block>Comité consultatif du temps et des fréquences</fo:block>
-						<fo:block><xsl:value-of select="/bipm:bipm-standard/bipm:bibdata/bipm:ext/bipm:editorialgroup/bipm:committee"/></fo:block>
+						<fo:block><xsl:value-of select="/bipm:bipm-standard/bipm:bibdata/bipm:ext/bipm:editorialgroup/bipm:committee/bipm:variant[@language = 'fr']"/></fo:block>
+						<fo:block><xsl:value-of select="/bipm:bipm-standard/bipm:bibdata/bipm:ext/bipm:editorialgroup/bipm:committee/bipm:variant[@language = 'en']"/></fo:block>
 						<fo:block>&#xA0;</fo:block>
 						<!-- <fo:block>BIPM SI MEP S1</fo:block> -->
 						<fo:block>
@@ -2246,7 +2246,8 @@
 			<xsl:if test=".//bipm:fn">
 				<xsl:attribute name="line-height-shift-adjustment">disregard-shifts</xsl:attribute>
 			</xsl:if>			
-			<xsl:call-template name="processBibitem"/>			
+			<!-- <xsl:call-template name="processBibitem"/>			 -->
+			<xsl:apply-templates />
 		</fo:block>
 	</xsl:template>
 
@@ -2304,7 +2305,8 @@
 				</fo:list-item-label>
 				<fo:list-item-body start-indent="body-start()">
 					<fo:block>
-						<xsl:call-template name="processBibitem"/>
+						<!-- <xsl:call-template name="processBibitem"/> -->
+						<xsl:apply-templates />
 					</fo:block>
 				</fo:list-item-body>
 			</fo:list-item>
