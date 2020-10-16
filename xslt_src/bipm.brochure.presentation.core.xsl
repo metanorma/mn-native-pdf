@@ -1829,7 +1829,13 @@
 						<!-- currid=<xsl:value-of select="@id"/>
 						clause=<xsl:copy-of select="$clauses"/> -->
 						
-						<xsl:for-each select="xalan:nodeset($rows)/num">
+						<xsl:call-template name="insertClauses">
+							<xsl:with-param name="rows" select="$rows"/>
+						</xsl:call-template>
+						
+						
+						
+						<xsl:for-each select="xalan:nodeset($rows)/num2">
 							<xsl:variable name="start_row" select="@span_start"/>
 							<xsl:variable name="end_row" select="@span_start + @span_num - 1"/>
 							<!-- start_row=<xsl:value-of select="$start_row"/>
@@ -1838,6 +1844,7 @@
 							<fo:table-row>
 								<fo:table-cell>
 									<fo:block>
+									
 										<!-- begin -->
 										<xsl:for-each select="xalan:nodeset($clauses)/*[position() &gt;= number($start_row) and position() &lt;= $end_row]">
 											<fo:block>
@@ -1893,6 +1900,46 @@
 		
 	</xsl:template>
 	
+	
+	<xsl:template name="insertClauses">
+			<xsl:param name="rows"/>
+			<xsl:param name="curr_row_num" select="1"/>
+			
+			<xsl:if test="$curr_row_num &lt;=  count(xalan:nodeset($rows)/num)">
+				<xsl:variable name="start_row" select="xalan:nodeset($rows)/num[$curr_row_num]/@span_start"/>
+				<xsl:variable name="end_row" select="$start_row + xalan:nodeset($rows)/num[$curr_row_num]/@span_num - 1"/>
+				<fo:table-row>
+					<fo:table-cell>
+						<fo:block>
+							<!-- insert elements from sections/clause annex/clause -->
+							<xsl:for-each select="*[position() &gt;= number($start_row) and position() &lt;= $end_row]">
+								<fo:block>
+									<!-- clause=<xsl:copy-of select="."/> -->
+									<xsl:apply-templates select="."/>
+								</fo:block>
+							</xsl:for-each>
+						</fo:block>
+					</fo:table-cell>
+					<fo:table-cell><fo:block>&#xA0;</fo:block></fo:table-cell> <!-- <fo:block/> <fo:block>&#xA0;</fo:block> -->
+					<fo:table-cell font-size="8pt" line-height="120%" display-align="before" padding-bottom="6pt">
+						<xsl:attribute name="display-align">
+							<xsl:value-of select="xalan:nodeset($rows)/num[$curr_row_num]/@display-align"/>
+						</xsl:attribute>
+							
+							<fo:block>												
+								<xsl:for-each select="*[position() &gt;= $start_row and position() &lt;= $end_row]//bipm:note_side">												
+									<xsl:apply-templates select="." mode="note_side"/>
+								</xsl:for-each>
+							</fo:block>
+					</fo:table-cell>
+				</fo:table-row>	
+				<xsl:call-template name="insertClauses">
+					<xsl:with-param name="rows" select="$rows"/>
+					<xsl:with-param name="curr_row_num" select="$curr_row_num + 1"/>
+				</xsl:call-template>
+			</xsl:if>
+			
+		</xsl:template>
 
 	<xsl:template match="bipm:sections/bipm:clause/* | bipm:annex/bipm:clause/*" mode="clause_table">
 		<xsl:param name="rows"/>
