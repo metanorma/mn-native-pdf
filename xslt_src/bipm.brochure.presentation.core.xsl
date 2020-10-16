@@ -1430,10 +1430,12 @@
 				<xsl:attribute name="margin-top">36pt</xsl:attribute>
 			</xsl:if> -->
 			<xsl:if test="$level = 2">
-				<xsl:attribute name="margin-top">24pt</xsl:attribute>
+				<!-- <xsl:attribute name="margin-top">24pt</xsl:attribute>				 -->
+				<xsl:attribute name="space-before">24pt</xsl:attribute>
 			</xsl:if>
 			<xsl:if test="$level = 3 and not(ancestor::bipm:annex)">
-				<xsl:attribute name="margin-top">20pt</xsl:attribute>
+				<!-- <xsl:attribute name="margin-top">20pt</xsl:attribute> -->
+				<xsl:attribute name="space-before">20pt</xsl:attribute>
 			</xsl:if>
 			
 			<fo:block-container margin-left="0mm">
@@ -1698,8 +1700,20 @@
 	<xsl:template match="bipm:sections/bipm:clause | bipm:annex/bipm:clause" priority="3">
 		<!-- <xsl:choose>
 			<xsl:when test="$independentAppendix = ''"> -->
+			
+			<xsl:variable name="space-before"> <!-- margin-top for title, see bipm:title -->
+				<xsl:if test="local-name(*[1]) = 'title'">					
+						<xsl:if test="*[1]/@depth = 2">24pt</xsl:if>						
+						<xsl:if test="*[1]/@level = 3 and not(*[1]/ancestor::bipm:annex)">20pt</xsl:if>							
+				</xsl:if>						
+			</xsl:variable>					
+			<xsl:variable name="space-before-value" select="normalize-space($space-before)"/>			
+			
 				<fo:table table-layout="fixed" width="174mm" line-height="135%">
 					<xsl:call-template name="setId"/>
+					<xsl:if test="$space-before-value != ''">
+						<xsl:attribute name="space-before"><xsl:value-of select="$space-before-value"/></xsl:attribute>
+					</xsl:if>
 					<fo:table-column column-width="137mm"/>
 					<fo:table-column column-width="5mm"/>
 					<fo:table-column column-width="32mm"/>
@@ -1908,20 +1922,60 @@
 			<xsl:if test="$curr_row_num &lt;=  count(xalan:nodeset($rows)/num)">
 				<xsl:variable name="start_row" select="xalan:nodeset($rows)/num[$curr_row_num]/@span_start"/>
 				<xsl:variable name="end_row" select="$start_row + xalan:nodeset($rows)/num[$curr_row_num]/@span_num - 1"/>
-				<fo:table-row>
-					<fo:table-cell>
+				<fo:table-row border-top="2pt solid blue" border-bottom="2pt solid blue">
+					<xsl:if test="local-name(*[$end_row]) = 'title' or local-name(*[$end_row]) = 'clause'"> <!-- if last element is title or clause, then keep row with next -->
+						<xsl:attribute  name="keep-with-next.within-page">always</xsl:attribute>
+					</xsl:if>
+					
+					<!-- start_row_next=<xsl:value-of select="$start_row_next"/>
+					 local-name=<xsl:value-of select="local-name(*[$start_row_next])"/> -->
+					<xsl:variable name="padding-bottom">						
+						<xsl:variable name="start_row_next" select="normalize-space(xalan:nodeset($rows)/num[$curr_row_num + 1]/@span_start)" />
+						<xsl:if test="$start_row_next != '' and local-name(*[$start_row_next]) = 'title'">							
+							<xsl:variable name="start_row_next_num" select="number($start_row_next)"/>							
+								<xsl:if test="*[$start_row_next_num]/@depth = 2">24pt</xsl:if>
+								<!-- <xsl:attribute name="padding-bottom">20pt</xsl:attribute> -->
+								<xsl:if test="*[$start_row_next_num]/@level = 3 and not(*[$start_row_next_num]/ancestor::bipm:annex)">20pt</xsl:if>							
+						</xsl:if>						
+					</xsl:variable>					
+					<xsl:variable name="padding-bottom-value" select="normalize-space($padding-bottom)"/>
+					<!-- padding-bottom-value=<xsl:value-of select="$padding-bottom-value"/> -->
+					<fo:table-cell>						
+						<xsl:if test="$padding-bottom-value != ''">
+							<xsl:attribute name="padding-bottom"><xsl:value-of select="$padding-bottom-value"/></xsl:attribute>
+						</xsl:if>
+						
+						<!-- start_row_next=<xsl:value-of select="$start_row_next"/>
+						localname=<xsl:value-of select="local-name(*[$start_row_next])"/> -->
+						
+						
+							<!-- <fo:block>nexttext=<xsl:value-of select="*[number($start_row_next)]"/>
+							start_row=<xsl:value-of select="$start_row"/>
+						start_row_next=<xsl:value-of select="$start_row_next"/>
+							</fo:block> -->
+						
+						
 						<fo:block>
+							<xsl:apply-templates select="*[position() &gt;= number($start_row) and position() &lt;= $end_row]"/>
 							<!-- insert elements from sections/clause annex/clause -->
-							<xsl:for-each select="*[position() &gt;= number($start_row) and position() &lt;= $end_row]">
-								<fo:block>
+							<xsl:for-each select="zzz/*[position() &gt;= number($start_row) and position() &lt;= $end_row]">
+								<!-- <fo:block> -->
 									<!-- clause=<xsl:copy-of select="."/> -->
 									<xsl:apply-templates select="."/>
-								</fo:block>
+								<!-- </fo:block> -->
 							</xsl:for-each>
 						</fo:block>
 					</fo:table-cell>
-					<fo:table-cell><fo:block>&#xA0;</fo:block></fo:table-cell> <!-- <fo:block/> <fo:block>&#xA0;</fo:block> -->
+					<fo:table-cell>
+						<xsl:if test="$padding-bottom-value != ''">
+							<xsl:attribute name="padding-bottom"><xsl:value-of select="$padding-bottom-value"/></xsl:attribute>
+						</xsl:if>
+						<fo:block>&#xA0;</fo:block>
+					</fo:table-cell> <!-- <fo:block/> <fo:block>&#xA0;</fo:block> -->
 					<fo:table-cell font-size="8pt" line-height="120%" display-align="before" padding-bottom="6pt">
+						<xsl:if test="$padding-bottom-value != ''">
+							<xsl:attribute name="padding-bottom"><xsl:value-of select="$padding-bottom-value"/></xsl:attribute>
+						</xsl:if>
 						<xsl:attribute name="display-align">
 							<xsl:value-of select="xalan:nodeset($rows)/num[$curr_row_num]/@display-align"/>
 						</xsl:attribute>
