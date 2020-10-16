@@ -1417,7 +1417,7 @@
 				<xsl:choose>
 					<xsl:when test="$level = 1 and (parent::bipm:annex or parent::bipm:abstract or ancestor::bipm:preface)">84pt</xsl:when>
 					<xsl:when test="$level = 1">6pt</xsl:when>
-					<xsl:when test="$level = 2 and ancestor::bipm:annex">12pt</xsl:when> <!-- 6pt -->
+					<xsl:when test="$level = 2 and ancestor::bipm:annex">6pt</xsl:when> <!-- 6pt 12pt -->
 					<!-- <xsl:when test="$level = 2 and $independentAppendix != ''">6pt</xsl:when> -->
 					<xsl:when test="$level = 2">10pt</xsl:when>
 					<xsl:otherwise>6pt</xsl:otherwise>
@@ -1707,8 +1707,8 @@
 			<xsl:variable name="space-before"> <!-- margin-top for title, see bipm:title -->
 				<xsl:if test="local-name(*[1]) = 'title'">					
 						<xsl:if test="*[1]/@depth = 2">24pt</xsl:if>						
-						<xsl:if test="*[1]/@level = 3 and not(*[1]/ancestor::bipm:annex)">20pt</xsl:if>
-						<xsl:if test="*[1]/@level &gt;= 3 and *[1]/ancestor::bipm:annex">12pt</xsl:if> <!-- 6pt-->
+						<xsl:if test="*[1]/@depth = 3 and not(*[1]/ancestor::bipm:annex)">20pt</xsl:if>
+						<xsl:if test="*[1]/@depth &gt;= 3 and *[1]/ancestor::bipm:annex">6pt</xsl:if> <!-- 6pt-->
 				</xsl:if>						
 			</xsl:variable>					
 			<xsl:variable name="space-before-value" select="normalize-space($space-before)"/>			
@@ -1931,18 +1931,21 @@
 						<xsl:attribute  name="keep-with-next.within-page">always</xsl:attribute>
 					</xsl:if>
 					
+					
+					<xsl:variable name="start_row_next" select="normalize-space(xalan:nodeset($rows)/num[$curr_row_num + 1]/@span_start)" />
+					<xsl:variable name="start_row_next_num" select="number($start_row_next)"/>
 					<!-- start_row_next=<xsl:value-of select="$start_row_next"/>
-					 local-name=<xsl:value-of select="local-name(*[$start_row_next])"/> -->
+					 local-name=<xsl:value-of select="local-name(*[$start_row_next_num])"/>
+					 level=<xsl:value-of select="*[$start_row_next_num]/@depth"/> -->
 					<xsl:variable name="table-row-padding-bottom">						
-						<xsl:variable name="start_row_next" select="normalize-space(xalan:nodeset($rows)/num[$curr_row_num + 1]/@span_start)" />
-						<xsl:if test="$start_row_next != '' and local-name(*[$start_row_next]) = 'title'">							
-							<xsl:variable name="start_row_next_num" select="number($start_row_next)"/>							
+						<xsl:if test="$start_row_next != '' and local-name(*[$start_row_next_num]) = 'title'">							
 								<xsl:if test="*[$start_row_next_num]/@depth = 2">24pt</xsl:if>
 								<!-- <xsl:attribute name="padding-bottom">20pt</xsl:attribute> -->
-								<xsl:if test="*[$start_row_next_num]/@level = 3 and not(*[$start_row_next_num]/ancestor::bipm:annex)">20pt</xsl:if>
-								<xsl:if test="*[$start_row_next_num]/@level &gt;= 3 and *[$start_row_next_num]/ancestor::bipm:annex">12pt</xsl:if> <!-- 6pt -->
+								<xsl:if test="*[$start_row_next_num]/@depth = 3 and not(*[$start_row_next_num]/ancestor::bipm:annex)">20pt</xsl:if>
+								<xsl:if test="*[$start_row_next_num]/@depth &gt;= 3 and *[$start_row_next_num]/ancestor::bipm:annex">6pt</xsl:if> <!-- 6pt -->
 						</xsl:if>						
 					</xsl:variable>					
+					<!-- table-row-padding-bottom=<xsl:value-of select="$table-row-padding-bottom"/> -->
 					<xsl:variable name="table-row-padding-bottom-value" select="normalize-space($table-row-padding-bottom)"/>
 					<!-- padding-bottom-value=<xsl:value-of select="$padding-bottom-value"/> -->
 					<fo:table-cell>						

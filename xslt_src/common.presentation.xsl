@@ -2188,6 +2188,11 @@
 						</xsl:if>
 					</xsl:if>					
 				</xsl:if>
+				<xsl:if test="$namespace = 'bipm'">
+					<xsl:if test="count(*) = 1 and local-name(*[1]) = 'th'">
+						<xsl:attribute  name="keep-with-next.within-page">always</xsl:attribute>
+					</xsl:if>
+				</xsl:if>
 				<!-- <xsl:if test="$namespace = 'bipm'">
 					<xsl:attribute name="height">8mm</xsl:attribute>
 				</xsl:if> -->
