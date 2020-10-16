@@ -617,7 +617,7 @@
 								<xsl:for-each select="xalan:nodeset($contents)/doc[@id = $docid]//item[@display='true' and not(@type = 'annex') and not(@parent = 'annex')]">								
 									<xsl:call-template name="insertContentItem"/>								
 								</xsl:for-each>
-								<xsl:for-each select="xalan:nodeset($contents)/doc[@id = $docid]//item[@display='true' and (@type = 'annex' or (@level = 2 and @parent = 'annex'))]">								
+								<xsl:for-each select="xalan:nodeset($contents)/doc[@id = $docid]//item[@display='true' and (@type = 'annex')]"> <!--  or (@level = 2 and @parent = 'annex') -->
 									<xsl:call-template name="insertContentItem"/>								
 								</xsl:for-each>
 							</fo:block>
