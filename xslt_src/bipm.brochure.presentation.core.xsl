@@ -289,7 +289,10 @@
 		</fo:root>
 	</xsl:template>
 	
-	<!-- flat xml for fit notes at page sides -->
+	
+	<!-- ================================= -->
+	<!-- Flattening xml for fit notes at page sides (margins) -->
+	<!-- ================================= -->	
 	<xsl:template match="@*|node()" mode="flatxml">
 		<xsl:copy>
 			<xsl:if test="ancestor::bipm:quote">
@@ -299,12 +302,36 @@
 		</xsl:copy>
 	</xsl:template>
 
-	<!-- flat clauses from 2nd level -->
+	<!-- flattening clauses from 2nd level -->
 	<!-- <xsl:template match="bipm:clause[not(parent::bipm:sections) and not(parent::bipm:annex) and not(parent::bipm:abstract) and not(ancestor::bipm:boilerplate)]" mode="flatxml"> -->
 	<xsl:template match="bipm:clause[not(parent::bipm:sections) and not(parent::bipm:annex) and not(parent::bipm:preface) and not(ancestor::bipm:boilerplate)]" mode="flatxml">
 		<xsl:copy>
 			<xsl:apply-templates select="@*" mode="flatxml"/>
-		</xsl:copy>
+			
+			<!-- add note_side inside empty clause to show near the title -->
+			<!-- <xsl:variable name="curr_id" select="@id"/>
+			<xsl:for-each select=".//bipm:quote[ancestor::bipm:clause[1][@id = $curr_id]]//bipm:fn">
+				<xsl:element name="note_side" namespace="https://www.metanorma.org/ns/bipm">
+				
+					<xsl:attribute name="id">						
+						<xsl:call-template name="fn_reference_to_xref_target"/>				
+					</xsl:attribute>
+					
+					<xsl:variable name="num" select="position()"/>
+					
+					<xsl:variable name="asterisks">
+						<xsl:call-template name="repeat">
+							<xsl:with-param name="char" select="'*'"/>
+							<xsl:with-param name="count" select="$num + 1"/>
+						</xsl:call-template>
+					</xsl:variable>
+					<xsl:value-of select="$asterisks"/>
+					
+					<xsl:text> </xsl:text>
+					<xsl:apply-templates mode="flatxml"/>
+				</xsl:element>
+			</xsl:for-each> -->
+		</xsl:copy>		
 		<xsl:apply-templates mode="flatxml"/>
 	</xsl:template>
 	
@@ -349,19 +376,74 @@
 	</xsl:template>
 	
 	
+	<!-- change fn to xref with asterisks -->
 	<xsl:template match="bipm:fn[ancestor::bipm:quote]" mode="flatxml">
-		<xsl:element name="note_side" namespace="https://www.metanorma.org/ns/bipm">
-			<xsl:apply-templates mode="flatxml"/>
-		</xsl:element>
+		<xsl:choose>
+			<xsl:when test="ancestor::bipm:li">
+				<xsl:apply-templates select="." mode="fn_to_xref"/> <!-- displays asterisks with link to side note -->
+			</xsl:when>
+			<xsl:otherwise>
+				<xsl:apply-templates select="." mode="fn_to_xref"/> <!-- displays asterisks with link to side note -->				
+				<xsl:call-template name="fn_to_note_side"/> <!-- convert footnote to side note with asterisk at start  -->
+				<!-- <xsl:element name="note_side" namespace="https://www.metanorma.org/ns/bipm">					
+					<xsl:apply-templates mode="flatxml"/>
+				</xsl:element> -->
+			</xsl:otherwise>
+		</xsl:choose>		
 	</xsl:template>
 	
+	<!-- change fn to xref with asterisks -->
 	<xsl:template match="bipm:fn[ancestor::bipm:quote]" mode="flatxml_list">
-		<xsl:element name="note_side" namespace="https://www.metanorma.org/ns/bipm">
-			<xsl:apply-templates mode="flatxml_list"/>
+		<xsl:choose>
+			<xsl:when test="ancestor::bipm:li">
+				<xsl:apply-templates select="." mode="fn_to_xref"/> <!-- displays asterisks with link to side note -->	
+			</xsl:when>
+			<xsl:otherwise>
+				<xsl:apply-templates select="." mode="fn_to_xref"/>  <!-- displays asterisks with link to side note -->				
+				<xsl:call-template name="fn_to_note_side"/> <!-- convert footnote to side note with asterisk at start  -->					
+				<!-- <xsl:element name="note_side" namespace="https://www.metanorma.org/ns/bipm">
+					<xsl:apply-templates mode="flatxml"/>
+				</xsl:element> -->
+			</xsl:otherwise>
+		</xsl:choose>		
+	</xsl:template>
+	
+	<xsl:template match="bipm:fn" mode="fn_to_xref">
+		<xsl:element name="xref" namespace="https://www.metanorma.org/ns/bipm">
+			
+			<xsl:attribute name="target">
+				<xsl:call-template name="fn_reference_to_xref_target"/>				
+			</xsl:attribute>
+			
+			<xsl:variable name="curr_clause_id" select="ancestor::bipm:clause[1]/@id"/>
+			
+			<xsl:variable name="number">
+				<xsl:number count="bipm:fn[ancestor::bipm:clause[1]/@id = $curr_clause_id]" level="any"/>
+			</xsl:variable>
+			
+			<xsl:variable name="asterisks">
+				<xsl:call-template name="repeat">
+					<xsl:with-param name="char" select="'*'"/>
+					<xsl:with-param name="count" select="$number + 1"/>
+				</xsl:call-template>
+			</xsl:variable>
+			<xsl:value-of select="$asterisks"/>			
+			<xsl:text> </xsl:text>
+			
 		</xsl:element>
 	</xsl:template>
 	
-		
+	<xsl:template name="fn_reference_to_xref_target">
+		<xsl:variable name="lang" select="ancestor::bipm:bipm-standard/*[local-name()='bibdata']//*[local-name()='language']"/>
+			<xsl:variable name="gen_id" select="generate-id()"/>
+			<xsl:variable name="curr_clause_id" select="ancestor::bipm:clause[1]/@id"/>
+			<xsl:variable name="number">
+				<xsl:number count="bipm:fn[ancestor::bipm:clause[1]/@id = $curr_clause_id]" level="any"/>
+			</xsl:variable>
+		<xsl:value-of select="concat($lang, '_footnote_', @reference, '_', $number, '_', $gen_id)"/>
+	</xsl:template>
+	
+	
 	<xsl:template match="bipm:preface/bipm:clause[position() &gt; 1]" mode="flatxml">
 		<xsl:copy-of select="."/>
 	</xsl:template>
@@ -385,11 +467,10 @@
 		</xsl:copy>
 	</xsl:template>	
 	
-	
-	
 	<!-- copy 'ol' 'ul' properties to each 'li' -->
-	<!-- move note for list (list level note)  into latest 'li' -->
+	<!-- OBSOLETE: move note for list (list level note)  into latest 'li' -->
 	<!-- move note for list (list level note)  into first 'li' -->
+	<!-- move fn for list-item (list-item level footnote)  into first 'li' -->
 	<xsl:template match="bipm:li" mode="flatxml_list">
 		<xsl:copy>
 			<xsl:apply-templates select="@*" mode="flatxml_list"/>
@@ -404,12 +485,12 @@
 			</xsl:if>
 			<xsl:apply-templates mode="flatxml_list"/>
 			
-			<!-- move note for list (list level note) into first 'li' -->
+			
 			<!-- if current li is first -->
 			<xsl:if test="not(preceding-sibling::*[local-name() = 'li'])">
 				<!-- <xsl:copy-of select="following-sibling::bipm:li[last()]/following-sibling::*"/> -->
 				
-				
+				<!-- move note for list (list level note) into first 'li' -->
 				<xsl:for-each select="following-sibling::bipm:li[last()]/following-sibling::*">
 					<xsl:choose>
 						<xsl:when test="local-name() = 'note'">
@@ -420,6 +501,17 @@
 						</xsl:otherwise>
 					</xsl:choose>
 				</xsl:for-each>
+			
+				<xsl:if test="ancestor::bipm:quote">
+					<!-- move all footnotes in the current list (not only current list item) into first 'li' -->
+					<xsl:variable name="curr_list_id" select="../@id"/>
+					<xsl:for-each select="..//bipm:fn[ancestor::bipm:ol[1]/@id = $curr_list_id or ancestor::bipm:ul[1]/@id = $curr_list_id]">
+					
+						<xsl:call-template name="fn_to_note_side" />
+							
+						
+					</xsl:for-each>
+				</xsl:if>
 				
 			</xsl:if>
 			
@@ -430,7 +522,33 @@
 		</xsl:copy>
 	</xsl:template>
 	
-	<!-- remove latest element (after li), because they moved into latest 'li' -->
+	<xsl:template name="fn_to_note_side">		
+		<xsl:element name="note_side" namespace="https://www.metanorma.org/ns/bipm">
+	
+			<xsl:attribute name="id">						
+				<xsl:call-template name="fn_reference_to_xref_target"/>				
+			</xsl:attribute>
+			
+			<xsl:variable name="curr_clause_id" select="ancestor::bipm:clause[1]/@id"/>
+			
+			<xsl:variable name="number">
+				<xsl:number count="bipm:fn[ancestor::bipm:clause[1]/@id = $curr_clause_id]" level="any"/>
+			</xsl:variable>
+			
+			<xsl:variable name="asterisks">
+				<xsl:call-template name="repeat">
+					<xsl:with-param name="char" select="'*'"/>
+					<xsl:with-param name="count" select="$number + 1"/>
+				</xsl:call-template>
+			</xsl:variable>
+			<xsl:value-of select="$asterisks"/>							
+			<xsl:text> </xsl:text>
+			
+			<xsl:apply-templates mode="flatxml"/>
+		</xsl:element>
+	</xsl:template>
+	
+	<!-- remove latest elements (after li), because they moved into latest 'li' -->
 	<xsl:template match="bipm:ul/*[not(local-name() = 'li') and not(following-sibling::*[local-name() = 'li'])]" mode="flatxml_list"/>
 	<xsl:template match="bipm:ol/*[not(local-name() = 'li') and not(following-sibling::*[local-name() = 'li'])]" mode="flatxml_list"/>
 	
@@ -466,7 +584,12 @@
 				<xsl:attribute name="font-size">15pt</xsl:attribute>
 			</xsl:when>
 		</xsl:choose>
-</xsl:template>
+	</xsl:template>
+	<!-- ================================= -->
+	<!-- END: Flattening xml for fit notes at page sides (margins) -->
+	<!-- ================================= -->	
+	
+	
 	
 	
 	<xsl:template match="bipm:bipm-standard"/>
@@ -635,7 +758,7 @@
 				
 				<!-- Document Pages -->
 				
-				<xsl:apply-templates select="bipm:sections/*" mode="sections" />
+				<xsl:apply-templates select="bipm:sections2/*" mode="sections" />
 				
 				
 				
@@ -1814,7 +1937,7 @@
 			<xsl:if test="$curr_row_num &lt;=  count(xalan:nodeset($rows)/num)">
 				<xsl:variable name="start_row" select="xalan:nodeset($rows)/num[$curr_row_num]/@span_start"/>
 				<xsl:variable name="end_row" select="$start_row + xalan:nodeset($rows)/num[$curr_row_num]/@span_num - 1"/>
-				<fo:table-row > <!-- DEBUG border-top="2pt solid blue" border-bottom="2pt solid blue" -->
+				<fo:table-row border-top="1.5pt solid blue" border-bottom="1.5pt solid blue"> <!-- DEBUG border-top="2pt solid blue" border-bottom="2pt solid blue" -->
 					<xsl:if test="local-name(*[$end_row]) = 'title' or local-name(*[$end_row]) = 'clause'"> <!-- if last element is title or clause, then keep row with next -->
 						<xsl:attribute  name="keep-with-next.within-page">always</xsl:attribute>
 					</xsl:if>
@@ -1941,6 +2064,7 @@
 	<!-- <xsl:template match="bipm:note" mode="note_side"> -->
 	<xsl:template match="bipm:note_side" mode="note_side">
 		<fo:block line-height-shift-adjustment="disregard-shifts">
+			<xsl:call-template name="setId"/>
 			<xsl:if test="ancestor::bipm:title"><fo:inline>* </fo:inline></xsl:if>
 			<xsl:apply-templates mode="note_side"/>
 		</fo:block>
@@ -4752,5 +4876,18 @@
 			</xsl:otherwise>
 		</xsl:choose>
 	</xsl:template>
+
+	<xsl:template name="repeat">
+		<xsl:param name="char" select="'*'"/>
+		<xsl:param name="count" />
+		<xsl:if test="$count &gt; 0">
+			<xsl:value-of select="$char" />
+			<xsl:call-template name="repeat">
+				<xsl:with-param name="char" select="$char" />
+				<xsl:with-param name="count" select="$count - 1" />
+			</xsl:call-template>
+		</xsl:if>
+	</xsl:template>
+
 	
 </xsl:stylesheet>
