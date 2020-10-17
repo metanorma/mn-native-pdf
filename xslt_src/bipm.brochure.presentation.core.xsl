@@ -1539,11 +1539,14 @@
 		</xsl:variable>
 		
 		<fo:block-container margin-left="-14mm" font-family="Arial" font-size="{$font-size}" font-weight="bold" keep-with-next="always"  line-height="130%">				 <!-- line-height="145%" -->
+			<xsl:if test="local-name(preceding-sibling::*[1]) = 'clause'">
+				<xsl:attribute name="id"><xsl:value-of select="preceding-sibling::*[1]/@id"/></xsl:attribute>
+			</xsl:if>
 			<xsl:attribute name="margin-bottom">
 				<xsl:choose>
 					<xsl:when test="$level = 1 and (parent::bipm:annex or parent::bipm:abstract or ancestor::bipm:preface)">84pt</xsl:when>
 					<xsl:when test="$level = 1">6pt</xsl:when>
-					<xsl:when test="$level = 2 and ancestor::bipm:annex">6pt</xsl:when> <!-- 6pt 12pt -->
+					<xsl:when test="$level = 2 and ancestor::bipm:annex">12pt</xsl:when> <!-- 6pt 12pt -->					
 					<!-- <xsl:when test="$level = 2 and $independentAppendix != ''">6pt</xsl:when> -->
 					<xsl:when test="$level = 2">10pt</xsl:when>
 					<xsl:otherwise>6pt</xsl:otherwise>
@@ -1555,12 +1558,18 @@
 			<xsl:if test="$level = 2 and $independentAppendix != ''">
 				<xsl:attribute name="margin-top">36pt</xsl:attribute>
 			</xsl:if> -->
-			<xsl:if test="$level = 2">
+			<xsl:if test="$level = 2 and ancestor::bipm:annex">
 				<!-- <xsl:attribute name="margin-top">24pt</xsl:attribute>				 -->
 				<xsl:attribute name="space-before">24pt</xsl:attribute>
 			</xsl:if>
-			<xsl:if test="$level &gt;= 3 and ancestor::bipm:annex">
+			<xsl:if test="$level = 2 and not(ancestor::bipm:annex)">
+				<xsl:attribute name="space-before">30pt</xsl:attribute>
+			</xsl:if>
+			<xsl:if test="$level = 3 and ancestor::bipm:annex">
 				<xsl:attribute name="space-before">6pt</xsl:attribute>
+			</xsl:if>
+			<xsl:if test="$level = 4 and ancestor::bipm:annex">
+				<xsl:attribute name="space-before">12pt</xsl:attribute>
 			</xsl:if>
 			<xsl:if test="$level = 3 and not(ancestor::bipm:annex)">
 				<!-- <xsl:attribute name="margin-top">20pt</xsl:attribute> -->
@@ -1832,9 +1841,11 @@
 			
 		<xsl:variable name="space-before"> <!-- margin-top for title, see bipm:title -->
 			<xsl:if test="local-name(*[1]) = 'title'">					
-					<xsl:if test="*[1]/@depth = 2">24pt</xsl:if>						
+					<xsl:if test="*[1]/@depth = 2 and not(*[1]/ancestor::bipm:annex)">30pt</xsl:if>
+					<xsl:if test="*[1]/@depth = 2 and *[1]/ancestor::bipm:annex">24pt</xsl:if>
 					<xsl:if test="*[1]/@depth = 3 and not(*[1]/ancestor::bipm:annex)">20pt</xsl:if>
-					<xsl:if test="*[1]/@depth &gt;= 3 and *[1]/ancestor::bipm:annex">6pt</xsl:if> <!-- 6pt-->
+					<xsl:if test="*[1]/@depth = 3 and *[1]/ancestor::bipm:annex">6pt</xsl:if> <!-- 6pt-->
+					<xsl:if test="*[1]/@depth = 4 and *[1]/ancestor::bipm:annex">12pt</xsl:if> <!-- 6pt-->
 			</xsl:if>						
 		</xsl:variable>					
 		<xsl:variable name="space-before-value" select="normalize-space($space-before)"/>			
@@ -1951,10 +1962,12 @@
 					
 					<xsl:variable name="table-row-padding-bottom">						
 						<xsl:if test="$start_row_next != '' and local-name(*[$start_row_next_num]) = 'title'">							
-								<xsl:if test="*[$start_row_next_num]/@depth = 2">24pt</xsl:if>
+								<xsl:if test="*[$start_row_next_num]/@depth = 2 and not(*[$start_row_next_num]/ancestor::bipm:annex)">30pt</xsl:if>
+								<xsl:if test="*[$start_row_next_num]/@depth = 2 and *[$start_row_next_num]/ancestor::bipm:annex">24pt</xsl:if>
 								<!-- <xsl:attribute name="padding-bottom">20pt</xsl:attribute> -->
 								<xsl:if test="*[$start_row_next_num]/@depth = 3 and not(*[$start_row_next_num]/ancestor::bipm:annex)">20pt</xsl:if>
-								<xsl:if test="*[$start_row_next_num]/@depth &gt;= 3 and *[$start_row_next_num]/ancestor::bipm:annex">6pt</xsl:if> <!-- 6pt -->
+								<xsl:if test="*[$start_row_next_num]/@depth = 3 and *[$start_row_next_num]/ancestor::bipm:annex">6pt</xsl:if> <!-- 6pt -->
+								<xsl:if test="*[$start_row_next_num]/@depth = 4 and *[$start_row_next_num]/ancestor::bipm:annex">12pt</xsl:if> <!-- 6pt -->
 						</xsl:if>						
 					</xsl:variable>					
 					
@@ -2048,14 +2061,31 @@
 		</fo:table-row>
 	</xsl:template>
 
+	<!-- from common.xsl -->
 	<xsl:template match="*[local-name() = 'clause']" priority="2">
-		<fo:block>
-			<xsl:call-template name="setId"/>			
-			<xsl:if test="$namespace = 'bipm'">				
-				<xsl:attribute name="keep-with-next">always</xsl:attribute>
-			</xsl:if>
-			<xsl:apply-templates />
-		</fo:block>
+		<xsl:choose>
+			<xsl:when test="count(./node()) = 0"> <!-- if empty clause, then move id into next title -->
+				<xsl:choose>
+					<xsl:when test="local-name(following-sibling::*[1]) = 'title'"/> <!-- id will set in title -->
+					<xsl:otherwise>
+						<fo:block>
+							<xsl:call-template name="setId"/>									
+							<xsl:apply-templates />
+						</fo:block>
+					</xsl:otherwise>
+				</xsl:choose>
+			</xsl:when>
+			<xsl:otherwise>
+				<fo:block>
+					<xsl:call-template name="setId"/>									
+					<xsl:apply-templates />
+				</fo:block>
+			</xsl:otherwise>
+		</xsl:choose>
+		
+		<!-- <xsl:if test="$namespace = 'bipm'">				
+							<xsl:attribute name="keep-with-next">always</xsl:attribute>
+						</xsl:if> -->
 	</xsl:template>
 
 
