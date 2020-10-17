@@ -2048,6 +2048,17 @@
 		</fo:table-row>
 	</xsl:template>
 
+	<xsl:template match="*[local-name() = 'clause']" priority="2">
+		<fo:block>
+			<xsl:call-template name="setId"/>			
+			<xsl:if test="$namespace = 'bipm'">				
+				<xsl:attribute name="keep-with-next">always</xsl:attribute>
+			</xsl:if>
+			<xsl:apply-templates />
+		</fo:block>
+	</xsl:template>
+
+
 	<!-- skip, because it process in note_side template -->
 	<!-- <xsl:template match="bipm:preface/bipm:abstract//bipm:note[not(ancestor::bipm:table)]" priority="3"/> -->
 	<!-- <xsl:template match="bipm:preface/bipm:abstract//bipm:note_side" priority="3"/> -->
@@ -2476,13 +2487,9 @@
 				<xsl:when test="starts-with(normalize-space(following-sibling::node()[1]), ')')">										
 					<!-- add , see p. N -->				
 					<!-- add , voir p. N -->
-					<xsl:apply-templates />
-					<xsl:variable name="curr_lang" select="ancestor::bipm:bipm-standard/bipm:bibdata/bipm:language"/>
+					<xsl:apply-templates />					
 					<xsl:text>, </xsl:text>
-					<xsl:choose>
-						<xsl:when test="$curr_lang = 'fr'">voir</xsl:when>
-						<xsl:otherwise>see</xsl:otherwise>
-					</xsl:choose>
+					<xsl:value-of select="ancestor::bipm:bipm-standard/bipm:local_bibdata/bipm:i18nyaml/bipm:i18n_see"/>					
 					<xsl:text> p. </xsl:text>
 					<fo:page-number-citation ref-id="{@target}"/>					
 				</xsl:when>
