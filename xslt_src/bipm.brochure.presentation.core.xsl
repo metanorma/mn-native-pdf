@@ -737,12 +737,20 @@
 							<fo:block>
 								<!-- <xsl:copy-of select="$contents"/> -->
 								
-								<xsl:for-each select="xalan:nodeset($contents)/doc[@id = $docid]//item[@display='true' and not(@type = 'annex') and not(@parent = 'annex')]">								
-									<xsl:call-template name="insertContentItem"/>								
-								</xsl:for-each>
-								<xsl:for-each select="xalan:nodeset($contents)/doc[@id = $docid]//item[@display='true' and (@type = 'annex')]"> <!--  or (@level = 2 and @parent = 'annex') -->
-									<xsl:call-template name="insertContentItem"/>								
-								</xsl:for-each>
+								<xsl:if test="xalan:nodeset($contents)/doc[@id = $docid]//item[@display='true']">
+									<fo:table table-layout="fixed" width="100%">
+										<fo:table-column column-width="127mm"/>
+										<fo:table-column column-width="12mm"/>
+										<fo:table-body>											
+											<xsl:for-each select="xalan:nodeset($contents)/doc[@id = $docid]//item[@display='true' and not(@type = 'annex') and not(@parent = 'annex')]">								
+												<xsl:call-template name="insertContentItem"/>								
+											</xsl:for-each>
+											<xsl:for-each select="xalan:nodeset($contents)/doc[@id = $docid]//item[@display='true' and (@type = 'annex')]"> <!--  or (@level = 2 and @parent = 'annex') -->
+												<xsl:call-template name="insertContentItem"/>								
+											</xsl:for-each>
+										</fo:table-body>
+									</fo:table>
+								</xsl:if>
 							</fo:block>
 						</fo:block-container>
 				
@@ -758,54 +766,13 @@
 				
 				<!-- Document Pages -->
 				
-				<xsl:apply-templates select="bipm:sections2/*" mode="sections" />
+				<xsl:apply-templates select="bipm:sections/*" mode="sections" />
 				
 				
 				
 				<!-- Normative references  -->
 				<xsl:apply-templates select="bipm:bibliography/bipm:references[@normative='true']" mode="sections"/>
 
-				
-				<!-- Table of Contents for Annexes -->
-				<!-- <fo:page-sequence master-reference="document" force-page-count="no-force">
-					<xsl:call-template name="insertHeaderFooter"/>
-					<fo:flow flow-name="xsl-region-body">
-					
-						<fo:block-container margin-left="-18mm"  margin-right="-1mm">
-							<fo:block-container margin-left="0mm" margin-right="0mm">							
-								<fo:block font-family="Arial" font-size="16pt" font-weight="bold" text-align-last="justify" margin-bottom="84pt">
-									<xsl:variable name="title-toc">
-										<xsl:call-template name="getTitle">
-											<xsl:with-param name="name" select="'title-toc'"/>
-										</xsl:call-template>
-									</xsl:variable>
-									<fo:marker marker-class-name="header-title"><xsl:value-of select="$title-toc"/></fo:marker>
-									<fo:inline><xsl:value-of select="$title-fr"/></fo:inline>
-									<fo:inline keep-together.within-line="always">
-										<fo:leader leader-pattern="space"/>
-										<fo:inline>
-											<xsl:value-of select="$title-toc"/>
-										</fo:inline>
-									</fo:inline>
-								</fo:block>
-							</fo:block-container>
-						</fo:block-container>
-					
-						<fo:block-container line-height="130%">
-							<fo:block>
-								<xsl:for-each select="xalan:nodeset($contents)/doc[@id = $docid]//item[@display='true' and @type = 'annex']">
-									
-									<xsl:call-template name="insertContentItem"/>
-									
-								</xsl:for-each>
-							</fo:block>
-						</fo:block-container>
-				
-					</fo:flow>
-					
-				</fo:page-sequence> -->
-				
-				
 				<xsl:apply-templates select="bipm:annex" mode="sections"/>
 				
 				<!-- Bibliography -->
@@ -1257,87 +1224,123 @@
 	</xsl:template>
 		
 	<xsl:template name="insertContentItem">
-		<fo:block>
-			<xsl:if test="@level = 1">
-				<xsl:attribute name="space-after">6pt</xsl:attribute>
-				<xsl:attribute name="font-family">Arial</xsl:attribute>
-				<xsl:attribute name="font-size">10pt</xsl:attribute>
-				<xsl:attribute name="font-weight">bold</xsl:attribute>
-				<xsl:if test="@type = 'annex'">
-					<xsl:attribute name="space-before">14pt</xsl:attribute>
-					<xsl:attribute name="space-after">0pt</xsl:attribute>
+		<fo:table-row>
+			<xsl:variable name="space-before">
+				<xsl:if test="@level = 1">
+					<xsl:if test="@type = 'annex'">14pt</xsl:if>
 				</xsl:if>
-			</xsl:if>
-			<xsl:if test="@level &gt;= 2 and not(@parent = 'annex')">
-				<xsl:attribute name="font-size">10.5pt</xsl:attribute>
-			</xsl:if>									
-			<xsl:if test="@level = 2">
-				<xsl:attribute name="margin-left">8mm</xsl:attribute>
-			</xsl:if>
-			<xsl:if test="@level &gt; 2">
-				<xsl:attribute name="margin-left">9mm</xsl:attribute>
-			</xsl:if>
-			<xsl:if test="@level &gt;= 2 and @parent = 'annex'">
-				<xsl:attribute name="font-family">Arial</xsl:attribute>
-				<xsl:attribute name="font-size">8pt</xsl:attribute>
-				<xsl:attribute name="margin-left">25mm</xsl:attribute>
-				<xsl:attribute name="font-weight">bold</xsl:attribute>
-			</xsl:if>
+			</xsl:variable>
+			<xsl:variable name="space-after">
+				<xsl:choose>
+					<xsl:when test="@level = 1 and @type = 'annex'">0pt</xsl:when>
+					<xsl:when test="@level = 1">6pt</xsl:when>
+					<xsl:when test="@level = 2 and not(following-sibling::item[@display='true']) and not(item[@display='true'])">12pt</xsl:when>
+					<xsl:when test="@level = 3 and not(following-sibling::item[@display='true']) and not(../following-sibling::item[@display='true'])">12pt</xsl:when>
+				</xsl:choose>
+			</xsl:variable>
 			
-			<xsl:if test="@level = 2 and not(following-sibling::item[@display='true']) and not(item[@display='true'])">
-				<xsl:attribute name="space-after">12pt</xsl:attribute>
-			</xsl:if>
-			<xsl:if test="@level = 3 and not(following-sibling::item[@display='true']) and not(../following-sibling::item[@display='true'])">
-				<xsl:attribute name="space-after">12pt</xsl:attribute>
-			</xsl:if>
-			
-			<fo:list-block>
-				<xsl:attribute name="provisional-distance-between-starts">
-					<xsl:choose>
-						<xsl:when test="@section = '' or @level &gt; 3">0mm</xsl:when>
-						<xsl:when test="@level = 2 and @parent = 'annex'">0mm</xsl:when>
-						<xsl:when test="@level = 2">8mm</xsl:when>
-						<xsl:when test="@type = 'annex' and @level = 1">25mm</xsl:when>
-						<xsl:otherwise>7mm</xsl:otherwise>
-					</xsl:choose>
-				</xsl:attribute>
-				
-				<fo:list-item>
-					<fo:list-item-label end-indent="label-end()">
-						<fo:block>
-							<xsl:if test="@level = 1 or (@level = 2 and not(@parent = 'annex'))">
-								<xsl:value-of select="@section"/>
-							</xsl:if>
-							<fo:inline font-size="10pt" color="white">Z</fo:inline> <!-- for baseline alignment in string -->
-						</fo:block>
-					</fo:list-item-label>
-					<fo:list-item-body start-indent="body-start()">
-						<fo:block text-align-last="justify">
-							<xsl:if test="@level &gt;= 3">
-								<xsl:attribute name="margin-left">12mm</xsl:attribute>
-								<xsl:attribute name="text-indent">-12mm</xsl:attribute>
-							</xsl:if>
-							<fo:basic-link internal-destination="{@id}" fox:alt-text="{title}">
-								<xsl:if test="@level &gt;= 3">
-									<fo:inline padding-right="2mm"><xsl:value-of select="@section"/></fo:inline>
-								</xsl:if>
-								<xsl:variable name="sectionTitle">
-									<xsl:apply-templates select="title"/>
-								</xsl:variable>
-								<fo:inline>
-									<xsl:value-of select="$sectionTitle"/>															
-								</fo:inline>
-								<xsl:text> </xsl:text>															
-								<fo:inline keep-together.within-line="always">
-									<fo:leader leader-pattern="space"/>																																		
-									<fo:inline font-family="Arial" font-weight="bold" font-size="10pt"><fo:page-number-citation ref-id="{@id}"/></fo:inline>
-								</fo:inline>
-							</fo:basic-link>
-						</fo:block>
-					</fo:list-item-body>
-				</fo:list-item>
-			</fo:list-block>
-		</fo:block>
+			<fo:table-cell>
+				<xsl:if test="normalize-space($space-before) != ''">
+					<xsl:attribute name="padding-top"><xsl:value-of select="normalize-space($space-before)"/></xsl:attribute>
+				</xsl:if>
+				<xsl:if test="normalize-space($space-after) != ''">
+					<xsl:attribute name="padding-bottom"><xsl:value-of select="normalize-space($space-after)"/></xsl:attribute>
+				</xsl:if>				
+				<fo:block>
+					<xsl:if test="@level = 1">
+						<!-- <xsl:attribute name="space-after">6pt</xsl:attribute> -->
+						<xsl:attribute name="font-family">Arial</xsl:attribute>
+						<xsl:attribute name="font-size">10pt</xsl:attribute>
+						<xsl:attribute name="font-weight">bold</xsl:attribute>
+						<!-- <xsl:if test="@type = 'annex'">
+							<xsl:attribute name="space-before">14pt</xsl:attribute>
+							<xsl:attribute name="space-after">0pt</xsl:attribute>
+						</xsl:if> -->
+					</xsl:if>
+					<xsl:if test="@level &gt;= 2 and not(@parent = 'annex')">
+						<xsl:attribute name="font-size">10.5pt</xsl:attribute>
+					</xsl:if>									
+					<xsl:if test="@level = 2">
+						<xsl:attribute name="margin-left">8mm</xsl:attribute>
+					</xsl:if>
+					<xsl:if test="@level &gt; 2">
+						<xsl:attribute name="margin-left">9mm</xsl:attribute>
+					</xsl:if>
+					<xsl:if test="@level &gt;= 2 and @parent = 'annex'">
+						<xsl:attribute name="font-family">Arial</xsl:attribute>
+						<xsl:attribute name="font-size">8pt</xsl:attribute>
+						<xsl:attribute name="margin-left">25mm</xsl:attribute>
+						<xsl:attribute name="font-weight">bold</xsl:attribute>
+					</xsl:if>
+					
+					<!-- <xsl:if test="@level = 2 and not(following-sibling::item[@display='true']) and not(item[@display='true'])">
+						<xsl:attribute name="space-after">12pt</xsl:attribute>
+					</xsl:if>
+					<xsl:if test="@level = 3 and not(following-sibling::item[@display='true']) and not(../following-sibling::item[@display='true'])">
+						<xsl:attribute name="space-after">12pt</xsl:attribute>
+					</xsl:if> -->
+					
+					<fo:list-block>
+						<xsl:attribute name="provisional-distance-between-starts">
+							<xsl:choose>
+								<xsl:when test="@section = '' or @level &gt; 3">0mm</xsl:when>
+								<xsl:when test="@level = 2 and @parent = 'annex'">0mm</xsl:when>
+								<xsl:when test="@level = 2">8mm</xsl:when>								
+								<xsl:when test="@type = 'annex' and @level = 1">25mm</xsl:when>
+								<xsl:otherwise>7mm</xsl:otherwise>
+							</xsl:choose>
+						</xsl:attribute>
+						
+						<fo:list-item>
+							<fo:list-item-label end-indent="label-end()">
+								<fo:block>
+									<xsl:if test="@level = 1 or (@level = 2 and not(@parent = 'annex'))">
+										<xsl:value-of select="@section"/>
+									</xsl:if>
+									<!-- <fo:inline font-size="10pt" color="white">Z</fo:inline> --> <!-- for baseline alignment in string -->
+								</fo:block>
+							</fo:list-item-label>
+							<fo:list-item-body start-indent="body-start()">
+								<fo:block> <!-- text-align-last="justify" -->
+									<xsl:if test="@level &gt;= 3">
+										<xsl:attribute name="margin-left">11mm</xsl:attribute>
+										<xsl:attribute name="text-indent">-11mm</xsl:attribute>
+									</xsl:if>
+									<fo:basic-link internal-destination="{@id}" fox:alt-text="{title}">
+										<xsl:if test="@level &gt;= 3">
+											<fo:inline padding-right="2mm"><xsl:value-of select="@section"/></fo:inline>
+										</xsl:if>
+										<xsl:variable name="sectionTitle">
+											<xsl:apply-templates select="title"/>
+										</xsl:variable>
+										<fo:inline>
+											<xsl:value-of select="$sectionTitle"/>															
+										</fo:inline>
+										<!-- <xsl:text> </xsl:text> -->
+										 <!-- keep-together.within-line="always" -->
+										<!-- <fo:inline >
+											<fo:leader leader-pattern="space"/>																																		
+											<fo:inline font-family="Arial" font-weight="bold" font-size="10pt"><fo:page-number-citation ref-id="{@id}"/>35</fo:inline>
+										</fo:inline> -->
+									</fo:basic-link>
+								</fo:block>
+							</fo:list-item-body>
+						</fo:list-item>
+					</fo:list-block>
+				</fo:block>				
+			</fo:table-cell>
+			<fo:table-cell text-align="right">
+				<xsl:if test="normalize-space($space-before) != ''">
+					<xsl:attribute name="padding-top"><xsl:value-of select="normalize-space($space-before)"/></xsl:attribute>
+				</xsl:if>
+				<xsl:if test="normalize-space($space-after) != ''">
+					<xsl:attribute name="padding-bottom"><xsl:value-of select="normalize-space($space-after)"/></xsl:attribute>
+				</xsl:if>
+				<fo:block>
+					<fo:inline font-family="Arial" font-weight="bold" font-size="10pt"><fo:page-number-citation ref-id="{@id}"/></fo:inline>
+				</fo:block>
+			</fo:table-cell>
+		</fo:table-row>
 	</xsl:template>
 	
 	
@@ -1937,7 +1940,7 @@
 			<xsl:if test="$curr_row_num &lt;=  count(xalan:nodeset($rows)/num)">
 				<xsl:variable name="start_row" select="xalan:nodeset($rows)/num[$curr_row_num]/@span_start"/>
 				<xsl:variable name="end_row" select="$start_row + xalan:nodeset($rows)/num[$curr_row_num]/@span_num - 1"/>
-				<fo:table-row border-top="1.5pt solid blue" border-bottom="1.5pt solid blue"> <!-- DEBUG border-top="2pt solid blue" border-bottom="2pt solid blue" -->
+				<fo:table-row > <!-- DEBUG border-top="1.5pt solid blue" border-bottom="1.5pt solid blue" -->
 					<xsl:if test="local-name(*[$end_row]) = 'title' or local-name(*[$end_row]) = 'clause'"> <!-- if last element is title or clause, then keep row with next -->
 						<xsl:attribute  name="keep-with-next.within-page">always</xsl:attribute>
 					</xsl:if>
