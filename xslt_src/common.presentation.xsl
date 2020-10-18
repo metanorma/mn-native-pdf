@@ -683,7 +683,7 @@
 		<xsl:if test="$namespace = 'bipm'">
 			<xsl:attribute name="font-weight">bold</xsl:attribute>
 			<xsl:attribute name="text-align">left</xsl:attribute>
-			<xsl:attribute name="margin-top">12pt</xsl:attribute>
+			<xsl:attribute name="margin-top">24pt</xsl:attribute>
 			<xsl:attribute name="margin-left">25mm</xsl:attribute>
 			<xsl:attribute name="text-indent">-25mm</xsl:attribute>
 			<xsl:attribute name="margin-bottom">6pt</xsl:attribute>			
@@ -1364,9 +1364,9 @@
 			<fo:block>&#xA0;</fo:block>				
 		</xsl:if>
 		
-		<xsl:if test="$namespace = 'bipm'">
+		<!-- <xsl:if test="$namespace = 'bipm'">
 			<fo:block>&#xA0;</fo:block>				
-		</xsl:if>
+		</xsl:if> -->
 		
 		<!-- $namespace = 'iso' or  -->
 		<xsl:if test="$namespace = 'csa' or $namespace = 'csd' or $namespace = 'gb' or $namespace = 'iec' or $namespace = 'iho' or 											

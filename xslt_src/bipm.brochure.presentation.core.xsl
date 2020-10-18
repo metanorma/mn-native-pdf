@@ -1546,7 +1546,7 @@
 				<xsl:choose>
 					<xsl:when test="$level = 1 and (parent::bipm:annex or parent::bipm:abstract or ancestor::bipm:preface)">84pt</xsl:when>
 					<xsl:when test="$level = 1">6pt</xsl:when>
-					<xsl:when test="$level = 2 and ancestor::bipm:annex">12pt</xsl:when> <!-- 6pt 12pt -->					
+					<xsl:when test="$level = 2 and ancestor::bipm:annex">6pt</xsl:when> <!-- 6pt 12pt -->					
 					<!-- <xsl:when test="$level = 2 and $independentAppendix != ''">6pt</xsl:when> -->
 					<xsl:when test="$level = 2">10pt</xsl:when>
 					<xsl:otherwise>6pt</xsl:otherwise>
@@ -1560,13 +1560,13 @@
 			</xsl:if> -->
 			<xsl:if test="$level = 2 and ancestor::bipm:annex">
 				<!-- <xsl:attribute name="margin-top">24pt</xsl:attribute>				 -->
-				<xsl:attribute name="space-before">24pt</xsl:attribute>
+				<xsl:attribute name="space-before">18pt</xsl:attribute> <!-- 24 pt -->
 			</xsl:if>
 			<xsl:if test="$level = 2 and not(ancestor::bipm:annex)">
 				<xsl:attribute name="space-before">30pt</xsl:attribute>
 			</xsl:if>
 			<xsl:if test="$level = 3 and ancestor::bipm:annex">
-				<xsl:attribute name="space-before">6pt</xsl:attribute>
+				<xsl:attribute name="space-before">12pt</xsl:attribute> <!-- 6pt -->
 			</xsl:if>
 			<xsl:if test="$level = 4 and ancestor::bipm:annex">
 				<xsl:attribute name="space-before">12pt</xsl:attribute>
@@ -1842,7 +1842,7 @@
 		<xsl:variable name="space-before"> <!-- margin-top for title, see bipm:title -->
 			<xsl:if test="local-name(*[1]) = 'title'">					
 					<xsl:if test="*[1]/@depth = 2 and not(*[1]/ancestor::bipm:annex)">30pt</xsl:if>
-					<xsl:if test="*[1]/@depth = 2 and *[1]/ancestor::bipm:annex">24pt</xsl:if>
+					<xsl:if test="*[1]/@depth = 2 and *[1]/ancestor::bipm:annex">18pt</xsl:if> <!-- 24pt -->
 					<xsl:if test="*[1]/@depth = 3 and not(*[1]/ancestor::bipm:annex)">20pt</xsl:if>
 					<xsl:if test="*[1]/@depth = 3 and *[1]/ancestor::bipm:annex">6pt</xsl:if> <!-- 6pt-->
 					<xsl:if test="*[1]/@depth = 4 and *[1]/ancestor::bipm:annex">12pt</xsl:if> <!-- 6pt-->
@@ -1963,7 +1963,7 @@
 					<xsl:variable name="table-row-padding-bottom">						
 						<xsl:if test="$start_row_next != '' and local-name(*[$start_row_next_num]) = 'title'">							
 								<xsl:if test="*[$start_row_next_num]/@depth = 2 and not(*[$start_row_next_num]/ancestor::bipm:annex)">30pt</xsl:if>
-								<xsl:if test="*[$start_row_next_num]/@depth = 2 and *[$start_row_next_num]/ancestor::bipm:annex">24pt</xsl:if>
+								<xsl:if test="*[$start_row_next_num]/@depth = 2 and *[$start_row_next_num]/ancestor::bipm:annex">18pt</xsl:if> <!-- 24pt -->
 								<!-- <xsl:attribute name="padding-bottom">20pt</xsl:attribute> -->
 								<xsl:if test="*[$start_row_next_num]/@depth = 3 and not(*[$start_row_next_num]/ancestor::bipm:annex)">20pt</xsl:if>
 								<xsl:if test="*[$start_row_next_num]/@depth = 3 and *[$start_row_next_num]/ancestor::bipm:annex">6pt</xsl:if> <!-- 6pt -->
@@ -2109,7 +2109,11 @@
 	<xsl:template match="bipm:note_side" mode="note_side">
 		<fo:block line-height-shift-adjustment="disregard-shifts">
 			<xsl:call-template name="setId"/>
+			<xsl:if test="ancestor::bipm:table"><!-- move table note lower than title -->
+				<xsl:attribute name="margin-top">48pt</xsl:attribute>
+			</xsl:if>
 			<xsl:if test="ancestor::bipm:title"><fo:inline>* </fo:inline></xsl:if>
+			
 			<xsl:apply-templates mode="note_side"/>
 		</fo:block>
 	</xsl:template>
