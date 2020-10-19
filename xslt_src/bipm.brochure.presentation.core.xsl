@@ -558,26 +558,32 @@
 				<xsl:when test="local-name(..) = 'ul' and ../ancestor::bipm:ul">&#x2212;</xsl:when> <!-- &#x2212; - minus sign.  &#x2014; - dash -->
 				<xsl:when test="local-name(..) = 'ul'">•</xsl:when> <!-- &#x2014; dash -->
 				<xsl:otherwise> <!-- for ordered lists -->
-					<xsl:choose>
-						<xsl:when test="../@type = 'arabic'">
-							<xsl:number format="1."/>
-						</xsl:when>
-						<xsl:when test="../@type = 'alphabet'">
-							<xsl:number format="a)"/>
-						</xsl:when>
-						<xsl:when test="../@type = 'alphabet_upper'">
-							<xsl:number format="A."/>
-						</xsl:when>
-						<xsl:when test="../@type = 'roman'">
-							<xsl:number format="(i)"/>
-						</xsl:when>
-						<xsl:when test="../@type = 'roman_upper'">
-							<xsl:number format="I."/>
-						</xsl:when>
-						<xsl:otherwise> <!-- default -->
-							<xsl:number format="1."/>
-						</xsl:otherwise>
-					</xsl:choose>
+					<xsl:variable name="start_value">
+						<xsl:choose>
+							<xsl:when test="../@start">
+								<xsl:value-of select="number(../@start) - 1"/><!-- if start="3" then start_value=2 + xsl:number(1) = 3 -->
+							</xsl:when>
+							<xsl:otherwise>0</xsl:otherwise>
+						</xsl:choose>
+					</xsl:variable>
+					
+					<xsl:variable name="curr_value">
+						<xsl:number/>
+					</xsl:variable>
+					
+					<xsl:variable name="format">
+						<xsl:choose>
+							<xsl:when test="../@type = 'arabic'">1.</xsl:when>
+							<xsl:when test="../@type = 'alphabet'">a)</xsl:when>
+							<xsl:when test="../@type = 'alphabet_upper'">A.</xsl:when>
+							<xsl:when test="../@type = 'roman'">(i)</xsl:when>
+							<xsl:when test="../@type = 'roman_upper'">I.</xsl:when>
+							<xsl:otherwise>1.</xsl:otherwise>
+						</xsl:choose>
+					</xsl:variable>					
+					
+					<xsl:number value="$start_value + $curr_value" format="{$format}"/>
+					
 				</xsl:otherwise>
 			</xsl:choose>
 		</xsl:attribute>
@@ -1443,7 +1449,7 @@
 							</xsl:when>
 							<xsl:otherwise> <!-- for annex -->
 								<xsl:variable name="title_annex">
-									<xsl:value-of select="normalize-space(./bipm:title[1]/*[local-name() = 'tab'][1]/preceding-sibling::node())" mode="header"/>
+									<xsl:value-of select="normalize-space(./bipm:title[1]/*[local-name() = 'tab'][1]/preceding-sibling::node())"/>
 								</xsl:variable>
 								<xsl:choose>
 									<xsl:when test="substring($title_annex, string-length($title_annex)) = '.'">
