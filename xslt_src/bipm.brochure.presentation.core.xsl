@@ -566,13 +566,16 @@
 							<xsl:number format="a)"/>
 						</xsl:when>
 						<xsl:when test="../@type = 'alphabet_upper'">
-							<xsl:number format="A)"/>
+							<xsl:number format="A."/>
 						</xsl:when>
 						<xsl:when test="../@type = 'roman'">
-							<xsl:number format="i)"/>
+							<xsl:number format="(i)"/>
 						</xsl:when>
-						<xsl:otherwise>
-							<xsl:number format="1)"/>
+						<xsl:when test="../@type = 'roman_upper'">
+							<xsl:number format="I."/>
+						</xsl:when>
+						<xsl:otherwise> <!-- default -->
+							<xsl:number format="1."/>
 						</xsl:otherwise>
 					</xsl:choose>
 				</xsl:otherwise>
