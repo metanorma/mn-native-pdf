@@ -376,8 +376,8 @@
 	</xsl:template>
 	
 	
-	<!-- change fn to xref with asterisks -->
-	<xsl:template match="bipm:fn[ancestor::bipm:quote]" mode="flatxml">
+	<!-- change fn to xref with asterisks --> <!-- all fn except fn in table (but not quote table) -->
+	<xsl:template match="bipm:fn[ancestor::bipm:quote or not(ancestor::bipm:table)]" mode="flatxml">
 		<xsl:choose>
 			<xsl:when test="ancestor::bipm:li">
 				<xsl:apply-templates select="." mode="fn_to_xref"/> <!-- displays asterisks with link to side note -->
@@ -392,8 +392,8 @@
 		</xsl:choose>		
 	</xsl:template>
 	
-	<!-- change fn to xref with asterisks -->
-	<xsl:template match="bipm:fn[ancestor::bipm:quote]" mode="flatxml_list">
+	<!-- change fn to xref with asterisks --> <!-- all fn except fn in table (but not quote table) -->
+	<xsl:template match="bipm:fn[ancestor::bipm:quote or not(ancestor::bipm:table)]" mode="flatxml_list">
 		<xsl:choose>
 			<xsl:when test="ancestor::bipm:li">
 				<xsl:apply-templates select="." mode="fn_to_xref"/> <!-- displays asterisks with link to side note -->	
@@ -418,7 +418,7 @@
 			<xsl:variable name="curr_clause_id" select="ancestor::bipm:clause[1]/@id"/>
 			
 			<xsl:variable name="number">
-				<xsl:number count="bipm:fn[ancestor::bipm:clause[1]/@id = $curr_clause_id]" level="any"/>
+				<xsl:number count="bipm:fn[ancestor::bipm:clause[1]/@id = $curr_clause_id][ancestor::bipm:quote or not(ancestor::bipm:table)]" level="any"/>
 			</xsl:variable>
 			
 			<xsl:variable name="asterisks">
@@ -438,7 +438,7 @@
 			<xsl:variable name="gen_id" select="generate-id()"/>
 			<xsl:variable name="curr_clause_id" select="ancestor::bipm:clause[1]/@id"/>
 			<xsl:variable name="number">
-				<xsl:number count="bipm:fn[ancestor::bipm:clause[1]/@id = $curr_clause_id]" level="any"/>
+				<xsl:number count="bipm:fn[ancestor::bipm:clause[1]/@id = $curr_clause_id][ancestor::bipm:quote or not(ancestor::bipm:table)]" level="any"/>
 			</xsl:variable>
 		<xsl:value-of select="concat($lang, '_footnote_', @reference, '_', $number, '_', $gen_id)"/>
 	</xsl:template>
@@ -502,7 +502,7 @@
 					</xsl:choose>
 				</xsl:for-each>
 			
-				<xsl:if test="ancestor::bipm:quote">
+				<xsl:if test="ancestor::bipm:quote or not(ancestor::bipm:table)">
 					<!-- move all footnotes in the current list (not only current list item) into first 'li' -->
 					<xsl:variable name="curr_list_id" select="../@id"/>
 					<xsl:for-each select="..//bipm:fn[ancestor::bipm:ol[1]/@id = $curr_list_id or ancestor::bipm:ul[1]/@id = $curr_list_id]">
@@ -532,7 +532,7 @@
 			<xsl:variable name="curr_clause_id" select="ancestor::bipm:clause[1]/@id"/>
 			
 			<xsl:variable name="number">
-				<xsl:number count="bipm:fn[ancestor::bipm:clause[1]/@id = $curr_clause_id]" level="any"/>
+				<xsl:number count="bipm:fn[ancestor::bipm:clause[1]/@id = $curr_clause_id][ancestor::bipm:quote or not(ancestor::bipm:table)]" level="any"/>
 			</xsl:variable>
 			
 			<xsl:variable name="asterisks">
