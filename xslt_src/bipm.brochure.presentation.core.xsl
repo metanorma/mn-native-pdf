@@ -421,14 +421,17 @@
 				<xsl:number count="bipm:fn[ancestor::bipm:clause[1]/@id = $curr_clause_id][ancestor::bipm:quote or not(ancestor::bipm:table)]" level="any"/>
 			</xsl:variable>
 			
-			<xsl:variable name="asterisks">
+			<!-- <xsl:variable name="asterisks">
 				<xsl:call-template name="repeat">
 					<xsl:with-param name="char" select="'*'"/>
 					<xsl:with-param name="count" select="$number + 1"/>
 				</xsl:call-template>
 			</xsl:variable>
-			<xsl:value-of select="$asterisks"/>			
-			<xsl:text> </xsl:text>
+			<xsl:value-of select="$asterisks"/> -->
+			<xsl:element name="sup_fn" namespace="https://www.metanorma.org/ns/bipm">
+				<xsl:value-of select="$number"/>
+			</xsl:element>
+			<!-- <xsl:text> </xsl:text> -->
 			
 		</xsl:element>
 	</xsl:template>
@@ -535,13 +538,16 @@
 				<xsl:number count="bipm:fn[ancestor::bipm:clause[1]/@id = $curr_clause_id][ancestor::bipm:quote or not(ancestor::bipm:table)]" level="any"/>
 			</xsl:variable>
 			
-			<xsl:variable name="asterisks">
+			<!-- <xsl:variable name="asterisks">
 				<xsl:call-template name="repeat">
 					<xsl:with-param name="char" select="'*'"/>
 					<xsl:with-param name="count" select="$number + 1"/>
 				</xsl:call-template>
 			</xsl:variable>
-			<xsl:value-of select="$asterisks"/>							
+			<xsl:value-of select="$asterisks"/> -->
+			<xsl:element name="sup_fn" namespace="https://www.metanorma.org/ns/bipm">
+				<xsl:value-of select="$number"/>
+			</xsl:element>
 			<xsl:text> </xsl:text>
 			
 			<xsl:apply-templates mode="flatxml"/>
@@ -2168,7 +2174,7 @@
 	
 	<!-- <xsl:template match="bipm:note" mode="note_side"> -->
 	<xsl:template match="bipm:note_side" mode="note_side">
-		<fo:block line-height-shift-adjustment="disregard-shifts">
+		<fo:block line-height-shift-adjustment="disregard-shifts" space-after="4pt">
 			<xsl:call-template name="setId"/>
 			<xsl:if test="ancestor::bipm:table"><!-- move table note lower than title -->
 				<xsl:attribute name="margin-top">48pt</xsl:attribute>
@@ -2620,6 +2626,12 @@
 		</fo:inline>
 		<fo:inline><xsl:value-of select="$linebreak"/></fo:inline>
 		
+	</xsl:template>
+
+	<xsl:template match="*[local-name() = 'sup_fn']">
+		<fo:inline font-size="65%" keep-with-previous.within-line="always" vertical-align="super">
+			<xsl:apply-templates />
+		</fo:inline>
 	</xsl:template>
 
 	<xsl:template name="insertHeaderFooter">
