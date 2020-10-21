@@ -594,7 +594,7 @@
 				<xsl:otherwise> <!-- for ordered lists -->
 					<xsl:variable name="start_value">
 						<xsl:choose>
-							<xsl:when test="../@start">
+							<xsl:when test="normalize-space(../@start) != ''">
 								<xsl:value-of select="number(../@start) - 1"/><!-- if start="3" then start_value=2 + xsl:number(1) = 3 -->
 							</xsl:when>
 							<xsl:otherwise>0</xsl:otherwise>
