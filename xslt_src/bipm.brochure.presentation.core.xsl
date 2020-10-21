@@ -277,7 +277,7 @@
 						<xsl:apply-templates mode="flatxml"/>
 					</xsl:variable>
 				
-					flatxml=<xsl:copy-of select="$flatxml"/>
+					<!-- flatxml=<xsl:copy-of select="$flatxml"/> -->
 				
 					<xsl:apply-templates select="xalan:nodeset($flatxml)/bipm:bipm-standard" mode="bipm-standard">
 						<xsl:with-param name="curr_docnum" select="1"/>
@@ -343,6 +343,12 @@
 			<xsl:for-each select="following-sibling::*[local-name() = 'note']">
 				<xsl:call-template name="change_note_kind"/>
 			</xsl:for-each>
+			<xsl:if test="@depth = 3 and local-name() = 'title' and ../bipm:clause/bipm:title/@depth = 4 and count(following-sibling::*[1][local-name() = 'note']) &gt; 0"> <!-- it means that current node is title level is 3 with notes, next level is 4 -->
+				<!-- <put_note_side_level4_here/> -->
+				<xsl:for-each select="../bipm:clause//bipm:fn[ancestor::bipm:quote or not(ancestor::bipm:table)]"> <!-- move here footnotes from clause level 4 -->
+					<xsl:call-template name="fn_to_note_side"/>
+				</xsl:for-each>
+			</xsl:if>
 		</xsl:copy>	
 	</xsl:template>
 	
@@ -378,7 +384,12 @@
 	
 	<!-- change fn to xref with asterisks --> <!-- all fn except fn in table (but not quote table) -->
 	<xsl:template match="bipm:fn[ancestor::bipm:quote or not(ancestor::bipm:table)]" mode="flatxml">
-		<xsl:choose>
+		<xsl:choose>		
+			<!-- see template above with @depth = 4 -->
+			<xsl:when test="ancestor::bipm:clause[1]/bipm:title/@depth = 4 and 																
+																count(ancestor::bipm:clause[2]/bipm:title[@depth = 3]/following-sibling::*[1][local-name() = 'note']) &gt; 0">
+				<xsl:apply-templates select="." mode="fn_to_xref"/>
+			</xsl:when>
 			<xsl:when test="ancestor::bipm:li">
 				<xsl:apply-templates select="." mode="fn_to_xref"/> <!-- displays asterisks with link to side note -->
 			</xsl:when>
@@ -395,6 +406,11 @@
 	<!-- change fn to xref with asterisks --> <!-- all fn except fn in table (but not quote table) -->
 	<xsl:template match="bipm:fn[ancestor::bipm:quote or not(ancestor::bipm:table)]" mode="flatxml_list">
 		<xsl:choose>
+			<!-- see template above with @depth = 4 -->
+			<xsl:when test="ancestor::bipm:clause[1]/bipm:title/@depth = 4 and 																
+																count(ancestor::bipm:clause[2]/bipm:title[@depth = 3]/following-sibling::*[1][local-name() = 'note']) &gt; 0">
+				<xsl:apply-templates select="." mode="fn_to_xref"/>
+			</xsl:when>
 			<xsl:when test="ancestor::bipm:li">
 				<xsl:apply-templates select="." mode="fn_to_xref"/> <!-- displays asterisks with link to side note -->	
 			</xsl:when>
@@ -455,28 +471,6 @@
 		<xsl:apply-templates mode="flatxml"/>
 	</xsl:template>
 	
-	<!-- convert definitions list into individual definitions lists for each definition term (dt) -->
-	<xsl:template match="bipm:dl" mode="flatxml" priority="2">
-		<!-- <xsl:copy>
-			<xsl:copy-of select="@*"/>			
-		</xsl:copy> -->
-		<xsl:apply-templates mode="flatxml"/>
-	</xsl:template>	
-	<xsl:template match="bipm:dt" mode="flatxml">
-		<xsl:element name="dl" namespace="https://www.metanorma.org/ns/bipm">
-			<xsl:copy>
-					<xsl:apply-templates select="@*|node()" mode="flatxml"/>
-			</xsl:copy>
-			<xsl:apply-templates select="following-sibling::*[local-name()='dd'][1]" mode="flatxml_process"/>
-		</xsl:element>	
-	</xsl:template>	
-	<xsl:template match="bipm:dd" mode="flatxml"/>
-	<xsl:template match="bipm:dd" mode="flatxml_process">
-		<xsl:copy>
-					<xsl:apply-templates select="@*|node()" mode="flatxml"/>
-			</xsl:copy>
-	</xsl:template>
-	
 	
 	<!-- flat lists -->
 	<xsl:template match="bipm:ul | bipm:ol" mode="flatxml" priority="2">
@@ -495,13 +489,8 @@
 	<!-- copy 'ol' 'ul' properties to each 'li' -->
 	<!-- OBSOLETE: move note for list (list level note)  into latest 'li' -->
 	<!-- move note for list (list level note)  into first 'li' -->
-	<!-- move fn for list-item (list-item level footnote)  into first 'li' -->
-	
+	<!-- move fn for list-item (list-item level footnote)  into first 'li' -->	
 	<xsl:template match="bipm:li" mode="flatxml_list">	
-		<xsl:apply-templates mode="flatxml_list"/>
-	</xsl:template>
-	
-	<xsl:template match="bipm:li2" mode="flatxml_list">	
 		<xsl:copy>
 			<xsl:apply-templates select="@*" mode="flatxml_list"/>
 			<xsl:attribute name="list_type">
@@ -533,14 +522,25 @@
 				</xsl:for-each>
 			
 				<xsl:if test="ancestor::bipm:quote or not(ancestor::bipm:table)">
-					<!-- move all footnotes in the current list (not only current list item) into first 'li' -->
-					<xsl:variable name="curr_list_id" select="../@id"/>
-					<xsl:for-each select="..//bipm:fn[ancestor::bipm:ol[1]/@id = $curr_list_id or ancestor::bipm:ul[1]/@id = $curr_list_id]">
-					
-						<xsl:call-template name="fn_to_note_side" />
+				
+					<xsl:choose>
+						<!-- see template above with @depth = 4 -->
+						<xsl:when test="ancestor::bipm:clause[1]/bipm:title/@depth = 4 and 																
+																count(ancestor::bipm:clause[2]/bipm:title[@depth = 3]/following-sibling::*[1][local-name() = 'note']) &gt; 0"></xsl:when>
+						<xsl:otherwise>
+				
+							<!-- move all footnotes in the current list (not only current list item) into first 'li' -->
+							<xsl:variable name="curr_list_id" select="../@id"/>
+							<xsl:for-each select="..//bipm:fn[ancestor::bipm:ol[1]/@id = $curr_list_id or ancestor::bipm:ul[1]/@id = $curr_list_id]">
+								
+								<xsl:call-template name="fn_to_note_side" />
+									
+								
+							</xsl:for-each>
 							
-						
-					</xsl:for-each>
+						</xsl:otherwise>
+					</xsl:choose>
+					
 				</xsl:if>
 				
 			</xsl:if>
@@ -551,94 +551,6 @@
 			</xsl:if> -->
 		</xsl:copy>
 	</xsl:template>
-	
-	
-	<!-- each nested node in 'li' convert to li/node -->
-	<xsl:template match="bipm:li/*" mode="flatxml_list">
-		<xsl:element name="li" namespace="https://www.metanorma.org/ns/bipm">			
-			<xsl:variable name="first" select="count(preceding-sibling::*) = 0"/>
-			<xsl:if test="$first = 'true'">
-				<xsl:apply-templates select="../@*" mode="flatxml_list"/>
-				<xsl:for-each select="..">
-					<xsl:call-template name="setListItemLabel"/>
-				</xsl:for-each>
-			</xsl:if>
-			<xsl:attribute name="list_type">
-				<xsl:value-of select="local-name(../..)"/>
-			</xsl:attribute>			
-			<xsl:if test="ancestor::bipm:quote">
-				<xsl:attribute name="parent-type">quote</xsl:attribute>
-			</xsl:if>
-			<xsl:copy>
-				<xsl:apply-templates select="@*" mode="flatxml_list"/>
-				<xsl:apply-templates  mode="flatxml_list"/>
-				
-			</xsl:copy>
-			
-			<xsl:if test="$first = 'true'">
-			<!-- if current li is first -->
-				<xsl:if test="not(../preceding-sibling::*[local-name() = 'li'])">
-					<!-- <xsl:copy-of select="following-sibling::bipm:li[last()]/following-sibling::*"/> -->
-					
-					<!-- move note for list (list level note) into first 'li' -->
-					<xsl:for-each select="../following-sibling::bipm:li[last()]/following-sibling::*">
-						<xsl:choose>
-							<xsl:when test="local-name() = 'note'">
-								<xsl:call-template name="change_note_kind"/>
-							</xsl:when>
-							<xsl:otherwise>
-								<xsl:copy-of select="."/>
-							</xsl:otherwise>
-						</xsl:choose>
-					</xsl:for-each>
-				
-					<xsl:if test="ancestor::bipm:quote or not(ancestor::bipm:table)">
-						<!-- move all footnotes in the current list (not only current list item) into first 'li' -->
-						<xsl:variable name="curr_list_id" select="../../@id"/>
-						<xsl:for-each select="../..//bipm:fn[ancestor::bipm:ol[1]/@id = $curr_list_id or ancestor::bipm:ul[1]/@id = $curr_list_id]">
-						
-							<xsl:call-template name="fn_to_note_side" />
-								
-							
-						</xsl:for-each>
-					</xsl:if>
-					
-				</xsl:if>
-			</xsl:if>
-		</xsl:element>
-		
-	</xsl:template>
-	
-	<xsl:template match="bipm:li/bipm:dl" mode="flatxml_list" priority="2">
-		<xsl:apply-templates mode="flatxml_list_dl"/>	
-	</xsl:template>	
-	<xsl:template match="bipm:dt" mode="flatxml_list_dl">
-		<xsl:element name="li" namespace="https://www.metanorma.org/ns/bipm">
-		
-			<xsl:variable name="first" select="count(../preceding-sibling::*) = 0"/>
-			<xsl:if test="$first = 'true'">
-				<xsl:apply-templates select="../../@*" mode="flatxml_list"/>
-				<xsl:for-each select="../..">
-					<xsl:call-template name="setListItemLabel"/>
-				</xsl:for-each>
-			</xsl:if>
-			<xsl:attribute name="list_type">
-				<xsl:value-of select="local-name(../../..)"/>
-			</xsl:attribute>			
-			<xsl:if test="ancestor::bipm:quote">
-				<xsl:attribute name="parent-type">quote</xsl:attribute>
-			</xsl:if>
-		
-		
-			<xsl:element name="dl" namespace="https://www.metanorma.org/ns/bipm">
-				<xsl:copy>
-						<xsl:apply-templates select="@*|node()" mode="flatxml"/>
-				</xsl:copy>
-				<xsl:apply-templates select="following-sibling::*[local-name()='dd'][1]" mode="flatxml_process"/>
-			</xsl:element>
-		</xsl:element>
-	</xsl:template>	
-	<xsl:template match="bipm:dd" mode="flatxml_list_dl"/>
 	
 	
 	<xsl:template name="fn_to_note_side">		
@@ -2304,7 +2216,8 @@
 				<!-- <fo:inline>num=<xsl:value-of select="$num"/></fo:inline> -->
 			</xsl:if>
 			
-			<xsl:if test="ancestor::bipm:title"><fo:inline>* </fo:inline></xsl:if>
+			<!-- if note relates to title, but not fn -->
+			<xsl:if test="ancestor::bipm:title and not(bipm:sup_fn)"><fo:inline>* </fo:inline></xsl:if>
 			
 			<xsl:apply-templates mode="note_side"/>
 		</fo:block>

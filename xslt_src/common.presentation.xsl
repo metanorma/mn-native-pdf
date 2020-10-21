@@ -1651,6 +1651,11 @@
 				<xsl:if test="$namespace = 'iso'">
 					<xsl:attribute name="margin-bottom">0pt</xsl:attribute>
 				</xsl:if>
+				<xsl:if test="$namespace = 'bipm'">
+					<xsl:if test="not(*[local-name()='tab'])"> <!-- table without number -->
+						<xsl:attribute name="margin-top">0pt</xsl:attribute>
+					</xsl:if>
+				</xsl:if>
 				<xsl:apply-templates />				
 			</fo:block>
 		</xsl:if>
