@@ -445,7 +445,7 @@
 			</xsl:variable>
 			<xsl:value-of select="$asterisks"/> -->
 			<xsl:element name="sup_fn" namespace="https://www.metanorma.org/ns/bipm">
-				<xsl:value-of select="$number"/>
+				<xsl:value-of select="concat('(',$number,')')"/>
 			</xsl:element>
 			<!-- <xsl:text> </xsl:text> -->
 			
@@ -574,7 +574,7 @@
 			</xsl:variable>
 			<xsl:value-of select="$asterisks"/> -->
 			<xsl:element name="sup_fn" namespace="https://www.metanorma.org/ns/bipm">
-				<xsl:value-of select="$number"/>
+				<xsl:value-of select="concat('(',$number,')')"/>
 			</xsl:element>
 			<xsl:text> </xsl:text>
 			
