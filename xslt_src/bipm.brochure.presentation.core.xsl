@@ -302,6 +302,54 @@
 		</xsl:copy>
 	</xsl:template>
 
+	<!-- enclosing starting elements annex/... in clause -->
+	<xsl:template match="bipm:annex" mode="flatxml">
+		<xsl:copy>
+			<xsl:apply-templates select="@*" mode="flatxml"/>
+			
+				<xsl:variable name="pos_first_clause_" select="count(bipm:clause[1]/preceding-sibling::*)"/>
+			<!-- pos_first_clause=<xsl:value-of select="$pos_first_clause"/> -->
+			
+				<xsl:variable name="pos_first_clause">
+					<xsl:choose>
+						<xsl:when test="$pos_first_clause_ = 0">
+							<xsl:value-of select="count(*)"/>
+						</xsl:when>
+						<xsl:otherwise>
+							<xsl:value-of select="$pos_first_clause_"/>
+						</xsl:otherwise>
+					</xsl:choose>
+				</xsl:variable>
+				<xsl:choose>
+				
+						<xsl:when test="$pos_first_clause &gt; 0">
+							<xsl:element name="clause" namespace="https://www.metanorma.org/ns/bipm">
+								<xsl:attribute name="id"><xsl:value-of select="concat(@id,'_clause')"/></xsl:attribute>
+								<xsl:for-each select="*[position() &gt; 0 and position() &lt;= $pos_first_clause]">
+									<xsl:apply-templates select="." mode="flatxml"/>									
+								</xsl:for-each>								
+							</xsl:element>
+							<xsl:for-each select="*[position() &gt; $pos_first_clause]">
+								<xsl:apply-templates select="." mode="flatxml"/>									
+							</xsl:for-each>
+						</xsl:when>
+						<xsl:otherwise>
+							<xsl:apply-templates mode="flatxml"/>
+						</xsl:otherwise>
+				</xsl:choose>
+		
+		</xsl:copy>
+	</xsl:template>
+
+	<xsl:template match="bipm:annex/bipm:title" mode="flatxml">
+		<xsl:copy>
+			<xsl:apply-templates select="@*" mode="flatxml"/>
+			<xsl:attribute name="depth">1</xsl:attribute>
+			<xsl:apply-templates mode="flatxml"/>
+		</xsl:copy>
+	</xsl:template>
+	
+
 	<!-- flattening clauses from 2nd level -->
 	<!-- <xsl:template match="bipm:clause[not(parent::bipm:sections) and not(parent::bipm:annex) and not(parent::bipm:abstract) and not(ancestor::bipm:boilerplate)]" mode="flatxml"> -->
 	<xsl:template match="bipm:clause[not(parent::bipm:sections) and not(parent::bipm:annex) and not(parent::bipm:preface) and not(ancestor::bipm:boilerplate)]" mode="flatxml">
@@ -431,10 +479,18 @@
 				<xsl:call-template name="fn_reference_to_xref_target"/>				
 			</xsl:attribute>
 			
-			<xsl:variable name="curr_clause_id" select="ancestor::bipm:clause[1]/@id"/>
+			<xsl:variable name="curr_clause_id" select="normalize-space(ancestor::bipm:clause[1]/@id)"/>
+			<xsl:variable name="curr_annex_id" select="normalize-space(ancestor::bipm:annex[1]/@id)"/>
 			
 			<xsl:variable name="number">
-				<xsl:number count="bipm:fn[ancestor::bipm:clause[1]/@id = $curr_clause_id][ancestor::bipm:quote or not(ancestor::bipm:table)]" level="any"/>
+				<xsl:choose>
+					<xsl:when test="$curr_clause_id != ''">
+						<xsl:number count="bipm:fn[ancestor::bipm:clause[1]/@id = $curr_clause_id][ancestor::bipm:quote or not(ancestor::bipm:table)]" level="any"/>
+					</xsl:when>
+					<xsl:otherwise>
+						<xsl:number count="bipm:fn[ancestor::bipm:annex[1]/@id = $curr_annex_id]"/>
+					</xsl:otherwise>
+				</xsl:choose>
 			</xsl:variable>
 			
 			<!-- <xsl:variable name="asterisks">
@@ -560,10 +616,18 @@
 				<xsl:call-template name="fn_reference_to_xref_target"/>				
 			</xsl:attribute>
 			
-			<xsl:variable name="curr_clause_id" select="ancestor::bipm:clause[1]/@id"/>
+			<xsl:variable name="curr_clause_id" select="normalize-space(ancestor::bipm:clause[1]/@id)"/>
+			<xsl:variable name="curr_annex_id" select="normalize-space(ancestor::bipm:annex[1]/@id)"/>
 			
 			<xsl:variable name="number">
-				<xsl:number count="bipm:fn[ancestor::bipm:clause[1]/@id = $curr_clause_id][ancestor::bipm:quote or not(ancestor::bipm:table)]" level="any"/>
+				<xsl:choose>
+					<xsl:when test="$curr_clause_id != ''">
+						<xsl:number count="bipm:fn[ancestor::bipm:clause[1]/@id = $curr_clause_id][ancestor::bipm:quote or not(ancestor::bipm:table)]" level="any"/>
+					</xsl:when>
+					<xsl:otherwise>
+						<xsl:number count="bipm:fn[ancestor::bipm:annex[1]/@id = $curr_annex_id]"/>
+					</xsl:otherwise>
+				</xsl:choose>
 			</xsl:variable>
 			
 			<!-- <xsl:variable name="asterisks">
@@ -1509,29 +1573,43 @@
 			
 			<xsl:variable name="header-title">
 				<xsl:choose>
-					<xsl:when test="./bipm:title[1]/*[local-name() = 'tab']">
+					
+					<xsl:when test="local-name(..) = 'sections'">
 						<xsl:choose>
-							<xsl:when test="local-name(..) = 'sections'">
+							<xsl:when test="./bipm:title[1]/*[local-name() = 'tab']">
 								<xsl:apply-templates select="./bipm:title[1]/*[local-name() = 'tab'][1]/following-sibling::node()" mode="header"/>
 							</xsl:when>
-							<xsl:otherwise> <!-- for annex -->
-								<xsl:variable name="title_annex">
-									<xsl:value-of select="normalize-space(./bipm:title[1]/*[local-name() = 'tab'][1]/preceding-sibling::node())"/>
-								</xsl:variable>
-								<xsl:choose>
-									<xsl:when test="substring($title_annex, string-length($title_annex)) = '.'">
-										<xsl:value-of select="substring($title_annex, 1, string-length($title_annex) - 1)"/>
-									</xsl:when>
-									<xsl:otherwise>
-										<xsl:value-of select="$title_annex"/>
-									</xsl:otherwise>
-								</xsl:choose>
+							<xsl:otherwise>
+								<xsl:apply-templates select="./bipm:title[1]" mode="header"/>
 							</xsl:otherwise>
 						</xsl:choose>
 					</xsl:when>
+					
+					<xsl:when test="local-name() = 'annex'">
+						<xsl:choose>
+							<xsl:when test="./*[1]/bipm:title[1]/*[local-name() = 'tab']">
+								<xsl:variable name="title_annex">
+										<xsl:value-of select="normalize-space(./*[1]/bipm:title[1]/*[local-name() = 'tab'][1]/preceding-sibling::node())"/>
+									</xsl:variable>
+									<xsl:choose>
+										<xsl:when test="substring($title_annex, string-length($title_annex)) = '.'">
+											<xsl:value-of select="substring($title_annex, 1, string-length($title_annex) - 1)"/>
+										</xsl:when>
+										<xsl:otherwise>
+											<xsl:value-of select="$title_annex"/>
+										</xsl:otherwise>
+									</xsl:choose>
+							</xsl:when>
+							<xsl:otherwise>
+								<xsl:apply-templates select="./*[1]/bipm:title[1]" mode="header"/>
+							</xsl:otherwise>
+						</xsl:choose>
+					</xsl:when>
+					
 					<xsl:otherwise>
 						<xsl:apply-templates select="./bipm:title[1]" mode="header"/>
 					</xsl:otherwise>
+					
 				</xsl:choose>
 			</xsl:variable>
 			<xsl:call-template name="insertHeaderFooter">
@@ -1699,7 +1777,7 @@
 			</xsl:if>
 			<xsl:attribute name="margin-bottom">
 				<xsl:choose>
-					<xsl:when test="$level = 1 and (parent::bipm:annex or parent::bipm:abstract or ancestor::bipm:preface)">84pt</xsl:when>
+					<xsl:when test="$level = 1 and (parent::bipm:annex or ancestor::bipm:annex or parent::bipm:abstract or ancestor::bipm:preface)">84pt</xsl:when>
 					<xsl:when test="$level = 1">6pt</xsl:when>
 					<xsl:when test="$level = 2 and ancestor::bipm:annex">6pt</xsl:when> <!-- 6pt 12pt -->					
 					<!-- <xsl:when test="$level = 2 and $independentAppendix != ''">6pt</xsl:when> -->
@@ -1997,7 +2075,7 @@
 			
 		<xsl:variable name="space-before"> <!-- margin-top for title, see bipm:title -->
 			<xsl:if test="local-name(*[1]) = 'title'">
-					<xsl:if test="*[1]/@depth = 1 and $independentAppendix != ''">30pt</xsl:if>
+					<xsl:if test="*[1]/@depth = 1 and not(*[1]/ancestor::bipm:annex) and $independentAppendix != ''">30pt</xsl:if>
 					<xsl:if test="*[1]/@depth = 2 and not(*[1]/ancestor::bipm:annex)">30pt</xsl:if>
 					<xsl:if test="*[1]/@depth = 2 and *[1]/ancestor::bipm:annex">18pt</xsl:if> <!-- 24pt -->
 					<xsl:if test="*[1]/@depth = 3 and not(*[1]/ancestor::bipm:annex)">20pt</xsl:if>
