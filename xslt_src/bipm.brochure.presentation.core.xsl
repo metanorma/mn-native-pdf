@@ -908,8 +908,22 @@
 						</fo:block-container>
 						
 						<fo:block-container font-size="18pt" font-weight="bold" text-align="center">
-							<fo:block>						
-								<xsl:value-of select="//bipm:bipm-standard/bipm:bibdata/bipm:title[@language = $curr_lang and @type='appendix']"/>
+							<fo:block>
+								<xsl:variable name="title" select="//bipm:bipm-standard/bipm:bibdata/bipm:title[@language = $curr_lang and @type='appendix']"/>
+								
+								<xsl:variable name="mep_text" select="'Mise en pratique'"/>
+								
+								<xsl:choose>
+									<xsl:when test="$curr_lang = 'en' and contains($title, $mep_text)">
+										<xsl:value-of select="substring-before($title, $mep_text)"/>
+										<xsl:text> </xsl:text><fo:inline font-style="italic"><xsl:value-of select="$mep_text"/></fo:inline><xsl:text> </xsl:text>
+										<xsl:value-of select="substring-after($title, $mep_text)"/>
+									</xsl:when>
+									<xsl:otherwise>
+										<xsl:value-of select="$title"/>
+									</xsl:otherwise>
+								</xsl:choose>
+								
 							</fo:block>
 							<fo:block>&#xA0;</fo:block>
 							<fo:block font-size="9pt">
@@ -1090,7 +1104,20 @@
 						<fo:block>&#xA0;</fo:block>
 						<fo:block font-weight="{$weight-normal}"><xsl:value-of select="/bipm:bipm-standard/bipm:bibdata/bipm:title[@language = 'fr' and @type = 'appendix']"/></fo:block>
 						<fo:block>&#xA0;</fo:block>
-						<fo:block font-weight="{$weight-bold}"><xsl:value-of select="/bipm:bipm-standard/bipm:bibdata/bipm:title[@language = 'en' and @type = 'appendix']"/></fo:block>
+						<fo:block font-weight="{$weight-bold}">
+							<xsl:variable name="title_en" select="/bipm:bipm-standard/bipm:bibdata/bipm:title[@language = 'en' and @type = 'appendix']"/>
+							<xsl:variable name="mep_text" select="'Mise en pratique'"/>
+							<xsl:choose>
+								<xsl:when test="contains($title_en, $mep_text)">
+									<xsl:value-of select="substring-before($title_en, $mep_text)"/>
+									<xsl:text> </xsl:text><fo:inline font-style="italic"><xsl:value-of select="$mep_text"/></fo:inline><xsl:text> </xsl:text>
+									<xsl:value-of select="substring-after($title_en, $mep_text)"/>
+								</xsl:when>
+								<xsl:otherwise>
+									<xsl:value-of select="$title_en"/>
+								</xsl:otherwise>
+							</xsl:choose>
+						</fo:block>
 					</fo:block>
 				</fo:block-container>
 				
