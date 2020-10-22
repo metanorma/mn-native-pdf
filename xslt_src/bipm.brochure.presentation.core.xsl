@@ -976,7 +976,8 @@
 				
 				<!-- Document Pages -->
 				
-				<xsl:apply-templates select="bipm:sections/*" mode="sections" />
+				<!-- <xsl:apply-templates select="bipm:sections/*" mode="sections" /> -->
+				<xsl:call-template name="sections_appendix"/>
 				
 				<!-- Normative references  -->
 				<xsl:apply-templates select="bipm:bibliography/bipm:references[@normative='true']" mode="sections"/>
@@ -1545,6 +1546,34 @@
 		</fo:page-sequence>
 	</xsl:template>
 	
+	<xsl:template  name="sections_appendix">
+		<fo:page-sequence master-reference="document" force-page-count="no-force">
+			<xsl:call-template name="insertFootnoteSeparator"/>
+			
+			<xsl:variable name="curr_lang" select="/bipm:bipm-standard/bipm:bibdata/bipm:language"/>
+												
+			<xsl:variable name="header-title">
+				<xsl:choose>
+					<xsl:when test="$lang = 'fr'">Annexe </xsl:when>
+					<xsl:otherwise>Appendix </xsl:otherwise>
+				</xsl:choose>
+				<xsl:value-of select="/bipm:bipm-standard/bipm:bibdata/bipm:ext/bipm:structuredidentifier/bipm:appendix"/>
+			</xsl:variable>
+			<xsl:call-template name="insertHeaderFooter">
+				<xsl:with-param name="header-title" select="$header-title"/>
+			</xsl:call-template>
+			
+			<fo:flow flow-name="xsl-region-body">
+				<fo:block line-height="125%">
+					
+					<xsl:for-each select=" bipm:sections/*">				
+						<xsl:apply-templates select="."/>
+					</xsl:for-each>
+				</fo:block>
+			</fo:flow>
+		</fo:page-sequence>
+	</xsl:template>
+	
 	<xsl:template match="bipm:bipm-standard/bipm:bibdata/bipm:edition">
 		<xsl:param name="font-size" select="'65%'"/>
 		<xsl:param name="baseline-shift" select="'30%'"/>
@@ -1679,9 +1708,9 @@
 				</xsl:choose>
 			</xsl:attribute>			
 			<!-- <xsl:if test="$level = 1 and $independentAppendix != ''">
-				<xsl:attribute name="margin-top">24pt</xsl:attribute>
-			</xsl:if>
-			<xsl:if test="$level = 2 and $independentAppendix != ''">
+				<xsl:attribute name="space-before">24pt</xsl:attribute>
+			</xsl:if> -->
+			<!-- <xsl:if test="$level = 2 and $independentAppendix != ''">
 				<xsl:attribute name="margin-top">36pt</xsl:attribute>
 			</xsl:if> -->
 			<xsl:if test="$level = 2 and ancestor::bipm:annex">
@@ -1967,7 +1996,8 @@
 			<xsl:when test="$independentAppendix = ''"> -->
 			
 		<xsl:variable name="space-before"> <!-- margin-top for title, see bipm:title -->
-			<xsl:if test="local-name(*[1]) = 'title'">					
+			<xsl:if test="local-name(*[1]) = 'title'">
+					<xsl:if test="*[1]/@depth = 1 and $independentAppendix != ''">30pt</xsl:if>
 					<xsl:if test="*[1]/@depth = 2 and not(*[1]/ancestor::bipm:annex)">30pt</xsl:if>
 					<xsl:if test="*[1]/@depth = 2 and *[1]/ancestor::bipm:annex">18pt</xsl:if> <!-- 24pt -->
 					<xsl:if test="*[1]/@depth = 3 and not(*[1]/ancestor::bipm:annex)">20pt</xsl:if>
