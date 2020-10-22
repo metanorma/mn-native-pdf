@@ -608,7 +608,12 @@
 					<xsl:variable name="format">
 						<xsl:choose>
 							<xsl:when test="../@type = 'arabic'">1.</xsl:when>
-							<xsl:when test="../@type = 'alphabet'">a)</xsl:when>
+							<xsl:when test="../@type = 'alphabet'">
+								<xsl:choose>
+									<xsl:when test="$independentAppendix = ''">a)</xsl:when>
+									<xsl:otherwise>(a)</xsl:otherwise>
+								</xsl:choose>
+							</xsl:when>
 							<xsl:when test="../@type = 'alphabet_upper'">A.</xsl:when>
 							<xsl:when test="../@type = 'roman'">(i)</xsl:when>
 							<xsl:when test="../@type = 'roman_upper'">I.</xsl:when>
