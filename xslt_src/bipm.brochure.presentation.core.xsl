@@ -31,7 +31,7 @@
 	
 	<xsl:variable name="copyrightYear" select="//bipm:bipm-standard/bipm:bibdata/bipm:copyright/bipm:from"/>
 	
-	<xsl:variable name="doc_first_language" select="(//bipm:bipm-standard)[1]/bipm:bibdata/bipm:language"/>
+	<xsl:variable name="doc_first_language" select="(//bipm:bipm-standard)[1]/bipm:bibdata/bipm:language[@current = 'true']"/>
 
 	<xsl:variable name="lang">
 		<xsl:call-template name="getLang"/>
@@ -47,7 +47,7 @@
 				<xsl:choose>
 					<xsl:when test="$doc_split_by_language = ''"><!-- all documents -->
 						<xsl:for-each select="//bipm:bipm-standard">
-							<xsl:variable name="lang" select="*[local-name()='bibdata']/*[local-name()='language']"/>
+							<xsl:variable name="lang" select="*[local-name()='bibdata']/*[local-name()='language'][@current = 'true']"/>
 							<xsl:variable name="num"><xsl:number level="any" count="bipm:bipm-standard"/></xsl:variable>
 							<xsl:variable name="current_document">
 								<xsl:apply-templates select="." mode="change_id">
@@ -65,8 +65,8 @@
 						</xsl:for-each>
 					</xsl:when>
 					<xsl:otherwise>
-						<xsl:for-each select="(//bipm:bipm-standard)[*[local-name()='bibdata']/*[local-name()='language'] = $doc_split_by_language]">
-							<xsl:variable name="lang" select="*[local-name()='bibdata']/*[local-name()='language']"/>
+						<xsl:for-each select="(//bipm:bipm-standard)[*[local-name()='bibdata']/*[local-name()='language'][@current = 'true'] = $doc_split_by_language]">
+							<xsl:variable name="lang" select="*[local-name()='bibdata']/*[local-name()='language'][@current = 'true']"/>
 							<xsl:variable name="num"><xsl:number level="any" count="bipm:bipm-standard"/></xsl:variable>
 							<xsl:variable name="current_document">
 								<xsl:apply-templates select="." mode="change_id">
@@ -225,7 +225,7 @@
 					<xsl:choose>
 						<xsl:when test="$doc_split_by_language = ''"><!-- all documents -->
 							<xsl:for-each select="//bipm:bipm-standard">
-								<xsl:variable name="lang" select="*[local-name()='bibdata']//*[local-name()='language']"/>						
+								<xsl:variable name="lang" select="*[local-name()='bibdata']//*[local-name()='language'][@current = 'true']"/>						
 								<xsl:variable name="num"><xsl:number level="any" count="bipm:bipm-standard"/></xsl:variable>
 								<!-- change id to prevent identical id in different documents in one container -->						
 								<xsl:variable name="current_document">							
@@ -247,8 +247,8 @@
 							</xsl:for-each>
 						</xsl:when>
 						<xsl:otherwise>
-							<xsl:for-each select="(//bipm:bipm-standard)[*[local-name()='bibdata']/*[local-name()='language'] = $doc_split_by_language]">
-								<xsl:variable name="lang" select="*[local-name()='bibdata']//*[local-name()='language']"/>						
+							<xsl:for-each select="(//bipm:bipm-standard)[*[local-name()='bibdata']/*[local-name()='language'][@current = 'true'] = $doc_split_by_language]">
+								<xsl:variable name="lang" select="*[local-name()='bibdata']//*[local-name()='language'][@current = 'true']"/>						
 								<xsl:variable name="num"><xsl:number level="any" count="bipm:bipm-standard"/></xsl:variable>
 								<!-- change id to prevent identical id in different documents in one container -->						
 								<xsl:variable name="current_document">							
@@ -509,7 +509,7 @@
 	</xsl:template>
 	
 	<xsl:template name="fn_reference_to_xref_target">
-		<xsl:variable name="lang" select="ancestor::bipm:bipm-standard/*[local-name()='bibdata']//*[local-name()='language']"/>
+		<xsl:variable name="lang" select="ancestor::bipm:bipm-standard/*[local-name()='bibdata']//*[local-name()='language'][@current = 'true']"/>
 			<xsl:variable name="gen_id" select="generate-id()"/>
 			<xsl:variable name="curr_clause_id" select="ancestor::bipm:clause[1]/@id"/>
 			<xsl:variable name="number">
@@ -714,7 +714,7 @@
 			<xsl:call-template name="namespaceCheck"/>
 		</xsl:for-each>
 		
-		<xsl:variable name="curr_lang" select="bipm:bibdata/bipm:language"/>
+		<xsl:variable name="curr_lang" select="bipm:bibdata/bipm:language[@current = 'true']"/>
 		
 		<xsl:if test="$debug = 'true'">
 			<xsl:text disable-output-escaping="yes">&lt;!--</xsl:text>
@@ -1360,7 +1360,7 @@
 		<xsl:choose>
 			<xsl:when test="$doc_split_by_language = ''"><!-- all documents -->
 				<xsl:for-each select="//bipm:bipm-standard/bipm:bibdata">
-					<lang><xsl:value-of select="bipm:language"/></lang>
+					<lang><xsl:value-of select="bipm:language[@current = 'true']"/></lang>
 				</xsl:for-each>
 				<!-- <xsl:choose>
 					<xsl:when test="count(//bipm:bipm-standard) = 1">											
@@ -1628,7 +1628,7 @@
 		<fo:page-sequence master-reference="document" force-page-count="no-force">
 			<xsl:call-template name="insertFootnoteSeparator"/>
 			
-			<xsl:variable name="curr_lang" select="/bipm:bipm-standard/bipm:bibdata/bipm:language"/>
+			<xsl:variable name="curr_lang" select="/bipm:bipm-standard/bipm:bibdata/bipm:language[@current = 'true']"/>
 												
 			<xsl:variable name="header-title">
 				<xsl:choose>
@@ -2401,7 +2401,7 @@
 				<xsl:number count="bipm:fn[not(ancestor::bipm:table)]" level="any"/>
 			</xsl:variable>
 			<xsl:variable name="gen_id" select="generate-id()"/>
-			<xsl:variable name="lang" select="ancestor::bipm:bipm-standard/*[local-name()='bibdata']//*[local-name()='language']"/>
+			<xsl:variable name="lang" select="ancestor::bipm:bipm-standard/*[local-name()='bibdata']//*[local-name()='language'][@current = 'true']"/>
 			<fo:inline font-size="65%" keep-with-previous.within-line="always" vertical-align="super">
 				<fo:basic-link internal-destination="{$lang}_footnote_{@reference}_{$number}_{$gen_id}" fox:alt-text="footnote {@reference}">
 					<xsl:value-of select="$number"/><!--  + count(//bipm:bibitem/bipm:note) -->
@@ -2768,7 +2768,9 @@
 					<!-- add , voir p. N -->
 					<xsl:apply-templates />					
 					<xsl:text>, </xsl:text>
-					<xsl:value-of select="ancestor::bipm:bipm-standard/bipm:local_bibdata/bipm:i18nyaml/bipm:i18n_see"/>					
+					<xsl:variable name="curr_lang" select="ancestor::bipm:bipm-standard/bipm:bibdata/bipm:language[@current = 'true']"/>
+					<!-- <xsl:value-of select="ancestor::bipm:bipm-standard/bipm:local_bibdata/bipm:i18nyaml/bipm:i18n_see"/> -->
+					<xsl:value-of select="ancestor::bipm:bipm-standard/bipm:localized-strings/bipm:localized-string[@key='see' and @language=$curr_lang]"/>
 					<xsl:text> p. </xsl:text>
 					<fo:page-number-citation ref-id="{@target}"/>					
 				</xsl:when>
@@ -2782,7 +2784,7 @@
 	<xsl:template match="bipm:note[not(ancestor::bipm:preface)]/bipm:name" priority="2"  mode="presentation">
 		<xsl:choose>
 			<xsl:when test="not(../preceding-sibling::bipm:note) and not((../following-sibling::bipm:note))">
-				<xsl:variable name="curr_lang" select="ancestor::bipm:bipm-standard/bipm:bibdata/bipm:language"/>
+				<xsl:variable name="curr_lang" select="ancestor::bipm:bipm-standard/bipm:bibdata/bipm:language[@current = 'true']"/>
 				<xsl:choose>
 					<xsl:when test="$curr_lang = 'fr'">Remarque: </xsl:when>
 					<xsl:otherwise>Note: </xsl:otherwise>
