@@ -1040,8 +1040,8 @@
 				
 				<!-- Document Pages -->
 				
-				<!-- <xsl:apply-templates select="bipm:sections/*" mode="sections" /> -->
-				<xsl:call-template name="sections_appendix"/>
+				<xsl:apply-templates select="bipm:sections/*" mode="sections" />
+				<!-- <xsl:call-template name="sections_appendix"/> --> <!-- without pagebreaks  -->
 				
 				<!-- Normative references  -->
 				<xsl:apply-templates select="bipm:bibliography/bipm:references[@normative='true']" mode="sections"/>
