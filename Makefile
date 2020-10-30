@@ -96,7 +96,9 @@ XSLT_GENERATED := xslt/iec.international-standard.xsl \
 	xslt/mpfd.guidelines.presentation.xsl \
 	xslt/mpfd.supervision-of-mpf-intermediaries.xsl \
 	xslt/mpfd.supervision-of-mpf-intermediaries.presentation.xsl \
-	xslt/bipm.brochure.presentation.xsl
+	xslt/bipm.brochure.presentation.xsl \
+	xslt/bipm.mise-en-pratique.presentation.xsl \
+	xslt/bipm.rapport.presentation.xsl 
 
 MN2PDF_DOWNLOAD_PATH := https://github.com/metanorma/mn2pdf/releases/download/v1.22/mn2pdf-1.22.jar
 # MN2PDF_DOWNLOAD_PATH := https://maven.pkg.github.com/metanorma/mn2pdf/com/metanorma/fop/mn2pdf/1.7/mn2pdf-1.7.jar
@@ -262,6 +264,7 @@ xslt/%.xsl: xslt_src/%.core.xsl xslt_src/merge.xsl xalan/xalan.jar
 	java -jar xalan/xalan.jar -IN $< -XSL xslt_src/merge.xsl -OUT $@ -PARAM xslfile $<
 
 documents.rxl: $(HTML) $(DOC) $(RXL) $(PDF) | bundle
+#	echo "### skipping step 'documents.rxl'"
 	bundle exec relaton concatenate \
 	  -t "mn2pdf samples" \
 		-g "Metanorma" \
@@ -271,6 +274,7 @@ bundle:
 	bundle
 
 documents.html: documents.rxl
+#	echo "### skipping step 'documents.html'"
 	bundle exec relaton xml2html documents.rxl
 
 distclean: clean

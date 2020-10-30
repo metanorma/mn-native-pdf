@@ -683,7 +683,7 @@
 		<xsl:if test="$namespace = 'bipm'">
 			<xsl:attribute name="font-weight">bold</xsl:attribute>
 			<xsl:attribute name="text-align">left</xsl:attribute>
-			<xsl:attribute name="margin-top">12pt</xsl:attribute>
+			<xsl:attribute name="margin-top">24pt</xsl:attribute>
 			<xsl:attribute name="margin-left">25mm</xsl:attribute>
 			<xsl:attribute name="text-indent">-25mm</xsl:attribute>
 			<xsl:attribute name="margin-bottom">6pt</xsl:attribute>			
@@ -1364,9 +1364,9 @@
 			<fo:block>&#xA0;</fo:block>				
 		</xsl:if>
 		
-		<xsl:if test="$namespace = 'bipm'">
+		<!-- <xsl:if test="$namespace = 'bipm'">
 			<fo:block>&#xA0;</fo:block>				
-		</xsl:if>
+		</xsl:if> -->
 		
 		<!-- $namespace = 'iso' or  -->
 		<xsl:if test="$namespace = 'csa' or $namespace = 'csd' or $namespace = 'gb' or $namespace = 'iec' or $namespace = 'iho' or 											
@@ -1650,6 +1650,11 @@
 			<fo:block xsl:use-attribute-sets="table-name-style">
 				<xsl:if test="$namespace = 'iso'">
 					<xsl:attribute name="margin-bottom">0pt</xsl:attribute>
+				</xsl:if>
+				<xsl:if test="$namespace = 'bipm'">
+					<xsl:if test="not(*[local-name()='tab'])"> <!-- table without number -->
+						<xsl:attribute name="margin-top">0pt</xsl:attribute>
+					</xsl:if>
 				</xsl:if>
 				<xsl:apply-templates />				
 			</fo:block>
@@ -2187,6 +2192,11 @@
 							<xsl:attribute name="background-color">rgb(252, 246, 222)</xsl:attribute>
 						</xsl:if>
 					</xsl:if>					
+				</xsl:if>
+				<xsl:if test="$namespace = 'bipm'">
+					<xsl:if test="count(*) = 1 and local-name(*[1]) = 'th'">
+						<xsl:attribute  name="keep-with-next.within-page">always</xsl:attribute>
+					</xsl:if>
 				</xsl:if>
 				<!-- <xsl:if test="$namespace = 'bipm'">
 					<xsl:attribute name="height">8mm</xsl:attribute>
@@ -3632,7 +3642,18 @@
 	<!-- ===================== -->	
 
 	<xsl:template name="getLang">
-		<xsl:variable name="language" select="//*[local-name()='bibdata']//*[local-name()='language']"/>
+		<xsl:variable name="language_current" select="normalize-space(//*[local-name()='bibdata']//*[local-name()='language'][@current = 'true'])"/>
+		<xsl:variable name="language">
+			<xsl:choose>
+				<xsl:when test="$language_current != ''">
+					<xsl:value-of select="$language_current"/>
+				</xsl:when>
+				<xsl:otherwise>
+					<xsl:value-of select="//*[local-name()='bibdata']//*[local-name()='language']"/>
+				</xsl:otherwise>
+			</xsl:choose>
+		</xsl:variable>
+		
 		<xsl:choose>
 			<xsl:when test="$language = 'English'">en</xsl:when>
 			<xsl:otherwise><xsl:value-of select="$language"/></xsl:otherwise>
