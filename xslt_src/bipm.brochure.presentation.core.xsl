@@ -852,7 +852,7 @@
 					
 						<fo:block-container margin-left="-14mm"  margin-right="0mm">
 							<fo:block-container margin-left="0mm" margin-right="0mm">							
-								<fo:block font-family="Arial" font-size="16pt" font-weight="bold" text-align-last="justify" margin-bottom="84pt">									
+								<fo:block font-family="Arial" font-size="16pt" font-weight="bold" text-align-last="justify" margin-bottom="82pt">									
 									<!-- <fo:marker marker-class-name="header-title"><xsl:value-of select="$title-toc"/></fo:marker> -->
 									<fo:inline><xsl:value-of select="//bipm:bipm-standard/bipm:bibdata/bipm:title[@language = $curr_lang and @type='main']"/></fo:inline>
 									<fo:inline keep-together.within-line="always">
@@ -877,6 +877,14 @@
 											<xsl:for-each select="xalan:nodeset($contents)/doc[@id = $docid]//item[@display='true' and not(@type = 'annex') and not(@parent = 'annex')]">								
 												<xsl:call-template name="insertContentItem"/>								
 											</xsl:for-each>
+											<xsl:if test="//bipm:bipm-standard/bipm:bibdata/bipm:ext/bipm:doctype ='brochure'">
+												<!-- insert page break between main sections and appendixes in ToC -->
+												<fo:table-row>
+													<fo:table-cell number-columns-spanned="2">
+														<fo:block break-after="page"/>
+													</fo:table-cell>
+												</fo:table-row>
+											</xsl:if>
 											<xsl:for-each select="xalan:nodeset($contents)/doc[@id = $docid]//item[@display='true' and (@type = 'annex')]"> <!--  or (@level = 2 and @parent = 'annex') -->
 												<xsl:call-template name="insertContentItem"/>								
 											</xsl:for-each>
@@ -1394,8 +1402,8 @@
 				<xsl:choose>
 					<xsl:when test="@level = 1 and @type = 'annex'">0pt</xsl:when>
 					<xsl:when test="@level = 1">6pt</xsl:when>
-					<xsl:when test="@level = 2 and not(following-sibling::item[@display='true']) and not(item[@display='true'])">12pt</xsl:when>
-					<xsl:when test="@level = 3 and not(following-sibling::item[@display='true']) and not(../following-sibling::item[@display='true'])">12pt</xsl:when>
+					<xsl:when test="@level = 2 and not(following-sibling::item[@display='true']) and not(item[@display='true']) and not(position() = last())">12pt</xsl:when>
+					<xsl:when test="@level = 3 and not(following-sibling::item[@display='true']) and not(../following-sibling::item[@display='true']) and not(position() = last())">12pt</xsl:when>
 				</xsl:choose>
 			</xsl:variable>
 			
