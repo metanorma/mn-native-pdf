@@ -1690,7 +1690,7 @@
 	</xsl:template>
 
 	<xsl:template match="bipm:license-statement">
-		<fo:block font-size="10.6pt" font-family="Times New Roman">
+		<fo:block font-size="10.5pt" font-family="Times New Roman">
 			<xsl:apply-templates />
 		</fo:block>
 	</xsl:template>
@@ -2786,7 +2786,12 @@
 			<xsl:when test="not(../preceding-sibling::bipm:note) and not((../following-sibling::bipm:note))">
 				<xsl:variable name="curr_lang" select="ancestor::bipm:bipm-standard/bipm:bibdata/bipm:language[@current = 'true']"/>
 				<xsl:choose>
-					<xsl:when test="$curr_lang = 'fr'">Remarque: </xsl:when>
+					<xsl:when test="$curr_lang = 'fr'">
+						<xsl:choose>
+							<xsl:when test="ancestor::bipm:li">Remarque: </xsl:when>
+							<xsl:otherwise>Note: </xsl:otherwise>
+						</xsl:choose>
+					</xsl:when>
 					<xsl:otherwise>Note: </xsl:otherwise>
 				</xsl:choose>
 			</xsl:when>
