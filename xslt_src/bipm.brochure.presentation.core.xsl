@@ -145,14 +145,14 @@
 				<fo:simple-page-master master-name="document-odd" page-width="{$pageWidth}" page-height="{$pageHeight}">
 					<fo:region-body margin-top="25.4mm" margin-bottom="22mm" margin-left="31.7mm" margin-right="40mm"/>
 					<fo:region-before region-name="header-odd" extent="25.4mm"/> 
-					<fo:region-after region-name="footer" extent="22mm"/>
+					<fo:region-after region-name="footer" extent="22mm"/> <!-- debug:  background-color="green" -->
 					<fo:region-start region-name="left-region" extent="17mm"/>
 					<fo:region-end region-name="right-region" extent="26.5mm"/>
 				</fo:simple-page-master>
 				<fo:simple-page-master master-name="document-even" page-width="{$pageWidth}" page-height="{$pageHeight}">
 					<fo:region-body margin-top="25.4mm" margin-bottom="22mm" margin-left="31.7mm" margin-right="40mm"/>
 					<fo:region-before region-name="header-even" extent="25.4mm"/> 
-					<fo:region-after region-name="footer" extent="22mm"/>
+					<fo:region-after region-name="footer" extent="22mm"/> <!-- debug:  background-color="green" -->
 					<fo:region-start region-name="left-region" extent="17mm"/>
 					<fo:region-end region-name="right-region" extent="26.5mm"/>
 				</fo:simple-page-master>
@@ -2195,7 +2195,7 @@
 				<xsl:variable name="start_row" select="xalan:nodeset($rows)/num[$curr_row_num]/@span_start"/>
 				<xsl:variable name="end_row" select="$start_row + xalan:nodeset($rows)/num[$curr_row_num]/@span_num - 1"/>
 				<fo:table-row > <!-- DEBUG border-top="1.5pt solid blue" border-bottom="1.5pt solid blue" -->
-					<xsl:if test="local-name(*[$end_row]) = 'title' or local-name(*[$end_row]) = 'clause'"> <!-- if last element is title or clause, then keep row with next -->
+					<xsl:if test="local-name(*[$end_row]) = 'title'"> <!-- if last element is title, then keep row with next--> <!--  or local-name(*[$end_row]) = 'clause' or clause, then keep row with next -->
 						<xsl:attribute  name="keep-with-next.within-page">always</xsl:attribute>
 					</xsl:if>
 					
@@ -2216,10 +2216,13 @@
 					
 					<xsl:variable name="table-row-padding-bottom-value" select="normalize-space($table-row-padding-bottom)"/>
 					
-					<fo:table-cell>						
+					<fo:table-cell>	
+						
 						<xsl:if test="$table-row-padding-bottom-value != ''">
 							<xsl:attribute name="padding-bottom"><xsl:value-of select="$table-row-padding-bottom-value"/></xsl:attribute>
 						</xsl:if>
+						
+						<!-- <fo:block>$end_row=<xsl:value-of select="$end_row"/>,local-name(*[$end_row])=<xsl:value-of select="local-name(*[$end_row]) "/></fo:block> -->
 						
 						<fo:block>
 							<!-- insert elements from sections/clause annex/clause -->
@@ -2517,7 +2520,7 @@
 	
 	<!-- process list item as individual list --> <!-- flat list -->
 	<xsl:template match="bipm:li">
-		<fo:block-container margin-left="0mm">
+		<fo:block-container margin-left="0mm"> <!-- debug:  border="0.5pt solid black" -->
 			<xsl:if test="ancestor::bipm:li">
 				<xsl:attribute name="margin-left">6.5mm</xsl:attribute><!-- 8 mm -->
 			</xsl:if>
@@ -2526,9 +2529,22 @@
 				<xsl:attribute name="font-size">9pt</xsl:attribute>
 				<xsl:attribute name="line-height">130%</xsl:attribute>
 			</xsl:if>
+			
+			<!-- last item -->		
+			<xsl:if test="not(following-sibling::*[1][local-name() = 'li'])"> 		
+				<xsl:attribute name="space-after">6pt</xsl:attribute>
+				<xsl:if test="../ancestor::bipm:ul | ../ancestor::bipm:ol">					
+					<xsl:attribute name="space-after">0pt</xsl:attribute>
+				</xsl:if>
+				<xsl:if test="../following-sibling::*[1][local-name() = 'ul' or local-name() = 'ol']">					
+					<xsl:attribute name="space-after">0pt</xsl:attribute>
+				</xsl:if>						
+			</xsl:if>
+			
 			<fo:block-container margin-left="0mm">
-				<fo:list-block provisional-distance-between-starts="6.5mm"> <!-- 8 mm -->
-					<xsl:if test="not(following-sibling::*[1][local-name() = 'li'])"> <!-- last item -->
+				<fo:list-block provisional-distance-between-starts="6.5mm"> <!-- debug: border="0.5pt solid blue" -->
+					 <!-- last item -->
+					<!-- <xsl:if test="not(following-sibling::*[1][local-name() = 'li'])">
 						<xsl:attribute name="margin-bottom">6pt</xsl:attribute>
 						<xsl:if test="../ancestor::bipm:ul | ../ancestor::bipm:ol">
 							<xsl:attribute name="margin-bottom">0pt</xsl:attribute>
@@ -2536,7 +2552,7 @@
 						<xsl:if test="../following-sibling::*[1][local-name() = 'ul' or local-name() = 'ol']">
 							<xsl:attribute name="margin-bottom">0pt</xsl:attribute>
 						</xsl:if>
-					</xsl:if>
+					</xsl:if> -->
 					<!-- <xsl:if test="../ancestor::bipm:note"> -->
 					<xsl:if test="ancestor::bipm:note_side">
 						<xsl:attribute name="provisional-distance-between-starts">0mm</xsl:attribute>
@@ -2544,7 +2560,7 @@
 	
 					<fo:list-item id="{@id}">
 						<fo:list-item-label end-indent="label-end()">
-							<fo:block>
+							<fo:block> <!-- debug: border="0.5pt solid green" -->
 								<fo:inline>
 									<!-- <xsl:if test="@list_type = 'ul'">
 										<xsl:attribute name="font-size">15pt</xsl:attribute> -->
@@ -2579,7 +2595,7 @@
 							</fo:block>
 						</fo:list-item-label>
 						<fo:list-item-body start-indent="body-start()" line-height-shift-adjustment="disregard-shifts">
-							<fo:block margin-bottom="0pt">
+							<fo:block margin-bottom="0pt"> <!-- debug:   border="0.5pt solid red" -->
 								<xsl:if test="@list_type = 'ol'">
 									<xsl:attribute name="margin-bottom">6pt</xsl:attribute>
 								</xsl:if>
@@ -2596,6 +2612,11 @@
 		
 			</fo:block-container>
 		</fo:block-container>
+		
+		<xsl:if test="not(following-sibling::*[1][local-name() = 'li']) and 
+								not(../ancestor::bipm:ul | ../ancestor::bipm:ol) and not (../following-sibling::*[1][local-name() = 'ul' or local-name() = 'ol'])"> 		
+			<fo:block/>
+		</xsl:if>
 		
 	</xsl:template>
 
