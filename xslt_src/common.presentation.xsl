@@ -2197,6 +2197,9 @@
 					<xsl:if test="count(*) = 1 and local-name(*[1]) = 'th'">
 						<xsl:attribute  name="keep-with-next.within-page">always</xsl:attribute>
 					</xsl:if>
+					<xsl:if test="not(ancestor::*[local-name()='note_side'])">
+					 <xsl:attribute name="min-height">5mm</xsl:attribute>
+					 </xsl:if>
 				</xsl:if>
 				<!-- <xsl:if test="$namespace = 'bipm'">
 					<xsl:attribute name="height">8mm</xsl:attribute>
@@ -2408,7 +2411,10 @@
 				</xsl:attribute>
 			</xsl:if>
 			<xsl:call-template name="display-align" />
-			<fo:block>								
+			<fo:block>
+				<xsl:if test="$namespace = 'bipm'">
+					<xsl:attribute name="line-stacking-strategy">font-height</xsl:attribute>
+				</xsl:if>				
 				<xsl:apply-templates />
 			</fo:block>			
 		</fo:table-cell>
@@ -2785,7 +2791,15 @@
 
 	<!-- Definition List -->
 	<xsl:template match="*[local-name()='dl']">
-		<fo:block-container margin-left="0mm">
+		<fo:block-container>
+			<xsl:if test="$namespace = 'csa' or $namespace = 'csd' or $namespace = 'gb' or $namespace = 'iec' or $namespace = 'iho' or $namespace = 'iso' or $namespace = 'itu' or $namespace = 'm3d' or $namespace = 'mpfd' or $namespace = 'nist-cswp'  or $namespace = 'nist-sp' or $namespace = 'ogc' or $namespace = 'ogc-white-paper' or $namespace = 'rsd' or $namespace = 'unece' or $namespace = 'unece-rec'">
+				<xsl:attribute name="margin-left">0mm</xsl:attribute>
+			</xsl:if>
+			<xsl:if test="$namespace = 'bipm'">
+				<!-- <xsl:if test="not(ancestor::*[local-name() = 'li'])"> -->
+					<xsl:attribute name="margin-left">0mm</xsl:attribute>
+				<!-- </xsl:if> -->
+			</xsl:if>
 			<xsl:if test="parent::*[local-name() = 'note']">
 				<xsl:attribute name="margin-left">
 					<xsl:choose>
@@ -2797,8 +2811,15 @@
 					<xsl:attribute name="margin-left">0mm</xsl:attribute>
 				</xsl:if>
 			</xsl:if>
-			<fo:block-container margin-left="0mm">
-	
+			<fo:block-container>
+				<xsl:if test="$namespace = 'csa' or $namespace = 'csd' or $namespace = 'gb' or $namespace = 'iec' or $namespace = 'iho' or $namespace = 'iso' or $namespace = 'itu' or $namespace = 'm3d' or $namespace = 'mpfd' or $namespace = 'nist-cswp'  or $namespace = 'nist-sp' or $namespace = 'ogc' or $namespace = 'ogc-white-paper' or $namespace = 'rsd' or $namespace = 'unece' or $namespace = 'unece-rec'">
+					<xsl:attribute name="margin-left">0mm</xsl:attribute>
+				</xsl:if>
+				<xsl:if test="$namespace = 'bipm'">
+					<!-- <xsl:if test="not(ancestor::*[local-name() = 'li'])"> -->
+						<xsl:attribute name="margin-left">0mm</xsl:attribute>
+					<!-- </xsl:if> -->
+				</xsl:if>
 				<xsl:variable name="parent" select="local-name(..)"/>
 				
 				<xsl:variable name="key_iso">
@@ -3694,6 +3715,11 @@
 	
 	<xsl:template match="mathml:math">
 		<fo:inline font-family="STIX Two Math"> <!--  -->
+			<xsl:if test="$namespace = 'bipm'">
+				<xsl:if test="ancestor::*[local-name()='table']">
+					<xsl:attribute name="font-size">95%</xsl:attribute> <!-- base font in table is 10pt -->
+				</xsl:if>
+			</xsl:if>
 			<xsl:variable name="mathml">
 				<xsl:apply-templates select="." mode="mathml"/>
 			</xsl:variable>
