@@ -172,7 +172,40 @@
 						<fo:block margin-left="-20mm">
 							<fo:block font-size="17pt" margin-bottom="16pt">
 								<xsl:value-of select="$title"/>
+								
+								<xsl:for-each select="/un:un-standard/un:bibdata/un:note[@type = 'title-footnote']">
+									<xsl:variable name="number" select="position()"/>									
+									<fo:inline font-size="14pt" baseline-shift="15%"  font-weight="normal">
+										<xsl:if test="$number = 1">
+											<xsl:text> </xsl:text>
+										</xsl:if>
+										<fo:basic-link internal-destination="title-footnote_{$number}" fox:alt-text="title footnote">
+											<xsl:call-template name="repeat">
+												<xsl:with-param name="char" select="'*'"/>
+												<xsl:with-param name="count" select="$number"/>
+											</xsl:call-template>
+										</fo:basic-link>
+										<xsl:if test="position() != last()"><fo:inline  baseline-shift="20%">,</fo:inline></xsl:if>
+									</fo:inline>
+								</xsl:for-each>
+								
+								<xsl:for-each select="/un:un-standard/un:bibdata/un:note[@type = 'title-footnote']">
+									<xsl:variable name="number" select="position()"/>
+									<fo:block id="title-footnote_{$number}" font-size="14pt" font-weight="normal">
+										<xsl:if test="$number = 1">
+											<xsl:attribute name="margin-top">12pt</xsl:attribute>
+										</xsl:if>
+										<xsl:call-template name="repeat">
+											<xsl:with-param name="char" select="'*'"/>
+											<xsl:with-param name="count" select="$number"/>
+										</xsl:call-template>
+										<xsl:text> </xsl:text>
+										<xsl:apply-templates />
+									</fo:block>
+								</xsl:for-each>
+								
 							</fo:block>
+							
 							<fo:block font-size="14pt" margin-bottom="16pt">
 								<xsl:value-of select="/un:un-standard/un:bibdata/un:title[@language = 'en' and @type = 'subtitle']"/>
 							</fo:block>

@@ -6178,5 +6178,17 @@
 			</xsl:call-template>
 		</xsl:if>
 	</xsl:template>
+
+	<xsl:template name="repeat">
+		<xsl:param name="char" select="'*'"/>
+		<xsl:param name="count" />
+		<xsl:if test="$count &gt; 0">
+			<xsl:value-of select="$char" />
+			<xsl:call-template name="repeat">
+				<xsl:with-param name="char" select="$char" />
+				<xsl:with-param name="count" select="$count - 1" />
+			</xsl:call-template>
+		</xsl:if>
+	</xsl:template>
  
 </xsl:stylesheet>
