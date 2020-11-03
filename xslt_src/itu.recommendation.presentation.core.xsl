@@ -72,8 +72,8 @@
 		<xsl:call-template name="getLang"/>
 	</xsl:variable>
 	
-	<xsl:variable name="isAmendment" select="normalize-space(/itu:itu-standard/itu:local_bibdata/itu:ext/itu:structuredidentifier/itu:amendment[@language = $lang])"/>
-	<xsl:variable name="isCorrigendum" select="normalize-space(/itu:itu-standard/itu:local_bibdata/itu:ext/itu:structuredidentifier/itu:corrigendum[@language = $lang])"/>
+	<xsl:variable name="isAmendment" select="normalize-space(/itu:itu-standard/itu:bibdata/itu:ext/itu:structuredidentifier/itu:amendment[@language = $lang])"/>
+	<xsl:variable name="isCorrigendum" select="normalize-space(/itu:itu-standard/itu:bibdata/itu:ext/itu:structuredidentifier/itu:corrigendum[@language = $lang])"/>
 	
 	<xsl:template match="/">
 		<xsl:call-template name="namespaceCheck"/>
