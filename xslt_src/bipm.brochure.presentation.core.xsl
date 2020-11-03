@@ -2856,6 +2856,16 @@
 		<mathml:mspace width="1ex" height="1ex"/>
 	</xsl:template>
 
+	<!-- set script minimal font-size -->
+	<xsl:template match="mathml:math" mode="mathml" priority="2">
+		<xsl:copy>
+			<xsl:apply-templates select="@*" mode="mathml"/>
+			<mathml:mstyle scriptminsize="6pt">
+				<xsl:apply-templates select="node()" mode="mathml"/>
+			</mathml:mstyle>
+		</xsl:copy>
+	</xsl:template>
+
 	<xsl:template name="insertHeaderFooter">
 		<xsl:param name="header-title"/>		
 		<fo:static-content flow-name="header-odd">			
