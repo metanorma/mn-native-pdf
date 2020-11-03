@@ -210,7 +210,8 @@
 									</xsl:call-template>									
 								</fo:block>
 								<fo:block font-size="12pt" font-weight="bold">
-									<xsl:variable name="stage" select="java:toUpperCase(java:java.lang.String.new(//ogc:local_bibdata/ogc:status/ogc:stage))"/>
+									<xsl:variable name="curr_lang" select="/ogc:ogc-standard/ogc:bibdata/ogc:language[@current = 'true']"/>					
+									<xsl:variable name="stage" select="java:toUpperCase(java:java.lang.String.new(/ogc:ogc-standard/ogc:bibdata/ogc:status/ogc:stage[@language = $curr_lang]))"/>									
 									<xsl:call-template name="addLetterSpacing">
 										<xsl:with-param name="text" select="$stage"/>
 									</xsl:call-template>
