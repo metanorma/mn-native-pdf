@@ -2848,6 +2848,14 @@
 		</fo:inline>
 	</xsl:template>
 
+	<!-- for chemical expressions, when prefix superscripted -->
+	<xsl:template match="mathml:msup[count(*) = 2 and count(mathml:mrow) = 2]/mathml:mrow[1][count(*) = 1 and mathml:mtext and (mathml:mtext/text() = '' or not(mathml:mtext/text()))]/mathml:mtext" mode="mathml" priority="2">
+		<mathml:mspace height="1ex"/>
+	</xsl:template>
+	<xsl:template match="mathml:msup[count(*) = 2 and count(mathml:mrow) = 2]/mathml:mrow[1][count(*) = 1 and mathml:mtext and (mathml:mtext/text() = ' ' or mathml:mtext/text() = '&#xa0;')]/mathml:mtext" mode="mathml" priority="2">
+		<mathml:mspace width="1ex" height="1ex"/>
+	</xsl:template>
+
 	<xsl:template name="insertHeaderFooter">
 		<xsl:param name="header-title"/>		
 		<fo:static-content flow-name="header-odd">			
