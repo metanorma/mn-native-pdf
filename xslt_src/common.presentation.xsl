@@ -81,6 +81,9 @@
 			<xsl:if test="$namespace = 'iec' or $namespace = 'gb'">
 				<xsl:text>Part #: </xsl:text>
 			</xsl:if>
+			<xsl:if test="$namespace = 'bipm'">
+				<xsl:text>Part #</xsl:text>
+			</xsl:if>
 		</title-part>
 		<title-part lang="fr">
 			<xsl:if test="$namespace = 'iso'">
@@ -89,8 +92,22 @@
 			<xsl:if test="$namespace = 'iec' or $namespace = 'gb'">
 				<xsl:text>Partie #:  </xsl:text>
 			</xsl:if>
+			<xsl:if test="$namespace = 'bipm'">
+				<xsl:text>Partie #</xsl:text>
+			</xsl:if>
 		</title-part>		
 		<title-part lang="zh">第 # 部分:</title-part>
+		
+		<title-subpart lang="en">			
+			<xsl:if test="$namespace = 'bipm'">
+				<xsl:text>Sub-part #</xsl:text>
+			</xsl:if>
+		</title-subpart>
+		<title-subpart lang="fr">		
+			<xsl:if test="$namespace = 'bipm'">
+				<xsl:text>Partie de sub #</xsl:text>
+			</xsl:if>
+		</title-subpart>
 		
 		<title-modified lang="en">modified</title-modified>
 		<title-modified lang="fr">modifiée</title-modified>
@@ -5319,9 +5336,16 @@
 	
 	<xsl:template match="*[local-name() = 'deprecates']">
 		<xsl:variable name="title-deprecated">
-			<xsl:call-template name="getTitle">
-				<xsl:with-param name="name" select="'title-deprecated'"/>
-			</xsl:call-template>
+			<xsl:if test="$namespace = 'iso'">
+				<xsl:call-template name="getLocalizedString">
+					<xsl:with-param name="key">deprecated</xsl:with-param>
+				</xsl:call-template>
+			</xsl:if>
+			<xsl:if test="$namespace = 'bipm' or $namespace = 'csa' or $namespace = 'csd' or $namespace = 'gb' or $namespace = 'iec' or $namespace = 'iho' or $namespace = 'itu' or $namespace = 'm3d' or $namespace = 'mpfd' or $namespace = 'nist-cswp'  or $namespace = 'nist-sp' or $namespace = 'ogc' or $namespace = 'ogc-white-paper' or $namespace = 'rsd' or $namespace = 'unece' or $namespace = 'unece-rec'">
+				<xsl:call-template name="getTitle">
+					<xsl:with-param name="name" select="'title-deprecated'"/>
+				</xsl:call-template>
+			</xsl:if>
 		</xsl:variable>
 		<fo:block xsl:use-attribute-sets="deprecates-style">
 			<xsl:value-of select="$title-deprecated"/>: <xsl:apply-templates />
@@ -6095,13 +6119,22 @@
 	<xsl:template name="split">
 		<xsl:param name="pText" select="."/>
 		<xsl:param name="sep" select="','"/>
+		<xsl:param name="normalize-space" select="'true'"/>
 		<xsl:if test="string-length($pText) >0">
 		<item>
-			<xsl:value-of select="normalize-space(substring-before(concat($pText, ','), $sep))"/>
+			<xsl:choose>
+				<xsl:when test="$normalize-space = 'true'">
+					<xsl:value-of select="normalize-space(substring-before(concat($pText, $sep), $sep))"/>
+				</xsl:when>
+				<xsl:otherwise>
+					<xsl:value-of select="substring-before(concat($pText, $sep), $sep)"/>
+				</xsl:otherwise>
+			</xsl:choose>
 		</item>
 		<xsl:call-template name="split">
 			<xsl:with-param name="pText" select="substring-after($pText, $sep)"/>
 			<xsl:with-param name="sep" select="$sep"/>
+			<xsl:with-param name="normalize-space" select="$normalize-space"/>
 		</xsl:call-template>
 		</xsl:if>
 	</xsl:template>
@@ -6215,6 +6248,17 @@
 				<xsl:with-param name="count" select="$count - 1" />
 			</xsl:call-template>
 		</xsl:if>
+	</xsl:template>
+
+	<xsl:template name="getLocalizedString">
+		<xsl:param name="key"/>		
+		
+		<xsl:variable name="curr_lang">
+			<xsl:call-template name="getLang"/>
+		</xsl:variable>
+		
+		<xsl:value-of select="/*/*[local-name() = 'localized-strings']/*[local-name() = 'localized-string'][@key = $key and @language = $curr_lang]"/>
+		
 	</xsl:template>
  
 </xsl:stylesheet>
