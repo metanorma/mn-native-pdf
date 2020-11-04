@@ -1710,6 +1710,9 @@
 			<xsl:if test="normalize-space($docidentifier) != ''">, </xsl:if>
 			<fo:inline font-style="italic">
 				<xsl:choose>
+					<xsl:when test="iso:title[@type = 'main' and @language = $lang]">
+						<xsl:value-of select="iso:title[@type = 'main' and @language = $lang]"/>
+					</xsl:when>
 					<xsl:when test="iso:title[@type = 'main' and @language = 'en']">
 						<xsl:value-of select="iso:title[@type = 'main' and @language = 'en']"/>
 					</xsl:when>
@@ -1829,6 +1832,9 @@
 						<xsl:apply-templates select="iso:note"/>
 						<xsl:if test="normalize-space($docidentifier) != ''">, </xsl:if>
 						<xsl:choose>
+							<xsl:when test="iso:title[@type = 'main' and @language = $lang]">
+								<xsl:apply-templates select="iso:title[@type = 'main' and @language = $lang]"/>
+							</xsl:when>
 							<xsl:when test="iso:title[@type = 'main' and @language = 'en']">
 								<xsl:apply-templates select="iso:title[@type = 'main' and @language = 'en']"/>
 							</xsl:when>
