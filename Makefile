@@ -98,6 +98,7 @@ XSLT_GENERATED := xslt/iec.international-standard.xsl \
 	xslt/mpfd.supervision-of-mpf-intermediaries.presentation.xsl \
 	xslt/bipm.brochure.presentation.xsl \
 	xslt/bipm.mise-en-pratique.presentation.xsl \
+	xslt/bipm.guide.presentation.xsl \
 	xslt/bipm.rapport.presentation.xsl 
 
 MN2PDF_DOWNLOAD_PATH := https://github.com/metanorma/mn2pdf/releases/download/v1.22/mn2pdf-1.22.jar
