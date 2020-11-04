@@ -1152,20 +1152,26 @@
 						</fo:block>
 						 -->
 						<fo:block font-size="18pt" font-weight="bold" margin-top="40pt" margin-bottom="20pt" line-height="1.1">
-							<xsl:variable name="part-en" select="/iso:iso-standard/iso:bibdata/iso:title[@language = 'en' and @type = 'title-part']"/>
+						
+							<xsl:variable name="title-part-doc-lang" select="/iso:iso-standard/iso:bibdata/iso:title[@language = $lang and @type = 'title-part']"/>
+							
+							<xsl:variable name="title-intro-doc-lang" select="/iso:iso-standard/iso:bibdata/iso:title[@language = $lang and @type = 'title-intro']"/>
+							
 							<fo:block>
-								<xsl:if test="normalize-space($title-intro) != ''">
-									<xsl:value-of select="$title-intro"/>
+								<xsl:if test="normalize-space($title-intro-doc-lang) != ''">
+									<xsl:value-of select="$title-intro-doc-lang"/>
 									<xsl:text> — </xsl:text>
 								</xsl:if>
 								
-								<xsl:value-of select="$title-main"/>
+								<xsl:variable name="title-main-doc-lang" select="/iso:iso-standard/iso:bibdata/iso:title[@language = $lang and @type = 'title-main']"/>
 								
-								<xsl:if test="normalize-space($part-en) != ''">
+								<xsl:value-of select="$title-main-doc-lang"/>
+								
+								<xsl:if test="normalize-space($title-part-doc-lang) != ''">
 									<xsl:if test="$part != ''">
 										<xsl:text> — </xsl:text>
-										<fo:block font-weight="normal" margin-top="12pt" line-height="1.1">
-											<xsl:value-of select="java:replaceAll(java:java.lang.String.new($titles/title-part[@lang='en']),'#',$part)"/>
+										<fo:block font-weight="normal" margin-top="12pt" line-height="1.1">											
+											<xsl:value-of select="java:replaceAll(java:java.lang.String.new($titles/title-part[@lang=$lang]),'#',$part)"/>											
 											<!-- <xsl:value-of select="$title-part-en"/>
 											<xsl:value-of select="$part"/>
 											<xsl:text>:</xsl:text> -->
@@ -1174,10 +1180,10 @@
 								</xsl:if>
 							</fo:block>
 							<fo:block>
-								<xsl:value-of select="$part-en"/>
+								<xsl:value-of select="$title-part-doc-lang"/>
 							</fo:block>
 							
-							<xsl:variable name="title-amd" select="/iso:iso-standard/iso:bibdata/iso:title[@language = 'en' and @type = 'title-amd']"/>
+							<xsl:variable name="title-amd" select="/iso:iso-standard/iso:bibdata/iso:title[@language = $lang and @type = 'title-amd']"/>
 							<xsl:if test="$doctype = 'amendment' and normalize-space($title-amd) != ''">
 								<fo:block margin-top="12pt">
 									<xsl:call-template name="printAmendmentTitle"/>
