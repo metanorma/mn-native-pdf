@@ -177,6 +177,9 @@
 	<xsl:template match="/">
 		<xsl:call-template name="namespaceCheck"/>
 		<fo:root xmlns:fo="http://www.w3.org/1999/XSL/Format" font-family="Cambria, Times New Roman, Cambria Math, HanSans" font-size="11pt" xml:lang="{$lang}"> <!--   -->
+			<xsl:if test="$lang = 'zh'">
+				<xsl:attribute name="font-family">HanSans, Times New Roman, Cambria Math</xsl:attribute>
+			</xsl:if>
 			<fo:layout-master-set>
 				
 				<!-- cover page -->

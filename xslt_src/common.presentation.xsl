@@ -81,6 +81,9 @@
 			<xsl:if test="$namespace = 'iec' or $namespace = 'gb'">
 				<xsl:text>Part #: </xsl:text>
 			</xsl:if>
+			<xsl:if test="$namespace = 'bipm'">
+				<xsl:text>Part #</xsl:text>
+			</xsl:if>
 		</title-part>
 		<title-part lang="fr">
 			<xsl:if test="$namespace = 'iso'">
@@ -89,8 +92,22 @@
 			<xsl:if test="$namespace = 'iec' or $namespace = 'gb'">
 				<xsl:text>Partie #:  </xsl:text>
 			</xsl:if>
+			<xsl:if test="$namespace = 'bipm'">
+				<xsl:text>Partie #</xsl:text>
+			</xsl:if>
 		</title-part>		
 		<title-part lang="zh">第 # 部分:</title-part>
+		
+		<title-subpart lang="en">			
+			<xsl:if test="$namespace = 'bipm'">
+				<xsl:text>Sub-part #</xsl:text>
+			</xsl:if>
+		</title-subpart>
+		<title-subpart lang="fr">		
+			<xsl:if test="$namespace = 'bipm'">
+				<xsl:text>Partie de sub #</xsl:text>
+			</xsl:if>
+		</title-subpart>
 		
 		<title-modified lang="en">modified</title-modified>
 		<title-modified lang="fr">modifiée</title-modified>
@@ -2413,7 +2430,9 @@
 			<xsl:call-template name="display-align" />
 			<fo:block>
 				<xsl:if test="$namespace = 'bipm'">
-					<xsl:attribute name="line-stacking-strategy">font-height</xsl:attribute>
+					<xsl:if test="not(.//bipm:image)">
+						<xsl:attribute name="line-stacking-strategy">font-height</xsl:attribute>
+					</xsl:if>
 				</xsl:if>				
 				<xsl:apply-templates />
 			</fo:block>			
@@ -3831,10 +3850,18 @@
 
 	<xsl:template match="*[local-name() = 'modification']">
 		<xsl:variable name="title-modified">
-			<xsl:call-template name="getTitle">
-				<xsl:with-param name="name" select="'title-modified'"/>
-			</xsl:call-template>
+			<xsl:if test="$namespace = 'iso'">
+				<xsl:call-template name="getLocalizedString">
+					<xsl:with-param name="key">modified</xsl:with-param>
+				</xsl:call-template>
+			</xsl:if>
+			<xsl:if test="$namespace = 'bipm' or $namespace = 'csa' or $namespace = 'csd' or $namespace = 'gb' or $namespace = 'iec' or $namespace = 'iho' or $namespace = 'itu' or $namespace = 'm3d' or $namespace = 'mpfd' or $namespace = 'nist-cswp'  or $namespace = 'nist-sp' or $namespace = 'ogc' or $namespace = 'ogc-white-paper' or $namespace = 'rsd' or $namespace = 'unece' or $namespace = 'unece-rec'">
+				<xsl:call-template name="getTitle">
+					<xsl:with-param name="name" select="'title-modified'"/>
+				</xsl:call-template>
+			</xsl:if>
 		</xsl:variable>
+		
 		<xsl:choose>
 			<xsl:when test="$lang = 'zh'"><xsl:text>、</xsl:text><xsl:value-of select="$title-modified"/><xsl:text>—</xsl:text></xsl:when>
 			<xsl:otherwise><xsl:text>, </xsl:text><xsl:value-of select="$title-modified"/><xsl:text> — </xsl:text></xsl:otherwise>
@@ -5029,9 +5056,18 @@
 						<xsl:attribute name="font-weight">bold</xsl:attribute>
 						<xsl:attribute name="padding-right">1mm</xsl:attribute>
 					</xsl:if>
-					<xsl:call-template name="getTitle">
-						<xsl:with-param name="name" select="'title-source'"/>
-					</xsl:call-template>
+					
+					<xsl:if test="$namespace = 'iso'">
+						<xsl:call-template name="getLocalizedString">
+							<xsl:with-param name="key">source</xsl:with-param>
+						</xsl:call-template>
+					</xsl:if>
+					<xsl:if test="$namespace = 'bipm' or $namespace = 'csa' or $namespace = 'csd' or $namespace = 'gb' or $namespace = 'iec' or $namespace = 'iho' or $namespace = 'itu' or $namespace = 'm3d' or $namespace = 'mpfd' or $namespace = 'nist-cswp'  or $namespace = 'nist-sp' or $namespace = 'ogc' or $namespace = 'ogc-white-paper' or $namespace = 'rsd' or $namespace = 'unece' or $namespace = 'unece-rec'">
+						<xsl:call-template name="getTitle">
+							<xsl:with-param name="name" select="'title-source'"/>
+						</xsl:call-template>
+					</xsl:if>
+					
 					<xsl:text>: </xsl:text>
 				</fo:inline>
 			</xsl:if>
