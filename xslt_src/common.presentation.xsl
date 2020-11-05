@@ -2430,7 +2430,9 @@
 			<xsl:call-template name="display-align" />
 			<fo:block>
 				<xsl:if test="$namespace = 'bipm'">
-					<xsl:attribute name="line-stacking-strategy">font-height</xsl:attribute>
+					<xsl:if test="not(.//bipm:image)">
+						<xsl:attribute name="line-stacking-strategy">font-height</xsl:attribute>
+					</xsl:if>
 				</xsl:if>				
 				<xsl:apply-templates />
 			</fo:block>			
