@@ -72,8 +72,8 @@
 		<xsl:call-template name="getLang"/>
 	</xsl:variable>
 	
-	<xsl:variable name="isAmendment" select="normalize-space(/itu:itu-standard/itu:local_bibdata/itu:ext/itu:structuredidentifier/itu:amendment)"/>
-	<xsl:variable name="isCorrigendum" select="normalize-space(/itu:itu-standard/itu:local_bibdata/itu:ext/itu:structuredidentifier/itu:corrigendum)"/>
+	<xsl:variable name="isAmendment" select="normalize-space(/itu:itu-standard/itu:bibdata/itu:ext/itu:structuredidentifier/itu:amendment[@language = $lang])"/>
+	<xsl:variable name="isCorrigendum" select="normalize-space(/itu:itu-standard/itu:bibdata/itu:ext/itu:structuredidentifier/itu:corrigendum[@language = $lang])"/>
 	
 	<xsl:template match="/">
 		<xsl:call-template name="namespaceCheck"/>
@@ -322,8 +322,10 @@
 										<fo:block font-size="16pt" margin-top="3pt">
 											<xsl:value-of select="$doctype"/>
 											<xsl:text>&#xA0;&#xA0;</xsl:text>
-											<xsl:value-of select="/itu:itu-standard/itu:bibdata/itu:contributor/itu:organization/itu:abbreviation"/>
-											<xsl:text>-</xsl:text>
+											<xsl:if test="/itu:itu-standard/itu:bibdata/itu:contributor/itu:organization/itu:abbreviation">
+												<xsl:value-of select="/itu:itu-standard/itu:bibdata/itu:contributor/itu:organization/itu:abbreviation"/>
+												<xsl:text>-</xsl:text>
+											</xsl:if>
 											<xsl:value-of select="/itu:itu-standard/itu:bibdata/itu:ext/itu:structuredidentifier/itu:bureau"/>
 											<xsl:text>&#xA0;&#xA0;</xsl:text>
 											<xsl:value-of select="/itu:itu-standard/itu:bibdata/itu:ext/itu:structuredidentifier/itu:docnumber"/>
@@ -907,23 +909,37 @@
 				<xsl:apply-templates />
 			</fo:inline>
 			<xsl:if test="../itu:termsource/itu:origin">
+				<xsl:text>: </xsl:text>
 				<xsl:variable name="citeas" select="../itu:termsource/itu:origin/@citeas"/>
-				<xsl:choose>
-					<xsl:when test="contains($citeas, '[')">
-						<xsl:text> </xsl:text><xsl:value-of select="$citeas"/> <!--  disable-output-escaping="yes" -->
-					</xsl:when>
-					<xsl:otherwise>
-						<xsl:text> [</xsl:text><xsl:value-of select="$citeas"/><xsl:text>]</xsl:text>
-					</xsl:otherwise>
-				</xsl:choose>
-			</xsl:if>
-			<xsl:text>: </xsl:text>
-			<xsl:apply-templates select="following-sibling::itu:definition/node()" mode="process"/>			
+				<xsl:variable name="bibitemid" select="../itu:termsource/itu:origin/@bibitemid"/>
+				<xsl:variable name="origin_text" select="normalize-space(../itu:termsource/itu:origin/text())"/>
+				
+				<fo:basic-link internal-destination="{$bibitemid}" fox:alt-text="{$citeas}">
+					<xsl:choose>
+						<xsl:when test="$origin_text != ''">
+							<xsl:text> </xsl:text><xsl:apply-templates select="../itu:termsource/itu:origin/node()"/>
+						</xsl:when>
+						<xsl:when test="contains($citeas, '[')">
+							<xsl:text> </xsl:text><xsl:value-of select="$citeas"/> <!--  disable-output-escaping="yes" -->
+						</xsl:when>
+						<xsl:otherwise>
+							<xsl:text> [</xsl:text><xsl:value-of select="$citeas"/><xsl:text>]</xsl:text>
+						</xsl:otherwise>
+					</xsl:choose>
+				</fo:basic-link>
+			</xsl:if>			
+			<xsl:if test="following-sibling::itu:definition/node()">
+				<xsl:text>: </xsl:text>
+				<xsl:apply-templates select="following-sibling::itu:definition/node()" mode="process"/>			
+			</xsl:if>			
 		</fo:block>
 		<!-- <xsl:if test="following-sibling::itu:table">
 			<fo:block space-after="18pt">&#xA0;</fo:block>
 		</xsl:if> -->
 	</xsl:template>
+	
+	<xsl:template match="itu:term[itu:preferred]/itu:termsource" priority="2"/>
+	
 	
 	<xsl:template match="itu:definition/itu:p" priority="2"/>
 	<xsl:template match="itu:definition/itu:formula" priority="2"/>
