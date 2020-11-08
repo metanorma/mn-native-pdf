@@ -2595,6 +2595,7 @@
 					<xsl:otherwise>justify</xsl:otherwise>
 				</xsl:choose>
 			</xsl:attribute>
+			<xsl:copy-of select="@font-family"/>
 			<xsl:if test="not(ancestor::bipm:table)">
 				<xsl:attribute name="margin-bottom">6pt</xsl:attribute>
 			</xsl:if>
