@@ -246,8 +246,8 @@ ifeq ($(OS),Windows_NT)
 	cmd /V /C "set /p MN_FLAVOR=<MN_FLAVOR.txt & set /p DOCTYPE=<DOCTYPE.txt & java -Xss5m -Xmx1024m -jar $(MN2PDF_EXECUTABLE) --xml-file $< --xsl-file ${XSLT_PATH_BASE}/!MN_FLAVOR!.!DOCTYPE!.presentation.xsl --pdf-file $@"
 else
 	FILENAME=$<; \
-	MN_FLAVOR=$$(xmllint --xpath 'name(*)' $${FILENAME} | cut -d '-' -f 1); \
-	DOCTYPE=$$(xmllint --xpath "(//*[local-name()='doctype'])[1]/text()" $${FILENAME}); \
+	MN_FLAVOR=$$(xmllint --huge --xpath 'name(*)' $${FILENAME} | cut -d '-' -f 1); \
+	DOCTYPE=$$(xmllint --huge --xpath "(//*[local-name()='doctype'])[1]/text()" $${FILENAME}); \
 	XSLT_PATH=${XSLT_PATH_BASE}/$${MN_FLAVOR}.$${DOCTYPE}.presentation.xsl; \
 	java -Xss5m -Xmx1024m -jar $(MN2PDF_EXECUTABLE) --xml-file $$FILENAME --xsl-file $$XSLT_PATH --pdf-file $@	
 endif
@@ -259,8 +259,8 @@ ifeq ($(OS),Windows_NT)
 	cmd /V /C "set /p MN_FLAVOR=<MN_FLAVOR.txt & set /p DOCTYPE=<DOCTYPE.txt & java -Xss5m -Xmx1024m -jar $(MN2PDF_EXECUTABLE) --xml-file $< --xsl-file ${XSLT_PATH_BASE}/!MN_FLAVOR!.!DOCTYPE!.xsl --pdf-file $@"
 else
 	FILENAME=$<; \
-	MN_FLAVOR=$$(xmllint --xpath 'name(*)' $${FILENAME} | cut -d '-' -f 1); \
-	DOCTYPE=$$(xmllint --xpath "(//*[local-name()='doctype'])[1]/text()" $${FILENAME}); \
+	MN_FLAVOR=$$(xmllint --huge --xpath 'name(*)' $${FILENAME} | cut -d '-' -f 1); \
+	DOCTYPE=$$(xmllint --huge --xpath "(//*[local-name()='doctype'])[1]/text()" $${FILENAME}); \
 	XSLT_PATH=${XSLT_PATH_BASE}/$${MN_FLAVOR}.$${DOCTYPE}.xsl; \
 	java -Xss5m -Xmx1024m -jar $(MN2PDF_EXECUTABLE) --xml-file $$FILENAME --xsl-file $$XSLT_PATH --pdf-file $@	
 endif
