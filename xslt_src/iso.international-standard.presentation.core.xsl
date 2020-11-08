@@ -26,7 +26,12 @@
 
 	<xsl:variable name="docidentifierISO" select="/iso:iso-standard/iso:bibdata/iso:docidentifier[@type = 'iso'] | /iso:iso-standard/iso:bibdata/iso:docidentifier[@type = 'ISO']"/>
 
-	<xsl:variable name="copyrightText" select="concat('© ISO ', iso:iso-standard/iso:bibdata/iso:copyright/iso:from ,' – All rights reserved')"/>
+	<xsl:variable name="all_rights_reserved">
+		<xsl:call-template name="getLocalizedString">
+			<xsl:with-param name="key">all_rights_reserved</xsl:with-param>
+		</xsl:call-template>
+	</xsl:variable>	
+	<xsl:variable name="copyrightText" select="concat('© ISO ', /iso:iso-standard/iso:bibdata/iso:copyright/iso:from ,' – ', $all_rights_reserved)"/>
   
 	<xsl:variable name="lang-1st-letter_tmp" select="substring-before(substring-after(/iso:iso-standard/iso:bibdata/iso:docidentifier[@type = 'iso-with-lang'], '('), ')')"/>
 	<xsl:variable name="lang-1st-letter" select="concat('(', $lang-1st-letter_tmp , ')')"/>
@@ -172,6 +177,9 @@
 	<xsl:template match="/">
 		<xsl:call-template name="namespaceCheck"/>
 		<fo:root xmlns:fo="http://www.w3.org/1999/XSL/Format" font-family="Cambria, Times New Roman, Cambria Math, HanSans" font-size="11pt" xml:lang="{$lang}"> <!--   -->
+			<xsl:if test="$lang = 'zh'">
+				<xsl:attribute name="font-family">HanSans, Times New Roman, Cambria Math</xsl:attribute>
+			</xsl:if>
 			<fo:layout-master-set>
 				
 				<!-- cover page -->
@@ -399,8 +407,13 @@
 																</fo:block>
 															</fo:table-cell>
 															<fo:table-cell  display-align="center">
-																<fo:block text-align="right">
-																	<fo:block>Reference number</fo:block>
+																<fo:block text-align="right">																	
+																	<!-- Reference number -->
+																	<fo:block>
+																		<xsl:call-template name="getLocalizedString">
+																			<xsl:with-param name="key">reference_number</xsl:with-param>																			
+																		</xsl:call-template>
+																	</fo:block>
 																	<fo:block>
 																		<xsl:value-of select="$ISOname"/>																		
 																	</fo:block>
@@ -788,8 +801,12 @@
 											</fo:block>
 										</fo:table-cell>
 										<fo:table-cell  display-align="center">
-											<fo:block text-align="right">
-												<fo:block>Reference number</fo:block>
+											<fo:block text-align="right">												
+												<fo:block>
+													<xsl:call-template name="getLocalizedString">
+														<xsl:with-param name="key">reference_number</xsl:with-param>																			
+													</xsl:call-template>
+												</fo:block>
 												<fo:block><xsl:value-of select="$ISOname"/></fo:block>
 												<fo:block>&#xA0;</fo:block>
 												<fo:block>&#xA0;</fo:block>
@@ -1016,10 +1033,10 @@
 					<xsl:if test="/iso:iso-standard/iso:boilerplate/iso:copyright-statement">
 					
 						<fo:block-container height="252mm" display-align="after">
-							<fo:block margin-bottom="3mm">
-								<fo:external-graphic src="{concat('data:image/png;base64,', normalize-space($Image-Attention))}" width="14mm" content-height="13mm" content-width="scale-to-fit" scaling="uniform" fox:alt-text="Image {@alt}"/>
-								<fo:inline padding-left="6mm" font-size="12pt" font-weight="bold">COPYRIGHT PROTECTED DOCUMENT</fo:inline>
-							</fo:block>
+							<!-- <fo:block margin-bottom="3mm">
+								<fo:external-graphic src="{concat('data:image/png;base64,', normalize-space($Image-Attention))}" width="14mm" content-height="13mm" content-width="scale-to-fit" scaling="uniform" fox:alt-text="Image {@alt}"/>								
+								<fo:inline padding-left="6mm" font-size="12pt" font-weight="bold"></fo:inline>
+							</fo:block> -->
 							<fo:block line-height="90%">
 								<fo:block font-size="9pt" text-align="justify">
 									<xsl:apply-templates select="/iso:iso-standard/iso:boilerplate/iso:copyright-statement"/>
@@ -1138,20 +1155,26 @@
 						</fo:block>
 						 -->
 						<fo:block font-size="18pt" font-weight="bold" margin-top="40pt" margin-bottom="20pt" line-height="1.1">
-							<xsl:variable name="part-en" select="/iso:iso-standard/iso:bibdata/iso:title[@language = 'en' and @type = 'title-part']"/>
+						
+							<xsl:variable name="title-part-doc-lang" select="/iso:iso-standard/iso:bibdata/iso:title[@language = $lang and @type = 'title-part']"/>
+							
+							<xsl:variable name="title-intro-doc-lang" select="/iso:iso-standard/iso:bibdata/iso:title[@language = $lang and @type = 'title-intro']"/>
+							
 							<fo:block>
-								<xsl:if test="normalize-space($title-intro) != ''">
-									<xsl:value-of select="$title-intro"/>
+								<xsl:if test="normalize-space($title-intro-doc-lang) != ''">
+									<xsl:value-of select="$title-intro-doc-lang"/>
 									<xsl:text> — </xsl:text>
 								</xsl:if>
 								
-								<xsl:value-of select="$title-main"/>
+								<xsl:variable name="title-main-doc-lang" select="/iso:iso-standard/iso:bibdata/iso:title[@language = $lang and @type = 'title-main']"/>
 								
-								<xsl:if test="normalize-space($part-en) != ''">
+								<xsl:value-of select="$title-main-doc-lang"/>
+								
+								<xsl:if test="normalize-space($title-part-doc-lang) != ''">
 									<xsl:if test="$part != ''">
 										<xsl:text> — </xsl:text>
-										<fo:block font-weight="normal" margin-top="12pt" line-height="1.1">
-											<xsl:value-of select="java:replaceAll(java:java.lang.String.new($titles/title-part[@lang='en']),'#',$part)"/>
+										<fo:block font-weight="normal" margin-top="12pt" line-height="1.1">											
+											<xsl:value-of select="java:replaceAll(java:java.lang.String.new($titles/title-part[@lang=$lang]),'#',$part)"/>											
 											<!-- <xsl:value-of select="$title-part-en"/>
 											<xsl:value-of select="$part"/>
 											<xsl:text>:</xsl:text> -->
@@ -1160,10 +1183,10 @@
 								</xsl:if>
 							</fo:block>
 							<fo:block>
-								<xsl:value-of select="$part-en"/>
+								<xsl:value-of select="$title-part-doc-lang"/>
 							</fo:block>
 							
-							<xsl:variable name="title-amd" select="/iso:iso-standard/iso:bibdata/iso:title[@language = 'en' and @type = 'title-amd']"/>
+							<xsl:variable name="title-amd" select="/iso:iso-standard/iso:bibdata/iso:title[@language = $lang and @type = 'title-amd']"/>
 							<xsl:if test="$doctype = 'amendment' and normalize-space($title-amd) != ''">
 								<fo:block margin-top="12pt">
 									<xsl:call-template name="printAmendmentTitle"/>
@@ -1247,7 +1270,28 @@
 										</xsl:call-template>
 									</fo:block>
 								</xsl:if>
-								<fo:block font-size="9pt">Price based on <fo:page-number-citation ref-id="lastBlock"/> pages</fo:block>
+								<xsl:variable name="countPages"></xsl:variable>
+								<xsl:variable name="price_based_on">
+									<xsl:call-template name="getLocalizedString">
+										<xsl:with-param name="key">price_based_on</xsl:with-param>
+									</xsl:call-template>
+								</xsl:variable>
+								<xsl:variable name="price_based_on_items">
+									<xsl:call-template name="split">
+										<xsl:with-param name="pText" select="$price_based_on"/>
+										<xsl:with-param name="sep" select="'%'"/>
+										<xsl:with-param name="normalize-space">false</xsl:with-param>
+									</xsl:call-template>
+								</xsl:variable>
+								<!-- Price based on ... pages -->
+								<fo:block font-size="9pt">
+									<xsl:for-each select="xalan:nodeset($price_based_on_items)/item">
+										<xsl:value-of select="."/>
+										<xsl:if test="position() != last()">
+											<fo:page-number-citation ref-id="lastBlock"/>
+										</xsl:if>										
+									</xsl:for-each>
+								</fo:block>
 							</fo:block-container>
 						</fo:block-container>
 					</fo:flow>
@@ -1396,6 +1440,14 @@
 				<fo:block>copyright@iso.org</fo:block>
 				<fo:block>www.iso.org</fo:block>
 			</fo:block> -->
+	
+	<xsl:template match="iso:copyright-statement/iso:clause[1]/iso:title">
+		<fo:block margin-bottom="3mm">
+				<fo:external-graphic src="{concat('data:image/png;base64,', normalize-space($Image-Attention))}" width="14mm" content-height="13mm" content-width="scale-to-fit" scaling="uniform" fox:alt-text="Image {@alt}"/>
+				<!-- <fo:inline padding-left="6mm" font-size="12pt" font-weight="bold">COPYRIGHT PROTECTED DOCUMENT</fo:inline> -->
+				<fo:inline padding-left="6mm" font-size="12pt" font-weight="bold"><xsl:apply-templates /></fo:inline>
+			</fo:block>
+	</xsl:template>
 	
 	<xsl:template match="iso:copyright-statement//iso:p">
 		<fo:block>
@@ -1661,6 +1713,9 @@
 			<xsl:if test="normalize-space($docidentifier) != ''">, </xsl:if>
 			<fo:inline font-style="italic">
 				<xsl:choose>
+					<xsl:when test="iso:title[@type = 'main' and @language = $lang]">
+						<xsl:value-of select="iso:title[@type = 'main' and @language = $lang]"/>
+					</xsl:when>
 					<xsl:when test="iso:title[@type = 'main' and @language = 'en']">
 						<xsl:value-of select="iso:title[@type = 'main' and @language = 'en']"/>
 					</xsl:when>
@@ -1780,6 +1835,9 @@
 						<xsl:apply-templates select="iso:note"/>
 						<xsl:if test="normalize-space($docidentifier) != ''">, </xsl:if>
 						<xsl:choose>
+							<xsl:when test="iso:title[@type = 'main' and @language = $lang]">
+								<xsl:apply-templates select="iso:title[@type = 'main' and @language = $lang]"/>
+							</xsl:when>
 							<xsl:when test="iso:title[@type = 'main' and @language = 'en']">
 								<xsl:apply-templates select="iso:title[@type = 'main' and @language = 'en']"/>
 							</xsl:when>
@@ -1821,7 +1879,12 @@
 	
 	<xsl:template match="iso:admonition">
 		<fo:block margin-bottom="12pt" font-weight="bold"> <!-- text-align="center"  -->			
-			<xsl:value-of select="java:toUpperCase(java:java.lang.String.new(@type))"/>
+			<xsl:variable name="type">
+				<xsl:call-template name="getLocalizedString">
+					<xsl:with-param name="key">admonition.<xsl:value-of select="@type"/></xsl:with-param>
+				</xsl:call-template>
+			</xsl:variable>			
+			<xsl:value-of select="java:toUpperCase(java:java.lang.String.new($type))"/>
 			<xsl:text> — </xsl:text>
 			<xsl:apply-templates />
 		</fo:block>
