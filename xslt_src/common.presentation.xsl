@@ -2815,9 +2815,12 @@
 				<xsl:attribute name="margin-left">0mm</xsl:attribute>
 			</xsl:if>
 			<xsl:if test="$namespace = 'bipm'">
-				<!-- <xsl:if test="not(ancestor::*[local-name() = 'li'])"> -->
+				<xsl:if test="not(ancestor::*[local-name() = 'li'])">
 					<xsl:attribute name="margin-left">0mm</xsl:attribute>
-				<!-- </xsl:if> -->
+				</xsl:if>
+				<xsl:if test="ancestor::*[local-name() = 'li']">
+					<xsl:attribute name="margin-left">6.5mm</xsl:attribute><!-- 8 mm -->
+				</xsl:if>
 			</xsl:if>
 			<xsl:if test="parent::*[local-name() = 'note']">
 				<xsl:attribute name="margin-left">
