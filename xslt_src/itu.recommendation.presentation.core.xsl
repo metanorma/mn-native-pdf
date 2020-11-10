@@ -37,9 +37,10 @@
 			<xsl:with-param name="date" select="/itu:itu-standard/itu:bibdata/itu:date[@type = 'published']/itu:on"/>
 		</xsl:call-template>
 	</xsl:variable>
-	<xsl:variable name="doctype">
+	<xsl:variable name="doctype" select="/itu:itu-standard/itu:bibdata/itu:ext/itu:doctype"/>
+	<xsl:variable name="doctypeTitle">
 		<xsl:call-template name="capitalize">
-			<xsl:with-param name="str" select="/itu:itu-standard/itu:bibdata/itu:ext/itu:doctype"/>
+			<xsl:with-param name="str" select="$doctype"/>
 		</xsl:call-template>		
 	</xsl:variable>
 	
@@ -79,6 +80,17 @@
 		<xsl:call-template name="namespaceCheck"/>
 		<fo:root xmlns:fo="http://www.w3.org/1999/XSL/Format" font-family="Times New Roman, STIX Two Math" font-size="12pt" xml:lang="{$lang}">
 			<fo:layout-master-set>
+			
+			
+				<!-- Technical Report first page -->
+				<fo:simple-page-master master-name="TR-first-page" page-width="{$pageWidth}" page-height="{$pageHeight}">
+					<fo:region-body margin-top="21.6mm" margin-bottom="25.4mm" margin-left="20.1mm" margin-right="22.6mm"/>
+					<fo:region-before region-name="TR-first-page-header" extent="21.6mm" display-align="center"/>
+					<fo:region-after region-name="TR-first-page-footer" extent="25.4mm" display-align="center"/>					
+					<fo:region-start region-name="TR-first-page-left-region" extent="20.1mm"/>
+					<fo:region-end region-name="TR-first-page-right-region" extent="22.6mm"/>
+				</fo:simple-page-master>
+				
 				<!-- cover page -->
 				<fo:simple-page-master master-name="cover-page" page-width="{$pageWidth}" page-height="{$pageHeight}">
 					<fo:region-body margin-top="19.2mm" margin-bottom="5mm" margin-left="19.2mm" margin-right="19.2mm"/>
@@ -139,6 +151,130 @@
 			<xsl:call-template name="addBookmarks">
 				<xsl:with-param name="contents" select="$contents"/>
 			</xsl:call-template>
+			
+			
+			<xsl:if test="$doctype = 'technical-report'">
+				<fo:page-sequence master-reference="TR-first-page">
+					<fo:flow flow-name="xsl-region-body">						
+							<fo:block>
+								<fo:table width="175mm" table-layout="fixed" border-top="1.5pt solid black">									
+									<fo:table-column column-width="29mm"/>
+									<fo:table-column column-width="45mm"/>
+									<fo:table-column column-width="28mm"/>
+									<fo:table-column column-width="72mm"/>
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell padding-left="1mm" padding-top="3mm">
+													<fo:block font-weight="bold">Question(s):</fo:block>
+											</fo:table-cell>
+											<fo:table-cell padding-top="3mm">
+													<fo:block><xsl:value-of select="/itu:itu-standard/itu:bibdata/itu:ext/itu:editorialgroup/itu:group/itu:name"/></fo:block>
+											</fo:table-cell>
+											<fo:table-cell padding-top="3mm">
+													<fo:block font-weight="bold">Meeting, date:</fo:block>
+											</fo:table-cell>
+											<fo:table-cell padding-top="3mm" text-align="right" padding-right="1mm">
+												<fo:block>
+													<xsl:value-of select="/itu:itu-standard/itu:bibdata/itu:ext/itu:meeting"/>
+													<xsl:text>, </xsl:text>
+													<xsl:call-template name="formatMeetingDate">
+														<xsl:with-param name="date" select="/itu:itu-standard/itu:bibdata/itu:ext/itu:meeting-date/itu:from"/>
+													</xsl:call-template>													
+													<xsl:text>/</xsl:text>
+													<xsl:call-template name="formatMeetingDate">
+														<xsl:with-param name="date" select="/itu:itu-standard/itu:bibdata/itu:ext/itu:meeting-date/itu:to"/>
+													</xsl:call-template>													
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+								
+								<fo:table width="175mm" table-layout="fixed">									
+									<fo:table-column column-width="29mm"/>
+									<fo:table-column column-width="10mm"/>
+									<fo:table-column column-width="35mm"/>
+									<fo:table-column column-width="9mm"/>
+									<fo:table-column column-width="83mm"/>
+									<fo:table-column column-width="6mm"/>
+									<fo:table-body>										
+										<fo:table-row >
+											<fo:table-cell padding-left="1mm" padding-top="2mm">
+												<fo:block font-weight="bold">Study Group:</fo:block>
+											</fo:table-cell>
+											<fo:table-cell padding-top="2mm">
+												<fo:block><xsl:value-of select="/itu:itu-standard/itu:bibdata/itu:ext/itu:editorialgroup/itu:subgroup/itu:name"/></fo:block>
+											</fo:table-cell>
+											<fo:table-cell padding-top="2mm">
+												<fo:block font-weight="bold">Working Party:</fo:block>
+											</fo:table-cell>
+											<fo:table-cell padding-top="2mm">
+												<fo:block><xsl:value-of select="/itu:itu-standard/itu:bibdata/itu:ext/itu:editorialgroup/itu:workgroup/itu:name"/></fo:block>
+											</fo:table-cell>
+											<fo:table-cell padding-top="2mm">
+												<fo:block font-weight="bold">Intended type of document <fo:inline font-weight="normal">(R-C-TD)</fo:inline>:</fo:block>
+											</fo:table-cell>
+											<fo:table-cell padding-top="2mm">
+												<fo:block font-weight="normal"><xsl:value-of select="/itu:itu-standard/itu:bibdata/itu:ext/itu:intended-type"/></fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+										<fo:table-row >
+											<fo:table-cell padding-left="1mm" padding-top="2mm">
+												<fo:block font-weight="bold">Source:</fo:block>
+											</fo:table-cell>
+											<fo:table-cell number-columns-spanned="4" padding-top="2mm">
+												<fo:block><xsl:value-of select="java:toUpperCase(java:java.lang.String.new(/itu:itu-standard/itu:bibdata/itu:ext/itu:source))"/></fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+										<fo:table-row >
+											<fo:table-cell padding-left="1mm" padding-top="2mm">
+												<fo:block font-weight="bold">Title:</fo:block>
+											</fo:table-cell>
+											<fo:table-cell number-columns-spanned="4" padding-top="2mm">
+												<fo:block><xsl:value-of select="/itu:itu-standard/itu:bibdata/itu:title[@language='en' and @type='main']"/></fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+								
+								<xsl:if test="/itu:itu-standard/itu:bibdata/itu:contributor/itu:person">								
+									<fo:table width="175mm" table-layout="fixed" line-height="110%">
+										<fo:table-column column-width="29mm"/>
+										<fo:table-column column-width="75mm"/>
+										<fo:table-column column-width="71mm"/>									
+										<fo:table-body>
+										
+											<xsl:for-each select="/itu:itu-standard/itu:bibdata/itu:contributor/itu:person">
+											
+										
+												<fo:table-row border-top="1.5pt solid black">
+													<xsl:if test="position() = last()">
+														<xsl:attribute name="border-bottom">1.5pt solid black</xsl:attribute>
+													</xsl:if>
+													<fo:table-cell padding-left="1mm" padding-top="2.5mm">
+														<fo:block font-weight="bold">Contact:</fo:block>
+													</fo:table-cell>
+													<fo:table-cell padding-top="3mm">
+														<fo:block><xsl:value-of select="itu:name/itu:completename"/></fo:block>
+														<fo:block><xsl:value-of select="itu:affiliation/itu:organization/itu:name"/></fo:block>
+														<fo:block><xsl:value-of select="itu:affiliation/itu:organization/itu:address/itu:formattedAddress"/></fo:block>
+													</fo:table-cell>
+													<fo:table-cell padding-top="3mm">
+														<fo:block>Tel: <xsl:value-of select="itu:phone[not(@type)]"/></fo:block>
+														<fo:block>Fax: <xsl:value-of select="itu:phone[@type = 'fax']"/></fo:block>
+														<fo:block>E-mail: <xsl:value-of select="itu:email"/></fo:block>
+													</fo:table-cell>
+												</fo:table-row>
+											</xsl:for-each>											
+										</fo:table-body>
+									</fo:table>
+								</xsl:if>
+								<fo:block space-before="0.5mm" font-size="9pt" margin-left="1mm">Please do not change the structure of this table, just insert the necessary information.</fo:block>
+								<fo:block space-before="6pt">&lt;INSERT TEXT&gt;</fo:block>
+							</fo:block>
+					</fo:flow>
+				</fo:page-sequence>
+			</xsl:if>
 			
 			<!-- cover page -->
 			<fo:page-sequence master-reference="cover-page">
@@ -320,7 +456,7 @@
 									</fo:table-cell>
 									<fo:table-cell number-columns-spanned="3">
 										<fo:block font-size="16pt" margin-top="3pt">
-											<xsl:value-of select="$doctype"/>
+											<xsl:value-of select="$doctypeTitle"/>
 											<xsl:text>&#xA0;&#xA0;</xsl:text>
 											<xsl:if test="/itu:itu-standard/itu:bibdata/itu:contributor/itu:organization/itu:abbreviation">
 												<xsl:value-of select="/itu:itu-standard/itu:bibdata/itu:contributor/itu:organization/itu:abbreviation"/>
@@ -352,7 +488,7 @@
 				<fo:flow flow-name="xsl-region-body">
 					<fo:block-container font-size="14pt" font-weight="bold">
 						<fo:block>
-							<xsl:value-of select="$doctype"/>
+							<xsl:value-of select="$doctypeTitle"/>
 							<xsl:text>&#xA0;</xsl:text>
 							<xsl:value-of select="$docname"/>
 						</fo:block>
@@ -486,7 +622,7 @@
 				
 					<fo:block-container font-size="14pt" font-weight="bold">
 						<fo:block>
-							<xsl:value-of select="$doctype"/>
+							<xsl:value-of select="$doctypeTitle"/>
 							<xsl:text>&#xA0;</xsl:text>
 							<xsl:value-of select="$docname"/>
 						</fo:block>
@@ -1265,6 +1401,33 @@
 		<xsl:if test="$month != '' and $year != ''">
 			<xsl:text>(</xsl:text><xsl:value-of select="$month"/>/<xsl:value-of select="$year"/><xsl:text>)</xsl:text>
 		</xsl:if>
+	</xsl:template>
+	
+	<xsl:template name="formatMeetingDate">
+		<xsl:param name="date"/>
+		<xsl:variable name="year" select="substring($date, 1, 4)"/>
+		<xsl:variable name="month" select="substring($date, 6, 2)"/>
+		<xsl:variable name="day" select="substring($date, 9)"/>
+		
+		<xsl:variable name="monthStr">
+			<xsl:choose>
+				<xsl:when test="$month = '01'">Jan</xsl:when>
+				<xsl:when test="$month = '02'">Feb</xsl:when>
+				<xsl:when test="$month = '03'">Mar</xsl:when>
+				<xsl:when test="$month = '04'">Apr</xsl:when>
+				<xsl:when test="$month = '05'">May</xsl:when>
+				<xsl:when test="$month = '06'">Jun</xsl:when>
+				<xsl:when test="$month = '07'">Jul</xsl:when>
+				<xsl:when test="$month = '08'">Aug</xsl:when>
+				<xsl:when test="$month = '09'">Sep</xsl:when>
+				<xsl:when test="$month = '10'">Oct</xsl:when>
+				<xsl:when test="$month = '11'">Nov</xsl:when>
+				<xsl:when test="$month = '12'">Dec</xsl:when>
+			</xsl:choose>
+		</xsl:variable>
+
+		<xsl:value-of select="$day"/><xsl:text> </xsl:text><xsl:value-of select="$monthStr"/><xsl:text> </xsl:text><xsl:value-of select="$year"/>
+		
 	</xsl:template>
 	
 
