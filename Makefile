@@ -34,6 +34,8 @@ XSLT_GENERATED := xslt/iec.international-standard.xsl \
 	xslt/itu.recommendation.presentation.xsl \
 	xslt/itu.recommendation-annex.xsl \
 	xslt/itu.recommendation-annex.presentation.xsl \
+	xslt/itu.technical-report.presentation.xsl \
+	xslt/itu.technical-paper.presentation.xsl \
 	xslt/itu.resolution.xsl \
 	xslt/itu.resolution.presentation.xsl \
 	xslt/ogc.abstract-specification-topic.xsl \
