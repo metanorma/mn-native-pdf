@@ -49,6 +49,16 @@
 		</xsl:call-template>		
 	</xsl:variable>
 
+	<xsl:variable name="xSTR-ACRONYM">
+		<xsl:variable name="x" select="substring(/itu:itu-standard/itu:bibdata/itu:series[@type = 'main']/itu:title, 1, 1)"/>
+		<xsl:variable name="acronym" select="/itu:itu-standard/itu:bibdata/itu:docnumber"/>
+		<xsl:value-of select="concat($x,'STR-', $acronym)"/>
+	</xsl:variable>
+	
+	<xsl:variable name="footer-TR">
+		<xsl:variable name="date" select="concat('(',substring(/itu:itu-standard/itu:bibdata/itu:version/itu:revision-date,1,7), ')')"/>
+		<xsl:value-of select="concat($xSTR-ACRONYM, ' ', $date)"/>
+	</xsl:variable>
 	
 	<!-- Example:
 		<item level="1" id="Foreword" display="true">Foreword</item>
@@ -158,7 +168,7 @@
 			</xsl:call-template>
 			
 			
-			<xsl:if test="$doctype = 'technical-report'">
+			<xsl:if test="$doctype = 'technical-report' or $doctype = 'technical-paper'">
 				<fo:page-sequence master-reference="TR-first-page">
 					<fo:flow flow-name="xsl-region-body">						
 							<fo:block>
@@ -328,7 +338,7 @@
 									<fo:table-cell padding-top="1mm" number-columns-spanned="2" padding-bottom="-1mm">
 										<fo:block font-size="30pt" font-weight="bold" text-align="right"  margin-top="12pt" padding="0mm">
 											<xsl:choose>
-												<xsl:when test="$doctype = 'technical-report'">													
+												<xsl:when test="$doctype = 'technical-report' or $doctype = 'technical-paper'">
 													<xsl:value-of select="$doctypeCapitalizedTitle"/>
 												</xsl:when>
 												<xsl:otherwise>
@@ -376,7 +386,7 @@
 										</xsl:if>
 										<fo:block font-size="14pt">
 											<xsl:choose>
-												<xsl:when  test="$doctype = 'technical-report' and /itu:itu-standard/itu:bibdata/itu:version/itu:revision-date">
+												<xsl:when  test="($doctype = 'technical-report' or $doctype = 'technical-paper') and /itu:itu-standard/itu:bibdata/itu:version/itu:revision-date">
 													<xsl:text>(</xsl:text>
 														<xsl:call-template name="formatMeetingDate">
 															<xsl:with-param name="date" select="/itu:itu-standard/itu:bibdata/itu:version/itu:revision-date"/>
@@ -428,9 +438,9 @@
 											<xsl:if test="not(/itu:itu-standard/itu:bibdata/itu:title[@type = 'annex' and @language = 'en']) and $isAmendment = '' and $isCorrigendum = ''">
 												<xsl:attribute name="font-weight">bold</xsl:attribute>
 											</xsl:if>
-											<xsl:if test="$doctype = 'technical-report' and /itu:itu-standard/itu:bibdata/itu:docnumber">
-												<fo:block font-weight="bold">
-													<xsl:value-of select="/itu:itu-standard/itu:bibdata/itu:docnumber"/>
+											<xsl:if test="($doctype = 'technical-report' or $doctype = 'technical-paper') and /itu:itu-standard/itu:bibdata/itu:docnumber">
+												<fo:block font-weight="bold">													
+													<xsl:value-of select="$xSTR-ACRONYM"/>
 												</fo:block>
 											</xsl:if>
 											<xsl:value-of select="/itu:itu-standard/itu:bibdata/itu:title[@type = 'main' and @language = 'en']"/>
@@ -489,7 +499,7 @@
 											</xsl:if>
 											
 											<xsl:choose>
-												<xsl:when test="$doctype = 'technical-report'">
+												<xsl:when test="$doctype = 'technical-report' or $doctype = 'technical-paper'">
 													<xsl:if test="/itu:itu-standard/itu:bibdata/itu:status/itu:stage">
 														<xsl:call-template name="capitalizeWords">
 															<xsl:with-param name="str" select="/itu:itu-standard/itu:bibdata/itu:status/itu:stage"/>
@@ -598,58 +608,117 @@
 							<fo:block margin-top="6pt" text-align="center" font-weight="bold"><xsl:value-of select="$title-toc"/></fo:block>
 							<fo:block margin-top="6pt" text-align="right" font-weight="bold"><xsl:value-of select="$title-page"/></fo:block>
 							
-								<xsl:for-each select="xalan:nodeset($contents)//item[@display = 'true']">									
-									<fo:block>
-										<xsl:if test="@level = 1">
-											<xsl:attribute name="margin-top">6pt</xsl:attribute>
-										</xsl:if>
-										<xsl:if test="@level = 2">
-											<xsl:attribute name="margin-top">4pt</xsl:attribute>
-											<!-- <xsl:attribute name="margin-left">12mm</xsl:attribute> -->
-										</xsl:if>
-										<fo:list-block provisional-label-separation="3mm">
-											<xsl:attribute name="provisional-distance-between-starts">
-												<xsl:choose>
-													<xsl:when test="@section != ''">
-														<xsl:if test="@level = 1">
-															<xsl:choose>
-																<xsl:when test="string-length(@section) &gt; 10">27mm</xsl:when>
-																<xsl:when test="string-length(@section) &gt; 5">22mm</xsl:when>
-																<!-- <xsl:when test="@type = 'annex'">20mm</xsl:when> -->
-																<xsl:otherwise>12mm</xsl:otherwise>
-															</xsl:choose>
-														</xsl:if>
-														<xsl:if test="@level = 2">26mm</xsl:if>
-													</xsl:when> <!--   -->
-													<xsl:otherwise>0mm</xsl:otherwise>
-												</xsl:choose>
-											</xsl:attribute>
-											<fo:list-item>
-												<fo:list-item-label end-indent="label-end()">
-													<xsl:if test="@level =2">
-														<xsl:attribute name="start-indent">12mm</xsl:attribute>
+							<xsl:for-each select="xalan:nodeset($contents)//item[@display = 'true']">									
+								<fo:block>
+									<xsl:if test="@level = 1">
+										<xsl:attribute name="margin-top">6pt</xsl:attribute>
+									</xsl:if>
+									<xsl:if test="@level = 2">
+										<xsl:attribute name="margin-top">4pt</xsl:attribute>
+										<!-- <xsl:attribute name="margin-left">12mm</xsl:attribute> -->
+									</xsl:if>
+									<fo:list-block provisional-label-separation="3mm">
+										<xsl:attribute name="provisional-distance-between-starts">
+											<xsl:choose>
+												<xsl:when test="@section != ''">
+													<xsl:if test="@level = 1">
+														<xsl:choose>
+															<xsl:when test="string-length(@section) &gt; 10">27mm</xsl:when>
+															<xsl:when test="string-length(@section) &gt; 5">22mm</xsl:when>
+															<!-- <xsl:when test="@type = 'annex'">20mm</xsl:when> -->
+															<xsl:otherwise>12mm</xsl:otherwise>
+														</xsl:choose>
 													</xsl:if>
-													<fo:block>
-														<xsl:if test="@section">															
-															<xsl:value-of select="@section"/>
-														</xsl:if>
+													<xsl:if test="@level = 2">26mm</xsl:if>
+												</xsl:when> <!--   -->
+												<xsl:otherwise>0mm</xsl:otherwise>
+											</xsl:choose>
+										</xsl:attribute>
+										<fo:list-item>
+											<fo:list-item-label end-indent="label-end()">
+												<xsl:if test="@level =2">
+													<xsl:attribute name="start-indent">12mm</xsl:attribute>
+												</xsl:if>
+												<fo:block>
+													<xsl:if test="@section">															
+														<xsl:value-of select="@section"/>
+													</xsl:if>
+												</fo:block>
+											</fo:list-item-label>
+												<fo:list-item-body start-indent="body-start()">
+													<fo:block text-align-last="justify">															
+														<fo:basic-link internal-destination="{@id}" fox:alt-text="{title}">
+															<xsl:apply-templates select="title"/>
+															<fo:inline keep-together.within-line="always">
+																<fo:leader leader-pattern="dots"/>
+																<fo:page-number-citation ref-id="{@id}"/>
+															</fo:inline>
+														</fo:basic-link>
 													</fo:block>
-												</fo:list-item-label>
-													<fo:list-item-body start-indent="body-start()">
-														<fo:block text-align-last="justify">															
-															<fo:basic-link internal-destination="{@id}" fox:alt-text="{title}">
-																<xsl:apply-templates select="title"/>
-																<fo:inline keep-together.within-line="always">
-																	<fo:leader leader-pattern="dots"/>
-																	<fo:page-number-citation ref-id="{@id}"/>
-																</fo:inline>
-															</fo:basic-link>
-														</fo:block>
-													</fo:list-item-body>
-											</fo:list-item>
-										</fo:list-block>
-									</fo:block>									
-								</xsl:for-each>
+												</fo:list-item-body>
+										</fo:list-item>
+									</fo:list-block>
+								</fo:block>									
+							</xsl:for-each>
+							
+
+						<xsl:if  test="$doctype = 'technical-report' or $doctype = 'technical-paper'">
+							<xsl:if test="//itu:table[@id and itu:name]">								
+								<xsl:variable name="title-list-tables">
+									<xsl:call-template name="getTitle">
+										<xsl:with-param name="name" select="'title-list-tables'"/>
+									</xsl:call-template>
+								</xsl:variable>
+								
+								<fo:block space-before="36pt" text-align="center" font-weight="bold" keep-with-next="always">
+									<xsl:value-of select="$title-list-tables"/>
+								</fo:block>
+								<fo:block margin-top="6pt" text-align="right" font-weight="bold"  keep-with-next="always"><xsl:value-of select="$title-page"/></fo:block>
+								
+								<fo:block-container>
+									<xsl:for-each select="//itu:table[@id and itu:name]">
+										<fo:block text-align-last="justify" margin-top="6pt">
+											<fo:basic-link internal-destination="{@id}" fox:alt-text="{itu:name}">
+												<xsl:apply-templates select="itu:name" mode="contents"/>										
+												<fo:inline keep-together.within-line="always">
+													<fo:leader leader-pattern="dots"/>
+													<fo:page-number-citation ref-id="{@id}"/>
+												</fo:inline>
+											</fo:basic-link>
+										</fo:block>
+									</xsl:for-each>
+								</fo:block-container>							
+							</xsl:if>
+									
+							<xsl:if test="//itu:figure[@id and itu:name]">								
+								<xsl:variable name="title-list-figures">
+									<xsl:call-template name="getTitle">
+										<xsl:with-param name="name" select="'title-list-figures'"/>
+									</xsl:call-template>
+								</xsl:variable>
+								
+								
+								<fo:block space-before="36pt" text-align="center" font-weight="bold" keep-with-next="always">
+									<xsl:value-of select="$title-list-figures"/>
+								</fo:block>
+								<fo:block margin-top="6pt" text-align="right" font-weight="bold" keep-with-next="always"><xsl:value-of select="$title-page"/></fo:block>
+								
+								<fo:block-container>
+									<xsl:for-each select="//itu:figure[@id and itu:name]">
+										<fo:block text-align-last="justify" margin-top="6pt">
+											<fo:basic-link internal-destination="{@id}" fox:alt-text="{itu:name}">
+												<xsl:apply-templates select="itu:name" mode="contents"/>										
+												<fo:inline keep-together.within-line="always">
+													<fo:leader leader-pattern="dots"/>
+													<fo:page-number-citation ref-id="{@id}"/>
+												</fo:inline>
+											</fo:basic-link>
+										</fo:block>
+									</xsl:for-each>
+								</fo:block-container>							
+							</xsl:if>
+						</xsl:if>
+							
 						</fo:block-container>
 					</xsl:if>
 					
@@ -1412,7 +1481,14 @@
 							</fo:table-cell>
 							<fo:table-cell font-weight="bold" text-align="left" padding-bottom="8mm">
 								<fo:block>
-									<xsl:value-of select="concat($footerprefix, $docname, ' ', $docdate)"/>
+									<xsl:choose>
+										<xsl:when  test="$doctype = 'technical-report' or $doctype = 'technical-paper'">
+											<xsl:value-of select="$footer-TR"/>
+										</xsl:when>
+										<xsl:otherwise>
+											<xsl:value-of select="concat($footerprefix, $docname, ' ', $docdate)"/>
+										</xsl:otherwise>
+									</xsl:choose>
 								</fo:block>
 							</fo:table-cell>
 						</fo:table-row>
@@ -1429,7 +1505,14 @@
 						<fo:table-row>
 							<fo:table-cell font-weight="bold" text-align="right" padding-bottom="8mm">
 								<fo:block>
-									<xsl:value-of select="concat($footerprefix, $docname, ' ', $docdate)"/>
+									<xsl:choose>
+										<xsl:when  test="$doctype = 'technical-report' or $doctype = 'technical-paper'">											
+											<xsl:value-of select="$footer-TR"/>
+										</xsl:when>
+										<xsl:otherwise>
+											<xsl:value-of select="concat($footerprefix, $docname, ' ', $docdate)"/>
+										</xsl:otherwise>
+									</xsl:choose>
 								</fo:block>
 							</fo:table-cell>
 							<fo:table-cell  text-align="right" padding-bottom="8mm" padding-right="2mm">
