@@ -500,8 +500,10 @@
 								<xsl:text>&#xA0;</xsl:text>
 								<fo:inline keep-together.within-line="always"><fo:leader leader-pattern="space"/>
 									<xsl:text>&#xA0;</xsl:text>
-									<!-- <xsl:value-of select="/iec:iec-standard/iec:bibdata/iec:isbn"/> -->
-									<xsl:text>Example: ISBN 978-2-8322-1532-6</xsl:text>
+									<xsl:if test="/iec:iec-standard/iec:bibdata/iec:docidentifier[@type='ISBN']">
+										<!-- <xsl:text>Example: ISBN 978-2-8322-1532-6</xsl:text> -->
+										<xsl:value-of select="/iec:iec-standard/iec:bibdata/iec:docidentifier[@type='ISBN']"/>
+									</xsl:if>
 								</fo:inline>
 							</fo:block>
 							<fo:block-container margin-left="1.5mm">
