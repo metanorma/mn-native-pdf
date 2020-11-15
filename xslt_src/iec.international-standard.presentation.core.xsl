@@ -156,6 +156,13 @@
 					<fo:region-start region-name="left-region" extent="18mm"/>
 					<fo:region-end region-name="right-region" extent="20.5mm"/>
 				</fo:simple-page-master>
+				<fo:simple-page-master master-name="cover_2nd" page-width="{$pageWidth}" page-height="{$pageHeight}">
+					<fo:region-body margin-top="17.5mm" margin-bottom="12.5mm" margin-left="25mm" margin-right="25mm" column-count="2" column-gap="5mm"/>
+					<fo:region-before region-name="header" extent="17.5mm"/> 
+					<fo:region-after region-name="footer" extent="12.5mm" precedence="true"/>
+					<fo:region-start region-name="left-region" extent="25mm"/>
+					<fo:region-end region-name="right-region" extent="25mm"/>
+				</fo:simple-page-master>
 				
 				<fo:simple-page-master master-name="cover-FDIS" page-width="{$pageWidth}" page-height="{$pageHeight}">
 					<fo:region-body margin-top="17.5mm" margin-bottom="29mm" margin-left="18mm" margin-right="19mm"/>
@@ -228,222 +235,230 @@
 				</fo:page-sequence>
 				
 				<!-- 2nd Cover Page -->
-				<fo:page-sequence master-reference="cover" force-page-count="no-force">
+				<fo:page-sequence master-reference="cover_2nd" force-page-count="no-force"  font-size="8pt">
 					<fo:flow flow-name="xsl-region-body">
-						<fo:block-container margin-left="7mm" margin-right="4.5mm" border="0.5pt solid black" margin-top="7mm">
-							<fo:block-container margin-left="2.5mm" margin-right="2.5mm" margin-top="1mm" margin-bottom="1mm">
-								<fo:block-container margin-left="0mm" margin-right="0mm">
-									<fo:table table-layout="fixed" width="100%">
-										<fo:table-column column-width="20mm"/>
-										<fo:table-column column-width="130mm"/>
-										<fo:table-body>
-											<fo:table-row>
-												<fo:table-cell>
-													<fo:block>
-														<fo:external-graphic src="{concat('data:image/png;base64,', normalize-space($Image-Attention))}" width="17.8mm" content-height="scale-to-fit" scaling="uniform" fox:alt-text="Image Front"/>
-													</fo:block>
-												</fo:table-cell>
-												<fo:table-cell font-size="10pt" font-weight="bold" display-align="after">
-													<fo:block margin-bottom="3pt">THIS PUBLICATION IS COPYRIGHT PROTECTED</fo:block>
-													<fo:block margin-bottom="10pt">
-														<!-- Example: Copyright © 2014 IEC, Geneva, Switzerland -->
-														<xsl:apply-templates select="/iec:iec-standard/iec:boilerplate/iec:copyright-statement/iec:clause/iec:p[@id = 'boilerplate-year']"/>
-													</fo:block>
-												</fo:table-cell>
-											</fo:table-row>
-										</fo:table-body>
-									</fo:table>
-									<fo:block font-size="8pt">
-										<fo:block margin-bottom="8pt" text-align="justify">
-										<!-- Example: All rights reserved. Unless otherwise specified, no part of this publication may be reproduced or utilized in any form
-	or by any means, electronic or mechanical, including photocopying and microfilm, without permission in writing from
-	either IEC or IEC's member National Committee in the country of the requester. If you have any questions about IEC
-	copyright or have an enquiry about obtaining additional rights to this publication, please contact the address below or
-	your local IEC member National Committee for further information. -->
-										<xsl:apply-templates select="/iec:iec-standard/iec:boilerplate/iec:copyright-statement/iec:clause/iec:p[@id = 'boilerplate-message']"/>
-										</fo:block>
-										<fo:block margin-bottom="8pt" text-align="justify">Droits de reproduction réservés. Sauf indication contraire, aucune partie de cette publication ne peut être reproduite
-	ni utilisée sous quelque forme que ce soit et par aucun procédé, électronique ou mécanique, y compris la photocopie
-	et les microfilms, sans l'accord écrit de l'IEC ou du Comité national de l'IEC du pays du demandeur. Si vous avez des
-	questions sur le copyright de l'IEC ou si vous désirez obtenir des droits supplémentaires sur cette publication, utilisez
-	les coordonnées ci-après ou contactez le Comité national de l'IEC de votre pays de résidence.</fo:block>
-									
-										<xsl:variable name="telpos" select="count(/iec:iec-standard/iec:boilerplate/iec:copyright-statement/iec:clause/iec:p[@id = 'boilerplate-address']/text()[contains(., 'Tel.')]/preceding-sibling::node())"/>
+						<fo:block span="all">
+							<fo:block-container border="0.5pt solid black" margin-top="7mm">
+								<fo:block-container margin-left="2.5mm" margin-right="2.5mm" margin-top="1mm" margin-bottom="1mm">
+									<fo:block-container margin-left="0mm" margin-right="0mm">
 										<fo:table table-layout="fixed" width="100%">
-											<fo:table-column column-width="59mm"/>
-											<fo:table-column column-width="90mm"/>
+											<fo:table-column column-width="20mm"/>
+											<fo:table-column column-width="130mm"/>
 											<fo:table-body>
 												<fo:table-row>
 													<fo:table-cell>
 														<fo:block>
-															<!-- Example: IEC Central Office
-																3, rue de Varembé
-																CH-1211 Geneva 20
-																Switzerland -->
-															<xsl:apply-templates select="/iec:iec-standard/iec:boilerplate/iec:copyright-statement/iec:clause/iec:p[@id = 'boilerplate-name']" mode="coverpage"/>
-															<xsl:choose>
-																<xsl:when test="$telpos != 0">
-																	<xsl:apply-templates select="/iec:iec-standard/iec:boilerplate/iec:copyright-statement/iec:clause/iec:p[@id = 'boilerplate-address']/node()[position() &lt; $telpos]" mode="coverpage"/>
-																</xsl:when>
-																<xsl:otherwise>
-																	<xsl:apply-templates select="/iec:iec-standard/iec:boilerplate/iec:copyright-statement/iec:clause/iec:p[@id = 'boilerplate-address']" mode="coverpage"/>
-																</xsl:otherwise>
-															</xsl:choose>
+															<fo:external-graphic src="{concat('data:image/png;base64,', normalize-space($Image-Attention))}" width="17.8mm" content-height="scale-to-fit" scaling="uniform" fox:alt-text="Image Front"/>
 														</fo:block>
 													</fo:table-cell>
-													<fo:table-cell>
-														<fo:block>
-															<!-- Example: Tel.: +41 22 919 02 11
-															 Fax: +41 22 919 0
-															 info@iec.ch
-															www.iec.ch -->
-															<xsl:choose>
-																<xsl:when test="$telpos != 0">
-																	<xsl:apply-templates select="/iec:iec-standard/iec:boilerplate/iec:copyright-statement/iec:clause/iec:p[@id = 'boilerplate-address']/node()[position() &gt; $telpos]" mode="coverpage"/>
-																</xsl:when>
-																<xsl:otherwise>&#xA0;</xsl:otherwise>
-															</xsl:choose>
+													<fo:table-cell font-size="10pt" font-weight="bold" display-align="after">
+														<fo:block margin-bottom="3pt">THIS PUBLICATION IS COPYRIGHT PROTECTED</fo:block>
+														<fo:block margin-bottom="10pt">
+															<!-- Example: Copyright © 2014 IEC, Geneva, Switzerland -->
+															<xsl:apply-templates select="/iec:iec-standard/iec:boilerplate/iec:copyright-statement/iec:clause/iec:p[@id = 'boilerplate-year']"/>
 														</fo:block>
 													</fo:table-cell>
 												</fo:table-row>
 											</fo:table-body>
 										</fo:table>
-									
-									</fo:block>
+										<fo:block>
+											<fo:block margin-bottom="8pt" text-align="justify">
+											<!-- Example: All rights reserved. Unless otherwise specified, no part of this publication may be reproduced or utilized in any form
+		or by any means, electronic or mechanical, including photocopying and microfilm, without permission in writing from
+		either IEC or IEC's member National Committee in the country of the requester. If you have any questions about IEC
+		copyright or have an enquiry about obtaining additional rights to this publication, please contact the address below or
+		your local IEC member National Committee for further information. -->
+											<xsl:apply-templates select="/iec:iec-standard/iec:boilerplate/iec:copyright-statement/iec:clause/iec:p[@id = 'boilerplate-message']"/>
+											</fo:block>
+											<fo:block margin-bottom="8pt" text-align="justify">Droits de reproduction réservés. Sauf indication contraire, aucune partie de cette publication ne peut être reproduite
+		ni utilisée sous quelque forme que ce soit et par aucun procédé, électronique ou mécanique, y compris la photocopie
+		et les microfilms, sans l'accord écrit de l'IEC ou du Comité national de l'IEC du pays du demandeur. Si vous avez des
+		questions sur le copyright de l'IEC ou si vous désirez obtenir des droits supplémentaires sur cette publication, utilisez
+		les coordonnées ci-après ou contactez le Comité national de l'IEC de votre pays de résidence.</fo:block>
+										
+											<xsl:variable name="telpos" select="count(/iec:iec-standard/iec:boilerplate/iec:copyright-statement/iec:clause/iec:p[@id = 'boilerplate-address']/text()[contains(., 'Tel.')]/preceding-sibling::node())"/>
+											<fo:table table-layout="fixed" width="100%">
+												<fo:table-column column-width="59mm"/>
+												<fo:table-column column-width="90mm"/>
+												<fo:table-body>
+													<fo:table-row>
+														<fo:table-cell>
+															<fo:block>
+																<!-- Example: IEC Central Office
+																	3, rue de Varembé
+																	CH-1211 Geneva 20
+																	Switzerland -->
+																<xsl:apply-templates select="/iec:iec-standard/iec:boilerplate/iec:copyright-statement/iec:clause/iec:p[@id = 'boilerplate-name']" mode="coverpage"/>
+																<xsl:choose>
+																	<xsl:when test="$telpos != 0">
+																		<xsl:apply-templates select="/iec:iec-standard/iec:boilerplate/iec:copyright-statement/iec:clause/iec:p[@id = 'boilerplate-address']/node()[position() &lt; $telpos]" mode="coverpage"/>
+																	</xsl:when>
+																	<xsl:otherwise>
+																		<xsl:apply-templates select="/iec:iec-standard/iec:boilerplate/iec:copyright-statement/iec:clause/iec:p[@id = 'boilerplate-address']" mode="coverpage"/>
+																	</xsl:otherwise>
+																</xsl:choose>
+															</fo:block>
+														</fo:table-cell>
+														<fo:table-cell>
+															<fo:block>
+																<!-- Example: Tel.: +41 22 919 02 11
+																 Fax: +41 22 919 0
+																 info@iec.ch
+																www.iec.ch -->
+																<xsl:choose>
+																	<xsl:when test="$telpos != 0">
+																		<xsl:apply-templates select="/iec:iec-standard/iec:boilerplate/iec:copyright-statement/iec:clause/iec:p[@id = 'boilerplate-address']/node()[position() &gt; $telpos]" mode="coverpage"/>
+																	</xsl:when>
+																	<xsl:otherwise>&#xA0;</xsl:otherwise>
+																</xsl:choose>
+															</fo:block>
+														</fo:table-cell>
+													</fo:table-row>
+												</fo:table-body>
+											</fo:table>
+										
+										</fo:block>
+									</fo:block-container>
 								</fo:block-container>
 							</fo:block-container>
-						</fo:block-container>
+						</fo:block>
 						
-						<fo:block-container margin-left="7mm" margin-right="4.5mm" margin-top="6pt">
-							<fo:block-container font-size="8pt" text-align="justify" margin-left="0mm" margin-right="0mm">
+						<xsl:apply-templates select="/iec:iec-standard/iec:boilerplate/iec:feedback-statement"/>
+						<fo:block span="all" border-bottom="0.5pt solid black"/>
+						
+						<!-- <fo:block span="all">
+							<fo:block-container margin-top="6pt">
+								<fo:block-container text-align="justify" margin-left="0mm" margin-right="0mm">
+									
+									<fo:block font-weight="bold">About the IEC</fo:block>
+									<fo:block margin-bottom="6pt">The International Electrotechnical Commission (IEC) is the leading global organization that prepares and publishes
+			International Standards for all electrical, electronic and related technologies.</fo:block>
 								
-								<fo:block font-weight="bold">About the IEC</fo:block>
-								<fo:block margin-bottom="6pt">The International Electrotechnical Commission (IEC) is the leading global organization that prepares and publishes
-		International Standards for all electrical, electronic and related technologies.</fo:block>
-							
-							<fo:block font-weight="bold">About IEC publications</fo:block>
-							<fo:block margin-bottom="6pt">The technical content of IEC publications is kept under constant review by the IEC. Please make sure that you have the
-		latest edition, a corrigenda or an amendment might have been published.</fo:block>
-								
-								<fo:table table-layout="fixed" width="100%" margin-bottom="12pt">
-									<fo:table-column column-width="82mm"/>
-									<fo:table-column column-width="78mm"/>
-									<fo:table-body>
-										<fo:table-row border-bottom="0.5pt solid black">
-											<fo:table-cell padding-right="5mm">
-												<fo:block font-weight="bold">IEC Catalogue - <fo:inline color="blue">webstore.iec.ch/catalogue</fo:inline></fo:block>
-												<fo:block margin-bottom="6pt">
-													<xsl:text>The stand-alone application for consulting the entire
-													bibliographical information on IEC International Standards,
-													Technical Specifications, Technical Reports and other
-													documents. Available for PC, Mac OS, Android Tablets and
-													iPad.</xsl:text>
-												</fo:block>
-												<fo:block font-weight="bold">IEC publications search - <fo:inline color="blue">www.iec.ch/searchpub</fo:inline></fo:block>
-												<fo:block margin-bottom="6pt">
-													<xsl:text>The advanced search enables to find IEC publications by a
-													variety of criteria (reference number, text, technical
-													committee,…). It also gives information on projects, replaced
-													and withdrawn publications.</xsl:text>
-												</fo:block>
-												<fo:block font-weight="bold">IEC Just Published - <fo:inline color="blue">webstore.iec.ch/justpublished</fo:inline></fo:block>
-												<fo:block margin-bottom="6pt">
-													<xsl:text>Stay up to date on all new IEC publications. Just Published
-													details all new publications released. Available online and
-													also once a month by email.</xsl:text>
-												</fo:block>
-											</fo:table-cell>
-											<fo:table-cell>
-												<fo:block font-weight="bold">Electropedia - <fo:inline color="blue">www.electropedia.org</fo:inline></fo:block>
-												<fo:block margin-bottom="6pt">
-													<xsl:text>The world's leading online dictionary of electronic and
-														electrical terms containing more than 30 000 terms and
-														definitions in English and French, with equivalent terms in 14
-														additional languages. Also known as the International
-														Electrotechnical Vocabulary (IEV) online.</xsl:text>
-												</fo:block>
-												<fo:block font-weight="bold">IEC Glossary - <fo:inline color="blue">std.iec.ch/glossary</fo:inline></fo:block>
-												<fo:block margin-bottom="6pt">
-													<xsl:text>More than 55 000 electrotechnical terminology entries in
-														English and French extracted from the Terms and Definitions
-														clause of IEC publications issued since 2002. Some entries
-														have been collected from earlier publications of IEC TC 37,
-														77, 86 and CISPR.</xsl:text>
-												</fo:block>
-												<fo:block font-weight="bold">IEC Customer Service Centre - <fo:inline color="blue">webstore.iec.ch/csc</fo:inline></fo:block>
-												<fo:block margin-bottom="6pt">
-													<xsl:text>If you wish to give us your feedback on this publication or
-														need further assistance, please contact the Customer Service
-														Centre: </xsl:text><fo:inline color="blue">csc@iec.ch</fo:inline>.
-												</fo:block>
-											</fo:table-cell>
-										</fo:table-row>
-									</fo:table-body>
-								</fo:table>
-								<fo:block font-weight="bold">A propos de l'IEC</fo:block>
-									<fo:block margin-bottom="6pt">La Commission Electrotechnique Internationale (IEC) est la première organisation mondiale qui élabore et publie des
-	Normes internationales pour tout ce qui a trait à l'électricité, à l'électronique et aux technologies apparentées.</fo:block>
-								
-								<fo:block font-weight="bold">A propos des publications IEC</fo:block>
-								<fo:block margin-bottom="6pt">Le contenu technique des publications IEC est constamment revu. Veuillez vous assurer que vous possédez l’édition la
-	plus récente, un corrigendum ou amendement peut avoir été publié.</fo:block>
+								<fo:block font-weight="bold">About IEC publications</fo:block>
+								<fo:block margin-bottom="6pt">The technical content of IEC publications is kept under constant review by the IEC. Please make sure that you have the
+			latest edition, a corrigenda or an amendment might have been published.</fo:block>
+									
+									<fo:table table-layout="fixed" width="100%" margin-bottom="12pt">
+										<fo:table-column column-width="82mm"/>
+										<fo:table-column column-width="78mm"/>
+										<fo:table-body>
+											<fo:table-row border-bottom="0.5pt solid black">
+												<fo:table-cell padding-right="5mm">
+													<fo:block font-weight="bold">IEC Catalogue - <fo:inline color="blue">webstore.iec.ch/catalogue</fo:inline></fo:block>
+													<fo:block margin-bottom="6pt">
+														<xsl:text>The stand-alone application for consulting the entire
+														bibliographical information on IEC International Standards,
+														Technical Specifications, Technical Reports and other
+														documents. Available for PC, Mac OS, Android Tablets and
+														iPad.</xsl:text>
+													</fo:block>
+													<fo:block font-weight="bold">IEC publications search - <fo:inline color="blue">www.iec.ch/searchpub</fo:inline></fo:block>
+													<fo:block margin-bottom="6pt">
+														<xsl:text>The advanced search enables to find IEC publications by a
+														variety of criteria (reference number, text, technical
+														committee,…). It also gives information on projects, replaced
+														and withdrawn publications.</xsl:text>
+													</fo:block>
+													<fo:block font-weight="bold">IEC Just Published - <fo:inline color="blue">webstore.iec.ch/justpublished</fo:inline></fo:block>
+													<fo:block margin-bottom="6pt">
+														<xsl:text>Stay up to date on all new IEC publications. Just Published
+														details all new publications released. Available online and
+														also once a month by email.</xsl:text>
+													</fo:block>
+												</fo:table-cell>
+												<fo:table-cell>
+													<fo:block font-weight="bold">Electropedia - <fo:inline color="blue">www.electropedia.org</fo:inline></fo:block>
+													<fo:block margin-bottom="6pt">
+														<xsl:text>The world's leading online dictionary of electronic and
+															electrical terms containing more than 30 000 terms and
+															definitions in English and French, with equivalent terms in 14
+															additional languages. Also known as the International
+															Electrotechnical Vocabulary (IEV) online.</xsl:text>
+													</fo:block>
+													<fo:block font-weight="bold">IEC Glossary - <fo:inline color="blue">std.iec.ch/glossary</fo:inline></fo:block>
+													<fo:block margin-bottom="6pt">
+														<xsl:text>More than 55 000 electrotechnical terminology entries in
+															English and French extracted from the Terms and Definitions
+															clause of IEC publications issued since 2002. Some entries
+															have been collected from earlier publications of IEC TC 37,
+															77, 86 and CISPR.</xsl:text>
+													</fo:block>
+													<fo:block font-weight="bold">IEC Customer Service Centre - <fo:inline color="blue">webstore.iec.ch/csc</fo:inline></fo:block>
+													<fo:block margin-bottom="6pt">
+														<xsl:text>If you wish to give us your feedback on this publication or
+															need further assistance, please contact the Customer Service
+															Centre: </xsl:text><fo:inline color="blue">csc@iec.ch</fo:inline>.
+													</fo:block>
+												</fo:table-cell>
+											</fo:table-row>
+										</fo:table-body>
+									</fo:table>
+									
+									<fo:block font-weight="bold">A propos de l'IEC</fo:block>
+										<fo:block margin-bottom="6pt">La Commission Electrotechnique Internationale (IEC) est la première organisation mondiale qui élabore et publie des
+		Normes internationales pour tout ce qui a trait à l'électricité, à l'électronique et aux technologies apparentées.</fo:block>
+									
+									<fo:block font-weight="bold">A propos des publications IEC</fo:block>
+									<fo:block margin-bottom="6pt">Le contenu technique des publications IEC est constamment revu. Veuillez vous assurer que vous possédez l’édition la
+		plus récente, un corrigendum ou amendement peut avoir été publié.</fo:block>
 
-								<fo:table table-layout="fixed" width="100%">
-									<fo:table-column column-width="82mm"/>
-									<fo:table-column column-width="78mm"/>
-									<fo:table-body>
-										<fo:table-row>
-											<fo:table-cell padding-right="5mm">
-												<fo:block font-weight="bold">Catalogue IEC - <fo:inline color="blue">webstore.iec.ch/catalogue</fo:inline></fo:block>
-												<fo:block margin-bottom="6pt">
-													<xsl:text>Application autonome pour consulter tous les renseignements
-														bibliographiques sur les Normes internationales,
-														Spécifications techniques, Rapports techniques et autres
-														documents de l'IEC. Disponible pour PC, Mac OS, tablettes
-														Android et iPad.</xsl:text>
-												</fo:block>
-												<fo:block font-weight="bold">Recherche de publications IEC - <fo:inline color="blue">www.iec.ch/searchpub</fo:inline></fo:block>
-												<fo:block margin-bottom="6pt">
-													<xsl:text>La recherche avancée permet de trouver des publications IEC
-														en utilisant différents critères (numéro de référence, texte,
-														comité d’études,…). Elle donne aussi des informations sur les
-														projets et les publications remplacées ou retirées.</xsl:text>
-												</fo:block>
-												<fo:block font-weight="bold">IEC Just Published - <fo:inline color="blue">webstore.iec.ch/justpublished</fo:inline></fo:block>
-												<fo:block margin-bottom="6pt">
-													<xsl:text>Restez informé sur les nouvelles publications IEC. Just
-														Published détaille les nouvelles publications parues.
-														Disponible en ligne et aussi une fois par mois par email.</xsl:text>
-												</fo:block>
-											</fo:table-cell>
-											<fo:table-cell>
-												<fo:block font-weight="bold">Electropedia - <fo:inline color="blue">www.electropedia.org</fo:inline></fo:block>
-												<fo:block margin-bottom="6pt">
-													<xsl:text>Le premier dictionnaire en ligne de termes électroniques et
-														électriques. Il contient plus de 30 000 termes et définitions en
-														anglais et en français, ainsi que les termes équivalents dans
-														14 langues additionnelles. Egalement appelé Vocabulaire
-														Electrotechnique International (IEV) en ligne.</xsl:text>
-												</fo:block>
-												<fo:block font-weight="bold">Glossaire IEC - <fo:inline color="blue">std.iec.ch/glossary</fo:inline></fo:block>
-												<fo:block margin-bottom="6pt">
-													<xsl:text>Plus de 55 000 entrées terminologiques électrotechniques, en
-														anglais et en français, extraites des articles Termes et
-														Définitions des publications IEC parues depuis 2002. Plus
-														certaines entrées antérieures extraites des publications des
-														CE 37, 77, 86 et CISPR de l'IEC.</xsl:text>
-												</fo:block>
-												<fo:block font-weight="bold">Service Clients - <fo:inline color="blue">webstore.iec.ch/csc</fo:inline></fo:block>
-												<fo:block margin-bottom="6pt">
-													<xsl:text>Si vous désirez nous donner des commentaires sur cette
-															publication ou si vous avez des questions contactez-nous: </xsl:text><fo:inline color="blue">csc@iec.ch</fo:inline>.
-												</fo:block>
-											</fo:table-cell>
-										</fo:table-row>
-									</fo:table-body>
-								</fo:table>
+									<fo:table table-layout="fixed" width="100%">
+										<fo:table-column column-width="82mm"/>
+										<fo:table-column column-width="78mm"/>
+										<fo:table-body>
+											<fo:table-row>
+												<fo:table-cell padding-right="5mm">
+													<fo:block font-weight="bold">Catalogue IEC - <fo:inline color="blue">webstore.iec.ch/catalogue</fo:inline></fo:block>
+													<fo:block margin-bottom="6pt">
+														<xsl:text>Application autonome pour consulter tous les renseignements
+															bibliographiques sur les Normes internationales,
+															Spécifications techniques, Rapports techniques et autres
+															documents de l'IEC. Disponible pour PC, Mac OS, tablettes
+															Android et iPad.</xsl:text>
+													</fo:block>
+													<fo:block font-weight="bold">Recherche de publications IEC - <fo:inline color="blue">www.iec.ch/searchpub</fo:inline></fo:block>
+													<fo:block margin-bottom="6pt">
+														<xsl:text>La recherche avancée permet de trouver des publications IEC
+															en utilisant différents critères (numéro de référence, texte,
+															comité d’études,…). Elle donne aussi des informations sur les
+															projets et les publications remplacées ou retirées.</xsl:text>
+													</fo:block>
+													<fo:block font-weight="bold">IEC Just Published - <fo:inline color="blue">webstore.iec.ch/justpublished</fo:inline></fo:block>
+													<fo:block margin-bottom="6pt">
+														<xsl:text>Restez informé sur les nouvelles publications IEC. Just
+															Published détaille les nouvelles publications parues.
+															Disponible en ligne et aussi une fois par mois par email.</xsl:text>
+													</fo:block>
+												</fo:table-cell>
+												<fo:table-cell>
+													<fo:block font-weight="bold">Electropedia - <fo:inline color="blue">www.electropedia.org</fo:inline></fo:block>
+													<fo:block margin-bottom="6pt">
+														<xsl:text>Le premier dictionnaire en ligne de termes électroniques et
+															électriques. Il contient plus de 30 000 termes et définitions en
+															anglais et en français, ainsi que les termes équivalents dans
+															14 langues additionnelles. Egalement appelé Vocabulaire
+															Electrotechnique International (IEV) en ligne.</xsl:text>
+													</fo:block>
+													<fo:block font-weight="bold">Glossaire IEC - <fo:inline color="blue">std.iec.ch/glossary</fo:inline></fo:block>
+													<fo:block margin-bottom="6pt">
+														<xsl:text>Plus de 55 000 entrées terminologiques électrotechniques, en
+															anglais et en français, extraites des articles Termes et
+															Définitions des publications IEC parues depuis 2002. Plus
+															certaines entrées antérieures extraites des publications des
+															CE 37, 77, 86 et CISPR de l'IEC.</xsl:text>
+													</fo:block>
+													<fo:block font-weight="bold">Service Clients - <fo:inline color="blue">webstore.iec.ch/csc</fo:inline></fo:block>
+													<fo:block margin-bottom="6pt">
+														<xsl:text>Si vous désirez nous donner des commentaires sur cette
+																publication ou si vous avez des questions contactez-nous: </xsl:text><fo:inline color="blue">csc@iec.ch</fo:inline>.
+													</fo:block>
+												</fo:table-cell>
+											</fo:table-row>
+										</fo:table-body>
+									</fo:table>
+								</fo:block-container>
 							</fo:block-container>
-						</fo:block-container>
+						</fo:block> -->
 					</fo:flow>
 				</fo:page-sequence>
 			</xsl:if>
@@ -1398,6 +1413,35 @@
 	
 	<xsl:template match="node()">		
 		<xsl:apply-templates />			
+	</xsl:template>
+	
+	
+	<xsl:template match="iec:feedback-statement//iec:clause/iec:title" priority="2">
+		<fo:block font-weight="bold" keep-with-next="always"><xsl:apply-templates/></fo:block>
+	</xsl:template>
+	
+	<xsl:template match="iec:feedback-statement//iec:clause/iec:p" priority="2">
+		<fo:block margin-bottom="6pt"><xsl:apply-templates/></fo:block>	
+	</xsl:template>
+	
+	<xsl:template match="iec:feedback-statement/iec:clause[not(iec:clause)]" priority="2">
+		<fo:block span="all" text-align="justify">
+			<xsl:if test="not(preceding-sibling::iec:clause)">
+				<xsl:attribute name="margin-top">6pt</xsl:attribute>
+			</xsl:if>
+			<xsl:apply-templates />
+		</fo:block>
+	</xsl:template>
+	
+	<xsl:template match="iec:feedback-statement/iec:clause[iec:clause]" priority="2">
+		<fo:block text-align="justify">
+			<xsl:apply-templates />
+		</fo:block>
+	</xsl:template>
+	<xsl:template match="iec:feedback-statement/iec:clause/iec:clause" priority="3">
+		<fo:block text-align="justify">
+			<xsl:apply-templates />
+		</fo:block>
 	</xsl:template>
 	
 	<!-- ============================= -->

@@ -3807,6 +3807,11 @@
 			</xsl:choose>
 		</xsl:variable>
 		<fo:inline xsl:use-attribute-sets="link-style">
+			<xsl:if test="$namespace = 'iec'">
+				<xsl:if test="ancestor::*[local-name()='feedback-statement']">
+					<xsl:attribute name="color">blue</xsl:attribute>
+				</xsl:if>
+			</xsl:if>
 			<xsl:choose>
 				<xsl:when test="$target = ''">
 					<xsl:apply-templates />
