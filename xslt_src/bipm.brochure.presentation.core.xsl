@@ -391,6 +391,19 @@
 		<xsl:apply-templates mode="flatxml"/>
 	</xsl:template>
 	
+	
+	<xsl:template match="bipm:clause2/bipm:title[following-sibling::*[local-name() != 'quote' and local-name() != 'note' and local-name() != 'clause']]" mode="flatxml">
+		<xsl:copy>
+			<xsl:apply-templates select="@*|node()" mode="flatxml"/>
+			<!-- move note(s) inside title -->
+			<xsl:variable name="title-id" select="generate-id(.)"/>
+			<xsl:for-each select="following-sibling::bipm:note[generate-id(preceding-sibling::bipm:title[1]) = $title-id]">			
+				<xsl:call-template name="change_note_kind"/>
+			</xsl:for-each>
+		</xsl:copy>	
+	</xsl:template>
+	
+	
 	<!-- move clause/note inside title, p, ul or ol -->
 	<xsl:template match="bipm:clause/*[local-name() != 'quote' and local-name() != 'note' and local-name() != 'clause'][last()]" mode="flatxml">
 		<xsl:copy>
@@ -1848,7 +1861,7 @@
 		</fo:block>
 	</xsl:template>
 	
-	<xsl:template match="bipm:license-statement//bipm:link">
+	<!-- <xsl:template match="bipm:license-statement//bipm:link">
 		<fo:inline color="blue" text-decoration="underline">
 				<fo:basic-link external-destination="{@target}" fox:alt-text="{@target}">
 					<xsl:choose>
@@ -1861,7 +1874,7 @@
 					</xsl:choose>
 				</fo:basic-link>
 			</fo:inline>
-	</xsl:template>
+	</xsl:template> -->
 	
 
 	<xsl:template match="bipm:feedback-statement">
