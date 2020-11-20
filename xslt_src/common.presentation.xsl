@@ -219,7 +219,7 @@
 	</xsl:attribute-set>
 		
 	<xsl:attribute-set name="link-style">
-		<xsl:if test="$namespace = 'iso' or $namespace = 'csd' or $namespace = 'ogc-white-paper' or $namespace = 'rsd' or or $namespace = 'm3d' or $namespace = 'iho' or $namespace = 'mpfd'">
+		<xsl:if test="$namespace = 'iso' or $namespace = 'csd' or $namespace = 'ogc-white-paper' or $namespace = 'rsd' or or $namespace = 'm3d' or $namespace = 'iho' or $namespace = 'mpfd' or $namespace = 'bipm'">
 			<xsl:attribute name="color">blue</xsl:attribute>
 			<xsl:attribute name="text-decoration">underline</xsl:attribute>
 		</xsl:if>
@@ -1066,6 +1066,13 @@
 	</xsl:attribute-set>
 
 	<xsl:attribute-set name="figure-name-style">
+		<xsl:if test="$namespace = 'bipm'">
+			<xsl:attribute name="keep-with-previous">always</xsl:attribute>
+			<xsl:attribute name="font-weight">bold</xsl:attribute>
+			<xsl:attribute name="text-align">left</xsl:attribute>			
+			<xsl:attribute name="margin-left">19mm</xsl:attribute>
+			<xsl:attribute name="text-indent">-19mm</xsl:attribute>
+		</xsl:if>
 		<xsl:if test="$namespace = 'csa'">
 			<xsl:attribute name="font-size">11pt</xsl:attribute>
 			<xsl:attribute name="font-weight">bold</xsl:attribute>
@@ -4205,7 +4212,12 @@
 	<!-- ====== -->
 	
 	<xsl:template match="*[local-name() = 'figure']">
-		<fo:block-container id="{@id}">
+		<fo:block-container id="{@id}">			
+			<xsl:if test="$namespace = 'bipm'">
+				<xsl:if test="*[local-name() = 'name']">
+					<xsl:attribute name="space-after">12pt</xsl:attribute>
+				</xsl:if>
+			</xsl:if>
 			<fo:block>
 				<xsl:apply-templates />
 			</fo:block>

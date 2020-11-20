@@ -391,8 +391,39 @@
 		<xsl:apply-templates mode="flatxml"/>
 	</xsl:template>
 	
+	
+	<!-- move note(s) inside element -->
+	<!-- but ignore quote, move inside element which before quote -->
+	<xsl:template match="bipm:clause/*
+		[not(local-name() = 'quote')]
+		[following-sibling::*
+			[not(local-name()='quote')]
+			[1][local-name() = 'note']]"  mode="flatxml"> <!-- find element, which has next 'note' -->
+		<xsl:copy>
+			<xsl:apply-templates select="@*|node()" mode="flatxml"/>
+			<xsl:variable name="element-id" select="generate-id(.)"/>
+			<xsl:for-each select="following-sibling::bipm:note[generate-id(preceding-sibling::*[not(local-name()='note') and not(local-name()='quote')][1]) = $element-id]">			
+				<xsl:call-template name="change_note_kind"/>
+			</xsl:for-each>
+			
+			<!-- if current node is title level is 3 with notes, and next level is 4 -->
+			<xsl:if test="local-name() = 'title' and @depth = 3 and
+						../bipm:clause/bipm:title/@depth = 4 and count(following-sibling::*[1][local-name() = 'note']) &gt; 0">
+				<!-- then move here footnotes from clause level 4 -->
+				<xsl:for-each select="../bipm:clause//bipm:fn[ancestor::bipm:quote or not(ancestor::bipm:table)]"> 
+					<xsl:call-template name="fn_to_note_side"/>
+				</xsl:for-each>
+			</xsl:if>
+			
+		</xsl:copy>
+	</xsl:template>
+	
+	<!-- remove note(s), which was moved into element in previous template -->
+	<xsl:template match="bipm:clause/bipm:note" mode="flatxml" priority="2"/>
+	
+	
 	<!-- move clause/note inside title, p, ul or ol -->
-	<xsl:template match="bipm:clause/*[local-name() != 'quote' and local-name() != 'note' and local-name() != 'clause'][last()]" mode="flatxml">
+	<xsl:template match="bipm:clause2/*[local-name() != 'quote' and local-name() != 'note' and local-name() != 'clause'][last()]" mode="flatxml">
 		<xsl:copy>
 			<xsl:apply-templates select="@*|node()" mode="flatxml"/>
 			<!-- <xsl:copy-of select="following-sibling::*[local-name() = 'note']"/> -->
@@ -416,7 +447,7 @@
 	</xsl:template> -->
 	
 	<!-- <xsl:template match="bipm:clause/bipm:note[count(following-sibling::*) = 0]" mode="flatxml"/> -->
-	<xsl:template match="bipm:clause/bipm:note[count(following-sibling::*[local-name() != 'clause' and local-name() != 'note']) = 0]" mode="flatxml" priority="2"/>
+	<!-- <xsl:template match="bipm:clause/bipm:note[count(following-sibling::*[local-name() != 'clause' and local-name() != 'note']) = 0]" mode="flatxml" priority="2"/> -->
 	
 	
 	<xsl:template match="bipm:note" name="change_note_kind" mode="flatxml">
@@ -1848,7 +1879,7 @@
 		</fo:block>
 	</xsl:template>
 	
-	<xsl:template match="bipm:license-statement//bipm:link">
+	<!-- <xsl:template match="bipm:license-statement//bipm:link">
 		<fo:inline color="blue" text-decoration="underline">
 				<fo:basic-link external-destination="{@target}" fox:alt-text="{@target}">
 					<xsl:choose>
@@ -1861,7 +1892,7 @@
 					</xsl:choose>
 				</fo:basic-link>
 			</fo:inline>
-	</xsl:template>
+	</xsl:template> -->
 	
 
 	<xsl:template match="bipm:feedback-statement">
