@@ -44,11 +44,11 @@ jobs:
         run: |
           gem install fontist
           fontist update
-#          fontist install "Cambria"
-#          fontist install "Calibri"
-#          fontist install "Arial"
-#          fontist install "Times New Roman"
-#          fontist install "Courier"
+          # fontist install "Cambria"
+          # fontist install "Calibri"
+          # fontist install "Arial"
+          # fontist install "Times New Roman"
+          # fontist install "Courier"
           fontist install "Source Han Sans"
           fontist install "Source Sans Pro"
           fontist install "Source Serif Pro"
