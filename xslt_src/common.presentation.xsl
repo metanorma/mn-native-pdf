@@ -266,7 +266,7 @@
 			<xsl:attribute name="margin-bottom">12pt</xsl:attribute>
 		</xsl:if>		
 		<xsl:if test="$namespace = 'ogc'">
-			<xsl:attribute name="font-family">FiraCode</xsl:attribute>			
+			<xsl:attribute name="font-family">Fira Code</xsl:attribute>			
 			<xsl:attribute name="margin-bottom">6pt</xsl:attribute>			
 			<xsl:attribute name="line-height">113%</xsl:attribute>
 		</xsl:if>
@@ -1250,7 +1250,7 @@
 			<xsl:attribute name="font-family">Courier</xsl:attribute>			
 		</xsl:if>
 		<xsl:if test="$namespace = 'ogc'">
-			<xsl:attribute name="font-family">FiraCode</xsl:attribute>			
+			<xsl:attribute name="font-family">Fira Code</xsl:attribute>			
 		</xsl:if>
 	</xsl:attribute-set>
 
