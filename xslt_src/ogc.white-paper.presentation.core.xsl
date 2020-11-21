@@ -100,7 +100,7 @@
 	
 	<xsl:template match="/">
 		<xsl:call-template name="namespaceCheck"/>
-		<fo:root xmlns:fo="http://www.w3.org/1999/XSL/Format" font-family="Arial, STIX Two Math, HanSans" font-size="11pt" xml:lang="{$lang}">
+		<fo:root xmlns:fo="http://www.w3.org/1999/XSL/Format" font-family="Arial, STIX Two Math, Source Han Sans" font-size="11pt" xml:lang="{$lang}">
 			<fo:layout-master-set>
 				
 				<!-- Document pages -->

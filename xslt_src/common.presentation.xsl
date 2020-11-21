@@ -213,7 +213,7 @@
 	
 	<xsl:attribute-set name="root-style">
 		<xsl:if test="$namespace = 'bipm'">
-			<xsl:attribute name="font-family">Times New Roman, STIX Two Math, HanSans</xsl:attribute>
+			<xsl:attribute name="font-family">Times New Roman, STIX Two Math, Source Han Sans</xsl:attribute>
 			<xsl:attribute name="font-size">10.5pt</xsl:attribute>
 		</xsl:if>
 	</xsl:attribute-set>
