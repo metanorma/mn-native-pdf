@@ -277,7 +277,7 @@
 			<xsl:attribute name="line-height">113%</xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'iho'">
-			<xsl:attribute name="font-family">SFMono-Regular</xsl:attribute>			
+			<xsl:attribute name="font-family">SF Mono</xsl:attribute>			
 			<xsl:attribute name="margin-bottom">6pt</xsl:attribute>
 			<xsl:attribute name="keep-with-next">always</xsl:attribute>
 			<xsl:attribute name="line-height">113%</xsl:attribute>
