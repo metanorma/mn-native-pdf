@@ -27,12 +27,12 @@ jobs:
 
           # Install fonts
           # If necessary
-#          echo ttf-mscorefonts-installer msttcorefonts/accepted-mscorefonts-eula select true | sudo debconf-set-selections
-#          sudo apt-get install -y ttf-mscorefonts-installer
+          echo ttf-mscorefonts-installer msttcorefonts/accepted-mscorefonts-eula select true | sudo debconf-set-selections
+          sudo apt-get install -y ttf-mscorefonts-installer
 
-#      - name: Setup Cambria fonts
-#        run: |
-#          curl -Ls https://raw.githubusercontent.com/metanorma/vista-fonts-installer/master/vista-fonts-installer.sh | sudo bash
+      - name: Setup Cambria fonts
+        run: |
+          curl -Ls https://raw.githubusercontent.com/metanorma/vista-fonts-installer/master/vista-fonts-installer.sh | sudo bash
 
       - name: Update gems
         run: |
@@ -44,11 +44,11 @@ jobs:
         run: |
           gem install fontist
           fontist update
-          fontist install "Cambria"
-          fontist install "Calibri"
-          fontist install "Arial"
-          fontist install "Times New Roman"
-          fontist install "Courier"
+#          fontist install "Cambria"
+#          fontist install "Calibri"
+#          fontist install "Arial"
+#          fontist install "Times New Roman"
+#          fontist install "Courier"
           fontist install "Source Han Sans"
           fontist install "Source Sans Pro"
           fontist install "Source Serif Pro"
