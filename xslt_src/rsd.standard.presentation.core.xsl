@@ -121,7 +121,7 @@
 					<fo:block font-size="22pt" margin-bottom="14pt">&#xA0;</fo:block>
 					<fo:block font-size="22pt" margin-bottom="6pt">&#xA0;</fo:block>
 					
-					<fo:block font-family="SourceSerifPro" font-size="12pt" line-height="230%">
+					<fo:block font-family="Source Serif Pro" font-size="12pt" line-height="230%">
 						<fo:block>Ronald Tse</fo:block>
 						<fo:block>Wai Kit Wong</fo:block>
 						<fo:block>Daniel Wyatt</fo:block>
@@ -538,7 +538,7 @@
 	
 	
 	<xsl:template match="rsd:bibitem">
-		<fo:block font-family="SourceSansPro" font-size="11pt" id="{@id}" margin-bottom="12pt" start-indent="12mm" text-indent="-12mm">
+		<fo:block font-family="Source Sans Pro" font-size="11pt" id="{@id}" margin-bottom="12pt" start-indent="12mm" text-indent="-12mm">
 			<xsl:if test=".//rsd:fn">
 				<xsl:attribute name="line-height-shift-adjustment">disregard-shifts</xsl:attribute>
 			</xsl:if>

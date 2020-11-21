@@ -241,13 +241,13 @@
 			<xsl:attribute name="margin-bottom">12pt</xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'csa' or $namespace = 'rsd'">
-			<xsl:attribute name="font-family">SourceCodePro</xsl:attribute>			
+			<xsl:attribute name="font-family">Source Code Pro</xsl:attribute>			
 			<xsl:attribute name="margin-bottom">6pt</xsl:attribute>
 			<xsl:attribute name="keep-with-next">always</xsl:attribute>
 			<xsl:attribute name="line-height">113%</xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'csd'">
-			<xsl:attribute name="font-family">SourceCodePro</xsl:attribute>			
+			<xsl:attribute name="font-family">Source Code Pro</xsl:attribute>			
 			<xsl:attribute name="margin-bottom">6pt</xsl:attribute>
 			<xsl:attribute name="keep-with-next">always</xsl:attribute>					
 		</xsl:if>
@@ -401,7 +401,7 @@
 			<xsl:attribute name="text-align">justify</xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'rsd'">			
-			<xsl:attribute name="font-family">SourceSansPro</xsl:attribute>
+			<xsl:attribute name="font-family">Source Sans Pro</xsl:attribute>
 			<xsl:attribute name="font-size">11pt</xsl:attribute>
 			<xsl:attribute name="margin-bottom">12pt</xsl:attribute>
 		</xsl:if>
@@ -532,7 +532,7 @@
 		</xsl:if>
 		
 		<xsl:if test="$namespace = 'rsd'">
-			<xsl:attribute name="font-family">SourceSansPro</xsl:attribute>
+			<xsl:attribute name="font-family">Source Sans Pro</xsl:attribute>
 			<xsl:attribute name="font-size">11pt</xsl:attribute>			
 			<xsl:attribute name="margin-top">12pt</xsl:attribute>
 			<xsl:attribute name="margin-bottom">12pt</xsl:attribute>
@@ -722,7 +722,7 @@
 		</xsl:if>
 		<xsl:if test="$namespace = 'rsd'">
 			<xsl:attribute name="font-size">12pt</xsl:attribute>
-			<xsl:attribute name="font-family">SourceSansPro</xsl:attribute>
+			<xsl:attribute name="font-family">Source Sans Pro</xsl:attribute>
 			<xsl:attribute name="margin-top">12pt</xsl:attribute>
 			<xsl:attribute name="margin-bottom">12pt</xsl:attribute>
 		</xsl:if>
@@ -739,7 +739,7 @@
 			<xsl:attribute name="margin-bottom">14pt</xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'rsd'">
-			<xsl:attribute name="font-family">SourceSansPro</xsl:attribute>
+			<xsl:attribute name="font-family">Source Sans Pro</xsl:attribute>
 			<xsl:attribute name="font-size">11pt</xsl:attribute>			
 			<xsl:attribute name="margin-bottom">12pt</xsl:attribute>
 		</xsl:if>
@@ -1140,7 +1140,7 @@
 		</xsl:if>
 		
 		<xsl:if test="$namespace = 'rsd'">
-			<xsl:attribute name="font-family">SourceSansPro</xsl:attribute>
+			<xsl:attribute name="font-family">Source Sans Pro</xsl:attribute>
 			<xsl:attribute name="font-size">12pt</xsl:attribute>
 			<xsl:attribute name="font-weight">bold</xsl:attribute>
 			<xsl:attribute name="text-align">center</xsl:attribute>
@@ -1243,7 +1243,7 @@
 	
 	<xsl:attribute-set name="tt-style">
 		<xsl:if test="$namespace = 'csa' or $namespace = 'csd' or $namespace = 'rsd'">
-			<xsl:attribute name="font-family">SourceCodePro</xsl:attribute>			
+			<xsl:attribute name="font-family">Source Code Pro</xsl:attribute>			
 		</xsl:if>
 		<xsl:if test="$namespace = 'gb' or $namespace = 'iec' or $namespace = 'iho' or $namespace = 'iso' or $namespace = 'm3d' or 
 										 $namespace = 'ogc-white-paper'">
@@ -1262,7 +1262,7 @@
 		<xsl:attribute name="keep-with-previous">always</xsl:attribute>
 		<xsl:if test="$namespace = 'rsd'">
 			<xsl:attribute name="font-size">12pt</xsl:attribute>
-			<xsl:attribute name="font-family">SourceSansPro</xsl:attribute>
+			<xsl:attribute name="font-family">Source Sans Pro</xsl:attribute>
 		</xsl:if>
 	</xsl:attribute-set>
 
