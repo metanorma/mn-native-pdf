@@ -40,6 +40,23 @@ jobs:
           bundle config build.nokogiri --use-system-libraries
           bundle install --jobs 4 --retry 3
 
+      - name: Install Fontist fonts
+        run: |
+          gem install fontist
+          fontist install "Cambria"
+          fontist install "Calibri"
+          fontist install "Arial"
+          fontist install "Times New Roman"
+          fontist install "Courier"
+          fontist install "Source Han Sans"
+          fontist install "Source Sans Pro"
+          fontist install "Source Serif Pro"
+          fontist install "Source Code Pro"
+          fontist install "STIX Two Math"
+          fontist install "Lato"
+          fontist install "Fira Code"
+          fontist install "Work Sans"
+
       - name: Update submodules
         run: |
           make update-init update-modules
