@@ -1154,7 +1154,7 @@
 				<xsl:call-template name="insertCoverPageCommon"/>
 				
 				<fo:block-container height="100%" display-align="center" border="0pt solid black"><!--  -->
-					<fo:block font-family="WorkSans" font-size="50pt" line-height="115%">
+					<fo:block font-family="Work Sans" font-size="50pt" line-height="115%">
 					
 						<xsl:variable name="languages">
 							<xsl:call-template name="getLanguages"/>
@@ -1225,7 +1225,7 @@
 	
 		<fo:page-sequence master-reference="cover-page-appendix" force-page-count="even" initial-page-number="1">
 			
-			<fo:flow flow-name="xsl-region-body" font-family="WorkSans">
+			<fo:flow flow-name="xsl-region-body" font-family="Work Sans">
 			
 				<xsl:call-template name="insertCoverPageCommon"/>
 				
@@ -1359,7 +1359,7 @@
 				</fo:block-container>
 				
 				<!-- <fo:block-container>
-					<fo:block font-family="WorkSans" font-size="16pt" line-height="120%" font-weight="400" margin-top="20mm">
+					<fo:block font-family="Work Sans" font-size="16pt" line-height="120%" font-weight="400" margin-top="20mm">
 						<fo:block>
 							<xsl:value-of select="/bipm:bipm-standard/bipm:bibdata/bipm:title[@language = $lang]"/>
 							<xsl:text> (</xsl:text>
@@ -1379,7 +1379,7 @@
 							<xsl:value-of select="/bipm:bipm-standard/bipm:bibdata/bipm:ext/bipm:structuredidentifier/bipm:appendix"/>
 						</fo:block>
 					</fo:block>
-					<fo:block font-family="WorkSans" font-size="36pt" font-weight="600" margin-top="15mm">
+					<fo:block font-family="Work Sans" font-size="36pt" font-weight="600" margin-top="15mm">
 						<xsl:value-of select="/bipm:bipm-standard/bipm:bibdata/bipm:title[@type = 'appendix' and @language = $lang]"/>
 					</fo:block>
 				</fo:block-container> -->
