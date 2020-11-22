@@ -23,6 +23,15 @@ jobs:
           gem install bundler
           bundle install --jobs 4 --retry 3
 
+      - name: Install Fontist fonts
+        run: |
+          gem install fontist
+          fontist update
+          fontist manifest-install --confirm-license fonts/manifest.yml
+          fontist manifest-locations fonts/manifest.yml > fonts/manifest.paths.yml
+          cat fonts/manifest.paths.yml
+
+
       # cabextract for fonts, gettext-base for envsubst
       - name: Setup prerequisites
         run: |
@@ -31,15 +40,15 @@ jobs:
           brew link --force gettext
 
           # Install cabextract
-          brew install cabextract
+#          brew install cabextract
 
           # Install yq
           brew install yq
 
-      - name: Install Microsoft Vista fonts
-        run: |
-          export RENAME_FONTS=false
-          curl -Ls https://raw.githubusercontent.com/metanorma/vista-fonts-installer/master/vista-fonts-installer.sh | bash
+#      - name: Install Microsoft Vista fonts
+#        run: |
+#          export RENAME_FONTS=false
+#          curl -Ls https://raw.githubusercontent.com/metanorma/vista-fonts-installer/master/vista-fonts-installer.sh | bash
 
       - name: Update submodules
         run: |
