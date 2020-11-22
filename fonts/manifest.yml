@@ -1,230 +1,95 @@
-Work Sans:
-  Black:
-  - "~/.fontist/fonts/WorkSans-Black.ttf"
-  Black Italic:
-  - "~/.fontist/fonts/WorkSans-BlackItalic.ttf"
-  Bold:
-  - "~/.fontist/fonts/WorkSans-Bold.ttf"
-  Bold Italic:
-  - "~/.fontist/fonts/WorkSans-BoldItalic.ttf"
-  ExtraBold:
-  - "~/.fontist/fonts/WorkSans-ExtraBold.ttf"
-  ExtraBold Italic:
-  - "~/.fontist/fonts/WorkSans-ExtraBoldItalic.ttf"
-  ExtraLight:
-  - "~/.fontist/fonts/WorkSans-ExtraLight.ttf"
-  ExtraLight Italic:
-  - "~/.fontist/fonts/WorkSans-ExtraLightItalic.ttf"
-  Italic:
-  - "~/.fontist/fonts/WorkSans-Italic.ttf"
-  Light:
-  - "~/.fontist/fonts/WorkSans-Light.ttf"
-  Light Italic:
-  - "~/.fontist/fonts/WorkSans-LightItalic.ttf"
-  Medium:
-  - "~/.fontist/fonts/WorkSans-Medium.ttf"
-  Medium Italic:
-  - "~/.fontist/fonts/WorkSans-MediumItalic.ttf"
-  Regular:
-  - "~/.fontist/fonts/WorkSans-Regular.ttf"
-  SemiBold:
-  - "~/.fontist/fonts/WorkSans-SemiBold.ttf"
-  SemiBold Italic:
-  - "~/.fontist/fonts/WorkSans-SemiBoldItalic.ttf"
-  Thin:
-  - "~/.fontist/fonts/WorkSans-Thin.ttf"
-  Thin Italic:
-  - "~/.fontist/fonts/WorkSans-ThinItalic.ttf"
-  Black:
-  - "~/.fontist/fonts/WorkSans-Black.otf"
-  Bold:
-  - "~/.fontist/fonts/WorkSans-Bold.otf"
-  ExtraBold:
-  - "~/.fontist/fonts/WorkSans-ExtraBold.otf"
-  ExtraLight:
-  - "~/.fontist/fonts/WorkSans-ExtraLight.otf"
-  Light:
-  - "~/.fontist/fonts/WorkSans-Light.otf"
-  Medium:
-  - "~/.fontist/fonts/WorkSans-Medium.otf"
-  Regular:
-  - "~/.fontist/fonts/WorkSans-Regular.otf"
-  SemiBold:
-  - "~/.fontist/fonts/WorkSans-SemiBold.otf"
-  Thin:
-  - "~/.fontist/fonts/WorkSans-Thin.otf"
-  Black:
-  - "~/.fontist/fonts/WorkSans-Black.ttf"
-  Bold:
-  - "~/.fontist/fonts/WorkSans-Bold.ttf"
-  ExtraBold:
-  - "~/.fontist/fonts/WorkSans-ExtraBold.ttf"
-  ExtraLight:
-  - "~/.fontist/fonts/WorkSans-ExtraLight.ttf"
-  Light:
-  - "~/.fontist/fonts/WorkSans-Light.ttf"
-  Medium:
-  - "~/.fontist/fonts/WorkSans-Medium.ttf"
-  Regular:
-  - "~/.fontist/fonts/WorkSans-Regular.ttf"
-  SemiBold:
-  - "~/.fontist/fonts/WorkSans-SemiBold.ttf"
-  Thin:
-  - "~/.fontist/fonts/WorkSans-Thin.ttf"
-  Black:
-  - "~/.fontist/fonts/WorkSans-Black.ttf"
-  Bold:
-  - "~/.fontist/fonts/WorkSans-Bold.ttf"
-  ExtraBold:
-  - "~/.fontist/fonts/WorkSans-ExtraBold.ttf"
-  ExtraLight:
-  - "~/.fontist/fonts/WorkSans-ExtraLight.ttf"
-  Light:
-  - "~/.fontist/fonts/WorkSans-Light.ttf"
-  Medium:
-  - "~/.fontist/fonts/WorkSans-Medium.ttf"
-  Regular:
-  - "~/.fontist/fonts/WorkSans-Regular.ttf"
-  SemiBold:
-  - "~/.fontist/fonts/WorkSans-SemiBold.ttf"
-  Thin:
-  - "~/.fontist/fonts/WorkSans-Thin.ttf"
+Cambria:
+  - Regular
+  - Bold
+  - Italic
+  - Bold Italic
 
+Calibri:
+  - Regular
+  - Bold
+  - Italic
+  - Bold Italic
+  
+Arial:
+  - Regular
+  - Bold
+  - Italic
+  - Bold Italic
+
+Arial Black:
+  - Regular
+
+Times New Roman:
+  - Regular
+  - Bold
+  - Italic
+  - Bold Italic
+  
+Courier:
+  - Regular
+  - Bold
+  - Italic
+  - Bold Italic
+  
+Cambria Math:
+  - Regular
+
+Work Sans:
+  - Black
+  - Black Italic
+  - Bold
+  - Bold Italic
+  - ExtraBold
+  - ExtraBold Italic
+  - ExtraLight
+  - ExtraLight Italic
+  - Italic
+  - Light
+  - Light Italic
+  - Medium
+  - Medium Italic
+  - Regular
+  - SemiBold
+  - SemiBold Italic
+  - Thin
+  - Thin Italic
+ 
 STIX Two Math:
-  Regular:
-  - "~/.fontist/fonts/STIX2Math.otf"
+  - Regular
 
 Source Han Sans:
-  Bold:
-  - "~/.fontist/fonts/SourceHanSans-Bold.ttc"
-  Normal:
-  - "~/.fontist/fonts/SourceHanSans-Normal.ttc"
-  Regular:
-  - "~/.fontist/fonts/SourceHanSans-Regular.ttc"
- 
+  - Bold
+  - Normal
+  - Regular
 
 Source Code Pro:
-  Regular:
-  - "~/.fontist/fonts/SourceCodePro-Regular.ttf"
-  Medium Italic:
-  - "~/.fontist/fonts/SourceCodePro-MediumIt.ttf"
-  Italic:
-  - "~/.fontist/fonts/SourceCodePro-It.ttf"
-  ExtraLight Italic:
-  - "~/.fontist/fonts/SourceCodePro-ExtraLightIt.ttf"
-  ExtraLight:
-  - "~/.fontist/fonts/SourceCodePro-ExtraLight.ttf"
-  Black Italic:
-  - "~/.fontist/fonts/SourceCodePro-BlackIt.ttf"
-  Bold Italic:
-  - "~/.fontist/fonts/SourceCodePro-BoldIt.ttf"
-  Semibold Italic:
-  - "~/.fontist/fonts/SourceCodePro-SemiboldIt.ttf"
-  Black:
-  - "~/.fontist/fonts/SourceCodePro-Black.ttf"
-  Bold:
-  - "~/.fontist/fonts/SourceCodePro-Bold.ttf"
-  Semibold:
-  - "~/.fontist/fonts/SourceCodePro-Semibold.ttf"
-  Light Italic:
-  - "~/.fontist/fonts/SourceCodePro-LightIt.ttf"
-  Medium:
-  - "~/.fontist/fonts/SourceCodePro-Medium.ttf"
-  Light:
-  - "~/.fontist/fonts/SourceCodePro-Light.ttf"
+  - Regular
+  - Italic
+  - Bold Italic
+  - Bold
 
 Source Sans Pro:
-  Black Italic:
-  - "~/.fontist/fonts/SourceSansPro-BlackIt.ttf"
-  Italic:
-  - "~/.fontist/fonts/SourceSansPro-It.ttf"
-  Light:
-  - "~/.fontist/fonts/SourceSansPro-Light.ttf"
-  ExtraLight:
-  - "~/.fontist/fonts/SourceSansPro-ExtraLight.ttf"
-  ExtraLight Italic:
-  - "~/.fontist/fonts/SourceSansPro-ExtraLightIt.ttf"
-  Bold Italic:
-  - "~/.fontist/fonts/SourceSansPro-BoldIt.ttf"
-  Black:
-  - "~/.fontist/fonts/SourceSansPro-Black.ttf"
-  Light Italic:
-  - "~/.fontist/fonts/SourceSansPro-LightIt.ttf"
-  Regular:
-  - "~/.fontist/fonts/SourceSansPro-Regular.ttf"
-  Semibold:
-  - "~/.fontist/fonts/SourceSansPro-Semibold.ttf"
-  Bold:
-  - "~/.fontist/fonts/SourceSansPro-Bold.ttf"
-  Semibold Italic:
-  - "~/.fontist/fonts/SourceSansPro-SemiboldIt.ttf"
+  - Italic
+  - Light
+  - Bold Italic
+  - Light Italic
+  - Regular
+  - Bold
 
 Source Serif Pro:
-  Black:
-  - "~/.fontist/fonts/SourceSerifPro-Black.ttf"
-  Bold:
-  - "~/.fontist/fonts/SourceSerifPro-Bold.ttf"
-  Bold Italic:
-  - "~/.fontist/fonts/SourceSerifPro-BoldIt.ttf"
-  Regular:
-  - "~/.fontist/fonts/SourceSerifPro-Regular.ttf"
-  ExtraLight:
-  - "~/.fontist/fonts/SourceSerifPro-ExtraLight.ttf"
-  Semibold Italic:
-  - "~/.fontist/fonts/SourceSerifPro-SemiboldIt.ttf"
-  Black Italic:
-  - "~/.fontist/fonts/SourceSerifPro-BlackIt.ttf"
-  Semibold:
-  - "~/.fontist/fonts/SourceSerifPro-Semibold.ttf"
-  Light:
-  - "~/.fontist/fonts/SourceSerifPro-Light.ttf"
-  Light Italic:
-  - "~/.fontist/fonts/SourceSerifPro-LightIt.ttf"
-  ExtraLight Italic:
-  - "~/.fontist/fonts/SourceSerifPro-ExtraLightIt.ttf"
-  Italic:
-  - "~/.fontist/fonts/SourceSerifPro-It.ttf"
+  - Bold
+  - Bold Italic
+  - Regular
+  - Italic
 
 
 Fira Code:
-  Regular:
-  - "~/.fontist/fonts/FiraCode-Regular.ttf"
+  - Regular
  
 Lato:
-  Black:
-  - "~/.fontist/fonts/Lato-Black.ttf"
-  Black Italic:
-  - "~/.fontist/fonts/Lato-BlackItalic.ttf"
-  Bold:
-  - "~/.fontist/fonts/Lato-Bold.ttf"
-  Bold Italic:
-  - "~/.fontist/fonts/Lato-BoldItalic.ttf"
-  Hairline:
-  - "~/.fontist/fonts/Lato-Hairline.ttf"
-  Hairline Italic:
-  - "~/.fontist/fonts/Lato-HairlineItalic.ttf"
-  Heavy:
-  - "~/.fontist/fonts/Lato-Heavy.ttf"
-  Heavy Italic:
-  - "~/.fontist/fonts/Lato-HeavyItalic.ttf"
-  Italic:
-  - "~/.fontist/fonts/Lato-Italic.ttf"
-  Light:
-  - "~/.fontist/fonts/Lato-Light.ttf"
-  Light Italic:
-  - "~/.fontist/fonts/Lato-LightItalic.ttf"
-  Medium:
-  - "~/.fontist/fonts/Lato-Medium.ttf"
-  Medium Italic:
-  - "~/.fontist/fonts/Lato-MediumItalic.ttf"
-  Regular:
-  - "~/.fontist/fonts/Lato-Regular.ttf"
-  Semibold:
-  - "~/.fontist/fonts/Lato-Semibold.ttf"
-  Semibold Italic:
-  - "~/.fontist/fonts/Lato-SemiboldItalic.ttf"
-  Thin:
-  - "~/.fontist/fonts/Lato-Thin.ttf"
-  Thin Italic:
-  - "~/.fontist/fonts/Lato-ThinItalic.ttf"
- 
+  - Bold
+  - Bold Italic
+  - Italic
+  - Light
+  - Light Italic
+  - Regular
