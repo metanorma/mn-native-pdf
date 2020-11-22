@@ -40,7 +40,7 @@ jobs:
           brew link --force gettext
 
           # Install cabextract
-#          brew install cabextract
+          # brew install cabextract
 
           # Install yq
           brew install yq
