@@ -57,7 +57,9 @@ jobs:
           #fontist install "Lato"
           #fontist install "Fira Code"
           #fontist install "Work Sans"
-          fontist manifest-install --confirm-license fonts/manifest.install.yml > fonts/manifest.paths.yml
+          ls -l
+          fontist manifest-install --confirm-license fonts/manifest.install.yml
+          fontist manifest-locations fonts/manifest.install.yml > fonts/manifest.paths.yml
           cat fonts/manifest.paths.yml
 
       - name: Update submodules
