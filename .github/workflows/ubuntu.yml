@@ -49,14 +49,16 @@ jobs:
           # fontist install "Arial"
           # fontist install "Times New Roman"
           # fontist install "Courier"
-          fontist install "Source Han Sans"
-          fontist install "Source Sans Pro"
-          fontist install "Source Serif Pro"
-          fontist install "Source Code Pro"
-          fontist install "STIX Two Math"
-          fontist install "Lato"
-          fontist install "Fira Code"
-          fontist install "Work Sans"
+          #fontist install "Source Han Sans"
+          #fontist install "Source Sans Pro"
+          #fontist install "Source Serif Pro"
+          #fontist install "Source Code Pro"
+          #fontist install "STIX Two Math"
+          #fontist install "Lato"
+          #fontist install "Fira Code"
+          #fontist install "Work Sans"
+          fontist manifest-install --confirm-license fonts/manifest.install.yml > fonts/manifest.paths.yml
+          cat fonts/manifest.paths.yml
 
       - name: Update submodules
         run: |
