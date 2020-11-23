@@ -305,7 +305,7 @@ else
 	git submodule foreach "git fetch origin gh-pages"; \
 	git submodule foreach "git checkout gh-pages"; \
 	git submodule foreach "git reset --hard origin/gh-pages"
-
+endif
 
 publish: published
 published: documents.html
