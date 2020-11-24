@@ -1634,6 +1634,7 @@
 								<fo:block>
 									<xsl:if test="@level = 1 or (@level = 2 and not(@parent = 'annex'))">
 										<xsl:value-of select="@section"/>
+										<xsl:if test="normalize-space(@section) != '' and @type = 'annex'">.</xsl:if>
 									</xsl:if>
 									<!-- <fo:inline font-size="10pt" color="white">Z</fo:inline> --> <!-- for baseline alignment in string -->
 								</fo:block>
