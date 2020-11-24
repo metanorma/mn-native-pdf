@@ -2968,9 +2968,20 @@
 					<!-- add , voir p. N -->
 					<xsl:apply-templates />					
 					<xsl:text>, </xsl:text>
-					<xsl:variable name="curr_lang" select="ancestor::bipm:bipm-standard/bipm:bibdata/bipm:language[@current = 'true']"/>					
-					<xsl:value-of select="ancestor::bipm:bipm-standard/bipm:localized-strings/bipm:localized-string[@key='see' and @language=$curr_lang]"/>
-					<xsl:text> p. </xsl:text>
+					
+					<xsl:variable name="nosee" select="normalize-space(@nosee)"/>
+					<xsl:if test="$nosee != 'true'">
+						<xsl:variable name="curr_lang" select="ancestor::bipm:bipm-standard/bipm:bibdata/bipm:language[@current = 'true']"/>					
+						<fo:inline>
+							<xsl:if test="ancestor::bipm:note_side">
+								<xsl:attribute name="font-style">italic</xsl:attribute>
+							</xsl:if>
+							<xsl:value-of select="ancestor::bipm:bipm-standard/bipm:localized-strings/bipm:localized-string[@key='see' and @language=$curr_lang]"/>
+						</fo:inline>
+						<xsl:text> </xsl:text>
+					</xsl:if>
+					
+					<xsl:text>p. </xsl:text>
 					<fo:page-number-citation ref-id="{@target}"/>					
 				</xsl:when>
 				<xsl:otherwise>
