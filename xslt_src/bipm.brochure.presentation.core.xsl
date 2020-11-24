@@ -105,8 +105,14 @@
 
 	<xsl:template name="generateContents">
 		<contents>
-			<xsl:call-template name="processPrefaceSectionsDefault_Contents"/>
-			<xsl:call-template name="processMainSectionsDefault_Contents"/>
+
+			<xsl:apply-templates select="/*/bipm:preface/*[position() &gt; 1]" mode="contents" />
+			
+			<xsl:apply-templates select="/*/bipm:sections/*" mode="contents" />
+			<xsl:apply-templates select="/*/bipm:bibliography/bipm:references[@normative='true']" mode="contents"/>
+			<xsl:apply-templates select="/*/bipm:annex" mode="contents"/>
+			<xsl:apply-templates select="/*/bipm:bibliography/bipm:references[not(@normative='true')]" mode="contents"/> 
+			
 		</contents>
 	</xsl:template>
 	
