@@ -2960,8 +2960,10 @@
 	<xsl:template match="bipm:xref" priority="2">		
 		<fo:basic-link internal-destination="{@target}" fox:alt-text="{@target}">
 			<xsl:choose>
-				<xsl:when test="@pagenumber='true'"><!-- ToC in Appendix -->
-					<fo:inline font-weight="bold"><fo:page-number-citation ref-id="{@target}"/></fo:inline>
+				<xsl:when test="@pagenumber='true'"><!-- ToC in Appendix, and page in references like this: « Le BIPM et la Convention du Mètre » (page 5). -->
+					<fo:inline> <!--  font-weight="bold" -->
+						<fo:page-number-citation ref-id="{@target}"/>
+					</fo:inline>
 				</xsl:when>
 				<xsl:when test="starts-with(normalize-space(following-sibling::node()[1]), ')')">										
 					<!-- add , see p. N -->				
