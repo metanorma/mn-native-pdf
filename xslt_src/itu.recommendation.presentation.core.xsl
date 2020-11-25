@@ -55,11 +55,7 @@
 		<xsl:value-of select="concat($x,'STR-', $acronym)"/>
 	</xsl:variable>
 	
-	<xsl:variable name="footer-TR">
-		<xsl:variable name="date" select="concat('(',substring(/itu:itu-standard/itu:bibdata/itu:version/itu:revision-date,1,7), ')')"/>
-		<xsl:value-of select="concat($xSTR-ACRONYM, ' ', $date)"/>
-	</xsl:variable>
-	
+
 	<!-- Example:
 		<item level="1" id="Foreword" display="true">Foreword</item>
 		<item id="term-script" display="false">3.2</item>
@@ -86,6 +82,21 @@
 
 	<xsl:variable name="lang">
 		<xsl:call-template name="getLang"/>
+	</xsl:variable>
+	
+	
+	<xsl:variable name="footer-TR">
+		<xsl:variable name="date" select="concat('(',substring(/itu:itu-standard/itu:bibdata/itu:version/itu:revision-date,1,7), ')')"/>
+		<xsl:value-of select="concat($xSTR-ACRONYM, ' ', $date)"/>
+	</xsl:variable>
+
+	<xsl:variable name="footer-IG">
+		<xsl:value-of select="/itu:itu-standard/itu:bibdata/itu:ext/itu:doctype[@language = $lang]"/>
+		<xsl:text> for </xsl:text>
+		<xsl:value-of select="/itu:itu-standard/itu:bibdata/itu:docidentifier[@type='ITU-Recommendation']"/>
+		<xsl:text> </xsl:text>
+		<xsl:variable name="date" select="concat('(',substring(/itu:itu-standard/itu:bibdata/itu:date[@type = 'published']/itu:on,1,7), ')')"/>
+		<xsl:value-of select="$date"/>
 	</xsl:variable>
 	
 	<xsl:variable name="isAmendment" select="normalize-space(/itu:itu-standard/itu:bibdata/itu:ext/itu:structuredidentifier/itu:amendment[@language = $lang])"/>
@@ -168,7 +179,9 @@
 			</xsl:call-template>
 			
 			
-			<xsl:if test="$doctype = 'technical-report' or $doctype = 'technical-paper'">
+			<xsl:if test="$doctype = 'technical-report' or 
+													$doctype = 'technical-paper' or
+													$doctype = 'implementers-guide'">
 				<fo:page-sequence master-reference="TR-first-page">
 					<fo:flow flow-name="xsl-region-body">						
 							<fo:block>
@@ -341,6 +354,11 @@
 												<xsl:when test="$doctype = 'technical-report' or $doctype = 'technical-paper'">
 													<xsl:value-of select="$doctypeCapitalizedTitle"/>
 												</xsl:when>
+												<xsl:when test="$doctype = 'implementers-guide'">
+													<xsl:value-of select="/itu:itu-standard/itu:bibdata/itu:docidentifier[@type='ITU-Recommendation']"/>
+													<xsl:text> </xsl:text>
+													<xsl:value-of select="/itu:itu-standard/itu:bibdata/itu:ext/itu:doctype[@language = $lang]"/>
+												</xsl:when>
 												<xsl:otherwise>
 													<xsl:value-of select="substring-after(/itu:itu-standard/itu:bibdata/itu:docidentifier[@type = 'ITU'], ' ')"/>
 												</xsl:otherwise>
@@ -443,6 +461,10 @@
 													<xsl:value-of select="$xSTR-ACRONYM"/>
 												</fo:block>
 											</xsl:if>
+											<xsl:if test="$doctype = 'implementers-guide'">
+												<xsl:value-of select="/itu:itu-standard/itu:bibdata/itu:ext/itu:doctype[@language = $lang]"/>
+												<xsl:text> for </xsl:text>
+											</xsl:if>
 											<xsl:value-of select="/itu:itu-standard/itu:bibdata/itu:title[@type = 'main' and @language = 'en']"/>
 										</fo:block>
 										<xsl:for-each select="/itu:itu-standard/itu:bibdata/itu:title[@type = 'annex' and @language = 'en']">
@@ -509,6 +531,8 @@
 													<xsl:value-of select="$doctypeCapitalizedTitle"/>
 													<xsl:text>&#xA0;&#xA0;</xsl:text>
 													<xsl:value-of select="/itu:itu-standard/itu:bibdata/itu:docidentifier[@type='ITU']"/>
+												</xsl:when>
+												<xsl:when test="$doctype = 'implementers-guide'">
 												</xsl:when>
 												<xsl:otherwise>
 													<xsl:value-of select="$doctypeCapitalizedTitle"/>
@@ -1485,6 +1509,9 @@
 										<xsl:when  test="$doctype = 'technical-report' or $doctype = 'technical-paper'">
 											<xsl:value-of select="$footer-TR"/>
 										</xsl:when>
+										<xsl:when  test="$doctype = 'implementers-guide'">
+											<xsl:value-of select="$footer-IG"/>
+										</xsl:when>
 										<xsl:otherwise>
 											<xsl:value-of select="concat($footerprefix, $docname, ' ', $docdate)"/>
 										</xsl:otherwise>
@@ -1508,6 +1535,9 @@
 									<xsl:choose>
 										<xsl:when  test="$doctype = 'technical-report' or $doctype = 'technical-paper'">											
 											<xsl:value-of select="$footer-TR"/>
+										</xsl:when>
+										<xsl:when  test="$doctype = 'implementers-guide'">
+											<xsl:value-of select="$footer-IG"/>
 										</xsl:when>
 										<xsl:otherwise>
 											<xsl:value-of select="concat($footerprefix, $docname, ' ', $docdate)"/>
