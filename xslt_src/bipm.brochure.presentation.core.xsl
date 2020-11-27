@@ -105,8 +105,14 @@
 
 	<xsl:template name="generateContents">
 		<contents>
-			<xsl:call-template name="processPrefaceSectionsDefault_Contents"/>
-			<xsl:call-template name="processMainSectionsDefault_Contents"/>
+
+			<xsl:apply-templates select="/*/bipm:preface/*[position() &gt; 1]" mode="contents" />
+			
+			<xsl:apply-templates select="/*/bipm:sections/*" mode="contents" />
+			<xsl:apply-templates select="/*/bipm:bibliography/bipm:references[@normative='true']" mode="contents"/>
+			<xsl:apply-templates select="/*/bipm:annex" mode="contents"/>
+			<xsl:apply-templates select="/*/bipm:bibliography/bipm:references[not(@normative='true')]" mode="contents"/> 
+			
 		</contents>
 	</xsl:template>
 	
@@ -1628,6 +1634,7 @@
 								<fo:block>
 									<xsl:if test="@level = 1 or (@level = 2 and not(@parent = 'annex'))">
 										<xsl:value-of select="@section"/>
+										<xsl:if test="normalize-space(@section) != '' and @type = 'annex'">.</xsl:if>
 									</xsl:if>
 									<!-- <fo:inline font-size="10pt" color="white">Z</fo:inline> --> <!-- for baseline alignment in string -->
 								</fo:block>
@@ -2954,17 +2961,30 @@
 	<xsl:template match="bipm:xref" priority="2">		
 		<fo:basic-link internal-destination="{@target}" fox:alt-text="{@target}">
 			<xsl:choose>
-				<xsl:when test="@pagenumber='true'"><!-- ToC in Appendix -->
-					<fo:inline font-weight="bold"><fo:page-number-citation ref-id="{@target}"/></fo:inline>
+				<xsl:when test="@pagenumber='true'"><!-- ToC in Appendix, and page in references like this: « Le BIPM et la Convention du Mètre » (page 5). -->
+					<fo:inline> <!--  font-weight="bold" -->
+						<fo:page-number-citation ref-id="{@target}"/>
+					</fo:inline>
 				</xsl:when>
 				<xsl:when test="starts-with(normalize-space(following-sibling::node()[1]), ')')">										
 					<!-- add , see p. N -->				
 					<!-- add , voir p. N -->
 					<xsl:apply-templates />					
 					<xsl:text>, </xsl:text>
-					<xsl:variable name="curr_lang" select="ancestor::bipm:bipm-standard/bipm:bibdata/bipm:language[@current = 'true']"/>					
-					<xsl:value-of select="ancestor::bipm:bipm-standard/bipm:localized-strings/bipm:localized-string[@key='see' and @language=$curr_lang]"/>
-					<xsl:text> p. </xsl:text>
+					
+					<xsl:variable name="nosee" select="normalize-space(@nosee)"/>
+					<xsl:if test="$nosee != 'true'">
+						<xsl:variable name="curr_lang" select="ancestor::bipm:bipm-standard/bipm:bibdata/bipm:language[@current = 'true']"/>					
+						<fo:inline>
+							<xsl:if test="ancestor::bipm:note_side">
+								<xsl:attribute name="font-style">italic</xsl:attribute>
+							</xsl:if>
+							<xsl:value-of select="ancestor::bipm:bipm-standard/bipm:localized-strings/bipm:localized-string[@key='see' and @language=$curr_lang]"/>
+						</fo:inline>
+						<xsl:text> </xsl:text>
+					</xsl:if>
+					
+					<xsl:text>p. </xsl:text>
 					<fo:page-number-citation ref-id="{@target}"/>					
 				</xsl:when>
 				<xsl:otherwise>
