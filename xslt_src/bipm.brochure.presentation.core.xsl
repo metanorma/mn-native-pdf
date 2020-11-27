@@ -52,6 +52,7 @@
 							<xsl:variable name="current_document">
 								<xsl:apply-templates select="." mode="change_id">
 									<xsl:with-param name="lang" select="$lang"/>
+									<xsl:with-param name="ignoreReferenceFrom" select="'true'"/>
 								</xsl:apply-templates>
 							</xsl:variable>				
 							<xsl:for-each select="xalan:nodeset($current_document)">
@@ -98,6 +99,17 @@
 		
 	</xsl:variable>
 
+	<xsl:variable name="ids">
+		<xsl:for-each select="//*[@id]">
+			<id><xsl:value-of select="@id"/></id>
+		</xsl:for-each>
+		<xsl:for-each select="//bipm:locality[@type='anchor']/bipm:referenceFrom">
+			<referenceFrom><xsl:value-of select="."/></referenceFrom>
+		</xsl:for-each>
+	</xsl:variable>
+	
+	
+	
 	<xsl:variable name="independentAppendix" select="normalize-space(/bipm:bipm-standard/bipm:bibdata/bipm:ext/bipm:structuredidentifier/bipm:appendix)"/>
 	<!-- <xsl:variable name="independentAppendix" select="normalize-space(/bipm:bipm-standard/bipm:bibdata/bipm:title[@type = 'appendix'])"/> -->
 	
@@ -245,6 +257,7 @@
 								<xsl:variable name="current_document">							
 									<xsl:apply-templates select="." mode="change_id">
 										<xsl:with-param name="lang" select="$lang"/>
+										<xsl:with-param name="ignoreReferenceFrom" select="'true'"/>
 									</xsl:apply-templates>
 								</xsl:variable>
 								
@@ -2985,12 +2998,22 @@
 					</xsl:if>
 					
 					<xsl:text>p. </xsl:text>
-					<fo:page-number-citation ref-id="{@target}"/>					
+					<fo:page-number-citation ref-id="{@target}"/>
 				</xsl:when>
 				<xsl:otherwise>
 					<fo:inline><xsl:apply-templates /></fo:inline>
 				</xsl:otherwise>
 			</xsl:choose>
+		</fo:basic-link>
+	</xsl:template>
+	
+	<xsl:template match="bipm:eref[.//bipm:locality[@type = 'anchor']]" priority="2">
+		<xsl:variable name="target" select=".//bipm:locality[@type = 'anchor']/bipm:referenceFrom"/>
+		<fo:basic-link internal-destination="{$target}" fox:alt-text="{$target}">
+			<!-- <xsl:apply-templates select="node()[not(local-name() = 'localityStack')]"/> -->
+			<xsl:if test="xalan:nodeset($ids)//id = $target">
+				<fo:page-number-citation ref-id="{$target}"/>
+			</xsl:if>
 		</fo:basic-link>
 	</xsl:template>
 	
@@ -5395,31 +5418,58 @@
 
 	<xsl:template match="node()" mode="change_id">
 		<xsl:param name="lang"/>
+		<xsl:param name="ignoreReferenceFrom"/>
 		<xsl:copy>
 			<xsl:apply-templates select="@*|node()" mode="change_id">
 				<xsl:with-param name="lang" select="$lang"/>
+				<xsl:with-param name="ignoreReferenceFrom" select="$ignoreReferenceFrom"/>
 			</xsl:apply-templates>
+		</xsl:copy>
+	</xsl:template>
+	
+	<xsl:template match="bipm:locality[@type='anchor']/bipm:referenceFrom " mode="change_id">
+		<xsl:param name="lang"/>
+		<xsl:param name="ignoreReferenceFrom"/>
+		<xsl:copy>
+			<xsl:apply-templates select="@*" mode="change_id">
+				<xsl:with-param name="lang" select="$lang"/>
+				<xsl:with-param name="ignoreReferenceFrom" select="$ignoreReferenceFrom"/>
+			</xsl:apply-templates>
+			<xsl:choose>
+				<xsl:when test="$ignoreReferenceFrom = 'true'"><xsl:value-of select="."/></xsl:when>
+				<xsl:otherwise><xsl:value-of select="."/>_<xsl:value-of select="$lang"/></xsl:otherwise>
+			</xsl:choose>
 		</xsl:copy>
 	</xsl:template>
 	
 	<xsl:template match="@*" mode="change_id">
 		<xsl:param name="lang"/>
+		<xsl:param name="ignoreReferenceFrom"/>
 		<xsl:choose>
+			<xsl:when test="$ignoreReferenceFrom = 'true' and local-name() = 'id' and xalan:nodeset($ids)//referenceFrom = .">
+				<xsl:attribute name="{local-name()}">
+					<xsl:value-of select="."/>
+				</xsl:attribute>
+			</xsl:when>
 			<xsl:when test="local-name() = 'id' or 
-														local-name() = 'bibitemid' or
+														local-name() = 'bibitemid' or	 
 														(local-name() = 'target' and local-name(..) = 'xref')">
 				<xsl:attribute name="{local-name()}">
 					<xsl:value-of select="."/>_<xsl:value-of select="$lang"/>
 				</xsl:attribute>
 			</xsl:when>			
-			<xsl:otherwise>				
+			<xsl:otherwise>
+				<!-- no change -->
 				<xsl:copy>
 					<xsl:apply-templates select="@*" mode="change_id">
 						<xsl:with-param name="lang" select="$lang"/>
+						<xsl:with-param name="ignoreReferenceFrom" select="$ignoreReferenceFrom"/>
 					</xsl:apply-templates>
 				</xsl:copy>
 			</xsl:otherwise>
 		</xsl:choose>
 	</xsl:template>
+	
+
 	
 </xsl:stylesheet>
