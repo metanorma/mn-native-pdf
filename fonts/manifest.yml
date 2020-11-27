@@ -1,0 +1,95 @@
+Cambria:
+  - Regular
+  - Bold
+  - Italic
+  - Bold Italic
+
+Calibri:
+  - Regular
+  - Bold
+  - Italic
+  - Bold Italic
+  
+Arial:
+  - Regular
+  - Bold
+  - Italic
+  - Bold Italic
+
+Arial Black:
+  - Regular
+
+Times New Roman:
+  - Regular
+  - Bold
+  - Italic
+  - Bold Italic
+  
+Courier:
+  - Regular
+  - Bold
+  - Italic
+  - Bold Italic
+  
+Cambria Math:
+  - Regular
+
+Work Sans:
+  - Black
+  - Black Italic
+  - Bold
+  - Bold Italic
+  - ExtraBold
+  - ExtraBold Italic
+  - ExtraLight
+  - ExtraLight Italic
+  - Italic
+  - Light
+  - Light Italic
+  - Medium
+  - Medium Italic
+  - Regular
+  - SemiBold
+  - SemiBold Italic
+  - Thin
+  - Thin Italic
+ 
+STIX Two Math:
+  - Regular
+
+Source Han Sans:
+  - Bold
+  - Normal
+  - Regular
+
+Source Code Pro:
+  - Regular
+  - Italic
+  - Bold Italic
+  - Bold
+
+Source Sans Pro:
+  - Italic
+  - Light
+  - Bold Italic
+  - Light Italic
+  - Regular
+  - Bold
+
+Source Serif Pro:
+  - Bold
+  - Bold Italic
+  - Regular
+  - Italic
+
+
+Fira Code:
+  - Regular
+ 
+Lato:
+  - Bold
+  - Bold Italic
+  - Italic
+  - Light
+  - Light Italic
+  - Regular

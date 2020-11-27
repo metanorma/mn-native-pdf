@@ -27,18 +27,26 @@ jobs:
 
           # Install fonts
           # If necessary
-          echo ttf-mscorefonts-installer msttcorefonts/accepted-mscorefonts-eula select true | sudo debconf-set-selections
-          sudo apt-get install -y ttf-mscorefonts-installer
+#          echo ttf-mscorefonts-installer msttcorefonts/accepted-mscorefonts-eula select true | sudo debconf-set-selections
+#          sudo apt-get install -y ttf-mscorefonts-installer
 
-      - name: Setup Cambria fonts
-        run: |
-          curl -Ls https://raw.githubusercontent.com/metanorma/vista-fonts-installer/master/vista-fonts-installer.sh | sudo bash
+#      - name: Setup Cambria fonts
+#        run: |
+#          curl -Ls https://raw.githubusercontent.com/metanorma/vista-fonts-installer/master/vista-fonts-installer.sh | sudo bash
 
       - name: Update gems
         run: |
           gem install bundler
           bundle config build.nokogiri --use-system-libraries
           bundle install --jobs 4 --retry 3
+
+      - name: Install Fontist fonts
+        run: |
+          gem install fontist
+          fontist update
+          fontist manifest-install --confirm-license fonts/manifest.yml
+          fontist manifest-locations fonts/manifest.yml > fonts/manifest.paths.yml
+          cat fonts/manifest.paths.yml
 
       - name: Update submodules
         run: |

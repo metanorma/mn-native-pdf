@@ -20,17 +20,17 @@ jobs:
             libxml2-dev libxslt1-dev zlib1g-dev zlib1g pkg-config g++ default-jre gnupg \
             git
 
-      - name: Install fonts
-        run: |
-          # We need to do this to install mscorefonts
-          apt-add-repository -y contrib
-          apt-get update
-          echo ttf-mscorefonts-installer msttcorefonts/accepted-mscorefonts-eula select true | debconf-set-selections
-          apt-get install -y ttf-mscorefonts-installer
+#      - name: Install fonts
+#        run: |
+#          # We need to do this to install mscorefonts
+#          apt-add-repository -y contrib
+#          apt-get update
+#          echo ttf-mscorefonts-installer msttcorefonts/accepted-mscorefonts-eula select true | debconf-set-selections
+#          apt-get install -y ttf-mscorefonts-installer
 
-      - name: Setup Cambria fonts
-        run: |
-          curl -Ls https://raw.githubusercontent.com/metanorma/vista-fonts-installer/master/vista-fonts-installer.sh | bash
+#      - name: Setup Cambria fonts
+#        run: |
+#          curl -Ls https://raw.githubusercontent.com/metanorma/vista-fonts-installer/master/vista-fonts-installer.sh | bash
 
       - uses: actions/checkout@master
 
@@ -39,6 +39,15 @@ jobs:
           gem install bundler
           bundle config build.nokogiri --use-system-libraries
           bundle install --jobs 4 --retry 3
+
+      - name: Install Fontist fonts
+        run: |
+          gem install fontist
+          fontist update
+          fontist manifest-install --confirm-license fonts/manifest.yml
+          fontist manifest-locations fonts/manifest.yml > fonts/manifest.paths.yml
+          cat fonts/manifest.paths.yml
+
 
       - name: Update submodules
         run: |

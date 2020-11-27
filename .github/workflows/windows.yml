@@ -43,6 +43,15 @@ jobs:
           bundle config build.nokogiri --use-system-libraries
           bundle install --jobs 4 --retry 3
 
+      - name: Install Fontist fonts
+        run: |
+          gem install fontist
+          fontist update
+          fontist manifest-install --confirm-license fonts/manifest.yml
+          fontist manifest-locations fonts/manifest.yml > fonts/manifest.paths.yml
+          cat fonts/manifest.paths.yml
+
+
       - name: Update submodules
         run: |
           make update-init update-modules

@@ -100,7 +100,7 @@
 	
 	<xsl:template match="/">
 		<xsl:call-template name="namespaceCheck"/>
-		<fo:root xmlns:fo="http://www.w3.org/1999/XSL/Format" font-family="Arial, STIX Two Math, HanSans" font-size="11pt" xml:lang="{$lang}">
+		<fo:root xmlns:fo="http://www.w3.org/1999/XSL/Format" font-family="Arial, STIX Two Math, Source Han Sans" font-size="11pt" xml:lang="{$lang}">
 			<fo:layout-master-set>
 				
 				<!-- Document pages -->
@@ -133,7 +133,7 @@
 						</fo:block-container>
 					</fo:block-container>
 					
-					<fo:block font-family="Lato Light" font-size="14pt" font-style="italic" margin-top="6pt" color="rgb(21, 43, 77)">
+					<fo:block font-family="Lato" font-weight="300" font-size="14pt" font-style="italic" margin-top="6pt" color="rgb(21, 43, 77)">
 						<xsl:text>Additional context, inspirational quote, etc. fits into this subheading area</xsl:text>
 					</fo:block>
 					
