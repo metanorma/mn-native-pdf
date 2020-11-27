@@ -4307,6 +4307,8 @@
 		<xsl:apply-templates select="."/>
 	</xsl:template>
 	
+	<xsl:template match="*[local-name() = 'references'][@hidden='true']" mode="contents" priority="3"/>
+	
 	<xsl:template match="*[local-name() = 'stem']" mode="bookmarks">
 		<xsl:apply-templates mode="bookmarks"/>
 	</xsl:template>
@@ -5542,6 +5544,9 @@
 		</fo:block>
 	</xsl:template>
 	
+	<xsl:template match="*[local-name() = 'references'][@hidden='true']" priority="3"/>
+	<xsl:template match="*[local-name() = 'bibitem'][@hidden='true']" priority="3"/>
+	
 	<xsl:template match="/*/*[local-name() = 'bibliography']/*[local-name() = 'references'][@normative='true']">
 		<xsl:if test="$namespace = 'nist-sp' or $namespace = 'nist-cswp'">
 			<fo:block break-after="page"/>
@@ -5550,7 +5555,6 @@
 			<xsl:apply-templates />
 		</fo:block>
 	</xsl:template>
-	
 	
 	
 	<xsl:template match="*[local-name() = 'annex']">
