@@ -104,7 +104,7 @@ XSLT_GENERATED := xslt/iec.international-standard.xsl \
 	xslt/bipm.guide.presentation.xsl \
 	xslt/bipm.rapport.presentation.xsl 
 
-MN2PDF_DOWNLOAD_PATH := https://github.com/metanorma/mn2pdf/releases/download/v1.23/mn2pdf-1.23.jar
+MN2PDF_DOWNLOAD_PATH := https://github.com/metanorma/mn2pdf/releases/download/v1.24a/mn2pdf-1.24a.jar
 # MN2PDF_DOWNLOAD_PATH := https://maven.pkg.github.com/metanorma/mn2pdf/com/metanorma/fop/mn2pdf/1.7/mn2pdf-1.7.jar
 MN2PDF_EXECUTABLE := $(notdir $(MN2PDF_DOWNLOAD_PATH))
 
@@ -271,18 +271,18 @@ xslt/%.xsl: xslt_src/%.core.xsl xslt_src/merge.xsl xalan/xalan.jar
 	java -jar xalan/xalan.jar -IN $< -XSL xslt_src/merge.xsl -OUT $@ -PARAM xslfile $<
 
 documents.rxl: $(HTML) $(DOC) $(RXL) $(PDF) | bundle
-#	echo "### skipping step 'documents.rxl'"
-	bundle exec relaton concatenate \
-	  -t "mn2pdf samples" \
-		-g "Metanorma" \
-		documents $@
+	echo "### skipping step 'documents.rxl'"
+#	bundle exec relaton concatenate \
+#	  -t "mn2pdf samples" \
+#		-g "Metanorma" \
+#		documents $@
 
 bundle:
 	bundle
 
 documents.html: documents.rxl
-#	echo "### skipping step 'documents.html'"
-	bundle exec relaton xml2html documents.rxl
+	echo "### skipping step 'documents.html'"
+#	bundle exec relaton xml2html documents.rxl
 
 distclean: clean
 	rm -rf xalan/*
@@ -311,8 +311,9 @@ endif
 publish: published
 published: documents.html
 	mkdir published && \
-	cp -a documents $@/ && \
-	cp $< published/index.html
+	cp -a documents $@/
+# && \
+#	cp $< published/index.html
 ifeq ($(OS),Windows_NT)
 	if exist "images" ( cp -a images published )
 else
