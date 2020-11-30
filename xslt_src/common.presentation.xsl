@@ -277,7 +277,7 @@
 			<xsl:attribute name="line-height">113%</xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'iho'">
-			<xsl:attribute name="font-family">SF Mono</xsl:attribute>			
+			<xsl:attribute name="font-family">Fira Code</xsl:attribute>			
 			<xsl:attribute name="margin-bottom">6pt</xsl:attribute>
 			<xsl:attribute name="keep-with-next">always</xsl:attribute>
 			<xsl:attribute name="line-height">113%</xsl:attribute>
@@ -5632,7 +5632,10 @@
 			<fo:table-column column-width="107mm"/>
 			<fo:table-column column-width="15mm"/>
 			<fo:table-body>
-				<fo:table-row font-family="Arial" text-align="center" font-weight="bold" background-color="black" color="white">
+				<fo:table-row text-align="center" font-weight="bold" background-color="black" color="white">
+					<xsl:if test="$namespace = 'nist-cswp' or $namespace = 'nist-sp'">
+						<xsl:attribute name="font-family">Arial</xsl:attribute>
+					</xsl:if>
 					<fo:table-cell border="1pt solid black"><fo:block>Date</fo:block></fo:table-cell>
 					<fo:table-cell border="1pt solid black"><fo:block>Type</fo:block></fo:table-cell>
 					<fo:table-cell border="1pt solid black"><fo:block>Change</fo:block></fo:table-cell>

@@ -47,7 +47,7 @@
 	<xsl:template match="/">
 		
 		<xsl:variable name="xslfo">		
-			<fo:root xmlns:fo="http://www.w3.org/1999/XSL/Format" font-family="Helvetica Neue, Cambria Math" font-size="12pt" xml:lang="{$lang}">
+			<fo:root xmlns:fo="http://www.w3.org/1999/XSL/Format" font-family="Arial, Cambria Math" font-size="12pt" xml:lang="{$lang}">
 				<fo:layout-master-set>
 					<!-- cover page -->
 					<fo:simple-page-master master-name="cover" page-width="{$pageWidth}" page-height="{$pageHeight}">
