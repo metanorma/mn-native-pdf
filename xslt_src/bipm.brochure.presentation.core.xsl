@@ -743,7 +743,7 @@
 						</xsl:choose>
 					</xsl:variable>					
 					
-					<xsl:number value="$start_value + $curr_value" format="{$format}"/>
+					<xsl:number value="$start_value + $curr_value" format="{$format}" lang="en"/>
 					
 				</xsl:otherwise>
 			</xsl:choose>

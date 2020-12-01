@@ -653,7 +653,7 @@
 						<xsl:otherwise> <!-- for ordered lists -->
 							<xsl:choose>
 								<xsl:when test="../@type = 'arabic'">
-									<xsl:number format="a)"/>
+									<xsl:number format="a)" lang="en"/>
 								</xsl:when>
 								<xsl:when test="../@type = 'alphabet'">
 									<xsl:number format="1)"/>
@@ -661,7 +661,7 @@
 								<xsl:when test="ancestor::*[un:annex]">
 									<xsl:choose>
 										<xsl:when test="$level = 1">
-											<xsl:number format="a)"/>
+											<xsl:number format="a)" lang="en"/>
 										</xsl:when>
 										<xsl:when test="$level = 2">
 											<xsl:number format="i)"/>

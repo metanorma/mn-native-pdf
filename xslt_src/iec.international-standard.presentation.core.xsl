@@ -1942,10 +1942,10 @@
 						<xsl:otherwise> <!-- for ordered lists -->
 							<xsl:choose>
 								<xsl:when test="../@type = 'arabic'">
-									<xsl:number format="a)"/>
+									<xsl:number format="a)" lang="en"/>
 								</xsl:when>
 								<xsl:when test="../@type = 'alphabet'">
-									<xsl:number format="a)"/>
+									<xsl:number format="a)" lang="en"/>
 								</xsl:when>
 								<xsl:otherwise>
 									<xsl:number format="1)"/>
