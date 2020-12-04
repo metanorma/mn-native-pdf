@@ -3070,7 +3070,7 @@
 			<xsl:apply-templates select="@*|node()" mode="mathml"/>
 		</xsl:copy>
 		<!-- <xsl:copy-of select="."/> -->
-		<mathml:mspace height="1.4ex"/>
+		<mathml:mspace height="1.47ex"/>
 	</xsl:template>
 
 	<!-- set script minimal font-size -->
