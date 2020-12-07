@@ -496,12 +496,22 @@
 									<fo:table-row border-bottom="0.5pt solid {$color_gray}" height="16mm">
 										<fo:table-cell font-size="8pt" text-align="right" display-align="center">
 											<fo:block>
-												<fo:block color="{$color_blue}" margin-bottom="3pt">PRICE CODE</fo:block>
-												<fo:block>CODE PRIX</fo:block>
+												<fo:block color="{$color_blue}" margin-bottom="3pt">
+													<!-- PRICE CODE -->
+													<xsl:variable name="price_code">
+														<xsl:call-template name="getLocalizedString">
+															<xsl:with-param name="key">price-code</xsl:with-param>																			
+														</xsl:call-template>
+													</xsl:variable>
+													<xsl:value-of select="java:toUpperCase(java:java.lang.String.new($price_code))"/>
+												</fo:block>
+												<xsl:if test="$lang != 'fr'">
+													<fo:block>CODE PRIX</fo:block>
+												</xsl:if>
 											</fo:block>
 										</fo:table-cell>
 										<fo:table-cell font-size="25pt" font-weight="bold" color="{$color_gray}" text-align="right" display-align="center">
-											<fo:block padding-top="1mm">XC</fo:block>
+											<fo:block padding-top="1mm"><xsl:value-of select="/iec:iec-standard/iec:bibdata/iec:ext/iec:price-code"/></fo:block>
 										</fo:table-cell>
 									</fo:table-row>
 								</fo:table-body>
@@ -1182,7 +1192,9 @@
 			<fo:block-container margin-left="0mm">
 				<fo:block-container height="6mm">
 					<fo:block text-align="right" margin-top="-4.5mm" margin-right="-1mm">
-						<fo:external-graphic src="{concat('data:image/png;base64,', normalize-space($Image-Colour-Inside))}" width="19mm" content-height="scale-to-fit" scaling="uniform" fox:alt-text="Image Logo IEC"/>
+						<xsl:if test="/iec:iec-standard/iec:bibdata/iec:ext/iec:accessibility-color-inside = 'true'">
+							<fo:external-graphic src="{concat('data:image/png;base64,', normalize-space($Image-Colour-Inside))}" width="19mm" content-height="scale-to-fit" scaling="uniform" fox:alt-text="Image Logo IEC"/>
+						</xsl:if>
 					</fo:block>
 				</fo:block-container>
 				<fo:block-container border-bottom="0.5pt solid {$color_gray}" margin-top="4mm" margin-bottom="16pt" height="14mm" display-align="center">
