@@ -2875,8 +2875,8 @@
 			<xsl:if test=".//bipm:fn">
 				<xsl:attribute name="line-height-shift-adjustment">disregard-shifts</xsl:attribute>
 			</xsl:if>			
-			<!-- <xsl:call-template name="processBibitem"/>			 -->
-			<xsl:apply-templates />
+			<xsl:call-template name="processBibitem"/>
+			<!-- <xsl:apply-templates /> -->
 		</fo:block>
 	</xsl:template>
 
@@ -2935,8 +2935,8 @@
 				</fo:list-item-label>
 				<fo:list-item-body start-indent="body-start()">
 					<fo:block>
-						<!-- <xsl:call-template name="processBibitem"/> -->
-						<xsl:apply-templates />
+						<xsl:call-template name="processBibitem"/>
+						<!-- <xsl:apply-templates /> -->
 					</fo:block>
 				</fo:list-item-body>
 			</fo:list-item>
