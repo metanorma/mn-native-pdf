@@ -2929,7 +2929,14 @@
 					<fo:block>
 						<fo:inline>
 						 <!-- <xsl:number format="1."/> -->
-							<xsl:value-of select="bipm:docidentifier[@type='metanorma']"/>
+							<xsl:choose>
+								<xsl:when test="bipm:docidentifier[@type='metanorma']">
+									<xsl:value-of select="bipm:docidentifier[@type='metanorma']"/>
+								</xsl:when>
+								<xsl:otherwise>
+									<xsl:number format="[1]"/>
+								</xsl:otherwise>
+							</xsl:choose>
 						</fo:inline>
 					</fo:block>
 				</fo:list-item-label>
