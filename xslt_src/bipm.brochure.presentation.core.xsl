@@ -2928,7 +2928,8 @@
 				<fo:list-item-label end-indent="label-end()">
 					<fo:block>
 						<fo:inline>
-							<xsl:number format="1."/>
+						 <!-- <xsl:number format="1."/> -->
+							<xsl:value-of select="bipm:docidentifier[@type='metanorma']"/>
 						</fo:inline>
 					</fo:block>
 				</fo:list-item-label>
@@ -2950,6 +2951,9 @@
 			<xsl:apply-templates />
 		</fo:inline>
 	</xsl:template>
+
+	<xsl:template match="bipm:references/bipm:bibitem/bipm:docidentifier[@type='metanorma' and ../bipm:formattedref]"/>
+	
 
 	<xsl:template match="bipm:pagebreak">
 		<fo:block break-after="page"/>
