@@ -5448,7 +5448,7 @@
 			</xsl:apply-templates>
 			<xsl:choose>
 				<xsl:when test="$ignoreReferenceFrom = 'true'"><xsl:value-of select="."/></xsl:when>
-				<xsl:otherwise><xsl:value-of select="."/>_<xsl:value-of select="$lang"/></xsl:otherwise>
+				<xsl:otherwise><xsl:value-of select="."/>_<xsl:value-of select="$lang"/><xsl:if test="$doctype = 'guide'">_<xsl:number count="bipm:bipm-standard" level="any"/></xsl:if></xsl:otherwise>
 			</xsl:choose>
 		</xsl:copy>
 	</xsl:template>
@@ -5466,7 +5466,7 @@
 														local-name() = 'bibitemid' or	 
 														(local-name() = 'target' and local-name(..) = 'xref')">
 				<xsl:attribute name="{local-name()}">
-					<xsl:value-of select="."/>_<xsl:value-of select="$lang"/>
+					<xsl:value-of select="."/>_<xsl:value-of select="$lang"/><xsl:if test="$doctype = 'guide'">_<xsl:number count="bipm:bipm-standard" level="any"/></xsl:if>
 				</xsl:attribute>
 			</xsl:when>			
 			<xsl:otherwise>
