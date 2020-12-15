@@ -50,10 +50,11 @@
 							<xsl:variable name="lang" select="*[local-name()='bibdata']/*[local-name()='language'][@current = 'true']"/>
 							<xsl:variable name="num"><xsl:number level="any" count="bipm:bipm-standard"/></xsl:variable>
 							<xsl:variable name="current_document">
-								<xsl:apply-templates select="." mode="change_id">
+								<!-- <xsl:apply-templates select="." mode="change_id">
 									<xsl:with-param name="lang" select="$lang"/>
 									<xsl:with-param name="ignoreReferenceFrom" select="'true'"/>
-								</xsl:apply-templates>
+								</xsl:apply-templates> -->
+								<xsl:copy-of select="."/>
 							</xsl:variable>				
 							<xsl:for-each select="xalan:nodeset($current_document)">
 								<xsl:variable name="docid">
@@ -70,9 +71,10 @@
 							<xsl:variable name="lang" select="*[local-name()='bibdata']/*[local-name()='language'][@current = 'true']"/>
 							<xsl:variable name="num"><xsl:number level="any" count="bipm:bipm-standard"/></xsl:variable>
 							<xsl:variable name="current_document">
-								<xsl:apply-templates select="." mode="change_id">
+								<!-- <xsl:apply-templates select="." mode="change_id">
 									<xsl:with-param name="lang" select="$lang"/>
-								</xsl:apply-templates>
+								</xsl:apply-templates> -->
+								<xsl:copy-of select="."/>
 							</xsl:variable>				
 							<xsl:for-each select="xalan:nodeset($current_document)">
 								<xsl:variable name="docid">
@@ -254,7 +256,7 @@
 								<xsl:variable name="lang" select="*[local-name()='bibdata']//*[local-name()='language'][@current = 'true']"/>						
 								<xsl:variable name="num"><xsl:number level="any" count="bipm:bipm-standard"/></xsl:variable>
 								<!-- change id to prevent identical id in different documents in one container -->						
-								<xsl:variable name="current_document">							
+								<!-- <xsl:variable name="current_document">							
 									<xsl:apply-templates select="." mode="change_id">
 										<xsl:with-param name="lang" select="$lang"/>
 										<xsl:with-param name="ignoreReferenceFrom" select="'true'"/>
@@ -263,6 +265,10 @@
 								
 								<xsl:variable name="flatxml">
 									<xsl:apply-templates select="xalan:nodeset($current_document)" mode="flatxml"/>
+								</xsl:variable> -->
+								
+								<xsl:variable name="flatxml">
+									<xsl:apply-templates select="." mode="flatxml"/>
 								</xsl:variable>
 								
 								<!-- flatxml=<xsl:copy-of select="$flatxml"/> -->
@@ -278,7 +284,7 @@
 								<xsl:variable name="lang" select="*[local-name()='bibdata']//*[local-name()='language'][@current = 'true']"/>						
 								<xsl:variable name="num"><xsl:number level="any" count="bipm:bipm-standard"/></xsl:variable>
 								<!-- change id to prevent identical id in different documents in one container -->						
-								<xsl:variable name="current_document">							
+								<!-- <xsl:variable name="current_document">							
 									<xsl:apply-templates select="." mode="change_id">
 										<xsl:with-param name="lang" select="$lang"/>
 									</xsl:apply-templates>
@@ -286,6 +292,10 @@
 								
 								<xsl:variable name="flatxml">
 									<xsl:apply-templates select="xalan:nodeset($current_document)" mode="flatxml"/>
+								</xsl:variable> -->
+								
+								<xsl:variable name="flatxml">
+									<xsl:apply-templates select="." mode="flatxml"/>
 								</xsl:variable>
 								
 								<xsl:apply-templates select="xalan:nodeset($flatxml)/bipm:bipm-standard" mode="bipm-standard">
@@ -5429,7 +5439,7 @@
 		</xsl:if>		
 	</xsl:template>
 
-	<xsl:template match="node()" mode="change_id">
+	<!-- <xsl:template match="node()" mode="change_id">
 		<xsl:param name="lang"/>
 		<xsl:param name="ignoreReferenceFrom"/>
 		<xsl:copy>
@@ -5472,7 +5482,7 @@
 				</xsl:attribute>
 			</xsl:when>			
 			<xsl:otherwise>
-				<!-- no change -->
+				no change
 				<xsl:copy>
 					<xsl:apply-templates select="@*" mode="change_id">
 						<xsl:with-param name="lang" select="$lang"/>
@@ -5481,7 +5491,7 @@
 				</xsl:copy>
 			</xsl:otherwise>
 		</xsl:choose>
-	</xsl:template>
+	</xsl:template> -->
 	
 
 	
