@@ -26,7 +26,7 @@
 	
 	<xsl:variable name="namespace">iec</xsl:variable>
 	
-	<xsl:variable name="debug">true</xsl:variable>
+	<xsl:variable name="debug">false</xsl:variable>
 	<xsl:variable name="pageWidth" select="'210mm'"/>
 	<xsl:variable name="pageHeight" select="'297mm'"/>
 
@@ -141,6 +141,16 @@
 		<contents>
 			<xsl:call-template name="processPrefaceSectionsDefault_Contents"/>
 			<xsl:call-template name="processMainSectionsDefault_Contents"/>
+			<xsl:for-each select="//*[local-name() = 'figure'][@id and *[local-name() = 'name']]">
+				<figure id="{@id}">
+					<title><xsl:value-of select="*[local-name() = 'name']/text()"/></title>
+				</figure>				
+			</xsl:for-each>
+			<xsl:for-each select="//*[local-name() = 'table'][@id and *[local-name() = 'name']]">
+				<table id="{@id}">
+					<title><xsl:value-of select="*[local-name() = 'name']/text()"/></title>
+				</table>				
+			</xsl:for-each>
 		</contents>
 	</xsl:template>
 	
@@ -1049,7 +1059,7 @@
 					</xsl:variable>
 					
 					
-					<fo:page-sequence master-reference="document" format="1" force-page-count="even"> <!-- initial-page-number="2"  force-page-count="no-force" -->
+					<fo:page-sequence master-reference="document" format="1" force-page-count="no-force"> <!-- initial-page-number="2"   -->
 						<xsl:variable name="num"><xsl:number count="iec:iec-standard" level="any"/></xsl:variable>
 						<xsl:if test="$num = '1'">
 							<xsl:attribute name="initial-page-number">2</xsl:attribute>
@@ -1199,7 +1209,16 @@
 	</xsl:template> 
 
 	<xsl:template name="insertCoverPart1">
-		<xsl:variable name="lang_second" select="(//iec:iec-standard)[2]/iec:bibdata/iec:language[@current = 'true']"/>
+		<xsl:variable name="lang_second">
+			<xsl:choose>
+				<xsl:when test="(//iec:iec-standard)[2]/iec:bibdata/iec:language[@current = 'true']">
+					<xsl:value-of select="(//iec:iec-standard)[2]/iec:bibdata/iec:language[@current = 'true']"/>
+				</xsl:when>
+				<xsl:otherwise>
+					<xsl:value-of select="/iec:iec-standard/iec:bibdata/iec:title[@language and @language != $lang]/@language"/>
+				</xsl:otherwise>
+			</xsl:choose>
+		</xsl:variable>
 		<fo:block text-align-last="justify">
 			<fo:external-graphic src="{concat('data:image/png;base64,', normalize-space($Image-Logo-IEC))}" width="18mm" content-height="scale-to-fit" scaling="uniform" fox:alt-text="Image Logo IEC"/>
 			<fo:inline font-size="8pt" padding-left="0.5mm" color="rgb(88, 88, 90)">®</fo:inline>
@@ -1348,9 +1367,21 @@
 						<xsl:text> — </xsl:text>
 						<xsl:value-of select="$linebreak"/>
 						<xsl:if test="$part != ''">
-							<xsl:variable name="localized_part" select="(//iec:iec-standard)[2]/iec:localized-strings/iec:localized-string[@key='locality.part' and @language=$lang_second]"/>
+							
+							<xsl:choose>
+								<xsl:when test="(//iec:iec-standard)[2]/iec:localized-strings/iec:localized-string[@key='locality.part' and @language=$lang_second]">
+									<xsl:variable name="localized_part">
+										<xsl:value-of select="(//iec:iec-standard)[2]/iec:localized-strings/iec:localized-string[@key='locality.part' and @language=$lang_second]"/>
+									</xsl:variable>
+									<xsl:value-of select="concat($localized_part ,' ',$part, ': ')"/>
+								</xsl:when>
+								<xsl:otherwise>
+									<xsl:value-of select="java:replaceAll(java:java.lang.String.new($titles/title-part[@lang = $lang_second]),'#',$part)"/>
+								</xsl:otherwise>
+							</xsl:choose>
+							
 							<!-- <xsl:value-of select="java:replaceAll(java:java.lang.String.new($localized_part),'#',$part)"/> -->
-							<xsl:value-of select="concat($localized_part ,' ',$part, ': ')"/>
+							
 							<!-- <xsl:text>Part </xsl:text><xsl:value-of select="$part"/>
 							<xsl:text>: </xsl:text> -->
 						</xsl:if>
@@ -1476,7 +1507,8 @@
 		<xsl:param name="lang" select="$lang"/>
 		<fo:block break-after="page"/>
 		<fo:block-container font-size="12pt" text-align="center" margin-bottom="18pt">
-			<fo:block><xsl:value-of select="java:toUpperCase(java:java.lang.String.new(/iec:iec-standard/iec:bibdata/iec:contributor/iec:organization/iec:name))"/></fo:block>
+			<!-- <fo:block><xsl:value-of select="java:toUpperCase(java:java.lang.String.new(/iec:iec-standard/iec:bibdata/iec:contributor/iec:organization/iec:name))"/></fo:block> -->
+			<fo:block><xsl:value-of select="/iec:iec-standard/iec:localized-strings/iec:localized-string[@key='IEC' and @language=$lang]"/></fo:block>
 			<fo:block>___________</fo:block>
 			<fo:block>&#xa0;</fo:block>
 			<fo:block font-weight="bold">				
@@ -1533,7 +1565,9 @@
 							<fo:block>
 								<xsl:if test="$part != ''">
 									<!-- Example: Part 1: Rice -->
-									<xsl:value-of select="java:replaceAll(java:java.lang.String.new($titles/title-part[@lang = $lang]),'#',$part)"/>
+									<!-- <xsl:value-of select="java:replaceAll(java:java.lang.String.new($titles/title-part[@lang = $lang]),'#',$part)"/> -->
+									<xsl:variable name="localized_part" select="//iec:iec-standard/iec:localized-strings/iec:localized-string[@key='locality.part' and @language = $lang]"/>
+									<xsl:value-of select="concat($localized_part ,' ',$part, ': ')"/>
 								</xsl:if>
 								<xsl:value-of select="$title-part"/>
 							</fo:block>
@@ -1939,9 +1973,9 @@
 					<fo:inline id="{$lang}_footnote_{@reference}" keep-with-next.within-line="always" baseline-shift="15%" padding-right="3mm"> <!-- padding-right="3mm" font-size="60%"  alignment-baseline="hanging" -->
 						<xsl:value-of select="$number + count(//iec:bibitem/iec:note)"/><!-- <xsl:text>)</xsl:text> -->
 					</fo:inline>
-					<xsl:for-each select="iec:p">
-							<xsl:apply-templates />
-					</xsl:for-each>
+					<!-- <xsl:for-each select="iec:p"> -->
+					<xsl:apply-templates />
+					<!-- </xsl:for-each> -->
 				</fo:block>
 			</fo:footnote-body>
 		</fo:footnote>
