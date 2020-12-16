@@ -4377,13 +4377,34 @@
 											</xsl:choose>
 										</fo:bookmark-title>
 										<xsl:apply-templates select="contents/item" mode="bookmark"/>
+										
+										<xsl:call-template name="insertFigureBookmarks">
+											<xsl:with-param name="contents" select="contents"/>
+										</xsl:call-template>
+										
+										<xsl:call-template name="insertTableBookmarks">
+											<xsl:with-param name="contents" select="contents"/>
+											<xsl:with-param name="lang" select="@lang"/>
+										</xsl:call-template>
+										
 									</fo:bookmark>
 									
 								</xsl:for-each>
 							</xsl:when>
 							<xsl:otherwise>
 								<xsl:for-each select="xalan:nodeset($contents)/doc">
+								
 									<xsl:apply-templates select="contents/item" mode="bookmark"/>
+									
+									<xsl:call-template name="insertFigureBookmarks">
+										<xsl:with-param name="contents" select="contents"/>
+									</xsl:call-template>
+										
+									<xsl:call-template name="insertTableBookmarks">
+										<xsl:with-param name="contents" select="contents"/>
+										<xsl:with-param name="lang" select="@lang"/>
+									</xsl:call-template>
+									
 								</xsl:for-each>
 							</xsl:otherwise>
 						</xsl:choose>
@@ -4394,7 +4415,7 @@
 				</xsl:choose>
 				
 				
-				<xsl:if test="$namespace = 'iec' or $namespace = 'nist-sp' or $namespace = 'ogc' or $namespace = 'ogc-white-paper'">
+				<xsl:if test="$namespace = 'nist-sp' or $namespace = 'ogc' or $namespace = 'ogc-white-paper'">
 					<xsl:if test="//*[local-name() = 'figure'][@id and *[local-name() = 'name']]">					
 						<fo:bookmark internal-destination="{//*[local-name() = 'figure'][@id and *[local-name() = 'name']][1]/@id}" starting-state="hide">
 							<fo:bookmark-title>Figures</fo:bookmark-title>
@@ -4407,7 +4428,7 @@
 					</xsl:if>
 				</xsl:if>
 				
-				<xsl:if test="$namespace = 'iec' or $namespace = 'nist-sp' or $namespace = 'ogc'">					
+				<xsl:if test="$namespace = 'nist-sp' or $namespace = 'ogc'">					
 					<xsl:if test="//*[local-name() = 'table'][@id and *[local-name() = 'name']]">					
 						<fo:bookmark internal-destination="{//*[local-name() = 'table'][@id and *[local-name() = 'name']][1]/@id}" starting-state="hide">
 							<fo:bookmark-title>
@@ -4444,6 +4465,45 @@
 				</xsl:if>
 				
 			</fo:bookmark-tree>
+		</xsl:if>
+	</xsl:template>
+	
+	
+	<xsl:template name="insertFigureBookmarks">
+		<xsl:param name="contents"/>
+		<xsl:if test="xalan:nodeset($contents)/figure">
+			<fo:bookmark internal-destination="{xalan:nodeset($contents)/figure[1]/@id}" starting-state="hide">
+				<fo:bookmark-title>Figures</fo:bookmark-title>
+				<xsl:for-each select="xalan:nodeset($contents)/figure">
+					<fo:bookmark internal-destination="{@id}">
+						<fo:bookmark-title>
+							<xsl:value-of select="normalize-space(title)"/>
+						</fo:bookmark-title>
+					</fo:bookmark>
+				</xsl:for-each>
+			</fo:bookmark>	
+		</xsl:if>
+	</xsl:template>
+	
+	<xsl:template name="insertTableBookmarks">
+		<xsl:param name="contents"/>
+		<xsl:param name="lang"/>
+		<xsl:if test="xalan:nodeset($contents)/table">
+			<fo:bookmark internal-destination="{xalan:nodeset($contents)/table[1]/@id}" starting-state="hide">
+				<fo:bookmark-title>
+					<xsl:choose>
+						<xsl:when test="$lang = 'fr'">Tableaux</xsl:when>
+						<xsl:otherwise>Tables</xsl:otherwise>
+					</xsl:choose>
+				</fo:bookmark-title>
+				<xsl:for-each select="xalan:nodeset($contents)/table">
+					<fo:bookmark internal-destination="{@id}">
+						<fo:bookmark-title>
+							<xsl:value-of select="normalize-space(title)"/>
+						</fo:bookmark-title>
+					</fo:bookmark>
+				</xsl:for-each>
+			</fo:bookmark>	
 		</xsl:if>
 	</xsl:template>
 	
