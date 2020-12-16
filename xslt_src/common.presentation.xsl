@@ -4360,6 +4360,8 @@
 											<xsl:variable name="bookmark-title_">
 												<xsl:call-template name="getLangVersion">
 													<xsl:with-param name="lang" select="@lang"/>
+													<xsl:with-param name="doctype" select="@doctype"/>
+													<xsl:with-param name="title" select="@title-part"/>
 												</xsl:call-template>
 											</xsl:variable>
 											<xsl:choose>
@@ -4509,14 +4511,30 @@
 	
 	<xsl:template name="getLangVersion">
 		<xsl:param name="lang"/>
+		<xsl:param name="doctype" select="''"/>
+		<xsl:param name="title" select="''"/>
 		<xsl:choose>
 			<xsl:when test="$lang = 'en'">
 				<xsl:if test="$namespace = 'iec'">English</xsl:if>
-				<xsl:if test="$namespace = 'bipm'">English version</xsl:if>
+				<xsl:if test="$namespace = 'bipm'">
+					<xsl:choose>
+						<xsl:when test="$doctype = 'guide'">
+							<xsl:value-of select="$title"/>
+						</xsl:when>
+						<xsl:otherwise>English version</xsl:otherwise>
+					</xsl:choose>
+				</xsl:if>
 				</xsl:when>
 			<xsl:when test="$lang = 'fr'">
 				<xsl:if test="$namespace = 'iec'">Français</xsl:if>
-				<xsl:if test="$namespace = 'bipm'">Version française</xsl:if>
+				<xsl:if test="$namespace = 'bipm'">
+					<xsl:choose>
+						<xsl:when test="$doctype = 'guide'">
+							<xsl:value-of select="$title"/>
+						</xsl:when>
+						<xsl:otherwise>Version française</xsl:otherwise>
+					</xsl:choose>
+				</xsl:if>
 			</xsl:when>
 			<xsl:when test="$lang = 'de'">Deutsche</xsl:when>
 			<xsl:otherwise><xsl:value-of select="$lang"/> version</xsl:otherwise>

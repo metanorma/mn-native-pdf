@@ -49,6 +49,7 @@
 						<xsl:for-each select="//bipm:bipm-standard">
 							<xsl:variable name="lang" select="*[local-name()='bibdata']/*[local-name()='language'][@current = 'true']"/>
 							<xsl:variable name="num"><xsl:number level="any" count="bipm:bipm-standard"/></xsl:variable>
+							<xsl:variable name="title-part"><xsl:value-of select="bipm:bibdata/bipm:title[@type = 'part']"/></xsl:variable>
 							<xsl:variable name="current_document">
 								<!-- <xsl:apply-templates select="." mode="change_id">
 									<xsl:with-param name="lang" select="$lang"/>
@@ -60,7 +61,7 @@
 								<xsl:variable name="docid">
 									<xsl:call-template name="getDocumentId"/>
 								</xsl:variable>
-								<doc id="{$docid}" lang="{$lang}">
+								<doc id="{$docid}" lang="{$lang}" doctype="{$doctype}" title-part="{$title-part}">
 									<xsl:call-template name="generateContents"/>
 								</doc>
 							</xsl:for-each>				
