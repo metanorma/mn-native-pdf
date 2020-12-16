@@ -972,9 +972,6 @@
 			<xsl:attribute name="font-weight">bold</xsl:attribute>
 			<xsl:attribute name="padding-right">1mm</xsl:attribute>
 		</xsl:if>		
-		<xsl:if test="$namespace = 'bipm'">
-			<xsl:attribute name="padding-right">1mm</xsl:attribute>
-		</xsl:if>
 	</xsl:attribute-set>
 
 	<xsl:attribute-set name="quote-style">		
@@ -4177,7 +4174,7 @@
 					<xsl:value-of select="$sfx"/>					
 				</xsl:when>
 				<xsl:otherwise>
-					<xsl:if test="$namespace = 'gb' or $namespace = 'iso' or $namespace = 'iec' or $namespace = 'rsd' or $namespace = 'ogc' or $namespace = 'ogc-white-paper' or $namespace = 'bipm'">
+					<xsl:if test="$namespace = 'gb' or $namespace = 'iso' or $namespace = 'iec' or $namespace = 'rsd' or $namespace = 'ogc' or $namespace = 'ogc-white-paper'">
 						<xsl:text>:</xsl:text>
 					</xsl:if>
 					<xsl:if test="$namespace = 'itu' or $namespace = 'nist-cswp'  or $namespace = 'nist-sp' or $namespace = 'unece-rec' or $namespace = 'unece'">				
