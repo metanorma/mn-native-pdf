@@ -2852,7 +2852,9 @@
 	<xsl:template match="*[local-name()='dl']">
 		<fo:block-container>
 			<xsl:if test="$namespace = 'csa' or $namespace = 'csd' or $namespace = 'gb' or $namespace = 'iec' or $namespace = 'iho' or $namespace = 'iso' or $namespace = 'itu' or $namespace = 'm3d' or $namespace = 'mpfd' or $namespace = 'nist-cswp'  or $namespace = 'nist-sp' or $namespace = 'ogc' or $namespace = 'ogc-white-paper' or $namespace = 'rsd' or $namespace = 'unece' or $namespace = 'unece-rec'">
-				<xsl:attribute name="margin-left">0mm</xsl:attribute>
+				<xsl:if test="not(ancestor::*[local-name() = 'quote'])">
+					<xsl:attribute name="margin-left">0mm</xsl:attribute>
+				</xsl:if>
 			</xsl:if>
 			<xsl:if test="$namespace = 'bipm'">
 				<xsl:if test="not(ancestor::*[local-name() = 'li'])">
@@ -5273,7 +5275,8 @@
 			<fo:block-container margin-left="0mm">
 		
 				<fo:block xsl:use-attribute-sets="quote-style">
-					<xsl:apply-templates select=".//*[local-name() = 'p']"/>
+					<!-- <xsl:apply-templates select=".//*[local-name() = 'p']"/> -->
+					<xsl:apply-templates select="./*[not(local-name() = 'author') and not(local-name() = 'source')]"/> <!-- process all nested nodes, except author and source -->
 				</fo:block>
 				<xsl:if test="*[local-name() = 'author'] or *[local-name() = 'source']">
 					<fo:block xsl:use-attribute-sets="quote-source-style">
