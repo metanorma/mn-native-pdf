@@ -2878,6 +2878,7 @@
 			<fo:block-container>
 				<xsl:if test="$namespace = 'csa' or $namespace = 'csd' or $namespace = 'gb' or $namespace = 'iec' or $namespace = 'iho' or $namespace = 'iso' or $namespace = 'itu' or $namespace = 'm3d' or $namespace = 'mpfd' or $namespace = 'nist-cswp'  or $namespace = 'nist-sp' or $namespace = 'ogc' or $namespace = 'ogc-white-paper' or $namespace = 'rsd' or $namespace = 'unece' or $namespace = 'unece-rec'">
 					<xsl:attribute name="margin-left">0mm</xsl:attribute>
+					<xsl:attribute name="margin-right">0mm</xsl:attribute>
 				</xsl:if>
 				<xsl:if test="$namespace = 'bipm'">
 					<!-- <xsl:if test="not(ancestor::*[local-name() = 'li'])"> -->
