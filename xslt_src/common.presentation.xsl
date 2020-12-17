@@ -3168,12 +3168,32 @@
 	</xsl:template>
 	
 	<xsl:template name="getMaxLength_dt">
-		<xsl:for-each select="*[local-name()='dt']">
-			<xsl:sort select="string-length(normalize-space(.))" data-type="number" order="descending"/>
-			<xsl:if test="position() = 1">
-				<xsl:value-of select="string-length(normalize-space(.))"/>
-			</xsl:if>
-		</xsl:for-each>
+		<xsl:variable name="lengths">
+			<xsl:for-each select="*[local-name()='dt']">
+				<xsl:variable name="maintext_length" select="string-length(normalize-space(.))"/>
+				<xsl:variable name="attributes">
+					<xsl:for-each select=".//@open"><xsl:value-of select="."/></xsl:for-each>
+					<xsl:for-each select=".//@close"><xsl:value-of select="."/></xsl:for-each>
+				</xsl:variable>
+				<length><xsl:value-of select="string-length(normalize-space(.)) + string-length($attributes)"/></length>
+			</xsl:for-each>
+		</xsl:variable>
+		<xsl:variable name="maxLength">
+			<!-- <xsl:for-each select="*[local-name()='dt']">
+				<xsl:sort select="string-length(normalize-space(.))" data-type="number" order="descending"/>
+				<xsl:if test="position() = 1">
+					<xsl:value-of select="string-length(normalize-space(.))"/>
+				</xsl:if>
+			</xsl:for-each> -->
+			<xsl:for-each select="xalan:nodeset($lengths)/length">
+				<xsl:sort select="." data-type="number" order="descending"/>
+				<xsl:if test="position() = 1">
+					<xsl:value-of select="."/>
+				</xsl:if>
+			</xsl:for-each>
+		</xsl:variable>
+		<!-- <xsl:message>DEBUG:<xsl:value-of select="$maxLength"/></xsl:message> -->
+		<xsl:value-of select="$maxLength"/>
 	</xsl:template>
 	
 	<xsl:template match="*[local-name()='dl']/*[local-name()='note']" priority="2">
