@@ -613,7 +613,7 @@
 	
 	<!-- copy 'ol' 'ul' properties to each 'li' -->
 	<!-- OBSOLETE: move note for list (list level note)  into latest 'li' -->
-	<!-- move note for list (list level note)  into first 'li' -->
+	<!-- NOW: move note for list (list level note)  into first 'li' -->
 	<!-- move fn for list-item (list-item level footnote)  into first 'li' -->	
 	<xsl:template match="bipm:li" mode="flatxml_list">	
 		<xsl:copy>
@@ -645,6 +645,15 @@
 						</xsl:otherwise>
 					</xsl:choose>
 				</xsl:for-each>
+				
+				<!-- move note(s) after ul/ol into first 'li' -->
+				<xsl:if test="not(ancestor::bipm:quote)">
+					<xsl:variable name="list_id" select="generate-id(..)"/>
+					<xsl:for-each select="../following-sibling::bipm:note[generate-id(preceding-sibling::*[not(local-name()='note') and not(local-name()='quote')][1]) = $list_id]">			
+						<xsl:call-template name="change_note_kind"/>
+					</xsl:for-each>
+				</xsl:if>
+				
 			
 				<xsl:if test="ancestor::bipm:quote or not(ancestor::bipm:table)">
 				
