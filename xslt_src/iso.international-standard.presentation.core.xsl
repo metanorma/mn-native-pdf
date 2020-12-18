@@ -1395,13 +1395,22 @@
 			<xsl:otherwise> <!-- for ordered lists -->
 				<xsl:choose>
 					<xsl:when test="../@type = 'arabic'">
-						<xsl:number format="a)" lang="en"/>
+						<xsl:number format="1." lang="en"/>
 					</xsl:when>
 					<xsl:when test="../@type = 'alphabet'">
 						<xsl:number format="a)" lang="en"/>
 					</xsl:when>
+					<xsl:when test="../@type = 'alphabet_upper'">
+						<xsl:number format="A." lang="en"/>
+					</xsl:when>
+					<xsl:when test="../@type = 'roman'">
+						<xsl:number format="i)"/>
+					</xsl:when>
+					<xsl:when test="../@type = 'roman_upper'">
+						<xsl:number format="I."/>
+					</xsl:when>
 					<xsl:otherwise>
-						<xsl:number format="1."/>
+						<xsl:number format="a)"/>
 					</xsl:otherwise>
 				</xsl:choose>
 			</xsl:otherwise>
