@@ -894,7 +894,14 @@
 											<fo:table-row >
 												<fo:table-cell border="1.5pt solid {$border-color}" padding="1.5mm" padding-bottom="0mm">
 													<fo:block font-size="6.5pt" margin-bottom="12pt">
-														<xsl:call-template name="insertCheckBoxOn"/>
+														<xsl:choose>
+															<xsl:when test="/iec:iec-standard/iec:bibdata/iec:ext/iec:cen-processing = 'true'">
+																<xsl:call-template name="insertCheckBoxOn"/>
+															</xsl:when>
+															<xsl:otherwise>
+																<xsl:call-template name="insertCheckBoxOff"/>
+															</xsl:otherwise>
+														</xsl:choose>
 														<xsl:call-template name="addLetterSpacingSmallCaps">
 															<xsl:with-param name="text" select="'Submitted for CENELEC parallel voting'"/>
 														</xsl:call-template>
@@ -925,7 +932,14 @@
 												</fo:table-cell>
 												<fo:table-cell border="1.5pt solid {$border-color}" padding="1.5mm" padding-bottom="0mm">
 													<fo:block font-size="6.5pt" margin-bottom="6pt">
-														<xsl:call-template name="insertCheckBoxOff"/>
+														<xsl:choose>
+															<xsl:when test="/iec:iec-standard/iec:bibdata/iec:ext/iec:cen-processing = 'true'">
+																<xsl:call-template name="insertCheckBoxOff"/>
+															</xsl:when>
+															<xsl:otherwise>
+																<xsl:call-template name="insertCheckBoxOn"/>
+															</xsl:otherwise>
+														</xsl:choose>
 														<xsl:call-template name="addLetterSpacingSmallCaps">
 															<xsl:with-param name="text" select="'Not submitted for CENELEC parallel voting'"/>
 														</xsl:call-template>
