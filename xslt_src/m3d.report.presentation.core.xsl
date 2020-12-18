@@ -227,55 +227,89 @@
 							</xsl:call-template>
 						</xsl:variable>
 						<fo:block font-size="12pt" font-weight="bold" text-decoration="underline" margin-bottom="4pt"><xsl:value-of select="$title-toc"/></fo:block>
-						<fo:table table-layout="fixed" width="100%" font-size="10pt">
-							<fo:table-column column-width="25mm"/>
-							<fo:table-column column-width="155mm"/>
-							<fo:table-body>
-								<xsl:for-each select="xalan:nodeset($contents)//item[@display = 'true']"><!-- [not(@level = 2 and starts-with(@section, '0'))] skip clause from preface -->							
-									<fo:table-row height="6mm">
-										<fo:table-cell>
-											<fo:block font-weight="bold">
-												<fo:basic-link internal-destination="{@id}" fox:alt-text="{title}">
-													<xsl:choose>
-														<xsl:when test="@section = ''">
-															<xsl:apply-templates select="title"/>
-														</xsl:when>
-														<xsl:when test="@type = 'references' and @section = ''">
-															<xsl:apply-templates select="title"/>
-														</xsl:when>
-														<xsl:when test="@level = 1">
-															<xsl:value-of select="@section"/>
-														</xsl:when>
-														<xsl:otherwise></xsl:otherwise>
-													</xsl:choose>
-												</fo:basic-link>
-											</fo:block>
-										</fo:table-cell>
-										<fo:table-cell>
-											<fo:block text-align-last="justify">
-												<xsl:if test="@level = 1">
-													<xsl:attribute name="font-weight">bold</xsl:attribute>
-												</xsl:if>
-												<fo:basic-link internal-destination="{@id}" fox:alt-text="{title}">
-													<xsl:choose>
-														<xsl:when test="@section = ''"></xsl:when>
-														<xsl:when test="@type = 'references' and @section = ''"></xsl:when>
-														<xsl:otherwise>
-															<xsl:apply-templates select="title"/>
-														</xsl:otherwise>
-													</xsl:choose>
-													
-													<fo:inline keep-together.within-line="always">
-														<fo:leader font-weight="normal" leader-pattern="dots"/>
-														<fo:inline><fo:page-number-citation ref-id="{@id}"/></fo:inline>
-													</fo:inline>
-												</fo:basic-link>
-											</fo:block>
-										</fo:table-cell>
-									</fo:table-row>
-								</xsl:for-each>
-							</fo:table-body>
-						</fo:table>
+						<fo:block font-size="10pt">
+							<xsl:for-each select="xalan:nodeset($contents)//item[@display = 'true']"><!-- [not(@level = 2 and starts-with(@section, '0'))] skip clause from preface -->							
+								<xsl:choose>
+									<xsl:when test="@section = ''">
+										<fo:table table-layout="fixed" width="100%">
+											<fo:table-column column-width="180mm"/>
+											<fo:table-body>
+												<fo:table-row height="6mm">
+													<fo:table-cell>
+														<fo:block text-align-last="justify">
+															<xsl:if test="@level = 1">
+																<xsl:attribute name="font-weight">bold</xsl:attribute>
+															</xsl:if>
+															<fo:basic-link internal-destination="{@id}" fox:alt-text="{title}">
+																<fo:inline font-weight="bold">
+																	<xsl:apply-templates select="title"/><xsl:text>&#xa0;</xsl:text>
+																</fo:inline>
+																<fo:inline keep-together.within-line="always">
+																	<fo:leader font-weight="normal" leader-pattern="dots"/>
+																	<fo:inline><fo:page-number-citation ref-id="{@id}"/></fo:inline>
+																</fo:inline>
+															</fo:basic-link>
+														</fo:block>
+													</fo:table-cell>
+												</fo:table-row>
+											</fo:table-body>
+										</fo:table>
+									</xsl:when>
+									<xsl:otherwise>
+										<fo:table table-layout="fixed" width="100%">
+											<fo:table-column column-width="5mm"/> <!-- 25mm -->
+											<fo:table-column column-width="175mm"/> <!-- 155mm -->
+											<fo:table-body>
+												<fo:table-row height="6mm">
+													<fo:table-cell>
+														<fo:block font-weight="bold">
+															<fo:basic-link internal-destination="{@id}" fox:alt-text="{title}">
+																<xsl:choose>
+																	<!-- <xsl:when test="@section = ''">
+																		<xsl:apply-templates select="title"/>
+																	</xsl:when> -->
+																	<!-- <xsl:when test="@type = 'references' and @section = ''">
+																		<xsl:apply-templates select="title"/>
+																	</xsl:when> -->
+																	<xsl:when test="@level = 1">
+																		<xsl:value-of select="@section"/>
+																	</xsl:when>
+																	<xsl:otherwise></xsl:otherwise>
+																</xsl:choose>
+															</fo:basic-link>
+														</fo:block>
+													</fo:table-cell>
+													<fo:table-cell>
+														<fo:block text-align-last="justify">
+															<xsl:if test="@level = 1">
+																<xsl:attribute name="font-weight">bold</xsl:attribute>
+															</xsl:if>
+															<fo:basic-link internal-destination="{@id}" fox:alt-text="{title}">
+																<!-- <xsl:choose>
+																	<xsl:when test="@section = ''"></xsl:when>
+																	<xsl:otherwise>
+																		<xsl:apply-templates select="title"/>
+																	</xsl:otherwise>
+																</xsl:choose> -->
+																<xsl:apply-templates select="title"/><xsl:text>&#xa0;</xsl:text>
+																<fo:inline keep-together.within-line="always">
+																	<fo:leader font-weight="normal" leader-pattern="dots"/>
+																	<fo:inline><fo:page-number-citation ref-id="{@id}"/></fo:inline>
+																</fo:inline>
+															</fo:basic-link>
+														</fo:block>
+													</fo:table-cell>
+												</fo:table-row>
+											</fo:table-body>
+										</fo:table>
+									</xsl:otherwise>
+									
+								</xsl:choose>
+							
+							
+								
+							</xsl:for-each>
+						</fo:block>
 					</fo:block-container>
 					
 					<fo:block break-after="page"/>
