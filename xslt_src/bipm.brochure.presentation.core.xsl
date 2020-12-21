@@ -128,6 +128,9 @@
 			<xsl:apply-templates select="/*/bipm:annex" mode="contents"/>
 			<xsl:apply-templates select="/*/bipm:bibliography/bipm:references[not(@normative='true')]" mode="contents"/> 
 			
+			<!-- Index -->
+			<xsl:apply-templates select="//bipm:clause[@type = 'index']" mode="contents"/>
+			
 		</contents>
 	</xsl:template>
 	
@@ -961,7 +964,7 @@
 										<fo:table-column column-width="127mm"/>
 										<fo:table-column column-width="12mm"/>
 										<fo:table-body>											
-											<xsl:for-each select="xalan:nodeset($contents)/doc[@id = $docid]//item[@display='true' and not(@type = 'annex') and not(@parent = 'annex')]">								
+											<xsl:for-each select="xalan:nodeset($contents)/doc[@id = $docid]//item[@display='true' and not(@type = 'annex') and not(@type = 'index') and not(@parent = 'annex')]">								
 												<xsl:call-template name="insertContentItem"/>								
 											</xsl:for-each>
 											<xsl:if test="$doctype ='brochure'">
@@ -973,6 +976,9 @@
 												</fo:table-row>
 											</xsl:if>
 											<xsl:for-each select="xalan:nodeset($contents)/doc[@id = $docid]//item[@display='true' and (@type = 'annex')]"> <!--  or (@level = 2 and @parent = 'annex') -->
+												<xsl:call-template name="insertContentItem"/>								
+											</xsl:for-each>
+											<xsl:for-each select="xalan:nodeset($contents)/doc[@id = $docid]//item[@display='true' and (@type = 'index')]">
 												<xsl:call-template name="insertContentItem"/>								
 											</xsl:for-each>
 										</fo:table-body>
@@ -1658,7 +1664,12 @@
 						<xsl:attribute name="margin-left">25mm</xsl:attribute>
 						<xsl:attribute name="font-weight">bold</xsl:attribute>
 					</xsl:if>
-					
+					<xsl:if test="@type = 'index'">
+						<xsl:attribute name="font-family">Arial</xsl:attribute>
+						<xsl:attribute name="font-size">10pt</xsl:attribute>
+						<xsl:attribute name="font-weight">bold</xsl:attribute>
+						<xsl:attribute name="space-before">14pt</xsl:attribute>
+					</xsl:if>
 					<!-- <xsl:if test="@level = 2 and not(following-sibling::item[@display='true']) and not(item[@display='true'])">
 						<xsl:attribute name="space-after">12pt</xsl:attribute>
 					</xsl:if>
@@ -1724,7 +1735,9 @@
 					<xsl:attribute name="padding-bottom"><xsl:value-of select="normalize-space($space-after)"/></xsl:attribute>
 				</xsl:if>
 				<fo:block>
-					<fo:inline font-family="Arial" font-weight="bold" font-size="10pt"><fo:page-number-citation ref-id="{@id}"/></fo:inline>
+					<fo:basic-link internal-destination="{@id}" fox:alt-text="{title}">
+						<fo:inline font-family="Arial" font-weight="bold" font-size="10pt"><fo:page-number-citation ref-id="{@id}"/></fo:inline>
+					</fo:basic-link>
 				</fo:block>
 			</fo:table-cell>
 		</fo:table-row>
@@ -1775,7 +1788,10 @@
 			</xsl:variable>
 			
 			<xsl:variable name="type">
-				<xsl:value-of select="local-name()"/>
+				<xsl:choose>
+					<xsl:when test="@type = 'index'">index</xsl:when>
+					<xsl:otherwise><xsl:value-of select="local-name()"/></xsl:otherwise>
+				</xsl:choose>
 			</xsl:variable>
 			
 			<item id="{@id}" level="{$level}" section="{$section}" type="{$type}" display="{$display}">
@@ -1785,7 +1801,9 @@
 				<title>
 					<xsl:apply-templates select="xalan:nodeset($title)" mode="contents_item"/>
 				</title>
-				<xsl:apply-templates  mode="contents" />
+				<xsl:if test="$type != 'index'">
+					<xsl:apply-templates  mode="contents" />
+				</xsl:if>
 			</item>
 		</xsl:if>
 	</xsl:template>
@@ -3102,6 +3120,9 @@
 		</fo:inline>
 	</xsl:template>
 
+	<!-- DEBUG -->
+	<!-- <xsl:template match="mathml:math" priority="10"/> -->
+
 	<!-- for chemical expressions, when prefix superscripted -->
 	<xsl:template match="mathml:msup[count(*) = 2 and count(mathml:mrow) = 2]/mathml:mrow[1][count(*) = 1 and mathml:mtext and (mathml:mtext/text() = '' or not(mathml:mtext/text()))]/mathml:mtext" mode="mathml" priority="2">
 		<mathml:mspace height="1ex"/>
@@ -3319,25 +3340,26 @@
 			</xsl:call-template>
 			
 			<fo:flow flow-name="xsl-region-body">
-				<xsl:apply-templates />
-				
-				<xsl:variable name="alphabet" select="'ABCDEFGHIJKLMNOPQRSTUVWXYZ'"/>
-				<xsl:for-each select="(document('')//node())[position() &lt; 26]">
-					<xsl:variable name="letter" select="substring($alphabet, position(), 1)"/>
-					<!-- <xsl:if test="position() &lt;= 3">
-						<fo:block font-size="10pt" font-weight="bold" margin-bottom="3pt" keep-with-next="always"><xsl:value-of select="$letter"/>, DEBUG</fo:block>
-						
-						<fo:block>accélération due à la pesanteur (gn), 33</fo:block>
-						<fo:block>activité d’un radionucléide, 26, 27</fo:block>
-						<fo:block>ampère (A), 13, 16, 18, 20, 28, 44, 49, 51, 52, 54, 55, 71, 81, 83-86, 89, 91-94, 97, 99, 100, 101, 103-104</fo:block>
-						<fo:block>angle, 25, 26, 33, 37 38, 40, 48, 55, 65</fo:block>
-						<fo:block>atmosphère normale, 52</fo:block>
-						<fo:block>atome gramme, 104</fo:block>
-						<fo:block>atome de césium, niveaux hyperfins, 15, 17, 18, 56, 58, 83, 85, 92, 94, 97, 98, 102</fo:block>
-						<xsl:if test="position() != last()"><fo:block>&#xA0;</fo:block></xsl:if>
-					</xsl:if> -->
-				</xsl:for-each>
-				
+				<fo:block id="{@id}">
+					<xsl:apply-templates />
+					
+					<xsl:variable name="alphabet" select="'ABCDEFGHIJKLMNOPQRSTUVWXYZ'"/>
+					<xsl:for-each select="(document('')//node())[position() &lt; 26]">
+						<xsl:variable name="letter" select="substring($alphabet, position(), 1)"/>
+						<!-- <xsl:if test="position() &lt;= 3">
+							<fo:block font-size="10pt" font-weight="bold" margin-bottom="3pt" keep-with-next="always"><xsl:value-of select="$letter"/>, DEBUG</fo:block>
+							
+							<fo:block>accélération due à la pesanteur (gn), 33</fo:block>
+							<fo:block>activité d’un radionucléide, 26, 27</fo:block>
+							<fo:block>ampère (A), 13, 16, 18, 20, 28, 44, 49, 51, 52, 54, 55, 71, 81, 83-86, 89, 91-94, 97, 99, 100, 101, 103-104</fo:block>
+							<fo:block>angle, 25, 26, 33, 37 38, 40, 48, 55, 65</fo:block>
+							<fo:block>atmosphère normale, 52</fo:block>
+							<fo:block>atome gramme, 104</fo:block>
+							<fo:block>atome de césium, niveaux hyperfins, 15, 17, 18, 56, 58, 83, 85, 92, 94, 97, 98, 102</fo:block>
+							<xsl:if test="position() != last()"><fo:block>&#xA0;</fo:block></xsl:if>
+						</xsl:if> -->
+					</xsl:for-each>
+				</fo:block>
 			</fo:flow>
 		</fo:page-sequence>
 	</xsl:template>
