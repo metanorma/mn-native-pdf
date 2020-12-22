@@ -19,7 +19,7 @@
 	
 	<!-- <item id="#">N_page</item> -->
 	<!-- param for second pass -->
-	<xsl:param name="external_index" select="'C:\\Upwork\\Metanorma\\XML\\BIPM11_Index\\index.xml'"/>
+	<xsl:param name="external_index" />
 	<xsl:variable name="index" select="document($external_index)"/>
 	
 	<xsl:variable name="first_pass" select="count($index//item) = 0"/>
@@ -1076,8 +1076,8 @@
 				
 				<!-- Index -->
 				<!-- <xsl:apply-templates select="//bipm:clause[@type = 'index']" mode="index" /> -->
-				<!-- indexes=<xsl:copy-of select="$indexes"/>
-				docid=<xsl:value-of select="$docid"/> -->
+				indexes=<xsl:copy-of select="$indexes"/>
+				<!-- docid=<xsl:value-of select="$docid"/> -->
 				<xsl:apply-templates select="xalan:nodeset($indexes)/doc[@id = $docid]//bipm:clause[@type = 'index']" mode="index" />
 				
 				<!-- End Document Pages -->
@@ -3111,9 +3111,10 @@
 				<xsl:when test="@pagenumber='true'"><!-- ToC in Appendix, and page in references like this: « Le BIPM et la Convention du Mètre » (page 5). -->
 					<fo:inline> <!--  font-weight="bold" -->
 						<!-- DEBUG -->
-						<!-- <xsl:if test="@id">
-							<xsl:value-of select="concat('[', @id,']')"/>
-						</xsl:if> -->
+						<xsl:if test="@id">
+							<!-- <xsl:value-of select="concat('[', @id,']')"/> -->
+							<xsl:attribute name="id"><xsl:value-of select="@id"/></xsl:attribute>
+						</xsl:if>
 						<fo:page-number-citation ref-id="{@target}"/>
 						<xsl:if test="@to">&#x2013;<fo:page-number-citation ref-id="{@to}"/></xsl:if>
 					</fo:inline>
@@ -3410,7 +3411,76 @@
 		</xsl:copy>
 	</xsl:template>
 	
-	<xsl:template match="bipm:xref" mode="index_add_id">
+	<xsl:template match="bipm:clause[@type = 'index']//bipm:li" mode="index_add_id">
+		<!-- <xsl:call-template name="process_li_element">
+			<xsl:param name="element" select="node()[1]"/>
+		</xsl:call-template> -->
+		<xsl:copy>
+			<xsl:apply-templates select="@*"  mode="index_add_id"/>
+		<xsl:apply-templates select="node()[1]" mode="process_li_element"/>
+		</xsl:copy>
+	</xsl:template>
+	
+	<xsl:template match="bipm:clause[@type = 'index']//bipm:li/node()" mode="process_li_element" priority="2">
+		<xsl:param name="element" />
+		<xsl:param name="remove" select="'false'"/>
+		<!-- <node></node> -->
+		<xsl:choose>
+			<xsl:when test="self::text()  and normalize-space(.) = ',' and $remove = 'true'">
+				<!-- skip text (i.e. remove it) and process next element -->
+				<!-- [removed_<xsl:value-of select="."/>] -->
+				<xsl:apply-templates select="following-sibling::node()[1]" mode="process_li_element"/>
+			</xsl:when>
+			<xsl:when test="self::text()">
+				<xsl:value-of select="."/>
+				<xsl:apply-templates select="following-sibling::node()[1]" mode="process_li_element"/>
+			</xsl:when>
+			<xsl:when test="self::* and local-name(.) = 'xref'">
+				<xsl:variable name="id">
+					<xsl:call-template name="generateIndexXrefId"/>
+				</xsl:variable>
+				<xsl:variable name="page" select="$index//item[@id = $id]"/>
+				
+				<xsl:variable name="id_next">
+					<xsl:for-each select="following-sibling::bipm:xref[1]">
+						<xsl:call-template name="generateIndexXrefId"/>
+					</xsl:for-each>
+				</xsl:variable>
+				<xsl:variable name="page_next" select="$index//item[@id = $id_next]"/>
+			
+				<xsl:choose>
+					<!-- if page is equal to page for next -->
+					<xsl:when test="$page != '' and $page_next != '' and $page = $page_next">
+						<!-- skip element (i.e. remove it) and remove next text ',' -->
+						<!-- [removed_xref] -->
+						<xsl:apply-templates select="following-sibling::node()[1]" mode="process_li_element">
+							<xsl:with-param name="remove">true</xsl:with-param>
+						</xsl:apply-templates>
+					</xsl:when>
+					<xsl:otherwise>
+						<xsl:copy> <!-- add id to xref -->
+							<xsl:apply-templates select="@*" mode="index_add_id"/>
+							<xsl:attribute name="id">
+								<xsl:value-of select="$id"/>
+							</xsl:attribute>
+							<xsl:apply-templates mode="index_add_id"/>
+						</xsl:copy>
+						<xsl:apply-templates select="following-sibling::node()[1]" mode="process_li_element"/>
+					</xsl:otherwise>
+				</xsl:choose>
+			</xsl:when>
+			<xsl:when test="self::* and local-name(.) = 'ul'">
+				<!-- ul -->
+				<xsl:apply-templates select="." mode="index_add_id"/>
+			</xsl:when>
+			<xsl:otherwise>
+			 <xsl:copy-of select="."/>
+				<xsl:apply-templates select="following-sibling::node()[1]" mode="process_li_element"/>
+			</xsl:otherwise>
+		</xsl:choose>
+	</xsl:template>
+	
+	<xsl:template match="bipm:xref2" mode="index_add_id">
 		<xsl:variable name="id">
 			<xsl:call-template name="generateIndexXrefId"/>
 		</xsl:variable>
