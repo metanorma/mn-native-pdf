@@ -17,6 +17,13 @@
 	<xsl:param name="initial_page_number"/>
 	<xsl:param name="doc_split_by_language"/>
 	
+	<!-- <item id="#">N_page</item> -->
+	<!-- param for second pass -->
+	<xsl:param name="external_index" select="'C:\\Upwork\\Metanorma\\XML\\BIPM11_Index\\index.xml'"/>
+	<xsl:variable name="index" select="document($external_index)"/>
+	
+	<xsl:variable name="first_pass" select="count($index//item) = 0"/>
+	
 	<xsl:variable name="pageWidth" select="'210mm'"/>
 	<xsl:variable name="pageHeight" select="'297mm'"/>
 
@@ -40,10 +47,8 @@
 	<xsl:variable name="root-element" select="local-name(/*)"/>
 
 	<xsl:variable name="contents">
-		
 		<xsl:choose>
 			<xsl:when test="$root-element = 'metanorma-collection'">
-			
 				<xsl:choose>
 					<xsl:when test="$doc_split_by_language = ''"><!-- all documents -->
 						<xsl:for-each select="//bipm:bipm-standard">
@@ -99,8 +104,43 @@
 				</doc>
 			</xsl:otherwise>
 		</xsl:choose>
-		
 	</xsl:variable>
+
+	<xsl:variable name="indexes">
+		<xsl:choose>
+			<xsl:when test="$doc_split_by_language = ''"><!-- all documents -->
+				<xsl:for-each select="//bipm:bipm-standard">
+					<xsl:variable name="docid">
+						<xsl:call-template name="getDocumentId"/>
+					</xsl:variable>
+					<xsl:variable name="current_document_index">
+						<xsl:apply-templates select="//bipm:clause[@type = 'index']" mode="index_add_id"/>
+					</xsl:variable>
+					<xsl:for-each select="xalan:nodeset($current_document_index)">
+						<doc id="{$docid}">
+							<xsl:copy-of select="."/>
+						</doc>
+					</xsl:for-each>				
+				</xsl:for-each>
+			</xsl:when>
+			<xsl:otherwise>
+				<xsl:for-each select="(//bipm:bipm-standard)[*[local-name()='bibdata']/*[local-name()='language'][@current = 'true'] = $doc_split_by_language]">
+					<xsl:variable name="docid">
+							<xsl:call-template name="getDocumentId"/>
+						</xsl:variable>
+					<xsl:variable name="current_document_index">
+						<xsl:apply-templates select="//bipm:clause[@type = 'index']" mode="index_add_id"/>
+					</xsl:variable>
+					<xsl:for-each select="xalan:nodeset($current_document_index)">
+						<doc id="{$docid}">
+							<xsl:copy-of select="."/>
+						</doc>
+					</xsl:for-each>
+				</xsl:for-each>
+			</xsl:otherwise>
+		</xsl:choose>
+	</xsl:variable>
+	
 
 	<xsl:variable name="ids">
 		<xsl:for-each select="//*[@id]">
@@ -319,6 +359,9 @@
 					</xsl:variable>
 				
 					<!-- flatxml=<xsl:copy-of select="$flatxml"/> -->
+					
+					<!-- indexes=<xsl:copy-of select="$indexes"/> -->
+					
 				
 					<xsl:apply-templates select="xalan:nodeset($flatxml)/bipm:bipm-standard" mode="bipm-standard">
 						<xsl:with-param name="curr_docnum" select="1"/>
@@ -779,9 +822,29 @@
 		</xsl:choose>
 	</xsl:template>
 	
-	<xsl:template match="bipm:clause[@type = 'index']" mode="flatxml">
-		<xsl:copy-of select="."/>
+	<xsl:template match="bipm:clause[@type = 'index']" mode="flatxml"/>
+	<!-- <xsl:template match="bipm:clause[@type = 'index']" mode="flatxml">
+		<xsl:copy>
+			<xsl:apply-templates select="@*" mode="flatxml_index"/>
+			<xsl:apply-templates mode="flatxml_index"/>
+		</xsl:copy>
 	</xsl:template>
+	
+	<xsl:template match="@*|node()" mode="flatxml_index">
+		<xsl:copy>
+				<xsl:apply-templates select="@*|node()" mode="flatxml_index"/>
+		</xsl:copy>
+	</xsl:template>
+	
+	<xsl:template match="bipm:xref" mode="flatxml_index">
+		<xsl:copy>
+			<xsl:apply-templates select="@*" mode="flatxml_index"/>
+			<xsl:attribute name="id">
+				<xsl:value-of select="generate-id(.)"/>
+			</xsl:attribute>
+			<xsl:apply-templates mode="flatxml_index"/>
+		</xsl:copy>
+	</xsl:template> -->
 	
 	<!-- ================================= -->
 	<!-- END: Flattening xml for fit notes at page sides (margins) -->
@@ -1012,7 +1075,10 @@
 				<xsl:apply-templates select="bipm:bibliography/bipm:references[not(@normative='true')]" mode="sections"/> 
 				
 				<!-- Index -->
-				<xsl:apply-templates select="//bipm:clause[@type = 'index']" mode="index"/>
+				<!-- <xsl:apply-templates select="//bipm:clause[@type = 'index']" mode="index" /> -->
+				<!-- indexes=<xsl:copy-of select="$indexes"/>
+				docid=<xsl:value-of select="$docid"/> -->
+				<xsl:apply-templates select="xalan:nodeset($indexes)/doc[@id = $docid]//bipm:clause[@type = 'index']" mode="index" />
 				
 				<!-- End Document Pages -->
 				
@@ -1050,6 +1116,10 @@
 						<fo:block id="theLastPage"/>
 					</fo:flow>
 				</fo:page-sequence> -->
+				
+				<xsl:variable name="docid">
+					<xsl:call-template name="getDocumentId"/>
+				</xsl:variable>
 				
 				<fo:page-sequence master-reference="document" force-page-count="no-force">
 					
@@ -3040,6 +3110,10 @@
 			<xsl:choose>
 				<xsl:when test="@pagenumber='true'"><!-- ToC in Appendix, and page in references like this: « Le BIPM et la Convention du Mètre » (page 5). -->
 					<fo:inline> <!--  font-weight="bold" -->
+						<!-- DEBUG -->
+						<!-- <xsl:if test="@id">
+							<xsl:value-of select="concat('[', @id,']')"/>
+						</xsl:if> -->
 						<fo:page-number-citation ref-id="{@target}"/>
 						<xsl:if test="@to">&#x2013;<fo:page-number-citation ref-id="{@to}"/></xsl:if>
 					</fo:inline>
@@ -3321,6 +3395,63 @@
 	<!-- =================== -->
 	<!-- Index processing -->
 	<!-- =================== -->
+	
+	
+	<xsl:template match="bipm:clause[@type = 'index']" mode="index_add_id">
+		<xsl:copy>
+			<xsl:apply-templates select="@*" mode="index_add_id"/>
+			<xsl:apply-templates mode="index_add_id"/>
+		</xsl:copy>
+	</xsl:template>
+	
+	<xsl:template match="@*|node()" mode="index_add_id">
+		<xsl:copy>
+				<xsl:apply-templates select="@*|node()" mode="index_add_id"/>
+		</xsl:copy>
+	</xsl:template>
+	
+	<xsl:template match="bipm:xref" mode="index_add_id">
+		<xsl:variable name="id">
+			<xsl:call-template name="generateIndexXrefId"/>
+		</xsl:variable>
+		
+		<xsl:variable name="page" select="$index//item[@id = $id]"/>
+		
+		<xsl:variable name="id_next">
+			<xsl:for-each select="following-sibling::bipm:xref[1]">
+				<xsl:call-template name="generateIndexXrefId"/>
+			</xsl:for-each>
+		</xsl:variable>
+		
+		<xsl:variable name="page_next" select="$index//item[@id = $id_next]"/>
+		
+		<xsl:choose>
+			<!-- if page is equal to page for next -->
+			<xsl:when test="$page != '' and $page_next != '' and $page = $page_next"><!-- skip index item --></xsl:when>
+			<xsl:otherwise>
+				<xsl:copy>
+					<xsl:apply-templates select="@*" mode="index_add_id"/>
+					<xsl:attribute name="id">
+						<!-- <xsl:value-of select="generate-id(.)"/>z -->
+						<xsl:value-of select="$id"/><!-- __<xsl:value-of select="$id_next"/>__page<xsl:value-of select="$page"/>__page_next<xsl:value-of select="$page_next"/> -->
+					</xsl:attribute>
+					<xsl:apply-templates mode="index_add_id"/>
+				</xsl:copy>
+			</xsl:otherwise>
+		</xsl:choose>
+	</xsl:template>
+	
+	<xsl:template name="generateIndexXrefId">
+		<xsl:variable name="level" select="count(ancestor::bipm:ul)"/>
+		<!-- <xsl:variable name="parent_ul_id" select="generate-id(ancestor::bipm:ul[1])"/>
+		<xsl:variable name="item_number" select="count(ancestor::bipm:li[ancestor::bipm:ul[generate-id() = $parent_ul_id]])"/> -->
+		<xsl:variable name="item_number">
+			<xsl:number count="bipm:li[ancestor::bipm:clause[@type = 'index']]" level="any" />
+		</xsl:variable>
+		<xsl:variable name="xref_number"><xsl:number count="bipm:xref"/></xsl:variable>
+		<xsl:value-of select="concat($item_number, '_', $xref_number)"/> <!-- $level, '_',  -->
+	</xsl:template>
+	
 	<xsl:template match="bipm:clause[@type = 'index']" />
 	<xsl:template match="bipm:clause[@type = 'index']" mode="index">
 	
