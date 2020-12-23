@@ -19,7 +19,7 @@
 	
 	<!-- <item id="#">N_page</item> -->
 	<!-- param for second pass -->
-	<xsl:param name="external_index" />
+	<xsl:param name="external_index" /><!-- path to index xml, generated on 1st pass, based on FOP Intermediate Format -->
 	<xsl:variable name="index" select="document($external_index)"/>
 	
 	<xsl:variable name="first_pass" select="count($index//item) = 0"/>
@@ -113,8 +113,13 @@
 					<xsl:variable name="docid">
 						<xsl:call-template name="getDocumentId"/>
 					</xsl:variable>
-					<xsl:variable name="current_document_index">
+					<!-- add id to xref and split xref with @to into two xref -->
+					<xsl:variable name="current_document_index_id">
 						<xsl:apply-templates select="//bipm:clause[@type = 'index']" mode="index_add_id"/>
+					</xsl:variable>
+					
+					<xsl:variable name="current_document_index">
+						<xsl:apply-templates select="xalan:nodeset($current_document_index_id)" mode="index_update"/>
 					</xsl:variable>
 					<xsl:for-each select="xalan:nodeset($current_document_index)">
 						<doc id="{$docid}">
@@ -128,8 +133,12 @@
 					<xsl:variable name="docid">
 							<xsl:call-template name="getDocumentId"/>
 						</xsl:variable>
-					<xsl:variable name="current_document_index">
+					<xsl:variable name="current_document_index_id">
 						<xsl:apply-templates select="//bipm:clause[@type = 'index']" mode="index_add_id"/>
+					</xsl:variable>
+					
+					<xsl:variable name="current_document_index">
+						<xsl:apply-templates select="xalan:nodeset($current_document_index_id)" mode="index_update"/>
 					</xsl:variable>
 					<xsl:for-each select="xalan:nodeset($current_document_index)">
 						<doc id="{$docid}">
@@ -141,6 +150,7 @@
 		</xsl:choose>
 	</xsl:variable>
 	
+	<xsl:variable name="dash" select="'&#x2013;'"/>
 
 	<xsl:variable name="ids">
 		<xsl:for-each select="//*[@id]">
@@ -1076,7 +1086,7 @@
 				
 				<!-- Index -->
 				<!-- <xsl:apply-templates select="//bipm:clause[@type = 'index']" mode="index" /> -->
-				indexes=<xsl:copy-of select="$indexes"/>
+				<!-- indexes=<xsl:copy-of select="$indexes"/> -->
 				<!-- docid=<xsl:value-of select="$docid"/> -->
 				<xsl:apply-templates select="xalan:nodeset($indexes)/doc[@id = $docid]//bipm:clause[@type = 'index']" mode="index" />
 				
@@ -1263,6 +1273,7 @@
 				
 				<xsl:apply-templates select="bipm:bibliography/bipm:references[not(@normative='true')]" mode="sections"/> 
 				
+				<xsl:apply-templates select="xalan:nodeset($indexes)/doc[@id = $docid]//bipm:clause[@type = 'index']" mode="index" />
 				
 			</xsl:otherwise>
 		</xsl:choose>
@@ -3116,7 +3127,7 @@
 							<xsl:attribute name="id"><xsl:value-of select="@id"/></xsl:attribute>
 						</xsl:if>
 						<fo:page-number-citation ref-id="{@target}"/>
-						<xsl:if test="@to">&#x2013;<fo:page-number-citation ref-id="{@to}"/></xsl:if>
+						<!-- <xsl:if test="@to">&#x2013;<fo:page-number-citation ref-id="{@to}"/></xsl:if> -->
 					</fo:inline>
 				</xsl:when>
 				<xsl:when test="starts-with(normalize-space(following-sibling::node()[1]), ')')">										
@@ -3397,26 +3408,47 @@
 	<!-- Index processing -->
 	<!-- =================== -->
 	
-	
-	<xsl:template match="bipm:clause[@type = 'index']" mode="index_add_id">
-		<xsl:copy>
-			<xsl:apply-templates select="@*" mode="index_add_id"/>
-			<xsl:apply-templates mode="index_add_id"/>
-		</xsl:copy>
-	</xsl:template>
-	
 	<xsl:template match="@*|node()" mode="index_add_id">
 		<xsl:copy>
 				<xsl:apply-templates select="@*|node()" mode="index_add_id"/>
 		</xsl:copy>
 	</xsl:template>
 	
-	<xsl:template match="bipm:clause[@type = 'index']//bipm:li" mode="index_add_id">
-		<!-- <xsl:call-template name="process_li_element">
-			<xsl:param name="element" select="node()[1]"/>
-		</xsl:call-template> -->
+	<xsl:template match="bipm:xref" mode="index_add_id">
+		<xsl:variable name="id">
+			<xsl:call-template name="generateIndexXrefId"/>
+		</xsl:variable>
+		<xsl:copy> <!-- add id to xref -->
+			<xsl:apply-templates select="@*" mode="index_add_id"/>
+			<xsl:attribute name="id">
+				<xsl:value-of select="$id"/>
+			</xsl:attribute>
+			<xsl:apply-templates mode="index_add_id"/>
+		</xsl:copy>
+		<!-- split <xref target="bm1" to="End" pagenumber="true"> to two xref:
+		<xref target="bm1" pagenumber="true"> and <xref target="End" pagenumber="true"> -->
+		<xsl:if test="@to">
+			<xsl:value-of select="$dash"/>
+			<xsl:copy>
+				<xsl:copy-of select="@*"/>
+				<xsl:attribute name="target"><xsl:value-of select="@to"/></xsl:attribute>
+				<xsl:attribute name="id">
+					<xsl:value-of select="$id"/><xsl:text>_to</xsl:text>
+				</xsl:attribute>
+				<xsl:apply-templates mode="index_add_id"/>
+			</xsl:copy>
+		</xsl:if>
+	</xsl:template>
+
+	<xsl:template match="@*|node()" mode="index_update">
 		<xsl:copy>
-			<xsl:apply-templates select="@*"  mode="index_add_id"/>
+				<xsl:apply-templates select="@*|node()" mode="index_update"/>
+		</xsl:copy>
+	</xsl:template>
+	
+	<xsl:template match="bipm:clause[@type = 'index']//bipm:li" mode="index_update">
+		<xsl:copy>
+			<xsl:apply-templates select="@*"  mode="index_update"/>
 		<xsl:apply-templates select="node()[1]" mode="process_li_element"/>
 		</xsl:copy>
 	</xsl:template>
@@ -3426,7 +3458,7 @@
 		<xsl:param name="remove" select="'false'"/>
 		<!-- <node></node> -->
 		<xsl:choose>
-			<xsl:when test="self::text()  and normalize-space(.) = ',' and $remove = 'true'">
+			<xsl:when test="self::text()  and (normalize-space(.) = ',' or normalize-space(.) = $dash) and $remove = 'true'">
 				<!-- skip text (i.e. remove it) and process next element -->
 				<!-- [removed_<xsl:value-of select="."/>] -->
 				<xsl:apply-templates select="following-sibling::node()[1]" mode="process_li_element"/>
@@ -3436,42 +3468,42 @@
 				<xsl:apply-templates select="following-sibling::node()[1]" mode="process_li_element"/>
 			</xsl:when>
 			<xsl:when test="self::* and local-name(.) = 'xref'">
-				<xsl:variable name="id">
-					<xsl:call-template name="generateIndexXrefId"/>
-				</xsl:variable>
+				<xsl:variable name="id" select="@id"/>
 				<xsl:variable name="page" select="$index//item[@id = $id]"/>
-				
-				<xsl:variable name="id_next">
-					<xsl:for-each select="following-sibling::bipm:xref[1]">
-						<xsl:call-template name="generateIndexXrefId"/>
-					</xsl:for-each>
-				</xsl:variable>
+				<xsl:variable name="id_next" select="following-sibling::bipm:xref[1]/@id"/>
 				<xsl:variable name="page_next" select="$index//item[@id = $id_next]"/>
-			
+				
+				<xsl:variable name="id_prev" select="preceding-sibling::bipm:xref[1]/@id"/>
+				<xsl:variable name="page_prev" select="$index//item[@id = $id_prev]"/>
+				
 				<xsl:choose>
-					<!-- if page is equal to page for next -->
-					<xsl:when test="$page != '' and $page_next != '' and $page = $page_next">
+					<!-- 2nd pass -->
+					<!-- if page is equal to page for next and page is not the end of range -->
+					<xsl:when test="$page != '' and $page_next != '' and $page = $page_next and not(contains($page, '_to'))">  <!-- case: 12, 12-14 -->
 						<!-- skip element (i.e. remove it) and remove next text ',' -->
 						<!-- [removed_xref] -->
+						
 						<xsl:apply-templates select="following-sibling::node()[1]" mode="process_li_element">
 							<xsl:with-param name="remove">true</xsl:with-param>
 						</xsl:apply-templates>
 					</xsl:when>
+					
+					<xsl:when test="$page != '' and $page_prev != '' and $page = $page_prev and contains($page_prev, '_to')"> <!-- case: 12-14, 14, ... -->
+						<!-- remove xref -->
+						<xsl:apply-templates select="following-sibling::node()[1]" mode="process_li_element">
+							<xsl:with-param name="remove">true</xsl:with-param>
+						</xsl:apply-templates>
+					</xsl:when>
+
 					<xsl:otherwise>
-						<xsl:copy> <!-- add id to xref -->
-							<xsl:apply-templates select="@*" mode="index_add_id"/>
-							<xsl:attribute name="id">
-								<xsl:value-of select="$id"/>
-							</xsl:attribute>
-							<xsl:apply-templates mode="index_add_id"/>
-						</xsl:copy>
+						<xsl:copy-of select="."/>
 						<xsl:apply-templates select="following-sibling::node()[1]" mode="process_li_element"/>
 					</xsl:otherwise>
 				</xsl:choose>
 			</xsl:when>
 			<xsl:when test="self::* and local-name(.) = 'ul'">
 				<!-- ul -->
-				<xsl:apply-templates select="." mode="index_add_id"/>
+				<xsl:apply-templates select="." mode="index_update"/>
 			</xsl:when>
 			<xsl:otherwise>
 			 <xsl:copy-of select="."/>
@@ -3479,37 +3511,7 @@
 			</xsl:otherwise>
 		</xsl:choose>
 	</xsl:template>
-	
-	<xsl:template match="bipm:xref2" mode="index_add_id">
-		<xsl:variable name="id">
-			<xsl:call-template name="generateIndexXrefId"/>
-		</xsl:variable>
-		
-		<xsl:variable name="page" select="$index//item[@id = $id]"/>
-		
-		<xsl:variable name="id_next">
-			<xsl:for-each select="following-sibling::bipm:xref[1]">
-				<xsl:call-template name="generateIndexXrefId"/>
-			</xsl:for-each>
-		</xsl:variable>
-		
-		<xsl:variable name="page_next" select="$index//item[@id = $id_next]"/>
-		
-		<xsl:choose>
-			<!-- if page is equal to page for next -->
-			<xsl:when test="$page != '' and $page_next != '' and $page = $page_next"><!-- skip index item --></xsl:when>
-			<xsl:otherwise>
-				<xsl:copy>
-					<xsl:apply-templates select="@*" mode="index_add_id"/>
-					<xsl:attribute name="id">
-						<!-- <xsl:value-of select="generate-id(.)"/>z -->
-						<xsl:value-of select="$id"/><!-- __<xsl:value-of select="$id_next"/>__page<xsl:value-of select="$page"/>__page_next<xsl:value-of select="$page_next"/> -->
-					</xsl:attribute>
-					<xsl:apply-templates mode="index_add_id"/>
-				</xsl:copy>
-			</xsl:otherwise>
-		</xsl:choose>
-	</xsl:template>
+
 	
 	<xsl:template name="generateIndexXrefId">
 		<xsl:variable name="level" select="count(ancestor::bipm:ul)"/>
@@ -3544,10 +3546,10 @@
 				<fo:block id="{@id}">
 					<xsl:apply-templates />
 					
-					<xsl:variable name="alphabet" select="'ABCDEFGHIJKLMNOPQRSTUVWXYZ'"/>
+					<!-- TEST <xsl:variable name="alphabet" select="'ABCDEFGHIJKLMNOPQRSTUVWXYZ'"/>
 					<xsl:for-each select="(document('')//node())[position() &lt; 26]">
 						<xsl:variable name="letter" select="substring($alphabet, position(), 1)"/>
-						<!-- <xsl:if test="position() &lt;= 3">
+						<xsl:if test="position() &lt;= 3">
 							<fo:block font-size="10pt" font-weight="bold" margin-bottom="3pt" keep-with-next="always"><xsl:value-of select="$letter"/>, DEBUG</fo:block>
 							
 							<fo:block>accélération due à la pesanteur (gn), 33</fo:block>
@@ -3558,8 +3560,8 @@
 							<fo:block>atome gramme, 104</fo:block>
 							<fo:block>atome de césium, niveaux hyperfins, 15, 17, 18, 56, 58, 83, 85, 92, 94, 97, 98, 102</fo:block>
 							<xsl:if test="position() != last()"><fo:block>&#xA0;</fo:block></xsl:if>
-						</xsl:if> -->
-					</xsl:for-each>
+						</xsl:if>
+					</xsl:for-each> -->
 				</fo:block>
 			</fo:flow>
 		</fo:page-sequence>
