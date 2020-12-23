@@ -3517,11 +3517,14 @@
 		<xsl:variable name="level" select="count(ancestor::bipm:ul)"/>
 		<!-- <xsl:variable name="parent_ul_id" select="generate-id(ancestor::bipm:ul[1])"/>
 		<xsl:variable name="item_number" select="count(ancestor::bipm:li[ancestor::bipm:ul[generate-id() = $parent_ul_id]])"/> -->
+		<xsl:variable name="docid">
+			<xsl:call-template name="getDocumentId"/>
+		</xsl:variable>
 		<xsl:variable name="item_number">
 			<xsl:number count="bipm:li[ancestor::bipm:clause[@type = 'index']]" level="any" />
 		</xsl:variable>
 		<xsl:variable name="xref_number"><xsl:number count="bipm:xref"/></xsl:variable>
-		<xsl:value-of select="concat($item_number, '_', $xref_number)"/> <!-- $level, '_',  -->
+		<xsl:value-of select="concat($docid, '_', $item_number, '_', $xref_number)"/> <!-- $level, '_',  -->
 	</xsl:template>
 	
 	<xsl:template match="bipm:clause[@type = 'index']" />
