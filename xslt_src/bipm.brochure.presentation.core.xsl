@@ -110,41 +110,65 @@
 		<xsl:choose>
 			<xsl:when test="$doc_split_by_language = ''"><!-- all documents -->
 				<xsl:for-each select="//bipm:bipm-standard">
-					<xsl:variable name="docid">
-						<xsl:call-template name="getDocumentId"/>
-					</xsl:variable>
-					<!-- add id to xref and split xref with @to into two xref -->
-					<xsl:variable name="current_document_index_id">
-						<xsl:apply-templates select="//bipm:clause[@type = 'index']" mode="index_add_id"/>
+					
+					<xsl:variable name="current_document">
+						<xsl:copy-of select="."/>
 					</xsl:variable>
 					
-					<xsl:variable name="current_document_index">
-						<xsl:apply-templates select="xalan:nodeset($current_document_index_id)" mode="index_update"/>
-					</xsl:variable>
-					<xsl:for-each select="xalan:nodeset($current_document_index)">
-						<doc id="{$docid}">
-							<xsl:copy-of select="."/>
-						</doc>
-					</xsl:for-each>				
+					<xsl:for-each select="xalan:nodeset($current_document)">
+					
+						<xsl:variable name="docid">
+							<xsl:call-template name="getDocumentId"/>
+						</xsl:variable>
+
+						<!-- add id to xref and split xref with @to into two xref -->
+						<xsl:variable name="current_document_index_id">
+							<xsl:apply-templates select=".//bipm:clause[@type = 'index']" mode="index_add_id"/>
+						</xsl:variable>
+						
+						<xsl:variable name="current_document_index">
+							<xsl:apply-templates select="xalan:nodeset($current_document_index_id)" mode="index_update"/>
+						</xsl:variable>
+						
+						<xsl:for-each select="xalan:nodeset($current_document_index)">
+							<doc id="{$docid}">
+								<xsl:copy-of select="."/>
+							</doc>
+						</xsl:for-each>
+						
+					</xsl:for-each>
+					
 				</xsl:for-each>
 			</xsl:when>
 			<xsl:otherwise>
 				<xsl:for-each select="(//bipm:bipm-standard)[*[local-name()='bibdata']/*[local-name()='language'][@current = 'true'] = $doc_split_by_language]">
-					<xsl:variable name="docid">
+				
+					<xsl:variable name="current_document">
+						<xsl:copy-of select="."/>
+					</xsl:variable>
+				
+					<xsl:for-each select="xalan:nodeset($current_document)">
+					
+						<xsl:variable name="docid">
 							<xsl:call-template name="getDocumentId"/>
 						</xsl:variable>
-					<xsl:variable name="current_document_index_id">
-						<xsl:apply-templates select="//bipm:clause[@type = 'index']" mode="index_add_id"/>
-					</xsl:variable>
-					
-					<xsl:variable name="current_document_index">
-						<xsl:apply-templates select="xalan:nodeset($current_document_index_id)" mode="index_update"/>
-					</xsl:variable>
-					<xsl:for-each select="xalan:nodeset($current_document_index)">
-						<doc id="{$docid}">
-							<xsl:copy-of select="."/>
-						</doc>
+						
+						<xsl:variable name="current_document_index_id">
+							<xsl:apply-templates select=".//bipm:clause[@type = 'index']" mode="index_add_id"/>
+						</xsl:variable>
+						
+						<xsl:variable name="current_document_index">
+							<xsl:apply-templates select="xalan:nodeset($current_document_index_id)" mode="index_update"/>
+						</xsl:variable>
+						
+						<xsl:for-each select="xalan:nodeset($current_document_index)">
+							<doc id="{$docid}">
+								<xsl:copy-of select="."/>
+							</doc>
+						</xsl:for-each>
+						
 					</xsl:for-each>
+					
 				</xsl:for-each>
 			</xsl:otherwise>
 		</xsl:choose>
@@ -259,15 +283,6 @@
 						<fo:conditional-page-master-reference odd-or-even="odd" master-reference="index-odd"/>
 					</fo:repeatable-page-master-alternatives>
 				</fo:page-sequence-master>
-				
-				<!-- Independent Appendix pages -->
-				<!-- <fo:simple-page-master master-name="appendix" page-width="{$pageWidth}" page-height="{$pageHeight}">
-					<fo:region-body margin-top="25mm" margin-bottom="25mm" margin-left="25mm" margin-right="25mm"/>
-					<fo:region-before region-name="header-appendix" extent="25mm"/> 
-					<fo:region-after region-name="footer-appendix" extent="25mm"/>
-					<fo:region-start region-name="left-region" extent="25mm"/>
-					<fo:region-end region-name="right-region" extent="25mm"/>
-				</fo:simple-page-master> -->
 				
 				
 			</fo:layout-master-set>
@@ -1085,9 +1100,6 @@
 				<xsl:apply-templates select="bipm:bibliography/bipm:references[not(@normative='true')]" mode="sections"/> 
 				
 				<!-- Index -->
-				<!-- <xsl:apply-templates select="//bipm:clause[@type = 'index']" mode="index" /> -->
-				<!-- indexes=<xsl:copy-of select="$indexes"/> -->
-				<!-- docid=<xsl:value-of select="$docid"/> -->
 				<xsl:apply-templates select="xalan:nodeset($indexes)/doc[@id = $docid]//bipm:clause[@type = 'index']" mode="index" />
 				
 				<!-- End Document Pages -->
@@ -1100,33 +1112,7 @@
 			</xsl:when>
 			<xsl:otherwise> <!-- independentAppendix != '' -->
 			
-			
-			<!-- 	<fo:page-sequence master-reference="appendix" initial-page-number="1" force-page-count="no-force">
-					<xsl:call-template name="insertFootnoteSeparator"/>
-					<xsl:call-template name="insertHeaderFooterAppendix"/>
-					<fo:flow flow-name="xsl-region-body" font-family="Times New Roman">
-						<fo:block-container border-bottom="1.5pt solid rgb(79, 129, 189)" margin-bottom="36pt">
-							<fo:block font-family="Arial" font-size="24pt" font-weight="bold" color="rgb(23, 54, 93)">
-								<fo:block>
-									<xsl:choose>
-										<xsl:when test="$lang = 'fr'">Annexe </xsl:when>
-										<xsl:otherwise>Appendix </xsl:otherwise>
-									</xsl:choose>
-									<xsl:value-of select="/bipm:bipm-standard/bipm:bibdata/bipm:ext/bipm:structuredidentifier/bipm:appendix"/>
-									<xsl:text>. </xsl:text>
-									<xsl:value-of select="/bipm:bipm-standard/bipm:bibdata/bipm:title[@type = 'appendix' and @language = $lang]"/>
-								</fo:block>								
-							</fo:block>
-						</fo:block-container>
-						
-						<fo:block line-height="130%">
-							<xsl:apply-templates select="bipm:sections/*"/>
-						</fo:block>
-
-						<fo:block id="theLastPage"/>
-					</fo:flow>
-				</fo:page-sequence> -->
-				
+		
 				<xsl:variable name="docid">
 					<xsl:call-template name="getDocumentId"/>
 				</xsl:variable>
@@ -1273,6 +1259,7 @@
 				
 				<xsl:apply-templates select="bipm:bibliography/bipm:references[not(@normative='true')]" mode="sections"/> 
 				
+				<!-- Index -->
 				<xsl:apply-templates select="xalan:nodeset($indexes)/doc[@id = $docid]//bipm:clause[@type = 'index']" mode="index" />
 				
 			</xsl:otherwise>
