@@ -3120,23 +3120,26 @@
 				<xsl:when test="starts-with(normalize-space(following-sibling::node()[1]), ')')">										
 					<!-- add , see p. N -->				
 					<!-- add , voir p. N -->
-					<xsl:apply-templates />					
-					<xsl:text>, </xsl:text>
+					<xsl:apply-templates />	
 					
-					<xsl:variable name="nosee" select="normalize-space(@nosee)"/>
-					<xsl:if test="$nosee != 'true'">
-						<xsl:variable name="curr_lang" select="ancestor::bipm:bipm-standard/bipm:bibdata/bipm:language[@current = 'true']"/>					
-						<fo:inline>
-							<xsl:if test="ancestor::bipm:note_side">
-								<xsl:attribute name="font-style">italic</xsl:attribute>
-							</xsl:if>
-							<xsl:value-of select="ancestor::bipm:bipm-standard/bipm:localized-strings/bipm:localized-string[@key='see' and @language=$curr_lang]"/>
-						</fo:inline>
-						<xsl:text> </xsl:text>
+					<xsl:variable name="nopage" select="normalize-space(@nopage)"/>
+					
+					<xsl:if test="$nopage != 'true'">
+						<xsl:text>, </xsl:text>
+						<xsl:variable name="nosee" select="normalize-space(@nosee)"/>
+						<xsl:if test="$nosee != 'true'">
+							<xsl:variable name="curr_lang" select="ancestor::bipm:bipm-standard/bipm:bibdata/bipm:language[@current = 'true']"/>					
+							<fo:inline>
+								<xsl:if test="ancestor::bipm:note_side">
+									<xsl:attribute name="font-style">italic</xsl:attribute>
+								</xsl:if>
+								<xsl:value-of select="ancestor::bipm:bipm-standard/bipm:localized-strings/bipm:localized-string[@key='see' and @language=$curr_lang]"/>
+							</fo:inline>
+							<xsl:text> </xsl:text>
+						</xsl:if>
+						<xsl:text>p. </xsl:text>
+						<fo:page-number-citation ref-id="{@target}"/>
 					</xsl:if>
-					
-					<xsl:text>p. </xsl:text>
-					<fo:page-number-citation ref-id="{@target}"/>
 				</xsl:when>
 				<xsl:otherwise>
 					<fo:inline><xsl:apply-templates /></fo:inline>
