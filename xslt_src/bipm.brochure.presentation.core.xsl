@@ -3224,6 +3224,13 @@
 		</xsl:copy>
 	</xsl:template>
 
+	<!-- issue 'over bar above equation with sub' fixing -->
+	<xsl:template match="mathml:msub/mathml:mrow[1][mathml:mover and count(following-sibling::*) = 1 and following-sibling::mathml:mrow]"  mode="mathml" priority="2">
+		<mathml:mstyle>
+			<xsl:copy-of select="."/>
+		</mathml:mstyle>
+	</xsl:template>
+
 	<xsl:template name="insertHeaderFooter">
 		<xsl:param name="header-title"/>		
 		<fo:static-content flow-name="header-odd">			
