@@ -28,7 +28,7 @@
 		</xsl:choose>
 	</xsl:variable>
 	
-	<xsl:variable name="debug">false</xsl:variable>
+	<xsl:variable name="debug">true</xsl:variable>
 	<xsl:variable name="pageWidth" select="'210mm'"/>
 	<xsl:variable name="pageHeight" select="'297mm'"/>
 
@@ -1359,7 +1359,7 @@
 	</xsl:template>
 
 	<!-- element with title -->
-	<xsl:template match="*[iso:title]" mode="contents">
+	<xsl:template match="*[*[local-name()='title']]" mode="contents"> <!-- iso:title -->
 		<xsl:variable name="level">
 			<xsl:call-template name="getLevel">
 				<xsl:with-param name="depth" select="iso:title/@depth"/>
@@ -1887,7 +1887,8 @@
 	</xsl:template>
 	
 	<!-- <xsl:template match="iso:references[@id = '_bibliography']/iso:bibitem" mode="contents"/> -->
-	<xsl:template match="iso:references[not(@normative='true')]/iso:bibitem" mode="contents"/>
+	<!-- <xsl:template match="iso:references[not(@normative='true')]/iso:bibitem" mode="contents"/> -->
+	<xsl:template match="*[local-name()='references']/*[local-name()='bibitem']" mode="contents"/>
 	
 	<!-- <xsl:template match="iso:references[@id = '_bibliography']/iso:bibitem/iso:title"> -->
 	<xsl:template match="iso:references[not(@normative='true')]/iso:bibitem/iso:title">
@@ -2233,7 +2234,7 @@
 				<xsl:with-param name="contents" select="$contents"/>
 			</xsl:call-template>
 			
-			<fo:page-sequence master-reference="cover-page-jcgm" font-family="Arial" force-page-count="no-force">
+			<fo:page-sequence master-reference="cover-page-jcgm" font-family="Arial" font-size="10.5pt" force-page-count="no-force">
 				<fo:static-content flow-name="cover-page-jcgm-footer" font-size="10pt">
 					<fo:block font-size="10pt" border-bottom="0.5pt solid black" padding-bottom="2.5mm"  margin-left="-1mm" space-after="4mm">
 						<!-- Example: First edition  July 2009 -->
@@ -2336,16 +2337,102 @@
 			</fo:page-sequence>
 			
 			
-			<fo:page-sequence master-reference="document-jcgm" format="i" initial-page-number="2" force-page-count="even">
+			<fo:page-sequence master-reference="document-jcgm" format="i" initial-page-number="2" force-page-count="odd">
 				<xsl:call-template name="insertHeaderFooter_JCGM"/>
 					
 				<fo:flow flow-name="xsl-region-body" line-height="115%">
-					<fo:block>test</fo:block>
+					<!-- Table of Contents -->
+					<fo:block-container>
+						<fo:block text-align-last="justify">
+							<fo:inline font-size="15pt" font-weight="bold">
+								<xsl:call-template name="getLocalizedString">
+									<xsl:with-param name="key">table_of_contents</xsl:with-param>
+								</xsl:call-template>
+							</fo:inline>
+							<fo:inline keep-together.within-line="always">
+								<fo:leader leader-pattern="space"/>
+								<xsl:call-template name="getLocalizedString">
+									<xsl:with-param name="key">Page.sg</xsl:with-param>
+								</xsl:call-template>
+							</fo:inline>
+						</fo:block>
+						
+						<xsl:if test="$debug = 'true'">
+							<xsl:text disable-output-escaping="yes">&lt;!--</xsl:text>
+								DEBUG
+								contents=<xsl:copy-of select="xalan:nodeset($contents)"/>
+							<xsl:text disable-output-escaping="yes">--&gt;</xsl:text>
+						</xsl:if>
+						
+						<xsl:variable name="annexes_title">
+							<xsl:call-template name="getLocalizedString">
+								<xsl:with-param name="key">Annex.pl</xsl:with-param>
+							</xsl:call-template>
+						</xsl:variable>
+						
+						<xsl:for-each select="xalan:nodeset($contents)//item[@display = 'true']"> <!-- and not (@type = 'annex') and not (@type = 'references') -->
+							<xsl:if test="@type = 'annex' and not(preceding-sibling::item[@display = 'true' and @type = 'annex'])">
+								<fo:block font-size="12pt" space-before="16pt" font-weight="bold">
+									<xsl:value-of select="$annexes_title"/>
+								</fo:block>
+							</xsl:if>
+							<xsl:call-template name="print_JCGN_toc_item"/>
+						</xsl:for-each>	
+					</fo:block-container>
+					
+					<!-- Foreword, Introduction -->					
+					<xsl:call-template name="processPrefaceSectionsDefault"/>
+					
 				</fo:flow>
 			</fo:page-sequence>
 		</fo:root>
 	</xsl:template>
 	
+
+	<xsl:template name="print_JCGN_toc_item">
+		<xsl:variable name="margin-left">5</xsl:variable>
+		<fo:block>
+			<xsl:if test="@level = 1">
+				<xsl:attribute name="margin-top">12pt</xsl:attribute>
+			</xsl:if>
+			<fo:list-block>
+				<xsl:attribute name="margin-left"><xsl:value-of select="$margin-left * (@level - 1)"/>mm</xsl:attribute>
+				<xsl:attribute name="provisional-distance-between-starts">
+					<xsl:choose>
+						<!-- skip 0 section without subsections -->
+						<xsl:when test="@level = 2"><xsl:value-of select="$margin-left * 1.6"/>mm</xsl:when>
+						<xsl:when test="@level &gt;= 3"><xsl:value-of select="$margin-left * 1.8"/>mm</xsl:when>
+						<xsl:when test="@section != ''"><xsl:value-of select="$margin-left"/>mm</xsl:when>
+						<xsl:otherwise>0mm</xsl:otherwise>
+					</xsl:choose>
+				</xsl:attribute>
+				<fo:list-item>
+					<fo:list-item-label end-indent="label-end()">
+						<fo:block font-weight="bold">														
+								<xsl:value-of select="@section"/>
+						</fo:block>
+					</fo:list-item-label>
+					<fo:list-item-body start-indent="body-start()">
+						<fo:block text-align-last="justify" margin-left="12mm" text-indent="-12mm">
+							<fo:basic-link internal-destination="{@id}" fox:alt-text="{title}">
+								<fo:inline>
+									<xsl:if test="@level = 1">
+										<xsl:attribute name="font-weight">bold</xsl:attribute>
+									</xsl:if>
+									<xsl:apply-templates select="title"/>
+								</fo:inline>
+								<xsl:text> </xsl:text>
+								<fo:inline keep-together.within-line="always" font-weight="normal">
+									<fo:leader font-size="9pt" leader-pattern="dots"/>
+									<fo:inline><fo:page-number-citation ref-id="{@id}"/></fo:inline>
+								</fo:inline>
+							</fo:basic-link>
+						</fo:block>
+					</fo:list-item-body>
+				</fo:list-item>
+			</fo:list-block>
+		</fo:block>
+	</xsl:template>
 
 	<xsl:template name="insertHeaderFooter_JCGM">
 		<xsl:variable name="header_text">
