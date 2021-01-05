@@ -2,7 +2,7 @@
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" 
 											xmlns:fo="http://www.w3.org/1999/XSL/Format" 
 											xmlns:iso="https://www.metanorma.org/ns/iso" 
-											xmlns:bipm="https://www.metanorma.org/ns/bipm" 
+											xmlns:jcgm="https://www.metanorma.org/ns/bipm" 
 											xmlns:mathml="http://www.w3.org/1998/Math/MathML" 
 											xmlns:xalan="http://xml.apache.org/xalan" 
 											xmlns:fox="http://xmlgraphics.apache.org/fop/extensions" 
@@ -38,8 +38,18 @@
 		<xsl:call-template name="getLocalizedString">
 			<xsl:with-param name="key">all_rights_reserved</xsl:with-param>
 		</xsl:call-template>
-	</xsl:variable>	
-	<xsl:variable name="copyrightText" select="concat('© ISO ', /iso:iso-standard/iso:bibdata/iso:copyright/iso:from ,' – ', $all_rights_reserved)"/>
+	</xsl:variable>
+	
+	<xsl:variable name="copyrightText">
+		<xsl:choose>
+			<xsl:when test="$template_namespace = 'iso'">
+				<xsl:value-of select="concat('© ISO ', /iso:iso-standard/iso:bibdata/iso:copyright/iso:from ,' – ', $all_rights_reserved)"/>
+			</xsl:when>
+			<xsl:when test="$template_namespace = 'jcgm'">
+				<xsl:value-of select="concat('© ', /jcgm:bipm-standard/jcgm:bibdata/jcgm:ext/jcgm:editorialgroup/jcgm:committee/@acronym, ' ', /jcgm:bipm-standard/jcgm:bibdata/jcgm:copyright/jcgm:from, ' — ', $all_rights_reserved)"/>
+			</xsl:when>
+		</xsl:choose>
+	</xsl:variable>
   
 	<xsl:variable name="lang-1st-letter_tmp" select="substring-before(substring-after(/iso:iso-standard/iso:bibdata/iso:docidentifier[@type = 'iso-with-lang'], '('), ')')"/>
 	<xsl:variable name="lang-1st-letter" select="concat('(', $lang-1st-letter_tmp , ')')"/>
@@ -2186,7 +2196,35 @@
 					<fo:region-start extent="100mm"/>
 					<fo:region-end extent="19mm"/>
 				</fo:simple-page-master>
-			
+				<!-- internal cover page -->
+				<fo:simple-page-master master-name="internal-cover-page-jcgm" page-width="{$pageWidth}" page-height="{$pageHeight}">
+					<fo:region-body margin-top="11mm" margin-bottom="21mm" margin-left="25mm" margin-right="19mm"/>
+					<fo:region-before extent="11mm"/>
+					<fo:region-after region-name="internal-cover-page-jcgm-footer" extent="21mm"/>
+					<fo:region-start extent="25mm"/>
+					<fo:region-end extent="19mm"/>
+				</fo:simple-page-master>
+				
+				<fo:simple-page-master master-name="odd-jcgm" page-width="{$pageWidth}" page-height="{$pageHeight}">
+					<fo:region-body margin-top="29.5mm" margin-bottom="23.5mm" margin-left="25mm" margin-right="15mm"/>
+					<fo:region-before region-name="header-odd-jcgm" extent="29.5mm"/> <!--   display-align="center" -->
+					<fo:region-after region-name="footer-odd-jcgm" extent="23.5mm"/>
+					<fo:region-start region-name="left-region" extent="25mm"/>
+					<fo:region-end region-name="right-region" extent="15mm"/>
+				</fo:simple-page-master>
+				<fo:simple-page-master master-name="even-jcgm" page-width="{$pageWidth}" page-height="{$pageHeight}">
+					<fo:region-body margin-top="29.5mm" margin-bottom="23.5mm" margin-left="15mm" margin-right="25mm"/>
+					<fo:region-before region-name="header-even-jcgm" extent="29.5mm"/> <!--   display-align="center" -->
+					<fo:region-after region-name="footer-even-jcgm" extent="23.5mm"/>
+					<fo:region-start region-name="left-region" extent="15mm"/>
+					<fo:region-end region-name="right-region" extent="25mm"/>
+				</fo:simple-page-master>
+				<fo:page-sequence-master master-name="document-jcgm">
+					<fo:repeatable-page-master-alternatives>
+						<fo:conditional-page-master-reference odd-or-even="even" master-reference="even-jcgm"/>
+						<fo:conditional-page-master-reference odd-or-even="odd" master-reference="odd-jcgm"/>
+					</fo:repeatable-page-master-alternatives>
+				</fo:page-sequence-master>
 			</fo:layout-master-set>
 			
 			<xsl:call-template name="addPDFUAmeta"/>
@@ -2208,46 +2246,153 @@
 					<!-- Example © JCGM 2009 -->
 					<fo:block font-size="11pt">
 						<fo:inline font-family="Times New Roman" font-size="12pt"><xsl:text>© </xsl:text></fo:inline>
-						<xsl:value-of select="/bipm:bipm-standard/bipm:bibdata/bipm:ext/bipm:editorialgroup/bipm:committee/@acronym"/>
+						<xsl:value-of select="/jcgm:bipm-standard/jcgm:bibdata/jcgm:ext/jcgm:editorialgroup/jcgm:committee/@acronym"/>
 						<xsl:text> </xsl:text>
-						<xsl:value-of select="/bipm:bipm-standard/bipm:bibdata/bipm:copyright/bipm:from"/>
+						<xsl:value-of select="/jcgm:bipm-standard/jcgm:bibdata/jcgm:copyright/jcgm:from"/>
 					</fo:block>
 				</fo:static-content>
 				<fo:flow flow-name="xsl-region-body">
 					<xsl:call-template name="insert_Logo-BIPM-Metro"/>
 					<fo:block-container font-weight="bold">
 						<fo:block font-size="16.5pt"  space-after="24.5mm">
-							<xsl:value-of select="//bipm:bibdata/bipm:ext/bipm:editorialgroup/bipm:committee/@acronym"/>
+							<xsl:value-of select="//jcgm:bibdata/jcgm:ext/jcgm:editorialgroup/jcgm:committee/@acronym"/>
 							<xsl:text> </xsl:text>
-							<xsl:value-of select="//bipm:bibdata/bipm:docnumber"/>
+							<xsl:value-of select="//jcgm:bibdata/jcgm:docnumber"/>
 							<fo:inline font-weight="normal">:</fo:inline>
-							<xsl:value-of select="//bipm:bipm-standard/bipm:bibdata/bipm:copyright/bipm:from"/>
+							<xsl:value-of select="//jcgm:bipm-standard/jcgm:bibdata/jcgm:copyright/jcgm:from"/>
 						</fo:block>
 						<fo:block border-bottom="1pt solid black">&#xa0;</fo:block>
 						<fo:block font-size="16.5pt" margin-left="-0.5mm"  padding-top="3.5mm" space-after="7mm" margin-right="7mm" line-height="105%">
-							<xsl:value-of select="/bipm:bipm-standard/bipm:bibdata/bipm:title[@language = $lang and @type = 'main']"/>
-							<xsl:if test="/bipm:bipm-standard/bipm:bibdata/bipm:title[@language = $lang and @type = 'part']">
+							<xsl:apply-templates select="/jcgm:bipm-standard/jcgm:bibdata/jcgm:title[@language = $lang and @type = 'main']" mode="title"/>
+							<xsl:variable name="title_part">
+								<xsl:apply-templates select="/jcgm:bipm-standard/jcgm:bibdata/jcgm:title[@language = $lang and @type = 'part']" mode="title"/>
+							</xsl:variable>
+							<xsl:if test="normalize-space($title_part) != ''">
 								<xsl:text> — </xsl:text>
-								<xsl:value-of select="/bipm:bipm-standard/bipm:bibdata/bipm:title[@language = $lang and @type = 'part']"/>
+								<xsl:copy-of select="$title_part"/>
 							</xsl:if>
 						</fo:block>
-						<xsl:variable name="secondLang" select="/bipm:bipm-standard/bipm:bibdata/bipm:title/@language[. != $lang]"/>
-						
 						<fo:block font-size="12pt" font-style="italic" line-height="140%">
-							<xsl:value-of select="/bipm:bipm-standard/bipm:bibdata/bipm:title[@language = $secondLang and @type = 'main']"/>
-							<xsl:if test="/bipm:bipm-standard/bipm:bibdata/bipm:title[@language = $secondLang and @type = 'part']">
+							<xsl:variable name="secondLang" select="/jcgm:bipm-standard/jcgm:bibdata/jcgm:title/@language[. != $lang]"/>
+							<xsl:apply-templates select="/jcgm:bipm-standard/jcgm:bibdata/jcgm:title[@language = $secondLang and @type = 'main']" mode="title"/>
+							<xsl:variable name="title_part">
+								<xsl:apply-templates select="/jcgm:bipm-standard/jcgm:bibdata/jcgm:title[@language = $secondLang and @type = 'part']" mode="title"/>
+							</xsl:variable>
+							<xsl:if test="normalize-space($title_part) != ''">
 								<xsl:text> — </xsl:text>
-								<xsl:value-of select="/bipm:bipm-standard/bipm:bibdata/bipm:title[@language = $secondLang and @type = 'part']"/>
+								<xsl:copy-of select="$title_part"/>
 							</xsl:if>
 						</fo:block>
 					</fo:block-container>
 				</fo:flow>
 			</fo:page-sequence>
-				
 			
+			<fo:page-sequence master-reference="internal-cover-page-jcgm" force-page-count="no-force">
+				<fo:static-content flow-name="internal-cover-page-jcgm-footer" font-size="9pt">
+					<!-- example: (c) JCGM 2009— All rights reserved -->
+					<fo:block text-align="right">
+						<xsl:value-of select="$copyrightText"/>
+					</fo:block>
+				</fo:static-content>
+				<fo:flow flow-name="xsl-region-body">
+					<fo:table table-layout="fixed" width="100%" font-size="13pt">
+						<fo:table-column column-width="134mm"/>
+						<fo:table-column column-width="30mm"/>
+						<fo:table-body>
+							<fo:table-row>
+								<fo:table-cell>
+									<fo:block><xsl:value-of select="/jcgm:bipm-standard/jcgm:bibdata/jcgm:ext/jcgm:editorialgroup/jcgm:committee"/></fo:block>
+								</fo:table-cell>
+								<fo:table-cell line-height="140%">
+									<fo:block><xsl:value-of select="/jcgm:bipm-standard/jcgm:bibdata/jcgm:ext/jcgm:editorialgroup/jcgm:committee/@acronym"/></fo:block>
+									<fo:block><xsl:value-of select="/jcgm:bipm-standard/jcgm:bibdata/jcgm:docnumber"/></fo:block>
+									<fo:block><xsl:value-of select="/jcgm:bipm-standard/jcgm:bibdata/jcgm:copyright/jcgm:from"/></fo:block>
+								</fo:table-cell>
+							</fo:table-row>
+						</fo:table-body>
+					</fo:table>
+					<fo:block font-size="18pt" space-before="70mm">
+						<xsl:apply-templates select="/jcgm:bipm-standard/jcgm:bibdata/jcgm:title[@language = $lang and @type = 'main']" mode="title"/>
+						<xsl:variable name="title_part">
+							<xsl:apply-templates select="/jcgm:bipm-standard/jcgm:bibdata/jcgm:title[@language = $lang and @type = 'part']" mode="title"/>
+						</xsl:variable>
+						<xsl:if test="normalize-space($title_part) != ''">
+							<xsl:text> — </xsl:text>
+							<xsl:copy-of select="$title_part"/>
+						</xsl:if>
+					</fo:block>
+					<fo:block font-size="13pt" space-before="35mm">
+						<xsl:variable name="secondLang" select="/jcgm:bipm-standard/jcgm:bibdata/jcgm:title/@language[. != $lang]"/>
+						<xsl:apply-templates select="/jcgm:bipm-standard/jcgm:bibdata/jcgm:title[@language = $secondLang and @type = 'main']" mode="title"/>
+						<xsl:variable name="title_part">
+							<xsl:apply-templates select="/jcgm:bipm-standard/jcgm:bibdata/jcgm:title[@language = $secondLang and @type = 'part']" mode="title"/>
+						</xsl:variable>
+						<xsl:if test="normalize-space($title_part) != ''">
+							<xsl:text> — </xsl:text>
+							<xsl:copy-of select="$title_part"/>
+						</xsl:if>
+					</fo:block>
+				</fo:flow>
+			</fo:page-sequence>
+			
+			
+			<fo:page-sequence master-reference="document-jcgm" format="i" initial-page-number="2" force-page-count="even">
+				<xsl:call-template name="insertHeaderFooter_JCGM"/>
+					
+				<fo:flow flow-name="xsl-region-body" line-height="115%">
+					<fo:block>test</fo:block>
+				</fo:flow>
+			</fo:page-sequence>
 		</fo:root>
 	</xsl:template>
 	
+
+	<xsl:template name="insertHeaderFooter_JCGM">
+		<xsl:variable name="header_text">
+			<xsl:value-of select="/jcgm:bipm-standard/jcgm:bibdata/jcgm:ext/jcgm:editorialgroup/jcgm:committee/@acronym"/>
+			<xsl:text> </xsl:text>
+			<xsl:value-of select="/jcgm:bipm-standard/jcgm:bibdata/jcgm:docnumber"/>
+			<xsl:text>:</xsl:text>
+			<xsl:value-of select="/jcgm:bipm-standard/jcgm:bibdata/jcgm:copyright/jcgm:from"/>
+		</xsl:variable>
+		<fo:static-content flow-name="header-even-jcgm">
+			<fo:block-container height="98%">
+				<fo:block font-size="13pt" font-weight="bold" padding-top="12mm">
+					<xsl:value-of select="$header_text"/>
+				</fo:block>
+			</fo:block-container>
+		</fo:static-content>
+		<fo:static-content flow-name="footer-even-jcgm">
+			<fo:block-container height="98%">
+				<fo:block text-align-last="justify" >
+					<fo:inline font-size="12pt" font-weight="bold"><fo:page-number/></fo:inline>
+					<fo:inline keep-together.within-line="always">
+						<fo:leader leader-pattern="space"/>
+						<fo:inline font-size="10pt"><xsl:value-of select="$copyrightText"/></fo:inline>
+					</fo:inline>
+				</fo:block>
+			</fo:block-container>
+		</fo:static-content>
+		<fo:static-content flow-name="header-odd-jcgm">
+			<fo:block-container height="98%" >
+				<fo:block font-size="13pt" font-weight="bold" text-align="right" padding-top="12mm">
+					<xsl:value-of select="$header_text"/>
+				</fo:block>
+			</fo:block-container>
+		</fo:static-content>
+		<fo:static-content flow-name="footer-odd-jcgm">
+			<fo:block-container height="98%">
+				<fo:block text-align-last="justify" >
+					<fo:inline font-size="10pt"><xsl:value-of select="$copyrightText"/></fo:inline>
+					<fo:inline keep-together.within-line="always">
+						<fo:leader leader-pattern="space"/>
+						<fo:inline font-size="12pt" font-weight="bold"><fo:page-number/></fo:inline>
+					</fo:inline>
+				</fo:block>
+				
+			</fo:block-container>
+		</fo:static-content>
+	</xsl:template>
 	
 	<xsl:template name="insert_Logo-BIPM-Metro">
 		<fo:block-container absolute-position="fixed" left="21mm" top="52mm">
