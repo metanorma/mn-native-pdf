@@ -17,7 +17,7 @@
 	
 	<xsl:include href="./common.xsl"/>
 
-	<xsl:key name="kfn" match="iso:p/iso:fn" use="@reference"/>
+	<xsl:key name="kfn" match="*[local-name()='p']/*[local-name()='fn']" use="@reference"/>
 	
 	<xsl:variable name="namespace">iso</xsl:variable>
 	
@@ -1362,7 +1362,7 @@
 	<xsl:template match="*[*[local-name()='title']]" mode="contents"> <!-- iso:title -->
 		<xsl:variable name="level">
 			<xsl:call-template name="getLevel">
-				<xsl:with-param name="depth" select="iso:title/@depth"/>
+				<xsl:with-param name="depth" select="*[local-name()='title']/@depth"/>
 			</xsl:call-template>
 		</xsl:variable>
 		
@@ -1376,7 +1376,7 @@
 			
 		<xsl:variable name="display">
 			<xsl:choose>				
-				<xsl:when test="ancestor-or-self::iso:annex and $level &gt;= 2">false</xsl:when>
+				<xsl:when test="ancestor-or-self::*[local-name()='annex'] and $level &gt;= 2">false</xsl:when>
 				<xsl:when test="$section = '' and $type = 'clause'">false</xsl:when>
 				<xsl:when test="$level &lt;= 3">true</xsl:when>
 				<xsl:otherwise>false</xsl:otherwise>
@@ -1385,8 +1385,8 @@
 		
 		<xsl:variable name="skip">
 			<xsl:choose>
-				<xsl:when test="ancestor-or-self::iso:bibitem">true</xsl:when>
-				<xsl:when test="ancestor-or-self::iso:term">true</xsl:when>				
+				<xsl:when test="ancestor-or-self::*[local-name()='bibitem']">true</xsl:when>
+				<xsl:when test="ancestor-or-self::*[local-name()='term']">true</xsl:when>				
 				<xsl:otherwise>false</xsl:otherwise>
 			</xsl:choose>
 		</xsl:variable>
@@ -1399,8 +1399,8 @@
 			</xsl:variable>
 			
 			<xsl:variable name="root">
-				<xsl:if test="ancestor-or-self::iso:preface">preface</xsl:if>
-				<xsl:if test="ancestor-or-self::iso:annex">annex</xsl:if>
+				<xsl:if test="ancestor-or-self::*[local-name()='preface']">preface</xsl:if>
+				<xsl:if test="ancestor-or-self::*[local-name()='annex']">annex</xsl:if>
 			</xsl:variable>
 			
 			<item id="{@id}" level="{$level}" section="{$section}" type="{$type}" root="{$root}" display="{$display}">
@@ -1623,7 +1623,7 @@
 	<!-- ====== -->
 
 	
-	<xsl:template match="iso:p">
+	<xsl:template match="*[local-name()='p']">
 		<xsl:param name="inline" select="'false'"/>
 		<xsl:variable name="previous-element" select="local-name(preceding-sibling::*[1])"/>
 		<xsl:variable name="element-name">
@@ -1639,17 +1639,22 @@
 				<xsl:choose>
 					<!-- <xsl:when test="ancestor::iso:preface">justify</xsl:when> -->
 					<xsl:when test="@align"><xsl:value-of select="@align"/></xsl:when>
-					<xsl:when test="ancestor::iso:td/@align"><xsl:value-of select="ancestor::iso:td/@align"/></xsl:when>
-					<xsl:when test="ancestor::iso:th/@align"><xsl:value-of select="ancestor::iso:th/@align"/></xsl:when>
+					<xsl:when test="ancestor::*[local-name()='td']/@align"><xsl:value-of select="ancestor::*[local-name()='td']/@align"/></xsl:when>
+					<xsl:when test="ancestor::*[local-name()='th']/@align"><xsl:value-of select="ancestor::*[local-name()='th']/@align"/></xsl:when>
 					<xsl:otherwise>justify</xsl:otherwise><!-- left -->
 				</xsl:choose>
 			</xsl:attribute>
-			<xsl:attribute name="margin-bottom">8pt</xsl:attribute>
+			<xsl:attribute name="margin-bottom">
+				<xsl:choose>
+					<xsl:when test="$template_namespace = 'iso'">8pt</xsl:when>
+					<xsl:otherwise>12pt</xsl:otherwise> <!-- jcgm -->
+				</xsl:choose>
+			</xsl:attribute>
 			<xsl:apply-templates />
 		</xsl:element>
 		<xsl:if test="$element-name = 'fo:inline' and not($inline = 'true') and not(local-name(..) = 'admonition')">
 			<fo:block margin-bottom="12pt">
-				 <xsl:if test="ancestor::iso:annex or following-sibling::iso:table">
+				 <xsl:if test="ancestor::*[local-name()='annex'] or following-sibling::*[local-name()='table']">
 					<xsl:attribute name="margin-bottom">0</xsl:attribute>
 				 </xsl:if>
 				<xsl:value-of select="$linebreak"/>
@@ -1679,7 +1684,7 @@
 	-->
 	
 	<xsl:variable name="p_fn">
-		<xsl:for-each select="//iso:p/iso:fn[generate-id(.)=generate-id(key('kfn',@reference)[1])]">
+		<xsl:for-each select="//*[local-name()='p']/*[local-name()='fn'][generate-id(.)=generate-id(key('kfn',@reference)[1])]">
 			<!-- copy unique fn -->
 			<fn gen_id="{generate-id(.)}">
 				<xsl:copy-of select="@*"/>
@@ -1688,7 +1693,7 @@
 		</xsl:for-each>
 	</xsl:variable>
 	
-	<xsl:template match="iso:p/iso:fn" priority="2">
+	<xsl:template match="*[local-name()='p']/*[local-name()='fn']" priority="2">
 		<xsl:variable name="gen_id" select="generate-id(.)"/>
 		<xsl:variable name="reference" select="@reference"/>
 		<xsl:variable name="number">
@@ -1701,15 +1706,15 @@
 					<fo:inline font-size="80%" keep-with-previous.within-line="always" vertical-align="super">
 						<fo:basic-link internal-destination="footnote_{@reference}_{$number}" fox:alt-text="footnote {@reference} {$number}">
 							<!-- <xsl:value-of select="@reference"/> -->
-							<xsl:value-of select="$number + count(//iso:bibitem[ancestor::iso:references[@normative='true']]/iso:note)"/><xsl:text>)</xsl:text>
+							<xsl:value-of select="$number + count(//*[local-name()='bibitem'][ancestor::*[local-name()='references'][@normative='true']]/*[local-name()='note'])"/><xsl:text>)</xsl:text>
 						</fo:basic-link>
 					</fo:inline>
 					<fo:footnote-body>
 						<fo:block font-size="10pt" margin-bottom="12pt">
 							<fo:inline id="footnote_{@reference}_{$number}" keep-with-next.within-line="always" padding-right="3mm"> <!-- font-size="60%"  alignment-baseline="hanging" -->
-								<xsl:value-of select="$number + count(//iso:bibitem[ancestor::iso:references[@normative='true']]/iso:note)"/><xsl:text>)</xsl:text>
+								<xsl:value-of select="$number + count(//*[local-name()='bibitem'][ancestor::*[local-name()='references'][@normative='true']]/*[local-name()='note'])"/><xsl:text>)</xsl:text>
 							</fo:inline>
-							<xsl:for-each select="iso:p">
+							<xsl:for-each select="*[local-name()='p']">
 									<xsl:apply-templates />
 							</xsl:for-each>
 						</fo:block>
@@ -1719,42 +1724,42 @@
 			<xsl:otherwise>
 				<fo:inline font-size="60%" keep-with-previous.within-line="always" vertical-align="super">
 					<fo:basic-link internal-destination="footnote_{@reference}_{$number}" fox:alt-text="footnote {@reference} {$number}">
-						<xsl:value-of select="$number + count(//iso:bibitem/iso:note)"/>
+						<xsl:value-of select="$number + count(//*[local-name()='bibitem']/*[local-name()='note'])"/>
 					</fo:basic-link>
 				</fo:inline>
 			</xsl:otherwise>
 		</xsl:choose>
 	</xsl:template>
 
-	<xsl:template match="iso:p/iso:fn/iso:p">
+	<xsl:template match="*[local-name()='p']/*[local-name()='fn']/*[local-name()='p']">
 		<xsl:apply-templates />
 	</xsl:template>
 	
 	
 	
-	<xsl:template match="iso:bibitem">
+	<xsl:template match="*[local-name()='bibitem']">
 		<fo:block id="{@id}" margin-bottom="6pt"> <!-- 12 pt -->
 			<xsl:variable name="docidentifier">
-				<xsl:if test="iso:docidentifier">
+				<xsl:if test="*[local-name()='docidentifier']">
 					<xsl:choose>
-						<xsl:when test="iso:docidentifier/@type = 'metanorma'"/>
-						<xsl:otherwise><xsl:value-of select="iso:docidentifier"/></xsl:otherwise>
+						<xsl:when test="*[local-name()='docidentifier']/@type = 'metanorma'"/>
+						<xsl:otherwise><xsl:value-of select="*[local-name()='docidentifier']"/></xsl:otherwise>
 					</xsl:choose>
 				</xsl:if>
 			</xsl:variable>
 			<xsl:value-of select="$docidentifier"/>
-			<xsl:apply-templates select="iso:note"/>			
+			<xsl:apply-templates select="*[local-name()='note']"/>			
 			<xsl:if test="normalize-space($docidentifier) != ''">, </xsl:if>
 			<fo:inline font-style="italic">
 				<xsl:choose>
-					<xsl:when test="iso:title[@type = 'main' and @language = $lang]">
-						<xsl:value-of select="iso:title[@type = 'main' and @language = $lang]"/>
+					<xsl:when test="*[local-name()='title'][@type = 'main' and @language = $lang]">
+						<xsl:value-of select="*[local-name()='title'][@type = 'main' and @language = $lang]"/>
 					</xsl:when>
-					<xsl:when test="iso:title[@type = 'main' and @language = 'en']">
-						<xsl:value-of select="iso:title[@type = 'main' and @language = 'en']"/>
+					<xsl:when test="*[local-name()='title'][@type = 'main' and @language = 'en']">
+						<xsl:value-of select="*[local-name()='title'][@type = 'main' and @language = 'en']"/>
 					</xsl:when>
 					<xsl:otherwise>
-						<xsl:value-of select="iso:title"/>
+						<xsl:value-of select="*[local-name()='title']"/>
 					</xsl:otherwise>
 				</xsl:choose>
 			</fo:inline>
@@ -1762,10 +1767,10 @@
 	</xsl:template>
 	
 	
-	<xsl:template match="iso:bibitem/iso:note" priority="2">
+	<xsl:template match="*[local-name()='bibitem']/*[local-name()='note']" priority="2">
 		<fo:footnote>
 			<xsl:variable name="number">
-				<xsl:number level="any" count="iso:bibitem/iso:note"/>
+				<xsl:number level="any" count="*[local-name()='bibitem']/*[local-name()='note']"/>
 			</xsl:variable>
 			<fo:inline font-size="8pt" keep-with-previous.within-line="always" baseline-shift="30%"> <!--85% vertical-align="super"-->
 				<fo:basic-link internal-destination="{generate-id()}" fox:alt-text="footnote {$number}">
@@ -1785,18 +1790,18 @@
 	
 	
 	
-	<xsl:template match="iso:ul | iso:ol" mode="ul_ol">
+	<xsl:template match="*[local-name()='ul'] | *[local-name()='ol']" mode="ul_ol">
 		<fo:list-block provisional-distance-between-starts="7mm" margin-top="8pt"> <!-- margin-bottom="8pt" -->
 			<xsl:apply-templates />
 		</fo:list-block>
-		<xsl:for-each select="./iso:note">
+		<xsl:for-each select="./*[local-name()='note']">
 			<xsl:call-template name="note"/>
 		</xsl:for-each>
 	</xsl:template>
 	
-	<xsl:template match="iso:ul//iso:note |  iso:ol//iso:note" priority="2"/>
+	<xsl:template match="*[local-name()='ul']//*[local-name()='note'] |  *[local-name()='ol']//*[local-name()='note']" priority="2"/>
 	
-	<xsl:template match="iso:li">
+	<xsl:template match="*[local-name()='li']">
 		<fo:list-item id="{@id}">
 			<fo:list-item-label end-indent="label-end()">
 				<fo:block>
@@ -1806,13 +1811,13 @@
 			<fo:list-item-body start-indent="body-start()">
 				<fo:block>
 					<xsl:apply-templates />
-					<xsl:apply-templates select=".//iso:note" mode="process"/>
+					<xsl:apply-templates select=".//*[local-name()='note']" mode="process"/>
 				</fo:block>
 			</fo:list-item-body>
 		</fo:list-item>
 	</xsl:template>
 	
-	<xsl:template match="iso:note" mode="process">
+	<xsl:template match="*[local-name()='note']" mode="process">
 		<xsl:call-template name="note"/>
 	</xsl:template>
 	
@@ -1828,14 +1833,14 @@
 	</xsl:template>
 	
 
-	<xsl:template match="iso:references[@normative='true']">
+	<xsl:template match="*[local-name()='references'][@normative='true']">
 		<fo:block id="{@id}">
 			<xsl:apply-templates />
 		</fo:block>
 	</xsl:template>
 	
 	<!-- <xsl:template match="iso:references[@id = '_bibliography']"> -->
-	<xsl:template match="iso:references[not(@normative='true')]">
+	<xsl:template match="*[local-name()='references'][not(@normative='true')]">
 		<fo:block break-after="page"/>
 		<fo:block id="{@id}">
 			<xsl:apply-templates />
@@ -1845,7 +1850,7 @@
 
 	<!-- Example: [1] ISO 9:1995, Information and documentation – Transliteration of Cyrillic characters into Latin characters – Slavic and non-Slavic languages -->
 	<!-- <xsl:template match="iso:references[@id = '_bibliography']/iso:bibitem"> -->
-	<xsl:template match="iso:references[not(@normative='true')]/iso:bibitem">
+	<xsl:template match="*[local-name()='references'][not(@normative='true')]/*[local-name()='bibitem']">
 		<fo:list-block margin-bottom="6pt" provisional-distance-between-starts="12mm">
 			<fo:list-item>
 				<fo:list-item-label end-indent="label-end()">
@@ -1858,28 +1863,28 @@
 				<fo:list-item-body start-indent="body-start()">
 					<fo:block>
 						<xsl:variable name="docidentifier">
-							<xsl:if test="iso:docidentifier">
+							<xsl:if test="*[local-name()='docidentifier']">
 								<xsl:choose>
-									<xsl:when test="iso:docidentifier/@type = 'metanorma'"/>
-									<xsl:otherwise><xsl:value-of select="iso:docidentifier"/></xsl:otherwise>
+									<xsl:when test="*[local-name()='docidentifier']/@type = 'metanorma'"/>
+									<xsl:otherwise><xsl:value-of select="*[local-name()='docidentifier']"/></xsl:otherwise>
 								</xsl:choose>
 							</xsl:if>
 						</xsl:variable>
 						<xsl:value-of select="$docidentifier"/>
-						<xsl:apply-templates select="iso:note"/>
+						<xsl:apply-templates select="*[local-name()='note']"/>
 						<xsl:if test="normalize-space($docidentifier) != ''">, </xsl:if>
 						<xsl:choose>
-							<xsl:when test="iso:title[@type = 'main' and @language = $lang]">
-								<xsl:apply-templates select="iso:title[@type = 'main' and @language = $lang]"/>
+							<xsl:when test="*[local-name()='title'][@type = 'main' and @language = $lang]">
+								<xsl:apply-templates select="*[local-name()='title'][@type = 'main' and @language = $lang]"/>
 							</xsl:when>
-							<xsl:when test="iso:title[@type = 'main' and @language = 'en']">
-								<xsl:apply-templates select="iso:title[@type = 'main' and @language = 'en']"/>
+							<xsl:when test="*[local-name()='title'][@type = 'main' and @language = 'en']">
+								<xsl:apply-templates select="*[local-name()='title'][@type = 'main' and @language = 'en']"/>
 							</xsl:when>
 							<xsl:otherwise>
-								<xsl:apply-templates select="iso:title"/>
+								<xsl:apply-templates select="*[local-name()='title']"/>
 							</xsl:otherwise>
 						</xsl:choose>
-						<xsl:apply-templates select="iso:formattedref"/>
+						<xsl:apply-templates select="*[local-name()='formattedref']"/>
 					</fo:block>
 				</fo:list-item-body>
 			</fo:list-item>
@@ -1891,7 +1896,7 @@
 	<xsl:template match="*[local-name()='references']/*[local-name()='bibitem']" mode="contents"/>
 	
 	<!-- <xsl:template match="iso:references[@id = '_bibliography']/iso:bibitem/iso:title"> -->
-	<xsl:template match="iso:references[not(@normative='true')]/iso:bibitem/iso:title">
+	<xsl:template match="*[local-name()='references'][not(@normative='true')]/*[local-name()='bibitem']/*[local-name()='title']">
 		<fo:inline font-style="italic">
 			<xsl:apply-templates />
 		</fo:inline>
@@ -1926,7 +1931,7 @@
 	</xsl:template>
 	
 
-	<xsl:template match="iso:formula/iso:stem">
+	<xsl:template match="*[local-name()='formula']/*[local-name()='stem']">
 		<fo:block margin-top="6pt" margin-bottom="12pt">
 			<fo:table table-layout="fixed" width="100%">
 				<fo:table-column column-width="95%"/>
@@ -1935,12 +1940,15 @@
 					<fo:table-row>
 						<fo:table-cell display-align="center">
 							<fo:block text-align="left" margin-left="5mm">
+								<xsl:if test="$template_namespace = 'jcgm'">
+									<xsl:attribute name="margin-left">25mm</xsl:attribute>
+								</xsl:if>
 								<xsl:apply-templates />
 							</fo:block>
 						</fo:table-cell>
 						<fo:table-cell display-align="center">
 							<fo:block text-align="right">
-								<xsl:apply-templates select="../iso:name" mode="presentation"/>
+								<xsl:apply-templates select="../*[local-name()='name']" mode="presentation"/>
 							</fo:block>
 						</fo:table-cell>
 					</fo:table-row>
@@ -2385,6 +2393,50 @@
 					
 				</fo:flow>
 			</fo:page-sequence>
+			
+			
+			<!-- JCGM BODY -->
+			<fo:page-sequence master-reference="document-jcgm" initial-page-number="1" force-page-count="no-force">
+				<fo:static-content flow-name="xsl-footnote-separator">
+					<fo:block>
+						<fo:leader leader-pattern="rule" leader-length="30%"/>
+					</fo:block>
+				</fo:static-content>
+				<xsl:call-template name="insertHeaderFooter_JCGM"/>
+				
+				<fo:flow flow-name="xsl-region-body" line-height="115%">
+					
+					<fo:block-container>
+						<!-- Show title -->
+						<!-- Example: Evaluation of measurement data — An introduction to the `Guide to the expression of uncertainty in measurement' and related documents -->
+						
+						<fo:block font-size="20pt" font-weight="bold" margin-bottom="20pt" line-height="1.1">
+						
+							<xsl:variable name="title-main">
+								<xsl:apply-templates select="//*[contains(local-name(), '-standard')]/*[local-name() = 'bibdata']/*[local-name() = 'title'][@language = $lang and @type = 'main']" mode="title"/>
+							</xsl:variable> 
+							<xsl:variable name="title-part">
+								<xsl:apply-templates select="//*[contains(local-name(), '-standard')]/*[local-name() = 'bibdata']/*[local-name() = 'title'][@language = $lang and @type = 'part']" mode="title"/>
+							</xsl:variable>
+							
+							<fo:block>
+								<xsl:copy-of select="$title-main"/>
+								<xsl:if test="normalize-space($title-main) != '' and normalize-space($title-part) != ''">
+									<xsl:text> — </xsl:text>
+								</xsl:if>
+								<xsl:copy-of select="$title-part"/>
+							</fo:block>
+							
+						</fo:block>
+					
+					</fo:block-container>
+					<!-- Clause(s) -->
+					<fo:block>
+						<xsl:call-template name="processMainSectionsDefault"/>
+					</fo:block>
+				</fo:flow>
+			</fo:page-sequence>
+			
 		</fo:root>
 	</xsl:template>
 	
@@ -2479,6 +2531,70 @@
 				
 			</fo:block-container>
 		</fo:static-content>
+	</xsl:template>
+	
+	<xsl:template match="jcgm:title">
+	
+		<xsl:variable name="level">
+			<xsl:call-template name="getLevel"/>
+		</xsl:variable>
+		
+		<xsl:variable name="font-size">
+			<xsl:choose>
+				<xsl:when test="ancestor::jcgm:preface">15pt</xsl:when>
+				<xsl:when test="../@inline-header = 'true'">10.5pt</xsl:when>
+				<xsl:when test="$level = 2">11.5pt</xsl:when>
+				<xsl:when test="$level &gt;= 3">10.5pt</xsl:when>
+				<xsl:otherwise>13pt</xsl:otherwise><!-- level 1 -->
+			</xsl:choose>
+		</xsl:variable>
+		
+		<xsl:variable name="element-name">
+			<xsl:choose>
+				<xsl:when test="../@inline-header = 'true'">fo:inline</xsl:when>
+				<xsl:otherwise>fo:block</xsl:otherwise>
+			</xsl:choose>
+		</xsl:variable>
+		
+			<xsl:element name="{$element-name}">
+				<xsl:attribute name="font-size"><xsl:value-of select="$font-size"/></xsl:attribute>
+				<xsl:attribute name="font-weight">bold</xsl:attribute>
+				<xsl:attribute name="space-before"> <!-- margin-top -->
+					<xsl:choose>
+						
+						<xsl:when test="$level = 1">36pt</xsl:when>
+						<xsl:when test="$level = 2">18pt</xsl:when>
+						<xsl:when test="$level &gt;= 3">3pt</xsl:when>
+						<xsl:when test="$level = ''">6pt</xsl:when><!-- 13.5pt -->
+						<xsl:otherwise>12pt</xsl:otherwise>
+					</xsl:choose>
+				</xsl:attribute>
+				<xsl:attribute name="space-after">
+					<xsl:choose>
+						<xsl:when test="ancestor::jcgm:preface">12pt</xsl:when>
+						<!-- <xsl:otherwise>12pt</xsl:otherwise> -->
+						<xsl:otherwise>12pt</xsl:otherwise>
+					</xsl:choose>
+				</xsl:attribute>
+				<xsl:attribute name="keep-with-next">always</xsl:attribute>		
+				<xsl:if test="$element-name = 'fo:inline'">
+					<xsl:attribute name="padding-right">
+						<xsl:choose>
+							<xsl:when test="$level = 3">6.5mm</xsl:when>
+							<xsl:otherwise>4mm</xsl:otherwise>
+						</xsl:choose>
+					</xsl:attribute>
+				</xsl:if>
+				<xsl:apply-templates />
+			</xsl:element>
+			
+			<xsl:if test="$element-name = 'fo:inline' and not(following-sibling::jcgm:p)">
+				<fo:block > <!-- margin-bottom="12pt" -->
+					<xsl:value-of select="$linebreak"/>
+				</fo:block>
+			</xsl:if>
+			
+		
 	</xsl:template>
 	
 	<xsl:template name="insert_Logo-BIPM-Metro">
