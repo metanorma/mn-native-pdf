@@ -1697,9 +1697,6 @@
 	</xsl:template>
 	<!-- End Cover Pages -->
 		
-	<xsl:template match="bipm:title" mode="title">
-		<fo:inline><xsl:apply-templates /></fo:inline>
-	</xsl:template>
 	
 	<xsl:template match="bipm:bipm-standard/bipm:bibdata/bipm:title[@language = 'en']/text()" priority="3">
 		<xsl:variable name="mep_text" select="'Mise en pratique'"/>

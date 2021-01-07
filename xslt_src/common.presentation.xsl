@@ -2349,7 +2349,7 @@
 			<xsl:if test="$namespace = 'bipm'">
 				<xsl:attribute name="font-weight">normal</xsl:attribute>
 				<xsl:attribute name="border">solid black 0pt</xsl:attribute>				
-				<xsl:attribute name="border-top">solid black 0.5pt</xsl:attribute>
+				<!-- <xsl:attribute name="border-top">solid black 0.5pt</xsl:attribute> -->
 				<xsl:attribute name="border-bottom">solid black 0.5pt</xsl:attribute>
 				<xsl:attribute name="height">8mm</xsl:attribute>
 				<xsl:attribute name="padding-top">2mm</xsl:attribute>
@@ -6154,6 +6154,11 @@
 	<xsl:template match="*[local-name() = 'name']/*[local-name() = 'forename']/text()" mode="strip">
 		<xsl:value-of select="substring(.,1,1)"/>
 	</xsl:template>
+
+
+	<xsl:template match="*[local-name() = 'title']" mode="title">
+		<fo:inline><xsl:apply-templates /></fo:inline>
+	</xsl:template>
 	
 	<!-- convert YYYY-MM-DD to 'Month YYYY' or 'Month DD, YYYY' -->
 	<xsl:template name="convertDate">
@@ -6512,7 +6517,12 @@
 			<xsl:call-template name="getLang"/>
 		</xsl:variable>
 		
-		<xsl:value-of select="/*/*[local-name() = 'localized-strings']/*[local-name() = 'localized-string'][@key = $key and @language = $curr_lang]"/>
+		<xsl:choose>
+			<xsl:when test="/*/*[local-name() = 'localized-strings']/*[local-name() = 'localized-string'][@key = $key and @language = $curr_lang]">
+				<xsl:value-of select="/*/*[local-name() = 'localized-strings']/*[local-name() = 'localized-string'][@key = $key and @language = $curr_lang]"/>
+			</xsl:when>
+			<xsl:otherwise><xsl:value-of select="$key"/></xsl:otherwise>
+		</xsl:choose>
 		
 	</xsl:template>
  
