@@ -15,6 +15,11 @@
 	<xsl:param name="svg_images"/>
 	<xsl:variable name="images" select="document($svg_images)"/>
 	
+	<!-- <item id="#">N_page</item> -->
+	<!-- param for second pass -->
+	<xsl:param name="external_index" /><!-- path to index xml, generated on 1st pass, based on FOP Intermediate Format -->
+	<xsl:variable name="index" select="document($external_index)"/>
+	
 	<xsl:include href="./common.xsl"/>
 
 	<xsl:key name="kfn" match="*[local-name()='p']/*[local-name()='fn']" use="@reference"/>
@@ -185,8 +190,49 @@
 		<contents>
 			<xsl:call-template name="processPrefaceSectionsDefault_Contents"/>
 			<xsl:call-template name="processMainSectionsDefault_Contents"/>
+			<!-- Index -->
+			<xsl:apply-templates select="//jcgm:clause[@type = 'index']" mode="contents"/>
 		</contents>
 	</xsl:variable>
+	
+	
+	<xsl:variable name="indexes">
+		<xsl:for-each select="//jcgm:bipm-standard">
+			
+			<xsl:variable name="current_document">
+				<xsl:copy-of select="."/>
+			</xsl:variable>
+			
+			<xsl:for-each select="xalan:nodeset($current_document)">
+			
+				<xsl:variable name="docid">
+					<xsl:call-template name="getDocumentId"/>
+				</xsl:variable>
+
+				<!-- add id to xref and split xref with @to into two xref -->
+				<xsl:variable name="current_document_index_id">
+					<xsl:apply-templates select=".//jcgm:clause[@type = 'index']" mode="index_add_id"/>
+				</xsl:variable>
+				
+				<xsl:variable name="current_document_index">
+					<xsl:apply-templates select="xalan:nodeset($current_document_index_id)" mode="index_update"/>
+				</xsl:variable>
+				
+				<xsl:for-each select="xalan:nodeset($current_document_index)">
+					<doc id="{$docid}">
+						<xsl:copy-of select="."/>
+					</doc>
+				</xsl:for-each>
+				
+			</xsl:for-each>
+			
+		</xsl:for-each>
+			
+	</xsl:variable>
+	
+	<xsl:variable name="dash" select="'&#x2013;'"/>
+
+	
 	
 	<xsl:variable name="lang">
 		<xsl:call-template name="getLang"/>
@@ -1371,7 +1417,10 @@
 		</xsl:variable>
 		
 		<xsl:variable name="type">
-			<xsl:value-of select="local-name()"/>
+			<xsl:choose>
+				<xsl:when test="@type = 'index'">index</xsl:when>
+				<xsl:otherwise><xsl:value-of select="local-name()"/></xsl:otherwise>
+			</xsl:choose>
 		</xsl:variable>
 			
 		<xsl:variable name="display">
@@ -1407,7 +1456,9 @@
 				<title>
 					<xsl:apply-templates select="xalan:nodeset($title)" mode="contents_item"/>
 				</title>
-				<xsl:apply-templates  mode="contents" />
+				<xsl:if test="$type != 'index'">
+					<xsl:apply-templates  mode="contents" />
+				</xsl:if>
 			</item>
 		</xsl:if>
 	</xsl:template>
@@ -2433,9 +2484,14 @@
 					<!-- Clause(s) -->
 					<fo:block>
 						<xsl:call-template name="processMainSectionsDefault"/>
+						
 					</fo:block>
 				</fo:flow>
 			</fo:page-sequence>
+
+				<!-- indexes=<xsl:copy-of select="$indexes"/> -->
+			<!-- Index -->
+			<xsl:apply-templates select="xalan:nodeset($indexes)/doc//jcgm:clause[@type = 'index']" mode="index" />
 			
 		</fo:root>
 	</xsl:template>
@@ -2595,6 +2651,233 @@
 			</xsl:if>
 			
 		
+	</xsl:template>
+
+
+		<!-- =================== -->
+	<!-- Index processing -->
+	<!-- =================== -->
+	
+	<xsl:template match="@*|node()" mode="index_add_id">
+		<xsl:copy>
+				<xsl:apply-templates select="@*|node()" mode="index_add_id"/>
+		</xsl:copy>
+	</xsl:template>
+	
+	<xsl:template match="jcgm:xref" mode="index_add_id">
+		<xsl:variable name="id">
+			<xsl:call-template name="generateIndexXrefId"/>
+		</xsl:variable>
+		<xsl:copy> <!-- add id to xref -->
+			<xsl:apply-templates select="@*" mode="index_add_id"/>
+			<xsl:attribute name="id">
+				<xsl:value-of select="$id"/>
+			</xsl:attribute>
+			<xsl:apply-templates mode="index_add_id"/>
+		</xsl:copy>
+		<!-- split <xref target="bm1" to="End" pagenumber="true"> to two xref:
+		<xref target="bm1" pagenumber="true"> and <xref target="End" pagenumber="true"> -->
+		<xsl:if test="@to">
+			<xsl:value-of select="$dash"/>
+			<xsl:copy>
+				<xsl:copy-of select="@*"/>
+				<xsl:attribute name="target"><xsl:value-of select="@to"/></xsl:attribute>
+				<xsl:attribute name="id">
+					<xsl:value-of select="$id"/><xsl:text>_to</xsl:text>
+				</xsl:attribute>
+				<xsl:apply-templates mode="index_add_id"/>
+			</xsl:copy>
+		</xsl:if>
+	</xsl:template>
+
+	<xsl:template match="@*|node()" mode="index_update">
+		<xsl:copy>
+				<xsl:apply-templates select="@*|node()" mode="index_update"/>
+		</xsl:copy>
+	</xsl:template>
+	
+	<xsl:template match="jcgm:clause[@type = 'index']//jcgm:li" mode="index_update">
+		<xsl:copy>
+			<xsl:apply-templates select="@*"  mode="index_update"/>
+		<xsl:apply-templates select="node()[1]" mode="process_li_element"/>
+		</xsl:copy>
+	</xsl:template>
+	
+	<xsl:template match="jcgm:clause[@type = 'index']//jcgm:li/node()" mode="process_li_element" priority="2">
+		<xsl:param name="element" />
+		<xsl:param name="remove" select="'false'"/>
+		<!-- <node></node> -->
+		<xsl:choose>
+			<xsl:when test="self::text()  and (normalize-space(.) = ',' or normalize-space(.) = $dash) and $remove = 'true'">
+				<!-- skip text (i.e. remove it) and process next element -->
+				<!-- [removed_<xsl:value-of select="."/>] -->
+				<xsl:apply-templates select="following-sibling::node()[1]" mode="process_li_element"/>
+			</xsl:when>
+			<xsl:when test="self::text()">
+				<xsl:value-of select="."/>
+				<xsl:apply-templates select="following-sibling::node()[1]" mode="process_li_element"/>
+			</xsl:when>
+			<xsl:when test="self::* and local-name(.) = 'xref'">
+				<xsl:variable name="id" select="@id"/>
+				<xsl:variable name="page" select="$index//item[@id = $id]"/>
+				<xsl:variable name="id_next" select="following-sibling::jcgm:xref[1]/@id"/>
+				<xsl:variable name="page_next" select="$index//item[@id = $id_next]"/>
+				
+				<xsl:variable name="id_prev" select="preceding-sibling::jcgm:xref[1]/@id"/>
+				<xsl:variable name="page_prev" select="$index//item[@id = $id_prev]"/>
+				
+				<xsl:choose>
+					<!-- 2nd pass -->
+					<!-- if page is equal to page for next and page is not the end of range -->
+					<xsl:when test="$page != '' and $page_next != '' and $page = $page_next and not(contains($page, '_to'))">  <!-- case: 12, 12-14 -->
+						<!-- skip element (i.e. remove it) and remove next text ',' -->
+						<!-- [removed_xref] -->
+						
+						<xsl:apply-templates select="following-sibling::node()[1]" mode="process_li_element">
+							<xsl:with-param name="remove">true</xsl:with-param>
+						</xsl:apply-templates>
+					</xsl:when>
+					
+					<xsl:when test="$page != '' and $page_prev != '' and $page = $page_prev and contains($page_prev, '_to')"> <!-- case: 12-14, 14, ... -->
+						<!-- remove xref -->
+						<xsl:apply-templates select="following-sibling::node()[1]" mode="process_li_element">
+							<xsl:with-param name="remove">true</xsl:with-param>
+						</xsl:apply-templates>
+					</xsl:when>
+
+					<xsl:otherwise>
+						<xsl:copy-of select="."/>
+						<xsl:apply-templates select="following-sibling::node()[1]" mode="process_li_element"/>
+					</xsl:otherwise>
+				</xsl:choose>
+			</xsl:when>
+			<xsl:when test="self::* and local-name(.) = 'ul'">
+				<!-- ul -->
+				<xsl:apply-templates select="." mode="index_update"/>
+			</xsl:when>
+			<xsl:otherwise>
+			 <xsl:copy-of select="."/>
+				<xsl:apply-templates select="following-sibling::node()[1]" mode="process_li_element"/>
+			</xsl:otherwise>
+		</xsl:choose>
+	</xsl:template>
+
+	
+	<xsl:template name="generateIndexXrefId">
+		<xsl:variable name="level" select="count(ancestor::jcgm:ul)"/>
+		<!-- <xsl:variable name="parent_ul_id" select="generate-id(ancestor::jcgm:ul[1])"/>
+		<xsl:variable name="item_number" select="count(ancestor::jcgm:li[ancestor::jcgm:ul[generate-id() = $parent_ul_id]])"/> -->
+		<xsl:variable name="docid">
+			<xsl:call-template name="getDocumentId"/>
+		</xsl:variable>
+		<xsl:variable name="item_number">
+			<xsl:number count="jcgm:li[ancestor::jcgm:clause[@type = 'index']]" level="any" />
+		</xsl:variable>
+		<xsl:variable name="xref_number"><xsl:number count="jcgm:xref"/></xsl:variable>
+		<xsl:value-of select="concat($docid, '_', $item_number, '_', $xref_number)"/> <!-- $level, '_',  -->
+	</xsl:template>
+	
+	<xsl:template match="jcgm:clause[@type = 'index']" />
+	<xsl:template match="jcgm:clause[@type = 'index']" mode="index">
+	
+		<fo:page-sequence master-reference="document-jcgm" force-page-count="no-force">
+			<xsl:variable name="header-title">
+				<xsl:choose>
+					<xsl:when test="./jcgm:title[1]/*[local-name() = 'tab']">
+						<xsl:apply-templates select="./jcgm:title[1]/*[local-name() = 'tab'][1]/following-sibling::node()" mode="header"/>
+					</xsl:when>
+					<xsl:otherwise>
+						<xsl:apply-templates select="./jcgm:title[1]" mode="header"/>
+					</xsl:otherwise>
+				</xsl:choose>
+			</xsl:variable>
+			<xsl:call-template name="insertHeaderFooter_JCGM">
+				<xsl:with-param name="header-title" select="$header-title"/>
+			</xsl:call-template>
+			
+			<fo:flow flow-name="xsl-region-body">
+				<fo:block id="{@id}">
+					<xsl:apply-templates />
+					
+					<!-- TEST <xsl:variable name="alphabet" select="'ABCDEFGHIJKLMNOPQRSTUVWXYZ'"/>
+					<xsl:for-each select="(document('')//node())[position() &lt; 26]">
+						<xsl:variable name="letter" select="substring($alphabet, position(), 1)"/>
+						<xsl:if test="position() &lt;= 3">
+							<fo:block font-size="10pt" font-weight="bold" margin-bottom="3pt" keep-with-next="always"><xsl:value-of select="$letter"/>, DEBUG</fo:block>
+							
+							<fo:block>accélération due à la pesanteur (gn), 33</fo:block>
+							<fo:block>activité d’un radionucléide, 26, 27</fo:block>
+							<fo:block>ampère (A), 13, 16, 18, 20, 28, 44, 49, 51, 52, 54, 55, 71, 81, 83-86, 89, 91-94, 97, 99, 100, 101, 103-104</fo:block>
+							<fo:block>angle, 25, 26, 33, 37 38, 40, 48, 55, 65</fo:block>
+							<fo:block>atmosphère normale, 52</fo:block>
+							<fo:block>atome gramme, 104</fo:block>
+							<fo:block>atome de césium, niveaux hyperfins, 15, 17, 18, 56, 58, 83, 85, 92, 94, 97, 98, 102</fo:block>
+							<xsl:if test="position() != last()"><fo:block>&#xA0;</fo:block></xsl:if>
+						</xsl:if>
+					</xsl:for-each> -->
+				</fo:block>
+			</fo:flow>
+		</fo:page-sequence>
+	</xsl:template>
+	
+	<xsl:template match="jcgm:clause[@type = 'index']/jcgm:title" priority="4">
+		<fo:block font-size="16pt" font-weight="bold" margin-bottom="84pt" margin-left="-18mm" span="all">
+			<!-- Index -->
+			<xsl:apply-templates />
+		</fo:block>
+	</xsl:template>
+	
+	<xsl:template match="jcgm:clause[@type = 'index']/jcgm:clause" priority="4">
+		<xsl:apply-templates />
+		<fo:block>
+		<xsl:if test="following-sibling::jcgm:clause">
+			<fo:block>&#xA0;</fo:block>
+		</xsl:if>
+		</fo:block>
+	</xsl:template>
+	
+	<xsl:template match="jcgm:clause[@type = 'index']/jcgm:clause/jcgm:title" priority="4">
+		<!-- Letter A, B, C, ... -->
+		<fo:block font-size="10pt" font-weight="bold" margin-bottom="3pt" keep-with-next="always">
+			<xsl:apply-templates />
+		</fo:block>
+	</xsl:template>
+	
+	<xsl:template match="jcgm:clause[@type = 'index']//jcgm:ul" priority="4">
+		<xsl:apply-templates />
+	</xsl:template>
+	
+	<xsl:template match="jcgm:clause[@type = 'index']//jcgm:li" priority="4">
+		<xsl:variable name="level" select="count(ancestor::jcgm:ul)" />
+		<fo:block start-indent="{5 * $level}mm" text-indent="-5mm">
+			<xsl:apply-templates />
+		</fo:block>
+	</xsl:template>
+	
+	<xsl:template match="jcgm:bookmark">
+		<fo:inline id="{@id}"/>
+	</xsl:template>
+	
+	<!-- =================== -->
+	<!-- End of Index processing -->
+	<!-- =================== -->
+	
+	<xsl:template match="jcgm:xref"  priority="2">
+		<fo:basic-link internal-destination="{@target}" fox:alt-text="{@target}" xsl:use-attribute-sets="xref-style">
+			<xsl:choose>
+				<xsl:when test="@pagenumber='true'">
+					<fo:inline>
+						<xsl:if test="@id">
+							<xsl:attribute name="id"><xsl:value-of select="@id"/></xsl:attribute>
+						</xsl:if>
+						<fo:page-number-citation ref-id="{@target}"/>
+					</fo:inline>
+				</xsl:when>
+				<xsl:otherwise>
+					<fo:inline><xsl:apply-templates /></fo:inline>
+				</xsl:otherwise>
+			</xsl:choose>
+		</fo:basic-link>
 	</xsl:template>
 	
 	<xsl:template name="insert_Logo-BIPM-Metro">

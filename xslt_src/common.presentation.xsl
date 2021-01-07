@@ -2349,7 +2349,7 @@
 			<xsl:if test="$namespace = 'bipm'">
 				<xsl:attribute name="font-weight">normal</xsl:attribute>
 				<xsl:attribute name="border">solid black 0pt</xsl:attribute>				
-				<xsl:attribute name="border-top">solid black 0.5pt</xsl:attribute>
+				<!-- <xsl:attribute name="border-top">solid black 0.5pt</xsl:attribute> -->
 				<xsl:attribute name="border-bottom">solid black 0.5pt</xsl:attribute>
 				<xsl:attribute name="height">8mm</xsl:attribute>
 				<xsl:attribute name="padding-top">2mm</xsl:attribute>
@@ -5307,6 +5307,11 @@
 			<fo:block-container margin-left="0mm">
 		
 				<fo:block xsl:use-attribute-sets="quote-style">
+					<xsl:if test="$namespace = 'iso'">
+						<xsl:if test="$template_namespace = 'jcgm'">
+							<xsl:attribute name="font-style">italic</xsl:attribute>
+						</xsl:if>
+					</xsl:if>
 					<!-- <xsl:apply-templates select=".//*[local-name() = 'p']"/> -->
 					<xsl:apply-templates select="./*[not(local-name() = 'author') and not(local-name() = 'source')]"/> <!-- process all nested nodes, except author and source -->
 				</fo:block>
