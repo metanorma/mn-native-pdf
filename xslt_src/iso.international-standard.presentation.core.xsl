@@ -1453,6 +1453,9 @@
 			</xsl:variable>
 			
 			<item id="{@id}" level="{$level}" section="{$section}" type="{$type}" root="{$root}" display="{$display}">
+				<xsl:if test="$type = 'index'">
+					<xsl:attribute name="level">1</xsl:attribute>
+				</xsl:if>
 				<title>
 					<xsl:apply-templates select="xalan:nodeset($title)" mode="contents_item"/>
 				</title>
@@ -2542,14 +2545,16 @@
 		</fo:block>
 	</xsl:template>
 
+	
+	<xsl:variable name="header_text">
+		<xsl:value-of select="/jcgm:bipm-standard/jcgm:bibdata/jcgm:ext/jcgm:editorialgroup/jcgm:committee/@acronym"/>
+		<xsl:text> </xsl:text>
+		<xsl:value-of select="/jcgm:bipm-standard/jcgm:bibdata/jcgm:docnumber"/>
+		<xsl:text>:</xsl:text>
+		<xsl:value-of select="/jcgm:bipm-standard/jcgm:bibdata/jcgm:copyright/jcgm:from"/>
+	</xsl:variable>
+	
 	<xsl:template name="insertHeaderFooter_JCGM">
-		<xsl:variable name="header_text">
-			<xsl:value-of select="/jcgm:bipm-standard/jcgm:bibdata/jcgm:ext/jcgm:editorialgroup/jcgm:committee/@acronym"/>
-			<xsl:text> </xsl:text>
-			<xsl:value-of select="/jcgm:bipm-standard/jcgm:bibdata/jcgm:docnumber"/>
-			<xsl:text>:</xsl:text>
-			<xsl:value-of select="/jcgm:bipm-standard/jcgm:bibdata/jcgm:copyright/jcgm:from"/>
-		</xsl:variable>
 		<fo:static-content flow-name="header-even-jcgm">
 			<fo:block-container height="98%">
 				<fo:block font-size="13pt" font-weight="bold" padding-top="12mm">
@@ -2618,6 +2623,7 @@
 				<xsl:attribute name="space-before"> <!-- margin-top -->
 					<xsl:choose>
 						
+						<xsl:when test="$level = 1 and parent::jcgm:annex">0pt</xsl:when>
 						<xsl:when test="$level = 1">36pt</xsl:when>
 						<xsl:when test="$level = 2">18pt</xsl:when>
 						<xsl:when test="$level &gt;= 3">3pt</xsl:when>
@@ -2781,47 +2787,19 @@
 	<xsl:template match="jcgm:clause[@type = 'index']" mode="index">
 	
 		<fo:page-sequence master-reference="document-jcgm" force-page-count="no-force">
-			<xsl:variable name="header-title">
-				<xsl:choose>
-					<xsl:when test="./jcgm:title[1]/*[local-name() = 'tab']">
-						<xsl:apply-templates select="./jcgm:title[1]/*[local-name() = 'tab'][1]/following-sibling::node()" mode="header"/>
-					</xsl:when>
-					<xsl:otherwise>
-						<xsl:apply-templates select="./jcgm:title[1]" mode="header"/>
-					</xsl:otherwise>
-				</xsl:choose>
-			</xsl:variable>
-			<xsl:call-template name="insertHeaderFooter_JCGM">
-				<xsl:with-param name="header-title" select="$header-title"/>
-			</xsl:call-template>
+			
+			<xsl:call-template name="insertHeaderFooter_JCGM"/>
 			
 			<fo:flow flow-name="xsl-region-body">
 				<fo:block id="{@id}">
 					<xsl:apply-templates />
-					
-					<!-- TEST <xsl:variable name="alphabet" select="'ABCDEFGHIJKLMNOPQRSTUVWXYZ'"/>
-					<xsl:for-each select="(document('')//node())[position() &lt; 26]">
-						<xsl:variable name="letter" select="substring($alphabet, position(), 1)"/>
-						<xsl:if test="position() &lt;= 3">
-							<fo:block font-size="10pt" font-weight="bold" margin-bottom="3pt" keep-with-next="always"><xsl:value-of select="$letter"/>, DEBUG</fo:block>
-							
-							<fo:block>accélération due à la pesanteur (gn), 33</fo:block>
-							<fo:block>activité d’un radionucléide, 26, 27</fo:block>
-							<fo:block>ampère (A), 13, 16, 18, 20, 28, 44, 49, 51, 52, 54, 55, 71, 81, 83-86, 89, 91-94, 97, 99, 100, 101, 103-104</fo:block>
-							<fo:block>angle, 25, 26, 33, 37 38, 40, 48, 55, 65</fo:block>
-							<fo:block>atmosphère normale, 52</fo:block>
-							<fo:block>atome gramme, 104</fo:block>
-							<fo:block>atome de césium, niveaux hyperfins, 15, 17, 18, 56, 58, 83, 85, 92, 94, 97, 98, 102</fo:block>
-							<xsl:if test="position() != last()"><fo:block>&#xA0;</fo:block></xsl:if>
-						</xsl:if>
-					</xsl:for-each> -->
 				</fo:block>
 			</fo:flow>
 		</fo:page-sequence>
 	</xsl:template>
 	
 	<xsl:template match="jcgm:clause[@type = 'index']/jcgm:title" priority="4">
-		<fo:block font-size="16pt" font-weight="bold" margin-bottom="84pt" margin-left="-18mm" span="all">
+		<fo:block font-weight="bold" span="all">
 			<!-- Index -->
 			<xsl:apply-templates />
 		</fo:block>
@@ -2838,7 +2816,7 @@
 	
 	<xsl:template match="jcgm:clause[@type = 'index']/jcgm:clause/jcgm:title" priority="4">
 		<!-- Letter A, B, C, ... -->
-		<fo:block font-size="10pt" font-weight="bold" margin-bottom="3pt" keep-with-next="always">
+		<fo:block font-weight="bold" margin-left="25mm" keep-with-next="always">
 			<xsl:apply-templates />
 		</fo:block>
 	</xsl:template>
