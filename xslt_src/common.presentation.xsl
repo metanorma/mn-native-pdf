@@ -5712,7 +5712,7 @@
 	
 	<xsl:template match="*[local-name() = 'clause']">
 		<fo:block>
-			<xsl:call-template name="setId"/>			
+			<xsl:call-template name="setId"/>
 			<xsl:if test="$namespace = 'bipm'">
 				<xsl:attribute name="keep-with-next">always</xsl:attribute>
 			</xsl:if>

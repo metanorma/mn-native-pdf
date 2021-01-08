@@ -33,6 +33,18 @@
 		</xsl:choose>
 	</xsl:variable>
 	
+	<xsl:variable name="doc_first">
+		<xsl:if test="*[local-name()='metanorma-collection']">
+			<xsl:apply-templates  select="(/*[local-name()='metanorma-collection']//*[contains(local-name(), '-standard')])[1]" mode="flatxml"/>
+		</xsl:if>
+	</xsl:variable>
+	<xsl:variable name="doc_second">
+		<xsl:if test="*[local-name()='metanorma-collection']">
+			<xsl:apply-templates  select="(/*[local-name()='metanorma-collection']//*[contains(local-name(), '-standard')])[2]" mode="flatxml"/>
+		</xsl:if>
+	</xsl:variable><!--  select="(/*[local-name()='metanorma-collection']//*[contains(local-name(), '-standard')])[2]"/> -->
+	
+	
 	<xsl:variable name="debug">true</xsl:variable>
 	<xsl:variable name="pageWidth" select="'210mm'"/>
 	<xsl:variable name="pageHeight" select="'297mm'"/>
@@ -51,7 +63,7 @@
 				<xsl:value-of select="concat('© ISO ', /iso:iso-standard/iso:bibdata/iso:copyright/iso:from ,' – ', $all_rights_reserved)"/>
 			</xsl:when>
 			<xsl:when test="$template_namespace = 'jcgm'">
-				<xsl:value-of select="concat('© ', /jcgm:bipm-standard/jcgm:bibdata/jcgm:ext/jcgm:editorialgroup/jcgm:committee/@acronym, ' ', /jcgm:bipm-standard/jcgm:bibdata/jcgm:copyright/jcgm:from, ' — ', $all_rights_reserved)"/>
+				<xsl:value-of select="concat('© ', (//jcgm:bipm-standard)[1]/jcgm:bibdata/jcgm:ext/jcgm:editorialgroup/jcgm:committee/@acronym, ' ', (//jcgm:bipm-standard)[1]/jcgm:bibdata/jcgm:copyright/jcgm:from, ' — ', $all_rights_reserved)"/>
 			</xsl:when>
 		</xsl:choose>
 	</xsl:variable>
@@ -187,12 +199,26 @@
 		<item id="term-script" display="false">3.2</item>
 	-->
 	<xsl:variable name="contents">
-		<contents>
-			<xsl:call-template name="processPrefaceSectionsDefault_Contents"/>
-			<xsl:call-template name="processMainSectionsDefault_Contents"/>
-			<!-- Index -->
-			<xsl:apply-templates select="//jcgm:clause[@type = 'index']" mode="contents"/>
-		</contents>
+	
+		<xsl:for-each select="//*[contains(local-name(), '-standard')]">
+			<xsl:variable name="lang" select="*[local-name()='bibdata']/*[local-name()='language'][@current = 'true']"/>
+			<xsl:variable name="current_document">
+				<xsl:copy-of select="."/>
+			</xsl:variable>				
+			<xsl:for-each select="xalan:nodeset($current_document)">
+				<xsl:variable name="docid">
+					<xsl:call-template name="getDocumentId"/>
+				</xsl:variable>
+				<doc id="{$docid}" lang="{$lang}">
+					<contents>
+						<xsl:call-template name="processPrefaceSectionsDefault_Contents"/>
+						<xsl:call-template name="processMainSectionsDefault_Contents"/>
+						<!-- Index -->
+						<xsl:apply-templates select="//jcgm:clause[@type = 'index']" mode="contents"/>
+					</contents>
+				</doc>
+			</xsl:for-each>				
+		</xsl:for-each>
 	</xsl:variable>
 	
 	
@@ -1501,13 +1527,13 @@
 	<!-- ============================= -->
 	
 	
-	<xsl:template match="iso:license-statement//iso:title">
+	<xsl:template match="iso:license-statement//iso:title" priority="2">
 		<fo:block text-align="center" font-weight="bold">
 			<xsl:apply-templates />
 		</fo:block>
 	</xsl:template>
 	
-	<xsl:template match="iso:license-statement//iso:p">
+	<xsl:template match="iso:license-statement//iso:p" priority="2">
 		<fo:block margin-left="1.5mm" margin-right="1.5mm">
 			<xsl:if test="following-sibling::iso:p">
 				<xsl:attribute name="margin-top">6pt</xsl:attribute>
@@ -1529,7 +1555,7 @@
 				<fo:block>www.iso.org</fo:block>
 			</fo:block> -->
 	
-	<xsl:template match="iso:copyright-statement/iso:clause[1]/iso:title">
+	<xsl:template match="iso:copyright-statement/iso:clause[1]/iso:title" priority="2">
 		<fo:block margin-bottom="3mm">
 				<fo:external-graphic src="{concat('data:image/png;base64,', normalize-space($Image-Attention))}" width="14mm" content-height="13mm" content-width="scale-to-fit" scaling="uniform" fox:alt-text="Image {@alt}"/>
 				<!-- <fo:inline padding-left="6mm" font-size="12pt" font-weight="bold">COPYRIGHT PROTECTED DOCUMENT</fo:inline> -->
@@ -1537,7 +1563,7 @@
 			</fo:block>
 	</xsl:template>
 	
-	<xsl:template match="iso:copyright-statement//iso:p">
+	<xsl:template match="iso:copyright-statement//iso:p" priority="2">
 		<fo:block>
 			<xsl:if test="preceding-sibling::iso:p">
 				<!-- <xsl:attribute name="font-size">10pt</xsl:attribute> -->
@@ -2309,26 +2335,26 @@
 					<!-- Example © JCGM 2009 -->
 					<fo:block font-size="11pt">
 						<fo:inline font-family="Times New Roman" font-size="12pt"><xsl:text>© </xsl:text></fo:inline>
-						<xsl:value-of select="/jcgm:bipm-standard/jcgm:bibdata/jcgm:ext/jcgm:editorialgroup/jcgm:committee/@acronym"/>
+						<xsl:value-of select="(//jcgm:bipm-standard)[1]/jcgm:bibdata/jcgm:ext/jcgm:editorialgroup/jcgm:committee/@acronym"/>
 						<xsl:text> </xsl:text>
-						<xsl:value-of select="/jcgm:bipm-standard/jcgm:bibdata/jcgm:copyright/jcgm:from"/>
+						<xsl:value-of select="(//jcgm:bipm-standard)[1]/jcgm:bibdata/jcgm:copyright/jcgm:from"/>
 					</fo:block>
 				</fo:static-content>
 				<fo:flow flow-name="xsl-region-body">
 					<xsl:call-template name="insert_Logo-BIPM-Metro"/>
 					<fo:block-container font-weight="bold">
 						<fo:block font-size="16.5pt"  space-after="24.5mm">
-							<xsl:value-of select="//jcgm:bibdata/jcgm:ext/jcgm:editorialgroup/jcgm:committee/@acronym"/>
+							<xsl:value-of select="(//jcgm:bipm-standard)[1]/jcgm:bibdata/jcgm:ext/jcgm:editorialgroup/jcgm:committee/@acronym"/>
 							<xsl:text> </xsl:text>
-							<xsl:value-of select="//jcgm:bibdata/jcgm:docnumber"/>
+							<xsl:value-of select="(//jcgm:bipm-standard)[1]/jcgm:bibdata/jcgm:docnumber"/>
 							<fo:inline font-weight="normal">:</fo:inline>
-							<xsl:value-of select="//jcgm:bipm-standard/jcgm:bibdata/jcgm:copyright/jcgm:from"/>
+							<xsl:value-of select="(//jcgm:bipm-standard)[1]/jcgm:bibdata/jcgm:copyright/jcgm:from"/>
 						</fo:block>
 						<fo:block border-bottom="1pt solid black">&#xa0;</fo:block>
 						<fo:block font-size="16.5pt" margin-left="-0.5mm"  padding-top="3.5mm" space-after="7mm" margin-right="7mm" line-height="105%">
-							<xsl:apply-templates select="/jcgm:bipm-standard/jcgm:bibdata/jcgm:title[@language = $lang and @type = 'main']" mode="title"/>
+							<xsl:apply-templates select="(//jcgm:bipm-standard)[1]/jcgm:bibdata/jcgm:title[@language = $lang and @type = 'main']" mode="title"/>
 							<xsl:variable name="title_part">
-								<xsl:apply-templates select="/jcgm:bipm-standard/jcgm:bibdata/jcgm:title[@language = $lang and @type = 'part']" mode="title"/>
+								<xsl:apply-templates select="(//jcgm:bipm-standard)[1]/jcgm:bibdata/jcgm:title[@language = $lang and @type = 'part']" mode="title"/>
 							</xsl:variable>
 							<xsl:if test="normalize-space($title_part) != ''">
 								<xsl:text> — </xsl:text>
@@ -2336,10 +2362,10 @@
 							</xsl:if>
 						</fo:block>
 						<fo:block font-size="12pt" font-style="italic" line-height="140%">
-							<xsl:variable name="secondLang" select="/jcgm:bipm-standard/jcgm:bibdata/jcgm:title/@language[. != $lang]"/>
-							<xsl:apply-templates select="/jcgm:bipm-standard/jcgm:bibdata/jcgm:title[@language = $secondLang and @type = 'main']" mode="title"/>
+							<xsl:variable name="secondLang" select="(//jcgm:bipm-standard)[1]/jcgm:bibdata/jcgm:title/@language[. != $lang]"/>
+							<xsl:apply-templates select="(//jcgm:bipm-standard)[1]/jcgm:bibdata/jcgm:title[@language = $secondLang and @type = 'main']" mode="title"/>
 							<xsl:variable name="title_part">
-								<xsl:apply-templates select="/jcgm:bipm-standard/jcgm:bibdata/jcgm:title[@language = $secondLang and @type = 'part']" mode="title"/>
+								<xsl:apply-templates select="(//jcgm:bipm-standard)[1]/jcgm:bibdata/jcgm:title[@language = $secondLang and @type = 'part']" mode="title"/>
 							</xsl:variable>
 							<xsl:if test="normalize-space($title_part) != ''">
 								<xsl:text> — </xsl:text>
@@ -2364,20 +2390,20 @@
 						<fo:table-body>
 							<fo:table-row>
 								<fo:table-cell>
-									<fo:block><xsl:value-of select="/jcgm:bipm-standard/jcgm:bibdata/jcgm:ext/jcgm:editorialgroup/jcgm:committee"/></fo:block>
+									<fo:block><xsl:value-of select="(//jcgm:bipm-standard)[1]/jcgm:bibdata/jcgm:ext/jcgm:editorialgroup/jcgm:committee"/></fo:block>
 								</fo:table-cell>
 								<fo:table-cell line-height="140%">
-									<fo:block><xsl:value-of select="/jcgm:bipm-standard/jcgm:bibdata/jcgm:ext/jcgm:editorialgroup/jcgm:committee/@acronym"/></fo:block>
-									<fo:block><xsl:value-of select="/jcgm:bipm-standard/jcgm:bibdata/jcgm:docnumber"/></fo:block>
-									<fo:block><xsl:value-of select="/jcgm:bipm-standard/jcgm:bibdata/jcgm:copyright/jcgm:from"/></fo:block>
+									<fo:block><xsl:value-of select="(//jcgm:bipm-standard)[1]/jcgm:bibdata/jcgm:ext/jcgm:editorialgroup/jcgm:committee/@acronym"/></fo:block>
+									<fo:block><xsl:value-of select="(//jcgm:bipm-standard)[1]/jcgm:bibdata/jcgm:docnumber"/></fo:block>
+									<fo:block><xsl:value-of select="(//jcgm:bipm-standard)[1]/jcgm:bibdata/jcgm:copyright/jcgm:from"/></fo:block>
 								</fo:table-cell>
 							</fo:table-row>
 						</fo:table-body>
 					</fo:table>
 					<fo:block font-size="18pt" space-before="70mm">
-						<xsl:apply-templates select="/jcgm:bipm-standard/jcgm:bibdata/jcgm:title[@language = $lang and @type = 'main']" mode="title"/>
+						<xsl:apply-templates select="(//jcgm:bipm-standard)[1]/jcgm:bibdata/jcgm:title[@language = $lang and @type = 'main']" mode="title"/>
 						<xsl:variable name="title_part">
-							<xsl:apply-templates select="/jcgm:bipm-standard/jcgm:bibdata/jcgm:title[@language = $lang and @type = 'part']" mode="title"/>
+							<xsl:apply-templates select="(//jcgm:bipm-standard)[1]/jcgm:bibdata/jcgm:title[@language = $lang and @type = 'part']" mode="title"/>
 						</xsl:variable>
 						<xsl:if test="normalize-space($title_part) != ''">
 							<xsl:text> — </xsl:text>
@@ -2385,10 +2411,10 @@
 						</xsl:if>
 					</fo:block>
 					<fo:block font-size="13pt" space-before="35mm">
-						<xsl:variable name="secondLang" select="/jcgm:bipm-standard/jcgm:bibdata/jcgm:title/@language[. != $lang]"/>
-						<xsl:apply-templates select="/jcgm:bipm-standard/jcgm:bibdata/jcgm:title[@language = $secondLang and @type = 'main']" mode="title"/>
+						<xsl:variable name="secondLang" select="(//jcgm:bipm-standard)[1]/jcgm:bibdata/jcgm:title/@language[. != $lang]"/>
+						<xsl:apply-templates select="(//jcgm:bipm-standard)[1]/jcgm:bibdata/jcgm:title[@language = $secondLang and @type = 'main']" mode="title"/>
 						<xsl:variable name="title_part">
-							<xsl:apply-templates select="/jcgm:bipm-standard/jcgm:bibdata/jcgm:title[@language = $secondLang and @type = 'part']" mode="title"/>
+							<xsl:apply-templates select="(//jcgm:bipm-standard)[1]/jcgm:bibdata/jcgm:title[@language = $secondLang and @type = 'part']" mode="title"/>
 						</xsl:variable>
 						<xsl:if test="normalize-space($title_part) != ''">
 							<xsl:text> — </xsl:text>
@@ -2403,48 +2429,86 @@
 				<xsl:call-template name="insertHeaderFooter_JCGM"/>
 					
 				<fo:flow flow-name="xsl-region-body" line-height="115%">
-					<!-- Table of Contents -->
-					<fo:block-container>
-						<fo:block text-align-last="justify">
-							<fo:inline font-size="15pt" font-weight="bold">
-								<xsl:call-template name="getLocalizedString">
-									<xsl:with-param name="key">table_of_contents</xsl:with-param>
-								</xsl:call-template>
-							</fo:inline>
-							<fo:inline keep-together.within-line="always">
-								<fo:leader leader-pattern="space"/>
-								<xsl:call-template name="getLocalizedString">
-									<xsl:with-param name="key">Page.sg</xsl:with-param>
-								</xsl:call-template>
-							</fo:inline>
-						</fo:block>
-						
-						<xsl:if test="$debug = 'true'">
-							<xsl:text disable-output-escaping="yes">&lt;!--</xsl:text>
-								DEBUG
-								contents=<xsl:copy-of select="xalan:nodeset($contents)"/>
-							<xsl:text disable-output-escaping="yes">--&gt;</xsl:text>
-						</xsl:if>
-						
-						<xsl:variable name="annexes_title">
-							<xsl:call-template name="getLocalizedString">
-								<xsl:with-param name="key">Annex.pl</xsl:with-param>
-							</xsl:call-template>
-						</xsl:variable>
-						
-						<xsl:for-each select="xalan:nodeset($contents)//item[@display = 'true']"> <!-- and not (@type = 'annex') and not (@type = 'references') -->
-							<xsl:if test="@type = 'annex' and not(preceding-sibling::item[@display = 'true' and @type = 'annex'])">
-								<fo:block font-size="12pt" space-before="16pt" font-weight="bold">
-									<xsl:value-of select="$annexes_title"/>
+				
+					<xsl:for-each select="//*[contains(local-name(), '-standard')]">
+						<xsl:variable name="current_document">
+							<xsl:copy-of select="."/>
+						</xsl:variable>				
+						<xsl:for-each select="xalan:nodeset($current_document)">
+							<xsl:variable name="docid">
+								<xsl:call-template name="getDocumentId"/>
+							</xsl:variable>
+							
+							<!-- Table of Contents -->
+							<fo:block-container>
+								<fo:block text-align-last="justify">
+									<fo:inline font-size="15pt" font-weight="bold">
+										<xsl:call-template name="getLocalizedString">
+											<xsl:with-param name="key">table_of_contents</xsl:with-param>
+										</xsl:call-template>
+									</fo:inline>
+									<fo:inline keep-together.within-line="always">
+										<fo:leader leader-pattern="space"/>
+										<xsl:call-template name="getLocalizedString">
+											<xsl:with-param name="key">Page.sg</xsl:with-param>
+										</xsl:call-template>
+									</fo:inline>
 								</fo:block>
-							</xsl:if>
-							<xsl:call-template name="print_JCGN_toc_item"/>
-						</xsl:for-each>	
-					</fo:block-container>
+								
+								<xsl:if test="$debug = 'true'">
+									<xsl:text disable-output-escaping="yes">&lt;!--</xsl:text>
+										DEBUG
+										contents=<xsl:copy-of select="xalan:nodeset($contents)"/>
+									<xsl:text disable-output-escaping="yes">--&gt;</xsl:text>
+								</xsl:if>
+								
+								<xsl:variable name="annexes_title">
+									<xsl:call-template name="getLocalizedString">
+										<xsl:with-param name="key">Annex.pl</xsl:with-param>
+									</xsl:call-template>
+								</xsl:variable>
+								
+								<xsl:for-each select="xalan:nodeset($contents)/doc[@id=$docid]//item[@display = 'true']"> <!-- and not (@type = 'annex') and not (@type = 'references') -->
+									<xsl:if test="@type = 'annex' and not(preceding-sibling::item[@display = 'true' and @type = 'annex'])">
+										<fo:block font-size="12pt" space-before="16pt" font-weight="bold">
+											<xsl:value-of select="$annexes_title"/>
+										</fo:block>
+									</xsl:if>
+									<xsl:call-template name="print_JCGN_toc_item"/>
+								</xsl:for-each>	
+							</fo:block-container>
+
+						</xsl:for-each>
+						
+						<xsl:if test="position() != last()">
+							<fo:block break-after="page"/>
+						</xsl:if>
+					</xsl:for-each>
+					
 					
 					<!-- Foreword, Introduction -->					
-					<xsl:call-template name="processPrefaceSectionsDefault"/>
-					
+					<!-- <xsl:call-template name="processPrefaceSectionsDefault"/> -->
+					<xsl:for-each select="//*[contains(local-name(), '-standard')]">
+						<fo:block break-after="page"/>
+						<xsl:apply-templates select="./*[local-name()='preface']/*[local-name()='abstract']" />
+					</xsl:for-each>
+					<xsl:for-each select="//*[contains(local-name(), '-standard')]">
+						<fo:block break-after="page"/>
+						<xsl:apply-templates select="./*[local-name()='preface']/*[local-name()='foreword']" />
+					</xsl:for-each>
+					<xsl:for-each select="//*[contains(local-name(), '-standard')]">
+						<fo:block break-after="page"/>
+						<xsl:apply-templates select="./*[local-name()='preface']/*[local-name()='introduction']" />
+					</xsl:for-each>
+					<xsl:for-each select="//*[contains(local-name(), '-standard')]">
+						<fo:block break-after="page"/>
+						<xsl:apply-templates select="./*[local-name()='preface']/*[local-name() != 'abstract' and local-name() != 'foreword' and local-name() != 'introduction' and local-name() != 'acknowledgements']" />
+					</xsl:for-each>
+					<xsl:for-each select="//*[contains(local-name(), '-standard')]">
+						<fo:block break-after="page"/>
+						<xsl:apply-templates select="./*[local-name()='preface']/*[local-name()='acknowledgements']" />
+					</xsl:for-each>
+
 				</fo:flow>
 			</fo:page-sequence>
 			
@@ -2464,29 +2528,69 @@
 						<!-- Show title -->
 						<!-- Example: Evaluation of measurement data — An introduction to the `Guide to the expression of uncertainty in measurement' and related documents -->
 						
-						<fo:block font-size="20pt" font-weight="bold" margin-bottom="20pt" line-height="1.1">
-						
-							<xsl:variable name="title-main">
-								<xsl:apply-templates select="//*[contains(local-name(), '-standard')]/*[local-name() = 'bibdata']/*[local-name() = 'title'][@language = $lang and @type = 'main']" mode="title"/>
-							</xsl:variable> 
-							<xsl:variable name="title-part">
-								<xsl:apply-templates select="//*[contains(local-name(), '-standard')]/*[local-name() = 'bibdata']/*[local-name() = 'title'][@language = $lang and @type = 'part']" mode="title"/>
-							</xsl:variable>
+						<xsl:for-each select="//*[contains(local-name(), '-standard')]">
+							<fo:block font-size="20pt" font-weight="bold" margin-bottom="20pt" space-before="36pt" line-height="1.1">
 							
-							<fo:block>
-								<xsl:copy-of select="$title-main"/>
-								<xsl:if test="normalize-space($title-main) != '' and normalize-space($title-part) != ''">
-									<xsl:text> — </xsl:text>
-								</xsl:if>
-								<xsl:copy-of select="$title-part"/>
+								<xsl:variable name="title-main">
+									<xsl:apply-templates select="./*[local-name() = 'bibdata']/*[local-name() = 'title'][@language = $lang and @type = 'main']" mode="title"/>
+								</xsl:variable> 
+								<xsl:variable name="title-part">
+									<xsl:apply-templates select="./*[local-name() = 'bibdata']/*[local-name() = 'title'][@language = $lang and @type = 'part']" mode="title"/>
+								</xsl:variable>
+								
+								<fo:block>
+									<xsl:copy-of select="$title-main"/>
+									<xsl:if test="normalize-space($title-main) != '' and normalize-space($title-part) != ''">
+										<xsl:text> — </xsl:text>
+									</xsl:if>
+									<xsl:copy-of select="$title-part"/>
+								</fo:block>
+								
 							</fo:block>
-							
-						</fo:block>
+						</xsl:for-each>
 					
 					</fo:block-container>
 					<!-- Clause(s) -->
 					<fo:block>
-						<xsl:call-template name="processMainSectionsDefault"/>
+						<xsl:choose>
+							<xsl:when test="count(//*[contains(local-name(), '-standard')]) = 1 ">
+								<xsl:call-template name="processMainSectionsDefault"/>
+							</xsl:when>
+							<xsl:otherwise>
+								<!-- output each clause pair in two-column table -->
+						
+								<!-- <xsl:variable name="flatxml">
+									<xsl:apply-templates select="." mode="flatxml"/>
+								</xsl:variable> -->
+						
+								<!-- doc_first=<xsl:copy-of select="$doc_first"/> -->
+								<!-- doc_second=<xsl:copy-of select="$doc_second"/> -->
+						
+								<xsl:apply-templates select="xalan:nodeset($doc_first)/*/*[local-name()='sections']/*[local-name()='clause'][@type='scope']" mode="two_columns" /> <!-- -->
+								
+								<!-- Normative references  -->
+								<xsl:apply-templates select="xalan:nodeset($doc_first)/*/*[local-name()='bibliography']/*[local-name()='references'][@normative='true']" mode="two_columns"/>
+								<!-- Terms and definitions -->
+								<xsl:apply-templates select="xalan:nodeset($doc_first)/*/*[local-name()='sections']/*[local-name()='terms'] | 
+																												xalan:nodeset($doc_first)/*/*[local-name()='sections']/*[local-name()='clause'][.//*[local-name()='terms']] |
+																												xalan:nodeset($doc_first)/*/*[local-name()='sections']/*[local-name()='definitions'] | 
+																												xalan:nodeset($doc_first)/*/*[local-name()='sections']/*[local-name()='clause'][.//*[local-name()='definitions']]" mode="two_columns"/>
+								<!-- Another main sections -->
+								<xsl:apply-templates select="xalan:nodeset($doc_first)/*/*[local-name()='sections']/*[local-name() != 'terms' and 
+																																																				local-name() != 'definitions' and 
+																																																				not(@type='scope') and
+																																																				not(local-name() = 'clause' and .//*[local-name()='terms']) and
+																																																				not(local-name() = 'clause' and .//*[local-name()='definitions'])]" mode="two_columns"/>
+								<xsl:apply-templates select="/*/*[local-name()='annex']" />
+								<!-- Bibliography -->
+								<xsl:apply-templates select="/*/*[local-name()='bibliography']/*[local-name()='references'][not(@normative='true')]" />
+								
+							
+							</xsl:otherwise>
+						</xsl:choose>
+						<!--  -->
+						
+						
 						
 					</fo:block>
 				</fo:flow>
@@ -2547,11 +2651,11 @@
 
 	
 	<xsl:variable name="header_text">
-		<xsl:value-of select="/jcgm:bipm-standard/jcgm:bibdata/jcgm:ext/jcgm:editorialgroup/jcgm:committee/@acronym"/>
+		<xsl:value-of select="(//jcgm:bipm-standard)[1]/jcgm:bibdata/jcgm:ext/jcgm:editorialgroup/jcgm:committee/@acronym"/>
 		<xsl:text> </xsl:text>
-		<xsl:value-of select="/jcgm:bipm-standard/jcgm:bibdata/jcgm:docnumber"/>
+		<xsl:value-of select="(//jcgm:bipm-standard)[1]/jcgm:bibdata/jcgm:docnumber"/>
 		<xsl:text>:</xsl:text>
-		<xsl:value-of select="/jcgm:bipm-standard/jcgm:bibdata/jcgm:copyright/jcgm:from"/>
+		<xsl:value-of select="(//jcgm:bipm-standard)[1]/jcgm:bibdata/jcgm:copyright/jcgm:from"/>
 	</xsl:variable>
 	
 	<xsl:template name="insertHeaderFooter_JCGM">
@@ -2840,6 +2944,7 @@
 	<!-- End of Index processing -->
 	<!-- =================== -->
 	
+	
 	<xsl:template match="jcgm:xref"  priority="2">
 		<fo:basic-link internal-destination="{@target}" fox:alt-text="{@target}" xsl:use-attribute-sets="xref-style">
 			<xsl:choose>
@@ -2857,6 +2962,124 @@
 			</xsl:choose>
 		</fo:basic-link>
 	</xsl:template>
+
+	<!-- =================== -->
+	<!-- Two columns layout -->
+	<!-- =================== -->
+	<!-- <xsl:template match="*[local-name()='metanorma-collection']//*[contains(local-name(), '-standard')][1]//*[local-name() = 'clause']" priority="2"> --> <!-- mode="two_columns" -->
+	<xsl:template match="*[local-name()='sections']/*[local-name() = 'clause']" mode="two_columns">
+		<xsl:variable name="clause_number_"><xsl:number /></xsl:variable>
+		<xsl:variable name="clause_number" select="number(normalize-space($clause_number_))"/>
+		<fo:block>
+			<xsl:call-template name="setId"/>			
+			<fo:table table-layout="fixed" width="100%">
+				<fo:table-column column-width="82mm"/>
+				<fo:table-column column-width="8mm"/>
+				<fo:table-column column-width="82mm"/>
+				<fo:table-body>
+					<fo:table-row>
+						<fo:table-cell>
+							<fo:block font-size="1pt"></fo:block>
+							<fo:block><xsl:apply-templates /></fo:block>
+						</fo:table-cell>
+						<fo:table-cell>
+							<fo:block></fo:block>
+						</fo:table-cell>
+						<fo:table-cell>
+							<fo:block>
+								<fo:block font-size="1pt"></fo:block>
+								<!-- z<xsl:value-of select="$clause_number"/>z -->
+								<!-- test=<xsl:copy-of select="((/*[local-name()='metanorma-collection']//*[contains(local-name(), '-standard')])[2]//*[local-name() = 'clause'])[$clause_number]"/> -->
+								<!-- <xsl:variable name="second_doc" select="(/*[local-name()='metanorma-collection']//*[contains(local-name(), '-standard')])[2]"/> -->
+								<xsl:apply-templates select="(xalan:nodeset($doc_second)/*/*[local-name()='sections']/*[local-name() = 'clause'])[$clause_number]"/>
+							</fo:block>
+						</fo:table-cell>
+					</fo:table-row>
+				</fo:table-body>
+			</fo:table>
+		</fo:block>
+	</xsl:template>
+
+	<xsl:template match="*[local-name()='bibliography']/*[local-name()='references'][@normative='true']" mode="two_columns">
+		<fo:block>
+			<xsl:call-template name="setId"/>			
+			<fo:table table-layout="fixed" width="100%">
+				<fo:table-column column-width="82mm"/>
+				<fo:table-column column-width="8mm"/>
+				<fo:table-column column-width="82mm"/>
+				<fo:table-body>
+					<fo:table-row>
+						<fo:table-cell>
+							<fo:block font-size="1pt"></fo:block>
+							<fo:block><xsl:apply-templates /></fo:block>
+						</fo:table-cell>
+						<fo:table-cell>
+							<fo:block></fo:block>
+						</fo:table-cell>
+						<fo:table-cell>
+							<fo:block>
+								<fo:block font-size="1pt"></fo:block>
+								<xsl:apply-templates select="xalan:nodeset($doc_second)/*/*[local-name()='bibliography']/*[local-name()='references'][@normative='true']"/>
+							</fo:block>
+						</fo:table-cell>
+					</fo:table-row>
+				</fo:table-body>
+			</fo:table>
+		</fo:block>
+	</xsl:template>
+
+	<xsl:template match="*[local-name()='sections']/*[local-name() = 'terms' or local-name() = 'definitions']" mode="two_columns">
+		<xsl:variable name="name" select="local-name()"/>
+		<fo:block>
+			<xsl:call-template name="setId"/>			
+			<fo:table table-layout="fixed" width="100%">
+				<fo:table-column column-width="82mm"/>
+				<fo:table-column column-width="8mm"/>
+				<fo:table-column column-width="82mm"/>
+				<fo:table-body>
+					<fo:table-row>
+						<fo:table-cell>
+							<fo:block font-size="1pt"></fo:block>
+							<fo:block><xsl:apply-templates /></fo:block>
+						</fo:table-cell>
+						<fo:table-cell>
+							<fo:block></fo:block>
+						</fo:table-cell>
+						<fo:table-cell>
+							<fo:block>
+								<fo:block font-size="1pt"></fo:block>
+								<xsl:apply-templates select="xalan:nodeset($doc_second)/*/*[local-name()='sections']/*[local-name() = $name]"/>
+							</fo:block>
+						</fo:table-cell>
+					</fo:table-row>
+				</fo:table-body>
+			</fo:table>
+		</fo:block>
+	</xsl:template>
+
+
+	<!-- =================== -->
+	<!-- End Two columns layout -->
+	<!-- =================== -->
+
+
+	<!-- ================================= -->
+	<!-- Flattening xml for two columns -->
+	<!-- ================================= -->	
+	<xsl:template match="@*|node()" mode="flatxml">
+		<xsl:copy>
+			<xsl:apply-templates select="@*|node()" mode="flatxml"/>
+		</xsl:copy>
+	</xsl:template>
+	
+	<xsl:template match="jcgm:clause" mode="flatxml">
+		<xsl:copy>
+			<xsl:apply-templates select="@*" mode="flatxml"/>
+			<xsl:apply-templates select="node()[local-name() != 'clause']" mode="flatxml"/>
+		</xsl:copy>
+		<xsl:apply-templates select="jcgm:clause" mode="flatxml"/>
+	</xsl:template>
+	
 	
 	<xsl:template name="insert_Logo-BIPM-Metro">
 		<fo:block-container absolute-position="fixed" left="21mm" top="52mm">
