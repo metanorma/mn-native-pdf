@@ -3010,7 +3010,6 @@
 
 	<xsl:template match="*[@first]/*[local-name()='bibliography']/*[local-name()='references'][@normative='true']" mode="two_columns">
 		<fo:block>
-			<xsl:call-template name="setId"/>			
 			<fo:table table-layout="fixed" width="100%">
 				<fo:table-column column-width="82mm"/>
 				<fo:table-column column-width="8mm"/>
@@ -3019,7 +3018,7 @@
 					<fo:table-row>
 						<fo:table-cell>
 							<fo:block font-size="1pt"></fo:block>
-							<fo:block><xsl:apply-templates /></fo:block>
+							<xsl:apply-templates select="." />
 						</fo:table-cell>
 						<fo:table-cell>
 							<fo:block></fo:block>
@@ -3037,9 +3036,10 @@
 	</xsl:template>
 
 	<xsl:template match="*[@first]/*[local-name()='sections']/*[local-name() = 'terms' or local-name() = 'definitions']" mode="two_columns">
+		<xsl:variable name="number_"><xsl:number /></xsl:variable>
+		<xsl:variable name="number" select="number(normalize-space($number_))"/>
 		<xsl:variable name="name" select="local-name()"/>
 		<fo:block>
-			<xsl:call-template name="setId"/>			
 			<fo:table table-layout="fixed" width="100%">
 				<fo:table-column column-width="82mm"/>
 				<fo:table-column column-width="8mm"/>
@@ -3048,7 +3048,7 @@
 					<fo:table-row>
 						<fo:table-cell>
 							<fo:block font-size="1pt"></fo:block>
-							<fo:block><xsl:apply-templates /></fo:block>
+							<xsl:apply-templates select="." />
 						</fo:table-cell>
 						<fo:table-cell>
 							<fo:block></fo:block>
@@ -3056,7 +3056,7 @@
 						<fo:table-cell>
 							<fo:block>
 								<fo:block font-size="1pt"></fo:block>
-								<xsl:apply-templates select="xalan:nodeset($doc_second)/*/*[local-name()='sections']/*[local-name() = $name]"/>
+								<xsl:apply-templates select="(xalan:nodeset($doc_second)/*/*[local-name()='sections']/*[local-name() = $name])[$number]"/>
 							</fo:block>
 						</fo:table-cell>
 					</fo:table-row>
@@ -3097,6 +3097,25 @@
 		<xsl:apply-templates select="jcgm:clause" mode="flatxml"/>
 	</xsl:template>
 	
+	<xsl:template match="jcgm:terms" mode="flatxml">
+		<xsl:copy>
+			<xsl:apply-templates select="@*" mode="flatxml"/>
+			<xsl:apply-templates select="node()[local-name() != 'term']" mode="flatxml"/>
+		</xsl:copy>
+		<xsl:apply-templates select="jcgm:term" mode="flatxml"/>
+	</xsl:template>
+	
+	<xsl:template match="jcgm:term" mode="flatxml">
+		<xsl:element name="terms" namespace="https://www.metanorma.org/ns/bipm">
+			<xsl:copy>
+			<xsl:apply-templates select="@*|node()" mode="flatxml"/>
+		</xsl:copy>
+		</xsl:element>
+	</xsl:template>
+	
+	<!-- ================================= -->
+	<!-- End Flattening xml for two columns -->
+	<!-- ================================= -->	
 	
 	<xsl:template name="insert_Logo-BIPM-Metro">
 		<fo:block-container absolute-position="fixed" left="21mm" top="52mm">

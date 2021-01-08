@@ -5699,7 +5699,7 @@
 		
 	</xsl:template>
 	
-	<xsl:template match="/*/*[local-name() = 'preface']/*" priority="2">
+	<xsl:template match="//*[contains(local-name(), '-standard')]/*[local-name() = 'preface']/*" priority="2"> <!-- /*/*[local-name() = 'preface']/* -->
 		<fo:block break-after="page"/>
 		<fo:block>
 			<xsl:call-template name="setId"/>
