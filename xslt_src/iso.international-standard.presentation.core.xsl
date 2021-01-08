@@ -35,12 +35,16 @@
 	
 	<xsl:variable name="doc_first">
 		<xsl:if test="*[local-name()='metanorma-collection']">
-			<xsl:apply-templates  select="(/*[local-name()='metanorma-collection']//*[contains(local-name(), '-standard')])[1]" mode="flatxml"/>
+			<xsl:apply-templates  select="(/*[local-name()='metanorma-collection']//*[contains(local-name(), '-standard')])[1]" mode="flatxml">
+				<xsl:with-param name="num" select="'first'"/>
+			</xsl:apply-templates>
 		</xsl:if>
 	</xsl:variable>
 	<xsl:variable name="doc_second">
 		<xsl:if test="*[local-name()='metanorma-collection']">
-			<xsl:apply-templates  select="(/*[local-name()='metanorma-collection']//*[contains(local-name(), '-standard')])[2]" mode="flatxml"/>
+			<xsl:apply-templates  select="(/*[local-name()='metanorma-collection']//*[contains(local-name(), '-standard')])[2]" mode="flatxml">
+			<xsl:with-param name="num" select="'second'"/>
+			</xsl:apply-templates>
 		</xsl:if>
 	</xsl:variable><!--  select="(/*[local-name()='metanorma-collection']//*[contains(local-name(), '-standard')])[2]"/> -->
 	
@@ -1730,6 +1734,10 @@
 					<xsl:otherwise>12pt</xsl:otherwise> <!-- jcgm -->
 				</xsl:choose>
 			</xsl:attribute>
+			<xsl:if test="$template_namespace = 'jcgm' and ancestor::*[@first or @second]">
+				<!-- JCGM two column layout -->
+				<xsl:attribute name="widows">1</xsl:attribute>
+			</xsl:if>
 			<xsl:apply-templates />
 		</xsl:element>
 		<xsl:if test="$element-name = 'fo:inline' and not($inline = 'true') and not(local-name(..) = 'admonition')">
@@ -1901,10 +1909,10 @@
 		<xsl:call-template name="note"/>
 	</xsl:template>
 	
-	<xsl:template match="iso:preferred">		
+	<xsl:template match="*[local-name()='preferred']">		
 		<fo:block line-height="1.1">
 			<fo:block font-weight="bold" keep-with-next="always">
-				<xsl:apply-templates select="ancestor::iso:term/iso:name" mode="presentation"/>				
+				<xsl:apply-templates select="ancestor::*[local-name()='term']/*[local-name()='name']" mode="presentation"/>				
 			</fo:block>
 			<fo:block font-weight="bold" keep-with-next="always">
 				<xsl:apply-templates />
@@ -1997,7 +2005,7 @@
 	
 
 	
-	<xsl:template match="iso:admonition">
+	<xsl:template match="*[local-name()='admonition']">
 		<fo:block margin-bottom="12pt" font-weight="bold"> <!-- text-align="center"  -->			
 			<xsl:variable name="type">
 				<xsl:call-template name="getLocalizedString">
@@ -2563,10 +2571,10 @@
 									<xsl:apply-templates select="." mode="flatxml"/>
 								</xsl:variable> -->
 						
-								<!-- doc_first=<xsl:copy-of select="$doc_first"/> -->
-								<!-- doc_second=<xsl:copy-of select="$doc_second"/> -->
+								<!-- doc_first=<xsl:copy-of select="$doc_first"/>
+								doc_second=<xsl:copy-of select="$doc_second"/> -->
 						
-								<xsl:apply-templates select="xalan:nodeset($doc_first)/*/*[local-name()='sections']/*[local-name()='clause'][@type='scope']" mode="two_columns" /> <!-- -->
+								<xsl:apply-templates select="xalan:nodeset($doc_first)/*/*[local-name()='sections']/*[local-name()='clause'][@type='scope']" mode="two_columns"/> <!-- mode="two_columns" -->
 								
 								<!-- Normative references  -->
 								<xsl:apply-templates select="xalan:nodeset($doc_first)/*/*[local-name()='bibliography']/*[local-name()='references'][@normative='true']" mode="two_columns"/>
@@ -2967,11 +2975,11 @@
 	<!-- Two columns layout -->
 	<!-- =================== -->
 	<!-- <xsl:template match="*[local-name()='metanorma-collection']//*[contains(local-name(), '-standard')][1]//*[local-name() = 'clause']" priority="2"> --> <!-- mode="two_columns" -->
-	<xsl:template match="*[local-name()='sections']/*[local-name() = 'clause']" mode="two_columns">
+	<xsl:template match="*[@first]/*[local-name()='sections']/*[local-name() = 'clause']" mode="two_columns">
 		<xsl:variable name="clause_number_"><xsl:number /></xsl:variable>
 		<xsl:variable name="clause_number" select="number(normalize-space($clause_number_))"/>
 		<fo:block>
-			<xsl:call-template name="setId"/>			
+			<!-- <xsl:call-template name="setId"/>			 -->
 			<fo:table table-layout="fixed" width="100%">
 				<fo:table-column column-width="82mm"/>
 				<fo:table-column column-width="8mm"/>
@@ -2980,7 +2988,7 @@
 					<fo:table-row>
 						<fo:table-cell>
 							<fo:block font-size="1pt"></fo:block>
-							<fo:block><xsl:apply-templates /></fo:block>
+							<xsl:apply-templates select="." />
 						</fo:table-cell>
 						<fo:table-cell>
 							<fo:block></fo:block>
@@ -3000,7 +3008,7 @@
 		</fo:block>
 	</xsl:template>
 
-	<xsl:template match="*[local-name()='bibliography']/*[local-name()='references'][@normative='true']" mode="two_columns">
+	<xsl:template match="*[@first]/*[local-name()='bibliography']/*[local-name()='references'][@normative='true']" mode="two_columns">
 		<fo:block>
 			<xsl:call-template name="setId"/>			
 			<fo:table table-layout="fixed" width="100%">
@@ -3028,7 +3036,7 @@
 		</fo:block>
 	</xsl:template>
 
-	<xsl:template match="*[local-name()='sections']/*[local-name() = 'terms' or local-name() = 'definitions']" mode="two_columns">
+	<xsl:template match="*[@first]/*[local-name()='sections']/*[local-name() = 'terms' or local-name() = 'definitions']" mode="two_columns">
 		<xsl:variable name="name" select="local-name()"/>
 		<fo:block>
 			<xsl:call-template name="setId"/>			
@@ -3069,6 +3077,15 @@
 	<xsl:template match="@*|node()" mode="flatxml">
 		<xsl:copy>
 			<xsl:apply-templates select="@*|node()" mode="flatxml"/>
+		</xsl:copy>
+	</xsl:template>
+	
+	<xsl:template match="*[contains(local-name(), '-standard')]" mode="flatxml">
+		<xsl:param name="num"/>
+		<xsl:copy>
+			<xsl:apply-templates select="@*" mode="flatxml"/>
+			<xsl:attribute name="{$num}"/>
+			<xsl:apply-templates select="node()" mode="flatxml"/>
 		</xsl:copy>
 	</xsl:template>
 	
