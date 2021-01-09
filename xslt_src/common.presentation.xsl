@@ -1375,7 +1375,7 @@
 	</xsl:template>
 	
 
-	<xsl:template match="*[local-name()='table']">
+	<xsl:template match="*[local-name()='table']" name="table">
 	
 		<xsl:variable name="simple-table">	
 			<xsl:call-template  name="getSimpleTable"/>			
@@ -4310,7 +4310,7 @@
 	<!-- image    -->
 	<!-- ====== -->
 	
-	<xsl:template match="*[local-name() = 'figure']">
+	<xsl:template match="*[local-name() = 'figure']" name="figure">
 		<fo:block-container id="{@id}">			
 			<xsl:if test="$namespace = 'bipm'">
 				<xsl:if test="*[local-name() = 'name']">

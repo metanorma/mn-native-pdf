@@ -3,6 +3,7 @@
 											xmlns:fo="http://www.w3.org/1999/XSL/Format" 
 											xmlns:iso="https://www.metanorma.org/ns/iso" 
 											xmlns:jcgm="https://www.metanorma.org/ns/bipm" 
+											xmlns:bipm="https://www.metanorma.org/ns/bipm" 
 											xmlns:mathml="http://www.w3.org/1998/Math/MathML" 
 											xmlns:xalan="http://xml.apache.org/xalan" 
 											xmlns:fox="http://xmlgraphics.apache.org/fop/extensions" 
@@ -49,7 +50,7 @@
 	</xsl:variable><!--  select="(/*[local-name()='metanorma-collection']//*[contains(local-name(), '-standard')])[2]"/> -->
 	
 	
-	<xsl:variable name="debug">true</xsl:variable>
+	<xsl:variable name="debug">false</xsl:variable>
 	<xsl:variable name="pageWidth" select="'210mm'"/>
 	<xsl:variable name="pageHeight" select="'297mm'"/>
 
@@ -1737,6 +1738,7 @@
 			<xsl:if test="$template_namespace = 'jcgm' and ancestor::*[@first or @second]">
 				<!-- JCGM two column layout -->
 				<xsl:attribute name="widows">1</xsl:attribute>
+				<xsl:attribute name="orphans">1</xsl:attribute>
 			</xsl:if>
 			<xsl:apply-templates />
 		</xsl:element>
@@ -2434,6 +2436,12 @@
 			
 			
 			<fo:page-sequence master-reference="document-jcgm" format="i" initial-page-number="2" force-page-count="odd">
+				<fo:static-content flow-name="xsl-footnote-separator">
+					<fo:block>
+						<fo:leader leader-pattern="rule" leader-length="30%"/>
+					</fo:block>
+				</fo:static-content>
+        
 				<xsl:call-template name="insertHeaderFooter_JCGM"/>
 					
 				<fo:flow flow-name="xsl-region-body" line-height="115%">
@@ -2589,9 +2597,10 @@
 																																																				not(@type='scope') and
 																																																				not(local-name() = 'clause' and .//*[local-name()='terms']) and
 																																																				not(local-name() = 'clause' and .//*[local-name()='definitions'])]" mode="two_columns"/>
-								<xsl:apply-templates select="/*/*[local-name()='annex']" />
+                                                                                                        
+								<xsl:apply-templates select="xalan:nodeset($doc_first)/*/*[local-name()='annex']" mode="two_columns"/>
 								<!-- Bibliography -->
-								<xsl:apply-templates select="/*/*[local-name()='bibliography']/*[local-name()='references'][not(@normative='true')]" />
+								<xsl:apply-templates select="xalan:nodeset($doc_first)/*/*[local-name()='bibliography']/*[local-name()='references'][not(@normative='true')]" mode="two_columns"/>
 								
 							
 							</xsl:otherwise>
@@ -3008,7 +3017,7 @@
 		</fo:block>
 	</xsl:template>
 
-	<xsl:template match="*[@first]/*[local-name()='bibliography']/*[local-name()='references'][@normative='true']" mode="two_columns">
+	<xsl:template match="*[@first]//*[local-name()='references'][@normative='true']" mode="two_columns">
 		<fo:block>
 			<fo:table table-layout="fixed" width="100%">
 				<fo:table-column column-width="82mm"/>
@@ -3026,7 +3035,7 @@
 						<fo:table-cell>
 							<fo:block>
 								<fo:block font-size="1pt"></fo:block>
-								<xsl:apply-templates select="xalan:nodeset($doc_second)/*/*[local-name()='bibliography']/*[local-name()='references'][@normative='true']"/>
+								<xsl:apply-templates select="xalan:nodeset($doc_second)//*[local-name()='references'][@normative='true']"/>
 							</fo:block>
 						</fo:table-cell>
 					</fo:table-row>
@@ -3034,6 +3043,86 @@
 			</fo:table>
 		</fo:block>
 	</xsl:template>
+  
+  <xsl:template match="*[@first]//*[local-name()='annex']" mode="two_columns">
+    <xsl:variable name="number_"><xsl:number /></xsl:variable>
+		<xsl:variable name="number" select="number(normalize-space($number_))"/>
+    <fo:block break-after="page"/>
+		<fo:block font-size="1pt" id="{@id}"/>
+    <fo:block font-size="1pt" id="{(xalan:nodeset($doc_second)//*[local-name()='annex'])[$number]/@id}"/>
+    <xsl:apply-templates mode="two_columns" />
+  </xsl:template>
+  
+  <xsl:template match="*[@first]//*[local-name()='annex']/*" mode="two_columns">
+    <xsl:variable name="number_"><xsl:number count="*"/></xsl:variable>
+		<xsl:variable name="number" select="number(normalize-space($number_))"/>
+    <xsl:variable name="annex_number_"><xsl:number count="*[local-name()='annex']"/></xsl:variable>
+    <xsl:variable name="annex_number" select="number(normalize-space($annex_number_))"/>
+		<fo:block>
+			<fo:table table-layout="fixed" width="100%">
+				<fo:table-column column-width="82mm"/>
+				<fo:table-column column-width="8mm"/>
+				<fo:table-column column-width="82mm"/>
+				<fo:table-body>
+					<fo:table-row>
+						<fo:table-cell>
+							<fo:block font-size="1pt"></fo:block>
+							<xsl:apply-templates select="." />
+						</fo:table-cell>
+						<fo:table-cell>
+							<fo:block></fo:block>
+						</fo:table-cell>
+						<fo:table-cell>
+							<fo:block>
+								<fo:block font-size="1pt"></fo:block>
+								<xsl:apply-templates select="(xalan:nodeset($doc_second)//*[local-name()='annex'])[$annex_number]/*[$number]"/>
+							</fo:block>
+						</fo:table-cell>
+					</fo:table-row>
+				</fo:table-body>
+			</fo:table>
+		</fo:block>
+	</xsl:template>
+  
+  
+  
+  <xsl:template match="*[@first]//*[local-name()='references'][not(@normative='true')]" mode="two_columns">
+		<fo:block break-after="page"/>
+		<fo:block font-size="1pt" id="{@id}"/>
+    <fo:block font-size="1pt" id="{xalan:nodeset($doc_second)//*[local-name()='references'][not(@normative='true')]/@id}"/>
+    <xsl:apply-templates mode="two_columns" />
+	</xsl:template>
+  
+  <xsl:template match="*[@first]//*[local-name()='references'][not(@normative='true')]/*" mode="two_columns">
+    <xsl:variable name="number_"><xsl:number count="*"/></xsl:variable>
+		<xsl:variable name="number" select="number(normalize-space($number_))"/>
+		<fo:block>
+			<fo:table table-layout="fixed" width="100%">
+				<fo:table-column column-width="82mm"/>
+				<fo:table-column column-width="8mm"/>
+				<fo:table-column column-width="82mm"/>
+				<fo:table-body>
+					<fo:table-row>
+						<fo:table-cell>
+							<xsl:apply-templates select="." />
+							<fo:block font-size="1pt"></fo:block>
+						</fo:table-cell>
+						<fo:table-cell>
+							<fo:block></fo:block>
+						</fo:table-cell>
+						<fo:table-cell>
+							<fo:block>
+								<xsl:apply-templates select="(xalan:nodeset($doc_second)//*[local-name()='references'][not(@normative='true')]/*)[$number]"/>
+								<fo:block font-size="1pt"></fo:block>
+							</fo:block>
+						</fo:table-cell>
+					</fo:table-row>
+				</fo:table-body>
+			</fo:table>
+		</fo:block>
+	</xsl:template>
+
+
 
 	<xsl:template match="*[@first]/*[local-name()='sections']/*[local-name() = 'terms' or local-name() = 'definitions']" mode="two_columns">
 		<xsl:variable name="number_"><xsl:number /></xsl:variable>
@@ -3065,6 +3154,55 @@
 		</fo:block>
 	</xsl:template>
 
+	<!-- no display table/figure from second document if common=true or span=true -->
+	<xsl:template match="*[@second]//*[local-name()='table'][@common = 'true']" priority="2"/>
+	<xsl:template match="*[@second]//*[local-name()='table'][@span = 'true']" priority="2"/>
+	<xsl:template match="*[@second]//*[local-name()='figure'][@common = 'true']" priority="2"/>
+	<xsl:template match="*[@second]//*[local-name()='figure'][@span = 'true']" priority="2"/>
+	
+	<xsl:template match="*[@first]//*[local-name()='table'][@common = 'true']" priority="2">
+		<fo:block-container width="210%">
+			<fo:block>
+				<xsl:call-template name="table"/>
+			</fo:block>
+		</fo:block-container>
+	</xsl:template>
+	
+	<xsl:template match="*[@first]//*[local-name()='table'][@span = 'true']" priority="2">
+		<xsl:variable name="number_"><xsl:number level="any" count="*[local-name()='table']"/></xsl:variable>
+		<xsl:variable name="number" select="number(normalize-space($number_))"/>
+		<fo:block-container width="210%">
+			<fo:block>
+				<xsl:call-template name="table"/>
+				<fo:block>&#xa0;</fo:block>      
+				<xsl:for-each select="(xalan:nodeset($doc_second)//*[local-name()='table'])[$number][@span = 'true']">
+					<xsl:call-template name="table"/>
+				</xsl:for-each>
+			</fo:block>
+		</fo:block-container>
+	</xsl:template>
+	
+	<xsl:template match="*[@first]//*[local-name()='figure'][@common = 'true']" priority="2">
+		<fo:block-container width="210%">
+			<fo:block>
+				<xsl:call-template name="figure"/>
+			</fo:block>
+		</fo:block-container>
+	</xsl:template>
+	
+	<xsl:template match="*[@first]//*[local-name()='figure'][@span = 'true']" priority="2">
+		<xsl:variable name="number_"><xsl:number level="any" count="*[local-name()='figure']"/></xsl:variable>
+		<xsl:variable name="number" select="number(normalize-space($number_))"/>
+		<fo:block-container width="210%">
+			<fo:block>
+				<xsl:call-template name="figure"/>
+				<fo:block>&#xa0;</fo:block>
+				<xsl:for-each select="(xalan:nodeset($doc_second)//*[local-name()='figure'])[$number][@span = 'true']">
+					<xsl:call-template name="figure"/>
+				</xsl:for-each>
+			</fo:block>
+		</fo:block-container>
+	</xsl:template>
 
 	<!-- =================== -->
 	<!-- End Two columns layout -->
