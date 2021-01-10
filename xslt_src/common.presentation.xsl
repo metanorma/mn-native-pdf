@@ -1557,11 +1557,11 @@
 					<xsl:if test="*[local-name()='thead']">
 						<attribute name="border-top">1pt solid black</attribute>
 					</xsl:if>
-					<xsl:if test="$template_namespace = 'jcgm'">
+					<!-- <xsl:if test="$template_namespace = 'jcgm'">
 						<attribute name="border">0pt solid black</attribute>
 						<attribute name="border-top">0.5pt solid black</attribute>
 						<attribute name="border-bottom">0.5pt solid black</attribute>
-					</xsl:if>
+					</xsl:if> -->
 				</xsl:if>
 				<xsl:if test="$namespace = 'iec'">
 					<attribute name="border">0.5pt solid black</attribute>
@@ -1868,9 +1868,9 @@
 		<fo:table-row>
 			<fo:table-cell number-columns-spanned="{$cols-count}" border-left="1.5pt solid white" border-right="1.5pt solid white" border-top="1.5pt solid white" border-bottom="1.5pt solid black">
 				<xsl:if test="$namespace = 'iso'">
-					<xsl:if test="$template_namespace = 'jcgm'">
+					<!-- <xsl:if test="$template_namespace = 'jcgm'">
 						<xsl:attribute name="border-bottom">0.5pt solid black</xsl:attribute>
-					</xsl:if>
+					</xsl:if> -->
 				</xsl:if>
 				<xsl:apply-templates select="ancestor::*[local-name()='table']/*[local-name()='name']" mode="presentation"/>
 				<xsl:for-each select="ancestor::*[local-name()='table'][1]">
@@ -2215,24 +2215,24 @@
 							<xsl:when test="position() = 1">
 								<xsl:attribute name="border-top">solid black 1.5pt</xsl:attribute>
 								<xsl:attribute name="border-bottom">solid black 1pt</xsl:attribute>
-								<xsl:if test="$template_namespace = 'jcgm'">
+								<!-- <xsl:if test="$template_namespace = 'jcgm'">
 									<xsl:attribute name="border">0pt solid black</xsl:attribute>
-								</xsl:if>
+								</xsl:if> -->
 							</xsl:when>
 							<xsl:when test="position() = last()">
 								<xsl:attribute name="border-top">solid black 1pt</xsl:attribute>
 								<xsl:attribute name="border-bottom">solid black 1.5pt</xsl:attribute>
-								<xsl:if test="$template_namespace = 'jcgm'">
+								<!-- <xsl:if test="$template_namespace = 'jcgm'">
 									<xsl:attribute name="border">0pt solid black</xsl:attribute>
 									<xsl:attribute name="border-bottom">0.5pt solid black</xsl:attribute>
-								</xsl:if>
+								</xsl:if> -->
 							</xsl:when>
 							<xsl:otherwise>
 								<xsl:attribute name="border-top">solid black 1pt</xsl:attribute>
 								<xsl:attribute name="border-bottom">solid black 1pt</xsl:attribute>
-								<xsl:if test="$template_namespace = 'jcgm'">
+								<!-- <xsl:if test="$template_namespace = 'jcgm'">
 									<xsl:attribute name="border">0pt solid black</xsl:attribute>
-								</xsl:if>
+								</xsl:if> -->
 							</xsl:otherwise>
 						</xsl:choose>
 					</xsl:if>
@@ -2306,10 +2306,10 @@
 				<xsl:attribute name="padding-top">1mm</xsl:attribute>
 			</xsl:if>
 			<xsl:if test="$namespace = 'iso'">
-				<xsl:if test="$template_namespace = 'jcgm'">
+				<!-- <xsl:if test="$template_namespace = 'jcgm'">
 					<xsl:attribute name="border">0pt solid black</xsl:attribute>
 					<xsl:attribute name="border-bottom">0.5pt solid black</xsl:attribute>
-				</xsl:if>
+				</xsl:if> -->
 			</xsl:if>
 			<xsl:if test="$namespace = 'iec'">
 				<xsl:attribute name="border">solid black 0.5pt</xsl:attribute>
@@ -2437,9 +2437,9 @@
 				<xsl:if test="ancestor::*[local-name() = 'tfoot']">
 					<xsl:attribute name="border">solid black 0</xsl:attribute>
 				</xsl:if>
-				<xsl:if test="$template_namespace = 'jcgm'">
+				<!-- <xsl:if test="$template_namespace = 'jcgm'">
 					<xsl:attribute name="border">0pt solid black</xsl:attribute>
-				</xsl:if>
+				</xsl:if> -->
 			</xsl:if>
 			<xsl:if test="$namespace = 'gb'">
 				<xsl:if test="ancestor::*[local-name() = 'tfoot']">
