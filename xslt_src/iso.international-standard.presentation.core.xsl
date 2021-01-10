@@ -2446,6 +2446,12 @@
 					
 				<fo:flow flow-name="xsl-region-body" line-height="115%">
 				
+					<!-- Copyright -->
+					<xsl:for-each select="//*[contains(local-name(), '-standard')]">
+						<xsl:apply-templates select="./*[local-name()='boilerplate']/*" />
+						<fo:block break-after="page"/>
+					</xsl:for-each>
+				
 					<xsl:for-each select="//*[contains(local-name(), '-standard')]">
 						<xsl:variable name="current_document">
 							<xsl:copy-of select="."/>
