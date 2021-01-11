@@ -39,6 +39,7 @@ XSLT_GENERATED := xslt/iec.international-standard.xsl \
 	xslt/itu.implementers-guide.presentation.xsl \
 	xslt/itu.resolution.xsl \
 	xslt/itu.resolution.presentation.xsl \
+	xslt/itu.in-force.presentation.xsl \
 	xslt/ogc.abstract-specification-topic.xsl \
 	xslt/ogc.abstract-specification-topic.presentation.xsl \
 	xslt/ogc.best-practice.xsl \
