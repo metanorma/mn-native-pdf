@@ -345,7 +345,7 @@
 							</fo:block-container>
 						</fo:block>
 						
-						<xsl:apply-templates select="(//iec:iec-standard)[1]/iec:boilerplate/iec:feedback-statement"/>
+						<xsl:apply-templates select="(//iec:iec-standard)[1]/iec:boilerplate/iec:feedback-statement"/> <!-- //iec:clause[not(@id) or @id != 'boilerplate-cenelec-attention'] -->
 						<fo:block span="all" border-bottom="0.5pt solid black"/>
 						<xsl:if test="(//iec:iec-standard)[2]/iec:boilerplate/iec:feedback-statement">
 							<xsl:apply-templates select="(//iec:iec-standard)[2]/iec:boilerplate/iec:feedback-statement"/>
@@ -605,7 +605,10 @@
 					<fo:static-content flow-name="footer-FDIS">
 						<fo:block-container background-color="rgb(236, 232, 232)" padding="2mm" border="1.5pt solid white">
 							<fo:block font-size="8pt" margin-bottom="6pt">
-								<fo:inline font-weight="bold">
+							
+								<xsl:apply-templates select="(//iec:iec-standard)[1]/iec:boilerplate/iec:copyright-statement/iec:clause/iec:p[not(@id)]"/>
+							
+								<!-- <fo:inline font-weight="bold">
 									<xsl:call-template name="addLetterSpacing">
 										<xsl:with-param name="text">
 											<xsl:for-each select="(//iec:iec-standard)[1]/iec:bibdata/iec:copyright">
@@ -620,7 +623,7 @@
 											<xsl:text>. All rights reserved. It is permitted to download this electronic file, to make a copy and to print out the content for the sole purpose of preparing National Committee positions. You may not copy or "mirror" the file or printed version of the document, or any part of it, for any other purpose without permission in writing from IEC.</xsl:text>
 										</xsl:with-param>
 									</xsl:call-template>
-								</fo:inline>
+								</fo:inline> -->
 							</fo:block>
 						</fo:block-container>
 					</fo:static-content>
@@ -632,7 +635,8 @@
 								<fo:inline font-size="8pt" padding-left="0.5mm" color="{$color_blue}">®</fo:inline>
 							</xsl:if>
 							<fo:inline keep-together.within-line="always" font-size="18pt" font-weight="bold" baseline-shift="10mm"><fo:leader leader-pattern="space"/>
-								<xsl:text>Ex: 34D/1511/FDIS</xsl:text>
+								<!-- Ex: 34D/1511/FDIS -->
+								<xsl:value-of select="//iec:iec-standard/iec:bibdata/iec:docidentifier[@type='iso-tc']"/>
 								<xsl:text>&#xA0;</xsl:text>
 							</fo:inline>
 						</fo:block>
@@ -693,7 +697,8 @@
 												</fo:block>
 												<fo:block font-size="9pt" font-weight="bold">
 													<xsl:call-template name="addLetterSpacing">
-														<xsl:with-param name="text">2019-12-06</xsl:with-param>
+														<!-- 2019-12-06 -->
+														<xsl:with-param name="text"><xsl:value-of select="//iec:iec-standard/iec:bibdata/iec:date[@type='vote-ended']/iec:on"/></xsl:with-param>
 													</xsl:call-template>
 												</fo:block>
 											</fo:table-cell>
@@ -733,22 +738,26 @@
 										<fo:table-row height="4mm">
 											<fo:table-cell number-columns-spanned="2" border="1.5pt solid {$border-color}" padding="1.5mm" padding-bottom="0mm">
 												<fo:block>
-													<xsl:if test="//iec:iec-standard/iec:bibdata/iec:ext/iec:editorialgroup/iec:subcommittee">
-														<fo:block font-size="6.5pt">
-															<fo:inline font-size="8pt">IEC SC <xsl:value-of select="//iec:iec-standard/iec:bibdata/iec:ext/iec:editorialgroup/iec:subcommittee/@number"/> : </fo:inline>
-															<xsl:call-template name="addLetterSpacingSmallCaps">
-																<xsl:with-param name="text" select="//iec:iec-standard/iec:bibdata/iec:ext/iec:editorialgroup/iec:subcommittee"/>
-															</xsl:call-template>
-														</fo:block>
-													</xsl:if>
-													<xsl:if test="//iec:iec-standard/iec:bibdata/iec:ext/iec:editorialgroup/iec:technical-committee">
-														<fo:block font-size="6.5pt">
-															<fo:inline font-size="8pt">IEC TC <xsl:value-of select="//iec:iec-standard/iec:bibdata/iec:ext/iec:editorialgroup/iec:technical-committee/@number"/> : </fo:inline>
-															<xsl:call-template name="addLetterSpacingSmallCaps">
-																<xsl:with-param name="text" select="//iec:iec-standard/iec:bibdata/iec:ext/iec:editorialgroup/iec:technical-committee"/>
-															</xsl:call-template>
-														</fo:block>
-													</xsl:if>
+													<!-- If //bibdata/ext/editorialgroup/subcommittee exists, use "IEC SC" + //bibdata/ext/editorialgroup/subcommittee/@number + //bibdata/ext/editorialgroup/subcommittee, 
+													else use "IEC TC" + //bibdata/ext/editorialgroup/technical-committee/@number + //bibdata/ext/editorialgroup/technical-committee -->
+													<xsl:choose>
+														<xsl:when test="//iec:iec-standard/iec:bibdata/iec:ext/iec:editorialgroup/iec:subcommittee">
+															<fo:block font-size="6.5pt">
+																<fo:inline font-size="8pt">IEC SC <xsl:value-of select="//iec:iec-standard/iec:bibdata/iec:ext/iec:editorialgroup/iec:subcommittee/@number"/> : </fo:inline>
+																<xsl:call-template name="addLetterSpacingSmallCaps">
+																	<xsl:with-param name="text" select="//iec:iec-standard/iec:bibdata/iec:ext/iec:editorialgroup/iec:subcommittee"/>
+																</xsl:call-template>
+															</fo:block>
+														</xsl:when>
+														<xsl:when test="//iec:iec-standard/iec:bibdata/iec:ext/iec:editorialgroup/iec:technical-committee">
+															<fo:block font-size="6.5pt">
+																<fo:inline font-size="8pt">IEC TC <xsl:value-of select="//iec:iec-standard/iec:bibdata/iec:ext/iec:editorialgroup/iec:technical-committee/@number"/> : </fo:inline>
+																<xsl:call-template name="addLetterSpacingSmallCaps">
+																	<xsl:with-param name="text" select="//iec:iec-standard/iec:bibdata/iec:ext/iec:editorialgroup/iec:technical-committee"/>
+																</xsl:call-template>
+															</fo:block>
+														</xsl:when>
+													</xsl:choose>
 												</fo:block>
 											</fo:table-cell>
 										</fo:table-row>
@@ -772,8 +781,9 @@
 													</xsl:call-template>
 												</fo:block>
 												<fo:block font-size="9pt">
+													<!-- Example: Ms Shanti Conn -->
 													<xsl:call-template name="addLetterSpacing">
-														<xsl:with-param name="text" select="'Ms Shanti Conn'"/>
+														<xsl:with-param name="text" select="//iec:iec-standard/iec:bibdata/iec:ext/iec:secretary"/>
 													</xsl:call-template>
 												</fo:block>
 											</fo:table-cell>
@@ -786,6 +796,11 @@
 												<fo:block font-size="6.5pt" margin-bottom="6pt">
 													<xsl:call-template name="addLetterSpacingSmallCaps">
 														<xsl:with-param name="text" select="'Of interest to the following committees:'"/>
+													</xsl:call-template>
+												</fo:block>
+												<fo:block font-size="9pt">
+													<xsl:call-template name="addLetterSpacing">
+														<xsl:with-param name="text" select="//iec:iec-standard/iec:bibdata/iec:ext/iec:interest-to-committees"/>
 													</xsl:call-template>
 												</fo:block>
 											</fo:table-cell>
@@ -803,9 +818,15 @@
 															</xsl:call-template>
 														</xsl:if>
 													</fo:block>
-													
 													<fo:block>
-														<xsl:call-template name="insertCheckBoxOff"/>
+														<xsl:choose>
+															<xsl:when test="//iec:iec-standard/iec:bibdata/iec:ext/iec:horizontal = 'true'">
+																<xsl:call-template name="insertCheckBoxOn"/>
+															</xsl:when>
+															<xsl:otherwise>
+																<xsl:call-template name="insertCheckBoxOff"/>
+															</xsl:otherwise>
+														</xsl:choose>
 													</fo:block>
 													
 													<xsl:if test="$stage-abbreviation = 'CDV' or $stage-abbreviation = 'CD'">
@@ -906,13 +927,10 @@
 															<xsl:with-param name="text" select="'Submitted for CENELEC parallel voting'"/>
 														</xsl:call-template>
 													</fo:block>
-													<fo:block font-size="8pt" font-weight="bold" margin-bottom="10pt">
-														<xsl:call-template name="addLetterSpacing">
-															<xsl:with-param name="text" select="'Attention IEC-CENELEC parallel voting'"/>
-														</xsl:call-template>
-													</fo:block>
 													
-													<fo:block font-size="8pt" margin-bottom="10pt" text-align="justify">
+													<xsl:apply-templates select="(//iec:iec-standard)[1]/iec:boilerplate/iec:feedback-statement/iec:clause[@id = 'boilerplate-cenelec-attention']"/>
+													
+													<!-- <fo:block font-size="8pt" margin-bottom="10pt" text-align="justify">
 														<xsl:if test="$stage-abbreviation = 'FDIS'">
 															<xsl:call-template name="addLetterSpacing">
 																<xsl:with-param name="text" select="'The attention of IEC National Committees, members of CENELEC, is drawn to the fact that this Final Draft International Standard (FDIS) is submitted for parallel voting.'"/>
@@ -928,7 +946,8 @@
 														<xsl:call-template name="addLetterSpacing">
 															<xsl:with-param name="text" select="'The CENELEC members are invited to vote through the CENELEC online voting system.'"/>
 														</xsl:call-template>
-													</fo:block>
+													</fo:block> -->
+													
 												</fo:table-cell>
 												<fo:table-cell border="1.5pt solid {$border-color}" padding="1.5mm" padding-bottom="0mm">
 													<fo:block font-size="6.5pt" margin-bottom="6pt">
@@ -953,7 +972,10 @@
 						</fo:block-container>
 						
 						<fo:block-container font-size="8pt" background-color="rgb(236, 232, 232)" margin-top="5mm" padding="2mm" text-align="justify" border="1.5pt solid white">
-							<xsl:if test="$stage-abbreviation = 'FDIS'">
+							<fo:block>
+								<xsl:apply-templates select="(//iec:iec-standard)[1]/iec:boilerplate/iec:license-statement" mode="cover-page-internal"/>
+							</fo:block>
+							<!-- <xsl:if test="$stage-abbreviation = 'FDIS'">
 								<fo:block margin-bottom="6pt">
 									<xsl:call-template name="addLetterSpacing">
 										<xsl:with-param name="text">This document is a draft distributed for approval. It may not be referred to as an International Standard until published as such.</xsl:with-param>
@@ -991,7 +1013,7 @@
 										<xsl:with-param name="text">Recipients of this document are invited to submit, with their comments, notification of any relevant patent rights of which they are aware and to provide supporting documentation.</xsl:with-param>
 									</xsl:call-template>
 								</fo:block>
-							</xsl:if>
+							</xsl:if> -->
 						</fo:block-container>
 						
 						<fo:block-container background-color="rgb(219, 229, 241)" margin-top="4mm" padding="2mm" padding-top="1mm" border="1.5pt solid white">
@@ -1015,23 +1037,23 @@
 											<xsl:text>PROPOSED STABILITY DATE: </xsl:text>
 										</xsl:with-param>
 									</xsl:call-template>
-									<fo:inline font-size="9pt">2023</fo:inline>
+									<!-- 2023 -->
+									<fo:inline font-size="9pt"><xsl:value-of select="//iec:iec-standard/iec:bibdata/iec:date[@type='unchanged']/iec:on"/></fo:inline>
 								</fo:block>
 							</fo:block-container>
 						</xsl:if>
 						
-						<fo:block-container border="1.5 solid" border-color="rgb(221, 213, 213)" height="13mm" padding="1mm" margin-top="3mm">
+						<fo:block-container border="1.5 solid" border-color="rgb(221, 213, 213)" padding="1mm" margin-top="3mm">
 							<fo:block font-size="6.5pt" margin-bottom="6pt">
 								<xsl:call-template name="addLetterSpacingSmallCaps">
 									<xsl:with-param name="text">Note from TC/SC officers:</xsl:with-param>
 								</xsl:call-template>
 							</fo:block>
-							<!-- <fo:block font-size="9pt">This FDIS is the result of the discussion between the IEC SC21A experts WG 3 during the meeting held in</fo:block> -->
+							<!-- Example: This FDIS is the result of the discussion between the IEC SC21A experts WG 3 during the meeting held in -->
+							<xsl:apply-templates select="(//iec:iec-standard)[1]/iec:bibdata/iec:ext/iec:tc-sc-officers-note"/>
 						</fo:block-container>
 								
-						
-						
-						<xsl:if test="$stage-abbreviation = 'FDIS'">
+						<!-- <xsl:if test="$stage-abbreviation = 'FDIS'">
 							<fo:block-container  font-size="9pt" border="1.5 solid" border-color="rgb(221, 213, 213)" height="13mm" padding="1mm" margin-top="3mm">
 								<fo:block margin-bottom="6pt">
 									<xsl:call-template name="addLetterSpacing">
@@ -1048,7 +1070,7 @@
 									</xsl:call-template>
 								</fo:block>
 							</fo:block-container>
-						</xsl:if>
+						</xsl:if> -->
 						
 					</fo:flow>
 				</fo:page-sequence>
@@ -1222,6 +1244,10 @@
 		</fo:root>
 	</xsl:template> 
 
+	<xsl:template match="iec:tc-sc-officers-note/iec:p">
+		<fo:block><xsl:apply-templates /></fo:block>
+	</xsl:template>
+	
 	<xsl:template name="insertCoverPart1">
 		<xsl:variable name="lang_second">
 			<xsl:choose>
@@ -1605,6 +1631,38 @@
 	</xsl:template>
 	
 	
+	<xsl:template match="iec:feedback-statement/iec:clause[@id = 'boilerplate-cenelec-attention']" priority="3">
+		<fo:block font-size="8pt" margin-bottom="10pt" text-align="justify">
+			<xsl:apply-templates />
+		</fo:block>
+	</xsl:template>
+	
+	<xsl:template match="iec:feedback-statement/iec:clause[@id = 'boilerplate-cenelec-attention']//iec:title" priority="3">
+		<fo:block font-size="8pt" font-weight="bold" margin-bottom="10pt">
+			<xsl:apply-templates />
+		</fo:block>
+	</xsl:template>
+	
+	<xsl:template match="iec:feedback-statement/iec:clause[@id = 'boilerplate-cenelec-attention']//iec:p" priority="3">
+		<fo:block font-size="8pt" margin-bottom="10pt" text-align="justify">
+			<xsl:apply-templates />
+		</fo:block>
+	</xsl:template>
+	
+	<xsl:template match="iec:feedback-statement/iec:clause[@id = 'boilerplate-cenelec-attention']//text()" priority="3">
+		<!-- Example: Attention IEC-CENELEC parallel voting -->
+		<xsl:if test="normalize-space() ! = ''">
+			<xsl:call-template name="addLetterSpacing">
+				<xsl:with-param name="text" select="."/>
+			</xsl:call-template>
+		</xsl:if>
+	</xsl:template>
+	
+	<xsl:template match="iec:boilerplate/iec:feedback-statement">
+		<fo:block margin-top="6pt" font-size="1pt" span="all" >&#xa;</fo:block>
+		<xsl:apply-templates select="*[not(@id) or @id != 'boilerplate-cenelec-attention']"/>
+	</xsl:template>
+	
 	<xsl:template match="iec:feedback-statement//iec:clause/iec:title" priority="2">
 		<fo:block font-weight="bold" keep-with-next="always"><xsl:apply-templates/></fo:block>
 	</xsl:template>
@@ -1615,9 +1673,9 @@
 	
 	<xsl:template match="iec:feedback-statement/iec:clause[not(iec:clause)]" priority="2">
 		<fo:block span="all" text-align="justify">
-			<xsl:if test="not(preceding-sibling::iec:clause)">
+			<!-- <xsl:if test="not(preceding-sibling::iec:clause)">
 				<xsl:attribute name="margin-top">6pt</xsl:attribute>
-			</xsl:if>
+			</xsl:if> -->
 			<xsl:apply-templates />
 		</fo:block>
 	</xsl:template>
@@ -1724,6 +1782,23 @@
 		</fo:block>
 	</xsl:template>
 	
+	<xsl:template match="iec:license-statement//iec:title" mode="cover-page-internal">
+		<fo:block text-align="center" font-weight="bold">
+			<xsl:apply-templates />
+		</fo:block>
+	</xsl:template>
+	<xsl:template match="iec:license-statement//iec:p" mode="cover-page-internal">
+		<fo:block margin-bottom="6pt">
+			<xsl:apply-templates mode="cover-page-internal"/>
+		</fo:block>
+	</xsl:template>	
+	<xsl:template match="iec:license-statement//iec:p//text()" mode="cover-page-internal">
+		<xsl:call-template name="addLetterSpacing">
+			<xsl:with-param name="text"><xsl:value-of select="."/></xsl:with-param>
+		</xsl:call-template>
+	</xsl:template>
+	
+								
 	<!-- <fo:block margin-bottom="12pt">© ISO 2019, Published in Switzerland.</fo:block>
 			<fo:block font-size="10pt" margin-bottom="12pt">All rights reserved. Unless otherwise specified, no part of this publication may be reproduced or utilized otherwise in any form or by any means, electronic or mechanical, including photocopying, or posting on the internet or an intranet, without prior written permission. Permission can be requested from either ISO at the address below or ISO’s member body in the country of the requester.</fo:block>
 			<fo:block font-size="10pt" text-indent="7.1mm">
@@ -1758,6 +1833,15 @@
 			</xsl:if>
 			<xsl:apply-templates />
 		</fo:block>
+	</xsl:template>
+
+	<!-- copyright text in footer internal footer -->
+	<xsl:template match="iec:copyright-statement//iec:p[not(@id)]//text()">
+		<xsl:if test="normalize-space() ! = ''">
+			<xsl:call-template name="addLetterSpacing">
+				<xsl:with-param name="text" select="normalize-space(.)"/>
+			</xsl:call-template>
+		</xsl:if>
 	</xsl:template>
 	
 	
