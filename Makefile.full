@@ -106,6 +106,8 @@ XSLT_GENERATED := xslt/iec.international-standard.xsl \
 	xslt/bipm.rapport.presentation.xsl \
 	xslt/nist.cswp.xsl \
 	xslt/nist.cswp.presentation.xsl \
+	xslt/nist.csts.presentation.xsl \
+	xslt/nist.itl.presentation.xsl \
 	xslt/nist.sp.xsl \
 	xslt/nist.sp.presentation.xsl 
 
