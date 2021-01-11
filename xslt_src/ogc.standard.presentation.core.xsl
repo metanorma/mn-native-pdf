@@ -127,14 +127,14 @@
 				<fo:flow flow-name="xsl-region-body" color="white">
 				
 					<!-- background image -->
-					<fo:block-container absolute-position="fixed" left="0mm" top="0mm">
+					<fo:block-container absolute-position="fixed" left="0mm" top="0mm" font-size="0">
 						<fo:block>
 							<fo:external-graphic src="{concat('data:image/png;base64,', normalize-space($Image-Cover-Background))}" width="{$pageWidth}" content-height="scale-to-fit" scaling="uniform" fox:alt-text="Image Front"/>
 						</fo:block>
 					</fo:block-container>
 					
 					<!-- background color -->
-					<fo:block-container absolute-position="fixed" left="0" top="0">
+					<fo:block-container absolute-position="fixed" left="0" top="0" font-size="0">
             <fo:block>
               <fo:instream-foreign-object content-height="{$pageHeight}" fox:alt-text="Background color">
                 <svg xmlns="http://www.w3.org/2000/svg" version="1.0" width="215.9mm" height="279.4mm">
@@ -277,7 +277,7 @@
 					</xsl:if>
 
 					<!-- crossing lines -->					
-					<fo:block-container absolute-position="fixed" width="{$pageWidth}" height="{$pageHeight}">
+					<fo:block-container absolute-position="fixed" width="{$pageWidth}" height="{$pageHeight}" font-size="0">
 						<fo:block>
 							<fo:instream-foreign-object content-height="{$pageHeight}" content-width="{$pageWidth}" fox:alt-text="Crossing lines">
 								<svg viewBox="0 0 2159 2794" xmlns="http://www.w3.org/2000/svg" width="{$pageWidth}" height="{$pageHeight}">
@@ -310,7 +310,7 @@
 				<fo:flow flow-name="xsl-region-body">
 				
 					<!-- crossing lines -->					
-					<fo:block-container absolute-position="fixed" width="{$pageWidth}" height="{$pageHeight}">
+					<fo:block-container absolute-position="fixed" width="{$pageWidth}" height="{$pageHeight}" font-size="0">
 						<fo:block>
 							<fo:instream-foreign-object content-height="{$pageHeight}" content-width="{$pageWidth}" fox:alt-text="Crossing lines">
 								<svg viewBox="0 0 2159 2794" xmlns="http://www.w3.org/2000/svg" width="{$pageWidth}" height="{$pageHeight}">
@@ -604,7 +604,7 @@
 			</xsl:call-template>
 			<fo:flow flow-name="xsl-region-body">
 				<!-- background color -->
-				<fo:block-container absolute-position="fixed" left="0" top="0">
+				<fo:block-container absolute-position="fixed" left="0" top="0" font-size="0">
 					<fo:block>
 						<fo:instream-foreign-object content-height="{$pageHeight}" fox:alt-text="Background color">
 							<svg xmlns="http://www.w3.org/2000/svg" version="1.0" width="{$pageWidth}" height="{$pageHeight}">
@@ -1365,7 +1365,7 @@
 	</xsl:template>
 
 	<xsl:template name="insertCrossingLines">
-		<fo:block-container absolute-position="fixed" width="{$pageWidth}" height="{$pageHeight}">
+		<fo:block-container absolute-position="fixed" width="{$pageWidth}" height="{$pageHeight}" font-size="0">
 			<fo:block>
 				<fo:instream-foreign-object content-height="{$pageHeight}" content-width="{$pageWidth}" fox:alt-text="Crossing lines">
 					<svg viewBox="0 0 2159 2794" xmlns="http://www.w3.org/2000/svg" width="{$pageWidth}" height="{$pageHeight}">
