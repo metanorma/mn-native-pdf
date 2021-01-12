@@ -3313,6 +3313,32 @@
 		</mathml:mstyle>
 	</xsl:template>
 
+	<!-- Decrease space between ()
+	from: 
+	<mfenced open="(" close=")">
+		<mrow>
+			<mtext>Cu</mtext>
+		</mrow>
+	</mfenced>
+		to: 
+		<mrow>
+			<mtext>(Cu)</mtext>
+		</mrow> -->
+	<xsl:template match="mathml:mfenced[count(*) = 1 and *[count(*) = 1] and */*[count(*) = 0]] |
+																	mathml:mfenced[count(*) = 1 and *[count(*) = 1] and */*[count(*) = 1] and */*/*[count(*) = 0]]" mode="mathml" priority="2">
+		<xsl:apply-templates mode="mathml"/>
+	</xsl:template>
+		
+	<xsl:template match="mathml:mfenced[count(*) = 1]/*[count(*) = 1]/*[count(*) = 0] |
+																	mathml:mfenced[count(*) = 1]/*[count(*) = 1]/*[count(*) = 1]/*[count(*) = 0]" mode="mathml" priority="2"> <!-- [not(following-sibling::*) and not(preceding-sibling::*)] -->
+		<xsl:copy>
+			<xsl:apply-templates select="@*" mode="mathml"/>
+			<xsl:value-of select="ancestor::mathml:mfenced/@open"/>
+			<xsl:value-of select="."/>
+			<xsl:value-of select="ancestor::mathml:mfenced/@close"/>
+		</xsl:copy>
+	</xsl:template>
+
 	<xsl:template name="insertHeaderFooter">
 		<xsl:param name="header-title"/>		
 		<fo:static-content flow-name="header-odd">			
