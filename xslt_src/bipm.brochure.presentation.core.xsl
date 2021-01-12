@@ -3439,7 +3439,12 @@
 				<xsl:value-of select="concat($day, ' ', $monthStr, ' ', $year)"/>
 			</xsl:when>
 			<xsl:otherwise>
-				<xsl:value-of select="concat($monthStr, ' ', $day, ', ', $year)"/>
+				<!-- <xsl:value-of select="concat($monthStr, ' ', $day, ', ', $year)"/> -->
+				<xsl:value-of select="$monthStr"/>
+				<xsl:text> </xsl:text>
+				<xsl:value-of select="$day"/>
+				<xsl:if test="$day != '' and $year != ''"><xsl:text>, </xsl:text></xsl:if>
+				<xsl:value-of select="$year"/>
 			</xsl:otherwise>
 		</xsl:choose>
 		
