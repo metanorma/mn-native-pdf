@@ -1056,20 +1056,20 @@
 							<fo:block-container font-weight="bold">
 								
 								<fo:block text-align-last="justify" font-size="16pt" margin-top="10pt" margin-bottom="18pt">
-									<xsl:variable name="title-toc">
-										<xsl:call-template name="getTitle">
-											<xsl:with-param name="name" select="'title-toc'"/>
+									<fo:inline font-size="16pt" font-weight="bold">
+										<!-- Contents -->
+										<xsl:call-template name="getLocalizedString">
+											<xsl:with-param name="key">table_of_contents</xsl:with-param>
 										</xsl:call-template>
-									</xsl:variable>
-									<fo:inline font-size="16pt" font-weight="bold"><xsl:value-of select="$title-toc"/></fo:inline>
+									</fo:inline>
 									<fo:inline keep-together.within-line="always">
 										<fo:leader leader-pattern="space"/>
-										<xsl:variable name="title-page">
-											<xsl:call-template name="getTitle">
-												<xsl:with-param name="name" select="'title-page'"/>
-											</xsl:call-template>
-										</xsl:variable>
-										<fo:inline font-weight="normal" font-size="10pt"><xsl:value-of select="$title-page"/></fo:inline>
+										<fo:inline font-weight="normal" font-size="10pt">
+											<!-- Page -->
+											<xsl:call-template name="getLocalizedString">
+											<xsl:with-param name="key">locality.page</xsl:with-param>
+										</xsl:call-template>
+										</fo:inline>
 									</fo:inline>
 								</fo:block>
 								
