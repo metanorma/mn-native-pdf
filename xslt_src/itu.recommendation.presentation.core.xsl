@@ -309,6 +309,9 @@
 			
 			<!-- cover page -->
 			<fo:page-sequence master-reference="cover-page">
+				<xsl:if test="$doctype = 'resolution'">
+					<xsl:attribute name="force-page-count">no-force</xsl:attribute>
+				</xsl:if>
 				<fo:flow flow-name="xsl-region-body">
 				
 					<fo:block-container absolute-position="fixed" top="265mm">
@@ -583,39 +586,43 @@
 			<fo:page-sequence master-reference="document-preface" initial-page-number="1" format="i" force-page-count="no-force">
 				<xsl:call-template name="insertHeaderFooter"/>
 				<fo:flow flow-name="xsl-region-body">
-					<fo:block-container font-size="14pt" font-weight="bold">
-						<fo:block>
-							<xsl:value-of select="$doctypeTitle"/>
-							<xsl:text>&#xA0;</xsl:text>
-							<xsl:value-of select="$docname"/>
-						</fo:block>
-						<fo:block text-align="center" margin-top="15pt" margin-bottom="15pt">
-							<xsl:value-of select="/itu:itu-standard/itu:bibdata/itu:title[@type = 'main' and @language = 'en']"/>
-						</fo:block>
-					</fo:block-container>
-					<!-- Summary, History ... -->
-					<xsl:call-template name="processPrefaceSectionsDefault"/>
-					
-					<!-- Keywords -->
-					<xsl:if test="/itu:itu-standard/itu:bibdata/itu:keyword">
-						<fo:block font-size="12pt">
-							<xsl:value-of select="$linebreak"/>
-							<xsl:value-of select="$linebreak"/>
-						</fo:block>
-						<fo:block font-weight="bold" margin-top="18pt" margin-bottom="18pt">
-							<xsl:variable name="title-keywords">
-								<xsl:call-template name="getTitle">
-									<xsl:with-param name="name" select="'title-keywords'"/>
-								</xsl:call-template>
-							</xsl:variable>
-							<xsl:value-of select="$title-keywords"/>
-						</fo:block>
-						<fo:block>
-							<xsl:call-template name="insertKeywords"/>
-						</fo:block>
+				
+					<xsl:if test="/itu:itu-standard/itu:preface/* or /itu:itu-standard/itu:bibdata/itu:keyword">
+						<fo:block-container font-size="14pt" font-weight="bold">
+							<fo:block>
+								<xsl:value-of select="$doctypeTitle"/>
+								<xsl:text>&#xA0;</xsl:text>
+								<xsl:value-of select="$docname"/>
+							</fo:block>
+							<fo:block text-align="center" margin-top="15pt" margin-bottom="15pt">
+								<xsl:value-of select="/itu:itu-standard/itu:bibdata/itu:title[@type = 'main' and @language = 'en']"/>
+							</fo:block>
+						</fo:block-container>
+						<!-- Summary, History ... -->
+						<xsl:call-template name="processPrefaceSectionsDefault"/>
+						
+						<!-- Keywords -->
+						<xsl:if test="/itu:itu-standard/itu:bibdata/itu:keyword">
+							<fo:block font-size="12pt">
+								<xsl:value-of select="$linebreak"/>
+								<xsl:value-of select="$linebreak"/>
+							</fo:block>
+							<fo:block font-weight="bold" margin-top="18pt" margin-bottom="18pt">
+								<xsl:variable name="title-keywords">
+									<xsl:call-template name="getTitle">
+										<xsl:with-param name="name" select="'title-keywords'"/>
+									</xsl:call-template>
+								</xsl:variable>
+								<xsl:value-of select="$title-keywords"/>
+							</fo:block>
+							<fo:block>
+								<xsl:call-template name="insertKeywords"/>
+							</fo:block>
+						</xsl:if>
+						
+						<fo:block break-after="page"/>
 					</xsl:if>
 					
-					<fo:block break-after="page"/>
 					
 					<!-- FOREWORD -->
 					<fo:block font-size="11pt" text-align="justify">
@@ -631,21 +638,19 @@
 						<xsl:text disable-output-escaping="yes">--&gt;</xsl:text>
 					</xsl:if>
 					
-					<xsl:if test="xalan:nodeset($contents)//item[@display = 'true']">
+					<xsl:if test="xalan:nodeset($contents)//item[@display = 'true'] and $doctype != 'resolution'">
 						<fo:block break-after="page"/>
 						<fo:block-container >
-							<xsl:variable name="title-toc">
-								<xsl:call-template name="getTitle">
-									<xsl:with-param name="name" select="'title-toc'"/>
+							<fo:block margin-top="6pt" text-align="center" font-weight="bold">
+								<xsl:call-template name="getLocalizedString">
+									<xsl:with-param name="key">table_of_contents</xsl:with-param>
 								</xsl:call-template>
-							</xsl:variable>
-							<xsl:variable name="title-page">
-								<xsl:call-template name="getTitle">
-									<xsl:with-param name="name" select="'title-page'"/>
+							</fo:block>
+							<fo:block margin-top="6pt" text-align="right" font-weight="bold">
+								<xsl:call-template name="getLocalizedString">
+									<xsl:with-param name="key">Page.sg</xsl:with-param>
 								</xsl:call-template>
-							</xsl:variable>
-							<fo:block margin-top="6pt" text-align="center" font-weight="bold"><xsl:value-of select="$title-toc"/></fo:block>
-							<fo:block margin-top="6pt" text-align="right" font-weight="bold"><xsl:value-of select="$title-page"/></fo:block>
+							</fo:block>
 							
 							<xsl:for-each select="xalan:nodeset($contents)//item[@display = 'true']">									
 								<fo:block>
@@ -712,7 +717,11 @@
 								<fo:block space-before="36pt" text-align="center" font-weight="bold" keep-with-next="always">
 									<xsl:value-of select="$title-list-tables"/>
 								</fo:block>
-								<fo:block margin-top="6pt" text-align="right" font-weight="bold"  keep-with-next="always"><xsl:value-of select="$title-page"/></fo:block>
+								<fo:block margin-top="6pt" text-align="right" font-weight="bold"  keep-with-next="always">
+									<xsl:call-template name="getLocalizedString">
+										<xsl:with-param name="key">Page.sg</xsl:with-param>
+									</xsl:call-template>
+								</fo:block>
 								
 								<fo:block-container>
 									<xsl:for-each select="//itu:table[@id and itu:name]">
@@ -740,7 +749,11 @@
 								<fo:block space-before="36pt" text-align="center" font-weight="bold" keep-with-next="always">
 									<xsl:value-of select="$title-list-figures"/>
 								</fo:block>
-								<fo:block margin-top="6pt" text-align="right" font-weight="bold" keep-with-next="always"><xsl:value-of select="$title-page"/></fo:block>
+								<fo:block margin-top="6pt" text-align="right" font-weight="bold" keep-with-next="always">
+									<xsl:call-template name="getLocalizedString">
+										<xsl:with-param name="key">Page.sg</xsl:with-param>
+									</xsl:call-template>
+								</fo:block>
 								
 								<fo:block-container>
 									<xsl:for-each select="//itu:figure[@id and itu:name]">
