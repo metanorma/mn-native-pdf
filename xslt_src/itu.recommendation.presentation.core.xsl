@@ -105,6 +105,8 @@
 				<!-- WTSA-16 – Resolution 1  -->
 				<xsl:value-of select="/itu:itu-standard/itu:bibdata/itu:ext/itu:meeting/@acronym"/>
 				<xsl:text> – </xsl:text>
+				<xsl:value-of select="$doctypeTitle"/>
+				<xsl:text> </xsl:text>
 				<xsl:value-of select="/itu:itu-standard/itu:bibdata/itu:ext/itu:structuredidentifier/itu:docnumber"/>
 			</xsl:when>
 			<xsl:otherwise>
@@ -456,6 +458,46 @@
 									</fo:table-cell>
 									<fo:table-cell font-size="16pt" number-columns-spanned="3" border-bottom="0.5mm solid black" padding-right="2mm" display-align="after">
 										<fo:block padding-bottom="7mm">
+											<xsl:if test="$doctype = 'resolution'">
+												<fo:block><xsl:value-of select="/itu:itu-standard/itu:bibdata/itu:ext/itu:meeting"/></fo:block>
+												<fo:block>
+													<xsl:variable name="meeting-place" select="/itu:itu-standard/itu:bibdata/itu:ext/itu:meeting-place"/>
+													<xsl:variable name="meeting-date_from" select="/itu:itu-standard/itu:bibdata/itu:ext/itu:meeting-date/itu:from"/>
+													<xsl:variable name="meeting-date_from_year" select="substring($meeting-date_from, 1, 4)"/>
+													<xsl:variable name="meeting-date_to" select="/itu:itu-standard/itu:bibdata/itu:ext/itu:meeting-date/itu:to"/>
+													<xsl:variable name="meeting-date_to_year" select="substring($meeting-date_to, 1, 4)"/>
+													
+													<xsl:variable name="date_format">
+														<xsl:choose>
+															<xsl:when test="$meeting-date_from_year = $meeting-date_to_year">ddMM</xsl:when>
+															<xsl:otherwise>ddMMyyyy</xsl:otherwise>
+														</xsl:choose>
+													</xsl:variable>
+													<xsl:variable name="meeting-date_from_str">
+														<xsl:call-template name="convertDateLocalized">
+															<xsl:with-param name="date" select="$meeting-date_from"/>
+															<xsl:with-param name="format" select="$date_format"/>
+														</xsl:call-template>
+													</xsl:variable>													
+
+													<xsl:variable name="meeting-date_to_str">
+														<xsl:call-template name="convertDateLocalized">
+															<xsl:with-param name="date" select="$meeting-date_to"/>
+															<xsl:with-param name="format" select="'ddMMyyyy'"/>
+														</xsl:call-template>
+													</xsl:variable>
+													
+													<xsl:value-of select="$meeting-place"/>
+													<xsl:if test="$meeting-place != '' and (normalize-space($meeting-date_from_str) != '' or normalize-space($meeting-date_to_str != ''))">
+														<xsl:text>, </xsl:text>
+														<xsl:value-of select="$meeting-date_from_str"/>
+														<xsl:if test="normalize-space($meeting-date_from_str) != '' and  normalize-space($meeting-date_to_str) != ''">
+														<xsl:text> – </xsl:text>
+														</xsl:if>
+														<xsl:value-of select="$meeting-date_to_str"/>
+													</xsl:if>
+												</fo:block>
+											</xsl:if>
 											<fo:block text-transform="uppercase">
 												<xsl:if test="normalize-space(/itu:itu-standard/itu:bibdata/itu:series[@type = 'main']) != ''">
 													<xsl:variable name="title">
@@ -496,6 +538,11 @@
 											<xsl:if test="$doctype = 'implementers-guide'">
 												<xsl:value-of select="/itu:itu-standard/itu:bibdata/itu:ext/itu:doctype[@language = $lang]"/>
 												<xsl:text> for </xsl:text>
+											</xsl:if>
+											<xsl:if test="$doctype = 'resolution'">
+												<!-- Resolution 1 -->
+												<xsl:value-of select="$doctypeTitle"/><xsl:text> </xsl:text><xsl:value-of select="/itu:itu-standard/itu:bibdata/itu:ext/itu:structuredidentifier/itu:docnumber"/>
+												<xsl:text> – </xsl:text>
 											</xsl:if>
 											<xsl:value-of select="/itu:itu-standard/itu:bibdata/itu:title[@type = 'main' and @language = 'en']"/>
 										</fo:block>
@@ -886,7 +933,10 @@
 		</xsl:variable>
 		
 		<xsl:variable name="section">
-			<xsl:call-template name="getSection"/>
+			<!-- <xsl:call-template name="getSection"/> -->
+			<xsl:for-each select="*[local-name() = 'title']/*[local-name() = 'tab'][1]/preceding-sibling::node()">
+				<xsl:value-of select="."/>
+			</xsl:for-each>
 		</xsl:variable>
 		
 		<xsl:variable name="type">
@@ -904,7 +954,8 @@
 		<xsl:variable name="skip">
 			<xsl:choose>
 				<xsl:when test="ancestor-or-self::itu:bibitem">true</xsl:when>
-				<xsl:when test="ancestor-or-self::itu:term">true</xsl:when>				
+				<xsl:when test="ancestor-or-self::itu:term">true</xsl:when>
+				<xsl:when test="@inline-header = 'true' and not(*[local-name() = 'title']/*[local-name() = 'tab'])">true</xsl:when>
 				<xsl:otherwise>false</xsl:otherwise>
 			</xsl:choose>
 		</xsl:variable>
