@@ -1168,16 +1168,18 @@
 	<xsl:template match="itu:annex/itu:title">
 		<fo:block  font-size="14pt" font-weight="bold" text-align="center" margin-bottom="18pt">			
 			<fo:block><xsl:apply-templates /></fo:block>
-			<fo:block font-size="12pt" font-weight="normal" margin-top="6pt">
-				<xsl:choose>
-					<xsl:when test="parent::*[@obligation = 'informative']">
-						<xsl:text>(This appendix does not form an integral part of this Recommendation.)</xsl:text>
-					</xsl:when>
-					<xsl:otherwise>
-						<xsl:text>(This annex forms an integral part of this Recommendation.)</xsl:text>
-					</xsl:otherwise>
-				</xsl:choose>
-			</fo:block>
+			<xsl:if test="$doctype != 'resolution'">
+				<fo:block font-size="12pt" font-weight="normal" margin-top="6pt">
+					<xsl:choose>
+						<xsl:when test="parent::*[@obligation = 'informative']">
+							<xsl:text>(This appendix does not form an integral part of this Recommendation.)</xsl:text>
+						</xsl:when>
+						<xsl:otherwise>
+							<xsl:text>(This annex forms an integral part of this Recommendation.)</xsl:text>
+						</xsl:otherwise>
+					</xsl:choose>
+				</fo:block>
+			</xsl:if>
 		</fo:block>
 	</xsl:template>
 	
