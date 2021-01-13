@@ -86,20 +86,31 @@
 			</xsl:otherwise>
 		</xsl:choose>
 	</xsl:variable>
-
 	
-	<xsl:variable name="footer-TR">
-		<xsl:variable name="date" select="concat('(',substring(/itu:itu-standard/itu:bibdata/itu:version/itu:revision-date,1,7), ')')"/>
-		<xsl:value-of select="concat($xSTR-ACRONYM, ' ', $date)"/>
-	</xsl:variable>
-
-	<xsl:variable name="footer-IG">
-		<xsl:value-of select="/itu:itu-standard/itu:bibdata/itu:ext/itu:doctype[@language = $lang]"/>
-		<xsl:text> for </xsl:text>
-		<xsl:value-of select="/itu:itu-standard/itu:bibdata/itu:docidentifier[@type='ITU-Recommendation']"/>
-		<xsl:text> </xsl:text>
-		<xsl:variable name="date" select="concat('(',substring(/itu:itu-standard/itu:bibdata/itu:date[@type = 'published']/itu:on,1,7), ')')"/>
-		<xsl:value-of select="$date"/>
+	<xsl:variable name="footer-text">
+		<xsl:choose>
+			<xsl:when  test="$doctype = 'technical-report' or $doctype = 'technical-paper'">
+				<xsl:variable name="date" select="concat('(',substring(/itu:itu-standard/itu:bibdata/itu:version/itu:revision-date,1,7), ')')"/>
+				<xsl:value-of select="concat($xSTR-ACRONYM, ' ', $date)"/>
+			</xsl:when>
+			<xsl:when  test="$doctype = 'implementers-guide'">
+				<xsl:value-of select="/itu:itu-standard/itu:bibdata/itu:ext/itu:doctype[@language = $lang]"/>
+				<xsl:text> for </xsl:text>
+				<xsl:value-of select="/itu:itu-standard/itu:bibdata/itu:docidentifier[@type='ITU-Recommendation']"/>
+				<xsl:text> </xsl:text>
+				<xsl:variable name="date" select="concat('(',substring(/itu:itu-standard/itu:bibdata/itu:date[@type = 'published']/itu:on,1,7), ')')"/>
+				<xsl:value-of select="$date"/>
+			</xsl:when>
+			<xsl:when  test="$doctype = 'resolution'">
+				<!-- WTSA-16 – Resolution 1  -->
+				<xsl:value-of select="/itu:itu-standard/itu:bibdata/itu:ext/itu:meeting/@acronym"/>
+				<xsl:text> – </xsl:text>
+				<xsl:value-of select="/itu:itu-standard/itu:bibdata/itu:ext/itu:structuredidentifier/itu:docnumber"/>
+			</xsl:when>
+			<xsl:otherwise>
+				<xsl:value-of select="concat($footerprefix, $docname, ' ', $docdate)"/>
+			</xsl:otherwise>
+		</xsl:choose>
 	</xsl:variable>
 	
 	<xsl:variable name="isAmendment" select="normalize-space(/itu:itu-standard/itu:bibdata/itu:ext/itu:structuredidentifier/itu:amendment[@language = $lang])"/>
@@ -789,27 +800,45 @@
 				
 				<fo:flow flow-name="xsl-region-body">
 				
-					<fo:block-container font-size="14pt" font-weight="bold">
-						<fo:block>
-							<xsl:value-of select="$doctypeTitle"/>
-							<xsl:text>&#xA0;</xsl:text>
-							<xsl:value-of select="$docname"/>
-						</fo:block>
-						<fo:block text-align="center" margin-top="15pt" margin-bottom="15pt">
-							<xsl:value-of select="/itu:itu-standard/itu:bibdata/itu:title[@type = 'main' and @language = 'en']"/>
+					
+					<fo:block-container font-size="14pt" >
+						<xsl:choose>
+							<xsl:when test="$doctype = 'resolution'">
+								<fo:block text-align="center">
+									<xsl:value-of select="/itu:itu-standard/itu:bibdata/itu:title[@type='resolution' and @language = $lang]"/>
+								</fo:block>
+							</xsl:when>
+							<xsl:otherwise>
+								<fo:block font-weight="bold">
+									<xsl:value-of select="$doctypeTitle"/>
+									<xsl:text>&#xA0;</xsl:text>
+									<xsl:value-of select="$docname"/>
+								</fo:block>
+							</xsl:otherwise>
+						</xsl:choose>
+						<fo:block font-weight="bold" text-align="center" margin-top="15pt" margin-bottom="15pt">
+							<xsl:value-of select="/itu:itu-standard/itu:bibdata/itu:title[@type = 'main' and @language = $lang]"/>
 							
-							<xsl:if test="/itu:itu-standard/itu:bibdata/itu:title[@type = 'subtitle' and @language = 'en']">
+							<xsl:variable name="subtitle" select="/itu:itu-standard/itu:bibdata/itu:title[@type = 'subtitle' and @language = $lang]"/>
+							<xsl:if test="$subtitle != ''">
 								<fo:block margin-top="18pt" font-weight="normal" font-style="italic">
-									<xsl:value-of select="/itu:itu-standard/itu:bibdata/itu:title[@type = 'subtitle' and @language = 'en']"/>
+									<xsl:value-of select="$subtitle"/>
 								</fo:block>								
 							</xsl:if>
 							
+							<xsl:variable name="resolution-placedate" select="/itu:itu-standard/itu:bibdata/itu:title[@type = 'resolution-placedate' and @language = $lang]"/>
+							<xsl:if test="$doctype = 'resolution' and $resolution-placedate != ''">
+								<fo:block font-size="11pt" margin-top="6pt" font-weight="normal">
+									<fo:inline font-style="italic">
+										<xsl:text>(</xsl:text><xsl:value-of select="$resolution-placedate"/><xsl:text>)</xsl:text>
+									</fo:inline>
+									<xsl:apply-templates select="/itu:itu-standard/itu:bibdata/itu:note[@type = 'title-footnote']" mode="title_footnote"/>
+								</fo:block>
+							</xsl:if>
 						</fo:block>
-						
-						
-						
 					</fo:block-container>
-				
+						
+					
 					
 					<!-- Clause(s) -->
 					<fo:block>
@@ -1274,6 +1303,27 @@
 		</xsl:choose>
 	</xsl:template>
 
+	<!-- footnotes for title -->
+	<xsl:template match="itu:bibdata/itu:note[@type = 'title-footnote']" mode="title_footnote">
+		<xsl:variable name="number" select="position()"/>
+		<fo:footnote>
+			<fo:inline font-size="60%" keep-with-previous.within-line="always" vertical-align="super">
+				<fo:basic-link internal-destination="title_footnote_{$number}" fox:alt-text="titlefootnote  {$number}">
+					<xsl:value-of select="$number"/>
+				</fo:basic-link>
+				<xsl:if test="position() != last()">,</xsl:if><!-- <fo:inline  baseline-shift="20%">,</fo:inline> -->
+			</fo:inline>
+			<fo:footnote-body>
+				<fo:block font-size="11pt" margin-bottom="12pt" text-align="justify">
+					<fo:inline id="title_footnote_{$number}" font-size="85%" padding-right="2mm" keep-with-next.within-line="always" baseline-shift="30%">
+						<xsl:value-of select="$number"/>
+					</fo:inline>
+					<xsl:apply-templates />
+				</fo:block>
+			</fo:footnote-body>
+		</fo:footnote>
+	</xsl:template>
+
 	<xsl:variable name="p_fn">
 		<xsl:for-each select="//itu:p/itu:fn[generate-id(.)=generate-id(key('kfn',@reference)[1])]">
 			<!-- copy unique fn -->
@@ -1291,19 +1341,21 @@
 			<!-- <xsl:number level="any" count="itu:p/itu:fn"/> -->
 			<xsl:value-of select="count(xalan:nodeset($p_fn)//fn[@reference = $reference]/preceding-sibling::fn) + 1" />
 		</xsl:variable>
+		<xsl:variable name="count_title_footnotes" select="count(/itu:itu-standard/itu:bibdata/itu:note[@type='title-footnote'])"/>
+		<xsl:variable name="count_bibitem_notes" select="count(//itu:bibitem/itu:note)"/>
+		<xsl:variable name="current_fn_number" select="$number + $count_title_footnotes + $count_bibitem_notes"/>
 		<xsl:choose>
 			<xsl:when test="xalan:nodeset($p_fn)//fn[@gen_id = $gen_id]">
 				<fo:footnote>
 					<fo:inline font-size="60%" keep-with-previous.within-line="always" vertical-align="super">
 						<fo:basic-link internal-destination="footnote_{@reference}_{$number}" fox:alt-text="footnote {@reference} {$number}">
-							<!-- <xsl:value-of select="@reference"/> -->
-							<xsl:value-of select="$number + count(//itu:bibitem/itu:note)"/>
+							<xsl:value-of select="$current_fn_number"/>
 						</fo:basic-link>
 					</fo:inline>
 					<fo:footnote-body>
-						<fo:block font-size="11pt" margin-bottom="12pt">
+						<fo:block font-size="11pt" margin-bottom="12pt" text-align="justify">
 							<fo:inline id="footnote_{@reference}_{$number}" font-size="85%" padding-right="2mm" keep-with-next.within-line="always" baseline-shift="30%">
-								<xsl:value-of select="$number + count(//itu:bibitem/itu:note)"/>
+								<xsl:value-of select="$current_fn_number"/>
 							</fo:inline>
 							<xsl:for-each select="itu:p">
 									<xsl:apply-templates />
@@ -1315,7 +1367,7 @@
 			<xsl:otherwise>
 				<fo:inline font-size="60%" keep-with-previous.within-line="always" vertical-align="super">
 					<fo:basic-link internal-destination="footnote_{@reference}_{$number}" fox:alt-text="footnote {@reference} {$number}">
-						<xsl:value-of select="$number + count(//itu:bibitem/itu:note)"/>
+						<xsl:value-of select="$current_fn_number"/>
 					</fo:basic-link>
 				</fo:inline>
 			</xsl:otherwise>
@@ -1532,19 +1584,7 @@
 								<fo:block><fo:page-number/></fo:block>
 							</fo:table-cell>
 							<fo:table-cell font-weight="bold" text-align="left" padding-bottom="8mm">
-								<fo:block>
-									<xsl:choose>
-										<xsl:when  test="$doctype = 'technical-report' or $doctype = 'technical-paper'">
-											<xsl:value-of select="$footer-TR"/>
-										</xsl:when>
-										<xsl:when  test="$doctype = 'implementers-guide'">
-											<xsl:value-of select="$footer-IG"/>
-										</xsl:when>
-										<xsl:otherwise>
-											<xsl:value-of select="concat($footerprefix, $docname, ' ', $docdate)"/>
-										</xsl:otherwise>
-									</xsl:choose>
-								</fo:block>
+								<fo:block><xsl:value-of select="$footer-text"/></fo:block>
 							</fo:table-cell>
 						</fo:table-row>
 					</fo:table-body>
@@ -1559,19 +1599,7 @@
 					<fo:table-body>
 						<fo:table-row>
 							<fo:table-cell font-weight="bold" text-align="right" padding-bottom="8mm">
-								<fo:block>
-									<xsl:choose>
-										<xsl:when  test="$doctype = 'technical-report' or $doctype = 'technical-paper'">											
-											<xsl:value-of select="$footer-TR"/>
-										</xsl:when>
-										<xsl:when  test="$doctype = 'implementers-guide'">
-											<xsl:value-of select="$footer-IG"/>
-										</xsl:when>
-										<xsl:otherwise>
-											<xsl:value-of select="concat($footerprefix, $docname, ' ', $docdate)"/>
-										</xsl:otherwise>
-									</xsl:choose>
-								</fo:block>
+								<fo:block><xsl:value-of select="$footer-text"/></fo:block>
 							</fo:table-cell>
 							<fo:table-cell  text-align="right" padding-bottom="8mm" padding-right="2mm">
 								<fo:block><fo:page-number/></fo:block>
