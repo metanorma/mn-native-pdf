@@ -119,6 +119,9 @@
 	<xsl:template match="/">
 		<xsl:call-template name="namespaceCheck"/>
 		<fo:root xmlns:fo="http://www.w3.org/1999/XSL/Format" font-family="Times New Roman, STIX Two Math" font-size="12pt" xml:lang="{$lang}">
+			<xsl:if test="$doctype = 'resolution'">
+				<xsl:attribute name="font-size">11pt</xsl:attribute>
+			</xsl:if>
 			<fo:layout-master-set>
 			
 			
@@ -1027,9 +1030,28 @@
 	<!-- PARAGRAPHS                                    -->
 	<!-- ============================= -->	
 	<xsl:template match="itu:p | itu:sections/itu:p">
-		<fo:block margin-top="6pt">
+		<xsl:variable name="previous-element" select="local-name(preceding-sibling::*[1])"/>
+		<xsl:variable name="element-name">
+			<xsl:choose>
+				<xsl:when test="../@inline-header = 'true' and $previous-element = 'title'">fo:inline</xsl:when> <!-- first paragraph after inline title -->
+				<xsl:otherwise>fo:block</xsl:otherwise>
+			</xsl:choose>
+		</xsl:variable>
+		<xsl:element name="{$element-name}">
+			<xsl:attribute name="margin-top">6pt</xsl:attribute>
+			<xsl:if test="@keep-with-next = 'true'">
+				<xsl:attribute name="keep-with-next">always</xsl:attribute>
+			</xsl:if>
+			<xsl:if test="@class='supertitle'">
+				<xsl:attribute name="space-before">36pt</xsl:attribute>
+				<xsl:attribute name="margin-bottom">24pt</xsl:attribute>
+				<xsl:attribute name="margin-top">0pt</xsl:attribute>
+				<xsl:attribute name="font-size">14pt</xsl:attribute>
+				
+			</xsl:if>
 			<xsl:attribute name="text-align">
 				<xsl:choose>
+					<xsl:when test="@class='supertitle'">center</xsl:when>
 					<xsl:when test="@align"><xsl:value-of select="@align"/></xsl:when>
 					<xsl:when test="ancestor::*[1][local-name() = 'td']/@align">
 						<xsl:value-of select="ancestor::*[1][local-name() = 'td']/@align"/>
@@ -1040,8 +1062,11 @@
 					<xsl:otherwise>justify</xsl:otherwise>
 				</xsl:choose>
 			</xsl:attribute>
-			<xsl:apply-templates />				
-		</fo:block>
+			<xsl:apply-templates />
+		</xsl:element>
+		<xsl:if test="$element-name = 'fo:inline'">
+			<fo:block><xsl:value-of select="$linebreak"/></fo:block>
+		</xsl:if>
 	</xsl:template>
 
 <!-- 	<xsl:template match="itu:note">
@@ -1171,9 +1196,18 @@
 		
 		<xsl:variable name="font-size">
 			<xsl:choose>
+				<xsl:when test="$level = 1 and $doctype = 'resolution'">14pt</xsl:when>
+				<xsl:when test="$level &gt;= 2 and $doctype = 'resolution' and ../@inline-header = 'true'">11pt</xsl:when>
 				<xsl:when test="$level = 2">12pt</xsl:when>
 				<xsl:when test="$level &gt;= 3">12pt</xsl:when>
 				<xsl:otherwise>12pt</xsl:otherwise>
+			</xsl:choose>
+		</xsl:variable>
+		
+		<xsl:variable name="element-name">
+			<xsl:choose>
+				<xsl:when test="../@inline-header = 'true'">fo:inline</xsl:when>
+				<xsl:otherwise>fo:block</xsl:otherwise>
 			</xsl:choose>
 		</xsl:variable>
 		
@@ -1187,15 +1221,42 @@
 		
 		<xsl:variable name="space-after">
 			<xsl:choose>
+				<xsl:when test="$level = 1 and $doctype = 'resolution'">24pt</xsl:when>
 				<xsl:when test="$level = 2">6pt</xsl:when>
 				<xsl:otherwise>6pt</xsl:otherwise>
 			</xsl:choose>
 		</xsl:variable>
 		
-		<fo:block font-size="{$font-size}" font-weight="bold" space-before="{$space-before}" space-after="{$space-after}" keep-with-next="always">			
+		<xsl:variable name="text-align">
+			<xsl:choose>
+				<xsl:when test="$level = 1 and $doctype = 'resolution'">center</xsl:when>
+				<xsl:otherwise>left</xsl:otherwise>
+			</xsl:choose>
+		</xsl:variable>
+		
+		<xsl:element name="{$element-name}">
+			<xsl:attribute name="font-size"><xsl:value-of select="$font-size"/></xsl:attribute>
+			<xsl:attribute name="font-weight">bold</xsl:attribute>
+			<xsl:attribute name="text-align"><xsl:value-of select="$text-align"/></xsl:attribute>
+			<xsl:attribute name="space-before"><xsl:value-of select="$space-before"/></xsl:attribute>
+			<xsl:attribute name="space-after"><xsl:value-of select="$space-after"/></xsl:attribute>
+			<xsl:attribute name="keep-with-next">always</xsl:attribute>
+			<xsl:if test="$element-name = 'fo:inline'">
+				<xsl:attribute name="padding-right">
+					<xsl:choose>
+						<xsl:when test="$level = 2">9mm</xsl:when>
+						<xsl:when test="$level = 3">6.5mm</xsl:when>
+						<xsl:otherwise>4mm</xsl:otherwise>
+					</xsl:choose>
+				</xsl:attribute>
+			</xsl:if>
 			<xsl:apply-templates />
-		</fo:block>
-			
+		</xsl:element>
+		
+		<xsl:if test="$element-name = 'fo:inline' and not(following-sibling::itu:p)">
+			<fo:block margin-bottom="12pt"><xsl:value-of select="$linebreak"/></fo:block>
+		</xsl:if>
+		
 	</xsl:template>
 	
 	
@@ -1423,6 +1484,9 @@
 			<xsl:apply-templates />
 		</fo:list-block>
 		<xsl:apply-templates select="./itu:note" mode="process"/>
+		<xsl:if test="../@inline-header='true'">
+			<fo:block><xsl:value-of select="$linebreak"/></fo:block>
+		</xsl:if>
 	</xsl:template>
 	
 	<xsl:template match="itu:ul//itu:note |  itu:ol//itu:note" priority="2"/>

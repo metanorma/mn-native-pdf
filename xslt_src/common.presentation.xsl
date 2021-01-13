@@ -5633,6 +5633,14 @@
 					<xsl:attribute name="space-before">18pt</xsl:attribute>
 				</xsl:if>
 			</xsl:if>
+			<xsl:if test="$namespace = 'itu'">
+				<xsl:if test="*[1][@class='supertitle']">
+					<xsl:attribute name="space-before">36pt</xsl:attribute>
+				</xsl:if>
+				<xsl:if test="@inline-header='true'">
+					<xsl:attribute name="text-align">justify</xsl:attribute>
+				</xsl:if>
+			</xsl:if>
 			<xsl:if test="$namespace = 'm3d'">
 				<xsl:variable name="pos"><xsl:number count="m3d:sections/m3d:clause | m3d:sections/m3d:terms"/></xsl:variable>
 				<xsl:if test="$pos &gt;= 2">
@@ -5691,6 +5699,11 @@
 			<xsl:call-template name="setId"/>
 			<xsl:if test="$namespace = 'bipm'">
 				<xsl:attribute name="keep-with-next">always</xsl:attribute>
+			</xsl:if>
+			<xsl:if test="$namespace = 'itu'">
+				<xsl:if test="@inline-header='true'">
+					<xsl:attribute name="text-align">justify</xsl:attribute>
+				</xsl:if>
 			</xsl:if>
 			<xsl:apply-templates />
 		</fo:block>
