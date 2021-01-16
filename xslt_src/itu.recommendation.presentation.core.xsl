@@ -344,7 +344,7 @@
 						</fo:block>
 					</fo:block-container>
 				
-					<fo:block-container absolute-position="fixed" left="-7mm" top="0">
+					<fo:block-container absolute-position="fixed" left="-7mm" top="0" font-size="0">
 						<fo:block>
 							<fo:external-graphic src="{concat('data:image/png;base64,', normalize-space($Image-Fond-Rec))}" width="43.6mm" content-height="299.2mm" content-width="scale-to-fit" scaling="uniform" fox:alt-text="Image Cover Page"/>
 						</fo:block>
