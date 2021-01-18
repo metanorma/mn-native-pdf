@@ -174,6 +174,12 @@
 		</xsl:choose>
 	</xsl:variable>
 	
+	<xsl:variable name="bookmark_in_fn">
+		<xsl:for-each select="//bipm:bookmark[ancestor::bipm:fn]">
+			<bookmark><xsl:value-of select="@id"/></bookmark>
+		</xsl:for-each>
+	</xsl:variable>
+	
 	<xsl:variable name="dash" select="'&#x2013;'"/>
 
 	<xsl:variable name="ids">
@@ -3636,7 +3642,7 @@
 		<xsl:param name="target"/>
 		<xsl:copy>
 			<xsl:apply-templates select="@*" mode="xref_copy"/>
-			<xsl:if test="$target != ''">
+			<xsl:if test="$target != '' and not(xalan:nodeset($bookmark_in_fn)//bookmark[. = $target])">
 				<xsl:attribute name="target"><xsl:value-of select="$target"/></xsl:attribute>
 			</xsl:if>
 			<xsl:apply-templates select="node()" mode="xref_copy"/>
