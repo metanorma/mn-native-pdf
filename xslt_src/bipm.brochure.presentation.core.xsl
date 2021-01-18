@@ -3563,12 +3563,15 @@
 	<xsl:template match="bipm:clause[@type = 'index']//bipm:li/node()" mode="process_li_element" priority="2">
 		<xsl:param name="element" />
 		<xsl:param name="remove" select="'false'"/>
+		<xsl:param name="target"/>
 		<!-- <node></node> -->
 		<xsl:choose>
 			<xsl:when test="self::text()  and (normalize-space(.) = ',' or normalize-space(.) = $dash) and $remove = 'true'">
 				<!-- skip text (i.e. remove it) and process next element -->
 				<!-- [removed_<xsl:value-of select="."/>] -->
-				<xsl:apply-templates select="following-sibling::node()[1]" mode="process_li_element"/>
+				<xsl:apply-templates select="following-sibling::node()[1]" mode="process_li_element">
+					<xsl:with-param name="target"><xsl:value-of select="$target"/></xsl:with-param>
+				</xsl:apply-templates>
 			</xsl:when>
 			<xsl:when test="self::text()">
 				<xsl:value-of select="."/>
@@ -3592,6 +3595,12 @@
 						
 						<xsl:apply-templates select="following-sibling::node()[1]" mode="process_li_element">
 							<xsl:with-param name="remove">true</xsl:with-param>
+							<xsl:with-param name="target">
+								<xsl:choose>
+									<xsl:when test="$target != ''"><xsl:value-of select="$target"/></xsl:when>
+									<xsl:otherwise><xsl:value-of select="@target"/></xsl:otherwise>
+								</xsl:choose>
+							</xsl:with-param>
 						</xsl:apply-templates>
 					</xsl:when>
 					
@@ -3603,7 +3612,9 @@
 					</xsl:when>
 
 					<xsl:otherwise>
-						<xsl:copy-of select="."/>
+						<xsl:apply-templates select="." mode="xref_copy">
+							<xsl:with-param name="target" select="$target"/>
+						</xsl:apply-templates>
 						<xsl:apply-templates select="following-sibling::node()[1]" mode="process_li_element"/>
 					</xsl:otherwise>
 				</xsl:choose>
@@ -3613,12 +3624,25 @@
 				<xsl:apply-templates select="." mode="index_update"/>
 			</xsl:when>
 			<xsl:otherwise>
-			 <xsl:copy-of select="."/>
+			 <xsl:apply-templates select="." mode="xref_copy">
+					<xsl:with-param name="target" select="$target"/>
+				</xsl:apply-templates>
 				<xsl:apply-templates select="following-sibling::node()[1]" mode="process_li_element"/>
 			</xsl:otherwise>
 		</xsl:choose>
 	</xsl:template>
 
+	<xsl:template match="@*|node()" mode="xref_copy">
+		<xsl:param name="target"/>
+		<xsl:copy>
+			<xsl:apply-templates select="@*" mode="xref_copy"/>
+			<xsl:if test="$target != ''">
+				<xsl:attribute name="target"><xsl:value-of select="$target"/></xsl:attribute>
+			</xsl:if>
+			<xsl:apply-templates select="node()" mode="xref_copy"/>
+		</xsl:copy>
+	</xsl:template>
+	
 	
 	<xsl:template name="generateIndexXrefId">
 		<xsl:variable name="level" select="count(ancestor::bipm:ul)"/>
