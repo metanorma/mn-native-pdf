@@ -3677,8 +3677,11 @@
 			</xsl:call-template>
 			
 			<fo:flow flow-name="xsl-region-body">
-				<fo:block id="{@id}">
-					<xsl:apply-templates />
+				<fo:block id="{@id}" span="all">
+					<xsl:apply-templates select="bipm:title"/>
+				</fo:block>
+				<fo:block>
+					<xsl:apply-templates select="*[not(local-name() = 'title')]"/>
 					
 					<!-- TEST <xsl:variable name="alphabet" select="'ABCDEFGHIJKLMNOPQRSTUVWXYZ'"/>
 					<xsl:for-each select="(document('')//node())[position() &lt; 26]">
@@ -3702,7 +3705,7 @@
 	</xsl:template>
 	
 	<xsl:template match="bipm:clause[@type = 'index']/bipm:title" priority="4">
-		<fo:block font-size="16pt" font-weight="bold" margin-bottom="84pt" margin-left="-18mm" span="all">
+		<fo:block font-size="16pt" font-weight="bold" margin-bottom="84pt" margin-left="-18mm">
 			<!-- Index -->
 			<xsl:apply-templates />
 		</fo:block>
