@@ -14,7 +14,7 @@
 	
 	<xsl:param name="svg_images"/>
 	<xsl:variable name="images" select="document($svg_images)"/>
-	
+
 	<!-- <item id="#">N_page</item> -->
 	<!-- param for second pass -->
 	<xsl:param name="external_index" /><!-- path to index xml, generated on 1st pass, based on FOP Intermediate Format -->
@@ -26,18 +26,35 @@
 	
 	<xsl:variable name="namespace">jcgm</xsl:variable>
 	
+	<xsl:variable name="align_cross_elements_">clause note title</xsl:variable>
+	<xsl:variable name="align_cross_elements">
+		<xsl:text>#</xsl:text><xsl:value-of select="translate(normalize-space($align_cross_elements_), ' ', '#')"/><xsl:text>#</xsl:text>
+	</xsl:variable>
+	
 	<xsl:variable name="doc_first">
 		<xsl:if test="*[local-name()='metanorma-collection']">
-			<xsl:apply-templates  select="(/*[local-name()='metanorma-collection']//*[contains(local-name(), '-standard')])[1]" mode="flatxml">
-				<xsl:with-param name="num" select="'first'"/>
-			</xsl:apply-templates>
+			<xsl:variable name="doc_first_step1">
+				<xsl:apply-templates  select="(/*[local-name()='metanorma-collection']//*[contains(local-name(), '-standard')])[1]" mode="flatxml_step1">
+					<xsl:with-param name="num" select="'first'"/>
+				</xsl:apply-templates>
+			</xsl:variable>
+			<xsl:variable name="doc_first_step2">
+				<xsl:apply-templates select="xalan:nodeset($doc_first_step1)" mode="flatxml_step2"/>
+			</xsl:variable>
+			<xsl:copy-of select="$doc_first_step2"/>
 		</xsl:if>
 	</xsl:variable>
 	<xsl:variable name="doc_second">
 		<xsl:if test="*[local-name()='metanorma-collection']">
-			<xsl:apply-templates  select="(/*[local-name()='metanorma-collection']//*[contains(local-name(), '-standard')])[2]" mode="flatxml">
-			<xsl:with-param name="num" select="'second'"/>
-			</xsl:apply-templates>
+			<xsl:variable name="doc_first_step1">
+				<xsl:apply-templates  select="(/*[local-name()='metanorma-collection']//*[contains(local-name(), '-standard')])[2]" mode="flatxml_step1">
+				<xsl:with-param name="num" select="'second'"/>
+				</xsl:apply-templates>
+			</xsl:variable>
+			<xsl:variable name="doc_first_step2">
+				<xsl:apply-templates select="xalan:nodeset($doc_first_step1)" mode="flatxml_step2"/>
+			</xsl:variable>
+			<xsl:copy-of select="$doc_first_step2"/>
 		</xsl:if>
 	</xsl:variable>
 	
@@ -436,28 +453,30 @@
 									<xsl:apply-templates select="." mode="flatxml"/>
 								</xsl:variable> -->
 						
-								<!-- doc_first=<xsl:copy-of select="$doc_first"/>
-								doc_second=<xsl:copy-of select="$doc_second"/> -->
+						<!-- doc_first=<xsl:copy-of select="$doc_first"/>
+													
+													doc_second=<xsl:copy-of select="$doc_second"/> -->
 						
-								<xsl:apply-templates select="xalan:nodeset($doc_first)/*/*[local-name()='sections']/*[local-name()='clause'][@type='scope']" mode="two_columns"/> <!-- mode="two_columns" -->
+								<!-- <xsl:apply-templates select="xalan:nodeset($doc_first)/*/*[local-name()='sections']/*[local-name()='clause'][@type='scope']" mode="two_columns"/> -->
+								<xsl:apply-templates select="xalan:nodeset($doc_first)/*/*[local-name()='sections']/*[local-name()='section_scope']/*" mode="two_columns"/>
 								
 								<!-- Normative references  -->
-								<xsl:apply-templates select="xalan:nodeset($doc_first)/*/*[local-name()='bibliography']/*[local-name()='references'][@normative='true']" mode="two_columns"/>
+								<!-- <xsl:apply-templates select="xalan:nodeset($doc_first)/*/*[local-name()='bibliography']/*[local-name()='references'][@normative='true']" mode="two_columns"/> -->
 								<!-- Terms and definitions -->
-								<xsl:apply-templates select="xalan:nodeset($doc_first)/*/*[local-name()='sections']/*[local-name()='terms'] | 
+								<!-- <xsl:apply-templates select="xalan:nodeset($doc_first)/*/*[local-name()='sections']/*[local-name()='terms'] | 
 																												xalan:nodeset($doc_first)/*/*[local-name()='sections']/*[local-name()='clause'][.//*[local-name()='terms']] |
 																												xalan:nodeset($doc_first)/*/*[local-name()='sections']/*[local-name()='definitions'] | 
-																												xalan:nodeset($doc_first)/*/*[local-name()='sections']/*[local-name()='clause'][.//*[local-name()='definitions']]" mode="two_columns"/>
+																												xalan:nodeset($doc_first)/*/*[local-name()='sections']/*[local-name()='clause'][.//*[local-name()='definitions']]" mode="two_columns"/> -->
 								<!-- Another main sections -->
-								<xsl:apply-templates select="xalan:nodeset($doc_first)/*/*[local-name()='sections']/*[local-name() != 'terms' and 
+								<!-- <xsl:apply-templates select="xalan:nodeset($doc_first)/*/*[local-name()='sections']/*[local-name() != 'terms' and 
 																																																				local-name() != 'definitions' and 
 																																																				not(@type='scope') and
 																																																				not(local-name() = 'clause' and .//*[local-name()='terms']) and
-																																																				not(local-name() = 'clause' and .//*[local-name()='definitions'])]" mode="two_columns"/>
+																																																				not(local-name() = 'clause' and .//*[local-name()='definitions'])]" mode="two_columns"/> -->
                                                                                                         
-								<xsl:apply-templates select="xalan:nodeset($doc_first)/*/*[local-name()='annex']" mode="two_columns"/>
+								<!-- <xsl:apply-templates select="xalan:nodeset($doc_first)/*/*[local-name()='annex']" mode="two_columns"/> -->
 								<!-- Bibliography -->
-								<xsl:apply-templates select="xalan:nodeset($doc_first)/*/*[local-name()='bibliography']/*[local-name()='references'][not(@normative='true')]" mode="two_columns"/>
+								<!-- <xsl:apply-templates select="xalan:nodeset($doc_first)/*/*[local-name()='bibliography']/*[local-name()='references'][not(@normative='true')]" mode="two_columns"/> -->
 								
 							
 							</xsl:otherwise>
@@ -556,30 +575,46 @@
 
 	<xsl:template name="getListItemFormat">
 		<xsl:choose>
-			<xsl:when test="local-name(..) = 'ul'">&#x2014;</xsl:when> <!-- dash -->
+			<xsl:when test="local-name(..) = 'ul' and ../ancestor::bipm:ul">&#x2212;</xsl:when> <!-- &#x2212; - minus sign.  &#x2014; - dash -->
+			<xsl:when test="local-name(..) = 'ul'">&#x2014;</xsl:when> <!-- &#x2014; dash -->
 			<xsl:otherwise> <!-- for ordered lists -->
-				<xsl:choose>
-					<xsl:when test="../@type = 'arabic'">
-						<xsl:number format="1." lang="en"/>
-					</xsl:when>
-					<xsl:when test="../@type = 'alphabet'">
-						<xsl:number format="a)" lang="en"/>
-					</xsl:when>
-					<xsl:when test="../@type = 'alphabet_upper'">
-						<xsl:number format="A." lang="en"/>
-					</xsl:when>
-					<xsl:when test="../@type = 'roman'">
-						<xsl:number format="i)"/>
-					</xsl:when>
-					<xsl:when test="../@type = 'roman_upper'">
-						<xsl:number format="I."/>
-					</xsl:when>
-					<xsl:otherwise>
-						<xsl:number format="a)"/>
-					</xsl:otherwise>
-				</xsl:choose>
+				<xsl:variable name="start_value">
+					<xsl:choose>
+						<xsl:when test="normalize-space(../@start) != ''">
+							<xsl:value-of select="number(../@start) - 1"/><!-- if start="3" then start_value=2 + xsl:number(1) = 3 -->
+						</xsl:when>
+						<xsl:otherwise>0</xsl:otherwise>
+					</xsl:choose>
+				</xsl:variable>
+				
+				<xsl:variable name="curr_value">
+					<xsl:number/>
+				</xsl:variable>
+				
+				<xsl:variable name="format">
+					<xsl:choose>
+						<xsl:when test="../@type = 'arabic'">1.</xsl:when>
+						<xsl:when test="../@type = 'alphabet'">a)</xsl:when>
+						<xsl:when test="../@type = 'alphabet_upper'">A.</xsl:when>
+						<xsl:when test="../@type = 'roman'">i)</xsl:when>
+						<xsl:when test="../@type = 'roman_upper'">I.</xsl:when>
+						<xsl:otherwise>a)</xsl:otherwise>
+					</xsl:choose>
+				</xsl:variable>
+				
+				<xsl:number value="$start_value + $curr_value" format="{$format}" lang="en"/>
+				
 			</xsl:otherwise>
 		</xsl:choose>
+	</xsl:template>
+
+	<xsl:template name="setListItemLabel">
+		<xsl:attribute name="label">
+			<xsl:call-template name="getListItemFormat"/>
+		</xsl:attribute>
+		<xsl:attribute name="list_type">
+			<xsl:value-of select="local-name(..)"/>
+		</xsl:attribute>
 	</xsl:template>
 
 	
@@ -1415,8 +1450,53 @@
 	<!-- =================== -->
 	<!-- Two columns layout -->
 	<!-- =================== -->
+	
+	<!-- <xsl:template match="*[@first]/*[local-name()='sections']//*[not(@cross-align) or not(@cross-align='true')]" mode="two_columns"/> -->
+	
+	<xsl:template match="*[@first]/*[local-name()='sections']//*[local-name() = 'cross-align']" mode="two_columns">
+		<xsl:variable name="element-number" select="@element-number"/>
+		<fo:block>
+			<!-- <xsl:call-template name="setId"/>			 -->
+			<!-- <xsl:if test="not(*)"> -->
+				<xsl:copy-of select="@keep-with-next"/>
+			<!-- </xsl:if> -->
+			<fo:table table-layout="fixed" width="100%">
+				<fo:table-column column-width="82mm"/>
+				<fo:table-column column-width="8mm"/>
+				<fo:table-column column-width="82mm"/>
+				<fo:table-body>
+					<fo:table-row>
+						<fo:table-cell>
+							<fo:block font-size="1pt"></fo:block>
+							<fo:block>
+								<xsl:copy-of select="@keep-with-next"/>
+								<!-- element-number=<xsl:value-of select="@element-number"/> -->
+								<xsl:apply-templates select="." />
+								<!-- get next elements until element with @cross-align=true -->
+								<!-- <xsl:variable name="curr_id" select="generate-id()"/>
+								<xsl:apply-templates select="following-sibling::*[(not(@cross-align) or not(@cross-align='true')) and preceding-sibling::*[@cross-align='true'][1][generate-id() = $curr_id]]"/> -->
+								<!-- <fo:block>End @cross-align='true'</fo:block> -->
+							</fo:block>
+						</fo:table-cell>
+						<fo:table-cell>
+							<fo:block></fo:block>
+						</fo:table-cell>
+						<fo:table-cell>
+							<fo:block font-size="1pt"></fo:block>
+							<xsl:apply-templates select="xalan:nodeset($doc_second)//*[local-name() = 'cross-align' and @element-number=$element-number]"/>
+							<!-- <xsl:variable name="curr_id" select="generate-id(xalan:nodeset($doc_second)/*/*[local-name()='sections']//*[@element-number=$element-number])"/>
+							<fo:block>curr_id=<xsl:value-of select="$curr_id"/></fo:block>
+							<xsl:apply-templates select="xalan:nodeset($doc_second)/*/*[local-name()='sections']//*[@element-number=$element-number]"/>
+							<xsl:apply-templates select="xalan:nodeset($doc_second)/*/*[local-name()='sections']//*[@element-number=$element-number]/following-sibling::*[(not(@cross-align) or not(@cross-align='true')) and preceding-sibling::*[@cross-align='true'][1][generate-id() = $curr_id]]"/> -->
+						</fo:table-cell>
+					</fo:table-row>
+				</fo:table-body>
+			</fo:table>
+		</fo:block>
+	</xsl:template>
+	
 	<!-- <xsl:template match="*[local-name()='metanorma-collection']//*[contains(local-name(), '-standard')][1]//*[local-name() = 'clause']" priority="2"> --> <!-- mode="two_columns" -->
-	<xsl:template match="*[@first]/*[local-name()='sections']/*[local-name() = 'clause']" mode="two_columns">
+	<xsl:template match="*[@first1]/*[local-name()='sections']/*[local-name() = 'clause']" mode="two_columns">
 		<xsl:variable name="clause_number_"><xsl:number /></xsl:variable>
 		<xsl:variable name="clause_number" select="number(normalize-space($clause_number_))"/>
 		<fo:block>
@@ -1449,7 +1529,7 @@
 		</fo:block>
 	</xsl:template>
 
-	<xsl:template match="*[@first]//*[local-name()='references'][@normative='true']" mode="two_columns">
+	<xsl:template match="*[@first1]//*[local-name()='references'][@normative='true']" mode="two_columns">
 		<fo:block>
 			<fo:table table-layout="fixed" width="100%">
 				<fo:table-column column-width="82mm"/>
@@ -1476,7 +1556,7 @@
 		</fo:block>
 	</xsl:template>
   
-  <xsl:template match="*[@first]//*[local-name()='annex']" mode="two_columns">
+  <xsl:template match="*[@first1]//*[local-name()='annex']" mode="two_columns">
     <xsl:variable name="number_"><xsl:number /></xsl:variable>
 		<xsl:variable name="number" select="number(normalize-space($number_))"/>
     <fo:block break-after="page"/>
@@ -1485,7 +1565,7 @@
     <xsl:apply-templates mode="two_columns" />
   </xsl:template>
   
-  <xsl:template match="*[@first]//*[local-name()='annex']/*" mode="two_columns">
+  <xsl:template match="*[@first1]//*[local-name()='annex']/*" mode="two_columns">
     <xsl:variable name="number_"><xsl:number count="*"/></xsl:variable>
 		<xsl:variable name="number" select="number(normalize-space($number_))"/>
     <xsl:variable name="annex_number_"><xsl:number count="*[local-name()='annex']"/></xsl:variable>
@@ -1518,7 +1598,7 @@
   
   
   
-  <xsl:template match="*[@first]//*[local-name()='references'][not(@normative='true')]" mode="two_columns">
+  <xsl:template match="*[@first1]//*[local-name()='references'][not(@normative='true')]" mode="two_columns">
 		<fo:block break-after="page"/>
 		<fo:block font-size="1pt" id="{@id}"/>
     <fo:block font-size="1pt" id="{xalan:nodeset($doc_second)//*[local-name()='references'][not(@normative='true')]/@id}"/>
@@ -1556,7 +1636,7 @@
 
 
 
-	<xsl:template match="*[@first]/*[local-name()='sections']/*[local-name() = 'terms' or local-name() = 'definitions']" mode="two_columns">
+	<xsl:template match="*[@first1]/*[local-name()='sections']/*[local-name() = 'terms' or local-name() = 'definitions']" mode="two_columns">
 		<xsl:variable name="number_"><xsl:number /></xsl:variable>
 		<xsl:variable name="number" select="number(normalize-space($number_))"/>
 		<xsl:variable name="name" select="local-name()"/>
@@ -1592,7 +1672,7 @@
 	<xsl:template match="*[@second]//*[local-name()='figure'][@common = 'true']" priority="2"/>
 	<xsl:template match="*[@second]//*[local-name()='figure'][@span = 'true']" priority="2"/>
 	
-	<xsl:template match="*[@first]//*[local-name()='table'][@common = 'true']" priority="2">
+	<xsl:template match="*[@first1]//*[local-name()='table'][@common = 'true']" priority="2">
 		<fo:block-container width="210%">
 			<fo:block>
 				<xsl:call-template name="table"/>
@@ -1600,7 +1680,7 @@
 		</fo:block-container>
 	</xsl:template>
 	
-	<xsl:template match="*[@first]//*[local-name()='table'][@span = 'true']" priority="2">
+	<xsl:template match="*[@first1]//*[local-name()='table'][@span = 'true']" priority="2">
 		<xsl:variable name="number_"><xsl:number level="any" count="*[local-name()='table']"/></xsl:variable>
 		<xsl:variable name="number" select="number(normalize-space($number_))"/>
 		<fo:block-container width="210%">
@@ -1614,7 +1694,7 @@
 		</fo:block-container>
 	</xsl:template>
 	
-	<xsl:template match="*[@first]//*[local-name()='figure'][@common = 'true']" priority="2">
+	<xsl:template match="*[@first1]//*[local-name()='figure'][@common = 'true']" priority="2">
 		<fo:block-container width="210%">
 			<fo:block>
 				<xsl:call-template name="figure"/>
@@ -1622,7 +1702,7 @@
 		</fo:block-container>
 	</xsl:template>
 	
-	<xsl:template match="*[@first]//*[local-name()='figure'][@span = 'true']" priority="2">
+	<xsl:template match="*[@first1]//*[local-name()='figure'][@span = 'true']" priority="2">
 		<xsl:variable name="number_"><xsl:number level="any" count="*[local-name()='figure']"/></xsl:variable>
 		<xsl:variable name="number" select="number(normalize-space($number_))"/>
 		<fo:block-container width="210%">
@@ -1644,22 +1724,151 @@
 	<!-- ================================= -->
 	<!-- Flattening xml for two columns -->
 	<!-- ================================= -->	
+	
+	<!-- ================================= -->	
+	<!-- First step -->
+	<!-- ================================= -->	
+	<xsl:template match="@*|node()" mode="flatxml_step1">
+		<xsl:copy>
+			<xsl:apply-templates select="@*|node()" mode="flatxml_step1"/>
+		</xsl:copy>
+	</xsl:template>
+	
+	<xsl:template match="*[contains(local-name(), '-standard')]" mode="flatxml_step1">
+		<xsl:param name="num"/>
+		<xsl:copy>
+			<xsl:apply-templates select="@*" mode="flatxml_step1"/>
+			<xsl:attribute name="{$num}"/>
+			<xsl:apply-templates select="node()" mode="flatxml_step1"/>
+		</xsl:copy>
+	</xsl:template>
+	
+	<!-- enclose clause[@type='scope'] into scope -->
+	<xsl:template match="*[local-name()='sections']/*[local-name()='clause'][@type='scope']" mode="flatxml_step1" priority="2">
+		<xsl:element name="section_scope" namespace="https://www.metanorma.org/ns/bipm">
+			<xsl:call-template name="clause"/>
+		</xsl:element>
+	</xsl:template>
+	
+	<xsl:template match="jcgm:sections//jcgm:clause | jcgm:annex//jcgm:clause" mode="flatxml_step1" name="clause">
+		<xsl:copy>
+			<xsl:apply-templates select="@*" mode="flatxml_step1"/>
+			<xsl:call-template name="setCrossAlignAttributes"/>
+		</xsl:copy>
+		<xsl:apply-templates mode="flatxml_step1"/>
+	</xsl:template>
+	
+	
+	<xsl:template match="jcgm:sections//jcgm:title | jcgm:annex//jcgm:title" mode="flatxml_step1">
+		<xsl:copy>
+			<xsl:apply-templates select="@*" mode="flatxml_step1"/>
+			<xsl:call-template name="setCrossAlignAttributes"/>
+			<xsl:apply-templates mode="flatxml_step1"/>
+		</xsl:copy>
+	</xsl:template>
+	
+	<xsl:template name="setCrossAlignAttributes">
+		<xsl:variable name="is_cross_aligned">
+			<xsl:call-template name="isCrossAligned"/>
+		</xsl:variable>
+		<xsl:if test="normalize-space($is_cross_aligned) = 'true'">
+			<xsl:attribute name="cross-align">true</xsl:attribute>
+			<xsl:attribute name="keep-with-next">always</xsl:attribute>
+			<xsl:call-template name="setElementNumber"/>
+		</xsl:if>
+	</xsl:template>
+	
+	<!--
+		Elements that should be aligned:
+			- name of element presents in field align-cross-elements="clause note"
+			- marked with attribute name
+			- table/figure with attribute common="true" or span="true"
+			- marked with attribute cross-align
+  -->
+	<xsl:template name="isCrossAligned">
+		<xsl:variable name="element_name" select="local-name()"/>
+		<xsl:choose>
+			<!-- if element`s name is presents in array align_cross_elements -->
+			<xsl:when test="contains($align_cross_elements, concat('#',$element_name,'#'))">true</xsl:when>
+			<!-- if element has attribute name/bookmark -->
+			<xsl:when test="normalize-space(@name) != ''">true</xsl:when>
+			<xsl:when test="($element_name = 'table' or $element_name = 'image') and (@common = 'true' or @span = 'true')">true</xsl:when>
+			<xsl:when test="@cross-align='true'">true</xsl:when>
+			<xsl:otherwise>false</xsl:otherwise>
+		</xsl:choose>
+	</xsl:template>
+
+	<xsl:template name="setElementNumber">
+		<xsl:variable name="element-number">
+			<xsl:for-each select="ancestor-or-self::*[ancestor-or-self::*[local-name() = 'sections' or local-name() = 'annex']]">
+				<xsl:choose>
+					<xsl:when test="local-name() = 'annex'"><xsl:number/></xsl:when>
+					<xsl:when test="local-name() = 'clause'"><xsl:number/></xsl:when>
+					<xsl:when test="local-name() = 'title'"><xsl:number/></xsl:when>
+					<xsl:when test="local-name() = 'terms'"><xsl:value-of select="local-name()"/></xsl:when>
+					<xsl:when test="local-name() = 'sections'"><xsl:value-of select="local-name()"/></xsl:when>
+					<xsl:otherwise><xsl:value-of select="local-name()"/></xsl:otherwise>
+				</xsl:choose>
+				<xsl:text>_</xsl:text>
+			</xsl:for-each>
+			<!-- <xsl:number level="multiple" count="ancestor-or-self::*[ancestor::*[local-name() = 'sections' or local-name() = 'annex']]"/> -->
+			<!-- <xsl:number/><xsl:text>_</xsl:text>
+			<xsl:for-each select="ancestor-or-self::*[ancestor::*[local-name() = 'sections' or local-name() = 'annex']]">
+				<xsl:number count="*"/><xsl:text>_</xsl:text>
+			</xsl:for-each> -->
+		</xsl:variable>
+		<xsl:attribute name="element-number">
+			<xsl:value-of select="normalize-space($element-number)"/>
+		</xsl:attribute>
+	</xsl:template>
+	<!-- ================================= -->	
+	<!-- End First step -->
+	<!-- ================================= -->	
+	
+	<!-- ================================= -->	
+	<!-- Second step -->
+	<!-- ================================= -->	
+	<xsl:template match="@*|node()" mode="flatxml_step2">
+		<xsl:copy>
+			<xsl:apply-templates select="@*|node()" mode="flatxml_step2"/>
+		</xsl:copy>
+	</xsl:template>
+	
+	<xsl:template match="*[@cross-align='true']" mode="flatxml_step2">
+		<xsl:element name="cross-align" namespace="https://www.metanorma.org/ns/bipm">
+			<xsl:copy-of select="@element-number"/>
+			<xsl:if test="local-name() = 'clause'">
+				<xsl:copy-of select="@keep-with-next"/>
+			</xsl:if>
+			<xsl:copy-of select="."/>
+			<xsl:variable name="curr_id" select="generate-id()"/>
+			<!-- copy next elements until next element with cross-align=true -->
+			<xsl:for-each select="following-sibling::*[(not(@cross-align) or not(@cross-align='true')) and preceding-sibling::*[@cross-align='true'][1][generate-id() = $curr_id]]">
+				<xsl:copy-of select="."/>
+			</xsl:for-each>
+		</xsl:element>
+	</xsl:template>
+	
+	<xsl:template match="*[preceding-sibling::*[@cross-align='true']][not(@cross-align) or not(@cross-align='true')]" mode="flatxml_step2"/>
+	
+	<!-- ================================= -->	
+	<!-- Second step -->
+	<!-- ================================= -->	
+	
+	
 	<xsl:template match="@*|node()" mode="flatxml">
 		<xsl:copy>
 			<xsl:apply-templates select="@*|node()" mode="flatxml"/>
 		</xsl:copy>
 	</xsl:template>
 	
-	<xsl:template match="*[contains(local-name(), '-standard')]" mode="flatxml">
-		<xsl:param name="num"/>
-		<xsl:copy>
-			<xsl:apply-templates select="@*" mode="flatxml"/>
-			<xsl:attribute name="{$num}"/>
-			<xsl:apply-templates select="node()" mode="flatxml"/>
-		</xsl:copy>
-	</xsl:template>
 	
-	<xsl:template match="jcgm:clause" mode="flatxml">
+	
+	
+	
+	
+	
+	<xsl:template match="jcgm:clause2" mode="flatxml">
 		<xsl:copy>
 			<xsl:apply-templates select="@*" mode="flatxml"/>
 			<xsl:apply-templates select="node()[local-name() != 'clause']" mode="flatxml"/>
@@ -1667,7 +1876,9 @@
 		<xsl:apply-templates select="jcgm:clause" mode="flatxml"/>
 	</xsl:template>
 	
-	<xsl:template match="jcgm:terms" mode="flatxml">
+	
+	
+	<xsl:template match="jcgm:terms2" mode="flatxml">
 		<xsl:copy>
 			<xsl:apply-templates select="@*" mode="flatxml"/>
 			<xsl:apply-templates select="node()[local-name() != 'term']" mode="flatxml"/>
@@ -1675,13 +1886,65 @@
 		<xsl:apply-templates select="jcgm:term" mode="flatxml"/>
 	</xsl:template>
 	
-	<xsl:template match="jcgm:term" mode="flatxml">
+	<xsl:template match="jcgm:sections//jcgm:terms | jcgm:annex//jcgm:terms" mode="flatxml">
+		<xsl:copy>
+			<xsl:apply-templates select="@*" mode="flatxml"/>
+			<xsl:attribute name="cross-align">true</xsl:attribute>
+			<xsl:attribute name="keep-with-next">always</xsl:attribute>
+			<xsl:call-template name="setElementNumber"/>
+		</xsl:copy>
+		<xsl:apply-templates mode="flatxml"/>
+	</xsl:template>
+	
+	
+	<xsl:template match="jcgm:term2" mode="flatxml">
 		<xsl:element name="terms" namespace="https://www.metanorma.org/ns/bipm">
 			<xsl:copy>
 			<xsl:apply-templates select="@*|node()" mode="flatxml"/>
 		</xsl:copy>
 		</xsl:element>
 	</xsl:template>
+	
+	<xsl:template match="jcgm:sections//jcgm:term | jcgm:annex//jcgm:term" mode="flatxml">
+		<xsl:copy>
+			<xsl:apply-templates select="@*" mode="flatxml"/>
+			<xsl:attribute name="cross-align">true</xsl:attribute>
+			<xsl:attribute name="keep-with-next">always</xsl:attribute>
+			<xsl:call-template name="setElementNumber"/>
+		</xsl:copy>
+		<xsl:apply-templates mode="flatxml"/>
+	</xsl:template>
+	
+	<xsl:template match="jcgm:sections//jcgm:title | jcgm:annex//jcgm:title" mode="flatxml">
+		<xsl:copy>
+			<xsl:apply-templates select="@*" mode="flatxml"/>
+			<xsl:attribute name="cross-align">true</xsl:attribute>
+			<xsl:attribute name="keep-with-next">always</xsl:attribute>
+			<xsl:call-template name="setElementNumber"/>
+			<xsl:apply-templates mode="flatxml"/>
+		</xsl:copy>
+	</xsl:template>
+	
+	<xsl:template match="jcgm:sections//jcgm:ul | jcgm:annex//jcgm:ul | jcgm:sections//jcgm:ol | jcgm:annex//jcgm:ol" mode="flatxml">
+		<xsl:copy>
+			<xsl:apply-templates select="@*" mode="flatxml"/>
+			<xsl:attribute name="cross-align">true</xsl:attribute>
+			<xsl:attribute name="keep-with-next">always</xsl:attribute>
+		</xsl:copy>
+		<xsl:apply-templates mode="flatxml"/>
+	</xsl:template>
+	
+	<xsl:template match="jcgm:sections//jcgm:li | jcgm:annex//jcgm:li" mode="flatxml">
+		<xsl:copy>
+			<xsl:apply-templates select="@*" mode="flatxml"/>
+			<xsl:call-template name="setListItemLabel"/>
+			<xsl:apply-templates mode="flatxml"/>
+			<xsl:call-template name="setElementNumber"/>
+		</xsl:copy>
+	</xsl:template>
+	
+	
+
 	
 	<!-- ================================= -->
 	<!-- End Flattening xml for two columns -->
