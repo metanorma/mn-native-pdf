@@ -179,7 +179,7 @@
 						<xsl:call-template name="printEdition"/>
 						<xsl:text>&#xa0;&#xa0;</xsl:text>
 						<xsl:call-template name="convertDate">
-							<xsl:with-param name="date" select="'2009-07-01'"/>
+							<xsl:with-param name="date" select="(//jcgm:bipm-standard)[1]/jcgm:bibdata/jcgm:version/jcgm:revision-date"/>
 						</xsl:call-template>
 					</fo:block>
 					<!-- Example © JCGM 2009 -->
@@ -392,12 +392,14 @@
 						
 						<xsl:for-each select="//*[contains(local-name(), '-standard')]">
 							<fo:block font-size="20pt" font-weight="bold" margin-bottom="20pt" space-before="36pt" line-height="1.1">
-							
+								<xsl:variable name="curr_lang" select="*[local-name()='bibdata']/*[local-name()='language'][@current = 'true']"/>
+								
 								<xsl:variable name="title-main">
-									<xsl:apply-templates select="./*[local-name() = 'bibdata']/*[local-name() = 'title'][@language = $lang and @type = 'main']" mode="title"/>
-								</xsl:variable> 
+									<xsl:apply-templates select="./*[local-name() = 'bibdata']/*[local-name() = 'title'][@language = $curr_lang and @type = 'main']" mode="title"/>
+								</xsl:variable>
+
 								<xsl:variable name="title-part">
-									<xsl:apply-templates select="./*[local-name() = 'bibdata']/*[local-name() = 'title'][@language = $lang and @type = 'part']" mode="title"/>
+									<xsl:apply-templates select="./*[local-name() = 'bibdata']/*[local-name() = 'title'][@language = $curr_lang and @type = 'part']" mode="title"/>
 								</xsl:variable>
 								
 								<fo:block>
@@ -407,6 +409,15 @@
 									</xsl:if>
 									<xsl:copy-of select="$title-part"/>
 								</fo:block>
+								
+								<xsl:variable name="edition">
+									<xsl:apply-templates select="./*[local-name() = 'bibdata']/*[local-name() = 'edition']">
+										<xsl:with-param name="curr_lang" select="$curr_lang"/>
+									</xsl:apply-templates>
+								</xsl:variable>
+								<xsl:if test="normalize-space($edition) != ''">
+									<fo:block margin-top="12pt"><xsl:copy-of select="$edition"/></fo:block>
+								</xsl:if>
 								
 							</fo:block>
 						</xsl:for-each>
@@ -1000,11 +1011,7 @@
 	<!-- ================ -->
 	<!-- JCGM specific templates -->
 	<!-- ================ -->
-	<xsl:template match="/" mode="jcgm">
-
-	</xsl:template>
 	
-
 	<xsl:template name="print_JCGN_toc_item">
 		<xsl:variable name="margin-left">5</xsl:variable>
 		<fo:block>
@@ -1162,6 +1169,47 @@
 			</xsl:if>
 			
 		
+	</xsl:template>
+
+	<xsl:template match="jcgm:bipm-standard/jcgm:bibdata/jcgm:edition">
+		<xsl:param name="font-size" select="'65%'"/>
+		<xsl:param name="baseline-shift" select="'30%'"/>
+		<xsl:param name="curr_lang" select="'fr'"/>
+		<fo:inline>
+			<xsl:variable name="title-edition">
+				<xsl:call-template name="getTitle">
+					<xsl:with-param name="name" select="'title-edition'"/>
+					<xsl:with-param name="lang" select="$curr_lang"/>
+				</xsl:call-template>
+			</xsl:variable>
+			<xsl:value-of select="."/>
+			<fo:inline font-size="{$font-size}" baseline-shift="{$baseline-shift}">
+				<xsl:if test="$curr_lang = 'en'">
+					<xsl:attribute name="baseline-shift">0%</xsl:attribute>
+					<xsl:attribute name="font-size">100%</xsl:attribute>
+				</xsl:if>
+				<xsl:choose>
+					<xsl:when test="$curr_lang = 'fr'">
+						<xsl:choose>					
+							<xsl:when test=". = '1'">re</xsl:when>
+							<xsl:otherwise>e</xsl:otherwise>
+						</xsl:choose>
+					</xsl:when>
+					<xsl:otherwise>
+						<xsl:choose>					
+							<xsl:when test=". = '1'">st</xsl:when>
+							<xsl:when test=". = '2'">nd</xsl:when>
+							<xsl:when test=". = '3'">rd</xsl:when>
+							<xsl:otherwise>th</xsl:otherwise>
+						</xsl:choose>
+					</xsl:otherwise>
+				</xsl:choose>
+				
+			</fo:inline>
+			<xsl:text> </xsl:text>			
+			<xsl:value-of select="java:toLowerCase(java:java.lang.String.new($title-edition))"/>
+			<xsl:text></xsl:text>
+		</fo:inline>
 	</xsl:template>
 
 
