@@ -1312,7 +1312,7 @@
 	</xsl:template>
 
 
-		<!-- =================== -->
+	<!-- =================== -->
 	<!-- Index processing -->
 	<!-- =================== -->
 	
@@ -1520,10 +1520,7 @@
 	<xsl:template match="*[@first]/*[local-name()='sections']//*[local-name() = 'cross-align'] | *[@first]/*[local-name()='annex']//*[local-name() = 'cross-align']" mode="two_columns">
 		<xsl:variable name="element-number" select="@element-number"/>
 		<fo:block>
-			<!-- <xsl:call-template name="setId"/>			 -->
-			<!-- <xsl:if test="not(*)"> -->
 				<xsl:copy-of select="@keep-with-next"/>
-			<!-- </xsl:if> -->
 			<fo:table table-layout="fixed" width="100%">
 				<fo:table-column column-width="82mm"/>
 				<fo:table-column column-width="8mm"/>
@@ -1534,13 +1531,9 @@
 							<fo:block font-size="1pt" keep-with-next="always"></fo:block>
 							<fo:block>
 								<xsl:copy-of select="@keep-with-next"/>
-								<!-- element-number=<xsl:value-of select="@element-number"/> -->
 								<xsl:apply-templates select="." />
-								<!-- get next elements until element with @cross-align=true -->
-								<!-- <xsl:variable name="curr_id" select="generate-id()"/>
-								<xsl:apply-templates select="following-sibling::*[(not(@cross-align) or not(@cross-align='true')) and preceding-sibling::*[@cross-align='true'][1][generate-id() = $curr_id]]"/> -->
-								<!-- <fo:block>End @cross-align='true'</fo:block> -->
 							</fo:block>
+							<fo:block font-size="1pt"></fo:block>
 						</fo:table-cell>
 						<fo:table-cell>
 							<fo:block></fo:block>
@@ -1548,17 +1541,19 @@
 						<fo:table-cell>
 							<fo:block font-size="1pt" keep-with-next="always"></fo:block>
 							<fo:block>
+								<xsl:copy-of select="@keep-with-next"/>
 								<xsl:apply-templates select="xalan:nodeset($doc_second)//*[local-name() = 'cross-align' and @element-number=$element-number]"/>
 							</fo:block>
-							<!-- <xsl:variable name="curr_id" select="generate-id(xalan:nodeset($doc_second)/*/*[local-name()='sections']//*[@element-number=$element-number])"/>
-							<fo:block>curr_id=<xsl:value-of select="$curr_id"/></fo:block>
-							<xsl:apply-templates select="xalan:nodeset($doc_second)/*/*[local-name()='sections']//*[@element-number=$element-number]"/>
-							<xsl:apply-templates select="xalan:nodeset($doc_second)/*/*[local-name()='sections']//*[@element-number=$element-number]/following-sibling::*[(not(@cross-align) or not(@cross-align='true')) and preceding-sibling::*[@cross-align='true'][1][generate-id() = $curr_id]]"/> -->
+							<fo:block font-size="1pt"></fo:block>
 						</fo:table-cell>
 					</fo:table-row>
 				</fo:table-body>
 			</fo:table>
 		</fo:block>
+	</xsl:template>
+	
+	<xsl:template match="*[local-name() = 'cross-align']" priority="3">
+		<xsl:apply-templates />
 	</xsl:template>
 	
 	<!-- no display table/figure from second document if common=true or span=true -->
@@ -1678,13 +1673,6 @@
 		<fo:block font-size="1pt"><fo:inline id="{@id}"/><fo:inline id="{(xalan:nodeset($doc_second)//*[local-name()='annex'])[$number]/@id}"/></fo:block>
     <xsl:apply-templates mode="two_columns" />
   </xsl:template>
-
-
-	<!-- no display table/figure from second document if common=true or span=true -->
-	<xsl:template match="*[@second]//*[local-name()='table'][@common = 'true']" priority="2"/>
-	<xsl:template match="*[@second]//*[local-name()='table'][@span = 'true']" priority="2"/>
-	<xsl:template match="*[@second]//*[local-name()='figure'][@common = 'true']" priority="2"/>
-	<xsl:template match="*[@second]//*[local-name()='figure'][@span = 'true']" priority="2"/>
 	
 	<!-- =================== -->
 	<!-- End Two columns layout -->
@@ -1763,6 +1751,7 @@
 			<!-- create empty element for case if first element isn't cross-align -->
 			<xsl:element name="empty" namespace="https://www.metanorma.org/ns/bipm">
 				<xsl:attribute name="cross-align">true</xsl:attribute>
+				<xsl:attribute name="element-number">empty_annex<xsl:number/></xsl:attribute>
 			</xsl:element>
 			<xsl:apply-templates mode="flatxml_step1"/>
 		</xsl:copy>
@@ -1780,6 +1769,11 @@
 			<terms>...</terms>
 		</section_terms> -->
 		<xsl:element name="section_terms" namespace="https://www.metanorma.org/ns/bipm">
+			<!-- create empty element for case if first element isn't cross-align -->
+			<xsl:element name="empty" namespace="https://www.metanorma.org/ns/bipm">
+				<xsl:attribute name="cross-align">true</xsl:attribute>
+				<xsl:attribute name="element-number">empty_terms_<xsl:number/></xsl:attribute>
+			</xsl:element>
 			<xsl:call-template name="terms"/>
 		</xsl:element>
 	</xsl:template>
@@ -1788,6 +1782,7 @@
 			<xsl:call-template name="terms"/>
 		</xsl:element>
 	</xsl:template>
+	
 	
 	<!-- From:
 	<terms>
@@ -1854,30 +1849,23 @@
 	</xsl:template>
 	
 	
-	<!-- allow cross-align for element li, and set label -->
-	<xsl:template match="jcgm:sections//jcgm:li | jcgm:annex//jcgm:li" mode="flatxml_step1">
+	<!-- allow cross-align for element p, note, termsource, table, figure,  li (and set label)  -->
+	<xsl:template match="jcgm:sections//jcgm:p | 
+																	jcgm:sections//jcgm:note | 
+																	jcgm:sections//jcgm:termsource |
+																	jcgm:sections//jcgm:li |
+																	jcgm:table |
+																	jcgm:figure |
+																	jcgm:annex//jcgm:p | 
+																	jcgm:annex//jcgm:note |
+																	jcgm:annex//jcgm:termsource |
+																	jcgm:annex//jcgm:li" mode="flatxml_step1">
 		<xsl:copy>
 			<xsl:apply-templates select="@*" mode="flatxml_step1"/>
 			<xsl:call-template name="setCrossAlignAttributes"/>
-			<xsl:call-template name="setListItemLabel"/>
-			<xsl:apply-templates mode="flatxml_step1"/>
-		</xsl:copy>
-	</xsl:template>
-	
-	<!-- allow cross-align for element termsource -->
-	<xsl:template match="jcgm:sections//jcgm:termsource | jcgm:annex//jcgm:termsource" mode="flatxml_step1">
-		<xsl:copy>
-			<xsl:apply-templates select="@*" mode="flatxml_step1"/>			
-			<xsl:call-template name="setCrossAlignAttributes"/>
-			<xsl:apply-templates mode="flatxml_step1"/>
-		</xsl:copy>
-	</xsl:template>
-	
-	<!-- allow cross-align for elements table, figure -->
-	<xsl:template match="jcgm:table | jcgm:figure" mode="flatxml_step1">
-		<xsl:copy>
-			<xsl:apply-templates select="@*" mode="flatxml_step1"/>
-			<xsl:call-template name="setCrossAlignAttributes"/>
+			<xsl:if test="local-name() = 'li'">
+				<xsl:call-template name="setListItemLabel"/>
+			</xsl:if>
 			<xsl:apply-templates mode="flatxml_step1"/>
 		</xsl:copy>
 	</xsl:template>
@@ -1915,28 +1903,24 @@
 		</xsl:choose>
 	</xsl:template>
 
+	<!-- calculate element number in tree to find a match between documents -->
 	<xsl:template name="setElementNumber">
 		<xsl:variable name="element-number">
-			<xsl:for-each select="ancestor-or-self::*[ancestor-or-self::*[local-name() = 'sections' or local-name() = 'annex']]">
-				<xsl:value-of select="local-name()"/>
-				<xsl:choose>
-					<xsl:when test="local-name() = 'terms'"></xsl:when>
-					<xsl:when test="local-name() = 'sections'"></xsl:when>
-					<xsl:otherwise><xsl:number /></xsl:otherwise>
-					<!-- <xsl:when test="local-name() = 'annex'"><xsl:number/></xsl:when>
-					<xsl:when test="local-name() = 'clause'"><xsl:number/></xsl:when>
-					<xsl:when test="local-name() = 'title'"><xsl:number/></xsl:when>
-					<xsl:when test="local-name() = 'term'"><xsl:number/></xsl:when> -->
-					
-					<!-- <xsl:otherwise><xsl:value-of select="local-name()"/></xsl:otherwise> -->
-				</xsl:choose>
-				<xsl:text>_</xsl:text>
-			</xsl:for-each>
-			<!-- <xsl:number level="multiple" count="ancestor-or-self::*[ancestor::*[local-name() = 'sections' or local-name() = 'annex']]"/> -->
-			<!-- <xsl:number/><xsl:text>_</xsl:text>
-			<xsl:for-each select="ancestor-or-self::*[ancestor::*[local-name() = 'sections' or local-name() = 'annex']]">
-				<xsl:number count="*"/><xsl:text>_</xsl:text>
-			</xsl:for-each> -->
+			<xsl:choose>
+				<!-- if name set, then use it -->
+				<xsl:when test="@name"><xsl:value-of select="@name"/></xsl:when>
+				<xsl:otherwise>
+					<xsl:for-each select="ancestor-or-self::*[ancestor-or-self::*[local-name() = 'sections' or local-name() = 'annex']]">
+						<xsl:value-of select="local-name()"/>
+						<xsl:choose>
+							<xsl:when test="local-name() = 'terms'"></xsl:when>
+							<xsl:when test="local-name() = 'sections'"></xsl:when>
+							<xsl:otherwise><xsl:number /></xsl:otherwise>
+						</xsl:choose>
+						<xsl:text>_</xsl:text>
+					</xsl:for-each>
+				</xsl:otherwise>
+			</xsl:choose>
 		</xsl:variable>
 		<xsl:attribute name="element-number">
 			<xsl:value-of select="normalize-space($element-number)"/>
