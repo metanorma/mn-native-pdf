@@ -26,7 +26,7 @@
 	
 	<xsl:variable name="namespace">jcgm</xsl:variable>
 	
-	<xsl:variable name="align_cross_elements_">clause note title terms</xsl:variable>
+	<xsl:variable name="align_cross_elements_">clause note title terms term termsource</xsl:variable>
 	<xsl:variable name="align_cross_elements">
 		<xsl:text>#</xsl:text><xsl:value-of select="translate(normalize-space($align_cross_elements_), ' ', '#')"/><xsl:text>#</xsl:text>
 	</xsl:variable>
@@ -453,8 +453,8 @@
 									<xsl:apply-templates select="." mode="flatxml"/>
 								</xsl:variable> -->
 						
-								<!-- doc_first=<xsl:copy-of select="$doc_first"/>
-								doc_second=<xsl:copy-of select="$doc_second"/> -->
+								<!-- doc_first=<xsl:copy-of select="$doc_first"/> -->
+								<!-- doc_second=<xsl:copy-of select="$doc_second"/> -->
 						
 								<!-- <xsl:apply-templates select="xalan:nodeset($doc_first)/*/*[local-name()='sections']/*[local-name()='clause'][@type='scope']" mode="two_columns"/> -->
 								<xsl:apply-templates select="xalan:nodeset($doc_first)/*/*[local-name()='sections']/*[local-name()='section_scope']/*" mode="two_columns"/>
@@ -877,7 +877,7 @@
 	</xsl:template>
 
 	<xsl:template match="*[local-name() = 'definition']/*[local-name() = 'p']" priority="2">
-		<fo:block><xsl:apply-templates /></fo:block>
+		<fo:block widows="1" orphans="1"><xsl:apply-templates /></fo:block>
 	</xsl:template>
 
 
@@ -1881,6 +1881,13 @@
 		</xsl:copy>
 	</xsl:template>
 	
+	<xsl:template match="jcgm:sections//jcgm:termsource | jcgm:annex//jcgm:termsource" mode="flatxml_step1">
+		<xsl:copy>
+			<xsl:apply-templates select="@*" mode="flatxml_step1"/>
+			<xsl:call-template name="setCrossAlignAttributes"/>
+			<xsl:apply-templates mode="flatxml_step1"/>
+		</xsl:copy>
+	</xsl:template>
 	
 	<xsl:template name="setCrossAlignAttributes">
 		<xsl:variable name="is_cross_aligned">
@@ -1916,13 +1923,17 @@
 	<xsl:template name="setElementNumber">
 		<xsl:variable name="element-number">
 			<xsl:for-each select="ancestor-or-self::*[ancestor-or-self::*[local-name() = 'sections' or local-name() = 'annex']]">
+				<xsl:value-of select="local-name()"/>
 				<xsl:choose>
-					<xsl:when test="local-name() = 'annex'"><xsl:number/></xsl:when>
+					<xsl:when test="local-name() = 'terms'"></xsl:when>
+					<xsl:when test="local-name() = 'sections'"></xsl:when>
+					<xsl:otherwise><xsl:number /></xsl:otherwise>
+					<!-- <xsl:when test="local-name() = 'annex'"><xsl:number/></xsl:when>
 					<xsl:when test="local-name() = 'clause'"><xsl:number/></xsl:when>
 					<xsl:when test="local-name() = 'title'"><xsl:number/></xsl:when>
-					<xsl:when test="local-name() = 'terms'"><xsl:value-of select="local-name()"/></xsl:when>
-					<xsl:when test="local-name() = 'sections'"><xsl:value-of select="local-name()"/></xsl:when>
-					<xsl:otherwise><xsl:value-of select="local-name()"/></xsl:otherwise>
+					<xsl:when test="local-name() = 'term'"><xsl:number/></xsl:when> -->
+					
+					<!-- <xsl:otherwise><xsl:value-of select="local-name()"/></xsl:otherwise> -->
 				</xsl:choose>
 				<xsl:text>_</xsl:text>
 			</xsl:for-each>
@@ -1967,7 +1978,7 @@
 	<xsl:template match="*[preceding-sibling::*[@cross-align='true']][not(@cross-align) or not(@cross-align='true')]" mode="flatxml_step2"/>
 	
 	<!-- ================================= -->	
-	<!-- Second step -->
+	<!-- End Second step -->
 	<!-- ================================= -->	
 	
 	
@@ -2030,6 +2041,7 @@
 		<xsl:apply-templates mode="flatxml"/>
 	</xsl:template>
 	
+
 	<xsl:template match="jcgm:sections//jcgm:title | jcgm:annex//jcgm:title" mode="flatxml">
 		<xsl:copy>
 			<xsl:apply-templates select="@*" mode="flatxml"/>
