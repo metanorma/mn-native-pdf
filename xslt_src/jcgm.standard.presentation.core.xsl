@@ -790,6 +790,7 @@
 	
 	<xsl:template match="*[local-name()='ul']//*[local-name()='note'] |  *[local-name()='ol']//*[local-name()='note']" priority="2"/>
 	
+
 	<xsl:template match="*[local-name()='li']">
 		<fo:list-item id="{@id}">
 			<fo:list-item-label end-indent="label-end()">
@@ -804,6 +805,30 @@
 				</fo:block>
 			</fo:list-item-body>
 		</fo:list-item>
+	</xsl:template>
+
+	
+	<!-- for two-columns layout -->
+	
+	<xsl:template match="*[local-name()='ul'][not(*)] | *[local-name()='ol'][not(*)]" priority="2"/>
+	
+	<xsl:template match="*[local-name()='li'][not(parent::*[local-name()='ul'] or parent::*[local-name()='ol'])]">
+		<fo:list-block provisional-distance-between-starts="7mm" margin-top="8pt">
+			<fo:list-item id="{@id}">
+				<fo:list-item-label end-indent="label-end()">
+					<fo:block>
+						<xsl:value-of select="@label"/>
+						<!-- <xsl:call-template name="getListItemFormat"/> -->
+					</fo:block>
+				</fo:list-item-label>
+				<fo:list-item-body start-indent="body-start()">
+					<fo:block>
+						<xsl:apply-templates />
+						<xsl:apply-templates select=".//*[local-name()='note']" mode="process"/>
+					</fo:block>
+				</fo:list-item-body>
+			</fo:list-item>
+		</fo:list-block>
 	</xsl:template>
 	
 	<xsl:template match="*[local-name()='note']" mode="process">
@@ -1797,7 +1822,7 @@
 		<xsl:apply-templates mode="flatxml_step1"/>
 	</xsl:template>
 	
-	<!-- <xsl:template match="jcgm:sections//jcgm:ul | jcgm:annex//jcgm:ul | jcgm:sections//jcgm:ol | jcgm:annex//jcgm:ol" mode="flatxml_step1">
+	<xsl:template match="jcgm:sections//jcgm:ul | jcgm:annex//jcgm:ul | jcgm:sections//jcgm:ol | jcgm:annex//jcgm:ol" mode="flatxml_step1">
 		<xsl:copy>
 			<xsl:apply-templates select="@*" mode="flatxml"/>
 			<xsl:call-template name="setCrossAlignAttributes"/>
@@ -1812,7 +1837,7 @@
 			<xsl:call-template name="setListItemLabel"/>
 			<xsl:apply-templates mode="flatxml_step1"/>
 		</xsl:copy>
-	</xsl:template> -->
+	</xsl:template>
 	
 	
 	<xsl:template name="setCrossAlignAttributes">
