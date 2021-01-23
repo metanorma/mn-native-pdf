@@ -712,7 +712,8 @@
 												</fo:block>
 												<fo:block font-size="9pt" font-weight="bold">
 													<xsl:variable name="supersedes_documents">
-														<xsl:for-each select="//iec:iec-standard/iec:bibdata/iec:relation[@type='supersedes']/iec:bibitem/iec:docnumber">
+														<!-- <xsl:for-each select="//iec:iec-standard/iec:bibdata/iec:relation[@type='supersedes']/iec:bibitem/iec:docnumber"> -->
+														<xsl:for-each select="//iec:iec-standard/iec:bibdata/iec:relation[@type='obsoletes']/iec:bibitem/iec:docidentifier">
 															<xsl:value-of select="."/>
 															<xsl:if test="position() != last()">,</xsl:if>
 														</xsl:for-each>
