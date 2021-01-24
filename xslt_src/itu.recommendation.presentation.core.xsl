@@ -40,7 +40,7 @@
 	<xsl:variable name="doctype" select="/itu:itu-standard/itu:bibdata/itu:ext/itu:doctype[not(@language) or @language = '']"/>
 
 	<xsl:variable name="xSTR-ACRONYM">
-		<xsl:variable name="x" select="substring(/itu:itu-standard/itu:bibdata/itu:series[@type = 'main']/itu:title, 1, 1)"/>
+		<xsl:variable name="x" select="/itu:itu-standard/itu:bibdata/itu:series[@type = 'main']/itu:title[@type = 'abbrev']"/>
 		<xsl:variable name="acronym" select="/itu:itu-standard/itu:bibdata/itu:docnumber"/>
 		<xsl:value-of select="concat($x,'STR-', $acronym)"/>
 	</xsl:variable>
@@ -108,6 +108,11 @@
 				<xsl:value-of select="$doctypeTitle"/>
 				<xsl:text> </xsl:text>
 				<xsl:value-of select="/itu:itu-standard/itu:bibdata/itu:ext/itu:structuredidentifier/itu:docnumber"/>
+			</xsl:when>
+			<xsl:when  test="$doctype = 'recommendation-supplement'">
+				<xsl:value-of select="/itu:itu-standard/itu:bibdata/itu:docidentifier[@type = 'ITU-Supplement-Short']"/>
+				<xsl:text> </xsl:text>
+				<xsl:value-of select="$docdate"/>
 			</xsl:when>
 			<xsl:otherwise>
 				<xsl:value-of select="concat($footerprefix, $docname, ' ', $docdate)"/>
@@ -389,10 +394,30 @@
 													<xsl:text> </xsl:text>
 													<xsl:value-of select="/itu:itu-standard/itu:bibdata/itu:ext/itu:doctype[@language = $lang]"/>
 												</xsl:when>
+												<xsl:when test="$doctype = 'resolution'"/>
+												<xsl:when test="$doctype = 'recommendation-supplement'">
+													<!-- Series L -->
+													<xsl:variable name="title-series">
+														<xsl:call-template name="getLocalizedString">
+															<xsl:with-param name="key">series</xsl:with-param>
+														</xsl:call-template>
+													</xsl:variable>
+													<xsl:call-template name="capitalize">
+														<xsl:with-param name="str" select="$title-series"/>
+													</xsl:call-template>
+													<xsl:text> </xsl:text>
+													<xsl:value-of select="/itu:itu-standard/itu:bibdata/itu:series[@type='main']/itu:title[@type='abbrev']"/>
+													<!-- Ex. Supplement 37 -->
+													<fo:block font-size="18pt">
+														<xsl:call-template name="getLocalizedString">
+															<xsl:with-param name="key">doctype_dict.recommendation-supplement</xsl:with-param>
+														</xsl:call-template>
+														<xsl:text> </xsl:text>
+														<xsl:value-of select="/itu:itu-standard/itu:bibdata/itu:docnumber"/>
+													</fo:block>
+												</xsl:when>
 												<xsl:otherwise>
-													<xsl:if test="$doctype != 'resolution'">
-														<xsl:value-of select="substring-after(/itu:itu-standard/itu:bibdata/itu:docidentifier[@type = 'ITU'], ' ')"/>
-													</xsl:if>
+													<xsl:value-of select="substring-after(/itu:itu-standard/itu:bibdata/itu:docidentifier[@type = 'ITU'], ' ')"/>
 												</xsl:otherwise>
 											</xsl:choose>
 										</fo:block>
@@ -499,25 +524,36 @@
 												</fo:block>
 											</xsl:if>
 											<fo:block text-transform="uppercase">
-												<xsl:if test="normalize-space(/itu:itu-standard/itu:bibdata/itu:series[@type = 'main']) != ''">
+												<xsl:variable name="series_title" select="normalize-space(/itu:itu-standard/itu:bibdata/itu:series[@type = 'main']/itu:title[@type = 'full'])"/>
+												<xsl:if test="$series_title != ''">
 													<xsl:variable name="title">
 														<xsl:if test="$doctype != 'resolution'">
-															<xsl:text>Series </xsl:text>
+															<!-- <xsl:text>Series </xsl:text> -->
+															<xsl:call-template name="getLocalizedString">
+																<xsl:with-param name="key">series</xsl:with-param>
+															</xsl:call-template>
+															<xsl:text> </xsl:text>
 														</xsl:if>
-														<xsl:value-of select="/itu:itu-standard/itu:bibdata/itu:series[@type = 'main']"/>
+														<xsl:value-of select="$series_title"/>
 													</xsl:variable>
 													<xsl:value-of select="$title"/>												
 												</xsl:if>
 											</fo:block>
-											<xsl:if test="/itu:itu-standard/itu:bibdata/itu:series">
-												<fo:block margin-top="6pt">
-													<xsl:value-of select="/itu:itu-standard/itu:bibdata/itu:series[@type = 'secondary']"/>
-													<xsl:if test="normalize-space(/itu:itu-standard/itu:bibdata/itu:series[@type = 'tertiary']) != ''">
-														<xsl:text> — </xsl:text>
-														<xsl:value-of select="/itu:itu-standard/itu:bibdata/itu:series[@type = 'tertiary']"/>
+											<xsl:choose>
+												<xsl:when test="$doctype = 'recommendation-supplement'"/>
+												<xsl:otherwise>
+													<xsl:if test="/itu:itu-standard/itu:bibdata/itu:series">
+														<fo:block margin-top="6pt">
+															<xsl:value-of select="/itu:itu-standard/itu:bibdata/itu:series[@type = 'secondary']"/>
+															<xsl:if test="normalize-space(/itu:itu-standard/itu:bibdata/itu:series[@type = 'tertiary']) != ''">
+																<xsl:text> — </xsl:text>
+																<xsl:value-of select="/itu:itu-standard/itu:bibdata/itu:series[@type = 'tertiary']"/>
+															</xsl:if>
+														</fo:block>
 													</xsl:if>
-												</fo:block>
-											</xsl:if>
+												</xsl:otherwise>
+											</xsl:choose>
+											
 										</fo:block>
 									</fo:table-cell>
 								</fo:table-row>
@@ -597,6 +633,9 @@
 										<fo:block font-size="16pt" margin-top="3pt">
 											<xsl:if test="/itu:itu-standard/itu:boilerplate/itu:legal-statement/itu:clause[@id='draft-warning']">
 												<xsl:attribute name="margin-top">6pt</xsl:attribute>
+												<xsl:if test="$doctype = 'recommendation-supplement'">
+													<xsl:attribute name="margin-top">12pt</xsl:attribute>
+												</xsl:if>
 											</xsl:if>
 											
 											<xsl:choose>
@@ -613,6 +652,11 @@
 												</xsl:when>
 												<xsl:when test="$doctype = 'implementers-guide'"></xsl:when>
 												<xsl:when test="$doctype = 'resolution'"></xsl:when>
+												<xsl:when test="$doctype = 'recommendation-supplement'">
+													<xsl:if test="/itu:itu-standard/itu:bibdata/itu:status/itu:stage = 'draft'">Draft </xsl:if>
+													<xsl:text>ITU-</xsl:text><xsl:value-of select="/itu:itu-standard/itu:bibdata/itu:ext/itu:editorialgroup/itu:bureau"/><xsl:text> </xsl:text>
+													<xsl:value-of select="/itu:itu-standard/itu:bibdata/itu:docidentifier[@type = 'ITU-Supplement']"/>
+												</xsl:when>
 												<xsl:otherwise>
 													<xsl:value-of select="$doctypeTitle"/>
 													<xsl:text>&#xA0;&#xA0;</xsl:text>
@@ -652,6 +696,11 @@
 						<fo:block-container font-size="14pt" font-weight="bold">
 							<xsl:choose>
 								<xsl:when  test="$doctype = 'implementers-guide'"></xsl:when>
+								<xsl:when  test="$doctype = 'recommendation-supplement'">
+									<fo:block>
+										<xsl:value-of select="/itu:itu-standard/itu:bibdata/itu:docidentifier[@type = 'ITU-Supplement-Internal']"/>
+									</fo:block>
+								</xsl:when>
 								<xsl:otherwise>
 									<fo:block>
 										<xsl:value-of select="$doctypeTitle"/>
@@ -863,6 +912,12 @@
 									<xsl:value-of select="/itu:itu-standard/itu:bibdata/itu:title[@type='resolution' and @language = $lang]"/>
 								</fo:block>
 							</xsl:when>
+							<xsl:when  test="$doctype = 'implementers-guide'"></xsl:when>
+							<xsl:when  test="$doctype = 'recommendation-supplement'">
+									<fo:block font-weight="bold">
+										<xsl:value-of select="/itu:itu-standard/itu:bibdata/itu:docidentifier[@type = 'ITU-Supplement-Internal']"/>
+									</fo:block>
+								</xsl:when>
 							<xsl:otherwise>
 								<fo:block font-weight="bold">
 									<xsl:value-of select="$doctypeTitle"/>
