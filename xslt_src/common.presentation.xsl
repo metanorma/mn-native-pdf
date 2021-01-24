@@ -983,7 +983,7 @@
 			<xsl:attribute name="margin-left">13mm</xsl:attribute>
 			<xsl:attribute name="margin-right">12mm</xsl:attribute>
 		</xsl:if>
-		<xsl:if test="$namespace = 'csd' or $namespace = 'gb' or $namespace = 'iso' or $namespace = 'm3d' or $namespace = 'jcgm'">
+		<xsl:if test="$namespace = 'csd' or $namespace = 'gb' or $namespace = 'iso' or $namespace = 'm3d'">
 			<xsl:attribute name="margin-top">12pt</xsl:attribute>
 			<xsl:attribute name="margin-left">12mm</xsl:attribute>
 			<xsl:attribute name="margin-right">12mm</xsl:attribute>
@@ -993,6 +993,7 @@
 			<xsl:attribute name="margin-left">12mm</xsl:attribute>
 			<xsl:attribute name="margin-right">12mm</xsl:attribute>
 			<xsl:attribute name="font-style">italic</xsl:attribute>
+			<xsl:attribute name="text-align">justify</xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'iec'">
 			<xsl:attribute name="margin-top">5pt</xsl:attribute>
@@ -5326,11 +5327,23 @@
 			<xsl:if test="$namespace = 'gb'">
 				<xsl:attribute name="margin-left">0mm</xsl:attribute>
 			</xsl:if>
+			<xsl:if test="$namespace = 'jcgm'">
+				<xsl:if test="not(*)">
+					<xsl:attribute name="space-after">12pt</xsl:attribute>
+				</xsl:if>
+			</xsl:if>
 			<fo:block-container margin-left="0mm">
 		
 				<fo:block xsl:use-attribute-sets="quote-style">
 					<!-- <xsl:apply-templates select=".//*[local-name() = 'p']"/> -->
-					<xsl:apply-templates select="./*[not(local-name() = 'author') and not(local-name() = 'source')]"/> <!-- process all nested nodes, except author and source -->
+					<xsl:if test="$namespace = 'jcgm'">
+						<xsl:if test="ancestor::*[local-name() = 'boilerplate']">
+							<xsl:attribute name="margin-left">7mm</xsl:attribute>
+							<xsl:attribute name="margin-right">7mm</xsl:attribute>
+							<xsl:attribute name="font-style">normal</xsl:attribute>
+						</xsl:if>
+					</xsl:if>
+					<xsl:apply-templates select="./node()[not(local-name() = 'author') and not(local-name() = 'source')]"/> <!-- process all nested nodes, except author and source -->
 				</fo:block>
 				<xsl:if test="*[local-name() = 'author'] or *[local-name() = 'source']">
 					<fo:block xsl:use-attribute-sets="quote-source-style">
