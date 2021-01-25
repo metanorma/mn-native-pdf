@@ -740,21 +740,30 @@
 				</xsl:if>
 			</xsl:variable>
 			<xsl:value-of select="$docidentifier"/>
-			<xsl:apply-templates select="*[local-name()='note']"/>			
-			<xsl:if test="normalize-space($docidentifier) != ''">, </xsl:if>
-			<fo:inline font-style="italic">
-				<xsl:choose>
-					<xsl:when test="*[local-name()='title'][@type = 'main' and @language = $lang]">
-						<xsl:value-of select="*[local-name()='title'][@type = 'main' and @language = $lang]"/>
-					</xsl:when>
-					<xsl:when test="*[local-name()='title'][@type = 'main' and @language = 'en']">
-						<xsl:value-of select="*[local-name()='title'][@type = 'main' and @language = 'en']"/>
-					</xsl:when>
-					<xsl:otherwise>
-						<xsl:value-of select="*[local-name()='title']"/>
-					</xsl:otherwise>
-				</xsl:choose>
-			</fo:inline>
+			
+			<xsl:choose>
+				<xsl:when test="*[local-name()='formattedref']">
+					<xsl:if test="normalize-space($docidentifier) != ''">, </xsl:if>
+					<xsl:apply-templates select="*[local-name()='formattedref']"/>
+				</xsl:when>
+				<xsl:otherwise>
+					<xsl:apply-templates select="*[local-name()='note']"/>			
+					<xsl:if test="normalize-space($docidentifier) != ''">, </xsl:if>
+					<fo:inline font-style="italic">
+						<xsl:choose>
+							<xsl:when test="*[local-name()='title'][@type = 'main' and @language = $lang]">
+								<xsl:value-of select="*[local-name()='title'][@type = 'main' and @language = $lang]"/>
+							</xsl:when>
+							<xsl:when test="*[local-name()='title'][@type = 'main' and @language = 'en']">
+								<xsl:value-of select="*[local-name()='title'][@type = 'main' and @language = 'en']"/>
+							</xsl:when>
+							<xsl:otherwise>
+								<xsl:value-of select="*[local-name()='title']"/>
+							</xsl:otherwise>
+						</xsl:choose>
+					</fo:inline>
+				</xsl:otherwise>
+			</xsl:choose>
 		</fo:block>
 	</xsl:template>
 	
