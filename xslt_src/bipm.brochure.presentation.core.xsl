@@ -3352,6 +3352,17 @@
 		</xsl:copy>
 	</xsl:template>
 
+	<!-- Decrease height of / and | -->
+	<xsl:template match="mathml:mo[normalize-space(text()) = '/' or normalize-space(text()) = '|']" mode="mathml">
+		<xsl:copy>
+			<xsl:apply-templates select="@*" mode="mathml"/>
+				<xsl:if test="not(@stretchy)">
+					<xsl:attribute name="stretchy">false</xsl:attribute>
+				</xsl:if>
+			<xsl:apply-templates mode="mathml"/>
+		</xsl:copy>
+	</xsl:template>
+
 	<xsl:template name="insertHeaderFooter">
 		<xsl:param name="header-title"/>		
 		<fo:static-content flow-name="header-odd">			
