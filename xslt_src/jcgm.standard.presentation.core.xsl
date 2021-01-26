@@ -44,20 +44,35 @@
 			<xsl:copy-of select="$doc_first_step2"/>
 		</xsl:if>
 	</xsl:variable>
-	<xsl:variable name="doc_second">
+	<xsl:variable name="docs_slave">
 		<xsl:if test="*[local-name()='metanorma-collection']">
-			<xsl:variable name="doc_first_step1">
-				<xsl:apply-templates  select="(/*[local-name()='metanorma-collection']//*[contains(local-name(), '-standard')])[2]" mode="flatxml_step1">
-				<xsl:with-param name="num" select="'second'"/>
-				</xsl:apply-templates>
-			</xsl:variable>
-			<xsl:variable name="doc_first_step2">
-				<xsl:apply-templates select="xalan:nodeset($doc_first_step1)" mode="flatxml_step2"/>
-			</xsl:variable>
-			<xsl:copy-of select="$doc_first_step2"/>
+			<xsl:for-each select="(/*[local-name()='metanorma-collection']//*[contains(local-name(), '-standard')])[position() &gt; 1]">
+				<xsl:variable name="doc_first_step1">
+					<xsl:apply-templates  select="." mode="flatxml_step1">
+					<xsl:with-param name="num" select="'slave'"/>
+					</xsl:apply-templates>
+				</xsl:variable>
+				<xsl:variable name="doc_first_step2">
+					<xsl:apply-templates select="xalan:nodeset($doc_first_step1)" mode="flatxml_step2"/>
+				</xsl:variable>
+				<xsl:copy-of select="$doc_first_step2"/>
+			</xsl:for-each>
 		</xsl:if>
 	</xsl:variable>
-	
+
+	<xsl:variable name="page_width">172</xsl:variable>
+	<xsl:variable name="column_gap">8</xsl:variable>
+	<xsl:variable name="docs_count">
+		<xsl:choose>
+			<xsl:when test="/*[local-name()='metanorma-collection']">
+				<xsl:value-of select="count(/*[local-name()='metanorma-collection']//*[contains(local-name(), '-standard')])"/>
+			</xsl:when>
+			<xsl:otherwise>1</xsl:otherwise>
+		</xsl:choose>
+	</xsl:variable>
+	<!-- (page_width - column_gap)/n_columns = column_width -->
+	<!-- example: for two-column layout: 82mm 8mm 82mm -->
+	<xsl:variable name="column_width" select="($page_width - $column_gap) div $docs_count"/>
 	
 	<xsl:variable name="debug">false</xsl:variable>
 	<xsl:variable name="pageWidth" select="'210mm'"/>
@@ -454,33 +469,33 @@
 								</xsl:variable> -->
 						
 								<!-- doc_first=<xsl:copy-of select="$doc_first"/>
-								doc_second=<xsl:copy-of select="$doc_second"/> -->
+								docs_slave=<xsl:copy-of select="$docs_slave"/> -->
 						
-								<!-- <xsl:apply-templates select="xalan:nodeset($doc_first)/*/*[local-name()='sections']/*[local-name()='clause'][@type='scope']" mode="two_columns"/> -->
-								<xsl:apply-templates select="xalan:nodeset($doc_first)/*/*[local-name()='sections']/*[local-name()='section_scope']/*" mode="two_columns"/>
+								<!-- <xsl:apply-templates select="xalan:nodeset($doc_first)/*/*[local-name()='sections']/*[local-name()='clause'][@type='scope']" mode="multi_columns"/> -->
+								<xsl:apply-templates select="xalan:nodeset($doc_first)/*/*[local-name()='sections']/*[local-name()='section_scope']/*" mode="multi_columns"/>
 								
 								<!-- Normative references  -->
-								<xsl:apply-templates select="xalan:nodeset($doc_first)/*/*[local-name()='bibliography']/*[local-name()='references'][@normative='true']" mode="two_columns"/>
+								<xsl:apply-templates select="xalan:nodeset($doc_first)/*/*[local-name()='bibliography']/*[local-name()='references'][@normative='true']" mode="multi_columns"/>
 								<!-- Terms and definitions -->
-								<xsl:apply-templates select="xalan:nodeset($doc_first)/*/*[local-name()='sections']/*[local-name()='section_terms']/*" mode="two_columns"/>
+								<xsl:apply-templates select="xalan:nodeset($doc_first)/*/*[local-name()='sections']/*[local-name()='section_terms']/*" mode="multi_columns"/>
 																												
 								<!-- <xsl:apply-templates select="xalan:nodeset($doc_first)/*/*[local-name()='sections']/*[local-name()='terms'] | 
 																												xalan:nodeset($doc_first)/*/*[local-name()='sections']/*[local-name()='clause'][.//*[local-name()='terms']] |
 																												xalan:nodeset($doc_first)/*/*[local-name()='sections']/*[local-name()='definitions'] | 
-																												xalan:nodeset($doc_first)/*/*[local-name()='sections']/*[local-name()='clause'][.//*[local-name()='definitions']]" mode="two_columns"/> -->
+																												xalan:nodeset($doc_first)/*/*[local-name()='sections']/*[local-name()='clause'][.//*[local-name()='definitions']]" mode="multi_columns"/> -->
 																												
 								<!-- Another main sections -->
 								<!-- <xsl:apply-templates select="xalan:nodeset($doc_first)/*/*[local-name()='sections']/*[local-name() != 'terms' and 
 																																																				local-name() != 'definitions' and 
 																																																				not(@type='scope') and
 																																																				not(local-name() = 'clause' and .//*[local-name()='terms']) and
-																																																				not(local-name() = 'clause' and .//*[local-name()='definitions'])]" mode="two_columns"/> -->
+																																																				not(local-name() = 'clause' and .//*[local-name()='definitions'])]" mode="multi_columns"/> -->
 								<xsl:apply-templates select="xalan:nodeset($doc_first)/*/*[local-name()='sections']/*[local-name() != 'section_terms' and 
-																																																			local-name() != 'section_scope']" mode="two_columns"/>																																											
+																																																			local-name() != 'section_scope']" mode="multi_columns"/>																																											
                                                                                                         
-								<xsl:apply-templates select="xalan:nodeset($doc_first)/*/*[local-name()='annex']" mode="two_columns"/>
+								<xsl:apply-templates select="xalan:nodeset($doc_first)/*/*[local-name()='annex']" mode="multi_columns"/>
 								<!-- Bibliography -->
-								<xsl:apply-templates select="xalan:nodeset($doc_first)/*/*[local-name()='bibliography']/*[local-name()='references'][not(@normative='true')]" mode="two_columns"/>
+								<xsl:apply-templates select="xalan:nodeset($doc_first)/*/*[local-name()='bibliography']/*[local-name()='references'][not(@normative='true')]" mode="multi_columns"/>
 								
 							
 							</xsl:otherwise>
@@ -649,7 +664,7 @@
 				</xsl:choose>
 			</xsl:attribute>
 			<xsl:attribute name="margin-bottom">12pt</xsl:attribute>
-			<xsl:if test="ancestor::*[@first or @second]">
+			<xsl:if test="ancestor::*[@first or @slave]">
 				<!-- JCGM two column layout -->
 				<xsl:attribute name="widows">1</xsl:attribute>
 				<xsl:attribute name="orphans">1</xsl:attribute>
@@ -1524,16 +1539,18 @@
 	<!-- Two columns layout -->
 	<!-- =================== -->
 	
-	<!-- <xsl:template match="*[@first]/*[local-name()='sections']//*[not(@cross-align) or not(@cross-align='true')]" mode="two_columns"/> -->
+	<!-- <xsl:template match="*[@first]/*[local-name()='sections']//*[not(@cross-align) or not(@cross-align='true')]" mode="multi_columns"/> -->
 	
-	<xsl:template match="*[@first]/*[local-name()='sections']//*[local-name() = 'cross-align'] | *[@first]/*[local-name()='annex']//*[local-name() = 'cross-align']" mode="two_columns">
+	<xsl:template match="*[@first]/*[local-name()='sections']//*[local-name() = 'cross-align'] | *[@first]/*[local-name()='annex']//*[local-name() = 'cross-align']" mode="multi_columns">
 		<xsl:variable name="element-number" select="@element-number"/>
 		<fo:block>
 				<xsl:copy-of select="@keep-with-next"/>
 			<fo:table table-layout="fixed" width="100%">
-				<fo:table-column column-width="82mm"/>
-				<fo:table-column column-width="8mm"/>
-				<fo:table-column column-width="82mm"/>
+				<fo:table-column column-width="{$column_width}mm"/>
+				<xsl:for-each select="xalan:nodeset($docs_slave)/*">
+					<fo:table-column column-width="{$column_gap}mm"/>
+					<fo:table-column column-width="{$column_width}mm"/>
+				</xsl:for-each>
 				<fo:table-body>
 					<fo:table-row>
 						<fo:table-cell>
@@ -1544,17 +1561,22 @@
 							</fo:block>
 							<fo:block font-size="1pt"></fo:block>
 						</fo:table-cell>
-						<fo:table-cell>
-							<fo:block></fo:block>
-						</fo:table-cell>
-						<fo:table-cell>
-							<fo:block font-size="1pt" keep-with-next="always"></fo:block>
-							<fo:block>
-								<xsl:copy-of select="@keep-with-next"/>
-								<xsl:apply-templates select="xalan:nodeset($doc_second)//*[local-name() = 'cross-align' and @element-number=$element-number]"/>
-							</fo:block>
-							<fo:block font-size="1pt"></fo:block>
-						</fo:table-cell>
+						<xsl:variable name="keep-with-next" select="@keep-with-next"/>
+						<xsl:for-each select="xalan:nodeset($docs_slave)/*">
+							<fo:table-cell>
+								<fo:block></fo:block>
+							</fo:table-cell>
+							<fo:table-cell>
+								<fo:block font-size="1pt" keep-with-next="always"></fo:block>
+								<fo:block>
+									<xsl:if test="$keep-with-next != ''">
+										<xsl:attribute name="keep-with-next"><xsl:value-of select="$keep-with-next"/></xsl:attribute>
+									</xsl:if>
+									<xsl:apply-templates select=".//*[local-name() = 'cross-align' and @element-number=$element-number]"/>
+								</fo:block>
+								<fo:block font-size="1pt"></fo:block>
+							</fo:table-cell>
+						</xsl:for-each>
 					</fo:table-row>
 				</fo:table-body>
 			</fo:table>
@@ -1565,37 +1587,41 @@
 		<xsl:apply-templates />
 	</xsl:template>
 	
-	<!-- no display table/figure from second document if common=true or span=true -->
-	<xsl:template match="*[@second]//*[local-name()='table'][@common = 'true']" priority="2"/>
-	<xsl:template match="*[@second]//*[local-name()='table'][@span = 'true']" priority="2"/>
-	<xsl:template match="*[@second]//*[local-name()='figure'][@common = 'true']" priority="2"/>
-	<xsl:template match="*[@second]//*[local-name()='figure'][@span = 'true']" priority="2"/>
+	<!-- no display table/figure from slave documents if common=true or span=true -->
+	<xsl:template match="*[@slave]//*[local-name()='table'][@common = 'true']" priority="2"/>
+	<xsl:template match="*[@slave]//*[local-name()='table'][@span = 'true']" priority="2"/>
+	<xsl:template match="*[@slave]//*[local-name()='figure'][@common = 'true']" priority="2"/>
+	<xsl:template match="*[@slave]//*[local-name()='figure'][@span = 'true']" priority="2"/>
 	
 	<!-- for table and figure with @common='true' -->
 	<!-- display only element from first document -->
-	<xsl:template match="*[@first]//*[local-name() = 'cross-align'][@common = 'true']" mode="two_columns">
+	<xsl:template match="*[@first]//*[local-name() = 'cross-align'][@common = 'true']" mode="multi_columns">
 		<fo:block>
 			<xsl:apply-templates />
 		</fo:block>
 	</xsl:template>
 	
 	<!-- for table and figure with @span='true' -->
-	<!-- display element from first document, then (after) from second one -->
-	<xsl:template match="*[@first]//*[local-name() = 'cross-align'][@span = 'true']"  mode="two_columns">
+	<!-- display element from first document, then (after) from 2nd one, then 3rd, etc. -->
+	<xsl:template match="*[@first]//*[local-name() = 'cross-align'][@span = 'true']"  mode="multi_columns">
 		<xsl:variable name="element-number" select="@element-number"/>
 		<fo:block>
 			<xsl:apply-templates />
 			<fo:block>&#xa0;</fo:block>
 			<xsl:choose>
 				<xsl:when test="local-name(*[@span = 'true']) = 'table'">
-					<xsl:for-each select="xalan:nodeset($doc_second)//*[local-name() = 'table' and @element-number=$element-number]">
+					<xsl:for-each select="xalan:nodeset($docs_slave)/*">
+						<xsl:for-each select=".//*[local-name() = 'table' and @element-number=$element-number]">
 							<xsl:call-template name="table"/>
 						</xsl:for-each>
+					</xsl:for-each>
 				</xsl:when>
 				<xsl:when test="local-name(*[@span = 'true']) = 'figure'">
-					<xsl:for-each select="xalan:nodeset($doc_second)//*[local-name() = 'figure' and @element-number=$element-number]">
+					<xsl:for-each select="xalan:nodeset($docs_slave)/*">
+						<xsl:for-each select=".//*[local-name() = 'figure' and @element-number=$element-number]">
 							<xsl:call-template name="figure"/>
 						</xsl:for-each>
+					</xsl:for-each>
 				</xsl:when>
 			</xsl:choose>
 		</fo:block>
@@ -1603,19 +1629,26 @@
 	
 	<!-- =========== -->
 	<!-- References -->
-	<xsl:template match="*[@first]//*[local-name()='references'][@normative='true']" mode="two_columns">
-		<fo:block font-size="1pt" keep-with-next="always"><fo:inline id="{@id}"/> <fo:inline id="{xalan:nodeset($doc_second)//*[local-name()='references'][@normative='true']/@id}"/></fo:block>
-    <xsl:apply-templates mode="two_columns" />
+	<xsl:template match="*[@first]//*[local-name()='references'][@normative='true']" mode="multi_columns">
+		<fo:block font-size="1pt" keep-with-next="always">
+			<fo:inline id="{@id}"/> 
+			<xsl:for-each select="xalan:nodeset($docs_slave)/*">
+				<fo:inline id="{.//*[local-name()='references'][@normative='true']/@id}"/>
+			</xsl:for-each>
+		</fo:block>
+    <xsl:apply-templates mode="multi_columns" />
 	</xsl:template>
 	
-	<xsl:template match="*[@first]//*[local-name()='references'][@normative='true']/*" mode="two_columns">
+	<xsl:template match="*[@first]//*[local-name()='references'][@normative='true']/*" mode="multi_columns">
 		<xsl:variable name="number_"><xsl:number count="*"/></xsl:variable>
 		<xsl:variable name="number" select="number(normalize-space($number_))"/>
 		<fo:block>
 			<fo:table table-layout="fixed" width="100%">
-				<fo:table-column column-width="82mm"/>
-				<fo:table-column column-width="8mm"/>
-				<fo:table-column column-width="82mm"/>
+				<fo:table-column column-width="{$column_width}mm"/>
+				<xsl:for-each select="xalan:nodeset($docs_slave)/*">
+					<fo:table-column column-width="{$column_gap}mm"/>
+					<fo:table-column column-width="{$column_width}mm"/>
+				</xsl:for-each>
 				<fo:table-body>
 					<fo:table-row>
 						<fo:table-cell>
@@ -1623,51 +1656,63 @@
 							<xsl:apply-templates select="." />
 							<fo:block font-size="1pt"></fo:block>
 						</fo:table-cell>
-						<fo:table-cell>
-							<fo:block></fo:block>
-						</fo:table-cell>
-						<fo:table-cell>
-							<fo:block>
-								<fo:block font-size="1pt"></fo:block>
-								<xsl:apply-templates select="(xalan:nodeset($doc_second)//*[local-name()='references'][@normative='true']/*)[$number]"/>
-								<fo:block font-size="1pt"></fo:block>
-							</fo:block>
-						</fo:table-cell>
+						
+						<xsl:for-each select="xalan:nodeset($docs_slave)/*">
+							<fo:table-cell>
+								<fo:block></fo:block>
+							</fo:table-cell>
+							<fo:table-cell>
+								<fo:block>
+									<fo:block font-size="1pt"></fo:block>
+									<xsl:apply-templates select="(.//*[local-name()='references'][@normative='true']/*)[$number]"/>
+									<fo:block font-size="1pt"></fo:block>
+								</fo:block>
+							</fo:table-cell>
+						</xsl:for-each>
 					</fo:table-row>
 				</fo:table-body>
 			</fo:table>
 		</fo:block>
 	</xsl:template>
 	
-  <xsl:template match="*[@first]//*[local-name()='references'][not(@normative='true')]" mode="two_columns">
+  <xsl:template match="*[@first]//*[local-name()='references'][not(@normative='true')]" mode="multi_columns">
 		<fo:block break-after="page"/>
-		<fo:block font-size="1pt"><fo:inline id="{@id}"/><fo:inline id="{xalan:nodeset($doc_second)//*[local-name()='references'][not(@normative='true')]/@id}"/></fo:block>
-    <xsl:apply-templates mode="two_columns" />
+		<fo:block font-size="1pt"><fo:inline id="{@id}"/>
+			<xsl:for-each select="xalan:nodeset($docs_slave)/*">
+				<fo:inline id="{.//*[local-name()='references'][not(@normative='true')]/@id}"/>
+			</xsl:for-each>
+		</fo:block>
+    <xsl:apply-templates mode="multi_columns" />
 	</xsl:template>
   
-  <xsl:template match="*[@first]//*[local-name()='references'][not(@normative='true')]/*" mode="two_columns">
+  <xsl:template match="*[@first]//*[local-name()='references'][not(@normative='true')]/*" mode="multi_columns">
     <xsl:variable name="number_"><xsl:number count="*"/></xsl:variable>
 		<xsl:variable name="number" select="number(normalize-space($number_))"/>
 		<fo:block>
 			<fo:table table-layout="fixed" width="100%">
-				<fo:table-column column-width="82mm"/>
-				<fo:table-column column-width="8mm"/>
-				<fo:table-column column-width="82mm"/>
+				<fo:table-column column-width="{$column_width}mm"/>
+				<xsl:for-each select="xalan:nodeset($docs_slave)/*">
+					<fo:table-column column-width="{$column_gap}mm"/>
+					<fo:table-column column-width="{$column_width}mm"/>
+				</xsl:for-each>
 				<fo:table-body>
 					<fo:table-row>
 						<fo:table-cell>
 							<xsl:apply-templates select="." />
 							<fo:block font-size="1pt"></fo:block>
 						</fo:table-cell>
-						<fo:table-cell>
-							<fo:block></fo:block>
-						</fo:table-cell>
-						<fo:table-cell>
-							<fo:block>
-								<xsl:apply-templates select="(xalan:nodeset($doc_second)//*[local-name()='references'][not(@normative='true')]/*)[$number]"/>
-								<fo:block font-size="1pt"></fo:block>
-							</fo:block>
-						</fo:table-cell>
+						
+						<xsl:for-each select="xalan:nodeset($docs_slave)/*">
+							<fo:table-cell>
+								<fo:block></fo:block>
+							</fo:table-cell>
+							<fo:table-cell>
+								<fo:block>
+									<xsl:apply-templates select="(.//*[local-name()='references'][not(@normative='true')]/*)[$number]"/>
+									<fo:block font-size="1pt"></fo:block>
+								</fo:block>
+							</fo:table-cell>
+						</xsl:for-each>
 					</fo:table-row>
 				</fo:table-body>
 			</fo:table>
@@ -1675,12 +1720,16 @@
 	</xsl:template>
 	<!-- End of References -->
 
-	<xsl:template match="*[@first]//*[local-name()='annex']" mode="two_columns">
+	<xsl:template match="*[@first]//*[local-name()='annex']" mode="multi_columns">
     <xsl:variable name="number_"><xsl:number /></xsl:variable>
 		<xsl:variable name="number" select="number(normalize-space($number_))"/>
     <fo:block break-after="page"/>
-		<fo:block font-size="1pt"><fo:inline id="{@id}"/><fo:inline id="{(xalan:nodeset($doc_second)//*[local-name()='annex'])[$number]/@id}"/></fo:block>
-    <xsl:apply-templates mode="two_columns" />
+		<fo:block font-size="1pt"><fo:inline id="{@id}"/>
+			<xsl:for-each select="xalan:nodeset($docs_slave)/*">
+				<fo:inline id="{(.//*[local-name()='annex'])[$number]/@id}"/>
+			</xsl:for-each>
+		</fo:block>
+    <xsl:apply-templates mode="multi_columns" />
   </xsl:template>
 	
 	<!-- =================== -->
