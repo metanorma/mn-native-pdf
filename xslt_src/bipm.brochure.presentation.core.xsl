@@ -1861,11 +1861,12 @@
 										<xsl:if test="@level &gt;= 3">
 											<fo:inline padding-right="2mm"><xsl:value-of select="@section"/></fo:inline>
 										</xsl:if>
-										<xsl:variable name="sectionTitle">
+										<!-- <xsl:variable name="sectionTitle">
 											<xsl:apply-templates select="title"/>
-										</xsl:variable>
+										</xsl:variable> -->
 										<fo:inline>
-											<xsl:value-of select="$sectionTitle"/>															
+											<!-- <xsl:value-of select="$sectionTitle"/>															 -->
+											<xsl:apply-templates select="title"/>
 										</fo:inline>
 										<!-- <xsl:text> </xsl:text> -->
 										 <!-- keep-together.within-line="always" -->
@@ -1959,6 +1960,12 @@
 				</xsl:if>
 			</item>
 		</xsl:if>
+	</xsl:template>
+	
+	<xsl:template match="*[local-name() = 'strong']" mode="contents_item" priority="2">
+		<!-- <xsl:copy> -->
+			<xsl:apply-templates mode="contents_item"/>
+		<!-- </xsl:copy>	 -->	
 	</xsl:template>
 	
 	<!-- ============================= -->

@@ -4710,6 +4710,10 @@
 			<xsl:apply-templates mode="contents_item"/>
 		</xsl:copy>		
 	</xsl:template>
+	
+	<xsl:template match="*[local-name() = 'stem']" mode="contents_item">
+		<xsl:copy-of select="." />
+	</xsl:template>
 
 	<xsl:template match="*[local-name() = 'br']" mode="contents_item">
 		<xsl:text> </xsl:text>
