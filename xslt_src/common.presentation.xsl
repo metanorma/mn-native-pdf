@@ -3554,6 +3554,12 @@
 		<xsl:value-of select="java:replaceAll(java:java.lang.String.new($text),'(-|\.|:|=|_|—| )','$1&#x200B;')"/>
 	</xsl:template>​
 	
+	<xsl:template name="add-zero-spaces-link-java">
+		<xsl:param name="text" select="."/>
+		<!-- add zero-width space (#x200B) after characters: dash, dot, colon, equal, underscore, em dash, thin space  -->
+		<xsl:value-of select="java:replaceAll(java:java.lang.String.new($text),'(-|\.|:|=|_|—| |,)','$1&#x200B;')"/>
+	</xsl:template>​
+	
 	<!-- add zero space after dash character (for table's entries) -->
 	<xsl:template name="add-zero-spaces">
 		<xsl:param name="text" select="."/>
@@ -3905,7 +3911,10 @@
 					<fo:basic-link external-destination="{@target}" fox:alt-text="{@target}">
 						<xsl:choose>
 							<xsl:when test="normalize-space(.) = ''">
-								<xsl:value-of select="$target"/>
+								<!-- <xsl:value-of select="$target"/> -->
+								<xsl:call-template name="add-zero-spaces-link-java">
+									<xsl:with-param name="text" select="$target"/>
+								</xsl:call-template>
 							</xsl:when>
 							<xsl:otherwise>
 								<xsl:apply-templates />
