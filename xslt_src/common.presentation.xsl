@@ -3883,6 +3883,13 @@
 			<xsl:value-of select="java:replaceAll(java:java.lang.String.new(.),'(^ )|( $)','&#xA0;')"/>
 		</xsl:copy>
 	</xsl:template>
+	
+	<xsl:template match="mathml:mi[. = ',' and not(following-sibling::*[1][local-name() = 'mtext' and text() = '&#xa0;'])]" mode="mathml">
+		<xsl:copy>
+			<xsl:apply-templates select="@*|node()" mode="mathml"/>
+		</xsl:copy>
+		<mathml:mspace width="0.5ex"/>
+	</xsl:template>
 
 	<xsl:template match="*[local-name()='localityStack']"/>
 
