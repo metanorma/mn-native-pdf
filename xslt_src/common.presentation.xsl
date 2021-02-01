@@ -4,7 +4,7 @@
 											xmlns:mathml="http://www.w3.org/1998/Math/MathML" 
 											xmlns:xalan="http://xml.apache.org/xalan"  
 											xmlns:fox="http://xmlgraphics.apache.org/fop/extensions" 
-											xmlns:java="http://xml.apache.org/xalan/java" 
+											xmlns:java="http://xml.apache.org/xalan/java"
 											exclude-result-prefixes="java"
 											version="1.0">
 
@@ -3109,7 +3109,7 @@
 										<xsl:with-param name="table" select="$html-table"/>
 									</xsl:call-template>
 								</xsl:variable>
-								<!-- colwidths=<xsl:value-of select="$colwidths"/> -->
+								<!-- colwidths=<xsl:copy-of select="$colwidths"/> -->
 								<xsl:variable name="maxlength_dt">							
 									<xsl:call-template name="getMaxLength_dt"/>							
 								</xsl:variable>
@@ -3145,9 +3145,17 @@
 						<fo:table-column column-width="5%"/>
 						<fo:table-column column-width="95%"/>
 					</xsl:when>
-					<xsl:when test="normalize-space($maxlength_dt) != '' and number($maxlength_dt) &lt;= 5"> <!-- if dt contains short text like t90, a, etc -->
+					<xsl:when test="normalize-space($maxlength_dt) != '' and number($maxlength_dt) &lt;= 5"> <!-- if dt contains short text like ABC, etc -->
 						<fo:table-column column-width="10%"/>
 						<fo:table-column column-width="90%"/>
+					</xsl:when>
+					<xsl:when test="normalize-space($maxlength_dt) != '' and number($maxlength_dt) &lt;= 7"> <!-- if dt contains short text like ABCDEF, etc -->
+						<fo:table-column column-width="15%"/>
+						<fo:table-column column-width="85%"/>
+					</xsl:when>
+					<xsl:when test="normalize-space($maxlength_dt) != '' and number($maxlength_dt) &lt;= 10"> <!-- if dt contains short text like ABCDEFEF, etc -->
+						<fo:table-column column-width="20%"/>
+						<fo:table-column column-width="80%"/>
 					</xsl:when>
 					<!-- <xsl:when test="xalan:nodeset($colwidths)/column[1] div xalan:nodeset($colwidths)/column[2] &gt; 1.7">
 						<fo:table-column column-width="60%"/>
