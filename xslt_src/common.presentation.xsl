@@ -3192,21 +3192,22 @@
 			</xsl:when>
 			<xsl:otherwise>
 				<xsl:choose>
+					<!-- to set width check most wide chars like `W` -->
 					<xsl:when test="normalize-space($maxlength_dt) != '' and number($maxlength_dt) &lt;= 2"> <!-- if dt contains short text like t90, a, etc -->
-						<fo:table-column column-width="5%"/>
-						<fo:table-column column-width="95%"/>
+						<fo:table-column column-width="7%"/>
+						<fo:table-column column-width="93%"/>
 					</xsl:when>
 					<xsl:when test="normalize-space($maxlength_dt) != '' and number($maxlength_dt) &lt;= 5"> <!-- if dt contains short text like ABC, etc -->
-						<fo:table-column column-width="10%"/>
-						<fo:table-column column-width="90%"/>
-					</xsl:when>
-					<xsl:when test="normalize-space($maxlength_dt) != '' and number($maxlength_dt) &lt;= 7"> <!-- if dt contains short text like ABCDEF, etc -->
 						<fo:table-column column-width="15%"/>
 						<fo:table-column column-width="85%"/>
 					</xsl:when>
-					<xsl:when test="normalize-space($maxlength_dt) != '' and number($maxlength_dt) &lt;= 10"> <!-- if dt contains short text like ABCDEFEF, etc -->
+					<xsl:when test="normalize-space($maxlength_dt) != '' and number($maxlength_dt) &lt;= 7"> <!-- if dt contains short text like ABCDEF, etc -->
 						<fo:table-column column-width="20%"/>
 						<fo:table-column column-width="80%"/>
+					</xsl:when>
+					<xsl:when test="normalize-space($maxlength_dt) != '' and number($maxlength_dt) &lt;= 10"> <!-- if dt contains short text like ABCDEFEF, etc -->
+						<fo:table-column column-width="25%"/>
+						<fo:table-column column-width="75%"/>
 					</xsl:when>
 					<!-- <xsl:when test="xalan:nodeset($colwidths)/column[1] div xalan:nodeset($colwidths)/column[2] &gt; 1.7">
 						<fo:table-column column-width="60%"/>
