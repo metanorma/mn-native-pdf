@@ -133,24 +133,64 @@
 						</fo:block-container>
 					</fo:block-container>
 					
-					<fo:block font-family="Lato" font-weight="300" font-size="14pt" font-style="italic" margin-top="6pt" color="rgb(21, 43, 77)">
+					<!-- <fo:block font-family="Lato" font-weight="300" font-size="14pt" font-style="italic" margin-top="6pt" color="rgb(21, 43, 77)">
 						<xsl:text>Additional context, inspirational quote, etc. fits into this subheading area</xsl:text>
+					</fo:block> -->
+					
+					<fo:block text-align="right" font-size="10pt" margin-top="12pt" margin-bottom="24pt">
+						<fo:block margin-top="6pt">Submission Date: <xsl:value-of select="/ogc:ogc-standard/ogc:bibdata/ogc:date[@type = 'received']/ogc:on"/></fo:block>
+						<fo:block margin-top="6pt">Approval Date: <xsl:value-of select="/ogc:ogc-standard/ogc:bibdata/ogc:date[@type = 'issued']/ogc:on"/></fo:block>
+						<fo:block margin-top="6pt">Publication Date: <xsl:value-of select="/ogc:ogc-standard/ogc:bibdata/ogc:date[@type = 'published']/ogc:on"/></fo:block>
+						<fo:block margin-top="6pt">External identifier of this OGC&#xAE; document: <xsl:value-of select="/ogc:ogc-standard/ogc:bibdata/ogc:docidentifier[@type = 'ogc-external']"/></fo:block>
+						<fo:block margin-top="6pt">Internal reference number of this OGC&#xAE; document: <xsl:value-of select="/ogc:ogc-standard/ogc:bibdata/ogc:docnumber"/></fo:block>
+						
+						<xsl:variable name="url" select="/ogc:ogc-standard/ogc:bibdata/ogc:uri"/>
+						<xsl:if test="normalize-space($url) != ''">
+							<fo:block margin-top="6pt">URL for this OGC&#xAE; document: <xsl:value-of select="$url"/></fo:block>
+						</xsl:if>
+							
+						<xsl:variable name="edition" select="/ogc:ogc-standard/ogc:bibdata/ogc:edition"/>
+						<xsl:if test="normalize-space($edition) != ''">
+							<fo:block margin-top="6pt">Version: <xsl:value-of select="$edition"/></fo:block>
+						</xsl:if>
+							
+						<fo:block margin-top="6pt"><xsl:text>Category: </xsl:text>
+							<xsl:call-template name="capitalizeWords">
+								<xsl:with-param name="str" select="/ogc:ogc-standard/ogc:bibdata/ogc:ext/ogc:doctype"/>
+							</xsl:call-template>
+						</fo:block>
+						
+						<xsl:variable name="editors">
+							<xsl:for-each select="/ogc:ogc-standard/ogc:bibdata/ogc:contributor[ogc:role/@type='editor']/ogc:person/ogc:name/ogc:completename">
+								<xsl:value-of select="."/>
+								<xsl:if test="position() != last()">, </xsl:if>
+							</xsl:for-each>
+						</xsl:variable>
+						<xsl:if test="normalize-space($editors) != ''">
+							<fo:block margin-top="6pt">Editor: <xsl:value-of select="$editors"/></fo:block>
+						</xsl:if>
 					</fo:block>
 					
-					<fo:block-container absolute-position="fixed" left="20mm" top="91mm" width="175mm" font-size="9pt">
-						<fo:block margin-top="8pt">
-							<xsl:apply-templates select="/ogc:ogc-standard/ogc:boilerplate/ogc:copyright-statement"/>
-						</fo:block>
-						<fo:block margin-top="8pt">&#xA0;</fo:block>
-						<fo:block margin-top="8pt">
-							<xsl:apply-templates select="/ogc:ogc-standard/ogc:boilerplate/ogc:legal-statement"/>
-						</fo:block>
+					<!-- absolute-position="fixed" left="20mm" top="91mm" width="175mm" -->
+					<fo:block-container font-size="9pt" margin-left="-5mm" margin-right="-5mm">
+						<fo:block-container margin-left="0mm" margin-right="0mm">
+							<fo:block margin-top="8pt">
+								<xsl:apply-templates select="/ogc:ogc-standard/ogc:boilerplate/ogc:copyright-statement"/>
+							</fo:block>
+							<fo:block margin-top="8pt">&#xA0;</fo:block>
+							<fo:block margin-top="8pt">
+								<xsl:apply-templates select="/ogc:ogc-standard/ogc:boilerplate/ogc:legal-statement"/>
+							</fo:block>
+						</fo:block-container>
 					</fo:block-container>
 					
-					<fo:block-container absolute-position="fixed" left="79mm" top="168mm">
-						<fo:block>
-							<fo:external-graphic src="{concat('data:image/png;base64,', normalize-space($Image-Logo-OGC))}" width="57.5mm" content-height="scale-to-fit" scaling="uniform" fox:alt-text="Image Logo"/>
-						</fo:block>
+					<!-- absolute-position="fixed" left="79mm" top="168mm" -->
+					<fo:block-container margin-top="24pt" margin-left="-5mm" margin-right="-5mm">
+						<fo:block-container margin-left="0mm" margin-right="0mm">
+							<fo:block text-align="center">
+								<fo:external-graphic src="{concat('data:image/png;base64,', normalize-space($Image-Logo-OGC))}" width="57.5mm" content-height="scale-to-fit" scaling="uniform" fox:alt-text="Image Logo"/>
+							</fo:block>
+						</fo:block-container>
 					</fo:block-container>
 
 				</fo:flow>
