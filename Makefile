@@ -332,7 +332,7 @@ update-xslts-in-processor:
 	rsync xslt/$(XSLT_PREFIX).*.xsl $(PROCR_REPO)/lib/isodoc/$(MN_PROCR)/ --exclude *.presentation.*
 	git -C $(PROCR_REPO) add lib/isodoc/$(MN_PROCR)/*.xsl
 	git -C $(PROCR_REPO) commit -m "xslt update based on metanorma/mn-native-pdf@$(shell git rev-parse --short HEAD)" || git -C $(PROCR_REPO) --no-pager show --name-only
-	echo "git -C $(PROCR_REPO) push"
+	git -C $(PROCR_REPO) push
 
 update-xslts-in-processor-all:
 	$(MAKE) update-xslts-in-processor MN_PROCR=bipm

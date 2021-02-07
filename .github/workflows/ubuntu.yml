@@ -69,15 +69,6 @@ jobs:
           name: xslt
           path: xslt
 
-      - name: TEST Update XSLTs in processor gems
-        env:
-          GIT_TOKEN: ${{ secrets.METANORMA_CI_PAT_TOKEN }}
-        run: |
-          git config --global user.name "metanorma-ci"
-          git config --global user.email "metanorma-ci@users.noreply.github.com"
-          git config credential.helper "!f() { echo \"username=metanorma-ci\\npassword=${GIT_TOKEN}\"; }; f"
-          make update-xslts-in-processor-all
-
   deploy-gh-pages:
     if: github.ref == 'refs/heads/master'
     runs-on: ubuntu-latest
