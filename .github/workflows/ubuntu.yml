@@ -64,6 +64,32 @@ jobs:
           name: published-ubuntu
           path: published
 
+      - uses: actions/upload-artifact@master
+        with:
+          name: xslt
+          path: xslt
+
+      - name: TEST Update XSLTs in processor gems
+        env:
+          GIT_TOKEN: ${{ secrets.METANORMA_CI_PAT_TOKEN }}
+        run: |
+          git config --global user.name "metanorma-ci"
+          git config --global user.email "metanorma-ci@users.noreply.github.com"
+          git config credential.helper "!f() { echo \"username=metanorma-ci\\npassword=${GIT_TOKEN}\"; }; f"
+          make update-xslts-in-processor MN_PROCR=bipm
+          make update-xslts-in-processor MN_PROCR=csa
+          make update-xslts-in-processor MN_PROCR=cc XSLT_PREFIX=csd
+          make update-xslts-in-processor MN_PROCR=gb
+          make update-xslts-in-processor MN_PROCR=iec
+          make update-xslts-in-processor MN_PROCR=iho
+          make update-xslts-in-processor MN_PROCR=iso
+          make update-xslts-in-processor MN_PROCR=itu
+          make update-xslts-in-processor MN_PROCR=iec
+          make update-xslts-in-processor MN_PROCR=m3aawg XSLT_PREFIX="{m3d,jcgm}"
+          make update-xslts-in-processor MN_PROCR=mpfa XSLT_PREFIX=mpfd
+          make update-xslts-in-processor MN_PROCR=mpfa XSLT_PREFIX=ogc
+          make update-xslts-in-processor MN_PROCR=ribose XSLT_PREFIX=rsd
+          make update-xslts-in-processor MN_PROCR=un
 
   deploy-gh-pages:
     if: github.ref == 'refs/heads/master'
@@ -85,3 +111,31 @@ jobs:
         ACTIONS_DEPLOY_KEY: ${{ secrets.GH_DEPLOY_KEY }}
         PUBLISH_BRANCH: gh-pages
         PUBLISH_DIR: ./published
+
+    - uses: actions/checkout@master
+    - uses: actions/download-artifact@master
+      with:
+        name: xslt
+        path: xslt
+
+    - name: Update XSLTs in processor gems
+      env:
+        GIT_TOKEN: ${{ secrets.METANORMA_CI_PAT_TOKEN }}
+      run: |
+        git config --global user.name "metanorma-ci"
+        git config --global user.email "metanorma-ci@users.noreply.github.com"
+        git config credential.helper "!f() { echo \"username=metanorma-ci\\npassword=${GIT_TOKEN}\"; }; f"
+        make update-xslts-in-processor MN_PROCR=bipm
+        make update-xslts-in-processor MN_PROCR=csa
+        make update-xslts-in-processor MN_PROCR=cc XSLT_PREFIX=csd
+        make update-xslts-in-processor MN_PROCR=gb
+        make update-xslts-in-processor MN_PROCR=iec
+        make update-xslts-in-processor MN_PROCR=iho
+        make update-xslts-in-processor MN_PROCR=iso
+        make update-xslts-in-processor MN_PROCR=itu
+        make update-xslts-in-processor MN_PROCR=iec
+        make update-xslts-in-processor MN_PROCR=m3aawg XSLT_PREFIX="{m3d,jcgm}"
+        make update-xslts-in-processor MN_PROCR=mpfa XSLT_PREFIX=mpfd
+        make update-xslts-in-processor MN_PROCR=mpfa XSLT_PREFIX=ogc
+        make update-xslts-in-processor MN_PROCR=ribose XSLT_PREFIX=rsd
+        make update-xslts-in-processor MN_PROCR=un
