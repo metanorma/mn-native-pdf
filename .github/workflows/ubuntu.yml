@@ -76,20 +76,7 @@ jobs:
           git config --global user.name "metanorma-ci"
           git config --global user.email "metanorma-ci@users.noreply.github.com"
           git config credential.helper "!f() { echo \"username=metanorma-ci\\npassword=${GIT_TOKEN}\"; }; f"
-          make update-xslts-in-processor MN_PROCR=bipm
-          make update-xslts-in-processor MN_PROCR=csa
-          make update-xslts-in-processor MN_PROCR=cc XSLT_PREFIX=csd
-          make update-xslts-in-processor MN_PROCR=gb
-          make update-xslts-in-processor MN_PROCR=iec
-          make update-xslts-in-processor MN_PROCR=iho
-          make update-xslts-in-processor MN_PROCR=iso
-          make update-xslts-in-processor MN_PROCR=itu
-          make update-xslts-in-processor MN_PROCR=iec
-          make update-xslts-in-processor MN_PROCR=m3aawg XSLT_PREFIX="{m3d,jcgm}"
-          make update-xslts-in-processor MN_PROCR=mpfa XSLT_PREFIX=mpfd
-          make update-xslts-in-processor MN_PROCR=mpfa XSLT_PREFIX=ogc
-          make update-xslts-in-processor MN_PROCR=ribose XSLT_PREFIX=rsd
-          make update-xslts-in-processor MN_PROCR=un
+          make update-xslts-in-processor-all
 
   deploy-gh-pages:
     if: github.ref == 'refs/heads/master'
@@ -125,17 +112,4 @@ jobs:
         git config --global user.name "metanorma-ci"
         git config --global user.email "metanorma-ci@users.noreply.github.com"
         git config credential.helper "!f() { echo \"username=metanorma-ci\\npassword=${GIT_TOKEN}\"; }; f"
-        make update-xslts-in-processor MN_PROCR=bipm
-        make update-xslts-in-processor MN_PROCR=csa
-        make update-xslts-in-processor MN_PROCR=cc XSLT_PREFIX=csd
-        make update-xslts-in-processor MN_PROCR=gb
-        make update-xslts-in-processor MN_PROCR=iec
-        make update-xslts-in-processor MN_PROCR=iho
-        make update-xslts-in-processor MN_PROCR=iso
-        make update-xslts-in-processor MN_PROCR=itu
-        make update-xslts-in-processor MN_PROCR=iec
-        make update-xslts-in-processor MN_PROCR=m3aawg XSLT_PREFIX="{m3d,jcgm}"
-        make update-xslts-in-processor MN_PROCR=mpfa XSLT_PREFIX=mpfd
-        make update-xslts-in-processor MN_PROCR=mpfa XSLT_PREFIX=ogc
-        make update-xslts-in-processor MN_PROCR=ribose XSLT_PREFIX=rsd
-        make update-xslts-in-processor MN_PROCR=un
+        make update-xslts-in-processor-all
