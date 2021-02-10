@@ -291,7 +291,7 @@ MN_PROCR ?= iso
 XSLT_PREFIX ?= $(MN_PROCR)
 update-xslts-in-processor:
 	$(eval PROCR_REPO := processor/$(MN_PROCR))
-	[ -d $(PROCR_REPO) ] || git clone git@github.com:metanorma/metanorma-$(MN_PROCR) $(PROCR_REPO)
+	[ -d $(PROCR_REPO) ] || git clone https://github.com/metanorma/metanorma-$(MN_PROCR) $(PROCR_REPO)
 	rsync xslt/$(XSLT_PREFIX).*.xsl $(PROCR_REPO)/lib/isodoc/$(MN_PROCR)/
 	git -C $(PROCR_REPO) add lib/isodoc/$(MN_PROCR)/*.xsl
 	git -C $(PROCR_REPO) commit -m "xslt update based on metanorma/mn-native-pdf@$(shell git rev-parse --short HEAD)" || git -C $(PROCR_REPO) --no-pager show --name-only
