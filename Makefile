@@ -13,11 +13,11 @@ SRC := $(patsubst mn-samples-iso/documents/international-standard/%,sources/iso-
 	$(patsubst mn-samples-ogc/documents/%,sources/ogc-%,$(wildcard mn-samples-ogc/documents/*.xml)) \
 	$(patsubst mn-samples-un/documents/%,sources/un-%,$(wildcard mn-samples-un/documents/*.xml)) \
 	$(patsubst mn-samples-cc/documents/%,sources/%,$(wildcard mn-samples-cc/documents/*.xml)) \
-	$(patsubst mn-samples-m3aawg/documents/best-practice/%,sources/m3d-bp-%,$(wildcard mn-samples-m3aawg/documents/**/*.xml)) \
+	$(patsubst mn-samples-m3aawg/documents/best-practice/%,sources/m3aawg-bp-%,$(wildcard mn-samples-m3aawg/documents/**/*.xml)) \
 	$(patsubst mn-samples-cc/documents/%,sources/%,$(wildcard mn-samples-cc/documents/*.xml)) \
 	$(patsubst mn-samples-gb/documents/%,sources/gb-%,$(wildcard mn-samples-gb/documents/*.xml)) \
 	$(patsubst mn-samples-iho/documents/%,sources/iho-%,$(wildcard mn-samples-iho/documents/*.xml)) \
-	$(patsubst mn-samples-mpfa/documents/%,sources/%,$(wildcard mn-samples-mpfa/documents/*.xml))
+	$(patsubst mn-samples-mpfa/documents/mpfd-%,sources/mpfa-%,$(wildcard mn-samples-mpfa/documents/*.xml))
  
 PDF := $(patsubst sources/%,documents/%,$(patsubst %.xml,%.pdf,$(SRC)))
 HTML := $(patsubst sources/%,documents/%,$(patsubst %.xml,%.html,$(SRC)))
@@ -53,18 +53,18 @@ XSLT_GENERATED := xslt/iec.international-standard.xsl \
 	xslt/un.plenary.xsl \
 	xslt/un.plenary-attachment.xsl \
 	xslt/un.recommendation.xsl \
-	xslt/csd.standard.xsl \
+	xslt/cc.standard.xsl \
 	xslt/csa.standard.xsl \
-	xslt/rsd.standard.xsl \
-	xslt/m3d.report.xsl \
+	xslt/ribose.standard.xsl \
+	xslt/m3aawg.report.xsl \
 	xslt/gb.recommendation.xsl \
 	xslt/iho.specification.xsl \
 	xslt/iho.standard.xsl \
-	xslt/mpfd.standards.xsl \
-	xslt/mpfd.circular.xsl \
-	xslt/mpfd.compliance-standards-for-mpf-trustees.xsl \
-	xslt/mpfd.guidelines.xsl \
-	xslt/mpfd.supervision-of-mpf-intermediaries.xsl \
+	xslt/mpfa.standards.xsl \
+	xslt/mpfa.circular.xsl \
+	xslt/mpfa.compliance-standards-for-mpf-trustees.xsl \
+	xslt/mpfa.guidelines.xsl \
+	xslt/mpfa.supervision-of-mpf-intermediaries.xsl \
 	xslt/bipm.brochure.xsl \
 	xslt/bipm.mise-en-pratique.xsl \
 	xslt/bipm.guide.xsl \
@@ -124,7 +124,7 @@ sources/ogc-%: mn-samples-ogc/documents/%
 sources/cc-%: mn-samples-cc/documents/cc-%
 	cp $< $@
 
-sources/m3d-bp-%: mn-samples-m3aawg/documents/best-practice/%
+sources/m3aawg-bp-%: mn-samples-m3aawg/documents/best-practice/%
 	cp $< $@
 
 sources/gb-%: mn-samples-gb/documents/%
@@ -133,7 +133,7 @@ sources/gb-%: mn-samples-gb/documents/%
 sources/iho-%: mn-samples-iho/documents/%
 	cp $< $@
 
-sources/mpfd-%: mn-samples-mpfa/documents/mpfd-%
+sources/mpfa-%: mn-samples-mpfa/documents/mpfd-%
 	cp $< $@
 
 documents:
@@ -197,28 +197,27 @@ documents/cc-18011.doc:
 documents/cc-18011.rxl:
 	echo "### skipping $@"
 
-documents/m3d-bp-document.html:
+documents/m3aawg-bp-document.html:
 	echo "### skipping $@"
 
-documents/m3d-bp-document.doc:
+documents/m3aawg-bp-document.doc:
 	echo "### skipping $@"
 
-documents/m3d-bp-document.rxl:
+documents/m3aawg-bp-document.rxl:
 	echo "### skipping $@"
 
 
 documents/%.presentation.pdf: sources/%.presentation.xml $(MN2PDF_EXECUTABLE) | documents
 ifeq ($(OS),Windows_NT)
-	powershell -Command "$$doc = [xml](Get-Content $<); $$doc.SelectNodes(\"*\").get_name()" | cut -d "-" -f 1 > MN_FLAVOR.txt
+	powershell -Command "Write-Host $(word 1,$(subst -, ,$(notdir $<)))" > MN_FLAVOR.txt
 	powershell -Command "$$doc = [xml](Get-Content $<); $$doc.SelectNodes(\"//*[local-name()='doctype']\").'#text'" > DOCTYPE.txt
 	cmd /V /C "set /p MN_FLAVOR=<MN_FLAVOR.txt & set /p DOCTYPE=<DOCTYPE.txt & java -Xss5m -Xmx1024m -jar $(MN2PDF_EXECUTABLE) --xml-file $< --xsl-file ${XSLT_PATH_BASE}/!MN_FLAVOR!.!DOCTYPE!.xsl --pdf-file $@"
 #--font-manifest $(FONT_MANIFEST_PATH) 
 else
-	FILENAME=$<; \
-	MN_FLAVOR=$$(xmllint --huge --xpath 'name(*)' $${FILENAME} | cut -d '-' -f 1); \
-	DOCTYPE=$$(xmllint --huge --xpath "(//*[local-name()='doctype'])[1]/text()" $${FILENAME}); \
+	MN_FLAVOR=$(word 1,$(subst -, ,$(notdir $<))); \
+	DOCTYPE=$$(xmllint --huge --xpath "(//*[local-name()='doctype'])[1]/text()" $<); \
 	XSLT_PATH=${XSLT_PATH_BASE}/$${MN_FLAVOR}.$${DOCTYPE}.xsl; \
-	java -Xss5m -Xmx1024m -jar $(MN2PDF_EXECUTABLE) --xml-file $$FILENAME --xsl-file $$XSLT_PATH --pdf-file $@	
+	java -Xss5m -Xmx1024m -jar $(MN2PDF_EXECUTABLE) --xml-file $< --xsl-file $$XSLT_PATH --pdf-file $@	
 #--font-manifest $(FONT_MANIFEST_PATH) 
 endif
 
@@ -293,25 +292,25 @@ XSLT_PREFIX ?= $(MN_PROCR)
 update-xslts-in-processor:
 	$(eval PROCR_REPO := processor/$(MN_PROCR))
 	[ -d $(PROCR_REPO) ] || git clone https://github.com/metanorma/metanorma-$(MN_PROCR) $(PROCR_REPO)
-	rsync xslt/$(XSLT_PREFIX).*.xsl $(PROCR_REPO)/lib/isodoc/$(MN_PROCR)/ --exclude *.presentation.*
+	rsync xslt/$(XSLT_PREFIX).*.xsl $(PROCR_REPO)/lib/isodoc/$(MN_PROCR)/
 	git -C $(PROCR_REPO) add lib/isodoc/$(MN_PROCR)/*.xsl
 	git -C $(PROCR_REPO) commit -m "xslt update based on metanorma/mn-native-pdf@$(shell git rev-parse --short HEAD)" || git -C $(PROCR_REPO) --no-pager show --name-only
 	git -C $(PROCR_REPO) push
 
 update-xslts-in-processor-all:
-	$(MAKE) update-xslts-in-processor MN_PROCR=bipm
+	$(MAKE) update-xslts-in-processor MN_PROCR=bipm XSLT_PREFIX="{bipm,jcgm}"
 	$(MAKE) update-xslts-in-processor MN_PROCR=csa
-	$(MAKE) update-xslts-in-processor MN_PROCR=cc XSLT_PREFIX=csd
+	$(MAKE) update-xslts-in-processor MN_PROCR=cc
 	$(MAKE) update-xslts-in-processor MN_PROCR=gb
 	$(MAKE) update-xslts-in-processor MN_PROCR=iec
 	$(MAKE) update-xslts-in-processor MN_PROCR=iho
 	$(MAKE) update-xslts-in-processor MN_PROCR=iso
 	$(MAKE) update-xslts-in-processor MN_PROCR=itu
 	$(MAKE) update-xslts-in-processor MN_PROCR=iec
-	$(MAKE) update-xslts-in-processor MN_PROCR=m3aawg XSLT_PREFIX="{m3d,jcgm}"
-	$(MAKE) update-xslts-in-processor MN_PROCR=mpfa XSLT_PREFIX=mpfd
+	$(MAKE) update-xslts-in-processor MN_PROCR=m3aawg
+	$(MAKE) update-xslts-in-processor MN_PROCR=mpfa
 	$(MAKE) update-xslts-in-processor MN_PROCR=ogc
-	$(MAKE) update-xslts-in-processor MN_PROCR=ribose XSLT_PREFIX=rsd
+	$(MAKE) update-xslts-in-processor MN_PROCR=ribose
 	$(MAKE) update-xslts-in-processor MN_PROCR=un
 
 .PHONY: all clean update-init update-modules bundle publish xslts update-xslts-in-processor update-xslts-in-processor-all

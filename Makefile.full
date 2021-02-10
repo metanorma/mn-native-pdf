@@ -53,18 +53,18 @@ XSLT_GENERATED := xslt/iec.international-standard.xsl \
 	xslt/un.plenary.xsl \
 	xslt/un.plenary-attachment.xsl \
 	xslt/un.recommendation.xsl \
-	xslt/csd.standard.xsl \
+	xslt/cc.standard.xsl \
 	xslt/csa.standard.xsl \
-	xslt/rsd.standard.xsl \
-	xslt/m3d.report.xsl \
+	xslt/ribose.standard.xsl \
+	xslt/m3aawg.report.xsl \
 	xslt/gb.recommendation.xsl \
 	xslt/iho.specification.xsl \
 	xslt/iho.standard.xsl \
-	xslt/mpfd.standards.xsl \
-	xslt/mpfd.circular.xsl \
-	xslt/mpfd.compliance-standards-for-mpf-trustees.xsl \
-	xslt/mpfd.guidelines.xsl \
-	xslt/mpfd.supervision-of-mpf-intermediaries.xsl \
+	xslt/mpfa.standards.xsl \
+	xslt/mpfa.circular.xsl \
+	xslt/mpfa.compliance-standards-for-mpf-trustees.xsl \
+	xslt/mpfa.guidelines.xsl \
+	xslt/mpfa.supervision-of-mpf-intermediaries.xsl \
 	xslt/bipm.brochure.xsl \
 	xslt/bipm.mise-en-pratique.xsl \
 	xslt/bipm.guide.xsl \
