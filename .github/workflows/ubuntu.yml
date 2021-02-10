@@ -75,6 +75,7 @@ jobs:
     needs: build
     steps:
     - uses: actions/checkout@master
+
     - uses: actions/download-artifact@master
       with:
         name: published-ubuntu
@@ -90,7 +91,6 @@ jobs:
         PUBLISH_BRANCH: gh-pages
         PUBLISH_DIR: ./published
 
-    - uses: actions/checkout@master
     - uses: actions/download-artifact@master
       with:
         name: xslt
