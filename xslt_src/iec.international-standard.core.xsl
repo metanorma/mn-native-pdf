@@ -2185,7 +2185,7 @@
 									<xsl:number format="I." lang="en"/>
 								</xsl:when>
 								<xsl:otherwise>
-									<xsl:number format="a)"/>
+									<xsl:number format="a)" lang="en"/>
 								</xsl:otherwise>
 							</xsl:choose>
 						</xsl:otherwise>
