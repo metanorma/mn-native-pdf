@@ -1148,6 +1148,7 @@
 						<!-- skip 0 section without subsections -->
 						<xsl:when test="@level = 2"><xsl:value-of select="$margin-left * 1.6"/>mm</xsl:when>
 						<xsl:when test="@level &gt;= 3"><xsl:value-of select="$margin-left * 1.8"/>mm</xsl:when>
+						<xsl:when test="@level = 1 and @type = 'annex' and @section != ''"><xsl:value-of select="$margin-left + string-length(@section) * 1.7"/>mm</xsl:when>
 						<xsl:when test="@section != ''"><xsl:value-of select="$margin-left"/>mm</xsl:when>
 						<xsl:otherwise>0mm</xsl:otherwise>
 					</xsl:choose>
