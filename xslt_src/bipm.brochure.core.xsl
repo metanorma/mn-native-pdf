@@ -123,7 +123,8 @@
 
 						<!-- add id to xref and split xref with @to into two xref -->
 						<xsl:variable name="current_document_index_id">
-							<xsl:apply-templates select=".//bipm:clause[@type = 'index']" mode="index_add_id"/>
+							<!-- <xsl:apply-templates select=".//bipm:clause[@type = 'index']" mode="index_add_id"/> -->
+							<xsl:apply-templates select=".//bipm:indexsect" mode="index_add_id"/>
 						</xsl:variable>
 						
 						<xsl:variable name="current_document_index">
@@ -154,7 +155,8 @@
 						</xsl:variable>
 						
 						<xsl:variable name="current_document_index_id">
-							<xsl:apply-templates select=".//bipm:clause[@type = 'index']" mode="index_add_id"/>
+							<!-- <xsl:apply-templates select=".//bipm:clause[@type = 'index']" mode="index_add_id"/> -->
+							<xsl:apply-templates select=".//bipm:indexsect" mode="index_add_id"/>
 						</xsl:variable>
 						
 						<xsl:variable name="current_document_index">
@@ -209,7 +211,8 @@
 			<xsl:apply-templates select="/*/bipm:bibliography/bipm:references[not(@normative='true')]" mode="contents"/> 
 			
 			<!-- Index -->
-			<xsl:apply-templates select="//bipm:clause[@type = 'index']" mode="contents"/>
+			<!-- <xsl:apply-templates select="//bipm:clause[@type = 'index']" mode="contents"/> -->
+			<xsl:apply-templates select="//bipm:indexsect" mode="contents"/>
 			
 		</contents>
 	</xsl:template>
@@ -853,7 +856,8 @@
 		</xsl:choose>
 	</xsl:template>
 	
-	<xsl:template match="bipm:clause[@type = 'index']" mode="flatxml"/>
+	<!-- <xsl:template match="bipm:clause[@type = 'index']" mode="flatxml"/> -->
+	<xsl:template match="bipm:indexsect" mode="flatxml"/>
 	<!-- <xsl:template match="bipm:clause[@type = 'index']" mode="flatxml">
 		<xsl:copy>
 			<xsl:apply-templates select="@*" mode="flatxml_index"/>
@@ -1106,7 +1110,8 @@
 				<xsl:apply-templates select="bipm:bibliography/bipm:references[not(@normative='true')]" mode="sections"/> 
 				
 				<!-- Index -->
-				<xsl:apply-templates select="xalan:nodeset($indexes)/doc[@id = $docid]//bipm:clause[@type = 'index']" mode="index" />
+				<!-- <xsl:apply-templates select="xalan:nodeset($indexes)/doc[@id = $docid]//bipm:clause[@type = 'index']" mode="index" /> -->
+				<xsl:apply-templates select="xalan:nodeset($indexes)/doc[@id = $docid]//bipm:indexsect" mode="index" />
 				
 				<!-- End Document Pages -->
 				
@@ -1270,7 +1275,8 @@
 				<xsl:apply-templates select="bipm:bibliography/bipm:references[not(@normative='true')]" mode="sections"/> 
 				
 				<!-- Index -->
-				<xsl:apply-templates select="xalan:nodeset($indexes)/doc[@id = $docid]//bipm:clause[@type = 'index']" mode="index" />
+				<!-- <xsl:apply-templates select="xalan:nodeset($indexes)/doc[@id = $docid]//bipm:clause[@type = 'index']" mode="index" /> -->
+				<xsl:apply-templates select="xalan:nodeset($indexes)/doc[@id = $docid]//bipm:indexsect" mode="index" />
 				
 			</xsl:otherwise>
 		</xsl:choose>
@@ -1944,6 +1950,7 @@
 			<xsl:variable name="type">
 				<xsl:choose>
 					<xsl:when test="@type = 'index'">index</xsl:when>
+					<xsl:when test="local-name() = 'indexsect'">index</xsl:when>
 					<xsl:otherwise><xsl:value-of select="local-name()"/></xsl:otherwise>
 				</xsl:choose>
 			</xsl:variable>
@@ -3577,14 +3584,16 @@
 		</xsl:copy>
 	</xsl:template>
 	
-	<xsl:template match="bipm:clause[@type = 'index']//bipm:li" mode="index_update">
+	<!-- <xsl:template match="bipm:clause[@type = 'index']//bipm:li" mode="index_update"> -->
+	<xsl:template match="bipm:indexsect//bipm:li" mode="index_update">
 		<xsl:copy>
 			<xsl:apply-templates select="@*"  mode="index_update"/>
 		<xsl:apply-templates select="node()[1]" mode="process_li_element"/>
 		</xsl:copy>
 	</xsl:template>
 	
-	<xsl:template match="bipm:clause[@type = 'index']//bipm:li/node()" mode="process_li_element" priority="2">
+	<!-- <xsl:template match="bipm:clause[@type = 'index']//bipm:li/node()" mode="process_li_element" priority="2"> -->
+	<xsl:template match="bipm:indexsect//bipm:li/node()" mode="process_li_element" priority="2">
 		<xsl:param name="element" />
 		<xsl:param name="remove" select="'false'"/>
 		<xsl:param name="target"/>
@@ -3676,14 +3685,17 @@
 			<xsl:call-template name="getDocumentId"/>
 		</xsl:variable>
 		<xsl:variable name="item_number">
-			<xsl:number count="bipm:li[ancestor::bipm:clause[@type = 'index']]" level="any" />
+			<!-- <xsl:number count="bipm:li[ancestor::bipm:clause[@type = 'index']]" level="any" /> -->
+			<xsl:number count="bipm:li[ancestor::bipm:indexsect]" level="any" />
 		</xsl:variable>
 		<xsl:variable name="xref_number"><xsl:number count="bipm:xref"/></xsl:variable>
 		<xsl:value-of select="concat($docid, '_', $item_number, '_', $xref_number)"/> <!-- $level, '_',  -->
 	</xsl:template>
 	
-	<xsl:template match="bipm:clause[@type = 'index']" />
-	<xsl:template match="bipm:clause[@type = 'index']" mode="index">
+	<!-- <xsl:template match="bipm:clause[@type = 'index']" /> -->
+	<!-- <xsl:template match="bipm:clause[@type = 'index']" mode="index"> -->
+	<xsl:template match="bipm:indexsect" />
+	<xsl:template match="bipm:indexsect" mode="index">
 	
 		<fo:page-sequence master-reference="index" force-page-count="no-force">
 			<xsl:variable name="header-title">
@@ -3728,14 +3740,16 @@
 		</fo:page-sequence>
 	</xsl:template>
 	
-	<xsl:template match="bipm:clause[@type = 'index']/bipm:title" priority="4">
+	<!-- <xsl:template match="bipm:clause[@type = 'index']/bipm:title" priority="4"> -->
+	<xsl:template match="bipm:indexsect/bipm:title" priority="4">
 		<fo:block font-size="16pt" font-weight="bold" margin-bottom="84pt" margin-left="-18mm">
 			<!-- Index -->
 			<xsl:apply-templates />
 		</fo:block>
 	</xsl:template>
 	
-	<xsl:template match="bipm:clause[@type = 'index']/bipm:clause" priority="4">
+	<!-- <xsl:template match="bipm:clause[@type = 'index']/bipm:clause" priority="4"> -->
+	<xsl:template match="bipm:indexsect/bipm:clause" priority="4">
 		<xsl:apply-templates />
 		<fo:block>
 		<xsl:if test="following-sibling::bipm:clause">
@@ -3744,18 +3758,21 @@
 		</fo:block>
 	</xsl:template>
 	
-	<xsl:template match="bipm:clause[@type = 'index']/bipm:clause/bipm:title" priority="4">
+	<!-- <xsl:template match="bipm:clause[@type = 'index']/bipm:clause/bipm:title" priority="4"> -->
+	<xsl:template match="bipm:indexsect/bipm:clause/bipm:title" priority="4">
 		<!-- Letter A, B, C, ... -->
 		<fo:block font-size="10pt" font-weight="bold" margin-bottom="3pt" keep-with-next="always">
 			<xsl:apply-templates />
 		</fo:block>
 	</xsl:template>
 	
-	<xsl:template match="bipm:clause[@type = 'index']//bipm:ul" priority="4">
+	<!-- <xsl:template match="bipm:clause[@type = 'index']//bipm:ul" priority="4"> -->
+	<xsl:template match="bipm:indexsect//bipm:ul" priority="4">
 		<xsl:apply-templates />
 	</xsl:template>
 	
-	<xsl:template match="bipm:clause[@type = 'index']//bipm:li" priority="4">
+	<!-- <xsl:template match="bipm:clause[@type = 'index']//bipm:li" priority="4"> -->
+	<xsl:template match="bipm:indexsect//bipm:li" priority="4">
 		<xsl:variable name="level" select="count(ancestor::bipm:ul)" />
 		<fo:block start-indent="{5 * $level}mm" text-indent="-5mm">
 			<xsl:apply-templates />
