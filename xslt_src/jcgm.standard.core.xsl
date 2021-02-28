@@ -18,7 +18,6 @@
 	<!-- <item id="#">N_page</item> -->
 	<!-- param for second pass -->
 	<xsl:param name="external_index" /><!-- path to index xml, generated on 1st pass, based on FOP Intermediate Format -->
-	<xsl:variable name="index" select="document($external_index)"/>
 	
 	<xsl:include href="./common.xsl"/>
 
@@ -150,8 +149,6 @@
 		</xsl:for-each>
 			
 	</xsl:variable>
-
-	<xsl:variable name="dash" select="'&#x2013;'"/>
 
 	
 	<xsl:variable name="lang">

@@ -5889,6 +5889,10 @@
 	<!-- Index section processing -->
 	<!-- =================== -->
 
+	<xsl:variable name="index" select="document($external_index)"/>
+	
+	<xsl:variable name="dash" select="'&#x2013;'"/>
+	
 	<xsl:variable name="bookmark_in_fn">
 		<xsl:for-each select="//*[local-name() = 'bookmark'][ancestor::*[local-name() = 'fn']]">
 			<bookmark><xsl:value-of select="@id"/></bookmark>

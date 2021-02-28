@@ -13,6 +13,7 @@
 	<xsl:output version="1.0" method="xml" encoding="UTF-8" indent="no"/>
 
 	<xsl:param name="svg_images"/>
+	<xsl:param name="external_index" /><!-- path to index xml, generated on 1st pass, based on FOP Intermediate Format -->
 	<xsl:variable name="images" select="document($svg_images)"/>
 	
 	<xsl:include href="./common.xsl"/>

@@ -20,7 +20,6 @@
 	<!-- <item id="#">N_page</item> -->
 	<!-- param for second pass -->
 	<xsl:param name="external_index" /><!-- path to index xml, generated on 1st pass, based on FOP Intermediate Format -->
-	<xsl:variable name="index" select="document($external_index)"/>
 	
 	<xsl:variable name="first_pass" select="count($index//item) = 0"/>
 	
@@ -177,8 +176,6 @@
 	</xsl:variable>
 	
 	
-	<xsl:variable name="dash" select="'&#x2013;'"/>
-
 	<xsl:variable name="ids">
 		<xsl:for-each select="//*[@id]">
 			<id><xsl:value-of select="@id"/></id>
