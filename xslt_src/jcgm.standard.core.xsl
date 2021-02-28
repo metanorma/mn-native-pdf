@@ -107,7 +107,8 @@
 						<xsl:call-template name="processPrefaceSectionsDefault_Contents"/>
 						<xsl:call-template name="processMainSectionsDefault_Contents"/>
 						<!-- Index -->
-						<xsl:apply-templates select="//jcgm:clause[@type = 'index']" mode="contents"/>
+						<!-- <xsl:apply-templates select="//jcgm:clause[@type = 'index']" mode="contents"/> -->
+						<xsl:apply-templates select="//jcgm:indexsect" mode="contents"/>
 					</contents>
 				</doc>
 			</xsl:for-each>				
@@ -130,7 +131,8 @@
 
 				<!-- add id to xref and split xref with @to into two xref -->
 				<xsl:variable name="current_document_index_id">
-					<xsl:apply-templates select=".//jcgm:clause[@type = 'index']" mode="index_add_id"/>
+					<!-- <xsl:apply-templates select=".//jcgm:clause[@type = 'index']" mode="index_add_id"/> -->
+					<xsl:apply-templates select=".//jcgm:indexsect" mode="index_add_id"/>
 				</xsl:variable>
 				
 				<xsl:variable name="current_document_index">
@@ -510,7 +512,8 @@
 
 				<!-- indexes=<xsl:copy-of select="$indexes"/> -->
 			<!-- Index -->
-			<xsl:apply-templates select="xalan:nodeset($indexes)/doc//jcgm:clause[@type = 'index']" mode="index" />
+			<!-- <xsl:apply-templates select="xalan:nodeset($indexes)/doc//jcgm:clause[@type = 'index']" mode="index" /> -->
+			<xsl:apply-templates select="xalan:nodeset($indexes)/doc//jcgm:indexsect" mode="index" />
 			
 		</fo:root>
 	</xsl:template>
@@ -543,6 +546,7 @@
 		<xsl:variable name="type">
 			<xsl:choose>
 				<xsl:when test="@type = 'index'">index</xsl:when>
+				<xsl:when test="local-name() = 'indexsect'">index</xsl:when>
 				<xsl:otherwise><xsl:value-of select="local-name()"/></xsl:otherwise>
 			</xsl:choose>
 		</xsl:variable>
@@ -1459,14 +1463,16 @@
 		</xsl:copy>
 	</xsl:template>
 	
-	<xsl:template match="jcgm:clause[@type = 'index']//jcgm:li" mode="index_update">
+	<!-- <xsl:template match="jcgm:clause[@type = 'index']//jcgm:li" mode="index_update"> -->
+	<xsl:template match="jcgm:indexsect//jcgm:li" mode="index_update">
 		<xsl:copy>
 			<xsl:apply-templates select="@*"  mode="index_update"/>
 		<xsl:apply-templates select="node()[1]" mode="process_li_element"/>
 		</xsl:copy>
 	</xsl:template>
 	
-	<xsl:template match="jcgm:clause[@type = 'index']//jcgm:li/node()" mode="process_li_element" priority="2">
+	<!-- <xsl:template match="jcgm:clause[@type = 'index']//jcgm:li/node()" mode="process_li_element" priority="2"> -->
+	<xsl:template match="jcgm:indexsect//jcgm:li/node()" mode="process_li_element" priority="2">
 		<xsl:param name="element" />
 		<xsl:param name="remove" select="'false'"/>
 		<!-- <node></node> -->
@@ -1534,14 +1540,17 @@
 			<xsl:call-template name="getDocumentId"/>
 		</xsl:variable>
 		<xsl:variable name="item_number">
-			<xsl:number count="jcgm:li[ancestor::jcgm:clause[@type = 'index']]" level="any" />
+			<!-- <xsl:number count="jcgm:li[ancestor::jcgm:clause[@type = 'index']]" level="any" /> -->
+			<xsl:number count="jcgm:li[ancestor::jcgm:indexsect]" level="any" />
 		</xsl:variable>
 		<xsl:variable name="xref_number"><xsl:number count="jcgm:xref"/></xsl:variable>
 		<xsl:value-of select="concat($docid, '_', $item_number, '_', $xref_number)"/> <!-- $level, '_',  -->
 	</xsl:template>
 	
-	<xsl:template match="jcgm:clause[@type = 'index']" />
-	<xsl:template match="jcgm:clause[@type = 'index']" mode="index">
+	<!-- <xsl:template match="jcgm:clause[@type = 'index']" />
+	<xsl:template match="jcgm:clause[@type = 'index']" mode="index"> -->
+	<xsl:template match="jcgm:indexsect" />
+	<xsl:template match="jcgm:indexsect" mode="index">
 	
 		<fo:page-sequence master-reference="document-jcgm" force-page-count="no-force">
 			
@@ -1555,14 +1564,16 @@
 		</fo:page-sequence>
 	</xsl:template>
 	
-	<xsl:template match="jcgm:clause[@type = 'index']/jcgm:title" priority="4">
+	<!-- <xsl:template match="jcgm:clause[@type = 'index']/jcgm:title" priority="4"> -->
+	<xsl:template match="jcgm:indexsect/jcgm:title" priority="4">
 		<fo:block font-weight="bold" span="all">
 			<!-- Index -->
 			<xsl:apply-templates />
 		</fo:block>
 	</xsl:template>
 	
-	<xsl:template match="jcgm:clause[@type = 'index']/jcgm:clause" priority="4">
+	<!-- <xsl:template match="jcgm:clause[@type = 'index']/jcgm:clause" priority="4"> -->
+	<xsl:template match="jcgm:indexsect/jcgm:clause" priority="4">
 		<xsl:apply-templates />
 		<fo:block>
 		<xsl:if test="following-sibling::jcgm:clause">
@@ -1571,18 +1582,21 @@
 		</fo:block>
 	</xsl:template>
 	
-	<xsl:template match="jcgm:clause[@type = 'index']/jcgm:clause/jcgm:title" priority="4">
+	<!-- <xsl:template match="jcgm:clause[@type = 'index']/jcgm:clause/jcgm:title" priority="4"> -->
+	<xsl:template match="jcgm:indexsect/jcgm:clause/jcgm:title" priority="4">
 		<!-- Letter A, B, C, ... -->
 		<fo:block font-weight="bold" margin-left="25mm" keep-with-next="always">
 			<xsl:apply-templates />
 		</fo:block>
 	</xsl:template>
 	
-	<xsl:template match="jcgm:clause[@type = 'index']//jcgm:ul" priority="4">
+	<!-- <xsl:template match="jcgm:clause[@type = 'index']//jcgm:ul" priority="4"> -->
+	<xsl:template match="jcgm:indexsect//jcgm:ul" priority="4">
 		<xsl:apply-templates />
 	</xsl:template>
 	
-	<xsl:template match="jcgm:clause[@type = 'index']//jcgm:li" priority="4">
+	<!-- <xsl:template match="jcgm:clause[@type = 'index']//jcgm:li" priority="4"> -->
+	<xsl:template match="jcgm:indexsect//jcgm:li" priority="4">
 		<xsl:variable name="level" select="count(ancestor::jcgm:ul)" />
 		<fo:block start-indent="{5 * $level}mm" text-indent="-5mm">
 			<xsl:apply-templates />
