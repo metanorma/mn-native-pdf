@@ -176,11 +176,6 @@
 		</xsl:choose>
 	</xsl:variable>
 	
-	<xsl:variable name="bookmark_in_fn">
-		<xsl:for-each select="//bipm:bookmark[ancestor::bipm:fn]">
-			<bookmark><xsl:value-of select="@id"/></bookmark>
-		</xsl:for-each>
-	</xsl:variable>
 	
 	<xsl:variable name="dash" select="'&#x2013;'"/>
 
@@ -3556,152 +3551,6 @@
 	<!-- Index processing -->
 	<!-- =================== -->
 	
-	<xsl:template match="@*|node()" mode="index_add_id">
-		<xsl:copy>
-				<xsl:apply-templates select="@*|node()" mode="index_add_id"/>
-		</xsl:copy>
-	</xsl:template>
-	
-	<xsl:template match="bipm:xref" mode="index_add_id">
-		<xsl:variable name="id">
-			<xsl:call-template name="generateIndexXrefId"/>
-		</xsl:variable>
-		<xsl:copy> <!-- add id to xref -->
-			<xsl:apply-templates select="@*" mode="index_add_id"/>
-			<xsl:attribute name="id">
-				<xsl:value-of select="$id"/>
-			</xsl:attribute>
-			<xsl:apply-templates mode="index_add_id"/>
-		</xsl:copy>
-		<!-- split <xref target="bm1" to="End" pagenumber="true"> to two xref:
-		<xref target="bm1" pagenumber="true"> and <xref target="End" pagenumber="true"> -->
-		<xsl:if test="@to">
-			<xsl:value-of select="$dash"/>
-			<xsl:copy>
-				<xsl:copy-of select="@*"/>
-				<xsl:attribute name="target"><xsl:value-of select="@to"/></xsl:attribute>
-				<xsl:attribute name="id">
-					<xsl:value-of select="$id"/><xsl:text>_to</xsl:text>
-				</xsl:attribute>
-				<xsl:apply-templates mode="index_add_id"/>
-			</xsl:copy>
-		</xsl:if>
-	</xsl:template>
-
-	<xsl:template match="@*|node()" mode="index_update">
-		<xsl:copy>
-				<xsl:apply-templates select="@*|node()" mode="index_update"/>
-		</xsl:copy>
-	</xsl:template>
-	
-	<!-- <xsl:template match="bipm:clause[@type = 'index']//bipm:li" mode="index_update"> -->
-	<xsl:template match="bipm:indexsect//bipm:li" mode="index_update">
-		<xsl:copy>
-			<xsl:apply-templates select="@*"  mode="index_update"/>
-		<xsl:apply-templates select="node()[1]" mode="process_li_element"/>
-		</xsl:copy>
-	</xsl:template>
-	
-	<!-- <xsl:template match="bipm:clause[@type = 'index']//bipm:li/node()" mode="process_li_element" priority="2"> -->
-	<xsl:template match="bipm:indexsect//bipm:li/node()" mode="process_li_element" priority="2">
-		<xsl:param name="element" />
-		<xsl:param name="remove" select="'false'"/>
-		<xsl:param name="target"/>
-		<!-- <node></node> -->
-		<xsl:choose>
-			<xsl:when test="self::text()  and (normalize-space(.) = ',' or normalize-space(.) = $dash) and $remove = 'true'">
-				<!-- skip text (i.e. remove it) and process next element -->
-				<!-- [removed_<xsl:value-of select="."/>] -->
-				<xsl:apply-templates select="following-sibling::node()[1]" mode="process_li_element">
-					<xsl:with-param name="target"><xsl:value-of select="$target"/></xsl:with-param>
-				</xsl:apply-templates>
-			</xsl:when>
-			<xsl:when test="self::text()">
-				<xsl:value-of select="."/>
-				<xsl:apply-templates select="following-sibling::node()[1]" mode="process_li_element"/>
-			</xsl:when>
-			<xsl:when test="self::* and local-name(.) = 'xref'">
-				<xsl:variable name="id" select="@id"/>
-				<xsl:variable name="page" select="$index//item[@id = $id]"/>
-				<xsl:variable name="id_next" select="following-sibling::bipm:xref[1]/@id"/>
-				<xsl:variable name="page_next" select="$index//item[@id = $id_next]"/>
-				
-				<xsl:variable name="id_prev" select="preceding-sibling::bipm:xref[1]/@id"/>
-				<xsl:variable name="page_prev" select="$index//item[@id = $id_prev]"/>
-				
-				<xsl:choose>
-					<!-- 2nd pass -->
-					<!-- if page is equal to page for next and page is not the end of range -->
-					<xsl:when test="$page != '' and $page_next != '' and $page = $page_next and not(contains($page, '_to'))">  <!-- case: 12, 12-14 -->
-						<!-- skip element (i.e. remove it) and remove next text ',' -->
-						<!-- [removed_xref] -->
-						
-						<xsl:apply-templates select="following-sibling::node()[1]" mode="process_li_element">
-							<xsl:with-param name="remove">true</xsl:with-param>
-							<xsl:with-param name="target">
-								<xsl:choose>
-									<xsl:when test="$target != ''"><xsl:value-of select="$target"/></xsl:when>
-									<xsl:otherwise><xsl:value-of select="@target"/></xsl:otherwise>
-								</xsl:choose>
-							</xsl:with-param>
-						</xsl:apply-templates>
-					</xsl:when>
-					
-					<xsl:when test="$page != '' and $page_prev != '' and $page = $page_prev and contains($page_prev, '_to')"> <!-- case: 12-14, 14, ... -->
-						<!-- remove xref -->
-						<xsl:apply-templates select="following-sibling::node()[1]" mode="process_li_element">
-							<xsl:with-param name="remove">true</xsl:with-param>
-						</xsl:apply-templates>
-					</xsl:when>
-
-					<xsl:otherwise>
-						<xsl:apply-templates select="." mode="xref_copy">
-							<xsl:with-param name="target" select="$target"/>
-						</xsl:apply-templates>
-						<xsl:apply-templates select="following-sibling::node()[1]" mode="process_li_element"/>
-					</xsl:otherwise>
-				</xsl:choose>
-			</xsl:when>
-			<xsl:when test="self::* and local-name(.) = 'ul'">
-				<!-- ul -->
-				<xsl:apply-templates select="." mode="index_update"/>
-			</xsl:when>
-			<xsl:otherwise>
-			 <xsl:apply-templates select="." mode="xref_copy">
-					<xsl:with-param name="target" select="$target"/>
-				</xsl:apply-templates>
-				<xsl:apply-templates select="following-sibling::node()[1]" mode="process_li_element"/>
-			</xsl:otherwise>
-		</xsl:choose>
-	</xsl:template>
-
-	<xsl:template match="@*|node()" mode="xref_copy">
-		<xsl:param name="target"/>
-		<xsl:copy>
-			<xsl:apply-templates select="@*" mode="xref_copy"/>
-			<xsl:if test="$target != '' and not(xalan:nodeset($bookmark_in_fn)//bookmark[. = $target])">
-				<xsl:attribute name="target"><xsl:value-of select="$target"/></xsl:attribute>
-			</xsl:if>
-			<xsl:apply-templates select="node()" mode="xref_copy"/>
-		</xsl:copy>
-	</xsl:template>
-	
-	
-	<xsl:template name="generateIndexXrefId">
-		<xsl:variable name="level" select="count(ancestor::bipm:ul)"/>
-		<!-- <xsl:variable name="parent_ul_id" select="generate-id(ancestor::bipm:ul[1])"/>
-		<xsl:variable name="item_number" select="count(ancestor::bipm:li[ancestor::bipm:ul[generate-id() = $parent_ul_id]])"/> -->
-		<xsl:variable name="docid">
-			<xsl:call-template name="getDocumentId"/>
-		</xsl:variable>
-		<xsl:variable name="item_number">
-			<!-- <xsl:number count="bipm:li[ancestor::bipm:clause[@type = 'index']]" level="any" /> -->
-			<xsl:number count="bipm:li[ancestor::bipm:indexsect]" level="any" />
-		</xsl:variable>
-		<xsl:variable name="xref_number"><xsl:number count="bipm:xref"/></xsl:variable>
-		<xsl:value-of select="concat($docid, '_', $item_number, '_', $xref_number)"/> <!-- $level, '_',  -->
-	</xsl:template>
-	
 	<!-- <xsl:template match="bipm:clause[@type = 'index']" /> -->
 	<!-- <xsl:template match="bipm:clause[@type = 'index']" mode="index"> -->
 	<xsl:template match="bipm:indexsect" />
@@ -3757,17 +3606,7 @@
 			<xsl:apply-templates />
 		</fo:block>
 	</xsl:template>
-	
-	<!-- <xsl:template match="bipm:clause[@type = 'index']/bipm:clause" priority="4"> -->
-	<xsl:template match="bipm:indexsect/bipm:clause" priority="4">
-		<xsl:apply-templates />
-		<fo:block>
-		<xsl:if test="following-sibling::bipm:clause">
-			<fo:block>&#xA0;</fo:block>
-		</xsl:if>
-		</fo:block>
-	</xsl:template>
-	
+		
 	<!-- <xsl:template match="bipm:clause[@type = 'index']/bipm:clause/bipm:title" priority="4"> -->
 	<xsl:template match="bipm:indexsect/bipm:clause/bipm:title" priority="4">
 		<!-- Letter A, B, C, ... -->
@@ -3776,22 +3615,6 @@
 		</fo:block>
 	</xsl:template>
 	
-	<!-- <xsl:template match="bipm:clause[@type = 'index']//bipm:ul" priority="4"> -->
-	<xsl:template match="bipm:indexsect//bipm:ul" priority="4">
-		<xsl:apply-templates />
-	</xsl:template>
-	
-	<!-- <xsl:template match="bipm:clause[@type = 'index']//bipm:li" priority="4"> -->
-	<xsl:template match="bipm:indexsect//bipm:li" priority="4">
-		<xsl:variable name="level" select="count(ancestor::bipm:ul)" />
-		<fo:block start-indent="{5 * $level}mm" text-indent="-5mm">
-			<xsl:apply-templates />
-		</fo:block>
-	</xsl:template>
-	
-	<xsl:template match="bipm:bookmark">
-		<fo:inline id="{@id}"/>
-	</xsl:template>
 
 	<xsl:template match="*[local-name() = 'stem']/text()">
 		<xsl:value-of select="normalize-space()"/>
