@@ -985,7 +985,87 @@
 		</fo:inline>
 	</xsl:template>
 	
+	<!-- for chemical expressions, when prefix superscripted -->
+	<xsl:template match="mathml:msup[count(*) = 2 and count(mathml:mrow) = 2]/mathml:mrow[1][count(*) = 1 and mathml:mtext and (mathml:mtext/text() = '' or not(mathml:mtext/text()))]/mathml:mtext" mode="mathml" priority="2">
+		<mathml:mspace height="1ex"/>
+	</xsl:template>
+	<xsl:template match="mathml:msup[count(*) = 2 and count(mathml:mrow) = 2]/mathml:mrow[1][count(*) = 1 and mathml:mtext and (mathml:mtext/text() = ' ' or mathml:mtext/text() = '&#xa0;')]/mathml:mtext" mode="mathml" priority="2">
+		<mathml:mspace width="1ex" height="1ex"/>
+	</xsl:template>
 
+	<!-- set height for sup -->
+	<!-- <xsl:template match="mathml:msup[count(*) = 2 and count(mathml:mrow) = 2]/mathml:mrow[1][count(*) = 1 and mathml:mtext and (mathml:mtext/text() != '' and mathml:mtext/text() != ' ' and mathml:mtext/text() != '&#xa0;')]/mathml:mtext" mode="mtext"> -->
+	<xsl:template match="mathml:msup[count(*) = 2 and count(mathml:mrow) = 2]/mathml:mrow[1][count(*) = 1]/*" mode="mathml" priority="2">
+		<xsl:copy>
+			<xsl:apply-templates select="@*|node()" mode="mathml"/>
+		</xsl:copy>
+		<!-- <xsl:copy-of select="."/> -->
+		<mathml:mspace height="1.47ex"/>
+	</xsl:template>
+
+	<!-- set script minimal font-size -->
+	<xsl:template match="mathml:math" mode="mathml" priority="2">
+		<xsl:copy>
+			<xsl:apply-templates select="@*" mode="mathml"/>
+			<mathml:mstyle scriptminsize="6pt">
+				<xsl:apply-templates select="node()" mode="mathml"/>
+			</mathml:mstyle>
+		</xsl:copy>
+	</xsl:template>
+
+	<!-- issue 'over bar above equation with sub' fixing -->
+	<xsl:template match="mathml:msub/mathml:mrow[1][mathml:mover and count(following-sibling::*) = 1 and following-sibling::mathml:mrow]"  mode="mathml" priority="2">
+		<mathml:mstyle>
+			<xsl:copy-of select="."/>
+		</mathml:mstyle>
+	</xsl:template>
+
+	<!-- Decrease space between ()
+	from: 
+	<mfenced open="(" close=")">
+		<mrow>
+			<mtext>Cu</mtext>
+		</mrow>
+	</mfenced>
+		to: 
+		<mrow>
+			<mtext>(Cu)</mtext>
+		</mrow> -->
+	<xsl:template match="mathml:mfenced[count(*) = 1 and *[count(*) = 1] and */*[count(*) = 0]] |
+																	mathml:mfenced[count(*) = 1 and *[count(*) = 1] and */*[count(*) = 1] and */*/*[count(*) = 0]]" mode="mathml" priority="2">
+		<xsl:apply-templates mode="mathml"/>
+	</xsl:template>
+		
+	<xsl:template match="mathml:mfenced[count(*) = 1]/*[count(*) = 1]/*[count(*) = 0] |
+																	mathml:mfenced[count(*) = 1]/*[count(*) = 1]/*[count(*) = 1]/*[count(*) = 0]" mode="mathml" priority="2"> <!-- [not(following-sibling::*) and not(preceding-sibling::*)] -->
+		<xsl:copy>
+			<xsl:apply-templates select="@*" mode="mathml"/>
+			<xsl:value-of select="ancestor::mathml:mfenced/@open"/>
+			<xsl:value-of select="."/>
+			<xsl:value-of select="ancestor::mathml:mfenced/@close"/>
+		</xsl:copy>
+	</xsl:template>
+
+	<!-- Decrease height of / and | -->
+	<xsl:template match="mathml:mo[normalize-space(text()) = '/' or normalize-space(text()) = '|']" mode="mathml" priority="2">
+		<xsl:copy>
+			<xsl:apply-templates select="@*" mode="mathml"/>
+				<xsl:if test="not(@stretchy)">
+					<xsl:attribute name="stretchy">false</xsl:attribute>
+				</xsl:if>
+			<xsl:apply-templates mode="mathml"/>
+		</xsl:copy>
+	</xsl:template>
+	
+	<xsl:template match="mathml:mi[string-length(normalize-space()) &gt; 1]" mode="mathml" priority="2">
+		<xsl:if test="preceding-sibling::* and preceding-sibling::*[1][not(local-name() = 'mfenced' or local-name() = 'mo')]">
+			<mathml:mspace width="0.3em"/>
+		</xsl:if>
+		<xsl:copy-of select="."/>
+		<xsl:if test="following-sibling::* and following-sibling::*[1][not(local-name() = 'mfenced' or local-name() = 'mo')]">
+			<mathml:mspace width="0.3em"/>
+		</xsl:if>
+	</xsl:template>
 	
 	<xsl:template match="*[local-name()='admonition']">
 		<fo:block margin-bottom="12pt" font-weight="bold"> <!-- text-align="center"  -->			

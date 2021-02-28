@@ -3369,6 +3369,16 @@
 			<xsl:apply-templates mode="mathml"/>
 		</xsl:copy>
 	</xsl:template>
+	
+	<xsl:template match="mathml:mi[string-length(normalize-space()) &gt; 1]" mode="mathml" priority="2">
+		<xsl:if test="preceding-sibling::* and preceding-sibling::*[1][not(local-name() = 'mfenced' or local-name() = 'mo')]">
+			<mathml:mspace width="0.3em"/>
+		</xsl:if>
+		<xsl:copy-of select="."/>
+		<xsl:if test="following-sibling::* and following-sibling::*[1][not(local-name() = 'mfenced' or local-name() = 'mo')]">
+			<mathml:mspace width="0.3em"/>
+		</xsl:if>
+	</xsl:template>
 
 	<xsl:template name="insertHeaderFooter">
 		<xsl:param name="header-title"/>		
