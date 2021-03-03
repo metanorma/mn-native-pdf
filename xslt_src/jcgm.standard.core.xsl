@@ -25,7 +25,18 @@
 	
 	<xsl:variable name="namespace">jcgm</xsl:variable>
 	
-	<xsl:variable name="align_cross_elements_">clause note title terms term termsource</xsl:variable>
+	<xsl:variable name="align_cross_elements_default">clause</xsl:variable>
+	<xsl:variable name="align_cross_elements_doc" select="normalize-space((//jcgm:bipm-standard)[1]/jcgm:bibdata/jcgm:ext/jcgm:parallel-align-element)"/>
+	<xsl:variable name="align_cross_elements_">
+		<xsl:choose>
+			<xsl:when test="$align_cross_elements_doc != ''">
+				<xsl:value-of select="$align_cross_elements_doc"/>
+			</xsl:when>
+			<xsl:otherwise>
+				<xsl:value-of select="$align_cross_elements_default"/>
+			</xsl:otherwise>
+		</xsl:choose>
+	</xsl:variable>
 	<xsl:variable name="align_cross_elements">
 		<xsl:text>#</xsl:text><xsl:value-of select="translate(normalize-space($align_cross_elements_), ' ', '#')"/><xsl:text>#</xsl:text>
 	</xsl:variable>
@@ -1550,36 +1561,36 @@
 		<xsl:apply-templates />
 	</xsl:template>
 	
-	<!-- no display table/figure from slave documents if common=true or span=true -->
-	<xsl:template match="*[@slave]//*[local-name()='table'][@common = 'true']" priority="2"/>
-	<xsl:template match="*[@slave]//*[local-name()='table'][@span = 'true']" priority="2"/>
-	<xsl:template match="*[@slave]//*[local-name()='figure'][@common = 'true']" priority="2"/>
-	<xsl:template match="*[@slave]//*[local-name()='figure'][@span = 'true']" priority="2"/>
+	<!-- no display table/figure from slave documents if @multilingual-rendering="common" or @multilingual-rendering = 'all-columns' -->
+	<xsl:template match="*[@slave]//*[local-name()='table'][@multilingual-rendering= 'common']" priority="2"/>
+	<xsl:template match="*[@slave]//*[local-name()='table'][@multilingual-rendering = 'all-columns']" priority="2"/>
+	<xsl:template match="*[@slave]//*[local-name()='figure'][@multilingual-rendering = 'common']" priority="2"/>
+	<xsl:template match="*[@slave]//*[local-name()='figure'][@multilingual-rendering = 'all-columns']" priority="2"/>
 	
-	<!-- for table and figure with @common='true' -->
+	<!-- for table and figure with @multilingual-rendering="common" -->
 	<!-- display only element from first document -->
-	<xsl:template match="*[@first]//*[local-name() = 'cross-align'][@common = 'true']" mode="multi_columns">
+	<xsl:template match="*[@first]//*[local-name() = 'cross-align'][@multilingual-rendering = 'common']" mode="multi_columns">
 		<fo:block>
 			<xsl:apply-templates />
 		</fo:block>
 	</xsl:template>
 	
-	<!-- for table and figure with @span='true' -->
+	<!-- for table and figure with @multilingual-rendering = 'all-columns' -->
 	<!-- display element from first document, then (after) from 2nd one, then 3rd, etc. -->
-	<xsl:template match="*[@first]//*[local-name() = 'cross-align'][@span = 'true']"  mode="multi_columns">
+	<xsl:template match="*[@first]//*[local-name() = 'cross-align'][@multilingual-rendering = 'all-columns']"  mode="multi_columns">
 		<xsl:variable name="element-number" select="@element-number"/>
 		<fo:block>
 			<xsl:apply-templates />
 			<fo:block>&#xa0;</fo:block>
 			<xsl:choose>
-				<xsl:when test="local-name(*[@span = 'true']) = 'table'">
+				<xsl:when test="local-name(*[@multilingual-rendering = 'all-columns']) = 'table'">
 					<xsl:for-each select="xalan:nodeset($docs_slave)/*">
 						<xsl:for-each select=".//*[local-name() = 'table' and @element-number=$element-number]">
 							<xsl:call-template name="table"/>
 						</xsl:for-each>
 					</xsl:for-each>
 				</xsl:when>
-				<xsl:when test="local-name(*[@span = 'true']) = 'figure'">
+				<xsl:when test="local-name(*[@multilingual-rendering = 'all-columns']) = 'figure'">
 					<xsl:for-each select="xalan:nodeset($docs_slave)/*">
 						<xsl:for-each select=".//*[local-name() = 'figure' and @element-number=$element-number]">
 							<xsl:call-template name="figure"/>
@@ -1907,7 +1918,7 @@
 		Elements that should be aligned:
 			- name of element presents in field align-cross-elements="clause note"
 			- marked with attribute name
-			- table/figure with attribute common="true" or span="true"
+			- table/figure with attribute @multilingual-rendering = 'common' or @multilingual-rendering = 'all-columns'
 			- marked with attribute cross-align
   -->
 	<xsl:template name="isCrossAligned">
@@ -1916,10 +1927,10 @@
 			<!-- if element`s name is presents in array align_cross_elements -->
 			<xsl:when test="contains($align_cross_elements, concat('#',$element_name,'#'))">true</xsl:when>
 			<!-- if element has attribute name/bookmark -->
-			<xsl:when test="normalize-space(@name) != ''">true</xsl:when>
-			<xsl:when test="($element_name = 'table' or $element_name = 'figure') and (@common = 'true' or @span = 'true')">true</xsl:when>
+			<xsl:when test="normalize-space(@name) != '' and @multilingual-rendering = 'name'">true</xsl:when>
+			<xsl:when test="($element_name = 'table' or $element_name = 'figure') and (@multilingual-rendering = 'common' or @multilingual-rendering = 'all-columns')">true</xsl:when>
 			<!-- element marked as cross-align -->
-			<xsl:when test="@cross-align='true'">true</xsl:when>
+			<xsl:when test="@multilingual-rendering='parallel'">true</xsl:when>
 			<xsl:otherwise>false</xsl:otherwise>
 		</xsl:choose>
 	</xsl:template>
@@ -1929,7 +1940,7 @@
 		<xsl:variable name="element-number">
 			<xsl:choose>
 				<!-- if name set, then use it -->
-				<xsl:when test="@name"><xsl:value-of select="@name"/></xsl:when>
+				<xsl:when test="@name and @multilingual-rendering = 'name'"><xsl:value-of select="@name"/></xsl:when>
 				<xsl:otherwise>
 					<xsl:for-each select="ancestor-or-self::*[ancestor-or-self::*[local-name() = 'sections' or local-name() = 'annex']]">
 						<xsl:value-of select="local-name()"/>
@@ -1960,13 +1971,12 @@
 		</xsl:copy>
 	</xsl:template>
 	
-	<!-- enclose elements after table/figure with common=true and span=true in a separate element cross-align -->
-	<xsl:template match="*[@common='true' or @span='true']" mode="flatxml_step2" priority="2">
+	<!-- enclose elements after table/figure with @multilingual-rendering = 'common' and @multilingual-rendering = 'all-columns' in a separate element cross-align -->
+	<xsl:template match="*[@multilingual-rendering = 'common' or @multilingual-rendering = 'all-columns']" mode="flatxml_step2" priority="2">
 		<xsl:variable name="curr_id" select="generate-id()"/>
 		<xsl:element name="cross-align" namespace="https://www.metanorma.org/ns/bipm">
 			<xsl:copy-of select="@element-number"/>
-			<xsl:copy-of select="@common"/>
-			<xsl:copy-of select="@span"/>
+			<xsl:copy-of select="@multilingual-rendering"/>
 			<xsl:copy-of select="."/>
 		</xsl:element>
 		<xsl:if test="following-sibling::*[(not(@cross-align) or not(@cross-align='true')) and preceding-sibling::*[@cross-align='true'][1][generate-id() = $curr_id]]">
@@ -1992,8 +2002,7 @@
 			<xsl:if test="local-name() = 'title'">
 				<xsl:copy-of select="@keep-with-next"/>
 			</xsl:if>
-			<xsl:copy-of select="@common"/>
-			<xsl:copy-of select="@span"/>
+			<xsl:copy-of select="@multilingual-rendering"/>
 			<xsl:copy-of select="."/>
 			
 			<!-- copy next elements until next element with cross-align=true -->
