@@ -3512,6 +3512,12 @@
 		</fo:inline>
 	</xsl:template>
 	
+	<xsl:template match="*[local-name()='hi']">
+		<fo:inline background-color="yellow">
+			<xsl:apply-templates />
+		</fo:inline>
+	</xsl:template>
+	
 	<xsl:template match="text()[ancestor::*[local-name()='smallcap']]">
 		<xsl:variable name="text" select="normalize-space(.)"/>
 		<fo:inline font-size="75%">
