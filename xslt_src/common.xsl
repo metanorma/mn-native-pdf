@@ -3512,6 +3512,7 @@
 		</fo:inline>
 	</xsl:template>
 	
+	<!-- highlight text -->
 	<xsl:template match="*[local-name()='hi']">
 		<fo:inline background-color="yellow">
 			<xsl:apply-templates />
