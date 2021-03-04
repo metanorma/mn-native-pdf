@@ -4382,9 +4382,10 @@
 		<fo:block id="{@id}">
 			<xsl:apply-templates />
 		</fo:block>
+		<xsl:apply-templates select="*[local-name() = 'name']" mode="presentation"/>
 	</xsl:template>
 	
-		<xsl:template match="*[local-name() = 'figure'][@class = 'pseudocode']//*[local-name() = 'p']">
+	<xsl:template match="*[local-name() = 'figure'][@class = 'pseudocode']//*[local-name() = 'p']">
 		<fo:block xsl:use-attribute-sets="figure-pseudocode-p-style">
 			<xsl:apply-templates />
 		</fo:block>
