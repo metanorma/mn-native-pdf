@@ -14,6 +14,8 @@ SRC := $(patsubst mn-samples-iso/documents/international-standard/%,sources/iso-
 	$(patsubst mn-samples-un/documents/%,sources/un-%,$(wildcard mn-samples-un/documents/*.xml)) \
 	$(patsubst mn-samples-cc/documents/%,sources/%,$(wildcard mn-samples-cc/documents/*.xml)) \
 	$(patsubst mn-samples-m3aawg/documents/best-practice/%,sources/m3aawg-bp-%,$(wildcard mn-samples-m3aawg/documents/**/*.xml)) \
+	$(patsubst mn-samples-m3aawg/documents/policy/%,sources/m3aawg-p-%,$(wildcard mn-samples-m3aawg/documents/**/*.xml)) \
+	$(patsubst mn-samples-m3aawg/documents/report/%,sources/m3aawg-r-%,$(wildcard mn-samples-m3aawg/documents/**/*.xml)) \
 	$(patsubst mn-samples-cc/documents/%,sources/%,$(wildcard mn-samples-cc/documents/*.xml)) \
 	$(patsubst mn-samples-gb/documents/%,sources/gb-%,$(wildcard mn-samples-gb/documents/*.xml)) \
 	$(patsubst mn-samples-iho/documents/%,sources/iho-%,$(wildcard mn-samples-iho/documents/*.xml)) \
@@ -125,6 +127,12 @@ sources/cc-%: mn-samples-cc/documents/cc-%
 	cp $< $@
 
 sources/m3aawg-bp-%: mn-samples-m3aawg/documents/best-practice/%
+	cp $< $@
+
+sources/m3aawg-bp-%: mn-samples-m3aawg/documents/policy/%
+	cp $< $@
+
+sources/m3aawg-bp-%: mn-samples-m3aawg/documents/report/%
 	cp $< $@
 
 sources/gb-%: mn-samples-gb/documents/%
