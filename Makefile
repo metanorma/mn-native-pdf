@@ -133,7 +133,7 @@ sources/gb-%: mn-samples-gb/documents/%
 sources/iho-%: mn-samples-iho/documents/%
 	cp $< $@
 
-sources/mpfa-%: mn-samples-mpfa/documents/mpfd-%
+sources/mpfa-%: mn-samples-mpfa/documents/mpfa-%
 	cp $< $@
 
 documents:
