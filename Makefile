@@ -59,6 +59,7 @@ XSLT_GENERATED := xslt/iec.international-standard.xsl \
 	xslt/csa.standard.xsl \
 	xslt/ribose.standard.xsl \
 	xslt/m3aawg.report.xsl \
+	xslt/m3aawg.policy.xsl \
 	xslt/gb.recommendation.xsl \
 	xslt/iho.specification.xsl \
 	xslt/iho.standard.xsl \
