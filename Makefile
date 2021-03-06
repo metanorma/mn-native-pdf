@@ -129,10 +129,10 @@ sources/cc-%: mn-samples-cc/documents/cc-%
 sources/m3aawg-bp-%: mn-samples-m3aawg/documents/best-practice/%
 	cp $< $@
 
-sources/m3aawg-bp-%: mn-samples-m3aawg/documents/policy/%
+sources/m3aawg-p-%: mn-samples-m3aawg/documents/policy/%
 	cp $< $@
 
-sources/m3aawg-bp-%: mn-samples-m3aawg/documents/report/%
+sources/m3aawg-r-%: mn-samples-m3aawg/documents/report/%
 	cp $< $@
 
 sources/gb-%: mn-samples-gb/documents/%
