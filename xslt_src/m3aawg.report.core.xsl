@@ -83,7 +83,9 @@
 				
 			</fo:layout-master-set>
 
-			<xsl:call-template name="addPDFUAmeta"/>
+			<fo:declarations>
+				<xsl:call-template name="addPDFUAmeta"/>
+			</fo:declarations>
 			
 			<xsl:call-template name="addBookmarks">
 				<xsl:with-param name="contents" select="$contents"/>

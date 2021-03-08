@@ -5,6 +5,7 @@
 											xmlns:mathml="http://www.w3.org/1998/Math/MathML" 
 											xmlns:xalan="http://xml.apache.org/xalan" 
 											xmlns:fox="http://xmlgraphics.apache.org/fop/extensions" 
+											xmlns:pdf="http://xmlgraphics.apache.org/fop/extensions/pdf"
 											xmlns:java="http://xml.apache.org/xalan/java" 
 											exclude-result-prefixes="java"
 											version="1.0">
@@ -18,6 +19,8 @@
 	<xsl:include href="./common.xsl"/>
 
 	<xsl:key name="kfn" match="iso:p/iso:fn" use="@reference"/>
+	
+	<xsl:key name="attachments" match="iso:eref[contains(@bibitemid, '.exp')]" use="@bibitemid"/>
 	
 	<xsl:variable name="namespace">iso</xsl:variable>
 	
@@ -194,8 +197,6 @@
 				<xsl:attribute name="font-family">Source Han Sans, Times New Roman, Cambria Math</xsl:attribute>
 			</xsl:if>
 			
-			
-			
 			<fo:layout-master-set>
 				
 				<!-- cover page -->
@@ -349,9 +350,16 @@
 				
 				
 			</fo:layout-master-set>
+			
+			<fo:declarations>
+				<xsl:call-template name="addPDFUAmeta"/>
+				<xsl:for-each select="//*[local-name() = 'eref'][generate-id(.)=generate-id(key('attachments',@bibitemid)[1])]">
+					<xsl:variable name="url" select="concat('url(', ., ')')"/>
+					<pdf:embedded-file src="{$url}"/>
+				</xsl:for-each>
+			</fo:declarations>
 
-
-			<xsl:call-template name="addPDFUAmeta"/>
+			
 			
 			<xsl:call-template name="addBookmarks">
 				<xsl:with-param name="contents" select="$contents"/>
@@ -2182,7 +2190,20 @@
 	<!-- End SVG images processing -->
 	<!-- =================== -->
 	
+	<!-- For express listings PDF attachments -->
+	<xsl:template match="*[local-name() = 'eref'][contains(., '.exp')]" priority="2">
+		<fo:inline xsl:use-attribute-sets="eref-style">
+			<xsl:variable name="url" select="concat('url(embedded-file:', @bibitemid, ')')"/>
+			<fo:basic-link external-destination="{$url}" fox:alt-text="{@citeas}">
+				<xsl:if test="normalize-space(@citeas) = ''">
+					<xsl:attribute name="fox:alt-text"><xsl:value-of select="."/></xsl:attribute>
+				</xsl:if>
+				<xsl:apply-templates />
+			</fo:basic-link>
+		</fo:inline>
+	</xsl:template>
 	
+
 	<!-- =================== -->
 	<!-- Index processing -->
 	<!-- =================== -->

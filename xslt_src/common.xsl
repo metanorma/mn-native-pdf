@@ -6604,90 +6604,88 @@
 		<xsl:variable name="lang">
 			<xsl:call-template name="getLang"/>
 		</xsl:variable>
-		<fo:declarations>
-			<pdf:catalog xmlns:pdf="http://xmlgraphics.apache.org/fop/extensions/pdf">
-					<pdf:dictionary type="normal" key="ViewerPreferences">
-						<pdf:boolean key="DisplayDocTitle">true</pdf:boolean>
-					</pdf:dictionary>
-				</pdf:catalog>
-			<x:xmpmeta xmlns:x="adobe:ns:meta/">
-				<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-					<rdf:Description rdf:about="" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:pdf="http://ns.adobe.com/pdf/1.3/">
-					<!-- Dublin Core properties go here -->
-						<dc:title>
-							<xsl:variable name="title">
-								<xsl:for-each select="(//*[contains(local-name(), '-standard')])[1]/*[local-name() = 'bibdata']">
-									<xsl:if test="$namespace = 'iso' or $namespace = 'gb' or $namespace = 'iec' or $namespace = 'nist-cswp'  or $namespace = 'nist-sp' or $namespace = 'unece' or $namespace = 'unece-rec'">
-										<xsl:value-of select="*[local-name() = 'title'][@language = $lang and @type = 'main']"/>
-									</xsl:if>
-									<xsl:if test="$namespace = 'bipm'">
-										<xsl:value-of select="*[local-name() = 'title'][@language = $lang and @type = 'main']"/>
-									</xsl:if>
-									<xsl:if test="$namespace = 'jcgm'">
-										<xsl:value-of select="*[local-name() = 'title'][@language = $lang and @type = 'part']"/>
-									</xsl:if>
-									<xsl:if test="$namespace = 'iho' or $namespace = 'csa' or $namespace = 'csd' or $namespace = 'rsd' or $namespace = 'ogc' or $namespace = 'ogc-white-paper' or $namespace = 'mpfd'">								
-										<xsl:value-of select="*[local-name() = 'title'][@language = $lang]"/>
-									</xsl:if>
-									<xsl:if test="$namespace = 'm3d'">
-										<xsl:value-of select="*[local-name() = 'title']"/>
-									</xsl:if>
-									<xsl:if test="$namespace = 'itu'">
-										<xsl:value-of select="*[local-name() = 'title'][@type='main']"/>
-									</xsl:if>								
-								</xsl:for-each>
-							</xsl:variable>
-							<xsl:choose>
-								<xsl:when test="normalize-space($title) != ''">
-									<xsl:value-of select="$title"/>
-								</xsl:when>
-								<xsl:otherwise>
-									<xsl:text>&#xA0;</xsl:text>
-								</xsl:otherwise>
-							</xsl:choose>							
-						</dc:title>
-						<dc:creator>
+		<pdf:catalog xmlns:pdf="http://xmlgraphics.apache.org/fop/extensions/pdf">
+				<pdf:dictionary type="normal" key="ViewerPreferences">
+					<pdf:boolean key="DisplayDocTitle">true</pdf:boolean>
+				</pdf:dictionary>
+			</pdf:catalog>
+		<x:xmpmeta xmlns:x="adobe:ns:meta/">
+			<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+				<rdf:Description rdf:about="" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:pdf="http://ns.adobe.com/pdf/1.3/">
+				<!-- Dublin Core properties go here -->
+					<dc:title>
+						<xsl:variable name="title">
 							<xsl:for-each select="(//*[contains(local-name(), '-standard')])[1]/*[local-name() = 'bibdata']">
-								<xsl:if test="$namespace = 'bipm' or $namespace = 'csa' or $namespace = 'csd' or $namespace = 'gb' or $namespace = 'iec' or $namespace = 'iho' or $namespace = 'iso' or $namespace = 'itu' or $namespace = 'm3d' or $namespace = 'ogc' or $namespace = 'ogc-white-paper' or $namespace = 'rsd' or $namespace = 'unece' or $namespace = 'unece-rec'">
-									<xsl:for-each select="*[local-name() = 'contributor'][*[local-name() = 'role']/@type='author']">
-										<xsl:value-of select="*[local-name() = 'organization']/*[local-name() = 'name']"/>
-										<xsl:if test="position() != last()">; </xsl:if>
-									</xsl:for-each>
+								<xsl:if test="$namespace = 'iso' or $namespace = 'gb' or $namespace = 'iec' or $namespace = 'nist-cswp'  or $namespace = 'nist-sp' or $namespace = 'unece' or $namespace = 'unece-rec'">
+									<xsl:value-of select="*[local-name() = 'title'][@language = $lang and @type = 'main']"/>
+								</xsl:if>
+								<xsl:if test="$namespace = 'bipm'">
+									<xsl:value-of select="*[local-name() = 'title'][@language = $lang and @type = 'main']"/>
 								</xsl:if>
 								<xsl:if test="$namespace = 'jcgm'">
-									<xsl:value-of select="normalize-space(*[local-name() = 'ext']/*[local-name() = 'editorialgroup']/*[local-name() = 'committee'])"/>
+									<xsl:value-of select="*[local-name() = 'title'][@language = $lang and @type = 'part']"/>
 								</xsl:if>
-								<xsl:if test="$namespace = 'nist-cswp'  or $namespace = 'nist-sp'">
-									<xsl:for-each select="*[local-name() = 'contributor'][*[local-name() = 'role']/@type='author']">
-										<xsl:value-of select="*[local-name() = 'person']/*[local-name() = 'name']/*[local-name() = 'completename']"/>
-										<xsl:if test="position() != last()">; </xsl:if>
-									</xsl:for-each>
+								<xsl:if test="$namespace = 'iho' or $namespace = 'csa' or $namespace = 'csd' or $namespace = 'rsd' or $namespace = 'ogc' or $namespace = 'ogc-white-paper' or $namespace = 'mpfd'">								
+									<xsl:value-of select="*[local-name() = 'title'][@language = $lang]"/>
 								</xsl:if>
+								<xsl:if test="$namespace = 'm3d'">
+									<xsl:value-of select="*[local-name() = 'title']"/>
+								</xsl:if>
+								<xsl:if test="$namespace = 'itu'">
+									<xsl:value-of select="*[local-name() = 'title'][@type='main']"/>
+								</xsl:if>								
 							</xsl:for-each>
-						</dc:creator>
-						<dc:description>
-							<xsl:variable name="abstract">
-								<xsl:if test="$namespace = 'bipm' or $namespace = 'csa' or $namespace = 'csd' or $namespace = 'gb' or $namespace = 'iec' or $namespace = 'iho' or  $namespace = 'iso' or $namespace = 'itu' or $namespace = 'm3d' or $namespace = 'ogc' or $namespace = 'ogc-white-paper' or $namespace = 'rsd' or $namespace = 'nist-cswp' or $namespace = 'nist-sp' or $namespace = 'unece' or $namespace = 'unece-rec'">
-									<xsl:copy-of select="//*[contains(local-name(), '-standard')]/*[local-name() = 'preface']/*[local-name() = 'abstract']//text()"/>									
-								</xsl:if>
-								<xsl:if test="$namespace = 'jcgm'">
-									<xsl:value-of select="//*[contains(local-name(), '-standard')]/*[local-name() = 'bibdata']/*[local-name() = 'title'][@language = $lang and @type = 'main']"/>
-								</xsl:if>
-							</xsl:variable>
-							<xsl:value-of select="normalize-space($abstract)"/>
-						</dc:description>
-						<pdf:Keywords>
-							<xsl:call-template name="insertKeywords"/>
-						</pdf:Keywords>
-					</rdf:Description>
-					<rdf:Description rdf:about=""
-							xmlns:xmp="http://ns.adobe.com/xap/1.0/">
-						<!-- XMP properties go here -->
-						<xmp:CreatorTool></xmp:CreatorTool>
-					</rdf:Description>
-				</rdf:RDF>
-			</x:xmpmeta>
-		</fo:declarations>
+						</xsl:variable>
+						<xsl:choose>
+							<xsl:when test="normalize-space($title) != ''">
+								<xsl:value-of select="$title"/>
+							</xsl:when>
+							<xsl:otherwise>
+								<xsl:text>&#xA0;</xsl:text>
+							</xsl:otherwise>
+						</xsl:choose>							
+					</dc:title>
+					<dc:creator>
+						<xsl:for-each select="(//*[contains(local-name(), '-standard')])[1]/*[local-name() = 'bibdata']">
+							<xsl:if test="$namespace = 'bipm' or $namespace = 'csa' or $namespace = 'csd' or $namespace = 'gb' or $namespace = 'iec' or $namespace = 'iho' or $namespace = 'iso' or $namespace = 'itu' or $namespace = 'm3d' or $namespace = 'ogc' or $namespace = 'ogc-white-paper' or $namespace = 'rsd' or $namespace = 'unece' or $namespace = 'unece-rec'">
+								<xsl:for-each select="*[local-name() = 'contributor'][*[local-name() = 'role']/@type='author']">
+									<xsl:value-of select="*[local-name() = 'organization']/*[local-name() = 'name']"/>
+									<xsl:if test="position() != last()">; </xsl:if>
+								</xsl:for-each>
+							</xsl:if>
+							<xsl:if test="$namespace = 'jcgm'">
+								<xsl:value-of select="normalize-space(*[local-name() = 'ext']/*[local-name() = 'editorialgroup']/*[local-name() = 'committee'])"/>
+							</xsl:if>
+							<xsl:if test="$namespace = 'nist-cswp'  or $namespace = 'nist-sp'">
+								<xsl:for-each select="*[local-name() = 'contributor'][*[local-name() = 'role']/@type='author']">
+									<xsl:value-of select="*[local-name() = 'person']/*[local-name() = 'name']/*[local-name() = 'completename']"/>
+									<xsl:if test="position() != last()">; </xsl:if>
+								</xsl:for-each>
+							</xsl:if>
+						</xsl:for-each>
+					</dc:creator>
+					<dc:description>
+						<xsl:variable name="abstract">
+							<xsl:if test="$namespace = 'bipm' or $namespace = 'csa' or $namespace = 'csd' or $namespace = 'gb' or $namespace = 'iec' or $namespace = 'iho' or  $namespace = 'iso' or $namespace = 'itu' or $namespace = 'm3d' or $namespace = 'ogc' or $namespace = 'ogc-white-paper' or $namespace = 'rsd' or $namespace = 'nist-cswp' or $namespace = 'nist-sp' or $namespace = 'unece' or $namespace = 'unece-rec'">
+								<xsl:copy-of select="//*[contains(local-name(), '-standard')]/*[local-name() = 'preface']/*[local-name() = 'abstract']//text()"/>									
+							</xsl:if>
+							<xsl:if test="$namespace = 'jcgm'">
+								<xsl:value-of select="//*[contains(local-name(), '-standard')]/*[local-name() = 'bibdata']/*[local-name() = 'title'][@language = $lang and @type = 'main']"/>
+							</xsl:if>
+						</xsl:variable>
+						<xsl:value-of select="normalize-space($abstract)"/>
+					</dc:description>
+					<pdf:Keywords>
+						<xsl:call-template name="insertKeywords"/>
+					</pdf:Keywords>
+				</rdf:Description>
+				<rdf:Description rdf:about=""
+						xmlns:xmp="http://ns.adobe.com/xap/1.0/">
+					<!-- XMP properties go here -->
+					<xmp:CreatorTool></xmp:CreatorTool>
+				</rdf:Description>
+			</rdf:RDF>
+		</x:xmpmeta>
 	</xsl:template>
 	
 	<xsl:template name="getId">
