@@ -1595,6 +1595,7 @@
 		<xsl:variable name="element-name">
 			<xsl:choose>
 				<xsl:when test="ancestor::itu:dd">fo:inline</xsl:when>
+				<xsl:when test="ancestor::itu:title">fo:inline</xsl:when>
 				<xsl:when test="normalize-space(ancestor::itu:p[1]//text()[not(parent::itu:tt)]) != ''">fo:inline</xsl:when>
 				<xsl:otherwise>fo:block</xsl:otherwise>
 			</xsl:choose>
@@ -1602,8 +1603,11 @@
 		<xsl:element name="{$element-name}">
 			<xsl:attribute name="font-family">Courier</xsl:attribute>
 			<xsl:attribute name="font-size">10pt</xsl:attribute>
-			<xsl:if test="local-name(..) != 'dt' and not(ancestor::itu:dd)">
+			<xsl:if test="local-name(..) != 'dt' and not(ancestor::itu:dd) and not(ancestor::itu:title)">
 				<xsl:attribute name="text-align">center</xsl:attribute>
+			</xsl:if>
+			<xsl:if test="ancestor::itu:title">
+				<xsl:attribute name="font-size">11pt</xsl:attribute>
 			</xsl:if>
 			<xsl:apply-templates />
 		</xsl:element>
