@@ -5463,50 +5463,66 @@
 	<!-- author  -->	
 	<!-- ====== -->
 	<xsl:template match="*[local-name() = 'eref']">
-		<fo:inline xsl:use-attribute-sets="eref-style">
-			<xsl:if test="@type = 'footnote'">
-				<xsl:if test="$namespace = 'csa' or $namespace = 'csd' or $namespace = 'iec' or $namespace = 'iho' or $namespace = 'itu' or $namespace = 'iso' or 
-													$namespace = 'nist-cswp' or
-													$namespace = 'nist-sp' or
-													$namespace = 'ogc' or $namespace = 'ogc-white-paper' or 
-													$namespace = 'rsd' or 
-													$namespace = 'unece' or 
-													$namespace = 'unece-rec' or $namespace = 'mpfd' or $namespace = 'bipm' or $namespace = 'jcgm'">
-					<xsl:attribute name="keep-together.within-line">always</xsl:attribute>
-					<xsl:attribute name="font-size">80%</xsl:attribute>
-					<xsl:attribute name="keep-with-previous.within-line">always</xsl:attribute>
-					<xsl:attribute name="vertical-align">super</xsl:attribute>
-				</xsl:if>					
-				<xsl:if test="$namespace = 'gb' or $namespace = 'm3d'">
-					<xsl:attribute name="keep-together.within-line">always</xsl:attribute>
-					<xsl:attribute name="font-size">50%</xsl:attribute>
-					<xsl:attribute name="keep-with-previous.within-line">always</xsl:attribute>
-					<xsl:attribute name="vertical-align">super</xsl:attribute>
-				</xsl:if>
-			</xsl:if>	
-		
-			<fo:basic-link internal-destination="{@bibitemid}" fox:alt-text="{@citeas}">
-				<xsl:if test="normalize-space(@citeas) = ''">
-					<xsl:attribute name="fox:alt-text"><xsl:value-of select="."/></xsl:attribute>
-				</xsl:if>
-				<xsl:if test="@type = 'inline'">
-					<xsl:if test="$namespace = 'csd' or $namespace = 'iho' or $namespace = 'ogc-white-paper' or $namespace = 'mpfd' or $namespace = 'bipm'">
-						<xsl:attribute name="color">blue</xsl:attribute>
-						<xsl:attribute name="text-decoration">underline</xsl:attribute>
-					</xsl:if>
-					<xsl:if test="$namespace = 'ogc'">
-					</xsl:if>
-					<xsl:if test="$namespace = 'nist-cswp' or 
-														$namespace = 'nist-sp' or 
-														$namespace = 'unece'">
-						<xsl:attribute name="text-decoration">underline</xsl:attribute>
-					</xsl:if>
-				</xsl:if>
-			
-			
-				<xsl:apply-templates />
-			</fo:basic-link>
-		</fo:inline>
+	
+		<xsl:variable name="bibitemid">
+			<xsl:choose>
+				<xsl:when test="//*[local-name() = 'bibitem'][@hidden='true' and @id = current()/@bibitemid]"></xsl:when>
+				<xsl:when test="//*[local-name() = 'references'][@hidden='true']/*[local-name() = 'bibitem'][@id = current()/@bibitemid]"></xsl:when>
+				<xsl:otherwise><xsl:value-of select="@bibitemid"/></xsl:otherwise>
+			</xsl:choose>
+		</xsl:variable>
+	
+		<xsl:choose>
+			<xsl:when test="normalize-space($bibitemid) != ''">
+				<fo:inline xsl:use-attribute-sets="eref-style">
+					<xsl:if test="@type = 'footnote'">
+						<xsl:if test="$namespace = 'csa' or $namespace = 'csd' or $namespace = 'iec' or $namespace = 'iho' or $namespace = 'itu' or $namespace = 'iso' or 
+															$namespace = 'nist-cswp' or
+															$namespace = 'nist-sp' or
+															$namespace = 'ogc' or $namespace = 'ogc-white-paper' or 
+															$namespace = 'rsd' or 
+															$namespace = 'unece' or 
+															$namespace = 'unece-rec' or $namespace = 'mpfd' or $namespace = 'bipm' or $namespace = 'jcgm'">
+							<xsl:attribute name="keep-together.within-line">always</xsl:attribute>
+							<xsl:attribute name="font-size">80%</xsl:attribute>
+							<xsl:attribute name="keep-with-previous.within-line">always</xsl:attribute>
+							<xsl:attribute name="vertical-align">super</xsl:attribute>
+						</xsl:if>					
+						<xsl:if test="$namespace = 'gb' or $namespace = 'm3d'">
+							<xsl:attribute name="keep-together.within-line">always</xsl:attribute>
+							<xsl:attribute name="font-size">50%</xsl:attribute>
+							<xsl:attribute name="keep-with-previous.within-line">always</xsl:attribute>
+							<xsl:attribute name="vertical-align">super</xsl:attribute>
+						</xsl:if>
+					</xsl:if>	
+											
+					<fo:basic-link internal-destination="{@bibitemid}" fox:alt-text="{@citeas}">
+						<xsl:if test="normalize-space(@citeas) = ''">
+							<xsl:attribute name="fox:alt-text"><xsl:value-of select="."/></xsl:attribute>
+						</xsl:if>
+						<xsl:if test="@type = 'inline'">
+							<xsl:if test="$namespace = 'csd' or $namespace = 'iho' or $namespace = 'ogc-white-paper' or $namespace = 'mpfd' or $namespace = 'bipm'">
+								<xsl:attribute name="color">blue</xsl:attribute>
+								<xsl:attribute name="text-decoration">underline</xsl:attribute>
+							</xsl:if>
+							<xsl:if test="$namespace = 'ogc'">
+							</xsl:if>
+							<xsl:if test="$namespace = 'nist-cswp' or 
+																$namespace = 'nist-sp' or 
+																$namespace = 'unece'">
+								<xsl:attribute name="text-decoration">underline</xsl:attribute>
+							</xsl:if>
+						</xsl:if>
+
+						<xsl:apply-templates />
+					</fo:basic-link>
+							
+				</fo:inline>
+			</xsl:when>
+			<xsl:otherwise>
+				<fo:inline><xsl:apply-templates /></fo:inline>
+			</xsl:otherwise>
+		</xsl:choose>
 	</xsl:template>
 	
 	<!-- ====== -->

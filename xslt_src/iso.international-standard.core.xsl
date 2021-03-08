@@ -2172,11 +2172,11 @@
 		<xsl:param name="height"/>
 		<xsl:param name="dest"/>
 		<fo:block-container position="absolute" left="{$left}px" top="{$top}px" width="{$width}px" height="{$height}px">
-		 <fo:block>
+		 <fo:block font-size="1pt">
 			<fo:basic-link internal-destination="{$dest}" fox:alt-text="svg link">
-				<fo:inline-container>
-					<fo:block-container height="{$height}px" width="100%">
-						<!-- <xsl:if test="local-name()='polygon'">
+				<fo:inline-container inline-progression-dimension="100%">
+					<fo:block-container height="{$height - 1}px" width="100%">
+						<!-- DEBUG <xsl:if test="local-name()='polygon'">
 							<xsl:attribute name="background-color">magenta</xsl:attribute>
 						</xsl:if> -->
 					<fo:block>&#xa0;</fo:block></fo:block-container>
