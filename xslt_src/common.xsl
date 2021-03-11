@@ -574,6 +574,9 @@
 			<xsl:attribute name="font-size">11pt</xsl:attribute>
 			<xsl:attribute name="margin-left">12.7mm</xsl:attribute>			
 		</xsl:if>
+		<xsl:if test="$namespace = 'iso'">
+			<xsl:attribute name="text-align">justify</xsl:attribute>
+		</xsl:if>
 		<xsl:if test="$namespace = 'itu'">
 			<xsl:attribute name="font-size">10pt</xsl:attribute>
 			<xsl:attribute name="margin-top">12pt</xsl:attribute>
@@ -5192,8 +5195,7 @@
 			<xsl:variable name="element">
 				<xsl:if test="$namespace = 'csa' or 
 													$namespace = 'csd' or 
-													$namespace = 'gb' or 
-													$namespace = 'iso' or 
+													$namespace = 'gb' or 													
 													$namespace = 'iho' or 
 													$namespace = 'itu'  or 
 													$namespace = 'nist-cswp' or 
@@ -5203,6 +5205,7 @@
 													$namespace = 'unece' or 
 													$namespace = 'unece-rec' or $namespace = 'mpfd' or $namespace = 'bipm' or $namespace = 'jcgm'">block</xsl:if>				
 				<xsl:if test="$namespace = 'iec' or 
+													$namespace = 'iso' or 
 													$namespace = 'ogc' or 
 													$namespace = 'm3d'">inline</xsl:if>
 				<xsl:if test=".//*[local-name() = 'table']">block</xsl:if> 
@@ -5267,13 +5270,12 @@
 	</xsl:template>
 	
 	<xsl:template match="*[local-name() = 'example']/*[local-name() = 'p']">
-	
+		<xsl:variable name="num"><xsl:number/></xsl:variable>
 		<xsl:variable name="element">
 			<xsl:if test="$namespace = 'csa' or 
 												$namespace = 'csd' or 
 												$namespace = 'gb' or 
 												$namespace = 'iec' or 
-												$namespace = 'iso' or 
 												$namespace = 'iho' or 
 												$namespace = 'itu' or 
 												$namespace = 'nist-cswp' or 
@@ -5286,6 +5288,12 @@
 												$namespace = 'm3d' or 
 												$namespace = 'bipm' or 
 												$namespace = 'jcgm'">block</xsl:if>
+			<xsl:if test="$namespace = 'iso'">
+				<xsl:choose>
+					<xsl:when test="$num = 1">inline</xsl:when>
+					<xsl:otherwise>block</xsl:otherwise>
+				</xsl:choose>
+			</xsl:if>
 			<xsl:if test="$namespace = 'ogc' ">inline</xsl:if>
 		</xsl:variable>		
 		<xsl:choose>			
