@@ -3943,6 +3943,14 @@
 				<xsl:apply-templates select="." mode="mathml"/>
 			</xsl:variable>
 			<fo:instream-foreign-object fox:alt-text="Math">
+				<xsl:if test="$namespace = 'bipm'">
+					<xsl:if test="ancestor::*[local-name() = 'formula']">
+						<xsl:attribute name="width">95%</xsl:attribute>
+						<xsl:attribute name="content-height">100%</xsl:attribute>
+						<xsl:attribute name="content-width">scale-down-to-fit</xsl:attribute>
+						<xsl:attribute name="scaling">uniform</xsl:attribute>
+					</xsl:if>
+				</xsl:if>
 				<!-- <xsl:copy-of select="."/> -->
 				<xsl:copy-of select="xalan:nodeset($mathml)"/>
 			</fo:instream-foreign-object>			
