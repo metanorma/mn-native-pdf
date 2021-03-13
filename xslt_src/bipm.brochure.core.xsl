@@ -3359,9 +3359,9 @@
 																	mathml:mfenced[count(*) = 1]/*[count(*) = 1]/*[count(*) = 1]/*[count(*) = 0]" mode="mathml" priority="2"> <!-- [not(following-sibling::*) and not(preceding-sibling::*)] -->
 		<xsl:copy>
 			<xsl:apply-templates select="@*" mode="mathml"/>
-			<xsl:value-of select="ancestor::mathml:mfenced/@open"/>
+			<xsl:value-of select="ancestor::mathml:mfenced[1]/@open"/>
 			<xsl:value-of select="."/>
-			<xsl:value-of select="ancestor::mathml:mfenced/@close"/>
+			<xsl:value-of select="ancestor::mathml:mfenced[1]/@close"/>
 		</xsl:copy>
 	</xsl:template>
 
