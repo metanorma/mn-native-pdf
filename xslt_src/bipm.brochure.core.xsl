@@ -3369,7 +3369,7 @@
 	<xsl:template match="mathml:mo[normalize-space(text()) = '/' or normalize-space(text()) = '|']" mode="mathml">
 		<xsl:copy>
 			<xsl:apply-templates select="@*" mode="mathml"/>
-				<xsl:if test="not(@stretchy)">
+				<xsl:if test="not(@stretchy) and not(preceding-sibling::*[1][local-name() = 'mfrac'] and following-sibling::*[1][local-name() = 'mfrac'])">
 					<xsl:attribute name="stretchy">false</xsl:attribute>
 				</xsl:if>
 			<xsl:apply-templates mode="mathml"/>
