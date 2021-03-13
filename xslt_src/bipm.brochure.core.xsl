@@ -1418,17 +1418,20 @@
 																													string-length($title_subpart_fr) +
 																													string-length($title_subpart_fr)"/>
 																													
-						<xsl:variable name="font-size-number-factor">
+						<!-- <xsl:variable name="font-size-number-factor">
 							<xsl:choose>
 								<xsl:when test="$titles_length &gt; 350">0.7</xsl:when>
 								<xsl:when test="$titles_length &gt; 250">0.85</xsl:when>
+								<xsl:when test="$titles_length &gt; 130">0.9</xsl:when>
 								<xsl:otherwise>1</xsl:otherwise>
 							</xsl:choose>
-						</xsl:variable>
+						</xsl:variable> -->
 						
 						<xsl:variable name="space-factor">
 							<xsl:choose>
 								<xsl:when test="$titles_length &gt; 250">0.3</xsl:when>
+								<xsl:when test="$titles_length &gt; 200">0.5</xsl:when>
+								<xsl:when test="$titles_length &gt; 150">0.7</xsl:when>
 								<xsl:otherwise>1</xsl:otherwise>
 							</xsl:choose>
 						</xsl:variable>
@@ -1436,11 +1439,21 @@
 						<xsl:variable name="font-size-factor">
 							<xsl:choose>
 								<xsl:when test="$titles_length &gt; 350">0.5</xsl:when>
-								<xsl:when test="$titles_length &gt; 250">0.65</xsl:when>
+								<xsl:when test="$titles_length &gt; 250">0.55</xsl:when>
+								<xsl:when test="$titles_length &gt; 180">0.65</xsl:when>
+								<xsl:when test="$titles_length &gt; 130">0.8</xsl:when>
 								<xsl:otherwise>1</xsl:otherwise>
 							</xsl:choose>
 						</xsl:variable>
-					
+						
+						<xsl:variable name="font-size-number-factor">
+							<xsl:choose>
+								<xsl:when test="$font-size-factor &lt; 1"><xsl:value-of select="$font-size-factor *1.3"/></xsl:when>
+								<xsl:otherwise>1</xsl:otherwise>
+							</xsl:choose>
+						</xsl:variable>
+						
+						<!-- <fo:block font-size="6pt">DEBUG font-size-factor=<xsl:value-of select="$font-size-factor"/>, titles_length=<xsl:value-of select="$titles_length"/></fo:block> -->
 						<!-- Appendix titles processing -->
 						<xsl:variable name="appendix_num" select="normalize-space((//bipm:bipm-standard)[1]/bipm:bibdata/bipm:ext/bipm:structuredidentifier/bipm:appendix)"/>
 						<xsl:if test="$appendix_num != ''">
