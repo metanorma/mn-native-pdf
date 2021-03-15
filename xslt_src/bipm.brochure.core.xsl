@@ -3096,6 +3096,18 @@
 		</fo:block>
 	</xsl:template>
 
+  <xsl:template match="bipm:preferred">		
+    <fo:block font-weight="bold" keep-with-next="always" space-before="8pt" margin-bottom="6pt">
+      <xsl:if test="ancestor::bipm:term/bipm:name">
+        <fo:inline>
+          <xsl:attribute name="padding-right">2mm</xsl:attribute>
+          <xsl:apply-templates select="ancestor::bipm:term/bipm:name" mode="presentation"/>				
+        </fo:inline>
+      </xsl:if>
+      <xsl:apply-templates />
+    </fo:block>
+	</xsl:template>
+
 	<xsl:template match="bipm:bibitem">
 		<fo:block id="{@id}" margin-bottom="12pt" start-indent="25mm" text-indent="-25mm" line-height="115%">
 			<xsl:if test=".//bipm:fn">
