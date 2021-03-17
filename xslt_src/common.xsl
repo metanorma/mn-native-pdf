@@ -3944,7 +3944,7 @@
 			</xsl:variable>
 			<fo:instream-foreign-object fox:alt-text="Math">
 				<xsl:if test="$namespace = 'bipm'">
-					<xsl:if test="ancestor::*[local-name() = 'formula']">
+					<xsl:if test="local-name(../..) = 'formula'">
 						<xsl:attribute name="width">95%</xsl:attribute>
 						<xsl:attribute name="content-height">100%</xsl:attribute>
 						<xsl:attribute name="content-width">scale-down-to-fit</xsl:attribute>
