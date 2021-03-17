@@ -1102,6 +1102,9 @@
 				<!-- Bibliography -->
 				<xsl:apply-templates select="bipm:bibliography/bipm:references[not(@normative='true')]" mode="sections"/> 
 				
+				<!-- Document Control -->
+				<xsl:apply-templates select="bipm:doccontrol" mode="sections"/> 
+				
 				<!-- Index -->
 				<!-- <xsl:apply-templates select="xalan:nodeset($indexes)/doc[@id = $docid]//bipm:clause[@type = 'index']" mode="index" /> -->
 				<xsl:apply-templates select="xalan:nodeset($indexes)/doc[@id = $docid]//bipm:indexsect" mode="index" />
@@ -1266,6 +1269,9 @@
 				
 				
 				<xsl:apply-templates select="bipm:bibliography/bipm:references[not(@normative='true')]" mode="sections"/> 
+				
+				<!-- Document Control -->
+				<xsl:apply-templates select="bipm:doccontrol" mode="sections"/> 
 				
 				<!-- Index -->
 				<!-- <xsl:apply-templates select="xalan:nodeset($indexes)/doc[@id = $docid]//bipm:clause[@type = 'index']" mode="index" /> -->

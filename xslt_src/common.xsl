@@ -1614,7 +1614,7 @@
 						<attribute name="border-bottom">2pt solid black</attribute>
 					</xsl:if>				
 					<xsl:if test="$namespace = 'bipm'">					
-						<xsl:if test="not(ancestor::*[local-name()='preface']) and not(ancestor::*[local-name()='note_side']) and not(ancestor::*[local-name() = 'annex'] and .//*[local-name() = 'xref'][@pagenumber])">
+						<xsl:if test="not(ancestor::*[local-name()='preface']) and not(ancestor::*[local-name()='note_side']) and not(ancestor::*[local-name() = 'annex'] and .//*[local-name() = 'xref'][@pagenumber]) and not(ancestor::*[local-name() = 'doccontrol'])">
 							<attribute name="border-top">0.5pt solid black</attribute>
 							<attribute name="border-bottom">0.5pt solid black</attribute>
 						</xsl:if>
