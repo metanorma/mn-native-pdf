@@ -3326,7 +3326,7 @@
 
 	<!-- set height for sup -->
 	<!-- <xsl:template match="mathml:msup[count(*) = 2 and count(mathml:mrow) = 2]/mathml:mrow[1][count(*) = 1 and mathml:mtext and (mathml:mtext/text() != '' and mathml:mtext/text() != ' ' and mathml:mtext/text() != '&#xa0;')]/mathml:mtext" mode="mtext"> -->
-	<xsl:template match="mathml:msup[count(*) = 2 and count(mathml:mrow) = 2]/mathml:mrow[1][count(*) = 1]/*" mode="mathml" priority="2">
+	<xsl:template match="mathml:msup[count(*) = 2 and count(mathml:mrow) = 2]/mathml:mrow[1][count(*) = 1]/*" mode="mathml" priority="3">
 		<xsl:copy>
 			<xsl:apply-templates select="@*|node()" mode="mathml"/>
 		</xsl:copy>
