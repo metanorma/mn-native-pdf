@@ -3394,6 +3394,20 @@
 		</xsl:copy>
 	</xsl:template>
 	
+	<!-- Decrease a distance before and after of delta -->
+	<xsl:template match="mathml:mo[normalize-space(text()) = 'Δ']" mode="mathml">
+		<xsl:copy>
+			<xsl:apply-templates select="@*" mode="mathml"/>
+			<xsl:if test="not(@rspace)">
+				<xsl:attribute name="rspace">0em</xsl:attribute>
+			</xsl:if>
+			<xsl:if test="not(@lspace) and (preceding-sibling::*[1][local-name() = 'mo'] or not(preceding-sibling::*))">
+				<xsl:attribute name="lspace">0em</xsl:attribute>
+			</xsl:if>
+			<xsl:apply-templates mode="mathml"/>
+		</xsl:copy>
+	</xsl:template>
+	
 	<xsl:template match="mathml:mi[string-length(normalize-space()) &gt; 1]" mode="mathml" priority="2">
 		<xsl:if test="preceding-sibling::* and preceding-sibling::*[1][not(local-name() = 'mfenced' or local-name() = 'mo')]">
 			<mathml:mspace width="0.3em"/>
