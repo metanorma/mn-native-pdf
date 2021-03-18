@@ -10,18 +10,20 @@ jobs:
   build:
     runs-on: macos-latest
     steps:
-      - name: Use Ruby
-        uses: actions/setup-ruby@v1
+      - uses: actions/checkout@v2
+
+      - run: make update-init update-modules
+
+      - uses: ruby/setup-ruby@v1
         with:
           ruby-version: 2.6
-          architecture: 'x64'
+          bundler-cache: true
 
-      - uses: actions/checkout@master
-
-      - name: Update gems
-        run: |
-          gem install bundler
-          bundle install --jobs 4 --retry 3
+      - uses: actions/cache@v2
+        with:
+          path: ~/.fontist
+          key: fontist-macos
+          restore-keys: fontist-macos
 
       - name: Install Fontist fonts
         run: |
@@ -30,7 +32,6 @@ jobs:
           fontist manifest-install --confirm-license fonts/manifest.yml
           fontist manifest-locations fonts/manifest.yml > fonts/manifest.paths.yml
           cat fonts/manifest.paths.yml
-
 
       # cabextract for fonts, gettext-base for envsubst
       - name: Setup prerequisites
@@ -45,22 +46,10 @@ jobs:
           # Install yq
           brew install yq
 
-#      - name: Install Microsoft Vista fonts
-#        run: |
-#          export RENAME_FONTS=false
-#          curl -Ls https://raw.githubusercontent.com/metanorma/vista-fonts-installer/master/vista-fonts-installer.sh | bash
-
-      - name: Update submodules
-        run: |
-          make update-init update-modules
-
-      - name: Compile output
+      - run: make all published
         env:
           GITHUB_USERNAME: ${{ github.actor }}
           GITHUB_TOKEN: ${{ github.token }}
-        run: |
-          make all
-          mv documents published
 
       - uses: actions/upload-artifact@master
         with:
