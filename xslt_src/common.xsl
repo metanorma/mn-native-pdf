@@ -2422,9 +2422,19 @@
 				<xsl:attribute name="border-bottom">solid black 0.5pt</xsl:attribute>
 				<xsl:attribute name="height">8mm</xsl:attribute>
 				<xsl:attribute name="padding-top">2mm</xsl:attribute>
-				<xsl:if test="ancestor::*[local-name() = 'annex'] and ancestor::*[local-name() = 'table']//*[local-name() = 'xref'][@pagenumber]"><!-- for Annex ToC -->
+				<xsl:if test="(ancestor::*[local-name() = 'annex'] and ancestor::*[local-name() = 'table']//*[local-name() = 'xref'][@pagenumber]) or ancestor::*[local-name() = 'doccontrol']"><!-- for Annex ToC -->
 					<xsl:attribute name="border-top">solid black 0pt</xsl:attribute>
 					<xsl:attribute name="border-bottom">solid black 0pt</xsl:attribute>
+				</xsl:if>
+				<xsl:if test="ancestor::*[local-name() = 'doccontrol']">
+					<xsl:attribute name="text-align">
+						<xsl:choose>
+							<xsl:when test="@align">
+								<xsl:value-of select="@align"/>
+							</xsl:when>
+							<xsl:otherwise>left</xsl:otherwise>
+						</xsl:choose>
+					</xsl:attribute>
 				</xsl:if>
 			</xsl:if>
 			<xsl:if test="@colspan">
