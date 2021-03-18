@@ -1759,6 +1759,9 @@
 					<xsl:if test="not(*[local-name()='tab'])"> <!-- table without number -->
 						<xsl:attribute name="margin-top">0pt</xsl:attribute>
 					</xsl:if>
+					<xsl:if test="not(../preceding-sibling::*) and ancestor::node()[@orientation]">
+						<xsl:attribute name="margin-top">0pt</xsl:attribute>
+					</xsl:if>
 				</xsl:if>
 				<xsl:apply-templates />				
 			</fo:block>

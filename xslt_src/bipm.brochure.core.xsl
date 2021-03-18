@@ -263,6 +263,28 @@
 					</fo:repeatable-page-master-alternatives>
 				</fo:page-sequence-master>
 				
+				<!-- Document pages (landscape orientation) -->
+				<fo:simple-page-master master-name="document-landscape-odd" page-width="{$pageHeight}" page-height="{$pageWidth}">
+					<fo:region-body margin-top="25.4mm" margin-bottom="22mm" margin-left="31.7mm" margin-right="40mm"/>
+					<fo:region-before region-name="header-odd" extent="25.4mm"/> 
+					<fo:region-after region-name="footer" extent="22mm"/> <!-- debug:  background-color="green" -->
+					<fo:region-start region-name="left-region" extent="17mm"/>
+					<fo:region-end region-name="right-region" extent="26.5mm"/>
+				</fo:simple-page-master>
+				<fo:simple-page-master master-name="document-landscape-even" page-width="{$pageHeight}" page-height="{$pageWidth}">
+					<fo:region-body margin-top="25.4mm" margin-bottom="22mm" margin-left="31.7mm" margin-right="40mm"/>
+					<fo:region-before region-name="header-even" extent="25.4mm"/> 
+					<fo:region-after region-name="footer" extent="22mm"/> <!-- debug:  background-color="green" -->
+					<fo:region-start region-name="left-region" extent="17mm"/>
+					<fo:region-end region-name="right-region" extent="26.5mm"/>
+				</fo:simple-page-master>
+				<fo:page-sequence-master master-name="document-landscape">
+					<fo:repeatable-page-master-alternatives>						
+						<fo:conditional-page-master-reference odd-or-even="even" master-reference="document-landscape-even"/>
+						<fo:conditional-page-master-reference odd-or-even="odd" master-reference="document-landscape-odd"/>
+					</fo:repeatable-page-master-alternatives>
+				</fo:page-sequence-master>
+				
 				<!-- Index pages -->
 				<fo:simple-page-master master-name="index-odd" page-width="{$pageWidth}" page-height="{$pageHeight}">
 					<fo:region-body margin-top="25.4mm" margin-bottom="22mm" margin-left="31.7mm" margin-right="41.7mm" column-count="2" column-gap="10mm"/>
@@ -338,8 +360,12 @@
 									<xsl:apply-templates select="xalan:nodeset($current_document)" mode="flatxml"/>
 								</xsl:variable> -->
 								
-								<xsl:variable name="flatxml">
+								<xsl:variable name="flatxml_">
 									<xsl:apply-templates select="." mode="flatxml"/>
+								</xsl:variable>
+								
+								<xsl:variable name="flatxml">
+									<xsl:apply-templates select="xalan:nodeset($flatxml_)" mode="pagebreak"/>
 								</xsl:variable>
 								
 								<!-- flatxml=<xsl:copy-of select="$flatxml"/> -->
@@ -365,8 +391,12 @@
 									<xsl:apply-templates select="xalan:nodeset($current_document)" mode="flatxml"/>
 								</xsl:variable> -->
 								
-								<xsl:variable name="flatxml">
+								<xsl:variable name="flatxml_">
 									<xsl:apply-templates select="." mode="flatxml"/>
+								</xsl:variable>
+								
+								<xsl:variable name="flatxml">
+									<xsl:apply-templates select="xalan:nodeset($flatxml_)" mode="pagebreak"/>
 								</xsl:variable>
 								
 								<xsl:apply-templates select="xalan:nodeset($flatxml)/bipm:bipm-standard" mode="bipm-standard">
@@ -381,10 +411,14 @@
 				</xsl:when>			
 				<xsl:otherwise>
 				
-					<xsl:variable name="flatxml">
+					<xsl:variable name="flatxml_">
 						<xsl:apply-templates mode="flatxml"/>
 					</xsl:variable>
-				
+
+					<xsl:variable name="flatxml">
+						<xsl:apply-templates select="xalan:nodeset($flatxml_)" mode="pagebreak"/>
+					</xsl:variable>
+					
 					<!-- flatxml=<xsl:copy-of select="$flatxml"/> -->
 					
 					<!-- indexes=<xsl:copy-of select="$indexes"/> -->
@@ -878,8 +912,82 @@
 	<!-- END: Flattening xml for fit notes at page sides (margins) -->
 	<!-- ================================= -->	
 	
+	<!-- ================================= -->
+	<!-- Page breaks processing (close previous elements (clause) and start new) -->
+	<!-- ================================= -->	
+	<xsl:template match="@*|node()" mode="pagebreak">
+		<xsl:copy>
+			<xsl:apply-templates select="@*|node()" mode="pagebreak"/>
+		</xsl:copy>
+	</xsl:template>
 	
+	<xsl:template match="node()[bipm:pagebreak[@orientation]]" mode="pagebreak">
+		<xsl:variable name="element_name" select="local-name()"/>
+		<xsl:for-each select="bipm:pagebreak[@orientation]">
+			<xsl:variable name="pagebreak_id" select="generate-id()"/>
+			<xsl:variable name="pagebreak_previous_orientation" select="preceding-sibling::bipm:pagebreak[@orientation][1]/@orientation"/>
+			
+			<!-- copy elements before page break -->
+			<xsl:element name="{$element_name}" namespace="https://www.metanorma.org/ns/bipm">
+				<xsl:if test="not(preceding-sibling::bipm:pagebreak[@orientation])">
+					<xsl:apply-templates select="../@*" mode="pagebreak"/>
+				</xsl:if>
+				<xsl:if test="$pagebreak_previous_orientation != ''">
+					<xsl:attribute name="orientation"><xsl:value-of select="$pagebreak_previous_orientation"/></xsl:attribute>
+				</xsl:if>
+				
+				<xsl:apply-templates select="preceding-sibling::node()[following-sibling::bipm:pagebreak[@orientation][1][generate-id(.) = $pagebreak_id]][not(local-name() = 'pagebreak' and @orientation)]" mode="pagebreak"/>
+			</xsl:element>
+			
+			<!-- copy elements after last page break -->
+			<xsl:if test="position() = last() and following-sibling::node()">
+				<xsl:element name="{$element_name}" namespace="https://www.metanorma.org/ns/bipm">
+					<xsl:attribute name="orientation"><xsl:value-of select="@orientation"/></xsl:attribute>
+					<xsl:apply-templates select="following-sibling::node()" mode="pagebreak"/>
+				</xsl:element>
+			</xsl:if>
+			
+		</xsl:for-each>
+		
+	</xsl:template>
 	
+	<xsl:template match="bipm:pagebreak2" mode="pagebreak">
+		<xsl:variable name="orientation" select="normalize-space(@orientation)"/>
+		<xsl:variable name="tree">
+			<xsl:for-each select="ancestor::*[ancestor::bipm:sections or ancestor::bipm:annex or ancestor::bipm:preface]">
+				<element pos="{position()}">					
+					<xsl:value-of select="name()"/>
+				</element>
+			</xsl:for-each>
+		</xsl:variable>
+		<!-- close preceding elements -->
+		<xsl:for-each select="xalan:nodeset($tree)//element">
+			<xsl:sort data-type="number" order="descending" select="@pos"/>
+			<xsl:text disable-output-escaping="yes">&lt;/</xsl:text>
+				<xsl:value-of select="."/>				
+			<xsl:text disable-output-escaping="yes">&gt;</xsl:text>
+		</xsl:for-each>
+		<!-- open elements -->
+		<xsl:for-each select="xalan:nodeset($tree)//element">
+			<xsl:text disable-output-escaping="yes">&lt;</xsl:text>
+				<xsl:value-of select="."/>
+				<xsl:for-each select="@*[local-name() != 'pos']">
+					<xsl:text> </xsl:text>
+					<xsl:value-of select="local-name()"/>
+					<xsl:text>="</xsl:text>
+					<xsl:value-of select="."/>
+					<xsl:text>"</xsl:text>
+				</xsl:for-each>
+				<xsl:if test="position() = 1">
+					<xsl:text> orientation="</xsl:text><xsl:value-of select="$orientation"/><xsl:text>"</xsl:text>
+				</xsl:if>
+			<xsl:text disable-output-escaping="yes">&gt;</xsl:text>
+		</xsl:for-each>
+		
+	</xsl:template>
+	<!-- ================================= -->
+	<!-- END: Page breaks processing  -->
+	<!-- ================================= -->	
 	
 	<xsl:template match="bipm:bipm-standard"/>
 	<xsl:template match="bipm:bipm-standard" mode="bipm-standard">
@@ -1089,12 +1197,11 @@
 				
 				
 				<!-- Document Pages -->
-				
 				<xsl:apply-templates select="bipm:sections/*" mode="sections" />
 				
 				
-				
 				<!-- Normative references  -->
+				
 				<xsl:apply-templates select="bipm:bibliography/bipm:references[@normative='true']" mode="sections"/>
 
 				<xsl:apply-templates select="bipm:annex" mode="sections"/>
@@ -1258,7 +1365,6 @@
 				<xsl:apply-templates select="bipm:preface/*" mode="sections" /> <!-- bipm:clause -->
 				
 				<!-- Document Pages -->
-				
 				<xsl:apply-templates select="bipm:sections/*" mode="sections" />
 				<!-- <xsl:call-template name="sections_appendix"/> --> <!-- without pagebreaks  -->
 				
@@ -1993,11 +2099,14 @@
 	
 	<xsl:template match="node()" mode="sections">
 		<fo:page-sequence master-reference="document" force-page-count="no-force">
+			<xsl:if test="@orientation = 'landscape'">
+				<xsl:attribute name="master-reference">document-landscape</xsl:attribute>
+			</xsl:if>
+
 			<xsl:call-template name="insertFootnoteSeparator"/>
 			
 			<xsl:variable name="header-title">
 				<xsl:choose>
-					
 					<xsl:when test="local-name(..) = 'sections'">
 						<xsl:choose>
 							<xsl:when test="./bipm:title[1]/*[local-name() = 'tab']">
@@ -2038,6 +2147,7 @@
 			</xsl:variable>
 			<xsl:call-template name="insertHeaderFooter">
 				<xsl:with-param name="header-title" select="$header-title"/>
+				<xsl:with-param name="orientation" select="@orientation"/>
 			</xsl:call-template>
 			
 			<fo:flow flow-name="xsl-region-body">
@@ -2510,13 +2620,25 @@
 		<xsl:variable name="space-before-value" select="normalize-space($space-before)"/>			
 			
 		<fo:table table-layout="fixed" width="174mm" line-height="135%">
+			<xsl:if test="@orientation = 'landscape'">
+				<xsl:attribute name="width">261mm</xsl:attribute> <!-- 87 = (297 - 210) -->
+			</xsl:if>
 			<xsl:call-template name="setId"/>
 			<xsl:if test="$space-before-value != ''">
 				<xsl:attribute name="space-before"><xsl:value-of select="$space-before-value"/></xsl:attribute>
 			</xsl:if>
-			<fo:table-column column-width="137mm"/>
+			
+			<xsl:choose>
+				<xsl:when test="@orientation = 'landscape'"> 
+					<fo:table-column column-width="224mm"/> <!-- +87  -->
+				</xsl:when>
+				<xsl:otherwise>
+					<fo:table-column column-width="137mm"/>
+				</xsl:otherwise>
+			</xsl:choose>
 			<fo:table-column column-width="5mm"/>
 			<fo:table-column column-width="32mm"/>
+			
 			<fo:table-body>
 				
 				<xsl:variable name="total_rows" select="count(*)"/>
@@ -3332,7 +3454,7 @@
 
 	<!-- set height for sup -->
 	<!-- <xsl:template match="mathml:msup[count(*) = 2 and count(mathml:mrow) = 2]/mathml:mrow[1][count(*) = 1 and mathml:mtext and (mathml:mtext/text() != '' and mathml:mtext/text() != ' ' and mathml:mtext/text() != '&#xa0;')]/mathml:mtext" mode="mtext"> -->
-	<xsl:template match="mathml:msup[count(*) = 2 and count(mathml:mrow) = 2]/mathml:mrow[1][count(*) = 1]/*" mode="mathml" priority="3">
+	<xsl:template match="mathml:msup[count(*) = 2 and count(mathml:mrow) = 2]/mathml:mrow[1][count(*) = 1 and not(mathml:mfenced)]/*" mode="mathml" priority="3">
 		<xsl:copy>
 			<xsl:apply-templates select="@*|node()" mode="mathml"/>
 		</xsl:copy>
@@ -3419,7 +3541,8 @@
 	</xsl:template>
 
 	<xsl:template name="insertHeaderFooter">
-		<xsl:param name="header-title"/>		
+		<xsl:param name="header-title"/>
+		<xsl:param name="orientation"/>
 		<fo:static-content flow-name="header-odd">			
 			<fo:block-container font-family="Arial" font-size="8pt" padding-top="12.5mm">
 				<fo:block text-align="right">
@@ -3434,9 +3557,12 @@
 				</fo:block>
 			</fo:block-container>
 			<fo:block-container font-size="1pt" border-top="0.5pt solid black" margin-left="81mm" width="86mm">
-					<fo:block>&#xA0;</fo:block>
-				</fo:block-container>
-			</fo:static-content>		
+				<xsl:if test="$orientation = 'landscape'">
+					<xsl:attribute name="margin-left">168mm</xsl:attribute>
+				</xsl:if>
+				<fo:block>&#xA0;</fo:block>
+			</fo:block-container>
+		</fo:static-content>		
 		<fo:static-content flow-name="header-even">
 			<fo:block-container font-family="Arial" font-size="8pt" padding-top="12.5mm">
 				<fo:block>
