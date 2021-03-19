@@ -277,11 +277,11 @@ update-init:
 update-modules:
 ifeq ($(OS),Windows_NT)
 	git submodule foreach "git fetch origin gh-pages"
-	git submodule foreach "git checkout gh-pages"
+	git submodule foreach "git checkout origin/gh-pages"
 	git submodule foreach "git reset --hard origin/gh-pages"
 else
 	git submodule foreach "git fetch origin gh-pages"; \
-	git submodule foreach "git checkout gh-pages"; \
+	git submodule foreach "git checkout origin/gh-pages"; \
 	git submodule foreach "git reset --hard origin/gh-pages"
 endif
 
