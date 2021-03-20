@@ -3485,25 +3485,49 @@
 		<mrow>
 			<mtext>Cu</mtext>
 		</mrow>
-	</mfenced>
-		to: 
+	</mfenced> 
+	to:
+	<mfenced open="(" close=")" separators="">
+		<mathml:mo rspace="-0.35em"></mathml:mo>
+		<mathml:mspace width="-0.15em"/>
+		<mrow>
+			<mtext>Cu</mtext>
+		</mrow>
+		<mathml:mspace width="-0.1em"/>
+	</mfenced> 
+	-->
+	<xsl:template match="mathml:mfenced[count(*) = 1]" mode="mathml" priority="2"> 
+		<xsl:if test="preceding-sibling::*">
+			<mathml:mo rspace="-0.35em"></mathml:mo><!-- decrease space before opening bracket -->
+		</xsl:if>
+		<xsl:copy>
+			<xsl:apply-templates select="@*" mode="mathml"/>
+			<xsl:if test="not(@separators)">
+				<xsl:attribute name="separators"></xsl:attribute>
+			</xsl:if>
+			<mathml:mspace width="-0.15em"/> <!-- decrease space between opening brackets  and inside text-->
+			<xsl:apply-templates mode="mathml"/>
+			<mathml:mspace width="-0.1em"/> <!-- decrease space between inside text and closing brackets -->
+		</xsl:copy>
+	</xsl:template>
+		
+	<!-- to: 
 		<mrow>
 			<mtext>(Cu)</mtext>
 		</mrow> -->
-	<xsl:template match="mathml:mfenced[count(*) = 1 and *[count(*) = 1] and */*[count(*) = 0]] |
+		<!-- <xsl:template match="mathml:mfenced[count(*) = 1 and *[count(*) = 1] and */*[count(*) = 0]] |
 																	mathml:mfenced[count(*) = 1 and *[count(*) = 1] and */*[count(*) = 1] and */*/*[count(*) = 0]]" mode="mathml" priority="2">
 		<xsl:apply-templates mode="mathml"/>
 	</xsl:template>
-		
 	<xsl:template match="mathml:mfenced[count(*) = 1]/*[count(*) = 1]/*[count(*) = 0] |
-																	mathml:mfenced[count(*) = 1]/*[count(*) = 1]/*[count(*) = 1]/*[count(*) = 0]" mode="mathml" priority="2"> <!-- [not(following-sibling::*) and not(preceding-sibling::*)] -->
+																	mathml:mfenced[count(*) = 1]/*[count(*) = 1]/*[count(*) = 1]/*[count(*) = 0]" mode="mathml" priority="2"> 
 		<xsl:copy>
 			<xsl:apply-templates select="@*" mode="mathml"/>
 			<xsl:value-of select="ancestor::mathml:mfenced[1]/@open"/>
 			<xsl:value-of select="."/>
 			<xsl:value-of select="ancestor::mathml:mfenced[1]/@close"/>
 		</xsl:copy>
-	</xsl:template>
+	</xsl:template> -->
 
 	<!-- Decrease height of / and | -->
 	<xsl:template match="mathml:mo[normalize-space(text()) = '/' or normalize-space(text()) = '|']" mode="mathml">
