@@ -6133,8 +6133,8 @@
 		</fo:block>
 	</xsl:template>
 	
-	<xsl:template match="*[local-name() = 'bookmark']">
-		<fo:inline id="{@id}"/>
+	<xsl:template match="*[local-name() = 'bookmark']" name="bookmark">
+		<fo:inline id="{@id}" font-size="1pt"/>
 	</xsl:template>
 	<!-- =================== -->
 	<!-- End of Index processing -->

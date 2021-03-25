@@ -1683,6 +1683,12 @@
 			<xsl:if test="@id">
 				<xsl:attribute name="id"><xsl:value-of select="@id"/></xsl:attribute>
 			</xsl:if>
+			<!-- bookmarks only in paragraph -->
+			<xsl:if test="count(iso:bookmark) != 0 and count(*) = count(iso:bookmark) and normalize-space() = ''">
+				<xsl:attribute name="font-size">0</xsl:attribute>
+				<xsl:attribute name="margin-bottom">0pt</xsl:attribute>
+				<xsl:attribute name="line-height">0</xsl:attribute>
+			</xsl:if>
 			<xsl:apply-templates />
 		</xsl:element>
 		<xsl:if test="$element-name = 'fo:inline' and not($inline = 'true') and not(local-name(..) = 'admonition')">
@@ -1989,6 +1995,7 @@
 	<!-- =================== -->
 	<!-- SVG images processing -->
 	<!-- =================== -->
+	<xsl:template match="*[local-name() = 'figure'][not(*[local-name() = 'image']) and *[local-name() = 'svg']]/*[local-name() = 'name']/*[local-name() = 'bookmark']" priority="2"/>
 	<xsl:template match="*[local-name() = 'figure'][not(*[local-name() = 'image'])]/*[local-name() = 'svg']" priority="2">
 		
 		<xsl:choose>
@@ -2038,6 +2045,13 @@
 								<fo:table-cell column-number="2">
 									<fo:block>
 										<fo:block-container width="{$width_scale}px" height="{$height_scale}px">
+											<xsl:if test="../*[local-name() = 'name']/*[local-name() = 'bookmark']">
+												<fo:block  line-height="0" font-size="0">
+													<xsl:for-each select="../*[local-name() = 'name']/*[local-name() = 'bookmark']">
+														<xsl:call-template name="bookmark"/>
+													</xsl:for-each>
+												</fo:block>
+											</xsl:if>
 											<fo:block text-depth="0" line-height="0" font-size="0">
 												<fo:instream-foreign-object fox:alt-text="{../*[local-name() = 'name']}">
 													<xsl:attribute name="width">100%</xsl:attribute>
