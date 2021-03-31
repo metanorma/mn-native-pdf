@@ -14,6 +14,7 @@
 	
 	<xsl:param name="svg_images"/>
 	<xsl:variable name="images" select="document($svg_images)"/>
+	<xsl:param name="basepath"/>
 
 	<!-- <item id="#">N_page</item> -->
 	<!-- param for second pass -->

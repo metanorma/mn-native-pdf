@@ -13,6 +13,7 @@
 	
 	<xsl:param name="svg_images"/>
 	<xsl:variable name="images" select="document($svg_images)"/>
+	<xsl:param name="basepath"/>
 	
 	<xsl:param name="initial_page_number"/>
 	<xsl:param name="doc_split_by_language"/>

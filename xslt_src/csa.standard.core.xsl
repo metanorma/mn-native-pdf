@@ -14,6 +14,7 @@
 	<xsl:param name="svg_images"/>
 	<xsl:param name="external_index" /><!-- path to index xml, generated on 1st pass, based on FOP Intermediate Format -->
 	<xsl:variable name="images" select="document($svg_images)"/>
+	<xsl:param name="basepath"/>
 	
 	<xsl:variable name="pageWidth" select="'215.9mm'"/>
 	<xsl:variable name="pageHeight" select="'279.4mm'"/>

@@ -14,6 +14,7 @@
 	<xsl:param name="svg_images"/>
 	<xsl:param name="external_index" /><!-- path to index xml, generated on 1st pass, based on FOP Intermediate Format -->
 	<xsl:variable name="images" select="document($svg_images)"/>
+	<xsl:param name="basepath"/>
 	
 	<xsl:key name="kfn" match="mpfd:p/mpfd:fn" use="@reference"/>
 	
