@@ -224,7 +224,7 @@
 						<xsl:call-template name="printEdition"/>
 						<xsl:text>&#xa0;&#xa0;</xsl:text>
 						<xsl:call-template name="convertDate">
-							<xsl:with-param name="date" select="(//jcgm:bipm-standard)[1]/jcgm:bibdata/jcgm:version/jcgm:revision-date"/>
+							<xsl:with-param name="date" select="(//jcgm:bipm-standard)[1]/jcgm:bibdata/jcgm:date[@type = 'published']/jcgm:on"/>
 						</xsl:call-template>
 					</fo:block>
 					<!-- Example © JCGM 2009 -->
@@ -238,12 +238,15 @@
 				<fo:flow flow-name="xsl-region-body">
 					<xsl:call-template name="insert_Logo-BIPM-Metro"/>
 					<fo:block-container font-weight="bold">
-						<fo:block font-size="16.5pt"  space-after="24.5mm">
+						<fo:block font-size="16.5pt">
 							<xsl:value-of select="(//jcgm:bipm-standard)[1]/jcgm:bibdata/jcgm:ext/jcgm:editorialgroup/jcgm:committee/@acronym"/>
 							<xsl:text> </xsl:text>
 							<xsl:value-of select="(//jcgm:bipm-standard)[1]/jcgm:bibdata/jcgm:docnumber"/>
 							<fo:inline font-weight="normal">:</fo:inline>
 							<xsl:value-of select="(//jcgm:bipm-standard)[1]/jcgm:bibdata/jcgm:copyright/jcgm:from"/>
+						</fo:block>
+						<fo:block font-size="13pt" font-weight="normal" space-after="19.5mm">
+							<xsl:value-of select="(//jcgm:bipm-standard)[1]/jcgm:bibdata/jcgm:title[@type = 'provenance']"/>
 						</fo:block>
 						<fo:block border-bottom="1pt solid black">&#xa0;</fo:block>
 						<fo:block font-size="16.5pt" margin-left="-0.5mm"  padding-top="3.5mm" space-after="7mm" margin-right="7mm" line-height="105%">
@@ -1334,6 +1337,7 @@
 		<xsl:variable name="font-size">
 			<xsl:choose>
 				<xsl:when test="ancestor::jcgm:preface">15pt</xsl:when>
+				<xsl:when test="parent::jcgm:annex">15pt</xsl:when>
 				<xsl:when test="../@inline-header = 'true'  or @inline-header = 'true'">10.5pt</xsl:when>
 				<xsl:when test="$level = 2">11.5pt</xsl:when>
 				<xsl:when test="$level &gt;= 3">10.5pt</xsl:when>
@@ -1365,6 +1369,8 @@
 				<xsl:attribute name="space-after">
 					<xsl:choose>
 						<xsl:when test="ancestor::jcgm:preface">12pt</xsl:when>
+						<xsl:when test="parent::jcgm:annex">30pt</xsl:when>
+						<xsl:when test="following-sibling::*[1][local-name() = 'admitted']">0pt</xsl:when>
 						<!-- <xsl:otherwise>12pt</xsl:otherwise> -->
 						<xsl:otherwise>12pt</xsl:otherwise>
 					</xsl:choose>
@@ -1377,6 +1383,10 @@
 							<xsl:otherwise>4mm</xsl:otherwise>
 						</xsl:choose>
 					</xsl:attribute>
+				</xsl:if>
+				<xsl:if test="parent::jcgm:annex">
+					<xsl:attribute name="text-align">center</xsl:attribute>
+					<xsl:attribute name="line-height">130%</xsl:attribute>
 				</xsl:if>
 				<xsl:apply-templates />
 			</xsl:element>
@@ -1394,41 +1404,43 @@
 		<xsl:param name="font-size" select="'65%'"/>
 		<xsl:param name="baseline-shift" select="'30%'"/>
 		<xsl:param name="curr_lang" select="'fr'"/>
-		<fo:inline>
-			<xsl:variable name="title-edition">
-				<xsl:call-template name="getTitle">
-					<xsl:with-param name="name" select="'title-edition'"/>
-					<xsl:with-param name="lang" select="$curr_lang"/>
-				</xsl:call-template>
-			</xsl:variable>
-			<xsl:value-of select="."/>
-			<fo:inline font-size="{$font-size}" baseline-shift="{$baseline-shift}">
-				<xsl:if test="$curr_lang = 'en'">
-					<xsl:attribute name="baseline-shift">0%</xsl:attribute>
-					<xsl:attribute name="font-size">100%</xsl:attribute>
-				</xsl:if>
-				<xsl:choose>
-					<xsl:when test="$curr_lang = 'fr'">
-						<xsl:choose>					
-							<xsl:when test=". = '1'">re</xsl:when>
-							<xsl:otherwise>e</xsl:otherwise>
-						</xsl:choose>
-					</xsl:when>
-					<xsl:otherwise>
-						<xsl:choose>					
-							<xsl:when test=". = '1'">st</xsl:when>
-							<xsl:when test=". = '2'">nd</xsl:when>
-							<xsl:when test=". = '3'">rd</xsl:when>
-							<xsl:otherwise>th</xsl:otherwise>
-						</xsl:choose>
-					</xsl:otherwise>
-				</xsl:choose>
-				
+		<xsl:if test="normalize-space (.) != '1'">
+			<fo:inline>
+				<xsl:variable name="title-edition">
+					<xsl:call-template name="getTitle">
+						<xsl:with-param name="name" select="'title-edition'"/>
+						<xsl:with-param name="lang" select="$curr_lang"/>
+					</xsl:call-template>
+				</xsl:variable>
+				<xsl:value-of select="."/>
+				<fo:inline font-size="{$font-size}" baseline-shift="{$baseline-shift}">
+					<xsl:if test="$curr_lang = 'en'">
+						<xsl:attribute name="baseline-shift">0%</xsl:attribute>
+						<xsl:attribute name="font-size">100%</xsl:attribute>
+					</xsl:if>
+					<xsl:choose>
+						<xsl:when test="$curr_lang = 'fr'">
+							<xsl:choose>					
+								<xsl:when test=". = '1'">re</xsl:when>
+								<xsl:otherwise>e</xsl:otherwise>
+							</xsl:choose>
+						</xsl:when>
+						<xsl:otherwise>
+							<xsl:choose>					
+								<xsl:when test=". = '1'">st</xsl:when>
+								<xsl:when test=". = '2'">nd</xsl:when>
+								<xsl:when test=". = '3'">rd</xsl:when>
+								<xsl:otherwise>th</xsl:otherwise>
+							</xsl:choose>
+						</xsl:otherwise>
+					</xsl:choose>
+					
+				</fo:inline>
+				<xsl:text> </xsl:text>			
+				<xsl:value-of select="java:toLowerCase(java:java.lang.String.new($title-edition))"/>
+				<xsl:text></xsl:text>
 			</fo:inline>
-			<xsl:text> </xsl:text>			
-			<xsl:value-of select="java:toLowerCase(java:java.lang.String.new($title-edition))"/>
-			<xsl:text></xsl:text>
-		</fo:inline>
+		</xsl:if>
 	</xsl:template>
 
 

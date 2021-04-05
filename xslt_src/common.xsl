@@ -1287,7 +1287,9 @@
 		<xsl:if test="$namespace = 'ogc' or $namespace = 'ogc-white-paper'">
 			<xsl:attribute name="font-size">11pt</xsl:attribute>
 		</xsl:if>
-	
+		<xsl:if test="$namespace = 'jcgm'">
+			<xsl:attribute name="font-weight">bold</xsl:attribute>
+		</xsl:if>
 	</xsl:attribute-set>
 
 	<xsl:attribute-set name="deprecates-style">
