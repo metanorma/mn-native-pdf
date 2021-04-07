@@ -612,7 +612,7 @@
 
 	<xsl:template name="getListItemFormat">
 		<xsl:choose>
-			<xsl:when test="local-name(..) = 'ul' and ../ancestor::bipm:ul">&#x2212;</xsl:when> <!-- &#x2212; - minus sign.  &#x2014; - dash -->
+			<xsl:when test="local-name(..) = 'ul' and ../ancestor::jcgm:ul">&#x2212;</xsl:when> <!-- &#x2212; - minus sign.  &#x2014; - dash -->
 			<xsl:when test="local-name(..) = 'ul'">&#x2014;</xsl:when> <!-- &#x2014; dash -->
 			<xsl:otherwise> <!-- for ordered lists -->
 				<xsl:variable name="start_value">
@@ -822,6 +822,46 @@
 		</fo:footnote>
 	</xsl:template>
 	
+  
+  <!--
+	<fn reference="1">
+			<p id="_8e5cf917-f75a-4a49-b0aa-1714cb6cf954">Formerly denoted as 15 % (m/m).</p>
+		</fn>
+	-->
+	<xsl:template match="jcgm:title//jcgm:fn | 
+																jcgm:name//jcgm:fn | 
+																jcgm:p/jcgm:fn[not(ancestor::jcgm:table)] | 
+																jcgm:p/*/jcgm:fn[not(ancestor::jcgm:table)] |
+																jcgm:sourcecode/jcgm:fn[not(ancestor::jcgm:table)]" priority="2" name="fn">
+		<fo:footnote keep-with-previous.within-line="always">
+			<xsl:variable name="number">
+				<xsl:number count="jcgm:fn[not(ancestor::jcgm:table)]" level="any"/>
+			</xsl:variable>
+			<xsl:variable name="gen_id" select="generate-id()"/>
+			<xsl:variable name="lang" select="ancestor::jcgm:bipm-standard/*[local-name()='bibdata']//*[local-name()='language'][@current = 'true']"/>
+			<fo:inline font-size="65%" keep-with-previous.within-line="always" vertical-align="super">
+				<fo:basic-link internal-destination="{$lang}_footnote_{@reference}_{$number}_{$gen_id}" fox:alt-text="footnote {@reference}">
+					<xsl:value-of select="$number"/>
+				</fo:basic-link>
+			</fo:inline>
+			<fo:footnote-body>
+				<fo:block font-size="9pt" margin-bottom="12pt" font-weight="normal" text-indent="0" start-indent="0" line-height="124%" text-align="justify">
+					<fo:inline id="{$lang}_footnote_{@reference}_{$number}_{$gen_id}" keep-with-next.within-line="always" font-size="60%" vertical-align="super" padding-right="1mm"> <!-- baseline-shift="30%" padding-right="3mm" font-size="60%"  alignment-baseline="hanging" -->
+						<xsl:value-of select="$number "/>
+					</fo:inline>
+					<xsl:for-each select="jcgm:p">
+							<xsl:apply-templates />
+					</xsl:for-each>
+				</fo:block>
+			</fo:footnote-body>
+		</fo:footnote>
+	</xsl:template>
+
+	<xsl:template match="jcgm:fn/jcgm:p">
+		<fo:block>
+			<xsl:apply-templates />
+		</fo:block>
+	</xsl:template>
 	
 	
 	<xsl:template match="*[local-name()='ul'] | *[local-name()='ol']" mode="ul_ol">
@@ -997,6 +1037,12 @@
 				<xsl:apply-templates select="." mode="mathml"/>
 			</xsl:variable>
 			<fo:instream-foreign-object fox:alt-text="Math">
+				<xsl:if test="local-name(../..) = 'formula'">
+					<xsl:attribute name="width">95%</xsl:attribute>
+					<xsl:attribute name="content-height">100%</xsl:attribute>
+					<xsl:attribute name="content-width">scale-down-to-fit</xsl:attribute>
+					<xsl:attribute name="scaling">uniform</xsl:attribute>
+				</xsl:if>
 				<!-- <xsl:copy-of select="."/> -->
 				<xsl:copy-of select="xalan:nodeset($mathml)"/>
 			</fo:instream-foreign-object>
@@ -1099,6 +1145,17 @@
 	</xsl:template>
 	
 
+	<xsl:template match="*[local-name()='td' or local-name()='th']/*[local-name()='formula']/*[local-name()='stem']" priority="2">
+		<fo:block>
+			<xsl:if test="ancestor::*[local-name()='td' or local-name()='th'][1][@align]">
+				<xsl:attribute name="text-align">
+					<xsl:value-of select="ancestor::*[local-name()='td' or local-name()='th'][1]/@align"/>
+				</xsl:attribute>
+			</xsl:if>
+			<xsl:apply-templates />
+		</fo:block>
+	</xsl:template>
+  
 	<xsl:template match="*[local-name()='formula']/*[local-name()='stem']">
 		<fo:block margin-top="6pt" margin-bottom="12pt">
 			<fo:table table-layout="fixed" width="100%">
@@ -1469,7 +1526,7 @@
 			
 			<fo:flow flow-name="xsl-region-body">
 				<fo:block id="{@id}" span="all">
-					<xsl:apply-templates select="bipm:title"/>
+					<xsl:apply-templates select="jcgm:title"/>
 				</fo:block>
 				<fo:block>
 					<xsl:apply-templates select="*[not(local-name() = 'title')]"/>

@@ -5261,9 +5261,10 @@
 													$namespace = 'ogc-white-paper' or 
 													$namespace = 'rsd' or 
 													$namespace = 'unece' or 
-													$namespace = 'unece-rec' or $namespace = 'mpfd' or $namespace = 'bipm' or $namespace = 'jcgm'">block</xsl:if>				
+													$namespace = 'unece-rec' or $namespace = 'mpfd' or $namespace = 'bipm'">block</xsl:if>				
 				<xsl:if test="$namespace = 'iec' or 
 													$namespace = 'iso' or 
+													$namespace = 'jcgm' or 
 													$namespace = 'ogc' or 
 													$namespace = 'm3d'">inline</xsl:if>
 				<xsl:if test=".//*[local-name() = 'table']">block</xsl:if> 
@@ -5344,9 +5345,8 @@
 												$namespace = 'unece-rec' or 
 												$namespace = 'mpfd' or
 												$namespace = 'm3d' or 
-												$namespace = 'bipm' or 
-												$namespace = 'jcgm'">block</xsl:if>
-			<xsl:if test="$namespace = 'iso'">
+												$namespace = 'bipm'">block</xsl:if>
+			<xsl:if test="$namespace = 'iso' or $namespace = 'jcgm'">
 				<xsl:choose>
 					<xsl:when test="$num = 1">inline</xsl:when>
 					<xsl:otherwise>block</xsl:otherwise>
