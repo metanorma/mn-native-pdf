@@ -490,6 +490,7 @@
 		</xsl:if>
 		<xsl:if test="$namespace = 'gb' or $namespace = 'iso' or $namespace = 'jcgm'">
 			 <xsl:attribute name="padding-right">5mm</xsl:attribute>
+			 <xsl:attribute name="keep-with-next">always</xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'iec'">
 			<xsl:attribute name="padding-right">9mm</xsl:attribute>
@@ -1313,6 +1314,10 @@
 	<xsl:attribute-set name="add-style">
 		<xsl:attribute name="color">red</xsl:attribute>
 		<xsl:attribute name="text-decoration">underline</xsl:attribute>
+		<!-- <xsl:attribute name="color">black</xsl:attribute>
+		<xsl:attribute name="background-color">rgb(0, 255, 0)</xsl:attribute>
+		<xsl:attribute name="padding-top">1mm</xsl:attribute>
+		<xsl:attribute name="padding-bottom">0.5mm</xsl:attribute> -->
 	</xsl:attribute-set>
 
 	<xsl:attribute-set name="del-style">
@@ -1436,7 +1441,7 @@
 			</xsl:if>
 				
 			
-			<xsl:variable name="cols-count" select="count(xalan:nodeset($simple-table)//tr[1]/td)"/>
+			<xsl:variable name="cols-count" select="count(xalan:nodeset($simple-table)/*/tr[1]/td)"/>
 			
 			<!-- <xsl:variable name="cols-count">
 				<xsl:choose>
@@ -1454,8 +1459,6 @@
 			</xsl:variable> -->
 			<!-- cols-count=<xsl:copy-of select="$cols-count"/> -->
 			<!-- cols-count2=<xsl:copy-of select="$cols-count2"/> -->
-			
-			
 			
 			<xsl:variable name="colwidths">
 				<xsl:if test="not(*[local-name()='colgroup']/*[local-name()='col'])">
@@ -1590,6 +1593,12 @@
 						<attribute name="border">1.5pt solid black</attribute>
 						<xsl:if test="*[local-name()='thead']">
 							<attribute name="border-top">1pt solid black</attribute>
+						</xsl:if>
+					</xsl:if>
+					<xsl:if test="$namespace = 'iso'">
+						<xsl:if test="ancestor::*[local-name() = 'table']">
+							<!-- for internal table in table cell -->
+							<attribute name="border">0.5pt solid black</attribute>
 						</xsl:if>
 					</xsl:if>
 					<xsl:if test="$namespace = 'iec'">
@@ -1832,7 +1841,7 @@
 						</xsl:for-each>
 					</xsl:when>
 					<xsl:otherwise>
-						<xsl:for-each select="xalan:nodeset($table)//tr">
+						<xsl:for-each select="xalan:nodeset($table)/*/tr">
 							<xsl:variable name="td_text">
 								<xsl:apply-templates select="td[$curr-col]" mode="td_text"/>
 								
@@ -2558,6 +2567,9 @@
 				<xsl:if test="ancestor::*[local-name() = 'doccontrol']">
 					<xsl:attribute name="display-align">before</xsl:attribute>
 				</xsl:if>
+			</xsl:if>
+			<xsl:if test=".//*[local-name() = 'table']">
+				<xsl:attribute name="padding-right">1mm</xsl:attribute>
 			</xsl:if>
 			<xsl:if test="@colspan">
 				<xsl:attribute name="number-columns-spanned">
@@ -5322,6 +5334,7 @@
 												$namespace = 'ogc' or
 												$namespace = 'm3d' or 
 												$namespace = 'jcgm'">inline</xsl:if>
+			<xsl:if test="following-sibling::*[1][local-name() = 'table']">block</xsl:if> 
 		</xsl:variable>		
 		<xsl:choose>
 			<xsl:when test="ancestor::*[local-name() = 'appendix']">
@@ -5329,7 +5342,7 @@
 					<xsl:apply-templates/>
 				</fo:inline>
 			</xsl:when>
-			<xsl:when test="normalize-space($element) = 'block'">
+			<xsl:when test="contains(normalize-space($element), 'block')">
 				<fo:block xsl:use-attribute-sets="example-name-style">
 					<xsl:apply-templates/>
 				</fo:block>
