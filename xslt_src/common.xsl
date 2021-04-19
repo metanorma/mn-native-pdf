@@ -2819,13 +2819,13 @@
 						</xsl:choose>
 					</xsl:variable>
 					<!-- <xsl:variable name="ns" select="substring-before(name(/*), '-')"/> -->
-					<xsl:element name="{$ns}:table">
+					<!-- <xsl:element name="{$ns}:table"> -->
 						<xsl:for-each select="*[local-name() = 'dl'][1]">
 							<tbody>
 								<xsl:apply-templates mode="dl"/>
 							</tbody>
 						</xsl:for-each>
-					</xsl:element>
+					<!-- </xsl:element> -->
 				</xsl:variable>
 				
 				<xsl:call-template name="calculate-column-widths">
@@ -3198,11 +3198,11 @@
 										</xsl:choose>
 									</xsl:variable>
 									<!-- <xsl:variable name="ns" select="substring-before(name(/*), '-')"/> -->
-									<xsl:element name="{$ns}:table">
+									<!-- <xsl:element name="{$ns}:table"> -->
 										<tbody>
 											<xsl:apply-templates mode="dl"/>
 										</tbody>
-									</xsl:element>
+									<!-- </xsl:element> -->
 								</xsl:variable>
 								<!-- html-table<xsl:copy-of select="$html-table"/> -->
 								<xsl:variable name="colwidths">
