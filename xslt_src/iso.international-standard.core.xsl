@@ -982,22 +982,26 @@
 																																				/iso:iso-standard/iso:bibdata/iso:ext/iso:editorialgroup/iso:workgroup/@type, ' ',
 																																				/iso:iso-standard/iso:bibdata/iso:ext/iso:editorialgroup/iso:workgroup/@number)"/>
 								 -->
-								<!-- ISO/TC 34/SC 4/WG 3 -->
-								<fo:block margin-bottom="12pt">
-									<xsl:text>ISO</xsl:text>
-									<xsl:for-each select="/iso:iso-standard/iso:bibdata/iso:ext/iso:editorialgroup/iso:technical-committee[@number]">
-										<xsl:text>/TC </xsl:text><xsl:value-of select="@number"/>
-									</xsl:for-each>
-									<xsl:for-each select="/iso:iso-standard/iso:bibdata/iso:ext/iso:editorialgroup/iso:subcommittee[@number]">
-										<xsl:text>/SC </xsl:text>
-										<xsl:value-of select="@number"/>
-									</xsl:for-each>
-									<xsl:for-each select="/iso:iso-standard/iso:bibdata/iso:ext/iso:editorialgroup/iso:workgroup[@number]">
-										<xsl:text>/WG </xsl:text>
-										<xsl:value-of select="@number"/>
-									</xsl:for-each>
-								</fo:block>
-								
+								 
+								 <xsl:if test="/iso:iso-standard/iso:bibdata/iso:ext/iso:editorialgroup/iso:technical-committee[normalize-space(@number) != ''] or 
+																	/iso:iso-standard/iso:bibdata/iso:ext/iso:editorialgroup/iso:subcommittee[normalize-space(@number) != ''] or
+																	/iso:iso-standard/iso:bibdata/iso:ext/iso:editorialgroup/iso:workgroup[normalize-space(@number) != '']">
+									<!-- ISO/TC 34/SC 4/WG 3 -->
+									<fo:block margin-bottom="12pt">
+										<xsl:text>ISO</xsl:text>
+										<xsl:for-each select="/iso:iso-standard/iso:bibdata/iso:ext/iso:editorialgroup/iso:technical-committee[normalize-space(@number) != '']">
+											<xsl:text>/TC </xsl:text><xsl:value-of select="@number"/>
+										</xsl:for-each>
+										<xsl:for-each select="/iso:iso-standard/iso:bibdata/iso:ext/iso:editorialgroup/iso:subcommittee[normalize-space(@number) != '']">
+											<xsl:text>/SC </xsl:text>
+											<xsl:value-of select="@number"/>
+										</xsl:for-each>
+										<xsl:for-each select="/iso:iso-standard/iso:bibdata/iso:ext/iso:editorialgroup/iso:workgroup[normalize-space(@number) != '']">
+											<xsl:text>/WG </xsl:text>
+											<xsl:value-of select="@number"/>
+										</xsl:for-each>
+									</fo:block>
+								</xsl:if>
 								<!-- Secretariat: AFNOR  -->
 								
 								<fo:block margin-bottom="100pt">
@@ -1059,7 +1063,15 @@
 							<fo:block font-size="11pt" margin-bottom="8pt"><xsl:value-of select="$linebreak"/></fo:block>
 							<fo:block-container font-size="40pt" text-align="center" margin-bottom="12pt" border="0.5pt solid black">
 								<xsl:variable name="stage-title" select="substring-after(substring-before($docidentifierISO, ' '), '/')"/>
-								<fo:block padding-top="2mm"><xsl:value-of select="$stage-title"/><xsl:text> stage</xsl:text></fo:block>
+								<xsl:choose>
+									<xsl:when test="normalize-space($stage-title) != ''">
+										<fo:block padding-top="2mm"><xsl:value-of select="$stage-title"/><xsl:text> stage</xsl:text></fo:block>
+									</xsl:when>
+									<xsl:otherwise>
+										<xsl:attribute name="border">0pt solid white</xsl:attribute>
+										<fo:block>&#xa0;</fo:block>
+									</xsl:otherwise>
+								</xsl:choose>
 							</fo:block-container>
 							<fo:block><xsl:value-of select="$linebreak"/></fo:block>
 							
