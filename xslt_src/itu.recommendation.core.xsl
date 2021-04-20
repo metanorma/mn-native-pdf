@@ -131,6 +131,9 @@
 			<xsl:if test="$doctype = 'resolution'">
 				<xsl:attribute name="font-size">11pt</xsl:attribute>
 			</xsl:if>
+			<!-- <xsl:if test="$lang = 'ar'">
+				<xsl:attribute name="writing-mode">rl-tb</xsl:attribute>
+			</xsl:if> -->
 			<fo:layout-master-set>
 			
 			
@@ -1767,19 +1770,7 @@
 	<xsl:template match="itu:formula" mode="process">
 		<xsl:call-template name="formula" />			
 	</xsl:template>
-	
-	<xsl:template match="mathml:math" priority="2">
-		<fo:inline font-family="STIX Two Math" font-size="11pt">
-			<xsl:variable name="mathml">
-				<xsl:apply-templates select="." mode="mathml"/>
-			</xsl:variable>
-			<fo:instream-foreign-object fox:alt-text="Math"> 
-				<!-- <xsl:copy-of select="."/> -->
-				<xsl:copy-of select="xalan:nodeset($mathml)"/>
-			</fo:instream-foreign-object>
-		</fo:inline>
-	</xsl:template>
-	
+
 	
 	<xsl:template match="itu:references[@normative='true']">
 		<fo:block id="{@id}">
