@@ -223,6 +223,8 @@
 					
 					<xsl:apply-templates select="/rsd:rsd-standard/rsd:boilerplate/rsd:legal-statement"/>
 					
+					<xsl:apply-templates select="/rsd:rsd-standard/rsd:boilerplate/rsd:feedback-statement"/>
+					
 				</fo:flow>
 			</fo:page-sequence>
 
@@ -356,9 +358,11 @@
 	</xsl:template>
 	
 	<xsl:template match="rsd:feedback-statement">
-		<fo:block margin-top="12pt" margin-bottom="12pt">
-			<xsl:apply-templates select="rsd:clause[1]"/>
-		</fo:block>
+		<fo:block-container border="1pt solid black" padding="1mm" padding-left="2mm">
+			<fo:block>
+				<xsl:apply-templates />
+			</fo:block>
+		</fo:block-container>
 	</xsl:template>
 		
 	<xsl:template match="rsd:copyright-statement//rsd:title">
@@ -487,6 +491,7 @@
 			<xsl:attribute name="space-after">
 				<xsl:choose>
 					<xsl:when test="ancestor::rsd:li">0pt</xsl:when>
+					<xsl:when test="ancestor::rsd:feedback-statement and not(following-sibling::rsd:p)">0pt</xsl:when>
 					<xsl:otherwise>12pt</xsl:otherwise>
 				</xsl:choose>
 			</xsl:attribute>
