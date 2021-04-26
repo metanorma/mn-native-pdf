@@ -5997,9 +5997,8 @@
 				</fo:inline>
 			</xsl:when>
 			<xsl:otherwise>
-				<xsl:if test="$lang != 'ar'">
-					<fo:inline padding-right="{$padding-right}mm">&#x200B;</fo:inline>
-				</xsl:if>
+				<xsl:variable name="direction"><xsl:if test="$lang = 'ar'"><xsl:value-of select="$RLM"/></xsl:if></xsl:variable>
+				<fo:inline padding-right="{$padding-right}mm"><xsl:value-of select="$direction"/>&#x200B;</fo:inline>
 			</xsl:otherwise>
 		</xsl:choose>
 		
@@ -7282,8 +7281,9 @@
 			</xsl:otherwise>
 		</xsl:choose>
 	</xsl:template>
-	<!--  LEFT-TO-RIGHT MARK (LRM), see https://xmlgraphics.apache.org/fop/2.5/complexscripts.html#bidi_controls-->
-	<xsl:variable name="LRM" select="'&#x200e;'"/>
+	<!--  see https://xmlgraphics.apache.org/fop/2.5/complexscripts.html#bidi_controls-->
+	<xsl:variable name="LRM" select="'&#x200e;'"/> <!-- U+200E - LEFT-TO-RIGHT MARK (LRM) -->
+	<xsl:variable name="RLM" select="'&#x200f;'"/> <!-- U+200F - RIGHT-TO-LEFT MARK (RLM) -->
 	<xsl:template name="setWritingMode">
 		<xsl:if test="$lang = 'ar'">
 			<xsl:attribute name="writing-mode">rl-tb</xsl:attribute>
