@@ -6163,7 +6163,7 @@
 			<xsl:if test="$namespace = 'bipm'">
 				<xsl:attribute name="keep-with-next">always</xsl:attribute>
 			</xsl:if>
-			<xsl:if test="$namespace = 'itu'">
+			<xsl:if test="$namespace = 'itu' or $namespace = 'jcgm'">
 				<xsl:if test="@inline-header='true'">
 					<xsl:attribute name="text-align">justify</xsl:attribute>
 				</xsl:if>
