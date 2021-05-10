@@ -1856,35 +1856,10 @@
 
 	<xsl:template match="iso:bibitem">
 		<fo:block id="{@id}" margin-bottom="6pt">
-			<xsl:call-template name="bibitem" />
+			<xsl:call-template name="processBibitem" />
 		</fo:block>
 	</xsl:template>
 	
-	<xsl:template name="bibitem">
-		<xsl:variable name="docidentifier">
-			<xsl:if test="iso:docidentifier">
-				<xsl:choose>
-					<xsl:when test="iso:docidentifier/@type = 'metanorma'"/>
-					<xsl:otherwise><xsl:value-of select="iso:docidentifier"/></xsl:otherwise>
-				</xsl:choose>
-			</xsl:if>
-		</xsl:variable>
-		<xsl:value-of select="$docidentifier"/>
-		<xsl:apply-templates select="iso:note"/>			
-		<xsl:if test="normalize-space($docidentifier) != ''">, </xsl:if>
-		<xsl:choose>
-			<xsl:when test="iso:title[@type = 'main' and @language = $lang]">
-				<xsl:apply-templates select="iso:title[@type = 'main' and @language = $lang]"/>
-			</xsl:when>
-			<xsl:when test="iso:title[@type = 'main' and @language = 'en']">
-				<xsl:apply-templates select="iso:title[@type = 'main' and @language = 'en']"/>
-			</xsl:when>
-			<xsl:otherwise>
-				<xsl:apply-templates select="iso:title"/>
-			</xsl:otherwise>
-		</xsl:choose>
-		<xsl:apply-templates select="iso:formattedref"/>
-	</xsl:template>
 	
 	<xsl:template match="iso:bibitem/iso:note" priority="2">
 		<fo:footnote>
@@ -1921,7 +1896,7 @@
 				</fo:list-item-label>
 				<fo:list-item-body start-indent="body-start()">
 					<fo:block>
-						<xsl:call-template name="bibitem" />
+						<xsl:call-template name="processBibitem" />
 					</fo:block>
 				</fo:list-item-body>
 			</fo:list-item>

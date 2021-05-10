@@ -6769,6 +6769,34 @@
 			</xsl:choose>
 			<!-- end IHO bibitem processing -->
 		</xsl:if> 
+		
+		<xsl:if test="$namespace = 'iso'">
+			<!-- start ISO bibtem processing -->
+			<xsl:variable name="docidentifier">
+				<xsl:if test="*[local-name() = 'docidentifier']">
+					<xsl:choose>
+						<xsl:when test="*[local-name() = 'docidentifier']/@type = 'metanorma'"/>
+						<xsl:otherwise><xsl:value-of select="*[local-name() = 'docidentifier']"/></xsl:otherwise>
+					</xsl:choose>
+				</xsl:if>
+			</xsl:variable>
+			<xsl:value-of select="$docidentifier"/>
+			<xsl:apply-templates select="*[local-name() = 'note']"/>			
+			<xsl:if test="normalize-space($docidentifier) != ''">, </xsl:if>
+			<xsl:choose>
+				<xsl:when test="*[local-name() = 'title'][@type = 'main' and @language = $lang]">
+					<xsl:apply-templates select="*[local-name() = 'title'][@type = 'main' and @language = $lang]"/>
+				</xsl:when>
+				<xsl:when test="*[local-name() = 'title'][@type = 'main' and @language = 'en']">
+					<xsl:apply-templates select="*[local-name() = 'title'][@type = 'main' and @language = 'en']"/>
+				</xsl:when>
+				<xsl:otherwise>
+					<xsl:apply-templates select="*[local-name() = 'title']"/>
+				</xsl:otherwise>
+			</xsl:choose>
+			<xsl:apply-templates select="*[local-name() = 'formattedref']"/>
+			<!-- end ISO bibitem processing -->
+		</xsl:if>
 	</xsl:template>
 	
 	<xsl:template name="processBibitemDocId">
