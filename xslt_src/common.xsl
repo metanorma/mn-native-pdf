@@ -885,7 +885,7 @@
 	
 	<xsl:attribute-set name="note-name-style">
 		<xsl:if test="$namespace = 'bsi'">
-			<xsl:attribute name="padding-right">1mm</xsl:attribute>
+			<xsl:attribute name="padding-right">1.5mm</xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'csa'">
 			<xsl:attribute name="padding-right">4mm</xsl:attribute>
@@ -1013,7 +1013,7 @@
 
 	<xsl:attribute-set name="termnote-name-style">		
 		<xsl:if test="$namespace = 'bsi'">
-			<xsl:attribute name="padding-right">1mm</xsl:attribute>
+			<xsl:attribute name="padding-right">1.5mm</xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'ogc'">
 			<xsl:attribute name="font-weight">bold</xsl:attribute>
@@ -4583,6 +4583,13 @@
 						
 						
 						<fo:inline xsl:use-attribute-sets="note-name-style">
+							<xsl:if test="$namespace = 'bsi'">
+								<xsl:variable name="name" select="normalize-space(*[local-name() = 'name'])" />
+								<!-- if NOTE without number -->
+								<xsl:if test="translate(substring($name, string-length($name)), '0123456789', '') != ''">
+									<xsl:attribute name="padding-right">3.5mm</xsl:attribute>
+								</xsl:if>
+							</xsl:if>
 							<xsl:apply-templates select="*[local-name() = 'name']" mode="presentation"/>
 						</fo:inline>
 						<xsl:apply-templates />
@@ -4614,6 +4621,13 @@
 	<xsl:template match="*[local-name() = 'termnote']">
 		<fo:block id="{@id}" xsl:use-attribute-sets="termnote-style">			
 			<fo:inline xsl:use-attribute-sets="termnote-name-style">
+				<xsl:if test="$namespace = 'bsi'">
+					<xsl:variable name="name" select="normalize-space(*[local-name() = 'name'])" />
+					<!-- if NOTE without number -->
+					<xsl:if test="translate(substring($name, string-length($name)), '0123456789', '') != ''">
+						<xsl:attribute name="padding-right">3.5mm</xsl:attribute>
+					</xsl:if>
+				</xsl:if>
 				<xsl:apply-templates select="*[local-name() = 'name']" mode="presentation"/>
 			</fo:inline>
 			<xsl:apply-templates />
