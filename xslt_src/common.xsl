@@ -4961,11 +4961,11 @@
 		<xsl:text> </xsl:text>
 	</xsl:template>
 	
-	<xsl:template match="*[local-name() = 'name']/text()" mode="contents" priority="2">
+	<xsl:template match="*[local-name() = 'figure' or local-name() = 'table' or local-name() = 'permission' or local-name() = 'recommendation' or local-name() = 'requirement']/*[local-name() = 'name']/text()" mode="contents" priority="2">
 		<xsl:value-of select="."/>
 	</xsl:template>
 	
-	<xsl:template match="*[local-name() = 'name']/text()" mode="bookmarks" priority="2">
+	<xsl:template match="*[local-name() = 'figure' or local-name() = 'table' or local-name() = 'permission' or local-name() = 'recommendation' or local-name() = 'requirement']/*[local-name() = 'name']/text()" mode="bookmarks" priority="2">
 		<xsl:value-of select="."/>
 	</xsl:template>
 	
@@ -4977,7 +4977,7 @@
 		<xsl:apply-templates mode="bookmarks"/>
 	</xsl:template>
 	
-	<xsl:template match="*[local-name() = 'stem']" mode="contents">
+	<xsl:template match="*[local-name() = 'title' or local-name() = 'name']//*[local-name() = 'stem']" mode="contents">
 		<xsl:apply-templates select="."/>
 	</xsl:template>
 	
@@ -5856,13 +5856,15 @@
 			
 			<xsl:choose>
 				<xsl:when test="starts-with(normalize-space($termsource_text), '[')">
-					<xsl:apply-templates />
+					<!-- <xsl:apply-templates /> -->
+					<xsl:copy-of select="$termsource_text"/>
 				</xsl:when>
 				<xsl:otherwise>					
 					<xsl:if test="$namespace = 'bsi' or $namespace = 'gb' or $namespace = 'iso' or $namespace = 'iec' or $namespace = 'itu' or $namespace = 'unece' or $namespace = 'unece-rec' or $namespace = 'nist-cswp'  or $namespace = 'nist-sp' or $namespace = 'ogc-white-paper' or $namespace = 'rsd' or $namespace = 'csa' or $namespace = 'csd' or $namespace = 'm3d' or $namespace = 'iho' or $namespace = 'bipm' or $namespace = 'jcgm'">
 						<xsl:text>[</xsl:text>
 					</xsl:if>
-					<xsl:apply-templates />					
+					<!-- <xsl:apply-templates />					 -->
+					<xsl:copy-of select="$termsource_text"/>
 					<xsl:if test="$namespace = 'bsi' or $namespace = 'gb' or $namespace = 'iso' or $namespace = 'iec' or $namespace = 'itu' or $namespace = 'unece' or $namespace = 'unece-rec' or $namespace = 'nist-cswp'  or $namespace = 'nist-sp' or $namespace = 'ogc-white-paper' or $namespace = 'rsd' or $namespace = 'csa' or $namespace = 'csd' or $namespace = 'm3d' or $namespace = 'iho' or $namespace = 'bipm' or $namespace = 'jcgm'">
 						<xsl:text>]</xsl:text>
 					</xsl:if>
@@ -5877,8 +5879,16 @@
 		</xsl:if>
 	</xsl:template>
 	
+	<xsl:variable name="localized.source">
+		<xsl:call-template name="getLocalizedString">
+				<xsl:with-param name="key">source</xsl:with-param>
+			</xsl:call-template>
+	</xsl:variable>
 	<xsl:template match="*[local-name() = 'origin']">
 		<fo:basic-link internal-destination="{@bibitemid}" fox:alt-text="{@citeas}">
+			<xsl:if test="normalize-space(@citeas) = ''">
+				<xsl:attribute name="fox:alt-text"><xsl:value-of select="@bibitemid"/></xsl:attribute>
+			</xsl:if>
 			<xsl:if test="$namespace = 'csa' or 
 											$namespace = 'csd' or 
 											$namespace = 'iho' or 
@@ -5893,9 +5903,10 @@
 						<xsl:attribute name="padding-right">1mm</xsl:attribute>
 					</xsl:if>
 					<xsl:if test="$namespace = 'bsi' or $namespace = 'iso' or $namespace = 'jcgm'">
-						<xsl:call-template name="getLocalizedString">
+						<!-- <xsl:call-template name="getLocalizedString">
 							<xsl:with-param name="key">source</xsl:with-param>
-						</xsl:call-template>
+						</xsl:call-template> -->
+						<xsl:value-of select="$localized.source"/>
 					</xsl:if>
 					<xsl:if test="$namespace = 'bipm' or $namespace = 'csa' or $namespace = 'csd' or $namespace = 'gb' or $namespace = 'iec' or $namespace = 'iho' or $namespace = 'itu' or $namespace = 'm3d' or $namespace = 'mpfd' or $namespace = 'nist-cswp'  or $namespace = 'nist-sp' or $namespace = 'ogc' or $namespace = 'ogc-white-paper' or $namespace = 'rsd' or $namespace = 'unece' or $namespace = 'unece-rec'">
 						<xsl:call-template name="getTitle">

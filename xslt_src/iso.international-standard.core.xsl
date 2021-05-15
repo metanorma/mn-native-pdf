@@ -1461,7 +1461,7 @@
 		</xsl:if>
 	</xsl:template>
 	
-
+	<xsl:template match="iso:p | iso:termsource | iso:termnote" mode="contents" />
 
 	<xsl:template name="getListItemFormat">
 		<xsl:choose>
