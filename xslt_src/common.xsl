@@ -3746,6 +3746,10 @@
 		</fo:inline>
 	</xsl:template>
 	
+	<xsl:template match="*[local-name()='padding']">
+		<fo:inline padding-right="{@value}">&#xA0;</fo:inline>
+	</xsl:template>
+	
 	<xsl:template match="*[local-name()='sup']">
 		<fo:inline font-size="80%" vertical-align="super">
 			<xsl:apply-templates />
@@ -6103,7 +6107,14 @@
 					<xsl:otherwise>4</xsl:otherwise>
 				</xsl:choose>
 			</xsl:if>
-			<xsl:if test="$namespace = 'bsi' or $namespace = 'iso' or $namespace = 'jcgm'">
+			<xsl:if test="$namespace = 'bsi'">
+				<xsl:choose>
+					<xsl:when test="$depth = 1 and ../@ancestor = 'annex'">1.5</xsl:when>
+					<xsl:when test="$depth = 2">3</xsl:when>
+					<xsl:otherwise>4</xsl:otherwise>
+				</xsl:choose>
+			</xsl:if>
+			<xsl:if test="$namespace = 'iso' or $namespace = 'jcgm'">
 				<xsl:choose>
 					<xsl:when test="$depth = 2">3</xsl:when>
 					<xsl:otherwise>4</xsl:otherwise>
