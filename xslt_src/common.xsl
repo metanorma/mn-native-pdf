@@ -7433,6 +7433,9 @@
 						<xsl:when test="parent::*[local-name() = 'preface']">
 							<xsl:value-of select="$level_total - 1"/>
 						</xsl:when>
+						<xsl:when test="ancestor::*[local-name() = 'preface'] and not(ancestor::*[local-name() = 'foreword']) and not(ancestor::*[local-name() = 'introduction'])"> <!-- for preface/clause -->
+							<xsl:value-of select="$level_total - 1"/>
+						</xsl:when>
 						<xsl:when test="ancestor::*[local-name() = 'preface']">
 							<xsl:value-of select="$level_total - 2"/>
 						</xsl:when>
