@@ -106,36 +106,36 @@
 				</fo:page-sequence-master>	
 				
 				
-				<fo:simple-page-master master-name="first" page-width="{$pageWidth}" page-height="{$pageHeight}">
+				<!-- <fo:simple-page-master master-name="first" page-width="{$pageWidth}" page-height="{$pageHeight}">
 					<fo:region-body margin-top="71mm" margin-bottom="22mm" margin-left="29mm" margin-right="43mm"/>
 					<fo:region-before region-name="header-first" extent="22mm"/> 
 					<fo:region-after region-name="footer-even" extent="12.5mm"/>
 					<fo:region-start region-name="left-region" extent="13mm"/>
 					<fo:region-end region-name="right-region" extent="12mm"/>
-				</fo:simple-page-master>
+				</fo:simple-page-master> -->
 				<fo:simple-page-master master-name="odd" page-width="{$pageWidth}" page-height="{$pageHeight}">
 					<fo:region-body margin-top="15mm" margin-bottom="91mm" margin-left="29mm" margin-right="43mm"/>
-					<fo:region-before region-name="header" extent="15mm"/> 
+					<fo:region-before region-name="header-odd" extent="15mm"/> 
 					<fo:region-after region-name="footer-odd" extent="12.5mm"/>
 					<fo:region-start region-name="left-region" extent="13mm"/>
 					<fo:region-end region-name="right-region" extent="12mm"/>
 				</fo:simple-page-master>
 				<fo:simple-page-master master-name="even" page-width="{$pageWidth}" page-height="{$pageHeight}">
-					<fo:region-body margin-top="15mm" margin-bottom="91mm" margin-left="29mm" margin-right="43mm"/>
+					<!-- <fo:region-body margin-top="15mm" margin-bottom="91mm" margin-left="29mm" margin-right="43mm"/>
 					<fo:region-before region-name="header" extent="15mm"/> 
 					<fo:region-after region-name="footer-odd" extent="12.5mm"/>
 					<fo:region-start region-name="left-region" extent="13mm"/>
-					<fo:region-end region-name="right-region" extent="12mm"/>
-					<!-- <fo:region-body margin-top="71mm" margin-bottom="22mm" margin-left="29mm" margin-right="43mm"/>
-					<fo:region-before region-name="header" extent="22mm"/> 
+					<fo:region-end region-name="right-region" extent="12mm"/> -->
+					<fo:region-body margin-top="71mm" margin-bottom="22mm" margin-left="29mm" margin-right="43mm"/>
+					<fo:region-before region-name="header-even" extent="22mm"/> 
 					<fo:region-after region-name="footer-even" extent="12.5mm"/>
 					<fo:region-start region-name="left-region" extent="13mm"/>
-					<fo:region-end region-name="right-region" extent="12mm"/> -->
+					<fo:region-end region-name="right-region" extent="12mm"/>
 				</fo:simple-page-master>
 				
 				<fo:page-sequence-master master-name="document">
 					<fo:repeatable-page-master-alternatives>
-						<fo:conditional-page-master-reference master-reference="first" page-position="first"/>
+						<!-- <fo:conditional-page-master-reference master-reference="first" page-position="first"/> -->
 						<fo:conditional-page-master-reference odd-or-even="odd" master-reference="odd"/>
 						<fo:conditional-page-master-reference odd-or-even="even" master-reference="even"/>
 					</fo:repeatable-page-master-alternatives>
@@ -973,14 +973,14 @@
 	</xsl:template>
 	
 	<xsl:template name="insertHeaderFooter">
-		<fo:static-content flow-name="header-first">
+		<fo:static-content flow-name="header-even"><!--  header-first -->
 			<fo:block-container absolute-position="fixed" left="0mm" top="0mm" font-size="0">
 				<fo:block>
 						<fo:external-graphic src="{concat('data:image/png;base64,', normalize-space($Image-Page-even-Background))}" width="{$pageWidth}" content-height="scale-to-fit" scaling="uniform" fox:alt-text="Image Page"/>
 					</fo:block>
 			</fo:block-container>
 		</fo:static-content>
-		<fo:static-content flow-name="header">
+		<fo:static-content flow-name="header-odd">
 			<fo:block-container absolute-position="fixed" left="0mm" top="0mm" font-size="0">
 				<fo:block>
 						<fo:external-graphic src="{concat('data:image/png;base64,', normalize-space($Image-Page-odd-Background))}" width="{$pageWidth}" content-height="scale-to-fit" scaling="uniform" fox:alt-text="Image Page"/>
