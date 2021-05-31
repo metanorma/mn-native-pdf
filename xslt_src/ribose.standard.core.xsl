@@ -983,7 +983,7 @@
 	<xsl:template name="insertFooter">
 		<xsl:param name="invert"/>
 		<xsl:variable name="footerText"> 
-			<xsl:value-of select="/rsd:rsd-standard/rsd:bibdata/rsd:contributor[rsd:role/@type='publisher']/rsd:organization/rsd:name"/><!-- Ribose -->
+			<xsl:text>Ribose</xsl:text>
 			<xsl:text>&#xA0;</xsl:text>
 			<xsl:call-template name="capitalize">
 				<xsl:with-param name="str" select="/rsd:rsd-standard/rsd:bibdata/rsd:ext/rsd:doctype"/>
