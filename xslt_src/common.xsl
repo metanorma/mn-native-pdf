@@ -730,6 +730,14 @@
 			<xsl:attribute name="text-indent">-25mm</xsl:attribute>
 			<xsl:attribute name="margin-bottom">6pt</xsl:attribute>			
 		</xsl:if>
+		<xsl:if test="$namespace = 'rsd'">
+			<xsl:attribute name="font-size">12pt</xsl:attribute>
+			<xsl:attribute name="font-weight">normal</xsl:attribute>
+			<xsl:attribute name="text-align">center</xsl:attribute>
+			<xsl:attribute name="margin-top">12pt</xsl:attribute>
+			<xsl:attribute name="margin-bottom">6pt</xsl:attribute>
+			<xsl:attribute name="keep-with-previous">always</xsl:attribute>
+		</xsl:if>
 	</xsl:attribute-set>
 
 	
@@ -1697,7 +1705,11 @@
 						<xsl:attribute name="font-size">9pt</xsl:attribute>
 					</xsl:if>
 				</xsl:if>
-				
+				<xsl:if test="$namespace = 'rsd'">
+					<xsl:attribute name="margin-left">0mm</xsl:attribute>
+					<xsl:attribute name="margin-right">0mm</xsl:attribute>
+					<xsl:attribute name="margin-bottom">12pt</xsl:attribute>
+				</xsl:if>
 				<xsl:variable name="table_width">
 					<!-- for centered table always 100% (@width will be set for middle/second cell of outer table) -->
 					<xsl:if test="$namespace = 'bsi' or $namespace = 'csa' or $namespace = 'csd' or $namespace = 'gb' or 
@@ -2549,7 +2561,9 @@
 						<xsl:attribute name="border-top">solid black 0.5pt</xsl:attribute>
 						<xsl:attribute name="border-bottom">solid black 0.5pt</xsl:attribute>
 					</xsl:if>
-					
+					<xsl:if test="$namespace = 'rsd'">
+							<xsl:attribute name="font-weight">normal</xsl:attribute>
+						</xsl:if>
 				</xsl:if>
 				<xsl:if test="$parent-name = 'tfoot'">
 					<xsl:if test="$namespace = 'bsi' or $namespace = 'iso' or $namespace = 'jcgm'">
@@ -2705,6 +2719,9 @@
 					</xsl:attribute>
 					<xsl:attribute name="display-align">before</xsl:attribute>
 				</xsl:if>
+			</xsl:if>
+			<xsl:if test="$namespace = 'rsd'">
+				<xsl:attribute name="font-weight">normal</xsl:attribute>
 			</xsl:if>
 			<xsl:if test="$lang = 'ar'">
 				<xsl:attribute name="padding-right">1mm</xsl:attribute>
@@ -3373,6 +3390,9 @@
 							<xsl:if test="$namespace = 'gb'">
 								<xsl:attribute name="margin-bottom">0pt</xsl:attribute>
 								<xsl:attribute name="text-indent">7.4mm</xsl:attribute>
+							</xsl:if>
+							<xsl:if test="$namespace = 'rsd'">
+								<xsl:attribute name="font-weight">normal</xsl:attribute>
 							</xsl:if>
 							<xsl:variable name="title-key">
 								<xsl:if test="$namespace = 'bsi' or $namespace = 'iso' or $namespace = 'jcgm'">
