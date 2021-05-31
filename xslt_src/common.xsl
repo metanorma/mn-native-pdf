@@ -1299,12 +1299,10 @@
 	
 	<xsl:attribute-set name="image-graphic-style">
 		<xsl:if test="$namespace = 'bsi'">
-			<!-- <xsl:attribute name="width">100%</xsl:attribute> -->
+			<xsl:attribute name="width">100%</xsl:attribute>
 			<xsl:attribute name="content-height">100%</xsl:attribute>
 			<xsl:attribute name="content-width">scale-to-fit</xsl:attribute>
 			<xsl:attribute name="scaling">uniform</xsl:attribute>
-			<xsl:attribute name="border">0.5pt solid black</xsl:attribute>
-			<xsl:attribute name="padding">3mm</xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'csa' or $namespace = 'csd' or $namespace = 'iho' or $namespace = 'iso' or 
 											$namespace = 'ogc' or $namespace = 'ogc-white-paper' or
