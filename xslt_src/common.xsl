@@ -1371,6 +1371,9 @@
 		<xsl:if test="$namespace = 'jcgm'">
 			<xsl:attribute name="font-weight">bold</xsl:attribute>
 		</xsl:if>
+		<xsl:if test="$namespace = 'rsd'">
+			<xsl:attribute name="font-weight">600</xsl:attribute>
+		</xsl:if>
 	</xsl:attribute-set>
 
 	<xsl:attribute-set name="deprecates-style">
@@ -1378,6 +1381,9 @@
 			<xsl:attribute name="font-size">8pt</xsl:attribute>
 			<xsl:attribute name="margin-top">5pt</xsl:attribute>
 			<xsl:attribute name="margin-bottom">5pt</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'rsd'">
+			<xsl:attribute name="font-weight">600</xsl:attribute>
 		</xsl:if>
 	</xsl:attribute-set>
 
