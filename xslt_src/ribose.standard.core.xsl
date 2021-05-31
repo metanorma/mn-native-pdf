@@ -491,8 +491,8 @@
 		
 		<xsl:variable name="font-size">
 			<xsl:choose>
-				<xsl:when test="ancestor::rsd:preface and $level &gt;= 2">12pt</xsl:when>
-				<xsl:when test="ancestor::rsd:preface">13pt</xsl:when>
+				<!-- <xsl:when test="ancestor::rsd:preface and $level &gt;= 2">12pt</xsl:when>
+				<xsl:when test="ancestor::rsd:preface">13pt</xsl:when> -->
 				<xsl:when test="$level = 1">24pt</xsl:when>
 				<xsl:when test="$level = 2">14pt</xsl:when>
 				<xsl:when test="$level &gt;= 3">12pt</xsl:when>
