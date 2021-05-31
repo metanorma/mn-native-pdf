@@ -1383,13 +1383,17 @@
 
 
 	<xsl:attribute-set name="definition-style">
-		<xsl:if test="$namespace = 'csa' or $namespace = 'ogc' or $namespace = 'ogc-white-paper' or $namespace = 'rsd'">
+		<xsl:if test="$namespace = 'csa' or $namespace = 'ogc' or $namespace = 'ogc-white-paper'">
 			<xsl:attribute name="space-after">6pt</xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'csd' or $namespace = 'iec' or $namespace = 'iho' or $namespace = 'iso' or $namespace = 'jcgm'">
 			<xsl:attribute name="margin-bottom">6pt</xsl:attribute>
 		</xsl:if>
-		
+		<xsl:if test="$namespace = 'rsd'">
+			<xsl:attribute name="keep-with-previous">always</xsl:attribute>
+			<xsl:attribute name="space-before">12pt</xsl:attribute>
+			<xsl:attribute name="space-after">6pt</xsl:attribute>
+		</xsl:if>
 	</xsl:attribute-set>
 
 	<xsl:variable name="color-added-text">

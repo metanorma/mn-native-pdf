@@ -868,7 +868,7 @@
 				<xsl:otherwise>12pt</xsl:otherwise>
 			</xsl:choose>
 		</xsl:variable>
-		<fo:block font-weight="600" font-size="{$font-size}" keep-with-next="always" space-before="13mm" space-after="12pt"> <!-- 600 - semibold -->
+		<fo:block font-weight="600" font-size="{$font-size}" keep-with-next="always" space-before="13mm"> <!-- 600 - semibold -->
 			<fo:inline padding-right="1mm">
 				<xsl:apply-templates select="ancestor::rsd:term/rsd:name" mode="presentation"/>
 			</fo:inline>
