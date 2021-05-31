@@ -23,9 +23,11 @@
 	
 	<xsl:variable name="debug">false</xsl:variable>
 	
+	<xsl:variable name="copyright_year" select="/rsd:rsd-standard/rsd:bibdata/rsd:copyright/rsd:from"/>
+	
 	<xsl:variable name="copyright">
 		<xsl:text>© </xsl:text>
-		<xsl:value-of select="/rsd:rsd-standard/rsd:bibdata/rsd:copyright/rsd:from"/>
+		<xsl:value-of select="$copyright_year"/>
 		<xsl:text> </xsl:text>
 		<xsl:value-of select="/rsd:rsd-standard/rsd:bibdata/rsd:copyright/rsd:owner/rsd:organization/rsd:name"/>
 	</xsl:variable>
@@ -55,7 +57,7 @@
 	<xsl:variable name="docnumber_version">
 		<xsl:value-of select="/rsd:rsd-standard/rsd:bibdata/rsd:docidentifier[@type = 'rsd' or @type = 'Ribose']"/>
 			<xsl:text>:</xsl:text>
-			<xsl:value-of select="/rsd:rsd-standard/rsd:bibdata/rsd:copyright/rsd:from"/>
+			<xsl:value-of select="$copyright_year"/>
 			<xsl:variable name="edition" select="normalize-space(/rsd:rsd-standard/rsd:bibdata/rsd:edition)"/>
 			<xsl:if test="$edition != ''">
 				<xsl:variable name="title-edition">
@@ -192,7 +194,12 @@
 												<fo:block><xsl:value-of select="$docnumber_version"/></fo:block>
 												<xsl:apply-templates select="/rsd:rsd-standard/rsd:bibdata/rsd:ext/rsd:editorialgroup/rsd:committee"/>
 												<fo:block>
-													<xsl:value-of select="$copyright"/>
+													<xsl:text>© </xsl:text>
+													<xsl:value-of select="$copyright_year"/>
+													<xsl:text> </xsl:text>
+													<xsl:variable name="publisher" select="/rsd:rsd-standard/rsd:bibdata/rsd:contributor[rsd:role/@type='publisher']/rsd:organization/rsd:name"/>
+													<xsl:value-of select="$publisher"/>
+													<xsl:if test="substring($publisher, string-length($publisher)) != '.'"><xsl:text>.</xsl:text></xsl:if>
 													<xsl:text> </xsl:text>
 													<xsl:call-template name="getLocalizedString">
 														<xsl:with-param name="key">all_rights_reserved</xsl:with-param>
