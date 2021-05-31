@@ -706,7 +706,7 @@
 						<xsl:if test="position() != last()">, </xsl:if>
 					</xsl:for-each>
 					<xsl:if test="rsd:date[@type='published']/rsd:on">
-						<xsl:text>(</xsl:text><xsl:value-of select="rsd:date[@type='published']/rsd:on"/><xsl:text>)</xsl:text>
+						<xsl:text> (</xsl:text><xsl:value-of select="rsd:date[@type='published']/rsd:on"/><xsl:text>)</xsl:text>
 					</xsl:if>
 			</xsl:otherwise>
 			</xsl:choose>
