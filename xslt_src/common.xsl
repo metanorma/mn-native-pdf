@@ -5968,19 +5968,21 @@
 						<xsl:attribute name="font-weight">bold</xsl:attribute>
 						<xsl:attribute name="padding-right">1mm</xsl:attribute>
 					</xsl:if>
-					<xsl:if test="$namespace = 'bsi' or $namespace = 'iso' or $namespace = 'jcgm'">
-						<!-- <xsl:call-template name="getLocalizedString">
-							<xsl:with-param name="key">source</xsl:with-param>
-						</xsl:call-template> -->
+					<xsl:if test="$namespace = 'bsi' or $namespace = 'iso'">
 						<xsl:value-of select="$localized.source"/>
+						<xsl:text>: </xsl:text>
 					</xsl:if>
-					<xsl:if test="$namespace = 'bipm' or $namespace = 'csa' or $namespace = 'csd' or $namespace = 'gb' or $namespace = 'iec' or $namespace = 'iho' or $namespace = 'itu' or $namespace = 'm3d' or $namespace = 'mpfd' or $namespace = 'nist-cswp'  or $namespace = 'nist-sp' or $namespace = 'ogc' or $namespace = 'ogc-white-paper' or $namespace = 'rsd' or $namespace = 'unece' or $namespace = 'unece-rec'">
+					<xsl:if test="$namespace = 'bipm' or $namespace = 'jcgm'">
+						<xsl:value-of select="$localized.source"/>
+						<xsl:text> </xsl:text>
+					</xsl:if>
+					<xsl:if test="$namespace = 'csa' or $namespace = 'csd' or $namespace = 'gb' or $namespace = 'iec' or $namespace = 'iho' or $namespace = 'itu' or $namespace = 'm3d' or $namespace = 'mpfd' or $namespace = 'nist-cswp'  or $namespace = 'nist-sp' or $namespace = 'ogc' or $namespace = 'ogc-white-paper' or $namespace = 'rsd' or $namespace = 'unece' or $namespace = 'unece-rec'">
 						<xsl:call-template name="getTitle">
 							<xsl:with-param name="name" select="'title-source'"/>
 						</xsl:call-template>
+						<xsl:text>: </xsl:text>
 					</xsl:if>
 					
-					<xsl:text>: </xsl:text>
 				</fo:inline>
 			</xsl:if>
 			<fo:inline xsl:use-attribute-sets="origin-style">
