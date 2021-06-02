@@ -74,7 +74,7 @@ XSLT_GENERATED := xslt/iec.international-standard.xsl \
 	xslt/bipm.rapport.xsl \
 	xslt/jcgm.standard.xsl
 
-MN2PDF_DOWNLOAD_PATH := https://github.com/metanorma/mn2pdf/releases/download/v1.28/mn2pdf-1.28.jar
+MN2PDF_DOWNLOAD_PATH := https://github.com/metanorma/mn2pdf/releases/download/v1.31/mn2pdf-1.31.jar
 # MN2PDF_DOWNLOAD_PATH := https://maven.pkg.github.com/metanorma/mn2pdf/com/metanorma/fop/mn2pdf/1.7/mn2pdf-1.7.jar
 MN2PDF_EXECUTABLE := $(notdir $(MN2PDF_DOWNLOAD_PATH))
 
@@ -220,14 +220,12 @@ documents/%.presentation.pdf: sources/%.presentation.xml $(MN2PDF_EXECUTABLE) | 
 ifeq ($(OS),Windows_NT)
 	powershell -Command "Write-Host $(word 1,$(subst -, ,$(notdir $<)))" > MN_FLAVOR.txt
 	powershell -Command "$$doc = [xml](Get-Content $<); $$doc.SelectNodes(\"//*[local-name()='doctype']\").'#text'" > DOCTYPE.txt
-	cmd /V /C "set /p MN_FLAVOR=<MN_FLAVOR.txt & set /p DOCTYPE=<DOCTYPE.txt & java -Xss5m -Xmx1024m -jar $(MN2PDF_EXECUTABLE) --xml-file $< --xsl-file ${XSLT_PATH_BASE}/!MN_FLAVOR!.!DOCTYPE!.xsl --pdf-file $@"
-#--font-manifest $(FONT_MANIFEST_PATH) 
+	cmd /V /C "set /p MN_FLAVOR=<MN_FLAVOR.txt & set /p DOCTYPE=<DOCTYPE.txt & java -Xss5m -Xmx1024m -jar $(MN2PDF_EXECUTABLE) --xml-file $< --xsl-file ${XSLT_PATH_BASE}/!MN_FLAVOR!.!DOCTYPE!.xsl --pdf-file $@ --font-manifest $(FONT_MANIFEST_PATH) "
 else
 	MN_FLAVOR=$(word 1,$(subst -, ,$(notdir $<))); \
 	DOCTYPE=$$(xmllint --huge --xpath "(//*[local-name()='doctype'])[1]/text()" $<); \
 	XSLT_PATH=${XSLT_PATH_BASE}/$${MN_FLAVOR}.$${DOCTYPE}.xsl; \
-	java -Xss5m -Xmx1024m -jar $(MN2PDF_EXECUTABLE) --xml-file $< --xsl-file $$XSLT_PATH --pdf-file $@	
-#--font-manifest $(FONT_MANIFEST_PATH) 
+	java -Xss5m -Xmx1024m -jar $(MN2PDF_EXECUTABLE) --xml-file $< --xsl-file $$XSLT_PATH --pdf-file $@ --font-manifest $(FONT_MANIFEST_PATH) 
 endif
 
 documents/%.pdf: sources/%.xml $(MN2PDF_EXECUTABLE) | documents

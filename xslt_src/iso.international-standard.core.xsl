@@ -6,7 +6,8 @@
 											xmlns:xalan="http://xml.apache.org/xalan" 
 											xmlns:fox="http://xmlgraphics.apache.org/fop/extensions" 
 											xmlns:pdf="http://xmlgraphics.apache.org/fop/extensions/pdf"
-											xmlns:java="http://xml.apache.org/xalan/java" 
+											xmlns:xlink="http://www.w3.org/1999/xlink"
+											xmlns:java="http://xml.apache.org/xalan/java"
 											exclude-result-prefixes="java"
 											version="1.0">
 
@@ -15,6 +16,7 @@
 	<xsl:param name="svg_images"/>
 	<xsl:param name="external_index" /><!-- path to index xml, generated on 1st pass, based on FOP Intermediate Format -->
 	<xsl:variable name="images" select="document($svg_images)"/>
+	<xsl:param name="basepath"/>
 	
 	<xsl:include href="./common.xsl"/>
 
@@ -354,8 +356,8 @@
 			<fo:declarations>
 				<xsl:call-template name="addPDFUAmeta"/>
 				<xsl:for-each select="//*[local-name() = 'eref'][generate-id(.)=generate-id(key('attachments',@bibitemid)[1])]">
-					<xsl:variable name="url" select="concat('url(', ., ')')"/>
-					<pdf:embedded-file src="{$url}"/>
+					<xsl:variable name="url" select="concat('url(file:',$basepath, @bibitemid, ')')"/>
+					<pdf:embedded-file src="{$url}" filename="{@bibitemid}"/>
 				</xsl:for-each>
 			</fo:declarations>
 
@@ -980,22 +982,26 @@
 																																				/iso:iso-standard/iso:bibdata/iso:ext/iso:editorialgroup/iso:workgroup/@type, ' ',
 																																				/iso:iso-standard/iso:bibdata/iso:ext/iso:editorialgroup/iso:workgroup/@number)"/>
 								 -->
-								<!-- ISO/TC 34/SC 4/WG 3 -->
-								<fo:block margin-bottom="12pt">
-									<xsl:text>ISO</xsl:text>
-									<xsl:for-each select="/iso:iso-standard/iso:bibdata/iso:ext/iso:editorialgroup/iso:technical-committee[@number]">
-										<xsl:text>/TC </xsl:text><xsl:value-of select="@number"/>
-									</xsl:for-each>
-									<xsl:for-each select="/iso:iso-standard/iso:bibdata/iso:ext/iso:editorialgroup/iso:subcommittee[@number]">
-										<xsl:text>/SC </xsl:text>
-										<xsl:value-of select="@number"/>
-									</xsl:for-each>
-									<xsl:for-each select="/iso:iso-standard/iso:bibdata/iso:ext/iso:editorialgroup/iso:workgroup[@number]">
-										<xsl:text>/WG </xsl:text>
-										<xsl:value-of select="@number"/>
-									</xsl:for-each>
-								</fo:block>
-								
+								 
+								 <xsl:if test="/iso:iso-standard/iso:bibdata/iso:ext/iso:editorialgroup/iso:technical-committee[normalize-space(@number) != ''] or 
+																	/iso:iso-standard/iso:bibdata/iso:ext/iso:editorialgroup/iso:subcommittee[normalize-space(@number) != ''] or
+																	/iso:iso-standard/iso:bibdata/iso:ext/iso:editorialgroup/iso:workgroup[normalize-space(@number) != '']">
+									<!-- ISO/TC 34/SC 4/WG 3 -->
+									<fo:block margin-bottom="12pt">
+										<xsl:text>ISO</xsl:text>
+										<xsl:for-each select="/iso:iso-standard/iso:bibdata/iso:ext/iso:editorialgroup/iso:technical-committee[normalize-space(@number) != '']">
+											<xsl:text>/TC </xsl:text><xsl:value-of select="@number"/>
+										</xsl:for-each>
+										<xsl:for-each select="/iso:iso-standard/iso:bibdata/iso:ext/iso:editorialgroup/iso:subcommittee[normalize-space(@number) != '']">
+											<xsl:text>/SC </xsl:text>
+											<xsl:value-of select="@number"/>
+										</xsl:for-each>
+										<xsl:for-each select="/iso:iso-standard/iso:bibdata/iso:ext/iso:editorialgroup/iso:workgroup[normalize-space(@number) != '']">
+											<xsl:text>/WG </xsl:text>
+											<xsl:value-of select="@number"/>
+										</xsl:for-each>
+									</fo:block>
+								</xsl:if>
 								<!-- Secretariat: AFNOR  -->
 								
 								<fo:block margin-bottom="100pt">
@@ -1057,7 +1063,15 @@
 							<fo:block font-size="11pt" margin-bottom="8pt"><xsl:value-of select="$linebreak"/></fo:block>
 							<fo:block-container font-size="40pt" text-align="center" margin-bottom="12pt" border="0.5pt solid black">
 								<xsl:variable name="stage-title" select="substring-after(substring-before($docidentifierISO, ' '), '/')"/>
-								<fo:block padding-top="2mm"><xsl:value-of select="$stage-title"/><xsl:text> stage</xsl:text></fo:block>
+								<xsl:choose>
+									<xsl:when test="normalize-space($stage-title) != ''">
+										<fo:block padding-top="2mm"><xsl:value-of select="$stage-title"/><xsl:text> stage</xsl:text></fo:block>
+									</xsl:when>
+									<xsl:otherwise>
+										<xsl:attribute name="border">0pt solid white</xsl:attribute>
+										<fo:block>&#xa0;</fo:block>
+									</xsl:otherwise>
+								</xsl:choose>
 							</fo:block-container>
 							<fo:block><xsl:value-of select="$linebreak"/></fo:block>
 							
@@ -1447,7 +1461,7 @@
 		</xsl:if>
 	</xsl:template>
 	
-
+	<xsl:template match="iso:p | iso:termsource | iso:termnote" mode="contents" />
 
 	<xsl:template name="getListItemFormat">
 		<xsl:choose>
@@ -1683,6 +1697,12 @@
 			<xsl:if test="@id">
 				<xsl:attribute name="id"><xsl:value-of select="@id"/></xsl:attribute>
 			</xsl:if>
+			<!-- bookmarks only in paragraph -->
+			<xsl:if test="count(iso:bookmark) != 0 and count(*) = count(iso:bookmark) and normalize-space() = ''">
+				<xsl:attribute name="font-size">0</xsl:attribute>
+				<xsl:attribute name="margin-bottom">0pt</xsl:attribute>
+				<xsl:attribute name="line-height">0</xsl:attribute>
+			</xsl:if>
 			<xsl:apply-templates />
 		</xsl:element>
 		<xsl:if test="$element-name = 'fo:inline' and not($inline = 'true') and not(local-name(..) = 'admonition')">
@@ -1768,61 +1788,7 @@
 		<xsl:apply-templates />
 	</xsl:template>
 	
-	
-	
-	<xsl:template match="iso:bibitem">
-		<fo:block id="{@id}" margin-bottom="6pt"> <!-- 12 pt -->
-			<xsl:variable name="docidentifier">
-				<xsl:if test="iso:docidentifier">
-					<xsl:choose>
-						<xsl:when test="iso:docidentifier/@type = 'metanorma'"/>
-						<xsl:otherwise><xsl:value-of select="iso:docidentifier"/></xsl:otherwise>
-					</xsl:choose>
-				</xsl:if>
-			</xsl:variable>
-			<xsl:value-of select="$docidentifier"/>
-			<xsl:apply-templates select="iso:note"/>			
-			<xsl:if test="normalize-space($docidentifier) != ''">, </xsl:if>
-			<fo:inline font-style="italic">
-				<xsl:choose>
-					<xsl:when test="iso:title[@type = 'main' and @language = $lang]">
-						<xsl:value-of select="iso:title[@type = 'main' and @language = $lang]"/>
-					</xsl:when>
-					<xsl:when test="iso:title[@type = 'main' and @language = 'en']">
-						<xsl:value-of select="iso:title[@type = 'main' and @language = 'en']"/>
-					</xsl:when>
-					<xsl:otherwise>
-						<xsl:value-of select="iso:title"/>
-					</xsl:otherwise>
-				</xsl:choose>
-			</fo:inline>
-		</fo:block>
-	</xsl:template>
-	
-	
-	<xsl:template match="iso:bibitem/iso:note" priority="2">
-		<fo:footnote>
-			<xsl:variable name="number">
-				<xsl:number level="any" count="iso:bibitem/iso:note"/>
-			</xsl:variable>
-			<fo:inline font-size="8pt" keep-with-previous.within-line="always" baseline-shift="30%"> <!--85% vertical-align="super"-->
-				<fo:basic-link internal-destination="{generate-id()}" fox:alt-text="footnote {$number}">
-					<xsl:value-of select="$number"/><xsl:text>)</xsl:text>
-				</fo:basic-link>
-			</fo:inline>
-			<fo:footnote-body>
-				<fo:block font-size="10pt" margin-bottom="4pt" start-indent="0pt">
-					<fo:inline id="{generate-id()}" keep-with-next.within-line="always" alignment-baseline="hanging" padding-right="3mm"><!-- font-size="60%"  -->
-						<xsl:value-of select="$number"/><xsl:text>)</xsl:text>
-					</fo:inline>
-					<xsl:apply-templates />
-				</fo:block>
-			</fo:footnote-body>
-		</fo:footnote>
-	</xsl:template>
-	
-	
-	
+		
 	<xsl:template match="iso:ul | iso:ol" mode="ul_ol">
 		<fo:list-block provisional-distance-between-starts="7mm" margin-top="8pt"> <!-- margin-bottom="8pt" -->
 			<xsl:apply-templates />
@@ -1832,7 +1798,7 @@
 		</xsl:for-each>
 	</xsl:template>
 	
-	<xsl:template match="iso:ul//iso:note |  iso:ol//iso:note" priority="2"/>
+	<xsl:template match="iso:ul/iso:note |  iso:ol/iso:note | iso:ul/iso:li/iso:note |  iso:ol/iso:li/iso:note" priority="2"/>
 	
 	<xsl:template match="iso:li">
 		<fo:list-item id="{@id}">
@@ -1844,7 +1810,10 @@
 			<fo:list-item-body start-indent="body-start()">
 				<fo:block>
 					<xsl:apply-templates />
-					<xsl:apply-templates select=".//iso:note" mode="process"/>
+					<!-- <xsl:apply-templates select=".//iso:note" mode="process"/> -->
+					<xsl:for-each select="./iso:note">
+						<xsl:call-template name="note"/>
+					</xsl:for-each>
 				</fo:block>
 			</fo:list-item-body>
 		</fo:list-item>
@@ -1852,6 +1821,10 @@
 	
 	<xsl:template match="iso:note" mode="process">
 		<xsl:call-template name="note"/>
+	</xsl:template>
+	
+	<xsl:template match="*" mode="process">
+		<xsl:apply-templates select="."/>
 	</xsl:template>
 	
 	<xsl:template match="iso:preferred">		
@@ -1881,6 +1854,34 @@
 	</xsl:template>
 
 
+	<xsl:template match="iso:bibitem">
+		<fo:block id="{@id}" margin-bottom="6pt">
+			<xsl:call-template name="processBibitem" />
+		</fo:block>
+	</xsl:template>
+	
+	
+	<xsl:template match="iso:bibitem/iso:note" priority="2">
+		<fo:footnote>
+			<xsl:variable name="number">
+				<xsl:number level="any" count="iso:bibitem/iso:note"/>
+			</xsl:variable>
+			<fo:inline font-size="8pt" keep-with-previous.within-line="always" baseline-shift="30%"> <!--85% vertical-align="super"-->
+				<fo:basic-link internal-destination="{generate-id()}" fox:alt-text="footnote {$number}">
+					<xsl:value-of select="$number"/><xsl:text>)</xsl:text>
+				</fo:basic-link>
+			</fo:inline>
+			<fo:footnote-body>
+				<fo:block font-size="10pt" margin-bottom="4pt" start-indent="0pt">
+					<fo:inline id="{generate-id()}" keep-with-next.within-line="always" alignment-baseline="hanging" padding-right="3mm"><!-- font-size="60%"  -->
+						<xsl:value-of select="$number"/><xsl:text>)</xsl:text>
+					</fo:inline>
+					<xsl:apply-templates />
+				</fo:block>
+			</fo:footnote-body>
+		</fo:footnote>
+	</xsl:template>
+
 	<!-- Example: [1] ISO 9:1995, Information and documentation – Transliteration of Cyrillic characters into Latin characters – Slavic and non-Slavic languages -->
 	<!-- <xsl:template match="iso:references[@id = '_bibliography']/iso:bibitem"> -->
 	<xsl:template match="iso:references[not(@normative='true')]/iso:bibitem">
@@ -1895,58 +1896,22 @@
 				</fo:list-item-label>
 				<fo:list-item-body start-indent="body-start()">
 					<fo:block>
-						<xsl:variable name="docidentifier">
-							<xsl:if test="iso:docidentifier">
-								<xsl:choose>
-									<xsl:when test="iso:docidentifier/@type = 'metanorma'"/>
-									<xsl:otherwise><xsl:value-of select="iso:docidentifier"/></xsl:otherwise>
-								</xsl:choose>
-							</xsl:if>
-						</xsl:variable>
-						<xsl:value-of select="$docidentifier"/>
-						<xsl:apply-templates select="iso:note"/>
-						<xsl:if test="normalize-space($docidentifier) != ''">, </xsl:if>
-						<xsl:choose>
-							<xsl:when test="iso:title[@type = 'main' and @language = $lang]">
-								<xsl:apply-templates select="iso:title[@type = 'main' and @language = $lang]"/>
-							</xsl:when>
-							<xsl:when test="iso:title[@type = 'main' and @language = 'en']">
-								<xsl:apply-templates select="iso:title[@type = 'main' and @language = 'en']"/>
-							</xsl:when>
-							<xsl:otherwise>
-								<xsl:apply-templates select="iso:title"/>
-							</xsl:otherwise>
-						</xsl:choose>
-						<xsl:apply-templates select="iso:formattedref"/>
+						<xsl:call-template name="processBibitem" />
 					</fo:block>
 				</fo:list-item-body>
 			</fo:list-item>
 		</fo:list-block>
 	</xsl:template>
 	
-	<!-- <xsl:template match="iso:references[@id = '_bibliography']/iso:bibitem" mode="contents"/> -->
-	<xsl:template match="iso:references[not(@normative='true')]/iso:bibitem" mode="contents"/>
+	<!-- <xsl:template match="iso:references[@id = '_bibliography']/iso:bibitem" mode="contents"/> [not(@normative='true')] -->
+	<xsl:template match="iso:references/iso:bibitem" mode="contents"/>
 	
-	<!-- <xsl:template match="iso:references[@id = '_bibliography']/iso:bibitem/iso:title"> -->
-	<xsl:template match="iso:references[not(@normative='true')]/iso:bibitem/iso:title">
+	<!-- <xsl:template match="iso:references[@id = '_bibliography']/iso:bibitem/iso:title"> iso:references[not(@normative='true')]/ -->
+	<xsl:template match="iso:bibitem/iso:title">
 		<fo:inline font-style="italic">
 			<xsl:apply-templates />
 		</fo:inline>
 	</xsl:template>
-
-	
-	<xsl:template match="mathml:math" priority="2">
-		<fo:inline font-family="Cambria Math">
-			<xsl:variable name="mathml">
-				<xsl:apply-templates select="." mode="mathml"/>
-			</xsl:variable>
-			<fo:instream-foreign-object fox:alt-text="Math">
-				<!-- <xsl:copy-of select="."/> -->
-				<xsl:copy-of select="xalan:nodeset($mathml)"/>
-			</fo:instream-foreign-object>
-		</fo:inline>
-	</xsl:template>
-	
 
 	
 	<xsl:template match="iso:admonition">
@@ -1989,7 +1954,25 @@
 	<!-- =================== -->
 	<!-- SVG images processing -->
 	<!-- =================== -->
-	<xsl:template match="*[local-name() = 'figure'][not(*[local-name() = 'image'])]/*[local-name() = 'svg']" priority="2">
+	<xsl:template match="*[local-name() = 'figure'][not(*[local-name() = 'image']) and *[local-name() = 'svg']]/*[local-name() = 'name']/*[local-name() = 'bookmark']" priority="2"/>
+	<xsl:template match="*[local-name() = 'figure'][not(*[local-name() = 'image'])]/*[local-name() = 'svg']" priority="2" name="image_svg">
+		<xsl:param name="name"/>
+		
+		<xsl:variable name="svg_content">
+			<xsl:apply-templates select="." mode="svg_update"/>
+		</xsl:variable>
+		
+		<xsl:variable name="alt-text">
+			<xsl:choose>
+				<xsl:when test="normalize-space(../*[local-name() = 'name']) != ''">
+					<xsl:value-of select="../*[local-name() = 'name']"/>
+				</xsl:when>
+				<xsl:when test="normalize-space($name) != ''">
+					<xsl:value-of select="$name"/>
+				</xsl:when>
+				<xsl:otherwise>Figure</xsl:otherwise>
+			</xsl:choose>
+		</xsl:variable>
 		
 		<xsl:choose>
 			<xsl:when test=".//*[local-name() = 'a'][*[local-name() = 'rect'] or *[local-name() = 'polygon'] or *[local-name() = 'circle'] or *[local-name() = 'ellipse']]">
@@ -2038,14 +2021,22 @@
 								<fo:table-cell column-number="2">
 									<fo:block>
 										<fo:block-container width="{$width_scale}px" height="{$height_scale}px">
+											<xsl:if test="../*[local-name() = 'name']/*[local-name() = 'bookmark']">
+												<fo:block  line-height="0" font-size="0">
+													<xsl:for-each select="../*[local-name() = 'name']/*[local-name() = 'bookmark']">
+														<xsl:call-template name="bookmark"/>
+													</xsl:for-each>
+												</fo:block>
+											</xsl:if>
 											<fo:block text-depth="0" line-height="0" font-size="0">
-												<fo:instream-foreign-object fox:alt-text="{../*[local-name() = 'name']}">
+
+												<fo:instream-foreign-object fox:alt-text="{$alt-text}">
 													<xsl:attribute name="width">100%</xsl:attribute>
 													<xsl:attribute name="content-height">100%</xsl:attribute>
 													<xsl:attribute name="content-width">scale-down-to-fit</xsl:attribute>
 													<xsl:attribute name="scaling">uniform</xsl:attribute>
 
-													<xsl:apply-templates select="." mode="svg_remove_a"/>
+													<xsl:apply-templates select="xalan:nodeset($svg_content)" mode="svg_remove_a"/>
 												</fo:instream-foreign-object>
 											</fo:block>
 											
@@ -2063,7 +2054,7 @@
 			</xsl:when>
 			<xsl:otherwise>
 				<fo:block xsl:use-attribute-sets="image-style">
-					<fo:instream-foreign-object fox:alt-text="{../*[local-name() = 'name']}">
+					<fo:instream-foreign-object fox:alt-text="{$alt-text}">
 						<xsl:attribute name="width">100%</xsl:attribute>
 						<xsl:attribute name="content-height">100%</xsl:attribute>
 						<xsl:attribute name="content-width">scale-down-to-fit</xsl:attribute>
@@ -2075,11 +2066,33 @@
 							<xsl:attribute name="width"><xsl:value-of select="$width"/>%</xsl:attribute>
 						</xsl:if>
 						<xsl:attribute name="scaling">uniform</xsl:attribute>
-						<xsl:copy-of select="."/>
+						<xsl:copy-of select="$svg_content"/>
 					</fo:instream-foreign-object>
 				</fo:block>
 			</xsl:otherwise>
 		</xsl:choose>
+	</xsl:template>
+	
+	<xsl:template match="@*|node()" mode="svg_update">
+		<xsl:copy>
+				<xsl:apply-templates select="@*|node()" mode="svg_update"/>
+		</xsl:copy>
+	</xsl:template>
+	
+	<xsl:template match="*[local-name() = 'image']/@href" mode="svg_update">
+		<xsl:attribute name="href" namespace="http://www.w3.org/1999/xlink">
+			<xsl:value-of select="."/>
+		</xsl:attribute>
+	</xsl:template>
+	
+	<xsl:template match="*[local-name() = 'figure']/*[local-name() = 'image'][@mimetype = 'image/svg+xml' and @src[not(starts-with(., 'data:image/'))]]" priority="2">
+		<xsl:variable name="svg_content" select="document(@src)"/>
+		<xsl:variable name="name" select="ancestor::*[local-name() = 'figure']/*[local-name() = 'name']"/>
+		<xsl:for-each select="xalan:nodeset($svg_content)/node()">
+			<xsl:call-template name="image_svg">
+				<xsl:with-param name="name" select="$name"/>
+			</xsl:call-template>
+		</xsl:for-each>
 	</xsl:template>
 	
 	<xsl:template match="@*|node()" mode="svg_remove_a">
@@ -2191,7 +2204,7 @@
 	<!-- =================== -->
 	
 	<!-- For express listings PDF attachments -->
-	<xsl:template match="*[local-name() = 'eref'][contains(., '.exp')]" priority="2">
+	<xsl:template match="*[local-name() = 'eref'][contains(@bibitemid, '.exp')]" priority="2">
 		<fo:inline xsl:use-attribute-sets="eref-style">
 			<xsl:variable name="url" select="concat('url(embedded-file:', @bibitemid, ')')"/>
 			<fo:basic-link external-destination="{$url}" fox:alt-text="{@citeas}">
