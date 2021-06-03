@@ -2,6 +2,7 @@
 
 image:https://github.com/metanorma/mn-native-pdf/workflows/ubuntu/badge.svg["Build Status", link="https://github.com/metanorma/mn-native-pdf/actions?workflow=ubuntu"]
 image:https://github.com/metanorma/mn-native-pdf/workflows/macos/badge.svg["Build Status", link="https://github.com/metanorma/mn-native-pdf/actions?workflow=macos"]
+image:https://github.com/metanorma/mn-native-pdf/workflows/windows/badge.svg["Build Status", link="https://github.com/metanorma/mn-native-pdf/actions?workflow=windows"]
 
 The experimental PDFs are available here:
 
