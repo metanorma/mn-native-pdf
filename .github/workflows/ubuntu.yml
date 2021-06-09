@@ -89,3 +89,15 @@ jobs:
         git config --global user.name "metanorma-ci"
         git config --global user.email "metanorma-ci@users.noreply.github.com"
         make update-xslts-in-processor-all
+
+    - uses: peter-evans/repository-dispatch@v1
+      with:
+        token: ${{ secrets.METANORMA_CI_PAT_TOKEN || secrets.GITHUB_TOKEN }}
+        repository: metanorma/mn-native-pdf-bsi
+        event-type: metanorma/mn-native-pdf
+
+    - uses: peter-evans/repository-dispatch@v1
+      with:
+        token: ${{ secrets.METANORMA_CI_PAT_TOKEN || secrets.GITHUB_TOKEN }}
+        repository: metanorma/mn-native-pdf-nist
+        event-type: metanorma/mn-native-pdf
