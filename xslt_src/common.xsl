@@ -4706,6 +4706,9 @@
 				<xsl:if test="$document_type = 'PAS'">
 					<xsl:attribute name="color"><xsl:value-of select="$color_PAS"/></xsl:attribute>
 					<xsl:attribute name="line-height">1.3</xsl:attribute>
+					<xsl:if test="not(following-sibling::*[local-name() = 'note'])">
+						<xsl:attribute name="space-after">24pt</xsl:attribute>
+					</xsl:if>
 				</xsl:if>
 			</xsl:if>
 			<fo:block-container margin-left="0mm">
@@ -4814,6 +4817,15 @@
 	
 	<xsl:template match="*[local-name() = 'termnote']">
 		<fo:block id="{@id}" xsl:use-attribute-sets="termnote-style">			
+			<xsl:if test="$namespace = 'bsi'">
+				<xsl:if test="$document_type = 'PAS'">
+					<xsl:attribute name="space-before">0pt</xsl:attribute>
+						<xsl:if test="not(following-sibling::*)">
+							<xsl:attribute name="space-after">24pt</xsl:attribute>
+						</xsl:if>
+					<xsl:attribute name="color"><xsl:value-of select="$color_PAS"/></xsl:attribute>
+				</xsl:if>
+			</xsl:if>
 			<fo:inline xsl:use-attribute-sets="termnote-name-style">
 				<xsl:if test="$namespace = 'bsi'">
 					<xsl:variable name="name" select="normalize-space(*[local-name() = 'name'])" />
@@ -4824,7 +4836,7 @@
 					<xsl:if test="$document_type = 'PAS'">
 						<xsl:attribute name="padding-right">0mm</xsl:attribute>
 						<xsl:attribute name="font-weight">bold</xsl:attribute>
-						<xsl:attribute name="line-height">1.3</xsl:attribute>
+						
 					</xsl:if>
 				</xsl:if>
 				<xsl:apply-templates select="*[local-name() = 'name']" mode="presentation"/>
