@@ -3531,6 +3531,7 @@
 	</xsl:template> -->
 
 	<!-- Decrease height of / and | -->
+	<!-- Decrease space before and after / -->
 	<xsl:template match="mathml:mo[normalize-space(text()) = '/' or normalize-space(text()) = '|']" mode="mathml">
 		<xsl:copy>
 			<xsl:apply-templates select="@*" mode="mathml"/>
@@ -3550,6 +3551,20 @@
 						<xsl:attribute name="rspace">-0.1em</xsl:attribute>
 					</xsl:if>
 				</xsl:if>
+			</xsl:if>
+			<xsl:apply-templates mode="mathml"/>
+		</xsl:copy>
+	</xsl:template>
+	
+	<!-- Increase space before and after multiplication sign -->
+	<xsl:template match="mathml:mo[normalize-space(text()) = '&#215;']" mode="mathml"> <!-- multiplication sign -->
+		<xsl:copy>
+			<xsl:apply-templates select="@*" mode="mathml"/>
+			<xsl:if test="not(@lspace)">
+				<xsl:attribute name="lspace">0.5em</xsl:attribute>
+			</xsl:if>
+			<xsl:if test="not(@rspace)">
+				<xsl:attribute name="rspace">0.5em</xsl:attribute>
 			</xsl:if>
 			<xsl:apply-templates mode="mathml"/>
 		</xsl:copy>
