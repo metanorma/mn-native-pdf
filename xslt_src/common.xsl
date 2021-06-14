@@ -1834,6 +1834,7 @@
 						</xsl:if>
 						<attribute name="margin-left">0mm</attribute>
 						<attribute name="margin-right">0mm</attribute>					
+						<!-- <attribute name="keep-together.within-column">1</attribute> --> <!-- integer value  instead 'always'! -->
 					</xsl:if>
 					<xsl:if test="$namespace = 'rsd'">
 						<attribute name="border">0pt solid black</attribute>
