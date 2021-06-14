@@ -3594,6 +3594,10 @@
 		</xsl:if>
 	</xsl:template>
 
+	<xsl:template match="mathml:mn/text()" mode="mathml">
+		<xsl:value-of select="translate(., '&#8239;', ' ')"/>
+	</xsl:template>
+
 	<xsl:template name="insertHeaderFooter">
 		<xsl:param name="header-title"/>
 		<xsl:param name="orientation"/>
