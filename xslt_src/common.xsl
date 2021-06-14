@@ -2199,10 +2199,17 @@
 		<xsl:param name="cols-count"/>
 		<!-- font-weight="bold" -->
 		<fo:table-header>
-			<xsl:if test="$namespace = 'bsi' or $namespace = 'iso' or $namespace = 'jcgm'">				
+			<xsl:if test="$namespace = 'iso' or $namespace = 'jcgm'">				
 				<xsl:call-template name="table-header-title">
 					<xsl:with-param name="cols-count" select="$cols-count"/>
 				</xsl:call-template>				
+			</xsl:if>
+			<xsl:if test="$namespace = 'bsi'">				
+				<xsl:if test="ancestor::*[local-name()='table']/*[local-name()='name']">
+					<xsl:call-template name="table-header-title">
+						<xsl:with-param name="cols-count" select="$cols-count"/>
+					</xsl:call-template>
+				</xsl:if>
 			</xsl:if>
 			<xsl:apply-templates />
 		</fo:table-header>
