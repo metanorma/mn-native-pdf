@@ -3534,9 +3534,23 @@
 	<xsl:template match="mathml:mo[normalize-space(text()) = '/' or normalize-space(text()) = '|']" mode="mathml">
 		<xsl:copy>
 			<xsl:apply-templates select="@*" mode="mathml"/>
-				<xsl:if test="not(@stretchy) and not(preceding-sibling::*[1][local-name() = 'mfrac'] and following-sibling::*[1][local-name() = 'mfrac'])">
-					<xsl:attribute name="stretchy">false</xsl:attribute>
+			<xsl:if test="not(@stretchy) and not(preceding-sibling::*[1][local-name() = 'mfrac'] and following-sibling::*[1][local-name() = 'mfrac'])">
+				<xsl:attribute name="stretchy">false</xsl:attribute>
+			</xsl:if>
+			<xsl:if test="normalize-space(text()) = '/'">
+				<xsl:if test="not(@lspace)">
+					<xsl:attribute name="lspace">0em</xsl:attribute>
+					<xsl:if test="preceding-sibling::*[1][local-name() = 'msub']">
+						<xsl:attribute name="lspace">0.1em</xsl:attribute>
+					</xsl:if>
 				</xsl:if>
+				<xsl:if test="not(@rspace)">
+					<xsl:attribute name="rspace">0em</xsl:attribute>
+					<xsl:if test="following-sibling::*[1][local-name() = 'mfenced']">
+						<xsl:attribute name="rspace">-0.1em</xsl:attribute>
+					</xsl:if>
+				</xsl:if>
+			</xsl:if>
 			<xsl:apply-templates mode="mathml"/>
 		</xsl:copy>
 	</xsl:template>
