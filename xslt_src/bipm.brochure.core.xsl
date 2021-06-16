@@ -3507,6 +3507,13 @@
 				<xsl:attribute name="separators"></xsl:attribute>
 			</xsl:if>
 			<mathml:mspace width="-0.15em"/> <!-- decrease space between opening brackets  and inside text-->
+			
+			<!-- if there is previous or next mfenced with superscript, then increase height of Parentheses -->
+			<xsl:if test="following-sibling::mathml:mfenced[.//mathml:msup] or preceding-sibling::mathml:mfenced[.//mathml:msup] or
+			ancestor::*[following-sibling::mathml:mfenced[.//mathml:msup] or preceding-sibling::mathml:mfenced[.//mathml:msup]]">
+				<mathml:mspace height="1.15em"/> <!-- increase height of parentheses -->
+			</xsl:if>
+			
 			<xsl:apply-templates mode="mathml"/>
 			<mathml:mspace width="-0.1em"/> <!-- decrease space between inside text and closing brackets -->
 		</xsl:copy>
