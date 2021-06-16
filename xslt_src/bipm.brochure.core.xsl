@@ -1129,8 +1129,11 @@
 					
 					<xsl:variable name="title-toc">
 						<fo:inline>
-							<xsl:call-template name="getTitle">
+							<!-- <xsl:call-template name="getTitle">
 								<xsl:with-param name="name" select="'title-toc'"/>
+							</xsl:call-template> -->
+							<xsl:call-template name="getLocalizedString">
+								<xsl:with-param name="key">table_of_contents</xsl:with-param>
 							</xsl:call-template>
 						</fo:inline>
 					</xsl:variable>
@@ -2431,8 +2434,16 @@
 
 	</xsl:template>
 	
+	<xsl:variable name="zero-width-space" select="'&#x200b;'"/>
 	<xsl:template match="*" mode="header">
-		<xsl:apply-templates mode="header"/>
+		<xsl:choose>
+			<xsl:when test="contains(preceding-sibling::node()[1], $zero-width-space)">
+				<!-- stop further processing -->
+			</xsl:when>
+			<xsl:otherwise>
+				<xsl:apply-templates mode="header"/>
+			</xsl:otherwise>
+		</xsl:choose>
 	</xsl:template>
 
 	<xsl:template match="*[local-name() = 'stem']" mode="header">
@@ -2441,6 +2452,10 @@
 
 	<xsl:template match="*[local-name() = 'br']" mode="header">
 		<xsl:text> </xsl:text>
+	</xsl:template>
+	
+	<xsl:template match="text()[contains(., $zero-width-space)]" mode="header"> <!-- zero-width space - separator for full/short titles. Short titles using in headers -->
+		<xsl:value-of select="substring-before(., $zero-width-space)"/>
 	</xsl:template>
 	
 	<!-- ====== -->
