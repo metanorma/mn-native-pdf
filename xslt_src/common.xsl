@@ -2935,6 +2935,11 @@
 					<xsl:if test="not(.//bipm:image)">
 						<xsl:attribute name="line-stacking-strategy">font-height</xsl:attribute>
 					</xsl:if>
+					<!-- hanging indent for left column -->
+					<xsl:if test="not(preceding-sibling::*[local-name() = 'td'])">
+						<xsl:attribute name="text-indent">-3mm</xsl:attribute>
+						<xsl:attribute name="start-indent">3mm</xsl:attribute>
+					</xsl:if>
 				</xsl:if>				
 				<xsl:apply-templates />
 			</fo:block>			
