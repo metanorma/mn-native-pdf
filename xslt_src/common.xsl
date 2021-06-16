@@ -4489,7 +4489,13 @@
 		<xsl:copy>
 			<xsl:apply-templates select="@*|node()" mode="mathml"/>
 		</xsl:copy>
-		<mathml:mspace width="0.5ex"/>
+		<!-- if in msub, then don't add space -->
+		<xsl:choose>
+			<xsl:when test="ancestor::mathml:mrow[parent::mathml:msub and preceding-sibling::*[1][self::mathml:mrow]]"></xsl:when>
+			<xsl:otherwise>
+				<mathml:mspace width="0.5ex"/>
+			</xsl:otherwise>
+		</xsl:choose>
 	</xsl:template>
 
 	<xsl:template match="mathml:math/*[local-name()='unit']" mode="mathml"/>
