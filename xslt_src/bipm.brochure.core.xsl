@@ -3606,6 +3606,29 @@
 		</xsl:copy>
 	</xsl:template>
 	
+	<!-- decrease space before and after sign 'minus' -->
+	<xsl:template match="mathml:mo[normalize-space(text()) = '&#8722;']" mode="mathml"> <!-- minus sign -->
+		<xsl:copy>
+			<xsl:apply-templates select="@*" mode="mathml"/>
+			<xsl:choose>
+				<xsl:when test="not(preceding-sibling::*)"><!-- example: -0.234 -->
+					<xsl:if test="not(@rspace)">
+						<xsl:attribute name="rspace">0em</xsl:attribute>
+					</xsl:if>
+				</xsl:when>
+				<xsl:otherwise>
+					<xsl:if test="not(@lspace)">
+						<xsl:attribute name="lspace">0.2em</xsl:attribute>
+					</xsl:if>
+					<xsl:if test="not(@rspace)">
+						<xsl:attribute name="rspace">0.2em</xsl:attribute>
+					</xsl:if>
+				</xsl:otherwise>
+			</xsl:choose>
+			<xsl:apply-templates mode="mathml"/>
+		</xsl:copy>
+	</xsl:template>
+	
 	<xsl:template match="mathml:mi[string-length(normalize-space()) &gt; 1]" mode="mathml" priority="2">
 		<xsl:if test="preceding-sibling::* and preceding-sibling::*[1][not(local-name() = 'mfenced' or local-name() = 'mo')]">
 			<mathml:mspace width="0.3em"/>
