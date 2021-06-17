@@ -2940,11 +2940,13 @@
 		<xsl:choose>
 			<xsl:when test="$num = 1">
 				<fo:inline xsl:use-attribute-sets="note-p-style">
+					<xsl:attribute name="text-align">left</xsl:attribute>
 					<xsl:apply-templates />
 				</fo:inline>
 			</xsl:when>
 			<xsl:otherwise>
 				<fo:block xsl:use-attribute-sets="note-p-style">						
+					<xsl:attribute name="text-align">left</xsl:attribute>
 					<xsl:apply-templates />
 				</fo:block>
 			</xsl:otherwise>
@@ -3012,6 +3014,7 @@
 			<xsl:attribute name="text-align">
 				<xsl:choose>
 					<xsl:when test="@align"><xsl:value-of select="@align"/></xsl:when>
+					<xsl:when test="ancestor::*[local-name() = 'note_side']">left</xsl:when>
 					<xsl:when test="../@align"><xsl:value-of select="../@align"/></xsl:when>
 					<xsl:otherwise>justify</xsl:otherwise>
 				</xsl:choose>
