@@ -2434,16 +2434,17 @@
 
 	</xsl:template>
 	
-	<xsl:variable name="zero-width-space" select="'&#x200b;'"/>
+	<!-- <xsl:variable name="zero-width-space" select="'&#x200b;'"/> -->
 	<xsl:template match="*" mode="header">
-		<xsl:choose>
-			<xsl:when test="contains(preceding-sibling::node()[1], $zero-width-space)">
+		<xsl:apply-templates mode="header"/>
+		<!-- <xsl:choose>
+			<xsl:when test="contains(preceding-sibling::node()[1], $zero-width-space)"> -->
 				<!-- stop further processing -->
-			</xsl:when>
+			<!-- </xsl:when>
 			<xsl:otherwise>
 				<xsl:apply-templates mode="header"/>
 			</xsl:otherwise>
-		</xsl:choose>
+		</xsl:choose> -->
 	</xsl:template>
 
 	<xsl:template match="*[local-name() = 'stem']" mode="header">
@@ -2454,9 +2455,10 @@
 		<xsl:text> </xsl:text>
 	</xsl:template>
 	
-	<xsl:template match="text()[contains(., $zero-width-space)]" mode="header"> <!-- zero-width space - separator for full/short titles. Short titles using in headers -->
+	<!-- zero-width space - separator for full/short titles. Short titles using in headers -->
+	<!-- <xsl:template match="text()[contains(., $zero-width-space)]" mode="header"> 
 		<xsl:value-of select="substring-before(., $zero-width-space)"/>
-	</xsl:template>
+	</xsl:template> -->
 	
 	<!-- ====== -->
 	<!-- ====== -->
