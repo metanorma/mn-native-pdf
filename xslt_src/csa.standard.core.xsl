@@ -567,10 +567,11 @@
 						<xsl:if test="position() = last()">: </xsl:if>
 					</xsl:for-each>
 						<!-- csa:docidentifier -->
-					<xsl:if test="csa:docidentifier">
+					<!-- <xsl:if test="csa:docidentifier">
 						<xsl:value-of select="csa:docidentifier/@type"/><xsl:text> </xsl:text>
 						<xsl:value-of select="csa:docidentifier"/>
-					</xsl:if>
+					</xsl:if> -->
+					<xsl:value-of select="csa:docidentifier"/>
 					<xsl:apply-templates select="csa:note"/>
 					<xsl:if test="csa:docidentifier">, </xsl:if>
 					<fo:inline font-style="italic">
@@ -772,7 +773,7 @@
 					<xsl:when test="csa:docidentifier/@type = 'ISO' and csa:formattedref"/>
 					<xsl:when test="csa:docidentifier/@type = 'OGC' and csa:formattedref"/>
 					<xsl:otherwise><fo:inline>
-						<xsl:if test="csa:docidentifier/@type = 'OGC'">OGC </xsl:if>
+						<!-- <xsl:if test="csa:docidentifier/@type = 'OGC'">OGC </xsl:if> -->
 						<xsl:value-of select="csa:docidentifier"/><xsl:apply-templates select="csa:note"/>, </fo:inline></xsl:otherwise>
 				</xsl:choose>
 			</xsl:if>

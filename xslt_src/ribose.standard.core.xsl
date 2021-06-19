@@ -873,12 +873,13 @@
 			<xsl:if test=".//rsd:fn">
 				<xsl:attribute name="line-height-shift-adjustment">disregard-shifts</xsl:attribute>
 			</xsl:if>
-			<xsl:if test="rsd:docidentifier">
+			<!-- <xsl:if test="rsd:docidentifier">
 				<xsl:if test="rsd:docidentifier/@type != 'IETF' and rsd:docidentifier/@type != 'ISO'">
 					<xsl:value-of select="rsd:docidentifier/@type"/><xsl:text> </xsl:text>
 				</xsl:if>
 				<xsl:value-of select="rsd:docidentifier"/>
-			</xsl:if>
+			</xsl:if> -->
+			<xsl:value-of select="rsd:docidentifier"/>
 			<xsl:apply-templates select="rsd:note"/>
 			<xsl:if test="rsd:docidentifier">, </xsl:if>
 			<xsl:choose>
