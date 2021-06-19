@@ -5411,6 +5411,13 @@
 						<xsl:attribute name="space-before">12pt</xsl:attribute>
 					</xsl:if>
 				</xsl:if>
+				<xsl:if test="$namespace = 'bsi'">
+					<xsl:if test="$document_type = 'PAS'">
+						<xsl:attribute name="margin-left">0mm</xsl:attribute>
+						<xsl:attribute name="font-size">12pt</xsl:attribute>
+						<xsl:attribute name="font-style">normal</xsl:attribute>
+					</xsl:if>
+				</xsl:if>
 				<xsl:apply-templates/>
 			</fo:block>
 		</xsl:if>
