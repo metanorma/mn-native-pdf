@@ -1655,6 +1655,10 @@
 					<xsl:if test="ancestor::*[local-name() = 'preface']">
 						<xsl:attribute name="font-size">9pt</xsl:attribute>
 					</xsl:if>
+					<xsl:if test="$document_type = 'PAS'">
+						<xsl:attribute name="span">all</xsl:attribute>
+						<xsl:attribute name="font-size">8pt</xsl:attribute>
+					</xsl:if>
 				</xsl:if>
 				<xsl:if test="$namespace = 'iso' or $namespace = 'itu' or $namespace = 'csd' or $namespace = 'ogc-white-paper' or $namespace = 'gb' or $namespace = 'jcgm'">
 					<xsl:attribute name="font-size">10pt</xsl:attribute>
@@ -1781,6 +1785,9 @@
 						<xsl:if test="ancestor::*[local-name() = 'preface']">
 							<attribute name="border">0pt solid black</attribute>
 							<attribute name="border-top">0pt solid black</attribute>
+						</xsl:if>
+						<xsl:if test="$document_type = 'PAS'">
+							<attribute name="border">1pt solid <xsl:value-of select="$color_PAS"/></attribute>
 						</xsl:if>
 					</xsl:if>
 					<xsl:if test="$namespace = 'iso' or $namespace = 'jcgm'">
@@ -2021,6 +2028,15 @@
 						<xsl:attribute name="margin-top">0pt</xsl:attribute>
 					</xsl:if>
 				</xsl:if>
+				
+				<xsl:if test="$namespace = 'bsi'">
+					<xsl:if test="$document_type = 'PAS'">
+						<xsl:attribute name="margin-left">0mm</xsl:attribute>
+						<xsl:attribute name="font-size">12pt</xsl:attribute>
+						<xsl:attribute name="font-style">normal</xsl:attribute>
+					</xsl:if>
+				</xsl:if>
+				
 				<xsl:choose>
 					<xsl:when test="$continued = 'true'"> 
 						<!-- <xsl:if test="$namespace = 'bsi'"></xsl:if> -->
@@ -2036,9 +2052,15 @@
 				<xsl:if test="$namespace = 'bsi'">
 					<xsl:if test="$continued = 'true'">
 						<fo:inline font-weight="bold" font-style="normal">
+							<xsl:if test="$document_type = 'PAS'">
+								<xsl:attribute name="color"><xsl:value-of select="$color_PAS"/></xsl:attribute>
+							</xsl:if>
 							<fo:retrieve-table-marker retrieve-class-name="table_number"/>
 						</fo:inline>
 						<fo:inline font-style="italic">
+							<xsl:if test="$document_type = 'PAS'">
+								<xsl:attribute name="font-style">normal</xsl:attribute>
+							</xsl:if>
 							<xsl:text> </xsl:text>
 							<fo:retrieve-table-marker retrieve-class-name="table_continued"/>
 						</fo:inline>
@@ -2533,17 +2555,21 @@
 					<fo:table-cell>
 						<xsl:if test="$namespace = 'bsi'">
 							<fo:marker marker-class-name="table_number"><xsl:value-of select="$table_number"/></fo:marker>
-							<xsl:variable name="table_name" select="ancestor::*[local-name()='table'][1]/*[local-name()='name']"/>
-							<fo:marker marker-class-name="table_continued">
+							
+							<xsl:variable name="table_name_full" select="ancestor::*[local-name()='table'][1]/*[local-name()='name']"/>
+							<xsl:variable name="table_name">
 								<xsl:choose>
-									<xsl:when test="substring-after($table_name, '—') != ''">
-										<xsl:text>—</xsl:text><xsl:value-of select="substring-after($table_name, '—')"/>
+									<xsl:when test="substring-after($table_name_full, '—') != ''">
+										<xsl:text>—</xsl:text><xsl:value-of select="substring-after($table_name_full, '—')"/>
 									</xsl:when>
 									<xsl:otherwise>
-										<xsl:value-of select="$table_name"/>
+										<xsl:value-of select="$table_name_full"/>
 									</xsl:otherwise>
 								</xsl:choose>
-							</fo:marker>
+							</xsl:variable>
+							
+							
+							<fo:marker marker-class-name="table_continued"><xsl:value-of select="$table_name"/></fo:marker>
 						</xsl:if>
 						<xsl:if test="$namespace = 'iso' or $namespace = 'jcgm'">
 							<fo:marker marker-class-name="table_continued" />
@@ -2557,8 +2583,8 @@
 							<fo:marker marker-class-name="table_number"><xsl:value-of select="$table_number"/></fo:marker>
 						</xsl:if>
 						<fo:marker marker-class-name="table_continued">
-								<xsl:value-of select="$title_continued"/>
-						 </fo:marker>
+							<xsl:value-of select="$title_continued"/>
+						</fo:marker>
 						 <fo:block/>
 					</fo:table-cell>
 				</fo:table-row>
@@ -2675,6 +2701,13 @@
 						</xsl:if>
 					</xsl:if>					
 				</xsl:if>
+				
+				<xsl:if test="$namespace = 'bsi'">
+					<xsl:if test="$document_type = 'PAS'">
+						<xsl:attribute name="min-height">6mm</xsl:attribute>
+					</xsl:if>
+			</xsl:if>
+				
 				<!-- <xsl:if test="$namespace = 'bipm'">
 					<xsl:attribute name="height">8mm</xsl:attribute>
 				</xsl:if> -->
@@ -2700,6 +2733,9 @@
 				<xsl:if test="ancestor::*[local-name() = 'preface']">
 					<xsl:attribute name="font-weight">normal</xsl:attribute>
 					<xsl:attribute name="border">solid black 0pt</xsl:attribute>
+				</xsl:if>
+				<xsl:if test="$document_type = 'PAS'">
+					<xsl:attribute name="border">1pt solid <xsl:value-of select="$color_PAS"/></xsl:attribute>
 				</xsl:if>
 			</xsl:if>
 			<xsl:if test="$namespace = 'iso' or $namespace = 'iec' or $namespace = 'jcgm'">
@@ -2916,6 +2952,12 @@
 				<xsl:attribute name="border">0pt solid black</xsl:attribute>
 				<xsl:attribute name="padding-top">0.5mm</xsl:attribute>
 			</xsl:if>
+			<xsl:if test="$namespace = 'bsi'">
+				<xsl:if test="$document_type = 'PAS'">
+					<xsl:attribute name="border">1pt solid <xsl:value-of select="$color_PAS"/></xsl:attribute>
+				</xsl:if>
+			</xsl:if>
+			
 			<xsl:if test=".//*[local-name() = 'table']">
 				<xsl:attribute name="padding-right">1mm</xsl:attribute>
 			</xsl:if>
@@ -4457,6 +4499,9 @@
 						<xsl:attribute name="content-width">scale-down-to-fit</xsl:attribute>
 						<xsl:attribute name="scaling">uniform</xsl:attribute>
 					</xsl:if>
+					<!-- <xsl:attribute name="fox:alt-text">
+						put AsciiMath/LaTeX math
+					</xsl:attribute> -->
 				</xsl:if>
 				<xsl:if test="$namespace = 'bsi' or $namespace = 'iso'">
 					<xsl:if test="count(ancestor::*[local-name() = 'table']) &gt; 1">
