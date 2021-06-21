@@ -417,6 +417,7 @@
 			<fo:page-sequence master-reference="document" force-page-count="no-force"> <!-- master-reference="toc" -->
 				<xsl:call-template name="insertHeaderFooter"/>
 				<fo:flow flow-name="xsl-region-body">
+					<xsl:if test="xalan:nodeset($contents)//item[@display = 'true']">
 					<!-- <fo:block-container absolute-position="fixed" left="13mm" top="15mm"> -->
 						<fo:block font-size="28pt" font-weight="600" color="black" margin-left="-15mm" margin-bottom="13mm">
 							<xsl:call-template name="getLocalizedString">
@@ -425,42 +426,43 @@
 						</fo:block>
 					<!-- </fo:block-container> -->
 					
-					<fo:block-container margin-left="32mm" margin-right="-17mm">
-						<fo:block-container margin-left="0mm" margin-right="0mm">
-							<xsl:for-each select="xalan:nodeset($contents)//item[@display = 'true']">
-								<fo:block font-size="14pt">
-									<xsl:if test="@level = 1">
-										<xsl:if test="preceding-sibling::item[@display = 'true' and @level = 1]">
-											<xsl:attribute name="space-before">16pt</xsl:attribute>
+						<fo:block-container margin-left="32mm" margin-right="-17mm">
+							<fo:block-container margin-left="0mm" margin-right="0mm">
+								<xsl:for-each select="xalan:nodeset($contents)//item[@display = 'true']">
+									<fo:block font-size="14pt">
+										<xsl:if test="@level = 1">
+											<xsl:if test="preceding-sibling::item[@display = 'true' and @level = 1]">
+												<xsl:attribute name="space-before">16pt</xsl:attribute>
+											</xsl:if>
+											<xsl:attribute name="space-after">2pt</xsl:attribute>
+											<xsl:attribute name="font-weight">600</xsl:attribute> <!-- 600 semibold -->
+											<xsl:attribute name="keep-with-next">always</xsl:attribute>
+											<xsl:attribute name="color">black</xsl:attribute>
 										</xsl:if>
-										<xsl:attribute name="space-after">2pt</xsl:attribute>
-										<xsl:attribute name="font-weight">600</xsl:attribute> <!-- 600 semibold -->
-										<xsl:attribute name="keep-with-next">always</xsl:attribute>
-										<xsl:attribute name="color">black</xsl:attribute>
-									</xsl:if>
-									<xsl:if test="@level = 2">
-										<xsl:attribute name="margin-left">16.5mm</xsl:attribute>
-										<xsl:attribute name="space-before">4pt</xsl:attribute>
-										<xsl:attribute name="space-after">5pt</xsl:attribute>
-									</xsl:if>
-									<fo:block text-align-last="justify">
-										<fo:basic-link internal-destination="{@id}" fox:alt-text="{title}">
-											<xsl:value-of select="@section"/>
-											<xsl:text> </xsl:text>
-											<xsl:apply-templates select="title"/>
-											<xsl:text> &#xA0;</xsl:text>
-											<fo:inline>
-													<fo:leader leader-pattern="rule" rule-thickness="0.2mm"/>
-													<fo:inline padding-left="2mm"><fo:page-number-citation ref-id="{@id}"/></fo:inline>
-												</fo:inline>
-										</fo:basic-link>
+										<xsl:if test="@level = 2">
+											<xsl:attribute name="margin-left">16.5mm</xsl:attribute>
+											<xsl:attribute name="space-before">4pt</xsl:attribute>
+											<xsl:attribute name="space-after">5pt</xsl:attribute>
+										</xsl:if>
+										<fo:block text-align-last="justify">
+											<fo:basic-link internal-destination="{@id}" fox:alt-text="{title}">
+												<xsl:value-of select="@section"/>
+												<xsl:text> </xsl:text>
+												<xsl:apply-templates select="title"/>
+												<xsl:text> &#xA0;</xsl:text>
+												<fo:inline>
+														<fo:leader leader-pattern="rule" rule-thickness="0.2mm"/>
+														<fo:inline padding-left="2mm"><fo:page-number-citation ref-id="{@id}"/></fo:inline>
+													</fo:inline>
+											</fo:basic-link>
+										</fo:block>
 									</fo:block>
-								</fo:block>
-							</xsl:for-each>
+								</xsl:for-each>
+							</fo:block-container>
 						</fo:block-container>
-					</fo:block-container>
-				
-					<fo:block break-after="page"/>
+					
+						<fo:block break-after="page"/>
+					</xsl:if>
 					<fo:block margin-bottom="12pt">&#xA0;</fo:block>
 					
 					<xsl:apply-templates select="/rsd:rsd-standard/rsd:boilerplate/rsd:legal-statement"/>
