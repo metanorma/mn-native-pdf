@@ -1497,7 +1497,8 @@
 		<xsl:apply-templates select="/*/*[local-name()='sections']/*[local-name()='clause'][@type='scope']" mode="contents"/>			
 		
 		<!-- Normative references  -->
-		<xsl:apply-templates select="/*/*[local-name()='bibliography']/*[local-name()='references'][@normative='true']" mode="contents"/>	
+		<xsl:apply-templates select="/*/*[local-name()='bibliography']/*[local-name()='references'][@normative='true'] |
+		/*/*[local-name()='bibliography']/*[local-name()='clause'][*[local-name()='references'][@normative='true']]" mode="contents"/>	
 		<!-- Terms and definitions -->
 		<xsl:apply-templates select="/*/*[local-name()='sections']/*[local-name()='terms'] | 
 																						/*/*[local-name()='sections']/*[local-name()='clause'][.//*[local-name()='terms']] |
@@ -1511,7 +1512,9 @@
 																																														not(local-name() = 'clause' and .//*[local-name()='definitions'])]" mode="contents"/>
 		<xsl:apply-templates select="/*/*[local-name()='annex']" mode="contents"/>		
 		<!-- Bibliography -->
-		<xsl:apply-templates select="/*/*[local-name()='bibliography']/*[local-name()='references'][not(@normative='true')]" mode="contents"/>
+		<xsl:apply-templates select="/*/*[local-name()='bibliography']/*[local-name()='references'][not(@normative='true')] | 
+					/*/*[local-name()='bibliography']/*[local-name()='clause'][*[local-name()='references'][not(@normative='true')]]" mode="contents"/>
+		
 	</xsl:template>
 
 	<xsl:template name="processPrefaceSectionsDefault">
@@ -4586,6 +4589,12 @@
 					<xsl:attribute name="font-weight">300</xsl:attribute>
 				</xsl:if>
 			</xsl:if>
+			<xsl:if test="$namespace = 'bsi'">
+				<xsl:if test="$document_type = 'PAS'">
+					<xsl:attribute name="color">inherit</xsl:attribute>
+					<xsl:attribute name="text-decoration">none</xsl:attribute>
+				</xsl:if>
+			</xsl:if>
 			<xsl:choose>
 				<xsl:when test="$target_text = ''">
 					<xsl:apply-templates />
@@ -7305,7 +7314,9 @@
 			<xsl:variable name="docidentifier">
 				<xsl:if test="*[local-name() = 'docidentifier']">
 					<xsl:choose>
-						<!-- <xsl:when test="*[local-name() = 'docidentifier']/@type = 'metanorma'"/> -->
+						<xsl:when test="*[local-name() = 'docidentifier'][not(@type = 'metanorma')]">
+							<xsl:value-of select="*[local-name() = 'docidentifier'][not(@type = 'metanorma')]"/>
+						</xsl:when>
 						<xsl:otherwise><xsl:value-of select="*[local-name() = 'docidentifier']"/></xsl:otherwise>
 					</xsl:choose>
 				</xsl:if>
