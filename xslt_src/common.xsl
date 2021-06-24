@@ -7314,7 +7314,7 @@
 			<xsl:variable name="docidentifier">
 				<xsl:if test="*[local-name() = 'docidentifier']">
 					<xsl:choose>
-						<xsl:when test="*[local-name() = 'docidentifier'][not(@type = 'metanorma')]">
+						<xsl:when test="*[local-name() = 'docidentifier'][not(@type = 'metanorma')] and $document_type = 'PAS'">
 							<xsl:value-of select="*[local-name() = 'docidentifier'][not(@type = 'metanorma')]"/>
 						</xsl:when>
 						<xsl:otherwise><xsl:value-of select="*[local-name() = 'docidentifier']"/></xsl:otherwise>
