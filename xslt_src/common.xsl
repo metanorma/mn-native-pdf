@@ -236,7 +236,7 @@
 		</xsl:if>
 		<xsl:if test="$namespace = 'rsd'">
 			<xsl:attribute name="color"><xsl:value-of select="$color_blue"/></xsl:attribute>
-			<xsl:attribute name="font-weight">600</xsl:attribute>
+			<xsl:attribute name="font-weight">bold</xsl:attribute>
 			<xsl:attribute name="text-decoration">underline</xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'ogc'">
@@ -550,7 +550,7 @@
 			<xsl:attribute name="keep-with-next">always</xsl:attribute>			 
 		</xsl:if>
 		<xsl:if test="$namespace = 'rsd'">
-			<xsl:attribute name="font-weight">600</xsl:attribute>
+			<xsl:attribute name="font-weight">bold</xsl:attribute>
 			<xsl:attribute name="color"><xsl:value-of select="$color_blue"/></xsl:attribute>
 			<xsl:attribute name="padding-right">0.5mm</xsl:attribute>
 		</xsl:if>		
@@ -637,7 +637,7 @@
 			<xsl:attribute name="font-weight">bold</xsl:attribute>			
 		</xsl:if>		
 		<xsl:if test="$namespace = 'rsd'">
-			<xsl:attribute name="font-weight">600</xsl:attribute>
+			<xsl:attribute name="font-weight">bold</xsl:attribute>
 			<xsl:attribute name="color"><xsl:value-of select="$color_blue"/></xsl:attribute>
 			<xsl:attribute name="padding-right">0.5mm</xsl:attribute>
 		</xsl:if>		
@@ -954,7 +954,7 @@
 			<xsl:attribute name="padding-right">4mm</xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'rsd'">
-			<xsl:attribute name="font-weight">600</xsl:attribute>
+			<xsl:attribute name="font-weight">bold</xsl:attribute>
 			<xsl:attribute name="color"><xsl:value-of select="$color_blue"/></xsl:attribute>
 			<xsl:attribute name="padding-right">0.5mm</xsl:attribute>
 		</xsl:if>
@@ -1061,7 +1061,7 @@
 			<xsl:attribute name="padding-right">1mm</xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'rsd'">
-				<xsl:attribute name="font-weight">600</xsl:attribute>
+				<xsl:attribute name="font-weight">bold</xsl:attribute>
 				<xsl:attribute name="color"><xsl:value-of select="$color_blue"/></xsl:attribute>
 				<xsl:attribute name="padding-right">0.5mm</xsl:attribute>
 			</xsl:if>
@@ -1413,7 +1413,7 @@
 			<xsl:attribute name="font-weight">bold</xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'rsd'">
-			<xsl:attribute name="font-weight">600</xsl:attribute>
+			<xsl:attribute name="font-weight">bold</xsl:attribute>
 			<xsl:attribute name="color">black</xsl:attribute>
 		</xsl:if>
 	</xsl:attribute-set>
@@ -1425,7 +1425,7 @@
 			<xsl:attribute name="margin-bottom">5pt</xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'rsd'">
-			<xsl:attribute name="font-weight">600</xsl:attribute>
+			<xsl:attribute name="font-weight">bold</xsl:attribute>
 			<xsl:attribute name="color">black</xsl:attribute>
 		</xsl:if>
 	</xsl:attribute-set>
@@ -1848,7 +1848,7 @@
 					</xsl:if>
 					<xsl:if test="$namespace = 'rsd'">
 						<attribute name="border">0pt solid black</attribute>
-						<attribute name="font-size">9.5pt</attribute>
+						<attribute name="font-size">8pt</attribute>
 					</xsl:if>
 				</xsl:variable>
 				
@@ -3020,7 +3020,9 @@
 						<xsl:attribute name="margin-top">18pt</xsl:attribute>
 						<xsl:attribute name="margin-bottom">12pt</xsl:attribute>
 					</xsl:if>
-					
+				</xsl:if>
+				<xsl:if test="$namespace = 'rsd'">
+					<xsl:attribute name="font-size">8pt</xsl:attribute>					
 				</xsl:if>
 				
 				<fo:inline padding-right="2mm">
@@ -3848,7 +3850,7 @@
 					</xsl:if>
 					<xsl:if test="$namespace = 'rsd'">
 						<xsl:attribute name="margin-top">0pt</xsl:attribute>
-						<xsl:attribute name="font-weight">600</xsl:attribute>
+						<xsl:attribute name="font-weight">bold</xsl:attribute>
 						<xsl:attribute name="color"><xsl:value-of select="$color_blue"/></xsl:attribute>
 					</xsl:if>
 					<xsl:apply-templates />
@@ -4583,7 +4585,7 @@
 				</xsl:if>
 			</xsl:if>
 			<xsl:if test="$namespace = 'rsd'">
-				<xsl:if test="not(ancestor::*[local-name() = 'bibitem'])">
+				<xsl:if test="ancestor::*[local-name() = 'bibitem']">
 					<xsl:attribute name="color">black</xsl:attribute>
 					<xsl:attribute name="text-decoration">none</xsl:attribute>
 					<xsl:attribute name="font-weight">300</xsl:attribute>
@@ -6191,7 +6193,7 @@
 						<xsl:attribute name="padding-right">1mm</xsl:attribute>
 					</xsl:if>
 					<xsl:if test="$namespace = 'rsd'">
-						<xsl:attribute name="font-weight">600</xsl:attribute>
+						<xsl:attribute name="font-weight">bold</xsl:attribute>
 						<xsl:attribute name="color"><xsl:value-of select="$color_blue"/></xsl:attribute>
 					</xsl:if>
 					
