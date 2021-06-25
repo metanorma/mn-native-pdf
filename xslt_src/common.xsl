@@ -809,6 +809,10 @@
 	</xsl:attribute-set>
 
 	<xsl:attribute-set name="eref-style">
+		<xsl:if test="$namespace = 'bsi'">
+			<xsl:attribute name="color">rgb(58,88,168)</xsl:attribute>
+			<xsl:attribute name="text-decoration">underline</xsl:attribute>
+		</xsl:if>
 		<xsl:if test="$namespace = 'csa'">
 			<xsl:attribute name="color">rgb(33, 94, 159)</xsl:attribute>
 			<xsl:attribute name="text-decoration">underline</xsl:attribute>
@@ -6336,6 +6340,12 @@
 					</xsl:if>	
 											
 					<fo:basic-link internal-destination="{@bibitemid}" fox:alt-text="{@citeas}">
+						<xsl:if test="$namespace = 'bsi'">
+							<xsl:if test="not(xalan:nodeset($ids)/id = current()/@bibitemid)"> <!-- if reference can't be resolved -->
+								<xsl:attribute name="color">inherit</xsl:attribute>
+								<xsl:attribute name="text-decoration">none</xsl:attribute>
+							</xsl:if>
+						</xsl:if>
 						<xsl:if test="normalize-space(@citeas) = ''">
 							<xsl:attribute name="fox:alt-text"><xsl:value-of select="."/></xsl:attribute>
 						</xsl:if>
