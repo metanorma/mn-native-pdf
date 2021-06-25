@@ -3129,8 +3129,12 @@
 						<xsl:if test="$namespace = 'itu' or $namespace = 'nist-cswp'  or $namespace = 'nist-sp' or $namespace = 'unece' or $namespace = 'unece-rec'  or $namespace = 'csd' or $namespace = 'ogc' or $namespace = 'ogc-white-paper' or $namespace = 'gb' or $namespace = 'm3d' or $namespace = 'iho'">
 							<xsl:attribute name="vertical-align">super</xsl:attribute>
 						</xsl:if>
-						<xsl:if test="$namespace = 'bsi' or $namespace = 'iso' or $namespace = 'jcgm'">
+						<xsl:if test="$namespace = 'iso' or $namespace = 'jcgm'">
 							<xsl:attribute name="alignment-baseline">hanging</xsl:attribute>
+						</xsl:if>
+						<xsl:if test="$namespace = 'bsi'">
+							<xsl:attribute name="baseline-shift">30%</xsl:attribute>
+							<xsl:attribute name="font-size">80%</xsl:attribute>
 						</xsl:if>
 						<xsl:if test="$namespace = 'iec'">
 							<xsl:attribute name="baseline-shift">30%</xsl:attribute>
@@ -3314,13 +3318,21 @@
 	<xsl:template match="*[local-name()='fn']">
 		<!-- <xsl:variable name="namespace" select="substring-before(name(/*), '-')"/> -->
 		<fo:inline font-size="80%" keep-with-previous.within-line="always">
-			<xsl:if test="$namespace = 'bsi' or $namespace = 'iso' or $namespace = 'iec' or $namespace = 'jcgm'">
+			<xsl:if test="$namespace = 'bsi'">
+				<xsl:if test="ancestor::*[local-name()='td'] or ancestor::*[local-name()='th']">
+					<xsl:attribute name="font-weight">normal</xsl:attribute>
+					<xsl:attribute name="baseline-shift">25%</xsl:attribute>
+				</xsl:if>
+			</xsl:if>
+			
+			<xsl:if test="$namespace = 'iso' or $namespace = 'iec' or $namespace = 'jcgm'">
 				<xsl:if test="ancestor::*[local-name()='td']">
 					<xsl:attribute name="font-weight">normal</xsl:attribute>
 					<!-- <xsl:attribute name="alignment-baseline">hanging</xsl:attribute> -->
 					<xsl:attribute name="baseline-shift">15%</xsl:attribute>
 				</xsl:if>
 			</xsl:if>
+			
 			<xsl:if test="$namespace = 'gb'">
 				<xsl:attribute name="font-size">50%</xsl:attribute>
 				<xsl:attribute name="font-weight">normal</xsl:attribute>
