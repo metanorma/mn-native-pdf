@@ -5468,16 +5468,23 @@
 	</xsl:template>
 	
 	<xsl:template match="item" mode="bookmark">
-		<fo:bookmark internal-destination="{@id}" starting-state="hide">
-				<fo:bookmark-title>
-					<xsl:if test="@section != ''">
-						<xsl:value-of select="@section"/> 
-						<xsl:text> </xsl:text>
-					</xsl:if>
-					<xsl:value-of select="normalize-space(title)"/>
-				</fo:bookmark-title>
-				<xsl:apply-templates mode="bookmark"/>				
-		</fo:bookmark>
+		<xsl:choose>
+			<xsl:when test="@id != ''">
+				<fo:bookmark internal-destination="{@id}" starting-state="hide">
+					<fo:bookmark-title>
+						<xsl:if test="@section != ''">
+							<xsl:value-of select="@section"/> 
+							<xsl:text> </xsl:text>
+						</xsl:if>
+						<xsl:value-of select="normalize-space(title)"/>
+					</fo:bookmark-title>
+					<xsl:apply-templates mode="bookmark"/>
+				</fo:bookmark>
+			</xsl:when>
+			<xsl:otherwise>
+				<xsl:apply-templates mode="bookmark"/>
+			</xsl:otherwise>
+		</xsl:choose>
 	</xsl:template>	
 	
 	<xsl:template match="title" mode="bookmark"/>	
