@@ -24,8 +24,13 @@
 	<xsl:variable name="namespace">iho</xsl:variable>
 	
 	<xsl:variable name="debug">false</xsl:variable>
-	<xsl:variable name="pageWidth" select="'210mm'"/>
-	<xsl:variable name="pageHeight" select="'297mm'"/>
+	<xsl:variable name="pageWidth" select="210"/>
+	<xsl:variable name="pageHeight" select="297"/>
+	<xsl:variable name="marginLeftRight1" select="25.4"/>
+	<xsl:variable name="marginLeftRight2" select="25.4"/>
+	<xsl:variable name="marginTop" select="25.4"/>
+	<xsl:variable name="marginBottom" select="25.4"/>
+	
 	
 	<xsl:variable name="title-en" select="/iho:iho-standard/iho:bibdata/iho:title[@language = 'en']"/>
 	<xsl:variable name="docidentifier" select="/iho:iho-standard/iho:bibdata/iho:docidentifier[@type = 'IHO']"/>
@@ -52,44 +57,44 @@
 			<fo:root xmlns:fo="http://www.w3.org/1999/XSL/Format" font-family="Arial, Cambria Math" font-size="12pt" xml:lang="{$lang}">
 				<fo:layout-master-set>
 					<!-- cover page -->
-					<fo:simple-page-master master-name="cover" page-width="{$pageWidth}" page-height="{$pageHeight}">
+					<fo:simple-page-master master-name="cover" page-width="{$pageWidth}mm" page-height="{$pageHeight}mm">
 						<fo:region-body margin-top="0mm" margin-bottom="5mm" margin-left="0mm" margin-right="5mm"/>
 					</fo:simple-page-master>
 					
-					<fo:simple-page-master master-name="first" page-width="{$pageWidth}" page-height="{$pageHeight}">
-						<fo:region-body margin-top="25.4mm" margin-bottom="25.4mm" margin-left="25.4mm" margin-right="25.4mm"/>
-						<fo:region-before region-name="header" extent="25.4mm"/> 
-						<fo:region-after region-name="footer-even" extent="25.4mm"/>
-						<fo:region-start region-name="left-region" extent="25.4mm"/>
-						<fo:region-end region-name="right-region" extent="25.4mm"/>
+					<fo:simple-page-master master-name="first" page-width="{$pageWidth}mm" page-height="{$pageHeight}mm">
+						<fo:region-body margin-top="{$marginTop}mm" margin-bottom="{$marginBottom}mm" margin-left="{$marginLeftRight1}mm" margin-right="{$marginLeftRight2}mm"/>
+						<fo:region-before region-name="header" extent="{$marginTop}mm"/> 
+						<fo:region-after region-name="footer-even" extent="{$marginBottom}mm"/>
+						<fo:region-start region-name="left-region" extent="{$marginLeftRight1}mm"/>
+						<fo:region-end region-name="right-region" extent="{$marginLeftRight2}mm"/>
 					</fo:simple-page-master>				
-					<fo:simple-page-master master-name="odd" page-width="{$pageWidth}" page-height="{$pageHeight}">
-						<fo:region-body margin-top="25.4mm" margin-bottom="25.4mm" margin-left="25.4mm" margin-right="25.4mm"/>
-						<fo:region-before region-name="header-odd" extent="25.4mm"/> 
-						<fo:region-after region-name="footer-odd" extent="25.4mm"/>
-						<fo:region-start region-name="left-region" extent="25.4mm"/>
-						<fo:region-end region-name="right-region" extent="25.4mm"/>
+					<fo:simple-page-master master-name="odd" page-width="{$pageWidth}mm" page-height="{$pageHeight}mm">
+						<fo:region-body margin-top="{$marginTop}mm" margin-bottom="{$marginBottom}mm" margin-left="{$marginLeftRight1}mm" margin-right="{$marginLeftRight2}mm"/>
+						<fo:region-before region-name="header-odd" extent="{$marginTop}mm"/> 
+						<fo:region-after region-name="footer-odd" extent="{$marginBottom}mm"/>
+						<fo:region-start region-name="left-region" extent="{$marginLeftRight1}mm"/>
+						<fo:region-end region-name="right-region" extent="{$marginLeftRight2}mm"/>
 					</fo:simple-page-master>
-					<fo:simple-page-master master-name="odd-landscape" page-width="{$pageHeight}" page-height="{$pageWidth}">
-						<fo:region-body margin-top="25.4mm" margin-bottom="25.4mm" margin-left="25.4mm" margin-right="25.4mm"/>
-						<fo:region-before region-name="header-odd" extent="25.4mm"/> 
-						<fo:region-after region-name="footer-odd" extent="25.4mm"/>
-						<fo:region-start region-name="left-region" extent="25.4mm"/>
-						<fo:region-end region-name="right-region" extent="25.4mm"/>
+					<fo:simple-page-master master-name="odd-landscape" page-width="{$pageHeight}mm" page-height="{$pageWidth}mm">
+						<fo:region-body margin-top="{$marginTop}mm" margin-bottom="{$marginBottom}mm" margin-left="{$marginLeftRight1}mm" margin-right="{$marginLeftRight2}mm"/>
+						<fo:region-before region-name="header-odd" extent="{$marginTop}mm"/> 
+						<fo:region-after region-name="footer-odd" extent="{$marginBottom}mm"/>
+						<fo:region-start region-name="left-region" extent="{$marginLeftRight1}mm"/>
+						<fo:region-end region-name="right-region" extent="{$marginLeftRight2}mm"/>
 					</fo:simple-page-master>
-					<fo:simple-page-master master-name="even" page-width="{$pageWidth}" page-height="{$pageHeight}">
-						<fo:region-body margin-top="25.4mm" margin-bottom="25.4mm" margin-left="25.4mm" margin-right="25.4mm"/>
-						<fo:region-before region-name="header-even" extent="25.4mm"/>
-						<fo:region-after region-name="footer-even" extent="25.4mm"/>
-						<fo:region-start region-name="left-region" extent="25.4mm"/>
-						<fo:region-end region-name="right-region" extent="25.4mm"/>
+					<fo:simple-page-master master-name="even" page-width="{$pageWidth}mm" page-height="{$pageHeight}mm">
+						<fo:region-body margin-top="{$marginTop}mm" margin-bottom="{$marginBottom}mm" margin-left="{$marginLeftRight2}mm" margin-right="{$marginLeftRight1}mm"/>
+						<fo:region-before region-name="header-even" extent="{$marginTop}mm"/>
+						<fo:region-after region-name="footer-even" extent="{$marginBottom}mm"/>
+						<fo:region-start region-name="left-region" extent="{$marginLeftRight2}mm"/>
+						<fo:region-end region-name="right-region" extent="{$marginLeftRight1}mm"/>
 					</fo:simple-page-master>
-					<fo:simple-page-master master-name="even-landscape" page-width="{$pageHeight}" page-height="{$pageWidth}">
-						<fo:region-body margin-top="25.4mm" margin-bottom="25.4mm" margin-left="25.4mm" margin-right="25.4mm"/>
-						<fo:region-before region-name="header-even" extent="25.4mm"/>
-						<fo:region-after region-name="footer-even" extent="25.4mm"/>
-						<fo:region-start region-name="left-region" extent="25.4mm"/>
-						<fo:region-end region-name="right-region" extent="25.4mm"/>
+					<fo:simple-page-master master-name="even-landscape" page-width="{$pageHeight}mm" page-height="{$pageWidth}mm">
+						<fo:region-body margin-top="{$marginTop}mm" margin-bottom="{$marginBottom}mm" margin-left="{$marginLeftRight2}mm" margin-right="{$marginLeftRight1}mm"/>
+						<fo:region-before region-name="header-even" extent="{$marginTop}mm"/>
+						<fo:region-after region-name="footer-even" extent="{$marginBottom}mm"/>
+						<fo:region-start region-name="left-region" extent="{$marginLeftRight2}mm"/>
+						<fo:region-end region-name="right-region" extent="{$marginLeftRight1}mm"/>
 					</fo:simple-page-master>
 					<!-- Preface pages -->
 					<fo:page-sequence-master master-name="preface">

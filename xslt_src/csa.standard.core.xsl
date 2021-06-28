@@ -16,8 +16,13 @@
 	<xsl:variable name="images" select="document($svg_images)"/>
 	<xsl:param name="basepath"/>
 	
-	<xsl:variable name="pageWidth" select="'215.9mm'"/>
-	<xsl:variable name="pageHeight" select="'279.4mm'"/>
+	<xsl:variable name="pageWidth" select="215.9"/>
+	<xsl:variable name="pageHeight" select="279.4"/>
+	<xsl:variable name="marginLeftRight1" select="25"/>
+	<xsl:variable name="marginLeftRight2" select="25"/>
+	<xsl:variable name="marginTop" select="25"/>
+	<xsl:variable name="marginBottom" select="21"/>
+
 
 	<xsl:variable name="namespace">csa</xsl:variable>
 
@@ -47,18 +52,18 @@
 		<fo:root xmlns:fo="http://www.w3.org/1999/XSL/Format" font-family="Azo Sans, STIX Two Math" font-size="10pt" xml:lang="{$lang}">
 			<fo:layout-master-set>
 				<!-- Cover page -->
-				<fo:simple-page-master master-name="cover-page" page-width="{$pageWidth}" page-height="{$pageHeight}">
+				<fo:simple-page-master master-name="cover-page" page-width="{$pageWidth}mm" page-height="{$pageHeight}mm">
 					<fo:region-body margin-top="21mm" margin-bottom="21mm" margin-left="25mm" margin-right="25mm"/>
 					<fo:region-before region-name="cover-page-header" extent="21mm" precedence="true"/>
 					<fo:region-after region-name="footer" extent="21mm"/>
 				</fo:simple-page-master>
 				
-				<fo:simple-page-master master-name="document" page-width="{$pageWidth}" page-height="{$pageHeight}">
-					<fo:region-body margin-top="25mm" margin-bottom="21mm" margin-left="25mm" margin-right="25mm"/>
-					<fo:region-before region-name="header" extent="25mm" precedence="true"/> 
-					<fo:region-after region-name="footer" extent="21mm"/>
-					<fo:region-start region-name="left-region" extent="25mm"/>
-					<fo:region-end region-name="right-region" extent="25mm"/>
+				<fo:simple-page-master master-name="document" page-width="{$pageWidth}mm" page-height="{$pageHeight}mm">
+					<fo:region-body margin-top="{$marginTop}mm" margin-bottom="{$marginBottom}mm" margin-left="{$marginLeftRight1}mm" margin-right="{$marginLeftRight2}mm"/>
+					<fo:region-before region-name="header" extent="{$marginTop}mm" precedence="true"/> 
+					<fo:region-after region-name="footer" extent="{$marginBottom}mm"/>
+					<fo:region-start region-name="left-region" extent="{$marginLeftRight1}mm"/>
+					<fo:region-end region-name="right-region" extent="{$marginLeftRight2}mm"/>
 				</fo:simple-page-master>
 				
 			</fo:layout-master-set>

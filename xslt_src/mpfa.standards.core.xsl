@@ -21,8 +21,12 @@
 	<xsl:variable name="namespace">mpfd</xsl:variable>
 	
 	<xsl:variable name="debug">false</xsl:variable>
-	<xsl:variable name="pageWidth" select="'210mm'"/>
-	<xsl:variable name="pageHeight" select="'297mm'"/>
+	<xsl:variable name="pageWidth" select="210"/>
+	<xsl:variable name="pageHeight" select="297"/>
+	<xsl:variable name="marginLeftRight1" select="19"/>
+	<xsl:variable name="marginLeftRight2" select="19"/>
+	<xsl:variable name="marginTop" select="16.5"/>
+	<xsl:variable name="marginBottom" select="10"/>
 	
 	<xsl:variable name="copyrightHolder">Ribose Group Inc.</xsl:variable>
 
@@ -72,7 +76,7 @@
 			<fo:layout-master-set>
 				
 				<!-- cover page -->
-				<fo:simple-page-master master-name="cover" page-width="{$pageWidth}" page-height="{$pageHeight}">
+				<fo:simple-page-master master-name="cover" page-width="{$pageWidth}mm" page-height="{$pageHeight}mm">
 					<fo:region-body margin-top="24mm" margin-bottom="10mm" margin-left="19mm" margin-right="19mm"/>
 					<fo:region-before region-name="cover-header" extent="24mm" />
 					<fo:region-after region-name="footer" extent="10mm" />
@@ -81,19 +85,19 @@
 				</fo:simple-page-master>
 				
 				<!-- document pages -->				
-				<fo:simple-page-master master-name="odd" page-width="{$pageWidth}" page-height="{$pageHeight}">
-					<fo:region-body margin-top="16.5mm" margin-bottom="10mm" margin-left="19mm" margin-right="19mm"/>
-					<fo:region-before region-name="header-odd" extent="16.5mm" />
-					<fo:region-after region-name="footer-odd" extent="10mm" />
-					<fo:region-start region-name="left-region" extent="19mm"/>
-					<fo:region-end region-name="right-region" extent="19mm"/>
+				<fo:simple-page-master master-name="odd" page-width="{$pageWidth}mm" page-height="{$pageHeight}mm">
+					<fo:region-body margin-top="{$marginTop}mm" margin-bottom="{$marginBottom}mm" margin-left="{$marginLeftRight1}mm" margin-right="{$marginLeftRight2}mm"/>
+					<fo:region-before region-name="header-odd" extent="{$marginTop}mm" />
+					<fo:region-after region-name="footer-odd" extent="{$marginBottom}mm" />
+					<fo:region-start region-name="left-region" extent="{$marginLeftRight1}mm"/>
+					<fo:region-end region-name="right-region" extent="{$marginLeftRight2}mm"/>
 				</fo:simple-page-master>
-				<fo:simple-page-master master-name="even" page-width="{$pageWidth}" page-height="{$pageHeight}">
-					<fo:region-body margin-top="16.5mm" margin-bottom="10mm" margin-left="19mm" margin-right="19mm"/>
-					<fo:region-before region-name="header-even" extent="16.5mm" />
-					<fo:region-after region-name="footer-even" extent="10mm" />
-					<fo:region-start region-name="left-region" extent="19mm"/>
-					<fo:region-end region-name="right-region" extent="19mm"/>
+				<fo:simple-page-master master-name="even" page-width="{$pageWidth}mm" page-height="{$pageHeight}mm">
+					<fo:region-body margin-top="{$marginTop}mm" margin-bottom="{$marginBottom}mm" margin-left="{$marginLeftRight2}mm" margin-right="{$marginLeftRight1}mm"/>
+					<fo:region-before region-name="header-even" extent="{$marginTop}mm" />
+					<fo:region-after region-name="footer-even" extent="{$marginBottom}mm" />
+					<fo:region-start region-name="left-region" extent="{$marginLeftRight2}mm"/>
+					<fo:region-end region-name="right-region" extent="{$marginLeftRight1}mm"/>
 				</fo:simple-page-master>
 				
 				<fo:page-sequence-master master-name="document">

@@ -23,8 +23,12 @@
 	<xsl:variable name="namespace">m3d</xsl:variable>
 	
 	<xsl:variable name="debug">false</xsl:variable>
-	<xsl:variable name="pageWidth" select="'215.9mm'"/>
-	<xsl:variable name="pageHeight" select="'279.4mm'"/>
+	<xsl:variable name="pageWidth" select="215.9"/>
+	<xsl:variable name="pageHeight" select="279.4"/>
+	<xsl:variable name="marginLeftRight1" select="17.3"/>
+	<xsl:variable name="marginLeftRight2" select="17.3"/>
+	<xsl:variable name="marginTop" select="35"/>
+	<xsl:variable name="marginBottom" select="23"/>
 			
 	<xsl:variable name="title-en" select="/m3d:m3d-standard/m3d:bibdata/m3d:title[@language = 'en']"/>
 	<!-- Example:
@@ -48,7 +52,7 @@
 			<fo:layout-master-set>
 				
 				<!-- cover page -->
-				<fo:simple-page-master master-name="cover" page-width="{$pageWidth}" page-height="{$pageHeight}">
+				<fo:simple-page-master master-name="cover" page-width="{$pageWidth}mm" page-height="{$pageHeight}mm">
 					<fo:region-body margin-top="31mm" margin-bottom="32mm" margin-left="17.3mm" margin-right="22mm"/>
 					<fo:region-before region-name="cover-header" extent="31mm" />
 					<fo:region-after region-name="cover-footer" extent="32mm" />
@@ -57,17 +61,17 @@
 				</fo:simple-page-master>
 				
 				<!-- contents pages -->				
-				<fo:simple-page-master master-name="page" page-width="{$pageWidth}" page-height="{$pageHeight}">
-					<fo:region-body margin-top="20mm" margin-bottom="23mm" margin-left="17.3mm" margin-right="17.3mm"/>
-					<fo:region-before region-name="header" extent="35mm"/>
-					<fo:region-after region-name="footer" extent="23mm"/>
-					<fo:region-start region-name="left-region" extent="17.3mm"/>
-					<fo:region-end region-name="right-region" extent="17.3mm"/>
+				<fo:simple-page-master master-name="page" page-width="{$pageWidth}mm" page-height="{$pageHeight}mm">
+					<fo:region-body margin-top="20mm" margin-bottom="23mm" margin-left="{$marginLeftRight1}mm" margin-right="{$marginLeftRight2}mm"/>
+					<fo:region-before region-name="header" extent="{$marginTop}mm"/>
+					<fo:region-after region-name="footer" extent="{$marginBottom}mm"/>
+					<fo:region-start region-name="left-region" extent="{$marginLeftRight1}mm"/>
+					<fo:region-end region-name="right-region" extent="{$marginLeftRight2}mm"/>
 				</fo:simple-page-master>
 				
-				<fo:simple-page-master master-name="last" page-width="{$pageWidth}" page-height="{$pageHeight}">
-					<fo:region-body margin-top="20mm" margin-bottom="53mm" margin-left="17.3mm" margin-right="17.3mm"/>
-					<fo:region-before region-name="header" extent="35mm"/>
+				<fo:simple-page-master master-name="last" page-width="{$pageWidth}mm" page-height="{$pageHeight}mm">
+					<fo:region-body margin-top="20mm" margin-bottom="53mm" margin-left="{$marginLeftRight1}mm" margin-right="{$marginLeftRight2}mm"/>
+					<fo:region-before region-name="header" extent="{$marginTop}mm"/>
 					<fo:region-after region-name="footer-last" extent="53mm"/>
 					<fo:region-start region-name="left-region" extent="17.3mm"/>
 					<fo:region-end region-name="right-region" extent="17.3mm"/>

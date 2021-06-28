@@ -86,8 +86,13 @@
 	<xsl:variable name="column_width" select="($page_width - $column_gap) div $docs_count"/>
 	
 	<xsl:variable name="debug">false</xsl:variable>
-	<xsl:variable name="pageWidth" select="'210mm'"/>
-	<xsl:variable name="pageHeight" select="'297mm'"/>
+	<xsl:variable name="pageWidth" select="210"/>
+	<xsl:variable name="pageHeight" select="297"/>
+	<xsl:variable name="marginLeftRight1" select="25"/>
+	<xsl:variable name="marginLeftRight2" select="15"/>
+	<xsl:variable name="marginTop" select="29.5"/>
+	<xsl:variable name="marginBottom" select="23.5"/>
+	
 
 	<xsl:variable name="all_rights_reserved">
 		<xsl:call-template name="getLocalizedString">
@@ -171,7 +176,7 @@
 		<fo:root xmlns:fo="http://www.w3.org/1999/XSL/Format" xsl:use-attribute-sets="root-style" xml:lang="{$lang}">
 			<fo:layout-master-set>
 				<!-- cover page -->
-				<fo:simple-page-master master-name="cover-page-jcgm" page-width="{$pageWidth}" page-height="{$pageHeight}">
+				<fo:simple-page-master master-name="cover-page-jcgm" page-width="{$pageWidth}mm" page-height="{$pageHeight}mm">
 					<fo:region-body margin-top="85mm" margin-bottom="30mm" margin-left="100mm" margin-right="19mm"/>
 					<fo:region-before extent="85mm"/>
 					<fo:region-after  region-name="cover-page-jcgm-footer" extent="30mm"/>
@@ -179,7 +184,7 @@
 					<fo:region-end extent="19mm"/>
 				</fo:simple-page-master>
 				<!-- internal cover page -->
-				<fo:simple-page-master master-name="internal-cover-page-jcgm" page-width="{$pageWidth}" page-height="{$pageHeight}">
+				<fo:simple-page-master master-name="internal-cover-page-jcgm" page-width="{$pageWidth}mm" page-height="{$pageHeight}mm">
 					<fo:region-body margin-top="11mm" margin-bottom="21mm" margin-left="25mm" margin-right="19mm"/>
 					<fo:region-before extent="11mm"/>
 					<fo:region-after region-name="internal-cover-page-jcgm-footer" extent="21mm"/>
@@ -187,19 +192,19 @@
 					<fo:region-end extent="19mm"/>
 				</fo:simple-page-master>
 				
-				<fo:simple-page-master master-name="odd-jcgm" page-width="{$pageWidth}" page-height="{$pageHeight}">
-					<fo:region-body margin-top="29.5mm" margin-bottom="23.5mm" margin-left="25mm" margin-right="15mm"/>
-					<fo:region-before region-name="header-odd-jcgm" extent="29.5mm"/> <!--   display-align="center" -->
-					<fo:region-after region-name="footer-odd-jcgm" extent="23.5mm"/>
-					<fo:region-start region-name="left-region" extent="25mm"/>
-					<fo:region-end region-name="right-region" extent="15mm"/>
+				<fo:simple-page-master master-name="odd-jcgm" page-width="{$pageWidth}mm" page-height="{$pageHeight}mm">
+					<fo:region-body margin-top="{$marginTop}mm" margin-bottom="{$marginBottom}mm" margin-left="{$marginLeftRight1}mm" margin-right="{$marginLeftRight2}mm"/>
+					<fo:region-before region-name="header-odd-jcgm" extent="{$marginTop}mm"/> <!--   display-align="center" -->
+					<fo:region-after region-name="footer-odd-jcgm" extent="{$marginBottom}mm"/>
+					<fo:region-start region-name="left-region" extent="{$marginLeftRight1}mm"/>
+					<fo:region-end region-name="right-region" extent="{$marginLeftRight2}mm"/>
 				</fo:simple-page-master>
-				<fo:simple-page-master master-name="even-jcgm" page-width="{$pageWidth}" page-height="{$pageHeight}">
-					<fo:region-body margin-top="29.5mm" margin-bottom="23.5mm" margin-left="15mm" margin-right="25mm"/>
-					<fo:region-before region-name="header-even-jcgm" extent="29.5mm"/> <!--   display-align="center" -->
-					<fo:region-after region-name="footer-even-jcgm" extent="23.5mm"/>
-					<fo:region-start region-name="left-region" extent="15mm"/>
-					<fo:region-end region-name="right-region" extent="25mm"/>
+				<fo:simple-page-master master-name="even-jcgm" page-width="{$pageWidth}mm" page-height="{$pageHeight}mm">
+					<fo:region-body margin-top="{$marginTop}mm" margin-bottom="{$marginBottom}mm" margin-left="{$marginLeftRight2}mm" margin-right="{$marginLeftRight1}mm"/>
+					<fo:region-before region-name="header-even-jcgm" extent="{$marginTop}mm"/> <!--   display-align="center" -->
+					<fo:region-after region-name="footer-even-jcgm" extent="{$marginBottom}mm"/>
+					<fo:region-start region-name="left-region" extent="{$marginLeftRight2}mm"/>
+					<fo:region-end region-name="right-region" extent="{$marginLeftRight1}mm"/>
 				</fo:simple-page-master>
 				<fo:page-sequence-master master-name="document-jcgm">
 					<fo:repeatable-page-master-alternatives>
@@ -2111,7 +2116,7 @@
 		<!-- grey opacity -->
 		<fo:block-container absolute-position="fixed" left="0" top="0">
 			<fo:block>
-				<fo:instream-foreign-object content-height="{$pageHeight}" fox:alt-text="Background color">
+				<fo:instream-foreign-object content-height="{$pageHeight}mm" fox:alt-text="Background color">
 					<svg xmlns="http://www.w3.org/2000/svg" version="1.0" width="210mm" height="297mm">
 						<rect width="210mm" height="297mm" style="fill:rgb(255,255,255);stroke-width:0;fill-opacity:0.73"/>
 						</svg>

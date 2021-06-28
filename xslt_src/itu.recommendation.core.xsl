@@ -23,8 +23,12 @@
 	<xsl:variable name="namespace">itu</xsl:variable>
 	
 	<xsl:variable name="debug">false</xsl:variable>
-	<xsl:variable name="pageWidth" select="'210mm'"/>
-	<xsl:variable name="pageHeight" select="'297mm'"/>
+	<xsl:variable name="pageWidth" select="210"/>
+	<xsl:variable name="pageHeight" select="297"/>
+	<xsl:variable name="marginLeftRight1" select="20"/>
+	<xsl:variable name="marginLeftRight2" select="20"/>
+	<xsl:variable name="marginTop" select="20"/>
+	<xsl:variable name="marginBottom" select="20"/>
 	
 	<!-- Rec. ITU-T G.650.1 (03/2018) -->
 	<xsl:variable name="footerprefix" select="'Rec. '"/>
@@ -142,7 +146,7 @@
 			
 			
 				<!-- Technical Report first page -->
-				<fo:simple-page-master master-name="TR-first-page" page-width="{$pageWidth}" page-height="{$pageHeight}">
+				<fo:simple-page-master master-name="TR-first-page" page-width="{$pageWidth}mm" page-height="{$pageHeight}mm">
 					<fo:region-body margin-top="21.6mm" margin-bottom="25.4mm" margin-left="20.1mm" margin-right="22.6mm"/>
 					<fo:region-before region-name="TR-first-page-header" extent="21.6mm" display-align="center"/>
 					<fo:region-after region-name="TR-first-page-footer" extent="25.4mm" display-align="center"/>					
@@ -151,7 +155,7 @@
 				</fo:simple-page-master>
 				
 				<!-- cover page -->
-				<fo:simple-page-master master-name="cover-page" page-width="{$pageWidth}" page-height="{$pageHeight}">
+				<fo:simple-page-master master-name="cover-page" page-width="{$pageWidth}mm" page-height="{$pageHeight}mm">
 					<fo:region-body margin-top="19.2mm" margin-bottom="5mm" margin-left="19.2mm" margin-right="19.2mm"/>
 					<fo:region-before region-name="cover-page-header" extent="19.2mm" display-align="center"/>
 					<fo:region-after/>
@@ -160,7 +164,7 @@
 				</fo:simple-page-master>
 				<!-- contents pages -->
 				<!-- odd pages Preface -->
-				<fo:simple-page-master master-name="odd-preface" page-width="{$pageWidth}" page-height="{$pageHeight}">
+				<fo:simple-page-master master-name="odd-preface" page-width="{$pageWidth}mm" page-height="{$pageHeight}mm">
 					<fo:region-body margin-top="19.2mm" margin-bottom="19.2mm" margin-left="19.2mm" margin-right="19.2mm"/>
 					<fo:region-before region-name="header-odd" extent="19.2mm"  display-align="center"/>
 					<fo:region-after region-name="footer-odd" extent="19.2mm"/>
@@ -168,7 +172,7 @@
 					<fo:region-end region-name="right-region" extent="19.2mm"/>
 				</fo:simple-page-master>
 				<!-- even pages Preface -->
-				<fo:simple-page-master master-name="even-preface" page-width="{$pageWidth}" page-height="{$pageHeight}">
+				<fo:simple-page-master master-name="even-preface" page-width="{$pageWidth}mm" page-height="{$pageHeight}mm">
 					<fo:region-body margin-top="19.2mm" margin-bottom="19.2mm" margin-left="19.2mm" margin-right="19.2mm"/>
 					<fo:region-before region-name="header-even" extent="19.2mm"  display-align="center"/>
 					<fo:region-after region-name="footer-even" extent="19.2mm"/>
@@ -182,20 +186,20 @@
 					</fo:repeatable-page-master-alternatives>
 				</fo:page-sequence-master>
 				<!-- odd pages Body -->
-				<fo:simple-page-master master-name="odd" page-width="{$pageWidth}" page-height="{$pageHeight}">
-					<fo:region-body margin-top="20mm" margin-bottom="20mm" margin-left="20mm" margin-right="20mm"/>
-					<fo:region-before region-name="header-odd" extent="20mm"  display-align="center"/>
-					<fo:region-after region-name="footer-odd" extent="20mm"/>
-					<fo:region-start region-name="left-region" extent="20mm"/>
-					<fo:region-end region-name="right-region" extent="20mm"/>
+				<fo:simple-page-master master-name="odd" page-width="{$pageWidth}mm" page-height="{$pageHeight}mm">
+					<fo:region-body margin-top="{$marginTop}mm" margin-bottom="{$marginBottom}mm" margin-left="{$marginLeftRight1}mm" margin-right="{$marginLeftRight2}mm"/>
+					<fo:region-before region-name="header-odd" extent="{$marginTop}mm"  display-align="center"/>
+					<fo:region-after region-name="footer-odd" extent="{$marginBottom}mm"/>
+					<fo:region-start region-name="left-region" extent="{$marginLeftRight1}mm"/>
+					<fo:region-end region-name="right-region" extent="{$marginLeftRight2}mm"/>
 				</fo:simple-page-master>
 				<!-- even pages Body -->
-				<fo:simple-page-master master-name="even" page-width="{$pageWidth}" page-height="{$pageHeight}">
-					<fo:region-body margin-top="20mm" margin-bottom="20mm" margin-left="20mm" margin-right="20mm"/>
-					<fo:region-before region-name="header-even" extent="20mm"  display-align="center"/>
-					<fo:region-after region-name="footer-even" extent="20mm"/>
-					<fo:region-start region-name="left-region" extent="20mm"/>
-					<fo:region-end region-name="right-region" extent="20mm"/>
+				<fo:simple-page-master master-name="even" page-width="{$pageWidth}mm" page-height="{$pageHeight}mm">
+					<fo:region-body margin-top="{$marginTop}mm" margin-bottom="{$marginBottom}mm" margin-left="{$marginLeftRight2}mm" margin-right="{$marginLeftRight1}mm"/>
+					<fo:region-before region-name="header-even" extent="{$marginTop}mm"  display-align="center"/>
+					<fo:region-after region-name="footer-even" extent="{$marginBottom}mm"/>
+					<fo:region-start region-name="left-region" extent="{$marginLeftRight2}mm"/>
+					<fo:region-end region-name="right-region" extent="{$marginLeftRight1}mm"/>
 				</fo:simple-page-master>
 				<fo:page-sequence-master master-name="document">
 					<fo:repeatable-page-master-alternatives>

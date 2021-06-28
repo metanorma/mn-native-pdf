@@ -29,8 +29,12 @@
 	<xsl:variable name="namespace">iec</xsl:variable>
 	
 	<xsl:variable name="debug">false</xsl:variable>
-	<xsl:variable name="pageWidth" select="'210mm'"/>
-	<xsl:variable name="pageHeight" select="'297mm'"/>
+	<xsl:variable name="pageWidth" select="210"/>
+	<xsl:variable name="pageHeight" select="297"/>
+	<xsl:variable name="marginLeftRight1" select="25"/>
+	<xsl:variable name="marginLeftRight2" select="25"/>
+	<xsl:variable name="marginTop" select="31"/>
+	<xsl:variable name="marginBottom" select="15"/>
 
 	<xsl:variable name="copyrightText" select="concat('© ', //iec:iec-standard/iec:bibdata/iec:copyright/iec:owner/iec:organization/iec:abbreviation, ':', //iec:iec-standard/iec:bibdata/iec:copyright/iec:from)"/>
   <!-- <xsl:variable name="lang-1st-letter" select="concat('(', translate(substring(iec:iec-standard/iec:bibdata/iec:language,1,1),$lower, $upper), ')')"/> -->
@@ -170,14 +174,14 @@
 		<fo:root xmlns:fo="http://www.w3.org/1999/XSL/Format" font-family="Arial, Times New Roman, STIX Two Math, Source Han Sans" font-size="10pt" xml:lang="{$lang}">
 			<fo:layout-master-set>
 				<!-- cover pages -->
-				<fo:simple-page-master master-name="cover" page-width="{$pageWidth}" page-height="{$pageHeight}">
+				<fo:simple-page-master master-name="cover" page-width="{$pageWidth}mm" page-height="{$pageHeight}mm">
 					<fo:region-body margin-top="17.5mm" margin-bottom="12.5mm" margin-left="18mm" margin-right="20.5mm"/>
 					<fo:region-before region-name="header" extent="17.5mm"/> 
 					<fo:region-after region-name="footer" extent="12.5mm" precedence="true"/>
 					<fo:region-start region-name="left-region" extent="18mm"/>
 					<fo:region-end region-name="right-region" extent="20.5mm"/>
 				</fo:simple-page-master>
-				<fo:simple-page-master master-name="cover_2nd" page-width="{$pageWidth}" page-height="{$pageHeight}">
+				<fo:simple-page-master master-name="cover_2nd" page-width="{$pageWidth}mm" page-height="{$pageHeight}mm">
 					<fo:region-body margin-top="17.5mm" margin-bottom="12.5mm" margin-left="25mm" margin-right="25mm" column-count="2" column-gap="5mm"/>
 					<fo:region-before region-name="header" extent="17.5mm"/> 
 					<fo:region-after region-name="footer" extent="12.5mm" precedence="true"/>
@@ -185,7 +189,7 @@
 					<fo:region-end region-name="right-region" extent="25mm"/>
 				</fo:simple-page-master>
 				
-				<fo:simple-page-master master-name="cover-FDIS" page-width="{$pageWidth}" page-height="{$pageHeight}">
+				<fo:simple-page-master master-name="cover-FDIS" page-width="{$pageWidth}mm" page-height="{$pageHeight}mm">
 					<fo:region-body margin-top="17.5mm" margin-bottom="29mm" margin-left="18mm" margin-right="19mm"/>
 					<fo:region-before region-name="header" extent="17.5mm"/> 
 					<fo:region-after region-name="footer-FDIS" extent="29mm"/> 
@@ -194,20 +198,20 @@
 				</fo:simple-page-master>
 				
 				<!-- odd pages -->
-				<fo:simple-page-master master-name="odd" page-width="{$pageWidth}" page-height="{$pageHeight}">
-					<fo:region-body margin-top="31mm" margin-bottom="15mm" margin-left="25mm" margin-right="25mm"/>
-					<fo:region-before region-name="header-odd" extent="31mm"/> 
-					<fo:region-after region-name="footer" extent="15mm"/>
-					<fo:region-start region-name="left-region" extent="25mm"/>
-					<fo:region-end region-name="right-region" extent="25mm"/>
+				<fo:simple-page-master master-name="odd" page-width="{$pageWidth}mm" page-height="{$pageHeight}mm">
+					<fo:region-body margin-top="{$marginTop}mm" margin-bottom="{$marginBottom}mm" margin-left="{$marginLeftRight1}mm" margin-right="{$marginLeftRight2}mm"/>
+					<fo:region-before region-name="header-odd" extent="{$marginTop}mm"/> 
+					<fo:region-after region-name="footer" extent="{$marginBottom}mm"/>
+					<fo:region-start region-name="left-region" extent="{$marginLeftRight1}mm"/>
+					<fo:region-end region-name="right-region" extent="{$marginLeftRight2}mm"/>
 				</fo:simple-page-master>
 				<!-- even pages -->
-				<fo:simple-page-master master-name="even" page-width="{$pageWidth}" page-height="{$pageHeight}">
-					<fo:region-body margin-top="31mm" margin-bottom="15mm" margin-left="25mm" margin-right="25mm"/>
-					<fo:region-before region-name="header-even" extent="31mm"/>
-					<fo:region-after region-name="footer" extent="15mm"/>
-					<fo:region-start region-name="left-region" extent="25mm"/>
-					<fo:region-end region-name="right-region" extent="25mm"/>
+				<fo:simple-page-master master-name="even" page-width="{$pageWidth}mm" page-height="{$pageHeight}mm">
+					<fo:region-body margin-top="{$marginTop}mm" margin-bottom="{$marginBottom}mm" margin-left="{$marginLeftRight1}mm" margin-right="{$marginLeftRight2}mm"/>
+					<fo:region-before region-name="header-even" extent="{$marginTop}mm"/>
+					<fo:region-after region-name="footer" extent="{$marginBottom}mm"/>
+					<fo:region-start region-name="left-region" extent="{$marginLeftRight1}mm"/>
+					<fo:region-end region-name="right-region" extent="{$marginLeftRight2}mm"/>
 				</fo:simple-page-master>
 				<fo:page-sequence-master master-name="document">
 					<fo:repeatable-page-master-alternatives>
@@ -216,11 +220,11 @@
 					</fo:repeatable-page-master-alternatives>
 				</fo:page-sequence-master>
 				
-				<fo:simple-page-master master-name="blank-page" page-width="{$pageWidth}" page-height="{$pageHeight}">
+				<fo:simple-page-master master-name="blank-page" page-width="{$pageWidth}mm" page-height="{$pageHeight}mm">
 					<fo:region-body margin-top="107mm" margin-bottom="0mm" margin-left="18mm" margin-right="0mm"/>
 				</fo:simple-page-master>
 				
-				<fo:simple-page-master master-name="last-page" page-width="{$pageWidth}" page-height="{$pageHeight}">
+				<fo:simple-page-master master-name="last-page" page-width="{$pageWidth}mm" page-height="{$pageHeight}mm">
 					<fo:region-body margin-top="107mm" margin-bottom="0mm" margin-left="18mm" margin-right="0mm" background-color="rgb(236, 236, 236)"/>
 					<fo:region-before region-name="header" extent="107mm"/> 
 					<fo:region-start region-name="left-region" extent="18mm"/>

@@ -16,8 +16,12 @@
 	<xsl:variable name="images" select="document($svg_images)"/>
 	<xsl:param name="basepath"/>
 	
-	<xsl:variable name="pageWidth" select="'215.9mm'"/>
-	<xsl:variable name="pageHeight" select="'279.4mm'"/>
+	<xsl:variable name="pageWidth" select="215.9"/>
+	<xsl:variable name="pageHeight" select="279.4"/>
+	<xsl:variable name="marginLeftRight1" select="35"/>
+	<xsl:variable name="marginLeftRight2" select="17"/>
+	<xsl:variable name="marginTop" select="16.5"/>
+	<xsl:variable name="marginBottom" select="22.5"/>
 
 	<xsl:variable name="namespace">ogc</xsl:variable>
 
@@ -83,7 +87,7 @@
 		<fo:root xmlns:fo="http://www.w3.org/1999/XSL/Format" font-family="Lato, STIX Two Math, Source Han Sans" font-size="11pt" color="{$color_main}" xml:lang="{$lang}">
 			<fo:layout-master-set>
 				<!-- Cover page -->
-				<fo:simple-page-master master-name="cover-page" page-width="{$pageWidth}" page-height="{$pageHeight}">
+				<fo:simple-page-master master-name="cover-page" page-width="{$pageWidth}mm" page-height="{$pageHeight}mm">
 					<fo:region-body margin-top="16.5mm" margin-bottom="10mm" margin-left="16.5mm" margin-right="14mm"/>
 					<fo:region-before region-name="cover-page-header" extent="16.5mm" />
 					<fo:region-after extent="10mm"/>
@@ -92,7 +96,7 @@
 				</fo:simple-page-master>
 
 				<!-- Preface pages -->
-				<fo:simple-page-master master-name="preface" page-width="{$pageWidth}" page-height="{$pageHeight}">
+				<fo:simple-page-master master-name="preface" page-width="{$pageWidth}mm" page-height="{$pageHeight}mm">
 					<fo:region-body margin-top="16.5mm" margin-bottom="22.5mm" margin-left="16.5mm" margin-right="16.5mm"/>
 					<fo:region-before region-name="header" extent="16.5mm"/> 
 					<fo:region-after region-name="footer" extent="22.5mm"/>
@@ -102,12 +106,12 @@
 
 				
 				<!-- Document pages -->
-				<fo:simple-page-master master-name="document" page-width="{$pageWidth}" page-height="{$pageHeight}">
-					<fo:region-body margin-top="16.5mm" margin-bottom="22.5mm" margin-left="35mm" margin-right="17mm"/>
-					<fo:region-before region-name="header" extent="16.5mm"/> 
-					<fo:region-after region-name="footer" extent="22.5mm"/>
+				<fo:simple-page-master master-name="document" page-width="{$pageWidth}mm" page-height="{$pageHeight}mm">
+					<fo:region-body margin-top="{$marginTop}mm" margin-bottom="{$marginBottom}mm" margin-left="{$marginLeftRight1}mm" margin-right="{$marginLeftRight2}mm"/>
+					<fo:region-before region-name="header" extent="{$marginTop}mm"/> 
+					<fo:region-after region-name="footer" extent="{$marginBottom}mm"/>
 					<fo:region-start region-name="left-region" extent="16.5mm"/>
-					<fo:region-end region-name="right-region" extent="17mm"/>
+					<fo:region-end region-name="right-region" extent="{$marginLeftRight2}mm"/>
 				</fo:simple-page-master>				
 				
 			</fo:layout-master-set>
@@ -133,16 +137,16 @@
 					<!-- background image -->
 					<fo:block-container absolute-position="fixed" left="0mm" top="0mm" font-size="0">
 						<fo:block>
-							<fo:external-graphic src="{concat('data:image/png;base64,', normalize-space($Image-Cover-Background))}" width="{$pageWidth}" content-height="scale-to-fit" scaling="uniform" fox:alt-text="Image Front"/>
+							<fo:external-graphic src="{concat('data:image/png;base64,', normalize-space($Image-Cover-Background))}" width="{$pageWidth}mm" content-height="scale-to-fit" scaling="uniform" fox:alt-text="Image Front"/>
 						</fo:block>
 					</fo:block-container>
 					
 					<!-- background color -->
 					<fo:block-container absolute-position="fixed" left="0" top="0" font-size="0">
             <fo:block>
-              <fo:instream-foreign-object content-height="{$pageHeight}" fox:alt-text="Background color">
-                <svg xmlns="http://www.w3.org/2000/svg" version="1.0" width="215.9mm" height="279.4mm">
-                  <rect width="215.9mm" height="279.4mm" style="fill:rgb(33,55,92);stroke-width:0;fill-opacity:0.85"/>
+              <fo:instream-foreign-object content-height="{$pageHeight}mm" fox:alt-text="Background color">
+                <svg xmlns="http://www.w3.org/2000/svg" version="1.0" width="{$pageWidth}mm" height="{$pageHeight}mm">
+                  <rect width="{$pageWidth}mm" height="{$pageHeight}mm" style="fill:rgb(33,55,92);stroke-width:0;fill-opacity:0.85"/>
                 </svg>
               </fo:instream-foreign-object>
             </fo:block>
@@ -281,10 +285,10 @@
 					</xsl:if>
 
 					<!-- crossing lines -->					
-					<fo:block-container absolute-position="fixed" width="{$pageWidth}" height="{$pageHeight}" font-size="0">
+					<fo:block-container absolute-position="fixed" width="{$pageWidth}mm" height="{$pageHeight}mm" font-size="0">
 						<fo:block>
-							<fo:instream-foreign-object content-height="{$pageHeight}" content-width="{$pageWidth}" fox:alt-text="Crossing lines">
-								<svg viewBox="0 0 2159 2794" xmlns="http://www.w3.org/2000/svg" width="{$pageWidth}" height="{$pageHeight}">
+							<fo:instream-foreign-object content-height="{$pageHeight}mm" content-width="{$pageWidth}mm" fox:alt-text="Crossing lines">
+								<svg viewBox="0 0 2159 2794" xmlns="http://www.w3.org/2000/svg" width="{$pageWidth}mm" height="{$pageHeight}mm">
 									<line x1="230" y1="0" x2="2159" y2="490" stroke="{$color_lightorange}"/>
 									<line x1="0" y1="395" x2="820" y2="0" stroke="{$color_lightorange}"/>
 									<circle style="fill:{$color_lightorange};" cx="614" cy="100" r="15" />
@@ -314,10 +318,10 @@
 				<fo:flow flow-name="xsl-region-body">
 				
 					<!-- crossing lines -->					
-					<fo:block-container absolute-position="fixed" width="{$pageWidth}" height="{$pageHeight}" font-size="0">
+					<fo:block-container absolute-position="fixed" width="{$pageWidth}mm" height="{$pageHeight}mm" font-size="0">
 						<fo:block>
-							<fo:instream-foreign-object content-height="{$pageHeight}" content-width="{$pageWidth}" fox:alt-text="Crossing lines">
-								<svg viewBox="0 0 2159 2794" xmlns="http://www.w3.org/2000/svg" width="{$pageWidth}" height="{$pageHeight}">
+							<fo:instream-foreign-object content-height="{$pageHeight}mm" content-width="{$pageWidth}mm" fox:alt-text="Crossing lines">
+								<svg viewBox="0 0 2159 2794" xmlns="http://www.w3.org/2000/svg" width="{$pageWidth}mm" height="{$pageHeight}mm">
 									<line x1="0" y1="545" x2="2084" y2="0" stroke="{$color_lightorange}"/>
 									<line x1="0" y1="1374" x2="355" y2="0" stroke="{$color_lightorange}"/>
 									<circle style="fill:{$color_lightorange};" cx="227" cy="487" r="15" />
@@ -610,9 +614,9 @@
 				<!-- background color -->
 				<fo:block-container absolute-position="fixed" left="0" top="0" font-size="0">
 					<fo:block>
-						<fo:instream-foreign-object content-height="{$pageHeight}" fox:alt-text="Background color">
-							<svg xmlns="http://www.w3.org/2000/svg" version="1.0" width="{$pageWidth}" height="{$pageHeight}">
-								<rect width="215.9mm" height="279.4mm" style="fill:rgb(33,55,92);stroke-width:0;fill-opacity:1"/>
+						<fo:instream-foreign-object content-height="{$pageHeight}mm" fox:alt-text="Background color">
+							<svg xmlns="http://www.w3.org/2000/svg" version="1.0" width="{$pageWidth}mm" height="{$pageHeight}mm">
+								<rect width="{$pageWidth}mm" height="{$pageHeight}mm" style="fill:rgb(33,55,92);stroke-width:0;fill-opacity:1"/>
 							</svg>
 						</fo:instream-foreign-object>
 					</fo:block>
@@ -1369,10 +1373,10 @@
 	</xsl:template>
 
 	<xsl:template name="insertCrossingLines">
-		<fo:block-container absolute-position="fixed" width="{$pageWidth}" height="{$pageHeight}" font-size="0">
+		<fo:block-container absolute-position="fixed" width="{$pageWidth}mm" height="{$pageHeight}mm" font-size="0">
 			<fo:block>
-				<fo:instream-foreign-object content-height="{$pageHeight}" content-width="{$pageWidth}" fox:alt-text="Crossing lines">
-					<svg viewBox="0 0 2159 2794" xmlns="http://www.w3.org/2000/svg" width="{$pageWidth}" height="{$pageHeight}">
+				<fo:instream-foreign-object content-height="{$pageHeight}mm" content-width="{$pageWidth}mm" fox:alt-text="Crossing lines">
+					<svg viewBox="0 0 2159 2794" xmlns="http://www.w3.org/2000/svg" width="{$pageWidth}mm" height="{$pageHeight}mm">
 						<line x1="0" y1="300" x2="2159" y2="675" stroke="{$color_orange}" />
 						<line x1="1215" y1="0" x2="2159" y2="1380" stroke="{$color_orange}" />
 						<line x1="0" y1="1850" x2="2159" y2="2390" stroke="{$color_orange}" />

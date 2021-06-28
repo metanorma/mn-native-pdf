@@ -16,8 +16,12 @@
 	<xsl:variable name="images" select="document($svg_images)"/>
 	<xsl:param name="basepath"/>
 	
-	<xsl:variable name="pageWidth" select="'215.9mm'"/>
-	<xsl:variable name="pageHeight" select="'279.4mm'"/>
+	<xsl:variable name="pageWidth" select="215.9"/>
+	<xsl:variable name="pageHeight" select="279.4"/>
+	<xsl:variable name="marginLeftRight1" select="25.4"/>
+	<xsl:variable name="marginLeftRight2" select="25.4"/>
+	<xsl:variable name="marginTop" select="25.4"/>
+	<xsl:variable name="marginBottom" select="25.4"/>
 
 	<xsl:variable name="namespace">ogc-white-paper</xsl:variable>
 
@@ -106,12 +110,12 @@
 			<fo:layout-master-set>
 				
 				<!-- Document pages -->
-				<fo:simple-page-master master-name="document" page-width="{$pageWidth}" page-height="{$pageHeight}">
-					<fo:region-body margin-top="1in" margin-bottom="1in" margin-left="1in" margin-right="1in"/>
-					<fo:region-before region-name="header" extent="1in" precedence="true"/> 
-					<fo:region-after region-name="footer" extent="1in" precedence="true"/>
-					<fo:region-start region-name="left" extent="1in"/>
-					<fo:region-end region-name="right" extent="1in"/>
+				<fo:simple-page-master master-name="document" page-width="{$pageWidth}mm" page-height="{$pageHeight}mm">
+					<fo:region-body margin-top="{$marginTop}mm" margin-bottom="{$marginBottom}mm" margin-left="{$marginLeftRight1}mm" margin-right="{$marginLeftRight2}mm"/>
+					<fo:region-before region-name="header" extent="{$marginTop}mm" precedence="true"/> 
+					<fo:region-after region-name="footer" extent="{$marginBottom}mm" precedence="true"/>
+					<fo:region-start region-name="left" extent="{$marginLeftRight1}mm"/>
+					<fo:region-end region-name="right" extent="{$marginLeftRight2}mm"/>
 				</fo:simple-page-master>
 				
 			</fo:layout-master-set>
