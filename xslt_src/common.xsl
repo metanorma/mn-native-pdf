@@ -2888,6 +2888,14 @@
 			<xsl:if test="$namespace = 'bsi' or $namespace = 'iso' or $namespace = 'iec' or $namespace = 'iho' or $namespace = 'jcgm'"> <!--  and ancestor::*[local-name() = 'thead'] -->
 				<xsl:attribute name="padding-top">0.5mm</xsl:attribute>
 			</xsl:if>
+			<xsl:if test="$namespace = 'bsi'">
+				<xsl:if test="count(*) = 1 and local-name(*[1]) = 'figure'">
+					<xsl:attribute name="padding-top">3mm</xsl:attribute>
+					<xsl:attribute name="padding-left">3mm</xsl:attribute>
+					<xsl:attribute name="padding-bottom">3mm</xsl:attribute>
+					<xsl:attribute name="padding-right">3mm</xsl:attribute>
+				</xsl:if>
+			</xsl:if>
 			<xsl:if test="$namespace = 'jcgm'">
 				<xsl:if test="count(*) = 1 and (local-name(*[1]) = 'stem' or local-name(*[1]) = 'figure')">
 					<xsl:attribute name="padding-left">0mm</xsl:attribute>
