@@ -2622,7 +2622,7 @@
 						<xsl:attribute name="font-size">10pt</xsl:attribute>
 					</xsl:if>
 					
-					<xsl:if test="$namespace = 'bsi' or $namespace = 'iso' or $namespace = 'jcgm'">
+					<xsl:if test="$namespace = 'iso' or $namespace = 'jcgm'">
 						<xsl:choose>
 							<xsl:when test="position() = 1">
 								<xsl:attribute name="border-top">solid black 1.5pt</xsl:attribute>
@@ -2639,8 +2639,11 @@
 						</xsl:choose>
 					</xsl:if>
 					<xsl:if test="$namespace = 'bsi'">
-						<!-- <xsl:attribute name="border-top">solid black 1pt</xsl:attribute>
-						<xsl:attribute name="border-bottom">solid black 1pt</xsl:attribute> -->
+						<xsl:attribute name="border-top">solid black 0.5pt</xsl:attribute>
+						<xsl:attribute name="border-bottom">solid black 0.5pt</xsl:attribute>
+						<xsl:if test="position() = last()">
+							<xsl:attribute name="border-bottom">solid black 0pt</xsl:attribute>
+						</xsl:if>
 						<xsl:if test="ancestor::*[local-name() = 'preface']">
 							<xsl:attribute name="border-top">solid black 0pt</xsl:attribute>
 							<xsl:attribute name="border-bottom">solid black 0pt</xsl:attribute>
@@ -2738,7 +2741,9 @@
 				</xsl:choose>
 			</xsl:attribute>
 			<xsl:if test="$namespace = 'bsi'">
+				<xsl:attribute name="border">0.5pt solid black</xsl:attribute>
 				<xsl:attribute name="padding-top">1mm</xsl:attribute>
+				
 				<xsl:if test="ancestor::*[local-name() = 'preface']">
 					<xsl:attribute name="font-weight">normal</xsl:attribute>
 					<xsl:attribute name="border">solid black 0pt</xsl:attribute>
@@ -2889,6 +2894,13 @@
 				<xsl:attribute name="padding-top">0.5mm</xsl:attribute>
 			</xsl:if>
 			<xsl:if test="$namespace = 'bsi'">
+				<xsl:attribute name="border">0.5pt solid black</xsl:attribute>
+				
+				<xsl:if test="not(ancestor::*[local-name()='preface']) and ancestor::*[local-name() = 'table']/*[local-name() = 'thead'] and not(ancestor::*[local-name() = 'tr']/preceding-sibling::*[local-name() = 'tr'])">
+					<!-- first row in table body, and if exists header -->
+					<xsl:attribute name="border-top">0pt solid black</xsl:attribute>
+				</xsl:if>
+				
 				<xsl:if test="count(*) = 1 and local-name(*[1]) = 'figure'">
 					<xsl:attribute name="padding-top">3mm</xsl:attribute>
 					<xsl:attribute name="padding-left">3mm</xsl:attribute>
