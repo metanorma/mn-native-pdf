@@ -2299,7 +2299,7 @@
 				<xsl:when test="$level = 2 and ancestor::bipm:annex">10.5pt</xsl:when>
 				<xsl:when test="$level = 2">14pt</xsl:when>
 				<xsl:when test="$level = 3 and ancestor::bipm:annex">10pt</xsl:when>
-				<xsl:when test="$level = 4 and ancestor::bipm:annex">9pt</xsl:when>
+				<xsl:when test="$level &gt;= 4 and ancestor::bipm:annex">9pt</xsl:when>
 				<xsl:when test="$level = 3">12pt</xsl:when>
 				<xsl:otherwise>11pt</xsl:otherwise>
 			</xsl:choose>
@@ -2395,8 +2395,10 @@
 							</xsl:if> -->
 							<xsl:choose>
 								<xsl:when test="ancestor::bipm:annex and $level &gt;= 2">
-									<xsl:if test="$level = 3">
+									<xsl:if test="$level &gt;= 3">
 										<xsl:attribute name="margin-left">14mm</xsl:attribute>
+									</xsl:if>
+									<xsl:if test="$level = 3">
 										<fo:inline padding-right="2.5mm" baseline-shift="15%">
 											<fo:instream-foreign-object content-height="2mm" content-width="2mm"  fox:alt-text="Quad">
 													<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xml:space="preserve"
@@ -2407,7 +2409,6 @@
 										</fo:inline>
 									</xsl:if>
 									<xsl:if test="$level = 4">
-										<xsl:attribute name="margin-left">14mm</xsl:attribute>
 										<xsl:attribute name="text-align">center</xsl:attribute>
 									</xsl:if>
 									<xsl:call-template name="extractTitle"/>
