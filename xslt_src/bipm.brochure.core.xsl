@@ -3115,9 +3115,10 @@
 								<fo:inline>
 									<!-- <xsl:if test="@list_type = 'ul'">
 										<xsl:attribute name="font-size">15pt</xsl:attribute> -->
-									<xsl:if test="@font-size">
-										<xsl:attribute name="font-size"><xsl:value-of select="@font-size"/></xsl:attribute>									
-										<!-- <xsl:attribute name="baseline-shift">-10%</xsl:attribute> -->
+									<xsl:copy-of select="@font-size"/>
+									<xsl:copy-of select="@baseline-shift"/>
+									<xsl:if test="@list_type = 'ul' and ancestor::bipm:note_side">
+										<xsl:attribute name="font-size">10pt</xsl:attribute>
 									</xsl:if>
 									<xsl:value-of select="@label"/>
 								</fo:inline>
