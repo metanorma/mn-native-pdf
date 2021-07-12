@@ -6645,14 +6645,15 @@
 							<xsl:attribute name="vertical-align">super</xsl:attribute>
 						</xsl:if>
 					</xsl:if>	
-											
-					<fo:basic-link internal-destination="{@bibitemid}" fox:alt-text="{@citeas}">
-						<xsl:if test="$namespace = 'bsi'">
-							<xsl:if test="not(xalan:nodeset($ids)/id = current()/@bibitemid)"> <!-- if reference can't be resolved -->
-								<xsl:attribute name="color">inherit</xsl:attribute>
-								<xsl:attribute name="text-decoration">none</xsl:attribute>
-							</xsl:if>
+					
+					<xsl:if test="$namespace = 'bsi'">
+						<xsl:if test="not(xalan:nodeset($ids)/id = current()/@bibitemid) or $document_type = 'PAS'"> <!-- if reference can't be resolved or PAS document -->
+							<xsl:attribute name="color">inherit</xsl:attribute>
+							<xsl:attribute name="text-decoration">none</xsl:attribute>
 						</xsl:if>
+					</xsl:if>
+            
+					<fo:basic-link internal-destination="{@bibitemid}" fox:alt-text="{@citeas}">
 						<xsl:if test="normalize-space(@citeas) = ''">
 							<xsl:attribute name="fox:alt-text"><xsl:value-of select="."/></xsl:attribute>
 						</xsl:if>
