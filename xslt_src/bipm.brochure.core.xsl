@@ -3396,6 +3396,11 @@
 
 	<xsl:template match="bipm:xref" priority="2">		
 		<fo:basic-link internal-destination="{@target}" fox:alt-text="{@target}">
+		
+			<xsl:if test="parent::*[local-name() = 'title']">
+				<xsl:attribute name="font-weight">normal</xsl:attribute>
+			</xsl:if>
+			
 			<xsl:choose>
 				<xsl:when test="@pagenumber='true'"><!-- ToC in Appendix, and page in references like this: « Le BIPM et la Convention du Mètre » (page 5). -->
 					<fo:inline> <!--  font-weight="bold" -->
