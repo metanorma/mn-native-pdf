@@ -365,8 +365,12 @@
 									<xsl:apply-templates select="xalan:nodeset($current_document)" mode="flatxml"/>
 								</xsl:variable> -->
 								
+								<xsl:variable name="title_eref">
+									<xsl:apply-templates select="." mode="title_eref"/>
+								</xsl:variable>
+								
 								<xsl:variable name="flatxml_">
-									<xsl:apply-templates select="." mode="flatxml"/>
+									<xsl:apply-templates select="xalan:nodeset($title_eref)" mode="flatxml"/>
 								</xsl:variable>
 								
 								<xsl:variable name="flatxml">
@@ -396,8 +400,12 @@
 									<xsl:apply-templates select="xalan:nodeset($current_document)" mode="flatxml"/>
 								</xsl:variable> -->
 								
+								<xsl:variable name="title_eref">
+									<xsl:apply-templates select="." mode="title_eref"/>
+								</xsl:variable>
+								
 								<xsl:variable name="flatxml_">
-									<xsl:apply-templates select="." mode="flatxml"/>
+									<xsl:apply-templates select="xalan:nodeset($title_eref)" mode="flatxml"/>
 								</xsl:variable>
 								
 								<xsl:variable name="flatxml">
@@ -416,8 +424,12 @@
 				</xsl:when>			
 				<xsl:otherwise>
 				
+					<xsl:variable name="title_eref">
+						<xsl:apply-templates mode="title_eref"/>
+					</xsl:variable>
+					
 					<xsl:variable name="flatxml_">
-						<xsl:apply-templates mode="flatxml"/>
+						<xsl:apply-templates select="xalan:nodeset($title_eref)" mode="flatxml"/>
 					</xsl:variable>
 
 					<xsl:variable name="flatxml">
@@ -439,6 +451,27 @@
 		</fo:root>
 	</xsl:template>
 	
+	<!-- ================================= -->
+	<!-- Move eref inside title -->
+	<!-- ================================= -->	
+	<xsl:template match="@*|node()" mode="title_eref">
+		<xsl:copy>
+			<xsl:apply-templates select="@*|node()" mode="title_eref"/>
+		</xsl:copy>
+	</xsl:template>
+	
+	<xsl:template match="bipm:title[following-sibling::*[1][self::bipm:eref]]" mode="title_eref">
+		<xsl:copy>
+			<xsl:apply-templates select="@*|node()" mode="title_eref"/>
+			<!-- move next eref inside title -->
+			<xsl:copy-of select="following-sibling::*[1][self::bipm:eref]"/>
+		</xsl:copy>
+	</xsl:template>
+	<!-- remove eref immediately after title -->
+	<xsl:template match="bipm:eref[preceding-sibling::*[1][self::bipm:title]]" mode="title_eref"/>
+	<!-- ================================= -->
+	<!-- END Move eref inside title -->
+	<!-- ================================= -->	
 	
 	<!-- ================================= -->
 	<!-- Flattening xml for fit notes at page sides (margins) -->

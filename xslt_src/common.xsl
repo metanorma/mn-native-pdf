@@ -6661,6 +6661,13 @@
 								<xsl:attribute name="color">blue</xsl:attribute>
 								<xsl:attribute name="text-decoration">underline</xsl:attribute>
 							</xsl:if>
+							<xsl:if test="$namespace = 'bipm'">
+								<xsl:if test="parent::*[local-name() = 'title']">
+									<xsl:attribute name="color">inherit</xsl:attribute>
+									<xsl:attribute name="text-decoration">inherit</xsl:attribute>
+									<xsl:attribute name="font-weight">normal</xsl:attribute>
+								</xsl:if>
+							</xsl:if>
 							<xsl:if test="$namespace = 'ogc'">
 							</xsl:if>
 							<xsl:if test="$namespace = 'nist-cswp' or 
