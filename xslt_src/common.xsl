@@ -4821,9 +4821,16 @@
 				<xsl:if test="$document_type = 'PAS'">
 					<xsl:attribute name="color"><xsl:value-of select="$color_PAS"/></xsl:attribute>
 					<xsl:attribute name="line-height">1.3</xsl:attribute>
-					<xsl:if test="not(following-sibling::*[local-name() = 'note'])">
-						<xsl:attribute name="space-after">24pt</xsl:attribute>
+					<xsl:if test="following-sibling::*[1][local-name() = 'clause']">
+						<xsl:attribute name="space-after">12pt</xsl:attribute>
+						<xsl:if test="following-sibling::*[2][local-name() = 'title']/@depth = 2">
+							<xsl:attribute name="space-after">24pt</xsl:attribute>
+						</xsl:if>
 					</xsl:if>
+					<!-- <xsl:if test="not(following-sibling::*[local-name() = 'note'])">
+						<xsl:attribute name="space-after">24pt</xsl:attribute>
+					</xsl:if> -->
+					
 				</xsl:if>
 			</xsl:if>
 			<xsl:if test="$namespace = 'bipm'">
@@ -4904,7 +4911,7 @@
 									<xsl:attribute name="padding-right">3.5mm</xsl:attribute>
 								</xsl:if>
 								<xsl:if test="$document_type = 'PAS'">
-										<xsl:attribute name="padding-right">0mm</xsl:attribute>
+										<xsl:attribute name="padding-right">1mm</xsl:attribute>
 										<xsl:attribute name="font-weight">bold</xsl:attribute>
 									</xsl:if>
 							</xsl:if>
@@ -4955,7 +4962,7 @@
 						<xsl:attribute name="padding-right">3.5mm</xsl:attribute>
 					</xsl:if>
 					<xsl:if test="$document_type = 'PAS'">
-						<xsl:attribute name="padding-right">0mm</xsl:attribute>
+						<xsl:attribute name="padding-right">1mm</xsl:attribute>
 						<xsl:attribute name="font-weight">bold</xsl:attribute>
 						
 					</xsl:if>
