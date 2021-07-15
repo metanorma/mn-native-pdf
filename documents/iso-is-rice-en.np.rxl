@@ -1,0 +1,65 @@
+<bibdata type="standard">
+<title language="en" format="text/plain" type="main">Cereals and pulses&#8201;&#8212;&#8201;Specifications and test methods&#8201;&#8212;&#8201;Rice (NP)</title>
+<title language="en" format="text/plain" type="title-intro">Cereals and pulses</title>
+<title language="en" format="text/plain" type="title-main">Specifications and test methods</title>
+<title language="en" format="text/plain" type="title-part">Rice (NP)</title>
+<title language="fr" format="text/plain" type="main">C&#233;r&#233;ales et l&#233;gumineuses&#8201;&#8212;&#8201;Sp&#233;cification et m&#233;thodes d&#8217;essai&#8201;&#8212;&#8201;Riz (NP)</title>
+<title language="fr" format="text/plain" type="title-intro">C&#233;r&#233;ales et l&#233;gumineuses</title>
+<title language="fr" format="text/plain" type="title-main">Sp&#233;cification et m&#233;thodes d&#8217;essai</title>
+<title language="fr" format="text/plain" type="title-part">Riz (NP)</title>
+<docidentifier type="ISO">ISO/PWI 17301-1</docidentifier><docidentifier type="iso-with-lang">ISO/PWI 17301-1(E)</docidentifier><docidentifier type="iso-reference">ISO/PWI 17301-1:2016(E)</docidentifier><docidentifier type="iso-tc">17301</docidentifier>
+
+
+
+<docnumber>17301</docnumber>
+<contributor>
+<role type="author"/>
+<organization>
+<name>International Organization for Standardization</name>
+<abbreviation>ISO</abbreviation>
+</organization>
+</contributor>
+<contributor>
+<role type="publisher"/>
+<organization>
+<name>International Organization for Standardization</name>
+<abbreviation>ISO</abbreviation>
+</organization>
+</contributor>
+<edition>2</edition>
+<version>
+<revision-date>2016-05-01</revision-date>
+
+</version>
+<language>en</language>
+<script>Latn</script>
+<status>
+<stage abbreviation="PWI">00</stage>
+<substage>00</substage>
+</status>
+<copyright>
+<from>2016</from>
+<owner>
+<organization>
+<name>International Organization for Standardization</name>
+<abbreviation>ISO</abbreviation>
+</organization>
+</owner>
+</copyright>
+<ext>
+<doctype>international-standard</doctype>
+<editorialgroup>
+<technical-committee number="34">Food products</technical-committee>
+<subcommittee number="4">Cereals and pulses</subcommittee>
+<workgroup number="4" type="WG">Amylose in rice</workgroup>
+<secretariat>SAC</secretariat>
+</editorialgroup>
+<ics>
+<code>67.060</code>
+</ics>
+<structuredidentifier>
+<project-number part="1">ISO 17301</project-number>
+</structuredidentifier>
+<stagename>Preliminary work item</stagename>
+</ext>
+</bibdata>

@@ -1,0 +1,66 @@
+<bibdata type="standard">
+<title language="en" format="text/plain" type="main">Counterfeit ICT equipment</title>
+
+
+
+<docidentifier type="ITU">ITU-T QSTR-COUNTERFEIT</docidentifier><docidentifier type="ITU-lang">ITU-T QSTR-COUNTERFEIT-E</docidentifier>
+
+<docnumber>QSTR-COUNTERFEIT</docnumber>
+<date type="published">
+<on>2015-12-11</on>
+</date>
+<contributor>
+<role type="author"/>
+<organization>
+<name>International Telecommunication Union</name>
+</organization>
+</contributor>
+<contributor>
+<role type="editor"/>
+<person>
+<name>
+<completename>Keith Mainwaring</completename>
+</name>
+<affiliation>
+<organization>
+<name>UNIS</name>
+</organization>
+</affiliation>
+<phone>+46 76 107 6877</phone>
+<email>keith.mainwaring@ukrainesystems.com</email>
+</person>
+</contributor>
+<contributor>
+<role type="publisher"/>
+<organization>
+<name>International Telecommunication Union</name>
+</organization>
+</contributor>
+
+<language>en</language>
+<script>Latn</script>
+<status>
+<stage>in-force</stage>
+</status>
+<copyright>
+<from>2015</from>
+<owner>
+<organization>
+<name>International Telecommunication Union</name>
+</organization>
+</owner>
+</copyright>
+<keyword>Counterfeit</keyword>
+<keyword>substandard</keyword>
+<ext>
+<doctype>technical-report</doctype>
+<editorialgroup>
+<bureau>T</bureau>
+</editorialgroup>
+<ip-notice-received>false</ip-notice-received>
+<structuredidentifier>
+<bureau>T</bureau>
+<docnumber>QSTR-COUNTERFEIT</docnumber>
+</structuredidentifier>
+</ext>
+</bibdata>

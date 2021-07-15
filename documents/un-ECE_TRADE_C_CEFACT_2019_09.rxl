@@ -1,0 +1,47 @@
+<bibdata type="standard">
+<title type="main" language="en" format="text/plain">White Paper Overview of Blockchain for Trade</title>
+<title type="subtitle" language="en" format="text/plain">An Introduction to Blockchain Use in Trade Facilitation</title>
+<docidentifier>GE.19-00825(E)</docidentifier>
+<docnumber>GE.19-00825(E)</docnumber>
+<contributor>
+<role type="author"/>
+<organization>
+<name>United Nations</name>
+</organization>
+</contributor>
+<contributor>
+<role type="publisher"/>
+<organization>
+<name>United Nations</name>
+</organization>
+</contributor>
+<version>
+<revision-date>2019-01-17</revision-date>
+</version>
+<language>en</language>
+<script>Latn</script><abstract><p>Blockchain technology and Distributed Ledger Technology (DLT) in general have the potential of bringing great benefit to the trustworthiness of international commercial transactions. This White Paper presents the main aspects of blockchain and its functioning in an attempt to create a common understanding and basis for all future work on the topic within the United Nations Centre for Trade Facilitation and Electronic Business (UN/CEFACT). It concludes with guidance on when blockchain technology is appropriate for a transaction, and when it may not be.</p>
+<p>Document ECE/TRADE/C/CEFACT/2019/9 is submitted by the UN/CEFACT Bureau to the twenty-fifth session of the Plenary for noting.</p></abstract>
+<status>
+<stage>published</stage>
+</status>
+<copyright>
+<from>2019</from>
+<owner>
+<organization>
+<name>United Nations</name>
+</organization>
+</owner>
+</copyright>
+<ext>
+<doctype>plenary-attachment</doctype>
+<editorialgroup>
+<committee>United Nations Centre for Trade Facilitation and Electronic Business (UN/CEFACT)</committee>
+</editorialgroup>
+<distribution>General</distribution>
+<session>
+<number>25</number>
+<date>Geneva, 8&#8211;9 April 2019</date>
+<id>ECE/TRADE/C/CEFACT/2019/9</id>
+</session>
+</ext>
+</bibdata>

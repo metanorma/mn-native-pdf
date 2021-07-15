@@ -1,0 +1,54 @@
+<bibdata type="standard">
+<title language="en" format="text/plain" type="main">Alternative approval process for new and revised ITU-T Recommendations</title>
+<title language="en" format="text/plain" type="subtitle">(2000; 2004; 2006; 2008)</title>
+
+
+<docidentifier type="ITU">ITU-T A.8</docidentifier><docidentifier type="ITU-lang">ITU-T A.8-E</docidentifier>
+
+<docnumber>A.8</docnumber>
+<date type="published">
+<on>2008-10-01</on>
+</date>
+<contributor>
+<role type="author"/>
+<organization>
+<name>International Telecommunication Union</name>
+</organization>
+</contributor>
+<contributor>
+<role type="publisher"/>
+<organization>
+<name>International Telecommunication Union</name>
+</organization>
+</contributor>
+
+<language>en</language>
+<script>Latn</script><abstract>
+<p>This Recommendation provides working methods and procedures for approving draft new and revised ITU-T Recommendations using the alternative approval process.</p>
+</abstract>
+<status>
+<stage>published</stage>
+</status>
+<copyright>
+<from>2008</from>
+<owner>
+<organization>
+<name>International Telecommunication Union</name>
+</organization>
+</owner>
+</copyright>
+<series type="main">
+<title>A: ORGANIZATION OF THE WORK OF ITU-T</title>
+</series>
+<ext>
+<doctype>resolution</doctype>
+<editorialgroup>
+<bureau>T</bureau>
+</editorialgroup>
+<ip-notice-received>false</ip-notice-received>
+<structuredidentifier>
+<bureau>T</bureau>
+<docnumber>A.8</docnumber>
+</structuredidentifier>
+</ext>
+</bibdata>

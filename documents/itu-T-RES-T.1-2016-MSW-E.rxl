@@ -1,0 +1,53 @@
+<bibdata type="standard">
+<title language="en" format="text/plain" type="main">Rules of procedure of the ITU Telecommunication Standardization Sector</title>
+
+
+
+<docidentifier type="ITU">ITU-T 1</docidentifier><docidentifier type="ITU-lang">ITU-T 1-E</docidentifier>
+
+<docnumber>1</docnumber>
+<contributor>
+<role type="author"/>
+<organization>
+<name>International Telecommunication Union</name>
+</organization>
+</contributor>
+<contributor>
+<role type="publisher"/>
+<organization>
+<name>International Telecommunication Union</name>
+</organization>
+</contributor>
+<edition>Hammamet, 2016</edition>
+
+<note type="title-footnote"><p>Previously published (Geneva, 1956 and 1958; New Delhi, 1960; Geneva, 1964; Mar del Plata, 1968; Geneva, 1972, 1976 and 1980, Malaga-Torremolinos, 1984; Melbourne, 1988; Helsinki, 1993; Geneva, 1996; Montreal, 2000; Florian&#243;polis, 2004; Johannesburg, 2008; Dubai, 2012).</p></note><note type="title-footnote"><p>This Hammamet, 2016 edition was initially published in 2016 and then republished in November 2017 to move the contents of Annex A (ITU-T Documentation) to Section 1<em>bis</em>, as approved during the Assembly.</p></note><language>en</language>
+<script>Latn</script>
+<status>
+<stage>in-force</stage>
+</status>
+<copyright>
+<from>2017</from>
+<owner>
+<organization>
+<name>International Telecommunication Union</name>
+</organization>
+</owner>
+</copyright>
+<ext>
+<doctype>resolution</doctype>
+<editorialgroup>
+<bureau>T</bureau>
+</editorialgroup>
+<ip-notice-received>false</ip-notice-received>
+<meeting acronym="WTSA-16">WORLD TELECOMMUNICATION STANDARDIZATION ASSEMBLY</meeting>
+<meeting-place>Hammamet</meeting-place>
+<meeting-date>
+<from>2016-10-25</from>
+<to>2016-11-03</to>
+</meeting-date>
+<structuredidentifier>
+<bureau>T</bureau>
+<docnumber>1</docnumber>
+</structuredidentifier>
+</ext>
+</bibdata>

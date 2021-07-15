@@ -1,0 +1,53 @@
+<bibdata type="standard">
+<title language="en" format="text/plain" type="main">Author's guide for drafting ITU-T Recommendations</title>
+
+
+
+<docidentifier type="ITU">ITU-T A.1500 (fictitious)</docidentifier><docidentifier type="ITU-lang">ITU-T A.1500 (fictitious)-E</docidentifier>
+
+<docnumber>A.1500 (fictitious)</docnumber>
+<date type="published">
+<on>2016-02-05</on>
+</date>
+<date type="created">
+<on>2011-03-15</on>
+</date>
+<contributor>
+<role type="author"/>
+<organization>
+<name>International Telecommunication Union</name>
+</organization>
+</contributor>
+<contributor>
+<role type="publisher"/>
+<organization>
+<name>International Telecommunication Union</name>
+</organization>
+</contributor>
+
+<language>en</language>
+<script>Latn</script><abstract><p>This author's guide for drafting ITU-T Recommendations permits uniform, efficient preparation of texts by TSB for publication. It covers the rules for drafting a Recommendation in a standard manner. Its provisions should be applied in all instances where texts (such as draft Recommendations) are being prepared by study group authors for approval and publication. The methods presented in this author's guide are the basis for a template and will remain stable until changes to current publication procedures necessitate their modification.</p>
+<p>In order to facilitate comparison with other presentation styles, this author's guide has been prepared in accordance with the presentation rules that it mandates. The examples used within the text, such as references, are for illustrative purposes only. Thus, this author's guide constitutes an example of the proposed presentation style. Please note that Recommendation ITU-T A.1500 is a fictitious Recommendation used to illustrate the points given in this guide.</p></abstract>
+<status>
+<stage>in-force</stage>
+</status>
+<copyright>
+<from>2016</from>
+<owner>
+<organization>
+<name>International Telecommunication Union</name>
+</organization>
+</owner>
+</copyright>
+<ext>
+<doctype>recommendation</doctype>
+<editorialgroup>
+<bureau>T</bureau>
+</editorialgroup>
+<ip-notice-received>false</ip-notice-received>
+<structuredidentifier>
+<bureau>T</bureau>
+<docnumber>A.1500 (fictitious)</docnumber>
+</structuredidentifier>
+</ext>
+</bibdata>

@@ -1,0 +1,106 @@
+<bibdata type="standard">
+<title language="en" format="text/plain" type="main">Survey report on counterfeit ICT devices in Africa region</title>
+
+
+
+<docidentifier type="ITU">ITU-T QTR-CICT</docidentifier><docidentifier type="ITU-lang">ITU-T QTR-CICT-E</docidentifier>
+
+<docnumber>QTR-CICT</docnumber>
+<date type="published">
+<on>2017-02-15</on>
+</date>
+<contributor>
+<role type="author"/>
+<organization>
+<name>International Telecommunication Union</name>
+</organization>
+</contributor>
+<contributor>
+<role type="editor"/>
+<person>
+<name>
+<completename>Isaac Boateng</completename>
+</name>
+<phone>+233 302 763434/776621</phone>
+<phone type="fax">+233 302 763449</phone>
+<email>isaac.boateng@nca.org.gh</email>
+</person>
+</contributor>
+<contributor>
+<role type="publisher"/>
+<organization>
+<name>International Telecommunication Union</name>
+</organization>
+</contributor>
+
+<language>en</language>
+<script>Latn</script><abstract><p>The survey on Counterfeit ICT Devices in Africa was aimed at gathering information on challenges, use cases and efforts in place to address the problem of counterfeit ICT devices and collect information from Member States in the region to progress the on-going study on Counterfeit ICT devices, in ITU-T Study Group 11 and ITU- D Study Groups.</p>
+<p>The survey explored the perspectives of Africa on counterfeit ICT devices. It also provides background information on the national initiatives to combat ICT counterfeit devices. The report of the survey is organized into five thematic blocks, as a result of responses obtained from the survey. These themes are:</p>
+<ul>
+<li>
+<p>Common perceptions of counterfeit ICT devices</p>
+</li>
+<li>
+<p>Available Laws, Regulations and Enforcement</p>
+</li>
+<li>
+<p>Impact Assessment on counterfeit ICT devices</p>
+</li>
+<li>
+<p>Existing measures and techniques to combat counterfeit ICT devices</p>
+</li>
+<li>
+<p>ITU involvement and a possible creation of a regional group of ITU-T SG11</p>
+</li>
+</ul>
+<p>
+<strong>
+<em>Conclusions from the findings showed among others that:</em>
+</strong>
+</p>
+<ul>
+<li>
+<p>Counterfeit ICT devices are commonly understood to mean "fake and substandard".</p>
+</li>
+<li>
+<p>ICT devices perceived to have been counterfeited are mobile phones, tablets and personal computers.</p>
+</li>
+<li>
+<p>Affordability and availability are the major reasons for the larger market and higher patronage of counterfeit ICT devices in the Africa Region.</p>
+</li>
+<li>
+<p>ITU's involvement in addressing the problem of counterfeit ICT devices through its standardisation work is essential.</p>
+</li>
+<li>
+<p>Conformity Assessment Schemes can be used one of the tools to combat counterfeit ICT devices.</p>
+</li>
+<li>
+<p>Member States recommend the establishment of an ITU-T SG11 Regional Group for Africa. They would support and participate in such group's activities.</p>
+</li>
+</ul>
+<p>It is therefore concluded from these findings that establishing ITU-T SG11 Regional Group for Africa to provide the regional views and influence ICT standards developments activities, particularly on counterfeit ICT devices, Conformance and Interoperability Testing and other related topics aimed at bridging the ICT digital divide is of essence. This report also recommends improved public sensitization and awareness creation on the negative impacts of counterfeit ICT devices as well as the development of regulatory frameworks to combat counterfeit ICT devices. The report should be used to progress the work currently on-going in ITU-T SG11 Question 8 and Question 11 as well as ITU-D SG 1 &amp; SG 2.</p></abstract>
+<status>
+<stage>in-force</stage>
+</status>
+<copyright>
+<from>2017</from>
+<owner>
+<organization>
+<name>International Telecommunication Union</name>
+</organization>
+</owner>
+</copyright>
+<keyword>Counterfeiting</keyword>
+<keyword>ICT devices</keyword>
+<ext>
+<doctype>technical-report</doctype>
+<editorialgroup>
+<bureau>T</bureau>
+</editorialgroup>
+<ip-notice-received>false</ip-notice-received>
+<structuredidentifier>
+<bureau>T</bureau>
+<docnumber>QTR-CICT</docnumber>
+</structuredidentifier>
+</ext>
+</bibdata>

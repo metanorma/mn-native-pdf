@@ -1,0 +1,1629 @@
+
+<!DOCTYPE html>
+<html lang="en" xml:lang="en">
+  <head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><style>
+  <!--
+/*
+    0 CSS RESET
+*/
+/* http://meyerweb.com/eric/tools/css/reset/
+   v2.0 | 20110126
+   License: none (public domain)
+*/
+html, body, div, span, applet, object, iframe,
+h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+a, abbr, acronym, address, big, cite, code,
+del, dfn, em, img, ins, kbd, q, s, samp,
+small, strike, strong, sub, sup, tt, var,
+b, u, i, center,
+ol, ul, li,
+fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td,
+article, aside, canvas, details, embed,
+figure, figcaption, footer, header, hgroup,
+menu, output, ruby, section, summary,
+time, mark, audio, video {
+  margin: 0;
+  padding: 0; }
+
+html, body, div, span, applet, object, iframe,
+h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+a, abbr, acronym, address, big, cite, code,
+del, dfn, em, img, ins, kbd, q, s, samp,
+small, strike, strong, sub, sup, tt, var,
+b, u, i, center,
+dl, dt, dd, ol, ul, li,
+fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td,
+article, aside, canvas, details, embed,
+figure, figcaption, footer, header, hgroup,
+menu, nav, output, ruby, section, summary,
+time, mark, audio, video {
+  border: 0;
+  font-size: 100%; }
+
+html, body, div, span, applet, object, iframe,
+h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+a, abbr, acronym, address, big, cite, code,
+del, dfn, em, img, ins, kbd, q, s, samp,
+small, strike, strong, tt, var,
+b, u, i, center,
+dl, dd, ol, ul, li,
+fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td,
+article, aside, canvas, details, embed,
+figure, figcaption, footer, header, hgroup,
+menu, nav, output, ruby, section, summary,
+time, mark, audio, video {
+  vertical-align: baseline; }
+
+html, body, div, span, applet, object, iframe,
+p, blockquote,
+a, abbr, acronym, address, big, cite,
+del, dfn, em, img, ins, q, s,
+small, strike, strong, sub, sup, var,
+b, u, i, center,
+dl, dt, dd, ol, ul, li,
+fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td,
+article, aside, canvas, details, embed,
+figure, figcaption, footer, header, hgroup,
+menu, nav, output, ruby, section, summary,
+time, mark, audio, video {
+  font-family: "Times New Roman", serif; }
+
+code, pre, tt, kbd, samp {
+  font-family: "Courier New",monospace;
+  font-variant-ligatures: none; }
+
+code *, pre *, tt *, kbd *, samp * {
+  font-family: "Courier New",monospace !important;
+  font-variant-ligatures: none; }
+
+article, aside, details, figcaption, figure,
+footer, header, hgroup, menu, nav, section {
+  display: block; }
+
+table {
+  border-collapse: collapse;
+  border-spacing: 0; }
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: "Times New Roman", serif; }
+
+blockquote, q {
+  quotes: none; }
+  blockquote:before, blockquote:after, q:before, q:after {
+    content: '';
+    content: none; }
+
+.h2Annex {
+  font-family: "Times New Roman", serif; }
+
+dl {
+  display: grid;
+  grid-template-columns: max-content auto; }
+  dl dt p, dl dd p {
+    margin-top: 0; }
+  dl dt {
+    grid-column-start: 1; }
+  dl dd {
+    grid-column-start: 2; }
+
+b, strong {
+  font-weight: bold; }
+
+div.document-stage-band, div.document-type-band {
+  background-color: #333333; }
+
+a.FootnoteRef + a.FootnoteRef:before {
+  content: ", ";
+  vertical-align: super; }
+
+.addition {
+  color: blue; }
+
+.deletion {
+  color: red;
+  text-decoration: line-through; }
+
+#standard-band {
+  background-color: #0AC442; }
+
+#standard {
+  border-bottom: solid 3px #0AC442; }
+
+#directive-band {
+  background-color: #540D6E; }
+
+#directive {
+  border-bottom: solid 3px #540D6E; }
+
+#guide-band {
+  background-color: #D183C9; }
+
+#guide {
+  border-bottom: solid 3px #D183C9; }
+
+#specification-band {
+  background-color: #65AFFF; }
+
+#specification {
+  border-bottom: solid 3px #65AFFF; }
+
+#report-band {
+  background-color: #3A405A; }
+
+#report {
+  border-bottom: solid 3px #3A405A; }
+
+#amendment-band {
+  background-color: #F26430; }
+
+#amendment {
+  border-bottom: solid 3px #F26430; }
+
+#corrigendum-band {
+  background-color: #C84630; }
+
+#corrigendum {
+  border-bottom: solid 3px #C84630; }
+
+#administrative-band {
+  background-color: #BFAE48; }
+
+#administrative {
+  border-bottom: solid 3px #BFAE48; }
+
+#advisory-band {
+  background-color: #BD9391; }
+
+#advisory {
+  border-bottom: solid 3px #BD9391; }
+
+#proposal-band {
+  background-color: #39A0ED; }
+
+#proposal {
+  border-bottom: solid 3px #39A0ED; }
+
+#working-draft-band {
+  background-color: #2D7393; }
+
+#working-draft {
+  border-bottom: solid 3px #2D7393; }
+
+#committee-draft-band {
+  background-color: #2A6B7C; }
+
+#committee-draft {
+  border-bottom: solid 3px #2A6B7C; }
+
+#draft-standard-band {
+  background-color: #1C7F7A; }
+
+#draft-standard {
+  border-bottom: solid 3px #1C7F7A; }
+
+#final-draft-band {
+  background-color: #53C170; }
+
+#final-draft {
+  border-bottom: solid 3px #53C170; }
+
+#published-band {
+  background-color: #069E2D; }
+
+#published {
+  border-bottom: solid 3px #069E2D; }
+
+#withdrawn-band {
+  background-color: #004E64; }
+
+#withdrawn {
+  border-bottom: solid 3px #004E64; }
+
+#cancelled-band {
+  background-color: #2E382E; }
+
+#cancelled {
+  border-bottom: solid 3px #2E382E; }
+
+/*
+    1. HTML & Body
+*/
+/* http://www.un.org/styleguide/ color */
+/* http://www.99colors.net/name/united-nations-blue */
+/* http://www.un.org/styleguide/ label text */
+/* http://www.un.org/styleguide/ brand-bar */
+/* http://www.un.org/styleguide/ p */
+/* RT: I made this up */
+body {
+  margin-left: auto;
+  margin-right: auto;
+  max-width: 100%;
+  font-size: 15px;
+  font-weight: 300;
+  line-height: 1.4em;
+  color: #333;
+  background-color: #ffffff;
+  font-weight: 400; }
+  body main {
+    margin: 0 3em 0 6em; }
+
+main {
+  margin: 0 3em 0 6em; }
+
+p {
+  line-height: 1.6; }
+
+/*
+    2. Responsive navigation layout
+*/
+#toc {
+  font-family: "Times New Roman", serif;
+  font-weight: 400; }
+  #toc ul {
+    margin: 0;
+    padding: 0;
+    list-style: none; }
+    #toc ul li a {
+      padding: 5px 10px; }
+    #toc ul a {
+      color: #333;
+      text-decoration: none;
+      display: block; }
+      #toc ul a:hover {
+        box-shadow: none;
+        color: #333; }
+  #toc .h2 {
+    padding-left: 30px; }
+  #toc .h3 {
+    padding-left: 50px; }
+  #toc .toc-active, #toc li:hover {
+    background: #1661ad;
+    box-shadow: inset -5px 0px 10px -5px #1661ad !important; }
+    #toc .toc-active a, #toc li:hover a {
+      color: #333; }
+  @media print {
+    #toc .toc-active, #toc li:hover {
+      background: white;
+      box-shadow: none !important; }
+    #toc .toc-active a {
+      color: #333; }
+    #toc li:hover a {
+      color: black; } }
+  @media screen and (max-width: 768px) {
+    #toc {
+      padding: 0 1.5em;
+      overflow: visible; } }
+  #toc .toc-active a {
+    color: white; }
+  #toc .toc-active,
+  #toc li:hover {
+    background: linear-gradient(280deg, #00ADEF, #5b92e5);
+    box-shadow: inset -5px 0px 10px -5px #00ADEF !important; }
+    #toc .toc-active a,
+    #toc li:hover a {
+      color: white;
+      background: none;
+      box-shadow: none; }
+  #toc ul a:hover {
+    box-shadow: none;
+    color: white; }
+
+@media screen and (min-width: 768px) {
+  nav {
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    width: 323px;
+    font-size: 0.9em;
+    overflow: auto;
+    padding: 0 0 0 45px;
+    background-color: #f2f2f2; } }
+
+@media print {
+  nav {
+    position: relative;
+    width: auto;
+    font-size: 0.9em;
+    overflow: auto;
+    padding: 0;
+    margin-right: 0;
+    background-color: white; } }
+
+@media screen and (min-width: 768px) {
+  #toggle {
+    position: fixed;
+    height: 100%;
+    width: 30px;
+    background-color: #00ADEF;
+    color: white !important;
+    cursor: pointer;
+    z-index: 100; }
+    #toggle span {
+      text-align: center;
+      width: 100%;
+      position: absolute;
+      top: 50%;
+      transform: translate(0, -50%); } }
+
+@media screen and (max-width: 768px) {
+  #toggle {
+    display: none; } }
+
+@media print {
+  #toggle {
+    display: none; } }
+
+@media screen and (min-width: 768px) {
+  .container {
+    padding-left: 360px; }
+  .rule.toc {
+    display: none; }
+  h1.toc-contents {
+    margin-top: 1em; }
+  ul#toc-list {
+    margin: 0;
+    padding: 0; } }
+
+.figure {
+  line-height: 1.6em;
+  padding: 1.5em;
+  margin: 2em 0 1em 0;
+  overflow: auto; }
+  .figure .FigureTitle, .figure .figure-title {
+    font-weight: 700;
+    font-size: 1em;
+    text-align: center; }
+  .figure > img {
+    margin-left: auto;
+    margin-right: auto;
+    display: block;
+    max-width: 100%;
+    height: auto; }
+
+/*
+    Document types + stages
+*/
+.document-type-band {
+  left: 0;
+  top: 180px;
+  height: 100%;
+  position: fixed;
+  display: block;
+  z-index: 102; }
+  .document-type-band > :first-child {
+    position: relative;
+    width: 25px;
+    font-weight: 400;
+    color: white;
+    text-transform: uppercase;
+    font-size: 0.9em;
+    font-weight: 400;
+    letter-spacing: 0.05em;
+    margin: 0;
+    margin-left: 6px;
+    writing-mode: tb-rl;
+    -webkit-transform: rotate(180deg);
+    -moz-transform: rotate(180deg);
+    -o-transform: rotate(180deg);
+    white-space: nowrap;
+    display: block;
+    bottom: 0; }
+  @media print {
+    .document-type-band {
+      display: none; } }
+  .document-type-band .document-type {
+    top: 20px; }
+
+.document-stage-band {
+  left: 0;
+  top: 0;
+  height: 100%;
+  position: fixed;
+  display: block;
+  z-index: 101;
+  box-shadow: -5px 0px 10px #1d1d1d; }
+  .document-stage-band > :first-child {
+    position: relative;
+    width: 25px;
+    font-weight: 400;
+    height: 150;
+    color: white;
+    text-transform: uppercase;
+    font-size: 0.9em;
+    font-weight: 400;
+    letter-spacing: 0.05em;
+    margin: 0;
+    margin-left: 6px;
+    writing-mode: tb-rl;
+    -webkit-transform: rotate(180deg);
+    -moz-transform: rotate(180deg);
+    -o-transform: rotate(180deg);
+    white-space: nowrap;
+    display: block;
+    bottom: 0; }
+  @media print {
+    .document-stage-band {
+      display: none; } }
+.document-stage-band > :first-child {
+  font-weight: 300; }
+
+div.document-stage-band,
+div.document-type-band {
+  background-color: #9abd48; }
+
+p.document-type,
+p.document-stage {
+  position: relative;
+  width: 25px;
+  font-weight: 400;
+  height: 150;
+  color: white;
+  text-transform: uppercase;
+  font-size: 0.9em;
+  font-weight: 400;
+  letter-spacing: 0.05em;
+  margin: 0;
+  margin-left: 6px;
+  writing-mode: tb-rl;
+  -webkit-transform: rotate(180deg);
+  -moz-transform: rotate(180deg);
+  -o-transform: rotate(180deg);
+  white-space: nowrap;
+  display: block;
+  bottom: 0; }
+
+#governance-band p.document-type {
+  height: 230px !important; }
+
+p.document-stage {
+  font-weight: 300;
+  height: 160px; }
+
+#standard-band p {
+  height: 270px; }
+
+#proposal-band p {
+  height: 150px; }
+
+#standard-band,
+#published-band {
+  background-color: #9abd48; }
+
+#standard,
+#published {
+  border-bottom: solid 3px #9abd48; }
+
+#governance,
+#policy-and-procedures {
+  border-bottom: solid 3px #750697; }
+
+#governance-band,
+#policy-and-procedures-band {
+  background-color: #750697; }
+
+#guide {
+  border-bottom: solid 3px #48a0e7; }
+
+#guide-band {
+  background-color: #48a0e7; }
+
+.coverpage-maturity {
+  font-family: "Times New Roman", serif;
+  font-weight: 400;
+  font-size: 1em;
+  margin: 0 0 2em 0;
+  text-transform: uppercase; }
+
+#working-draft,
+#proposal {
+  border-bottom: solid 3px #f7803c; }
+
+#working-draft-band,
+#proposal-band {
+  background-color: #f7803c; }
+
+#committee-draft {
+  border-bottom: solid 3px #fd06fd; }
+
+#committee-draft-band {
+  background-color: #fd06fd; }
+
+#draft-standard {
+  border-bottom: solid 3px #fdf906; }
+
+#draft-standard-band {
+  background-color: #fdf906; }
+
+#standard {
+  border-bottom: solid 3px #9abd48; }
+
+#standard-band {
+  background-color: #9abd48; }
+
+#obsolete {
+  border-bottom: solid 3px #7e0d13; }
+
+#obsolete-band {
+  background-color: #7e0d13; }
+
+/*
+    3. TYPOGRAPHY
+*/
+/*
+    3.1 Titles
+*/
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+.h2Annex {
+  font-family: "Times New Roman", serif;
+  color: #00ADEF;
+  font-weight: 700;
+  line-height: 1.1;
+  margin-top: 1.6em;
+  margin-bottom: 0.3em; }
+
+h1,
+h2,
+h3 {
+  margin-top: 18px;
+  margin-bottom: 9px; }
+
+h1 {
+  font-size: 33px;
+  font-weight: 500;
+  margin: 0.67em 0;
+  letter-spacing: -0.02em;
+  color: #4D4D4D; }
+
+h2 {
+  font-size: 27px;
+  color: #4D4D4D; }
+
+h3 {
+  font-size: 24px;
+  margin-top: 26px;
+  color: #000; }
+
+h4 {
+  font-size: 18.2px;
+  margin-bottom: 2px;
+  color: #4D4D4D;
+  letter-spacing: 0.03em; }
+
+h5 {
+  font-size: 16.25px;
+  color: #000;
+  margin-bottom: 2px; }
+
+h6 {
+  font-size: 13px;
+  color: #4D4D4D;
+  letter-spacing: 0.05em; }
+
+/*  h1 {
+    font-size: 1.6em;
+    text-transform: uppercase;
+    margin-top: 2em;
+  }
+
+  h1#content {
+      margin-top: 2em;
+  }
+
+  h2 {
+    margin-top: 1.3em;
+    font-size: 1.3em;
+    font-weight: 400;
+  }
+
+  h3 {
+    margin-top: 1.1em;
+    font-size: 1.1em;
+    font-weight: 100;
+  }*/
+.TermNum,
+.Terms,
+.AltTerms {
+  color: #00ADEF;
+  font-weight: 100; }
+
+h2.TermNum {
+  margin-bottom: 0; }
+
+p.Terms {
+  font-size: 1.1em;
+  line-height: 1.5em;
+  margin: 0; }
+
+p.AltTerms {
+  /*
+    font-style: italic;
+     */
+  font-size: 1.1em;
+  margin: 0; }
+
+/*
+    3.2 Links
+*/
+a, a:visited {
+  text-decoration: none;
+  color: #00ADEF; }
+
+a:hover {
+  color: white;
+  background: #00ADEF;
+  box-shadow: 3px 0 0 #00ADEF, -3px 0 0 #00ADEF; }
+
+::selection,
+::-moz-selection {
+  background: #00ADEF;
+  color: white; }
+
+/*
+    3.3 Lists
+*/
+ul,
+ol {
+  margin-left: 1.2em; }
+
+ul > li p:first-child {
+  display: inline; }
+
+ul > li:first-child {
+  margin-top: 1em; }
+
+#toc-list ul {
+  margin-bottom: 0.25em; }
+
+#toc-list li {
+  list-style-type: none; }
+
+#toc li:before {
+  content: " ";
+  display: none; }
+
+main ul > li {
+  list-style-type: disc;
+  list-style-position: outside;
+  margin-bottom: 0.5em;
+  margin-left: 1em; }
+
+/*
+    3.4 Rules
+*/
+.rule {
+  width: 100%;
+  height: 1px;
+  background-color: #eee;
+  margin: 2em 0; }
+
+/*
+    3.5 Bibliograhy
+*/
+p.Biblio,
+p.NormRef {
+  margin-left: 2em;
+  margin-top: 1em; }
+
+/*
+    3.6 Source Code + figures
+*/
+.figure,
+pre,
+.pseudocode {
+  background-color: #f2f2f2;
+  font-size: ;
+  line-height: 1.6em;
+  padding: 1.5em;
+  margin: 2em 0 1em 0;
+  overflow: auto; }
+  .figure .SourceTitle,
+  pre .SourceTitle,
+  .pseudocode .SourceTitle {
+    font-weight: 700;
+    font-size: 1em;
+    text-align: center; }
+
+pre {
+  font-family: "Courier New",monospace;
+  font-variant-ligatures: none; }
+
+.AdmonitionTitle {
+  font-weight: 700;
+  font-size: 1em;
+  text-align: center; }
+
+.RecommendationTitle {
+  font-weight: 700;
+  font-size: 1em;
+  text-align: center; }
+
+.FigureTitle,
+.SourceTitle {
+  font-weight: 700;
+  font-size: 1em;
+  text-align: center; }
+
+/*
+    3.7 Notes
+*/
+.Note {
+  background-color: #fff495;
+  color: #47430c;
+  margin: 1em 0;
+  padding: 1.2em; }
+  .Note p {
+    margin: 0; }
+
+.Admonition {
+  background-color: #ffcccc;
+  color: #47430c;
+  margin: 1em 0;
+  padding: 1.2em; }
+  .Admonition p {
+    margin: 0; }
+
+/*
+    3.8 Examples
+*/
+.example {
+  background-color: #e1eef1;
+  padding: 1.2em;
+  margin: 2em 0 1em 0;
+  text-align: left;
+  color: #424242;
+  padding-left: 2.7em; }
+  .example p {
+    margin: 0; }
+  .example .example-title {
+    font-weight: 700;
+    text-transform: uppercase;
+    margin-left: -1.5em; }
+  .example .example-title {
+    margin-top: 0; }
+  .example pre,
+  .example .pseudocode {
+    background: none; }
+
+/*
+    3.9 Tables
+*/
+table {
+  width: 100%;
+  font-weight: 300;
+  margin: 1em 0 2em 0;
+  margin-left: auto;
+  margin-right: auto;
+  padding-right: 2em; }
+  table, table th, table td {
+    border: 1px solid #000;
+    font-size: 0.95em; }
+  table th, table td {
+    padding: 1em; }
+  table td.header {
+    font-weigth: 400; }
+
+p.TableTitle {
+  text-align: center;
+  margin-top: 2.5em;
+  font-weight: 400; }
+
+/*
+  3.10 Footnotes
+*/
+a.footnote-number {
+  font-size: 0.8em;
+  vertical-align: super; }
+
+.footnote {
+  font-size: 0.9em; }
+
+/*
+    3.11 Blockquotes
+*/
+.Quote {
+  background-color: #f2f2f2;
+  font-style: italic;
+  width: 80%;
+  padding: 1.5em;
+  margin-top: 2em;
+  margin-left: auto;
+  margin-right: auto; }
+
+/*
+    3.12 Formulas
+*/
+.formula {
+  background-color: #f2f2f2;
+  padding: 1.5em;
+  margin-top: 2em;
+  text-align: center; }
+
+/*
+    3.13 Contact Info
+*/
+.contact-info {
+  margin-top: 5em;
+  text-align: left; }
+
+.contact-info a,
+.contact-info a:hover {
+  color: #00ADEF; }
+
+.contact-info p,
+.contact-info a {
+  font-weight: 400; }
+
+.contact-info #boilerplate-feedback-name {
+  padding-left: 1px;
+  color: #4D4D4D;
+  font-size: 18.2px;
+  text-transform: uppercase;
+  margin-top: 0;
+  letter-spacing: 0.03em;
+  border-bottom: #00ADEF solid 3px;
+  padding-bottom: 7px;
+  margin-bottom: 9px; }
+
+.contact-info #boilerplate-feedback-address {
+  font-size: 1em;
+  line-height: 1.3em;
+  margin-top: 0; }
+
+/*
+    Keywords
+*/
+span.keyword {
+  font-weight: 600; }
+
+/*
+    Paragraphs
+*/
+p {
+  margin-bottom: 1em;
+  margin-top: 1em; }
+
+h2 p {
+  display: inline; }
+
+/*
+    4.0 Page header
+*/
+/*
+    4.1 Top Logo
+*/
+.icon-svg {
+  width: 100%;
+  color: #5ecf86; }
+
+.wrapper-top {
+  background: linear-gradient(85deg, #00ADEF, #5b92e5);
+  color: #ffffff;
+  padding: 2em 0;
+  width: 100%; }
+
+.wrapper-top-bottom {
+  width: 0;
+  height: 0;
+  border-top: 100px solid #00ADEF;
+  border-right: 100px solid transparent;
+  position: absolute; }
+
+.doc-number {
+  font-size: 0.5em;
+  font-family: "Times New Roman", serif; }
+
+.coverpage-title {
+  padding-bottom: 0.5em;
+  font-family: "Times New Roman", serif;
+  font-size: 1.2em;
+  line-height: 1.5em;
+  font-weight: 100;
+  padding-left: 1em;
+  padding-right: 1em;
+  text-transform: uppercase; }
+
+.WordSection11 {
+  padding: 0 2em 0 3em;
+  text-align: center; }
+
+.title-footnote {
+  text-align: left; }
+
+.info-section {
+  padding: 0 2em; }
+
+.prefatory-section {
+  padding: 0 3em 0 6em; }
+
+.zzSTDTitle1,
+.MsoCommentText {
+  display: none; }
+
+.coverpage {
+  text-align: center;
+  padding-left: 1.5em; }
+
+.coverpage-logo span,
+.coverpage-tc-name span {
+  font-family: "Times New Roman", serif;
+  text-transform: none;
+  font-weight: 300; }
+
+.coverpage-tc-name {
+  font-size: 1.2em;
+  line-height: 1.2em;
+  margin: 0.25em 0; }
+
+/*
+  4.2 Document Identity
+*/
+.coverpage-doc-identity {
+  font-size: 2em;
+  line-height: 2em; }
+
+.coverpage-title .title-second {
+  display: none; }
+
+.coverpage-stage-block {
+  font-family: "Times New Roman", serif;
+  font-weight: 600;
+  font-size: 1.25em;
+  margin: 2em 0em 2em 0em;
+  text-transform: uppercase; }
+
+/*
+  4.3 Draft Warning
+*/
+.coverpage-warning {
+  border: #f36f36 solid 2px;
+  color: #f36f36 !important;
+  margin: 1em 2em;
+  padding: 2em 1em 1em 1em;
+  border-radius: 25px; }
+
+.coverpage-warning .title {
+  font-family: "Times New Roman", serif;
+  font-weight: 300;
+  text-transform: uppercase;
+  font-size: 1.2em; }
+
+/*
+  4.4 Copyright
+*/
+.boilerplate-copyright {
+  padding: 1em;
+  font-size: 0.9em;
+  text-align: left; }
+
+.boilerplate-copyright p {
+  text-align: center; }
+
+#boilerplate-ECEhdr {
+  border: solid; }
+
+/*
+    5.0 Other styles
+*/
+/*
+To top button
+*/
+#myBtn {
+  font-family: "Courier New",monospace;
+  font-variant-ligatures: none;
+  display: none;
+  position: fixed;
+  bottom: 20px;
+  right: 30px;
+  z-index: 99;
+  font-size: 12px;
+  border: none;
+  outline: none;
+  background-color: #1f8ca0;
+  opacity: 0.15;
+  color: white;
+  cursor: pointer;
+  padding: 10px 15px 10px 15px;
+  border-radius: 4px;
+  text-transform: uppercase; }
+  #myBtn:hover {
+    opacity: 1; }
+  @media print {
+    #myBtn {
+      display: none; } }
+  #myBtn a.anchorjs-link:hover {
+    background: none;
+    color: #00ADEF;
+    box-shadow: none; }
+
+@page {
+  margin: 2cm 1cm; }
+
+@media print {
+  .document-info,
+  nav,
+  .copyright {
+    page-break-before: always; }
+  h1,
+  h2,
+  h3,
+  h4 {
+    page-break-after: avoid;
+    margin-top: 1.2em; }
+  .note,
+  .figure,
+  pre,
+  .pseudocode,
+  table {
+    page-break-inside: avoid; }
+  .info-section {
+    display: none; }
+  .coverpage {
+    height: 23cm; }
+  .wrapper-top {
+    top: 0;
+    padding-top: 4cm;
+    padding-bottom: 4cm; }
+  .wrapper-top-bottom {
+    margin-top: -5px; }
+  .container {
+    padding-left: 0; }
+  #toc .toc-active a {
+    color: #4d7ea5; }
+  #toc .toc-active,
+  #toc li:hover {
+    background: white;
+    box-shadow: none !important; }
+  #toc li:hover a {
+    color: #000; }
+  h1.content {
+    line-height: 2.5em;
+    margin-top: 2em; }
+  h1 {
+    font-size: 1.5em;
+    line-height: 1.5; }
+  h2 {
+    font-size: 1.2em; }
+  h3 {
+    font-size: 1em; }
+  .Note {
+    background-color: #fff495;
+    color: #47430c;
+    margin: 2em 0 1em;
+    padding: 5px; }
+  .Note p {
+    padding: 0 5px; }
+  .Admonition {
+    background-color: #ffcccc;
+    color: #47430c;
+    margin: 2em 0 1em;
+    padding: 5px; }
+  .Admonition p {
+    padding: 0 5px; }
+  nav {
+    line-height: 1; }
+  .wrapper-top-bottom {
+    display: none; } }
+
+-->
+</style><title>Report of the Advisory Group Advanced Technologies in Trade and Logistics on its First Annual Meeting</title>
+<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+
+<!--TOC script import-->
+<script type="text/javascript" src="https://cdn.rawgit.com/jgallen23/toc/0.3.2/dist/toc.min.js"></script>
+<script type="text/javascript">function toclevel() { return "h1:not(:empty):not(.TermNum):not(.noTOC),h2:not(:empty):not(.TermNum):not(.noTOC)";}
+</script>
+
+<!--Google fonts-->
+<link rel="preconnect" href="https://fonts.gstatic.com" /> 
+<link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i|Space+Mono:400,700" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css?family=Roboto:300,400,400i,500,700,900" rel="stylesheet" />
+
+<!--Font awesome import for the link icon-->
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.8/css/solid.css" integrity="sha384-v2Tw72dyUXeU3y4aM2Y0tBJQkGfplr39mxZqlTBDUZAb9BGoC40+rdFCG0m10lXk" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.8/css/fontawesome.css" integrity="sha384-q3jl8XQu1OpdLgGFvNRnPdj5VIlCvgsDQTQB6owSOHWlAurxul7f+JpUOVdAiJ5P" crossorigin="anonymous" />
+<style class="anchorjs"></style>
+</head>
+  <body lang="EN-US" link="blue" vlink="#954F72" xml:lang="EN-US" class="container">
+    <div class="title-section"><div class="document-stage-band" id="published-band">
+    <p class="document-stage">Published</p>
+</div>
+
+<div class="document-type-band" id="recommendation-band">
+    <p class="document-type">UNECE Recommendation</p>
+</div>
+
+
+
+  <div id="toggle"> <span>&#x2022;</span> </div>
+
+  <header>
+
+<!--<div class="WordSection1">-->
+  <div class="coverpage">
+    <div class="wrapper-top">
+
+  <div class="coverpage-logo">
+    <span>UNECE 2020</span>
+  </div>
+  <div class="coverpage-tc-name">
+    <span>Centre for Trade Facilitation and Electronic Business</span>
+  </div>
+  <div class="coverpage-doc-identity">
+    <div class="doc-number">
+      <p>Twenty-sixth session</p>
+      <p>Geneva, 4-5 May 2020</p>
+
+<p>Agenda item 8 of the provisional agenda</p>
+
+
+<p>GE.20-02503(E)
+
+</p><p> Advisory Group on Advanced Technologies in Trade and Logistics</p>
+
+
+</div>
+    </div>
+
+
+
+
+
+    <div class="coverpage-title">
+      <span class="title-first">Report of the Advisory Group Advanced Technologies in Trade and Logistics on its First Annual Meeting </span>
+      <!--<span class="title-second"></span>-->
+    </div>
+  </div>
+  <div class="wrapper-top-bottom"></div>
+  </div>
+
+  <div class="WordSection11">
+  <div class="coverpage-stage-block">
+    <span class="coverpage-stage" id="recommendation">UNECE Recommendation</span>
+  </div>
+
+  <div class="coverpage-stage-block">
+    <p><span class="coverpage-maturity" id="published"></span></p>
+
+
+<p><span class="coverpage-maturity">English only</span></p>
+
+</div>
+
+
+
+
+
+<div class="info-section">
+<div class="copyright">
+  <p class="year">
+    &#xA9; 2020 United Nations.
+  </p>
+
+  <div class="message">
+  <div class="boilerplate-license">
+    <div>
+      <p id="_10aefd24-68e7-4df2-a4f1-4633969a8faa">None of the materials provided on this web site may be used,
+        reproduced or transmitted, in whole or in part, in any form or by any
+        means, electronic or mechanical, including photocopying, recording or
+        the use of any information storage and retrieval system, except as
+        provided for in the Terms and Conditions of Use of United Nations Web
+        Sites, without permission in writing from the publisher.</p>
+
+      <p id="_7269b0cb-a2be-457a-aced-284197438415">News-related material can be used as long as the appropriate credit is given and the United Nations is advised.</p>
+      <p id="_aa00edb4-b9b8-4190-a785-1961d96fd348">To request such permission or for further enquires, please visit:
+        <a href="https://shop.un.org/rights-permissions">United Nations Publications: Rights and Permissions.</a></p>
+    </div>
+  </div>
+  </div>
+
+<div class="contact-info">
+  <div class="boilerplate-feedback">
+    <div>
+      <p id="boilerplate-feedback-name">UN Economic Commission for Europe: Information Service</p>
+      <p id="boilerplate-feedback-address">
+
+        Palais des Nations<br />
+        CH-1211 Geneva 10<br />
+        Switzerland<br />
+        <br />
+        <a href="tel:+41(0)229171234">+41 (0) 22 917 12 34 (switchboard)</a><br />
+
+        <a href="mailto:unece_info@un.org">unece_info@un.org</a><br />
+        <a href="https://www.unece.org/">www.unece.org/</a>
+      </p>
+    </div>
+  </div>
+</div>
+</div>
+
+<div class="rule"></div>
+</div>
+  </div>
+
+
+</header>
+
+      <p>&#xA0;</p>
+    </div>
+    <br />
+    <div class="prefatory-section">
+<div>
+   <div class="boilerplate-legal">
+    <div>
+      <div><h1 class="IntroTitle">Note</h1>
+
+        <p id="_e1a46aca-2e8c-4746-b0a0-219651a97d44">The designations employed and the presentation of the material in this publication do not imply the expression of any opinion whatsoever on the part of the Secretariat of the United Nations concerning the legal status of any country, territory, city or area, or of its authorities, or concerning the delimitation of its frontiers or boundaries.</p>
+      </div>
+
+
+    </div>
+  </div>
+  <div class="boilerplate-copyright">
+    <div>
+      <p id="boilerplate-ECEhdr">ECE/TRADE/437</p>
+      <p id="_ff1fca7d-ca31-403d-b358-a7c710ec7436">Copyright &#xA9; United Nations 2020<br />
+        All rights reserved worldwide<br />
+        United Nations publication issued by the Economic Commission for Europe</p>
+    </div>
+  </div>
+</div>
+
+
+<nav>
+  <h1 id="content">Table of contents</h1>
+  <div id="toc"><ul><li class="h1"><a href="#toc0">      I.&#xA0; Introduction and opening</a></li><li class="h1"><a href="#toc1">      II.&#xA0; The role of technology in reimagining future supply chains</a></li><li class="h1"><a href="#toc2">      III.&#xA0; How to handle digital information and technologies for value chains</a></li><li class="h1"><a href="#toc3">      IV.&#xA0; Obstacles, challenges and lessons learned</a></li><li class="h1"><a href="#toc4">      V.&#xA0; Next steps for the Advisory Group</a></li></ul></div>
+
+</nav>
+
+
+<div class="rule toc"></div>
+
+      <p>&#xA0;</p>
+    </div>
+    <br />
+    <main class="main-section"><button onclick="topFunction()" id="myBtn" title="Go to top">Top</button>
+      <div class="authority">
+  
+  
+  
+  
+</div>
+      <div id="_introduction_and_opening">
+        <h1 id="toc0">I.&#xA0; Introduction and opening</h1>
+        <div id="_0e0c178c-4dd5-46d2-8596-66b326b958d6">
+          
+          <p id="_e8e1e175-1f0b-421f-88f6-95bba128835d"><span>1.&#xA0; </span>The United Nations Economic Commission for Europe (UNECE) Advisory Group (AG) on Advanced Technologies in Trade and Logistics held its first session on 30 January 2020.</p>
+        </div>
+        <div id="_b8704d82-f72a-4d98-945f-f3bacbd63ba3">
+          
+          <p id="_d4f0df18-de7e-4972-8e88-bb1c19724dee"><span>2.&#xA0; </span>The session was attended by 80 delegates and experts representing national governmental agencies, international organizations, non-governmental organizations, academia and the private sector.</p>
+        </div>
+        <div id="_573cadfc-7685-4138-bed1-2af16cb679bb">
+          
+          <p id="_341d4924-70c3-4af4-9330-d418483453dd"><span>3.&#xA0; </span>Experts from the following UNECE member States were present: Belgium, Estonia, Germany, Italy, Israel, the Netherlands, the Russian Federation, Slovenia, Tajikistan and the United Kingdom of Great Britain and Northern Ireland. Delegates from the following countries outside the UNECE region also participated: Brazil, India, the Lao People&#x2019;s Democratic Republic, Nigeria and Senegal.</p>
+        </div>
+        <div id="_0f773c0b-dbc4-44bb-8874-bacc7eed98a5">
+          
+          <p id="_ece67f2c-6718-4c10-8495-7e23454e2ecb"><span>4.&#xA0; </span>Representatives of the International Telecommunication Union (ITU), the United Nations Conference on Trade and Development (UNCTAD), the United Nations World Food Programme (WFP), the World Trade Organization (WTO), United Nations Volunteers and the World Economic Forum (WEF) participated in the session.</p>
+        </div>
+        <div id="_379db559-ca22-48c6-826c-28d1e42cb789">
+          
+          <p id="_821db082-b242-47d7-a5bc-fe46b413acd8"><span>5.&#xA0; </span>The UNECE Executive Secretary welcomed participants and underscored the potential importance of this group providing guidance on new technologies. She reminded attendees of the importance of the 2030 Sustainable Development Agenda and the need to ensure that the work of this group assists governments and organizations to implement the Sustainable Development Goals, leaving no one behind. She further underscored the potential influence that such technologies have for fraudulent activities, and that this Group should keep responsible application at the forefront of their work.</p>
+        </div>
+        <div id="_c2f1a9fa-d634-4de6-992a-420cd42f0176">
+          
+          <p id="_e7711a5e-cfba-499a-8b45-0428c07505f7"><span>6.&#xA0; </span>The Ambassador of the Permanent Mission of the Republic of Estonia to the United Nations welcomed the participants and expressed appreciation for the timely creation of this Advisory Group to deal specifically with the use of new technologies in Trade and Logistics. The Public Sector should take a role in implementing technologies such as Artificial Intelligence (AI), and Estonia has set up a task force to study such use. The Estonian Parliament will use AI for more faithful transcriptions of sessions. The Government of Estonia has stimulated joint projects, both public and private, through match-making events and through encouraging the use of AI in the private sector. Estonia aims to be a major test bed of AI. This implies rethinking some public structures such as education to prepare tomorrow&#x2019;s leaders and technicians. Governments can take a major role in using such technologies to improve the conditions of its citizens.</p>
+        </div>
+        <div id="_c7a2c7d8-a3a9-4649-abe7-875ca3b22d11">
+          
+          <p id="_f3a4b135-a872-43b1-95c5-8f424f8e7e21"><span>7.&#xA0; </span>The United Nations Centre for Trade Facilitation and Electronic Business (UN/CEFACT) Chair welcomed the experts to the Advisory Group and reminded them of the historic role of UN/CEFACT in working on standards and guidance in this area. Indeed, UN/CEFACT has, over several decades, linked trade facilitation to trade and government partnerships and helped to move goods across borders more effectively. The Chair invited the experts to familiarize themselves with the work of UN/CEFACT and encouraged them to join.</p>
+        </div>
+        <div id="_6fa92d3e-8bf7-4f84-8cb5-b215f8903497">
+          
+          <p id="_e2adaa87-51db-44ef-b073-c2a9ca804fa5"><span>8.&#xA0; </span>The Secretariat presented the agenda for the meeting. It was approved as proposed (Decision 1).</p>
+        </div>
+        <div id="_dda9cc37-7289-4720-bc06-eb3710af64ba">
+          
+          <p id="_0ed42cf7-86ea-4ae2-984b-ad222f216332"><span>9.&#xA0; </span>The Secretariat announced that it had received a candidature for the chairmanship of the Group from the Italian delegation and a candidature for Vice Chair from the Slovenian delegation. The Advisory Group appointed by acclamation Mr. Quintarelli as Chair and Ms. Dokuzov as Vice Chair (Decision 2). The newly appointed Chair presided over the rest of the meeting.</p>
+        </div>
+        <div id="_0c1c6497-763f-4580-912f-544b19e39ebf">
+          
+          <p id="_e9e62f1d-9d92-41bd-90e4-6fbbe395b16e"><span>10.&#xA0; </span>The keynote speaker from the University of Geneva, in their opening, underscored the difficulty of explaining new technologies to the general public and regulators. The evolution of Artificial Intelligence is happening very quickly&#x2009;&#x2014;&#x2009;but in specific locations and specific sectors. This makes it very difficult to regulate them. The scope can also be very different for each potential solution; it is therefore necessary to imagine what the future will be with transformative technologies. How do we find a balance and not over-regulate? Who will benefit from these technologies (e.g. civil society, citizens, government agencies, technical companies) and should these actors have a role in their regulation? What role can intergovernmental agencies play? The speaker reminded attendees that some of the pitfalls include the changing nature of transformative technologies and emphasized that any regulations need to be future-proof in order to remain relevant. Learning and monitoring will play a major role in the future.</p>
+        </div>
+      </div>
+      <div id="_the_role_of_technology_in_reimagining_future_supply_chains">
+        <h1 id="toc1">II.&#xA0; The role of technology in reimagining future supply chains</h1>
+        <div id="_a6302152-c236-4d1a-9f58-20f4fd412c51">
+          
+          <p id="_0d242d87-2148-4ea2-abd6-a306618c38c1"><span>11.&#xA0; </span>Representatives from other United Nations organizations, international bodies and the public sector were invited to present practical use cases of new technologies positively impacting Trade and Logistics, and to explain the benefits, implementation obstacles and lessons learned. Implementation will be a critical factor in the successful leveraging of new technologies.</p>
+        </div>
+        <div id="_0f33aa74-ec58-4e14-a7b8-1dde80dd62f3">
+          
+          <p id="_6f0c7c40-1b61-4226-a94e-35dbf0451db0"><span>12.&#xA0; </span>Attendees were reminded of the current state of Industry 4.0. Technologies formerly considered cutting edge, which have now become standard use (such as the use of cloud technology). Today, countries like Switzerland are working more and more to improve connectivity, especially for IoT devices. Implementation requires synergies between the readiness of the user community, the reliability of the technologies, the availability of data/standards, and the enabling infrastructure. IoT uses and the connection that these can have with blockchain technology were briefly presented.</p>
+        </div>
+        <div id="_d1e27c46-7181-40b2-9e07-03ca3564f65e">
+          
+          <p id="_62fae4e3-3de3-480d-abf1-fedb49d2ce55"><span>13.&#xA0; </span>Four generations of blockchain/Distributed Ledger Technology (DLT) were presented: the first being Bitcoin; the second being Ethereum and smart contracts; the third being EOS, IOTA, Hyperledger increasing the capacity and speed of the blockchain network; and the fourth being Tolar HashNET, Hedera Hashgraph. Several use cases of blockchain technology were presented, notably the European Blockchain Services Infrastructure (EBSI) for notarization, identity framework, and data sharing. Other applications were presented for bonds, bookkeeping and auditing.</p>
+        </div>
+        <div id="_b40de820-bb69-445d-9178-ec01b1b87daf">
+          
+          <p id="_7369fa34-7636-4275-aee9-d244fcea56d5"><span>14.&#xA0; </span>Bridging supply-chain complexity and providing traceability can be achieved through advanced technologies, but generally a link may be missing between the physical product and its digital representation and corresponding data. In certain cases, linking digital technologies to the bio markers of the product, based on DNA technology, allows for the tracking of a product throughout its lifecycle. A bio marker allows the final product to be traced back, though each phase of its evolution, to its origins. Such bio markers can be applied to gems, precious metals, and natural or man-made textiles.</p>
+        </div>
+        <div id="_ccc78a7f-f9ae-449a-b429-4858b061343a">
+          
+          <p id="_8e65e418-8096-4281-96a9-8c85e7f49c7c"><span>15.&#xA0; </span>Regarding data quality and security of data, attendees were reminded that there are positive approaches (which strive to achieve organizational goals and improve performance) and negative approaches (whose goal is protection from fraudulent activities). Within information security, there are three pillars: authentication (identify the origin of the transaction and only genuine parties have access); confidentiality (of all or part of the data); and integrity (to ensure that no one can contest the data). One approach to address this is the traditional PKI approach. Another is a blockchain approach, which is excellent for integrity but not necessarily for identity and not for confidentiality. There are advantages and disadvantages in both approaches. Solutions will generally require a combination of these technologies.</p>
+        </div>
+        <div id="_d8caa7a7-c11e-4d54-8d5c-88ae4a23e69c">
+          
+          <p id="_1196fc14-a5fc-4cda-a200-93e57206c9e0"><span>16.&#xA0; </span>Questions were raised about how to help developing/transitioning countries use these new technologies and how to ensure that these technologies are supporting the implementation of the 2030 Sustainable Development Goals. This topic should be kept in mind for the future work of the Advisory Group.</p>
+        </div>
+      </div>
+      <div id="_how_to_handle_digital_information_and_technologies_for_value_chains">
+        <h1 id="toc2">III.&#xA0; How to handle digital information and technologies for value chains</h1>
+        <div id="_e3116114-3eb2-4dca-b47c-d70864e91036">
+          
+          <p id="_c6639c7d-238c-49a2-a691-6ae81dfc24ed"><span>17.&#xA0; </span>Artificial Intelligence can also be used for border surveillance. AI can be faster but not necessarily smarter; it is therefore necessary to teach AI basic concepts for it to function. AI can be applied to trade and logistics at the border to identify potential fraud or to optimize circulation flows.</p>
+        </div>
+        <div id="_1182f99a-4314-4d5a-a619-a77c63f6ae97">
+          
+          <p id="_2128cc52-32c7-4017-b9ac-79d82772dc7f"><span>18.&#xA0; </span>We are experiencing a tsunami of data and only 1-2 per cent is being analysed. There are many challenges including multiple standards, fragmentation of platforms, natural languages / computer languages, and long investment return times. A global approach to data can identify the distribution of stored data&#x2014;where it is being stored allowing for the identification of potential risks.</p>
+        </div>
+        <div id="_b76c467f-0cb4-470b-8b4b-3821f9bec3b6">
+          
+          <p id="_205b334e-3cdf-44ef-82a8-a50f66b7fb1a"><span>19.&#xA0; </span>A thirty-year World Economic Forum study involving Nordic countries showed that the use of standards results in a roughly 40 per cent increase in GDP. Standards enable increased interoperability, improved quality, better access to global markets and support for innovation. The International Telecommunication Union (ITU) has developed several infrastructure standards which enable the use of new technologies and ensure interoperability across borders.</p>
+        </div>
+        <div id="_17b74f4d-6a66-4309-9fd9-0e2c3a0452b9">
+          
+          <p id="_a863a2d7-0a0b-4191-8b89-845e8335b764"><span>20.&#xA0; </span>Data is continually generated with everyday use of devices such as smart phones or vehicles. Before 2001, this data was typically discarded; but since then, it has been increasingly valued and marketed. Each region of the world has different preoccupations. In many African countries, the tracking of physical assets, especially for perishable products, is a major challenge; technology has been key in improving this kind of tracking.</p>
+        </div>
+      </div>
+      <div id="_obstacles_challenges_and_lessons_learned">
+        <h1 id="toc3">IV.&#xA0; Obstacles, challenges and lessons learned</h1>
+        <div id="_d9916b95-3abe-4001-917e-b91e7cc53c8f">
+          
+          <p id="_12c3c6cb-bfde-42b5-b265-cdb67d20ced9"><span>21.&#xA0; </span>Service providers are offering applications to their user communities to enhance their operations. However, the multiplication of providers requires underlying standards so that the applications can communicate with each other. The UN/CEFACT project on Smart Containers has responded to this need, providing a clear standard that any entity can use or reference. It is important that such standards are adaptable, can be used by different users in different ways, and support harmonization between applications&#x2014;allowing for connectivity and interoperability. The UN/CEFACT Core Component Library<a class="FootnoteRef" href="#fn:1" id="fnref:1"><sup>1</sup></a>  and the UN/CEFACT Multi-Modal Transport Reference Data Model<a class="FootnoteRef" href="#fn:2" id="fnref:2"><sup>2</sup></a> are key examples of this. The next evolution of this will be to develop standardized Application Programming Interfaces (APIs) to allow web programmers to easily use the standards.</p>
+        </div>
+        <div id="_bbee9f12-9dc4-4b73-b7c0-3789f15920e0">
+          
+          <p id="_896735aa-cc9d-4915-a464-84e01c1fda2e"><span>22.&#xA0; </span>Blockchain technologies have been applied to solutions for liquefied natural gas (LNG) by using tokens to generate additional revenue and contribute to positive social impact. The supply chain of LNG has been relatively unchanged for many years. Blockchain technology can reveal the inefficiencies and the lack of transparency in these value chains. Looking forward, it could be useful to use APIs in these exchanges for key resources such as the UN/LOCODE<a class="FootnoteRef" href="#fn:3" id="fnref:3"><sup>3</sup></a>.</p>
+        </div>
+        <div id="_d1976549-ceb0-47a9-b260-122c0ace8da5">
+          
+          <p id="_b2732c9f-6cfa-4cf5-bff5-a826d335c3c0"><span>23.&#xA0; </span>The World Food Program has been developing a blockchain solution to allow 70 agencies to coordinate their information exchange for a transport corridor between Djibouti and Ethiopia. The time spent in document approvals and clearance will be reduced and there will be an increase in accountability of fleet operations. The blockchain-powered platform for the humanitarian supply chain currently provides real-time insights that mitigate issues regarding traceability, visibility, compliance and fleet management. Information is easily accessible and traceable, as records on the blockchain cannot be erased, thus allowing all actors to effectively collaborate and increase performance. In 2019, a proof of concept digital platform was developed. In 2020, the platform will be further developed to include new features and functionalities.</p>
+        </div>
+        <div id="_896fdf4b-c89c-4e3f-bd58-618e7fe1c231">
+          
+          <p id="_e587f3a2-e678-497f-9278-f1bd3dfbb13c"><span>24.&#xA0; </span>Border crossing in transport can often involve several hours or days in border queues, resulting in lost revenue. Implementing an API-based virtual queue allows drivers to plan their border crossing, book a time for the crossing, arrive at the designated time and cross the border rapidly. This Just-In-Time cross-border logistics approach allows for better resource management and administration.</p>
+        </div>
+      </div>
+      <div id="_next_steps_for_the_advisory_group">
+        <h1 id="toc4">V.&#xA0; Next steps for the Advisory Group</h1>
+        <div id="_56e5d1f4-26d1-4399-a789-b523ed6e058b">
+          
+          <p id="_40a4dace-9adc-4c68-a523-dcdff8a36895"><span>25.&#xA0; </span>The draft Programme of Work&#x2014;detailing the scope, objectives, activities, work areas, guiding principles, governance, and funding for the AG&#x2014;was discussed, amended and approved. The draft vision and mission statements, summarizing the overall goals and methods by which to achieve them, were discussed, slightly amended and approved (Decision 3).</p>
+        </div>
+        <div id="_335bae03-8856-4678-8eee-c0082951eeeb">
+          
+          <p id="_cf920843-20b6-4d08-b174-a00eb3bc9f13"><span>26.&#xA0; </span>It was suggested that the themes of identity, interoperability, security and trustworthiness be identified as key areas of work for future reflection. There was also a suggestion to put out a call for ideas that could be circulated and used as a future work area.</p>
+        </div>
+        <div id="_89ebf3f6-19bc-4bcf-8ffe-4beceb5badf2">
+          
+          <p id="_e15056cf-67c3-427c-9345-5e413b9641aa"><span>27.&#xA0; </span>Delegates and participants were invited to adopt the decisions of the session (Decision 4).</p>
+        </div>
+      </div>
+      <aside id="fn:1" class="footnote">
+  <p id="_d35b0534-6190-4935-b4a1-671bec051977"><a class="FootnoteRef" href="#fn:1"><sup>1</sup></a>The United Nations Core Component Library (CCL) is a library of business semantics in a data model which is harmonized, audited and published by UN/CEFACT. Available at: <a href="https://www.unece.org/cefact/codesfortrade/unccl/ccl_index.html">https://www.unece.org/cefact/codesfortrade/unccl/ccl_index.html</a></p>
+<a href="#fnref:1">&#x21A9;</a></aside>
+      <aside id="fn:2" class="footnote">
+  <p id="_a20ef5e3-7e68-4ee7-b5ee-21634d7e77db"><a class="FootnoteRef" href="#fn:2"><sup>2</sup></a>The UN/CEFACT Multi-Modal Transport Reference Data Model (MMT-RDM) is a subset of the Buy/Ship/Pay Reference Data Model covering contracts for the supply of transport and related services. Available at: <a href="https://www.unece.org/uncefact/mainstandards.html">https://www.unece.org/uncefact/mainstandards.html</a></p>
+<a href="#fnref:2">&#x21A9;</a></aside>
+      <aside id="fn:3" class="footnote">
+  <p id="_06da2f43-6cf2-4282-9e5e-710a06f38786"><a class="FootnoteRef" href="#fn:3"><sup>3</sup></a>The United Nations Code for Trade and Transport Locations (UN/LOCODE) is a geographic coding scheme developed and maintained by the United Nations Economic Commission for Europe (UNECE). Available at: <a href="https://www.unece.org/cefact/locode/service/location">https://www.unece.org/cefact/locode/service/location</a></p>
+<a href="#fnref:3">&#x21A9;</a></aside>
+    </main>
+  <script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    "HTML-CSS": { preferredFont: "STIX" },
+    asciimath2jax: { delimiters: [['(#(', ')#)']] }
+ });
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=MML_HTMLorMML-full" async="async"></script>
+<script src="https://cdn.rawgit.com/google/code-prettify/master/loader/run_prettify.js"></script>  <script>
+    $("#toc").on('click', 'li', function(e) {
+    $(this).parent().find('li.toc-active').removeClass('toc-active');
+    $(this).addClass('toc-active');
+});
+  </script>
+
+  <script>
+  //TOC toggle animation
+$('#toggle').on('click', function(){
+    if( $('nav').is(':visible') ) {
+        $('nav').animate({ 'left': '-353px' }, 'slow', function(){
+            $('nav').hide();
+        });
+        $('body').animate({ 'margin-left': '0' }, 'slow');
+    }
+    else {
+        $('nav').show();
+        $('nav').animate({ 'left': '0px' }, 'slow');
+        $('body').animate({ 'margin-left': '298px' }, 'slow');
+    }
+});
+</script>
+
+<script>
+    // Scroll to top button
+    window.onscroll = function() {scrollFunction()};
+
+    function scrollFunction() {
+        if (document.body.scrollTop > 100 || document.documentElement.scrollTop > 100) {
+            document.getElementById("myBtn").style.display = "block";
+        } else {
+            document.getElementById("myBtn").style.display = "none";
+        }
+    }
+
+    // When the user clicks on the button, scroll to the top of the document
+    function topFunction() {
+        document.body.scrollTop = 0;
+        document.documentElement.scrollTop = 0;
+    }
+    </script>
+
+<script>
+/*
+  $(document).ready(function() {
+	  $('[id^=toc]').each(function ()
+	  {
+	     var currentToc = $(this);
+       var url = window.location.href;
+            currentToc.wrap("<a href='" + url + "#" + currentToc.attr("id") + "'></a>");
+	  });
+});
+*/
+</script>
+
+  <script>
+    document.querySelectorAll('*|svg a').forEach(function(item) {
+      var loc = item.getAttribute('href');
+      if (loc !== null && loc.startsWith('#')) {
+  item.setAttribute('href', location.pathname + loc);
+      }
+});
+  </script>
+
+
+<script>
+
+// jQuery Inline Footnotes v1.0.3
+// Copyright (c) 2011 Vesa Vänskä, released under the MIT License.
+
+// Generated by CoffeeScript 1.6.1
+(function() {
+
+  (function($) {
+    $.inlineFootnote = function(el, options) {
+      var _this = this;
+      this.el = $(el);
+      this.el.data("inlineFootnote", this);
+      this.initialize = function() {
+        this.options = $.extend({}, $.inlineFootnote.defaultOptions, options);
+        this.footnoteId = this.el.attr("href").match(/#(.*)/)[1];
+        if (this.footnoteId) {
+          this.el.mouseenter(this.openBox);
+          return $("body").mousemove(this.closeBox);
+        }
+      };
+      this.openBox = function(event) {
+        var footnoteContent, linkOffset;
+        if (!_this.box) {
+          footnoteContent = $("[id='" + _this.footnoteId + "']").children().filter(":not('" + _this.options.hideFromContent + "')");
+          linkOffset = _this.el.offset();
+          _this.box = $("<div />", {
+            id: _this.options.boxId,
+            html: footnoteContent.clone().find(_this.options.hideFromContent).remove().end(),
+            css: {
+              position: "absolute",
+              top: linkOffset.top,
+              left: linkOffset.left + _this.el.outerWidth()
+            }
+          }).appendTo("body");
+          return _this.positionBox();
+        }
+      };
+      this.closeBox = function(event) {
+        if (_this.box) {
+          if (_this.isHoveringFootnote(event)) {
+            clearTimeout(_this.closeTimeout);
+            return _this.closeTimeout = null;
+          } else {
+            if (!_this.closeTimeout) {
+              return _this.closeTimeout = setTimeout((function() {
+                _this.box.remove();
+                return _this.box = null;
+              }), _this.options.hideDelay);
+            }
+          }
+        }
+      };
+      this.isHoveringFootnote = function(event) {
+        return this.box.is(event.target) || $(event.target).closest(this.box).length > 0 || event.target === this.el[0];
+      };
+      this.positionBox = function() {
+        var boxHorizontalPadding, boxLeft, boxWidth, linkLeftOffset, windowWidth;
+        boxHorizontalPadding = parseInt(this.box.css("padding-left")) + parseInt(this.box.css("padding-right"));
+        linkLeftOffset = this.el.offset().left;
+        windowWidth = $(window).width();
+        if ((windowWidth / 2) > linkLeftOffset) {
+          boxLeft = linkLeftOffset + 20;
+          boxWidth = windowWidth - boxLeft - boxHorizontalPadding - this.options.boxMargin * 2;
+          if (boxWidth > this.options.maximumBoxWidth) {
+            boxWidth = this.options.maximumBoxWidth;
+          }
+        } else {
+          boxWidth = linkLeftOffset - boxHorizontalPadding - this.options.boxMargin * 2;
+          if (boxWidth > this.options.maximumBoxWidth) {
+            boxWidth = this.options.maximumBoxWidth;
+          }
+          boxLeft = linkLeftOffset - boxWidth - this.options.boxMargin * 2;
+        }
+        return this.box.css({
+          width: boxWidth,
+          left: boxLeft
+        });
+      };
+      return this.initialize();
+    };
+    $.inlineFootnote.defaultOptions = {
+      boxMargin: 20,
+      hideDelay: 200,
+      hideFromContent: "[rel=footnote]",
+      maximumBoxWidth: 500,
+      boxId: "footnote_box"
+    };
+    return $.fn.inlineFootnote = function(options) {
+      return this.each(function() {
+        return new $.inlineFootnote(this, options);
+      });
+    };
+  })(jQuery);
+
+}).call(this);
+</script>
+
+<script>
+      $(function() {
+        $("[rel=footnote]").inlineFootnote();
+        });
+</script>
+  <script>
+// @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&dn=expat.txt Expat
+//
+// AnchorJS - v4.2.2 - 2020-04-20
+// https://www.bryanbraun.com/anchorjs/
+// Copyright (c) 2020 Bryan Braun; Licensed MIT
+//
+// @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&dn=expat.txt Expat
+!function(A,e){"use strict";"function"==typeof define&&define.amd?define([],e):"object"==typeof module&&module.exports?module.exports=e():(A.AnchorJS=e(),A.anchors=new A.AnchorJS)}(this,function(){"use strict";return function(A){function f(A){A.icon=A.hasOwnProperty("icon")?A.icon:"",A.visible=A.hasOwnProperty("visible")?A.visible:"hover",A.placement=A.hasOwnProperty("placement")?A.placement:"right",A.ariaLabel=A.hasOwnProperty("ariaLabel")?A.ariaLabel:"Anchor",A.class=A.hasOwnProperty("class")?A.class:"",A.base=A.hasOwnProperty("base")?A.base:"",A.truncate=A.hasOwnProperty("truncate")?Math.floor(A.truncate):64,A.titleText=A.hasOwnProperty("titleText")?A.titleText:""}function p(A){var e;if("string"==typeof A||A instanceof String)e=[].slice.call(document.querySelectorAll(A));else{if(!(Array.isArray(A)||A instanceof NodeList))throw new Error("The selector provided to AnchorJS was invalid.");e=[].slice.call(A)}return e}this.options=A||{},this.elements=[],f(this.options),this.isTouchDevice=function(){return!!("ontouchstart"in window||window.DocumentTouch&&document instanceof DocumentTouch)},this.add=function(A){var e,t,i,n,o,s,a,r,c,h,l,u,d=[];if(f(this.options),"touch"===(l=this.options.visible)&&(l=this.isTouchDevice()?"always":"hover"),0===(e=p(A=A||"h2, h3, h4, h5, h6")).length)return this;for(!function(){if(null!==document.head.querySelector("style.anchorjs"))return;var A,e=document.createElement("style");e.className="anchorjs",e.appendChild(document.createTextNode("")),void 0===(A=document.head.querySelector('[rel="stylesheet"],style'))?document.head.appendChild(e):document.head.insertBefore(e,A);e.sheet.insertRule(".anchorjs-link{opacity:0;text-decoration:none;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}",e.sheet.cssRules.length),e.sheet.insertRule(":hover>.anchorjs-link,.anchorjs-link:focus{opacity:1}",e.sheet.cssRules.length),e.sheet.insertRule("[data-anchorjs-icon]::after{content:attr(data-anchorjs-icon)}",e.sheet.cssRules.length),e.sheet.insertRule('@font-face{font-family:anchorjs-icons;src:url(data:n/a;base64,AAEAAAALAIAAAwAwT1MvMg8yG2cAAAE4AAAAYGNtYXDp3gC3AAABpAAAAExnYXNwAAAAEAAAA9wAAAAIZ2x5ZlQCcfwAAAH4AAABCGhlYWQHFvHyAAAAvAAAADZoaGVhBnACFwAAAPQAAAAkaG10eASAADEAAAGYAAAADGxvY2EACACEAAAB8AAAAAhtYXhwAAYAVwAAARgAAAAgbmFtZQGOH9cAAAMAAAAAunBvc3QAAwAAAAADvAAAACAAAQAAAAEAAHzE2p9fDzz1AAkEAAAAAADRecUWAAAAANQA6R8AAAAAAoACwAAAAAgAAgAAAAAAAAABAAADwP/AAAACgAAA/9MCrQABAAAAAAAAAAAAAAAAAAAAAwABAAAAAwBVAAIAAAAAAAIAAAAAAAAAAAAAAAAAAAAAAAMCQAGQAAUAAAKZAswAAACPApkCzAAAAesAMwEJAAAAAAAAAAAAAAAAAAAAARAAAAAAAAAAAAAAAAAAAAAAQAAg//0DwP/AAEADwABAAAAAAQAAAAAAAAAAAAAAIAAAAAAAAAIAAAACgAAxAAAAAwAAAAMAAAAcAAEAAwAAABwAAwABAAAAHAAEADAAAAAIAAgAAgAAACDpy//9//8AAAAg6cv//f///+EWNwADAAEAAAAAAAAAAAAAAAAACACEAAEAAAAAAAAAAAAAAAAxAAACAAQARAKAAsAAKwBUAAABIiYnJjQ3NzY2MzIWFxYUBwcGIicmNDc3NjQnJiYjIgYHBwYUFxYUBwYGIwciJicmNDc3NjIXFhQHBwYUFxYWMzI2Nzc2NCcmNDc2MhcWFAcHBgYjARQGDAUtLXoWOR8fORYtLTgKGwoKCjgaGg0gEhIgDXoaGgkJBQwHdR85Fi0tOAobCgoKOBoaDSASEiANehoaCQkKGwotLXoWOR8BMwUFLYEuehYXFxYugC44CQkKGwo4GkoaDQ0NDXoaShoKGwoFBe8XFi6ALjgJCQobCjgaShoNDQ0NehpKGgobCgoKLYEuehYXAAAADACWAAEAAAAAAAEACAAAAAEAAAAAAAIAAwAIAAEAAAAAAAMACAAAAAEAAAAAAAQACAAAAAEAAAAAAAUAAQALAAEAAAAAAAYACAAAAAMAAQQJAAEAEAAMAAMAAQQJAAIABgAcAAMAAQQJAAMAEAAMAAMAAQQJAAQAEAAMAAMAAQQJAAUAAgAiAAMAAQQJAAYAEAAMYW5jaG9yanM0MDBAAGEAbgBjAGgAbwByAGoAcwA0ADAAMABAAAAAAwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAH//wAP) format("truetype")}',e.sheet.cssRules.length)}(),t=document.querySelectorAll("[id]"),i=[].map.call(t,function(A){return A.id}),o=0;o<e.length;o++)if(this.hasAnchorJSLink(e[o]))d.push(o);else{if(e[o].hasAttribute("id"))n=e[o].getAttribute("id");else if(e[o].hasAttribute("data-anchor-id"))n=e[o].getAttribute("data-anchor-id");else{for(c=r=this.urlify(e[o].textContent),a=0;void 0!==s&&(c=r+"-"+a),a+=1,-1!==(s=i.indexOf(c)););s=void 0,i.push(c),e[o].setAttribute("id",c),n=c}(h=document.createElement("a")).className="anchorjs-link "+this.options.class,h.setAttribute("aria-label",this.options.ariaLabel),h.setAttribute("data-anchorjs-icon",this.options.icon),this.options.titleText&&(h.title=this.options.titleText),u=document.querySelector("base")?window.location.pathname+window.location.search:"",u=this.options.base||u,h.href=u+"#"+n,"always"===l&&(h.style.opacity="1"),""===this.options.icon&&(h.style.font="1em/1 anchorjs-icons","left"===this.options.placement&&(h.style.lineHeight="inherit")),"left"===this.options.placement?(h.style.position="absolute",h.style.marginLeft="-1em",h.style.paddingRight="0.5em",e[o].insertBefore(h,e[o].firstChild)):(h.style.paddingLeft="0.375em",e[o].appendChild(h))}for(o=0;o<d.length;o++)e.splice(d[o]-o,1);return this.elements=this.elements.concat(e),this},this.remove=function(A){for(var e,t,i=p(A),n=0;n<i.length;n++)(t=i[n].querySelector(".anchorjs-link"))&&(-1!==(e=this.elements.indexOf(i[n]))&&this.elements.splice(e,1),i[n].removeChild(t));return this},this.removeAll=function(){this.remove(this.elements)},this.urlify=function(A){return this.options.truncate||f(this.options),A.trim().replace(/\'/gi,"").replace(/[& +$,:;=?@"#{}|^~[`%!'<>\]\.\/\(\)\*\\\n\t\b\v]/g,"-").replace(/-{2,}/g,"-").substring(0,this.options.truncate).replace(/^-+|-+$/gm,"").toLowerCase()},this.hasAnchorJSLink=function(A){var e=A.firstChild&&-1<(" "+A.firstChild.className+" ").indexOf(" anchorjs-link "),t=A.lastChild&&-1<(" "+A.lastChild.className+" ").indexOf(" anchorjs-link ");return e||t||!1}}});
+// @license-end
+  </script>
+    <script>
+  anchors.options = {
+  placement: 'left'
+};
+anchors.add('h1, h2, h3, h4');
+</script>
+
+</body>
+</html>

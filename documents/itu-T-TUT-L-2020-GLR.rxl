@@ -1,0 +1,71 @@
+<bibdata type="standard">
+<title language="en" format="text/plain" type="main">Guide on the use of ITU-T L-series Recommendations related to optical technologies for outside plant</title>
+
+
+
+<docidentifier type="ITU">ITU-T LSTP-GLSR</docidentifier><docidentifier type="ITU-lang">ITU-T LSTP-GLSR-E</docidentifier>
+
+<docnumber>LSTP-GLSR</docnumber>
+<date type="published">
+<on>2020-02</on>
+</date>
+<contributor>
+<role type="author"/>
+<organization>
+<name>International Telecommunication Union</name>
+</organization>
+</contributor>
+<contributor>
+<role type="publisher"/>
+<organization>
+<name>International Telecommunication Union</name>
+</organization>
+</contributor>
+
+<language>en</language>
+<script>Latn</script><abstract><p>ITU-T Technical Report "Guide on the use of ITU-T L-series Recommendations related to optical technologies for outside plant" provides information on the background, development and uses of L-series Recommendations prepared by Working Party 2 of ITU-T Study Group 15.</p>
+<p>These Recommendations are related to the design, construction, maintenance and operation of the optical fibre outside plant.</p>
+<p>The items covered are related to the following areas:</p>
+<ul>
+<li>
+<p>optical fibre cable characteristics, evaluation and installation techniques;</p>
+</li>
+<li>
+<p>construction of optical infrastructure;</p>
+</li>
+<li>
+<p>network design;</p>
+</li>
+<li>
+<p>network maintenance and operation, including disaster management;</p>
+</li>
+<li>
+<p>passive optical components.</p>
+</li>
+</ul>
+<note>
+<p>This is an informative ITU-T publication. Mandatory provisions, such as those found in ITU-T Recommendations, are outside the scope of this publication. This publication should only be referenced bibliographically in ITU-T Recommendations.</p>
+</note></abstract>
+<status>
+<stage>in-force</stage>
+</status>
+<copyright>
+<from>2020</from>
+<owner>
+<organization>
+<name>International Telecommunication Union</name>
+</organization>
+</owner>
+</copyright>
+<ext>
+<doctype>technical-paper</doctype>
+<editorialgroup>
+<bureau>T</bureau>
+</editorialgroup>
+<ip-notice-received>false</ip-notice-received>
+<structuredidentifier>
+<bureau>T</bureau>
+<docnumber>LSTP-GLSR</docnumber>
+</structuredidentifier>
+</ext>
+</bibdata>

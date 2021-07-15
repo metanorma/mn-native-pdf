@@ -1,0 +1,63 @@
+<bibdata type="standard">
+<title language="en" format="text/plain" type="main">Cloud computing - Functional requirements of physical machine</title>
+
+
+
+<docidentifier type="ITU">ITU-T Y.3507</docidentifier><docidentifier type="ITU-lang">ITU-T Y.3507-E</docidentifier>
+
+<docnumber>Y.3507</docnumber>
+<date type="published">
+<on>2018-12-01</on>
+</date>
+<contributor>
+<role type="author"/>
+<organization>
+<name>International Telecommunication Union</name>
+</organization>
+</contributor>
+<contributor>
+<role type="publisher"/>
+<organization>
+<name>International Telecommunication Union</name>
+</organization>
+</contributor>
+
+<language>en</language>
+<script>Latn</script><abstract><p>The physical machine is a type of computing machine to provide physical resources. Since all cloud services have to reside and operate on physical machines, it is important for the cloud service providers as well as for the manufacturers to identify specific functional requirements of the physical machine.</p>
+<p>Recommendation ITU-T Y.3507 provides an introduction to the physical machine including the physical machine components, physical machine types, virtualizations in the physical machine as well as the scalability of components in the physical machine.</p>
+<p>In addition, this Recommendation provides functional requirements for the physical machine derived from various use cases described in <xref target="_use_cases_of_the_physical_machine_for_cloud_computing"/>. The relationship with other related specifications developed in other Standards Development Organizations (SDOs) has is introduced in <xref target="_comparison_between_functional_requirements_and_other_specifications"/>.</p></abstract>
+<status>
+<stage>in-force</stage>
+</status>
+<copyright>
+<from>2018</from>
+<owner>
+<organization>
+<name>International Telecommunication Union</name>
+</organization>
+</owner>
+</copyright>
+<series type="main">
+<title>Y: Global Information Infrastructure, Internet Protocol Aspects, Next-Generation Networks, Internet of Things and Smart Cities</title>
+</series>
+<series type="secondary">
+<title>Cloud Computing</title>
+</series>
+<series type="tertiary">
+
+</series>
+<keyword>Cloud computing</keyword>
+<keyword>functional requirements</keyword>
+<keyword>physical machine</keyword>
+<ext>
+<doctype>recommendation</doctype>
+<editorialgroup>
+<bureau>T</bureau>
+</editorialgroup>
+<ip-notice-received>false</ip-notice-received>
+<structuredidentifier>
+<bureau>T</bureau>
+<docnumber>Y.3507</docnumber>
+</structuredidentifier>
+</ext>
+</bibdata>

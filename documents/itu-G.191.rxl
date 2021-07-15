@@ -1,0 +1,72 @@
+<bibdata type="standard">
+<title language="en" format="text/plain" type="main">Software tools for speech and audio coding standardization</title>
+
+
+
+<docidentifier type="ITU">ITU-T G.191</docidentifier><docidentifier type="ITU-lang">ITU-T G.191-E</docidentifier>
+
+<docnumber>G.191</docnumber>
+<date type="published">
+<on>2019-01</on>
+</date>
+<contributor>
+<role type="author"/>
+<organization>
+<name>International Telecommunication Union</name>
+</organization>
+</contributor>
+<contributor>
+<role type="publisher"/>
+<organization>
+<name>International Telecommunication Union</name>
+</organization>
+</contributor>
+
+<language>en</language>
+<script>Latn</script><abstract><p>Recommendation ITU-T G.191 provides source code for speech and audio processing modules for narrowband, wideband and super-wideband telephony applications. The set includes codecs, filters and noise generators.</p>
+<p>This edition introduces changes to <xref target="annexA"/>, which describes the ITU-T software tool library (STL) containing a high-quality, portable C code library for speech-processing applications. This release of the STL, also known as STL2019, incorporates new basic operators to accommodate state-of-the-art processor architectures that support wide accumulators, single instruction multiple data (SIMD) and very long instruction word (VLIW). Thus, the new operators provide support for 64-bit accumulator, complex numbers, enhanced 32-bit operations and additional control code operators.</p>
+<p>The software package was reworked to make it available as a truly open-source project and is therefore hosted on an open-source collaboration platform. The build toolchain now uses CMake to generate platform-dependent and tool-dependent build scripts, as well as to execute regression tests for each module in the STL.</p>
+<p>Recommendation ITU-T G.191 includes an electronic attachment containing STL2019 and manual.</p></abstract>
+<status>
+<stage>in-force</stage>
+</status>
+<copyright>
+<from>2019</from>
+<owner>
+<organization>
+<name>International Telecommunication Union</name>
+</organization>
+</owner>
+</copyright>
+<series type="main">
+<title>G: Transmission Systems and Media, Digital Systems and Networks</title>
+</series>
+<series type="secondary">
+<title>International telephone connections and circuits</title>
+</series>
+<series type="tertiary">
+<title>Software tools for transmission systems</title>
+</series>
+<keyword>DSP operators</keyword>
+<keyword>G.711</keyword>
+<keyword>G.722</keyword>
+<keyword>G.726</keyword>
+<keyword>G.728</keyword>
+<keyword>MNRU</keyword>
+<keyword>STL2019</keyword>
+<keyword>filters</keyword>
+<keyword>open source</keyword>
+<keyword>reverb</keyword>
+<keyword>sv56</keyword>
+<ext>
+<doctype>recommendation</doctype>
+<editorialgroup>
+<bureau>T</bureau>
+</editorialgroup>
+<ip-notice-received>false</ip-notice-received>
+<structuredidentifier>
+<bureau>T</bureau>
+<docnumber>G.191</docnumber>
+</structuredidentifier>
+</ext>
+</bibdata>

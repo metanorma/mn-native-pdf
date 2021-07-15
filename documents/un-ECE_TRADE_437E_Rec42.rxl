@@ -1,0 +1,43 @@
+<bibdata type="standard">
+<title type="main" language="en" format="text/plain">Trade and Transport Facilitation Monitoring Mechanism</title>
+<docidentifier>42</docidentifier>
+<docnumber>42</docnumber>
+<contributor>
+<role type="author"/>
+<organization>
+<name>United Nations</name>
+</organization>
+</contributor>
+<contributor>
+<role type="publisher"/>
+<organization>
+<name>United Nations</name>
+</organization>
+</contributor>
+
+<language>ar</language>
+<language>ru</language>
+<language>en</language>
+<language>fr</language>
+<language>zh</language>
+<language>es</language>
+<script>Latn</script>
+<status>
+<stage>published</stage>
+</status>
+<copyright>
+<from>2017</from>
+<owner>
+<organization>
+<name>United Nations</name>
+</organization>
+</owner>
+</copyright>
+<ext>
+<doctype>recommendation</doctype>
+<editorialgroup>
+<committee>United Nations Centre for Trade Facilitation and Electronic Business (UN/CEFACT)</committee>
+</editorialgroup>
+<session/>
+</ext>
+</bibdata>

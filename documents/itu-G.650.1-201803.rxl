@@ -1,0 +1,93 @@
+<bibdata type="standard">
+<title language="en" format="text/plain" type="main">Definitions and test methods for linear, deterministic attributes of single-mode fibre and cable</title>
+
+
+
+<docidentifier type="ITU">ITU-T G.650.1</docidentifier><docidentifier type="ITU-lang">ITU-T G.650.1-E</docidentifier>
+
+<docnumber>G.650.1</docnumber>
+<date type="published">
+<on>2018-03-01</on>
+</date>
+<contributor>
+<role type="author"/>
+<organization>
+<name>International Telecommunication Union</name>
+</organization>
+</contributor>
+<contributor>
+<role type="publisher"/>
+<organization>
+<name>International Telecommunication Union</name>
+</organization>
+</contributor>
+
+<language>en</language>
+<script>Latn</script><abstract><p>Recommendation ITU-T G.650.1 contains definitions of the linear, deterministic parameters of single-mode optical fibres and cables. It also contains both reference test methods and alternative test methods for characterizing these parameters.</p>
+<p>These test methods are suitable mainly for factory measurements of the linear, deterministic attributes of single-mode fibres and cables. Some of the test methods may also be used to characterize discrete optical components.</p>
+<p>The history of this Recommendation is as follows:</p>
+<dl>
+<dt>1993</dt>
+<dd>
+<p>Definitions and test methods were removed from single-mode fibre Recommendations such as Recommendation <eref type="inline" bibitemid="ITU-T_G.652" citeas="ITU-T G.652"/> and used to create the initial version of Recommendation ITU-T G.650.</p>
+</dd>
+<dt>1997</dt>
+<dd>
+<p>The second version of Recommendation ITU-T G.650 added definitions and test methods for polarization mode dispersion and appendices I, II and III. The improved determination of cut-off wavelength (clause 5.3.1.3.4) was also added.</p>
+</dd>
+<dt>2000</dt>
+<dd>
+<p>The third version established reference and alternative test methods for polarization mode dispersion, modified the definitions and test methods for core concentricity error (clauses 3.4 and 5.2), and added clause 5.1.4 and appendices IV, V and VI.</p>
+</dd>
+<dt>2002</dt>
+<dd>
+<p>In order to facilitate maintenance, Recommendation ITU-T G.650 was divided into smaller Recommendations. Recommendation ITU-T G.650.2 contains definitions and test methods for statistical and non-linear attributes of single-mode fibre and cable.</p>
+</dd>
+<dt>2004</dt>
+<dd>
+<p>The second version of Recommendation ITU-TG.650.1 added a third alternative test method "Spectral attenuation modelling" (clause 5.4.4) and new Appendix III "Example of a matrix model". This material has been moved from the single-mode fibre Recommendations into this Recommendation ITU-T G.650.1. In addition, chromatic dispersion fitting procedures have been added (Annex A).</p>
+</dd>
+<dt>2010</dt>
+<dd>
+<p>The third version of Recommendation ITU-TG.650.1 added the test method "Test methods for the macrobend loss" (clause 5.6). Jumper cut-off wavelength has been deleted from clause 5.3. An additional description has been added in cut-off wavelength test method (clause 5.3.1.3.2). Equation 5-1 has been corrected. A detailed description has been added in proof test method (clause 5.7). Appendix II has been updated.</p>
+</dd>
+<dt>2018</dt>
+<dd>
+<p>The fourth version of Recommendation ITU-TG.650.1 added Appendix IV (from Amendment 1 published in 2012) to provide measurement procedures for coherent multipath interference (MPI). The interferometric technique for chromatic dispersion measurement has been deleted from clause 6.5 and moved to Appendix V. The description of measurement details for <eref type="inline" bibitemid="ITU-T_G.657" citeas="ITU-T G.657"/> fibre on MFD, cut-off wavelength and spectral attenuation tests has been improved. The RTM and ATM of cable cut-off wavelength measurement has been modified. An example of the interpolation method has been added in clause I.3. Equation 6-1 has been corrected.</p>
+</dd>
+</dl></abstract>
+<status>
+<stage>in-force</stage>
+</status>
+<copyright>
+<from>2018</from>
+<owner>
+<organization>
+<name>International Telecommunication Union</name>
+</organization>
+</owner>
+</copyright>
+<series type="main">
+<title>G: Transmission Systems and Media, Digital Systems and Networks</title>
+</series>
+<series type="secondary">
+<title>Transmission media and optical systems characteristics</title>
+</series>
+<series type="tertiary">
+<title>Optical fibre cables</title>
+</series>
+<keyword>Deterministic attributes</keyword>
+<keyword>linear attributes</keyword>
+<keyword>single-mode fibre characterization</keyword>
+<ext>
+<doctype>recommendation</doctype>
+<editorialgroup>
+<bureau>T</bureau>
+</editorialgroup>
+<ip-notice-received>false</ip-notice-received>
+<structuredidentifier>
+<bureau>T</bureau>
+<docnumber>G.650.1</docnumber>
+</structuredidentifier>
+</ext>
+</bibdata>

@@ -1,0 +1,49 @@
+<bibdata type="standard">
+<title language="en" format="text/plain" type="main">Telecommunication for rural and remote areas</title>
+
+
+
+<docidentifier type="ITU">ITU-D D.19</docidentifier><docidentifier type="ITU-lang">ITU-D D.19-E</docidentifier>
+
+<docnumber>D.19</docnumber>
+<date type="published">
+<on>2019-01</on>
+</date>
+<contributor>
+<role type="author"/>
+<organization>
+<name>International Telecommunication Union</name>
+</organization>
+</contributor>
+<contributor>
+<role type="publisher"/>
+<organization>
+<name>International Telecommunication Union</name>
+</organization>
+</contributor>
+
+<language>en</language>
+<script>Latn</script>
+<status>
+<stage>in-force</stage>
+</status>
+<copyright>
+<from>2021</from>
+<owner>
+<organization>
+<name>International Telecommunication Union</name>
+</organization>
+</owner>
+</copyright>
+<ext>
+<doctype>recommendation</doctype>
+<editorialgroup>
+<bureau>D</bureau>
+</editorialgroup>
+<ip-notice-received>false</ip-notice-received>
+<structuredidentifier>
+<bureau>D</bureau>
+<docnumber>D.19</docnumber>
+</structuredidentifier>
+</ext>
+</bibdata>

@@ -1,0 +1,74 @@
+<bibdata type="standard">
+<title language="en" format="text/plain" type="main">Integrated broadcast-broadband digital TV application cooperated with server for functional extension including functions of digital TV reception and processing</title>
+
+
+
+<docidentifier type="ITU">ITU-T JSTP-IBBDTV</docidentifier><docidentifier type="ITU-lang">ITU-T JSTP-IBBDTV-E</docidentifier>
+
+<docnumber>JSTP-IBBDTV</docnumber>
+<date type="published">
+<on>2020-04</on>
+</date>
+<contributor>
+<role type="author"/>
+<organization>
+<name>International Telecommunication Union</name>
+</organization>
+</contributor>
+<contributor>
+<role type="author"/>
+<person>
+<name>
+<completename>Masayoshi Onishi</completename>
+</name>
+<affiliation>
+<organization>
+<name>NHK (Japan Broadcasting Corporation)</name>
+<address>
+<formattedAddress>Japon</formattedAddress>
+</address>
+</organization>
+</affiliation>
+<email>oonsihi.m-jc@nhk.or.jp</email>
+</person>
+</contributor>
+<contributor>
+<role type="publisher"/>
+<organization>
+<name>International Telecommunication Union</name>
+</organization>
+</contributor>
+
+<language>en</language>
+<script>Latn</script><abstract><p>This Technical Paper describes an integrated broadcast-broadband (IBB) digital television (TV) application that cooperates with the server for functional extension including functions of digital TV reception and processing. In the current cable TV (CATV) systems, services are dependent on functions of a set top box (STB); thus, the services that require functions beyond the capabilities of an STB cannot be introduced. This system allows for the introduction of new services that require furthering the capabilities of the existing STBs and smoothly transitioning to new STB models. The system is built on an IBB system as defined in <eref type="inline" bibitemid="j207" citeas="ITU-T J.207"/>.</p>
+<p>This system comprises servers and STBs with the following features. The server receives a cable broadcast signal, processes the required content elements and applications, and transfers the processed outputs to STBs. The STB presents the delivered processed outputs and provides user-interactive functions.</p>
+<note>
+<p>This is an informative ITU-T publication. Mandatory provisions, such as those found in ITU-T Recommendations, are outside the scope of this publication. This publication should only be referenced bibliographically in ITU-T Recommendations.</p>
+</note></abstract>
+<status>
+<stage>in-force</stage>
+</status>
+<copyright>
+<from>2020</from>
+<owner>
+<organization>
+<name>International Telecommunication Union</name>
+</organization>
+</owner>
+</copyright>
+<keyword>IBB system</keyword>
+<keyword>STB</keyword>
+<keyword>server-side processing</keyword>
+<keyword>streaming</keyword>
+<ext>
+<doctype>technical-paper</doctype>
+<editorialgroup>
+<bureau>T</bureau>
+</editorialgroup>
+<ip-notice-received>false</ip-notice-received>
+<structuredidentifier>
+<bureau>T</bureau>
+<docnumber>JSTP-IBBDTV</docnumber>
+</structuredidentifier>
+</ext>
+</bibdata>

@@ -1,0 +1,58 @@
+<bibdata type="standard">
+<title language="en" format="text/plain" type="main">Transmission specification for radio over IP transmission systems</title>
+
+
+
+<docidentifier type="ITU">ITU-T J.1108</docidentifier><docidentifier type="ITU-lang">ITU-T J.1108-E</docidentifier>
+
+<docnumber>J.1108</docnumber>
+<date type="published">
+<on>2019-01</on>
+</date>
+<contributor>
+<role type="author"/>
+<organization>
+<name>International Telecommunication Union</name>
+</organization>
+</contributor>
+<contributor>
+<role type="publisher"/>
+<organization>
+<name>International Telecommunication Union</name>
+</organization>
+</contributor>
+
+<language>en</language>
+<script>Latn</script><abstract><p>As cable TV network is migrating to deep fibre or fibre to the home (FTTH) architecture, it is now possible and easy to provide bidirectional high quality media services that require very high speed digital transmission of various high quality contents. Cable TV networks provide services by transmitting radio frequency (RF) signals between headend and cable modems (CM), the configuration and devices of cable TV networks are optimized for RF signal transmission. For the migration of all-fibre access cable TV networks, the existing network devices of service operators (SOs) providing broadcasting services and various data services through the hybrid fibre coaxial (HFC) based cable TV network is recommended to change into the new network devices. Therefore, a cost-effective solution for deployable and acceptable migration toward an optic-based cable TV network is required.</p>
+<p>Recommendation ITU-T J.1108 provides a cost-effective adaptable solution for HFC-based cable TV network devices in an optic-based cable TV network. The purpose of a radio over IP (RoIP) system is to transmit data over cable service interface specifications (DOCSIS) based up stream (US) RF signals of a cable modem (CM) to a cable modem termination system (CMTS) through IP transmission in optic-based cable TV networks.</p></abstract>
+<status>
+<stage>in-force</stage>
+</status>
+<copyright>
+<from>2019</from>
+<owner>
+<organization>
+<name>International Telecommunication Union</name>
+</organization>
+</owner>
+</copyright>
+<series type="main">
+<title>J: Cable Networks and Transmission of Television, Sound Programme and Other Multimedia Signals</title>
+</series>
+<series type="secondary">
+<title>Switched digital video over cable networks</title>
+</series>
+<keyword>Radio over IP</keyword>
+<keyword>RoIP</keyword>
+<ext>
+<doctype>recommendation</doctype>
+<editorialgroup>
+<bureau>T</bureau>
+</editorialgroup>
+<ip-notice-received>false</ip-notice-received>
+<structuredidentifier>
+<bureau>T</bureau>
+<docnumber>J.1108</docnumber>
+</structuredidentifier>
+</ext>
+</bibdata>

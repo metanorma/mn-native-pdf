@@ -1,0 +1,58 @@
+<bibdata type="standard">
+<title language="en" format="text/plain" type="main">ITU-T Software Tool Library 2019 User's Manual</title>
+
+
+
+<docidentifier type="ITU">ITU-T G.191 STL-2019 Manual</docidentifier><docidentifier type="ITU-lang">ITU-T G.191 STL-2019 Manual-E</docidentifier>
+
+<docnumber>G.191 STL-2019 Manual</docnumber>
+<date type="published">
+<on>2019-02</on>
+</date>
+<contributor>
+<role type="author"/>
+<organization>
+<name>International Telecommunication Union</name>
+</organization>
+</contributor>
+<contributor>
+<role type="publisher"/>
+<organization>
+<name>International Telecommunication Union</name>
+</organization>
+</contributor>
+
+<language>en</language>
+<script>Latn</script>
+<status>
+<stage>in-force</stage>
+</status>
+<copyright>
+<from>2005, 2006, 2009, 2019</from>
+<owner>
+<organization>
+<name>International Telecommunication Union</name>
+</organization>
+</owner>
+</copyright>
+<series type="main">
+<title>G: Transmission Systems and Media, Digital Systems and Networks</title>
+</series>
+<series type="secondary">
+<title>International telephone connections and circuits</title>
+</series>
+<series type="tertiary">
+<title>Software tools for transmission systems</title>
+</series>
+<ext>
+<doctype>recommendation</doctype>
+<editorialgroup>
+<bureau>T</bureau>
+</editorialgroup>
+<ip-notice-received>false</ip-notice-received>
+<structuredidentifier>
+<bureau>T</bureau>
+<docnumber>G.191 STL-2019 Manual</docnumber>
+</structuredidentifier>
+</ext>
+</bibdata>

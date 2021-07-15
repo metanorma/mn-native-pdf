@@ -1,0 +1,62 @@
+<bibdata type="standard">
+<title language="en" format="text/plain" type="main">Digital signage: Metadata</title>
+
+
+
+<docidentifier type="ITU">ITU-T H.782</docidentifier><docidentifier type="ITU-lang">ITU-T H.782-E</docidentifier>
+
+<docnumber>H.782</docnumber>
+<date type="published">
+<on>2018-11-01</on>
+</date>
+<contributor>
+<role type="author"/>
+<organization>
+<name>International Telecommunication Union</name>
+</organization>
+</contributor>
+<contributor>
+<role type="publisher"/>
+<organization>
+<name>International Telecommunication Union</name>
+</organization>
+</contributor>
+
+<language>en</language>
+<script>Latn</script><abstract><p>Recommendation ITU-T H.782 specifies the data elements and structures of the metadata for digital signage services. The metadata describes information for contents, terminal devices, play logs, playlist schedule, screen layout, etc. The metadata is handled by a digital signage server, a digital signage client, a content delivery server, and a content delivery client. It also specifies general information flows to describe how the metadata are used in the digital signage services.</p>
+<p>This revision updates the data types of elements/attributes of identifiers. This update aims to widen applicability of the specifications at the price of easy extensible markup language (XML) validation.</p></abstract>
+<status>
+<stage>in-force</stage>
+</status>
+<copyright>
+<from>2018</from>
+<owner>
+<organization>
+<name>International Telecommunication Union</name>
+</organization>
+</owner>
+</copyright>
+<series type="main">
+<title>H: Audiovisual and Multimedia Systems</title>
+</series>
+<series type="secondary">
+<title>IPTV multimedia services and applications for IPTV</title>
+</series>
+<series type="tertiary">
+<title>Digital Signage</title>
+</series>
+<keyword>Digital signage</keyword>
+<keyword>information flows</keyword>
+<keyword>metadata</keyword>
+<ext>
+<doctype>recommendation</doctype>
+<editorialgroup>
+<bureau>T</bureau>
+</editorialgroup>
+<ip-notice-received>false</ip-notice-received>
+<structuredidentifier>
+<bureau>T</bureau>
+<docnumber>H.782</docnumber>
+</structuredidentifier>
+</ext>
+</bibdata>

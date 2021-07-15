@@ -1,0 +1,80 @@
+<bibdata type="standard">
+<title language="en" format="text/plain" type="main">Guideline on web-based remote sign language interpretation or video remote interpretation (VRI) system</title>
+
+
+
+<docidentifier type="ITU">ITU-T FSTP.ACC-WebVRI</docidentifier><docidentifier type="ITU-lang">ITU-T FSTP.ACC-WebVRI-E</docidentifier>
+
+<docnumber>FSTP.ACC-WebVRI</docnumber>
+<date type="published">
+<on>2020-07-03</on>
+</date>
+<contributor>
+<role type="author"/>
+<organization>
+<name>International Telecommunication Union</name>
+</organization>
+</contributor>
+<contributor>
+<role type="author"/>
+<person>
+<name>
+<completename>Masahito Kawamori</completename>
+</name>
+<affiliation>
+<organization>
+<name>Keio University</name>
+<address>
+<formattedAddress>Japan</formattedAddress>
+</address>
+</organization>
+</affiliation>
+<phone>+81 (466) 49-1170</phone>
+<phone type="fax">+81 (466) 49-1171</phone>
+<email>masahito.kawamori@ties.itu.int</email>
+</person>
+</contributor>
+<contributor>
+<role type="publisher"/>
+<organization>
+<name>International Telecommunication Union</name>
+</organization>
+</contributor>
+
+<language>en</language>
+<script>Latn</script><abstract><p>Due to the COVID-19 pandemic, the practice of physical distancing makes it difficult for a sign language interpreter to accompany a deaf or a hard of hearing person when the latter visits places such as a government agency, a school, a meeting, or a hospital. It is now almost imperative that a remote sign language interpretation, or a video remote interpretation (VRI) be implemented.</p>
+<p>During the time of physical distancing when almost any schooling and medical consultation needs to be done remotely, a non-interoperable VRI system for deaf and hard of hearing persons will exclude them from important social services. It is therefore important to have a standard guideline for a VRI or VRI system, which considers interoperability and future effectiveness.</p>
+<p>Considering the immediacy of the need as well as the cost of system introduction and practicality of the implementation, such a guideline is most likely to be based on web-based technologies.</p>
+<p>This Technical Paper describes a web-based VRI, based on Web real time communication (RTC), and describes how it can be used in a scenario where community sign language interpreters can participate, as well as ways in which other remote services, online medical treatment and distance education, can harmonize with the Web-based VRI system.</p></abstract>
+<status>
+<stage>in-force</stage>
+</status>
+<copyright>
+<from>2020</from>
+<owner>
+<organization>
+<name>International Telecommunication Union</name>
+</organization>
+</owner>
+</copyright>
+<keyword>Accessibility</keyword>
+<keyword>VRI</keyword>
+<keyword>WebRTC</keyword>
+<keyword>disaster resilience</keyword>
+<keyword>distance learning</keyword>
+<keyword>online medicine</keyword>
+<keyword>remote sign language interpretation</keyword>
+<keyword>total conversation</keyword>
+<keyword>video remote interpretation</keyword>
+<ext>
+<doctype>technical-paper</doctype>
+<editorialgroup>
+<bureau>T</bureau>
+</editorialgroup>
+<ip-notice-received>false</ip-notice-received>
+<structuredidentifier>
+<bureau>T</bureau>
+<docnumber>FSTP.ACC-WebVRI</docnumber>
+</structuredidentifier>
+</ext>
+</bibdata>

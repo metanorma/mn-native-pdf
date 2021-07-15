@@ -1,0 +1,69 @@
+<bibdata type="standard">
+<title language="en" format="text/plain" type="main">Specification and Description Language &#8211; Overview of SDL-2010</title>
+<title language="en" format="text/plain" type="annex">SDL-2010 formal definition: General overview</title>
+
+
+
+<docidentifier type="ITU">ITU-T Z.100</docidentifier><docidentifier type="ITU-lang">ITU-T Z.100-E</docidentifier>
+
+<docnumber>Z.100</docnumber>
+<date type="published">
+<on>2018-11-01</on>
+</date>
+<contributor>
+<role type="author"/>
+<organization>
+<name>International Telecommunication Union</name>
+</organization>
+</contributor>
+<contributor>
+<role type="publisher"/>
+<organization>
+<name>International Telecommunication Union</name>
+</organization>
+</contributor>
+
+<language>en</language>
+<script>Latn</script><abstract>
+<p>Annex F1 provides the motivation for and the main objectives of a formal semantics definition for SDL-2010. It gives an overview of the structure of the formal semantics, and it also contains an introduction to the Abstract State Machine (ASM) formalism, which is used to define the SDL-2010 semantics.</p>
+</abstract>
+<status>
+<stage>in-force</stage>
+</status>
+<copyright>
+<from>2018</from>
+<owner>
+<organization>
+<name>International Telecommunication Union</name>
+</organization>
+</owner>
+</copyright>
+<series type="main">
+<title>Z: Languages and General Software Aspects for Telecommunication Systems</title>
+</series>
+<series type="secondary">
+<title>Formal description techniques (FDT)</title>
+</series>
+<series type="tertiary">
+<title>Specification and Description Language (SDL)</title>
+</series>
+<keyword>ASM</keyword>
+<keyword>SDL-2010</keyword>
+<keyword>abstract state machines</keyword>
+<keyword>formal definition</keyword>
+<keyword>overview</keyword>
+<keyword>overview of semantics</keyword>
+<keyword>specification and description language</keyword>
+<ext>
+<doctype>recommendation-annex</doctype>
+<editorialgroup>
+<bureau>T</bureau>
+</editorialgroup>
+<ip-notice-received>false</ip-notice-received>
+<structuredidentifier>
+<bureau>T</bureau>
+<docnumber>Z.100</docnumber>
+<annexid>F1</annexid>
+</structuredidentifier>
+</ext>
+</bibdata>

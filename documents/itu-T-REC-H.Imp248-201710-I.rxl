@@ -1,0 +1,99 @@
+<bibdata type="standard">
+<title language="en" format="text/plain" type="main">Implementors' Guide for the H.248 Sub-series of Recommendations ("Media Gateway Control Protocol")</title>
+
+
+
+<docidentifier type="ITU">ITU-T H.248 Sub-series Implementors Guide</docidentifier><docidentifier type="ITU-lang">ITU-T H.248 Sub-series Implementors Guide-E</docidentifier><docidentifier type="ITU-Recommendation">ITU-T H.248</docidentifier>
+
+<docnumber>H.248 Sub-series Implementors Guide</docnumber>
+
+<date type="published">
+<on>2017-10-27</on>
+</date>
+<contributor>
+<role type="author"/>
+<organization>
+<name>International Telecommunication Union</name>
+</organization>
+</contributor>
+<contributor>
+<role type="editor">raporteur</role>
+<person>
+<name>
+<completename>Patrick Luthi</completename>
+</name>
+<affiliation>
+<organization>
+<name>IEEE</name>
+<address>
+<formattedAddress>Switzerland</formattedAddress>
+</address>
+</organization>
+</affiliation>
+<email>pluthi@ieee.org</email>
+</person>
+</contributor>
+<contributor>
+<role type="editor"/>
+<person>
+<name>
+<completename>Christian Groves</completename>
+</name>
+<affiliation>
+<organization>
+
+<address>
+<formattedAddress>Australia</formattedAddress>
+</address>
+</organization>
+</affiliation>
+<phone>+61 3 9391 3457</phone>
+<email>cngroves.std@gmail.com</email>
+</person>
+</contributor>
+<contributor>
+<role type="publisher"/>
+<organization>
+<name>International Telecommunication Union</name>
+</organization>
+</contributor>
+
+<language>en</language>
+<script>Latn</script><abstract><p>This document is a compilation of reported defects identified in the ITU-T H.248 sub-series of Recommendations currently in force. It must be read in conjunction with the Recommendations to serve as an additional authoritative source of information for implementors. The changes, clarifications and corrections defined herein are expected to be included in future versions of affected H.248 sub-series Recommendations.</p>
+<p>This edition contains all updates submitted up to and including those at Study Group 16 meeting in Macao, China, 16-27 October 2017.</p>
+<p>This Implementors' Guide was approved by ITU-T Study Group 16 on 27 October 2017 and obsoletes the earlier version of this implementers' guide approved on 23 October 2015.</p>
+<note>
+<p>The Implementors' Guides for H.248.1 Version 1 and Version 2 are published as separate documents. (ITU-T H.248.1 is currently in its version 3.)</p>
+</note></abstract>
+<status>
+<stage>in-force</stage>
+</status>
+<copyright>
+<from>2017</from>
+<owner>
+<organization>
+<name>International Telecommunication Union</name>
+</organization>
+</owner>
+</copyright>
+<series type="main">
+<title>H: Audiovisual and Multimedia Systems</title>
+</series>
+<series type="secondary">
+<title>Infrastructure of audiovisual services &#8211; Communication procedures</title>
+</series>
+<ext>
+<doctype>implementers-guide</doctype>
+<editorialgroup>
+<bureau>T</bureau>
+<group type="study-group">
+<name>16</name>
+</group>
+</editorialgroup>
+<ip-notice-received>false</ip-notice-received>
+<structuredidentifier>
+<bureau>T</bureau>
+<docnumber>H.248 Sub-series Implementors Guide</docnumber>
+</structuredidentifier>
+</ext>
+</bibdata>
