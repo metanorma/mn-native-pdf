@@ -4894,6 +4894,7 @@
 			</xsl:if>
 			<xsl:if test="$namespace = 'bsi'">
 				<xsl:if test="$document_type = 'PAS'">
+					<xsl:attribute name="font-size">inherit</xsl:attribute>
 					<xsl:attribute name="color"><xsl:value-of select="$color_PAS"/></xsl:attribute>
 					<xsl:attribute name="line-height">1.3</xsl:attribute>
 					<xsl:if test="following-sibling::*[1][local-name() = 'clause']">
