@@ -1589,6 +1589,8 @@
 				<fo:block>&#xA0;</fo:block>
 			</xsl:if> -->
 			
+			
+			<!-- Display table's name before table as standalone block -->
 			<!-- $namespace = 'iso' or  -->
 			<xsl:if test="$namespace = 'csa' or $namespace = 'csd' or $namespace = 'gb' or $namespace = 'iec' or $namespace = 'iho' or 											
 												$namespace = 'itu' or 
@@ -1762,6 +1764,14 @@
 					<xsl:attribute name="margin-right">0mm</xsl:attribute>
 					<xsl:attribute name="margin-bottom">12pt</xsl:attribute>
 				</xsl:if>
+				
+				<!-- display table's name before table for PAS inside block-container (2-columnn layout) -->
+				<xsl:if test="$namespace = 'bsi'">
+					<xsl:if test="$document_type = 'PAS'">
+						<xsl:apply-templates select="*[local-name()='name']" mode="presentation"/>
+					</xsl:if>
+				</xsl:if>
+				
 				<xsl:variable name="table_width">
 					<!-- for centered table always 100% (@width will be set for middle/second cell of outer table) -->
 					<xsl:if test="$namespace = 'bsi' or $namespace = 'csa' or $namespace = 'csd' or $namespace = 'gb' or 
@@ -2038,9 +2048,15 @@
 				
 				<xsl:if test="$namespace = 'bsi'">
 					<xsl:if test="$document_type = 'PAS'">
-						<xsl:attribute name="margin-left">0mm</xsl:attribute>
+						<xsl:attribute name="margin-left">0.5mm</xsl:attribute>
 						<xsl:attribute name="font-size">12pt</xsl:attribute>
 						<xsl:attribute name="font-style">normal</xsl:attribute>
+						<xsl:attribute name="margin-bottom">-16pt</xsl:attribute> <!-- to overlap title on empty header row -->
+						<xsl:if test="$continued = 'true'"> <!-- in continued table header -->
+							<xsl:attribute name="margin-left">0mm</xsl:attribute>
+							<xsl:attribute name="margin-top">0pt</xsl:attribute>
+							<xsl:attribute name="margin-bottom">8pt</xsl:attribute>
+						</xsl:if>
 					</xsl:if>
 				</xsl:if>
 				
@@ -2065,9 +2081,9 @@
 							<fo:retrieve-table-marker retrieve-class-name="table_number"/>
 						</fo:inline>
 						<fo:inline font-style="italic">
-							<xsl:if test="$document_type = 'PAS'">
+							<!-- <xsl:if test="$document_type = 'PAS'">
 								<xsl:attribute name="font-style">normal</xsl:attribute>
-							</xsl:if>
+							</xsl:if> -->
 							<xsl:text> </xsl:text>
 							<fo:retrieve-table-marker retrieve-class-name="table_continued"/>
 						</fo:inline>
@@ -2571,10 +2587,20 @@
 		
 		<fo:table-body>
 			<xsl:if test="$namespace = 'bsi' or $namespace = 'iso' or $namespace = 'jcgm'">				
-				<xsl:variable name="title_continued">
+				<xsl:variable name="title_continued_">
 					<xsl:call-template name="getTitle">
 						<xsl:with-param name="name" select="'title-continued'"/>
 					</xsl:call-template>
+				</xsl:variable>
+				
+				<xsl:variable name="title_continued">
+					<xsl:if test="$namespace = 'iso' or $namespace = 'jcgm'"><xsl:value-of select="$title_continued_"/></xsl:if>
+					<xsl:if test="$namespace = 'bsi'">
+						<xsl:choose>
+							<xsl:when test="$document_type = 'PAS'">— <xsl:value-of select="translate($title_continued_, '()', '')"/></xsl:when>
+							<xsl:otherwise><xsl:value-of select="$title_continued_"/></xsl:otherwise>
+						</xsl:choose>
+					</xsl:if>
 				</xsl:variable>
 				
 				<xsl:variable name="title_start" select="ancestor::*[local-name()='table'][1]/*[local-name()='name']/node()[1][self::text()]"/>
@@ -2583,7 +2609,11 @@
 				<fo:table-row height="0" keep-with-next.within-page="always">
 					<fo:table-cell>
 						<xsl:if test="$namespace = 'bsi'">
-							<fo:marker marker-class-name="table_number"><xsl:value-of select="$table_number"/></fo:marker>
+							<fo:marker marker-class-name="table_number">
+								<xsl:if test="$document_type != 'PAS'">
+									<xsl:value-of select="$table_number"/>
+								</xsl:if>
+							</fo:marker>
 							
 							<xsl:variable name="table_name_full" select="ancestor::*[local-name()='table'][1]/*[local-name()='name']"/>
 							<xsl:variable name="table_name">
@@ -2597,8 +2627,11 @@
 								</xsl:choose>
 							</xsl:variable>
 							
-							
-							<fo:marker marker-class-name="table_continued"><xsl:value-of select="$table_name"/></fo:marker>
+							<fo:marker marker-class-name="table_continued">
+								<xsl:if test="$document_type != 'PAS'">
+									<xsl:value-of select="$table_name"/>
+								</xsl:if>
+							</fo:marker>
 						</xsl:if>
 						<xsl:if test="$namespace = 'iso' or $namespace = 'jcgm'">
 							<fo:marker marker-class-name="table_continued" />
