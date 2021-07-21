@@ -1572,7 +1572,9 @@
 	
 		<xsl:variable name="table-preamble">
 			<xsl:if test="$namespace = 'itu'">
-				<fo:block space-before="18pt">&#xA0;</fo:block>
+				<xsl:if test="$doctype != 'service-publication'">
+					<fo:block space-before="18pt">&#xA0;</fo:block>
+				</xsl:if>
 			</xsl:if>
 			<xsl:if test="$namespace = 'ogc'">
 				<fo:block>&#xA0;</fo:block>
@@ -1765,6 +1767,12 @@
 					<xsl:attribute name="margin-bottom">12pt</xsl:attribute>
 				</xsl:if>
 				
+				<xsl:if test="$namespace = 'itu'">
+					<xsl:if test="$doctype = 'service-publication' and $lang != 'ar'">
+						<xsl:attribute name="font-family">Calibri</xsl:attribute>
+					</xsl:if>
+				</xsl:if>
+				
 				<!-- display table's name before table for PAS inside block-container (2-columnn layout) -->
 				<xsl:if test="$namespace = 'bsi'">
 					<xsl:if test="$document_type = 'PAS'">
@@ -1825,6 +1833,9 @@
 					<xsl:if test="$namespace = 'itu'">
 						<attribute name="margin-left">0mm</attribute>
 						<attribute name="margin-right">0mm</attribute>
+						<xsl:if test="$doctype = 'service-publication'">
+							<attribute name="border">1pt solid rgb(211,211,211)</attribute>
+						</xsl:if>
 					</xsl:if>
 					<xsl:if test="$namespace = 'bsi' or $namespace = 'iso' or $namespace = 'jcgm'">
 						<attribute name="margin-left">0mm</attribute>
@@ -2710,9 +2721,15 @@
 						<xsl:attribute name="border-bottom">solid black 0.5pt</xsl:attribute>
 					</xsl:if>
 					<xsl:if test="$namespace = 'rsd'">
-							<xsl:attribute name="font-weight">normal</xsl:attribute>
-							<xsl:attribute name="color">black</xsl:attribute>
+						<xsl:attribute name="font-weight">normal</xsl:attribute>
+						<xsl:attribute name="color">black</xsl:attribute>
+					</xsl:if>
+					<xsl:if test="$namespace = 'itu'">
+						<xsl:if test="$doctype = 'service-publication'">
+							<xsl:attribute name="border-bottom">1.1pt solid black</xsl:attribute>
 						</xsl:if>
+					</xsl:if>
+					
 				</xsl:if>
 				<xsl:if test="$parent-name = 'tfoot'">
 					<xsl:if test="$namespace = 'bsi'">
@@ -2781,7 +2798,13 @@
 					<xsl:if test="$document_type = 'PAS'">
 						<xsl:attribute name="min-height">6mm</xsl:attribute>
 					</xsl:if>
-			</xsl:if>
+				</xsl:if>
+				
+				<xsl:if test="$namespace = 'itu'">
+					<xsl:if test="$doctype = 'service-publication'">
+						<xsl:attribute name="min-height">5mm</xsl:attribute>
+					</xsl:if>
+				</xsl:if>
 				
 				<!-- <xsl:if test="$namespace = 'bipm'">
 					<xsl:attribute name="height">8mm</xsl:attribute>
@@ -2828,6 +2851,11 @@
 			<xsl:if test="$namespace = 'itu'">
 				<xsl:if test="ancestor::*[local-name()='preface']">
 					<xsl:attribute name="border">solid black 0pt</xsl:attribute>
+				</xsl:if>
+				<xsl:if test="$doctype = 'service-publication'">
+					<xsl:attribute name="border">1pt solid rgb(211,211,211)</xsl:attribute>
+					<xsl:attribute name="border-bottom">1pt solid black</xsl:attribute>
+					<xsl:attribute name="padding-top">1mm</xsl:attribute>
 				</xsl:if>
 			</xsl:if>
 			<xsl:if test="$namespace = 'nist-cswp'  or $namespace = 'nist-sp'">
@@ -2981,6 +3009,10 @@
 					<xsl:attribute name="border">solid black 0pt</xsl:attribute>
 				</xsl:if>
 				<xsl:attribute name="display-align">before</xsl:attribute>
+				<xsl:if test="$doctype = 'service-publication'">
+					<xsl:attribute name="border">1pt solid rgb(211,211,211)</xsl:attribute>
+					<xsl:attribute name="padding-top">1mm</xsl:attribute>
+				</xsl:if>
 			</xsl:if>
 			<xsl:if test="$namespace = 'bsi' or $namespace = 'iso' or $namespace = 'iec' or $namespace = 'jcgm'">
 				<xsl:if test="ancestor::*[local-name() = 'tfoot']">
@@ -8395,20 +8427,40 @@
 	</xsl:template>
 
 	<xsl:template name="getLocalizedString">
-		<xsl:param name="key"/>	
+		<xsl:param name="key"/>
+		<xsl:param name="formatted">false</xsl:param>
 		
 		<xsl:variable name="curr_lang">
 			<xsl:call-template name="getLang"/>
 		</xsl:variable>
 		
-		<xsl:variable name="data_value" select="normalize-space(xalan:nodeset($bibdata)//*[local-name() = 'localized-string'][@key = $key and @language = $curr_lang])"/>
+		<xsl:variable name="data_value">
+			<xsl:choose>
+				<xsl:when test="$formatted = 'true'">
+					<xsl:apply-templates select="xalan:nodeset($bibdata)//*[local-name() = 'localized-string'][@key = $key and @language = $curr_lang]"/>
+				</xsl:when>
+				<xsl:otherwise>
+					<xsl:value-of select="normalize-space(xalan:nodeset($bibdata)//*[local-name() = 'localized-string'][@key = $key and @language = $curr_lang])"/>
+				</xsl:otherwise>
+			</xsl:choose>
+		</xsl:variable>
 		
 		<xsl:choose>
-			<xsl:when test="$data_value != ''">
-				<xsl:value-of select="$data_value"/>
+			<xsl:when test="normalize-space($data_value) != ''">
+				<xsl:choose>
+					<xsl:when test="$formatted = 'true'"><xsl:copy-of select="$data_value"/></xsl:when>
+					<xsl:otherwise><xsl:value-of select="$data_value"/></xsl:otherwise>
+				</xsl:choose>
 			</xsl:when>
 			<xsl:when test="/*/*[local-name() = 'localized-strings']/*[local-name() = 'localized-string'][@key = $key and @language = $curr_lang]">
-				<xsl:value-of select="/*/*[local-name() = 'localized-strings']/*[local-name() = 'localized-string'][@key = $key and @language = $curr_lang]"/>
+				<xsl:choose>
+					<xsl:when test="$formatted = 'true'">
+						<xsl:apply-templates select="/*/*[local-name() = 'localized-strings']/*[local-name() = 'localized-string'][@key = $key and @language = $curr_lang]"/>
+					</xsl:when>
+					<xsl:otherwise>
+						<xsl:value-of select="/*/*[local-name() = 'localized-strings']/*[local-name() = 'localized-string'][@key = $key and @language = $curr_lang]"/>
+					</xsl:otherwise>
+				</xsl:choose>
 			</xsl:when>
 			<xsl:otherwise>
 				<xsl:variable name="key_">
@@ -8419,9 +8471,10 @@
 				<xsl:value-of select="$key_"/>
 			</xsl:otherwise>
 		</xsl:choose>
-		
+			
 	</xsl:template>
- 
+	
+	
 	<xsl:template name="setTrackChangesStyles">
 		<xsl:param name="isAdded"/>
 		<xsl:param name="isDeleted"/>
