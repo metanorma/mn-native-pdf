@@ -376,7 +376,7 @@
 								</xsl:call-template>
 								<xsl:value-of select="/*/itu:bibdata/itu:docnumber"/>
 								<xsl:text> – </xsl:text>
-								<xsl:value-of select="translate(/*/itu:bibdata/itu:date[@type='published' and @format='ddMMMyyyy'],' ','')"/>
+								<xsl:value-of select="translate(normalize-space(/*/itu:bibdata/itu:date[@type='published' and @format]),' ','')"/>
 							</fo:block>
 						</fo:block>
 						
@@ -416,12 +416,78 @@
 									</xsl:variable>
 									<xsl:value-of select="java:toUpperCase(java:java.lang.String.new($tsb_full))"/>
 								</fo:block>
-								
-								<fo:block-container margin-top="20mm">
+								<fo:block-container height="20mm" display-align="center">
+									<fo:block font-weight="bold">
+										<!-- complements -->
+										<!-- To do: Example: COMPLEMENT  TO  ITU-T  RECOMMENDATIONS  F.69  (06/1994) AND  F.68  (11/1988) -->
+									</fo:block>
+								</fo:block-container>
+								<fo:block-container>
 									<fo:block font-size="1pt"><fo:leader leader-pattern="rule" leader-length="90%" rule-style="solid" rule-thickness="1pt"/></fo:block>
 									<fo:block-container height="75mm" display-align="center" >
-										<fo:block font-size="16pt" font-weight="bold" space-before="18mm">
-											<xsl:value-of select="/*/itu:bibdata/itu:title[@type='main' and @language = $lang]"/>
+										<xsl:variable name="title_main" select="/*/itu:bibdata/itu:title[@type='main' and @language = $lang]"/>
+										<xsl:variable name="series_main" select="normalize-space(/*/itu:bibdata/itu:series[@type='main']/itu:title)"/>
+										<xsl:variable name="series_secondary" select="normalize-space(/*/itu:bibdata/itu:series[@type='secondary']/itu:title)"/>
+										<xsl:variable name="series_tertiary" select="normalize-space(/*/itu:bibdata/itu:series[@type='tertiary']/itu:title)"/>
+										<fo:block font-weight="bold">
+											<xsl:choose>
+												<xsl:when test="$series_main != '' and $series_secondary != '' and $series_tertiary = ''">
+													<fo:block font-size="16pt">
+														<xsl:value-of select="$series_main"/>
+													</fo:block>
+													<fo:block font-size="14pt">
+														<xsl:if test="not(starts-with($series_secondary, '('))">
+															<xsl:text>(</xsl:text>
+														</xsl:if>
+														<xsl:value-of select="$series_secondary"/>
+														<xsl:if test="not(starts-with($series_secondary, '('))">
+															<xsl:text>)</xsl:text>
+														</xsl:if>
+													</fo:block>
+												</xsl:when>
+												<xsl:when test="$series_main != '' and $series_secondary != '' and $series_tertiary != ''">
+													<fo:block font-size="16pt">
+														<xsl:value-of select="$series_main"/>
+													</fo:block>
+													<fo:block font-size="14pt">
+														<xsl:if test="not(starts-with($series_secondary, '('))">
+															<xsl:text>(</xsl:text>
+														</xsl:if>
+														<xsl:value-of select="$series_secondary"/>
+														<xsl:if test="not(starts-with($series_secondary, '('))">
+															<xsl:text>)</xsl:text>
+														</xsl:if>
+													</fo:block>
+													<fo:block font-size="12pt" space-before="12pt" space-after="12pt">
+														<xsl:value-of select="$series_tertiary"/>
+													</fo:block>
+													<fo:block font-size="16pt">
+														<xsl:value-of select="$title_main"/>
+													</fo:block>
+												</xsl:when>
+												<xsl:when test="$series_main != '' and $series_secondary = '' and $series_tertiary = ''">
+													<fo:block font-size="16pt">
+														<xsl:value-of select="$title_main"/>
+													</fo:block>
+													<fo:block font-size="14pt">
+														<xsl:if test="not(starts-with($series_main, '('))">
+															<xsl:text>(</xsl:text>
+														</xsl:if>
+														<xsl:value-of select="$series_main"/>
+														<xsl:if test="not(starts-with($series_main, '('))">
+															<xsl:text>)</xsl:text>
+														</xsl:if>
+													</fo:block>
+												</xsl:when>
+												<xsl:otherwise>
+													<fo:block font-size="16pt">
+														<xsl:value-of select="$title_main"/>
+													</fo:block>
+												</xsl:otherwise>
+											</xsl:choose>
+										</fo:block>
+										
+										<fo:block font-size="14pt">
 										</fo:block>
 										<fo:block font-size="14pt">
 											<fo:block>&#xa0;</fo:block>
@@ -442,7 +508,9 @@
 								</xsl:call-template>
 							</xsl:variable>
 							<xsl:variable name="year" select="substring(/*/itu:bibdata/itu:date[@type = 'published']/itu:on,1,4)"/>
-							<xsl:value-of select="java:replaceAll(java:java.lang.String.new($placedate),'%',$year)"/>
+							<xsl:if test="normalize-space($year) != ''">
+								<xsl:value-of select="java:replaceAll(java:java.lang.String.new($placedate),'%',$year)"/>
+							</xsl:if>
 						</fo:block>
 					</fo:flow>
 				</fo:page-sequence>
@@ -2117,7 +2185,7 @@
 					<fo:table-column column-width="proportional-column-width(2)"/>
 					<fo:table-body>
 						<fo:table-row>
-							<fo:table-cell text-align="start" font-size="10pt">
+							<fo:table-cell text-align="start" font-size="10pt" display-align="center">
 								<fo:block><xsl:value-of select="$footer-text"/></fo:block>
 							</fo:table-cell>
 							<fo:table-cell text-align="center">
@@ -2139,7 +2207,7 @@
 					<fo:table-column column-width="proportional-column-width(2)"/>
 					<fo:table-body>
 						<fo:table-row>
-							<fo:table-cell text-align="start" font-size="10pt">
+							<fo:table-cell text-align="start" font-size="10pt" display-align="center">
 								<fo:block><xsl:value-of select="$footer-text"/></fo:block>
 							</fo:table-cell>
 							<fo:table-cell text-align="center">
