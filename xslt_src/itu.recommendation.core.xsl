@@ -374,7 +374,7 @@
 								<xsl:call-template name="getLocalizedString">
 									<xsl:with-param name="key">number_abbrev</xsl:with-param>
 								</xsl:call-template>
-								<xsl:text>????</xsl:text>
+								<xsl:value-of select="/*/itu:bibdata/itu:docnumber"/>
 								<xsl:text> – </xsl:text>
 								<xsl:value-of select="translate(/*/itu:bibdata/itu:date[@type='published' and @format='ddMMMyyyy'],' ','')"/>
 							</fo:block>
@@ -417,19 +417,21 @@
 									<xsl:value-of select="java:toUpperCase(java:java.lang.String.new($tsb_full))"/>
 								</fo:block>
 								
-								<fo:block space-before="18mm"><fo:leader leader-pattern="rule" leader-length="90%" rule-style="solid" rule-thickness="1pt"/></fo:block>
-								
-								<fo:block font-size="16pt" font-weight="bold" space-before="18mm">
-									<xsl:value-of select="/*/itu:bibdata/itu:title[@type='main' and @language = $lang]"/>
-								</fo:block>
-								<fo:block font-size="14pt">
-									<fo:block>&#xa0;</fo:block>
-									<xsl:variable name="position-sp" select="/*/itu:bibdata/itu:title[@type='position-sp' and @language = $lang]"/>
-									<xsl:value-of select="java:toUpperCase(java:java.lang.String.new($position-sp))"/>
-								</fo:block>
-								
-								<fo:block space-before="22mm"><fo:leader leader-pattern="rule" leader-length="90%" rule-style="solid" rule-thickness="1pt"/></fo:block>
-								
+								<fo:block-container margin-top="20mm">
+									<fo:block font-size="1pt"><fo:leader leader-pattern="rule" leader-length="90%" rule-style="solid" rule-thickness="1pt"/></fo:block>
+									<fo:block-container height="75mm" display-align="center" >
+										<fo:block font-size="16pt" font-weight="bold" space-before="18mm">
+											<xsl:value-of select="/*/itu:bibdata/itu:title[@type='main' and @language = $lang]"/>
+										</fo:block>
+										<fo:block font-size="14pt">
+											<fo:block>&#xa0;</fo:block>
+											<xsl:variable name="position-sp" select="/*/itu:bibdata/itu:title[@type='position-sp' and @language = $lang]"/>
+											<xsl:value-of select="java:toUpperCase(java:java.lang.String.new($position-sp))"/>
+										</fo:block>
+									</fo:block-container>
+									<fo:block font-size="1pt"><fo:leader leader-pattern="rule" leader-length="90%" rule-style="solid" rule-thickness="1pt"/></fo:block>
+								</fo:block-container>
+							
 							</fo:block-container>
 						</fo:block-container>
 						
@@ -1797,7 +1799,10 @@
 						</fo:basic-link>
 					</fo:inline>
 					<fo:footnote-body>
-						<fo:block font-size="10pt" margin-bottom="12pt" text-align="justify" font-style="normal" font-weight="normal">
+						<fo:block font-size="11pt" margin-bottom="12pt" text-align="justify" font-style="normal" font-weight="normal">
+							<xsl:if test="$doctype = 'service-publication'">
+								<xsl:attribute name="font-size">10pt</xsl:attribute>
+							</xsl:if>
 							<fo:inline id="footnote_{@reference}_{$number}" font-size="85%" padding-right="2mm" keep-with-next.within-line="always" baseline-shift="30%">
 								<xsl:value-of select="$current_fn_number"/>
 							</fo:inline>
