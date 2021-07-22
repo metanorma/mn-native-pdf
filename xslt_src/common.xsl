@@ -2437,6 +2437,14 @@
 					</xsl:choose>
 				</xsl:for-each>
 				
+				<xsl:if test="$namespace = 'itu'">
+					<xsl:if test="$doctype = 'service-publication'">
+						<xsl:attribute name="border">none</xsl:attribute>
+						<xsl:attribute name="font-family">Arial</xsl:attribute>
+						<xsl:attribute name="font-size">8pt</xsl:attribute>
+					</xsl:if>
+				</xsl:if>
+				
 				<xsl:choose>
 					<xsl:when test="xalan:nodeset($colgroup)//*[local-name()='col']">
 						<xsl:for-each select="xalan:nodeset($colgroup)//*[local-name()='col']">
@@ -2476,6 +2484,9 @@
 								<xsl:if test="ancestor::*[local-name()='preface']">
 									<xsl:attribute name="border">solid black 0pt</xsl:attribute>
 								</xsl:if>
+								<xsl:if test="$doctype = 'service-publication'">
+									<xsl:attribute name="border">none</xsl:attribute>
+								</xsl:if>
 							</xsl:if>
 							<!-- fn will be processed inside 'note' processing -->
 							<xsl:if test="$namespace = 'iec'">
@@ -2505,6 +2516,11 @@
 								<xsl:attribute name="border">solid black 0pt</xsl:attribute>
 							</xsl:if>
 							
+							<xsl:if test="$namespace = 'itu'">
+								<xsl:if test="$doctype = 'service-publication'">
+									<fo:block margin-top="7pt" margin-bottom="2pt"><fo:inline>____________</fo:inline></fo:block>
+								</xsl:if>
+							</xsl:if>
 							
 							<!-- for BSI (not PAS) display Notes before footnotes -->
 							<xsl:if test="$namespace = 'bsi'">
