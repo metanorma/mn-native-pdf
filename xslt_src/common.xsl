@@ -643,6 +643,11 @@
 		</xsl:if>		
 	</xsl:attribute-set>
 
+	<xsl:variable name="table-border_">
+		<xsl:if test="$namespace = 'bsi'">0.5pt solid black</xsl:if>
+	</xsl:variable>
+	<xsl:variable name="table-border" select="normalize-space($table-border_)"/>
+	
 	<xsl:attribute-set name="table-name-style">
 		<xsl:attribute name="keep-with-next">always</xsl:attribute>
 		<xsl:if test="$namespace = 'bsi'">
@@ -1803,9 +1808,9 @@
 					<attribute name="margin-left"><xsl:value-of select="$margin-left"/>mm</attribute>
 					<attribute name="margin-right"><xsl:value-of select="$margin-left"/>mm</attribute>
 					<xsl:if test="$namespace = 'bsi'">
-						<attribute name="border">0.5pt solid black</attribute>
+						<attribute name="border"><xsl:value-of select="$table-border"/></attribute>
 						<xsl:if test="*[local-name()='thead']">
-							<attribute name="border-top">0.5pt solid black</attribute>
+							<attribute name="border-top"><xsl:value-of select="$table-border"/></attribute>
 						</xsl:if>
 						<xsl:if test="ancestor::*[local-name() = 'preface']">
 							<attribute name="border">0pt solid black</attribute>
@@ -1821,7 +1826,13 @@
 							<attribute name="border-top">1pt solid black</attribute>
 						</xsl:if>
 					</xsl:if>
-					<xsl:if test="$namespace = 'bsi' or $namespace = 'iso'">
+					<xsl:if test="$namespace = 'bsi'">
+						<xsl:if test="ancestor::*[local-name() = 'table']">
+							<!-- for internal table in table cell -->
+							<attribute name="border"><xsl:value-of select="$table-border"/></attribute>
+						</xsl:if>
+					</xsl:if>
+					<xsl:if test="$namespace = 'iso'">
 						<xsl:if test="ancestor::*[local-name() = 'table']">
 							<!-- for internal table in table cell -->
 							<attribute name="border">0.5pt solid black</attribute>
@@ -2721,10 +2732,10 @@
 						</xsl:choose>
 					</xsl:if>
 					<xsl:if test="$namespace = 'bsi'">
-						<xsl:attribute name="border-top">solid black 0.5pt</xsl:attribute>
-						<xsl:attribute name="border-bottom">solid black 0.5pt</xsl:attribute>
+						<xsl:attribute name="border-top"><xsl:value-of select="$table-border"/></xsl:attribute>
+						<xsl:attribute name="border-bottom"><xsl:value-of select="$table-border"/></xsl:attribute>
 						<xsl:if test="position() = last()">
-							<xsl:attribute name="border-bottom">solid black 0pt</xsl:attribute>
+							<xsl:attribute name="border-bottom">none</xsl:attribute>
 						</xsl:if>
 						<xsl:if test="ancestor::*[local-name() = 'preface']">
 							<xsl:attribute name="border-top">solid black 0pt</xsl:attribute>
@@ -2750,8 +2761,8 @@
 				<xsl:if test="$parent-name = 'tfoot'">
 					<xsl:if test="$namespace = 'bsi'">
 						<xsl:attribute name="font-size">9pt</xsl:attribute>
-						<xsl:attribute name="border-left">solid black 1pt</xsl:attribute>
-						<xsl:attribute name="border-right">solid black 1pt</xsl:attribute>
+						<xsl:attribute name="border-left"><xsl:value-of select="$table-border"/></xsl:attribute>
+						<xsl:attribute name="border-right"><xsl:value-of select="$table-border"/></xsl:attribute>
 						<xsl:if test="$document_type = 'PAS'">
 							<xsl:attribute name="font-size">inherit</xsl:attribute>
 						</xsl:if>
@@ -2843,7 +2854,7 @@
 				</xsl:choose>
 			</xsl:attribute>
 			<xsl:if test="$namespace = 'bsi'">
-				<xsl:attribute name="border">0.5pt solid black</xsl:attribute>
+				<xsl:attribute name="border"><xsl:value-of select="$table-border"/></xsl:attribute>
 				<xsl:attribute name="padding-top">1mm</xsl:attribute>
 				
 				<xsl:if test="ancestor::*[local-name() = 'preface']">
@@ -3001,7 +3012,7 @@
 				<xsl:attribute name="padding-top">0.5mm</xsl:attribute>
 			</xsl:if>
 			<xsl:if test="$namespace = 'bsi'">
-				<xsl:attribute name="border">0.5pt solid black</xsl:attribute>
+				<xsl:attribute name="border"><xsl:value-of select="$table-border"/></xsl:attribute>
 				
 				<xsl:if test="not(ancestor::*[local-name()='preface']) and ancestor::*[local-name() = 'table']/*[local-name() = 'thead'] and not(ancestor::*[local-name() = 'tr']/preceding-sibling::*[local-name() = 'tr'])">
 					<!-- first row in table body, and if exists header -->
