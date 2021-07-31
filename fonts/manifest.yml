@@ -25,7 +25,7 @@ Times New Roman:
   - Italic
   - Bold Italic
   
-Courier:
+Courier New:
   - Regular
   - Bold
   - Italic
@@ -35,31 +35,47 @@ Cambria Math:
   - Regular
 
 Work Sans:
-  - Black
-  - Black Italic
-  - Bold
-  - Bold Italic
-  - ExtraBold
-  - ExtraBold Italic
-  - ExtraLight
-  - ExtraLight Italic
-  - Italic
-  - Light
-  - Light Italic
-  - Medium
-  - Medium Italic
   - Regular
-  - SemiBold
-  - SemiBold Italic
-  - Thin
-  - Thin Italic
- 
+  - Bold
+  - Italic
+  - Bold Italic
+
+Work Sans Black:
+  - Regular
+  - Italic
+
+Work Sans ExtraBold:
+  - Regular
+  - Italic
+
+Work Sans ExtraLight:
+  - Regular
+  - Italic
+
+Work Sans Light:
+  - Regular
+  - Italic
+
+Work Sans Medium:
+  - Regular
+  - Italic
+
+Work Sans SemiBold:
+  - Regular
+  - Italic
+
+Work Sans Thin:
+  - Regular
+  - Italic
+
 STIX Two Math:
   - Regular
 
 Source Han Sans:
   - Bold
-  - Normal
+  - Regular
+
+Source Han Sans Normal:
   - Regular
 
 Source Code Pro:
@@ -90,6 +106,8 @@ Lato:
   - Bold
   - Bold Italic
   - Italic
-  - Light
-  - Light Italic
   - Regular
+
+Lato Light:
+  - Regular
+  - Italic

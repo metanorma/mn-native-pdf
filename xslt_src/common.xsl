@@ -253,7 +253,7 @@
 		<xsl:attribute name="white-space">pre</xsl:attribute>
 		<xsl:attribute name="wrap-option">wrap</xsl:attribute>
 		<xsl:if test="$namespace = 'bsi' or $namespace = 'iso' or $namespace = 'gb' or $namespace = 'jcgm'">
-			<xsl:attribute name="font-family">Courier</xsl:attribute>			
+			<xsl:attribute name="font-family">Courier New</xsl:attribute>			
 			<xsl:attribute name="margin-bottom">12pt</xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'csa' or $namespace = 'rsd'">
@@ -268,17 +268,17 @@
 			<xsl:attribute name="keep-with-next">always</xsl:attribute>					
 		</xsl:if>
 		<xsl:if test="$namespace = 'iec'">
-			<xsl:attribute name="font-family">Courier</xsl:attribute>			
+			<xsl:attribute name="font-family">Courier New</xsl:attribute>			
 			<xsl:attribute name="margin-top">5pt</xsl:attribute>
 			<xsl:attribute name="margin-bottom">5pt</xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'itu' or $namespace = 'nist-cswp'  or $namespace = 'nist-sp' or $namespace = 'unece' or $namespace = 'unece-rec'">
-			<xsl:attribute name="font-family">Courier</xsl:attribute>			
+			<xsl:attribute name="font-family">Courier New</xsl:attribute>			
 			<xsl:attribute name="margin-top">6pt</xsl:attribute>
 			<xsl:attribute name="margin-bottom">6pt</xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'm3d'">
-			<xsl:attribute name="font-family">Courier</xsl:attribute>			
+			<xsl:attribute name="font-family">Courier New</xsl:attribute>			
 			<xsl:attribute name="margin-bottom">12pt</xsl:attribute>
 		</xsl:if>		
 		<xsl:if test="$namespace = 'ogc'">
@@ -287,7 +287,7 @@
 			<xsl:attribute name="line-height">113%</xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'ogc-white-paper'">
-			<xsl:attribute name="font-family">Courier</xsl:attribute>			
+			<xsl:attribute name="font-family">Courier New</xsl:attribute>			
 			<xsl:attribute name="margin-bottom">6pt</xsl:attribute>
 			<xsl:attribute name="keep-with-next">always</xsl:attribute>
 			<xsl:attribute name="line-height">113%</xsl:attribute>
@@ -1385,7 +1385,7 @@
 		</xsl:if>
 		<xsl:if test="$namespace = 'bsi' or $namespace = 'gb' or $namespace = 'iec' or $namespace = 'iho' or $namespace = 'iso' or $namespace = 'm3d' or 
 										 $namespace = 'ogc-white-paper' or $namespace = 'jcgm'">
-			<xsl:attribute name="font-family">Courier</xsl:attribute>			
+			<xsl:attribute name="font-family">Courier New</xsl:attribute>			
 		</xsl:if>
 		<xsl:if test="$namespace = 'ogc'">
 			<xsl:attribute name="font-family">Fira Code</xsl:attribute>			
