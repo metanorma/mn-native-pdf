@@ -7863,7 +7863,10 @@
 			</xsl:variable>
 			<xsl:value-of select="$docidentifier"/>
 			<xsl:apply-templates select="*[local-name() = 'note']"/>			
-			<xsl:if test="normalize-space($docidentifier) != ''">, </xsl:if>
+			<xsl:if test="normalize-space($docidentifier) != ''">
+				<xsl:if test="ancestor::*[local-name() = 'references'][@normative = 'true']">,</xsl:if>
+				<xsl:text> </xsl:text>
+			</xsl:if>
 			<xsl:choose>
 				<xsl:when test="*[local-name() = 'title'][@type = 'main' and @language = $lang]">
 					<xsl:apply-templates select="*[local-name() = 'title'][@type = 'main' and @language = $lang]"/>
