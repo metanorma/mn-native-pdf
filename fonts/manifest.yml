@@ -86,11 +86,13 @@ Source Code Pro:
 
 Source Sans Pro:
   - Italic
-  - Light
   - Bold Italic
-  - Light Italic
   - Regular
   - Bold
+
+Source Sans Pro Light:
+  - Regular
+  - Italic
 
 Source Serif Pro:
   - Bold
