@@ -1902,6 +1902,12 @@
 						<xsl:attribute name="border-bottom">0pt solid black</xsl:attribute> <!-- set 0pt border, because there is a separete table below for footer  -->
 					</xsl:if>
 					
+					<xsl:if test="$namespace = 'bsi'">
+						<xsl:if test=".//*[local-name()='fn']"> <!-- show fn in name after table -->
+							<!-- <xsl:attribute name="border-bottom">0pt solid black</xsl:attribute> --> <!-- set 0pt border, because there is a separete table below for footer  -->
+						</xsl:if>
+					</xsl:if>
+					
 					<xsl:choose>
 						<xsl:when test="*[local-name()='colgroup']/*[local-name()='col']">
 							<xsl:for-each select="*[local-name()='colgroup']/*[local-name()='col']">
@@ -2283,6 +2289,7 @@
 		</fo:table-header>
 	</xsl:template>
 	
+	<!-- template is using for iso, jcgm, bsi only -->
 	<xsl:template name="table-header-title">
 		<xsl:param name="cols-count"/>
 		<!-- row for title -->
@@ -2294,9 +2301,13 @@
 				<xsl:apply-templates select="ancestor::*[local-name()='table']/*[local-name()='name']" mode="presentation">
 					<xsl:with-param name="continued">true</xsl:with-param>
 				</xsl:apply-templates>
-				<xsl:for-each select="ancestor::*[local-name()='table'][1]">
-					<xsl:call-template name="fn_name_display"/>
-				</xsl:for-each>
+				
+				<xsl:if test="$namespace = 'iso' or $namespace = 'jcgm'">
+					<xsl:for-each select="ancestor::*[local-name()='table'][1]">
+						<xsl:call-template name="fn_name_display"/>
+					</xsl:for-each>
+				</xsl:if>
+				
 				<xsl:if test="$namespace = 'iso' or $namespace = 'jcgm'">
 					<fo:block text-align="right" font-style="italic">
 						<xsl:text>&#xA0;</xsl:text>
@@ -2419,7 +2430,13 @@
 		
 		<xsl:variable name="isNoteOrFnExist" select="../*[local-name()='note'] or ..//*[local-name()='fn'][local-name(..) != 'name']"/>
 		
-		<xsl:if test="$isNoteOrFnExist = 'true'">
+		<xsl:variable name="isNoteOrFnExistShowAfterTable">
+			<xsl:if test="$namespace = 'bsi'">
+				 <xsl:value-of select="../*[local-name()='note'] or ..//*[local-name()='fn']"/>
+			</xsl:if>
+		</xsl:variable>
+		
+		<xsl:if test="$isNoteOrFnExist = 'true' or normalize-space($isNoteOrFnExistShowAfterTable) = 'true'">
 		
 			<xsl:variable name="cols-count">
 				<xsl:choose>
@@ -2483,6 +2500,7 @@
 								<xsl:if test="$document_type = 'PAS'">
 									<xsl:attribute name="border">1pt solid <xsl:value-of select="$color_PAS"/></xsl:attribute>
 								</xsl:if>
+								<xsl:attribute name="border"><xsl:value-of select="$table-border"/></xsl:attribute>
 								<xsl:attribute name="border-top">solid black 0pt</xsl:attribute>
 							</xsl:if>
 							<xsl:if test="$namespace = 'iso' or $namespace = 'gb' or $namespace = 'jcgm'">
@@ -2646,6 +2664,7 @@
 				
 				<fo:table-row height="0" keep-with-next.within-page="always">
 					<fo:table-cell>
+					
 						<xsl:if test="$namespace = 'bsi'">
 							<fo:marker marker-class-name="table_number">
 								<xsl:if test="$document_type != 'PAS'">
@@ -2653,27 +2672,19 @@
 								</xsl:if>
 							</fo:marker>
 							
-							<xsl:variable name="table_name_full" select="ancestor::*[local-name()='table'][1]/*[local-name()='name']"/>
-							<xsl:variable name="table_name">
-								<xsl:choose>
-									<xsl:when test="substring-after($table_name_full, '—') != ''">
-										<xsl:text>—</xsl:text><xsl:value-of select="substring-after($table_name_full, '—')"/>
-									</xsl:when>
-									<xsl:otherwise>
-										<xsl:value-of select="$table_name_full"/>
-									</xsl:otherwise>
-								</xsl:choose>
-							</xsl:variable>
-							
-							<fo:marker marker-class-name="table_continued">
+							<fo:marker marker-class-name="table_continued"><fo:inline>
 								<xsl:if test="$document_type != 'PAS'">
-									<xsl:value-of select="$table_name"/>
+									<xsl:apply-templates select="ancestor::*[local-name()='table'][1]/*[local-name()='name']" mode="presentation_name"/>
 								</xsl:if>
+								</fo:inline>
 							</fo:marker>
+						 <!-- end BSI -->
 						</xsl:if>
+						
 						<xsl:if test="$namespace = 'iso' or $namespace = 'jcgm'">
 							<fo:marker marker-class-name="table_continued" />
 						</xsl:if>
+						
 						<fo:block/>
 					</fo:table-cell>
 				</fo:table-row>
@@ -2696,6 +2707,24 @@
 		</fo:table-body>
 		
 	</xsl:template>
+	
+	<xsl:template match="*[local-name()='table']/*[local-name()='name']/text()[1]" priority="2" mode="presentation_name">
+		<xsl:choose>
+			<xsl:when test="substring-after(., '—') != ''">
+				<xsl:text>—</xsl:text><xsl:value-of select="substring-after(., '—')"/>
+			</xsl:when>
+			<xsl:otherwise>
+				<xsl:value-of select="."/>
+			</xsl:otherwise>
+		</xsl:choose>
+	</xsl:template>
+	<xsl:template match="*[local-name()='table']/*[local-name()='name']" mode="presentation_name">
+		<xsl:apply-templates mode="presentation_name"/>
+	</xsl:template>
+	<xsl:template match="*[local-name()='table']/*[local-name()='name']/node()" mode="presentation_name">
+		<xsl:apply-templates select="." />
+	</xsl:template>
+	
 	
 <!--	
 	<xsl:template match="*[local-name()='thead']/*[local-name()='tr']">
@@ -3239,24 +3268,16 @@
 	
 	<xsl:template name="fn_display">
 		<xsl:variable name="references">
+			<xsl:if test="$namespace = 'bsi'">
+				<xsl:for-each select="..//*[local-name()='fn'][local-name(..) = 'name']">
+					<xsl:call-template name="create_fn" />
+				</xsl:for-each>
+			</xsl:if>
 			<xsl:for-each select="..//*[local-name()='fn'][local-name(..) != 'name']">
-				<fn reference="{@reference}" id="{@reference}_{ancestor::*[@id][1]/@id}">
-					<xsl:if test="$namespace = 'itu'">
-						<xsl:if test="ancestor::*[local-name()='preface']">
-							<xsl:attribute name="preface">true</xsl:attribute>
-						</xsl:if>
-					</xsl:if>
-					<xsl:if test="$namespace = 'ogc' or $namespace = 'ogc-white-paper'">
-						<xsl:attribute name="id">
-							<xsl:value-of select="@reference"/>
-							<xsl:text>_</xsl:text>
-							<xsl:value-of select="ancestor::*[local-name()='table'][1]/@id"/>
-						</xsl:attribute>
-					</xsl:if>
-					<xsl:apply-templates />
-				</fn>
+				<xsl:call-template name="create_fn" />
 			</xsl:for-each>
 		</xsl:variable>
+		
 		<xsl:for-each select="xalan:nodeset($references)//fn">
 			<xsl:variable name="reference" select="@reference"/>
 			<xsl:if test="not(preceding-sibling::*[@reference = $reference])"> <!-- only unique reference puts in note-->
@@ -3356,6 +3377,24 @@
 				</fo:block>
 			</xsl:if>
 		</xsl:for-each>
+	</xsl:template>
+	
+	<xsl:template name="create_fn">
+		<fn reference="{@reference}" id="{@reference}_{ancestor::*[@id][1]/@id}">
+			<xsl:if test="$namespace = 'itu'">
+				<xsl:if test="ancestor::*[local-name()='preface']">
+					<xsl:attribute name="preface">true</xsl:attribute>
+				</xsl:if>
+			</xsl:if>
+			<xsl:if test="$namespace = 'ogc' or $namespace = 'ogc-white-paper'">
+				<xsl:attribute name="id">
+					<xsl:value-of select="@reference"/>
+					<xsl:text>_</xsl:text>
+					<xsl:value-of select="ancestor::*[local-name()='table'][1]/@id"/>
+				</xsl:attribute>
+			</xsl:if>
+			<xsl:apply-templates />
+		</fn>
 	</xsl:template>
 	
 	<xsl:template name="fn_name_display">
@@ -3499,7 +3538,7 @@
 		<!-- <xsl:variable name="namespace" select="substring-before(name(/*), '-')"/> -->
 		<fo:inline font-size="80%" keep-with-previous.within-line="always">
 			<xsl:if test="$namespace = 'bsi'">
-				<xsl:if test="ancestor::*[local-name()='td'] or ancestor::*[local-name()='th']">
+				<xsl:if test="ancestor::*[local-name()='table'] or ancestor::*[local-name()='table']">
 					<xsl:attribute name="font-weight">normal</xsl:attribute>
 					<xsl:attribute name="baseline-shift">25%</xsl:attribute>
 					<xsl:if test="$document_type = 'PAS'">
@@ -3510,7 +3549,7 @@
 			</xsl:if>
 			
 			<xsl:if test="$namespace = 'iso' or $namespace = 'iec' or $namespace = 'jcgm'">
-				<xsl:if test="ancestor::*[local-name()='td']">
+				<xsl:if test="ancestor::*[local-name()='table']">
 					<xsl:attribute name="font-weight">normal</xsl:attribute>
 					<!-- <xsl:attribute name="alignment-baseline">hanging</xsl:attribute> -->
 					<xsl:attribute name="baseline-shift">15%</xsl:attribute>
