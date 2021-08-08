@@ -7609,8 +7609,8 @@
 					
 				</xsl:otherwise>
 			</xsl:choose>
+			<!-- end BIPM bibitem processing-->
 		</xsl:if>
-		<!-- end BIPM bibitem processing-->
 		
 		<xsl:if test="$namespace = 'ogc' or $namespace = 'ogc-white-paper'">
 			<!-- start OGC bibtem processing -->
@@ -7903,7 +7903,7 @@
 			<xsl:value-of select="$docidentifier"/>
 			<xsl:apply-templates select="*[local-name() = 'note']"/>			
 			<xsl:if test="normalize-space($docidentifier) != ''">
-				<xsl:if test="ancestor::*[local-name() = 'references'][@normative = 'true']">,</xsl:if>
+				<xsl:if test="preceding-sibling::*[local-name() = 'references'][1][@normative = 'true']">,</xsl:if>
 				<xsl:text> </xsl:text>
 			</xsl:if>
 			<xsl:choose>
