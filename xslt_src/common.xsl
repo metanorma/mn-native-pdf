@@ -580,7 +580,11 @@
 		<xsl:if test="$namespace = 'csd'">			
 			<xsl:attribute name="margin-bottom">14pt</xsl:attribute>
 		</xsl:if>
-		<xsl:if test="$namespace = 'bsi' or $namespace = 'gb' or $namespace = 'iso' or $namespace = 'jcgm'">
+		<xsl:if test="$namespace = 'bsi'">
+			<xsl:attribute name="font-size">10pt</xsl:attribute>
+			<xsl:attribute name="margin-bottom">8pt</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'gb' or $namespace = 'iso' or $namespace = 'jcgm'">
 			<xsl:attribute name="font-size">10pt</xsl:attribute>
 			<xsl:attribute name="margin-top">8pt</xsl:attribute>
 			<xsl:attribute name="margin-bottom">8pt</xsl:attribute>
@@ -6546,7 +6550,19 @@
 	</xsl:template>
 	
 	<xsl:template match="*[local-name() = 'termexample']/*[local-name() = 'p']">
-		<fo:inline><xsl:apply-templates/></fo:inline>
+		<xsl:variable name="element">inline
+			<xsl:if test="$namespace = 'bsi'">block</xsl:if>
+		</xsl:variable>		
+		<xsl:choose>			
+			<xsl:when test="contains($element, 'block')">
+				<fo:block xsl:use-attribute-sets="example-p-style">
+					<xsl:apply-templates/>
+				</fo:block>
+			</xsl:when>
+			<xsl:otherwise>
+				<fo:inline><xsl:apply-templates/></fo:inline>
+			</xsl:otherwise>
+		</xsl:choose>
 	</xsl:template>	
 	<!-- ====== -->
 	<!-- ====== -->
@@ -6650,7 +6666,8 @@
 	<xsl:template match="*[local-name() = 'example']/*[local-name() = 'p']">
 		<xsl:variable name="num"><xsl:number/></xsl:variable>
 		<xsl:variable name="element">
-			<xsl:if test="$namespace = 'csa' or 
+			<xsl:if test="$namespace = 'bsi' or 
+												$namespace = 'csa' or 
 												$namespace = 'csd' or 
 												$namespace = 'gb' or 
 												$namespace = 'iec' or 
@@ -6664,7 +6681,7 @@
 												$namespace = 'mpfd' or
 												$namespace = 'm3d' or 
 												$namespace = 'bipm'">block</xsl:if>
-			<xsl:if test="$namespace = 'bsi' or $namespace = 'iso' or $namespace = 'jcgm' or $namespace = 'rsd'">
+			<xsl:if test="$namespace = 'iso' or $namespace = 'jcgm' or $namespace = 'rsd'">
 				<xsl:choose>
 					<xsl:when test="$num = 1">inline</xsl:when>
 					<xsl:otherwise>block</xsl:otherwise>
