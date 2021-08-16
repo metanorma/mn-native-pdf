@@ -660,7 +660,7 @@
 			<xsl:attribute name="font-style">italic</xsl:attribute>
 			<xsl:attribute name="text-align">left</xsl:attribute>
 			<xsl:attribute name="margin-left">-20mm</xsl:attribute>
-			<xsl:attribute name="margin-bottom">8pt</xsl:attribute>			
+			<xsl:attribute name="margin-bottom">8pt</xsl:attribute>
 		</xsl:if>	
 		<xsl:if test="$namespace = 'itu' or $namespace = 'csd' or $namespace = 'm3d'">
 			<xsl:attribute name="font-weight">bold</xsl:attribute>
@@ -1616,7 +1616,13 @@
 												$namespace = 'bipm'">
 				<xsl:apply-templates select="*[local-name()='name']" mode="presentation"/>
 			</xsl:if>
-					
+			
+			<xsl:if test="$namespace = 'bsi'">
+				<xsl:if test="$document_type != 'PAS'">
+					<xsl:apply-templates select="*[local-name()='name']" mode="presentation"/>
+				</xsl:if>
+			</xsl:if>
+			
 			<xsl:if test="$namespace = 'iec' or $namespace = 'itu' or $namespace = 'unece-rec' or $namespace = 'unece' or $namespace = 'csd' or $namespace = 'ogc' or $namespace = 'ogc-white-paper' or $namespace = 'gb' or $namespace = 'm3d' or $namespace = 'iho' or $namespace = 'mpfd' or $namespace = 'bipm'">
 				<xsl:call-template name="fn_name_display"/>
 			</xsl:if>
@@ -1731,6 +1737,9 @@
 				</xsl:if>
 				<xsl:if test="$namespace = 'bsi'">
 					<xsl:attribute name="margin-top">6pt</xsl:attribute>
+					<xsl:if test="$document_type != 'PAS'">
+						<xsl:attribute name="margin-top">-14pt</xsl:attribute>
+					</xsl:if>
 					<xsl:attribute name="margin-left">0mm</xsl:attribute>
 					<xsl:attribute name="margin-right">0mm</xsl:attribute>
 					<xsl:attribute name="margin-bottom">8pt</xsl:attribute>
@@ -1812,9 +1821,11 @@
 					<attribute name="margin-left"><xsl:value-of select="$margin-left"/>mm</attribute>
 					<attribute name="margin-right"><xsl:value-of select="$margin-left"/>mm</attribute>
 					<xsl:if test="$namespace = 'bsi'">
-						<attribute name="border"><xsl:value-of select="$table-border"/></attribute>
+						<!-- <attribute name="border"><xsl:value-of select="$table-border"/></attribute> -->
+						<attribute name="border">none</attribute>
+						<attribute name="border-bottom"><xsl:value-of select="$table-border"/></attribute>
 						<xsl:if test="*[local-name()='thead']">
-							<attribute name="border-top"><xsl:value-of select="$table-border"/></attribute>
+							<!-- <attribute name="border-top"><xsl:value-of select="$table-border"/></attribute> -->
 						</xsl:if>
 						<xsl:if test="ancestor::*[local-name() = 'preface']">
 							<attribute name="border">0pt solid black</attribute>
@@ -2079,6 +2090,11 @@
 				</xsl:if>
 				
 				<xsl:if test="$namespace = 'bsi'">
+					<xsl:if test="$continued != 'true'">
+						<xsl:attribute name="margin-top">6pt</xsl:attribute>
+						<xsl:attribute name="margin-bottom">0pt</xsl:attribute>
+					</xsl:if>
+				
 					<xsl:if test="$document_type = 'PAS'">
 						<xsl:attribute name="margin-left">0.5mm</xsl:attribute>
 						<xsl:attribute name="font-size">12pt</xsl:attribute>
@@ -2300,7 +2316,11 @@
 		<fo:table-row>
 			<fo:table-cell number-columns-spanned="{$cols-count}" border-left="1.5pt solid white" border-right="1.5pt solid white" border-top="1.5pt solid white" border-bottom="1.5pt solid black">
 				<xsl:if test="$namespace = 'bsi'">
-					<xsl:attribute name="border-bottom">0pt solid black</xsl:attribute>
+					<!-- <xsl:attribute name="border-bottom">0pt solid black</xsl:attribute> -->
+					<xsl:attribute name="border-bottom">none</xsl:attribute>
+					<xsl:attribute name="border-left">none</xsl:attribute>
+					<xsl:attribute name="border-right">none</xsl:attribute>
+					<xsl:attribute name="border-top">none</xsl:attribute>
 				</xsl:if>
 				<xsl:apply-templates select="ancestor::*[local-name()='table']/*[local-name()='name']" mode="presentation">
 					<xsl:with-param name="continued">true</xsl:with-param>
@@ -2505,7 +2525,7 @@
 									<xsl:attribute name="border">1pt solid <xsl:value-of select="$color_PAS"/></xsl:attribute>
 								</xsl:if>
 								<xsl:attribute name="border"><xsl:value-of select="$table-border"/></xsl:attribute>
-								<xsl:attribute name="border-top">solid black 0pt</xsl:attribute>
+								<!-- <xsl:attribute name="border-top">solid black 0pt</xsl:attribute> -->
 							</xsl:if>
 							<xsl:if test="$namespace = 'iso' or $namespace = 'gb' or $namespace = 'jcgm'">
 								<xsl:attribute name="border-top">solid black 0pt</xsl:attribute>
@@ -2670,18 +2690,19 @@
 					<fo:table-cell>
 					
 						<xsl:if test="$namespace = 'bsi'">
-							<fo:marker marker-class-name="table_number">
-								<xsl:if test="$document_type != 'PAS'">
+							<fo:marker marker-class-name="table_number" />
+								<!-- <xsl:if test="$document_type != 'PAS'">
 									<xsl:value-of select="$table_number"/>
 								</xsl:if>
-							</fo:marker>
+							</fo:marker> -->
 							
-							<fo:marker marker-class-name="table_continued"><fo:inline>
+							<fo:marker marker-class-name="table_continued" />
+							<!-- <fo:inline>
 								<xsl:if test="$document_type != 'PAS'">
 									<xsl:apply-templates select="ancestor::*[local-name()='table'][1]/*[local-name()='name']" mode="presentation_name"/>
 								</xsl:if>
 								</fo:inline>
-							</fo:marker>
+							</fo:marker> -->
 						 <!-- end BSI -->
 						</xsl:if>
 						
