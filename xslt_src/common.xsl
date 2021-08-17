@@ -1142,6 +1142,7 @@
 		<xsl:if test="$namespace = 'bsi'">
 			<xsl:attribute name="text-align">right</xsl:attribute>
 			<xsl:attribute name="margin-bottom">8pt</xsl:attribute>
+			<xsl:attribute name="keep-with-previous">always</xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'csa' or $namespace = 'ogc' or $namespace = 'ogc-white-paper'">
 			<xsl:attribute name="margin-bottom">12pt</xsl:attribute>
