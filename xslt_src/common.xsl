@@ -351,13 +351,27 @@
 		</xsl:if>
 	</xsl:attribute-set>
 
-	<xsl:attribute-set name="requirement-subject-style">
+	<xsl:attribute-set name="subject-style">
 	</xsl:attribute-set>
 	
-	<xsl:attribute-set name="requirement-inherit-style">
+	<xsl:attribute-set name="inherit-style">
 	</xsl:attribute-set>
 	
-
+	<xsl:attribute-set name="description-style">
+	</xsl:attribute-set>
+	
+	<xsl:attribute-set name="specification-style">
+	</xsl:attribute-set>
+	
+	<xsl:attribute-set name="measurement-target-style">
+	</xsl:attribute-set>
+	
+	<xsl:attribute-set name="verification-style">
+	</xsl:attribute-set>
+	
+	<xsl:attribute-set name="import-style">
+	</xsl:attribute-set>
+	
 	<xsl:attribute-set name="recommendation-style">
 		<xsl:if test="$namespace = 'ogc' or $namespace = 'ogc-white-paper'">
 			<xsl:attribute name="margin-top">6pt</xsl:attribute>
@@ -389,6 +403,7 @@
 			<xsl:attribute name="margin-bottom">12pt</xsl:attribute>
 		</xsl:if>
 	</xsl:attribute-set>
+	
 	
 	<xsl:attribute-set name="termexample-style">
 		<xsl:if test="$namespace = 'iec'">
@@ -6344,19 +6359,6 @@
 				<fo:inline padding-right="3mm">Obligation</fo:inline><xsl:value-of select="."/>
 			</fo:block>
 	</xsl:template>
-	
-	<xsl:template match="*[local-name() = 'requirement']/*[local-name() = 'subject']"/>
-	<xsl:template match="*[local-name() = 'requirement']/*[local-name() = 'subject']" mode="presentation">
-		<fo:block xsl:use-attribute-sets="requirement-subject-style">
-			<xsl:text>Target Type </xsl:text><xsl:apply-templates />
-		</fo:block>
-	</xsl:template>
-	
-	<xsl:template match="*[local-name() = 'requirement']/*[local-name() = 'inherit']">
-		<fo:block xsl:use-attribute-sets="requirement-inherit-style">
-			<xsl:text>Dependency </xsl:text><xsl:apply-templates />
-		</fo:block>
-	</xsl:template>
 	<!-- ========== -->
 	<!-- ========== -->
 	
@@ -6388,10 +6390,66 @@
 		</fo:block>
 	</xsl:template>
 	<!-- ========== -->
+	<!-- END recommendation -->
+	<!-- ========== -->
+	
+	<!-- ========== -->
+	<!-- ========== -->
+	<xsl:template match="*[local-name() = 'requirement']/*[local-name() = 'subject']" priority="2"/>
+	<xsl:template match="*[local-name() = 'requirement']/*[local-name() = 'subject']" mode="presentation">
+		<fo:block xsl:use-attribute-sets="subject-style">
+			<xsl:text>Target Type </xsl:text><xsl:apply-templates />
+		</fo:block>
+	</xsl:template>
+	
+	<xsl:template match="*[local-name() = 'subject']">
+		<fo:block xsl:use-attribute-sets="subject-style">
+			<xsl:text>Target Type </xsl:text><xsl:apply-templates />
+		</fo:block>
+	</xsl:template>
+	
+	<xsl:template match="*[local-name() = 'inherit'] | *[local-name() = 'component'][@class = 'inherit']">
+		<fo:block xsl:use-attribute-sets="inherit-style">
+			<xsl:text>Dependency </xsl:text><xsl:apply-templates />
+		</fo:block>
+	</xsl:template>
+	
+	<xsl:template match="*[local-name() = 'description'] | *[local-name() = 'component'][@class = 'description']">
+		<fo:block xsl:use-attribute-sets="description-style">
+			<xsl:apply-templates />
+		</fo:block>
+	</xsl:template>
+	
+	<xsl:template match="*[local-name() = 'specification'] | *[local-name() = 'component'][@class = 'specification']">
+		<fo:block xsl:use-attribute-sets="specification-style">
+			<xsl:apply-templates />
+		</fo:block>
+	</xsl:template>
+	
+	<xsl:template match="*[local-name() = 'measurement-target'] | *[local-name() = 'component'][@class = 'measurement-target']">
+		<fo:block xsl:use-attribute-sets="measurement-target-style">
+			<xsl:apply-templates />
+		</fo:block>
+	</xsl:template>
+	
+	<xsl:template match="*[local-name() = 'verification'] | *[local-name() = 'component'][@class = 'verification']">
+		<fo:block xsl:use-attribute-sets="verification-style">
+			<xsl:apply-templates />
+		</fo:block>
+	</xsl:template>
+	
+	<xsl:template match="*[local-name() = 'import'] | *[local-name() = 'component'][@class = 'import']">
+		<fo:block xsl:use-attribute-sets="import-style">
+			<xsl:apply-templates />
+		</fo:block>
+	</xsl:template>
+	<!-- ========== -->
+	<!-- END  -->
 	<!-- ========== -->
 	
 	<!-- ========== -->
 	<!-- requirement, recommendation, permission table -->
+	<!-- ========== -->
 	<xsl:template match="*[local-name() = 'table'][@class = 'recommendation' or @class='requirement' or @class='permission']">
 		<fo:block-container margin-left="0mm" margin-right="0mm" margin-bottom="12pt">
 			<xsl:if test="ancestor::*[local-name() = 'table'][@class = 'recommendation' or @class='requirement' or @class='permission']">
@@ -6548,7 +6606,8 @@
 			<xsl:apply-templates />
 		</fo:block>
 	</xsl:template>
-	
+	<!-- ========== -->
+	<!-- END requirement, recommendation, permission table -->
 	<!-- ========== -->
 	
 	<!-- ====== -->
