@@ -8002,7 +8002,8 @@
 			<xsl:value-of select="$docidentifier"/>
 			<xsl:apply-templates select="*[local-name() = 'note']"/>			
 			<xsl:if test="normalize-space($docidentifier) != ''">
-				<xsl:if test="preceding-sibling::*[local-name() = 'references'][1][@normative = 'true']">,</xsl:if>
+				<!-- <xsl:if test="preceding-sibling::*[local-name() = 'references'][1][@normative = 'true']">,</xsl:if> -->
+				<xsl:if test="not(starts-with($docidentifier, '['))">,</xsl:if>
 				<xsl:text> </xsl:text>
 			</xsl:if>
 			<xsl:choose>
