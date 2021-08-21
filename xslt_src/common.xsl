@@ -1753,7 +1753,7 @@
 				</xsl:if>
 				<xsl:if test="$namespace = 'bsi'">
 					<xsl:attribute name="margin-top">6pt</xsl:attribute>
-					<xsl:if test="$document_type != 'PAS'">
+					<xsl:if test="$document_type != 'PAS' and *[local-name() = 'name']">
 						<xsl:attribute name="margin-top">-14pt</xsl:attribute>
 					</xsl:if>
 					<xsl:attribute name="margin-left">0mm</xsl:attribute>
