@@ -4778,6 +4778,12 @@
 				<xsl:with-param name="isDeleted" select="$isDeleted"/>
 			</xsl:call-template>
 			
+			<xsl:if test="$namespace = 'bipm'"> <!-- insert helper tag -->
+				<xsl:if test="$add_math_as_text = 'true'">
+					<fo:inline color="white" font-size="1pt" font-style="normal" font-weight="normal">&#x200b;</fo:inline> <!-- zero width space -->
+				</xsl:if>
+			</xsl:if>
+			
 			<xsl:variable name="mathml">
 				<xsl:apply-templates select="." mode="mathml"/>
 			</xsl:variable>
@@ -4789,9 +4795,20 @@
 						<xsl:attribute name="content-width">scale-down-to-fit</xsl:attribute>
 						<xsl:attribute name="scaling">uniform</xsl:attribute>
 					</xsl:if>
-					<!-- <xsl:attribute name="fox:alt-text">
-						put AsciiMath/LaTeX math
-					</xsl:attribute> -->
+					
+					<xsl:if test="$add_math_as_text = 'true'">
+						<!-- <xsl:variable name="comment_text" select="following-sibling::node()[1][self::comment()]"/> -->
+						<xsl:variable name="comment_text" select="normalize-space(translate(.,'&#xa0;&#8290;','  '))"/>
+						<!-- <xsl:variable name="comment_text" select="normalize-space(.)"/> -->
+						<xsl:if test="normalize-space($comment_text) != ''">
+						<!-- put Mathin Alternate Text -->
+							<xsl:attribute name="fox:alt-text">
+								<xsl:value-of select="java:org.metanorma.fop.Util.unescape($comment_text)"/>
+								<!-- <xsl:value-of select="$comment_text"/> -->
+							</xsl:attribute>
+						</xsl:if>
+					</xsl:if>
+					
 				</xsl:if>
 				<xsl:if test="$namespace = 'bsi' or $namespace = 'iso'">
 					<xsl:if test="count(ancestor::*[local-name() = 'table']) &gt; 1">

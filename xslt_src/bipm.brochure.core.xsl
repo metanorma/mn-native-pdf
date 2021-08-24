@@ -22,6 +22,8 @@
 	<!-- param for second pass -->
 	<xsl:param name="external_index" /><!-- path to index xml, generated on 1st pass, based on FOP Intermediate Format -->
 	
+	<xsl:param name="add_math_as_text">true</xsl:param>
+	
 	<xsl:variable name="first_pass" select="count($index//item) = 0"/>
 	
 	<xsl:variable name="pageWidth" select="210"/>
