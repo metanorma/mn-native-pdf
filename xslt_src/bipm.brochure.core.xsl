@@ -5,6 +5,7 @@
 											xmlns:mathml="http://www.w3.org/1998/Math/MathML" 
 											xmlns:xalan="http://xml.apache.org/xalan" 
 											xmlns:fox="http://xmlgraphics.apache.org/fop/extensions" 
+											xmlns:pdf="http://xmlgraphics.apache.org/fop/extensions/pdf"
 											xmlns:java="http://xml.apache.org/xalan/java" 
 											exclude-result-prefixes="java"
 											version="1.0">
@@ -23,6 +24,8 @@
 	<xsl:param name="external_index" /><!-- path to index xml, generated on 1st pass, based on FOP Intermediate Format -->
 	
 	<xsl:param name="add_math_as_text">false</xsl:param>
+  
+	<xsl:param name="add_math_as_attachment">false</xsl:param>
 	
 	<xsl:variable name="first_pass" select="count($index//item) = 0"/>
 	
@@ -217,6 +220,37 @@
 	</xsl:template>
 	
 	
+	<xsl:variable name="mathml_attachments">
+		<xsl:if test="$add_math_as_attachment = 'true'">
+			<xsl:for-each select="//mathml:math">
+						
+				<xsl:variable name="sequence_number"><xsl:number level="any" format="00001"/></xsl:variable>
+				
+				<xsl:variable name="clause_title_number" select="ancestor-or-self::bipm:clause[bipm:title[bipm:tab]][1]/bipm:title/node()[1]"/>
+				
+				<xsl:variable name="mathml_filename">
+					<xsl:text>math</xsl:text>
+					<xsl:if test="$clause_title_number != '' and translate($clause_title_number, '.123456789', '') = ''">
+						<xsl:text>_</xsl:text>
+						<xsl:value-of select="$clause_title_number"/>
+						<xsl:text>_</xsl:text>
+					</xsl:if>
+					<xsl:value-of select="$sequence_number"/>
+					<xsl:text>.mml</xsl:text>
+				</xsl:variable>
+				
+				<xsl:variable name="mathml_content">
+					<xsl:apply-templates select="." mode="mathml_actual_text"/>
+				</xsl:variable>
+				
+				<attachment filename="{$mathml_filename}">
+					<xsl:value-of select="$mathml_content"/>
+				</attachment>
+				
+			</xsl:for-each>
+		</xsl:if>
+	</xsl:variable>
+	
 	
 	<xsl:template match="/">
 		<fo:root xmlns:fo="http://www.w3.org/1999/XSL/Format" xsl:use-attribute-sets="root-style" xml:lang="{$lang}">
@@ -319,6 +353,23 @@
 			
 			<fo:declarations>
 				<xsl:call-template name="addPDFUAmeta"/>
+				
+				<xsl:if test="$add_math_as_attachment = 'true'">
+					<xsl:for-each select="xalan:nodeset($mathml_attachments)//attachment">
+						
+						<xsl:variable name="mathml_filename" select="@filename"/>
+						<xsl:variable name="mathml_content" select="."/>
+						
+						<xsl:variable name="basepath" select="java:org.metanorma.fop.Util.saveFileToDisk($mathml_filename,$mathml_content)"/>
+						
+						<xsl:variable name="url" select="concat('url(file:',$basepath, ')')"/>
+						
+						<xsl:if test="normalize-space($url) != ''">
+							<pdf:embedded-file src="{$url}" filename="{$mathml_filename}"/>
+						</xsl:if>
+					</xsl:for-each>
+				</xsl:if>
+        
 			</fo:declarations>
 			
 			<xsl:call-template name="addBookmarks">
@@ -3678,6 +3729,80 @@
 
 	<xsl:template match="mathml:mn/text()" mode="mathml">
 		<xsl:value-of select="translate(., '&#8239;', ' ')"/>
+	</xsl:template>
+
+	<xsl:template match="mathml:math" priority="2">
+		<xsl:variable name="isAdded" select="@added"/>
+		<xsl:variable name="isDeleted" select="@deleted"/>
+		
+		<fo:inline xsl:use-attribute-sets="mathml-style">
+			
+			<xsl:if test="ancestor::*[local-name()='table']">
+				<xsl:attribute name="font-size">95%</xsl:attribute> <!-- base font in table is 10pt -->
+			</xsl:if>
+			
+			<xsl:call-template name="setTrackChangesStyles">
+				<xsl:with-param name="isAdded" select="$isAdded"/>
+				<xsl:with-param name="isDeleted" select="$isDeleted"/>
+			</xsl:call-template>
+			
+			<xsl:if test="$add_math_as_text = 'true'">
+				<fo:inline color="white" font-size="1pt" font-style="normal" font-weight="normal">&#x200b;</fo:inline> <!-- zero width space -->
+			</xsl:if>
+			
+			<!-- <fo:wrapper role="artifact"> -->
+			<xsl:choose>
+				<xsl:when test="$add_math_as_attachment = 'true'">
+					
+					<xsl:variable name="mathml_content">
+						<xsl:apply-templates select="." mode="mathml_actual_text"/>
+					</xsl:variable>
+					<xsl:variable name="filename" select="xalan:nodeset($mathml_attachments)//attachment[. = $mathml_content]/@filename"/>
+					<xsl:if test="$filename != ''">
+						<xsl:variable name="url" select="concat('url(embedded-file:', $filename, ')')"/>
+						<fo:basic-link external-destination="{$url}" fox:alt-text="MathLink">
+							<xsl:call-template name="mathml_instream_object"/>
+						</fo:basic-link>
+					</xsl:if>
+				</xsl:when>
+				<xsl:otherwise>
+					<xsl:call-template name="mathml_instream_object"/>
+				</xsl:otherwise>
+			</xsl:choose>
+			<!-- </fo:wrapper> -->
+		</fo:inline>
+	</xsl:template>
+
+	<xsl:template name="mathml_instream_object">
+	
+		<xsl:variable name="mathml">
+			<xsl:apply-templates select="." mode="mathml"/>
+		</xsl:variable>
+			
+		<fo:instream-foreign-object fox:alt-text="Math">
+					
+			<xsl:if test="local-name(../..) = 'formula'">
+				<xsl:attribute name="width">95%</xsl:attribute>
+				<xsl:attribute name="content-height">100%</xsl:attribute>
+				<xsl:attribute name="content-width">scale-down-to-fit</xsl:attribute>
+				<xsl:attribute name="scaling">uniform</xsl:attribute>
+			</xsl:if>
+			
+			<xsl:if test="$add_math_as_text = 'true'">
+				<!-- <xsl:variable name="comment_text" select="following-sibling::node()[1][self::comment()]"/> -->
+				<xsl:variable name="comment_text" select="normalize-space(translate(.,'&#xa0;&#8290;','  '))"/>
+				<!-- <xsl:variable name="comment_text" select="normalize-space(.)"/> -->
+				<xsl:if test="normalize-space($comment_text) != ''">
+				<!-- put Mathin Alternate Text -->
+					<xsl:attribute name="fox:alt-text">
+						<xsl:value-of select="java:org.metanorma.fop.Util.unescape($comment_text)"/>
+						<!-- <xsl:value-of select="$comment_text"/> -->
+					</xsl:attribute>
+				</xsl:if>
+			</xsl:if>
+		
+		<xsl:copy-of select="xalan:nodeset($mathml)"/>
+	</fo:instream-foreign-object>
 	</xsl:template>
 
 	<xsl:template name="insertHeaderFooter">
