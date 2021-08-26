@@ -27,6 +27,8 @@
   
 	<xsl:param name="add_math_as_attachment">false</xsl:param>
 	
+	<xsl:param name="add_math_in_actual_text">false</xsl:param>
+	
 	<xsl:variable name="first_pass" select="count($index//item) = 0"/>
 	
 	<xsl:variable name="pageWidth" select="210"/>
@@ -3751,22 +3753,28 @@
 			</xsl:if>
 			
 			<!-- <fo:wrapper role="artifact"> -->
+			
+			<xsl:variable name="mathml_content">
+				<xsl:apply-templates select="." mode="mathml_actual_text"/>
+			</xsl:variable>
+			
 			<xsl:choose>
 				<xsl:when test="$add_math_as_attachment = 'true'">
 					
-					<xsl:variable name="mathml_content">
-						<xsl:apply-templates select="." mode="mathml_actual_text"/>
-					</xsl:variable>
 					<xsl:variable name="filename" select="xalan:nodeset($mathml_attachments)//attachment[. = $mathml_content]/@filename"/>
 					<xsl:if test="$filename != ''">
 						<xsl:variable name="url" select="concat('url(embedded-file:', $filename, ')')"/>
 						<fo:basic-link external-destination="{$url}" fox:alt-text="MathLink">
-							<xsl:call-template name="mathml_instream_object"/>
+							<xsl:call-template name="mathml_instream_object">
+								<xsl:with-param name="mathml_content" select="$mathml_content"/>
+							</xsl:call-template>
 						</fo:basic-link>
 					</xsl:if>
 				</xsl:when>
 				<xsl:otherwise>
-					<xsl:call-template name="mathml_instream_object"/>
+					<xsl:call-template name="mathml_instream_object">
+						<xsl:with-param name="mathml_content" select="$mathml_content"/>
+					</xsl:call-template>
 				</xsl:otherwise>
 			</xsl:choose>
 			<!-- </fo:wrapper> -->
@@ -3774,6 +3782,7 @@
 	</xsl:template>
 
 	<xsl:template name="mathml_instream_object">
+		<xsl:param name="mathml_content"/>
 	
 		<xsl:variable name="mathml">
 			<xsl:apply-templates select="." mode="mathml"/>
@@ -3786,6 +3795,13 @@
 				<xsl:attribute name="content-height">100%</xsl:attribute>
 				<xsl:attribute name="content-width">scale-down-to-fit</xsl:attribute>
 				<xsl:attribute name="scaling">uniform</xsl:attribute>
+			</xsl:if>
+			
+			<xsl:if test="$add_math_in_actual_text = 'true'">
+				<!-- put MathML in Actual Text -->
+				<xsl:attribute name="fox:actual-text">
+					<xsl:value-of select="$mathml_content"/>
+				</xsl:attribute>
 			</xsl:if>
 			
 			<xsl:if test="$add_math_as_text = 'true'">
