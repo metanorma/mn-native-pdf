@@ -3749,7 +3749,9 @@
 			</xsl:call-template>
 			
 			<xsl:if test="$add_math_as_text = 'true'">
-				<fo:inline color="white" font-size="1pt" font-style="normal" font-weight="normal">&#x200b;</fo:inline> <!-- zero width space -->
+				<!-- set unique font-size (fiction) -->
+				<xsl:variable name="font-size_sfx"><xsl:number level="any"/></xsl:variable>
+				<fo:inline color="white" font-size="1.{$font-size_sfx}pt" font-style="normal" font-weight="normal">&#x200b;</fo:inline> <!-- zero width space -->
 			</xsl:if>
 			
 			<!-- <fo:wrapper role="artifact"> -->
