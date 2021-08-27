@@ -3760,6 +3760,11 @@
 				<xsl:apply-templates select="." mode="mathml_actual_text"/>
 			</xsl:variable>
 			
+			<!-- <xsl:variable name="comment_text" select="following-sibling::node()[1][self::comment()]"/> -->
+			<xsl:variable name="comment_text_" select="normalize-space(translate(.,'&#xa0;&#8290;','  '))"/>
+			<xsl:variable name="comment_text" select="java:org.metanorma.fop.Util.unescape($comment_text_)"/>
+			<!-- <xsl:variable name="comment_text" select="normalize-space(.)"/> -->
+			
 			<xsl:choose>
 				<xsl:when test="$add_math_as_attachment = 'true'">
 					
@@ -3767,8 +3772,15 @@
 					<xsl:if test="$filename != ''">
 						<xsl:variable name="url" select="concat('url(embedded-file:', $filename, ')')"/>
 						<fo:basic-link external-destination="{$url}" fox:alt-text="MathLink">
+							<xsl:if test="normalize-space($comment_text) != ''">
+							<!-- put Mathin Alternate Text -->
+								<xsl:attribute name="fox:alt-text">
+									<xsl:value-of select="$comment_text"/>
+								</xsl:attribute>
+							</xsl:if>
 							<xsl:call-template name="mathml_instream_object">
 								<xsl:with-param name="mathml_content" select="$mathml_content"/>
+								<xsl:with-param name="comment_text" select="$comment_text"/>
 							</xsl:call-template>
 						</fo:basic-link>
 					</xsl:if>
@@ -3776,6 +3788,7 @@
 				<xsl:otherwise>
 					<xsl:call-template name="mathml_instream_object">
 						<xsl:with-param name="mathml_content" select="$mathml_content"/>
+						<xsl:with-param name="comment_text" select="$comment_text"/>
 					</xsl:call-template>
 				</xsl:otherwise>
 			</xsl:choose>
@@ -3785,6 +3798,7 @@
 
 	<xsl:template name="mathml_instream_object">
 		<xsl:param name="mathml_content"/>
+		<xsl:param name="comment_text"/>
 	
 		<xsl:variable name="mathml">
 			<xsl:apply-templates select="." mode="mathml"/>
@@ -3807,14 +3821,10 @@
 			</xsl:if>
 			
 			<xsl:if test="$add_math_as_text = 'true'">
-				<!-- <xsl:variable name="comment_text" select="following-sibling::node()[1][self::comment()]"/> -->
-				<xsl:variable name="comment_text" select="normalize-space(translate(.,'&#xa0;&#8290;','  '))"/>
-				<!-- <xsl:variable name="comment_text" select="normalize-space(.)"/> -->
 				<xsl:if test="normalize-space($comment_text) != ''">
 				<!-- put Mathin Alternate Text -->
 					<xsl:attribute name="fox:alt-text">
-						<xsl:value-of select="java:org.metanorma.fop.Util.unescape($comment_text)"/>
-						<!-- <xsl:value-of select="$comment_text"/> -->
+						<xsl:value-of select="$comment_text"/>
 					</xsl:attribute>
 				</xsl:if>
 			</xsl:if>
