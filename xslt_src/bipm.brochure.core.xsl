@@ -23,11 +23,9 @@
 	<!-- param for second pass -->
 	<xsl:param name="external_index" /><!-- path to index xml, generated on 1st pass, based on FOP Intermediate Format -->
 	
-	<xsl:param name="add_math_as_text">false</xsl:param>
+	<xsl:param name="add_math_as_text">true</xsl:param>
   
-	<xsl:param name="add_math_as_attachment">false</xsl:param>
-	
-	<xsl:param name="add_math_in_actual_text">false</xsl:param>
+	<xsl:param name="add_math_as_attachment">true</xsl:param>
 	
 	<xsl:variable name="first_pass" select="count($index//item) = 0"/>
 	
@@ -3760,10 +3758,18 @@
 				<xsl:apply-templates select="." mode="mathml_actual_text"/>
 			</xsl:variable>
 			
-			<!-- <xsl:variable name="comment_text" select="following-sibling::node()[1][self::comment()]"/> -->
-			<xsl:variable name="comment_text_" select="normalize-space(translate(.,'&#xa0;&#8290;','  '))"/>
+			<xsl:variable name="comment_text_following" select="following-sibling::node()[1][self::comment()]"/>
+			<xsl:variable name="comment_text_">
+				<xsl:choose>
+					<xsl:when test="normalize-space($comment_text_following) != ''">
+						<xsl:value-of select="$comment_text_following"/>
+					</xsl:when>
+					<xsl:otherwise>
+						<xsl:value-of select="normalize-space(translate(.,'&#xa0;&#8290;','  '))"/>
+					</xsl:otherwise>
+				</xsl:choose>
+			</xsl:variable> 
 			<xsl:variable name="comment_text" select="java:org.metanorma.fop.Util.unescape($comment_text_)"/>
-			<!-- <xsl:variable name="comment_text" select="normalize-space(.)"/> -->
 			
 			<xsl:choose>
 				<xsl:when test="$add_math_as_attachment = 'true'">
@@ -3813,12 +3819,10 @@
 				<xsl:attribute name="scaling">uniform</xsl:attribute>
 			</xsl:if>
 			
-			<xsl:if test="$add_math_in_actual_text = 'true'">
-				<!-- put MathML in Actual Text -->
-				<xsl:attribute name="fox:actual-text">
-					<xsl:value-of select="$mathml_content"/>
-				</xsl:attribute>
-			</xsl:if>
+			<!-- put MathML in Actual Text -->
+			<xsl:attribute name="fox:actual-text">
+				<xsl:value-of select="$mathml_content"/>
+			</xsl:attribute>
 			
 			<xsl:if test="$add_math_as_text = 'true'">
 				<xsl:if test="normalize-space($comment_text) != ''">
