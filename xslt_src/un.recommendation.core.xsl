@@ -750,6 +750,7 @@
 		</xsl:variable>
 		<fo:block font-size="{$font-size}" font-weight="bold" margin-top="30pt" margin-bottom="16pt" keep-with-next="always">
 			<xsl:apply-templates />
+			<xsl:apply-templates select="following-sibling::*[1][local-name() = 'variant-title'][@type = 'sub']" mode="subtitle"/>
 		</fo:block>
 	</xsl:template>
 	
@@ -769,6 +770,7 @@
 			<xsl:when test="$level = 1">
 				<fo:block font-size="{$font-size}" font-weight="bold" space-before="3pt" margin-top="12pt" margin-bottom="16pt" keep-with-next="always" line-height="18pt">					
 					<xsl:apply-templates />
+					<xsl:apply-templates select="following-sibling::*[1][local-name() = 'variant-title'][@type = 'sub']" mode="subtitle"/>
 				</fo:block>
 			</xsl:when>
 			<xsl:when test="$level &gt;= 2">
@@ -824,6 +826,7 @@
 			<xsl:otherwise>
 				<fo:block font-size="{$font-size}" font-weight="bold" text-align="left" keep-with-next="always">						
 						<xsl:apply-templates />
+						<xsl:apply-templates select="following-sibling::*[1][local-name() = 'variant-title'][@type = 'sub']" mode="subtitle"/>
 					</fo:block>
 			</xsl:otherwise>
 		</xsl:choose>

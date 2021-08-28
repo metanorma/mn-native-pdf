@@ -464,6 +464,7 @@
 	<xsl:template match="iho:annex/iho:title">
 		<fo:block font-size="13pt" font-weight="bold" text-align="center" margin-bottom="12pt" keep-with-next="always">			
 			<xsl:apply-templates />
+			<xsl:apply-templates select="following-sibling::*[1][local-name() = 'variant-title'][@type = 'sub']" mode="subtitle"/>
 		</fo:block>
 	</xsl:template>
 		
@@ -514,6 +515,7 @@
 			<xsl:attribute name="keep-with-next">always</xsl:attribute>		
 			
 			<xsl:apply-templates />
+			<xsl:apply-templates select="following-sibling::*[1][local-name() = 'variant-title'][@type = 'sub']" mode="subtitle"/>
 		</xsl:element>
 		
 		<xsl:if test="$element-name = 'fo:inline' and not(following-sibling::iho:p)">

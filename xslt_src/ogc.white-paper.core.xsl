@@ -502,6 +502,7 @@
 	<xsl:template match="ogc:annex/ogc:title">
 		<fo:block xsl:use-attribute-sets="title-depth1-style">			
 			<xsl:apply-templates />
+			<xsl:apply-templates select="following-sibling::*[1][local-name() = 'variant-title'][@type = 'sub']" mode="subtitle"/>
 		</fo:block>
 	</xsl:template>
 	
@@ -542,21 +543,25 @@
 					<xsl:when test="$level = 1">
 						<fo:block xsl:use-attribute-sets="title-depth1-style">
 							<xsl:apply-templates />
+							<xsl:apply-templates select="following-sibling::*[1][local-name() = 'variant-title'][@type = 'sub']" mode="subtitle"/>
 						</fo:block>
 					</xsl:when>
 					<xsl:when test="$level = 2">
 						<fo:block xsl:use-attribute-sets="title-depth2-style">
 							<xsl:apply-templates />
+							<xsl:apply-templates select="following-sibling::*[1][local-name() = 'variant-title'][@type = 'sub']" mode="subtitle"/>
 						</fo:block>
 					</xsl:when>
 					<xsl:when test="$level = 3">
 						<fo:block xsl:use-attribute-sets="title-depth3-style">
 							<xsl:apply-templates />
+							<xsl:apply-templates select="following-sibling::*[1][local-name() = 'variant-title'][@type = 'sub']" mode="subtitle"/>
 						</fo:block>
 					</xsl:when>
 					<xsl:otherwise>
 						<fo:block font-family="Lato">
 							<xsl:apply-templates />
+							<xsl:apply-templates select="following-sibling::*[1][local-name() = 'variant-title'][@type = 'sub']" mode="subtitle"/>
 						</fo:block>
 					</xsl:otherwise>
 				</xsl:choose>

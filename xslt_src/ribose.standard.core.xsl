@@ -755,6 +755,7 @@
 										<fo:table-cell>
 											<fo:block>
 													<xsl:call-template name="extractTitle"/> <!-- section title -->
+													<xsl:apply-templates select="following-sibling::*[1][local-name() = 'variant-title'][@type = 'sub']" mode="subtitle"/>
 												</fo:block>
 										</fo:table-cell>
 									</fo:table-row>
@@ -765,6 +766,7 @@
 				</xsl:when>
 				<xsl:otherwise>
 						<xsl:apply-templates />
+						<xsl:apply-templates select="following-sibling::*[1][local-name() = 'variant-title'][@type = 'sub']" mode="subtitle"/>
 				</xsl:otherwise>
 			</xsl:choose>
 			

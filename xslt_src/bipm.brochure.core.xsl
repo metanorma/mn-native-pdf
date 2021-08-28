@@ -2468,6 +2468,7 @@
 									<fo:table-cell>
 										<fo:block line-height-shift-adjustment="disregard-shifts">
 											<xsl:call-template name="extractTitle"/>
+											<xsl:apply-templates select="following-sibling::*[1][local-name() = 'variant-title'][@type = 'sub']" mode="subtitle"/>
 										</fo:block>
 									</fo:table-cell>
 								</fo:table-row>
@@ -2498,11 +2499,13 @@
 										<xsl:attribute name="text-align">center</xsl:attribute>
 									</xsl:if>
 									<xsl:call-template name="extractTitle"/>
+									<xsl:apply-templates select="following-sibling::*[1][local-name() = 'variant-title'][@type = 'sub']" mode="subtitle"/>
 								</xsl:when>
 								<xsl:otherwise>
 									<!-- <xsl:choose>
 										<xsl:when test="$independentAppendix = ''"> -->
 											<xsl:apply-templates />
+											<xsl:apply-templates select="following-sibling::*[1][local-name() = 'variant-title'][@type = 'sub']" mode="subtitle"/>
 										<!-- </xsl:when>
 										<xsl:otherwise>
 											<xsl:variable name="section" select="*[local-name() = 'tab'][1]/preceding-sibling::node()"/>

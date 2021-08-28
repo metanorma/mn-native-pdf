@@ -920,6 +920,7 @@
 					<xsl:attribute name="margin-bottom">12pt</xsl:attribute>		
 					<xsl:attribute name="color"><xsl:value-of select="$color_blue"/></xsl:attribute>					
 					<xsl:apply-templates />
+					<xsl:apply-templates select="following-sibling::*[1][local-name() = 'variant-title'][@type = 'sub']" mode="subtitle"/>
 				</xsl:element>
 			</xsl:otherwise>
 		</xsl:choose>
@@ -1437,6 +1438,15 @@
 					</fo:inline>
 				</xsl:if>
 				<xsl:apply-templates select="xalan:nodeset($title)" mode="titlesmall"/>
+				
+				<xsl:variable name="variant-title">
+					<xsl:apply-templates select="following-sibling::*[1][local-name() = 'variant-title'][@type = 'sub']" mode="titlesmall"/>
+				</xsl:variable>
+				<xsl:if test="normalize-space($variant-title) != ''">
+					<fo:inline padding-right="5mm">&#xa0;</fo:inline>
+					<fo:inline><xsl:copy-of select="$variant-title"/></fo:inline>
+				</xsl:if>
+				
 			</fo:block>
 			<xsl:call-template name="insertOrangeHorizontalLine"/>
 		</fo:block>		

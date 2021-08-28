@@ -1368,6 +1368,7 @@
 					<xsl:attribute name="line-height">130%</xsl:attribute>
 				</xsl:if>
 				<xsl:apply-templates />
+				<xsl:apply-templates select="following-sibling::*[1][local-name() = 'variant-title'][@type = 'sub']" mode="subtitle"/>
 			</xsl:element>
 			
 			<xsl:if test="$element-name = 'fo:inline' and not(following-sibling::jcgm:p)">

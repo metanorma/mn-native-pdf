@@ -1912,6 +1912,7 @@
 	<xsl:template match="iec:introduction/iec:title">
 		<fo:block font-size="12pt" text-align="center" margin-bottom="12pt">
 			<xsl:apply-templates />
+			<xsl:apply-templates select="following-sibling::*[1][local-name() = 'variant-title'][@type = 'sub']" mode="subtitle"/>
 		</fo:block>
 	</xsl:template>
 	<xsl:template match="iec:introduction/iec:title/text()">
@@ -1923,6 +1924,7 @@
 	<xsl:template match="iec:annex/iec:title">
 		<fo:block font-size="12pt" text-align="center" margin-bottom="32pt" keep-with-next="always">
 			<xsl:apply-templates />
+			<xsl:apply-templates select="following-sibling::*[1][local-name() = 'variant-title'][@type = 'sub']" mode="subtitle"/>
 		</fo:block>
 	</xsl:template>
 	
@@ -1979,6 +1981,7 @@
 						</xsl:choose>
 					</xsl:attribute>					
 					<xsl:apply-templates />
+					<xsl:apply-templates select="following-sibling::*[1][local-name() = 'variant-title'][@type = 'sub']" mode="subtitle"/>
 				</fo:block>
 			</xsl:otherwise>
 		</xsl:choose>

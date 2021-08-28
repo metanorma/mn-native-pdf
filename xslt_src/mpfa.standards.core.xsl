@@ -404,6 +404,7 @@
 				<xsl:attribute name="font-size">12pt</xsl:attribute>
 			</xsl:if>
 			<xsl:apply-templates />
+			<xsl:apply-templates select="following-sibling::*[1][local-name() = 'variant-title'][@type = 'sub']" mode="subtitle"/>
 		</fo:block>
 			
 	</xsl:template>

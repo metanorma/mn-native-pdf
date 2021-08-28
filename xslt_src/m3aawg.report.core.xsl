@@ -474,6 +474,7 @@
 		</xsl:variable>
 		<fo:block font-size="{$font-size}" text-align="center" margin-bottom="24pt" keep-with-next="always">
 			<xsl:apply-templates />
+			<xsl:apply-templates select="following-sibling::*[1][local-name() = 'variant-title'][@type = 'sub']" mode="subtitle"/>
 		</fo:block>
 	</xsl:template>
 	
@@ -522,6 +523,7 @@
 			<xsl:attribute name="keep-with-next">always</xsl:attribute>		
 			
 			<xsl:apply-templates />
+			<xsl:apply-templates select="following-sibling::*[1][local-name() = 'variant-title'][@type = 'sub']" mode="subtitle"/>
 			
 		</xsl:element>
 		
