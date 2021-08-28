@@ -123,7 +123,7 @@
 							</fo:block>
 					</fo:block-container>
 				</fo:static-content>
-				<fo:static-content flow-name="footer">
+				<fo:static-content flow-name="footer" role="artifact">
 					<fo:block-container height="31mm" font-size="10pt">
 						<fo:block text-align-last="justify" margin-top="2mm">
 							<fo:inline font-weight="bold">

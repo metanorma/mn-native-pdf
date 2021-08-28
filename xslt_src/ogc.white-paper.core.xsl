@@ -881,13 +881,13 @@
 			</fo:block>
 		</fo:static-content>
 		
-		<fo:static-content flow-name="header">
+		<fo:static-content flow-name="header" role="artifact">
 			<fo:block-container height="16.5mm" background-color="{$color}">
 				<fo:block>&#xA0;</fo:block>
 			</fo:block-container>
 		</fo:static-content>
 		
-		<fo:static-content flow-name="footer">
+		<fo:static-content flow-name="footer" role="artifact">
 			<fo:block-container height="100%" display-align="after">
 				<fo:block-container height="23.5mm" background-color="{$color}" color="rgb(231, 230, 230)" display-align="after">
 					<fo:block-container margin-left="1in" margin-right="1in">

@@ -1065,26 +1065,26 @@
 	<!-- ============================ -->	
 	
 	<xsl:template name="insertHeaderFooter">
-		<fo:static-content flow-name="header-odd">
+		<fo:static-content flow-name="header-odd" role="artifact">
 			<fo:block-container height="25mm" display-align="after" border-bottom="0.5pt solid black" margin-left="-20.5mm" margin-right="-20.5mm">
 				<fo:block font-size="9pt" font-weight="bold" text-align="right" margin-left="21mm" margin-right="21mm" padding-bottom="0.5mm">
 					<xsl:value-of select="$id"/>
 				</fo:block>
 			</fo:block-container>
 		</fo:static-content>
-		<fo:static-content flow-name="footer-odd">
+		<fo:static-content flow-name="footer-odd" role="artifact">
 			<fo:block-container height="40mm" margin-left="-20.5mm" margin-right="-20.5mm">
 				<fo:block font-size="9pt" font-weight="bold" text-align="right" margin-left="21mm" margin-right="21mm" padding-top="12mm"><fo:page-number/></fo:block>
 			</fo:block-container>
 		</fo:static-content>
-		<fo:static-content flow-name="header-even">
+		<fo:static-content flow-name="header-even" role="artifact">
 			<fo:block-container height="25mm" display-align="after" border-bottom="0.5pt solid black" margin-left="-20.5mm" margin-right="-20.5mm">
 				<fo:block font-size="9pt" font-weight="bold" margin-left="21mm" margin-right="21mm" padding-bottom="0.5mm">
 					<xsl:value-of select="$id"/>
 				</fo:block>
 			</fo:block-container>
 		</fo:static-content>
-		<fo:static-content flow-name="footer-even">
+		<fo:static-content flow-name="footer-even" role="artifact">
 			<fo:block-container height="40mm" margin-left="-20.5mm" margin-right="-20.5mm">
 				<fo:block font-size="9pt" font-weight="bold" margin-left="21mm" margin-right="21mm" padding-top="12mm"><fo:page-number/></fo:block>
 			</fo:block-container>

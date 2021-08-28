@@ -1277,28 +1277,28 @@
 		<xsl:variable name="top_top">-25.75</xsl:variable>
 		<xsl:variable name="top_bottom">194</xsl:variable>
 		<!-- Yellow -->
-		<fo:static-content flow-name="header-LT-yellow">
+		<fo:static-content flow-name="header-LT-yellow" role="artifact">
 			<fo:block-container absolute-position="fixed" left="{$left_left}mm" top="{$top_top}mm" font-size="0">
 				<fo:block>
 						<fo:external-graphic src="{concat('data:image/png;base64,', normalize-space($Image-Page-Background-yellow-left))}" content-width="100%" content-height="scale-to-fit" scaling="uniform" fox:alt-text="Image Page"/>
 					</fo:block>
 			</fo:block-container>
 		</fo:static-content>
-		<fo:static-content flow-name="header-RT-yellow">
+		<fo:static-content flow-name="header-RT-yellow" role="artifact">
 			<fo:block-container absolute-position="fixed" left="{$left_right}mm" top="{$top_top}mm" font-size="0">
 				<fo:block>
 						<fo:external-graphic src="{concat('data:image/png;base64,', normalize-space($Image-Page-Background-yellow-right))}" content-width="100%" content-height="scale-to-fit" scaling="uniform" fox:alt-text="Image Page"/>
 					</fo:block>
 			</fo:block-container>
 		</fo:static-content>
-		<fo:static-content flow-name="header-LB-yellow">
+		<fo:static-content flow-name="header-LB-yellow" role="artifact">
 			<fo:block-container absolute-position="fixed" left="{$left_left}mm" top="{$top_bottom}mm" font-size="0">
 				<fo:block>
 						<fo:external-graphic src="{concat('data:image/png;base64,', normalize-space($Image-Page-Background-yellow-left))}" content-width="100%" content-height="scale-to-fit" scaling="uniform" fox:alt-text="Image Page"/>
 					</fo:block>
 			</fo:block-container>
 		</fo:static-content>
-		<fo:static-content flow-name="header-RB-yellow">
+		<fo:static-content flow-name="header-RB-yellow" role="artifact">
 			<fo:block-container absolute-position="fixed" left="{$left_right}mm" top="{$top_bottom}mm" font-size="0">
 				<fo:block>
 						<fo:external-graphic src="{concat('data:image/png;base64,', normalize-space($Image-Page-Background-yellow-right))}" content-width="100%" content-height="scale-to-fit" scaling="uniform" fox:alt-text="Image Page"/>
@@ -1306,28 +1306,28 @@
 			</fo:block-container>
 		</fo:static-content>
 		<!-- Blue -->
-		<fo:static-content flow-name="header-LT-blue">
+		<fo:static-content flow-name="header-LT-blue" role="artifact">
 			<fo:block-container absolute-position="fixed" left="{$left_left}mm" top="{$top_top}mm" font-size="0">
 				<fo:block>
 						<fo:external-graphic src="{concat('data:image/png;base64,', normalize-space($Image-Page-Background-blue-left))}" content-width="100%" content-height="scale-to-fit" scaling="uniform" fox:alt-text="Image Page"/>
 					</fo:block>
 			</fo:block-container>
 		</fo:static-content>
-		<fo:static-content flow-name="header-RT-blue">
+		<fo:static-content flow-name="header-RT-blue" role="artifact">
 			<fo:block-container absolute-position="fixed" left="{$left_right}mm" top="{$top_top}mm" font-size="0">
 				<fo:block>
 						<fo:external-graphic src="{concat('data:image/png;base64,', normalize-space($Image-Page-Background-blue-right))}" content-width="100%" content-height="scale-to-fit" scaling="uniform" fox:alt-text="Image Page"/>
 					</fo:block>
 			</fo:block-container>
 		</fo:static-content>
-		<fo:static-content flow-name="header-LB-blue">
+		<fo:static-content flow-name="header-LB-blue" role="artifact">
 			<fo:block-container absolute-position="fixed" left="{$left_left}mm" top="{$top_bottom}mm" font-size="0">
 				<fo:block>
 						<fo:external-graphic src="{concat('data:image/png;base64,', normalize-space($Image-Page-Background-blue-left))}" content-width="100%" content-height="scale-to-fit" scaling="uniform" fox:alt-text="Image Page"/>
 					</fo:block>
 			</fo:block-container>
 		</fo:static-content>
-		<fo:static-content flow-name="header-RB-blue">
+		<fo:static-content flow-name="header-RB-blue" role="artifact">
 			<fo:block-container absolute-position="fixed" left="{$left_right}mm" top="{$top_bottom}mm" font-size="0">
 				<fo:block>
 						<fo:external-graphic src="{concat('data:image/png;base64,', normalize-space($Image-Page-Background-blue-right))}" content-width="100%" content-height="scale-to-fit" scaling="uniform" fox:alt-text="Image Page"/>
@@ -1335,28 +1335,28 @@
 			</fo:block-container>
 		</fo:static-content>
 		<!-- Orange -->
-		<fo:static-content flow-name="header-LT-orange">
+		<fo:static-content flow-name="header-LT-orange" role="artifact">
 			<fo:block-container absolute-position="fixed" left="{$left_left}mm" top="{$top_top}mm" font-size="0">
 				<fo:block>
 						<fo:external-graphic src="{concat('data:image/png;base64,', normalize-space($Image-Page-Background-orange-left))}" content-width="100%" content-height="scale-to-fit" scaling="uniform" fox:alt-text="Image Page"/>
 					</fo:block>
 			</fo:block-container>
 		</fo:static-content>
-		<fo:static-content flow-name="header-RT-orange">
+		<fo:static-content flow-name="header-RT-orange" role="artifact">
 			<fo:block-container absolute-position="fixed" left="{$left_right}mm" top="{$top_top}mm" font-size="0">
 				<fo:block>
 						<fo:external-graphic src="{concat('data:image/png;base64,', normalize-space($Image-Page-Background-orange-right))}" content-width="100%" content-height="scale-to-fit" scaling="uniform" fox:alt-text="Image Page"/>
 					</fo:block>
 			</fo:block-container>
 		</fo:static-content>
-		<fo:static-content flow-name="header-LB-orange">
+		<fo:static-content flow-name="header-LB-orange" role="artifact">
 			<fo:block-container absolute-position="fixed" left="{$left_left}mm" top="{$top_bottom}mm" font-size="0">
 				<fo:block>
 						<fo:external-graphic src="{concat('data:image/png;base64,', normalize-space($Image-Page-Background-orange-left))}" content-width="100%" content-height="scale-to-fit" scaling="uniform" fox:alt-text="Image Page"/>
 					</fo:block>
 			</fo:block-container>
 		</fo:static-content>
-		<fo:static-content flow-name="header-RB-orange">
+		<fo:static-content flow-name="header-RB-orange" role="artifact">
 			<fo:block-container absolute-position="fixed" left="{$left_right}mm" top="{$top_bottom}mm" font-size="0">
 				<fo:block>
 						<fo:external-graphic src="{concat('data:image/png;base64,', normalize-space($Image-Page-Background-orange-right))}" content-width="100%" content-height="scale-to-fit" scaling="uniform" fox:alt-text="Image Page"/>
@@ -1376,7 +1376,7 @@
 				<xsl:with-param name="str" select="/rsd:rsd-standard/rsd:bibdata/rsd:ext/rsd:doctype"/>
 			</xsl:call-template>
 		</xsl:variable>
-		<fo:static-content flow-name="footer-odd">
+		<fo:static-content flow-name="footer-odd" role="artifact">
 			<fo:block-container font-size="8pt" height="100%" color="black">
 				<fo:block text-align-last="justify" margin-right="1mm">
 					<fo:inline padding-right="11mm"><fo:page-number/></fo:inline>
@@ -1388,7 +1388,7 @@
 				</fo:block>
 			</fo:block-container>
 		</fo:static-content>
-		<fo:static-content flow-name="footer-even">
+		<fo:static-content flow-name="footer-even" role="artifact">
 			<fo:block-container font-size="8pt" height="100%" color="black">
 				<fo:block text-align-last="justify" margin-right="1mm">
 					<fo:inline padding-right="11mm"><fo:page-number/></fo:inline>

@@ -1277,7 +1277,7 @@
 		
 	<xsl:template name="insertHeaderFooter">
 		<xsl:param name="color" select="$color_blue"/>
-		<fo:static-content flow-name="footer">
+		<fo:static-content flow-name="footer" role="artifact">
 			<fo:block-container font-size="8pt" height="100%" color="{$color}" padding-top="6mm">
 				<fo:table table-layout="fixed" width="100%">
 					<fo:table-column column-width="90%"/>

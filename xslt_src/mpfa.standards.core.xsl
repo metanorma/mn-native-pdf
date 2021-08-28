@@ -747,14 +747,14 @@
 	
 	<xsl:template name="insertHeaderFooter">
 		<xsl:param name="font-weight">normal</xsl:param>
-		<fo:static-content flow-name="header-even">
+		<fo:static-content flow-name="header-even" role="artifact">
 			<fo:block-container height="100%" display-align="before">
 				<fo:block padding-top="12.5mm">
 					<xsl:value-of select="$copyrightShort"/>
 				</fo:block>
 			</fo:block-container>
 		</fo:static-content>
-		<fo:static-content flow-name="footer-even">
+		<fo:static-content flow-name="footer-even" role="artifact">
 			<fo:block-container font-size="10pt" height="100%" display-align="after">
 				<fo:table table-layout="fixed" width="100%">
 					<fo:table-column column-width="10%"/>
@@ -772,14 +772,14 @@
 				</fo:table>
 			</fo:block-container>
 		</fo:static-content>
-		<fo:static-content flow-name="header-odd">
+		<fo:static-content flow-name="header-odd" role="artifact">
 			<fo:block-container height="100%" display-align="before">
 				<fo:block text-align="right" padding-top="12.5mm">
 					<xsl:value-of select="$copyrightShort"/>
 				</fo:block>
 			</fo:block-container>
 		</fo:static-content>
-		<fo:static-content flow-name="footer-odd">
+		<fo:static-content flow-name="footer-odd" role="artifact">
 			<fo:block-container font-size="10pt" height="100%" display-align="after">
 				<fo:table table-layout="fixed" width="100%">
 					<fo:table-column column-width="90%"/>

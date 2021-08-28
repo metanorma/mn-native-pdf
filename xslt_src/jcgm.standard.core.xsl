@@ -1268,14 +1268,14 @@
 	</xsl:variable>
 	
 	<xsl:template name="insertHeaderFooter">
-		<fo:static-content flow-name="header-even-jcgm">
+		<fo:static-content flow-name="header-even-jcgm" role="artifact">
 			<fo:block-container height="98%">
 				<fo:block font-size="13pt" font-weight="bold" padding-top="12mm">
 					<xsl:value-of select="$header_text"/>
 				</fo:block>
 			</fo:block-container>
 		</fo:static-content>
-		<fo:static-content flow-name="footer-even-jcgm">
+		<fo:static-content flow-name="footer-even-jcgm" role="artifact">
 			<fo:block-container height="98%">
 				<fo:block text-align-last="justify" >
 					<fo:inline font-size="12pt" font-weight="bold"><fo:page-number/></fo:inline>
@@ -1286,14 +1286,14 @@
 				</fo:block>
 			</fo:block-container>
 		</fo:static-content>
-		<fo:static-content flow-name="header-odd-jcgm">
+		<fo:static-content flow-name="header-odd-jcgm" role="artifact">
 			<fo:block-container height="98%" >
 				<fo:block font-size="13pt" font-weight="bold" text-align="right" padding-top="12mm">
 					<xsl:value-of select="$header_text"/>
 				</fo:block>
 			</fo:block-container>
 		</fo:static-content>
-		<fo:static-content flow-name="footer-odd-jcgm">
+		<fo:static-content flow-name="footer-odd-jcgm" role="artifact">
 			<fo:block-container height="98%">
 				<fo:block text-align-last="justify" >
 					<fo:inline font-size="10pt"><xsl:value-of select="$copyrightText"/></fo:inline>
