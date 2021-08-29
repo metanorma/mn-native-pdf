@@ -1996,7 +1996,7 @@
 				<fo:block id="{@id}" span="all">
 					<xsl:apply-templates select="iso:title"/>
 				</fo:block>
-				<fo:block>
+				<fo:block role="Index">
 					<xsl:apply-templates select="*[not(local-name() = 'title')]"/>
 				</fo:block>
 			</fo:flow>

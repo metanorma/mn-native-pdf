@@ -4052,7 +4052,7 @@
 				<fo:block id="{@id}" span="all">
 					<xsl:apply-templates select="bipm:title"/>
 				</fo:block>
-				<fo:block>
+				<fo:block role="Index">
 					<xsl:apply-templates select="*[not(local-name() = 'title')]"/>
 					
 					<!-- TEST <xsl:variable name="alphabet" select="'ABCDEFGHIJKLMNOPQRSTUVWXYZ'"/>
