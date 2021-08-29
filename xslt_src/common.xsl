@@ -252,6 +252,7 @@
 	<xsl:attribute-set name="sourcecode-style">
 		<xsl:attribute name="white-space">pre</xsl:attribute>
 		<xsl:attribute name="wrap-option">wrap</xsl:attribute>
+		<xsl:attribute name="role">Code</xsl:attribute>
 		<xsl:if test="$namespace = 'bsi' or $namespace = 'iso' or $namespace = 'gb' or $namespace = 'jcgm'">
 			<xsl:attribute name="font-family">Courier New</xsl:attribute>			
 			<xsl:attribute name="margin-bottom">12pt</xsl:attribute>
