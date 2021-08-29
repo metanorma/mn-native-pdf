@@ -1095,7 +1095,8 @@
 			</xsl:if>
 	</xsl:attribute-set>
 
-	<xsl:attribute-set name="quote-style">		
+	<xsl:attribute-set name="quote-style">
+		<xsl:attribute name="role">BlockQuote</xsl:attribute>
 		<xsl:if test="$namespace = 'csa' or $namespace = 'ogc' or $namespace = 'ogc-white-paper' or $namespace = 'rsd'">
 			<xsl:attribute name="margin-top">12pt</xsl:attribute>
 			<xsl:attribute name="margin-left">13mm</xsl:attribute>

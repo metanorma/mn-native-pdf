@@ -3127,6 +3127,7 @@
 				<xsl:attribute name="font-family">Arial</xsl:attribute>
 				<xsl:attribute name="font-size">9pt</xsl:attribute>
 				<xsl:attribute name="line-height">130%</xsl:attribute>
+				<xsl:attribute name="role">BlockQuote</xsl:attribute>
 			</xsl:if>
 			<xsl:attribute name="line-height-shift-adjustment">disregard-shifts</xsl:attribute>
 			<xsl:apply-templates />
@@ -3171,6 +3172,7 @@
 				<xsl:attribute name="font-family">Arial</xsl:attribute>
 				<xsl:attribute name="font-size">9pt</xsl:attribute>
 				<xsl:attribute name="line-height">130%</xsl:attribute>
+				<xsl:attribute name="role">BlockQuote</xsl:attribute>
 			</xsl:if>
 			
 			<!-- last item -->		
