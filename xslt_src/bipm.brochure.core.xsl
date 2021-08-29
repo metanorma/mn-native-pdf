@@ -1249,7 +1249,7 @@
 						</fo:block-container>
 					
 						<fo:block-container line-height="135%">
-							<fo:block>
+							<fo:block role="TOC">
 								<!-- <xsl:copy-of select="$contents"/> -->
 								
 								<xsl:if test="xalan:nodeset($contents)/doc[@id = $docid]//item[@display='true']">
@@ -2009,7 +2009,7 @@
 				<xsl:if test="normalize-space($space-after) != ''">
 					<xsl:attribute name="padding-bottom"><xsl:value-of select="normalize-space($space-after)"/></xsl:attribute>
 				</xsl:if>				
-				<fo:block>
+				<fo:block role="TOCI">
 					<xsl:if test="@level = 1">
 						<!-- <xsl:attribute name="space-after">6pt</xsl:attribute> -->
 						<xsl:attribute name="font-family">Arial</xsl:attribute>

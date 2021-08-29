@@ -191,9 +191,9 @@
 							</xsl:call-template>
 						</xsl:variable>						
 						<fo:block font-size="14pt" margin-bottom="15.5pt" role="H1"><xsl:value-of select="$title-toc"/></fo:block>						
-						<fo:block line-height="115%">
+						<fo:block line-height="115%" role="TOC">
 							<xsl:for-each select="xalan:nodeset($contents)//item[@display = 'true']">
-								<fo:block>
+								<fo:block role="TOCI">
 									<xsl:if test="@level = 1">
 										<xsl:attribute name="margin-top">6pt</xsl:attribute>
 									</xsl:if>								

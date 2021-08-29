@@ -224,61 +224,63 @@
 						<!-- Table of Contents -->
 						<fo:block-container margin-right="-12.7mm">
 							<fo:block-container margin-right="0mm">
-								<fo:block color="rgb(14, 36, 133)" margin-bottom="15.5pt" role="H1">
-									<xsl:variable name="title-toc">
-										<xsl:call-template name="getTitle">
-											<xsl:with-param name="name" select="'title-toc'"/>
-										</xsl:call-template>
-									</xsl:variable>
-									<xsl:value-of select="$title-toc"/>
-								</fo:block>
-								<xsl:if test="$debug = 'true'">
-									<xsl:text disable-output-escaping="yes">&lt;!--</xsl:text>
-										DEBUG
-										contents=<xsl:copy-of select="xalan:nodeset($contents)"/>
-									<xsl:text disable-output-escaping="yes">--&gt;</xsl:text>
-								</xsl:if>
-								
-								<xsl:for-each select="xalan:nodeset($contents)//item[@display = 'true']"><!-- [not(@level = 2 and starts-with(@section, '0'))] skip clause from preface -->							
-									<fo:block>
-										<xsl:if test="@level = 1">
-											<xsl:attribute name="margin-top">6pt</xsl:attribute>
-										</xsl:if>
-									
-										<fo:list-block>
-											
-											<xsl:attribute name="provisional-distance-between-starts">
-												<xsl:choose>
-													<xsl:when test="@level &gt;= 1 and @root = 'preface'">0mm</xsl:when>
-													<xsl:when test="@level &gt;= 1 and @root = 'annex' and not(@type = 'annex')">13mm</xsl:when>
-													<xsl:when test="@level &gt;= 1 and not(@type = 'annex')">10mm</xsl:when>													
-													<xsl:otherwise>0mm</xsl:otherwise>
-												</xsl:choose>											
-											</xsl:attribute>
-											<fo:list-item>
-												<fo:list-item-label end-indent="label-end()">
-													<fo:block>
-														<xsl:if test="@section != '' and not(@type = 'annex')"> <!-- output below   -->
-															<xsl:value-of select="@section"/>
-														</xsl:if>
-													</fo:block>
-												</fo:list-item-label>
-													<fo:list-item-body start-indent="body-start()">
-														<fo:block text-align-last="justify" margin-left="12mm" text-indent="-12mm">
-															<fo:basic-link internal-destination="{@id}" fox:alt-text="{title}">																
-																<xsl:apply-templates select="title"/>
-																<fo:inline keep-together.within-line="always">
-																	<fo:leader font-size="9pt" font-weight="normal" leader-pattern="dots"/>
-																	<fo:inline><fo:page-number-citation ref-id="{@id}"/></fo:inline>
-																</fo:inline>
-															</fo:basic-link>
-														</fo:block>
-													</fo:list-item-body>
-											</fo:list-item>
-										</fo:list-block>
+								<fo:block role="TOC">
+									<fo:block color="rgb(14, 36, 133)" margin-bottom="15.5pt" role="H1">
+										<xsl:variable name="title-toc">
+											<xsl:call-template name="getTitle">
+												<xsl:with-param name="name" select="'title-toc'"/>
+											</xsl:call-template>
+										</xsl:variable>
+										<xsl:value-of select="$title-toc"/>
 									</fo:block>
+									<xsl:if test="$debug = 'true'">
+										<xsl:text disable-output-escaping="yes">&lt;!--</xsl:text>
+											DEBUG
+											contents=<xsl:copy-of select="xalan:nodeset($contents)"/>
+										<xsl:text disable-output-escaping="yes">--&gt;</xsl:text>
+									</xsl:if>
 									
-								</xsl:for-each>
+									<xsl:for-each select="xalan:nodeset($contents)//item[@display = 'true']"><!-- [not(@level = 2 and starts-with(@section, '0'))] skip clause from preface -->							
+										<fo:block role="TOCI">
+											<xsl:if test="@level = 1">
+												<xsl:attribute name="margin-top">6pt</xsl:attribute>
+											</xsl:if>
+										
+											<fo:list-block>
+												
+												<xsl:attribute name="provisional-distance-between-starts">
+													<xsl:choose>
+														<xsl:when test="@level &gt;= 1 and @root = 'preface'">0mm</xsl:when>
+														<xsl:when test="@level &gt;= 1 and @root = 'annex' and not(@type = 'annex')">13mm</xsl:when>
+														<xsl:when test="@level &gt;= 1 and not(@type = 'annex')">10mm</xsl:when>													
+														<xsl:otherwise>0mm</xsl:otherwise>
+													</xsl:choose>											
+												</xsl:attribute>
+												<fo:list-item>
+													<fo:list-item-label end-indent="label-end()">
+														<fo:block>
+															<xsl:if test="@section != '' and not(@type = 'annex')"> <!-- output below   -->
+																<xsl:value-of select="@section"/>
+															</xsl:if>
+														</fo:block>
+													</fo:list-item-label>
+														<fo:list-item-body start-indent="body-start()">
+															<fo:block text-align-last="justify" margin-left="12mm" text-indent="-12mm">
+																<fo:basic-link internal-destination="{@id}" fox:alt-text="{title}">																
+																	<xsl:apply-templates select="title"/>
+																	<fo:inline keep-together.within-line="always">
+																		<fo:leader font-size="9pt" font-weight="normal" leader-pattern="dots"/>
+																		<fo:inline><fo:page-number-citation ref-id="{@id}"/></fo:inline>
+																	</fo:inline>
+																</fo:basic-link>
+															</fo:block>
+														</fo:list-item-body>
+												</fo:list-item>
+											</fo:list-block>
+										</fo:block>
+										
+									</xsl:for-each>
+								</fo:block>
 							</fo:block-container>
 						</fo:block-container>
 						

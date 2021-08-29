@@ -1444,111 +1444,112 @@
 	<xsl:template name="insertTOCpages">
 		<xsl:param name="contents"/>
 		<fo:block-container>
-			<fo:block font-size="12pt" text-align="center" margin-bottom="22pt" role="H1">
-				<xsl:variable name="title-toc">
-					<xsl:call-template name="getTitle">
-						<xsl:with-param name="name" select="'title-toc'"/>
+			<fo:block role="TOC">
+				<fo:block font-size="12pt" text-align="center" margin-bottom="22pt" role="H1">
+					<xsl:variable name="title-toc">
+						<xsl:call-template name="getTitle">
+							<xsl:with-param name="name" select="'title-toc'"/>
+						</xsl:call-template>
+					</xsl:variable>
+					<xsl:call-template name="addLetterSpacing">
+						<xsl:with-param name="text" select="java:toUpperCase(java:java.lang.String.new($title-toc))"/>
 					</xsl:call-template>
-				</xsl:variable>
-				<xsl:call-template name="addLetterSpacing">
-					<xsl:with-param name="text" select="java:toUpperCase(java:java.lang.String.new($title-toc))"/>
-				</xsl:call-template>
-			</fo:block>
-			
-			<xsl:for-each select="xalan:nodeset($contents)//item[@display = 'true']"><!-- [@display = 'true']
-																																										[@level &lt;= 3]
-																																										[not(@level = 2 and starts-with(@section, '0'))] skip clause from preface -->
-				<fo:block text-align-last="justify">
-					<xsl:if test="@level = 1">
-						<xsl:attribute name="margin-bottom">5pt</xsl:attribute>
-					</xsl:if>
-					<xsl:if test="@level = 2">
-						<xsl:attribute name="margin-bottom">3pt</xsl:attribute>
-					</xsl:if>
-					<xsl:if test="@level = 3">
-						<xsl:attribute name="margin-bottom">2pt</xsl:attribute>
-					</xsl:if>
-					<!-- <xsl:if test="@level &gt;= 2 and @section != ''">
-						<xsl:attribute name="margin-left">5mm</xsl:attribute>
-					</xsl:if> -->
-					
-					<!-- <xsl:choose>
-						<xsl:when test="@section != '' and not(@display-section = 'false')"> -->
-							<fo:list-block>
-								<xsl:attribute name="margin-left">
-									<xsl:choose>
-										<xsl:when test="@level = 2">8mm</xsl:when>
-										<xsl:when test="@level = 3">23mm</xsl:when>
-										<xsl:otherwise>0mm</xsl:otherwise>
-									</xsl:choose>
-								</xsl:attribute>
-								<xsl:attribute name="provisional-distance-between-starts">
-									<xsl:choose>
-										<xsl:when test="@section = ''">0mm</xsl:when>
-										<xsl:when test="@level = 1">8mm</xsl:when>
-										<xsl:when test="@level = 2">15mm</xsl:when>
-										<xsl:when test="@level = 3">19mm</xsl:when>
-										<xsl:otherwise>0mm</xsl:otherwise>
-									</xsl:choose>
-								</xsl:attribute>
-								<fo:list-item>
-									<fo:list-item-label end-indent="label-end()">
-										<fo:block>
-											<xsl:value-of select="@section"/>											
-										</fo:block>
-									</fo:list-item-label>
-									<fo:list-item-body start-indent="body-start()">
-										<fo:block text-align-last="justify">
-											<fo:basic-link internal-destination="{@id}" fox:alt-text="{title}">
-												<xsl:variable name="title">
-													<xsl:apply-templates select="title"/>
-												</xsl:variable>
-												<xsl:call-template name="addLetterSpacing">
-													<xsl:with-param name="text" select="$title"/>
-												</xsl:call-template>
-												<xsl:text> </xsl:text>
-												<fo:inline keep-together.within-line="always">
-													<fo:leader leader-pattern="dots"/>
-													<fo:inline><fo:page-number-citation ref-id="{@id}"/></fo:inline>
-												</fo:inline>
-											</fo:basic-link>
-										</fo:block>
-									</fo:list-item-body>
-								</fo:list-item>
-							</fo:list-block>
 				</fo:block>
-			</xsl:for-each>
-			
-			<xsl:if test="//iec:figure[@id and iec:name]">
-				<fo:block margin-bottom="5pt">&#xA0;</fo:block>				
-				<xsl:for-each select="//iec:figure[@id and iec:name]">					
-					<fo:block text-align-last="justify" margin-bottom="5pt" margin-left="8mm" text-indent="-8mm">
-						<fo:basic-link internal-destination="{@id}"  fox:alt-text="Figure {@id}">
-							<xsl:apply-templates select="iec:name" mode="contents"/>
-							<fo:inline keep-together.within-line="always">
-								<fo:leader leader-pattern="dots"/>
-								<fo:page-number-citation ref-id="{@id}"/>
-							</fo:inline>
-						</fo:basic-link>
+				
+				<xsl:for-each select="xalan:nodeset($contents)//item[@display = 'true']"><!-- [@display = 'true']
+																																											[@level &lt;= 3]
+																																											[not(@level = 2 and starts-with(@section, '0'))] skip clause from preface -->
+					<fo:block text-align-last="justify" role="TOCI">
+						<xsl:if test="@level = 1">
+							<xsl:attribute name="margin-bottom">5pt</xsl:attribute>
+						</xsl:if>
+						<xsl:if test="@level = 2">
+							<xsl:attribute name="margin-bottom">3pt</xsl:attribute>
+						</xsl:if>
+						<xsl:if test="@level = 3">
+							<xsl:attribute name="margin-bottom">2pt</xsl:attribute>
+						</xsl:if>
+						<!-- <xsl:if test="@level &gt;= 2 and @section != ''">
+							<xsl:attribute name="margin-left">5mm</xsl:attribute>
+						</xsl:if> -->
+						
+						<!-- <xsl:choose>
+							<xsl:when test="@section != '' and not(@display-section = 'false')"> -->
+								<fo:list-block>
+									<xsl:attribute name="margin-left">
+										<xsl:choose>
+											<xsl:when test="@level = 2">8mm</xsl:when>
+											<xsl:when test="@level = 3">23mm</xsl:when>
+											<xsl:otherwise>0mm</xsl:otherwise>
+										</xsl:choose>
+									</xsl:attribute>
+									<xsl:attribute name="provisional-distance-between-starts">
+										<xsl:choose>
+											<xsl:when test="@section = ''">0mm</xsl:when>
+											<xsl:when test="@level = 1">8mm</xsl:when>
+											<xsl:when test="@level = 2">15mm</xsl:when>
+											<xsl:when test="@level = 3">19mm</xsl:when>
+											<xsl:otherwise>0mm</xsl:otherwise>
+										</xsl:choose>
+									</xsl:attribute>
+									<fo:list-item>
+										<fo:list-item-label end-indent="label-end()">
+											<fo:block>
+												<xsl:value-of select="@section"/>											
+											</fo:block>
+										</fo:list-item-label>
+										<fo:list-item-body start-indent="body-start()">
+											<fo:block text-align-last="justify">
+												<fo:basic-link internal-destination="{@id}" fox:alt-text="{title}">
+													<xsl:variable name="title">
+														<xsl:apply-templates select="title"/>
+													</xsl:variable>
+													<xsl:call-template name="addLetterSpacing">
+														<xsl:with-param name="text" select="$title"/>
+													</xsl:call-template>
+													<xsl:text> </xsl:text>
+													<fo:inline keep-together.within-line="always">
+														<fo:leader leader-pattern="dots"/>
+														<fo:inline><fo:page-number-citation ref-id="{@id}"/></fo:inline>
+													</fo:inline>
+												</fo:basic-link>
+											</fo:block>
+										</fo:list-item-body>
+									</fo:list-item>
+								</fo:list-block>
 					</fo:block>
 				</xsl:for-each>
-			</xsl:if>
-			
-			<xsl:if test="//iec:table[@id and iec:name]">
-				<fo:block margin-bottom="5pt">&#xA0;</fo:block>				
-				<xsl:for-each select="//iec:table[@id and iec:name]">
-					<fo:block text-align-last="justify" margin-bottom="5pt" margin-left="8mm" text-indent="-8mm">
-						<fo:basic-link internal-destination="{@id}"  fox:alt-text="Table {@id}">
-							<xsl:apply-templates select="iec:name" mode="contents"/>
-							<fo:inline keep-together.within-line="always">
-								<fo:leader leader-pattern="dots"/>
-								<fo:page-number-citation ref-id="{@id}"/>
-							</fo:inline>
-						</fo:basic-link>
-					</fo:block>
-				</xsl:for-each>
-			</xsl:if>
-			
+				
+				<xsl:if test="//iec:figure[@id and iec:name]">
+					<fo:block margin-bottom="5pt">&#xA0;</fo:block>				
+					<xsl:for-each select="//iec:figure[@id and iec:name]">					
+						<fo:block text-align-last="justify" margin-bottom="5pt" margin-left="8mm" text-indent="-8mm" role="TOCI">
+							<fo:basic-link internal-destination="{@id}"  fox:alt-text="Figure {@id}">
+								<xsl:apply-templates select="iec:name" mode="contents"/>
+								<fo:inline keep-together.within-line="always">
+									<fo:leader leader-pattern="dots"/>
+									<fo:page-number-citation ref-id="{@id}"/>
+								</fo:inline>
+							</fo:basic-link>
+						</fo:block>
+					</xsl:for-each>
+				</xsl:if>
+				
+				<xsl:if test="//iec:table[@id and iec:name]">
+					<fo:block margin-bottom="5pt">&#xA0;</fo:block>				
+					<xsl:for-each select="//iec:table[@id and iec:name]">
+						<fo:block text-align-last="justify" margin-bottom="5pt" margin-left="8mm" text-indent="-8mm" role="TOCI">
+							<fo:basic-link internal-destination="{@id}"  fox:alt-text="Table {@id}">
+								<xsl:apply-templates select="iec:name" mode="contents"/>
+								<fo:inline keep-together.within-line="always">
+									<fo:leader leader-pattern="dots"/>
+									<fo:page-number-citation ref-id="{@id}"/>
+								</fo:inline>
+							</fo:basic-link>
+						</fo:block>
+					</xsl:for-each>
+				</xsl:if>
+			</fo:block>
 		</fo:block-container>
 	</xsl:template>
 	

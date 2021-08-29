@@ -356,41 +356,43 @@
 							
 							<!-- Table of Contents -->
 							<fo:block-container>
-								<fo:block text-align-last="justify">
-									<fo:inline font-size="15pt" font-weight="bold" role="H1">
-										<xsl:call-template name="getLocalizedString">
-											<xsl:with-param name="key">table_of_contents</xsl:with-param>
-										</xsl:call-template>
-									</fo:inline>
-									<fo:inline keep-together.within-line="always">
-										<fo:leader leader-pattern="space"/>
-										<xsl:call-template name="getLocalizedString">
-											<xsl:with-param name="key">Page.sg</xsl:with-param>
-										</xsl:call-template>
-									</fo:inline>
-								</fo:block>
-								
-								<xsl:if test="$debug = 'true'">
-									<xsl:text disable-output-escaping="yes">&lt;!--</xsl:text>
-										DEBUG
-										contents=<xsl:copy-of select="xalan:nodeset($contents)"/>
-									<xsl:text disable-output-escaping="yes">--&gt;</xsl:text>
-								</xsl:if>
-								
-								<xsl:variable name="annexes_title">
-									<xsl:call-template name="getLocalizedString">
-										<xsl:with-param name="key">Annex.pl</xsl:with-param>
-									</xsl:call-template>
-								</xsl:variable>
-								
-								<xsl:for-each select="xalan:nodeset($contents)/doc[@id=$docid]//item[@display = 'true']"> <!-- and not (@type = 'annex') and not (@type = 'references') -->
-									<xsl:if test="@type = 'annex' and not(preceding-sibling::item[@display = 'true' and @type = 'annex'])">
-										<fo:block font-size="12pt" space-before="16pt" font-weight="bold">
-											<xsl:value-of select="$annexes_title"/>
-										</fo:block>
+								<fo:block role="TOC">
+									<fo:block text-align-last="justify">
+										<fo:inline font-size="15pt" font-weight="bold" role="H1">
+											<xsl:call-template name="getLocalizedString">
+												<xsl:with-param name="key">table_of_contents</xsl:with-param>
+											</xsl:call-template>
+										</fo:inline>
+										<fo:inline keep-together.within-line="always">
+											<fo:leader leader-pattern="space"/>
+											<xsl:call-template name="getLocalizedString">
+												<xsl:with-param name="key">Page.sg</xsl:with-param>
+											</xsl:call-template>
+										</fo:inline>
+									</fo:block>
+									
+									<xsl:if test="$debug = 'true'">
+										<xsl:text disable-output-escaping="yes">&lt;!--</xsl:text>
+											DEBUG
+											contents=<xsl:copy-of select="xalan:nodeset($contents)"/>
+										<xsl:text disable-output-escaping="yes">--&gt;</xsl:text>
 									</xsl:if>
-									<xsl:call-template name="print_JCGN_toc_item"/>
-								</xsl:for-each>	
+									
+									<xsl:variable name="annexes_title">
+										<xsl:call-template name="getLocalizedString">
+											<xsl:with-param name="key">Annex.pl</xsl:with-param>
+										</xsl:call-template>
+									</xsl:variable>
+									
+									<xsl:for-each select="xalan:nodeset($contents)/doc[@id=$docid]//item[@display = 'true']"> <!-- and not (@type = 'annex') and not (@type = 'references') -->
+										<xsl:if test="@type = 'annex' and not(preceding-sibling::item[@display = 'true' and @type = 'annex'])">
+											<fo:block font-size="12pt" space-before="16pt" font-weight="bold" role="TOCI">
+												<xsl:value-of select="$annexes_title"/>
+											</fo:block>
+										</xsl:if>
+										<xsl:call-template name="print_JCGN_toc_item"/>
+									</xsl:for-each>	
+								</fo:block>
 							</fo:block-container>
 
 						</xsl:for-each>

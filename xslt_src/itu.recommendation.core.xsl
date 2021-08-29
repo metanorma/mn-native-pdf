@@ -1008,137 +1008,138 @@
 					
 					<xsl:if test="xalan:nodeset($contents)//item[@display = 'true'] and $doctype != 'resolution' and $doctype != 'service-publication'">
 						<fo:block break-after="page"/>
-						<fo:block-container >
-							<fo:block margin-top="6pt" text-align="center" font-weight="bold" role="H1">
-								<xsl:call-template name="getLocalizedString">
-									<xsl:with-param name="key">table_of_contents</xsl:with-param>
-								</xsl:call-template>
-							</fo:block>
-							<fo:block margin-top="6pt" text-align="end" font-weight="bold">
-								<xsl:call-template name="getLocalizedString">
-									<xsl:with-param name="key">Page.sg</xsl:with-param>
-								</xsl:call-template>
-							</fo:block>
-							
-							<xsl:for-each select="xalan:nodeset($contents)//item[@display = 'true']">									
-								<fo:block>
-									<xsl:if test="@level = 1">
-										<xsl:attribute name="margin-top">6pt</xsl:attribute>
-									</xsl:if>
-									<xsl:if test="@level = 2">
-										<xsl:attribute name="margin-top">4pt</xsl:attribute>
-										<!-- <xsl:attribute name="margin-left">12mm</xsl:attribute> -->
-									</xsl:if>
-									<fo:list-block provisional-label-separation="3mm">
-										<xsl:attribute name="provisional-distance-between-starts">
-											<xsl:choose>
-												<xsl:when test="@section != ''">
-													<xsl:if test="@level = 1">
-														<xsl:choose>
-															<xsl:when test="string-length(@section) &gt; 10">27mm</xsl:when>
-															<xsl:when test="string-length(@section) &gt; 5">22mm</xsl:when>
-															<!-- <xsl:when test="@type = 'annex'">20mm</xsl:when> -->
-															<xsl:otherwise>12mm</xsl:otherwise>
-														</xsl:choose>
+							<fo:block-container>
+								<fo:block role="TOC">
+								<fo:block margin-top="6pt" text-align="center" font-weight="bold" role="H1">
+									<xsl:call-template name="getLocalizedString">
+										<xsl:with-param name="key">table_of_contents</xsl:with-param>
+									</xsl:call-template>
+								</fo:block>
+								<fo:block margin-top="6pt" text-align="end" font-weight="bold">
+									<xsl:call-template name="getLocalizedString">
+										<xsl:with-param name="key">Page.sg</xsl:with-param>
+									</xsl:call-template>
+								</fo:block>
+								
+								<xsl:for-each select="xalan:nodeset($contents)//item[@display = 'true']">									
+									<fo:block role="TOCI">
+										<xsl:if test="@level = 1">
+											<xsl:attribute name="margin-top">6pt</xsl:attribute>
+										</xsl:if>
+										<xsl:if test="@level = 2">
+											<xsl:attribute name="margin-top">4pt</xsl:attribute>
+											<!-- <xsl:attribute name="margin-left">12mm</xsl:attribute> -->
+										</xsl:if>
+										<fo:list-block provisional-label-separation="3mm">
+											<xsl:attribute name="provisional-distance-between-starts">
+												<xsl:choose>
+													<xsl:when test="@section != ''">
+														<xsl:if test="@level = 1">
+															<xsl:choose>
+																<xsl:when test="string-length(@section) &gt; 10">27mm</xsl:when>
+																<xsl:when test="string-length(@section) &gt; 5">22mm</xsl:when>
+																<!-- <xsl:when test="@type = 'annex'">20mm</xsl:when> -->
+																<xsl:otherwise>12mm</xsl:otherwise>
+															</xsl:choose>
+														</xsl:if>
+														<xsl:if test="@level = 2">26mm</xsl:if>
+													</xsl:when> <!--   -->
+													<xsl:otherwise>0mm</xsl:otherwise>
+												</xsl:choose>
+											</xsl:attribute>
+											<fo:list-item>
+												<fo:list-item-label end-indent="label-end()">
+													<xsl:if test="@level =2">
+														<xsl:attribute name="start-indent">12mm</xsl:attribute>
 													</xsl:if>
-													<xsl:if test="@level = 2">26mm</xsl:if>
-												</xsl:when> <!--   -->
-												<xsl:otherwise>0mm</xsl:otherwise>
-											</xsl:choose>
-										</xsl:attribute>
-										<fo:list-item>
-											<fo:list-item-label end-indent="label-end()">
-												<xsl:if test="@level =2">
-													<xsl:attribute name="start-indent">12mm</xsl:attribute>
-												</xsl:if>
-												<fo:block>
-													<xsl:if test="@section">															
-														<xsl:value-of select="@section"/>
-													</xsl:if>
-												</fo:block>
-											</fo:list-item-label>
-												<fo:list-item-body start-indent="body-start()">
-													<fo:block text-align-last="justify">															
-														<fo:basic-link internal-destination="{@id}" fox:alt-text="{title}">
-															<xsl:apply-templates select="title"/>
-															<fo:inline keep-together.within-line="always">
-																<fo:leader leader-pattern="dots"/>
-																<fo:page-number-citation ref-id="{@id}"/>
-															</fo:inline>
-														</fo:basic-link>
+													<fo:block>
+														<xsl:if test="@section">															
+															<xsl:value-of select="@section"/>
+														</xsl:if>
 													</fo:block>
-												</fo:list-item-body>
-										</fo:list-item>
-									</fo:list-block>
-								</fo:block>									
-							</xsl:for-each>
-							
+												</fo:list-item-label>
+													<fo:list-item-body start-indent="body-start()">
+														<fo:block text-align-last="justify">															
+															<fo:basic-link internal-destination="{@id}" fox:alt-text="{title}">
+																<xsl:apply-templates select="title"/>
+																<fo:inline keep-together.within-line="always">
+																	<fo:leader leader-pattern="dots"/>
+																	<fo:page-number-citation ref-id="{@id}"/>
+																</fo:inline>
+															</fo:basic-link>
+														</fo:block>
+													</fo:list-item-body>
+											</fo:list-item>
+										</fo:list-block>
+									</fo:block>									
+								</xsl:for-each>
+								
 
-						<xsl:if  test="$doctype = 'technical-report' or $doctype = 'technical-paper'">
-							<xsl:if test="//itu:table[@id and itu:name]">								
-								<xsl:variable name="title-list-tables">
-									<xsl:call-template name="getTitle">
-										<xsl:with-param name="name" select="'title-list-tables'"/>
-									</xsl:call-template>
-								</xsl:variable>
-								
-								<fo:block space-before="36pt" text-align="center" font-weight="bold" keep-with-next="always">
-									<xsl:value-of select="$title-list-tables"/>
-								</fo:block>
-								<fo:block margin-top="6pt" text-align="end" font-weight="bold"  keep-with-next="always">
-									<xsl:call-template name="getLocalizedString">
-										<xsl:with-param name="key">Page.sg</xsl:with-param>
-									</xsl:call-template>
-								</fo:block>
-								
-								<fo:block-container>
-									<xsl:for-each select="//itu:table[@id and itu:name]">
-										<fo:block text-align-last="justify" margin-top="6pt">
-											<fo:basic-link internal-destination="{@id}" fox:alt-text="{itu:name}">
-												<xsl:apply-templates select="itu:name" mode="contents"/>										
-												<fo:inline keep-together.within-line="always">
-													<fo:leader leader-pattern="dots"/>
-													<fo:page-number-citation ref-id="{@id}"/>
-												</fo:inline>
-											</fo:basic-link>
-										</fo:block>
-									</xsl:for-each>
-								</fo:block-container>							
-							</xsl:if>
+							<xsl:if  test="$doctype = 'technical-report' or $doctype = 'technical-paper'">
+								<xsl:if test="//itu:table[@id and itu:name]">								
+									<xsl:variable name="title-list-tables">
+										<xsl:call-template name="getTitle">
+											<xsl:with-param name="name" select="'title-list-tables'"/>
+										</xsl:call-template>
+									</xsl:variable>
 									
-							<xsl:if test="//itu:figure[@id and itu:name]">								
-								<xsl:variable name="title-list-figures">
-									<xsl:call-template name="getTitle">
-										<xsl:with-param name="name" select="'title-list-figures'"/>
-									</xsl:call-template>
-								</xsl:variable>
-								
-								
-								<fo:block space-before="36pt" text-align="center" font-weight="bold" keep-with-next="always">
-									<xsl:value-of select="$title-list-figures"/>
-								</fo:block>
-								<fo:block margin-top="6pt" text-align="end" font-weight="bold" keep-with-next="always">
-									<xsl:call-template name="getLocalizedString">
-										<xsl:with-param name="key">Page.sg</xsl:with-param>
-									</xsl:call-template>
-								</fo:block>
-								
-								<fo:block-container>
-									<xsl:for-each select="//itu:figure[@id and itu:name]">
-										<fo:block text-align-last="justify" margin-top="6pt">
-											<fo:basic-link internal-destination="{@id}" fox:alt-text="{itu:name}">
-												<xsl:apply-templates select="itu:name" mode="contents"/>										
-												<fo:inline keep-together.within-line="always">
-													<fo:leader leader-pattern="dots"/>
-													<fo:page-number-citation ref-id="{@id}"/>
-												</fo:inline>
-											</fo:basic-link>
-										</fo:block>
-									</xsl:for-each>
-								</fo:block-container>							
+									<fo:block space-before="36pt" text-align="center" font-weight="bold" keep-with-next="always">
+										<xsl:value-of select="$title-list-tables"/>
+									</fo:block>
+									<fo:block margin-top="6pt" text-align="end" font-weight="bold"  keep-with-next="always">
+										<xsl:call-template name="getLocalizedString">
+											<xsl:with-param name="key">Page.sg</xsl:with-param>
+										</xsl:call-template>
+									</fo:block>
+									
+									<fo:block-container>
+										<xsl:for-each select="//itu:table[@id and itu:name]">
+											<fo:block text-align-last="justify" margin-top="6pt" role="TOCI">
+												<fo:basic-link internal-destination="{@id}" fox:alt-text="{itu:name}">
+													<xsl:apply-templates select="itu:name" mode="contents"/>										
+													<fo:inline keep-together.within-line="always">
+														<fo:leader leader-pattern="dots"/>
+														<fo:page-number-citation ref-id="{@id}"/>
+													</fo:inline>
+												</fo:basic-link>
+											</fo:block>
+										</xsl:for-each>
+									</fo:block-container>							
+								</xsl:if>
+										
+								<xsl:if test="//itu:figure[@id and itu:name]">								
+									<xsl:variable name="title-list-figures">
+										<xsl:call-template name="getTitle">
+											<xsl:with-param name="name" select="'title-list-figures'"/>
+										</xsl:call-template>
+									</xsl:variable>
+									
+									
+									<fo:block space-before="36pt" text-align="center" font-weight="bold" keep-with-next="always">
+										<xsl:value-of select="$title-list-figures"/>
+									</fo:block>
+									<fo:block margin-top="6pt" text-align="end" font-weight="bold" keep-with-next="always">
+										<xsl:call-template name="getLocalizedString">
+											<xsl:with-param name="key">Page.sg</xsl:with-param>
+										</xsl:call-template>
+									</fo:block>
+									
+									<fo:block-container>
+										<xsl:for-each select="//itu:figure[@id and itu:name]">
+											<fo:block text-align-last="justify" margin-top="6pt" role="TOCI">
+												<fo:basic-link internal-destination="{@id}" fox:alt-text="{itu:name}">
+													<xsl:apply-templates select="itu:name" mode="contents"/>										
+													<fo:inline keep-together.within-line="always">
+														<fo:leader leader-pattern="dots"/>
+														<fo:page-number-citation ref-id="{@id}"/>
+													</fo:inline>
+												</fo:basic-link>
+											</fo:block>
+										</xsl:for-each>
+									</fo:block-container>							
+								</xsl:if>
 							</xsl:if>
-						</xsl:if>
-							
+						</fo:block>
 						</fo:block-container>
 					</xsl:if>
 					

@@ -235,7 +235,7 @@
 							</xsl:call-template>
 						</xsl:variable>
 						<fo:block font-size="12pt" font-weight="bold" text-decoration="underline" margin-bottom="4pt" role="H1"><xsl:value-of select="$title-toc"/></fo:block>
-						<fo:block font-size="10pt">
+						<fo:block font-size="10pt" role="TOC">
 							<xsl:for-each select="xalan:nodeset($contents)//item[@display = 'true']"><!-- [not(@level = 2 and starts-with(@section, '0'))] skip clause from preface -->							
 								<xsl:choose>
 									<xsl:when test="@section = ''">
@@ -244,7 +244,7 @@
 											<fo:table-body>
 												<fo:table-row height="6mm">
 													<fo:table-cell>
-														<fo:block text-align-last="justify">
+														<fo:block text-align-last="justify" role="TOCI">
 															<xsl:if test="@level = 1">
 																<xsl:attribute name="font-weight">bold</xsl:attribute>
 															</xsl:if>
@@ -270,7 +270,7 @@
 											<fo:table-body>
 												<fo:table-row height="6mm">
 													<fo:table-cell>
-														<fo:block font-weight="bold">
+														<fo:block font-weight="bold" role="TOCI">
 															<fo:basic-link internal-destination="{@id}" fox:alt-text="{title}">
 																<xsl:choose>
 																	<!-- <xsl:when test="@section = ''">
@@ -288,7 +288,7 @@
 														</fo:block>
 													</fo:table-cell>
 													<fo:table-cell>
-														<fo:block text-align-last="justify">
+														<fo:block text-align-last="justify" role="TOCI">
 															<xsl:if test="@level = 1">
 																<xsl:attribute name="font-weight">bold</xsl:attribute>
 															</xsl:if>

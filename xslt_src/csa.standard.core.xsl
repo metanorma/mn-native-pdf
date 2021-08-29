@@ -217,9 +217,9 @@
 						</xsl:variable>
 						<fo:block font-size="26pt" color="black" margin-top="2pt" margin-bottom="30pt" role="H1"><xsl:value-of select="$title-toc"/></fo:block>
 						
-						<fo:block margin-left="-3mm">
+						<fo:block margin-left="-3mm" role="TOC">
 							<xsl:for-each select="xalan:nodeset($contents)//item[@display = 'true']">
-								<fo:block>
+								<fo:block role="TOCI">
 									<fo:list-block>
 										<xsl:attribute name="provisional-distance-between-starts">
 											<xsl:choose>

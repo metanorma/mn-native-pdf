@@ -357,70 +357,70 @@
 						
 						
 						<fo:block-container line-height="130%">
-							 
-							<xsl:for-each select="xalan:nodeset($contents)//item[@display = 'true']">
-								
-								<fo:block>
-									<xsl:if test="@level = 1">
-										<xsl:attribute name="margin-top">14pt</xsl:attribute>
-									</xsl:if>
-									<xsl:if test="@level = 1 or @parent = 'annex'">										
-										<xsl:attribute name="font-size">12pt</xsl:attribute>
-									</xsl:if>
-									<xsl:if test="@level = 2 and not(@parent = 'annex')">
-										<xsl:attribute name="font-size">10pt</xsl:attribute>
-									</xsl:if>
+							<fo:block role="TOC">
+								<xsl:for-each select="xalan:nodeset($contents)//item[@display = 'true']">
 									
-									<xsl:choose>
-										<xsl:when test="@level = 1">
-											<fo:list-block provisional-distance-between-starts="7mm">
-												<xsl:if test="@type = 'annex'">
-													<xsl:attribute name="provisional-distance-between-starts">0mm</xsl:attribute>
-												</xsl:if>
-												<fo:list-item>
-													<fo:list-item-label end-indent="label-end()">
-														<fo:block>												
-															<xsl:value-of select="java:toUpperCase(java:java.lang.String.new(@section))"/>
-														</fo:block>
-													</fo:list-item-label>
-													<fo:list-item-body start-indent="body-start()">
-														<fo:block text-align-last="justify" margin-left="12mm" text-indent="-12mm">
-															<fo:basic-link internal-destination="{@id}" fox:alt-text="{text()}">
-																<xsl:variable name="sectionTitle">
-																	<xsl:apply-templates select="title"/>
-																</xsl:variable>
-																<xsl:value-of select="java:toUpperCase(java:java.lang.String.new($sectionTitle))"/>															
-																<xsl:text> </xsl:text>															
-																<fo:inline keep-together.within-line="always">
-																	<fo:leader leader-pattern="dots"/>																																		
-																	<fo:inline><fo:page-number-citation ref-id="{@id}"/></fo:inline>
-																</fo:inline>
-															</fo:basic-link>
-														</fo:block>
-													</fo:list-item-body>
-												</fo:list-item>
-											</fo:list-block>
-										</xsl:when>
-										<xsl:otherwise>
-											<fo:block text-align-last="justify" margin-left="7mm">
-												<fo:basic-link internal-destination="{@id}" fox:alt-text="{text()}">
-													<xsl:value-of select="java:toUpperCase(java:java.lang.String.new(@section))"/>
-													<xsl:text> </xsl:text>
-													<xsl:apply-templates select="title"/>
-													<xsl:text> </xsl:text>
-													<fo:inline keep-together.within-line="always">
-														<fo:leader leader-pattern="dots"/>
-														<fo:inline><fo:page-number-citation ref-id="{@id}"/></fo:inline>
-													</fo:inline>
-												</fo:basic-link>
-											</fo:block>
-										</xsl:otherwise>
-									</xsl:choose>
-									
-									
-								</fo:block>
-							</xsl:for-each>
-							
+									<fo:block role="TOCI">
+										<xsl:if test="@level = 1">
+											<xsl:attribute name="margin-top">14pt</xsl:attribute>
+										</xsl:if>
+										<xsl:if test="@level = 1 or @parent = 'annex'">										
+											<xsl:attribute name="font-size">12pt</xsl:attribute>
+										</xsl:if>
+										<xsl:if test="@level = 2 and not(@parent = 'annex')">
+											<xsl:attribute name="font-size">10pt</xsl:attribute>
+										</xsl:if>
+										
+										<xsl:choose>
+											<xsl:when test="@level = 1">
+												<fo:list-block provisional-distance-between-starts="7mm">
+													<xsl:if test="@type = 'annex'">
+														<xsl:attribute name="provisional-distance-between-starts">0mm</xsl:attribute>
+													</xsl:if>
+													<fo:list-item>
+														<fo:list-item-label end-indent="label-end()">
+															<fo:block>												
+																<xsl:value-of select="java:toUpperCase(java:java.lang.String.new(@section))"/>
+															</fo:block>
+														</fo:list-item-label>
+														<fo:list-item-body start-indent="body-start()">
+															<fo:block text-align-last="justify" margin-left="12mm" text-indent="-12mm">
+																<fo:basic-link internal-destination="{@id}" fox:alt-text="{text()}">
+																	<xsl:variable name="sectionTitle">
+																		<xsl:apply-templates select="title"/>
+																	</xsl:variable>
+																	<xsl:value-of select="java:toUpperCase(java:java.lang.String.new($sectionTitle))"/>															
+																	<xsl:text> </xsl:text>															
+																	<fo:inline keep-together.within-line="always">
+																		<fo:leader leader-pattern="dots"/>																																		
+																		<fo:inline><fo:page-number-citation ref-id="{@id}"/></fo:inline>
+																	</fo:inline>
+																</fo:basic-link>
+															</fo:block>
+														</fo:list-item-body>
+													</fo:list-item>
+												</fo:list-block>
+											</xsl:when>
+											<xsl:otherwise>
+												<fo:block text-align-last="justify" margin-left="7mm">
+													<fo:basic-link internal-destination="{@id}" fox:alt-text="{text()}">
+														<xsl:value-of select="java:toUpperCase(java:java.lang.String.new(@section))"/>
+														<xsl:text> </xsl:text>
+														<xsl:apply-templates select="title"/>
+														<xsl:text> </xsl:text>
+														<fo:inline keep-together.within-line="always">
+															<fo:leader leader-pattern="dots"/>
+															<fo:inline><fo:page-number-citation ref-id="{@id}"/></fo:inline>
+														</fo:inline>
+													</fo:basic-link>
+												</fo:block>
+											</xsl:otherwise>
+										</xsl:choose>
+										
+										
+									</fo:block>
+								</xsl:for-each>
+							</fo:block>
 						</fo:block-container>	
 								
 						<xsl:if test="//ogc:table[@id and ogc:name]">								
@@ -439,7 +439,7 @@
 							</fo:block-container>							
 							<fo:block-container line-height="130%">
 								<xsl:for-each select="//ogc:table[@id and ogc:name]">
-									<fo:block text-align-last="justify" margin-top="2pt">
+									<fo:block text-align-last="justify" margin-top="2pt" role="TOCI">
 										<fo:basic-link internal-destination="{@id}" fox:alt-text="{ogc:name}">
 											<xsl:apply-templates select="ogc:name" mode="contents"/>										
 											<fo:inline keep-together.within-line="always">
@@ -468,7 +468,7 @@
 							
 							<fo:block-container line-height="130%">
 								<xsl:for-each select="//ogc:figure[@id and ogc:name]">
-									<fo:block text-align-last="justify" margin-top="2pt">
+									<fo:block text-align-last="justify" margin-top="2pt" role="TOCI">
 										<fo:basic-link internal-destination="{@id}" fox:alt-text="{ogc:name}">
 											<xsl:apply-templates select="ogc:name" mode="contents"/>										
 											<fo:inline keep-together.within-line="always">
@@ -501,7 +501,7 @@
 								<!-- <xsl:for-each select="//ogc:permission[@id and ogc:name] | //ogc:recommendation[@id and ogc:name] | //ogc:requirement[@id and ogc:name]"> -->
 								<xsl:for-each select="//ogc:table[.//ogc:p[@class = 'RecommendationTitle']]">
 									<xsl:variable name="table_id" select="@id"/>									
-									<fo:block text-align-last="justify" margin-top="6pt">
+									<fo:block text-align-last="justify" margin-top="6pt" role="TOCI">
 										<fo:basic-link internal-destination="{@id}" fox:alt-text="{.//ogc:p[@class = 'RecommendationTitle'][1]/text()}">
 											<xsl:apply-templates select=".//ogc:p[@class = 'RecommendationTitle'][ancestor::ogc:table[1][@id= $table_id]]/node()"/>
 											<xsl:text> </xsl:text>

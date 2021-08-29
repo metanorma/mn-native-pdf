@@ -228,43 +228,45 @@
 					<fo:block break-after="page"/>
 					
 					<fo:block-container line-height="1.08" font-family="Lato">
-						<fo:block xsl:use-attribute-sets="title-toc-style" role="H1">
-							<xsl:text>Table of Contents</xsl:text>
-						</fo:block>
-						<xsl:variable name="margin-left">3.9</xsl:variable>
-						<xsl:for-each select="xalan:nodeset($contents)//item[@display = 'true']">
-							<fo:block margin-top="8pt" margin-bottom="5pt" margin-left="{(@level - 1) * $margin-left}mm" text-align-last="justify">
-								<fo:basic-link internal-destination="{@id}" fox:alt-text="{title}">
-									<xsl:if test="@section != ''">
-										<xsl:value-of select="@section"/><xsl:text> </xsl:text>
-									</xsl:if>
-									<xsl:apply-templates select="title"/>
-									<fo:inline keep-together.within-line="always">
-										<fo:leader leader-pattern="dots"/>
-										<fo:inline><fo:page-number-citation ref-id="{@id}"/></fo:inline>
-									</fo:inline>
-								</fo:basic-link>
+						<fo:block role="TOC">
+							<fo:block xsl:use-attribute-sets="title-toc-style" role="H1">
+								<xsl:text>Table of Contents</xsl:text>
 							</fo:block>
-						</xsl:for-each>
-						
-						<xsl:if test="//ogc:figure[@id and ogc:name] or //ogc:table[@id and ogc:name]">
-							<fo:block font-size="11pt" margin-top="8pt">&#xA0;</fo:block>
-							<fo:block font-size="11pt" margin-top="8pt">&#xA0;</fo:block>							
-							<fo:block xsl:use-attribute-sets="title-toc-style">
-								<xsl:text>Table of Figures</xsl:text>
-							</fo:block>
-							<xsl:for-each select="//ogc:figure[@id and ogc:name] | //ogc:table[@id and ogc:name]">
-								<fo:block margin-top="8pt" margin-bottom="5pt" text-align-last="justify">
-									<fo:basic-link internal-destination="{@id}" fox:alt-text="{ogc:name}">
-										<xsl:apply-templates select="ogc:name" mode="contents"/>										
+							<xsl:variable name="margin-left">3.9</xsl:variable>
+							<xsl:for-each select="xalan:nodeset($contents)//item[@display = 'true']">
+								<fo:block margin-top="8pt" margin-bottom="5pt" margin-left="{(@level - 1) * $margin-left}mm" text-align-last="justify" role="TOCI">
+									<fo:basic-link internal-destination="{@id}" fox:alt-text="{title}">
+										<xsl:if test="@section != ''">
+											<xsl:value-of select="@section"/><xsl:text> </xsl:text>
+										</xsl:if>
+										<xsl:apply-templates select="title"/>
 										<fo:inline keep-together.within-line="always">
 											<fo:leader leader-pattern="dots"/>
-											<fo:page-number-citation ref-id="{@id}"/>
+											<fo:inline><fo:page-number-citation ref-id="{@id}"/></fo:inline>
 										</fo:inline>
 									</fo:basic-link>
 								</fo:block>
 							</xsl:for-each>
-						</xsl:if>						
+							
+							<xsl:if test="//ogc:figure[@id and ogc:name] or //ogc:table[@id and ogc:name]">
+								<fo:block font-size="11pt" margin-top="8pt">&#xA0;</fo:block>
+								<fo:block font-size="11pt" margin-top="8pt">&#xA0;</fo:block>							
+								<fo:block xsl:use-attribute-sets="title-toc-style">
+									<xsl:text>Table of Figures</xsl:text>
+								</fo:block>
+								<xsl:for-each select="//ogc:figure[@id and ogc:name] | //ogc:table[@id and ogc:name]">
+									<fo:block margin-top="8pt" margin-bottom="5pt" text-align-last="justify" role="TOCI">
+										<fo:basic-link internal-destination="{@id}" fox:alt-text="{ogc:name}">
+											<xsl:apply-templates select="ogc:name" mode="contents"/>										
+											<fo:inline keep-together.within-line="always">
+												<fo:leader leader-pattern="dots"/>
+												<fo:page-number-citation ref-id="{@id}"/>
+											</fo:inline>
+										</fo:basic-link>
+									</fo:block>
+								</xsl:for-each>
+							</xsl:if>
+						</fo:block>
 					</fo:block-container>
 				
 					

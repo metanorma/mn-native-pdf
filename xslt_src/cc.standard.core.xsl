@@ -239,50 +239,52 @@
 					<fo:block break-after="page"/>
 					
 					<fo:block-container font-weight="bold" line-height="115%">
-						<xsl:variable name="title-toc">
-							<xsl:call-template name="getTitle">
-								<xsl:with-param name="name" select="'title-toc'"/>
-							</xsl:call-template>
-						</xsl:variable>
-						<fo:block font-size="14pt"  margin-bottom="15.5pt" role="H1"><xsl:value-of select="$title-toc"/></fo:block>
-						
-						<xsl:for-each select="xalan:nodeset($contents)//item[@display = 'true']"><!-- [not(@level = 2 and starts-with(@section, '0'))] skip clause from preface -->
+						<fo:block role="TOC">
+							<xsl:variable name="title-toc">
+								<xsl:call-template name="getTitle">
+									<xsl:with-param name="name" select="'title-toc'"/>
+								</xsl:call-template>
+							</xsl:variable>
+							<fo:block font-size="14pt"  margin-bottom="15.5pt" role="H1"><xsl:value-of select="$title-toc"/></fo:block>
 							
-							<fo:block>
-								<xsl:if test="@level = 1">
-									<xsl:attribute name="margin-top">6pt</xsl:attribute>
-								</xsl:if>
+							<xsl:for-each select="xalan:nodeset($contents)//item[@display = 'true']"><!-- [not(@level = 2 and starts-with(@section, '0'))] skip clause from preface -->
 								
-								
-								<fo:list-block>
-									<xsl:attribute name="provisional-distance-between-starts">
-										<xsl:choose>
-											<!-- skip 0 section without subsections -->
-											<xsl:when test="@section != ''">8mm</xsl:when> <!-- and not(@display-section = 'false') -->
-											<xsl:otherwise>0mm</xsl:otherwise>
-										</xsl:choose>
-									</xsl:attribute>
-									<fo:list-item>
-										<fo:list-item-label end-indent="label-end()">
-											<fo:block>												
-												<xsl:value-of select="@section"/>
-											</fo:block>
-										</fo:list-item-label>
-										<fo:list-item-body start-indent="body-start()">
-											<fo:block text-align-last="justify" margin-left="12mm" text-indent="-12mm">
-												<fo:basic-link internal-destination="{@id}" fox:alt-text="{title}">													
-													<xsl:apply-templates select="title"/>
-													<fo:inline keep-together.within-line="always">
-														<fo:leader leader-pattern="dots"/>
-														<fo:inline><fo:page-number-citation ref-id="{@id}"/></fo:inline>
-													</fo:inline>
-												</fo:basic-link>
-											</fo:block>
-										</fo:list-item-body>
-									</fo:list-item>
-								</fo:list-block>
-							</fo:block>
-						</xsl:for-each>
+								<fo:block role="TOCI">
+									<xsl:if test="@level = 1">
+										<xsl:attribute name="margin-top">6pt</xsl:attribute>
+									</xsl:if>
+									
+									
+									<fo:list-block>
+										<xsl:attribute name="provisional-distance-between-starts">
+											<xsl:choose>
+												<!-- skip 0 section without subsections -->
+												<xsl:when test="@section != ''">8mm</xsl:when> <!-- and not(@display-section = 'false') -->
+												<xsl:otherwise>0mm</xsl:otherwise>
+											</xsl:choose>
+										</xsl:attribute>
+										<fo:list-item>
+											<fo:list-item-label end-indent="label-end()">
+												<fo:block>												
+													<xsl:value-of select="@section"/>
+												</fo:block>
+											</fo:list-item-label>
+											<fo:list-item-body start-indent="body-start()">
+												<fo:block text-align-last="justify" margin-left="12mm" text-indent="-12mm">
+													<fo:basic-link internal-destination="{@id}" fox:alt-text="{title}">													
+														<xsl:apply-templates select="title"/>
+														<fo:inline keep-together.within-line="always">
+															<fo:leader leader-pattern="dots"/>
+															<fo:inline><fo:page-number-citation ref-id="{@id}"/></fo:inline>
+														</fo:inline>
+													</fo:basic-link>
+												</fo:block>
+											</fo:list-item-body>
+										</fo:list-item>
+									</fo:list-block>
+								</fo:block>
+							</xsl:for-each>
+						</fo:block>
 					</fo:block-container>
 					
 					<!-- Foreword, Introduction -->					

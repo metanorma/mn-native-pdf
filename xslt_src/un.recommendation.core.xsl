@@ -216,10 +216,10 @@
 						</xsl:call-template>
 					</xsl:variable>
 					<fo:block font-size="9pt" text-align="right" font-style="italic" margin-bottom="6pt"><xsl:value-of select="$title-page"/></fo:block>
-					<fo:block>
+					<fo:block role="TOC">
 						<xsl:for-each select="xalan:nodeset($contents)//item[not (@type = 'annex' or @parent = 'annex') and @display = 'true']">
 							
-							<fo:block>
+							<fo:block role="TOCI">
 								
 								<fo:block text-align-last="justify" margin-left="12mm" text-indent="-12mm">
 									<xsl:if test="@level = 2 and @section != ''">
@@ -258,7 +258,7 @@
 						<xsl:if test="xalan:nodeset($contents)//item[@type = 'annex' and @display = 'true']">
 							<fo:block text-align="center" margin-top="12pt" margin-bottom="12pt">ANNEXES</fo:block>
 							<xsl:for-each select="xalan:nodeset($contents)//item[@type = 'annex' and @display = 'true']">
-								<fo:block>
+								<fo:block role="TOCI">
 									<fo:block text-align-last="justify" margin-left="12mm" text-indent="-12mm">
 										<fo:basic-link internal-destination="{@id}" fox:alt-text="{@section}">
 											<xsl:if test="@section != ''">
