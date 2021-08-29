@@ -136,7 +136,7 @@
 						</fo:block>
 					</fo:block>
 					<fo:block-container absolute-position="fixed" left="50mm" top="30mm" width="139mm" height="40mm" text-align="right" display-align="after">
-						<fo:block font-family="Arial" font-size="24.5pt" font-weight="bold" margin-right="3mm"> <!-- margin-top="19mm" -->
+						<fo:block font-family="Arial" font-size="24.5pt" font-weight="bold" margin-right="3mm" role="H1"> <!-- margin-top="19mm" -->
 							<xsl:if test="string-length($title) &gt; 70">
 								<xsl:attribute name="font-size">22pt</xsl:attribute>
 							</xsl:if>
@@ -151,7 +151,7 @@
 				<fo:flow flow-name="xsl-region-body" font-family="Arial">
 					<fo:block font-size="14pt" font-weight="bold" text-align="center">United Nations Economic Commission for Europe</fo:block>
 					<fo:block font-size="12pt" font-weight="normal" text-align="center" margin-top="46pt" margin-bottom="128pt" keep-together="always">United Nations Centre for Trade Facilitation and Electronic Business</fo:block>
-					<fo:block font-size="22pt" font-weight="bold" text-align="center">
+					<fo:block font-size="22pt" font-weight="bold" text-align="center" role="H1">
 						<xsl:value-of select="$title"/>
 						<xsl:value-of select="$linebreak"/>
 						<xsl:value-of select="$doctypenumber"/>
@@ -209,7 +209,7 @@
 							<xsl:with-param name="name" select="'title-toc'"/>
 						</xsl:call-template>
 					</xsl:variable>
-					<fo:block font-size="14pt" margin-top="4pt" margin-bottom="8pt"><xsl:value-of select="$title-toc"/></fo:block>
+					<fo:block font-size="14pt" margin-top="4pt" margin-bottom="8pt" role="H1"><xsl:value-of select="$title-toc"/></fo:block>
 					<xsl:variable name="title-page">
 						<xsl:call-template name="getTitle">
 							<xsl:with-param name="name" select="'title-page'"/>
@@ -432,7 +432,10 @@
 		
 		
 	<xsl:template match="un:legal-statement//un:clause/un:title">
-		<fo:block font-weight="bold">
+		<xsl:variable name="level">
+			<xsl:call-template name="getLevel"/>
+		</xsl:variable>
+		<fo:block font-weight="bold" role="H{$level}">
 			<xsl:choose>
 				<xsl:when test="text() = 'Note'">
 					<xsl:attribute name="font-size">14pt</xsl:attribute>
@@ -576,7 +579,10 @@
 	</xsl:template>
 	
 	<xsl:template match="un:title" mode="inline-header">
-		<fo:inline>
+		<xsl:variable name="level">
+			<xsl:call-template name="getLevel"/>
+		</xsl:variable>
+		<fo:inline role="H{$level}">
 			<xsl:apply-templates />
 		</fo:inline>
 	</xsl:template>
@@ -748,7 +754,7 @@
 				<xsl:otherwise>12pt</xsl:otherwise>
 			</xsl:choose>
 		</xsl:variable>
-		<fo:block font-size="{$font-size}" font-weight="bold" margin-top="30pt" margin-bottom="16pt" keep-with-next="always">
+		<fo:block font-size="{$font-size}" font-weight="bold" margin-top="30pt" margin-bottom="16pt" keep-with-next="always" role="H{$level}">
 			<xsl:apply-templates />
 			<xsl:apply-templates select="following-sibling::*[1][local-name() = 'variant-title'][@type = 'sub']" mode="subtitle"/>
 		</fo:block>
@@ -768,13 +774,13 @@
 		
 		<xsl:choose>
 			<xsl:when test="$level = 1">
-				<fo:block font-size="{$font-size}" font-weight="bold" space-before="3pt" margin-top="12pt" margin-bottom="16pt" keep-with-next="always" line-height="18pt">					
+				<fo:block font-size="{$font-size}" font-weight="bold" space-before="3pt" margin-top="12pt" margin-bottom="16pt" keep-with-next="always" line-height="18pt" role="H{$level}">					
 					<xsl:apply-templates />
 					<xsl:apply-templates select="following-sibling::*[1][local-name() = 'variant-title'][@type = 'sub']" mode="subtitle"/>
 				</fo:block>
 			</xsl:when>
 			<xsl:when test="$level &gt;= 2">
-				<fo:block font-size="{$font-size}" font-weight="bold" space-before="3pt" margin-bottom="12pt" margin-left="-9.5mm" line-height="108%" keep-with-next="always"> <!-- line-height="14.5pt" text-indent="-9.5mm" -->					
+				<fo:block font-size="{$font-size}" font-weight="bold" space-before="3pt" margin-bottom="12pt" margin-left="-9.5mm" line-height="108%" keep-with-next="always" role="H{$level}"> <!-- line-height="14.5pt" text-indent="-9.5mm" -->					
 					<xsl:if test="$level = 2">
 						<xsl:attribute name="margin-top">16pt</xsl:attribute>
 					</xsl:if>
@@ -807,7 +813,7 @@
 				
 		<xsl:choose>			
 			<xsl:when test="ancestor::un:sections">
-				<fo:block font-size="{$font-size}" font-weight="bold" space-before="3pt" margin-bottom="12pt" margin-left="-9.5mm" line-height="108%" keep-with-next="always"> <!-- line-height="14.5pt" text-indent="-9.5mm" -->
+				<fo:block font-size="{$font-size}" font-weight="bold" space-before="3pt" margin-bottom="12pt" margin-left="-9.5mm" line-height="108%" keep-with-next="always" role="H{$level}"> <!-- line-height="14.5pt" text-indent="-9.5mm" -->
 					<xsl:if test="$level = 1">
 						<!-- <xsl:attribute name="margin-left">-8.5mm</xsl:attribute> -->
 						<xsl:attribute name="margin-top">18pt</xsl:attribute>
@@ -824,7 +830,7 @@
 			</xsl:when>
 			
 			<xsl:otherwise>
-				<fo:block font-size="{$font-size}" font-weight="bold" text-align="left" keep-with-next="always">						
+				<fo:block font-size="{$font-size}" font-weight="bold" text-align="left" keep-with-next="always" role="H{$level}">						
 						<xsl:apply-templates />
 						<xsl:apply-templates select="following-sibling::*[1][local-name() = 'variant-title'][@type = 'sub']" mode="subtitle"/>
 					</fo:block>

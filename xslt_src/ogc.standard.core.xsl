@@ -183,7 +183,7 @@
 					
 					<fo:block-container absolute-position="fixed" left="16.5mm" top="83mm" height="90mm">
 						<fo:block-container width="155mm">
-							<fo:block font-size="33pt">
+							<fo:block font-size="33pt" role="H1">
 								<xsl:call-template name="addLetterSpacing">
 									<xsl:with-param name="text" select="java:toUpperCase(java:java.lang.String.new($doctitle))"/>
 									<xsl:with-param name="letter-spacing" select="1.1"/>
@@ -341,7 +341,7 @@
 						<fo:block-container margin-left="-18mm">
 							<fo:block-container margin-left="0mm">
 								<fo:block margin-bottom="40pt">						
-									<fo:block font-size="33pt" margin-bottom="4pt">							
+									<fo:block font-size="33pt" margin-bottom="4pt" role="H1">							
 										<xsl:call-template name="addLetterSpacing">
 											<xsl:with-param name="text" select="java:toUpperCase(java:java.lang.String.new($title-toc))"/>
 											<xsl:with-param name="letter-spacing" select="1.1"/>
@@ -748,14 +748,20 @@
 		</fo:block>
 	</xsl:template>
 	
-	<xsl:template match="ogc:license-statement//ogc:title">	
-		<fo:block font-weight="bold" color="{$color_blue}">
+	<xsl:template match="ogc:license-statement//ogc:title">
+		<xsl:variable name="level">
+			<xsl:call-template name="getLevel"/>
+		</xsl:variable>
+		<fo:block font-weight="bold" color="{$color_blue}" role="H{$level}">
 			<xsl:apply-templates />
 		</fo:block>
 	</xsl:template>
 	
 	<xsl:template match="ogc:copyright-statement//ogc:title">
-		<fo:block font-weight="bold" color="{$color_blue}" margin-top="24pt">
+		<xsl:variable name="level">
+			<xsl:call-template name="getLevel"/>
+		</xsl:variable>
+		<fo:block font-weight="bold" color="{$color_blue}" margin-top="24pt" role="H{$level}">
 			<xsl:apply-templates />
 		</fo:block>
 	</xsl:template>
@@ -773,7 +779,10 @@
 	</xsl:template>
 
 	<xsl:template match="ogc:legal-statement//ogc:title">
-		<fo:inline font-weight="bold">
+		<xsl:variable name="level">
+			<xsl:call-template name="getLevel"/>
+		</xsl:variable>
+		<fo:inline font-weight="bold" role="H{$level}">
 			<xsl:apply-templates /><xsl:text>: </xsl:text>
 		</fo:inline>
 	</xsl:template>
@@ -848,7 +857,7 @@
 			<xsl:when test="$level = 1">			
 				<fo:block-container margin-left="-22mm">
 					<fo:block-container margin-left="0mm">
-						<fo:block margin-bottom="10pt" space-before="36pt" keep-with-next="always">
+						<fo:block margin-bottom="10pt" space-before="36pt" keep-with-next="always" role="H{$level}">
 							<fo:table table-layout="fixed" width="100%">
 								<fo:table-column column-width="22mm"/>
 								<fo:table-column column-width="158mm"/>
@@ -892,7 +901,7 @@
 				</fo:block-container>
 			</xsl:when>
 			<xsl:when test="$level = 2">
-				<fo:block space-before="24pt" margin-bottom="10pt">
+				<fo:block space-before="24pt" margin-bottom="10pt" role="H{$level}">
 					<xsl:attribute name="keep-with-next">always</xsl:attribute>		
 					<xsl:variable name="title">							
 						<xsl:choose>
@@ -914,11 +923,12 @@
 			<xsl:otherwise>
 				<xsl:element name="{$element-name}">
 					<xsl:attribute name="font-size"><xsl:value-of select="$font-size"/></xsl:attribute>
-					<xsl:attribute name="font-weight"><xsl:value-of select="$font-weight"/></xsl:attribute>					
-					<xsl:attribute name="keep-with-next">always</xsl:attribute>		
-					<xsl:attribute name="margin-top">30pt</xsl:attribute>		
-					<xsl:attribute name="margin-bottom">12pt</xsl:attribute>		
-					<xsl:attribute name="color"><xsl:value-of select="$color_blue"/></xsl:attribute>					
+					<xsl:attribute name="font-weight"><xsl:value-of select="$font-weight"/></xsl:attribute>
+					<xsl:attribute name="keep-with-next">always</xsl:attribute>
+					<xsl:attribute name="margin-top">30pt</xsl:attribute>
+					<xsl:attribute name="margin-bottom">12pt</xsl:attribute>
+					<xsl:attribute name="color"><xsl:value-of select="$color_blue"/></xsl:attribute>
+					<xsl:attribute name="role">H<xsl:value-of select="$level"/></xsl:attribute>
 					<xsl:apply-templates />
 					<xsl:apply-templates select="following-sibling::*[1][local-name() = 'variant-title'][@type = 'sub']" mode="subtitle"/>
 				</xsl:element>
@@ -1132,7 +1142,10 @@
 	</xsl:template>
 	
 	<xsl:template match="ogc:term/ogc:name" priority="2">
-		<fo:block space-before="36pt" margin-bottom="10pt" keep-with-next="always">
+		<xsl:variable name="levelTerm">
+			<xsl:call-template name="getLevelTermName"/>
+		</xsl:variable>
+		<fo:block space-before="36pt" margin-bottom="10pt" keep-with-next="always" role="H{$levelTerm}">
 			<fo:block color="{$color_blue}" keep-with-next="always">
 				<fo:inline font-size="18pt" padding-right="1mm"><xsl:apply-templates /></fo:inline>				
 				<xsl:apply-templates select="../ogc:preferred | ../ogc:deprecated | ../ogc:admitted" mode="term_name"/>

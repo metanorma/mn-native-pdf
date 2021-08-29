@@ -170,7 +170,7 @@
 							<fo:block>
 								<xsl:value-of select="translate(/un:un-standard/un:sections/un:clause[1]/un:ol[1]/un:li[1]/un:p[1], '.', '')"/>
 							</fo:block>
-							<fo:block><xsl:value-of select="$title"/></fo:block>
+							<fo:block role="H1"><xsl:value-of select="$title"/></fo:block>
 						</fo:block>
 					</fo:block-container>
 					
@@ -499,7 +499,10 @@
 	</xsl:template>
 	
 	<xsl:template match="un:title" mode="inline-header">
-		<fo:inline>
+		<xsl:variable name="level">
+			<xsl:call-template name="getLevel"/>
+		</xsl:variable>
+		<fo:inline role="H{$level}">
 			<xsl:apply-templates />
 		</fo:inline>
 	</xsl:template>
@@ -729,7 +732,7 @@
 				<xsl:otherwise>11pt</xsl:otherwise>
 			</xsl:choose>
 		</xsl:variable>
-		<fo:block font-size="{$font-size}" font-weight="bold" margin-top="3pt" margin-bottom="16pt" keep-with-next="always">
+		<fo:block font-size="{$font-size}" font-weight="bold" margin-top="3pt" margin-bottom="16pt" keep-with-next="always" role="H{$level}">
 			<xsl:apply-templates />
 			<xsl:apply-templates select="following-sibling::*[1][local-name() = 'variant-title'][@type = 'sub']" mode="subtitle"/>
 		</fo:block>
@@ -749,7 +752,7 @@
 		</xsl:variable>
 		<xsl:choose>
 			<xsl:when test="$level = 1">
-				<fo:block font-size="{$font-size}" font-weight="bold" space-before="3pt" keep-with-next="always">					
+				<fo:block font-size="{$font-size}" font-weight="bold" space-before="3pt" keep-with-next="always" role="H{$level}">					
 					<fo:block margin-bottom="12pt">
 						<xsl:apply-templates />
 						<xsl:apply-templates select="following-sibling::*[1][local-name() = 'variant-title'][@type = 'sub']" mode="subtitle"/>
@@ -757,7 +760,7 @@
 				</fo:block>
 			</xsl:when>
 			<xsl:otherwise>			
-				<fo:block font-size="{$font-size}" font-weight="bold" margin-left="1mm" space-before="3pt" margin-bottom="6pt" keep-with-next="always">
+				<fo:block font-size="{$font-size}" font-weight="bold" margin-left="1mm" space-before="3pt" margin-bottom="6pt" keep-with-next="always" role="H{$level}">
 					<xsl:apply-templates />
 					<xsl:apply-templates select="following-sibling::*[1][local-name() = 'variant-title'][@type = 'sub']" mode="subtitle"/>
 				</fo:block>
@@ -786,7 +789,7 @@
 		<xsl:choose>			
 			<xsl:when test="ancestor::un:sections and $level = 1">
 				<fo:block-container margin-left="-16mm">
-					<fo:block font-size="{$font-size}" font-weight="bold" margin-left="16mm" space-before="16pt" margin-bottom="13pt" keep-with-next="always">
+					<fo:block font-size="{$font-size}" font-weight="bold" margin-left="16mm" space-before="16pt" margin-bottom="13pt" keep-with-next="always" role="H{$level}">
 						<fo:table table-layout="fixed" width="100%">
 							<fo:table-column column-width="16mm"/>
 							<fo:table-column column-width="130mm"/>
@@ -815,7 +818,7 @@
 				</fo:block-container>
 			</xsl:when>
 			<xsl:when test="ancestor::un:sections">
-				<fo:block font-size="{$font-size}" font-weight="bold" space-before="16pt" margin-bottom="13pt" text-indent="-8mm" keep-with-next="always">
+				<fo:block font-size="{$font-size}" font-weight="bold" space-before="16pt" margin-bottom="13pt" text-indent="-8mm" keep-with-next="always" role="H{$level}">
 					<xsl:if test="$level = 2">
 						<xsl:attribute name="margin-left">1mm</xsl:attribute>
 						<xsl:attribute name="space-before">12pt</xsl:attribute>
@@ -832,7 +835,7 @@
 				</fo:block>
 			</xsl:when>			
 			<xsl:otherwise>
-				<fo:block font-size="{$font-size}" font-weight="bold" text-align="left" keep-with-next="always">						
+				<fo:block font-size="{$font-size}" font-weight="bold" text-align="left" keep-with-next="always" role="H{$level}">						
 					<xsl:apply-templates />
 					<xsl:apply-templates select="following-sibling::*[1][local-name() = 'variant-title'][@type = 'sub']" mode="subtitle"/>
 				</fo:block>

@@ -554,7 +554,7 @@
 										
 										<fo:block-container border-top="1mm double black" line-height="1.1" margin-top="3mm">
 											<fo:block margin-right="5mm">
-												<fo:block font-size="18pt" font-weight="bold" margin-top="6pt">
+												<fo:block font-size="18pt" font-weight="bold" margin-top="6pt" role="H1">
 													<xsl:if test="normalize-space($title-intro) != ''">
 														<xsl:value-of select="$title-intro"/>
 														<xsl:text> — </xsl:text>
@@ -566,7 +566,7 @@
 													
 													<xsl:variable name="title-amd" select="/iso:iso-standard/iso:bibdata/iso:title[@language = 'en' and @type = 'title-amd']"/>
 													<xsl:if test="$doctype = 'amendment' and normalize-space($title-amd) != ''">
-														<fo:block margin-top="12pt">
+														<fo:block margin-top="12pt" role="H1">
 															<xsl:call-template name="printAmendmentTitle"/>
 														</fo:block>
 													</xsl:if>
@@ -574,7 +574,7 @@
 												</fo:block>
 															
 												<fo:block font-size="9pt"><xsl:value-of select="$linebreak"/></fo:block>
-												<fo:block font-size="11pt" font-style="italic" line-height="1.5">
+												<fo:block font-size="11pt" font-style="italic" line-height="1.5" role="H1">
 													
 													<xsl:if test="normalize-space($title-intro-fr) != ''">
 														<xsl:value-of select="$title-intro-fr"/>
@@ -587,7 +587,7 @@
 													
 													<xsl:variable name="title-amd" select="/iso:iso-standard/iso:bibdata/iso:title[@language = 'fr' and @type = 'title-amd']"/>
 														<xsl:if test="$doctype = 'amendment' and normalize-space($title-amd) != ''">
-															<fo:block margin-top="6pt">
+															<fo:block margin-top="6pt" role="H1">
 																<xsl:call-template name="printAmendmentTitle">
 																	<xsl:with-param name="lang" select="'fr'"/>
 																</xsl:call-template>
@@ -688,7 +688,7 @@
 														<xsl:value-of select="/iso:iso-standard/iso:bibdata/iso:version/iso:revision-date"/> -->
 														<xsl:if test="$doctype = 'amendment'">
 															<fo:block text-align="right" margin-right="0.5mm">
-																<fo:block font-weight="bold" margin-top="4pt">
+																<fo:block font-weight="bold" margin-top="4pt" role="H1">
 																	<xsl:variable name="title-amendment">
 																		<xsl:call-template name="getTitle">
 																			<xsl:with-param name="name" select="'title-amendment'"/>
@@ -758,7 +758,7 @@
 													<fo:table-cell>
 														<fo:block-container border-top="1mm double black" line-height="1.1">
 															<fo:block margin-right="5mm">
-																<fo:block font-size="18pt" font-weight="bold" margin-top="12pt">
+																<fo:block font-size="18pt" font-weight="bold" margin-top="12pt" role="H1">
 																	
 																	<xsl:if test="normalize-space($title-intro) != ''">
 																		<xsl:value-of select="$title-intro"/>
@@ -780,14 +780,14 @@
 																	</xsl:if> -->
 																	<xsl:variable name="title-amd" select="/iso:iso-standard/iso:bibdata/iso:title[@language = 'en' and @type = 'title-amd']"/>
 																	<xsl:if test="$doctype = 'amendment' and normalize-space($title-amd) != ''">
-																		<fo:block margin-right="-5mm" margin-top="12pt">
+																		<fo:block margin-right="-5mm" margin-top="12pt" role="H1">
 																			<xsl:call-template name="printAmendmentTitle"/>
 																		</fo:block>
 																	</xsl:if>
 																</fo:block>
 																			
 																<fo:block font-size="9pt"><xsl:value-of select="$linebreak"/></fo:block>
-																<fo:block font-size="11pt" font-style="italic" line-height="1.5">
+																<fo:block font-size="11pt" font-style="italic" line-height="1.5" role="H1">
 																	
 																	<xsl:if test="normalize-space($title-intro-fr) != ''">
 																		<xsl:value-of select="$title-intro-fr"/>
@@ -800,7 +800,7 @@
 																	
 																	<xsl:variable name="title-amd" select="/iso:iso-standard/iso:bibdata/iso:title[@language = 'fr' and @type = 'title-amd']"/>
 																	<xsl:if test="$doctype = 'amendment' and normalize-space($title-amd) != ''">
-																		<fo:block margin-right="-5mm" margin-top="6pt">
+																		<fo:block margin-right="-5mm" margin-top="6pt" role="H1">
 																			<xsl:call-template name="printAmendmentTitle">
 																				<xsl:with-param name="lang" select="'fr'"/>
 																			</xsl:call-template>
@@ -891,7 +891,7 @@
 								
 								<fo:block-container border-top="1mm double black" line-height="1.1">
 									<fo:block margin-right="40mm">
-									<fo:block font-size="18pt" font-weight="bold" margin-top="12pt">
+									<fo:block font-size="18pt" font-weight="bold" margin-top="12pt" role="H1">
 									
 										<xsl:if test="normalize-space($title-intro) != ''">
 											<xsl:value-of select="$title-intro"/>
@@ -914,7 +914,7 @@
 									</fo:block>
 												
 									<fo:block font-size="9pt"><xsl:value-of select="$linebreak"/></fo:block>
-									<fo:block font-size="11pt" font-style="italic" line-height="1.5">
+									<fo:block font-size="11pt" font-style="italic" line-height="1.5" role="H1">
 										
 										<xsl:if test="normalize-space($title-intro-fr) != ''">
 											<xsl:value-of select="$title-intro-fr"/>
@@ -1008,7 +1008,7 @@
 								</fo:block-container>
 							<fo:block-container font-size="16pt">
 								<!-- Information and documentation — Codes for transcription systems  -->
-									<fo:block font-weight="bold">
+									<fo:block font-weight="bold" role="H1">
 									
 										<xsl:if test="normalize-space($title-intro) != ''">
 											<xsl:value-of select="$title-intro"/>
@@ -1031,7 +1031,7 @@
 									</fo:block>
 									
 									<fo:block font-size="12pt"><xsl:value-of select="$linebreak"/></fo:block>
-									<fo:block>
+									<fo:block role="H1">
 										<xsl:if test="normalize-space($title-intro-fr) != ''">
 											<xsl:value-of select="$title-intro-fr"/>
 											<xsl:text> — </xsl:text>
@@ -1111,7 +1111,7 @@
 							<fo:block-container font-weight="bold">
 								
 								<fo:block text-align-last="justify" font-size="16pt" margin-top="10pt" margin-bottom="18pt">
-									<fo:inline font-size="16pt" font-weight="bold">
+									<fo:inline font-size="16pt" font-weight="bold" role="H1">
 										<!-- Contents -->
 										<xsl:call-template name="getLocalizedString">
 											<xsl:with-param name="key">table_of_contents</xsl:with-param>
@@ -1215,7 +1215,7 @@
 							
 							<xsl:variable name="title-intro-doc-lang" select="/iso:iso-standard/iso:bibdata/iso:title[@language = $lang and @type = 'title-intro']"/>
 							
-							<fo:block>
+							<fo:block role="H1">
 								<xsl:if test="normalize-space($title-intro-doc-lang) != ''">
 									<xsl:value-of select="$title-intro-doc-lang"/>
 									<xsl:text> — </xsl:text>
@@ -1237,13 +1237,13 @@
 									</xsl:if>
 								</xsl:if>
 							</fo:block>
-							<fo:block>
+							<fo:block role="H1">
 								<xsl:value-of select="$title-part-doc-lang"/>
 							</fo:block>
 							
 							<xsl:variable name="title-amd" select="/iso:iso-standard/iso:bibdata/iso:title[@language = $lang and @type = 'title-amd']"/>
 							<xsl:if test="$doctype = 'amendment' and normalize-space($title-amd) != ''">
-								<fo:block margin-top="12pt">
+								<fo:block margin-top="12pt" role="H1">
 									<xsl:call-template name="printAmendmentTitle"/>
 								</fo:block>
 							</xsl:if>
@@ -1490,7 +1490,10 @@
 	
 	
 	<xsl:template match="iso:license-statement//iso:title">
-		<fo:block text-align="center" font-weight="bold">
+		<xsl:variable name="level">
+			<xsl:call-template name="getLevel"/>
+		</xsl:variable>
+		<fo:block text-align="center" font-weight="bold" role="H{$level}">
 			<xsl:apply-templates />
 		</fo:block>
 	</xsl:template>
@@ -1518,7 +1521,7 @@
 			</fo:block> -->
 	
 	<xsl:template match="iso:copyright-statement/iso:clause[1]/iso:title">
-		<fo:block margin-bottom="3mm">
+		<fo:block margin-bottom="3mm" role="H1">
 				<fo:external-graphic src="{concat('data:image/png;base64,', normalize-space($Image-Attention))}" width="14mm" content-height="13mm" content-width="scale-to-fit" scaling="uniform" fox:alt-text="Image {@alt}"/>
 				<!-- <fo:inline padding-left="6mm" font-size="12pt" font-weight="bold">COPYRIGHT PROTECTED DOCUMENT</fo:inline> -->
 				<fo:inline padding-left="6mm" font-size="12pt" font-weight="bold"><xsl:apply-templates /></fo:inline>
@@ -1555,7 +1558,7 @@
 				<xsl:call-template name="titleAmendment"/>				
 			</xsl:when>
 			<xsl:otherwise>
-				<fo:block font-size="16pt" text-align="center" margin-bottom="48pt" keep-with-next="always">
+				<fo:block font-size="16pt" text-align="center" margin-bottom="48pt" keep-with-next="always" role="H1">
 					<xsl:apply-templates />
 					<xsl:apply-templates select="following-sibling::*[1][local-name() = 'variant-title'][@type = 'sub']" mode="subtitle"/>
 				</fo:block>
@@ -1570,7 +1573,7 @@
 				<xsl:call-template name="titleAmendment"/>				
 			</xsl:when>
 			<xsl:otherwise>
-				<fo:block font-size="16pt" font-weight="bold" text-align="center" margin-top="6pt" margin-bottom="36pt" keep-with-next="always">
+				<fo:block font-size="16pt" font-weight="bold" text-align="center" margin-top="6pt" margin-bottom="36pt" keep-with-next="always" role="H1">
 					<xsl:apply-templates />
 				</fo:block>
 			</xsl:otherwise>
@@ -1603,7 +1606,7 @@
 		
 		<xsl:choose>
 			<xsl:when test="$doctype = 'amendment' and not(ancestor::iso:preface)">
-				<fo:block font-size="11pt" font-style="italic" margin-bottom="12pt" keep-with-next="always">
+				<fo:block font-size="11pt" font-style="italic" margin-bottom="12pt" keep-with-next="always" role="H{$level}">
 					<xsl:apply-templates />
 					<xsl:apply-templates select="following-sibling::*[1][local-name() = 'variant-title'][@type = 'sub']" mode="subtitle"/>
 				</fo:block>
@@ -1631,6 +1634,7 @@
 						</xsl:choose>
 					</xsl:attribute>
 					<xsl:attribute name="keep-with-next">always</xsl:attribute>		
+					<xsl:attribute name="role">H<xsl:value-of select="$level"/></xsl:attribute>
 					<xsl:if test="$element-name = 'fo:inline'">
 						<xsl:choose>
 							<xsl:when test="$lang = 'zh'">
@@ -1823,8 +1827,11 @@
 		<xsl:apply-templates select="."/>
 	</xsl:template>
 	
-	<xsl:template match="iso:preferred">		
-		<fo:block line-height="1.1">
+	<xsl:template match="iso:preferred">	
+		<xsl:variable name="levelTerm">
+			<xsl:call-template name="getLevelTermName"/>
+		</xsl:variable>
+		<fo:block line-height="1.1" role="H{$levelTerm}">
 			<fo:block font-weight="bold" keep-with-next="always">
 				<xsl:apply-templates select="ancestor::iso:term/iso:name" mode="presentation"/>				
 			</fo:block>
@@ -1997,7 +2004,7 @@
 	
 	<!-- <xsl:template match="iso:clause[@type = 'index']/iso:title" priority="4"> -->
 	<xsl:template match="iso:indexsect/iso:title" priority="4">
-		<fo:block font-size="16pt" font-weight="bold" margin-bottom="84pt">
+		<fo:block font-size="16pt" font-weight="bold" margin-bottom="84pt" role="H1">
 			<!-- Index -->
 			<xsl:apply-templates />
 		</fo:block>

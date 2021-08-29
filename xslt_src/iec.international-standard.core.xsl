@@ -1374,7 +1374,7 @@
 		</fo:block-container>
 		<fo:block-container margin-left="8.5mm">
 			<fo:block-container margin-left="0mm">
-				<fo:block font-size="12pt" font-weight="bold" color="{$color_blue}" margin-bottom="16pt">
+				<fo:block font-size="12pt" font-weight="bold" color="{$color_blue}" margin-bottom="16pt" role="H1">
 					<!-- Example:
 						Electromagnetic compatibility (EMC) – 
 						Part 4-5: Testing and measurement techniques – Surge immunity test
@@ -1400,7 +1400,7 @@
 						<xsl:value-of select="$title-part"/>
 					</xsl:if>
 				</fo:block>
-				<fo:block font-size="12pt" font-weight="bold">
+				<fo:block font-size="12pt" font-weight="bold" role="H1">
 				<!-- Example: Compatibilité électromagnétique (CEM) –
 					Partie 4-5: Techniques d'essai et de mesure – Essai d'immunité aux ondes de
 					choc -->
@@ -1444,7 +1444,7 @@
 	<xsl:template name="insertTOCpages">
 		<xsl:param name="contents"/>
 		<fo:block-container>
-			<fo:block font-size="12pt" text-align="center" margin-bottom="22pt">
+			<fo:block font-size="12pt" text-align="center" margin-bottom="22pt" role="H1">
 				<xsl:variable name="title-toc">
 					<xsl:call-template name="getTitle">
 						<xsl:with-param name="name" select="'title-toc'"/>
@@ -1560,7 +1560,7 @@
 			<fo:block><xsl:value-of select="/iec:iec-standard/iec:localized-strings/iec:localized-string[@key='IEC' and @language=$lang]"/></fo:block>
 			<fo:block>___________</fo:block>
 			<fo:block>&#xa0;</fo:block>
-			<fo:block font-weight="bold">				
+			<fo:block font-weight="bold" role="H1">				
 				<xsl:value-of select="java:toUpperCase(java:java.lang.String.new(/iec:iec-standard/iec:bibdata/iec:title[@language = $lang and @type = 'title-intro']))"/>
 				<xsl:text> — </xsl:text>
 				<xsl:value-of select="java:toUpperCase(java:java.lang.String.new(/iec:iec-standard/iec:bibdata/iec:title[@language = $lang and @type = 'title-main']))"/>
@@ -1603,7 +1603,7 @@
 					<!-- <fo:block><xsl:value-of select="$organization"/></fo:block>
 					<fo:block>____________</fo:block>
 					<fo:block>&#xa0;</fo:block> -->
-					<fo:block font-weight="bold">						
+					<fo:block font-weight="bold" role="H1">						
 						<xsl:value-of select="java:toUpperCase(java:java.lang.String.new(/iec:iec-standard/iec:bibdata/iec:title[@language = $lang and @type = 'title-intro']))"/>
 						<xsl:text> — </xsl:text>
 						<xsl:value-of select="java:toUpperCase(java:java.lang.String.new(/iec:iec-standard/iec:bibdata/iec:title[@language = $lang and @type = 'title-main']))"/>
@@ -1647,7 +1647,10 @@
 	</xsl:template>
 	
 	<xsl:template match="iec:feedback-statement/iec:clause[@id = 'boilerplate-cenelec-attention']//iec:title" priority="3">
-		<fo:block font-size="8pt" font-weight="bold" margin-bottom="10pt">
+		<xsl:variable name="level">
+			<xsl:call-template name="getLevel"/>
+		</xsl:variable>
+		<fo:block font-size="8pt" font-weight="bold" margin-bottom="10pt" role="H{$level}">
 			<xsl:apply-templates />
 		</fo:block>
 	</xsl:template>
@@ -1673,7 +1676,10 @@
 	</xsl:template>
 	
 	<xsl:template match="iec:feedback-statement//iec:clause/iec:title" priority="2">
-		<fo:block font-weight="bold" keep-with-next="always"><xsl:apply-templates/></fo:block>
+		<xsl:variable name="level">
+			<xsl:call-template name="getLevel"/>
+		</xsl:variable>
+		<fo:block font-weight="bold" keep-with-next="always" role="H{$level}"><xsl:apply-templates/></fo:block>
 	</xsl:template>
 	
 	<xsl:template match="iec:feedback-statement//iec:clause/iec:p" priority="2">
@@ -1776,7 +1782,10 @@
 	<!-- ============================= -->
 	
 	<xsl:template match="iec:license-statement//iec:title">
-		<fo:block text-align="center" font-weight="bold">
+		<xsl:variable name="level">
+			<xsl:call-template name="getLevel"/>
+		</xsl:variable>
+		<fo:block text-align="center" font-weight="bold" role="H{$level}">
 			<xsl:apply-templates />
 		</fo:block>
 	</xsl:template>
@@ -1792,7 +1801,10 @@
 	</xsl:template>
 	
 	<xsl:template match="iec:license-statement//iec:title" mode="cover-page-internal">
-		<fo:block text-align="center" font-weight="bold">
+		<xsl:variable name="level">
+			<xsl:call-template name="getLevel"/>
+		</xsl:variable>
+		<fo:block text-align="center" font-weight="bold" role="H{$level}">
 			<xsl:apply-templates />
 		</fo:block>
 	</xsl:template>
@@ -1910,7 +1922,7 @@
 	<!-- title      -->
 	<!-- ====== -->
 	<xsl:template match="iec:introduction/iec:title">
-		<fo:block font-size="12pt" text-align="center" margin-bottom="12pt">
+		<fo:block font-size="12pt" text-align="center" margin-bottom="12pt" role="H1">
 			<xsl:apply-templates />
 			<xsl:apply-templates select="following-sibling::*[1][local-name() = 'variant-title'][@type = 'sub']" mode="subtitle"/>
 		</fo:block>
@@ -1922,7 +1934,7 @@
 	</xsl:template>
 	
 	<xsl:template match="iec:annex/iec:title">
-		<fo:block font-size="12pt" text-align="center" margin-bottom="32pt" keep-with-next="always">
+		<fo:block font-size="12pt" text-align="center" margin-bottom="32pt" keep-with-next="always" role="H1">
 			<xsl:apply-templates />
 			<xsl:apply-templates select="following-sibling::*[1][local-name() = 'variant-title'][@type = 'sub']" mode="subtitle"/>
 		</fo:block>
@@ -1930,7 +1942,7 @@
 	
 	<!-- Bibliography -->
 	<xsl:template match="iec:references[not(@normative='true')]/iec:title">
-		<fo:block font-size="12pt" text-align="center" margin-bottom="12pt" keep-with-next="always">
+		<fo:block font-size="12pt" text-align="center" margin-bottom="12pt" keep-with-next="always" role="H1">
 			<xsl:apply-templates />			
 		</fo:block>
 	</xsl:template>
@@ -1958,12 +1970,12 @@
 			
 		<xsl:choose>
 			<xsl:when test="../@inline-header = 'true'">
-				<fo:inline font-size="{$font-size}" font-weight="bold">
+				<fo:inline font-size="{$font-size}" font-weight="bold" role="H{$level}">
 					<xsl:apply-templates />
 				</fo:inline>
 			</xsl:when>
 			<xsl:otherwise>
-				<fo:block font-size="{$font-size}" font-weight="bold" keep-with-next="always">
+				<fo:block font-size="{$font-size}" font-weight="bold" keep-with-next="always" role="H{$level}">
 					<xsl:attribute name="space-before"> <!-- margin-top -->
 						<xsl:choose>
 							<xsl:when test="$level = 2 and ancestor::iec:annex">22pt</xsl:when>
@@ -2225,8 +2237,10 @@
 	
 	
 	<xsl:template match="iec:preferred">
-
-		<fo:block line-height="1.1" space-before="14pt">
+		<xsl:variable name="levelTerm">
+			<xsl:call-template name="getLevelTermName"/>
+		</xsl:variable>
+		<fo:block line-height="1.1" space-before="14pt" role="H{$levelTerm}">
 			<fo:block font-weight="bold" keep-with-next="always">
 				<xsl:apply-templates select="ancestor::iec:term/iec:name" mode="presentation"/>				
 			</fo:block>

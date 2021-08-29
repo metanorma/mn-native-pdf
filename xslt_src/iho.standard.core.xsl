@@ -164,7 +164,7 @@
 											</fo:table-cell>
 											<fo:table-cell number-columns-spanned="2" border="0.5pt solid rgb(0, 21, 50)">
 												<fo:block-container height="154.4mm" text-align="center" display-align="center">
-													<fo:block font-size="28pt" font-weight="bold" color="rgb(0, 0, 76)">
+													<fo:block font-size="28pt" font-weight="bold" color="rgb(0, 0, 76)" role="H1">
 														<xsl:value-of select="$title-en"/>
 													</fo:block>
 												</fo:block-container>
@@ -224,7 +224,7 @@
 						<!-- Table of Contents -->
 						<fo:block-container margin-right="-12.7mm">
 							<fo:block-container margin-right="0mm">
-								<fo:block color="rgb(14, 36, 133)" margin-bottom="15.5pt">
+								<fo:block color="rgb(14, 36, 133)" margin-bottom="15.5pt" role="H1">
 									<xsl:variable name="title-toc">
 										<xsl:call-template name="getTitle">
 											<xsl:with-param name="name" select="'title-toc'"/>
@@ -306,7 +306,7 @@
 					<fo:flow flow-name="xsl-region-body">
 						<fo:block-container>
 							
-							<fo:block font-size="16pt" font-weight="bold" margin-bottom="18pt"><xsl:value-of select="$title-en"/></fo:block>
+							<fo:block font-size="16pt" font-weight="bold" margin-bottom="18pt" role="H1"><xsl:value-of select="$title-en"/></fo:block>
 							
 							<xsl:apply-templates select="/*/*[local-name()='sections']/*[local-name()='clause'][@type='scope']" />
 							<!-- Normative references  -->
@@ -462,14 +462,14 @@
 	<!-- ====== -->
 	
 	<xsl:template match="iho:annex/iho:title">
-		<fo:block font-size="13pt" font-weight="bold" text-align="center" margin-bottom="12pt" keep-with-next="always">			
+		<fo:block font-size="13pt" font-weight="bold" text-align="center" margin-bottom="12pt" keep-with-next="always" role="H1">			
 			<xsl:apply-templates />
 			<xsl:apply-templates select="following-sibling::*[1][local-name() = 'variant-title'][@type = 'sub']" mode="subtitle"/>
 		</fo:block>
 	</xsl:template>
 		
 	<xsl:template match="iho:bibliography/iho:references[not(@normative='true')]/iho:title">
-		<fo:block font-size="16pt" font-weight="bold" text-align="center" margin-top="6pt" margin-bottom="36pt" keep-with-next="always">
+		<fo:block font-size="16pt" font-weight="bold" text-align="center" margin-top="6pt" margin-bottom="36pt" keep-with-next="always" role="H1">
 			<xsl:apply-templates />
 		</fo:block>
 	</xsl:template>
@@ -513,6 +513,8 @@
 			<xsl:attribute name="margin-bottom">12pt</xsl:attribute>
 				
 			<xsl:attribute name="keep-with-next">always</xsl:attribute>		
+			
+			<xsl:attribute name="role">H<xsl:value-of select="$level"/></xsl:attribute>
 			
 			<xsl:apply-templates />
 			<xsl:apply-templates select="following-sibling::*[1][local-name() = 'variant-title'][@type = 'sub']" mode="subtitle"/>
@@ -817,8 +819,10 @@
 	
 	
 	<xsl:template match="iho:preferred">
-
-		<fo:block line-height="1.1">
+		<xsl:variable name="levelTerm">
+			<xsl:call-template name="getLevelTermName"/>
+		</xsl:variable>
+		<fo:block line-height="1.1" role="H{$levelTerm}">
 			<fo:block font-weight="bold" keep-with-next="always">
 				<xsl:apply-templates select="ancestor::iho:term/iho:name" mode="presentation"/>				
 			</fo:block>

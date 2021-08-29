@@ -406,7 +406,7 @@
 						<xsl:if test="string-length($title) &gt; 80">
 							<xsl:attribute name="margin-right">-30mm</xsl:attribute>
 						</xsl:if>
-						<fo:block font-size="27pt" font-weight="bold">
+						<fo:block font-size="27pt" font-weight="bold" role="H1">
 								<xsl:apply-templates select="/rsd:rsd-standard/rsd:bibdata/rsd:title[@language = $lang]" mode="cover_page"/>
 						</fo:block>
 						<fo:block space-before="9pt" font-size="16.8pt" font-weight="600">
@@ -423,7 +423,7 @@
 				<fo:flow flow-name="xsl-region-body">
 					<xsl:if test="xalan:nodeset($contents)//item[@display = 'true']">
 					<!-- <fo:block-container absolute-position="fixed" left="13mm" top="15mm"> -->
-						<fo:block font-size="27pt" font-weight="bold" color="black" margin-left="-15mm" margin-bottom="13mm">
+						<fo:block font-size="27pt" font-weight="bold" color="black" margin-left="-15mm" margin-bottom="13mm" role="H1">
 							<xsl:call-template name="getLocalizedString">
 								<xsl:with-param name="key">table_of_contents</xsl:with-param>
 							</xsl:call-template>
@@ -600,7 +600,10 @@
 	</xsl:template>
 	
 	<xsl:template match="rsd:license-statement//rsd:title">
-		<fo:block text-align="center" font-weight="normal" margin-top="4pt">
+		<xsl:variable name="level">
+			<xsl:call-template name="getLevel"/>
+		</xsl:variable>
+		<fo:block text-align="center" font-weight="normal" margin-top="4pt" role="H{$level}">
 			<xsl:apply-templates />
 		</fo:block>
 	</xsl:template>
@@ -623,7 +626,10 @@
 	</xsl:template>
 		
 	<xsl:template match="rsd:copyright-statement//rsd:title">
-		<fo:block font-weight="normal" text-align="center">
+		<xsl:variable name="level">
+			<xsl:call-template name="getLevel"/>
+		</xsl:variable>
+		<fo:block font-weight="normal" text-align="center" role="H{$level}">
 			<xsl:apply-templates/>
 		</fo:block>
 	</xsl:template>
@@ -647,7 +653,10 @@
 	</xsl:template>
 
 	<xsl:template match="rsd:legal-statement//rsd:title">
-		<fo:block font-weight="normal" padding-top="2mm" margin-bottom="6pt">
+		<xsl:variable name="level">
+			<xsl:call-template name="getLevel"/>
+		</xsl:variable>
+		<fo:block font-weight="normal" padding-top="2mm" margin-bottom="6pt" role="H{$level}">
 			<xsl:apply-templates />
 		</fo:block>
 	</xsl:template>
@@ -737,6 +746,7 @@
 			<xsl:attribute name="keep-with-next">always</xsl:attribute>		
 			<xsl:attribute name="color"><xsl:value-of select="$color"/></xsl:attribute>
 			<xsl:attribute name="line-height">125%</xsl:attribute>
+			<xsl:attribute name="role">H<xsl:value-of select="$level"/></xsl:attribute>
 			
 			<xsl:choose>
 				<xsl:when test="$level = 1">
@@ -1091,7 +1101,10 @@
 				<xsl:otherwise>12pt</xsl:otherwise>
 			</xsl:choose>
 		</xsl:variable>
-		<fo:block font-weight="bold" color="black" font-size="{$font-size}" keep-with-next="always"> <!-- 600 - semibold -->
+		<xsl:variable name="levelTerm">
+			<xsl:call-template name="getLevelTermName"/>
+		</xsl:variable>
+		<fo:block font-weight="bold" color="black" font-size="{$font-size}" keep-with-next="always" role="H{$levelTerm}"> <!-- 600 - semibold -->
 			<xsl:if test="preceding-sibling::*[1][self::rsd:name]">
 				<xsl:attribute name="space-before">11mm</xsl:attribute>
 				<fo:inline padding-right="1mm">
@@ -1141,7 +1154,7 @@
 				<fo:table-header>
 					<fo:table-row>
 						<fo:table-cell text-align="left">
-							<fo:block margin-left="-15mm"> <!-- Bibliography section title -->
+							<fo:block margin-left="-15mm" role="H1"> <!-- Bibliography section title -->
 								<xsl:attribute name="font-size">22pt</xsl:attribute>
 								<xsl:attribute name="font-weight">bold</xsl:attribute>
 								<xsl:attribute name="margin-bottom">16pt</xsl:attribute>

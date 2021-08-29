@@ -41,6 +41,7 @@
 		<xsl:attribute name="margin-top">18pt</xsl:attribute>
 		<xsl:attribute name="margin-bottom">18pt</xsl:attribute>
 		<xsl:attribute name="line-height">110%</xsl:attribute>
+		<xsl:attribute name="role">H1</xsl:attribute>
 	</xsl:attribute-set>
 	
 	<xsl:attribute-set name="title-depth2-style">
@@ -51,6 +52,7 @@
 		<xsl:attribute name="margin-bottom">8pt</xsl:attribute>
 		<xsl:attribute name="keep-with-next">always</xsl:attribute>		
 		<xsl:attribute name="line-height">110%</xsl:attribute>
+		<xsl:attribute name="role">H2</xsl:attribute>
 	</xsl:attribute-set>
 	
 	<xsl:attribute-set name="title-depth3-style">
@@ -60,7 +62,8 @@
 		<xsl:attribute name="color">rgb(21, 43, 77)</xsl:attribute>
 		<xsl:attribute name="margin-top">6pt</xsl:attribute>
 		<xsl:attribute name="margin-bottom">8pt</xsl:attribute>
-		<xsl:attribute name="keep-with-next">always</xsl:attribute>		
+		<xsl:attribute name="keep-with-next">always</xsl:attribute>
+		<xsl:attribute name="role">H3</xsl:attribute>
 	</xsl:attribute-set>
 	
 	<xsl:attribute-set name="empty-style">
@@ -135,7 +138,7 @@
 					
 					<fo:block-container margin-left="-12mm" margin-right="-9mm">
 						<fo:block-container margin-left="0mm" margin-right="0mm">
-							<fo:block font-size="36pt" background-color="{$color}" color="white" margin-left="2.5mm" padding-top="1mm" padding-left="1mm">
+							<fo:block font-size="36pt" background-color="{$color}" color="white" margin-left="2.5mm" padding-top="1mm" padding-left="1mm" role="H1">
 								<xsl:apply-templates select="/ogc:ogc-standard/ogc:bibdata/ogc:title/node()"/>
 							</fo:block>
 						</fo:block-container>
@@ -225,7 +228,7 @@
 					<fo:block break-after="page"/>
 					
 					<fo:block-container line-height="1.08" font-family="Lato">
-						<fo:block xsl:use-attribute-sets="title-toc-style">
+						<fo:block xsl:use-attribute-sets="title-toc-style" role="H1">
 							<xsl:text>Table of Contents</xsl:text>
 						</fo:block>
 						<xsl:variable name="margin-left">3.9</xsl:variable>
@@ -426,7 +429,10 @@
 	</xsl:template>
 	
 	<xsl:template match="ogc:license-statement//ogc:title">
-		<fo:block font-family="Lato" text-align="center" font-weight="bold" margin-top="4pt">
+		<xsl:variable name="level">
+			<xsl:call-template name="getLevel"/>
+		</xsl:variable>
+		<fo:block font-family="Lato" text-align="center" font-weight="bold" margin-top="4pt" role="H{$level}">
 			<xsl:apply-templates />
 		</fo:block>
 	</xsl:template>
@@ -459,7 +465,10 @@
 	</xsl:template>
 		
 	<xsl:template match="ogc:copyright-statement//ogc:title | ogc:legal-statement//ogc:title">
-		<fo:block font-family="Lato" text-align="center" font-weight="bold" >
+		<xsl:variable name="level">
+			<xsl:call-template name="getLevel"/>
+		</xsl:variable>
+		<fo:block font-family="Lato" text-align="center" font-weight="bold" role="H{$level}">
 			<xsl:apply-templates/>
 		</fo:block>
 	</xsl:template>
@@ -500,7 +509,7 @@
 	<!-- ====== -->
 	
 	<xsl:template match="ogc:annex/ogc:title">
-		<fo:block xsl:use-attribute-sets="title-depth1-style">			
+		<fo:block xsl:use-attribute-sets="title-depth1-style" role="H1">			
 			<xsl:apply-templates />
 			<xsl:apply-templates select="following-sibling::*[1][local-name() = 'variant-title'][@type = 'sub']" mode="subtitle"/>
 		</fo:block>
@@ -532,7 +541,7 @@
 						</fo:inline>
 					</xsl:when>
 					<xsl:otherwise>
-						<fo:inline font-family="Lato">
+						<fo:inline font-family="Lato" role="H{$level}">
 							<xsl:apply-templates />
 						</fo:inline>
 					</xsl:otherwise>
@@ -559,7 +568,7 @@
 						</fo:block>
 					</xsl:when>
 					<xsl:otherwise>
-						<fo:block font-family="Lato">
+						<fo:block font-family="Lato" role="H{$level}">
 							<xsl:apply-templates />
 							<xsl:apply-templates select="following-sibling::*[1][local-name() = 'variant-title'][@type = 'sub']" mode="subtitle"/>
 						</fo:block>
@@ -771,7 +780,10 @@
 				<xsl:otherwise>12pt</xsl:otherwise>
 			</xsl:choose>
 		</xsl:variable>
-		<fo:block font-size="{$font-size}">
+		<xsl:variable name="levelTerm">
+			<xsl:call-template name="getLevelTermName"/>
+		</xsl:variable>
+		<fo:block font-size="{$font-size}" role="H{$levelTerm}">
 			<fo:block font-weight="bold" keep-with-next="always">
 				<xsl:apply-templates select="ancestor::ogc:term/ogc:name" mode="presentation"/>
 			</fo:block>
