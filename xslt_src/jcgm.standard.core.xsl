@@ -254,7 +254,7 @@
 							<xsl:value-of select="(//jcgm:bipm-standard)[1]/jcgm:bibdata/jcgm:title[@type = 'provenance']"/>
 						</fo:block>
 						<fo:block border-bottom="1pt solid black">&#xa0;</fo:block>
-						<fo:block font-size="16.5pt" margin-left="-0.5mm"  padding-top="3.5mm" space-after="7mm" margin-right="7mm" line-height="105%">
+						<fo:block font-size="16.5pt" margin-left="-0.5mm"  padding-top="3.5mm" space-after="7mm" margin-right="7mm" line-height="105%" role="H1">
 							<xsl:apply-templates select="(//jcgm:bipm-standard)[1]/jcgm:bibdata/jcgm:title[@language = $lang and @type = 'main']" mode="title"/>
 							<xsl:variable name="title_part">
 								<xsl:apply-templates select="(//jcgm:bipm-standard)[1]/jcgm:bibdata/jcgm:title[@language = $lang and @type = 'part']" mode="title"/>
@@ -264,7 +264,7 @@
 								<xsl:copy-of select="$title_part"/>
 							</xsl:if>
 						</fo:block>
-						<fo:block font-size="12pt" font-style="italic" line-height="140%">
+						<fo:block font-size="12pt" font-style="italic" line-height="140%" role="H1">
 							<xsl:variable name="secondLang" select="(//jcgm:bipm-standard)[1]/jcgm:bibdata/jcgm:title/@language[. != $lang]"/>
 							<xsl:apply-templates select="(//jcgm:bipm-standard)[1]/jcgm:bibdata/jcgm:title[@language = $secondLang and @type = 'main']" mode="title"/>
 							<xsl:variable name="title_part">
@@ -303,7 +303,7 @@
 							</fo:table-row>
 						</fo:table-body>
 					</fo:table>
-					<fo:block font-size="18pt" space-before="70mm">
+					<fo:block font-size="18pt" space-before="70mm" role="H1">
 						<xsl:apply-templates select="(//jcgm:bipm-standard)[1]/jcgm:bibdata/jcgm:title[@language = $lang and @type = 'main']" mode="title"/>
 						<xsl:variable name="title_part">
 							<xsl:apply-templates select="(//jcgm:bipm-standard)[1]/jcgm:bibdata/jcgm:title[@language = $lang and @type = 'part']" mode="title"/>
@@ -313,7 +313,7 @@
 							<xsl:copy-of select="$title_part"/>
 						</xsl:if>
 					</fo:block>
-					<fo:block font-size="13pt" space-before="35mm">
+					<fo:block font-size="13pt" space-before="35mm" role="H1">
 						<xsl:variable name="secondLang" select="(//jcgm:bipm-standard)[1]/jcgm:bibdata/jcgm:title/@language[. != $lang]"/>
 						<xsl:apply-templates select="(//jcgm:bipm-standard)[1]/jcgm:bibdata/jcgm:title[@language = $secondLang and @type = 'main']" mode="title"/>
 						<xsl:variable name="title_part">
@@ -356,41 +356,43 @@
 							
 							<!-- Table of Contents -->
 							<fo:block-container>
-								<fo:block text-align-last="justify">
-									<fo:inline font-size="15pt" font-weight="bold">
-										<xsl:call-template name="getLocalizedString">
-											<xsl:with-param name="key">table_of_contents</xsl:with-param>
-										</xsl:call-template>
-									</fo:inline>
-									<fo:inline keep-together.within-line="always">
-										<fo:leader leader-pattern="space"/>
-										<xsl:call-template name="getLocalizedString">
-											<xsl:with-param name="key">Page.sg</xsl:with-param>
-										</xsl:call-template>
-									</fo:inline>
-								</fo:block>
-								
-								<xsl:if test="$debug = 'true'">
-									<xsl:text disable-output-escaping="yes">&lt;!--</xsl:text>
-										DEBUG
-										contents=<xsl:copy-of select="xalan:nodeset($contents)"/>
-									<xsl:text disable-output-escaping="yes">--&gt;</xsl:text>
-								</xsl:if>
-								
-								<xsl:variable name="annexes_title">
-									<xsl:call-template name="getLocalizedString">
-										<xsl:with-param name="key">Annex.pl</xsl:with-param>
-									</xsl:call-template>
-								</xsl:variable>
-								
-								<xsl:for-each select="xalan:nodeset($contents)/doc[@id=$docid]//item[@display = 'true']"> <!-- and not (@type = 'annex') and not (@type = 'references') -->
-									<xsl:if test="@type = 'annex' and not(preceding-sibling::item[@display = 'true' and @type = 'annex'])">
-										<fo:block font-size="12pt" space-before="16pt" font-weight="bold">
-											<xsl:value-of select="$annexes_title"/>
-										</fo:block>
+								<fo:block role="TOC">
+									<fo:block text-align-last="justify">
+										<fo:inline font-size="15pt" font-weight="bold" role="H1">
+											<xsl:call-template name="getLocalizedString">
+												<xsl:with-param name="key">table_of_contents</xsl:with-param>
+											</xsl:call-template>
+										</fo:inline>
+										<fo:inline keep-together.within-line="always">
+											<fo:leader leader-pattern="space"/>
+											<xsl:call-template name="getLocalizedString">
+												<xsl:with-param name="key">Page.sg</xsl:with-param>
+											</xsl:call-template>
+										</fo:inline>
+									</fo:block>
+									
+									<xsl:if test="$debug = 'true'">
+										<xsl:text disable-output-escaping="yes">&lt;!--</xsl:text>
+											DEBUG
+											contents=<xsl:copy-of select="xalan:nodeset($contents)"/>
+										<xsl:text disable-output-escaping="yes">--&gt;</xsl:text>
 									</xsl:if>
-									<xsl:call-template name="print_JCGN_toc_item"/>
-								</xsl:for-each>	
+									
+									<xsl:variable name="annexes_title">
+										<xsl:call-template name="getLocalizedString">
+											<xsl:with-param name="key">Annex.pl</xsl:with-param>
+										</xsl:call-template>
+									</xsl:variable>
+									
+									<xsl:for-each select="xalan:nodeset($contents)/doc[@id=$docid]//item[@display = 'true']"> <!-- and not (@type = 'annex') and not (@type = 'references') -->
+										<xsl:if test="@type = 'annex' and not(preceding-sibling::item[@display = 'true' and @type = 'annex'])">
+											<fo:block font-size="12pt" space-before="16pt" font-weight="bold" role="TOCI">
+												<xsl:value-of select="$annexes_title"/>
+											</fo:block>
+										</xsl:if>
+										<xsl:call-template name="print_JCGN_toc_item"/>
+									</xsl:for-each>	
+								</fo:block>
 							</fo:block-container>
 
 						</xsl:for-each>
@@ -455,7 +457,7 @@
 									<xsl:apply-templates select="./*[local-name() = 'bibdata']/*[local-name() = 'title'][@language = $curr_lang and @type = 'part']" mode="title"/>
 								</xsl:variable>
 								
-								<fo:block>
+								<fo:block role="H1">
 									<xsl:copy-of select="$title-main"/>
 									<xsl:if test="normalize-space($title-main) != '' and normalize-space($title-part) != ''">
 										<xsl:text> — </xsl:text>
@@ -925,8 +927,11 @@
 		<xsl:call-template name="note"/>
 	</xsl:template>
 	
-	<xsl:template match="*[local-name()='preferred']">		
-		<fo:block line-height="1.1">
+	<xsl:template match="*[local-name()='preferred']">
+		<xsl:variable name="level">
+			<xsl:call-template name="getLevel"/>
+		</xsl:variable>
+		<fo:block line-height="1.1" role="H{$level}">
 			<fo:block font-weight="bold" keep-with-next="always">
 				<xsl:apply-templates select="ancestor::*[local-name()='term']/*[local-name()='name']" mode="presentation"/>				
 			</fo:block>
@@ -937,7 +942,10 @@
 	</xsl:template>
 	
 	<xsl:template match="*[local-name()='preferred'][not(parent::*[local-name()='term'])]">		
-		<fo:block line-height="1.1">
+		<xsl:variable name="levelTerm">
+			<xsl:call-template name="getLevelTermName"/>
+		</xsl:variable>
+		<fo:block line-height="1.1" role="H{$levelTerm}">
 			<fo:block font-weight="bold" keep-with-next="always">
 				<xsl:apply-templates select="preceding-sibling::*[local-name()='term_name'][1]" mode="presentation"/>				
 			</fo:block>
@@ -1367,6 +1375,7 @@
 					<xsl:attribute name="text-align">center</xsl:attribute>
 					<xsl:attribute name="line-height">130%</xsl:attribute>
 				</xsl:if>
+				<xsl:attribute name="role">H<xsl:value-of select="$level"/></xsl:attribute>
 				<xsl:apply-templates />
 				<xsl:apply-templates select="following-sibling::*[1][local-name() = 'variant-title'][@type = 'sub']" mode="subtitle"/>
 			</xsl:element>
@@ -1451,7 +1460,7 @@
 				<fo:block id="{@id}" span="all">
 					<xsl:apply-templates select="jcgm:title"/>
 				</fo:block>
-				<fo:block>
+				<fo:block role="Index">
 					<xsl:apply-templates select="*[not(local-name() = 'title')]"/>
 				</fo:block>
 			</fo:flow>
@@ -1460,7 +1469,7 @@
 	
 	<!-- <xsl:template match="jcgm:clause[@type = 'index']/jcgm:title" priority="4"> -->
 	<xsl:template match="jcgm:indexsect/jcgm:title" priority="4">
-		<fo:block font-weight="bold" span="all">
+		<fo:block font-weight="bold" span="all" role="H1">
 			<!-- Index -->
 			<xsl:apply-templates />
 		</fo:block>

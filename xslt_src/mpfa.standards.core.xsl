@@ -143,7 +143,7 @@
 						<fo:external-graphic src="{concat('data:image/png;base64,', normalize-space($Image-MPFD-Logo))}" width="13.2mm" content-height="13mm" content-width="scale-to-fit" scaling="uniform" fox:alt-text="Image MPFD Logo"/>
 					</fo:block>
 					<fo:block-container text-align="center">
-						<fo:block>								
+						<fo:block role="H1">								
 							<fo:inline font-size="24pt" font-weight="bold">
 								<xsl:call-template name="capitalizeWords">
 									<xsl:with-param name="str" select="java:replaceAll(java:java.lang.String.new(/mpfd:mpfd-standard/mpfd:bibdata/mpfd:ext/mpfd:doctype),'MPF','')"/>
@@ -190,10 +190,10 @@
 								<xsl:with-param name="name" select="'title-toc'"/>
 							</xsl:call-template>
 						</xsl:variable>						
-						<fo:block font-size="14pt" margin-bottom="15.5pt"><xsl:value-of select="$title-toc"/></fo:block>						
-						<fo:block line-height="115%">
+						<fo:block font-size="14pt" margin-bottom="15.5pt" role="H1"><xsl:value-of select="$title-toc"/></fo:block>						
+						<fo:block line-height="115%" role="TOC">
 							<xsl:for-each select="xalan:nodeset($contents)//item[@display = 'true']">
-								<fo:block>
+								<fo:block role="TOCI">
 									<xsl:if test="@level = 1">
 										<xsl:attribute name="margin-top">6pt</xsl:attribute>
 									</xsl:if>								
@@ -249,7 +249,7 @@
 					
 						
 						
-						<fo:block font-size="16pt" font-weight="bold" margin-bottom="18pt">
+						<fo:block font-size="16pt" font-weight="bold" margin-bottom="18pt" role="H1">
 							<xsl:value-of select="$title-en"/>
 						</fo:block>
 						
@@ -398,7 +398,7 @@
 			</xsl:choose>
 		</xsl:variable>
 		
-		<fo:block font-size="{$font-size}" color="rgb(14, 26, 133)" font-weight="bold" space-before="{$space-before}" space-after="{$space-after}" keep-with-next="always">			
+		<fo:block font-size="{$font-size}" color="rgb(14, 26, 133)" font-weight="bold" space-before="{$space-before}" space-after="{$space-after}" keep-with-next="always" role="H{$level}">
 			<xsl:if test="parent::mpfd:annex">
 				<xsl:attribute name="text-align">center</xsl:attribute>
 				<xsl:attribute name="font-size">12pt</xsl:attribute>
