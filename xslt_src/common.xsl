@@ -7700,6 +7700,15 @@
 	<xsl:template match="*[local-name() = 'indexsect']//*[local-name() = 'li']" priority="4">
 		<xsl:variable name="level" select="count(ancestor::*[local-name() = 'ul'])" />
 		<fo:block start-indent="{5 * $level}mm" text-indent="-5mm">
+			<xsl:if test="$namespace = 'bsi'">
+				<xsl:if test="count(ancestor::bsi:ul) = 1">
+					<xsl:variable name="prev_first_char" select="java:toLowerCase(java:java.lang.String.new(substring(normalize-space(preceding-sibling::bsi:li[1]), 1, 1)))"/>
+					<xsl:variable name="curr_first_char" select="java:toLowerCase(java:java.lang.String.new(substring(normalize-space(), 1, 1)))"/>
+					<xsl:if test="$curr_first_char != $prev_first_char and preceding-sibling::bsi:li">
+						<xsl:attribute name="space-before">12pt</xsl:attribute>
+					</xsl:if>
+				</xsl:if>
+			</xsl:if>
 			<xsl:apply-templates />
 		</fo:block>
 	</xsl:template>
