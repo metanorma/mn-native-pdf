@@ -596,7 +596,9 @@
 		<xsl:variable name="content">
 			<xsl:call-template name="add-zero-spaces"/>
 		</xsl:variable>
-		<xsl:value-of select="translate($content, $thinspace, ' ')"/>
+		<!-- add zero-width space in the words like 'adeOfAbstractTransportaonSpace' to split it in the table's cell -->
+		<xsl:variable name="content2" select="java:replaceAll(java:java.lang.String.new($content),'([a-z]{2,})([A-Z])(.?)','$1&#x200B;$2$3')"/>
+		<xsl:value-of select="translate($content2, $thinspace, ' ')"/>
 	</xsl:template>
 
 
