@@ -1070,10 +1070,13 @@
 	<xsl:template match="ogc:ul | ogc:ol" mode="ul_ol">
 		<fo:block-container margin-left="13mm">
 			<xsl:if test="ancestor::ogc:table">
-				<xsl:attribute name="margin-left">1.5mm</xsl:attribute>
+				<xsl:attribute name="margin-left">4mm</xsl:attribute>
 			</xsl:if>
 			<xsl:if test="ancestor::ogc:ul or ancestor::ogc:ol">
 				<xsl:attribute name="margin-top">10pt</xsl:attribute>
+				<xsl:if test="ancestor::ogc:table">
+					<xsl:attribute name="margin-top">1mm</xsl:attribute>
+				</xsl:if>
 			</xsl:if>
 			<fo:block-container margin-left="0mm">
 				<fo:list-block provisional-distance-between-starts="12mm" space-after="12pt" line-height="115%">
@@ -1082,6 +1085,9 @@
 					</xsl:if>
 					<xsl:if test="ancestor::ogc:ul | ancestor::ogc:ol">
 						<xsl:attribute name="margin-bottom">0pt</xsl:attribute>
+						<xsl:if test="ancestor::ogc:table[not(@class)]">
+							<xsl:attribute name="space-after">1mm</xsl:attribute>
+						</xsl:if>
 					</xsl:if>
 					<xsl:if test="following-sibling::*[1][local-name() = 'ul' or local-name() = 'ol']">
 						<xsl:attribute name="margin-bottom">0pt</xsl:attribute>
@@ -1136,6 +1142,9 @@
 			</fo:list-item-label>
 			<fo:list-item-body start-indent="body-start()" line-height-shift-adjustment="disregard-shifts">
 				<fo:block margin-bottom="10pt">
+					<xsl:if test="ancestor::ogc:table[not(@class)]">
+						<xsl:attribute name="margin-bottom">1mm</xsl:attribute>
+					</xsl:if>
 					<xsl:if test="not(following-sibling::*) and not(../following-sibling::*)">
 						<xsl:attribute name="margin-bottom">0pt</xsl:attribute>
 					</xsl:if>
