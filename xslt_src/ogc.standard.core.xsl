@@ -1070,6 +1070,9 @@
 			<xsl:if test="ancestor::ogc:table">
 				<xsl:attribute name="margin-left">1.5mm</xsl:attribute>
 			</xsl:if>
+			<xsl:if test="ancestor::ogc:ul or ancestor::ogc:ol">
+				<xsl:attribute name="margin-top">10pt</xsl:attribute>
+			</xsl:if>
 			<fo:block-container margin-left="0mm">
 				<fo:list-block provisional-distance-between-starts="12mm" space-after="12pt" line-height="115%">
 					<xsl:if test="ancestor::ogc:table">
@@ -1104,17 +1107,25 @@
 									<xsl:number format="a)" lang="en"/>
 								</xsl:when>
 								<xsl:when test="../@type = 'alphabet'">
-									<xsl:number format="1)"/>
+									<xsl:number format="1."/>
 								</xsl:when>
 								<xsl:when test="../@type = 'alphabet_upper'">
 									<xsl:number format="A)" lang="en"/>
 								</xsl:when>
-								
 								<xsl:when test="../@type = 'roman'">
 									<xsl:number format="i)"/>
 								</xsl:when>
+								<xsl:when test="ancestor::ogc:table">
+									<xsl:variable name="level" select="count(ancestor-or-self::ogc:li[ancestor::ogc:table])"/>
+									<xsl:choose>
+										<xsl:when test="$level = 1"><xsl:number format="a)" lang="en"/></xsl:when>
+										<xsl:when test="$level = 2"><xsl:number format="1."/></xsl:when>
+										<xsl:when test="$level = 3"><xsl:number format="i)"/></xsl:when>
+										<xsl:otherwise><xsl:number format="a)" lang="en"/></xsl:otherwise>
+									</xsl:choose>
+								</xsl:when>
 								<xsl:otherwise>
-									<xsl:number format="1)"/>
+									<xsl:number format="1."/>
 								</xsl:otherwise>
 							</xsl:choose>
 						</xsl:otherwise>
@@ -1123,6 +1134,9 @@
 			</fo:list-item-label>
 			<fo:list-item-body start-indent="body-start()" line-height-shift-adjustment="disregard-shifts">
 				<fo:block margin-bottom="10pt">
+					<xsl:if test="not(following-sibling::*) and not(../following-sibling::*)">
+						<xsl:attribute name="margin-bottom">0pt</xsl:attribute>
+					</xsl:if>
 					<xsl:apply-templates />
 				</fo:block>
 			</fo:list-item-body>
