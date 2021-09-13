@@ -6916,8 +6916,8 @@
 	
 	<xsl:variable name="localized.source">
 		<xsl:call-template name="getLocalizedString">
-				<xsl:with-param name="key">source</xsl:with-param>
-			</xsl:call-template>
+			<xsl:with-param name="key">source</xsl:with-param>
+		</xsl:call-template>
 	</xsl:variable>
 	<xsl:template match="*[local-name() = 'origin']">
 		<fo:basic-link internal-destination="{@bibitemid}" fox:alt-text="{@citeas}">
@@ -6932,6 +6932,7 @@
 											$namespace = 'bsi' or 
 											$namespace = 'ogc' or $namespace = 'ogc-white-paper' or 
 											$namespace = 'rsd' or $namespace = 'mpfd' or $namespace = 'bipm' or $namespace = 'jcgm'">
+				<xsl:if test="$namespace = 'ogc'"><xsl:text>[</xsl:text></xsl:if>
 				<fo:inline>
 					<xsl:if test="$namespace = 'ogc'">
 						<xsl:attribute name="font-weight">bold</xsl:attribute>
@@ -6942,7 +6943,8 @@
 						<xsl:attribute name="color"><xsl:value-of select="$color_blue"/></xsl:attribute>
 					</xsl:if>
 					
-					<xsl:if test="$namespace = 'bsi' or $namespace = 'iso' or $namespace = 'rsd'">
+					
+					<xsl:if test="$namespace = 'bsi' or $namespace = 'iso' or $namespace = 'rsd' or $namespace = 'ogc'">
 						<xsl:value-of select="$localized.source"/>
 						<xsl:text>: </xsl:text>
 					</xsl:if>
@@ -6950,7 +6952,7 @@
 						<xsl:value-of select="$localized.source"/>
 						<xsl:text> </xsl:text>
 					</xsl:if>
-					<xsl:if test="$namespace = 'csa' or $namespace = 'csd' or $namespace = 'gb' or $namespace = 'iec' or $namespace = 'iho' or $namespace = 'itu' or $namespace = 'm3d' or $namespace = 'mpfd' or $namespace = 'nist-cswp'  or $namespace = 'nist-sp' or $namespace = 'ogc' or $namespace = 'ogc-white-paper' or $namespace = 'unece' or $namespace = 'unece-rec'">
+					<xsl:if test="$namespace = 'csa' or $namespace = 'csd' or $namespace = 'gb' or $namespace = 'iec' or $namespace = 'iho' or $namespace = 'itu' or $namespace = 'm3d' or $namespace = 'mpfd' or $namespace = 'nist-cswp'  or $namespace = 'nist-sp' or $namespace = 'ogc-white-paper' or $namespace = 'unece' or $namespace = 'unece-rec'">
 						<xsl:call-template name="getTitle">
 							<xsl:with-param name="name" select="'title-source'"/>
 						</xsl:call-template>
@@ -6962,6 +6964,7 @@
 			<fo:inline xsl:use-attribute-sets="origin-style">
 				<xsl:apply-templates/>
 			</fo:inline>
+			<xsl:if test="$namespace = 'ogc'"><xsl:text>]</xsl:text></xsl:if>
 			</fo:basic-link>
 	</xsl:template>
 	
