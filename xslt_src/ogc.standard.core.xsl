@@ -1547,7 +1547,22 @@
 	<xsl:template match="ogc:br" mode="titlesimple">
 		<xsl:value-of select="$linebreak"/>
 	</xsl:template>
-	
+
+	<xsl:template match="*[local-name() = 'name']/text()[1]" priority="2">
+		<!-- 0xA0 to space replacement -->
+		<xsl:variable name="text" select="java:replaceAll(java:java.lang.String.new(.),' ',' ')"/>
+		<xsl:variable name="separator" select="' &#8212; '"/>
+		<xsl:choose>
+			<xsl:when test="contains($text, $separator)">
+				<fo:inline font-weight="bold"><xsl:value-of select="substring-before($text, $separator)"/></fo:inline>
+				<xsl:value-of select="$separator"/>
+				<xsl:value-of select="substring-after($text, $separator)"/>
+			</xsl:when>
+			<xsl:otherwise>
+				<xsl:value-of select="$text"/>
+			</xsl:otherwise>
+		</xsl:choose>
+	</xsl:template>
 	
 	<xsl:template name="insertOrangeHorizontalLine">		
 		<fo:block-container width="12.7mm" border-top="1pt solid {$color_orange}" margin-top="3mm">
