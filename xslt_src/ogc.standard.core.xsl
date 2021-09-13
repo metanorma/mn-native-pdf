@@ -1123,17 +1123,14 @@
 								<xsl:when test="../@type = 'roman'">
 									<xsl:number format="i)"/>
 								</xsl:when>
-								<xsl:when test="ancestor::ogc:table">
-									<xsl:variable name="level" select="count(ancestor-or-self::ogc:li[ancestor::ogc:table])"/>
+								<xsl:otherwise>
+									<xsl:variable name="level" select="count(ancestor-or-self::ogc:li)"/>
 									<xsl:choose>
 										<xsl:when test="$level = 1"><xsl:number format="a)" lang="en"/></xsl:when>
 										<xsl:when test="$level = 2"><xsl:number format="1."/></xsl:when>
 										<xsl:when test="$level = 3"><xsl:number format="i)"/></xsl:when>
 										<xsl:otherwise><xsl:number format="a)" lang="en"/></xsl:otherwise>
 									</xsl:choose>
-								</xsl:when>
-								<xsl:otherwise>
-									<xsl:number format="1."/>
 								</xsl:otherwise>
 							</xsl:choose>
 						</xsl:otherwise>
