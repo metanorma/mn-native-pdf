@@ -373,7 +373,7 @@
 										
 										<xsl:choose>
 											<xsl:when test="@level = 1">
-												<fo:list-block provisional-distance-between-starts="7mm">
+												<fo:list-block provisional-distance-between-starts="8mm">
 													<xsl:if test="@type = 'annex'">
 														<xsl:attribute name="provisional-distance-between-starts">0mm</xsl:attribute>
 													</xsl:if>
@@ -402,7 +402,7 @@
 												</fo:list-block>
 											</xsl:when>
 											<xsl:otherwise>
-												<fo:block text-align-last="justify" margin-left="7mm">
+												<fo:block text-align-last="justify" margin-left="8mm">
 													<fo:basic-link internal-destination="{@id}" fox:alt-text="{text()}">
 														<xsl:value-of select="java:toUpperCase(java:java.lang.String.new(@section))"/>
 														<xsl:text> </xsl:text>
@@ -588,7 +588,7 @@
 		<xsl:value-of select="translate(., $thinspace, ' ')"/>
 	</xsl:template>
 	
-	<xsl:template match="text()" priority="3" mode="contents">
+	<xsl:template match="ogc:title//text() | ogc:name//text()" priority="3" mode="contents">
 		<xsl:value-of select="translate(., $thinspace, ' ')"/>
 	</xsl:template>
 
@@ -713,7 +713,7 @@
 				<title>
 					<xsl:apply-templates select="xalan:nodeset($title)" mode="contents_item"/>
 				</title>
-				<xsl:apply-templates  mode="contents" />
+				<xsl:apply-templates mode="contents" />
 			</item>
 		</xsl:if>	
 		
