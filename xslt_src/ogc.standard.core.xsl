@@ -1294,7 +1294,6 @@
 	
 	<xsl:template match="ogc:figure" priority="2">
 		<fo:block-container id="{@id}" margin-top="12pt" margin-bottom="12pt">			
-			<xsl:apply-templates select="ogc:name" mode="presentation"/>			
 			<fo:block>
 				<xsl:apply-templates />
 			</fo:block>
@@ -1302,6 +1301,7 @@
 			<xsl:for-each select="ogc:note">
 				<xsl:call-template name="note"/>
 			</xsl:for-each>
+			<xsl:apply-templates select="ogc:name" mode="presentation"/>
 		</fo:block-container>
 	</xsl:template>
 

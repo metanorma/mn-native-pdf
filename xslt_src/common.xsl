@@ -1233,9 +1233,13 @@
 		</xsl:if>		
 		<xsl:if test="$namespace = 'ogc'">
 			<xsl:attribute name="color"><xsl:value-of select="$color_blue"/></xsl:attribute>
-			<xsl:attribute name="margin-top">12pt</xsl:attribute>
-			<xsl:attribute name="margin-bottom">6pt</xsl:attribute>
-			<xsl:attribute name="keep-with-next">always</xsl:attribute>
+			<!-- <xsl:attribute name="margin-top">12pt</xsl:attribute> -->
+			<xsl:attribute name="margin-top">6pt</xsl:attribute>
+			<!-- <xsl:attribute name="margin-bottom">6pt</xsl:attribute> -->
+			<xsl:attribute name="margin-bottom">12pt</xsl:attribute>
+			<!-- <xsl:attribute name="keep-with-next">always</xsl:attribute> -->
+			<xsl:attribute name="keep-with-previous">always</xsl:attribute>
+			<xsl:attribute name="text-align">center</xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'ogc-white-paper'">
 			<xsl:attribute name="font-size">11pt</xsl:attribute>
