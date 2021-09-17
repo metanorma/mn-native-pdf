@@ -3867,7 +3867,7 @@
 	<!-- Table of Contents (ToC) processing -->
 	<!-- =================== -->
 	<xsl:template match="bipm:clause[@type = 'toc']" priority="3">
-		<fo:block>
+		<fo:block role="TOC">
 			<xsl:copy-of select="@id"/>
 			<xsl:apply-templates select="bipm:title[1]"/>
 			
