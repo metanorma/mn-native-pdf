@@ -2385,8 +2385,10 @@
 				<!-- <xsl:when test="$level = 1 and $independentAppendix != ''">11.5pt</xsl:when>
 				<xsl:when test="$level &gt;= 2 and $independentAppendix != ''">10.5pt</xsl:when> -->
 				<xsl:when test="$level = 1">16pt</xsl:when>
+				<xsl:when test="$level = 2 and ancestor::bipm:annex and ../@type = 'toc'">16pt</xsl:when>
 				<xsl:when test="$level = 2 and ancestor::bipm:annex">10.5pt</xsl:when>
 				<xsl:when test="$level = 2">14pt</xsl:when>
+				<xsl:when test="$level &gt;= 3 and ancestor::bipm:annex and ../@type = 'toc'">9pt</xsl:when>
 				<xsl:when test="$level = 3 and ancestor::bipm:annex">10pt</xsl:when>
 				<xsl:when test="$level &gt;= 4 and ancestor::bipm:annex">9pt</xsl:when>
 				<xsl:when test="$level = 3">12pt</xsl:when>
@@ -2410,6 +2412,7 @@
 				<xsl:choose>
 					<xsl:when test="$level = 1 and (parent::bipm:annex or ancestor::bipm:annex or parent::bipm:abstract or ancestor::bipm:preface)">84pt</xsl:when>
 					<xsl:when test="$level = 1">6pt</xsl:when>
+					<xsl:when test="$level = 2 and ancestor::bipm:annex and ../@type = 'toc'">29mm</xsl:when>
 					<xsl:when test="$level = 2 and ancestor::bipm:annex">6pt</xsl:when> <!-- 6pt 12pt -->					
 					<!-- <xsl:when test="$level = 2 and $independentAppendix != ''">6pt</xsl:when> -->
 					<xsl:when test="$level = 2">10pt</xsl:when>
@@ -2438,6 +2441,10 @@
 			<xsl:if test="$level = 3 and not(ancestor::bipm:annex)">
 				<!-- <xsl:attribute name="margin-top">20pt</xsl:attribute> -->
 				<xsl:attribute name="space-before">20pt</xsl:attribute>
+			</xsl:if>
+			
+			<xsl:if test="$level &gt;= 3 and ancestor::bipm:annex and ../@type = 'toc'">
+				<xsl:attribute name="space-before">0pt</xsl:attribute>
 			</xsl:if>
 			
 			<fo:block-container margin-left="0mm">
@@ -2493,6 +2500,9 @@
 									</xsl:if>
 									<xsl:if test="$level = 4">
 										<xsl:attribute name="text-align">center</xsl:attribute>
+									</xsl:if>
+									<xsl:if test="../@type = 'toc'">
+										<xsl:attribute name="text-align">left</xsl:attribute>
 									</xsl:if>
 									<xsl:call-template name="extractTitle"/>
 									<xsl:apply-templates select="following-sibling::*[1][local-name() = 'variant-title'][@type = 'sub']" mode="subtitle"/>
@@ -3851,6 +3861,71 @@
 		<xsl:copy-of select="xalan:nodeset($mathml)"/>
 	</fo:instream-foreign-object>
 	</xsl:template>
+
+
+	<!-- =================== -->
+	<!-- Table of Contents (ToC) processing -->
+	<!-- =================== -->
+	<xsl:template match="bipm:clause[@type = 'toc']" priority="3">
+		<fo:block>
+			<xsl:copy-of select="@id"/>
+			<xsl:apply-templates select="bipm:title[1]"/>
+			
+			<!-- create virtual table to determine column's width -->
+			<xsl:variable name="toc_table_simple">
+				<tbody>
+					<xsl:apply-templates mode="toc_table_width" />
+				</tbody>
+			</xsl:variable>
+			<xsl:variable name="cols-count" select="count(xalan:nodeset($toc_table_simple)/*/tr[1]/td)"/>
+			<xsl:variable name="colwidths">
+				<xsl:call-template name="calculate-column-widths">
+					<xsl:with-param name="cols-count" select="$cols-count"/>
+					<xsl:with-param name="table" select="$toc_table_simple"/>
+				</xsl:call-template>
+			</xsl:variable>
+			
+			<fo:table width="100%" table-layout="fixed">
+				<fo:table-column column-width="100%" />
+				<fo:table-header>
+					<fo:table-row font-weight="bold">
+						<fo:table-cell text-align="right" font-size="9pt" font-family="Arial">
+							<fo:block>
+								<xsl:variable name="page">
+									<xsl:call-template name="getLocalizedString">
+										<xsl:with-param name="key">Page.sg</xsl:with-param>
+									</xsl:call-template>
+								</xsl:variable>
+								<xsl:value-of select="java:toLowerCase(java:java.lang.String.new($page))"/>
+							</fo:block>
+						</fo:table-cell>
+					</fo:table-row>
+				</fo:table-header>
+				<fo:table-body>
+					<fo:table-row>
+						<fo:table-cell>
+							<fo:block>
+								<xsl:variable name="title_id" select="generate-id(bipm:title[1])"/>
+								<xsl:apply-templates select="*[not(generate-id() = $title_id)]">
+									<xsl:with-param name="colwidths" select="$colwidths"/>
+								</xsl:apply-templates>
+							</fo:block>
+						</fo:table-cell>
+					</fo:table-row>
+				</fo:table-body>
+			</fo:table>
+		</fo:block>
+	</xsl:template>
+	
+	
+	<!-- ignore section number before tab -->
+	<xsl:template match="bipm:clause[@type = 'toc']//bipm:title/text()[1][not(preceding-sibling::bipm:tab) and following-sibling::*[1][self::bipm:tab]]"/>
+	<xsl:template match="bipm:clause[@type = 'toc']//bipm:title/bipm:tab" priority="2"/>
+
+	<!-- =================== -->
+	<!-- End Table of Contents (ToC) processing -->
+	<!-- =================== -->
+
 
 	<xsl:template name="insertHeaderFooter">
 		<xsl:param name="header-title"/>
