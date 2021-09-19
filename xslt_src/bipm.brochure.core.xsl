@@ -2452,6 +2452,10 @@
 				<xsl:attribute name="space-before">0pt</xsl:attribute>
 			</xsl:if>
 			
+			<xsl:if test="@type = 'quoted'">
+				<xsl:attribute name="font-weight">normal</xsl:attribute>
+			</xsl:if>
+			
 			<fo:block-container margin-left="0mm">
 				
 				<!-- marker not working for math -->
