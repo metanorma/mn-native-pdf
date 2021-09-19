@@ -2539,16 +2539,6 @@
 
 	</xsl:template>
 	
-	<xsl:template match="bipm:blacksquare" name="blacksquare">
-		<fo:inline padding-right="2.5mm" baseline-shift="5%">
-			<fo:instream-foreign-object content-height="2mm" content-width="2mm"  fox:alt-text="Quad">
-					<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xml:space="preserve"
-					viewBox="0 0 2 2">
-						<rect x="0" y="0" width="2" height="2" fill="black"  />
-					</svg>
-				</fo:instream-foreign-object>	
-		</fo:inline>
-	</xsl:template>
 	
 	<xsl:template match="*" mode="header">
 		<xsl:apply-templates mode="header"/>
