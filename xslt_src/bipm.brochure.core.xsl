@@ -357,6 +357,7 @@
 				<xsl:call-template name="addPDFUAmeta"/>
 				
 				<xsl:if test="$add_math_as_attachment = 'true'">
+					<!-- DEBUG: mathml_attachments=<xsl:copy-of select="$mathml_attachments"/> -->
 					<xsl:for-each select="xalan:nodeset($mathml_attachments)//attachment">
 						
 						<xsl:variable name="mathml_filename" select="@filename"/>
@@ -538,6 +539,10 @@
 			</xsl:if>
 			<xsl:apply-templates select="@*|node()" mode="flatxml"/>
 		</xsl:copy>
+	</xsl:template>
+	
+	<xsl:template match="mathml:math" mode="flatxml" priority="2">
+		<xsl:copy-of select="."/>
 	</xsl:template>
 
 	<!-- enclosing starting elements annex/... in clause -->
@@ -810,6 +815,10 @@
 				<xsl:apply-templates select="@*|node()" mode="flatxml_list"/>
 		</xsl:copy>
 	</xsl:template>	
+	
+	<xsl:template match="mathml:math" mode="flatxml_list" priority="2">
+		<xsl:copy-of select="."/>
+	</xsl:template>
 	
 	<!-- copy 'ol' 'ul' properties to each 'li' -->
 	<!-- OBSOLETE: move note for list (list level note)  into latest 'li' -->
@@ -2504,7 +2513,7 @@
 									<xsl:if test="$level &gt;= 3">
 										<xsl:attribute name="margin-left">14mm</xsl:attribute>
 									</xsl:if>
-									<xsl:if test="$level = 3">
+									<xsl:if test="$level = 3 and not(../@type = 'toc')">
 										<!-- <xsl:call-template name="blacksquare"/> -->
 									</xsl:if>
 									<xsl:if test="$level = 4">
@@ -3781,6 +3790,7 @@
 			<xsl:variable name="mathml_content">
 				<xsl:apply-templates select="." mode="mathml_actual_text"/>
 			</xsl:variable>
+			<!-- DEBUG: mathml_content=<xsl:value-of select="$mathml_content"/> -->
 			
 			<xsl:variable name="comment_text_following" select="following-sibling::node()[1][self::comment()]"/>
 			<xsl:variable name="comment_text_">
@@ -3795,11 +3805,9 @@
 			</xsl:variable> 
 			<xsl:variable name="comment_text" select="java:org.metanorma.fop.Util.unescape($comment_text_)"/>
 			
+			<xsl:variable name="filename" select="xalan:nodeset($mathml_attachments)//attachment[. = $mathml_content]/@filename"/>
 			<xsl:choose>
-				<xsl:when test="$add_math_as_attachment = 'true'">
-					
-					<xsl:variable name="filename" select="xalan:nodeset($mathml_attachments)//attachment[. = $mathml_content]/@filename"/>
-					<xsl:if test="$filename != ''">
+				<xsl:when test="$add_math_as_attachment = 'true' and normalize-space($filename) != ''">
 						<xsl:variable name="url" select="concat('url(embedded-file:', $filename, ')')"/>
 						<fo:basic-link external-destination="{$url}" fox:alt-text="MathLink">
 							<xsl:if test="normalize-space($comment_text) != ''">
@@ -3813,7 +3821,7 @@
 								<xsl:with-param name="comment_text" select="$comment_text"/>
 							</xsl:call-template>
 						</fo:basic-link>
-					</xsl:if>
+					<!-- </xsl:if> -->
 				</xsl:when>
 				<xsl:otherwise>
 					<xsl:call-template name="mathml_instream_object">
