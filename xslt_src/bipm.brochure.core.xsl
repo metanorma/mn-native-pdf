@@ -3803,24 +3803,25 @@
 					</xsl:otherwise>
 				</xsl:choose>
 			</xsl:variable> 
-			<xsl:variable name="comment_text" select="java:org.metanorma.fop.Util.unescape($comment_text_)"/>
+			<xsl:variable name="comment_text_2" select="java:org.metanorma.fop.Util.unescape($comment_text_)"/>
+			<xsl:variable name="comment_text" select="java:trim(java:java.lang.String.new($comment_text_2))"/>
 			
 			<xsl:variable name="filename" select="xalan:nodeset($mathml_attachments)//attachment[. = $mathml_content]/@filename"/>
 			<xsl:choose>
 				<xsl:when test="$add_math_as_attachment = 'true' and normalize-space($filename) != ''">
-						<xsl:variable name="url" select="concat('url(embedded-file:', $filename, ')')"/>
-						<fo:basic-link external-destination="{$url}" fox:alt-text="MathLink">
-							<xsl:if test="normalize-space($comment_text) != ''">
-							<!-- put Mathin Alternate Text -->
-								<xsl:attribute name="fox:alt-text">
-									<xsl:value-of select="$comment_text"/>
-								</xsl:attribute>
-							</xsl:if>
-							<xsl:call-template name="mathml_instream_object">
-								<xsl:with-param name="mathml_content" select="$mathml_content"/>
-								<xsl:with-param name="comment_text" select="$comment_text"/>
-							</xsl:call-template>
-						</fo:basic-link>
+					<xsl:variable name="url" select="concat('url(embedded-file:', $filename, ')')"/>
+					<fo:basic-link external-destination="{$url}" fox:alt-text="MathLink">
+						<xsl:if test="normalize-space($comment_text) != ''">
+						<!-- put Mathin Alternate Text -->
+							<xsl:attribute name="fox:alt-text">
+								<xsl:value-of select="$comment_text"/>
+							</xsl:attribute>
+						</xsl:if>
+						<xsl:call-template name="mathml_instream_object">
+							<xsl:with-param name="mathml_content" select="$mathml_content"/>
+							<xsl:with-param name="comment_text" select="$comment_text"/>
+						</xsl:call-template>
+					</fo:basic-link>
 					<!-- </xsl:if> -->
 				</xsl:when>
 				<xsl:otherwise>
