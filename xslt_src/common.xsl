@@ -5165,7 +5165,6 @@
 					<!-- <xsl:if test="not(following-sibling::*[local-name() = 'note'])">
 						<xsl:attribute name="space-after">24pt</xsl:attribute>
 					</xsl:if> -->
-					
 				</xsl:if>
 			</xsl:if>
 			<xsl:if test="$namespace = 'bipm'">
@@ -8101,11 +8100,39 @@
 					</xsl:choose>
 				</xsl:if>
 			</xsl:variable>
-			<xsl:value-of select="$docidentifier"/>
+			
+			<!-- string starts with [ -->
+			<xsl:variable name="isStartsWithOpeningBracket" select="starts-with($docidentifier,'[')"/>
+			<!-- string ends with [ -->
+			<xsl:variable name="isEndsWithClosingBracket" select="java:endsWith(java:java.lang.String.new($docidentifier),']')"/>
+			<xsl:variable name="removeBrackets">
+				<xsl:choose>
+					<xsl:when test="$isStartsWithOpeningBracket = 'true' and $isEndsWithClosingBracket">
+						<xsl:choose>
+							<!-- [1] [2] ... -->
+							<xsl:when test="normalize-space(java:replaceAll(java:java.lang.String.new($docidentifier), '^\[[0-9]+\]$', '')) = ''">false</xsl:when>
+							<xsl:otherwise>true</xsl:otherwise>
+						</xsl:choose>
+					</xsl:when>
+					<xsl:otherwise>false</xsl:otherwise>
+				</xsl:choose>
+			</xsl:variable>
+			<xsl:variable name="docidentifier_">
+				<xsl:choose>
+					<xsl:when test="contains($removeBrackets, 'true')">
+						<xsl:value-of select="substring($docidentifier, 2, string-length($docidentifier) - 2)"/>
+					</xsl:when>
+					<xsl:otherwise>
+						<xsl:value-of select="$docidentifier"/>
+					</xsl:otherwise>
+				</xsl:choose>
+			</xsl:variable>
+			<xsl:value-of select="$docidentifier_"/>
+			
 			<xsl:apply-templates select="*[local-name() = 'note']"/>			
-			<xsl:if test="normalize-space($docidentifier) != ''">
+			<xsl:if test="normalize-space($docidentifier_) != ''">
 				<!-- <xsl:if test="preceding-sibling::*[local-name() = 'references'][1][@normative = 'true']">,</xsl:if> -->
-				<xsl:if test="not(starts-with($docidentifier, '['))">,</xsl:if>
+				<xsl:if test="not(starts-with($docidentifier_, '['))">,</xsl:if>
 				<xsl:text> </xsl:text>
 			</xsl:if>
 			<xsl:choose>
