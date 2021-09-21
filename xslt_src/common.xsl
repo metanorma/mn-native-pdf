@@ -7089,8 +7089,11 @@
 						</xsl:if>
 					</xsl:if>	
 					
+					<xsl:variable name="citeas" select="java:replaceAll(java:java.lang.String.new(@citeas),'^\[?(.+?)\]?$','$1')"/> <!-- remove leading and trailing brackets -->
+					<xsl:variable name="text" select="normalize-space()"/>
+					
 					<xsl:if test="$namespace = 'bsi'">
-						<xsl:if test="not(xalan:nodeset($ids)/id = current()/@bibitemid) or $document_type = 'PAS'"> <!-- if reference can't be resolved or PAS document -->
+						<xsl:if test="not(xalan:nodeset($ids)/id = current()/@bibitemid) or $document_type = 'PAS' or not(contains($citeas, $text))"> <!-- if reference can't be resolved or PAS document -->
 							<xsl:attribute name="color">inherit</xsl:attribute>
 							<xsl:attribute name="text-decoration">none</xsl:attribute>
 						</xsl:if>
@@ -7120,7 +7123,13 @@
 								<xsl:attribute name="text-decoration">underline</xsl:attribute>
 							</xsl:if>
 						</xsl:if>
-
+						
+						<xsl:if test="$namespace = 'bsi'">
+							<xsl:if test="not(contains($citeas, $text))">
+								<fo:inline xsl:use-attribute-sets="eref-style"><xsl:value-of select="$citeas"/></fo:inline><xsl:text>, </xsl:text>
+							</xsl:if>
+						</xsl:if>
+						
 						<xsl:apply-templates />
 					</fo:basic-link>
 							
