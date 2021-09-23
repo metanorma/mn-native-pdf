@@ -5883,6 +5883,9 @@
 	<!-- End SVG images processing -->
 	<!-- =================== -->
 	
+	<!-- ignore emf processing (Apache FOP doesn't support EMF) -->
+	<xsl:template match="*[local-name() = 'emf']"/>
+	
 	
 	<xsl:template match="*[local-name() = 'figure']/*[local-name() = 'name']"/>	
 	
