@@ -1627,6 +1627,7 @@
 	<xsl:template name="processMainSectionsDefault">
 		<xsl:for-each select="/*/*[local-name()='sections']/* | /*/*[local-name()='bibliography']/*[local-name()='references'][@normative='true']">
 			<xsl:sort select="@displayorder" data-type="number"/>
+			<xsl:apply-templates select="."/>
 			<xsl:if test="$namespace = 'm3d'">
 				<xsl:if test="local-name()='clause' and @type='scope'">
 					<xsl:if test="/*/*[local-name()='bibliography']/*[local-name()='references'][@normative='true']">
@@ -1634,7 +1635,6 @@
 					</xsl:if>
 				</xsl:if>
 			</xsl:if>
-			<xsl:apply-templates select="."/>
 		</xsl:for-each>
 		
 		<xsl:for-each select="/*/*[local-name()='annex']">
