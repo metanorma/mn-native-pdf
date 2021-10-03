@@ -1253,6 +1253,9 @@
 				<fo:inline font-weight="bold" font-style="normal" color="black"><xsl:value-of select="java:toUpperCase(java:java.lang.String.new($name_number))"/><xsl:text>:</xsl:text></fo:inline>
 				<xsl:value-of select="substring-after(., '—')"/>
 			</xsl:when>
+			<xsl:when test="starts-with(., 'Figure ') or starts-with(., 'Table ')">
+				<fo:inline font-weight="bold" font-style="normal" color="black"><xsl:value-of select="java:toUpperCase(java:java.lang.String.new(.))"/></fo:inline>
+			</xsl:when>
 			<xsl:otherwise>
 				<xsl:value-of select="."/>
 			</xsl:otherwise>
