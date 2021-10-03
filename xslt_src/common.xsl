@@ -990,6 +990,25 @@
 		</xsl:if>
 	</xsl:attribute-set>
 	
+	<xsl:attribute-set name="table-note-name-style">
+		<xsl:if test="$namespace = 'bipm'">
+			<xsl:attribute name="font-size">10pt</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'gb'">
+			<xsl:attribute name="font-family">SimHei</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'iho'">
+			<xsl:attribute name="font-size">11pt</xsl:attribute>
+			<xsl:attribute name="padding-right">3mm</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'rsd'">
+			<xsl:attribute name="font-weight">bold</xsl:attribute>
+			<xsl:attribute name="color"><xsl:value-of select="$color_blue"/></xsl:attribute>
+			<xsl:attribute name="padding-right">0.5mm</xsl:attribute>
+		</xsl:if>
+	</xsl:attribute-set>
+	
+	
 	<xsl:attribute-set name="note-p-style">
 		<xsl:if test="$namespace = 'csa'">
 			<xsl:attribute name="margin-top">12pt</xsl:attribute>
@@ -3327,21 +3346,14 @@
 				
 				<!-- Table's note name (NOTE, for example) -->
 
-				<fo:inline padding-right="2mm">
+				<fo:inline padding-right="2mm" xsl:use-attribute-sets="table-note-name-style">
 					<xsl:if test="$namespace = 'bsi'">
 						<xsl:if test="$document_type = 'PAS'">
 							<xsl:attribute name="padding-right">1mm</xsl:attribute>
 							<xsl:attribute name="font-style">italic</xsl:attribute>
 						</xsl:if>
 					</xsl:if>
-				
-					<xsl:if test="$namespace = 'gb'">
-						<xsl:attribute name="font-family">SimHei</xsl:attribute>
-					</xsl:if>
-					<xsl:if test="$namespace = 'iho'">
-						<xsl:attribute name="font-size">11pt</xsl:attribute>
-						<xsl:attribute name="padding-right">3mm</xsl:attribute>
-					</xsl:if>
+					
 					<xsl:if test="$namespace = 'unece'  or $namespace = 'unece-rec'">
 						<xsl:if test="@type = 'source' or @type = 'abbreviation'">
 							<xsl:attribute name="font-size">9pt</xsl:attribute>							
@@ -3354,11 +3366,11 @@
 						</xsl:if>
 					</xsl:if>
 					<xsl:if test="$namespace = 'bipm'">
-						<xsl:attribute name="font-size">10pt</xsl:attribute>
 						<xsl:if test="ancestor::bipm:preface">
 							<xsl:attribute name="text-decoration">underline</xsl:attribute>
 						</xsl:if>
 					</xsl:if>
+					
 					<xsl:apply-templates select="*[local-name() = 'name']" mode="presentation"/>
 						
 				</fo:inline>
