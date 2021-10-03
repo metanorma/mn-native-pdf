@@ -20,6 +20,8 @@
 	<!-- param for second pass -->
 	<xsl:param name="external_index" /><!-- path to index xml, generated on 1st pass, based on FOP Intermediate Format -->
 	
+	<xsl:param name="align-cross-elements" />
+	
 	<xsl:include href="./common.xsl"/>
 
 	<xsl:key name="kfn" match="*[local-name()='p']/*[local-name()='fn']" use="@reference"/>
@@ -27,7 +29,14 @@
 	<xsl:variable name="namespace">jcgm</xsl:variable>
 	
 	<xsl:variable name="align_cross_elements_default">clause</xsl:variable>
-	<xsl:variable name="align_cross_elements_doc" select="normalize-space((//jcgm:bipm-standard)[1]/jcgm:bibdata/jcgm:ext/jcgm:parallel-align-element)"/>
+	<xsl:variable name="align_cross_elements_doc">
+		<xsl:choose>
+			<xsl:when test="normalize-space($align-cross-elements) != ''"><xsl:value-of select="$align-cross-elements"/></xsl:when>
+			<xsl:otherwise>
+				<xsl:value-of select="normalize-space((//jcgm:bipm-standard)[1]/jcgm:bibdata/jcgm:ext/jcgm:parallel-align-element)"/>
+			</xsl:otherwise>
+		</xsl:choose>
+	</xsl:variable>
 	<xsl:variable name="align_cross_elements_">
 		<xsl:choose>
 			<xsl:when test="$align_cross_elements_doc != ''">
