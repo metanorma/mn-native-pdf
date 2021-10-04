@@ -2522,7 +2522,8 @@
 									<xsl:if test="../@type = 'toc'">
 										<xsl:attribute name="text-align">left</xsl:attribute>
 									</xsl:if>
-									<xsl:call-template name="extractTitle"/>
+									<!-- <xsl:call-template name="extractTitle"/> -->
+									<xsl:apply-templates />
 									<xsl:apply-templates select="following-sibling::*[1][local-name() = 'variant-title'][@type = 'sub']" mode="subtitle"/>
 								</xsl:when>
 								<xsl:otherwise>
