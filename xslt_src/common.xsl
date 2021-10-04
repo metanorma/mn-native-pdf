@@ -6823,7 +6823,7 @@
 	<xsl:template match="*[local-name() = 'termexample']/*[local-name() = 'name']" mode="presentation">
 		<xsl:if test="normalize-space() != ''">
 			<fo:inline xsl:use-attribute-sets="termexample-name-style">
-				<xsl:apply-templates />
+				<xsl:apply-templates /><xsl:if test="$namespace = 'rsd'">: </xsl:if>
 			</fo:inline>
 		</xsl:if>
 	</xsl:template>
