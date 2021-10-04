@@ -236,7 +236,7 @@
 		</xsl:if>
 		<xsl:if test="$namespace = 'rsd'">
 			<xsl:attribute name="color"><xsl:value-of select="$color_blue"/></xsl:attribute>
-			<xsl:attribute name="font-weight">bold</xsl:attribute>
+			<xsl:attribute name="font-weight">300</xsl:attribute><!-- bold -->
 			<xsl:attribute name="text-decoration">underline</xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'ogc'">
