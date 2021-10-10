@@ -8221,7 +8221,16 @@
 						<xsl:when test="*[local-name() = 'docidentifier'][not(@type = 'metanorma')] and $document_type = 'PAS'">
 							<xsl:value-of select="*[local-name() = 'docidentifier'][not(@type = 'metanorma')]"/>
 						</xsl:when>
-						<xsl:otherwise><xsl:value-of select="*[local-name() = 'docidentifier']"/></xsl:otherwise>
+						<xsl:otherwise>
+							<xsl:choose>
+								<xsl:when test="count(*[local-name() = 'docidentifier']) &gt; 1">
+									<xsl:value-of select="*[local-name() = 'docidentifier'][not(@type = 'metanorma')][1]"/>
+								</xsl:when>
+								<xsl:otherwise>
+									<xsl:value-of select="*[local-name() = 'docidentifier']"/>
+								</xsl:otherwise>
+							</xsl:choose>
+						</xsl:otherwise>
 					</xsl:choose>
 				</xsl:if>
 			</xsl:variable>
@@ -8252,6 +8261,11 @@
 					</xsl:otherwise>
 				</xsl:choose>
 			</xsl:variable>
+			
+			<xsl:if test="count(*[local-name() = 'docidentifier']) &gt; 1 and *[local-name() = 'docidentifier'][@type = 'metanorma']">
+				<xsl:value-of select="*[local-name() = 'docidentifier'][@type = 'metanorma']"/><xsl:text> </xsl:text>
+			</xsl:if>
+			
 			<xsl:value-of select="$docidentifier_"/>
 			
 			<xsl:apply-templates select="*[local-name() = 'note']"/>			
