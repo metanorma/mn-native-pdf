@@ -1931,6 +1931,9 @@
 						<!-- <attribute name="border"><xsl:value-of select="$table-border"/></attribute> -->
 						<attribute name="border">none</attribute>
 						<attribute name="border-bottom"><xsl:value-of select="$table-border"/></attribute>
+						<xsl:if test=".//*[local-name() = 'tr'][1]/*[local-name() = 'td'][normalize-space() = 'Key']">
+							<attribute name="border-bottom">none</attribute>
+						</xsl:if>
 						<xsl:if test="*[local-name()='thead']">
 							<!-- <attribute name="border-top"><xsl:value-of select="$table-border"/></attribute> -->
 						</xsl:if>
@@ -3186,6 +3189,21 @@
 					<xsl:attribute name="padding-bottom">3mm</xsl:attribute>
 					<xsl:attribute name="padding-right">3mm</xsl:attribute>
 				</xsl:if>
+				
+				<!-- Key table for figure -->
+				<xsl:if test="ancestor::*[local-name() = 'table'][1]/preceding-sibling::*[1][local-name() = 'figure'] and 
+				ancestor::*[local-name() = 'table'][1]//*[local-name() = 'tr'][1]/*[local-name() = 'td'][normalize-space() = 'Key']">
+					<xsl:attribute name="border">none</xsl:attribute>
+					
+					<xsl:if test="count(*) = 1 and local-name(*[1]) = 'figure'">
+						<xsl:attribute name="padding-top">0.5mm</xsl:attribute>
+						<xsl:attribute name="padding-left">0mm</xsl:attribute>
+						<xsl:attribute name="padding-bottom">0mm</xsl:attribute>
+						<xsl:attribute name="padding-right">0mm</xsl:attribute>
+					</xsl:if>
+				</xsl:if>
+				
+				
 			</xsl:if>
 			<xsl:if test="$namespace = 'jcgm'">
 				<xsl:if test="count(*) = 1 and (local-name(*[1]) = 'stem' or local-name(*[1]) = 'figure')">
@@ -5564,6 +5582,11 @@
 			</xsl:when>
 			<xsl:otherwise>
 				<fo:block xsl:use-attribute-sets="image-style">
+					<xsl:if test="$namespace = 'bsi'">
+						<xsl:if test="ancestor::*[local-name() = 'table']">
+							<xsl:attribute name="text-align">inherit</xsl:attribute>
+						</xsl:if>
+					</xsl:if>
 					<xsl:if test="$namespace = 'unece-rec'">
 						<xsl:if test="ancestor::un:admonition">
 							<xsl:attribute name="margin-top">-12mm</xsl:attribute>
