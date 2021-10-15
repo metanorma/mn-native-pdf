@@ -6265,6 +6265,9 @@
 					</xsl:if>
 				</xsl:if>
 				<xsl:if test="$namespace = 'bsi'">
+					<xsl:if test="count(ancestor::*[local-name() = 'figure']) &gt; 1">
+						<xsl:attribute name="margin-left">0mm</xsl:attribute>
+					</xsl:if>
 					<xsl:if test="$document_type = 'PAS'">
 						<xsl:attribute name="margin-left">0mm</xsl:attribute>
 						<xsl:attribute name="font-size">12pt</xsl:attribute>
