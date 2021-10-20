@@ -136,6 +136,8 @@
 		
 		<title-list-figures lang="en">List of Figures</title-list-figures>
 		
+		<title-table-figures lang="en">Table of Figures</title-table-figures>
+		
 		<title-list-recommendations lang="en">List of Recommendations</title-list-recommendations>
 		
 		<title-acknowledgements lang="en">Acknowledgements</title-acknowledgements>
@@ -6159,7 +6161,8 @@
 					</xsl:if>
 				</xsl:if>
 				
-				<xsl:if test="$namespace = 'ogc' or $namespace = 'ogc-white-paper'">
+				
+				<xsl:if test="$namespace = 'ogc'">
 				
 					<xsl:variable name="list_of_tables_">
 						<xsl:for-each select="//*[local-name() = 'table'][@id and *[local-name() = 'name'] and contains(*[local-name() = 'name'], '—')]">
@@ -6174,72 +6177,105 @@
 						</xsl:for-each>
 					</xsl:variable>
 					<xsl:variable name="list_of_figures" select="xalan:nodeset($list_of_figures_)"/>
-					
-					<xsl:if test="$namespace = 'ogc'">
-						<xsl:if test="$list_of_tables//table or $list_of_figures/figure or //*[local-name() = 'table'][.//*[local-name() = 'p'][@class = 'RecommendationTitle']]">
-							<fo:bookmark internal-destination="empty_bookmark">
-								<fo:bookmark-title>—————</fo:bookmark-title>
-							</fo:bookmark>
-						</xsl:if>
+										
+					<xsl:if test="$list_of_tables//table or $list_of_figures/figure or //*[local-name() = 'table'][.//*[local-name() = 'p'][@class = 'RecommendationTitle']]">
+						<fo:bookmark internal-destination="empty_bookmark">
+							<fo:bookmark-title>—————</fo:bookmark-title>
+						</fo:bookmark>
 					</xsl:if>
 					
-					<xsl:if test="$namespace = 'ogc-white-paper'">
-						<xsl:if test="$list_of_figures/figure">
-							<fo:bookmark internal-destination="empty_bookmark">
-								<fo:bookmark-title>—————</fo:bookmark-title>
-							</fo:bookmark>
-						</xsl:if>
-					</xsl:if>
-					
-					<xsl:if test="$namespace = 'ogc'">
-						<xsl:if test="$list_of_tables//table">
-							<fo:bookmark internal-destination="empty_bookmark" starting-state="hide"> <!-- {$list_of_tables//table[1]/@id} -->
-								<fo:bookmark-title>
-									<xsl:choose>
-										<xsl:when test="$lang = 'fr'">Listes des Tableaux</xsl:when>
-										<xsl:otherwise>List of Tables</xsl:otherwise>
-									</xsl:choose>
-								</fo:bookmark-title>
-								<xsl:for-each select="$list_of_tables//table">
-									<fo:bookmark internal-destination="{@id}">
-										<fo:bookmark-title><xsl:value-of select="."/></fo:bookmark-title>
-									</fo:bookmark>
-								</xsl:for-each>
-							</fo:bookmark>
-						</xsl:if>
-					</xsl:if>
-					
-					<xsl:if test="$namespace = 'ogc' or $namespace = 'ogc-white-paper'">
-						<xsl:if test="$list_of_figures//figure">
-							<fo:bookmark internal-destination="empty_bookmark" starting-state="hide"> <!-- {$list_of_figures//figure[1]/@id} -->
-								<fo:bookmark-title>
-									<xsl:choose>
-										<xsl:when test="$lang = 'fr'">Listes des Figures</xsl:when>
-										<xsl:otherwise>List of Figures</xsl:otherwise>
-									</xsl:choose>
-								</fo:bookmark-title>
-								<xsl:for-each select="$list_of_figures//figure">
-									<fo:bookmark internal-destination="{@id}">
-										<fo:bookmark-title><xsl:value-of select="."/></fo:bookmark-title>
-									</fo:bookmark>
-								</xsl:for-each>
-							</fo:bookmark>
-						</xsl:if>
+					<xsl:if test="$list_of_tables//table">
+						<fo:bookmark internal-destination="empty_bookmark" starting-state="hide"> <!-- {$list_of_tables//table[1]/@id} -->
+							<fo:bookmark-title>
+								<xsl:call-template name="getTitle">
+									<xsl:with-param name="name" select="'title-list-tables'"/>
+								</xsl:call-template>
+							</fo:bookmark-title>
+							<xsl:for-each select="$list_of_tables//table">
+								<fo:bookmark internal-destination="{@id}">
+									<fo:bookmark-title><xsl:value-of select="."/></fo:bookmark-title>
+								</fo:bookmark>
+							</xsl:for-each>
+						</fo:bookmark>
 					</xsl:if>
 
-					<xsl:if test="$namespace = 'ogc'">
-						<xsl:if test="//*[local-name() = 'table'][.//*[local-name() = 'p'][@class = 'RecommendationTitle']]">							
-							<fo:bookmark internal-destination="empty_bookmark" starting-state="hide"> <!-- {//*[local-name() = 'table'][.//*[local-name() = 'p'][@class = 'RecommendationTitle']][1]/@id} -->
-								<fo:bookmark-title>Recommendations</fo:bookmark-title>
-								<xsl:for-each select="//*[local-name() = 'table'][.//*[local-name() = 'p'][@class = 'RecommendationTitle']]">
-									<xsl:variable name="table_id" select="@id"/>
-									<fo:bookmark internal-destination="{@id}">
-										<fo:bookmark-title><xsl:value-of select=".//*[local-name() = 'p'][@class = 'RecommendationTitle'][ancestor::*[local-name() = 'table'][1][@id= $table_id]]/node()"/></fo:bookmark-title>
-									</fo:bookmark>
-								</xsl:for-each>
-							</fo:bookmark>
-							</xsl:if>
+					<xsl:if test="$list_of_figures//figure">
+						<fo:bookmark internal-destination="empty_bookmark" starting-state="hide"> <!-- {$list_of_figures//figure[1]/@id} -->
+							<fo:bookmark-title>
+								<xsl:if test="$namespace = 'ogc'">
+									<xsl:call-template name="getTitle">
+										<xsl:with-param name="name" select="'title-list-figures'"/>
+									</xsl:call-template>
+								</xsl:if>
+								<xsl:if test="$namespace = 'ogc-white-paper'">
+									<xsl:call-template name="getTitle">
+										<xsl:with-param name="name" select="'title-table-figures'"/>
+									</xsl:call-template>
+								</xsl:if>
+							</fo:bookmark-title>
+							<xsl:for-each select="$list_of_figures//figure">
+								<fo:bookmark internal-destination="{@id}">
+									<fo:bookmark-title><xsl:value-of select="."/></fo:bookmark-title>
+								</fo:bookmark>
+							</xsl:for-each>
+						</fo:bookmark>
 					</xsl:if>
+
+					
+					<xsl:if test="//*[local-name() = 'table'][.//*[local-name() = 'p'][@class = 'RecommendationTitle']]">							
+						<fo:bookmark internal-destination="empty_bookmark" starting-state="hide"> <!-- {//*[local-name() = 'table'][.//*[local-name() = 'p'][@class = 'RecommendationTitle']][1]/@id} -->
+							<fo:bookmark-title>
+								<xsl:call-template name="getTitle">
+									<xsl:with-param name="name" select="'title-list-recommendations'"/>
+								</xsl:call-template>
+							</fo:bookmark-title>
+							<xsl:for-each select="//*[local-name() = 'table'][.//*[local-name() = 'p'][@class = 'RecommendationTitle']]">
+								<xsl:variable name="table_id" select="@id"/>
+								<fo:bookmark internal-destination="{@id}">
+									<fo:bookmark-title><xsl:value-of select=".//*[local-name() = 'p'][@class = 'RecommendationTitle'][ancestor::*[local-name() = 'table'][1][@id= $table_id]]/node()"/></fo:bookmark-title>
+								</fo:bookmark>
+							</xsl:for-each>
+						</fo:bookmark>
+					</xsl:if>
+				</xsl:if>
+				
+				<xsl:if test="$namespace = 'ogc-white-paper'">
+					<xsl:variable name="list_of_tables_figures_">
+						<xsl:for-each select="//*[local-name() = 'table'][@id and *[local-name() = 'name']] | //*[local-name() = 'figure'][@id and *[local-name() = 'name']]">
+							<table_figure id="{@id}"><xsl:apply-templates select="*[local-name() = 'name']" mode="bookmarks"/></table_figure>
+						</xsl:for-each>
+					</xsl:variable>
+					<xsl:variable name="list_of_tables_figures" select="xalan:nodeset($list_of_tables_figures_)"/>
+				
+					
+					<xsl:if test="$list_of_tables_figures/table_figure">
+						<fo:bookmark internal-destination="empty_bookmark">
+							<fo:bookmark-title>—————</fo:bookmark-title>
+						</fo:bookmark>
+					</xsl:if>
+					
+					<xsl:if test="$list_of_tables_figures//table_figure">
+						<fo:bookmark internal-destination="empty_bookmark" starting-state="hide"> <!-- {$list_of_figures//figure[1]/@id} -->
+							<fo:bookmark-title>
+								<xsl:if test="$namespace = 'ogc'">
+									<xsl:call-template name="getTitle">
+										<xsl:with-param name="name" select="'title-list-figures'"/>
+									</xsl:call-template>
+								</xsl:if>
+								<xsl:if test="$namespace = 'ogc-white-paper'">
+									<xsl:call-template name="getTitle">
+										<xsl:with-param name="name" select="'title-table-figures'"/>
+									</xsl:call-template>
+								</xsl:if>
+							</fo:bookmark-title>
+							<xsl:for-each select="$list_of_tables_figures//table_figure">
+								<fo:bookmark internal-destination="{@id}">
+									<fo:bookmark-title><xsl:value-of select="."/></fo:bookmark-title>
+								</fo:bookmark>
+							</xsl:for-each>
+						</fo:bookmark>
+					</xsl:if>
+				
 				</xsl:if>
 				
 			</fo:bookmark-tree>
