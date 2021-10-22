@@ -2633,10 +2633,10 @@
 					<fo:table-row>
 						<fo:table-cell border="solid black 1pt" padding-left="1mm" padding-right="1mm" padding-top="1mm" number-columns-spanned="{$cols-count}">
 							<xsl:if test="$namespace = 'bsi'">
+								<xsl:attribute name="border"><xsl:value-of select="$table-border"/></xsl:attribute>
 								<xsl:if test="$document_type = 'PAS'">
 									<xsl:attribute name="border">1pt solid <xsl:value-of select="$color_PAS"/></xsl:attribute>
 								</xsl:if>
-								<xsl:attribute name="border"><xsl:value-of select="$table-border"/></xsl:attribute>
 								<!-- <xsl:attribute name="border-top">solid black 0pt</xsl:attribute> -->
 							</xsl:if>
 							<xsl:if test="$namespace = 'iso' or $namespace = 'gb' or $namespace = 'jcgm'">
