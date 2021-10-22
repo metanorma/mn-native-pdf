@@ -7776,6 +7776,14 @@
 					</xsl:if>
 					<xsl:if test="$namespace = 'bsi'">
 						<xsl:attribute name="margin-left">12mm</xsl:attribute>
+						<xsl:if test="$document_type = 'PAS'">
+							<xsl:if test="ancestor::*[local-name() = 'termnote']">
+								<xsl:attribute name="margin-left">2mm</xsl:attribute>
+							</xsl:if>
+							<xsl:if test="parent::*[local-name() = 'termnote']">
+								<xsl:attribute name="margin-left">0mm</xsl:attribute>
+							</xsl:if>
+						</xsl:if>
 					</xsl:if>
 					<fo:block-container margin-left="0mm">
 						<fo:block>
