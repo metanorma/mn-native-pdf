@@ -1944,7 +1944,7 @@
 							<attribute name="border-top">0pt solid black</attribute>
 						</xsl:if>
 						<xsl:if test="$document_type = 'PAS'">
-							<attribute name="border">1pt solid <xsl:value-of select="$color_PAS"/></attribute>
+							<!-- <attribute name="border">1pt solid <xsl:value-of select="$color_PAS"/></attribute> -->
 						</xsl:if>
 					</xsl:if>
 					<xsl:if test="$namespace = 'iso' or $namespace = 'jcgm'">
@@ -7132,6 +7132,11 @@
 	<!-- ====== -->
 	<xsl:template match="*[local-name() = 'termsource']" name="termsource">
 		<fo:block xsl:use-attribute-sets="termsource-style">
+			<xsl:if test="$namespace = 'bsi'">
+				<xsl:if test="$document_type = 'PAS'">
+					<xsl:attribute name="text-align">left</xsl:attribute>
+				</xsl:if>
+			</xsl:if>
 			<!-- Example: [SOURCE: ISO 5127:2017, 3.1.6.02] -->			
 			<xsl:variable name="termsource_text">
 				<xsl:apply-templates />
