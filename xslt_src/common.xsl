@@ -7147,13 +7147,25 @@
 					<!-- <xsl:apply-templates /> -->
 					<xsl:copy-of select="$termsource_text"/>
 				</xsl:when>
-				<xsl:otherwise>					
-					<xsl:if test="$namespace = 'bsi' or $namespace = 'gb' or $namespace = 'iso' or $namespace = 'iec' or $namespace = 'itu' or $namespace = 'unece' or $namespace = 'unece-rec' or $namespace = 'nist-cswp'  or $namespace = 'nist-sp' or $namespace = 'ogc-white-paper' or $namespace = 'csa' or $namespace = 'csd' or $namespace = 'm3d' or $namespace = 'iho' or $namespace = 'bipm' or $namespace = 'jcgm'">
+				<xsl:otherwise>
+					<xsl:if test="$namespace = 'bsi'">
+						<xsl:choose>
+							<xsl:when test="$document_type = 'PAS' and starts-with(*[local-name() = 'origin']/@citeas, '[')"><xsl:text>{</xsl:text></xsl:when>
+							<xsl:otherwise><xsl:text>[</xsl:text></xsl:otherwise>
+						</xsl:choose>
+					</xsl:if>
+					<xsl:if test="$namespace = 'gb' or $namespace = 'iso' or $namespace = 'iec' or $namespace = 'itu' or $namespace = 'unece' or $namespace = 'unece-rec' or $namespace = 'nist-cswp'  or $namespace = 'nist-sp' or $namespace = 'ogc-white-paper' or $namespace = 'csa' or $namespace = 'csd' or $namespace = 'm3d' or $namespace = 'iho' or $namespace = 'bipm' or $namespace = 'jcgm'">
 						<xsl:text>[</xsl:text>
 					</xsl:if>
 					<!-- <xsl:apply-templates />					 -->
 					<xsl:copy-of select="$termsource_text"/>
-					<xsl:if test="$namespace = 'bsi' or $namespace = 'gb' or $namespace = 'iso' or $namespace = 'iec' or $namespace = 'itu' or $namespace = 'unece' or $namespace = 'unece-rec' or $namespace = 'nist-cswp'  or $namespace = 'nist-sp' or $namespace = 'ogc-white-paper' or $namespace = 'csa' or $namespace = 'csd' or $namespace = 'm3d' or $namespace = 'iho' or $namespace = 'bipm' or $namespace = 'jcgm'">
+					<xsl:if test="$namespace = 'bsi'">
+						<xsl:choose>
+							<xsl:when test="$document_type = 'PAS' and starts-with(*[local-name() = 'origin']/@citeas, '[')"><xsl:text>}</xsl:text></xsl:when>
+							<xsl:otherwise><xsl:text>]</xsl:text></xsl:otherwise>
+						</xsl:choose>
+					</xsl:if>
+					<xsl:if test="$namespace = 'gb' or $namespace = 'iso' or $namespace = 'iec' or $namespace = 'itu' or $namespace = 'unece' or $namespace = 'unece-rec' or $namespace = 'nist-cswp'  or $namespace = 'nist-sp' or $namespace = 'ogc-white-paper' or $namespace = 'csa' or $namespace = 'csd' or $namespace = 'm3d' or $namespace = 'iho' or $namespace = 'bipm' or $namespace = 'jcgm'">
 						<xsl:text>]</xsl:text>
 					</xsl:if>
 				</xsl:otherwise>
