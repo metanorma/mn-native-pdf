@@ -5471,12 +5471,14 @@
 	<!-- ====== -->
 	
 	<xsl:template match="*[local-name() = 'terms']">
+		<!-- <xsl:message>'terms' <xsl:number/> processing...</xsl:message> -->
 		<fo:block id="{@id}">
 			<xsl:apply-templates />
 		</fo:block>
 	</xsl:template>
 	
 	<xsl:template match="*[local-name() = 'term']">
+		<!-- <xsl:message>'term' <xsl:number/> processing, name=<xsl:value-of select="iso:name"/>, preferred=<xsl:value-of select="iso:preferred"/>...</xsl:message> -->
 		<fo:block id="{@id}" xsl:use-attribute-sets="term-style">
 			<xsl:if test="$namespace = 'gb'">
 				<fo:block font-family="SimHei" font-size="11pt" keep-with-next="always" margin-top="10pt" margin-bottom="8pt" line-height="1.1">
@@ -7314,12 +7316,23 @@
 	<!-- source -->	
 	<!-- author  -->	
 	<!-- ====== -->
+	<xsl:variable name="bibitem_hidden_">
+		<xsl:for-each select="//*[local-name() = 'bibitem'][@hidden='true']">
+			<xsl:copy-of select="."/>
+		</xsl:for-each>
+		<xsl:for-each select="//*[local-name() = 'references'][@hidden='true']/*[local-name() = 'bibitem']">
+			<xsl:copy-of select="."/>
+		</xsl:for-each>
+	</xsl:variable>
+	<xsl:variable name="bibitem_hidden" select="xalan:nodeset($bibitem_hidden_)"/>
+	
 	<xsl:template match="*[local-name() = 'eref']">
 	
 		<xsl:variable name="bibitemid">
 			<xsl:choose>
-				<xsl:when test="//*[local-name() = 'bibitem'][@hidden='true' and @id = current()/@bibitemid]"></xsl:when>
-				<xsl:when test="//*[local-name() = 'references'][@hidden='true']/*[local-name() = 'bibitem'][@id = current()/@bibitemid]"></xsl:when>
+				<!-- <xsl:when test="//*[local-name() = 'bibitem'][@hidden='true' and @id = current()/@bibitemid]"></xsl:when>
+				<xsl:when test="//*[local-name() = 'references'][@hidden='true']/*[local-name() = 'bibitem'][@id = current()/@bibitemid]"></xsl:when> -->
+				<xsl:when test="$bibitem_hidden/*[local-name() = 'bibitem'][@id = current()/@bibitemid]"></xsl:when>
 				<xsl:otherwise><xsl:value-of select="@bibitemid"/></xsl:otherwise>
 			</xsl:choose>
 		</xsl:variable>
@@ -7539,10 +7552,10 @@
 			</xsl:choose>
 		</xsl:variable>
 		
-		<xsl:variable name="language" select="//*[local-name()='bibdata']//*[local-name()='language']"/>
+		<!-- <xsl:variable name="language" select="//*[local-name()='bibdata']//*[local-name()='language']"/> -->
 		
 		<xsl:choose>
-			<xsl:when test="$language = 'zh'">
+			<xsl:when test="$lang = 'zh'">
 				<fo:inline><xsl:value-of select="$tab_zh"/></fo:inline>
 			</xsl:when>
 			<xsl:when test="../../@inline-header = 'true'">
