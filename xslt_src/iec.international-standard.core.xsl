@@ -2243,7 +2243,7 @@
 		</xsl:variable>
 		<fo:block line-height="1.1" space-before="14pt" role="H{$levelTerm}">
 			<fo:block font-weight="bold" keep-with-next="always">
-				<xsl:apply-templates select="ancestor::iec:term/iec:name" mode="presentation"/>				
+				<xsl:apply-templates select="ancestor::iec:term[1]/iec:name" mode="presentation"/>				
 			</fo:block>
 			<fo:block font-weight="bold" keep-with-next="always">
 				<xsl:apply-templates />

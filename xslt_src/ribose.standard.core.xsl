@@ -1109,7 +1109,7 @@
 			<xsl:if test="preceding-sibling::*[1][self::rsd:name]">
 				<xsl:attribute name="space-before">11mm</xsl:attribute>
 				<fo:inline padding-right="1mm">
-					<xsl:apply-templates select="ancestor::rsd:term/rsd:name" mode="presentation"/>
+					<xsl:apply-templates select="ancestor::rsd:term[1]/rsd:name" mode="presentation"/>
 				</fo:inline>
 			</xsl:if>
 			

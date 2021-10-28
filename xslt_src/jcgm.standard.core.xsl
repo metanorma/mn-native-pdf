@@ -942,7 +942,7 @@
 		</xsl:variable>
 		<fo:block line-height="1.1" role="H{$level}">
 			<fo:block font-weight="bold" keep-with-next="always">
-				<xsl:apply-templates select="ancestor::*[local-name()='term']/*[local-name()='name']" mode="presentation"/>				
+				<xsl:apply-templates select="ancestor::*[local-name()='term'][1]/*[local-name()='name']" mode="presentation"/>				
 			</fo:block>
 			<fo:block font-weight="bold" keep-with-next="always">
 				<xsl:apply-templates />

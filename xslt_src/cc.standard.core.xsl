@@ -658,7 +658,7 @@
 		</xsl:variable>
 		<fo:block font-size="{$font-size}" line-height="1.1" role="H{$levelTerm}">
 			<fo:block font-weight="bold" keep-with-next="always">
-				<xsl:apply-templates select="ancestor::csd:term/csd:name" mode="presentation"/>	
+				<xsl:apply-templates select="ancestor::csd:term[1]/csd:name" mode="presentation"/>	
 			</fo:block>
 			<fo:block font-weight="bold" keep-with-next="always">
 				<xsl:apply-templates />

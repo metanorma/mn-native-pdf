@@ -790,7 +790,7 @@
 		</xsl:variable>
 		<fo:block font-size="{$font-size}" role="H{$levelTerm}">
 			<fo:block font-weight="bold" keep-with-next="always">
-				<xsl:apply-templates select="ancestor::ogc:term/ogc:name" mode="presentation"/>
+				<xsl:apply-templates select="ancestor::ogc:term[1]/ogc:name" mode="presentation"/>
 			</fo:block>
 			<fo:block font-weight="bold" keep-with-next="always" line-height="1">
 				<xsl:apply-templates />
