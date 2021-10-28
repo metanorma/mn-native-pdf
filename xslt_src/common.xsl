@@ -5490,7 +5490,11 @@
 					<xsl:apply-templates select="m3d:name" mode="presentation"/>
 				</fo:block>
 			</xsl:if>
-			
+			<xsl:if test="parent::*[local-name() = 'term'] and not(preceding-sibling::*[local-name() = 'term'])">
+				<xsl:if test="$namespace = 'iso'">
+					<xsl:attribute name="space-before">12pt</xsl:attribute>
+				</xsl:if>
+			</xsl:if>
 			<xsl:apply-templates />
 		</fo:block>
 	</xsl:template>
