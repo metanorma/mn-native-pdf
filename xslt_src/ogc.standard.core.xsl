@@ -1112,6 +1112,9 @@
 						<xsl:when test="local-name(..) = 'ul'">•</xsl:when> <!-- &#x2014; dash -->
 						<xsl:otherwise> <!-- for ordered lists -->
 							<xsl:choose>
+								<xsl:when test="../@class = 'steps'">
+									<xsl:number format="1."/>
+								</xsl:when>
 								<xsl:when test="../@type = 'arabic'">
 									<xsl:number format="a)" lang="en"/>
 								</xsl:when>
