@@ -838,8 +838,8 @@
 
 	<xsl:attribute-set name="eref-style">
 		<xsl:if test="$namespace = 'bsi'">
-			<xsl:attribute name="color">rgb(58,88,168)</xsl:attribute>
-			<xsl:attribute name="text-decoration">underline</xsl:attribute>
+			<!-- <xsl:attribute name="color">rgb(58,88,168)</xsl:attribute>
+			<xsl:attribute name="text-decoration">underline</xsl:attribute> -->
 		</xsl:if>
 		<xsl:if test="$namespace = 'csa'">
 			<xsl:attribute name="color">rgb(33, 94, 159)</xsl:attribute>
@@ -4203,6 +4203,7 @@
 					</xsl:if>
 				</xsl:if>
 				<fo:block margin-top="6pt">
+					<xsl:copy-of select="@id"/>
 					<xsl:if test="$namespace = 'bsi' or $namespace = 'iso' or $namespace = 'jcgm'">
 						<xsl:attribute name="margin-top">0pt</xsl:attribute>
 					</xsl:if>
