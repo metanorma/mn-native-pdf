@@ -6934,7 +6934,10 @@
 	</xsl:template>
 	
 	<xsl:template match="*[local-name() = 'p'][@class='RecommendationTitle' or @class = 'RecommendationTestTitle']" priority="2">
-		<fo:block font-size="11pt" color="rgb(237, 193, 35)"> <!-- font-weight="bold" margin-bottom="4pt" text-align="center"  -->
+		<fo:block font-size="11pt">
+			<xsl:if test="$namespace = 'ogc' or $namespace = 'ogc-white-paper'">
+				<xsl:attribute name="color"><xsl:value-of select="$color_design"/></xsl:attribute>
+			</xsl:if>
 			<xsl:apply-templates />
 		</fo:block>
 	</xsl:template>
