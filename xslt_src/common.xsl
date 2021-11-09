@@ -1936,6 +1936,9 @@
 						<xsl:if test=".//*[local-name() = 'tr'][1]/*[local-name() = 'td'][normalize-space() = 'Key']">
 							<attribute name="border-bottom">none</attribute>
 						</xsl:if>
+						<xsl:if test="ancestor::*[local-name()='preface'] and ancestor::*[local-name()='clause'][@type = 'corrigenda'] and normalize-space(*[local-name() = 'tbody']) = ''">
+							<attribute name="border-bottom">none</attribute>
+						</xsl:if>
 						<xsl:if test="*[local-name()='thead']">
 							<!-- <attribute name="border-top"><xsl:value-of select="$table-border"/></attribute> -->
 						</xsl:if>
@@ -2991,6 +2994,9 @@
 					<xsl:if test="$document_type = 'PAS'">
 						<xsl:attribute name="min-height">6mm</xsl:attribute>
 					</xsl:if>
+					<xsl:if test="ancestor::*[local-name()='preface'] and ancestor::*[local-name()='clause'][@type = 'corrigenda'] and normalize-space() = ''">
+						<xsl:attribute name="min-height">0mm</xsl:attribute>
+					</xsl:if>
 				</xsl:if>
 				
 				<xsl:if test="$namespace = 'itu'">
@@ -3205,6 +3211,9 @@
 					</xsl:if>
 				</xsl:if>
 				
+				<xsl:if test="ancestor::*[local-name()='preface'] and ancestor::*[local-name()='clause'][@type = 'corrigenda'] and normalize-space(parent::*[local-name() = 'tr']) = ''">
+					<xsl:attribute name="border">none</xsl:attribute>
+				</xsl:if>
 				
 			</xsl:if>
 			<xsl:if test="$namespace = 'jcgm'">
