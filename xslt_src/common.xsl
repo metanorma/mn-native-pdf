@@ -1948,6 +1948,9 @@
 						</xsl:if>
 						<xsl:if test="$document_type = 'PAS'">
 							<!-- <attribute name="border">1pt solid <xsl:value-of select="$color_PAS"/></attribute> -->
+							<xsl:if test="ancestor::*[local-name()='preface'] and ancestor::*[local-name()='clause'][@type = 'logos']">
+								<attribute name="border-bottom">none</attribute>
+							</xsl:if>
 						</xsl:if>
 					</xsl:if>
 					<xsl:if test="$namespace = 'iso' or $namespace = 'jcgm'">
@@ -3298,6 +3301,9 @@
 			<xsl:if test="$namespace = 'bsi'">
 				<xsl:if test="$document_type = 'PAS'">
 					<xsl:attribute name="border">1pt solid <xsl:value-of select="$color_PAS"/></xsl:attribute>
+				</xsl:if>
+				<xsl:if test="ancestor::*[local-name()='preface'] and ancestor::*[local-name()='clause'][@type = 'logos']">
+					<xsl:attribute name="border">none</xsl:attribute>
 				</xsl:if>
 			</xsl:if>
 			
