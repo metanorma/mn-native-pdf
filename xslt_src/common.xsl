@@ -6251,10 +6251,11 @@
 									<xsl:with-param name="name" select="'title-list-recommendations'"/>
 								</xsl:call-template>
 							</fo:bookmark-title>
-							<xsl:for-each select="//*[local-name() = 'table'][.//*[local-name() = 'p'][@class = 'RecommendationTitle']]">
+							<!-- <xsl:for-each select="//*[local-name() = 'table'][.//*[local-name() = 'p'][@class = 'RecommendationTitle']]"> -->
+							<xsl:for-each select="xalan:nodeset($toc_recommendations)/*">
 								<xsl:variable name="table_id" select="@id"/>
 								<fo:bookmark internal-destination="{@id}">
-									<fo:bookmark-title><xsl:value-of select=".//*[local-name() = 'p'][@class = 'RecommendationTitle'][ancestor::*[local-name() = 'table'][1][@id= $table_id]]/node()"/></fo:bookmark-title>
+									<fo:bookmark-title><xsl:value-of select="bookmark"/></fo:bookmark-title>
 								</fo:bookmark>
 							</xsl:for-each>
 						</fo:bookmark>

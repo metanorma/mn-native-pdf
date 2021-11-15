@@ -69,6 +69,56 @@
 	</xsl:variable>
 	<xsl:variable name="color_blue">rgb(33, 55, 92)</xsl:variable>
 	
+	<xsl:variable name="toc_recommendations_">
+		<xsl:for-each select="//ogc:table[.//ogc:p[@class = 'RecommendationTitle']]">
+			<xsl:variable name="table_id" select="@id"/>
+			<recommendation alt-text="{.//ogc:p[@class = 'RecommendationTitle'][1]/text()}">
+				<xsl:copy-of select="@id"/>
+				<xsl:variable name="title">
+					<xsl:apply-templates select=".//ogc:p[@class = 'RecommendationTitle'][ancestor::ogc:table[1][@id= $table_id]]/node()"/>
+				</xsl:variable>
+				<xsl:variable name="bookmark" select="normalize-space(.//ogc:p[@class = 'RecommendationTitle'][ancestor::ogc:table[1][@id= $table_id]]/node())"/>
+				<xsl:variable name="regex_str" select="'^([^0-9]+) (\d+).*'"/>
+				<xsl:variable name="class" select="java:replaceAll(java:java.lang.String.new($bookmark), $regex_str, '$1')"/>
+				<xsl:variable name="num" select="java:replaceAll(java:java.lang.String.new($bookmark), $regex_str, '$2')"/>
+				<xsl:variable name="class_lc" select="java:toLowerCase(java:java.lang.String.new($class))"/>
+				<!-- <xsl:attribute name="class_str">
+					<xsl:value-of select="$class"/>
+				</xsl:attribute> -->
+				<xsl:attribute name="class">
+					<xsl:choose>
+						<xsl:when test="$class_lc = 'requirements class'">1</xsl:when>
+						<xsl:when test="$class_lc = 'requirement'">2</xsl:when>
+						<xsl:when test="$class_lc = 'recommendation'">3</xsl:when>
+						<xsl:when test="$class_lc = 'permission'">4</xsl:when>
+						<xsl:when test="$class_lc = 'conformance class'">5</xsl:when>
+						<xsl:when test="$class_lc = 'abstract test'">6</xsl:when>
+						<xsl:when test="$class_lc = 'requirement test'">7</xsl:when>
+						<xsl:when test="$class_lc = 'recommendation test'">8</xsl:when>
+						<xsl:when test="$class_lc = 'permission test'">9</xsl:when>
+						<xsl:otherwise>9999</xsl:otherwise>
+					</xsl:choose>
+				</xsl:attribute>
+				<xsl:attribute name="num">
+					<xsl:value-of select="$num"/>
+				</xsl:attribute>
+				<title>
+					<xsl:copy-of select="$title"/>
+				</title>
+				<bookmark>
+					<xsl:value-of select="$bookmark"/>
+				</bookmark>
+			</recommendation>
+		</xsl:for-each>
+	</xsl:variable>
+	<xsl:variable name="toc_recommendations">
+		<xsl:for-each select="xalan:nodeset($toc_recommendations_)/*">
+			<xsl:sort select="@class" data-type="number"/>
+			<xsl:sort select="@num" data-type="number"/>
+			<xsl:copy-of select="."/>
+		</xsl:for-each>
+	</xsl:variable>	
+	
 	<xsl:variable name="contents">
 		<contents>
 		
@@ -521,12 +571,11 @@
 							</fo:block-container>
 							
 							<fo:block-container line-height="130%">
-								<!-- <xsl:for-each select="//ogc:permission[@id and ogc:name] | //ogc:recommendation[@id and ogc:name] | //ogc:requirement[@id and ogc:name]"> -->
-								<xsl:for-each select="//ogc:table[.//ogc:p[@class = 'RecommendationTitle']]">
-									<xsl:variable name="table_id" select="@id"/>									
+								<!-- <xsl:for-each select="//ogc:table[.//ogc:p[@class = 'RecommendationTitle']]"> -->
+								<xsl:for-each select="xalan:nodeset($toc_recommendations)/*">
 									<fo:block text-align-last="justify" margin-top="6pt" role="TOCI">
-										<fo:basic-link internal-destination="{@id}" fox:alt-text="{.//ogc:p[@class = 'RecommendationTitle'][1]/text()}">
-											<xsl:apply-templates select=".//ogc:p[@class = 'RecommendationTitle'][ancestor::ogc:table[1][@id= $table_id]]/node()"/>
+										<fo:basic-link internal-destination="{@id}" fox:alt-text="{@alt-text}">
+											<xsl:copy-of select="title/node()"/>
 											<xsl:text> </xsl:text>
 											<fo:inline keep-together.within-line="always">
 												<fo:leader leader-pattern="dots"/>
