@@ -125,13 +125,14 @@
 			<!-- Abstract, Keywords, Preface, Submitting Organizations, Submitters -->			
 			<!-- <xsl:apply-templates select="/ogc:ogc-standard/ogc:preface/*" mode="contents"/> -->
 			<xsl:apply-templates select="/ogc:ogc-standard/ogc:preface/ogc:abstract" mode="contents"/>
+			<xsl:apply-templates select="/ogc:ogc-standard/ogc:preface/ogc:clause[@type = 'executivesummary']" mode="contents"/>
 			<xsl:apply-templates select="/ogc:ogc-standard/ogc:preface/ogc:clause[@type = 'keywords']" mode="contents"/>
 			<xsl:apply-templates select="/ogc:ogc-standard/ogc:preface/ogc:foreword" mode="contents"/>
 			<xsl:apply-templates select="/ogc:ogc-standard/ogc:preface/ogc:clause[@type = 'security']" mode="contents"/>
 			<xsl:apply-templates select="/ogc:ogc-standard/ogc:preface/ogc:clause[@type = 'submitting_orgs']" mode="contents"/>
 			<xsl:apply-templates select="/ogc:ogc-standard/ogc:preface/ogc:submitters" mode="contents"/>
 			<xsl:apply-templates select="/ogc:ogc-standard/ogc:preface/ogc:introduction" mode="contents"/>			
-			<xsl:apply-templates select="/ogc:ogc-standard/ogc:preface/ogc:clause[not(@type = 'security') and not(@type = 'submitting_orgs') and not(@type = 'keywords')]" mode="contents"/>
+			<xsl:apply-templates select="/ogc:ogc-standard/ogc:preface/ogc:clause[not(@type = 'executivesummary') and not(@type = 'security') and not(@type = 'submitting_orgs') and not(@type = 'keywords')]" mode="contents"/>
 			<xsl:apply-templates select="/ogc:ogc-standard/ogc:preface/ogc:acknowledgements" mode="contents"/>
 			
 			
@@ -595,6 +596,7 @@
 					<fo:block line-height="125%">
 						<!-- Abstract, Keywords, Preface, Submitting Organizations, Submitters -->					
 						<xsl:apply-templates select="/ogc:ogc-standard/ogc:preface/ogc:abstract" />
+						<xsl:apply-templates select="/ogc:ogc-standard/ogc:preface/ogc:clause[@type = 'executivesummary']" />
 						<xsl:apply-templates select="/ogc:ogc-standard/ogc:preface/ogc:clause[@type = 'keywords']" />
 						<xsl:if test="/ogc:ogc-standard/ogc:preface/ogc:foreword">
 							<fo:block break-after="page"/>
@@ -619,7 +621,7 @@
 						
 						
 						
-						<xsl:apply-templates select="/ogc:ogc-standard/ogc:preface/ogc:clause[not(@type = 'security') and not(@type = 'submitting_orgs') and not(@type = 'keywords')]" />
+						<xsl:apply-templates select="/ogc:ogc-standard/ogc:preface/ogc:clause[not(@type = 'executivesummary') and not(@type = 'security') and not(@type = 'submitting_orgs') and not(@type = 'keywords')]" />
 						<xsl:apply-templates select="/ogc:ogc-standard/ogc:preface/ogc:acknowledgements" />
 					</fo:block>
 				</fo:flow>

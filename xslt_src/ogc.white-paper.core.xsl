@@ -97,12 +97,13 @@
 			<!-- Abstract, Keywords, Preface, Submitting Organizations, Submitters -->			
 			<!-- <xsl:apply-templates select="/ogc:ogc-standard/ogc:preface/*" mode="contents"/> -->			
 			<xsl:apply-templates select="/ogc:ogc-standard/ogc:preface/ogc:abstract" mode="contents"/>
+			<xsl:apply-templates select="/ogc:ogc-standard/ogc:preface/ogc:clause[@type = 'executivesummary']" mode="contents"/>
 			<xsl:apply-templates select="/ogc:ogc-standard/ogc:preface/ogc:clause[@type = 'keyword']" mode="contents"/>
 			<xsl:apply-templates select="/ogc:ogc-standard/ogc:preface/ogc:foreword" mode="contents"/>
 			<xsl:apply-templates select="/ogc:ogc-standard/ogc:preface/ogc:introduction" mode="contents"/>
 			<xsl:apply-templates select="/ogc:ogc-standard/ogc:preface/ogc:clause[@type = 'submitting_orgs']" mode="contents"/>
 			<xsl:apply-templates select="/ogc:ogc-standard/ogc:preface/ogc:submitters" mode="contents"/>
-			<xsl:apply-templates select="/ogc:ogc-standard/ogc:preface/ogc:clause[not(@type = 'submitting_orgs') and not(@type = 'keyword')]" mode="contents"/>
+			<xsl:apply-templates select="/ogc:ogc-standard/ogc:preface/ogc:clause[not(@type = 'executivesummary') and not(@type = 'submitting_orgs') and not(@type = 'keyword')]" mode="contents"/>
 			<xsl:apply-templates select="/ogc:ogc-standard/ogc:preface/ogc:acknowledgements" mode="contents"/>
 			
 			
@@ -296,6 +297,7 @@
 						<fo:block break-after="page"/>
 					</xsl:if>
 					<xsl:apply-templates select="/ogc:ogc-standard/ogc:preface/ogc:abstract" />
+					<xsl:apply-templates select="/ogc:ogc-standard/ogc:preface/ogc:clause[@type = 'executivesummary']" />
 					<xsl:apply-templates select="/ogc:ogc-standard/ogc:preface/ogc:clause[@type = 'keyword']" />
 					<xsl:if test="/ogc:ogc-standard/ogc:preface/ogc:foreword">
 						<fo:block break-after="page"/>
@@ -308,7 +310,7 @@
 					
 					<xsl:apply-templates select="/ogc:ogc-standard/ogc:preface/ogc:clause[@type = 'submitting_orgs']" />
 					<xsl:apply-templates select="/ogc:ogc-standard/ogc:preface/ogc:submitters" />
-					<xsl:apply-templates select="/ogc:ogc-standard/ogc:preface/ogc:clause[not(@type = 'submitting_orgs') and not(@type = 'keyword')]" />
+					<xsl:apply-templates select="/ogc:ogc-standard/ogc:preface/ogc:clause[not(@type = 'executivesummary') and not(@type = 'submitting_orgs') and not(@type = 'keyword')]" />
 					<xsl:apply-templates select="/ogc:ogc-standard/ogc:preface/ogc:acknowledgements" />
 						
 				</fo:flow>
