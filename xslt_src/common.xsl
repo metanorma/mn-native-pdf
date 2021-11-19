@@ -7620,12 +7620,12 @@
 	
 	<xsl:template match="*[local-name() = 'deprecates']">
 		<xsl:variable name="title-deprecated">
-			<xsl:if test="$namespace = 'bsi' or $namespace = 'iso' or $namespace = 'jcgm' or $namespace = 'rsd' ">
+			<xsl:if test="$namespace = 'bipm' or $namespace = 'bsi' or $namespace = 'csa' or $namespace = 'iso' or $namespace = 'iec' or $namespace = 'iho' or $namespace = 'itu' or $namespace = 'jcgm' or $namespace = 'm3d' or $namespace = 'ogc' or $namespace = 'ogc-white-paper' or $namespace = 'rsd' ">
 				<xsl:call-template name="getLocalizedString">
 					<xsl:with-param name="key">deprecated</xsl:with-param>
 				</xsl:call-template>
 			</xsl:if>
-			<xsl:if test="$namespace = 'bipm' or $namespace = 'csa' or $namespace = 'csd' or $namespace = 'gb' or $namespace = 'iec' or $namespace = 'iho' or $namespace = 'itu' or $namespace = 'm3d' or $namespace = 'mpfd' or $namespace = 'nist-cswp'  or $namespace = 'nist-sp' or $namespace = 'ogc' or $namespace = 'ogc-white-paper' or $namespace = 'unece' or $namespace = 'unece-rec'">
+			<xsl:if test="$namespace = 'csd' or $namespace = 'gb' or $namespace = 'mpfd' or $namespace = 'nist-cswp' or $namespace = 'nist-sp' or $namespace = 'unece' or $namespace = 'unece-rec'">
 				<xsl:call-template name="getTitle">
 					<xsl:with-param name="name" select="'title-deprecated'"/>
 				</xsl:call-template>
@@ -7650,9 +7650,10 @@
 	<xsl:template match="*[local-name() = 'definition'][preceding-sibling::*[local-name() = 'domain']]">
 		<xsl:apply-templates />
 	</xsl:template>
-	<xsl:template match="*[local-name() = 'definition'][preceding-sibling::*[local-name() = 'domain']]/*[local-name() = 'p']">
+	<xsl:template match="*[local-name() = 'definition'][preceding-sibling::*[local-name() = 'domain']]/*[local-name() = 'p'][1]">
 		<fo:inline> <xsl:apply-templates /></fo:inline>
-		<fo:block>&#xA0;</fo:block>
+		<!-- <fo:block>&#xA0;</fo:block> -->
+		<fo:block></fo:block>
 	</xsl:template>
 	<!-- ========== -->
 	<!-- ========== -->
