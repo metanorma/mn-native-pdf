@@ -1588,7 +1588,9 @@
 
 
 	<xsl:template name="processMainSectionsDefault_Contents">
-		<xsl:for-each select="/*/*[local-name()='sections']/* | /*/*[local-name()='bibliography']/*[local-name()='references'][@normative='true']">
+	
+		<xsl:for-each select="/*/*[local-name()='sections']/* | /*/*[local-name()='bibliography']/*[local-name()='references'][@normative='true'] |
+			/*/*[local-name()='bibliography']/*[local-name()='clause'][*[local-name()='references'][@normative='true']]">
 			<xsl:sort select="@displayorder" data-type="number"/>
 			<xsl:apply-templates select="." mode="contents"/>
 		</xsl:for-each>
@@ -1598,7 +1600,7 @@
 			<xsl:apply-templates select="." mode="contents"/>
 		</xsl:for-each>
 		
-		<xsl:for-each select="/*/*[local-name()='bibliography']/*[not(@normative='true')] | 
+		<xsl:for-each select="/*/*[local-name()='bibliography']/*[not(@normative='true') and not(*[local-name()='references'][@normative='true'])] | 
 								/*/*[local-name()='bibliography']/*[local-name()='clause'][*[local-name()='references'][not(@normative='true')]]">
 			<xsl:sort select="@displayorder" data-type="number"/>
 			<xsl:apply-templates select="." mode="contents"/>
@@ -8442,6 +8444,7 @@
 			</xsl:variable>
 			<xsl:variable name="docidentifier_">
 				<xsl:choose>
+					<xsl:when test="$docidentifier = @id"></xsl:when> <!-- don't display docidentifier equal to bibitem/@id, like further_reading_x -->
 					<xsl:when test="contains($removeBrackets, 'true')">
 						<xsl:value-of select="substring($docidentifier, 2, string-length($docidentifier) - 2)"/>
 					</xsl:when>
