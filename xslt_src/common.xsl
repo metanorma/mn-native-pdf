@@ -4373,8 +4373,8 @@
 				</xsl:if>
 				<xsl:if test="$namespace = 'mpfd'"></xsl:if>
 				<xsl:if test="$namespace = 'nist-cswp'  or $namespace = 'nist-sp'"></xsl:if>
-				<xsl:if test="$namespace = 'ogc'">10</xsl:if>
-				<xsl:if test="$namespace = 'ogc-white-paper'">10</xsl:if>
+				<xsl:if test="$namespace = 'ogc'">9.5</xsl:if>
+				<xsl:if test="$namespace = 'ogc-white-paper'">9.5</xsl:if>
 				<xsl:if test="$namespace = 'rsd'">
 					<xsl:choose>
 						<xsl:when test="ancestor::*[local-name() = 'table']">inherit</xsl:when>
@@ -6572,8 +6572,8 @@
 						<xsl:if test="$namespace = 'm3d'"></xsl:if>		
 						<xsl:if test="$namespace = 'mpfd'"></xsl:if>
 						<xsl:if test="$namespace = 'nist-cswp'  or $namespace = 'nist-sp'">10</xsl:if>
-						<xsl:if test="$namespace = 'ogc'"></xsl:if>
-						<xsl:if test="$namespace = 'ogc-white-paper'">10</xsl:if>						
+						<xsl:if test="$namespace = 'ogc'">9.5</xsl:if>
+						<xsl:if test="$namespace = 'ogc-white-paper'">9.5</xsl:if>						
 						<xsl:if test="$namespace = 'rsd'">
 							<xsl:choose>
 								<xsl:when test="ancestor::*[local-name() = 'table']">inherit</xsl:when>
