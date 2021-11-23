@@ -6558,6 +6558,10 @@
 					<xsl:apply-templates select="*[local-name()='name']" mode="presentation"/>
 				</xsl:if>
 				
+				<xsl:if test="$namespace = 'ogc'">
+					<fo:block font-size="1pt" line-height="10%" space-after="4pt">&#xa0;</fo:block>
+				</xsl:if>
+				
 				<fo:block xsl:use-attribute-sets="sourcecode-style">
 					<xsl:variable name="_font-size">
 						<xsl:if test="$namespace = 'csa'">10</xsl:if>
@@ -6610,12 +6614,20 @@
 					</xsl:if>
 				</xsl:if>
 				
+				<xsl:if test="$namespace = 'ogc'">
+					<xsl:attribute name="margin-bottom">0pt</xsl:attribute>
+				</xsl:if>
+				
 				<xsl:apply-templates/>			
 			</fo:block>
-				
+			
 			<xsl:if test="$namespace = 'bsi' or  $namespace = 'bipm' or $namespace = 'csa' or $namespace = 'csd' or $namespace = 'gb' or $namespace = 'iec' or $namespace = 'iho' or $namespace = 'iso' or $namespace = 'itu' or $namespace = 'jcgm' or $namespace = 'm3d' or $namespace = 'mpfd' or $namespace = 'nist-cswp'  or $namespace = 'nist-sp' or $namespace = 'ogc' or $namespace = 'ogc-white-paper' or $namespace = 'unece' or $namespace = 'unece-rec'">
 				<xsl:apply-templates select="*[local-name()='name']" mode="presentation"/>
 			</xsl:if>	
+				
+			<xsl:if test="$namespace = 'ogc'">
+				<fo:block font-size="1pt" line-height="10%" space-before="6pt">&#xa0;</fo:block>
+			</xsl:if>
 				
 			</fo:block-container>
 		</fo:block-container>
