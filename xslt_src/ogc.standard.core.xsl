@@ -525,8 +525,18 @@
 								</xsl:for-each>
 							</fo:block-container>							
 						</xsl:if>
-								
-						<xsl:if test="//ogc:figure[@id and ogc:name and not(@unnumbered = 'true')]"> <!-- contains(ogc:name, '—') -->
+						
+						<xsl:variable name="list_of_figures_">
+							<xsl:for-each select="//ogc:figure[@id and ogc:name and not(@unnumbered = 'true')] | //*[@id and starts-with(ogc:name, 'Figure ')]">
+								<figure id="{@id}" alt-text="{ogc:name}">
+									<xsl:apply-templates select="ogc:name" mode="contents"/>
+								</figure>
+							</xsl:for-each>
+						</xsl:variable>
+						<xsl:variable name="list_of_figures" select="xalan:nodeset($list_of_figures_)"/>
+						
+						<!-- <xsl:if test="//ogc:figure[@id and ogc:name and not(@unnumbered = 'true')] or //*[@id and starts-with(ogc:name, 'Figure ')]"> --> <!-- contains(ogc:name, '—') -->
+						<xsl:if test="$list_of_figures//figure">
 							<xsl:variable name="title-list-figures">
 								<xsl:call-template name="getTitle">
 									<xsl:with-param name="name" select="'title-list-figures'"/>
@@ -541,10 +551,12 @@
 							</fo:block-container>
 							
 							<fo:block-container line-height="130%">
-								<xsl:for-each select="//ogc:figure[@id and ogc:name and not(@unnumbered = 'true')]"> <!-- contains(ogc:name, '—') -->
+								<!-- <xsl:for-each select="//ogc:figure[@id and ogc:name and not(@unnumbered = 'true')] or //*[@id and starts-with(ogc:name, 'Figure ')]"> --> <!-- contains(ogc:name, '—') -->
+								<xsl:for-each select="$list_of_figures/figure"> <!-- contains(ogc:name, '—') -->
 									<fo:block text-align-last="justify" margin-top="2pt" role="TOCI">
-										<fo:basic-link internal-destination="{@id}" fox:alt-text="{ogc:name}">
-											<xsl:apply-templates select="ogc:name" mode="contents"/>										
+										<fo:basic-link internal-destination="{@id}" fox:alt-text="{@alt-text}">
+											<!-- <xsl:apply-templates select="ogc:name" mode="contents"/>										 -->
+											<xsl:copy-of select="node()"/>
 											<fo:inline keep-together.within-line="always">
 												<fo:leader leader-pattern="dots"/>
 												<fo:page-number-citation ref-id="{@id}"/>

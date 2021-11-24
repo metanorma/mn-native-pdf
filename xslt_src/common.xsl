@@ -6041,7 +6041,8 @@
 														*[local-name() = 'table']/*[local-name() = 'name'] |
 														*[local-name() = 'permission']/*[local-name() = 'name'] |
 														*[local-name() = 'recommendation']/*[local-name() = 'name'] |
-														*[local-name() = 'requirement']/*[local-name() = 'name']" mode="bookmarks">		
+														*[local-name() = 'requirement']/*[local-name() = 'name'] |
+														*[local-name() = 'sourcecode']/*[local-name() = 'name']" mode="bookmarks">		
 		<xsl:apply-templates mode="bookmarks"/>
 		<xsl:text> </xsl:text>
 	</xsl:template>
@@ -6050,7 +6051,7 @@
 		<xsl:value-of select="."/>
 	</xsl:template>
 	
-	<xsl:template match="*[local-name() = 'figure' or local-name() = 'table' or local-name() = 'permission' or local-name() = 'recommendation' or local-name() = 'requirement']/*[local-name() = 'name']//text()" mode="bookmarks" priority="2">
+	<xsl:template match="*[local-name() = 'figure' or local-name() = 'table' or local-name() = 'permission' or local-name() = 'recommendation' or local-name() = 'requirement' or local-name() = 'sourcecode']/*[local-name() = 'name']//text()" mode="bookmarks" priority="2">
 		<xsl:value-of select="."/>
 	</xsl:template>
 	
@@ -6196,7 +6197,8 @@
 					<xsl:variable name="list_of_tables" select="xalan:nodeset($list_of_tables_)"/>
 					
 					<xsl:variable name="list_of_figures_">
-						<xsl:for-each select="//*[local-name() = 'figure'][@id and *[local-name() = 'name'] and not(@unnumbered = 'true')]"> <!-- contains(*[local-name() = 'name'], '—') -->
+						<xsl:for-each select="//*[local-name() = 'figure'][@id and *[local-name() = 'name'] and not(@unnumbered = 'true')] | 
+						  //*[@id and starts-with(*[local-name() = 'name'], 'Figure ')]"> <!-- contains(*[local-name() = 'name'], '—') -->
 							<figure id="{@id}"><xsl:apply-templates select="*[local-name() = 'name']" mode="bookmarks"/></figure>
 						</xsl:for-each>
 					</xsl:variable>
@@ -6559,7 +6561,9 @@
 				</xsl:if>
 				
 				<xsl:if test="$namespace = 'ogc'">
-					<fo:block font-size="1pt" line-height="10%" space-after="4pt">&#xa0;</fo:block>
+					<xsl:if test="parent::*[local-name() = 'example']">
+						<fo:block font-size="1pt" line-height="10%" space-after="4pt">&#xa0;</fo:block>
+					</xsl:if>
 				</xsl:if>
 				
 				<fo:block xsl:use-attribute-sets="sourcecode-style">
@@ -6615,7 +6619,9 @@
 				</xsl:if>
 				
 				<xsl:if test="$namespace = 'ogc'">
-					<xsl:attribute name="margin-bottom">0pt</xsl:attribute>
+					<xsl:if test="parent::*[local-name() = 'example']">
+						<xsl:attribute name="margin-bottom">0pt</xsl:attribute>
+					</xsl:if>
 				</xsl:if>
 				
 				<xsl:apply-templates/>			
@@ -6626,7 +6632,9 @@
 			</xsl:if>	
 				
 			<xsl:if test="$namespace = 'ogc'">
-				<fo:block font-size="1pt" line-height="10%" space-before="6pt">&#xa0;</fo:block>
+				<xsl:if test="parent::*[local-name() = 'example']">
+					<fo:block font-size="1pt" line-height="10%" space-before="6pt">&#xa0;</fo:block>
+				</xsl:if>
 			</xsl:if>
 				
 			</fo:block-container>
