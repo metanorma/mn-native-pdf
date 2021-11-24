@@ -497,7 +497,7 @@
 							</fo:block>
 						</fo:block-container>	
 								
-						<xsl:if test="//ogc:table[@id and ogc:name and contains(ogc:name, '—')]">								
+						<xsl:if test="//ogc:table[@id and ogc:name]"> <!-- contains(ogc:name, '—') -->
 							<xsl:variable name="title-list-tables">
 								<xsl:call-template name="getTitle">
 									<xsl:with-param name="name" select="'title-list-tables'"/>
@@ -512,7 +512,7 @@
 								</fo:block-container>
 							</fo:block-container>							
 							<fo:block-container line-height="130%">
-								<xsl:for-each select="//ogc:table[@id and ogc:name and contains(ogc:name, '—')]">
+								<xsl:for-each select="//ogc:table[@id and ogc:name]"> <!-- contains(ogc:name, '—') -->
 									<fo:block text-align-last="justify" margin-top="2pt" role="TOCI">
 										<fo:basic-link internal-destination="{@id}" fox:alt-text="{ogc:name}">
 											<xsl:apply-templates select="ogc:name" mode="contents"/>										
@@ -526,7 +526,7 @@
 							</fo:block-container>							
 						</xsl:if>
 								
-						<xsl:if test="//ogc:figure[@id and ogc:name and contains(ogc:name, '—')]">								
+						<xsl:if test="//ogc:figure[@id and ogc:name and not(@unnumbered = 'true')]"> <!-- contains(ogc:name, '—') -->
 							<xsl:variable name="title-list-figures">
 								<xsl:call-template name="getTitle">
 									<xsl:with-param name="name" select="'title-list-figures'"/>
@@ -541,7 +541,7 @@
 							</fo:block-container>
 							
 							<fo:block-container line-height="130%">
-								<xsl:for-each select="//ogc:figure[@id and ogc:name and contains(ogc:name, '—')]">
+								<xsl:for-each select="//ogc:figure[@id and ogc:name and not(@unnumbered = 'true')]"> <!-- contains(ogc:name, '—') -->
 									<fo:block text-align-last="justify" margin-top="2pt" role="TOCI">
 										<fo:basic-link internal-destination="{@id}" fox:alt-text="{ogc:name}">
 											<xsl:apply-templates select="ogc:name" mode="contents"/>										

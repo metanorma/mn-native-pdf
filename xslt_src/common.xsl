@@ -6189,14 +6189,14 @@
 				<xsl:if test="$namespace = 'ogc'">
 				
 					<xsl:variable name="list_of_tables_">
-						<xsl:for-each select="//*[local-name() = 'table'][@id and *[local-name() = 'name'] and contains(*[local-name() = 'name'], '—')]">
+						<xsl:for-each select="//*[local-name() = 'table'][@id and *[local-name() = 'name']]"> <!-- contains(*[local-name() = 'name'], '—') -->
 							<table id="{@id}"><xsl:apply-templates select="*[local-name() = 'name']" mode="bookmarks"/></table>
 						</xsl:for-each>
 					</xsl:variable>
 					<xsl:variable name="list_of_tables" select="xalan:nodeset($list_of_tables_)"/>
 					
 					<xsl:variable name="list_of_figures_">
-						<xsl:for-each select="//*[local-name() = 'figure'][@id and *[local-name() = 'name'] and contains(*[local-name() = 'name'], '—')]">
+						<xsl:for-each select="//*[local-name() = 'figure'][@id and *[local-name() = 'name'] and not(@unnumbered = 'true')]"> <!-- contains(*[local-name() = 'name'], '—') -->
 							<figure id="{@id}"><xsl:apply-templates select="*[local-name() = 'name']" mode="bookmarks"/></figure>
 						</xsl:for-each>
 					</xsl:variable>
