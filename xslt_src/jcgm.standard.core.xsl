@@ -195,10 +195,19 @@
 				<!-- internal cover page -->
 				<fo:simple-page-master master-name="internal-cover-page-jcgm" page-width="{$pageWidth}mm" page-height="{$pageHeight}mm">
 					<fo:region-body margin-top="11mm" margin-bottom="21mm" margin-left="25mm" margin-right="19mm"/>
-					<fo:region-before extent="11mm"/>
+					<fo:region-before region-name="header" extent="11mm"/>
 					<fo:region-after region-name="internal-cover-page-jcgm-footer" extent="21mm"/>
 					<fo:region-start extent="25mm"/>
 					<fo:region-end extent="19mm"/>
+				</fo:simple-page-master>
+				
+				<!-- blank page -->
+				<fo:simple-page-master master-name="blankpage" page-width="{$pageWidth}mm" page-height="{$pageHeight}mm">
+					<fo:region-body margin-top="{$marginTop}mm" margin-bottom="{$marginBottom}mm" margin-left="{$marginLeftRight1}mm" margin-right="{$marginLeftRight2}mm"/>
+					<fo:region-before region-name="header-blank" extent="{$marginTop}mm"/> 
+					<fo:region-after region-name="footer-blank" extent="{$marginBottom}mm"/>
+					<fo:region-start region-name="left-region" extent="17mm"/>
+					<fo:region-end region-name="right-region" extent="26.5mm"/>
 				</fo:simple-page-master>
 				
 				<fo:simple-page-master master-name="odd-jcgm" page-width="{$pageWidth}mm" page-height="{$pageHeight}mm">
@@ -217,6 +226,7 @@
 				</fo:simple-page-master>
 				<fo:page-sequence-master master-name="document-jcgm">
 					<fo:repeatable-page-master-alternatives>
+						<fo:conditional-page-master-reference master-reference="blankpage" blank-or-not-blank="blank"/>
 						<fo:conditional-page-master-reference odd-or-even="even" master-reference="even-jcgm"/>
 						<fo:conditional-page-master-reference odd-or-even="odd" master-reference="odd-jcgm"/>
 					</fo:repeatable-page-master-alternatives>
@@ -251,6 +261,7 @@
 				</fo:static-content>
 				<fo:flow flow-name="xsl-region-body">
 					<xsl:call-template name="insert_Logo-BIPM-Metro"/>
+					<xsl:call-template name="insertDraftWatermark"/>
 					<fo:block-container font-weight="bold">
 						<fo:block font-size="16.5pt">
 							<xsl:value-of select="(//jcgm:bipm-standard)[1]/jcgm:bibdata/jcgm:ext/jcgm:editorialgroup/jcgm:committee/@acronym"/>
@@ -296,6 +307,7 @@
 					</fo:block>
 				</fo:static-content>
 				<fo:flow flow-name="xsl-region-body">
+					<xsl:call-template name="insertDraftWatermark"/>
 					<fo:table table-layout="fixed" width="100%" font-size="13pt">
 						<fo:table-column column-width="134mm"/>
 						<fo:table-column column-width="30mm"/>
@@ -1285,7 +1297,11 @@
 	</xsl:variable>
 	
 	<xsl:template name="insertHeaderFooter">
+		<xsl:param name="isDraft"/>
 		<fo:static-content flow-name="header-even-jcgm" role="artifact">
+			<xsl:call-template name="insertDraftWatermark">
+				<xsl:with-param name="isDraft" select="$isDraft"/>
+			</xsl:call-template>
 			<fo:block-container height="98%">
 				<fo:block font-size="13pt" font-weight="bold" padding-top="12mm">
 					<xsl:value-of select="$header_text"/>
@@ -1304,6 +1320,9 @@
 			</fo:block-container>
 		</fo:static-content>
 		<fo:static-content flow-name="header-odd-jcgm" role="artifact">
+			<xsl:call-template name="insertDraftWatermark">
+				<xsl:with-param name="isDraft" select="$isDraft"/>
+			</xsl:call-template>
 			<fo:block-container height="98%" >
 				<fo:block font-size="13pt" font-weight="bold" text-align="right" padding-top="12mm">
 					<xsl:value-of select="$header_text"/>
@@ -1319,9 +1338,51 @@
 						<fo:inline font-size="12pt" font-weight="bold"><fo:page-number/></fo:inline>
 					</fo:inline>
 				</fo:block>
-				
 			</fo:block-container>
 		</fo:static-content>
+		<fo:static-content flow-name="header-blank" role="artifact">
+			<xsl:call-template name="insertDraftWatermark">
+				<xsl:with-param name="isDraft" select="$isDraft"/>
+			</xsl:call-template>
+			<fo:block></fo:block>
+		</fo:static-content>
+	</xsl:template>
+	
+	<xsl:template name="insertDraftWatermark">
+		<xsl:param name="isDraft"/>
+		<xsl:if test="$isDraft = 'true' or normalize-space(//jcgm:bipm-standard/jcgm:bibdata/jcgm:version/jcgm:draft or
+		contains(//jcgm:bipm-standard/jcgm:bibdata/jcgm:status/jcgm:stage, 'draft') or
+		contains(//jcgm:bipm-standard/jcgm:bibdata/jcgm:status/jcgm:stage, 'projet')) = 'true'">
+			<!-- DRAFT -->
+			<xsl:variable name="draft_label">
+				<xsl:call-template name="getLocalizedString">
+					<xsl:with-param name="key">draft_label</xsl:with-param>
+				</xsl:call-template>
+			</xsl:variable>
+			<fo:block-container absolute-position="fixed" left="0mm" top="30mm">
+				<fo:block line-height="0">
+					<fo:instream-foreign-object fox:alt-text="DRAFT">
+							<svg:svg width="200mm" height="250mm" xmlns:svg="http://www.w3.org/2000/svg">
+								<svg:g transform="rotate(-45) scale(0.6, 1)">
+									<xsl:variable name="font-size">
+										<xsl:choose>
+											<xsl:when test="string-length($draft_label) &gt; 5">150</xsl:when>
+											<xsl:otherwise>260</xsl:otherwise>
+										</xsl:choose>
+									</xsl:variable>
+										<svg:text x="-175mm" y="205mm"  style="font-family:Arial;font-size:{$font-size}pt;font-weight:normal;fill:rgb(223, 223, 223);">
+											<xsl:if test="string-length($draft_label) &gt; 5">
+												<xsl:attribute name="x">-175mm</xsl:attribute>
+												<xsl:attribute name="y">180mm</xsl:attribute>
+											</xsl:if>
+											<xsl:value-of select="java:toUpperCase(java:java.lang.String.new($draft_label))"/>
+										</svg:text>
+								</svg:g>
+							</svg:svg>
+					</fo:instream-foreign-object>
+				</fo:block>
+			</fo:block-container>
+		</xsl:if>
 	</xsl:template>
 	
 	<xsl:template match="jcgm:title">

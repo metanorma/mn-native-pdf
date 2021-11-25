@@ -257,32 +257,67 @@
 	<xsl:template match="/">
 		<fo:root xmlns:fo="http://www.w3.org/1999/XSL/Format" xsl:use-attribute-sets="root-style" xml:lang="{$lang}">
 			<fo:layout-master-set>
+			
+				<!-- blank page -->
+				<fo:simple-page-master master-name="blankpage" page-width="{$pageWidth}mm" page-height="{$pageHeight}mm">
+					<fo:region-body margin-top="{$marginTop}mm" margin-bottom="{$marginBottom}mm" margin-left="{$marginLeftRight1}mm" margin-right="{$marginLeftRight2}mm"/>
+					<fo:region-before region-name="header-blank" extent="{$marginTop}mm"/> 
+					<fo:region-after region-name="footer-blank" extent="{$marginBottom}mm"/>
+					<fo:region-start region-name="left-region" extent="17mm"/>
+					<fo:region-end region-name="right-region" extent="26.5mm"/>
+				</fo:simple-page-master>
+				
 				<!-- Cover page -->
-				<fo:simple-page-master master-name="cover-page" page-width="{$pageWidth}mm" page-height="{$pageHeight}mm">
+				<fo:simple-page-master master-name="simple-cover-page" page-width="{$pageWidth}mm" page-height="{$pageHeight}mm">
 					<fo:region-body margin-top="36mm" margin-bottom="43mm" margin-left="49mm" margin-right="48mm"/>
-					<fo:region-before extent="36mm" />
+					<fo:region-before region-name="header" extent="36mm" />
 					<fo:region-after extent="43mm"/>
 					<fo:region-start extent="49mm"/>
 					<fo:region-end extent="48mm"/>
 				</fo:simple-page-master>
 				
+				<fo:page-sequence-master master-name="cover-page">
+					<fo:repeatable-page-master-alternatives>
+						<fo:conditional-page-master-reference master-reference="blankpage" blank-or-not-blank="blank"/>
+						<fo:conditional-page-master-reference master-reference="simple-cover-page" odd-or-even="odd"/>
+						<fo:conditional-page-master-reference master-reference="simple-cover-page" odd-or-even="even"/>
+					</fo:repeatable-page-master-alternatives>
+				</fo:page-sequence-master>
+				
 				<!-- Cover page -->
-				<fo:simple-page-master master-name="cover-page-appendix" page-width="{$pageWidth}mm" page-height="{$pageHeight}mm">
+				<fo:simple-page-master master-name="simple-cover-page-appendix" page-width="{$pageWidth}mm" page-height="{$pageHeight}mm">
 					<fo:region-body margin-top="90mm" margin-bottom="40mm" margin-left="12.5mm" margin-right="53mm"/>
-					<fo:region-before extent="60mm" />
+					<fo:region-before region-name="header" extent="60mm" />
 					<fo:region-after extent="40mm"/>
 					<fo:region-start extent="12.5mm"/>
 					<fo:region-end extent="53mm"/>
 				</fo:simple-page-master>
 				
+				<fo:page-sequence-master master-name="cover-page-appendix">
+					<fo:repeatable-page-master-alternatives>
+						<fo:conditional-page-master-reference master-reference="blankpage" blank-or-not-blank="blank"/>
+						<fo:conditional-page-master-reference master-reference="simple-cover-page-appendix" odd-or-even="odd"/>
+						<fo:conditional-page-master-reference master-reference="simple-cover-page-appendix" odd-or-even="even"/>
+					</fo:repeatable-page-master-alternatives>
+				</fo:page-sequence-master>
+				
+				
 				<!-- Title page  -->
-				<fo:simple-page-master master-name="title-page" page-width="{$pageWidth}mm" page-height="{$pageHeight}mm">
+				<fo:simple-page-master master-name="simple-title-page" page-width="{$pageWidth}mm" page-height="{$pageHeight}mm">
 					<fo:region-body margin-top="38mm" margin-bottom="25mm" margin-left="95mm" margin-right="12mm"/>
-					<fo:region-before extent="38mm" />
+					<fo:region-before region-name="header" extent="38mm" />
 					<fo:region-after extent="25mm"/>
 					<fo:region-start extent="95mm"/>
 					<fo:region-end extent="12mm"/>
 				</fo:simple-page-master>
+				
+				<fo:page-sequence-master master-name="title-page">
+					<fo:repeatable-page-master-alternatives>
+						<fo:conditional-page-master-reference master-reference="blankpage" blank-or-not-blank="blank"/>
+						<fo:conditional-page-master-reference master-reference="simple-title-page" odd-or-even="odd"/>
+						<fo:conditional-page-master-reference master-reference="simple-title-page" odd-or-even="even"/>
+					</fo:repeatable-page-master-alternatives>
+				</fo:page-sequence-master>
 				
 				<!-- Document pages -->
 				<fo:simple-page-master master-name="document-odd" page-width="{$pageWidth}mm" page-height="{$pageHeight}mm">
@@ -301,6 +336,7 @@
 				</fo:simple-page-master>
 				<fo:page-sequence-master master-name="document">
 					<fo:repeatable-page-master-alternatives>						
+						<fo:conditional-page-master-reference master-reference="blankpage" blank-or-not-blank="blank"/>
 						<fo:conditional-page-master-reference odd-or-even="even" master-reference="document-even"/>
 						<fo:conditional-page-master-reference odd-or-even="odd" master-reference="document-odd"/>
 					</fo:repeatable-page-master-alternatives>
@@ -322,7 +358,8 @@
 					<fo:region-end region-name="right-region" extent="26.5mm"/>
 				</fo:simple-page-master>
 				<fo:page-sequence-master master-name="document-landscape">
-					<fo:repeatable-page-master-alternatives>						
+					<fo:repeatable-page-master-alternatives>
+						<fo:conditional-page-master-reference master-reference="blankpage" blank-or-not-blank="blank"/>
 						<fo:conditional-page-master-reference odd-or-even="even" master-reference="document-landscape-even"/>
 						<fo:conditional-page-master-reference odd-or-even="odd" master-reference="document-landscape-odd"/>
 					</fo:repeatable-page-master-alternatives>
@@ -344,7 +381,8 @@
 					<fo:region-end region-name="right-region" extent="26.5mm"/>
 				</fo:simple-page-master>
 				<fo:page-sequence-master master-name="index">
-					<fo:repeatable-page-master-alternatives>						
+					<fo:repeatable-page-master-alternatives>
+						<fo:conditional-page-master-reference master-reference="blankpage" blank-or-not-blank="blank"/>
 						<fo:conditional-page-master-reference odd-or-even="even" master-reference="index-even"/>
 						<fo:conditional-page-master-reference odd-or-even="odd" master-reference="index-odd"/>
 					</fo:repeatable-page-master-alternatives>
@@ -1124,6 +1162,9 @@
 					</xsl:if>
 					
 					<xsl:call-template name="insertFootnoteSeparator"/>
+					
+					<xsl:call-template name="insertHeaderDraftWatermark"/>
+					
 					<fo:flow flow-name="xsl-region-body" font-family="Arial">
 						
 						<fo:block-container font-size="12pt" font-weight="bold" border-top="1pt solid black" width="82mm" margin-top="2mm" padding-top="2mm">						
@@ -1321,7 +1362,11 @@
 				
 				<!-- Index -->
 				<!-- <xsl:apply-templates select="xalan:nodeset($indexes)/doc[@id = $docid]//bipm:clause[@type = 'index']" mode="index" /> -->
-				<xsl:apply-templates select="xalan:nodeset($indexes)/doc[@id = $docid]//bipm:indexsect" mode="index" />
+				<xsl:apply-templates select="xalan:nodeset($indexes)/doc[@id = $docid]//bipm:indexsect" mode="index">
+					<xsl:with-param name="isDraft" select="normalize-space(//bipm:bipm-standard/bipm:bibdata/bipm:version/bipm:draft or
+						contains(//bipm:bipm-standard/bipm:bibdata/bipm:status/bipm:stage, 'draft') or
+						contains(//bipm:bipm-standard/bipm:bibdata/bipm:status/bipm:stage, 'projet'))"/>
+				</xsl:apply-templates>
 				
 				<!-- End Document Pages -->
 				
@@ -1339,6 +1384,8 @@
 				</xsl:variable>
 				
 				<fo:page-sequence master-reference="document" force-page-count="no-force">
+					
+					<xsl:call-template name="insertHeaderDraftWatermark"/>
 					
 					<fo:flow flow-name="xsl-region-body" font-family="Arial">
 						
@@ -1489,7 +1536,11 @@
 				
 				<!-- Index -->
 				<!-- <xsl:apply-templates select="xalan:nodeset($indexes)/doc[@id = $docid]//bipm:clause[@type = 'index']" mode="index" /> -->
-				<xsl:apply-templates select="xalan:nodeset($indexes)/doc[@id = $docid]//bipm:indexsect" mode="index" />
+				<xsl:apply-templates select="xalan:nodeset($indexes)/doc[@id = $docid]//bipm:indexsect" mode="index">
+					<xsl:with-param name="isDraft" select="normalize-space(//bipm:bipm-standard/bipm:bibdata/bipm:version/bipm:draft or
+						contains(//bipm:bipm-standard/bipm:bibdata/bipm:status/bipm:stage, 'draft') or
+						contains(//bipm:bipm-standard/bipm:bibdata/bipm:status/bipm:stage, 'projet'))"/>
+				</xsl:apply-templates>
 				
 			</xsl:otherwise>
 		</xsl:choose>
@@ -1502,6 +1553,8 @@
 	<xsl:template name="insertCoverPage">	
 	
 		<fo:page-sequence master-reference="cover-page" force-page-count="even">
+			
+			<xsl:call-template name="insertHeaderDraftWatermark"/>
 			
 			<fo:flow flow-name="xsl-region-body">
 			
@@ -1845,6 +1898,8 @@
 			</fo:block>
 		</fo:block-container>
 	
+		<xsl:call-template name="insertDraftWatermark"/>
+		
 		<!-- BIPM logo -->
 		<fo:block-container absolute-position="fixed" left="12.8mm" top="12.2mm">
 			<fo:block>
@@ -1868,6 +1923,8 @@
 		<xsl:if test="(//bipm:bipm-standard)[1]/bipm:bibdata/bipm:title[@type='cover']">
 	
 			<fo:page-sequence master-reference="title-page" format="1" initial-page-number="1" force-page-count="even">
+				
+				<xsl:call-template name="insertHeaderDraftWatermark"/>
 				
 				<fo:flow flow-name="xsl-region-body" font-family="Arial">
 				
@@ -3939,7 +3996,11 @@
 	<xsl:template name="insertHeaderFooter">
 		<xsl:param name="header-title"/>
 		<xsl:param name="orientation"/>
+		<xsl:param name="isDraft"/>
 		<fo:static-content flow-name="header-odd" role="artifact">
+			<xsl:call-template name="insertDraftWatermark">
+				<xsl:with-param name="isDraft" select="$isDraft"/>
+			</xsl:call-template>
 			<fo:block-container font-family="Arial" font-size="8pt" padding-top="12.5mm">
 				<fo:block text-align="right">
 					<xsl:copy-of select="$header-title"/>
@@ -3960,6 +4021,9 @@
 			</fo:block-container>
 		</fo:static-content>		
 		<fo:static-content flow-name="header-even" role="artifact">
+			<xsl:call-template name="insertDraftWatermark">
+				<xsl:with-param name="isDraft" select="$isDraft"/>
+			</xsl:call-template>
 			<fo:block-container font-family="Arial" font-size="8pt" padding-top="12.5mm">
 				<fo:block>
 					<fo:inline font-weight="bold"><fo:page-number/></fo:inline>
@@ -3975,7 +4039,78 @@
 					<fo:block>&#xA0;</fo:block>
 				</fo:block-container>
 			</fo:block-container>
-		</fo:static-content>		
+		</fo:static-content>
+		<fo:static-content flow-name="header-blank" role="artifact">
+			<xsl:call-template name="insertDraftWatermark">
+				<xsl:with-param name="isDraft" select="$isDraft"/>
+			</xsl:call-template>
+			<fo:block></fo:block>
+		</fo:static-content>
+	</xsl:template>
+
+	<xsl:template name="insertDraftWatermark">
+		<xsl:param name="isDraft"/>
+		<xsl:if test="$isDraft = 'true' or normalize-space(//bipm:bipm-standard/bipm:bibdata/bipm:version/bipm:draft or
+		contains(//bipm:bipm-standard/bipm:bibdata/bipm:status/bipm:stage, 'draft') or
+		contains(//bipm:bipm-standard/bipm:bibdata/bipm:status/bipm:stage, 'projet')) = 'true'">
+			<!-- DRAFT -->
+			<xsl:variable name="draft_label">
+				<xsl:call-template name="getLocalizedString">
+					<xsl:with-param name="key">draft_label</xsl:with-param>
+				</xsl:call-template>
+			</xsl:variable>
+			<fo:block-container absolute-position="fixed" left="0mm" top="30mm">
+				<fo:block line-height="0">
+					<fo:instream-foreign-object fox:alt-text="DRAFT">
+							<svg:svg width="200mm" height="250mm" xmlns:svg="http://www.w3.org/2000/svg">
+								<svg:g transform="rotate(-45) scale(0.6, 1)">
+									<xsl:variable name="font-size">
+										<xsl:choose>
+											<xsl:when test="string-length($draft_label) &gt; 5">150</xsl:when>
+											<xsl:otherwise>260</xsl:otherwise>
+										</xsl:choose>
+									</xsl:variable>
+										<svg:text x="-175mm" y="205mm"  style="font-family:Arial;font-size:{$font-size}pt;font-weight:normal;fill:rgb(223, 223, 223);">
+											<xsl:if test="string-length($draft_label) &gt; 5">
+												<xsl:attribute name="x">-175mm</xsl:attribute>
+												<xsl:attribute name="y">180mm</xsl:attribute>
+											</xsl:if>
+											<xsl:value-of select="java:toUpperCase(java:java.lang.String.new($draft_label))"/>
+										</svg:text>
+								</svg:g>
+							</svg:svg>
+					</fo:instream-foreign-object>
+				</fo:block>
+			</fo:block-container>
+		</xsl:if>
+	</xsl:template>
+
+	<xsl:template name="insertHeaderDraftWatermark">
+		<xsl:variable name="isDraft" select="normalize-space(//bipm:bipm-standard/bipm:bibdata/bipm:version/bipm:draft or
+		contains(//bipm:bipm-standard/bipm:bibdata/bipm:status/bipm:stage, 'draft') or
+		contains(//bipm:bipm-standard/bipm:bibdata/bipm:status/bipm:stage, 'projet'))"/>
+		<xsl:if test="$isDraft = 'true'">
+			<fo:static-content flow-name="header-blank" role="artifact">
+				<xsl:call-template name="insertDraftWatermark">
+					<xsl:with-param name="isDraft" select="$isDraft"/>
+				</xsl:call-template>
+			</fo:static-content>
+			<fo:static-content flow-name="header" role="artifact">
+				<xsl:call-template name="insertDraftWatermark">
+					<xsl:with-param name="isDraft" select="$isDraft"/>
+				</xsl:call-template>
+			</fo:static-content>
+			<fo:static-content flow-name="header-odd" role="artifact">
+				<xsl:call-template name="insertDraftWatermark">
+					<xsl:with-param name="isDraft" select="$isDraft"/>
+				</xsl:call-template>
+			</fo:static-content>
+			<fo:static-content flow-name="header-even" role="artifact">
+				<xsl:call-template name="insertDraftWatermark">
+					<xsl:with-param name="isDraft" select="$isDraft"/>
+				</xsl:call-template>
+			</fo:static-content>
+		</xsl:if>
 	</xsl:template>
 
 	<!-- <xsl:template name="insertHeaderFooterAppendix">		
@@ -4120,6 +4255,7 @@
 	<!-- <xsl:template match="bipm:clause[@type = 'index']" mode="index"> -->
 	<xsl:template match="bipm:indexsect" />
 	<xsl:template match="bipm:indexsect" mode="index">
+		<xsl:param name="isDraft"/>
 	
 		<fo:page-sequence master-reference="index" force-page-count="no-force">
 			<xsl:variable name="header-title">
@@ -4134,6 +4270,7 @@
 			</xsl:variable>
 			<xsl:call-template name="insertHeaderFooter">
 				<xsl:with-param name="header-title" select="$header-title"/>
+				<xsl:with-param name="isDraft" select="$isDraft"/>
 			</xsl:call-template>
 			
 			<fo:flow flow-name="xsl-region-body">
