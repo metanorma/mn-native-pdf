@@ -2246,6 +2246,7 @@
 				<xsl:apply-templates select="ancestor::iec:term[1]/iec:name" mode="presentation"/>				
 			</fo:block>
 			<fo:block font-weight="bold" keep-with-next="always">
+				<xsl:call-template name="setStyle_preferred"/>
 				<xsl:apply-templates />
 			</fo:block>
 		</fo:block>

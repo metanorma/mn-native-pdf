@@ -747,6 +747,7 @@
 	<xsl:template match="m3d:preferred">
 
 		<fo:inline>
+			<xsl:call-template name="setStyle_preferred"/>
 			<xsl:apply-templates />
 		</fo:inline>
 		

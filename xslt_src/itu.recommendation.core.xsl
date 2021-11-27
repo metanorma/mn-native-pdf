@@ -1782,6 +1782,7 @@
 				<xsl:apply-templates select="ancestor::itu:term[1]/itu:name" mode="presentation"/>
 			</fo:inline>
 			<fo:inline font-weight="bold">
+				<xsl:call-template name="setStyle_preferred"/>
 				<xsl:apply-templates />
 			</fo:inline>
 			<xsl:if test="../itu:termsource/itu:origin">

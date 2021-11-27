@@ -7658,7 +7658,11 @@
 		</fo:block>
 	</xsl:template>
 
-
+	<xsl:template name="setStyle_preferred">
+		<xsl:if test="*[local-name() = 'strong']">
+			<xsl:attribute name="font-weight">normal</xsl:attribute>
+		</xsl:if>
+	</xsl:template>
 	
 	<!-- ========== -->
 	<!-- definition -->

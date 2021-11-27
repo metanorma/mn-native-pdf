@@ -661,6 +661,7 @@
 				<xsl:apply-templates select="ancestor::csd:term[1]/csd:name" mode="presentation"/>	
 			</fo:block>
 			<fo:block font-weight="bold" keep-with-next="always">
+				<xsl:call-template name="setStyle_preferred"/>
 				<xsl:apply-templates />
 			</fo:block>
 		</fo:block>

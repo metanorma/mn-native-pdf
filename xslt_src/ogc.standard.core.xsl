@@ -1269,7 +1269,7 @@
 	<xsl:template match="ogc:preferred | ogc:deprecated | ogc:admitted" priority="2"/>
 	
 	<xsl:template match="ogc:preferred" mode="term_name">						
-		<fo:inline font-size="18pt" padding-right="3mm"><xsl:apply-templates /></fo:inline>		
+		<fo:inline font-size="18pt" padding-right="3mm"><xsl:call-template name="setStyle_preferred"/><xsl:apply-templates /></fo:inline>		
 		<fo:inline padding-right="2mm">&#xA0;</fo:inline>
 	</xsl:template>
 	

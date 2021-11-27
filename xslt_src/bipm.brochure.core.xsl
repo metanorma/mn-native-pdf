@@ -3413,11 +3413,12 @@
 
 	<xsl:template match="bipm:preferred">		
 		<fo:block font-weight="bold" keep-with-next="always" space-before="8pt" margin-bottom="6pt">
+			<xsl:call-template name="setStyle_preferred"/>
 			<xsl:if test="ancestor::bipm:term[1]/bipm:name">
 				<xsl:variable name="level">
 					<xsl:call-template name="getLevelTermName"/>
 				</xsl:variable>
-				<fo:inline role="H{$level}">
+				<fo:inline role="H{$level}" font-weight="bold">
 					<xsl:attribute name="padding-right">2mm</xsl:attribute>
 					<xsl:apply-templates select="ancestor::bipm:term[1]/bipm:name" mode="presentation"/>				
 				</fo:inline>

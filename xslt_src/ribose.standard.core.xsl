@@ -1113,7 +1113,7 @@
 				</fo:inline>
 			</xsl:if>
 			
-			<fo:inline padding-right="4mm"><xsl:apply-templates /></fo:inline>
+			<fo:inline padding-right="4mm"><xsl:if test="local-name() = 'preferred'"><xsl:call-template name="setStyle_preferred"/></xsl:if><xsl:apply-templates /></fo:inline>
 			
 			<xsl:variable name="term_kind">
 				<xsl:choose>

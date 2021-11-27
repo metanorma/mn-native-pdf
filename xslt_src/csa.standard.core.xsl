@@ -747,6 +747,7 @@
 				<xsl:apply-templates select="ancestor::csa:term[1]/csa:name" mode="presentation"/>	
 			</fo:block>
 			<fo:block font-weight="bold" keep-with-next="always" line-height="1">
+				<xsl:call-template name="setStyle_preferred"/>
 				<xsl:apply-templates />
 			</fo:block>
 		</fo:block>

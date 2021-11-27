@@ -957,6 +957,7 @@
 				<xsl:apply-templates select="ancestor::*[local-name()='term'][1]/*[local-name()='name']" mode="presentation"/>				
 			</fo:block>
 			<fo:block font-weight="bold" keep-with-next="always">
+				<xsl:call-template name="setStyle_preferred"/>
 				<xsl:apply-templates />
 			</fo:block>
 		</fo:block>
@@ -971,6 +972,7 @@
 				<xsl:apply-templates select="preceding-sibling::*[local-name()='term_name'][1]" mode="presentation"/>				
 			</fo:block>
 			<fo:block font-weight="bold" keep-with-next="always">
+				<xsl:call-template name="setStyle_preferred"/>
 				<xsl:apply-templates />
 			</fo:block>
 		</fo:block>

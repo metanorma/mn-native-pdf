@@ -624,6 +624,7 @@
 	
 	<xsl:template match="mpfd:preferred">		
 		<fo:inline font-weight="bold">
+			<xsl:call-template name="setStyle_preferred"/>
 			<xsl:apply-templates />
 		</fo:inline>
 		<xsl:if test="not(following-sibling::*[1][local-name() = 'preferred'])">
