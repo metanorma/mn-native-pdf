@@ -147,6 +147,7 @@
 		<contents>
 			<xsl:call-template name="processPrefaceSectionsDefault_Contents"/>
 			<xsl:call-template name="processMainSectionsDefault_Contents"/>
+			<xsl:apply-templates select="//iec:indexsect" mode="contents"/>
 			<xsl:for-each select="//*[local-name() = 'figure'][@id and *[local-name() = 'name']]">
 				<figure id="{@id}">
 					<title><xsl:value-of select="*[local-name() = 'name']/text()"/></title>
@@ -166,6 +167,8 @@
 	<xsl:variable name="lang">
 		<xsl:call-template name="getLang"/>
 	</xsl:variable>	
+	
+	<xsl:variable name="isIEV" select="normalize-space((//iec:iec-standard/iec:bibdata/iec:title[@language = 'en' and @type = 'title-main'] = 'International Electrotechnical Vocabulary') and 1 = 1)"/>
 	
 	<xsl:template match="/">
 		<xsl:call-template name="namespaceCheck"/>
@@ -1109,6 +1112,9 @@
 						<xsl:if test="$num = '1'">
 							<xsl:attribute name="initial-page-number">2</xsl:attribute>
 						</xsl:if>
+						<xsl:if test="$isIEV = 'true'">
+							<xsl:attribute name="format">I</xsl:attribute>
+						</xsl:if>
 						
 						<xsl:call-template name="insertHeaderFooter"/>
 							<fo:flow flow-name="xsl-region-body">
@@ -1469,6 +1475,9 @@
 						<xsl:if test="@level = 3">
 							<xsl:attribute name="margin-bottom">2pt</xsl:attribute>
 						</xsl:if>
+						<xsl:if test="@type = 'indexsect'">
+							<xsl:attribute name="space-before">16pt</xsl:attribute>
+						</xsl:if>
 						<!-- <xsl:if test="@level &gt;= 2 and @section != ''">
 							<xsl:attribute name="margin-left">5mm</xsl:attribute>
 						</xsl:if> -->
@@ -1591,7 +1600,10 @@
 	<xsl:template name="insertBodypages">
 		<xsl:param name="lang" select="'en'"/>
 		<!-- BODY -->
-		<fo:page-sequence master-reference="document" force-page-count="no-force">
+		<fo:page-sequence master-reference="document" force-page-count="no-force">						
+			<xsl:if test="$isIEV = 'true'">
+				<xsl:attribute name="initial-page-number">1</xsl:attribute>
+			</xsl:if>
 			<fo:static-content flow-name="xsl-footnote-separator">
 				<fo:block>
 					<fo:leader leader-pattern="rule" leader-length="30%"/>
@@ -1633,6 +1645,10 @@
 				
 			</fo:flow>
 		</fo:page-sequence>
+		
+		<!-- Index -->
+		<xsl:apply-templates select="//iec:indexsect" mode="index"/>
+		
 	</xsl:template>
 	
 	
@@ -1757,9 +1773,15 @@
 				<xsl:if test="$type ='appendix'">
 					<xsl:attribute name="section"></xsl:attribute>
 				</xsl:if>
+				<xsl:if test="$type ='indexsect'">
+					<xsl:attribute name="level">1</xsl:attribute>
+				</xsl:if>
 				<title>
 					<xsl:choose>
-						<xsl:when test="$type = 'foreword' or $type = 'introduction'">
+						<!-- <xsl:when test="$type = 'foreword' or $type = 'introduction'">
+							<xsl:value-of select="java:toUpperCase(java:java.lang.String.new($title))"/>
+						</xsl:when> -->
+						<xsl:when test="$type = 'indexsect'">
 							<xsl:value-of select="java:toUpperCase(java:java.lang.String.new($title))"/>
 						</xsl:when>
 						<xsl:when test="$type = 'appendix'">
@@ -1770,7 +1792,9 @@
 						</xsl:otherwise>
 					</xsl:choose>
 				</title>
-				<xsl:apply-templates  mode="contents" />
+				<xsl:if test="$type != 'indexsect'">
+					<xsl:apply-templates  mode="contents" />
+				</xsl:if>
 			</item>
 			
 		</xsl:if>	
@@ -1870,7 +1894,8 @@
 	<xsl:template match="iec:iec-standard/iec:preface/iec:foreword" priority="3">
 		<fo:block id="{@id}" margin-bottom="12pt" font-size="12pt" text-align="center">
 			<xsl:call-template name="addLetterSpacing">
-				<xsl:with-param name="text" select="java:toUpperCase(java:java.lang.String.new(iec:title))"/>
+				<!-- <xsl:with-param name="text" select="java:toUpperCase(java:java.lang.String.new(iec:title))"/> -->
+				<xsl:with-param name="text" select="iec:title"/>
 			</xsl:call-template>
 		</fo:block>
 		<fo:block font-size="8.2pt" text-align="justify"> <!--  margin-left="6.3mm" -->
@@ -1930,7 +1955,8 @@
 	</xsl:template>
 	<xsl:template match="iec:introduction/iec:title/text()">
 		<xsl:call-template name="addLetterSpacing">
-			<xsl:with-param name="text" select="java:toUpperCase(java:java.lang.String.new(.))"/>
+			<!-- <xsl:with-param name="text" select="java:toUpperCase(java:java.lang.String.new(.))"/> -->
+			<xsl:with-param name="text" select="."/>
 		</xsl:call-template>			
 	</xsl:template>
 	
@@ -2356,7 +2382,63 @@
 		</fo:block>
 	</xsl:template>
 	
+	<!-- =================== -->
+	<!-- Index processing -->
+	<!-- =================== -->
+	
+	<xsl:template match="iec:indexsect" />
+	<xsl:template match="iec:indexsect" mode="index">
+	
+		<fo:page-sequence master-reference="document" force-page-count="no-force">
+			<xsl:call-template name="insertHeaderFooter" />
+			<fo:flow flow-name="xsl-region-body">
+				<fo:block id="{@id}" span="all">
+					<xsl:apply-templates select="iec:title"/>
+				</fo:block>
+				<fo:block role="Index">
+					<xsl:apply-templates select="*[not(local-name() = 'title')]"/>
+				</fo:block>
+			</fo:flow>
+		</fo:page-sequence>
+	</xsl:template>
+	
+	<xsl:template match="iec:indexsect/iec:title" priority="4">
+		<fo:block font-size="12pt" font-weight="bold" margin-bottom="84pt" role="H1">
+			<!-- Index -->
+			<xsl:apply-templates />
+		</fo:block>
+	</xsl:template>
+		
+	<xsl:template match="iec:indexsect/iec:title/text()" priority="4">
+		<xsl:value-of select="java:toUpperCase(java:java.lang.String.new(.))"/>
+	</xsl:template>
 
+	<xsl:template match="iec:indexsect/iec:clause/iec:title" priority="4">
+		<!-- Letter A, B, C, ... -->
+		<fo:block font-size="10pt" font-weight="bold" margin-bottom="3pt" keep-with-next="always">
+			<xsl:apply-templates />
+		</fo:block>
+	</xsl:template>
+	
+	<xsl:template match="iec:indexsect//iec:li/text()">
+		<!-- to split by '_' and other chars -->
+		<xsl:call-template name="add-zero-spaces-java"/>
+	</xsl:template>
+	
+	<xsl:template match="iec:xref[@pagenumber = 'true']"  priority="2">
+		<fo:basic-link internal-destination="{@target}" fox:alt-text="{@target}" xsl:use-attribute-sets="xref-style">
+			<fo:inline>
+				<xsl:if test="@id">
+					<xsl:attribute name="id"><xsl:value-of select="@id"/></xsl:attribute>
+				</xsl:if>
+				<fo:page-number-citation ref-id="{@target}"/>
+			</fo:inline>
+		</fo:basic-link>
+	</xsl:template>
+	
+	<!-- =================== -->
+	<!-- End of Index processing -->
+	<!-- =================== -->
 	
 	<xsl:template name="insertHeaderFooter">
 		<fo:static-content flow-name="header-even" role="artifact">
