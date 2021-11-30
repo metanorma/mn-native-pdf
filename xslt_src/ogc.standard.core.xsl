@@ -16,6 +16,8 @@
 	<xsl:variable name="images" select="document($svg_images)"/>
 	<xsl:param name="basepath"/>
 	
+	<xsl:key name="kfn" match="*[local-name() = 'fn'][not(ancestor::*[local-name() = 'tr'])]" use="@reference"/>
+	
 	<xsl:variable name="pageWidth" select="215.9"/>
 	<xsl:variable name="pageHeight" select="279.4"/>
 	<xsl:variable name="marginLeftRight1" select="35"/>
@@ -1075,16 +1077,75 @@
 		</xsl:if>
 	</xsl:template>
 	
+	
+	<xsl:variable name="p_fn_">
+		<!-- itetation for:
+		footnotes in bibdata/title
+		footnotes in Normative references
+		footnotes in document body (except table's head/body/foot) 
+		-->
+		<xsl:for-each select="
+		/*/*[local-name() = 'bibdata']/*[local-name() = 'note'][@type='title-footnote'] |
+		//*[local-name() = 'bibitem'][ancestor::*[local-name() = 'references'][@normative = 'true']]/*[local-name() = 'note'] |
+		//*[local-name() = 'fn'][not(ancestor::*[local-name() = 'tr'])][generate-id(.)=generate-id(key('kfn',@reference)[1])]">
+			<!-- copy unique fn -->
+			<fn gen_id="{generate-id(.)}">
+				<xsl:copy-of select="@*"/>
+				<xsl:copy-of select="node()"/>
+			</fn>
+		</xsl:for-each>
+	</xsl:variable>
+	<xsl:variable name="p_fn" select="xalan:nodeset($p_fn_)"/>
+	
 	<!--
 	<fn reference="1">
 			<p id="_8e5cf917-f75a-4a49-b0aa-1714cb6cf954">Formerly denoted as 15 % (m/m).</p>
 		</fn>
 	-->
+	<!-- for fn not in table head/body/foot -->
+	<xsl:template match="*[local-name() = 'fn'][not(ancestor::*[local-name() = 'tr'])]" priority="2" name="fn">
+		<xsl:variable name="gen_id" select="generate-id(.)"/>
+		<xsl:variable name="reference" select="@reference"/>
+		<!-- fn sequence number in document -->
+		<xsl:variable name="current_fn_number" select="count($p_fn//fn[@reference = $reference]/preceding-sibling::fn) + 1" />
+		
+		<xsl:variable name="footnote_inline">
+			<fo:inline font-size="65%" keep-with-previous.within-line="always" vertical-align="super">
+				<fo:basic-link internal-destination="footnote_{@reference}_{$current_fn_number}" fox:alt-text="footnote {@reference} {$current_fn_number}">
+					<xsl:value-of select="$current_fn_number"/>
+				</fo:basic-link>
+			</fo:inline>
+		</xsl:variable>
+		
+		<xsl:choose>
+			<xsl:when test="$p_fn//fn[@gen_id = $gen_id]">
+				<fo:footnote keep-with-previous.within-line="always">
+					<xsl:copy-of select="$footnote_inline"/>
+					<fo:footnote-body>
+						<fo:block font-size="10pt" margin-bottom="12pt" font-weight="normal" text-indent="0" start-indent="0" color="{$color_main}" line-height="124%" text-align="justify">
+							<fo:inline id="footnote_{@reference}_{$current_fn_number}" keep-with-next.within-line="always" font-size="60%" vertical-align="super"> <!-- baseline-shift="30%" padding-right="3mm" font-size="60%"  alignment-baseline="hanging" -->
+								<xsl:value-of select="$current_fn_number "/>
+							</fo:inline>
+							<xsl:for-each select="ogc:p">
+									<xsl:apply-templates />
+							</xsl:for-each>
+						</fo:block>
+					</fo:footnote-body>
+				</fo:footnote>
+			</xsl:when>
+			<xsl:otherwise>
+				<xsl:copy-of select="$footnote_inline"/>
+			</xsl:otherwise>
+		</xsl:choose>
+	</xsl:template>
+	
+	
+	<!-- DEPRECATED -->
 	<xsl:template match="ogc:title//ogc:fn | 
 																ogc:name//ogc:fn | 
 																ogc:p/ogc:fn[not(ancestor::ogc:table)] | 
 																ogc:p/*/ogc:fn[not(ancestor::ogc:table)] |
-																ogc:sourcecode/ogc:fn[not(ancestor::ogc:table)]" priority="2" name="fn">
+																ogc:sourcecode/ogc:fn[not(ancestor::ogc:table)]" priority="2" name="fn_skip" mode="skip">
 		<fo:footnote keep-with-previous.within-line="always">
 			<xsl:variable name="number" select="@reference"/>
 			
