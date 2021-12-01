@@ -16,6 +16,8 @@
 	<xsl:variable name="images" select="document($svg_images)"/>
 	<xsl:param name="basepath"/>
 	
+	<xsl:key name="kfn" match="*[local-name() = 'fn'][not(ancestor::*[(local-name() = 'table' or local-name() = 'figure') and not(ancestor::*[local-name() = 'name'])])]" use="@reference"/>
+	
 	<xsl:variable name="pageWidth" select="210"/>
 	<xsl:variable name="pageHeight" select="297"/>
 	<xsl:variable name="marginLeftRight1" select="19"/>
@@ -509,35 +511,7 @@
 		</xsl:if>
 	</xsl:template>
 	
-	<!--
-	<fn reference="1">
-			<p id="_8e5cf917-f75a-4a49-b0aa-1714cb6cf954">Formerly denoted as 15 % (m/m).</p>
-		</fn>
-	-->
-	<xsl:template match="csd:p/csd:fn">
-		<fo:footnote>
-			<xsl:variable name="number">
-				<xsl:number level="any" count="csd:p/csd:fn"/>
-			</xsl:variable>
-			<fo:inline font-size="65%" keep-with-previous.within-line="always" vertical-align="super">
-				<fo:basic-link internal-destination="footnote_{@reference}" fox:alt-text="footnote {@reference}">
-					<!-- <xsl:value-of select="@reference"/> -->
-					<xsl:value-of select="$number + count(//csd:bibitem/csd:note)"/><!-- <xsl:text>)</xsl:text> -->
-				</fo:basic-link>
-			</fo:inline>
-			<fo:footnote-body>
-				<fo:block font-size="10pt" margin-bottom="12pt">
-					<fo:inline id="footnote_{@reference}" keep-with-next.within-line="always" font-size="60%" vertical-align="super"> <!-- baseline-shift="30%" padding-right="3mm" font-size="60%"  alignment-baseline="hanging" -->
-						<xsl:value-of select="$number + count(//csd:bibitem/csd:note)"/><!-- <xsl:text>)</xsl:text> -->
-					</fo:inline>
-					<xsl:for-each select="csd:p">
-							<xsl:apply-templates />
-					</xsl:for-each>
-				</fo:block>
-			</fo:footnote-body>
-		</fo:footnote>
-	</xsl:template>
-
+	
 	<xsl:template match="csd:p/csd:fn/csd:p">
 		<xsl:apply-templates />
 	</xsl:template>

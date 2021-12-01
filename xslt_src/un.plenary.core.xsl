@@ -17,6 +17,8 @@
 	<xsl:variable name="images" select="document($svg_images)"/>
 	<xsl:param name="basepath"/>
 	
+	<xsl:key name="kfn" match="*[local-name() = 'fn'][not(ancestor::*[(local-name() = 'table' or local-name() = 'figure') and not(ancestor::*[local-name() = 'name'])])]" use="@reference"/>
+	
 	<xsl:include href="./common.xsl"/>
 	
 	<xsl:variable name="namespace">unece</xsl:variable>
@@ -566,31 +568,6 @@
 		</fo:block-container>
 	</xsl:template>
 	
-	
-	<xsl:template match="un:title/un:fn | un:p/un:fn[not(ancestor::un:table)] | un:figure/un:name/un:fn" priority="2">
-		<fo:footnote keep-with-previous.within-line="always">
-			<xsl:variable name="number">
-				<xsl:number level="any" count="un:fn[not(ancestor::un:table)]"/>
-			</xsl:variable>
-			<fo:inline font-size="60%" keep-with-previous.within-line="always" vertical-align="super">
-				<fo:basic-link internal-destination="footnote_{@reference}_{$number}" fox:alt-text="footnote {@reference} {$number}">
-					<xsl:value-of select="$number + count(//un:bibitem/un:note)"/>
-				</fo:basic-link>
-			</fo:inline>
-			<fo:footnote-body>
-				<fo:block-container margin-left="-8mm">
-					<fo:block font-size="9pt" text-align="justify" line-height="125%" font-weight="normal" text-indent="0" margin-left="8mm">
-						<fo:inline id="footnote_{@reference}_{$number}" font-size="60%" keep-with-next.within-line="always" vertical-align="super" padding-right="8mm"> <!-- alignment-baseline="hanging" -->
-							<xsl:value-of select="$number + count(//un:bibitem/un:note)"/>
-						</fo:inline>
-						<xsl:for-each select="un:p">
-							<xsl:apply-templates />
-						</xsl:for-each>
-					</fo:block>
-				</fo:block-container>
-			</fo:footnote-body>
-		</fo:footnote>
-	</xsl:template>
 	
 	<xsl:template match="un:fn/un:p">
 		<fo:block>

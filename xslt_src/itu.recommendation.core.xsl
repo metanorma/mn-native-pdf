@@ -18,7 +18,7 @@
 	
 	<xsl:include href="./common.xsl"/>
 	
-	<xsl:key name="kfn" match="itu:fn[local-name(..) = 'p' or ancestor::*[local-name() = 'title']]" use="@reference"/>
+	<xsl:key name="kfn" match="*[local-name() = 'fn'][not(ancestor::*[(local-name() = 'table' or local-name() = 'figure') and not(ancestor::*[local-name() = 'name'])])]" use="@reference"/>
 	
 	<xsl:variable name="namespace">itu</xsl:variable>
 	
@@ -1857,58 +1857,6 @@
 		</fo:footnote>
 	</xsl:template>
 
-	<xsl:variable name="p_fn">
-		<xsl:for-each select="//itu:fn[local-name(..) = 'p' or ancestor::*[local-name() = 'title']][generate-id(.)=generate-id(key('kfn',@reference)[1])]">
-			<!-- copy unique fn -->
-			<fn gen_id="{generate-id(.)}">
-				<xsl:copy-of select="@*"/>
-				<xsl:copy-of select="node()"/>
-			</fn>
-		</xsl:for-each>
-	</xsl:variable>
-	
-	<xsl:template match="itu:fn[local-name(..) = 'p' or ancestor::*[local-name() = 'title']]" priority="2">
-		<xsl:variable name="gen_id" select="generate-id(.)"/>
-		<xsl:variable name="reference" select="@reference"/>
-		<xsl:variable name="number">
-			<!-- <xsl:number level="any" count="itu:p/itu:fn"/> -->
-			<xsl:value-of select="count(xalan:nodeset($p_fn)//fn[@reference = $reference]/preceding-sibling::fn) + 1" />
-		</xsl:variable>
-		<xsl:variable name="count_title_footnotes" select="count(/itu:itu-standard/itu:bibdata/itu:note[@type='title-footnote'])"/>
-		<xsl:variable name="count_bibitem_notes" select="count(//itu:bibitem/itu:note)"/>
-		<xsl:variable name="current_fn_number" select="$number + $count_title_footnotes + $count_bibitem_notes"/>
-		<xsl:choose>
-			<xsl:when test="xalan:nodeset($p_fn)//fn[@gen_id = $gen_id]">
-				<fo:footnote>
-					<fo:inline font-size="60%" keep-with-previous.within-line="always" vertical-align="super">
-						<fo:basic-link internal-destination="footnote_{@reference}_{$number}" fox:alt-text="footnote {@reference} {$number}">
-							<xsl:value-of select="$current_fn_number"/>
-						</fo:basic-link>
-					</fo:inline>
-					<fo:footnote-body>
-						<fo:block font-size="11pt" margin-bottom="12pt" text-align="justify" font-style="normal" font-weight="normal">
-							<xsl:if test="$doctype = 'service-publication'">
-								<xsl:attribute name="font-size">10pt</xsl:attribute>
-							</xsl:if>
-							<fo:inline id="footnote_{@reference}_{$number}" font-size="85%" padding-right="2mm" keep-with-next.within-line="always" baseline-shift="30%">
-								<xsl:value-of select="$current_fn_number"/>
-							</fo:inline>
-							<xsl:for-each select="itu:p">
-									<xsl:apply-templates />
-							</xsl:for-each>
-						</fo:block>
-					</fo:footnote-body>
-				</fo:footnote>
-			</xsl:when>
-			<xsl:otherwise>
-				<fo:inline font-size="60%" keep-with-previous.within-line="always" vertical-align="super">
-					<fo:basic-link internal-destination="footnote_{@reference}_{$number}" fox:alt-text="footnote {@reference} {$number}">
-						<xsl:value-of select="$current_fn_number"/>
-					</fo:basic-link>
-				</fo:inline>
-			</xsl:otherwise>
-		</xsl:choose>
-	</xsl:template>
 	
 	
 	<xsl:template match="*[local-name()='tt']" priority="2">

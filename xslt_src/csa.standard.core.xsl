@@ -15,6 +15,8 @@
 	<xsl:param name="external_index" /><!-- path to index xml, generated on 1st pass, based on FOP Intermediate Format -->
 	<xsl:variable name="images" select="document($svg_images)"/>
 	<xsl:param name="basepath"/>
+
+	<xsl:key name="kfn" match="*[local-name() = 'fn'][not(ancestor::*[(local-name() = 'table' or local-name() = 'figure') and not(ancestor::*[local-name() = 'name'])])]" use="@reference"/>
 	
 	<xsl:variable name="pageWidth" select="215.9"/>
 	<xsl:variable name="pageHeight" select="279.4"/>
@@ -539,7 +541,7 @@
 			<p id="_8e5cf917-f75a-4a49-b0aa-1714cb6cf954">Formerly denoted as 15 % (m/m).</p>
 		</fn>
 	-->
-	<xsl:template match="csa:title/csa:fn | csa:p/csa:fn[not(ancestor::csa:table)]" priority="2">
+	<xsl:template match="csa:title2/csa:fn | csa:p2/csa:fn[not(ancestor::csa:table)]" priority="2">
 		<fo:footnote keep-with-previous.within-line="always">
 			<xsl:variable name="number" select="@reference"/>
 			

@@ -27,6 +27,8 @@
   
 	<xsl:param name="add_math_as_attachment">true</xsl:param>
 	
+	<xsl:key name="kfn" match="*[local-name() = 'fn'][not(ancestor::*[(local-name() = 'table' or local-name() = 'figure') and not(ancestor::*[local-name() = 'name'])])]" use="@reference"/>
+	
 	<xsl:variable name="first_pass" select="count($index//item) = 0"/>
 	
 	<xsl:variable name="pageWidth" select="210"/>
@@ -3118,39 +3120,6 @@
 		</xsl:choose>
 	</xsl:template>
 
-	<!--
-	<fn reference="1">
-			<p id="_8e5cf917-f75a-4a49-b0aa-1714cb6cf954">Formerly denoted as 15 % (m/m).</p>
-		</fn>
-	-->
-	<xsl:template match="bipm:title//bipm:fn | 
-																bipm:name//bipm:fn | 
-																bipm:p/bipm:fn[not(ancestor::bipm:table)] | 
-																bipm:p/*/bipm:fn[not(ancestor::bipm:table)] |
-																bipm:sourcecode/bipm:fn[not(ancestor::bipm:table)]" priority="2" name="fn">
-		<fo:footnote keep-with-previous.within-line="always">
-			<xsl:variable name="number"> <!-- select="@reference"/> -->
-				<xsl:number count="bipm:fn[not(ancestor::bipm:table)]" level="any"/>
-			</xsl:variable>
-			<xsl:variable name="gen_id" select="generate-id()"/>
-			<xsl:variable name="lang" select="ancestor::bipm:bipm-standard/*[local-name()='bibdata']//*[local-name()='language'][@current = 'true']"/>
-			<fo:inline font-size="65%" keep-with-previous.within-line="always" vertical-align="super">
-				<fo:basic-link internal-destination="{$lang}_footnote_{@reference}_{$number}_{$gen_id}" fox:alt-text="footnote {@reference}">
-					<xsl:value-of select="$number"/><!--  + count(//bipm:bibitem/bipm:note) -->
-				</fo:basic-link>
-			</fo:inline>
-			<fo:footnote-body>
-				<fo:block font-size="9pt" margin-bottom="12pt" font-weight="normal" text-indent="0" start-indent="0" line-height="124%" text-align="justify">
-					<fo:inline id="{$lang}_footnote_{@reference}_{$number}_{$gen_id}" keep-with-next.within-line="always" font-size="60%" vertical-align="super" padding-right="1mm"> <!-- baseline-shift="30%" padding-right="3mm" font-size="60%"  alignment-baseline="hanging" -->
-						<xsl:value-of select="$number "/><!-- + count(//bipm:bibitem/bipm:note) -->
-					</fo:inline>
-					<xsl:for-each select="bipm:p">
-							<xsl:apply-templates />
-					</xsl:for-each>
-				</fo:block>
-			</fo:footnote-body>
-		</fo:footnote>
-	</xsl:template>
 
 	<xsl:template match="bipm:fn/bipm:p">
 		<fo:block>

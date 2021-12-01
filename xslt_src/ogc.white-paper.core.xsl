@@ -16,6 +16,8 @@
 	<xsl:variable name="images" select="document($svg_images)"/>
 	<xsl:param name="basepath"/>
 	
+	<xsl:key name="kfn" match="*[local-name() = 'fn'][not(ancestor::*[(local-name() = 'table' or local-name() = 'figure') and not(ancestor::*[local-name() = 'name'])])]" use="@reference"/>
+	
 	<xsl:variable name="pageWidth" select="215.9"/>
 	<xsl:variable name="pageHeight" select="279.4"/>
 	<xsl:variable name="marginLeftRight1" select="25.4"/>
@@ -653,36 +655,6 @@
 		</xsl:if>
 	</xsl:template>
 	
-	<!--
-	<fn reference="1">
-			<p id="_8e5cf917-f75a-4a49-b0aa-1714cb6cf954">Formerly denoted as 15 % (m/m).</p>
-		</fn>
-	-->
-	<xsl:template match="ogc:title//ogc:fn | 
-																ogc:name//ogc:fn | 
-																ogc:p/ogc:fn[not(ancestor::ogc:table)] | 
-																ogc:p/*/ogc:fn[not(ancestor::ogc:table)] |
-																ogc:sourcecode/ogc:fn[not(ancestor::ogc:table)]" priority="2">
-		<fo:footnote keep-with-previous.within-line="always">
-			<xsl:variable name="number" select="@reference"/>
-			
-			<fo:inline font-size="65%" keep-with-previous.within-line="always" vertical-align="super">
-				<fo:basic-link internal-destination="footnote_{@reference}" fox:alt-text="footnote {@reference}">
-					<xsl:value-of select="$number"/><!--  + count(//ogc:bibitem/ogc:note) -->
-				</fo:basic-link>
-			</fo:inline>
-			<fo:footnote-body>
-				<fo:block font-size="10pt" margin-bottom="12pt" font-weight="normal" text-indent="0" start-indent="0" color="black" text-align="justify">
-					<fo:inline id="footnote_{@reference}" keep-with-next.within-line="always" font-size="60%" vertical-align="super"> <!-- baseline-shift="30%" padding-right="3mm" font-size="60%"  alignment-baseline="hanging" -->
-						<xsl:value-of select="$number "/><!-- + count(//ogc:bibitem/ogc:note) -->
-					</fo:inline>
-					<xsl:for-each select="ogc:p">
-							<xsl:apply-templates />
-					</xsl:for-each>
-				</fo:block>
-			</fo:footnote-body>
-		</fo:footnote>
-	</xsl:template>
 
 	<xsl:template match="ogc:fn/ogc:p">
 		<fo:block>

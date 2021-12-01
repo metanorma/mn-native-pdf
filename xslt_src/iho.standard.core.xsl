@@ -18,8 +18,7 @@
 	
 	<xsl:include href="./common.xsl"/>
 
-	<!-- <xsl:key name="kfn" match="iho:fn[local-name(..) = 'p' or local-name(..) = 'title']" use="@reference"/> -->
-	<xsl:key name="kfn" match="iho:fn[local-name(..) = 'p' or ancestor::*[local-name() = 'title']]" use="@reference"/>
+	<xsl:key name="kfn" match="*[local-name() = 'fn'][not(ancestor::*[(local-name() = 'table' or local-name() = 'figure') and not(ancestor::*[local-name() = 'name'])])]" use="@reference"/>
 	
 	<xsl:variable name="namespace">iho</xsl:variable>
 	
@@ -584,61 +583,6 @@
 		</xsl:if>
 	</xsl:template>
 	
-	<!--
-	<fn reference="1">
-			<p id="_8e5cf917-f75a-4a49-b0aa-1714cb6cf954">Formerly denoted as 15 % (m/m).</p>
-		</fn>
-	-->
-
-	<xsl:variable name="p_fn">
-		<!-- <xsl:for-each select="//iho:p/iho:fn[generate-id(.)=generate-id(key('kfn',@reference)[1])]"> -->
-		<xsl:for-each select="//iho:fn[local-name(..) = 'p' or ancestor::*[local-name() = 'title']][generate-id(.)=generate-id(key('kfn',@reference)[1])]">
-			<!-- copy unique fn -->
-			<fn gen_id="{generate-id(.)}">
-				<xsl:copy-of select="@*"/>
-				<xsl:copy-of select="node()"/>
-			</fn>
-		</xsl:for-each>
-	</xsl:variable>
-	
-	<!-- iho:p/iho:fn -->
-	<xsl:template match="iho:fn[local-name(..) = 'p' or ancestor::*[local-name() = 'title']]" priority="2">
-		<xsl:variable name="gen_id" select="generate-id(.)"/>
-		<xsl:variable name="reference" select="@reference"/>
-		<xsl:variable name="number">
-			<!-- <xsl:number level="any" count="iho:p/iho:fn"/> -->
-			<xsl:value-of select="count(xalan:nodeset($p_fn)//fn[@reference = $reference]/preceding-sibling::fn) + 1" />
-		</xsl:variable>
-		<xsl:choose>
-			<xsl:when test="xalan:nodeset($p_fn)//fn[@gen_id = $gen_id]">
-				<fo:footnote>
-					<fo:inline font-size="70%" keep-with-previous.within-line="always" vertical-align="super"> <!--  -->
-						<fo:basic-link internal-destination="footnote_{@reference}_{$number}" fox:alt-text="footnote {@reference} {$number}">
-							<!-- <xsl:value-of select="@reference"/> -->
-							<xsl:value-of select="$number + count(//iho:bibitem[ancestor::iho:references[@normative='true']]/iho:note)"/>
-						</fo:basic-link>
-					</fo:inline>
-					<fo:footnote-body>
-						<fo:block font-size="10pt" margin-bottom="12pt">
-							<fo:inline id="footnote_{@reference}_{$number}" font-size="60%" vertical-align="super" keep-with-next.within-line="always" padding-right="1mm"> <!-- font-size="60%"  alignment-baseline="hanging" -->
-								<xsl:value-of select="$number + count(//iho:bibitem[ancestor::iho:references[@normative='true']]/iho:note)"/>
-							</fo:inline>
-							<xsl:for-each select="iho:p">
-									<xsl:apply-templates />
-							</xsl:for-each>
-						</fo:block>
-					</fo:footnote-body>
-				</fo:footnote>
-			</xsl:when>
-			<xsl:otherwise>
-				<fo:inline font-size="60%" keep-with-previous.within-line="always" vertical-align="super">
-					<fo:basic-link internal-destination="footnote_{@reference}_{$number}" fox:alt-text="footnote {@reference} {$number}">
-						<xsl:value-of select="$number + count(//iho:bibitem/iho:note)"/>
-					</fo:basic-link>
-				</fo:inline>
-			</xsl:otherwise>
-		</xsl:choose>
-	</xsl:template>
 
 	<xsl:template match="iho:p/iho:fn/iho:p">
 		<xsl:apply-templates />

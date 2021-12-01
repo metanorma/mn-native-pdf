@@ -16,6 +16,8 @@
 	<xsl:variable name="images" select="document($svg_images)"/>
 	<xsl:param name="basepath"/>
 	
+	<xsl:key name="kfn" match="*[local-name() = 'fn'][not(ancestor::*[(local-name() = 'table' or local-name() = 'figure') and not(ancestor::*[local-name() = 'name'])])]" use="@reference"/>
+	
 	<xsl:include href="./common.xsl"/>
 	
 	<xsl:param name="additionalXMLs" select="''"/> <!-- iec-rice.fr.xml  -->
@@ -2098,37 +2100,6 @@
 		</xsl:if> -->
 	</xsl:template>
 	
-	<!--
-	<fn reference="1">
-			<p id="_8e5cf917-f75a-4a49-b0aa-1714cb6cf954">Formerly denoted as 15 % (m/m).</p>
-		</fn>
-	-->
-	<xsl:template match="iec:p/iec:fn" priority="2">
-		<fo:footnote>
-			<xsl:variable name="number">
-				<xsl:number level="any" count="iec:p/iec:fn"/>
-			</xsl:variable>
-			<xsl:variable name="lang">
-				<xsl:call-template name="getLang"/>
-			</xsl:variable>	
-			<fo:inline font-size="8pt" keep-with-previous.within-line="always" baseline-shift="15%"> <!-- font-size="80%"  vertical-align="super"-->
-				<fo:basic-link internal-destination="{$lang}_footnote_{@reference}" fox:alt-text="footnote {@reference}">
-					<!-- <xsl:value-of select="@reference"/> -->
-					<xsl:value-of select="$number + count(//iec:bibitem/iec:note)"/><!-- <xsl:text>)</xsl:text> -->
-				</fo:basic-link>
-			</fo:inline>
-			<fo:footnote-body>
-				<fo:block font-size="8pt" margin-bottom="5pt">
-					<fo:inline id="{$lang}_footnote_{@reference}" keep-with-next.within-line="always" baseline-shift="15%" padding-right="3mm"> <!-- padding-right="3mm" font-size="60%"  alignment-baseline="hanging" -->
-						<xsl:value-of select="$number + count(//iec:bibitem/iec:note)"/><!-- <xsl:text>)</xsl:text> -->
-					</fo:inline>
-					<!-- <xsl:for-each select="iec:p"> -->
-					<xsl:apply-templates />
-					<!-- </xsl:for-each> -->
-				</fo:block>
-			</fo:footnote-body>
-		</fo:footnote>
-	</xsl:template>
 
 	<xsl:template match="iec:p/iec:fn/iec:p">
 		<xsl:apply-templates />

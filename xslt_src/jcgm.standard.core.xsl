@@ -24,7 +24,7 @@
 	
 	<xsl:include href="./common.xsl"/>
 
-	<xsl:key name="kfn" match="*[local-name()='p']/*[local-name()='fn']" use="@reference"/>
+	<xsl:key name="kfn" match="*[local-name() = 'fn'][not(ancestor::*[(local-name() = 'table' or local-name() = 'figure') and not(ancestor::*[local-name() = 'name'])])]" use="@reference"/>
 	
 	<xsl:variable name="namespace">jcgm</xsl:variable>
 	
@@ -730,66 +730,12 @@
 		</xsl:if>
 	</xsl:template>
 	
-	
-	<!--
-	<fn reference="1">
-			<p id="_8e5cf917-f75a-4a49-b0aa-1714cb6cf954">Formerly denoted as 15 % (m/m).</p>
-		</fn>
-	-->
-	
-	<xsl:variable name="p_fn">
-		<xsl:for-each select="//*[local-name()='p']/*[local-name()='fn'][generate-id(.)=generate-id(key('kfn',@reference)[1])]">
-			<!-- copy unique fn -->
-			<fn gen_id="{generate-id(.)}">
-				<xsl:copy-of select="@*"/>
-				<xsl:copy-of select="node()"/>
-			</fn>
-		</xsl:for-each>
-	</xsl:variable>
-	
-	<xsl:template match="*[local-name()='p']/*[local-name()='fn']" priority="2">
-		<xsl:variable name="gen_id" select="generate-id(.)"/>
-		<xsl:variable name="reference" select="@reference"/>
-		<xsl:variable name="number">
-			<xsl:value-of select="count(xalan:nodeset($p_fn)//fn[@reference = $reference]/preceding-sibling::fn) + 1" />
-		</xsl:variable>
-		<xsl:choose>
-			<xsl:when test="xalan:nodeset($p_fn)//fn[@gen_id = $gen_id]">
-				<fo:footnote>
-					<fo:inline font-size="80%" keep-with-previous.within-line="always" vertical-align="super">
-						<fo:basic-link internal-destination="footnote_{@reference}_{$number}" fox:alt-text="footnote {@reference} {$number}">
-							<!-- <xsl:value-of select="@reference"/> -->
-							<xsl:value-of select="$number + count(//*[local-name()='bibitem'][ancestor::*[local-name()='references'][@normative='true']]/*[local-name()='note'])"/><xsl:text>)</xsl:text>
-						</fo:basic-link>
-					</fo:inline>
-					<fo:footnote-body>
-						<fo:block font-size="10pt" margin-bottom="12pt">
-							<fo:inline id="footnote_{@reference}_{$number}" keep-with-next.within-line="always" padding-right="3mm"> <!-- font-size="60%"  alignment-baseline="hanging" -->
-								<xsl:value-of select="$number + count(//*[local-name()='bibitem'][ancestor::*[local-name()='references'][@normative='true']]/*[local-name()='note'])"/><xsl:text>)</xsl:text>
-							</fo:inline>
-							<xsl:for-each select="*[local-name()='p']">
-									<xsl:apply-templates />
-							</xsl:for-each>
-						</fo:block>
-					</fo:footnote-body>
-				</fo:footnote>
-			</xsl:when>
-			<xsl:otherwise>
-				<fo:inline font-size="60%" keep-with-previous.within-line="always" vertical-align="super">
-					<fo:basic-link internal-destination="footnote_{@reference}_{$number}" fox:alt-text="footnote {@reference} {$number}">
-						<xsl:value-of select="$number + count(//*[local-name()='bibitem']/*[local-name()='note'])"/>
-					</fo:basic-link>
-				</fo:inline>
-			</xsl:otherwise>
-		</xsl:choose>
-	</xsl:template>
 
 	<xsl:template match="*[local-name()='p']/*[local-name()='fn']/*[local-name()='p']">
 		<xsl:apply-templates />
 	</xsl:template>
 	
-	
-	
+		
 	<xsl:template match="*[local-name()='bibitem']">
 		<fo:block id="{@id}" margin-bottom="6pt"> <!-- 12 pt -->
 			<xsl:variable name="docidentifier">
@@ -850,41 +796,7 @@
 		</fo:footnote>
 	</xsl:template>
 	
-  
-  <!--
-	<fn reference="1">
-			<p id="_8e5cf917-f75a-4a49-b0aa-1714cb6cf954">Formerly denoted as 15 % (m/m).</p>
-		</fn>
-	-->
-	<xsl:template match="jcgm:title//jcgm:fn | 
-																jcgm:name//jcgm:fn | 
-																jcgm:p/jcgm:fn[not(ancestor::jcgm:table)] | 
-																jcgm:p/*/jcgm:fn[not(ancestor::jcgm:table)] |
-																jcgm:sourcecode/jcgm:fn[not(ancestor::jcgm:table)]" priority="2" name="fn">
-		<fo:footnote keep-with-previous.within-line="always">
-			<xsl:variable name="number">
-				<xsl:number count="jcgm:fn[not(ancestor::jcgm:table)]" level="any"/>
-			</xsl:variable>
-			<xsl:variable name="gen_id" select="generate-id()"/>
-			<xsl:variable name="lang" select="ancestor::jcgm:bipm-standard/*[local-name()='bibdata']//*[local-name()='language'][@current = 'true']"/>
-			<fo:inline font-size="65%" keep-with-previous.within-line="always" vertical-align="super">
-				<fo:basic-link internal-destination="{$lang}_footnote_{@reference}_{$number}_{$gen_id}" fox:alt-text="footnote {@reference}">
-					<xsl:value-of select="$number"/>
-				</fo:basic-link>
-			</fo:inline>
-			<fo:footnote-body>
-				<fo:block font-size="9pt" margin-bottom="12pt" font-weight="normal" text-indent="0" start-indent="0" line-height="124%" text-align="justify">
-					<fo:inline id="{$lang}_footnote_{@reference}_{$number}_{$gen_id}" keep-with-next.within-line="always" font-size="60%" vertical-align="super" padding-right="1mm"> <!-- baseline-shift="30%" padding-right="3mm" font-size="60%"  alignment-baseline="hanging" -->
-						<xsl:value-of select="$number "/>
-					</fo:inline>
-					<xsl:for-each select="jcgm:p">
-							<xsl:apply-templates />
-					</xsl:for-each>
-				</fo:block>
-			</fo:footnote-body>
-		</fo:footnote>
-	</xsl:template>
-
+ 
 	<xsl:template match="jcgm:fn/jcgm:p">
 		<fo:block>
 			<xsl:apply-templates />
