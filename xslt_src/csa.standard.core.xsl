@@ -536,32 +536,6 @@
 		</xsl:if>
 	</xsl:template>
 	
-	<!--
-	<fn reference="1">
-			<p id="_8e5cf917-f75a-4a49-b0aa-1714cb6cf954">Formerly denoted as 15 % (m/m).</p>
-		</fn>
-	-->
-	<xsl:template match="csa:title2/csa:fn | csa:p2/csa:fn[not(ancestor::csa:table)]" priority="2">
-		<fo:footnote keep-with-previous.within-line="always">
-			<xsl:variable name="number" select="@reference"/>
-			
-			<fo:inline font-size="65%" keep-with-previous.within-line="always" vertical-align="super">
-				<fo:basic-link internal-destination="footnote_{@reference}" fox:alt-text="footnote {@reference}">
-					<xsl:value-of select="$number"/><!--  + count(//csa:bibitem/csa:note) -->
-				</fo:basic-link>
-			</fo:inline>
-			<fo:footnote-body>
-				<fo:block font-family="Azo Sans Lt" font-size="10pt" margin-bottom="12pt" font-weight="normal" text-indent="0" start-indent="0" color="rgb(168, 170, 173)" text-align="left">
-					<fo:inline id="footnote_{@reference}" keep-with-next.within-line="always" font-size="60%" vertical-align="super">
-						<xsl:value-of select="$number "/><!-- + count(//csa:bibitem/csa:note) -->
-					</fo:inline>
-					<xsl:for-each select="csa:p">
-							<xsl:apply-templates />
-					</xsl:for-each>
-				</fo:block>
-			</fo:footnote-body>
-		</fo:footnote>
-	</xsl:template>
 
 	<xsl:template match="csa:fn/csa:p">
 		<fo:block>
