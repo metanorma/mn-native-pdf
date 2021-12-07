@@ -1026,7 +1026,7 @@
 										<xsl:if test="@level = 1">
 											<xsl:attribute name="margin-top">6pt</xsl:attribute>
 										</xsl:if>
-										<xsl:if test="@level = 2">
+										<xsl:if test="@level &gt;= 2">
 											<xsl:attribute name="margin-top">4pt</xsl:attribute>
 											<!-- <xsl:attribute name="margin-left">12mm</xsl:attribute> -->
 										</xsl:if>
@@ -1042,15 +1042,15 @@
 																<xsl:otherwise>12mm</xsl:otherwise>
 															</xsl:choose>
 														</xsl:if>
-														<xsl:if test="@level = 2">26mm</xsl:if>
+														<xsl:if test="@level &gt;= 2"><xsl:value-of select="(@level - 1) * 26"/>mm</xsl:if>
 													</xsl:when> <!--   -->
 													<xsl:otherwise>0mm</xsl:otherwise>
 												</xsl:choose>
 											</xsl:attribute>
 											<fo:list-item>
 												<fo:list-item-label end-indent="label-end()">
-													<xsl:if test="@level =2">
-														<xsl:attribute name="start-indent">12mm</xsl:attribute>
+													<xsl:if test="@level &gt;= 2">
+														<xsl:attribute name="start-indent"><xsl:value-of select="(@level - 1) * 12"/>mm</xsl:attribute>
 													</xsl:if>
 													<fo:block>
 														<xsl:if test="@section">															
@@ -1269,7 +1269,7 @@
 			
 		<xsl:variable name="display">
 			<xsl:choose>				
-				<xsl:when test="$level &gt;= 3">false</xsl:when>
+				<xsl:when test="$level &gt; $toc_level">false</xsl:when>
 				<xsl:when test="$section = '' and $type = 'clause' and $level &gt;= 2">false</xsl:when>
 				<xsl:otherwise>true</xsl:otherwise>
 			</xsl:choose>

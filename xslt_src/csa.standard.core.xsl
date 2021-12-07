@@ -225,7 +225,7 @@
 									<fo:list-block>
 										<xsl:attribute name="provisional-distance-between-starts">
 											<xsl:choose>
-												<xsl:when test="@level = 2">10mm</xsl:when>
+												<xsl:when test="@level &gt;= 2"><xsl:value-of select="(@level - 1) * 10"/>mm</xsl:when>
 												<xsl:otherwise>3mm</xsl:otherwise>
 											</xsl:choose>
 										</xsl:attribute>
@@ -289,7 +289,7 @@
 		
 		<xsl:variable name="display">
 			<xsl:choose>				
-				<xsl:when test="$level &gt;= 3">false</xsl:when>				
+				<xsl:when test="$level &gt; $toc_level">false</xsl:when>				
 				<xsl:otherwise>true</xsl:otherwise>
 			</xsl:choose>
 		</xsl:variable>

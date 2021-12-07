@@ -443,7 +443,7 @@
 										<xsl:if test="@level = 1 or @parent = 'annex'">										
 											<xsl:attribute name="font-size">12pt</xsl:attribute>
 										</xsl:if>
-										<xsl:if test="@level = 2 and not(@parent = 'annex')">
+										<xsl:if test="@level &gt;= 2 and not(@parent = 'annex')">
 											<xsl:attribute name="font-size">10pt</xsl:attribute>
 										</xsl:if>
 										
@@ -481,7 +481,13 @@
 												</fo:list-block>
 											</xsl:when>
 											<xsl:otherwise>
-												<fo:block text-align-last="justify" margin-left="8mm">
+												<xsl:variable name="margin-left">
+													<xsl:choose>
+														<xsl:when test="number(@level) != 'NaN'"><xsl:value-of select="(@level - 1) * 8"/></xsl:when>
+														<xsl:otherwise>8</xsl:otherwise>
+													</xsl:choose>
+												</xsl:variable>
+												<fo:block text-align-last="justify" margin-left="{$margin-left}mm">
 													<fo:basic-link internal-destination="{@id}">
 														<xsl:call-template name="setAltText">
 															<xsl:with-param name="value" select="text()"/>
@@ -784,7 +790,7 @@
 		
 		<xsl:variable name="display">
 			<xsl:choose>				
-				<xsl:when test="$level &gt;= 3">false</xsl:when>
+				<xsl:when test="$level &gt; $toc_level">false</xsl:when>
 				<xsl:otherwise>true</xsl:otherwise>
 			</xsl:choose>
 		</xsl:variable>

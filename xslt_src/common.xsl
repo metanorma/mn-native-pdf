@@ -9074,6 +9074,33 @@
 	<!-- =================== -->
 	<!-- Table of Contents (ToC) processing -->
 	<!-- =================== -->
+	
+	<xsl:variable name="toc_level">
+		<xsl:choose>
+			<xsl:when test="1 = 2"></xsl:when> <!-- to do https://github.com/metanorma/mn-native-pdf/issues/337: if there is value in xml -->
+			<xsl:otherwise><!-- default value -->
+				<xsl:if test="$namespace = 'bipm'">3</xsl:if>
+				<xsl:if test="$namespace = 'bsi'">2</xsl:if>
+				<xsl:if test="$namespace = 'csa'">2</xsl:if>
+				<xsl:if test="$namespace = 'csd'">2</xsl:if>
+				<xsl:if test="$namespace = 'gb'">2</xsl:if>
+				<xsl:if test="$namespace = 'iec'">3</xsl:if>
+				<xsl:if test="$namespace = 'iho'">2</xsl:if>
+				<xsl:if test="$namespace = 'itu'">2</xsl:if>
+				<xsl:if test="$namespace = 'jcgm'">3</xsl:if>
+				<xsl:if test="$namespace = 'm3d'">3</xsl:if>
+				<xsl:if test="$namespace = 'mpfd'">2</xsl:if>
+				<xsl:if test="$namespace = 'nist-cswp'">3</xsl:if>
+				<xsl:if test="$namespace = 'nist-sp'">2</xsl:if>
+				<xsl:if test="$namespace = 'ogc'">2</xsl:if>
+				<xsl:if test="$namespace = 'ogc-white-paper'">3</xsl:if>
+				<xsl:if test="$namespace = 'rsd'">2</xsl:if>
+				<xsl:if test="$namespace = 'unece'">3</xsl:if>
+				<xsl:if test="$namespace = 'unece-rec'">3</xsl:if>
+			</xsl:otherwise>
+		</xsl:choose>
+	</xsl:variable>
+	
 	<xsl:template match="*[local-name() = 'toc']">
 		<xsl:param name="colwidths"/>
 		<xsl:variable name="colwidths_">

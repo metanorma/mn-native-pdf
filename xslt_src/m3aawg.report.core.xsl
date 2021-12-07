@@ -372,7 +372,7 @@
 			<xsl:choose>				
 				<xsl:when test="ancestor-or-self::m3d:preface and $level &gt;= 2">false</xsl:when>
 				<xsl:when test="ancestor::m3d:annex and $level &gt;= 3">false</xsl:when>
-				<xsl:when test="$level &lt;= 3">true</xsl:when>
+				<xsl:when test="$level &lt;= $toc_level">true</xsl:when>
 				<xsl:otherwise>false</xsl:otherwise>
 			</xsl:choose>
 		</xsl:variable>

@@ -228,7 +228,7 @@
 										<xsl:attribute name="margin-left">20mm</xsl:attribute>										
 									</xsl:if>
 									<xsl:if test="@level &gt;= 3 and @section != ''">
-										<xsl:attribute name="margin-left">28mm</xsl:attribute>										
+										<xsl:attribute name="margin-left"><xsl:value-of select="(@level - 2) * 28"/>mm</xsl:attribute>										
 									</xsl:if>
 									<fo:basic-link internal-destination="{@id}" fox:alt-text="{title}">
 										<xsl:if test="@section != ''">
@@ -373,7 +373,7 @@
 		<xsl:variable name="display">
 			<xsl:choose>				
 				<xsl:when test="ancestor-or-self::un:annex and $level &gt;= 2">false</xsl:when>
-				<xsl:when test="$level &gt; 3">false</xsl:when>
+				<xsl:when test="$level &gt; $toc_level">false</xsl:when>
 				<xsl:when test="@inline-header='true'">false</xsl:when>
 				<xsl:otherwise>true</xsl:otherwise>
 			</xsl:choose>

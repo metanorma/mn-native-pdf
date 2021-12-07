@@ -1474,7 +1474,7 @@
 						<xsl:if test="@level = 2">
 							<xsl:attribute name="margin-bottom">3pt</xsl:attribute>
 						</xsl:if>
-						<xsl:if test="@level = 3">
+						<xsl:if test="@level &gt;= 3">
 							<xsl:attribute name="margin-bottom">2pt</xsl:attribute>
 						</xsl:if>
 						<xsl:if test="@type = 'indexsect'">
@@ -1490,7 +1490,7 @@
 									<xsl:attribute name="margin-left">
 										<xsl:choose>
 											<xsl:when test="@level = 2">8mm</xsl:when>
-											<xsl:when test="@level = 3">23mm</xsl:when>
+											<xsl:when test="@level &gt;= 3"><xsl:value-of select="(@level - 2) * 23"/>mm</xsl:when>
 											<xsl:otherwise>0mm</xsl:otherwise>
 										</xsl:choose>
 									</xsl:attribute>
@@ -1499,7 +1499,7 @@
 											<xsl:when test="@section = ''">0mm</xsl:when>
 											<xsl:when test="@level = 1">8mm</xsl:when>
 											<xsl:when test="@level = 2">15mm</xsl:when>
-											<xsl:when test="@level = 3">19mm</xsl:when>
+											<xsl:when test="@level &gt;= 3"><xsl:value-of select="(@level - 2) * 19"/>mm</xsl:when>
 											<xsl:otherwise>0mm</xsl:otherwise>
 										</xsl:choose>
 									</xsl:attribute>
@@ -1750,7 +1750,7 @@
 	
 		<xsl:variable name="display">
 			<xsl:choose>				
-				<xsl:when test="$level &gt; 3">false</xsl:when>
+				<xsl:when test="$level &gt; $toc_level">false</xsl:when>
 				<xsl:when test="$section = '' and $type = 'clause'">false</xsl:when><!-- don't show clause with number only in title -->
 				<xsl:otherwise>true</xsl:otherwise>
 			</xsl:choose>

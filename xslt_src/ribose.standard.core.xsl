@@ -446,8 +446,8 @@
 												<xsl:attribute name="keep-with-next">always</xsl:attribute>
 												<xsl:attribute name="color">black</xsl:attribute>
 											</xsl:if>
-											<xsl:if test="@level = 2">
-												<xsl:attribute name="margin-left">16.5mm</xsl:attribute>
+											<xsl:if test="@level &gt;= 2">
+												<xsl:attribute name="margin-left"><xsl:value-of select="(@level - 1) * 16.5"/>mm</xsl:attribute>
 												<xsl:attribute name="space-before">4pt</xsl:attribute>
 												<xsl:attribute name="space-after">5pt</xsl:attribute>
 											</xsl:if>
@@ -548,7 +548,7 @@
 		
 		<xsl:variable name="display">
 			<xsl:choose>				
-				<xsl:when test="$level &gt;= 3">false</xsl:when>
+				<xsl:when test="$level &gt; $toc_level">false</xsl:when>
 				<xsl:otherwise>true</xsl:otherwise>
 			</xsl:choose>
 		</xsl:variable>
