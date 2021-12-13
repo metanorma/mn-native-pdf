@@ -2239,9 +2239,11 @@
 			<xsl:call-template name="getLevelTermName"/>
 		</xsl:variable>
 		<fo:block line-height="1.1" space-before="14pt" role="H{$levelTerm}">
-			<fo:block font-weight="bold" keep-with-next="always">
-				<xsl:apply-templates select="ancestor::iec:term[1]/iec:name" mode="presentation"/>				
-			</fo:block>
+			<xsl:if test="parent::iec:term">
+				<fo:block font-weight="bold" keep-with-next="always">
+					<xsl:apply-templates select="ancestor::iec:term[1]/iec:name" mode="presentation"/>				
+				</fo:block>
+			</xsl:if>
 			<fo:block font-weight="bold" keep-with-next="always">
 				<xsl:call-template name="setStyle_preferred"/>
 				<xsl:apply-templates />
