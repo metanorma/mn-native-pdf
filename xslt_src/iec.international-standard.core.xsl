@@ -2078,6 +2078,7 @@
 					<!-- <xsl:if test="ancestor::iec:dl and ancestor::iec:figure">
 						<xsl:attribute name="margin-bottom">10pt</xsl:attribute>
 					</xsl:if> -->
+					<xsl:apply-templates select="@language"/>
 					<xsl:apply-templates />
 				</xsl:element>
 			</xsl:when>

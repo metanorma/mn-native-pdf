@@ -4721,6 +4721,7 @@
 	
 	<xsl:template match="*[local-name()='dd']"/>
 	<xsl:template match="*[local-name()='dd']" mode="process">
+		<xsl:apply-templates select="@language"/>
 		<xsl:apply-templates />
 	</xsl:template>
 
@@ -9250,6 +9251,10 @@
 					</svg>
 				</fo:instream-foreign-object>	
 		</fo:inline>
+	</xsl:template>
+	
+	<xsl:template match="@language">
+		<xsl:copy-of select="."/>
 	</xsl:template>
 	
 	<!-- convert YYYY-MM-DD to 'Month YYYY' or 'Month DD, YYYY' -->
