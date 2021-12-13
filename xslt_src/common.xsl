@@ -4737,10 +4737,8 @@
 	<xsl:template match="*[local-name()='strong'] | *[local-name()='b']">
 		<fo:inline font-weight="bold">
 			<xsl:if test="$namespace = 'rsd'">
-				<xsl:if test="not(parent::*[local-name() = 'termsource'])">
-					<xsl:attribute name="font-weight">normal</xsl:attribute>
-					<xsl:attribute name="color">black</xsl:attribute>
-				</xsl:if>
+				<xsl:attribute name="font-weight">normal</xsl:attribute>
+				<xsl:attribute name="color">black</xsl:attribute>
 			</xsl:if>
 			<xsl:apply-templates />
 		</fo:inline>
@@ -5564,6 +5562,28 @@
 			<xsl:apply-templates />
 		</fo:inline>		
 	</xsl:template>
+
+	<xsl:template match="*[local-name() = 'modification']">
+		<xsl:variable name="title-modified">
+			<xsl:if test="$namespace = 'bsi' or $namespace = 'iso' or $namespace = 'jcgm'">
+				<xsl:call-template name="getLocalizedString">
+					<xsl:with-param name="key">modified</xsl:with-param>
+				</xsl:call-template>
+			</xsl:if>
+			<xsl:if test="$namespace = 'bipm' or $namespace = 'csa' or $namespace = 'csd' or $namespace = 'gb' or $namespace = 'iec' or $namespace = 'iho' or $namespace = 'itu' or $namespace = 'm3d' or $namespace = 'mpfd' or $namespace = 'nist-cswp'  or $namespace = 'nist-sp' or $namespace = 'ogc' or $namespace = 'ogc-white-paper' or $namespace = 'rsd' or $namespace = 'unece' or $namespace = 'unece-rec'">
+				<xsl:call-template name="getTitle">
+					<xsl:with-param name="name" select="'title-modified'"/>
+				</xsl:call-template>
+			</xsl:if>
+		</xsl:variable>
+		
+    <xsl:variable name="text"><xsl:apply-templates/></xsl:variable>
+		<xsl:choose>
+			<xsl:when test="$lang = 'zh'"><xsl:text>、</xsl:text><xsl:value-of select="$title-modified"/><xsl:if test="normalize-space($text) != ''"><xsl:text>—</xsl:text></xsl:if></xsl:when>
+			<xsl:otherwise><xsl:text>, </xsl:text><xsl:value-of select="$title-modified"/><xsl:if test="normalize-space($text) != ''"><xsl:text> — </xsl:text></xsl:if></xsl:otherwise>
+		</xsl:choose>
+		<xsl:apply-templates/>
+	</xsl:template>	
 
 	<xsl:template match="*[local-name() = 'xref']">
 		<fo:basic-link internal-destination="{@target}" fox:alt-text="{@target}" xsl:use-attribute-sets="xref-style">
@@ -7576,9 +7596,10 @@
 			<xsl:variable name="termsource_text">
 				<xsl:apply-templates />
 			</xsl:variable>
-			<xsl:copy-of select="$termsource_text"/>
-			<!-- <xsl:choose>
+			
+			<xsl:choose>
 				<xsl:when test="starts-with(normalize-space($termsource_text), '[')">
+					<!-- <xsl:apply-templates /> -->
 					<xsl:copy-of select="$termsource_text"/>
 				</xsl:when>
 				<xsl:otherwise>
@@ -7591,6 +7612,7 @@
 					<xsl:if test="$namespace = 'gb' or $namespace = 'iso' or $namespace = 'iec' or $namespace = 'itu' or $namespace = 'unece' or $namespace = 'unece-rec' or $namespace = 'nist-cswp'  or $namespace = 'nist-sp' or $namespace = 'ogc-white-paper' or $namespace = 'csa' or $namespace = 'csd' or $namespace = 'm3d' or $namespace = 'iho' or $namespace = 'bipm' or $namespace = 'jcgm'">
 						<xsl:text>[</xsl:text>
 					</xsl:if>
+					<!-- <xsl:apply-templates />					 -->
 					<xsl:copy-of select="$termsource_text"/>
 					<xsl:if test="$namespace = 'bsi'">
 						<xsl:choose>
@@ -7602,7 +7624,7 @@
 						<xsl:text>]</xsl:text>
 					</xsl:if>
 				</xsl:otherwise>
-			</xsl:choose> -->
+			</xsl:choose>
 		</fo:block>
 	</xsl:template>
 	
@@ -7612,7 +7634,7 @@
 		</xsl:if>
 	</xsl:template>
 	
-	<!-- <xsl:variable name="localized.source">
+	<xsl:variable name="localized.source">
 		<xsl:call-template name="getLocalizedString">
 			<xsl:with-param name="key">source</xsl:with-param>
 		</xsl:call-template>
@@ -7656,62 +7678,15 @@
 						</xsl:call-template>
 						<xsl:text>: </xsl:text>
 					</xsl:if>
+					
 				</fo:inline>
 			</xsl:if>
 			<fo:inline xsl:use-attribute-sets="origin-style">
 				<xsl:apply-templates/>
 			</fo:inline>
 			<xsl:if test="$namespace = 'ogc'"><xsl:text>]</xsl:text></xsl:if>
-		</fo:basic-link>
-	</xsl:template> -->
-	
-	<!-- text SOURCE: -->
-	<xsl:template match="*[local-name() = 'termsource']/*[local-name() = 'strong'][1][following-sibling::*[1][local-name() = 'origin']]/text()">
-		<fo:inline>
-			<xsl:if test="$namespace = 'rsd'">
-				<xsl:attribute name="color"><xsl:value-of select="$color_blue"/></xsl:attribute>
-			</xsl:if>
-			<xsl:if test="$namespace = 'ogc'">
-				<xsl:attribute name="padding-right">1mm</xsl:attribute>
-			</xsl:if>
-			<xsl:value-of select="."/>
-		</fo:inline>
+			</fo:basic-link>
 	</xsl:template>
-	
-	<xsl:template match="*[local-name() = 'origin']">
-		<fo:basic-link internal-destination="{@bibitemid}" fox:alt-text="{@citeas}">
-			<xsl:if test="normalize-space(@citeas) = ''">
-				<xsl:attribute name="fox:alt-text"><xsl:value-of select="@bibitemid"/></xsl:attribute>
-			</xsl:if>
-			<fo:inline xsl:use-attribute-sets="origin-style">
-				<xsl:apply-templates/>
-			</fo:inline>
-		</fo:basic-link>
-	</xsl:template>
-	
-	
-	<!-- not using, see https://github.com/glossarist/iev-document/issues/23 -->
-	<xsl:template match="*[local-name() = 'modification']">
-		<xsl:variable name="title-modified">
-			<xsl:if test="$namespace = 'bsi' or $namespace = 'iso' or $namespace = 'jcgm'">
-				<xsl:call-template name="getLocalizedString">
-					<xsl:with-param name="key">modified</xsl:with-param>
-				</xsl:call-template>
-			</xsl:if>
-			<xsl:if test="$namespace = 'bipm' or $namespace = 'csa' or $namespace = 'csd' or $namespace = 'gb' or $namespace = 'iec' or $namespace = 'iho' or $namespace = 'itu' or $namespace = 'm3d' or $namespace = 'mpfd' or $namespace = 'nist-cswp'  or $namespace = 'nist-sp' or $namespace = 'ogc' or $namespace = 'ogc-white-paper' or $namespace = 'rsd' or $namespace = 'unece' or $namespace = 'unece-rec'">
-				<xsl:call-template name="getTitle">
-					<xsl:with-param name="name" select="'title-modified'"/>
-				</xsl:call-template>
-			</xsl:if>
-		</xsl:variable>
-		
-    <xsl:variable name="text"><xsl:apply-templates/></xsl:variable>
-		<xsl:choose>
-			<xsl:when test="$lang = 'zh'"><xsl:text>、</xsl:text><xsl:value-of select="$title-modified"/><xsl:if test="normalize-space($text) != ''"><xsl:text>—</xsl:text></xsl:if></xsl:when>
-			<xsl:otherwise><xsl:text>, </xsl:text><xsl:value-of select="$title-modified"/><xsl:if test="normalize-space($text) != ''"><xsl:text> — </xsl:text></xsl:if></xsl:otherwise>
-		</xsl:choose>
-		<xsl:apply-templates/>
-	</xsl:template>	
 	
 	<xsl:template match="*[local-name() = 'modification']/*[local-name() = 'p']">
 		<fo:inline><xsl:apply-templates /></fo:inline>
