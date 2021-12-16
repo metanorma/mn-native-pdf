@@ -2050,6 +2050,9 @@
 						<xsl:attribute name="span">all</xsl:attribute>
 						<xsl:attribute name="font-size">8pt</xsl:attribute>
 					</xsl:if>
+					<xsl:if test="starts-with(@id, 'boxed-text')">
+						<xsl:attribute name="font-size">inherit</xsl:attribute>
+					</xsl:if>
 				</xsl:if>
 				<xsl:if test="$namespace = 'iso' or $namespace = 'itu' or $namespace = 'csd' or $namespace = 'ogc-white-paper' or $namespace = 'gb' or $namespace = 'jcgm'">
 					<xsl:attribute name="font-size">10pt</xsl:attribute>
@@ -3474,6 +3477,12 @@
 					<xsl:attribute name="border">none</xsl:attribute>
 				</xsl:if>
 				
+				<xsl:if test="starts-with(ancestor::*[local-name() = 'table']/@id, 'boxed-text')">
+					<xsl:attribute name="padding-left">2mm</xsl:attribute>
+					<xsl:attribute name="padding-right">2mm</xsl:attribute>
+					<xsl:attribute name="padding-top">4mm</xsl:attribute>
+					<xsl:attribute name="padding-bottom">4mm</xsl:attribute>
+				</xsl:if>
 			</xsl:if>
 			<xsl:if test="$namespace = 'jcgm'">
 				<xsl:if test="count(*) = 1 and (local-name(*[1]) = 'stem' or local-name(*[1]) = 'figure')">
