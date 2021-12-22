@@ -1003,7 +1003,7 @@
 	</xsl:template>
 	
 	<xsl:template name="listProcessing">
-		<fo:list-block provisional-distance-between-starts="8mm"> <!-- 12mm -->
+		<fo:list-block provisional-distance-between-starts="6mm"> <!-- 12mm -->
 			<xsl:if test="ancestor::rsd:ul | ancestor::rsd:ol">
 				<!-- <xsl:attribute name="margin-bottom">0pt</xsl:attribute> -->
 			</xsl:if>
