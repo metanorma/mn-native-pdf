@@ -4797,7 +4797,7 @@
 				<xsl:if test="$namespace = 'rsd'">
 					<xsl:choose>
 						<xsl:when test="ancestor::*[local-name() = 'table']">inherit</xsl:when>
-						<xsl:otherwise>110%</xsl:otherwise>
+						<xsl:otherwise>95%</xsl:otherwise> <!-- 110% -->
 					</xsl:choose>
 				</xsl:if>
 				<xsl:if test="$namespace = 'unece' or $namespace = 'unece-rec'"></xsl:if>		
@@ -6982,7 +6982,7 @@
 						<xsl:if test="$namespace = 'rsd'">
 							<xsl:choose>
 								<xsl:when test="ancestor::*[local-name() = 'table']">inherit</xsl:when>
-								<xsl:otherwise>110%</xsl:otherwise>
+								<xsl:otherwise>95%</xsl:otherwise><!-- 110% -->
 							</xsl:choose>
 						</xsl:if>
 						<xsl:if test="$namespace = 'unece' or $namespace = 'unece-rec'">10</xsl:if>		
