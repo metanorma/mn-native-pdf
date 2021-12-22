@@ -2276,7 +2276,7 @@
 					</xsl:if>
 					<xsl:if test="$namespace = 'rsd'">
 						<attribute name="border">0pt solid black</attribute>
-						<attribute name="font-size">8pt</attribute>
+						<attribute name="font-size">9.5pt</attribute> <!-- 8pt -->
 					</xsl:if>
 				</xsl:variable>
 				
