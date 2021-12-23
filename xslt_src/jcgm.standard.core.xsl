@@ -640,8 +640,9 @@
 
 	<xsl:template name="getListItemFormat">
 		<xsl:choose>
-			<xsl:when test="local-name(..) = 'ul' and ../ancestor::jcgm:ul">&#x2212;</xsl:when> <!-- &#x2212; - minus sign.  &#x2014; - dash -->
-			<xsl:when test="local-name(..) = 'ul'">&#x2014;</xsl:when> <!-- &#x2014; dash -->
+			<xsl:when test="local-name(..) = 'ul'">
+				<xsl:call-template name="setULLabel"/>
+			</xsl:when>
 			<xsl:otherwise> <!-- for ordered lists -->
 				<xsl:variable name="start_value">
 					<xsl:choose>

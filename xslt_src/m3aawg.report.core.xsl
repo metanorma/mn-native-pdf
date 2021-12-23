@@ -412,7 +412,9 @@
 
 	<xsl:template name="getListItemFormat">
 		<xsl:choose>
-			<xsl:when test="local-name(..) = 'ul'">•</xsl:when> <!-- &#x2014; dash -->
+			<xsl:when test="local-name(..) = 'ul'">
+				<xsl:call-template name="setULLabel"/>
+			</xsl:when>
 			<xsl:otherwise> <!-- for ordered lists -->
 				<xsl:choose>
 					<xsl:when test="../@type = 'arabic'">
@@ -670,10 +672,6 @@
 		<fo:list-item id="{@id}">
 			<fo:list-item-label end-indent="label-end()">
 				<fo:block>
-					<xsl:if test="local-name(..) = 'ul'">
-						<xsl:attribute name="font-size">18pt</xsl:attribute>
-						<xsl:attribute name="margin-top">-0.5mm</xsl:attribute><!-- to vertical align big dot -->
-					</xsl:if>
 					<xsl:call-template name="getListItemFormat"/>
 				</fo:block>
 			</fo:list-item-label>

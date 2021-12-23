@@ -1182,13 +1182,10 @@
 		<fo:list-item id="{@id}">
 			<fo:list-item-label end-indent="label-end()">
 				<fo:block>
-					<xsl:if test="local-name(..) = 'ul'">
-						<xsl:attribute name="color">
-							<xsl:value-of select="$color_design"/>
-						</xsl:attribute>
-					</xsl:if>
 					<xsl:choose>
-						<xsl:when test="local-name(..) = 'ul'">•</xsl:when> <!-- &#x2014; dash -->
+						<xsl:when test="local-name(..) = 'ul'">
+							<xsl:call-template name="setULLabel"/>
+						</xsl:when>
 						<xsl:otherwise> <!-- for ordered lists -->
 							<xsl:choose>
 								<xsl:when test="../@class = 'steps'">

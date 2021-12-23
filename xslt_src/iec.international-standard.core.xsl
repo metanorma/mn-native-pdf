@@ -2183,12 +2183,11 @@
 	<xsl:template match="iec:li">
 		<fo:list-item>
 			<fo:list-item-label end-indent="label-end()">
-				<xsl:if test="local-name(..) = 'ul'">
-					<xsl:attribute name="font-size">10pt</xsl:attribute>
-				</xsl:if>
 				<fo:block>
 					<xsl:choose>
-						<xsl:when test="local-name(..) = 'ul'">•</xsl:when> <!-- &#x2014; dash -->
+						<xsl:when test="local-name(..) = 'ul'">
+							<xsl:call-template name="setULLabel"/>
+						</xsl:when>
 						<xsl:otherwise> <!-- for ordered lists -->
 							<xsl:choose>
 								<xsl:when test="../@type = 'arabic'">

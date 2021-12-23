@@ -8281,13 +8281,102 @@
 	</xsl:template>
 	
 	<xsl:variable name="ul_labels_">
+		<xsl:if test="$namespace = 'bipm'">
+			<label level="1" font-size="15pt">•</label>
+			<label level="2">&#x2212;</label><!-- &#x2212; - minus sign.  &#x2014; - en dash -->
+			<label level="3" font-size="75%">o</label> <!-- white circle -->
+		</xsl:if>
+		<xsl:if test="$namespace = 'bsi'">
+			<label>
+				<xsl:choose>
+					<xsl:when test="$document_type = 'PAS'">•</xsl:when> <!-- bullet -->
+					<xsl:otherwise>&#x2014;</xsl:otherwise> <!-- em dash -->
+				</xsl:choose>
+			</label>
+		</xsl:if>
+		<xsl:if test="$namespace = 'csa'">
+			<label level="1">•</label>
+			<label level="2">-</label><!-- minus -->
+			<label level="3" font-size="75%">o</label> <!-- white circle -->
+		</xsl:if>
+		<xsl:if test="$namespace = 'csd'">
+			<label>&#x2014;</label> <!-- em dash -->
+		</xsl:if>
+		<xsl:if test="$namespace = 'iec'">
+			<label level="1" font-size="10pt">•</label>
+			<label level="2" font-size="10pt">&#x2014;</label><!-- em dash -->
+			<label level="3" font-size="75%">o</label> <!-- white circle -->
+		</xsl:if>
+		<xsl:if test="$namespace = 'iho'">
+			<label>&#x2014;</label> <!-- em dash -->
+		</xsl:if>
+		<xsl:if test="$namespace = 'iso'">
+			<label>&#x2014;</label> <!-- em dash -->
+		</xsl:if>
+		<xsl:if test="$namespace = 'jcgm'">
+			<label level="1">&#x2014;</label> <!-- em dash -->
+			<label level="2">&#x2212;</label><!-- minus sign -->
+			<label level="3" font-size="75%">o</label> <!-- white circle -->
+		</xsl:if>
+		<xsl:if test="$namespace = 'm3d'">
+			<label font-size="18pt" margin-top="-0.5mm">•</label> <!-- margin-top to vertical align big dot -->
+		</xsl:if>
+		<xsl:if test="$namespace = 'mpfd'">
+			<label>&#x2014;</label> <!-- em dash -->
+		</xsl:if>
+		<xsl:if test="$namespace = 'nist-cswp'">
+			<label>•</label>
+		</xsl:if>
+		<xsl:if test="$namespace = 'nist-sp'">
+			<label>•</label>
+		</xsl:if>
+		<xsl:if test="$namespace = 'ogc'">
+			<label color="{$color_design}">•</label>
+		</xsl:if>
+		<xsl:if test="$namespace = 'ogc-white-paper'">
+			<label>&#x2014;</label> <!-- em dash -->
+		</xsl:if>
 		<xsl:if test="$namespace = 'rsd'">
-			<label num="1" font-size="75%">o</label> <!-- white circle -->
-			<label num="2">&#x2014;</label> <!-- em dash -->
-			<label num="3" font-size="140%">&#x2022;</label> <!-- bullet -->
+			<label level="1" font-size="75%">o</label> <!-- white circle -->
+			<label level="2">&#x2014;</label> <!-- em dash -->
+			<label level="3" font-size="140%">&#x2022;</label> <!-- bullet -->
+		</xsl:if>
+		<xsl:if test="$namespace = 'unece'">
+			<label>•</label>
+		</xsl:if>
+		<xsl:if test="$namespace = 'unece-rec'">
+			<label>•</label>
 		</xsl:if>
 	</xsl:variable>
 	<xsl:variable name="ul_labels" select="xalan:nodeset($ul_labels_)"/>
+
+	<xsl:template name="setULLabel">
+		<xsl:variable name="list_level_" select="count(ancestor::*[local-name() = 'ul']) + count(ancestor::*[local-name() = 'ol'])" />
+		<xsl:variable name="list_level">
+			<xsl:choose>
+				<xsl:when test="$list_level_ &lt;= 3"><xsl:value-of select="$list_level_"/></xsl:when>
+				<xsl:otherwise><xsl:value-of select="$list_level_ mod 3"/></xsl:otherwise>
+			</xsl:choose>
+		</xsl:variable>
+		<xsl:choose>
+			<xsl:when test="$ul_labels/label[not(@level)]"> <!-- one label for all levels -->
+				<xsl:apply-templates select="$ul_labels/label[not(@level)]" mode="ul_labels"/>
+			</xsl:when>
+			<xsl:when test="$list_level mod 3 = 0">
+				<xsl:apply-templates select="$ul_labels/label[@level = 3]" mode="ul_labels"/>
+			</xsl:when>
+			<xsl:when test="$list_level mod 2 = 0">
+				<xsl:apply-templates select="$ul_labels/label[@level = 2]" mode="ul_labels"/>
+			</xsl:when>
+			<xsl:otherwise>
+				<xsl:apply-templates select="$ul_labels/label[@level = 1]" mode="ul_labels"/>
+			</xsl:otherwise>
+		</xsl:choose>
+	</xsl:template>
+	<xsl:template match="label" mode="ul_labels">
+		<xsl:copy-of select="@*[not(local-name() = 'level')]"/>
+		<xsl:value-of select="."/>
+	</xsl:template>
 
 	<xsl:template match="*[local-name() = 'ul'] | *[local-name() = 'ol']">
 		<xsl:choose>

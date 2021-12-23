@@ -1021,28 +1021,7 @@
 				<fo:block color="{$color_blue}" font-weight="bold">
 					<xsl:choose>
 						<xsl:when test="local-name(..) = 'ul'">
-							<xsl:variable name="list_level_" select="count(ancestor::rsd:ul) + count(ancestor::rsd:ol)"/>
-							<xsl:variable name="list_level">
-								<xsl:choose>
-									<xsl:when test="$list_level_ &lt;= 3"><xsl:value-of select="$list_level_"/></xsl:when>
-									<xsl:otherwise><xsl:value-of select="$list_level_ mod 3"/></xsl:otherwise>
-								</xsl:choose>
-							</xsl:variable>
-							<xsl:choose>
-								<xsl:when test="$list_level mod 3 = 0">
-									<xsl:copy-of select="$ul_labels/label[@num = 3]/@font-size"/>
-									<xsl:copy-of select="$ul_labels/label[@num = 3]/@font-family"/>
-									<xsl:value-of select="$ul_labels/label[@num = 3]"/>
-								</xsl:when>
-								<xsl:when test="$list_level mod 2 = 0">
-									<xsl:copy-of select="$ul_labels/label[@num = 2]/@font-size"/>
-									<xsl:value-of select="$ul_labels/label[@num = 2]"/>
-								</xsl:when>
-								<xsl:otherwise>
-									<xsl:copy-of select="$ul_labels/label[@num = 1]/@font-size"/>
-									<xsl:value-of select="$ul_labels/label[@num = 1]"/>
-								</xsl:otherwise>
-							</xsl:choose>
+							<xsl:call-template name="setULLabel"/>
 						</xsl:when>
 						<!-- <xsl:when test="local-name(..) = 'ul' and (../ancestor::rsd:ul or ../ancestor::rsd:ol)">&#x2014;</xsl:when> --> <!-- - &#x2014; dash -->
 						<!-- <xsl:when test="local-name(..) = 'ul'">•</xsl:when> -->

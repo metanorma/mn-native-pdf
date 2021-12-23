@@ -980,8 +980,11 @@
 	<xsl:template name="setListItemLabel">
 		<xsl:attribute name="label">
 			<xsl:choose>
-				<xsl:when test="local-name(..) = 'ul' and ../ancestor::bipm:ul">&#x2212;</xsl:when> <!-- &#x2212; - minus sign.  &#x2014; - dash -->
-				<xsl:when test="local-name(..) = 'ul'">•</xsl:when> <!-- &#x2014; dash -->
+				<xsl:when test="local-name(..) = 'ul'">
+					<xsl:call-template name="setULLabel"/>
+				</xsl:when>
+				<!-- <xsl:when test="local-name(..) = 'ul' and ../ancestor::bipm:ul">&#x2212;</xsl:when> --> <!-- &#x2212; - minus sign.  &#x2014; - dash -->
+				<!-- <xsl:when test="local-name(..) = 'ul'">•</xsl:when> --> <!-- &#x2014; dash -->
 				<xsl:otherwise> <!-- for ordered lists -->
 					<xsl:variable name="start_value">
 						<xsl:choose>

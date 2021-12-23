@@ -591,7 +591,9 @@
 			<fo:list-item-label end-indent="label-end()">
 				<fo:block>
 					<xsl:choose>
-						<xsl:when test="local-name(..) = 'ul'">&#x2014;</xsl:when> <!-- dash -->
+						<xsl:when test="local-name(..) = 'ul'">
+							<xsl:call-template name="setULLabel"/>
+						</xsl:when>
 						<xsl:otherwise> <!-- for ordered lists -->
 							<xsl:choose>
 								<xsl:when test="../@type = 'arabic'">
