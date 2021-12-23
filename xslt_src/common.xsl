@@ -8280,6 +8280,14 @@
 		<xsl:value-of select="java:replaceAll(java:java.lang.String.new(.),' ',' ')"/>
 	</xsl:template>
 	
+	<xsl:variable name="ul_labels_">
+		<xsl:if test="$namespace = 'rsd'">
+			<label num="1" font-size="75%">o</label> <!-- white circle -->
+			<label num="2">&#x2014;</label> <!-- em dash -->
+			<label num="3" font-size="140%">&#x2022;</label> <!-- bullet -->
+		</xsl:if>
+	</xsl:variable>
+	<xsl:variable name="ul_labels" select="xalan:nodeset($ul_labels_)"/>
 
 	<xsl:template match="*[local-name() = 'ul'] | *[local-name() = 'ol']">
 		<xsl:choose>

@@ -1014,13 +1014,6 @@
 		</fo:list-block>
 	</xsl:template>
 	
-	
-	<xsl:variable name="ul_labels_">
-		<label num="1">•</label>
-		<label num="2" font-size="70%">&#x2014;</label> <!-- em dash -->
-		<label num="3" font-size="70%">o</label> <!-- white circle -->
-	</xsl:variable>
-	<xsl:variable name="ul_labels" select="xalan:nodeset($ul_labels_)"/>
 							
 	<xsl:template match="rsd:li">
 		<fo:list-item space-after="4pt">
@@ -1038,13 +1031,17 @@
 							<xsl:choose>
 								<xsl:when test="$list_level mod 3 = 0">
 									<xsl:copy-of select="$ul_labels/label[@num = 3]/@font-size"/>
+									<xsl:copy-of select="$ul_labels/label[@num = 3]/@font-family"/>
 									<xsl:value-of select="$ul_labels/label[@num = 3]"/>
 								</xsl:when>
 								<xsl:when test="$list_level mod 2 = 0">
 									<xsl:copy-of select="$ul_labels/label[@num = 2]/@font-size"/>
 									<xsl:value-of select="$ul_labels/label[@num = 2]"/>
 								</xsl:when>
-								<xsl:otherwise><xsl:value-of select="$ul_labels/label[@num = 1]"/></xsl:otherwise>
+								<xsl:otherwise>
+									<xsl:copy-of select="$ul_labels/label[@num = 1]/@font-size"/>
+									<xsl:value-of select="$ul_labels/label[@num = 1]"/>
+								</xsl:otherwise>
 							</xsl:choose>
 						</xsl:when>
 						<!-- <xsl:when test="local-name(..) = 'ul' and (../ancestor::rsd:ul or ../ancestor::rsd:ol)">&#x2014;</xsl:when> --> <!-- - &#x2014; dash -->
