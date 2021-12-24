@@ -368,7 +368,7 @@
 	
 	
 	
-	<xsl:template match="mpfd:title">
+	<xsl:template match="mpfd:title" name="title">
 		
 		<xsl:variable name="level">
 			<xsl:call-template name="getLevel"/>

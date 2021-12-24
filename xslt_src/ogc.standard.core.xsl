@@ -932,7 +932,7 @@
 		</fo:block>
 	</xsl:template>
 	
-	<xsl:template match="ogc:title">
+	<xsl:template match="ogc:title" name="title">
 		
 		<xsl:variable name="level">
 			<xsl:call-template name="getLevel"/>

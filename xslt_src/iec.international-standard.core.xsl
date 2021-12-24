@@ -1982,7 +1982,7 @@
 	</xsl:template>
 	
 	
-	<xsl:template match="iec:title">
+	<xsl:template match="iec:title" name="title">
 		
 		<xsl:variable name="level">
 			<xsl:call-template name="getLevel"/>

@@ -2450,7 +2450,7 @@
 	<!-- ====== -->
 	
 	
-	<xsl:template match="bipm:title" name="clause_title">
+	<xsl:template match="bipm:title" name="title">
 		
 		<xsl:variable name="level">
 			<xsl:call-template name="getLevel"/>

@@ -773,7 +773,7 @@
 	
 	<xsl:template match="un:title[parent::un:clause[@inline-header = 'true']]" priority="3"/>
 	
-	<xsl:template match="un:title">
+	<xsl:template match="un:title" name="title">
 
 		<xsl:variable name="level">
 			<xsl:call-template name="getLevel"/>

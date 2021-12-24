@@ -475,7 +475,7 @@
 		</fo:block>
 	</xsl:template>
 		
-	<xsl:template match="iho:title">
+	<xsl:template match="iho:title" name="title">
 		
 		<xsl:variable name="level">
 			<xsl:call-template name="getLevel"/>

@@ -428,7 +428,7 @@
 	
 
 	
-	<xsl:template match="csd:title">
+	<xsl:template match="csd:title" name="title">
 		
 		<xsl:variable name="level">
 			<xsl:call-template name="getLevel"/>

@@ -1300,7 +1300,7 @@
 		</xsl:if>
 	</xsl:template>
 	
-	<xsl:template match="jcgm:title">
+	<xsl:template match="jcgm:title" name="title">
 	
 		<xsl:variable name="level">
 			<xsl:call-template name="getLevel"/>

@@ -428,7 +428,7 @@
 		</fo:block>		
 	</xsl:template>
 	
-	<xsl:template match="csa:title">
+	<xsl:template match="csa:title" name="title">
 
 		<xsl:variable name="level">
 			<xsl:call-template name="getLevel"/>

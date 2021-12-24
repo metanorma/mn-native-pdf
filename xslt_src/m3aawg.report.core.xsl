@@ -484,7 +484,7 @@
 	</xsl:template>
 	
 	
-	<xsl:template match="m3d:title">
+	<xsl:template match="m3d:title" name="title">
 		
 		<xsl:variable name="level">
 			<xsl:call-template name="getLevel"/>

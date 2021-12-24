@@ -1647,7 +1647,7 @@
 		</fo:block>
 	</xsl:template>
 	
-	<xsl:template match="itu:title">
+	<xsl:template match="itu:title" name="title">
 		
 		<xsl:variable name="level">
 			<xsl:call-template name="getLevel"/>

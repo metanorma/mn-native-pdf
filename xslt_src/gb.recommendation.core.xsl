@@ -617,7 +617,7 @@
 		</fo:block>
 	</xsl:template>
 	
-	<xsl:template match="gb:title">
+	<xsl:template match="gb:title" name="title">
 		
 		<xsl:variable name="level">
 			<xsl:call-template name="getLevel"/>

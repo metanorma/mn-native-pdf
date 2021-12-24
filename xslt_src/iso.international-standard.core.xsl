@@ -1583,7 +1583,7 @@
 		</xsl:choose>
 	</xsl:template>
 	
-	<xsl:template match="iso:title">
+	<xsl:template match="iso:title" name="title">
 	
 		<xsl:variable name="level">
 			<xsl:call-template name="getLevel"/>
