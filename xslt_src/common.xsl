@@ -1625,6 +1625,7 @@
 			<xsl:attribute name="font-size">8pt</xsl:attribute>
 			<xsl:attribute name="start-indent">5mm</xsl:attribute>
 			<xsl:attribute name="text-indent">-5mm</xsl:attribute>
+			<xsl:attribute name="text-align">left</xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'bipm' or $namespace = 'jcgm'">
 			<xsl:attribute name="font-size">9pt</xsl:attribute>
