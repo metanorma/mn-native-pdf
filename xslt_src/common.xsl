@@ -9209,8 +9209,12 @@
 	<!-- =================== -->
 	
 	<xsl:variable name="toc_level">
+		<!-- https://www.metanorma.org/author/ref/document-attributes/ -->
+		<xsl:variable name="htmltoclevels" select="normalize-space(//*[local-name() = 'misc-container']/*[local-name() = 'presentation-metadata'][*[local-name() = 'name']/text() = 'HTML TOC Heading Levels']/*[local-name() = 'value'])"/> <!-- :htmltoclevels  Number of table of contents levels to render in HTML/PDF output; used to override :toclevels:-->
+		<xsl:variable name="toclevels" select="normalize-space(//*[local-name() = 'misc-container']/*[local-name() = 'presentation-metadata'][*[local-name() = 'name']/text() = 'TOC Heading Levels']/*[local-name() = 'value'])"/> <!-- Number of table of contents levels to render -->
 		<xsl:choose>
-			<xsl:when test="1 = 2"></xsl:when> <!-- to do https://github.com/metanorma/mn-native-pdf/issues/337: if there is value in xml -->
+			<xsl:when test="$htmltoclevels != ''"><xsl:value-of select="number($htmltoclevels)"/></xsl:when> <!-- if there is value in xml -->
+			<xsl:when test="$toclevels != ''"><xsl:value-of select="number($toclevels)"/></xsl:when>  <!-- if there is value in xml -->
 			<xsl:otherwise><!-- default value -->
 				<xsl:if test="$namespace = 'bipm'">3</xsl:if>
 				<xsl:if test="$namespace = 'bsi'">2</xsl:if>
