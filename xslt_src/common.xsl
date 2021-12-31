@@ -9347,7 +9347,7 @@
 	<!-- =================== -->
 	
 	
-	<xsl:template match="*[local-name() = 'variant-title'][@type = 'sub']"/>
+	<xsl:template match="*[local-name() = 'variant-title']"/> <!-- [@type = 'sub'] -->
 	<xsl:template match="*[local-name() = 'variant-title'][@type = 'sub']" mode="subtitle">
 		<fo:inline padding-right="5mm">&#xa0;</fo:inline>
 		<fo:inline><xsl:apply-templates /></fo:inline>
