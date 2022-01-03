@@ -6467,6 +6467,8 @@
 	
 	<xsl:template match="*[local-name() = 'references'][@hidden='true']" mode="contents" priority="3"/>
 	
+	<xsl:template match="*[local-name() = 'references']/*[local-name() = 'bibitem']" mode="contents"/>
+	
 	<xsl:template match="*[local-name() = 'stem']" mode="bookmarks">
 		<xsl:apply-templates mode="bookmarks"/>
 	</xsl:template>
@@ -8692,6 +8694,83 @@
 			<!-- end BIPM bibitem processing-->
 		</xsl:if>
 		
+		<xsl:if test="$namespace = 'bsi'">
+			<!-- start BSI bibtem processing -->
+			<xsl:variable name="docidentifier">
+				<xsl:if test="*[local-name() = 'docidentifier']">
+					<xsl:choose>
+						<xsl:when test="*[local-name() = 'docidentifier'][not(@type = 'metanorma') and not(@type = 'metanorma-ordinal')] and $document_type = 'PAS'">
+							<xsl:value-of select="*[local-name() = 'docidentifier'][not(@type = 'metanorma') and not(@type = 'metanorma-ordinal')]"/>
+						</xsl:when>
+						<xsl:otherwise>
+							<xsl:choose>
+								<xsl:when test="count(*[local-name() = 'docidentifier']) &gt; 1">
+									<xsl:value-of select="*[local-name() = 'docidentifier'][not(@type = 'metanorma') and not(@type = 'metanorma-ordinal')][1]"/>
+								</xsl:when>
+								<xsl:otherwise>
+									<xsl:value-of select="*[local-name() = 'docidentifier']"/>
+								</xsl:otherwise>
+							</xsl:choose>
+						</xsl:otherwise>
+					</xsl:choose>
+				</xsl:if>
+			</xsl:variable>
+			
+			<!-- string starts with [ -->
+			<xsl:variable name="isStartsWithOpeningBracket" select="starts-with($docidentifier,'[')"/>
+			<!-- string ends with [ -->
+			<xsl:variable name="isEndsWithClosingBracket" select="java:endsWith(java:java.lang.String.new($docidentifier),']')"/>
+			<xsl:variable name="removeBrackets">
+				<xsl:choose>
+					<xsl:when test="$isStartsWithOpeningBracket = 'true' and $isEndsWithClosingBracket">
+						<xsl:choose>
+							<!-- [1] [2] ... -->
+							<xsl:when test="normalize-space(java:replaceAll(java:java.lang.String.new($docidentifier), '^\[[0-9]+\]$', '')) = ''">false</xsl:when>
+							<xsl:otherwise>true</xsl:otherwise>
+						</xsl:choose>
+					</xsl:when>
+					<xsl:otherwise>false</xsl:otherwise>
+				</xsl:choose>
+			</xsl:variable>
+			<xsl:variable name="docidentifier_">
+				<xsl:choose>
+					<xsl:when test="$docidentifier = @id"></xsl:when> <!-- don't display docidentifier equal to bibitem/@id, like further_reading_x -->
+					<xsl:when test="contains($removeBrackets, 'true')">
+						<xsl:value-of select="substring($docidentifier, 2, string-length($docidentifier) - 2)"/>
+					</xsl:when>
+					<xsl:otherwise>
+						<xsl:value-of select="$docidentifier"/>
+					</xsl:otherwise>
+				</xsl:choose>
+			</xsl:variable>
+			
+			<xsl:if test="count(*[local-name() = 'docidentifier']) &gt; 1 and *[local-name() = 'docidentifier'][@type = 'metanorma']">
+				<xsl:value-of select="*[local-name() = 'docidentifier'][@type = 'metanorma']"/><xsl:text> </xsl:text>
+			</xsl:if>
+			
+			<xsl:value-of select="$docidentifier_"/>
+			
+			<xsl:apply-templates select="*[local-name() = 'note']"/>			
+			<xsl:if test="normalize-space($docidentifier_) != ''">
+				<!-- <xsl:if test="preceding-sibling::*[local-name() = 'references'][1][@normative = 'true']">,</xsl:if> -->
+				<xsl:if test="not(starts-with($docidentifier_, '['))">,</xsl:if>
+				<xsl:text> </xsl:text>
+			</xsl:if>
+			<xsl:choose>
+				<xsl:when test="*[local-name() = 'title'][@type = 'main' and @language = $lang]">
+					<xsl:apply-templates select="*[local-name() = 'title'][@type = 'main' and @language = $lang]"/>
+				</xsl:when>
+				<xsl:when test="*[local-name() = 'title'][@type = 'main' and @language = 'en']">
+					<xsl:apply-templates select="*[local-name() = 'title'][@type = 'main' and @language = 'en']"/>
+				</xsl:when>
+				<xsl:otherwise>
+					<xsl:apply-templates select="*[local-name() = 'title']"/>
+				</xsl:otherwise>
+			</xsl:choose>
+			<xsl:apply-templates select="*[local-name() = 'formattedref']"/>
+			<!-- end BSI bibitem processing -->
+		</xsl:if>
+		
 		<xsl:if test="$namespace = 'csa'">
 			<!-- start CSA bibtem processing -->
 			<xsl:if test=".//csa:fn">
@@ -9013,82 +9092,6 @@
 			<!-- end ISO bibitem processing -->
 		</xsl:if>
 		
-		<xsl:if test="$namespace = 'bsi'">
-			<!-- start BSI bibtem processing -->
-			<xsl:variable name="docidentifier">
-				<xsl:if test="*[local-name() = 'docidentifier']">
-					<xsl:choose>
-						<xsl:when test="*[local-name() = 'docidentifier'][not(@type = 'metanorma') and not(@type = 'metanorma-ordinal')] and $document_type = 'PAS'">
-							<xsl:value-of select="*[local-name() = 'docidentifier'][not(@type = 'metanorma') and not(@type = 'metanorma-ordinal')]"/>
-						</xsl:when>
-						<xsl:otherwise>
-							<xsl:choose>
-								<xsl:when test="count(*[local-name() = 'docidentifier']) &gt; 1">
-									<xsl:value-of select="*[local-name() = 'docidentifier'][not(@type = 'metanorma') and not(@type = 'metanorma-ordinal')][1]"/>
-								</xsl:when>
-								<xsl:otherwise>
-									<xsl:value-of select="*[local-name() = 'docidentifier']"/>
-								</xsl:otherwise>
-							</xsl:choose>
-						</xsl:otherwise>
-					</xsl:choose>
-				</xsl:if>
-			</xsl:variable>
-			
-			<!-- string starts with [ -->
-			<xsl:variable name="isStartsWithOpeningBracket" select="starts-with($docidentifier,'[')"/>
-			<!-- string ends with [ -->
-			<xsl:variable name="isEndsWithClosingBracket" select="java:endsWith(java:java.lang.String.new($docidentifier),']')"/>
-			<xsl:variable name="removeBrackets">
-				<xsl:choose>
-					<xsl:when test="$isStartsWithOpeningBracket = 'true' and $isEndsWithClosingBracket">
-						<xsl:choose>
-							<!-- [1] [2] ... -->
-							<xsl:when test="normalize-space(java:replaceAll(java:java.lang.String.new($docidentifier), '^\[[0-9]+\]$', '')) = ''">false</xsl:when>
-							<xsl:otherwise>true</xsl:otherwise>
-						</xsl:choose>
-					</xsl:when>
-					<xsl:otherwise>false</xsl:otherwise>
-				</xsl:choose>
-			</xsl:variable>
-			<xsl:variable name="docidentifier_">
-				<xsl:choose>
-					<xsl:when test="$docidentifier = @id"></xsl:when> <!-- don't display docidentifier equal to bibitem/@id, like further_reading_x -->
-					<xsl:when test="contains($removeBrackets, 'true')">
-						<xsl:value-of select="substring($docidentifier, 2, string-length($docidentifier) - 2)"/>
-					</xsl:when>
-					<xsl:otherwise>
-						<xsl:value-of select="$docidentifier"/>
-					</xsl:otherwise>
-				</xsl:choose>
-			</xsl:variable>
-			
-			<xsl:if test="count(*[local-name() = 'docidentifier']) &gt; 1 and *[local-name() = 'docidentifier'][@type = 'metanorma']">
-				<xsl:value-of select="*[local-name() = 'docidentifier'][@type = 'metanorma']"/><xsl:text> </xsl:text>
-			</xsl:if>
-			
-			<xsl:value-of select="$docidentifier_"/>
-			
-			<xsl:apply-templates select="*[local-name() = 'note']"/>			
-			<xsl:if test="normalize-space($docidentifier_) != ''">
-				<!-- <xsl:if test="preceding-sibling::*[local-name() = 'references'][1][@normative = 'true']">,</xsl:if> -->
-				<xsl:if test="not(starts-with($docidentifier_, '['))">,</xsl:if>
-				<xsl:text> </xsl:text>
-			</xsl:if>
-			<xsl:choose>
-				<xsl:when test="*[local-name() = 'title'][@type = 'main' and @language = $lang]">
-					<xsl:apply-templates select="*[local-name() = 'title'][@type = 'main' and @language = $lang]"/>
-				</xsl:when>
-				<xsl:when test="*[local-name() = 'title'][@type = 'main' and @language = 'en']">
-					<xsl:apply-templates select="*[local-name() = 'title'][@type = 'main' and @language = 'en']"/>
-				</xsl:when>
-				<xsl:otherwise>
-					<xsl:apply-templates select="*[local-name() = 'title']"/>
-				</xsl:otherwise>
-			</xsl:choose>
-			<xsl:apply-templates select="*[local-name() = 'formattedref']"/>
-			<!-- end BSI bibitem processing -->
-		</xsl:if>
 	</xsl:template>
 	
 	<xsl:template name="processBibitemDocId">
