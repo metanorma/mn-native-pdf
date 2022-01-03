@@ -3482,8 +3482,6 @@
 		</fo:list-block>
 	</xsl:template>
 	
-
-	<xsl:template match="bipm:references[not(@normative='true')]/bipm:bibitem" mode="contents"/>
 	
 	<xsl:template match="bipm:bibitem/bipm:title">
 		<fo:inline font-style="italic">

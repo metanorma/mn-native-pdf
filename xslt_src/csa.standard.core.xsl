@@ -771,8 +771,6 @@
 		</fo:block>
 	</xsl:template>
 	
-	<!-- <xsl:template match="csa:references[@id = '_bibliography']/csa:bibitem" mode="contents"/> [position() &gt; 1] -->
-	<xsl:template match="csa:references[not(@normative='true')]/csa:bibitem" mode="contents"/>
 	
 	<!-- <xsl:template match="csa:references[@id = '_bibliography']/csa:bibitem/csa:title"> [position() &gt; 1]-->
 	<xsl:template match="csa:references[not(@normative='true')]/csa:bibitem/csa:title">
