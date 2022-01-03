@@ -390,7 +390,6 @@
 		</xsl:if>	
 		
 	</xsl:template>
-	<xsl:template match="un:references[not(@normative='true')]/un:bibitem" mode="contents"/>
 	<!-- ============================= -->
 	<!-- ============================= -->
 
@@ -901,7 +900,7 @@
 						</xsl:when>
 						<xsl:otherwise>
 							<xsl:apply-templates select="un:formattedref"/>
-							<xsl:apply-templates select="un:docidentifier[@type != 'metanorma' or not(@type)]" mode="process"/>
+							<xsl:apply-templates select="un:docidentifier[(@type != 'metanorma' and @type != 'metanorma-ordinal') or not(@type)]" mode="process"/>
 						</xsl:otherwise>
 					</xsl:choose>
 				</xsl:if>
@@ -941,10 +940,10 @@
 		<xsl:apply-templates />
 	</xsl:template>
 	
-	<xsl:template match="un:docidentifier[@type = 'metanorma']" mode="process">
+	<xsl:template match="un:docidentifier[@type = 'metanorma' or @type = 'metanorma-ordinal']" mode="process">
 		<xsl:apply-templates />
 	</xsl:template>
-	<xsl:template match="un:docidentifier[@type != 'metanorma' or not(@type)]" mode="process">
+	<xsl:template match="un:docidentifier[(@type != 'metanorma' and @type != 'metanorma-ordinal') or not(@type)]" mode="process">
 		<xsl:text> [</xsl:text><xsl:apply-templates /><xsl:text>]</xsl:text>
 	</xsl:template>
 	<xsl:template match="un:docidentifier"/>
