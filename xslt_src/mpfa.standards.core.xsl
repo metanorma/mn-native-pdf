@@ -594,7 +594,7 @@
 		</fo:list-block>
 	</xsl:template>
 	
-	<xsl:template match="mpfd:references[not(@normative='true')]/mpfd:bibitem/mpfd:title">
+	<xsl:template match="mpfd:references/mpfd:bibitem/mpfd:title">
 		<fo:inline font-style="italic">
 			<xsl:apply-templates />
 		</fo:inline>

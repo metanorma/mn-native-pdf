@@ -604,25 +604,7 @@
 	
 	<xsl:template match="m3d:bibitem">
 		<fo:block id="{@id}" margin-bottom="12pt" text-indent="-11.7mm" margin-left="11.7mm"> <!-- 12 pt -->
-				<!-- m3d:docidentifier -->
-			<xsl:if test="m3d:docidentifier">
-				<xsl:choose>
-					<xsl:when test="m3d:docidentifier/@type = 'metanorma'"/>
-					<xsl:otherwise><fo:inline><xsl:value-of select="m3d:docidentifier"/></fo:inline></xsl:otherwise>
-				</xsl:choose>
-			</xsl:if>
-			<xsl:apply-templates select="m3d:note"/>
-			<xsl:if test="m3d:docidentifier">, </xsl:if>
-			<fo:inline font-style="italic">
-				<xsl:choose>
-					<xsl:when test="m3d:title[@type = 'main' and @language = 'en']">
-						<xsl:value-of select="m3d:title[@type = 'main' and @language = 'en']"/>
-					</xsl:when>
-					<xsl:otherwise>
-						<xsl:value-of select="m3d:title"/>
-					</xsl:otherwise>
-				</xsl:choose>
-			</fo:inline>
+			<xsl:call-template name="processBibitem"/>
 		</fo:block>
 	</xsl:template>
 	
@@ -744,49 +726,29 @@
 				<fo:list-item-label end-indent="label-end()">
 					<fo:block>
 						<fo:inline id="{@id}">
-							<xsl:number format="[1]"/>
+							<xsl:value-of select="m3d:docidentifier[@type = 'metanorma-ordinal']"/>
+							<xsl:if test="not(m3d:docidentifier[@type = 'metanorma-ordinal'])">
+								<xsl:number format="[1]"/>
+							</xsl:if>
 						</fo:inline>
 					</fo:block>
 				</fo:list-item-label>
 				<fo:list-item-body start-indent="body-start()">
 					<fo:block text-align="justify">
-						<xsl:variable name="docidentifier">
-							<xsl:if test="m3d:docidentifier">
-								<xsl:choose>
-									<xsl:when test="m3d:docidentifier/@type = 'metanorma'"/>
-									<xsl:otherwise><xsl:value-of select="m3d:docidentifier"/></xsl:otherwise>
-								</xsl:choose>
-							</xsl:if>
-						</xsl:variable>
-						<fo:inline><xsl:value-of select="$docidentifier"/></fo:inline>
-						<xsl:apply-templates select="m3d:note"/>
-						<xsl:if test="normalize-space($docidentifier) != ''">, </xsl:if>
-						<xsl:choose>
-							<xsl:when test="m3d:title[@type = 'main' and @language = 'en']">
-								<xsl:apply-templates select="m3d:title[@type = 'main' and @language = 'en']"/>
-							</xsl:when>
-							<xsl:otherwise>
-								<xsl:apply-templates select="m3d:title"/>
-							</xsl:otherwise>
-						</xsl:choose>
-						<xsl:apply-templates select="m3d:formattedref"/>
+						<xsl:call-template name="processBibitem"/>
 					</fo:block>
 				</fo:list-item-body>
 			</fo:list-item>
 		</fo:list-block>
 	</xsl:template>
 	
-	<!-- <xsl:template match="m3d:references[@id = '_bibliography']/m3d:bibitem" mode="contents"/> -->
-	<xsl:template match="m3d:references[not(@normative='true')]/m3d:bibitem" mode="contents"/>
 	
 	<!-- <xsl:template match="m3d:references[@id = '_bibliography']/m3d:bibitem/m3d:title"> -->
-	<xsl:template match="m3d:references[not(@normative='true')]/m3d:bibitem/m3d:title">
+	<xsl:template match="m3d:references/m3d:bibitem/m3d:title">
 		<fo:inline font-style="italic">
 			<xsl:apply-templates />
 		</fo:inline>
 	</xsl:template>
-
-
 
 	
 	<xsl:template match="mathml:math" priority="2">
