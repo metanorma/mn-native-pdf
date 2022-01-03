@@ -956,7 +956,7 @@
 						<xsl:if test="rsd:docidentifier">
 							<xsl:choose>
 								<xsl:when test="rsd:docidentifier/@type = 'metanorma'"/>
-								<xsl:otherwise><fo:inline><xsl:value-of select="rsd:docidentifier"/>, </fo:inline></xsl:otherwise>
+								<xsl:otherwise><fo:inline><xsl:value-of select="rsd:docidentifier[not(@type = 'metanorma-ordinal')]"/>, </fo:inline></xsl:otherwise>
 							</xsl:choose>
 						</xsl:if>
 						<xsl:choose>
@@ -1160,8 +1160,6 @@
 		</fo:block>
 	</xsl:template>
 
-	<xsl:template match="rsd:references[not(@normative='true')]/rsd:bibitem" mode="contents"/>
-	
 	<!-- <xsl:template match="rsd:references[@id = '_bibliography']/rsd:bibitem/rsd:title"> [position() &gt; 1]-->
 	<xsl:template match="rsd:references[not(@normative='true')]/rsd:bibitem/rsd:title">
 		<fo:inline font-style="italic">
