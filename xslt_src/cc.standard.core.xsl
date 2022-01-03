@@ -519,30 +519,7 @@
 	
 	<xsl:template match="csd:bibitem">
 		<fo:block id="{@id}" margin-bottom="6pt"> <!-- 12 pt -->
-			<xsl:if test=".//csd:fn">
-				<xsl:attribute name="line-height-shift-adjustment">disregard-shifts</xsl:attribute>
-			</xsl:if>
-				<!-- csd:docidentifier -->
-			<xsl:if test="csd:docidentifier">
-				<xsl:choose>
-					<xsl:when test="csd:docidentifier/@type = 'metanorma'"/>
-					<xsl:otherwise>
-						<xsl:value-of select="csd:docidentifier"/>
-					</xsl:otherwise>
-				</xsl:choose>
-			</xsl:if>
-			<xsl:apply-templates select="csd:note"/>
-			<xsl:if test="csd:docidentifier">, </xsl:if>
-			<fo:inline font-style="italic">
-				<xsl:choose>
-					<xsl:when test="csd:title[@type = 'main' and @language = 'en']">
-						<xsl:value-of select="csd:title[@type = 'main' and @language = 'en']"/>
-					</xsl:when>
-					<xsl:otherwise>
-						<xsl:value-of select="csd:title"/>
-					</xsl:otherwise>
-				</xsl:choose>
-			</fo:inline>
+			<xsl:call-template name="processBibitem"/>
 		</fo:block>
 	</xsl:template>
 	
@@ -663,39 +640,24 @@
 				<fo:list-item-label end-indent="label-end()">
 					<fo:block>
 						<fo:inline id="{@id}">
-							<xsl:number format="[1]"/>
+							<xsl:value-of select="*[local-name()='docidentifier'][@type = 'metanorma-ordinal']"/>
+							<xsl:if test="not(*[local-name()='docidentifier'][@type = 'metanorma-ordinal'])">
+								<xsl:number format="[1]"/>
+							</xsl:if>
 						</fo:inline>
 					</fo:block>
 				</fo:list-item-label>
 				<fo:list-item-body start-indent="body-start()">
 					<fo:block>
-						<xsl:if test="csd:docidentifier">
-							<xsl:choose>
-								<xsl:when test="csd:docidentifier/@type = 'metanorma'"/>
-								<xsl:otherwise><fo:inline><xsl:value-of select="csd:docidentifier"/><xsl:apply-templates select="csd:note"/>, </fo:inline></xsl:otherwise>
-							</xsl:choose>
-							
-						</xsl:if>
-						<xsl:choose>
-							<xsl:when test="csd:title[@type = 'main' and @language = 'en']">
-								<xsl:apply-templates select="csd:title[@type = 'main' and @language = 'en']"/>
-							</xsl:when>
-							<xsl:otherwise>
-								<xsl:apply-templates select="csd:title"/>
-							</xsl:otherwise>
-						</xsl:choose>
-						<xsl:apply-templates select="csd:formattedref"/>
+						<xsl:call-template name="processBibitem"/>
 					</fo:block>
 				</fo:list-item-body>
 			</fo:list-item>
 		</fo:list-block>
 	</xsl:template>
 	
-	<!-- <xsl:template match="csd:references[@id = '_bibliography']/csd:bibitem" mode="contents"/> -->
-	<xsl:template match="csd:references[not(@normative='true')]/csd:bibitem" mode="contents"/>
-	
 	<!-- <xsl:template match="csd:references[@id = '_bibliography']/csd:bibitem/csd:title"> -->
-	<xsl:template match="csd:references[not(@normative='true')]/csd:bibitem/csd:title">
+	<xsl:template match="csd:references/csd:bibitem/csd:title">
 		<fo:inline font-style="italic">
 			<xsl:apply-templates />
 		</fo:inline>

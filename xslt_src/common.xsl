@@ -8816,6 +8816,33 @@
 			<!-- end CSA bibtem processing -->
 		</xsl:if>
 		
+		<xsl:if test="$namespace = 'csd'">
+			<!-- start CSD bibtem processing -->
+			<xsl:if test=".//csd:fn">
+				<xsl:attribute name="line-height-shift-adjustment">disregard-shifts</xsl:attribute>
+			</xsl:if>
+			<xsl:variable name="docidentifier">
+				<xsl:if test="*[local-name() = 'docidentifier']">
+					<xsl:choose>
+						<xsl:when test="*[local-name() = 'docidentifier']/@type = 'metanorma'"/>
+						<xsl:otherwise><xsl:value-of select="*[local-name() = 'docidentifier'][not(@type = 'metanorma-ordinal')]"/></xsl:otherwise>
+					</xsl:choose>
+				</xsl:if>
+			</xsl:variable>
+			<xsl:value-of select="$docidentifier"/>
+			<xsl:apply-templates select="csd:note"/>
+			<xsl:if test="csd:docidentifier">, </xsl:if>
+			<xsl:choose>
+				<xsl:when test="csd:title[@type = 'main' and @language = 'en']">
+					<xsl:apply-templates select="csd:title[@type = 'main' and @language = 'en']"/>
+				</xsl:when>
+				<xsl:otherwise>
+					<xsl:apply-templates select="csd:title"/>
+				</xsl:otherwise>
+			</xsl:choose>
+			<xsl:apply-templates select="csd:formattedref"/>
+			<!-- end CSD bibtem processing -->
+		</xsl:if>
 		
 		<xsl:if test="$namespace = 'iho'">
 			<!-- start IHO bibtem processing -->
@@ -8985,12 +9012,10 @@
 		<!-- start MPFD bibitem processing -->
 		<xsl:if test="$namespace = 'mpfd'">
 			<xsl:variable name="docidentifier">
-				<xsl:if test="mpfd:docidentifier">
-					<xsl:choose>
-						<xsl:when test="mpfd:docidentifier/@type = 'metanorma'"/>
-						<xsl:otherwise><xsl:value-of select="mpfd:docidentifier[not(@type = 'metanorma-ordinal')]"/></xsl:otherwise>
-					</xsl:choose>
-				</xsl:if>
+				<xsl:choose>
+					<xsl:when test="mpfd:docidentifier/@type = 'metanorma'"/>
+					<xsl:otherwise><xsl:value-of select="mpfd:docidentifier[not(@type = 'metanorma-ordinal')]"/></xsl:otherwise>
+				</xsl:choose>
 			</xsl:variable>
 			<fo:inline><xsl:value-of select="$docidentifier"/></fo:inline>
 			<xsl:apply-templates select="mpfd:note"/>
