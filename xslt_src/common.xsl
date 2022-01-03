@@ -8822,16 +8822,14 @@
 				<xsl:attribute name="line-height-shift-adjustment">disregard-shifts</xsl:attribute>
 			</xsl:if>
 			<xsl:variable name="docidentifier">
-				<xsl:if test="*[local-name() = 'docidentifier']">
-					<xsl:choose>
-						<xsl:when test="*[local-name() = 'docidentifier']/@type = 'metanorma'"/>
-						<xsl:otherwise><xsl:value-of select="*[local-name() = 'docidentifier'][not(@type = 'metanorma-ordinal')]"/></xsl:otherwise>
-					</xsl:choose>
-				</xsl:if>
+				<xsl:choose>
+					<xsl:when test="*[local-name() = 'docidentifier']/@type = 'metanorma'"/>
+					<xsl:otherwise><xsl:value-of select="*[local-name() = 'docidentifier'][not(@type = 'metanorma-ordinal')]"/></xsl:otherwise>
+				</xsl:choose>
 			</xsl:variable>
 			<xsl:value-of select="$docidentifier"/>
 			<xsl:apply-templates select="csd:note"/>
-			<xsl:if test="csd:docidentifier">, </xsl:if>
+			<xsl:if test="normalize-space($docidentifier) != ''">, </xsl:if>
 			<xsl:choose>
 				<xsl:when test="csd:title[@type = 'main' and @language = 'en']">
 					<xsl:apply-templates select="csd:title[@type = 'main' and @language = 'en']"/>
@@ -8842,6 +8840,29 @@
 			</xsl:choose>
 			<xsl:apply-templates select="csd:formattedref"/>
 			<!-- end CSD bibtem processing -->
+		</xsl:if>
+		
+		<xsl:if test="$namespace = 'iec'">
+			<!-- start IEC bibtem processing -->
+			<xsl:variable name="docidentifier">
+				<xsl:choose>
+					<xsl:when test="*[local-name() = 'docidentifier']/@type = 'metanorma'"/>
+					<xsl:otherwise><xsl:value-of select="*[local-name() = 'docidentifier'][not(@type = 'metanorma-ordinal')]"/></xsl:otherwise>
+				</xsl:choose>
+			</xsl:variable>
+			<xsl:value-of select="$docidentifier"/>
+			<xsl:apply-templates select="iec:note"/>
+			<xsl:if test="normalize-space($docidentifier) != ''">, </xsl:if>
+			<xsl:choose>
+				<xsl:when test="iec:title[@type = 'main' and @language = 'en']">
+					<xsl:apply-templates select="iec:title[@type = 'main' and @language = 'en']"/>
+				</xsl:when>
+				<xsl:otherwise>
+					<xsl:apply-templates select="iec:title"/>
+				</xsl:otherwise>
+			</xsl:choose>
+			<xsl:apply-templates select="iec:formattedref"/>
+			<!-- end IEC bibtem processing -->
 		</xsl:if>
 		
 		<xsl:if test="$namespace = 'iho'">

@@ -2131,25 +2131,7 @@
 	
 	<xsl:template match="iec:bibitem">
 		<fo:block id="{@id}" margin-top="5pt" margin-bottom="10pt"> <!-- letter-spacing="0.4pt" -->
-				<!-- iec:docidentifier -->
-			<xsl:if test="iec:docidentifier">
-				<xsl:choose>
-					<xsl:when test="iec:docidentifier/@type = 'metanorma'"/>
-					<xsl:otherwise><fo:inline><xsl:value-of select="iec:docidentifier"/></fo:inline></xsl:otherwise>
-				</xsl:choose>
-			</xsl:if>
-			<xsl:apply-templates select="iec:note"/>
-			<xsl:if test="iec:docidentifier">, </xsl:if>
-			<fo:inline font-style="italic">
-				<xsl:choose>
-					<xsl:when test="iec:title[@type = 'main' and @language = 'en']">
-						<xsl:value-of select="iec:title[@type = 'main' and @language = 'en']"/>
-					</xsl:when>
-					<xsl:otherwise>
-						<xsl:value-of select="iec:title"/>
-					</xsl:otherwise>
-				</xsl:choose>
-			</fo:inline>
+			<xsl:call-template name="processBibitem"/>
 		</fo:block>
 	</xsl:template>
 	
@@ -2281,35 +2263,22 @@
 			<fo:list-item>
 				<fo:list-item-label end-indent="label-end()">
 					<fo:block id="{@id}">
-							<xsl:number format="[1]"/>
+							<xsl:value-of select="iec:docidentifier[@type = 'metanorma-ordinal']"/>
+							<xsl:if test="not(iec:docidentifier[@type = 'metanorma-ordinal'])">
+								<xsl:number format="[1]"/>
+							</xsl:if>
 					</fo:block>
 				</fo:list-item-label>
 				<fo:list-item-body start-indent="body-start()">
 					<fo:block>
-						<xsl:if test="iec:docidentifier">
-							<xsl:choose>
-								<xsl:when test="iec:docidentifier/@type = 'metanorma'"/>
-								<xsl:otherwise><fo:inline><xsl:value-of select="iec:docidentifier"/>, </fo:inline></xsl:otherwise>
-							</xsl:choose>
-						</xsl:if>
-						<xsl:choose>
-							<xsl:when test="iec:title[@type = 'main' and @language = 'en']">
-								<xsl:apply-templates select="iec:title[@type = 'main' and @language = 'en']"/>
-							</xsl:when>
-							<xsl:otherwise>
-								<xsl:apply-templates select="iec:title"/>
-							</xsl:otherwise>
-						</xsl:choose>
-						<xsl:apply-templates select="iec:formattedref"/>
+						<xsl:call-template name="processBibitem"/>
 					</fo:block>
 				</fo:list-item-body>
 			</fo:list-item>
 		</fo:list-block>
 	</xsl:template>
 	
-	<xsl:template match="iec:references[not(@normative='true')]/iec:bibitem" mode="contents"/>
-	
-	<xsl:template match="iec:references[not(@normative='true')]/iec:bibitem/iec:title">
+	<xsl:template match="iec:references/iec:bibitem/iec:title">
 		<fo:inline font-style="italic">
 			<xsl:apply-templates />
 		</fo:inline>
