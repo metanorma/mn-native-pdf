@@ -738,40 +738,8 @@
 	
 		
 	<xsl:template match="*[local-name()='bibitem']">
-		<fo:block id="{@id}" margin-bottom="6pt"> <!-- 12 pt -->
-			<xsl:variable name="docidentifier">
-				<xsl:if test="*[local-name()='docidentifier']">
-					<xsl:choose>
-						<xsl:when test="*[local-name()='docidentifier']/@type = 'metanorma'"/>
-						<xsl:otherwise><xsl:value-of select="*[local-name()='docidentifier']"/></xsl:otherwise>
-					</xsl:choose>
-				</xsl:if>
-			</xsl:variable>
-			<xsl:value-of select="$docidentifier"/>
-			
-			<xsl:choose>
-				<xsl:when test="*[local-name()='formattedref']">
-					<xsl:if test="normalize-space($docidentifier) != ''">, </xsl:if>
-					<xsl:apply-templates select="*[local-name()='formattedref']"/>
-				</xsl:when>
-				<xsl:otherwise>
-					<xsl:apply-templates select="*[local-name()='note']"/>			
-					<xsl:if test="normalize-space($docidentifier) != ''">, </xsl:if>
-					<fo:inline font-style="italic">
-						<xsl:choose>
-							<xsl:when test="*[local-name()='title'][@type = 'main' and @language = $lang]">
-								<xsl:value-of select="*[local-name()='title'][@type = 'main' and @language = $lang]"/>
-							</xsl:when>
-							<xsl:when test="*[local-name()='title'][@type = 'main' and @language = 'en']">
-								<xsl:value-of select="*[local-name()='title'][@type = 'main' and @language = 'en']"/>
-							</xsl:when>
-							<xsl:otherwise>
-								<xsl:value-of select="*[local-name()='title']"/>
-							</xsl:otherwise>
-						</xsl:choose>
-					</fo:inline>
-				</xsl:otherwise>
-			</xsl:choose>
+		<fo:block id="{@id}" margin-bottom="6pt">
+			<xsl:call-template name="processBibitem"/>
 		</fo:block>
 	</xsl:template>
 	
@@ -936,44 +904,24 @@
 				<fo:list-item-label end-indent="label-end()">
 					<fo:block>
 						<fo:inline id="{@id}">
-							<xsl:number format="[1]"/>
+							<xsl:value-of select="*[local-name()='docidentifier'][@type = 'metanorma-ordinal']"/>
+							<xsl:if test="not(*[local-name()='docidentifier'][@type = 'metanorma-ordinal'])">
+								<xsl:number format="[1]"/>
+							</xsl:if>
 						</fo:inline>
 					</fo:block>
 				</fo:list-item-label>
 				<fo:list-item-body start-indent="body-start()">
 					<fo:block>
-						<xsl:variable name="docidentifier">
-							<xsl:if test="*[local-name()='docidentifier']">
-								<xsl:choose>
-									<xsl:when test="*[local-name()='docidentifier']/@type = 'metanorma'"/>
-									<xsl:otherwise><xsl:value-of select="*[local-name()='docidentifier']"/></xsl:otherwise>
-								</xsl:choose>
-							</xsl:if>
-						</xsl:variable>
-						<xsl:value-of select="$docidentifier"/>
-						<xsl:apply-templates select="*[local-name()='note']"/>
-						<xsl:if test="normalize-space($docidentifier) != ''">, </xsl:if>
-						<xsl:choose>
-							<xsl:when test="*[local-name()='title'][@type = 'main' and @language = $lang]">
-								<xsl:apply-templates select="*[local-name()='title'][@type = 'main' and @language = $lang]"/>
-							</xsl:when>
-							<xsl:when test="*[local-name()='title'][@type = 'main' and @language = 'en']">
-								<xsl:apply-templates select="*[local-name()='title'][@type = 'main' and @language = 'en']"/>
-							</xsl:when>
-							<xsl:otherwise>
-								<xsl:apply-templates select="*[local-name()='title']"/>
-							</xsl:otherwise>
-						</xsl:choose>
-						<xsl:apply-templates select="*[local-name()='formattedref']"/>
+						<xsl:call-template name="processBibitem"/>
 					</fo:block>
 				</fo:list-item-body>
 			</fo:list-item>
 		</fo:list-block>
 	</xsl:template>
 	
-	<xsl:template match="*[local-name()='references']/*[local-name()='bibitem']" mode="contents"/>
 	
-	<xsl:template match="*[local-name()='references'][not(@normative='true')]/*[local-name()='bibitem']/*[local-name()='title']">
+	<xsl:template match="*[local-name()='references']/*[local-name()='bibitem']/*[local-name()='title']">
 		<fo:inline font-style="italic">
 			<xsl:apply-templates />
 		</fo:inline>
