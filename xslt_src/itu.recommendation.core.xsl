@@ -1309,10 +1309,7 @@
 	<xsl:template match="itu:br" mode="contents_item" priority="2">
 		<fo:inline>&#xA0;</fo:inline>
 	</xsl:template>
-	
 
-	
-	<xsl:template match="itu:bibitem" mode="contents"/>
 
 	<xsl:template match="itu:references" mode="contents">
 		<xsl:apply-templates mode="contents" />			
@@ -1523,7 +1520,7 @@
 					<xsl:otherwise>
 						<fo:inline padding-right="5mm">
 							<xsl:text>[</xsl:text>
-								<xsl:value-of select="itu:docidentifier"/>
+								<xsl:value-of select="itu:docidentifier[not(@type = 'metanorma-ordinal')]"/>
 							<xsl:text>] </xsl:text>
 						</fo:inline>
 					</xsl:otherwise>
@@ -1534,13 +1531,13 @@
 				<xsl:text> </xsl:text>
 				<xsl:choose>
 					<xsl:when test="itu:docidentifier[@type = 'metanorma']">
-						<xsl:if test="itu:docidentifier[not(@type) or not(@type = 'metanorma')]">
-							<xsl:value-of select="itu:docidentifier[not(@type) or not(@type = 'metanorma')]"/>
+						<xsl:if test="itu:docidentifier[not(@type) or not(@type = 'metanorma' or @type = 'metanorma-ordinal')]">
+							<xsl:value-of select="itu:docidentifier[not(@type) or not(@type = 'metanorma' or @type = 'metanorma-ordinal')]"/>
 							<xsl:text>, </xsl:text>
 						</xsl:if>
 					</xsl:when>
 					<xsl:otherwise>
-						<xsl:value-of select="itu:docidentifier"/>
+						<xsl:value-of select="itu:docidentifier[not(@type = 'metanorma-ordinal')]"/>
 						<xsl:if test="itu:title">
 							<xsl:text>, </xsl:text>
 						</xsl:if>
@@ -1889,9 +1886,9 @@
 	-->
 	<xsl:template match="itu:annex//itu:bibitem">
 		<fo:block margin-top="6pt" margin-left="10mm" text-indent="-10mm">
-			<fo:inline id="{@id}" padding-right="5mm">[<xsl:value-of select="itu:docidentifier"/>]</fo:inline>
+			<fo:inline id="{@id}" padding-right="5mm">[<xsl:value-of select="itu:docidentifier[not(@type = 'metanorma-ordinal')]"/>]</fo:inline>
 			<xsl:text> </xsl:text>
-			<xsl:apply-templates select="itu:docidentifier" mode="content"/>
+			<xsl:apply-templates select="itu:docidentifier[not(@type = 'metanorma-ordinal')]" mode="content"/>
 			<xsl:if test="node()[local-name(.) != current()/itu:docidentifier]">, </xsl:if>
 			<xsl:apply-templates />
 		</fo:block>
