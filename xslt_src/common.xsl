@@ -8668,7 +8668,7 @@
 					<xsl:apply-templates select="*[local-name() = 'formattedref']"/>
 				</xsl:when>
 				<xsl:otherwise>
-					<xsl:variable name="docidentifier" select="*[local-name() = 'docidentifier'][not(@type = 'URN' or @type = 'metanorma' or @type = 'BIPM' or @type = 'ISBN' or @type = 'ISSN')]"/>
+					<xsl:variable name="docidentifier" select="*[local-name() = 'docidentifier'][not(@type = 'URN' or @type = 'metanorma' or @type = 'metanorma-ordinal' or @type = 'BIPM' or @type = 'ISBN' or @type = 'ISSN')]"/>
 					
 					<xsl:value-of select="$docidentifier"/>
 					<xsl:if test="$docidentifier != '' and *[local-name() = 'title']">, </xsl:if>
@@ -9018,13 +9018,13 @@
 			<xsl:variable name="docidentifier">
 				<xsl:if test="*[local-name() = 'docidentifier']">
 					<xsl:choose>
-						<xsl:when test="*[local-name() = 'docidentifier'][not(@type = 'metanorma')] and $document_type = 'PAS'">
-							<xsl:value-of select="*[local-name() = 'docidentifier'][not(@type = 'metanorma')]"/>
+						<xsl:when test="*[local-name() = 'docidentifier'][not(@type = 'metanorma') and not(@type = 'metanorma-ordinal')] and $document_type = 'PAS'">
+							<xsl:value-of select="*[local-name() = 'docidentifier'][not(@type = 'metanorma') and not(@type = 'metanorma-ordinal')]"/>
 						</xsl:when>
 						<xsl:otherwise>
 							<xsl:choose>
 								<xsl:when test="count(*[local-name() = 'docidentifier']) &gt; 1">
-									<xsl:value-of select="*[local-name() = 'docidentifier'][not(@type = 'metanorma')][1]"/>
+									<xsl:value-of select="*[local-name() = 'docidentifier'][not(@type = 'metanorma') and not(@type = 'metanorma-ordinal')][1]"/>
 								</xsl:when>
 								<xsl:otherwise>
 									<xsl:value-of select="*[local-name() = 'docidentifier']"/>

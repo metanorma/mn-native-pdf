@@ -3458,14 +3458,17 @@
 					<fo:block>
 						<fo:inline>
 						 <!-- <xsl:number format="1."/> -->
-							<xsl:choose>
-								<xsl:when test="bipm:docidentifier[@type='metanorma']">
-									<xsl:value-of select="bipm:docidentifier[@type='metanorma']"/>
-								</xsl:when>
-								<xsl:otherwise>
-									<xsl:number format="[1]"/>
-								</xsl:otherwise>
-							</xsl:choose>
+							<xsl:value-of select="bipm:docidentifier[@type='metanorma-ordinal']"/>
+							<xsl:if test="not(bipm:docidentifier[@type='metanorma-ordinal'])">
+								<xsl:choose>
+									<xsl:when test="bipm:docidentifier[@type='metanorma']">
+										<xsl:value-of select="bipm:docidentifier[@type='metanorma']"/>
+									</xsl:when>
+									<xsl:otherwise>
+										<xsl:number format="[1]"/>
+									</xsl:otherwise>
+								</xsl:choose>
+							</xsl:if>
 						</fo:inline>
 					</fo:block>
 				</fo:list-item-label>
@@ -3488,7 +3491,7 @@
 		</fo:inline>
 	</xsl:template>
 
-	<xsl:template match="bipm:references/bipm:bibitem/bipm:docidentifier[@type='metanorma' and ../bipm:formattedref]"/>
+	<xsl:template match="bipm:references/bipm:bibitem/bipm:docidentifier[(@type='metanorma' or @type='metanorma-ordinal') and ../bipm:formattedref]"/>
 	
 
 	<xsl:template match="bipm:pagebreak">
