@@ -8993,9 +8993,9 @@
 			<xsl:apply-templates select="*[local-name() = 'formattedref']"/>
 			<!-- end ISO bibitem processing -->
 		</xsl:if>
-		
-		<!-- start JCGM bibitem processing -->
+
 		<xsl:if test="$namespace = 'jcgm'">
+			<!-- start JCGM bibitem processing -->
 			<xsl:variable name="docidentifier">
 				<xsl:if test="*[local-name()='docidentifier']">
 					<xsl:choose>
@@ -9027,11 +9027,11 @@
 					</xsl:choose>
 				</xsl:otherwise>
 			</xsl:choose>
+			<!-- end JCGM bibitem processing -->
 		</xsl:if>
-		<!-- end JCGM bibitem processing -->
-		
-		<!-- start MPFD bibitem processing -->
+
 		<xsl:if test="$namespace = 'mpfd'">
+			<!-- start MPFD bibitem processing -->
 			<xsl:variable name="docidentifier">
 				<xsl:choose>
 					<xsl:when test="mpfd:docidentifier/@type = 'metanorma'"/>
@@ -9075,6 +9075,7 @@
 				</xsl:otherwise>
 			</xsl:choose>
 			<xsl:apply-templates select="m3d:formattedref"/>
+			<!-- end MPFD bibitem processing -->
 		</xsl:if>
 		
 		<xsl:if test="$namespace = 'ogc' or $namespace = 'ogc-white-paper'">

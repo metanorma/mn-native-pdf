@@ -428,8 +428,6 @@
 		
 	</xsl:template>
 	
-
-	<xsl:template match="iho:references/iho:bibitem" mode="contents"/>	
 	<!-- ============================= -->
 	<!-- END CONTENTS                                 -->
 	<!-- ============================= -->
@@ -687,7 +685,10 @@
 				<fo:list-item-label end-indent="label-end()">
 					<fo:block>
 						<fo:inline id="{@id}">
-							<xsl:number format="[1]"/>
+							<xsl:value-of select="iho:docidentifier[@type = 'metanorma-ordinal']"/>
+							<xsl:if test="not(iho:docidentifier[@type = 'metanorma-ordinal'])">
+								<xsl:number format="[1]"/>
+							</xsl:if>
 						</fo:inline>
 					</fo:block>
 				</fo:list-item-label>
