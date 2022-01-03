@@ -8692,6 +8692,51 @@
 			<!-- end BIPM bibitem processing-->
 		</xsl:if>
 		
+		<xsl:if test="$namespace = 'csa'">
+			<!-- start CSA bibtem processing -->
+			<xsl:if test=".//csa:fn">
+				<xsl:attribute name="line-height-shift-adjustment">disregard-shifts</xsl:attribute>
+			</xsl:if>
+			<xsl:choose>
+				<xsl:when test="csa:formattedref">
+					<xsl:apply-templates select="csa:formattedref"/>
+				</xsl:when>
+				<xsl:otherwise>
+					<xsl:for-each select="csa:contributor[csa:role/@type='publisher']/csa:organization/csa:name">
+						<xsl:apply-templates />
+						<xsl:if test="position() != last()">, </xsl:if>
+						<xsl:if test="position() = last()">: </xsl:if>
+					</xsl:for-each>
+						<!-- csa:docidentifier -->
+					<!-- <xsl:if test="csa:docidentifier">
+						<xsl:value-of select="csa:docidentifier/@type"/><xsl:text> </xsl:text>
+						<xsl:value-of select="csa:docidentifier"/>
+					</xsl:if> -->
+					<xsl:value-of select="csa:docidentifier[not(@type = 'metanorma-ordinal')]"/>
+					<xsl:apply-templates select="csa:note"/>
+					<xsl:if test="csa:docidentifier[not(@type = 'metanorma-ordinal')]">, </xsl:if>
+					<fo:inline font-style="italic">
+						<xsl:choose>
+							<xsl:when test="csa:title[@type = 'main' and @language = 'en']">
+								<xsl:value-of select="csa:title[@type = 'main' and @language = 'en']"/><xsl:text>. </xsl:text>
+							</xsl:when>
+							<xsl:otherwise>
+								<xsl:value-of select="csa:title"/><xsl:text>. </xsl:text>
+							</xsl:otherwise>
+						</xsl:choose>
+					</fo:inline>
+					<xsl:for-each select="csa:contributor[csa:role/@type='publisher']/csa:organization/csa:name">
+						<xsl:apply-templates />
+						<xsl:if test="position() != last()">, </xsl:if>
+					</xsl:for-each>
+					<xsl:if test="csa:date[@type='published']/csa:on">
+						<xsl:text>(</xsl:text><xsl:value-of select="csa:date[@type='published']/csa:on"/><xsl:text>)</xsl:text>
+					</xsl:if>
+				</xsl:otherwise>
+			</xsl:choose>
+			<!-- end CSA bibtem processing -->
+		</xsl:if>
+		
 		<xsl:if test="$namespace = 'ogc' or $namespace = 'ogc-white-paper'">
 			<!-- start OGC bibtem processing -->
 			<xsl:choose>
