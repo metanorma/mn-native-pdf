@@ -831,7 +831,6 @@
 		</fo:list-block>
 	</xsl:template>
 	
-	<xsl:template match="ogc:references[not(@normative='true')]/ogc:bibitem" mode="contents"/>
 	
 	<xsl:template match="ogc:bibitem/ogc:title">
 		<fo:inline font-style="italic">
