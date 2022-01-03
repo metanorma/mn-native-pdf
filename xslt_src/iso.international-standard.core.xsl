@@ -1847,7 +1847,10 @@
 				<fo:list-item-label end-indent="label-end()">
 					<fo:block>
 						<fo:inline id="{@id}">
-							<xsl:number format="[1]"/>
+							<xsl:value-of select="iso:docidentifier[@type = 'metanorma-ordinal']"/>
+							<xsl:if test="not(iso:docidentifier[@type = 'metanorma-ordinal'])">
+								<xsl:number format="[1]"/>
+							</xsl:if>
 						</fo:inline>
 					</fo:block>
 				</fo:list-item-label>
@@ -1859,9 +1862,6 @@
 			</fo:list-item>
 		</fo:list-block>
 	</xsl:template>
-	
-	<!-- <xsl:template match="iso:references[@id = '_bibliography']/iso:bibitem" mode="contents"/> [not(@normative='true')] -->
-	<xsl:template match="iso:references/iso:bibitem" mode="contents"/>
 	
 	<!-- <xsl:template match="iso:references[@id = '_bibliography']/iso:bibitem/iso:title"> iso:references[not(@normative='true')]/ -->
 	<xsl:template match="iso:bibitem/iso:title">
