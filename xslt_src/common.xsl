@@ -8946,6 +8946,31 @@
 			<!-- end ISO bibitem processing -->
 		</xsl:if>
 		
+		<!-- start MPFD bibitem processing -->
+		<xsl:if test="$namespace = 'mpfd'">
+			<xsl:variable name="docidentifier">
+				<xsl:if test="mpfd:docidentifier">
+					<xsl:choose>
+						<xsl:when test="mpfd:docidentifier/@type = 'metanorma'"/>
+						<xsl:otherwise><xsl:value-of select="mpfd:docidentifier[not(@type = 'metanorma-ordinal')]"/></xsl:otherwise>
+					</xsl:choose>
+				</xsl:if>
+			</xsl:variable>
+			<fo:inline><xsl:value-of select="$docidentifier"/></fo:inline>
+			<xsl:apply-templates select="mpfd:note"/>
+			<xsl:if test="normalize-space($docidentifier) != ''">, </xsl:if>
+			<xsl:choose>
+				<xsl:when test="mpfd:title[@type = 'main' and @language = 'en']">
+					<xsl:apply-templates select="mpfd:title[@type = 'main' and @language = 'en']"/>
+				</xsl:when>
+				<xsl:otherwise>
+					<xsl:apply-templates select="mpfd:title"/>
+				</xsl:otherwise>
+			</xsl:choose>
+			<xsl:apply-templates select="mpfd:formattedref"/>
+		</xsl:if>
+		<!-- end MPFD bibitem processing -->
+		
 		<xsl:if test="$namespace = 'ogc' or $namespace = 'ogc-white-paper'">
 			<!-- start OGC bibtem processing -->
 			<xsl:choose>
