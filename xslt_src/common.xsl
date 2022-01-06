@@ -8158,6 +8158,12 @@
 		</xsl:if>
 	</xsl:template>
 	
+	<!-- regarding ISO 10241-1:2011,  If there is more than one preferred term, each preferred term follows the previous one on a new line. -->
+	<!-- in metanorma xml preferred terms delimited by semicolons -->
+	<xsl:template match="*[local-name() = 'preferred']/text()[contains(., ';')] | *[local-name() = 'preferred']/*[local-name() = 'strong']/text()[contains(., ';')]">
+		<xsl:value-of select="java:replaceAll(java:java.lang.String.new(.), ';', $linebreak)"/>
+	</xsl:template>
+	
 	<!-- ========== -->
 	<!-- definition -->
 	<!-- ========== -->
