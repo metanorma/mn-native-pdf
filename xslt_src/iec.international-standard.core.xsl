@@ -530,6 +530,7 @@
 								</xsl:if>
 							</fo:block-container>
 							
+							<xsl:variable name="price_code_value" select="//iec:iec-standard/iec:bibdata/iec:ext/iec:price-code"/>
 							<fo:table table-layout="fixed" width="102%" margin-top="-9mm" margin-bottom="2mm">
 								<fo:table-column column-width="148mm"/>
 								<fo:table-column column-width="16mm"/>
@@ -537,29 +538,31 @@
 									<fo:table-row border-bottom="0.5pt solid {$color_gray}" height="16mm">
 										<fo:table-cell font-size="8pt" text-align="right" display-align="center">
 											<fo:block>
-												<fo:block color="{$color_blue}" margin-bottom="3pt">
-													<!-- PRICE CODE -->
-													<xsl:variable name="price_code">
-														<!-- <xsl:call-template name="getLocalizedString">
-															<xsl:with-param name="key">price-code</xsl:with-param>																			
-														</xsl:call-template> -->
-														<xsl:value-of select="(//iec:iec-standard)[1]/iec:localized-strings/iec:localized-string[@key='price-code' and @language=$lang]"/>
-													</xsl:variable>
-													<xsl:value-of select="java:toUpperCase(java:java.lang.String.new($price_code))"/>
-												</fo:block>
-												<!-- <xsl:if test="$lang != 'fr'">
-													<fo:block>CODE PRIX</fo:block>
-												</xsl:if> -->
-												<fo:block>
-													<xsl:variable name="price_code">
-														<xsl:value-of select="(//iec:iec-standard)[2]/iec:localized-strings/iec:localized-string[@key='price-code' and @language=$lang_second]"/>
-													</xsl:variable>
-													<xsl:value-of select="java:toUpperCase(java:java.lang.String.new($price_code))"/>
-												</fo:block>
+												<xsl:if test="normalize-space($price_code_value) != ''">
+													<fo:block color="{$color_blue}" margin-bottom="3pt">
+														<!-- PRICE CODE -->
+														<xsl:variable name="price_code">
+															<!-- <xsl:call-template name="getLocalizedString">
+																<xsl:with-param name="key">price-code</xsl:with-param>																			
+															</xsl:call-template> -->
+															<xsl:value-of select="(//iec:iec-standard)[1]/iec:localized-strings/iec:localized-string[@key='price-code' and @language=$lang]"/>
+														</xsl:variable>
+														<xsl:value-of select="java:toUpperCase(java:java.lang.String.new($price_code))"/>
+													</fo:block>
+													<!-- <xsl:if test="$lang != 'fr'">
+														<fo:block>CODE PRIX</fo:block>
+													</xsl:if> -->
+													<fo:block>
+														<xsl:variable name="price_code">
+															<xsl:value-of select="(//iec:iec-standard)[2]/iec:localized-strings/iec:localized-string[@key='price-code' and @language=$lang_second]"/>
+														</xsl:variable>
+														<xsl:value-of select="java:toUpperCase(java:java.lang.String.new($price_code))"/>
+													</fo:block>
+												</xsl:if>
 											</fo:block>
 										</fo:table-cell>
 										<fo:table-cell font-size="25pt" font-weight="bold" color="{$color_gray}" text-align="right" display-align="center">
-											<fo:block padding-top="1mm"><xsl:value-of select="//iec:iec-standard/iec:bibdata/iec:ext/iec:price-code"/></fo:block>
+											<fo:block padding-top="1mm"><xsl:value-of select="$price_code_value"/></fo:block>
 										</fo:table-cell>
 									</fo:table-row>
 								</fo:table-body>
