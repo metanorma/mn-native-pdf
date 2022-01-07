@@ -2236,7 +2236,10 @@
 			<xsl:call-template name="getLevelTermName"/>
 		</xsl:variable>
 		<fo:block line-height="1.1" space-before="14pt" role="H{$levelTerm}">
-			<xsl:if test="parent::iec:term">
+			<xsl:if test="preceding-sibling::*[1][self::iec:preferred]">
+				<xsl:attribute name="space-before">1pt</xsl:attribute>
+			</xsl:if>
+			<xsl:if test="parent::iec:term and not(preceding-sibling::iec:preferred)"> <!-- if first preffered in term, then display term's name -->
 				<fo:block font-weight="bold" keep-with-next="always">
 					<xsl:apply-templates select="ancestor::iec:term[1]/iec:name" mode="presentation"/>				
 				</fo:block>
