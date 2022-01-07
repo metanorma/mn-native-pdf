@@ -3370,11 +3370,13 @@
 				<fo:table-body>
 					<fo:table-row>
 						<fo:table-cell>
-							<fo:block><xsl:apply-templates select="*[local-name()='name']" mode="presentation"/></fo:block>
+							<fo:block>
+								<xsl:apply-templates select="*[local-name()='name']"/>
+							</fo:block>
 						</fo:table-cell>
 						<fo:table-cell>
 							<fo:block>
-								<xsl:apply-templates/>
+								<xsl:apply-templates select="node()[not(local-name()='name')]"/>
 							</fo:block>
 						</fo:table-cell>
 					</fo:table-row>
