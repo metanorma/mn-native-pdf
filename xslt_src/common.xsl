@@ -1803,7 +1803,9 @@
 	
 	<xsl:variable name="border-block-added">2.5pt solid rgb(0, 176, 80)</xsl:variable>
 	<xsl:variable name="border-block-deleted">2.5pt solid rgb(255, 0, 0)</xsl:variable>
-		
+	
+	<xsl:variable name="ace_tag">ace-tag_</xsl:variable>
+	
 	<xsl:template name="OLD_processPrefaceSectionsDefault_Contents">
 		<xsl:apply-templates select="/*/*[local-name()='preface']/*[local-name()='abstract']" mode="contents"/>
 		<xsl:apply-templates select="/*/*[local-name()='preface']/*[local-name()='foreword']" mode="contents"/>
@@ -4826,8 +4828,20 @@
 		</fo:inline>
 	</xsl:template>
 	
+	<!-- ================= -->
+	<!-- Added,deleted text -->
+	<!-- ================= -->
 	<xsl:template match="*[local-name()='add']">
 		<xsl:choose>
+			<xsl:when test="starts-with(., $ace_tag)"> <!-- examples: ace-tag_A1_start, ace-tag_A2_end, C1_start, AC_start -->
+				<fo:inline>
+					<xsl:call-template name="insertTag">
+						<xsl:with-param name="type" select="substring-after(substring-after(., $ace_tag), '_')"/> <!-- start or end -->
+						<xsl:with-param name="kind" select="substring(substring-before(substring-after(., $ace_tag), '_'), 1, 1)"/> <!-- A or C -->
+						<xsl:with-param name="value" select="substring(substring-before(substring-after(., $ace_tag), '_'), 2)"/> <!-- 1, 2, C -->
+					</xsl:call-template>
+				</fo:inline>
+			</xsl:when>
 			<xsl:when test="@amendment">
 				<fo:inline>
 					<xsl:call-template name="insertTag">
@@ -4862,7 +4876,6 @@
 				</fo:inline>
 			</xsl:otherwise>
 		</xsl:choose>
-		
 	</xsl:template>
 	
 	<xsl:template name="insertTag">
@@ -4880,14 +4893,14 @@
 				<xsl:attribute name="scaling">uniform</xsl:attribute>
 				<svg xmlns="http://www.w3.org/2000/svg" width="{$maxwidth + 32}" height="80">
 					<g>
-						<xsl:if test="$type = 'closing'">
+						<xsl:if test="$type = 'closing' or $type = 'end'">
 							<xsl:attribute name="transform">scale(-1 1) translate(-<xsl:value-of select="$maxwidth + 32"/>,0)</xsl:attribute>
 						</xsl:if>
 						<polyline points="0,0 {$maxwidth},0 {$maxwidth + 30},40 {$maxwidth},80 0,80 " stroke="black" stroke-width="5" fill="white"/>
 						<line x1="0" y1="0" x2="0" y2="80" stroke="black" stroke-width="20"/>
 					</g>
 					<text font-family="Arial" x="15" y="57" font-size="40pt">
-						<xsl:if test="$type = 'closing'">
+						<xsl:if test="$type = 'closing' or $type = 'end'">
 							<xsl:attribute name="x">25</xsl:attribute>
 						</xsl:if>
 						<xsl:value-of select="$kind"/><tspan dy="10" font-size="30pt"><xsl:value-of select="$value"/></tspan>
@@ -4901,6 +4914,9 @@
 			<xsl:apply-templates />
 		</fo:inline>
 	</xsl:template>
+	<!-- ================= -->
+	<!-- END Added,deleted text -->
+	<!-- ================= -->
 	
 	<!-- highlight text -->
 	<xsl:template match="*[local-name()='hi']">
@@ -6886,7 +6902,10 @@
 	<!-- ====== -->
 	<!-- ====== -->
 	<xsl:template match="*[local-name() = 'title']" mode="contents_item">
-		<xsl:apply-templates mode="contents_item"/>
+		<xsl:param name="mode">bookmarks</xsl:param>
+		<xsl:apply-templates mode="contents_item">
+			<xsl:with-param name="mode" select="$mode"/>
+		</xsl:apply-templates>
 		<!-- <xsl:text> </xsl:text> -->
 	</xsl:template>
 
@@ -6984,6 +7003,22 @@
 
 	<xsl:template match="*[local-name() = 'br']" mode="contents_item">
 		<xsl:text> </xsl:text>
+	</xsl:template>
+
+	<xsl:template match="*[local-name() = 'name']" mode="contents_item">
+		<xsl:param name="mode">bookmarks</xsl:param>
+		<xsl:apply-templates mode="contents_item">
+			<xsl:with-param name="mode" select="$mode"/>
+		</xsl:apply-templates>
+	</xsl:template>
+	
+	<xsl:template match="*[local-name() = 'add'][starts-with(text(), $ace_tag)]" mode="contents_item">
+		<xsl:param name="mode">bookmarks</xsl:param>
+		<xsl:if test="$mode = 'contents'">
+			<xsl:copy>
+				<xsl:apply-templates mode="contents_item"/>
+			</xsl:copy>		
+		</xsl:if>
 	</xsl:template>
 
 	<!-- ====== -->
