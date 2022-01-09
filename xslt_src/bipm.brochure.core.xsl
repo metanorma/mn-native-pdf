@@ -1276,9 +1276,6 @@
 					
 					<xsl:variable name="title-toc">
 						<fo:inline>
-							<!-- <xsl:call-template name="getTitle">
-								<xsl:with-param name="name" select="'title-toc'"/>
-							</xsl:call-template> -->
 							<xsl:call-template name="getLocalizedString">
 								<xsl:with-param name="key">table_of_contents</xsl:with-param>
 							</xsl:call-template>
@@ -1452,7 +1449,12 @@
 							<xsl:if test="/bipm:bipm-standard/bipm:bibdata/bipm:title[@language = $curr_lang and @type = 'part']">
 								<fo:block role="H2">
 									<xsl:if test="$part_num != ''">
-										<xsl:value-of select="java:replaceAll(java:java.lang.String.new($titles/title-part[@lang=$curr_lang]),'#',$part_num)"/>
+										<xsl:call-template name="getLocalizedString">
+											<xsl:with-param name="key">Part.sg</xsl:with-param>
+											<xsl:with-param name="lang" select="$curr_lang"/>
+										</xsl:call-template>
+										<xsl:text> </xsl:text>
+										<xsl:value-of select="$part_num"/>
 									</xsl:if>
 									<xsl:text>: </xsl:text>
 									<xsl:apply-templates select="/bipm:bipm-standard/bipm:bibdata/bipm:title[@language = $curr_lang and @type = 'part']" mode="title"/>
@@ -1786,9 +1788,13 @@
 							<xsl:if test="$part_num != ''">
 								<fo:block font-size="{$space-factor * 30.4}pt">&#xA0;</fo:block>
 								<!-- Part -->
-								<fo:block font-size="{$font-size-number-factor * 17}pt" font-weight="{$weight-normal}"><xsl:value-of select="java:replaceAll(java:java.lang.String.new($titles/title-part[@lang='fr']),'#',$part_num)"/></fo:block>
+								<fo:block font-size="{$font-size-number-factor * 17}pt" font-weight="{$weight-normal}">
+									<xsl:value-of select="java:replaceAll(java:java.lang.String.new($titles/title-part[@lang='fr']),'#',$part_num)"/>
+								</fo:block>
 								<!-- Partie -->
-								<fo:block font-size="{$font-size-number-factor * 17}pt" font-weight="{$weight-bold}"><xsl:value-of select="java:replaceAll(java:java.lang.String.new($titles/title-part[@lang='en']),'#',$part_num)"/></fo:block>
+								<fo:block font-size="{$font-size-number-factor * 17}pt" font-weight="{$weight-bold}">
+									<xsl:value-of select="java:replaceAll(java:java.lang.String.new($titles/title-part[@lang='en']),'#',$part_num)"/>
+								</fo:block>
 							</xsl:if>
 						
 							<fo:block font-size="{$font-size-factor * 30.4}pt">

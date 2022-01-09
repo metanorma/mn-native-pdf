@@ -250,7 +250,9 @@
 					<fo:block-container line-height="1.08" font-family="Lato">
 						<fo:block role="TOC">
 							<fo:block xsl:use-attribute-sets="title-toc-style" role="H1">
-								<xsl:text>Table of Contents</xsl:text>
+								<xsl:call-template name="getTitle">
+									<xsl:with-param name="name" select="'title-toc'"/>
+								</xsl:call-template>
 							</fo:block>
 							<xsl:variable name="margin-left">3.9</xsl:variable>
 							<xsl:for-each select="xalan:nodeset($contents)//item[@display = 'true']">

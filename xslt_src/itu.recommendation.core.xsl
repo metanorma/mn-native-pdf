@@ -551,6 +551,7 @@
 							</fo:block>
 						</fo:block-container>
 						<fo:block-container font-family="Arial">
+							<xsl:variable name="annexid" select="normalize-space(/itu:itu-standard/itu:bibdata/itu:ext/itu:structuredidentifier/itu:annexid)"/>
 							<fo:table width="100%" table-layout="fixed"> <!-- 175.4mm-->
 								<fo:table-column column-width="25.2mm"/>
 								<fo:table-column column-width="44.4mm"/>
@@ -649,16 +650,15 @@
 											</fo:block-container>
 										</fo:table-cell>
 										<fo:table-cell text-align="right">
-											<xsl:if test="/itu:itu-standard/itu:bibdata/itu:ext/itu:structuredidentifier/itu:annexid">
+											<xsl:if test="$annexid != ''">
 												<fo:block-container>
-												<xsl:call-template name="setWritingMode"/>
+													<xsl:call-template name="setWritingMode"/>
 													<fo:block font-size="18pt" font-weight="bold">
-													<xsl:variable name="title-annex">
-															<xsl:call-template name="getTitle">
-																<xsl:with-param name="name" select="'title-annex'"/>
-															</xsl:call-template>
-														</xsl:variable>
-														<xsl:value-of select="$title-annex"/><xsl:value-of select="/itu:itu-standard/itu:bibdata/itu:ext/itu:structuredidentifier/itu:annexid"/>
+														<xsl:call-template name="getLocalizedString">
+															<xsl:with-param name="key">annex</xsl:with-param>
+														</xsl:call-template>
+														<xsl:text> </xsl:text>
+														<xsl:value-of select="$annexid"/>
 													</fo:block>
 												</fo:block-container>
 											</xsl:if>
@@ -899,13 +899,13 @@
 														</xsl:otherwise>
 													</xsl:choose>
 													
-													<xsl:if test="/itu:itu-standard/itu:bibdata/itu:ext/itu:structuredidentifier/itu:annexid">
-														<xsl:variable name="title-annex">
-															<xsl:call-template name="getTitle">
-																<xsl:with-param name="name" select="'title-annex'"/>
-															</xsl:call-template>
-														</xsl:variable>
-														<xsl:text> — </xsl:text><xsl:value-of select="$title-annex"/><xsl:value-of select="/itu:itu-standard/itu:bibdata/itu:ext/itu:structuredidentifier/itu:annexid"/>
+													<xsl:if test="$annexid != ''">
+														<xsl:text> — </xsl:text>
+														<xsl:call-template name="getLocalizedString">
+															<xsl:with-param name="key">annex</xsl:with-param>
+														</xsl:call-template>
+														<xsl:text> </xsl:text>
+														<xsl:value-of select="$annexid"/>
 													</xsl:if>
 												</fo:block>
 											</fo:block-container>
@@ -974,12 +974,9 @@
 								<xsl:value-of select="$linebreak"/>
 							</fo:block>
 							<fo:block font-weight="bold" margin-top="18pt" margin-bottom="18pt">
-								<xsl:variable name="title-keywords">
-									<xsl:call-template name="getTitle">
-										<xsl:with-param name="name" select="'title-keywords'"/>
-									</xsl:call-template>
-								</xsl:variable>
-								<xsl:value-of select="$title-keywords"/>
+								<xsl:call-template name="getLocalizedString">
+									<xsl:with-param name="key">keywords</xsl:with-param>
+								</xsl:call-template>
 							</fo:block>
 							<fo:block>
 								<xsl:call-template name="insertKeywords"/>

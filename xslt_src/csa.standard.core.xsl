@@ -151,12 +151,11 @@
 					
 					<fo:block break-after="page"/>
 					
-					<xsl:variable name="title-acknowledgements">
-						<xsl:call-template name="getTitle">
-							<xsl:with-param name="name" select="'title-acknowledgements'"/>
+					<fo:block font-size="26pt" margin-bottom="18pt" role="H1">
+						<xsl:call-template name="getLocalizedString">
+							<xsl:with-param name="key">acknowledgements</xsl:with-param>
 						</xsl:call-template>
-					</xsl:variable>
-					<fo:block font-size="26pt" margin-bottom="18pt" role="H1"><xsl:value-of select="$title-acknowledgements"/></fo:block>
+					</fo:block>
 
 					<xsl:variable name="persons">
 						<xsl:for-each select="/csa:csa-standard/csa:bibdata/csa:contributor[csa:person]">

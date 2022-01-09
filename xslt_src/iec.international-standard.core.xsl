@@ -512,18 +512,27 @@
 								<fo:block font-size="9pt" color="{$color_blue}" line-height="150%">
 									<fo:block-container width="40mm">
 										<fo:block>
-											<!-- <xsl:variable name="publisher" select="java:toUpperCase(java:java.lang.String.new(/iec:iec-standard/iec:bibdata/iec:contributor[iec:role/@type = 'publisher']/iec:organization/iec:name))"/> -->
-											<!-- <xsl:value-of select="$publisher"/> -->
-											<xsl:value-of select="(//iec:iec-standard)[1]/iec:localized-strings/iec:localized-string[@key='IEC' and @language=$lang]"/>
+											<xsl:call-template name="getLocalizedString">
+												<xsl:with-param name="key">IEC</xsl:with-param>
+												<xsl:with-param name="lang"><xsl:value-of select="$lang"/></xsl:with-param>
+											</xsl:call-template>
 										</fo:block>
 									</fo:block-container>
 								</fo:block>
-								<xsl:if test="(//iec:iec-standard)[2]/iec:localized-strings/iec:localized-string[@key='IEC' and @language=$lang_second]">
+								
+								<xsl:variable name="IEC_lang_second">
+									<xsl:call-template name="getLocalizedString">
+										<xsl:with-param name="key">IEC</xsl:with-param>
+										<xsl:with-param name="lang"><xsl:value-of select="$lang_second"/></xsl:with-param>
+									</xsl:call-template>
+								</xsl:variable>
+								
+								<xsl:if test="normalize-space($IEC_lang_second) != ''">
 									<fo:block font-size="9pt" line-height="150%" margin-top="8pt">
 										<fo:block-container width="40mm">
 											<fo:block>
 												<!-- <xsl:value-of select="'COMMISSION ELECTROTECHNIQUE INTERNATIONALE'"/> -->
-												<xsl:value-of select="(//iec:iec-standard)[2]/iec:localized-strings/iec:localized-string[@key='IEC' and @language=$lang_second]"/>
+												<xsl:value-of select="$IEC_lang_second"/>
 											</fo:block>
 										</fo:block-container>
 									</fo:block>
@@ -542,10 +551,10 @@
 													<fo:block color="{$color_blue}" margin-bottom="3pt">
 														<!-- PRICE CODE -->
 														<xsl:variable name="price_code">
-															<!-- <xsl:call-template name="getLocalizedString">
-																<xsl:with-param name="key">price-code</xsl:with-param>																			
-															</xsl:call-template> -->
-															<xsl:value-of select="(//iec:iec-standard)[1]/iec:localized-strings/iec:localized-string[@key='price-code' and @language=$lang]"/>
+															<xsl:call-template name="getLocalizedString">
+																<xsl:with-param name="key">price-code</xsl:with-param>
+																<xsl:with-param name="lang"><xsl:value-of select="$lang"/></xsl:with-param>
+															</xsl:call-template>
 														</xsl:variable>
 														<xsl:value-of select="java:toUpperCase(java:java.lang.String.new($price_code))"/>
 													</fo:block>
@@ -554,7 +563,10 @@
 													</xsl:if> -->
 													<fo:block>
 														<xsl:variable name="price_code">
-															<xsl:value-of select="(//iec:iec-standard)[2]/iec:localized-strings/iec:localized-string[@key='price-code' and @language=$lang_second]"/>
+															<xsl:call-template name="getLocalizedString">
+																<xsl:with-param name="key">price-code</xsl:with-param>
+																<xsl:with-param name="lang"><xsl:value-of select="$lang_second"/></xsl:with-param>
+															</xsl:call-template>
 														</xsl:variable>
 														<xsl:value-of select="java:toUpperCase(java:java.lang.String.new($price_code))"/>
 													</fo:block>
@@ -1402,7 +1414,13 @@
 						<xsl:text> — </xsl:text>
 						<xsl:value-of select="$linebreak"/>
 						<xsl:if test="$part != ''">
-							<xsl:variable name="localized_part" select="(//iec:iec-standard)[1]/iec:localized-strings/iec:localized-string[@key='locality.part' and @language=$lang]"/>
+							<xsl:variable name="localized_part">
+								<xsl:call-template name="getLocalizedString">
+									<xsl:with-param name="key">locality.part</xsl:with-param>
+									<xsl:with-param name="lang"><xsl:value-of select="$lang"/></xsl:with-param>
+								</xsl:call-template>
+							</xsl:variable>
+							
 							<!-- <xsl:value-of select="java:replaceAll(java:java.lang.String.new($localized_part),'#',$part)"/> -->
 							<xsl:value-of select="concat($localized_part ,' ',$part, ': ')"/>
 							<!-- <xsl:text>Part </xsl:text><xsl:value-of select="$part"/>
@@ -1428,10 +1446,17 @@
 						<xsl:value-of select="$linebreak"/>
 						<xsl:if test="$part != ''">
 							
+							<xsl:variable name="locality_part_lang_second">
+								<xsl:call-template name="getLocalizedString">
+									<xsl:with-param name="key">locality.part</xsl:with-param>
+									<xsl:with-param name="lang"><xsl:value-of select="$lang_second"/></xsl:with-param>
+								</xsl:call-template>
+							</xsl:variable>
+							
 							<xsl:choose>
-								<xsl:when test="(//iec:iec-standard)[2]/iec:localized-strings/iec:localized-string[@key='locality.part' and @language=$lang_second]">
+								<xsl:when test="normalize-space($locality_part_lang_second)">
 									<xsl:variable name="localized_part">
-										<xsl:value-of select="(//iec:iec-standard)[2]/iec:localized-strings/iec:localized-string[@key='locality.part' and @language=$lang_second]"/>
+										<xsl:value-of select="$locality_part_lang_second"/>
 									</xsl:variable>
 									<xsl:value-of select="concat($localized_part ,' ',$part, ': ')"/>
 								</xsl:when>
@@ -1458,8 +1483,8 @@
 			<fo:block role="TOC">
 				<fo:block font-size="12pt" text-align="center" margin-bottom="22pt" role="H1">
 					<xsl:variable name="title-toc">
-						<xsl:call-template name="getTitle">
-							<xsl:with-param name="name" select="'title-toc'"/>
+						<xsl:call-template name="getLocalizedString">
+							<xsl:with-param name="key">table_of_contents</xsl:with-param>
 						</xsl:call-template>
 					</xsl:variable>
 					<xsl:call-template name="addLetterSpacing">
@@ -1575,8 +1600,12 @@
 		<xsl:param name="lang" select="$lang"/>
 		<fo:block break-after="page"/>
 		<fo:block-container font-size="12pt" text-align="center" margin-bottom="18pt">
-			<!-- <fo:block><xsl:value-of select="java:toUpperCase(java:java.lang.String.new(/iec:iec-standard/iec:bibdata/iec:contributor/iec:organization/iec:name))"/></fo:block> -->
-			<fo:block><xsl:value-of select="/iec:iec-standard/iec:localized-strings/iec:localized-string[@key='IEC' and @language=$lang]"/></fo:block>
+			<fo:block>
+				<xsl:call-template name="getLocalizedString">
+					<xsl:with-param name="key">IEC</xsl:with-param>
+					<xsl:with-param name="lang"><xsl:value-of select="$lang"/></xsl:with-param>
+				</xsl:call-template>
+			</fo:block>
 			<fo:block>___________</fo:block>
 			<fo:block>&#xa0;</fo:block>
 			<fo:block font-weight="bold" role="H1">				
@@ -1591,9 +1620,13 @@
 					<fo:block>
 						<xsl:if test="$part != ''">
 							<!-- Example: Part 1: Riz -->
-							<!-- <xsl:value-of select="java:replaceAll(java:java.lang.String.new($titles/title-part[@lang = $lang]),'#',$part)"/>							 -->
-							<xsl:variable name="localized_part" select="//iec:iec-standard/iec:localized-strings/iec:localized-string[@key='locality.part' and @language = $lang]"/>
-							<xsl:value-of select="concat($localized_part ,' ',$part, ': ')"/>
+							<xsl:variable name="localized_part">
+								<xsl:call-template name="getLocalizedString">
+									<xsl:with-param name="key">Part.sg</xsl:with-param>
+									<xsl:with-param name="lang" select="$lang"/>
+								</xsl:call-template>
+							</xsl:variable>
+							<xsl:value-of select="concat($localized_part ,' ', $part, ': ')"/>
 						</xsl:if>
 						<xsl:value-of select="$title-part"/>
 					</fo:block>
@@ -1636,8 +1669,12 @@
 							<fo:block>
 								<xsl:if test="$part != ''">
 									<!-- Example: Part 1: Rice -->
-									<!-- <xsl:value-of select="java:replaceAll(java:java.lang.String.new($titles/title-part[@lang = $lang]),'#',$part)"/> -->
-									<xsl:variable name="localized_part" select="//iec:iec-standard/iec:localized-strings/iec:localized-string[@key='locality.part' and @language = $lang]"/>
+									<xsl:variable name="localized_part">
+										<xsl:call-template name="getLocalizedString">
+											<xsl:with-param name="key">Part.sg</xsl:with-param>
+											<xsl:with-param name="lang" select="$lang"/>
+										</xsl:call-template>
+									</xsl:variable>
 									<xsl:value-of select="concat($localized_part ,' ',$part, ': ')"/>
 								</xsl:if>
 								<xsl:value-of select="$title-part"/>

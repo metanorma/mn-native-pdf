@@ -482,14 +482,6 @@
 									<fo:block-container>
 										<fo:block margin-top="-1mm" font-size="20pt" text-align="right">
 											<xsl:value-of select="$stage-fullname-uppercased"/>
-											<!-- <xsl:if test="$doctype = 'amendment'">
-												<xsl:variable name="title-amendment">
-													<xsl:call-template name="getTitle">
-														<xsl:with-param name="name" select="'title-amendment'"/>
-													</xsl:call-template>
-												</xsl:variable>
-												<xsl:text> </xsl:text><xsl:value-of select="$title-amendment"/>
-											</xsl:if> -->
 										</fo:block>
 										<fo:block font-size="20pt" font-weight="bold" text-align="right">
 											<xsl:value-of select="$docidentifierISO"/>
@@ -689,12 +681,8 @@
 														<xsl:if test="$doctype = 'amendment'">
 															<fo:block text-align="right" margin-right="0.5mm">
 																<fo:block font-weight="bold" margin-top="4pt" role="H1">
-																	<xsl:variable name="title-amendment">
-																		<xsl:call-template name="getTitle">
-																			<xsl:with-param name="name" select="'title-amendment'"/>
-																		</xsl:call-template>
-																	</xsl:variable>
-																	<xsl:value-of select="$title-amendment"/><xsl:text> </xsl:text>
+																	<xsl:value-of select="$doctype_uppercased"/>
+																	<xsl:text> </xsl:text>
 																	<xsl:variable name="amendment-number" select="/iso:iso-standard/iso:bibdata/iso:ext/iso:structuredidentifier/iso:project-number/@amendment"/>
 																	<xsl:if test="normalize-space($amendment-number) != ''">
 																		<xsl:value-of select="$amendment-number"/><xsl:text> </xsl:text>
@@ -1229,8 +1217,13 @@
 								<xsl:if test="normalize-space($title-part-doc-lang) != ''">
 									<xsl:if test="$part != ''">
 										<xsl:text> — </xsl:text>
-										<fo:block font-weight="normal" margin-top="12pt" line-height="1.1">											
-											<xsl:value-of select="java:replaceAll(java:java.lang.String.new($titles/title-part[@lang=$lang]),'#',$part)"/>											
+										<fo:block font-weight="normal" margin-top="12pt" line-height="1.1">
+											<xsl:call-template name="getLocalizedString">
+												<xsl:with-param name="key">Part.sg</xsl:with-param>
+											</xsl:call-template>
+											<xsl:text> </xsl:text>
+											<xsl:value-of select="$part"/>
+											<xsl:text>:</xsl:text>
 											<!-- <xsl:value-of select="$title-part-en"/>
 											<xsl:value-of select="$part"/>
 											<xsl:text>:</xsl:text> -->
@@ -1370,12 +1363,7 @@
 		<xsl:variable name="title-amd" select="/iso:iso-standard/iso:bibdata/iso:title[@language = $lang and @type = 'title-amd']"/>
 		<xsl:if test="$doctype = 'amendment' and normalize-space($title-amd) != ''">
 			<fo:block font-weight="normal" line-height="1.1">
-				<xsl:variable name="title-amendment">
-					<xsl:call-template name="getTitle">
-						<xsl:with-param name="name" select="'title-amendment'"/>
-					</xsl:call-template>
-				</xsl:variable>
-				<xsl:value-of select="$title-amendment"/>
+				<xsl:value-of select="$doctype_uppercased"/>
 				<xsl:variable name="amendment-number" select="/iso:iso-standard/iso:bibdata/iso:ext/iso:structuredidentifier/iso:project-number/@amendment"/>
 				<xsl:if test="normalize-space($amendment-number) != ''">
 					<xsl:text> </xsl:text><xsl:value-of select="$amendment-number"/>

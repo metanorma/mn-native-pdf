@@ -213,8 +213,9 @@
 					</xsl:variable>
 					<fo:block font-size="14pt" margin-top="4pt" margin-bottom="8pt" role="H1"><xsl:value-of select="$title-toc"/></fo:block>
 					<xsl:variable name="title-page">
-						<xsl:call-template name="getTitle">
-							<xsl:with-param name="name" select="'title-page'"/>
+						<xsl:call-template name="getLocalizedString">
+							<xsl:with-param name="key">locality.page</xsl:with-param>
+							<xsl:with-param name="lang" select="$lang"/>
 						</xsl:call-template>
 					</xsl:variable>
 					<fo:block font-size="9pt" text-align="right" font-style="italic" margin-bottom="6pt"><xsl:value-of select="$title-page"/></fo:block>
