@@ -407,12 +407,9 @@
 				<fo:table-body>
 					<fo:table-row>
 						<fo:table-cell padding-left="6mm" padding-top="2.5mm">
-							<xsl:variable name="title-summary">
-								<xsl:call-template name="getTitle">
-									<xsl:with-param name="name" select="'title-summary'"/>
-								</xsl:call-template>
-							</xsl:variable>
-							<fo:block font-size="12pt" font-style="italic" margin-bottom="6pt"><xsl:value-of select="$title-summary"/></fo:block>
+							<fo:block font-size="12pt" font-style="italic" margin-bottom="6pt" role="H2">
+								<xsl:apply-templates select="un:title/node()"/>
+							</fo:block>
 						</fo:table-cell>
 						<fo:table-cell>
 							<fo:block>&#xA0;</fo:block>
@@ -426,7 +423,7 @@
 							<fo:block>&#xA0;</fo:block>
 						</fo:table-cell>
 						<fo:table-cell text-align="justify" padding-bottom="12pt" padding-right="3mm">
-							<fo:block font-size="10pt" line-height="120%"><xsl:apply-templates /></fo:block>
+							<fo:block font-size="10pt" line-height="120%"><xsl:apply-templates select="node()[not(self::un:title)]"/></fo:block>
 						</fo:table-cell>
 						<fo:table-cell>
 							<fo:block>&#xA0;</fo:block>
