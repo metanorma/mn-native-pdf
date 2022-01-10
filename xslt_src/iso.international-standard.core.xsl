@@ -1404,7 +1404,7 @@
 			<xsl:choose>				
 				<xsl:when test="ancestor-or-self::iso:annex and $level &gt;= 2">false</xsl:when>
 				<xsl:when test="$section = '' and $type = 'clause'">false</xsl:when>
-				<xsl:when test="$level &lt;= 3">true</xsl:when>
+				<xsl:when test="$level &lt;= $toc_level">true</xsl:when>
 				<xsl:otherwise>false</xsl:otherwise>
 			</xsl:choose>
 		</xsl:variable>
