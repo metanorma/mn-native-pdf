@@ -32,7 +32,20 @@
 	<xsl:template match="xsl:variable[@name = 'namespace']"/>
 	
 	<xsl:template match="xsl:if[contains(@test, '$namespace')]">
-		<xsl:if test="contains(@test, concat('$namespace = ', $apos, $namespace, $apos))">
+		<xsl:if test="contains(@test, concat($apos, $namespace, $apos))">
+			<xsl:apply-templates select="node()"/>
+		</xsl:if>
+	</xsl:template>
+	
+	<xsl:template match="xsl:choose[contains(xsl:when/@test, '$namespace')]">
+		<xsl:apply-templates select="xsl:when[contains(@test, concat($apos, $namespace, $apos))]"/>
+		<xsl:if test="not(xsl:when[contains(@test, concat($apos, $namespace, $apos))])">
+			<xsl:apply-templates select="xsl:otherwise/node()"/>
+		</xsl:if>
+	</xsl:template>
+	
+	<xsl:template match="xsl:when[contains(@test, '$namespace')]">
+		<xsl:if test="contains(@test, concat($apos, $namespace, $apos))">
 			<xsl:apply-templates select="node()"/>
 		</xsl:if>
 	</xsl:template>
