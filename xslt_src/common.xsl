@@ -151,13 +151,13 @@
 	<!-- STYLES -->
 	<!-- ====================================== -->
 	<xsl:attribute-set name="root-style">
-		<xsl:if test="$namespace = 'bsi'">
-			<xsl:attribute name="font-family">Cambria, Times New Roman, Cambria Math, Source Han Sans</xsl:attribute>
-			<xsl:attribute name="font-size">10pt</xsl:attribute>
-		</xsl:if>
 		<xsl:if test="$namespace = 'bipm' or $namespace = 'jcgm'">
 			<xsl:attribute name="font-family">Times New Roman, STIX Two Math, Source Han Sans</xsl:attribute>
 			<xsl:attribute name="font-size">10.5pt</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'bsi'">
+			<xsl:attribute name="font-family">Cambria, Times New Roman, Cambria Math, Source Han Sans</xsl:attribute>
+			<xsl:attribute name="font-size">10pt</xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'csa'">
 			<xsl:attribute name="font-family">Azo Sans, STIX Two Math</xsl:attribute>
@@ -659,6 +659,9 @@
 		</xsl:if>		
 	</xsl:attribute-set>
 
+	<!-- ========================== -->
+	<!-- Table styles -->
+	<!-- ========================== -->
 	<xsl:variable name="table-border_">
 		<xsl:if test="$namespace = 'bsi'">0.5pt solid black</xsl:if>
 	</xsl:variable>
@@ -776,9 +779,7 @@
 		<xsl:if test="$namespace = 'iso'">
 			<xsl:attribute name="border">1.5pt solid black</xsl:attribute>
 		</xsl:if>
-		<xsl:if test="$namespace = 'itu'">
-			
-		</xsl:if>
+		
 		<xsl:if test="$namespace = 'jcgm'">
 			<xsl:attribute name="border">1.5pt solid black</xsl:attribute>
 		</xsl:if>
@@ -850,8 +851,7 @@
 			<xsl:attribute name="font-size">11pt</xsl:attribute>
 			<xsl:attribute name="font-weight">bold</xsl:attribute>
 			<xsl:attribute name="text-align">center</xsl:attribute>
-			<!-- <xsl:attribute name="margin-top">12pt</xsl:attribute> -->
-			<xsl:attribute name="margin-bottom">6pt</xsl:attribute>			
+			<xsl:attribute name="margin-bottom">0pt</xsl:attribute>
 		</xsl:if>		
 		<xsl:if test="$namespace = 'nist-cswp'  or $namespace = 'nist-sp'">
 			<xsl:attribute name="font-weight">bold</xsl:attribute>
@@ -916,12 +916,274 @@
 		</xsl:if>
 	</xsl:attribute-set>
 
-	<xsl:attribute-set name="table-footer-cell-style">
+
+	<xsl:attribute-set name="table-row-style">
+		<xsl:attribute name="min-height">4mm</xsl:attribute>
+		
+		<xsl:if test="$namespace = 'gb'">
+			<xsl:attribute name="min-height">0mm</xsl:attribute>
+			<xsl:attribute name="line-height">110%</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'ogc'">
+			<xsl:attribute name="min-height">8.5mm</xsl:attribute>
+		</xsl:if>
 		<xsl:if test="$namespace = 'rsd'">
-			<xsl:attribute name="border">solid black 0pt</xsl:attribute>
+			<xsl:attribute name="min-height">8.5mm</xsl:attribute>
 		</xsl:if>
 	</xsl:attribute-set>
 	
+	<xsl:attribute-set name="table-header-row-style" use-attribute-sets="table-row-style">
+		<xsl:attribute name="font-weight">bold</xsl:attribute>
+		<xsl:if test="$namespace = 'bsi'">
+			<xsl:attribute name="border-top"><xsl:value-of select="$table-border"/></xsl:attribute>
+			<xsl:attribute name="border-bottom"><xsl:value-of select="$table-border"/></xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'iso' or $namespace = 'jcgm'">
+			<xsl:attribute name="border-top">solid black 1pt</xsl:attribute>
+			<xsl:attribute name="border-bottom">solid black 1pt</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'iec'">
+			<xsl:attribute name="border-top">solid black 0.5pt</xsl:attribute>
+			<xsl:attribute name="border-bottom">solid black 0.5pt</xsl:attribute>
+		</xsl:if>
+		
+		<xsl:if test="$namespace = 'nist-cswp'  or $namespace = 'nist-sp'">
+			<xsl:attribute name="font-family">Arial</xsl:attribute>
+			<xsl:attribute name="font-size">10pt</xsl:attribute>
+		</xsl:if>
+		
+		<xsl:if test="$namespace = 'ogc'">
+			<xsl:attribute name="background-color">rgb(33, 55, 92)</xsl:attribute>
+			<xsl:attribute name="color">white</xsl:attribute>
+		</xsl:if>
+				
+		
+		<xsl:if test="$namespace = 'rsd'">
+			<xsl:attribute name="font-weight">normal</xsl:attribute>
+			<xsl:attribute name="background-color">rgb(32, 98, 169)</xsl:attribute>
+			<xsl:attribute name="color">white</xsl:attribute>
+		</xsl:if>
+		
+		
+	</xsl:attribute-set>
+	
+	<xsl:attribute-set name="table-footer-row-style" use-attribute-sets="table-row-style">
+		<xsl:if test="$namespace = 'bsi'">
+			<xsl:attribute name="font-size">9pt</xsl:attribute>
+			<xsl:attribute name="border-left"><xsl:value-of select="$table-border"/></xsl:attribute>
+			<xsl:attribute name="border-right"><xsl:value-of select="$table-border"/></xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'iec'">
+			<xsl:attribute name="border-left">solid black 0.5pt</xsl:attribute>
+			<xsl:attribute name="border-right">solid black 0.5pt</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'iso' or $namespace = 'jcgm'">
+			<xsl:attribute name="font-size">9pt</xsl:attribute>
+			<xsl:attribute name="border-left">solid black 1pt</xsl:attribute>
+			<xsl:attribute name="border-right">solid black 1pt</xsl:attribute>
+		</xsl:if>
+	</xsl:attribute-set>
+	
+	<xsl:attribute-set name="table-body-row-style" use-attribute-sets="table-row-style">
+
+	</xsl:attribute-set>
+
+	<xsl:attribute-set name="table-header-cell-style">
+		<xsl:attribute name="font-weight">bold</xsl:attribute>
+		<xsl:attribute name="border">solid black 1pt</xsl:attribute>
+		<xsl:attribute name="padding-left">1mm</xsl:attribute>
+		<xsl:attribute name="display-align">center</xsl:attribute>
+		<xsl:if test="$namespace = 'bipm'">
+			<xsl:attribute name="font-weight">normal</xsl:attribute>
+			<xsl:attribute name="border">solid black 0pt</xsl:attribute>				
+			<xsl:attribute name="border-bottom">solid black 0.5pt</xsl:attribute>
+			<xsl:attribute name="height">8mm</xsl:attribute>
+			<xsl:attribute name="padding-top">2mm</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'bsi'">
+			<xsl:attribute name="border"><xsl:value-of select="$table-border"/></xsl:attribute>
+			<xsl:attribute name="padding-top">1mm</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'iso'">
+			<xsl:attribute name="padding-top">1mm</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'iec'">
+			<xsl:attribute name="padding-top">1mm</xsl:attribute>
+			<xsl:attribute name="border">solid black 0.5pt</xsl:attribute>
+			<xsl:attribute name="text-align">center</xsl:attribute>
+		</xsl:if>
+		
+		<xsl:if test="$namespace = 'jcgm'">
+			<xsl:attribute name="padding-top">1mm</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'mpfd'">								
+			<xsl:attribute name="border-top">solid black 2pt</xsl:attribute>
+			<xsl:attribute name="border-bottom">solid black 2pt</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'nist-cswp'  or $namespace = 'nist-sp'">
+			<xsl:attribute name="text-align">center</xsl:attribute>
+			<xsl:attribute name="background-color">black</xsl:attribute>
+			<xsl:attribute name="color">white</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'ogc'">				
+			<xsl:attribute name="border">solid black 0pt</xsl:attribute>				
+		</xsl:if>
+		<xsl:if test="$namespace = 'ogc-white-paper'">
+			<xsl:attribute name="padding">1mm</xsl:attribute>
+			<xsl:attribute name="background-color">rgb(0, 51, 102)</xsl:attribute>
+			<xsl:attribute name="color">white</xsl:attribute>
+			<xsl:attribute name="border">solid 0.5pt rgb(153, 153, 153)</xsl:attribute>
+			<xsl:attribute name="height">5mm</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'rsd'">
+			<xsl:attribute name="font-weight">normal</xsl:attribute>
+			<xsl:attribute name="border">0pt solid black</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'unece'">
+			<xsl:attribute name="display-align">center</xsl:attribute>
+			<xsl:attribute name="font-style">italic</xsl:attribute>
+			<xsl:attribute name="font-weight">normal</xsl:attribute>
+			<xsl:attribute name="padding-top">2mm</xsl:attribute>
+			<xsl:attribute name="padding-left">2mm</xsl:attribute>
+			<xsl:attribute name="border">solid black 0pt</xsl:attribute>
+			<xsl:attribute name="border-top">solid black 0.2pt</xsl:attribute>
+			<xsl:attribute name="border-bottom">solid black 1.5pt</xsl:attribute>
+			<xsl:attribute name="text-indent">0mm</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'unece-rec'">
+			<xsl:attribute name="text-indent">0mm</xsl:attribute>
+		</xsl:if>
+	</xsl:attribute-set>
+
+	<xsl:attribute-set name="table-cell-style">
+		<xsl:attribute name="display-align">center</xsl:attribute>
+		<xsl:attribute name="border">solid black 1pt</xsl:attribute>
+		<xsl:attribute name="padding-left">1mm</xsl:attribute>
+		
+		<xsl:if test="$namespace = 'bipm'">
+			<xsl:attribute name="border">solid 0pt white</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'bsi'">
+			<xsl:attribute name="padding-top">0.5mm</xsl:attribute>
+			<xsl:attribute name="border"><xsl:value-of select="$table-border"/></xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'iso'">
+			<xsl:attribute name="padding-top">0.5mm</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'iec'">
+			<xsl:attribute name="padding-top">0.5mm</xsl:attribute>
+			<xsl:attribute name="border">solid black 0.5pt</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'iho'">
+			<xsl:attribute name="padding-top">0.5mm</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'itu'">
+			<xsl:attribute name="display-align">before</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'jcgm'">
+			<xsl:attribute name="padding-top">0.5mm</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'ogc'">
+			<xsl:attribute name="border">solid 0pt white</xsl:attribute>
+			<xsl:attribute name="padding-top">1mm</xsl:attribute>			
+			<xsl:attribute name="padding-bottom">1mm</xsl:attribute>			
+		</xsl:if>
+		<xsl:if test="$namespace = 'ogc-white-paper'">
+			<xsl:attribute name="padding-top">1mm</xsl:attribute>			
+			<xsl:attribute name="border">solid 0.5pt rgb(153, 153, 153)</xsl:attribute>
+			<xsl:attribute name="height">5mm</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'rsd'">
+			<xsl:attribute name="border">0pt solid black</xsl:attribute>
+			<xsl:attribute name="padding-top">0.5mm</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'unece'">
+			<xsl:attribute name="display-align">before</xsl:attribute>
+			<xsl:attribute name="padding-left">0mm</xsl:attribute>
+			<xsl:attribute name="padding-top">2mm</xsl:attribute>
+			<xsl:attribute name="padding-bottom">1mm</xsl:attribute>
+			<xsl:attribute name="border">solid black 0pt</xsl:attribute>
+			<xsl:attribute name="border-bottom">solid black 1.5pt</xsl:attribute>
+			<xsl:attribute name="text-indent">0mm</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'unece-rec'">
+			<xsl:attribute name="text-indent">0mm</xsl:attribute>
+			
+		</xsl:if>
+	</xsl:attribute-set> <!-- table-cell-style -->
+
+	<xsl:attribute-set name="table-footer-cell-style">
+		<xsl:attribute name="border">solid black 1pt</xsl:attribute>
+		<xsl:attribute name="padding-left">1mm</xsl:attribute>
+		<xsl:attribute name="padding-right">1mm</xsl:attribute>
+		<xsl:attribute name="padding-top">1mm</xsl:attribute>
+		
+		<xsl:if test="$namespace = 'bipm'">
+			<xsl:attribute name="border">solid black 0pt</xsl:attribute>
+		</xsl:if>
+		
+		<xsl:if test="$namespace = 'bsi'">
+			<xsl:attribute name="border"><xsl:value-of select="$table-border"/></xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'gb'">
+			<xsl:attribute name="border-top">solid black 0pt</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'iso'">
+			<xsl:attribute name="border-top">solid black 0pt</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'iec'">
+			<xsl:attribute name="border">solid black 0.5pt</xsl:attribute>
+		</xsl:if>
+
+		<xsl:if test="$namespace = 'jcgm'">
+			<xsl:attribute name="border-top">solid black 0pt</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'ogc'">
+			<xsl:attribute name="border">solid black 0pt</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'rsd'">
+			<xsl:attribute name="border">solid black 0pt</xsl:attribute>
+		</xsl:if>
+	</xsl:attribute-set> <!-- table-footer-cell-style -->
+	
+	<xsl:attribute-set name="table-note-style">
+		<xsl:attribute name="font-size">10pt</xsl:attribute>
+		<xsl:attribute name="margin-bottom">12pt</xsl:attribute>
+		<xsl:if test="$namespace = 'bipm'">
+			<xsl:attribute name="text-align">justify</xsl:attribute>
+			<xsl:attribute name="margin-bottom">0pt</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'bsi'">
+			<xsl:attribute name="font-size">9pt</xsl:attribute>
+			<xsl:attribute name="margin-bottom">6pt</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'gb'">
+			<xsl:attribute name="font-size">9pt</xsl:attribute>
+			<xsl:attribute name="text-align">center</xsl:attribute>
+			<xsl:attribute name="margin-bottom">6pt</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'iso'">
+			<xsl:attribute name="font-size">9pt</xsl:attribute>
+			<xsl:attribute name="margin-bottom">6pt</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'iec'">
+			<xsl:attribute name="font-size">8pt</xsl:attribute>
+			<xsl:attribute name="margin-bottom">6pt</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'iho'">
+			<xsl:attribute name="font-size">12pt</xsl:attribute>					
+		</xsl:if>
+		<xsl:if test="$namespace = 'jcgm'">
+			<xsl:attribute name="font-size">9pt</xsl:attribute>
+			<xsl:attribute name="margin-bottom">6pt</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'rsd'">
+			<xsl:attribute name="font-size">8pt</xsl:attribute>					
+		</xsl:if>
+	</xsl:attribute-set><!-- table-note-style -->
+	<!-- ========================== -->
+	<!-- END Table styles -->
+	<!-- ========================== -->
 	
 	<xsl:attribute-set name="appendix-style">
 		<xsl:if test="$namespace = 'bsi' or $namespace = 'iso' or $namespace = 'ogc' or $namespace = 'ogc-white-paper' or $namespace = 'm3d' or $namespace = 'gb' or $namespace = 'csd' or $namespace = 'jcgm'">		
@@ -1136,6 +1398,7 @@
 	</xsl:attribute-set>
 	
 	<xsl:attribute-set name="table-note-name-style">
+		<xsl:attribute name="padding-right">2mm</xsl:attribute>
 		<xsl:if test="$namespace = 'bipm'">
 			<xsl:attribute name="font-size">10pt</xsl:attribute>
 		</xsl:if>
@@ -1144,12 +1407,10 @@
 		</xsl:if>
 		<xsl:if test="$namespace = 'iho'">
 			<xsl:attribute name="font-size">11pt</xsl:attribute>
-			<xsl:attribute name="padding-right">3mm</xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'rsd'">
 			<xsl:attribute name="font-weight">bold</xsl:attribute>
 			<xsl:attribute name="color"><xsl:value-of select="$color_blue"/></xsl:attribute>
-			<xsl:attribute name="padding-right">0.5mm</xsl:attribute>
 		</xsl:if>
 	</xsl:attribute-set>
 	
@@ -1370,6 +1631,13 @@
 	</xsl:attribute-set>
 
 	<xsl:attribute-set name="figure-name-style">
+		<xsl:if test="$namespace = 'bipm'">
+			<xsl:attribute name="keep-with-previous">always</xsl:attribute>
+			<xsl:attribute name="font-weight">bold</xsl:attribute>
+			<xsl:attribute name="text-align">left</xsl:attribute>			
+			<xsl:attribute name="margin-left">19mm</xsl:attribute>
+			<xsl:attribute name="text-indent">-19mm</xsl:attribute>
+		</xsl:if>
 		<xsl:if test="$namespace = 'bsi'">			
 			<xsl:attribute name="font-weight">normal</xsl:attribute>
 			<xsl:attribute name="font-style">italic</xsl:attribute>
@@ -1379,13 +1647,6 @@
 			<xsl:attribute name="margin-bottom">2pt</xsl:attribute>
 			<xsl:attribute name="margin-left">-20mm</xsl:attribute>
 			<xsl:attribute name="keep-with-next">always</xsl:attribute>
-		</xsl:if>
-		<xsl:if test="$namespace = 'bipm'">
-			<xsl:attribute name="keep-with-previous">always</xsl:attribute>
-			<xsl:attribute name="font-weight">bold</xsl:attribute>
-			<xsl:attribute name="text-align">left</xsl:attribute>			
-			<xsl:attribute name="margin-left">19mm</xsl:attribute>
-			<xsl:attribute name="text-indent">-19mm</xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'csa'">
 			<xsl:attribute name="font-size">11pt</xsl:attribute>
@@ -1502,8 +1763,7 @@
 	<xsl:attribute-set name="image-style">
 		<xsl:attribute name="text-align">center</xsl:attribute>
 		<xsl:if test="$namespace = 'bsi'">
-			<!-- <xsl:attribute name="border">0.5pt solid black</xsl:attribute>
-			<xsl:attribute name="padding">5mm</xsl:attribute> -->
+			
 		</xsl:if>
 		<xsl:if test="$namespace = 'ogc'">
 			<xsl:attribute name="space-before">12pt</xsl:attribute>
@@ -1764,17 +2024,17 @@
 		<xsl:attribute name="font-style">normal</xsl:attribute>
 		<xsl:attribute name="text-indent">0</xsl:attribute>
 		<xsl:attribute name="start-indent">0</xsl:attribute>
-		<xsl:if test="$namespace = 'bsi'">
-			<xsl:attribute name="font-size">8pt</xsl:attribute>
-			<xsl:attribute name="start-indent">5mm</xsl:attribute>
-			<xsl:attribute name="text-indent">-5mm</xsl:attribute>
-			<xsl:attribute name="text-align">left</xsl:attribute>
-		</xsl:if>
 		<xsl:if test="$namespace = 'bipm' or $namespace = 'jcgm'">
 			<xsl:attribute name="font-size">9pt</xsl:attribute>
 			<xsl:attribute name="margin-bottom">12pt</xsl:attribute>
 			<xsl:attribute name="line-height">124%</xsl:attribute>
 			<xsl:attribute name="text-align">justify</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'bsi'">
+			<xsl:attribute name="font-size">8pt</xsl:attribute>
+			<xsl:attribute name="start-indent">5mm</xsl:attribute>
+			<xsl:attribute name="text-indent">-5mm</xsl:attribute>
+			<xsl:attribute name="text-align">left</xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'csa'">
 			<xsl:attribute name="font-family">Azo Sans Lt</xsl:attribute>
@@ -2109,10 +2369,6 @@
 				</xsl:if>
 			
 				<xsl:if test="$namespace = 'bsi'">
-					<xsl:if test="$document_type = 'PAS'">
-						<xsl:attribute name="span">all</xsl:attribute>
-						<xsl:attribute name="font-size">8pt</xsl:attribute>
-					</xsl:if>
 					<xsl:if test="starts-with(@id, 'boxed-text')">
 						<xsl:attribute name="font-size">inherit</xsl:attribute>
 					</xsl:if>
@@ -2123,8 +2379,12 @@
 						<xsl:attribute name="margin-top">0pt</xsl:attribute>
 						<xsl:attribute name="margin-bottom">0pt</xsl:attribute>
 					</xsl:if>
+					<xsl:if test="$document_type = 'PAS'">
+						<xsl:attribute name="span">all</xsl:attribute>
+						<xsl:attribute name="font-size">8pt</xsl:attribute>
+					</xsl:if>
 				</xsl:if>
-				
+			
 				<xsl:if test="$namespace = 'iec'">
 					<xsl:if test="ancestor::*[local-name() = 'preface']">
 						<xsl:attribute name="space-after">16pt</xsl:attribute>
@@ -2136,7 +2396,7 @@
 						<xsl:attribute name="font-family">Calibri</xsl:attribute>
 					</xsl:if>
 				</xsl:if>
-				
+			
 				<xsl:if test="$namespace = 'nist-cswp'  or $namespace = 'nist-sp'">
 					<xsl:if test="ancestor::*[local-name()='annex'] or ancestor::*[local-name()='preface']">
 						<xsl:attribute name="font-size">10pt</xsl:attribute>
@@ -2188,6 +2448,13 @@
 							<xsl:attribute name="margin-right"><xsl:value-of select="$margin-side"/>mm</xsl:attribute>
 						</xsl:if>
 						
+						<xsl:if test="$namespace = 'bipm'">					
+							<xsl:if test="not(ancestor::*[local-name()='preface']) and not(ancestor::*[local-name()='note_side']) and not(ancestor::*[local-name() = 'annex'] and .//*[local-name() = 'xref'][@pagenumber]) and not(ancestor::*[local-name() = 'doccontrol'])">
+								<xsl:attribute name="border-top">0.5pt solid black</xsl:attribute>
+								<xsl:attribute name="border-bottom">0.5pt solid black</xsl:attribute>
+							</xsl:if>
+						</xsl:if>
+						
 						<xsl:if test="$namespace = 'bsi'">
 							<xsl:if test=".//*[local-name() = 'tr'][1]/*[local-name() = 'td'][normalize-space() = 'Key']">
 								<xsl:attribute name="border-bottom">none</xsl:attribute>
@@ -2210,13 +2477,6 @@
 							</xsl:if>
 						</xsl:if>
 						
-						<xsl:if test="$namespace = 'bipm'">					
-							<xsl:if test="not(ancestor::*[local-name()='preface']) and not(ancestor::*[local-name()='note_side']) and not(ancestor::*[local-name() = 'annex'] and .//*[local-name() = 'xref'][@pagenumber]) and not(ancestor::*[local-name() = 'doccontrol'])">
-								<xsl:attribute name="border-top">0.5pt solid black</xsl:attribute>
-								<xsl:attribute name="border-bottom">0.5pt solid black</xsl:attribute>
-							</xsl:if>
-						</xsl:if>
-						
 						<xsl:if test="$namespace = 'iso'">
 							<xsl:if test="*[local-name()='thead']">
 								<xsl:attribute name="border-top">1pt solid black</xsl:attribute>
@@ -2227,15 +2487,15 @@
 							</xsl:if>
 						</xsl:if>
 						
-						<xsl:if test="$namespace = 'jcgm'">
-							<xsl:if test="*[local-name()='thead']">
-								<xsl:attribute name="border-top">1pt solid black</xsl:attribute>
-							</xsl:if>
-						</xsl:if>
-						
 						<xsl:if test="$namespace = 'itu'">
 							<xsl:if test="$doctype = 'service-publication'">
 								<xsl:attribute name="border">1pt solid rgb(211,211,211)</xsl:attribute>
+							</xsl:if>
+						</xsl:if>
+						
+						<xsl:if test="$namespace = 'jcgm'">
+							<xsl:if test="*[local-name()='thead']">
+								<xsl:attribute name="border-top">1pt solid black</xsl:attribute>
 							</xsl:if>
 						</xsl:if>
 						
@@ -2398,9 +2658,7 @@
 		<xsl:param name="continued"/>
 		<xsl:if test="normalize-space() != ''">
 			<fo:block xsl:use-attribute-sets="table-name-style">
-				<xsl:if test="$namespace = 'iso' or $namespace = 'jcgm'">
-					<xsl:attribute name="margin-bottom">0pt</xsl:attribute>
-				</xsl:if>
+
 				<xsl:if test="$namespace = 'bipm'">
 					<xsl:if test="not(*[local-name()='tab'])"> <!-- table without number -->
 						<xsl:attribute name="margin-top">0pt</xsl:attribute>
@@ -2468,6 +2726,9 @@
 		<xsl:value-of select="$columns-count + $sum-colspans - $columns-with-colspan"/>
 	</xsl:template>
 
+	<!-- ================================================== -->
+	<!-- Calculate column's width based on text string max widths -->
+	<!-- ================================================== -->
 	<xsl:template name="calculate-column-widths">
 		<xsl:param name="table"/>
 		<xsl:param name="cols-count"/>
@@ -2550,7 +2811,6 @@
 					</xsl:otherwise>
 				</xsl:choose>
 			</xsl:variable>
-
 			
 			<column>
 				<xsl:for-each select="xalan:nodeset($widths)//width">
@@ -2593,6 +2853,10 @@
 		<xsl:variable name="math_text" select="normalize-space(xalan:nodeset($mathml))"/>
 		<xsl:value-of select="translate($math_text, ' ', '#')"/><!-- mathml images as one 'word' without spaces -->
 	</xsl:template>
+	<!-- ================================================== -->
+	<!-- END Calculate column's width based on text string max widths -->
+	<!-- ================================================== -->
+	
 	
 	<!-- for debug purpose only -->
 	<xsl:template match="*[local-name()='table2']"/>
@@ -2601,7 +2865,6 @@
 
 	<xsl:template match="*[local-name()='thead']" mode="process">
 		<xsl:param name="cols-count"/>
-		<!-- font-weight="bold" -->
 		<fo:table-header>
 			<xsl:if test="$namespace = 'iso' or $namespace = 'jcgm'">				
 				<xsl:call-template name="table-header-title">
@@ -2626,7 +2889,6 @@
 		<fo:table-row>
 			<fo:table-cell number-columns-spanned="{$cols-count}" border-left="1.5pt solid white" border-right="1.5pt solid white" border-top="1.5pt solid white" border-bottom="1.5pt solid black">
 				<xsl:if test="$namespace = 'bsi'">
-					<!-- <xsl:attribute name="border-bottom">0pt solid black</xsl:attribute> -->
 					<xsl:attribute name="border-bottom">none</xsl:attribute>
 					<xsl:attribute name="border-left">none</xsl:attribute>
 					<xsl:attribute name="border-right">none</xsl:attribute>
@@ -2649,7 +2911,7 @@
 				
 			</fo:table-cell>
 		</fo:table-row>
-	</xsl:template>
+	</xsl:template> <!-- table-header-title -->
 	
 	<xsl:template match="*[local-name()='thead']" mode="process_tbody">		
 		<fo:table-body>
@@ -2746,38 +3008,30 @@
 				
 				<fo:table-body>
 					<fo:table-row>
-						<fo:table-cell border="solid black 1pt" padding-left="1mm" padding-right="1mm" padding-top="1mm" number-columns-spanned="{$cols-count}">
+						<fo:table-cell xsl:use-attribute-sets="table-footer-cell-style" number-columns-spanned="{$cols-count}">
+							
 							<xsl:if test="$namespace = 'bsi'">
-								<xsl:attribute name="border"><xsl:value-of select="$table-border"/></xsl:attribute>
 								<xsl:if test="$document_type = 'PAS'">
 									<xsl:attribute name="border">1pt solid <xsl:value-of select="$color_PAS"/></xsl:attribute>
 								</xsl:if>
 							</xsl:if>
-							<xsl:if test="$namespace = 'iso' or $namespace = 'gb' or $namespace = 'jcgm'">
-								<xsl:attribute name="border-top">solid black 0pt</xsl:attribute>
-							</xsl:if>
-							<xsl:if test="$namespace = 'iec'">
-								<xsl:attribute name="border">solid black 0.5pt</xsl:attribute>
-							</xsl:if>
+
 							<xsl:if test="$namespace = 'itu'">
 								<xsl:if test="ancestor::*[local-name()='preface']">
-									<xsl:attribute name="border">solid black 0pt</xsl:attribute>
+									<xsl:if test="$doctype != 'service-publication'">
+										<xsl:attribute name="border">solid black 0pt</xsl:attribute>
+									</xsl:if>
 								</xsl:if>
 								<xsl:if test="$doctype = 'service-publication'">
 									<xsl:attribute name="border">none</xsl:attribute>
 								</xsl:if>
 							</xsl:if>
+							
 							<!-- fn will be processed inside 'note' processing -->
 							<xsl:if test="$namespace = 'iec'">
 								<xsl:if test="../*[local-name()='note']">
 									<fo:block margin-bottom="6pt">&#xA0;</fo:block>
 								</xsl:if>
-							</xsl:if>
-							<xsl:if test="$namespace = 'ogc'">
-								<xsl:attribute name="border">solid black 0pt</xsl:attribute>
-							</xsl:if>
-							<xsl:if test="$namespace = 'bipm'">
-								<xsl:attribute name="border">solid black 0pt</xsl:attribute>
 							</xsl:if>
 							
 							<xsl:if test="$namespace = 'bipm'">
@@ -2790,9 +3044,6 @@
 										</xsl:choose>
 									</fo:block>
 								</xsl:if>
-							</xsl:if>
-							<xsl:if test="$namespace = 'rsd'">
-								<xsl:attribute name="border">solid black 0pt</xsl:attribute>
 							</xsl:if>
 							
 							<xsl:if test="$namespace = 'itu'">
@@ -2952,146 +3203,123 @@
 		<xsl:apply-templates select="." />
 	</xsl:template>
 	
-	
-	<xsl:template match="*[local-name()='tr']">
-		<xsl:variable name="parent-name" select="local-name(..)"/>
+	<!-- ===================== -->
+	<!-- Table's row processing -->
+	<!-- ===================== -->
+	<!-- row in table header (thead) -->
+	<xsl:template match="*[local-name()='thead']/*[local-name()='tr']" priority="2">
+		<fo:table-row xsl:use-attribute-sets="table-header-row-style">
+		
+			<xsl:if test="$namespace = 'bsi'">
+				<xsl:if test="position() = last()">
+					<xsl:attribute name="border-bottom">none</xsl:attribute>
+				</xsl:if>
+				<xsl:if test="ancestor::*[local-name() = 'preface']">
+					<xsl:attribute name="border-top">solid black 0pt</xsl:attribute>
+					<xsl:attribute name="border-bottom">solid black 0pt</xsl:attribute>
+					<xsl:attribute name="font-weight">normal</xsl:attribute>
+				</xsl:if>
+			</xsl:if>
+			
+			<xsl:if test="$namespace = 'iso' or $namespace = 'jcgm'">
+				<xsl:choose>
+					<xsl:when test="position() = 1">
+						<xsl:attribute name="border-top">solid black 1.5pt</xsl:attribute>
+						<xsl:attribute name="border-bottom">solid black 1pt</xsl:attribute>
+					</xsl:when>
+					<xsl:when test="position() = last()">
+						<xsl:attribute name="border-top">solid black 1pt</xsl:attribute>
+						<xsl:attribute name="border-bottom">solid black 1.5pt</xsl:attribute>
+					</xsl:when>
+				</xsl:choose>
+			</xsl:if>
 
-		<fo:table-row min-height="4mm">
-				<xsl:if test="$parent-name = 'thead'">
-					<xsl:attribute name="font-weight">bold</xsl:attribute>
-					<xsl:if test="$namespace = 'nist-cswp'  or $namespace = 'nist-sp'">
-						<xsl:attribute name="font-family">Arial</xsl:attribute>
-						<xsl:attribute name="font-size">10pt</xsl:attribute>
-					</xsl:if>
-					
-					<xsl:if test="$namespace = 'iso' or $namespace = 'jcgm'">
-						<xsl:choose>
-							<xsl:when test="position() = 1">
-								<xsl:attribute name="border-top">solid black 1.5pt</xsl:attribute>
-								<xsl:attribute name="border-bottom">solid black 1pt</xsl:attribute>
-							</xsl:when>
-							<xsl:when test="position() = last()">
-								<xsl:attribute name="border-top">solid black 1pt</xsl:attribute>
-								<xsl:attribute name="border-bottom">solid black 1.5pt</xsl:attribute>
-							</xsl:when>
-							<xsl:otherwise>
-								<xsl:attribute name="border-top">solid black 1pt</xsl:attribute>
-								<xsl:attribute name="border-bottom">solid black 1pt</xsl:attribute>
-							</xsl:otherwise>
-						</xsl:choose>
-					</xsl:if>
-					<xsl:if test="$namespace = 'bsi'">
-						<xsl:attribute name="border-top"><xsl:value-of select="$table-border"/></xsl:attribute>
-						<xsl:attribute name="border-bottom"><xsl:value-of select="$table-border"/></xsl:attribute>
-						<xsl:if test="position() = last()">
-							<xsl:attribute name="border-bottom">none</xsl:attribute>
-						</xsl:if>
-						<xsl:if test="ancestor::*[local-name() = 'preface']">
-							<xsl:attribute name="border-top">solid black 0pt</xsl:attribute>
-							<xsl:attribute name="border-bottom">solid black 0pt</xsl:attribute>
-							<xsl:attribute name="font-weight">normal</xsl:attribute>
-						</xsl:if>
-					</xsl:if>
-					<xsl:if test="$namespace = 'iec'">
-						<xsl:attribute name="border-top">solid black 0.5pt</xsl:attribute>
-						<xsl:attribute name="border-bottom">solid black 0.5pt</xsl:attribute>
-					</xsl:if>
-					<xsl:if test="$namespace = 'rsd'">
-						<xsl:attribute name="font-weight">normal</xsl:attribute>
-						<xsl:attribute name="color">black</xsl:attribute>
-					</xsl:if>
-					<xsl:if test="$namespace = 'itu'">
-						<xsl:if test="$doctype = 'service-publication'">
-							<xsl:attribute name="border-bottom">1.1pt solid black</xsl:attribute>
-						</xsl:if>
-					</xsl:if>
-					
+			<xsl:if test="$namespace = 'itu'">
+				<xsl:if test="$doctype = 'service-publication'">
+					<xsl:attribute name="border-bottom">1.1pt solid black</xsl:attribute>
 				</xsl:if>
-				<xsl:if test="$parent-name = 'tfoot'">
-					<xsl:if test="$namespace = 'bsi'">
-						<xsl:attribute name="font-size">9pt</xsl:attribute>
-						<xsl:attribute name="border-left"><xsl:value-of select="$table-border"/></xsl:attribute>
-						<xsl:attribute name="border-right"><xsl:value-of select="$table-border"/></xsl:attribute>
-						<xsl:if test="$document_type = 'PAS'">
-							<xsl:attribute name="font-size">inherit</xsl:attribute>
-						</xsl:if>
-					</xsl:if>
-					<xsl:if test="$namespace = 'iso' or $namespace = 'jcgm'">
-						<xsl:attribute name="font-size">9pt</xsl:attribute>
-						<xsl:attribute name="border-left">solid black 1pt</xsl:attribute>
-						<xsl:attribute name="border-right">solid black 1pt</xsl:attribute>
-					</xsl:if>
-					<xsl:if test="$namespace = 'iec'">
-						<xsl:attribute name="border-left">solid black 0.5pt</xsl:attribute>
-						<xsl:attribute name="border-right">solid black 0.5pt</xsl:attribute>
-					</xsl:if>
+			</xsl:if>
+			
+			<xsl:call-template name="setTableRowAttributes"/>
+			
+			<xsl:apply-templates />
+		</fo:table-row>
+	</xsl:template>	
+		
+	<!-- row in table footer (tfoot) -->
+	<xsl:template match="*[local-name()='tfoot']/*[local-name()='tr']" priority="2">
+		<fo:table-row xsl:use-attribute-sets="table-footer-row-style">
+			<xsl:if test="$namespace = 'bsi'">
+				<xsl:if test="$document_type = 'PAS'">
+					<xsl:attribute name="font-size">inherit</xsl:attribute>
 				</xsl:if>
-				<xsl:if test="$namespace = 'gb'">
-					<xsl:attribute name="min-height">0mm</xsl:attribute>
-					<xsl:attribute name="line-height">110%</xsl:attribute>
-				</xsl:if>
-				<xsl:if test="$namespace = 'unece'">
-					<xsl:if test="not(*[local-name()='th'])">
-						<xsl:attribute name="min-height">8mm</xsl:attribute>
-					</xsl:if>
-				</xsl:if>
-				<xsl:if test="$namespace = 'ogc'">
-					<xsl:attribute name="min-height">8.5mm</xsl:attribute>
-					<xsl:if test="$parent-name = 'thead'">
-						<xsl:attribute name="background-color">rgb(33, 55, 92)</xsl:attribute>
-						<xsl:attribute name="color">white</xsl:attribute>
-					</xsl:if>
-					<xsl:if test="$parent-name = 'tbody'">
-						<xsl:variable name="number"><xsl:number/></xsl:variable>
-						<xsl:if test="$number mod 2 = 0">
-							<xsl:attribute name="background-color">rgb(252, 246, 222)</xsl:attribute>
-						</xsl:if>
-					</xsl:if>					
-				</xsl:if>
-				<xsl:if test="$namespace = 'bipm'">
-					<xsl:if test="count(*) = 1 and local-name(*[1]) = 'th'">
-						<xsl:attribute  name="keep-with-next.within-page">always</xsl:attribute>
-					</xsl:if>
-					<xsl:if test="not(ancestor::*[local-name()='note_side'])">
-					 <xsl:attribute name="min-height">5mm</xsl:attribute>
-					 </xsl:if>
-				</xsl:if>
-				<xsl:if test="$namespace = 'rsd'">
-					<xsl:attribute name="min-height">8.5mm</xsl:attribute>
-					<xsl:if test="$parent-name = 'thead'">
-						<xsl:attribute name="background-color">rgb(32, 98, 169)</xsl:attribute>
-						<xsl:attribute name="color">white</xsl:attribute>
-					</xsl:if>
-					<xsl:if test="$parent-name = 'tbody'">
-						<xsl:variable name="number"><xsl:number/></xsl:variable>
-						<xsl:if test="$number mod 2 = 0">
-							<xsl:attribute name="background-color">rgb(254, 247, 228)</xsl:attribute>
-						</xsl:if>
-					</xsl:if>					
-				</xsl:if>
-				
-				<xsl:if test="$namespace = 'bsi'">
-					<xsl:if test="$document_type = 'PAS'">
-						<xsl:attribute name="min-height">6mm</xsl:attribute>
-					</xsl:if>
-					<xsl:if test="ancestor::*[local-name()='preface'] and ancestor::*[local-name()='clause'][@type = 'corrigenda'] and normalize-space() = ''">
-						<xsl:attribute name="min-height">0mm</xsl:attribute>
-					</xsl:if>
-				</xsl:if>
-				
-				<xsl:if test="$namespace = 'itu'">
-					<xsl:if test="$doctype = 'service-publication'">
-						<xsl:attribute name="min-height">5mm</xsl:attribute>
-					</xsl:if>
-				</xsl:if>
-				
+			</xsl:if>
+			<xsl:call-template name="setTableRowAttributes"/>
 			<xsl:apply-templates />
 		</fo:table-row>
 	</xsl:template>
 	
-
+	<!-- row in table's body (tbody) -->
+	<xsl:template match="*[local-name()='tr']">
+		<fo:table-row xsl:use-attribute-sets="table-body-row-style">
+		
+			<xsl:if test="$namespace = 'ogc'">
+				<xsl:variable name="number"><xsl:number/></xsl:variable>
+				<xsl:if test="$number mod 2 = 0">
+					<xsl:attribute name="background-color">rgb(252, 246, 222)</xsl:attribute>
+				</xsl:if>
+			</xsl:if>
+		
+			<xsl:if test="$namespace = 'rsd'">
+				<xsl:variable name="number"><xsl:number/></xsl:variable>
+				<xsl:if test="$number mod 2 = 0">
+					<xsl:attribute name="background-color">rgb(254, 247, 228)</xsl:attribute>
+				</xsl:if>
+			</xsl:if>
+		
+			<xsl:call-template name="setTableRowAttributes"/>
+			<xsl:apply-templates />
+		</fo:table-row>
+	</xsl:template>
+	
+	<xsl:template name="setTableRowAttributes">
+		<xsl:if test="$namespace = 'bsi'">
+			<xsl:if test="ancestor::*[local-name()='preface'] and ancestor::*[local-name()='clause'][@type = 'corrigenda'] and normalize-space() = ''">
+				<xsl:attribute name="min-height">0mm</xsl:attribute>
+			</xsl:if>
+			<xsl:if test="$document_type = 'PAS'">
+				<xsl:attribute name="min-height">6mm</xsl:attribute>
+			</xsl:if>
+		</xsl:if>
+	
+		<xsl:if test="$namespace = 'bipm'">
+			<xsl:if test="count(*) = 1 and local-name(*[1]) = 'th'">
+				<xsl:attribute  name="keep-with-next.within-page">always</xsl:attribute>
+			</xsl:if>
+			<xsl:if test="not(ancestor::*[local-name()='note_side'])">
+			 <xsl:attribute name="min-height">5mm</xsl:attribute>
+			 </xsl:if>
+		</xsl:if>
+		
+		<xsl:if test="$namespace = 'itu'">
+			<xsl:if test="$doctype = 'service-publication'">
+				<xsl:attribute name="min-height">5mm</xsl:attribute>
+			</xsl:if>
+		</xsl:if>
+		
+		<xsl:if test="$namespace = 'unece'">
+			<xsl:if test="not(*[local-name()='th'])">
+				<xsl:attribute name="min-height">8mm</xsl:attribute>
+			</xsl:if>
+		</xsl:if>
+	</xsl:template> <!-- setTableRowAttributes -->
+	<!-- ===================== -->
+	<!-- END Table's row processing -->
+	<!-- ===================== -->
+	
+	<!-- cell in table header row -->
 	<xsl:template match="*[local-name()='th']">
-		<fo:table-cell text-align="{@align}" font-weight="bold" border="solid black 1pt" padding-left="1mm" display-align="center">
+		<fo:table-cell xsl:use-attribute-sets="table-header-cell-style"> <!-- text-align="{@align}" -->
 			<xsl:attribute name="text-align">
 				<xsl:choose>
 					<xsl:when test="@align">
@@ -3100,94 +3328,8 @@
 					<xsl:otherwise>center</xsl:otherwise>
 				</xsl:choose>
 			</xsl:attribute>
-			<xsl:if test="$namespace = 'bsi'">
-				<xsl:attribute name="border"><xsl:value-of select="$table-border"/></xsl:attribute>
-				<xsl:attribute name="padding-top">1mm</xsl:attribute>
-				
-				<xsl:if test="ancestor::*[local-name() = 'preface']">
-					<xsl:attribute name="font-weight">normal</xsl:attribute>
-					<xsl:attribute name="border">solid black 0pt</xsl:attribute>
-				</xsl:if>
-				<xsl:if test="$document_type = 'PAS'">
-					<xsl:attribute name="border">1pt solid <xsl:value-of select="$color_PAS"/></xsl:attribute>
-				</xsl:if>
-			</xsl:if>
-			<xsl:if test="$namespace = 'iso' or $namespace = 'iec' or $namespace = 'jcgm'">
-				<xsl:attribute name="padding-top">1mm</xsl:attribute>
-			</xsl:if>
-			<xsl:if test="$namespace = 'iec'">
-				<xsl:attribute name="border">solid black 0.5pt</xsl:attribute>
-				<xsl:if test="ancestor::*[local-name()='preface']">
-					<xsl:attribute name="font-weight">normal</xsl:attribute>
-				</xsl:if>
-				<xsl:attribute name="text-align">center</xsl:attribute>
-			</xsl:if>
-			<xsl:if test="$namespace = 'itu'">
-				<xsl:if test="ancestor::*[local-name()='preface']">
-					<xsl:attribute name="border">solid black 0pt</xsl:attribute>
-				</xsl:if>
-				<xsl:if test="$doctype = 'service-publication'">
-					<xsl:attribute name="border">1pt solid rgb(211,211,211)</xsl:attribute>
-					<xsl:attribute name="border-bottom">1pt solid black</xsl:attribute>
-					<xsl:attribute name="padding-top">1mm</xsl:attribute>
-				</xsl:if>
-			</xsl:if>
-			<xsl:if test="$namespace = 'nist-cswp'  or $namespace = 'nist-sp'">
-				<xsl:attribute name="text-align">center</xsl:attribute>
-				<xsl:attribute name="background-color">black</xsl:attribute>
-				<xsl:attribute name="color">white</xsl:attribute>
-			</xsl:if>
-			<xsl:if test="$namespace = 'ogc'">				
-				<xsl:attribute name="border">solid black 0pt</xsl:attribute>				
-			</xsl:if>
-			<xsl:if test="$namespace = 'ogc-white-paper'">
-				<xsl:attribute name="padding">1mm</xsl:attribute>
-				<xsl:attribute name="background-color">rgb(0, 51, 102)</xsl:attribute>
-				<xsl:attribute name="color">white</xsl:attribute>
-				<xsl:attribute name="border">solid 0.5pt rgb(153, 153, 153)</xsl:attribute>
-				<xsl:attribute name="height">5mm</xsl:attribute>
-			</xsl:if>
 			
-			<xsl:if test="$namespace = 'unece-rec'">				
-				<xsl:if test="ancestor::*[local-name()='sections']">
-					<xsl:attribute name="border">solid black 0pt</xsl:attribute>
-					<xsl:attribute name="display-align">before</xsl:attribute>
-					<xsl:attribute name="padding-top">1mm</xsl:attribute>
-				</xsl:if>
-				<xsl:if test="ancestor::*[local-name()='annex']">
-					<xsl:attribute name="font-weight">normal</xsl:attribute>
-					<xsl:attribute name="padding-top">1mm</xsl:attribute>
-					<xsl:attribute name="background-color">rgb(218, 218, 218)</xsl:attribute>
-					<xsl:if test="starts-with(text(), '1') or starts-with(text(), '2') or starts-with(text(), '3') or starts-with(text(), '4') or starts-with(text(), '5') or
-						starts-with(text(), '6') or starts-with(text(), '7') or starts-with(text(), '8') or starts-with(text(), '9')">
-						<xsl:attribute name="color">rgb(46, 116, 182)</xsl:attribute>
-						<xsl:attribute name="font-weight">bold</xsl:attribute>
-					</xsl:if>
-				</xsl:if>
-				<xsl:attribute name="text-indent">0mm</xsl:attribute>
-			</xsl:if>
-			<xsl:if test="$namespace = 'unece'">
-				<xsl:attribute name="display-align">center</xsl:attribute>
-				<xsl:attribute name="font-style">italic</xsl:attribute>
-				<xsl:attribute name="font-weight">normal</xsl:attribute>
-				<xsl:attribute name="padding-top">2mm</xsl:attribute>
-				<xsl:attribute name="padding-left">2mm</xsl:attribute>
-				<xsl:attribute name="border">solid black 0pt</xsl:attribute>
-				<xsl:attribute name="border-top">solid black 0.2pt</xsl:attribute>
-				<xsl:attribute name="border-bottom">solid black 1.5pt</xsl:attribute>
-				<xsl:attribute name="text-indent">0mm</xsl:attribute>
-			</xsl:if>
-			<xsl:if test="$namespace = 'mpfd'">								
-				<xsl:attribute name="border-top">solid black 2pt</xsl:attribute>
-				<xsl:attribute name="border-bottom">solid black 2pt</xsl:attribute>
-			</xsl:if>
 			<xsl:if test="$namespace = 'bipm'">
-				<xsl:attribute name="font-weight">normal</xsl:attribute>
-				<xsl:attribute name="border">solid black 0pt</xsl:attribute>				
-				<!-- <xsl:attribute name="border-top">solid black 0.5pt</xsl:attribute> -->
-				<xsl:attribute name="border-bottom">solid black 0.5pt</xsl:attribute>
-				<xsl:attribute name="height">8mm</xsl:attribute>
-				<xsl:attribute name="padding-top">2mm</xsl:attribute>
 				<xsl:if test="(ancestor::*[local-name() = 'annex'] and ancestor::*[local-name() = 'table']//*[local-name() = 'xref'][@pagenumber]) or ancestor::*[local-name() = 'doccontrol']"><!-- for Annex ToC -->
 					<xsl:attribute name="border-top">solid black 0pt</xsl:attribute>
 					<xsl:attribute name="border-bottom">solid black 0pt</xsl:attribute>
@@ -3204,28 +3346,83 @@
 					<xsl:attribute name="display-align">before</xsl:attribute>
 				</xsl:if>
 			</xsl:if>
-			<xsl:if test="$namespace = 'rsd'">
-				<xsl:attribute name="font-weight">normal</xsl:attribute>
-				<xsl:attribute name="border">0pt solid black</xsl:attribute>
+			
+			<xsl:if test="$namespace = 'bsi'">
+				<xsl:if test="ancestor::*[local-name() = 'preface']">
+					<xsl:attribute name="font-weight">normal</xsl:attribute>
+					<xsl:if test="$document_type != 'PAS'">
+						<xsl:attribute name="border">solid black 0pt</xsl:attribute>
+					</xsl:if>
+				</xsl:if>
+				<xsl:if test="$document_type = 'PAS'">
+					<xsl:attribute name="border">1pt solid <xsl:value-of select="$color_PAS"/></xsl:attribute>
+				</xsl:if>
 			</xsl:if>
+
+			<xsl:if test="$namespace = 'iec'">
+				<xsl:attribute name="text-align">center</xsl:attribute>
+				<xsl:if test="ancestor::*[local-name()='preface']">
+					<xsl:attribute name="font-weight">normal</xsl:attribute>
+				</xsl:if>
+			</xsl:if>
+			<xsl:if test="$namespace = 'itu'">
+				<xsl:if test="ancestor::*[local-name()='preface']">
+					<xsl:if test="$doctype != 'service-publication'">
+						<xsl:attribute name="border">solid black 0pt</xsl:attribute>
+					</xsl:if>
+				</xsl:if>
+				<xsl:if test="$doctype = 'service-publication'">
+					<xsl:attribute name="border">1pt solid rgb(211,211,211)</xsl:attribute>
+					<xsl:attribute name="border-bottom">1pt solid black</xsl:attribute>
+					<xsl:attribute name="padding-top">1mm</xsl:attribute>
+				</xsl:if>
+			</xsl:if>
+			<xsl:if test="$namespace = 'nist-cswp' or $namespace = 'nist-sp'">
+				<xsl:attribute name="text-align">center</xsl:attribute>
+			</xsl:if>
+			<xsl:if test="$namespace = 'unece-rec'">				
+				<xsl:if test="ancestor::*[local-name()='sections']">
+					<xsl:attribute name="border">solid black 0pt</xsl:attribute>
+					<xsl:attribute name="display-align">before</xsl:attribute>
+					<xsl:attribute name="padding-top">1mm</xsl:attribute>
+				</xsl:if>
+				<xsl:if test="ancestor::*[local-name()='annex']">
+					<xsl:attribute name="font-weight">normal</xsl:attribute>
+					<xsl:attribute name="padding-top">1mm</xsl:attribute>
+					<xsl:attribute name="background-color">rgb(218, 218, 218)</xsl:attribute>
+					<xsl:if test="starts-with(text(), '1') or starts-with(text(), '2') or starts-with(text(), '3') or starts-with(text(), '4') or starts-with(text(), '5') or
+						starts-with(text(), '6') or starts-with(text(), '7') or starts-with(text(), '8') or starts-with(text(), '9')">
+						<xsl:attribute name="color">rgb(46, 116, 182)</xsl:attribute>
+						<xsl:attribute name="font-weight">bold</xsl:attribute>
+					</xsl:if>
+				</xsl:if>
+			</xsl:if>
+			
 			<xsl:if test="$lang = 'ar'">
 				<xsl:attribute name="padding-right">1mm</xsl:attribute>
 			</xsl:if>
-			<xsl:if test="@colspan">
-				<xsl:attribute name="number-columns-spanned">
-					<xsl:value-of select="@colspan"/>
-				</xsl:attribute>
-			</xsl:if>
-			<xsl:if test="@rowspan">
-				<xsl:attribute name="number-rows-spanned">
-					<xsl:value-of select="@rowspan"/>
-				</xsl:attribute>
-			</xsl:if>
-			<xsl:call-template name="display-align" />
+			
+			<xsl:call-template name="setTableCellAttributes"/>
+
 			<fo:block>
 				<xsl:apply-templates />
 			</fo:block>
 		</fo:table-cell>
+	</xsl:template> <!-- cell in table header row -->
+	
+	
+	<xsl:template name="setTableCellAttributes">
+		<xsl:if test="@colspan">
+			<xsl:attribute name="number-columns-spanned">
+				<xsl:value-of select="@colspan"/>
+			</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="@rowspan">
+			<xsl:attribute name="number-rows-spanned">
+				<xsl:value-of select="@rowspan"/>
+			</xsl:attribute>
+		</xsl:if>
+		<xsl:call-template name="display-align" />
 	</xsl:template>
 	
 	<xsl:template name="display-align">
@@ -3241,8 +3438,9 @@
 		</xsl:if>
 	</xsl:template>
 	
+	<!-- cell in table body, footer -->
 	<xsl:template match="*[local-name()='td']">
-		<fo:table-cell text-align="{@align}" display-align="center" border="solid black 1pt" padding-left="1mm">
+		<fo:table-cell xsl:use-attribute-sets="table-cell-style"> <!-- text-align="{@align}" -->
 			<xsl:attribute name="text-align">
 				<xsl:choose>
 					<xsl:when test="@align">
@@ -3251,15 +3449,25 @@
 					<xsl:otherwise>left</xsl:otherwise>
 				</xsl:choose>
 			</xsl:attribute>
+			
 			<xsl:if test="$lang = 'ar'">
 				<xsl:attribute name="padding-right">1mm</xsl:attribute>
 			</xsl:if>
-			<xsl:if test="$namespace = 'bsi' or $namespace = 'iso' or $namespace = 'iec' or $namespace = 'iho' or $namespace = 'jcgm'"> <!--  and ancestor::*[local-name() = 'thead'] -->
-				<xsl:attribute name="padding-top">0.5mm</xsl:attribute>
+			
+			<xsl:if test="$namespace = 'bipm'">
+				<xsl:variable name="rownum"><xsl:number count="*[local-name()='tr']"/></xsl:variable>
+				<xsl:if test="$rownum = 1">
+					<xsl:attribute name="padding-top">3mm</xsl:attribute>
+				</xsl:if>
+				<xsl:if test="not(ancestor::*[local-name()='tr']/following-sibling::*[local-name()='tr'])"> <!-- last row -->
+					<xsl:attribute name="padding-bottom">2mm</xsl:attribute>
+				</xsl:if>
+				<xsl:if test="ancestor::*[local-name() = 'doccontrol']">
+					<xsl:attribute name="display-align">before</xsl:attribute>
+				</xsl:if>
 			</xsl:if>
+			
 			<xsl:if test="$namespace = 'bsi'">
-				<xsl:attribute name="border"><xsl:value-of select="$table-border"/></xsl:attribute>
-				
 				<xsl:if test="not(ancestor::*[local-name()='preface']) and ancestor::*[local-name() = 'table']/*[local-name() = 'thead'] and not(ancestor::*[local-name() = 'tr']/preceding-sibling::*[local-name() = 'tr'])">
 					<!-- first row in table body, and if exists header -->
 					<xsl:attribute name="border-top">0pt solid black</xsl:attribute>
@@ -3295,110 +3503,78 @@
 					<xsl:attribute name="padding-top">4mm</xsl:attribute>
 					<xsl:attribute name="padding-bottom">4mm</xsl:attribute>
 				</xsl:if>
-			</xsl:if>
-			<xsl:if test="$namespace = 'jcgm'">
-				<xsl:if test="count(*) = 1 and (local-name(*[1]) = 'stem' or local-name(*[1]) = 'figure')">
-					<xsl:attribute name="padding-left">0mm</xsl:attribute>
+				
+				<xsl:if test="ancestor::*[local-name()='preface'] and ancestor::*[local-name()='clause'][@type = 'logos']">
+					<xsl:attribute name="border">none</xsl:attribute>
 				</xsl:if>
-			</xsl:if>
-			<xsl:if test="$namespace = 'itu'">
-				<xsl:if test="ancestor::*[local-name()='preface']">
-					<xsl:attribute name="border">solid black 0pt</xsl:attribute>
-				</xsl:if>
-				<xsl:attribute name="display-align">before</xsl:attribute>
-				<xsl:if test="$doctype = 'service-publication'">
-					<xsl:attribute name="border">1pt solid rgb(211,211,211)</xsl:attribute>
-					<xsl:attribute name="padding-top">1mm</xsl:attribute>
-				</xsl:if>
-			</xsl:if>
-			<xsl:if test="$namespace = 'bsi' or $namespace = 'iso' or $namespace = 'iec' or $namespace = 'jcgm'">
+				
 				<xsl:if test="ancestor::*[local-name() = 'tfoot']">
 					<xsl:attribute name="border">solid black 0</xsl:attribute>
 				</xsl:if>
-			</xsl:if>
+				
+				<xsl:if test="$document_type = 'PAS'">
+					<xsl:attribute name="border">1pt solid <xsl:value-of select="$color_PAS"/></xsl:attribute>
+				</xsl:if>
+			</xsl:if> <!-- bsi -->
+			
 			<xsl:if test="$namespace = 'gb'">
 				<xsl:if test="ancestor::*[local-name() = 'tfoot']">
 					<xsl:attribute name="border-bottom">solid black 0</xsl:attribute>
 				</xsl:if>
 			</xsl:if>
+			
 			<xsl:if test="$namespace = 'iec'">
-				<xsl:attribute name="border">solid black 0.5pt</xsl:attribute>
 				<xsl:if test="ancestor::*[local-name()='preface']">
 					<xsl:attribute name="text-align">center</xsl:attribute>
 				</xsl:if>
 			</xsl:if>
-			<xsl:if test="$namespace = 'ogc'">
-				<xsl:attribute name="border">solid 0pt white</xsl:attribute>
-				<xsl:attribute name="padding-top">1mm</xsl:attribute>			
-				<xsl:attribute name="padding-bottom">1mm</xsl:attribute>			
-			</xsl:if>
-			<xsl:if test="$namespace = 'ogc-white-paper'">
-				<xsl:attribute name="padding-top">1mm</xsl:attribute>			
-				<xsl:attribute name="border">solid 0.5pt rgb(153, 153, 153)</xsl:attribute>
-				<xsl:attribute name="height">5mm</xsl:attribute>
-			</xsl:if>
-			<xsl:if test="$namespace = 'unece-rec'">
-				<xsl:if test="ancestor::*[local-name()='sections']">
-					<xsl:attribute name="border">solid black 0pt</xsl:attribute>
-					<xsl:attribute name="padding-top">1mm</xsl:attribute>					
+			
+			<xsl:if test="$namespace = 'iso'">
+				<xsl:if test="ancestor::*[local-name() = 'tfoot']">
+					<xsl:attribute name="border">solid black 0</xsl:attribute>
 				</xsl:if>
-				<xsl:attribute name="text-indent">0mm</xsl:attribute>
 			</xsl:if>
-			<xsl:if test="$namespace = 'unece'">
-				<xsl:attribute name="display-align">before</xsl:attribute>
-				<xsl:attribute name="padding-left">0mm</xsl:attribute>
-				<xsl:attribute name="padding-top">2mm</xsl:attribute>
-				<xsl:attribute name="padding-bottom">1mm</xsl:attribute>
-				<xsl:attribute name="border">solid black 0pt</xsl:attribute>
-				<xsl:attribute name="border-bottom">solid black 1.5pt</xsl:attribute>
-				<xsl:attribute name="text-indent">0mm</xsl:attribute>
+			
+			<xsl:if test="$namespace = 'itu'">
+				<xsl:if test="ancestor::*[local-name()='preface']">
+					<xsl:attribute name="border">solid black 0pt</xsl:attribute>
+				</xsl:if>
+				<xsl:if test="$doctype = 'service-publication'">
+					<xsl:attribute name="border">1pt solid rgb(211,211,211)</xsl:attribute>
+					<xsl:attribute name="padding-top">1mm</xsl:attribute>
+				</xsl:if>
 			</xsl:if>
+
+			<xsl:if test="$namespace = 'jcgm'">
+				<xsl:if test="count(*) = 1 and (local-name(*[1]) = 'stem' or local-name(*[1]) = 'figure')">
+					<xsl:attribute name="padding-left">0mm</xsl:attribute>
+				</xsl:if>
+				<xsl:if test="ancestor::*[local-name() = 'tfoot']">
+					<xsl:attribute name="border">solid black 0</xsl:attribute>
+				</xsl:if>
+			</xsl:if>
+			
 			<xsl:if test="$namespace = 'nist-cswp'  or $namespace = 'nist-sp'">
 				<xsl:if test="ancestor::*[local-name()='thead']">
 					<xsl:attribute name="font-weight">normal</xsl:attribute>
 				</xsl:if>
 			</xsl:if>
-			<xsl:if test="$namespace = 'bipm'">
-				<xsl:attribute name="border">solid 0pt white</xsl:attribute>
-				<xsl:variable name="rownum"><xsl:number count="*[local-name()='tr']"/></xsl:variable>
-				<xsl:if test="$rownum = 1">
-					<xsl:attribute name="padding-top">3mm</xsl:attribute>
-				</xsl:if>
-				<xsl:if test="not(ancestor::*[local-name()='tr']/following-sibling::*[local-name()='tr'])"> <!-- last row -->
-					<xsl:attribute name="padding-bottom">2mm</xsl:attribute>
-				</xsl:if>
-				<xsl:if test="ancestor::*[local-name() = 'doccontrol']">
-					<xsl:attribute name="display-align">before</xsl:attribute>
-				</xsl:if>
-			</xsl:if>
-			<xsl:if test="$namespace = 'rsd'">
-				<xsl:attribute name="border">0pt solid black</xsl:attribute>
-				<xsl:attribute name="padding-top">0.5mm</xsl:attribute>
-			</xsl:if>
-			<xsl:if test="$namespace = 'bsi'">
-				<xsl:if test="$document_type = 'PAS'">
-					<xsl:attribute name="border">1pt solid <xsl:value-of select="$color_PAS"/></xsl:attribute>
-				</xsl:if>
-				<xsl:if test="ancestor::*[local-name()='preface'] and ancestor::*[local-name()='clause'][@type = 'logos']">
-					<xsl:attribute name="border">none</xsl:attribute>
+			
+			<xsl:if test="$namespace = 'unece-rec'">
+				<xsl:if test="ancestor::*[local-name()='sections']">
+					<xsl:attribute name="border">solid black 0pt</xsl:attribute>
+					<xsl:attribute name="padding-top">1mm</xsl:attribute>					
 				</xsl:if>
 			</xsl:if>
 			
-			<xsl:if test=".//*[local-name() = 'table']">
+			<xsl:if test=".//*[local-name() = 'table']"> <!-- if there is nested table -->
 				<xsl:attribute name="padding-right">1mm</xsl:attribute>
 			</xsl:if>
-			<xsl:if test="@colspan">
-				<xsl:attribute name="number-columns-spanned">
-					<xsl:value-of select="@colspan"/>
-				</xsl:attribute>
-			</xsl:if>
-			<xsl:if test="@rowspan">
-				<xsl:attribute name="number-rows-spanned">
-					<xsl:value-of select="@rowspan"/>
-				</xsl:attribute>
-			</xsl:if>
-			<xsl:call-template name="display-align" />
+			
+			<xsl:call-template name="setTableCellAttributes"/>
+			
 			<fo:block>
+			
 				<xsl:if test="$namespace = 'bipm'">
 					<xsl:if test="not(.//bipm:image)">
 						<xsl:attribute name="line-stacking-strategy">font-height</xsl:attribute>
@@ -3408,7 +3584,8 @@
 						<xsl:attribute name="text-indent">-3mm</xsl:attribute>
 						<xsl:attribute name="start-indent">3mm</xsl:attribute>
 					</xsl:if>
-				</xsl:if>				
+				</xsl:if>
+				
 				<xsl:apply-templates />
 			</fo:block>			
 		</fo:table-cell>
@@ -3417,48 +3594,32 @@
 	
 	<xsl:template match="*[local-name()='table']/*[local-name()='note']" priority="2"/>
 	<xsl:template match="*[local-name()='table']/*[local-name()='note']" mode="process">
-		
-		
-			<fo:block font-size="10pt" margin-bottom="12pt">
-				<xsl:if test="$namespace = 'bsi'">
-					<xsl:attribute name="font-size">9pt</xsl:attribute>
-					<xsl:attribute name="margin-bottom">6pt</xsl:attribute>
-					<xsl:if test="$document_type = 'PAS'">
-						<xsl:attribute name="font-size">inherit</xsl:attribute>
-						<xsl:attribute name="color"><xsl:value-of select="$color_PAS"/></xsl:attribute>
-					</xsl:if>
-				</xsl:if>
-				<xsl:if test="$namespace = 'iso' or $namespace = 'jcgm'">
-					<xsl:attribute name="font-size">9pt</xsl:attribute>
-					<xsl:attribute name="margin-bottom">6pt</xsl:attribute>
-				</xsl:if>
-				<xsl:if test="$namespace = 'gb'">
-					<xsl:attribute name="font-size">9pt</xsl:attribute>
-					<xsl:attribute name="text-align">center</xsl:attribute>
-					<xsl:attribute name="margin-bottom">6pt</xsl:attribute>
-				</xsl:if>
-				<xsl:if test="$namespace = 'iec'">
-					<xsl:attribute name="font-size">8pt</xsl:attribute>
-					<xsl:attribute name="margin-bottom">6pt</xsl:attribute>
-				</xsl:if>
-				<xsl:if test="$namespace = 'iho'">
-					<xsl:attribute name="font-size">12pt</xsl:attribute>					
-				</xsl:if>
+
+			<fo:block xsl:use-attribute-sets="table-note-style">
+
 				<xsl:if test="$namespace = 'bipm'">					
-					<xsl:attribute name="text-align">justify</xsl:attribute>
-					<xsl:attribute name="margin-bottom">0pt</xsl:attribute>
 					<xsl:if test="ancestor::bipm:preface">
 						<xsl:attribute name="margin-top">18pt</xsl:attribute>
 						<xsl:attribute name="margin-bottom">12pt</xsl:attribute>
 					</xsl:if>
 				</xsl:if>
-				<xsl:if test="$namespace = 'rsd'">
-					<xsl:attribute name="font-size">8pt</xsl:attribute>					
-				</xsl:if>
 				
+				<xsl:if test="$namespace = 'bsi'">
+					<xsl:if test="$document_type = 'PAS'">
+						<xsl:attribute name="font-size">inherit</xsl:attribute>
+						<xsl:attribute name="color"><xsl:value-of select="$color_PAS"/></xsl:attribute>
+					</xsl:if>
+				</xsl:if>
+			
 				<!-- Table's note name (NOTE, for example) -->
-
-				<fo:inline padding-right="2mm" xsl:use-attribute-sets="table-note-name-style">
+				<fo:inline xsl:use-attribute-sets="table-note-name-style">
+					
+					<xsl:if test="$namespace = 'bipm'">
+						<xsl:if test="ancestor::bipm:preface">
+							<xsl:attribute name="text-decoration">underline</xsl:attribute>
+						</xsl:if>
+					</xsl:if>
+					
 					<xsl:if test="$namespace = 'bsi'">
 						<xsl:if test="$document_type = 'PAS'">
 							<xsl:attribute name="padding-right">1mm</xsl:attribute>
@@ -3466,14 +3627,9 @@
 						</xsl:if>
 					</xsl:if>
 					
-					<xsl:if test="$namespace = 'unece'  or $namespace = 'unece-rec'">
+					<xsl:if test="$namespace = 'unece' or $namespace = 'unece-rec'">
 						<xsl:if test="@type = 'source' or @type = 'abbreviation'">
 							<xsl:attribute name="font-size">9pt</xsl:attribute>							
-						</xsl:if>
-					</xsl:if>
-					<xsl:if test="$namespace = 'bipm'">
-						<xsl:if test="ancestor::bipm:preface">
-							<xsl:attribute name="text-decoration">underline</xsl:attribute>
 						</xsl:if>
 					</xsl:if>
 					
@@ -6713,13 +6869,18 @@
 		</xsl:apply-templates>
 	</xsl:template>
 	
-	<xsl:template match="*[local-name() = 'add'][starts-with(text(), $ace_tag)]" mode="contents_item">
+	<xsl:template match="*[local-name() = 'add']" mode="contents_item">
 		<xsl:param name="mode">bookmarks</xsl:param>
-		<xsl:if test="$mode = 'contents'">
-			<xsl:copy>
-				<xsl:apply-templates mode="contents_item"/>
-			</xsl:copy>		
-		</xsl:if>
+		<xsl:choose>
+			<xsl:when test="starts-with(text(), $ace_tag)">
+				<xsl:if test="$mode = 'contents'">
+					<xsl:copy>
+						<xsl:apply-templates mode="contents_item"/>
+					</xsl:copy>		
+				</xsl:if>
+			</xsl:when>
+			<xsl:otherwise><xsl:apply-templates mode="contents_item"/></xsl:otherwise>
+		</xsl:choose>
 	</xsl:template>
 
 	<!-- ====== -->
@@ -7085,17 +7246,8 @@
 					<xsl:otherwise>left</xsl:otherwise>
 				</xsl:choose>
 			</xsl:attribute>
-			<xsl:if test="@colspan">
-				<xsl:attribute name="number-columns-spanned">
-					<xsl:value-of select="@colspan"/>
-				</xsl:attribute>
-			</xsl:if>
-			<xsl:if test="@rowspan">
-				<xsl:attribute name="number-rows-spanned">
-					<xsl:value-of select="@rowspan"/>
-				</xsl:attribute>
-			</xsl:if>
-			<xsl:call-template name="display-align" />
+			
+			<xsl:call-template name="setTableCellAttributes"/>
 			
 			<fo:block>
 				<xsl:apply-templates />
@@ -7121,17 +7273,8 @@
 			<xsl:if test="following-sibling::*[local-name()='td'] and not(preceding-sibling::*[local-name()='td'])">
 				<xsl:attribute name="font-weight">bold</xsl:attribute>
 			</xsl:if>
-			<xsl:if test="@colspan">
-				<xsl:attribute name="number-columns-spanned">
-					<xsl:value-of select="@colspan"/>
-				</xsl:attribute>
-			</xsl:if>
-			<xsl:if test="@rowspan">
-				<xsl:attribute name="number-rows-spanned">
-					<xsl:value-of select="@rowspan"/>
-				</xsl:attribute>
-			</xsl:if>
-			<xsl:call-template name="display-align" />
+			
+			<xsl:call-template name="setTableCellAttributes"/>
 			
 			<fo:block>			
 				<xsl:apply-templates />
@@ -7340,11 +7483,13 @@
 	<!-- ====== -->
 	<xsl:template match="*[local-name() = 'termsource']" name="termsource">
 		<fo:block xsl:use-attribute-sets="termsource-style">
+			
 			<xsl:if test="$namespace = 'bsi'">
 				<xsl:if test="$document_type = 'PAS'">
 					<xsl:attribute name="text-align">left</xsl:attribute>
 				</xsl:if>
 			</xsl:if>
+			
 			<!-- Example: [SOURCE: ISO 5127:2017, 3.1.6.02] -->			
 			<xsl:variable name="termsource_text">
 				<xsl:apply-templates />
