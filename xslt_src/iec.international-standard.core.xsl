@@ -176,7 +176,7 @@
 		<xsl:call-template name="namespaceCheck"/>
 		<!-- https://stackoverflow.com/questions/25261949/xsl-fo-letter-spacing-with-text-align -->
 		<!-- https://xmlgraphics.apache.org/fop/knownissues.html -->
-		<fo:root xmlns:fo="http://www.w3.org/1999/XSL/Format" font-family="Arial, Times New Roman, STIX Two Math, Source Han Sans" font-size="10pt" xml:lang="{$lang}">
+		<fo:root xmlns:fo="http://www.w3.org/1999/XSL/Format" xsl:use-attribute-sets="root-style" xml:lang="{$lang}">
 			<fo:layout-master-set>
 				<!-- cover pages -->
 				<fo:simple-page-master master-name="cover" page-width="{$pageWidth}mm" page-height="{$pageHeight}mm">
