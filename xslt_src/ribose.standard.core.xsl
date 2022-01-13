@@ -369,7 +369,7 @@
 											<fo:block>
 												<xsl:apply-templates select="/rsd:rsd-standard/rsd:bibdata/rsd:ext/rsd:security"/>
 												<fo:block>
-													<xsl:call-template name="convertDateLocalized">
+													<xsl:call-template name="convertDate">
 														<xsl:with-param name="date" select="/rsd:rsd-standard/rsd:bibdata/rsd:date[@type = 'published']/rsd:on"/>
 														<xsl:with-param name="format" select="'Month DD, YYYY'"/>
 													</xsl:call-template>

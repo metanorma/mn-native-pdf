@@ -720,14 +720,14 @@
 																</xsl:choose>
 															</xsl:variable>
 															<xsl:variable name="meeting-date_from_str">
-																<xsl:call-template name="convertDateLocalized">
+																<xsl:call-template name="convertDate">
 																	<xsl:with-param name="date" select="$meeting-date_from"/>
 																	<xsl:with-param name="format" select="$date_format"/>
 																</xsl:call-template>
 															</xsl:variable>													
 
 															<xsl:variable name="meeting-date_to_str">
-																<xsl:call-template name="convertDateLocalized">
+																<xsl:call-template name="convertDate">
 																	<xsl:with-param name="date" select="$meeting-date_to"/>
 																	<xsl:with-param name="format" select="'ddMMyyyy'"/>
 																</xsl:call-template>
