@@ -835,7 +835,7 @@
 		</xsl:variable>
 		<fo:block line-height="1.1" role="H{$level}">
 			<fo:block font-weight="bold" keep-with-next="always">
-				<xsl:apply-templates select="ancestor::*[local-name()='term'][1]/*[local-name()='name']" mode="presentation"/>				
+				<xsl:apply-templates select="ancestor::*[local-name()='term'][1]/*[local-name()='name']" />
 			</fo:block>
 			<fo:block font-weight="bold" keep-with-next="always">
 				<xsl:call-template name="setStyle_preferred"/>
@@ -1067,7 +1067,7 @@
 						</fo:table-cell>
 						<fo:table-cell display-align="center">
 							<fo:block text-align="right">
-								<xsl:apply-templates select="../*[local-name()='name']" mode="presentation"/>
+								<xsl:apply-templates select="../*[local-name()='name']" mode="formula_number"/>
 							</fo:block>
 						</fo:table-cell>
 					</fo:table-row>

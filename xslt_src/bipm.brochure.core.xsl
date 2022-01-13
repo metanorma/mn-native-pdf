@@ -3329,8 +3329,8 @@
 			<fo:list-item-label><fo:block></fo:block></fo:list-item-label>
 			<fo:list-item-body>
 				<fo:block>
-					<xsl:apply-templates select="bipm:name" mode="presentation"/>
-					<xsl:apply-templates />
+					<xsl:apply-templates select="bipm:name"/>
+					<xsl:apply-templates select="node()[not(local-name() = 'name')]" />
 				</fo:block>
 			</fo:list-item-body>
 		</fo:list-item>
@@ -3352,7 +3352,7 @@
 								</fo:table-cell>
 								<fo:table-cell display-align="center">
 									<fo:block text-align="right">
-										<xsl:apply-templates select="../bipm:name" mode="presentation"/>
+										<xsl:apply-templates select="../bipm:name" mode="formula_number"/>
 									</fo:block>
 								</fo:table-cell>
 							</fo:table-row>
@@ -3400,7 +3400,7 @@
 				</xsl:variable>
 				<fo:inline role="H{$level}" font-weight="bold">
 					<xsl:attribute name="padding-right">2mm</xsl:attribute>
-					<xsl:apply-templates select="ancestor::bipm:term[1]/bipm:name" mode="presentation"/>				
+					<xsl:apply-templates select="ancestor::bipm:term[1]/bipm:name" />
 				</fo:inline>
 			</xsl:if>
 			<xsl:apply-templates />
@@ -3580,7 +3580,7 @@
 		</fo:basic-link>
 	</xsl:template>
 	
-	<xsl:template match="bipm:note[not(ancestor::bipm:preface)]/bipm:name" priority="2"  mode="presentation">
+	<xsl:template match="bipm:note[not(ancestor::bipm:preface)]/bipm:name" priority="2">
 		<xsl:choose>
 			<xsl:when test="not(../preceding-sibling::bipm:note) and not((../following-sibling::bipm:note))">
 				<xsl:variable name="curr_lang" select="ancestor::bipm:bipm-standard/bipm:bibdata/bipm:language[@current = 'true']"/>

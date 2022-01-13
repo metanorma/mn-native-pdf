@@ -1476,22 +1476,6 @@
 		</xsl:if>
 	</xsl:template>
 
-<!-- 	<xsl:template match="itu:note">
-		<fo:block id="{@id}">
-			<xsl:apply-templates />
-		</fo:block>
-	</xsl:template>
-	
-	<xsl:template match="itu:note/itu:p" name="note">		
-		<fo:block font-size="11pt" space-before="4pt" text-align="justify">
-			<xsl:if test="ancestor::itu:figure">
-				<xsl:attribute name="keep-with-previous">always</xsl:attribute>
-			</xsl:if>
-			<xsl:apply-templates select="../itu:name" mode="presentation"/>			
-			<xsl:apply-templates />
-		</fo:block>
-	</xsl:template> -->
-	
 	
 	<!-- ============================= -->
 	<!-- ============================= -->
@@ -1773,7 +1757,7 @@
 						<xsl:otherwise>5mm</xsl:otherwise>
 					</xsl:choose>
 				</xsl:attribute>
-				<xsl:apply-templates select="ancestor::itu:term[1]/itu:name" mode="presentation"/>
+				<xsl:apply-templates select="ancestor::itu:term[1]/itu:name" />
 			</fo:inline>
 			<fo:inline font-weight="bold">
 				<xsl:call-template name="setStyle_preferred"/>
@@ -1923,8 +1907,8 @@
 	<xsl:template match="itu:ul//itu:note |  itu:ol//itu:note" priority="2"/>
 	<xsl:template match="itu:ul//itu:note  | itu:ol//itu:note" mode="process">
 		<fo:block id="{@id}">
-			<xsl:apply-templates select="itu:name" mode="presentation"/>
-			<xsl:apply-templates mode="process"/>
+			<xsl:apply-templates select="itu:name" />
+			<xsl:apply-templates select="node()[not(local-name() = 'name')]" mode="process"/>
 		</fo:block>
 	</xsl:template>
 	<xsl:template match="itu:ul//itu:note/itu:name  | itu:ol//itu:note/itu:name" mode="process" priority="2"/>
@@ -2069,7 +2053,7 @@
 					</fo:table-cell>
 					<fo:table-cell display-align="center">
 						<fo:block text-align="right" margin-left="0mm">							
-							<xsl:apply-templates select="../itu:name" mode="presentation"/>							
+							<xsl:apply-templates select="../itu:name" mode="formula_number"/>							
 						</fo:block>
 					</fo:table-cell>
 				</fo:table-row>

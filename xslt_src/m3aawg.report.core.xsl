@@ -689,9 +689,9 @@
 		<fo:block-container margin-left="0mm" margin-top="4pt" line-height="125%">
 			<fo:block>
 				<fo:inline padding-right="1mm">
-					<xsl:apply-templates select="m3d:name" mode="presentation"/>
+					<xsl:apply-templates select="m3d:name" />
 				</fo:inline>
-				<xsl:apply-templates />
+				<xsl:apply-templates select="node()[not(local-name() = 'name')]" />
 			</fo:block>
 		</fo:block-container>
 	</xsl:template>
@@ -764,21 +764,7 @@
 	</xsl:template>
 	
 	
-<!-- 	<xsl:template match="m3d:note/m3d:p" name="note">		
-		<fo:block-container margin-left="0mm" margin-top="4pt" line-height="125%">
-			<fo:block>
-				<fo:inline >
-					<xsl:apply-templates select="../m3d:name" mode="presentation">
-						<xsl:with-param name="sfx" select="':'"/>
-					</xsl:apply-templates>					
-				</fo:inline>
-				<xsl:apply-templates />
-			</fo:block>
-		</fo:block-container>
-	</xsl:template> -->
 
-
-	
 	<xsl:template match="m3d:admonition">
 		<fo:block text-align="center" margin-bottom="12pt" font-weight="bold">			
 			<xsl:value-of select="java:toUpperCase(java:java.lang.String.new(@type))"/>
@@ -803,7 +789,7 @@
 						</fo:table-cell>
 						<fo:table-cell display-align="center">
 							<fo:block text-align="left">
-								<xsl:apply-templates select="../m3d:name" mode="presentation"/>
+								<xsl:apply-templates select="../m3d:name" mode="formula_number"/>
 							</fo:block>
 						</fo:table-cell>
 					</fo:table-row>

@@ -584,7 +584,7 @@
 	<xsl:template match="un:ul//un:note/un:name  | un:ol//un:note/un:name" mode="process" priority="2"/>
 	<xsl:template match="un:ul//un:note/un:p  | un:ol//un:note/un:p" mode="process" priority="2">
 		<fo:block margin-top="4pt">
-			<xsl:apply-templates select="../un:name" mode="presentation"/>
+			<xsl:apply-templates select="../un:name" />
 			<xsl:apply-templates />
 		</fo:block>
 	</xsl:template>
@@ -857,9 +857,9 @@
 	<xsl:template match="un:figure" priority="2">
 		<fo:block-container id="{@id}">
 			<fo:block>
-				<xsl:apply-templates />
+				<xsl:apply-templates select="node()[not(local-name() = 'name')]" />
 			</fo:block>			
-			<xsl:apply-templates select="un:name" mode="presentation"/>
+			<xsl:apply-templates select="un:name" />
 			<!-- <xsl:call-template name="fn_display_figure"/> -->
 			<xsl:for-each select="un:note">
 				<xsl:call-template name="note"/>
@@ -970,12 +970,12 @@
 											<xsl:attribute name="text-align">left</xsl:attribute>
 											<xsl:attribute name="margin-left">7mm</xsl:attribute>
 										</xsl:if>
-										<xsl:apply-templates />
+										<xsl:apply-templates select="node()[not(local-name() = 'name')]" />
 									</fo:block>
 								</fo:table-cell>
 								<fo:table-cell> <!--  display-align="center" -->
 									<fo:block text-align="right">
-										<xsl:apply-templates select="un:name" mode="presentation"/>
+										<xsl:apply-templates select="un:name" />
 									</fo:block>
 								</fo:table-cell>
 							</fo:table-row>

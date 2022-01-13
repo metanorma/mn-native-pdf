@@ -1726,7 +1726,7 @@
 	
 	<xsl:template match="iec:feedback-statement/iec:clause[@id = 'boilerplate-cenelec-attention']//text()" priority="3">
 		<!-- Example: Attention IEC-CENELEC parallel voting -->
-		<xsl:if test="normalize-space() ! = ''">
+		<xsl:if test="normalize-space() != ''">
 			<xsl:call-template name="addLetterSpacing">
 				<xsl:with-param name="text" select="."/>
 			</xsl:call-template>
@@ -1937,7 +1937,7 @@
 
 	<!-- copyright text in footer internal footer -->
 	<xsl:template match="iec:copyright-statement//iec:p[not(@id)]//text()">
-		<xsl:if test="normalize-space() ! = ''">
+		<xsl:if test="normalize-space() != ''">
 			<xsl:call-template name="addLetterSpacing">
 				<xsl:with-param name="text" select="normalize-space(.)"/>
 			</xsl:call-template>
@@ -2278,7 +2278,7 @@
 			</xsl:if>
 			<xsl:if test="parent::iec:term and not(preceding-sibling::iec:preferred)"> <!-- if first preffered in term, then display term's name -->
 				<fo:block font-weight="bold" keep-with-next="always">
-					<xsl:apply-templates select="ancestor::iec:term[1]/iec:name" mode="presentation"/>				
+					<xsl:apply-templates select="ancestor::iec:term[1]/iec:name" />
 				</fo:block>
 			</xsl:if>
 			<fo:block font-weight="bold" keep-with-next="always">
@@ -2370,7 +2370,7 @@
 						</fo:table-cell>
 						<fo:table-cell display-align="center">
 							<fo:block text-align="right" margin-right="-10mm">
-								<xsl:apply-templates select="../iec:name" mode="presentation"/>
+								<xsl:apply-templates select="../iec:name" mode="formula_number"/>
 							</fo:block>
 						</fo:table-cell>
 					</fo:table-row>

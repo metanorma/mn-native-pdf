@@ -1063,8 +1063,8 @@
 			<fo:list-item-label><fo:block></fo:block></fo:list-item-label>
 			<fo:list-item-body>
 				<fo:block>
-					<xsl:apply-templates select="rsd:name" mode="presentation"/>
-					<xsl:apply-templates />
+					<xsl:apply-templates select="rsd:name" />
+					<xsl:apply-templates select="node()[not(local-name() = 'name')]" />
 				</fo:block>
 			</fo:list-item-body>
 		</fo:list-item>
@@ -1089,7 +1089,7 @@
 			<xsl:if test="preceding-sibling::*[1][self::rsd:name]">
 				<xsl:attribute name="space-before">11mm</xsl:attribute>
 				<fo:inline padding-right="1mm">
-					<xsl:apply-templates select="ancestor::rsd:term[1]/rsd:name" mode="presentation"/>
+					<xsl:apply-templates select="ancestor::rsd:term[1]/rsd:name" />
 				</fo:inline>
 			</xsl:if>
 			
@@ -1168,19 +1168,6 @@
 	</xsl:template>
 
 	
-	<!-- 	<xsl:template match="rsd:note/rsd:p" name="note">
-		<fo:block font-size="10pt" margin-top="12pt" margin-bottom="12pt" line-height="115%">
-			<xsl:if test="ancestor::rsd:ul or ancestor::rsd:ol and not(ancestor::rsd:note[1]/following-sibling::*)">
-				<xsl:attribute name="margin-bottom">0pt</xsl:attribute>
-			</xsl:if>			
-			<fo:inline padding-right="4mm">
-				<xsl:apply-templates select="../rsd:name" mode="presentation"/>
-			</fo:inline>
-			<xsl:apply-templates />
-		</fo:block>
-	</xsl:template>
- -->
-
 	
 	<xsl:template match="rsd:admonition">
 		<fo:block-container border="0.5pt solid rgb(79, 129, 189)" color="rgb(79, 129, 189)" margin-left="16mm" margin-right="16mm" margin-bottom="12pt">
@@ -1209,7 +1196,7 @@
 						</fo:table-cell>
 						<fo:table-cell display-align="center">
 							<fo:block text-align="right">
-								<xsl:apply-templates select="../rsd:name" mode="presentation"/>
+								<xsl:apply-templates select="../rsd:name" mode="formula_number"/>
 							</fo:block>
 						</fo:table-cell>
 					</fo:table-row>

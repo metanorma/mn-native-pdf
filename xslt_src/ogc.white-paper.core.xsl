@@ -764,8 +764,8 @@
 			<fo:list-item-label><fo:block></fo:block></fo:list-item-label>
 			<fo:list-item-body>
 				<fo:block>
-					<xsl:apply-templates select="ogc:name" mode="presentation"/>
-					<xsl:apply-templates />
+					<xsl:apply-templates select="ogc:name" />
+					<xsl:apply-templates select="node()[not(local-name() = 'name')]" />
 				</fo:block>
 			</fo:list-item-body>
 		</fo:list-item>
@@ -788,7 +788,7 @@
 		</xsl:variable>
 		<fo:block font-size="{$font-size}" role="H{$levelTerm}">
 			<fo:block font-weight="bold" keep-with-next="always">
-				<xsl:apply-templates select="ancestor::ogc:term[1]/ogc:name" mode="presentation"/>
+				<xsl:apply-templates select="ancestor::ogc:term[1]/ogc:name" />
 			</fo:block>
 			<fo:block font-weight="bold" keep-with-next="always" line-height="1">
 				<xsl:call-template name="setStyle_preferred"/>
@@ -870,7 +870,7 @@
 						</fo:table-cell>
 						<fo:table-cell display-align="center">
 							<fo:block text-align="right">
-								<xsl:apply-templates select="../ogc:name" mode="presentation"/>
+								<xsl:apply-templates select="../ogc:name" mode="formula_number"/>
 							</fo:block>
 						</fo:table-cell>
 					</fo:table-row>

@@ -905,12 +905,12 @@
 						<fo:table-row>
 							<fo:table-cell>
 								<fo:block font-family="SimHei">
-									<xsl:apply-templates select="gb:name" mode="presentation"/>									
+									<xsl:apply-templates select="gb:name" />
 								</fo:block>
 							</fo:table-cell>
 							<fo:table-cell>
 								<fo:block>
-									<xsl:apply-templates />
+									<xsl:apply-templates select="node()[not(local-name() = 'name')]" />
 								</fo:block>
 							</fo:table-cell>
 						</fo:table-row>
@@ -1038,7 +1038,7 @@
 						</fo:table-cell>
 						<fo:table-cell display-align="center">
 							<fo:block text-align="left">
-								<xsl:apply-templates select="../gb:name" mode="presentation"/>
+								<xsl:apply-templates select="../gb:name" mode="formula_number"/>
 							</fo:block>
 						</fo:table-cell>
 					</fo:table-row>

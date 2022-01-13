@@ -616,7 +616,7 @@
 			<fo:inline padding-left="5mm"><xsl:apply-templates /></fo:inline>
 			<fo:inline keep-together.within-line="always">
 				<fo:leader leader-pattern="space"/>
-				<xsl:apply-templates select="../mpfd:name" mode="presentation"/>
+				<xsl:apply-templates select="../mpfd:name" mode="formula_number"/>
 			</fo:inline>
 		</fo:block>		
 	</xsl:template>

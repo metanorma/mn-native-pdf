@@ -599,8 +599,8 @@
 	<xsl:template match="iho:ul//iho:note |  iho:ol//iho:note" priority="2"/>
 	<xsl:template match="iho:ul//iho:note  | iho:ol//iho:note" mode="process">
 		<fo:block id="{@id}">
-			<xsl:apply-templates select="iho:name" mode="presentation"/>
-			<xsl:apply-templates mode="process"/>
+			<xsl:apply-templates select="iho:name" />
+			<xsl:apply-templates select="node()[not(local-name() = 'name')]" mode="process"/>
 		</fo:block>
 	</xsl:template>
 	<xsl:template match="iho:ul//iho:note/iho:name  | iho:ol//iho:note/iho:name" mode="process" priority="2"/>
@@ -771,7 +771,7 @@
 		</xsl:variable>
 		<fo:block line-height="1.1" role="H{$levelTerm}">
 			<fo:block font-weight="bold" keep-with-next="always">
-				<xsl:apply-templates select="ancestor::iho:term[1]/iho:name" mode="presentation"/>				
+				<xsl:apply-templates select="ancestor::iho:term[1]/iho:name" />
 			</fo:block>
 			<fo:block font-weight="bold" keep-with-next="always">
 				<xsl:call-template name="setStyle_preferred"/>

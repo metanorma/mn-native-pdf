@@ -611,7 +611,7 @@
 		</xsl:variable>
 		<fo:block font-size="{$font-size}" line-height="1.1" role="H{$levelTerm}">
 			<fo:block font-weight="bold" keep-with-next="always">
-				<xsl:apply-templates select="ancestor::csd:term[1]/csd:name" mode="presentation"/>	
+				<xsl:apply-templates select="ancestor::csd:term[1]/csd:name" />
 			</fo:block>
 			<fo:block font-weight="bold" keep-with-next="always">
 				<xsl:call-template name="setStyle_preferred"/>
@@ -700,7 +700,7 @@
 						</fo:table-cell>
 						<fo:table-cell display-align="center">
 							<fo:block text-align="right">
-								<xsl:apply-templates select="../csd:name" mode="presentation"/>
+								<xsl:apply-templates select="../csd:name" mode="formula_number"/>
 							</fo:block>
 						</fo:table-cell>
 					</fo:table-row>
