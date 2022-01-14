@@ -1258,12 +1258,22 @@
 	
 	<xsl:template match="ogc:preferred | ogc:deprecated | ogc:admitted" priority="2"/>
 	
-	<xsl:template match="ogc:preferred" mode="term_name">						
+	<!-- first preferred displays on the same line as term/name -->
+	<xsl:template match="ogc:preferred[not(preceding-sibling::ogc:preferred)]" mode="term_name" priority="2">
 		<fo:inline font-size="18pt" padding-right="3mm"><xsl:call-template name="setStyle_preferred"/><xsl:apply-templates /></fo:inline>		
 		<fo:inline padding-right="2mm">&#xA0;</fo:inline>
 	</xsl:template>
 	
-	<xsl:template match="ogc:deprecated | ogc:admitted" mode="term_name">						
+	<xsl:template match="ogc:preferred | ogc:deprecated | ogc:admitted" mode="term_name">
+		<xsl:choose>
+			<xsl:when test="preceding-sibling::*[self::ogc:preferred or self::deprecated or self::admitted]">
+				<fo:block space-before="6pt"><xsl:call-template name="displayTerm"/></fo:block> <!-- block wrapper -->
+			</xsl:when>
+			<xsl:otherwise><xsl:call-template name="displayTerm"/></xsl:otherwise>
+		</xsl:choose>
+	</xsl:template>
+	
+	<xsl:template name="displayTerm">
 		<fo:inline font-size="18pt" padding-right="3mm"><xsl:apply-templates /></fo:inline>		
 		<fo:inline font-size="11pt" padding="1mm" padding-bottom="0.5mm" baseline-shift="25%">
 			<xsl:variable name="kind" select="local-name()"/>
@@ -1278,7 +1288,9 @@
 				<xsl:with-param name="text" select="java:toUpperCase(java:java.lang.String.new($kind))"/>
 			</xsl:call-template>			
 		</fo:inline>
-		<fo:inline padding-right="2mm">&#xA0;</fo:inline>
+		<xsl:if test="following-sibling::*[self::ogc:preferred or self::deprecated or self::admitted]">
+			<fo:inline padding-right="2mm">&#xA0;</fo:inline>
+		</xsl:if>
 	</xsl:template>
 	
 	<!-- [position() &gt; 1] -->
