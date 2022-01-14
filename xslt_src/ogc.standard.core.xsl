@@ -926,12 +926,6 @@
 	<!-- title      -->
 	<!-- ====== -->
 	
-	<xsl:template match="ogc:annex2/ogc:title">
-		<fo:block font-size="12pt" text-align="center" margin-bottom="12pt" keep-with-next="always">			
-			<xsl:apply-templates />
-		</fo:block>
-	</xsl:template>
-	
 	<xsl:template match="ogc:title" name="title">
 		
 		<xsl:variable name="level">
@@ -955,7 +949,6 @@
 				<xsl:otherwise>normal</xsl:otherwise>
 			</xsl:choose>
 		</xsl:variable>
-		
 		
 		<xsl:variable name="element-name">
 			<xsl:choose>
@@ -986,10 +979,6 @@
 										<fo:table-cell>
 											<fo:block space-before="36pt">
 												<xsl:variable name="title">
-													<!-- <xsl:call-template name="extractTitle"/> -->
-													<!-- <xsl:for-each select="..">
-														<xsl:call-template name="getName"/>
-													</xsl:for-each> -->
 													<xsl:choose>
 														<xsl:when test="*[local-name() = 'tab']">
 															<xsl:copy-of select="*[local-name() = 'tab'][1]/following-sibling::node()"/>
@@ -1248,11 +1237,19 @@
 			<xsl:call-template name="getLevelTermName"/>
 		</xsl:variable>
 		<fo:block space-before="36pt" margin-bottom="10pt" keep-with-next="always" role="H{$levelTerm}">
-			<fo:block color="{$color_blue}" keep-with-next="always">
-				<fo:inline font-size="18pt" padding-right="1mm"><xsl:apply-templates /></fo:inline>				
-				<xsl:apply-templates select="../ogc:preferred | ../ogc:deprecated | ../ogc:admitted" mode="term_name"/>
-			</fo:block>
-			<xsl:call-template name="insertOrangeHorizontalLine"/>
+			<fo:list-block color="{$color_blue}" keep-with-next="always" provisional-distance-between-starts="{string-length()*3}mm">
+				<fo:list-item>
+					<fo:list-item-label end-indent="label-end()">
+						<fo:block><fo:inline font-size="18pt" padding-right="1mm"><xsl:apply-templates /></fo:inline></fo:block>
+					</fo:list-item-label>
+					<fo:list-item-body start-indent="body-start()">
+						<fo:block>
+							<xsl:apply-templates select="../ogc:preferred | ../ogc:deprecated | ../ogc:admitted" mode="term_name"/>
+						</fo:block>
+					</fo:list-item-body>
+				</fo:list-item>
+			</fo:list-block>
+			<xsl:call-template name="insertShortHorizontalLine"/>
 		</fo:block>
 	</xsl:template>
 	
@@ -1346,8 +1343,6 @@
 				</fo:block>
 			</fo:block-container>
 		</fo:block-container>
-		
-		
 	</xsl:template>
 
 
@@ -1626,7 +1621,7 @@
 				</xsl:if>
 				
 			</fo:block>
-			<xsl:call-template name="insertOrangeHorizontalLine"/>
+			<xsl:call-template name="insertShortHorizontalLine"/>
 		</fo:block>		
 	</xsl:template>
 	
@@ -1691,7 +1686,7 @@
 		</xsl:choose>
 	</xsl:template>
 	
-	<xsl:template name="insertOrangeHorizontalLine">		
+	<xsl:template name="insertShortHorizontalLine">		
 		<fo:block-container width="12.7mm" border-top="1pt solid {$color_design}" margin-top="3mm">
 			<fo:block font-size="1pt">&#xA0;</fo:block>
 		</fo:block-container>						
