@@ -708,7 +708,7 @@
 	<!-- ====== -->
 	
 	
-	<xsl:template match="gb:p">		
+	<xsl:template match="gb:p" name="paragraph">		
 		<xsl:variable name="previous-element" select="local-name(preceding-sibling::*[1])"/>
 		<xsl:variable name="element-name">
 			<xsl:choose>				
@@ -999,26 +999,6 @@
 		</fo:inline>
 	</xsl:template>
 	
-
-
-	
-	<xsl:template match="gb:admonition">
-		<fo:block font-family="SimHei" text-align="center" margin-bottom="12pt" font-weight="bold">
-			<xsl:variable name="title_admonition_">
-				<xsl:call-template name="getLocalizedString">
-					<xsl:with-param name="key">admonition.<xsl:value-of select="@type"/></xsl:with-param>																			
-				</xsl:call-template>
-			</xsl:variable>
-			<xsl:variable name="title_admonition" select="normalize-space(java:toUpperCase(java:java.lang.String.new($title_admonition_)))"/>
-			<xsl:value-of select="$title_admonition"/>
-			<xsl:if test="$title_admonition = ''">
-				<xsl:value-of select="java:toUpperCase(java:java.lang.String.new(@type))"/>
-			</xsl:if>
-		</fo:block>
-		<fo:block font-weight="bold">
-			<xsl:apply-templates />
-		</fo:block>
-	</xsl:template>
 	
 
 	<xsl:template match="gb:formula/gb:stem">

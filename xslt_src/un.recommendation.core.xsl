@@ -112,7 +112,7 @@
 			<fo:page-sequence master-reference="cover-page" force-page-count="even">
 				<fo:flow flow-name="xsl-region-body">
 					<fo:block-container absolute-position="fixed" left="0mm" top="72mm">
-							<fo:block>
+						<fo:block>
 							<fo:external-graphic src="{concat('data:image/png;base64,', normalize-space($Image-Front))}" width="188mm" content-height="scale-to-fit" scaling="uniform" fox:alt-text="Image Front"/>
 						</fo:block>
 					</fo:block-container>
@@ -333,10 +333,10 @@
 			<!-- Back Page -->
 			<fo:page-sequence master-reference="cover-page" force-page-count="no-force">
 				<fo:flow flow-name="xsl-region-body">
-            <fo:block>&#xA0;</fo:block>
-            <fo:block break-after="page"/>
+					<fo:block>&#xA0;</fo:block>
+					<fo:block break-after="page"/>
 					<fo:block-container absolute-position="fixed" left="0mm" top="72mm">
-							<fo:block>
+						<fo:block>
 							<fo:external-graphic src="{concat('data:image/png;base64,', normalize-space($Image-Back))}" width="210mm" content-height="scale-to-fit" scaling="uniform" fox:alt-text="Image Front"/>
 						</fo:block>
 					</fo:block-container>
@@ -684,30 +684,6 @@
 		</fo:block>
 	</xsl:template>
 		
-	
-	<xsl:template match="un:admonition">
-		<fo:block break-after="page"/>
-		<fo:block-container border="0.25pt solid black" margin-top="7mm" margin-left="-9mm" margin-right="-14mm" padding-top="3mm">
-			<fo:block id="{@id}" font-weight="bold" margin-left="20mm" margin-right="25mm" text-align="center" margin-top="6pt" margin-bottom="12pt" keep-with-next="always">
-				<xsl:apply-templates select="un:name" mode="process"/>
-			</fo:block>
-			<fo:block-container margin-left="20mm" margin-right="20mm">
-				<fo:block-container margin-left="0mm" margin-right="0mm" text-indent="0mm">
-					<xsl:apply-templates />
-				</fo:block-container>
-			</fo:block-container>
-		</fo:block-container>
-		<fo:block margin-bottom="6pt">&#xA0;</fo:block>
-	</xsl:template>
-	
-	<xsl:template match="un:admonition/un:name"/>
-	<xsl:template match="un:admonition/un:name" mode="process">
-		<xsl:apply-templates />
-	</xsl:template>
-	
-	<xsl:template match="un:admonition/un:p">
-		<fo:block text-align="justify" margin-bottom="6pt"><xsl:apply-templates /></fo:block>
-	</xsl:template>
 	
 	<!-- ============================= -->	
 	<!-- ============================= -->	

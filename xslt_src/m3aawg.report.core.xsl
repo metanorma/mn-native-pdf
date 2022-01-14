@@ -544,7 +544,7 @@
 	<!-- ====== -->	
 
 	
-	<xsl:template match="m3d:p">
+	<xsl:template match="m3d:p" name="paragraph">
 		<xsl:param name="inline" select="'false'"/>
 		<xsl:variable name="previous-element" select="local-name(preceding-sibling::*[1])"/>
 		<xsl:variable name="element-name">
@@ -762,17 +762,7 @@
 			</fo:instream-foreign-object>
 		</fo:inline>
 	</xsl:template>
-	
-	
 
-	<xsl:template match="m3d:admonition">
-		<fo:block text-align="center" margin-bottom="12pt" font-weight="bold">			
-			<xsl:value-of select="java:toUpperCase(java:java.lang.String.new(@type))"/>
-		</fo:block>
-		<fo:block font-weight="bold">
-			<xsl:apply-templates />
-		</fo:block>
-	</xsl:template>
 	
 	
 	<xsl:template match="m3d:formula/m3d:stem">

@@ -1416,7 +1416,7 @@
 	<!-- ============================= -->
 	<!-- PARAGRAPHS                                    -->
 	<!-- ============================= -->	
-	<xsl:template match="itu:p | itu:sections/itu:p">
+	<xsl:template match="itu:p | itu:sections/itu:p" name="paragraph">
 		<xsl:variable name="previous-element" select="local-name(preceding-sibling::*[1])"/>
 		<xsl:variable name="element-name">
 			<xsl:choose>

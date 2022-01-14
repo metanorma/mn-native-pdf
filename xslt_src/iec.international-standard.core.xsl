@@ -2083,7 +2083,7 @@
 	<!-- ====== -->
 
 	
-	<xsl:template match="iec:p">
+	<xsl:template match="iec:p" name="paragraph">
 		<xsl:param name="inline" select="'false'"/>
 		<xsl:variable name="previous-element" select="local-name(preceding-sibling::*[1])"/>
 		<xsl:variable name="element-name">
@@ -2328,24 +2328,6 @@
 	</xsl:template>
 
 
-
-	
-	<xsl:template match="iec:admonition">
-		<fo:block-container border="0.5pt solid black" margin-left="-2mm" margin-right="-2mm" space-before="18pt" space-after="12pt">
-			<fo:block-container margin-left="0mm" margin-right="0mm" font-weight="bold" padding="1mm" padding-top="2mm">
-				<fo:block text-align="justify">
-					<fo:inline><xsl:value-of select="java:toUpperCase(java:java.lang.String.new(@type))"/> – </fo:inline>
-					<xsl:apply-templates />
-				</fo:block>
-			</fo:block-container>
-		</fo:block-container>
-		<!-- <fo:block font-weight="bold">
-			<fo:block  text-align="center" margin-top="5pt" margin-bottom="10pt">
-				<xsl:value-of select="translate(@type, $lower, $upper)"/>
-			</fo:block>
-			<xsl:apply-templates />
-		</fo:block> -->
-	</xsl:template>
 	
 	<xsl:template match="iec:admonition//iec:p//text()">
 		<xsl:call-template name="addLetterSpacing">

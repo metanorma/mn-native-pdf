@@ -1663,7 +1663,7 @@
 	<!-- ====== -->
 
 	
-	<xsl:template match="iso:p">
+	<xsl:template match="iso:p" name="paragraph">
 		<xsl:param name="inline" select="'false'"/>
 		<xsl:variable name="previous-element" select="local-name(preceding-sibling::*[1])"/>
 		<xsl:variable name="element-name">
@@ -1858,20 +1858,7 @@
 		</fo:inline>
 	</xsl:template>
 
-	
-	<xsl:template match="iso:admonition">
-		<fo:block margin-bottom="12pt" font-weight="bold"> <!-- text-align="center"  -->			
-			<xsl:variable name="type">
-				<xsl:call-template name="getLocalizedString">
-					<xsl:with-param name="key">admonition.<xsl:value-of select="@type"/></xsl:with-param>
-				</xsl:call-template>
-			</xsl:variable>			
-			<xsl:value-of select="java:toUpperCase(java:java.lang.String.new($type))"/>
-			<xsl:text> — </xsl:text>
-			<xsl:apply-templates />
-		</fo:block>
-	</xsl:template>
-	
+
 
 	<xsl:template match="iso:formula/iso:stem">
 		<fo:block margin-top="6pt" margin-bottom="12pt">

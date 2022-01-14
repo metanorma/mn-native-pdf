@@ -530,7 +530,7 @@
 	<!-- ====== -->
 	
 	
-	<xsl:template match="iho:p">
+	<xsl:template match="iho:p" name="paragraph">
 		<xsl:param name="inline" select="'false'"/>
 		<xsl:variable name="previous-element" select="local-name(preceding-sibling::*[1])"/>
 		<xsl:variable name="element-name">
@@ -642,21 +642,6 @@
 		</xsl:choose>		
 	</xsl:template>
 	
-	
-	
-	<xsl:template match="iho:admonition">
-		<fo:block-container border="0.5pt solid rgb(79, 129, 189)" color="rgb(79, 129, 189)" margin-left="16mm" margin-right="16mm" margin-bottom="12pt">
-			<fo:block-container margin-left="0mm" margin-right="0mm" padding="2mm" padding-top="3mm">
-				<fo:block font-size="11pt" margin-bottom="6pt" font-weight="bold" font-style="italic" text-align="center">					
-					<xsl:value-of select="java:toUpperCase(java:java.lang.String.new(@type))"/>
-				</fo:block>
-				<fo:block font-style="italic">
-					<xsl:apply-templates />
-				</fo:block>
-			</fo:block-container>
-		</fo:block-container>		
-	</xsl:template>
-
 
 	<xsl:template match="iho:formula/iho:stem">
 		<fo:block margin-top="6pt" margin-bottom="12pt" text-align="center">

@@ -675,17 +675,6 @@
 	</xsl:template>
 
 
-	
-	<xsl:template match="csd:admonition">
-		<fo:block margin-bottom="12pt" font-weight="bold"> <!-- text-align="center"  -->
-			<xsl:value-of select="java:toUpperCase(java:java.lang.String.new(@type))"/>
-			<xsl:text> — </xsl:text>
-			<xsl:apply-templates />
-		</fo:block>
-	</xsl:template>
-	
-
-	
 	<xsl:template match="csd:formula/csd:stem">
 		<fo:block margin-top="6pt" margin-bottom="12pt">
 			<fo:table table-layout="fixed" width="100%">

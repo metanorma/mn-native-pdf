@@ -1167,21 +1167,7 @@
 		</fo:inline>
 	</xsl:template>
 
-	
-	
-	<xsl:template match="rsd:admonition">
-		<fo:block-container border="0.5pt solid rgb(79, 129, 189)" color="rgb(79, 129, 189)" margin-left="16mm" margin-right="16mm" margin-bottom="12pt">
-			<fo:block-container margin-left="0mm" margin-right="0mm" padding="2mm" padding-top="3mm">
-				<fo:block font-size="11pt" margin-bottom="6pt" font-weight="normal" font-style="italic" text-align="center">					
-					<xsl:value-of select="java:toUpperCase(java:java.lang.String.new(@type))"/>
-				</fo:block>
-				<fo:block font-style="italic">
-					<xsl:apply-templates />
-				</fo:block>
-			</fo:block-container>
-		</fo:block-container>
-	</xsl:template>
-	
+
 	<xsl:template match="rsd:formula/rsd:stem">
 		<fo:block margin-top="6pt" margin-bottom="12pt">
 			<fo:table table-layout="fixed" width="100%">

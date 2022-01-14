@@ -1028,20 +1028,7 @@
 		</xsl:if>
 	</xsl:template>
 	
-	<xsl:template match="*[local-name()='admonition']">
-		<fo:block margin-bottom="12pt" font-weight="bold"> <!-- text-align="center"  -->			
-			<xsl:variable name="type">
-				<xsl:call-template name="getLocalizedString">
-					<xsl:with-param name="key">admonition.<xsl:value-of select="@type"/></xsl:with-param>
-				</xsl:call-template>
-			</xsl:variable>			
-			<xsl:value-of select="java:toUpperCase(java:java.lang.String.new($type))"/>
-			<xsl:text> — </xsl:text>
-			<xsl:apply-templates />
-		</fo:block>
-	</xsl:template>
 	
-
 	<xsl:template match="*[local-name()='td' or local-name()='th']/*[local-name()='formula']/*[local-name()='stem']" priority="2">
 		<fo:block>
 			<xsl:if test="ancestor::*[local-name()='td' or local-name()='th'][1][@align]">

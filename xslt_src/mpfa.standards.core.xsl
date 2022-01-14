@@ -410,7 +410,7 @@
 	</xsl:template>
 
 	
-	<xsl:template match="mpfd:p">
+	<xsl:template match="mpfd:p" name="paragraph">
 		<xsl:param name="inline" select="'false'"/>
 		<xsl:variable name="previous-element" select="local-name(preceding-sibling::*[1])"/>
 		<xsl:variable name="element-name">
@@ -600,16 +600,6 @@
 		</fo:inline>
 	</xsl:template>
 
-
-	<xsl:template match="mpfd:admonition">
-		<fo:block text-align="center" margin-bottom="12pt" font-weight="bold">			
-			<xsl:value-of select="java:toUpperCase(java:java.lang.String.new(@type))"/>
-		</fo:block>
-		<fo:block font-weight="bold">
-			<xsl:apply-templates />
-		</fo:block>
-	</xsl:template>
-	
 	
 	<xsl:template match="mpfd:formula/mpfd:stem">
 		<fo:block margin-top="14pt" margin-bottom="14pt" text-align-last="justify">

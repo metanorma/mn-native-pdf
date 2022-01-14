@@ -658,32 +658,6 @@
 	</xsl:template>
 	
 	
-	<xsl:template match="un:admonition">		
-		<fo:block text-align="center" font-style="italic" keep-with-next="always" margin-bottom="6pt">			
-			<xsl:apply-templates select="un:name" mode="process"/>
-		</fo:block>
-		<fo:block-container border="0.25pt solid black" margin-left="-3mm" margin-right="-3mm" padding-top="4mm">
-			<fo:block id="{@id}" font-weight="bold" margin-left="6mm" margin-right="6mm" keep-with-next="always">
-				<xsl:apply-templates select="un:name" mode="process"/>
-			</fo:block>
-			<fo:block-container margin-left="2mm" margin-right="2mm">
-				<fo:block-container margin-left="0mm" margin-right="0mm">
-					<xsl:apply-templates />
-				</fo:block-container>
-			</fo:block-container>
-		</fo:block-container>
-		<fo:block margin-bottom="4pt">&#xA0;</fo:block>
-	</xsl:template>
-	
-	<xsl:template match="un:admonition/un:name"/>
-	<xsl:template match="un:admonition/un:name" mode="process">
-		<xsl:apply-templates />
-	</xsl:template>
-	
-	<xsl:template match="un:admonition/un:p">
-		<fo:block text-align="justify" margin-bottom="6pt" line-height="122%"><xsl:apply-templates /></fo:block>
-	</xsl:template>
-	
 	<!-- ============================= -->	
 	<!-- ============================= -->	
 	
