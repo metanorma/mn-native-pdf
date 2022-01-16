@@ -274,9 +274,6 @@
 	<!-- ============================= -->
 	<!-- CONTENTS                                       -->
 	<!-- ============================= -->
-	<xsl:template match="node()" mode="contents">		
-		<xsl:apply-templates mode="contents" />			
-	</xsl:template>
 
 	<!-- element with title -->
 	<xsl:template match="*[mpfd:title]" mode="contents">
@@ -468,37 +465,6 @@
 	</xsl:template>
 	
 	
-	
-	<xsl:template match="mpfd:bibitem">
-		<fo:block id="{@id}" margin-bottom="12pt" text-indent="-11.7mm" margin-left="11.7mm">
-			<xsl:call-template name="processBibitem"/>
-		</fo:block>
-	</xsl:template>
-	
-	
-	<xsl:template match="mpfd:bibitem/mpfd:note">
-		<fo:footnote>
-			<xsl:variable name="number">
-				<xsl:number level="any" count="mpfd:bibitem/mpfd:note"/>
-			</xsl:variable>
-			<fo:inline font-size="7pt" keep-with-previous.within-line="always" baseline-shift="30%">
-				<fo:basic-link internal-destination="{generate-id()}" fox:alt-text="footnote {$number}">
-					<xsl:value-of select="$number"/>
-				</fo:basic-link>
-			</fo:inline>
-			<fo:footnote-body>
-				<fo:block font-size="9pt" margin-bottom="4pt" start-indent="0pt">
-					<fo:inline font-size="6pt" id="{generate-id()}" keep-with-next.within-line="always" baseline-shift="30%" padding-right="1mm"><!-- alignment-baseline="hanging" font-size="60%"  -->
-						<xsl:value-of select="$number"/>
-					</fo:inline>
-					<xsl:apply-templates />
-				</fo:block>
-			</fo:footnote-body>
-		</fo:footnote>
-	</xsl:template>
-	
-	
-	
 	<xsl:template match="mpfd:ul | mpfd:ol" mode="ul_ol">
 		<fo:block-container margin-left="0mm">
 			<xsl:variable name="margin-left">
@@ -560,44 +526,6 @@
 		<fo:block id="{@id}">
 			<xsl:apply-templates />
 		</fo:block>
-	</xsl:template>
-
-	
-	<xsl:template match="mpfd:references">
-		<fo:block break-after="page"/>
-		<xsl:apply-templates />
-		<fo:block id="{@id}">
-			<xsl:apply-templates />
-		</fo:block>
-	</xsl:template>
-
-	<!-- Example: [1] ISO 9:1995, Information and documentation – Transliteration of Cyrillic characters into Latin characters – Slavic and non-Slavic languages -->
-	<xsl:template match="mpfd:references/mpfd:bibitem">
-		<fo:list-block id="{@id}" margin-bottom="12pt" provisional-distance-between-starts="12mm">
-			<fo:list-item>
-				<fo:list-item-label end-indent="label-end()">
-					<fo:block>
-						<fo:inline>
-							<xsl:value-of select="mpfd:docidentifier[@type = 'metanorma-ordinal']"/>
-							<xsl:if test="not(mpfd:docidentifier[@type = 'metanorma-ordinal'])">
-								<xsl:number format="[1]"/>
-							</xsl:if>
-						</fo:inline>
-					</fo:block>
-				</fo:list-item-label>
-				<fo:list-item-body start-indent="body-start()">
-					<fo:block text-align="justify">
-						<xsl:call-template name="processBibitem"/>
-					</fo:block>
-				</fo:list-item-body>
-			</fo:list-item>
-		</fo:list-block>
-	</xsl:template>
-	
-	<xsl:template match="mpfd:references/mpfd:bibitem/mpfd:title">
-		<fo:inline font-style="italic">
-			<xsl:apply-templates />
-		</fo:inline>
 	</xsl:template>
 
 	

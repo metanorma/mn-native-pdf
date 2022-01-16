@@ -355,11 +355,7 @@
 	<!-- ============================= -->
 	<!-- CONTENTS                                       -->
 	<!-- ============================= -->
-	<xsl:template match="node()" mode="contents">		
-		<xsl:apply-templates mode="contents" />			
-	</xsl:template>
-
-
+	
 	<!-- element with title -->
 	<xsl:template match="*[m3d:title]" mode="contents">
 		<xsl:variable name="level">
@@ -602,36 +598,6 @@
 	</xsl:template>
 	
 	
-	<xsl:template match="m3d:bibitem">
-		<fo:block id="{@id}" margin-bottom="12pt" text-indent="-11.7mm" margin-left="11.7mm"> <!-- 12 pt -->
-			<xsl:call-template name="processBibitem"/>
-		</fo:block>
-	</xsl:template>
-	
-	
-	<xsl:template match="m3d:bibitem/m3d:note" priority="2">
-		<fo:footnote>
-			<xsl:variable name="number">
-				<xsl:number level="any" count="m3d:bibitem/m3d:note"/>
-			</xsl:variable>
-			<fo:inline font-size="7pt" keep-with-previous.within-line="always" baseline-shift="30%">
-				<fo:basic-link internal-destination="{generate-id()}" fox:alt-text="footnote {$number}">
-					<xsl:value-of select="$number"/>
-				</fo:basic-link>
-			</fo:inline>
-			<fo:footnote-body>
-				<fo:block font-size="9pt" margin-bottom="4pt" start-indent="0pt">
-					<fo:inline font-size="6pt" id="{generate-id()}" keep-with-next.within-line="always" baseline-shift="30%" padding-right="1mm"><!-- alignment-baseline="hanging" font-size="60%"  -->
-						<xsl:value-of select="$number"/>
-					</fo:inline>
-					<xsl:apply-templates />
-				</fo:block>
-			</fo:footnote-body>
-		</fo:footnote>
-	</xsl:template>
-	
-	
-	
 	<xsl:template match="m3d:ul | m3d:ol" mode="ul_ol">
 		<fo:block-container margin-left="6mm">
 			<fo:block-container margin-left="0mm">
@@ -702,53 +668,6 @@
 		</fo:inline>
 	</xsl:template>
 
-
-	
-	<!-- <xsl:template match="m3d:references[@id = '_bibliography']"> -->
-	<xsl:template match="m3d:references[not(@normative='true')]">
-		<fo:block break-after="page"/>
-		<fo:block id="{@id}">
-			<xsl:apply-templates />
-		</fo:block>
-		<fo:block-container text-align="center">
-			<fo:block-container margin-left="63mm" width="42mm" border-bottom="2pt solid black">
-				<fo:block>&#xA0;</fo:block>
-			</fo:block-container>
-		</fo:block-container>
-	</xsl:template>
-
-
-	<!-- Example: [1] ISO 9:1995, Information and documentation – Transliteration of Cyrillic characters into Latin characters – Slavic and non-Slavic languages -->
-	<!-- <xsl:template match="m3d:references[@id = '_bibliography']/m3d:bibitem"> -->
-	<xsl:template match="m3d:references[not(@normative='true')]/m3d:bibitem">
-		<fo:list-block margin-bottom="12pt" provisional-distance-between-starts="12mm">
-			<fo:list-item>
-				<fo:list-item-label end-indent="label-end()">
-					<fo:block>
-						<fo:inline id="{@id}">
-							<xsl:value-of select="m3d:docidentifier[@type = 'metanorma-ordinal']"/>
-							<xsl:if test="not(m3d:docidentifier[@type = 'metanorma-ordinal'])">
-								<xsl:number format="[1]"/>
-							</xsl:if>
-						</fo:inline>
-					</fo:block>
-				</fo:list-item-label>
-				<fo:list-item-body start-indent="body-start()">
-					<fo:block text-align="justify">
-						<xsl:call-template name="processBibitem"/>
-					</fo:block>
-				</fo:list-item-body>
-			</fo:list-item>
-		</fo:list-block>
-	</xsl:template>
-	
-	
-	<!-- <xsl:template match="m3d:references[@id = '_bibliography']/m3d:bibitem/m3d:title"> -->
-	<xsl:template match="m3d:references/m3d:bibitem/m3d:title">
-		<fo:inline font-style="italic">
-			<xsl:apply-templates />
-		</fo:inline>
-	</xsl:template>
 
 	
 	<xsl:template match="mathml:math" priority="2">

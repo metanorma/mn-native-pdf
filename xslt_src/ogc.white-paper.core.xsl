@@ -383,9 +383,6 @@
 	<!-- ============================= -->
 	<!-- CONTENTS                                       -->
 	<!-- ============================= -->
-	<xsl:template match="node()" mode="contents">		
-		<xsl:apply-templates mode="contents" />			
-	</xsl:template>
 
 	<!-- element with title -->
 	<xsl:template match="*[ogc:title]" mode="contents">
@@ -665,46 +662,6 @@
 	</xsl:template>
 	
 	
-	<xsl:template match="ogc:bibitem">
-		<fo:block id="{@id}" margin-bottom="12pt" start-indent="12mm" text-indent="-12mm" line-height="115%">
-			<xsl:if test=".//ogc:fn">
-				<xsl:attribute name="line-height-shift-adjustment">disregard-shifts</xsl:attribute>
-			</xsl:if>			
-			<xsl:call-template name="processBibitem"/>			
-		</fo:block>
-	</xsl:template>
-	
-	
-	<xsl:template match="ogc:bibitem/ogc:note" priority="2">
-		<fo:footnote>
-			<xsl:variable name="number">
-				<xsl:choose>
-					<xsl:when test="ancestor::ogc:references[preceding-sibling::ogc:references]">
-						<xsl:number level="any" count="ogc:references[preceding-sibling::ogc:references]//ogc:bibitem/ogc:note"/>
-					</xsl:when>
-					<xsl:otherwise>
-						<xsl:number level="any" count="ogc:bibitem/ogc:note"/>
-					</xsl:otherwise>
-				</xsl:choose>
-			</xsl:variable>
-			<fo:inline font-size="65%" keep-with-previous.within-line="always" vertical-align="super"> <!--  60% baseline-shift="35%"   -->
-				<fo:basic-link internal-destination="{generate-id()}" fox:alt-text="footnote {$number}">
-					<xsl:value-of select="$number"/><!-- <xsl:text>)</xsl:text> -->
-				</fo:basic-link>
-			</fo:inline>
-			<fo:footnote-body>
-				<fo:block font-size="10pt" margin-bottom="12pt" start-indent="0pt">
-					<fo:inline id="{generate-id()}" keep-with-next.within-line="always" font-size="60%" vertical-align="super"><!-- baseline-shift="30%" padding-right="9mm"  alignment-baseline="hanging" -->
-						<xsl:value-of select="$number"/><!-- <xsl:text>)</xsl:text> -->
-					</fo:inline>
-					<xsl:apply-templates />
-				</fo:block>
-			</fo:footnote-body>
-		</fo:footnote>
-	</xsl:template>
-	
-	
-	
 	<xsl:template match="ogc:ul | ogc:ol" mode="ul_ol">
 		<fo:list-block provisional-distance-between-starts="6.5mm" margin-bottom="12pt" line-height="115%">
 			<xsl:if test="ancestor::ogc:ul | ancestor::ogc:ol">
@@ -797,50 +754,6 @@
 		</fo:block>
 	</xsl:template>
 	
-
-	
-	<!-- [position() &gt; 1] -->
-	<xsl:template match="ogc:references[not(@normative='true')]">
-		<fo:block break-after="page"/>
-		<fo:block id="{@id}" line-height="120%">
-			<xsl:apply-templates />
-		</fo:block>
-	</xsl:template>
-
-	<xsl:template match="ogc:annex//ogc:references">
-		<fo:block id="{@id}">
-			<xsl:apply-templates />
-		</fo:block>
-	</xsl:template>
-
-	<!-- Example: [1] ISO 9:1995, Information and documentation – Transliteration of Cyrillic characters into Latin characters – Slavic and non-Slavic languages -->
-	<xsl:template match="ogc:references[not(@normative='true')]/ogc:bibitem">
-		<fo:list-block id="{@id}" margin-bottom="12pt" provisional-distance-between-starts="12mm">
-			<fo:list-item>
-				<fo:list-item-label end-indent="label-end()">
-					<fo:block>
-						<fo:inline>
-							<xsl:number format="[1]"/>
-						</fo:inline>
-					</fo:block>
-				</fo:list-item-label>
-				<fo:list-item-body start-indent="body-start()">
-					<fo:block>
-						<xsl:call-template name="processBibitem"/>
-					</fo:block>
-				</fo:list-item-body>
-			</fo:list-item>
-		</fo:list-block>
-	</xsl:template>
-	
-	
-	<xsl:template match="ogc:bibitem/ogc:title">
-		<fo:inline font-style="italic">
-			<xsl:apply-templates />
-		</fo:inline>
-	</xsl:template>
-
-
 
 	<xsl:template match="ogc:formula/ogc:stem">
 		<fo:block margin-top="6pt" margin-bottom="12pt">

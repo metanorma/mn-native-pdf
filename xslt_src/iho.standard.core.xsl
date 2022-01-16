@@ -371,9 +371,6 @@
 	<!-- ============================= -->
 	<!-- CONTENTS                                       -->
 	<!-- ============================= -->
-	<xsl:template match="node()" mode="contents">		
-		<xsl:apply-templates mode="contents" />			
-	</xsl:template>
 
 	<!-- element with title -->
 	<xsl:template match="*[iho:title]" mode="contents">
@@ -650,85 +647,6 @@
 	</xsl:template>
 	
 
-		
-	<xsl:template match="iho:references"><!-- [position() &gt; 1] -->
-		<fo:block id="{@id}">
-			<xsl:apply-templates />
-		</fo:block>
-	</xsl:template>
-		
-	
-	<!-- IHO documents:
-			"[1] S57 edition 3.1: IHO Transfer Standard for Digital Hydrographic Data, International Hydrographic Organization (www.iho.int)”
-			[{number}] {docID} edition {edition}: {title}, {author/organization}
-			
-			Non-IHO documents:
-			Provide title and publisher -->
-	<xsl:template match="iho:bibitem">
-		<fo:list-block margin-bottom="12pt" provisional-distance-between-starts="12mm" line-height="115%">
-			<fo:list-item>
-				<fo:list-item-label end-indent="label-end()">
-					<fo:block>
-						<fo:inline id="{@id}">
-							<xsl:value-of select="iho:docidentifier[@type = 'metanorma-ordinal']"/>
-							<xsl:if test="not(iho:docidentifier[@type = 'metanorma-ordinal'])">
-								<xsl:number format="[1]"/>
-							</xsl:if>
-						</fo:inline>
-					</fo:block>
-				</fo:list-item-label>
-				<fo:list-item-body start-indent="body-start()">
-					<fo:block>
-						<xsl:call-template name="processBibitem"/>						
-					</fo:block>
-				</fo:list-item-body>
-			</fo:list-item>
-		</fo:list-block>
-	</xsl:template>	
-	
-	<xsl:template match="iho:bibitem/iho:edition">
-		<xsl:text> edition </xsl:text>
-		<xsl:value-of select="."/>
-	</xsl:template>
-	
-	<xsl:template match="iho:bibitem/iho:title">
-		<fo:inline font-style="italic">
-			<xsl:apply-templates />
-		</fo:inline>
-	</xsl:template>
-	
-	<xsl:template match="iho:bibitem/iho:uri">
-		<xsl:text> (</xsl:text>
-		<fo:inline xsl:use-attribute-sets="link-style">
-			<fo:basic-link external-destination="." fox:alt-text=".">
-				<xsl:value-of select="."/>							
-			</fo:basic-link>
-		</fo:inline>
-		<xsl:text>)</xsl:text>
-	</xsl:template>
-	
-	<xsl:template match="iho:bibitem/iho:note" priority="2">
-		<fo:footnote>
-			<xsl:variable name="number">
-				<xsl:number level="any" count="iho:bibitem/iho:note"/>
-			</xsl:variable>
-			<fo:inline font-size="8pt" keep-with-previous.within-line="always" baseline-shift="30%"> <!--85% vertical-align="super"-->
-				<fo:basic-link internal-destination="{generate-id()}" fox:alt-text="footnote {$number}">
-					<xsl:value-of select="$number"/><xsl:text>)</xsl:text>
-				</fo:basic-link>
-			</fo:inline>
-			<fo:footnote-body>
-				<fo:block font-size="10pt" margin-bottom="4pt" start-indent="0pt">
-					<fo:inline id="{generate-id()}" keep-with-next.within-line="always" alignment-baseline="hanging" padding-right="3mm"><!-- font-size="60%"  -->
-						<xsl:value-of select="$number"/><xsl:text>)</xsl:text>
-					</fo:inline>
-					<xsl:apply-templates />
-				</fo:block>
-			</fo:footnote-body>
-		</fo:footnote>
-	</xsl:template>
-	
-	
 	
 	<xsl:template match="iho:example/iho:p" priority="2">
 			<fo:block-container xsl:use-attribute-sets="example-p-style">

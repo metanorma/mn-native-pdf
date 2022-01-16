@@ -273,10 +273,7 @@
 	<!-- ============================= -->
 	<!-- CONTENTS                                       -->
 	<!-- ============================= -->
-	<xsl:template match="node()" mode="contents">
-		<xsl:apply-templates mode="contents" />
-	</xsl:template>
-
+	
 	<!-- element with title -->
 	<xsl:template match="*[csa:title]" mode="contents">
 		<xsl:variable name="level">
@@ -543,43 +540,6 @@
 	</xsl:template>
 	
 	
-	<xsl:template match="csa:bibitem">
-		<fo:block id="{@id}" margin-bottom="12pt" start-indent="12mm" text-indent="-12mm" line-height="145%">
-			<xsl:call-template name="processBibitem"/>
-		</fo:block>
-	</xsl:template>
-	
-	
-	<xsl:template match="csa:bibitem/csa:note" priority="2">
-		<fo:footnote>
-			<xsl:variable name="number">
-				<xsl:choose>
-					<xsl:when test="ancestor::csa:references[preceding-sibling::csa:references]">
-						<xsl:number level="any" count="csa:references[preceding-sibling::csa:references]//csa:bibitem/csa:note"/>
-					</xsl:when>
-					<xsl:otherwise>
-						<xsl:number level="any" count="csa:bibitem/csa:note"/>
-					</xsl:otherwise>
-				</xsl:choose>
-			</xsl:variable>
-			<fo:inline font-size="65%" keep-with-previous.within-line="always" vertical-align="super"> <!--  60% baseline-shift="35%"   -->
-				<fo:basic-link internal-destination="{generate-id()}" fox:alt-text="footnote {$number}">
-					<xsl:value-of select="$number"/><!-- <xsl:text>)</xsl:text> -->
-				</fo:basic-link>
-			</fo:inline>
-			<fo:footnote-body>
-				<fo:block font-family="Azo Sans Lt" font-size="10pt" margin-bottom="12pt" start-indent="0pt" color="rgb(168, 170, 173)">
-					<fo:inline id="{generate-id()}" keep-with-next.within-line="always" font-size="60%" vertical-align="super"><!-- baseline-shift="30%" padding-right="9mm"  alignment-baseline="hanging" -->
-						<xsl:value-of select="$number"/><!-- <xsl:text>)</xsl:text> -->
-					</fo:inline>
-					<xsl:apply-templates />
-				</fo:block>
-			</fo:footnote-body>
-		</fo:footnote>
-	</xsl:template>
-	
-	
-	
 	<xsl:template match="csa:ul | csa:ol" mode="ul_ol">
 		<xsl:choose>
 			<xsl:when test="not(ancestor::csa:ul) and not(ancestor::csa:ol)">
@@ -692,91 +652,6 @@
 		</fo:block>
 	</xsl:template>
 
-	
-
-	<!-- [position() &gt; 1] -->
-	<xsl:template match="csa:references[not(@normative='true')]">
-		<fo:block break-after="page"/>
-		<fo:block id="{@id}" line-height="145%">
-			<xsl:apply-templates />
-		</fo:block>
-	</xsl:template>
-
-
-	<!-- Example: [1] ISO 9:1995, Information and documentation – Transliteration of Cyrillic characters into Latin characters – Slavic and non-Slavic languages -->
-	<!-- <xsl:template match="csa:references[@id = '_bibliography']/csa:bibitem"> [position() &gt; 1] -->
-	<xsl:template match="csa:references[not(@normative='true')]/csa:bibitem">
-		<fo:block margin-bottom="12pt" line-height="145%">
-			<fo:inline id="{@id}">
-				<xsl:value-of select="csa:docidentifier[@type = 'metanorma-ordinal']"/>
-				<xsl:if test="not(csa:docidentifier[@type = 'metanorma-ordinal'])">
-					<xsl:number format="[1]"/>
-				</xsl:if>
-			</fo:inline>
-				
-			<xsl:if test="not(csa:formattedref)">
-				<xsl:choose>
-					<xsl:when test="csa:contributor[csa:role/@type='publisher']/csa:organization/csa:abbreviation">
-						<xsl:for-each select="csa:contributor[csa:role/@type='publisher']/csa:organization/csa:abbreviation">
-							<xsl:value-of select="."/>
-							<xsl:if test="position() != last()">/</xsl:if>
-						</xsl:for-each>
-						<xsl:text>: </xsl:text>
-					</xsl:when>
-					<xsl:when test="csa:contributor[csa:role/@type='publisher']/csa:organization/csa:name">
-						<xsl:value-of select="csa:contributor[csa:role/@type='publisher']/csa:organization/csa:name"/>
-						<xsl:text>: </xsl:text>
-					</xsl:when>
-				</xsl:choose>
-				
-			</xsl:if>
-			
-			<xsl:if test="csa:docidentifier[not(@type = 'metanorma-ordinal')]">
-				<xsl:choose>
-					<xsl:when test="csa:docidentifier/@type = 'ISO' and csa:formattedref"/>
-					<xsl:when test="csa:docidentifier/@type = 'OGC' and csa:formattedref"/>
-					<xsl:otherwise><fo:inline>
-						<!-- <xsl:if test="csa:docidentifier/@type = 'OGC'">OGC </xsl:if> -->
-						<xsl:value-of select="csa:docidentifier[not(@type = 'metanorma-ordinal')]"/><xsl:apply-templates select="csa:note"/>, </fo:inline></xsl:otherwise>
-				</xsl:choose>
-			</xsl:if>
-			
-			<xsl:choose>
-				<xsl:when test="csa:title[@type = 'main' and @language = 'en']">
-					<xsl:apply-templates select="csa:title[@type = 'main' and @language = 'en']"/>
-				</xsl:when>
-				<xsl:otherwise>
-					<xsl:apply-templates select="csa:title"/>
-				</xsl:otherwise>
-			</xsl:choose>
-			<xsl:if test="csa:contributor[csa:role/@type='publisher']/csa:organization/csa:name">
-				<xsl:text>, </xsl:text>
-				<xsl:for-each select="csa:contributor[csa:role/@type='publisher']/csa:organization/csa:name">
-					<xsl:if test="position() != last()">and </xsl:if>
-					<xsl:value-of select="."/>
-				</xsl:for-each>
-				
-			</xsl:if>
-			<xsl:if test="csa:place">
-				<xsl:text>, </xsl:text>
-				<xsl:value-of select="csa:place"/>
-			</xsl:if>
-			<xsl:if test="csa:date[@type='published']/csa:on">
-				<xsl:text> (</xsl:text><xsl:value-of select="csa:date[@type='published']/csa:on"/><xsl:text>).</xsl:text>
-			</xsl:if>
-			<xsl:apply-templates select="csa:formattedref"/>
-					
-			
-		</fo:block>
-	</xsl:template>
-	
-	
-	<!-- <xsl:template match="csa:references[@id = '_bibliography']/csa:bibitem/csa:title"> [position() &gt; 1]-->
-	<xsl:template match="csa:references[not(@normative='true')]/csa:bibitem/csa:title">
-		<fo:inline font-style="italic">
-			<xsl:apply-templates />
-		</fo:inline>
-	</xsl:template>
 	
 		
 	<xsl:template match="csa:formula/csa:stem">

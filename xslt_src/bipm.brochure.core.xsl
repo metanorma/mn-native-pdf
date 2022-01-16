@@ -2205,9 +2205,6 @@
 	<!-- ============================= -->
 	<!-- CONTENTS                                       -->
 	<!-- ============================= -->
-	<xsl:template match="node()" mode="contents">		
-		<xsl:apply-templates mode="contents" />			
-	</xsl:template>
 
 	<!-- element with title -->
 	<xsl:template match="*[bipm:title]" mode="contents">
@@ -3407,96 +3404,8 @@
 		</fo:block>
 	</xsl:template>
 
-	<xsl:template match="bipm:bibitem">
-		<fo:block id="{@id}" margin-bottom="12pt" start-indent="25mm" text-indent="-25mm" line-height="115%">
-			<xsl:if test=".//bipm:fn">
-				<xsl:attribute name="line-height-shift-adjustment">disregard-shifts</xsl:attribute>
-			</xsl:if>			
-			<xsl:call-template name="processBibitem"/>
-			<!-- <xsl:apply-templates /> -->
-		</fo:block>
-	</xsl:template>
 
-	<xsl:template match="bipm:bibitem/bipm:note" priority="2">
-		<fo:footnote>
-			<xsl:variable name="number">
-				<xsl:choose>
-					<xsl:when test="ancestor::bipm:references[preceding-sibling::bipm:references]">
-						<xsl:number level="any" count="bipm:references[preceding-sibling::bipm:references]//bipm:bibitem/bipm:note"/>
-					</xsl:when>
-					<xsl:otherwise>
-						<xsl:number level="any" count="bipm:bibitem/bipm:note"/>
-					</xsl:otherwise>
-				</xsl:choose>
-			</xsl:variable>
-			<fo:inline font-size="65%" keep-with-previous.within-line="always" vertical-align="super"> <!--  60% baseline-shift="35%"   -->
-				<fo:basic-link internal-destination="{generate-id()}" fox:alt-text="footnote {$number}">
-					<xsl:value-of select="$number"/><!-- <xsl:text>)</xsl:text> -->
-				</fo:basic-link>
-			</fo:inline>
-			<fo:footnote-body>
-				<fo:block font-size="10pt" margin-bottom="12pt" start-indent="0pt">
-					<fo:inline id="{generate-id()}" keep-with-next.within-line="always" font-size="60%" vertical-align="super"><!-- baseline-shift="30%" padding-right="9mm"  alignment-baseline="hanging" -->
-						<xsl:value-of select="$number"/><!-- <xsl:text>)</xsl:text> -->
-					</fo:inline>
-					<xsl:apply-templates />
-				</fo:block>
-			</fo:footnote-body>
-		</fo:footnote>
-	</xsl:template>
-
-	<xsl:template match="bipm:references[not(@normative='true')]">
-		<fo:block break-after="page"/>
-		<fo:block id="{@id}" line-height="120%">
-			<xsl:apply-templates />
-		</fo:block>
-	</xsl:template>
-
-	<xsl:template match="bipm:annex//bipm:references">
-		<fo:block id="{@id}">
-			<xsl:apply-templates />
-		</fo:block>
-	</xsl:template>
-
-	<!-- Example: [1] ISO 9:1995, Information and documentation – Transliteration of Cyrillic characters into Latin characters – Slavic and non-Slavic languages -->	
-	<xsl:template match="bipm:references[not(@normative='true')]/bipm:bibitem">
-		<fo:list-block id="{@id}" margin-bottom="12pt" provisional-distance-between-starts="13mm">
-			<fo:list-item>
-				<fo:list-item-label end-indent="label-end()">
-					<fo:block>
-						<fo:inline>
-						 <!-- <xsl:number format="1."/> -->
-							<xsl:value-of select="bipm:docidentifier[@type='metanorma-ordinal']"/>
-							<xsl:if test="not(bipm:docidentifier[@type='metanorma-ordinal'])">
-								<xsl:choose>
-									<xsl:when test="bipm:docidentifier[@type='metanorma']">
-										<xsl:value-of select="bipm:docidentifier[@type='metanorma']"/>
-									</xsl:when>
-									<xsl:otherwise>
-										<xsl:number format="[1]"/>
-									</xsl:otherwise>
-								</xsl:choose>
-							</xsl:if>
-						</fo:inline>
-					</fo:block>
-				</fo:list-item-label>
-				<fo:list-item-body start-indent="body-start()">
-					<fo:block>
-						<xsl:call-template name="processBibitem"/>
-						<!-- <xsl:apply-templates /> -->
-					</fo:block>
-				</fo:list-item-body>
-			</fo:list-item>
-		</fo:list-block>
-	</xsl:template>
 	
-	
-	<xsl:template match="bipm:bibitem/bipm:title">
-		<fo:inline font-style="italic">
-			<xsl:apply-templates />
-		</fo:inline>
-	</xsl:template>
-
 	<xsl:template match="bipm:references/bipm:bibitem/bipm:docidentifier[(@type='metanorma' or @type='metanorma-ordinal') and ../bipm:formattedref]"/>
 	
 

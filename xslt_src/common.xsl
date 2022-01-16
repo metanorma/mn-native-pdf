@@ -2617,7 +2617,7 @@
 			<xsl:attribute name="margin-right">20mm</xsl:attribute>
 			<xsl:attribute name="text-indent">0mm</xsl:attribute>
 		</xsl:if>
-	</xsl:attribute-set>
+	</xsl:attribute-set> <!-- admonition-container-style -->
 	
 	
 	<xsl:attribute-set name="admonition-name-style">
@@ -2741,9 +2741,412 @@
 			<xsl:attribute name="text-align">justify</xsl:attribute>
 			<xsl:attribute name="margin-bottom">6pt</xsl:attribute>
 		</xsl:if>
-	</xsl:attribute-set>
+	</xsl:attribute-set> <!-- admonition-p-style -->
 	<!-- end admonition -->
-	 
+
+
+
+
+	<!-- bibitem in Normative References (references/@normative="true") -->
+	<xsl:attribute-set name="bibitem-normative-style">
+		<xsl:if test="$namespace = 'bipm'">
+			<xsl:attribute name="margin-bottom">12pt</xsl:attribute>
+			<xsl:attribute name="start-indent">25mm</xsl:attribute>
+			<xsl:attribute name="text-indent">-25mm</xsl:attribute>
+			<xsl:attribute name="line-height">115%</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'bsi'">
+			<xsl:attribute name="margin-bottom">6pt</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'csa'">
+			<xsl:attribute name="margin-bottom">12pt</xsl:attribute>
+			<xsl:attribute name="start-indent">12mm</xsl:attribute>
+			<xsl:attribute name="text-indent">-12mm</xsl:attribute>
+			<xsl:attribute name="line-height">145%</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'csd'">
+			<xsl:attribute name="margin-bottom">6pt</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'gb'">
+			<xsl:attribute name="font-size">11pt</xsl:attribute>
+			<xsl:attribute name="margin-bottom">12pt</xsl:attribute>
+			<xsl:attribute name="text-indent">-11.7mm</xsl:attribute>
+			<xsl:attribute name="margin-left">11.7mm</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'iec'">
+			<xsl:attribute name="margin-top">5pt</xsl:attribute>
+			<xsl:attribute name="margin-bottom">10pt</xsl:attribute>
+		</xsl:if>
+		
+		<xsl:if test="$namespace = 'iso'">
+			<xsl:attribute name="margin-bottom">6pt</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'itu'">
+			<xsl:attribute name="margin-top">6pt</xsl:attribute>
+			<xsl:attribute name="margin-left">14mm</xsl:attribute>
+			<xsl:attribute name="text-indent">-14mm</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'jcgm'">
+			<xsl:attribute name="margin-bottom">6pt</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'm3d'">
+			<xsl:attribute name="margin-bottom">12pt</xsl:attribute>
+			<xsl:attribute name="text-indent">-11.7mm</xsl:attribute>
+			<xsl:attribute name="margin-left">11.7mm</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'mpfd'">
+			<xsl:attribute name="margin-bottom">12pt</xsl:attribute>
+			<xsl:attribute name="text-indent">-11.7mm</xsl:attribute>
+			<xsl:attribute name="margin-left">11.7mm</xsl:attribute>
+		</xsl:if>
+		
+		<xsl:if test="$namespace = 'nist-sp'">
+			<xsl:attribute name="margin-top">6pt</xsl:attribute>
+			<xsl:attribute name="margin-left">12mm</xsl:attribute>
+			<xsl:attribute name="text-indent">-12mm</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'ogc'">
+			<xsl:attribute name="margin-bottom">12pt</xsl:attribute>
+			<xsl:attribute name="start-indent">25mm</xsl:attribute>
+			<xsl:attribute name="text-indent">-25mm</xsl:attribute>
+			<xsl:attribute name="line-height">115%</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'ogc-white-paper'">
+			<xsl:attribute name="margin-bottom">12pt</xsl:attribute>
+			<xsl:attribute name="start-indent">12mm</xsl:attribute>
+			<xsl:attribute name="text-indent">-12mm</xsl:attribute>
+			<xsl:attribute name="line-height">115%</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'rsd'">
+			<xsl:attribute name="margin-bottom">12pt</xsl:attribute>
+			<xsl:attribute name="font-weight">normal</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'unece' or $namespace = 'unece-rec'">
+			<xsl:attribute name="margin-top">6pt</xsl:attribute>
+			<xsl:attribute name="margin-left">14mm</xsl:attribute>
+			<xsl:attribute name="text-indent">-14mm</xsl:attribute>
+		</xsl:if>
+	</xsl:attribute-set> <!-- bibitem-normative-style -->
+	
+	<!-- bibitem in Normative References (references/@normative="true"), renders as list -->
+	<xsl:attribute-set name="bibitem-normative-list-style">
+		<xsl:attribute name="provisional-distance-between-starts">12mm</xsl:attribute>
+		<xsl:attribute name="margin-bottom">12pt</xsl:attribute>
+		<xsl:if test="$namespace = 'bipm'">
+			<xsl:attribute name="provisional-distance-between-starts">13mm</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'csd'">
+			
+		</xsl:if>
+		<xsl:if test="$namespace = 'gb'">
+			<xsl:attribute name="font-size">11pt</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'iec'">
+			<xsl:attribute name="margin-top">5pt</xsl:attribute>
+			<xsl:attribute name="margin-bottom">14pt</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'iho'">
+			<xsl:attribute name="line-height">115%</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'iso'">
+			<xsl:attribute name="margin-bottom">6pt</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'jcgm'">
+			<xsl:attribute name="margin-bottom">6pt</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'nist-cswp'">
+			
+		</xsl:if>
+		<xsl:if test="$namespace = 'ogc'">
+			
+			<xsl:attribute name="provisional-distance-between-starts">13mm</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'ogc-white-paper'">
+			
+		</xsl:if>
+		<xsl:if test="$namespace = 'rsd'">
+			<xsl:attribute name="margin-bottom">4pt</xsl:attribute>
+			<xsl:attribute name="provisional-distance-between-starts">8mm</xsl:attribute>
+		</xsl:if>
+	</xsl:attribute-set> <!-- bibitem-normative-list-style -->
+	
+	<xsl:attribute-set name="bibitem-non-normative-style">
+		<xsl:if test="$namespace = 'bsi'">
+			<xsl:attribute name="margin-bottom">6pt</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'csa'">
+			<xsl:attribute name="margin-bottom">12pt</xsl:attribute>
+			<xsl:attribute name="line-height">145%</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'itu'">
+			<xsl:attribute name="margin-top">6pt</xsl:attribute>
+			<xsl:attribute name="margin-left">14mm</xsl:attribute>
+			<xsl:attribute name="text-indent">-14mm</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'nist-sp'">
+			<xsl:attribute name="margin-top">6pt</xsl:attribute>
+			<xsl:attribute name="margin-left">12mm</xsl:attribute>
+			<xsl:attribute name="text-indent">-12mm</xsl:attribute>
+		</xsl:if>
+	</xsl:attribute-set> <!-- bibitem-non-normative-style -->
+	
+	<!-- bibitem in bibliography section (references/@normative="false"), renders as list -->
+	<xsl:attribute-set name="bibitem-non-normative-list-style">
+		<xsl:attribute name="provisional-distance-between-starts">12mm</xsl:attribute>
+		<xsl:attribute name="margin-bottom">12pt</xsl:attribute>
+		<xsl:if test="$namespace = 'bipm'">
+			<xsl:attribute name="provisional-distance-between-starts">13mm</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'csd'">
+			
+		</xsl:if>
+		<xsl:if test="$namespace = 'gb'">
+			<xsl:attribute name="font-size">11pt</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'iec'">
+			<xsl:attribute name="margin-top">5pt</xsl:attribute>
+			<xsl:attribute name="margin-bottom">14pt</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'iho'">
+			<xsl:attribute name="line-height">115%</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'iso'">
+			<xsl:attribute name="margin-bottom">6pt</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'jcgm'">
+			<xsl:attribute name="margin-bottom">6pt</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'nist-cswp'">
+			
+		</xsl:if>
+		<xsl:if test="$namespace = 'ogc'">
+			
+			<xsl:attribute name="provisional-distance-between-starts">13mm</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'ogc-white-paper'">
+			
+		</xsl:if>
+		<xsl:if test="$namespace = 'rsd'">
+			<xsl:attribute name="margin-bottom">4pt</xsl:attribute>
+			<xsl:attribute name="provisional-distance-between-starts">8mm</xsl:attribute>
+		</xsl:if>
+	</xsl:attribute-set> <!-- bibitem-non-normative-list-style -->
+	
+	<!-- bibitem in bibliography section (references/@normative="false"), list body -->
+	<xsl:attribute-set name="bibitem-normative-list-body-style">
+		<xsl:if test="$namespace = 'gb'">
+			<xsl:attribute name="text-align">justify</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'itu'">
+			<xsl:attribute name="margin-top">6pt</xsl:attribute>
+			<xsl:attribute name="margin-left">14mm</xsl:attribute>
+			<xsl:attribute name="text-indent">-14mm</xsl:attribute>
+		</xsl:if>
+	</xsl:attribute-set>
+	
+	<xsl:attribute-set name="bibitem-non-normative-list-body-style">
+		<xsl:if test="$namespace = 'gb'">
+			<xsl:attribute name="text-align">justify</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'itu'">
+			<xsl:attribute name="margin-top">6pt</xsl:attribute>
+			<xsl:attribute name="margin-left">14mm</xsl:attribute>
+			<xsl:attribute name="text-indent">-14mm</xsl:attribute>
+		</xsl:if>
+	</xsl:attribute-set> <!-- bibitem-non-normative-list-body-style -->
+	
+	<!-- footnote reference number for bibitem, in the text  -->
+	<xsl:attribute-set name="bibitem-note-fn-style">
+		<xsl:attribute name="keep-with-previous.within-line">always</xsl:attribute>
+		<xsl:attribute name="font-size">65%</xsl:attribute>
+		<xsl:if test="$namespace = 'bipm'">
+			<xsl:attribute name="vertical-align">super</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'bsi'">
+			<xsl:attribute name="font-size">8pt</xsl:attribute>
+			<xsl:attribute name="baseline-shift">30%</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'csa'">
+			<xsl:attribute name="vertical-align">super</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'csd'">
+			<xsl:attribute name="vertical-align">super</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'gb'">
+			<xsl:attribute name="font-size">50%</xsl:attribute>
+			<xsl:attribute name="baseline-shift">30%</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'iec'">
+			<xsl:attribute name="font-size">8pt</xsl:attribute>
+			<xsl:attribute name="baseline-shift">15%</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'iho'">
+			<xsl:attribute name="font-size">8pt</xsl:attribute>
+			<xsl:attribute name="baseline-shift">30%</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'iso'">
+			<xsl:attribute name="font-size">8pt</xsl:attribute>
+			<xsl:attribute name="baseline-shift">30%</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'itu'">
+			<xsl:attribute name="font-size">8pt</xsl:attribute>
+			<xsl:attribute name="baseline-shift">30%</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'jcgm'">
+			<xsl:attribute name="font-size">8pt</xsl:attribute>
+			<xsl:attribute name="baseline-shift">30%</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'm3d'">
+			<xsl:attribute name="font-size">7pt</xsl:attribute>
+			<xsl:attribute name="baseline-shift">30%</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'mpfd'">
+			<xsl:attribute name="font-size">7pt</xsl:attribute>
+			<xsl:attribute name="baseline-shift">30%</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'nist-cswp' or $namespace = 'nist-sp'">
+			<xsl:attribute name="vertical-align">super</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'ogc' or $namespace = 'ogc-white-paper'">
+			<xsl:attribute name="vertical-align">super</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'rsd'">
+			<xsl:attribute name="vertical-align">super</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'unece' or $namespace = 'unece-rec'">
+			<xsl:attribute name="vertical-align">super</xsl:attribute>
+		</xsl:if>
+	</xsl:attribute-set> <!-- bibitem-note-fn-style -->
+	
+	<!-- footnote number on the page bottom -->
+	<xsl:attribute-set name="bibitem-note-fn-number-style">
+		<xsl:attribute name="keep-with-next.within-line">always</xsl:attribute>
+		<xsl:if test="$namespace = 'bipm'">
+			<xsl:attribute name="font-size">60%</xsl:attribute>
+			<xsl:attribute name="vertical-align">super</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'bsi'">
+			<xsl:attribute name="alignment-baseline">hanging</xsl:attribute>
+			<xsl:attribute name="padding-right">3mm</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'csa'">
+			<xsl:attribute name="font-size">60%</xsl:attribute>
+			<xsl:attribute name="vertical-align">super</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'csd'">
+			<xsl:attribute name="font-size">60%</xsl:attribute>
+			<xsl:attribute name="vertical-align">super</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'gb'">
+			<xsl:attribute name="font-size">50%</xsl:attribute>
+			<xsl:attribute name="baseline-shift">30%</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'iec'">
+			<xsl:attribute name="baseline-shift">15%</xsl:attribute>
+			<xsl:attribute name="padding-right">3mm</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'iho'">
+			<xsl:attribute name="alignment-baseline">hanging</xsl:attribute>
+			<xsl:attribute name="padding-right">3mm</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'iso'">
+			<xsl:attribute name="alignment-baseline">hanging</xsl:attribute>
+			<xsl:attribute name="padding-right">3mm</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'itu'">
+			<xsl:attribute name="alignment-baseline">hanging</xsl:attribute>
+			<xsl:attribute name="padding-right">3mm</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'jcgm'">
+			<xsl:attribute name="alignment-baseline">hanging</xsl:attribute>
+			<xsl:attribute name="padding-right">3mm</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'm3d'">
+			<xsl:attribute name="font-size">6pt</xsl:attribute>
+			<xsl:attribute name="baseline-shift">30%</xsl:attribute>
+			<xsl:attribute name="padding-right">1mm</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'mpfd'">
+			<xsl:attribute name="font-size">6pt</xsl:attribute>
+			<xsl:attribute name="baseline-shift">30%</xsl:attribute>
+			<xsl:attribute name="padding-right">1mm</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'nist-cswp' or $namespace = 'nist-sp'">
+			<xsl:attribute name="font-size">60%</xsl:attribute>
+			<xsl:attribute name="vertical-align">super</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'ogc' or $namespace = 'ogc-white-paper'">
+			<xsl:attribute name="font-size">60%</xsl:attribute>
+			<xsl:attribute name="vertical-align">super</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'rsd'">
+			<xsl:attribute name="font-size">60%</xsl:attribute>
+			<xsl:attribute name="vertical-align">super</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'unece' or $namespace = 'unece-rec'">
+			<xsl:attribute name="font-size">60%</xsl:attribute>
+			<xsl:attribute name="vertical-align">super</xsl:attribute>
+		</xsl:if>
+	</xsl:attribute-set> <!-- bibitem-note-fn-number-style -->
+	
+	<!-- footnote body (text) on the page bottom -->
+	<xsl:attribute-set name="bibitem-note-fn-body-style">
+		<xsl:attribute name="font-size">10pt</xsl:attribute>
+		<xsl:attribute name="margin-bottom">12pt</xsl:attribute>
+		<xsl:attribute name="start-indent">0pt</xsl:attribute>
+		<xsl:if test="$namespace = 'bsi'">
+			<xsl:attribute name="margin-bottom">4pt</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'csa'">
+			<xsl:attribute name="font-family">Azo Sans Lt</xsl:attribute>
+			<xsl:attribute name="color">rgb(168, 170, 173)</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'gb'">
+			<xsl:attribute name="font-size">9pt</xsl:attribute>
+			<xsl:attribute name="margin-bottom">4pt</xsl:attribute>
+			<xsl:attribute name="text-indent">7.4mm</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'iec'">
+			<xsl:attribute name="font-size">8pt</xsl:attribute>
+			<xsl:attribute name="margin-bottom">5pt</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'iho'">
+			<xsl:attribute name="margin-bottom">4pt</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'iso'">
+			<xsl:attribute name="margin-bottom">4pt</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'itu'">
+			<xsl:attribute name="margin-bottom">4pt</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'jcgm'">
+			<xsl:attribute name="margin-bottom">4pt</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'm3d'">
+			<xsl:attribute name="font-size">9pt</xsl:attribute>
+			<xsl:attribute name="margin-bottom">4pt</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'mpfd'">
+			<xsl:attribute name="font-size">9pt</xsl:attribute>
+			<xsl:attribute name="margin-bottom">4pt</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'rsd'">
+			<xsl:attribute name="color">rgb(168, 170, 173)</xsl:attribute>
+		</xsl:if>
+	</xsl:attribute-set> <!-- bibitem-note-fn-body-style -->
+	
+	
+	<xsl:attribute-set name="references-non-normative-style">
+		<xsl:if test="$namespace = 'bipm'">
+			<xsl:attribute name="line-height">120%</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'csa'">
+			<xsl:attribute name="line-height">145%</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'ogc' or $namespace = 'ogc-white-paper'">
+			<xsl:attribute name="line-height">120%</xsl:attribute>
+		</xsl:if>
+	</xsl:attribute-set> <!-- references-non-normative-style -->
 	
 	<!-- ====================================== -->
 	<!-- END STYLES -->
@@ -8451,17 +8854,6 @@
 		</fo:block>
 	</xsl:template>
 	
-	<xsl:template match="*[local-name() = 'references'][@hidden='true']" priority="3"/>
-	<xsl:template match="*[local-name() = 'bibitem'][@hidden='true']" priority="3"/>
-	
-	<xsl:template match="/*/*[local-name() = 'bibliography']/*[local-name() = 'references'][@normative='true']">
-		<xsl:if test="$namespace = 'nist-sp' or $namespace = 'nist-cswp'">
-			<fo:block break-after="page"/>
-		</xsl:if>
-		<fo:block id="{@id}">
-			<xsl:apply-templates />
-		</fo:block>
-	</xsl:template>
 	
 	
 	<xsl:template match="*[local-name() = 'annex']">
@@ -8871,43 +9263,329 @@
 	<!-- ======================= -->
 	<!-- Bibliography rendering -->
 	<!-- ======================= -->
-	<xsl:template name="processBibitem">
+	
+	<!-- ========================================================== -->
+	<!-- Reference sections (Normative References and Bibliography) -->
+	<!-- ========================================================== -->
+	<xsl:template match="*[local-name() = 'references'][@hidden='true']" priority="3"/>
+	<xsl:template match="*[local-name() = 'bibitem'][@hidden='true']" priority="3"/>
+	<!-- don't display bibitem with @id starts with '_hidden', that was introduced for references integrity -->
+	<xsl:template match="*[local-name() = 'bibitem'][starts-with(@id, 'hidden_bibitem_')]" priority="3"/>
+	
+	<!-- Normative references -->
+	<xsl:template match="*[local-name() = 'references'][@normative='true']" priority="2">
 		
-		<xsl:if test="$namespace = 'bipm'">
-			<!-- start BIPM bibtem processing -->
-			<xsl:choose>
-				<xsl:when test="*[local-name() = 'formattedref']">
-					<xsl:apply-templates select="*[local-name() = 'formattedref']"/>
-				</xsl:when>
-				<xsl:otherwise>
-					<xsl:variable name="docidentifier" select="*[local-name() = 'docidentifier'][not(@type = 'URN' or @type = 'metanorma' or @type = 'metanorma-ordinal' or @type = 'BIPM' or @type = 'ISBN' or @type = 'ISSN')]"/>
-					
-					<xsl:value-of select="$docidentifier"/>
-					<xsl:if test="$docidentifier != '' and *[local-name() = 'title']">, </xsl:if>
-					
-					<xsl:variable name="curr_lang" select="ancestor::bipm:bipm-standard/bipm:bibdata/bipm:language"/>
-					
-					<xsl:choose>
-						<xsl:when test="*[local-name() = 'title'][@type = 'main' and @language = $curr_lang]">
-							<xsl:apply-templates select="*[local-name() = 'title'][@type = 'main' and @language = $curr_lang]"/>
-						</xsl:when>
-						<xsl:when test="*[local-name() = 'title'][@type = 'main' and @language = 'en']">
-							<xsl:apply-templates select="*[local-name() = 'title'][@type = 'main' and @language = 'en']"/>
-						</xsl:when>
-						<xsl:otherwise>
-							<xsl:apply-templates select="*[local-name() = 'title']"/>
-						</xsl:otherwise>
-					</xsl:choose>
-					
-				</xsl:otherwise>
-			</xsl:choose>
-			<!-- end BIPM bibitem processing-->
+		<xsl:if test="$namespace = 'nist-sp' or $namespace = 'nist-cswp'">
+			<xsl:if test="not(ancestor::*[local-name() = 'annex'])">
+				<fo:block break-after="page"/>
+			</xsl:if>
 		</xsl:if>
 		
-		<xsl:if test="$namespace = 'bsi'">
-			<!-- start BSI bibtem processing -->
-			<xsl:variable name="docidentifier">
-				<xsl:if test="*[local-name() = 'docidentifier']">
+		<fo:block id="{@id}">
+			<xsl:apply-templates />
+		</fo:block>
+	</xsl:template>
+	
+	<!-- Bibliography (non-normative references) -->
+	<xsl:template match="*[local-name() = 'references']">
+		<xsl:if test="not(ancestor::*[local-name() = 'annex'])">
+			<xsl:choose>
+				<xsl:when test="$namespace = 'bsi' or $namespace = 'iho' or $namespace = 'nist-cswp' or $namespace = 'nist-sp' or $namespace = 'unece' or $namespace = 'unece-rec'"></xsl:when>
+				<xsl:otherwise>
+					<fo:block break-after="page"/>
+				</xsl:otherwise>
+			</xsl:choose>
+		</xsl:if>
+		
+		<!-- <xsl:if test="ancestor::*[local-name() = 'annex']">
+			<xsl:if test="$namespace = 'csa' or $namespace = 'csd' or $namespace = 'gb' or $namespace = 'iec' or $namespace = 'iso' or $namespace = 'itu'">
+				<fo:block break-after="page"/>
+			</xsl:if>
+		</xsl:if> -->
+		
+		<fo:block id="{@id}" xsl:use-attribute-sets="references-non-normative-style">
+			<xsl:apply-templates />
+		</fo:block>
+		
+		<xsl:if test="$namespace = 'gb' or $namespace = 'm3d'">
+			<!-- horizontal line -->
+			<fo:block-container text-align="center">
+				<fo:block-container margin-left="63mm" width="42mm" border-bottom="2pt solid black">
+					<fo:block>&#xA0;</fo:block>
+				</fo:block-container>
+			</fo:block-container>
+		</xsl:if>
+		
+		<xsl:if test="$namespace = 'iec'">
+			<!-- horizontal line -->
+			<fo:block-container text-align="center" margin-top="10mm">
+				<fo:block>_____________</fo:block>
+			</fo:block-container>
+		</xsl:if>
+	</xsl:template> <!-- references -->
+	
+	
+	
+	<xsl:template match="*[local-name() = 'bibitem']">
+		<xsl:call-template name="bibitem"/>
+	</xsl:template>
+	
+	<!-- Normative references -->
+	<xsl:template match="*[local-name() = 'references'][@normative='true']/*[local-name() = 'bibitem']" name="bibitem" priority="2">
+		<xsl:choose>
+			<xsl:when test="$namespace = 'iho' or $namespace = 'nist-cswp'">
+				<fo:list-block id="{@id}" xsl:use-attribute-sets="bibitem-normative-list-style">
+					<fo:list-item>
+						<fo:list-item-label end-indent="label-end()">
+							<fo:block>
+								<fo:inline>
+									<xsl:choose>
+										<xsl:when test="$namespace = 'iho'">
+											<xsl:value-of select="*[local-name() = 'docidentifier'][@type = 'metanorma-ordinal']"/>
+												<xsl:if test="not(*[local-name() = 'docidentifier'][@type = 'metanorma-ordinal'])">
+													<xsl:number format="[1]"/>
+												</xsl:if>
+										</xsl:when>
+										<xsl:when test="$namespace = 'nist-cswp'">
+											<xsl:value-of select="nist:docidentifier[@display = 'true']"/>
+										</xsl:when>
+									</xsl:choose>
+								</fo:inline>
+							</fo:block>
+						</fo:list-item-label>
+						<fo:list-item-body start-indent="body-start()">
+							<fo:block xsl:use-attribute-sets="bibitem-normative-list-body-style">
+								<xsl:call-template name="processBibitem"/>						
+							</fo:block>
+						</fo:list-item-body>
+					</fo:list-item>
+				</fo:list-block>
+			</xsl:when>
+			<xsl:otherwise>
+				<fo:block id="{@id}" xsl:use-attribute-sets="bibitem-normative-style">
+					<xsl:call-template name="processBibitem"/>
+				</fo:block>
+			</xsl:otherwise>
+		</xsl:choose>
+
+	</xsl:template> <!-- bibitem -->
+	
+	
+	<!-- Bibliography (non-normative references) -->
+	<xsl:template match="*[local-name() = 'references'][not(@normative='true')]/*[local-name() = 'bibitem']" priority="2">
+		
+		<xsl:choose>
+			<xsl:when test="$namespace = 'bipm'">
+				<fo:list-block id="{@id}" xsl:use-attribute-sets="bibitem-non-normative-list-style">
+					<fo:list-item>
+						<fo:list-item-label end-indent="label-end()">
+							<fo:block>
+								<fo:inline>
+									<xsl:value-of select="bipm:docidentifier[@type='metanorma-ordinal']"/>
+									<xsl:if test="not(bipm:docidentifier[@type='metanorma-ordinal'])">
+										<xsl:choose>
+											<xsl:when test="bipm:docidentifier[@type='metanorma']">
+												<xsl:value-of select="bipm:docidentifier[@type='metanorma']"/>
+											</xsl:when>
+											<xsl:otherwise>
+												<xsl:number format="[1]"/>
+											</xsl:otherwise>
+										</xsl:choose>
+									</xsl:if>
+								</fo:inline>
+							</fo:block>
+						</fo:list-item-label>
+						<fo:list-item-body start-indent="body-start()">
+							<fo:block>
+								<xsl:call-template name="processBibitem"/>
+							</fo:block>
+						</fo:list-item-body>
+					</fo:list-item>
+				</fo:list-block>
+			</xsl:when>
+			<xsl:when test="$namespace = 'csa'">
+				<fo:block xsl:use-attribute-sets="bibitem-non-normative-style">
+					<fo:inline id="{@id}">
+						<xsl:value-of select="csa:docidentifier[@type = 'metanorma-ordinal']"/>
+						<xsl:if test="not(csa:docidentifier[@type = 'metanorma-ordinal'])">
+							<xsl:number format="[1]"/>
+						</xsl:if>
+					</fo:inline>
+						
+					<xsl:if test="not(csa:formattedref)">
+						<xsl:choose>
+							<xsl:when test="csa:contributor[csa:role/@type='publisher']/csa:organization/csa:abbreviation">
+								<xsl:for-each select="csa:contributor[csa:role/@type='publisher']/csa:organization/csa:abbreviation">
+									<xsl:value-of select="."/>
+									<xsl:if test="position() != last()">/</xsl:if>
+								</xsl:for-each>
+								<xsl:text>: </xsl:text>
+							</xsl:when>
+							<xsl:when test="csa:contributor[csa:role/@type='publisher']/csa:organization/csa:name">
+								<xsl:value-of select="csa:contributor[csa:role/@type='publisher']/csa:organization/csa:name"/>
+								<xsl:text>: </xsl:text>
+							</xsl:when>
+						</xsl:choose>
+						
+					</xsl:if>
+					
+					<xsl:if test="csa:docidentifier[not(@type = 'metanorma-ordinal')]">
+						<xsl:choose>
+							<xsl:when test="csa:docidentifier/@type = 'ISO' and csa:formattedref"/>
+							<xsl:when test="csa:docidentifier/@type = 'OGC' and csa:formattedref"/>
+							<xsl:otherwise><fo:inline>
+								<!-- <xsl:if test="csa:docidentifier/@type = 'OGC'">OGC </xsl:if> -->
+								<xsl:value-of select="csa:docidentifier[not(@type = 'metanorma-ordinal')]"/><xsl:apply-templates select="csa:note"/>, </fo:inline></xsl:otherwise>
+						</xsl:choose>
+					</xsl:if>
+					
+					<xsl:choose>
+						<xsl:when test="csa:title[@type = 'main' and @language = 'en']">
+							<xsl:apply-templates select="csa:title[@type = 'main' and @language = 'en']"/>
+						</xsl:when>
+						<xsl:otherwise>
+							<xsl:apply-templates select="csa:title"/>
+						</xsl:otherwise>
+					</xsl:choose>
+					<xsl:if test="csa:contributor[csa:role/@type='publisher']/csa:organization/csa:name">
+						<xsl:text>, </xsl:text>
+						<xsl:for-each select="csa:contributor[csa:role/@type='publisher']/csa:organization/csa:name">
+							<xsl:if test="position() != last()">and </xsl:if>
+							<xsl:value-of select="."/>
+						</xsl:for-each>
+						
+					</xsl:if>
+					<xsl:if test="csa:place">
+						<xsl:text>, </xsl:text>
+						<xsl:value-of select="csa:place"/>
+					</xsl:if>
+					<xsl:if test="csa:date[@type='published']/csa:on">
+						<xsl:text> (</xsl:text><xsl:value-of select="csa:date[@type='published']/csa:on"/><xsl:text>).</xsl:text>
+					</xsl:if>
+					<xsl:apply-templates select="csa:formattedref"/>
+							
+				</fo:block>
+			</xsl:when>
+			
+			<xsl:when test="$namespace = 'iho' or $namespace = 'nist-cswp'">
+				<xsl:call-template name="bibitem"/>
+			</xsl:when>
+			
+			<xsl:when test="$namespace = 'itu' or $namespace = 'nist-sp' or $namespace = 'unece' or $namespace = 'unece-rec'">
+				<fo:block id="{@id}" xsl:use-attribute-sets="bibitem-non-normative-style">
+					<xsl:call-template name="processBibitem"/>
+				</fo:block>
+			</xsl:when>
+			
+			<xsl:when test="$namespace = 'rsd'">
+				<fo:list-block id="{@id}" xsl:use-attribute-sets="bibitem-non-normative-list-style">
+					<fo:list-item>
+						<fo:list-item-label end-indent="label-end()">
+							<fo:block>
+								<fo:inline>
+									<xsl:if test="$namespace = 'rsd'">
+										<xsl:number format="1."/>
+									</xsl:if>
+								</fo:inline>
+							</fo:block>
+						</fo:list-item-label>
+						<fo:list-item-body start-indent="body-start()">
+							<fo:block>
+								<xsl:if test="rsd:docidentifier">
+									<xsl:choose>
+										<xsl:when test="rsd:docidentifier/@type = 'metanorma'"/>
+										<xsl:otherwise><fo:inline><xsl:value-of select="rsd:docidentifier[not(@type = 'metanorma-ordinal')]"/>, </fo:inline></xsl:otherwise>
+									</xsl:choose>
+								</xsl:if>
+								<xsl:choose>
+									<xsl:when test="rsd:title[@type = 'main' and @language = 'en']">
+										<xsl:apply-templates select="rsd:title[@type = 'main' and @language = 'en']"/>
+									</xsl:when>
+									<xsl:otherwise>
+										<xsl:apply-templates select="rsd:title"/>
+									</xsl:otherwise>
+								</xsl:choose>
+								<xsl:apply-templates select="rsd:formattedref"/>
+							</fo:block>
+						</fo:list-item-body>
+					</fo:list-item>
+				</fo:list-block>
+			</xsl:when>
+			
+			<xsl:otherwise> <!-- $namespace = 'csd' or $namespace = 'gb' or $namespace = 'iec' or $namespace = 'iso' or $namespace = 'jcgm' or $namespace = 'm3d' or 
+			$namespace = 'mpfd' or $namespace = 'ogc' or $namespace = 'ogc-white-paper' -->
+				<!-- Example: [1] ISO 9:1995, Information and documentation – Transliteration of Cyrillic characters into Latin characters – Slavic and non-Slavic languages -->	
+				<fo:list-block id="{@id}" xsl:use-attribute-sets="bibitem-non-normative-list-style">
+					<fo:list-item>
+						<fo:list-item-label end-indent="label-end()">
+							<fo:block>
+								<fo:inline>
+									<xsl:choose>
+										<xsl:when test="$namespace = 'ogc' or $namespace = 'rsd'">
+											<xsl:number format="1."/>
+										</xsl:when>
+										<xsl:otherwise>
+											<xsl:value-of select="*[local-name()='docidentifier'][@type = 'metanorma-ordinal']"/>
+											<xsl:if test="not(*[local-name()='docidentifier'][@type = 'metanorma-ordinal'])">
+												<xsl:number format="[1]"/>
+											</xsl:if>
+										</xsl:otherwise>
+									</xsl:choose>
+								</fo:inline>
+							</fo:block>
+						</fo:list-item-label>
+						<fo:list-item-body start-indent="body-start()">
+							<fo:block xsl:use-attribute-sets="bibitem-non-normative-list-body-style">
+								<xsl:call-template name="processBibitem"/>
+							</fo:block>
+						</fo:list-item-body>
+					</fo:list-item>
+				</fo:list-block>
+			</xsl:otherwise>
+		</xsl:choose>
+		
+	</xsl:template> <!-- references[not(@normative='true')]/bibitem -->
+	
+	<xsl:template name="processBibitem">
+		
+		<xsl:choose>
+			<xsl:when test="$namespace = 'bipm'">
+				<!-- start BIPM bibitem processing -->
+				<xsl:if test=".//bipm:fn">
+					<xsl:attribute name="line-height-shift-adjustment">disregard-shifts</xsl:attribute>
+				</xsl:if>			
+				<xsl:choose>
+					<xsl:when test="*[local-name() = 'formattedref']">
+						<xsl:apply-templates select="*[local-name() = 'formattedref']"/>
+					</xsl:when>
+					<xsl:otherwise>
+						<xsl:variable name="docidentifier" select="*[local-name() = 'docidentifier'][not(@type = 'URN' or @type = 'metanorma' or @type = 'metanorma-ordinal' or @type = 'BIPM' or @type = 'ISBN' or @type = 'ISSN')]"/>
+						
+						<xsl:value-of select="$docidentifier"/>
+						<xsl:if test="$docidentifier != '' and *[local-name() = 'title']">, </xsl:if>
+						
+						<xsl:variable name="curr_lang" select="ancestor::bipm:bipm-standard/bipm:bibdata/bipm:language"/>
+						
+						<xsl:choose>
+							<xsl:when test="*[local-name() = 'title'][@type = 'main' and @language = $curr_lang]">
+								<xsl:apply-templates select="*[local-name() = 'title'][@type = 'main' and @language = $curr_lang]"/>
+							</xsl:when>
+							<xsl:when test="*[local-name() = 'title'][@type = 'main' and @language = 'en']">
+								<xsl:apply-templates select="*[local-name() = 'title'][@type = 'main' and @language = 'en']"/>
+							</xsl:when>
+							<xsl:otherwise>
+								<xsl:apply-templates select="*[local-name() = 'title']"/>
+							</xsl:otherwise>
+						</xsl:choose>
+						
+					</xsl:otherwise>
+				</xsl:choose>
+				<!-- end BIPM bibitem processing-->
+			</xsl:when>
+			
+			<xsl:when test="$namespace = 'bsi'">
+				<!-- start BSI bibitem processing -->
+				<xsl:variable name="docidentifier">
 					<xsl:choose>
 						<xsl:when test="*[local-name() = 'docidentifier'][not(@type = 'metanorma') and not(@type = 'metanorma-ordinal')] and $document_type = 'PAS'">
 							<xsl:value-of select="*[local-name() = 'docidentifier'][not(@type = 'metanorma') and not(@type = 'metanorma-ordinal')]"/>
@@ -8923,513 +9601,574 @@
 							</xsl:choose>
 						</xsl:otherwise>
 					</xsl:choose>
-				</xsl:if>
-			</xsl:variable>
-			
-			<!-- string starts with [ -->
-			<xsl:variable name="isStartsWithOpeningBracket" select="starts-with($docidentifier,'[')"/>
-			<!-- string ends with [ -->
-			<xsl:variable name="isEndsWithClosingBracket" select="java:endsWith(java:java.lang.String.new($docidentifier),']')"/>
-			<xsl:variable name="removeBrackets">
-				<xsl:choose>
-					<xsl:when test="$isStartsWithOpeningBracket = 'true' and $isEndsWithClosingBracket">
-						<xsl:choose>
-							<!-- [1] [2] ... -->
-							<xsl:when test="normalize-space(java:replaceAll(java:java.lang.String.new($docidentifier), '^\[[0-9]+\]$', '')) = ''">false</xsl:when>
-							<xsl:otherwise>true</xsl:otherwise>
-						</xsl:choose>
-					</xsl:when>
-					<xsl:otherwise>false</xsl:otherwise>
-				</xsl:choose>
-			</xsl:variable>
-			<xsl:variable name="docidentifier_">
-				<xsl:choose>
-					<xsl:when test="$docidentifier = @id"></xsl:when> <!-- don't display docidentifier equal to bibitem/@id, like further_reading_x -->
-					<xsl:when test="contains($removeBrackets, 'true')">
-						<xsl:value-of select="substring($docidentifier, 2, string-length($docidentifier) - 2)"/>
-					</xsl:when>
-					<xsl:otherwise>
-						<xsl:value-of select="$docidentifier"/>
-					</xsl:otherwise>
-				</xsl:choose>
-			</xsl:variable>
-			
-			<xsl:if test="count(*[local-name() = 'docidentifier']) &gt; 1 and *[local-name() = 'docidentifier'][@type = 'metanorma']">
-				<xsl:value-of select="*[local-name() = 'docidentifier'][@type = 'metanorma']"/><xsl:text> </xsl:text>
-			</xsl:if>
-			
-			<xsl:value-of select="$docidentifier_"/>
-			
-			<xsl:apply-templates select="*[local-name() = 'note']"/>			
-			<xsl:if test="normalize-space($docidentifier_) != ''">
-				<!-- <xsl:if test="preceding-sibling::*[local-name() = 'references'][1][@normative = 'true']">,</xsl:if> -->
-				<xsl:if test="not(starts-with($docidentifier_, '['))">,</xsl:if>
-				<xsl:text> </xsl:text>
-			</xsl:if>
-			<xsl:choose>
-				<xsl:when test="*[local-name() = 'title'][@type = 'main' and @language = $lang]">
-					<xsl:apply-templates select="*[local-name() = 'title'][@type = 'main' and @language = $lang]"/>
-				</xsl:when>
-				<xsl:when test="*[local-name() = 'title'][@type = 'main' and @language = 'en']">
-					<xsl:apply-templates select="*[local-name() = 'title'][@type = 'main' and @language = 'en']"/>
-				</xsl:when>
-				<xsl:otherwise>
-					<xsl:apply-templates select="*[local-name() = 'title']"/>
-				</xsl:otherwise>
-			</xsl:choose>
-			<xsl:apply-templates select="*[local-name() = 'formattedref']"/>
-			<!-- end BSI bibitem processing -->
-		</xsl:if>
-		
-		<xsl:if test="$namespace = 'csa'">
-			<!-- start CSA bibtem processing -->
-			<xsl:if test=".//csa:fn">
-				<xsl:attribute name="line-height-shift-adjustment">disregard-shifts</xsl:attribute>
-			</xsl:if>
-			<xsl:choose>
-				<xsl:when test="csa:formattedref">
-					<xsl:apply-templates select="csa:formattedref"/>
-				</xsl:when>
-				<xsl:otherwise>
-					<xsl:for-each select="csa:contributor[csa:role/@type='publisher']/csa:organization/csa:name">
-						<xsl:apply-templates />
-						<xsl:if test="position() != last()">, </xsl:if>
-						<xsl:if test="position() = last()">: </xsl:if>
-					</xsl:for-each>
-						<!-- csa:docidentifier -->
-					<xsl:value-of select="csa:docidentifier[not(@type = 'metanorma-ordinal')]"/>
-					<xsl:apply-templates select="csa:note"/>
-					<xsl:if test="csa:docidentifier[not(@type = 'metanorma-ordinal')]">, </xsl:if>
-					<fo:inline font-style="italic">
-						<xsl:choose>
-							<xsl:when test="csa:title[@type = 'main' and @language = 'en']">
-								<xsl:value-of select="csa:title[@type = 'main' and @language = 'en']"/><xsl:text>. </xsl:text>
-							</xsl:when>
-							<xsl:otherwise>
-								<xsl:value-of select="csa:title"/><xsl:text>. </xsl:text>
-							</xsl:otherwise>
-						</xsl:choose>
-					</fo:inline>
-					<xsl:for-each select="csa:contributor[csa:role/@type='publisher']/csa:organization/csa:name">
-						<xsl:apply-templates />
-						<xsl:if test="position() != last()">, </xsl:if>
-					</xsl:for-each>
-					<xsl:if test="csa:date[@type='published']/csa:on">
-						<xsl:text>(</xsl:text><xsl:value-of select="csa:date[@type='published']/csa:on"/><xsl:text>)</xsl:text>
-					</xsl:if>
-				</xsl:otherwise>
-			</xsl:choose>
-			<!-- end CSA bibtem processing -->
-		</xsl:if>
-		
-		<xsl:if test="$namespace = 'csd'">
-			<!-- start CSD bibtem processing -->
-			<xsl:if test=".//csd:fn">
-				<xsl:attribute name="line-height-shift-adjustment">disregard-shifts</xsl:attribute>
-			</xsl:if>
-			<xsl:variable name="docidentifier">
-				<xsl:choose>
-					<xsl:when test="*[local-name() = 'docidentifier']/@type = 'metanorma'"/>
-					<xsl:otherwise><xsl:value-of select="*[local-name() = 'docidentifier'][not(@type = 'metanorma-ordinal')]"/></xsl:otherwise>
-				</xsl:choose>
-			</xsl:variable>
-			<xsl:value-of select="$docidentifier"/>
-			<xsl:apply-templates select="csd:note"/>
-			<xsl:if test="normalize-space($docidentifier) != ''">, </xsl:if>
-			<xsl:choose>
-				<xsl:when test="csd:title[@type = 'main' and @language = 'en']">
-					<xsl:apply-templates select="csd:title[@type = 'main' and @language = 'en']"/>
-				</xsl:when>
-				<xsl:otherwise>
-					<xsl:apply-templates select="csd:title"/>
-				</xsl:otherwise>
-			</xsl:choose>
-			<xsl:apply-templates select="csd:formattedref"/>
-			<!-- end CSD bibtem processing -->
-		</xsl:if>
-		
-		<xsl:if test="$namespace = 'iec'">
-			<!-- start IEC bibtem processing -->
-			<xsl:variable name="docidentifier">
-				<xsl:choose>
-					<xsl:when test="*[local-name() = 'docidentifier']/@type = 'metanorma'"/>
-					<xsl:otherwise><xsl:value-of select="*[local-name() = 'docidentifier'][not(@type = 'metanorma-ordinal')]"/></xsl:otherwise>
-				</xsl:choose>
-			</xsl:variable>
-			<xsl:value-of select="$docidentifier"/>
-			<xsl:apply-templates select="iec:note"/>
-			<xsl:if test="normalize-space($docidentifier) != ''">, </xsl:if>
-			<xsl:choose>
-				<xsl:when test="iec:title[@type = 'main' and @language = 'en']">
-					<xsl:apply-templates select="iec:title[@type = 'main' and @language = 'en']"/>
-				</xsl:when>
-				<xsl:otherwise>
-					<xsl:apply-templates select="iec:title"/>
-				</xsl:otherwise>
-			</xsl:choose>
-			<xsl:apply-templates select="iec:formattedref"/>
-			<!-- end IEC bibtem processing -->
-		</xsl:if>
-		
-		<xsl:if test="$namespace = 'iho'">
-			<!-- start IHO bibtem processing -->
-			<xsl:choose>
-				<xsl:when test="iho:formattedref">
-					<xsl:apply-templates select="iho:formattedref"/>
-				</xsl:when>
-				<xsl:otherwise>
+				</xsl:variable>
+				
+				<!-- string starts with [ -->
+				<xsl:variable name="isStartsWithOpeningBracket" select="starts-with($docidentifier,'[')"/>
+				<!-- string ends with [ -->
+				<xsl:variable name="isEndsWithClosingBracket" select="java:endsWith(java:java.lang.String.new($docidentifier),']')"/>
+				<xsl:variable name="removeBrackets">
 					<xsl:choose>
-				<!-- IHO documents -->
-				<!-- {docID} edition {edition}: {title}, {author/organization} -->
-						<xsl:when test="iho:docidentifier[1]/@type='IHO'">						
-							<xsl:value-of select="iho:docidentifier[1]"/>							
-							<xsl:apply-templates select="iho:edition"/>							
-							<xsl:if test="iho:title or iho:contributor or iho:url">
-								<xsl:text>: </xsl:text>
-							</xsl:if>							
+						<xsl:when test="$isStartsWithOpeningBracket = 'true' and $isEndsWithClosingBracket">
+							<xsl:choose>
+								<!-- [1] [2] ... -->
+								<xsl:when test="normalize-space(java:replaceAll(java:java.lang.String.new($docidentifier), '^\[[0-9]+\]$', '')) = ''">false</xsl:when>
+								<xsl:otherwise>true</xsl:otherwise>
+							</xsl:choose>
 						</xsl:when>
-						
-						<!-- Non-IHO documents -->
-						<!-- title and publisher -->
-						<xsl:otherwise>						
-							<xsl:variable name="docID">
-								<xsl:call-template name="processBibitemDocId"/>
-							</xsl:variable>							
-							<xsl:value-of select="normalize-space($docID)"/>
-							<xsl:if test="normalize-space($docID) != ''"><xsl:text>: </xsl:text></xsl:if>							
-						</xsl:otherwise>						
+						<xsl:otherwise>false</xsl:otherwise>
 					</xsl:choose>
-					
+				</xsl:variable>
+				<xsl:variable name="docidentifier_">
 					<xsl:choose>
-						<xsl:when test="iho:title[@type = 'main' and @language = 'en']">
-							<xsl:apply-templates select="iho:title[@type = 'main' and @language = 'en']"/>
+						<xsl:when test="$docidentifier = @id"></xsl:when> <!-- don't display docidentifier equal to bibitem/@id, like further_reading_x -->
+						<xsl:when test="contains($removeBrackets, 'true')">
+							<xsl:value-of select="substring($docidentifier, 2, string-length($docidentifier) - 2)"/>
 						</xsl:when>
 						<xsl:otherwise>
-							<xsl:apply-templates select="iho:title"/>
+							<xsl:value-of select="$docidentifier"/>
 						</xsl:otherwise>
 					</xsl:choose>
-					
-					<xsl:if test="iho:title and iho:contributor">
-						<xsl:text>, </xsl:text>
-					</xsl:if>
-					
-					<xsl:variable name="authors">
+				</xsl:variable>
+				
+				<xsl:if test="count(*[local-name() = 'docidentifier']) &gt; 1 and *[local-name() = 'docidentifier'][@type = 'metanorma']">
+					<xsl:value-of select="*[local-name() = 'docidentifier'][@type = 'metanorma']"/><xsl:text> </xsl:text>
+				</xsl:if>
+				
+				<xsl:value-of select="$docidentifier_"/>
+				
+				<xsl:apply-templates select="*[local-name() = 'note']"/>			
+				<xsl:if test="normalize-space($docidentifier_) != ''">
+					<!-- <xsl:if test="preceding-sibling::*[local-name() = 'references'][1][@normative = 'true']">,</xsl:if> -->
+					<xsl:if test="not(starts-with($docidentifier_, '['))">,</xsl:if>
+					<xsl:text> </xsl:text>
+				</xsl:if>
+				<xsl:choose>
+					<xsl:when test="*[local-name() = 'title'][@type = 'main' and @language = $lang]">
+						<xsl:apply-templates select="*[local-name() = 'title'][@type = 'main' and @language = $lang]"/>
+					</xsl:when>
+					<xsl:when test="*[local-name() = 'title'][@type = 'main' and @language = 'en']">
+						<xsl:apply-templates select="*[local-name() = 'title'][@type = 'main' and @language = 'en']"/>
+					</xsl:when>
+					<xsl:otherwise>
+						<xsl:apply-templates select="*[local-name() = 'title']"/>
+					</xsl:otherwise>
+				</xsl:choose>
+				<xsl:apply-templates select="*[local-name() = 'formattedref']"/>
+				<!-- end BSI bibitem processing -->
+			</xsl:when>
+			
+			<xsl:when test="$namespace = 'csa'">
+				<!-- start CSA bibitem processing -->
+				<xsl:if test=".//csa:fn">
+					<xsl:attribute name="line-height-shift-adjustment">disregard-shifts</xsl:attribute>
+				</xsl:if>
+				<xsl:choose>
+					<xsl:when test="csa:formattedref">
+						<xsl:apply-templates select="csa:formattedref"/>
+					</xsl:when>
+					<xsl:otherwise>
+						<xsl:for-each select="csa:contributor[csa:role/@type='publisher']/csa:organization/csa:name">
+							<xsl:apply-templates />
+							<xsl:if test="position() != last()">, </xsl:if>
+							<xsl:if test="position() = last()">: </xsl:if>
+						</xsl:for-each>
+							<!-- csa:docidentifier -->
+						<xsl:value-of select="csa:docidentifier[not(@type = 'metanorma-ordinal')]"/>
+						<xsl:apply-templates select="csa:note"/>
+						<xsl:if test="csa:docidentifier[not(@type = 'metanorma-ordinal')]">, </xsl:if>
 						<xsl:choose>
-							<xsl:when test="*[local-name() = 'contributor'][*[local-name() = 'role']/@type='author']">
-								<xsl:for-each select="*[local-name() = 'contributor'][*[local-name() = 'role']/@type='author']">
-									<xsl:copy-of select="."/>
-								</xsl:for-each>
+							<xsl:when test="csa:title[@type = 'main' and @language = 'en']">
+								<fo:inline><xsl:apply-templates select="csa:title[@type = 'main' and @language = 'en']"/><xsl:text>. </xsl:text></fo:inline>
 							</xsl:when>
-							<xsl:when test="*[local-name() = 'contributor'][*[local-name() = 'role']/@type='editor']">
-								<xsl:for-each select="*[local-name() = 'contributor'][*[local-name() = 'role']/@type='editor']">
-									<xsl:copy-of select="."/>
-								</xsl:for-each>
-							</xsl:when>							
-							<xsl:when test="*[local-name() = 'contributor'][*[local-name() = 'role']/@type='publisher'][*[local-name() = 'organization']]">
-								<xsl:for-each select="*[local-name() = 'contributor'][*[local-name() = 'role']/@type='publisher'][*[local-name() = 'organization']]">
-									<xsl:copy>
-										<xsl:choose>
-											<xsl:when test="position() != 1 and position() != last()">, </xsl:when>
-											<xsl:when test="position() != 1 and position() = last()"> and </xsl:when>
-										</xsl:choose>
-										<xsl:value-of select="*[local-name() = 'organization']/*[local-name() = 'name']"/>
-									</xsl:copy>
-								</xsl:for-each>
-							</xsl:when>
-						</xsl:choose>						
-					</xsl:variable>
-					
-					<xsl:for-each select="xalan:nodeset($authors)/*">
-						<xsl:choose>							
-							<xsl:when test="not(*[local-name() = 'role'])"><!-- publisher organisation -->								
-								<xsl:value-of select="."/>
-							</xsl:when>
-							<xsl:otherwise> <!-- author, editor -->
-								<xsl:choose>
-									<xsl:when test="*[local-name() = 'organization']/*[local-name() = 'name']">										
-										<xsl:value-of select="*[local-name() = 'organization']/*[local-name() = 'name']"/>
-									</xsl:when>
-									<xsl:otherwise>										
-										<xsl:for-each select="*[local-name() = 'person']">
-											<xsl:variable name="author">
-												<xsl:call-template name="processPersonalAuthor"/>
-											</xsl:variable>
-											<xsl:value-of select="xalan:nodeset($author)/author"/>
-										</xsl:for-each>
-									</xsl:otherwise>
-								</xsl:choose>
+							<xsl:otherwise>
+								<fo:inline><xsl:apply-templates select="csa:title"/><xsl:text>. </xsl:text></fo:inline>
 							</xsl:otherwise>
 						</xsl:choose>
-						<xsl:if test="*[local-name() = 'organization']/*[local-name() = 'name'] and position() != last()">
+						<xsl:for-each select="csa:contributor[csa:role/@type='publisher']/csa:organization/csa:name">
+							<xsl:apply-templates />
+							<xsl:if test="position() != last()">, </xsl:if>
+						</xsl:for-each>
+						<xsl:if test="csa:date[@type='published']/csa:on">
+							<xsl:text>(</xsl:text><xsl:value-of select="csa:date[@type='published']/csa:on"/><xsl:text>)</xsl:text>
+						</xsl:if>
+					</xsl:otherwise>
+				</xsl:choose>
+				<!-- end CSA bibitem processing -->
+			</xsl:when>
+			
+			
+			<xsl:when test="$namespace = 'iho'">
+				<!-- start IHO bibitem processing -->
+				<!-- IHO documents:
+					"[1] S57 edition 3.1: IHO Transfer Standard for Digital Hydrographic Data, International Hydrographic Organization (www.iho.int)”
+					[{number}] {docID} edition {edition}: {title}, {author/organization}
+					Non-IHO documents:
+					Provide title and publisher -->
+				<xsl:choose>
+					<xsl:when test="iho:formattedref">
+						<xsl:apply-templates select="iho:formattedref"/>
+					</xsl:when>
+					<xsl:otherwise>
+						<xsl:choose>
+					<!-- IHO documents -->
+					<!-- {docID} edition {edition}: {title}, {author/organization} -->
+							<xsl:when test="iho:docidentifier[1]/@type='IHO'">						
+								<xsl:value-of select="iho:docidentifier[1]"/>							
+								<xsl:apply-templates select="iho:edition"/>							
+								<xsl:if test="iho:title or iho:contributor or iho:url">
+									<xsl:text>: </xsl:text>
+								</xsl:if>							
+							</xsl:when>
+							
+							<!-- Non-IHO documents -->
+							<!-- title and publisher -->
+							<xsl:otherwise>						
+								<xsl:variable name="docID">
+									<xsl:call-template name="processBibitemDocId"/>
+								</xsl:variable>							
+								<xsl:value-of select="normalize-space($docID)"/>
+								<xsl:if test="normalize-space($docID) != ''"><xsl:text>: </xsl:text></xsl:if>							
+							</xsl:otherwise>						
+						</xsl:choose>
+						
+						<xsl:choose>
+							<xsl:when test="iho:title[@type = 'main' and @language = 'en']">
+								<xsl:apply-templates select="iho:title[@type = 'main' and @language = 'en']"/>
+							</xsl:when>
+							<xsl:otherwise>
+								<xsl:apply-templates select="iho:title"/>
+							</xsl:otherwise>
+						</xsl:choose>
+						
+						<xsl:if test="iho:title and iho:contributor">
 							<xsl:text>, </xsl:text>
-						</xsl:if>						
-					</xsl:for-each>
-					
-					<xsl:apply-templates select="*[local-name() = 'uri'][1]"/>
-					
-				</xsl:otherwise>
-			</xsl:choose>
-			<!-- end IHO bibitem processing -->
-		</xsl:if> 
-		
-		<xsl:if test="$namespace = 'iso'">
-			<!-- start ISO bibtem processing -->
-			<xsl:variable name="docidentifier">
-				<xsl:if test="*[local-name() = 'docidentifier']">
-					<xsl:choose>
-						<xsl:when test="*[local-name() = 'docidentifier']/@type = 'metanorma'"/>
-						<xsl:otherwise><xsl:value-of select="*[local-name()='docidentifier'][not(@type = 'metanorma-ordinal')]"/></xsl:otherwise>
-					</xsl:choose>
-				</xsl:if>
-			</xsl:variable>
-			<xsl:value-of select="$docidentifier"/>
-			<xsl:apply-templates select="*[local-name() = 'note']"/>			
-			<xsl:if test="normalize-space($docidentifier) != ''">, </xsl:if>
-			<xsl:choose>
-				<xsl:when test="*[local-name() = 'title'][@type = 'main' and @language = $lang]">
-					<xsl:apply-templates select="*[local-name() = 'title'][@type = 'main' and @language = $lang]"/>
-				</xsl:when>
-				<xsl:when test="*[local-name() = 'title'][@type = 'main' and @language = 'en']">
-					<xsl:apply-templates select="*[local-name() = 'title'][@type = 'main' and @language = 'en']"/>
-				</xsl:when>
-				<xsl:otherwise>
-					<xsl:apply-templates select="*[local-name() = 'title']"/>
-				</xsl:otherwise>
-			</xsl:choose>
-			<xsl:apply-templates select="*[local-name() = 'formattedref']"/>
-			<!-- end ISO bibitem processing -->
-		</xsl:if>
+						</xsl:if>
+						
+						<xsl:variable name="authors">
+							<xsl:choose>
+								<xsl:when test="*[local-name() = 'contributor'][*[local-name() = 'role']/@type='author']">
+									<xsl:for-each select="*[local-name() = 'contributor'][*[local-name() = 'role']/@type='author']">
+										<xsl:copy-of select="."/>
+									</xsl:for-each>
+								</xsl:when>
+								<xsl:when test="*[local-name() = 'contributor'][*[local-name() = 'role']/@type='editor']">
+									<xsl:for-each select="*[local-name() = 'contributor'][*[local-name() = 'role']/@type='editor']">
+										<xsl:copy-of select="."/>
+									</xsl:for-each>
+								</xsl:when>							
+								<xsl:when test="*[local-name() = 'contributor'][*[local-name() = 'role']/@type='publisher'][*[local-name() = 'organization']]">
+									<xsl:for-each select="*[local-name() = 'contributor'][*[local-name() = 'role']/@type='publisher'][*[local-name() = 'organization']]">
+										<xsl:copy>
+											<xsl:choose>
+												<xsl:when test="position() != 1 and position() != last()">, </xsl:when>
+												<xsl:when test="position() != 1 and position() = last()"> and </xsl:when>
+											</xsl:choose>
+											<xsl:value-of select="*[local-name() = 'organization']/*[local-name() = 'name']"/>
+										</xsl:copy>
+									</xsl:for-each>
+								</xsl:when>
+							</xsl:choose>						
+						</xsl:variable>
+						
+						<xsl:for-each select="xalan:nodeset($authors)/*">
+							<xsl:choose>							
+								<xsl:when test="not(*[local-name() = 'role'])"><!-- publisher organisation -->								
+									<xsl:value-of select="."/>
+								</xsl:when>
+								<xsl:otherwise> <!-- author, editor -->
+									<xsl:choose>
+										<xsl:when test="*[local-name() = 'organization']/*[local-name() = 'name']">										
+											<xsl:value-of select="*[local-name() = 'organization']/*[local-name() = 'name']"/>
+										</xsl:when>
+										<xsl:otherwise>										
+											<xsl:for-each select="*[local-name() = 'person']">
+												<xsl:variable name="author">
+													<xsl:call-template name="processPersonalAuthor"/>
+												</xsl:variable>
+												<xsl:value-of select="xalan:nodeset($author)/author"/>
+											</xsl:for-each>
+										</xsl:otherwise>
+									</xsl:choose>
+								</xsl:otherwise>
+							</xsl:choose>
+							<xsl:if test="*[local-name() = 'organization']/*[local-name() = 'name'] and position() != last()">
+								<xsl:text>, </xsl:text>
+							</xsl:if>						
+						</xsl:for-each>
+						
+						<xsl:apply-templates select="*[local-name() = 'uri'][1]"/>
+						
+					</xsl:otherwise>
+				</xsl:choose>
+				<!-- end IHO bibitem processing -->
+			</xsl:when> 
 
-		<xsl:if test="$namespace = 'jcgm'">
-			<!-- start JCGM bibitem processing -->
-			<xsl:variable name="docidentifier">
-				<xsl:if test="*[local-name()='docidentifier']">
+			<xsl:when test="$namespace ='itu'">
+				
+				<!-- Example: [ITU-T A.23]	ITU-T A.23, Recommendation ITU-T A.23, Annex A (2014), Guide for ITU-T and ISO/IEC JTC 1 cooperation. -->
+				<xsl:if test="$doctype = 'implementers-guide'">
+					<xsl:attribute name="margin-left">0mm</xsl:attribute>
+					<xsl:attribute name="text-indent">0mm</xsl:attribute>
+				</xsl:if>
+				
+				<xsl:variable name="bibitem_label">
+					<xsl:choose>
+						<xsl:when test="itu:docidentifier[@type = 'metanorma']">
+							<xsl:value-of select="itu:docidentifier[@type = 'metanorma']"/>
+						</xsl:when>
+						<xsl:otherwise>
+							<fo:inline padding-right="5mm">
+								<xsl:text>[</xsl:text>
+									<xsl:value-of select="itu:docidentifier[not(@type = 'metanorma-ordinal')]"/>
+								<xsl:text>] </xsl:text>
+							</fo:inline>
+						</xsl:otherwise>
+					</xsl:choose>
+				</xsl:variable>
+				
+				<xsl:variable name="bibitem_body">
+					<xsl:text> </xsl:text>
+					<xsl:choose>
+						<xsl:when test="itu:docidentifier[@type = 'metanorma']">
+							<xsl:if test="itu:docidentifier[not(@type) or not(@type = 'metanorma' or @type = 'metanorma-ordinal')]">
+								<xsl:value-of select="itu:docidentifier[not(@type) or not(@type = 'metanorma' or @type = 'metanorma-ordinal')]"/>
+								<xsl:text>, </xsl:text>
+							</xsl:if>
+						</xsl:when>
+						<xsl:otherwise>
+							<xsl:value-of select="itu:docidentifier[not(@type = 'metanorma-ordinal')]"/>
+							<xsl:if test="itu:title">
+								<xsl:text>, </xsl:text>
+							</xsl:if>
+						</xsl:otherwise>
+					</xsl:choose>
+					<xsl:if test="itu:title">
+						<xsl:choose>
+							<xsl:when test="itu:title[@type = 'main' and @language = 'en']">
+								<xsl:apply-templates select="itu:title[@type = 'main' and @language = 'en']"/>
+							</xsl:when>
+							<xsl:otherwise>
+								<xsl:apply-templates select="itu:title"/>
+							</xsl:otherwise>
+						</xsl:choose>
+					</xsl:if>
+					<xsl:if test="itu:formattedref and not(itu:docidentifier[@type = 'metanorma'])">, </xsl:if>
+					<xsl:apply-templates select="itu:formattedref"/>
+				</xsl:variable>
+				
+				<xsl:choose>
+					<xsl:when test="$doctype = 'implementers-guide'">
+						<fo:table width="100%" table-layout="fixed">
+							<fo:table-column column-width="20%"/>
+							<fo:table-column column-width="80%"/>
+							<fo:table-body>
+								<fo:table-row>
+									<fo:table-cell><fo:block><xsl:copy-of select="$bibitem_label"/></fo:block></fo:table-cell>
+									<fo:table-cell><fo:block><xsl:copy-of select="$bibitem_body"/></fo:block></fo:table-cell>
+								</fo:table-row>
+							</fo:table-body>
+						</fo:table>
+					</xsl:when>
+					<xsl:otherwise>
+						<xsl:copy-of select="$bibitem_label"/>
+						<xsl:copy-of select="$bibitem_body"/>
+					</xsl:otherwise>
+				</xsl:choose>
+			</xsl:when>
+
+			<xsl:when test="$namespace = 'jcgm'">
+				<!-- start JCGM bibitem processing -->
+				<xsl:variable name="docidentifier">
 					<xsl:choose>
 						<xsl:when test="*[local-name()='docidentifier']/@type = 'metanorma'"/>
 						<xsl:otherwise><xsl:value-of select="*[local-name()='docidentifier'][not(@type = 'metanorma-ordinal')]"/></xsl:otherwise>
 					</xsl:choose>
-				</xsl:if>
-			</xsl:variable>
-			<xsl:value-of select="$docidentifier"/>
-			
-			<xsl:choose>
-				<xsl:when test="*[local-name()='formattedref']">
-					<xsl:if test="normalize-space($docidentifier) != ''">, </xsl:if>
-					<xsl:apply-templates select="*[local-name()='formattedref']"/>
-				</xsl:when>
-				<xsl:otherwise>
-					<xsl:apply-templates select="*[local-name()='note']"/>			
-					<xsl:if test="normalize-space($docidentifier) != ''">, </xsl:if>
-					<xsl:choose>
-						<xsl:when test="*[local-name()='title'][@type = 'main' and @language = $lang]">
-							<xsl:apply-templates select="*[local-name()='title'][@type = 'main' and @language = $lang]"/>
-						</xsl:when>
-						<xsl:when test="*[local-name()='title'][@type = 'main' and @language = 'en']">
-							<xsl:apply-templates select="*[local-name()='title'][@type = 'main' and @language = 'en']"/>
-						</xsl:when>
-						<xsl:otherwise>
-							<xsl:apply-templates select="*[local-name()='title']"/>
-						</xsl:otherwise>
-					</xsl:choose>
-				</xsl:otherwise>
-			</xsl:choose>
-			<!-- end JCGM bibitem processing -->
-		</xsl:if>
-
-		<xsl:if test="$namespace = 'mpfd'">
-			<!-- start MPFD bibitem processing -->
-			<xsl:variable name="docidentifier">
+				</xsl:variable>
+				<xsl:value-of select="$docidentifier"/>
+				
 				<xsl:choose>
-					<xsl:when test="mpfd:docidentifier/@type = 'metanorma'"/>
-					<xsl:otherwise><xsl:value-of select="mpfd:docidentifier[not(@type = 'metanorma-ordinal')]"/></xsl:otherwise>
-				</xsl:choose>
-			</xsl:variable>
-			<fo:inline><xsl:value-of select="$docidentifier"/></fo:inline>
-			<xsl:apply-templates select="mpfd:note"/>
-			<xsl:if test="normalize-space($docidentifier) != ''">, </xsl:if>
-			<xsl:choose>
-				<xsl:when test="mpfd:title[@type = 'main' and @language = 'en']">
-					<xsl:apply-templates select="mpfd:title[@type = 'main' and @language = 'en']"/>
-				</xsl:when>
-				<xsl:otherwise>
-					<xsl:apply-templates select="mpfd:title"/>
-				</xsl:otherwise>
-			</xsl:choose>
-			<xsl:apply-templates select="mpfd:formattedref"/>
-			<!-- end MPFD bibitem processing -->
-		</xsl:if>
-		
-		<xsl:if test="$namespace = 'm3d'">
-			<!-- start M3D bibitem processing -->
-			<xsl:variable name="docidentifier">
-				<xsl:if test="m3d:docidentifier">
-					<xsl:choose>
-						<xsl:when test="m3d:docidentifier/@type = 'metanorma'"/>
-						<xsl:otherwise><xsl:value-of select="m3d:docidentifier[not(@type = 'metanorma-ordinal')]"/></xsl:otherwise>
-					</xsl:choose>
-				</xsl:if>
-			</xsl:variable>
-			<fo:inline><xsl:value-of select="$docidentifier"/></fo:inline>
-			<xsl:apply-templates select="m3d:note"/>
-			<xsl:if test="normalize-space($docidentifier) != ''">, </xsl:if>
-			<xsl:choose>
-				<xsl:when test="m3d:title[@type = 'main' and @language = 'en']">
-					<xsl:apply-templates select="m3d:title[@type = 'main' and @language = 'en']"/>
-				</xsl:when>
-				<xsl:otherwise>
-					<xsl:apply-templates select="m3d:title"/>
-				</xsl:otherwise>
-			</xsl:choose>
-			<xsl:apply-templates select="m3d:formattedref"/>
-			<!-- end MPFD bibitem processing -->
-		</xsl:if>
-		
-		<xsl:if test="$namespace = 'ogc' or $namespace = 'ogc-white-paper'">
-			<!-- start OGC bibtem processing -->
-			<xsl:choose>
-				<xsl:when test="*[local-name() = 'formattedref']">
-					<xsl:apply-templates select="*[local-name() = 'formattedref']"/>
-				</xsl:when>
-				<xsl:otherwise>
-					<xsl:variable name="personalAuthors">
-						<xsl:for-each select="*[local-name() = 'contributor'][*[local-name() = 'role']/@type='author']/*[local-name() = 'person']">
-							<xsl:call-template name="processPersonalAuthor"/>
-						</xsl:for-each>
-						<xsl:if test="not(*[local-name() = 'contributor'][*[local-name() = 'role']/@type='author']/*[local-name() = 'person'])">
-							<xsl:for-each select="*[local-name() = 'contributor'][*[local-name() = 'role']/@type='editor']/*[local-name() = 'person']">
-								<xsl:call-template name="processPersonalAuthor"/>
-							</xsl:for-each>
-						</xsl:if>
-					</xsl:variable>
-					
-					<xsl:variable name="city" select="*[local-name() = 'place']"/>
-					<xsl:variable name="year">
+					<xsl:when test="*[local-name()='formattedref']">
+						<xsl:if test="normalize-space($docidentifier) != ''">, </xsl:if>
+						<xsl:apply-templates select="*[local-name()='formattedref']"/>
+					</xsl:when>
+					<xsl:otherwise>
+						<xsl:apply-templates select="*[local-name()='note']"/>			
+						<xsl:if test="normalize-space($docidentifier) != ''">, </xsl:if>
 						<xsl:choose>
-							<xsl:when test="*[local-name() = 'date'][@type = 'published']">
-								<xsl:for-each select="*[local-name() = 'date'][@type = 'published']">
-									<xsl:call-template name="renderDate"/>									
-								</xsl:for-each>								
+							<xsl:when test="*[local-name()='title'][@type = 'main' and @language = $lang]">
+								<xsl:apply-templates select="*[local-name()='title'][@type = 'main' and @language = $lang]"/>
 							</xsl:when>
-							<xsl:when test="*[local-name() = 'date'][@type = 'issued']">
-								<xsl:for-each select="*[local-name() = 'date'][@type = 'issued']">
-									<xsl:call-template name="renderDate"/>									
-								</xsl:for-each>
-							</xsl:when>
-							<xsl:when test="*[local-name() = 'date'][@type = 'circulated']">
-								<xsl:for-each select="*[local-name() = 'date'][@type = 'circulated']">
-									<xsl:call-template name="renderDate"/>									
-								</xsl:for-each>								
+							<xsl:when test="*[local-name()='title'][@type = 'main' and @language = 'en']">
+								<xsl:apply-templates select="*[local-name()='title'][@type = 'main' and @language = 'en']"/>
 							</xsl:when>
 							<xsl:otherwise>
-								<xsl:for-each select="*[local-name() = 'date']">
-									<xsl:call-template name="renderDate"/>
-								</xsl:for-each>
+								<xsl:apply-templates select="*[local-name()='title']"/>
 							</xsl:otherwise>
 						</xsl:choose>
-					</xsl:variable>
-					
-					<xsl:variable name="uri" select="*[local-name() = 'uri']"/>
-					
-					
-					<!-- citation structure:
-					{personal names | organisation}: {document identifier}, {title}. {publisher}, {city} ({year})
-					-->
-					
-					<!-- Author(s) -->
-					<xsl:choose>
-						<xsl:when test="xalan:nodeset($personalAuthors)//author">
-							<xsl:for-each select="xalan:nodeset($personalAuthors)//author">
-								<xsl:apply-templates />
-								<xsl:if test="position() != last()">, </xsl:if>
+					</xsl:otherwise>
+				</xsl:choose>
+				<!-- end JCGM bibitem processing -->
+			</xsl:when>
+			
+			<xsl:when test="$namespace = 'nist-cswp'">
+				<!-- Examples:
+				[b-ASM]	b-ASM, http://www.eecs.umich.edu/gasm/ (accessed 20 March 2018).
+				[b-Börger & Stärk]	b-Börger & Stärk, Börger, E., and Stärk, R. S. (2003), Abstract State Machines: A Method for High-Level System Design and Analysis, Springer-Verlag.
+				-->
+				<xsl:apply-templates select="nist:formattedref"/>
+			</xsl:when>
+			
+			<xsl:when test="$namespace = 'nist-sp'">
+				<!-- Examples:
+				[b-ASM]	b-ASM, http://www.eecs.umich.edu/gasm/ (accessed 20 March 2018).
+				[b-Börger & Stärk]	b-Börger & Stärk, Börger, E., and Stärk, R. S. (2003), Abstract State Machines: A Method for High-Level System Design and Analysis, Springer-Verlag.
+				-->
+				<xsl:variable name="docidentifier" select="normalize-space(nist:docidentifier[@display = 'true'])"/>
+				<xsl:if test="$docidentifier != ''">
+					<fo:inline padding-right="5mm"><xsl:value-of select="$docidentifier"/></fo:inline>
+				</xsl:if>
+				<xsl:apply-templates select="nist:formattedref"/>
+			</xsl:when>
+			
+			<xsl:when test="$namespace = 'ogc' or $namespace = 'ogc-white-paper'">
+				<!-- start OGC bibitem processing -->
+				<xsl:if test=".//ogc:fn">
+					<xsl:attribute name="line-height-shift-adjustment">disregard-shifts</xsl:attribute>
+				</xsl:if>			
+				<xsl:choose>
+					<xsl:when test="*[local-name() = 'formattedref']">
+						<xsl:apply-templates select="*[local-name() = 'formattedref']"/>
+					</xsl:when>
+					<xsl:otherwise>
+						<xsl:variable name="personalAuthors">
+							<xsl:for-each select="*[local-name() = 'contributor'][*[local-name() = 'role']/@type='author']/*[local-name() = 'person']">
+								<xsl:call-template name="processPersonalAuthor"/>
 							</xsl:for-each>
-							<xsl:text>: </xsl:text>
-						</xsl:when>
-						<xsl:when test="*[local-name() = 'contributor'][*[local-name() = 'role']/@type = 'publisher']/*[local-name() = 'organization']/*[local-name() = 'abbreviation']">
-							<xsl:for-each select="*[local-name() = 'contributor'][*[local-name() = 'role']/@type = 'publisher']/*[local-name() = 'organization']/*[local-name() = 'abbreviation']">
-								<xsl:value-of select="."/>
-								<xsl:if test="position() != last()">/</xsl:if>
-							</xsl:for-each>
-							<xsl:text>: </xsl:text>
-						</xsl:when>
-						<xsl:when test="*[local-name() = 'contributor'][*[local-name() = 'role']/@type = 'publisher']/*[local-name() = 'organization']/*[local-name() = 'name']">									
+							<xsl:if test="not(*[local-name() = 'contributor'][*[local-name() = 'role']/@type='author']/*[local-name() = 'person'])">
+								<xsl:for-each select="*[local-name() = 'contributor'][*[local-name() = 'role']/@type='editor']/*[local-name() = 'person']">
+									<xsl:call-template name="processPersonalAuthor"/>
+								</xsl:for-each>
+							</xsl:if>
+						</xsl:variable>
+						
+						<xsl:variable name="city" select="*[local-name() = 'place']"/>
+						<xsl:variable name="year">
+							<xsl:choose>
+								<xsl:when test="*[local-name() = 'date'][@type = 'published']">
+									<xsl:for-each select="*[local-name() = 'date'][@type = 'published']">
+										<xsl:call-template name="renderDate"/>									
+									</xsl:for-each>								
+								</xsl:when>
+								<xsl:when test="*[local-name() = 'date'][@type = 'issued']">
+									<xsl:for-each select="*[local-name() = 'date'][@type = 'issued']">
+										<xsl:call-template name="renderDate"/>									
+									</xsl:for-each>
+								</xsl:when>
+								<xsl:when test="*[local-name() = 'date'][@type = 'circulated']">
+									<xsl:for-each select="*[local-name() = 'date'][@type = 'circulated']">
+										<xsl:call-template name="renderDate"/>									
+									</xsl:for-each>								
+								</xsl:when>
+								<xsl:otherwise>
+									<xsl:for-each select="*[local-name() = 'date']">
+										<xsl:call-template name="renderDate"/>
+									</xsl:for-each>
+								</xsl:otherwise>
+							</xsl:choose>
+						</xsl:variable>
+						
+						<xsl:variable name="uri" select="*[local-name() = 'uri']"/>
+						
+						
+						<!-- citation structure:
+						{personal names | organisation}: {document identifier}, {title}. {publisher}, {city} ({year})
+						-->
+						
+						<!-- Author(s) -->
+						<xsl:choose>
+							<xsl:when test="xalan:nodeset($personalAuthors)//author">
+								<xsl:for-each select="xalan:nodeset($personalAuthors)//author">
+									<xsl:apply-templates />
+									<xsl:if test="position() != last()">, </xsl:if>
+								</xsl:for-each>
+								<xsl:text>: </xsl:text>
+							</xsl:when>
+							<xsl:when test="*[local-name() = 'contributor'][*[local-name() = 'role']/@type = 'publisher']/*[local-name() = 'organization']/*[local-name() = 'abbreviation']">
+								<xsl:for-each select="*[local-name() = 'contributor'][*[local-name() = 'role']/@type = 'publisher']/*[local-name() = 'organization']/*[local-name() = 'abbreviation']">
+									<xsl:value-of select="."/>
+									<xsl:if test="position() != last()">/</xsl:if>
+								</xsl:for-each>
+								<xsl:text>: </xsl:text>
+							</xsl:when>
+							<xsl:when test="*[local-name() = 'contributor'][*[local-name() = 'role']/@type = 'publisher']/*[local-name() = 'organization']/*[local-name() = 'name']">									
+								<xsl:for-each select="*[local-name() = 'contributor'][*[local-name() = 'role']/@type = 'publisher']/*[local-name() = 'organization']/*[local-name() = 'name']">
+									<xsl:value-of select="."/>
+									<xsl:if test="position() != last()">, </xsl:if>
+								</xsl:for-each>
+								<xsl:text>: </xsl:text>
+							</xsl:when>
+						</xsl:choose>
+						
+						
+						<xsl:variable name="document_identifier">
+							<xsl:call-template name="processBibitemDocId"/>
+						</xsl:variable>
+						
+						<xsl:value-of select="$document_identifier"/>
+						
+						<xsl:apply-templates select="*[local-name() = 'note']"/>
+						
+						<xsl:variable name="isDraft">
+							<xsl:variable name="stage" select="normalize-space(*[local-name() = 'status']/*[local-name() = 'stage'])"/>						
+							<xsl:if test="*[local-name() = 'contributor'][*[local-name() = 'role']/@type = 'publisher']/*[local-name() = 'organization'][*[local-name() = 'name']/text() = 'Open Geospatial Consortium'] and
+												$stage != '' and
+												$stage != 'published' and $stage != 'deprecated' and $stage != 'retired'">true</xsl:if>
+						</xsl:variable>	 
+						
+						<xsl:if test="$isDraft = 'true'">
+							<xsl:text> (Draft)</xsl:text>
+						</xsl:if>
+						
+						<xsl:text>, </xsl:text>
+						
+						<xsl:choose>
+							<xsl:when test="*[local-name() = 'title'][@type = 'main' and @language = 'en']">
+								<xsl:apply-templates select="*[local-name() = 'title'][@type = 'main' and @language = 'en']"/>
+							</xsl:when>
+							<xsl:otherwise>
+								<xsl:apply-templates select="*[local-name() = 'title']"/>
+							</xsl:otherwise>
+						</xsl:choose>
+						
+						<xsl:text>. </xsl:text>
+						
+						<xsl:if test="*[local-name() = 'contributor'][*[local-name() = 'role']/@type = 'publisher']/*[local-name() = 'organization']/*[local-name() = 'name']">									
 							<xsl:for-each select="*[local-name() = 'contributor'][*[local-name() = 'role']/@type = 'publisher']/*[local-name() = 'organization']/*[local-name() = 'name']">
 								<xsl:value-of select="."/>
 								<xsl:if test="position() != last()">, </xsl:if>
 							</xsl:for-each>
-							<xsl:text>: </xsl:text>
-						</xsl:when>
-					</xsl:choose>
-					
-					
-					<xsl:variable name="document_identifier">
-						<xsl:call-template name="processBibitemDocId"/>
-					</xsl:variable>
-					
-					<xsl:value-of select="$document_identifier"/>
-					
-					<xsl:apply-templates select="*[local-name() = 'note']"/>
-					
-					<xsl:variable name="isDraft">
-						<xsl:variable name="stage" select="normalize-space(*[local-name() = 'status']/*[local-name() = 'stage'])"/>						
-						<xsl:if test="*[local-name() = 'contributor'][*[local-name() = 'role']/@type = 'publisher']/*[local-name() = 'organization'][*[local-name() = 'name']/text() = 'Open Geospatial Consortium'] and
-											$stage != '' and
-											$stage != 'published' and $stage != 'deprecated' and $stage != 'retired'">true</xsl:if>
-					</xsl:variable>	 
-					
-					<xsl:if test="$isDraft = 'true'">
-						<xsl:text> (Draft)</xsl:text>
-					</xsl:if>
-					
-					<xsl:text>, </xsl:text>
-					
-					<xsl:choose>
-						<xsl:when test="*[local-name() = 'title'][@type = 'main' and @language = 'en']">
-							<xsl:apply-templates select="*[local-name() = 'title'][@type = 'main' and @language = 'en']"/>
-						</xsl:when>
-						<xsl:otherwise>
-							<xsl:apply-templates select="*[local-name() = 'title']"/>
-						</xsl:otherwise>
-					</xsl:choose>
-					
-					<xsl:text>. </xsl:text>
-					
-					<xsl:if test="*[local-name() = 'contributor'][*[local-name() = 'role']/@type = 'publisher']/*[local-name() = 'organization']/*[local-name() = 'name']">									
-						<xsl:for-each select="*[local-name() = 'contributor'][*[local-name() = 'role']/@type = 'publisher']/*[local-name() = 'organization']/*[local-name() = 'name']">
-							<xsl:value-of select="."/>
+							<xsl:if test="normalize-space($city) != ''">, </xsl:if>
+						</xsl:if>
+						
+						<xsl:value-of select="$city"/>
+						
+						<xsl:if test="(*[local-name() = 'contributor'][*[local-name() = 'role']/@type = 'publisher']/*[local-name() = 'organization']/*[local-name() = 'name'] or normalize-space($city) != '') and normalize-space($year) != ''">
+							<xsl:text> </xsl:text>
+						</xsl:if>
+						
+						<xsl:if test="normalize-space($year) != ''">
+							<xsl:text>(</xsl:text>
+							<xsl:value-of select="$year"/>
+							<xsl:text>). </xsl:text>
+						</xsl:if>
+						
+						<xsl:if test="normalize-space($uri) != ''">
+							<fo:inline>
+								<xsl:if test="$namespace = 'ogc'">
+									<xsl:attribute name="text-decoration">underline</xsl:attribute>
+								</xsl:if>
+								<xsl:text> </xsl:text>
+								<fo:basic-link external-destination="{$uri}" fox:alt-text="{$uri}">
+									<xsl:value-of select="$uri"/>							
+								</fo:basic-link>
+							</fo:inline>
+						</xsl:if>
+						
+					</xsl:otherwise>
+				</xsl:choose>
+				<!-- end OGC bibitem processing-->
+			</xsl:when>
+			
+			<xsl:when test="$namespace = 'rsd'">
+				<xsl:if test=".//rsd:fn">
+					<xsl:attribute name="line-height-shift-adjustment">disregard-shifts</xsl:attribute>
+				</xsl:if>
+				<xsl:value-of select="rsd:docidentifier"/>
+				<xsl:apply-templates select="rsd:note"/>
+				<xsl:if test="rsd:docidentifier">, </xsl:if>
+				<xsl:choose>
+					<xsl:when test="rsd:formattedref">
+						<xsl:apply-templates select="rsd:formattedref"/>
+					</xsl:when>
+					<xsl:otherwise>
+						<xsl:for-each select="rsd:contributor[rsd:role/@type='publisher']/rsd:organization/rsd:name">
+							<xsl:apply-templates />
+							<xsl:if test="position() != last()">, </xsl:if>
+							<xsl:if test="position() = last()">: </xsl:if>
+						</xsl:for-each>
+							<!-- rsd:docidentifier -->
+						
+						<xsl:choose>
+							<xsl:when test="rsd:title[@type = 'main' and @language = 'en']">
+								<fo:inline><xsl:apply-templates select="rsd:title[@type = 'main' and @language = 'en']"/><xsl:text>. </xsl:text></fo:inline>
+							</xsl:when>
+							<xsl:otherwise>
+								<fo:inline><xsl:apply-templates select="rsd:title"/><xsl:text>. </xsl:text></fo:inline>
+							</xsl:otherwise>
+						</xsl:choose>
+						
+						<xsl:for-each select="rsd:contributor[rsd:role/@type='publisher']/rsd:organization/rsd:name">
+							<xsl:apply-templates />
 							<xsl:if test="position() != last()">, </xsl:if>
 						</xsl:for-each>
-						<xsl:if test="normalize-space($city) != ''">, </xsl:if>
-					</xsl:if>
-					
-					<xsl:value-of select="$city"/>
-					
-					<xsl:if test="(*[local-name() = 'contributor'][*[local-name() = 'role']/@type = 'publisher']/*[local-name() = 'organization']/*[local-name() = 'name'] or normalize-space($city) != '') and normalize-space($year) != ''">
-						<xsl:text> </xsl:text>
-					</xsl:if>
-					
-					<xsl:if test="normalize-space($year) != ''">
-						<xsl:text>(</xsl:text>
-						<xsl:value-of select="$year"/>
-						<xsl:text>). </xsl:text>
-					</xsl:if>
-					
-					<xsl:if test="normalize-space($uri) != ''">
-						<fo:inline>
-							<xsl:if test="$namespace = 'ogc'">
-								<xsl:attribute name="text-decoration">underline</xsl:attribute>
-							</xsl:if>
-							<xsl:text> </xsl:text>
-							<fo:basic-link external-destination="{$uri}" fox:alt-text="{$uri}">
-								<xsl:value-of select="$uri"/>							
-							</fo:basic-link>
-						</fo:inline>
-					</xsl:if>
-					
-				</xsl:otherwise>
-			</xsl:choose>
-			<!-- end OGC bibitem processing-->
-		</xsl:if> 
-		
+						<xsl:if test="rsd:date[@type='published']/rsd:on">
+							<xsl:text> (</xsl:text><xsl:value-of select="rsd:date[@type='published']/rsd:on"/><xsl:text>)</xsl:text>
+						</xsl:if>
+					</xsl:otherwise>
+				</xsl:choose>
+			</xsl:when>
+			
+			<xsl:when test="$namespace = 'unece' or $namespace = 'unece-rec'">
+				<fo:inline padding-right="5mm">[<xsl:value-of select="un:docidentifier"/>]</fo:inline><xsl:value-of select="un:docidentifier"/>
+				<xsl:if test="un:title">
+					<fo:inline font-style="italic">
+						<xsl:text>, </xsl:text>
+						<xsl:choose>
+							<xsl:when test="un:title[@type = 'main' and @language = 'en']">
+								<xsl:apply-templates select="un:title[@type = 'main' and @language = 'en']"/>
+							</xsl:when>
+							<xsl:otherwise>
+								<xsl:apply-templates select="un:title"/>
+							</xsl:otherwise>
+						</xsl:choose>
+					</fo:inline>
+				</xsl:if>
+				<xsl:apply-templates select="un:formattedref"/>
+
+			</xsl:when>
+			
+			<!-- for csd, iec, iso, m3d, mpfd, and other  -->
+			<xsl:otherwise>
+				<!-- start bibitem processing -->
+				<xsl:if test=".//*[local-name() = 'fn']">
+					<xsl:attribute name="line-height-shift-adjustment">disregard-shifts</xsl:attribute>
+				</xsl:if>
+				<xsl:variable name="docidentifier">
+					<xsl:choose>
+						<xsl:when test="*[local-name() = 'docidentifier']/@type = 'metanorma'"/>
+						<xsl:otherwise><xsl:value-of select="*[local-name() = 'docidentifier'][not(@type = 'metanorma-ordinal')]"/></xsl:otherwise>
+					</xsl:choose>
+				</xsl:variable>
+				<fo:inline><xsl:value-of select="$docidentifier"/></fo:inline>
+				<xsl:apply-templates select="*[local-name() = 'note']"/>
+				<xsl:if test="normalize-space($docidentifier) != ''">, </xsl:if>
+				<xsl:choose>
+					<xsl:when test="*[local-name() = 'title'][@type = 'main' and @language = $lang]">
+						<xsl:apply-templates select="*[local-name() = 'title'][@type = 'main' and @language = $lang]"/>
+					</xsl:when>
+					<xsl:when test="*[local-name() = 'title'][@type = 'main' and @language = 'en']">
+						<xsl:apply-templates select="*[local-name() = 'title'][@type = 'main' and @language = 'en']"/>
+					</xsl:when>
+					<xsl:otherwise>
+						<xsl:apply-templates select="*[local-name() = 'title']"/>
+					</xsl:otherwise>
+				</xsl:choose>
+				<xsl:apply-templates select="*[local-name() = 'formattedref']"/>
+				<!-- end bibitem processing -->
+			</xsl:otherwise>
+			
+		</xsl:choose>
 	</xsl:template> <!-- processBibitem (bibitem) -->
 	
 	<xsl:template name="processBibitemDocId">
@@ -9496,13 +10235,97 @@
 		<xsl:value-of select="substring(.,1,1)"/>
 	</xsl:template>
 
-
 	<xsl:template match="*[local-name() = 'title']" mode="title">
 		<fo:inline><xsl:apply-templates /></fo:inline>
 	</xsl:template>
+
+	<!--
+	<xsl:template match="gb:references[not(@normative='true')]/gb:bibitem/gb:title">
+		<fo:inline font-style="italic">
+			<xsl:apply-templates />
+		</fo:inline>
+	</xsl:template>
+	-->
+
+	<xsl:template match="*[local-name() = 'bibitem']/*[local-name() = 'title']" priority="2">
+		<!-- <fo:inline><xsl:apply-templates /></fo:inline> -->
+		<fo:inline font-style="italic"> <!-- BIPM BSI CSD CSA GB IEC IHO ISO ITU JCGM -->
+			<xsl:apply-templates />
+		</fo:inline>
+	</xsl:template>
+	
+	<xsl:template match="*[local-name() = 'bibitem']/*[local-name() = 'note']" priority="2">
+		<fo:footnote>
+			<xsl:variable name="number">
+				<xsl:choose>
+					<xsl:when test="$namespace = 'bipm' or $namespace = 'csa' or $namespace = 'csd' or $namespace = 'ogc' or $namespace = 'ogc-white-paper' or $namespace = 'rsd'">
+						<xsl:choose>
+							<xsl:when test="ancestor::*[local-name() = 'references'][preceding-sibling::*[local-name() = 'references']]">
+								<xsl:number level="any" count="*[local-name() = 'references'][preceding-sibling::*[local-name() = 'references']]//*[local-name() = 'bibitem']/*[local-name() = 'note']"/>
+							</xsl:when>
+							<xsl:otherwise>
+								<xsl:number level="any" count="*[local-name() = 'bibitem']/*[local-name() = 'note']"/>
+							</xsl:otherwise>
+						</xsl:choose>
+					</xsl:when>
+					<xsl:otherwise>
+						<xsl:number level="any" count="*[local-name() = 'bibitem']/*[local-name() = 'note']"/>
+					</xsl:otherwise>
+				</xsl:choose>
+			</xsl:variable>
+			<fo:inline xsl:use-attribute-sets="bibitem-note-fn-style">
+				<fo:basic-link internal-destination="{generate-id()}" fox:alt-text="footnote {$number}">
+					<xsl:value-of select="$number"/>
+					<xsl:if test="$namespace = 'bsi' or $namespace = 'iho' or $namespace = 'iso' or $namespace = 'jcgm'">
+						<xsl:text>)</xsl:text>
+					</xsl:if>
+				</fo:basic-link>
+			</fo:inline>
+			<fo:footnote-body>
+				<fo:block xsl:use-attribute-sets="bibitem-note-fn-body-style">
+					<fo:inline id="{generate-id()}"  xsl:use-attribute-sets="bibitem-note-fn-number-style">
+						<xsl:value-of select="$number"/>
+						<xsl:if test="$namespace = 'bsi' or $namespace = 'iho' or $namespace = 'iso' or $namespace = 'jcgm'">
+							<xsl:text>)</xsl:text>
+						</xsl:if>
+					</fo:inline>
+					<xsl:apply-templates />
+				</fo:block>
+			</fo:footnote-body>
+		</fo:footnote>
+	</xsl:template>
+	
+	<xsl:template match="*[local-name() = 'bibitem']/*[local-name() = 'edition']"> <!-- for iho -->
+		<xsl:text> edition </xsl:text>
+		<xsl:value-of select="."/>
+	</xsl:template>
+	
+	<xsl:template match="*[local-name() = 'bibitem']/*[local-name() = 'uri']"> <!-- for iho -->
+		<xsl:text> (</xsl:text>
+		<fo:inline xsl:use-attribute-sets="link-style">
+			<fo:basic-link external-destination="." fox:alt-text=".">
+				<xsl:value-of select="."/>							
+			</fo:basic-link>
+		</fo:inline>
+		<xsl:text>)</xsl:text>
+	</xsl:template>
+	
+	<xsl:template match="*[local-name() = 'bibitem']/*[local-name() = 'docidentifier']"/>
+	
+	<xsl:template match="*[local-name() = 'formattedref']">
+		<xsl:if test="$namespace = 'unece' or $namespace = 'unece-rec'">
+			<xsl:text>, </xsl:text>
+		</xsl:if>
+		<xsl:apply-templates />
+	</xsl:template>
+
 	<!-- ======================= -->
 	<!-- END Bibliography rendering -->
 	<!-- ======================= -->
+	
+	<!-- ========================================================== -->
+	<!-- END Reference sections (Normative References and Bibliography) -->
+	<!-- ========================================================== -->
 	
 	
 	<!-- =================== -->

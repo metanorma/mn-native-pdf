@@ -475,9 +475,6 @@
 	<!-- ============================= -->
 	<!-- CONTENTS                                       -->
 	<!-- ============================= -->
-	<xsl:template match="node()" mode="contents">		
-		<xsl:apply-templates mode="contents" />			
-	</xsl:template>
 
 	<!-- element with title -->
 	<xsl:template match="*[gb:title]" mode="contents">
@@ -761,54 +758,6 @@
 	
 	
 	
-	<xsl:template match="gb:bibitem">
-		<fo:block id="{@id}" font-size="11pt" margin-bottom="12pt" text-indent="-11.7mm" margin-left="11.7mm"> <!-- 12 pt -->
-				<!-- gb:docidentifier -->
-			<xsl:if test="gb:docidentifier">
-				<xsl:choose>
-					<xsl:when test="gb:docidentifier/@type = 'metanorma'"/>
-					<xsl:otherwise><fo:inline><xsl:value-of select="gb:docidentifier"/></fo:inline></xsl:otherwise>
-				</xsl:choose>
-			</xsl:if>
-			<xsl:apply-templates select="gb:note"/>
-			<xsl:if test="gb:docidentifier">, </xsl:if>
-			<fo:inline font-style="italic">
-				<xsl:choose>
-					<xsl:when test="gb:title[@type = 'main' and @language = 'en']">
-						<xsl:value-of select="gb:title[@type = 'main' and @language = 'en']"/>
-					</xsl:when>
-					<xsl:otherwise>
-						<xsl:value-of select="gb:title"/>
-					</xsl:otherwise>
-				</xsl:choose>
-			</fo:inline>
-		</fo:block>
-	</xsl:template>
-	
-	
-	<xsl:template match="gb:bibitem/gb:note" priority="2">
-		<fo:footnote>
-			<xsl:variable name="number">
-				<xsl:number level="any" count="gb:bibitem/gb:note"/>
-			</xsl:variable>
-			<fo:inline font-size="50%" keep-with-previous.within-line="always" baseline-shift="30%">
-				<fo:basic-link internal-destination="{generate-id()}" fox:alt-text="footnote {$number}">
-					<xsl:value-of select="$number"/>
-				</fo:basic-link>
-			</fo:inline>
-			<fo:footnote-body>
-				<fo:block font-size="9pt" margin-bottom="4pt" start-indent="0pt" text-indent="7.4mm">
-					<fo:inline font-size="50%" id="{generate-id()}" keep-with-next.within-line="always" baseline-shift="30%"><!-- alignment-baseline="hanging" font-size="60%"  -->
-						<xsl:value-of select="$number"/>
-					</fo:inline>
-					<xsl:apply-templates />
-				</fo:block>
-			</fo:footnote-body>
-		</fo:footnote>
-	</xsl:template>
-	
-	
-	
 	<xsl:template match="gb:ul | gb:ol" mode="ul_ol">
 		<fo:list-block margin-bottom="12pt" margin-left="7.4mm" provisional-distance-between-starts="4mm"> <!--   margin-bottom="8pt" -->
 			<xsl:if test="local-name() = 'ol'">
@@ -921,72 +870,8 @@
 	</xsl:template>
 	
 
-
-	<!-- <xsl:template match="gb:references[@id = '_bibliography']"> -->
-	<xsl:template match="gb:references[not(@normative='true')]">
-		<fo:block break-after="page"/>
-		<fo:block id="{@id}">
-			<xsl:apply-templates />
-		</fo:block>
-		<fo:block-container text-align="center">
-			<fo:block-container margin-left="63mm" width="42mm" border-bottom="2pt solid black">
-				<fo:block>&#xA0;</fo:block>
-			</fo:block-container>
-		</fo:block-container>
-	</xsl:template>
-
-
-	<!-- Example: [1] ISO 9:1995, Information and documentation – Transliteration of Cyrillic characters into Latin characters – Slavic and non-Slavic languages -->
-	<!-- <xsl:template match="gb:references[@id = '_bibliography']/gb:bibitem"> -->
-	<xsl:template match="gb:references[not(@normative='true')]/gb:bibitem">
-		<fo:list-block font-size="11pt" margin-bottom="12pt" provisional-distance-between-starts="12mm">
-			<fo:list-item>
-				<fo:list-item-label end-indent="label-end()">
-					<fo:block>
-						<fo:inline id="{@id}">
-							<xsl:number format="[1]"/>
-						</fo:inline>
-					</fo:block>
-				</fo:list-item-label>
-				<fo:list-item-body start-indent="body-start()">
-					<fo:block text-align="justify">
-						<xsl:variable name="docidentifier">
-							<xsl:if test="gb:docidentifier">
-								<xsl:choose>
-									<xsl:when test="gb:docidentifier/@type = 'metanorma'"/>
-									<xsl:otherwise><xsl:value-of select="gb:docidentifier"/></xsl:otherwise>
-								</xsl:choose>
-							</xsl:if>
-						</xsl:variable>
-						<fo:inline><xsl:value-of select="$docidentifier"/></fo:inline>
-						<xsl:apply-templates select="gb:note"/>
-						<xsl:if test="normalize-space($docidentifier) != ''">, </xsl:if>
-						<xsl:choose>
-							<xsl:when test="gb:title[@type = 'main' and @language = 'en']">
-								<xsl:apply-templates select="gb:title[@type = 'main' and @language = 'en']"/>
-							</xsl:when>
-							<xsl:otherwise>
-								<xsl:apply-templates select="gb:title"/>
-							</xsl:otherwise>
-						</xsl:choose>
-						<xsl:apply-templates select="gb:formattedref"/>
-					</fo:block>
-				</fo:list-item-body>
-			</fo:list-item>
-		</fo:list-block>
-	</xsl:template>
 	
-	<!-- <xsl:template match="gb:references[@id = '_bibliography']/gb:bibitem" mode="contents"/> -->
-	<xsl:template match="gb:references[not(@normative='true')]/gb:bibitem" mode="contents"/>
 	
-	<!-- <xsl:template match="gb:references[@id = '_bibliography']/gb:bibitem/gb:title"> -->
-	<xsl:template match="gb:references[not(@normative='true')]/gb:bibitem/gb:title">
-		<fo:inline font-style="italic">
-			<xsl:apply-templates />
-		</fo:inline>
-	</xsl:template>
-
-
 	<xsl:template match="mathml:math" priority="2">
 		<fo:inline font-family="Cambria Math">
 			<xsl:variable name="mathml">

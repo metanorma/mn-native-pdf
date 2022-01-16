@@ -533,10 +533,6 @@
 	<!-- ============================= -->
 	<!-- CONTENTS                                       -->
 	<!-- ============================= -->
-	<xsl:template match="node()" mode="contents">		
-		<xsl:apply-templates mode="contents" />			
-	</xsl:template>
-
 
 	<!-- element with title -->
 	<xsl:template match="*[rsd:title]" mode="contents">
@@ -862,117 +858,6 @@
 	</xsl:template>
 	
 	
-	
-	<xsl:template match="rsd:bibitem">
-		<fo:block id="{@id}" margin-bottom="12pt" font-weight="normal"> <!-- start-indent="12mm" text-indent="-12mm" -->
-			<xsl:if test=".//rsd:fn">
-				<xsl:attribute name="line-height-shift-adjustment">disregard-shifts</xsl:attribute>
-			</xsl:if>
-			<!-- <xsl:if test="rsd:docidentifier">
-				<xsl:if test="rsd:docidentifier/@type != 'IETF' and rsd:docidentifier/@type != 'ISO'">
-					<xsl:value-of select="rsd:docidentifier/@type"/><xsl:text> </xsl:text>
-				</xsl:if>
-				<xsl:value-of select="rsd:docidentifier"/>
-			</xsl:if> -->
-			<xsl:value-of select="rsd:docidentifier"/>
-			<xsl:apply-templates select="rsd:note"/>
-			<xsl:if test="rsd:docidentifier">, </xsl:if>
-			<xsl:choose>
-				<xsl:when test="rsd:formattedref">
-					<xsl:apply-templates select="rsd:formattedref"/>
-				</xsl:when>
-				<xsl:otherwise>
-					<xsl:for-each select="rsd:contributor[rsd:role/@type='publisher']/rsd:organization/rsd:name">
-						<xsl:apply-templates />
-						<xsl:if test="position() != last()">, </xsl:if>
-						<xsl:if test="position() = last()">: </xsl:if>
-					</xsl:for-each>
-						<!-- rsd:docidentifier -->
-
-					<fo:inline font-style="italic">
-						<xsl:choose>
-							<xsl:when test="rsd:title[@type = 'main' and @language = 'en']">
-								<xsl:value-of select="rsd:title[@type = 'main' and @language = 'en']"/><xsl:text>. </xsl:text>
-							</xsl:when>
-							<xsl:otherwise>
-								<xsl:value-of select="rsd:title"/><xsl:text>. </xsl:text>
-							</xsl:otherwise>
-						</xsl:choose>
-					</fo:inline>
-					<xsl:for-each select="rsd:contributor[rsd:role/@type='publisher']/rsd:organization/rsd:name">
-						<xsl:apply-templates />
-						<xsl:if test="position() != last()">, </xsl:if>
-					</xsl:for-each>
-					<xsl:if test="rsd:date[@type='published']/rsd:on">
-						<xsl:text> (</xsl:text><xsl:value-of select="rsd:date[@type='published']/rsd:on"/><xsl:text>)</xsl:text>
-					</xsl:if>
-			</xsl:otherwise>
-			</xsl:choose>
-		</fo:block>
-	</xsl:template>
-	
-	
-	<xsl:template match="rsd:bibitem/rsd:note" priority="2">
-		<fo:footnote>
-			<xsl:variable name="number">
-				<xsl:choose>
-					<xsl:when test="ancestor::rsd:references[preceding-sibling::rsd:references]">
-						<xsl:number level="any" count="rsd:references[preceding-sibling::rsd:references]//rsd:bibitem/rsd:note"/>
-					</xsl:when>
-					<xsl:otherwise>
-						<xsl:number level="any" count="rsd:bibitem/rsd:note"/>
-					</xsl:otherwise>
-				</xsl:choose>
-			</xsl:variable>
-			<fo:inline font-size="65%" keep-with-previous.within-line="always" vertical-align="super"> <!--  60% baseline-shift="35%"   -->
-				<fo:basic-link internal-destination="{generate-id()}" fox:alt-text="footnote {$number}">
-					<xsl:value-of select="$number"/><!-- <xsl:text>)</xsl:text> -->
-				</fo:basic-link>
-			</fo:inline>
-			<fo:footnote-body>
-				<fo:block font-size="10pt" margin-bottom="12pt" start-indent="0pt" color="rgb(168, 170, 173)">
-					<fo:inline id="{generate-id()}" keep-with-next.within-line="always" font-size="60%" vertical-align="super"><!-- baseline-shift="30%" padding-right="9mm"  alignment-baseline="hanging" -->
-						<xsl:value-of select="$number"/><!-- <xsl:text>)</xsl:text> -->
-					</fo:inline>
-					<xsl:apply-templates />
-				</fo:block>
-			</fo:footnote-body>
-		</fo:footnote>
-	</xsl:template>
-	
-	
-	<xsl:template match="rsd:references[not(@normative='true')]/rsd:bibitem">
-		<fo:list-block margin-bottom="4pt" provisional-distance-between-starts="8mm">
-			<fo:list-item>
-				<fo:list-item-label end-indent="label-end()">
-					<fo:block>
-						<fo:inline id="{@id}">
-							<xsl:number format="1."/> <!-- [1] -->
-						</fo:inline>
-					</fo:block>
-				</fo:list-item-label>
-				<fo:list-item-body start-indent="body-start()">
-					<fo:block>
-						<xsl:if test="rsd:docidentifier">
-							<xsl:choose>
-								<xsl:when test="rsd:docidentifier/@type = 'metanorma'"/>
-								<xsl:otherwise><fo:inline><xsl:value-of select="rsd:docidentifier[not(@type = 'metanorma-ordinal')]"/>, </fo:inline></xsl:otherwise>
-							</xsl:choose>
-						</xsl:if>
-						<xsl:choose>
-							<xsl:when test="rsd:title[@type = 'main' and @language = 'en']">
-								<xsl:apply-templates select="rsd:title[@type = 'main' and @language = 'en']"/>
-							</xsl:when>
-							<xsl:otherwise>
-								<xsl:apply-templates select="rsd:title"/>
-							</xsl:otherwise>
-						</xsl:choose>
-						<xsl:apply-templates select="rsd:formattedref"/>
-					</fo:block>
-				</fo:list-item-body>
-			</fo:list-item>
-		</fo:list-block>
-	</xsl:template>
 
 	
 	
@@ -1125,9 +1010,7 @@
 		</fo:block>
 	</xsl:template>
 	
-	
-	<xsl:template match="rsd:references[not(@normative='true')]/rsd:title" priority="2"/>
-	<xsl:template match="rsd:references[not(@normative='true')]">
+	<xsl:template match="rsd:references[not(@normative='true')]" priority="3">
 		<fo:block break-after="page"/>
 		<fo:block id="{@id}">
 			<fo:table width="100%" table-layout="fixed" >
@@ -1150,7 +1033,7 @@
 					<fo:table-row>
 						<fo:table-cell text-align="left">
 							<fo:block>
-								<xsl:apply-templates />
+								<xsl:apply-templates select="node()[not(local-name() = 'title')]" />
 							</fo:block>
 						</fo:table-cell>
 					</fo:table-row>
@@ -1159,15 +1042,8 @@
 			
 		</fo:block>
 	</xsl:template>
-
-	<!-- <xsl:template match="rsd:references[@id = '_bibliography']/rsd:bibitem/rsd:title"> [position() &gt; 1]-->
-	<xsl:template match="rsd:references[not(@normative='true')]/rsd:bibitem/rsd:title">
-		<fo:inline font-style="italic">
-			<xsl:apply-templates />
-		</fo:inline>
-	</xsl:template>
-
-
+	
+	
 	<xsl:template match="rsd:formula/rsd:stem">
 		<fo:block margin-top="6pt" margin-bottom="12pt">
 			<fo:table table-layout="fixed" width="100%">

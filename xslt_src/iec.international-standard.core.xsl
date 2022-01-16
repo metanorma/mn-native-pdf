@@ -1772,9 +1772,6 @@
 	<!-- ============================= -->
 	<!-- CONTENTS                                       -->
 	<!-- ============================= -->
-	<xsl:template match="node()" mode="contents">		
-		<xsl:apply-templates mode="contents" />			
-	</xsl:template>
 	
 	<!-- element with title -->
 	<xsl:template match="*[iec:title]" mode="contents">
@@ -2166,37 +2163,6 @@
 		<fo:block margin-bottom="10pt"><xsl:apply-templates /></fo:block>
 	</xsl:template>
 	
-
-
-	
-	<xsl:template match="iec:bibitem">
-		<fo:block id="{@id}" margin-top="5pt" margin-bottom="10pt"> <!-- letter-spacing="0.4pt" -->
-			<xsl:call-template name="processBibitem"/>
-		</fo:block>
-	</xsl:template>
-	
-	
-	<xsl:template match="iec:bibitem/iec:note" priority="2">
-		<fo:footnote>
-			<xsl:variable name="number">
-				<xsl:number level="any" count="iec:bibitem/iec:note"/>
-			</xsl:variable>
-			<fo:inline font-size="8pt" keep-with-previous.within-line="always"  baseline-shift="15%" > <!--font-size="85%"  vertical-align="super"60% -->
-				<fo:basic-link internal-destination="{generate-id()}" fox:alt-text="footnote {$number}">
-					<xsl:value-of select="$number"/><!-- <xsl:text>)</xsl:text> -->
-				</fo:basic-link>
-			</fo:inline>
-			<fo:footnote-body>
-				<fo:block font-size="8pt" margin-bottom="5pt">
-					<fo:inline id="{generate-id()}" keep-with-next.within-line="always" baseline-shift="15%" padding-right="3mm"><!-- padding-right="9mm" alignment-baseline="hanging"  font-size="60%"  -->
-						<xsl:value-of select="$number"/><!-- <xsl:text>)</xsl:text> -->
-					</fo:inline>
-					<xsl:apply-templates />
-				</fo:block>
-			</fo:footnote-body>
-		</fo:footnote>
-	</xsl:template>
-	
 	
 	
 	<xsl:template match="iec:ul | iec:ol" mode="ul_ol">
@@ -2288,46 +2254,6 @@
 		</fo:block>
 	</xsl:template>
 	
-
-	<xsl:template match="iec:references[not(@normative='true')]">
-		<fo:block break-after="page"/>
-		<fo:block id="{@id}">
-			<xsl:apply-templates />
-		</fo:block>
-		<fo:block-container text-align="center" margin-top="10mm">
-			<fo:block>_____________</fo:block>
-		</fo:block-container>
-	</xsl:template>
-
-
-	<!-- Example: [1] ISO 9:1995, Information and documentation – Transliteration of Cyrillic characters into Latin characters – Slavic and non-Slavic languages -->
-	<xsl:template match="iec:references[not(@normative='true')]/iec:bibitem">
-		<fo:list-block margin-top="5pt" margin-bottom="14pt" provisional-distance-between-starts="12mm"> <!-- provisional-distance-between-starts="0mm" -->
-			<fo:list-item>
-				<fo:list-item-label end-indent="label-end()">
-					<fo:block id="{@id}">
-							<xsl:value-of select="iec:docidentifier[@type = 'metanorma-ordinal']"/>
-							<xsl:if test="not(iec:docidentifier[@type = 'metanorma-ordinal'])">
-								<xsl:number format="[1]"/>
-							</xsl:if>
-					</fo:block>
-				</fo:list-item-label>
-				<fo:list-item-body start-indent="body-start()">
-					<fo:block>
-						<xsl:call-template name="processBibitem"/>
-					</fo:block>
-				</fo:list-item-body>
-			</fo:list-item>
-		</fo:list-block>
-	</xsl:template>
-	
-	<xsl:template match="iec:references/iec:bibitem/iec:title">
-		<fo:inline font-style="italic">
-			<xsl:apply-templates />
-		</fo:inline>
-	</xsl:template>
-
-
 	
 	<xsl:template match="iec:admonition//iec:p//text()">
 		<xsl:call-template name="addLetterSpacing">

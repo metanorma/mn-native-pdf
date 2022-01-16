@@ -339,9 +339,6 @@
 	<!-- ============================= -->
 	<!-- CONTENTS                                       -->
 	<!-- ============================= -->
-	<xsl:template match="node()" mode="contents">		
-		<xsl:apply-templates mode="contents" />			
-	</xsl:template>
 
 	<!-- element with title -->
 	<xsl:template match="*[un:title]" mode="contents">
@@ -798,35 +795,6 @@
 	<!-- for further use -->
 	<!-- ============================ -->
 
-	
-	
-	<xsl:template match="un:bibitem">
-		<fo:block  id="{@id}" margin-top="6pt" margin-left="14mm" text-indent="-14mm">
-			<fo:inline padding-right="5mm">[<xsl:value-of select="un:docidentifier"/>]</fo:inline><xsl:value-of select="un:docidentifier"/>
-				<xsl:if test="un:title">
-				<fo:inline font-style="italic">
-						<xsl:text>, </xsl:text>
-						<xsl:choose>
-							<xsl:when test="un:title[@type = 'main' and @language = 'en']">
-								<xsl:value-of select="un:title[@type = 'main' and @language = 'en']"/>
-							</xsl:when>
-							<xsl:otherwise>
-								<xsl:value-of select="un:title"/>
-							</xsl:otherwise>
-						</xsl:choose>
-					</fo:inline>
-				</xsl:if>
-				<xsl:apply-templates select="un:formattedref"/>
-			</fo:block>
-	</xsl:template>
-	<xsl:template match="un:bibitem/un:docidentifier"/>
-	
-	<xsl:template match="un:bibitem/un:title"/>
-	
-	<xsl:template match="un:formattedref">
-		<xsl:text>, </xsl:text><xsl:apply-templates />
-	</xsl:template>
-	
 
 	<xsl:template match="un:figure" priority="2">
 		<fo:block-container id="{@id}">
@@ -967,15 +935,6 @@
 	</xsl:template>
 	
 
-		
-	<xsl:template match="un:references">
-		<fo:block>
-			<xsl:if test="not(un:title)">
-				<xsl:attribute name="id"><xsl:value-of select="@id"/></xsl:attribute>
-			</xsl:if>
-			<xsl:apply-templates />
-		</fo:block>
-	</xsl:template>
 	
 	<xsl:template match="un:dl" priority="2">
 		<fo:block-container margin-left="0mm">
