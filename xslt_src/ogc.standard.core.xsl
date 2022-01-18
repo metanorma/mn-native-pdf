@@ -332,12 +332,35 @@
 								<fo:inline font-weight="bold">Publication Date: </fo:inline>
 								<xsl:value-of select="/ogc:ogc-standard/ogc:bibdata/ogc:date[@type = 'published']/ogc:on"/>
 							</fo:block>
-							<fo:block margin-bottom="12pt">							
-								<fo:inline font-weight="bold">Editor: </fo:inline>
-								<xsl:for-each select="/ogc:ogc-standard/ogc:bibdata/ogc:contributor[ogc:role/@type='editor']/ogc:person/ogc:name/ogc:completename">
-									<xsl:value-of select="."/>
-									<xsl:if test="position() != last()">, </xsl:if>
-								</xsl:for-each>							
+							
+							<fo:block margin-bottom="12pt">
+								<xsl:if test="/ogc:ogc-standard/ogc:bibdata/ogc:contributor[ogc:role/@type='author']/ogc:person/ogc:name/ogc:completename">
+									<fo:block>
+										<fo:inline font-weight="bold">Author: </fo:inline>
+										<xsl:for-each select="/ogc:ogc-standard/ogc:bibdata/ogc:contributor[ogc:role/@type='author']/ogc:person/ogc:name/ogc:completename">
+											<xsl:value-of select="."/>
+											<xsl:if test="position() != last()">, </xsl:if>
+										</xsl:for-each>
+									</fo:block>
+								</xsl:if>
+								<xsl:if test="/ogc:ogc-standard/ogc:bibdata/ogc:contributor[ogc:role/@type='editor']/ogc:person/ogc:name/ogc:completename">
+									<fo:block>
+										<fo:inline font-weight="bold">Editor: </fo:inline>
+										<xsl:for-each select="/ogc:ogc-standard/ogc:bibdata/ogc:contributor[ogc:role/@type='editor']/ogc:person/ogc:name/ogc:completename">
+											<xsl:value-of select="."/>
+											<xsl:if test="position() != last()">, </xsl:if>
+										</xsl:for-each>
+									</fo:block>
+								</xsl:if>
+								<xsl:if test="/ogc:ogc-standard/ogc:bibdata/ogc:contributor[ogc:role/@type='contributor']/ogc:person/ogc:name/ogc:completename">
+									<fo:block>
+										<fo:inline font-weight="bold">Contributor: </fo:inline>
+										<xsl:for-each select="/ogc:ogc-standard/ogc:bibdata/ogc:contributor[ogc:role/@type='contributor']/ogc:person/ogc:name/ogc:completename">
+											<xsl:value-of select="."/>
+											<xsl:if test="position() != last()">, </xsl:if>
+										</xsl:for-each>
+									</fo:block>
+								</xsl:if>
 							</fo:block>
 						</fo:block>
 												
