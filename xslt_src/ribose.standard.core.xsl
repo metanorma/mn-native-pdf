@@ -1065,11 +1065,6 @@
 		</fo:block>
 	</xsl:template>
 	
-	<xsl:template match="rsd:pagebreak">
-		<fo:block break-after="page"/>
-		<fo:block>&#xA0;</fo:block>
-		<fo:block break-after="page"/>
-	</xsl:template>
 	
 	<xsl:template match="*[local-name()='table' or local-name()='figure'  or local-name()='sourcecode']/*[local-name() = 'name']/node()[1][self::text()]" priority="2">
 		<xsl:choose>

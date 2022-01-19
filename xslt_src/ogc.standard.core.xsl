@@ -1313,11 +1313,6 @@
 		</fo:block-container>
 	</xsl:template>
 
-	<xsl:template match="ogc:pagebreak">
-		<fo:block break-after="page"/>
-		<fo:block>&#xA0;</fo:block>
-		<fo:block break-after="page"/>
-	</xsl:template>
 		
 	<xsl:template name="insertHeaderFooter">
 		<xsl:param name="color" select="$color_blue"/>

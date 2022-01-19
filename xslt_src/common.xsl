@@ -5674,6 +5674,13 @@
       </xsl:call-template>
     </xsl:if>
   </xsl:template>
+	
+	<xsl:template match="*[local-name() = 'pagebreak']">
+		<fo:block break-after="page"/>
+		<fo:block>&#xA0;</fo:block>
+		<fo:block break-after="page"/>
+	</xsl:template>
+	
 	<!-- ========================= -->
 	<!-- END Rich text formatting -->
 	<!-- ========================= -->

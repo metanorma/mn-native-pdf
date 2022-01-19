@@ -659,7 +659,7 @@
 
 
 	
-	<xsl:template match="iho:pagebreak">
+	<xsl:template match="iho:pagebreak" priority="2">
 		<xsl:copy-of select="."/>
 	</xsl:template>
 	

@@ -972,40 +972,6 @@
 		
 	</xsl:template>
 	
-	<xsl:template match="bipm:pagebreak2" mode="pagebreak">
-		<xsl:variable name="orientation" select="normalize-space(@orientation)"/>
-		<xsl:variable name="tree">
-			<xsl:for-each select="ancestor::*[ancestor::bipm:sections or ancestor::bipm:annex or ancestor::bipm:preface]">
-				<element pos="{position()}">					
-					<xsl:value-of select="name()"/>
-				</element>
-			</xsl:for-each>
-		</xsl:variable>
-		<!-- close preceding elements -->
-		<xsl:for-each select="xalan:nodeset($tree)//element">
-			<xsl:sort data-type="number" order="descending" select="@pos"/>
-			<xsl:text disable-output-escaping="yes">&lt;/</xsl:text>
-				<xsl:value-of select="."/>				
-			<xsl:text disable-output-escaping="yes">&gt;</xsl:text>
-		</xsl:for-each>
-		<!-- open elements -->
-		<xsl:for-each select="xalan:nodeset($tree)//element">
-			<xsl:text disable-output-escaping="yes">&lt;</xsl:text>
-				<xsl:value-of select="."/>
-				<xsl:for-each select="@*[local-name() != 'pos']">
-					<xsl:text> </xsl:text>
-					<xsl:value-of select="local-name()"/>
-					<xsl:text>="</xsl:text>
-					<xsl:value-of select="."/>
-					<xsl:text>"</xsl:text>
-				</xsl:for-each>
-				<xsl:if test="position() = 1">
-					<xsl:text> orientation="</xsl:text><xsl:value-of select="$orientation"/><xsl:text>"</xsl:text>
-				</xsl:if>
-			<xsl:text disable-output-escaping="yes">&gt;</xsl:text>
-		</xsl:for-each>
-		
-	</xsl:template>
 	<!-- ================================= -->
 	<!-- END: Page breaks processing  -->
 	<!-- ================================= -->	
@@ -3029,7 +2995,7 @@
 	<xsl:template match="bipm:references/bipm:bibitem/bipm:docidentifier[(@type='metanorma' or @type='metanorma-ordinal') and ../bipm:formattedref]"/>
 	
 
-	<xsl:template match="bipm:pagebreak">
+	<xsl:template match="bipm:pagebreak" priority="2">
 		<fo:block break-after="page"/>
 	</xsl:template>
 

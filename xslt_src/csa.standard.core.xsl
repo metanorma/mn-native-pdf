@@ -675,12 +675,6 @@
 		</fo:block>
 	</xsl:template>
 	
-	
-	<xsl:template match="csa:pagebreak">
-		<fo:block break-after="page"/>
-		<fo:block>&#xA0;</fo:block>
-		<fo:block break-after="page"/>
-	</xsl:template>
 		
 	<xsl:template name="insertHeaderFooter">
 		<fo:static-content flow-name="header" role="artifact">
