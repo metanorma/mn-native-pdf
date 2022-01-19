@@ -23,8 +23,7 @@
 	<xsl:variable name="namespace">m3d</xsl:variable>
 	
 	<xsl:variable name="debug">false</xsl:variable>
-	<xsl:variable name="pageWidth" select="215.9"/>
-	<xsl:variable name="pageHeight" select="279.4"/>
+	
 	<xsl:variable name="marginLeftRight1" select="17.3"/>
 	<xsl:variable name="marginLeftRight2" select="17.3"/>
 	<xsl:variable name="marginTop" select="35"/>

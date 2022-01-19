@@ -23,8 +23,7 @@
 	<xsl:variable name="namespace">gb</xsl:variable>
 	
 	<xsl:variable name="debug">false</xsl:variable>
-	<xsl:variable name="pageWidth" select="210"/>
-	<xsl:variable name="pageHeight" select="297"/>
+	
 	<xsl:variable name="marginLeftRight1" select="25"/>
 	<xsl:variable name="marginLeftRight2" select="20"/>
 	<xsl:variable name="marginTop" select="35"/>

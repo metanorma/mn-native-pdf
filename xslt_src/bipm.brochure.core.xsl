@@ -31,8 +31,6 @@
 	
 	<xsl:variable name="first_pass" select="count($index//item) = 0"/>
 	
-	<xsl:variable name="pageWidth" select="210"/>
-	<xsl:variable name="pageHeight" select="297"/>
 	<xsl:variable name="marginLeftRight1" select="31.7"/>
 	<xsl:variable name="marginLeftRight2" select="40"/>
 	<xsl:variable name="marginTop" select="25.4"/>
@@ -44,7 +42,7 @@
 	<!-- IT USES for mn2pdf -->
 	<xsl:variable name="coverpages_count">2</xsl:variable><!-- DON'T DELETE IT -->
 	
-
+	
 	<xsl:variable name="debug">false</xsl:variable>
 	
 	<xsl:variable name="copyrightYear" select="//bipm:bipm-standard/bipm:bibdata/bipm:copyright/bipm:from"/>

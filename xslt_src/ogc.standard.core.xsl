@@ -18,8 +18,6 @@
 	
 	<xsl:key name="kfn" match="*[local-name() = 'fn'][not(ancestor::*[(local-name() = 'table' or local-name() = 'figure') and not(ancestor::*[local-name() = 'name'])])]" use="@reference"/>
 	
-	<xsl:variable name="pageWidth" select="215.9"/>
-	<xsl:variable name="pageHeight" select="279.4"/>
 	<xsl:variable name="marginLeftRight1" select="35"/>
 	<xsl:variable name="marginLeftRight2" select="17"/>
 	<xsl:variable name="marginTop" select="16.5"/>

@@ -23,8 +23,6 @@
 	
 	<xsl:variable name="namespace">unece</xsl:variable>
 	
-	<xsl:variable name="pageWidth" select="210"/>
-	<xsl:variable name="pageHeight" select="297"/>
 	<xsl:variable name="marginLeftRight1" select="40"/>
 	<xsl:variable name="marginLeftRight2" select="40"/>
 	<xsl:variable name="marginTop" select="30"/>

@@ -13,6 +13,27 @@
 	BUT DON'T put any another conditions together with $namespace = '...' (such conditions will be ignored). For another conditions, please use nested xsl:if or xsl:choose -->
 	
 	
+	<!-- page width in mm -->
+	<xsl:variable name="pageWidth_">
+		<xsl:choose>
+			<xsl:when test="$namespace = 'csa' or $namespace = 'm3d' or $namespace = 'nist-cswp' or $namespace = 'nist-sp' or 
+			$namespace = 'ogc' or $namespace = 'ogc-white-paper' or $namespace = 'rsd'">215.9</xsl:when> <!-- paper size letter -->
+			<xsl:otherwise>210</xsl:otherwise> <!-- paper size A4 (default value) -->
+		</xsl:choose>
+	</xsl:variable>
+	<xsl:variable name="pageWidth" select="normalize-space($pageWidth_)"/>
+	
+	<!-- page height in mm -->
+	<xsl:variable name="pageHeight_">
+		<xsl:choose>
+			<xsl:when test="$namespace = 'csa' or $namespace = 'm3d' or $namespace = 'nist-cswp' or $namespace = 'nist-sp' or 
+			$namespace = 'ogc' or $namespace = 'ogc-white-paper' or $namespace = 'rsd'">279.4</xsl:when> <!-- paper size letter -->
+			<xsl:otherwise>297</xsl:otherwise> <!-- paper size A4 (default value) -->
+		</xsl:choose>
+	</xsl:variable>
+	<xsl:variable name="pageHeight" select="normalize-space($pageHeight_)"/>
+	
+	
 	<!-- Note 2: almost all localized string determined in the element //localized-strings in metanorma xml, but there are a few cases when:
 	 - string didn't determined yet
 	 - we need to put the string on two-languages (for instance, on English and French both), but xml contains only localized strings for one language
