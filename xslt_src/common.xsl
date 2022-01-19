@@ -10790,27 +10790,17 @@
 		<xsl:variable name="month" select="substring($date, 6, 2)"/>
 		<xsl:variable name="day" select="substring($date, 9, 2)"/>
 		<xsl:variable name="monthStr">
-			<xsl:choose>
-				<xsl:when test="$month = '01'">january</xsl:when>
-				<xsl:when test="$month = '02'">february</xsl:when>
-				<xsl:when test="$month = '03'">march</xsl:when>
-				<xsl:when test="$month = '04'">april</xsl:when>
-				<xsl:when test="$month = '05'">may</xsl:when>
-				<xsl:when test="$month = '06'">june</xsl:when>
-				<xsl:when test="$month = '07'">july</xsl:when>
-				<xsl:when test="$month = '08'">august</xsl:when>
-				<xsl:when test="$month = '09'">september</xsl:when>
-				<xsl:when test="$month = '10'">october</xsl:when>
-				<xsl:when test="$month = '11'">november</xsl:when>
-				<xsl:when test="$month = '12'">december</xsl:when>
-			</xsl:choose>
+			<xsl:call-template name="getMonthByNum">
+				<xsl:with-param name="num" select="$month"/>
+				<xsl:with-param name="lowercase" select="'true'"/>
+			</xsl:call-template>
 		</xsl:variable>
 		<xsl:variable name="monthStr_localized">
 			<xsl:if test="normalize-space($monthStr) != ''"><xsl:call-template name="getLocalizedString"><xsl:with-param name="key">month_<xsl:value-of select="$monthStr"/></xsl:with-param></xsl:call-template></xsl:if>
 		</xsl:variable>
 		<xsl:variable name="result">
 			<xsl:choose>
-				<xsl:when test="$format = 'ddMMyyyy'">
+				<xsl:when test="$format = 'ddMMyyyy'"> <!-- convert date from format 2007-04-01 to 1 April 2007 -->
 					<xsl:if test="$day != ''"><xsl:value-of select="number($day)"/></xsl:if>
 					<xsl:text> </xsl:text>
 					<xsl:value-of select="normalize-space(concat($monthStr_localized, ' ' , $year))"/>
@@ -10823,12 +10813,61 @@
 					<xsl:value-of select="normalize-space(concat($monthStr_localized, ' ', $year))"/>
 				</xsl:when>
 				<xsl:otherwise>
-					<xsl:value-of select="normalize-space(concat($monthStr_localized, ' ', $day, ', ' , $year))"/>
+					<xsl:value-of select="normalize-space(concat($monthStr_localized, ' ', $day, ', ' , $year))"/> <!-- January 01, 2022 -->
 				</xsl:otherwise>
 			</xsl:choose>
 		</xsl:variable>
 		<xsl:value-of select="$result"/>
 	</xsl:template> <!-- convertDate -->
+
+	<!-- return Month's name by number -->
+	<xsl:template name="getMonthByNum">
+		<xsl:param name="num"/>
+		<xsl:param name="lang">en</xsl:param>
+		<xsl:param name="lowercase">false</xsl:param> <!-- return 'january' instead of 'January' -->
+		<xsl:variable name="monthStr_">
+			<xsl:choose>
+				<xsl:when test="$lang = 'fr'">
+					<xsl:choose>
+						<xsl:when test="$num = '01'">Janvier</xsl:when>
+						<xsl:when test="$num = '02'">Février</xsl:when>
+						<xsl:when test="$num = '03'">Mars</xsl:when>
+						<xsl:when test="$num = '04'">Avril</xsl:when>
+						<xsl:when test="$num = '05'">Mai</xsl:when>
+						<xsl:when test="$num = '06'">Juin</xsl:when>
+						<xsl:when test="$num = '07'">Juillet</xsl:when>
+						<xsl:when test="$num = '08'">Août</xsl:when>
+						<xsl:when test="$num = '09'">Septembre</xsl:when>
+						<xsl:when test="$num = '10'">Octobre</xsl:when>
+						<xsl:when test="$num = '11'">Novembre</xsl:when>
+						<xsl:when test="$num = '12'">Décembre</xsl:when>
+					</xsl:choose>
+				</xsl:when>
+				<xsl:otherwise>
+					<xsl:choose>
+						<xsl:when test="$num = '01'">January</xsl:when>
+						<xsl:when test="$num = '02'">February</xsl:when>
+						<xsl:when test="$num = '03'">March</xsl:when>
+						<xsl:when test="$num = '04'">April</xsl:when>
+						<xsl:when test="$num = '05'">May</xsl:when>
+						<xsl:when test="$num = '06'">June</xsl:when>
+						<xsl:when test="$num = '07'">July</xsl:when>
+						<xsl:when test="$num = '08'">August</xsl:when>
+						<xsl:when test="$num = '09'">September</xsl:when>
+						<xsl:when test="$num = '10'">October</xsl:when>
+						<xsl:when test="$num = '11'">November</xsl:when>
+						<xsl:when test="$num = '12'">December</xsl:when>
+					</xsl:choose>
+				</xsl:otherwise>
+			</xsl:choose>
+		</xsl:variable>
+		<xsl:choose>
+			<xsl:when test="normalize-space($lowercase) = 'true'">
+				<xsl:value-of select="java:toLowerCase(java:java.lang.String.new($monthStr_))"/>
+			</xsl:when>
+			<xsl:otherwise><xsl:value-of select="$monthStr_"/></xsl:otherwise>
+		</xsl:choose>
+	</xsl:template> <!-- getMonthByNum -->
 
 	<xsl:template name="insertKeywords">
 		<xsl:param name="sorting" select="'true'"/>
@@ -11395,6 +11434,28 @@
 			</xsl:choose>
 		</xsl:if>
 	</xsl:template> <!-- number-to-words -->
+ 
+	<!-- st for 1, nd for 2, rd for 3, th for 4, 5, 6, ... -->
+	<xsl:template name="number-to-ordinal">
+		<xsl:param name="number" />
+		<xsl:param name="curr_lang"/>
+		<xsl:choose>
+			<xsl:when test="$curr_lang = 'fr'">
+				<xsl:choose>					
+					<xsl:when test="$number = '1'">re</xsl:when>
+					<xsl:otherwise>e</xsl:otherwise>
+				</xsl:choose>
+			</xsl:when>
+			<xsl:otherwise>
+				<xsl:choose>
+					<xsl:when test="$number = 1">st</xsl:when>
+					<xsl:when test="$number = 2">nd</xsl:when>
+					<xsl:when test="$number = 3">rd</xsl:when>
+					<xsl:otherwise>th</xsl:otherwise>
+				</xsl:choose>
+			</xsl:otherwise>
+		</xsl:choose>
+	</xsl:template> <!-- number-to-ordinal -->
  
 	<!-- add the attribute fox:alt-text, required for PDF/UA -->
 	<xsl:template name="setAltText">

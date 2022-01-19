@@ -1250,23 +1250,10 @@
 						<xsl:attribute name="baseline-shift">0%</xsl:attribute>
 						<xsl:attribute name="font-size">100%</xsl:attribute>
 					</xsl:if>
-					<xsl:choose>
-						<xsl:when test="$curr_lang = 'fr'">
-							<xsl:choose>					
-								<xsl:when test=". = '1'">re</xsl:when>
-								<xsl:otherwise>e</xsl:otherwise>
-							</xsl:choose>
-						</xsl:when>
-						<xsl:otherwise>
-							<xsl:choose>					
-								<xsl:when test=". = '1'">st</xsl:when>
-								<xsl:when test=". = '2'">nd</xsl:when>
-								<xsl:when test=". = '3'">rd</xsl:when>
-								<xsl:otherwise>th</xsl:otherwise>
-							</xsl:choose>
-						</xsl:otherwise>
-					</xsl:choose>
-					
+					<xsl:call-template name="number-to-ordinal">
+						<xsl:with-param name="number" select="."/>
+						<xsl:with-param name="curr_lang" select="$curr_lang"/>
+					</xsl:call-template>
 				</fo:inline>
 				<xsl:text> </xsl:text>			
 				<xsl:value-of select="java:toLowerCase(java:java.lang.String.new($title-edition))"/>

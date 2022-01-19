@@ -65,10 +65,6 @@
 							<xsl:variable name="num"><xsl:number level="any" count="bipm:bipm-standard"/></xsl:variable>
 							<xsl:variable name="title-part"><xsl:value-of select="bipm:bibdata/bipm:title[@type = 'part']"/></xsl:variable>
 							<xsl:variable name="current_document">
-								<!-- <xsl:apply-templates select="." mode="change_id">
-									<xsl:with-param name="lang" select="$lang"/>
-									<xsl:with-param name="ignoreReferenceFrom" select="'true'"/>
-								</xsl:apply-templates> -->
 								<xsl:copy-of select="."/>
 							</xsl:variable>				
 							<xsl:for-each select="xalan:nodeset($current_document)">
@@ -86,9 +82,6 @@
 							<xsl:variable name="lang" select="*[local-name()='bibdata']/*[local-name()='language'][@current = 'true']"/>
 							<xsl:variable name="num"><xsl:number level="any" count="bipm:bipm-standard"/></xsl:variable>
 							<xsl:variable name="current_document">
-								<!-- <xsl:apply-templates select="." mode="change_id">
-									<xsl:with-param name="lang" select="$lang"/>
-								</xsl:apply-templates> -->
 								<xsl:copy-of select="."/>
 							</xsl:variable>				
 							<xsl:for-each select="xalan:nodeset($current_document)">
@@ -447,17 +440,6 @@
 							<xsl:for-each select="//bipm:bipm-standard">
 								<xsl:variable name="lang" select="*[local-name()='bibdata']//*[local-name()='language'][@current = 'true']"/>						
 								<xsl:variable name="num"><xsl:number level="any" count="bipm:bipm-standard"/></xsl:variable>
-								<!-- change id to prevent identical id in different documents in one container -->						
-								<!-- <xsl:variable name="current_document">							
-									<xsl:apply-templates select="." mode="change_id">
-										<xsl:with-param name="lang" select="$lang"/>
-										<xsl:with-param name="ignoreReferenceFrom" select="'true'"/>
-									</xsl:apply-templates>
-								</xsl:variable>
-								
-								<xsl:variable name="flatxml">
-									<xsl:apply-templates select="xalan:nodeset($current_document)" mode="flatxml"/>
-								</xsl:variable> -->
 								
 								<xsl:variable name="title_eref">
 									<xsl:apply-templates select="." mode="title_eref"/>
@@ -483,16 +465,6 @@
 							<xsl:for-each select="(//bipm:bipm-standard)[*[local-name()='bibdata']/*[local-name()='language'][@current = 'true'] = $doc_split_by_language]">
 								<xsl:variable name="lang" select="*[local-name()='bibdata']//*[local-name()='language'][@current = 'true']"/>						
 								<xsl:variable name="num"><xsl:number level="any" count="bipm:bipm-standard"/></xsl:variable>
-								<!-- change id to prevent identical id in different documents in one container -->						
-								<!-- <xsl:variable name="current_document">							
-									<xsl:apply-templates select="." mode="change_id">
-										<xsl:with-param name="lang" select="$lang"/>
-									</xsl:apply-templates>
-								</xsl:variable>
-								
-								<xsl:variable name="flatxml">
-									<xsl:apply-templates select="xalan:nodeset($current_document)" mode="flatxml"/>
-								</xsl:variable> -->
 								
 								<xsl:variable name="title_eref">
 									<xsl:apply-templates select="." mode="title_eref"/>
@@ -2370,23 +2342,10 @@
 			</xsl:variable>
 			<xsl:value-of select="."/>
 			<fo:inline font-size="{$font-size}" baseline-shift="{$baseline-shift}">
-				<xsl:choose>
-					<xsl:when test="$curr_lang = 'fr'">
-						<xsl:choose>					
-							<xsl:when test=". = '1'">re</xsl:when>
-							<xsl:otherwise>e</xsl:otherwise>
-						</xsl:choose>
-					</xsl:when>
-					<xsl:otherwise>
-						<xsl:choose>					
-							<xsl:when test=". = '1'">st</xsl:when>
-							<xsl:when test=". = '2'">nd</xsl:when>
-							<xsl:when test=". = '3'">rd</xsl:when>
-							<xsl:otherwise>th</xsl:otherwise>
-						</xsl:choose>
-					</xsl:otherwise>
-				</xsl:choose>
-				
+				<xsl:call-template name="number-to-ordinal">
+					<xsl:with-param name="number" select="."/>
+					<xsl:with-param name="curr_lang" select="$curr_lang"/>
+				</xsl:call-template>
 			</fo:inline>
 			<xsl:text> </xsl:text>			
 			<xsl:value-of select="java:toLowerCase(java:java.lang.String.new($title-edition))"/>
@@ -3989,44 +3948,6 @@
 		</xsl:if>
 	</xsl:template>
 
-	<!-- <xsl:template name="insertHeaderFooterAppendix">		
-		<fo:static-content flow-name="header-appendix">			
-			<fo:block-container font-size="11pt" padding-top="12.7mm">
-				
-				<fo:block text-align-last="justify">
-					<xsl:value-of select="/bipm:bipm-standard/bipm:bibdata/bipm:title[@language = $lang]"/>
-					<xsl:text> – </xsl:text>
-					<xsl:variable name="editionFO">
-						<xsl:apply-templates select="/bipm:bipm-standard/bipm:bibdata/bipm:edition">
-							<xsl:with-param name="curr_lang" select="$lang"/>
-						</xsl:apply-templates>
-					</xsl:variable>
-					<xsl:copy-of select="$editionFO"/>
-					<xsl:text> (</xsl:text>
-					<xsl:value-of select="substring(/bipm:bipm-standard/bipm:bibdata/bipm:version/bipm:revision-date, 1, 4)"/>					
-					<xsl:text>) – </xsl:text>
-					<xsl:choose>
-						<xsl:when test="$lang = 'fr'">Annexe </xsl:when>
-						<xsl:otherwise>Appendix </xsl:otherwise>
-					</xsl:choose>
-					<xsl:value-of select="/bipm:bipm-standard/bipm:bibdata/bipm:ext/bipm:structuredidentifier/bipm:appendix"/>
-					<fo:inline keep-together.within-line="always">
-						<fo:leader leader-pattern="space"/>
-						<fo:inline>
-							<xsl:call-template name="printRevisionDate">
-								<xsl:with-param name="date" select="/bipm:bipm-standard/bipm:bibdata/bipm:version/bipm:revision-date"/>
-							</xsl:call-template>
-						</fo:inline>
-					</fo:inline>
-				</fo:block>			
-			</fo:block-container>			
-		</fo:static-content>		
-		<fo:static-content flow-name="footer-appendix">
-			<fo:block-container font-size="11pt" height="100%" display-align="after">
-				<fo:block text-align="center" padding-bottom="12.7mm"><fo:page-number/>/<fo:page-number-citation ref-id="theLastPage"/></fo:block>					
-			</fo:block-container>
-		</fo:static-content>		
-	</xsl:template> -->
 
 	<xsl:template name="printRevisionDate">
 		<xsl:param name="date"/>
@@ -4037,47 +3958,17 @@
 		<xsl:variable name="month" select="substring($date, 6, 2)"/>
 		<xsl:variable name="day" select="substring($date, 9, 2)"/>
 		<xsl:variable name="monthStr">
-			<xsl:choose>
-				<xsl:when test="$lang = 'fr'">
-					<xsl:choose>
-						<xsl:when test="$month = '01'">janvier</xsl:when>
-						<xsl:when test="$month = '02'">février</xsl:when>
-						<xsl:when test="$month = '03'">mars</xsl:when>
-						<xsl:when test="$month = '04'">avril</xsl:when>
-						<xsl:when test="$month = '05'">mai</xsl:when>
-						<xsl:when test="$month = '06'">juin</xsl:when>
-						<xsl:when test="$month = '07'">juillet</xsl:when>
-						<xsl:when test="$month = '08'">août</xsl:when>
-						<xsl:when test="$month = '09'">septembre</xsl:when>
-						<xsl:when test="$month = '10'">octobre</xsl:when>
-						<xsl:when test="$month = '11'">novembre</xsl:when>
-						<xsl:when test="$month = '12'">décembre</xsl:when>
-					</xsl:choose>
-				</xsl:when>
-				<xsl:otherwise>
-					<xsl:choose>
-						<xsl:when test="$month = '01'">January</xsl:when>
-						<xsl:when test="$month = '02'">February</xsl:when>
-						<xsl:when test="$month = '03'">March</xsl:when>
-						<xsl:when test="$month = '04'">April</xsl:when>
-						<xsl:when test="$month = '05'">May</xsl:when>
-						<xsl:when test="$month = '06'">June</xsl:when>
-						<xsl:when test="$month = '07'">July</xsl:when>
-						<xsl:when test="$month = '08'">August</xsl:when>
-						<xsl:when test="$month = '09'">September</xsl:when>
-						<xsl:when test="$month = '10'">October</xsl:when>
-						<xsl:when test="$month = '11'">November</xsl:when>
-						<xsl:when test="$month = '12'">December</xsl:when>
-					</xsl:choose>
-				</xsl:otherwise>
-			</xsl:choose>
+			<xsl:call-template name="getMonthByNum">
+				<xsl:with-param name="num" select="$month"/>
+				<xsl:with-param name="lang" select="$lang"/>
+				<xsl:with-param name="lowercase" select="$lang = 'fr'"/>
+			</xsl:call-template>
 		</xsl:variable>
 		<xsl:choose>
 			<xsl:when test="$lang = 'fr' or $variant = 'true'">
 				<xsl:value-of select="concat($day, ' ', $monthStr, ' ', $year)"/>
 			</xsl:when>
 			<xsl:otherwise>
-				<!-- <xsl:value-of select="concat($monthStr, ' ', $day, ', ', $year)"/> -->
 				<xsl:value-of select="$monthStr"/>
 				<xsl:text> </xsl:text>
 				<xsl:value-of select="$day"/>
@@ -4085,7 +3976,6 @@
 				<xsl:value-of select="$year"/>
 			</xsl:otherwise>
 		</xsl:choose>
-		
 	</xsl:template>
 
 
@@ -4096,39 +3986,12 @@
 			</fo:block>
 		</fo:static-content>
 	</xsl:template>
-
-<!-- 	<xsl:template name="insertIndexPages">
-		<fo:page-sequence master-reference="index" force-page-count="no-force">
-			<xsl:call-template name="insertHeaderFooter"/>
-			<fo:flow flow-name="xsl-region-body">
-				<fo:marker marker-class-name="header-title">Index</fo:marker>
-				<fo:block font-size="16pt" font-weight="bold" margin-bottom="84pt" margin-left="-18mm" span="all">Index</fo:block>
-				<xsl:variable name="alphabet" select="'ABCDEFGHIJKLMNOPQRSTUVWXYZ'"/>
-				<xsl:for-each select="(document('')//node())[position() &lt; 26]">
-					<xsl:variable name="letter" select="substring($alphabet, position(), 1)"/>
-					<fo:block font-size="10pt" font-weight="bold" margin-bottom="3pt" keep-with-next="always"><xsl:value-of select="$letter"/></fo:block>
-					<fo:block>accélération due à la pesanteur (gn), 33</fo:block>
-					<fo:block>activité d’un radionucléide, 26, 27</fo:block>
-					<fo:block>ampère (A), 13, 16, 18, 20, 28, 44, 49, 51, 52, 54, 55, 71, 81, 83-86, 89, 91-94, 97, 99, 100, 101, 103-104</fo:block>
-					<fo:block>angle, 25, 26, 33, 37 38, 40, 48, 55, 65</fo:block>
-					<fo:block>atmosphère normale, 52</fo:block>
-					<fo:block>atome gramme, 104</fo:block>
-					<fo:block>atome de césium, niveaux hyperfins, 15, 17, 18, 56, 58, 83, 85, 92, 94, 97, 98, 102</fo:block>
-					<xsl:if test="position() != last()"><fo:block>&#xA0;</fo:block></xsl:if>
-				</xsl:for-each>
-				
-			</fo:flow>
-		</fo:page-sequence>
-	</xsl:template>
-	 -->
-	 
+ 
 	 
 	<!-- =================== -->
 	<!-- Index processing -->
 	<!-- =================== -->
 	
-	<!-- <xsl:template match="bipm:clause[@type = 'index']" /> -->
-	<!-- <xsl:template match="bipm:clause[@type = 'index']" mode="index"> -->
 	<xsl:template match="bipm:indexsect" />
 	<xsl:template match="bipm:indexsect" mode="index">
 		<xsl:param name="isDraft"/>
@@ -4177,7 +4040,6 @@
 		</fo:page-sequence>
 	</xsl:template>
 	
-	<!-- <xsl:template match="bipm:clause[@type = 'index']/bipm:title" priority="4"> -->
 	<xsl:template match="bipm:indexsect/bipm:title" priority="4">
 		<fo:block font-size="16pt" font-weight="bold" margin-bottom="84pt" margin-left="-18mm" role="H1">
 			<!-- Index -->
@@ -4185,7 +4047,6 @@
 		</fo:block>
 	</xsl:template>
 		
-	<!-- <xsl:template match="bipm:clause[@type = 'index']/bipm:clause/bipm:title" priority="4"> -->
 	<xsl:template match="bipm:indexsect/bipm:clause/bipm:title" priority="4">
 		<!-- Letter A, B, C, ... -->
 		<fo:block font-size="10pt" font-weight="bold" margin-bottom="3pt" keep-with-next="always">
@@ -6368,61 +6229,6 @@
 			</xsl:call-template>
 		</xsl:if>		
 	</xsl:template>
-
-	<!-- <xsl:template match="node()" mode="change_id">
-		<xsl:param name="lang"/>
-		<xsl:param name="ignoreReferenceFrom"/>
-		<xsl:copy>
-			<xsl:apply-templates select="@*|node()" mode="change_id">
-				<xsl:with-param name="lang" select="$lang"/>
-				<xsl:with-param name="ignoreReferenceFrom" select="$ignoreReferenceFrom"/>
-			</xsl:apply-templates>
-		</xsl:copy>
-	</xsl:template>
-	
-	<xsl:template match="bipm:locality[@type='anchor']/bipm:referenceFrom " mode="change_id">
-		<xsl:param name="lang"/>
-		<xsl:param name="ignoreReferenceFrom"/>
-		<xsl:copy>
-			<xsl:apply-templates select="@*" mode="change_id">
-				<xsl:with-param name="lang" select="$lang"/>
-				<xsl:with-param name="ignoreReferenceFrom" select="$ignoreReferenceFrom"/>
-			</xsl:apply-templates>
-			<xsl:choose>
-				<xsl:when test="$ignoreReferenceFrom = 'true'"><xsl:value-of select="."/></xsl:when>
-				<xsl:otherwise><xsl:value-of select="."/>_<xsl:value-of select="$lang"/><xsl:if test="$doctype = 'guide'">_<xsl:number count="bipm:bipm-standard" level="any"/></xsl:if></xsl:otherwise>
-			</xsl:choose>
-		</xsl:copy>
-	</xsl:template>
-	
-	<xsl:template match="@*" mode="change_id">
-		<xsl:param name="lang"/>
-		<xsl:param name="ignoreReferenceFrom"/>
-		<xsl:choose>
-			<xsl:when test="$ignoreReferenceFrom = 'true' and local-name() = 'id' and xalan:nodeset($ids)//referenceFrom = .">
-				<xsl:attribute name="{local-name()}">
-					<xsl:value-of select="."/>
-				</xsl:attribute>
-			</xsl:when>
-			<xsl:when test="local-name() = 'id' or 
-														local-name() = 'bibitemid' or	 
-														(local-name() = 'target' and local-name(..) = 'xref')">
-				<xsl:attribute name="{local-name()}">
-					<xsl:value-of select="."/>_<xsl:value-of select="$lang"/><xsl:if test="$doctype = 'guide'">_<xsl:number count="bipm:bipm-standard" level="any"/></xsl:if>
-				</xsl:attribute>
-			</xsl:when>			
-			<xsl:otherwise>
-				no change
-				<xsl:copy>
-					<xsl:apply-templates select="@*" mode="change_id">
-						<xsl:with-param name="lang" select="$lang"/>
-						<xsl:with-param name="ignoreReferenceFrom" select="$ignoreReferenceFrom"/>
-					</xsl:apply-templates>
-				</xsl:copy>
-			</xsl:otherwise>
-		</xsl:choose>
-	</xsl:template> -->
-	
 
 	
 </xsl:stylesheet>
