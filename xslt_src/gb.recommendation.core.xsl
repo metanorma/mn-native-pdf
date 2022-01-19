@@ -780,15 +780,11 @@
 			</fo:list-item-label>
 			<fo:list-item-body start-indent="body-start()">
 				<fo:block>
-					<xsl:apply-templates />
-					<xsl:apply-templates select=".//gb:note" mode="process"/>
+					<xsl:apply-templates select="node()[not(local-name() = 'note')]" />
+					<xsl:apply-templates select=".//gb:note" />
 				</fo:block>
 			</fo:list-item-body>
 		</fo:list-item>
-	</xsl:template>
-	
-	<xsl:template match="gb:note" mode="process">
-		<xsl:call-template name="note"/>
 	</xsl:template>
 	
 	

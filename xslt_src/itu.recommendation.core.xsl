@@ -1694,7 +1694,7 @@
 		<!-- <xsl:if test="following-sibling::itu:table">
 			<fo:block space-after="18pt">&#xA0;</fo:block>
 		</xsl:if> -->
-	</xsl:template>
+	</xsl:template> <!-- preferred -->
 	
 	<xsl:template match="itu:term[itu:preferred]/itu:termsource" priority="2"/>
 	
@@ -1715,6 +1715,10 @@
 				</fo:block>
 			</xsl:otherwise>
 		</xsl:choose>
+	</xsl:template>
+
+	<xsl:template match="itu:definition/*" mode="process">
+		<xsl:apply-templates select="."/>
 	</xsl:template>
 
 	<!-- footnotes for title -->
@@ -1790,47 +1794,42 @@
 		</xsl:if>
 		<xsl:choose>
 			<xsl:when test="$doctype = 'service-publication'">
-				<xsl:apply-templates />
+				<xsl:apply-templates select="node()[not(local-name() = 'note')]" />
 			</xsl:when>
 			<xsl:otherwise>
 				<fo:list-block>
 					<xsl:if test="$doctype = 'service-publication'">
 						<xsl:attribute name="provisional-distance-between-starts">0mm</xsl:attribute>
 					</xsl:if>
-					<xsl:apply-templates />
+					<xsl:apply-templates select="node()[not(local-name() = 'note')]" />
 				</fo:list-block>
 			</xsl:otherwise>
 		</xsl:choose>
-		<xsl:apply-templates select="./itu:note" mode="process"/>
+		<xsl:apply-templates select="./itu:note" />
 		<xsl:if test="../@inline-header='true'">
 			<fo:block><xsl:value-of select="$linebreak"/></fo:block>
 		</xsl:if>
 	</xsl:template>
 	
-	<xsl:template match="itu:ul//itu:note |  itu:ol//itu:note" priority="2"/>
-	<xsl:template match="itu:ul//itu:note  | itu:ol//itu:note" mode="process">
+	<xsl:template match="itu:ul//itu:note  | itu:ol//itu:note" priority="2">
 		<fo:block id="{@id}">
 			<xsl:apply-templates select="itu:name" />
-			<xsl:apply-templates select="node()[not(local-name() = 'name')]" mode="process"/>
-		</fo:block>
-	</xsl:template>
-	<xsl:template match="itu:ul//itu:note/itu:name  | itu:ol//itu:note/itu:name" mode="process" priority="2"/>
-	<xsl:template match="itu:ul//itu:note/itu:p  | itu:ol//itu:note/itu:p" mode="process" priority="2">		
-		<fo:block font-size="11pt" margin-top="4pt">			
-			<xsl:apply-templates />
+			<xsl:apply-templates select="node()[not(local-name() = 'name')]" />
 		</fo:block>
 	</xsl:template>
 	
-	<xsl:template match="itu:ul//itu:note/*  | itu:ol//itu:note/*" mode="process">
-		<xsl:apply-templates select="."/>
+	<xsl:template match="itu:ul//itu:note/itu:p  | itu:ol//itu:note/itu:p" priority="3">		
+		<fo:block font-size="11pt" margin-top="4pt">			
+			<xsl:apply-templates />
+		</fo:block>
 	</xsl:template>
 	
 	<xsl:template match="itu:li">
 		<xsl:choose>
 			<xsl:when test="$doctype = 'service-publication'">
 				<fo:block id="{@id}">
-					<xsl:apply-templates />
-					<xsl:apply-templates select=".//itu:note" mode="process"/>
+					<xsl:apply-templates select="node()[not(local-name() = 'note')]" />
+					<xsl:apply-templates select="./itu:note" />
 				</fo:block>
 				<xsl:if test="following-sibling::itu:li">
 					<fo:block>&#xa0;</fo:block>
@@ -1877,8 +1876,8 @@
 										<xsl:attribute name="start-indent">7mm</xsl:attribute>
 										<xsl:attribute name="text-indent">7mm</xsl:attribute>
 									</xsl:if> -->
-									<xsl:apply-templates />
-									<xsl:apply-templates select=".//itu:note" mode="process"/>
+									<xsl:apply-templates select="node()[not(local-name() = 'note')]" />
+									<xsl:apply-templates select="./itu:note" />
 								</fo:block>
 							</fo:block-container>
 						</fo:block-container>
@@ -1963,12 +1962,6 @@
 			</fo:table-body>
 		</fo:table>
 	</xsl:template>
-	
-	
-	<xsl:template match="itu:formula" mode="process">
-		<xsl:call-template name="formula" />			
-	</xsl:template>
-
 	
 		
 	<xsl:template name="insertHeaderFooter">

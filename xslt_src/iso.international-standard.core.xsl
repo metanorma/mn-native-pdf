@@ -1728,14 +1728,12 @@
 		
 	<xsl:template match="iso:ul | iso:ol" mode="ul_ol">
 		<fo:list-block provisional-distance-between-starts="7mm" margin-top="8pt"> <!-- margin-bottom="8pt" -->
-			<xsl:apply-templates />
+			<xsl:apply-templates select="node()[not(local-name() = 'note')]" />
 		</fo:list-block>
 		<xsl:for-each select="./iso:note">
 			<xsl:call-template name="note"/>
 		</xsl:for-each>
 	</xsl:template>
-	
-	<xsl:template match="iso:ul/iso:note |  iso:ol/iso:note | iso:ul/iso:li/iso:note |  iso:ol/iso:li/iso:note" priority="2"/>
 	
 	<xsl:template match="iso:li">
 		<fo:list-item id="{@id}">
@@ -1746,8 +1744,8 @@
 			</fo:list-item-label>
 			<fo:list-item-body start-indent="body-start()">
 				<fo:block>
-					<xsl:apply-templates />
-					<!-- <xsl:apply-templates select=".//iso:note" mode="process"/> -->
+					<xsl:apply-templates select="node()[not(local-name() = 'note')]" />
+					
 					<xsl:for-each select="./iso:note">
 						<xsl:call-template name="note"/>
 					</xsl:for-each>
@@ -1756,13 +1754,6 @@
 		</fo:list-item>
 	</xsl:template>
 	
-	<xsl:template match="iso:note" mode="process">
-		<xsl:call-template name="note"/>
-	</xsl:template>
-	
-	<xsl:template match="*" mode="process">
-		<xsl:apply-templates select="."/>
-	</xsl:template>
 	
 	<xsl:template match="iso:preferred">	
 		<xsl:variable name="levelTerm">

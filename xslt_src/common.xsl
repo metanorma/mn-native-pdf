@@ -2974,6 +2974,9 @@
 			<xsl:attribute name="margin-left">14mm</xsl:attribute>
 			<xsl:attribute name="text-indent">-14mm</xsl:attribute>
 		</xsl:if>
+		<xsl:if test="$namespace = 'm3d'">
+			<xsl:attribute name="text-align">justify</xsl:attribute>
+		</xsl:if>
 	</xsl:attribute-set> <!-- bibitem-non-normative-list-body-style -->
 	
 	<!-- footnote reference number for bibitem, in the text  -->
@@ -3514,7 +3517,8 @@
 							<xsl:apply-templates select="*[local-name()='thead']" mode="process_tbody"/>
 						</xsl:when>
 						<xsl:otherwise>
-							<xsl:apply-templates select="node()[not(local-name() = 'name')]" />
+							<xsl:apply-templates select="node()[not(local-name() = 'name') and not(local-name() = 'note')
+							and not(local-name() = 'thead') and not(local-name() = 'tfoot')]" /> <!-- process all table' elements, except name, header, footer and note that renders separaterely -->
 						</xsl:otherwise>
 					</xsl:choose>
 					
@@ -3531,7 +3535,7 @@
 				
 				
 				<xsl:if test="$namespace = 'gb'">
-					<xsl:apply-templates select="*[local-name()='note']" mode="process"/>
+					<xsl:apply-templates select="*[local-name()='note']" />
 				</xsl:if>
 				
 				<xsl:if test="$namespace = 'ogc-white-paper'">
@@ -3822,12 +3826,8 @@
 	<!-- ================================================== -->
 	
 	
-	<!-- for debug purpose only -->
-	<xsl:template match="*[local-name()='table2']"/>
 	
-	<xsl:template match="*[local-name()='thead']"/>
-
-	<xsl:template match="*[local-name()='thead']" mode="process">
+	<xsl:template match="*[local-name()='thead']">
 		<xsl:param name="cols-count"/>
 		<fo:table-header>
 			<xsl:if test="$namespace = 'iso' or $namespace = 'jcgm'">				
@@ -3844,7 +3844,7 @@
 			</xsl:if>
 			<xsl:apply-templates />
 		</fo:table-header>
-	</xsl:template>
+	</xsl:template> <!-- thead -->
 	
 	<!-- template is using for iso, jcgm, bsi only -->
 	<xsl:template name="table-header-title">
@@ -3883,9 +3883,8 @@
 		</fo:table-body>
 	</xsl:template>
 	
-	<xsl:template match="*[local-name()='tfoot']"/>
 
-	<xsl:template match="*[local-name()='tfoot']" mode="process">
+	<xsl:template match="*[local-name()='tfoot']">
 		<xsl:apply-templates/>
 	</xsl:template>
 	
@@ -3893,7 +3892,7 @@
 		<xsl:param name="cols-count" />
 		<xsl:if test="../*[local-name()='tfoot']">
 			<fo:table-footer>			
-				<xsl:apply-templates select="../*[local-name()='tfoot']" mode="process"/>
+				<xsl:apply-templates select="../*[local-name()='tfoot']" />
 			</fo:table-footer>
 		</xsl:if>
 	</xsl:template>
@@ -4019,7 +4018,7 @@
 							<!-- for BSI (not PAS) display Notes before footnotes -->
 							<xsl:if test="$namespace = 'bsi'">
 								<xsl:if test="$document_type != 'PAS'">
-									<xsl:apply-templates select="../*[local-name()='note']" mode="process"/>
+									<xsl:apply-templates select="../*[local-name()='note']" />
 								</xsl:if>
 							</xsl:if>
 							
@@ -4027,7 +4026,7 @@
 							<xsl:choose>
 								<xsl:when test="$namespace = 'gb' or $namespace = 'bsi'"></xsl:when>
 								<xsl:otherwise>
-									<xsl:apply-templates select="../*[local-name()='note']" mode="process"/>
+									<xsl:apply-templates select="../*[local-name()='note']" />
 								</xsl:otherwise>
 							</xsl:choose>
 							
@@ -4047,7 +4046,7 @@
 							<!-- for PAS display Notes after footnotes -->
 							<xsl:if test="$namespace = 'bsi'">
 								<xsl:if test="$document_type = 'PAS'">
-									<xsl:apply-templates select="../*[local-name()='note']" mode="process"/>
+									<xsl:apply-templates select="../*[local-name()='note']" />
 								</xsl:if>
 							</xsl:if>
 							
@@ -4057,7 +4056,7 @@
 				
 			</fo:table>
 		</xsl:if>
-	</xsl:template>
+	</xsl:template> <!-- insertTableFooterInSeparateTable -->
 	
 	<xsl:template match="*[local-name()='tbody']">
 		
@@ -4087,7 +4086,7 @@
 			</xsl:if>
 		</xsl:if>
 		
-		<xsl:apply-templates select="../*[local-name()='thead']" mode="process">
+		<xsl:apply-templates select="../*[local-name()='thead']">
 			<xsl:with-param name="cols-count" select="$cols-count"/>
 		</xsl:apply-templates>
 		
@@ -4526,8 +4525,7 @@
 	</xsl:template> <!-- td -->
 	
 	
-	<xsl:template match="*[local-name()='table']/*[local-name()='note']" priority="2"/>
-	<xsl:template match="*[local-name()='table']/*[local-name()='note']" mode="process">
+	<xsl:template match="*[local-name()='table']/*[local-name()='note']" priority="2">
 
 		<fo:block xsl:use-attribute-sets="table-note-style">
 
@@ -4577,14 +4575,13 @@
 				</xsl:if>
 			</xsl:if>
 			
-			<xsl:apply-templates select="node()[not(local-name() = 'name')]" mode="process"/>
+			<xsl:apply-templates select="node()[not(local-name() = 'name')]" />
 		</fo:block>
 		
 	</xsl:template> <!-- table/note -->
 	
-	<xsl:template match="*[local-name()='table']/*[local-name()='note']/*[local-name()='name']" mode="process" /><!-- commended, because processed in main template -->
 	
-	<xsl:template match="*[local-name()='table']/*[local-name()='note']/*[local-name()='p']" mode="process">
+	<xsl:template match="*[local-name()='table']/*[local-name()='note']/*[local-name()='p']" priority="2">
 		<xsl:apply-templates/>
 	</xsl:template>
 	
@@ -5365,11 +5362,15 @@
 				<xsl:choose>
 					<xsl:when test="$namespace = 'nist-cswp' or $namespace = 'nist-sp'">
 						<xsl:if test="local-name(*[1]) != 'stem'">
-							<xsl:apply-templates select="following-sibling::*[local-name()='dd'][1]" mode="process"/>
+							<xsl:apply-templates select="following-sibling::*[local-name()='dd'][1]">
+								<xsl:with-param name="process">true</xsl:with-param>
+							</xsl:apply-templates>
 						</xsl:if>
 					</xsl:when>
 					<xsl:otherwise>
-						<xsl:apply-templates select="following-sibling::*[local-name()='dd'][1]" mode="process"/>
+						<xsl:apply-templates select="following-sibling::*[local-name()='dd'][1]">
+							<xsl:with-param name="process">true</xsl:with-param>
+						</xsl:apply-templates>
 					</xsl:otherwise>
 				</xsl:choose>
 			</td>
@@ -5421,7 +5422,9 @@
 						<xsl:attribute name="text-align">justify</xsl:attribute>
 					</xsl:if>
 
-					<xsl:apply-templates select="following-sibling::*[local-name()='dd'][1]" mode="process"/>
+					<xsl:apply-templates select="following-sibling::*[local-name()='dd'][1]">
+						<xsl:with-param name="process">true</xsl:with-param>
+					</xsl:apply-templates>
 				</fo:block>
 			</fo:table-cell>
 		</fo:table-row>
@@ -5433,10 +5436,12 @@
 		<xsl:apply-templates />
 	</xsl:template>
 	
-	<xsl:template match="*[local-name()='dd']"/>
-	<xsl:template match="*[local-name()='dd']" mode="process">
-		<xsl:apply-templates select="@language"/>
-		<xsl:apply-templates />
+	<xsl:template match="*[local-name()='dd']">
+		<xsl:param name="process">false</xsl:param>
+		<xsl:if test="$process = 'true'">
+			<xsl:apply-templates select="@language"/>
+			<xsl:apply-templates />
+		</xsl:if>
 	</xsl:template>
 
 	<xsl:template match="*[local-name()='dd']/*[local-name()='p']" mode="inline">
@@ -6264,22 +6269,25 @@
 		</fo:inline>
 	</xsl:template> <!-- link -->
 
-	
+	<!-- ======================== -->
+	<!-- Appendix processing -->
+	<!-- ======================== -->
 	<xsl:template match="*[local-name()='appendix']">
 		<fo:block id="{@id}" xsl:use-attribute-sets="appendix-style">
-			<xsl:apply-templates select="*[local-name()='title']" mode="process"/>
+			<xsl:apply-templates select="*[local-name()='title']" />
 		</fo:block>
-		<xsl:apply-templates />
+		<xsl:apply-templates select="node()[not(local-name()='title')]"/>
 	</xsl:template>
 
-	<xsl:template match="*[local-name()='appendix']/*[local-name()='title']"/>
-	<xsl:template match="*[local-name()='appendix']/*[local-name()='title']" mode="process">
+	<xsl:template match="*[local-name()='appendix']/*[local-name()='title']" priority="2">
 		<xsl:variable name="level">
 			<xsl:call-template name="getLevel"/>
 		</xsl:variable>
 		<fo:inline role="H{$level}"><xsl:apply-templates /></fo:inline>
 	</xsl:template>
-	
+	<!-- ======================== -->
+	<!-- END Appendix processing -->
+	<!-- ======================== -->
 	
 	<xsl:template match="*[local-name()='appendix']//*[local-name()='example']" priority="2">
 		<fo:block id="{@id}" xsl:use-attribute-sets="appendix-example-style">			

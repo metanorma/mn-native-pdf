@@ -481,7 +481,7 @@
 					<xsl:if test="local-name() = 'ol'">
 						<xsl:attribute name="provisional-distance-between-starts">7mm</xsl:attribute>
 					</xsl:if>			
-					<xsl:apply-templates />
+					<xsl:apply-templates select="node()[not(local-name() = 'note')]" />
 				</fo:list-block>
 				<xsl:for-each select="./mpfd:note//mpfd:p">
 					<xsl:call-template name="note"/>
@@ -489,8 +489,6 @@
 			</fo:block-container>
 		</fo:block-container>
 	</xsl:template>
-	
-	<xsl:template match="mpfd:ul//mpfd:note |  mpfd:ol//mpfd:note" priority="2"/>
 	
 	<xsl:template match="mpfd:li">
 		<fo:list-item id="{@id}">
@@ -500,16 +498,12 @@
 				</fo:block>
 			</fo:list-item-label>
 			<fo:list-item-body start-indent="body-start()">
-				<xsl:apply-templates />
-				<xsl:apply-templates select=".//mpfd:note" mode="process"/>
+				<xsl:apply-templates select="node()[not(local-name() = 'note')]" />
+				<xsl:apply-templates select=".//mpfd:note" />
 			</fo:list-item-body>
 		</fo:list-item>
 	</xsl:template>
 	
-	<xsl:template match="mpfd:note" mode="process">
-		<xsl:call-template name="note"/>
-	</xsl:template>
-
 	
 	<xsl:template match="mpfd:preferred">		
 		<fo:inline font-weight="bold">

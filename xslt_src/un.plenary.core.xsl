@@ -570,24 +570,12 @@
 	<xsl:template match="un:ul | un:ol" mode="ul_ol">
 		<fo:block-container margin-left="8mm"  text-indent="0mm">
 			<fo:list-block provisional-distance-between-starts="4mm" margin-left="-8mm">
-				<xsl:apply-templates />
+				<xsl:apply-templates select="node()[not(local-name() = 'note')]" />
 			</fo:list-block>
-			<xsl:apply-templates select="./un:note" mode="process"/>
+			<xsl:apply-templates select="./un:note" />
 		</fo:block-container>
 	</xsl:template>
 	
-	<xsl:template match="un:ul//un:note |  un:ol//un:note" priority="2"/>
-	<xsl:template match="un:ul//un:note/un:name  | un:ol//un:note/un:name" mode="process" priority="2"/>
-	<xsl:template match="un:ul//un:note/un:p  | un:ol//un:note/un:p" mode="process" priority="2">
-		<fo:block margin-top="4pt">
-			<xsl:apply-templates select="../un:name" />
-			<xsl:apply-templates />
-		</fo:block>
-	</xsl:template>
-	
-	<xsl:template match="un:ul//un:note/* | un:ol//un:note/*" mode="process">		
-		<xsl:apply-templates select="."/>
-	</xsl:template>
 	
 	<xsl:template match="un:li">
 		<xsl:variable name="level">
@@ -631,8 +619,8 @@
 			</fo:list-item-label>
 			<fo:list-item-body start-indent="body-start()">
 				<fo:block>
-					<xsl:apply-templates />
-					<xsl:apply-templates select=".//un:note" mode="process"/>
+					<xsl:apply-templates select="node()[not(local-name() = 'note')]" />
+					<xsl:apply-templates select="./un:note" />
 				</fo:block>
 			</fo:list-item-body>
 		</fo:list-item>
@@ -929,11 +917,7 @@
 	</xsl:template>
 	
 	
-	<xsl:template match="un:formula" mode="process">
-		<xsl:call-template name="formula-un"/>
-	</xsl:template>
 	
-
 	
 	<xsl:template match="un:dl" priority="2">
 		<fo:block-container margin-left="0mm">

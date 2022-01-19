@@ -2820,7 +2820,7 @@
 		</xsl:if>
 	</xsl:template>
 
-	<xsl:template match="*[local-name()='table']/*[local-name()='note']/*[local-name()='p']" mode="process" priority="2">
+	<xsl:template match="*[local-name()='table']/*[local-name()='note']/*[local-name()='p']" priority="4">
 		<xsl:choose>
 			<xsl:when test="ancestor::bipm:preface">
 				<xsl:call-template name="p"/>

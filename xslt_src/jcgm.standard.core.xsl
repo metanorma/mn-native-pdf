@@ -743,14 +743,12 @@
 	
 	<xsl:template match="*[local-name()='ul'] | *[local-name()='ol']" mode="ul_ol">
 		<fo:list-block provisional-distance-between-starts="7mm" margin-top="8pt"> <!-- margin-bottom="8pt" -->
-			<xsl:apply-templates />
+			<xsl:apply-templates select="node()[not(local-name() = 'note')]" />
 		</fo:list-block>
 		<xsl:for-each select="./*[local-name()='note']">
 			<xsl:call-template name="note"/>
 		</xsl:for-each>
 	</xsl:template>
-	
-	<xsl:template match="*[local-name()='ul']//*[local-name()='note'] |  *[local-name()='ol']//*[local-name()='note']" priority="2"/>
 	
 
 	<xsl:template match="*[local-name()='li']">
@@ -762,8 +760,8 @@
 			</fo:list-item-label>
 			<fo:list-item-body start-indent="body-start()">
 				<fo:block>
-					<xsl:apply-templates />
-					<xsl:apply-templates select=".//*[local-name()='note']" mode="process"/>
+					<xsl:apply-templates select="node()[not(local-name() = 'note')]" />
+					<xsl:apply-templates select=".//*[local-name()='note']" />
 				</fo:block>
 			</fo:list-item-body>
 		</fo:list-item>
@@ -785,17 +783,14 @@
 				</fo:list-item-label>
 				<fo:list-item-body start-indent="body-start()">
 					<fo:block>
-						<xsl:apply-templates />
-						<xsl:apply-templates select=".//*[local-name()='note']" mode="process"/>
+						<xsl:apply-templates select="node()[not(local-name() = 'note')]" />
+						<xsl:apply-templates select=".//*[local-name()='note']" />
 					</fo:block>
 				</fo:list-item-body>
 			</fo:list-item>
 		</fo:list-block>
 	</xsl:template>
 	
-	<xsl:template match="*[local-name()='note']" mode="process">
-		<xsl:call-template name="note"/>
-	</xsl:template>
 	
 	<xsl:template match="*[local-name()='preferred']">
 		<xsl:variable name="level">

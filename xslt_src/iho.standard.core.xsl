@@ -585,29 +585,17 @@
 	
 	<xsl:template match="iho:ul | iho:ol" mode="ul_ol">
 		<fo:list-block provisional-distance-between-starts="6mm">
-			<xsl:apply-templates />
+			<xsl:apply-templates select="node()[not(local-name() = 'note')]" />
 		</fo:list-block>
 		<xsl:for-each select="./iho:note">
 			<xsl:call-template name="note"/>
 		</xsl:for-each>
 	</xsl:template>
 	
-	<xsl:template match="iho:ul//iho:note |  iho:ol//iho:note" priority="2"/>
-	<xsl:template match="iho:ul//iho:note  | iho:ol//iho:note" mode="process">
+	<xsl:template match="iho:ul//iho:note  | iho:ol//iho:note" priority="2">
 		<fo:block id="{@id}">
-			<xsl:apply-templates select="iho:name" />
-			<xsl:apply-templates select="node()[not(local-name() = 'name')]" mode="process"/>
-		</fo:block>
-	</xsl:template>
-	<xsl:template match="iho:ul//iho:note/iho:name  | iho:ol//iho:note/iho:name" mode="process" priority="2"/>
-	<xsl:template match="iho:ul//iho:note/iho:p  | iho:ol//iho:note/iho:p" mode="process" priority="2">		
-		<fo:block font-size="11pt" margin-top="4pt">
 			<xsl:apply-templates />
 		</fo:block>
-	</xsl:template>
-
-	<xsl:template match="iho:ul//iho:note/* | iho:ol//iho:note/*" mode="process">		
-		<xsl:apply-templates select="."/>
 	</xsl:template>
 	
 	
@@ -620,8 +608,8 @@
 			</fo:list-item-label>
 			<fo:list-item-body start-indent="body-start()">
 				<fo:block>
-					<xsl:apply-templates />
-					<xsl:apply-templates select=".//iho:note" mode="process"/>
+					<xsl:apply-templates select="node()[not(local-name() = 'note')]" />
+					<xsl:apply-templates select=".//iho:note" />
 				</fo:block>
 			</fo:list-item-body>
 		</fo:list-item>
