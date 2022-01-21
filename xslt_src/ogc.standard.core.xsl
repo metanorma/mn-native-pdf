@@ -871,46 +871,11 @@
 		</fo:block>
 	</xsl:template>
 	
-	<xsl:template match="ogc:license-statement | ogc:feedback-statement | ogc:copyright-statement">
-		<fo:block font-size="8pt" line-height="125%">
-			<xsl:apply-templates />
-		</fo:block>
-	</xsl:template>
-	
-	<xsl:template match="ogc:license-statement//ogc:title">
+	<xsl:template match="ogc:legal-statement//ogc:title" priority="2">
 		<xsl:variable name="level">
 			<xsl:call-template name="getLevel"/>
 		</xsl:variable>
-		<fo:block font-weight="bold" color="{$color_blue}" role="H{$level}">
-			<xsl:apply-templates />
-		</fo:block>
-	</xsl:template>
-	
-	<xsl:template match="ogc:copyright-statement//ogc:title">
-		<xsl:variable name="level">
-			<xsl:call-template name="getLevel"/>
-		</xsl:variable>
-		<fo:block font-weight="bold" color="{$color_blue}" margin-top="24pt" role="H{$level}">
-			<xsl:apply-templates />
-		</fo:block>
-	</xsl:template>
-	
-	<xsl:template match="ogc:license-statement//ogc:p | ogc:feedback-statement//ogc:p | ogc:copyright-statement//ogc:p">
-		<fo:block margin-top="6pt">
-			<xsl:apply-templates />
-		</fo:block>
-	</xsl:template>
-	
-	<xsl:template match="ogc:legal-statement">
-		<fo:block font-size="8pt">
-			<xsl:apply-templates/>
-		</fo:block>
-	</xsl:template>
-
-	<xsl:template match="ogc:legal-statement//ogc:title">
-		<xsl:variable name="level">
-			<xsl:call-template name="getLevel"/>
-		</xsl:variable>
+		<!-- inline title -->
 		<fo:inline font-weight="bold" role="H{$level}">
 			<xsl:apply-templates /><xsl:text>: </xsl:text>
 		</fo:inline>
@@ -922,8 +887,8 @@
 		</xsl:call-template>		
 	</xsl:template>
 
-	
-	<xsl:template match="ogc:legal-statement//ogc:p">
+
+	<xsl:template match="ogc:legal-statement//ogc:p" priority="2">
 		<fo:inline>			
 			<xsl:apply-templates />			
 		</fo:inline>
@@ -1060,7 +1025,7 @@
 	<!-- ====== -->
 	<!-- ====== -->
 	
-	<xsl:template match="ogc:p">
+	<xsl:template match="ogc:p" name="paragraph">
 		<xsl:param name="inline" select="'false'"/>
 		<xsl:variable name="previous-element" select="local-name(preceding-sibling::*[1])"/>
 		<xsl:variable name="element-name">

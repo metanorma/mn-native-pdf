@@ -508,7 +508,7 @@
 		</fo:block>
 	</xsl:template>
 	
-	<xsl:template match="un:p" > <!-- priority="3" [not(parent::un:note)]-->
+	<xsl:template match="un:p" name="paragraph"> <!-- priority="3" [not(parent::un:note)]-->
 		
 				<fo:block margin-bottom="6pt" line-height="122%">
 					<xsl:if test="following-sibling::*">

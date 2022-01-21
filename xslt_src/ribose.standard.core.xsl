@@ -596,66 +596,18 @@
 		</fo:block>
 	</xsl:template>
 	
-	<xsl:template match="rsd:license-statement//rsd:title">
-		<xsl:variable name="level">
-			<xsl:call-template name="getLevel"/>
-		</xsl:variable>
-		<fo:block text-align="center" font-weight="normal" margin-top="4pt" role="H{$level}">
-			<xsl:apply-templates />
-		</fo:block>
-	</xsl:template>
 	
-	<xsl:template match="rsd:license-statement//rsd:p">
-		<fo:block font-size="8pt" margin-top="14pt" line-height="115%">
-			<xsl:if test="following-sibling::rsd:p">
-				<xsl:attribute name="margin-bottom">14pt</xsl:attribute>
-			</xsl:if>
-			<xsl:apply-templates />
-		</fo:block>
-	</xsl:template>
-	
-	<xsl:template match="rsd:feedback-statement">
+	<xsl:template match="rsd:feedback-statement" priority="2">
 		<fo:block-container border="1pt solid black" padding="1mm" padding-left="2mm">
 			<fo:block>
 				<xsl:apply-templates />
 			</fo:block>
 		</fo:block-container>
 	</xsl:template>
-		
-	<xsl:template match="rsd:copyright-statement//rsd:title">
-		<xsl:variable name="level">
-			<xsl:call-template name="getLevel"/>
-		</xsl:variable>
-		<fo:block font-weight="normal" text-align="center" role="H{$level}">
-			<xsl:apply-templates/>
-		</fo:block>
-	</xsl:template>
-	<xsl:template match="rsd:copyright-statement//rsd:p">
-		<fo:block margin-bottom="12pt">
-			<xsl:if test="not(following-sibling::p)">
-				<xsl:attribute name="margin-bottom">10pt</xsl:attribute>
-			</xsl:if>
-			<xsl:attribute name="text-align">
-				<xsl:choose>
-					<xsl:when test="@align"><xsl:value-of select="@align"/></xsl:when>
-					<xsl:otherwise>left</xsl:otherwise>
-				</xsl:choose>
-			</xsl:attribute>
-			<xsl:apply-templates />
-		</fo:block>
-	</xsl:template>
-	
-	<xsl:template match="rsd:legal-statement">
-		<xsl:apply-templates/>
-	</xsl:template>
 
-	<xsl:template match="rsd:legal-statement//rsd:title">
-		<xsl:variable name="level">
-			<xsl:call-template name="getLevel"/>
-		</xsl:variable>
-		<fo:block font-weight="normal" padding-top="2mm" margin-bottom="6pt" role="H{$level}">
-			<xsl:apply-templates />
-		</fo:block>
+	
+	<xsl:template match="rsd:legal-statement" priority="2">
+		<xsl:apply-templates/>
 	</xsl:template>
 		
 	
@@ -799,7 +751,7 @@
 		</fo:block>
 	</xsl:template>
 	
-	<xsl:template match="rsd:p">
+	<xsl:template match="rsd:p" name="paragraph">
 		<xsl:param name="inline" select="'false'"/>
 		<xsl:variable name="previous-element" select="local-name(preceding-sibling::*[1])"/>
 		<xsl:variable name="element-name">

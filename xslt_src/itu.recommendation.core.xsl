@@ -1606,19 +1606,10 @@
 	</xsl:template>
 	
 	
-	<xsl:template match="itu:legal-statement//itu:title | itu:license-statement//itu:title">
-		<xsl:variable name="level">
-			<xsl:call-template name="getLevel"/>
-		</xsl:variable>
-		<fo:block text-align="center" margin-top="6pt" role="H{$level}">
-			<xsl:apply-templates />
-		</fo:block>
-	</xsl:template>
-	
 	<!-- ====== -->
 	<!-- ====== -->
 	
-	<xsl:template match="itu:legal-statement//itu:p | itu:license-statement//itu:p">
+	<xsl:template match="itu:legal-statement//itu:p | itu:license-statement//itu:p" priority="2">
 		<fo:block margin-top="6pt">
 			<xsl:apply-templates />
 		</fo:block>
@@ -1629,7 +1620,7 @@
 		</xsl:if>
 	</xsl:template>
 	
-	<xsl:template match="itu:copyright-statement//itu:p">
+	<xsl:template match="itu:copyright-statement//itu:p" priority="2">
 		<fo:block>
 			<xsl:if test="not(preceding-sibling::itu:p)"> <!-- first para -->
 				<xsl:attribute name="text-align">center</xsl:attribute>

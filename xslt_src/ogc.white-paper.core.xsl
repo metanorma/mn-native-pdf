@@ -450,64 +450,21 @@
 			<xsl:value-of select="."/><xsl:text> </xsl:text>
 		</fo:block>
 	</xsl:template>
+
 	
-	<xsl:template match="ogc:license-statement//ogc:title">
-		<xsl:variable name="level">
-			<xsl:call-template name="getLevel"/>
-		</xsl:variable>
-		<fo:block font-family="Lato" text-align="center" font-weight="bold" margin-top="4pt" role="H{$level}">
-			<xsl:apply-templates />
-		</fo:block>
-	</xsl:template>
-	
-	<xsl:template match="ogc:license-statement//ogc:p">
-		<fo:block font-size="8pt" margin-top="14pt" line-height="115%">
-			<xsl:if test="following-sibling::ogc:p">
-				<xsl:attribute name="margin-bottom">14pt</xsl:attribute>
-			</xsl:if>
-			<xsl:apply-templates />
-		</fo:block>
-	</xsl:template>
-	
-	<xsl:template match="ogc:feedback-statement">
+	<xsl:template match="ogc:feedback-statement" priority="2">
 		<fo:block margin-top="12pt" margin-bottom="12pt">
 			<xsl:apply-templates select="ogc:clause[1]"/>
 		</fo:block>
 	</xsl:template>
 		
-	<xsl:template match="ogc:copyright-statement | ogc:legal-statement">
-		<fo:block>
-			<xsl:apply-templates/>
-		</fo:block>
-	</xsl:template>
 		
 	<xsl:template match="ogc:copyright-statement//ogc:clause | ogc:legal-statement//ogc:clause" priority="2">
 		<fo:block margin-top="6pt">
 			<xsl:apply-templates/>
 		</fo:block>
 	</xsl:template>
-		
-	<xsl:template match="ogc:copyright-statement//ogc:title | ogc:legal-statement//ogc:title">
-		<xsl:variable name="level">
-			<xsl:call-template name="getLevel"/>
-		</xsl:variable>
-		<fo:block font-family="Lato" text-align="center" font-weight="bold" role="H{$level}">
-			<xsl:apply-templates/>
-		</fo:block>
-	</xsl:template>
 	
-	<xsl:template match="ogc:copyright-statement//ogc:p | ogc:legal-statement//ogc:p">
-		<fo:block>
-			<xsl:attribute name="text-align">
-				<xsl:choose>
-					<xsl:when test="@align"><xsl:value-of select="@align"/></xsl:when>
-					<xsl:otherwise>left</xsl:otherwise>
-				</xsl:choose>
-			</xsl:attribute>
-			<xsl:apply-templates />
-		</fo:block>
-	</xsl:template>
-
 	
 	<xsl:template match="/*/*[local-name() = 'preface']/*" priority="3">		
 		<fo:block>
@@ -605,7 +562,7 @@
 	<!-- ====== -->
 	<!-- ====== -->
 	
-	<xsl:template match="ogc:p">
+	<xsl:template match="ogc:p" name="paragraph">
 		<xsl:param name="inline" select="'false'"/>
 		<xsl:variable name="previous-element" select="local-name(preceding-sibling::*[1])"/>
 		<xsl:variable name="element-name">

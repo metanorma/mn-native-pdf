@@ -341,7 +341,7 @@
 	</xsl:template> 
 
 	
-	<xsl:template match="m3d:boilerplate//m3d:p">
+	<xsl:template match="m3d:boilerplate//m3d:p" priority="2">
 		<fo:block font-size="11pt" margin-bottom="12pt">
 			<xsl:apply-templates/>
 		</fo:block>
@@ -452,7 +452,7 @@
 	<!-- title      -->
 	<!-- ====== -->	
 	
-	<xsl:template match="m3d:boilerplate//m3d:title">
+	<xsl:template match="m3d:boilerplate//m3d:title" priority="2">
 		<xsl:variable name="level">
 			<xsl:call-template name="getLevel"/>
 		</xsl:variable>

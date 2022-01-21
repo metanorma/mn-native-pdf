@@ -427,7 +427,7 @@
 		
 		
 		
-	<xsl:template match="un:legal-statement//un:clause/un:title">
+	<xsl:template match="un:legal-statement//un:clause/un:title" priority="2">
 		<xsl:variable name="level">
 			<xsl:call-template name="getLevel"/>
 		</xsl:variable>
@@ -454,7 +454,7 @@
 		<fo:block margin-bottom="16pt">&#xA0;</fo:block>
 	</xsl:template>
 	
-	<xsl:template match="un:legal-statement//un:clause//un:p">
+	<xsl:template match="un:legal-statement//un:clause//un:p" priority="2">
 		<fo:block margin-bottom="12pt">
 			<xsl:if test="@align">
 				<xsl:attribute name="text-align"><xsl:value-of select="@align"/></xsl:attribute>
@@ -469,7 +469,7 @@
 		</fo:block>
 	</xsl:template>
 		
-		<xsl:template match="un:copyright-statement//un:clause//un:p">
+		<xsl:template match="un:copyright-statement//un:clause//un:p" priority="2">
 			<xsl:variable name="num"><xsl:number/></xsl:variable>
 			<fo:block>
 				<xsl:choose>
@@ -491,7 +491,7 @@
 			<xsl:call-template name="show_fs_table"/>
 		</xsl:template>
 		
-		<xsl:template match="un:feedback-statement//un:clause//un:p">
+		<xsl:template match="un:feedback-statement//un:clause//un:p" priority="2">
 			<fo:block>
 				<xsl:if test="@id = 'boilerplate-feedback-address'">
 					<xsl:attribute name="margin-top">5mm</xsl:attribute>
@@ -583,7 +583,7 @@
 		</fo:inline>
 	</xsl:template>
 	
-	<xsl:template match="un:p">
+	<xsl:template match="un:p" name="paragraph">
 		<fo:block>
 			<xsl:if test="following-sibling::*">
 				<xsl:attribute name="margin-bottom">6pt</xsl:attribute>

@@ -685,7 +685,7 @@
 	
 	
 
-	<xsl:template match="*[local-name()='p']">
+	<xsl:template match="*[local-name()='p']" name="paragraph">
 		<xsl:param name="inline" select="'false'"/>
 		<xsl:variable name="previous-element" select="local-name(preceding-sibling::*[1])"/>
 		<xsl:variable name="element-name">

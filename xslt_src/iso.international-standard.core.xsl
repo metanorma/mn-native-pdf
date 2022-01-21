@@ -1474,26 +1474,7 @@
 	
 	<!-- ============================= -->
 	<!-- ============================= -->
-	
-	
-	<xsl:template match="iso:license-statement//iso:title">
-		<xsl:variable name="level">
-			<xsl:call-template name="getLevel"/>
-		</xsl:variable>
-		<fo:block text-align="center" font-weight="bold" role="H{$level}">
-			<xsl:apply-templates />
-		</fo:block>
-	</xsl:template>
-	
-	<xsl:template match="iso:license-statement//iso:p">
-		<fo:block margin-left="1.5mm" margin-right="1.5mm">
-			<xsl:if test="following-sibling::iso:p">
-				<xsl:attribute name="margin-top">6pt</xsl:attribute>
-				<xsl:attribute name="margin-bottom">6pt</xsl:attribute>
-			</xsl:if>
-			<xsl:apply-templates />
-		</fo:block>
-	</xsl:template>
+
 	
 	<!-- <fo:block margin-bottom="12pt">© ISO 2019, Published in Switzerland.</fo:block>
 			<fo:block font-size="10pt" margin-bottom="12pt">All rights reserved. Unless otherwise specified, no part of this publication may be reproduced or utilized otherwise in any form or by any means, electronic or mechanical, including photocopying, or posting on the internet or an intranet, without prior written permission. Permission can be requested from either ISO at the address below or ISO’s member body in the country of the requester.</fo:block>
@@ -1507,7 +1488,7 @@
 				<fo:block>www.iso.org</fo:block>
 			</fo:block> -->
 	
-	<xsl:template match="iso:copyright-statement/iso:clause[1]/iso:title">
+	<xsl:template match="iso:copyright-statement/iso:clause[1]/iso:title" priority="2">
 		<fo:block margin-bottom="3mm" role="H1">
 				<fo:external-graphic src="{concat('data:image/png;base64,', normalize-space($Image-Attention))}" width="14mm" content-height="13mm" content-width="scale-to-fit" scaling="uniform" fox:alt-text="Image {@alt}"/>
 				<!-- <fo:inline padding-left="6mm" font-size="12pt" font-weight="bold">COPYRIGHT PROTECTED DOCUMENT</fo:inline> -->
@@ -1515,17 +1496,12 @@
 			</fo:block>
 	</xsl:template>
 	
-	<xsl:template match="iso:copyright-statement//iso:p">
+	<xsl:template match="iso:copyright-statement//iso:p" priority="2">
 		<fo:block>
-			<xsl:if test="preceding-sibling::iso:p">
-				<!-- <xsl:attribute name="font-size">10pt</xsl:attribute> -->
-			</xsl:if>
 			<xsl:if test="following-sibling::iso:p">
-				<!-- <xsl:attribute name="margin-bottom">12pt</xsl:attribute> -->
 				<xsl:attribute name="margin-bottom">3pt</xsl:attribute>
 			</xsl:if>
-			<xsl:if test="contains(@id, 'address')"> <!-- not(following-sibling::iso:p) -->
-				<!-- <xsl:attribute name="margin-left">7.1mm</xsl:attribute> -->
+			<xsl:if test="contains(@id, 'address')">
 				<xsl:attribute name="margin-left">4mm</xsl:attribute>
 			</xsl:if>
 			<xsl:apply-templates />

@@ -1732,27 +1732,13 @@
 		</xsl:if>
 	</xsl:template>
 	
-	<xsl:template match="iec:boilerplate/iec:feedback-statement">
+	<xsl:template match="iec:boilerplate/iec:feedback-statement" priority="2">
 		<fo:block margin-top="6pt" font-size="1pt" span="all" >&#xa;</fo:block>
 		<xsl:apply-templates select="*[not(@id) or @id != 'boilerplate-cenelec-attention']"/>
 	</xsl:template>
 	
-	<xsl:template match="iec:feedback-statement//iec:clause/iec:title" priority="2">
-		<xsl:variable name="level">
-			<xsl:call-template name="getLevel"/>
-		</xsl:variable>
-		<fo:block font-weight="bold" keep-with-next="always" role="H{$level}"><xsl:apply-templates/></fo:block>
-	</xsl:template>
-	
-	<xsl:template match="iec:feedback-statement//iec:clause/iec:p" priority="2">
-		<fo:block margin-bottom="6pt"><xsl:apply-templates/></fo:block>	
-	</xsl:template>
-	
 	<xsl:template match="iec:feedback-statement/iec:clause[not(iec:clause)]" priority="2">
 		<fo:block span="all" text-align="justify">
-			<!-- <xsl:if test="not(preceding-sibling::iec:clause)">
-				<xsl:attribute name="margin-top">6pt</xsl:attribute>
-			</xsl:if> -->
 			<xsl:apply-templates />
 		</fo:block>
 	</xsl:template>
@@ -1856,25 +1842,6 @@
 	<!-- ============================= -->
 	<!-- ============================= -->
 	
-	<xsl:template match="iec:license-statement//iec:title">
-		<xsl:variable name="level">
-			<xsl:call-template name="getLevel"/>
-		</xsl:variable>
-		<fo:block text-align="center" font-weight="bold" role="H{$level}">
-			<xsl:apply-templates />
-		</fo:block>
-	</xsl:template>
-	
-	<xsl:template match="iec:license-statement//iec:p">
-		<fo:block margin-left="1.5mm" margin-right="1.5mm">
-			<xsl:if test="following-sibling::iec:p">
-				<xsl:attribute name="margin-top">6pt</xsl:attribute>
-				<xsl:attribute name="margin-bottom">6pt</xsl:attribute>
-			</xsl:if>
-			<xsl:apply-templates />
-		</fo:block>
-	</xsl:template>
-	
 	<xsl:template match="iec:license-statement//iec:title" mode="cover-page-internal">
 		<xsl:variable name="level">
 			<xsl:call-template name="getLevel"/>
@@ -1914,17 +1881,12 @@
 		<xsl:value-of select="$linebreak"/>
 	</xsl:template>
 	
-	<xsl:template match="iec:copyright-statement//iec:p">
+	<xsl:template match="iec:copyright-statement//iec:p" priority="2">
 		<fo:block>
-			<xsl:if test="preceding-sibling::iec:p">
-				<!-- <xsl:attribute name="font-size">10pt</xsl:attribute> -->
-			</xsl:if>
 			<xsl:if test="following-sibling::iec:p">
-				<!-- <xsl:attribute name="margin-bottom">12pt</xsl:attribute> -->
 				<xsl:attribute name="margin-bottom">3pt</xsl:attribute>
 			</xsl:if>
 			<xsl:if test="not(following-sibling::iec:p)">
-				<!-- <xsl:attribute name="margin-left">7.1mm</xsl:attribute> -->
 				<xsl:attribute name="margin-left">4mm</xsl:attribute>
 			</xsl:if>
 			<xsl:apply-templates />
@@ -2220,7 +2182,7 @@
 		</fo:list-item>
 	</xsl:template>
 	
-	<xsl:template match="iec:li/iec:p">
+	<xsl:template match="iec:li/iec:p" priority="2">
 		<fo:block margin-bottom="6pt">
 			<xsl:if test="ancestor::iec:ul">
 				<xsl:attribute name="margin-bottom">3pt</xsl:attribute>

@@ -2126,36 +2126,8 @@
 		</fo:inline>
 	</xsl:template>
 
-	<xsl:template match="bipm:license-statement">
-		<fo:block font-size="10.5pt" font-family="Times New Roman">
-			<xsl:apply-templates />
-		</fo:block>
-	</xsl:template>
-
-	<xsl:template match="bipm:license-statement//bipm:title">
-		<xsl:variable name="level">
-			<xsl:call-template name="getLevel"/>
-		</xsl:variable>
-		<fo:block text-decoration="underline" margin-bottom="6pt" role="H{$level}">
-			<xsl:apply-templates />
-		</fo:block>
-	</xsl:template>
-
-	<xsl:template match="bipm:license-statement//bipm:p">
-		<fo:block text-align="justify" line-height="135%">
-			<xsl:apply-templates />
-		</fo:block>
-	</xsl:template>
 	
-	
-	<xsl:template match="bipm:feedback-statement">
-		<fo:block font-size="10pt" line-height="125%">
-			<xsl:apply-templates />
-		</fo:block>
-	</xsl:template>
-
-
-	<xsl:template match="bipm:feedback-statement//bipm:p">
+	<xsl:template match="bipm:feedback-statement//bipm:p" priority="2">
 		<fo:block margin-top="6pt">
 			<xsl:variable name="p_num"><xsl:number/></xsl:variable>			
 			<xsl:if test="$p_num = 1">Édité par le </xsl:if>
@@ -2757,7 +2729,7 @@
 	</xsl:template>
 	
 
-	<xsl:template match="bipm:p" name="p">
+	<xsl:template match="bipm:p" name="paragraph">
 		<xsl:param name="inline" select="'false'"/>
 		
 		<xsl:variable name="previous-element" select="local-name(preceding-sibling::*[1])"/>
@@ -2823,7 +2795,7 @@
 	<xsl:template match="*[local-name()='table']/*[local-name()='note']/*[local-name()='p']" priority="4">
 		<xsl:choose>
 			<xsl:when test="ancestor::bipm:preface">
-				<xsl:call-template name="p"/>
+				<xsl:call-template name="paragraph"/>
 			</xsl:when>
 			<xsl:otherwise>
 				<xsl:apply-templates />

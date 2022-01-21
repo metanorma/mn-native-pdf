@@ -373,56 +373,6 @@
 	<!-- ============================= -->
 	
 	
-	<xsl:template match="csd:license-statement//csd:title">
-		<xsl:variable name="level">
-			<xsl:call-template name="getLevel"/>
-		</xsl:variable>
-		<fo:block text-align="center" font-weight="bold" role="H{$level}">
-			<xsl:apply-templates />
-		</fo:block>
-	</xsl:template>
-	
-	<xsl:template match="csd:license-statement//csd:p">
-		<fo:block margin-left="1.5mm" margin-right="1.5mm">
-			<xsl:if test="following-sibling::csd:p">
-				<xsl:attribute name="margin-top">6pt</xsl:attribute>
-				<xsl:attribute name="margin-bottom">6pt</xsl:attribute>
-			</xsl:if>
-			<xsl:apply-templates />
-		</fo:block>
-	</xsl:template>
-	
-	<!-- <fo:block margin-bottom="12pt">© ISO 2019, Published in Switzerland.</fo:block>
-			<fo:block font-size="10pt" margin-bottom="12pt">All rights reserved. Unless otherwise specified, no part of this publication may be reproduced or utilized otherwise in any form or by any means, electronic or mechanical, including photocopying, or posting on the internet or an intranet, without prior written permission. Permission can be requested from either ISO at the address below or ISO’s member body in the country of the requester.</fo:block>
-			<fo:block font-size="10pt" text-indent="7.1mm">
-				<fo:block>ISO copyright office</fo:block>
-				<fo:block>Ch. de Blandonnet 8 • CP 401</fo:block>
-				<fo:block>CH-1214 Vernier, Geneva, Switzerland</fo:block>
-				<fo:block>Tel.  + 41 22 749 01 11</fo:block>
-				<fo:block>Fax  + 41 22 749 09 47</fo:block>
-				<fo:block>copyright@iso.org</fo:block>
-				<fo:block>www.iso.org</fo:block>
-			</fo:block> -->
-	
-	<xsl:template match="csd:copyright-statement//csd:p">
-		<fo:block>
-			<xsl:if test="preceding-sibling::csd:p">
-				<!-- <xsl:attribute name="font-size">10pt</xsl:attribute> -->
-			</xsl:if>
-			<xsl:if test="following-sibling::csd:p">
-				<!-- <xsl:attribute name="margin-bottom">12pt</xsl:attribute> -->
-				<xsl:attribute name="margin-bottom">3pt</xsl:attribute>
-			</xsl:if>
-			<xsl:if test="not(following-sibling::csd:p)">
-				<!-- <xsl:attribute name="margin-left">7.1mm</xsl:attribute> -->
-				<xsl:attribute name="margin-left">4mm</xsl:attribute>
-			</xsl:if>
-			<xsl:apply-templates />
-		</fo:block>
-	</xsl:template>
-	
-
-	
 	<xsl:template match="csd:title" name="title">
 		
 		<xsl:variable name="level">
@@ -464,7 +414,7 @@
 	</xsl:template>
 	
 
-	<xsl:template match="csd:p">
+	<xsl:template match="csd:p" name="paragraph">
 		<xsl:param name="inline" select="'false'"/>
 		<xsl:variable name="previous-element" select="local-name(preceding-sibling::*[1])"/>
 		<xsl:variable name="element-name">
