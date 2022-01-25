@@ -9,7 +9,12 @@
 											version="1.0">
 
 	<!-- external parameters -->
-	<xsl:param name="syntax-highlight">false</xsl:param>
+	
+	<xsl:param name="svg_images"/> <!-- svg images array -->
+	<xsl:variable name="images" select="document($svg_images)"/>
+	<xsl:param name="basepath"/> <!-- base path for images -->
+	<xsl:param name="external_index" /><!-- path to index xml, generated on 1st pass, based on FOP Intermediate Format -->
+	<xsl:param name="syntax-highlight">false</xsl:param> <!-- syntax highlighting feature, default - off -->
 	
 
 	<!-- Note 1: Each xslt has declated variable `namespace` that allows to set some properties, processing logic, etc. for concrete xslt.

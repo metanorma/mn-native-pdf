@@ -12,16 +12,8 @@
 
 	<xsl:output version="1.0" method="xml" encoding="UTF-8" indent="no"/>
 	
-	<xsl:param name="svg_images"/>
-	<xsl:variable name="images" select="document($svg_images)"/>
-	<xsl:param name="basepath"/>
-	
 	<xsl:param name="initial_page_number"/>
 	<xsl:param name="doc_split_by_language"/>
-	
-	<!-- <item id="#">N_page</item> -->
-	<!-- param for second pass -->
-	<xsl:param name="external_index" /><!-- path to index xml, generated on 1st pass, based on FOP Intermediate Format -->
 	
 	<xsl:param name="add_math_as_text">true</xsl:param>
   

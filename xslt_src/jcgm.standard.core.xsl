@@ -12,14 +12,6 @@
 
 	<xsl:output method="xml" encoding="UTF-8" indent="no"/>
 	
-	<xsl:param name="svg_images"/>
-	<xsl:variable name="images" select="document($svg_images)"/>
-	<xsl:param name="basepath"/>
-
-	<!-- <item id="#">N_page</item> -->
-	<!-- param for second pass -->
-	<xsl:param name="external_index" /><!-- path to index xml, generated on 1st pass, based on FOP Intermediate Format -->
-	
 	<xsl:param name="align-cross-elements" />
 	
 	<xsl:include href="./common.xsl"/>
