@@ -137,7 +137,13 @@
 		<xsl:copy-of select="//*[contains(local-name(), '-standard')]/*[local-name() = 'localized-strings']" />
 	</xsl:variable>
 	
+	<!-- Characters -->
+	<xsl:variable name="linebreak">&#x2028;</xsl:variable>
 	<xsl:variable name="tab_zh">&#x3000;</xsl:variable>
+	<xsl:variable name="non_breaking_hyphen">&#x2011;</xsl:variable>
+	<xsl:variable name="thin_space">&#x2009;</xsl:variable>	
+	<xsl:variable name="zero_width_space">&#x200B;</xsl:variable>
+	<xsl:variable name="en_dash">&#x2013;</xsl:variable>
 	
 	<xsl:template name="getTitle">
 		<xsl:param name="name"/>
@@ -170,7 +176,7 @@
 
 	<xsl:variable name="en_chars" select="concat($lower,$upper,',.`1234567890-=~!@#$%^*()_+[]{}\|?/')"/>
 	
-	<xsl:variable name="linebreak" select="'&#x2028;'"/>
+	
 	
 	<!-- ====================================== -->
 	<!-- STYLES -->
@@ -4325,8 +4331,7 @@
 	</xsl:template>
 	
 	<xsl:template match="text()" mode="td_text">
-		<xsl:variable name="zero-space">&#x200B;</xsl:variable>
-		<xsl:value-of select="translate(., $zero-space, ' ')"/><xsl:text> </xsl:text>
+		<xsl:value-of select="translate(., $zero_width_space, ' ')"/><xsl:text> </xsl:text>
 	</xsl:template>
 	
 	<xsl:template match="*[local-name()='termsource']" mode="td_text">
@@ -9748,8 +9753,6 @@
 
 	<xsl:variable name="index" select="document($external_index)"/>
 	
-	<xsl:variable name="dash" select="'&#x2013;'"/>
-	
 	<xsl:variable name="bookmark_in_fn">
 		<xsl:for-each select="//*[local-name() = 'bookmark'][ancestor::*[local-name() = 'fn']]">
 			<bookmark><xsl:value-of select="@id"/></bookmark>
@@ -9776,7 +9779,7 @@
 		<!-- split <xref target="bm1" to="End" pagenumber="true"> to two xref:
 		<xref target="bm1" pagenumber="true"> and <xref target="End" pagenumber="true"> -->
 		<xsl:if test="@to">
-			<xsl:value-of select="$dash"/>
+			<xsl:value-of select="$en_dash"/>
 			<xsl:copy>
 				<xsl:copy-of select="@*"/>
 				<xsl:attribute name="target"><xsl:value-of select="@to"/></xsl:attribute>
@@ -9808,7 +9811,7 @@
 		<xsl:param name="target"/>
 		<!-- <node></node> -->
 		<xsl:choose>
-			<xsl:when test="self::text()  and (normalize-space(.) = ',' or normalize-space(.) = $dash) and $remove = 'true'">
+			<xsl:when test="self::text()  and (normalize-space(.) = ',' or normalize-space(.) = $en_dash) and $remove = 'true'">
 				<!-- skip text (i.e. remove it) and process next element -->
 				<!-- [removed_<xsl:value-of select="."/>] -->
 				<xsl:apply-templates select="following-sibling::node()[1]" mode="process_li_element">

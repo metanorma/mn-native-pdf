@@ -3269,7 +3269,7 @@
 			<xsl:if test="$add_math_as_text = 'true'">
 				<!-- set unique font-size (fiction) -->
 				<xsl:variable name="font-size_sfx"><xsl:number level="any"/></xsl:variable>
-				<fo:inline color="white" font-size="1.{$font-size_sfx}pt" font-style="normal" font-weight="normal">&#x200b;</fo:inline> <!-- zero width space -->
+				<fo:inline color="white" font-size="1.{$font-size_sfx}pt" font-style="normal" font-weight="normal"><xsl:value-of select="$zero_width_space"/></fo:inline> <!-- zero width space -->
 			</xsl:if>
 			
 			<!-- <fo:wrapper role="artifact"> -->

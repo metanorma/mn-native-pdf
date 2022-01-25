@@ -1322,7 +1322,7 @@
 		</xsl:variable>
 		<xsl:choose>
 			<xsl:when test="local-name(..) = 'ul' and itu:ul and local-name(../../..) != 'ul'">•</xsl:when> <!-- dash &#x2014; -->
-			<xsl:when test="local-name(..) = 'ul'">&#x2013;</xsl:when> <!-- dash &#x2014; -->
+			<xsl:when test="local-name(..) = 'ul'"><xsl:value-of select="$en_dash"/></xsl:when> <!-- dash &#x2014; -->
 			<xsl:otherwise>
 				<!-- for Ordered Lists -->
 				<xsl:choose>

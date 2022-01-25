@@ -356,22 +356,20 @@
 	</xsl:template> 
 
 
-	<xsl:variable name="thinspace" select="'&#x2009;'"/>	
-	
 	<!-- Lato font doesn't contain 'thin space' glyph -->
 	<xsl:template match="text()" priority="1">
-		<xsl:value-of select="translate(., $thinspace, ' ')"/>
+		<xsl:value-of select="translate(., $thin_space, ' ')"/>
 	</xsl:template>
 	
 	<xsl:template match="text()" priority="3" mode="contents">
-		<xsl:value-of select="translate(., $thinspace, ' ')"/>
+		<xsl:value-of select="translate(., $thin_space, ' ')"/>
 	</xsl:template>
 
 	<xsl:template match="*[local-name()='td']//text() | *[local-name()='th']//text()" priority="2">
 		<xsl:variable name="content">
 			<xsl:call-template name="add-zero-spaces"/>
 		</xsl:variable>
-		<xsl:value-of select="translate($content, $thinspace, ' ')"/>
+		<xsl:value-of select="translate($content, $thin_space, ' ')"/>
 	</xsl:template>
 
 	<xsl:template match="node()">		

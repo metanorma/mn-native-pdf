@@ -1684,11 +1684,11 @@
 	<xsl:template match="iso:li//iso:p//text()">
 		<xsl:choose>
 			<xsl:when test="contains(., '&#x9;')">
-				<!-- <fo:inline white-space="pre"><xsl:value-of select="translate(., $thinspace, ' ')"/></fo:inline> -->
+				<!-- <fo:inline white-space="pre"><xsl:value-of select="translate(., $thin_space, ' ')"/></fo:inline> -->
 				<fo:inline white-space="pre"><xsl:value-of select="."/></fo:inline>
 			</xsl:when>
 			<xsl:otherwise>
-				<!-- <xsl:value-of select="translate(., $thinspace, ' ')"/> -->
+				<!-- <xsl:value-of select="translate(., $thin_space, ' ')"/> -->
 				<xsl:value-of select="."/>
 			</xsl:otherwise>
 		</xsl:choose>
@@ -1862,9 +1862,9 @@
 	<!-- End of Index processing -->
 	<!-- =================== -->
 	
-	<!-- <xsl:variable name="thinspace" select="'&#x2009;'"/>
-	<xsl:template match="text()[contains(., $thinspace)]">
-		<xsl:value-of select="translate(., $thinspace, ' ')"/>
+	<!-- 
+	<xsl:template match="text()[contains(., $thin_space)]">
+		<xsl:value-of select="translate(., $thin_space, ' ')"/>
 	</xsl:template> -->
 	
 	

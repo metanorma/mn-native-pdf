@@ -711,15 +711,14 @@
 		</fo:root>
 	</xsl:template> 
 
-	<xsl:variable name="thinspace" select="'&#x2009;'"/>	
 	
 	<!-- Lato font doesn't contain 'thin space' glyph -->
 	<xsl:template match="text()" priority="1">
-		<xsl:value-of select="translate(., $thinspace, ' ')"/>
+		<xsl:value-of select="translate(., $thin_space, ' ')"/>
 	</xsl:template>
 	
 	<xsl:template match="ogc:title//text() | ogc:name//text()" priority="3" mode="contents">
-		<xsl:value-of select="translate(., $thinspace, ' ')"/>
+		<xsl:value-of select="translate(., $thin_space, ' ')"/>
 	</xsl:template>
 
 	<xsl:template match="*[local-name()='td']//text() | *[local-name()='th']//text()" priority="2">
@@ -728,7 +727,7 @@
 		</xsl:variable>
 		<!-- add zero-width space in the words like 'adeOfAbstractTransportaonSpace' to split it in the table's cell -->
 		<xsl:variable name="content2" select="java:replaceAll(java:java.lang.String.new($content),'([a-z]{2,})([A-Z])(.?)','$1&#x200B;$2$3')"/>
-		<xsl:value-of select="translate($content2, $thinspace, ' ')"/>
+		<xsl:value-of select="translate($content2, $thin_space, ' ')"/>
 	</xsl:template>
 
 
