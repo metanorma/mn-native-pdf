@@ -1938,29 +1938,23 @@
 	</xsl:attribute-set>
 
 	<xsl:attribute-set name="quote-style">
-		<xsl:attribute name="role">BlockQuote</xsl:attribute>
+		<xsl:attribute name="margin-left">12mm</xsl:attribute>
+		<xsl:attribute name="margin-right">12mm</xsl:attribute>
 		<xsl:if test="$namespace = 'csa' or $namespace = 'ogc' or $namespace = 'ogc-white-paper' or $namespace = 'rsd'">
 			<xsl:attribute name="margin-top">12pt</xsl:attribute>
 			<xsl:attribute name="margin-left">13mm</xsl:attribute>
-			<xsl:attribute name="margin-right">12mm</xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'bsi' or $namespace = 'csd' or $namespace = 'gb' or $namespace = 'iso' or $namespace = 'm3d'">
 			<xsl:attribute name="margin-top">12pt</xsl:attribute>
-			<xsl:attribute name="margin-left">12mm</xsl:attribute>
-			<xsl:attribute name="margin-right">12mm</xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'jcgm'">
 			<xsl:attribute name="margin-top">12pt</xsl:attribute>
-			<xsl:attribute name="margin-left">12mm</xsl:attribute>
-			<xsl:attribute name="margin-right">12mm</xsl:attribute>
 			<xsl:attribute name="font-style">italic</xsl:attribute>
 			<xsl:attribute name="text-align">justify</xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'iec'">
 			<xsl:attribute name="margin-top">5pt</xsl:attribute>
 			<xsl:attribute name="margin-bottom">10pt</xsl:attribute>
-			<xsl:attribute name="margin-left">12mm</xsl:attribute>
-			<xsl:attribute name="margin-right">12mm</xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'iho'">			
 			<xsl:attribute name="margin-left">12.5mm</xsl:attribute>
@@ -1968,28 +1962,20 @@
 		</xsl:if>
 		<xsl:if test="$namespace = 'itu'">
 			<xsl:attribute name="margin-top">6pt</xsl:attribute>
-			<xsl:attribute name="margin-left">12mm</xsl:attribute>
-			<xsl:attribute name="margin-right">12mm</xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'mpfd'">
 			<xsl:attribute name="margin-top">12pt</xsl:attribute>
-			<xsl:attribute name="margin-left">12mm</xsl:attribute>
-			<xsl:attribute name="margin-right">12mm</xsl:attribute>
 			<xsl:attribute name="text-align">justify</xsl:attribute>
 		</xsl:if>
 	</xsl:attribute-set>
 	
 	
 	<xsl:attribute-set name="quote-source-style">		
+		<xsl:attribute name="text-align">right</xsl:attribute>
 		<xsl:if test="$namespace = 'csa' or $namespace = 'ogc' or $namespace = 'ogc-white-paper' or $namespace = 'rsd'">
-			<xsl:attribute name="text-align">right</xsl:attribute>
 			<xsl:attribute name="margin-right">25mm</xsl:attribute>
 		</xsl:if>
-		<xsl:if test="$namespace = 'bsi' or $namespace = 'csd' or $namespace = 'gb' or $namespace = 'iho' or $namespace = 'iso' or $namespace = 'itu' or $namespace = 'm3d' or $namespace = 'jcgm'">
-			<xsl:attribute name="text-align">right</xsl:attribute>			
-		</xsl:if>		
 		<xsl:if test="$namespace = 'iec'">
-			<xsl:attribute name="text-align">right</xsl:attribute>
 			<xsl:attribute name="margin-top">15pt</xsl:attribute>
 			<xsl:attribute name="margin-left">12mm</xsl:attribute>
 			<xsl:attribute name="margin-right">12mm</xsl:attribute>			 
@@ -9326,8 +9312,7 @@
 				</xsl:if>
 			</xsl:if>
 			<fo:block-container margin-left="0mm">
-		
-				<fo:block xsl:use-attribute-sets="quote-style">
+				<fo:block-container xsl:use-attribute-sets="quote-style">
 					<xsl:if test="$namespace = 'jcgm'">
 						<xsl:if test="ancestor::*[local-name() = 'boilerplate']">
 							<xsl:attribute name="margin-left">7mm</xsl:attribute>
@@ -9335,8 +9320,12 @@
 							<xsl:attribute name="font-style">normal</xsl:attribute>
 						</xsl:if>
 					</xsl:if>
-					<xsl:apply-templates select="./node()[not(local-name() = 'author') and not(local-name() = 'source')]"/> <!-- process all nested nodes, except author and source -->
-				</fo:block>
+					<fo:block-container margin-left="0mm" margin-right="0mm">
+						<fo:block role="BlockQuote">
+							<xsl:apply-templates select="./node()[not(local-name() = 'author') and not(local-name() = 'source')]"/> <!-- process all nested nodes, except author and source -->
+						</fo:block>
+					</fo:block-container>
+				</fo:block-container>
 				<xsl:if test="*[local-name() = 'author'] or *[local-name() = 'source']">
 					<fo:block xsl:use-attribute-sets="quote-source-style">
 						<!-- — ISO, ISO 7301:2011, Clause 1 -->
