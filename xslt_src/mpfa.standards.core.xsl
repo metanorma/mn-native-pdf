@@ -500,7 +500,7 @@
 	</xsl:template>
 	
 	
-	<xsl:template match="mpfd:preferred">		
+	<xsl:template match="mpfd:preferred" priority="2">		
 		<fo:inline font-weight="bold">
 			<xsl:call-template name="setStyle_preferred"/>
 			<xsl:apply-templates />

@@ -677,30 +677,6 @@
 	</xsl:template>
 	
 
-	
-	<xsl:template match="ogc:preferred">		
-		<xsl:variable name="level">
-			<xsl:call-template name="getLevel"/>
-		</xsl:variable>
-		<xsl:variable name="font-size">
-			<xsl:choose>
-				<xsl:when test="$level &gt;= 2">11pt</xsl:when>
-				<xsl:otherwise>12pt</xsl:otherwise>
-			</xsl:choose>
-		</xsl:variable>
-		<xsl:variable name="levelTerm">
-			<xsl:call-template name="getLevelTermName"/>
-		</xsl:variable>
-		<fo:block font-size="{$font-size}" role="H{$levelTerm}">
-			<fo:block font-weight="bold" keep-with-next="always">
-				<xsl:apply-templates select="ancestor::ogc:term[1]/ogc:name" />
-			</fo:block>
-			<fo:block font-weight="bold" keep-with-next="always" line-height="1">
-				<xsl:call-template name="setStyle_preferred"/>
-				<xsl:apply-templates />
-			</fo:block>
-		</fo:block>
-	</xsl:template>
 		
 	
 	<xsl:template name="insertHeaderFooter">

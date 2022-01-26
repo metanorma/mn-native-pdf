@@ -625,7 +625,7 @@
 	</xsl:template>
 	
 	
-	<xsl:template match="m3d:preferred">
+	<xsl:template match="m3d:preferred" priority="2">
 
 		<fo:inline>
 			<xsl:call-template name="setStyle_preferred"/>

@@ -642,23 +642,6 @@
 	<!-- https://github.com/metanorma/mn-native-pdf/issues/214 -->
 	<xsl:template match="iho:index"/>
 	
-	
-	<xsl:template match="iho:preferred">
-		<xsl:variable name="levelTerm">
-			<xsl:call-template name="getLevelTermName"/>
-		</xsl:variable>
-		<fo:block line-height="1.1" role="H{$levelTerm}">
-			<fo:block font-weight="bold" keep-with-next="always">
-				<xsl:apply-templates select="ancestor::iho:term[1]/iho:name" />
-			</fo:block>
-			<fo:block font-weight="bold" keep-with-next="always">
-				<xsl:call-template name="setStyle_preferred"/>
-				<xsl:apply-templates />
-			</fo:block>
-		</fo:block>
-	</xsl:template>
-	
-
 
 
 	<xsl:template name="insertHeaderFooter">		

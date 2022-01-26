@@ -2053,6 +2053,31 @@
 			<xsl:attribute name="margin-bottom">10pt</xsl:attribute>
 		</xsl:if>
 	</xsl:attribute-set>
+	
+	<xsl:attribute-set name="term-name-style">
+		<xsl:attribute name="keep-with-next">always</xsl:attribute>
+		<xsl:if test="$namespace = 'csa'">
+			<xsl:attribute name="font-weight">bold</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'csd'">
+			<xsl:attribute name="font-weight">bold</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'iec'">
+			<xsl:attribute name="font-weight">bold</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'iho'">
+			<xsl:attribute name="font-weight">bold</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'iso'">
+			<xsl:attribute name="font-weight">bold</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'jcgm'">
+			<xsl:attribute name="font-weight">bold</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'ogc-white-paper'">
+			<xsl:attribute name="font-weight">bold</xsl:attribute>
+		</xsl:if>
+	</xsl:attribute-set>
 
 	<xsl:attribute-set name="figure-style">
 		<xsl:if test="$namespace = 'rsd'"> <!-- background for image -->
@@ -2378,6 +2403,54 @@
 			<xsl:attribute name="margin-top">12pt</xsl:attribute>
 			<xsl:attribute name="margin-bottom">12pt</xsl:attribute>
 			<xsl:attribute name="keep-with-next">always</xsl:attribute>
+		</xsl:if>
+	</xsl:attribute-set>
+
+	<xsl:attribute-set name="preferred-block-style">
+		<xsl:if test="$namespace = 'csd'">
+			<xsl:attribute name="line-height">1.1</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'iec'">
+			<xsl:attribute name="line-height">1.1</xsl:attribute>
+			<xsl:attribute name="space-before">14pt</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'iho'">
+			<xsl:attribute name="line-height">1.1</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'iso'">
+			<xsl:attribute name="line-height">1.1</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'jcgm'">
+			<xsl:attribute name="line-height">1.1</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'ogc-white-paper'">
+		</xsl:if>
+	</xsl:attribute-set>
+
+	<xsl:attribute-set name="preferred-term-style">
+		<xsl:attribute name="keep-with-next">always</xsl:attribute>
+		<xsl:if test="$namespace = 'csa'">
+			<xsl:attribute name="font-weight">bold</xsl:attribute>
+			<xsl:attribute name="line-height">1</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'csd'">
+			<xsl:attribute name="font-weight">bold</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'iec'">
+			<xsl:attribute name="font-weight">bold</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'iho'">
+			<xsl:attribute name="font-weight">bold</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'iso'">
+			<xsl:attribute name="font-weight">bold</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'jcgm'">
+			<xsl:attribute name="font-weight">bold</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'ogc-white-paper'">
+			<xsl:attribute name="font-weight">bold</xsl:attribute>
+			<xsl:attribute name="line-height">1</xsl:attribute>
 		</xsl:if>
 	</xsl:attribute-set>
 
@@ -9552,6 +9625,58 @@
 		</xsl:if>
 	</xsl:template>
 	
+	<!-- Preferred, admitted, deprecated -->
+	<xsl:template match="*[local-name() = 'preferred']">
+		<xsl:variable name="level">
+			<xsl:call-template name="getLevel"/>
+		</xsl:variable>
+		<xsl:variable name="font-size">
+			<xsl:choose>
+				<xsl:when test="$namespace = 'csa'">
+					<xsl:choose>
+						<xsl:when test="$level &gt;= 2">11pt</xsl:when>
+						<xsl:otherwise>12pt</xsl:otherwise>
+					</xsl:choose>
+				</xsl:when>
+				<xsl:when test="$namespace = 'csd'">
+					<xsl:choose>
+						<xsl:when test="$level &gt;= 3">11pt</xsl:when>
+						<xsl:otherwise>12pt</xsl:otherwise>
+					</xsl:choose>
+				</xsl:when>
+				<xsl:when test="$namespace = 'ogc-white-paper'">
+					<xsl:choose>
+						<xsl:when test="$level &gt;= 2">11pt</xsl:when>
+						<xsl:otherwise>12pt</xsl:otherwise>
+					</xsl:choose>
+				</xsl:when>
+				<xsl:otherwise>inherit</xsl:otherwise>
+			</xsl:choose>
+		</xsl:variable>
+		<xsl:variable name="levelTerm">
+			<xsl:call-template name="getLevelTermName"/>
+		</xsl:variable>
+		<fo:block font-size="{$font-size}" role="H{$levelTerm}" xsl:use-attribute-sets="preferred-block-style">
+		
+			<xsl:if test="$namespace = 'iec'">
+				<xsl:if test="preceding-sibling::*[1][self::iec:preferred]">
+					<xsl:attribute name="space-before">1pt</xsl:attribute>
+				</xsl:if>
+			</xsl:if>
+			
+			<xsl:if test="parent::*[local-name() = 'term'] and not(preceding-sibling::*[local-name() = 'preferred'])"> <!-- if first preffered in term, then display term's name -->
+				<fo:block xsl:use-attribute-sets="term-name-style">
+					<xsl:apply-templates select="ancestor::*[local-name() = 'term'][1]/*[local-name() = 'name']" />
+				</fo:block>
+			</xsl:if>
+			
+			<fo:block xsl:use-attribute-sets="preferred-term-style">
+				<xsl:call-template name="setStyle_preferred"/>
+				<xsl:apply-templates />
+			</fo:block>
+		</fo:block>
+	</xsl:template>
+	
 	<xsl:template match="*[local-name() = 'domain']">
 		<fo:inline xsl:use-attribute-sets="domain-style">&lt;<xsl:apply-templates/>&gt;</fo:inline>
 		<xsl:text> </xsl:text>
@@ -9585,6 +9710,7 @@
 	<xsl:template match="*[local-name() = 'preferred']/text()[contains(., ';')] | *[local-name() = 'preferred']/*[local-name() = 'strong']/text()[contains(., ';')]">
 		<xsl:value-of select="java:replaceAll(java:java.lang.String.new(.), ';', $linebreak)"/>
 	</xsl:template>
+	<!--  End Preferred, admitted, deprecated -->
 	
 	<!-- ========== -->
 	<!-- definition -->

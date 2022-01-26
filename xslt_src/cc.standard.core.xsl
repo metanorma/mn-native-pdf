@@ -499,32 +499,6 @@
 		</fo:list-item>
 	</xsl:template>
 		
-			
-	<xsl:template match="csd:preferred">		
-		<xsl:variable name="level">
-			<xsl:call-template name="getLevel"/>
-		</xsl:variable>
-		<xsl:variable name="font-size">
-			<xsl:choose>
-				<xsl:when test="$level &gt;= 3">11pt</xsl:when>
-				<xsl:otherwise>12pt</xsl:otherwise>
-			</xsl:choose>
-		</xsl:variable>
-		<xsl:variable name="levelTerm">
-			<xsl:call-template name="getLevelTermName"/>
-		</xsl:variable>
-		<fo:block font-size="{$font-size}" line-height="1.1" role="H{$levelTerm}">
-			<fo:block font-weight="bold" keep-with-next="always">
-				<xsl:apply-templates select="ancestor::csd:term[1]/csd:name" />
-			</fo:block>
-			<fo:block font-weight="bold" keep-with-next="always">
-				<xsl:call-template name="setStyle_preferred"/>
-				<xsl:apply-templates />
-			</fo:block>
-		</fo:block>
-	</xsl:template>
-	
-
 	
 	
 	<xsl:template match="csd:xref" priority="2">

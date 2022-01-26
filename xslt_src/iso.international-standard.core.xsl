@@ -1726,24 +1726,6 @@
 	</xsl:template>
 	
 	
-	<xsl:template match="iso:preferred">	
-		<xsl:variable name="levelTerm">
-			<xsl:call-template name="getLevelTermName"/>
-		</xsl:variable>
-		<fo:block line-height="1.1" role="H{$levelTerm}">
-			<fo:block font-weight="bold" keep-with-next="always">
-				<xsl:apply-templates select="ancestor::iso:term[1]/iso:name" />
-			</fo:block>
-			<fo:block font-weight="bold" keep-with-next="always">
-				<xsl:call-template name="setStyle_preferred"/>
-				<xsl:apply-templates />
-			</fo:block>
-		</fo:block>
-	</xsl:template>
-	
-
-	
-	
 	<!-- For express listings PDF attachments -->
 	<xsl:template match="*[local-name() = 'eref'][contains(@bibitemid, '.exp')]" priority="2">
 		<fo:inline xsl:use-attribute-sets="eref-style">

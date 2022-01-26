@@ -1628,7 +1628,7 @@
 	</xsl:template>
 	
 	
-	<xsl:template match="itu:preferred">		
+	<xsl:template match="itu:preferred" priority="2">		
 		<!-- DEBUG need -->
 		<xsl:variable name="level">
 			<xsl:call-template name="getLevel"/>

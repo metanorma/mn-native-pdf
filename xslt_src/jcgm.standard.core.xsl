@@ -784,30 +784,15 @@
 	</xsl:template>
 	
 	
-	<xsl:template match="*[local-name()='preferred']">
-		<xsl:variable name="level">
-			<xsl:call-template name="getLevel"/>
-		</xsl:variable>
-		<fo:block line-height="1.1" role="H{$level}">
-			<fo:block font-weight="bold" keep-with-next="always">
-				<xsl:apply-templates select="ancestor::*[local-name()='term'][1]/*[local-name()='name']" />
-			</fo:block>
-			<fo:block font-weight="bold" keep-with-next="always">
-				<xsl:call-template name="setStyle_preferred"/>
-				<xsl:apply-templates />
-			</fo:block>
-		</fo:block>
-	</xsl:template>
-	
-	<xsl:template match="*[local-name()='preferred'][not(parent::*[local-name()='term'])]">		
+	<xsl:template match="*[local-name()='preferred'][not(parent::*[local-name()='term'])]" priority="2">		
 		<xsl:variable name="levelTerm">
 			<xsl:call-template name="getLevelTermName"/>
 		</xsl:variable>
-		<fo:block line-height="1.1" role="H{$levelTerm}">
-			<fo:block font-weight="bold" keep-with-next="always">
+		<fo:block role="H{$levelTerm}" xsl:use-attribute-sets="preferred-block-style">
+			<fo:block xsl:use-attribute-sets="term-name-style">
 				<xsl:apply-templates select="preceding-sibling::*[local-name()='term_name'][1]" mode="presentation"/>				
 			</fo:block>
-			<fo:block font-weight="bold" keep-with-next="always">
+			<fo:block xsl:use-attribute-sets="preferred-term-style">
 				<xsl:call-template name="setStyle_preferred"/>
 				<xsl:apply-templates />
 			</fo:block>
@@ -1633,7 +1618,7 @@
 	</term>
 	To:
 	<term/>
-	<name>...</name>
+	<term_name>...</term_name>
 	<preferred>...</preferred>
 	<definition>...</definition>
 	<termsource>...</termsource>
