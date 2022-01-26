@@ -519,12 +519,12 @@
 	</xsl:template>
 
 	
-	<xsl:template match="mpfd:formula/mpfd:stem">
+	<xsl:template match="mpfd:formula/mpfd:stem" priority="2">
 		<fo:block margin-top="14pt" margin-bottom="14pt" text-align-last="justify">
 			<fo:inline padding-left="5mm"><xsl:apply-templates /></fo:inline>
 			<fo:inline keep-together.within-line="always">
 				<fo:leader leader-pattern="space"/>
-				<xsl:apply-templates select="../mpfd:name" mode="formula_number"/>
+				<xsl:apply-templates select="../mpfd:name" />
 			</fo:inline>
 		</fo:block>		
 	</xsl:template>

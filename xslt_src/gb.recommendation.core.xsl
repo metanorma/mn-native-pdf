@@ -830,35 +830,6 @@
 	</xsl:template>
 	
 	
-
-	<xsl:template match="gb:formula/gb:stem">
-		<fo:block margin-top="14pt" margin-bottom="14pt">
-			<xsl:if test="not(ancestor::*[local-name()='note'])">
-				<xsl:attribute name="font-size">11pt</xsl:attribute>
-			</xsl:if>
-			<fo:table table-layout="fixed" width="100%"> <!-- width="170mm" -->
-				<fo:table-column column-width="95%"/><!-- 165mm -->
-				<fo:table-column column-width="5%"/> <!-- 5mm -->
-				<fo:table-body>
-					<fo:table-row>
-						<fo:table-cell display-align="center">
-							<fo:block text-align="center">
-								<xsl:apply-templates />
-							</fo:block>
-						</fo:table-cell>
-						<fo:table-cell display-align="center">
-							<fo:block text-align="left">
-								<xsl:apply-templates select="../gb:name" mode="formula_number"/>
-							</fo:block>
-						</fo:table-cell>
-					</fo:table-row>
-				</fo:table-body>
-			</fo:table>			
-		</fo:block>
-	</xsl:template>
-	
-
-	
 	<xsl:template name="insertHeaderFooter">
 		<fo:static-content flow-name="header">
 			<fo:block-container height="30mm" display-align="after">

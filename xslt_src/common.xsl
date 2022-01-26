@@ -2190,12 +2190,95 @@
 		</xsl:if>	
 	</xsl:attribute-set>
 	
+	<!-- Formula's styles -->
 	<xsl:attribute-set name="formula-style">
-		<xsl:if test="$namespace = 'itu'">
-			<xsl:attribute name="margin-top">6pt</xsl:attribute>
+		<xsl:attribute name="margin-top">6pt</xsl:attribute>
+		<xsl:attribute name="margin-bottom">12pt</xsl:attribute>
+		<xsl:if test="$namespace = 'bipm'">
 			<xsl:attribute name="margin-bottom">6pt</xsl:attribute>			
 		</xsl:if>
-	</xsl:attribute-set>
+		<xsl:if test="$namespace = 'gb'">
+			<xsl:attribute name="margin-top">14pt</xsl:attribute>
+			<xsl:attribute name="margin-bottom">14pt</xsl:attribute>			
+		</xsl:if>
+		<xsl:if test="$namespace = 'itu'">
+			<xsl:attribute name="margin-bottom">6pt</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'm3d'">
+			<xsl:attribute name="margin-top">14pt</xsl:attribute>
+			<xsl:attribute name="margin-bottom">14pt</xsl:attribute>			
+		</xsl:if>
+		<xsl:if test="$namespace = 'nist-cswp'">
+			<xsl:attribute name="margin-bottom">0pt</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'nist-sp'">
+			<xsl:attribute name="margin-top">0pt</xsl:attribute>
+		</xsl:if>
+	</xsl:attribute-set> <!-- formula-style -->
+	
+	<xsl:attribute-set name="formula-stem-block-style">
+		<xsl:attribute name="text-align">center</xsl:attribute>
+		<xsl:if test="$namespace = 'bsi'">
+			<xsl:attribute name="text-align">left</xsl:attribute>
+			<xsl:attribute name="margin-left">5mm</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'csa'">
+			<xsl:attribute name="text-align">left</xsl:attribute>
+			<xsl:attribute name="margin-left">5mm</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'csd'">
+			<xsl:attribute name="text-align">left</xsl:attribute>
+			<xsl:attribute name="margin-left">5mm</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'gb'">
+			<xsl:attribute name="text-align">center</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'iso'">
+			<xsl:attribute name="text-align">left</xsl:attribute>
+			<xsl:attribute name="margin-left">5mm</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'itu'">
+			<xsl:attribute name="margin-left">0mm</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'jcgm'">
+			<xsl:attribute name="text-align">left</xsl:attribute>
+			<xsl:attribute name="margin-left">25mm</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'nist-sp'">
+			<xsl:attribute name="margin-left">7mm</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'ogc'">
+			<xsl:attribute name="text-align">left</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'ogc-white-paper'">
+			<xsl:attribute name="text-align">left</xsl:attribute>
+			<xsl:attribute name="margin-left">5mm</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'rsd'">
+			<xsl:attribute name="text-align">left</xsl:attribute>
+			<xsl:attribute name="margin-left">5mm</xsl:attribute>
+		</xsl:if>
+	</xsl:attribute-set> <!-- formula-stem-block-style -->
+	
+	<xsl:attribute-set name="formula-stem-number-style">
+		<xsl:attribute name="text-align">right</xsl:attribute>
+		<xsl:if test="$namespace = 'gb'">
+			<xsl:attribute name="text-align">left</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'iec'">
+			<xsl:attribute name="margin-right">-10mm</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'itu'">
+			<xsl:attribute name="margin-left">0mm</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'jcgm'">
+		</xsl:if>
+		<xsl:if test="$namespace = 'm3d'">
+			<xsl:attribute name="text-align">left</xsl:attribute>
+		</xsl:if>
+	</xsl:attribute-set> <!-- formula-stem-number-style -->
+	<!-- End Formula's styles -->
+	
 	
 	<xsl:attribute-set name="image-style">
 		<xsl:attribute name="text-align">center</xsl:attribute>
@@ -3728,6 +3811,7 @@
 	</xsl:template> <!-- legal-statement/title -->
 	
 	<xsl:template match="*[local-name()='legal-statement']//*[local-name()='p']">
+		<xsl:param name="margin"/>
 		<xsl:choose>
 			<xsl:when test="$namespace = 'ogc-white-paper'">
 				<!-- csa -->
@@ -3744,7 +3828,9 @@
 			</xsl:when>
 			<xsl:otherwise>
 				<!-- process in the template 'paragraph' -->
-				<xsl:call-template name="paragraph"/>
+				<xsl:call-template name="paragraph">
+					<xsl:with-param name="margin" select="$margin"/>
+				</xsl:call-template>
 			</xsl:otherwise>
 		</xsl:choose>
 	</xsl:template> <!-- legal-statement/p -->
@@ -3773,6 +3859,7 @@
 	</xsl:template>
 	
 	<xsl:template match="*[local-name()='feedback-statement']//*[local-name()='p']">
+		<xsl:param name="margin"/>
 		<xsl:choose>
 			<xsl:when test="$namespace = 'iec' or $namespace = 'ogc'">
 				<fo:block xsl:use-attribute-sets="feedback-statement-p-style">
@@ -3781,7 +3868,9 @@
 			</xsl:when>
 			<xsl:otherwise>
 				<!-- process in the template 'paragraph' -->
-				<xsl:call-template name="paragraph"/>
+				<xsl:call-template name="paragraph">
+					<xsl:with-param name="margin" select="$margin"/>
+				</xsl:call-template>
 			</xsl:otherwise>
 		</xsl:choose>
 	</xsl:template>
@@ -6883,8 +6972,8 @@
 				</xsl:if>
 			</xsl:if>
 			<fo:block-container margin-left="0mm">	
-				<fo:block id="{@id}" xsl:use-attribute-sets="formula-style">
-					<xsl:apply-templates />
+				<fo:block id="{@id}">
+					<xsl:apply-templates select="node()[not(local-name() = 'name')]" /> <!-- formula's number will be process in 'stem' template -->
 				</fo:block>
 			</fo:block-container>
 		</fo:block-container>
@@ -6902,14 +6991,62 @@
 		</fo:inline>
 	</xsl:template>
 
-	
-	<xsl:template match="*[local-name() = 'formula']/*[local-name() = 'name']"/> <!-- skip formula number by default -->
-	
-	<xsl:template match="*[local-name() = 'formula']/*[local-name() = 'name']" mode="formula_number"> <!-- show by demand -->
+
+	<xsl:template match="*[local-name() = 'formula']/*[local-name() = 'name']"> <!-- show in 'stem' template -->
 		<xsl:if test="normalize-space() != ''">
 			<xsl:text>(</xsl:text><xsl:apply-templates /><xsl:text>)</xsl:text>
 		</xsl:if>
 	</xsl:template>
+	
+	
+	<!-- stem inside formula with name (with formula's number) -->
+	<xsl:template match="*[local-name() = 'formula'][*[local-name() = 'name']]/*[local-name() = 'stem']">
+		<fo:block xsl:use-attribute-sets="formula-style">
+		
+			<xsl:if test="$namespace = 'gb'">
+				<xsl:if test="not(ancestor::*[local-name()='note'])">
+					<xsl:attribute name="font-size">11pt</xsl:attribute>
+				</xsl:if>
+			</xsl:if>
+		
+			<fo:table table-layout="fixed" width="100%">
+				<fo:table-column column-width="95%"/>
+				<fo:table-column column-width="5%"/>
+				<fo:table-body>
+					<fo:table-row>
+						<fo:table-cell display-align="center">
+							<fo:block xsl:use-attribute-sets="formula-stem-block-style">
+							
+								<xsl:if test="$namespace = 'nist-cswp' or $namespace = 'unece' or $namespace = 'unece-rec'">
+									<xsl:if test="ancestor::*[local-name() ='annex']">
+										<xsl:attribute name="text-align">left</xsl:attribute>
+										<xsl:attribute name="margin-left">7mm</xsl:attribute>
+									</xsl:if>
+								</xsl:if>
+							
+								<xsl:apply-templates />
+							</fo:block>
+						</fo:table-cell>
+						<fo:table-cell display-align="center">
+							<fo:block xsl:use-attribute-sets="formula-stem-number-style">
+								<xsl:apply-templates select="../*[local-name() = 'name']"/>
+							</fo:block>
+						</fo:table-cell>
+					</fo:table-row>
+				</fo:table-body>
+			</fo:table>
+		</fo:block>
+	</xsl:template>
+	
+	<!-- stem inside formula without name (without formula's number) -->
+	<xsl:template match="*[local-name() = 'formula'][not(*[local-name() = 'name'])]/*[local-name() = 'stem']">
+		<fo:block xsl:use-attribute-sets="formula-style">
+			<fo:block xsl:use-attribute-sets="formula-stem-block-style">
+				<xsl:apply-templates />
+			</fo:block>
+		</fo:block>
+	</xsl:template>
+	
 	<!-- ====== -->
 	<!-- ====== -->
 	

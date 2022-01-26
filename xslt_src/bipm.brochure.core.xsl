@@ -2883,38 +2883,7 @@
 		</fo:list-item>
 	</xsl:template>
 
-	<xsl:template match="bipm:formula/bipm:stem">
-		<fo:block margin-top="6pt" margin-bottom="6pt">
-			<xsl:choose>
-				<xsl:when test="../bipm:name">
-					<fo:table table-layout="fixed" width="100%">
-						<fo:table-column column-width="95%"/>
-						<fo:table-column column-width="5%"/>
-						<fo:table-body>
-							<fo:table-row>
-								<fo:table-cell display-align="center">
-									<fo:block text-align="center">
-										<xsl:apply-templates />
-									</fo:block>
-								</fo:table-cell>
-								<fo:table-cell display-align="center">
-									<fo:block text-align="right">
-										<xsl:apply-templates select="../bipm:name" mode="formula_number"/>
-									</fo:block>
-								</fo:table-cell>
-							</fo:table-row>
-						</fo:table-body>
-					</fo:table>
-				</xsl:when>
-				<xsl:otherwise>
-					<fo:block text-align="center">
-							<xsl:apply-templates />
-						</fo:block>
-				</xsl:otherwise>
-			</xsl:choose>
-		</fo:block>
-	</xsl:template>
-
+	
 	<xsl:template match="bipm:example" priority="2">
 		<fo:block margin-top="6pt"  margin-bottom="6pt" keep-together.within-column="1">
 			<fo:table table-layout="fixed" width="100%">

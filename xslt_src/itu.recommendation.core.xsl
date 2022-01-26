@@ -1927,27 +1927,7 @@
 		<xsl:apply-templates />			
 	</xsl:template> -->
 
-	
-	<xsl:template match="itu:formula/itu:stem">
-		<fo:table table-layout="fixed" width="100%">
-			<fo:table-column column-width="95%"/>
-			<fo:table-column column-width="5%"/>
-			<fo:table-body>
-				<fo:table-row>
-					<fo:table-cell display-align="center">
-						<fo:block text-align="center" margin-left="0mm">
-							<xsl:apply-templates />
-						</fo:block>
-					</fo:table-cell>
-					<fo:table-cell display-align="center">
-						<fo:block text-align="right" margin-left="0mm">							
-							<xsl:apply-templates select="../itu:name" mode="formula_number"/>							
-						</fo:block>
-					</fo:table-cell>
-				</fo:table-row>
-			</fo:table-body>
-		</fo:table>
-	</xsl:template>
+
 	
 		
 	<xsl:template name="insertHeaderFooter">

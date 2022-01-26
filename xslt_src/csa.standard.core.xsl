@@ -561,31 +561,6 @@
 		</fo:block>
 	</xsl:template>
 
-	
-		
-	<xsl:template match="csa:formula/csa:stem">
-		<fo:block margin-top="6pt" margin-bottom="12pt">
-			<fo:table table-layout="fixed" width="100%">
-				<fo:table-column column-width="95%"/>
-				<fo:table-column column-width="5%"/>
-				<fo:table-body>
-					<fo:table-row>
-						<fo:table-cell display-align="center">
-							<fo:block text-align="left" margin-left="5mm">
-								<xsl:apply-templates />
-							</fo:block>
-						</fo:table-cell>
-						<fo:table-cell display-align="center">
-							<fo:block text-align="right">
-								<xsl:apply-templates select="../csa:name" mode="formula_number"/>
-							</fo:block>
-						</fo:table-cell>
-					</fo:table-row>
-				</fo:table-body>
-			</fo:table>			
-		</fo:block>
-	</xsl:template>
-	
 		
 	<xsl:template name="insertHeaderFooter">
 		<fo:static-content flow-name="header" role="artifact">

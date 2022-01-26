@@ -950,29 +950,6 @@
 		</fo:block>
 	</xsl:template>
   
-	<xsl:template match="*[local-name()='formula']/*[local-name()='stem']">
-		<fo:block margin-top="6pt" margin-bottom="12pt">
-			<fo:table table-layout="fixed" width="100%">
-				<fo:table-column column-width="95%"/>
-				<fo:table-column column-width="5%"/>
-				<fo:table-body>
-					<fo:table-row>
-						<fo:table-cell display-align="center">
-							<fo:block text-align="left" margin-left="25mm">
-								<xsl:apply-templates />
-							</fo:block>
-						</fo:table-cell>
-						<fo:table-cell display-align="center">
-							<fo:block text-align="right">
-								<xsl:apply-templates select="../*[local-name()='name']" mode="formula_number"/>
-							</fo:block>
-						</fo:table-cell>
-					</fo:table-row>
-				</fo:table-body>
-			</fo:table>			
-		</fo:block>
-	</xsl:template>
-	
 	
 	<xsl:template name="printEdition">
 		<xsl:variable name="edition" select="normalize-space(//*[local-name()='bibdata']/*[local-name()='edition'])"/>

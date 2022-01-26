@@ -670,31 +670,6 @@
 			</fo:instream-foreign-object>
 		</fo:inline>
 	</xsl:template>
-
-	
-	
-	<xsl:template match="m3d:formula/m3d:stem">
-		<fo:block margin-top="14pt" margin-bottom="14pt">
-			<fo:table table-layout="fixed" width="100%"> <!-- 170mm -->
-				<fo:table-column column-width="95%"/> <!-- 165mm -->
-				<fo:table-column column-width="5%"/> <!-- 5mm -->
-				<fo:table-body>
-					<fo:table-row>
-						<fo:table-cell display-align="center">
-							<fo:block text-align="center">
-								<xsl:apply-templates />
-							</fo:block>
-						</fo:table-cell>
-						<fo:table-cell display-align="center">
-							<fo:block text-align="left">
-								<xsl:apply-templates select="../m3d:name" mode="formula_number"/>
-							</fo:block>
-						</fo:table-cell>
-					</fo:table-row>
-				</fo:table-body>
-			</fo:table>			
-		</fo:block>
-	</xsl:template>
 	
 
 	<xsl:variable name="Image-M3AAWG-Logo">

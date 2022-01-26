@@ -622,13 +622,6 @@
 	</xsl:template>
 	
 
-	<xsl:template match="iho:formula/iho:stem">
-		<fo:block margin-top="6pt" margin-bottom="12pt" text-align="center">
-			<xsl:apply-templates />						
-		</fo:block>
-	</xsl:template>
-	
-
 	
 	<xsl:template match="iho:example/iho:p" priority="2">
 			<fo:block-container xsl:use-attribute-sets="example-p-style">

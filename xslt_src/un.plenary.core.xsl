@@ -870,49 +870,6 @@
 	<xsl:template match="un:docidentifier"/>
 
 	
-	<xsl:template match="un:formula" name="formula-un" priority="2">	
-		<fo:block-container margin-left="0mm">
-			<xsl:if test="parent::*[local-name() = 'note']">
-				<xsl:attribute name="margin-left">
-					<xsl:choose>
-						<xsl:when test="not(ancestor::*[local-name() = 'table'])"><xsl:value-of select="$note-body-indent"/></xsl:when>
-						<xsl:otherwise><xsl:value-of select="$note-body-indent-table"/></xsl:otherwise>
-					</xsl:choose>
-				</xsl:attribute>				
-			</xsl:if>
-			<fo:block-container margin-left="0mm">
-	
-				<fo:block id="{@id}" margin-top="6pt">
-					<fo:table table-layout="fixed" width="100%">
-						<fo:table-column column-width="95%"/>
-						<fo:table-column column-width="5%"/>
-						<fo:table-body>
-							<fo:table-row>
-								<fo:table-cell>
-									<fo:block text-align="center">
-										<xsl:if test="ancestor::un:annex">
-											<xsl:attribute name="text-align">left</xsl:attribute>
-											<xsl:attribute name="margin-left">7mm</xsl:attribute>
-										</xsl:if>
-										<xsl:apply-templates select="node()[not(local-name() = 'name')]" />
-									</fo:block>
-								</fo:table-cell>
-								<fo:table-cell> <!--  display-align="center" -->
-									<fo:block text-align="right">
-										<xsl:apply-templates select="un:name" />
-									</fo:block>
-								</fo:table-cell>
-							</fo:table-row>
-						</fo:table-body>
-					</fo:table>			
-				</fo:block>
-			
-			</fo:block-container>
-		</fo:block-container>
-	</xsl:template>
-	
-	
-	
 	
 	<xsl:template match="un:dl" priority="2">
 		<fo:block-container margin-left="0mm">
