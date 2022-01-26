@@ -2137,46 +2137,6 @@
 		</fo:list-block>
 	</xsl:template>
 	
-	<xsl:template match="iec:li">
-		<fo:list-item>
-			<fo:list-item-label end-indent="label-end()">
-				<fo:block>
-					<xsl:choose>
-						<xsl:when test="local-name(..) = 'ul'">
-							<xsl:call-template name="setULLabel"/>
-						</xsl:when>
-						<xsl:otherwise> <!-- for ordered lists -->
-							<xsl:choose>
-								<xsl:when test="../@type = 'arabic'">
-									<xsl:number format="1)"/>
-								</xsl:when>
-								<xsl:when test="../@type = 'alphabet'">
-									<xsl:number format="a)" lang="en"/>
-								</xsl:when>
-								<xsl:when test="../@type = 'alphabet_upper'">
-									<xsl:number format="A." lang="en"/>
-								</xsl:when>
-								<xsl:when test="../@type = 'roman'">
-									<xsl:number format="i)" lang="en"/>
-								</xsl:when>
-								<xsl:when test="../@type = 'roman_upper'">
-									<xsl:number format="I." lang="en"/>
-								</xsl:when>
-								<xsl:otherwise>
-									<xsl:number format="a)" lang="en"/>
-								</xsl:otherwise>
-							</xsl:choose>
-						</xsl:otherwise>
-					</xsl:choose>
-				</fo:block>
-			</fo:list-item-label>
-			<fo:list-item-body start-indent="body-start()">
-				<fo:block>
-					<xsl:apply-templates />
-				</fo:block>
-			</fo:list-item-body>
-		</fo:list-item>
-	</xsl:template>
 	
 	<xsl:template match="iec:li/iec:p" priority="2">
 		<fo:block margin-bottom="6pt">

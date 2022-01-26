@@ -813,10 +813,6 @@
 			</xsl:call-template>
 		</xsl:variable>
 		<fo:block-container>
-			<xsl:if test="$level &gt;= 3">
-				<!-- <xsl:variable name="list_level" select="count(ancestor-or-self::rsd:ul) + count(ancestor-or-self::rsd:ul)"/> -->
-				<!-- <xsl:attribute name="margin-left">13mm</xsl:attribute> -->
-			</xsl:if>
 			<fo:block-container margin-left="0mm">
 				<xsl:choose>
 					<xsl:when test="not(ancestor::rsd:ul) and not(ancestor::rsd:ol)">
@@ -833,57 +829,11 @@
 	</xsl:template>
 	
 	<xsl:template name="listProcessing">
-		<fo:list-block provisional-distance-between-starts="6mm"> <!-- 12mm -->
-			<xsl:if test="ancestor::rsd:ul | ancestor::rsd:ol">
-				<!-- <xsl:attribute name="margin-bottom">0pt</xsl:attribute> -->
-			</xsl:if>
-			<xsl:if test="following-sibling::*[1][local-name() = 'ul' or local-name() = 'ol']">
-				<!-- <xsl:attribute name="margin-bottom">0pt</xsl:attribute> -->
-			</xsl:if>
+		<fo:list-block provisional-distance-between-starts="6mm">
 			<xsl:apply-templates />
 		</fo:list-block>
 	</xsl:template>
 	
-							
-	<xsl:template match="rsd:li">
-		<fo:list-item space-after="4pt">
-			<fo:list-item-label end-indent="label-end()">
-				<fo:block color="{$color_blue}" font-weight="bold">
-					<xsl:choose>
-						<xsl:when test="local-name(..) = 'ul'">
-							<xsl:call-template name="setULLabel"/>
-						</xsl:when>
-						<!-- <xsl:when test="local-name(..) = 'ul' and (../ancestor::rsd:ul or ../ancestor::rsd:ol)">&#x2014;</xsl:when> --> <!-- - &#x2014; dash -->
-						<!-- <xsl:when test="local-name(..) = 'ul'">•</xsl:when> -->
-						<xsl:otherwise> <!-- for ordered lists -->
-							<xsl:choose>
-								<xsl:when test="../@type = 'arabic'">
-									<xsl:number format="1."/>
-								</xsl:when>
-								<xsl:when test="../@type = 'alphabet'">
-									<xsl:number format="a." lang="en"/>
-								</xsl:when>
-								<xsl:when test="../@type = 'alphabet_upper'">
-									<xsl:number format="A." lang="en"/>
-								</xsl:when>
-								<xsl:when test="../@type = 'roman'">
-									<xsl:number format="i."/>
-								</xsl:when>
-								<xsl:otherwise>
-									<xsl:number format="1."/>
-								</xsl:otherwise>
-							</xsl:choose>
-						</xsl:otherwise>
-					</xsl:choose>
-				</fo:block>
-			</fo:list-item-label>
-			<fo:list-item-body start-indent="body-start()" line-height-shift-adjustment="disregard-shifts">
-				<fo:block>
-					<xsl:apply-templates />
-				</fo:block>
-			</fo:list-item-body>
-		</fo:list-item>
-	</xsl:template>
 	
 	<xsl:template match="rsd:ul/rsd:note | rsd:ol/rsd:note" priority="2">
 		<fo:list-item font-size="10pt">

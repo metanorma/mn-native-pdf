@@ -594,21 +594,6 @@
 	</xsl:template>
 	
 	
-	<xsl:template match="iho:li">
-		<fo:list-item id="{@id}" margin-bottom="12pt">
-			<fo:list-item-label end-indent="label-end()">
-				<fo:block line-height="115%">
-					<xsl:call-template name="getListItemFormat"/>
-				</fo:block>
-			</fo:list-item-label>
-			<fo:list-item-body start-indent="body-start()">
-				<fo:block>
-					<xsl:apply-templates select="node()[not(local-name() = 'note')]" />
-					<xsl:apply-templates select=".//iho:note" />
-				</fo:block>
-			</fo:list-item-body>
-		</fo:list-item>
-	</xsl:template>
 
 	<xsl:template match="iho:li//iho:p//text()">
 		<xsl:choose>
@@ -688,27 +673,6 @@
 		</fo:static-content>
 	</xsl:template>
 	
-	
-	<xsl:template name="getListItemFormat">
-		<xsl:choose>
-			<xsl:when test="local-name(..) = 'ul'">
-				<xsl:call-template name="setULLabel"/>
-			</xsl:when>
-			<xsl:otherwise> <!-- for ordered lists -->
-				<xsl:choose>
-					<xsl:when test="../@type = 'arabic'">
-						<xsl:number format="a)" lang="en"/>
-					</xsl:when>
-					<xsl:when test="../@type = 'alphabet'">
-						<xsl:number format="a)" lang="en"/>
-					</xsl:when>
-					<xsl:otherwise>
-						<xsl:number format="1."/>
-					</xsl:otherwise>
-				</xsl:choose>
-			</xsl:otherwise>
-		</xsl:choose>
-	</xsl:template>
 	
 	<xsl:template match="@*|node()" mode="step2">
 		<xsl:copy>

@@ -1302,46 +1302,6 @@
 	<xsl:template match="itu:references" mode="contents">
 		<xsl:apply-templates mode="contents" />			
 	</xsl:template>
-
-
-
-	<xsl:template name="getListItemFormat">
-		<xsl:variable name="level">
-			<xsl:variable name="numtmp">
-				<xsl:number level="multiple" count="itu:ol"/>
-			</xsl:variable>
-			<!-- level example: 1.1 
-				calculate counts of '.' in numtmp value - level of nested lists
-			-->
-			<xsl:value-of select="string-length($numtmp) - string-length(translate($numtmp, '.', '')) + 1"/>
-		</xsl:variable>
-		<xsl:choose>
-			<xsl:when test="local-name(..) = 'ul' and itu:ul and local-name(../../..) != 'ul'">•</xsl:when> <!-- dash &#x2014; -->
-			<xsl:when test="local-name(..) = 'ul'"><xsl:value-of select="$en_dash"/></xsl:when> <!-- dash &#x2014; -->
-			<xsl:otherwise>
-				<!-- for Ordered Lists -->
-				<xsl:choose>
-					<xsl:when test="../@type = 'arabic'">
-						<xsl:number format="a)" lang="en"/>
-					</xsl:when>
-					<xsl:when test="../@class = 'steps'">
-						<xsl:number format="1)"/>
-					</xsl:when>
-					<xsl:when test="$level = 1">
-						<xsl:number format="a)" lang="en"/>
-					</xsl:when>
-					<xsl:when test="$level = 2">
-						<xsl:number format="i)"/>
-					</xsl:when>
-					<xsl:otherwise>
-						<!-- <xsl:number format="1.)"/> -->
-						<!-- https://github.com/metanorma/mn-native-pdf/issues/156 -->
-						<xsl:number format="1)"/>
-					</xsl:otherwise>
-				</xsl:choose>
-			</xsl:otherwise>
-		</xsl:choose>
-	</xsl:template>
 	
 	
 	<!-- ============================= -->
@@ -1810,7 +1770,7 @@
 		</fo:block>
 	</xsl:template>
 	
-	<xsl:template match="itu:li">
+	<xsl:template match="itu:li" priority="2">
 		<xsl:choose>
 			<xsl:when test="$doctype = 'service-publication'">
 				<fo:block id="{@id}">
@@ -1844,24 +1804,15 @@
 								<xsl:attribute name="{$attribute-margin}">18mm</xsl:attribute>
 							</xsl:if>
 							<xsl:if test="local-name(..) = 'ul'">
-								<xsl:attribute name="{$attribute-margin}">7mm</xsl:attribute><!-- 15mm -->
+								<xsl:attribute name="{$attribute-margin}">7mm</xsl:attribute>
 								<xsl:if test="ancestor::itu:table">
 									<xsl:attribute name="{$attribute-margin}">4.5mm</xsl:attribute>
 								</xsl:if>
-								<!-- <xsl:if test="count(ancestor::itu:ol) + count(ancestor::itu:ul) &gt; 1">
-									<xsl:attribute name="margin-left">7mm</xsl:attribute>
-								</xsl:if> -->
 							</xsl:if>
-							<!-- <xsl:if test="$doctype = 'service-publication'">
-								<xsl:attribute name="margin-left">0mm</xsl:attribute>
-								<xsl:attribute name="margin-right">0mm</xsl:attribute>
-							</xsl:if> -->
+							
 							<fo:block-container margin-left="0mm" margin-right="0mm">
 								<fo:block>
-									<!-- <xsl:if test="$doctype = 'service-publication'">
-										<xsl:attribute name="start-indent">7mm</xsl:attribute>
-										<xsl:attribute name="text-indent">7mm</xsl:attribute>
-									</xsl:if> -->
+									
 									<xsl:apply-templates select="node()[not(local-name() = 'note')]" />
 									<xsl:apply-templates select="./itu:note" />
 								</fo:block>

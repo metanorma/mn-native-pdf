@@ -1436,36 +1436,7 @@
 	
 	<xsl:template match="iso:p | iso:termsource | iso:termnote" mode="contents" />
 
-	<xsl:template name="getListItemFormat">
-		<xsl:choose>
-			<xsl:when test="local-name(..) = 'ul'">
-				<xsl:call-template name="setULLabel"/>
-			</xsl:when>
-			<xsl:otherwise> <!-- for ordered lists -->
-				<xsl:choose>
-					<xsl:when test="../@type = 'arabic'">
-						<xsl:number format="1." lang="en"/>
-					</xsl:when>
-					<xsl:when test="../@type = 'alphabet'">
-						<xsl:number format="a)" lang="en"/>
-					</xsl:when>
-					<xsl:when test="../@type = 'alphabet_upper'">
-						<xsl:number format="A." lang="en"/>
-					</xsl:when>
-					<xsl:when test="../@type = 'roman'">
-						<xsl:number format="i)"/>
-					</xsl:when>
-					<xsl:when test="../@type = 'roman_upper'">
-						<xsl:number format="I."/>
-					</xsl:when>
-					<xsl:otherwise>
-						<xsl:number format="a)"/>
-					</xsl:otherwise>
-				</xsl:choose>
-			</xsl:otherwise>
-		</xsl:choose>
-	</xsl:template>
-
+	
 	
 	<!-- ============================= -->
 	<!-- ============================= -->
@@ -1706,24 +1677,6 @@
 		</xsl:for-each>
 	</xsl:template>
 	
-	<xsl:template match="iso:li">
-		<fo:list-item id="{@id}">
-			<fo:list-item-label end-indent="label-end()">
-				<fo:block>
-					<xsl:call-template name="getListItemFormat"/>
-				</fo:block>
-			</fo:list-item-label>
-			<fo:list-item-body start-indent="body-start()">
-				<fo:block>
-					<xsl:apply-templates select="node()[not(local-name() = 'note')]" />
-					
-					<xsl:for-each select="./iso:note">
-						<xsl:call-template name="note"/>
-					</xsl:for-each>
-				</fo:block>
-			</fo:list-item-body>
-		</fo:list-item>
-	</xsl:template>
 	
 	
 	<!-- For express listings PDF attachments -->

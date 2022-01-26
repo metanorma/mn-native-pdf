@@ -347,7 +347,7 @@
 	</xsl:template>
 	
 	<!-- ============================= -->
-	<!-- CONTENTS                                       -->
+	<!-- CONTENTS                     -->
 	<!-- ============================= -->
 	
 	<!-- element with title -->
@@ -397,51 +397,10 @@
 			</item>
 		</xsl:if>	
 	</xsl:template>
-	
-
-
-	<xsl:template name="getListItemFormat">
-		<xsl:choose>
-			<xsl:when test="local-name(..) = 'ul'">
-				<xsl:call-template name="setULLabel"/>
-			</xsl:when>
-			<xsl:otherwise> <!-- for ordered lists -->
-				<xsl:choose>
-					<xsl:when test="../@type = 'arabic'">
-						<xsl:number format="a)" lang="en"/>
-					</xsl:when>
-					<xsl:when test="../@type = 'alphabet'">
-						<xsl:number format="1)"/>
-					</xsl:when>
-					<xsl:otherwise>
-						<xsl:number format="1."/>
-					</xsl:otherwise>
-				</xsl:choose>
-			</xsl:otherwise>
-		</xsl:choose>
-	</xsl:template>
-
 	<!-- ============================= -->
 	<!-- ============================= -->
 	
 
-	
-<!-- 	<xsl:template match="m3d:clause//m3d:clause[not(m3d:title)]">
-		<xsl:param name="sectionNum"/>
-		<xsl:variable name="section">
-			<xsl:call-template name="getSection">
-				<xsl:with-param name="sectionNum" select="$sectionNum"/>
-			</xsl:call-template>
-		</xsl:variable>
-		<fo:block margin-top="6pt" margin-bottom="6pt" keep-with-next="always">
-			<fo:inline>
-				<xsl:value-of select="$section"/>
-			</fo:inline>			
-		</fo:block>
-		<xsl:apply-templates>
-			<xsl:with-param name="sectionNum" select="$sectionNum"/>
-		</xsl:apply-templates>
-	</xsl:template> -->
 	
 	<!-- ====== -->
 	<!-- title      -->
@@ -606,22 +565,6 @@
 				</xsl:for-each>
 			</fo:block-container>
 		</fo:block-container>
-	</xsl:template>
-	
-	<xsl:template match="m3d:li">
-		<fo:list-item id="{@id}">
-			<fo:list-item-label end-indent="label-end()">
-				<fo:block>
-					<xsl:call-template name="getListItemFormat"/>
-				</fo:block>
-			</fo:list-item-label>
-			<fo:list-item-body start-indent="body-start()">
-				<fo:block>
-					<xsl:apply-templates select="node()[not(local-name() = 'note')]" />
-					<xsl:apply-templates select="./m3d:note" />
-				</fo:block>
-			</fo:list-item-body>
-		</fo:list-item>
 	</xsl:template>
 	
 	

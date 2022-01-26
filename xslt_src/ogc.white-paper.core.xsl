@@ -622,47 +622,6 @@
 		</fo:list-block>
 	</xsl:template>
 	
-	<xsl:template match="ogc:li">
-		<fo:list-item id="{@id}">
-			<fo:list-item-label end-indent="label-end()">
-				<fo:block>
-					<xsl:choose>
-						<xsl:when test="local-name(..) = 'ul'">
-							<xsl:call-template name="setULLabel"/>
-						</xsl:when>
-						<xsl:otherwise> <!-- for ordered lists -->
-							<xsl:choose>
-								<xsl:when test="../@class = 'steps'">
-									<xsl:number format="1)"/>
-								</xsl:when>
-								<xsl:when test="../@type = 'arabic'">
-									<xsl:number format="a)" lang="en"/>
-								</xsl:when>
-								<xsl:when test="../@type = 'alphabet'">
-									<xsl:number format="1)"/>
-								</xsl:when>
-								<xsl:when test="../@type = 'alphabet_upper'">
-									<xsl:number format="A)" lang="en"/>
-								</xsl:when>
-								
-								<xsl:when test="../@type = 'roman'">
-									<xsl:number format="i)"/>
-								</xsl:when>
-								<xsl:otherwise>
-									<xsl:number format="1)"/>
-								</xsl:otherwise>
-							</xsl:choose>
-						</xsl:otherwise>
-					</xsl:choose>
-				</fo:block>
-			</fo:list-item-label>
-			<fo:list-item-body start-indent="body-start()" line-height-shift-adjustment="disregard-shifts">
-				<fo:block>
-					<xsl:apply-templates />
-				</fo:block>
-			</fo:list-item-body>
-		</fo:list-item>
-	</xsl:template>
 	
 	<xsl:template match="ogc:ul/ogc:note | ogc:ol/ogc:note" priority="2">
 		<fo:list-item font-size="10pt">

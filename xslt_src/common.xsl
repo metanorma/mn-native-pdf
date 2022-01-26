@@ -2056,27 +2056,7 @@
 	
 	<xsl:attribute-set name="term-name-style">
 		<xsl:attribute name="keep-with-next">always</xsl:attribute>
-		<xsl:if test="$namespace = 'csa'">
-			<xsl:attribute name="font-weight">bold</xsl:attribute>
-		</xsl:if>
-		<xsl:if test="$namespace = 'csd'">
-			<xsl:attribute name="font-weight">bold</xsl:attribute>
-		</xsl:if>
-		<xsl:if test="$namespace = 'iec'">
-			<xsl:attribute name="font-weight">bold</xsl:attribute>
-		</xsl:if>
-		<xsl:if test="$namespace = 'iho'">
-			<xsl:attribute name="font-weight">bold</xsl:attribute>
-		</xsl:if>
-		<xsl:if test="$namespace = 'iso'">
-			<xsl:attribute name="font-weight">bold</xsl:attribute>
-		</xsl:if>
-		<xsl:if test="$namespace = 'jcgm'">
-			<xsl:attribute name="font-weight">bold</xsl:attribute>
-		</xsl:if>
-		<xsl:if test="$namespace = 'ogc-white-paper'">
-			<xsl:attribute name="font-weight">bold</xsl:attribute>
-		</xsl:if>
+		<xsl:attribute name="font-weight">bold</xsl:attribute>
 	</xsl:attribute-set>
 
 	<xsl:attribute-set name="figure-style">
@@ -2429,27 +2409,11 @@
 
 	<xsl:attribute-set name="preferred-term-style">
 		<xsl:attribute name="keep-with-next">always</xsl:attribute>
+		<xsl:attribute name="font-weight">bold</xsl:attribute>
 		<xsl:if test="$namespace = 'csa'">
-			<xsl:attribute name="font-weight">bold</xsl:attribute>
 			<xsl:attribute name="line-height">1</xsl:attribute>
 		</xsl:if>
-		<xsl:if test="$namespace = 'csd'">
-			<xsl:attribute name="font-weight">bold</xsl:attribute>
-		</xsl:if>
-		<xsl:if test="$namespace = 'iec'">
-			<xsl:attribute name="font-weight">bold</xsl:attribute>
-		</xsl:if>
-		<xsl:if test="$namespace = 'iho'">
-			<xsl:attribute name="font-weight">bold</xsl:attribute>
-		</xsl:if>
-		<xsl:if test="$namespace = 'iso'">
-			<xsl:attribute name="font-weight">bold</xsl:attribute>
-		</xsl:if>
-		<xsl:if test="$namespace = 'jcgm'">
-			<xsl:attribute name="font-weight">bold</xsl:attribute>
-		</xsl:if>
 		<xsl:if test="$namespace = 'ogc-white-paper'">
-			<xsl:attribute name="font-weight">bold</xsl:attribute>
 			<xsl:attribute name="line-height">1</xsl:attribute>
 		</xsl:if>
 	</xsl:attribute-set>
@@ -2533,6 +2497,40 @@
 	<xsl:attribute-set name="list-style">
 		<xsl:if test="$namespace = 'bsi'">
 			
+		</xsl:if>
+	</xsl:attribute-set>
+	
+	<xsl:attribute-set name="list-item-style">
+		<xsl:if test="$namespace = 'iho'">
+			<xsl:attribute name="margin-bottom">12pt</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'rsd'">
+			<xsl:attribute name="space-after">4pt</xsl:attribute>
+		</xsl:if>
+	</xsl:attribute-set>
+	
+	<xsl:attribute-set name="list-item-label-style">
+		<xsl:if test="$namespace = 'iho'">
+			<xsl:attribute name="line-height">115%</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'nist-sp'">
+			<xsl:attribute name="display-align">center</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'rsd'">
+			<xsl:attribute name="color"><xsl:value-of select="$color_blue"/></xsl:attribute>
+			<xsl:attribute name="font-weight">bold</xsl:attribute>
+		</xsl:if>
+	</xsl:attribute-set>
+	
+	<xsl:attribute-set name="list-item-body-style">
+		<xsl:if test="$namespace = 'csa'">
+			<xsl:attribute name="line-height-shift-adjustment">disregard-shifts</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'ogc' or $namespace = 'ogc-white-paper'">
+			<xsl:attribute name="line-height-shift-adjustment">disregard-shifts</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'rsd'">
+			<xsl:attribute name="line-height-shift-adjustment">disregard-shifts</xsl:attribute>
 		</xsl:if>
 	</xsl:attribute-set>
 	
@@ -9656,7 +9654,7 @@
 		<xsl:variable name="levelTerm">
 			<xsl:call-template name="getLevelTermName"/>
 		</xsl:variable>
-		<fo:block font-size="{$font-size}" role="H{$levelTerm}" xsl:use-attribute-sets="preferred-block-style">
+		<fo:block font-size="{normalize-space($font-size)}" role="H{$levelTerm}" xsl:use-attribute-sets="preferred-block-style">
 		
 			<xsl:if test="$namespace = 'iec'">
 				<xsl:if test="preceding-sibling::*[1][self::iec:preferred]">
@@ -9875,73 +9873,87 @@
 		<xsl:value-of select="java:replaceAll(java:java.lang.String.new(.),' ',' ')"/>
 	</xsl:template>
 	
+	
+	<!-- ===================================== -->
+	<!-- Lists processing -->
+	<!-- ===================================== -->
 	<xsl:variable name="ul_labels_">
-		<xsl:if test="$namespace = 'bipm'">
-			<label level="1" font-size="15pt">•</label>
-			<label level="2">&#x2212;</label><!-- &#x2212; - minus sign.  &#x2014; - en dash -->
-			<label level="3" font-size="75%">o</label> <!-- white circle -->
-		</xsl:if>
-		<xsl:if test="$namespace = 'bsi'">
-			<label>
-				<xsl:choose>
-					<xsl:when test="$document_type = 'PAS'">•</xsl:when> <!-- bullet -->
-					<xsl:otherwise>&#x2014;</xsl:otherwise> <!-- em dash -->
-				</xsl:choose>
-			</label>
-		</xsl:if>
-		<xsl:if test="$namespace = 'csa'">
-			<label level="1">•</label>
-			<label level="2">-</label><!-- minus -->
-			<label level="3" font-size="75%">o</label> <!-- white circle -->
-		</xsl:if>
-		<xsl:if test="$namespace = 'csd'">
-			<label>&#x2014;</label> <!-- em dash -->
-		</xsl:if>
-		<xsl:if test="$namespace = 'iec'">
-			<label level="1" font-size="10pt">•</label>
-			<label level="2" font-size="10pt">&#x2014;</label><!-- em dash -->
-			<label level="3" font-size="75%">o</label> <!-- white circle -->
-		</xsl:if>
-		<xsl:if test="$namespace = 'iho'">
-			<label>&#x2014;</label> <!-- em dash -->
-		</xsl:if>
-		<xsl:if test="$namespace = 'iso'">
-			<label>&#x2014;</label> <!-- em dash -->
-		</xsl:if>
-		<xsl:if test="$namespace = 'jcgm'">
-			<label level="1">&#x2014;</label> <!-- em dash -->
-			<label level="2">&#x2212;</label><!-- minus sign -->
-			<label level="3" font-size="75%">o</label> <!-- white circle -->
-		</xsl:if>
-		<xsl:if test="$namespace = 'm3d'">
-			<label font-size="18pt" margin-top="-0.5mm">•</label> <!-- margin-top to vertical align big dot -->
-		</xsl:if>
-		<xsl:if test="$namespace = 'mpfd'">
-			<label>&#x2014;</label> <!-- em dash -->
-		</xsl:if>
-		<xsl:if test="$namespace = 'nist-cswp'">
-			<label>•</label>
-		</xsl:if>
-		<xsl:if test="$namespace = 'nist-sp'">
-			<label>•</label>
-		</xsl:if>
-		<xsl:if test="$namespace = 'ogc'">
-			<label color="{$color_design}">•</label>
-		</xsl:if>
-		<xsl:if test="$namespace = 'ogc-white-paper'">
-			<label>&#x2014;</label> <!-- em dash -->
-		</xsl:if>
-		<xsl:if test="$namespace = 'rsd'">
-			<label level="1" font-size="75%">o</label> <!-- white circle -->
-			<label level="2">&#x2014;</label> <!-- em dash -->
-			<label level="3" font-size="140%">&#x2022;</label> <!-- bullet -->
-		</xsl:if>
-		<xsl:if test="$namespace = 'unece'">
-			<label>•</label>
-		</xsl:if>
-		<xsl:if test="$namespace = 'unece-rec'">
-			<label>•</label>
-		</xsl:if>
+		<xsl:choose>
+			<xsl:when test="$namespace = 'bipm'">
+				<label level="1" font-size="15pt">•</label>
+				<label level="2">&#x2212;</label><!-- &#x2212; - minus sign.  &#x2014; - en dash -->
+				<label level="3" font-size="75%">o</label> <!-- white circle -->
+			</xsl:when>
+			<xsl:when test="$namespace = 'bsi'">
+				<label>
+					<xsl:choose>
+						<xsl:when test="$document_type = 'PAS'">•</xsl:when> <!-- bullet -->
+						<xsl:otherwise>&#x2014;</xsl:otherwise> <!-- em dash -->
+					</xsl:choose>
+				</label>
+			</xsl:when>
+			<xsl:when test="$namespace = 'csa'">
+				<label level="1">•</label>
+				<label level="2">-</label><!-- minus -->
+				<label level="3" font-size="75%">o</label> <!-- white circle -->
+			</xsl:when>
+			<xsl:when test="$namespace = 'csd'">
+				<label>&#x2014;</label> <!-- em dash -->
+			</xsl:when>
+			<xsl:when test="$namespace = 'gb'">
+				<label>&#x2014;</label> <!-- em dash -->
+			</xsl:when>
+			<xsl:when test="$namespace = 'iec'">
+				<label level="1" font-size="10pt">•</label>
+				<label level="2" font-size="10pt">&#x2014;</label><!-- em dash -->
+				<label level="3" font-size="75%">o</label> <!-- white circle -->
+			</xsl:when>
+			<xsl:when test="$namespace = 'iho'">
+				<label>&#x2014;</label> <!-- em dash -->
+			</xsl:when>
+			<xsl:when test="$namespace = 'iso'">
+				<label>&#x2014;</label> <!-- em dash -->
+			</xsl:when>
+			<xsl:when test="$namespace = 'jcgm'">
+				<label level="1">&#x2014;</label> <!-- em dash -->
+				<label level="2">&#x2212;</label><!-- minus sign -->
+				<label level="3" font-size="75%">o</label> <!-- white circle -->
+			</xsl:when>
+			<xsl:when test="$namespace = 'm3d'">
+				<label font-size="18pt" margin-top="-0.5mm">•</label> <!-- margin-top to vertical align big dot -->
+			</xsl:when>
+			<xsl:when test="$namespace = 'mpfd'">
+				<label>&#x2014;</label> <!-- em dash -->
+			</xsl:when>
+			<xsl:when test="$namespace = 'nist-cswp'">
+				<label>•</label>
+			</xsl:when>
+			<xsl:when test="$namespace = 'nist-sp'">
+				<label>•</label>
+			</xsl:when>
+			<xsl:when test="$namespace = 'ogc'">
+				<label color="{$color_design}">•</label>
+			</xsl:when>
+			<xsl:when test="$namespace = 'ogc-white-paper'">
+				<label>&#x2014;</label> <!-- em dash -->
+			</xsl:when>
+			<xsl:when test="$namespace = 'rsd'">
+				<label level="1" font-size="75%">o</label> <!-- white circle -->
+				<label level="2">&#x2014;</label> <!-- em dash -->
+				<label level="3" font-size="140%">&#x2022;</label> <!-- bullet -->
+			</xsl:when>
+			<xsl:when test="$namespace = 'unece'">
+				<label>•</label>
+			</xsl:when>
+			<xsl:when test="$namespace = 'unece-rec'">
+				<label>•</label>
+			</xsl:when>
+			<xsl:otherwise>
+				<label level="1">–</label>
+				<label level="2">•</label>
+				<label level="3" font-size="75%">o</label> <!-- white circle -->
+			</xsl:otherwise>
+		</xsl:choose>
 	</xsl:variable>
 	<xsl:variable name="ul_labels" select="xalan:nodeset($ul_labels_)"/>
 
@@ -9971,6 +9983,247 @@
 	<xsl:template match="label" mode="ul_labels">
 		<xsl:copy-of select="@*[not(local-name() = 'level')]"/>
 		<xsl:value-of select="."/>
+	</xsl:template>
+
+	<xsl:template name="getListItemFormat">
+		<xsl:choose>
+			<xsl:when test="local-name(..) = 'ul'">
+				<xsl:call-template name="setULLabel"/>
+			</xsl:when>
+			<xsl:otherwise> <!-- for ordered lists 'ol' -->
+			
+				<!-- Example: for BSI <?list-start 2?> -->
+				<xsl:variable name="processing_instruction_start" select="normalize-space(../preceding-sibling::*[1]/processing-instruction('list-start'))"/>
+				<!-- Example: for BSI <?list-type loweralpha?> -->
+				<xsl:variable name="processing_instruction_type" select="normalize-space(../preceding-sibling::*[1]/processing-instruction('list-type'))"/>
+			
+				<xsl:variable name="start_value">
+					<xsl:choose>
+						<xsl:when test="normalize-space($processing_instruction_start) != ''">
+							<xsl:value-of select="number($processing_instruction_start) - 1"/><!-- if start="3" then start_value=2 + xsl:number(1) = 3 -->
+						</xsl:when>
+						<xsl:when test="normalize-space(../@start) != ''">
+							<xsl:value-of select="number(../@start) - 1"/><!-- if start="3" then start_value=2 + xsl:number(1) = 3 -->
+						</xsl:when>
+						<xsl:otherwise>0</xsl:otherwise>
+					</xsl:choose>
+				</xsl:variable>
+				
+				<xsl:variable name="curr_value"><xsl:number/></xsl:variable>
+				
+				<xsl:variable name="type">
+					<xsl:choose>
+						<xsl:when test="normalize-space($processing_instruction_type) != ''"><xsl:value-of select="$processing_instruction_type"/></xsl:when>
+						<xsl:otherwise><xsl:value-of select="../@type"/></xsl:otherwise>
+					</xsl:choose>
+				</xsl:variable>
+				
+				<xsl:variable name="format">
+					<xsl:choose>
+						<xsl:when test="$namespace = 'bipm'">
+							<xsl:choose>
+								<xsl:when test="$type = 'arabic'">1.</xsl:when>
+								<xsl:when test="$type = 'alphabet'">a)</xsl:when>
+								<xsl:when test="$type = 'alphabet_upper'">A.</xsl:when>
+								<xsl:when test="$type = 'roman'">(i)</xsl:when>
+								<xsl:when test="$type = 'roman_upper'">I.</xsl:when>
+								<xsl:otherwise>1.</xsl:otherwise>
+							</xsl:choose>
+						</xsl:when>
+						<xsl:when test="$namespace = 'bsi'">
+							<xsl:choose>
+								<xsl:when test="$type = 'arabic'">1)</xsl:when>
+								<xsl:when test="$type = 'alphabet'">a)</xsl:when>
+								<xsl:when test="$type = 'alphabet_upper'">A.</xsl:when>
+								<xsl:when test="$type = 'roman'">i)</xsl:when>
+								<xsl:when test="$type = 'roman_upper'">I.</xsl:when>
+								<xsl:otherwise>a)</xsl:otherwise>
+							</xsl:choose>
+						</xsl:when>
+						<xsl:when test="$namespace = 'csa'">
+							<xsl:choose>
+								<xsl:when test="$type = 'arabic'">a)</xsl:when>
+								<xsl:when test="$type = 'alphabet'">1)</xsl:when>
+								<xsl:when test="$type = 'alphabet_upper'">A)</xsl:when>
+								<xsl:when test="$type = 'roman'">i)</xsl:when>
+								<xsl:otherwise>1)</xsl:otherwise>
+							</xsl:choose>
+						</xsl:when>
+						<xsl:when test="$namespace = 'csd'">
+							<xsl:choose>
+								<xsl:when test="$type = 'arabic'">a)</xsl:when>
+								<xsl:when test="$type = 'alphabet'">1)</xsl:when>
+								<xsl:when test="$type = 'alphabet_upper'">A.</xsl:when>
+								<xsl:when test="$type = 'roman'">i)</xsl:when>
+								<xsl:when test="$type = 'roman_upper'">I.</xsl:when>
+								<xsl:otherwise>1.</xsl:otherwise>
+							</xsl:choose>
+						</xsl:when>
+						<xsl:when test="$namespace = 'gb'">
+							<xsl:choose>
+								<xsl:when test="$type = 'arabic'">a)</xsl:when>
+								<xsl:when test="$type = 'alphabet'">a)</xsl:when>
+								<xsl:otherwise>1.</xsl:otherwise>
+							</xsl:choose>
+						</xsl:when>
+						<xsl:when test="$namespace = 'iec'">
+							<xsl:choose>
+								<xsl:when test="$type = 'arabic'">1)</xsl:when>
+								<xsl:when test="$type = 'alphabet'">a)</xsl:when>
+								<xsl:when test="$type = 'alphabet_upper'">A.</xsl:when>
+								<xsl:when test="$type = 'roman'">i)</xsl:when>
+								<xsl:when test="$type = 'roman_upper'">I.</xsl:when>
+								<xsl:otherwise>a)</xsl:otherwise>
+							</xsl:choose>
+						</xsl:when>
+						<xsl:when test="$namespace = 'iho'">
+							<xsl:choose>
+								<xsl:when test="$type = 'arabic'">a)</xsl:when>
+								<xsl:when test="$type = 'alphabet'">a)</xsl:when>
+								<xsl:otherwise>1.</xsl:otherwise>
+							</xsl:choose>
+						</xsl:when>
+						<xsl:when test="$namespace = 'iso'">
+							<xsl:choose>
+								<xsl:when test="$type = 'arabic'">1.</xsl:when>
+								<xsl:when test="$type = 'alphabet'">a)</xsl:when>
+								<xsl:when test="$type = 'alphabet_upper'">A.</xsl:when>
+								<xsl:when test="$type = 'roman'">i)</xsl:when>
+								<xsl:when test="$type = 'roman_upper'">I.</xsl:when>
+								<xsl:otherwise>a)</xsl:otherwise>
+							</xsl:choose>
+						</xsl:when>
+						<xsl:when test="$namespace = 'itu'">
+							<xsl:variable name="level" select="count(ancestor::*[local-name() = 'ul']) + count(ancestor::*[local-name() = 'ol'])" />
+							<xsl:choose>
+								<xsl:when test="$type = 'arabic'">a)</xsl:when>
+								<xsl:when test="../@class = 'steps'">1)</xsl:when>
+								<xsl:when test="$level = 1">a)</xsl:when>
+								<xsl:when test="$level = 2">i)</xsl:when>
+								<xsl:otherwise>1)</xsl:otherwise>
+							</xsl:choose>
+						</xsl:when>
+						<xsl:when test="$namespace = 'jcgm'">
+							<xsl:choose>
+								<xsl:when test="$type = 'arabic'">1.</xsl:when>
+								<xsl:when test="$type = 'alphabet'">a)</xsl:when>
+								<xsl:when test="$type = 'alphabet_upper'">A.</xsl:when>
+								<xsl:when test="$type = 'roman'">i)</xsl:when>
+								<xsl:when test="$type = 'roman_upper'">I.</xsl:when>
+								<xsl:otherwise>a)</xsl:otherwise>
+							</xsl:choose>
+						</xsl:when>
+						
+						<xsl:when test="$namespace = 'm3d'">
+							<xsl:choose>
+								<xsl:when test="$type = 'arabic'">a)</xsl:when>
+								<xsl:when test="$type = 'alphabet'">1)</xsl:when>
+								<xsl:otherwise>1.</xsl:otherwise>
+							</xsl:choose>
+						</xsl:when>
+						<xsl:when test="$namespace = 'mpfd'">
+							<xsl:choose>
+								<xsl:when test="$type = 'arabic'">a)</xsl:when>
+								<xsl:when test="$type = 'roman'">1)</xsl:when>
+								<xsl:when test="$type = 'alphabet'">a)</xsl:when>
+								<xsl:otherwise>a)</xsl:otherwise>
+							</xsl:choose>
+						</xsl:when>
+						<xsl:when test="$namespace = 'nist-cswp' or $namespace = 'nist-sp'">
+							<xsl:variable name="level" select="count(ancestor::*[local-name() = 'ul']) + count(ancestor::*[local-name() = 'ol'])" />
+							<xsl:choose>
+								<xsl:when test="../@class = 'steps'">1.</xsl:when>
+								<xsl:when test="$type = 'arabic'">a)</xsl:when>
+								<xsl:when test="$type = 'alphabet'">1)</xsl:when>
+								<xsl:when test="$type = 'roman'">i)</xsl:when>
+								<xsl:when test="$type = 'alphabet_upper'">A)</xsl:when>
+								<xsl:when test="ancestor::*[nist:annex]">
+									<xsl:choose>
+										<xsl:when test="$level = 1">a)</xsl:when>
+										<xsl:when test="$level = 2">i)</xsl:when>
+										<xsl:otherwise>1.)</xsl:otherwise>
+									</xsl:choose>
+								</xsl:when>
+								<xsl:otherwise>1.</xsl:otherwise>
+							</xsl:choose>
+						</xsl:when>
+						<xsl:when test="$namespace = 'ogc'">
+							<xsl:choose>
+								<xsl:when test="../@class = 'steps'">1.</xsl:when>
+								<xsl:when test="$type = 'arabic'">a)</xsl:when>
+								<xsl:when test="$type = 'alphabet'">1.</xsl:when>
+								<xsl:when test="$type = 'alphabet_upper'">A)</xsl:when>
+								<xsl:when test="$type = 'roman'">i)</xsl:when>
+								<xsl:otherwise>
+									<xsl:variable name="level" select="count(ancestor-or-self::ogc:li)"/>
+									<xsl:choose>
+										<xsl:when test="$level = 1">a)</xsl:when>
+										<xsl:when test="$level = 2">1.</xsl:when>
+										<xsl:when test="$level = 3">i)</xsl:when>
+										<xsl:otherwise>a)</xsl:otherwise>
+									</xsl:choose>
+								</xsl:otherwise>
+							</xsl:choose>
+						</xsl:when>
+						<xsl:when test="$namespace = 'ogc-white-paper'">
+							<xsl:choose>
+								<xsl:when test="../@class = 'steps'">1)</xsl:when>
+								<xsl:when test="$type = 'arabic'">a)</xsl:when>
+								<xsl:when test="$type = 'alphabet'">1)</xsl:when>
+								<xsl:when test="$type = 'alphabet_upper'">A)</xsl:when>
+								<xsl:when test="$type = 'roman'">i)</xsl:when>
+								<xsl:otherwise>1)</xsl:otherwise>
+							</xsl:choose>
+						</xsl:when>
+						<xsl:when test="$namespace = 'rsd'">
+							<xsl:choose>
+								<xsl:when test="$type = 'arabic'">1.</xsl:when>
+								<xsl:when test="$type = 'alphabet'">a.</xsl:when>
+								<xsl:when test="$type = 'alphabet_upper'">A.</xsl:when>
+								<xsl:when test="$type = 'roman'">i.</xsl:when>
+								<xsl:otherwise>1.</xsl:otherwise>
+							</xsl:choose>
+						</xsl:when>
+						<xsl:when test="$namespace = 'unece'">
+							<xsl:variable name="level" select="count(ancestor::*[local-name() = 'ul']) + count(ancestor::*[local-name() = 'ol'])" />
+							<xsl:choose>
+								<xsl:when test="$type = 'arabic'">1.</xsl:when>
+								<xsl:when test="$type = 'alphabet'">1)</xsl:when>
+								<xsl:when test="ancestor::*[un:annex]">
+									<xsl:choose>
+										<xsl:when test="$level = 1">a)</xsl:when>
+										<xsl:when test="$level = 2">i)</xsl:when>
+										<xsl:otherwise>1.)</xsl:otherwise>
+									</xsl:choose>
+								</xsl:when>
+								<xsl:otherwise>1.</xsl:otherwise>
+							</xsl:choose>
+						</xsl:when>
+						<xsl:when test="$namespace = 'unece-rec'">
+							<xsl:variable name="level" select="count(ancestor::*[local-name() = 'ul']) + count(ancestor::*[local-name() = 'ol'])" />
+							<xsl:choose>
+								<xsl:when test="$type = 'arabic'">a)</xsl:when>
+								<xsl:when test="$type = 'alphabet'">1)</xsl:when>
+								<xsl:when test="ancestor::*[un:annex]">
+									<xsl:choose>
+										<xsl:when test="$level = 1">a)</xsl:when>
+										<xsl:when test="$level = 2">i)</xsl:when>
+										<xsl:otherwise>1.)</xsl:otherwise>
+									</xsl:choose>
+								</xsl:when>
+								<xsl:otherwise>1.</xsl:otherwise>
+							</xsl:choose>
+						</xsl:when>
+						
+						<!-- <xsl:number format="1.)"/> -->
+							<!-- https://github.com/metanorma/mn-native-pdf/issues/156 -->
+					</xsl:choose>
+				</xsl:variable>
+				
+				<xsl:number value="$start_value + $curr_value" format="{$format}" lang="en"/>
+				
+			</xsl:otherwise>
+		</xsl:choose>
 	</xsl:template>
 
 	<xsl:template match="*[local-name() = 'ul'] | *[local-name() = 'ol']">
@@ -10014,6 +10267,64 @@
 			</xsl:otherwise>
 		</xsl:choose>
 	</xsl:template>
+	
+	<xsl:template match="*[local-name()='li']">
+		<fo:list-item xsl:use-attribute-sets="list-item-style">
+			<xsl:copy-of select="@id"/>
+			
+			<xsl:if test="$namespace = 'bsi'">
+				<xsl:if test="$document_type = 'PAS'">
+					<xsl:attribute name="space-after">2pt</xsl:attribute>
+				</xsl:if>
+			</xsl:if>
+			
+			<fo:list-item-label end-indent="label-end()">
+				<fo:block xsl:use-attribute-sets="list-item-label-style">
+				
+					<xsl:if test="$namespace = 'bsi'">
+						<xsl:if test="$document_type = 'PAS'">
+							<xsl:attribute name="color"><xsl:value-of select="$color_PAS"/></xsl:attribute>
+						</xsl:if>
+					</xsl:if>
+				
+					<xsl:call-template name="getListItemFormat" /> <!-- this template should be determined in each xslt -->
+				</fo:block>
+			</fo:list-item-label>
+			<fo:list-item-body start-indent="body-start()" xsl:use-attribute-sets="list-item-body-style">
+				<fo:block>
+				
+					<xsl:if test="$namespace = 'bsi'">
+						<xsl:if test="*[last()][local-name() = 'note']">
+							<xsl:attribute name="margin-bottom">5pt</xsl:attribute>
+						</xsl:if>
+					</xsl:if>
+				
+					<xsl:if test="$namespace = 'ogc'">
+						<xsl:attribute name="margin-bottom">10pt</xsl:attribute>
+						<xsl:if test="ancestor::ogc:table[not(@class)]">
+							<xsl:attribute name="margin-bottom">1mm</xsl:attribute>
+						</xsl:if>
+						<xsl:if test="not(following-sibling::*) and not(../following-sibling::*)">
+							<xsl:attribute name="margin-bottom">0pt</xsl:attribute>
+						</xsl:if>
+					</xsl:if>
+				
+					<xsl:apply-templates />
+				
+					<!-- <xsl:apply-templates select="node()[not(local-name() = 'note')]" />
+					
+					<xsl:for-each select="./bsi:note">
+						<xsl:call-template name="note"/>
+					</xsl:for-each> -->
+				</fo:block>
+			</fo:list-item-body>
+		</fo:list-item>
+	</xsl:template>
+	
+	<!-- ===================================== -->
+	<!-- END Lists processing -->
+	<!-- ===================================== -->
+
 
 	<!-- =================== -->
 	<!-- Index section processing -->
@@ -11463,7 +11774,7 @@
 		</fo:block>
 	</xsl:template>
 
-	<xsl:template match="*[local-name() = 'toc']//*[local-name() = 'li']">
+	<xsl:template match="*[local-name() = 'toc']//*[local-name() = 'li']" priority="2">
 		<fo:table-row min-height="5mm">
 			<xsl:apply-templates />
 		</fo:table-row>

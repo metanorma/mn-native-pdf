@@ -1031,9 +1031,11 @@
 			</xsl:choose>
 		</xsl:variable>
 		<xsl:element name="{$element-name}">
-			<xsl:attribute name="id">
-				<xsl:value-of select="@id"/>
-			</xsl:attribute>
+			<xsl:if test="@id">
+				<xsl:attribute name="id">
+					<xsl:value-of select="@id"/>
+				</xsl:attribute>
+			</xsl:if>
 			<xsl:attribute name="text-align">
 				<xsl:choose>
 					<!-- <xsl:when test="ancestor::ogc:preface">justify</xsl:when> -->
@@ -1104,58 +1106,6 @@
 		</fo:block-container>
 	</xsl:template>
 	
-	<xsl:template match="ogc:li">
-		<fo:list-item id="{@id}">
-			<fo:list-item-label end-indent="label-end()">
-				<fo:block>
-					<xsl:choose>
-						<xsl:when test="local-name(..) = 'ul'">
-							<xsl:call-template name="setULLabel"/>
-						</xsl:when>
-						<xsl:otherwise> <!-- for ordered lists -->
-							<xsl:choose>
-								<xsl:when test="../@class = 'steps'">
-									<xsl:number format="1."/>
-								</xsl:when>
-								<xsl:when test="../@type = 'arabic'">
-									<xsl:number format="a)" lang="en"/>
-								</xsl:when>
-								<xsl:when test="../@type = 'alphabet'">
-									<xsl:number format="1."/>
-								</xsl:when>
-								<xsl:when test="../@type = 'alphabet_upper'">
-									<xsl:number format="A)" lang="en"/>
-								</xsl:when>
-								<xsl:when test="../@type = 'roman'">
-									<xsl:number format="i)"/>
-								</xsl:when>
-								<xsl:otherwise>
-									<xsl:variable name="level" select="count(ancestor-or-self::ogc:li)"/>
-									<xsl:choose>
-										<xsl:when test="$level = 1"><xsl:number format="a)" lang="en"/></xsl:when>
-										<xsl:when test="$level = 2"><xsl:number format="1."/></xsl:when>
-										<xsl:when test="$level = 3"><xsl:number format="i)"/></xsl:when>
-										<xsl:otherwise><xsl:number format="a)" lang="en"/></xsl:otherwise>
-									</xsl:choose>
-								</xsl:otherwise>
-							</xsl:choose>
-						</xsl:otherwise>
-					</xsl:choose>
-				</fo:block>
-			</fo:list-item-label>
-			<fo:list-item-body start-indent="body-start()" line-height-shift-adjustment="disregard-shifts">
-				<fo:block margin-bottom="10pt">
-					<xsl:if test="ancestor::ogc:table[not(@class)]">
-						<xsl:attribute name="margin-bottom">1mm</xsl:attribute>
-					</xsl:if>
-					<xsl:if test="not(following-sibling::*) and not(../following-sibling::*)">
-						<xsl:attribute name="margin-bottom">0pt</xsl:attribute>
-					</xsl:if>
-					<xsl:apply-templates />
-				</fo:block>
-			</fo:list-item-body>
-		</fo:list-item>
-	</xsl:template>
 	
 	<xsl:template match="ogc:ul/ogc:note | ogc:ol/ogc:note" priority="2">
 		<fo:list-item font-size="10pt">

@@ -519,25 +519,6 @@
 	</xsl:template>
 	
 	
-	<xsl:template name="getListItemFormat">
-		<xsl:choose>
-			<xsl:when test="local-name(..) = 'ul'">&#x2014;</xsl:when> <!-- dash -->
-			<xsl:otherwise> <!-- for ordered lists -->
-				<xsl:choose>
-					<xsl:when test="../@type = 'arabic'">
-						<xsl:number format="a)" lang="en"/>
-					</xsl:when>
-					<xsl:when test="../@type = 'alphabet'">
-						<xsl:number format="a)" lang="en"/>
-					</xsl:when>
-					<xsl:otherwise>
-						<xsl:number format="1."/>
-					</xsl:otherwise>
-				</xsl:choose>
-			</xsl:otherwise>
-		</xsl:choose>
-	</xsl:template>
-
 	<!-- ============================= -->
 	<!-- ============================= -->
 	
@@ -712,31 +693,12 @@
 			<xsl:if test="local-name() = 'ol'">
 				<xsl:attribute name="provisional-distance-between-starts">7mm</xsl:attribute>
 			</xsl:if>			
-			<xsl:apply-templates />
+			<xsl:apply-templates select="node()[not(local-name() = 'note')]" />
 		</fo:list-block>
-		<xsl:for-each select="./gb:note">
-			<xsl:call-template name="note"/>
-		</xsl:for-each>
+		<xsl:apply-templates select="./gb:note"/>
 	</xsl:template>
 	
-	<xsl:template match="gb:ul//gb:note |  gb:ol//gb:note" priority="2"/>
-	
-	<xsl:template match="gb:li">
-		<fo:list-item id="{@id}">
-			<fo:list-item-label end-indent="label-end()">
-				<fo:block>
-					<xsl:call-template name="getListItemFormat"/>
-				</fo:block>
-			</fo:list-item-label>
-			<fo:list-item-body start-indent="body-start()">
-				<fo:block>
-					<xsl:apply-templates select="node()[not(local-name() = 'note')]" />
-					<xsl:apply-templates select=".//gb:note" />
-				</fo:block>
-			</fo:list-item-body>
-		</fo:list-item>
-	</xsl:template>
-	
+
 	
 	<xsl:template match="gb:preferred" priority="2">
 		

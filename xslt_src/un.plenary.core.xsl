@@ -572,55 +572,6 @@
 	</xsl:template>
 	
 	
-	<xsl:template match="un:li">
-		<xsl:variable name="level">
-			<xsl:call-template name="getLevel"/>
-		</xsl:variable>
-		<fo:list-item>
-			<fo:list-item-label end-indent="label-end()">
-				<fo:block>
-					<xsl:choose>
-						<xsl:when test="local-name(..) = 'ul'">
-							<xsl:call-template name="setULLabel"/>
-						</xsl:when>
-						<xsl:otherwise> <!-- for ordered lists -->
-							<xsl:choose>
-								<xsl:when test="../@type = 'arabic'">
-									<xsl:number format="1."/>
-								</xsl:when>
-								<xsl:when test="../@type = 'alphabet'">
-									<xsl:number format="1)"/>
-								</xsl:when>
-								<xsl:when test="ancestor::*[un:annex]">
-									<xsl:choose>
-										<xsl:when test="$level = 1">
-											<xsl:number format="a)" lang="en"/>
-										</xsl:when>
-										<xsl:when test="$level = 2">
-											<xsl:number format="i)"/>
-										</xsl:when>
-										<xsl:otherwise>
-											<xsl:number format="1.)"/>
-										</xsl:otherwise>
-									</xsl:choose>
-								</xsl:when>
-								<xsl:otherwise>
-									<xsl:number format="1."/>
-								</xsl:otherwise>
-							</xsl:choose>
-						</xsl:otherwise>
-					</xsl:choose>
-				</fo:block>
-			</fo:list-item-label>
-			<fo:list-item-body start-indent="body-start()">
-				<fo:block>
-					<xsl:apply-templates select="node()[not(local-name() = 'note')]" />
-					<xsl:apply-templates select="./un:note" />
-				</fo:block>
-			</fo:list-item-body>
-		</fo:list-item>
-	</xsl:template>
-	
 	<xsl:template match="un:li//un:p" >
 		<fo:block margin-bottom="6pt" line-height="122%" text-align="justify">
 			<xsl:apply-templates />

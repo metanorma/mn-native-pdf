@@ -625,43 +625,6 @@
 	</xsl:template>
 	
 
-
-	<xsl:template name="getListItemFormat">
-		<xsl:choose>
-			<xsl:when test="local-name(..) = 'ul'">
-				<xsl:call-template name="setULLabel"/>
-			</xsl:when>
-			<xsl:otherwise> <!-- for ordered lists -->
-				<xsl:variable name="start_value">
-					<xsl:choose>
-						<xsl:when test="normalize-space(../@start) != ''">
-							<xsl:value-of select="number(../@start) - 1"/><!-- if start="3" then start_value=2 + xsl:number(1) = 3 -->
-						</xsl:when>
-						<xsl:otherwise>0</xsl:otherwise>
-					</xsl:choose>
-				</xsl:variable>
-				
-				<xsl:variable name="curr_value">
-					<xsl:number/>
-				</xsl:variable>
-				
-				<xsl:variable name="format">
-					<xsl:choose>
-						<xsl:when test="../@type = 'arabic'">1.</xsl:when>
-						<xsl:when test="../@type = 'alphabet'">a)</xsl:when>
-						<xsl:when test="../@type = 'alphabet_upper'">A.</xsl:when>
-						<xsl:when test="../@type = 'roman'">i)</xsl:when>
-						<xsl:when test="../@type = 'roman_upper'">I.</xsl:when>
-						<xsl:otherwise>a)</xsl:otherwise>
-					</xsl:choose>
-				</xsl:variable>
-				
-				<xsl:number value="$start_value + $curr_value" format="{$format}" lang="en"/>
-				
-			</xsl:otherwise>
-		</xsl:choose>
-	</xsl:template>
-
 	<xsl:template name="setListItemLabel">
 		<xsl:attribute name="label">
 			<xsl:call-template name="getListItemFormat"/>
@@ -742,22 +705,6 @@
 		</xsl:for-each>
 	</xsl:template>
 	
-
-	<xsl:template match="*[local-name()='li']">
-		<fo:list-item id="{@id}">
-			<fo:list-item-label end-indent="label-end()">
-				<fo:block>
-					<xsl:call-template name="getListItemFormat"/>
-				</fo:block>
-			</fo:list-item-label>
-			<fo:list-item-body start-indent="body-start()">
-				<fo:block>
-					<xsl:apply-templates select="node()[not(local-name() = 'note')]" />
-					<xsl:apply-templates select=".//*[local-name()='note']" />
-				</fo:block>
-			</fo:list-item-body>
-		</fo:list-item>
-	</xsl:template>
 
 	
 	<!-- for two-columns layout -->
