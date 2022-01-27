@@ -13,11 +13,6 @@
 	
 	<xsl:key name="kfn" match="*[local-name() = 'fn'][not(ancestor::*[(local-name() = 'table' or local-name() = 'figure') and not(ancestor::*[local-name() = 'name'])])]" use="@reference"/>
 
-	<xsl:variable name="marginLeftRight1" select="29"/>
-	<xsl:variable name="marginLeftRight2" select="29"/>
-	<xsl:variable name="marginTop" select="14"/>
-	<xsl:variable name="marginBottom" select="22"/>
-
 	<xsl:variable name="namespace">rsd</xsl:variable>
 	
 	<xsl:variable name="debug">false</xsl:variable>
@@ -49,9 +44,6 @@
 		</contents>
 	</xsl:variable>
 	
-	<xsl:variable name="lang">
-		<xsl:call-template name="getLang"/>
-	</xsl:variable>
 	
 	<xsl:variable name="docnumber_version">
 		<xsl:value-of select="/rsd:rsd-standard/rsd:bibdata/rsd:docidentifier[@type = 'rsd' or @type = 'Ribose']"/>

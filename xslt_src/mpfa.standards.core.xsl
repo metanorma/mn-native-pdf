@@ -16,12 +16,7 @@
 	<xsl:variable name="namespace">mpfd</xsl:variable>
 	
 	<xsl:variable name="debug">false</xsl:variable>
-	
-	<xsl:variable name="marginLeftRight1" select="19"/>
-	<xsl:variable name="marginLeftRight2" select="19"/>
-	<xsl:variable name="marginTop" select="16.5"/>
-	<xsl:variable name="marginBottom" select="10"/>
-	
+
 	<xsl:variable name="copyrightHolder">Ribose Group Inc.</xsl:variable>
 
 	<xsl:variable name="copyright">
@@ -60,9 +55,6 @@
 		</contents>
 	</xsl:variable>
 	
-	<xsl:variable name="lang">
-		<xsl:call-template name="getLang"/>
-	</xsl:variable>
 	
 	<xsl:template match="/">		
 		<xsl:call-template name="namespaceCheck"/>

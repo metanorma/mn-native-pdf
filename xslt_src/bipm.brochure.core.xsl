@@ -23,11 +23,6 @@
 	
 	<xsl:variable name="first_pass" select="count($index//item) = 0"/>
 	
-	<xsl:variable name="marginLeftRight1" select="31.7"/>
-	<xsl:variable name="marginLeftRight2" select="40"/>
-	<xsl:variable name="marginTop" select="25.4"/>
-	<xsl:variable name="marginBottom" select="22"/>
-
 	<xsl:variable name="namespace">bipm</xsl:variable>
 
 	<!-- DON'T DELETE IT -->
@@ -40,10 +35,6 @@
 	<xsl:variable name="copyrightYear" select="//bipm:bipm-standard/bipm:bibdata/bipm:copyright/bipm:from"/>
 	
 	<xsl:variable name="doc_first_language" select="(//bipm:bipm-standard)[1]/bipm:bibdata/bipm:language[@current = 'true']"/>
-
-	<xsl:variable name="lang">
-		<xsl:call-template name="getLang"/>
-	</xsl:variable>
 
 	<xsl:variable name="root-element" select="local-name(/*)"/>
 

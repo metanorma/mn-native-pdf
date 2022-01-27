@@ -18,12 +18,8 @@
 	<xsl:variable name="namespace">m3d</xsl:variable>
 	
 	<xsl:variable name="debug">false</xsl:variable>
-	
-	<xsl:variable name="marginLeftRight1" select="17.3"/>
-	<xsl:variable name="marginLeftRight2" select="17.3"/>
-	<xsl:variable name="marginTop" select="35"/>
-	<xsl:variable name="marginBottom" select="23"/>
-			
+
+		
 	<xsl:variable name="title-en" select="/m3d:m3d-standard/m3d:bibdata/m3d:title[@language = 'en']"/>
 	<!-- Example:
 		<item level="1" id="Foreword" display="true">Foreword</item>
@@ -34,10 +30,6 @@
 			<xsl:call-template name="processPrefaceSectionsDefault_Contents"/>
 			<xsl:call-template name="processMainSectionsDefault_Contents"/>
 		</contents>
-	</xsl:variable>
-	
-	<xsl:variable name="lang">
-		<xsl:call-template name="getLang"/>
 	</xsl:variable>
 	
 	<xsl:template match="/">

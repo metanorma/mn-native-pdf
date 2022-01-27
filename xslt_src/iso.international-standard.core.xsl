@@ -23,11 +23,6 @@
 	
 	<xsl:variable name="debug">false</xsl:variable>
 	
-	<xsl:variable name="marginLeftRight1" select="25"/>
-	<xsl:variable name="marginLeftRight2" select="12.5"/>
-	<xsl:variable name="marginTop" select="27.4"/>
-	<xsl:variable name="marginBottom" select="13"/>
-
 	<xsl:variable name="docidentifierISO" select="/iso:iso-standard/iso:bibdata/iso:docidentifier[@type = 'iso'] | /iso:iso-standard/iso:bibdata/iso:docidentifier[@type = 'ISO']"/>
 
 	<xsl:variable name="all_rights_reserved">
@@ -173,10 +168,6 @@
 			<xsl:call-template name="processMainSectionsDefault_Contents"/>
 			<xsl:apply-templates select="//iso:indexsect" mode="contents"/>
 		</contents>
-	</xsl:variable>
-	
-	<xsl:variable name="lang">
-		<xsl:call-template name="getLang"/>
 	</xsl:variable>
 	
 	<xsl:template match="/">

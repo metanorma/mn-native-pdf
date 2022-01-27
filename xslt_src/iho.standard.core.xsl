@@ -19,19 +19,11 @@
 	
 	<xsl:variable name="debug">false</xsl:variable>
 	
-	<xsl:variable name="marginLeftRight1" select="25.4"/>
-	<xsl:variable name="marginLeftRight2" select="25.4"/>
-	<xsl:variable name="marginTop" select="25.4"/>
-	<xsl:variable name="marginBottom" select="25.4"/>
-	
-	
+
 	<xsl:variable name="title-en" select="/iho:iho-standard/iho:bibdata/iho:title[@language = 'en']"/>
 	<xsl:variable name="docidentifier" select="/iho:iho-standard/iho:bibdata/iho:docidentifier[@type = 'IHO']"/>
 	<xsl:variable name="copyrightText" select="concat('© International Hydrographic Association ', /iho:iho-standard/iho:bibdata/iho:copyright/iho:from ,' – All rights reserved')"/>
 
-	<xsl:variable name="lang">
-		<xsl:call-template name="getLang"/>
-	</xsl:variable>
 
 	<!-- Example:
 		<item level="1" id="Foreword" display="true">Foreword</item>

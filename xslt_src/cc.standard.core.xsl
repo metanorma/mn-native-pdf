@@ -13,12 +13,6 @@
 	
 	<xsl:key name="kfn" match="*[local-name() = 'fn'][not(ancestor::*[(local-name() = 'table' or local-name() = 'figure') and not(ancestor::*[local-name() = 'name'])])]" use="@reference"/>
 	
-	<xsl:variable name="marginLeftRight1" select="19"/>
-	<xsl:variable name="marginLeftRight2" select="19"/>
-	<xsl:variable name="marginTop" select="20.2"/>
-	<xsl:variable name="marginBottom" select="20.3"/>
-	
-
 	<xsl:variable name="namespace">csd</xsl:variable>
 	
 	<xsl:variable name="debug">false</xsl:variable>
@@ -42,9 +36,6 @@
 		</contents>
 	</xsl:variable>
 	
-	<xsl:variable name="lang">
-		<xsl:call-template name="getLang"/>
-	</xsl:variable>
 	
 	<xsl:template match="/">
 		<xsl:call-template name="namespaceCheck"/>

@@ -15,7 +15,10 @@
 	<xsl:param name="basepath"/> <!-- base path for images -->
 	<xsl:param name="external_index" /><!-- path to index xml, generated on 1st pass, based on FOP Intermediate Format -->
 	<xsl:param name="syntax-highlight">false</xsl:param> <!-- syntax highlighting feature, default - off -->
-	
+
+	<xsl:variable name="lang">
+		<xsl:call-template name="getLang"/>
+	</xsl:variable>
 
 	<!-- Note 1: Each xslt has declated variable `namespace` that allows to set some properties, processing logic, etc. for concrete xslt.
 	You can put such conditions by using xslt construction `xsl:if test="..."` or <xsl:choose><xsl:when test=""></xsl:when><xsl:otherwiste></xsl:otherwiste></xsl:choose>,
@@ -42,6 +45,109 @@
 	</xsl:variable>
 	<xsl:variable name="pageHeight" select="normalize-space($pageHeight_)"/>
 	
+	<!-- Page margins in mm (just digits, without 'mm')-->
+	<!-- marginLeftRight1 and marginLeftRight2 - is left or right margin depends on odd/even page,
+	for example, left margin on odd page and right margin on even page -->
+	<xsl:variable name="marginLeftRight1_">
+		<xsl:choose>
+			<xsl:when test="$namespace = 'bipm'">31.7</xsl:when>
+			<xsl:when test="$namespace = 'bsi'">15</xsl:when>
+			<xsl:when test="$namespace = 'csa'">25</xsl:when>
+			<xsl:when test="$namespace = 'csd'">19</xsl:when>
+			<xsl:when test="$namespace = 'gb'">25</xsl:when>
+			<xsl:when test="$namespace = 'iec'">25</xsl:when>
+			<xsl:when test="$namespace = 'iho'">25.4</xsl:when>
+			<xsl:when test="$namespace = 'iso'">25</xsl:when>
+			<xsl:when test="$namespace = 'itu'">20</xsl:when>
+			<xsl:when test="$namespace = 'jcgm'">25</xsl:when>
+			<xsl:when test="$namespace = 'm3d'">17.3</xsl:when>
+			<xsl:when test="$namespace = 'mpfd'">19</xsl:when>
+			<xsl:when test="$namespace = 'nist-cswp' or $namespace = 'nist-sp'">25.4</xsl:when>
+			<xsl:when test="$namespace = 'ogc'">35</xsl:when>
+			<xsl:when test="$namespace = 'ogc-white-paper'">25.4</xsl:when>
+			<xsl:when test="$namespace = 'rsd'">29</xsl:when>
+			<xsl:when test="$namespace = 'unece'">40</xsl:when>
+			<xsl:when test="$namespace = 'unece-rec'">40</xsl:when>
+			<xsl:otherwise>25.4</xsl:otherwise> <!-- default value for page's left margin -->
+		</xsl:choose>
+	</xsl:variable>
+	<xsl:variable name="marginLeftRight1" select="normalize-space($marginLeftRight1_)"/>
+	
+
+	<xsl:variable name="marginLeftRight2_">
+		<xsl:choose>
+			<xsl:when test="$namespace = 'bipm'">40</xsl:when>
+			<xsl:when test="$namespace = 'bsi'">22</xsl:when>
+			<xsl:when test="$namespace = 'csa'">25</xsl:when>
+			<xsl:when test="$namespace = 'csd'">19</xsl:when>
+			<xsl:when test="$namespace = 'gb'">20</xsl:when>
+			<xsl:when test="$namespace = 'iec'">25</xsl:when>
+			<xsl:when test="$namespace = 'iho'">25.4</xsl:when>
+			<xsl:when test="$namespace = 'iso'">12.5</xsl:when>
+			<xsl:when test="$namespace = 'itu'">20</xsl:when>
+			<xsl:when test="$namespace = 'jcgm'">15</xsl:when>
+			<xsl:when test="$namespace = 'm3d'">17.3</xsl:when>
+			<xsl:when test="$namespace = 'mpfd'">19</xsl:when>
+			<xsl:when test="$namespace = 'nist-cswp' or $namespace = 'nist-sp'">25.4</xsl:when>
+			<xsl:when test="$namespace = 'ogc'">17</xsl:when>
+			<xsl:when test="$namespace = 'ogc-white-paper'">25.4</xsl:when>
+			<xsl:when test="$namespace = 'rsd'">29</xsl:when>
+			<xsl:when test="$namespace = 'unece'">40</xsl:when>
+			<xsl:when test="$namespace = 'unece-rec'">40</xsl:when>
+			<xsl:otherwise>25.4</xsl:otherwise> <!-- default value for page's right margin -->
+		</xsl:choose>
+	</xsl:variable>
+	<xsl:variable name="marginLeftRight2" select="normalize-space($marginLeftRight2_)"/>
+	
+	<xsl:variable name="marginTop_">
+		<xsl:choose>
+			<xsl:when test="$namespace = 'bipm'">25.4</xsl:when>
+			<xsl:when test="$namespace = 'bsi'">27</xsl:when>
+			<xsl:when test="$namespace = 'csa'">25</xsl:when>
+			<xsl:when test="$namespace = 'csd'">20.2</xsl:when>
+			<xsl:when test="$namespace = 'gb'">35</xsl:when>
+			<xsl:when test="$namespace = 'iec'">31</xsl:when>
+			<xsl:when test="$namespace = 'iho'">25.4</xsl:when>
+			<xsl:when test="$namespace = 'iso'">27.4</xsl:when>
+			<xsl:when test="$namespace = 'itu'">20</xsl:when>
+			<xsl:when test="$namespace = 'jcgm'">29.5</xsl:when>
+			<xsl:when test="$namespace = 'm3d'">35</xsl:when>
+			<xsl:when test="$namespace = 'mpfd'">16.5</xsl:when>
+			<xsl:when test="$namespace = 'nist-cswp' or $namespace = 'nist-sp'">25.4</xsl:when>
+			<xsl:when test="$namespace = 'ogc'">16.5</xsl:when>
+			<xsl:when test="$namespace = 'ogc-white-paper'">25.4</xsl:when>
+			<xsl:when test="$namespace = 'rsd'">14</xsl:when>
+			<xsl:when test="$namespace = 'unece'">30</xsl:when>
+			<xsl:when test="$namespace = 'unece-rec'">30</xsl:when>
+			<xsl:otherwise>25.4</xsl:otherwise> <!-- default value for page's top margin -->
+		</xsl:choose>
+	</xsl:variable>
+	<xsl:variable name="marginTop" select="normalize-space($marginTop_)"/>
+	
+	<xsl:variable name="marginBottom_">
+		<xsl:choose>
+			<xsl:when test="$namespace = 'bipm'">22</xsl:when>
+			<xsl:when test="$namespace = 'bsi'">22</xsl:when>
+			<xsl:when test="$namespace = 'csa'">21</xsl:when>
+			<xsl:when test="$namespace = 'csd'">20.3</xsl:when>
+			<xsl:when test="$namespace = 'gb'">20</xsl:when>
+			<xsl:when test="$namespace = 'iec'">15</xsl:when>
+			<xsl:when test="$namespace = 'iho'">25.4</xsl:when>
+			<xsl:when test="$namespace = 'iso'">13</xsl:when>
+			<xsl:when test="$namespace = 'itu'">20</xsl:when>
+			<xsl:when test="$namespace = 'jcgm'">23.5</xsl:when>
+			<xsl:when test="$namespace = 'm3d'">23</xsl:when>
+			<xsl:when test="$namespace = 'mpfd'">10</xsl:when>
+			<xsl:when test="$namespace = 'nist-cswp' or $namespace = 'nist-sp'">25.4</xsl:when>
+			<xsl:when test="$namespace = 'ogc'">22.5</xsl:when>
+			<xsl:when test="$namespace = 'ogc-white-paper'">25.4</xsl:when>
+			<xsl:when test="$namespace = 'rsd'">22</xsl:when>
+			<xsl:when test="$namespace = 'unece'">40</xsl:when>
+			<xsl:when test="$namespace = 'unece-rec'">34</xsl:when>
+			<xsl:otherwise>25.4</xsl:otherwise> <!-- default value for page's bottom margin -->
+		</xsl:choose>
+	</xsl:variable>
+	<xsl:variable name="marginBottom" select="normalize-space($marginBottom_)"/>
 	
 	<!-- Note 2: almost all localized string determined in the element //localized-strings in metanorma xml, but there are a few cases when:
 	 - string didn't determined yet
@@ -6688,17 +6794,21 @@
 
 	<xsl:template name="getLang">
 		<xsl:variable name="language_current" select="normalize-space(//*[local-name()='bibdata']//*[local-name()='language'][@current = 'true'])"/>
-		<xsl:variable name="language_current_2" select="normalize-space(xalan:nodeset($bibdata)//*[local-name()='bibdata']//*[local-name()='language'][@current = 'true'])"/>
 		<xsl:variable name="language">
 			<xsl:choose>
 				<xsl:when test="$language_current != ''">
 					<xsl:value-of select="$language_current"/>
 				</xsl:when>
-				<xsl:when test="$language_current_2 != ''">
-					<xsl:value-of select="$language_current_2"/>
-				</xsl:when>
 				<xsl:otherwise>
-					<xsl:value-of select="//*[local-name()='bibdata']//*[local-name()='language']"/>
+					<xsl:variable name="language_current_2" select="normalize-space(xalan:nodeset($bibdata)//*[local-name()='bibdata']//*[local-name()='language'][@current = 'true'])"/>
+					<xsl:choose>
+						<xsl:when test="$language_current_2 != ''">
+							<xsl:value-of select="$language_current_2"/>
+						</xsl:when>
+						<xsl:otherwise>
+							<xsl:value-of select="//*[local-name()='bibdata']//*[local-name()='language']"/>
+						</xsl:otherwise>
+					</xsl:choose>
 				</xsl:otherwise>
 			</xsl:choose>
 		</xsl:variable>
@@ -12162,9 +12272,6 @@
 	</xsl:template>
 
 	<xsl:template name="addPDFUAmeta">
-		<xsl:variable name="lang">
-			<xsl:call-template name="getLang"/>
-		</xsl:variable>
 		<pdf:catalog xmlns:pdf="http://xmlgraphics.apache.org/fop/extensions/pdf">
 				<pdf:dictionary type="normal" key="ViewerPreferences">
 					<pdf:boolean key="DisplayDocTitle">true</pdf:boolean>

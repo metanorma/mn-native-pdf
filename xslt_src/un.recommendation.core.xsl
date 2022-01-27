@@ -19,11 +19,6 @@
 	<xsl:variable name="namespace">unece-rec</xsl:variable>
 	
 	<xsl:variable name="debug">false</xsl:variable>
-	
-	<xsl:variable name="marginLeftRight1" select="40"/>
-	<xsl:variable name="marginLeftRight2" select="40"/>
-	<xsl:variable name="marginTop" select="30"/>
-	<xsl:variable name="marginBottom" select="34"/>
 
 	<xsl:variable name="contents">
 		<contents>
@@ -33,10 +28,7 @@
 		</contents>
 	</xsl:variable>
 	
-	<xsl:variable name="lang">
-		<xsl:call-template name="getLang"/>
-	</xsl:variable>	
-
+	
 	<xsl:variable name="title" select="/un:un-standard/un:bibdata/un:title[@language = 'en' and @type = 'main']"/>
 	
 	<xsl:variable name="doctype" select="/un:un-standard/un:bibdata/un:ext/un:doctype"/>

@@ -19,11 +19,7 @@
 	
 	<xsl:variable name="debug">false</xsl:variable>
 	
-	<xsl:variable name="marginLeftRight1" select="25"/>
-	<xsl:variable name="marginLeftRight2" select="20"/>
-	<xsl:variable name="marginTop" select="35"/>
-	<xsl:variable name="marginBottom" select="20"/>
-
+	
 	<xsl:variable name="part" select="normalize-space(/gb:gb-standard/gb:bibdata/gb:ext/gb:structuredidentifier/gb:project-number/@part)"/>
 	
 	<xsl:variable name="standard-name">			
@@ -51,9 +47,6 @@
 		</contents>
 	</xsl:variable>
 	
-	<xsl:variable name="lang">
-		<xsl:call-template name="getLang"/>
-	</xsl:variable>
 	
 	<xsl:template match="/">
 		<xsl:call-template name="namespaceCheck"/>

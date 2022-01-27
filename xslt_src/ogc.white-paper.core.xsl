@@ -12,11 +12,6 @@
 	<xsl:output version="1.0" method="xml" encoding="UTF-8" indent="no"/>
 	
 	<xsl:key name="kfn" match="*[local-name() = 'fn'][not(ancestor::*[(local-name() = 'table' or local-name() = 'figure') and not(ancestor::*[local-name() = 'name'])])]" use="@reference"/>
-	
-	<xsl:variable name="marginLeftRight1" select="25.4"/>
-	<xsl:variable name="marginLeftRight2" select="25.4"/>
-	<xsl:variable name="marginTop" select="25.4"/>
-	<xsl:variable name="marginBottom" select="25.4"/>
 
 	<xsl:variable name="namespace">ogc-white-paper</xsl:variable>
 
@@ -121,10 +116,7 @@
 		</contents>
 	</xsl:variable>
 	
-	<xsl:variable name="lang">
-		<xsl:call-template name="getLang"/>
-	</xsl:variable>
-	
+
 	<xsl:template match="/">
 		<xsl:call-template name="namespaceCheck"/>
 		<fo:root xmlns:fo="http://www.w3.org/1999/XSL/Format" xsl:use-attribute-sets="root-style" xml:lang="{$lang}">

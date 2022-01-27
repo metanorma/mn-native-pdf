@@ -28,11 +28,6 @@
 	
 	<xsl:variable name="debug">false</xsl:variable>
 	
-	<xsl:variable name="marginLeftRight1" select="25"/>
-	<xsl:variable name="marginLeftRight2" select="25"/>
-	<xsl:variable name="marginTop" select="31"/>
-	<xsl:variable name="marginBottom" select="15"/>
-
 	<xsl:variable name="copyrightText" select="concat('© ', //iec:iec-standard/iec:bibdata/iec:copyright/iec:owner/iec:organization/iec:abbreviation, ':', //iec:iec-standard/iec:bibdata/iec:copyright/iec:from)"/>
   <!-- <xsl:variable name="lang-1st-letter" select="concat('(', translate(substring(iec:iec-standard/iec:bibdata/iec:language,1,1),$lower, $upper), ')')"/> -->
   <xsl:variable name="lang-1st-letter" select="''"/>
@@ -160,10 +155,6 @@
 	
 	<xsl:variable name="color_blue">rgb(0, 90, 162)</xsl:variable>
 	<xsl:variable name="color_gray">rgb(157, 158, 160)</xsl:variable>
-	
-	<xsl:variable name="lang">
-		<xsl:call-template name="getLang"/>
-	</xsl:variable>	
 	
 	<xsl:variable name="isIEV" select="normalize-space((//iec:iec-standard/iec:bibdata/iec:title[@language = 'en' and @type = 'title-main'] = 'International Electrotechnical Vocabulary') and 1 = 1)"/>
 	

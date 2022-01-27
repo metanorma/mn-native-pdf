@@ -19,11 +19,6 @@
 	
 	<xsl:variable name="debug">false</xsl:variable>
 	
-	<xsl:variable name="marginLeftRight1" select="20"/>
-	<xsl:variable name="marginLeftRight2" select="20"/>
-	<xsl:variable name="marginTop" select="20"/>
-	<xsl:variable name="marginBottom" select="20"/>
-	
 	<!-- Rec. ITU-T G.650.1 (03/2018) -->
 	<xsl:variable name="footerprefix" select="'Rec. '"/>
 	<xsl:variable name="docname">		
@@ -68,10 +63,6 @@
 			<xsl:apply-templates select="//itu:table" mode="contents"/>
 			
 		</contents>
-	</xsl:variable>
-
-	<xsl:variable name="lang">
-		<xsl:call-template name="getLang"/>
 	</xsl:variable>
 	
 	<xsl:variable name="doctypeTitle">

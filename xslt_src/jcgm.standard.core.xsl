@@ -88,12 +88,6 @@
 	
 	<xsl:variable name="debug">false</xsl:variable>
 	
-	<xsl:variable name="marginLeftRight1" select="25"/>
-	<xsl:variable name="marginLeftRight2" select="15"/>
-	<xsl:variable name="marginTop" select="29.5"/>
-	<xsl:variable name="marginBottom" select="23.5"/>
-	
-
 	<xsl:variable name="all_rights_reserved">
 		<xsl:call-template name="getLocalizedString">
 			<xsl:with-param name="key">all_rights_reserved</xsl:with-param>
@@ -164,13 +158,8 @@
 			</xsl:for-each>
 			
 		</xsl:for-each>
-			
 	</xsl:variable>
 
-	
-	<xsl:variable name="lang">
-		<xsl:call-template name="getLang"/>
-	</xsl:variable>
 	
 	<xsl:template match="/">
 		<fo:root xmlns:fo="http://www.w3.org/1999/XSL/Format" xsl:use-attribute-sets="root-style" xml:lang="{$lang}">
