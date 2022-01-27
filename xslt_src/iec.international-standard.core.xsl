@@ -2169,29 +2169,11 @@
 			</fo:flow>
 		</fo:page-sequence>
 	</xsl:template>
-	
-	<xsl:template match="iec:indexsect/iec:title" priority="4">
-		<fo:block font-size="12pt" font-weight="bold" margin-bottom="84pt" role="H1">
-			<!-- Index -->
-			<xsl:apply-templates />
-		</fo:block>
-	</xsl:template>
 		
 	<xsl:template match="iec:indexsect/iec:title/text()" priority="4">
 		<xsl:value-of select="java:toUpperCase(java:java.lang.String.new(.))"/>
 	</xsl:template>
 
-	<xsl:template match="iec:indexsect/iec:clause/iec:title" priority="4">
-		<!-- Letter A, B, C, ... -->
-		<fo:block font-size="10pt" font-weight="bold" margin-bottom="3pt" keep-with-next="always">
-			<xsl:apply-templates />
-		</fo:block>
-	</xsl:template>
-	
-	<xsl:template match="iec:indexsect//iec:li/text()">
-		<!-- to split by '_' and other chars -->
-		<xsl:call-template name="add-zero-spaces-java"/>
-	</xsl:template>
 	
 	<xsl:template match="iec:xref[@pagenumber = 'true']"  priority="2">
 		<fo:basic-link internal-destination="{@target}" fox:alt-text="{@target}" xsl:use-attribute-sets="xref-style">

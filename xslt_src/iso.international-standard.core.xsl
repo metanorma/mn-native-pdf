@@ -1717,28 +1717,8 @@
 		</fo:page-sequence>
 	</xsl:template>
 	
-	<!-- <xsl:template match="iso:clause[@type = 'index']/iso:title" priority="4"> -->
-	<xsl:template match="iso:indexsect/iso:title" priority="4">
-		<fo:block font-size="16pt" font-weight="bold" margin-bottom="84pt" role="H1">
-			<!-- Index -->
-			<xsl:apply-templates />
-		</fo:block>
-	</xsl:template>
-		
-	<!-- <xsl:template match="iso:clause[@type = 'index']/iso:clause/iso:title" priority="4"> -->
-	<xsl:template match="iso:indexsect/iso:clause/iso:title" priority="4">
-		<!-- Letter A, B, C, ... -->
-		<fo:block font-size="10pt" font-weight="bold" margin-bottom="3pt" keep-with-next="always">
-			<xsl:apply-templates />
-		</fo:block>
-	</xsl:template>
 	
-	<xsl:template match="iso:indexsect//iso:li/text()">
-		<!-- to split by '_' and other chars -->
-		<xsl:call-template name="add-zero-spaces-java"/>
-	</xsl:template>
-	
-	<xsl:template match="iso:xref"  priority="2">
+	<xsl:template match="iso:xref" priority="2">
 		<fo:basic-link internal-destination="{@target}" fox:alt-text="{@target}" xsl:use-attribute-sets="xref-style">
 			<xsl:choose>
 				<xsl:when test="@pagenumber='true'">

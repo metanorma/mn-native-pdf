@@ -3760,6 +3760,66 @@
 	</xsl:attribute-set>
 	<!-- End Highlight syntax styles -->
 	
+	<!-- Index section styles -->
+	<xsl:attribute-set name="indexsect-title-style">
+		<xsl:attribute name="role">H1</xsl:attribute>
+		<xsl:if test="$namespace = 'bipm'">
+			<xsl:attribute name="font-size">16pt</xsl:attribute>
+			<xsl:attribute name="font-weight">bold</xsl:attribute>
+			<xsl:attribute name="margin-bottom">84pt</xsl:attribute>
+			<xsl:attribute name="margin-left">-18mm</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'bsi'">
+			<xsl:attribute name="font-size">18pt</xsl:attribute>
+			<xsl:attribute name="font-weight">bold</xsl:attribute>
+			<xsl:attribute name="margin-bottom">24pt</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'iec'">
+			<xsl:attribute name="font-size">12pt</xsl:attribute>
+			<xsl:attribute name="font-weight">bold</xsl:attribute>
+			<xsl:attribute name="margin-bottom">84pt</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'iso'">
+			<xsl:attribute name="font-size">16pt</xsl:attribute>
+			<xsl:attribute name="font-weight">bold</xsl:attribute>
+			<xsl:attribute name="margin-bottom">84pt</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'jcgm'">
+			<xsl:attribute name="font-weight">bold</xsl:attribute>
+			<xsl:attribute name="span">all</xsl:attribute>
+		</xsl:if>
+	</xsl:attribute-set>
+	
+	<xsl:attribute-set name="indexsect-clause-title-style">
+		<xsl:attribute name="keep-with-next">always</xsl:attribute>
+		<xsl:if test="$namespace = 'bipm'">
+			<xsl:attribute name="font-size">10pt</xsl:attribute>
+			<xsl:attribute name="font-weight">bold</xsl:attribute>
+			<xsl:attribute name="margin-bottom">3pt</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'bsi'">
+			<xsl:attribute name="font-size">10pt</xsl:attribute>
+			<xsl:attribute name="font-weight">bold</xsl:attribute>
+			<xsl:attribute name="margin-bottom">3pt</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'iec'">
+			<xsl:attribute name="font-size">10pt</xsl:attribute>
+			<xsl:attribute name="font-weight">bold</xsl:attribute>
+			<xsl:attribute name="margin-bottom">3pt</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'iso'">
+			<xsl:attribute name="font-size">10pt</xsl:attribute>
+			<xsl:attribute name="font-weight">bold</xsl:attribute>
+			<xsl:attribute name="margin-bottom">3pt</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'jcgm'">
+			<xsl:attribute name="font-weight">bold</xsl:attribute>
+			<xsl:attribute name="margin-left">25mm</xsl:attribute>
+		</xsl:if>
+	</xsl:attribute-set>
+	
+	
+	<!-- End Index section styles -->
 	<!-- ====================================== -->
 	<!-- END STYLES -->
 	<!-- ====================================== -->
@@ -10579,12 +10639,26 @@
 		<xsl:value-of select="concat($docid, '_', $item_number, '_', $xref_number)"/> <!-- $level, '_',  -->
 	</xsl:template>
 
+	<xsl:template match="*[local-name() = 'indexsect']/*[local-name() = 'title']" priority="4">
+		<fo:block xsl:use-attribute-sets="indexsect-title-style">
+			<!-- Index -->
+			<xsl:apply-templates />
+		</fo:block>
+	</xsl:template>
+
+	<xsl:template match="*[local-name() = 'indexsect']/*[local-name() = 'clause']/*[local-name() = 'title']" priority="4">
+		<!-- Letter A, B, C, ... -->
+		<fo:block xsl:use-attribute-sets="indexsect-clause-title-style">
+			<xsl:apply-templates />
+		</fo:block>
+	</xsl:template>
+
 	<xsl:template match="*[local-name() = 'indexsect']/*[local-name() = 'clause']" priority="4">
 		<xsl:apply-templates />
 		<fo:block>
-		<xsl:if test="following-sibling::*[local-name() = 'clause']">
-			<fo:block>&#xA0;</fo:block>
-		</xsl:if>
+			<xsl:if test="following-sibling::*[local-name() = 'clause']">
+				<fo:block>&#xA0;</fo:block>
+			</xsl:if>
 		</fo:block>
 	</xsl:template>
 	
@@ -10606,6 +10680,11 @@
 			</xsl:if>
 			<xsl:apply-templates />
 		</fo:block>
+	</xsl:template>
+	
+	<xsl:template match="*[local-name() = 'indexsect']//*[local-name() = 'li']/text()">
+		<!-- to split by '_' and other chars -->
+		<xsl:call-template name="add-zero-spaces-java"/>
 	</xsl:template>
 	
 	<xsl:template match="*[local-name() = 'bookmark']" name="bookmark">

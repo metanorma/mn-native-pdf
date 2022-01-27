@@ -3534,21 +3534,7 @@
 		</fo:page-sequence>
 	</xsl:template>
 	
-	<xsl:template match="bipm:indexsect/bipm:title" priority="4">
-		<fo:block font-size="16pt" font-weight="bold" margin-bottom="84pt" margin-left="-18mm" role="H1">
-			<!-- Index -->
-			<xsl:apply-templates />
-		</fo:block>
-	</xsl:template>
-		
-	<xsl:template match="bipm:indexsect/bipm:clause/bipm:title" priority="4">
-		<!-- Letter A, B, C, ... -->
-		<fo:block font-size="10pt" font-weight="bold" margin-bottom="3pt" keep-with-next="always">
-			<xsl:apply-templates />
-		</fo:block>
-	</xsl:template>
 	
-
 	<xsl:template match="*[local-name() = 'stem']/text()">
 		<xsl:value-of select="normalize-space()"/>
 	</xsl:template>

@@ -1182,28 +1182,6 @@
 		</fo:page-sequence>
 	</xsl:template>
 	
-	<!-- <xsl:template match="jcgm:clause[@type = 'index']/jcgm:title" priority="4"> -->
-	<xsl:template match="jcgm:indexsect/jcgm:title" priority="4">
-		<fo:block font-weight="bold" span="all" role="H1">
-			<!-- Index -->
-			<xsl:apply-templates />
-		</fo:block>
-	</xsl:template>
-	
-
-	<!-- <xsl:template match="jcgm:clause[@type = 'index']/jcgm:clause/jcgm:title" priority="4"> -->
-	<xsl:template match="jcgm:indexsect/jcgm:clause/jcgm:title" priority="4">
-		<!-- Letter A, B, C, ... -->
-		<fo:block font-weight="bold" margin-left="25mm" keep-with-next="always">
-			<xsl:apply-templates />
-		</fo:block>
-	</xsl:template>
-	
-	<!-- <xsl:template match="jcgm:clause[@type = 'index']//jcgm:ul" priority="4"> -->
-	<xsl:template match="jcgm:indexsect//jcgm:ul" priority="4">
-		<xsl:apply-templates />
-	</xsl:template>
-
 	
 	<!-- =================== -->
 	<!-- End of Index processing -->
