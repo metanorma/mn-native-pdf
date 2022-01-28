@@ -794,16 +794,8 @@
 		</fo:block>
 	</xsl:template>
 	
-	
 
-	
-	
-	<xsl:template match="rsd:ul | rsd:ol" mode="ul_ol">
-		<xsl:variable name="level">
-			<xsl:call-template name="getLevel">
-				<xsl:with-param name="depth" select="ancestor::rsd:clause[1]/rsd:title/@depth"/>
-			</xsl:call-template>
-		</xsl:variable>
+	<xsl:template match="rsd:ul | rsd:ol" mode="list" priority="2">
 		<fo:block-container>
 			<fo:block-container margin-left="0mm">
 				<xsl:choose>
@@ -821,7 +813,7 @@
 	</xsl:template>
 	
 	<xsl:template name="listProcessing">
-		<fo:list-block provisional-distance-between-starts="6mm">
+		<fo:list-block xsl:use-attribute-sets="list-style">
 			<xsl:apply-templates />
 		</fo:list-block>
 	</xsl:template>

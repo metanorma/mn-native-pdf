@@ -2582,15 +2582,80 @@
 			<xsl:attribute name="font-family">Cambria Math</xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'itu'">
-			<xsl:attribute name= "font-size">11pt</xsl:attribute>
+			<xsl:attribute name="font-size">11pt</xsl:attribute>
 		</xsl:if>
 	</xsl:attribute-set>
 	
 	<xsl:attribute-set name="list-style">
 		<xsl:if test="$namespace = 'bsi'">
-			
+			<xsl:attribute name="provisional-distance-between-starts">7mm</xsl:attribute>
+			<xsl:attribute name="margin-top">8pt</xsl:attribute>
+			<xsl:attribute name="line-height">1.4</xsl:attribute>
 		</xsl:if>
-	</xsl:attribute-set>
+		<xsl:if test="$namespace = 'csa'">
+			<xsl:attribute name="provisional-distance-between-starts">6.5mm</xsl:attribute>
+			<xsl:attribute name="line-height">145%</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'csd'">
+			<xsl:attribute name="provisional-distance-between-starts">6.5mm</xsl:attribute>
+			<xsl:attribute name="margin-bottom">12pt</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'gb'">
+			<xsl:attribute name="provisional-distance-between-starts">4mm</xsl:attribute>
+			<xsl:attribute name="margin-left">7.4mm</xsl:attribute>
+			<xsl:attribute name="margin-bottom">12pt</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'iec'">
+			<xsl:attribute name="provisional-distance-between-starts">6mm</xsl:attribute>
+			<xsl:attribute name="margin-bottom">12pt</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'iho'">
+			<xsl:attribute name="provisional-distance-between-starts">6mm</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'iso'">
+			<xsl:attribute name="provisional-distance-between-starts">7mm</xsl:attribute>
+			<xsl:attribute name="margin-top">8pt</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'jcgm'">
+			<xsl:attribute name="provisional-distance-between-starts">7mm</xsl:attribute>
+			<xsl:attribute name="margin-top">8pt</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'm3d'">
+			<xsl:attribute name="provisional-distance-between-starts">6mm</xsl:attribute>
+			<xsl:attribute name="margin-bottom">12pt</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'mpfd'">
+			<xsl:attribute name="provisional-distance-between-starts">6mm</xsl:attribute>
+			<xsl:attribute name="margin-bottom">12pt</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'nist-cswp'">
+		</xsl:if>
+		<xsl:if test="$namespace = 'nist-sp'">
+			<xsl:attribute name="space-after">12pt</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'ogc'">
+			<xsl:attribute name="provisional-distance-between-starts">12mm</xsl:attribute>
+			<xsl:attribute name="space-after">12pt</xsl:attribute>
+			<xsl:attribute name="line-height">115%</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'ogc-white-paper'">
+			<xsl:attribute name="provisional-distance-between-starts">6.5mm</xsl:attribute>
+			<xsl:attribute name="margin-bottom">12pt</xsl:attribute>
+			<xsl:attribute name="line-height">115%</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'rsd'">
+			<xsl:attribute name="provisional-distance-between-starts">6mm</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'unece'">
+			<xsl:attribute name="provisional-distance-between-starts">4mm</xsl:attribute>
+			<xsl:attribute name="margin-left">-8mm</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'unece-rec'">
+			<xsl:attribute name="provisional-distance-between-starts">3mm</xsl:attribute>
+			<xsl:attribute name="margin-left">7mm</xsl:attribute>
+			<xsl:attribute name="text-indent">0mm</xsl:attribute>
+		</xsl:if>
+	</xsl:attribute-set> <!-- list-style -->
 	
 	<xsl:attribute-set name="list-item-style">
 		<xsl:if test="$namespace = 'iho'">
@@ -10414,17 +10479,55 @@
 					</xsl:if>
 					<fo:block-container margin-left="0mm">
 						<fo:block>
-							<xsl:apply-templates select="." mode="ul_ol"/>
+							<xsl:apply-templates select="." mode="list"/>
 						</fo:block>
 					</fo:block-container>
 				</fo:block-container>
 			</xsl:when>
 			<xsl:otherwise>
 				<fo:block>
-					<xsl:apply-templates select="." mode="ul_ol"/>
+					<xsl:apply-templates select="." mode="list"/>
 				</fo:block>
 			</xsl:otherwise>
 		</xsl:choose>
+	</xsl:template>
+	
+	<xsl:template match="*[local-name()='ul'] | *[local-name()='ol']" mode="list" name="list">
+		<fo:list-block xsl:use-attribute-sets="list-style">
+		
+			<xsl:if test="$namespace = 'csd'">
+				<xsl:if test="ancestor::csd:ol">
+					<xsl:attribute name="margin-bottom">0pt</xsl:attribute>
+				</xsl:if>
+			</xsl:if>
+			
+			<xsl:if test="$namespace = 'iec'">
+				<xsl:if test="ancestor::iec:ul or ancestor::iec:ol">
+					<xsl:attribute name="margin-bottom">0pt</xsl:attribute>
+				</xsl:if>
+				<xsl:if test="ancestor::iec:legal-statement">
+					<xsl:attribute name="provisional-distance-between-starts">5mm</xsl:attribute>
+				</xsl:if>
+			</xsl:if>
+			
+			<xsl:if test="$namespace = 'gb' or $namespace = 'm3d' or $namespace = 'mpfd'">
+				<xsl:if test="local-name() = 'ol'">
+					<xsl:attribute name="provisional-distance-between-starts">7mm</xsl:attribute>
+				</xsl:if>			
+			</xsl:if>
+
+			<xsl:if test="$namespace = 'nist-sp'">
+				<xsl:if test="ancestor::nist:figure and not(following-sibling::*)">
+					<xsl:attribute name="space-after">0pt</xsl:attribute>
+				</xsl:if>
+			</xsl:if>
+					
+			<xsl:apply-templates select="node()[not(local-name() = 'note')]" />
+		</fo:list-block>
+		<!-- <xsl:for-each select="./iho:note">
+			<xsl:call-template name="note"/>
+		</xsl:for-each> -->
+		<xsl:apply-templates select="./*[local-name() = 'note']"/>
 	</xsl:template>
 	
 	<xsl:template match="*[local-name()='li']">

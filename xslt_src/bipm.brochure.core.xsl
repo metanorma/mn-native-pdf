@@ -2754,7 +2754,7 @@
 	</xsl:template>
 
 
-	<xsl:template match="bipm:ul | bipm:ol" mode="ul_ol">		
+	<xsl:template match="bipm:ul | bipm:ol" mode="list" priority="2">
 		<xsl:apply-templates /><!-- for second level -->
 	</xsl:template>
 	

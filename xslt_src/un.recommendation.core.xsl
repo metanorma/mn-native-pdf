@@ -591,14 +591,6 @@
 			<xsl:apply-templates />
 		</fo:block>
 	</xsl:template>
-	
-	<xsl:template match="un:ul | un:ol" mode="ul_ol">
-		<fo:list-block provisional-distance-between-starts="3mm" margin-left="7mm" text-indent="0mm">
-			<xsl:apply-templates select="node()[not(local-name() = 'note')]" />
-		</fo:list-block>
-		<xsl:apply-templates select="./un:note" />
-	</xsl:template>
-	
 
 	<xsl:template match="un:li//un:p">
 		<fo:block text-align="justify" margin-bottom="6pt">

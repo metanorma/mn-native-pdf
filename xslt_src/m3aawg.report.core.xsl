@@ -543,18 +543,10 @@
 	</xsl:template>
 	
 	
-	<xsl:template match="m3d:ul | m3d:ol" mode="ul_ol">
+	<xsl:template match="m3d:ul | m3d:ol" mode="list" priority="2">
 		<fo:block-container margin-left="6mm">
 			<fo:block-container margin-left="0mm">
-				<fo:list-block margin-bottom="12pt" provisional-distance-between-starts="6mm"> <!--   margin-bottom="8pt" -->
-					<xsl:if test="local-name() = 'ol'">
-						<xsl:attribute name="provisional-distance-between-starts">7mm</xsl:attribute>
-					</xsl:if>			
-					<xsl:apply-templates select="node()[not(local-name() = 'note')]" />
-				</fo:list-block>
-				<xsl:for-each select="./m3d:note">
-					<xsl:call-template name="note"/>
-				</xsl:for-each>
+				<xsl:call-template name="list" />
 			</fo:block-container>
 		</fo:block-container>
 	</xsl:template>

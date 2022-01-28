@@ -16,8 +16,7 @@
 	<xsl:key name="kfn" match="*[local-name() = 'fn'][not(ancestor::*[(local-name() = 'table' or local-name() = 'figure') and not(ancestor::*[local-name() = 'name'])])]" use="@reference"/>
 	
 	<xsl:include href="./common.xsl"/>
-	
-	
+		
 	<xsl:variable name="additionalXMLsArray">
 		<xsl:call-template name="split">
 			<xsl:with-param name="pText" select="normalize-space($additionalXMLs)"/>
@@ -29,8 +28,7 @@
 	<xsl:variable name="debug">false</xsl:variable>
 	
 	<xsl:variable name="copyrightText" select="concat('© ', //iec:iec-standard/iec:bibdata/iec:copyright/iec:owner/iec:organization/iec:abbreviation, ':', //iec:iec-standard/iec:bibdata/iec:copyright/iec:from)"/>
-  <!-- <xsl:variable name="lang-1st-letter" select="concat('(', translate(substring(iec:iec-standard/iec:bibdata/iec:language,1,1),$lower, $upper), ')')"/> -->
-  <xsl:variable name="lang-1st-letter" select="''"/>
+  
 	<xsl:variable name="ISOname" select="//iec:iec-standard/iec:bibdata/iec:docidentifier[@type='iso' or @type='ISO']"/>
 	
 	<xsl:variable name="part" select="//iec:iec-standard/iec:bibdata/iec:ext/iec:structuredidentifier/iec:project-number/@part"/>
@@ -103,36 +101,6 @@
 			</xsl:for-each>				
 		</xsl:for-each>
 	
-	
-		<!-- <xsl:variable name="docid">
-			<xsl:call-template name="getDocumentId"/>
-		</xsl:variable>
-		<doc id="{$docid}" lang="{$lang}">
-			<xsl:call-template name="generateContents"/>
-		</doc>
-		
-		<xsl:for-each select="xalan:nodeset($additionalXMLsArray)/*">
-			<xsl:for-each select="document(.)">
-				<xsl:variable name="lang">
-					<xsl:call-template name="getLang"/>
-				</xsl:variable>	
-				<xsl:variable name="document">
-					<xsl:apply-templates mode="change_id">
-						<xsl:with-param name="lang" select="$lang"/>
-					</xsl:apply-templates>
-				</xsl:variable>						
-				<xsl:for-each select="xalan:nodeset($document)">
-					<xsl:variable name="docid">
-						<xsl:call-template name="getDocumentId"/>
-					</xsl:variable>
-					<doc id="{$docid}" lang="{$lang}">
-						<xsl:call-template name="generateContents"/>
-					</doc>
-				</xsl:for-each>
-			</xsl:for-each>
-		</xsl:for-each> -->
-		
-		
 	</xsl:variable>
 
 	<xsl:template name="generateContents">
@@ -346,143 +314,19 @@
 						
 						<xsl:apply-templates select="(//iec:iec-standard)[1]/iec:boilerplate/iec:feedback-statement"/> <!-- //iec:clause[not(@id) or @id != 'boilerplate-cenelec-attention'] -->
 						<fo:block span="all" border-bottom="0.5pt solid black"/>
+						<!-- About the IEC
+						The International Electrotechnical Commission (IEC) is the leading global organization that prepares and publishes
+						International Standards for all electrical, electronic and related technologies.
+						About IEC publications
+						The technical content of IEC publications is kept under constant review by the IEC. Please make sure that you have the
+						latest edition, a corrigenda or an amendment might have been published.
+						...
+						-->
 						<xsl:if test="(//iec:iec-standard)[2]/iec:boilerplate/iec:feedback-statement">
 							<xsl:apply-templates select="(//iec:iec-standard)[2]/iec:boilerplate/iec:feedback-statement"/>
 							<fo:block span="all"/>
 						</xsl:if>
-						<!-- <fo:block span="all">
-							<fo:block-container margin-top="6pt">
-								<fo:block-container text-align="justify" margin-left="0mm" margin-right="0mm">
-									
-									<fo:block font-weight="bold">About the IEC</fo:block>
-									<fo:block margin-bottom="6pt">The International Electrotechnical Commission (IEC) is the leading global organization that prepares and publishes
-			International Standards for all electrical, electronic and related technologies.</fo:block>
-								
-								<fo:block font-weight="bold">About IEC publications</fo:block>
-								<fo:block margin-bottom="6pt">The technical content of IEC publications is kept under constant review by the IEC. Please make sure that you have the
-			latest edition, a corrigenda or an amendment might have been published.</fo:block>
-									
-									<fo:table table-layout="fixed" width="100%" margin-bottom="12pt">
-										<fo:table-column column-width="82mm"/>
-										<fo:table-column column-width="78mm"/>
-										<fo:table-body>
-											<fo:table-row border-bottom="0.5pt solid black">
-												<fo:table-cell padding-right="5mm">
-													<fo:block font-weight="bold">IEC Catalogue - <fo:inline color="blue">webstore.iec.ch/catalogue</fo:inline></fo:block>
-													<fo:block margin-bottom="6pt">
-														<xsl:text>The stand-alone application for consulting the entire
-														bibliographical information on IEC International Standards,
-														Technical Specifications, Technical Reports and other
-														documents. Available for PC, Mac OS, Android Tablets and
-														iPad.</xsl:text>
-													</fo:block>
-													<fo:block font-weight="bold">IEC publications search - <fo:inline color="blue">www.iec.ch/searchpub</fo:inline></fo:block>
-													<fo:block margin-bottom="6pt">
-														<xsl:text>The advanced search enables to find IEC publications by a
-														variety of criteria (reference number, text, technical
-														committee,…). It also gives information on projects, replaced
-														and withdrawn publications.</xsl:text>
-													</fo:block>
-													<fo:block font-weight="bold">IEC Just Published - <fo:inline color="blue">webstore.iec.ch/justpublished</fo:inline></fo:block>
-													<fo:block margin-bottom="6pt">
-														<xsl:text>Stay up to date on all new IEC publications. Just Published
-														details all new publications released. Available online and
-														also once a month by email.</xsl:text>
-													</fo:block>
-												</fo:table-cell>
-												<fo:table-cell>
-													<fo:block font-weight="bold">Electropedia - <fo:inline color="blue">www.electropedia.org</fo:inline></fo:block>
-													<fo:block margin-bottom="6pt">
-														<xsl:text>The world's leading online dictionary of electronic and
-															electrical terms containing more than 30 000 terms and
-															definitions in English and French, with equivalent terms in 14
-															additional languages. Also known as the International
-															Electrotechnical Vocabulary (IEV) online.</xsl:text>
-													</fo:block>
-													<fo:block font-weight="bold">IEC Glossary - <fo:inline color="blue">std.iec.ch/glossary</fo:inline></fo:block>
-													<fo:block margin-bottom="6pt">
-														<xsl:text>More than 55 000 electrotechnical terminology entries in
-															English and French extracted from the Terms and Definitions
-															clause of IEC publications issued since 2002. Some entries
-															have been collected from earlier publications of IEC TC 37,
-															77, 86 and CISPR.</xsl:text>
-													</fo:block>
-													<fo:block font-weight="bold">IEC Customer Service Centre - <fo:inline color="blue">webstore.iec.ch/csc</fo:inline></fo:block>
-													<fo:block margin-bottom="6pt">
-														<xsl:text>If you wish to give us your feedback on this publication or
-															need further assistance, please contact the Customer Service
-															Centre: </xsl:text><fo:inline color="blue">csc@iec.ch</fo:inline>.
-													</fo:block>
-												</fo:table-cell>
-											</fo:table-row>
-										</fo:table-body>
-									</fo:table>
-									
-									<fo:block font-weight="bold">A propos de l'IEC</fo:block>
-										<fo:block margin-bottom="6pt">La Commission Electrotechnique Internationale (IEC) est la première organisation mondiale qui élabore et publie des
-		Normes internationales pour tout ce qui a trait à l'électricité, à l'électronique et aux technologies apparentées.</fo:block>
-									
-									<fo:block font-weight="bold">A propos des publications IEC</fo:block>
-									<fo:block margin-bottom="6pt">Le contenu technique des publications IEC est constamment revu. Veuillez vous assurer que vous possédez l’édition la
-		plus récente, un corrigendum ou amendement peut avoir été publié.</fo:block>
-
-									<fo:table table-layout="fixed" width="100%">
-										<fo:table-column column-width="82mm"/>
-										<fo:table-column column-width="78mm"/>
-										<fo:table-body>
-											<fo:table-row>
-												<fo:table-cell padding-right="5mm">
-													<fo:block font-weight="bold">Catalogue IEC - <fo:inline color="blue">webstore.iec.ch/catalogue</fo:inline></fo:block>
-													<fo:block margin-bottom="6pt">
-														<xsl:text>Application autonome pour consulter tous les renseignements
-															bibliographiques sur les Normes internationales,
-															Spécifications techniques, Rapports techniques et autres
-															documents de l'IEC. Disponible pour PC, Mac OS, tablettes
-															Android et iPad.</xsl:text>
-													</fo:block>
-													<fo:block font-weight="bold">Recherche de publications IEC - <fo:inline color="blue">www.iec.ch/searchpub</fo:inline></fo:block>
-													<fo:block margin-bottom="6pt">
-														<xsl:text>La recherche avancée permet de trouver des publications IEC
-															en utilisant différents critères (numéro de référence, texte,
-															comité d’études,…). Elle donne aussi des informations sur les
-															projets et les publications remplacées ou retirées.</xsl:text>
-													</fo:block>
-													<fo:block font-weight="bold">IEC Just Published - <fo:inline color="blue">webstore.iec.ch/justpublished</fo:inline></fo:block>
-													<fo:block margin-bottom="6pt">
-														<xsl:text>Restez informé sur les nouvelles publications IEC. Just
-															Published détaille les nouvelles publications parues.
-															Disponible en ligne et aussi une fois par mois par email.</xsl:text>
-													</fo:block>
-												</fo:table-cell>
-												<fo:table-cell>
-													<fo:block font-weight="bold">Electropedia - <fo:inline color="blue">www.electropedia.org</fo:inline></fo:block>
-													<fo:block margin-bottom="6pt">
-														<xsl:text>Le premier dictionnaire en ligne de termes électroniques et
-															électriques. Il contient plus de 30 000 termes et définitions en
-															anglais et en français, ainsi que les termes équivalents dans
-															14 langues additionnelles. Egalement appelé Vocabulaire
-															Electrotechnique International (IEV) en ligne.</xsl:text>
-													</fo:block>
-													<fo:block font-weight="bold">Glossaire IEC - <fo:inline color="blue">std.iec.ch/glossary</fo:inline></fo:block>
-													<fo:block margin-bottom="6pt">
-														<xsl:text>Plus de 55 000 entrées terminologiques électrotechniques, en
-															anglais et en français, extraites des articles Termes et
-															Définitions des publications IEC parues depuis 2002. Plus
-															certaines entrées antérieures extraites des publications des
-															CE 37, 77, 86 et CISPR de l'IEC.</xsl:text>
-													</fo:block>
-													<fo:block font-weight="bold">Service Clients - <fo:inline color="blue">webstore.iec.ch/csc</fo:inline></fo:block>
-													<fo:block margin-bottom="6pt">
-														<xsl:text>Si vous désirez nous donner des commentaires sur cette
-																publication ou si vous avez des questions contactez-nous: </xsl:text><fo:inline color="blue">csc@iec.ch</fo:inline>.
-													</fo:block>
-												</fo:table-cell>
-											</fo:table-row>
-										</fo:table-body>
-									</fo:table>
-								</fo:block-container>
-							</fo:block-container>
-						</fo:block> -->
+						
 					</fo:flow>
 				</fo:page-sequence>
 			</xsl:if>
@@ -517,7 +361,7 @@
 									<fo:block font-size="9pt" line-height="150%" margin-top="8pt">
 										<fo:block-container width="40mm">
 											<fo:block>
-												<!-- <xsl:value-of select="'COMMISSION ELECTROTECHNIQUE INTERNATIONALE'"/> -->
+												<!-- 'COMMISSION ELECTROTECHNIQUE INTERNATIONALE' -->
 												<xsl:value-of select="$IEC_lang_second"/>
 											</fo:block>
 										</fo:block-container>
@@ -544,9 +388,7 @@
 														</xsl:variable>
 														<xsl:value-of select="java:toUpperCase(java:java.lang.String.new($price_code))"/>
 													</fo:block>
-													<!-- <xsl:if test="$lang != 'fr'">
-														<fo:block>CODE PRIX</fo:block>
-													</xsl:if> -->
+													
 													<fo:block>
 														<xsl:variable name="price_code">
 															<xsl:call-template name="getLocalizedString">
@@ -575,7 +417,7 @@
 								<fo:inline keep-together.within-line="always"><fo:leader leader-pattern="space"/>
 									<xsl:text>&#xA0;</xsl:text>
 									<xsl:if test="//iec:iec-standard/iec:bibdata/iec:docidentifier[@type='ISBN']">
-										<!-- <xsl:text>Example: ISBN 978-2-8322-1532-6</xsl:text> -->
+										<!-- Example: ISBN 978-2-8322-1532-6 -->
 										<xsl:value-of select="//iec:iec-standard/iec:bibdata/iec:docidentifier[@type='ISBN']"/>
 									</xsl:if>
 								</fo:inline>
@@ -622,22 +464,6 @@
 							
 								<xsl:apply-templates select="(//iec:iec-standard)[1]/iec:boilerplate/iec:copyright-statement/iec:clause/iec:p[not(@id)]"/>
 							
-								<!-- <fo:inline font-weight="bold">
-									<xsl:call-template name="addLetterSpacing">
-										<xsl:with-param name="text">
-											<xsl:for-each select="(//iec:iec-standard)[1]/iec:bibdata/iec:copyright">
-												<xsl:text>Copyright © </xsl:text><xsl:value-of select="iec:from"/><xsl:text> </xsl:text><xsl:value-of select="iec:owner/iec:organization/iec:name"/><xsl:text>, </xsl:text><xsl:value-of select="iec:owner/iec:organization/iec:abbreviation"/>
-											</xsl:for-each>
-										</xsl:with-param>
-									</xsl:call-template>
-								</fo:inline>
-								<fo:inline>
-									<xsl:call-template name="addLetterSpacing">
-										<xsl:with-param name="text">
-											<xsl:text>. All rights reserved. It is permitted to download this electronic file, to make a copy and to print out the content for the sole purpose of preparing National Committee positions. You may not copy or "mirror" the file or printed version of the document, or any part of it, for any other purpose without permission in writing from IEC.</xsl:text>
-										</xsl:with-param>
-									</xsl:call-template>
-								</fo:inline> -->
 							</fo:block>
 						</fo:block-container>
 					</fo:static-content>
@@ -655,19 +481,10 @@
 							</fo:inline>
 						</fo:block>
 						<fo:block font-size="10pt" text-align="right" margin-top="-2mm" margin-bottom="8pt">						
+							<!-- Examples: 'FINAL DRAFT INTERNATIONAL STANDARD (FDIS)', 'COMMITTEE DRAFT FOR VOTE (CDV)' -->
 							<xsl:call-template name="addLetterSpacing">
 								<xsl:with-param name="text" select="concat($stage-fullname-uppercased, ' (', $stage-abbreviation ,')')"/>
 							</xsl:call-template>
-							<!-- <xsl:if test="$stage-abbreviation = 'FDIS'">
-								<xsl:call-template name="addLetterSpacing">
-									<xsl:with-param name="text" select="'FINAL DRAFT INTERNATIONAL STANDARD (FDIS)'"/>
-								</xsl:call-template>
-							</xsl:if>
-							<xsl:if test="$stage-abbreviation = 'CDV'">
-								<xsl:call-template name="addLetterSpacing">
-									<xsl:with-param name="text" select="'COMMITTEE DRAFT FOR VOTE (CDV)'"/>
-								</xsl:call-template>
-							</xsl:if> -->
 							<xsl:text>&#xA0;</xsl:text>
 						</fo:block>
 						<fo:block-container margin-left="57mm">
@@ -945,24 +762,6 @@
 													
 													<xsl:apply-templates select="(//iec:iec-standard)[1]/iec:boilerplate/iec:feedback-statement/iec:clause[@id = 'boilerplate-cenelec-attention']"/>
 													
-													<!-- <fo:block font-size="8pt" margin-bottom="10pt" text-align="justify">
-														<xsl:if test="$stage-abbreviation = 'FDIS'">
-															<xsl:call-template name="addLetterSpacing">
-																<xsl:with-param name="text" select="'The attention of IEC National Committees, members of CENELEC, is drawn to the fact that this Final Draft International Standard (FDIS) is submitted for parallel voting.'"/>
-															</xsl:call-template>
-														</xsl:if>
-														<xsl:if test="$stage-abbreviation = 'CDV'">
-															<xsl:call-template name="addLetterSpacing">
-																<xsl:with-param name="text" select="'The attention of IEC National Committees, members of CENELEC, is drawn to the fact that this Committee Draft for Vote (CDV) is submitted for parallel voting.'"/>
-															</xsl:call-template>
-														</xsl:if>
-													</fo:block>
-													<fo:block font-size="8pt" margin-bottom="10pt">
-														<xsl:call-template name="addLetterSpacing">
-															<xsl:with-param name="text" select="'The CENELEC members are invited to vote through the CENELEC online voting system.'"/>
-														</xsl:call-template>
-													</fo:block> -->
-													
 												</fo:table-cell>
 												<fo:table-cell border="1.5pt solid {$border-color}" padding="1.5mm" padding-bottom="0mm">
 													<fo:block font-size="6.5pt" margin-bottom="6pt">
@@ -990,45 +789,6 @@
 							<fo:block>
 								<xsl:apply-templates select="(//iec:iec-standard)[1]/iec:boilerplate/iec:license-statement" mode="cover-page-internal"/>
 							</fo:block>
-							<!-- <xsl:if test="$stage-abbreviation = 'FDIS'">
-								<fo:block margin-bottom="6pt">
-									<xsl:call-template name="addLetterSpacing">
-										<xsl:with-param name="text">This document is a draft distributed for approval. It may not be referred to as an International Standard until published as such.</xsl:with-param>
-									</xsl:call-template>
-								</fo:block>
-								<fo:block margin-bottom="6pt">
-									<xsl:call-template name="addLetterSpacing">
-										<xsl:with-param name="text">In addition to their evaluation as being acceptable for industrial, technological, commercial and user purposes, Final Draft International Standards may on occasion have to be considered in the light of their potential to become standards to which reference may be made in national regulations.</xsl:with-param>
-									</xsl:call-template>
-								</fo:block>
-								<fo:block>
-									<xsl:call-template name="addLetterSpacing">
-										<xsl:with-param name="text"> Recipients of this document are invited to submit, with their comments, notification of any relevant patent rights of which they are aware and to provide supporting documentation.</xsl:with-param>
-									</xsl:call-template>
-								</fo:block>
-							</xsl:if>							
-							<xsl:if test="$stage-abbreviation = 'NWIP' or 
-															$stage-abbreviation = 'PWI' or 
-															$stage-abbreviation = 'NP' or 
-															$stage-abbreviation = 'AWI' or 
-															$stage-abbreviation = 'WD' or 
-															$stage-abbreviation = 'CD' or 
-															$stage-abbreviation = 'CDV' or
-															$stage-abbreviation = 'CD-TSTR' or 
-															$stage-abbreviation = 'DTS' or 
-															$stage-abbreviation = 'DTR' or 
-															$stage-abbreviation = 'DPAS'">
-								<fo:block margin-bottom="6pt">
-									<xsl:call-template name="addLetterSpacing">
-										<xsl:with-param name="text">This document is still under study and subject to change. It should not be used for reference purposes.</xsl:with-param>
-									</xsl:call-template>
-								</fo:block>
-								<fo:block margin-bottom="6pt">
-									<xsl:call-template name="addLetterSpacing">
-										<xsl:with-param name="text">Recipients of this document are invited to submit, with their comments, notification of any relevant patent rights of which they are aware and to provide supporting documentation.</xsl:with-param>
-									</xsl:call-template>
-								</fo:block>
-							</xsl:if> -->
 						</fo:block-container>
 						
 						<fo:block-container background-color="rgb(219, 229, 241)" margin-top="4mm" padding="2mm" padding-top="1mm" border="1.5pt solid white">
@@ -1068,24 +828,6 @@
 							<xsl:apply-templates select="(//iec:iec-standard)[1]/iec:bibdata/iec:ext/iec:tc-sc-officers-note"/>
 						</fo:block-container>
 								
-						<!-- <xsl:if test="$stage-abbreviation = 'FDIS'">
-							<fo:block-container  font-size="9pt" border="1.5 solid" border-color="rgb(221, 213, 213)" height="13mm" padding="1mm" margin-top="3mm">
-								<fo:block margin-bottom="6pt">
-									<xsl:call-template name="addLetterSpacing">
-											<xsl:with-param name="text">
-												<xsl:text>Chicago (USA) on April 9th</xsl:text>
-											</xsl:with-param>
-										</xsl:call-template>
-									</fo:block>
-								<fo:block>
-									<xsl:call-template name="addLetterSpacing">
-										<xsl:with-param name="text">
-											<xsl:text>This document is also of interest for ISO/ TC114/ WG1 Requirements for Watch batteries</xsl:text>
-										</xsl:with-param>
-									</xsl:call-template>
-								</fo:block>
-							</fo:block-container>
-						</xsl:if> -->
 						
 					</fo:flow>
 				</fo:page-sequence>
@@ -1141,76 +883,7 @@
 				</xsl:for-each>				
 			</xsl:for-each>
 			
-			
-			
-			<!-- <fo:page-sequence master-reference="document" format="1" initial-page-number="2" force-page-count="no-force">
-				<xsl:call-template name="insertHeaderFooter"/>
-				<fo:flow flow-name="xsl-region-body">
-					
-					<xsl:variable name="docid">
-						<xsl:call-template name="getDocumentId"/>
-					</xsl:variable>
-					
-			
-					<xsl:call-template name="insertTOCpages">
-						<xsl:with-param name="contents" select="xalan:nodeset($contents)/doc[@id = $docid]"/>
-					</xsl:call-template>
-					
-					<xsl:call-template name="insertPrefacepages"/>
-					
-				</fo:flow>
-			</fo:page-sequence>
-			
-			
-			<xsl:call-template name="insertBodypages"/>
-				 -->
-				
-				
-			<!-- Test=<xsl:copy-of select="$additionalDocs"/> Test -->
-			<!-- <xsl:for-each select="xalan:nodeset($additionalXMLsArray)/*">
-
-				<xsl:for-each select="document(.)">
-					<xsl:variable name="lang">
-						<xsl:call-template name="getLang"/>
-					</xsl:variable>	
-					<xsl:variable name="document">
-						<xsl:apply-templates mode="change_id">
-							<xsl:with-param name="lang" select="$lang"/>
-						</xsl:apply-templates>
-					</xsl:variable>
-					
-
-					<xsl:for-each select="xalan:nodeset($document)">
-					
-						<fo:page-sequence master-reference="document" force-page-count="no-force">
-							<xsl:call-template name="insertHeaderFooter"/>
-							<fo:flow flow-name="xsl-region-body">
-								
-								<xsl:variable name="docid">
-									<xsl:call-template name="getDocumentId"/>
-								</xsl:variable>
-						
-								<xsl:call-template name="insertTOCpages">
-									<xsl:with-param name="contents" select="xalan:nodeset($contents)/doc[@id = $docid]"/>
-								</xsl:call-template>
-								
-								<xsl:call-template name="insertPrefacepages">
-									<xsl:with-param name="lang" select="$lang"/>
-								</xsl:call-template>
-								
-							</fo:flow>
-						</fo:page-sequence>
-					
-						<xsl:call-template name="insertBodypages">
-							<xsl:with-param name="lang" select="$lang"/>
-						</xsl:call-template>
-					
-					
-					</xsl:for-each>
-				</xsl:for-each>
-			</xsl:for-each> -->
-			
-			
+		
 			
 			
 			<xsl:if test="$stage &gt;= 60">
@@ -1407,10 +1080,8 @@
 								</xsl:call-template>
 							</xsl:variable>
 							
-							<!-- <xsl:value-of select="java:replaceAll(java:java.lang.String.new($localized_part),'#',$part)"/> -->
 							<xsl:value-of select="concat($localized_part ,' ',$part, ': ')"/>
-							<!-- <xsl:text>Part </xsl:text><xsl:value-of select="$part"/>
-							<xsl:text>: </xsl:text> -->
+							
 						</xsl:if>
 						<xsl:value-of select="$title-part"/>
 					</xsl:if>
@@ -1451,10 +1122,6 @@
 								</xsl:otherwise>
 							</xsl:choose>
 							
-							<!-- <xsl:value-of select="java:replaceAll(java:java.lang.String.new($localized_part),'#',$part)"/> -->
-							
-							<!-- <xsl:text>Part </xsl:text><xsl:value-of select="$part"/>
-							<xsl:text>: </xsl:text> -->
 						</xsl:if>
 						<xsl:value-of select="$part-second"/>
 					</xsl:if>
@@ -1497,55 +1164,50 @@
 						<xsl:if test="@type = 'references'">
 							<xsl:attribute name="space-before">5pt</xsl:attribute>
 						</xsl:if>
-						<!-- <xsl:if test="@level &gt;= 2 and @section != ''">
-							<xsl:attribute name="margin-left">5mm</xsl:attribute>
-						</xsl:if> -->
 						
-						<!-- <xsl:choose>
-							<xsl:when test="@section != '' and not(@display-section = 'false')"> -->
-								<fo:list-block>
-									<xsl:attribute name="margin-left">
-										<xsl:choose>
-											<xsl:when test="title/@variant-title = 'true'">0mm</xsl:when>
-											<xsl:when test="@level = 2">8mm</xsl:when>
-											<xsl:when test="@level &gt;= 3"><xsl:value-of select="(@level - 2) * 23"/>mm</xsl:when>
-											<xsl:otherwise>0mm</xsl:otherwise>
-										</xsl:choose>
-									</xsl:attribute>
-									<xsl:attribute name="provisional-distance-between-starts">
-										<xsl:choose>
-											<xsl:when test="@section = ''">0mm</xsl:when>
-											<xsl:when test="@level = 1">8mm</xsl:when>
-											<xsl:when test="@level = 2">15mm</xsl:when>
-											<xsl:when test="@level &gt;= 3"><xsl:value-of select="(@level - 2) * 19"/>mm</xsl:when>
-											<xsl:otherwise>0mm</xsl:otherwise>
-										</xsl:choose>
-									</xsl:attribute>
-									<fo:list-item>
-										<fo:list-item-label end-indent="label-end()">
-											<fo:block>
-												<xsl:value-of select="@section"/>											
-											</fo:block>
-										</fo:list-item-label>
-										<fo:list-item-body start-indent="body-start()">
-											<fo:block text-align-last="justify">
-												<fo:basic-link internal-destination="{@id}" fox:alt-text="{title}">
-													<xsl:variable name="title">
-														<xsl:apply-templates select="title"/>
-													</xsl:variable>
-													<xsl:call-template name="addLetterSpacing">
-														<xsl:with-param name="text" select="$title"/>
-													</xsl:call-template>
-													<xsl:text> </xsl:text>
-													<fo:inline keep-together.within-line="always">
-														<fo:leader leader-pattern="dots"/>
-														<fo:inline><fo:page-number-citation ref-id="{@id}"/></fo:inline>
-													</fo:inline>
-												</fo:basic-link>
-											</fo:block>
-										</fo:list-item-body>
-									</fo:list-item>
-								</fo:list-block>
+						<fo:list-block>
+							<xsl:attribute name="margin-left">
+								<xsl:choose>
+									<xsl:when test="title/@variant-title = 'true'">0mm</xsl:when>
+									<xsl:when test="@level = 2">8mm</xsl:when>
+									<xsl:when test="@level &gt;= 3"><xsl:value-of select="(@level - 2) * 23"/>mm</xsl:when>
+									<xsl:otherwise>0mm</xsl:otherwise>
+								</xsl:choose>
+							</xsl:attribute>
+							<xsl:attribute name="provisional-distance-between-starts">
+								<xsl:choose>
+									<xsl:when test="@section = ''">0mm</xsl:when>
+									<xsl:when test="@level = 1">8mm</xsl:when>
+									<xsl:when test="@level = 2">15mm</xsl:when>
+									<xsl:when test="@level &gt;= 3"><xsl:value-of select="(@level - 2) * 19"/>mm</xsl:when>
+									<xsl:otherwise>0mm</xsl:otherwise>
+								</xsl:choose>
+							</xsl:attribute>
+							<fo:list-item>
+								<fo:list-item-label end-indent="label-end()">
+									<fo:block>
+										<xsl:value-of select="@section"/>											
+									</fo:block>
+								</fo:list-item-label>
+								<fo:list-item-body start-indent="body-start()">
+									<fo:block text-align-last="justify">
+										<fo:basic-link internal-destination="{@id}" fox:alt-text="{title}">
+											<xsl:variable name="title">
+												<xsl:apply-templates select="title"/>
+											</xsl:variable>
+											<xsl:call-template name="addLetterSpacing">
+												<xsl:with-param name="text" select="$title"/>
+											</xsl:call-template>
+											<xsl:text> </xsl:text>
+											<fo:inline keep-together.within-line="always">
+												<fo:leader leader-pattern="dots"/>
+												<fo:inline><fo:page-number-citation ref-id="{@id}"/></fo:inline>
+											</fo:inline>
+										</fo:basic-link>
+									</fo:block>
+								</fo:list-item-body>
+							</fo:list-item>
+						</fo:list-block>
 					</fo:block>
 				</xsl:for-each>
 				
@@ -1641,9 +1303,7 @@
 			<fo:flow flow-name="xsl-region-body">
 				
 				<fo:block-container font-size="12pt" text-align="center" margin-bottom="36pt">
-					<!-- <fo:block><xsl:value-of select="$organization"/></fo:block>
-					<fo:block>____________</fo:block>
-					<fo:block>&#xa0;</fo:block> -->
+					
 					<fo:block font-weight="bold" role="H1">						
 						<xsl:value-of select="java:toUpperCase(java:java.lang.String.new(/iec:iec-standard/iec:bibdata/iec:title[@language = $lang and @type = 'title-intro']))"/>
 						<xsl:text> — </xsl:text>
@@ -1797,9 +1457,6 @@
 				</xsl:if>
 				<title>
 					<xsl:choose>
-						<!-- <xsl:when test="$type = 'foreword' or $type = 'introduction'">
-							<xsl:value-of select="java:toUpperCase(java:java.lang.String.new($title))"/>
-						</xsl:when> -->
 						<xsl:when test="normalize-space($variant_title) != ''">
 							<xsl:attribute name="variant-title">true</xsl:attribute>
 							<xsl:apply-templates select="xalan:nodeset($variant_title)" mode="contents_item"/>
@@ -1904,14 +1561,7 @@
 			<xsl:apply-templates select="*[not(local-name() = 'title')]"/>
 		</fo:block>
 	</xsl:template>
-	
-<!-- 	<xsl:template match="iec:iec-standard/iec:preface/iec:introduction" priority="3">
-		<fo:block break-after="page"/>
-		<fo:block id="{@id}">
-			<xsl:apply-templates />
-		</fo:block>
-	</xsl:template> -->
-	
+		
 	
 	<xsl:template match="iec:annex//iec:clause" priority="2">		
 		<fo:block id="{@id}" margin-top="5pt" margin-bottom="10pt" text-align="justify">
@@ -1924,24 +1574,6 @@
 			<xsl:apply-templates/>
 		</fo:block>
 	</xsl:template>
-	<!-- <xsl:template match="iec:clause//iec:clause[not(iec:title)]">
-		<xsl:param name="sectionNum"/>
-		<xsl:variable name="section">
-			<xsl:call-template name="getSection">
-				<xsl:with-param name="sectionNum" select="$sectionNum"/>
-			</xsl:call-template>
-		</xsl:variable>
-		
-		<fo:block margin-top="5pt" margin-bottom="5pt" font-weight="bold" keep-with-next="always">
-			<xsl:value-of select="$section"/>
-		</fo:block>
-		<fo:block margin-bottom="10pt">
-			<xsl:apply-templates>
-				<xsl:with-param name="sectionNum" select="$sectionNum"/>				
-			</xsl:apply-templates>
-		</fo:block>
-		
-	</xsl:template> -->
 	
 	<!-- ====== -->
 	<!-- title      -->
@@ -1954,7 +1586,6 @@
 	</xsl:template>
 	<xsl:template match="iec:introduction/iec:title/text()">
 		<xsl:call-template name="addLetterSpacing">
-			<!-- <xsl:with-param name="text" select="java:toUpperCase(java:java.lang.String.new(.))"/> -->
 			<xsl:with-param name="text" select="."/>
 		</xsl:call-template>			
 	</xsl:template>
@@ -2006,8 +1637,7 @@
 						<xsl:choose>
 							<xsl:when test="$level = 2 and ancestor::iec:annex">22pt</xsl:when>
 							<xsl:when test="$level &gt;= 2 and ancestor::iec:annex">5pt</xsl:when>
-							<!-- <xsl:when test="$level &gt;= 4">5pt</xsl:when> -->
-							<xsl:when test="$level = '' or $level = 1">18pt</xsl:when><!-- 13.5pt -->
+							<xsl:when test="$level = '' or $level = 1">18pt</xsl:when>
 							<xsl:otherwise>10pt</xsl:otherwise>
 						</xsl:choose>
 					</xsl:attribute>
@@ -2040,15 +1670,14 @@
 				<xsl:otherwise>fo:block</xsl:otherwise>
 			</xsl:choose>
 		</xsl:variable>
-		<!-- inline=<xsl:value-of select="$inline"/> -->
+		
 		<xsl:choose>
 			<xsl:when test="$element-name = 'fo:block'">
 				<xsl:element name="{$element-name}">
 					<xsl:attribute name="text-align">
 						<xsl:choose>
-							<!-- <xsl:when test="ancestor::iec:preface">justify</xsl:when> -->
 							<xsl:when test="@align"><xsl:value-of select="@align"/></xsl:when>
-							<xsl:otherwise>justify</xsl:otherwise><!-- left -->
+							<xsl:otherwise>justify</xsl:otherwise>
 						</xsl:choose>
 					</xsl:attribute>
 					<xsl:attribute name="margin-top">5pt</xsl:attribute>
@@ -2071,10 +1700,7 @@
 					<xsl:if test="ancestor::iec:dl">
 						<xsl:attribute name="margin-bottom">5pt</xsl:attribute>
 					</xsl:if>
-					 <!-- Key -->
-					<!-- <xsl:if test="ancestor::iec:dl and ancestor::iec:figure">
-						<xsl:attribute name="margin-bottom">10pt</xsl:attribute>
-					</xsl:if> -->
+					 
 					<xsl:apply-templates select="@language"/>
 					<xsl:apply-templates />
 				</xsl:element>
@@ -2084,18 +1710,6 @@
 			</xsl:otherwise>
 		</xsl:choose>
 		
-		
-		<!-- <xsl:if test="$element-name = 'fo:inline' and not($inline = 'true') and not(local-name(..) = 'admonition')">
-			<fo:block margin-bottom="10pt">
-				 <xsl:if test="ancestor::iec:annex">
-					<xsl:attribute name="margin-bottom">0pt</xsl:attribute>
-				 </xsl:if>
-				<xsl:value-of select="$linebreak"/>
-			</fo:block>
-		</xsl:if> -->
-		<!-- <xsl:if test="$inline = 'true'">
-			<fo:block>&#xA0;</fo:block>
-		</xsl:if> -->
 	</xsl:template>
 	
 
@@ -2109,23 +1723,6 @@
 	
 	<xsl:template match="iec:dd/iec:p[ancestor::iec:figure]">
 		<fo:block margin-bottom="10pt"><xsl:apply-templates /></fo:block>
-	</xsl:template>
-	
-	
-	
-	<xsl:template match="iec:ul | iec:ol" mode="ul_ol">
-		<fo:list-block provisional-distance-between-starts="6mm" margin-bottom="12pt">
-			<xsl:if test="ancestor::iec:ul or ancestor::iec:ol">
-				<xsl:attribute name="margin-bottom">0pt</xsl:attribute>
-			</xsl:if>
-			<!-- <xsl:if test="local-name() = 'ul'">
-				<xsl:attribute name="margin-left">6mm</xsl:attribute>
-			</xsl:if> -->
-			<xsl:if test="ancestor::iec:legal-statement">
-				<xsl:attribute name="provisional-distance-between-starts">5mm</xsl:attribute>
-			</xsl:if>
-			<xsl:apply-templates />
-		</fo:list-block>
 	</xsl:template>
 	
 	

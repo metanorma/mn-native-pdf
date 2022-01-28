@@ -685,16 +685,6 @@
 	</xsl:template>
 	
 	
-	<xsl:template match="*[local-name()='ul'] | *[local-name()='ol']" mode="ul_ol">
-		<fo:list-block provisional-distance-between-starts="7mm" margin-top="8pt"> <!-- margin-bottom="8pt" -->
-			<xsl:apply-templates select="node()[not(local-name() = 'note')]" />
-		</fo:list-block>
-		<xsl:for-each select="./*[local-name()='note']">
-			<xsl:call-template name="note"/>
-		</xsl:for-each>
-	</xsl:template>
-	
-
 	
 	<!-- for two-columns layout -->
 	

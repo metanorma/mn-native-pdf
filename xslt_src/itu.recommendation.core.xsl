@@ -1725,7 +1725,7 @@
 	<xsl:template match="itu:docidentifier"/>
 	
 	
-	<xsl:template match="itu:ul | itu:ol | itu:sections/itu:ul | itu:sections/itu:ol" mode="ul_ol">
+	<xsl:template match="itu:ul | itu:ol | itu:sections/itu:ul | itu:sections/itu:ol" mode="list" priority="2">
 		<xsl:if test="preceding-sibling::*[1][local-name() = 'title'] and $doctype != 'service-publication'">
 			<fo:block padding-top="-8pt" font-size="1pt">&#xA0;</fo:block>
 		</xsl:if>

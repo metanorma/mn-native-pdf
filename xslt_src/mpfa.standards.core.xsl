@@ -429,7 +429,7 @@
 	</xsl:template>
 	
 	
-	<xsl:template match="mpfd:ul | mpfd:ol" mode="ul_ol">
+	<xsl:template match="mpfd:ul | mpfd:ol" mode="list" priority="2">
 		<fo:block-container margin-left="0mm">
 			<xsl:variable name="margin-left">
 				<xsl:variable name="countAncestorLists" select="count(ancestor::mpfd:ul) + count(ancestor::mpfd:ol)"/>					 
@@ -440,15 +440,7 @@
 			</xsl:attribute>
 			
 			<fo:block-container margin-left="0mm">
-				<fo:list-block margin-bottom="12pt" provisional-distance-between-starts="6mm">
-					<xsl:if test="local-name() = 'ol'">
-						<xsl:attribute name="provisional-distance-between-starts">7mm</xsl:attribute>
-					</xsl:if>			
-					<xsl:apply-templates select="node()[not(local-name() = 'note')]" />
-				</fo:list-block>
-				<xsl:for-each select="./mpfd:note//mpfd:p">
-					<xsl:call-template name="note"/>
-				</xsl:for-each>
+				<xsl:call-template name="list" />
 			</fo:block-container>
 		</fo:block-container>
 	</xsl:template>

@@ -602,8 +602,8 @@
 	</xsl:template>
 	
 	
-	<xsl:template match="ogc:ul | ogc:ol" mode="ul_ol">
-		<fo:list-block provisional-distance-between-starts="6.5mm" margin-bottom="12pt" line-height="115%">
+	<xsl:template match="ogc:ul | ogc:ol" mode="list" priority="2">
+		<fo:list-block xsl:use-attribute-sets="list-style">
 			<xsl:if test="ancestor::ogc:ul | ancestor::ogc:ol">
 				<xsl:attribute name="margin-bottom">0pt</xsl:attribute>
 			</xsl:if>
@@ -620,8 +620,7 @@
 			<fo:list-item-label><fo:block></fo:block></fo:list-item-label>
 			<fo:list-item-body>
 				<fo:block>
-					<xsl:apply-templates select="ogc:name" />
-					<xsl:apply-templates select="node()[not(local-name() = 'name')]" />
+					<xsl:apply-templates />
 				</fo:block>
 			</fo:list-item-body>
 		</fo:list-item>

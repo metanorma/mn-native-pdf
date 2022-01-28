@@ -437,15 +437,6 @@
 					<xsl:otherwise>left</xsl:otherwise>
 				</xsl:choose>
 			</xsl:attribute>
-			<!-- <xsl:choose>
-				<xsl:when test="ancestor::un:sections">
-					<fo:inline padding-right="10mm"><xsl:number format="1. " level="any" count="un:sections//un:clause/un:p"/></fo:inline>
-				</xsl:when>
-				<xsl:when test="ancestor::un:annex">
-					<xsl:variable name="annex_id" select="ancestor::un:annex/@id"/>
-					<fo:inline padding-right="10mm"><xsl:number format="1. " level="any" count="un:annex[@id = $annex_id]//un:clause/un:p"/></fo:inline>
-				</xsl:when>
-			</xsl:choose> -->
 			<xsl:apply-templates />
 		</fo:block>
 	</xsl:template>
@@ -495,56 +486,19 @@
 		</fo:block>
 	</xsl:template>
 	
-	<xsl:template match="un:p" name="paragraph"> <!-- priority="3" [not(parent::un:note)]-->
-		
-				<fo:block margin-bottom="6pt" line-height="122%">
-					<xsl:if test="following-sibling::*">
-						<xsl:attribute name="margin-bottom">6pt</xsl:attribute>
-					</xsl:if>
-					<xsl:attribute name="text-align">
-						<xsl:choose>
-							<xsl:when test="@align"><xsl:value-of select="@align"/></xsl:when>
-							<xsl:otherwise>justify</xsl:otherwise>
-						</xsl:choose>
-					</xsl:attribute>
-					<xsl:apply-templates />
-				</fo:block>
-			
-	</xsl:template>
-	
-	<xsl:template match="un:p2">
-		<fo:block-container margin-left="1mm">
-			<fo:block margin-left="-1mm">
-				<fo:list-block provisional-distance-between-starts="9mm" margin-bottom="6pt" line-height="122%">
-					<xsl:attribute name="text-align">
-						<xsl:choose>
-							<xsl:when test="@align"><xsl:value-of select="@align"/></xsl:when>
-							<xsl:otherwise>justify</xsl:otherwise>
-						</xsl:choose>
-					</xsl:attribute>
-					<fo:list-item>
-						<fo:list-item-label end-indent="label-end()">
-							<fo:block>
-								<xsl:choose>
-									<xsl:when test="ancestor::un:sections">
-										<xsl:number format="1. " level="any" count="un:sections//un:clause/un:p"/>
-									</xsl:when>
-									<xsl:when test="ancestor::un:annex">
-										<xsl:variable name="annex_id" select="ancestor::un:annex/@id"/>
-										<xsl:number format="1. " level="any" count="un:annex[@id = $annex_id]//un:p"/> <!-- //un:clause -->
-									</xsl:when>
-								</xsl:choose>
-							</fo:block>
-						</fo:list-item-label>
-						<fo:list-item-body text-indent="body-start()">
-							<fo:block>
-								<xsl:text> </xsl:text><xsl:apply-templates />
-							</fo:block>
-						</fo:list-item-body>
-					</fo:list-item>
-				</fo:list-block>
-			</fo:block>
-		</fo:block-container>
+	<xsl:template match="un:p" name="paragraph">
+		<fo:block margin-bottom="6pt" line-height="122%">
+			<xsl:if test="following-sibling::*">
+				<xsl:attribute name="margin-bottom">6pt</xsl:attribute>
+			</xsl:if>
+			<xsl:attribute name="text-align">
+				<xsl:choose>
+					<xsl:when test="@align"><xsl:value-of select="@align"/></xsl:when>
+					<xsl:otherwise>justify</xsl:otherwise>
+				</xsl:choose>
+			</xsl:attribute>
+			<xsl:apply-templates />
+		</fo:block>
 	</xsl:template>
 	
 	
@@ -554,12 +508,9 @@
 		</fo:block>
 	</xsl:template>
 	
-	<xsl:template match="un:ul | un:ol" mode="ul_ol">
-		<fo:block-container margin-left="8mm"  text-indent="0mm">
-			<fo:list-block provisional-distance-between-starts="4mm" margin-left="-8mm">
-				<xsl:apply-templates select="node()[not(local-name() = 'note')]" />
-			</fo:list-block>
-			<xsl:apply-templates select="./un:note" />
+	<xsl:template match="un:ul | un:ol" mode="list" priority="2">
+		<fo:block-container margin-left="8mm" text-indent="0mm">
+			<xsl:call-template name="list"/>
 		</fo:block-container>
 	</xsl:template>
 	

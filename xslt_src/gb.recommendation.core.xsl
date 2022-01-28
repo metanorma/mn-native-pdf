@@ -681,18 +681,6 @@
 	
 	
 	
-	<xsl:template match="gb:ul | gb:ol" mode="ul_ol">
-		<fo:list-block margin-bottom="12pt" margin-left="7.4mm" provisional-distance-between-starts="4mm"> <!--   margin-bottom="8pt" -->
-			<xsl:if test="local-name() = 'ol'">
-				<xsl:attribute name="provisional-distance-between-starts">7mm</xsl:attribute>
-			</xsl:if>			
-			<xsl:apply-templates select="node()[not(local-name() = 'note')]" />
-		</fo:list-block>
-		<xsl:apply-templates select="./gb:note"/>
-	</xsl:template>
-	
-
-	
 	<xsl:template match="gb:preferred" priority="2">
 		
 		<fo:inline font-family="SimHei" font-size="11pt">

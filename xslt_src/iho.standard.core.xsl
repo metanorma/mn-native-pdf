@@ -569,22 +569,12 @@
 		<xsl:apply-templates />
 	</xsl:template>
 
-	
-	<xsl:template match="iho:ul | iho:ol" mode="ul_ol">
-		<fo:list-block provisional-distance-between-starts="6mm">
-			<xsl:apply-templates select="node()[not(local-name() = 'note')]" />
-		</fo:list-block>
-		<xsl:for-each select="./iho:note">
-			<xsl:call-template name="note"/>
-		</xsl:for-each>
-	</xsl:template>
-	
+	<!-- note in list item -->
 	<xsl:template match="iho:ul//iho:note  | iho:ol//iho:note" priority="2">
 		<fo:block id="{@id}">
 			<xsl:apply-templates />
 		</fo:block>
 	</xsl:template>
-	
 	
 
 	<xsl:template match="iho:li//iho:p//text()">

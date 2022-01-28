@@ -447,18 +447,7 @@
 		<xsl:apply-templates />
 	</xsl:template>
 	
-	
-	
-	<xsl:template match="csd:ul | csd:ol" mode="ul_ol">
-		<fo:list-block provisional-distance-between-starts="6.5mm" margin-bottom="12pt">
-			<xsl:if test="ancestor::csd:ol">
-				<xsl:attribute name="margin-bottom">0pt</xsl:attribute>
-			</xsl:if>
-			<xsl:apply-templates />
-		</fo:list-block>
-	</xsl:template>
-	
-	
+		
 	<xsl:template match="csd:xref" priority="2">
 		<fo:basic-link internal-destination="{@target}" fox:alt-text="{@target}">			
 			<xsl:if test="not(starts-with(text(), 'Figure') or starts-with(text(), 'Table'))">

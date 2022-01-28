@@ -1658,17 +1658,6 @@
 		<xsl:apply-templates />
 	</xsl:template>
 	
-		
-	<xsl:template match="iso:ul | iso:ol" mode="ul_ol">
-		<fo:list-block provisional-distance-between-starts="7mm" margin-top="8pt"> <!-- margin-bottom="8pt" -->
-			<xsl:apply-templates select="node()[not(local-name() = 'note')]" />
-		</fo:list-block>
-		<xsl:for-each select="./iso:note">
-			<xsl:call-template name="note"/>
-		</xsl:for-each>
-	</xsl:template>
-	
-	
 	
 	<!-- For express listings PDF attachments -->
 	<xsl:template match="*[local-name() = 'eref'][contains(@bibitemid, '.exp')]" priority="2">

@@ -439,7 +439,7 @@
 	</xsl:template>
 	
 	
-	<xsl:template match="csa:ul | csa:ol" mode="ul_ol">
+	<xsl:template match="csa:ul | csa:ol" mode="list" priority="2">
 		<xsl:choose>
 			<xsl:when test="not(ancestor::csa:ul) and not(ancestor::csa:ol)">
 				<fo:block-container border-left="0.75mm solid {$color-header-document}" margin-left="1mm" margin-bottom="12pt">
@@ -463,18 +463,11 @@
 	</xsl:template>
 	
 	<xsl:template name="listProcessing">
-		<fo:list-block provisional-distance-between-starts="6.5mm" line-height="145%">
-			<xsl:if test="ancestor::csa:ul | ancestor::csa:ol">
-				<!-- <xsl:attribute name="margin-bottom">0pt</xsl:attribute> -->
-			</xsl:if>
-			<xsl:if test="following-sibling::*[1][local-name() = 'ul' or local-name() = 'ol']">
-				<!-- <xsl:attribute name="margin-bottom">0pt</xsl:attribute> -->
-			</xsl:if>
+		<fo:list-block xsl:use-attribute-sets="list-style">
 			<xsl:apply-templates />
 		</fo:list-block>
 	</xsl:template>
 	
-
 	
 	<xsl:template match="csa:ul/csa:note | csa:ol/csa:note" priority="2">
 		<fo:list-item font-size="10pt">
