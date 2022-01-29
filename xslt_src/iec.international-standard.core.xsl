@@ -354,6 +354,7 @@
 									<xsl:call-template name="getLocalizedString">
 										<xsl:with-param name="key">IEC</xsl:with-param>
 										<xsl:with-param name="lang"><xsl:value-of select="$lang_second"/></xsl:with-param>
+										<xsl:with-param name="returnEmptyIfNotFound">true</xsl:with-param>
 									</xsl:call-template>
 								</xsl:variable>
 								
@@ -1107,11 +1108,12 @@
 								<xsl:call-template name="getLocalizedString">
 									<xsl:with-param name="key">locality.part</xsl:with-param>
 									<xsl:with-param name="lang"><xsl:value-of select="$lang_second"/></xsl:with-param>
+									<xsl:with-param name="returnEmptyIfNotFound">true</xsl:with-param>
 								</xsl:call-template>
 							</xsl:variable>
 							
 							<xsl:choose>
-								<xsl:when test="normalize-space($locality_part_lang_second)">
+								<xsl:when test="normalize-space($locality_part_lang_second) != ''">
 									<xsl:variable name="localized_part">
 										<xsl:value-of select="$locality_part_lang_second"/>
 									</xsl:variable>
