@@ -6460,8 +6460,11 @@
 	<!-- ================= -->
 	<!-- Added,deleted text -->
 	<!-- ================= -->
-	<xsl:template match="*[local-name()='add']">
+	<xsl:template match="*[local-name()='add']" name="tag_add">
 		<xsl:param name="skip">true</xsl:param>
+		<xsl:param name="block">false</xsl:param>
+		<xsl:param name="type"/>
+		<xsl:param name="text-align"/>
 		<xsl:choose>
 			<xsl:when test="starts-with(., $ace_tag)"> <!-- examples: ace-tag_A1_start, ace-tag_A2_end, C1_start, AC_start -->
 				<xsl:choose>
@@ -6471,13 +6474,34 @@
 					and 
 					../node()[last()][local-name() = 'add'][starts-with(text(), $ace_tag)]"><!-- start tag displayed in template name="note" and title --></xsl:when>
 					<xsl:otherwise>
-						<fo:inline>
+						<xsl:variable name="tag">
 							<xsl:call-template name="insertTag">
-								<xsl:with-param name="type" select="substring-after(substring-after(., $ace_tag), '_')"/> <!-- start or end -->
+								<xsl:with-param name="type">
+									<xsl:choose>
+										<xsl:when test="$type = ''"><xsl:value-of select="substring-after(substring-after(., $ace_tag), '_')"/> <!-- start or end --></xsl:when>
+										<xsl:otherwise><xsl:value-of select="$type"/></xsl:otherwise>
+									</xsl:choose>
+								</xsl:with-param>
 								<xsl:with-param name="kind" select="substring(substring-before(substring-after(., $ace_tag), '_'), 1, 1)"/> <!-- A or C -->
 								<xsl:with-param name="value" select="substring(substring-before(substring-after(., $ace_tag), '_'), 2)"/> <!-- 1, 2, C -->
 							</xsl:call-template>
-						</fo:inline>
+						</xsl:variable>
+						<xsl:choose>
+							<xsl:when test="$block = 'false'">
+								<fo:inline>
+									<xsl:copy-of select="$tag"/>									
+								</fo:inline>
+							</xsl:when>
+							<xsl:otherwise>
+								<fo:block> <!-- for around figures -->
+									<xsl:if test="$text-align != ''">
+										<xsl:attribute name="text-align"><xsl:value-of select="$text-align"/></xsl:attribute>
+									</xsl:if>
+									<xsl:copy-of select="$tag"/>
+								</fo:block>
+							</xsl:otherwise>
+						</xsl:choose>
+						
 					</xsl:otherwise>
 				</xsl:choose>
 			</xsl:when>
@@ -8581,7 +8605,7 @@
 						<xsl:attribute name="font-style">normal</xsl:attribute>
 					</xsl:if>
 				</xsl:if>
-				<xsl:apply-templates/>
+				<xsl:apply-templates />
 			</fo:block>
 		</xsl:if>
 	</xsl:template>
