@@ -6470,7 +6470,8 @@
 				<xsl:choose>
 					<xsl:when test="$skip = 'true' and 
 					((local-name(../..) = 'note' and not(preceding-sibling::node())) or 
-					(local-name(..) = 'title' and preceding-sibling::node()[1][local-name() = 'tab']))
+					(local-name(..) = 'title' and preceding-sibling::node()[1][local-name() = 'tab']) or
+					local-name(..) = 'formattedref' and not(preceding-sibling::node()))
 					and 
 					../node()[last()][local-name() = 'add'][starts-with(text(), $ace_tag)]"><!-- start tag displayed in template name="note" and title --></xsl:when>
 					<xsl:otherwise>
@@ -11196,6 +11197,12 @@
 			
 			<xsl:when test="$namespace = 'bsi'">
 				<!-- start BSI bibitem processing -->
+				
+				<!-- move opening ace-tag before number -->
+				<xsl:apply-templates select="*[local-name() = 'formattedref']/node()[1][local-name() = 'add' and contains(., '_start')]">
+					<xsl:with-param name="skip">false</xsl:with-param>
+				</xsl:apply-templates>
+				
 				<xsl:variable name="docidentifier">
 					<xsl:choose>
 						<xsl:when test="*[local-name() = 'docidentifier'][not(@type = 'metanorma') and not(@type = 'metanorma-ordinal')] and $document_type = 'PAS'">
@@ -11251,7 +11258,7 @@
 				<xsl:apply-templates select="*[local-name() = 'note']"/>			
 				<xsl:if test="normalize-space($docidentifier_) != ''">
 					<!-- <xsl:if test="preceding-sibling::*[local-name() = 'references'][1][@normative = 'true']">,</xsl:if> -->
-					<xsl:if test="not(starts-with($docidentifier_, '['))">,</xsl:if>
+					<xsl:if test="not(starts-with($docidentifier_, '[')) and not(*[local-name() = 'formattedref']/node()[1][local-name() = 'add' and contains(., '_start')])">,</xsl:if>
 					<xsl:text> </xsl:text>
 				</xsl:if>
 				<xsl:choose>
