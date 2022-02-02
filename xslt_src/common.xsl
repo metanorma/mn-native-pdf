@@ -10430,7 +10430,7 @@
 				
 					<xsl:if test="$namespace = 'bsi'">
 						<xsl:if test="$document_type = 'PAS'">
-							<xsl:attribute name="color"><xsl:value-of select="$color_PAS"/></xsl:attribute>
+							<xsl:attribute name="color"><xsl:value-of select="$color_list_label_PAS"/></xsl:attribute>
 						</xsl:if>
 					</xsl:if>
 				
