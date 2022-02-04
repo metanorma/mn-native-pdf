@@ -859,30 +859,38 @@
 			<xsl:attribute name="margin-bottom">18pt</xsl:attribute>
 		</xsl:if>
 	</xsl:attribute-set> <!-- example-body-style -->
-	
+
 
 	<xsl:attribute-set name="example-name-style">
-		<xsl:attribute name="keep-with-next">always</xsl:attribute>
 		<xsl:if test="$namespace = 'csa'">			
+			<xsl:attribute name="keep-with-next">always</xsl:attribute>
 			<xsl:attribute name="margin-top">12pt</xsl:attribute>
 			<xsl:attribute name="margin-bottom">12pt</xsl:attribute>
 			<xsl:attribute name="font-weight">bold</xsl:attribute>
 		</xsl:if>
-		<xsl:if test="$namespace = 'csd'">			
+		<xsl:if test="$namespace = 'csd'">
+			<xsl:attribute name="keep-with-next">always</xsl:attribute>
 			<xsl:attribute name="margin-bottom">12pt</xsl:attribute>
 			<xsl:attribute name="font-weight">bold</xsl:attribute>
 		</xsl:if>
-		<xsl:if test="$namespace = 'bsi' or $namespace = 'gb' or $namespace = 'iso' or $namespace = 'jcgm'">
-			 <xsl:attribute name="padding-right">5mm</xsl:attribute>
+		<xsl:if test="$namespace = 'bsi' or $namespace = 'jcgm'">
+			<xsl:attribute name="padding-right">5mm</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'gb' or $namespace = 'iso'">
+			<xsl:attribute name="keep-with-next">always</xsl:attribute>
+			<xsl:attribute name="padding-right">5mm</xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'iec'">
+			<xsl:attribute name="keep-with-next">always</xsl:attribute>
 			<xsl:attribute name="padding-right">9mm</xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'iho'">
+			<xsl:attribute name="keep-with-next">always</xsl:attribute>
 			<xsl:attribute name="margin-bottom">12pt</xsl:attribute>
 			<xsl:attribute name="font-weight">bold</xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'itu'">
+			<xsl:attribute name="keep-with-next">always</xsl:attribute>
 			<xsl:attribute name="font-weight">bold</xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'm3d'">
@@ -890,11 +898,13 @@
 			<xsl:attribute name="font-weight">bold</xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'nist-cswp'">
+			<xsl:attribute name="keep-with-next">always</xsl:attribute>
 			<xsl:attribute name="font-size">10pt</xsl:attribute>
 			<xsl:attribute name="font-weight">bold</xsl:attribute>			
 			<xsl:attribute name="margin-bottom">12pt</xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'nist-sp'">
+			<xsl:attribute name="keep-with-next">always</xsl:attribute>
 			<xsl:attribute name="font-size">10pt</xsl:attribute>
 			<xsl:attribute name="font-weight">bold</xsl:attribute>
 			<xsl:attribute name="margin-top">12pt</xsl:attribute>
@@ -916,12 +926,14 @@
 			<xsl:attribute name="padding-right">0.5mm</xsl:attribute>
 		</xsl:if>		
 		<xsl:if test="$namespace = 'unece' or $namespace = 'unece-rec'">
+			<xsl:attribute name="keep-with-next">always</xsl:attribute>
 			<xsl:attribute name="font-size">10pt</xsl:attribute>
 			<xsl:attribute name="font-weight">bold</xsl:attribute>			
 			<xsl:attribute name="margin-bottom">12pt</xsl:attribute>
 		</xsl:if>		
 		
 		<xsl:if test="$namespace = 'mpfd'">
+			<xsl:attribute name="keep-with-next">always</xsl:attribute>
 			<xsl:attribute name="font-size">10pt</xsl:attribute>
 			<xsl:attribute name="font-weight">bold</xsl:attribute>			
 			<xsl:attribute name="margin-top">12pt</xsl:attribute>
