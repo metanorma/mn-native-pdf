@@ -245,9 +245,22 @@
 						</fo:table>
 					</fo:block>
 					
-					<fo:block-container absolute-position="fixed" left="16.5mm" top="83mm" height="90mm">
-						<fo:block-container width="155mm">
+					<!-- <fo:block-container absolute-position="fixed" left="16.5mm" top="83mm" height="90mm"> -->
+					<fo:block-container absolute-position="fixed" left="16.5mm" top="40mm" height="170mm">
+						<fo:block-container width="155mm" height="99%" display-align="center">
 							<fo:block font-size="33pt" role="H1">
+								<xsl:variable name="length_title" select="string-length($doctitle)"/>
+								<xsl:variable name="fit_font-size">
+									<xsl:choose>
+										<xsl:when test="$length_title &gt; 230">20</xsl:when>
+										<xsl:when test="$length_title &gt; 170">26</xsl:when>
+										<xsl:when test="$length_title &gt; 155">28</xsl:when>
+										<xsl:when test="$length_title &gt; 130">30</xsl:when>
+									</xsl:choose>
+								</xsl:variable>
+								<xsl:if test="normalize-space($fit_font-size) != ''">
+									<xsl:attribute name="font-size"><xsl:value-of select="$fit_font-size"/>pt</xsl:attribute>
+								</xsl:if>
 								<xsl:call-template name="addLetterSpacing">
 									<xsl:with-param name="text" select="java:toUpperCase(java:java.lang.String.new($doctitle))"/>
 									<xsl:with-param name="letter-spacing" select="1.1"/>
