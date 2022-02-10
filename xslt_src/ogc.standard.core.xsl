@@ -464,7 +464,7 @@
 										<xsl:if test="@level = 1 or @parent = 'annex'">										
 											<xsl:attribute name="font-size">12pt</xsl:attribute>
 										</xsl:if>
-										<xsl:if test="@level &gt;= 2 and not(@parent = 'annex')">
+										<xsl:if test="@level &gt;= 2"> <!-- and not(@parent = 'annex') -->
 											<xsl:attribute name="font-size">10pt</xsl:attribute>
 										</xsl:if>
 										
@@ -1081,7 +1081,11 @@
 	
 	
 	<xsl:template match="ogc:ul | ogc:ol" mode="list" priority="2">
+		<xsl:variable name="ul_indent">6mm</xsl:variable>
 		<fo:block-container margin-left="13mm">
+			<xsl:if test="self::ogc:ul">
+				<xsl:attribute name="margin-left"><xsl:value-of select="$ul_indent"/></xsl:attribute>
+			</xsl:if>
 			<xsl:if test="ancestor::ogc:table">
 				<xsl:attribute name="margin-left">4mm</xsl:attribute>
 			</xsl:if>
@@ -1093,6 +1097,9 @@
 			</xsl:if>
 			<fo:block-container margin-left="0mm">
 				<fo:list-block xsl:use-attribute-sets="list-style">
+					<xsl:if test="self::ogc:ul">
+						<xsl:attribute name="provisional-distance-between-starts"><xsl:value-of select="$ul_indent"/></xsl:attribute>
+					</xsl:if>
 					<xsl:if test="ancestor::ogc:table">
 						<xsl:attribute name="provisional-distance-between-starts">5mm</xsl:attribute>
 					</xsl:if>
