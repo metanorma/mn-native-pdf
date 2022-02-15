@@ -41,11 +41,23 @@
 	<xsl:variable name="part" select="/iso:iso-standard/iso:bibdata/iso:ext/iso:structuredidentifier/iso:project-number/@part"/>
 	
 	<xsl:variable name="doctype" select="/iso:iso-standard/iso:bibdata/iso:ext/iso:doctype"/>	 
-	<xsl:variable name="doctype_uppercased" select="java:toUpperCase(java:java.lang.String.new(translate($doctype,'-',' ')))"/>
+  <xsl:variable name="doctype_localized" select="/iso:iso-standard/iso:bibdata/iso:ext/iso:doctype[@language = $lang]"/>
+    
+	<xsl:variable name="doctype_uppercased">
+    <xsl:choose>
+      <xsl:when test="$doctype_localized != ''">
+        <xsl:value-of select="java:toUpperCase(java:java.lang.String.new(translate(normalize-space($doctype_localized),'-',' ')))"/>
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:value-of select="java:toUpperCase(java:java.lang.String.new(translate(normalize-space($doctype),'-',' ')))"/>
+      </xsl:otherwise>
+    </xsl:choose>
+  </xsl:variable> 
 	 	
 	<xsl:variable name="stage" select="number(/iso:iso-standard/iso:bibdata/iso:status/iso:stage)"/>
 	<xsl:variable name="substage" select="number(/iso:iso-standard/iso:bibdata/iso:status/iso:substage)"/>	
 	<xsl:variable name="stagename" select="normalize-space(/iso:iso-standard/iso:bibdata/iso:ext/iso:stagename)"/>
+	<xsl:variable name="stagename_localized" select="normalize-space(/iso:iso-standard/iso:bibdata/iso:status/iso:stage[@language = $lang])"/>
 	<xsl:variable name="abbreviation" select="normalize-space(/iso:iso-standard/iso:bibdata/iso:status/iso:stage/@abbreviation)"/>
 		
 	<xsl:variable name="stage-abbreviation">
@@ -69,7 +81,10 @@
 
 	<xsl:variable name="stage-fullname-uppercased">
 		<xsl:choose>
-			<xsl:when test="$stagename != ''">				
+			<xsl:when test="$stagename_localized != ''">
+				<xsl:value-of select="java:toUpperCase(java:java.lang.String.new($stagename_localized))"/>
+			</xsl:when>
+			<xsl:when test="$stagename != ''">
 				<xsl:value-of select="java:toUpperCase(java:java.lang.String.new($stagename))"/>
 			</xsl:when>
 			<xsl:when test="$stage-abbreviation = 'NWIP' or
@@ -444,7 +459,7 @@
 																	<!-- Reference number -->
 																	<fo:block>
 																		<xsl:call-template name="getLocalizedString">
-																			<xsl:with-param name="key">reference_number</xsl:with-param>																			
+																			<xsl:with-param name="key">reference_number</xsl:with-param>
 																		</xsl:call-template>
 																	</fo:block>
 																	<fo:block>
@@ -628,6 +643,15 @@
 															<xsl:if test="$stage-name = 'final-draft'">FINAL<xsl:value-of select="$linebreak"/>DRAFT</xsl:if> -->
 														</fo:block>
 													</fo:table-cell>
+													
+													<xsl:variable name="lastWord">
+														<xsl:call-template name="substring-after-last">
+															<xsl:with-param name="value" select="$doctype_uppercased"/>
+															<xsl:with-param name="delimiter" select="' '"/>
+														</xsl:call-template>
+													</xsl:variable>
+													<xsl:variable name="font-size"><xsl:if test="string-length($lastWord) &gt;= 12">90%</xsl:if></xsl:variable> <!-- to prevent overlapping 'NORME INTERNATIONALE' to number -->
+													
 													<fo:table-cell>
 														<fo:block text-align="left">
 															<xsl:choose>
@@ -635,6 +659,9 @@
 																	<xsl:value-of select="java:toUpperCase(java:java.lang.String.new(translate(/iso:iso-standard/iso:bibdata/iso:ext/iso:updates-document-type,'-',' ')))"/>
 																</xsl:when>
 																<xsl:otherwise>
+																	<xsl:if test="$font-size != ''">
+																		<xsl:attribute name="font-size"><xsl:value-of select="$font-size"/></xsl:attribute>
+																	</xsl:if>
 																	<xsl:value-of select="$doctype_uppercased"/>
 																</xsl:otherwise>
 															</xsl:choose>
@@ -642,6 +669,9 @@
 													</fo:table-cell>
 													<fo:table-cell>
 														<fo:block text-align="right" font-weight="bold" margin-bottom="13mm">
+															<xsl:if test="$font-size != ''">
+																<xsl:attribute name="font-size"><xsl:value-of select="$font-size"/></xsl:attribute>
+															</xsl:if>
 															<xsl:value-of select="$docidentifierISO"/>
 														</fo:block>
 													</fo:table-cell>
@@ -1318,7 +1348,7 @@
 				<xsl:choose>
 					<xsl:when test="$isMainLang = 'true'">
 						<xsl:call-template name="getLocalizedString">
-							<xsl:with-param name="key">Part.sg</xsl:with-param>
+							<xsl:with-param name="key">locality.part</xsl:with-param>
 						</xsl:call-template>
 						<xsl:text> </xsl:text>
 						<xsl:value-of select="$part"/>
@@ -1876,8 +1906,8 @@
 			</xsl:when>
 		</xsl:choose>
 		<xsl:variable name="title-edition">
-			<xsl:call-template name="getTitle">
-				<xsl:with-param name="name" select="'title-edition'"/>
+			<xsl:call-template name="getLocalizedString">
+				<xsl:with-param name="key">edition</xsl:with-param>
 			</xsl:call-template>
 		</xsl:variable>
 		<xsl:if test="$edition != ''"><xsl:text> </xsl:text><xsl:value-of select="java:toLowerCase(java:java.lang.String.new($title-edition))"/></xsl:if>
