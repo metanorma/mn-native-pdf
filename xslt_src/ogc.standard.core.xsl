@@ -66,8 +66,21 @@
 				<xsl:copy-of select="@id"/>
 				<xsl:variable name="title">
 					<xsl:apply-templates select=".//ogc:p[@class = 'RecommendationTitle'][ancestor::ogc:table[1][@id= $table_id]]/node()"/>
+					<xsl:if test=".//ogc:p[@class = 'RecommendationLabel'][ancestor::ogc:table[1][@id= $table_id]]/node()">
+						<xsl:text>: </xsl:text>
+						<xsl:variable name="recommendationLabel">
+							<tt><xsl:copy-of select=".//ogc:p[@class = 'RecommendationLabel'][ancestor::ogc:table[1][@id= $table_id]]/node()"/></tt>
+						</xsl:variable>
+						<xsl:apply-templates select="xalan:nodeset($recommendationLabel)/node()"/>
+					</xsl:if>
 				</xsl:variable>
-				<xsl:variable name="bookmark" select="normalize-space(.//ogc:p[@class = 'RecommendationTitle'][ancestor::ogc:table[1][@id= $table_id]]/node())"/>
+				<xsl:variable name="bookmark">
+					<xsl:value-of select="normalize-space(.//ogc:p[@class = 'RecommendationTitle'][ancestor::ogc:table[1][@id= $table_id]]/node())"/>
+					<xsl:if test=".//ogc:p[@class = 'RecommendationLabel'][ancestor::ogc:table[1][@id= $table_id]]/node()">
+						<xsl:text>: </xsl:text>
+						<xsl:value-of select="normalize-space(.//ogc:p[@class = 'RecommendationLabel'][ancestor::ogc:table[1][@id= $table_id]]/node())"/>
+					</xsl:if>
+				</xsl:variable>
 				<xsl:variable name="regex_str" select="'^([^0-9]+) (\d+).*'"/>
 				<xsl:variable name="class" select="java:replaceAll(java:java.lang.String.new($bookmark), $regex_str, '$1')"/>
 				<xsl:variable name="num" select="java:replaceAll(java:java.lang.String.new($bookmark), $regex_str, '$2')"/>
