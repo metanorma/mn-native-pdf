@@ -8271,11 +8271,18 @@
 		<xsl:apply-templates mode="contents"/>
 	</xsl:template>
 
-	<!-- special case -->
+	<!-- special case: ignore preface/section-title and sections/section-title without @displayorder  -->
 	<xsl:template match="*[local-name() = 'preface' or local-name() = 'sections']/*[local-name() = 'p'][@type = 'section-title' and not(@displayorder)]" priority="3" mode="contents"/>
+	<!-- process them by demand (mode="contents_no_displayorder") -->
 	<xsl:template match="*[local-name() = 'p'][@type = 'section-title' and not(@displayorder)]" mode="contents_no_displayorder">
 		<xsl:call-template name="contents_section-title"/>
 	</xsl:template>
+	<xsl:template match="*[local-name() = 'p'][@type = 'section-title']" mode="contents_in_clause">
+		<xsl:call-template name="contents_section-title"/>
+	</xsl:template>
+	
+	<!-- special case: ignore section-title if @depth different than @depth of parent clause, or @depth of parent clause = 1 -->
+	<xsl:template match="*[local-name() = 'clause']/*[local-name() = 'p'][@type = 'section-title' and (@depth != ../*[local-name() = 'title']/@depth or ../*[local-name() = 'title']/@depth = 1)]" priority="3" mode="contents"/>
 	
 	<xsl:template match="*[local-name() = 'p'][@type = 'floating-title' or @type = 'section-title']" priority="2" name="contents_section-title" mode="contents">
 		<xsl:variable name="level">
