@@ -124,37 +124,11 @@
 	
 	<xsl:variable name="contents">
 		<contents>
-		
 			<!-- Abstract, Keywords, Preface, Submitting Organizations, Submitters -->			
-			<!-- <xsl:apply-templates select="/ogc:ogc-standard/ogc:preface/*" mode="contents"/> -->
-			<xsl:apply-templates select="/ogc:ogc-standard/ogc:preface/ogc:abstract" mode="contents"/>
-			<xsl:apply-templates select="/ogc:ogc-standard/ogc:preface/ogc:clause[@type = 'executivesummary']" mode="contents"/>
-			<xsl:apply-templates select="/ogc:ogc-standard/ogc:preface/ogc:clause[@type = 'keywords']" mode="contents"/>
-			<xsl:apply-templates select="/ogc:ogc-standard/ogc:preface/ogc:foreword" mode="contents"/>
-			<xsl:apply-templates select="/ogc:ogc-standard/ogc:preface/ogc:clause[@type = 'security']" mode="contents"/>
-			<xsl:apply-templates select="/ogc:ogc-standard/ogc:preface/ogc:clause[@type = 'submitting_orgs']" mode="contents"/>
-			<xsl:apply-templates select="/ogc:ogc-standard/ogc:preface/ogc:submitters" mode="contents"/>
-			<xsl:apply-templates select="/ogc:ogc-standard/ogc:preface/ogc:introduction" mode="contents"/>			
-			<xsl:apply-templates select="/ogc:ogc-standard/ogc:preface/ogc:clause[not(@type = 'executivesummary') and not(@type = 'security') and not(@type = 'submitting_orgs') and not(@type = 'keywords')]" mode="contents"/>
-			<xsl:apply-templates select="/ogc:ogc-standard/ogc:preface/ogc:acknowledgements" mode="contents"/>
+			<xsl:call-template name="processPrefaceSectionsDefault_Contents"/>
 			
-			
-			<xsl:apply-templates select="/ogc:ogc-standard/ogc:sections/ogc:clause[@type='scope']" mode="contents" />				
-			<xsl:apply-templates select="/ogc:ogc-standard/ogc:sections/ogc:clause[@type='conformance']" mode="contents" />				
-			<!-- Normative references  -->
-			<xsl:apply-templates select="/ogc:ogc-standard/ogc:bibliography/ogc:references[@normative='true']" mode="contents" />			
-			<!-- Terms and definitions -->
-			<xsl:apply-templates select="/ogc:ogc-standard/ogc:sections/ogc:terms" mode="contents" />
-			<xsl:apply-templates select="/ogc:ogc-standard/ogc:sections/ogc:definitions" mode="contents" />
-		
-			<xsl:apply-templates select="/ogc:ogc-standard/ogc:sections/ogc:clause[not(@type='scope') and not(@type='conformance')]" mode="contents" />
-
-			<xsl:apply-templates select="/ogc:ogc-standard/ogc:annex" mode="contents"/>
-			
-			<!-- Bibliography -->
-			<xsl:apply-templates select="/ogc:ogc-standard/ogc:bibliography/ogc:references[not(@normative='true')]" mode="contents"/>
-			
-			
+			<xsl:call-template name="processMainSectionsDefault_Contents"/>
+			<xsl:apply-templates select="//ogc:indexsect" mode="contents"/>
 		</contents>
 	</xsl:variable>
 	
@@ -664,60 +638,53 @@
 					
 					<fo:block line-height="125%">
 						<!-- Abstract, Keywords, Preface, Submitting Organizations, Submitters -->					
-						<xsl:apply-templates select="/ogc:ogc-standard/ogc:preface/ogc:abstract" />
-						<xsl:apply-templates select="/ogc:ogc-standard/ogc:preface/ogc:clause[@type = 'executivesummary']" />
-						<xsl:apply-templates select="/ogc:ogc-standard/ogc:preface/ogc:clause[@type = 'keywords']" />
-						<xsl:if test="/ogc:ogc-standard/ogc:preface/ogc:foreword">
-							<fo:block break-after="page"/>
-						</xsl:if>
-						<xsl:apply-templates select="/ogc:ogc-standard/ogc:preface/ogc:foreword" />
 						
-						<xsl:if test="/ogc:ogc-standard/ogc:preface/ogc:clause[@type = 'security']">
-							<fo:block break-after="page"/>
-						</xsl:if>
-						<xsl:apply-templates select="/ogc:ogc-standard/ogc:preface/ogc:clause[@type = 'security']"/>
+						<xsl:for-each select="/*/*[local-name()='preface']/*">
+							<xsl:sort select="@displayorder" data-type="number"/>
+							
+							<xsl:if test="local-name() = 'foreword' or 
+							(local-name() = 'clause' and @type = 'security') or
+							(local-name() = 'clause' and @type = 'submitting_orgs') or 
+							local-name() = 'introduction'">
+								<fo:block break-after="page"/>
+							</xsl:if>
+							
+							<xsl:apply-templates select="."/>
+						</xsl:for-each>
 						
-						<xsl:if test="/ogc:ogc-standard/ogc:preface/ogc:clause[@type = 'submitting_orgs']">
-							<fo:block break-after="page"/>
-						</xsl:if>
-						<xsl:apply-templates select="/ogc:ogc-standard/ogc:preface/ogc:clause[@type = 'submitting_orgs']" />
-						
-						<xsl:apply-templates select="/ogc:ogc-standard/ogc:preface/ogc:submitters" />
-						<xsl:if test="/ogc:ogc-standard/ogc:preface/ogc:introduction">
-							<fo:block break-after="page"/>
-						</xsl:if>
-						<xsl:apply-templates select="/ogc:ogc-standard/ogc:preface/ogc:introduction" />
-						
-						
-						
-						<xsl:apply-templates select="/ogc:ogc-standard/ogc:preface/ogc:clause[not(@type = 'executivesummary') and not(@type = 'security') and not(@type = 'submitting_orgs') and not(@type = 'keywords')]" />
-						<xsl:apply-templates select="/ogc:ogc-standard/ogc:preface/ogc:acknowledgements" />
 					</fo:block>
 				</fo:flow>
 			</fo:page-sequence>
 			
 			
 			<!-- Document Pages -->
+			<xsl:for-each select="/*/*[local-name()='sections']/* | /*/*[local-name()='bibliography']/*[local-name()='references'][@normative='true']">
+				<xsl:sort select="@displayorder" data-type="number"/>
+				<xsl:choose>
+					<xsl:when test="local-name() = 'clause' and @type='scope'">
+						<xsl:apply-templates select="." mode="sections">
+							<xsl:with-param name="initial-page-number" select="1"/>
+						</xsl:apply-templates>
+					</xsl:when>
+					<xsl:otherwise>
+						<xsl:apply-templates select="." mode="sections"/>
+					</xsl:otherwise>
+				</xsl:choose>
+			</xsl:for-each>
 			
-			<xsl:apply-templates select="/ogc:ogc-standard/ogc:sections/ogc:clause[@type='scope']" mode="sections">
-				<xsl:with-param name="initial-page-number" select="1"/>
-			</xsl:apply-templates>
-						
-			<xsl:apply-templates select="/ogc:ogc-standard/ogc:sections/ogc:clause[@type='conformance']" mode="sections"/>
-			
-			<!-- Normative references  -->
-			<xsl:apply-templates select="/ogc:ogc-standard/ogc:bibliography/ogc:references[@normative='true']" mode="sections"/>
-
-			<!-- Terms and definitions -->
-			<xsl:apply-templates select="/ogc:ogc-standard/ogc:sections/ogc:terms" mode="sections"/>						
-			<xsl:apply-templates select="/ogc:ogc-standard/ogc:sections/ogc:definitions" mode="sections"/>
-			
-			<xsl:apply-templates select="/ogc:ogc-standard/ogc:sections/ogc:clause[not(@type='scope') and not(@type='conformance')]" mode="sections"/>
-			
-			<xsl:apply-templates select="/ogc:ogc-standard/ogc:annex" mode="sections"/>
+			<xsl:for-each select="/*/*[local-name()='annex']">
+				<xsl:sort select="@displayorder" data-type="number"/>
+				<xsl:apply-templates select="." mode="sections"/>
+			</xsl:for-each>
 			
 			<!-- Bibliography -->
-			<xsl:apply-templates select="/ogc:ogc-standard/ogc:bibliography/ogc:references[not(@normative='true')]" mode="sections"/> 
+			<xsl:for-each select="/*/*[local-name()='bibliography']/*[not(@normative='true')] | 
+								/*/*[local-name()='bibliography']/*[local-name()='clause'][*[local-name()='references'][not(@normative='true')]]">
+				<xsl:sort select="@displayorder" data-type="number"/>
+				<xsl:apply-templates select="." mode="sections"/>
+			</xsl:for-each>
+			
+			<xsl:apply-templates select="//ogc:indexsect" mode="sections"/>
 			
 			<!-- End Document Pages -->
 			
