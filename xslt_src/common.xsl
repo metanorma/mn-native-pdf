@@ -7335,7 +7335,7 @@
 
 	<xsl:template match="*[local-name() = 'xref']">
 		<fo:basic-link internal-destination="{@target}" fox:alt-text="{@target}" xsl:use-attribute-sets="xref-style">
-			<xsl:if test="parent::bsi:add">
+			<xsl:if test="parent::*[local-name() = 'add']">
 				<xsl:call-template name="append_add-style"/>
 			</xsl:if>
 			<xsl:apply-templates />
