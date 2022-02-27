@@ -521,9 +521,12 @@
 								
 						<xsl:if test="//ogc:table[@id and ogc:name]"> <!-- contains(ogc:name, '—') -->
 							<xsl:variable name="title-list-tables">
-								<xsl:call-template name="getTitle">
-									<xsl:with-param name="name" select="'title-list-tables'"/>
-								</xsl:call-template>
+								<xsl:value-of select="/ogc:ogc-standard/ogc:misc-container/ogc:toc[@type='table']/ogc:title"/>
+								<xsl:if test="not(/ogc:ogc-standard/ogc:misc-container/ogc:toc[@type='table']/ogc:title)">
+									<xsl:call-template name="getTitle">
+										<xsl:with-param name="name" select="'title-list-tables'"/>
+									</xsl:call-template>
+								</xsl:if>
 							</xsl:variable>
 							
 							<fo:block-container margin-left="-18mm" keep-with-next="always" margin-bottom="10pt" space-before="36pt">
@@ -563,9 +566,12 @@
 						<!-- <xsl:if test="//ogc:figure[@id and ogc:name and not(@unnumbered = 'true')] or //*[@id and starts-with(ogc:name, 'Figure ')]"> --> <!-- contains(ogc:name, '—') -->
 						<xsl:if test="$list_of_figures//figure">
 							<xsl:variable name="title-list-figures">
-								<xsl:call-template name="getTitle">
-									<xsl:with-param name="name" select="'title-list-figures'"/>
-								</xsl:call-template>
+								<xsl:value-of select="/ogc:ogc-standard/ogc:misc-container/ogc:toc[@type='figure']/ogc:title"/>
+								<xsl:if test="not(/ogc:ogc-standard/ogc:misc-container/ogc:toc[@type='figure']/ogc:title)">
+									<xsl:call-template name="getTitle">
+										<xsl:with-param name="name" select="'title-list-figures'"/>
+									</xsl:call-template>
+								</xsl:if>
 							</xsl:variable>
 							<fo:block-container margin-left="-18mm" keep-with-next="always" margin-bottom="10pt" space-before="36pt">
 								<fo:block-container margin-left="0mm">
@@ -598,9 +604,12 @@
 						<!-- <xsl:if test="//ogc:permission[@id and ogc:name] or //ogc:recommendation[@id and ogc:name] or //ogc:requirement[@id and ogc:name]"> -->
 						<xsl:if test="//ogc:table[.//ogc:p[@class = 'RecommendationTitle']]">							
 							<xsl:variable name="title-list-recommendations">
-								<xsl:call-template name="getTitle">
-									<xsl:with-param name="name" select="'title-list-recommendations'"/>
-								</xsl:call-template>
+								<xsl:value-of select="/ogc:ogc-standard/ogc:misc-container/ogc:toc[@type='requirement']/ogc:title"/>
+								<xsl:if test="not(/ogc:ogc-standard/ogc:misc-container/ogc:toc[@type='requirement']/ogc:title)">
+									<xsl:call-template name="getTitle">
+										<xsl:with-param name="name" select="'title-list-recommendations'"/>
+									</xsl:call-template>
+								</xsl:if>
 							</xsl:variable>
 							
 							<fo:block-container margin-left="-18mm" keep-with-next="always" margin-bottom="10pt" space-before="36pt">
