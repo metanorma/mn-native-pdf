@@ -25,12 +25,20 @@
 	
 	<xsl:variable name="color-header-document">rgb(79, 201, 204)</xsl:variable>
 	
-	<xsl:variable name="contents">
+	<xsl:variable name="contents_">
 		<contents>		
 			<xsl:call-template name="processPrefaceSectionsDefault_Contents"/>
 			<xsl:call-template name="processMainSectionsDefault_Contents"/>
+			
+			<xsl:if test="//*[contains(local-name(), '-standard')]/*[local-name() = 'misc-container']/*[local-name() = 'toc'][@type='table']/*[local-name() = 'title']">
+				<xsl:call-template name="processTables_Contents"/>
+			</xsl:if>
+			<xsl:if test="//*[contains(local-name(), '-standard')]/*[local-name() = 'misc-container']/*[local-name() = 'toc'][@type='figure']/*[local-name() = 'title']">
+				<xsl:call-template name="processFigures_Contents"/>
+			</xsl:if>
 		</contents>
 	</xsl:variable>
+	<xsl:variable name="contents" select="xalan:nodeset($contents_)"/>
 	
 	<xsl:template match="/">
 		<xsl:call-template name="namespaceCheck"/>
@@ -113,7 +121,7 @@
 					<xsl:if test="$debug = 'true'">
 						<xsl:text disable-output-escaping="yes">&lt;!--</xsl:text>
 							DEBUG
-							contents=<xsl:copy-of select="xalan:nodeset($contents)"/> 
+							contents=<xsl:copy-of select="$contents"/> 
 						<xsl:text disable-output-escaping="yes">--&gt;</xsl:text>
 					</xsl:if>
 					
@@ -202,7 +210,7 @@
 						<fo:block font-size="26pt" color="black" margin-top="2pt" margin-bottom="30pt" role="H1"><xsl:value-of select="$title-toc"/></fo:block>
 						
 						<fo:block margin-left="-3mm" role="TOC">
-							<xsl:for-each select="xalan:nodeset($contents)//item[@display = 'true']">
+							<xsl:for-each select="$contents//item[@display = 'true']">
 								<fo:block role="TOCI">
 									<fo:list-block>
 										<xsl:attribute name="provisional-distance-between-starts">

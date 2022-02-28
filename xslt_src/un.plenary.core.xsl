@@ -20,7 +20,7 @@
 	
 	<xsl:variable name="debug">false</xsl:variable>
 	
-	<xsl:variable name="contents">
+	<xsl:variable name="contents_">
 		<contents>			
 			<xsl:apply-templates select="/*/*[local-name()='preface']/*[local-name()='foreword']" mode="contents"/>
 			<xsl:apply-templates select="/*/*[local-name()='preface']/*[local-name()='introduction']" mode="contents"/>
@@ -30,9 +30,16 @@
 			<xsl:apply-templates select="/un:un-standard/un:sections/*" mode="contents"/>
 			<xsl:apply-templates select="/un:un-standard/un:annex" mode="contents"/>
 			<xsl:apply-templates select="/un:un-standard/un:bibliography/un:references" mode="contents"/>
+			
+			<xsl:if test="//*[contains(local-name(), '-standard')]/*[local-name() = 'misc-container']/*[local-name() = 'toc'][@type='table']/*[local-name() = 'title']">
+				<xsl:call-template name="processTables_Contents"/>
+			</xsl:if>
+			<xsl:if test="//*[contains(local-name(), '-standard')]/*[local-name() = 'misc-container']/*[local-name() = 'toc'][@type='figure']/*[local-name() = 'title']">
+				<xsl:call-template name="processFigures_Contents"/>
+			</xsl:if>
 		</contents>
 	</xsl:variable>
-	
+	<xsl:variable name="contents" select="xalan:nodeset($contents_)"/>
 
 	<xsl:variable name="title" select="/un:un-standard/un:bibdata/un:title[@language = 'en' and @type = 'main']"/>
 
@@ -290,7 +297,7 @@
 					<xsl:if test="$debug = 'true'">
 						<xsl:text disable-output-escaping="yes">&lt;!--</xsl:text>
 							DEBUG
-							contents=<xsl:copy-of select="xalan:nodeset($contents)"/>
+							contents=<xsl:copy-of select="$contents"/>
 						<xsl:text disable-output-escaping="yes">--&gt;</xsl:text>
 					</xsl:if>
 					

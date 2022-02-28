@@ -41,7 +41,7 @@
 		<item level="1" id="Foreword" display="true">Foreword</item>
 		<item id="term-script" display="false">3.2</item>
 	-->
-	<xsl:variable name="contents">
+	<xsl:variable name="contents_">
 		<contents>			
 			<xsl:apply-templates select="/mpfd:mpfd-standard/mpfd:preface/*[not(local-name() = 'terms')]" mode="contents"/>
 			<xsl:apply-templates select="/mpfd:mpfd-standard/mpfd:preface/mpfd:terms" mode="contents"/>
@@ -50,11 +50,17 @@
 				
 			<xsl:apply-templates select="/mpfd:mpfd-standard/mpfd:annex" mode="contents"/>
 			
-			<xsl:apply-templates select="/mpfd:mpfd-standard/mpfd:bibliography" mode="contents"/> 			
+			<xsl:apply-templates select="/mpfd:mpfd-standard/mpfd:bibliography" mode="contents"/>
 			
+			<xsl:if test="//*[contains(local-name(), '-standard')]/*[local-name() = 'misc-container']/*[local-name() = 'toc'][@type='table']/*[local-name() = 'title']">
+				<xsl:call-template name="processTables_Contents"/>
+			</xsl:if>
+			<xsl:if test="//*[contains(local-name(), '-standard')]/*[local-name() = 'misc-container']/*[local-name() = 'toc'][@type='figure']/*[local-name() = 'title']">
+				<xsl:call-template name="processFigures_Contents"/>
+			</xsl:if>
 		</contents>
 	</xsl:variable>
-	
+	<xsl:variable name="contents" select="xalan:nodeset($contents_)"/>
 	
 	<xsl:template match="/">		
 		<xsl:call-template name="namespaceCheck"/>
@@ -168,7 +174,7 @@
 					<xsl:if test="$debug = 'true'">
 						<xsl:text disable-output-escaping="yes">&lt;!--</xsl:text>
 							DEBUG
-							contents=<xsl:copy-of select="xalan:nodeset($contents)"/>
+							contents=<xsl:copy-of select="$contents"/>
 						<xsl:text disable-output-escaping="yes">--&gt;</xsl:text>
 					</xsl:if>
 					<!-- Table of content -->
@@ -180,7 +186,7 @@
 						</xsl:variable>						
 						<fo:block font-size="14pt" margin-bottom="15.5pt" role="H1"><xsl:value-of select="$title-toc"/></fo:block>						
 						<fo:block line-height="115%" role="TOC">
-							<xsl:for-each select="xalan:nodeset($contents)//item[@display = 'true']">
+							<xsl:for-each select="$contents//item[@display = 'true']">
 								<fo:block role="TOCI">
 									<xsl:if test="@level = 1">
 										<xsl:attribute name="margin-top">6pt</xsl:attribute>
@@ -200,21 +206,64 @@
 													</xsl:if>
 												</fo:block>
 											</fo:list-item-label>
-												<fo:list-item-body start-indent="body-start()">
-													<fo:block text-align-last="justify">															
-														<fo:basic-link internal-destination="{@id}" fox:alt-text="{title}">
-															<xsl:apply-templates select="title"/>
-															<fo:inline keep-together.within-line="always">
-																<fo:leader leader-pattern="dots"/>
-																<fo:page-number-citation ref-id="{@id}"/>
-															</fo:inline>
-														</fo:basic-link>
-													</fo:block>
-												</fo:list-item-body>
+											<fo:list-item-body start-indent="body-start()">
+												<fo:block text-align-last="justify">															
+													<fo:basic-link internal-destination="{@id}" fox:alt-text="{title}">
+														<xsl:apply-templates select="title"/>
+														<fo:inline keep-together.within-line="always">
+															<fo:leader leader-pattern="dots"/>
+															<fo:page-number-citation ref-id="{@id}"/>
+														</fo:inline>
+													</fo:basic-link>
+												</fo:block>
+											</fo:list-item-body>
 										</fo:list-item>
 									</fo:list-block>
 								</fo:block>									
 							</xsl:for-each>
+							
+							<!-- List of Tables -->
+							<xsl:if test="$contents//tables/table">
+								<fo:block margin-top="6pt" keep-with-next="always">
+									<xsl:value-of select="$title-list-tables"/>
+								</fo:block>
+								<xsl:for-each select="$contents//tables/table">
+									<fo:block role="TOCI" text-align-last="justify" >
+										<fo:basic-link internal-destination="{@id}">
+											<xsl:call-template name="setAltText">
+												<xsl:with-param name="value" select="@alt-text"/>
+											</xsl:call-template>
+											<xsl:apply-templates select="." mode="contents"/>
+											<fo:inline keep-together.within-line="always">
+												<fo:leader leader-pattern="dots"/>
+												<fo:page-number-citation ref-id="{@id}"/>
+											</fo:inline>
+										</fo:basic-link>
+									</fo:block>
+								</xsl:for-each>
+							</xsl:if>
+							
+							<!-- List of Figures -->
+							<xsl:if test="$contents//figures/figure">
+								<fo:block margin-top="6pt" keep-with-next="always">
+									<xsl:value-of select="$title-list-figures"/>
+								</fo:block>
+								<xsl:for-each select="$contents//figures/figure">
+									<fo:block role="TOCI" text-align-last="justify" >
+										<fo:basic-link internal-destination="{@id}">
+											<xsl:call-template name="setAltText">
+												<xsl:with-param name="value" select="@alt-text"/>
+											</xsl:call-template>
+											<xsl:apply-templates select="." mode="contents"/>
+											<fo:inline keep-together.within-line="always">
+												<fo:leader leader-pattern="dots"/>
+												<fo:page-number-citation ref-id="{@id}"/>
+											</fo:inline>
+										</fo:basic-link>
+									</fo:block>
+								</xsl:for-each>
+							</xsl:if>
+							
 						</fo:block>
 					</fo:block-container>
 					<xsl:if test="/mpfd:mpfd-standard/mpfd:preface/*">

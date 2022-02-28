@@ -172,13 +172,21 @@
 		<item level="1" id="Foreword" display="true">Foreword</item>
 		<item id="term-script" display="false">3.2</item>
 	-->
-	<xsl:variable name="contents">
+	<xsl:variable name="contents_">
 		<contents>
 			<xsl:call-template name="processPrefaceSectionsDefault_Contents"/>
 			<xsl:call-template name="processMainSectionsDefault_Contents"/>
 			<xsl:apply-templates select="//iso:indexsect" mode="contents"/>
+			
+			<xsl:if test="//*[contains(local-name(), '-standard')]/*[local-name() = 'misc-container']/*[local-name() = 'toc'][@type='table']/*[local-name() = 'title']">
+				<xsl:call-template name="processTables_Contents"/>
+			</xsl:if>
+			<xsl:if test="//*[contains(local-name(), '-standard')]/*[local-name() = 'misc-container']/*[local-name() = 'toc'][@type='figure']/*[local-name() = 'title']">
+				<xsl:call-template name="processFigures_Contents"/>
+			</xsl:if>
 		</contents>
 	</xsl:variable>
+	<xsl:variable name="contents" select="xalan:nodeset($contents_)"/>
 	
 	<xsl:variable name="lang_other">
 		<xsl:for-each select="/iso:iso-standard/iso:bibdata/iso:title[@language != $lang]">
@@ -1113,12 +1121,12 @@
 									<xsl:if test="$debug = 'true'">
 										<xsl:text disable-output-escaping="yes">&lt;!--</xsl:text>
 											DEBUG
-											contents=<xsl:copy-of select="xalan:nodeset($contents)"/>
+											contents=<xsl:copy-of select="$contents"/>
 										<xsl:text disable-output-escaping="yes">--&gt;</xsl:text>
 									</xsl:if>
 									
 									<xsl:variable name="margin-left">12</xsl:variable>
-									<xsl:for-each select="xalan:nodeset($contents)//item[@display = 'true']"><!-- [not(@level = 2 and starts-with(@section, '0'))] skip clause from preface -->
+									<xsl:for-each select="$contents//item[@display = 'true']"><!-- [not(@level = 2 and starts-with(@section, '0'))] skip clause from preface -->
 										
 										<fo:block role="TOCI">
 											<xsl:if test="@level = 1">

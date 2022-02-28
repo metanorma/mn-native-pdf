@@ -81,16 +81,23 @@
 	<xsl:attribute-set name="empty-style">
 	</xsl:attribute-set>
 	
-	<xsl:variable name="contents">
+	<xsl:variable name="contents_">
 		<contents>
 			<!-- Abstract, Keywords, Preface, Submitting Organizations, Submitters -->
 			<xsl:call-template name="processPrefaceSectionsDefault_Contents"/>
 			
 			<xsl:call-template name="processMainSectionsDefault_Contents"/>
 			<xsl:apply-templates select="//ogc:indexsect" mode="contents"/>
+			
+			<xsl:if test="//*[contains(local-name(), '-standard')]/*[local-name() = 'misc-container']/*[local-name() = 'toc'][@type='table']/*[local-name() = 'title']">
+				<xsl:call-template name="processTables_Contents"/>
+			</xsl:if>
+			<xsl:if test="//*[contains(local-name(), '-standard')]/*[local-name() = 'misc-container']/*[local-name() = 'toc'][@type='figure']/*[local-name() = 'title']">
+				<xsl:call-template name="processFigures_Contents"/>
+			</xsl:if>
 		</contents>
 	</xsl:variable>
-	
+	<xsl:variable name="contents" select="xalan:nodeset($contents_)"/>
 
 	<xsl:template match="/">
 		<xsl:call-template name="namespaceCheck"/>
@@ -215,7 +222,7 @@
 								</xsl:call-template>
 							</fo:block>
 							<xsl:variable name="margin-left">3.9</xsl:variable>
-							<xsl:for-each select="xalan:nodeset($contents)//item[@display = 'true']">
+							<xsl:for-each select="$contents//item[@display = 'true']">
 								<fo:block margin-top="8pt" margin-bottom="5pt" margin-left="{(@level - 1) * $margin-left}mm" text-align-last="justify" role="TOCI">
 									<fo:basic-link internal-destination="{@id}" fox:alt-text="{title}">
 										<xsl:if test="@section != ''">

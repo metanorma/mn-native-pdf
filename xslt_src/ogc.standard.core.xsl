@@ -122,16 +122,19 @@
 		</xsl:for-each>
 	</xsl:variable>	
 	
-	<xsl:variable name="contents">
+	<xsl:variable name="contents_">
 		<contents>
 			<!-- Abstract, Keywords, Preface, Submitting Organizations, Submitters -->			
 			<xsl:call-template name="processPrefaceSectionsDefault_Contents"/>
 			
 			<xsl:call-template name="processMainSectionsDefault_Contents"/>
 			<xsl:apply-templates select="//ogc:indexsect" mode="contents"/>
+			
+			<xsl:call-template name="processTables_Contents"/>
+			<xsl:call-template name="processFigures_Contents"/>
 		</contents>
 	</xsl:variable>
-	
+	<xsl:variable name="contents" select="xalan:nodeset($contents_)"/>
 	
 	<xsl:template match="/">
 		<xsl:call-template name="namespaceCheck"/>
@@ -442,7 +445,7 @@
 						
 						<fo:block-container line-height="130%">
 							<fo:block role="TOC">
-								<xsl:for-each select="xalan:nodeset($contents)//item[@display = 'true' and normalize-space(@id) != '']">
+								<xsl:for-each select="$contents//item[@display = 'true' and normalize-space(@id) != '']">
 									
 									<fo:block role="TOCI">
 										<xsl:if test="@level = 1">
@@ -519,15 +522,8 @@
 							</fo:block>
 						</fo:block-container>	
 								
-						<xsl:if test="//ogc:table[@id and ogc:name]"> <!-- contains(ogc:name, '—') -->
-							<xsl:variable name="title-list-tables">
-								<xsl:value-of select="/ogc:ogc-standard/ogc:misc-container/ogc:toc[@type='table']/ogc:title"/>
-								<xsl:if test="not(/ogc:ogc-standard/ogc:misc-container/ogc:toc[@type='table']/ogc:title)">
-									<xsl:call-template name="getTitle">
-										<xsl:with-param name="name" select="'title-list-tables'"/>
-									</xsl:call-template>
-								</xsl:if>
-							</xsl:variable>
+
+						<xsl:if test="$contents//tables/table">
 							
 							<fo:block-container margin-left="-18mm" keep-with-next="always" margin-bottom="10pt" space-before="36pt">
 								<fo:block-container margin-left="0mm">								
@@ -537,13 +533,14 @@
 								</fo:block-container>
 							</fo:block-container>							
 							<fo:block-container line-height="130%">
-								<xsl:for-each select="//ogc:table[@id and ogc:name and normalize-space(@id) != '']"> <!-- contains(ogc:name, '—') -->
+								<xsl:for-each select="$contents//tables/table">
 									<fo:block text-align-last="justify" margin-top="2pt" role="TOCI">
 										<fo:basic-link internal-destination="{@id}">
 											<xsl:call-template name="setAltText">
-												<xsl:with-param name="value" select="ogc:name"/>
+												<xsl:with-param name="value" select="@alt-text"/>
 											</xsl:call-template>
-											<xsl:apply-templates select="ogc:name" mode="contents"/>										
+											<!-- <xsl:copy-of select="node()"/> -->
+											<xsl:apply-templates select="." mode="contents"/>
 											<fo:inline keep-together.within-line="always">
 												<fo:leader leader-pattern="dots"/>
 												<fo:page-number-citation ref-id="{@id}"/>
@@ -553,26 +550,10 @@
 								</xsl:for-each>
 							</fo:block-container>							
 						</xsl:if>
+
 						
-						<xsl:variable name="list_of_figures_">
-							<xsl:for-each select="//ogc:figure[@id and ogc:name and not(@unnumbered = 'true') and normalize-space(@id) != ''] | //*[@id and starts-with(ogc:name, 'Figure ') and normalize-space(@id) != '']">
-								<figure id="{@id}" alt-text="{ogc:name}">
-									<xsl:apply-templates select="ogc:name" mode="contents"/>
-								</figure>
-							</xsl:for-each>
-						</xsl:variable>
-						<xsl:variable name="list_of_figures" select="xalan:nodeset($list_of_figures_)"/>
-						
-						<!-- <xsl:if test="//ogc:figure[@id and ogc:name and not(@unnumbered = 'true')] or //*[@id and starts-with(ogc:name, 'Figure ')]"> --> <!-- contains(ogc:name, '—') -->
-						<xsl:if test="$list_of_figures//figure">
-							<xsl:variable name="title-list-figures">
-								<xsl:value-of select="/ogc:ogc-standard/ogc:misc-container/ogc:toc[@type='figure']/ogc:title"/>
-								<xsl:if test="not(/ogc:ogc-standard/ogc:misc-container/ogc:toc[@type='figure']/ogc:title)">
-									<xsl:call-template name="getTitle">
-										<xsl:with-param name="name" select="'title-list-figures'"/>
-									</xsl:call-template>
-								</xsl:if>
-							</xsl:variable>
+						<xsl:if test="$contents//figures/figure">
+
 							<fo:block-container margin-left="-18mm" keep-with-next="always" margin-bottom="10pt" space-before="36pt">
 								<fo:block-container margin-left="0mm">
 									<xsl:call-template name="insertSectionTitle">
@@ -582,15 +563,14 @@
 							</fo:block-container>
 							
 							<fo:block-container line-height="130%">
-								<!-- <xsl:for-each select="//ogc:figure[@id and ogc:name and not(@unnumbered = 'true')] or //*[@id and starts-with(ogc:name, 'Figure ')]"> --> <!-- contains(ogc:name, '—') -->
-								<xsl:for-each select="$list_of_figures/figure"> <!-- contains(ogc:name, '—') -->
+								<xsl:for-each select="$contents//figures/figure">
 									<fo:block text-align-last="justify" margin-top="2pt" role="TOCI">
 										<fo:basic-link internal-destination="{@id}">
 											<xsl:call-template name="setAltText">
 												<xsl:with-param name="value" select="@alt-text"/>
 											</xsl:call-template>
-											<!-- <xsl:apply-templates select="ogc:name" mode="contents"/>										 -->
-											<xsl:copy-of select="node()"/>
+											<!-- <xsl:copy-of select="node()"/> -->
+											<xsl:apply-templates select="./node()" mode="contents"/>
 											<fo:inline keep-together.within-line="always">
 												<fo:leader leader-pattern="dots"/>
 												<fo:page-number-citation ref-id="{@id}"/>
@@ -601,16 +581,8 @@
 							</fo:block-container>							
 						</xsl:if>
 						
-						<!-- <xsl:if test="//ogc:permission[@id and ogc:name] or //ogc:recommendation[@id and ogc:name] or //ogc:requirement[@id and ogc:name]"> -->
+
 						<xsl:if test="//ogc:table[.//ogc:p[@class = 'RecommendationTitle']]">							
-							<xsl:variable name="title-list-recommendations">
-								<xsl:value-of select="/ogc:ogc-standard/ogc:misc-container/ogc:toc[@type='requirement']/ogc:title"/>
-								<xsl:if test="not(/ogc:ogc-standard/ogc:misc-container/ogc:toc[@type='requirement']/ogc:title)">
-									<xsl:call-template name="getTitle">
-										<xsl:with-param name="name" select="'title-list-recommendations'"/>
-									</xsl:call-template>
-								</xsl:if>
-							</xsl:variable>
 							
 							<fo:block-container margin-left="-18mm" keep-with-next="always" margin-bottom="10pt" space-before="36pt">
 								<fo:block-container margin-left="0mm">
@@ -621,7 +593,6 @@
 							</fo:block-container>
 							
 							<fo:block-container line-height="130%">
-								<!-- <xsl:for-each select="//ogc:table[.//ogc:p[@class = 'RecommendationTitle']]"> -->
 								<xsl:for-each select="xalan:nodeset($toc_recommendations)/*[normalize-space(@id) != '']">
 									<fo:block text-align-last="justify" margin-top="6pt" role="TOCI">
 										<fo:basic-link internal-destination="{@id}">

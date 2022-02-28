@@ -84,7 +84,7 @@
 		<item level="1" id="Foreword" display="true">Foreword</item>
 		<item id="term-script" display="false">3.2</item>
 	-->
-	<xsl:variable name="contents">
+	<xsl:variable name="contents_">
 	
 		<xsl:for-each select="//iec:iec-standard">
 			<xsl:variable name="lang" select="*[local-name()='bibdata']/*[local-name()='language'][@current = 'true']"/>
@@ -102,6 +102,7 @@
 		</xsl:for-each>
 	
 	</xsl:variable>
+	<xsl:variable name="contents" select="xalan:nodeset($contents_)"/>
 
 	<xsl:template name="generateContents">
 		<contents>
@@ -837,7 +838,7 @@
 			<xsl:if test="$debug = 'true'">
 					<xsl:text disable-output-escaping="yes">&lt;!--</xsl:text>
 						DEBUG
-						contents=<xsl:copy-of select="xalan:nodeset($contents)"/>
+						contents=<xsl:copy-of select="$contents"/>
 					<xsl:text disable-output-escaping="yes">--&gt;</xsl:text>
 				</xsl:if>
 			
@@ -866,7 +867,7 @@
 							<fo:flow flow-name="xsl-region-body">
 							
 							<xsl:call-template name="insertTOCpages">
-								<xsl:with-param name="contents" select="xalan:nodeset($contents)/doc[@id = $docid]"/>
+								<xsl:with-param name="contents" select="$contents/doc[@id = $docid]"/>
 							</xsl:call-template>
 							
 							<xsl:call-template name="insertPrefacepages">

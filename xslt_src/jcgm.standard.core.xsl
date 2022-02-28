@@ -101,7 +101,7 @@
 		<item level="1" id="Foreword" display="true">Foreword</item>
 		<item id="term-script" display="false">3.2</item>
 	-->
-	<xsl:variable name="contents">
+	<xsl:variable name="contents_">
 	
 		<xsl:for-each select="//*[contains(local-name(), '-standard')]">
 			<xsl:variable name="lang" select="*[local-name()='bibdata']/*[local-name()='language'][@current = 'true']"/>
@@ -119,11 +119,20 @@
 						<!-- Index -->
 						<!-- <xsl:apply-templates select="//jcgm:clause[@type = 'index']" mode="contents"/> -->
 						<xsl:apply-templates select="//jcgm:indexsect" mode="contents"/>
+						
+						<xsl:if test="//*[local-name() = 'misc-container']/*[local-name() = 'toc'][@type='table']/*[local-name() = 'title']">
+							<xsl:call-template name="processTables_Contents"/>
+						</xsl:if>
+						<xsl:if test="//*[local-name() = 'misc-container']/*[local-name() = 'toc'][@type='figure']/*[local-name() = 'title']">
+							<xsl:call-template name="processFigures_Contents"/>
+						</xsl:if>
+						
 					</contents>
 				</doc>
 			</xsl:for-each>				
 		</xsl:for-each>
 	</xsl:variable>
+	<xsl:variable name="contents" select="xalan:nodeset($contents_)"/>
 	
 	
 	<xsl:variable name="indexes">
@@ -375,7 +384,7 @@
 									<xsl:if test="$debug = 'true'">
 										<xsl:text disable-output-escaping="yes">&lt;!--</xsl:text>
 											DEBUG
-											contents=<xsl:copy-of select="xalan:nodeset($contents)"/>
+											contents=<xsl:copy-of select="$contents"/>
 										<xsl:text disable-output-escaping="yes">--&gt;</xsl:text>
 									</xsl:if>
 									
@@ -385,7 +394,7 @@
 										</xsl:call-template>
 									</xsl:variable>
 									
-									<xsl:for-each select="xalan:nodeset($contents)/doc[@id=$docid]//item[@display = 'true']"> <!-- and not (@type = 'annex') and not (@type = 'references') -->
+									<xsl:for-each select="$contents/doc[@id=$docid]//item[@display = 'true']"> <!-- and not (@type = 'annex') and not (@type = 'references') -->
 										<xsl:if test="@type = 'annex' and not(preceding-sibling::item[@display = 'true' and @type = 'annex'])">
 											<fo:block font-size="12pt" space-before="16pt" font-weight="bold" role="TOCI">
 												<xsl:value-of select="$annexes_title"/>
@@ -393,6 +402,59 @@
 										</xsl:if>
 										<xsl:call-template name="print_JCGN_toc_item"/>
 									</xsl:for-each>	
+									
+									<!-- List of Tables -->
+									<xsl:if test="$contents//tables/table">
+										<fo:block font-weight="bold" margin-top="12pt" keep-with-next="always">
+											<xsl:value-of select="$title-list-tables"/>
+										</fo:block>
+										<xsl:for-each select="$contents//tables/table">
+											<fo:block margin-left="5mm" role="TOCI">
+												<fo:block text-align-last="justify" margin-left="12mm" text-indent="-12mm">
+													<fo:basic-link internal-destination="{@id}">
+														<xsl:call-template name="setAltText">
+															<xsl:with-param name="value" select="@alt-text"/>
+														</xsl:call-template>
+														<fo:inline>
+															<xsl:apply-templates select="." mode="contents"/>
+														</fo:inline>
+														<xsl:text> </xsl:text>
+														<fo:inline keep-together.within-line="always" font-weight="normal">
+															<fo:leader font-size="9pt" leader-pattern="dots"/>
+															<fo:inline><fo:page-number-citation ref-id="{@id}"/></fo:inline>
+														</fo:inline>
+													</fo:basic-link>
+												</fo:block>
+											</fo:block>
+										</xsl:for-each>
+									</xsl:if>
+									
+									<!-- List of Figures -->
+									<xsl:if test="$contents//figures/figure">
+										<fo:block font-weight="bold" margin-top="12pt" keep-with-next="always">
+											<xsl:value-of select="$title-list-figures"/>
+										</fo:block>
+										<xsl:for-each select="$contents//figures/figure">
+											<fo:block margin-left="5mm" role="TOCI">
+												<fo:block text-align-last="justify" margin-left="12mm" text-indent="-12mm">
+													<fo:basic-link internal-destination="{@id}">
+														<xsl:call-template name="setAltText">
+															<xsl:with-param name="value" select="@alt-text"/>
+														</xsl:call-template>
+														<fo:inline>
+															<xsl:apply-templates select="." mode="contents"/>
+														</fo:inline>
+														<xsl:text> </xsl:text>
+														<fo:inline keep-together.within-line="always" font-weight="normal">
+															<fo:leader font-size="9pt" leader-pattern="dots"/>
+															<fo:inline><fo:page-number-citation ref-id="{@id}"/></fo:inline>
+														</fo:inline>
+													</fo:basic-link>
+												</fo:block>
+											</fo:block>
+										</xsl:for-each>
+									</xsl:if>
+									
 								</fo:block>
 							</fo:block-container>
 
