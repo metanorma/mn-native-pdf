@@ -273,6 +273,49 @@
 										</fo:block>
 										
 									</xsl:for-each>
+									
+									<!-- List of Tables -->
+									<xsl:if test="$contents//tables/table">
+										<fo:block role="TOCI" font-weight="bold" margin-top="6pt" keep-with-next="always">
+											<xsl:value-of select="$title-list-tables"/>
+										</fo:block>
+										<xsl:for-each select="$contents//tables/table">
+											<fo:block role="TOCI" text-align-last="justify" margin-left="12mm" text-indent="-12mm">
+												<fo:basic-link internal-destination="{@id}">
+													<xsl:call-template name="setAltText">
+														<xsl:with-param name="value" select="@alt-text"/>
+													</xsl:call-template>
+													<xsl:apply-templates select="." mode="contents"/>
+													<fo:inline keep-together.within-line="always">
+														<fo:leader font-size="9pt" font-weight="normal" leader-pattern="dots"/>
+														<fo:inline><fo:page-number-citation ref-id="{@id}"/></fo:inline>
+													</fo:inline>
+												</fo:basic-link>
+											</fo:block>
+										</xsl:for-each>
+									</xsl:if>
+									
+									<!-- List of Figures -->
+									<xsl:if test="$contents//figures/figure">
+										<fo:block role="TOCI" font-weight="bold" margin-top="6pt" keep-with-next="always">
+											<xsl:value-of select="$title-list-figures"/>
+										</fo:block>
+										<xsl:for-each select="$contents//figures/figure">
+											<fo:block  role="TOCI" text-align-last="justify" margin-left="12mm" text-indent="-12mm">
+												<fo:basic-link internal-destination="{@id}">
+													<xsl:call-template name="setAltText">
+														<xsl:with-param name="value" select="@alt-text"/>
+													</xsl:call-template>
+													<xsl:apply-templates select="." mode="contents"/>
+													<fo:inline keep-together.within-line="always">
+														<fo:leader font-size="9pt" font-weight="normal" leader-pattern="dots"/>
+														<fo:inline><fo:page-number-citation ref-id="{@id}"/></fo:inline>
+													</fo:inline>
+												</fo:basic-link>
+											</fo:block>
+										</xsl:for-each>
+									</xsl:if>
+									
 								</fo:block>
 							</fo:block-container>
 						</fo:block-container>

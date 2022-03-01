@@ -38,7 +38,7 @@
 
 	<xsl:variable name="root-element" select="local-name(/*)"/>
 
-	<xsl:variable name="contents">
+	<xsl:variable name="contents_">
 		<xsl:choose>
 			<xsl:when test="$root-element = 'metanorma-collection'">
 				<xsl:choose>
@@ -90,6 +90,7 @@
 			</xsl:otherwise>
 		</xsl:choose>
 	</xsl:variable>
+	<xsl:variable name="contents" select="xalan:nodeset($contents_)"/>
 
 	<xsl:variable name="indexes">
 		<xsl:choose>
@@ -189,6 +190,13 @@
 			
 			<!-- Index -->
 			<xsl:apply-templates select="//bipm:indexsect" mode="contents"/>
+			
+			<xsl:if test="/*/*[local-name() = 'misc-container']/*[local-name() = 'toc'][@type='table']/*[local-name() = 'title']">
+				<xsl:call-template name="processTables_Contents"/>
+			</xsl:if>
+			<xsl:if test="/*/*[local-name() = 'misc-container']/*[local-name() = 'toc'][@type='figure']/*[local-name() = 'title']">
+				<xsl:call-template name="processFigures_Contents"/>
+			</xsl:if>
 			
 		</contents>
 	</xsl:template>
@@ -941,7 +949,7 @@
 		<xsl:if test="$debug = 'true'">
 			<xsl:text disable-output-escaping="yes">&lt;!--</xsl:text>
 				DEBUG
-				contents=<xsl:copy-of select="xalan:nodeset($contents)"/>
+				contents=<xsl:copy-of select="$contents"/>
 			<xsl:text disable-output-escaping="yes">--&gt;</xsl:text>
 		</xsl:if>
 		
@@ -1096,12 +1104,12 @@
 							<fo:block role="TOC">
 								<!-- <xsl:copy-of select="$contents"/> -->
 								
-								<xsl:if test="xalan:nodeset($contents)/doc[@id = $docid]//item[@display='true']">
+								<xsl:if test="$contents/doc[@id = $docid]//item[@display='true']">
 									<fo:table table-layout="fixed" width="100%">
 										<fo:table-column column-width="127mm"/>
 										<fo:table-column column-width="12mm"/>
 										<fo:table-body>											
-											<xsl:for-each select="xalan:nodeset($contents)/doc[@id = $docid]//item[@display='true' and not(@type = 'annex') and not(@type = 'index') and not(@parent = 'annex')]">								
+											<xsl:for-each select="$contents/doc[@id = $docid]//item[@display='true' and not(@type = 'annex') and not(@type = 'index') and not(@parent = 'annex')]">								
 												<xsl:call-template name="insertContentItem"/>								
 											</xsl:for-each>
 											<xsl:if test="$doctype ='brochure'">
@@ -1112,12 +1120,33 @@
 													</fo:table-cell>
 												</fo:table-row>
 											</xsl:if>
-											<xsl:for-each select="xalan:nodeset($contents)/doc[@id = $docid]//item[@display='true' and (@type = 'annex')]"> <!--  or (@level = 2 and @parent = 'annex') -->
+											<xsl:for-each select="$contents/doc[@id = $docid]//item[@display='true' and (@type = 'annex')]"> <!--  or (@level = 2 and @parent = 'annex') -->
 												<xsl:call-template name="insertContentItem"/>								
 											</xsl:for-each>
-											<xsl:for-each select="xalan:nodeset($contents)/doc[@id = $docid]//item[@display='true' and (@type = 'index')]">
+											<xsl:for-each select="$contents/doc[@id = $docid]//item[@display='true' and (@type = 'index')]">
 												<xsl:call-template name="insertContentItem"/>								
 											</xsl:for-each>
+											
+											<!-- List of Tables -->
+											<xsl:if test="$contents/doc[@id = $docid]//tables/table">
+												<xsl:call-template name="insertListOf_Title">
+													<xsl:with-param name="title" select="$title-list-tables"/>
+												</xsl:call-template>
+												<xsl:for-each select="$contents/doc[@id = $docid]//tables/table">
+													<xsl:call-template name="insertListOf_Item"/>
+												</xsl:for-each>
+											</xsl:if>
+											
+											<!-- List of Figures -->
+											<xsl:if test="$contents/doc[@id = $docid]//figures/figure">
+												<xsl:call-template name="insertListOf_Title">
+													<xsl:with-param name="title" select="$title-list-figures"/>
+												</xsl:call-template>
+												<xsl:for-each select="$contents/doc[@id = $docid]//figures/figure">
+													<xsl:call-template name="insertListOf_Item"/>
+												</xsl:for-each>
+											</xsl:if>
+											
 										</fo:table-body>
 									</fo:table>
 								</xsl:if>
@@ -1890,6 +1919,57 @@
 		</fo:table-row>
 	</xsl:template>
 	
+	<xsl:template name="insertListOf_Title">
+		<xsl:param name="title"/>
+		<fo:table-row keep-with-next="always">
+			<fo:table-cell font-family="Arial" font-weight="bold" font-size="10pt" padding-top="14pt" padding-bottom="6pt">
+				<fo:block role="TOCI">
+					<xsl:value-of select="$title"/>
+				</fo:block>				
+			</fo:table-cell>
+			<fo:table-cell>
+				<fo:block></fo:block>
+			</fo:table-cell>
+		</fo:table-row>
+	</xsl:template>
+	
+	<xsl:template name="insertListOf_Item">
+		<fo:table-row>
+			<fo:table-cell>
+				<fo:block role="TOCI" font-size="10.5pt" margin-left="8mm">
+					<fo:list-block provisional-distance-between-starts="8mm">
+						<fo:list-item>
+							<fo:list-item-label end-indent="label-end()">
+								<fo:block></fo:block>
+							</fo:list-item-label>
+							<fo:list-item-body start-indent="body-start()">
+								<fo:block>
+									<fo:basic-link internal-destination="{@id}">
+										<xsl:call-template name="setAltText">
+											<xsl:with-param name="value" select="@alt-text"/>
+										</xsl:call-template>
+										<fo:inline>
+											<xsl:apply-templates select="." mode="contents"/>
+										</fo:inline>
+									</fo:basic-link>
+								</fo:block>
+							</fo:list-item-body>
+						</fo:list-item>
+					</fo:list-block>
+				</fo:block>				
+			</fo:table-cell>
+			<fo:table-cell text-align="right" font-family="Arial" font-weight="bold" font-size="10pt">
+				<fo:block>
+					<fo:basic-link internal-destination="{@id}">
+						<xsl:call-template name="setAltText">
+							<xsl:with-param name="value" select="@alt-text"/>
+						</xsl:call-template>
+						<fo:inline><fo:page-number-citation ref-id="{@id}"/></fo:inline>
+					</fo:basic-link>
+				</fo:block>
+			</fo:table-cell>
+		</fo:table-row>
+	</xsl:template>
 	
 	<xsl:template match="node()">		
 		<xsl:apply-templates />			

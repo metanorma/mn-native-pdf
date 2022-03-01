@@ -248,7 +248,6 @@
 										<xsl:attribute name="margin-top">6pt</xsl:attribute>
 									</xsl:if>
 									
-									
 									<fo:list-block>
 										<xsl:attribute name="provisional-distance-between-starts">
 											<xsl:choose>
@@ -278,6 +277,27 @@
 									</fo:list-block>
 								</fo:block>
 							</xsl:for-each>
+							
+							<!-- List of Tables -->
+							<xsl:if test="$contents//tables/table">
+								<xsl:call-template name="insertListOf_Title">
+									<xsl:with-param name="title" select="$title-list-tables"/>
+								</xsl:call-template>
+								<xsl:for-each select="$contents//tables/table">
+									<xsl:call-template name="insertListOf_Item"/>
+								</xsl:for-each>
+							</xsl:if>
+							
+							<!-- List of Figures -->
+							<xsl:if test="$contents//figures/figure">
+								<xsl:call-template name="insertListOf_Title">
+									<xsl:with-param name="title" select="$title-list-figures"/>
+								</xsl:call-template>
+								<xsl:for-each select="$contents//figures/figure">
+									<xsl:call-template name="insertListOf_Item"/>
+								</xsl:for-each>
+							</xsl:if>
+							
 						</fo:block>
 					</fo:block-container>
 					
@@ -310,6 +330,40 @@
 			
 		</fo:root>
 	</xsl:template> 
+
+	<xsl:template name="insertListOf_Title">
+		<xsl:param name="title"/>
+		<fo:block role="TOCI" margin-top="6pt" keep-with-next="always">
+			<xsl:value-of select="$title"/>
+		</fo:block>
+	</xsl:template>
+	
+	<xsl:template name="insertListOf_Item">
+		<fo:block role="TOCI">
+			<fo:list-block provisional-distance-between-starts="8mm">
+				<fo:list-item>
+					<fo:list-item-label end-indent="label-end()">
+						<fo:block></fo:block>
+					</fo:list-item-label>
+					<fo:list-item-body start-indent="body-start()">
+						<fo:block text-align-last="justify" margin-left="12mm" text-indent="-12mm">
+							<fo:basic-link internal-destination="{@id}">
+								<xsl:call-template name="setAltText">
+									<xsl:with-param name="value" select="@alt-text"/>
+								</xsl:call-template>
+								<xsl:apply-templates select="." mode="contents"/>
+								<fo:inline keep-together.within-line="always">
+									<fo:leader leader-pattern="dots"/>
+									<fo:inline><fo:page-number-citation ref-id="{@id}"/></fo:inline>
+								</fo:inline>
+							</fo:basic-link>
+						</fo:block>
+					</fo:list-item-body>
+				</fo:list-item>
+			</fo:list-block>
+		</fo:block>
+	</xsl:template>
+
 
 	<xsl:template match="node()">
 		<xsl:apply-templates />

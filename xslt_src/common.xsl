@@ -4022,7 +4022,6 @@
 		<tables>
 			<xsl:for-each select="//*[local-name() = 'table'][@id and *[local-name() = 'name'] and normalize-space(@id) != '']">
 				<table id="{@id}" alt-text="{*[local-name() = 'name']}">
-					<!-- <xsl:apply-templates select="*[local-name() = 'name']" mode="contents"/> -->
 					<xsl:copy-of select="*[local-name() = 'name']"/>
 				</table>
 			</xsl:for-each>
@@ -4033,7 +4032,6 @@
 		<figures>
 			<xsl:for-each select="//*[local-name() = 'figure'][@id and *[local-name() = 'name'] and not(@unnumbered = 'true') and normalize-space(@id) != ''] | //*[@id and starts-with(*[local-name() = 'name'], 'Figure ') and normalize-space(@id) != '']">
 				<figure id="{@id}" alt-text="{*[local-name() = 'name']}">
-					<!-- <xsl:apply-templates select="*[local-name() = 'name']" mode="contents"/> -->
 					<xsl:copy-of select="*[local-name() = 'name']"/>
 				</figure>
 			</xsl:for-each>
@@ -8552,7 +8550,6 @@
 							</fo:bookmark-title>
 							<xsl:for-each select="$contents//tables/table">
 								<fo:bookmark internal-destination="{@id}">
-									<!-- <fo:bookmark-title><xsl:value-of select="."/></fo:bookmark-title> -->
 									<xsl:variable name="title">
 										<xsl:apply-templates select="*[local-name() = 'name']" mode="bookmarks"/>
 									</xsl:variable>
@@ -8562,16 +8559,13 @@
 						</fo:bookmark>
 					</xsl:if>
 
-					<!-- <xsl:if test="$list_of_figures//figure"> -->
 					<xsl:if test="$contents//figures/figure">
-						<fo:bookmark internal-destination="empty_bookmark" starting-state="hide"> <!-- {$list_of_figures//figure[1]/@id} -->
+						<fo:bookmark internal-destination="empty_bookmark" starting-state="hide">
 							<fo:bookmark-title>
 								<xsl:value-of select="$title-list-figures"/>
 							</fo:bookmark-title>
-							<!-- <xsl:for-each select="$list_of_figures//figure"> -->
 							<xsl:for-each select="$contents//figures/figure">
 								<fo:bookmark internal-destination="{@id}">
-									<!-- <fo:bookmark-title><xsl:value-of select="."/></fo:bookmark-title> -->
 									<xsl:variable name="title">
 										<xsl:apply-templates select="*[local-name() = 'name']" mode="bookmarks"/>
 									</xsl:variable>
@@ -8611,7 +8605,7 @@
 					</xsl:if>
 					
 					<xsl:if test="$list_of_tables_figures//table_figure">
-						<fo:bookmark internal-destination="empty_bookmark" starting-state="hide"> <!-- {$list_of_figures//figure[1]/@id} -->
+						<fo:bookmark internal-destination="empty_bookmark" starting-state="hide">
 							<fo:bookmark-title>
 								<xsl:call-template name="getTitle">
 									<xsl:with-param name="name" select="'title-table-figures'"/>
@@ -8653,12 +8647,25 @@
 			<xsl:otherwise>
 				<xsl:if test="$contents_nodes//figures/figure">
 					<fo:bookmark internal-destination="empty_bookmark" starting-state="hide">
-						<fo:bookmark-title>
-							<xsl:value-of select="$title-list-figures"/>
-						</fo:bookmark-title>
+					
+						<xsl:if test="$namespace = 'iec'">
+							<xsl:attribute name="internal-destination">
+								<xsl:value-of select="$contents_nodes//figures/figure[1]/@id"/>
+							</xsl:attribute>
+						</xsl:if>
+						
+						<xsl:variable name="bookmark-title">
+							<xsl:choose>
+								<xsl:when test="$namespace = 'iec'">Figures</xsl:when>
+								<xsl:otherwise>
+									<xsl:value-of select="$title-list-figures"/>
+								</xsl:otherwise>
+							</xsl:choose>
+						</xsl:variable>
+						<fo:bookmark-title><xsl:value-of select="normalize-space($bookmark-title)"/></fo:bookmark-title>
 						<xsl:for-each select="$contents_nodes//figures/figure">
 							<fo:bookmark internal-destination="{@id}">
-								<fo:bookmark-title><xsl:value-of select="."/></fo:bookmark-title>
+								<fo:bookmark-title><xsl:value-of select="normalize-space(.)"/></fo:bookmark-title>
 							</fo:bookmark>
 						</xsl:for-each>
 					</fo:bookmark>
@@ -8694,12 +8701,32 @@
 			<xsl:otherwise>
 				<xsl:if test="$contents_nodes//tables/table">
 					<fo:bookmark internal-destination="empty_bookmark" starting-state="hide">
-						<fo:bookmark-title>
-							<xsl:value-of select="$title-list-tables"/>
-						</fo:bookmark-title>
+						
+						<xsl:if test="$namespace = 'iec'">
+							<xsl:attribute name="internal-destination">
+								<xsl:value-of select="$contents_nodes//tables/table[1]/@id"/>
+							</xsl:attribute>
+						</xsl:if>
+						
+						<xsl:variable name="bookmark-title">
+							<xsl:choose>
+								<xsl:when test="$namespace = 'iec'">
+									<xsl:choose>
+										<xsl:when test="$lang = 'fr'">Tableaux</xsl:when>
+										<xsl:otherwise>Tables</xsl:otherwise>
+									</xsl:choose>
+								</xsl:when>
+								<xsl:otherwise>
+									<xsl:value-of select="$title-list-tables"/>
+								</xsl:otherwise>
+							</xsl:choose>
+						</xsl:variable>
+						
+						<fo:bookmark-title><xsl:value-of select="$bookmark-title"/></fo:bookmark-title>
+						
 						<xsl:for-each select="$contents_nodes//tables/table">
 							<fo:bookmark internal-destination="{@id}">
-								<fo:bookmark-title><xsl:value-of select="."/></fo:bookmark-title>
+								<fo:bookmark-title><xsl:value-of select="normalize-space(.)"/></fo:bookmark-title>
 							</fo:bookmark>
 						</xsl:for-each>
 					</fo:bookmark>

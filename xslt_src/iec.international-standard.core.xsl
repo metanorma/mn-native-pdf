@@ -109,16 +109,9 @@
 			<xsl:call-template name="processPrefaceSectionsDefault_Contents"/>
 			<xsl:call-template name="processMainSectionsDefault_Contents"/>
 			<xsl:apply-templates select="//iec:indexsect" mode="contents"/>
-			<xsl:for-each select="//*[local-name() = 'figure'][@id and *[local-name() = 'name']]">
-				<figure id="{@id}">
-					<title><xsl:value-of select="*[local-name() = 'name']/text()"/></title>
-				</figure>				
-			</xsl:for-each>
-			<xsl:for-each select="//*[local-name() = 'table'][@id and *[local-name() = 'name']]">
-				<table id="{@id}">
-					<title><xsl:value-of select="*[local-name() = 'name']/text()"/></title>
-				</table>				
-			</xsl:for-each>
+			
+			<xsl:call-template name="processTables_Contents"/>
+			<xsl:call-template name="processFigures_Contents"/>
 		</contents>
 	</xsl:template>
 	
@@ -1214,12 +1207,12 @@
 					</fo:block>
 				</xsl:for-each>
 				
-				<xsl:if test="//iec:figure[@id and iec:name]">
+				<xsl:if test="$contents//figures/figure">
 					<fo:block margin-bottom="5pt">&#xA0;</fo:block>				
-					<xsl:for-each select="//iec:figure[@id and iec:name]">					
+					<xsl:for-each select="$contents//figures/figure">
 						<fo:block text-align-last="justify" margin-bottom="5pt" margin-left="8mm" text-indent="-8mm" role="TOCI">
-							<fo:basic-link internal-destination="{@id}"  fox:alt-text="Figure {@id}">
-								<xsl:apply-templates select="iec:name" mode="contents"/>
+							<fo:basic-link internal-destination="{@id}" fox:alt-text="Figure {@id}">
+								<xsl:apply-templates select="." mode="contents"/>
 								<fo:inline keep-together.within-line="always">
 									<fo:leader leader-pattern="dots"/>
 									<fo:page-number-citation ref-id="{@id}"/>
@@ -1229,12 +1222,12 @@
 					</xsl:for-each>
 				</xsl:if>
 				
-				<xsl:if test="//iec:table[@id and iec:name]">
+				<xsl:if test="$contents//tables/table">
 					<fo:block margin-bottom="5pt">&#xA0;</fo:block>				
-					<xsl:for-each select="//iec:table[@id and iec:name]">
+					<xsl:for-each select="$contents//tables/table">
 						<fo:block text-align-last="justify" margin-bottom="5pt" margin-left="8mm" text-indent="-8mm" role="TOCI">
 							<fo:basic-link internal-destination="{@id}"  fox:alt-text="Table {@id}">
-								<xsl:apply-templates select="iec:name" mode="contents"/>
+								<xsl:apply-templates select="." mode="contents"/>
 								<fo:inline keep-together.within-line="always">
 									<fo:leader leader-pattern="dots"/>
 									<fo:page-number-citation ref-id="{@id}"/>
