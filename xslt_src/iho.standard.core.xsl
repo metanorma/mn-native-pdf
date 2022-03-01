@@ -33,13 +33,8 @@
 		<contents>
 			<xsl:call-template name="processPrefaceSectionsDefault_Contents"/>
 			<xsl:call-template name="processMainSectionsDefault_Contents"/>
-
-			<xsl:if test="//*[contains(local-name(), '-standard')]/*[local-name() = 'misc-container']/*[local-name() = 'toc'][@type='table']/*[local-name() = 'title']">
-				<xsl:call-template name="processTables_Contents"/>
-			</xsl:if>
-			<xsl:if test="//*[contains(local-name(), '-standard')]/*[local-name() = 'misc-container']/*[local-name() = 'toc'][@type='figure']/*[local-name() = 'title']">
-				<xsl:call-template name="processFigures_Contents"/>
-			</xsl:if>			
+			
+			<xsl:call-template name="processTablesFigures_Contents"/>
 		</contents>
 	</xsl:variable>
 	<xsl:variable name="contents" select="xalan:nodeset($contents_)"/>
@@ -276,43 +271,21 @@
 									
 									<!-- List of Tables -->
 									<xsl:if test="$contents//tables/table">
-										<fo:block role="TOCI" font-weight="bold" margin-top="6pt" keep-with-next="always">
-											<xsl:value-of select="$title-list-tables"/>
-										</fo:block>
+										<xsl:call-template name="insertListOf_Title">
+											<xsl:with-param name="title" select="$title-list-tables"/>
+										</xsl:call-template>
 										<xsl:for-each select="$contents//tables/table">
-											<fo:block role="TOCI" text-align-last="justify" margin-left="12mm" text-indent="-12mm">
-												<fo:basic-link internal-destination="{@id}">
-													<xsl:call-template name="setAltText">
-														<xsl:with-param name="value" select="@alt-text"/>
-													</xsl:call-template>
-													<xsl:apply-templates select="." mode="contents"/>
-													<fo:inline keep-together.within-line="always">
-														<fo:leader font-size="9pt" font-weight="normal" leader-pattern="dots"/>
-														<fo:inline><fo:page-number-citation ref-id="{@id}"/></fo:inline>
-													</fo:inline>
-												</fo:basic-link>
-											</fo:block>
+											<xsl:call-template name="insertListOf_Item"/>
 										</xsl:for-each>
 									</xsl:if>
 									
 									<!-- List of Figures -->
 									<xsl:if test="$contents//figures/figure">
-										<fo:block role="TOCI" font-weight="bold" margin-top="6pt" keep-with-next="always">
-											<xsl:value-of select="$title-list-figures"/>
-										</fo:block>
+										<xsl:call-template name="insertListOf_Title">
+											<xsl:with-param name="title" select="$title-list-figures"/>
+										</xsl:call-template>
 										<xsl:for-each select="$contents//figures/figure">
-											<fo:block  role="TOCI" text-align-last="justify" margin-left="12mm" text-indent="-12mm">
-												<fo:basic-link internal-destination="{@id}">
-													<xsl:call-template name="setAltText">
-														<xsl:with-param name="value" select="@alt-text"/>
-													</xsl:call-template>
-													<xsl:apply-templates select="." mode="contents"/>
-													<fo:inline keep-together.within-line="always">
-														<fo:leader font-size="9pt" font-weight="normal" leader-pattern="dots"/>
-														<fo:inline><fo:page-number-citation ref-id="{@id}"/></fo:inline>
-													</fo:inline>
-												</fo:basic-link>
-											</fo:block>
+											<xsl:call-template name="insertListOf_Item"/>
 										</xsl:for-each>
 									</xsl:if>
 									
@@ -403,6 +376,28 @@
 		
 		<xsl:apply-templates select="xalan:nodeset($xslfo)" mode="step2"/>
 		
+	</xsl:template>
+	
+	<xsl:template name="insertListOf_Title">
+		<xsl:param name="title"/>
+		<fo:block role="TOCI" font-weight="bold" margin-top="6pt" keep-with-next="always">
+			<xsl:value-of select="$title"/>
+		</fo:block>
+	</xsl:template>
+	
+	<xsl:template name="insertListOf_Item">
+		<fo:block role="TOCI" text-align-last="justify" margin-left="12mm" text-indent="-12mm">
+			<fo:basic-link internal-destination="{@id}">
+				<xsl:call-template name="setAltText">
+					<xsl:with-param name="value" select="@alt-text"/>
+				</xsl:call-template>
+				<xsl:apply-templates select="." mode="contents"/>
+				<fo:inline keep-together.within-line="always">
+					<fo:leader font-size="9pt" font-weight="normal" leader-pattern="dots"/>
+					<fo:inline><fo:page-number-citation ref-id="{@id}"/></fo:inline>
+				</fo:inline>
+			</fo:basic-link>
+		</fo:block>
 	</xsl:template>
 	
 	<!-- ============================= -->

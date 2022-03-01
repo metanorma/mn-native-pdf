@@ -30,12 +30,7 @@
 			<xsl:call-template name="processPrefaceSectionsDefault_Contents"/>
 			<xsl:call-template name="processMainSectionsDefault_Contents"/>
 			
-			<xsl:if test="//*[contains(local-name(), '-standard')]/*[local-name() = 'misc-container']/*[local-name() = 'toc'][@type='table']/*[local-name() = 'title']">
-				<xsl:call-template name="processTables_Contents"/>
-			</xsl:if>
-			<xsl:if test="//*[contains(local-name(), '-standard')]/*[local-name() = 'misc-container']/*[local-name() = 'toc'][@type='figure']/*[local-name() = 'title']">
-				<xsl:call-template name="processFigures_Contents"/>
-			</xsl:if>
+			<xsl:call-template name="processTablesFigures_Contents"/>
 		</contents>
 	</xsl:variable>
 	<xsl:variable name="contents" select="xalan:nodeset($contents_)"/>
@@ -312,87 +307,21 @@
 							
 							<!-- List of Tables -->
 							<xsl:if test="$contents//tables/table">
-								<fo:table table-layout="fixed" width="100%">
-									<fo:table-column column-width="180mm"/>
-									<fo:table-body>
-										<fo:table-row height="6mm">
-											<fo:table-cell>
-												<fo:block role="TOCI" font-weight="bold">
-													<xsl:value-of select="$title-list-tables"/>
-												</fo:block>
-											</fo:table-cell>
-										</fo:table-row>
-									</fo:table-body>
-								</fo:table>
+								<xsl:call-template name="insertListOf_Title">
+									<xsl:with-param name="title" select="$title-list-tables"/>
+								</xsl:call-template>
 								<xsl:for-each select="$contents//tables/table">
-									<fo:table table-layout="fixed" width="100%">
-										<fo:table-column column-width="5mm"/>
-										<fo:table-column column-width="175mm"/>
-										<fo:table-body>
-											<fo:table-row height="6mm">
-												<fo:table-cell>
-													<fo:block>&#xa0;</fo:block>
-												</fo:table-cell>
-												<fo:table-cell>
-													<fo:block text-align-last="justify" role="TOCI" font-weight="bold">
-														<fo:basic-link internal-destination="{@id}" >
-															<xsl:call-template name="setAltText">
-																<xsl:with-param name="value" select="@alt-text"/>
-															</xsl:call-template>
-															<xsl:apply-templates select="." mode="contents"/><xsl:text>&#xa0;</xsl:text>
-															<fo:inline keep-together.within-line="always">
-																<fo:leader font-weight="normal" leader-pattern="dots"/>
-																<fo:inline><fo:page-number-citation ref-id="{@id}"/></fo:inline>
-															</fo:inline>
-														</fo:basic-link>
-													</fo:block>
-												</fo:table-cell>
-											</fo:table-row>
-										</fo:table-body>
-									</fo:table>
+									<xsl:call-template name="insertListOf_Item"/>
 								</xsl:for-each>
 							</xsl:if>
 							
 							<!-- List of Figures -->
 							<xsl:if test="$contents//figures/figure">
-								<fo:table table-layout="fixed" width="100%">
-									<fo:table-column column-width="180mm"/>
-									<fo:table-body>
-										<fo:table-row height="6mm">
-											<fo:table-cell>
-												<fo:block role="TOCI" font-weight="bold">
-													<xsl:value-of select="$title-list-figures"/>
-												</fo:block>
-											</fo:table-cell>
-										</fo:table-row>
-									</fo:table-body>
-								</fo:table>
+								<xsl:call-template name="insertListOf_Title">
+									<xsl:with-param name="title" select="$title-list-figures"/>
+								</xsl:call-template>
 								<xsl:for-each select="$contents//figures/figure">
-									<fo:table table-layout="fixed" width="100%">
-										<fo:table-column column-width="5mm"/>
-										<fo:table-column column-width="175mm"/>
-										<fo:table-body>
-											<fo:table-row height="6mm">
-												<fo:table-cell>
-													<fo:block>&#xa0;</fo:block>
-												</fo:table-cell>
-												<fo:table-cell>
-													<fo:block text-align-last="justify" role="TOCI" font-weight="bold">
-														<fo:basic-link internal-destination="{@id}" >
-															<xsl:call-template name="setAltText">
-																<xsl:with-param name="value" select="@alt-text"/>
-															</xsl:call-template>
-															<xsl:apply-templates select="." mode="contents"/><xsl:text>&#xa0;</xsl:text>
-															<fo:inline keep-together.within-line="always">
-																<fo:leader font-weight="normal" leader-pattern="dots"/>
-																<fo:inline><fo:page-number-citation ref-id="{@id}"/></fo:inline>
-															</fo:inline>
-														</fo:basic-link>
-													</fo:block>
-												</fo:table-cell>
-											</fo:table-row>
-										</fo:table-body>
-									</fo:table>
+									<xsl:call-template name="insertListOf_Item"/>
 								</xsl:for-each>
 							</xsl:if>
 								
@@ -421,6 +350,49 @@
 		</fo:root>
 	</xsl:template> 
 
+	<xsl:template name="insertListOf_Title">
+		<xsl:param name="title"/>
+		<fo:table table-layout="fixed" width="100%">
+			<fo:table-column column-width="180mm"/>
+			<fo:table-body>
+				<fo:table-row height="6mm">
+					<fo:table-cell>
+						<fo:block role="TOCI" font-weight="bold">
+							<xsl:value-of select="$title"/>
+						</fo:block>
+					</fo:table-cell>
+				</fo:table-row>
+			</fo:table-body>
+		</fo:table>
+	</xsl:template>
+	
+	<xsl:template name="insertListOf_Item">
+		<fo:table table-layout="fixed" width="100%">
+			<fo:table-column column-width="5mm"/>
+			<fo:table-column column-width="175mm"/>
+			<fo:table-body>
+				<fo:table-row height="6mm">
+					<fo:table-cell>
+						<fo:block>&#xa0;</fo:block>
+					</fo:table-cell>
+					<fo:table-cell>
+						<fo:block text-align-last="justify" role="TOCI" font-weight="bold">
+							<fo:basic-link internal-destination="{@id}" >
+								<xsl:call-template name="setAltText">
+									<xsl:with-param name="value" select="@alt-text"/>
+								</xsl:call-template>
+								<xsl:apply-templates select="." mode="contents"/><xsl:text>&#xa0;</xsl:text>
+								<fo:inline keep-together.within-line="always">
+									<fo:leader font-weight="normal" leader-pattern="dots"/>
+									<fo:inline><fo:page-number-citation ref-id="{@id}"/></fo:inline>
+								</fo:inline>
+							</fo:basic-link>
+						</fo:block>
+					</fo:table-cell>
+				</fo:table-row>
+			</fo:table-body>
+		</fo:table>
+	</xsl:template>
 	
 	<xsl:template match="m3d:boilerplate//m3d:p" priority="2">
 		<fo:block font-size="11pt" margin-bottom="12pt">

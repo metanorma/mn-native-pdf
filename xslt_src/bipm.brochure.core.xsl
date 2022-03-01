@@ -191,12 +191,7 @@
 			<!-- Index -->
 			<xsl:apply-templates select="//bipm:indexsect" mode="contents"/>
 			
-			<xsl:if test="/*/*[local-name() = 'misc-container']/*[local-name() = 'toc'][@type='table']/*[local-name() = 'title']">
-				<xsl:call-template name="processTables_Contents"/>
-			</xsl:if>
-			<xsl:if test="/*/*[local-name() = 'misc-container']/*[local-name() = 'toc'][@type='figure']/*[local-name() = 'title']">
-				<xsl:call-template name="processFigures_Contents"/>
-			</xsl:if>
+			<xsl:call-template name="processTablesFigures_Contents"/>
 			
 		</contents>
 	</xsl:template>

@@ -4018,6 +4018,16 @@
 		</xsl:for-each>
 	</xsl:template>
 
+	<xsl:template name="processTablesFigures_Contents">
+		<xsl:param name="always"/>
+		<xsl:if test="(//*[contains(local-name(), '-standard')]/*[local-name() = 'misc-container']/*[local-name() = 'toc'][@type='table']/*[local-name() = 'title']) or normalize-space($always) = 'true'">
+			<xsl:call-template name="processTables_Contents"/>
+		</xsl:if>
+		<xsl:if test="(//*[contains(local-name(), '-standard')]/*[local-name() = 'misc-container']/*[local-name() = 'toc'][@type='figure']/*[local-name() = 'title']) or normalize-space($always) = 'true'">
+			<xsl:call-template name="processFigures_Contents"/>
+		</xsl:if>
+	</xsl:template>
+
 	<xsl:template name="processTables_Contents">
 		<tables>
 			<xsl:for-each select="//*[local-name() = 'table'][@id and *[local-name() = 'name'] and normalize-space(@id) != '']">

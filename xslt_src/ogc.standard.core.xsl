@@ -130,8 +130,9 @@
 			<xsl:call-template name="processMainSectionsDefault_Contents"/>
 			<xsl:apply-templates select="//ogc:indexsect" mode="contents"/>
 			
-			<xsl:call-template name="processTables_Contents"/>
-			<xsl:call-template name="processFigures_Contents"/>
+			<xsl:call-template name="processTablesFigures_Contents">
+				<xsl:with-param name="always">true</xsl:with-param>
+			</xsl:call-template>
 		</contents>
 	</xsl:variable>
 	<xsl:variable name="contents" select="xalan:nodeset($contents_)"/>
@@ -523,75 +524,35 @@
 						</fo:block-container>	
 								
 
+						<!-- List of Tables -->
 						<xsl:if test="$contents//tables/table">
-							
-							<fo:block-container margin-left="-18mm" keep-with-next="always" margin-bottom="10pt" space-before="36pt">
-								<fo:block-container margin-left="0mm">								
-									<xsl:call-template name="insertSectionTitle">
-										<xsl:with-param name="title" select="$title-list-tables"/>
-									</xsl:call-template>
-								</fo:block-container>
-							</fo:block-container>							
+							<xsl:call-template name="insertListOf_Title">
+								<xsl:with-param name="title" select="$title-list-tables"/>
+							</xsl:call-template>
 							<fo:block-container line-height="130%">
 								<xsl:for-each select="$contents//tables/table">
-									<fo:block text-align-last="justify" margin-top="2pt" role="TOCI">
-										<fo:basic-link internal-destination="{@id}">
-											<xsl:call-template name="setAltText">
-												<xsl:with-param name="value" select="@alt-text"/>
-											</xsl:call-template>
-											<!-- <xsl:copy-of select="node()"/> -->
-											<xsl:apply-templates select="." mode="contents"/>
-											<fo:inline keep-together.within-line="always">
-												<fo:leader leader-pattern="dots"/>
-												<fo:page-number-citation ref-id="{@id}"/>
-											</fo:inline>
-										</fo:basic-link>
-									</fo:block>
+									<xsl:call-template name="insertListOf_Item"/>
 								</xsl:for-each>
-							</fo:block-container>							
-						</xsl:if>
-
-						
-						<xsl:if test="$contents//figures/figure">
-
-							<fo:block-container margin-left="-18mm" keep-with-next="always" margin-bottom="10pt" space-before="36pt">
-								<fo:block-container margin-left="0mm">
-									<xsl:call-template name="insertSectionTitle">
-										<xsl:with-param name="title" select="$title-list-figures"/>
-									</xsl:call-template>
-								</fo:block-container>
 							</fo:block-container>
-							
+						</xsl:if>
+						
+						<!-- List of Figures -->
+						<xsl:if test="$contents//figures/figure">
+							<xsl:call-template name="insertListOf_Title">
+								<xsl:with-param name="title" select="$title-list-figures"/>
+							</xsl:call-template>
 							<fo:block-container line-height="130%">
 								<xsl:for-each select="$contents//figures/figure">
-									<fo:block text-align-last="justify" margin-top="2pt" role="TOCI">
-										<fo:basic-link internal-destination="{@id}">
-											<xsl:call-template name="setAltText">
-												<xsl:with-param name="value" select="@alt-text"/>
-											</xsl:call-template>
-											<!-- <xsl:copy-of select="node()"/> -->
-											<xsl:apply-templates select="./node()" mode="contents"/>
-											<fo:inline keep-together.within-line="always">
-												<fo:leader leader-pattern="dots"/>
-												<fo:page-number-citation ref-id="{@id}"/>
-											</fo:inline>
-										</fo:basic-link>
-									</fo:block>
+									<xsl:call-template name="insertListOf_Item"/>
 								</xsl:for-each>
-							</fo:block-container>							
+							</fo:block-container>
 						</xsl:if>
 						
-
+						<!-- List of Recommendations -->
 						<xsl:if test="//ogc:table[.//ogc:p[@class = 'RecommendationTitle']]">							
-							
-							<fo:block-container margin-left="-18mm" keep-with-next="always" margin-bottom="10pt" space-before="36pt">
-								<fo:block-container margin-left="0mm">
-									<xsl:call-template name="insertSectionTitle">
-										<xsl:with-param name="title" select="$title-list-recommendations"/>
-									</xsl:call-template>
-								</fo:block-container>
-							</fo:block-container>
-							
+							<xsl:call-template name="insertListOf_Title">
+								<xsl:with-param name="title" select="$title-list-recommendations"/>
+							</xsl:call-template>
 							<fo:block-container line-height="130%">
 								<xsl:for-each select="xalan:nodeset($toc_recommendations)/*[normalize-space(@id) != '']">
 									<fo:block text-align-last="justify" margin-top="6pt" role="TOCI">
@@ -609,7 +570,6 @@
 									</fo:block>
 								</xsl:for-each>
 							</fo:block-container>
-							
 						</xsl:if>
 
 					</fo:block>
@@ -671,6 +631,32 @@
 		</fo:root>
 	</xsl:template> 
 
+	<xsl:template name="insertListOf_Title">
+		<xsl:param name="title"/>
+		<fo:block-container margin-left="-18mm" keep-with-next="always" margin-bottom="10pt" space-before="36pt">
+			<fo:block-container margin-left="0mm">								
+				<xsl:call-template name="insertSectionTitle">
+					<xsl:with-param name="title" select="$title"/>
+				</xsl:call-template>
+			</fo:block-container>
+		</fo:block-container>
+	</xsl:template>
+	
+	<xsl:template name="insertListOf_Item">
+		<fo:block text-align-last="justify" margin-top="2pt" role="TOCI">
+			<fo:basic-link internal-destination="{@id}">
+				<xsl:call-template name="setAltText">
+					<xsl:with-param name="value" select="@alt-text"/>
+				</xsl:call-template>
+				<!-- <xsl:copy-of select="node()"/> -->
+				<xsl:apply-templates select="." mode="contents"/>
+				<fo:inline keep-together.within-line="always">
+					<fo:leader leader-pattern="dots"/>
+					<fo:page-number-citation ref-id="{@id}"/>
+				</fo:inline>
+			</fo:basic-link>
+		</fo:block>
+	</xsl:template>
 	
 	<!-- Lato font doesn't contain 'thin space' glyph -->
 	<xsl:template match="text()" priority="1">
