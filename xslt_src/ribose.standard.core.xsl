@@ -29,7 +29,7 @@
 	</xsl:variable>
 	
 	
-	<xsl:variable name="contents">
+	<xsl:variable name="contents_">
 		<contents>
 		
 			<xsl:apply-templates select="/rsd:rsd-standard/rsd:preface/rsd:abstract" mode="contents"/>
@@ -41,9 +41,10 @@
 					
 			<xsl:call-template name="processMainSectionsDefault_Contents"/>
 			
+			<xsl:call-template name="processTablesFigures_Contents"/>
 		</contents>
 	</xsl:variable>
-	
+	<xsl:variable name="contents" select="xalan:nodeset($contents_)"/>
 	
 	<xsl:variable name="docnumber_version">
 		<xsl:value-of select="/rsd:rsd-standard/rsd:bibdata/rsd:docidentifier[@type = 'rsd' or @type = 'Ribose']"/>
@@ -408,7 +409,7 @@
 			<fo:page-sequence master-reference="document" force-page-count="no-force"> <!-- master-reference="toc" -->
 				<xsl:call-template name="insertHeaderFooter"/>
 				<fo:flow flow-name="xsl-region-body">
-					<xsl:if test="xalan:nodeset($contents)//item[@display = 'true']">
+					<xsl:if test="$contents//item[@display = 'true']">
 						<fo:block role="TOC">
 						<!-- <fo:block-container absolute-position="fixed" left="13mm" top="15mm"> -->
 							<fo:block font-size="27pt" font-weight="bold" color="black" margin-left="-15mm" margin-bottom="13mm" role="H1">
@@ -420,7 +421,7 @@
 						
 							<fo:block-container margin-left="32mm" margin-right="-17mm">
 								<fo:block-container margin-left="0mm" margin-right="0mm">
-									<xsl:for-each select="xalan:nodeset($contents)//item[@display = 'true']">
+									<xsl:for-each select="$contents//item[@display = 'true']">
 										<fo:block font-size="13pt" role="TOCI">
 											<xsl:if test="@level = 1">
 												<xsl:if test="preceding-sibling::item[@display = 'true' and @level = 1]">
@@ -443,13 +444,34 @@
 													<xsl:apply-templates select="title"/>
 													<xsl:text> &#xA0;</xsl:text>
 													<fo:inline>
-															<fo:leader leader-pattern="rule" rule-thickness="0.2mm"/>
-															<fo:inline padding-left="2mm"><fo:page-number-citation ref-id="{@id}"/></fo:inline>
-														</fo:inline>
+														<fo:leader leader-pattern="rule" rule-thickness="0.2mm"/>
+														<fo:inline padding-left="2mm"><fo:page-number-citation ref-id="{@id}"/></fo:inline>
+													</fo:inline>
 												</fo:basic-link>
 											</fo:block>
 										</fo:block>
 									</xsl:for-each>
+									
+									<!-- List of Tables -->
+									<xsl:if test="$contents//tables/table">
+										<xsl:call-template name="insertListOf_Title">
+											<xsl:with-param name="title" select="$title-list-tables"/>
+										</xsl:call-template>
+										<xsl:for-each select="$contents//tables/table">
+											<xsl:call-template name="insertListOf_Item"/>
+										</xsl:for-each>
+									</xsl:if>
+									
+									<!-- List of Figures -->
+									<xsl:if test="$contents//figures/figure">
+										<xsl:call-template name="insertListOf_Title">
+											<xsl:with-param name="title" select="$title-list-figures"/>
+										</xsl:call-template>
+										<xsl:for-each select="$contents//figures/figure">
+											<xsl:call-template name="insertListOf_Item"/>
+										</xsl:for-each>
+									</xsl:if>
+									
 								</fo:block-container>
 							</fo:block-container>
 						</fo:block>
@@ -494,6 +516,30 @@
 		</fo:root>
 	</xsl:template> 
 
+	<xsl:template name="insertListOf_Title">
+		<xsl:param name="title"/>
+		<fo:block font-size="13pt" font-weight="bold" color="black" margin-top="12pt" margin-bottom="12pt" keep-with-next="always">
+			<xsl:value-of select="$title"/>
+		</fo:block>
+	</xsl:template>
+	
+	<xsl:template name="insertListOf_Item">
+		<fo:block font-size="13pt" role="TOCI" margin-left="16.5mm" space-before="4pt" space-after="5pt">
+			<fo:block text-align-last="justify" >
+				<fo:basic-link internal-destination="{@id}">
+					<xsl:call-template name="setAltText">
+						<xsl:with-param name="value" select="@alt-text"/>
+					</xsl:call-template>
+					<xsl:apply-templates select="." mode="contents"/>
+					<xsl:text> &#xA0;</xsl:text>
+					<fo:inline>
+						<fo:leader leader-pattern="rule" rule-thickness="0.2mm"/>
+						<fo:inline padding-left="2mm"><fo:page-number-citation ref-id="{@id}"/></fo:inline>
+					</fo:inline>
+				</fo:basic-link>
+			</fo:block>
+		</fo:block>
+	</xsl:template>
 
 	<xsl:template match="rsd:title" mode="cover_page">
 		<xsl:apply-templates />

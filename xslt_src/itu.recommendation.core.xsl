@@ -45,7 +45,7 @@
 		<item level="1" id="Foreword" display="true">Foreword</item>
 		<item id="term-script" display="false">3.2</item>
 	-->
-	<xsl:variable name="contents">
+	<xsl:variable name="contents_">
 		<contents>
 			<!-- <xsl:apply-templates select="/itu:itu-standard/itu:preface/node()" mode="contents"/> -->
 			<xsl:apply-templates select="/itu:itu-standard/itu:sections/itu:clause[@type='scope']" mode="contents" /> <!-- @id = 'scope' -->
@@ -62,8 +62,12 @@
 			
 			<xsl:apply-templates select="//itu:table" mode="contents"/>
 			
+			<xsl:call-template name="processTablesFigures_Contents">
+				<xsl:with-param name="always" select="$doctype = 'technical-report' or $doctype = 'technical-paper'"/>
+			</xsl:call-template>
 		</contents>
 	</xsl:variable>
+	<xsl:variable name="contents" select="xalan:nodeset($contents_)"/>
 	
 	<xsl:variable name="doctypeTitle">
 		<xsl:choose>
@@ -984,11 +988,11 @@
 					<xsl:if test="$debug = 'true'">
 						<xsl:text disable-output-escaping="yes">&lt;!--</xsl:text>
 							DEBUG
-							contents=<xsl:copy-of select="xalan:nodeset($contents)"/>
+							contents=<xsl:copy-of select="$contents"/>
 						<xsl:text disable-output-escaping="yes">--&gt;</xsl:text>
 					</xsl:if>
 					
-					<xsl:if test="xalan:nodeset($contents)//item[@display = 'true'] and $doctype != 'resolution' and $doctype != 'service-publication'">
+					<xsl:if test="$contents//item[@display = 'true'] and $doctype != 'resolution' and $doctype != 'service-publication'">
 						<fo:block break-after="page"/>
 							<fo:block-container>
 								<fo:block role="TOC">
@@ -1003,7 +1007,7 @@
 									</xsl:call-template>
 								</fo:block>
 								
-								<xsl:for-each select="xalan:nodeset($contents)//item[@display = 'true']">									
+								<xsl:for-each select="$contents//item[@display = 'true']">									
 									<fo:block role="TOCI">
 										<xsl:if test="@level = 1">
 											<xsl:attribute name="margin-top">6pt</xsl:attribute>
@@ -1056,72 +1060,42 @@
 									</fo:block>									
 								</xsl:for-each>
 								
-
-							<xsl:if  test="$doctype = 'technical-report' or $doctype = 'technical-paper'">
-								<xsl:if test="//itu:table[@id and itu:name]">								
-									<xsl:variable name="title-list-tables">
-										<xsl:call-template name="getTitle">
-											<xsl:with-param name="name" select="'title-list-tables'"/>
-										</xsl:call-template>
-									</xsl:variable>
-									
-									<fo:block space-before="36pt" text-align="center" font-weight="bold" keep-with-next="always">
-										<xsl:value-of select="$title-list-tables"/>
-									</fo:block>
+								
+								<!-- List of Tables -->
+								<xsl:if test="$contents//tables/table">
+									<xsl:call-template name="insertListOf_Title">
+										<xsl:with-param name="title" select="$title-list-tables"/>
+									</xsl:call-template>
 									<fo:block margin-top="6pt" text-align="end" font-weight="bold"  keep-with-next="always">
 										<xsl:call-template name="getLocalizedString">
 											<xsl:with-param name="key">Page.sg</xsl:with-param>
 										</xsl:call-template>
 									</fo:block>
-									
 									<fo:block-container>
-										<xsl:for-each select="//itu:table[@id and itu:name]">
-											<fo:block text-align-last="justify" margin-top="6pt" role="TOCI">
-												<fo:basic-link internal-destination="{@id}" fox:alt-text="{itu:name}">
-													<xsl:apply-templates select="itu:name" mode="contents"/>										
-													<fo:inline keep-together.within-line="always">
-														<fo:leader leader-pattern="dots"/>
-														<fo:page-number-citation ref-id="{@id}"/>
-													</fo:inline>
-												</fo:basic-link>
-											</fo:block>
+										<xsl:for-each select="$contents//tables/table">
+											<xsl:call-template name="insertListOf_Item"/>
 										</xsl:for-each>
-									</fo:block-container>							
+									</fo:block-container>
 								</xsl:if>
-										
-								<xsl:if test="//itu:figure[@id and itu:name]">								
-									<xsl:variable name="title-list-figures">
-										<xsl:call-template name="getTitle">
-											<xsl:with-param name="name" select="'title-list-figures'"/>
-										</xsl:call-template>
-									</xsl:variable>
-									
-									
-									<fo:block space-before="36pt" text-align="center" font-weight="bold" keep-with-next="always">
-										<xsl:value-of select="$title-list-figures"/>
-									</fo:block>
+								
+								<!-- List of Figures -->
+								<xsl:if test="$contents//figures/figure">
+									<xsl:call-template name="insertListOf_Title">
+										<xsl:with-param name="title" select="$title-list-figures"/>
+									</xsl:call-template>
 									<fo:block margin-top="6pt" text-align="end" font-weight="bold" keep-with-next="always">
 										<xsl:call-template name="getLocalizedString">
 											<xsl:with-param name="key">Page.sg</xsl:with-param>
 										</xsl:call-template>
 									</fo:block>
-									
 									<fo:block-container>
-										<xsl:for-each select="//itu:figure[@id and itu:name]">
-											<fo:block text-align-last="justify" margin-top="6pt" role="TOCI">
-												<fo:basic-link internal-destination="{@id}" fox:alt-text="{itu:name}">
-													<xsl:apply-templates select="itu:name" mode="contents"/>										
-													<fo:inline keep-together.within-line="always">
-														<fo:leader leader-pattern="dots"/>
-														<fo:page-number-citation ref-id="{@id}"/>
-													</fo:inline>
-												</fo:basic-link>
-											</fo:block>
+										<xsl:for-each select="$contents//figures/figure">
+											<xsl:call-template name="insertListOf_Item"/>
 										</xsl:for-each>
-									</fo:block-container>							
+									</fo:block-container>
 								</xsl:if>
-							</xsl:if>
-						</fo:block>
+							
+							</fo:block>
 						</fo:block-container>
 					</xsl:if>
 					
@@ -1218,6 +1192,28 @@
 			
 		</fo:root>
 	</xsl:template> 
+
+	<xsl:template name="insertListOf_Title">
+		<xsl:param name="title"/>
+		<fo:block space-before="36pt" text-align="center" font-weight="bold" keep-with-next="always">
+			<xsl:value-of select="$title"/>
+		</fo:block>
+	</xsl:template>
+	
+	<xsl:template name="insertListOf_Item">
+		<fo:block text-align-last="justify" margin-top="6pt" role="TOCI">
+			<fo:basic-link internal-destination="{@id}">
+				<xsl:call-template name="setAltText">
+					<xsl:with-param name="value" select="@alt-text"/>
+				</xsl:call-template>
+				<xsl:apply-templates select="." mode="contents"/>
+				<fo:inline keep-together.within-line="always">
+					<fo:leader leader-pattern="dots"/>
+					<fo:page-number-citation ref-id="{@id}"/>
+				</fo:inline>
+			</fo:basic-link>
+		</fo:block>
+	</xsl:template>
 
 	<xsl:template match="node()">		
 		<xsl:apply-templates />			

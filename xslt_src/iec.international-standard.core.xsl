@@ -84,7 +84,7 @@
 		<item level="1" id="Foreword" display="true">Foreword</item>
 		<item id="term-script" display="false">3.2</item>
 	-->
-	<xsl:variable name="contents">
+	<xsl:variable name="contents_">
 	
 		<xsl:for-each select="//iec:iec-standard">
 			<xsl:variable name="lang" select="*[local-name()='bibdata']/*[local-name()='language'][@current = 'true']"/>
@@ -102,22 +102,16 @@
 		</xsl:for-each>
 	
 	</xsl:variable>
+	<xsl:variable name="contents" select="xalan:nodeset($contents_)"/>
 
 	<xsl:template name="generateContents">
 		<contents>
 			<xsl:call-template name="processPrefaceSectionsDefault_Contents"/>
 			<xsl:call-template name="processMainSectionsDefault_Contents"/>
 			<xsl:apply-templates select="//iec:indexsect" mode="contents"/>
-			<xsl:for-each select="//*[local-name() = 'figure'][@id and *[local-name() = 'name']]">
-				<figure id="{@id}">
-					<title><xsl:value-of select="*[local-name() = 'name']/text()"/></title>
-				</figure>				
-			</xsl:for-each>
-			<xsl:for-each select="//*[local-name() = 'table'][@id and *[local-name() = 'name']]">
-				<table id="{@id}">
-					<title><xsl:value-of select="*[local-name() = 'name']/text()"/></title>
-				</table>				
-			</xsl:for-each>
+			<xsl:call-template name="processTablesFigures_Contents">
+				<xsl:with-param name="always">true</xsl:with-param>
+			</xsl:call-template>
 		</contents>
 	</xsl:template>
 	
@@ -837,7 +831,7 @@
 			<xsl:if test="$debug = 'true'">
 					<xsl:text disable-output-escaping="yes">&lt;!--</xsl:text>
 						DEBUG
-						contents=<xsl:copy-of select="xalan:nodeset($contents)"/>
+						contents=<xsl:copy-of select="$contents"/>
 					<xsl:text disable-output-escaping="yes">--&gt;</xsl:text>
 				</xsl:if>
 			
@@ -866,7 +860,7 @@
 							<fo:flow flow-name="xsl-region-body">
 							
 							<xsl:call-template name="insertTOCpages">
-								<xsl:with-param name="contents" select="xalan:nodeset($contents)/doc[@id = $docid]"/>
+								<xsl:with-param name="contents" select="$contents/doc[@id = $docid]"/>
 							</xsl:call-template>
 							
 							<xsl:call-template name="insertPrefacepages">
@@ -1213,37 +1207,34 @@
 					</fo:block>
 				</xsl:for-each>
 				
-				<xsl:if test="//iec:figure[@id and iec:name]">
-					<fo:block margin-bottom="5pt">&#xA0;</fo:block>				
-					<xsl:for-each select="//iec:figure[@id and iec:name]">					
-						<fo:block text-align-last="justify" margin-bottom="5pt" margin-left="8mm" text-indent="-8mm" role="TOCI">
-							<fo:basic-link internal-destination="{@id}"  fox:alt-text="Figure {@id}">
-								<xsl:apply-templates select="iec:name" mode="contents"/>
-								<fo:inline keep-together.within-line="always">
-									<fo:leader leader-pattern="dots"/>
-									<fo:page-number-citation ref-id="{@id}"/>
-								</fo:inline>
-							</fo:basic-link>
-						</fo:block>
+				<xsl:if test="$contents//figures/figure">
+					<fo:block margin-bottom="5pt">&#xA0;</fo:block>
+					<xsl:for-each select="$contents//figures/figure">
+						<xsl:call-template name="insertListOf_Item"/>
 					</xsl:for-each>
 				</xsl:if>
 				
-				<xsl:if test="//iec:table[@id and iec:name]">
-					<fo:block margin-bottom="5pt">&#xA0;</fo:block>				
-					<xsl:for-each select="//iec:table[@id and iec:name]">
-						<fo:block text-align-last="justify" margin-bottom="5pt" margin-left="8mm" text-indent="-8mm" role="TOCI">
-							<fo:basic-link internal-destination="{@id}"  fox:alt-text="Table {@id}">
-								<xsl:apply-templates select="iec:name" mode="contents"/>
-								<fo:inline keep-together.within-line="always">
-									<fo:leader leader-pattern="dots"/>
-									<fo:page-number-citation ref-id="{@id}"/>
-								</fo:inline>
-							</fo:basic-link>
-						</fo:block>
+				<xsl:if test="$contents//tables/table">
+					<fo:block margin-bottom="5pt">&#xA0;</fo:block>
+					<xsl:for-each select="$contents//tables/table">
+						<xsl:call-template name="insertListOf_Item"/>
 					</xsl:for-each>
 				</xsl:if>
+				
 			</fo:block>
 		</fo:block-container>
+	</xsl:template>
+	
+	<xsl:template name="insertListOf_Item">
+		<fo:block text-align-last="justify" margin-bottom="5pt" margin-left="8mm" text-indent="-8mm" role="TOCI">
+			<fo:basic-link internal-destination="{@id}"  fox:alt-text="{local-name()} {@id}">
+				<xsl:apply-templates select="." mode="contents"/>
+				<fo:inline keep-together.within-line="always">
+					<fo:leader leader-pattern="dots"/>
+					<fo:page-number-citation ref-id="{@id}"/>
+				</fo:inline>
+			</fo:basic-link>
+		</fo:block>
 	</xsl:template>
 	
 	<xsl:template name="insertPrefacepages">

@@ -25,12 +25,14 @@
 	
 	<xsl:variable name="color-header-document">rgb(79, 201, 204)</xsl:variable>
 	
-	<xsl:variable name="contents">
+	<xsl:variable name="contents_">
 		<contents>		
 			<xsl:call-template name="processPrefaceSectionsDefault_Contents"/>
 			<xsl:call-template name="processMainSectionsDefault_Contents"/>
+			<xsl:call-template name="processTablesFigures_Contents"/>
 		</contents>
 	</xsl:variable>
+	<xsl:variable name="contents" select="xalan:nodeset($contents_)"/>
 	
 	<xsl:template match="/">
 		<xsl:call-template name="namespaceCheck"/>
@@ -113,7 +115,7 @@
 					<xsl:if test="$debug = 'true'">
 						<xsl:text disable-output-escaping="yes">&lt;!--</xsl:text>
 							DEBUG
-							contents=<xsl:copy-of select="xalan:nodeset($contents)"/> 
+							contents=<xsl:copy-of select="$contents"/> 
 						<xsl:text disable-output-escaping="yes">--&gt;</xsl:text>
 					</xsl:if>
 					
@@ -202,7 +204,7 @@
 						<fo:block font-size="26pt" color="black" margin-top="2pt" margin-bottom="30pt" role="H1"><xsl:value-of select="$title-toc"/></fo:block>
 						
 						<fo:block margin-left="-3mm" role="TOC">
-							<xsl:for-each select="xalan:nodeset($contents)//item[@display = 'true']">
+							<xsl:for-each select="$contents//item[@display = 'true']">
 								<fo:block role="TOCI">
 									<fo:list-block>
 										<xsl:attribute name="provisional-distance-between-starts">
@@ -231,6 +233,27 @@
 									</fo:list-block>
 								</fo:block>
 							</xsl:for-each>
+							
+							<!-- List of Tables -->
+							<xsl:if test="$contents//tables/table">
+								<xsl:call-template name="insertListOf_Title">
+									<xsl:with-param name="title" select="$title-list-tables"/>
+								</xsl:call-template>
+								<xsl:for-each select="$contents//tables/table">
+									<xsl:call-template name="insertListOf_Item"/>
+								</xsl:for-each>
+							</xsl:if>
+							
+							<!-- List of Figures -->
+							<xsl:if test="$contents//figures/figure">
+								<xsl:call-template name="insertListOf_Title">
+									<xsl:with-param name="title" select="$title-list-figures"/>
+								</xsl:call-template>
+								<xsl:for-each select="$contents//figures/figure">
+									<xsl:call-template name="insertListOf_Item"/>
+								</xsl:for-each>
+							</xsl:if>
+							
 						</fo:block>
 					</fo:block-container>
 					
@@ -248,6 +271,51 @@
 			
 		</fo:root>
 	</xsl:template> 
+
+	<xsl:template name="insertListOf_Title">
+		<xsl:param name="title"/>
+		<fo:block role="TOCI" keep-with-next="always">
+			<fo:list-block provisional-distance-between-starts="3mm">
+				<fo:list-item>
+					<fo:list-item-label end-indent="label-end()">
+						<fo:block font-size="1pt">&#x200a;</fo:block>
+					</fo:list-item-label>
+					<fo:list-item-body start-indent="body-start()">
+						<fo:block>
+							<xsl:value-of select="$title"/>
+						</fo:block>
+					</fo:list-item-body>
+				</fo:list-item>
+			</fo:list-block>
+		</fo:block>
+	</xsl:template>
+	
+	<xsl:template name="insertListOf_Item">
+		<fo:block role="TOCI">
+			<fo:list-block provisional-distance-between-starts="10mm">
+				<fo:list-item>
+					<fo:list-item-label end-indent="label-end()">
+						<fo:block font-size="1pt">&#x200a;</fo:block>
+					</fo:list-item-label>
+					<fo:list-item-body start-indent="body-start()">
+						<fo:block text-align-last="justify" margin-left="12mm" text-indent="-12mm">
+							<fo:basic-link internal-destination="{@id}">
+								<xsl:call-template name="setAltText">
+									<xsl:with-param name="value" select="@alt-text"/>
+								</xsl:call-template>
+								<xsl:apply-templates select="." mode="contents"/>
+								<fo:inline keep-together.within-line="always">
+									<fo:leader leader-pattern="dots"/>
+									<fo:inline><fo:page-number-citation ref-id="{@id}"/></fo:inline>
+								</fo:inline>
+							</fo:basic-link>
+						</fo:block>
+					</fo:list-item-body>
+				</fo:list-item>
+			</fo:list-block>
+		</fo:block>
+	</xsl:template>
+
 
 	<xsl:template match="node()">		
 		<xsl:apply-templates />			
