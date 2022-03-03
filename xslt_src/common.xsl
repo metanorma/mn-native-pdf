@@ -5639,41 +5639,7 @@
 	
 		<!-- list of footnotes to calculate actual footnotes number -->
 		<xsl:variable name="p_fn_">
-			<xsl:choose>
-				<xsl:when test="@current_fn_number"> <!-- for BSI, footnote reference number calculated already -->
-					<fn gen_id="{generate-id(.)}">
-						<xsl:copy-of select="@*"/>
-						<xsl:copy-of select="node()"/>
-					</fn>
-				</xsl:when>
-				<xsl:otherwise>
-					<!-- itetation for:
-					footnotes in bibdata/title
-					footnotes in bibliography
-					footnotes in document's body (except table's head/body/foot and figure text) 
-					-->
-					<xsl:for-each select="ancestor::*[contains(local-name(), '-standard')]/*[local-name() = 'bibdata']/*[local-name() = 'note'][@type='title-footnote']">
-						<fn gen_id="{generate-id(.)}">
-							<xsl:copy-of select="@*"/>
-							<xsl:copy-of select="node()"/>
-						</fn>
-					</xsl:for-each>
-					<xsl:for-each select="ancestor::*[contains(local-name(), '-standard')]/*[local-name()='preface']/* |
-						ancestor::*[contains(local-name(), '-standard')]/*[local-name()='sections']/* | 
-						ancestor::*[contains(local-name(), '-standard')]/*[local-name()='annex'] |
-						ancestor::*[contains(local-name(), '-standard')]/*[local-name()='bibliography']/*">
-						<xsl:sort select="@displayorder" data-type="number"/>
-						<xsl:for-each select=".//*[local-name() = 'bibitem'][ancestor::*[local-name() = 'references']]/*[local-name() = 'note'] |
-						.//*[local-name() = 'fn'][not(ancestor::*[(local-name() = 'table' or local-name() = 'figure') and not(ancestor::*[local-name() = 'name'])])][generate-id(.)=generate-id(key('kfn',@reference)[1])]">
-							<!-- copy unique fn -->
-							<fn gen_id="{generate-id(.)}">
-								<xsl:copy-of select="@*"/>
-								<xsl:copy-of select="node()"/>
-							</fn>
-						</xsl:for-each>
-					</xsl:for-each>
-				</xsl:otherwise>
-			</xsl:choose>
+			<xsl:call-template name="get_fn_list"/>
 		</xsl:variable>
 		<xsl:variable name="p_fn" select="xalan:nodeset($p_fn_)"/>
 		
@@ -5767,6 +5733,44 @@
 			</xsl:otherwise>
 		</xsl:choose>
 	</xsl:template> <!-- fn in text -->
+	
+	<xsl:template name="get_fn_list">
+		<xsl:choose>
+			<xsl:when test="@current_fn_number"> <!-- for BSI, footnote reference number calculated already -->
+				<fn gen_id="{generate-id(.)}">
+					<xsl:copy-of select="@*"/>
+					<xsl:copy-of select="node()"/>
+				</fn>
+			</xsl:when>
+			<xsl:otherwise>
+				<!-- itetation for:
+				footnotes in bibdata/title
+				footnotes in bibliography
+				footnotes in document's body (except table's head/body/foot and figure text) 
+				-->
+				<xsl:for-each select="ancestor::*[contains(local-name(), '-standard')]/*[local-name() = 'bibdata']/*[local-name() = 'note'][@type='title-footnote']">
+					<fn gen_id="{generate-id(.)}">
+						<xsl:copy-of select="@*"/>
+						<xsl:copy-of select="node()"/>
+					</fn>
+				</xsl:for-each>
+				<xsl:for-each select="ancestor::*[contains(local-name(), '-standard')]/*[local-name()='preface']/* |
+					ancestor::*[contains(local-name(), '-standard')]/*[local-name()='sections']/* | 
+					ancestor::*[contains(local-name(), '-standard')]/*[local-name()='annex'] |
+					ancestor::*[contains(local-name(), '-standard')]/*[local-name()='bibliography']/*">
+					<xsl:sort select="@displayorder" data-type="number"/>
+					<xsl:for-each select=".//*[local-name() = 'bibitem'][ancestor::*[local-name() = 'references']]/*[local-name() = 'note'] |
+					.//*[local-name() = 'fn'][not(ancestor::*[(local-name() = 'table' or local-name() = 'figure') and not(ancestor::*[local-name() = 'name'])])][generate-id(.)=generate-id(key('kfn',@reference)[1])]">
+						<!-- copy unique fn -->
+						<fn gen_id="{generate-id(.)}">
+							<xsl:copy-of select="@*"/>
+							<xsl:copy-of select="node()"/>
+						</fn>
+					</xsl:for-each>
+				</xsl:for-each>
+			</xsl:otherwise>
+		</xsl:choose>
+	</xsl:template>
 	
 	<!-- ============================ -->
 	<!-- table's footnotes rendering -->
@@ -6025,7 +6029,7 @@
 		<fo:inline><xsl:value-of select="."/></fo:inline>
 	</xsl:template>
 	
-	<xsl:template match="*[local-name()='fn']/*[local-name()='p']">
+	<xsl:template match="*[local-name()='fn']//*[local-name()='p']">
 		<fo:inline>
 			<xsl:apply-templates />
 		</fo:inline>
@@ -11955,6 +11959,17 @@
 	</xsl:template>
 	
 	<xsl:template match="*[local-name() = 'bibitem']/*[local-name() = 'note']" priority="2">
+	
+		<!-- list of footnotes to calculate actual footnotes number -->
+		<xsl:variable name="p_fn_">
+			<xsl:call-template name="get_fn_list"/>
+		</xsl:variable>
+		<xsl:variable name="p_fn" select="xalan:nodeset($p_fn_)"/>
+		<xsl:variable name="gen_id" select="generate-id(.)"/>
+		<xsl:variable name="lang" select="ancestor::*[contains(local-name(), '-standard')]/*[local-name()='bibdata']//*[local-name()='language'][@current = 'true']"/>
+		
+		<xsl:variable name="current_fn_number" select="count($p_fn//fn[@gen_id = $gen_id]/preceding-sibling::fn) + 1"/>
+	
 		<fo:footnote>
 			<xsl:variable name="number">
 				<xsl:choose>
@@ -11964,30 +11979,34 @@
 								<xsl:number level="any" count="*[local-name() = 'references'][preceding-sibling::*[local-name() = 'references']]//*[local-name() = 'bibitem']/*[local-name() = 'note']"/>
 							</xsl:when>
 							<xsl:otherwise>
-								<xsl:number level="any" count="*[local-name() = 'bibitem']/*[local-name() = 'note']"/>
+								<!-- <xsl:number level="any" count="*[local-name() = 'bibitem']/*[local-name() = 'note']"/> -->
+								<xsl:value-of select="$current_fn_number"/>
 							</xsl:otherwise>
 						</xsl:choose>
 					</xsl:when>
 					<xsl:otherwise>
-						<xsl:number level="any" count="*[local-name() = 'bibitem']/*[local-name() = 'note']"/>
+						<!-- <xsl:number level="any" count="*[local-name() = 'bibitem']/*[local-name() = 'note']"/> -->
+						<xsl:value-of select="$current_fn_number"/>
 					</xsl:otherwise>
 				</xsl:choose>
 			</xsl:variable>
-			<fo:inline xsl:use-attribute-sets="bibitem-note-fn-style">
-				<fo:basic-link internal-destination="{generate-id()}" fox:alt-text="footnote {$number}">
-					<xsl:value-of select="$number"/>
-					<xsl:if test="$namespace = 'bsi' or $namespace = 'iho' or $namespace = 'iso' or $namespace = 'jcgm'">
+			
+			<xsl:variable name="current_fn_number_text">
+				<xsl:value-of select="$number"/>
+				<xsl:if test="$namespace = 'bsi' or $namespace = 'iho' or $namespace = 'iso' or $namespace = 'jcgm'">
 						<xsl:text>)</xsl:text>
 					</xsl:if>
+			</xsl:variable>
+			
+			<fo:inline xsl:use-attribute-sets="bibitem-note-fn-style">
+				<fo:basic-link internal-destination="{$gen_id}" fox:alt-text="footnote {$number}">
+					<xsl:value-of select="$current_fn_number_text"/>
 				</fo:basic-link>
 			</fo:inline>
 			<fo:footnote-body>
 				<fo:block xsl:use-attribute-sets="bibitem-note-fn-body-style">
-					<fo:inline id="{generate-id()}"  xsl:use-attribute-sets="bibitem-note-fn-number-style">
-						<xsl:value-of select="$number"/>
-						<xsl:if test="$namespace = 'bsi' or $namespace = 'iho' or $namespace = 'iso' or $namespace = 'jcgm'">
-							<xsl:text>)</xsl:text>
-						</xsl:if>
+					<fo:inline id="{$gen_id}"  xsl:use-attribute-sets="bibitem-note-fn-number-style">
+						<xsl:value-of select="$current_fn_number_text"/>
 					</fo:inline>
 					<xsl:apply-templates />
 				</fo:block>
