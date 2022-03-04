@@ -11958,6 +11958,7 @@
 		</fo:inline>
 	</xsl:template>
 	
+	<!-- bibitem/note renders as footnote -->
 	<xsl:template match="*[local-name() = 'bibitem']/*[local-name() = 'note']" priority="2">
 	
 		<!-- list of footnotes to calculate actual footnotes number -->
@@ -11967,9 +11968,16 @@
 		<xsl:variable name="p_fn" select="xalan:nodeset($p_fn_)"/>
 		<xsl:variable name="gen_id" select="generate-id(.)"/>
 		<xsl:variable name="lang" select="ancestor::*[contains(local-name(), '-standard')]/*[local-name()='bibdata']//*[local-name()='language'][@current = 'true']"/>
-		
-		<xsl:variable name="current_fn_number" select="count($p_fn//fn[@gen_id = $gen_id]/preceding-sibling::fn) + 1"/>
-	
+		<!-- fn sequence number in document -->
+		<xsl:variable name="current_fn_number">
+			<xsl:choose>
+				<xsl:when test="@current_fn_number"><xsl:value-of select="@current_fn_number"/></xsl:when> <!-- for BSI -->
+				<xsl:otherwise>
+					<!-- <xsl:value-of select="count($p_fn//fn[@reference = $reference]/preceding-sibling::fn) + 1" /> -->
+					<xsl:value-of select="count($p_fn//fn[@gen_id = $gen_id]/preceding-sibling::fn) + 1"/>
+				</xsl:otherwise>
+			</xsl:choose>
+		</xsl:variable>
 		<fo:footnote>
 			<xsl:variable name="number">
 				<xsl:choose>
@@ -11979,13 +11987,11 @@
 								<xsl:number level="any" count="*[local-name() = 'references'][preceding-sibling::*[local-name() = 'references']]//*[local-name() = 'bibitem']/*[local-name() = 'note']"/>
 							</xsl:when>
 							<xsl:otherwise>
-								<!-- <xsl:number level="any" count="*[local-name() = 'bibitem']/*[local-name() = 'note']"/> -->
 								<xsl:value-of select="$current_fn_number"/>
 							</xsl:otherwise>
 						</xsl:choose>
 					</xsl:when>
 					<xsl:otherwise>
-						<!-- <xsl:number level="any" count="*[local-name() = 'bibitem']/*[local-name() = 'note']"/> -->
 						<xsl:value-of select="$current_fn_number"/>
 					</xsl:otherwise>
 				</xsl:choose>
@@ -12465,6 +12471,162 @@
 	<!-- ================ -->
 	<!-- END Admonition -->
 	<!-- ================ -->
+
+	<!-- ===================================== -->
+	<!-- Update xml -->
+	<!-- ===================================== -->
+	<!-- STEP1: Re-order elements in 'preface', 'sections' based on @displayorder -->
+	<xsl:template match="@*|node()" mode="update_xml_step1">
+		<xsl:copy>
+			<xsl:apply-templates select="@*|node()" mode="update_xml_step1"/>
+		</xsl:copy>
+	</xsl:template>
+	
+	<!-- change section's order based on @displayorder value -->
+	<xsl:template match="*[local-name() = 'preface']" mode="update_xml_step1">
+		<xsl:copy>
+			<xsl:copy-of select="@*"/>
+			
+			<xsl:variable name="nodes_preface_">
+				<xsl:for-each select="*">
+					<node id="{@id}"/>
+				</xsl:for-each>
+			</xsl:variable>
+			<xsl:variable name="nodes_preface" select="xalan:nodeset($nodes_preface_)"/>
+			
+			<xsl:for-each select="*">
+				<xsl:sort select="@displayorder" data-type="number"/>
+				
+				<!-- process Section's title -->
+				<xsl:variable name="preceding-sibling_id" select="$nodes_preface/node[@id = current()/@id]/preceding-sibling::node[1]/@id"/>
+				<xsl:if test="$preceding-sibling_id != ''">
+					<xsl:apply-templates select="parent::*/*[@type = 'section-title' and @id = $preceding-sibling_id and not(@displayorder)]" mode="update_xml_step1"/>
+				</xsl:if>
+				
+				<xsl:choose>
+					<xsl:when test="@type = 'section-title' and not(@displayorder)"><!-- skip, don't copy, because copied in above 'apply-templates' --></xsl:when>
+					<xsl:otherwise>
+						<xsl:apply-templates select="." mode="update_xml_step1"/>
+					</xsl:otherwise>
+				</xsl:choose>
+				
+			</xsl:for-each>
+		</xsl:copy>
+	</xsl:template>
+	
+	<xsl:template match="*[local-name() = 'sections']" mode="update_xml_step1">
+		<xsl:copy>
+			<xsl:copy-of select="@*"/>
+			
+			<xsl:variable name="nodes_sections_">
+				<xsl:for-each select="*">
+					<node id="{@id}"/>
+				</xsl:for-each>
+			</xsl:variable>
+			<xsl:variable name="nodes_sections" select="xalan:nodeset($nodes_sections_)"/>
+			
+			<!-- move section 'Normative references' inside 'sections' -->
+			<xsl:for-each select="* | 
+				ancestor::*[contains(local-name(), '-standard')]/*[local-name()='bibliography']/*[local-name()='references'][@normative='true'] |
+				ancestor::*[contains(local-name(), '-standard')]/*[local-name()='bibliography']/*[local-name()='clause'][*[local-name()='references'][@normative='true']]">
+				<xsl:sort select="@displayorder" data-type="number"/>
+				
+				<!-- process Section's title -->
+				<xsl:variable name="preceding-sibling_id" select="$nodes_sections/node[@id = current()/@id]/preceding-sibling::node[1]/@id"/>
+				<xsl:if test="$preceding-sibling_id != ''">
+					<xsl:apply-templates select="parent::*/*[@type = 'section-title' and @id = $preceding-sibling_id and not(@displayorder)]" mode="update_xml_step1"/>
+				</xsl:if>
+				
+				<xsl:choose>
+					<xsl:when test="@type = 'section-title' and not(@displayorder)"><!-- skip, don't copy, because copied in above 'apply-templates' --></xsl:when>
+					<xsl:otherwise>
+						<xsl:apply-templates select="." mode="update_xml_step1"/>
+					</xsl:otherwise>
+				</xsl:choose>
+				
+			</xsl:for-each>
+		</xsl:copy>
+	</xsl:template>
+
+	<xsl:template match="*[local-name() = 'bibliography']" mode="update_xml_step1">
+		<xsl:copy>
+			<xsl:copy-of select="@*"/>
+			<!-- copy all elements from bibliography except 'Normative references' (moved to 'sections') -->
+			<xsl:for-each select="*[not(@normative='true') and not(*[*[@normative='true']])]">
+				<xsl:sort select="@displayorder" data-type="number"/>
+				<xsl:apply-templates select="." mode="update_xml_step1"/>
+			</xsl:for-each>
+		</xsl:copy>
+	</xsl:template>
+	<!-- END STEP1: Re-order elements in 'preface', 'sections' based on @displayorder -->
+	
+	<xsl:if test="$namespace = 'iso' or $namespace = 'bsi'">
+		<!-- STEP2: add 'fn' after 'eref' and 'origin', if referenced to bibitem with 'note' = Withdrawn.' or 'Cancelled and replaced...'  -->
+		<xsl:template match="@*|node()" mode="update_xml_step2">
+			<xsl:copy>
+				<xsl:apply-templates select="@*|node()" mode="update_xml_step2"/>
+			</xsl:copy>
+		</xsl:template>
+		
+		<xsl:variable name="localized_string_withdrawn">
+			<xsl:call-template name="getLocalizedString">
+				<xsl:with-param name="key">withdrawn</xsl:with-param>
+			</xsl:call-template>
+		</xsl:variable>
+		<xsl:variable name="localized_string_cancelled_and_replaced">
+			<xsl:variable name="str">
+				<xsl:call-template name="getLocalizedString">
+					<xsl:with-param name="key">cancelled_and_replaced</xsl:with-param>
+				</xsl:call-template>
+			</xsl:variable>
+			<xsl:choose>
+				<xsl:when test="contains($str, '%')"><xsl:value-of select="substring-before($str, '%')"/></xsl:when>
+				<xsl:otherwise><xsl:value-of select="$str"/></xsl:otherwise>
+			</xsl:choose>
+		</xsl:variable>
+		
+		<!-- add 'fn' after eref and origin, to reference bibitem with note = 'Withdrawn.' or 'Cancelled and replaced...' -->
+		<xsl:template match="*[local-name() = 'eref'] | *[local-name() = 'origin']" mode="update_xml_step2">
+			<xsl:copy-of select="."/>
+			
+			<xsl:variable name="bibitemid" select="@bibitemid"/>
+			<xsl:variable name="local_name" select="local-name()"/>
+			<xsl:variable name="position"><xsl:number count="*[local-name() = $local_name][@bibitemid = $bibitemid]" level="any"/></xsl:variable>
+			<xsl:if test="normalize-space($position) = '1'">
+				<xsl:variable name="fn_text">
+					<xsl:copy-of select="key('bibitems', $bibitemid)[1]/*[local-name() = 'note'][not(@type='Unpublished-Status')][normalize-space() = $localized_string_withdrawn or starts-with(normalize-space(), $localized_string_cancelled_and_replaced)]/node()" />
+				</xsl:variable>
+				<xsl:if test="normalize-space($fn_text) != ''">
+					<xsl:element name="fn" namespace="{$namespace_full}">
+						<xsl:attribute name="reference">bibitem_<xsl:value-of select="$bibitemid"/></xsl:attribute>
+						<xsl:element name="p" namespace="{$namespace_full}">
+							<xsl:copy-of select="$fn_text"/>
+						</xsl:element>
+					</xsl:element>
+				</xsl:if>
+			</xsl:if>
+		</xsl:template>
+		
+		<!-- add @reference for bibitem/note, similar to fn/reference -->
+		<xsl:template match="*[local-name() = 'bibitem']/*[local-name() = 'note']" mode="update_xml_step2">
+			<xsl:copy>
+				<xsl:apply-templates select="@*" mode="update_xml_step2"/>
+				
+				<xsl:attribute name="reference">
+					<xsl:value-of select="concat('bibitem_', ../@id, '_', count(preceding-sibling::*[local-name() = 'note']))"/>
+				</xsl:attribute>
+				
+				<xsl:apply-templates select="node()" mode="update_xml_step2"/>
+			</xsl:copy>
+		</xsl:template>
+		
+		<!-- END STEP2: add 'fn' after 'eref' and 'origin', if referenced to bibitem with 'note' = Withdrawn.' or 'Cancelled and replaced...'  -->
+	</xsl:if>
+	
+	<!-- ===================================== -->
+	<!-- End Update xml -->
+	<!-- ===================================== -->
+
 	
 	<!-- convert YYYY-MM-DD to 'Month YYYY' or 'Month DD, YYYY' or DD Month YYYY -->
 	<xsl:template name="convertDate">
