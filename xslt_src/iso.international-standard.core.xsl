@@ -17,8 +17,6 @@
 
 	<xsl:key name="kfn" match="*[local-name() = 'fn'][not(ancestor::*[(local-name() = 'table' or local-name() = 'figure') and not(ancestor::*[local-name() = 'name'])])]" use="@reference"/>
 	
-	<xsl:key name="bibitems" match="*[local-name() = 'bibitem']" use="@id"/> 
-	
 	<xsl:key name="attachments" match="iso:eref[contains(@bibitemid, '.exp')]" use="@bibitemid"/>
 	
 	<xsl:variable name="namespace">iso</xsl:variable>
