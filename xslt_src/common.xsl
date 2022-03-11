@@ -11304,8 +11304,8 @@
 					<xsl:choose>
 						<xsl:when test="$isStartsWithOpeningBracket = 'true' and $isEndsWithClosingBracket">
 							<xsl:choose>
-								<!-- [1] [2] ... -->
-								<xsl:when test="normalize-space(java:replaceAll(java:java.lang.String.new($docidentifier), '^\[[0-9]+\]$', '')) = ''">false</xsl:when>
+								<!-- [1] [2] ... or [N1] [N2] -->
+								<xsl:when test="normalize-space(java:replaceAll(java:java.lang.String.new($docidentifier), '^\[N?[0-9]+\]$', '')) = ''">false</xsl:when>
 								<xsl:otherwise>true</xsl:otherwise>
 							</xsl:choose>
 						</xsl:when>
@@ -12541,7 +12541,7 @@
 		<xsl:copy>
 			<xsl:copy-of select="@*"/>
 			<!-- copy all elements from bibliography except 'Normative references' (moved to 'sections') -->
-			<xsl:for-each select="*[not(@normative='true') and not(*[*[@normative='true']])]">
+			<xsl:for-each select="*[not(@normative='true') and not(*[@normative='true'])]">
 				<xsl:sort select="@displayorder" data-type="number"/>
 				<xsl:apply-templates select="." mode="update_xml_step1"/>
 			</xsl:for-each>
