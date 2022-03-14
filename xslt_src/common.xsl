@@ -5478,10 +5478,6 @@
 					<xsl:attribute name="padding-bottom">4mm</xsl:attribute>
 				</xsl:if>
 				
-				<xsl:if test="ancestor::*[local-name()='preface'] and ancestor::*[local-name()='clause'][@type = 'logos']">
-					<xsl:attribute name="border">none</xsl:attribute>
-				</xsl:if>
-				
 				<xsl:if test="ancestor::*[local-name() = 'tfoot']">
 					<xsl:attribute name="border">solid black 0</xsl:attribute>
 				</xsl:if>
@@ -5489,6 +5485,11 @@
 				<xsl:if test="$document_type = 'PAS'">
 					<xsl:attribute name="border">1pt solid <xsl:value-of select="$color_PAS"/></xsl:attribute>
 				</xsl:if>
+				
+				<xsl:if test="ancestor::*[local-name()='preface'] and ancestor::*[local-name()='clause'][@type = 'logos']">
+					<xsl:attribute name="border">none</xsl:attribute>
+				</xsl:if>
+				
 			</xsl:if> <!-- bsi -->
 			
 			<xsl:if test="$namespace = 'gb'">
