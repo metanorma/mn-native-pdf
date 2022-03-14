@@ -16,11 +16,6 @@
 	<xsl:param name="external_index" /><!-- path to index xml, generated on 1st pass, based on FOP Intermediate Format -->
 	<xsl:param name="syntax-highlight">false</xsl:param> <!-- syntax highlighting feature, default - off -->
 
-	<xsl:key name="bibitems" match="*[local-name() = 'bibitem']" use="@id"/> 
-
-	<!-- get all hidden bibitems to exclude them from eref/origin processing -->
-	<xsl:key name="bibitems_hidden" match="*[local-name() = 'bibitem'][@hidden='true'] | *[local-name() = 'references'][@hidden='true']//*[local-name() = 'bibitem']" use="@id"/> 
-
 	<xsl:variable name="lang">
 		<xsl:call-template name="getLang"/>
 	</xsl:variable>
@@ -9843,15 +9838,33 @@
 	<!-- ====== -->
 	<!-- ====== -->
 
-
+	<xsl:variable name="bibitems_">
+		<xsl:for-each select="//*[local-name() = 'bibitem']">
+			<xsl:copy-of select="."/>
+		</xsl:for-each>
+	</xsl:variable>
+	<xsl:variable name="bibitems" select="xalan:nodeset($bibitems_)"/>
+	
+	<!-- get all hidden bibitems to exclude them from eref/origin processing -->
+	<xsl:variable name="bibitems_hidden_">
+		<xsl:for-each select="//*[local-name() = 'bibitem'][@hidden='true']">
+			<xsl:copy-of select="."/>
+		</xsl:for-each>
+		<xsl:for-each select="//*[local-name() = 'references'][@hidden='true']//*[local-name() = 'bibitem']">
+			<xsl:copy-of select="."/>
+		</xsl:for-each>
+	</xsl:variable>
+	<xsl:variable name="bibitems_hidden" select="xalan:nodeset($bibitems_hidden_)"/>
 	<!-- ====== -->
 	<!-- eref -->	
 	<!-- ====== -->
 	<xsl:template match="*[local-name() = 'eref']">
 		<xsl:variable name="current_bibitemid" select="@bibitemid"/>
-		<xsl:variable name="external-destination" select="normalize-space(key('bibitems', $current_bibitemid)/*[local-name() = 'uri'][@type = 'citation'])"/>
+		<!-- <xsl:variable name="external-destination" select="normalize-space(key('bibitems', $current_bibitemid)/*[local-name() = 'uri'][@type = 'citation'])"/> -->
+		<xsl:variable name="external-destination" select="normalize-space($bibitems/*[local-name() ='bibitem'][@id = $current_bibitemid]/*[local-name() = 'uri'][@type = 'citation'])"/>
 		<xsl:choose>
-			<xsl:when test="$external-destination != '' or not(key('bibitems_hidden', $current_bibitemid))"> <!-- if in the bibliography there is the item with @bibitemid (and not hidden), then create link (internal to the bibitem or external) -->
+			<!-- <xsl:when test="$external-destination != '' or not(key('bibitems_hidden', $current_bibitemid))"> --> <!-- if in the bibliography there is the item with @bibitemid (and not hidden), then create link (internal to the bibitem or external) -->
+			<xsl:when test="$external-destination != '' or not($bibitems_hidden/*[local-name() ='bibitem'][@id = $current_bibitemid])"> <!-- if in the bibliography there is the item with @bibitemid (and not hidden), then create link (internal to the bibitem or external) -->
 				<fo:inline xsl:use-attribute-sets="eref-style">
 					<xsl:if test="@type = 'footnote'">
 						<xsl:attribute name="keep-together.within-line">always</xsl:attribute>
@@ -12583,7 +12596,8 @@
 			<xsl:variable name="position"><xsl:number count="*[local-name() = $local_name][@bibitemid = $bibitemid]" level="any"/></xsl:variable>
 			<xsl:if test="normalize-space($position) = '1'">
 				<xsl:variable name="fn_text">
-					<xsl:copy-of select="key('bibitems', $bibitemid)[1]/*[local-name() = 'note'][not(@type='Unpublished-Status')][normalize-space() = $localized_string_withdrawn or starts-with(normalize-space(), $localized_string_cancelled_and_replaced)]/node()" />
+					<!-- <xsl:copy-of select="key('bibitems', $bibitemid)[1]/*[local-name() = 'note'][not(@type='Unpublished-Status')][normalize-space() = $localized_string_withdrawn or starts-with(normalize-space(), $localized_string_cancelled_and_replaced)]/node()" /> -->
+					<xsl:copy-of select="$bibitems/*[local-name() ='bibitem'][@id = $bibitemid][1]/*[local-name() = 'note'][not(@type='Unpublished-Status')][normalize-space() = $localized_string_withdrawn or starts-with(normalize-space(), $localized_string_cancelled_and_replaced)]/node()" />
 				</xsl:variable>
 				<xsl:if test="normalize-space($fn_text) != ''">
 					<xsl:element name="fn" namespace="{$namespace_full}">
