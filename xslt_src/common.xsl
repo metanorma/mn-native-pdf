@@ -7680,9 +7680,17 @@
 			<xsl:if test="$namespace = 'bsi'">
 				<xsl:if test="$document_type = 'PAS'">
 					<xsl:attribute name="space-before">0pt</xsl:attribute>
-						<xsl:if test="not(following-sibling::*)">
-							<xsl:attribute name="space-after">24pt</xsl:attribute>
+					<xsl:if test="not(following-sibling::*)">
+						<xsl:attribute name="space-after">24pt</xsl:attribute>
+						<xsl:variable name="level">
+							<xsl:for-each select="ancestor::*[local-name() = 'term']/*[local-name() = 'name']">
+								<xsl:call-template name="getLevelTermName"/>
+							</xsl:for-each>
+						</xsl:variable>
+						<xsl:if test="$level &gt; 2">
+							<xsl:attribute name="space-after">16pt</xsl:attribute>
 						</xsl:if>
+					</xsl:if>
 					<xsl:attribute name="color"><xsl:value-of select="$color_PAS"/></xsl:attribute>
 				</xsl:if>
 			</xsl:if>
@@ -9726,6 +9734,8 @@
 			<xsl:if test="$namespace = 'bsi'">
 				<xsl:if test="$document_type = 'PAS'">
 					<xsl:attribute name="text-align">left</xsl:attribute>
+					<xsl:attribute name="space-before">12pt</xsl:attribute>
+					<xsl:attribute name="margin-bottom">12pt</xsl:attribute>
 				</xsl:if>
 			</xsl:if>
 			
@@ -10703,7 +10713,7 @@
 				<fo:block xsl:use-attribute-sets="list-item-label-style">
 				
 					<xsl:if test="$namespace = 'bsi'">
-						<xsl:if test="$document_type = 'PAS'">
+						<xsl:if test="$document_type = 'PAS' and not(ancestor::*[local-name() = 'note' or local-name() = 'termnote'])">
 							<xsl:attribute name="color"><xsl:value-of select="$color_list_label_PAS"/></xsl:attribute>
 						</xsl:if>
 					</xsl:if>
