@@ -4393,6 +4393,9 @@
 					<xsl:if test="$document_type = 'PAS'">
 						<xsl:attribute name="span">all</xsl:attribute>
 						<xsl:attribute name="font-size">8pt</xsl:attribute>
+						<xsl:attribute name="margin-top">12pt</xsl:attribute>
+						<xsl:attribute name="space-before">12pt</xsl:attribute>
+						<xsl:attribute name="space-after">12pt</xsl:attribute>
 					</xsl:if>
 				</xsl:if>
 			
@@ -7523,7 +7526,7 @@
 					<xsl:attribute name="font-size">inherit</xsl:attribute>
 					<xsl:attribute name="color"><xsl:value-of select="$color_PAS"/></xsl:attribute>
 					<xsl:attribute name="line-height">1.3</xsl:attribute>
-					<xsl:if test="following-sibling::*[1][local-name() = 'clause']">
+					<xsl:if test="following-sibling::*[1][local-name() = 'clause' or local-name() = 'term']">
 						<xsl:attribute name="space-after">12pt</xsl:attribute>
 						<xsl:if test="following-sibling::*[2][local-name() = 'title']/@depth = 2">
 							<xsl:attribute name="space-after">24pt</xsl:attribute>
