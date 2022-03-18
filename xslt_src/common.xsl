@@ -4391,8 +4391,16 @@
 						<xsl:attribute name="margin-bottom">0pt</xsl:attribute>
 					</xsl:if>
 					<xsl:if test="$document_type = 'PAS'">
-						<xsl:attribute name="span">all</xsl:attribute>
 						<xsl:attribute name="font-size">8pt</xsl:attribute>
+						<!-- two-columns table without name renders in column (not spanned) -->
+						<xsl:choose>
+							<xsl:when test="count(*[local-name()='colgroup']/*[local-name()='col']) = 2 and not(*[local-name() = 'name']) and not(*[local-name() = 'thead'])">
+								<xsl:attribute name="font-size">inherit</xsl:attribute>
+							</xsl:when>
+							<xsl:otherwise>
+								<xsl:attribute name="span">all</xsl:attribute>
+							</xsl:otherwise>
+						</xsl:choose>
 						<xsl:attribute name="margin-top">12pt</xsl:attribute>
 						<xsl:attribute name="space-before">12pt</xsl:attribute>
 						<xsl:attribute name="space-after">12pt</xsl:attribute>
@@ -4482,6 +4490,10 @@
 							</xsl:if>
 							<xsl:if test="$document_type = 'PAS'">
 								<xsl:if test="ancestor::*[local-name()='preface'] and ancestor::*[local-name()='clause'][@type = 'logos']">
+									<xsl:attribute name="border-bottom">none</xsl:attribute>
+								</xsl:if>
+								<!-- two-columns table without name renders without borders -->
+								<xsl:if test="count(*[local-name()='colgroup']/*[local-name()='col']) = 2 and not(*[local-name() = 'name']) and not(*[local-name() = 'thead'])">
 									<xsl:attribute name="border-bottom">none</xsl:attribute>
 								</xsl:if>
 							</xsl:if>
@@ -5487,6 +5499,10 @@
 				
 				<xsl:if test="$document_type = 'PAS'">
 					<xsl:attribute name="border">1pt solid <xsl:value-of select="$color_PAS"/></xsl:attribute>
+					<!-- two-columns table without name renders without borders -->
+					<xsl:if test="ancestor::*[local-name() = 'table'][count(*[local-name()='colgroup']/*[local-name()='col']) = 2 and not(*[local-name() = 'name']) and not(*[local-name() = 'thead'])]">
+						<xsl:attribute name="border">none</xsl:attribute>
+					</xsl:if>
 				</xsl:if>
 				
 				<xsl:if test="ancestor::*[local-name()='preface'] and ancestor::*[local-name()='clause'][@type = 'logos']">
