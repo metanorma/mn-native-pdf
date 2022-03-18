@@ -11399,7 +11399,12 @@
 				</xsl:variable>
 				
 				<xsl:if test="count(*[local-name() = 'docidentifier']) &gt; 1 and *[local-name() = 'docidentifier'][@type = 'metanorma']">
-					<xsl:value-of select="*[local-name() = 'docidentifier'][@type = 'metanorma']"/><xsl:text> </xsl:text>
+					<xsl:choose>
+						<xsl:when test="starts-with(preceding-sibling::*[local-name() = 'title'][1], 'Further reading')"><!-- skip displaying [XX] --></xsl:when>
+						<xsl:otherwise>
+							<xsl:value-of select="*[local-name() = 'docidentifier'][@type = 'metanorma']"/><xsl:text> </xsl:text>
+						</xsl:otherwise>
+					</xsl:choose>
 				</xsl:if>
 				
 				<xsl:value-of select="$docidentifier_"/>
