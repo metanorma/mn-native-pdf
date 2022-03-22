@@ -9714,7 +9714,7 @@
 		<xsl:variable name="element">
 			<xsl:if test="$namespace = 'iso' or $namespace = 'jcgm' or $namespace = 'rsd'">
 				<xsl:choose>
-					<xsl:when test="$num = 1">inline</xsl:when>
+					<xsl:when test="$num = 1 and not(contains($fo_element, 'block'))">inline</xsl:when>
 					<xsl:otherwise>block</xsl:otherwise>
 				</xsl:choose>
 			</xsl:if>
