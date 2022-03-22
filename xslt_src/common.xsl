@@ -4478,7 +4478,10 @@
 						</xsl:if>
 						
 						<xsl:if test="$namespace = 'bsi'">
-							<xsl:if test=".//*[local-name() = 'tr'][1]/*[local-name() = 'td'][normalize-space() = 'Key']">
+							<xsl:if test=".//*[local-name() = 'tr'][1]/*[local-name() = 'td'][normalize-space() = 'Key'] or
+							normalize-space(substring-after(*[local-name() = 'name'], '—')) = 'Key' or 
+							normalize-space(*[local-name() = 'name']) = 'Key'
+							">
 								<xsl:attribute name="border-bottom">none</xsl:attribute>
 							</xsl:if>
 							<xsl:if test="ancestor::*[local-name()='preface'] and ancestor::*[local-name()='clause'][@type = 'corrigenda'] and normalize-space(*[local-name() = 'tbody']) = ''">
@@ -5471,7 +5474,9 @@
 				
 				<!-- Key table for figure -->
 				<xsl:if test="ancestor::*[local-name() = 'table'][1]/preceding-sibling::*[1][local-name() = 'figure'] and 
-				ancestor::*[local-name() = 'table'][1]//*[local-name() = 'tr'][1]/*[local-name() = 'td'][normalize-space() = 'Key']">
+				(ancestor::*[local-name() = 'table'][1]//*[local-name() = 'tr'][1]/*[local-name() = 'td'][normalize-space() = 'Key'] or
+				normalize-space(substring-after(ancestor::*[local-name() = 'table'][1]/*[local-name() = 'name'], '—')) = 'Key' or 
+				normalize-space(ancestor::*[local-name() = 'table'][1]/*[local-name() = 'name']) = 'Key')">
 					<xsl:attribute name="border">none</xsl:attribute>
 					
 					<xsl:if test="count(*) = 1 and local-name(*[1]) = 'figure'">
