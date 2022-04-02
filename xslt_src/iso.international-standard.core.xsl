@@ -1766,7 +1766,8 @@
 			</xsl:when>
 			<xsl:otherwise>
 				<!-- <xsl:value-of select="translate(., $thin_space, ' ')"/> -->
-				<xsl:value-of select="."/>
+				<!-- <xsl:value-of select="."/> -->
+				<xsl:call-template name="text"/>
 			</xsl:otherwise>
 		</xsl:choose>
 		
