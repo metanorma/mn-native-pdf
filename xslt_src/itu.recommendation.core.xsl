@@ -123,21 +123,29 @@
 	
 	<xsl:template match="/">
 		<xsl:call-template name="namespaceCheck"/>
-		<fo:root xmlns:fo="http://www.w3.org/1999/XSL/Format" xsl:use-attribute-sets="root-style" xml:lang="{$lang}">
-			<!-- <xsl:if test="$lang != 'ar'">
-				<xsl:attribute name="xml:lang"><xsl:value-of select="$lang"/></xsl:attribute>
-			</xsl:if> -->
-			<xsl:if test="$doctype = 'resolution'">
-				<xsl:attribute name="font-size">11pt</xsl:attribute>
-			</xsl:if>
-			<xsl:if test="$doctype = 'service-publication'">
-				<xsl:attribute name="font-size">11pt</xsl:attribute>
-				<xsl:attribute name="font-family">Arial, STIX Two Math</xsl:attribute>
-			</xsl:if>
-			<xsl:call-template name="setWritingMode"/>
-			<xsl:if test="$lang = 'ar'">
-				<xsl:attribute name="font-family">Traditional Arabic, Times New Roman, STIX Two Math</xsl:attribute>
-			</xsl:if>
+		<fo:root xmlns:fo="http://www.w3.org/1999/XSL/Format" xml:lang="{$lang}">
+			<xsl:variable name="root-style">
+				<root-style xsl:use-attribute-sets="root-style">
+					<!-- <xsl:if test="$lang != 'ar'">
+						<xsl:attribute name="xml:lang"><xsl:value-of select="$lang"/></xsl:attribute>
+					</xsl:if> -->
+					<xsl:if test="$doctype = 'resolution'">
+						<xsl:attribute name="font-size">11pt</xsl:attribute>
+					</xsl:if>
+					<xsl:if test="$doctype = 'service-publication'">
+						<xsl:attribute name="font-size">11pt</xsl:attribute>
+						<xsl:attribute name="font-family">Arial, STIX Two Math</xsl:attribute>
+					</xsl:if>
+					<xsl:call-template name="setWritingMode"/>
+					<xsl:if test="$lang = 'ar'">
+						<xsl:attribute name="font-family">Traditional Arabic, Times New Roman, STIX Two Math</xsl:attribute>
+					</xsl:if>
+				</root-style>
+			</xsl:variable>
+			<xsl:call-template name="insertRootStyle">
+				<xsl:with-param name="root-style" select="$root-style"/>
+			</xsl:call-template>
+			
 			<fo:layout-master-set>
 			
 				<!-- Technical Report first page -->

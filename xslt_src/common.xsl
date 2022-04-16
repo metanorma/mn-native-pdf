@@ -7773,7 +7773,12 @@
 			</xsl:if>
 			<fo:inline xsl:use-attribute-sets="termnote-name-style">
 			
+				<xsl:if test="not(*[local-name() = 'name']/following-sibling::node()[1][self::text()][normalize-space()=''])">
+					<xsl:attribute name="padding-right">1mm</xsl:attribute>
+				</xsl:if>
+			
 				<xsl:if test="$namespace = 'bsi'">
+					<xsl:attribute name="padding-right">1.5mm</xsl:attribute>
 					<xsl:variable name="name" select="normalize-space(*[local-name() = 'name'])" />
 					<!-- if NOTE without number -->
 					<xsl:if test="translate(substring($name, string-length($name)), '0123456789', '') != ''">
@@ -7784,10 +7789,7 @@
 						<xsl:attribute name="font-weight">bold</xsl:attribute>
 					</xsl:if>
 				</xsl:if>
-				
-				<xsl:if test="not(*[local-name() = 'name']/following-sibling::node()[1][self::text()][normalize-space()=''])">
-					<xsl:attribute name="padding-right">1mm</xsl:attribute>
-				</xsl:if>
+
 				
 				<!-- if 'p' contains all text in 'add' first and last elements in first p are 'add' -->
 				<!-- <xsl:if test="*[not(local-name()='name')][1][node()[normalize-space() != ''][1][local-name() = 'add'] and node()[normalize-space() != ''][last()][local-name() = 'add']]"> -->
