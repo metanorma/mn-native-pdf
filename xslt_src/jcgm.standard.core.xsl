@@ -805,24 +805,6 @@
 	</xsl:template>
 
 	
-	<xsl:template match="mathml:math" priority="2">
-		<fo:inline font-family="Cambria Math">
-			<xsl:variable name="mathml">
-				<xsl:apply-templates select="." mode="mathml"/>
-			</xsl:variable>
-			<fo:instream-foreign-object fox:alt-text="Math">
-				<xsl:if test="local-name(../..) = 'formula' or (local-name(../..) = 'td' and count(../../*) = 1)">
-					<xsl:attribute name="width">95%</xsl:attribute>
-					<xsl:attribute name="content-height">100%</xsl:attribute>
-					<xsl:attribute name="content-width">scale-down-to-fit</xsl:attribute>
-					<xsl:attribute name="scaling">uniform</xsl:attribute>
-				</xsl:if>
-				<!-- <xsl:copy-of select="."/> -->
-				<xsl:copy-of select="xalan:nodeset($mathml)"/>
-			</fo:instream-foreign-object>
-		</fo:inline>
-	</xsl:template>
-	
 	<!-- for chemical expressions, when prefix superscripted -->
 	<xsl:template match="mathml:msup[count(*) = 2 and count(mathml:mrow) = 2]/mathml:mrow[1][count(*) = 1 and mathml:mtext and (mathml:mtext/text() = '' or not(mathml:mtext/text()))]/mathml:mtext" mode="mathml" priority="2">
 		<mathml:mspace height="1ex"/>
