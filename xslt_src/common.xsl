@@ -4343,9 +4343,29 @@
 	<!-- END Preface boilerplate sections processing -->
 	<!-- ================================= -->
 	
+	<xsl:variable name="express_reference_separators">_.\</xsl:variable>
+	<xsl:variable name="express_reference_characters" select="concat($upper,$lower,'1234567890',$express_reference_separators)"/>
+	
+	<!-- add zero spaces into table cells text -->
 	<xsl:template match="*[local-name()='td']//text() | *[local-name()='th']//text() | *[local-name()='dt']//text() | *[local-name()='dd']//text()" priority="1">
-		<!-- <xsl:call-template name="add-zero-spaces"/> -->
-		<xsl:call-template name="add-zero-spaces-java"/>
+		<xsl:choose>
+			<xsl:when test="$namespace = 'iso'">
+				<xsl:choose>
+					<!-- if EXPRESS reference -->
+					<xsl:when test="parent::*[local-name()='strong'] and translate(., $express_reference_characters, '') = ''">
+						<xsl:value-of select="."/>
+					</xsl:when>
+					<xsl:otherwise>
+						<!-- <xsl:call-template name="add-zero-spaces"/> -->
+						<xsl:call-template name="add-zero-spaces-java"/>
+					</xsl:otherwise>
+				</xsl:choose>
+			</xsl:when>
+			<xsl:otherwise>
+				<!-- <xsl:call-template name="add-zero-spaces"/> -->
+				<xsl:call-template name="add-zero-spaces-java"/>
+			</xsl:otherwise>
+		</xsl:choose>
 	</xsl:template>
 	
 
@@ -4609,16 +4629,9 @@
 							</xsl:for-each>
 						</xsl:when>
 						<xsl:otherwise>
-							<xsl:for-each select="xalan:nodeset($colwidths)//column">
-								<xsl:choose>
-									<xsl:when test=". = 1 or . = 0">
-										<fo:table-column column-width="proportional-column-width(2)"/>
-									</xsl:when>
-									<xsl:otherwise>
-										<fo:table-column column-width="proportional-column-width({.})"/>
-									</xsl:otherwise>
-								</xsl:choose>
-							</xsl:for-each>
+							<xsl:call-template name="insertTableColumnWidth">
+								<xsl:with-param name="colwidths" select="$colwidths"/>
+							</xsl:call-template>
 						</xsl:otherwise>
 					</xsl:choose>
 					
@@ -4906,6 +4919,23 @@
 		</xsl:if>
 	</xsl:template>
 	
+	
+	<xsl:template match="*[(local-name()='strong' or (local-name()='inline' and @font-weight = 'bold'))]" mode="td_text">
+		<xsl:apply-templates mode="td_text"/>
+	</xsl:template>
+	<!-- Assume that EXPRESS reference is 'sequence of latin small letters, digis and underscore' in bold. -->
+	<xsl:template match="*[(local-name()='strong' or (local-name()='inline' and @font-weight = 'bold'))]/text()[translate(., $express_reference_characters, '') = '']" mode="td_text">
+		<xsl:choose>
+			<xsl:when test="$namespace = 'iso'">
+				<!-- replace underscore, back slash, dot to 'x', just to skip further tokenization -->
+				<xsl:value-of select="translate(., $express_reference_separators, 'xxx')"/><xsl:text>here</xsl:text>
+			</xsl:when>
+			<xsl:otherwise>
+				<xsl:value-of select="."/>
+			</xsl:otherwise>
+		</xsl:choose>
+	</xsl:template>
+	
 	<xsl:template match="text()" mode="td_text">
 		<xsl:value-of select="translate(., $zero_width_space, ' ')"/><xsl:text> </xsl:text>
 	</xsl:template>
@@ -5065,16 +5095,9 @@
 						</xsl:for-each>
 					</xsl:when>
 					<xsl:otherwise>
-						<xsl:for-each select="xalan:nodeset($colwidths)//column">
-							<xsl:choose>
-								<xsl:when test=". = 1 or . = 0">
-									<fo:table-column column-width="proportional-column-width(2)"/>
-								</xsl:when>
-								<xsl:otherwise>
-									<fo:table-column column-width="proportional-column-width({.})"/>
-								</xsl:otherwise>
-							</xsl:choose>
-						</xsl:for-each>
+						<xsl:call-template name="insertTableColumnWidth">
+							<xsl:with-param name="colwidths" select="$colwidths"/>
+						</xsl:call-template>
 					</xsl:otherwise>
 				</xsl:choose>
 				
@@ -6348,9 +6371,20 @@
 								<xsl:variable name="maxlength_dt">							
 									<xsl:call-template name="getMaxLength_dt"/>							
 								</xsl:variable>
+								<xsl:variable name="isContainsExpressReference_">
+									<xsl:choose>
+										<xsl:when test="$namespace = 'iso'">
+										 <xsl:value-of select="count(.//*[local-name() = 'strong'][translate(., $express_reference_characters, '') = '']) &gt; 0"/>
+										</xsl:when>
+										<xsl:otherwise>false</xsl:otherwise>
+									</xsl:choose>
+								</xsl:variable>
+								<xsl:variable name="isContainsExpressReference" select="normalize-space($isContainsExpressReference_)"/>
+								<!-- isContainsExpressReference=<xsl:value-of select="$isContainsExpressReference"/> -->
 								<xsl:call-template name="setColumnWidth_dl">
 									<xsl:with-param name="colwidths" select="$colwidths"/>							
 									<xsl:with-param name="maxlength_dt" select="$maxlength_dt"/>
+									<xsl:with-param name="isContainsExpressReference" select="$isContainsExpressReference"/>
 								</xsl:call-template>
 								<fo:table-body>
 									<xsl:apply-templates>
@@ -6369,6 +6403,7 @@
 	<xsl:template name="setColumnWidth_dl">
 		<xsl:param name="colwidths"/>		
 		<xsl:param name="maxlength_dt"/>
+		<xsl:param name="isContainsExpressReference"/>
 		<xsl:choose>
 			<xsl:when test="ancestor::*[local-name()='dl']"><!-- second level, i.e. inlined table -->
 				<fo:table-column column-width="50%"/>
@@ -6376,6 +6411,11 @@
 			</xsl:when>
 			<xsl:otherwise>
 				<xsl:choose>
+					<xsl:when test="$isContainsExpressReference">
+						<xsl:call-template name="insertTableColumnWidth">
+							<xsl:with-param name="colwidths" select="$colwidths"/>
+						</xsl:call-template>
+					</xsl:when>
 					<!-- to set width check most wide chars like `W` -->
 					<xsl:when test="normalize-space($maxlength_dt) != '' and number($maxlength_dt) &lt;= 2"> <!-- if dt contains short text like t90, a, etc -->
 						<fo:table-column column-width="7%"/>
@@ -6406,20 +6446,27 @@
 						<fo:table-column column-width="60%"/>
 					</xsl:when>
 					<xsl:otherwise>
-						<xsl:for-each select="xalan:nodeset($colwidths)//column">
-							<xsl:choose>
-								<xsl:when test=". = 1 or . = 0">
-									<fo:table-column column-width="proportional-column-width(2)"/>
-								</xsl:when>
-								<xsl:otherwise>
-									<fo:table-column column-width="proportional-column-width({.})"/>
-								</xsl:otherwise>
-							</xsl:choose>
-						</xsl:for-each>
+						<xsl:call-template name="insertTableColumnWidth">
+							<xsl:with-param name="colwidths" select="$colwidths"/>
+						</xsl:call-template>
 					</xsl:otherwise>
 				</xsl:choose>
 			</xsl:otherwise>
 		</xsl:choose>
+	</xsl:template>
+	
+	<xsl:template name="insertTableColumnWidth">
+		<xsl:param name="colwidths"/>
+		<xsl:for-each select="xalan:nodeset($colwidths)//column">
+			<xsl:choose>
+				<xsl:when test=". = 1 or . = 0">
+					<fo:table-column column-width="proportional-column-width(2)"/>
+				</xsl:when>
+				<xsl:otherwise>
+					<fo:table-column column-width="proportional-column-width({.})"/>
+				</xsl:otherwise>
+			</xsl:choose>
+		</xsl:for-each>
 	</xsl:template>
 	
 	<xsl:template name="getMaxLength_dt">
