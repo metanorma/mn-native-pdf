@@ -4928,7 +4928,7 @@
 		<xsl:choose>
 			<xsl:when test="$namespace = 'iso'">
 				<!-- replace underscore, back slash, dot to 'x', just to skip further tokenization -->
-				<xsl:value-of select="translate(., $express_reference_separators, 'xxx')"/><xsl:text>here</xsl:text>
+				<xsl:value-of select="translate(., $express_reference_separators, 'xxx')"/>
 			</xsl:when>
 			<xsl:otherwise>
 				<xsl:value-of select="."/>
