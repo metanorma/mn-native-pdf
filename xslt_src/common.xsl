@@ -7467,6 +7467,11 @@
 	<xsl:template match="mathml:math/*[local-name()='dimension']" mode="mathml"/>
 	<xsl:template match="mathml:math/*[local-name()='quantity']" mode="mathml"/>
 
+	<!-- patch: slash in the mtd wrong rendering -->
+	<xsl:template match="mathml:mtd/mathml:mo/text()[. = '/']" mode="mathml">
+		<xsl:value-of select="."/><xsl:value-of select="$zero_width_space"/>
+	</xsl:template>
+
 	<xsl:template match="*[local-name()='localityStack']"/>
 
 	<xsl:template match="*[local-name()='link']" name="link">
