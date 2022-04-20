@@ -8349,6 +8349,9 @@
 		</xsl:choose>
 	</xsl:template>
 	
+	<!-- ============== -->
+	<!-- svg_update     -->
+	<!-- ============== -->
 	<xsl:template match="@*|node()" mode="svg_update">
 		<xsl:copy>
 				<xsl:apply-templates select="@*|node()" mode="svg_update"/>
@@ -8364,21 +8367,39 @@
 	<xsl:template match="*[local-name() = 'svg'][not(@width and @height)]" mode="svg_update">
 		<xsl:copy>
 			<xsl:apply-templates select="@*" mode="svg_update"/>
-			<xsl:variable name="viewbox">
+			<xsl:variable name="viewbox_">
 				<xsl:call-template name="split">
 					<xsl:with-param name="pText" select="@viewBox"/>
 					<xsl:with-param name="sep" select="' '"/>
 				</xsl:call-template>
 			</xsl:variable>
+			<xsl:variable name="viewbox" select="xalan:nodeset($viewbox_)"/>
+			<xsl:variable name="width" select="normalize-space($viewbox//item[3])"/>
+			<xsl:variable name="height" select="normalize-space($viewbox//item[4])"/>
+			
 			<xsl:attribute name="width">
-				<xsl:value-of select="round(xalan:nodeset($viewbox)//item[3])"/>
+				<xsl:choose>
+					<xsl:when test="$width != ''">
+						<xsl:value-of select="round($width)"/>
+					</xsl:when>
+					<xsl:otherwise>400</xsl:otherwise> <!-- default width -->
+				</xsl:choose>
 			</xsl:attribute>
 			<xsl:attribute name="height">
-				<xsl:value-of select="round(xalan:nodeset($viewbox)//item[4])"/>
+				<xsl:choose>
+					<xsl:when test="$height != ''">
+						<xsl:value-of select="round($height)"/>
+					</xsl:when>
+					<xsl:otherwise>400</xsl:otherwise> <!-- default height -->
+				</xsl:choose>
 			</xsl:attribute>
+			
 			<xsl:apply-templates  mode="svg_update"/>
 		</xsl:copy>
 	</xsl:template>
+	<!-- ============== -->
+	<!-- END: svg_update -->
+	<!-- ============== -->
 	
 	<!-- image with svg and emf -->
 	<xsl:template match="*[local-name() = 'figure']/*[local-name() = 'image'][*[local-name() = 'svg']]" priority="3">
