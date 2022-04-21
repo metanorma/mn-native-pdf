@@ -1101,7 +1101,12 @@
 			</xsl:variable>
 			<!-- DEBUG: updated_xml_step2=<xsl:copy-of select="$updated_xml_step2"/> -->
 			
-			<xsl:for-each select="xalan:nodeset($updated_xml_step2)">
+			<xsl:variable name="updated_xml_step3">
+				<xsl:apply-templates select="xalan:nodeset($updated_xml_step2)" mode="update_xml_enclose_keep-together_within-line"/>
+			</xsl:variable>
+			<!-- DEBUG: updated_xml_step3=<xsl:copy-of select="$updated_xml_step3"/> -->
+			
+			<xsl:for-each select="xalan:nodeset($updated_xml_step3)">
 			
 				<fo:page-sequence master-reference="preface{$document-master-reference}" format="i" force-page-count="{$force-page-count-preface}">
 					<xsl:call-template name="insertHeaderFooter">
