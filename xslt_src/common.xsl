@@ -297,6 +297,7 @@
 	<xsl:variable name="non_breaking_hyphen">&#x2011;</xsl:variable>
 	<xsl:variable name="thin_space">&#x2009;</xsl:variable>	
 	<xsl:variable name="zero_width_space">&#x200B;</xsl:variable>
+	<xsl:variable name="hair_space">&#x200A;</xsl:variable>
 	<xsl:variable name="en_dash">&#x2013;</xsl:variable>
 	
 	<xsl:template name="getTitle">
@@ -10694,10 +10695,24 @@
 	</xsl:template>
 	
 	
-	<xsl:template match="*[local-name() = 'review']">
+	<xsl:template match="*[local-name() = 'review']"> <!-- 'review' will be processed in mn2pdf/review.xsl -->
 		<!-- comment 2019-11-29 -->
 		<!-- <fo:block font-weight="bold">Review:</fo:block>
 		<xsl:apply-templates /> -->
+		
+		<xsl:variable name="id_from" select="normalize-space(current()/@from)"/>
+
+		<xsl:choose>
+			<!-- if there isn't the attribute '@from', then -->
+			<xsl:when test="$id_from = ''">
+				<fo:block id="{@id}" font-size="1pt"><xsl:value-of select="$hair_space"/></fo:block>
+			</xsl:when>
+			<!-- if there isn't element with id 'from', then create 'bookmark' here -->
+			<xsl:when test="not(ancestor::*[contains(local-name(), '-standard')]//*[@id = $id_from])">
+				<fo:block id="{@from}" font-size="1pt"><xsl:value-of select="$hair_space"/></fo:block>
+			</xsl:when>
+		</xsl:choose>
+		
 	</xsl:template>
 
 	<xsl:template match="*[local-name() = 'name']/text()">
@@ -11264,7 +11279,10 @@
 	</xsl:template>
 	
 	<xsl:template match="*[local-name() = 'bookmark']" name="bookmark">
-		<fo:inline id="{@id}" font-size="1pt"/>
+		<!-- <fo:inline id="{@id}" font-size="1pt"/> -->
+		<fo:inline id="{@id}" font-size="1pt"><xsl:value-of select="$hair_space"/></fo:inline>
+		<!-- we need to add zero-width space, otherwise this fo:inline is missing in IF xml -->
+		<xsl:if test="not(following-sibling::node()[normalize-space() != ''])">&#xA0;</xsl:if>
 	</xsl:template>
 	<!-- =================== -->
 	<!-- End of Index processing -->
