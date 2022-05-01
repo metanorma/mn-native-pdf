@@ -304,7 +304,7 @@
 
 					<fo:block-container absolute-position="fixed" left="16.5mm" top="204mm" height="60mm" width="180mm" display-align="after" font-size="10pt">
 						<fo:block line-height="140%">
-							<xsl:apply-templates select="/ogc:ogc-standard/ogc:bibdata/ogc:edition"/>
+							<xsl:apply-templates select="/ogc:ogc-standard/ogc:bibdata/ogc:edition[normalize-space(@language) = '']"/>
 							<fo:block>
 								<fo:inline font-weight="bold">Submission Date: </fo:inline>
 								<xsl:choose>
@@ -812,12 +812,12 @@
 	
 	<xsl:template match="/ogc:ogc-standard/ogc:bibdata/ogc:edition">
 		<fo:block>
-			<xsl:variable name="title-edition">
+			<xsl:variable name="title-version">
 				<xsl:call-template name="getTitle">
-					<xsl:with-param name="name" select="'title-edition'"/>
+					<xsl:with-param name="name" select="'title-version'"/>
 				</xsl:call-template>
 			</xsl:variable>
-			<fo:inline font-weight="bold"><xsl:value-of select="$title-edition"/><xsl:text>: </xsl:text></fo:inline>
+			<fo:inline font-weight="bold"><xsl:value-of select="$title-version"/><xsl:text>: </xsl:text></fo:inline>
 			<xsl:value-of select="."/><xsl:text></xsl:text>
 		</fo:block>
 	</xsl:template>

@@ -144,7 +144,7 @@
 													<fo:block>
 														<xsl:value-of select="$docidentifier"/>
 														<xsl:text> </xsl:text>
-														<xsl:apply-templates select="/iho:iho-standard/iho:bibdata/iho:edition"/>
+														<xsl:apply-templates select="/iho:iho-standard/iho:bibdata/iho:edition[normalize-space(@language) = '']"/>
 													</fo:block>
 												</fo:block-container>
 											</fo:table-cell>
@@ -472,12 +472,14 @@
 
 	
 	<xsl:template match="/iho:iho-standard/iho:bibdata/iho:edition">
-		<xsl:variable name="title-edition">
-			<xsl:call-template name="getTitle">
-				<xsl:with-param name="name" select="'title-edition'"/>
-			</xsl:call-template>
-		</xsl:variable>
-		<xsl:value-of select="$title-edition"/>
+		<xsl:call-template name="capitalize">
+			<xsl:with-param name="str">
+				<xsl:call-template name="getLocalizedString">
+					<xsl:with-param name="key">edition</xsl:with-param>
+				</xsl:call-template>
+			</xsl:with-param>
+		</xsl:call-template>
+		<xsl:text> </xsl:text>
 		<xsl:apply-templates/>
 	</xsl:template>
 	

@@ -957,14 +957,16 @@
 			<fo:inline keep-together.within-line="always" font-size="25pt" font-weight="bold" color="{$color_gray}" border-bottom="0.5pt solid {$color_gray}" padding-bottom="3.5mm" baseline-shift="5.5mm"><fo:leader leader-pattern="space"/><xsl:value-of select="//iec:iec-standard/iec:bibdata/iec:docidentifier[@type = 'iso' or @type = 'ISO']"/></fo:inline>
 		</fo:block>
 		<fo:block font-size="10.5pt" text-align="right" margin-top="0.5mm">			
-			<xsl:variable name="title-edition">
-				<xsl:call-template name="getTitle">
-					<xsl:with-param name="name" select="'title-edition'"/>
-				</xsl:call-template>
-			</xsl:variable>
-			<xsl:value-of select="$title-edition"/>
+			<xsl:call-template name="capitalize">
+				<xsl:with-param name="str">
+					<xsl:call-template name="getLocalizedString">
+						<xsl:with-param name="key">edition</xsl:with-param>
+					</xsl:call-template>
+				</xsl:with-param>
+			</xsl:call-template>
+			<xsl:text> </xsl:text>
 			<fo:inline>
-				<xsl:variable name="edition" select="//iec:iec-standard/iec:bibdata/iec:edition"/>
+				<xsl:variable name="edition" select="//iec:iec-standard/iec:bibdata/iec:edition[normalize-space(@language) = '']"/>
 				<xsl:value-of select="$edition"/>
 				<xsl:if test="not(contains($edition, '.'))">.0</xsl:if>
 			</fo:inline>

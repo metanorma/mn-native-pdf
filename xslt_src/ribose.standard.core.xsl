@@ -50,15 +50,17 @@
 		<xsl:value-of select="/rsd:rsd-standard/rsd:bibdata/rsd:docidentifier[@type = 'rsd' or @type = 'Ribose']"/>
 			<xsl:text>:</xsl:text>
 			<xsl:value-of select="$copyright_year"/>
-			<xsl:variable name="edition" select="normalize-space(/rsd:rsd-standard/rsd:bibdata/rsd:edition)"/>
+			
+			<xsl:variable name="edition" select="normalize-space(/rsd:rsd-standard/rsd:bibdata/rsd:edition[normalize-space(@language) = ''])"/>
 			<xsl:if test="$edition != ''">
-				<xsl:variable name="title-edition">
+				<xsl:variable name="title-version">
 					<xsl:call-template name="getTitle">
-						<xsl:with-param name="name" select="'title-edition'"/>
+						<xsl:with-param name="name" select="'title-version'"/>
 					</xsl:call-template>
 				</xsl:variable>
-				<xsl:text>, </xsl:text><xsl:value-of select="$title-edition"/><xsl:text> </xsl:text><xsl:value-of select="$edition"/>
+				<xsl:text>, </xsl:text><xsl:value-of select="$title-version"/><xsl:text> </xsl:text><xsl:value-of select="$edition"/>
 			</xsl:if>
+			
 	</xsl:variable>
 	
 	<xsl:template match="/">
@@ -622,18 +624,6 @@
 	
 	<!-- ============================= -->
 	<!-- ============================= -->
-	
-	<xsl:template match="/rsd:rsd-standard/rsd:bibdata/rsd:edition">
-		<fo:block margin-bottom="12pt">
-			<xsl:variable name="title-edition">
-				<xsl:call-template name="getTitle">
-					<xsl:with-param name="name" select="'title-edition'"/>
-				</xsl:call-template>
-			</xsl:variable>
-			<xsl:value-of select="$title-edition"/><xsl:text>: </xsl:text>
-			<xsl:value-of select="."/><xsl:text> </xsl:text>
-		</fo:block>
-	</xsl:template>
 	
 	
 	<xsl:template match="rsd:feedback-statement" priority="2">

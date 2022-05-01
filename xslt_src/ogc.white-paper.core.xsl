@@ -153,10 +153,7 @@
 							<fo:block margin-top="6pt">URL for this OGC&#xAE; document: <xsl:value-of select="$url"/></fo:block>
 						</xsl:if>
 							
-						<xsl:variable name="edition" select="/ogc:ogc-standard/ogc:bibdata/ogc:edition"/>
-						<xsl:if test="normalize-space($edition) != ''">
-							<fo:block margin-top="6pt">Version: <xsl:value-of select="$edition"/></fo:block>
-						</xsl:if>
+						<xsl:apply-templates select="/ogc:ogc-standard/ogc:bibdata/ogc:edition[normalize-space(@language) = '']"/>
 							
 						<fo:block margin-top="6pt"><xsl:text>Category: </xsl:text>
 							<xsl:call-template name="capitalizeWords">
@@ -380,16 +377,17 @@
 		</fo:block>
 	</xsl:template>
 	
+	
 	<xsl:template match="/ogc:ogc-standard/ogc:bibdata/ogc:edition">
-		<fo:block margin-bottom="12pt">
-			<xsl:variable name="title-edition">
+		<xsl:variable name="edition" select="."/>
+		<xsl:if test="normalize-space($edition) != ''">
+			<fo:block margin-top="6pt">
 				<xsl:call-template name="getTitle">
-					<xsl:with-param name="name" select="'title-edition'"/>
+					<xsl:with-param name="name" select="'title-version'"/>
 				</xsl:call-template>
-			</xsl:variable>
-			<xsl:value-of select="$title-edition"/><xsl:text>: </xsl:text>
-			<xsl:value-of select="."/><xsl:text> </xsl:text>
-		</fo:block>
+				<xsl:text>: </xsl:text><xsl:value-of select="$edition"/>
+			</fo:block>
+		</xsl:if>
 	</xsl:template>
 
 	

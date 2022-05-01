@@ -182,21 +182,16 @@
 						</fo:block>
 						<!-- Version 1.0  -->
 						<fo:block font-size="12pt" margin-bottom="6pt">
-							<xsl:variable name="title-edition">
-								<xsl:call-template name="getTitle">
-									<xsl:with-param name="name" select="'title-edition'"/>
-								</xsl:call-template>
-							</xsl:variable>
-							<xsl:value-of select="$title-edition"/><xsl:text>: </xsl:text>
-							<xsl:variable name="edition" select="/m3d:m3d-standard/m3d:bibdata/m3d:edition"/>
-							<xsl:choose>
-								<xsl:when test="contains($edition, '.')">
-									<xsl:value-of select="$edition"/>
-								</xsl:when>
-								<xsl:otherwise>
-									<xsl:value-of select="$edition"/><xsl:text>.0</xsl:text>
-								</xsl:otherwise>
-							</xsl:choose>
+							<xsl:variable name="edition" select="normalize-space(/m3d:m3d-standard/m3d:bibdata/m3d:edition[normalize-space(@language) = ''])"/>
+							<xsl:if test="$edition != ''">
+								<xsl:variable name="title-version">
+									<xsl:call-template name="getTitle">
+										<xsl:with-param name="name" select="'title-version'"/>
+									</xsl:call-template>
+								</xsl:variable>
+								<xsl:value-of select="$title-version"/><xsl:text>: </xsl:text>
+								<xsl:value-of select="$edition"/><xsl:if test="not(contains($edition, '.'))"><xsl:text>.0</xsl:text></xsl:if>
+							</xsl:if>
 						</fo:block>
 						<fo:block font-size="12pt" margin-bottom="12pt">
 							<xsl:call-template name="convertDate">

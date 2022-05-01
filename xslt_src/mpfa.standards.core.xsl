@@ -149,12 +149,19 @@
 					<fo:block margin-bottom="12pt">&#xA0;</fo:block>
 					<fo:block-container text-align="center" border="0.5pt solid black" margin-bottom="12pt">
 						<fo:block font-size="16pt" margin-bottom="12pt" padding-top="1mm">
-							<xsl:value-of select="/mpfd:mpfd-standard/mpfd:bibdata/mpfd:edition"/>
-							<xsl:text> </xsl:text>
-							<xsl:call-template name="getTitle">
-								<xsl:with-param name="name" select="'title-edition'"/>
-							</xsl:call-template>
-							<xsl:value-of select="$linebreak"/>
+							<xsl:variable name="edition" select="normalize-space(/mpfd:mpfd-standard/mpfd:bibdata/mpfd:edition[normalize-space(@language) = ''])"/>
+							<xsl:if test="$edition != ''">
+								<xsl:value-of select="$edition"/>
+								<xsl:text> </xsl:text>
+								<xsl:call-template name="capitalize">
+									<xsl:with-param name="str">
+										<xsl:call-template name="getLocalizedString">
+											<xsl:with-param name="key">edition</xsl:with-param>
+										</xsl:call-template>
+									</xsl:with-param>
+								</xsl:call-template>
+								<xsl:value-of select="$linebreak"/>
+							</xsl:if>
 							<xsl:call-template name="convertDate">
 								<xsl:with-param name="date" select="/mpfd:mpfd-standard/mpfd:bibdata/mpfd:version/mpfd:revision-date"/>
 								<xsl:with-param name="format">ddMMyyyy</xsl:with-param>
