@@ -6891,6 +6891,10 @@
 		<fo:block break-after="page"/>
 	</xsl:template>
 	
+	
+	<!-- Note: to enable the addition of character span markup with semantic styling for DIS Word output -->
+	<xsl:template match="*[local-name() = 'span']"/>
+	
 	<!-- ========================= -->
 	<!-- END Rich text formatting -->
 	<!-- ========================= -->
@@ -8675,9 +8679,15 @@
 	
 	<xsl:template match="*[local-name() = 'references']/*[local-name() = 'bibitem']" mode="contents"/>
 	
+	<!-- Note: to enable the addition of character span markup with semantic styling for DIS Word output -->
+	<xsl:template match="*[local-name() = 'span']" mode="contents"/>
+	
 	<xsl:template match="*[local-name() = 'stem']" mode="bookmarks">
 		<xsl:apply-templates mode="bookmarks"/>
 	</xsl:template>
+	
+	<!-- Note: to enable the addition of character span markup with semantic styling for DIS Word output -->
+	<xsl:template match="*[local-name() = 'span']" mode="bookmarks"/>
 	
 	<!-- Bookmarks -->
 	<xsl:template name="addBookmarks">
@@ -9215,6 +9225,9 @@
 	<xsl:template match="text()" mode="contents_item">
 		<xsl:call-template name="keep_together_standard_number"/>
 	</xsl:template>
+
+	<!-- Note: to enable the addition of character span markup with semantic styling for DIS Word output -->
+	<xsl:template match="*[local-name() = 'span']" mode="contents_item"/>
 
 	<!-- ====== -->
 	<!-- sourcecode   -->	
@@ -12926,6 +12939,10 @@
 			</xsl:for-each>
 		</xsl:copy>
 	</xsl:template>
+	
+	<!-- Note: to enable the addition of character span markup with semantic styling for DIS Word output -->
+	<xsl:template match="*[local-name() = 'span']" mode="update_xml_step1"/>
+	
 	<!-- END STEP1: Re-order elements in 'preface', 'sections' based on @displayorder -->
 	
 	<xsl:if test="$namespace = 'iso' or $namespace = 'bsi'">
