@@ -6893,7 +6893,9 @@
 	
 	
 	<!-- Note: to enable the addition of character span markup with semantic styling for DIS Word output -->
-	<xsl:template match="*[local-name() = 'span']"/>
+	<xsl:template match="*[local-name() = 'span']">
+		<xsl:apply-templates />
+	</xsl:template>
 	
 	<!-- ========================= -->
 	<!-- END Rich text formatting -->
@@ -8680,14 +8682,18 @@
 	<xsl:template match="*[local-name() = 'references']/*[local-name() = 'bibitem']" mode="contents"/>
 	
 	<!-- Note: to enable the addition of character span markup with semantic styling for DIS Word output -->
-	<xsl:template match="*[local-name() = 'span']" mode="contents"/>
+	<xsl:template match="*[local-name() = 'span']" mode="contents">
+		<xsl:apply-templates mode="contents"/>
+	</xsl:template>
 	
 	<xsl:template match="*[local-name() = 'stem']" mode="bookmarks">
 		<xsl:apply-templates mode="bookmarks"/>
 	</xsl:template>
 	
 	<!-- Note: to enable the addition of character span markup with semantic styling for DIS Word output -->
-	<xsl:template match="*[local-name() = 'span']" mode="bookmarks"/>
+	<xsl:template match="*[local-name() = 'span']" mode="bookmarks">
+		<xsl:apply-templates mode="bookmarks"/>
+	</xsl:template>
 	
 	<!-- Bookmarks -->
 	<xsl:template name="addBookmarks">
@@ -9227,7 +9233,9 @@
 	</xsl:template>
 
 	<!-- Note: to enable the addition of character span markup with semantic styling for DIS Word output -->
-	<xsl:template match="*[local-name() = 'span']" mode="contents_item"/>
+	<xsl:template match="*[local-name() = 'span']" mode="contents_item">
+		<xsl:apply-templates mode="contents_item"/>
+	</xsl:template>
 
 	<!-- ====== -->
 	<!-- sourcecode   -->	
@@ -12941,7 +12949,9 @@
 	</xsl:template>
 	
 	<!-- Note: to enable the addition of character span markup with semantic styling for DIS Word output -->
-	<xsl:template match="*[local-name() = 'span']" mode="update_xml_step1"/>
+	<xsl:template match="*[local-name() = 'span']" mode="update_xml_step1">
+		<xsl:apply-templates mode="update_xml_step1"/>
+	</xsl:template>
 	
 	<!-- END STEP1: Re-order elements in 'preface', 'sections' based on @displayorder -->
 	
