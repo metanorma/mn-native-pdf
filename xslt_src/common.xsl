@@ -4388,8 +4388,10 @@
 		<xsl:variable name="table">
 	
 			<xsl:variable name="simple-table">	
-				<xsl:call-template  name="getSimpleTable"/>
+				<xsl:call-template name="getSimpleTable"/>
 			</xsl:variable>
+		
+			<xsl:copy-of select="$simple-table"/>
 		
 			
 			<!-- Display table's name before table as standalone block -->
@@ -4416,15 +4418,27 @@
 			
 			<xsl:variable name="cols-count" select="count(xalan:nodeset($simple-table)/*/tr[1]/td)"/>
 			
+			
+			
 			<xsl:variable name="colwidths">
 				<xsl:if test="not(*[local-name()='colgroup']/*[local-name()='col'])">
-					<xsl:call-template name="calculate-column-widths">
-						<xsl:with-param name="cols-count" select="$cols-count"/>
-						<xsl:with-param name="table" select="$simple-table"/>
-					</xsl:call-template>
+					<xsl:choose>
+						<xsl:when test="$namespace = 'iso'">
+							<xsl:call-template name="calculate-column-widths-autolayout-algorithm">
+								<xsl:with-param name="cols-count" select="$cols-count"/>
+								<xsl:with-param name="table" select="$simple-table"/>
+							</xsl:call-template>
+						</xsl:when>
+						<xsl:otherwise>
+							<xsl:call-template name="calculate-column-widths">
+								<xsl:with-param name="cols-count" select="$cols-count"/>
+								<xsl:with-param name="table" select="$simple-table"/>
+							</xsl:call-template>
+						</xsl:otherwise>
+					</xsl:choose>
 				</xsl:if>
 			</xsl:variable>
-			<!-- DEBUG colwidths=<xsl:copy-of select="$colwidths"/> -->
+			DEBUG colwidths=<xsl:copy-of select="$colwidths"/>
 			
 			
 			<xsl:variable name="margin-side">
@@ -4960,6 +4974,193 @@
 	<!-- END Calculate column's width based on text string max widths -->
 	<!-- ================================================== -->
 	
+	
+	<!-- ================================================== -->
+	<!-- Calculate column's width based on HTML4 algorithm -->
+	<!-- (https://www.w3.org/TR/REC-html40/appendix/notes.html#h-B.5.2) -->
+	<!-- ================================================== -->
+	<xsl:template name="calculate-column-widths-autolayout-algorithm">
+		<xsl:param name="cols-count"/>
+		<xsl:param name="table"/>
+		
+		 <!-- The algorithm uses two passes through the table data and scales linearly with the size of the table -->
+		 
+		 <!-- In the first pass, line wrapping is disabled, and the user agent keeps track of the minimum and maximum width of each cell. -->
+		 
+		 <!-- Since line wrap has been disabled, paragraphs are treated as long lines unless broken by BR elements. -->
+		 <!-- to do: split to paragraphs by 'br' in getSimpleTable -->
+		 
+		<xsl:variable name="table_with_cell_widths_">
+			<xsl:apply-templates select="xalan:nodeset($table)" mode="determine_cell_widths"/>
+		</xsl:variable>
+		<xsl:variable name="table_with_cell_widths" select="xalan:nodeset($table_with_cell_widths_)"/>
+		<!-- <xsl:copy-of select="$table_with_cell_widths"/> -->
+		
+		
+		<!-- The minimum and maximum cell widths are then used to determine the corresponding minimum and maximum widths for the columns. -->
+		
+		<xsl:variable name="column_widths_">
+			<!-- iteration of columns -->
+			<xsl:for-each select="$table_with_cell_widths//tr[1]/td">
+				<xsl:variable name="pos" select="position()"/>
+				<column>
+					<xsl:attribute name="width_max">
+						<xsl:for-each select="ancestor::tbody//tr/td[$pos]/@width_max">
+							<xsl:sort select="." data-type="number" order="descending"/>
+							<xsl:if test="position() = 1"><xsl:value-of select="."/></xsl:if>
+						</xsl:for-each>
+					</xsl:attribute>
+					<xsl:attribute name="width_min">
+						<xsl:for-each select="ancestor::tbody//tr/td[$pos]/@width_min">
+							<xsl:sort select="." data-type="number" order="descending"/>
+							<xsl:if test="position() = 1"><xsl:value-of select="."/></xsl:if>
+						</xsl:for-each>
+					</xsl:attribute>
+				</column>
+			</xsl:for-each>
+		</xsl:variable>
+		<xsl:variable name="column_widths" select="xalan:nodeset($column_widths_)"/>
+		<!-- <xsl:copy-of select="$column_widths"/> -->
+		
+		<!-- These in turn, are used to find the minimum and maximum width for the table. -->
+		<xsl:variable name="table_widths_">
+			<table>
+				<xsl:attribute name="width_max">
+					<xsl:value-of select="sum($column_widths/column/@width_max)"/>
+				</xsl:attribute>
+				<xsl:attribute name="width_min">
+					<xsl:value-of select="sum($column_widths/column/@width_min)"/>
+				</xsl:attribute>
+			</table>
+		</xsl:variable>
+		<xsl:variable name="table_widths" select="xalan:nodeset($table_widths_)" />
+		
+		<xsl:variable name="page_width">100</xsl:variable>
+		
+		<!-- <xsl:copy-of select="$table_widths"/> -->
+		
+		<!-- There are three cases: -->
+		<xsl:choose>
+			<!-- 1. The minimum table width is equal to or wider than the available space -->
+			<xsl:when test="$table_widths/@width_min &gt;= $page_width">
+				<!-- call old algorithm -->
+				<var1></var1>
+				<xsl:call-template name="calculate-column-widths">
+					<xsl:with-param name="cols-count" select="$cols-count"/>
+					<xsl:with-param name="table" select="$table"/>
+				</xsl:call-template>
+			</xsl:when>
+			<!-- 2. The maximum table width fits within the available space. In this case, set the columns to their maximum widths. -->
+			<xsl:when test="$table_widths/@width_max &lt;= $page_width">
+				<var2></var2>
+				<xsl:for-each select="$column_widths/column/@width_max">
+					<column><xsl:value-of select="."/></column>
+				</xsl:for-each>
+			</xsl:when>
+			<!-- 3. The maximum width of the table is greater than the available space, but the minimum table width is smaller. 
+			In this case, find the difference between the available space and the minimum table width, lets call it W. 
+			Lets also call D the difference between maximum and minimum width of the table. 
+			For each column, let d be the difference between maximum and minimum width of that column. 
+			Now set the column's width to the minimum width plus d times W over D. 
+			This makes columns with large differences between minimum and maximum widths wider than columns with smaller differences. -->
+			<xsl:when test="$table_widths/@width_max &gt; $page_width and $table_widths/@width_min &lt; $page_width">
+				<!-- difference between the available space and the minimum table width -->
+				<xsl:variable name="W" select="$page_width - $table_widths/@width_min"/>
+				<!-- difference between maximum and minimum width of the table -->
+				<xsl:variable name="D" select="$table_widths/@width_max - $table_widths/@width_min"/>
+				
+				<var3></var3>
+				<xsl:for-each select="$column_widths/column">
+					<!-- difference between maximum and minimum width of that column.  -->
+					<xsl:variable name="d" select="@width_max - @width_min"/>
+					<!-- set the column's width to the minimum width plus d times W over D.  -->
+					<column>
+						<xsl:value-of select="@width_min + $d * ($W div $D)"/>
+					</column>
+				</xsl:for-each>
+				
+			</xsl:when>
+		</xsl:choose>
+		
+		
+	</xsl:template> <!-- calculate-column-widths-autolayout-algorithm -->
+	
+	
+	<xsl:template match="@*|node()" mode="determine_cell_widths">
+		<xsl:copy>
+				<xsl:apply-templates select="@*|node()" mode="determine_cell_widths"/>
+		</xsl:copy>
+	</xsl:template>
+	
+	<xsl:template match="td | th" mode="determine_cell_widths">
+		<xsl:copy>
+			<xsl:copy-of select="@*"/>
+			
+			 <!-- The maximum width is given by the widest line.  -->
+			<xsl:variable name="widths_max">
+				<xsl:for-each select="*[local-name() = 'p']">
+					<width><xsl:value-of select="string-length(normalize-space())"/></width>
+				</xsl:for-each>
+				<xsl:if test="not(*[local-name() = 'p'])">
+					<width><xsl:value-of select="string-length(normalize-space())"/></width>
+				</xsl:if>
+			</xsl:variable>
+			<xsl:variable name="width_max">
+				<xsl:for-each select="xalan:nodeset($widths_max)//width">
+					<xsl:sort select="." data-type="number" order="descending"/>
+					<xsl:if test="position() = 1"><xsl:value-of select="."/></xsl:if>
+				</xsl:for-each>
+			</xsl:variable>
+			<xsl:attribute name="width_max">
+				<xsl:value-of select="$width_max"/>
+			</xsl:attribute>
+			
+			
+			<!-- The minimum width is given by the widest text element (word, image, etc.) -->
+			<!-- To do: image width -->
+			<xsl:variable name="td_text">
+				<xsl:apply-templates select="." mode="td_text"/>
+			</xsl:variable>
+			<xsl:variable name="words">
+				<xsl:variable name="string_with_added_zerospaces">
+					<xsl:call-template name="add-zero-spaces-java">
+						<xsl:with-param name="text" select="$td_text"/>
+					</xsl:call-template>
+				</xsl:variable>
+				<xsl:call-template name="tokenize">
+					<xsl:with-param name="text" select="normalize-space(translate($string_with_added_zerospaces, '&#x200B;&#xAD;', '  '))"/> <!-- replace zero-width-space and soft-hyphen to space -->
+				</xsl:call-template>
+			</xsl:variable>
+			<xsl:variable name="max_word_length">
+				<xsl:call-template name="max_length">
+					<xsl:with-param name="words" select="xalan:nodeset($words)"/>
+				</xsl:call-template>
+			</xsl:variable>
+			<xsl:variable name="width_min">
+				<xsl:value-of select="$max_word_length"/>
+			</xsl:variable>
+			<xsl:attribute name="width_min">
+				<xsl:value-of select="$width_min"/>
+			</xsl:attribute>
+			<!-- width_max="1" width_min="1.5"> --> <!-- see 'tokenize' template, multiply 1.5 for all latin capitals -->
+			<xsl:if test="$width_min &gt; $width_max">
+				<xsl:attribute name="width_max">
+					<xsl:value-of select="$width_min"/>
+				</xsl:attribute>
+			</xsl:if>
+			<xsl:if test="$width_min = 0">
+				<xsl:attribute name="width_min">1</xsl:attribute>
+			</xsl:if>
+			
+			<xsl:apply-templates select="node()" mode="determine_cell_widths"/>
+			
+		</xsl:copy>
+	</xsl:template>
+	
+	
+	<!-- ================================================== -->
+	<!-- Calculate column's width based on HTML4 algorithm -->
+	<!-- ================================================== -->
 	
 	
 	<xsl:template match="*[local-name()='thead']">
