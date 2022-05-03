@@ -4957,6 +4957,14 @@
 		<!-- <xsl:message>DEBUG t1=<xsl:value-of select="."/></xsl:message>
 		<xsl:message>DEBUG t2=<xsl:value-of select="java:replaceAll(java:java.lang.String.new(.),'.','X')"/></xsl:message> -->
 		<xsl:value-of select="java:replaceAll(java:java.lang.String.new(.),'.','X')"/>
+		
+		<!-- if all capitals english letters or digits -->
+		<xsl:if test="normalize-space(translate(., concat($upper,'0123456789'), '')) = ''">
+			<xsl:call-template name="repeat">
+				<xsl:with-param name="char" select="'X'"/>
+				<xsl:with-param name="count" select="string-length(normalize-space(.)) * 0.5"/>
+			</xsl:call-template>
+		</xsl:if>
 	</xsl:template>
 	
 	
@@ -5131,28 +5139,10 @@
 			 <!-- The maximum width is given by the widest line.  -->
 			<xsl:variable name="widths_max">
 				<xsl:for-each select=".//*[local-name() = 'p']">
-					<xsl:variable name="p_text"><xsl:apply-templates mode="td_text"/></xsl:variable>
-					
-					<xsl:variable name="math_addon_text">
-						<xsl:for-each select=".//*[local-name() = 'math']">
-							<xsl:apply-templates mode="td_text"/>
-						</xsl:for-each>
-					</xsl:variable>
-					<xsl:variable name="math_addon_length" select="string-length(normalize-space($math_addon_text)) * 0.2"/> <!-- plus 20% -->
-					
-					<width><xsl:value-of select="string-length(normalize-space($p_text)) + $math_addon_length"/></width>
+					<xsl:call-template name="add_width"/>
 				</xsl:for-each>
 				<xsl:if test="not(*[local-name() = 'p'])">
-					<xsl:variable name="p_text"><xsl:apply-templates mode="td_text"/></xsl:variable>
-					
-					<xsl:variable name="math_addon_text">
-						<xsl:for-each select=".//*[local-name() = 'math']">
-							<xsl:apply-templates mode="td_text"/>
-						</xsl:for-each>
-					</xsl:variable>
-					<xsl:variable name="math_addon_length" select="string-length(normalize-space($math_addon_text)) * 0.2"/> <!-- plus 20% -->
-					
-					<width><xsl:value-of select="string-length(normalize-space()) + $math_addon_length"/></width>
+					<xsl:call-template name="add_width"/>
 				</xsl:if>
 			</xsl:variable>
 			<xsl:variable name="width_max">
@@ -5164,7 +5154,6 @@
 			<xsl:attribute name="width_max">
 				<xsl:value-of select="$width_max"/>
 			</xsl:attribute>
-			
 			
 			<!-- The minimum width is given by the widest text element (word, image, etc.) -->
 			<!-- To do: image width -->
@@ -5181,6 +5170,7 @@
 					<xsl:with-param name="text" select="normalize-space(translate($string_with_added_zerospaces, '&#x200B;&#xAD;', '  '))"/> <!-- replace zero-width-space and soft-hyphen to space -->
 				</xsl:call-template>
 			</xsl:variable>
+			
 			<xsl:variable name="max_word_length">
 				<xsl:call-template name="max_length">
 					<xsl:with-param name="words" select="xalan:nodeset($words)"/>
@@ -5205,6 +5195,29 @@
 			<xsl:apply-templates select="node()" mode="determine_cell_widths"/>
 			
 		</xsl:copy>
+	</xsl:template>
+	
+	<xsl:template name="add_width">
+		<xsl:variable name="p_text"><xsl:apply-templates select="." mode="td_text"/></xsl:variable>
+		<xsl:variable name="p_text_len_" select="string-length(normalize-space($p_text))"/>
+		
+		<xsl:variable name="p_text_len">
+			<xsl:choose>
+				<xsl:when test="normalize-space(translate($p_text, concat($upper,'0123456789'), '')) = ''"> <!-- english word in CAPITAL letters -->
+					<xsl:value-of select="$p_text_len_ * 1.5"/>
+				</xsl:when>
+				<xsl:otherwise><xsl:value-of select="$p_text_len_"/></xsl:otherwise>
+			</xsl:choose>
+		</xsl:variable>
+		
+		<xsl:variable name="math_addon_text">
+			<xsl:for-each select=".//*[local-name() = 'math']">
+				<xsl:apply-templates mode="td_text"/>
+			</xsl:for-each>
+		</xsl:variable>
+		<xsl:variable name="math_addon_length" select="string-length(normalize-space($math_addon_text)) * 0.2"/> <!-- plus 20% -->
+		
+		<width><xsl:value-of select="$p_text_len + $math_addon_length"/></width>
 	</xsl:template>
 	
 	
