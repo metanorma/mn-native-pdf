@@ -4973,15 +4973,20 @@
 	</xsl:template>
 
 	<xsl:template match="*[local-name()='math']" mode="td_text">
-		<xsl:variable name="mathml">
+		<xsl:variable name="mathml_">
 			<xsl:for-each select="*">
 				<xsl:if test="local-name() != 'unit' and local-name() != 'prefix' and local-name() != 'dimension' and local-name() != 'quantity'">
 					<xsl:copy-of select="."/>
 				</xsl:if>
 			</xsl:for-each>
 		</xsl:variable>
-		
-		<xsl:variable name="math_text" select="normalize-space(xalan:nodeset($mathml))"/>
+		<xsl:variable name="mathml" select="xalan:nodeset($mathml_)"/>
+
+		<xsl:variable name="math_text">
+			<xsl:value-of select="normalize-space($mathml)"/>
+			<xsl:for-each select="$mathml//@open"><xsl:value-of select="."/></xsl:for-each>
+			<xsl:for-each select="$mathml//@close"><xsl:value-of select="."/></xsl:for-each>
+		</xsl:variable>
 		<xsl:value-of select="translate($math_text, ' ', '#')"/><!-- mathml images as one 'word' without spaces -->
 	</xsl:template>
 	<!-- ================================================== -->
@@ -5102,7 +5107,7 @@
 					<e><xsl:value-of select="$d * $W div $D"/></e>
 					<!-- set the column's width to the minimum width plus d times W over D.  -->
 					<column>
-						<xsl:value-of select="@width_min + $d * $W div $D"/>
+						<xsl:value-of select="round(@width_min + $d * $W div $D) * 10"/>
 					</column>
 				</xsl:for-each>
 				
