@@ -4427,9 +4427,12 @@
 				</xsl:if>
 			</xsl:variable>
 			
-			<xsl:comment>
-				DEBUG: colwidths=<xsl:copy-of select="$colwidths"/>
-			</xsl:comment>
+			
+			<xsl:text disable-output-escaping="yes">&lt;!--</xsl:text>
+			DEBUG
+			colwidths=<xsl:copy-of select="$colwidths"/>
+		<xsl:text disable-output-escaping="yes">--&gt;</xsl:text>
+			
 			
 			
 			<xsl:variable name="margin-side">
@@ -5031,7 +5034,10 @@
 			</xsl:for-each>
 		</xsl:variable>
 		<xsl:variable name="column_widths" select="xalan:nodeset($column_widths_)"/>
-		<!-- <xsl:copy-of select="$column_widths"/> -->
+		
+		<!-- <column_widths>
+			<xsl:copy-of select="$column_widths"/>
+		</column_widths> -->
 		
 		<!-- These in turn, are used to find the minimum and maximum width for the table. -->
 		<xsl:variable name="table_widths_">
@@ -5046,9 +5052,11 @@
 		</xsl:variable>
 		<xsl:variable name="table_widths" select="xalan:nodeset($table_widths_)" />
 		
-		<xsl:variable name="page_width">100</xsl:variable>
+		<xsl:variable name="page_width">90</xsl:variable>
 		
-		<!-- <xsl:copy-of select="$table_widths"/> -->
+		<!-- <table_width>
+			<xsl:copy-of select="$table_widths"/>
+		</table_width> -->
 		
 		<!-- <debug>$table_widths/@width_min=<xsl:value-of select="$table_widths/table/@width_min"/></debug>
 		<debug>$table_widths/@width_max=<xsl:value-of select="$table_widths/table/@width_max"/></debug>
@@ -5081,16 +5089,20 @@
 			<xsl:when test="$table_widths/table/@width_max &gt; $page_width and $table_widths/table/@width_min &lt; $page_width">
 				<!-- difference between the available space and the minimum table width -->
 				<xsl:variable name="W" select="$page_width - $table_widths/table/@width_min"/>
+				<W><xsl:value-of select="$W"/></W>
 				<!-- difference between maximum and minimum width of the table -->
 				<xsl:variable name="D" select="$table_widths/table/@width_max - $table_widths/table/@width_min"/>
-				
+				<D><xsl:value-of select="$D"/></D>
 				<case3/>
 				<xsl:for-each select="$column_widths/column">
 					<!-- difference between maximum and minimum width of that column.  -->
 					<xsl:variable name="d" select="@width_max - @width_min"/>
+					<d><xsl:value-of select="$d"/></d>
+					<width_min><xsl:value-of select="@width_min"/></width_min>
+					<e><xsl:value-of select="$d * $W div $D"/></e>
 					<!-- set the column's width to the minimum width plus d times W over D.  -->
 					<column>
-						<xsl:value-of select="@width_min + $d * ($W div $D)"/>
+						<xsl:value-of select="@width_min + $d * $W div $D"/>
 					</column>
 				</xsl:for-each>
 				
@@ -6581,6 +6593,13 @@
 										<xsl:with-param name="table" select="$html-table"/>
 									</xsl:call-template>
 								</xsl:variable>
+								
+								
+								<xsl:text disable-output-escaping="yes">&lt;!--</xsl:text>
+									DEBUG
+									colwidths=<xsl:copy-of select="$colwidths"/>
+								<xsl:text disable-output-escaping="yes">--&gt;</xsl:text>
+								
 								<!-- DEBUG: colwidths=<xsl:copy-of select="$colwidths"/> -->
 								<xsl:variable name="maxlength_dt">							
 									<xsl:call-template name="getMaxLength_dt"/>							
