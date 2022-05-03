@@ -5052,7 +5052,7 @@
 		</xsl:variable>
 		<xsl:variable name="table_widths" select="xalan:nodeset($table_widths_)" />
 		
-		<xsl:variable name="page_width">90</xsl:variable>
+		<xsl:variable name="page_width">75</xsl:variable>
 		
 		<!-- <table_width>
 			<xsl:copy-of select="$table_widths"/>
