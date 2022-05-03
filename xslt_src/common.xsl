@@ -7317,10 +7317,15 @@
 	<xsl:template name="getSimpleTable">
 		<xsl:variable name="simple-table">
 		
+			<!-- Step 0. replace <br/> to <p>...</p> -->
+			<xsl:variable name="table_without_br">
+				<xsl:apply-templates mode="table-without-br"/>
+			</xsl:variable>
+		
 			<!-- Step 1. colspan processing -->
 			<xsl:variable name="simple-table-colspan">
 				<tbody>
-					<xsl:apply-templates mode="simple-table-colspan"/>
+					<xsl:apply-templates select="xalan:nodeset($table_without_br)" mode="simple-table-colspan"/>
 				</tbody>
 			</xsl:variable>
 			
@@ -7334,7 +7339,59 @@
 		</xsl:variable>
 		<xsl:copy-of select="$simple-table"/>
 	</xsl:template>
-		
+	
+	<!-- ================================== -->
+	<!-- Step 0. replace <br/> to <p>...</p> -->
+	<!-- ================================== -->
+	<xsl:template match="@*|node()" mode="table-without-br">
+		<xsl:copy>
+				<xsl:apply-templates select="@*|node()" mode="table-without-br"/>
+		</xsl:copy>
+	</xsl:template>
+	
+	<xsl:template match="*[local-name()='th'][*[local-name()='br']] | *[local-name()='td'][*[local-name()='br']]" mode="table-without-br">
+		<xsl:copy>
+			<xsl:copy-of select="@*"/>
+			<xsl:for-each select="*[local-name()='br']">
+				<xsl:variable name="current_id" select="generate-id()"/>
+				<p>
+					<xsl:for-each select="preceding-sibling::node()[following-sibling::*[local-name() = 'br'][1][generate-id() = $current_id]][not(local-name() = 'br')]">
+						<xsl:copy-of select="."/>
+					</xsl:for-each>
+				</p>
+				<xsl:if test="not(following-sibling::*[local-name() = 'br'])">
+					<p>
+						<xsl:for-each select="following-sibling::node()">
+							<xsl:copy-of select="."/>
+						</xsl:for-each>
+					</p>
+				</xsl:if>
+			</xsl:for-each>
+		</xsl:copy>
+	</xsl:template>
+	
+	<xsl:template match="*[local-name()='th']/*[local-name() = 'p'][*[local-name()='br']] | *[local-name()='td']/*[local-name() = 'p'][*[local-name()='br']]" mode="table-without-br">
+		<xsl:for-each select="*[local-name()='br']">
+			<xsl:variable name="current_id" select="generate-id()"/>
+			<p>
+				<xsl:for-each select="preceding-sibling::node()[following-sibling::*[local-name() = 'br'][1][generate-id() = $current_id]][not(local-name() = 'br')]">
+					<xsl:copy-of select="."/>
+				</xsl:for-each>
+			</p>
+			<xsl:if test="not(following-sibling::*[local-name() = 'br'])">
+				<p>
+					<xsl:for-each select="following-sibling::node()">
+						<xsl:copy-of select="."/>
+					</xsl:for-each>
+				</p>
+			</xsl:if>
+		</xsl:for-each>
+	</xsl:template> <!-- mode="table-without-br" -->
+	<!-- ================================== -->
+	<!-- END: Step 0. replace <br/> to <p>...</p> -->
+	<!-- ================================== -->
+
+	
 	<!-- ===================== -->
 	<!-- 1. mode "simple-table-colspan" 
 			1.1. remove thead, tbody, fn
