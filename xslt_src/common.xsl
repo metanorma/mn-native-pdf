@@ -4428,10 +4428,10 @@
 			</xsl:variable>
 			
 			
-			<xsl:text disable-output-escaping="yes">&lt;!--</xsl:text>
+			<!-- <xsl:text disable-output-escaping="yes">&lt;!- -</xsl:text>
 			DEBUG
 			colwidths=<xsl:copy-of select="$colwidths"/>
-		<xsl:text disable-output-escaping="yes">--&gt;</xsl:text>
+		<xsl:text disable-output-escaping="yes">- -&gt;</xsl:text> -->
 			
 			
 			
@@ -4972,7 +4972,7 @@
 		<xsl:value-of select="@target"/>
 	</xsl:template>
 
-	<xsl:template match="*[local-name()='math']" mode="td_text">
+	<xsl:template match="*[local-name()='math']" mode="td_text" name="math_length">
 		<xsl:variable name="mathml_">
 			<xsl:for-each select="*">
 				<xsl:if test="local-name() != 'unit' and local-name() != 'prefix' and local-name() != 'dimension' and local-name() != 'quantity'">
@@ -5130,11 +5130,29 @@
 			
 			 <!-- The maximum width is given by the widest line.  -->
 			<xsl:variable name="widths_max">
-				<xsl:for-each select="*[local-name() = 'p']">
-					<width><xsl:value-of select="string-length(normalize-space())"/></width>
+				<xsl:for-each select=".//*[local-name() = 'p']">
+					<xsl:variable name="p_text"><xsl:apply-templates mode="td_text"/></xsl:variable>
+					
+					<xsl:variable name="math_addon_text">
+						<xsl:for-each select=".//*[local-name() = 'math']">
+							<xsl:apply-templates mode="td_text"/>
+						</xsl:for-each>
+					</xsl:variable>
+					<xsl:variable name="math_addon_length" select="string-length(normalize-space($math_addon_text)) * 0.2"/> <!-- plus 20% -->
+					
+					<width><xsl:value-of select="string-length(normalize-space($p_text)) + $math_addon_length"/></width>
 				</xsl:for-each>
 				<xsl:if test="not(*[local-name() = 'p'])">
-					<width><xsl:value-of select="string-length(normalize-space())"/></width>
+					<xsl:variable name="p_text"><xsl:apply-templates mode="td_text"/></xsl:variable>
+					
+					<xsl:variable name="math_addon_text">
+						<xsl:for-each select=".//*[local-name() = 'math']">
+							<xsl:apply-templates mode="td_text"/>
+						</xsl:for-each>
+					</xsl:variable>
+					<xsl:variable name="math_addon_length" select="string-length(normalize-space($math_addon_text)) * 0.2"/> <!-- plus 20% -->
+					
+					<width><xsl:value-of select="string-length(normalize-space()) + $math_addon_length"/></width>
 				</xsl:if>
 			</xsl:variable>
 			<xsl:variable name="width_max">
@@ -6600,10 +6618,10 @@
 								</xsl:variable>
 								
 								
-								<xsl:text disable-output-escaping="yes">&lt;!--</xsl:text>
+								<!-- <xsl:text disable-output-escaping="yes">&lt;!- -</xsl:text>
 									DEBUG
 									colwidths=<xsl:copy-of select="$colwidths"/>
-								<xsl:text disable-output-escaping="yes">--&gt;</xsl:text>
+								<xsl:text disable-output-escaping="yes">- -&gt;</xsl:text> -->
 								
 								<!-- DEBUG: colwidths=<xsl:copy-of select="$colwidths"/> -->
 								<xsl:variable name="maxlength_dt">							
@@ -7386,7 +7404,15 @@
 				</p>
 			</xsl:if>
 		</xsl:for-each>
-	</xsl:template> <!-- mode="table-without-br" -->
+	</xsl:template>
+
+	<!-- remove redundant white spaces -->
+	<xsl:template match="text()[not(ancestor::*[local-name() = 'sourcecode'])]" mode="table-without-br">
+		<xsl:variable name="text" select="translate(.,'&#x09;&#x0a;&#x0d;','')"/>
+		<xsl:value-of select="java:replaceAll(java:java.lang.String.new($text),' {2,}',' ')"/>
+	</xsl:template>
+
+	<!-- mode="table-without-br" -->
 	<!-- ================================== -->
 	<!-- END: Step 0. replace <br/> to <p>...</p> -->
 	<!-- ================================== -->
