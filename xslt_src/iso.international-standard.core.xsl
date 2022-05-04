@@ -1250,7 +1250,12 @@
 																	
 																	<fo:inline keep-together.within-line="always">
 																		<fo:leader font-size="9pt" font-weight="normal" leader-pattern="dots"/>
-																		<fo:inline><fo:page-number-citation ref-id="{@id}"/></fo:inline>
+																		<fo:inline>
+																			<xsl:if test="@level = 1 and @type = 'annex'">
+																				<xsl:attribute name="font-weight">bold</xsl:attribute>
+																			</xsl:if>
+																			<fo:page-number-citation ref-id="{@id}"/>
+																		</fo:inline>
 																	</fo:inline>
 																</fo:basic-link>
 															</fo:block>
