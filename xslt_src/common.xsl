@@ -614,7 +614,6 @@
 	</xsl:attribute-set>
 
 	<xsl:attribute-set name="sourcecode-container-style">
-		<xsl:attribute name="margin-left">0mm</xsl:attribute>
 		<xsl:if test="$namespace = 'rsd'">
 			<xsl:attribute name="space-after">12pt</xsl:attribute>
 		</xsl:if>
@@ -910,6 +909,10 @@
 		<xsl:if test="$namespace = 'iec'">
 			<xsl:attribute name="margin-left">10mm</xsl:attribute>
 		</xsl:if>
+		<xsl:if test="$namespace = 'iso'">			
+			<xsl:attribute name="margin-left">7mm</xsl:attribute>
+			<xsl:attribute name="margin-right">7mm</xsl:attribute>			
+		</xsl:if>
 		<xsl:if test="$namespace = 'mpfd'">
 			<xsl:attribute name="margin-left">12.5mm</xsl:attribute>
 			<xsl:attribute name="margin-bottom">18pt</xsl:attribute>
@@ -935,6 +938,7 @@
 		<xsl:if test="$namespace = 'gb' or $namespace = 'iso'">
 			<xsl:attribute name="keep-with-next">always</xsl:attribute>
 			<xsl:attribute name="padding-right">5mm</xsl:attribute>
+			<xsl:attribute name="margin-bottom">6pt</xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'iec'">
 			<xsl:attribute name="keep-with-next">always</xsl:attribute>
@@ -6706,7 +6710,7 @@
 					<xsl:choose>
 						<xsl:when test="$font-size = 'inherit'"><xsl:value-of select="$font-size"/></xsl:when>
 						<xsl:when test="contains($font-size, '%')"><xsl:value-of select="$font-size"/></xsl:when>
-						<xsl:when test="ancestor::*[local-name()='note']"><xsl:value-of select="$font-size * 0.91"/>pt</xsl:when>
+						<xsl:when test="ancestor::*[local-name()='note'] or ancestor::*[local-name()='example']"><xsl:value-of select="$font-size * 0.91"/>pt</xsl:when>
 						<xsl:otherwise><xsl:value-of select="$font-size"/>pt</xsl:otherwise>
 					</xsl:choose>
 				</xsl:attribute>
@@ -6714,6 +6718,11 @@
 			<xsl:apply-templates />
 		</fo:inline>
 	</xsl:template> <!-- tt -->
+	
+	<xsl:template match="*[local-name()='tt']/text()" priority="2">
+		<xsl:call-template name="add_spaces_to_sourcecode"/>
+	</xsl:template>
+	
 	
 	<xsl:template match="*[local-name()='underline']">
 		<fo:inline text-decoration="underline">
@@ -9243,6 +9252,15 @@
 	<xsl:template match="*[local-name()='sourcecode']" name="sourcecode">
 	
 		<fo:block-container xsl:use-attribute-sets="sourcecode-container-style">
+		
+			<xsl:if test="not(ancestor::*[local-name() = 'li']) or ancestor::*[local-name() = 'example']">
+				<xsl:attribute name="margin-left">0mm</xsl:attribute>
+			</xsl:if>
+			
+			<xsl:if test="ancestor::*[local-name() = 'example']">
+				<xsl:attribute name="margin-right">0mm</xsl:attribute>
+			</xsl:if>
+			
 			<xsl:copy-of select="@id"/>
 			
 			<xsl:if test="parent::*[local-name() = 'note']">
@@ -9914,16 +9932,18 @@
 			 text line 2
 	-->
 	<xsl:template match="*[local-name() = 'example']">
-		<fo:block id="{@id}" xsl:use-attribute-sets="example-style">
+		
+		<fo:block-container id="{@id}" xsl:use-attribute-sets="example-style">
+		
 			<xsl:if test="$namespace = 'rsd'">
 				<xsl:if test="ancestor::rsd:ul or ancestor::rsd:ol">
 					<xsl:attribute name="margin-top">6pt</xsl:attribute>
 					<xsl:attribute name="margin-bottom">6pt</xsl:attribute>
 				</xsl:if>
 			</xsl:if>
-			
+		
 			<xsl:variable name="fo_element">
-				<xsl:if test=".//*[local-name() = 'table'] or .//*[local-name() = 'dl']">block</xsl:if> 
+				<xsl:if test=".//*[local-name() = 'table'] or .//*[local-name() = 'dl'] or *[not(local-name() = 'name')][1][local-name() = 'sourcecode']">block</xsl:if> 
 				<xsl:choose>			
 					<xsl:when test="$namespace = 'bsi' or 
 														$namespace = 'iso' or 
@@ -9942,31 +9962,57 @@
 				</xsl:choose>
 			</xsl:variable>
 			
-			<!-- display 'EXAMPLE' -->
-			<xsl:apply-templates select="*[local-name()='name']">
-				<xsl:with-param name="fo_element" select="$fo_element"/>
-			</xsl:apply-templates>
+			<fo:block-container margin-left="0mm">
 			
-			<xsl:choose>
-				<xsl:when test="contains(normalize-space($fo_element), 'block')">
-					<fo:block-container xsl:use-attribute-sets="example-body-style">
-						<fo:block-container margin-left="0mm" margin-right="0mm">
-							<xsl:apply-templates select="node()[not(local-name() = 'name')]">
+				<xsl:choose>
+					
+					<xsl:when test="contains(normalize-space($fo_element), 'block')">
+					
+						<!-- display name 'EXAMPLE' in a separate block  -->
+						<fo:block>
+							<xsl:apply-templates select="*[local-name()='name']">
 								<xsl:with-param name="fo_element" select="$fo_element"/>
 							</xsl:apply-templates>
+						</fo:block>
+						
+						<fo:block-container xsl:use-attribute-sets="example-body-style">
+							<fo:block-container margin-left="0mm" margin-right="0mm"> 
+								<xsl:apply-templates select="node()[not(local-name() = 'name')]">
+									<xsl:with-param name="fo_element" select="$fo_element"/>
+								</xsl:apply-templates>
+							</fo:block-container>
 						</fo:block-container>
-					</fo:block-container>
-				</xsl:when>
-				<xsl:otherwise>
-					<fo:inline>
-						<xsl:apply-templates select="node()[not(local-name() = 'name')]">
-							<xsl:with-param name="fo_element" select="$fo_element"/>
-						</xsl:apply-templates>
-					</fo:inline>
-				</xsl:otherwise>
-			</xsl:choose>
-			
-		</fo:block>
+					</xsl:when> <!-- end block -->
+					
+					<xsl:otherwise> <!-- inline -->
+					
+						<!-- display 'EXAMPLE' and first element in the same line -->
+						<fo:block>
+							<xsl:apply-templates select="*[local-name()='name']">
+								<xsl:with-param name="fo_element" select="$fo_element"/>
+							</xsl:apply-templates>
+							<fo:inline>
+								<xsl:apply-templates select="*[not(local-name() = 'name')][1]">
+									<xsl:with-param name="fo_element" select="$fo_element"/>
+								</xsl:apply-templates>
+							</fo:inline>
+						</fo:block> 
+						
+						<xsl:if test="*[not(local-name() = 'name')][position() &gt; 1]">
+							<!-- display further elements in blocks -->
+							<fo:block-container xsl:use-attribute-sets="example-body-style">
+								<fo:block-container margin-left="0mm" margin-right="0mm">
+									<xsl:apply-templates select="*[not(local-name() = 'name')][position() &gt; 1]">
+										<xsl:with-param name="fo_element" select="'block'"/>
+									</xsl:apply-templates>
+								</fo:block-container>
+							</fo:block-container>
+						</xsl:if>
+					</xsl:otherwise> <!-- end inline -->
+					
+				</xsl:choose>
+			</fo:block-container>
+		</fo:block-container>
 	</xsl:template>
 	
 	<xsl:template match="*[local-name() = 'example']/*[local-name() = 'name']">
@@ -10007,14 +10053,20 @@
 		</xsl:variable>		
 		<xsl:choose>			
 			<xsl:when test="starts-with(normalize-space($element), 'block')">
-				<fo:block xsl:use-attribute-sets="example-p-style">
-					<xsl:if test="$namespace = 'nist-cswp' or $namespace = 'unece' or $namespace = 'unece-rec'">
-						<xsl:if test="$num = 1">
-							<xsl:attribute name="margin-left">5mm</xsl:attribute>
-						</xsl:if>
+				<fo:block-container>
+					<xsl:if test="ancestor::*[local-name() = 'li'] and contains(normalize-space($fo_element), 'block')">
+						<xsl:attribute name="margin-left">0mm</xsl:attribute>
+						<xsl:attribute name="margin-right">0mm</xsl:attribute>
 					</xsl:if>
-					<xsl:apply-templates/>
-				</fo:block>
+					<fo:block xsl:use-attribute-sets="example-p-style">
+						<xsl:if test="$namespace = 'nist-cswp' or $namespace = 'unece' or $namespace = 'unece-rec'">
+							<xsl:if test="$num = 1">
+								<xsl:attribute name="margin-left">5mm</xsl:attribute>
+							</xsl:if>
+						</xsl:if>
+						<xsl:apply-templates/>
+					</fo:block>
+				</fo:block-container>
 			</xsl:when>
 			<xsl:otherwise>
 				<fo:inline xsl:use-attribute-sets="example-p-style">
