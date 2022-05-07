@@ -813,8 +813,12 @@
 	<xsl:template match="/ogc:ogc-standard/ogc:bibdata/ogc:edition">
 		<fo:block>
 			<xsl:variable name="title-version">
-				<xsl:call-template name="getTitle">
-					<xsl:with-param name="name" select="'title-version'"/>
+				<xsl:call-template name="capitalize">
+					<xsl:with-param name="str">
+						<xsl:call-template name="getLocalizedString">
+							<xsl:with-param name="key">version</xsl:with-param>
+						</xsl:call-template>
+					</xsl:with-param>
 				</xsl:call-template>
 			</xsl:variable>
 			<fo:inline font-weight="bold"><xsl:value-of select="$title-version"/><xsl:text>: </xsl:text></fo:inline>

@@ -157,10 +157,6 @@
 	-->
 	<xsl:variable name="titles_">
 		
-		<title-version lang="en">
-			<xsl:text>Version</xsl:text>
-		</title-version>
-		
 		
 		<!-- These titles of Table of contents renders different than determined in localized-strings -->
 		<title-toc lang="en">

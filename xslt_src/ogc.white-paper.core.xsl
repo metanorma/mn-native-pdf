@@ -382,8 +382,12 @@
 		<xsl:variable name="edition" select="."/>
 		<xsl:if test="normalize-space($edition) != ''">
 			<fo:block margin-top="6pt">
-				<xsl:call-template name="getTitle">
-					<xsl:with-param name="name" select="'title-version'"/>
+				<xsl:call-template name="capitalize">
+					<xsl:with-param name="str">
+						<xsl:call-template name="getLocalizedString">
+							<xsl:with-param name="key">version</xsl:with-param>
+						</xsl:call-template>
+					</xsl:with-param>
 				</xsl:call-template>
 				<xsl:text>: </xsl:text><xsl:value-of select="$edition"/>
 			</fo:block>

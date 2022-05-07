@@ -54,8 +54,12 @@
 			<xsl:variable name="edition" select="normalize-space(/rsd:rsd-standard/rsd:bibdata/rsd:edition[normalize-space(@language) = ''])"/>
 			<xsl:if test="$edition != ''">
 				<xsl:variable name="title-version">
-					<xsl:call-template name="getTitle">
-						<xsl:with-param name="name" select="'title-version'"/>
+					<xsl:call-template name="capitalize">
+						<xsl:with-param name="str">
+							<xsl:call-template name="getLocalizedString">
+								<xsl:with-param name="key">version</xsl:with-param>
+							</xsl:call-template>
+						</xsl:with-param>
 					</xsl:call-template>
 				</xsl:variable>
 				<xsl:text>, </xsl:text><xsl:value-of select="$title-version"/><xsl:text> </xsl:text><xsl:value-of select="$edition"/>
