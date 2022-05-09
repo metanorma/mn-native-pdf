@@ -18,6 +18,18 @@
 	<xsl:param name="add_math_as_text">true</xsl:param> <!-- add math in text behind svg formula, to copy-paste formula from PDF as text -->
 	<xsl:param name="table_if">false</xsl:param> <!-- generate extended table in IF for autolayout-algorithm -->
 	<xsl:param name="table_widths" /> <!-- path to xml with table's widths, generated on 1st pass, based on FOP Intermediate Format -->
+	<!-- Example: <tables>
+			<table id="tab-symdu" page-width="75">
+				<tbody>
+					<tr>
+						<td id="tab-symdu_1_1">
+							<p_len>6</p_len>
+							<p_len>100</p_len>  for 2nd paragraph
+							<word_len>6</word_len>
+							<word_len>20</word_len>
+						...
+	-->
+	
 
 	<xsl:variable name="lang">
 		<xsl:call-template name="getLang"/>
@@ -4841,6 +4853,7 @@
 				<xsl:call-template name="calculate-column-widths-autolayout-algorithm">
 					<xsl:with-param name="cols-count" select="$cols-count"/>
 					<xsl:with-param name="table" select="$table"/>
+					<xsl:with-param name="if">true</xsl:with-param>
 				</xsl:call-template>
 			</xsl:when>
 			<xsl:otherwise>
@@ -5010,19 +5023,46 @@
 	<!-- Calculate column's width based on HTML4 algorithm -->
 	<!-- (https://www.w3.org/TR/REC-html40/appendix/notes.html#h-B.5.2) -->
 	<!-- ================================================== -->
+	
+	<xsl:variable name="table_widths_from_if" select="document($table_widths)"/>
+	
 	<xsl:template name="calculate-column-widths-autolayout-algorithm">
-		<xsl:param name="cols-count"/>
 		<xsl:param name="table"/>
+		<xsl:param name="if">false</xsl:param> <!-- via intermediate format -->
+
+		<!-- The algorithm uses two passes through the table data and scales linearly with the size of the table -->
+	 
+		<!-- In the first pass, line wrapping is disabled, and the user agent keeps track of the minimum and maximum width of each cell. -->
+	 
+		<!-- Since line wrap has been disabled, paragraphs are treated as long lines unless broken by BR elements. -->
+		 
+		 
+		<!-- get current table id -->
+		<xsl:variable name="table_id" select="xalan:nodeset($table)//tbody/@id"/>
+		<!-- find table by id in the file 'table_widths' -->
+		<xsl:variable name="table-if_" select="$table_widths_from_if//table[@id = $table_id]"/>
+		<xsl:variable name="table-if" select="xalan:nodeset($table-if_)"/>
 		
-		 <!-- The algorithm uses two passes through the table data and scales linearly with the size of the table -->
-		 
-		 <!-- In the first pass, line wrapping is disabled, and the user agent keeps track of the minimum and maximum width of each cell. -->
-		 
-		 <!-- Since line wrap has been disabled, paragraphs are treated as long lines unless broken by BR elements. -->
-		 <!-- to do: split to paragraphs by 'br' in getSimpleTable -->
-		 
 		<xsl:variable name="table_with_cell_widths_">
-			<xsl:apply-templates select="xalan:nodeset($table)" mode="determine_cell_widths"/>
+			<xsl:choose>
+				<xsl:when test="$if = 'true' and normalize-space($table-if) != ''">
+				
+					<!-- table=<xsl:copy-of select="$table"/> -->
+		
+					<!-- table_id=<xsl:value-of select="$table_id"/>
+					table_widths_from_if=<xsl:copy-of select="$table_widths_from_if"/> -->
+					
+					
+					<!-- <column>10</column>
+					<column>11</column> -->
+					<!-- table-if='<xsl:copy-of select="$table-if"/>' -->
+				
+					<xsl:apply-templates select="$table-if" mode="determine_cell_widths-if"/>
+				</xsl:when>
+				<xsl:otherwise>
+					<xsl:apply-templates select="xalan:nodeset($table)" mode="determine_cell_widths"/>
+				</xsl:otherwise>
+			</xsl:choose>
 		</xsl:variable>
 		<xsl:variable name="table_with_cell_widths" select="xalan:nodeset($table_with_cell_widths_)"/>
 		<!-- <xsl:copy-of select="$table_with_cell_widths"/> -->
@@ -5069,7 +5109,12 @@
 		</xsl:variable>
 		<xsl:variable name="table_widths" select="xalan:nodeset($table_widths_)" />
 		
-		<xsl:variable name="page_width">75</xsl:variable>
+		<xsl:variable name="page_width">
+			<xsl:choose>
+				<xsl:when test="$if = 'true'"><xsl:value-of select="$table-if/@page-width"/></xsl:when>
+				<xsl:otherwise>75</xsl:otherwise>
+			</xsl:choose>
+		</xsl:variable>
 		
 		<!-- <table_width>
 			<xsl:copy-of select="$table_widths"/>
@@ -5085,6 +5130,7 @@
 			<xsl:when test="$table_widths/table/@width_min &gt;= $page_width">
 				<!-- call old algorithm -->
 				<case1/>
+				<xsl:variable name="cols-count" select="count(xalan:nodeset($table)/*/tr[1]/td)"/>
 				<xsl:call-template name="calculate-column-widths-proportional">
 					<xsl:with-param name="cols-count" select="$cols-count"/>
 					<xsl:with-param name="table" select="$table"/>
@@ -5224,6 +5270,49 @@
 		<width><xsl:value-of select="$p_text_len + $math_addon_length"/></width>
 	</xsl:template>
 	
+	<!-- ============================= -->
+	<!-- mode: determine_cell_widths-if -->
+	<!-- ============================= -->
+	<xsl:template match="@*|node()" mode="determine_cell_widths-if">
+		<xsl:copy>
+				<xsl:apply-templates select="@*|node()" mode="determine_cell_widths-if"/>
+		</xsl:copy>
+	</xsl:template>
+	
+	<xsl:template match="td | th" mode="determine_cell_widths-if">
+		<xsl:copy>
+			<xsl:copy-of select="@*"/>
+			
+			 <!-- The maximum width is given by the widest line.  -->
+			<xsl:attribute name="width_max">
+				<xsl:for-each select="p_len">
+					<xsl:sort select="." data-type="number" order="descending"/>
+					<xsl:if test="position() = 1"><xsl:value-of select="."/></xsl:if>
+				</xsl:for-each>
+			</xsl:attribute>
+			
+			<!-- The minimum width is given by the widest text element (word, image, etc.) -->
+			<xsl:variable name="width_min">
+				<xsl:for-each select="word_len">
+					<xsl:sort select="." data-type="number" order="descending"/>
+					<xsl:if test="position() = 1"><xsl:value-of select="."/></xsl:if>
+				</xsl:for-each>
+			</xsl:variable>
+			<xsl:attribute name="width_min">
+				<xsl:value-of select="$width_min"/>
+			</xsl:attribute>
+			
+			<xsl:if test="$width_min = 0">
+				<xsl:attribute name="width_min">1</xsl:attribute>
+			</xsl:if>
+			
+			<xsl:apply-templates select="node()" mode="determine_cell_widths-if"/>
+			
+		</xsl:copy>
+	</xsl:template>
+	<!-- ============================= -->
+	<!-- END mode: determine_cell_widths-if -->
+	<!-- ============================= -->
 	
 	<!-- ================================================== -->
 	<!-- Calculate column's width based on HTML4 algorithm -->
