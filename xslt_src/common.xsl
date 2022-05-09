@@ -16,6 +16,8 @@
 	<xsl:param name="external_index" /><!-- path to index xml, generated on 1st pass, based on FOP Intermediate Format -->
 	<xsl:param name="syntax-highlight">false</xsl:param> <!-- syntax highlighting feature, default - off -->
 	<xsl:param name="add_math_as_text">true</xsl:param> <!-- add math in text behind svg formula, to copy-paste formula from PDF as text -->
+	<xsl:param name="table_if">false</xsl:param> <!-- generate extended table in IF for autolayout-algorithm -->
+	<xsl:param name="table_widths" /> <!-- path to xml with table's widths, generated on 1st pass, based on FOP Intermediate Format -->
 
 	<xsl:variable name="lang">
 		<xsl:call-template name="getLang"/>
@@ -4388,7 +4390,9 @@
 		<xsl:variable name="table">
 	
 			<xsl:variable name="simple-table">	
-				<xsl:call-template name="getSimpleTable"/>
+				<xsl:call-template name="getSimpleTable">
+					<xsl:with-param name="id" select="@id"/>
+				</xsl:call-template>
 			</xsl:variable>
 		
 			<!-- <xsl:copy-of select="$simple-table"/> -->
@@ -6247,7 +6251,7 @@
 			<xsl:variable name="following_dl_colwidths">
 				<xsl:if test="*[local-name() = 'dl']"><!-- if there is a 'dl', then set the same columns width as for 'dl' -->
 					<xsl:variable name="html-table">
-						<xsl:variable name="doc_ns">
+						<!-- <xsl:variable name="doc_ns">
 							<xsl:if test="$namespace = 'bipm'">bipm</xsl:if>
 						</xsl:variable>
 						<xsl:variable name="ns">
@@ -6259,7 +6263,7 @@
 									<xsl:value-of select="substring-before(name(/*), '-')"/>
 								</xsl:otherwise>
 							</xsl:choose>
-						</xsl:variable>
+						</xsl:variable> -->
 						
 						<xsl:for-each select="*[local-name() = 'dl'][1]">
 							<tbody>
@@ -6605,7 +6609,7 @@
 								</xsl:choose>
 								<!-- create virtual html table for dl/[dt and dd] -->
 								<xsl:variable name="html-table">
-									<xsl:variable name="doc_ns">
+									<!-- <xsl:variable name="doc_ns">
 										<xsl:if test="$namespace = 'bipm'">bipm</xsl:if>
 									</xsl:variable>
 									<xsl:variable name="ns">
@@ -6617,9 +6621,11 @@
 												<xsl:value-of select="substring-before(name(/*), '-')"/>
 											</xsl:otherwise>
 										</xsl:choose>
-									</xsl:variable>
+									</xsl:variable> -->
 									<tbody>
-										<xsl:apply-templates mode="dl"/>
+										<xsl:apply-templates mode="dl">
+											<xsl:with-param name="id" select="@id"/>
+										</xsl:apply-templates>
 									</tbody>
 								</xsl:variable>
 								<!-- DEBUG: html-table<xsl:copy-of select="$html-table"/> -->
@@ -6805,11 +6811,18 @@
 	
 	<!-- virtual html table for dl/[dt and dd]  -->
 	<xsl:template match="*[local-name()='dt']" mode="dl">
+		<xsl:param name="id"/>
 		<tr>
 			<td>
+				<xsl:attribute name="id">
+					<xsl:value-of select="concat($id,'_')"/><xsl:number/><xsl:text>_1</xsl:text>
+				</xsl:attribute>
 				<xsl:apply-templates />
 			</td>
 			<td>
+				<xsl:attribute name="id">
+					<xsl:value-of select="concat($id,'_')"/><xsl:number/><xsl:text>_2</xsl:text>
+				</xsl:attribute>
 				<xsl:choose>
 					<xsl:when test="$namespace = 'nist-cswp' or $namespace = 'nist-sp'">
 						<xsl:if test="local-name(*[1]) != 'stem'">
@@ -6830,9 +6843,15 @@
 			<xsl:if test="local-name(*[1]) = 'stem'">
 				<tr>
 					<td>
+						<xsl:attribute name="id">
+							<xsl:value-of select="concat($id,'_')"/><xsl:number/><xsl:text>_1_1</xsl:text>
+						</xsl:attribute>
 						<xsl:text>&#xA0;</xsl:text>
 					</td>
 					<td>
+						<xsl:attribute name="id">
+							<xsl:value-of select="concat($id,'_')"/><xsl:number/><xsl:text>_2_2</xsl:text>
+						</xsl:attribute>
 						<xsl:apply-templates select="following-sibling::*[local-name()='dd'][1]" mode="dl_process"/>
 					</td>
 				</tr>
@@ -7346,6 +7365,8 @@
 	
 	<!-- Table normalization (colspan,rowspan processing for adding TDs) for column width calculation -->
 	<xsl:template name="getSimpleTable">
+		<xsl:param name="id"/>
+		
 		<xsl:variable name="simple-table">
 		
 			<!-- Step 0. replace <br/> to <p>...</p> -->
@@ -7365,8 +7386,15 @@
 				<xsl:apply-templates select="xalan:nodeset($simple-table-colspan)" mode="simple-table-rowspan"/>
 			</xsl:variable>
 			
-			<xsl:copy-of select="xalan:nodeset($simple-table-rowspan)"/>
-					
+			<!-- Step 3: add id to each cell -->
+			<xsl:variable name="simple-table-id">
+				<xsl:apply-templates select="xalan:nodeset($simple-table-rowspan)" mode="simple-table-id">
+					<xsl:with-param name="id" select="$id"/>
+				</xsl:apply-templates>
+			</xsl:variable>
+			
+			<xsl:copy-of select="xalan:nodeset($simple-table-id)"/>
+
 		</xsl:variable>
 		<xsl:copy-of select="$simple-table"/>
 	</xsl:template>
@@ -7557,6 +7585,37 @@
 		</xsl:apply-templates>
 	</xsl:template>
 	<!-- End mode simple-table-rowspan  -->
+	
+	<!-- Step 3: add id for each cell -->
+	<!-- mode: simple-table-id -->
+	<xsl:template match="/" mode="simple-table-id">
+		<xsl:param name="id"/>
+		<xsl:apply-templates select="@*|node()" mode="simple-table-id">
+			<xsl:with-param name="id" select="$id"/>
+		</xsl:apply-templates>
+	</xsl:template>
+	<xsl:template match="@*|node()" mode="simple-table-id">
+		<xsl:param name="id"/>
+		<xsl:copy>
+				<xsl:apply-templates select="@*|node()" mode="simple-table-id">
+					<xsl:with-param name="id" select="$id"/>
+				</xsl:apply-templates>
+		</xsl:copy>
+	</xsl:template>
+	
+	<xsl:template match="*[local-name()='th'] | *[local-name()='td']" mode="simple-table-id">
+		<xsl:param name="id"/>
+		<xsl:copy>
+			<xsl:copy-of select="@*" />
+			<xsl:variable name="row_number"><xsl:number count="tr"/></xsl:variable>
+				 
+			<xsl:attribute name="id">
+				<xsl:value-of select="concat($id,'_',$row_number,'_')"/><xsl:number />
+			</xsl:attribute>
+			<xsl:copy-of select="node()" />
+		</xsl:copy>
+	</xsl:template>
+	<!-- End mode: simple-table-id -->
 	<!-- ===================== -->	
 	<!-- ===================== -->	
 
@@ -10095,7 +10154,9 @@
 						<!-- <xsl:attribute name="border">0.5pt solid black</xsl:attribute> -->
 					</xsl:if>
 					<xsl:variable name="simple-table">	
-						<xsl:call-template  name="getSimpleTable"/>			
+						<xsl:call-template name="getSimpleTable">
+							<xsl:with-param name="id" select="@id"/>
+						</xsl:call-template>
 					</xsl:variable>					
 					<xsl:variable name="cols-count" select="count(xalan:nodeset($simple-table)//tr[1]/td)"/>
 					<xsl:if test="$cols-count = 2 and not(ancestor::*[local-name()='table'])">
