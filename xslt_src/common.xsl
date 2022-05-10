@@ -6755,69 +6755,120 @@
 										</xsl:if>
 									</xsl:when>
 								</xsl:choose>
-								<!-- create virtual html table for dl/[dt and dd] -->
-								<xsl:variable name="html-table">
-									<!-- <xsl:variable name="doc_ns">
-										<xsl:if test="$namespace = 'bipm'">bipm</xsl:if>
-									</xsl:variable>
-									<xsl:variable name="ns">
-										<xsl:choose>
-											<xsl:when test="normalize-space($doc_ns)  != ''">
-												<xsl:value-of select="normalize-space($doc_ns)"/>
-											</xsl:when>
-											<xsl:otherwise>
-												<xsl:value-of select="substring-before(name(/*), '-')"/>
-											</xsl:otherwise>
-										</xsl:choose>
-									</xsl:variable> -->
-									<tbody>
-										<xsl:apply-templates mode="dl">
-											<xsl:with-param name="id" select="@id"/>
-										</xsl:apply-templates>
-									</tbody>
-								</xsl:variable>
 								
 								<!-- DEBUG: html-table<xsl:copy-of select="$html-table"/> -->
 								
-								<xsl:variable name="colwidths">
-									<xsl:call-template name="calculate-column-widths">
-										<xsl:with-param name="cols-count" select="2"/>
-										<xsl:with-param name="table" select="$html-table"/>
-									</xsl:call-template>
-								</xsl:variable>
+								<xsl:choose>
+									<xsl:when test="$table_if = 'true'">
+										<!-- generate IF for table widths -->
+										<!-- example:
+											<tr>
+												<td valign="top" align="left" id="tab-symdu_1_1">
+													<p>Symbol</p>
+													<word id="tab-symdu_1_1_word_1">Symbol</word>
+												</td>
+												<td valign="top" align="left" id="tab-symdu_1_2">
+													<p>Description</p>
+													<word id="tab-symdu_1_2_word_1">Description</word>
+												</td>
+											</tr>
+										-->
+										
+										<!-- create virtual html table for dl/[dt and dd] -->
+										<xsl:variable name="html-table">
+											
+											<xsl:variable name="dl_table">
+												<tbody>
+													<xsl:apply-templates mode="dl_if">
+														<xsl:with-param name="id" select="@id"/>
+													</xsl:apply-templates>
+												</tbody>
+											</xsl:variable>
+											
+											<!-- dl_table='<xsl:copy-of select="$dl_table"/>' -->
+											
+											<!-- Step: replace <br/> to <p>...</p> -->
+											<xsl:variable name="table_without_br">
+												<xsl:apply-templates select="xalan:nodeset($dl_table)" mode="table-without-br"/>
+											</xsl:variable>
+											
+											<!-- table_without_br='<xsl:copy-of select="$table_without_br"/>' -->
+											
+											<!-- Step: add id to each cell -->
+											<!-- add <word>...</word> for each word, image, math -->
+											<xsl:variable name="simple-table-id">
+												<xsl:apply-templates select="xalan:nodeset($table_without_br)" mode="simple-table-id">
+													<xsl:with-param name="id" select="@id"/>
+												</xsl:apply-templates>
+											</xsl:variable>
+											
+											<!-- simple-table-id='<xsl:copy-of select="$simple-table-id"/>' -->
+											
+											<xsl:copy-of select="xalan:nodeset($simple-table-id)"/>
+											
+										</xsl:variable>
+										
+										<!-- DEBUG: html-table<xsl:copy-of select="$html-table"/> -->
+										
+										
+										<xsl:apply-templates select="xalan:nodeset($html-table)" mode="process_table-if"/>
+										
+									</xsl:when>
+									<xsl:otherwise>
 								
+										<xsl:variable name="html-table">
+										
+											<xsl:variable name="dl_table">
+												<tbody>
+													<xsl:apply-templates mode="dl">
+														<xsl:with-param name="id" select="@id"/>
+													</xsl:apply-templates>
+												</tbody>
+											</xsl:variable>
+											
+											<xsl:copy-of select="$dl_table"/>
+										</xsl:variable>
 								
-								<!-- <xsl:text disable-output-escaping="yes">&lt;!- -</xsl:text>
-									DEBUG
-									colwidths=<xsl:copy-of select="$colwidths"/>
-								<xsl:text disable-output-escaping="yes">- -&gt;</xsl:text> -->
-								
-								<!-- DEBUG: colwidths=<xsl:copy-of select="$colwidths"/> -->
-								<xsl:variable name="maxlength_dt">							
-									<xsl:call-template name="getMaxLength_dt"/>							
-								</xsl:variable>
-								<xsl:variable name="isContainsKeepTogetherTag_">
-									<xsl:choose>
-										<xsl:when test="$namespace = 'iso'">
-										 <!-- <xsl:value-of select="count(.//*[local-name() = 'strong'][translate(., $express_reference_characters, '') = '']) &gt; 0"/> -->
-										 <xsl:value-of select="count(.//*[local-name() = $element_name_keep-together_within-line]) &gt; 0"/>
-										</xsl:when>
-										<xsl:otherwise>false</xsl:otherwise>
+											<xsl:variable name="colwidths">
+												<xsl:call-template name="calculate-column-widths">
+													<xsl:with-param name="cols-count" select="2"/>
+													<xsl:with-param name="table" select="$html-table"/>
+												</xsl:call-template>
+											</xsl:variable>
+											
+											<!-- <xsl:text disable-output-escaping="yes">&lt;!- -</xsl:text>
+												DEBUG
+												colwidths=<xsl:copy-of select="$colwidths"/>
+											<xsl:text disable-output-escaping="yes">- -&gt;</xsl:text> -->
+											
+											<!-- DEBUG: colwidths=<xsl:copy-of select="$colwidths"/> -->
+											<xsl:variable name="maxlength_dt">							
+												<xsl:call-template name="getMaxLength_dt"/>							
+											</xsl:variable>
+											<xsl:variable name="isContainsKeepTogetherTag_">
+												<xsl:choose>
+													<xsl:when test="$namespace = 'iso'">
+													 <!-- <xsl:value-of select="count(.//*[local-name() = 'strong'][translate(., $express_reference_characters, '') = '']) &gt; 0"/> -->
+													 <xsl:value-of select="count(.//*[local-name() = $element_name_keep-together_within-line]) &gt; 0"/>
+													</xsl:when>
+													<xsl:otherwise>false</xsl:otherwise>
+												</xsl:choose>
+											</xsl:variable>
+											<xsl:variable name="isContainsKeepTogetherTag" select="normalize-space($isContainsKeepTogetherTag_)"/>
+											<!-- isContainsExpressReference=<xsl:value-of select="$isContainsExpressReference"/> -->
+											<xsl:call-template name="setColumnWidth_dl">
+												<xsl:with-param name="colwidths" select="$colwidths"/>							
+												<xsl:with-param name="maxlength_dt" select="$maxlength_dt"/>
+												<xsl:with-param name="isContainsKeepTogetherTag" select="$isContainsKeepTogetherTag"/>
+											</xsl:call-template>
+											
+											<fo:table-body>
+												<xsl:apply-templates>
+													<xsl:with-param name="key_iso" select="normalize-space($key_iso)"/>
+												</xsl:apply-templates>
+											</fo:table-body>
+										</xsl:otherwise>
 									</xsl:choose>
-								</xsl:variable>
-								<xsl:variable name="isContainsKeepTogetherTag" select="normalize-space($isContainsKeepTogetherTag_)"/>
-								<!-- isContainsExpressReference=<xsl:value-of select="$isContainsExpressReference"/> -->
-								<xsl:call-template name="setColumnWidth_dl">
-									<xsl:with-param name="colwidths" select="$colwidths"/>							
-									<xsl:with-param name="maxlength_dt" select="$maxlength_dt"/>
-									<xsl:with-param name="isContainsKeepTogetherTag" select="$isContainsKeepTogetherTag"/>
-								</xsl:call-template>
-								
-								<fo:table-body>
-									<xsl:apply-templates>
-										<xsl:with-param name="key_iso" select="normalize-space($key_iso)"/>
-									</xsl:apply-templates>
-								</fo:table-body>
 							</fo:table>
 						</fo:block>
 					</fo:block>
@@ -7068,6 +7119,44 @@
 	<xsl:template match="*[local-name()='dd']/*[local-name()='p']" mode="inline">
 		<fo:inline><xsl:text> </xsl:text><xsl:apply-templates /></fo:inline>
 	</xsl:template>
+	
+	
+	<!-- virtual html table for dl/[dt and dd] for IF (Intermediate Format) -->
+	<xsl:template match="*[local-name()='dt']" mode="dl_if">
+		<xsl:param name="id"/>
+		<xsl:variable name="row_number" select="count(preceding-sibling::*[local-name()='dt']) + 1"/>
+		<tr>
+			<td>
+				<xsl:copy-of select="node()"/>
+			</td>
+			<td>
+				<xsl:choose>
+					<xsl:when test="$namespace = 'nist-cswp' or $namespace = 'nist-sp'">
+						<xsl:if test="local-name(*[1]) != 'stem'">
+							<xsl:copy-of select="following-sibling::*[local-name()='dd'][1]/node()"/>
+						</xsl:if>
+					</xsl:when>
+					<xsl:otherwise>
+						<xsl:copy-of  select="following-sibling::*[local-name()='dd'][1]/node()"/>
+					</xsl:otherwise>
+				</xsl:choose>
+			</td>
+		</tr>
+		<xsl:if test="$namespace = 'nist-cswp' or $namespace = 'nist-sp'">
+			<xsl:if test="local-name(*[1]) = 'stem'">
+				<tr>
+					<td>
+						<xsl:text>&#xA0;</xsl:text>
+					</td>
+					<td>
+						<xsl:copy-of select="following-sibling::*[local-name()='dd'][1]/node()" />
+					</td>
+				</tr>
+			</xsl:if>
+		</xsl:if>
+	</xsl:template>
+	<xsl:template match="*[local-name()='dd']" mode="dl_if"/>
+	
 	<!-- ===================== -->
 	<!-- END Definition List -->
 	<!-- ===================== -->
