@@ -4996,8 +4996,12 @@
 		</xsl:if>
 	</xsl:template> <!-- calculate-column-widths-proportional -->
 	
+	
+	<!-- ================================= -->
+	<!-- mode="td_text" -->
+	<!-- ================================= -->
 	<!-- replace each each char to 'X', just to process the tag 'keep-together_within-line' as whole word in longest word calculation -->
-	<xsl:template match="*[@keep-together.within-line]/text()" priority="2" mode="td_text">
+	<xsl:template match="*[@keep-together.within-line or local-name() = 'keep-together_within-line']/text()" priority="2" mode="td_text">
 		<!-- <xsl:message>DEBUG t1=<xsl:value-of select="."/></xsl:message>
 		<xsl:message>DEBUG t2=<xsl:value-of select="java:replaceAll(java:java.lang.String.new(.),'.','X')"/></xsl:message> -->
 		<xsl:value-of select="java:replaceAll(java:java.lang.String.new(.),'.','X')"/>
@@ -5010,7 +5014,6 @@
 			</xsl:call-template>
 		</xsl:if>
 	</xsl:template>
-	
 	
 	<xsl:template match="text()" mode="td_text">
 		<xsl:value-of select="translate(., $zero_width_space, ' ')"/><xsl:text> </xsl:text>
@@ -5043,6 +5046,9 @@
 			<xsl:value-of select="translate($math_text, ' ', '#')"/><!-- mathml images as one 'word' without spaces -->
 		</xsl:if>
 	</xsl:template>
+	<!-- ================================= -->
+	<!-- END mode="td_text" -->
+	<!-- ================================= -->
 	<!-- ================================================== -->
 	<!-- END Calculate column's width based on text string max widths -->
 	<!-- ================================================== -->
@@ -6770,7 +6776,9 @@
 										</xsl:apply-templates>
 									</tbody>
 								</xsl:variable>
+								
 								<!-- DEBUG: html-table<xsl:copy-of select="$html-table"/> -->
+								
 								<xsl:variable name="colwidths">
 									<xsl:call-template name="calculate-column-widths">
 										<xsl:with-param name="cols-count" select="2"/>
@@ -7406,6 +7414,59 @@
 		</xsl:choose>
 	</xsl:template>
 
+
+	<!-- split string 'text' by 'separator', enclosing in formatting tags -->
+	<xsl:template name="tokenize_with_tags">
+		<xsl:param name="tags"/>
+		<xsl:param name="text"/>
+		<xsl:param name="separator" select="' '"/>
+		<xsl:choose>
+		
+			<xsl:when test="not(contains($text, $separator))">
+				<word>
+					<xsl:call-template name="enclose_text_in_tags">
+						<xsl:with-param name="text" select="normalize-space($text)"/>
+						<xsl:with-param name="tags" select="$tags"/>
+					</xsl:call-template>
+				</word>
+			</xsl:when>
+			<xsl:otherwise>
+				<word>
+					<xsl:call-template name="enclose_text_in_tags">
+						<xsl:with-param name="text" select="normalize-space(substring-before($text, $separator))"/>
+						<xsl:with-param name="tags" select="$tags"/>
+					</xsl:call-template>
+				</word>
+				<xsl:call-template name="tokenize_with_tags">
+					<xsl:with-param name="text" select="substring-after($text, $separator)"/>
+				</xsl:call-template>
+			</xsl:otherwise>
+		</xsl:choose>
+	</xsl:template>
+	
+
+	<xsl:template name="enclose_text_in_tags">
+		<xsl:param name="text"/>
+		<xsl:param name="tags"/>
+		<xsl:param name="num">1</xsl:param> <!-- default (start) value -->
+		
+		<xsl:variable name="tag_name" select="normalize-space(xalan:nodeset($tags)//tag[$num])"/>
+		
+		<xsl:choose>
+			<xsl:when test="$tag_name = ''"><xsl:value-of select="$text"/></xsl:when>
+			<xsl:otherwise>
+				<xsl:element name="{$tag_name}">
+					<xsl:call-template name="enclose_text_in_tags">
+						<xsl:with-param name="text" select="$text"/>
+						<xsl:with-param name="tags" select="$tags"/>
+						<xsl:with-param name="num" select="$num + 1"/>
+					</xsl:call-template>
+				</xsl:element>
+			</xsl:otherwise>
+		</xsl:choose>
+	</xsl:template>
+
+
 	<!-- get max value in array -->
 	<xsl:template name="max_length">
 		<xsl:param name="words"/>
@@ -7803,6 +7864,13 @@
 			
 			
 			<xsl:if test="$table_if = 'true'"> <!-- split each paragraph to words, image, math -->
+			
+				<xsl:variable name="td_text">
+					<xsl:apply-templates select="." mode="td_text_with_formatting"/>
+				</xsl:variable>
+				
+				<!-- td_text='<xsl:copy-of select="$td_text"/>' -->
+			
 				<xsl:variable name="words">
 					<xsl:for-each select=".//*[local-name() = 'image' or local-name() = 'stem']">
 						<word>
@@ -7810,19 +7878,9 @@
 						</word>
 					</xsl:for-each>
 					
-					<xsl:variable name="td_text">
-						<xsl:apply-templates select="." mode="td_text"/>
-					</xsl:variable>
-					
-					<xsl:variable name="string_with_added_zerospaces">
-						<xsl:call-template name="add-zero-spaces-java">
-							<xsl:with-param name="text" select="$td_text"/>
-						</xsl:call-template>
-					</xsl:variable>
-					<!-- <word>text</word> -->
-					<xsl:call-template name="tokenize">
-						<xsl:with-param name="text" select="normalize-space(translate($string_with_added_zerospaces, '&#x200B;&#xAD;', '  '))"/> <!-- replace zero-width-space and soft-hyphen to space -->
-					</xsl:call-template>
+					<xsl:for-each select="xalan:nodeset($td_text)//*[local-name() = 'word']">
+						<xsl:copy-of select="."/>
+					</xsl:for-each>
 					
 				</xsl:variable>
 				
@@ -7842,6 +7900,66 @@
 	<!-- End mode: simple-table-id -->
 	<!-- ===================== -->	
 	<!-- ===================== -->	
+
+	
+	<!-- =============================== -->
+	<!-- mode="td_text_with_formatting" -->
+	<!-- =============================== -->
+	<xsl:template match="@*|node()" mode="td_text_with_formatting">
+		<xsl:copy>
+				<xsl:apply-templates select="@*|node()" mode="td_text_with_formatting"/>
+		</xsl:copy>
+	</xsl:template>
+
+	<xsl:template match="*[local-name() = 'stem' or local-name() = 'image']" mode="td_text_with_formatting"/>
+
+	<xsl:template match="*[local-name() = 'keep-together_within-line']/text()" mode="td_text_with_formatting">
+		<xsl:variable name="formatting_tags">
+			<xsl:call-template name="getFormattingTags"/>
+		</xsl:variable>
+		<word>
+			<xsl:call-template name="enclose_text_in_tags">
+				<xsl:with-param name="text" select="normalize-space(.)"/>
+				<xsl:with-param name="tags" select="$formatting_tags"/>
+			</xsl:call-template>
+		</word>
+	</xsl:template>
+
+	<xsl:template match="*[local-name() != 'keep-together_within-line']/text()" mode="td_text_with_formatting">
+		
+		<xsl:variable name="td_text" select="."/>
+		
+		<xsl:variable name="string_with_added_zerospaces">
+			<xsl:call-template name="add-zero-spaces-java">
+				<xsl:with-param name="text" select="$td_text"/>
+			</xsl:call-template>
+		</xsl:variable>
+		
+		<xsl:variable name="formatting_tags">
+			<xsl:call-template name="getFormattingTags"/>
+		</xsl:variable>
+		
+		<!-- <word>text</word> -->
+		<xsl:call-template name="tokenize_with_tags">
+			<xsl:with-param name="tags" select="$formatting_tags"/>
+			<xsl:with-param name="text" select="normalize-space(translate($string_with_added_zerospaces, '&#x200B;&#xAD;', '  '))"/> <!-- replace zero-width-space and soft-hyphen to space -->
+		</xsl:call-template>
+	</xsl:template>
+
+	<xsl:template name="getFormattingTags">
+		<tags>
+			<xsl:if test="ancestor::*[local-name() = 'strong']"><tag>strong</tag></xsl:if>
+			<xsl:if test="ancestor::*[local-name() = 'em']"><tag>em</tag></xsl:if>
+			<xsl:if test="ancestor::*[local-name() = 'sub']"><tag>sub</tag></xsl:if>
+			<xsl:if test="ancestor::*[local-name() = 'sup']"><tag>sup</tag></xsl:if>
+			<xsl:if test="ancestor::*[local-name() = 'tt']"><tag>tt</tag></xsl:if>
+			<xsl:if test="ancestor::*[local-name() = 'keep-together_within-line']"><tag>keep-together_within-line</tag></xsl:if>
+		</tags>
+	</xsl:template>
+	<!-- =============================== -->
+	<!-- END mode="td_text_with_formatting" -->
+	<!-- =============================== -->
+
 
 	<xsl:template name="getLang">
 		<xsl:variable name="language_current" select="normalize-space(//*[local-name()='bibdata']//*[local-name()='language'][@current = 'true'])"/>
