@@ -19,7 +19,7 @@
 	<xsl:param name="table_if">false</xsl:param> <!-- generate extended table in IF for autolayout-algorithm -->
 	<xsl:param name="table_widths" /> <!-- path to xml with table's widths, generated on 1st pass, based on FOP Intermediate Format -->
 	<!-- Example: <tables>
-			<table id="tab-symdu" page-width="75">
+			<table id="table_if_tab-symdu" page-width="75"> - table id prefixed by 'table_if_' to simple search in IF 
 				<tbody>
 					<tr>
 						<td id="tab-symdu_1_1">
@@ -7905,8 +7905,9 @@
 	<!-- mode: simple-table-id -->
 	<xsl:template match="/" mode="simple-table-id">
 		<xsl:param name="id"/>
+		<xsl:variable name="id_prefixed" select="concat('table_if_',$id)"/> <!-- table id prefixed by 'table_if_' to simple search in IF  -->
 		<xsl:apply-templates select="@*|node()" mode="simple-table-id">
-			<xsl:with-param name="id" select="$id"/>
+			<xsl:with-param name="id" select="$id_prefixed"/>
 		</xsl:apply-templates>
 	</xsl:template>
 	<xsl:template match="@*|node()" mode="simple-table-id">
@@ -7967,7 +7968,7 @@
 						</word>
 					</xsl:for-each>
 					
-					<xsl:for-each select="xalan:nodeset($td_text)//*[local-name() = 'word']">
+					<xsl:for-each select="xalan:nodeset($td_text)//*[local-name() = 'word'][normalize-space() != '']">
 						<xsl:copy-of select="."/>
 					</xsl:for-each>
 					
