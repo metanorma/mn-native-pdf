@@ -4401,11 +4401,12 @@
 		
 		<xsl:variable name="table">
 	
-			<xsl:variable name="simple-table">	
+			<xsl:variable name="simple-table_">	
 				<xsl:call-template name="getSimpleTable">
 					<xsl:with-param name="id" select="@id"/>
 				</xsl:call-template>
 			</xsl:variable>
+			<xsl:variable name="simple-table" select="xalan:nodeset($simple-table_)"/>
 		
 			<!-- <xsl:copy-of select="$simple-table"/> -->
 		
@@ -4432,7 +4433,7 @@
 				</xsl:otherwise>
 			</xsl:choose>
 			
-			<xsl:variable name="cols-count" select="count(xalan:nodeset($simple-table)/*/tr[1]/td)"/>
+			<xsl:variable name="cols-count" select="count($simple-table/*/tr[1]/td)"/>
 			
 			<xsl:variable name="colwidths">
 				<xsl:if test="not(*[local-name()='colgroup']/*[local-name()='col'])">
@@ -4652,7 +4653,23 @@
 					<xsl:choose>
 						<xsl:when test="$table_if = 'true'">
 							<!-- generate IF for table widths -->
-								
+							<!-- example:
+								<tr>
+									<td valign="top" align="left" id="tab-symdu_1_1">
+										<p>Symbol</p>
+										<word id="tab-symdu_1_1_word_1">Symbol</word>
+									</td>
+									<td valign="top" align="left" id="tab-symdu_1_2">
+										<p>Description</p>
+										<word id="tab-symdu_1_2_word_1">Description</word>
+									</td>
+								</tr>
+							-->
+							<xsl:apply-templates select="$simple-table" mode="process_table-if"/>
+							
+							
+							
+							
 						</xsl:when>
 						<xsl:otherwise>
 					
@@ -5647,6 +5664,23 @@
 	</xsl:template> <!-- tbody -->
 	
 	
+	<xsl:template match="*[local-name()='tbody']" mode="process_table-if">
+		<fo:table-body>
+			<xsl:for-each select="*[local-name() = 'tr']">
+				<xsl:variable name="col_count" select="count(*)"/>
+				
+				<!-- iteration for each tr/td -->
+				<xsl:for-each select="*[local-name() = 'td' or local-name() = 'th']/*">
+					<fo:table-row number-columns-spanned="{$col_count}">
+						<xsl:call-template name="td"/>
+					</fo:table-row>
+				</xsl:for-each>
+				
+				
+			</xsl:for-each>
+		</fo:table-body>
+	</xsl:template> <!-- process_table-if -->
+	
 	<!-- ===================== -->
 	<!-- Table's row processing -->
 	<!-- ===================== -->
@@ -5874,7 +5908,7 @@
 	</xsl:template>
 	
 	<!-- cell in table body, footer -->
-	<xsl:template match="*[local-name()='td']">
+	<xsl:template match="*[local-name()='td']" name="td">
 		<fo:table-cell xsl:use-attribute-sets="table-cell-style"> <!-- text-align="{@align}" -->
 			<xsl:call-template name="setTextAlignment">
 				<xsl:with-param name="default">left</xsl:with-param>
@@ -6012,6 +6046,11 @@
 			
 			<fo:block>
 			
+				<xsl:if test="$table_if = 'true'">
+					<xsl:attribute name="id"><xsl:value-of select="@id"/></xsl:attribute>
+				</xsl:if>
+			
+			
 				<xsl:if test="$namespace = 'bipm'">
 					<xsl:if test="not(.//bipm:image)">
 						<xsl:attribute name="line-stacking-strategy">font-height</xsl:attribute>
@@ -6024,6 +6063,8 @@
 				</xsl:if>
 				
 				<xsl:apply-templates />
+				
+				<xsl:if test="$table_if = 'true'"><fo:inline id="{@id}_end"><xsl:value-of select="$hair_space"/></fo:inline></xsl:if>
 			</fo:block>			
 		</fo:table-cell>
 	</xsl:template> <!-- td -->
@@ -7747,7 +7788,19 @@
 			<xsl:attribute name="id">
 				<xsl:value-of select="concat($id,'_',$row_number,'_',$col_number)"/>
 			</xsl:attribute>
-			<xsl:copy-of select="node()" />
+			
+			<xsl:for-each select="*[local-name() = 'p']">
+				<xsl:copy>
+					<xsl:copy-of select="@*" />
+					<xsl:variable name="p_num" select="count(preceding-sibling::*[local-name() = 'p']) + 1"/>
+					<xsl:attribute name="id">
+						<xsl:value-of select="concat($id,'_',$row_number,'_',$col_number,'_p_',$p_num)"/>
+					</xsl:attribute>
+					
+					<xsl:copy-of select="node()" />
+				</xsl:copy>
+			</xsl:for-each>
+			
 			
 			<xsl:if test="$table_if = 'true'"> <!-- split each paragraph to words, image, math -->
 				<xsl:variable name="words">
@@ -7774,9 +7827,10 @@
 				</xsl:variable>
 				
 				<xsl:for-each select="xalan:nodeset($words)/word">
+					<xsl:variable name="num" select="count(preceding-sibling::word) + 1"/>
 					<xsl:copy>
 						<xsl:attribute name="id">
-							<xsl:value-of select="concat($id,'_',$row_number,'_',$col_number,'_word_')"/><xsl:number/>
+							<xsl:value-of select="concat($id,'_',$row_number,'_',$col_number,'_word_',$num)"/>
 						</xsl:attribute>
 						<xsl:copy-of select="node()" />
 					</xsl:copy>
