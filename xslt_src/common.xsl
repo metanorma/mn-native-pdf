@@ -4437,7 +4437,7 @@
 			
 			<xsl:variable name="cols-count" select="count($simple-table/*/tr[1]/td)"/>
 			
-			<xsl:variable name="colwidths">
+			<xsl:variable name="colwidths_">
 				<xsl:if test="not(*[local-name()='colgroup']/*[local-name()='col'])">
 					<xsl:call-template name="calculate-column-widths">
 						<xsl:with-param name="cols-count" select="$cols-count"/>
@@ -4445,6 +4445,13 @@
 					</xsl:call-template>
 				</xsl:if>
 			</xsl:variable>
+			<xsl:variable name="colwidths" select="xalan:nodeset($colwidths_)"/>
+			
+			<!-- DEBUG -->
+			<!-- <fo:block font-size="60%">
+				<xsl:apply-templates select="$colwidths" mode="print_as_xml"/>
+			</fo:block> -->
+			
 			
 			<!-- <xsl:copy-of select="$colwidths"/> -->
 			
@@ -4457,7 +4464,7 @@
 			
 			<xsl:variable name="margin-side">
 				<xsl:choose>
-					<xsl:when test="sum(xalan:nodeset($colwidths)//column) &gt; 75">15</xsl:when>
+					<xsl:when test="sum($colwidths//column) &gt; 75">15</xsl:when>
 					<xsl:otherwise>0</xsl:otherwise>
 				</xsl:choose>
 			</xsl:variable>
@@ -5081,27 +5088,25 @@
 	 
 		<!-- Since line wrap has been disabled, paragraphs are treated as long lines unless broken by BR elements. -->
 		 
-		 
 		<!-- get current table id -->
 		<xsl:variable name="table_id" select="@id"/>
 		<!-- find table by id in the file 'table_widths' -->
 		<xsl:variable name="table-if_" select="$table_widths_from_if//table[@id = $table_id]"/>
 		<xsl:variable name="table-if" select="xalan:nodeset($table-if_)"/>
 		
-		<!-- table_id=<xsl:value-of select="$table_id"/>
-		table_widths_from_if=<xsl:copy-of select="$table_widths_from_if"/> -->
+		
+		<!-- table='<xsl:copy-of select="$table"/>' -->
+		<!-- table_id='<xsl:value-of select="$table_id"/>\ -->
+		<!-- table-if='<xsl:copy-of select="$table-if"/>' -->
+		<!-- table_widths_from_if='<xsl:copy-of select="$table_widths_from_if"/>' -->
 		
 		<xsl:variable name="table_with_cell_widths_">
 			<xsl:choose>
-				<xsl:when test="$if = 'true' and normalize-space($table-if) != ''">
+				<xsl:when test="$if = 'true' and normalize-space($table-if) != ''"> <!-- if we read column's width from IF and there is table in IF -->
 				
-					<!-- table=<xsl:copy-of select="$table"/> -->
-					
 					<!-- Example: <column>10</column>
 							<column>11</column> 
 					-->
-					<!-- table-if='<xsl:copy-of select="$table-if"/>' -->
-				
 					<xsl:apply-templates select="$table-if" mode="determine_cell_widths-if"/>
 				</xsl:when>
 				<xsl:otherwise>
@@ -5185,7 +5190,7 @@
 			<xsl:when test="$table_widths/table/@width_max &lt;= $page_width">
 				<case2/>
 				<xsl:for-each select="$column_widths/column/@width_max">
-					<column><xsl:value-of select="."/></column>
+					<column divider="100"><xsl:value-of select="."/></column>
 				</xsl:for-each>
 			</xsl:when>
 			<!-- 3. The maximum width of the table is greater than the available space, but the minimum table width is smaller. 
@@ -5209,7 +5214,7 @@
 					<width_min><xsl:value-of select="@width_min"/></width_min>
 					<e><xsl:value-of select="$d * $W div $D"/></e>
 					<!-- set the column's width to the minimum width plus d times W over D.  -->
-					<column>
+					<column divider="100">
 						<xsl:value-of select="round(@width_min + $d * $W div $D)"/> <!--  * 10 -->
 					</column>
 				</xsl:for-each>
@@ -6060,6 +6065,10 @@
 			
 			<xsl:call-template name="setTableCellAttributes"/>
 			
+			<xsl:if test="$table_if = 'true'">
+				<xsl:attribute name="border">1pt solid black</xsl:attribute>
+			</xsl:if>
+			
 			<fo:block>
 			
 				<xsl:if test="$table_if = 'true'">
@@ -6885,6 +6894,13 @@
 										</xsl:call-template>
 										
 										<fo:table-body>
+											<!-- DEBUG -->
+											<!-- <fo:table-row>
+												<fo:table-cell number-columns-spanned="2" font-size="60%">
+													<xsl:apply-templates select="xalan:nodeset($colwidths)" mode="print_as_xml"/>
+												</fo:table-cell>
+											</fo:table-row> -->
+
 											<xsl:apply-templates>
 												<xsl:with-param name="key_iso" select="normalize-space($key_iso)"/>
 											</xsl:apply-templates>
@@ -6957,6 +6973,7 @@
 	
 	<xsl:template name="insertTableColumnWidth">
 		<xsl:param name="colwidths"/>
+		
 		<xsl:for-each select="xalan:nodeset($colwidths)//column">
 			<xsl:choose>
 				<xsl:when test=". = 1 or . = 0">
@@ -6964,7 +6981,11 @@
 				</xsl:when>
 				<xsl:otherwise>
 					<!-- <fo:table-column column-width="proportional-column-width({.})"/> -->
-					<fo:table-column column-width="proportional-column-width({round(. div 100)})"/>
+					<xsl:variable name="divider">
+						<xsl:value-of select="@divider"/>
+						<xsl:if test="not(@divider)">1</xsl:if>
+					</xsl:variable>
+					<fo:table-column column-width="proportional-column-width({round(. div $divider)})"/>
 				</xsl:otherwise>
 			</xsl:choose>
 		</xsl:for-each>
@@ -14826,4 +14847,41 @@
 		</xsl:choose>
 	</xsl:template>
  
+	<xsl:template match="*" mode="print_as_xml">
+		<xsl:param name="level">0</xsl:param>
+
+		<fo:block margin-left="{2*$level}mm">
+			<xsl:text>&#xa;&lt;</xsl:text>
+			<xsl:value-of select="local-name()"/>
+			<xsl:for-each select="@*">
+				<xsl:text> </xsl:text>
+				<xsl:value-of select="local-name()"/>
+				<xsl:text>="</xsl:text>
+				<xsl:value-of select="."/>
+				<xsl:text>"</xsl:text>
+			</xsl:for-each>
+			<xsl:text>&gt;</xsl:text>
+			
+			<xsl:if test="not(*)">
+				<fo:inline font-weight="bold"><xsl:value-of select="."/></fo:inline>
+				<xsl:text>&lt;/</xsl:text>
+					<xsl:value-of select="local-name()"/>
+					<xsl:text>&gt;</xsl:text>
+			</xsl:if>
+		</fo:block>
+		
+		<xsl:if test="*">
+			<fo:block>
+				<xsl:apply-templates mode="print_as_xml">
+					<xsl:with-param name="level" select="$level + 1"/>
+				</xsl:apply-templates>
+			</fo:block>
+			<fo:block margin-left="{2*$level}mm">
+				<xsl:text>&lt;/</xsl:text>
+				<xsl:value-of select="local-name()"/>
+				<xsl:text>&gt;</xsl:text>
+			</fo:block>
+		</xsl:if>
+	</xsl:template>
+	
 </xsl:stylesheet>
