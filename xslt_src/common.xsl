@@ -17,6 +17,7 @@
 	<xsl:param name="syntax-highlight">false</xsl:param> <!-- syntax highlighting feature, default - off -->
 	<xsl:param name="add_math_as_text">true</xsl:param> <!-- add math in text behind svg formula, to copy-paste formula from PDF as text -->
 	<xsl:param name="table_if">false</xsl:param> <!-- generate extended table in IF for autolayout-algorithm -->
+	
 	<xsl:param name="table_widths" /> <!-- path to xml with table's widths, generated on 1st pass, based on FOP Intermediate Format -->
 	<!-- Example: <tables>
 			<table id="table_if_tab-symdu" page-width="75"> - table id prefixed by 'table_if_' to simple search in IF 
@@ -29,6 +30,7 @@
 							<word_len>20</word_len>
 						...
 	-->
+	<xsl:variable name="table_widths_from_if" select="document($table_widths)"/>
 	
 
 	<xsl:variable name="lang">
@@ -4401,14 +4403,14 @@
 		
 		<xsl:variable name="table">
 	
-			<xsl:variable name="simple-table_">	
+			<xsl:variable name="simple-table_">
 				<xsl:call-template name="getSimpleTable">
 					<xsl:with-param name="id" select="@id"/>
 				</xsl:call-template>
 			</xsl:variable>
 			<xsl:variable name="simple-table" select="xalan:nodeset($simple-table_)"/>
 		
-			<!-- <xsl:copy-of select="$simple-table"/> -->
+			<!-- simple-table=<xsl:copy-of select="$simple-table"/> -->
 		
 			
 			<!-- Display table's name before table as standalone block -->
@@ -4444,6 +4446,7 @@
 				</xsl:if>
 			</xsl:variable>
 			
+			<!-- <xsl:copy-of select="$colwidths"/> -->
 			
 			<!-- <xsl:text disable-output-escaping="yes">&lt;!- -</xsl:text>
 			DEBUG
@@ -4640,6 +4643,10 @@
 				</xsl:if>
 				
 				<fo:table id="{@id}">
+					
+					<xsl:if test="$table_if = 'true'">
+						<xsl:attribute name="wrap-option">no-wrap</xsl:attribute>
+					</xsl:if>
 					
 					<xsl:for-each select="xalan:nodeset($table_attributes)/table_attributes/@*">					
 						<xsl:attribute name="{local-name()}">
@@ -5062,7 +5069,7 @@
 	<!-- (https://www.w3.org/TR/REC-html40/appendix/notes.html#h-B.5.2) -->
 	<!-- ================================================== -->
 	
-	<xsl:variable name="table_widths_from_if" select="document($table_widths)"/>
+	
 	
 	<xsl:template name="calculate-column-widths-autolayout-algorithm">
 		<xsl:param name="table"/>
@@ -5076,23 +5083,23 @@
 		 
 		 
 		<!-- get current table id -->
-		<xsl:variable name="table_id" select="xalan:nodeset($table)//tbody/@id"/>
+		<xsl:variable name="table_id" select="@id"/>
 		<!-- find table by id in the file 'table_widths' -->
 		<xsl:variable name="table-if_" select="$table_widths_from_if//table[@id = $table_id]"/>
 		<xsl:variable name="table-if" select="xalan:nodeset($table-if_)"/>
+		
+		<!-- table_id=<xsl:value-of select="$table_id"/>
+		table_widths_from_if=<xsl:copy-of select="$table_widths_from_if"/> -->
 		
 		<xsl:variable name="table_with_cell_widths_">
 			<xsl:choose>
 				<xsl:when test="$if = 'true' and normalize-space($table-if) != ''">
 				
 					<!-- table=<xsl:copy-of select="$table"/> -->
-		
-					<!-- table_id=<xsl:value-of select="$table_id"/>
-					table_widths_from_if=<xsl:copy-of select="$table_widths_from_if"/> -->
 					
-					
-					<!-- <column>10</column>
-					<column>11</column> -->
+					<!-- Example: <column>10</column>
+							<column>11</column> 
+					-->
 					<!-- table-if='<xsl:copy-of select="$table-if"/>' -->
 				
 					<xsl:apply-templates select="$table-if" mode="determine_cell_widths-if"/>
@@ -5203,7 +5210,7 @@
 					<e><xsl:value-of select="$d * $W div $D"/></e>
 					<!-- set the column's width to the minimum width plus d times W over D.  -->
 					<column>
-						<xsl:value-of select="round(@width_min + $d * $W div $D) * 10"/>
+						<xsl:value-of select="round(@width_min + $d * $W div $D)"/> <!--  * 10 -->
 					</column>
 				</xsl:for-each>
 				
@@ -6751,6 +6758,11 @@
 							</xsl:if>
 							
 							<fo:table width="95%" table-layout="fixed">
+							
+								<xsl:if test="$table_if = 'true'">
+									<xsl:attribute name="wrap-option">no-wrap</xsl:attribute>
+								</xsl:if>
+							
 								<xsl:if test="$namespace = 'gb'">
 									<xsl:attribute name="margin-left">-3.7mm</xsl:attribute>
 								</xsl:if>
@@ -6837,46 +6849,48 @@
 											<xsl:copy-of select="$dl_table"/>
 										</xsl:variable>
 								
-											<xsl:variable name="colwidths">
-												<xsl:call-template name="calculate-column-widths">
-													<xsl:with-param name="cols-count" select="2"/>
-													<xsl:with-param name="table" select="$html-table"/>
-												</xsl:call-template>
-											</xsl:variable>
-											
-											<!-- <xsl:text disable-output-escaping="yes">&lt;!- -</xsl:text>
-												DEBUG
-												colwidths=<xsl:copy-of select="$colwidths"/>
-											<xsl:text disable-output-escaping="yes">- -&gt;</xsl:text> -->
-											
-											<!-- DEBUG: colwidths=<xsl:copy-of select="$colwidths"/> -->
-											<xsl:variable name="maxlength_dt">							
-												<xsl:call-template name="getMaxLength_dt"/>							
-											</xsl:variable>
-											<xsl:variable name="isContainsKeepTogetherTag_">
-												<xsl:choose>
-													<xsl:when test="$namespace = 'iso'">
-													 <!-- <xsl:value-of select="count(.//*[local-name() = 'strong'][translate(., $express_reference_characters, '') = '']) &gt; 0"/> -->
-													 <xsl:value-of select="count(.//*[local-name() = $element_name_keep-together_within-line]) &gt; 0"/>
-													</xsl:when>
-													<xsl:otherwise>false</xsl:otherwise>
-												</xsl:choose>
-											</xsl:variable>
-											<xsl:variable name="isContainsKeepTogetherTag" select="normalize-space($isContainsKeepTogetherTag_)"/>
-											<!-- isContainsExpressReference=<xsl:value-of select="$isContainsExpressReference"/> -->
-											<xsl:call-template name="setColumnWidth_dl">
-												<xsl:with-param name="colwidths" select="$colwidths"/>							
-												<xsl:with-param name="maxlength_dt" select="$maxlength_dt"/>
-												<xsl:with-param name="isContainsKeepTogetherTag" select="$isContainsKeepTogetherTag"/>
+										<xsl:variable name="colwidths">
+											<xsl:call-template name="calculate-column-widths">
+												<xsl:with-param name="cols-count" select="2"/>
+												<xsl:with-param name="table" select="$html-table"/>
 											</xsl:call-template>
-											
-											<fo:table-body>
-												<xsl:apply-templates>
-													<xsl:with-param name="key_iso" select="normalize-space($key_iso)"/>
-												</xsl:apply-templates>
-											</fo:table-body>
-										</xsl:otherwise>
-									</xsl:choose>
+										</xsl:variable>
+										
+										<!-- <xsl:text disable-output-escaping="yes">&lt;!- -</xsl:text>
+											DEBUG
+											colwidths=<xsl:copy-of select="$colwidths"/>
+										<xsl:text disable-output-escaping="yes">- -&gt;</xsl:text> -->
+										
+										<!-- DEBUG: colwidths=<xsl:copy-of select="$colwidths"/> -->
+										
+										
+										<xsl:variable name="maxlength_dt">							
+											<xsl:call-template name="getMaxLength_dt"/>							
+										</xsl:variable>
+										<xsl:variable name="isContainsKeepTogetherTag_">
+											<xsl:choose>
+												<xsl:when test="$namespace = 'iso'">
+												 <!-- <xsl:value-of select="count(.//*[local-name() = 'strong'][translate(., $express_reference_characters, '') = '']) &gt; 0"/> -->
+												 <xsl:value-of select="count(.//*[local-name() = $element_name_keep-together_within-line]) &gt; 0"/>
+												</xsl:when>
+												<xsl:otherwise>false</xsl:otherwise>
+											</xsl:choose>
+										</xsl:variable>
+										<xsl:variable name="isContainsKeepTogetherTag" select="normalize-space($isContainsKeepTogetherTag_)"/>
+										<!-- isContainsExpressReference=<xsl:value-of select="$isContainsExpressReference"/> -->
+										<xsl:call-template name="setColumnWidth_dl">
+											<xsl:with-param name="colwidths" select="$colwidths"/>							
+											<xsl:with-param name="maxlength_dt" select="$maxlength_dt"/>
+											<xsl:with-param name="isContainsKeepTogetherTag" select="$isContainsKeepTogetherTag"/>
+										</xsl:call-template>
+										
+										<fo:table-body>
+											<xsl:apply-templates>
+												<xsl:with-param name="key_iso" select="normalize-space($key_iso)"/>
+											</xsl:apply-templates>
+										</fo:table-body>
+									</xsl:otherwise>
+								</xsl:choose>
 							</fo:table>
 						</fo:block>
 					</fo:block>
@@ -6949,7 +6963,8 @@
 					<fo:table-column column-width="proportional-column-width(2)"/>
 				</xsl:when>
 				<xsl:otherwise>
-					<fo:table-column column-width="proportional-column-width({.})"/>
+					<!-- <fo:table-column column-width="proportional-column-width({.})"/> -->
+					<fo:table-column column-width="proportional-column-width({round(. div 100)})"/>
 				</xsl:otherwise>
 			</xsl:choose>
 		</xsl:for-each>
