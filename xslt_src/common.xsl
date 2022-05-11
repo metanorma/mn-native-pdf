@@ -4635,6 +4635,9 @@
 					</xsl:element>
 				</xsl:variable>
 				
+				<xsl:if test="$table_if = 'true'">
+					<fo:block id="{concat('table_if_start_',@id)}" keep-with-next="always" font-size="1pt">&#xa0;</fo:block>
+				</xsl:if>
 				
 				<fo:table id="{@id}">
 					
@@ -6740,6 +6743,11 @@
 							</xsl:if>
 							<xsl:if test="$namespace = 'iho'">
 								<xsl:attribute name="margin-left">-3.5mm</xsl:attribute>
+							</xsl:if>
+							
+							
+							<xsl:if test="$table_if = 'true'">
+								<fo:block id="{concat('table_if_start_',@id)}" keep-with-next="always" font-size="1pt">&#xa0;</fo:block>
 							</xsl:if>
 							
 							<fo:table width="95%" table-layout="fixed">
