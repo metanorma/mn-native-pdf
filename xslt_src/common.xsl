@@ -32,6 +32,7 @@
 	-->
 	<xsl:variable name="table_widths_from_if" select="document($table_widths)"/>
 	
+	<xsl:param name="table_if_debug">true</xsl:param>
 
 	<xsl:variable name="lang">
 		<xsl:call-template name="getLang"/>
@@ -4448,9 +4449,11 @@
 			<xsl:variable name="colwidths" select="xalan:nodeset($colwidths_)"/>
 			
 			<!-- DEBUG -->
-			<!-- <fo:block font-size="60%">
-				<xsl:apply-templates select="$colwidths" mode="print_as_xml"/>
-			</fo:block> -->
+			<xsl:if test="$table_if_debug = 'true'">
+				<fo:block font-size="60%">
+					<xsl:apply-templates select="$colwidths" mode="print_as_xml"/>
+				</fo:block>
+			</xsl:if>
 			
 			
 			<!-- <xsl:copy-of select="$colwidths"/> -->
@@ -5115,7 +5118,10 @@
 			</xsl:choose>
 		</xsl:variable>
 		<xsl:variable name="table_with_cell_widths" select="xalan:nodeset($table_with_cell_widths_)"/>
-		<!-- <xsl:copy-of select="$table_with_cell_widths"/> -->
+		
+		<xsl:if test="$table_if_debug = 'true'">
+			<xsl:copy-of select="$table_with_cell_widths"/>
+		</xsl:if>
 		
 		
 		<!-- The minimum and maximum cell widths are then used to determine the corresponding minimum and maximum widths for the columns. -->
@@ -5166,13 +5172,16 @@
 			</xsl:choose>
 		</xsl:variable>
 		
-		<!-- <table_width>
-			<xsl:copy-of select="$table_widths"/>
-		</table_width> -->
+		<xsl:if test="$table_if_debug = 'true'">
+			<table_width>
+				<xsl:copy-of select="$table_widths"/>
+			</table_width>
+			<!-- <debug>$table_widths/@width_min=<xsl:value-of select="$table_widths/table/@width_min"/></debug>
+			<debug>$table_widths/@width_max=<xsl:value-of select="$table_widths/table/@width_max"/></debug>
+			 -->
+			<debug>$page_width=<xsl:value-of select="$page_width"/></debug>
+		</xsl:if>
 		
-		<!-- <debug>$table_widths/@width_min=<xsl:value-of select="$table_widths/table/@width_min"/></debug>
-		<debug>$table_widths/@width_max=<xsl:value-of select="$table_widths/table/@width_max"/></debug>
-		<debug>$page_width=<xsl:value-of select="$page_width"/></debug> -->
 		
 		<!-- There are three cases: -->
 		<xsl:choose>
@@ -6785,7 +6794,6 @@
 									</xsl:when>
 								</xsl:choose>
 								
-								<!-- DEBUG: html-table<xsl:copy-of select="$html-table"/> -->
 								
 								<xsl:choose>
 									<xsl:when test="$table_if = 'true'">
@@ -6870,6 +6878,8 @@
 											colwidths=<xsl:copy-of select="$colwidths"/>
 										<xsl:text disable-output-escaping="yes">- -&gt;</xsl:text> -->
 										
+										
+										
 										<!-- DEBUG: colwidths=<xsl:copy-of select="$colwidths"/> -->
 										
 										
@@ -6894,12 +6904,15 @@
 										</xsl:call-template>
 										
 										<fo:table-body>
+											
 											<!-- DEBUG -->
-											<!-- <fo:table-row>
-												<fo:table-cell number-columns-spanned="2" font-size="60%">
-													<xsl:apply-templates select="xalan:nodeset($colwidths)" mode="print_as_xml"/>
-												</fo:table-cell>
-											</fo:table-row> -->
+											<xsl:if test="$table_if_debug = 'true'">
+												<fo:table-row>
+													<fo:table-cell number-columns-spanned="2" font-size="60%">
+														<xsl:apply-templates select="xalan:nodeset($colwidths)" mode="print_as_xml"/>
+													</fo:table-cell>
+												</fo:table-row>
+											</xsl:if>
 
 											<xsl:apply-templates>
 												<xsl:with-param name="key_iso" select="normalize-space($key_iso)"/>
