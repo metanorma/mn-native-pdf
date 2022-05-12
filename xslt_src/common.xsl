@@ -32,7 +32,7 @@
 	-->
 	<xsl:variable name="table_widths_from_if" select="document($table_widths)"/>
 	
-	<xsl:param name="table_if_debug">true</xsl:param>
+	<xsl:param name="table_if_debug">false</xsl:param>
 
 	<xsl:variable name="lang">
 		<xsl:call-template name="getLang"/>
@@ -1747,7 +1747,10 @@
 		</xsl:if>
 	</xsl:attribute-set>
 	
-	<xsl:attribute-set name="dt-style">
+	<xsl:attribute-set name="dt-cell-style">
+	</xsl:attribute-set>
+	
+	<xsl:attribute-set name="dt-block-style">
 		<xsl:attribute name="margin-top">6pt</xsl:attribute>
 		<xsl:if test="$namespace = 'csd'">
 			<xsl:attribute name="margin-left">7mm</xsl:attribute>
@@ -1785,6 +1788,10 @@
 			<xsl:attribute name="font-weight">bold</xsl:attribute>
 			<xsl:attribute name="color"><xsl:value-of select="$color_blue"/></xsl:attribute>
 		</xsl:if>
+	</xsl:attribute-set>
+	
+	<xsl:attribute-set name="dd-cell-style">
+		<xsl:attribute name="padding-left">2mm</xsl:attribute>
 	</xsl:attribute-set>
 	
 	<!-- ========================== -->
@@ -5694,18 +5701,51 @@
 	</xsl:template> <!-- tbody -->
 	
 	
+	<xsl:template match="/" mode="process_table-if">
+		<xsl:param name="table_or_dl">table</xsl:param>
+		<xsl:apply-templates mode="process_table-if">
+			<xsl:with-param name="table_or_dl" select="$table_or_dl"/>
+		</xsl:apply-templates>
+	</xsl:template>
+	
 	<xsl:template match="*[local-name()='tbody']" mode="process_table-if">
+		<xsl:param name="table_or_dl">table</xsl:param>
+		
 		<fo:table-body>
 			<xsl:for-each select="*[local-name() = 'tr']">
 				<xsl:variable name="col_count" select="count(*)"/>
-				
+
 				<!-- iteration for each tr/td -->
-				<xsl:for-each select="*[local-name() = 'td' or local-name() = 'th']/*">
-					<fo:table-row number-columns-spanned="{$col_count}">
-						<xsl:call-template name="td"/>
-					</fo:table-row>
-				</xsl:for-each>
 				
+				<xsl:choose>
+					<xsl:when test="$table_or_dl = 'table'">
+						<xsl:for-each select="*[local-name() = 'td' or local-name() = 'th']/*">
+							<fo:table-row number-columns-spanned="{$col_count}">
+								<!-- <test_table><xsl:copy-of select="."/></test_table> -->
+								<xsl:call-template name="td"/>
+							</fo:table-row>
+						</xsl:for-each>
+					</xsl:when>
+					<xsl:otherwise> <!-- $table_or_dl = 'dl' -->
+						<xsl:for-each select="*[local-name() = 'td' or local-name() = 'th']">
+							<xsl:variable name="is_dt" select="position() = 1"/>
+							
+							<xsl:for-each select="*">
+								<!-- <test><xsl:copy-of select="."/></test> -->
+								<fo:table-row number-columns-spanned="{$col_count}">
+									<xsl:choose>
+										<xsl:when test="$is_dt">
+											<xsl:call-template name="insert_dt_cell"/>
+										</xsl:when>
+										<xsl:otherwise>
+											<xsl:call-template name="insert_dd_cell"/>
+										</xsl:otherwise>
+									</xsl:choose>
+								</fo:table-row>
+							</xsl:for-each>
+						</xsl:for-each>
+					</xsl:otherwise>
+				</xsl:choose>
 				
 			</xsl:for-each>
 		</fo:table-body>
@@ -6847,8 +6887,9 @@
 										
 										<!-- DEBUG: html-table<xsl:copy-of select="$html-table"/> -->
 										
-										
-										<xsl:apply-templates select="xalan:nodeset($html-table)" mode="process_table-if"/>
+										<xsl:apply-templates select="xalan:nodeset($html-table)" mode="process_table-if">
+											<xsl:with-param name="table_or_dl">dl</xsl:with-param>
+										</xsl:apply-templates>
 										
 									</xsl:when>
 									<xsl:otherwise>
@@ -7123,41 +7164,89 @@
 		<xsl:param name="key_iso"/>
 		
 		<fo:table-row xsl:use-attribute-sets="dt-row-style">
-			<fo:table-cell>
-				<xsl:if test="$namespace = 'itu'">
-					<xsl:if test="ancestor::*[1][local-name() = 'dl']/preceding-sibling::*[1][local-name() = 'formula']">						
-						<xsl:attribute name="padding-right">3mm</xsl:attribute>
-					</xsl:if>
-				</xsl:if>
-				<fo:block xsl:use-attribute-sets="dt-style">
-					<xsl:copy-of select="@id"/>
-					
-					<xsl:if test="normalize-space($key_iso) = 'true'">
-						<xsl:attribute name="margin-top">0</xsl:attribute>
-					</xsl:if>
-					
-					<xsl:if test="$namespace = 'itu'">
-						<xsl:if test="ancestor::*[1][local-name() = 'dl']/preceding-sibling::*[1][local-name() = 'formula']">
-							<xsl:attribute name="text-align">right</xsl:attribute>							
-						</xsl:if>
-					</xsl:if>
-					
-					<xsl:apply-templates />
-				</fo:block>
-			</fo:table-cell>
-			<fo:table-cell>
-				<fo:block>
-					<xsl:if test="$namespace = 'itu'">
-						<xsl:attribute name="text-align">justify</xsl:attribute>
-					</xsl:if>
-
-					<xsl:apply-templates select="following-sibling::*[local-name()='dd'][1]">
-						<xsl:with-param name="process">true</xsl:with-param>
-					</xsl:apply-templates>
-				</fo:block>
-			</fo:table-cell>
+			<xsl:call-template name="insert_dt_cell">
+				<xsl:with-param name="key_iso" select="$key_iso"/>
+			</xsl:call-template>
+			<xsl:for-each select="following-sibling::*[local-name()='dd'][1]">
+				<xsl:call-template name="insert_dd_cell"/>
+			</xsl:for-each>
 		</fo:table-row>
 	</xsl:template> <!-- END: dt -->
+	
+	<xsl:template name="insert_dt_cell">
+		<xsl:param name="key_iso"/>
+		<fo:table-cell xsl:use-attribute-sets="dt-cell-style">
+		
+			<xsl:if test="$table_if = 'true'">
+				<!-- to calculate real width -->
+				<xsl:attribute name="border">0.1pt solid black</xsl:attribute>
+			</xsl:if>
+			
+			<xsl:if test="$namespace = 'itu'">
+				<xsl:if test="ancestor::*[1][local-name() = 'dl']/preceding-sibling::*[1][local-name() = 'formula']">						
+					<xsl:attribute name="padding-right">3mm</xsl:attribute>
+				</xsl:if>
+			</xsl:if>
+			<fo:block xsl:use-attribute-sets="dt-block-style">
+				<xsl:copy-of select="@id"/>
+				
+				<xsl:if test="normalize-space($key_iso) = 'true'">
+					<xsl:attribute name="margin-top">0</xsl:attribute>
+				</xsl:if>
+				
+				<xsl:if test="$namespace = 'itu'">
+					<xsl:if test="ancestor::*[1][local-name() = 'dl']/preceding-sibling::*[1][local-name() = 'formula']">
+						<xsl:attribute name="text-align">right</xsl:attribute>							
+					</xsl:if>
+				</xsl:if>
+				
+				<xsl:apply-templates />
+				
+				<xsl:if test="$table_if = 'true'"><fo:inline id="{@id}_end"><xsl:value-of select="$hair_space"/></fo:inline></xsl:if>
+				
+			</fo:block>
+		</fo:table-cell>
+	</xsl:template> <!-- insert_dt_cell -->
+	
+	<xsl:template name="insert_dd_cell">
+		<fo:table-cell xsl:use-attribute-sets="dd-cell-style">
+		
+			<xsl:if test="$table_if = 'true'">
+				<!-- to calculate real width -->
+				<xsl:attribute name="border">0.1pt solid black</xsl:attribute>
+			</xsl:if>
+		
+			<fo:block>
+			
+				<xsl:if test="$table_if = 'true'">
+					<xsl:attribute name="id"><xsl:value-of select="@id"/></xsl:attribute>
+				</xsl:if>
+			
+				<xsl:if test="$namespace = 'itu'">
+					<xsl:attribute name="text-align">justify</xsl:attribute>
+				</xsl:if>
+
+				<xsl:choose>
+					<xsl:when test="$table_if = 'true'">
+						<xsl:apply-templates> <!-- following-sibling::*[local-name()='dd'][1] -->
+							<xsl:with-param name="process">true</xsl:with-param>
+						</xsl:apply-templates>
+					</xsl:when>
+					<xsl:otherwise>
+						<xsl:apply-templates select="."> <!-- following-sibling::*[local-name()='dd'][1] -->
+							<xsl:with-param name="process">true</xsl:with-param>
+						</xsl:apply-templates>
+					</xsl:otherwise>
+				
+				</xsl:choose>
+				
+				<xsl:if test="$table_if = 'true'"><fo:inline id="{@id}_end"><xsl:value-of select="$hair_space"/></fo:inline></xsl:if>
+				
+			</fo:block>
+		</fo:table-cell>
+	</xsl:template> <!-- insert_dd_cell -->
+	
+	
 	<!-- END Definition's term -->
 	
 	<xsl:template match="*[local-name()='dd']" mode="dl"/>
