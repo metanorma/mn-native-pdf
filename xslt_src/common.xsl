@@ -1436,6 +1436,7 @@
 		<xsl:attribute name="font-weight">bold</xsl:attribute>
 		<xsl:attribute name="border">solid black 1pt</xsl:attribute>
 		<xsl:attribute name="padding-left">1mm</xsl:attribute>
+		<xsl:attribute name="padding-right">1mm</xsl:attribute>
 		<xsl:attribute name="display-align">center</xsl:attribute>
 		<xsl:if test="$namespace = 'bipm'">
 			<xsl:attribute name="font-weight">normal</xsl:attribute>
@@ -1503,6 +1504,7 @@
 		<xsl:attribute name="display-align">center</xsl:attribute>
 		<xsl:attribute name="border">solid black 1pt</xsl:attribute>
 		<xsl:attribute name="padding-left">1mm</xsl:attribute>
+		<xsl:attribute name="padding-right">1mm</xsl:attribute>
 		
 		<xsl:if test="$namespace = 'bipm'">
 			<xsl:attribute name="border">solid 0pt white</xsl:attribute>
@@ -4423,12 +4425,12 @@
 		
 		<xsl:variable name="table">
 	
-			<xsl:variable name="simple-table_">
+			<xsl:variable name="simple-table">
 				<xsl:call-template name="getSimpleTable">
 					<xsl:with-param name="id" select="@id"/>
 				</xsl:call-template>
 			</xsl:variable>
-			<xsl:variable name="simple-table" select="xalan:nodeset($simple-table_)"/>
+			<!-- <xsl:variable name="simple-table" select="xalan:nodeset($simple-table_)"/> -->
 		
 			<!-- simple-table=<xsl:copy-of select="$simple-table"/> -->
 		
@@ -4455,7 +4457,7 @@
 				</xsl:otherwise>
 			</xsl:choose>
 			
-			<xsl:variable name="cols-count" select="count($simple-table/*/tr[1]/td)"/>
+			<xsl:variable name="cols-count" select="count(xalan:nodeset($simple-table)/*/tr[1]/td)"/>
 			
 			<xsl:variable name="colwidths">
 				<xsl:if test="not(*[local-name()='colgroup']/*[local-name()='col'])">
@@ -4705,7 +4707,7 @@
 									</td>
 								</tr>
 							-->
-							<xsl:apply-templates select="$simple-table" mode="process_table-if"/>
+							<xsl:apply-templates select="xalan:nodeset($simple-table)" mode="process_table-if"/>
 							
 						</xsl:when>
 						<xsl:otherwise>
@@ -4938,6 +4940,8 @@
 		<xsl:param name="curr-col" select="1"/>
 		<xsl:param name="width" select="0"/>
 		
+		<!-- table=<xsl:copy-of select="$table"/> -->
+		
 		<xsl:if test="$curr-col &lt;= $cols-count">
 			<xsl:variable name="widths">
 				<xsl:choose>
@@ -4975,11 +4979,11 @@
 						</xsl:for-each>
 					</xsl:when>
 					<xsl:otherwise>
-						<!-- <curr_col><xsl:value-of select="$curr-col"/></curr_col>
+						<!-- <curr_col><xsl:value-of select="$curr-col"/></curr_col> -->
 						
-						<table><xsl:copy-of select="$table"/></table>
+						<!-- <table><xsl:copy-of select="$table"/></table>
 						 -->
-						<xsl:for-each select="$table/*/*[local-name()='tr']">
+						<xsl:for-each select="xalan:nodeset($table)/*/*[local-name()='tr']">
 							<xsl:variable name="td_text">
 								<xsl:apply-templates select="td[$curr-col]" mode="td_text"/>
 							</xsl:variable>
@@ -4998,6 +5002,7 @@
 									<xsl:with-param name="text" select="normalize-space(translate($string_with_added_zerospaces, '&#x200B;&#xAD;', '  '))"/> <!-- replace zero-width-space and soft-hyphen to space -->
 								</xsl:call-template>
 							</xsl:variable>
+							<!-- words=<xsl:copy-of select="$words"/> -->
 							<xsl:variable name="max_length">
 								<xsl:call-template name="max_length">
 									<xsl:with-param name="words" select="xalan:nodeset($words)"/>
@@ -5035,7 +5040,7 @@
 			<xsl:call-template name="calculate-column-widths-proportional">
 				<xsl:with-param name="cols-count" select="$cols-count"/>
 				<xsl:with-param name="curr-col" select="$curr-col +1"/>
-				<xsl:with-param name="table" select="xalan:nodeset($table)"/>
+				<xsl:with-param name="table" select="$table"/>
 			</xsl:call-template>
 		</xsl:if>
 	</xsl:template> <!-- calculate-column-widths-proportional -->
@@ -6136,6 +6141,7 @@
 			
 			<xsl:if test="$isGenerateTableIF = 'true'">
 				<xsl:attribute name="border">1pt solid black</xsl:attribute> <!-- border is mandatory, to determine page width -->
+				<xsl:attribute name="text-align">left</xsl:attribute>
 			</xsl:if>
 			
 			<fo:block>
@@ -6486,7 +6492,7 @@
 			<!-- current hierarchy is 'figure' element -->
 			<xsl:variable name="following_dl_colwidths">
 				<xsl:if test="*[local-name() = 'dl']"><!-- if there is a 'dl', then set the same columns width as for 'dl' -->
-					<xsl:variable name="html-table">
+					<xsl:variable name="simple-table">
 						<!-- <xsl:variable name="doc_ns">
 							<xsl:if test="$namespace = 'bipm'">bipm</xsl:if>
 						</xsl:variable>
@@ -6510,7 +6516,7 @@
 					
 					<xsl:call-template name="calculate-column-widths">
 						<xsl:with-param name="cols-count" select="2"/>
-						<xsl:with-param name="table" select="$html-table"/>
+						<xsl:with-param name="table" select="$simple-table"/>
 					</xsl:call-template>
 					
 				</xsl:if>
@@ -6873,7 +6879,7 @@
 										-->
 										
 										<!-- create virtual html table for dl/[dt and dd] -->
-										<xsl:variable name="html-table">
+										<xsl:variable name="simple-table">
 											
 											<xsl:variable name="dl_table">
 												<tbody>
@@ -6906,16 +6912,16 @@
 											
 										</xsl:variable>
 										
-										<!-- DEBUG: html-table<xsl:copy-of select="$html-table"/> -->
+										<!-- DEBUG: simple-table<xsl:copy-of select="$simple-table"/> -->
 										
-										<xsl:apply-templates select="xalan:nodeset($html-table)" mode="process_table-if">
+										<xsl:apply-templates select="xalan:nodeset($simple-table)" mode="process_table-if">
 											<xsl:with-param name="table_or_dl">dl</xsl:with-param>
 										</xsl:apply-templates>
 										
 									</xsl:when>
 									<xsl:otherwise>
 								
-										<xsl:variable name="html-table">
+										<xsl:variable name="simple-table">
 										
 											<xsl:variable name="dl_table">
 												<tbody>
@@ -6931,7 +6937,7 @@
 										<xsl:variable name="colwidths">
 											<xsl:call-template name="calculate-column-widths">
 												<xsl:with-param name="cols-count" select="2"/>
-												<xsl:with-param name="table" select="xalan:nodeset($html-table)"/>
+												<xsl:with-param name="table" select="$simple-table"/>
 											</xsl:call-template>
 										</xsl:variable>
 										
@@ -7189,6 +7195,7 @@
 			<xsl:if test="$isGenerateTableIF = 'true'">
 				<!-- border is mandatory, to calculate real width -->
 				<xsl:attribute name="border">0.1pt solid black</xsl:attribute>
+				<xsl:attribute name="text-align">left</xsl:attribute>
 			</xsl:if>
 			
 			<xsl:if test="$namespace = 'itu'">
