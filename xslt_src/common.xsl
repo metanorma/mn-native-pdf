@@ -34,7 +34,7 @@
 	<!-- for command line debug: <xsl:variable name="table_widths_from_if" select="document($table_widths)"/> -->
 	<xsl:variable name="table_widths_from_if" select="xalan:nodeset($table_widths)"/> 
 	
-	<xsl:param name="table_if_debug">false</xsl:param>
+	<xsl:param name="table_if_debug">false</xsl:param> <!-- set 'true' to put debug width data before table or dl -->
 
 	<xsl:variable name="isGenerateTableIF_">
 		<xsl:choose>
@@ -4669,9 +4669,9 @@
 					</xsl:element>
 				</xsl:variable>
 				
-				<!-- <test><xsl:value-of select="$table_if"/></test> -->
 				<xsl:if test="$isGenerateTableIF = 'true'">
-					<fo:block id="{concat('table_if_start_',@id)}" keep-with-next="always" font-size="1pt">&#xa0;</fo:block>
+					<!-- to determine start of table -->
+					<fo:block id="{concat('table_if_start_',@id)}" keep-with-next="always" font-size="1pt">Start table '<xsl:value-of select="@id"/>'.</fo:block>
 				</xsl:if>
 				
 				<fo:table id="{@id}">
@@ -5260,6 +5260,7 @@
 				</xsl:for-each>
 				
 			</xsl:when>
+			<xsl:otherwise><unknown_case/></xsl:otherwise>
 		</xsl:choose>
 		
 		
@@ -6164,7 +6165,8 @@
 				
 				<xsl:apply-templates />
 				
-				<xsl:if test="$isGenerateTableIF = 'true'"><fo:inline id="{@id}_end"><xsl:value-of select="$hair_space"/></fo:inline></xsl:if>
+				<xsl:if test="$isGenerateTableIF = 'true'"><fo:inline id="{@id}_end">end</fo:inline></xsl:if> <!-- to determine width of text --> <!-- <xsl:value-of select="$hair_space"/> -->
+
 			</fo:block>			
 		</fo:table-cell>
 	</xsl:template> <!-- td -->
@@ -6839,7 +6841,7 @@
 							
 							<xsl:if test="$isGenerateTableIF = 'true'">
 								<!-- to determine start of table -->
-								<fo:block id="{concat('table_if_start_',@id)}" keep-with-next="always" font-size="1pt">&#xa0;</fo:block>
+								<fo:block id="{concat('table_if_start_',@id)}" keep-with-next="always" font-size="1pt">Start table '<xsl:value-of select="@id"/>'.</fo:block>
 							</xsl:if>
 							
 							<fo:table width="95%" table-layout="fixed">
@@ -7218,7 +7220,7 @@
 				
 				<xsl:apply-templates />
 				
-				<xsl:if test="$isGenerateTableIF = 'true'"><fo:inline id="{@id}_end"><xsl:value-of select="$hair_space"/></fo:inline></xsl:if>
+				<xsl:if test="$isGenerateTableIF = 'true'"><fo:inline id="{@id}_end">end</fo:inline></xsl:if> <!-- to determine width of text --> <!-- <xsl:value-of select="$hair_space"/> -->
 				
 			</fo:block>
 		</fo:table-cell>
@@ -7256,7 +7258,7 @@
 				
 				</xsl:choose>
 				
-				<xsl:if test="$isGenerateTableIF = 'true'"><fo:inline id="{@id}_end"><xsl:value-of select="$hair_space"/></fo:inline></xsl:if> <!-- to determine width of text -->
+				<xsl:if test="$isGenerateTableIF = 'true'"><fo:inline id="{@id}_end">end</fo:inline></xsl:if> <!-- to determine width of text --> <!-- <xsl:value-of select="$hair_space"/> -->
 				
 			</fo:block>
 		</fo:table-cell>
