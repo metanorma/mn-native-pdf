@@ -12282,7 +12282,7 @@
 		<!-- <fo:inline id="{@id}" font-size="1pt"/> -->
 		<fo:inline id="{@id}" font-size="1pt"><xsl:value-of select="$hair_space"/></fo:inline>
 		<!-- we need to add zero-width space, otherwise this fo:inline is missing in IF xml -->
-		<xsl:if test="not(following-sibling::node()[normalize-space() != ''])">&#xA0;</xsl:if>
+		<xsl:if test="not(following-sibling::node()[normalize-space() != ''])"><fo:inline font-size="1pt">&#xA0;</fo:inline></xsl:if>
 	</xsl:template>
 	<!-- =================== -->
 	<!-- End of Index processing -->
