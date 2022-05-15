@@ -186,10 +186,6 @@
 	-->
 	<xsl:variable name="titles_">
 		
-		<title-version lang="en">
-			<xsl:text>Version</xsl:text>
-		</title-version>
-		
 		
 		<!-- These titles of Table of contents renders different than determined in localized-strings -->
 		<title-toc lang="en">
@@ -643,7 +639,6 @@
 	</xsl:attribute-set>
 
 	<xsl:attribute-set name="sourcecode-container-style">
-		<xsl:attribute name="margin-left">0mm</xsl:attribute>
 		<xsl:if test="$namespace = 'rsd'">
 			<xsl:attribute name="space-after">12pt</xsl:attribute>
 		</xsl:if>
@@ -939,6 +934,10 @@
 		<xsl:if test="$namespace = 'iec'">
 			<xsl:attribute name="margin-left">10mm</xsl:attribute>
 		</xsl:if>
+		<xsl:if test="$namespace = 'iso'">			
+			<xsl:attribute name="margin-left">7mm</xsl:attribute>
+			<xsl:attribute name="margin-right">7mm</xsl:attribute>			
+		</xsl:if>
 		<xsl:if test="$namespace = 'mpfd'">
 			<xsl:attribute name="margin-left">12.5mm</xsl:attribute>
 			<xsl:attribute name="margin-bottom">18pt</xsl:attribute>
@@ -964,6 +963,7 @@
 		<xsl:if test="$namespace = 'gb' or $namespace = 'iso'">
 			<xsl:attribute name="keep-with-next">always</xsl:attribute>
 			<xsl:attribute name="padding-right">5mm</xsl:attribute>
+			<xsl:attribute name="margin-bottom">6pt</xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'iec'">
 			<xsl:attribute name="keep-with-next">always</xsl:attribute>
@@ -4181,8 +4181,40 @@
 	
 	<!-- keep-together for standard's name (ISO 12345:2020) -->
 	<xsl:template match="*[local-name() = 'keep-together_within-line']">
-		<fo:inline keep-together.within-line="always"><xsl:apply-templates/></fo:inline>
+		<xsl:param name="split_keep-within-line"/>
+		
+		<!-- <fo:inline>split_keep-within-line='<xsl:value-of select="$split_keep-within-line"/>'</fo:inline> -->
+		<xsl:choose>
+		
+			<xsl:when test="normalize-space($split_keep-within-line) = 'true'">
+				<xsl:variable name="sep">_</xsl:variable>
+				<xsl:variable name="items">
+					<xsl:call-template name="split">
+						<xsl:with-param name="pText" select="."/>
+						<xsl:with-param name="sep" select="$sep"/>
+						<xsl:with-param name="normalize-space">false</xsl:with-param>
+						<xsl:with-param name="keep_sep">true</xsl:with-param>
+					</xsl:call-template>
+				</xsl:variable>
+				<xsl:for-each select="xalan:nodeset($items)/item">
+					<xsl:choose>
+						<xsl:when test=". = $sep">
+							<xsl:value-of select="$sep"/><xsl:value-of select="$zero_width_space"/>
+						</xsl:when>
+						<xsl:otherwise>
+							<fo:inline keep-together.within-line="always"><xsl:apply-templates/></fo:inline>
+						</xsl:otherwise>
+					</xsl:choose>
+				</xsl:for-each>
+			</xsl:when>
+			
+			<xsl:otherwise>
+				<fo:inline keep-together.within-line="always"><xsl:apply-templates/></fo:inline>
+			</xsl:otherwise>
+			
+		</xsl:choose>
 	</xsl:template>
+	
 	
 	<!-- ================================= -->
 	<!-- Preface boilerplate sections processing -->
@@ -5215,7 +5247,7 @@
 		<!-- There are three cases: -->
 		<xsl:choose>
 			<!-- 1. The minimum table width is equal to or wider than the available space -->
-			<xsl:when test="$table_widths/table/@width_min &gt;= $page_width">
+			<xsl:when test="$table_widths/table/@width_min &gt;= $page_width and 1 = 2">
 				<!-- call old algorithm -->
 				<case1/>
 				<xsl:variable name="cols-count" select="count(xalan:nodeset($table)/*/tr[1]/td)"/>
@@ -5238,7 +5270,7 @@
 			For each column, let d be the difference between maximum and minimum width of that column. 
 			Now set the column's width to the minimum width plus d times W over D. 
 			This makes columns with large differences between minimum and maximum widths wider than columns with smaller differences. -->
-			<xsl:when test="$table_widths/table/@width_max &gt; $page_width and $table_widths/table/@width_min &lt; $page_width">
+			<xsl:when test="($table_widths/table/@width_max &gt; $page_width and $table_widths/table/@width_min &lt; $page_width) or ($table_widths/table/@width_min &gt;= $page_width)">
 				<!-- difference between the available space and the minimum table width -->
 				<xsl:variable name="W" select="$page_width - $table_widths/table/@width_min"/>
 				<W><xsl:value-of select="$W"/></W>
@@ -5247,6 +5279,9 @@
 				<D><xsl:value-of select="$D"/></D>
 				<case3/>
 				<autolayout/>
+				<xsl:if test="$table_widths/table/@width_min &gt;= $page_width">
+					<split_keep-within-line>true</split_keep-within-line>
+				</xsl:if>
 				<xsl:for-each select="$column_widths/column">
 					<!-- difference between maximum and minimum width of that column.  -->
 					<xsl:variable name="d" select="@width_max - @width_min"/>
@@ -6948,15 +6983,28 @@
 											colwidths=<xsl:copy-of select="$colwidths"/>
 										<xsl:text disable-output-escaping="yes">- -&gt;</xsl:text> -->
 										
-										<!-- DEBUG: colwidths=<xsl:copy-of select="$colwidths"/> -->
+										colwidths=<xsl:copy-of select="$colwidths"/>
 										
-										<xsl:variable name="maxlength_dt">							
+										<xsl:variable name="maxlength_dt">
 											<xsl:call-template name="getMaxLength_dt"/>							
 										</xsl:variable>
+										
+										<xsl:variable name="isContainsKeepTogetherTag_">
+											<xsl:choose>
+												<xsl:when test="$namespace = 'iso'">
+												 <xsl:value-of select="count(.//*[local-name() = $element_name_keep-together_within-line]) &gt; 0"/>
+												</xsl:when>
+												<xsl:otherwise>false</xsl:otherwise>
+											</xsl:choose>
+										</xsl:variable>
+										<xsl:variable name="isContainsKeepTogetherTag" select="normalize-space($isContainsKeepTogetherTag_)"/>
+										<!-- isContainsExpressReference=<xsl:value-of select="$isContainsExpressReference"/> -->
+										
 										
 										<xsl:call-template name="setColumnWidth_dl">
 											<xsl:with-param name="colwidths" select="$colwidths"/>							
 											<xsl:with-param name="maxlength_dt" select="$maxlength_dt"/>
+											<xsl:with-param name="isContainsKeepTogetherTag" select="$isContainsKeepTogetherTag"/>
 										</xsl:call-template>
 										
 										<fo:table-body>
@@ -6972,7 +7020,9 @@
 
 											<xsl:apply-templates>
 												<xsl:with-param name="key_iso" select="normalize-space($key_iso)"/>
+												<xsl:with-param name="split_keep-within-line" select="xalan:nodeset($colwidths)/split_keep-within-line"/>
 											</xsl:apply-templates>
+											
 										</fo:table-body>
 									</xsl:otherwise>
 								</xsl:choose>
@@ -6988,6 +7038,7 @@
 	<xsl:template name="setColumnWidth_dl">
 		<xsl:param name="colwidths"/>		
 		<xsl:param name="maxlength_dt"/>
+		<xsl:param name="isContainsKeepTogetherTag"/>
 		
 		<!-- <colwidths><xsl:copy-of select="$colwidths"/></colwidths> -->
 		
@@ -6999,6 +7050,11 @@
 			<xsl:otherwise>
 				<xsl:choose>
 					<xsl:when test="xalan:nodeset($colwidths)/autolayout">
+						<xsl:call-template name="insertTableColumnWidth">
+							<xsl:with-param name="colwidths" select="$colwidths"/>
+						</xsl:call-template>
+					</xsl:when>
+					<xsl:when test="$isContainsKeepTogetherTag">
 						<xsl:call-template name="insertTableColumnWidth">
 							<xsl:with-param name="colwidths" select="$colwidths"/>
 						</xsl:call-template>
@@ -7179,19 +7235,24 @@
 	<!-- Definition's term -->
 	<xsl:template match="*[local-name()='dt']">
 		<xsl:param name="key_iso"/>
+		<xsl:param name="split_keep-within-line"/>
 		
 		<fo:table-row xsl:use-attribute-sets="dt-row-style">
 			<xsl:call-template name="insert_dt_cell">
 				<xsl:with-param name="key_iso" select="$key_iso"/>
+				<xsl:with-param name="split_keep-within-line" select="$split_keep-within-line"/>
 			</xsl:call-template>
 			<xsl:for-each select="following-sibling::*[local-name()='dd'][1]">
-				<xsl:call-template name="insert_dd_cell"/>
+				<xsl:call-template name="insert_dd_cell">
+					<xsl:with-param name="split_keep-within-line" select="$split_keep-within-line"/>
+				</xsl:call-template>
 			</xsl:for-each>
 		</fo:table-row>
 	</xsl:template> <!-- END: dt -->
 	
 	<xsl:template name="insert_dt_cell">
 		<xsl:param name="key_iso"/>
+		<xsl:param name="split_keep-within-line"/>
 		<fo:table-cell xsl:use-attribute-sets="dt-cell-style">
 		
 			<xsl:if test="$isGenerateTableIF = 'true'">
@@ -7218,7 +7279,9 @@
 					</xsl:if>
 				</xsl:if>
 				
-				<xsl:apply-templates />
+				<xsl:apply-templates>
+					<xsl:with-param name="split_keep-within-line" select="$split_keep-within-line"/>
+				</xsl:apply-templates>
 				
 				<xsl:if test="$isGenerateTableIF = 'true'"><fo:inline id="{@id}_end">end</fo:inline></xsl:if> <!-- to determine width of text --> <!-- <xsl:value-of select="$hair_space"/> -->
 				
@@ -7227,6 +7290,7 @@
 	</xsl:template> <!-- insert_dt_cell -->
 	
 	<xsl:template name="insert_dd_cell">
+		<xsl:param name="split_keep-within-line"/>
 		<fo:table-cell xsl:use-attribute-sets="dd-cell-style">
 		
 			<xsl:if test="$isGenerateTableIF = 'true'">
@@ -7253,6 +7317,7 @@
 					<xsl:otherwise>
 						<xsl:apply-templates select="."> <!-- following-sibling::*[local-name()='dd'][1] -->
 							<xsl:with-param name="process">true</xsl:with-param>
+							<xsl:with-param name="split_keep-within-line" select="$split_keep-within-line"/>
 						</xsl:apply-templates>
 					</xsl:otherwise>
 				
@@ -7274,9 +7339,12 @@
 	
 	<xsl:template match="*[local-name()='dd']">
 		<xsl:param name="process">false</xsl:param>
+		<xsl:param name="split_keep-within-line"/>
 		<xsl:if test="$process = 'true'">
 			<xsl:apply-templates select="@language"/>
-			<xsl:apply-templates />
+			<xsl:apply-templates>
+				<xsl:with-param name="split_keep-within-line" select="$split_keep-within-line"/>
+			</xsl:apply-templates>
 		</xsl:if>
 	</xsl:template>
 
@@ -7336,6 +7404,7 @@
 	</xsl:template>
 
 	<xsl:template match="*[local-name()='strong'] | *[local-name()='b']">
+		<xsl:param name="split_keep-within-line"/>
 		<fo:inline font-weight="bold">
 			<xsl:if test="$namespace = 'rsd'">
 				<xsl:if test="not(parent::*[local-name() = 'termsource'])">
@@ -7343,7 +7412,9 @@
 					<xsl:attribute name="color">black</xsl:attribute>
 				</xsl:if>
 			</xsl:if>
-			<xsl:apply-templates />
+			<xsl:apply-templates>
+				<xsl:with-param name="split_keep-within-line" select="$split_keep-within-line"/>
+			</xsl:apply-templates>
 		</fo:inline>
 	</xsl:template>
 	
@@ -7400,7 +7471,7 @@
 					<xsl:choose>
 						<xsl:when test="$font-size = 'inherit'"><xsl:value-of select="$font-size"/></xsl:when>
 						<xsl:when test="contains($font-size, '%')"><xsl:value-of select="$font-size"/></xsl:when>
-						<xsl:when test="ancestor::*[local-name()='note']"><xsl:value-of select="$font-size * 0.91"/>pt</xsl:when>
+						<xsl:when test="ancestor::*[local-name()='note'] or ancestor::*[local-name()='example']"><xsl:value-of select="$font-size * 0.91"/>pt</xsl:when>
 						<xsl:otherwise><xsl:value-of select="$font-size"/>pt</xsl:otherwise>
 					</xsl:choose>
 				</xsl:attribute>
@@ -7408,6 +7479,11 @@
 			<xsl:apply-templates />
 		</fo:inline>
 	</xsl:template> <!-- tt -->
+	
+	<xsl:template match="*[local-name()='tt']/text()" priority="2">
+		<xsl:call-template name="add_spaces_to_sourcecode"/>
+	</xsl:template>
+	
 	
 	<xsl:template match="*[local-name()='underline']">
 		<fo:inline text-decoration="underline">
@@ -10234,6 +10310,15 @@
 	<xsl:template match="*[local-name()='sourcecode']" name="sourcecode">
 	
 		<fo:block-container xsl:use-attribute-sets="sourcecode-container-style">
+		
+			<xsl:if test="not(ancestor::*[local-name() = 'li']) or ancestor::*[local-name() = 'example']">
+				<xsl:attribute name="margin-left">0mm</xsl:attribute>
+			</xsl:if>
+			
+			<xsl:if test="ancestor::*[local-name() = 'example']">
+				<xsl:attribute name="margin-right">0mm</xsl:attribute>
+			</xsl:if>
+			
 			<xsl:copy-of select="@id"/>
 			
 			<xsl:if test="parent::*[local-name() = 'note']">
@@ -10907,16 +10992,18 @@
 			 text line 2
 	-->
 	<xsl:template match="*[local-name() = 'example']">
-		<fo:block id="{@id}" xsl:use-attribute-sets="example-style">
+		
+		<fo:block-container id="{@id}" xsl:use-attribute-sets="example-style">
+		
 			<xsl:if test="$namespace = 'rsd'">
 				<xsl:if test="ancestor::rsd:ul or ancestor::rsd:ol">
 					<xsl:attribute name="margin-top">6pt</xsl:attribute>
 					<xsl:attribute name="margin-bottom">6pt</xsl:attribute>
 				</xsl:if>
 			</xsl:if>
-			
+		
 			<xsl:variable name="fo_element">
-				<xsl:if test=".//*[local-name() = 'table'] or .//*[local-name() = 'dl']">block</xsl:if> 
+				<xsl:if test=".//*[local-name() = 'table'] or .//*[local-name() = 'dl'] or *[not(local-name() = 'name')][1][local-name() = 'sourcecode']">block</xsl:if> 
 				<xsl:choose>			
 					<xsl:when test="$namespace = 'bsi' or 
 														$namespace = 'iso' or 
@@ -10935,31 +11022,57 @@
 				</xsl:choose>
 			</xsl:variable>
 			
-			<!-- display 'EXAMPLE' -->
-			<xsl:apply-templates select="*[local-name()='name']">
-				<xsl:with-param name="fo_element" select="$fo_element"/>
-			</xsl:apply-templates>
+			<fo:block-container margin-left="0mm">
 			
-			<xsl:choose>
-				<xsl:when test="contains(normalize-space($fo_element), 'block')">
-					<fo:block-container xsl:use-attribute-sets="example-body-style">
-						<fo:block-container margin-left="0mm" margin-right="0mm">
-							<xsl:apply-templates select="node()[not(local-name() = 'name')]">
+				<xsl:choose>
+					
+					<xsl:when test="contains(normalize-space($fo_element), 'block')">
+					
+						<!-- display name 'EXAMPLE' in a separate block  -->
+						<fo:block>
+							<xsl:apply-templates select="*[local-name()='name']">
 								<xsl:with-param name="fo_element" select="$fo_element"/>
 							</xsl:apply-templates>
+						</fo:block>
+						
+						<fo:block-container xsl:use-attribute-sets="example-body-style">
+							<fo:block-container margin-left="0mm" margin-right="0mm"> 
+								<xsl:apply-templates select="node()[not(local-name() = 'name')]">
+									<xsl:with-param name="fo_element" select="$fo_element"/>
+								</xsl:apply-templates>
+							</fo:block-container>
 						</fo:block-container>
-					</fo:block-container>
-				</xsl:when>
-				<xsl:otherwise>
-					<fo:inline>
-						<xsl:apply-templates select="node()[not(local-name() = 'name')]">
-							<xsl:with-param name="fo_element" select="$fo_element"/>
-						</xsl:apply-templates>
-					</fo:inline>
-				</xsl:otherwise>
-			</xsl:choose>
-			
-		</fo:block>
+					</xsl:when> <!-- end block -->
+					
+					<xsl:otherwise> <!-- inline -->
+					
+						<!-- display 'EXAMPLE' and first element in the same line -->
+						<fo:block>
+							<xsl:apply-templates select="*[local-name()='name']">
+								<xsl:with-param name="fo_element" select="$fo_element"/>
+							</xsl:apply-templates>
+							<fo:inline>
+								<xsl:apply-templates select="*[not(local-name() = 'name')][1]">
+									<xsl:with-param name="fo_element" select="$fo_element"/>
+								</xsl:apply-templates>
+							</fo:inline>
+						</fo:block> 
+						
+						<xsl:if test="*[not(local-name() = 'name')][position() &gt; 1]">
+							<!-- display further elements in blocks -->
+							<fo:block-container xsl:use-attribute-sets="example-body-style">
+								<fo:block-container margin-left="0mm" margin-right="0mm">
+									<xsl:apply-templates select="*[not(local-name() = 'name')][position() &gt; 1]">
+										<xsl:with-param name="fo_element" select="'block'"/>
+									</xsl:apply-templates>
+								</fo:block-container>
+							</fo:block-container>
+						</xsl:if>
+					</xsl:otherwise> <!-- end inline -->
+					
+				</xsl:choose>
+			</fo:block-container>
+		</fo:block-container>
 	</xsl:template>
 	
 	<xsl:template match="*[local-name() = 'example']/*[local-name() = 'name']">
@@ -11000,14 +11113,20 @@
 		</xsl:variable>		
 		<xsl:choose>			
 			<xsl:when test="starts-with(normalize-space($element), 'block')">
-				<fo:block xsl:use-attribute-sets="example-p-style">
-					<xsl:if test="$namespace = 'nist-cswp' or $namespace = 'unece' or $namespace = 'unece-rec'">
-						<xsl:if test="$num = 1">
-							<xsl:attribute name="margin-left">5mm</xsl:attribute>
-						</xsl:if>
+				<fo:block-container>
+					<xsl:if test="ancestor::*[local-name() = 'li'] and contains(normalize-space($fo_element), 'block')">
+						<xsl:attribute name="margin-left">0mm</xsl:attribute>
+						<xsl:attribute name="margin-right">0mm</xsl:attribute>
 					</xsl:if>
-					<xsl:apply-templates/>
-				</fo:block>
+					<fo:block xsl:use-attribute-sets="example-p-style">
+						<xsl:if test="$namespace = 'nist-cswp' or $namespace = 'unece' or $namespace = 'unece-rec'">
+							<xsl:if test="$num = 1">
+								<xsl:attribute name="margin-left">5mm</xsl:attribute>
+							</xsl:if>
+						</xsl:if>
+						<xsl:apply-templates/>
+					</fo:block>
+				</fo:block-container>
 			</xsl:when>
 			<xsl:otherwise>
 				<fo:inline xsl:use-attribute-sets="example-p-style">
@@ -11282,7 +11401,16 @@
 				</fo:inline>
 			</xsl:when>
 			<xsl:otherwise> <!-- if there is key('bibitems_hidden', $current_bibitemid) -->
-				<fo:inline><xsl:apply-templates /></fo:inline>
+			
+				<!-- if in bibitem[@hidden='true'] there is url[@type='src'], then create hyperlink  -->
+				<xsl:variable name="uri_src" select="normalize-space($bibitems_hidden/*[local-name() ='bibitem'][@id = $current_bibitemid]/*[local-name() = 'uri'][@type = 'src'])"/>
+				<xsl:choose>
+					<xsl:when test="$uri_src != ''">
+						<fo:basic-link external-destination="{$uri_src}" fox:alt-text="{$uri_src}"><xsl:apply-templates /></fo:basic-link>
+					</xsl:when>
+					<xsl:otherwise><fo:inline><xsl:apply-templates /></fo:inline></xsl:otherwise>
+				</xsl:choose>
+				
 			</xsl:otherwise>
 		</xsl:choose>
 	</xsl:template>

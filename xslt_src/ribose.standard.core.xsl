@@ -54,8 +54,12 @@
 			<xsl:variable name="edition" select="normalize-space(/rsd:rsd-standard/rsd:bibdata/rsd:edition[normalize-space(@language) = ''])"/>
 			<xsl:if test="$edition != ''">
 				<xsl:variable name="title-version">
-					<xsl:call-template name="getTitle">
-						<xsl:with-param name="name" select="'title-version'"/>
+					<xsl:call-template name="capitalize">
+						<xsl:with-param name="str">
+							<xsl:call-template name="getLocalizedString">
+								<xsl:with-param name="key">version</xsl:with-param>
+							</xsl:call-template>
+						</xsl:with-param>
 					</xsl:call-template>
 				</xsl:variable>
 				<xsl:text>, </xsl:text><xsl:value-of select="$title-version"/><xsl:text> </xsl:text><xsl:value-of select="$edition"/>
@@ -782,6 +786,7 @@
 	
 	<xsl:template match="rsd:p" name="paragraph">
 		<xsl:param name="inline" select="'false'"/>
+		<xsl:param name="split_keep-within-line"/>
 		<xsl:variable name="previous-element" select="local-name(preceding-sibling::*[1])"/>
 		<xsl:variable name="element-name">
 			<xsl:choose>
@@ -814,7 +819,9 @@
 			</xsl:if>
 			
 			<!-- <xsl:attribute name="line-height">155%</xsl:attribute> -->
-			<xsl:apply-templates />
+			<xsl:apply-templates>
+				<xsl:with-param name="split_keep-within-line" select="$split_keep-within-line"/>
+			</xsl:apply-templates>
 		</xsl:element>
 		<xsl:if test="$element-name = 'fo:inline' and not($inline = 'true') and not(local-name(..) = 'admonition')">
 			<fo:block margin-bottom="12pt">

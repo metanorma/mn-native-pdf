@@ -382,8 +382,12 @@
 		<xsl:variable name="edition" select="."/>
 		<xsl:if test="normalize-space($edition) != ''">
 			<fo:block margin-top="6pt">
-				<xsl:call-template name="getTitle">
-					<xsl:with-param name="name" select="'title-version'"/>
+				<xsl:call-template name="capitalize">
+					<xsl:with-param name="str">
+						<xsl:call-template name="getLocalizedString">
+							<xsl:with-param name="key">version</xsl:with-param>
+						</xsl:call-template>
+					</xsl:with-param>
 				</xsl:call-template>
 				<xsl:text>: </xsl:text><xsl:value-of select="$edition"/>
 			</fo:block>
@@ -493,6 +497,7 @@
 	
 	<xsl:template match="ogc:p" name="paragraph">
 		<xsl:param name="inline" select="'false'"/>
+		<xsl:param name="split_keep-within-line"/>
 		<xsl:variable name="previous-element" select="local-name(preceding-sibling::*[1])"/>
 		<xsl:variable name="element-name">
 			<xsl:choose>
@@ -523,7 +528,9 @@
 				<xsl:attribute name="margin-bottom">6pt</xsl:attribute>
 			</xsl:if>
 			<xsl:attribute name="line-height">115%</xsl:attribute>
-			<xsl:apply-templates />
+			<xsl:apply-templates>
+				<xsl:with-param name="split_keep-within-line" select="$split_keep-within-line"/>
+			</xsl:apply-templates>
 		</xsl:element>
 		<xsl:if test="$element-name = 'fo:inline' and not($inline = 'true') and not(local-name(..) = 'admonition')">
 			<fo:block margin-bottom="12pt">

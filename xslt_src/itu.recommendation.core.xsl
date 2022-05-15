@@ -1363,6 +1363,7 @@
 	<!-- PARAGRAPHS                                    -->
 	<!-- ============================= -->	
 	<xsl:template match="itu:p | itu:sections/itu:p" name="paragraph">
+		<xsl:param name="split_keep-within-line"/>
 		<xsl:variable name="previous-element" select="local-name(preceding-sibling::*[1])"/>
 		<xsl:variable name="element-name">
 			<xsl:choose>
@@ -1415,7 +1416,9 @@
 				</fo:inline>
 			</xsl:if>
 			
-			<xsl:apply-templates />
+			<xsl:apply-templates>
+				<xsl:with-param name="split_keep-within-line" select="$split_keep-within-line"/>
+			</xsl:apply-templates>
 		</xsl:element>
 		<xsl:if test="$element-name = 'fo:inline'">
 			<fo:block><xsl:value-of select="$linebreak"/></fo:block>
