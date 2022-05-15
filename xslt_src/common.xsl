@@ -5247,7 +5247,7 @@
 		<!-- There are three cases: -->
 		<xsl:choose>
 			<!-- 1. The minimum table width is equal to or wider than the available space -->
-			<xsl:when test="$table_widths/table/@width_min &gt;= $page_width and 1 = 2">
+			<xsl:when test="$table_widths/table/@width_min &gt;= $page_width and 1 = 2"> <!-- this condition isn't working see case 3 below -->
 				<!-- call old algorithm -->
 				<case1/>
 				<xsl:variable name="cols-count" select="count(xalan:nodeset($table)/*/tr[1]/td)"/>
@@ -6983,7 +6983,7 @@
 											colwidths=<xsl:copy-of select="$colwidths"/>
 										<xsl:text disable-output-escaping="yes">- -&gt;</xsl:text> -->
 										
-										colwidths=<xsl:copy-of select="$colwidths"/>
+										<!-- colwidths=<xsl:copy-of select="$colwidths"/> -->
 										
 										<xsl:variable name="maxlength_dt">
 											<xsl:call-template name="getMaxLength_dt"/>							
