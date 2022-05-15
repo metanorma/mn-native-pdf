@@ -495,6 +495,7 @@
 	</xsl:template>
 	
 	<xsl:template match="un:p" name="paragraph">
+		<xsl:param name="split_keep-within-line"/>
 		<fo:block margin-bottom="6pt" line-height="122%">
 			<xsl:if test="following-sibling::*">
 				<xsl:attribute name="margin-bottom">6pt</xsl:attribute>
@@ -505,7 +506,9 @@
 					<xsl:otherwise>justify</xsl:otherwise>
 				</xsl:choose>
 			</xsl:attribute>
-			<xsl:apply-templates />
+			<xsl:apply-templates>
+				<xsl:with-param name="split_keep-within-line" select="$split_keep-within-line"/>
+			</xsl:apply-templates>
 		</fo:block>
 	</xsl:template>
 	

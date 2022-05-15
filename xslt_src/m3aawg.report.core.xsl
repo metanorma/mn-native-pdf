@@ -556,6 +556,7 @@
 	
 	<xsl:template match="m3d:p" name="paragraph">
 		<xsl:param name="inline" select="'false'"/>
+		<xsl:param name="split_keep-within-line"/>
 		<xsl:variable name="previous-element" select="local-name(preceding-sibling::*[1])"/>
 		<xsl:variable name="element-name">
 			<xsl:choose>
@@ -576,7 +577,9 @@
 			</xsl:attribute>
 			<xsl:attribute name="text-indent">0mm</xsl:attribute>
 			<xsl:attribute name="margin-bottom">6pt</xsl:attribute>
-			<xsl:apply-templates />
+			<xsl:apply-templates>
+				<xsl:with-param name="split_keep-within-line" select="$split_keep-within-line"/>
+			</xsl:apply-templates>
 		</xsl:element>
 		<xsl:if test="$element-name = 'fo:inline' and not($inline = 'true') and not(local-name(..) = 'admonition')">
 			<xsl:choose>

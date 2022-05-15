@@ -1661,6 +1661,7 @@
 	
 	<xsl:template match="iec:p" name="paragraph">
 		<xsl:param name="inline" select="'false'"/>
+		<xsl:param name="split_keep-within-line"/>
 		<xsl:variable name="previous-element" select="local-name(preceding-sibling::*[1])"/>
 		<xsl:variable name="element-name">
 			<xsl:choose>
@@ -1703,11 +1704,15 @@
 					</xsl:if>
 					 
 					<xsl:apply-templates select="@language"/>
-					<xsl:apply-templates />
+					<xsl:apply-templates>
+						<xsl:with-param name="split_keep-within-line" select="$split_keep-within-line"/>
+					</xsl:apply-templates>
 				</xsl:element>
 			</xsl:when>
 			<xsl:otherwise>
-				<xsl:apply-templates />
+				<xsl:apply-templates>
+					<xsl:with-param name="split_keep-within-line" select="$split_keep-within-line"/>
+				</xsl:apply-templates>
 			</xsl:otherwise>
 		</xsl:choose>
 		
