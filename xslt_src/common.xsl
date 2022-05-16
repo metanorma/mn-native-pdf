@@ -12757,32 +12757,12 @@
 				<xsl:if test=".//bipm:fn">
 					<xsl:attribute name="line-height-shift-adjustment">disregard-shifts</xsl:attribute>
 				</xsl:if>			
-				<xsl:choose>
-					<xsl:when test="*[local-name() = 'formattedref']">
-						<xsl:apply-templates select="*[local-name() = 'formattedref']"/>
-					</xsl:when>
-					<xsl:otherwise>
-						<xsl:variable name="docidentifier" select="*[local-name() = 'docidentifier'][not(@type = 'URN' or @type = 'metanorma' or @type = 'metanorma-ordinal' or @type = 'BIPM' or @type = 'ISBN' or @type = 'ISSN')]"/>
-						
-						<xsl:value-of select="$docidentifier"/>
-						<xsl:if test="$docidentifier != '' and *[local-name() = 'title']">, </xsl:if>
-						
-						<xsl:variable name="curr_lang" select="ancestor::bipm:bipm-standard/bipm:bibdata/bipm:language"/>
-						
-						<xsl:choose>
-							<xsl:when test="*[local-name() = 'title'][@type = 'main' and @language = $curr_lang]">
-								<xsl:apply-templates select="*[local-name() = 'title'][@type = 'main' and @language = $curr_lang]"/>
-							</xsl:when>
-							<xsl:when test="*[local-name() = 'title'][@type = 'main' and @language = 'en']">
-								<xsl:apply-templates select="*[local-name() = 'title'][@type = 'main' and @language = 'en']"/>
-							</xsl:when>
-							<xsl:otherwise>
-								<xsl:apply-templates select="*[local-name() = 'title']"/>
-							</xsl:otherwise>
-						</xsl:choose>
-						
-					</xsl:otherwise>
-				</xsl:choose>
+				
+				<xsl:variable name="docidentifier" select="*[local-name() = 'docidentifier'][not(@type = 'URN' or @type = 'metanorma' or @type = 'metanorma-ordinal' or @type = 'BIPM' or @type = 'ISBN' or @type = 'ISSN')]"/>
+				<xsl:value-of select="$docidentifier"/>
+				
+				<xsl:if test="$docidentifier != '' and *[local-name() = 'formattedref']">, </xsl:if>
+				<xsl:apply-templates select="*[local-name() = 'formattedref']"/>
 				<!-- end BIPM bibitem processing-->
 			</xsl:when>
 			
