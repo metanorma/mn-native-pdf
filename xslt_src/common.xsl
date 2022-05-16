@@ -13337,17 +13337,6 @@
 				<fo:inline><xsl:value-of select="$docidentifier"/></fo:inline>
 				<xsl:apply-templates select="*[local-name() = 'note']"/>
 				<xsl:if test="normalize-space($docidentifier) != ''">, </xsl:if>
-				<xsl:choose>
-					<xsl:when test="*[local-name() = 'title'][@type = 'main' and @language = $lang]">
-						<xsl:apply-templates select="*[local-name() = 'title'][@type = 'main' and @language = $lang]"/>
-					</xsl:when>
-					<xsl:when test="*[local-name() = 'title'][@type = 'main' and @language = 'en']">
-						<xsl:apply-templates select="*[local-name() = 'title'][@type = 'main' and @language = 'en']"/>
-					</xsl:when>
-					<xsl:otherwise>
-						<xsl:apply-templates select="*[local-name() = 'title']"/>
-					</xsl:otherwise>
-				</xsl:choose>
 				<xsl:apply-templates select="*[local-name() = 'formattedref']"/>
 				<!-- end bibitem processing -->
 			</xsl:otherwise>
