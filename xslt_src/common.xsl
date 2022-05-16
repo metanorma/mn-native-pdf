@@ -12867,32 +12867,14 @@
 				<xsl:variable name="docidentifier">
 					<xsl:choose>
 						<xsl:when test="*[local-name()='docidentifier']/@type = 'metanorma'"/>
-						<xsl:otherwise><xsl:value-of select="*[local-name()='docidentifier'][not(@type = 'metanorma-ordinal')]"/></xsl:otherwise>
+						<xsl:otherwise><xsl:value-of select="*[local-name()='docidentifier'][not(@type = 'metanorma-ordinal') and not(@type = 'BIPM')]"/></xsl:otherwise>
 					</xsl:choose>
 				</xsl:variable>
 				<xsl:value-of select="$docidentifier"/>
 				
-				<xsl:choose>
-					<xsl:when test="*[local-name()='formattedref']">
-						<xsl:if test="normalize-space($docidentifier) != ''">, </xsl:if>
-						<xsl:apply-templates select="*[local-name()='formattedref']"/>
-					</xsl:when>
-					<xsl:otherwise>
-						<xsl:apply-templates select="*[local-name()='note']"/>			
-						<xsl:if test="normalize-space($docidentifier) != ''">, </xsl:if>
-						<xsl:choose>
-							<xsl:when test="*[local-name()='title'][@type = 'main' and @language = $lang]">
-								<xsl:apply-templates select="*[local-name()='title'][@type = 'main' and @language = $lang]"/>
-							</xsl:when>
-							<xsl:when test="*[local-name()='title'][@type = 'main' and @language = 'en']">
-								<xsl:apply-templates select="*[local-name()='title'][@type = 'main' and @language = 'en']"/>
-							</xsl:when>
-							<xsl:otherwise>
-								<xsl:apply-templates select="*[local-name()='title']"/>
-							</xsl:otherwise>
-						</xsl:choose>
-					</xsl:otherwise>
-				</xsl:choose>
+				<xsl:if test="*[local-name()='formattedref'] and normalize-space($docidentifier) != ''">, </xsl:if>
+				<xsl:apply-templates select="*[local-name()='formattedref']"/>
+					
 				<!-- end JCGM bibitem processing -->
 			</xsl:when>
 			
