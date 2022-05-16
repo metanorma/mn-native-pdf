@@ -12831,23 +12831,13 @@
 				
 				<xsl:value-of select="$docidentifier_"/>
 				
-				<xsl:apply-templates select="*[local-name() = 'note']"/>			
-				<xsl:if test="normalize-space($docidentifier_) != ''">
+				<xsl:apply-templates select="*[local-name() = 'note']"/>
+				<xsl:if test="normalize-space($docidentifier_) != '' and *[local-name() = 'formattedref']">
 					<!-- <xsl:if test="preceding-sibling::*[local-name() = 'references'][1][@normative = 'true']">,</xsl:if> -->
 					<xsl:if test="not(starts-with($docidentifier_, '[')) and not(*[local-name() = 'formattedref']/node()[1][local-name() = 'add' and contains(., '_start')])">,</xsl:if>
 					<xsl:text> </xsl:text>
 				</xsl:if>
-				<xsl:choose>
-					<xsl:when test="*[local-name() = 'title'][@type = 'main' and @language = $lang]">
-						<xsl:apply-templates select="*[local-name() = 'title'][@type = 'main' and @language = $lang]"/>
-					</xsl:when>
-					<xsl:when test="*[local-name() = 'title'][@type = 'main' and @language = 'en']">
-						<xsl:apply-templates select="*[local-name() = 'title'][@type = 'main' and @language = 'en']"/>
-					</xsl:when>
-					<xsl:otherwise>
-						<xsl:apply-templates select="*[local-name() = 'title']"/>
-					</xsl:otherwise>
-				</xsl:choose>
+				
 				<xsl:apply-templates select="*[local-name() = 'formattedref']"/>
 				<!-- end BSI bibitem processing -->
 			</xsl:when>
