@@ -12879,18 +12879,10 @@
 			</xsl:when>
 			
 			<xsl:when test="$namespace = 'nist-cswp'">
-				<!-- Examples:
-				[b-ASM]	b-ASM, http://www.eecs.umich.edu/gasm/ (accessed 20 March 2018).
-				[b-Börger & Stärk]	b-Börger & Stärk, Börger, E., and Stärk, R. S. (2003), Abstract State Machines: A Method for High-Level System Design and Analysis, Springer-Verlag.
-				-->
 				<xsl:apply-templates select="nist:formattedref"/>
 			</xsl:when>
 			
 			<xsl:when test="$namespace = 'nist-sp'">
-				<!-- Examples:
-				[b-ASM]	b-ASM, http://www.eecs.umich.edu/gasm/ (accessed 20 March 2018).
-				[b-Börger & Stärk]	b-Börger & Stärk, Börger, E., and Stärk, R. S. (2003), Abstract State Machines: A Method for High-Level System Design and Analysis, Springer-Verlag.
-				-->
 				<xsl:variable name="docidentifier" select="normalize-space(nist:docidentifier[@display = 'true'])"/>
 				<xsl:if test="$docidentifier != ''">
 					<fo:inline padding-right="5mm"><xsl:value-of select="$docidentifier"/></fo:inline>
@@ -12903,147 +12895,7 @@
 				<xsl:if test=".//ogc:fn">
 					<xsl:attribute name="line-height-shift-adjustment">disregard-shifts</xsl:attribute>
 				</xsl:if>			
-				<xsl:choose>
-					<xsl:when test="*[local-name() = 'formattedref']">
-						<xsl:apply-templates select="*[local-name() = 'formattedref']"/>
-					</xsl:when>
-					<xsl:otherwise>
-						<xsl:variable name="personalAuthors">
-							<xsl:for-each select="*[local-name() = 'contributor'][*[local-name() = 'role']/@type='author']/*[local-name() = 'person']">
-								<xsl:call-template name="processPersonalAuthor"/>
-							</xsl:for-each>
-							<xsl:if test="not(*[local-name() = 'contributor'][*[local-name() = 'role']/@type='author']/*[local-name() = 'person'])">
-								<xsl:for-each select="*[local-name() = 'contributor'][*[local-name() = 'role']/@type='editor']/*[local-name() = 'person']">
-									<xsl:call-template name="processPersonalAuthor"/>
-								</xsl:for-each>
-							</xsl:if>
-						</xsl:variable>
-						
-						<xsl:variable name="city" select="*[local-name() = 'place']"/>
-						<xsl:variable name="year">
-							<xsl:choose>
-								<xsl:when test="*[local-name() = 'date'][@type = 'published']">
-									<xsl:for-each select="*[local-name() = 'date'][@type = 'published']">
-										<xsl:call-template name="renderDate"/>									
-									</xsl:for-each>								
-								</xsl:when>
-								<xsl:when test="*[local-name() = 'date'][@type = 'issued']">
-									<xsl:for-each select="*[local-name() = 'date'][@type = 'issued']">
-										<xsl:call-template name="renderDate"/>									
-									</xsl:for-each>
-								</xsl:when>
-								<xsl:when test="*[local-name() = 'date'][@type = 'circulated']">
-									<xsl:for-each select="*[local-name() = 'date'][@type = 'circulated']">
-										<xsl:call-template name="renderDate"/>									
-									</xsl:for-each>								
-								</xsl:when>
-								<xsl:otherwise>
-									<xsl:for-each select="*[local-name() = 'date']">
-										<xsl:call-template name="renderDate"/>
-									</xsl:for-each>
-								</xsl:otherwise>
-							</xsl:choose>
-						</xsl:variable>
-						
-						<xsl:variable name="uri" select="*[local-name() = 'uri']"/>
-						
-						
-						<!-- citation structure:
-						{personal names | organisation}: {document identifier}, {title}. {publisher}, {city} ({year})
-						-->
-						
-						<!-- Author(s) -->
-						<xsl:choose>
-							<xsl:when test="xalan:nodeset($personalAuthors)//author">
-								<xsl:for-each select="xalan:nodeset($personalAuthors)//author">
-									<xsl:apply-templates />
-									<xsl:if test="position() != last()">, </xsl:if>
-								</xsl:for-each>
-								<xsl:text>: </xsl:text>
-							</xsl:when>
-							<xsl:when test="*[local-name() = 'contributor'][*[local-name() = 'role']/@type = 'publisher']/*[local-name() = 'organization']/*[local-name() = 'abbreviation']">
-								<xsl:for-each select="*[local-name() = 'contributor'][*[local-name() = 'role']/@type = 'publisher']/*[local-name() = 'organization']/*[local-name() = 'abbreviation']">
-									<xsl:value-of select="."/>
-									<xsl:if test="position() != last()">/</xsl:if>
-								</xsl:for-each>
-								<xsl:text>: </xsl:text>
-							</xsl:when>
-							<xsl:when test="*[local-name() = 'contributor'][*[local-name() = 'role']/@type = 'publisher']/*[local-name() = 'organization']/*[local-name() = 'name']">									
-								<xsl:for-each select="*[local-name() = 'contributor'][*[local-name() = 'role']/@type = 'publisher']/*[local-name() = 'organization']/*[local-name() = 'name']">
-									<xsl:value-of select="."/>
-									<xsl:if test="position() != last()">, </xsl:if>
-								</xsl:for-each>
-								<xsl:text>: </xsl:text>
-							</xsl:when>
-						</xsl:choose>
-						
-						
-						<xsl:variable name="document_identifier">
-							<xsl:call-template name="processBibitemDocId"/>
-						</xsl:variable>
-						
-						<xsl:value-of select="$document_identifier"/>
-						
-						<xsl:apply-templates select="*[local-name() = 'note']"/>
-						
-						<xsl:variable name="isDraft">
-							<xsl:variable name="stage" select="normalize-space(*[local-name() = 'status']/*[local-name() = 'stage'])"/>						
-							<xsl:if test="*[local-name() = 'contributor'][*[local-name() = 'role']/@type = 'publisher']/*[local-name() = 'organization'][*[local-name() = 'name']/text() = 'Open Geospatial Consortium'] and
-												$stage != '' and
-												$stage != 'published' and $stage != 'deprecated' and $stage != 'retired'">true</xsl:if>
-						</xsl:variable>	 
-						
-						<xsl:if test="$isDraft = 'true'">
-							<xsl:text> (Draft)</xsl:text>
-						</xsl:if>
-						
-						<xsl:text>, </xsl:text>
-						
-						<xsl:choose>
-							<xsl:when test="*[local-name() = 'title'][@type = 'main' and @language = 'en']">
-								<xsl:apply-templates select="*[local-name() = 'title'][@type = 'main' and @language = 'en']"/>
-							</xsl:when>
-							<xsl:otherwise>
-								<xsl:apply-templates select="*[local-name() = 'title']"/>
-							</xsl:otherwise>
-						</xsl:choose>
-						
-						<xsl:text>. </xsl:text>
-						
-						<xsl:if test="*[local-name() = 'contributor'][*[local-name() = 'role']/@type = 'publisher']/*[local-name() = 'organization']/*[local-name() = 'name']">									
-							<xsl:for-each select="*[local-name() = 'contributor'][*[local-name() = 'role']/@type = 'publisher']/*[local-name() = 'organization']/*[local-name() = 'name']">
-								<xsl:value-of select="."/>
-								<xsl:if test="position() != last()">, </xsl:if>
-							</xsl:for-each>
-							<xsl:if test="normalize-space($city) != ''">, </xsl:if>
-						</xsl:if>
-						
-						<xsl:value-of select="$city"/>
-						
-						<xsl:if test="(*[local-name() = 'contributor'][*[local-name() = 'role']/@type = 'publisher']/*[local-name() = 'organization']/*[local-name() = 'name'] or normalize-space($city) != '') and normalize-space($year) != ''">
-							<xsl:text> </xsl:text>
-						</xsl:if>
-						
-						<xsl:if test="normalize-space($year) != ''">
-							<xsl:text>(</xsl:text>
-							<xsl:value-of select="$year"/>
-							<xsl:text>). </xsl:text>
-						</xsl:if>
-						
-						<xsl:if test="normalize-space($uri) != ''">
-							<fo:inline>
-								<xsl:if test="$namespace = 'ogc'">
-									<xsl:attribute name="text-decoration">underline</xsl:attribute>
-								</xsl:if>
-								<xsl:text> </xsl:text>
-								<fo:basic-link external-destination="{$uri}" fox:alt-text="{$uri}">
-									<xsl:value-of select="$uri"/>							
-								</fo:basic-link>
-							</fo:inline>
-						</xsl:if>
-						
-					</xsl:otherwise>
-				</xsl:choose>
+				<xsl:apply-templates select="*[local-name() = 'formattedref']"/>			
 				<!-- end OGC bibitem processing-->
 			</xsl:when>
 			
