@@ -1710,27 +1710,6 @@
 		</xsl:element>
 	</xsl:template>
 
-		
-	
-	<!-- Examples:
-	[b-ASM]	b-ASM, http://www.eecs.umich.edu/gasm/ (accessed 20 March 2018).
-	[b-Börger & Stärk]	b-Börger & Stärk, Börger, E., and Stärk, R. S. (2003), Abstract State Machines: A Method for High-Level System Design and Analysis, Springer-Verlag.
-	-->
-	<xsl:template match="itu:annex//itu:bibitem" priority="3">
-		<fo:block margin-top="6pt" margin-left="10mm" text-indent="-10mm">
-			<fo:inline id="{@id}" padding-right="5mm">[<xsl:value-of select="itu:docidentifier[not(@type = 'metanorma-ordinal')]"/>]</fo:inline>
-			<xsl:text> </xsl:text>
-			<xsl:apply-templates select="itu:docidentifier[not(@type = 'metanorma-ordinal')]" mode="content"/>
-			<xsl:if test="node()[local-name(.) != current()/itu:docidentifier]">, </xsl:if>
-			<xsl:apply-templates />
-		</fo:block>
-	</xsl:template>
-	
-	<xsl:template match="itu:docidentifier" mode="content">
-		<xsl:apply-templates />
-	</xsl:template>
-	<xsl:template match="itu:docidentifier"/>
-	
 	
 	<xsl:template match="itu:ul | itu:ol | itu:sections/itu:ul | itu:sections/itu:ol" mode="list" priority="2">
 		<xsl:if test="preceding-sibling::*[1][local-name() = 'title'] and $doctype != 'service-publication'">
