@@ -12654,20 +12654,18 @@
 						</fo:list-item-label>
 						<fo:list-item-body start-indent="body-start()">
 							<fo:block>
-								<xsl:if test="rsd:docidentifier">
+								<xsl:variable name="docidentifier">
 									<xsl:choose>
 										<xsl:when test="rsd:docidentifier/@type = 'metanorma'"/>
-										<xsl:otherwise><fo:inline><xsl:value-of select="rsd:docidentifier[not(@type = 'metanorma-ordinal')]"/>, </fo:inline></xsl:otherwise>
+										<xsl:otherwise>
+											<xsl:value-of select="rsd:docidentifier[not(@type = 'metanorma-ordinal')]"/>
+										</xsl:otherwise>
 									</xsl:choose>
+								</xsl:variable>
+								<xsl:value-of select="$docidentifier"/>
+								<xsl:if test="normalize-space($docidentifier) != '' and rsd:formattedref">
+									<xsl:text>, </xsl:text>
 								</xsl:if>
-								<xsl:choose>
-									<xsl:when test="rsd:title[@type = 'main' and @language = 'en']">
-										<xsl:apply-templates select="rsd:title[@type = 'main' and @language = 'en']"/>
-									</xsl:when>
-									<xsl:otherwise>
-										<xsl:apply-templates select="rsd:title"/>
-									</xsl:otherwise>
-								</xsl:choose>
 								<xsl:apply-templates select="rsd:formattedref"/>
 							</fo:block>
 						</fo:list-item-body>
@@ -12684,7 +12682,7 @@
 							<fo:block>
 								<fo:inline>
 									<xsl:choose>
-										<xsl:when test="$namespace = 'ogc' or $namespace = 'rsd'">
+										<xsl:when test="$namespace = 'ogc'">
 											<xsl:number format="1."/>
 										</xsl:when>
 										<xsl:otherwise>
@@ -12900,42 +12898,16 @@
 			</xsl:when>
 			
 			<xsl:when test="$namespace = 'rsd'">
+				<!-- start RSD bibitem processing -->
 				<xsl:if test=".//rsd:fn">
 					<xsl:attribute name="line-height-shift-adjustment">disregard-shifts</xsl:attribute>
 				</xsl:if>
-				<xsl:value-of select="rsd:docidentifier"/>
+				<xsl:variable name="docidentifier" select="rsd:docidentifier"/>
+				<xsl:value-of select="$docidentifier"/>
 				<xsl:apply-templates select="rsd:note"/>
-				<xsl:if test="rsd:docidentifier">, </xsl:if>
-				<xsl:choose>
-					<xsl:when test="rsd:formattedref">
-						<xsl:apply-templates select="rsd:formattedref"/>
-					</xsl:when>
-					<xsl:otherwise>
-						<xsl:for-each select="rsd:contributor[rsd:role/@type='publisher']/rsd:organization/rsd:name">
-							<xsl:apply-templates />
-							<xsl:if test="position() != last()">, </xsl:if>
-							<xsl:if test="position() = last()">: </xsl:if>
-						</xsl:for-each>
-							<!-- rsd:docidentifier -->
-						
-						<xsl:choose>
-							<xsl:when test="rsd:title[@type = 'main' and @language = 'en']">
-								<fo:inline><xsl:apply-templates select="rsd:title[@type = 'main' and @language = 'en']"/><xsl:text>. </xsl:text></fo:inline>
-							</xsl:when>
-							<xsl:otherwise>
-								<fo:inline><xsl:apply-templates select="rsd:title"/><xsl:text>. </xsl:text></fo:inline>
-							</xsl:otherwise>
-						</xsl:choose>
-						
-						<xsl:for-each select="rsd:contributor[rsd:role/@type='publisher']/rsd:organization/rsd:name">
-							<xsl:apply-templates />
-							<xsl:if test="position() != last()">, </xsl:if>
-						</xsl:for-each>
-						<xsl:if test="rsd:date[@type='published']/rsd:on">
-							<xsl:text> (</xsl:text><xsl:value-of select="rsd:date[@type='published']/rsd:on"/><xsl:text>)</xsl:text>
-						</xsl:if>
-					</xsl:otherwise>
-				</xsl:choose>
+				<xsl:if test="normalize-space($docidentifier) != '' and rsd:formattedref">, </xsl:if>
+				<xsl:apply-templates select="rsd:formattedref"/>	
+				<!-- END RSD bibitem processing -->
 			</xsl:when>
 			
 			<xsl:when test="$namespace = 'unece' or $namespace = 'unece-rec'">
