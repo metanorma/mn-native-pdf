@@ -12881,11 +12881,13 @@
 			</xsl:when>
 			
 			<xsl:when test="$namespace = 'nist-sp'">
+				<!-- start NIST SP bibitem processing -->
 				<xsl:variable name="docidentifier" select="normalize-space(nist:docidentifier[@display = 'true'])"/>
 				<xsl:if test="$docidentifier != ''">
 					<fo:inline padding-right="5mm"><xsl:value-of select="$docidentifier"/></fo:inline>
 				</xsl:if>
 				<xsl:apply-templates select="nist:formattedref"/>
+				<!-- END NIST SP bibitem processing -->
 			</xsl:when>
 			
 			<xsl:when test="$namespace = 'ogc' or $namespace = 'ogc-white-paper'">
@@ -12911,22 +12913,11 @@
 			</xsl:when>
 			
 			<xsl:when test="$namespace = 'unece' or $namespace = 'unece-rec'">
+				<!-- start UNECE bibitem processing -->
 				<fo:inline padding-right="5mm">[<xsl:value-of select="un:docidentifier"/>]</fo:inline><xsl:value-of select="un:docidentifier"/>
-				<xsl:if test="un:title">
-					<fo:inline font-style="italic">
-						<xsl:text>, </xsl:text>
-						<xsl:choose>
-							<xsl:when test="un:title[@type = 'main' and @language = 'en']">
-								<xsl:apply-templates select="un:title[@type = 'main' and @language = 'en']"/>
-							</xsl:when>
-							<xsl:otherwise>
-								<xsl:apply-templates select="un:title"/>
-							</xsl:otherwise>
-						</xsl:choose>
-					</fo:inline>
-				</xsl:if>
+				<xsl:text> </xsl:text>
 				<xsl:apply-templates select="un:formattedref"/>
-
+				<!-- END UNECE bibitem processing -->
 			</xsl:when>
 			
 			<!-- for csa, csd, iec, iso, m3d, mpfd, and other  -->
@@ -13027,13 +13018,7 @@
 		<fo:inline><xsl:apply-templates /></fo:inline>
 	</xsl:template>
 
-	<!--
-	<xsl:template match="gb:references[not(@normative='true')]/gb:bibitem/gb:title">
-		<fo:inline font-style="italic">
-			<xsl:apply-templates />
-		</fo:inline>
-	</xsl:template>
-	-->
+
 
 	<xsl:template match="*[local-name() = 'bibitem']/*[local-name() = 'title']" priority="2">
 		<!-- <fo:inline><xsl:apply-templates /></fo:inline> -->
