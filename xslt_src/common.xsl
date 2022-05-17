@@ -4101,7 +4101,7 @@
 	</xsl:template>
 
 	<xsl:template name="processPrefaceSectionsDefault">
-		<xsl:for-each select="/*/*[local-name()='preface']/*">
+		<xsl:for-each select="/*/*[local-name()='preface']/*[not(local-name() = 'note' or local-name() = 'admonition')]">
 			<xsl:sort select="@displayorder" data-type="number"/>
 			<xsl:apply-templates select="."/>
 		</xsl:for-each>
