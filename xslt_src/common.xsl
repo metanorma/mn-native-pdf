@@ -12026,7 +12026,7 @@
 					<xsl:choose>
 						<xsl:when test="$type = 'arabic'">
 							<xsl:choose>
-								<xsl:when test="$namespace = 'bipm' or $namespace = 'iso' or $namespace = 'jcgm' or $namespace = 'm3d' or 
+								<xsl:when test="$namespace = 'bipm' or $namespace = 'jcgm' or $namespace = 'm3d' or 
 								$namespace = 'mpfd' or $namespace = 'ogc' or $namespace = 'rsd' or $namespace = 'unece' or $namespace = 'nist-cswp' or $namespace = 'nist-sp'">1.</xsl:when>
 								<xsl:otherwise>1)</xsl:otherwise>
 							</xsl:choose>
