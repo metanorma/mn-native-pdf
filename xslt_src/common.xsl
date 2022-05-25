@@ -13391,13 +13391,24 @@
 						</xsl:if>
 					</xsl:if>
 					
+					<xsl:if test="@type = 'editorial'">
+						<xsl:attribute name="color">green</xsl:attribute>
+					</xsl:if>
+					
 					<xsl:if test="$namespace = 'bsi'">
 						<fo:block xsl:use-attribute-sets="admonition-name-style">
 							<xsl:call-template name="displayAdmonitionName"/>
 						</fo:block>
 					</xsl:if>
 					
-					<xsl:if test="$namespace = 'csd' or $namespace = 'iso' or $namespace = 'jcgm'">
+					<xsl:if test="$namespace = 'iso'">
+						<xsl:if test="@type != 'editorial'">
+							<xsl:call-template name="displayAdmonitionName"/>
+							<xsl:text> — </xsl:text>
+						</xsl:if>
+					</xsl:if>
+					
+					<xsl:if test="$namespace = 'csd' or $namespace = 'jcgm'">
 						<xsl:call-template name="displayAdmonitionName"/>
 						<xsl:text> — </xsl:text>
 					</xsl:if>
