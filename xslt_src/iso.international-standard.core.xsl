@@ -527,7 +527,7 @@
 												</xsl:if>
 												
 												<fo:block>
-													<xsl:if test="$stage-abbreviation = 'DIS'">
+													<xsl:if test="$stage-abbreviation = 'NWIP' or $stage-abbreviation = 'NP' or $stage-abbreviation = 'PWI' or $stage-abbreviation = 'AWI' or $stage-abbreviation = 'WD' or $stage-abbreviation = 'CD' or $stage-abbreviation = 'DIS' or $stage-abbreviation = 'FDIS'">
 														<xsl:variable name="text">
 															<xsl:for-each select="/iso:iso-standard/iso:preface/iso:note[@coverpage='true']/iso:p">
 																<fo:block>
@@ -809,7 +809,7 @@
 																<xsl:call-template name="printEdition"/>
 															</xsl:if>
 															<xsl:choose>
-																<xsl:when test="($stage-abbreviation = 'PWI' or $stage-abbreviation = 'AWI' or $stage-abbreviation = 'WD' or $stage-abbreviation = 'CD') and /iso:iso-standard/iso:bibdata/iso:version/iso:revision-date">
+																<xsl:when test="($stage-abbreviation = 'NWIP' or $stage-abbreviation = 'NP' or $stage-abbreviation = 'PWI' or $stage-abbreviation = 'AWI' or $stage-abbreviation = 'WD' or $stage-abbreviation = 'CD' or $stage-abbreviation = 'FDIS') and /iso:iso-standard/iso:bibdata/iso:version/iso:revision-date">
 																	<xsl:value-of select="$linebreak"/>
 																	<xsl:value-of select="/iso:iso-standard/iso:bibdata/iso:version/iso:revision-date"/>
 																</xsl:when>
@@ -852,7 +852,7 @@
 													<fo:table-cell><fo:block></fo:block></fo:table-cell>
 													<fo:table-cell number-columns-spanned="2" font-size="10pt" line-height="1.2" display-align="center">
 														<fo:block>
-															<xsl:if test="$stage-abbreviation = 'PWI' or $stage-abbreviation = 'AWI' or $stage-abbreviation = 'WD' or $stage-abbreviation = 'CD'">
+															<xsl:if test="$stage-abbreviation = 'NWIP' or $stage-abbreviation = 'NP' or $stage-abbreviation = 'PWI' or $stage-abbreviation = 'AWI' or $stage-abbreviation = 'WD' or $stage-abbreviation = 'CD' or $stage-abbreviation = 'FDIS'">
 																<fo:table table-layout="fixed" width="100%">
 																	<fo:table-column column-width="50%"/>
 																	<fo:table-column column-width="50%"/>
@@ -964,7 +964,7 @@
 																	</fo:block>
 																</xsl:for-each>
 																
-																<xsl:if test="$stage-abbreviation = 'PWI' or $stage-abbreviation = 'AWI' or $stage-abbreviation = 'WD' or $stage-abbreviation = 'CD'">
+																<xsl:if test="$stage-abbreviation = 'NWIP' or $stage-abbreviation = 'NP' or $stage-abbreviation = 'PWI' or $stage-abbreviation = 'AWI' or $stage-abbreviation = 'WD' or $stage-abbreviation = 'CD' or $stage-abbreviation = 'FDIS'">
 																	<fo:block margin-top="10mm">
 																		<xsl:copy-of select="$ics"/>
 																	</fo:block>
