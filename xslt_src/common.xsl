@@ -6857,6 +6857,11 @@
 						<xsl:if test="$namespace = 'iho'">
 							<xsl:attribute name="margin-left">7mm</xsl:attribute>
 						</xsl:if>
+						
+						<xsl:if test="ancestor::*[local-name() = 'dd' or local-name() = 'td']">
+							<xsl:attribute name="margin-top">0</xsl:attribute>
+						</xsl:if>
+						
 						<fo:block>
 							<xsl:if test="$namespace = 'nist-cswp'  or $namespace = 'nist-sp'">
 								<xsl:if test="not(.//*[local-name()='dt']//*[local-name()='stem'])">
