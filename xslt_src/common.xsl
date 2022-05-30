@@ -5237,11 +5237,7 @@
 			<table_width>
 				<xsl:copy-of select="$table_widths"/>
 			</table_width>
-			<!-- <debug>$table_widths/@width_min=<xsl:value-of select="$table_widths/table/@width_min"/></debug>
-			<debug>$table_widths/@width_max=<xsl:value-of select="$table_widths/table/@width_max"/></debug>
-			 -->
 			<debug>$page_width=<xsl:value-of select="$page_width"/></debug>
-			
 		</xsl:if>
 		
 		
@@ -5299,7 +5295,6 @@
 			<xsl:otherwise><unknown_case/></xsl:otherwise>
 		</xsl:choose>
 		
-		
 	</xsl:template> <!-- calculate-column-widths-autolayout-algorithm -->
 	
 	
@@ -5346,8 +5341,7 @@
 			</xsl:otherwise>
 		</xsl:choose>
 		
-		
-	</xsl:template>
+	</xsl:template> <!-- get-calculated-column-widths-autolayout-algorithm -->
 	
 	
 	<!-- ============================= -->
