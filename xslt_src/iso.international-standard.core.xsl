@@ -209,9 +209,10 @@
 	<xsl:variable name="editorialgroup_">
 		<!-- Example: ISO/TC 46/SC 2 -->
 		<!-- ISO/SG SMART/SG TS/AG 1 -->
+		<xsl:variable name="approvalgroup" select="normalize-space(/iso:iso-standard/iso:bibdata/iso:ext/iso:approvalgroup/@identifier)"/>
 		<xsl:variable name="parts_by_slash">
 			<xsl:call-template name="split">
-				<xsl:with-param name="pText" select="/iso:iso-standard/iso:bibdata/iso:ext/iso:editorialgroup/iso:approvalgroup"/>
+				<xsl:with-param name="pText" select="$approvalgroup"/>
 				<xsl:with-param name="sep" select="'/'"/>
 				<xsl:with-param name="normalize-space">false</xsl:with-param>
 				<xsl:with-param name="keep_sep">true</xsl:with-param>
