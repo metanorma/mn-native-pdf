@@ -34,6 +34,18 @@
 	<!-- for command line debug: <xsl:variable name="table_widths_from_if" select="document($table_widths)"/> -->
 	<xsl:variable name="table_widths_from_if" select="xalan:nodeset($table_widths)"/> 
 	
+	
+	<xsl:variable name="table_widths_from_if_calculated_">
+		<xsl:for-each select="$table_widths_from_if//table">
+			<xsl:copy>
+				<xsl:copy-of select="@*"/>
+				<xsl:call-template name="calculate-column-widths-autolayout-algorithm"/>
+			</xsl:copy>
+		</xsl:for-each>
+	</xsl:variable>
+	<xsl:variable name="table_widths_from_if_calculated" select="xalan:nodeset($table_widths_from_if_calculated_)"/>
+	
+	
 	<xsl:param name="table_if_debug">false</xsl:param> <!-- set 'true' to put debug width data before table or dl -->
 
 	<xsl:variable name="isGenerateTableIF_">
@@ -4948,11 +4960,7 @@
 		<xsl:param name="cols-count"/>
 		<xsl:choose>
 			<xsl:when test="$namespace = 'iso'">
-				<xsl:call-template name="calculate-column-widths-autolayout-algorithm">
-					<xsl:with-param name="cols-count" select="$cols-count"/>
-					<xsl:with-param name="table" select="$table"/>
-					<xsl:with-param name="if">true</xsl:with-param>
-				</xsl:call-template>
+				<xsl:call-template name="get-calculated-column-widths-autolayout-algorithm"/>
 			</xsl:when>
 			<xsl:otherwise>
 				<xsl:call-template name="calculate-column-widths-proportional">
@@ -5141,10 +5149,10 @@
 	<!-- ================================================== -->
 	
 	
-	
 	<xsl:template name="calculate-column-widths-autolayout-algorithm">
-		<xsl:param name="table"/>
-		<xsl:param name="if">false</xsl:param> <!-- via intermediate format -->
+		<xsl:param name="parent_table_page-width"/> <!-- for nested tables, in re-calculate step -->
+		
+		<!-- via intermediate format -->
 
 		<!-- The algorithm uses two passes through the table data and scales linearly with the size of the table -->
 	 
@@ -5155,9 +5163,8 @@
 		<!-- get current table id -->
 		<xsl:variable name="table_id" select="@id"/>
 		<!-- find table by id in the file 'table_widths' -->
-		<xsl:variable name="table-if_" select="$table_widths_from_if//table[@id = $table_id]"/>
-		<xsl:variable name="table-if" select="xalan:nodeset($table-if_)"/>
-		
+	<!-- 	<xsl:variable name="table-if_" select="$table_widths_from_if//table[@id = $table_id]"/>
+		<xsl:variable name="table-if" select="xalan:nodeset($table-if_)"/> -->
 		
 		<!-- table='<xsl:copy-of select="$table"/>' -->
 		<!-- table_id='<xsl:value-of select="$table_id"/>\ -->
@@ -5165,24 +5172,13 @@
 		<!-- table_widths_from_if='<xsl:copy-of select="$table_widths_from_if"/>' -->
 		
 		<xsl:variable name="table_with_cell_widths_">
-			<xsl:choose>
-				<xsl:when test="$if = 'true' and normalize-space($table-if) != ''"> <!-- if we read column's width from IF and there is table in IF -->
-				
-					<!-- Example: <column>10</column>
-							<column>11</column> 
-					-->
-					<xsl:apply-templates select="$table-if" mode="determine_cell_widths-if"/>
-				</xsl:when>
-				<xsl:otherwise>
-					<xsl:apply-templates select="xalan:nodeset($table)" mode="determine_cell_widths"/>
-				</xsl:otherwise>
-			</xsl:choose>
+			<xsl:apply-templates select="." mode="determine_cell_widths-if"/> <!-- read column's width from IF -->
 		</xsl:variable>
 		<xsl:variable name="table_with_cell_widths" select="xalan:nodeset($table_with_cell_widths_)"/>
 		
-		<xsl:if test="$table_if_debug = 'true'">
+		<!-- <xsl:if test="$table_if_debug = 'true'">
 			<xsl:copy-of select="$table_with_cell_widths"/>
-		</xsl:if>
+		</xsl:if> -->
 		
 		
 		<!-- The minimum and maximum cell widths are then used to determine the corresponding minimum and maximum widths for the columns. -->
@@ -5228,8 +5224,12 @@
 		
 		<xsl:variable name="page_width">
 			<xsl:choose>
-				<xsl:when test="$if = 'true'"><xsl:value-of select="$table-if/@page-width"/></xsl:when>
-				<xsl:otherwise>75</xsl:otherwise>
+				<xsl:when test="$parent_table_page-width != ''">
+					<xsl:value-of select="$parent_table_page-width"/>
+				</xsl:when>
+				<xsl:otherwise>
+					<xsl:value-of select="@page-width"/>
+				</xsl:otherwise>
 			</xsl:choose>
 		</xsl:variable>
 		
@@ -5241,6 +5241,7 @@
 			<debug>$table_widths/@width_max=<xsl:value-of select="$table_widths/table/@width_max"/></debug>
 			 -->
 			<debug>$page_width=<xsl:value-of select="$page_width"/></debug>
+			
 		</xsl:if>
 		
 		
@@ -5250,11 +5251,11 @@
 			<xsl:when test="$table_widths/table/@width_min &gt;= $page_width and 1 = 2"> <!-- this condition isn't working see case 3 below -->
 				<!-- call old algorithm -->
 				<case1/>
-				<xsl:variable name="cols-count" select="count(xalan:nodeset($table)/*/tr[1]/td)"/>
+				<!-- <xsl:variable name="cols-count" select="count(xalan:nodeset($table)/*/tr[1]/td)"/>
 				<xsl:call-template name="calculate-column-widths-proportional">
 					<xsl:with-param name="cols-count" select="$cols-count"/>
 					<xsl:with-param name="table" select="$table"/>
-				</xsl:call-template>
+				</xsl:call-template> -->
 			</xsl:when>
 			<!-- 2. The maximum table width fits within the available space. In this case, set the columns to their maximum widths. -->
 			<xsl:when test="$table_widths/table/@width_max &lt;= $page_width">
@@ -5302,99 +5303,52 @@
 	</xsl:template> <!-- calculate-column-widths-autolayout-algorithm -->
 	
 	
-	<xsl:template match="@*|node()" mode="determine_cell_widths">
-		<xsl:copy>
-				<xsl:apply-templates select="@*|node()" mode="determine_cell_widths"/>
-		</xsl:copy>
-	</xsl:template>
-	
-	<xsl:template match="td | th" mode="determine_cell_widths">
-		<xsl:copy>
-			<xsl:copy-of select="@*"/>
+	<xsl:template name="get-calculated-column-widths-autolayout-algorithm">
+		
+		<!-- if nested 'dl' or 'table' -->
+		<xsl:variable name="parent_table_id" select="normalize-space(ancestor::*[local-name() = 'table' or local-name() = 'dl'][1]/@id)"/>
+		<parent_table_id><xsl:value-of select="$parent_table_id"/></parent_table_id>
 			
-			 <!-- The maximum width is given by the widest line.  -->
-			<xsl:variable name="widths_max">
-				<xsl:for-each select=".//*[local-name() = 'p']">
-					<xsl:call-template name="add_width"/>
-				</xsl:for-each>
-				<xsl:if test="not(*[local-name() = 'p'])">
-					<xsl:call-template name="add_width"/>
-				</xsl:if>
-			</xsl:variable>
-			<xsl:variable name="width_max">
-				<xsl:for-each select="xalan:nodeset($widths_max)//width">
-					<xsl:sort select="." data-type="number" order="descending"/>
-					<xsl:if test="position() = 1"><xsl:value-of select="."/></xsl:if>
-				</xsl:for-each>
-			</xsl:variable>
-			<xsl:attribute name="width_max">
-				<xsl:value-of select="$width_max"/>
-			</xsl:attribute>
+		<parent_element><xsl:value-of select="local-name(..)"/></parent_element>
 			
-			<!-- The minimum width is given by the widest text element (word, image, etc.) -->
-			<!-- To do: image width -->
-			<xsl:variable name="td_text">
-				<xsl:apply-templates select="." mode="td_text"/>
-			</xsl:variable>
-			<xsl:variable name="words">
-				<xsl:variable name="string_with_added_zerospaces">
-					<xsl:call-template name="add-zero-spaces-java">
-						<xsl:with-param name="text" select="$td_text"/>
-					</xsl:call-template>
+		<xsl:variable name="parent_table_page-width_">
+			<xsl:if test="$parent_table_id != ''">
+				<!-- determine column number in the parent table -->
+				<xsl:variable name="parent_table_column_number">
+					<xsl:choose>
+						<xsl:when test="parent::*[local-name() = 'dd']">2</xsl:when>
+						<xsl:otherwise> <!-- parent is table -->
+							<xsl:value-of select="count(ancestor::*[local-name() = 'td'][1]/preceding-sibling::*[local-name() = 'td']) + 1"/>
+						</xsl:otherwise>
+					</xsl:choose>
 				</xsl:variable>
-				<xsl:call-template name="tokenize">
-					<xsl:with-param name="text" select="normalize-space(translate($string_with_added_zerospaces, '&#x200B;&#xAD;', '  '))"/> <!-- replace zero-width-space and soft-hyphen to space -->
-				</xsl:call-template>
-			</xsl:variable>
-			
-			<xsl:variable name="max_word_length">
-				<xsl:call-template name="max_length">
-					<xsl:with-param name="words" select="xalan:nodeset($words)"/>
-				</xsl:call-template>
-			</xsl:variable>
-			<xsl:variable name="width_min">
-				<xsl:value-of select="$max_word_length"/>
-			</xsl:variable>
-			<xsl:attribute name="width_min">
-				<xsl:value-of select="$width_min"/>
-			</xsl:attribute>
-			<!-- width_max="1" width_min="1.5"> --> <!-- see 'tokenize' template, multiply 1.5 for all latin capitals -->
-			<xsl:if test="$width_min &gt; $width_max">
-				<xsl:attribute name="width_max">
-					<xsl:value-of select="$width_min"/>
-				</xsl:attribute>
+				<!-- find table by id in the file 'table_widths' and get all Nth `<column>...</column> -->
+				<xsl:value-of select="$table_widths_from_if_calculated//table[@id = $parent_table_id]/column[number($parent_table_column_number)]"/>
 			</xsl:if>
-			<xsl:if test="$width_min = 0">
-				<xsl:attribute name="width_min">1</xsl:attribute>
-			</xsl:if>
-			
-			<xsl:apply-templates select="node()" mode="determine_cell_widths"/>
-			
-		</xsl:copy>
+		</xsl:variable>
+		<xsl:variable name="parent_table_page-width" select="normalize-space($parent_table_page-width_)"/>
+		
+		<!-- get current table id -->
+		<xsl:variable name="table_id" select="@id"/>
+		
+		<xsl:choose>
+			<xsl:when test="$parent_table_id = '' or $parent_table_page-width = ''">
+				<!-- find table by id in the file 'table_widths' and get all `<column>...</column> -->
+				<xsl:copy-of select="$table_widths_from_if_calculated//table[@id = $table_id]/node()"/>
+			</xsl:when>
+			<xsl:otherwise>
+				<!-- recalculate columns width based on parent table width -->
+				<xsl:for-each select="$table_widths_from_if//table[@id = $table_id]">
+					<xsl:call-template name="calculate-column-widths-autolayout-algorithm">
+						<xsl:with-param name="parent_table_page-width" select="$parent_table_page-width"/> <!-- padding-left = 2mm  = 50000-->
+					</xsl:call-template>
+				</xsl:for-each>
+			</xsl:otherwise>
+		</xsl:choose>
+		
+		
 	</xsl:template>
 	
-	<xsl:template name="add_width">
-		<xsl:variable name="p_text"><xsl:apply-templates select="." mode="td_text"/></xsl:variable>
-		<xsl:variable name="p_text_len_" select="string-length(normalize-space($p_text))"/>
-		
-		<xsl:variable name="p_text_len">
-			<xsl:choose>
-				<xsl:when test="normalize-space(translate($p_text, concat($upper,'0123456789'), '')) = ''"> <!-- english word in CAPITAL letters -->
-					<xsl:value-of select="$p_text_len_ * 1.5"/>
-				</xsl:when>
-				<xsl:otherwise><xsl:value-of select="$p_text_len_"/></xsl:otherwise>
-			</xsl:choose>
-		</xsl:variable>
-		
-		<xsl:variable name="math_addon_text">
-			<xsl:for-each select=".//*[local-name() = 'math']">
-				<xsl:apply-templates mode="td_text"/>
-			</xsl:for-each>
-		</xsl:variable>
-		<xsl:variable name="math_addon_length" select="string-length(normalize-space($math_addon_text)) * 0.2"/> <!-- plus 20% -->
-		
-		<width><xsl:value-of select="$p_text_len + $math_addon_length"/></width>
-	</xsl:template>
 	
 	<!-- ============================= -->
 	<!-- mode: determine_cell_widths-if -->
@@ -6903,6 +6857,9 @@
 									</xsl:when>
 								</xsl:choose>
 								
+								<xsl:if test="$namespace = 'iso'">
+									<xsl:attribute name="width">100%</xsl:attribute>
+								</xsl:if>
 								
 								<xsl:choose>
 									<xsl:when test="$isGenerateTableIF = 'true'">
@@ -7037,6 +6994,11 @@
 				</xsl:if> <!-- END: a few components -->
 			</fo:block-container>
 		</fo:block-container>
+		
+		<xsl:if test="$isGenerateTableIF = 'true'"> <!-- process nested 'dl' -->
+			<xsl:apply-templates select="*[local-name() = 'dd']/*[local-name() = 'dl']"/>
+		</xsl:if>
+		
 	</xsl:template> <!-- END: dl -->
 	
 	
@@ -7048,6 +7010,11 @@
 		<!-- <colwidths><xsl:copy-of select="$colwidths"/></colwidths> -->
 		
 		<xsl:choose>
+			<xsl:when test="xalan:nodeset($colwidths)/autolayout">
+				<xsl:call-template name="insertTableColumnWidth">
+					<xsl:with-param name="colwidths" select="$colwidths"/>
+				</xsl:call-template>
+			</xsl:when>
 			<xsl:when test="ancestor::*[local-name()='dl']"><!-- second level, i.e. inlined table -->
 				<fo:table-column column-width="50%"/>
 				<fo:table-column column-width="50%"/>
@@ -7374,7 +7341,11 @@
 						</xsl:if>
 					</xsl:when>
 					<xsl:otherwise>
-						<xsl:copy-of  select="following-sibling::*[local-name()='dd'][1]/node()"/>
+						<xsl:copy-of select="following-sibling::*[local-name()='dd'][1]/node()[not(local-name() = 'dl')]"/>
+						
+						<!-- get paragraphs from nested 'dl' -->
+						<xsl:apply-templates select="following-sibling::*[local-name()='dd'][1]/*[local-name() = 'dl']" mode="dl_if_nested"/>
+						
 					</xsl:otherwise>
 				</xsl:choose>
 			</td>
@@ -7394,6 +7365,16 @@
 	</xsl:template>
 	<xsl:template match="*[local-name()='dd']" mode="dl_if"/>
 	
+	<xsl:template match="*[local-name()='dl']" mode="dl_if_nested">
+		<xsl:for-each select="*[local-name() = 'dt']">
+			<p>
+				<xsl:copy-of select="node()"/>
+				<xsl:text> </xsl:text>
+				<xsl:copy-of select="following-sibling::*[local-name()='dd'][1]/*[local-name() = 'p']/node()"/>
+			</p>
+		</xsl:for-each>
+	</xsl:template>
+	<xsl:template match="*[local-name()='dd']" mode="dl_if_nested"/>
 	<!-- ===================== -->
 	<!-- END Definition List -->
 	<!-- ===================== -->
