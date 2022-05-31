@@ -66,13 +66,41 @@
 	You can put such conditions by using xslt construction `xsl:if test="..."` or <xsl:choose><xsl:when test=""></xsl:when><xsl:otherwiste></xsl:otherwiste></xsl:choose>,
 	BUT DON'T put any another conditions together with $namespace = '...' (such conditions will be ignored). For another conditions, please use nested xsl:if or xsl:choose -->
 	
+	<!--
+	<misc-container>
+		<presentation-metadata>
+			<papersize>letter</papersize>
+		</presentation-metadata>
+	</misc-container>
+	-->
+	
+	<xsl:variable name="papersize" select="java:toLowerCase(java:java.lang.String.new(normalize-space(//*[contains(local-name(), '-standard')]/*[local-name() = 'misc-container']/*[local-name() = 'presentation-metadata']/*[local-name() = 'papersize'])))"/>
+	<xsl:variable name="papersize_width_">
+		<xsl:choose>
+			<xsl:when test="$papersize = 'letter'">215.9</xsl:when>
+			<xsl:when test="$papersize = 'a4'">210</xsl:when>
+		</xsl:choose>
+	</xsl:variable>
+	<xsl:variable name="papersize_width" select="normalize-space($papersize_width_)"/>
+	<xsl:variable name="papersize_height_">
+		<xsl:choose>
+			<xsl:when test="$papersize = 'letter'">279.4</xsl:when>
+			<xsl:when test="$papersize = 'a4'">297</xsl:when>
+		</xsl:choose>
+	</xsl:variable>
+	<xsl:variable name="papersize_height" select="normalize-space($papersize_height_)"/>
 	
 	<!-- page width in mm -->
 	<xsl:variable name="pageWidth_">
 		<xsl:choose>
-			<xsl:when test="$namespace = 'csa' or $namespace = 'm3d' or $namespace = 'nist-cswp' or $namespace = 'nist-sp' or 
-			$namespace = 'ogc' or $namespace = 'ogc-white-paper' or $namespace = 'rsd'">215.9</xsl:when> <!-- paper size letter -->
-			<xsl:otherwise>210</xsl:otherwise> <!-- paper size A4 (default value) -->
+			<xsl:when test="$papersize_width != ''"><xsl:value-of select="$papersize_width"/></xsl:when>
+			<xsl:otherwise>
+				<xsl:choose>
+					<xsl:when test="$namespace = 'csa' or $namespace = 'm3d' or $namespace = 'nist-cswp' or $namespace = 'nist-sp' or 
+					$namespace = 'ogc' or $namespace = 'ogc-white-paper' or $namespace = 'rsd'">215.9</xsl:when> <!-- paper size letter -->
+					<xsl:otherwise>210</xsl:otherwise> <!-- paper size A4 (default value) -->
+				</xsl:choose>
+			</xsl:otherwise>
 		</xsl:choose>
 	</xsl:variable>
 	<xsl:variable name="pageWidth" select="normalize-space($pageWidth_)"/>
@@ -80,9 +108,14 @@
 	<!-- page height in mm -->
 	<xsl:variable name="pageHeight_">
 		<xsl:choose>
-			<xsl:when test="$namespace = 'csa' or $namespace = 'm3d' or $namespace = 'nist-cswp' or $namespace = 'nist-sp' or 
-			$namespace = 'ogc' or $namespace = 'ogc-white-paper' or $namespace = 'rsd'">279.4</xsl:when> <!-- paper size letter -->
-			<xsl:otherwise>297</xsl:otherwise> <!-- paper size A4 (default value) -->
+			<xsl:when test="$papersize_height != ''"><xsl:value-of select="$papersize_height"/></xsl:when>
+			<xsl:otherwise>
+				<xsl:choose>
+					<xsl:when test="$namespace = 'csa' or $namespace = 'm3d' or $namespace = 'nist-cswp' or $namespace = 'nist-sp' or 
+					$namespace = 'ogc' or $namespace = 'ogc-white-paper' or $namespace = 'rsd'">279.4</xsl:when> <!-- paper size letter -->
+					<xsl:otherwise>297</xsl:otherwise> <!-- paper size A4 (default value) -->
+				</xsl:choose>
+			</xsl:otherwise>
 		</xsl:choose>
 	</xsl:variable>
 	<xsl:variable name="pageHeight" select="normalize-space($pageHeight_)"/>
