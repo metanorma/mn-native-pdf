@@ -450,7 +450,7 @@
 					</xsl:for-each>
 					<xsl:for-each select="//*[contains(local-name(), '-standard')]">
 						<fo:block break-after="page"/>
-						<xsl:apply-templates select="./*[local-name()='preface']/*[local-name() != 'abstract' and local-name() != 'foreword' and local-name() != 'introduction' and local-name() != 'acknowledgements']" />
+						<xsl:apply-templates select="./*[local-name()='preface']/*[local-name() != 'abstract' and local-name() != 'foreword' and local-name() != 'introduction' and local-name() != 'acknowledgements' and local-name() != 'note' and local-name() != 'admonition']" />
 					</xsl:for-each>
 					<xsl:for-each select="//*[contains(local-name(), '-standard')]">
 						<fo:block break-after="page"/>

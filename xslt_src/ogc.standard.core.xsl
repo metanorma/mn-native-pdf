@@ -585,7 +585,7 @@
 					<fo:block line-height="125%">
 						<!-- Abstract, Keywords, Preface, Submitting Organizations, Submitters -->					
 						
-						<xsl:for-each select="/*/*[local-name()='preface']/*">
+						<xsl:for-each select="/*/*[local-name()='preface']/*[not(local-name() = 'note' or local-name() = 'admonition')]">
 							<xsl:sort select="@displayorder" data-type="number"/>
 							
 							<xsl:if test="local-name() = 'foreword' or 

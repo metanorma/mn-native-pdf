@@ -43,7 +43,7 @@
 	-->
 	<xsl:variable name="contents_">
 		<contents>			
-			<xsl:apply-templates select="/mpfd:mpfd-standard/mpfd:preface/*[not(local-name() = 'terms')]" mode="contents"/>
+			<xsl:apply-templates select="/mpfd:mpfd-standard/mpfd:preface/*[not(local-name() = 'terms' or local-name() = 'note' or local-name() = 'admonition')]" mode="contents"/>
 			<xsl:apply-templates select="/mpfd:mpfd-standard/mpfd:preface/mpfd:terms" mode="contents"/>
 				
 			<xsl:apply-templates select="/mpfd:mpfd-standard/mpfd:sections/*" mode="contents" />
@@ -253,11 +253,11 @@
 							
 						</fo:block>
 					</fo:block-container>
-					<xsl:if test="/mpfd:mpfd-standard/mpfd:preface/*">
+					<xsl:if test="/mpfd:mpfd-standard/mpfd:preface/*[not(local-name() = 'note' or local-name() = 'admonition')]">
 						<fo:block break-after="page"/>
 						<!-- Foreword, Introduction -->
 						<fo:block>
-							<xsl:apply-templates select="/mpfd:mpfd-standard/mpfd:preface/*[not(local-name() = 'terms')]"/>
+							<xsl:apply-templates select="/mpfd:mpfd-standard/mpfd:preface/*[not(local-name() = 'terms' or local-name() = 'note' or local-name() = 'admonition')]"/>
 							<xsl:apply-templates select="/mpfd:mpfd-standard/mpfd:preface/mpfd:terms"/>
 						</fo:block>
 					</xsl:if>

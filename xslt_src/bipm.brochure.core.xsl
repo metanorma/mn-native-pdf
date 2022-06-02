@@ -177,7 +177,7 @@
 	<xsl:template name="generateContents">
 		<contents>
 
-			<xsl:apply-templates select="/*/bipm:preface/*[position() &gt; 1]" mode="contents" />
+			<xsl:apply-templates select="/*/bipm:preface/*[not(local-name() = 'note' or local-name() = 'admonition')][position() &gt; 1]" mode="contents" />
 			
 			<xsl:apply-templates select="/*/bipm:sections/*" mode="contents" />
 			<xsl:apply-templates select="/*/bipm:bibliography/bipm:references[@normative='true']" mode="contents"/>
@@ -646,7 +646,7 @@
 	</xsl:template>
 		
 	
-	<xsl:template match="bipm:note" name="change_note_kind" mode="flatxml">
+	<xsl:template match="bipm:note[not(parent::bipm:preface)]" name="change_note_kind" mode="flatxml">
 		<xsl:variable name="element">
 			<xsl:choose>
 				<xsl:when test="ancestor::bipm:quote">note</xsl:when>
@@ -1038,17 +1038,17 @@
 				</fo:page-sequence>
 				
 				
-				<xsl:if test="bipm:preface/*">
+				<xsl:if test="bipm:preface/*[not(local-name() = 'note' or local-name() = 'admonition')]">
 					<fo:page-sequence master-reference="document" force-page-count="no-force">
 						<xsl:call-template name="insertFootnoteSeparator"/>
 						
 						<xsl:variable name="header-title">
 							<xsl:choose>
-								<xsl:when test="bipm:preface/*[1]/bipm:title[1]/*[local-name() = 'tab']">
-									<xsl:apply-templates select="bipm:preface/*[1]/bipm:title[1]/*[local-name() = 'tab'][1]/following-sibling::node()" mode="header"/>
+								<xsl:when test="bipm:preface/*[not(local-name() = 'note' or local-name() = 'admonition')][1]/bipm:title[1]/*[local-name() = 'tab']">
+									<xsl:apply-templates select="bipm:preface/*[not(local-name() = 'note' or local-name() = 'admonition')][1]/bipm:title[1]/*[local-name() = 'tab'][1]/following-sibling::node()" mode="header"/>
 								</xsl:when>
 								<xsl:otherwise>
-									<xsl:apply-templates select="bipm:preface/*[1]/bipm:title[1]" mode="header"/>
+									<xsl:apply-templates select="bipm:preface/*[not(local-name() = 'note' or local-name() = 'admonition')][1]/bipm:title[1]" mode="header"/>
 								</xsl:otherwise>
 							</xsl:choose>
 						</xsl:variable>
@@ -1058,7 +1058,7 @@
 						
 						<fo:flow flow-name="xsl-region-body">
 							<fo:block line-height="135%">
-								<xsl:apply-templates select="bipm:preface/*[1]" />
+								<xsl:apply-templates select="bipm:preface/*[not(local-name() = 'note' or local-name() = 'admonition')][1]" />
 							</fo:block>
 						</fo:flow>
 					</fo:page-sequence>
@@ -1157,7 +1157,7 @@
 				</fo:page-sequence>
 				
 				
-				<xsl:apply-templates select="bipm:preface/*[position() &gt; 1]" mode="sections" /> <!-- bipm:clause -->
+				<xsl:apply-templates select="bipm:preface/*[not(local-name() = 'note' or local-name() = 'admonition')][position() &gt; 1]" mode="sections" /> <!-- bipm:clause -->
 				
 				
 				
@@ -1324,7 +1324,7 @@
 				</fo:page-sequence>
 				
 				
-				<xsl:apply-templates select="bipm:preface/*" mode="sections" />
+				<xsl:apply-templates select="bipm:preface/*[not(local-name() = 'note' or local-name() = 'admonition')]" mode="sections" />
 				
 				<!-- Document Pages -->
 				<xsl:apply-templates select="bipm:sections/*" mode="sections" />
@@ -2309,7 +2309,7 @@
 	<!-- ====== -->
 
 
-	<xsl:template match="bipm:preface/*[1]" priority="3">
+	<xsl:template match="bipm:preface/*[not(local-name() = 'note' or local-name() = 'admonition')][1]" priority="3">
 		<fo:table table-layout="fixed" width="173.5mm">
 			<xsl:call-template name="setId"/>
 			<fo:table-column column-width="137mm"/>
@@ -2400,7 +2400,7 @@
 	</xsl:template>
 	
 
-	<xsl:template match="bipm:preface/*[1]/*" mode="clause_table">
+	<xsl:template match="bipm:preface/*[not(local-name() = 'note' or local-name() = 'admonition')][1]/*" mode="clause_table">
 		<xsl:param name="rows"/>
 		
 		<xsl:variable name="current_row"><xsl:number count="*"/></xsl:variable>
@@ -2432,7 +2432,7 @@
 					<xsl:variable name="end_row" select="$current_row + $number-rows-spanned"/>
 					<fo:block>
 						
-						<xsl:for-each select="ancestor::bipm:preface/*[1]/*[position() &gt;= $start_row and position() &lt; $end_row]//bipm:note_side">
+						<xsl:for-each select="ancestor::bipm:preface/*[not(local-name() = 'note' or local-name() = 'admonition')][1]/*[position() &gt;= $start_row and position() &lt; $end_row]//bipm:note_side">
 							<xsl:apply-templates select="." mode="note_side"/>
 						</xsl:for-each>
 					</fo:block>
@@ -2692,7 +2692,7 @@
 
 
 	<!-- skip, because it process in note_side template -->
-	<xsl:template match="bipm:preface/*[1]//bipm:note_side" priority="3"/>
+	<xsl:template match="bipm:preface/*[not(local-name() = 'note' or local-name() = 'admonition')][1]//bipm:note_side" priority="3"/>
 	
 	
 	<xsl:template match="bipm:sections//bipm:note_side | bipm:annex//bipm:note_side" priority="3">
