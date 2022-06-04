@@ -13557,14 +13557,16 @@
 					
 					<xsl:if test="$namespace = 'iso'">
 						<xsl:if test="@type != 'editorial'">
-							<xsl:call-template name="displayAdmonitionName"/>
-							<xsl:text> — </xsl:text>
+							<xsl:call-template name="displayAdmonitionName">
+								<xsl:with-param name="sep"> — </xsl:with-param>
+							</xsl:call-template>
 						</xsl:if>
 					</xsl:if>
 					
 					<xsl:if test="$namespace = 'csd' or $namespace = 'jcgm'">
-						<xsl:call-template name="displayAdmonitionName"/>
-						<xsl:text> — </xsl:text>
+						<xsl:call-template name="displayAdmonitionName">
+							<xsl:with-param name="sep"> — </xsl:with-param>
+						</xsl:call-template>
 					</xsl:if>
 					
 					<xsl:apply-templates select="node()[not(local-name() = 'name')]" />
@@ -13616,8 +13618,9 @@
 									<xsl:when test="$namespace = 'iec'">
 										<fo:block text-align="justify">
 											<fo:inline>
-												<xsl:call-template name="displayAdmonitionName"/>
-												<xsl:text> – </xsl:text>
+												<xsl:call-template name="displayAdmonitionName">
+													<xsl:with-param name="sep"> – </xsl:with-param>
+												</xsl:call-template>
 											</fo:inline>
 											<xsl:apply-templates select="node()[not(local-name() = 'name')]" />
 										</fo:block>
@@ -13641,7 +13644,8 @@
 	</xsl:template>
 	
 	<xsl:template name="displayAdmonitionName">
-		<xsl:choose>
+		<xsl:param name="sep"/> <!-- Example: ' - ' -->
+		<!-- <xsl:choose>
 			<xsl:when test="$namespace = 'nist-cswp' or $namespace = 'nist-sp'">
 				<xsl:choose>
 					<xsl:when test="@type='important'"><xsl:apply-templates select="@type"/></xsl:when>
@@ -13656,14 +13660,21 @@
 					<xsl:apply-templates select="@type"/>
 				</xsl:if>
 			</xsl:otherwise>
-		</xsl:choose>
+		</xsl:choose> -->
+		<xsl:variable name="name">
+			<xsl:apply-templates select="*[local-name() = 'name']"/>
+		</xsl:variable>
+		<xsl:copy-of select="$name"/>
+		<xsl:if test="normalize-space($name) != ''">
+			<xsl:value-of select="$sep"/>
+		</xsl:if>
 	</xsl:template>
 	
 	<xsl:template match="*[local-name() = 'admonition']/*[local-name() = 'name']">
 		<xsl:apply-templates />
 	</xsl:template>
 	
-	<xsl:template match="*[local-name() = 'admonition']/@type">
+	<!-- <xsl:template match="*[local-name() = 'admonition']/@type">
 		<xsl:variable name="admonition_type_">
 			<xsl:call-template name="getLocalizedString">
 				<xsl:with-param name="key">admonition.<xsl:value-of select="."/></xsl:with-param>
@@ -13674,7 +13685,7 @@
 		<xsl:if test="$admonition_type = ''">
 			<xsl:value-of select="java:toUpperCase(java:java.lang.String.new(.))"/>
 		</xsl:if>
-	</xsl:template>
+	</xsl:template> -->
 	
 	<xsl:template match="*[local-name() = 'admonition']/*[local-name() = 'p']">
 		<xsl:choose>
