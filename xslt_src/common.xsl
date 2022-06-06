@@ -392,72 +392,91 @@
 	<!-- ====================================== -->
 	<!-- STYLES -->
 	<!-- ====================================== -->
+	<xsl:variable name="font_noto_sans">Noto Sans, Noto Sans HK, Noto Sans JP, Noto Sans KR, Noto Sans SC, Noto Sans TC</xsl:variable>
+	<xsl:variable name="font_noto_sans_mono">Noto Sans Mono, Noto Sans Mono CJK HK, Noto Sans Mono CJK JP, Noto Sans Mono CJK KR, Noto Sans Mono CJK SC, Noto Sans Mono CJK TC</xsl:variable>
+	<xsl:variable name="font_noto_serif">Noto Serif, Noto Serif HK, Noto Serif JP, Noto Serif KR, Noto Serif SC, Noto Serif TC</xsl:variable>
 	<xsl:attribute-set name="root-style">
 		<xsl:if test="$namespace = 'bipm' or $namespace = 'jcgm'">
-			<xsl:attribute name="font-family">Times New Roman, STIX Two Math, Source Han Sans</xsl:attribute>
+			<xsl:attribute name="font-family">Times New Roman, STIX Two Math, <xsl:value-of select="$font_noto_serif"/></xsl:attribute>
+			<xsl:attribute name="font-family-generic">Serif</xsl:attribute>
 			<xsl:attribute name="font-size">10.5pt</xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'bsi'">
-			<xsl:attribute name="font-family">Cambria, Times New Roman, Cambria Math, Source Han Sans</xsl:attribute>
+			<xsl:attribute name="font-family">Cambria, Times New Roman, Cambria Math, <xsl:value-of select="$font_noto_serif"/></xsl:attribute>
+			<xsl:attribute name="font-family-generic">Serif</xsl:attribute>
 			<xsl:attribute name="font-size">10pt</xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'csa'">
-			<xsl:attribute name="font-family">Azo Sans, STIX Two Math</xsl:attribute>
+			<xsl:attribute name="font-family">Azo Sans, STIX Two Math, <xsl:value-of select="$font_noto_sans"/></xsl:attribute>
+			<xsl:attribute name="font-family-generic">Sans</xsl:attribute>
 			<xsl:attribute name="font-size">10pt</xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'csd'">
-			<xsl:attribute name="font-family">Source Sans Pro, STIX Two Math, Source Han Sans</xsl:attribute>
+			<xsl:attribute name="font-family">Source Sans Pro, STIX Two Math, <xsl:value-of select="$font_noto_sans"/></xsl:attribute>
+			<xsl:attribute name="font-family-generic">Sans</xsl:attribute>
 			<xsl:attribute name="font-size">10.5pt</xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'gb'">
 			<xsl:attribute name="font-family">SimSun</xsl:attribute>
+			<xsl:attribute name="font-family-generic">Sans</xsl:attribute>
 			<xsl:attribute name="font-size">10.5pt</xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'iec'">
-			<xsl:attribute name="font-family">Arial, Times New Roman, STIX Two Math, Source Han Sans</xsl:attribute>
+			<xsl:attribute name="font-family">Arial, Times New Roman, STIX Two Math, <xsl:value-of select="$font_noto_sans"/></xsl:attribute>
+			<xsl:attribute name="font-family-generic">Sans</xsl:attribute>
 			<xsl:attribute name="font-size">10pt</xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'iho'">
-			<xsl:attribute name="font-family">Arial, Cambria Math</xsl:attribute>
+			<xsl:attribute name="font-family">Arial, Cambria Math, <xsl:value-of select="$font_noto_sans"/></xsl:attribute>
+			<xsl:attribute name="font-family-generic">Sans</xsl:attribute>
 			<xsl:attribute name="font-size">12pt</xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'iso'">
-			<xsl:attribute name="font-family">Cambria, Times New Roman, Cambria Math, Source Han Sans</xsl:attribute>
+			<xsl:attribute name="font-family">Cambria, Times New Roman, Cambria Math, <xsl:value-of select="$font_noto_serif"/></xsl:attribute>
+			<xsl:attribute name="font-family-generic">Serif</xsl:attribute>
 			<xsl:attribute name="font-size">11pt</xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'itu'">
-			<xsl:attribute name="font-family">Times New Roman, STIX Two Math</xsl:attribute>
+			<xsl:attribute name="font-family">Times New Roman, STIX Two Math, <xsl:value-of select="$font_noto_serif"/></xsl:attribute>
+			<xsl:attribute name="font-family-generic">Serif</xsl:attribute>
 			<xsl:attribute name="font-size">12pt</xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'm3d'">
-			<xsl:attribute name="font-family">EB Garamond 12</xsl:attribute>
+			<xsl:attribute name="font-family">EB Garamond 12, <xsl:value-of select="$font_noto_sans"/></xsl:attribute>
+			<xsl:attribute name="font-family-generic">Sans</xsl:attribute>
 			<xsl:attribute name="font-size">12pt</xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'mpfd'">
-			<xsl:attribute name="font-family">Arial</xsl:attribute>
+			<xsl:attribute name="font-family">Arial, <xsl:value-of select="$font_noto_sans"/></xsl:attribute>
+			<xsl:attribute name="font-family-generic">Sans</xsl:attribute>
 			<xsl:attribute name="font-size">10.5pt</xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'nist-cswp' or $namespace = 'nist-sp'">
-			<xsl:attribute name="font-family">Times New Roman, STIX Two Math</xsl:attribute>
+			<xsl:attribute name="font-family">Times New Roman, STIX Two Math, <xsl:value-of select="$font_noto_serif"/></xsl:attribute>
+			<xsl:attribute name="font-family-generic">Serif</xsl:attribute>
 			<xsl:attribute name="font-size">12pt</xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'ogc'">
-			<xsl:attribute name="font-family">Lato, STIX Two Math, Source Han Sans</xsl:attribute>
+			<xsl:attribute name="font-family">Lato, STIX Two Math, <xsl:value-of select="$font_noto_sans"/></xsl:attribute>
+			<xsl:attribute name="font-family-generic">Sans</xsl:attribute>
 			<xsl:attribute name="font-size">11pt</xsl:attribute>
 			<xsl:attribute name="color"><xsl:value-of select="$color_main"/></xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'ogc-white-paper'">
-			<xsl:attribute name="font-family">Arial, STIX Two Math, Source Han Sans</xsl:attribute>
+			<xsl:attribute name="font-family">Arial, STIX Two Math, <xsl:value-of select="$font_noto_sans"/></xsl:attribute>
+			<xsl:attribute name="font-family-generic">Sans</xsl:attribute>
 			<xsl:attribute name="font-size">11pt</xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'rsd'">
-			<xsl:attribute name="font-family">OpenSans, STIX Two Math</xsl:attribute>
+			<xsl:attribute name="font-family">OpenSans, STIX Two Math, <xsl:value-of select="$font_noto_sans"/></xsl:attribute>
+			<xsl:attribute name="font-family-generic">Sans</xsl:attribute>
 			<xsl:attribute name="font-weight">300</xsl:attribute>
 			<xsl:attribute name="font-size">11pt</xsl:attribute>
 			<xsl:attribute name="color">rgb(88, 88, 90)</xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'unece' or $namespace = 'unece-rec'">
-			<xsl:attribute name="font-family">Times New Roman, STIX Two Math, Source Han Sans</xsl:attribute>
+			<xsl:attribute name="font-family">Times New Roman, STIX Two Math, <xsl:value-of select="$font_noto_serif"/></xsl:attribute>
+			<xsl:attribute name="font-family-generic">Serif</xsl:attribute>
 			<xsl:attribute name="font-size">10pt</xsl:attribute>
 		</xsl:if>
 	</xsl:attribute-set> <!-- root-style -->
@@ -474,9 +493,52 @@
 		</xsl:variable>
 		<xsl:variable name="additional_fonts" select="normalize-space($additional_fonts_)"/>
 		
+		<xsl:variable name="font_family_generic" select="$root-style_/root-style/@font-family-generic"/>
+		
 		<xsl:for-each select="$root-style_/root-style/@*">
+		
 			<xsl:choose>
-				<xsl:when test="local-name() = 'font-family' and $additional_fonts != ''">
+				<xsl:when test="local-name() = 'font-family-generic'"><!-- skip, it's using for determine 'sans' or 'serif' --></xsl:when>
+				<xsl:when test="local-name() = 'font-family'">
+				
+					<xsl:variable name="font_regional_prefix">
+						<xsl:choose>
+							<xsl:when test="$font_family_generic = 'Sans'">Noto Sans</xsl:when>
+							<xsl:otherwise>Noto Serif</xsl:otherwise>
+						</xsl:choose>
+					</xsl:variable>
+				
+					<xsl:attribute name="{local-name()}">
+					
+						<xsl:variable name="font_extended">
+							<xsl:choose>
+								<xsl:when test="$lang = 'zh'"><xsl:value-of select="$font_regional_prefix"/> SC</xsl:when>
+								<xsl:when test="$lang = 'hk'"><xsl:value-of select="$font_regional_prefix"/> HK</xsl:when>
+								<xsl:when test="$lang = 'jp'"><xsl:value-of select="$font_regional_prefix"/> JP</xsl:when>
+								<xsl:when test="$lang = 'kr'"><xsl:value-of select="$font_regional_prefix"/> KR</xsl:when>
+								<xsl:when test="$lang = 'sc'"><xsl:value-of select="$font_regional_prefix"/> SC</xsl:when>
+								<xsl:when test="$lang = 'tc'"><xsl:value-of select="$font_regional_prefix"/> TC</xsl:when>
+							</xsl:choose>
+						</xsl:variable>
+						<xsl:if test="normalize-space($font_extended) != ''">
+							<xsl:value-of select="$font_regional_prefix"/><xsl:text>, </xsl:text>
+							<xsl:value-of select="$font_extended"/><xsl:text>, </xsl:text>
+						</xsl:if>
+					
+						<xsl:value-of select="."/>
+						
+						<xsl:if test="$additional_fonts != ''">
+							<xsl:text>, </xsl:text><xsl:value-of select="$additional_fonts"/>
+						</xsl:if>
+					</xsl:attribute>
+				</xsl:when>
+				<xsl:otherwise>
+					<xsl:copy-of select="."/>
+				</xsl:otherwise>
+			</xsl:choose>
+		
+			<!-- <xsl:choose>
+				<xsl:when test="local-name() = 'font-family'">
 					<xsl:attribute name="{local-name()}">
 						<xsl:value-of select="."/>, <xsl:value-of select="$additional_fonts"/>
 					</xsl:attribute>
@@ -484,7 +546,7 @@
 				<xsl:otherwise>
 					<xsl:copy-of select="."/>
 				</xsl:otherwise>
-			</xsl:choose>
+			</xsl:choose> -->
 		</xsl:for-each>
 	</xsl:template> <!-- insertRootStyle -->
 	
@@ -694,77 +756,77 @@
 		<xsl:attribute name="wrap-option">wrap</xsl:attribute>
 		<xsl:attribute name="role">Code</xsl:attribute>
 		<xsl:if test="$namespace = 'bsi'">
-			<xsl:attribute name="font-family">Courier New</xsl:attribute>			
+			<xsl:attribute name="font-family">Courier New, <xsl:value-of select="$font_noto_sans_mono"/></xsl:attribute>			
 			<xsl:attribute name="margin-bottom">12pt</xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'csa'">
-			<xsl:attribute name="font-family">Source Code Pro</xsl:attribute>			
+			<xsl:attribute name="font-family">Source Code Pro, <xsl:value-of select="$font_noto_sans_mono"/></xsl:attribute>			
 			<xsl:attribute name="margin-bottom">6pt</xsl:attribute>
 			<xsl:attribute name="keep-with-next">always</xsl:attribute>
 			<xsl:attribute name="line-height">113%</xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'csd'">
-			<xsl:attribute name="font-family">Source Code Pro</xsl:attribute>			
+			<xsl:attribute name="font-family">Source Code Pro, <xsl:value-of select="$font_noto_sans_mono"/></xsl:attribute>			
 			<xsl:attribute name="margin-bottom">6pt</xsl:attribute>
 			<xsl:attribute name="keep-with-next">always</xsl:attribute>					
 		</xsl:if>
 		
 		<xsl:if test="$namespace = 'gb'">
-			<xsl:attribute name="font-family">Courier New</xsl:attribute>			
+			<xsl:attribute name="font-family">Courier New, <xsl:value-of select="$font_noto_sans_mono"/></xsl:attribute>			
 			<xsl:attribute name="margin-bottom">12pt</xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'iec'">
-			<xsl:attribute name="font-family">Courier New</xsl:attribute>			
+			<xsl:attribute name="font-family">Courier New, <xsl:value-of select="$font_noto_sans_mono"/></xsl:attribute>			
 			<xsl:attribute name="margin-top">5pt</xsl:attribute>
 			<xsl:attribute name="margin-bottom">5pt</xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'iho'">
-			<xsl:attribute name="font-family">Fira Code</xsl:attribute>			
+			<xsl:attribute name="font-family">Fira Code, <xsl:value-of select="$font_noto_sans_mono"/></xsl:attribute>			
 			<xsl:attribute name="margin-bottom">6pt</xsl:attribute>
 			<xsl:attribute name="keep-with-next">always</xsl:attribute>
 			<xsl:attribute name="line-height">113%</xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'iso'">
-			<xsl:attribute name="font-family">Courier New</xsl:attribute>			
+			<xsl:attribute name="font-family">Courier New, <xsl:value-of select="$font_noto_sans_mono"/></xsl:attribute>			
 			<xsl:attribute name="margin-bottom">12pt</xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'itu'">
-			<xsl:attribute name="font-family">Courier New</xsl:attribute>			
+			<xsl:attribute name="font-family">Courier New, <xsl:value-of select="$font_noto_sans_mono"/></xsl:attribute>			
 			<xsl:attribute name="margin-top">6pt</xsl:attribute>
 			<xsl:attribute name="margin-bottom">6pt</xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'jcgm'">
-			<xsl:attribute name="font-family">Courier New</xsl:attribute>			
+			<xsl:attribute name="font-family">Courier New, <xsl:value-of select="$font_noto_sans_mono"/></xsl:attribute>			
 			<xsl:attribute name="margin-bottom">12pt</xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'm3d'">
-			<xsl:attribute name="font-family">Courier New</xsl:attribute>			
+			<xsl:attribute name="font-family">Courier New, <xsl:value-of select="$font_noto_sans_mono"/></xsl:attribute>			
 			<xsl:attribute name="margin-bottom">12pt</xsl:attribute>
 		</xsl:if>		
 		<xsl:if test="$namespace = 'ogc'">
-			<xsl:attribute name="font-family">Fira Code</xsl:attribute>			
+			<xsl:attribute name="font-family">Fira Code, <xsl:value-of select="$font_noto_sans_mono"/></xsl:attribute>			
 			<xsl:attribute name="margin-bottom">6pt</xsl:attribute>			
 			<xsl:attribute name="line-height">113%</xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'ogc-white-paper'">
-			<xsl:attribute name="font-family">Courier New</xsl:attribute>			
+			<xsl:attribute name="font-family">Courier New, <xsl:value-of select="$font_noto_sans_mono"/></xsl:attribute>			
 			<xsl:attribute name="margin-bottom">6pt</xsl:attribute>
 			<xsl:attribute name="keep-with-next">always</xsl:attribute>
 			<xsl:attribute name="line-height">113%</xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'rsd'">
-			<xsl:attribute name="font-family">Source Code Pro</xsl:attribute>			
+			<xsl:attribute name="font-family">Source Code Pro, <xsl:value-of select="$font_noto_sans_mono"/></xsl:attribute>			
 			<xsl:attribute name="margin-bottom">6pt</xsl:attribute>
 			<xsl:attribute name="keep-with-next">always</xsl:attribute>
 			<xsl:attribute name="line-height">113%</xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'nist-cswp' or $namespace = 'nist-sp'">
-			<xsl:attribute name="font-family">Courier New</xsl:attribute>			
+			<xsl:attribute name="font-family">Courier New, <xsl:value-of select="$font_noto_sans_mono"/></xsl:attribute>			
 			<xsl:attribute name="margin-top">6pt</xsl:attribute>
 			<xsl:attribute name="margin-bottom">6pt</xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'unece' or $namespace = 'unece-rec'">
-			<xsl:attribute name="font-family">Courier New</xsl:attribute>			
+			<xsl:attribute name="font-family">Courier New, <xsl:value-of select="$font_noto_sans_mono"/></xsl:attribute>			
 			<xsl:attribute name="margin-top">6pt</xsl:attribute>
 			<xsl:attribute name="margin-bottom">6pt</xsl:attribute>
 		</xsl:if>
@@ -2649,14 +2711,14 @@
 	
 	<xsl:attribute-set name="tt-style">
 		<xsl:if test="$namespace = 'csa' or $namespace = 'csd' or $namespace = 'rsd'">
-			<xsl:attribute name="font-family">Source Code Pro</xsl:attribute>			
+			<xsl:attribute name="font-family">Source Code Pro, <xsl:value-of select="$font_noto_sans_mono"/></xsl:attribute>			
 		</xsl:if>
 		<xsl:if test="$namespace = 'bsi' or $namespace = 'gb' or $namespace = 'iec' or $namespace = 'iho' or $namespace = 'iso' or $namespace = 'm3d' or 
 										 $namespace = 'ogc-white-paper' or $namespace = 'jcgm'">
-			<xsl:attribute name="font-family">Courier New</xsl:attribute>			
+			<xsl:attribute name="font-family">Courier New, <xsl:value-of select="$font_noto_sans_mono"/></xsl:attribute>			
 		</xsl:if>
 		<xsl:if test="$namespace = 'ogc'">
-			<xsl:attribute name="font-family">Fira Code</xsl:attribute>			
+			<xsl:attribute name="font-family">Fira Code, <xsl:value-of select="$font_noto_sans_mono"/></xsl:attribute>			
 		</xsl:if>
 	</xsl:attribute-set>
 

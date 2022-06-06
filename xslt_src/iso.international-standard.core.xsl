@@ -281,9 +281,9 @@
 			
 			<xsl:variable name="root-style">
 				<root-style xsl:use-attribute-sets="root-style">
-					<xsl:if test="$lang = 'zh'">
+					<!-- <xsl:if test="$lang = 'zh'">
 						<xsl:attribute name="font-family">Source Han Sans, Times New Roman, Cambria Math</xsl:attribute>
-					</xsl:if>
+					</xsl:if> -->
 				</root-style>
 			</xsl:variable>
 			<xsl:call-template name="insertRootStyle">
