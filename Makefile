@@ -27,6 +27,7 @@ DOC := $(patsubst sources/%,documents/%,$(patsubst %.xml,%.doc,$(SRC)))
 RXL := $(patsubst sources/%,documents/%,$(patsubst %.xml,%.rxl,$(SRC)))
 XSLT_PATH_BASE := ${CURDIR}/xslt
 XSLT_GENERATED := xslt/iec.international-standard.xsl \
+	xslt/ieee.standard.xsl \
 	xslt/iso.international-standard.xsl \
 	xslt/iso.amendment.xsl \
 	xslt/itu.recommendation.xsl \
@@ -311,6 +312,7 @@ update-xslts-in-processor-all:
 	$(MAKE) update-xslts-in-processor MN_PROCR=cc
 	$(MAKE) update-xslts-in-processor MN_PROCR=gb
 	$(MAKE) update-xslts-in-processor MN_PROCR=iec
+	$(MAKE) update-xslts-in-processor MN_PROCR=ieee
 	$(MAKE) update-xslts-in-processor MN_PROCR=iho
 	$(MAKE) update-xslts-in-processor MN_PROCR=iso
 	$(MAKE) update-xslts-in-processor MN_PROCR=itu
