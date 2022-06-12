@@ -113,8 +113,6 @@
 				<!-- ======================== -->
 				<!-- END IEEE pages -->
 				<!-- ======================== -->
-				
-				
 			
 			</fo:layout-master-set>
 			
@@ -142,13 +140,17 @@
 				
 				<xsl:for-each select=".">
 				
-					<xsl:variable name="designation">&lt;designation&gt;</xsl:variable>
-					<xsl:variable name="draft_number">&lt;draft_number&gt;</xsl:variable>
-					<xsl:variable name="draft_month">&lt;draft_month&gt;</xsl:variable>
-					<xsl:variable name="draft_year">&lt;draft_year&gt;</xsl:variable>
-					<xsl:variable name="opt_trial_use">&lt;opt_Trial-Use&gt;</xsl:variable>
-					<xsl:variable name="doctype">&lt;Gde./Rec. Prac./Std.&gt;</xsl:variable>
-					<xsl:variable name="title">&lt;Complete Title Matching PAR&gt;</xsl:variable>
+					<xsl:variable name="designation" select="/ieee:ieee-standard/ieee:bibdata/ieee:docnumber"/>
+					<xsl:variable name="draft_number" select="/ieee:ieee-standard/ieee:bibdata/ieee:edition[normalize-space(@language) = '']"/>
+					<xsl:variable name="revision_month" select="/ieee:ieee-standard/ieee:bibdata/ieee:version/ieee:revision-date"/>
+					<xsl:variable name="draft_month">
+						<xsl:call-template name="getMonthLocalizedByNum">
+							<xsl:with-param name="num" select="substring($revision_month, 6, 2)"/>
+						</xsl:call-template>
+					</xsl:variable>
+					<xsl:variable name="draft_year" select="substring($revision_month, 1, 4)"/>
+					<xsl:variable name="doctype" select="/ieee:ieee-standard/ieee:bibdata/ieee:ext/ieee:doctype[@language = $lang]"/>
+					<xsl:variable name="title"><xsl:apply-templates select="/ieee:ieee-standard/ieee:bibdata/ieee:title[@type = 'main']/node()"/></xsl:variable>
 					<xsl:variable name="copyright_year" select="/ieee:ieee-standard/ieee:bibdata/ieee:copyright/ieee:from"/>
 					<xsl:variable name="copyright_holder" select="/ieee:ieee-standard/ieee:bibdata/ieee:copyright/ieee:owner/ieee:organization/ieee:name"/>
 					
@@ -162,7 +164,6 @@
 							<xsl:with-param name="draft_number" select="$draft_number"/>
 							<xsl:with-param name="draft_month" select="$draft_month"/>
 							<xsl:with-param name="draft_year" select="$draft_year"/>
-							<xsl:with-param name="opt_trial_use" select="$opt_trial_use"/>
 							<xsl:with-param name="doctype" select="$doctype"/>
 							<xsl:with-param name="title" select="$title"/>
 							<xsl:with-param name="copyright_year" select="$copyright_year"/>
@@ -178,15 +179,17 @@
 										<xsl:value-of select="$designation"/>
 										<xsl:text>™/D</xsl:text>
 										<xsl:value-of select="$draft_number"/>
-										<xsl:text>Draft</xsl:text>
-										<xsl:value-of select="$opt_trial_use"/>
+										<xsl:value-of select="$linebreak"/>
+										<xsl:text>Draft </xsl:text>
 										<xsl:value-of select="$doctype"/>
 										<xsl:text> for </xsl:text>
 										<xsl:copy-of select="$title"/>
 									</fo:block>
 									<fo:block>Developed by the</fo:block>
 									<fo:block>&#xa0;</fo:block>
-									<fo:block font-size="11pt" font-weight="bold">&lt;Committee Name&gt;</fo:block>
+									<fo:block font-size="11pt" font-weight="bold">
+										<xsl:value-of select="/ieee:ieee-standard/ieee:bibdata/ieee:ext/ieee:editorialgroup/ieee:technical-committee"/>
+									</fo:block>
 									<fo:block>of the</fo:block>
 									<fo:block font-size="11pt" font-weight="bold">IEEE &lt;Society Name&gt;</fo:block>
 									<fo:block>&#xa0;</fo:block>
@@ -209,13 +212,19 @@
 								
 								<fo:block break-after="page"/>
 								
-								<fo:block font-family="Arial">
+								<fo:block font-family="Arial" text-align="justify">
 									<fo:block>
-										<fo:inline font-weight="bold">Abstract: </fo:inline> &lt;Select this text and type or paste Abstract—contents of the Scope may be used&gt;
+										<fo:inline font-weight="bold">
+											<xsl:call-template name="getLocalizedString">
+												<xsl:with-param name="key">abstract</xsl:with-param>
+											</xsl:call-template>
+											<xsl:text>: </xsl:text>
+										</fo:inline>
+										<xsl:apply-templates select="ieee:itu-standard/ieee:preface/ieee:abstract/node()"/>
 									</fo:block>
 									<fo:block>&#xa0;</fo:block>
 									<fo:block>
-										<fo:inline font-weight="bold">Keywords: </fo:inline> &lt;Select this text and type or paste keywords&gt;
+										<fo:inline font-weight="bold">Keywords: </fo:inline> <xsl:value-of select="/ieee:ieee-standard/ieee:bibdata/ieee:keyword"/>
 									</fo:block>
 								</fo:block>
 								
@@ -268,7 +277,6 @@
 							<xsl:with-param name="draft_number" select="$draft_number"/>
 							<xsl:with-param name="draft_month" select="$draft_month"/>
 							<xsl:with-param name="draft_year" select="$draft_year"/>
-							<xsl:with-param name="opt_trial_use" select="$opt_trial_use"/>
 							<xsl:with-param name="doctype" select="$doctype"/>
 							<xsl:with-param name="title" select="$title"/>
 							<xsl:with-param name="copyright_year" select="$copyright_year"/>
@@ -277,7 +285,7 @@
 						
 						<fo:flow flow-name="xsl-region-body">
 							<fo:block font-family="Arial" font-size="12pt" font-weight="bold" margin-top="12pt" margin-bottom="12pt">Participants</fo:block>
-							<fo:block margin-bottom="12pt">At the time this draft<xsl:value-of select="$opt_trial_use"/><xsl:value-of select="$doctype"/> was completed, the &lt;Working Group Name&gt; Working Group had the following membership:</fo:block>
+							<fo:block margin-bottom="12pt">At the time this draft <xsl:value-of select="$doctype"/> was completed, the &lt;Working Group Name&gt; Working Group had the following membership:</fo:block>
 							<fo:block text-align="center" margin-bottom="12pt">
 								<fo:block>
 									<fo:inline font-weight="bold">&lt;Chair Name&gt;</fo:inline>, <fo:inline font-style="italic">Chair</fo:inline>
@@ -327,7 +335,7 @@
 							
 							<fo:block margin-bottom="12pt">&#xa0;</fo:block>
 							
-							<fo:block margin-bottom="12pt">The following members of the &lt;individual/entity&gt; Standards Association balloting group voted on this <xsl:value-of select="$opt_trial_use"/><xsl:value-of select="$doctype"/>. Balloters may have voted for approval, disapproval, or abstention.</fo:block>
+							<fo:block margin-bottom="12pt">The following members of the &lt;individual/entity&gt; Standards Association balloting group voted on this <xsl:value-of select="$doctype"/>. Balloters may have voted for approval, disapproval, or abstention.</fo:block>
 							
 							<fo:block margin-bottom="12pt" font-weight="bold" font-style="italic">[To be supplied by IEEE]</fo:block>
 							
@@ -371,7 +379,7 @@
 							
 							<fo:block margin-bottom="12pt">&#xa0;</fo:block>
 							
-							<fo:block margin-bottom="12pt">When the IEEE SA Standards Board approved this <xsl:value-of select="$opt_trial_use"/><xsl:value-of select="$doctype"/> on &lt;Date Approved&gt;, it had the following membership:</fo:block>
+							<fo:block margin-bottom="12pt">When the IEEE SA Standards Board approved this <xsl:value-of select="$doctype"/> on &lt;Date Approved&gt;, it had the following membership:</fo:block>
 							
 							<fo:block margin-bottom="12pt" font-weight="bold" font-style="italic">[To be supplied by IEEE]</fo:block>
 							
@@ -474,7 +482,6 @@
 							<xsl:with-param name="draft_number" select="$draft_number"/>
 							<xsl:with-param name="draft_month" select="$draft_month"/>
 							<xsl:with-param name="draft_year" select="$draft_year"/>
-							<xsl:with-param name="opt_trial_use" select="$opt_trial_use"/>
 							<xsl:with-param name="doctype" select="$doctype"/>
 							<xsl:with-param name="title" select="$title"/>
 							<xsl:with-param name="copyright_year" select="$copyright_year"/>
@@ -490,79 +497,48 @@
 								</xsl:for-each>
 							</fo:block>
 								
-							<fo:block text-align-last="justify" font-weight="bold" margin-top="4.5mm" margin-bottom="3.5mm">
-								<fo:inline font-family="Arial" font-size="18pt" role="H1">
-									<!-- Contents -->
-									<xsl:call-template name="getLocalizedString">
-										<xsl:with-param name="key">table_of_contents</xsl:with-param>
-									</xsl:call-template>
-								</fo:inline>
-								<fo:inline keep-together.within-line="always">
-									<fo:leader leader-pattern="space"/>
-									<fo:inline>
-										<!-- Page -->
-										<xsl:call-template name="getLocalizedString">
-										<xsl:with-param name="key">locality.page</xsl:with-param>
-									</xsl:call-template>
-									</fo:inline>
-								</fo:inline>
+							<fo:block font-family="Arial" font-size="12pt" role="H1" font-weight="bold" margin-top="12pt" margin-bottom="24pt">
+								<!-- Contents -->
+								<xsl:call-template name="getLocalizedString">
+									<xsl:with-param name="key">table_of_contents</xsl:with-param>
+								</xsl:call-template>
 							</fo:block>
 						
 							<fo:block role="TOC">
 								<xsl:if test="$contents/doc[@num = $num]//item[@display = 'true']">
 									
-									<xsl:variable name="margin-left">12</xsl:variable>
+									<xsl:variable name="margin-left">4</xsl:variable>
 									
 									<xsl:for-each select="$contents/doc[@num = $num]//item[@display = 'true']">
-											
 										<fo:block role="TOCI">
 											<xsl:if test="@level = 1">
-												<xsl:attribute name="margin-top">5pt</xsl:attribute>
+												<xsl:attribute name="margin-top">12pt</xsl:attribute>
 											</xsl:if>
-											<xsl:if test="@level = 3">
-												<xsl:attribute name="margin-top">-0.7pt</xsl:attribute>
-											</xsl:if>
-											<fo:list-block>
+											
+											<fo:block text-align-last="justify">
 												<xsl:attribute name="margin-left"><xsl:value-of select="$margin-left * (@level - 1)"/>mm</xsl:attribute>
-												<xsl:if test="@level &gt;= 2 or @type = 'annex'">
+												<xsl:if test="@type = 'annex'">
 													<xsl:attribute name="font-weight">normal</xsl:attribute>
 												</xsl:if>
-												<xsl:attribute name="provisional-distance-between-starts">
-													<xsl:choose>
-														<!-- skip 0 section without subsections -->
-														<xsl:when test="@level &gt;= 3"><xsl:value-of select="$margin-left * 1.2"/>mm</xsl:when>
-														<xsl:when test="@section != ''"><xsl:value-of select="$margin-left"/>mm</xsl:when>
-														<xsl:otherwise>0mm</xsl:otherwise>
-													</xsl:choose>
-												</xsl:attribute>
-												<fo:list-item>
-													<fo:list-item-label end-indent="label-end()">
-														<fo:block>														
-																<xsl:value-of select="@section"/>														
-														</fo:block>
-													</fo:list-item-label>
-													<fo:list-item-body start-indent="body-start()">
-														<fo:block text-align-last="justify" margin-left="12mm" text-indent="-12mm">
-															<fo:basic-link internal-destination="{@id}" fox:alt-text="{title}">
-															
-																<xsl:apply-templates select="title"/>
-																
-																<fo:inline keep-together.within-line="always">
-																	<fo:leader font-size="9pt" font-weight="normal" leader-pattern="dots"/>
-																	<fo:inline>
-																		<xsl:if test="@level = 1 and @type = 'annex'">
-																			<xsl:attribute name="font-weight">bold</xsl:attribute>
-																		</xsl:if>
-																		<fo:page-number-citation ref-id="{@id}"/>
-																	</fo:inline>
-																</fo:inline>
-															</fo:basic-link>
-														</fo:block>
-													</fo:list-item-body>
-												</fo:list-item>
-											</fo:list-block>
+												
+												<fo:basic-link internal-destination="{@id}" fox:alt-text="{title}">
+												
+													<xsl:value-of select="@section"/>
+													<xsl:if test="normalize-space(@section) != '' and @level = 1">.</xsl:if>
+													<xsl:if test="normalize-space(@section) != ''"><xsl:text>&#xa0;</xsl:text></xsl:if>
+													
+													<xsl:apply-templates select="title"/>
+												
+													<fo:inline keep-together.within-line="always">
+														<fo:leader font-size="9pt" font-weight="normal" leader-pattern="dots"/>
+														<fo:inline>
+															<fo:page-number-citation ref-id="{@id}"/>
+														</fo:inline>
+													</fo:inline>
+												
+												</fo:basic-link>
+											</fo:block>
 										</fo:block>
-										
 									</xsl:for-each>
 									
 									<!-- List of Tables -->
@@ -602,8 +578,6 @@
 					<!-- END: PREFACE pages (Table of Contents, Foreword -->
 					<!-- ================================ -->
 
-
-				<xsl:if test="1 = 1">
 					
 					<!-- item - page sequence -->
 					<xsl:variable name="structured_xml_">
@@ -665,7 +639,6 @@
 								<xsl:with-param name="draft_number" select="$draft_number"/>
 								<xsl:with-param name="draft_month" select="$draft_month"/>
 								<xsl:with-param name="draft_year" select="$draft_year"/>
-								<xsl:with-param name="opt_trial_use" select="$opt_trial_use"/>
 								<xsl:with-param name="doctype" select="$doctype"/>
 								<xsl:with-param name="title" select="$title"/>
 								<xsl:with-param name="copyright_year" select="$copyright_year"/>
@@ -680,7 +653,6 @@
 							</fo:flow>
 						</fo:page-sequence>
 					</xsl:for-each>
-			</xsl:if>
 					<!-- ===================== -->
 					<!-- End IEEE pages -->
 					<!-- ===================== -->
@@ -843,28 +815,6 @@
 		</xsl:if>
 	</xsl:template>
 	
-	<xsl:template match="ieee:figure[ieee:name] | ieee:table[ieee:name and not(@unnumbered = 'true' and java:endsWith(java:java.lang.String.new(ieee:name),'Key'))]" priority="2" mode="contents">		
-		<xsl:variable name="level">
-			<xsl:for-each select="ancestor::ieee:clause[1] | ancestor::ieee:annex[1]">
-				<xsl:call-template name="getLevel">
-					<xsl:with-param name="depth" select="ieee:title/@depth"/>
-				</xsl:call-template>
-			</xsl:for-each>
-		</xsl:variable>
-		<item id="{@id}" level="{$level}" section="" type="{local-name()}" root="" display="true">
-			<xsl:variable name="name">
-				<xsl:apply-templates select="ieee:name" mode="contents_item">
-					<xsl:with-param name="mode">contents</xsl:with-param>
-				</xsl:apply-templates>
-			</xsl:variable>
-			<xsl:if test="not(contains(normalize-space($name), '—'))">
-				<xsl:attribute name="display">false</xsl:attribute>
-			</xsl:if>
-			<title>
-				<xsl:copy-of select="$name"/>
-			</title>
-		</item>
-	</xsl:template>
 
 	<xsl:template match="*[local-name()='add'][parent::*[local-name() = 'name'] and ancestor::*[local-name() = 'figure'] and normalize-space(following-sibling::node()) = '']" mode="contents_item" priority="2"/>
 
@@ -885,7 +835,7 @@
 	
 	<xsl:template name="insertListOf_Title">
 		<xsl:param name="title"/>
-		<fo:block role="TOCI" margin-top="5pt" keep-with-next="always">
+		<fo:block role="TOCI" margin-top="12pt" keep-with-next="always">
 			<xsl:value-of select="$title"/>
 		</fo:block>
 	</xsl:template>
@@ -898,7 +848,7 @@
 				</xsl:call-template>
 				<xsl:apply-templates select="." mode="contents"/>
 				<fo:inline keep-together.within-line="always">
-					<fo:leader font-size="9pt" font-weight="normal" leader-pattern="dots"/>
+					<fo:leader font-weight="normal" leader-pattern="dots"/>
 					<fo:inline><fo:page-number-citation ref-id="{@id}"/></fo:inline>
 				</fo:inline>
 			</fo:basic-link>
@@ -1193,151 +1143,7 @@
 			<xsl:value-of select="."/>
 		</fo:block>
 	</xsl:template>
-	
-	<xsl:template match="/*/ieee:bibdata/ieee:docidentifier[@type = 'ISBN']" mode="barcode">
-		<fo:block text-align="center" font-weight="300">
-			<fo:block font-size="6.5pt">ISBN <xsl:value-of select="translate(., ' ', '-')"/></fo:block>
-			<xsl:variable name="code" select="translate(., ' ', '')"/>
-			<fo:block>
-				<fo:instream-foreign-object fox:alt-text="Barcode">
-						<barcode:barcode
-									xmlns:barcode="http://barcode4j.krysalis.org/ns"
-									message="{$code}">
-							<barcode:ean-13>
-								<barcode:height>26mm</barcode:height>
-								<barcode:module-width>0.34mm</barcode:module-width>
-								<barcode:human-readable>
-									<barcode:placement>bottom</barcode:placement>
-								</barcode:human-readable>
-							</barcode:ean-13>
-						</barcode:barcode>
-					</fo:instream-foreign-object>
-			</fo:block>
-		</fo:block>
-	</xsl:template>
-	
-	<xsl:template match="/*/ieee:bibdata/ieee:ext/ieee:ics" />
-	<xsl:template match="/*/ieee:bibdata/ieee:ext/ieee:ics[1]" priority="2">
-		<fo:block space-after="6pt">
-			<fo:inline>
-				<xsl:attribute name="font-weight">bold</xsl:attribute>
-				<xsl:text>ICS </xsl:text>
-			</fo:inline>
-			<xsl:for-each select="../ieee:ics">
-				<xsl:sort select="ieee:code" />
-				<xsl:value-of select="ieee:code"/>
-				<xsl:if test="position() != last()">; </xsl:if>
-			</xsl:for-each>
-		</fo:block>
-	</xsl:template>
-	
-	
-	
-	<xsl:template match="ieee:copyright-statement/ieee:clause[1]/ieee:title" priority="3">
-		<fo:block font-weight="bold" space-after="6pt" role="H1">
-			<xsl:apply-templates />
-		</fo:block>
-	</xsl:template>
-	
-	
-	<xsl:template match="ieee:preface/ieee:clause[@type = 'related-refs']" priority="3">
-		<fo:block><xsl:apply-templates /></fo:block>
-	</xsl:template>
 
-	<xsl:template match="ieee:preface/ieee:clause[@type = 'corrigenda']" priority="3">
-		<fo:block-container width="60%" space-before="12pt">
-			<fo:block><xsl:apply-templates /></fo:block>
-		</fo:block-container>
-	</xsl:template>
-
-	<xsl:template match="ieee:preface/ieee:clause[@type = 'corrigenda']/ieee:title" priority="3">
-		<fo:block font-weight="bold" space-after="6pt" role="H1">
-			<xsl:apply-templates />
-		</fo:block>
-	</xsl:template>
-
-	<xsl:template match="ieee:feedback-statement/ieee:clause" priority="3">
-		<fo:block space-after="8pt">
-			<xsl:apply-templates />
-		</fo:block>
-	</xsl:template>
-	
-	<xsl:template match="ieee:feedback-statement/ieee:clause/ieee:clause" priority="3">
-		<fo:block>
-			<xsl:apply-templates />
-		</fo:block>
-		<xsl:if test="following-sibling::*">
-			<fo:block>&#xa0;</fo:block>
-		</xsl:if>
-	</xsl:template>
-	
-	<xsl:template match="ieee:feedback-statement/ieee:clause/ieee:title" priority="3">
-		<fo:block font-size="10pt" font-weight="bold" space-after="2pt" keep-with-next="always" role="H1">
-			<xsl:if test="not(../following-sibling::*)">
-				<xsl:attribute name="font-size">9pt</xsl:attribute><!-- for address -->
-			</xsl:if>
-			<xsl:apply-templates />
-		</fo:block>
-	</xsl:template>
-	
-	<xsl:template match="ieee:feedback-statement/ieee:clause/ieee:clause/ieee:title" priority="3">
-		<fo:block font-weight="bold" keep-with-next="always" role="H2"><xsl:apply-templates /></fo:block>
-	</xsl:template>
-	
-	<xsl:template match="ieee:feedback-statement/ieee:clause/ieee:p" priority="3">
-		<fo:block space-after="6pt">
-			<xsl:if test="following-sibling::ieee:ul">
-				<xsl:attribute name="space-after">4</xsl:attribute>
-			</xsl:if>
-			<!-- for address -->
-			<xsl:if test="not(../following-sibling::*)">
-				<xsl:attribute name="font-size">8pt</xsl:attribute>
-			</xsl:if>
-			<xsl:apply-templates />
-		</fo:block>
-	</xsl:template>
-	
-	<xsl:template match="ieee:feedback-statement/ieee:clause/ieee:clause/ieee:p" priority="3">
-		<fo:block>
-			<xsl:apply-templates />
-		</fo:block>
-	</xsl:template>
-	
-	<xsl:template match="ieee:feedback-statement/ieee:clause/ieee:ul" priority="3">
-		<fo:list-block space-after="6pt" provisional-distance-between-starts="4mm">
-			<xsl:apply-templates />
-		</fo:list-block>
-	</xsl:template>
-	
-	<xsl:template match="ieee:feedback-statement/ieee:clause/ieee:ul/ieee:li" priority="3">
-		<fo:list-item space-after="4pt">
-			<fo:list-item-label end-indent="label-end()">
-				<fo:block>•</fo:block>
-			</fo:list-item-label>
-			<fo:list-item-body start-indent="body-start()" >
-				<fo:block><xsl:apply-templates /></fo:block>
-			</fo:list-item-body>
-		</fo:list-item>
-	</xsl:template>
-	
-	<xsl:template match="ieee:feedback-statement/ieee:clause" mode="back_header">
-		<xsl:apply-templates mode="back_header"/>
-	</xsl:template>
-	
-	<xsl:template match="ieee:feedback-statement/ieee:clause/ieee:title" mode="back_header">
-		<fo:block margin-top="3.5mm" font-size="28pt" role="H1">
-			<xsl:apply-templates />
-		</fo:block>
-	</xsl:template>
-	
-	<xsl:template match="ieee:feedback-statement/ieee:clause/ieee:p" mode="back_header">
-		<fo:block font-size="15pt" space-before="2pt">
-			<xsl:if test="preceding-sibling::ieee:p">
-				<xsl:attribute name="space-before">6pt</xsl:attribute>
-			</xsl:if>
-			<xsl:apply-templates />
-		</fo:block>
-	</xsl:template>
 					
 	<xsl:template match="*[local-name() = 'introduction'] | *[local-name() = 'foreword']">
 		<fo:block>
@@ -1359,14 +1165,17 @@
 	
 	<!-- Bibliography -->
 	<xsl:template match="ieee:references[not(@normative='true')]/ieee:title">
-		<fo:block font-size="16pt" font-weight="bold" text-align="center" margin-top="6pt" margin-bottom="36pt" keep-with-next="always" role="H1">
+		<fo:block font-size="16pt" font-weight="bold" margin-top="6pt" margin-bottom="36pt" keep-with-next="always" role="H1">
 				<xsl:apply-templates />
 			</fo:block>
 	</xsl:template>
 	
 	
 	<xsl:template match="ieee:title[@inline-header = 'true'][following-sibling::*[1][local-name() = 'p']]" priority="3">
-		<xsl:call-template name="title"/>
+		<fo:block>
+			<xsl:call-template name="title"/>
+			<xsl:apply-templates select="following-sibling::*[1][local-name() = 'p']"/>
+		</fo:block>
 	</xsl:template>
 	
 	<xsl:template match="ieee:clauses_union" priority="4">
@@ -1446,17 +1255,6 @@
 			
 	</xsl:template>
 	
-	<!-- special case -->
-	<xsl:variable name="annex_integral_part_text">(This annex forms an integral part of this </xsl:variable>
-	<xsl:template match="ieee:title[@ancestor = 'annex']//text()[contains(., $annex_integral_part_text)]" priority="2">
-		<xsl:value-of select="substring-before(., $annex_integral_part_text)"/>
-		<fo:inline font-weight="normal">
-			<xsl:value-of select="$annex_integral_part_text"/>
-			<xsl:value-of select="substring-before(substring-after(., $annex_integral_part_text), ')')"/>
-			<xsl:text>)</xsl:text>
-		</fo:inline>
-		<xsl:value-of select="substring-after(substring-after(., $annex_integral_part_text), ')')"/>
-	</xsl:template>
 	
 	
 	<xsl:template match="ieee:term" priority="2">
@@ -1561,7 +1359,9 @@
 					</xsl:choose>
 				</xsl:variable> -->
 				<xsl:element name="{$element-name}">
-					<xsl:call-template name="setTextAlignment"/>
+					<xsl:call-template name="setTextAlignment">
+						<xsl:with-param name="default">justify</xsl:with-param>
+					</xsl:call-template>
 					<xsl:attribute name="margin-bottom">6pt</xsl:attribute><!-- 8pt -->
 					<xsl:if test="../following-sibling::*[1][self::ieee:note or self::ieee:termnote or self::ieee:ul or self::ieee:ol] or following-sibling::*[1][self::ieee:ul or self::ieee:ol]">
 						<xsl:attribute name="margin-bottom">4pt</xsl:attribute>
@@ -1589,17 +1389,11 @@
 						<xsl:attribute name="line-height">0</xsl:attribute>
 					</xsl:if>
 					
-					<!-- put inline title in the first paragraph -->
-					<!-- <xsl:if test="preceding-sibling::*[1]/@inline-header = 'true' and $previous-element = 'title'">
-						<xsl:attribute name="space-before">6pt</xsl:attribute>
-						<xsl:for-each select="preceding-sibling::*[1]">
-							<xsl:call-template name="title"/>
-						</xsl:for-each>
-						<xsl:text> </xsl:text>
-					</xsl:if> -->
+					
 					<xsl:apply-templates>
 						<xsl:with-param name="split_keep-within-line" select="$split_keep-within-line"/>
 					</xsl:apply-templates>
+					
 				</xsl:element>
 				<xsl:if test="$element-name = 'fo:inline' and not(local-name(..) = 'admonition')"> <!-- and not($inline = 'true')  -->
 					<fo:block margin-bottom="12pt">
@@ -1836,11 +1630,6 @@
 
 	</xsl:template>
 	
-	
-	
-	<xsl:template match="ieee:columnbreak">
-		<fo:block break-after="column"/>
-	</xsl:template>
 
 	<xsl:template match="ieee:pagebreak[ancestor::ieee:table]" priority="2">
 		<fo:block break-after="page"/>
@@ -1861,7 +1650,6 @@
 		<xsl:param name="draft_number"/>
 		<xsl:param name="draft_month"/>
 		<xsl:param name="draft_year"/>
-		<xsl:param name="opt_trial_use"/>
 		<xsl:param name="doctype"/>
 		<xsl:param name="title"/>
 		<xsl:param name="copyright_year"/>
@@ -1892,8 +1680,7 @@
 					<xsl:value-of select="$draft_year"/>
 				</fo:block>
 				<fo:block>
-					<xsl:text>Draft</xsl:text>
-					<xsl:value-of select="$opt_trial_use"/>
+					<xsl:text>Draft </xsl:text>
 					<xsl:value-of select="$doctype"/>
 					<xsl:text> for </xsl:text>
 					<xsl:copy-of select="$title"/>
@@ -1902,26 +1689,28 @@
 		</xsl:variable>
 		
 		<xsl:variable name="footer">
-			<fo:block text-align="center" font-size="8pt" margin-bottom="12.7mm">
-				<fo:block font-family="Times New Roman" font-size="10pt" font-weight="bold">
+			<fo:block text-align="center" margin-bottom="12.7mm">
+				<fo:block font-weight="bold">
 					<fo:page-number />
 				</fo:block>
 				<!-- Copyright © 2022 IEEE. All rights reserved. -->
-				<fo:block>
-					<xsl:text>Copyright © </xsl:text>
-					<xsl:value-of select="$copyright_year"/>
-					<xsl:text> </xsl:text>
-					<xsl:value-of select="$copyright_holder"/>
-					<xsl:text>. </xsl:text>
-					<xsl:variable name="all_rights_reserved">
-						<xsl:call-template name="getLocalizedString">
-							<xsl:with-param name="key">all_rights_reserved</xsl:with-param>
-						</xsl:call-template>
-					</xsl:variable>
-					<xsl:value-of select="$all_rights_reserved"/>
-					<xsl:text>.</xsl:text>
+				<fo:block font-family="Arial" font-size="8pt">
+					<fo:block>
+						<xsl:text>Copyright © </xsl:text>
+						<xsl:value-of select="$copyright_year"/>
+						<xsl:text> </xsl:text>
+						<xsl:value-of select="$copyright_holder"/>
+						<xsl:text>. </xsl:text>
+						<xsl:variable name="all_rights_reserved">
+							<xsl:call-template name="getLocalizedString">
+								<xsl:with-param name="key">all_rights_reserved</xsl:with-param>
+							</xsl:call-template>
+						</xsl:variable>
+						<xsl:value-of select="$all_rights_reserved"/>
+						<xsl:text>.</xsl:text>
+					</fo:block>
+					<fo:block>This is an unapproved IEEE Standards Draft, subject to change.</fo:block>
 				</fo:block>
-				<fo:block>This is an unapproved IEEE Standards Draft, subject to change.</fo:block>
 			</fo:block>
 		</xsl:variable>
 		
