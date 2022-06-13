@@ -12754,7 +12754,7 @@
 										<xsl:when test="$namespace = 'iho'">
 											<xsl:value-of select="*[local-name() = 'docidentifier'][@type = 'metanorma-ordinal']"/>
 											<xsl:if test="not(*[local-name() = 'docidentifier'][@type = 'metanorma-ordinal'])">
-												<xsl:number format="[1]"/>
+												<xsl:number format="[1]" count="*[local-name()='bibitem'][not(@hidden = 'true')]"/>
 											</xsl:if>
 										</xsl:when>
 										<xsl:when test="$namespace = 'nist-cswp'">
@@ -12800,7 +12800,7 @@
 												<xsl:value-of select="bipm:docidentifier[@type='metanorma']"/>
 											</xsl:when>
 											<xsl:otherwise>
-												<xsl:number format="[1]"/>
+												<xsl:number format="[1]" count="*[local-name()='bibitem'][not(@hidden = 'true')]"/>
 											</xsl:otherwise>
 										</xsl:choose>
 									</xsl:if>
@@ -12824,7 +12824,7 @@
 					<xsl:variable name="docidentifier">
 						<xsl:value-of select="csa:docidentifier[@type = 'metanorma-ordinal']"/>
 						<xsl:if test="not(csa:docidentifier[@type = 'metanorma-ordinal'])">
-							<xsl:number format="[1]"/>
+							<xsl:number format="[1]" count="*[local-name()='bibitem'][not(@hidden = 'true')]"/>
 						</xsl:if>
 					</xsl:variable>
 				
@@ -12855,7 +12855,7 @@
 							<fo:block>
 								<fo:inline>
 									<xsl:if test="$namespace = 'rsd'">
-										<xsl:number format="1."/>
+										<xsl:number format="1." count="*[local-name()='bibitem'][not(@hidden = 'true')]"/>
 									</xsl:if>
 								</fo:inline>
 							</fo:block>
@@ -12891,12 +12891,12 @@
 								<fo:inline>
 									<xsl:choose>
 										<xsl:when test="$namespace = 'ogc'">
-											<xsl:number format="1."/>
+											<xsl:number format="1." count="*[local-name()='bibitem'][not(@hidden = 'true')]"/>
 										</xsl:when>
 										<xsl:otherwise>
 											<xsl:value-of select="*[local-name()='docidentifier'][@type = 'metanorma-ordinal']"/>
 											<xsl:if test="not(*[local-name()='docidentifier'][@type = 'metanorma-ordinal'])">
-												<xsl:number format="[1]"/>
+												<xsl:number format="[1]" count="*[local-name()='bibitem'][not(@hidden = 'true')]"/>
 											</xsl:if>
 										</xsl:otherwise>
 									</xsl:choose>
