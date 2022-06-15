@@ -2304,6 +2304,12 @@
 		</xsl:if>
 	</xsl:attribute-set>
 
+	<xsl:attribute-set name="termnote-p-style">
+		<xsl:if test="$namespace = 'ogc' or $namespace = 'ogc-white-paper'">
+			<xsl:attribute name="space-before">4pt</xsl:attribute>
+		</xsl:if>
+	</xsl:attribute-set>
+
 	<xsl:attribute-set name="quote-style">
 		<xsl:attribute name="margin-left">12mm</xsl:attribute>
 		<xsl:attribute name="margin-right">12mm</xsl:attribute>
@@ -9249,7 +9255,19 @@
 	</xsl:template>
 	
 	<xsl:template match="*[local-name() = 'termnote']/*[local-name() = 'p']">
-		<fo:inline><xsl:apply-templates/></fo:inline>
+		<xsl:variable name="num"><xsl:number/></xsl:variable>
+		<xsl:choose>
+			<xsl:when test="$num = 1"> <!-- first paragraph renders in the same line as titlenote name -->
+				<fo:inline xsl:use-attribute-sets="termnote-p-style">
+					<xsl:apply-templates />
+				</fo:inline>
+			</xsl:when>
+			<xsl:otherwise>
+				<fo:block xsl:use-attribute-sets="termnote-p-style">						
+					<xsl:apply-templates />
+				</fo:block>
+			</xsl:otherwise>
+		</xsl:choose>
 	</xsl:template>
 	
 	<!-- ====== -->
