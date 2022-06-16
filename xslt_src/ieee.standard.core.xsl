@@ -208,7 +208,7 @@
 							
 								<fo:static-content flow-name="right-region" role="artifact">
 									<fo:block-container font-family="Montserrat" font-weight="800" reference-orientation="90" font-size="45.9pt" text-align="right">
-										<fo:block>
+										<fo:block margin-right="-6mm" margin-top="-2mm">
 											<fo:external-graphic src="{concat('data:image/png;base64,', normalize-space($Image-Blue-Box-vertical))}" content-height="11.9mm" content-width="2.5mm" scaling="non-uniform" fox:alt-text="Image Box"/>
 											<fo:inline padding-left="2.5mm">STANDARDS</fo:inline>
 										</fo:block>
@@ -718,9 +718,22 @@
 					<!-- item - page sequence -->
 					<xsl:variable name="structured_xml_">
 						
-						<item>
-							<xsl:apply-templates select="/*/*[local-name()='sections']/*" mode="flatxml"/>
-						</item>	
+						<xsl:choose>
+							<xsl:when test="$doctype = 'standard'">
+								<xsl:for-each select="/*/*[local-name()='sections']/*"> <!-- each section starts with a new page -->
+									<item>
+										<xsl:apply-templates select="." mode="flatxml"/>
+									</item>
+								</xsl:for-each>
+							</xsl:when>
+							<xsl:otherwise>
+								<item>
+									<xsl:apply-templates select="/*/*[local-name()='sections']/*" mode="flatxml"/>
+								</item>	
+							</xsl:otherwise>
+						</xsl:choose>
+						
+						
 						
 						<!-- Annexes -->
 						<item>
@@ -824,12 +837,12 @@
 							
 								<fo:flow flow-name="xsl-region-body" font-family="Calibri">
 								
-									<fo:block font-family="Montserrat" font-size="32pt" font-weight="800" margin-top="40mm">
+									<fo:block font-family="Montserrat" font-size="32pt" font-weight="800" margin-top="44mm" line-height="0.9">
 										<fo:block>RAISING THE</fo:block>
 										<fo:block>WORLD’S</fo:block>
 										<fo:block>STANDARDS</fo:block>
 									</fo:block>
-									<fo:block font-size="1">
+									<fo:block font-size="1" space-before="6mm">
 										<fo:external-graphic src="{concat('data:image/png;base64,', normalize-space($Image-Blue-Box))}" content-width="75mm" content-height="2.6mm" scaling="non-uniform" fox:alt-text="Image Box"/>
 									</fo:block>
 									<fo:block font-size="12pt" font-weight="bold" space-before="1.5mm">Connect with us on:</fo:block>
