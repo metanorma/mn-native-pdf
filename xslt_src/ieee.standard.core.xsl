@@ -59,11 +59,16 @@
 		</xsl:for-each>
 	</xsl:variable>
 
+	<xsl:variable name="doctype" select="(//ieee:ieee-standard)[1]/ieee:bibdata/ieee:ext/ieee:doctype[normalize-space(@language) = '']"/>
 	
 	<xsl:template match="/">
 		<fo:root xmlns:fo="http://www.w3.org/1999/XSL/Format" xml:lang="{$lang}">
 			<xsl:variable name="root-style">
 				<root-style xsl:use-attribute-sets="root-style">
+					<xsl:if test="$doctype = 'industry-connection-report'">
+						<xsl:attribute name="font-family">Calibri, STIX Two Math, <xsl:value-of select="$font_noto_serif"/></xsl:attribute>
+						<xsl:attribute name="font-size">11.2pt</xsl:attribute>
+					</xsl:if>
 				</root-style>
 			</xsl:variable>
 			<xsl:call-template name="insertRootStyle">
@@ -101,6 +106,14 @@
 					<fo:region-after region-name="footer" extent="15mm"/>
 					<fo:region-start region-name="left-region" extent="62mm" precedence="true" />
 					<fo:region-end region-name="right-region" extent="35mm"/>
+				</fo:simple-page-master>
+				
+				<fo:simple-page-master master-name="toc-page-industry-connection-report" page-width="{$pageWidth}mm" page-height="{$pageHeight}mm">
+					<fo:region-body margin-top="{$marginTop}mm" margin-bottom="{$marginBottom}mm" margin-left="19mm" margin-right="19mm"/>
+					<fo:region-before region-name="header" extent="{$marginTop}mm" precedence="true"/>
+					<fo:region-after region-name="footer" extent="{$marginBottom}mm"/>
+					<fo:region-start region-name="left-region" extent="19mm" />
+					<fo:region-end region-name="right-region" extent="19mm"/>
 				</fo:simple-page-master>
 				
 			
@@ -170,7 +183,7 @@
 					</xsl:variable>
 					<xsl:variable name="draft_year" select="substring($revision_month, 1, 4)"/>
 					<xsl:variable name="doctype_localized" select="/ieee:ieee-standard/ieee:bibdata/ieee:ext/ieee:doctype[@language = $lang]"/>
-					<xsl:variable name="doctype" select="/ieee:ieee-standard/ieee:bibdata/ieee:ext/ieee:doctype[normalize-space(@language) = '']"/>
+					
 					<xsl:variable name="title"><xsl:apply-templates select="/ieee:ieee-standard/ieee:bibdata/ieee:title[@type = 'main']/node()"/></xsl:variable>
 					<xsl:variable name="copyright_year" select="/ieee:ieee-standard/ieee:bibdata/ieee:copyright/ieee:from"/>
 					<xsl:variable name="copyright_holder" select="/ieee:ieee-standard/ieee:bibdata/ieee:copyright/ieee:owner/ieee:organization/ieee:name"/>
@@ -187,143 +200,151 @@
 					<!-- ======================= -->
 					<xsl:choose>
 						<xsl:when test="$doctype = 'standard'">
-						
-							<fo:page-sequence master-reference="cover-and-back-page-standard" force-page-count="no-force">
-							
-								<fo:static-content flow-name="header" role="artifact">
-									<fo:block-container position="absolute" left="14mm" top="17.8mm">
-										<fo:block font-size="1">
-											<fo:external-graphic src="{concat('data:image/png;base64,', normalize-space($Image-IEEE2-Logo))}" content-width="32.9mm" content-height="scale-to-fit" scaling="uniform" fox:alt-text="Image IEEE Logo"/>
-										</fo:block>
-									</fo:block-container>
-									<fo:block-container position="absolute" left="14.6mm" top="259mm">
-										<fo:block font-size="1">
-											<fo:external-graphic src="{concat('data:image/png;base64,', normalize-space($Image-IEEE-Logo))}" content-width="20.8mm" content-height="scale-to-fit" scaling="uniform" fox:alt-text="Image IEEE Logo"/>
-										</fo:block>
-									</fo:block-container>
-									<fo:block-container position="absolute" left="191.1mm" top="0mm">
-										<fo:block font-size="1">
-											<!-- <fo:external-graphic src="{concat('data:image/png;base64,', normalize-space($Image-Coverpage-Right))}" content-width="25mm" content-height="scale-to-fit" scaling="uniform" fox:alt-text="Image Boxes"/> -->
-											<fo:external-graphic src="{concat('data:image/png;base64,', normalize-space($Image-Blue-Boxes))}" content-width="25mm" content-height="scale-to-fit" scaling="uniform" fox:alt-text="Image Boxes"/>
-										</fo:block>
-									</fo:block-container>
-									
-									<!-- <fo:block-container position="absolute" left="193.4mm" top="169.3mm">
-										<fo:block font-size="1">
-											<fo:external-graphic src="{concat('data:image/png;base64,', normalize-space($Image-Blue-Box))}" content-width="11.9mm" content-height="scale-to-fit" scaling="non-uniform" fox:alt-text="Image IEEE Logo"/>
-										</fo:block>
-									</fo:block-container> -->
-								</fo:static-content>
-							
-								<fo:static-content flow-name="right-region" role="artifact">
-									<fo:block-container font-family="Montserrat ExtraBold" font-weight="normal" reference-orientation="90" font-size="45.9pt" text-align="right">
-										<fo:block margin-right="-6mm" margin-top="-2mm">
-											<fo:external-graphic src="{concat('data:image/png;base64,', normalize-space($Image-Blue-Box-vertical))}" content-height="11.9mm" content-width="2.5mm" scaling="non-uniform" fox:alt-text="Image Box"/>
-											<fo:inline padding-left="2.5mm">STANDARDS</fo:inline>
-										</fo:block>
-									</fo:block-container>
-									
-								</fo:static-content>
-							
-								<fo:flow flow-name="xsl-region-body" font-family="Calibri">
-									<fo:block-container height="81mm" display-align="center"  font-weight="bold">
-										<fo:block font-size="22pt" space-after="2pt">IEEE Standard for</fo:block>
-										<fo:block font-size="22pt">&#xa0;&#xa0;Local and Metropolitan Area Networks—</fo:block> <!-- <xsl:apply-templates select="/ieee:ieee-standard/ieee:bibdata/ieee:title[@type = 'title-main']"/> -->
-										<fo:block font-size="25pt" space-before="32pt">Port-Based Network Access Control</fo:block> <!-- <xsl:apply-templates select="/ieee:ieee-standard/ieee:bibdata/ieee:title[@type = 'title-intro']"/> -->
-									</fo:block-container>
-									
-									<fo:block-container>
-										<fo:block font-size="16pt">IEEE Computer Society</fo:block>
-										<fo:block font-size="12pt" space-before="13mm">Developed by the</fo:block>
-										<fo:block font-size="12pt">LAN/MAN Standards Committee</fo:block>
-										
-										
-										<fo:block font-size="12pt" font-weight="bold" space-before="40mm"><xsl:value-of select="$standard_number"/></fo:block>
-										<fo:block font-size="10pt"><xsl:value-of select="$history"/></fo:block>
-										
-									</fo:block-container>
-									
-									
-									
-									
-								</fo:flow>
-							</fo:page-sequence>
-						</xsl:when> <!-- $doctype = 'standard' -->
+							<xsl:call-template name="insertCoverPage_Standard">
+								<xsl:with-param name="standard_number" select="$standard_number"/>
+								<xsl:with-param name="history" select="$history"/>
+							</xsl:call-template>
+						</xsl:when>
 						
 						<xsl:when test="$doctype = 'industry-connection-report'">
-							<fo:page-sequence master-reference="cover-and-back-page-industry-connection-report" force-page-count="no-force">
-								<fo:static-content flow-name="header" role="artifact">
-									
-									<fo:block-container position="absolute" left="65.5mm" top="0mm">
-										<fo:block font-size="1">
-											<fo:instream-foreign-object content-height="93.5mm" content-width="64.1mm"  fox:alt-text="Image Boxes">
-												<xsl:copy-of select="$Image-Blue-Boxes-svg"/>
-											</fo:instream-foreign-object>
-										</fo:block>
-									</fo:block-container>
-								</fo:static-content>
-							
-								<fo:static-content flow-name="left-region" role="artifact">
-									<fo:block-container position="absolute" left="0mm" top="0mm" width="50mm" height="{$pageHeight}mm" background-color="black">
-										<fo:block>&#xa0;</fo:block>
-									</fo:block-container>
-									
-									<fo:block-container position="absolute" left="11mm" top="4.5mm">
-										<fo:block font-size="1">
-											<fo:external-graphic src="{concat('data:image/png;base64,', normalize-space($Image-IEEE2-Logo-inverted))}" content-width="27.2mm" content-height="scale-to-fit" scaling="uniform" fox:alt-text="Image IEEE Logo"/>
-										</fo:block>
-									</fo:block-container>
-									
-									<fo:block-container position="absolute" left="10.6mm" top="242.8mm">
-										<fo:block font-size="1">
-											<fo:instream-foreign-object content-width="24.9mm" content-height="scale-to-fit" scaling="uniform"  fox:alt-text="Image Logo">
-												<xsl:copy-of select="$Image-IEEE-Logo-svg"/>
-											</fo:instream-foreign-object>
-										</fo:block>
-									</fo:block-container>
-									
-									<fo:block-container position="absolute" left="0.5mm" top="217.3mm">
-										<fo:block font-size="1">
-											<fo:instream-foreign-object content-width="39.8mm" content-height="2.7mm" scaling="non-uniform"  fox:alt-text="Image Box">
-												<xsl:call-template name="insertImageBoxSVG">
-													<xsl:with-param name="color">rgb(80,197,216)</xsl:with-param>
-												</xsl:call-template>
-											</fo:instream-foreign-object>
-										</fo:block>
-									</fo:block-container>
-									
-									<fo:block-container font-family="Montserrat ExtraBold" font-weight="normal" reference-orientation="90" font-size="36pt" line-height="0.93" text-align="left" color="white">
-										<fo:block margin-left="70mm" margin-top="13mm">INDUSTRY CONNECTIONS REPORT</fo:block>
-									</fo:block-container>
-									
-								</fo:static-content>
-							
-								<fo:flow flow-name="xsl-region-body">
-									<fo:block-container font-family="Arial Black" height="100mm" display-align="center">
-										<fo:block font-size="12.8pt" line-height="1.4">THE IEEE GLOBAL INITIATIVE ON ETHICS OF EXTENDED REALITY (XR) REPORT</fo:block>
-										<fo:block font-size="20pt" space-before="16mm" line-height="1.3">BUSINESS, FINANCE, AND ECONOMICS</fo:block>
-									</fo:block-container>
-									
-									<fo:block-container font-family="Calibri Light" font-weight="normal" font-size="12pt" line-height="1.5">
-										<fo:block>Authored by</fo:block>
-										<fo:block>&#xa0;</fo:block>
-										<fo:block line-height="1.7">
-											<fo:block>First Last names</fo:block>
-											<fo:block font-style="italic">Chapter Leader</fo:block>
-										</fo:block>
-
-									</fo:block-container>
-									
-									
-								</fo:flow>
-							</fo:page-sequence>
-						</xsl:when> <!-- "$doctype = 'industry-connection-report' -->
-						
+							<xsl:call-template name="insertCoverPage_IndustryConnectionReport">
+								
+							</xsl:call-template>
+						</xsl:when>
 						
 					</xsl:choose>
 					<!-- ======================= -->
 					<!-- END Cover page -->
 					<!-- ======================= -->
+					
+					
+					
+					<xsl:choose>
+						<xsl:when test="$doctype = 'industry-connection-report'">
+							<!-- TRADEMARKS AND DISCLAIMERS -->
+							<!-- ACKNOWLEDGEMENTS -->
+							<!-- NOTICE AND DISCLAIMER OF LIABILITY CONCERNING THE USE OF IEEE SA INDUSTRY CONNECTIONS DOCUMENTS -->
+							
+							<!-- ToC -->
+							<fo:page-sequence master-reference="toc-page-industry-connection-report" force-page-count="no-force">
+							
+								<xsl:call-template name="insertHeaderFooter">
+									<xsl:with-param name="doctype" select="$doctype"/>
+									<xsl:with-param name="copyright_year" select="$copyright_year"/>
+									<xsl:with-param name="copyright_holder" select="$copyright_holder"/>
+									<xsl:with-param name="hideHeader">true</xsl:with-param>
+								</xsl:call-template>
+							
+								<fo:static-content flow-name="header" role="artifact">
+									<fo:block-container position="absolute" left="0mm" top="0mm" width="54mm" height="{$pageHeight}mm" background-color="rgb(35,31,32)">
+										<fo:block>&#xa0;</fo:block>
+									</fo:block-container>
+									
+									<fo:block-container position="absolute" left="0.5mm" top="252mm">
+										<fo:block font-size="1">
+											<fo:instream-foreign-object content-width="38mm" content-height="2.5mm" scaling="non-uniform" fox:alt-text="Image Box">
+												<xsl:call-template name="insertImageBoxSVG">
+													<xsl:with-param name="color">rgb(0,174,239)</xsl:with-param>
+												</xsl:call-template>
+											</fo:instream-foreign-object>
+										</fo:block>
+									</fo:block-container>
+									
+								</fo:static-content>
+								<fo:static-content flow-name="left-region" role="artifact">
+									<fo:block-container font-family="Arial Black" font-weight="normal" reference-orientation="90" font-size="48pt" text-align="left" color="white">
+										<fo:block margin-left="31.4mm" margin-top="20mm">TABLE OF CONTENTS</fo:block>
+									</fo:block-container>
+								</fo:static-content>
+								<fo:flow flow-name="xsl-region-body">
+								
+									<fo:block-container margin-left="47mm"  margin-top="27mm">
+										<fo:block-container margin-left="0mm">
+											<fo:block role="TOC" font-size="11pt">
+												<xsl:if test="$contents/doc[@num = $num]//item[@display = 'true']">
+													
+													<xsl:variable name="margin-left">
+														<xsl:choose>
+															<xsl:when test="@level = 2">4.5mm</xsl:when>
+															<xsl:when test="@level &gt;= 3">7.5mm</xsl:when>
+															<xsl:otherwise>0mm</xsl:otherwise>
+														</xsl:choose>
+													</xsl:variable>
+													
+													<xsl:for-each select="$contents/doc[@num = $num]//item[@display = 'true']">
+														<fo:block role="TOCI">
+															<xsl:if test="@level = 1">
+																<xsl:attribute name="margin-top">12pt</xsl:attribute>
+																<xsl:attribute name="margin-bottom">6pt</xsl:attribute>
+															</xsl:if>
+															
+															<fo:block text-align-last="justify">
+																<xsl:attribute name="margin-left"><xsl:value-of select="$margin-left"/>mm</xsl:attribute>
+																<xsl:if test="@type = 'annex'">
+																	<xsl:attribute name="font-weight">normal</xsl:attribute>
+																</xsl:if>
+																
+																<fo:basic-link internal-destination="{@id}" fox:alt-text="{title}">
+																
+																	<xsl:value-of select="@section"/>
+																	<xsl:if test="normalize-space(@section) != ''"><xsl:text>.&#xa0;</xsl:text></xsl:if>
+																	
+																	<xsl:variable name="title">
+																		<xsl:apply-templates select="title"/>
+																	</xsl:variable>
+																	
+																	<xsl:choose>
+																		<xsl:when test="@level = 1">
+																			<xsl:apply-templates select="xalan:nodeset($title)" mode="uppercase"/>
+																		</xsl:when>
+																		<xsl:otherwise>
+																			<xsl:apply-templates select="xalan:nodeset($title)" mode="smallcaps"/>
+																		</xsl:otherwise>
+																	</xsl:choose>
+																	
+																	<fo:inline keep-together.within-line="always">
+																		<fo:leader font-weight="normal" leader-pattern="dots"/>
+																		<fo:inline>
+																			<fo:page-number-citation ref-id="{@id}"/>
+																		</fo:inline>
+																	</fo:inline>
+																
+																</fo:basic-link>
+															</fo:block>
+														</fo:block>
+													</xsl:for-each>
+													
+													<!-- List of Tables -->
+													<xsl:if test="$contents//tables/table">
+														<xsl:call-template name="insertListOf_Title">
+															<xsl:with-param name="title" select="$title-list-tables"/>
+														</xsl:call-template>
+														<xsl:for-each select="$contents//tables/table">
+															<xsl:call-template name="insertListOf_Item"/>
+														</xsl:for-each>
+													</xsl:if>
+													
+													<!-- List of Figures -->
+													<xsl:if test="$contents//figures/figure">
+														<xsl:call-template name="insertListOf_Title">
+															<xsl:with-param name="title" select="$title-list-figures"/>
+														</xsl:call-template>
+														<xsl:for-each select="$contents//figures/figure">
+															<xsl:call-template name="insertListOf_Item"/>
+														</xsl:for-each>
+													</xsl:if>
+													
+												</xsl:if>
+												
+											</fo:block>
+										</fo:block-container>
+									</fo:block-container>
+								</fo:flow>
+							</fo:page-sequence> <!-- toc-page-industry-connection-report -->
+						
+						</xsl:when>
+					</xsl:choose>
+					
 					
 					
 					<xsl:choose>
@@ -358,16 +379,15 @@
 									<fo:block font-size="10pt" space-before="8mm" space-after="4pt">Approved 30 January 2020</fo:block>
 									<fo:block font-size="11pt" font-weight="bold">IEEE SA Standards Board</fo:block>
 
-
-									
 								</fo:flow>
 								
 							</fo:page-sequence>
 						</xsl:when>
+						
 					</xsl:choose>
 					
-
-
+					
+					
 					<fo:page-sequence master-reference="document" force-page-count="no-force">
 						
 						<xsl:call-template name="insertFootnoteSeparator"/>
@@ -893,138 +913,11 @@
 					<!-- ======================= -->
 					<xsl:choose>
 						<xsl:when test="$doctype = 'standard'">
-						
-							<fo:page-sequence master-reference="cover-and-back-page-standard" force-page-count="no-force">
-							
-								<fo:static-content flow-name="header" role="artifact">
-									<fo:block-container position="absolute" left="14mm" top="17.8mm">
-										<fo:block font-size="1">
-											<fo:external-graphic src="{concat('data:image/png;base64,', normalize-space($Image-IEEE2-Logo))}" content-width="32.9mm" content-height="scale-to-fit" scaling="uniform" fox:alt-text="Image IEEE Logo"/>
-										</fo:block>
-									</fo:block-container>
-									<fo:block-container position="absolute" left="21mm" top="256mm">
-										<fo:block font-size="1">
-											<fo:external-graphic src="{concat('data:image/png;base64,', normalize-space($Image-IEEE-Logo))}" content-width="20.8mm" content-height="scale-to-fit" scaling="uniform" fox:alt-text="Image IEEE Logo"/>
-										</fo:block>
-									</fo:block-container>
-									<fo:block-container position="absolute" left="191.1mm" top="0mm">
-										<fo:block font-size="1">
-											<fo:external-graphic src="{concat('data:image/png;base64,', normalize-space($Image-Blue-Boxes))}" content-width="25mm" content-height="scale-to-fit" scaling="uniform" fox:alt-text="Image Boxes"/>
-										</fo:block>
-									</fo:block-container>
-								</fo:static-content>
-							
-							
-								<fo:flow flow-name="xsl-region-body" font-family="Calibri">
-								
-									<fo:block font-family="Montserrat ExtraBold" font-size="32pt" font-weight="normal" margin-top="44mm" line-height="0.9">
-										<fo:block>RAISING THE</fo:block>
-										<fo:block>WORLD’S</fo:block>
-										<fo:block>STANDARDS</fo:block>
-									</fo:block>
-									<fo:block font-size="1" space-before="6mm">
-										<fo:external-graphic src="{concat('data:image/png;base64,', normalize-space($Image-Blue-Box))}" content-width="75mm" content-height="2.6mm" scaling="non-uniform" fox:alt-text="Image Box"/>
-									</fo:block>
-									<fo:block font-size="12pt" font-weight="bold" space-before="1.5mm">Connect with us on:</fo:block>
-									<fo:block font-size="10pt" space-before="1mm">
-										<fo:table width="100%" table-layout="fixed">
-											<fo:table-column column-width="7.6mm"/>
-											<fo:table-column column-width="90mm"/>
-											<fo:table-body>
-												<fo:table-row display-align="center" height="6mm">
-													<fo:table-cell>
-														<fo:block font-size="1">
-															<fo:external-graphic src="{concat('data:image/png;base64,', normalize-space($Image-Twitter-Logo))}" content-width="4.5mm" content-height="scale-to-fit" scaling="uniform" fox:alt-text="Image Boxes"/>
-														</fo:block>
-													</fo:table-cell>
-													<fo:table-cell>
-														<fo:block><fo:inline font-weight="bold">Twitter</fo:inline>: twitter.com/ieeesa</fo:block>
-													</fo:table-cell>
-												</fo:table-row>
-												<fo:table-row display-align="center" height="6mm">
-													<fo:table-cell>
-														<fo:block font-size="1">
-															<fo:external-graphic src="{concat('data:image/png;base64,', normalize-space($Image-FB-Logo))}" content-width="5.5mm" content-height="scale-to-fit" scaling="uniform" fox:alt-text="Image Boxes"/>
-														</fo:block>
-													</fo:table-cell>
-													<fo:table-cell>
-														<fo:block><fo:inline font-weight="bold">Facebook</fo:inline>: facebook.com/ieeesa</fo:block>
-													</fo:table-cell>
-												</fo:table-row>
-												<fo:table-row display-align="center" height="6mm">
-													<fo:table-cell>
-														<fo:block font-size="1">
-															<fo:external-graphic src="{concat('data:image/png;base64,', normalize-space($Image-LinkedIn-Logo))}" content-width="5.2mm" content-height="scale-to-fit" scaling="uniform" fox:alt-text="Image Boxes"/>
-														</fo:block>
-													</fo:table-cell>
-													<fo:table-cell>
-														<fo:block><fo:inline font-weight="bold">LinkedIn</fo:inline>: linkedin.com/groups/1791118</fo:block>
-													</fo:table-cell>
-												</fo:table-row>
-												<fo:table-row display-align="center" height="6mm">
-													<fo:table-cell>
-														<fo:block font-size="1">
-															<fo:external-graphic src="{concat('data:image/png;base64,', normalize-space($Image-Beyond-Logo))}" content-width="5mm" content-height="scale-to-fit" scaling="uniform" fox:alt-text="Image Boxes"/>
-														</fo:block>
-													</fo:table-cell>
-													<fo:table-cell>
-														<fo:block><fo:inline font-weight="bold">Beyond Standards blog</fo:inline>: beyondstandards.ieee.org</fo:block>
-													</fo:table-cell>
-												</fo:table-row>
-												<fo:table-row display-align="center" height="6mm">
-													<fo:table-cell>
-														<fo:block font-size="1">
-															<fo:external-graphic src="{concat('data:image/png;base64,', normalize-space($Image-Youtube-Logo))}" content-width="5mm" content-height="scale-to-fit" scaling="uniform" fox:alt-text="Image Boxes"/>
-														</fo:block>
-													</fo:table-cell>
-													<fo:table-cell>
-														<fo:block><fo:inline font-weight="bold">YouTube</fo:inline>: youtube.com/ieeesa</fo:block>
-													</fo:table-cell>
-												</fo:table-row>
-											</fo:table-body>
-										</fo:table>
-									</fo:block>
-									<fo:block font-size="10pt" space-before="3mm">
-										<fo:block>standards.ieee.org</fo:block>
-										<fo:block>Phone: +1 732 981 0060</fo:block>
-									</fo:block>
-
-								</fo:flow>
-							</fo:page-sequence>
-						</xsl:when> <!-- $doctype = 'standard' -->
-						
+							<xsl:call-template name="insertBackPage_Standard"/>
+						</xsl:when>
 						<xsl:when test="$doctype = 'industry-connection-report'">
-							<fo:page-sequence master-reference="cover-and-back-page-industry-connection-report" force-page-count="no-force">
-								<fo:static-content flow-name="left-region" role="artifact">
-									<fo:block-container position="absolute" left="0mm" top="0mm" width="50mm" height="{$pageHeight}mm" background-color="black">
-										<fo:block>&#xa0;</fo:block>
-									</fo:block-container>
-								</fo:static-content>
-								<fo:flow flow-name="xsl-region-body">
-									<fo:block-container margin-top="-61mm">
-										<fo:block font-family="Arial Black" font-weight="normal" font-size="20pt" line-height="1.25">
-											<fo:block>RAISING THE WORLD’S </fo:block>
-											<fo:block>STANDARDS</fo:block>
-										</fo:block>
-										<fo:block font-size="1" space-before="1mm">
-											<fo:instream-foreign-object content-width="56.8mm" content-height="2.7mm" scaling="non-uniform" fox:alt-text="Image Box">
-												<xsl:call-template name="insertImageBoxSVG">
-													<xsl:with-param name="color">rgb(0,174,239)</xsl:with-param>
-												</xsl:call-template>
-											</fo:instream-foreign-object>
-										</fo:block>
-									</fo:block-container>
-									
-									<fo:block margin-left="8mm" margin-right="-10mm" margin-top="152mm" font-size="11pt" font-family="Calibri">
-										<fo:block>3 Park Avenue, New York, NY 10016‐5997 USA <fo:inline text-decoration="underline" color="rgb(0,169,233)">http://standards.ieee.org</fo:inline></fo:block>
-										<fo:block>&#xa0;</fo:block>
-										<fo:block>Tel.+1732‐981‐0060 Fax+1732‐562‐1571</fo:block>
-									</fo:block>
-									
-								</fo:flow>
-							</fo:page-sequence>
-						</xsl:when> <!-- "$doctype = 'industry-connection-report' -->
-						
+							<xsl:call-template name="insertBackPage_IndustryConnectionReport"/>
+						</xsl:when>
 					</xsl:choose>
 					<!-- ======================= -->
 					<!-- END Back page -->
@@ -1042,15 +935,55 @@
 			</xsl:if>
 			
 			
-			
-			
-			
-			
-			
 		</fo:root>
 	</xsl:template>
-
 	
+	
+	<xsl:template match="text()" priority="2" mode="uppercase">
+		<xsl:value-of select="java:toUpperCase(java:java.lang.String.new(.))"/>
+	</xsl:template>
+	<xsl:template match="@*|node()" mode="uppercase">
+		<xsl:copy>
+			<xsl:apply-templates select="@*|node()" mode="uppercase"/>
+		</xsl:copy>
+	</xsl:template>
+	
+	<xsl:template match="text()" priority="2" mode="smallcaps">
+		<xsl:call-template name="tocSmallCaps">
+			<xsl:with-param name="text" select="."/>
+		</xsl:call-template>
+	</xsl:template>
+	<xsl:template match="@*|node()" mode="uppercase">
+		<xsl:copy>
+			<xsl:apply-templates select="@*|node()" mode="smallcaps"/>
+		</xsl:copy>
+	</xsl:template>
+	
+	<xsl:template name="tocSmallCaps">
+		<xsl:param name="text"/>
+		<xsl:param name="font-size">9pt</xsl:param>
+		<xsl:variable name="char" select="substring($text,1,1)"/>
+		<xsl:variable name="upperCase" select="java:toUpperCase(java:java.lang.String.new($char))"/>
+		<xsl:choose>
+			<xsl:when test="$char = ' '">
+				<xsl:value-of select="$char"/>
+			</xsl:when>
+			<xsl:when test="$char != $upperCase">
+				<fo:inline font-size="{$font-size}">
+					<xsl:value-of select="$upperCase"/>
+				</fo:inline>
+			</xsl:when>
+			<xsl:otherwise>
+				<xsl:value-of select="$upperCase"/>
+			</xsl:otherwise>
+		</xsl:choose>
+		<xsl:if test="string-length($text) &gt; 1">
+			<xsl:call-template name="tocSmallCaps">
+				<xsl:with-param name="text" select="substring($text,2)"/>
+			</xsl:call-template>
+		</xsl:if>
+	</xsl:template>
+
 
 	<xsl:template match="*[local-name() = 'br']" priority="2" mode="contents_item">
 		<xsl:text> </xsl:text>
@@ -2054,7 +1987,6 @@
 		<xsl:param name="docidentifier" />
 		<xsl:param name="hideHeader" select="'false'"/>
 		<xsl:param name="hideFooter" select="'false'"/>
-		<xsl:param name="copyrightText"/>
 		
 		<xsl:param name="copyright_year"/>
 		<xsl:param name="copyright_holder"/>
@@ -2085,43 +2017,68 @@
 			</fo:block>
 		</xsl:variable>
 		
+		<xsl:variable name="copyrightText">
+			<xsl:text>Copyright © </xsl:text>
+			<xsl:value-of select="$copyright_year"/>
+			<xsl:text> </xsl:text>
+			<xsl:value-of select="$copyright_holder"/>
+			<xsl:text>. </xsl:text>
+			<xsl:variable name="all_rights_reserved">
+				<xsl:call-template name="getLocalizedString">
+					<xsl:with-param name="key">all_rights_reserved</xsl:with-param>
+				</xsl:call-template>
+			</xsl:variable>
+			<xsl:value-of select="$all_rights_reserved"/>
+			<xsl:text>.</xsl:text>
+		</xsl:variable>
+		
 		<xsl:variable name="footer">
-			<fo:block text-align="center" margin-bottom="12.7mm">
-				<xsl:if test="$doctype = 'standard'">
-					<xsl:attribute name="margin-bottom">8.5mm</xsl:attribute>
-				</xsl:if>
-				<fo:block font-weight="bold">
-					<xsl:if test="$doctype = 'standard'">
-						<xsl:attribute name="font-family">Times New Roman</xsl:attribute>
-						<xsl:attribute name="font-weight">normal</xsl:attribute>
-					</xsl:if>
-					<fo:page-number />
-				</fo:block>
-				<!-- Copyright © 2022 IEEE. All rights reserved. -->
-				<fo:block font-family="Arial" font-size="8pt">
-					<fo:block>
-						<xsl:text>Copyright © </xsl:text>
-						<xsl:value-of select="$copyright_year"/>
-						<xsl:text> </xsl:text>
-						<xsl:value-of select="$copyright_holder"/>
-						<xsl:text>. </xsl:text>
-						<xsl:variable name="all_rights_reserved">
-							<xsl:call-template name="getLocalizedString">
-								<xsl:with-param name="key">all_rights_reserved</xsl:with-param>
-							</xsl:call-template>
-						</xsl:variable>
-						<xsl:value-of select="$all_rights_reserved"/>
-						<xsl:text>.</xsl:text>
+			<xsl:choose>
+				<xsl:when test="$doctype = 'industry-connection-report'">
+					<fo:block margin-bottom="8mm">
+						<fo:table width="100%" table-layout="fixed" font-size="7pt">
+							<fo:table-body>
+								<fo:table-row>
+									<fo:table-cell>
+										<fo:block font-weight="bold"><fo:inline font-size="10pt" ><fo:page-number /></fo:inline>&#xa0;&#xa0;&#xa0;IEEE SA</fo:block> <!--  INDUSTRY CONNECTIONS -->
+									</fo:table-cell>
+									<fo:table-cell text-align="right" font-family="Calibri Light">
+										<fo:block>
+											<xsl:value-of select="$copyrightText"/>
+										</fo:block>
+									</fo:table-cell>
+								</fo:table-row>
+							</fo:table-body>
+						</fo:table>
 					</fo:block>
-					<xsl:choose>
-						<xsl:when test="$doctype = 'standard'"></xsl:when>
-						<xsl:otherwise>
-							<fo:block>This is an unapproved IEEE Standards Draft, subject to change.</fo:block>
-						</xsl:otherwise>
-					</xsl:choose>
-					
-				</fo:block>
-			</fo:block>
+				</xsl:when>
+				<xsl:otherwise>
+					<fo:block text-align="center" margin-bottom="12.7mm">
+						<xsl:if test="$doctype = 'standard'">
+							<xsl:attribute name="margin-bottom">8.5mm</xsl:attribute>
+						</xsl:if>
+						<fo:block font-weight="bold">
+							<xsl:if test="$doctype = 'standard'">
+								<xsl:attribute name="font-family">Times New Roman</xsl:attribute>
+								<xsl:attribute name="font-weight">normal</xsl:attribute>
+							</xsl:if>
+							<fo:page-number />
+						</fo:block>
+						<!-- Copyright © 2022 IEEE. All rights reserved. -->
+						<fo:block font-family="Arial" font-size="8pt">
+							<fo:block>
+								<xsl:value-of select="$copyrightText"/>
+							</fo:block>
+							<xsl:choose>
+								<xsl:when test="$doctype = 'standard'"></xsl:when>
+								<xsl:otherwise>
+									<fo:block>This is an unapproved IEEE Standards Draft, subject to change.</fo:block>
+								</xsl:otherwise>
+							</xsl:choose>
+						</fo:block>
+					</fo:block>
+				</xsl:otherwise>
+			</xsl:choose>
 		</xsl:variable>
 		
 		<xsl:choose>
@@ -2159,6 +2116,8 @@
 			</xsl:otherwise>
 		</xsl:choose>
 	</xsl:template>
+
+
 
 	
 	<xsl:variable name="Image-Blue-Box">
@@ -2272,6 +2231,281 @@
 			<rect x="0" y="1" width="100" height="100" fill="{$color}"/>
 		</svg>
 	</xsl:template>
+	
+	
+	<!-- =============================== -->
+	<!-- Cover Pages -->
+	<!-- =============================== -->
+	<xsl:template name="insertCoverPage_Standard">
+		<xsl:param name="standard_number" />
+		<xsl:param name="history" />
+		
+		<fo:page-sequence master-reference="cover-and-back-page-standard" force-page-count="no-force">
+		
+			<fo:static-content flow-name="header" role="artifact">
+				<fo:block-container position="absolute" left="14mm" top="17.8mm">
+					<fo:block font-size="1">
+						<fo:external-graphic src="{concat('data:image/png;base64,', normalize-space($Image-IEEE2-Logo))}" content-width="32.9mm" content-height="scale-to-fit" scaling="uniform" fox:alt-text="Image IEEE Logo"/>
+					</fo:block>
+				</fo:block-container>
+				<fo:block-container position="absolute" left="14.6mm" top="259mm">
+					<fo:block font-size="1">
+						<fo:external-graphic src="{concat('data:image/png;base64,', normalize-space($Image-IEEE-Logo))}" content-width="20.8mm" content-height="scale-to-fit" scaling="uniform" fox:alt-text="Image IEEE Logo"/>
+					</fo:block>
+				</fo:block-container>
+				<fo:block-container position="absolute" left="191.1mm" top="0mm">
+					<fo:block font-size="1">
+						<!-- <fo:external-graphic src="{concat('data:image/png;base64,', normalize-space($Image-Coverpage-Right))}" content-width="25mm" content-height="scale-to-fit" scaling="uniform" fox:alt-text="Image Boxes"/> -->
+						<fo:external-graphic src="{concat('data:image/png;base64,', normalize-space($Image-Blue-Boxes))}" content-width="25mm" content-height="scale-to-fit" scaling="uniform" fox:alt-text="Image Boxes"/>
+					</fo:block>
+				</fo:block-container>
+				
+				<!-- <fo:block-container position="absolute" left="193.4mm" top="169.3mm">
+					<fo:block font-size="1">
+						<fo:external-graphic src="{concat('data:image/png;base64,', normalize-space($Image-Blue-Box))}" content-width="11.9mm" content-height="scale-to-fit" scaling="non-uniform" fox:alt-text="Image IEEE Logo"/>
+					</fo:block>
+				</fo:block-container> -->
+			</fo:static-content>
+		
+			<fo:static-content flow-name="right-region" role="artifact">
+				<fo:block-container font-family="Montserrat ExtraBold" font-weight="normal" reference-orientation="90" font-size="45.9pt" text-align="right">
+					<fo:block margin-right="-6mm" margin-top="-2mm">
+						<fo:external-graphic src="{concat('data:image/png;base64,', normalize-space($Image-Blue-Box-vertical))}" content-height="11.9mm" content-width="2.5mm" scaling="non-uniform" fox:alt-text="Image Box"/>
+						<fo:inline padding-left="2.5mm">STANDARDS</fo:inline>
+					</fo:block>
+				</fo:block-container>
+				
+			</fo:static-content>
+		
+			<fo:flow flow-name="xsl-region-body" font-family="Calibri">
+				<fo:block-container height="81mm" display-align="center"  font-weight="bold">
+					<fo:block font-size="22pt" space-after="2pt">IEEE Standard for</fo:block>
+					<fo:block font-size="22pt">&#xa0;&#xa0;Local and Metropolitan Area Networks—</fo:block> <!-- <xsl:apply-templates select="/ieee:ieee-standard/ieee:bibdata/ieee:title[@type = 'title-main']"/> -->
+					<fo:block font-size="25pt" space-before="32pt">Port-Based Network Access Control</fo:block> <!-- <xsl:apply-templates select="/ieee:ieee-standard/ieee:bibdata/ieee:title[@type = 'title-intro']"/> -->
+				</fo:block-container>
+				
+				<fo:block-container>
+					<fo:block font-size="16pt">IEEE Computer Society</fo:block>
+					<fo:block font-size="12pt" space-before="13mm">Developed by the</fo:block>
+					<fo:block font-size="12pt">LAN/MAN Standards Committee</fo:block>
+					
+					<fo:block font-size="12pt" font-weight="bold" space-before="40mm"><xsl:value-of select="$standard_number"/></fo:block>
+					<fo:block font-size="10pt"><xsl:value-of select="$history"/></fo:block>
+					
+				</fo:block-container>
+			</fo:flow>
+		</fo:page-sequence>
+	</xsl:template> <!-- insertCoverPage_Standard -->
+	
+	
+	<xsl:template name="insertCoverPage_IndustryConnectionReport">
+		
+		
+		<fo:page-sequence master-reference="cover-and-back-page-industry-connection-report" force-page-count="no-force">
+			<fo:static-content flow-name="header" role="artifact">
+				
+				<fo:block-container position="absolute" left="65.5mm" top="0mm">
+					<fo:block font-size="1">
+						<fo:instream-foreign-object content-height="93.5mm" content-width="64.1mm"  fox:alt-text="Image Boxes">
+							<xsl:copy-of select="$Image-Blue-Boxes-svg"/>
+						</fo:instream-foreign-object>
+					</fo:block>
+				</fo:block-container>
+			</fo:static-content>
+		
+			<fo:static-content flow-name="left-region" role="artifact">
+				<fo:block-container position="absolute" left="0mm" top="0mm" width="50mm" height="{$pageHeight}mm" background-color="black">
+					<fo:block>&#xa0;</fo:block>
+				</fo:block-container>
+				
+				<fo:block-container position="absolute" left="11mm" top="4.5mm">
+					<fo:block font-size="1">
+						<fo:external-graphic src="{concat('data:image/png;base64,', normalize-space($Image-IEEE2-Logo-inverted))}" content-width="27.2mm" content-height="scale-to-fit" scaling="uniform" fox:alt-text="Image IEEE Logo"/>
+					</fo:block>
+				</fo:block-container>
+				
+				<fo:block-container position="absolute" left="10.6mm" top="242.8mm">
+					<fo:block font-size="1">
+						<fo:instream-foreign-object content-width="24.9mm" content-height="scale-to-fit" scaling="uniform"  fox:alt-text="Image Logo">
+							<xsl:copy-of select="$Image-IEEE-Logo-svg"/>
+						</fo:instream-foreign-object>
+					</fo:block>
+				</fo:block-container>
+				
+				<fo:block-container position="absolute" left="0.5mm" top="217.3mm">
+					<fo:block font-size="1">
+						<fo:instream-foreign-object content-width="39.8mm" content-height="2.7mm" scaling="non-uniform"  fox:alt-text="Image Box">
+							<xsl:call-template name="insertImageBoxSVG">
+								<xsl:with-param name="color">rgb(80,197,216)</xsl:with-param>
+							</xsl:call-template>
+						</fo:instream-foreign-object>
+					</fo:block>
+				</fo:block-container>
+				
+				<fo:block-container font-family="Montserrat ExtraBold" font-weight="normal" reference-orientation="90" font-size="36pt" line-height="0.93" text-align="left" color="white">
+					<fo:block margin-left="70mm" margin-top="13mm">INDUSTRY CONNECTIONS REPORT</fo:block>
+				</fo:block-container>
+				
+			</fo:static-content>
+		
+			<fo:flow flow-name="xsl-region-body">
+				<fo:block-container font-family="Arial Black" height="100mm" display-align="center">
+					<fo:block font-size="12.8pt" line-height="1.4">THE IEEE GLOBAL INITIATIVE ON ETHICS OF EXTENDED REALITY (XR) REPORT</fo:block>
+					<fo:block font-size="20pt" space-before="16mm" line-height="1.3">BUSINESS, FINANCE, AND ECONOMICS</fo:block>
+				</fo:block-container>
+				
+				<fo:block-container font-family="Calibri Light" font-weight="normal" font-size="12pt" line-height="1.5">
+					<fo:block>Authored by</fo:block>
+					<fo:block>&#xa0;</fo:block>
+					<fo:block line-height="1.7">
+						<fo:block>First Last names</fo:block>
+						<fo:block font-style="italic">Chapter Leader</fo:block>
+					</fo:block>
+				</fo:block-container>
+			</fo:flow>
+		</fo:page-sequence>
+	</xsl:template> <!-- insertCoverPage_IndustryConnectionReport -->
+	<!-- =============================== -->
+	<!-- End Cover Pages -->
+	<!-- =============================== -->
+	
+
+	<!-- =============================== -->
+	<!-- Back Pages -->
+	<!-- =============================== -->
+	<xsl:template name="insertBackPage_Standard">
+		<fo:page-sequence master-reference="cover-and-back-page-standard" force-page-count="no-force">
+		
+			<fo:static-content flow-name="header" role="artifact">
+				<fo:block-container position="absolute" left="14mm" top="17.8mm">
+					<fo:block font-size="1">
+						<fo:external-graphic src="{concat('data:image/png;base64,', normalize-space($Image-IEEE2-Logo))}" content-width="32.9mm" content-height="scale-to-fit" scaling="uniform" fox:alt-text="Image IEEE Logo"/>
+					</fo:block>
+				</fo:block-container>
+				<fo:block-container position="absolute" left="21mm" top="256mm">
+					<fo:block font-size="1">
+						<fo:external-graphic src="{concat('data:image/png;base64,', normalize-space($Image-IEEE-Logo))}" content-width="20.8mm" content-height="scale-to-fit" scaling="uniform" fox:alt-text="Image IEEE Logo"/>
+					</fo:block>
+				</fo:block-container>
+				<fo:block-container position="absolute" left="191.1mm" top="0mm">
+					<fo:block font-size="1">
+						<fo:external-graphic src="{concat('data:image/png;base64,', normalize-space($Image-Blue-Boxes))}" content-width="25mm" content-height="scale-to-fit" scaling="uniform" fox:alt-text="Image Boxes"/>
+					</fo:block>
+				</fo:block-container>
+			</fo:static-content>
+		
+			<fo:flow flow-name="xsl-region-body" font-family="Calibri">
+			
+				<fo:block font-family="Montserrat ExtraBold" font-size="32pt" font-weight="normal" margin-top="44mm" line-height="0.9">
+					<fo:block>RAISING THE</fo:block>
+					<fo:block>WORLD’S</fo:block>
+					<fo:block>STANDARDS</fo:block>
+				</fo:block>
+				<fo:block font-size="1" space-before="6mm">
+					<fo:external-graphic src="{concat('data:image/png;base64,', normalize-space($Image-Blue-Box))}" content-width="75mm" content-height="2.6mm" scaling="non-uniform" fox:alt-text="Image Box"/>
+				</fo:block>
+				<fo:block font-size="12pt" font-weight="bold" space-before="1.5mm">Connect with us on:</fo:block>
+				<fo:block font-size="10pt" space-before="1mm">
+					<fo:table width="100%" table-layout="fixed">
+						<fo:table-column column-width="7.6mm"/>
+						<fo:table-column column-width="90mm"/>
+						<fo:table-body>
+							<fo:table-row display-align="center" height="6mm">
+								<fo:table-cell>
+									<fo:block font-size="1">
+										<fo:external-graphic src="{concat('data:image/png;base64,', normalize-space($Image-Twitter-Logo))}" content-width="4.5mm" content-height="scale-to-fit" scaling="uniform" fox:alt-text="Image Boxes"/>
+									</fo:block>
+								</fo:table-cell>
+								<fo:table-cell>
+									<fo:block><fo:inline font-weight="bold">Twitter</fo:inline>: twitter.com/ieeesa</fo:block>
+								</fo:table-cell>
+							</fo:table-row>
+							<fo:table-row display-align="center" height="6mm">
+								<fo:table-cell>
+									<fo:block font-size="1">
+										<fo:external-graphic src="{concat('data:image/png;base64,', normalize-space($Image-FB-Logo))}" content-width="5.5mm" content-height="scale-to-fit" scaling="uniform" fox:alt-text="Image Boxes"/>
+									</fo:block>
+								</fo:table-cell>
+								<fo:table-cell>
+									<fo:block><fo:inline font-weight="bold">Facebook</fo:inline>: facebook.com/ieeesa</fo:block>
+								</fo:table-cell>
+							</fo:table-row>
+							<fo:table-row display-align="center" height="6mm">
+								<fo:table-cell>
+									<fo:block font-size="1">
+										<fo:external-graphic src="{concat('data:image/png;base64,', normalize-space($Image-LinkedIn-Logo))}" content-width="5.2mm" content-height="scale-to-fit" scaling="uniform" fox:alt-text="Image Boxes"/>
+									</fo:block>
+								</fo:table-cell>
+								<fo:table-cell>
+									<fo:block><fo:inline font-weight="bold">LinkedIn</fo:inline>: linkedin.com/groups/1791118</fo:block>
+								</fo:table-cell>
+							</fo:table-row>
+							<fo:table-row display-align="center" height="6mm">
+								<fo:table-cell>
+									<fo:block font-size="1">
+										<fo:external-graphic src="{concat('data:image/png;base64,', normalize-space($Image-Beyond-Logo))}" content-width="5mm" content-height="scale-to-fit" scaling="uniform" fox:alt-text="Image Boxes"/>
+									</fo:block>
+								</fo:table-cell>
+								<fo:table-cell>
+									<fo:block><fo:inline font-weight="bold">Beyond Standards blog</fo:inline>: beyondstandards.ieee.org</fo:block>
+								</fo:table-cell>
+							</fo:table-row>
+							<fo:table-row display-align="center" height="6mm">
+								<fo:table-cell>
+									<fo:block font-size="1">
+										<fo:external-graphic src="{concat('data:image/png;base64,', normalize-space($Image-Youtube-Logo))}" content-width="5mm" content-height="scale-to-fit" scaling="uniform" fox:alt-text="Image Boxes"/>
+									</fo:block>
+								</fo:table-cell>
+								<fo:table-cell>
+									<fo:block><fo:inline font-weight="bold">YouTube</fo:inline>: youtube.com/ieeesa</fo:block>
+								</fo:table-cell>
+							</fo:table-row>
+						</fo:table-body>
+					</fo:table>
+				</fo:block>
+				<fo:block font-size="10pt" space-before="3mm">
+					<fo:block>standards.ieee.org</fo:block>
+					<fo:block>Phone: +1 732 981 0060</fo:block>
+				</fo:block>
+
+			</fo:flow>
+		</fo:page-sequence>
+	</xsl:template>
+	
+	<xsl:template name="insertBackPage_IndustryConnectionReport">
+		<fo:page-sequence master-reference="cover-and-back-page-industry-connection-report" force-page-count="no-force">
+			<fo:static-content flow-name="left-region" role="artifact">
+				<fo:block-container position="absolute" left="0mm" top="0mm" width="50mm" height="{$pageHeight}mm" background-color="black">
+					<fo:block>&#xa0;</fo:block>
+				</fo:block-container>
+			</fo:static-content>
+			<fo:flow flow-name="xsl-region-body">
+				<fo:block-container margin-top="-61mm">
+					<fo:block font-family="Arial Black" font-weight="normal" font-size="20pt" line-height="1.25">
+						<fo:block>RAISING THE WORLD’S </fo:block>
+						<fo:block>STANDARDS</fo:block>
+					</fo:block>
+					<fo:block font-size="1" space-before="1mm">
+						<fo:instream-foreign-object content-width="56.8mm" content-height="2.7mm" scaling="non-uniform" fox:alt-text="Image Box">
+							<xsl:call-template name="insertImageBoxSVG">
+								<xsl:with-param name="color">rgb(0,174,239)</xsl:with-param>
+							</xsl:call-template>
+						</fo:instream-foreign-object>
+					</fo:block>
+				</fo:block-container>
+				
+				<fo:block margin-left="8mm" margin-right="-10mm" margin-top="152mm" font-size="11pt" font-family="Calibri">
+					<fo:block>3 Park Avenue, New York, NY 10016‐5997 USA <fo:inline text-decoration="underline" color="rgb(0,169,233)">http://standards.ieee.org</fo:inline></fo:block>
+					<fo:block>&#xa0;</fo:block>
+					<fo:block>Tel.+1732‐981‐0060 Fax+1732‐562‐1571</fo:block>
+				</fo:block>
+				
+			</fo:flow>
+		</fo:page-sequence>
+	</xsl:template>
+	<!-- =============================== -->
+	<!-- End Back Pages -->
+	<!-- =============================== -->
 	
 	<xsl:template name="replaceChar">
 		<xsl:param name="text" />
