@@ -50,7 +50,7 @@
 
 	<xsl:variable name="isGenerateTableIF_">
 		<xsl:choose>
-			<xsl:when test="$namespace = 'iso'">
+			<xsl:when test="$namespace = 'ieee' or $namespace = 'iso'">
 				<xsl:value-of select="normalize-space($table_if) = 'true'"/>
 			</xsl:when>
 			<xsl:otherwise>false</xsl:otherwise>
@@ -2387,6 +2387,12 @@
 		</xsl:if>
 	</xsl:attribute-set>
 
+	<xsl:attribute-set name="termnote-p-style">
+		<xsl:if test="$namespace = 'ogc' or $namespace = 'ogc-white-paper'">
+			<xsl:attribute name="space-before">4pt</xsl:attribute>
+		</xsl:if>
+	</xsl:attribute-set>
+
 	<xsl:attribute-set name="quote-style">
 		<xsl:attribute name="margin-left">12mm</xsl:attribute>
 		<xsl:attribute name="margin-right">12mm</xsl:attribute>
@@ -3178,7 +3184,7 @@
 			<xsl:attribute name="baseline-shift">15%</xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'ieee'">
-			<xsl:attribute name="font-size">80%</xsl:attribute>
+			<xsl:attribute name="font-size">65%</xsl:attribute>
 			<xsl:attribute name="vertical-align">super</xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'iho'">
@@ -3261,7 +3267,7 @@
 		</xsl:if>
 		<xsl:if test="$namespace = 'ieee'">
 			<xsl:attribute name="font-size">8pt</xsl:attribute>
-			<xsl:attribute name="margin-bottom">5pt</xsl:attribute>
+			<!-- <xsl:attribute name="margin-bottom">5pt</xsl:attribute> -->
 		</xsl:if>
 		<xsl:if test="$namespace = 'iho'">
 			<xsl:attribute name="font-size">10pt</xsl:attribute>
@@ -3358,9 +3364,9 @@
 			<xsl:attribute name="padding-right">3mm</xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'ieee'">
-			<xsl:attribute name="font-size">5pt</xsl:attribute>
+			<xsl:attribute name="font-size">50%</xsl:attribute>
 			<xsl:attribute name="vertical-align">super</xsl:attribute>
-			<xsl:attribute name="padding-right">1mm</xsl:attribute>
+			<!-- <xsl:attribute name="padding-right">1mm</xsl:attribute> -->
 		</xsl:if>
 		<xsl:if test="$namespace = 'iho'">
 			<xsl:attribute name="font-size">60%</xsl:attribute>
@@ -4907,6 +4913,14 @@
 					</xsl:if>
 				</xsl:if>
 				
+				<xsl:if test="$namespace = 'ieee'">
+					<xsl:if test="ancestor::*[local-name() = 'feedback-statement']">
+						<xsl:attribute name="font-size">inherit</xsl:attribute>
+						<xsl:attribute name="margin-top">6pt</xsl:attribute>
+						<xsl:attribute name="margin-bottom">6pt</xsl:attribute>
+					</xsl:if>
+				</xsl:if>
+				
 				<xsl:if test="$namespace = 'itu'">
 					<xsl:if test="$doctype = 'service-publication' and $lang != 'ar'">
 						<xsl:attribute name="font-family">Calibri</xsl:attribute>
@@ -4945,6 +4959,13 @@
 					<xsl:choose>
 						<xsl:when test="$namespace = 'bipm' or $namespace = 'ogc' or $namespace = 'ogc-white-paper' or $namespace = 'unece' or $namespace = 'unece-rec'">
 							<xsl:choose>
+								<xsl:when test="@width"><xsl:value-of select="@width"/></xsl:when>
+								<xsl:otherwise><xsl:value-of select="$table_width_default"/></xsl:otherwise>
+							</xsl:choose>
+						</xsl:when>
+						<xsl:when test="$namespace = 'ieee'">
+							<xsl:choose>
+								<xsl:when test="ancestor::*[local-name() = 'feedback-statement']">50%</xsl:when>
 								<xsl:when test="@width"><xsl:value-of select="@width"/></xsl:when>
 								<xsl:otherwise><xsl:value-of select="$table_width_default"/></xsl:otherwise>
 							</xsl:choose>
@@ -4997,6 +5018,12 @@
 							<xsl:if test="ancestor::*[local-name() = 'table']">
 								<!-- for internal table in table cell -->
 								<xsl:attribute name="border"><xsl:value-of select="$table-border"/></xsl:attribute>
+							</xsl:if>
+						</xsl:if>
+						
+						<xsl:if test="$namespace = 'ieee'">
+							<xsl:if test="ancestor::*[local-name() = 'feedback-statement']">
+								<xsl:attribute name="border">none</xsl:attribute>
 							</xsl:if>
 						</xsl:if>
 						
@@ -6188,6 +6215,12 @@
 	<xsl:template match="*[local-name()='tr']">
 		<fo:table-row xsl:use-attribute-sets="table-body-row-style">
 		
+			<xsl:if test="$namespace = 'ieee'">
+				<xsl:if test="ancestor::*[local-name() = 'feedback-statement']">
+					<xsl:attribute name="min-height">0mm</xsl:attribute>
+				</xsl:if>
+			</xsl:if>
+		
 			<xsl:if test="$namespace = 'ogc'">
 				<xsl:variable name="number"><xsl:number/></xsl:variable>
 				<xsl:if test="$number mod 2 = 0">
@@ -6447,6 +6480,15 @@
 				</xsl:if>
 			</xsl:if>
 			
+			<xsl:if test="$namespace = 'ieee'">
+				<xsl:if test="ancestor::*[local-name() = 'feedback-statement']">
+					<xsl:attribute name="padding-left">0mm</xsl:attribute>
+					<xsl:attribute name="padding-top">0mm</xsl:attribute>
+					<xsl:attribute name="padding-right">0mm</xsl:attribute>
+					<xsl:attribute name="border">none</xsl:attribute>
+				</xsl:if>
+			</xsl:if>
+			
 			<xsl:if test="$namespace = 'iso'">
 				<xsl:if test="ancestor::*[local-name() = 'tfoot']">
 					<xsl:attribute name="border">solid black 0</xsl:attribute>
@@ -6602,7 +6644,11 @@
 		
 		<xsl:variable name="gen_id" select="generate-id(.)"/>
 		<xsl:variable name="lang" select="ancestor::*[contains(local-name(), '-standard')]/*[local-name()='bibdata']//*[local-name()='language'][@current = 'true']"/>
-		<xsl:variable name="reference" select="@reference"/>
+		<xsl:variable name="reference_">
+			<xsl:value-of select="@reference"/>
+			<xsl:if test="normalize-space(@reference) = ''"><xsl:value-of select="$gen_id"/></xsl:if>
+		</xsl:variable>
+		<xsl:variable name="reference" select="normalize-space($reference_)"/>
 		<!-- fn sequence number in document -->
 		<xsl:variable name="current_fn_number">
 			<xsl:choose>
@@ -6711,7 +6757,8 @@
 						<xsl:copy-of select="node()"/>
 					</fn>
 				</xsl:for-each>
-				<xsl:for-each select="ancestor::*[contains(local-name(), '-standard')]/*[local-name()='preface']/* |
+				<xsl:for-each select="ancestor::*[contains(local-name(), '-standard')]/*[local-name()='boilerplate']/* | 
+					ancestor::*[contains(local-name(), '-standard')]/*[local-name()='preface']/* |
 					ancestor::*[contains(local-name(), '-standard')]/*[local-name()='sections']/* | 
 					ancestor::*[contains(local-name(), '-standard')]/*[local-name()='annex'] |
 					ancestor::*[contains(local-name(), '-standard')]/*[local-name()='bibliography']/*">
@@ -8949,6 +8996,10 @@
 		</xsl:variable>
 		<fo:inline xsl:use-attribute-sets="link-style">
 			
+			<xsl:if test="starts-with(normalize-space(@target), 'mailto:')">
+				<xsl:attribute name="keep-together.within-line">always</xsl:attribute>
+			</xsl:if>
+			
 			<xsl:if test="$namespace = 'bsi'">
 				<xsl:if test="$document_type = 'PAS'">
 					<xsl:attribute name="color">inherit</xsl:attribute>
@@ -8969,6 +9020,7 @@
 					<xsl:attribute name="font-weight">300</xsl:attribute>
 				</xsl:if>
 			</xsl:if>
+			
 			
 			<xsl:choose>
 				<xsl:when test="$target_text = ''">
@@ -9425,7 +9477,19 @@
 	</xsl:template>
 	
 	<xsl:template match="*[local-name() = 'termnote']/*[local-name() = 'p']">
-		<fo:inline><xsl:apply-templates/></fo:inline>
+		<xsl:variable name="num"><xsl:number/></xsl:variable>
+		<xsl:choose>
+			<xsl:when test="$num = 1"> <!-- first paragraph renders in the same line as titlenote name -->
+				<fo:inline xsl:use-attribute-sets="termnote-p-style">
+					<xsl:apply-templates />
+				</fo:inline>
+			</xsl:when>
+			<xsl:otherwise>
+				<fo:block xsl:use-attribute-sets="termnote-p-style">						
+					<xsl:apply-templates />
+				</fo:block>
+			</xsl:otherwise>
+		</xsl:choose>
 	</xsl:template>
 	
 	<!-- ====== -->
@@ -12933,7 +12997,7 @@
 										<xsl:when test="$namespace = 'iho'">
 											<xsl:value-of select="*[local-name() = 'docidentifier'][@type = 'metanorma-ordinal']"/>
 											<xsl:if test="not(*[local-name() = 'docidentifier'][@type = 'metanorma-ordinal'])">
-												<xsl:number format="[1]"/>
+												<xsl:number format="[1]" count="*[local-name()='bibitem'][not(@hidden = 'true')]"/>
 											</xsl:if>
 										</xsl:when>
 										<xsl:when test="$namespace = 'nist-cswp'">
@@ -12979,7 +13043,7 @@
 												<xsl:value-of select="bipm:docidentifier[@type='metanorma']"/>
 											</xsl:when>
 											<xsl:otherwise>
-												<xsl:number format="[1]"/>
+												<xsl:number format="[1]" count="*[local-name()='bibitem'][not(@hidden = 'true')]"/>
 											</xsl:otherwise>
 										</xsl:choose>
 									</xsl:if>
@@ -13003,7 +13067,7 @@
 					<xsl:variable name="docidentifier">
 						<xsl:value-of select="csa:docidentifier[@type = 'metanorma-ordinal']"/>
 						<xsl:if test="not(csa:docidentifier[@type = 'metanorma-ordinal'])">
-							<xsl:number format="[1]"/>
+							<xsl:number format="[1]" count="*[local-name()='bibitem'][not(@hidden = 'true')]"/>
 						</xsl:if>
 					</xsl:variable>
 				
@@ -13034,7 +13098,7 @@
 							<fo:block>
 								<fo:inline>
 									<xsl:if test="$namespace = 'rsd'">
-										<xsl:number format="1."/>
+										<xsl:number format="1." count="*[local-name()='bibitem'][not(@hidden = 'true')]"/>
 									</xsl:if>
 								</fo:inline>
 							</fo:block>
@@ -13070,12 +13134,12 @@
 								<fo:inline>
 									<xsl:choose>
 										<xsl:when test="$namespace = 'ogc'">
-											<xsl:number format="1."/>
+											<xsl:number format="1." count="*[local-name()='bibitem'][not(@hidden = 'true')]"/>
 										</xsl:when>
 										<xsl:otherwise>
 											<xsl:value-of select="*[local-name()='docidentifier'][@type = 'metanorma-ordinal']"/>
 											<xsl:if test="not(*[local-name()='docidentifier'][@type = 'metanorma-ordinal'])">
-												<xsl:number format="[1]"/>
+												<xsl:number format="[1]" count="*[local-name()='bibitem'][not(@hidden = 'true')]"/>
 											</xsl:if>
 										</xsl:otherwise>
 									</xsl:choose>
@@ -14099,6 +14163,26 @@
 				</xsl:if>
 			</xsl:if>
 		</xsl:template>
+		
+		<!-- add id for table without id (for autolayout algorithm) -->
+		<!-- <xsl:template match="*[local-name() = 'table'][not(@id)]" mode="update_xml_step2">
+			<xsl:copy>
+				<xsl:apply-templates select="@*" mode="update_xml_step2"/>
+				<xsl:attribute name="id">_abc<xsl:value-of select="generate-id()"/></xsl:attribute>
+				
+				<xsl:apply-templates select="node()" mode="update_xml_step2"/>
+			</xsl:copy>
+		</xsl:template> -->
+		
+		<!-- add @reference for fn -->
+		<xsl:template match="*[local-name() = 'fn'][not(@reference)]" mode="update_xml_step2">
+			<xsl:copy>
+				<xsl:apply-templates select="@*" mode="update_xml_step2"/>
+				<xsl:attribute name="reference"><xsl:value-of select="generate-id(.)"/></xsl:attribute>
+				<xsl:apply-templates select="node()" mode="update_xml_step2"/>
+			</xsl:copy>
+		</xsl:template>
+		
 		
 		<!-- add @reference for bibitem/note, similar to fn/reference -->
 		<xsl:template match="*[local-name() = 'bibitem']/*[local-name() = 'note']" mode="update_xml_step2">

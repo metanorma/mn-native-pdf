@@ -69,7 +69,7 @@
 						<xsl:attribute name="font-family">Calibri, STIX Two Math, <xsl:value-of select="$font_noto_serif"/></xsl:attribute>
 						<xsl:attribute name="font-size">11.2pt</xsl:attribute>
 					</xsl:if>
-					<xsl:if test="$doctype = 'whitepaper'">
+					<xsl:if test="$doctype = 'whitepaper' or $doctype = 'icap-whitepaper'">
 						<xsl:attribute name="font-family">Calibri, STIX Two Math, <xsl:value-of select="$font_noto_serif"/></xsl:attribute>
 						<xsl:attribute name="font-size">11pt</xsl:attribute>
 					</xsl:if>
@@ -201,7 +201,7 @@
 				<xsl:for-each select=".">
 				
 					<xsl:variable name="designation" select="/ieee:ieee-standard/ieee:bibdata/ieee:docnumber"/>
-					<xsl:variable name="draft_number" select="/ieee:ieee-standard/ieee:bibdata/ieee:edition[normalize-space(@language) = '']"/>
+					<xsl:variable name="draft_number" select="/ieee:ieee-standard/ieee:bibdata/ieee:version/ieee:draft"/>
 					<xsl:variable name="revision_month" select="/ieee:ieee-standard/ieee:bibdata/ieee:version/ieee:revision-date"/>
 					<xsl:variable name="draft_month">
 						<xsl:call-template name="getMonthLocalizedByNum">
@@ -211,9 +211,9 @@
 					<xsl:variable name="draft_year" select="substring($revision_month, 1, 4)"/>
 					<xsl:variable name="doctype_localized" select="/ieee:ieee-standard/ieee:bibdata/ieee:ext/ieee:doctype[@language = $lang]"/>
 					
-					<xsl:variable name="title"><xsl:apply-templates select="/ieee:ieee-standard/ieee:bibdata/ieee:title[@type = 'main']/node()"/></xsl:variable>
+					<xsl:variable name="title"><xsl:apply-templates select="/ieee:ieee-standard/ieee:bibdata/ieee:title[@language = 'main-en']/node()"/></xsl:variable>
 					<xsl:variable name="copyright_year" select="/ieee:ieee-standard/ieee:bibdata/ieee:copyright/ieee:from"/>
-					<xsl:variable name="copyright_holder" select="/ieee:ieee-standard/ieee:bibdata/ieee:copyright/ieee:owner/ieee:organization/ieee:name"/>
+					<xsl:variable name="copyright_holder" select="/ieee:ieee-standard/ieee:bibdata/ieee:copyright/ieee:owner/ieee:organization/ieee:abbreviation"/>
 					
 					
 					<xsl:variable name="standard_number">IEEE Std 802.1X™-2020</xsl:variable>
@@ -237,7 +237,7 @@
 							<xsl:call-template name="insertCoverPage_IndustryConnectionReport"/>
 						</xsl:when>
 						
-						<xsl:when test="$doctype = 'whitepaper'">
+						<xsl:when test="$doctype = 'whitepaper' or $doctype = 'icap-whitepaper'">
 							<xsl:call-template name="insertCoverPage_Whitepaper"/>
 						</xsl:when>
 						
@@ -445,35 +445,49 @@
 										<xsl:value-of select="$linebreak"/>
 										<xsl:text>Draft </xsl:text>
 										<xsl:value-of select="$doctype_localized"/>
+										<xsl:if test="normalize-space($doctype_localized) = ''">
+											<xsl:choose>
+												<xsl:when test="$doctype = 'international-standard'">Standard</xsl:when>
+											</xsl:choose>
+										</xsl:if>
 										<xsl:text> for </xsl:text>
 										<xsl:copy-of select="$title"/>
+										<xsl:if test="/ieee:ieee-standard/ieee:bibdata/ieee:title[@language = 'part-en']">
+											<xsl:text>&#xa0;—&#xa0;</xsl:text>
+											<xsl:value-of select="$linebreak"/>
+											<xsl:value-of select="$linebreak"/>
+											<xsl:apply-templates select="/ieee:ieee-standard/ieee:bibdata/ieee:title[@language = 'part-en']/node()"/>
+										</xsl:if>
 									</fo:block>
 									<fo:block>Developed by the</fo:block>
 									<fo:block>&#xa0;</fo:block>
 									<fo:block font-size="11pt" font-weight="bold">
-										<xsl:value-of select="/ieee:ieee-standard/ieee:bibdata/ieee:ext/ieee:editorialgroup/ieee:technical-committee"/>
+										<!-- <Committee Name> -->
+										<xsl:value-of select="/ieee:ieee-standard/ieee:bibdata/ieee:ext/ieee:editorialgroup/ieee:committee"/> 
 									</fo:block>
 									<fo:block>of the</fo:block>
-									<fo:block font-size="11pt" font-weight="bold">IEEE &lt;Society Name&gt;</fo:block>
+									<fo:block font-size="11pt" font-weight="bold">
+										 <!-- IEEE <Society Name> -->
+										<xsl:text>IEEE </xsl:text><xsl:value-of select="/ieee:ieee-standard/ieee:bibdata/ieee:ext/ieee:editorialgroup/ieee:society"/>
+									</fo:block>
 									<fo:block>&#xa0;</fo:block>
 									<fo:block>&#xa0;</fo:block>
-									<fo:block>Approved &lt;Date Approved&gt;</fo:block>
+									<fo:block>
+										<xsl:text>Approved </xsl:text>
+										<xsl:text>&lt;Date Approved&gt;</xsl:text>
+										<!-- Approved <Date Approved> -->
+									</fo:block>
 									<fo:block>&#xa0;</fo:block>
 									<fo:block font-size="11pt" font-weight="bold">IEEE SA Standards Board</fo:block>
 								</fo:block>
-								<fo:block>
-									<fo:block>&#xa0;</fo:block>
-									<fo:block>Copyright © 2022 by The Institute of Electrical and Electronics Engineers, Inc.</fo:block>
-									<fo:block>Three Park Avenue</fo:block>
-									<fo:block>New York, New York 10016-5997, USA</fo:block>
-									<fo:block margin-top="6pt" margin-bottom="6pt">All rights reserved.</fo:block>
-									<fo:block margin-top="6pt" margin-bottom="6pt" text-align="justify">This document is an unapproved draft of a proposed IEEE Standard. As such, this document is subject to change. USE AT YOUR OWN RISK! IEEE copyright statements SHALL NOT BE REMOVED from draft or approved IEEE standards, or modified in any way. Because this is an unapproved draft, this document must not be utilized for any conformance/compliance purposes. Permission is hereby granted for officers from each IEEE Standards Working Group or Committee to reproduce the draft document developed by that Working Group for purposes of international standardization consideration.  IEEE Standards Department must be informed of the submission for consideration prior to any reproduction for international standardization consideration (stds-ipr@ieee.org). Prior to adoption of this document, in whole or in part, by another standards development organization, permission must first be obtained from the IEEE Standards Department (stds-ipr@ieee.org). When requesting permission, IEEE Standards Department will require a copy of the standard development organization's document highlighting the use of IEEE content. Other entities seeking permission to reproduce this document, in whole or in part, must also obtain permission from the IEEE Standards Department.</fo:block>
-									<fo:block>IEEE Standards Department</fo:block>
-									<fo:block>445 Hoes Lane</fo:block>
-									<fo:block>Piscataway, NJ 08854, USA</fo:block>
-								</fo:block>
 								
+								<xsl:apply-templates select="/ieee:ieee-standard/ieee:boilerplate/ieee:copyright-statement"/>
+								
+								<xsl:apply-templates select="/ieee:ieee-standard/ieee:boilerplate/ieee:license-statement"/>
+							
+							
 								<fo:block break-after="page"/>
+								
 								
 								<fo:block font-family="Arial" text-align="justify">
 									<fo:block>
@@ -483,7 +497,7 @@
 											</xsl:call-template>
 											<xsl:text>: </xsl:text>
 										</fo:inline>
-										<xsl:apply-templates select="ieee:itu-standard/ieee:preface/ieee:abstract/node()"/>
+										<xsl:apply-templates select="ieee:itu-standard/ieee:preface/ieee:abstract/node() | /ieee:ieee-standard/ieee:preface/ieee:clause[@id = '_abstract' or ieee:title = 'Abstract']/node()[not(self::ieee:title)]"/>
 									</fo:block>
 									<fo:block>&#xa0;</fo:block>
 									<fo:block>
@@ -491,46 +505,48 @@
 									</fo:block>
 								</fo:block>
 								
-								<fo:block>
-									<fo:footnote>
-										<fo:inline></fo:inline>
-										<fo:footnote-body font-family="Arial" font-size="7pt">
-											<fo:block>The Institute of Electrical and Electronics Engineers, Inc.</fo:block>
-											<fo:block>3 Park Avenue, New York, NY 10016-5997, USA</fo:block>
-											<fo:block>&#xa0;</fo:block>
-											<fo:block>Copyright © 2022 by The Institute of Electrical and Electronics Engineers, Inc. </fo:block>
-											<fo:block>All rights reserved. Published &lt;Date Published&gt;. Printed in the United States of America.</fo:block>
-											<fo:block>&#xa0;</fo:block>
-											<fo:block>IEEE is a registered trademark in the U.S. Patent &amp; Trademark Office, owned by The Institute of Electrical and Electronics &#xa; Engineers, Incorporated.</fo:block>
-											<fo:block>&#xa0;</fo:block>
-											<fo:block>PDF:	ISBN 978-0-XXXX-XXXX-X	STDXXXXX</fo:block>
-											<fo:block>Print:	ISBN 978-0-XXXX-XXXX-X	STDPDXXXXX</fo:block>
-											<fo:block>&#xa0;</fo:block>
-											<fo:block font-style="italic">
-												<fo:block>IEEE prohibits discrimination, harassment, and bullying.</fo:block>
-												<fo:block>For more information, visit https://www.ieee.org/about/corporate/governance/p9-26.html.</fo:block>
-												<fo:block>No part of this publication may be reproduced in any form, in an electronic retrieval system or otherwise, without the prior written permission of the publisher.</fo:block>
-											</fo:block>
-										</fo:footnote-body>
-									</fo:footnote>
-								</fo:block>
-								
-								<fo:block break-after="page"/>
-								
-								<fo:block text-align="justify">
-									<fo:block font-family="Arial" font-size="12pt" margin-bottom="12pt" keep-with-next="always">Important Notices and Disclaimers Concerning IEEE Standards Documents</fo:block>
-									<fo:block space-after="12pt">IEEE Standards documents are made available for use subject to important notices and legal disclaimers. These notices and disclaimers, or a reference to this page (https://standards.ieee.org/ipr/disclaimers.html), appear in all standards and may be found under the heading “Important Notices and Disclaimers Concerning IEEE Standards Documents.”</fo:block>
-									
-									<fo:block font-family="Arial" font-size="11pt" space-before="18pt" margin-bottom="12pt" keep-with-next="always">Notice and Disclaimer of Liability Concerning the Use of IEEE Standards Documents</fo:block>
-									<fo:block space-after="12pt">IEEE Standards documents are developed within the IEEE Societies and the Standards Coordinating Committees of the IEEE Standards Association (IEEE SA) Standards Board. IEEE develops its standards through an accredited consensus development process, which brings together volunteers representing varied viewpoints and interests to achieve the final product. IEEE Standards are documents developed by volunteers with scientific, academic, and industry-based expertise in technical working groups. Volunteers are not necessarily members of IEEE or IEEE SA, and participate without compensation from IEEE. While IEEE administers the process and establishes rules to promote fairness in the consensus development process, IEEE does not independently evaluate, test, or verify the accuracy of any of the information or the soundness of any judgments contained in its standards.</fo:block>
-
-
-									
-								</fo:block>
+								<!-- Example:
+								The Institute of Electrical and Electronics Engineers, Inc.
+								3 Park Avenue, New York, NY 10016-5997, USA
+								...
+								PDF: ISBN 978-0-XXXX-XXXX-X STDXXXXX
+								Print: ISBN 978-0-XXXX-XXXX-X STDPDXXXXX
+								-->
+								<xsl:apply-templates select="/ieee:ieee-standard/ieee:boilerplate/ieee:feedback-statement"/>
 								
 							</fo:block-container>
 						</fo:flow>
 					</fo:page-sequence>
+					
+					
+					<fo:page-sequence master-reference="document" force-page-count="no-force" format="1">
+						<xsl:call-template name="insertFootnoteSeparator"/>
+						
+						<xsl:call-template name="insertHeaderFooter">
+							<xsl:with-param name="designation" select="$designation"/>
+							<xsl:with-param name="draft_number" select="$draft_number"/>
+							<xsl:with-param name="draft_month" select="$draft_month"/>
+							<xsl:with-param name="draft_year" select="$draft_year"/>
+							<xsl:with-param name="doctype" select="$doctype"/>
+							<xsl:with-param name="doctype_localized" select="$doctype_localized"/>
+							<xsl:with-param name="title" select="$title"/>
+							<xsl:with-param name="copyright_year" select="$copyright_year"/>
+							<xsl:with-param name="copyright_holder" select="$copyright_holder"/>
+						</xsl:call-template>
+						
+						<fo:flow flow-name="xsl-region-body">
+							<fo:block>
+								<!-- Example:
+								Important Notices and Disclaimers Concerning IEEE Standards Documents
+								IEEE Standards documents are made available for use subject to important notices and legal disclaimers. These notices and disclaimers, or a reference to this page (https://standards.ieee.org/ipr/disclaimers.html), appear in all standards and may be found under the heading “Important Notices and Disclaimers Concerning IEEE Standards Documents.”
+								...
+								-->
+								<xsl:apply-templates select="/ieee:ieee-standard/ieee:boilerplate/ieee:legal-statement"/>
+							</fo:block>
+						</fo:flow>
+						
+					</fo:page-sequence>
+					
 						
 					<fo:page-sequence master-reference="document" format="i">
 						<xsl:call-template name="insertFootnoteSeparator"/>
@@ -947,7 +963,7 @@
 						<xsl:when test="$doctype = 'industry-connection-report'">
 							<xsl:call-template name="insertBackPage_IndustryConnectionReport"/>
 						</xsl:when>
-						<xsl:when test="$doctype = 'whitepaper'">
+						<xsl:when test="$doctype = 'whitepaper' or $doctype = 'icap-whitepaper'">
 							<xsl:call-template name="insertBackPage_Whitepaper"/>
 						</xsl:when>
 					</xsl:choose>
@@ -970,6 +986,64 @@
 		</fo:root>
 	</xsl:template>
 	
+	
+	<xsl:template match="ieee:boilerplate/ieee:copyright-statement//ieee:p" priority="2">
+		<fo:block margin-top="6pt" margin-bottom="6pt" text-align="justify">
+			<xsl:apply-templates />
+		</fo:block>
+	</xsl:template>
+	
+	<xsl:template match="ieee:boilerplate/ieee:license-statement//ieee:p" priority="2">
+		<fo:block margin-top="6pt" margin-bottom="6pt" text-align="justify">
+			<xsl:apply-templates />
+		</fo:block>
+	</xsl:template>
+	
+	<xsl:template match="ieee:boilerplate/ieee:feedback-statement" priority="2">
+		<fo:block>
+			<fo:footnote>
+				<fo:inline></fo:inline>
+				<fo:footnote-body font-family="Arial" font-size="7pt">
+					<xsl:apply-templates />
+				</fo:footnote-body>
+			</fo:footnote>
+		</fo:block>
+	</xsl:template>
+	
+	<xsl:template match="ieee:boilerplate/ieee:feedback-statement//ieee:p" priority="2">
+		<fo:block margin-bottom="6pt">
+			<xsl:apply-templates />
+		</fo:block>
+	</xsl:template>
+	
+	<xsl:template match="ieee:boilerplate/ieee:legal-statement" priority="2">
+		<fo:block break-after="page"/>
+		<xsl:apply-templates />
+	</xsl:template>
+	
+	<!-- Example: Important Notices and Disclaimers Concerning IEEE Standards Documents -->
+	<xsl:template match="ieee:boilerplate/ieee:legal-statement//ieee:title" priority="2">
+		<fo:block font-family="Arial" font-weight="bold" margin-bottom="12pt" space-before="18pt" keep-with-next="always">
+			<xsl:attribute name="font-size">
+				<xsl:choose>
+					<xsl:when test="@depth = '1'">12pt</xsl:when>
+					<xsl:otherwise>11pt</xsl:otherwise>
+				</xsl:choose>
+			</xsl:attribute>
+			<xsl:apply-templates />
+		</fo:block>
+	</xsl:template>
+	
+	<xsl:template match="ieee:boilerplate/ieee:legal-statement//ieee:p" priority="2">
+		<fo:block space-after="12pt" text-align="justify">
+			<xsl:apply-templates />
+		</fo:block>
+	</xsl:template>
+	
+	
+	<xsl:template match="ieee:preface/ieee:abstract/ieee:p[1] | /ieee:ieee-standard/ieee:preface/ieee:clause[@id = '_abstract' or ieee:title = 'Abstract']/ieee:p[1]" priority="2">
+		<fo:inline><xsl:apply-templates /></fo:inline>
+	</xsl:template>
 	
 	<xsl:template match="text()" priority="2" mode="uppercase">
 		<xsl:value-of select="java:toUpperCase(java:java.lang.String.new(.))"/>
@@ -1398,7 +1472,11 @@
 		<xsl:variable name="p_fn" select="xalan:nodeset($p_fn_)"/>
 		<xsl:variable name="gen_id" select="generate-id(.)"/>
 		<xsl:variable name="lang" select="ancestor::*[contains(local-name(), '-standard')]/*[local-name()='bibdata']//*[local-name()='language'][@current = 'true']"/>
-		<xsl:variable name="reference" select="@reference"/>
+		<xsl:variable name="reference_">
+			<xsl:value-of select="@reference"/>
+			<xsl:if test="normalize-space(@reference) = ''"><xsl:value-of select="$gen_id"/></xsl:if>
+		</xsl:variable>
+		<xsl:variable name="reference" select="normalize-space($reference_)"/>
 		<!-- fn sequence number in document -->
 		<xsl:variable name="current_fn_number" select="count($p_fn//fn[@reference = $reference]/preceding-sibling::fn) + 1" />
 		
@@ -2043,6 +2121,11 @@
 				<fo:block>
 					<xsl:text>Draft </xsl:text>
 					<xsl:value-of select="$doctype_localized"/>
+					<xsl:if test="normalize-space($doctype_localized) = ''">
+						<xsl:choose>
+							<xsl:when test="$doctype = 'international-standard'">Standard</xsl:when>
+						</xsl:choose>
+					</xsl:if>
 					<xsl:text> for </xsl:text>
 					<xsl:copy-of select="$title"/>
 				</fo:block>
@@ -2066,13 +2149,19 @@
 		
 		<xsl:variable name="footer">
 			<xsl:choose>
-				<xsl:when test="$doctype = 'industry-connection-report'">
+				<xsl:when test="$doctype = 'industry-connection-report' or $doctype = 'whitepaper' or $doctype = 'icap-whitepaper'">
 					<fo:block margin-bottom="8mm">
 						<fo:table width="100%" table-layout="fixed" font-size="7pt">
 							<fo:table-body>
 								<fo:table-row>
 									<fo:table-cell>
-										<fo:block font-weight="bold"><fo:inline font-size="10pt" ><fo:page-number /></fo:inline>&#xa0;&#xa0;&#xa0;IEEE SA</fo:block> <!--  INDUSTRY CONNECTIONS -->
+										<fo:block font-weight="bold"><fo:inline font-size="10pt" ><fo:page-number /></fo:inline>
+											<xsl:text>&#xa0;&#xa0;&#xa0;IEEE&#xa0;</xsl:text>
+											<xsl:choose>
+												<xsl:when test="$doctype = 'icap-whitepaper'">CONFORMITY ASSESSMENT PROGRAM (ICAP)</xsl:when>
+												<xsl:otherwise>SA</xsl:otherwise>
+											</xsl:choose>
+											</fo:block> <!--  INDUSTRY CONNECTIONS -->
 									</fo:table-cell>
 									<fo:table-cell text-align="right" font-family="Calibri Light">
 										<fo:block>
@@ -2089,7 +2178,7 @@
 						<xsl:if test="$doctype = 'standard'">
 							<xsl:attribute name="margin-bottom">8.5mm</xsl:attribute>
 						</xsl:if>
-						<fo:block font-weight="bold">
+						<fo:block> <!-- font-weight="bold" -->
 							<xsl:if test="$doctype = 'standard'">
 								<xsl:attribute name="font-family">Times New Roman</xsl:attribute>
 								<xsl:attribute name="font-weight">normal</xsl:attribute>
@@ -2508,7 +2597,7 @@
 						<fo:block margin-top="10.5mm">
 							<xsl:text>IEEE SA</xsl:text>
 							<xsl:if test="$doctype = 'icap-whitepaper'">
-								<xsl:text>ICAP</xsl:text>
+								<xsl:text> ICAP</xsl:text>
 							</xsl:if>
 						</fo:block>
 						<fo:block>WHITE PAPER</fo:block>
@@ -2519,7 +2608,16 @@
 		
 			<fo:flow flow-name="xsl-region-body">
 				<fo:block-container font-family="Arial Black" display-align="center" height="85mm">
-					<fo:block font-size="13pt">PROGRAM TITLE TO GO HERE</fo:block>
+					<fo:block font-size="13pt">
+						<xsl:choose>
+							<xsl:when test="$doctype = 'icap-whitepaper'">
+								<xsl:text>IEEE CONFORMITY ASSESSMENT PROGRAM (ICAP)</xsl:text>
+							</xsl:when>
+							<xsl:otherwise>
+								PROGRAM TITLE TO GO HERE
+							</xsl:otherwise>
+						</xsl:choose>
+					</fo:block>
 					<fo:block font-size="20pt" space-before="18mm">PAPER TITLE TO GO HERE</fo:block>
 				</fo:block-container>
 				<fo:block-container font-family="Calibri Light" font-size="12pt" line-height="1.7">
