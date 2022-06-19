@@ -112,14 +112,28 @@
 					<fo:region-end region-name="right-region" extent="35mm"/>
 				</fo:simple-page-master>
 				
-				<!-- IEEE whitepaper cover page -->
-				<fo:simple-page-master master-name="cover-and-back-page-whitepaper" page-width="{$pageWidth}mm" page-height="{$pageHeight}mm">
-					<fo:region-body margin-top="147mm" margin-bottom="15mm" margin-left="54mm" margin-right="35mm"/>
-					<fo:region-before region-name="header" extent="147mm"/>
+				<!-- ================== -->
+				<!-- IEEE whitepaper-->
+				<!-- ================== -->
+				<fo:simple-page-master master-name="cover-page-whitepaper" page-width="{$pageWidth}mm" page-height="{$pageHeight}mm">
+					<fo:region-body margin-top="115mm" margin-bottom="15mm" margin-left="64mm" margin-right="35mm"/>
+					<fo:region-before region-name="header" extent="115mm"/>
 					<fo:region-after region-name="footer" extent="15mm"/>
-					<fo:region-start region-name="left-region" extent="54mm" precedence="true" />
+					<fo:region-start region-name="left-region" extent="64mm" precedence="true" />
 					<fo:region-end region-name="right-region" extent="35mm"/>
 				</fo:simple-page-master>
+				
+				<fo:simple-page-master master-name="back-page-whitepaper" page-width="{$pageWidth}mm" page-height="{$pageHeight}mm">
+					<fo:region-body margin-top="73mm" margin-bottom="15mm" margin-left="63.5mm" margin-right="35mm"/>
+					<fo:region-before region-name="header" extent="73mm"/>
+					<fo:region-after region-name="footer" extent="15mm"/>
+					<fo:region-start region-name="left-region" extent="63.5mm" precedence="true" />
+					<fo:region-end region-name="right-region" extent="35mm"/>
+				</fo:simple-page-master>
+				<!-- ================== -->
+				<!-- End: IEEE whitepaper -->
+				<!-- ================== -->
+				
 				
 				<fo:simple-page-master master-name="toc-page-industry-connection-report" page-width="{$pageWidth}mm" page-height="{$pageHeight}mm">
 					<fo:region-body margin-top="{$marginTop}mm" margin-bottom="{$marginBottom}mm" margin-left="19mm" margin-right="19mm"/>
@@ -2444,44 +2458,44 @@
 	</xsl:template> <!-- insertCoverPage_IndustryConnectionReport -->
 	
 	<xsl:template name="insertCoverPage_Whitepaper">
-		<fo:page-sequence master-reference="cover-and-back-page-whitepaper" force-page-count="no-force">
+		<fo:page-sequence master-reference="cover-page-whitepaper" force-page-count="no-force">
 			<fo:static-content flow-name="header" role="artifact">
-				<fo:block-container position="absolute" left="65.5mm" top="-2.6mm">
+				<fo:block-container position="absolute" left="65mm"> <!-- top="-2.6mm" -->
 					<fo:block font-size="1">
-						<fo:instream-foreign-object content-height="98.1mm" content-width="65.4mm"  fox:alt-text="Image Boxes">
+						<fo:instream-foreign-object content-height="93.5mm" content-width="64mm"  fox:alt-text="Image Boxes">
 							<xsl:copy-of select="$Image-Blue-Boxes-svg"/>
 						</fo:instream-foreign-object>
 					</fo:block>
 				</fo:block-container>
-				<fo:block-container position="absolute" left="0mm" top="263mm">
+				<!-- <fo:block-container position="absolute" left="0mm" top="263mm">
 					<fo:block font-size="10pt">3 Park Avenue | New York, NY 10016‐5997 | USA</fo:block>
-				</fo:block-container>
+				</fo:block-container> -->
 			</fo:static-content> <!-- header -->
 		
 			<fo:static-content flow-name="left-region" role="artifact">
-				<fo:block-container position="absolute" left="0mm" top="0mm" width="50mm" height="{$pageHeight}mm" background-color="rgb(223,223,223)">
+				<fo:block-container position="absolute" left="0mm" top="0mm" width="50mm" height="{$pageHeight}mm" background-color="rgb(224,226,224)">
 					<fo:block>&#xa0;</fo:block>
 				</fo:block-container>
 				
-				<fo:block-container position="absolute" left="12.7mm" top="13mm">
+				<fo:block-container position="absolute" left="14.5mm" top="12mm">
 					<fo:block font-size="1">
-						<fo:instream-foreign-object content-width="27mm" content-height="scale-to-fit" scaling="uniform"  fox:alt-text="Image Logo">
+						<fo:instream-foreign-object content-width="27mm" content-height="scale-to-fit" scaling="uniform" fox:alt-text="Image Logo">
 							<xsl:copy-of select="$Image-IEEE2-Logo-svg"/>
 						</fo:instream-foreign-object>
 					</fo:block>
 				</fo:block-container>
 				
-				<fo:block-container position="absolute" left="12.7mm" top="259.5mm">
+				<fo:block-container position="absolute" left="15.2mm" top="262mm">
 					<fo:block font-size="1">
-						<fo:instream-foreign-object content-width="24.5mm" content-height="scale-to-fit" scaling="uniform"  fox:alt-text="Image Logo">
+						<fo:instream-foreign-object content-width="23.5mm" content-height="scale-to-fit" scaling="uniform"  fox:alt-text="Image Logo">
 							<xsl:copy-of select="$Image-IEEE-Logo-black-svg"/>
 						</fo:instream-foreign-object>
 					</fo:block>
 				</fo:block-container>
 				
-				<fo:block-container position="absolute" left="0mm" top="215mm">
+				<fo:block-container position="absolute" left="1.5mm" top="217mm">
 					<fo:block font-size="1">
-						<fo:instream-foreign-object content-width="39mm" content-height="2.6mm" scaling="non-uniform"  fox:alt-text="Image Box">
+						<fo:instream-foreign-object content-width="40mm" content-height="2.6mm" scaling="non-uniform"  fox:alt-text="Image Box">
 							<xsl:call-template name="insertImageBoxSVG">
 								<xsl:with-param name="color">rgb(80,197,216)</xsl:with-param>
 							</xsl:call-template>
@@ -2489,9 +2503,14 @@
 					</fo:block>
 				</fo:block-container>
 				
-				<fo:block-container font-family="Montserrat ExtraBold" font-weight="normal" reference-orientation="90" font-size="44pt" line-height="0.93" text-align="left">
-					<fo:block margin-left="69mm">
-						<fo:block margin-top="10mm">IEEE SA</fo:block>
+				<fo:block-container font-family="Arial Black" font-weight="normal" reference-orientation="90" font-size="44pt" line-height="0.9" text-align="left">
+					<fo:block margin-left="71mm">
+						<fo:block margin-top="10.5mm">
+							<xsl:text>IEEE SA</xsl:text>
+							<xsl:if test="$doctype = 'icap-whitepaper'">
+								<xsl:text>ICAP</xsl:text>
+							</xsl:if>
+						</fo:block>
 						<fo:block>WHITE PAPER</fo:block>
 					</fo:block>
 				</fo:block-container>
@@ -2499,13 +2518,16 @@
 			</fo:static-content> <!-- "left-region -->
 		
 			<fo:flow flow-name="xsl-region-body">
-				<fo:block-container font-family="Montserrat ExtraBold" >
-					<fo:block font-size="16pt">INTEROPERABILITY MATURITY ROADMAP</fo:block>
-					<fo:block font-size="14pt" space-before="4pt">IEEE Std 2030.5</fo:block>
+				<fo:block-container font-family="Arial Black" display-align="center" height="85mm">
+					<fo:block font-size="13pt">PROGRAM TITLE TO GO HERE</fo:block>
+					<fo:block font-size="20pt" space-before="18mm">PAPER TITLE TO GO HERE</fo:block>
 				</fo:block-container>
-				<fo:block-container font-family="Calibri Light" font-size="10pt" line-height="1.5" space-before="6mm">
-					<fo:block>Authored by</fo:block>
-					<fo:block>IEEE 2030.5 Ecosystem Steering Committee (ESC)</fo:block>
+				<fo:block-container font-family="Calibri Light" font-size="12pt" line-height="1.7">
+					<fo:block space-after="6mm">Authored by</fo:block>
+					<fo:block>Firstname Lastname</fo:block>
+					<fo:block font-style="italic">Title</fo:block>
+					<fo:block>Firstname Lastname</fo:block>
+					<fo:block font-style="italic">Title</fo:block>
 				</fo:block-container>
 			</fo:flow>
 		</fo:page-sequence>
@@ -2650,38 +2672,31 @@
 	</xsl:template> <!-- insertBackPage_IndustryConnectionReport -->
 	
 	<xsl:template name="insertBackPage_Whitepaper">
-		<fo:page-sequence master-reference="cover-and-back-page-whitepaper" force-page-count="no-force">
+		<fo:page-sequence master-reference="back-page-whitepaper" force-page-count="no-force">
 			<fo:static-content flow-name="left-region" role="artifact">
-				<fo:block-container position="absolute" left="0mm" top="0mm" width="50mm" height="{$pageHeight}mm" background-color="rgb(223,223,223)">
+				<fo:block-container position="absolute" left="0mm" top="0mm" width="50mm" height="{$pageHeight}mm" background-color="rgb(224,226,224)">
 					<fo:block>&#xa0;</fo:block>
 				</fo:block-container>
 			</fo:static-content>
 			<fo:flow flow-name="xsl-region-body">
-				<fo:block-container margin-left="9.5mm" margin-top="-123mm">
-					<fo:block-container margin-left="0mm">
-						<fo:block font-family="Times New Roman" font-weight="bold" font-size="25pt" line-height="1.2">
-							<fo:block>RAISING THE WORLD’S </fo:block>
-							<fo:block>STANDARDS</fo:block>
-						</fo:block>
-						<fo:block font-size="1" space-before="0mm">
-							<fo:instream-foreign-object content-width="56.8mm" content-height="2.7mm" scaling="non-uniform" fox:alt-text="Image Box">
-								<xsl:call-template name="insertImageBoxSVG">
-									<xsl:with-param name="color">rgb(0,174,239)</xsl:with-param>
-								</xsl:call-template>
-							</fo:instream-foreign-object>
-						</fo:block>
-						<fo:block margin-right="-10mm" margin-top="196mm" font-size="10pt">
-							<fo:block font-size="1">
-								<fo:instream-foreign-object content-width="24mm" content-height="scale-to-fit" scaling="uniform"  fox:alt-text="Image Logo">
-									<xsl:copy-of select="$Image-IEEE-Logo-black-svg"/>
-								</fo:instream-foreign-object>
-							</fo:block>
-							<fo:block space-before="4mm">3 Park Avenue I New York, NY 10016‐5997 USA http://standards.ieee.org</fo:block>
-							<fo:block>Tel.+1732‐981‐0060 Fax+1732‐562‐1571</fo:block>
-						</fo:block>
-					</fo:block-container>
+				<fo:block-container>
+					<fo:block font-family="Arial Black" font-weight="normal" font-size="20pt" line-height="1.25">
+						<fo:block>RAISING THE WORLD’S </fo:block>
+						<fo:block>STANDARDS</fo:block>
+					</fo:block>
+					<fo:block font-size="1" space-before="2mm" margin-left="-1.5mm">
+						<fo:instream-foreign-object content-width="56.8mm" content-height="2.7mm" scaling="non-uniform" fox:alt-text="Image Box">
+							<xsl:call-template name="insertImageBoxSVG">
+								<xsl:with-param name="color">rgb(0,174,239)</xsl:with-param>
+							</xsl:call-template>
+						</fo:instream-foreign-object>
+					</fo:block>
+					<fo:block margin-right="-10mm" margin-top="140mm" font-size="11pt" font-family="Calibri">
+						<fo:block>3 Park Avenue, New York, NY 10016‐5997 USA <fo:inline padding-left="2mm" text-decoration="underline" color="rgb(0,169,233)">http://standards.ieee.org</fo:inline></fo:block>
+						<fo:block>&#xa0;</fo:block>
+						<fo:block>Tel.+1732‐981‐0060 Fax+1732‐562‐1571</fo:block>
+					</fo:block>
 				</fo:block-container>
-				
 			</fo:flow>
 		</fo:page-sequence>
 	</xsl:template> <!-- insertBackPage_Whitepaper -->
