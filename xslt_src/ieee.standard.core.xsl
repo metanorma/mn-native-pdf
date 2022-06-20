@@ -215,6 +215,37 @@
 					<xsl:variable name="copyright_year" select="/ieee:ieee-standard/ieee:bibdata/ieee:copyright/ieee:from"/>
 					<xsl:variable name="copyright_holder" select="/ieee:ieee-standard/ieee:bibdata/ieee:copyright/ieee:owner/ieee:organization/ieee:abbreviation"/>
 					
+					<xsl:variable name="draft_id">
+						<xsl:text>P</xsl:text>
+						<xsl:value-of select="$designation"/>
+						<xsl:text>/D</xsl:text>
+						<xsl:value-of select="$draft_number"/>
+						<xsl:text>, </xsl:text>
+						<xsl:value-of select="$draft_month"/>
+						<xsl:text> </xsl:text>
+						<xsl:value-of select="$draft_year"/>
+					</xsl:variable>
+					
+					<xsl:variable name="draft_title">
+						<xsl:text>Draft </xsl:text>
+						<xsl:value-of select="$doctype_localized"/>
+						<xsl:if test="normalize-space($doctype_localized) = ''">
+							<xsl:choose>
+								<xsl:when test="$doctype = 'international-standard'">Standard</xsl:when>
+							</xsl:choose>
+						</xsl:if>
+						<xsl:text> for </xsl:text>
+						<xsl:copy-of select="$title"/>
+					</xsl:variable>
+					
+					<xsl:variable name="draft_title_part">
+						<xsl:if test="/ieee:ieee-standard/ieee:bibdata/ieee:title[@language = 'part-en']">
+							<xsl:text>&#xa0;—&#xa0;</xsl:text>
+							<xsl:value-of select="$linebreak"/>
+							<xsl:value-of select="$linebreak"/>
+							<xsl:apply-templates select="/ieee:ieee-standard/ieee:bibdata/ieee:title[@language = 'part-en']/node()"/>
+						</xsl:if>
+					</xsl:variable>
 					
 					<xsl:variable name="standard_number">IEEE Std 802.1X™-2020</xsl:variable>
 					
@@ -416,19 +447,16 @@
 					</xsl:choose>
 					
 					
-					
+					<!-- 'Draft' first page -->
 					<fo:page-sequence master-reference="document" force-page-count="no-force">
 						
 						<xsl:call-template name="insertFootnoteSeparator"/>
 						
 						<xsl:call-template name="insertHeaderFooter">
-							<xsl:with-param name="designation" select="$designation"/>
-							<xsl:with-param name="draft_number" select="$draft_number"/>
-							<xsl:with-param name="draft_month" select="$draft_month"/>
-							<xsl:with-param name="draft_year" select="$draft_year"/>
+							<xsl:with-param name="draft_id" select="$draft_id"/>
+							<xsl:with-param name="draft_title" select="$draft_title"/>
 							<xsl:with-param name="doctype" select="$doctype"/>
-							<xsl:with-param name="doctype_localized" select="$doctype_localized"/>
-							<xsl:with-param name="title" select="$title"/>
+							
 							<xsl:with-param name="copyright_year" select="$copyright_year"/>
 							<xsl:with-param name="copyright_holder" select="$copyright_holder"/>
 							<xsl:with-param name="hideFooter">true</xsl:with-param>
@@ -443,21 +471,8 @@
 										<xsl:text>™/D</xsl:text>
 										<xsl:value-of select="$draft_number"/>
 										<xsl:value-of select="$linebreak"/>
-										<xsl:text>Draft </xsl:text>
-										<xsl:value-of select="$doctype_localized"/>
-										<xsl:if test="normalize-space($doctype_localized) = ''">
-											<xsl:choose>
-												<xsl:when test="$doctype = 'international-standard'">Standard</xsl:when>
-											</xsl:choose>
-										</xsl:if>
-										<xsl:text> for </xsl:text>
-										<xsl:copy-of select="$title"/>
-										<xsl:if test="/ieee:ieee-standard/ieee:bibdata/ieee:title[@language = 'part-en']">
-											<xsl:text>&#xa0;—&#xa0;</xsl:text>
-											<xsl:value-of select="$linebreak"/>
-											<xsl:value-of select="$linebreak"/>
-											<xsl:apply-templates select="/ieee:ieee-standard/ieee:bibdata/ieee:title[@language = 'part-en']/node()"/>
-										</xsl:if>
+										<xsl:copy-of select="$draft_title"/>
+										<xsl:copy-of select="$draft_title_part"/>
 									</fo:block>
 									<fo:block>Developed by the</fo:block>
 									<fo:block>&#xa0;</fo:block>
@@ -516,20 +531,17 @@
 								
 							</fo:block-container>
 						</fo:flow>
-					</fo:page-sequence>
+					</fo:page-sequence> <!-- End: 'Draft' first page -->
+					 
 					
-					
+					<!-- Legal statement -->
 					<fo:page-sequence master-reference="document" force-page-count="no-force" format="1">
 						<xsl:call-template name="insertFootnoteSeparator"/>
 						
 						<xsl:call-template name="insertHeaderFooter">
-							<xsl:with-param name="designation" select="$designation"/>
-							<xsl:with-param name="draft_number" select="$draft_number"/>
-							<xsl:with-param name="draft_month" select="$draft_month"/>
-							<xsl:with-param name="draft_year" select="$draft_year"/>
+							<xsl:with-param name="draft_id" select="$draft_id"/>
+							<xsl:with-param name="draft_title" select="$draft_title"/>
 							<xsl:with-param name="doctype" select="$doctype"/>
-							<xsl:with-param name="doctype_localized" select="$doctype_localized"/>
-							<xsl:with-param name="title" select="$title"/>
 							<xsl:with-param name="copyright_year" select="$copyright_year"/>
 							<xsl:with-param name="copyright_holder" select="$copyright_holder"/>
 						</xsl:call-template>
@@ -545,187 +557,8 @@
 							</fo:block>
 						</fo:flow>
 						
-					</fo:page-sequence>
+					</fo:page-sequence> <!-- End: Legal statement -->
 					
-						
-					<fo:page-sequence master-reference="document" format="i">
-						<xsl:call-template name="insertFootnoteSeparator"/>
-						
-						<xsl:call-template name="insertHeaderFooter">
-							<xsl:with-param name="designation" select="$designation"/>
-							<xsl:with-param name="draft_number" select="$draft_number"/>
-							<xsl:with-param name="draft_month" select="$draft_month"/>
-							<xsl:with-param name="draft_year" select="$draft_year"/>
-							<xsl:with-param name="doctype" select="$doctype"/>
-							<xsl:with-param name="doctype_localized" select="$doctype_localized"/>
-							<xsl:with-param name="title" select="$title"/>
-							<xsl:with-param name="copyright_year" select="$copyright_year"/>
-							<xsl:with-param name="copyright_holder" select="$copyright_holder"/>
-						</xsl:call-template>
-						
-						<fo:flow flow-name="xsl-region-body">
-							<fo:block font-family="Arial" font-size="12pt" font-weight="bold" margin-top="12pt" margin-bottom="12pt">Participants</fo:block>
-							<fo:block margin-bottom="12pt">At the time this draft <xsl:value-of select="$doctype_localized"/> was completed, the &lt;Working Group Name&gt; Working Group had the following membership:</fo:block>
-							<fo:block text-align="center" margin-bottom="12pt">
-								<fo:block>
-									<fo:inline font-weight="bold">&lt;Chair Name&gt;</fo:inline>, <fo:inline font-style="italic">Chair</fo:inline>
-								</fo:block>
-								<fo:block>
-									<fo:inline font-weight="bold">&lt;Vice-chair Name&gt;</fo:inline>, <fo:inline font-style="italic">Vice Chair</fo:inline>
-								</fo:block>
-							</fo:block>
-							
-							<fo:table width="100%" table-layout="fixed" font-size="9pt">
-								<fo:table-body>
-									<fo:table-row>
-										<fo:table-cell>
-											<fo:block>Participant1</fo:block>
-										</fo:table-cell>
-										<fo:table-cell>
-											<fo:block>Participant4</fo:block>
-										</fo:table-cell>
-										<fo:table-cell>
-											<fo:block>Participant7</fo:block>
-										</fo:table-cell>
-									</fo:table-row>
-									<fo:table-row>
-										<fo:table-cell>
-											<fo:block>Participant2</fo:block>
-										</fo:table-cell>
-										<fo:table-cell>
-											<fo:block>Participant5</fo:block>
-										</fo:table-cell>
-										<fo:table-cell>
-											<fo:block>Participant8</fo:block>
-										</fo:table-cell>
-									</fo:table-row>
-									<fo:table-row>
-										<fo:table-cell>
-											<fo:block>Participant3</fo:block>
-										</fo:table-cell>
-										<fo:table-cell>
-											<fo:block>Participant6</fo:block>
-										</fo:table-cell>
-										<fo:table-cell>
-											<fo:block>Participant9</fo:block>
-										</fo:table-cell>
-									</fo:table-row>
-								</fo:table-body>
-							</fo:table>
-							
-							<fo:block margin-bottom="12pt">&#xa0;</fo:block>
-							
-							<fo:block margin-bottom="12pt">The following members of the &lt;individual/entity&gt; Standards Association balloting group voted on this <xsl:value-of select="$doctype_localized"/>. Balloters may have voted for approval, disapproval, or abstention.</fo:block>
-							
-							<fo:block margin-bottom="12pt" font-weight="bold" font-style="italic">[To be supplied by IEEE]</fo:block>
-							
-							<fo:table width="100%" table-layout="fixed" font-size="9pt">
-								<fo:table-body>
-									<fo:table-row>
-										<fo:table-cell>
-											<fo:block>Balloter1</fo:block>
-										</fo:table-cell>
-										<fo:table-cell>
-											<fo:block>Balloter4</fo:block>
-										</fo:table-cell>
-										<fo:table-cell>
-											<fo:block>Balloter7</fo:block>
-										</fo:table-cell>
-									</fo:table-row>
-									<fo:table-row>
-										<fo:table-cell>
-											<fo:block>Balloter2</fo:block>
-										</fo:table-cell>
-										<fo:table-cell>
-											<fo:block>Balloter5</fo:block>
-										</fo:table-cell>
-										<fo:table-cell>
-											<fo:block>Balloter8</fo:block>
-										</fo:table-cell>
-									</fo:table-row>
-									<fo:table-row>
-										<fo:table-cell>
-											<fo:block>Balloter3</fo:block>
-										</fo:table-cell>
-										<fo:table-cell>
-											<fo:block>Balloter6</fo:block>
-										</fo:table-cell>
-										<fo:table-cell>
-											<fo:block>Balloter9</fo:block>
-										</fo:table-cell>
-									</fo:table-row>
-								</fo:table-body>
-							</fo:table>
-							
-							<fo:block margin-bottom="12pt">&#xa0;</fo:block>
-							
-							<fo:block margin-bottom="12pt">When the IEEE SA Standards Board approved this <xsl:value-of select="$doctype_localized"/> on &lt;Date Approved&gt;, it had the following membership:</fo:block>
-							
-							<fo:block margin-bottom="12pt" font-weight="bold" font-style="italic">[To be supplied by IEEE]</fo:block>
-							
-							<fo:block text-align="center">
-								<fo:block>
-									<fo:inline font-weight="bold">&lt;Name&gt;</fo:inline>, <fo:inline font-style="italic">Chair</fo:inline>
-								</fo:block>
-								<fo:block>
-									<fo:inline font-weight="bold">&lt;Name&gt;</fo:inline>, <fo:inline font-style="italic">Vice Chair</fo:inline>
-								</fo:block>
-								<fo:block>
-									<fo:inline font-weight="bold">&lt;Name&gt;</fo:inline>, <fo:inline font-style="italic">Past Chair</fo:inline>
-								</fo:block>
-								<fo:block>
-									<fo:inline font-weight="bold">Konstantinos Karachalios</fo:inline>, <fo:inline font-style="italic">Secretary</fo:inline>
-								</fo:block>
-							</fo:block>
-							
-							<fo:table width="100%" table-layout="fixed" font-size="9pt">
-								<fo:table-body>
-									<fo:table-row>
-										<fo:table-cell>
-											<fo:block>SBMember1</fo:block>
-										</fo:table-cell>
-										<fo:table-cell>
-											<fo:block>SBMember4</fo:block>
-										</fo:table-cell>
-										<fo:table-cell>
-											<fo:block>SBMember7</fo:block>
-										</fo:table-cell>
-									</fo:table-row>
-									<fo:table-row>
-										<fo:table-cell>
-											<fo:block>SBMember2</fo:block>
-										</fo:table-cell>
-										<fo:table-cell>
-											<fo:block>SBMember5</fo:block>
-										</fo:table-cell>
-										<fo:table-cell>
-											<fo:block>SBMember8</fo:block>
-										</fo:table-cell>
-									</fo:table-row>
-									<fo:table-row>
-										<fo:table-cell>
-											<fo:block>SBMember3</fo:block>
-										</fo:table-cell>
-										<fo:table-cell>
-											<fo:block>SBMember6</fo:block>
-										</fo:table-cell>
-										<fo:table-cell>
-											<fo:block>SBMember9</fo:block>
-										</fo:table-cell>
-									</fo:table-row>
-								</fo:table-body>
-							</fo:table>
-							
-							<fo:block margin-left="9.4mm">*Member Emeritus</fo:block>
-							
-							<fo:block break-after="page"/>
-							
-							
-							
-						</fo:flow>
-					
-					</fo:page-sequence>
-						
 				
 					<!-- ================================ -->
 					<!-- PREFACE pages (Introduction, Contents -->
@@ -758,13 +591,9 @@
 						<xsl:call-template name="insertFootnoteSeparator"/>
 						
 						<xsl:call-template name="insertHeaderFooter">
-							<xsl:with-param name="designation" select="$designation"/>
-							<xsl:with-param name="draft_number" select="$draft_number"/>
-							<xsl:with-param name="draft_month" select="$draft_month"/>
-							<xsl:with-param name="draft_year" select="$draft_year"/>
+							<xsl:with-param name="draft_id" select="$draft_id"/>
+							<xsl:with-param name="draft_title" select="$draft_title"/>
 							<xsl:with-param name="doctype" select="$doctype"/>
-							<xsl:with-param name="doctype_localized" select="$doctype_localized"/>
-							<xsl:with-param name="title" select="$title"/>
 							<xsl:with-param name="copyright_year" select="$copyright_year"/>
 							<xsl:with-param name="copyright_holder" select="$copyright_holder"/>
 						</xsl:call-template>
@@ -805,9 +634,9 @@
 												<fo:basic-link internal-destination="{@id}" fox:alt-text="{title}">
 												
 													<xsl:value-of select="@section"/>
-													<xsl:if test="normalize-space(@section) != '' and @level = 1">.</xsl:if>
-													<xsl:if test="normalize-space(@section) != ''"><xsl:text>&#xa0;</xsl:text></xsl:if>
-													
+													<!-- <xsl:if test="normalize-space(@section) != '' and @level = 1">.</xsl:if>
+													<xsl:if test="normalize-space(@section) != ''"><xsl:text>&#xa0;</xsl:text></xsl:if> -->
+													<xsl:text>&#xa0;</xsl:text>
 													<xsl:apply-templates select="title"/>
 												
 													<fo:inline keep-together.within-line="always">
@@ -878,8 +707,6 @@
 							</xsl:otherwise>
 						</xsl:choose>
 						
-						
-						
 						<!-- Annexes -->
 						<item>
 							<xsl:apply-templates select="/*/*[local-name()='annex']" mode="flatxml"/>
@@ -915,13 +742,13 @@
 					<!-- paged_xml=<xsl:copy-of select="$paged_xml"/> -->
 					
 					<xsl:for-each select="xalan:nodeset($paged_xml)/*[local-name()='page'][*]">
-						<fo:page-sequence master-reference="document" format="1" force-page-count="no-force">
+						<fo:page-sequence master-reference="document" force-page-count="no-force">
 							<xsl:if test="@orientation = 'landscape'">
 								<xsl:attribute name="master-reference">document-<xsl:value-of select="@orientation"/></xsl:attribute>
 							</xsl:if>
-							<xsl:if test="position() = 1">
+							<!-- <xsl:if test="position() = 1">
 								<xsl:attribute name="initial-page-number">1</xsl:attribute>
-							</xsl:if>
+							</xsl:if> -->
 							<xsl:if test=".//ieee:indexsect">
 								<xsl:attribute name="master-reference">page-index</xsl:attribute>
 							</xsl:if>
@@ -929,13 +756,9 @@
 							<xsl:call-template name="insertFootnoteSeparator"/>
 							
 							<xsl:call-template name="insertHeaderFooter">
-								<xsl:with-param name="designation" select="$designation"/>
-								<xsl:with-param name="draft_number" select="$draft_number"/>
-								<xsl:with-param name="draft_month" select="$draft_month"/>
-								<xsl:with-param name="draft_year" select="$draft_year"/>
+								<xsl:with-param name="draft_id" select="$draft_id"/>
+								<xsl:with-param name="draft_title" select="$draft_title"/>
 								<xsl:with-param name="doctype" select="$doctype"/>
-								<xsl:with-param name="doctype_localized" select="$doctype_localized"/>
-								<xsl:with-param name="title" select="$title"/>
 								<xsl:with-param name="copyright_year" select="$copyright_year"/>
 								<xsl:with-param name="copyright_holder" select="$copyright_holder"/>
 								<xsl:with-param name="orientation">@orientation</xsl:with-param>
@@ -943,6 +766,14 @@
 
 							<fo:flow flow-name="xsl-region-body">
 								<!-- debugpage=<xsl:copy-of select="."/> -->
+								
+								<xsl:if test="position() = 1">
+									<fo:block font-family="Arial" font-size="23pt" font-weight="bold" margin-top="70pt" margin-bottom="48pt">
+										<xsl:copy-of select="$draft_title"/>
+										<xsl:copy-of select="$draft_title_part"/>
+									</fo:block>
+								</xsl:if>
+								
 								<xsl:apply-templates select="*" mode="page"/>
 								<xsl:if test="position() = last()"><fo:block id="lastBlockMain"/></xsl:if>
 							</fo:flow>
@@ -1021,6 +852,13 @@
 		<xsl:apply-templates />
 	</xsl:template>
 	
+	<xsl:template match="ieee:boilerplate/ieee:legal-statement/ieee:clause[@id = 'boilerplate-participants' or ieee:title = 'Participants']" priority="2">
+		<fo:block break-after="page"/>
+		<fo:block id="{@id}">
+			<xsl:apply-templates />
+		</fo:block>
+	</xsl:template>
+	
 	<!-- Example: Important Notices and Disclaimers Concerning IEEE Standards Documents -->
 	<xsl:template match="ieee:boilerplate/ieee:legal-statement//ieee:title" priority="2">
 		<fo:block font-family="Arial" font-weight="bold" margin-bottom="12pt" space-before="18pt" keep-with-next="always">
@@ -1035,7 +873,13 @@
 	</xsl:template>
 	
 	<xsl:template match="ieee:boilerplate/ieee:legal-statement//ieee:p" priority="2">
-		<fo:block space-after="12pt" text-align="justify">
+		<fo:block space-after="12pt">
+			<xsl:if test="@align = 'center' and ancestor::ieee:clause[@id = 'boilerplate-participants' or ieee:title = 'Participants'] and following-sibling::*[1][self::ieee:p and @align = 'center']">
+				<xsl:attribute name="space-after">0</xsl:attribute>
+			</xsl:if>
+			<xsl:call-template name="setTextAlignment">
+				<xsl:with-param name="default">justify</xsl:with-param>
+			</xsl:call-template>
 			<xsl:apply-templates />
 		</fo:block>
 	</xsl:template>
@@ -1636,7 +1480,7 @@
 				<xsl:when test="@type = 'section-title'">12pt</xsl:when>
 				<xsl:when test="$level = 1">12pt</xsl:when>
 				<xsl:when test="$level = 2">11pt</xsl:when>
-				<xsl:otherwise>10pt</xsl:otherwise>
+				<xsl:otherwise>10pt</xsl:otherwise> <!-- 3rd, 4th, ... levels -->
 			</xsl:choose>
 		</xsl:variable>
 		
@@ -1646,17 +1490,17 @@
 			<xsl:choose>
 				<xsl:when test="$level = 1">18pt</xsl:when>
 				<xsl:when test="$level = 2">18pt</xsl:when>
-				<xsl:when test="$level = 3">12pt</xsl:when>
+				<xsl:when test="$level &gt;= 3">12pt</xsl:when>
 				<xsl:otherwise>0mm</xsl:otherwise>
 			</xsl:choose>
 		</xsl:variable>
 		
-		<xsl:variable name="margin-bottom">
-			<xsl:choose>
+		<xsl:variable name="margin-bottom">12pt</xsl:variable>
+			<!-- <xsl:choose>
 				<xsl:when test="$level = 1">12pt</xsl:when>
 				<xsl:otherwise>12pt</xsl:otherwise>
 			</xsl:choose>
-		</xsl:variable>
+		</xsl:variable> -->
 		
 		<xsl:variable name="element-name">
 			<xsl:choose>
@@ -2084,17 +1928,13 @@
 	
 	
 	<xsl:template name="insertHeaderFooter">
-		<xsl:param name="designation"/>
-		<xsl:param name="draft_number"/>
-		<xsl:param name="draft_month"/>
-		<xsl:param name="draft_year"/>
 		<xsl:param name="doctype"/>
-		<xsl:param name="doctype_localized"/>
-		<xsl:param name="title"/>
+		<xsl:param name="draft_id"/>
+		<xsl:param name="draft_title"/>
+		
 		<xsl:param name="copyright_year"/>
 		<xsl:param name="copyright_holder"/>
 	
-		<xsl:param name="docidentifier" />
 		<xsl:param name="hideHeader" select="'false'"/>
 		<xsl:param name="hideFooter" select="'false'"/>
 		
@@ -2109,17 +1949,11 @@
 				Draft<opt_Trial-Use><Gde./Rec. Prac./Std.> for <Complete Title Matching PAR>
 				 -->
 				<fo:block>
-					<xsl:text>P</xsl:text>
-					<xsl:value-of select="$designation"/>
-					<xsl:text>/D</xsl:text>
-					<xsl:value-of select="$draft_number"/>
-					<xsl:text>, </xsl:text>
-					<xsl:value-of select="$draft_month"/>
-					<xsl:text> </xsl:text>
-					<xsl:value-of select="$draft_year"/>
+					<xsl:value-of select="$draft_id"/>
+					
 				</fo:block>
 				<fo:block>
-					<xsl:text>Draft </xsl:text>
+					<!-- <xsl:text>Draft </xsl:text>
 					<xsl:value-of select="$doctype_localized"/>
 					<xsl:if test="normalize-space($doctype_localized) = ''">
 						<xsl:choose>
@@ -2127,7 +1961,8 @@
 						</xsl:choose>
 					</xsl:if>
 					<xsl:text> for </xsl:text>
-					<xsl:copy-of select="$title"/>
+					<xsl:copy-of select="$title"/> -->
+					<xsl:copy-of select="$draft_title"/>
 				</fo:block>
 			</fo:block>
 		</xsl:variable>
