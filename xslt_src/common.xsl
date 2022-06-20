@@ -13162,7 +13162,6 @@
 														<xsl:number format="[1]" count="*[local-name()='bibitem'][not(@hidden = 'true')]"/>
 													</xsl:otherwise>
 												</xsl:choose>
-												
 											</xsl:if>
 										</xsl:otherwise>
 									</xsl:choose>
