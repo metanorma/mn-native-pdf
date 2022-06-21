@@ -13913,8 +13913,10 @@
 					<xsl:if test="$namespace = 'ieee'">
 						<xsl:if test="@type = 'editorial'">
 							<xsl:attribute name="border">none</xsl:attribute>
-							<xsl:attribute name="font-weight">bold</xsl:attribute>
-							<xsl:attribute name="font-style">italic</xsl:attribute>
+							<!-- 	<xsl:attribute name="font-weight">bold</xsl:attribute>
+							<xsl:attribute name="font-style">italic</xsl:attribute> -->
+							<xsl:attribute name="color">green</xsl:attribute>
+							<xsl:attribute name="font-weight">normal</xsl:attribute>
 							<xsl:attribute name="margin-top">12pt</xsl:attribute>
 							<xsl:attribute name="margin-bottom">12pt</xsl:attribute>
 						</xsl:if>
@@ -14570,6 +14572,23 @@
 									<xsl:when test="$namespace = 'jcgm'">
 										<xsl:value-of select="*[local-name() = 'title'][@language = $lang and @type = 'part']"/>
 									</xsl:when>
+									<xsl:when test="$namespace = 'ieee'">
+										<xsl:variable name="full_title">
+											<item>
+												<xsl:value-of select="*[local-name() = 'title'][@language = 'intro-en']"/>
+											</item>
+											<item>
+												<xsl:value-of select="*[local-name() = 'title'][@language = 'main-en']"/>
+											</item>
+											<item>
+												<xsl:value-of select="*[local-name() = 'title'][@language = 'part-en']"/>
+											</item>
+										</xsl:variable>
+										<xsl:for-each select="xalan:nodeset($full_title)/item[normalize-space() != '']">
+											<xsl:value-of select="."/>
+											<xsl:if test="position() != last()"> - </xsl:if>
+										</xsl:for-each>
+									</xsl:when>
 									<xsl:when test="$namespace = 'iho' or $namespace = 'csa' or $namespace = 'csd' or $namespace = 'rsd' or $namespace = 'ogc' or $namespace = 'ogc-white-paper' or $namespace = 'mpfd'">								
 										<xsl:value-of select="*[local-name() = 'title'][@language = $lang]"/>
 									</xsl:when>
@@ -14597,6 +14616,9 @@
 					<dc:creator>
 						<xsl:for-each select="(//*[contains(local-name(), '-standard')])[1]/*[local-name() = 'bibdata']">
 							<xsl:choose>
+								<xsl:when test="$namespace = 'ieee'">
+									<xsl:value-of select="ieee:ext/ieee:editorialgroup/ieee:committee"/>
+								</xsl:when>
 								<xsl:when test="$namespace = 'jcgm'">
 									<xsl:value-of select="normalize-space(*[local-name() = 'ext']/*[local-name() = 'editorialgroup']/*[local-name() = 'committee'])"/>
 								</xsl:when>
@@ -14622,7 +14644,7 @@
 									<xsl:value-of select="//*[contains(local-name(), '-standard')]/*[local-name() = 'bibdata']/*[local-name() = 'title'][@language = $lang and @type = 'main']"/>
 								</xsl:when>
 								<xsl:otherwise>
-									<xsl:copy-of select="//*[contains(local-name(), '-standard')]/*[local-name() = 'preface']/*[local-name() = 'abstract']//text()"/>									
+									<xsl:copy-of select="//*[contains(local-name(), '-standard')]/*[local-name() = 'preface']/*[local-name() = 'abstract']//text()[not(ancestor::*[local-name() = 'title'])]"/>									
 								</xsl:otherwise>
 							</xsl:choose>
 						</xsl:variable>
