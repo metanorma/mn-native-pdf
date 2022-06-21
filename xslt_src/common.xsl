@@ -13162,7 +13162,6 @@
 														<xsl:number format="[1]" count="*[local-name()='bibitem'][not(@hidden = 'true')]"/>
 													</xsl:otherwise>
 												</xsl:choose>
-												
 											</xsl:if>
 										</xsl:otherwise>
 									</xsl:choose>
@@ -13914,8 +13913,10 @@
 					<xsl:if test="$namespace = 'ieee'">
 						<xsl:if test="@type = 'editorial'">
 							<xsl:attribute name="border">none</xsl:attribute>
-							<xsl:attribute name="font-weight">bold</xsl:attribute>
-							<xsl:attribute name="font-style">italic</xsl:attribute>
+							<!-- 	<xsl:attribute name="font-weight">bold</xsl:attribute>
+							<xsl:attribute name="font-style">italic</xsl:attribute> -->
+							<xsl:attribute name="color">green</xsl:attribute>
+							<xsl:attribute name="font-weight">normal</xsl:attribute>
 							<xsl:attribute name="margin-top">12pt</xsl:attribute>
 							<xsl:attribute name="margin-bottom">12pt</xsl:attribute>
 						</xsl:if>
