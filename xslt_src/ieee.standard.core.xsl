@@ -602,8 +602,8 @@
 							
 							<fo:block>
 								<xsl:for-each select="xalan:nodeset($paged_xml_preface)/*[local-name()='page']">
-									<fo:block break-after="page"/>
 									<xsl:apply-templates select="*" mode="page"/>
+									<fo:block break-after="page"/>
 								</xsl:for-each>
 							</fo:block>
 								
@@ -1041,6 +1041,7 @@
 		
 		<xsl:variable name="skip">
 			<xsl:choose>
+				<xsl:when test="ancestor-or-self::ieee:preface">true</xsl:when> <!-- no need render preface sections in ToC -->
 				<xsl:when test="ancestor-or-self::ieee:bibitem">true</xsl:when>
 				<xsl:when test="ancestor-or-self::ieee:term">true</xsl:when>				
 				<xsl:when test="@type = 'corrigenda'">true</xsl:when>
