@@ -230,7 +230,10 @@
 												<xsl:with-param name="letter-spacing" select="0.3"/>
 											</xsl:call-template>
 										</fo:block>
-										<fo:block font-size="10pt">External identifier of this OGC<fo:inline font-size="58%" baseline-shift="30%">®</fo:inline>  document: <fo:inline font-weight="normal"><xsl:value-of select="/ogc:ogc-standard/ogc:bibdata/ogc:docidentifier[@type='ogc-external']"/></fo:inline></fo:block>
+										<xsl:variable name="ogc_external" select="/ogc:ogc-standard/ogc:bibdata/ogc:docidentifier[@type='ogc-external']" />
+										<xsl:if test="normalize-space($ogc_external) != ''">
+											<fo:block font-size="10pt">External identifier of this OGC<fo:inline font-size="58%" baseline-shift="30%">®</fo:inline>  document: <fo:inline font-weight="normal"><xsl:value-of select="$ogc_external"/></fo:inline></fo:block>
+										</xsl:if>
 									</fo:table-cell>
 									<fo:table-cell text-align="right">
 										<fo:block>
@@ -272,7 +275,7 @@
 										<xsl:with-param name="text" select="java:toUpperCase(java:java.lang.String.new($doctype))"/>
 									</xsl:call-template>									
 									<xsl:value-of select="$linebreak"/>
-									<xsl:variable name="docsubtype" select="normalize-space(/ogc:ogc-standard/ogc:bibdata/ogc:ext/ogc:docsubtype)"/>
+									<xsl:variable name="docsubtype" select="normalize-space(/ogc:ogc-standard/ogc:bibdata/ogc:ext/ogc:subdoctype)"/>
 									<xsl:variable name="docsubtype_str">
 										<xsl:choose>
 											<xsl:when test="$docsubtype = 'implementation'">Implementation</xsl:when>
