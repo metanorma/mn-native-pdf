@@ -13189,10 +13189,17 @@
 					<xsl:attribute name="line-height-shift-adjustment">disregard-shifts</xsl:attribute>
 				</xsl:if>			
 				
-				<xsl:variable name="docidentifier" select="*[local-name() = 'docidentifier'][not(@type = 'URN' or @type = 'metanorma' or @type = 'metanorma-ordinal' or @type = 'BIPM' or @type = 'ISBN' or @type = 'ISSN')]"/>
-				<xsl:value-of select="$docidentifier"/>
+				<xsl:variable name="docidentifier_" select="*[local-name() = 'docidentifier'][not(@type = 'URN' or @type = 'metanorma' or @type = 'metanorma-ordinal' or @type = 'BIPM' or @type = 'ISBN' or @type = 'ISSN')]"/>
+				<xsl:variable name="docidentifier_main" select="*[local-name() = 'docidentifier'][not(@type)]" />
+				<xsl:variable name="docidentifier">
+					<xsl:choose>
+						<xsl:when test="$docidentifier_ = $docidentifier_main and @suppress_identifier = 'true'"><!-- suppress indentifier --></xsl:when>
+						<xsl:otherwise><xsl:value-of select="$docidentifier_"/></xsl:otherwise>
+					</xsl:choose>
+				</xsl:variable>
+				<xsl:value-of select="normalize-space($docidentifier)"/>
 				
-				<xsl:if test="$docidentifier != '' and *[local-name() = 'formattedref']">, </xsl:if>
+				<xsl:if test="normalize-space($docidentifier) != '' and *[local-name() = 'formattedref']">, </xsl:if>
 				<xsl:apply-templates select="*[local-name() = 'formattedref']"/>
 				<!-- end BIPM bibitem processing-->
 			</xsl:when>
