@@ -839,7 +839,10 @@
 			<fo:footnote>
 				<fo:inline></fo:inline>
 				<fo:footnote-body font-family="Arial" font-size="7pt">
-					<xsl:apply-templates />
+					<fo:block>
+						<fo:inline font-size="1pt" id="footnote_footer_{generate-id()}"><xsl:value-of select="$hair_space"/></fo:inline>
+						<xsl:apply-templates />
+					</fo:block>
 				</fo:footnote-body>
 			</fo:footnote>
 		</fo:block>
