@@ -79,6 +79,10 @@
 				<xsl:with-param name="root-style" select="$root-style"/>
 			</xsl:call-template>
 			
+			<xsl:if test="//ieee:ieee-standard/ieee:bibdata[ieee:ext/ieee:doctype = 'international-standard' and ieee:version/ieee:draft]">
+				<xsl:processing-instruction name="add_line_numbers">true</xsl:processing-instruction>
+			</xsl:if>
+			
 			<fo:layout-master-set>
 			
 				<!-- ======================== -->
