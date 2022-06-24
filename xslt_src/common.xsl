@@ -1958,6 +1958,7 @@
 		<xsl:if test="$namespace = 'ieee'">
 			<xsl:attribute name="margin-left">2mm</xsl:attribute>
 			<xsl:attribute name="margin-top">0pt</xsl:attribute>
+			<xsl:attribute name="line-height">1.4</xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'iho'">
 			<xsl:attribute name="margin-top">0pt</xsl:attribute>
@@ -3366,7 +3367,7 @@
 		<xsl:if test="$namespace = 'ieee'">
 			<xsl:attribute name="font-size">50%</xsl:attribute>
 			<xsl:attribute name="vertical-align">super</xsl:attribute>
-			<!-- <xsl:attribute name="padding-right">1mm</xsl:attribute> -->
+			<xsl:attribute name="padding-right">1mm</xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'iho'">
 			<xsl:attribute name="font-size">60%</xsl:attribute>
