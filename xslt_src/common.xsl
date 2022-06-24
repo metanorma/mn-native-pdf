@@ -873,12 +873,22 @@
 	</xsl:attribute-set>
 
 	<xsl:attribute-set name="requirement-style">
+		<xsl:if test="$namespace = 'iso'">
+			<xsl:attribute name="margin-top">6pt</xsl:attribute>
+			<xsl:attribute name="margin-bottom">6pt</xsl:attribute>
+		</xsl:if>
 		<xsl:if test="$namespace = 'ogc' or $namespace = 'ogc-white-paper'">
 			<xsl:attribute name="margin-top">6pt</xsl:attribute>
 		</xsl:if>
 	</xsl:attribute-set>
 
 	<xsl:attribute-set name="requirement-name-style">
+		<xsl:attribute name="keep-with-next">always</xsl:attribute>
+		<xsl:if test="$namespace = 'iso'">
+			<xsl:attribute name="font-weight">bold</xsl:attribute>
+			<xsl:attribute name="text-align">center</xsl:attribute>			
+			<xsl:attribute name="margin-bottom">4pt</xsl:attribute>
+		</xsl:if>
 		<xsl:if test="$namespace = 'ogc' or $namespace = 'ogc-white-paper'">
 			<xsl:attribute name="font-size">11pt</xsl:attribute>
 			<xsl:attribute name="font-weight">bold</xsl:attribute>
@@ -887,7 +897,6 @@
 			<xsl:attribute name="padding-bottom">1mm</xsl:attribute>
 			<xsl:attribute name="margin-bottom">1mm</xsl:attribute>
 			<xsl:attribute name="background-color">rgb(165,165,165)</xsl:attribute>
-			<xsl:attribute name="keep-with-next">always</xsl:attribute>
 		</xsl:if>
 	</xsl:attribute-set>
 
@@ -11149,7 +11158,7 @@
 					</xsl:if>
 				</xsl:if>
 				<xsl:apply-templates />
-				<xsl:if test="$namespace = 'ogc' or $namespace = 'ogc-white-paper'">
+				<xsl:if test="$namespace = 'iso' or $namespace = 'ogc' or $namespace = 'ogc-white-paper'">
 					<xsl:text>:</xsl:text>
 				</xsl:if>
 			</fo:block>
