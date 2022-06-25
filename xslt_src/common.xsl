@@ -9012,7 +9012,7 @@
 			
 			<xsl:if test="$namespace = 'ieee'">
 				<xsl:if test="$doctype = 'whitepaper' or $doctype = 'icap-whitepaper'">
-					<xsl:attribute name="color">rgb(0,176,240)</xsl:attribute>
+					<xsl:attribute name="color"><xsl:value-of select="$color_blue"/></xsl:attribute>
 					<xsl:attribute name="text-decoration">none</xsl:attribute>
 				</xsl:if>
 			</xsl:if>
@@ -12621,6 +12621,12 @@
 						</xsl:if>
 					</xsl:if>
 				
+					<xsl:if test="$namespace = 'ieee'">
+						<xsl:if test="$doctype = 'whitepaper' or $doctype = 'icap-whitepaper' or $doctype = 'industry-connection-report'">
+							<xsl:attribute name="color">rgb(128,128,128)</xsl:attribute>
+						</xsl:if>
+					</xsl:if>
+				
 					<!-- if 'p' contains all text in 'add' first and last elements in first p are 'add' -->
 					<xsl:if test="*[1][count(node()[normalize-space() != '']) = 1 and *[local-name() = 'add']]">
 						<xsl:call-template name="append_add-style"/>
@@ -13003,6 +13009,9 @@
 						<xsl:if test="count(preceding-sibling::*[local-name()='bibitem'][not(@hidden = 'true')]) &gt; 99">
 							<xsl:attribute name="provisional-distance-between-starts">11mm</xsl:attribute>
 						</xsl:if>
+						<xsl:if test="($doctype = 'whitepaper' or $doctype = 'icap-whitepaper' or $doctype = 'industry-connection-report')">
+							<xsl:attribute name="provisional-distance-between-starts">12.5mm</xsl:attribute>
+						</xsl:if>
 					</xsl:if>
 					<fo:list-item>
 						<fo:list-item-label end-indent="label-end()">
@@ -13011,10 +13020,22 @@
 									<xsl:choose>
 										<xsl:when test="$namespace = 'ieee'">
 											<xsl:value-of select="*[local-name() = 'docidentifier'][@type = 'metanorma-ordinal']"/>
+											
 											<xsl:if test="not(*[local-name() = 'docidentifier'][@type = 'metanorma-ordinal'])">
-												<xsl:text>[B</xsl:text>
-												<xsl:number format="1" count="*[local-name()='bibitem'][not(@hidden = 'true')]"/>
-												<xsl:text>]</xsl:text>
+												<xsl:choose>
+													<xsl:when test="($doctype = 'whitepaper' or $doctype = 'icap-whitepaper' or $doctype = 'industry-connection-report')">
+														<fo:inline color="{$color_blue}">
+															<xsl:text>[&#xa0;</xsl:text>
+															<xsl:number format="1" count="*[local-name()='bibitem'][not(@hidden = 'true')]"/>
+															<xsl:text>&#xa0;]</xsl:text>
+														</fo:inline>
+													</xsl:when>
+													<xsl:otherwise>
+													<xsl:text>[B</xsl:text>
+													<xsl:number format="1" count="*[local-name()='bibitem'][not(@hidden = 'true')]"/>
+													<xsl:text>]</xsl:text>
+													</xsl:otherwise>
+												</xsl:choose>
 											</xsl:if>
 										</xsl:when>
 										<xsl:when test="$namespace = 'iho'">
