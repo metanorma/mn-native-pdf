@@ -61,6 +61,8 @@
 
 	<xsl:variable name="doctype" select="(//ieee:ieee-standard)[1]/ieee:bibdata/ieee:ext/ieee:doctype[normalize-space(@language) = '']"/>
 	
+	<xsl:variable name="isDraft" select="normalize-space((//ieee:ieee-standard)[1]/ieee:bibdata/ieee:version/ieee:draft) != ''"/>
+	
 	<xsl:template match="/">
 		<fo:root xmlns:fo="http://www.w3.org/1999/XSL/Format" xml:lang="{$lang}">
 			<xsl:variable name="root-style">
@@ -127,6 +129,23 @@
 					<fo:region-end region-name="right-region" extent="35mm"/>
 				</fo:simple-page-master>
 				
+				<fo:simple-page-master master-name="document" page-width="{$pageWidth}mm" page-height="{$pageHeight}mm">
+					<fo:region-body margin-top="25.4mm" margin-bottom="25.4mm" margin-left="19mm" margin-right="19mm"/>
+					<fo:region-before region-name="header" extent="25.4mm"/>
+					<fo:region-after region-name="footer" extent="25.4mm"/>
+					<fo:region-start region-name="left-region" extent="19mm"/>
+					<fo:region-end region-name="right-region" extent="19mm"/>
+				</fo:simple-page-master>
+				
+				<!-- landscape -->
+				<fo:simple-page-master master-name="document-landscape" page-width="{$pageHeight}mm" page-height="{$pageWidth}mm">
+					<fo:region-body margin-top="19mm" margin-bottom="19mm" margin-left="25.4mm" margin-right="25.4mm"/>
+					<fo:region-before region-name="header" extent="19mm" precedence="true"/>
+					<fo:region-after region-name="footer" extent="19mm" precedence="true"/>
+					<fo:region-start region-name="left-region-landscape" extent="25.4mm"/>
+					<fo:region-end region-name="right-region-landscape" extent="25.4mm"/>
+				</fo:simple-page-master>
+				
 				<fo:simple-page-master master-name="back-page-whitepaper" page-width="{$pageWidth}mm" page-height="{$pageHeight}mm">
 					<fo:region-body margin-top="73mm" margin-bottom="15mm" margin-left="63.5mm" margin-right="35mm"/>
 					<fo:region-before region-name="header" extent="73mm"/>
@@ -139,7 +158,7 @@
 				<!-- ================== -->
 				
 				
-				<fo:simple-page-master master-name="toc-page-industry-connection-report" page-width="{$pageWidth}mm" page-height="{$pageHeight}mm">
+				<fo:simple-page-master master-name="page-toc" page-width="{$pageWidth}mm" page-height="{$pageHeight}mm">
 					<fo:region-body margin-top="{$marginTop}mm" margin-bottom="{$marginBottom}mm" margin-left="19mm" margin-right="19mm"/>
 					<fo:region-before region-name="header" extent="{$marginTop}mm" precedence="true"/>
 					<fo:region-after region-name="footer" extent="{$marginBottom}mm"/>
@@ -147,14 +166,23 @@
 					<fo:region-end region-name="right-region" extent="19mm"/>
 				</fo:simple-page-master>
 				
-			
-				<fo:simple-page-master master-name="document" page-width="{$pageWidth}mm" page-height="{$pageHeight}mm">
+				
+				<fo:simple-page-master master-name="document-draft" page-width="{$pageWidth}mm" page-height="{$pageHeight}mm">
 					<fo:region-body margin-top="{$marginTop}mm" margin-bottom="{$marginBottom}mm" margin-left="{$marginLeftRight1}mm" margin-right="{$marginLeftRight2}mm"/>
 					<fo:region-before region-name="header" extent="{$marginTop}mm"/>
 					<fo:region-after region-name="footer" extent="{$marginBottom}mm"/>
 					<fo:region-start region-name="left-region" extent="{$marginLeftRight1}mm"/>
 					<fo:region-end region-name="right-region" extent="{$marginLeftRight2}mm"/>
 				</fo:simple-page-master>
+				
+			
+				<!-- <fo:simple-page-master master-name="document" page-width="{$pageWidth}mm" page-height="{$pageHeight}mm">
+					<fo:region-body margin-top="{$marginTop}mm" margin-bottom="{$marginBottom}mm" margin-left="{$marginLeftRight1}mm" margin-right="{$marginLeftRight2}mm"/>
+					<fo:region-before region-name="header" extent="{$marginTop}mm"/>
+					<fo:region-after region-name="footer" extent="{$marginBottom}mm"/>
+					<fo:region-start region-name="left-region" extent="{$marginLeftRight1}mm"/>
+					<fo:region-end region-name="right-region" extent="{$marginLeftRight2}mm"/>
+				</fo:simple-page-master> -->
 				
 				<!-- Index pages -->
 				<fo:simple-page-master master-name="page-index" page-width="{$pageWidth}mm" page-height="{$pageHeight}mm">
@@ -166,13 +194,21 @@
 				</fo:simple-page-master>
 				
 				<!-- landscape -->
-				<fo:simple-page-master master-name="document-landscape" page-width="{$pageHeight}mm" page-height="{$pageWidth}mm">
+				<fo:simple-page-master master-name="document-draft-landscape" page-width="{$pageHeight}mm" page-height="{$pageWidth}mm">
 					<fo:region-body margin-top="{$marginLeftRight1}mm" margin-bottom="{$marginLeftRight2}mm" margin-left="{$marginBottom}mm" margin-right="{$marginTop}mm"/>
 					<fo:region-before region-name="header" extent="{$marginLeftRight1}mm" precedence="true"/>
 					<fo:region-after region-name="footer" extent="{$marginLeftRight2}mm" precedence="true"/>
 					<fo:region-start region-name="left-region-landscape" extent="{$marginBottom}mm"/>
 					<fo:region-end region-name="right-region-landscape" extent="{$marginTop}mm"/>
 				</fo:simple-page-master>
+				
+				<!-- <fo:simple-page-master master-name="document-landscape" page-width="{$pageHeight}mm" page-height="{$pageWidth}mm">
+					<fo:region-body margin-top="{$marginLeftRight1}mm" margin-bottom="{$marginLeftRight2}mm" margin-left="{$marginBottom}mm" margin-right="{$marginTop}mm"/>
+					<fo:region-before region-name="header" extent="{$marginLeftRight1}mm" precedence="true"/>
+					<fo:region-after region-name="footer" extent="{$marginLeftRight2}mm" precedence="true"/>
+					<fo:region-start region-name="left-region-landscape" extent="{$marginBottom}mm"/>
+					<fo:region-end region-name="right-region-landscape" extent="{$marginTop}mm"/>
+				</fo:simple-page-master> -->
 				
 				<!-- ======================== -->
 				<!-- END IEEE pages -->
@@ -261,7 +297,96 @@
 					<!-- Cover page -->
 					<!-- ======================= -->
 					<xsl:choose>
-						<xsl:when test="$doctype = 'standard'">
+					
+						<xsl:when test="$doctype = 'international-standard' and $isDraft = 'true'">
+							<!-- 'Draft' first page -->
+							<fo:page-sequence master-reference="document-draft" force-page-count="no-force">
+								
+								<xsl:call-template name="insertFootnoteSeparator"/>
+								
+								<xsl:call-template name="insertHeaderFooter">
+									<xsl:with-param name="draft_id" select="$draft_id"/>
+									<xsl:with-param name="draft_title" select="$draft_title"/>
+									<xsl:with-param name="doctype" select="$doctype"/>
+									
+									<xsl:with-param name="copyright_year" select="$copyright_year"/>
+									<xsl:with-param name="copyright_holder" select="$copyright_holder"/>
+									<xsl:with-param name="hideFooter">true</xsl:with-param>
+								</xsl:call-template>
+								
+								<fo:flow flow-name="xsl-region-body">
+									<fo:block-container margin-top="18mm" id="firstpage_id_{$num}">
+										<fo:block font-family="Arial">
+											<fo:block font-size="23pt" font-weight="bold" margin-top="50pt" margin-bottom="36pt">
+												<xsl:text>P</xsl:text>
+												<xsl:value-of select="$designation"/>
+												<xsl:text>™/D</xsl:text>
+												<xsl:value-of select="$draft_number"/>
+												<xsl:value-of select="$linebreak"/>
+												<xsl:copy-of select="$draft_title"/>
+												<xsl:copy-of select="$draft_title_part"/>
+											</fo:block>
+											<fo:block>Developed by the</fo:block>
+											<fo:block>&#xa0;</fo:block>
+											<fo:block font-size="11pt" font-weight="bold">
+												<!-- <Committee Name> -->
+												<xsl:value-of select="/ieee:ieee-standard/ieee:bibdata/ieee:ext/ieee:editorialgroup/ieee:committee"/> 
+											</fo:block>
+											<fo:block>of the</fo:block>
+											<fo:block font-size="11pt" font-weight="bold">
+												 <!-- IEEE <Society Name> -->
+												<xsl:text>IEEE </xsl:text><xsl:value-of select="/ieee:ieee-standard/ieee:bibdata/ieee:ext/ieee:editorialgroup/ieee:society"/>
+											</fo:block>
+											<fo:block>&#xa0;</fo:block>
+											<fo:block>&#xa0;</fo:block>
+											<fo:block>
+												<xsl:text>Approved </xsl:text>
+												<xsl:text>&lt;Date Approved&gt;</xsl:text>
+												<!-- Approved <Date Approved> -->
+											</fo:block>
+											<fo:block>&#xa0;</fo:block>
+											<fo:block font-size="11pt" font-weight="bold">IEEE SA Standards Board</fo:block>
+										</fo:block>
+										
+										<xsl:apply-templates select="/ieee:ieee-standard/ieee:boilerplate/ieee:copyright-statement"/>
+										
+										<xsl:apply-templates select="/ieee:ieee-standard/ieee:boilerplate/ieee:license-statement"/>
+									
+									
+										<fo:block break-after="page"/>
+										
+										
+										<fo:block font-family="Arial" text-align="justify">
+											<fo:block>
+												<fo:inline font-weight="bold">
+													<xsl:call-template name="getLocalizedString">
+														<xsl:with-param name="key">abstract</xsl:with-param>
+													</xsl:call-template>
+													<xsl:text>: </xsl:text>
+												</fo:inline>
+												<xsl:apply-templates select="ieee:itu-standard/ieee:preface/ieee:abstract/node() | /ieee:ieee-standard/ieee:preface/ieee:clause[@id = '_abstract' or ieee:title = 'Abstract']/node()[not(self::ieee:title)]"/>
+											</fo:block>
+											<fo:block>&#xa0;</fo:block>
+											<fo:block>
+												<fo:inline font-weight="bold">Keywords: </fo:inline> <xsl:value-of select="/ieee:ieee-standard/ieee:bibdata/ieee:keyword"/>
+											</fo:block>
+										</fo:block>
+										
+										<!-- Example:
+										The Institute of Electrical and Electronics Engineers, Inc.
+										3 Park Avenue, New York, NY 10016-5997, USA
+										...
+										PDF: ISBN 978-0-XXXX-XXXX-X STDXXXXX
+										Print: ISBN 978-0-XXXX-XXXX-X STDPDXXXXX
+										-->
+										<xsl:apply-templates select="/ieee:ieee-standard/ieee:boilerplate/ieee:feedback-statement"/>
+										
+									</fo:block-container>
+								</fo:flow>
+							</fo:page-sequence> <!-- End: 'Draft' first page -->
+						</xsl:when>
+					
+						<xsl:when test="$doctype = 'international-standard' and $isDraft = 'false'">
 							<xsl:call-template name="insertCoverPage_Standard">
 								<xsl:with-param name="standard_number" select="$standard_number"/>
 								<xsl:with-param name="history" select="$history"/>
@@ -282,15 +407,263 @@
 					<!-- ======================= -->
 					
 					
+					<!-- =================== -->
+					<!-- Second page(s) -->
+					<!-- =================== -->
+					<xsl:choose>
+					
+						<xsl:when test="$doctype = 'international-standard' and $isDraft = 'true'">
+							<!-- Legal statement -->
+							<fo:page-sequence master-reference="document-draft" force-page-count="no-force" format="1">
+								<xsl:call-template name="insertFootnoteSeparator"/>
+								
+								<xsl:call-template name="insertHeaderFooter">
+									<xsl:with-param name="draft_id" select="$draft_id"/>
+									<xsl:with-param name="draft_title" select="$draft_title"/>
+									<xsl:with-param name="doctype" select="$doctype"/>
+									<xsl:with-param name="copyright_year" select="$copyright_year"/>
+									<xsl:with-param name="copyright_holder" select="$copyright_holder"/>
+								</xsl:call-template>
+								
+								<fo:flow flow-name="xsl-region-body">
+									<fo:block>
+										<!-- Example:
+										Important Notices and Disclaimers Concerning IEEE Standards Documents
+										IEEE Standards documents are made available for use subject to important notices and legal disclaimers. These notices and disclaimers, or a reference to this page (https://standards.ieee.org/ipr/disclaimers.html), appear in all standards and may be found under the heading “Important Notices and Disclaimers Concerning IEEE Standards Documents.”
+										...
+										-->
+										<xsl:apply-templates select="/ieee:ieee-standard/ieee:boilerplate/ieee:legal-statement"/>
+									</fo:block>
+								</fo:flow>
+								
+							</fo:page-sequence> <!-- End: Legal statement -->
+						
+						</xsl:when> <!-- $doctype = 'international-standard' and $isDraft = 'true' -->
+					
+					
+						<xsl:when test="$doctype = 'international-standard' and $isDraft = 'false'">
+							<fo:page-sequence master-reference="document" force-page-count="no-force" font-family="Arial" initial-page-number="1">
+							
+								<xsl:call-template name="insertHeaderFooter">
+									<xsl:with-param name="doctype" select="$doctype"/>
+									<xsl:with-param name="copyright_year" select="$copyright_year"/>
+									<xsl:with-param name="copyright_holder" select="$copyright_holder"/>
+									<xsl:with-param name="hideHeader">true</xsl:with-param>
+								</xsl:call-template>
+								
+								<fo:flow flow-name="xsl-region-body">
+									<fo:block text-align="right" margin-top="2mm">
+										<fo:block font-size="12pt" font-weight="bold"><xsl:value-of select="$standard_number"/></fo:block>
+										<fo:block font-size="9pt"><xsl:value-of select="$history"/></fo:block>
+									</fo:block>
+									
+									<fo:block font-weight="bold" space-before="13mm">
+										<fo:block font-size="18pt" space-after="2pt">IEEE Standard for</fo:block>
+										<fo:block font-size="18pt">&#xa0;&#xa0;&#xa0;&#xa0;Local and Metropolitan Area Networks—</fo:block> <!-- <xsl:apply-templates select="/ieee:ieee-standard/ieee:bibdata/ieee:title[@type = 'title-main']"/> -->
+										<fo:block font-size="24pt" space-before="12pt">Port-Based Network Access Control</fo:block> <!-- <xsl:apply-templates select="/ieee:ieee-standard/ieee:bibdata/ieee:title[@type = 'title-intro']"/> -->
+									</fo:block>
+									
+									<fo:block font-size="10pt" space-before="9mm" space-after="4pt">Developed by the</fo:block>
+									<fo:block font-size="11pt" font-weight="bold">LAN/MAN Standards Committee<xsl:value-of select="$linebreak"/>
+										of the<xsl:value-of select="$linebreak"/>
+										IEEE Computer Society<xsl:value-of select="$linebreak"/>
+									</fo:block>
+
+									<fo:block font-size="10pt" space-before="8mm" space-after="4pt">Approved 30 January 2020</fo:block>
+									<fo:block font-size="11pt" font-weight="bold">IEEE SA Standards Board</fo:block>
+
+								</fo:flow>
+								
+							</fo:page-sequence>
+						</xsl:when> <!-- $doctype = 'international-standard' and $isDraft = 'false' -->
+						
+						
+						<xsl:when test="$doctype = 'whitepaper' or $doctype = 'icap-whitepaper' or $doctype = 'industry-connection-report'">
+							<fo:page-sequence master-reference="document" force-page-count="no-force" font-family="Calibri Light">
+							
+								<xsl:call-template name="insertHeaderFooter">
+									<xsl:with-param name="doctype" select="$doctype"/>
+									<xsl:with-param name="copyright_year" select="$copyright_year"/>
+									<xsl:with-param name="copyright_holder" select="$copyright_holder"/>
+									<xsl:with-param name="hideHeader">true</xsl:with-param>
+								</xsl:call-template>
+								
+								<fo:flow flow-name="xsl-region-body">
+									<fo:block-container>
+										<fo:block font-family="Arial Black" font-size="13pt">TRADEMARKS AND DISCLAIMERS</fo:block>
+										<fo:block font-size="10pt" margin-top="12pt" margin-bottom="12pt" text-align="justify" line-height="1.9">IEEE believes the information in this publication is accurate as of its publication date; such information is subject to change without notice. IEEE is not responsible for any inadvertent errors.</fo:block>
+										<fo:block font-size="10pt" margin-top="12pt" margin-bottom="12pt" text-align="justify" line-height="1.9">The ideas and proposals in this specification are the respective author’s views and do not represent the views of the affiliated organization.</fo:block>
+										<fo:block font-family="Arial Black" font-size="13pt">ACKNOWLEDGEMENTS</fo:block>
+										<fo:block font-family="Calibri">
+											<fo:block margin-top="12pt" margin-bottom="12pt" line-height="1.9">Special thanks are given to the following reviewers of this paper:</fo:block>
+											<fo:block font-size="10pt">
+												<fo:block margin-bottom="6pt">Firstname Lastname</fo:block>
+												<fo:block margin-bottom="6pt">Firstname Lastname</fo:block>
+												<fo:block margin-bottom="6pt">Firstname Lastname</fo:block>
+												<fo:block margin-bottom="6pt">Firstname Lastname</fo:block>
+												<fo:block margin-bottom="6pt">Firstname Lastname</fo:block>
+												<fo:block margin-bottom="6pt">Firstname Lastname</fo:block>
+												<fo:block margin-bottom="6pt">Firstname Lastname</fo:block>
+												<fo:block margin-bottom="6pt">Firstname Lastname</fo:block>
+											</fo:block>
+										</fo:block>
+										
+										<!-- Example:
+										The Institute of Electrical and Electronics Engineers, Inc. 3 Park Avenue, New York, NY 10016-5997, USA
+										...
+										PDF: STDXXXXX ISBN 978-0-XXXX-XXXX-X 
+										-->
+										<fo:block font-style="italic">
+											<xsl:apply-templates select="/ieee:ieee-standard/ieee:boilerplate/ieee:feedback-statement"/>
+										</fo:block>
+										
+										<!-- NOTICE AND DISCLAIMER OF LIABILITY CONCERNING THE USE OF IEEE SA DOCUMENTS -->
+										<xsl:apply-templates select="/ieee:ieee-standard/ieee:boilerplate/ieee:legal-statement"/>
+										
+									</fo:block-container>
+								</fo:flow>
+								
+							</fo:page-sequence>
+						
+						</xsl:when> <!-- $doctype = 'whitepaper' or $doctype = 'icap-whitepaper' or $doctype = 'industry-connection-report' -->
+						
+					</xsl:choose>
+					<!-- =================== -->
+					<!-- End Second page(s) -->
+					<!-- =================== -->
+					
+					
+					
+					
+				
+					<!-- ================================ -->
+					<!-- PREFACE pages (Introduction, Contents -->
+					<!-- ================================ -->
+					
+					<xsl:variable name="structured_xml_preface">
+						<xsl:apply-templates select="/*/*[local-name()='preface']/*[local-name() = 'introduction']" mode="flatxml" />
+					</xsl:variable>
+					
+					<!-- structured_xml_preface=<xsl:copy-of select="$structured_xml_preface"/> -->
+					
+					<xsl:variable name="paged_xml_preface">
+						<xsl:call-template name="makePagedXML">
+							<xsl:with-param name="structured_xml" select="$structured_xml_preface"/>
+						</xsl:call-template>
+					</xsl:variable>
+					
+					<xsl:if test="$debug = 'true'">
+						<xsl:text disable-output-escaping="yes">&lt;!--</xsl:text>
+							DEBUG
+							contents=<xsl:copy-of select="$contents"/>
+						<xsl:text disable-output-escaping="yes">--&gt;</xsl:text>
+					</xsl:if>
+					
 					
 					<xsl:choose>
-						<xsl:when test="$doctype = 'industry-connection-report'">
+					
+						<xsl:when test="$doctype = 'international-standard' and $isDraft = 'true'">
+							<fo:page-sequence master-reference="document-draft" id="prefaceSequence"> <!-- format="i" initial-page-number="1" -->
+						
+								<xsl:call-template name="insertFootnoteSeparator"/>
+								
+								<xsl:call-template name="insertHeaderFooter">
+									<xsl:with-param name="draft_id" select="$draft_id"/>
+									<xsl:with-param name="draft_title" select="$draft_title"/>
+									<xsl:with-param name="doctype" select="$doctype"/>
+									<xsl:with-param name="copyright_year" select="$copyright_year"/>
+									<xsl:with-param name="copyright_holder" select="$copyright_holder"/>
+								</xsl:call-template>
+								
+								<fo:flow flow-name="xsl-region-body">
+									
+									<fo:block>
+										<xsl:for-each select="xalan:nodeset($paged_xml_preface)/*[local-name()='page']">
+											<xsl:apply-templates select="*" mode="page"/>
+											<fo:block break-after="page"/>
+										</xsl:for-each>
+									</fo:block>
+										
+									<fo:block font-family="Arial" font-size="12pt" role="H1" font-weight="bold" margin-top="12pt" margin-bottom="24pt">
+										<!-- Contents -->
+										<xsl:call-template name="getLocalizedString">
+											<xsl:with-param name="key">table_of_contents</xsl:with-param>
+										</xsl:call-template>
+									</fo:block>
+								
+									<fo:block role="TOC">
+										<xsl:if test="$contents/doc[@num = $num]//item[@display = 'true']">
+											
+											<xsl:variable name="margin-left">4</xsl:variable>
+											
+											<xsl:for-each select="$contents/doc[@num = $num]//item[@display = 'true']">
+												<fo:block role="TOCI">
+													<xsl:if test="@level = 1">
+														<xsl:attribute name="margin-top">12pt</xsl:attribute>
+													</xsl:if>
+													
+													<fo:block text-align-last="justify">
+														<xsl:attribute name="margin-left"><xsl:value-of select="$margin-left * (@level - 1)"/>mm</xsl:attribute>
+														<xsl:if test="@type = 'annex'">
+															<xsl:attribute name="font-weight">normal</xsl:attribute>
+														</xsl:if>
+														
+														<fo:basic-link internal-destination="{@id}" fox:alt-text="{title}">
+														
+															<xsl:value-of select="@section"/>
+															<!-- <xsl:if test="normalize-space(@section) != '' and @level = 1">.</xsl:if>
+															<xsl:if test="normalize-space(@section) != ''"><xsl:text>&#xa0;</xsl:text></xsl:if> -->
+															<xsl:text>&#xa0;</xsl:text>
+															<xsl:apply-templates select="title"/>
+														
+															<fo:inline keep-together.within-line="always">
+																<fo:leader font-size="9pt" font-weight="normal" leader-pattern="dots"/>
+																<fo:inline>
+																	<fo:page-number-citation ref-id="{@id}"/>
+																</fo:inline>
+															</fo:inline>
+														
+														</fo:basic-link>
+													</fo:block>
+												</fo:block>
+											</xsl:for-each>
+											
+											<!-- List of Tables -->
+											<xsl:if test="$contents//tables/table">
+												<xsl:call-template name="insertListOf_Title">
+													<xsl:with-param name="title" select="$title-list-tables"/>
+												</xsl:call-template>
+												<xsl:for-each select="$contents//tables/table">
+													<xsl:call-template name="insertListOf_Item"/>
+												</xsl:for-each>
+											</xsl:if>
+											
+											<!-- List of Figures -->
+											<xsl:if test="$contents//figures/figure">
+												<xsl:call-template name="insertListOf_Title">
+													<xsl:with-param name="title" select="$title-list-figures"/>
+												</xsl:call-template>
+												<xsl:for-each select="$contents//figures/figure">
+													<xsl:call-template name="insertListOf_Item"/>
+												</xsl:for-each>
+											</xsl:if>
+											
+										</xsl:if>
+										
+									</fo:block>
+									
+								</fo:flow>
+							</fo:page-sequence>
+						</xsl:when> <!-- $doctype = 'international-standard' and $isDraft = 'true' -->
+					
+					
+						<xsl:when test="$doctype = 'whitepaper' or $doctype = 'icap-whitepaper' or $doctype = 'industry-connection-report'">
 							<!-- TRADEMARKS AND DISCLAIMERS -->
 							<!-- ACKNOWLEDGEMENTS -->
 							<!-- NOTICE AND DISCLAIMER OF LIABILITY CONCERNING THE USE OF IEEE SA INDUSTRY CONNECTIONS DOCUMENTS -->
 							
 							<!-- ToC -->
-							<fo:page-sequence master-reference="toc-page-industry-connection-report" force-page-count="no-force">
+							<fo:page-sequence master-reference="page-toc" force-page-count="no-force">
 							
 								<xsl:call-template name="insertHeaderFooter">
 									<xsl:with-param name="doctype" select="$doctype"/>
@@ -351,7 +724,7 @@
 																<fo:basic-link internal-destination="{@id}" fox:alt-text="{title}">
 																
 																	<xsl:value-of select="@section"/>
-																	<xsl:if test="normalize-space(@section) != ''"><xsl:text>.&#xa0;</xsl:text></xsl:if>
+																	<xsl:if test="normalize-space(@section) != ''"><xsl:text>&#xa0;</xsl:text></xsl:if>
 																	
 																	<xsl:variable name="title">
 																		<xsl:apply-templates select="title"/>
@@ -404,289 +777,11 @@
 										</fo:block-container>
 									</fo:block-container>
 								</fo:flow>
-							</fo:page-sequence> <!-- toc-page-industry-connection-report -->
+							</fo:page-sequence> <!-- page-toc -->
 						
-						</xsl:when>
+						</xsl:when> <!-- $doctype = 'industry-connection-report' -->
 					</xsl:choose>
 					
-					
-					
-					<xsl:choose>
-						<xsl:when test="$doctype = 'standard'">
-							<fo:page-sequence master-reference="document" force-page-count="no-force" font-family="Arial" initial-page-number="1">
-							
-								<xsl:call-template name="insertHeaderFooter">
-									<xsl:with-param name="doctype" select="$doctype"/>
-									<xsl:with-param name="copyright_year" select="$copyright_year"/>
-									<xsl:with-param name="copyright_holder" select="$copyright_holder"/>
-									<xsl:with-param name="hideHeader">true</xsl:with-param>
-								</xsl:call-template>
-								
-								<fo:flow flow-name="xsl-region-body">
-									<fo:block text-align="right" margin-top="2mm">
-										<fo:block font-size="12pt" font-weight="bold"><xsl:value-of select="$standard_number"/></fo:block>
-										<fo:block font-size="9pt"><xsl:value-of select="$history"/></fo:block>
-									</fo:block>
-									
-									<fo:block font-weight="bold" space-before="13mm">
-										<fo:block font-size="18pt" space-after="2pt">IEEE Standard for</fo:block>
-										<fo:block font-size="18pt">&#xa0;&#xa0;&#xa0;&#xa0;Local and Metropolitan Area Networks—</fo:block> <!-- <xsl:apply-templates select="/ieee:ieee-standard/ieee:bibdata/ieee:title[@type = 'title-main']"/> -->
-										<fo:block font-size="24pt" space-before="12pt">Port-Based Network Access Control</fo:block> <!-- <xsl:apply-templates select="/ieee:ieee-standard/ieee:bibdata/ieee:title[@type = 'title-intro']"/> -->
-									</fo:block>
-									
-									<fo:block font-size="10pt" space-before="9mm" space-after="4pt">Developed by the</fo:block>
-									<fo:block font-size="11pt" font-weight="bold">LAN/MAN Standards Committee<xsl:value-of select="$linebreak"/>
-										of the<xsl:value-of select="$linebreak"/>
-										IEEE Computer Society<xsl:value-of select="$linebreak"/>
-									</fo:block>
-
-									<fo:block font-size="10pt" space-before="8mm" space-after="4pt">Approved 30 January 2020</fo:block>
-									<fo:block font-size="11pt" font-weight="bold">IEEE SA Standards Board</fo:block>
-
-								</fo:flow>
-								
-							</fo:page-sequence>
-						</xsl:when>
-						
-					</xsl:choose>
-					
-					
-					<!-- 'Draft' first page -->
-					<fo:page-sequence master-reference="document" force-page-count="no-force">
-						
-						<xsl:call-template name="insertFootnoteSeparator"/>
-						
-						<xsl:call-template name="insertHeaderFooter">
-							<xsl:with-param name="draft_id" select="$draft_id"/>
-							<xsl:with-param name="draft_title" select="$draft_title"/>
-							<xsl:with-param name="doctype" select="$doctype"/>
-							
-							<xsl:with-param name="copyright_year" select="$copyright_year"/>
-							<xsl:with-param name="copyright_holder" select="$copyright_holder"/>
-							<xsl:with-param name="hideFooter">true</xsl:with-param>
-						</xsl:call-template>
-						
-						<fo:flow flow-name="xsl-region-body">
-							<fo:block-container margin-top="18mm" id="firstpage_id_{$num}">
-								<fo:block font-family="Arial">
-									<fo:block font-size="23pt" font-weight="bold" margin-top="50pt" margin-bottom="36pt">
-										<xsl:text>P</xsl:text>
-										<xsl:value-of select="$designation"/>
-										<xsl:text>™/D</xsl:text>
-										<xsl:value-of select="$draft_number"/>
-										<xsl:value-of select="$linebreak"/>
-										<xsl:copy-of select="$draft_title"/>
-										<xsl:copy-of select="$draft_title_part"/>
-									</fo:block>
-									<fo:block>Developed by the</fo:block>
-									<fo:block>&#xa0;</fo:block>
-									<fo:block font-size="11pt" font-weight="bold">
-										<!-- <Committee Name> -->
-										<xsl:value-of select="/ieee:ieee-standard/ieee:bibdata/ieee:ext/ieee:editorialgroup/ieee:committee"/> 
-									</fo:block>
-									<fo:block>of the</fo:block>
-									<fo:block font-size="11pt" font-weight="bold">
-										 <!-- IEEE <Society Name> -->
-										<xsl:text>IEEE </xsl:text><xsl:value-of select="/ieee:ieee-standard/ieee:bibdata/ieee:ext/ieee:editorialgroup/ieee:society"/>
-									</fo:block>
-									<fo:block>&#xa0;</fo:block>
-									<fo:block>&#xa0;</fo:block>
-									<fo:block>
-										<xsl:text>Approved </xsl:text>
-										<xsl:text>&lt;Date Approved&gt;</xsl:text>
-										<!-- Approved <Date Approved> -->
-									</fo:block>
-									<fo:block>&#xa0;</fo:block>
-									<fo:block font-size="11pt" font-weight="bold">IEEE SA Standards Board</fo:block>
-								</fo:block>
-								
-								<xsl:apply-templates select="/ieee:ieee-standard/ieee:boilerplate/ieee:copyright-statement"/>
-								
-								<xsl:apply-templates select="/ieee:ieee-standard/ieee:boilerplate/ieee:license-statement"/>
-							
-							
-								<fo:block break-after="page"/>
-								
-								
-								<fo:block font-family="Arial" text-align="justify">
-									<fo:block>
-										<fo:inline font-weight="bold">
-											<xsl:call-template name="getLocalizedString">
-												<xsl:with-param name="key">abstract</xsl:with-param>
-											</xsl:call-template>
-											<xsl:text>: </xsl:text>
-										</fo:inline>
-										<xsl:apply-templates select="ieee:itu-standard/ieee:preface/ieee:abstract/node() | /ieee:ieee-standard/ieee:preface/ieee:clause[@id = '_abstract' or ieee:title = 'Abstract']/node()[not(self::ieee:title)]"/>
-									</fo:block>
-									<fo:block>&#xa0;</fo:block>
-									<fo:block>
-										<fo:inline font-weight="bold">Keywords: </fo:inline> <xsl:value-of select="/ieee:ieee-standard/ieee:bibdata/ieee:keyword"/>
-									</fo:block>
-								</fo:block>
-								
-								<!-- Example:
-								The Institute of Electrical and Electronics Engineers, Inc.
-								3 Park Avenue, New York, NY 10016-5997, USA
-								...
-								PDF: ISBN 978-0-XXXX-XXXX-X STDXXXXX
-								Print: ISBN 978-0-XXXX-XXXX-X STDPDXXXXX
-								-->
-								<xsl:apply-templates select="/ieee:ieee-standard/ieee:boilerplate/ieee:feedback-statement"/>
-								
-							</fo:block-container>
-						</fo:flow>
-					</fo:page-sequence> <!-- End: 'Draft' first page -->
-					 
-					
-					<!-- Legal statement -->
-					<fo:page-sequence master-reference="document" force-page-count="no-force" format="1">
-						<xsl:call-template name="insertFootnoteSeparator"/>
-						
-						<xsl:call-template name="insertHeaderFooter">
-							<xsl:with-param name="draft_id" select="$draft_id"/>
-							<xsl:with-param name="draft_title" select="$draft_title"/>
-							<xsl:with-param name="doctype" select="$doctype"/>
-							<xsl:with-param name="copyright_year" select="$copyright_year"/>
-							<xsl:with-param name="copyright_holder" select="$copyright_holder"/>
-						</xsl:call-template>
-						
-						<fo:flow flow-name="xsl-region-body">
-							<fo:block>
-								<!-- Example:
-								Important Notices and Disclaimers Concerning IEEE Standards Documents
-								IEEE Standards documents are made available for use subject to important notices and legal disclaimers. These notices and disclaimers, or a reference to this page (https://standards.ieee.org/ipr/disclaimers.html), appear in all standards and may be found under the heading “Important Notices and Disclaimers Concerning IEEE Standards Documents.”
-								...
-								-->
-								<xsl:apply-templates select="/ieee:ieee-standard/ieee:boilerplate/ieee:legal-statement"/>
-							</fo:block>
-						</fo:flow>
-						
-					</fo:page-sequence> <!-- End: Legal statement -->
-					
-				
-					<!-- ================================ -->
-					<!-- PREFACE pages (Introduction, Contents -->
-					<!-- ================================ -->
-					<xsl:variable name="structured_xml_preface">
-						<xsl:apply-templates select="/*/*[local-name()='preface']/*[local-name() = 'introduction']" mode="flatxml" />
-					</xsl:variable>
-					
-					<!-- structured_xml_preface=<xsl:copy-of select="$structured_xml_preface"/> -->
-					
-					<xsl:variable name="paged_xml_preface">
-						<xsl:call-template name="makePagedXML">
-							<xsl:with-param name="structured_xml" select="$structured_xml_preface"/>
-						</xsl:call-template>
-					</xsl:variable>
-					
-					<xsl:if test="$debug = 'true'">
-						<xsl:text disable-output-escaping="yes">&lt;!--</xsl:text>
-							DEBUG
-							contents=<xsl:copy-of select="$contents"/>
-						<xsl:text disable-output-escaping="yes">--&gt;</xsl:text>
-					</xsl:if>
-					
-					
-					<!-- ===================== -->
-					<!-- IEEE Contents and Preface pages-->
-					<!-- ===================== -->
-					<fo:page-sequence master-reference="document" id="prefaceSequence"> <!-- format="i" initial-page-number="1" -->
-						
-						<xsl:call-template name="insertFootnoteSeparator"/>
-						
-						<xsl:call-template name="insertHeaderFooter">
-							<xsl:with-param name="draft_id" select="$draft_id"/>
-							<xsl:with-param name="draft_title" select="$draft_title"/>
-							<xsl:with-param name="doctype" select="$doctype"/>
-							<xsl:with-param name="copyright_year" select="$copyright_year"/>
-							<xsl:with-param name="copyright_holder" select="$copyright_holder"/>
-						</xsl:call-template>
-						
-						<fo:flow flow-name="xsl-region-body">
-							
-							<fo:block>
-								<xsl:for-each select="xalan:nodeset($paged_xml_preface)/*[local-name()='page']">
-									<xsl:apply-templates select="*" mode="page"/>
-									<fo:block break-after="page"/>
-								</xsl:for-each>
-							</fo:block>
-								
-							<fo:block font-family="Arial" font-size="12pt" role="H1" font-weight="bold" margin-top="12pt" margin-bottom="24pt">
-								<!-- Contents -->
-								<xsl:call-template name="getLocalizedString">
-									<xsl:with-param name="key">table_of_contents</xsl:with-param>
-								</xsl:call-template>
-							</fo:block>
-						
-							<fo:block role="TOC">
-								<xsl:if test="$contents/doc[@num = $num]//item[@display = 'true']">
-									
-									<xsl:variable name="margin-left">4</xsl:variable>
-									
-									<xsl:for-each select="$contents/doc[@num = $num]//item[@display = 'true']">
-										<fo:block role="TOCI">
-											<xsl:if test="@level = 1">
-												<xsl:attribute name="margin-top">12pt</xsl:attribute>
-											</xsl:if>
-											
-											<fo:block text-align-last="justify">
-												<xsl:attribute name="margin-left"><xsl:value-of select="$margin-left * (@level - 1)"/>mm</xsl:attribute>
-												<xsl:if test="@type = 'annex'">
-													<xsl:attribute name="font-weight">normal</xsl:attribute>
-												</xsl:if>
-												
-												<fo:basic-link internal-destination="{@id}" fox:alt-text="{title}">
-												
-													<xsl:value-of select="@section"/>
-													<!-- <xsl:if test="normalize-space(@section) != '' and @level = 1">.</xsl:if>
-													<xsl:if test="normalize-space(@section) != ''"><xsl:text>&#xa0;</xsl:text></xsl:if> -->
-													<xsl:text>&#xa0;</xsl:text>
-													<xsl:apply-templates select="title"/>
-												
-													<fo:inline keep-together.within-line="always">
-														<fo:leader font-size="9pt" font-weight="normal" leader-pattern="dots"/>
-														<fo:inline>
-															<fo:page-number-citation ref-id="{@id}"/>
-														</fo:inline>
-													</fo:inline>
-												
-												</fo:basic-link>
-											</fo:block>
-										</fo:block>
-									</xsl:for-each>
-									
-									<!-- List of Tables -->
-									<xsl:if test="$contents//tables/table">
-										<xsl:call-template name="insertListOf_Title">
-											<xsl:with-param name="title" select="$title-list-tables"/>
-										</xsl:call-template>
-										<xsl:for-each select="$contents//tables/table">
-											<xsl:call-template name="insertListOf_Item"/>
-										</xsl:for-each>
-									</xsl:if>
-									
-									<!-- List of Figures -->
-									<xsl:if test="$contents//figures/figure">
-										<xsl:call-template name="insertListOf_Title">
-											<xsl:with-param name="title" select="$title-list-figures"/>
-										</xsl:call-template>
-										<xsl:for-each select="$contents//figures/figure">
-											<xsl:call-template name="insertListOf_Item"/>
-										</xsl:for-each>
-									</xsl:if>
-									
-								</xsl:if>
-								
-							</fo:block>
-							
-						</fo:flow>
-					</fo:page-sequence>
-					
-					<!-- ===================== -->
-					<!-- END IEEE Contents and Preface pages-->
-					<!-- ===================== -->
-						
-				
 					
 					<!-- ================================ -->
 					<!-- END: PREFACE pages (Table of Contents, Foreword -->
@@ -746,10 +841,20 @@
 					<!-- paged_xml=<xsl:copy-of select="$paged_xml"/> -->
 					
 					<xsl:for-each select="xalan:nodeset($paged_xml)/*[local-name()='page'][*]">
-						<fo:page-sequence master-reference="document" force-page-count="no-force">
+						<fo:page-sequence master-reference="document-draft" force-page-count="no-force">
+						
 							<xsl:if test="@orientation = 'landscape'">
-								<xsl:attribute name="master-reference">document-<xsl:value-of select="@orientation"/></xsl:attribute>
+								<xsl:attribute name="master-reference">document-draft-<xsl:value-of select="@orientation"/></xsl:attribute>
 							</xsl:if>
+						
+							<xsl:if test="$doctype = 'whitepaper' or $doctype = 'icap-whitepaper' or $doctype = 'industry-connection-report'">
+								<xsl:attribute name="master-reference">document</xsl:attribute>
+								<xsl:if test="@orientation = 'landscape'">
+									<xsl:attribute name="master-reference">document-<xsl:value-of select="@orientation"/></xsl:attribute>
+								</xsl:if>
+							</xsl:if>
+						
+							
 							<!-- <xsl:if test="position() = 1">
 								<xsl:attribute name="initial-page-number">1</xsl:attribute>
 							</xsl:if> -->
@@ -839,6 +944,13 @@
 			<fo:footnote>
 				<fo:inline></fo:inline>
 				<fo:footnote-body font-family="Arial" font-size="7pt">
+				
+					<xsl:if test="$doctype = 'whitepaper' or $doctype = 'icap-whitepaper'">
+						<xsl:attribute name="font-family">Calibri Light</xsl:attribute>
+						<xsl:attribute name="font-size">9pt</xsl:attribute>
+						<xsl:attribute name="line-height">1.2</xsl:attribute>
+					</xsl:if>
+				
 					<fo:block>
 						<fo:inline font-size="1pt" id="footnote_footer_{generate-id()}"><xsl:value-of select="$hair_space"/></fo:inline>
 						<xsl:apply-templates />
@@ -867,7 +979,7 @@
 	</xsl:template>
 	
 	<!-- Example: Important Notices and Disclaimers Concerning IEEE Standards Documents -->
-	<xsl:template match="ieee:boilerplate/ieee:legal-statement//ieee:title" priority="2">
+	<xsl:template match="ieee:boilerplate/ieee:legal-statement//ieee:title" priority="3">
 		<fo:block font-family="Arial" font-weight="bold" margin-bottom="12pt" space-before="18pt" keep-with-next="always">
 			<xsl:attribute name="font-size">
 				<xsl:choose>
@@ -875,6 +987,12 @@
 					<xsl:otherwise>11pt</xsl:otherwise>
 				</xsl:choose>
 			</xsl:attribute>
+			
+			<xsl:if test="$doctype = 'whitepaper' or $doctype = 'icap-whitepaper'">
+				<xsl:attribute name="font-family">Arial Black</xsl:attribute>
+				<xsl:attribute name="font-size">13pt</xsl:attribute>
+			</xsl:if>
+			
 			<xsl:apply-templates />
 		</fo:block>
 	</xsl:template>
@@ -887,6 +1005,13 @@
 			<xsl:call-template name="setTextAlignment">
 				<xsl:with-param name="default">justify</xsl:with-param>
 			</xsl:call-template>
+			
+			<xsl:if test="$doctype = 'whitepaper' or $doctype = 'icap-whitepaper'">
+				<xsl:attribute name="font-size">10pt</xsl:attribute>
+				<xsl:attribute name="font-family">Calibri Light</xsl:attribute>
+				<xsl:attribute name="line-height">2</xsl:attribute>
+			</xsl:if>
+			
 			<xsl:apply-templates />
 		</fo:block>
 	</xsl:template>
@@ -1994,11 +2119,14 @@
 			<xsl:choose>
 				<xsl:when test="$doctype = 'industry-connection-report' or $doctype = 'whitepaper' or $doctype = 'icap-whitepaper'">
 					<fo:block margin-bottom="8mm">
+						<xsl:if test="$doctype = 'whitepaper' or $doctype = 'icap-whitepaper'">
+							<xsl:attribute name="margin-bottom">10.5mm</xsl:attribute>
+						</xsl:if>
 						<fo:table width="100%" table-layout="fixed" font-size="7pt">
 							<fo:table-body>
 								<fo:table-row>
 									<fo:table-cell>
-										<fo:block font-weight="bold"><fo:inline font-size="10pt" ><fo:page-number /></fo:inline>
+										<fo:block font-weight="bold" font-family="Calibri"><fo:inline font-size="10pt"><fo:page-number /></fo:inline>
 											<xsl:text>&#xa0;&#xa0;&#xa0;IEEE&#xa0;</xsl:text>
 											<xsl:choose>
 												<xsl:when test="$doctype = 'icap-whitepaper'">CONFORMITY ASSESSMENT PROGRAM (ICAP)</xsl:when>
@@ -2007,6 +2135,9 @@
 											</fo:block> <!--  INDUSTRY CONNECTIONS -->
 									</fo:table-cell>
 									<fo:table-cell text-align="right" font-family="Calibri Light">
+										<xsl:if test="$doctype = 'whitepaper' or $doctype = 'icap-whitepaper'">
+											<xsl:attribute name="font-family">Arial</xsl:attribute>
+										</xsl:if>
 										<fo:block>
 											<xsl:value-of select="$copyrightText"/>
 										</fo:block>

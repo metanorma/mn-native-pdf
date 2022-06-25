@@ -9010,6 +9010,13 @@
 				</xsl:if>
 			</xsl:if>
 			
+			<xsl:if test="$namespace = 'ieee'">
+				<xsl:if test="$doctype = 'whitepaper' or $doctype = 'icap-whitepaper'">
+					<xsl:attribute name="color">rgb(0,176,240)</xsl:attribute>
+					<xsl:attribute name="text-decoration">none</xsl:attribute>
+				</xsl:if>
+			</xsl:if>
+			
 			<xsl:if test="$namespace = 'iec'">
 				<xsl:if test="ancestor::*[local-name()='feedback-statement']">
 					<xsl:attribute name="color">blue</xsl:attribute>
