@@ -1652,7 +1652,9 @@
 				<xsl:call-template name="getTitleMarginBottom"/>
 			</xsl:attribute>
 			<xsl:call-template name="title"/>
-			<xsl:apply-templates select="following-sibling::*[1][local-name() = 'p']"/>
+			<xsl:apply-templates select="following-sibling::*[1][local-name() = 'p']">
+				<xsl:with-param name="inline-header">true</xsl:with-param>
+			</xsl:apply-templates>
 		</fo:block>
 	</xsl:template>
 	
@@ -2200,6 +2202,11 @@
 					<xsl:attribute name="text-decoration">none</xsl:attribute>
 				</xsl:if>
 				
+				<xsl:if test="$doctype = 'whitepaper' or $doctype = 'icap-whitepaper' or $doctype = 'industry-connection-report'">
+					<xsl:attribute name="color"><xsl:value-of select="$color_blue"/></xsl:attribute>
+					<xsl:attribute name="text-decoration">none</xsl:attribute>
+				</xsl:if>
+				
 				<xsl:if test="parent::ieee:add">
 					<xsl:call-template name="append_add-style"/>
 				</xsl:if>
@@ -2270,6 +2277,23 @@
 	<xsl:template match="ieee:pagebreak[ancestor::ieee:table]" priority="2">
 		<fo:block break-after="page"/>
 	</xsl:template>
+
+	<!-- Figure N in blue color -->
+	<xsl:template match="*[local-name() = 'figure']/*[local-name() = 'name']/text()[1] |
+								*[local-name() = 'image']/*[local-name() = 'name']/text()[1] |
+								*[local-name() = 'table']/*[local-name() = 'name']/text()[1]" priority="2">
+		<xsl:choose>
+			<xsl:when test="($doctype = 'whitepaper' or $doctype = 'icap-whitepaper' or $doctype = 'industry-connection-report') and contains(., ' — ')">
+				<fo:inline color="{$color_blue}"><xsl:value-of select="java:toUpperCase(java:java.lang.String.new(substring-before(., ' — ')))"/></fo:inline> <!-- 'FIgure' 1 to 'FIGURE A' -->
+				<xsl:text>&#xa0;&#xa0;</xsl:text>
+				<xsl:value-of select="substring-after(., ' — ')"/>			
+			</xsl:when>
+			<xsl:otherwise>
+				<xsl:value-of select="."/>
+			</xsl:otherwise>
+		</xsl:choose>
+	</xsl:template>
+	
 
 
 	<xsl:template name="insertFootnoteSeparator">

@@ -4917,6 +4917,9 @@
 				</xsl:if>
 				
 				<xsl:if test="$namespace = 'ieee'">
+					<xsl:if test="$doctype = 'whitepaper' or $doctype = 'icap-whitepaper' or $doctype = 'industry-connection-report'">
+						<xsl:attribute name="font-size">10pt</xsl:attribute>
+					</xsl:if>
 					<xsl:if test="ancestor::*[local-name() = 'feedback-statement']">
 						<xsl:attribute name="font-size">inherit</xsl:attribute>
 						<xsl:attribute name="margin-top">6pt</xsl:attribute>
@@ -5025,6 +5028,9 @@
 						</xsl:if>
 						
 						<xsl:if test="$namespace = 'ieee'">
+							<xsl:if test="$doctype = 'whitepaper' or $doctype = 'icap-whitepaper' or $doctype = 'industry-connection-report'">
+								<xsl:attribute name="border">0.5 solid black</xsl:attribute>
+							</xsl:if>
 							<xsl:if test="ancestor::*[local-name() = 'feedback-statement']">
 								<xsl:attribute name="border">none</xsl:attribute>
 							</xsl:if>
@@ -5236,6 +5242,12 @@
 			<xsl:choose>
 				<xsl:when test="$namespace = 'ieee'">
 					<fo:inline>
+				
+						<xsl:if test="$doctype = 'whitepaper' or $doctype = 'icap-whitepaper' or $doctype = 'industry-connection-report'">
+							<xsl:attribute name="font-size">inherit</xsl:attribute>
+							<xsl:attribute name="font-family">Arial Black</xsl:attribute>
+						</xsl:if>
+				
 						<xsl:apply-templates />
 					</fo:inline>
 				</xsl:when>
@@ -5787,6 +5799,11 @@
 				
 				<xsl:choose>
 					<xsl:when test="$namespace = 'ieee'">
+					
+						<xsl:if test="$doctype = 'whitepaper' or $doctype = 'icap-whitepaper' or $doctype = 'industry-connection-report'">
+							<xsl:attribute name="border-bottom">0.5 solid black</xsl:attribute>
+						</xsl:if>
+					
 						<fo:block xsl:use-attribute-sets="table-name-style">
 							<xsl:apply-templates select="ancestor::*[local-name()='table']/*[local-name()='name']">
 								<xsl:with-param name="continued">true</xsl:with-param>
@@ -5870,137 +5887,145 @@
 				</xsl:choose>
 			</xsl:variable>
 			
-			<fo:table keep-with-previous="always">
-				<xsl:for-each select="xalan:nodeset($table_attributes)/table_attributes/@*">
-					<xsl:variable name="name" select="local-name()"/>
+			
+			<xsl:variable name="tableWithNotesAndFootnotes">
+			
+				<fo:table keep-with-previous="always">
+					<xsl:for-each select="xalan:nodeset($table_attributes)/table_attributes/@*">
+						<xsl:variable name="name" select="local-name()"/>
+						<xsl:choose>
+							<xsl:when test="$name = 'border-top'">
+								<xsl:attribute name="{$name}">0pt solid black</xsl:attribute>
+							</xsl:when>
+							<xsl:when test="$name = 'border'">
+								<xsl:attribute name="{$name}"><xsl:value-of select="."/></xsl:attribute>
+								<xsl:attribute name="border-top">0pt solid black</xsl:attribute>
+							</xsl:when>
+							<xsl:otherwise>
+								<xsl:attribute name="{$name}"><xsl:value-of select="."/></xsl:attribute>
+							</xsl:otherwise>
+						</xsl:choose>
+					</xsl:for-each>
+					
+					<xsl:if test="$namespace = 'itu'">
+						<xsl:if test="$doctype = 'service-publication'">
+							<xsl:attribute name="border">none</xsl:attribute>
+							<xsl:attribute name="font-family">Arial</xsl:attribute>
+							<xsl:attribute name="font-size">8pt</xsl:attribute>
+						</xsl:if>
+					</xsl:if>
+					
 					<xsl:choose>
-						<xsl:when test="$name = 'border-top'">
-							<xsl:attribute name="{$name}">0pt solid black</xsl:attribute>
-						</xsl:when>
-						<xsl:when test="$name = 'border'">
-							<xsl:attribute name="{$name}"><xsl:value-of select="."/></xsl:attribute>
-							<xsl:attribute name="border-top">0pt solid black</xsl:attribute>
+						<xsl:when test="xalan:nodeset($colgroup)//*[local-name()='col']">
+							<xsl:for-each select="xalan:nodeset($colgroup)//*[local-name()='col']">
+								<fo:table-column column-width="{@width}"/>
+							</xsl:for-each>
 						</xsl:when>
 						<xsl:otherwise>
-							<xsl:attribute name="{$name}"><xsl:value-of select="."/></xsl:attribute>
+							<!-- $colwidths=<xsl:copy-of select="$colwidths"/> -->
+							<xsl:call-template name="insertTableColumnWidth">
+								<xsl:with-param name="colwidths" select="$colwidths"/>
+							</xsl:call-template>
 						</xsl:otherwise>
 					</xsl:choose>
-				</xsl:for-each>
-				
-				<xsl:if test="$namespace = 'itu'">
-					<xsl:if test="$doctype = 'service-publication'">
-						<xsl:attribute name="border">none</xsl:attribute>
-						<xsl:attribute name="font-family">Arial</xsl:attribute>
-						<xsl:attribute name="font-size">8pt</xsl:attribute>
-					</xsl:if>
-				</xsl:if>
-				
-				<xsl:choose>
-					<xsl:when test="xalan:nodeset($colgroup)//*[local-name()='col']">
-						<xsl:for-each select="xalan:nodeset($colgroup)//*[local-name()='col']">
-							<fo:table-column column-width="{@width}"/>
-						</xsl:for-each>
-					</xsl:when>
-					<xsl:otherwise>
-						<!-- $colwidths=<xsl:copy-of select="$colwidths"/> -->
-						<xsl:call-template name="insertTableColumnWidth">
-							<xsl:with-param name="colwidths" select="$colwidths"/>
-						</xsl:call-template>
-					</xsl:otherwise>
-				</xsl:choose>
-				
-				<fo:table-body>
-					<fo:table-row>
-						<fo:table-cell xsl:use-attribute-sets="table-footer-cell-style" number-columns-spanned="{$cols-count}">
-							
-							<xsl:if test="$namespace = 'bsi'">
-								<xsl:if test="$document_type = 'PAS'">
-									<xsl:attribute name="border">1pt solid <xsl:value-of select="$color_PAS"/></xsl:attribute>
-								</xsl:if>
-							</xsl:if>
-
-							<xsl:if test="$namespace = 'itu'">
-								<xsl:if test="ancestor::*[local-name()='preface']">
-									<xsl:if test="$doctype != 'service-publication'">
-										<xsl:attribute name="border">solid black 0pt</xsl:attribute>
+					
+					<fo:table-body>
+						<fo:table-row>
+							<fo:table-cell xsl:use-attribute-sets="table-footer-cell-style" number-columns-spanned="{$cols-count}">
+								
+								<xsl:if test="$namespace = 'bsi'">
+									<xsl:if test="$document_type = 'PAS'">
+										<xsl:attribute name="border">1pt solid <xsl:value-of select="$color_PAS"/></xsl:attribute>
 									</xsl:if>
 								</xsl:if>
-								<xsl:if test="$doctype = 'service-publication'">
-									<xsl:attribute name="border">none</xsl:attribute>
+
+								<xsl:if test="$namespace = 'itu'">
+									<xsl:if test="ancestor::*[local-name()='preface']">
+										<xsl:if test="$doctype != 'service-publication'">
+											<xsl:attribute name="border">solid black 0pt</xsl:attribute>
+										</xsl:if>
+									</xsl:if>
+									<xsl:if test="$doctype = 'service-publication'">
+										<xsl:attribute name="border">none</xsl:attribute>
+									</xsl:if>
 								</xsl:if>
-							</xsl:if>
-							
-							<!-- fn will be processed inside 'note' processing -->
-							<xsl:if test="$namespace = 'iec'">
-								<xsl:if test="../*[local-name()='note']">
-									<fo:block margin-bottom="6pt">&#xA0;</fo:block>
+								
+								<!-- fn will be processed inside 'note' processing -->
+								<xsl:if test="$namespace = 'iec'">
+									<xsl:if test="../*[local-name()='note']">
+										<fo:block margin-bottom="6pt">&#xA0;</fo:block>
+									</xsl:if>
 								</xsl:if>
-							</xsl:if>
-							
-							<xsl:if test="$namespace = 'bipm'">
-								<xsl:if test="count(ancestor::bipm:table//*[local-name()='note']) &gt; 1">
-									<fo:block font-weight="bold">
-										<xsl:variable name="curr_lang" select="ancestor::bipm:bipm-standard/bipm:bibdata/bipm:language"/>
-										<xsl:choose>
-											<xsl:when test="$curr_lang = 'fr'">Remarques</xsl:when>
-											<xsl:otherwise>Notes</xsl:otherwise>
-										</xsl:choose>
-									</fo:block>
+								
+								<xsl:if test="$namespace = 'bipm'">
+									<xsl:if test="count(ancestor::bipm:table//*[local-name()='note']) &gt; 1">
+										<fo:block font-weight="bold">
+											<xsl:variable name="curr_lang" select="ancestor::bipm:bipm-standard/bipm:bibdata/bipm:language"/>
+											<xsl:choose>
+												<xsl:when test="$curr_lang = 'fr'">Remarques</xsl:when>
+												<xsl:otherwise>Notes</xsl:otherwise>
+											</xsl:choose>
+										</fo:block>
+									</xsl:if>
 								</xsl:if>
-							</xsl:if>
-							
-							<xsl:if test="$namespace = 'itu'">
-								<xsl:if test="$doctype = 'service-publication'">
-									<fo:block margin-top="7pt" margin-bottom="2pt"><fo:inline>____________</fo:inline></fo:block>
+								
+								<xsl:if test="$namespace = 'itu'">
+									<xsl:if test="$doctype = 'service-publication'">
+										<fo:block margin-top="7pt" margin-bottom="2pt"><fo:inline>____________</fo:inline></fo:block>
+									</xsl:if>
 								</xsl:if>
-							</xsl:if>
-							
-							<!-- for BSI (not PAS) display Notes before footnotes -->
-							<xsl:if test="$namespace = 'bsi'">
-								<xsl:if test="$document_type != 'PAS'">
-									<xsl:apply-templates select="../*[local-name()='note']" />
+								
+								<!-- for BSI (not PAS) display Notes before footnotes -->
+								<xsl:if test="$namespace = 'bsi'">
+									<xsl:if test="$document_type != 'PAS'">
+										<xsl:apply-templates select="../*[local-name()='note']" />
+									</xsl:if>
 								</xsl:if>
-							</xsl:if>
-							
-							<!-- except gb and bsi  -->
-							<xsl:choose>
-								<xsl:when test="$namespace = 'gb' or $namespace = 'bsi'"></xsl:when>
-								<xsl:otherwise>
-									<xsl:apply-templates select="../*[local-name()='note']" />
-								</xsl:otherwise>
-							</xsl:choose>
-							
-							
-							<!-- horizontal row separator -->
-							<xsl:if test="$namespace = 'iec'">
-								<xsl:if test="../*[local-name()='note']">
-									<fo:block-container border-top="0.5pt solid black" padding-left="1mm" padding-right="1mm">
-										<fo:block font-size="1pt">&#xA0;</fo:block>
-									</fo:block-container>
+								
+								<!-- except gb and bsi  -->
+								<xsl:choose>
+									<xsl:when test="$namespace = 'gb' or $namespace = 'bsi'"></xsl:when>
+									<xsl:otherwise>
+										<xsl:apply-templates select="../*[local-name()='note']" />
+									</xsl:otherwise>
+								</xsl:choose>
+								
+								
+								<!-- horizontal row separator -->
+								<xsl:if test="$namespace = 'iec'">
+									<xsl:if test="../*[local-name()='note']">
+										<fo:block-container border-top="0.5pt solid black" padding-left="1mm" padding-right="1mm">
+											<fo:block font-size="1pt">&#xA0;</fo:block>
+										</fo:block-container>
+									</xsl:if>
 								</xsl:if>
-							</xsl:if>
-							
-							<!-- fn processing -->
-							<xsl:choose>
-								<xsl:when test="$namespace = 'ieee'"><fo:block></fo:block><!-- display fn after table --></xsl:when>
-								<xsl:otherwise>
-									<xsl:call-template name="table_fn_display" />
-								</xsl:otherwise>
-							</xsl:choose>
-							
-							
-							<!-- for PAS display Notes after footnotes -->
-							<xsl:if test="$namespace = 'bsi'">
-								<xsl:if test="$document_type = 'PAS'">
-									<xsl:apply-templates select="../*[local-name()='note']" />
+								
+								<!-- fn processing -->
+								<xsl:choose>
+									<xsl:when test="$namespace = 'ieee'"><fo:block></fo:block><!-- display fn after table --></xsl:when>
+									<xsl:otherwise>
+										<xsl:call-template name="table_fn_display" />
+									</xsl:otherwise>
+								</xsl:choose>
+								
+								
+								<!-- for PAS display Notes after footnotes -->
+								<xsl:if test="$namespace = 'bsi'">
+									<xsl:if test="$document_type = 'PAS'">
+										<xsl:apply-templates select="../*[local-name()='note']" />
+									</xsl:if>
 								</xsl:if>
-							</xsl:if>
-							
-						</fo:table-cell>
-					</fo:table-row>
-				</fo:table-body>
-				
-			</fo:table>
+								
+							</fo:table-cell>
+						</fo:table-row>
+					</fo:table-body>
+					
+				</fo:table>
+			</xsl:variable>
+			
+			<xsl:if test="normalize-space($tableWithNotesAndFootnotes) != ''">
+				<xsl:copy-of select="$tableWithNotesAndFootnotes"/>
+			</xsl:if>
 			
 			<xsl:if test="$namespace = 'ieee'">
 				<xsl:call-template name="table_fn_display" />
@@ -6186,6 +6211,9 @@
 			<xsl:if test="$namespace = 'ieee'">
 				<xsl:if test="position() = last()">
 					<xsl:attribute name="border-bottom"><xsl:value-of select="$table-border"/></xsl:attribute>
+				</xsl:if>
+				<xsl:if test="$doctype = 'whitepaper' or $doctype = 'icap-whitepaper' or $doctype = 'industry-connection-report'">
+					<xsl:attribute name="border-bottom">0.5 solid black</xsl:attribute>
 				</xsl:if>
 			</xsl:if>
 
@@ -10595,6 +10623,14 @@
 						<xsl:attribute name="font-style">normal</xsl:attribute>
 					</xsl:if>
 				</xsl:if>
+				
+				<xsl:if test="$namespace = 'ieee'">
+					<xsl:if test="$doctype = 'whitepaper' or $doctype = 'icap-whitepaper' or $doctype = 'industry-connection-report'">
+						<xsl:attribute name="font-size">inherit</xsl:attribute>
+						<xsl:attribute name="font-family">Arial Black</xsl:attribute>
+					</xsl:if>
+				</xsl:if>
+				
 				<xsl:apply-templates />
 			</fo:block>
 		</xsl:if>
@@ -11801,6 +11837,13 @@
 					<xsl:if test="$namespace = 'bsi'">
 						<xsl:if test="not(xalan:nodeset($ids)/id = current()/@bibitemid) or $document_type = 'PAS' or not(contains($citeas, $text))"> <!-- if reference can't be resolved or PAS document -->
 							<xsl:attribute name="color">inherit</xsl:attribute>
+							<xsl:attribute name="text-decoration">none</xsl:attribute>
+						</xsl:if>
+					</xsl:if>
+					
+					<xsl:if test="$namespace = 'ieee'">
+						<xsl:if test="$doctype = 'whitepaper' or $doctype = 'icap-whitepaper' or $doctype = 'industry-connection-report'">
+							<xsl:attribute name="color"><xsl:value-of select="$color_blue"/></xsl:attribute>
 							<xsl:attribute name="text-decoration">none</xsl:attribute>
 						</xsl:if>
 					</xsl:if>
