@@ -5982,7 +5982,7 @@
 							
 							<!-- fn processing -->
 							<xsl:choose>
-								<xsl:when test="$namespace = 'ieee'"><!-- display fn after table --></xsl:when>
+								<xsl:when test="$namespace = 'ieee'"><fo:block></fo:block><!-- display fn after table --></xsl:when>
 								<xsl:otherwise>
 									<xsl:call-template name="table_fn_display" />
 								</xsl:otherwise>

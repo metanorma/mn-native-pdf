@@ -733,6 +733,8 @@
 																		<xsl:apply-templates select="title"/>
 																	</xsl:variable>
 																	
+																	<!-- DEBUG=<xsl:copy-of select="$title"/> -->
+																	
 																	<xsl:choose>
 																		<xsl:when test="@level = 1">
 																			<xsl:apply-templates select="xalan:nodeset($title)" mode="uppercase"/>
@@ -818,9 +820,11 @@
 						</xsl:choose>
 						
 						<!-- Annexes -->
-						<item>
-							<xsl:apply-templates select="/*/*[local-name()='annex']" mode="flatxml"/>
-						</item>
+						<xsl:for-each select="/*/*[local-name()='annex']">
+							<item>
+								<xsl:apply-templates select="." mode="flatxml"/>
+							</item>
+						</xsl:for-each>
 						
 						<!-- Bibliography -->
 						<xsl:for-each select="/*/*[local-name()='bibliography']/*">
@@ -921,14 +925,16 @@
 												<xsl:copy-of select="$draft_title"/>
 												<xsl:copy-of select="$draft_title_part"/>
 											</fo:block>
-											<fo:block font-size="1" margin-top="3mm">
+											<xsl:call-template name="addBlueBox"/>
+											<!-- <fo:block font-size="1" margin-top="3mm">
 												<fo:instream-foreign-object content-width="57mm" content-height="3mm" scaling="non-uniform" fox:alt-text="Image Box">
 													<xsl:call-template name="insertImageBoxSVG">
 														<xsl:with-param name="color"><xsl:value-of select="$color_blue"/></xsl:with-param>
 													</xsl:call-template>
 												</fo:instream-foreign-object>
 											</fo:block>
-											<fo:block margin-top="12pt" margin-bottom="12pt">&#xa0;</fo:block>
+											<fo:block margin-top="12pt" margin-bottom="12pt">&#xa0;</fo:block> -->
+											<fo:block margin-bottom="12pt">&#xa0;</fo:block>
 										</xsl:otherwise>
 									</xsl:choose>
 									
@@ -1075,9 +1081,9 @@
 	<xsl:template match="text()" priority="2" mode="uppercase">
 		<xsl:value-of select="java:toUpperCase(java:java.lang.String.new(.))"/>
 	</xsl:template>
-	<xsl:template match="@*|node()" mode="uppercase">
+	<xsl:template match="node()" mode="uppercase">
 		<xsl:copy>
-			<xsl:apply-templates select="@*|node()" mode="uppercase"/>
+			<xsl:apply-templates select="node()" mode="uppercase"/>
 		</xsl:copy>
 	</xsl:template>
 	
@@ -1086,9 +1092,9 @@
 			<xsl:with-param name="text" select="."/>
 		</xsl:call-template>
 	</xsl:template>
-	<xsl:template match="@*|node()" mode="uppercase">
+	<xsl:template match="node()" mode="uppercase">
 		<xsl:copy>
-			<xsl:apply-templates select="@*|node()" mode="smallcaps"/>
+			<xsl:apply-templates select="node()" mode="smallcaps"/>
 		</xsl:copy>
 	</xsl:template>
 	
@@ -1637,8 +1643,14 @@
 	</xsl:template>
 	
 	
-	<xsl:template match="ieee:title[@inline-header = 'true'][following-sibling::*[1][local-name() = 'p']]" priority="3">
+	<xsl:template match="ieee:title[@inline-header = 'true'][following-sibling::*[1][local-name() = 'p'] or following-sibling::*[1][local-name() = 'clause'] or not(following-sibling::*)]" priority="3">
 		<fo:block>
+			<xsl:attribute name="space-before">
+				<xsl:call-template name="getTitleMarginTop"/>
+			</xsl:attribute>
+			<xsl:attribute name="margin-bottom">
+				<xsl:call-template name="getTitleMarginBottom"/>
+			</xsl:attribute>
 			<xsl:call-template name="title"/>
 			<xsl:apply-templates select="following-sibling::*[1][local-name() = 'p']"/>
 		</fo:block>
@@ -1652,11 +1664,52 @@
 		</fo:block-container>
 	</xsl:template>
 	
+	<xsl:template name="getTitleMarginTop">
+		<xsl:variable name="level">
+			<xsl:call-template name="getLevel"/>
+		</xsl:variable>
+		<xsl:choose>
+			<xsl:when test="$doctype = 'whitepaper' or $doctype = 'icap-whitepaper' or $doctype = 'industry-connection-report'">
+				<xsl:choose>
+					<xsl:when test="$level = 2">22.4pt</xsl:when>
+					<xsl:when test="$level = 3">4.6pt</xsl:when>
+					<xsl:otherwise>0mm</xsl:otherwise>
+				</xsl:choose>
+			</xsl:when>
+			<xsl:otherwise>
+				<xsl:choose>
+					<xsl:when test="$level = 1">18pt</xsl:when>
+					<xsl:when test="$level = 2">18pt</xsl:when>
+					<xsl:when test="$level &gt;= 3">12pt</xsl:when>
+					<xsl:otherwise>0mm</xsl:otherwise>
+				</xsl:choose>
+			</xsl:otherwise>
+		</xsl:choose>
+	</xsl:template>
+	
+	<xsl:template name="getTitleMarginBottom">
+		<xsl:choose>
+			<xsl:when test="$doctype = 'whitepaper' or $doctype = 'icap-whitepaper' or $doctype = 'industry-connection-report'">
+				<xsl:choose>
+					<xsl:when test="ancestor::ieee:abstract">6pt</xsl:when>
+					<xsl:otherwise>12pt</xsl:otherwise>
+				</xsl:choose>
+			</xsl:when>
+			<xsl:otherwise>12pt</xsl:otherwise>
+		</xsl:choose>
+	</xsl:template>
 	
 	<xsl:template match="ieee:title" priority="2" name="title">
 	
 		<xsl:variable name="level">
 			<xsl:call-template name="getLevel"/>
+		</xsl:variable>
+		
+		<xsl:variable name="font-family">
+			<xsl:choose>
+				<xsl:when test="$doctype = 'whitepaper' or $doctype = 'icap-whitepaper' or $doctype = 'industry-connection-report'">Arial Black</xsl:when>
+				<xsl:otherwise>Arial</xsl:otherwise>
+			</xsl:choose>
 		</xsl:variable>
 		
 		<xsl:variable name="font-size">
@@ -1681,38 +1734,24 @@
 			</xsl:choose>
 		</xsl:variable>
 		
-		<xsl:variable name="font-weight">bold</xsl:variable>
-		
-		<xsl:variable name="margin-top">
+		<xsl:variable name="font-weight">
 			<xsl:choose>
-				<xsl:when test="$doctype = 'whitepaper' or $doctype = 'icap-whitepaper' or $doctype = 'industry-connection-report'">
-					<xsl:choose>
-						<xsl:when test="$level = 2">22.4pt</xsl:when>
-						<xsl:when test="$level = 3">4.6pt</xsl:when>
-						<xsl:otherwise>0mm</xsl:otherwise>
-					</xsl:choose>
-				</xsl:when>
+				<xsl:when test="$doctype = 'whitepaper' or $doctype = 'icap-whitepaper' or $doctype = 'industry-connection-report'">normal</xsl:when>
 				<xsl:otherwise>
 					<xsl:choose>
-						<xsl:when test="$level = 1">18pt</xsl:when>
-						<xsl:when test="$level = 2">18pt</xsl:when>
-						<xsl:when test="$level &gt;= 3">12pt</xsl:when>
-						<xsl:otherwise>0mm</xsl:otherwise>
+						<xsl:when test="@ancestor = 'annex' and $level = 1">normal</xsl:when>
+						<xsl:otherwise>bold</xsl:otherwise>
 					</xsl:choose>
 				</xsl:otherwise>
 			</xsl:choose>
 		</xsl:variable>
 		
+		<xsl:variable name="margin-top">
+			<xsl:call-template name="getTitleMarginTop"/>
+		</xsl:variable>
+		
 		<xsl:variable name="margin-bottom">
-			<xsl:choose>
-				<xsl:when test="$doctype = 'whitepaper' or $doctype = 'icap-whitepaper' or $doctype = 'industry-connection-report'">
-					<xsl:choose>
-						<xsl:when test="ancestor::ieee:abstract">6pt</xsl:when>
-						<xsl:otherwise>12pt</xsl:otherwise>
-					</xsl:choose>
-				</xsl:when>
-				<xsl:otherwise>12pt</xsl:otherwise>
-			</xsl:choose>
+			<xsl:call-template name="getTitleMarginBottom"/>
 		</xsl:variable>
 			<!-- <xsl:choose>
 				<xsl:when test="$level = 1">12pt</xsl:when>
@@ -1729,25 +1768,19 @@
 		
 		<xsl:variable name="attributes_">
 			<attributes>
-				<xsl:attribute name="font-family">Arial</xsl:attribute>
-					<xsl:if test="$doctype = 'whitepaper' or $doctype = 'icap-whitepaper' or $doctype = 'industry-connection-report'">
-						<xsl:attribute name="font-family">Arial Black</xsl:attribute>
-					</xsl:if>
-					<xsl:attribute name="font-size"><xsl:value-of select="$font-size"/></xsl:attribute>
-					<xsl:attribute name="font-weight"><xsl:value-of select="$font-weight"/></xsl:attribute>
-					<xsl:if test="$doctype = 'whitepaper' or $doctype = 'icap-whitepaper' or $doctype = 'industry-connection-report'">
-						<xsl:attribute name="font-weight">normal</xsl:attribute>
-					</xsl:if>
-					<xsl:attribute name="space-before"><xsl:value-of select="$margin-top"/></xsl:attribute>
-					<xsl:attribute name="margin-bottom"><xsl:value-of select="$margin-bottom"/></xsl:attribute>
-					<xsl:attribute name="keep-with-next">always</xsl:attribute>
-					<xsl:attribute name="keep-together.within-column">always</xsl:attribute>
-					
-					<xsl:attribute name="role">H<xsl:value-of select="$level"/></xsl:attribute>
-					
-					<xsl:if test="@type = 'floating-title' or @type = 'section-title'">
-						<xsl:copy-of select="@id"/>
-					</xsl:if>
+				<xsl:attribute name="font-family"><xsl:value-of select="$font-family"/></xsl:attribute>
+				<xsl:attribute name="font-size"><xsl:value-of select="$font-size"/></xsl:attribute>
+				<xsl:attribute name="font-weight"><xsl:value-of select="$font-weight"/></xsl:attribute>
+				<xsl:attribute name="space-before"><xsl:value-of select="$margin-top"/></xsl:attribute>
+				<xsl:attribute name="margin-bottom"><xsl:value-of select="$margin-bottom"/></xsl:attribute>
+				<xsl:attribute name="keep-with-next">always</xsl:attribute>
+				<xsl:attribute name="keep-together.within-column">always</xsl:attribute>
+				
+				<xsl:attribute name="role">H<xsl:value-of select="$level"/></xsl:attribute>
+				
+				<xsl:if test="@type = 'floating-title' or @type = 'section-title'">
+					<xsl:copy-of select="@id"/>
+				</xsl:if>
 			</attributes>
 		</xsl:variable>
 		<xsl:variable name="attributes" select="xalan:nodeset($attributes_)"/>
@@ -1820,18 +1853,36 @@
 			
 			
 		<xsl:if test="($doctype = 'whitepaper' or $doctype = 'icap-whitepaper' or $doctype = 'industry-connection-report') and preceding-sibling::*[1][self::ieee:references[@normative = 'false']]">
-			<fo:block font-size="1" margin-top="3mm" margin-bottom="3mm">
-				<fo:instream-foreign-object content-width="57mm" content-height="3mm" scaling="non-uniform" fox:alt-text="Image Box">
-					<xsl:call-template name="insertImageBoxSVG">
-						<xsl:with-param name="color"><xsl:value-of select="$color_blue"/></xsl:with-param>
-					</xsl:call-template>
-				</fo:instream-foreign-object>
-			</fo:block>
+			<xsl:call-template name="addBlueBox"/>
 		</xsl:if>
 			
 	</xsl:template>
 	
 	
+	<xsl:template name="addBlueBox">
+		<xsl:param name="width">57mm</xsl:param>
+		<xsl:param name="height">3mm</xsl:param>
+		<fo:block font-size="1" margin-top="3mm" margin-bottom="3mm">
+			<fo:instream-foreign-object content-width="57mm" content-height="3mm" scaling="non-uniform" fox:alt-text="Image Box">
+				<xsl:call-template name="insertImageBoxSVG">
+					<xsl:with-param name="color"><xsl:value-of select="$color_blue"/></xsl:with-param>
+				</xsl:call-template>
+			</fo:instream-foreign-object>
+		</fo:block>
+	</xsl:template>
+	
+	<!-- add blue box after first break in Annex title -->
+	<xsl:template match="*[local-name()='br'][not(preceding-sibling::ieee:br)][ancestor::ieee:title[preceding-sibling::*[1][self::ieee:annex]]]" priority="2">
+		<xsl:choose>
+			<xsl:when test="($doctype = 'whitepaper' or $doctype = 'icap-whitepaper' or $doctype = 'industry-connection-report') ">
+				<xsl:call-template name="addBlueBox"/>
+			</xsl:when>
+			<xsl:otherwise>
+				<xsl:value-of select="$linebreak"/>
+			</xsl:otherwise>
+			
+		</xsl:choose>
+	</xsl:template>
 	
 	<xsl:template match="ieee:term" priority="2">
 	
