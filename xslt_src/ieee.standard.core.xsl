@@ -400,7 +400,9 @@
 						</xsl:when>
 						
 						<xsl:when test="$doctype = 'whitepaper' or $doctype = 'icap-whitepaper'">
-							<xsl:call-template name="insertCoverPage_Whitepaper"/>
+							<xsl:call-template name="insertCoverPage_Whitepaper">
+								<xsl:with-param name="title" select="$title"/>
+							</xsl:call-template>
 						</xsl:when>
 						
 					</xsl:choose>
@@ -2766,6 +2768,7 @@
 	</xsl:template> <!-- insertCoverPage_IndustryConnectionReport -->
 	
 	<xsl:template name="insertCoverPage_Whitepaper">
+		<xsl:param name="title"/>
 		<fo:page-sequence master-reference="cover-page-whitepaper" force-page-count="no-force">
 			<fo:static-content flow-name="header" role="artifact">
 				<fo:block-container position="absolute" left="65mm"> <!-- top="-2.6mm" -->
@@ -2837,7 +2840,9 @@
 							</xsl:otherwise>
 						</xsl:choose>
 					</fo:block>
-					<fo:block font-size="20pt" space-before="18mm">PAPER TITLE TO GO HERE</fo:block>
+					<fo:block font-size="20pt" space-before="18mm">
+						<xsl:copy-of select="$title"/>
+					</fo:block>
 				</fo:block-container>
 				<fo:block-container font-family="Calibri Light" font-size="12pt" line-height="1.7">
 					<fo:block space-after="6mm">Authored by</fo:block>

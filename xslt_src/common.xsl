@@ -12369,6 +12369,10 @@
 				<label level="2" font-size="10pt">&#x2014;</label><!-- em dash -->
 				<label level="3" font-size="75%">o</label> <!-- white circle -->
 			</xsl:when>
+			<xsl:when test="$namespace = 'ieee'">
+				<label level="1" font-size="18pt" line-height="1.5" color="rgb(128,128,128)">▪</label> <!-- Black small square 25AA -->
+				<label level="2">&#x2014;</label><!-- em dash -->
+			</xsl:when>
 			<xsl:when test="$namespace = 'iho'">
 				<label>&#x2014;</label> <!-- em dash -->
 			</xsl:when>
