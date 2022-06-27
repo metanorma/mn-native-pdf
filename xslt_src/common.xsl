@@ -13054,7 +13054,7 @@
 	<xsl:template match="*[local-name() = 'references']">
 		<xsl:if test="not(ancestor::*[local-name() = 'annex'])">
 			<xsl:choose>
-				<xsl:when test="$namespace = 'bsi' or $namespace = 'iho' or $namespace = 'nist-cswp' or $namespace = 'nist-sp' or $namespace = 'unece' or $namespace = 'unece-rec'"></xsl:when>
+				<xsl:when test="$namespace = 'bsi' or $namespace = 'ieee' or $namespace = 'iho' or $namespace = 'nist-cswp' or $namespace = 'nist-sp' or $namespace = 'unece' or $namespace = 'unece-rec'"></xsl:when>
 				<xsl:otherwise>
 					<fo:block break-after="page"/>
 				</xsl:otherwise>
