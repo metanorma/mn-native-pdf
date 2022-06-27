@@ -253,11 +253,12 @@
 						</xsl:call-template>
 					</xsl:variable>
 					<xsl:variable name="draft_year" select="substring($revision_month, 1, 4)"/>
-					<xsl:variable name="doctype_localized">
+					<!-- <xsl:variable name="doctype_localized">
 						<xsl:call-template name="getLocalizedString">
 							<xsl:with-param name="key">doctype_abbrev.<xsl:value-of select="$doctype"/></xsl:with-param>
 						</xsl:call-template>
-					</xsl:variable>
+					</xsl:variable> -->
+					<xsl:variable name="doctype_localized" select="/ieee:ieee-standard/ieee:bibdata/ieee:ext/ieee:doctype[@language = $lang]"/>
 					
 					<xsl:variable name="title"><xsl:apply-templates select="/ieee:ieee-standard/ieee:bibdata/ieee:title/node()"/></xsl:variable> <!-- [@language = 'main-en'] -->
 					<xsl:variable name="copyright_year" select="/ieee:ieee-standard/ieee:bibdata/ieee:copyright/ieee:from"/>
@@ -279,7 +280,7 @@
 						<xsl:value-of select="$doctype_localized"/>
 						<xsl:if test="normalize-space($doctype_localized) = ''">
 							<xsl:choose>
-								<xsl:when test="$doctype = 'international-standard'">Standard</xsl:when>
+								<xsl:when test="$doctype = 'standard'">Standard</xsl:when>
 							</xsl:choose>
 						</xsl:if>
 						<xsl:text> for </xsl:text>
