@@ -14658,7 +14658,7 @@
 										<xsl:value-of select="*[local-name() = 'title'][@language = $lang and @type = 'part']"/>
 									</xsl:when>
 									<xsl:when test="$namespace = 'ieee'">
-										<xsl:variable name="full_title">
+										<!-- <xsl:variable name="full_title">
 											<item>
 												<xsl:value-of select="*[local-name() = 'title'][@language = 'intro-en']"/>
 											</item>
@@ -14672,7 +14672,8 @@
 										<xsl:for-each select="xalan:nodeset($full_title)/item[normalize-space() != '']">
 											<xsl:value-of select="."/>
 											<xsl:if test="position() != last()"> - </xsl:if>
-										</xsl:for-each>
+										</xsl:for-each> -->
+										<xsl:value-of select="*[local-name() = 'title']"/>
 									</xsl:when>
 									<xsl:when test="$namespace = 'iho' or $namespace = 'csa' or $namespace = 'csd' or $namespace = 'rsd' or $namespace = 'ogc' or $namespace = 'ogc-white-paper' or $namespace = 'mpfd'">								
 										<xsl:value-of select="*[local-name() = 'title'][@language = $lang]"/>

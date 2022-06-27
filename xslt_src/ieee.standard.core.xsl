@@ -61,7 +61,9 @@
 
 	<xsl:variable name="doctype" select="(//ieee:ieee-standard)[1]/ieee:bibdata/ieee:ext/ieee:doctype[normalize-space(@language) = '']"/>
 	
-	<xsl:variable name="isDraft" select="normalize-space(normalize-space((//ieee:ieee-standard)[1]/ieee:bibdata/ieee:version/ieee:draft) != '')"/>
+	<!-- <xsl:variable name="isDraft" select="normalize-space(normalize-space((//ieee:ieee-standard)[1]/ieee:bibdata/ieee:version/ieee:draft) != '')"/> -->
+	
+	<xsl:variable name="stage" select="normalize-space((//ieee:ieee-standard)[1]/ieee:bibdata/ieee:status/ieee:stage)"/>
 	
 	<xsl:variable name="color_blue">rgb(0,176,240)</xsl:variable>
 	
@@ -83,7 +85,7 @@
 				<xsl:with-param name="root-style" select="$root-style"/>
 			</xsl:call-template>
 			
-			<xsl:if test="//ieee:ieee-standard/ieee:bibdata[ieee:ext/ieee:doctype = 'international-standard' and ieee:version/ieee:draft]">
+			<xsl:if test="$stage = 'draft'"> <!-- //ieee:ieee-standard/ieee:bibdata[ieee:ext/ieee:doctype = 'international-standard' and ieee:version/ieee:draft] -->
 				<xsl:processing-instruction name="add_line_numbers">true</xsl:processing-instruction>
 			</xsl:if>
 			
@@ -251,9 +253,13 @@
 						</xsl:call-template>
 					</xsl:variable>
 					<xsl:variable name="draft_year" select="substring($revision_month, 1, 4)"/>
-					<xsl:variable name="doctype_localized" select="/ieee:ieee-standard/ieee:bibdata/ieee:ext/ieee:doctype[@language = $lang]"/>
+					<xsl:variable name="doctype_localized">
+						<xsl:call-template name="getLocalizedString">
+							<xsl:with-param name="key">doctype_abbrev.<xsl:value-of select="$doctype"/></xsl:with-param>
+						</xsl:call-template>
+					</xsl:variable>
 					
-					<xsl:variable name="title"><xsl:apply-templates select="/ieee:ieee-standard/ieee:bibdata/ieee:title[@language = 'main-en']/node()"/></xsl:variable>
+					<xsl:variable name="title"><xsl:apply-templates select="/ieee:ieee-standard/ieee:bibdata/ieee:title/node()"/></xsl:variable> <!-- [@language = 'main-en'] -->
 					<xsl:variable name="copyright_year" select="/ieee:ieee-standard/ieee:bibdata/ieee:copyright/ieee:from"/>
 					<xsl:variable name="copyright_holder" select="/ieee:ieee-standard/ieee:bibdata/ieee:copyright/ieee:owner/ieee:organization/ieee:abbreviation"/>
 					
@@ -280,14 +286,14 @@
 						<xsl:copy-of select="$title"/>
 					</xsl:variable>
 					
-					<xsl:variable name="draft_title_part">
+					<!-- <xsl:variable name="draft_title_part">
 						<xsl:if test="/ieee:ieee-standard/ieee:bibdata/ieee:title[@language = 'part-en']">
 							<xsl:text>&#xa0;—&#xa0;</xsl:text>
 							<xsl:value-of select="$linebreak"/>
 							<xsl:value-of select="$linebreak"/>
 							<xsl:apply-templates select="/ieee:ieee-standard/ieee:bibdata/ieee:title[@language = 'part-en']/node()"/>
 						</xsl:if>
-					</xsl:variable>
+					</xsl:variable> -->
 					
 					<xsl:variable name="standard_number">IEEE Std 802.1X™-2020</xsl:variable>
 					
@@ -300,7 +306,7 @@
 					<!-- ======================= -->
 					<xsl:choose>
 					
-						<xsl:when test="$doctype = 'international-standard' and $isDraft = 'true'">
+						<xsl:when test="$stage = 'draft'"> <!-- $doctype = 'international-standard' and $isDraft = 'true' -->
 							<!-- 'Draft' first page -->
 							<fo:page-sequence master-reference="document-draft" force-page-count="no-force">
 								
@@ -326,7 +332,7 @@
 												<xsl:value-of select="$draft_number"/>
 												<xsl:value-of select="$linebreak"/>
 												<xsl:copy-of select="$draft_title"/>
-												<xsl:copy-of select="$draft_title_part"/>
+												<!-- <xsl:copy-of select="$draft_title_part"/> -->
 											</fo:block>
 											<fo:block>Developed by the</fo:block>
 											<fo:block>&#xa0;</fo:block>
@@ -388,7 +394,7 @@
 							</fo:page-sequence> <!-- End: 'Draft' first page -->
 						</xsl:when>
 					
-						<xsl:when test="$doctype = 'international-standard' and $isDraft = 'false'">
+						<xsl:when test="$stage != 'draft' and $doctype = 'standard'"><!--  $doctype = 'international-standard' and $isDraft = 'false' -->
 							<xsl:call-template name="insertCoverPage_Standard">
 								<xsl:with-param name="standard_number" select="$standard_number"/>
 								<xsl:with-param name="history" select="$history"/>
@@ -416,7 +422,7 @@
 					<!-- =================== -->
 					<xsl:choose>
 					
-						<xsl:when test="$doctype = 'international-standard' and $isDraft = 'true'">
+						<xsl:when test="$stage = 'draft'"><!-- $doctype = 'international-standard' and $isDraft = 'true' -->
 							<!-- Legal statement -->
 							<fo:page-sequence master-reference="document-draft" force-page-count="no-force" format="1">
 								<xsl:call-template name="insertFootnoteSeparator"/>
@@ -442,10 +448,10 @@
 								
 							</fo:page-sequence> <!-- End: Legal statement -->
 						
-						</xsl:when> <!-- $doctype = 'international-standard' and $isDraft = 'true' -->
+						</xsl:when> <!-- $stage = 'draft' -->
 					
 					
-						<xsl:when test="$doctype = 'international-standard' and $isDraft = 'false'">
+						<xsl:when test="$stage != 'draft' and $doctype = 'standard'"><!-- $doctype = 'international-standard' and $isDraft = 'false' -->
 							<fo:page-sequence master-reference="document" force-page-count="no-force" font-family="Arial" initial-page-number="1">
 							
 								<xsl:call-template name="insertHeaderFooter">
@@ -479,7 +485,7 @@
 								</fo:flow>
 								
 							</fo:page-sequence>
-						</xsl:when> <!-- $doctype = 'international-standard' and $isDraft = 'false' -->
+						</xsl:when> <!-- $stage != 'draft' -->
 						
 						
 						<xsl:when test="$doctype = 'whitepaper' or $doctype = 'icap-whitepaper' or $doctype = 'industry-connection-report'">
@@ -566,7 +572,7 @@
 					
 					<xsl:choose>
 					
-						<xsl:when test="$doctype = 'international-standard' and $isDraft = 'true'">
+						<xsl:when test="$stage = 'draft'"><!-- $doctype = 'international-standard' and $isDraft = 'true' -->
 							<fo:page-sequence master-reference="document-draft" id="prefaceSequence"> <!-- format="i" initial-page-number="1" -->
 						
 								<xsl:call-template name="insertFootnoteSeparator"/>
@@ -658,7 +664,7 @@
 									
 								</fo:flow>
 							</fo:page-sequence>
-						</xsl:when> <!-- $doctype = 'international-standard' and $isDraft = 'true' -->
+						</xsl:when> <!-- $stage = 'draft' -->
 					
 					
 						<xsl:when test="$doctype = 'whitepaper' or $doctype = 'icap-whitepaper' or $doctype = 'industry-connection-report'">
@@ -802,7 +808,7 @@
 					<xsl:variable name="structured_xml_">
 						
 						<xsl:choose>
-							<xsl:when test="($doctype = 'international-standard' and $isDraft = 'false') or $doctype = 'whitepaper' or $doctype = 'icap-whitepaper' or $doctype = 'industry-connection-report'">
+							<xsl:when test="($stage != 'draft' and $doctype = 'standard') or $doctype = 'whitepaper' or $doctype = 'icap-whitepaper' or $doctype = 'industry-connection-report'"><!-- $doctype = 'international-standard' and $isDraft = 'false' -->
 							
 								<item>
 									<xsl:apply-templates select="/ieee:ieee-standard/ieee:preface/ieee:abstract" mode="flatxml"/>
@@ -882,7 +888,7 @@
 							<xsl:call-template name="insertFootnoteSeparator"/>
 							
 							<xsl:choose>
-								<xsl:when test="$doctype = 'international-standard' and $isDraft = 'true'">
+								<xsl:when test="$stage = 'draft'"><!-- $doctype = 'international-standard' and $isDraft = 'true' -->
 									<xsl:call-template name="insertHeaderFooter">
 										<xsl:with-param name="draft_id" select="$draft_id"/>
 										<xsl:with-param name="draft_title" select="$draft_title"/>
@@ -910,10 +916,10 @@
 								<xsl:if test="position() = 1">
 									
 									<xsl:choose>
-										<xsl:when test="$doctype = 'international-standard' and $isDraft = 'true'">
+										<xsl:when test="$stage = 'draft'"><!-- $doctype = 'international-standard' and $isDraft = 'true' -->
 											<fo:block font-family="Arial" font-size="23pt" font-weight="bold" margin-top="70pt" margin-bottom="48pt">
 												<xsl:copy-of select="$draft_title"/>
-												<xsl:copy-of select="$draft_title_part"/>
+												<!-- <xsl:copy-of select="$draft_title_part"/> -->
 											</fo:block>
 										</xsl:when>
 										
@@ -925,7 +931,7 @@
 										
 											<fo:block font-family="Arial Black" font-size="20pt">
 												<xsl:copy-of select="$draft_title"/>
-												<xsl:copy-of select="$draft_title_part"/>
+												<!-- <xsl:copy-of select="$draft_title_part"/> -->
 											</fo:block>
 											<xsl:call-template name="addBlueBox"/>
 											<!-- <fo:block font-size="1" margin-top="3mm">
@@ -956,7 +962,7 @@
 					<!-- Back page -->
 					<!-- ======================= -->
 					<xsl:choose>
-						<xsl:when test="$doctype = 'standard'">
+						<xsl:when test="$doctype = 'standard' and $stage != 'draft'">
 							<xsl:call-template name="insertBackPage_Standard"/>
 						</xsl:when>
 						<xsl:when test="$doctype = 'industry-connection-report'">
@@ -2409,11 +2415,11 @@
 				</xsl:when>
 				<xsl:otherwise>
 					<fo:block text-align="center" margin-bottom="12.7mm">
-						<xsl:if test="$doctype = 'standard'">
+						<xsl:if test="$doctype = 'standard' and $stage != 'draft'">
 							<xsl:attribute name="margin-bottom">8.5mm</xsl:attribute>
 						</xsl:if>
 						<fo:block> <!-- font-weight="bold" -->
-							<xsl:if test="$doctype = 'standard'">
+							<xsl:if test="$doctype = 'standard' and $stage != 'draft'">
 								<xsl:attribute name="font-family">Times New Roman</xsl:attribute>
 								<xsl:attribute name="font-weight">normal</xsl:attribute>
 							</xsl:if>
@@ -2425,7 +2431,7 @@
 								<xsl:value-of select="$copyrightText"/>
 							</fo:block>
 							<xsl:choose>
-								<xsl:when test="$doctype = 'standard'"></xsl:when>
+								<xsl:when test="$doctype = 'standard' and $stage != 'draft'"></xsl:when>
 								<xsl:otherwise>
 									<fo:block>This is an unapproved IEEE Standards Draft, subject to change.</fo:block>
 								</xsl:otherwise>
