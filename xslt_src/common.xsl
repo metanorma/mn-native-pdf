@@ -998,6 +998,7 @@
 		<xsl:if test="$namespace = 'ieee'">
 			<xsl:attribute name="margin-top">8pt</xsl:attribute>
 			<xsl:attribute name="margin-bottom">8pt</xsl:attribute>
+			<xsl:attribute name="text-align">justify</xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'bsi' or $namespace = 'gb' or $namespace = 'iso' or $namespace = 'jcgm'">
 			<xsl:attribute name="font-size">10pt</xsl:attribute>
@@ -1102,6 +1103,7 @@
 		<xsl:if test="$namespace = 'ieee'">
 			<xsl:attribute name="keep-with-next">always</xsl:attribute>
 			<xsl:attribute name="padding-right">9mm</xsl:attribute>
+			<xsl:attribute name="font-style">italic</xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'iho'">
 			<xsl:attribute name="keep-with-next">always</xsl:attribute>
@@ -1226,8 +1228,13 @@
 			<xsl:attribute name="padding-right">1mm</xsl:attribute>
 			<xsl:attribute name="font-family">SimHei</xsl:attribute>			
 		</xsl:if>
-		<xsl:if test="$namespace = 'bsi' or $namespace = 'ieee' or $namespace = 'iho' or $namespace = 'iso' or $namespace = 'jcgm'">
+		<xsl:if test="$namespace = 'bsi' or $namespace = 'iho' or $namespace = 'iso' or $namespace = 'jcgm'">
 			<xsl:attribute name="padding-right">5mm</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'ieee'">
+			<xsl:attribute name="keep-with-next">always</xsl:attribute>
+			<xsl:attribute name="padding-right">9mm</xsl:attribute>
+			<xsl:attribute name="font-style">italic</xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'm3d'">
 			<xsl:attribute name="padding-right">1mm</xsl:attribute>
@@ -2294,9 +2301,12 @@
 			<xsl:attribute name="line-height">125%</xsl:attribute>
 			<xsl:attribute name="text-align">justify</xsl:attribute>			
 		</xsl:if>
-		<xsl:if test="$namespace = 'iec'">			
+		<xsl:if test="$namespace = 'iec'">
 			<xsl:attribute name="margin-top">5pt</xsl:attribute>
-		</xsl:if>		
+		</xsl:if>
+		<xsl:if test="$namespace = 'ieee'">
+			<xsl:attribute name="text-align">justify</xsl:attribute>
+		</xsl:if>
 		<xsl:if test="$namespace = 'iho'">			
 			<xsl:attribute name="margin-top">8pt</xsl:attribute>
 			<xsl:attribute name="margin-bottom">8pt</xsl:attribute>			
@@ -2347,6 +2357,12 @@
 			<xsl:attribute name="font-size">10pt</xsl:attribute>			
 			<xsl:attribute name="margin-bottom">12pt</xsl:attribute>
 		</xsl:if>
+		<xsl:if test="$namespace = 'ieee'">
+			<xsl:attribute name="font-size">9pt</xsl:attribute>
+			<xsl:attribute name="margin-top">12pt</xsl:attribute>
+			<xsl:attribute name="margin-bottom">12pt</xsl:attribute>
+			<xsl:attribute name="text-align">justify</xsl:attribute>
+		</xsl:if>		
 		<xsl:if test="$namespace = 'iec'">
 			<xsl:attribute name="font-size">8pt</xsl:attribute>
 			<xsl:attribute name="margin-top">5pt</xsl:attribute>
@@ -9452,6 +9468,9 @@
 					</xsl:if>
 				</xsl:if>
 
+				<xsl:if test="$namespace = 'ieee'">
+					<xsl:attribute name="padding-right">0mm</xsl:attribute>
+				</xsl:if>
 				
 				<!-- if 'p' contains all text in 'add' first and last elements in first p are 'add' -->
 				<!-- <xsl:if test="*[not(local-name()='name')][1][node()[normalize-space() != ''][1][local-name() = 'add'] and node()[normalize-space() != ''][last()][local-name() = 'add']]"> -->
@@ -9476,6 +9495,9 @@
 					<xsl:value-of select="$sfx"/>					
 				</xsl:when>
 				<xsl:otherwise>
+					<xsl:if test="$namespace = 'ieee'">
+						<xsl:text>—</xsl:text>
+					</xsl:if>
 					<xsl:if test="$namespace = 'gb' or $namespace = 'm3d' or  $namespace = 'ogc' or $namespace = 'unece-rec' or $namespace = 'unece'  or $namespace = 'bipm' or $namespace = 'rsd'">
 						<xsl:text>:</xsl:text>
 					</xsl:if>
@@ -9499,6 +9521,9 @@
 					<xsl:value-of select="$sfx"/>					
 				</xsl:when>
 				<xsl:otherwise>
+					<xsl:if test="$namespace = 'ieee'">
+						<xsl:text>—</xsl:text>
+					</xsl:if>
 					<xsl:if test="$namespace = 'gb' or $namespace = 'iso' or $namespace = 'iec' or $namespace = 'ogc' or $namespace = 'ogc-white-paper' or $namespace = 'bipm' or $namespace = 'jcgm' or $namespace = 'rsd'">
 						<xsl:text>:</xsl:text>
 					</xsl:if>
@@ -11432,7 +11457,7 @@
 	<xsl:template match="*[local-name() = 'termexample']/*[local-name() = 'name']">
 		<xsl:if test="normalize-space() != ''">
 			<fo:inline xsl:use-attribute-sets="termexample-name-style">
-				<xsl:apply-templates /><xsl:if test="$namespace = 'rsd'">: </xsl:if>
+				<xsl:apply-templates /><xsl:if test="$namespace = 'ieee' or $namespace = 'rsd'">: </xsl:if>
 			</fo:inline>
 		</xsl:if>
 	</xsl:template>
@@ -11440,10 +11465,18 @@
 	<xsl:template match="*[local-name() = 'termexample']/*[local-name() = 'p']">
 		<xsl:variable name="element">inline
 			<xsl:if test="$namespace = 'bsi'">block</xsl:if>
+			<xsl:if test="$namespace = 'ieee'">block</xsl:if>
 		</xsl:variable>		
 		<xsl:choose>			
 			<xsl:when test="contains($element, 'block')">
 				<fo:block xsl:use-attribute-sets="example-p-style">
+				
+					<xsl:if test="$namespace = 'ieee'">
+						<xsl:if test="not(preceding-sibling::*[local-name() = 'p'])">
+							<xsl:attribute name="margin-top">6pt</xsl:attribute>
+						</xsl:if>
+					</xsl:if>
+						
 					<xsl:apply-templates/>
 				</fo:block>
 			</xsl:when>
@@ -11569,7 +11602,7 @@
 			</xsl:when>
 			<xsl:otherwise>
 				<fo:inline xsl:use-attribute-sets="example-name-style">
-					<xsl:apply-templates/><xsl:if test="$namespace = 'ogc' or $namespace = 'rsd'">: </xsl:if>
+					<xsl:apply-templates/><xsl:if test="$namespace = 'ieee' or $namespace = 'ogc' or $namespace = 'rsd'">: </xsl:if>
 				</fo:inline>
 			</xsl:otherwise>
 		</xsl:choose>
@@ -11597,6 +11630,11 @@
 						<xsl:attribute name="margin-right">0mm</xsl:attribute>
 					</xsl:if>
 					<fo:block xsl:use-attribute-sets="example-p-style">
+						<xsl:if test="$namespace = 'ieee'">
+							<xsl:if test="not(preceding-sibling::*[local-name() = 'p'])">
+								<xsl:attribute name="margin-top">6pt</xsl:attribute>
+							</xsl:if>
+						</xsl:if>
 						<xsl:if test="$namespace = 'nist-cswp' or $namespace = 'unece' or $namespace = 'unece-rec'">
 							<xsl:if test="$num = 1">
 								<xsl:attribute name="margin-left">5mm</xsl:attribute>

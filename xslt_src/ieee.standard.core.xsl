@@ -2169,7 +2169,7 @@
 
 	
 
-
+<!--
 	<xsl:variable name="example_name_width">25</xsl:variable>
 	<xsl:template match="ieee:termexample" priority="2">
 		<fo:block id="{@id}" xsl:use-attribute-sets="termexample-style">
@@ -2208,6 +2208,11 @@
 			</fo:list-block>
 		
 		</fo:block>
+	</xsl:template> -->
+
+	<!-- remove space after 'NOTE' without number -->
+	<xsl:template match="*[local-name() = 'note' or local-name() = 'termnote']/*[local-name() = 'name']/text()" priority="2">
+		<xsl:value-of select="normalize-space()"/>
 	</xsl:template>
 
 	<!-- =================== -->
