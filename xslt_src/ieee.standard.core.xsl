@@ -1039,10 +1039,13 @@
 	
 	<!-- Example: Important Notices and Disclaimers Concerning IEEE Standards Documents -->
 	<xsl:template match="ieee:boilerplate/ieee:legal-statement//ieee:title" priority="3">
-		<fo:block font-family="Arial" font-weight="bold" margin-bottom="12pt" space-before="18pt" keep-with-next="always">
+		<xsl:variable name="level">
+			<xsl:call-template name="getLevel"/>
+		</xsl:variable>
+		<fo:block font-family="Arial" font-weight="bold" margin-bottom="12pt" space-before="18pt" keep-with-next="always" keep-together.within-column="always" role="H{$level}">
 			<xsl:attribute name="font-size">
 				<xsl:choose>
-					<xsl:when test="@depth = '1'">12pt</xsl:when>
+					<xsl:when test="$level = '1'">12pt</xsl:when>
 					<xsl:otherwise>11pt</xsl:otherwise>
 				</xsl:choose>
 			</xsl:attribute>
@@ -2106,7 +2109,23 @@
 	</xsl:template>
 	
 
-	<xsl:template match="*[local-name()='table' or local-name()='figure']/*[local-name() = 'name']/node()[1][self::text()]" priority="2">
+	<!-- <xsl:template match="*[local-name() = 'figure']/*[local-name() = 'name']/text()[1] |
+								*[local-name() = 'image']/*[local-name() = 'name']/text()[1] |
+								*[local-name() = 'table']/*[local-name() = 'name']/text()[1]" priority="2">
+		<xsl:choose>
+			<xsl:when test="($doctype = 'whitepaper' or $doctype = 'icap-whitepaper' or $doctype = 'industry-connection-report') and contains(., ' — ')">
+				<fo:inline color="{$color_blue}"><xsl:value-of select="java:toUpperCase(java:java.lang.String.new(substring-before(., ' — ')))"/></fo:inline> 
+				<xsl:text>&#xa0;&#xa0;</xsl:text>
+				<xsl:value-of select="substring-after(., ' — ')"/>			
+			</xsl:when>
+			<xsl:otherwise>
+				<xsl:value-of select="."/>
+			</xsl:otherwise>
+		</xsl:choose>
+	</xsl:template> -->
+
+
+	<xsl:template match="*[local-name()='table' or local-name()='figure' or local-name() = 'image']/*[local-name() = 'name']/node()[1][self::text()]" priority="2">
 		<xsl:choose>
 			<xsl:when test="contains(., '—')">
 				<xsl:variable name="substring_after" select="substring-after(., '—')"/>
@@ -2114,9 +2133,20 @@
 					<xsl:when test="ancestor::ieee:table/@unnumbered = 'true' and normalize-space($substring_after) = 'Key'"><!-- no display Table - --></xsl:when>
 					<xsl:otherwise>
 						<fo:inline font-weight="bold" font-style="normal">
-							<xsl:value-of select="substring-before(., '—')"/>
+							<xsl:choose>
+								<xsl:when test="$doctype = 'whitepaper' or $doctype = 'icap-whitepaper' or $doctype = 'industry-connection-report'">
+									<!-- Figure N in blue color -->
+									<xsl:attribute name="color"><xsl:value-of select="$color_blue"/></xsl:attribute>
+									<xsl:value-of select="java:toUpperCase(java:java.lang.String.new(substring-before(., '—')))"/> <!-- 'FIgure' 1 to 'FIGURE A' -->
+								</xsl:when>
+								<xsl:otherwise>
+									<xsl:value-of select="substring-before(., '—')"/>
+								</xsl:otherwise>
+							</xsl:choose>
 						</fo:inline>
-						<xsl:text>—</xsl:text>
+						<xsl:if test="not($doctype = 'whitepaper' or $doctype = 'icap-whitepaper' or $doctype = 'industry-connection-report')">
+							<xsl:text>—</xsl:text>
+						</xsl:if>
 					</xsl:otherwise>
 				</xsl:choose>
 				<xsl:value-of select="$substring_after"/>
@@ -2280,24 +2310,7 @@
 		<fo:block break-after="page"/>
 	</xsl:template>
 
-	<!-- Figure N in blue color -->
-	<xsl:template match="*[local-name() = 'figure']/*[local-name() = 'name']/text()[1] |
-								*[local-name() = 'image']/*[local-name() = 'name']/text()[1] |
-								*[local-name() = 'table']/*[local-name() = 'name']/text()[1]" priority="2">
-		<xsl:choose>
-			<xsl:when test="($doctype = 'whitepaper' or $doctype = 'icap-whitepaper' or $doctype = 'industry-connection-report') and contains(., ' — ')">
-				<fo:inline color="{$color_blue}"><xsl:value-of select="java:toUpperCase(java:java.lang.String.new(substring-before(., ' — ')))"/></fo:inline> <!-- 'FIgure' 1 to 'FIGURE A' -->
-				<xsl:text>&#xa0;&#xa0;</xsl:text>
-				<xsl:value-of select="substring-after(., ' — ')"/>			
-			</xsl:when>
-			<xsl:otherwise>
-				<xsl:value-of select="."/>
-			</xsl:otherwise>
-		</xsl:choose>
-	</xsl:template>
 	
-
-
 	<xsl:template name="insertFootnoteSeparator">
 		<fo:static-content flow-name="xsl-footnote-separator">
 			<fo:block>
