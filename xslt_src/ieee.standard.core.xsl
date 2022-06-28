@@ -1074,22 +1074,99 @@
 	</xsl:template>
 	
 	<xsl:template match="ieee:boilerplate/ieee:legal-statement//ieee:p" priority="2">
-		<fo:block space-after="12pt">
-			<xsl:if test="@align = 'center' and ancestor::ieee:clause[@id = 'boilerplate-participants' or ieee:title = 'Participants'] and following-sibling::*[1][self::ieee:p and @align = 'center']">
-				<xsl:attribute name="space-after">0</xsl:attribute>
-			</xsl:if>
-			<xsl:call-template name="setTextAlignment">
-				<xsl:with-param name="default">justify</xsl:with-param>
-			</xsl:call-template>
+		<xsl:choose>
+			<xsl:when test="@type = 'officemember' and not(preceding-sibling::*[1][self::ieee:p][@type = 'officemember'])"> <!-- special case -->
 			
-			<xsl:if test="$doctype = 'whitepaper' or $doctype = 'icap-whitepaper'">
-				<xsl:attribute name="font-size">10pt</xsl:attribute>
-				<xsl:attribute name="font-family">Calibri Light</xsl:attribute>
-				<xsl:attribute name="line-height"><xsl:value-of select="$line-height"/></xsl:attribute>
-			</xsl:if>
+				<xsl:variable name="officemembers_">
+					<officemember><xsl:copy-of select="node()"/></officemember>
+					<xsl:variable name="pos_curr" select="count(preceding-sibling::*) + 1"/>
+					<xsl:variable name="pos_end" select="count(following-sibling::*[not(@type = 'officemember')][1]/preceding-sibling::*)"/>
+					<xsl:variable name="p_count" select="$pos_end - $pos_curr"/>
+					<xsl:for-each select="following-sibling::ieee:p[position() &lt;= $p_count]">
+						<officemember><xsl:copy-of select="node()"/></officemember>
+					</xsl:for-each>
+				</xsl:variable>
+				<xsl:variable name="officemembers" select="xalan:nodeset($officemembers_)"/>
+				
+				<xsl:variable name="officemembers_count" select="count($officemembers/officemember)"/>
+				
+				<xsl:variable name="mod" select="$officemembers_count mod 3"/>
+				<xsl:variable name="floor" select="floor($officemembers_count div 3)"/>
+				
+				<xsl:variable name="max">
+					<xsl:choose>
+						<xsl:when test="$mod = 0"><xsl:value-of select="$officemembers_count div 3"/></xsl:when>
+						<xsl:otherwise><xsl:value-of select="$floor + 1"/></xsl:otherwise>
+					</xsl:choose>
+				</xsl:variable>
+				
+				<!-- <fo:block>officemembers_count=<xsl:value-of select="$officemembers_count"/></fo:block>
+				<fo:block>mod=<xsl:value-of select="$mod"/></fo:block>
+				<fo:block>floor=<xsl:value-of select="$floor"/></fo:block>
+				<fo:block>max=<xsl:value-of select="$max"/></fo:block> -->
+				
+				<fo:block font-size="9pt">
+					<fo:block>&#xa0;</fo:block>
+					<fo:table width="100%" table-layout="fixed">
+						<fo:table-column column-width="proportional-column-width(55)"/>
+						<fo:table-column column-width="proportional-column-width(55)"/>
+						<fo:table-column column-width="proportional-column-width(42)"/>
+						<fo:table-body>
+							<xsl:for-each select="$officemembers/officemember[position() &lt;= $max]">
+								<fo:table-row>
+									<fo:table-cell>
+										<fo:block>
+											<xsl:apply-templates/>
+										</fo:block>
+									</fo:table-cell>
+									<fo:table-cell>
+										<fo:block>
+											<xsl:apply-templates select="following-sibling::*[number($max)]/node()"/>
+										</fo:block>
+									</fo:table-cell>
+									<fo:table-cell>
+										<fo:block>
+											<xsl:apply-templates select="following-sibling::*[number($max) * 2]/node()"/>
+										</fo:block>
+									</fo:table-cell>
+								</fo:table-row>
+							</xsl:for-each>
+						</fo:table-body>
+					</fo:table>
+				</fo:block>
+				
+				<xsl:if test="following-sibling::*[not(@type = 'officemember' or @type = 'emeritus_sign')]">
+					<fo:block font-size="10pt" space-after="12pt">&#xa0;</fo:block>
+				</xsl:if>
+			</xsl:when> <!-- @type = 'officemember' -->
 			
-			<xsl:apply-templates />
-		</fo:block>
+			<xsl:when test="@type = 'officemember' and preceding-sibling::*[1][self::ieee:p][@type = 'officemember']"><!-- skip --></xsl:when>
+			
+			<xsl:when test="@type = 'emeritus_sign'">
+				<fo:block font-size="9pt" margin-left="9.4mm">
+					<xsl:apply-templates />
+				</fo:block>
+			</xsl:when>
+			
+			<xsl:otherwise>
+				<fo:block space-after="12pt">
+					<xsl:if test="@align = 'center' and ancestor::ieee:clause[@id = 'boilerplate-participants' or ieee:title = 'Participants'] and following-sibling::*[1][self::ieee:p and @align = 'center']">
+						<xsl:attribute name="space-after">0</xsl:attribute>
+					</xsl:if>
+					<xsl:call-template name="setTextAlignment">
+						<xsl:with-param name="default">justify</xsl:with-param>
+					</xsl:call-template>
+					
+					<xsl:if test="$doctype = 'whitepaper' or $doctype = 'icap-whitepaper'">
+						<xsl:attribute name="font-size">10pt</xsl:attribute>
+						<xsl:attribute name="font-family">Calibri Light</xsl:attribute>
+						<xsl:attribute name="line-height"><xsl:value-of select="$line-height"/></xsl:attribute>
+					</xsl:if>
+					
+					<xsl:apply-templates />
+				</fo:block>
+			</xsl:otherwise>
+		</xsl:choose>
 	</xsl:template>
 	
 	<xsl:template match="ieee:abstract">
