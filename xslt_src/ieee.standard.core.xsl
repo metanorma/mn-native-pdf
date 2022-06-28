@@ -67,6 +67,8 @@
 	
 	<xsl:variable name="color_blue">rgb(0,176,240)</xsl:variable>
 	
+	<xsl:variable name="line-height">1.8</xsl:variable>
+	
 	<xsl:template match="/">
 		<fo:root xmlns:fo="http://www.w3.org/1999/XSL/Format" xml:lang="{$lang}">
 			<xsl:variable name="root-style">
@@ -502,11 +504,11 @@
 								<fo:flow flow-name="xsl-region-body">
 									<fo:block-container>
 										<fo:block font-family="Arial Black" font-size="13pt">TRADEMARKS AND DISCLAIMERS</fo:block>
-										<fo:block font-size="10pt" margin-top="12pt" margin-bottom="12pt" text-align="justify" line-height="1.9">IEEE believes the information in this publication is accurate as of its publication date; such information is subject to change without notice. IEEE is not responsible for any inadvertent errors.</fo:block>
-										<fo:block font-size="10pt" margin-top="12pt" margin-bottom="12pt" text-align="justify" line-height="1.9">The ideas and proposals in this specification are the respective author’s views and do not represent the views of the affiliated organization.</fo:block>
+										<fo:block font-size="10pt" margin-top="12pt" margin-bottom="12pt" text-align="justify" line-height="{$line-height}">IEEE believes the information in this publication is accurate as of its publication date; such information is subject to change without notice. IEEE is not responsible for any inadvertent errors.</fo:block>
+										<fo:block font-size="10pt" margin-top="12pt" margin-bottom="12pt" text-align="justify" line-height="{$line-height}">The ideas and proposals in this specification are the respective author’s views and do not represent the views of the affiliated organization.</fo:block>
 										<fo:block font-family="Arial Black" font-size="13pt">ACKNOWLEDGEMENTS</fo:block>
 										<fo:block font-family="Calibri">
-											<fo:block margin-top="12pt" margin-bottom="12pt" line-height="1.9">Special thanks are given to the following reviewers of this paper:</fo:block>
+											<fo:block margin-top="12pt" margin-bottom="12pt" line-height="{$line-height}">Special thanks are given to the following reviewers of this paper:</fo:block>
 											<fo:block font-size="10pt">
 												<fo:block margin-bottom="6pt">Firstname Lastname</fo:block>
 												<fo:block margin-bottom="6pt">Firstname Lastname</fo:block>
@@ -709,7 +711,7 @@
 									<fo:block-container margin-left="47mm" margin-top="10mm"> <!-- margin-top="27mm" -->
 									
 										<fo:block-container margin-left="0mm">
-											<fo:block role="TOC" font-size="11pt">
+											<fo:block role="TOC" font-size="10pt">
 												<xsl:if test="$contents/doc[@num = $num]//item[@display = 'true']">
 													
 													<xsl:variable name="margin-left">
@@ -720,11 +722,16 @@
 														</xsl:choose>
 													</xsl:variable>
 													
-													<xsl:for-each select="$contents/doc[@num = $num]//item[@display = 'true']">
+													<xsl:for-each select="$contents/doc[@num = $num]//item[@display = 'true'][@level &lt;= $toc_level or @type = 'figure' or @type = 'table']">
 														<fo:block role="TOCI">
 															<xsl:if test="@level = 1">
 																<xsl:attribute name="margin-top">12pt</xsl:attribute>
 																<xsl:attribute name="margin-bottom">6pt</xsl:attribute>
+															</xsl:if>
+															
+															<xsl:if test="@type = 'figure' or @type = 'table' and preceding-sibling::item[1][@type = 'figure' or @type = 'table']">
+																<xsl:attribute name="margin-top">0pt</xsl:attribute>
+																<xsl:attribute name="margin-bottom">0pt</xsl:attribute>
 															</xsl:if>
 															
 															<fo:block text-align-last="justify">
@@ -766,24 +773,24 @@
 													</xsl:for-each>
 													
 													<!-- List of Tables -->
-													<xsl:if test="$contents//tables/table">
+													<!-- <xsl:if test="$contents//tables/table">
 														<xsl:call-template name="insertListOf_Title">
 															<xsl:with-param name="title" select="$title-list-tables"/>
 														</xsl:call-template>
 														<xsl:for-each select="$contents//tables/table">
 															<xsl:call-template name="insertListOf_Item"/>
 														</xsl:for-each>
-													</xsl:if>
+													</xsl:if> -->
 													
 													<!-- List of Figures -->
-													<xsl:if test="$contents//figures/figure">
+													<!-- <xsl:if test="$contents//figures/figure">
 														<xsl:call-template name="insertListOf_Title">
 															<xsl:with-param name="title" select="$title-list-figures"/>
 														</xsl:call-template>
 														<xsl:for-each select="$contents//figures/figure">
 															<xsl:call-template name="insertListOf_Item"/>
 														</xsl:for-each>
-													</xsl:if>
+													</xsl:if> -->
 													
 												</xsl:if>
 												
@@ -930,8 +937,8 @@
 											<xsl:attribute name="font-size">12pt</xsl:attribute>
 											
 										
-											<fo:block font-family="Arial Black" font-size="20pt">
-												<xsl:copy-of select="$draft_title"/>
+											<fo:block font-family="Arial Black" font-size="20pt" margin-top="18pt">
+												<xsl:copy-of select="$title"/>
 												<!-- <xsl:copy-of select="$draft_title_part"/> -->
 											</fo:block>
 											<xsl:call-template name="addBlueBox"/>
@@ -1067,25 +1074,109 @@
 	</xsl:template>
 	
 	<xsl:template match="ieee:boilerplate/ieee:legal-statement//ieee:p" priority="2">
-		<fo:block space-after="12pt">
-			<xsl:if test="@align = 'center' and ancestor::ieee:clause[@id = 'boilerplate-participants' or ieee:title = 'Participants'] and following-sibling::*[1][self::ieee:p and @align = 'center']">
-				<xsl:attribute name="space-after">0</xsl:attribute>
-			</xsl:if>
-			<xsl:call-template name="setTextAlignment">
-				<xsl:with-param name="default">justify</xsl:with-param>
-			</xsl:call-template>
+		<xsl:choose>
+			<xsl:when test="@type = 'officemember' and not(preceding-sibling::*[1][self::ieee:p][@type = 'officemember'])"> <!-- special case -->
 			
-			<xsl:if test="$doctype = 'whitepaper' or $doctype = 'icap-whitepaper'">
-				<xsl:attribute name="font-size">10pt</xsl:attribute>
-				<xsl:attribute name="font-family">Calibri Light</xsl:attribute>
-				<xsl:attribute name="line-height">2</xsl:attribute>
-			</xsl:if>
+				<xsl:variable name="officemembers_">
+					<officemember><xsl:copy-of select="node()"/></officemember>
+					<xsl:variable name="pos_curr" select="count(preceding-sibling::*) + 1"/>
+					<xsl:variable name="pos_end" select="count(following-sibling::*[not(@type = 'officemember')][1]/preceding-sibling::*)"/>
+					<xsl:variable name="p_count" select="$pos_end - $pos_curr"/>
+					<xsl:for-each select="following-sibling::ieee:p[position() &lt;= $p_count]">
+						<officemember><xsl:copy-of select="node()"/></officemember>
+					</xsl:for-each>
+				</xsl:variable>
+				<xsl:variable name="officemembers" select="xalan:nodeset($officemembers_)"/>
+				
+				<xsl:variable name="officemembers_count" select="count($officemembers/officemember)"/>
+				
+				<xsl:variable name="mod" select="$officemembers_count mod 3"/>
+				<xsl:variable name="floor" select="floor($officemembers_count div 3)"/>
+				
+				<xsl:variable name="max">
+					<xsl:choose>
+						<xsl:when test="$mod = 0"><xsl:value-of select="$officemembers_count div 3"/></xsl:when>
+						<xsl:otherwise><xsl:value-of select="$floor + 1"/></xsl:otherwise>
+					</xsl:choose>
+				</xsl:variable>
+				
+				<!-- <fo:block>officemembers_count=<xsl:value-of select="$officemembers_count"/></fo:block>
+				<fo:block>mod=<xsl:value-of select="$mod"/></fo:block>
+				<fo:block>floor=<xsl:value-of select="$floor"/></fo:block>
+				<fo:block>max=<xsl:value-of select="$max"/></fo:block> -->
+				
+				<fo:block font-size="9pt">
+					<fo:block>&#xa0;</fo:block>
+					<fo:table width="100%" table-layout="fixed">
+						<fo:table-column column-width="proportional-column-width(55)"/>
+						<fo:table-column column-width="proportional-column-width(55)"/>
+						<fo:table-column column-width="proportional-column-width(42)"/>
+						<fo:table-body>
+							<xsl:for-each select="$officemembers/officemember[position() &lt;= $max]">
+								<fo:table-row>
+									<fo:table-cell>
+										<fo:block>
+											<xsl:apply-templates/>
+										</fo:block>
+									</fo:table-cell>
+									<fo:table-cell>
+										<fo:block>
+											<xsl:apply-templates select="following-sibling::*[number($max)]/node()"/>
+										</fo:block>
+									</fo:table-cell>
+									<fo:table-cell>
+										<fo:block>
+											<xsl:apply-templates select="following-sibling::*[number($max) * 2]/node()"/>
+										</fo:block>
+									</fo:table-cell>
+								</fo:table-row>
+							</xsl:for-each>
+						</fo:table-body>
+					</fo:table>
+				</fo:block>
+				
+				<xsl:if test="following-sibling::*[not(@type = 'officemember' or @type = 'emeritus_sign')]">
+					<fo:block font-size="10pt" space-after="12pt">&#xa0;</fo:block>
+				</xsl:if>
+			</xsl:when> <!-- @type = 'officemember' -->
 			
+			<xsl:when test="@type = 'officemember' and preceding-sibling::*[1][self::ieee:p][@type = 'officemember']"><!-- skip --></xsl:when>
+			
+			<xsl:when test="@type = 'emeritus_sign'">
+				<fo:block font-size="9pt" margin-left="9.4mm">
+					<xsl:apply-templates />
+				</fo:block>
+			</xsl:when>
+			
+			<xsl:otherwise>
+				<fo:block space-after="12pt">
+					<xsl:if test="@align = 'center' and ancestor::ieee:clause[@id = 'boilerplate-participants' or ieee:title = 'Participants'] and following-sibling::*[1][self::ieee:p and @align = 'center']">
+						<xsl:attribute name="space-after">0</xsl:attribute>
+					</xsl:if>
+					<xsl:call-template name="setTextAlignment">
+						<xsl:with-param name="default">justify</xsl:with-param>
+					</xsl:call-template>
+					
+					<xsl:if test="$doctype = 'whitepaper' or $doctype = 'icap-whitepaper'">
+						<xsl:attribute name="font-size">10pt</xsl:attribute>
+						<xsl:attribute name="font-family">Calibri Light</xsl:attribute>
+						<xsl:attribute name="line-height"><xsl:value-of select="$line-height"/></xsl:attribute>
+					</xsl:if>
+					
+					<xsl:apply-templates />
+				</fo:block>
+			</xsl:otherwise>
+		</xsl:choose>
+	</xsl:template>
+	
+	<xsl:template match="ieee:abstract">
+		<fo:block>
+			<xsl:call-template name="setId"/>
 			<xsl:apply-templates />
 		</fo:block>
 	</xsl:template>
 	
-	
+	<!-- for 'draft' -->
 	<xsl:template match="ieee:preface/ieee:abstract/ieee:p[1] | /ieee:ieee-standard/ieee:preface/ieee:clause[@id = '_abstract' or ieee:title = 'Abstract']/ieee:p[1]" priority="2">
 		<fo:inline><xsl:apply-templates /></fo:inline>
 	</xsl:template>
@@ -1242,7 +1333,7 @@
 		
 		<xsl:variable name="skip">
 			<xsl:choose>
-				<xsl:when test="ancestor-or-self::ieee:preface">true</xsl:when> <!-- no need render preface sections in ToC -->
+				<xsl:when test="$stage = 'draft' and ancestor-or-self::ieee:preface">true</xsl:when> <!-- no need render preface sections in ToC -->
 				<xsl:when test="ancestor-or-self::ieee:bibitem">true</xsl:when>
 				<xsl:when test="ancestor-or-self::ieee:term">true</xsl:when>				
 				<xsl:when test="@type = 'corrigenda'">true</xsl:when>
@@ -1278,6 +1369,30 @@
 		</xsl:if>
 	</xsl:template>
 	
+	<xsl:template match="ieee:figure[ieee:name] | ieee:table[ieee:name and not(@unnumbered = 'true' and java:endsWith(java:java.lang.String.new(ieee:name),'Key'))]" priority="2" mode="contents">		
+		<xsl:if test="$doctype = 'whitepaper' or $doctype = 'icap-whitepaper' or $doctype = 'industry-connection-report'">
+			<xsl:variable name="level">
+				<xsl:for-each select="ancestor::ieee:clause[1] | ancestor::ieee:annex[1]">
+					<xsl:call-template name="getLevel">
+						<xsl:with-param name="depth" select="ieee:title/@depth"/>
+					</xsl:call-template>
+				</xsl:for-each>
+			</xsl:variable>
+			<item id="{@id}" level="{$level}" section="" type="{local-name()}" root="" display="true">
+				<xsl:variable name="name">
+					<xsl:apply-templates select="ieee:name" mode="contents_item">
+						<xsl:with-param name="mode">contents</xsl:with-param>
+					</xsl:apply-templates>
+				</xsl:variable>
+				<xsl:if test="not(contains(normalize-space($name), '—'))">
+					<xsl:attribute name="display">false</xsl:attribute>
+				</xsl:if>
+				<title>
+					<xsl:copy-of select="$name"/>
+				</title>
+			</item>
+		</xsl:if>
+	</xsl:template>
 
 	<xsl:template match="*[local-name()='add'][parent::*[local-name() = 'name'] and ancestor::*[local-name() = 'figure'] and normalize-space(following-sibling::node()) = '']" mode="contents_item" priority="2"/>
 
@@ -1819,6 +1934,10 @@
 				
 					<xsl:copy-of select="$attributes/attributes/@*"/>
 				
+					<xsl:if test="$level = 1">
+						<xsl:attribute name="line-height">20pt</xsl:attribute>
+					</xsl:if>
+				
 					<fo:list-item>
 						<fo:list-item-label end-indent="label-end()">
 							<fo:block>
@@ -2004,6 +2123,9 @@
 						<xsl:with-param name="default">justify</xsl:with-param>
 					</xsl:call-template>
 					<xsl:attribute name="margin-bottom">6pt</xsl:attribute><!-- 8pt -->
+					<xsl:if test="($doctype = 'whitepaper' or $doctype = 'icap-whitepaper' or $doctype = 'industry-connection-report') and (ancestor::ieee:sections or ancestor::ieee:annex)">
+						<xsl:attribute name="margin-bottom">12pt</xsl:attribute>
+					</xsl:if>
 					<xsl:if test="../following-sibling::*[1][self::ieee:note or self::ieee:termnote or self::ieee:ul or self::ieee:ol] or following-sibling::*[1][self::ieee:ul or self::ieee:ol]">
 						<xsl:attribute name="margin-bottom">4pt</xsl:attribute>
 					</xsl:if>
@@ -2030,10 +2152,16 @@
 						<xsl:attribute name="line-height">0</xsl:attribute>
 					</xsl:if>
 					
-					<xsl:if test="$doctype = 'whitepaper' or $doctype = 'icap-whitepaper' or $doctype = 'industry-connection-report'">
-						<xsl:attribute name="line-height">2</xsl:attribute>
+					<xsl:if test="($doctype = 'whitepaper' or $doctype = 'icap-whitepaper' or $doctype = 'industry-connection-report') and not(parent::ieee:li)">
+						<xsl:attribute name="line-height"><xsl:value-of select="$line-height"/></xsl:attribute>
+						<xsl:attribute name="margin-bottom">12pt</xsl:attribute>
 					</xsl:if>
 					
+					<xsl:if test="($doctype = 'whitepaper' or $doctype = 'icap-whitepaper' or $doctype = 'industry-connection-report') and parent::ieee:li">
+						<xsl:attribute name="line-height">inherit</xsl:attribute>
+						<xsl:attribute name="margin-bottom">6pt</xsl:attribute>
+					</xsl:if>
+				
 					
 					<xsl:apply-templates>
 						<xsl:with-param name="split_keep-within-line" select="$split_keep-within-line"/>
@@ -2088,7 +2216,7 @@
 	
 	<xsl:template match="ieee:ul | ieee:ol" mode="list" priority="2">
 		<fo:list-block xsl:use-attribute-sets="list-style">
-		
+			
 			<xsl:if test="parent::ieee:admonition[@type = 'commentary']">
 				<xsl:attribute name="margin-left">7mm</xsl:attribute>
 			</xsl:if>
@@ -2106,8 +2234,9 @@
 			</xsl:if>
 			
 			<xsl:if test="$doctype = 'whitepaper' or $doctype = 'icap-whitepaper' or $doctype = 'industry-connection-report'">
-				<xsl:attribute name="line-height">2</xsl:attribute>
+				<xsl:attribute name="line-height">1.3</xsl:attribute>
 				<xsl:attribute name="margin-left">6.2mm</xsl:attribute>
+				<xsl:attribute name="provisional-distance-between-starts">6.5mm</xsl:attribute>
 			</xsl:if>
 			
 			<xsl:apply-templates select="node()[not(local-name() = 'note')]" />
@@ -2145,6 +2274,10 @@
 									<!-- Figure N in blue color -->
 									<xsl:attribute name="color"><xsl:value-of select="$color_blue"/></xsl:attribute>
 									<xsl:value-of select="java:toUpperCase(java:java.lang.String.new(substring-before(., '—')))"/> <!-- 'FIgure' 1 to 'FIGURE A' -->
+									<xsl:text>&#xa0;&#xa0;</xsl:text>
+									<xsl:if test="ancestor::*[local-name()='table']">
+										<xsl:text>&#xa0;&#xa0;&#xa0;</xsl:text>
+									</xsl:if>
 								</xsl:when>
 								<xsl:otherwise>
 									<xsl:value-of select="substring-before(., '—')"/>
@@ -2326,7 +2459,12 @@
 	<xsl:template name="insertFootnoteSeparator">
 		<fo:static-content flow-name="xsl-footnote-separator">
 			<fo:block>
-				<fo:leader leader-pattern="rule" rule-thickness="0.5pt" leader-length="35%"/>
+				<fo:leader leader-pattern="rule" rule-thickness="0.5pt" leader-length="35%">
+					<xsl:if test="$doctype = 'whitepaper' or $doctype = 'icap-whitepaper' or $doctype = 'industry-connection-report'">
+						<xsl:attribute name="rule-thickness">1pt</xsl:attribute>
+						<xsl:attribute name="leader-length">51mm</xsl:attribute>
+					</xsl:if>
+				</fo:leader>
 			</fo:block>
 		</fo:static-content>
 	</xsl:template>
