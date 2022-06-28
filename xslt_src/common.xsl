@@ -5260,7 +5260,7 @@
 					<fo:inline>
 				
 						<xsl:if test="$doctype = 'whitepaper' or $doctype = 'icap-whitepaper' or $doctype = 'industry-connection-report'">
-							<xsl:attribute name="font-size">inherit</xsl:attribute>
+							<xsl:attribute name="font-size">11pt</xsl:attribute>
 							<xsl:attribute name="font-family">Arial Black</xsl:attribute>
 						</xsl:if>
 				
@@ -6725,6 +6725,7 @@
 						<xsl:attribute name="font-size">5pt</xsl:attribute>
 					</xsl:if>
 				</xsl:if>
+				
 				<fo:basic-link internal-destination="{$ref_id}" fox:alt-text="footnote {$current_fn_number}">
 					<xsl:value-of select="$current_fn_number_text"/>
 				</fo:basic-link>
@@ -6757,6 +6758,12 @@
 										<xsl:attribute name="margin-bottom">-7mm</xsl:attribute>
 									</xsl:if>
 								</xsl:if>
+								<xsl:if test="$namespace = 'ieee'">
+									<xsl:if test="$doctype = 'whitepaper' or $doctype = 'icap-whitepaper' or $doctype = 'industry-connection-report'">
+										<xsl:attribute name="font-size">7pt</xsl:attribute>
+										<xsl:attribute name="line-height">1.1</xsl:attribute>
+									</xsl:if>
+								</xsl:if>
 								<xsl:if test="$namespace = 'itu'">
 									<xsl:if test="$doctype = 'service-publication'">
 										<xsl:attribute name="font-size">10pt</xsl:attribute>
@@ -6770,6 +6777,13 @@
 											<xsl:attribute name="padding-right">1mm</xsl:attribute>
 										</xsl:if>
 									</xsl:if>
+									
+									<xsl:if test="$namespace = 'ieee'">
+										<xsl:if test="$doctype = 'whitepaper' or $doctype = 'icap-whitepaper' or $doctype = 'industry-connection-report'">
+											<xsl:attribute name="padding-right">0.5mm</xsl:attribute>
+										</xsl:if>
+									</xsl:if>
+									
 									<xsl:value-of select="$current_fn_number_text"/>
 								</fo:inline>
 								<xsl:apply-templates />
@@ -12410,8 +12424,8 @@
 			<xsl:when test="$namespace = 'ieee'">
 				<xsl:choose>
 					<xsl:when test="$doctype = 'whitepaper' or $doctype = 'icap-whitepaper' or $doctype = 'industry-connection-report'">
-						<label level="1" font-size="18pt" line-height="1.5" color="rgb(128,128,128)">▪</label> <!-- Black small square 25AA -->
-						<label level="2">&#x2014;</label><!-- em dash -->
+						<label level="1" font-size="14pt" color="rgb(128,128,128)">▪</label> <!-- Black small square 25AA  18pt  line-height="1.5" -->
+						<label level="2">&#x2014;</label><!-- em dash --> 
 					</xsl:when>
 					<xsl:otherwise>
 						<label level="1">–</label>
@@ -12718,6 +12732,11 @@
 					<xsl:if test="$namespace = 'ieee'">
 						<xsl:if test="$doctype = 'whitepaper' or $doctype = 'icap-whitepaper' or $doctype = 'industry-connection-report'">
 							<xsl:attribute name="color">rgb(128,128,128)</xsl:attribute>
+							<xsl:attribute name="line-height">1.1</xsl:attribute>
+							<xsl:if test=".//ieee:fn">
+								<xsl:attribute name="line-height">1.4</xsl:attribute>
+							</xsl:if>
+							
 						</xsl:if>
 					</xsl:if>
 				
@@ -13822,6 +13841,12 @@
 				<xsl:choose>
 					<xsl:when test="$namespace = 'bipm' or $namespace = 'iec' or $namespace = 'iso' or $namespace = 'jcgm' or $namespace = 'm3d' or $namespace = 'nist-cswp' or 
 					$namespace = 'ogc-white-paper' or $namespace = 'unece' or $namespace = 'unece-rec'">3</xsl:when>
+					<xsl:when test="$namespace = 'ieee'">
+						<xsl:choose>
+							<xsl:when test="$doctype = 'whitepaper' or $doctype = 'icap-whitepaper' or $doctype = 'industry-connection-report'">3</xsl:when>
+							<xsl:otherwise>2</xsl:otherwise>
+						</xsl:choose>
+					</xsl:when>
 					<xsl:otherwise>2</xsl:otherwise>
 				</xsl:choose>
 			</xsl:otherwise>
