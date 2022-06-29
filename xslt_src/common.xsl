@@ -9070,7 +9070,7 @@
 			</xsl:if>
 			
 			<xsl:if test="$namespace = 'ieee'">
-				<xsl:if test="$doctype = 'whitepaper' or $doctype = 'icap-whitepaper'">
+				<xsl:if test="$doctype = 'whitepaper' or $doctype = 'icap-whitepaper' or $doctype = 'industry-connection-report'">
 					<xsl:attribute name="color"><xsl:value-of select="$color_blue"/></xsl:attribute>
 					<xsl:attribute name="text-decoration">none</xsl:attribute>
 				</xsl:if>
