@@ -2144,7 +2144,7 @@
 					<xsl:if test="@id">
 						<xsl:attribute name="id"><xsl:value-of select="@id"/></xsl:attribute>
 					</xsl:if>
-					<xsl:attribute name="line-height">1.4</xsl:attribute>
+					<xsl:attribute name="line-height">1.2</xsl:attribute>
 					<!-- bookmarks only in paragraph -->
 					<xsl:if test="count(ieee:bookmark) != 0 and count(*) = count(ieee:bookmark) and normalize-space() = ''">
 						<xsl:attribute name="font-size">0</xsl:attribute>
@@ -2347,6 +2347,10 @@
 	<!-- remove space after 'NOTE' without number -->
 	<xsl:template match="*[local-name() = 'note' or local-name() = 'termnote']/*[local-name() = 'name']/text()" priority="2">
 		<xsl:value-of select="normalize-space()"/>
+	</xsl:template>
+
+	<xsl:template match="*[local-name() = 'bibitem'][preceding-sibling::*[local-name() = 'references'][1][not(@normative='true')]]" priority="3">
+		<xsl:call-template name="bibitem_non_normative"/>
 	</xsl:template>
 
 	<!-- =================== -->
