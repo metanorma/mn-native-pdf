@@ -14062,6 +14062,7 @@
 							<xsl:attribute name="font-weight">normal</xsl:attribute>
 							<xsl:attribute name="margin-top">12pt</xsl:attribute>
 							<xsl:attribute name="margin-bottom">12pt</xsl:attribute>
+							<xsl:attribute name="text-align">left</xsl:attribute>
 						</xsl:if>
 						<xsl:if test="not(@type)">
 							<xsl:attribute name="font-size">9pt</xsl:attribute>
@@ -14094,6 +14095,10 @@
 									<xsl:if test="@type = 'editorial' or not(@type)">
 										<xsl:attribute name="padding">0mm</xsl:attribute>
 									</xsl:if>
+									<xsl:if test="not(@type)">
+										<xsl:attribute name="padding">1mm</xsl:attribute>
+										<xsl:attribute name="padding-bottom">0.5mm</xsl:attribute>
+									</xsl:if>
 								</xsl:if>
 							
 								<xsl:choose>
@@ -14116,6 +14121,19 @@
 											</fo:inline>
 											<xsl:apply-templates select="node()[not(local-name() = 'name')]" />
 										</fo:block>
+									</xsl:when>
+									
+									<xsl:when test="$namespace = 'ieee'">
+										<fo:block-container margin-left="0mm" margin-right="0mm">
+											<fo:block xsl:use-attribute-sets="admonition-p-style">
+												<fo:inline>
+													<xsl:call-template name="displayAdmonitionName">
+														<xsl:with-param name="sep">: </xsl:with-param>
+													</xsl:call-template>
+												</fo:inline>
+												<xsl:apply-templates select="node()[not(local-name() = 'name')]" />
+											</fo:block>
+										</fo:block-container>
 									</xsl:when>
 									
 									<xsl:otherwise>
@@ -14188,6 +14206,18 @@
 				<fo:block xsl:use-attribute-sets="admonition-p-style">
 					<xsl:call-template name="paragraph"/>
 				</fo:block>
+			</xsl:when>
+			<xsl:when test="$namespace = 'ieee'">
+				<xsl:choose>
+					<xsl:when test="ancestor::*[local-name() = 'admonition'][@type = 'editorial']">
+						<xsl:apply-templates />
+					</xsl:when>
+					<xsl:otherwise>
+						<fo:block xsl:use-attribute-sets="admonition-p-style">
+							<xsl:apply-templates />
+						</fo:block>
+					</xsl:otherwise>
+				</xsl:choose>
 			</xsl:when>
 			<xsl:otherwise>
 				<fo:block xsl:use-attribute-sets="admonition-p-style">

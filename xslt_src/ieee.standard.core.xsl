@@ -624,9 +624,9 @@
 														<fo:basic-link internal-destination="{@id}" fox:alt-text="{title}">
 														
 															<xsl:value-of select="@section"/>
-															<!-- <xsl:if test="normalize-space(@section) != '' and @level = 1">.</xsl:if>
-															<xsl:if test="normalize-space(@section) != ''"><xsl:text>&#xa0;</xsl:text></xsl:if> -->
-															<xsl:text>&#xa0;</xsl:text>
+															<!-- <xsl:if test="normalize-space(@section) != '' and @level = 1">.</xsl:if> -->
+															<xsl:if test="normalize-space(@section) != ''"><xsl:text>&#xa0;</xsl:text></xsl:if>
+															
 															<xsl:apply-templates select="title"/>
 														
 															<fo:inline keep-together.within-line="always">
