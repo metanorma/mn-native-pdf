@@ -9074,6 +9074,13 @@
 					<xsl:attribute name="color"><xsl:value-of select="$color_blue"/></xsl:attribute>
 					<xsl:attribute name="text-decoration">none</xsl:attribute>
 				</xsl:if>
+				<xsl:if test="$doctype = 'standard' and $stage = 'published'">
+					<xsl:attribute name="color"><xsl:value-of select="$color_blue"/></xsl:attribute>
+					<xsl:attribute name="text-decoration">none</xsl:attribute>
+					<xsl:if test="ancestor::*[local-name() = 'feedback-statement']">
+						<xsl:attribute name="text-decoration">underline</xsl:attribute>
+					</xsl:if>
+				</xsl:if>
 			</xsl:if>
 			
 			<xsl:if test="$namespace = 'iec'">
@@ -10755,7 +10762,7 @@
 	
 	<xsl:template match="*[local-name() = 'fn']" mode="contents_item"/>
 
-	<xsl:template match="*[local-name() = 'xref']" mode="contents">
+	<xsl:template match="*[local-name() = 'xref'] | *[local-name() = 'eref']" mode="contents">
 		<xsl:value-of select="."/>
 	</xsl:template>
 
@@ -10865,6 +10872,9 @@
 						<xsl:if test="$namespace = 'iso'">inherit</xsl:if><!-- 9 -->
 						<xsl:if test="$namespace = 'bsi'">9</xsl:if>
 						<xsl:if test="$namespace = 'jcgm'">9</xsl:if>
+						<xsl:if test="$namespace = 'ieee'">							
+							<xsl:if test="$doctype = 'standard' and $stage = 'published'">8</xsl:if>
+						</xsl:if>
 						<xsl:if test="$namespace = 'itu'">10</xsl:if>
 						<xsl:if test="$namespace = 'm3d'"></xsl:if>		
 						<xsl:if test="$namespace = 'mpfd'"></xsl:if>
