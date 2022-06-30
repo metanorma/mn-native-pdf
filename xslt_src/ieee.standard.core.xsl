@@ -1121,7 +1121,7 @@
 					<!-- paged_xml=<xsl:copy-of select="$paged_xml"/> -->
 			
 					
-					<xsl:for-each select="xalan:nodeset($paged_xml)/*[local-name()='page'][*][1]">
+					<xsl:for-each select="xalan:nodeset($paged_xml)/*[local-name()='page'][*]">
 						<fo:page-sequence master-reference="document-draft" force-page-count="no-force">
 						
 							<xsl:if test="@orientation = 'landscape'">
@@ -1616,7 +1616,7 @@
 		
 		<xsl:variable name="skip">
 			<xsl:choose>
-				<xsl:when test="($stage = 'draft' or $stage = 'published') and ancestor-or-self::ieee:preface">true</xsl:when> <!-- no need render preface sections in ToC -->
+				<xsl:when test="($stage = 'draft' or $stage = 'published') and $doctype = 'standard' and ancestor-or-self::ieee:preface">true</xsl:when> <!-- no need render preface sections in ToC -->
 				<xsl:when test="ancestor-or-self::ieee:bibitem">true</xsl:when>
 				<xsl:when test="ancestor-or-self::ieee:term">true</xsl:when>				
 				<xsl:when test="@type = 'corrigenda'">true</xsl:when>
