@@ -132,7 +132,7 @@
 					<fo:region-end region-name="right-region" extent="35mm"/>
 				</fo:simple-page-master>
 				
-				<fo:simple-page-master master-name="document" page-width="{$pageWidth}mm" page-height="{$pageHeight}mm">
+				<fo:simple-page-master master-name="document-nonstandard" page-width="{$pageWidth}mm" page-height="{$pageHeight}mm">
 					<fo:region-body margin-top="25.4mm" margin-bottom="25.4mm" margin-left="19mm" margin-right="19mm"/>
 					<fo:region-before region-name="header" extent="25.4mm"/>
 					<fo:region-after region-name="footer" extent="25.4mm"/>
@@ -141,7 +141,7 @@
 				</fo:simple-page-master>
 				
 				<!-- landscape -->
-				<fo:simple-page-master master-name="document-landscape" page-width="{$pageHeight}mm" page-height="{$pageWidth}mm">
+				<fo:simple-page-master master-name="document-nonstandard-landscape" page-width="{$pageHeight}mm" page-height="{$pageWidth}mm">
 					<fo:region-body margin-top="19mm" margin-bottom="19mm" margin-left="25.4mm" margin-right="25.4mm"/>
 					<fo:region-before region-name="header" extent="19mm" precedence="true"/>
 					<fo:region-after region-name="footer" extent="19mm" precedence="true"/>
@@ -206,6 +206,34 @@
 				<!-- =================== -->
 				<!-- =================== -->
 				
+				<!-- ======================= -->
+				<!-- Standard document pages -->
+				<!-- ======================= -->
+				<fo:simple-page-master master-name="document-standard-first" page-width="{$pageWidth}mm" page-height="{$pageHeight}mm">
+					<fo:region-body margin-top="{$marginTop}mm" margin-bottom="{$marginBottom}mm" margin-left="{$marginLeftRight1}mm" margin-right="{$marginLeftRight2}mm"/>
+					<fo:region-before region-name="header_empty" extent="{$marginTop}mm"/>
+					<fo:region-after region-name="footer" extent="{$marginBottom}mm"/>
+					<fo:region-start region-name="left-region" extent="{$marginLeftRight1}mm"/>
+					<fo:region-end region-name="right-region" extent="{$marginLeftRight2}mm"/>
+				</fo:simple-page-master>
+				<fo:page-sequence-master master-name="document-standard">
+					<fo:repeatable-page-master-alternatives>
+						<fo:conditional-page-master-reference page-position="first" master-reference="document-standard-first"/>
+						<fo:conditional-page-master-reference page-position="any" master-reference="document-draft"/>
+					</fo:repeatable-page-master-alternatives>
+				</fo:page-sequence-master>
+				
+				<!-- landscape -->
+				<fo:simple-page-master master-name="document-standard-landscape" page-width="{$pageHeight}mm" page-height="{$pageWidth}mm">
+					<fo:region-body margin-top="{$marginLeftRight1}mm" margin-bottom="{$marginLeftRight2}mm" margin-left="{$marginBottom}mm" margin-right="{$marginTop}mm"/>
+					<fo:region-before region-name="header" extent="{$marginLeftRight1}mm" precedence="true"/>
+					<fo:region-after region-name="footer" extent="{$marginLeftRight2}mm" precedence="true"/>
+					<fo:region-start region-name="left-region-landscape" extent="{$marginBottom}mm"/>
+					<fo:region-end region-name="right-region-landscape" extent="{$marginTop}mm"/>
+				</fo:simple-page-master>
+				<!-- ======================= -->
+				<!-- ======================= -->
+				
 				<!-- Index pages -->
 				<fo:simple-page-master master-name="page-index" page-width="{$pageWidth}mm" page-height="{$pageHeight}mm">
 					<fo:region-body margin-top="{$marginTop}mm" margin-bottom="{$marginBottom}mm" margin-left="{$marginLeftRight1}mm" margin-right="{$marginLeftRight2}mm" column-count="2" column-gap="10mm"/>
@@ -258,14 +286,31 @@
 						</xsl:call-template>
 					</xsl:variable>
 					<xsl:variable name="draft_year" select="substring($revision_month, 1, 4)"/>
-					<!-- <xsl:variable name="doctype_localized">
-						<xsl:call-template name="getLocalizedString">
-							<xsl:with-param name="key">doctype_abbrev.<xsl:value-of select="$doctype"/></xsl:with-param>
-						</xsl:call-template>
-					</xsl:variable> -->
+					
 					<xsl:variable name="doctype_localized" select="/ieee:ieee-standard/ieee:bibdata/ieee:ext/ieee:doctype[@language = $lang]"/>
 					
-					<xsl:variable name="title"><xsl:apply-templates select="/ieee:ieee-standard/ieee:bibdata/ieee:title/node()"/></xsl:variable> <!-- [@language = 'main-en'] -->
+					<xsl:variable name="title_intro">
+						<!-- Example Local and Metropolitan Area Networks— -->
+						<xsl:apply-templates select="/ieee:ieee-standard/ieee:bibdata/ieee:title[@language = 'intro' or @language = 'intro-en']/node()"/>
+						<xsl:if test="/ieee:ieee-standard/ieee:bibdata/ieee:title[@language = 'intro' or @language = 'intro-en']">—</xsl:if>
+					</xsl:variable>
+					
+					<xsl:variable name="title_main">
+						<!-- Example: Port-Based Network Access Control -->
+						<xsl:apply-templates select="/ieee:ieee-standard/ieee:bibdata/ieee:title[@language = 'main' or @language = 'main-en']/node()"/>
+					</xsl:variable>
+					
+					<xsl:variable name="title">
+						<xsl:choose>
+							<xsl:when test="$doctype = 'standard' and $stage = 'published'">
+								<xsl:copy-of select="$title_intro"/>
+								<xsl:copy-of select="$title_main"/>
+							</xsl:when>
+							<xsl:otherwise>
+								<xsl:apply-templates select="/ieee:ieee-standard/ieee:bibdata/ieee:title/node()"/>
+							</xsl:otherwise>
+						</xsl:choose>
+					</xsl:variable>
 					<xsl:variable name="copyright_year" select="/ieee:ieee-standard/ieee:bibdata/ieee:copyright/ieee:from"/>
 					<xsl:variable name="copyright_holder" select="/ieee:ieee-standard/ieee:bibdata/ieee:copyright/ieee:owner/ieee:organization/ieee:abbreviation"/>
 					
@@ -315,16 +360,7 @@
 					
 					
 					
-					<xsl:variable name="title_intro">
-						<!-- Example Local and Metropolitan Area Networks— -->
-						<xsl:apply-templates select="/ieee:ieee-standard/ieee:bibdata/ieee:title[@language = 'intro' or @language = 'intro-en']/node()"/>
-						<xsl:if test="/ieee:ieee-standard/ieee:bibdata/ieee:title[@language = 'intro' or @language = 'intro-en']">—</xsl:if>
-					</xsl:variable>
 					
-					<xsl:variable name="title_main">
-						<!-- Example: Port-Based Network Access Control -->
-						<xsl:apply-templates select="/ieee:ieee-standard/ieee:bibdata/ieee:title[@language = 'main' or @language = 'main-en']/node()"/>
-					</xsl:variable>
 					
 					<xsl:variable name="society" select="/ieee:ieee-standard/ieee:bibdata/ieee:ext/ieee:editorialgroup/ieee:society"/> 
 					
@@ -604,8 +640,21 @@
 									-->
 									<xsl:apply-templates select="/ieee:ieee-standard/ieee:boilerplate/ieee:feedback-statement"/>
 									
-									<fo:block break-after="page"/>
-									
+								</fo:flow>
+							</fo:page-sequence>
+							
+							<fo:page-sequence master-reference="document-draft" force-page-count="no-force">
+								<xsl:call-template name="insertFootnoteSeparator"/>
+								<xsl:call-template name="insertHeaderFooter">
+									<xsl:with-param name="document_id" select="$document_id"/>
+									<xsl:with-param name="title_prefix" select="$title_prefix"/>
+									<xsl:with-param name="title" select="$title"/>
+									<xsl:with-param name="doctype" select="$doctype"/>
+									<xsl:with-param name="copyright_year" select="$copyright_year"/>
+									<xsl:with-param name="copyright_holder" select="$copyright_holder"/>
+								</xsl:call-template>
+								
+								<fo:flow flow-name="xsl-region-body">
 									<fo:block>
 										<!-- Example:
 										Important Notices and Disclaimers Concerning IEEE Standards Documents
@@ -614,16 +663,13 @@
 										-->
 										<xsl:apply-templates select="/ieee:ieee-standard/ieee:boilerplate/ieee:legal-statement"/>
 									</fo:block>
-										
 								</fo:flow>
 							</fo:page-sequence>
-							
-							
 						</xsl:when> <!-- $stage = 'published' -->
 						
 						
 						<xsl:when test="$doctype = 'whitepaper' or $doctype = 'icap-whitepaper' or $doctype = 'industry-connection-report'">
-							<fo:page-sequence master-reference="document" force-page-count="no-force" font-family="Calibri Light">
+							<fo:page-sequence master-reference="document-nonstandard" force-page-count="no-force" font-family="Calibri Light">
 							
 								<xsl:call-template name="insertHeaderFooter">
 									<xsl:with-param name="doctype" select="$doctype"/>
@@ -1009,7 +1055,8 @@
 					<xsl:variable name="structured_xml_">
 						
 						<xsl:choose>
-							<xsl:when test="$doctype = 'whitepaper' or $doctype = 'icap-whitepaper' or $doctype = 'industry-connection-report'"><!-- $doctype = 'international-standard' and $isDraft = 'false' -->
+						
+							<xsl:when test="$doctype = 'whitepaper' or $doctype = 'icap-whitepaper' or $doctype = 'industry-connection-report'">
 								<!-- ($stage = 'published' and $doctype = 'standard') or -->
 								<item>
 									<xsl:apply-templates select="/ieee:ieee-standard/ieee:preface/ieee:abstract" mode="flatxml"/>
@@ -1020,7 +1067,7 @@
 										<xsl:apply-templates select="." mode="flatxml"/>
 									</item>
 								</xsl:for-each>
-							</xsl:when>
+							</xsl:when> <!-- $doctype = 'whitepaper' or $doctype = 'icap-whitepaper' or $doctype = 'industry-connection-report' -->
 							
 							<xsl:when test="$doctype = 'standard' and $stage = 'published'">
 								<xsl:for-each select="/*/*[local-name()='sections']/*"> <!-- each section starts with a new page -->
@@ -1028,7 +1075,7 @@
 										<xsl:apply-templates select="." mode="flatxml"/>
 									</item>
 								</xsl:for-each>
-							</xsl:when>
+							</xsl:when> <!-- $doctype = 'standard' and $stage = 'published' -->
 							
 							<xsl:otherwise>
 								<item>
@@ -1074,7 +1121,7 @@
 					<!-- paged_xml=<xsl:copy-of select="$paged_xml"/> -->
 			
 					
-					<xsl:for-each select="xalan:nodeset($paged_xml)/*[local-name()='page'][*]">
+					<xsl:for-each select="xalan:nodeset($paged_xml)/*[local-name()='page'][*][1]">
 						<fo:page-sequence master-reference="document-draft" force-page-count="no-force">
 						
 							<xsl:if test="@orientation = 'landscape'">
@@ -1082,9 +1129,16 @@
 							</xsl:if>
 						
 							<xsl:if test="$doctype = 'whitepaper' or $doctype = 'icap-whitepaper' or $doctype = 'industry-connection-report'">
-								<xsl:attribute name="master-reference">document</xsl:attribute>
+								<xsl:attribute name="master-reference">document-nonstandard</xsl:attribute>
 								<xsl:if test="@orientation = 'landscape'">
-									<xsl:attribute name="master-reference">document-<xsl:value-of select="@orientation"/></xsl:attribute>
+									<xsl:attribute name="master-reference">document-nonstandard<xsl:value-of select="@orientation"/></xsl:attribute>
+								</xsl:if>
+							</xsl:if>
+						
+							<xsl:if test="$doctype = 'standard' and $stage = 'published'">
+								<xsl:attribute name="master-reference">document-standard</xsl:attribute>
+								<xsl:if test="@orientation = 'landscape'">
+									<xsl:attribute name="master-reference">document-standard<xsl:value-of select="@orientation"/></xsl:attribute>
 								</xsl:if>
 							</xsl:if>
 						
@@ -1207,7 +1261,7 @@
 			</xsl:for-each> <!-- END of //ieee-standard iteration -->
 			
 			<xsl:if test="not(//ieee:ieee-standard)">
-				<fo:page-sequence master-reference="document" force-page-count="no-force">
+				<fo:page-sequence master-reference="document-nonstandard" force-page-count="no-force">
 					<fo:flow flow-name="xsl-region-body">
 						<fo:block><!-- prevent fop error for empty document --></fo:block>
 					</fo:flow>

@@ -10872,9 +10872,9 @@
 						<xsl:if test="$namespace = 'iso'">inherit</xsl:if><!-- 9 -->
 						<xsl:if test="$namespace = 'bsi'">9</xsl:if>
 						<xsl:if test="$namespace = 'jcgm'">9</xsl:if>
-						<xsl:if test="$namespace = 'ieee'">							
+						<!-- <xsl:if test="$namespace = 'ieee'">							
 							<xsl:if test="$doctype = 'standard' and $stage = 'published'">8</xsl:if>
-						</xsl:if>
+						</xsl:if> -->
 						<xsl:if test="$namespace = 'itu'">10</xsl:if>
 						<xsl:if test="$namespace = 'm3d'"></xsl:if>		
 						<xsl:if test="$namespace = 'mpfd'"></xsl:if>
