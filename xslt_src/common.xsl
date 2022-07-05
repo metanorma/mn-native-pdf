@@ -3929,6 +3929,9 @@
 		<xsl:if test="$namespace = 'gb'">
 			<xsl:attribute name="text-align">justify</xsl:attribute>
 		</xsl:if>
+		<xsl:if test="$namespace = 'ieee'">
+			<xsl:attribute name="line-height-shift-adjustment">disregard-shifts</xsl:attribute>
+		</xsl:if>
 		<xsl:if test="$namespace = 'itu'">
 			<xsl:attribute name="margin-top">6pt</xsl:attribute>
 			<xsl:attribute name="margin-left">14mm</xsl:attribute>
@@ -3939,6 +3942,9 @@
 	<xsl:attribute-set name="bibitem-non-normative-list-body-style">
 		<xsl:if test="$namespace = 'gb'">
 			<xsl:attribute name="text-align">justify</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'ieee'">
+			<xsl:attribute name="line-height-shift-adjustment">disregard-shifts</xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'itu'">
 			<xsl:attribute name="margin-top">6pt</xsl:attribute>

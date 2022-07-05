@@ -307,7 +307,7 @@
 								<xsl:copy-of select="$title_main"/>
 							</xsl:when>
 							<xsl:otherwise>
-								<xsl:apply-templates select="/ieee:ieee-standard/ieee:bibdata/ieee:title/node()"/>
+								<xsl:apply-templates select="/ieee:ieee-standard/ieee:bibdata/ieee:title[1]/node()"/>
 							</xsl:otherwise>
 						</xsl:choose>
 					</xsl:variable>
