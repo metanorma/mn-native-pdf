@@ -6,6 +6,10 @@ on:
       - master
   pull_request:
 
+concurrency:
+  group: '${{ github.workflow }}-${{ github.job }}-${{ github.head_ref || github.ref_name }}'
+  cancel-in-progress: true
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -60,44 +64,59 @@ jobs:
     runs-on: ubuntu-latest
     needs: build
     steps:
-    - uses: actions/checkout@master
+      - uses: actions/checkout@master
 
-    - uses: actions/download-artifact@master
-      with:
-        name: published-ubuntu
-        path: published
+      - uses: actions/download-artifact@master
+        with:
+          name: published-ubuntu
+          path: published
 
-    - name: GitHub Pages action
-      uses: docker://peaceiris/gh-pages:v2
-      with:
-        emptyCommits: false
-        forceOrphan: true
-      env:
-        ACTIONS_DEPLOY_KEY: ${{ secrets.GH_DEPLOY_KEY }}
-        PUBLISH_BRANCH: gh-pages
-        PUBLISH_DIR: ./published
+      - name: GitHub Pages action
+        uses: docker://peaceiris/gh-pages:v2
+        with:
+          emptyCommits: false
+          forceOrphan: true
+        env:
+          ACTIONS_DEPLOY_KEY: ${{ secrets.GH_DEPLOY_KEY }}
+          PUBLISH_BRANCH: gh-pages
+          PUBLISH_DIR: ./published
 
-    - uses: actions/download-artifact@master
-      with:
-        name: xslt
-        path: xslt
+  update-xslts:
+    if: github.ref == 'refs/heads/master'
+    runs-on: ubuntu-latest
+    needs: build
+    strategy:
+      fail-fast: false
+      matrix:
+        flavor: [csa, cc, gb, iec, ieee, iho, iso, itu, m3aawg, mpfa, ogc, ribose, un]
+        prefix: ['*']
+        include:
+          - flavor: bipm
+            prefix: '{bipm,jcgm}'
+    steps:
+      - uses: actions/checkout@v3
 
-    - name: Update XSLTs in processor gems
-      env:
-        GIT_CREDS: metanorma-ci:${{ secrets.METANORMA_CI_PAT_TOKEN }}@
-      run: |
-        git config --global user.name "metanorma-ci"
-        git config --global user.email "metanorma-ci@users.noreply.github.com"
-        make update-xslts-in-processor-all
+      - uses: actions/download-artifact@master
+        with:
+          name: xslt
+          path: xslt
 
-    - uses: peter-evans/repository-dispatch@v1
-      with:
-        token: ${{ secrets.METANORMA_CI_PAT_TOKEN || secrets.GITHUB_TOKEN }}
-        repository: metanorma/mn-native-pdf-bsi
-        event-type: metanorma/mn-native-pdf
+      - uses: actions/checkout@v3
+        with:
+          submodules: recursive
+          repository: metanorma/metanorma-${{ matrix.flavor }}
+          token: ${{ secrets.METANORMA_CI_PAT_TOKEN }}
+          path: ${{ github.workspace }}/metanorma-${{ matrix.flavor }}
 
-    - uses: peter-evans/repository-dispatch@v1
-      with:
-        token: ${{ secrets.METANORMA_CI_PAT_TOKEN || secrets.GITHUB_TOKEN }}
-        repository: metanorma/mn-native-pdf-nist
-        event-type: metanorma/mn-native-pdf
+      - run: rsync xslt/${{ matrix.prefix }}.*.xsl ${{ github.workspace }}/metanorma-${{ matrix.flavor }}/lib/isodoc/${{ matrix.flavor }}/
+
+      - uses: peter-evans/create-pull-request@v4
+        with:
+          path: ${{ github.workspace }}/metanorma-${{ matrix.flavor }}
+          token: ${{ secrets.METANORMA_CI_PAT_TOKEN }}
+          add-paths: lib/isodoc/${{ matrix.flavor }}
+          author: metanorma-ci
+          committer: metanorma-ci@users.noreply.github.com
+          branch: feature/xslt-update
+          delete-branch: true
+          commit-message: xslt update based on metanorma/mn-native-pdf@${{ github.sha }}
