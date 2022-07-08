@@ -61,7 +61,19 @@
 
 	<xsl:variable name="doctype" select="(//ieee:ieee-standard)[1]/ieee:bibdata/ieee:ext/ieee:doctype[normalize-space(@language) = '']"/>
 	
-	<xsl:variable name="stage" select="normalize-space((//ieee:ieee-standard)[1]/ieee:bibdata/ieee:status/ieee:stage)"/>
+	<xsl:variable name="stage_" select="normalize-space((//ieee:ieee-standard)[1]/ieee:bibdata/ieee:status/ieee:stage)"/>
+	
+	<xsl:variable name="stage">
+		<xsl:choose>
+			<xsl:when test="translate($stage_,'0123456789','') != ''"><xsl:value-of select="$stage_"/></xsl:when> <!-- 'draft' or 'published' -->
+			<xsl:otherwise> <!-- stage in digits form -->
+				<xsl:choose>
+					<xsl:when test="number($stage_) &lt; 60">draft</xsl:when>
+					<xsl:otherwise>published</xsl:otherwise>
+				</xsl:choose>
+			</xsl:otherwise>
+		</xsl:choose>
+	</xsl:variable>
 	
 	<xsl:variable name="color_blue">
 		<xsl:choose>
