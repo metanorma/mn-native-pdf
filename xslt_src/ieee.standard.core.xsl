@@ -1221,7 +1221,6 @@
 											<xsl:attribute name="font-family">Calibri Light</xsl:attribute>
 											<xsl:attribute name="font-size">12pt</xsl:attribute>
 											
-										
 											<fo:block font-family="Arial Black" font-size="20pt" margin-top="18pt">
 												<xsl:copy-of select="$title"/>
 												<!-- <xsl:copy-of select="$draft_title_part"/> -->
@@ -1268,6 +1267,13 @@
 					<!-- ======================= -->
 					<!-- END Back page -->
 					<!-- ======================= -->
+					<xsl:if test="not(xalan:nodeset($paged_xml)/*[local-name()='page'][*])">
+						<fo:page-sequence master-reference="document-nonstandard" force-page-count="no-force">
+							<fo:flow flow-name="xsl-region-body">
+								<fo:block><!-- prevent fop error for empty document --></fo:block>
+							</fo:flow>
+						</fo:page-sequence>
+					</xsl:if>
 				
 				</xsl:for-each>
 			</xsl:for-each> <!-- END of //ieee-standard iteration -->
