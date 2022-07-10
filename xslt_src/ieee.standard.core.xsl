@@ -59,7 +59,9 @@
 		</xsl:for-each>
 	</xsl:variable>
 
-	<xsl:variable name="doctype" select="(//ieee:ieee-standard)[1]/ieee:bibdata/ieee:ext/ieee:doctype[normalize-space(@language) = '']"/>
+	<xsl:variable name="doctype" select="(//ieee:ieee-standard)[1]/ieee:bibdata/ieee:ext/ieee:doctype[normalize-space(@language) = '']"/> <!-- values standard, guide, recommended-practice -->
+	
+	<xsl:variable name="subdoctype" select="(//ieee:ieee-standard)[1]/ieee:bibdata/ieee:ext/ieee:subdoctype[normalize-space(@language) = '']"/> <!-- has values amendment, corrigendum, erratum -->
 	
 	<xsl:variable name="stage_" select="normalize-space((//ieee:ieee-standard)[1]/ieee:bibdata/ieee:status/ieee:stage)"/>
 	
@@ -337,6 +339,9 @@
 					<xsl:variable name="document_id">
 						<xsl:choose>
 							<xsl:when test="$current_template = 'draft'">
+								<xsl:if test="contains('amendment corrigendum erratum', $subdoctype) and $subdoctype != ''">
+									<xsl:text>IEEE </xsl:text>
+								</xsl:if>
 								<xsl:text>P</xsl:text>
 								<xsl:value-of select="$designation"/>
 								<xsl:text>/D</xsl:text>
@@ -453,6 +458,9 @@
 									<fo:block-container margin-top="18mm" id="firstpage_id_{$num}">
 										<fo:block font-family="Arial">
 											<fo:block font-size="23pt" font-weight="bold" margin-top="50pt" margin-bottom="36pt">
+												<xsl:if test="contains('amendment corrigendum erratum', $subdoctype) and $subdoctype != ''">
+													<xsl:attribute name="font-size">24pt</xsl:attribute>
+												</xsl:if>
 												<xsl:text>P</xsl:text>
 												<xsl:value-of select="$designation"/>
 												<xsl:text>™/D</xsl:text>
@@ -460,6 +468,14 @@
 												<xsl:value-of select="$linebreak"/>
 												<xsl:copy-of select="$title_prefix"/>
 												<xsl:copy-of select="$title"/>
+												<xsl:if test="contains('amendment corrigendum erratum', $subdoctype) and $subdoctype != ''">
+													<fo:block>
+														<xsl:call-template name="capitalize">
+															<xsl:with-param name="str" select="$subdoctype"/>
+														</xsl:call-template>
+													 <fo:inline> #</fo:inline>
+													</fo:block>
+												</xsl:if>
 												<!-- <xsl:copy-of select="$draft_title_part"/> -->
 											</fo:block>
 											<fo:block>Developed by the</fo:block>
@@ -564,6 +580,7 @@
 									<xsl:with-param name="doctype" select="$doctype"/>
 									<xsl:with-param name="copyright_year" select="$copyright_year"/>
 									<xsl:with-param name="copyright_holder" select="$copyright_holder"/>
+									<xsl:with-param name="hideFooter"><xsl:if test="not(contains('amendment corrigendum erratum', $subdoctype) and $subdoctype != '')">false</xsl:if></xsl:with-param>
 								</xsl:call-template>
 								
 								<fo:flow flow-name="xsl-region-body">
@@ -1199,8 +1216,22 @@
 									<xsl:choose>
 										<xsl:when test="$current_template = 'draft'">
 											<fo:block font-family="Arial" font-size="23pt" font-weight="bold" margin-top="70pt" margin-bottom="48pt">
+											
+												<xsl:if test="contains('amendment corrigendum erratum', $subdoctype) and $subdoctype != ''">
+													<xsl:attribute name="font-size">24pt</xsl:attribute>
+												</xsl:if>
+												
 												<xsl:copy-of select="$title_prefix"/>
 												<xsl:copy-of select="$title"/>
+												
+												<xsl:if test="contains('amendment corrigendum erratum', $subdoctype) and $subdoctype != ''">
+													<fo:block>
+														<xsl:call-template name="capitalize">
+															<xsl:with-param name="str" select="$subdoctype"/>
+														</xsl:call-template>
+													 <fo:inline> #</fo:inline>
+													</fo:block>
+												</xsl:if>
 												<!-- <xsl:copy-of select="$draft_title_part"/> -->
 											</fo:block>
 										</xsl:when>
@@ -2863,13 +2894,26 @@
 				<!-- P<designation>/D<draft_number>, <draft_month> <draft_year>
 				Draft<opt_Trial-Use><Gde./Rec. Prac./Std.> for <Complete Title Matching PAR>
 				 -->
-				<fo:block>
-					<xsl:value-of select="$document_id"/>
-				</fo:block>
-				<fo:block>
-					<xsl:copy-of select="$title_prefix"/>
-					<xsl:copy-of select="$title"/>
-				</fo:block>
+				
+				<xsl:choose>
+					<xsl:when test="$current_template = 'draft' and contains('amendment corrigendum erratum', $subdoctype) and $subdoctype != ''">
+						<xsl:attribute name="text-align">right</xsl:attribute>
+						<!-- IEEE P<designation>/D<draft_number>, <draft_month> <draft_year> -->
+						<fo:block>
+							<xsl:value-of select="$document_id"/>
+						</fo:block>
+					</xsl:when>
+					<xsl:otherwise>
+						<fo:block>
+							<xsl:value-of select="$document_id"/>
+						</fo:block>
+						<fo:block>
+							<xsl:copy-of select="$title_prefix"/>
+							<xsl:copy-of select="$title"/>
+						</fo:block>
+					</xsl:otherwise>
+				</xsl:choose>
+			 
 			</fo:block>
 		</xsl:variable>
 		
