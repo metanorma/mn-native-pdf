@@ -4940,7 +4940,7 @@
 				</xsl:if>
 				
 				<xsl:if test="$namespace = 'ieee'">
-					<xsl:if test="$doctype = 'whitepaper' or $doctype = 'icap-whitepaper' or $doctype = 'industry-connection-report'">
+					<xsl:if test="$current_template = 'whitepaper' or $current_template = 'icap-whitepaper' or $current_template = 'industry-connection-report'">
 						<xsl:attribute name="font-size">10pt</xsl:attribute>
 					</xsl:if>
 					<xsl:if test="ancestor::*[local-name() = 'feedback-statement']">
@@ -5051,7 +5051,7 @@
 						</xsl:if>
 						
 						<xsl:if test="$namespace = 'ieee'">
-							<xsl:if test="$doctype = 'whitepaper' or $doctype = 'icap-whitepaper' or $doctype = 'industry-connection-report'">
+							<xsl:if test="$current_template = 'whitepaper' or $current_template = 'icap-whitepaper' or $current_template = 'industry-connection-report'">
 								<xsl:attribute name="border">0.5 solid black</xsl:attribute>
 							</xsl:if>
 							<xsl:if test="ancestor::*[local-name() = 'feedback-statement']">
@@ -5266,7 +5266,7 @@
 				<xsl:when test="$namespace = 'ieee'">
 					<fo:inline>
 				
-						<xsl:if test="$doctype = 'whitepaper' or $doctype = 'icap-whitepaper' or $doctype = 'industry-connection-report'">
+						<xsl:if test="$current_template = 'whitepaper' or $current_template = 'icap-whitepaper' or $current_template = 'industry-connection-report'">
 							<xsl:attribute name="font-size">11pt</xsl:attribute>
 							<xsl:attribute name="font-family">Arial Black</xsl:attribute>
 						</xsl:if>
@@ -5823,7 +5823,7 @@
 				<xsl:choose>
 					<xsl:when test="$namespace = 'ieee'">
 					
-						<xsl:if test="$doctype = 'whitepaper' or $doctype = 'icap-whitepaper' or $doctype = 'industry-connection-report'">
+						<xsl:if test="$current_template = 'whitepaper' or $current_template = 'icap-whitepaper' or $current_template = 'industry-connection-report'">
 							<xsl:attribute name="border-bottom">0.5 solid black</xsl:attribute>
 						</xsl:if>
 					
@@ -6235,7 +6235,7 @@
 				<xsl:if test="position() = last()">
 					<xsl:attribute name="border-bottom"><xsl:value-of select="$table-border"/></xsl:attribute>
 				</xsl:if>
-				<xsl:if test="$doctype = 'whitepaper' or $doctype = 'icap-whitepaper' or $doctype = 'industry-connection-report'">
+				<xsl:if test="$current_template = 'whitepaper' or $current_template = 'icap-whitepaper' or $current_template = 'industry-connection-report'">
 					<xsl:attribute name="border-bottom">0.5 solid black</xsl:attribute>
 				</xsl:if>
 			</xsl:if>
@@ -6766,7 +6766,7 @@
 									</xsl:if>
 								</xsl:if>
 								<xsl:if test="$namespace = 'ieee'">
-									<xsl:if test="$doctype = 'whitepaper' or $doctype = 'icap-whitepaper' or $doctype = 'industry-connection-report'">
+									<xsl:if test="$current_template = 'whitepaper' or $current_template = 'icap-whitepaper' or $current_template = 'industry-connection-report'">
 										<xsl:attribute name="font-size">7pt</xsl:attribute>
 										<xsl:attribute name="line-height">1.1</xsl:attribute>
 									</xsl:if>
@@ -6786,7 +6786,7 @@
 									</xsl:if>
 									
 									<xsl:if test="$namespace = 'ieee'">
-										<xsl:if test="$doctype = 'whitepaper' or $doctype = 'icap-whitepaper' or $doctype = 'industry-connection-report'">
+										<xsl:if test="$current_template = 'whitepaper' or $current_template = 'icap-whitepaper' or $current_template = 'industry-connection-report'">
 											<xsl:attribute name="padding-right">0.5mm</xsl:attribute>
 										</xsl:if>
 									</xsl:if>
@@ -9076,11 +9076,11 @@
 			</xsl:if>
 			
 			<xsl:if test="$namespace = 'ieee'">
-				<xsl:if test="$doctype = 'whitepaper' or $doctype = 'icap-whitepaper' or $doctype = 'industry-connection-report'">
+				<xsl:if test="$current_template = 'whitepaper' or $current_template = 'icap-whitepaper' or $current_template = 'industry-connection-report'">
 					<xsl:attribute name="color"><xsl:value-of select="$color_blue"/></xsl:attribute>
 					<xsl:attribute name="text-decoration">none</xsl:attribute>
 				</xsl:if>
-				<xsl:if test="$doctype = 'standard' and $stage = 'published'">
+				<xsl:if test="$current_template = 'standard'">
 					<xsl:attribute name="color"><xsl:value-of select="$color_blue"/></xsl:attribute>
 					<xsl:attribute name="text-decoration">none</xsl:attribute>
 					<xsl:if test="ancestor::*[local-name() = 'feedback-statement']">
@@ -10678,7 +10678,7 @@
 				</xsl:if>
 				
 				<xsl:if test="$namespace = 'ieee'">
-					<xsl:if test="$doctype = 'whitepaper' or $doctype = 'icap-whitepaper' or $doctype = 'industry-connection-report'">
+					<xsl:if test="$current_template = 'whitepaper' or $current_template = 'icap-whitepaper' or $current_template = 'industry-connection-report'">
 						<xsl:attribute name="font-size">inherit</xsl:attribute>
 						<xsl:attribute name="font-family">Arial Black</xsl:attribute>
 					</xsl:if>
@@ -10879,7 +10879,7 @@
 						<xsl:if test="$namespace = 'bsi'">9</xsl:if>
 						<xsl:if test="$namespace = 'jcgm'">9</xsl:if>
 						<!-- <xsl:if test="$namespace = 'ieee'">							
-							<xsl:if test="$doctype = 'standard' and $stage = 'published'">8</xsl:if>
+							<xsl:if test="$current_template = 'standard'">8</xsl:if>
 						</xsl:if> -->
 						<xsl:if test="$namespace = 'itu'">10</xsl:if>
 						<xsl:if test="$namespace = 'm3d'"></xsl:if>		
@@ -11911,7 +11911,7 @@
 					</xsl:if>
 					
 					<xsl:if test="$namespace = 'ieee'">
-						<xsl:if test="$doctype = 'whitepaper' or $doctype = 'icap-whitepaper' or $doctype = 'industry-connection-report'">
+						<xsl:if test="$current_template = 'whitepaper' or $current_template = 'icap-whitepaper' or $current_template = 'industry-connection-report'">
 							<xsl:attribute name="color"><xsl:value-of select="$color_blue"/></xsl:attribute>
 							<xsl:attribute name="text-decoration">none</xsl:attribute>
 						</xsl:if>
@@ -12440,7 +12440,7 @@
 			</xsl:when>
 			<xsl:when test="$namespace = 'ieee'">
 				<xsl:choose>
-					<xsl:when test="$doctype = 'whitepaper' or $doctype = 'icap-whitepaper' or $doctype = 'industry-connection-report'">
+					<xsl:when test="$current_template = 'whitepaper' or $current_template = 'icap-whitepaper' or $current_template = 'industry-connection-report'">
 						<label level="1" font-size="14pt" color="rgb(128,128,128)">▪</label> <!-- Black small square 25AA  18pt  line-height="1.5" -->
 						<label level="2">&#x2014;</label><!-- em dash --> 
 					</xsl:when>
@@ -12747,7 +12747,7 @@
 					</xsl:if>
 				
 					<xsl:if test="$namespace = 'ieee'">
-						<xsl:if test="$doctype = 'whitepaper' or $doctype = 'icap-whitepaper' or $doctype = 'industry-connection-report'">
+						<xsl:if test="$current_template = 'whitepaper' or $current_template = 'icap-whitepaper' or $current_template = 'industry-connection-report'">
 							<xsl:attribute name="color">rgb(128,128,128)</xsl:attribute>
 							<xsl:attribute name="line-height">1.1</xsl:attribute>
 							<xsl:if test=".//ieee:fn">
@@ -13139,7 +13139,7 @@
 						<xsl:if test="count(preceding-sibling::*[local-name()='bibitem'][not(@hidden = 'true')]) &gt; 99">
 							<xsl:attribute name="provisional-distance-between-starts">11mm</xsl:attribute>
 						</xsl:if>
-						<xsl:if test="($doctype = 'whitepaper' or $doctype = 'icap-whitepaper' or $doctype = 'industry-connection-report')">
+						<xsl:if test="($current_template = 'whitepaper' or $current_template = 'icap-whitepaper' or $current_template = 'industry-connection-report')">
 							<xsl:attribute name="provisional-distance-between-starts">12.5mm</xsl:attribute>
 						</xsl:if>
 					</xsl:if>
@@ -13295,7 +13295,7 @@
 											<xsl:value-of select="*[local-name() = 'docidentifier'][@type = 'metanorma-ordinal']"/>
 											<xsl:if test="not(*[local-name() = 'docidentifier'][@type = 'metanorma-ordinal'])">
 												<xsl:choose>
-													<xsl:when test="($doctype = 'whitepaper' or $doctype = 'icap-whitepaper' or $doctype = 'industry-connection-report')">
+													<xsl:when test="($current_template = 'whitepaper' or $current_template = 'icap-whitepaper' or $current_template = 'industry-connection-report')">
 														<fo:inline color="{$color_blue}">
 															<xsl:text>[&#xa0;</xsl:text>
 															<xsl:number format="1" count="*[local-name()='bibitem'][not(@hidden = 'true')]"/>
@@ -13854,7 +13854,7 @@
 					$namespace = 'ogc-white-paper' or $namespace = 'unece' or $namespace = 'unece-rec'">3</xsl:when>
 					<xsl:when test="$namespace = 'ieee'">
 						<xsl:choose>
-							<xsl:when test="$doctype = 'whitepaper' or $doctype = 'icap-whitepaper' or $doctype = 'industry-connection-report'">3</xsl:when>
+							<xsl:when test="$current_template = 'whitepaper' or $current_template = 'icap-whitepaper' or $current_template = 'industry-connection-report'">3</xsl:when>
 							<xsl:otherwise>2</xsl:otherwise>
 						</xsl:choose>
 					</xsl:when>
