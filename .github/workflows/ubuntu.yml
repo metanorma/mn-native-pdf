@@ -116,4 +116,7 @@ jobs:
           add-paths: lib/isodoc/${{ matrix.flavor }}
           branch: feature/xslt-update
           delete-branch: true
+          reviewers: |
+            opoudjis
+            ronaldtse
           commit-message: xslt update based on metanorma/mn-native-pdf@${{ github.sha }}
