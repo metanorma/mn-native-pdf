@@ -115,8 +115,6 @@ jobs:
           path: ${{ github.workspace }}/metanorma-${{ matrix.flavor }}
           token: ${{ secrets.METANORMA_CI_PAT_TOKEN }}
           add-paths: lib/isodoc/${{ matrix.flavor }}
-          author: metanorma-ci
-          committer: metanorma-ci@users.noreply.github.com
           branch: feature/xslt-update
           delete-branch: true
           commit-message: xslt update based on metanorma/mn-native-pdf@${{ github.sha }}
