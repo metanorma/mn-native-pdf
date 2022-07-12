@@ -119,4 +119,5 @@ jobs:
           reviewers: |
             opoudjis
             ronaldtse
+          title: xslt update based on metanorma/mn-native-pdf@${{ github.sha }}
           commit-message: xslt update based on metanorma/mn-native-pdf@${{ github.sha }}
