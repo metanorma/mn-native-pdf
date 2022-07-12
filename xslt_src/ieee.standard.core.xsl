@@ -410,7 +410,7 @@
 					<xsl:variable name="approved_by">IEEE SA Standards Board</xsl:variable>
 					<xsl:variable name="approved_date">
 						<xsl:call-template name="convertDate">
-							<xsl:with-param name="date" select="/ieee:ieee-standard/ieee:bibdata/ieee:date[@type = 'confirmed']"/>
+							<xsl:with-param name="date" select="/ieee:ieee-standard/ieee:bibdata/ieee:date[@type = 'issued']"/>
 							<xsl:with-param name="format" select="'ddMMyyyy'"/>
 						</xsl:call-template>
 					</xsl:variable>
