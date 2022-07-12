@@ -67,7 +67,15 @@
 	
 	<xsl:variable name="stage">
 		<xsl:choose>
-			<xsl:when test="translate($stage_,'0123456789','') != ''"><xsl:value-of select="$stage_"/></xsl:when> <!-- 'draft' or 'published' -->
+			<xsl:when test="translate($stage_,'0123456789','') != ''">
+				<xsl:choose>
+					<xsl:when test="$stage_ = 'Developing' or $stage_ = 'developing' or $stage_ = 'draft'">draft</xsl:when>
+					<xsl:when test="$stage_ = 'Active' or $stage_ = 'active' or $stage_ = 'Inactive' or $stage_ = 'inactive'">published</xsl:when>
+					<xsl:otherwise>
+						<xsl:value-of select="$stage_"/>
+					</xsl:otherwise>
+				</xsl:choose>
+			</xsl:when> <!-- 'draft' or 'published' -->
 			<xsl:otherwise> <!-- stage in digits form -->
 				<xsl:choose>
 					<xsl:when test="number($stage_) &lt; 60">draft</xsl:when>
@@ -76,6 +84,8 @@
 			</xsl:otherwise>
 		</xsl:choose>
 	</xsl:variable>
+	
+	<xsl:variable name="trial_use" select="(//ieee:ieee-standard)[1]/ieee:bibdata/ieee:ext/ieee:trial-use[normalize-space(@language) = '']"/>
 	
 	<xsl:variable name="current_template">
 		<xsl:choose>
@@ -371,25 +381,21 @@
 						<xsl:choose>
 							<xsl:when test="$current_template = 'draft'">
 								<xsl:text>Draft </xsl:text>
-								<xsl:value-of select="$doctype_localized"/>
-								<xsl:if test="normalize-space($doctype_localized) = ''">
-									<xsl:choose>
-										<xsl:when test="$doctype = 'standard'">Standard</xsl:when>
-									</xsl:choose>
-								</xsl:if>
-								<xsl:text> for </xsl:text>
 							</xsl:when>
 							<xsl:when test="$current_template = 'standard'">
 								<xsl:text>IEEE </xsl:text>
-								<xsl:value-of select="$doctype_localized"/>
-								<xsl:if test="normalize-space($doctype_localized) = ''">
-									<xsl:choose>
-										<xsl:when test="$doctype = 'standard'">Standard</xsl:when>
-									</xsl:choose>
-								</xsl:if>
-								<xsl:text> for </xsl:text>
 							</xsl:when>
 						</xsl:choose>
+						<xsl:if test="$trial_use = 'true'">Trial-Use </xsl:if>
+							<xsl:value-of select="$doctype_localized"/>
+							<xsl:if test="normalize-space($doctype_localized) = ''">
+								<xsl:choose>
+									<xsl:when test="$doctype = 'standard'">Standard</xsl:when>
+									<xsl:when test="$doctype = 'guide'">Guide</xsl:when>
+									<xsl:when test="$doctype = 'recommended-practice'">Recommended Practice</xsl:when>
+								</xsl:choose>
+							</xsl:if>
+							<xsl:text> for </xsl:text>
 						<!-- <xsl:copy-of select="$title"/> -->
 					</xsl:variable>
 					
@@ -409,6 +415,19 @@
 						</xsl:call-template>
 					</xsl:variable>
 					
+					<xsl:variable name="cutoff_date">
+						<xsl:call-template name="convertDate">
+							<xsl:with-param name="date" select="/ieee:ieee-standard/ieee:bibdata/ieee:date[@type = 'feedback-ended']"/>
+							<xsl:with-param name="format" select="'ddMMyyyy'"/>
+						</xsl:call-template>
+					</xsl:variable>
+					
+					<xsl:variable name="expiration_date">
+						<xsl:call-template name="convertDate">
+							<xsl:with-param name="date" select="/ieee:ieee-standard/ieee:bibdata/ieee:date[@type = 'obsoleted']"/>
+							<xsl:with-param name="format" select="'ddMMyyyy'"/>
+						</xsl:call-template>
+					</xsl:variable>
 					
 					<!-- Example: Revision of IEEE Std 802.1X™-2010
 						Incorporating IEEE Std 802.1Xbx™-2014
@@ -440,6 +459,13 @@
 						</xsl:for-each>
 						
 						<xsl:if test="string-length($history) != 0">)</xsl:if>
+					</xsl:variable>
+					
+					
+					<xsl:variable name="standard_title_prefix">
+						<xsl:text>IEEE </xsl:text>
+						<xsl:if test="$trial_use = 'true'">Trial-Use </xsl:if>
+						<xsl:text>Standard for</xsl:text>
 					</xsl:variable>
 					
 					<!-- ======================= -->
@@ -502,6 +528,21 @@
 											<fo:block>&#xa0;</fo:block>
 											<!-- Example: IEEE SA Standards Board -->
 											<fo:block font-size="11pt" font-weight="bold"><xsl:value-of select="$approved_by"/></fo:block>
+											
+											<xsl:if test="normalize-space($cutoff_date) != ''">
+												<fo:block>&#xa0;</fo:block>
+												<fo:block>
+													<xsl:text>Cutoff date </xsl:text>
+													<xsl:value-of select="$cutoff_date"/>
+												</fo:block>
+											</xsl:if>
+											<xsl:if test="normalize-space($cutoff_date) != ''">
+												<fo:block>&#xa0;</fo:block>
+												<fo:block>
+													<xsl:text>Expiration date </xsl:text>
+													<xsl:value-of select="$expiration_date"/>
+												</fo:block>
+											</xsl:if>
 										</fo:block>
 										
 										<xsl:apply-templates select="/ieee:ieee-standard/ieee:boilerplate/ieee:copyright-statement"/>
@@ -550,6 +591,9 @@
 								<xsl:with-param name="committee" select="$committee"/>
 								<xsl:with-param name="standard_number" select="$standard_number"/>
 								<xsl:with-param name="history" select="$history_text"/>
+								<xsl:with-param name="standard_title_prefix" select="$standard_title_prefix"/>
+								<xsl:with-param name="cutoff_date" select="$cutoff_date"/>
+								<xsl:with-param name="expiration_date" select="$expiration_date"/>
 							</xsl:call-template>
 						</xsl:when>
 						
@@ -622,7 +666,9 @@
 									</fo:block>
 									
 									<fo:block font-weight="bold" space-before="13mm">
-										<fo:block font-size="18pt">IEEE Standard for</fo:block>
+										<fo:block font-size="18pt">
+											<xsl:value-of select="$standard_title_prefix"/>
+										</fo:block>
 										<fo:block font-size="18pt">
 											<!-- Example Local and Metropolitan Area Networks— -->
 											<xsl:text>&#xa0;&#xa0;&#xa0;&#xa0;</xsl:text>
@@ -1234,7 +1280,9 @@
 										
 										<xsl:when test="$current_template = 'standard'">
 											<fo:block font-family="Arial" font-weight="bold" margin-top="13mm" space-after="12pt">
-												<fo:block font-size="18pt">IEEE Standard for</fo:block>
+												<fo:block font-size="18pt">
+													<xsl:value-of select="$standard_title_prefix"/>
+												</fo:block>
 												<fo:block font-size="18pt">
 													<!-- Example Local and Metropolitan Area Networks— -->
 													<xsl:text>&#xa0;&#xa0;&#xa0;&#xa0;</xsl:text>
@@ -3183,6 +3231,9 @@
 		<xsl:param name="committee" />
 		<xsl:param name="standard_number" />
 		<xsl:param name="history" />
+		<xsl:param name="standard_title_prefix" />
+		<xsl:param name="cutoff_date" />
+		<xsl:param name="expiration_date" />
 		
 		<fo:page-sequence master-reference="cover-and-back-page-standard" force-page-count="no-force">
 		
@@ -3228,7 +3279,9 @@
 		
 			<fo:flow flow-name="xsl-region-body" font-family="Calibri">
 				<fo:block-container height="81mm" display-align="center" font-weight="bold">
-					<fo:block font-size="22pt" space-after="2pt">IEEE Standard for</fo:block>
+					<fo:block font-size="22pt" space-after="2pt">
+						<xsl:value-of select="$standard_title_prefix"/>
+					</fo:block>
 					<fo:block font-size="22pt">
 						<xsl:text>&#xa0;&#xa0;</xsl:text>
 						<!-- Example: Local and Metropolitan Area Networks— -->
@@ -3248,6 +3301,22 @@
 					<fo:block font-size="12pt" space-before="13mm">Developed by the</fo:block>
 					<!-- LAN/MAN Standards Committee -->
 					<fo:block font-size="12pt"><xsl:value-of select="$committee"/></fo:block>
+					
+					<xsl:if test="normalize-space($cutoff_date) != ''">
+						<fo:block>&#xa0;</fo:block>
+						<fo:block font-size="12pt">
+							<xsl:text>Cutoff date </xsl:text>
+							<xsl:value-of select="$cutoff_date"/>
+						</fo:block>
+					</xsl:if>
+					<xsl:if test="normalize-space($cutoff_date) != ''">
+						<fo:block>&#xa0;</fo:block>
+						<fo:block font-size="12pt">
+							<xsl:text>Expiration date </xsl:text>
+							<xsl:value-of select="$expiration_date"/>
+						</fo:block>
+					</xsl:if>
+					
 					<fo:block font-size="12pt" font-weight="bold" space-before="40mm"><xsl:value-of select="$standard_number"/></fo:block>
 					<fo:block font-size="10pt"><xsl:value-of select="$history"/></fo:block>
 					
