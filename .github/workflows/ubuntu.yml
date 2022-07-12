@@ -89,7 +89,7 @@ jobs:
       fail-fast: false
       matrix:
         flavor: [csa, cc, gb, iec, ieee, iho, iso, itu, m3aawg, mpfa, ogc, ribose, un]
-        prefix:
+        prefix: null
         include:
           - flavor: bipm
             prefix: '{bipm,jcgm}'
