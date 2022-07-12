@@ -89,7 +89,7 @@ jobs:
       fail-fast: false
       matrix:
         flavor: [csa, cc, gb, iec, ieee, iho, iso, itu, m3aawg, mpfa, ogc, ribose, un]
-        prefix: ['*']
+        prefix:
         include:
           - flavor: bipm
             prefix: '{bipm,jcgm}'
@@ -108,7 +108,7 @@ jobs:
           token: ${{ secrets.METANORMA_CI_PAT_TOKEN }}
           path: ${{ github.workspace }}/metanorma-${{ matrix.flavor }}
 
-      - run: rsync xslt/${{ matrix.prefix }}.*.xsl ${{ github.workspace }}/metanorma-${{ matrix.flavor }}/lib/isodoc/${{ matrix.flavor }}/
+      - run: rsync xslt/${{ matrix.prefix || matrix.flavor }}.*.xsl ${{ github.workspace }}/metanorma-${{ matrix.flavor }}/lib/isodoc/${{ matrix.flavor }}/
 
       - uses: peter-evans/create-pull-request@v4
         with:
