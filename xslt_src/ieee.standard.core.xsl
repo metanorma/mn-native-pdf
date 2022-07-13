@@ -306,8 +306,11 @@
 				
 				<xsl:for-each select=".">
 				
+					<xsl:variable name="copyright_year" select="/ieee:ieee-standard/ieee:bibdata/ieee:copyright/ieee:from"/>
+				
 					<!-- IEEE Std 802.1X™-2020 -->
-					<xsl:variable name="standard_number">IEEE Std <xsl:value-of select="/ieee:ieee-standard/ieee:bibdata/ieee:docidentifier[@type = 'IEEE']"/>-<xsl:value-of select="substring(/ieee:ieee-standard/ieee:bibdata/ieee:date[@type = 'published'],1,4)"/></xsl:variable>
+					<xsl:variable name="standard_number">IEEE Std <xsl:value-of select="/ieee:ieee-standard/ieee:bibdata/ieee:docidentifier[@type = 'IEEE']"/>-<xsl:value-of select="$copyright_year"/></xsl:variable>
+					<!-- <xsl:value-of select="substring(/ieee:ieee-standard/ieee:bibdata/ieee:date[@type = 'published'],1,4)"/> -->
 				
 					<xsl:variable name="designation" select="/ieee:ieee-standard/ieee:bibdata/ieee:docnumber"/>
 					<xsl:variable name="draft_number" select="/ieee:ieee-standard/ieee:bibdata/ieee:version/ieee:draft"/>
@@ -324,7 +327,10 @@
 					<xsl:variable name="title_intro">
 						<!-- Example Local and Metropolitan Area Networks— -->
 						<xsl:apply-templates select="/ieee:ieee-standard/ieee:bibdata/ieee:title[@language = 'intro' or @language = 'intro-en']/node()"/>
-						<xsl:if test="/ieee:ieee-standard/ieee:bibdata/ieee:title[@language = 'intro' or @language = 'intro-en']">—</xsl:if>
+						<xsl:if test="not(/ieee:ieee-standard/ieee:bibdata/ieee:title[@language = 'intro' or @language = 'intro-en'])">
+							<xsl:apply-templates select="/ieee:ieee-standard/ieee:bibdata/ieee:title[@language = 'en']/node()"/>
+						</xsl:if>
+						<xsl:if test="/ieee:ieee-standard/ieee:bibdata/ieee:title[@language = 'intro' or @language = 'intro-en' or @language = 'en'] and /ieee:ieee-standard/ieee:bibdata/ieee:title[@language = 'main' or @language = 'main-en']">—</xsl:if>
 					</xsl:variable>
 					
 					<xsl:variable name="title_main">
@@ -353,8 +359,17 @@
 							</xsl:otherwise>
 						</xsl:choose>
 					</xsl:variable>
-					<xsl:variable name="copyright_year" select="/ieee:ieee-standard/ieee:bibdata/ieee:copyright/ieee:from"/>
-					<xsl:variable name="copyright_holder" select="/ieee:ieee-standard/ieee:bibdata/ieee:copyright/ieee:owner/ieee:organization/ieee:abbreviation"/>
+					
+					<xsl:variable name="copyright_abbreviation" select="normalize-space(/ieee:ieee-standard/ieee:bibdata/ieee:copyright/ieee:owner/ieee:organization/ieee:abbreviation)"/>
+					<xsl:variable name="copyright_holder">
+						<xsl:value-of select="$copyright_abbreviation"/>
+						<xsl:if test="$copyright_abbreviation = ''">
+							<xsl:for-each select="/ieee:ieee-standard/ieee:bibdata/ieee:contributor[ieee:role/@type = 'publisher']/ieee:organization/ieee:abbreviation">
+								<xsl:value-of select="."/>
+								<xsl:if test="position() != last()">, </xsl:if>
+							</xsl:for-each>
+						</xsl:if>
+					</xsl:variable>
 					
 					<xsl:variable name="document_id">
 						<xsl:choose>
@@ -387,15 +402,15 @@
 							</xsl:when>
 						</xsl:choose>
 						<xsl:if test="$trial_use = 'true'">Trial-Use </xsl:if>
-							<xsl:value-of select="$doctype_localized"/>
-							<xsl:if test="normalize-space($doctype_localized) = ''">
-								<xsl:choose>
-									<xsl:when test="$doctype = 'standard'">Standard</xsl:when>
-									<xsl:when test="$doctype = 'guide'">Guide</xsl:when>
-									<xsl:when test="$doctype = 'recommended-practice'">Recommended Practice</xsl:when>
-								</xsl:choose>
-							</xsl:if>
-							<xsl:text> for </xsl:text>
+						<xsl:value-of select="$doctype_localized"/>
+						<xsl:if test="normalize-space($doctype_localized) = ''">
+							<xsl:choose>
+								<xsl:when test="$doctype = 'standard'">Standard</xsl:when>
+								<xsl:when test="$doctype = 'guide'">Guide</xsl:when>
+								<xsl:when test="$doctype = 'recommended-practice'">Recommended Practice</xsl:when>
+							</xsl:choose>
+						</xsl:if>
+						<xsl:text> for </xsl:text>
 						<!-- <xsl:copy-of select="$title"/> -->
 					</xsl:variable>
 					
@@ -462,11 +477,16 @@
 					</xsl:variable>
 					
 					
-					<xsl:variable name="standard_title_prefix">
-						<xsl:text>IEEE </xsl:text>
-						<xsl:if test="$trial_use = 'true'">Trial-Use </xsl:if>
-						<xsl:text>Standard for</xsl:text>
-					</xsl:variable>
+					<!-- <fo:page-sequence master-reference="document-draft" force-page-count="no-force">
+						<fo:flow flow-name="xsl-region-body">
+							<fo:block-container>
+								<fo:block>DEBUG:</fo:block>
+								<fo:block>current_template=<xsl:value-of select="$current_template"/></fo:block>
+								<fo:block>doctype=<xsl:value-of select="$doctype"/></fo:block>
+							</fo:block-container>
+						</fo:flow>
+					</fo:page-sequence> -->
+					
 					
 					<!-- ======================= -->
 					<!-- Cover page -->
@@ -591,7 +611,7 @@
 								<xsl:with-param name="committee" select="$committee"/>
 								<xsl:with-param name="standard_number" select="$standard_number"/>
 								<xsl:with-param name="history" select="$history_text"/>
-								<xsl:with-param name="standard_title_prefix" select="$standard_title_prefix"/>
+								<xsl:with-param name="standard_title_prefix" select="$title_prefix"/>
 								<xsl:with-param name="cutoff_date" select="$cutoff_date"/>
 								<xsl:with-param name="expiration_date" select="$expiration_date"/>
 							</xsl:call-template>
@@ -609,6 +629,32 @@
 					<!-- END Cover page -->
 					<!-- ======================= -->
 					
+					<xsl:variable name="title_standard_coverpage_">
+						<xsl:choose>
+							<!-- title starts with lower-cased letter -->
+							<xsl:when test="translate(substring($title_intro,1,1),$lower,'') = ''">
+								<fo:block font-size="18pt">
+									<xsl:value-of select="$title_prefix"/>
+									<xsl:copy-of select="$title_intro"/>
+								</fo:block>
+							</xsl:when>
+							<xsl:otherwise>
+								<!-- Example: IEEE Standard for -->
+								<fo:block font-size="18pt">
+								<xsl:value-of select="$title_prefix"/>
+							</fo:block>
+								<fo:block font-size="18pt" margin-left="6mm">
+									<!-- Example Local and Metropolitan Area Networks— -->
+									<xsl:copy-of select="$title_intro"/>
+								</fo:block>
+							</xsl:otherwise>
+						</xsl:choose>
+						<fo:block font-size="24pt" space-before="12pt">
+							<!-- Example: Port-Based Network Access Control -->
+							<xsl:copy-of select="$title_main"/>
+						</fo:block>
+					</xsl:variable>
+					<xsl:variable name="title_standard_coverpage" select="xalan:nodeset($title_standard_coverpage_)"/>
 					
 					<!-- =================== -->
 					<!-- Second page(s) -->
@@ -666,18 +712,7 @@
 									</fo:block>
 									
 									<fo:block font-weight="bold" space-before="13mm">
-										<fo:block font-size="18pt">
-											<xsl:value-of select="$standard_title_prefix"/>
-										</fo:block>
-										<fo:block font-size="18pt">
-											<!-- Example Local and Metropolitan Area Networks— -->
-											<xsl:text>&#xa0;&#xa0;&#xa0;&#xa0;</xsl:text>
-											<xsl:copy-of select="$title_intro"/>
-										</fo:block>
-										<fo:block font-size="24pt" space-before="12pt">
-											<!-- Example: Port-Based Network Access Control -->
-											<xsl:copy-of select="$title_main"/>
-										</fo:block>
+										<xsl:copy-of select="$title_standard_coverpage"/>
 									</fo:block>
 									
 									<fo:block font-size="10pt" space-before="9mm" space-after="4pt">Developed by the</fo:block>
@@ -1280,17 +1315,8 @@
 										
 										<xsl:when test="$current_template = 'standard'">
 											<fo:block font-family="Arial" font-weight="bold" margin-top="13mm" space-after="12pt">
-												<fo:block font-size="18pt">
-													<xsl:value-of select="$standard_title_prefix"/>
-												</fo:block>
-												<fo:block font-size="18pt">
-													<!-- Example Local and Metropolitan Area Networks— -->
-													<xsl:text>&#xa0;&#xa0;&#xa0;&#xa0;</xsl:text>
-													<xsl:copy-of select="$title_intro"/>
-												</fo:block>
-												<fo:block font-size="24pt" space-before="12pt">
-													<!-- Example: Port-Based Network Access Control -->
-													<xsl:copy-of select="$title_main"/>
+												<fo:block font-weight="bold" space-before="13mm">
+													<xsl:copy-of select="$title_standard_coverpage"/>
 												</fo:block>
 											</fo:block>
 										</xsl:when>
@@ -3279,14 +3305,29 @@
 		
 			<fo:flow flow-name="xsl-region-body" font-family="Calibri">
 				<fo:block-container height="81mm" display-align="center" font-weight="bold">
-					<fo:block font-size="22pt" space-after="2pt">
-						<xsl:value-of select="$standard_title_prefix"/>
-					</fo:block>
-					<fo:block font-size="22pt">
-						<xsl:text>&#xa0;&#xa0;</xsl:text>
-						<!-- Example: Local and Metropolitan Area Networks— -->
-						<xsl:copy-of select="$title_intro"/>
-					</fo:block>
+				
+					<xsl:choose>
+						<!-- title starts with lower-cased letter -->
+						<xsl:when test="translate(substring($title_intro,1,1),$lower,'') = ''">
+							<fo:block font-size="22pt">
+								<xsl:value-of select="$standard_title_prefix"/>
+								<xsl:copy-of select="$title_intro"/>
+							</fo:block>
+						</xsl:when>
+						
+						<xsl:otherwise>
+							<!-- Example: IEEE Standard for -->
+							<fo:block font-size="22pt" space-after="2pt">
+								<xsl:value-of select="$standard_title_prefix"/>
+							</fo:block>
+							<fo:block font-size="22pt" margin-left="3mm">
+								<!-- Example: Local and Metropolitan Area Networks— -->
+								<xsl:copy-of select="$title_intro"/>
+							</fo:block>
+						</xsl:otherwise>
+					</xsl:choose>
+					
+					
 					<fo:block font-size="25pt" space-before="32pt">
 						<!-- Example: Port-Based Network Access Control -->
 						<xsl:copy-of select="$title_main"/>
