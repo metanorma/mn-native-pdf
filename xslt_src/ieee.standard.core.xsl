@@ -585,7 +585,11 @@
 											</fo:block>
 											<fo:block>&#xa0;</fo:block>
 											<fo:block>
-												<fo:inline font-weight="bold">Keywords: </fo:inline> <xsl:value-of select="/ieee:ieee-standard/ieee:bibdata/ieee:keyword"/>
+												<fo:inline font-weight="bold">Keywords: </fo:inline>
+												<xsl:for-each select="/ieee:ieee-standard/ieee:bibdata/ieee:keyword">
+													<xsl:value-of select="."/>
+													<xsl:if test="position() != last()">, </xsl:if>
+												</xsl:for-each>
 											</fo:block>
 										</fo:block>
 										
@@ -745,7 +749,11 @@
 										</fo:block>
 										<fo:block>&#xa0;</fo:block>
 										<fo:block>
-											<fo:inline font-weight="bold">Keywords: </fo:inline> <xsl:value-of select="/ieee:ieee-standard/ieee:bibdata/ieee:keyword"/>
+											<fo:inline font-weight="bold">Keywords: </fo:inline>
+											<xsl:for-each select="/ieee:ieee-standard/ieee:bibdata/ieee:keyword">
+												<xsl:value-of select="."/>
+												<xsl:if test="position() != last()">, </xsl:if>
+											</xsl:for-each>
 										</fo:block>
 									</fo:block>
 										
