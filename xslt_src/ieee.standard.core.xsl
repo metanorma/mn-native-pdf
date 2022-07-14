@@ -326,16 +326,16 @@
 					
 					<xsl:variable name="title_intro">
 						<!-- Example Local and Metropolitan Area Networks— -->
-						<xsl:apply-templates select="/ieee:ieee-standard/ieee:bibdata/ieee:title[@language = 'intro' or @language = 'intro-en']/node()"/>
+						<xsl:apply-templates select="/ieee:ieee-standard/ieee:bibdata/ieee:title[@language = 'en']/node()"/>
+						<!-- <xsl:apply-templates select="/ieee:ieee-standard/ieee:bibdata/ieee:title[@language = 'intro' or @language = 'intro-en']/node()"/>
 						<xsl:if test="not(/ieee:ieee-standard/ieee:bibdata/ieee:title[@language = 'intro' or @language = 'intro-en'])">
-							<xsl:apply-templates select="/ieee:ieee-standard/ieee:bibdata/ieee:title[@language = 'en']/node()"/>
 						</xsl:if>
-						<xsl:if test="/ieee:ieee-standard/ieee:bibdata/ieee:title[@language = 'intro' or @language = 'intro-en' or @language = 'en'] and /ieee:ieee-standard/ieee:bibdata/ieee:title[@language = 'main' or @language = 'main-en']">—</xsl:if>
+						<xsl:if test="/ieee:ieee-standard/ieee:bibdata/ieee:title[@language = 'intro' or @language = 'intro-en' or @language = 'en'] and /ieee:ieee-standard/ieee:bibdata/ieee:title[@language = 'main' or @language = 'main-en']">—</xsl:if> -->
 					</xsl:variable>
 					
 					<xsl:variable name="title_main">
 						<!-- Example: Port-Based Network Access Control -->
-						<xsl:apply-templates select="/ieee:ieee-standard/ieee:bibdata/ieee:title[@language = 'main' or @language = 'main-en']/node()"/>
+						<!-- <xsl:apply-templates select="/ieee:ieee-standard/ieee:bibdata/ieee:title[@language = 'main' or @language = 'main-en']/node()"/> -->
 					</xsl:variable>
 					
 					<xsl:variable name="title">
@@ -727,7 +727,7 @@
 										<xsl:text>of the</xsl:text>
 										<xsl:value-of select="$linebreak"/>
 										<!-- Example: IEEE Computer Society -->
-										<xsl:value-of select="$society"/> 
+										<xsl:text>IEEE </xsl:text><xsl:value-of select="$society"/> 
 										<xsl:value-of select="$linebreak"/>
 									</fo:block>
 
@@ -3345,7 +3345,7 @@
 				<fo:block-container>
 					<fo:block font-size="16pt">
 						<!-- Example: IEEE Computer Society -->
-						<xsl:value-of select="$society"/> 
+						<xsl:text>IEEE </xsl:text><xsl:value-of select="$society"/> 
 					</fo:block>
 					<fo:block font-size="12pt" space-before="13mm">Developed by the</fo:block>
 					<!-- LAN/MAN Standards Committee -->
