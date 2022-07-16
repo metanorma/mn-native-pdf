@@ -14741,6 +14741,7 @@
 
 	<xsl:template name="insertKeywords">
 		<xsl:param name="sorting" select="'true'"/>
+		<xsl:param name="meta" select="'false'"/>
 		<xsl:param name="charAtEnd" select="'.'"/>
 		<xsl:param name="charDelim" select="', '"/>
 		<xsl:choose>
@@ -14748,6 +14749,7 @@
 				<xsl:for-each select="//*[contains(local-name(), '-standard')]/*[local-name() = 'bibdata']//*[local-name() = 'keyword']">
 					<xsl:sort data-type="text" order="ascending"/>
 					<xsl:call-template name="insertKeyword">
+						<xsl:with-param name="meta" select="$meta"/>
 						<xsl:with-param name="charAtEnd" select="$charAtEnd"/>
 						<xsl:with-param name="charDelim" select="$charDelim"/>
 					</xsl:call-template>
@@ -14756,6 +14758,7 @@
 			<xsl:otherwise>
 				<xsl:for-each select="//*[contains(local-name(), '-standard')]/*[local-name() = 'bibdata']//*[local-name() = 'keyword']">
 					<xsl:call-template name="insertKeyword">
+						<xsl:with-param name="meta" select="$meta"/>
 						<xsl:with-param name="charAtEnd" select="$charAtEnd"/>
 						<xsl:with-param name="charDelim" select="$charDelim"/>
 					</xsl:call-template>
@@ -14767,7 +14770,15 @@
 	<xsl:template name="insertKeyword">
 		<xsl:param name="charAtEnd"/>
 		<xsl:param name="charDelim"/>
-		<xsl:apply-templates/>
+		<xsl:param name="meta"/>
+		<xsl:choose>
+			<xsl:when test="$meta = 'true'">
+				<xsl:value-of select="."/>
+			</xsl:when>
+			<xsl:otherwise>
+				<xsl:apply-templates/>
+			</xsl:otherwise>
+		</xsl:choose>
 		<xsl:choose>
 			<xsl:when test="position() != last()"><xsl:value-of select="$charDelim"/></xsl:when>
 			<xsl:otherwise><xsl:value-of select="$charAtEnd"/></xsl:otherwise>
@@ -14792,21 +14803,7 @@
 										<xsl:value-of select="*[local-name() = 'title'][@language = $lang and @type = 'part']"/>
 									</xsl:when>
 									<xsl:when test="$namespace = 'ieee'">
-										<!-- <xsl:variable name="full_title">
-											<item>
-												<xsl:value-of select="*[local-name() = 'title'][@language = 'intro-en']"/>
-											</item>
-											<item>
-												<xsl:value-of select="*[local-name() = 'title'][@language = 'main-en']"/>
-											</item>
-											<item>
-												<xsl:value-of select="*[local-name() = 'title'][@language = 'part-en']"/>
-											</item>
-										</xsl:variable>
-										<xsl:for-each select="xalan:nodeset($full_title)/item[normalize-space() != '']">
-											<xsl:value-of select="."/>
-											<xsl:if test="position() != last()"> - </xsl:if>
-										</xsl:for-each> -->
+										<xsl:value-of select="$title_prefix"/>
 										<xsl:value-of select="*[local-name() = 'title']"/>
 									</xsl:when>
 									<xsl:when test="$namespace = 'iho' or $namespace = 'csa' or $namespace = 'csd' or $namespace = 'rsd' or $namespace = 'ogc' or $namespace = 'ogc-white-paper' or $namespace = 'mpfd'">								
@@ -14871,7 +14868,9 @@
 						<xsl:value-of select="normalize-space($abstract)"/>
 					</dc:description>
 					<pdf:Keywords>
-						<xsl:call-template name="insertKeywords"/>
+						<xsl:call-template name="insertKeywords">
+							<xsl:with-param name="meta">true</xsl:with-param>
+						</xsl:call-template>
 					</pdf:Keywords>
 				</rdf:Description>
 				<rdf:Description rdf:about=""

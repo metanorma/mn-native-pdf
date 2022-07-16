@@ -61,6 +61,8 @@
 
 	<xsl:variable name="doctype" select="(//ieee:ieee-standard)[1]/ieee:bibdata/ieee:ext/ieee:doctype[normalize-space(@language) = '']"/> <!-- values standard, guide, recommended-practice -->
 	
+	<xsl:variable name="doctype_localized" select="(//ieee:ieee-standard)[1]/ieee:bibdata/ieee:ext/ieee:doctype[@language = $lang]"/>
+	
 	<xsl:variable name="subdoctype" select="(//ieee:ieee-standard)[1]/ieee:bibdata/ieee:ext/ieee:subdoctype[normalize-space(@language) = '']"/> <!-- has values amendment, corrigendum, erratum -->
 	
 	<xsl:variable name="stage_" select="normalize-space((//ieee:ieee-standard)[1]/ieee:bibdata/ieee:status/ieee:stage)"/>
@@ -93,6 +95,28 @@
 			<xsl:when test="($doctype = 'standard' or $doctype = 'guide' or $doctype = 'recommended-practice') and $stage = 'published'">standard</xsl:when>
 			<xsl:otherwise><xsl:value-of select="$doctype"/></xsl:otherwise>
 		</xsl:choose>
+	</xsl:variable>
+	
+	<xsl:variable name="title_prefix">
+		<xsl:choose>
+			<xsl:when test="$current_template = 'draft'">
+				<xsl:text>Draft </xsl:text>
+			</xsl:when>
+			<xsl:when test="$current_template = 'standard'">
+				<xsl:text>IEEE </xsl:text>
+			</xsl:when>
+		</xsl:choose>
+		<xsl:if test="$trial_use = 'true'">Trial-Use </xsl:if>
+		<xsl:value-of select="$doctype_localized"/>
+		<xsl:if test="normalize-space($doctype_localized) = ''">
+			<xsl:choose>
+				<xsl:when test="$doctype = 'standard'">Standard</xsl:when>
+				<xsl:when test="$doctype = 'guide'">Guide</xsl:when>
+				<xsl:when test="$doctype = 'recommended-practice'">Recommended Practice</xsl:when>
+			</xsl:choose>
+		</xsl:if>
+		<xsl:text> for </xsl:text>
+		<!-- <xsl:copy-of select="$title"/> -->
 	</xsl:variable>
 	
 	<xsl:variable name="color_blue">
@@ -322,8 +346,6 @@
 					</xsl:variable>
 					<xsl:variable name="draft_year" select="substring($revision_month, 1, 4)"/>
 					
-					<xsl:variable name="doctype_localized" select="/ieee:ieee-standard/ieee:bibdata/ieee:ext/ieee:doctype[@language = $lang]"/>
-					
 					<xsl:variable name="title_intro">
 						<!-- Example Local and Metropolitan Area Networks— -->
 						<xsl:apply-templates select="/ieee:ieee-standard/ieee:bibdata/ieee:title[@language = 'en']/node()"/>
@@ -391,30 +413,6 @@
 							</xsl:when>
 						</xsl:choose>
 					</xsl:variable>
-					
-					<xsl:variable name="title_prefix">
-						<xsl:choose>
-							<xsl:when test="$current_template = 'draft'">
-								<xsl:text>Draft </xsl:text>
-							</xsl:when>
-							<xsl:when test="$current_template = 'standard'">
-								<xsl:text>IEEE </xsl:text>
-							</xsl:when>
-						</xsl:choose>
-						<xsl:if test="$trial_use = 'true'">Trial-Use </xsl:if>
-						<xsl:value-of select="$doctype_localized"/>
-						<xsl:if test="normalize-space($doctype_localized) = ''">
-							<xsl:choose>
-								<xsl:when test="$doctype = 'standard'">Standard</xsl:when>
-								<xsl:when test="$doctype = 'guide'">Guide</xsl:when>
-								<xsl:when test="$doctype = 'recommended-practice'">Recommended Practice</xsl:when>
-							</xsl:choose>
-						</xsl:if>
-						<xsl:text> for </xsl:text>
-						<!-- <xsl:copy-of select="$title"/> -->
-					</xsl:variable>
-					
-					
 					
 					
 					
