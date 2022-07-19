@@ -332,8 +332,10 @@
 				
 					<xsl:variable name="copyright_year" select="/ieee:ieee-standard/ieee:bibdata/ieee:copyright/ieee:from"/>
 				
+					<xsl:variable name="approved_date_year" select="substring(/ieee:ieee-standard/ieee:bibdata/ieee:date[@type = 'issued'],1,4)"/>
+					
 					<!-- IEEE Std 802.1X™-2020 -->
-					<xsl:variable name="standard_number">IEEE Std <xsl:value-of select="/ieee:ieee-standard/ieee:bibdata/ieee:docidentifier[@type = 'IEEE']"/>-<xsl:value-of select="$copyright_year"/></xsl:variable>
+					<xsl:variable name="standard_number">IEEE Std <xsl:value-of select="/ieee:ieee-standard/ieee:bibdata/ieee:docidentifier[@type = 'IEEE']"/>-<xsl:value-of select="$approved_date_year"/></xsl:variable>
 					<!-- <xsl:value-of select="substring(/ieee:ieee-standard/ieee:bibdata/ieee:date[@type = 'published'],1,4)"/> -->
 				
 					<xsl:variable name="designation" select="/ieee:ieee-standard/ieee:bibdata/ieee:docnumber"/>
