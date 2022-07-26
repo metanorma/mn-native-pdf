@@ -332,8 +332,10 @@
 				
 					<xsl:variable name="copyright_year" select="/ieee:ieee-standard/ieee:bibdata/ieee:copyright/ieee:from"/>
 				
+					<xsl:variable name="approved_date_year" select="substring(normalize-space(/ieee:ieee-standard/ieee:bibdata/ieee:date[@type = 'issued']),1,4)"/>
+					
 					<!-- IEEE Std 802.1X™-2020 -->
-					<xsl:variable name="standard_number">IEEE Std <xsl:value-of select="/ieee:ieee-standard/ieee:bibdata/ieee:docidentifier[@type = 'IEEE']"/>-<xsl:value-of select="$copyright_year"/></xsl:variable>
+					<xsl:variable name="standard_number">IEEE Std <xsl:value-of select="/ieee:ieee-standard/ieee:bibdata/ieee:docidentifier[@type = 'IEEE']"/>-<xsl:value-of select="$approved_date_year"/></xsl:variable>
 					<!-- <xsl:value-of select="substring(/ieee:ieee-standard/ieee:bibdata/ieee:date[@type = 'published'],1,4)"/> -->
 				
 					<xsl:variable name="designation" select="/ieee:ieee-standard/ieee:bibdata/ieee:docnumber"/>
@@ -423,21 +425,21 @@
 					<xsl:variable name="approved_by">IEEE SA Standards Board</xsl:variable>
 					<xsl:variable name="approved_date">
 						<xsl:call-template name="convertDate">
-							<xsl:with-param name="date" select="/ieee:ieee-standard/ieee:bibdata/ieee:date[@type = 'issued']"/>
+							<xsl:with-param name="date" select="normalize-space(/ieee:ieee-standard/ieee:bibdata/ieee:date[@type = 'issued'])"/>
 							<xsl:with-param name="format" select="'ddMMyyyy'"/>
 						</xsl:call-template>
 					</xsl:variable>
 					
 					<xsl:variable name="cutoff_date">
 						<xsl:call-template name="convertDate">
-							<xsl:with-param name="date" select="/ieee:ieee-standard/ieee:bibdata/ieee:date[@type = 'feedback-ended']"/>
+							<xsl:with-param name="date" select="normalize-space(/ieee:ieee-standard/ieee:bibdata/ieee:date[@type = 'feedback-ended'])"/>
 							<xsl:with-param name="format" select="'ddMMyyyy'"/>
 						</xsl:call-template>
 					</xsl:variable>
 					
 					<xsl:variable name="expiration_date">
 						<xsl:call-template name="convertDate">
-							<xsl:with-param name="date" select="/ieee:ieee-standard/ieee:bibdata/ieee:date[@type = 'obsoleted']"/>
+							<xsl:with-param name="date" select="normalize-space(/ieee:ieee-standard/ieee:bibdata/ieee:date[@type = 'obsoleted'])"/>
 							<xsl:with-param name="format" select="'ddMMyyyy'"/>
 						</xsl:call-template>
 					</xsl:variable>
@@ -1455,6 +1457,12 @@
 		</fo:block>
 	</xsl:template>
 	
+	<xsl:template match="ieee:boilerplate/ieee:legal-statement/ieee:clause[@id = 'boilerplate-participants' or ieee:title = 'Participants']/ieee:clause" priority="2">
+		<fo:block id="{@id}" space-before="12pt">
+			<xsl:apply-templates />
+		</fo:block>
+	</xsl:template>
+	
 	<!-- Example: Important Notices and Disclaimers Concerning IEEE Standards Documents -->
 	<xsl:template match="ieee:boilerplate/ieee:legal-statement//ieee:title" priority="3">
 		<xsl:variable name="level">
@@ -1484,7 +1492,13 @@
 				<xsl:variable name="officemembers_">
 					<officemember><xsl:copy-of select="node()"/></officemember>
 					<xsl:variable name="pos_curr" select="count(preceding-sibling::*) + 1"/>
-					<xsl:variable name="pos_end" select="count(following-sibling::*[not(@type = 'officemember')][1]/preceding-sibling::*)"/>
+					<xsl:variable name="pos_end_" select="count(following-sibling::*[not(@type = 'officemember')][1]/preceding-sibling::*)"/>
+					<xsl:variable name="pos_end">
+						<xsl:choose>
+							<xsl:when test="$pos_end_ = 0">9999</xsl:when>
+							<xsl:otherwise><xsl:value-of select="$pos_end_"/></xsl:otherwise>
+						</xsl:choose>
+					</xsl:variable>
 					<xsl:variable name="p_count" select="$pos_end - $pos_curr"/>
 					<xsl:for-each select="following-sibling::ieee:p[position() &lt;= $p_count]">
 						<officemember><xsl:copy-of select="node()"/></officemember>
@@ -1518,12 +1532,12 @@
 						<fo:table-body>
 							<xsl:for-each select="$officemembers/officemember[position() &lt;= $max]">
 								<fo:table-row>
-									<fo:table-cell>
+									<fo:table-cell padding-right="3mm">
 										<fo:block>
 											<xsl:apply-templates/>
 										</fo:block>
 									</fo:table-cell>
-									<fo:table-cell>
+									<fo:table-cell padding-right="3mm">
 										<fo:block>
 											<xsl:apply-templates select="following-sibling::*[number($max)]/node()"/>
 										</fo:block>
@@ -1552,26 +1566,62 @@
 				</fo:block>
 			</xsl:when>
 			
+			<xsl:when test="@type = 'officeorgrepmemberhdr'">
+				<fo:block text-align-last="justify" space-after="12pt">
+					<!-- before tab - left aligned text -->
+					<xsl:apply-templates select="ieee:tab[1]/preceding-sibling::node()"/>
+					<fo:inline keep-together.within-line="always">
+						<fo:leader leader-pattern="space"/>
+						<!-- after tab - right aligned text -->
+						<xsl:apply-templates select="ieee:tab[1]/following-sibling::node()"/>
+					</fo:inline>
+				</fo:block>
+			</xsl:when>
+			
+			<xsl:when test="@type = 'officeorgrepmember'">
+				<fo:block text-align-last="justify" space-after="6pt" font-size="9pt">
+					<!-- before tab - left aligned text -->
+					<xsl:apply-templates select="ieee:tab[1]/preceding-sibling::node()"/>
+					<fo:inline keep-together.within-line="always">
+						<fo:leader font-size="9pt" font-weight="normal" leader-pattern="dots"/>
+						<!-- after tab - right aligned text -->
+						<xsl:apply-templates select="ieee:tab[1]/following-sibling::node()"/>
+					</fo:inline>
+				</fo:block>
+			</xsl:when>
+			
 			<xsl:otherwise>
+			
+				<xsl:variable name="attributes_">
+					<attributes>
+						<xsl:if test="@align = 'center' and ancestor::ieee:clause[@id = 'boilerplate-participants' or ieee:title = 'Participants'] and following-sibling::*[1][self::ieee:p and @align = 'center']">
+							<xsl:attribute name="space-after">0</xsl:attribute>
+						</xsl:if>
+						<xsl:call-template name="setTextAlignment">
+							<xsl:with-param name="default">justify</xsl:with-param>
+						</xsl:call-template>
+						
+						<xsl:if test="$current_template = 'whitepaper' or $current_template = 'icap-whitepaper' or $current_template = 'industry-connection-report'">
+							<xsl:attribute name="font-size">10pt</xsl:attribute>
+							<xsl:attribute name="font-family">Calibri Light</xsl:attribute>
+							<xsl:attribute name="line-height"><xsl:value-of select="$line-height"/></xsl:attribute>
+						</xsl:if>
+						
+						<xsl:if test="$current_template = 'standard'">
+							<xsl:attribute name="font-size">9pt</xsl:attribute>
+							<xsl:attribute name="font-family">Times New Roman</xsl:attribute>
+							<xsl:attribute name="space-after">6pt</xsl:attribute>
+						</xsl:if>
+					</attributes>
+				</xsl:variable>
+			
+				<xsl:variable name="attributes" select="xalan:nodeset($attributes_)"/>
+				
 				<fo:block space-after="12pt">
-					<xsl:if test="@align = 'center' and ancestor::ieee:clause[@id = 'boilerplate-participants' or ieee:title = 'Participants'] and following-sibling::*[1][self::ieee:p and @align = 'center']">
-						<xsl:attribute name="space-after">0</xsl:attribute>
-					</xsl:if>
-					<xsl:call-template name="setTextAlignment">
-						<xsl:with-param name="default">justify</xsl:with-param>
-					</xsl:call-template>
 					
-					<xsl:if test="$current_template = 'whitepaper' or $current_template = 'icap-whitepaper' or $current_template = 'industry-connection-report'">
-						<xsl:attribute name="font-size">10pt</xsl:attribute>
-						<xsl:attribute name="font-family">Calibri Light</xsl:attribute>
-						<xsl:attribute name="line-height"><xsl:value-of select="$line-height"/></xsl:attribute>
-					</xsl:if>
-					
-					<xsl:if test="$current_template = 'standard'">
-						<xsl:attribute name="font-size">9pt</xsl:attribute>
-						<xsl:attribute name="font-family">Times New Roman</xsl:attribute>
-						<xsl:attribute name="space-after">6pt</xsl:attribute>
-					</xsl:if>
+					<xsl:for-each select="$attributes/attributes/@*">
+						<xsl:attribute name="{local-name()}"><xsl:value-of select="."/></xsl:attribute>
+					</xsl:for-each>
 					
 					<xsl:apply-templates />
 				</fo:block>
