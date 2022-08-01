@@ -137,7 +137,7 @@ jobs:
       - uses: actions/download-artifact@v3
 
       - id: prs
-        run: echo "::set-output name=list::$(cat pr-url-*.txt)"
+        run: echo "::set-output name=list::$(cat pr-url-*)"
 
       - uses: peter-evans/create-or-update-comment@v2
         with:
