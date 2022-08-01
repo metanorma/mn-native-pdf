@@ -144,6 +144,7 @@ jobs:
         uses: peter-evans/create-issue-from-file@v4
         with:
           title: Metanorma PRs aggregator
+          content-filepath: .github/templates/prs-list.md
           labels: |
             report
             automated issue
@@ -151,6 +152,7 @@ jobs:
       - uses: peter-evans/create-or-update-comment@v2
         with:
           issue-number: ${{ steps.prs-issue.outputs.issue-number }}
+          # comment-id: 1200842309
           body: |
             ${{ steps.prs.outputs.list }}
           edit-mode: replace
