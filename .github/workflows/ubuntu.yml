@@ -146,6 +146,7 @@ jobs:
         uses: peter-evans/create-issue-from-file@v4
         with:
           title: Metanorma PRs aggregator
+          issue-number: 404
           content-filepath: .github/templates/prs-list.md
           labels: |
             report
