@@ -154,7 +154,7 @@ jobs:
       - uses: peter-evans/create-or-update-comment@v2
         with:
           issue-number: ${{ steps.prs-issue.outputs.issue-number }}
-          # comment-id: 1200842309
+          comment-id: 1324321384 # https://github.com/metanorma/mn-native-pdf/issues/404#issue-1324321384
           body: |
             ${{ steps.prs.outputs.list }}
           edit-mode: replace
