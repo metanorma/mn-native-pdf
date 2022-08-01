@@ -123,7 +123,8 @@ jobs:
           title: xslt update based on metanorma/mn-native-pdf@${{ github.sha }}
           commit-message: xslt update based on metanorma/mn-native-pdf@${{ github.sha }}
 
-      - run: printf " - [ ] ${{ steps.cpr.outputs.pull-request-url }}\n" > pr-url-${{ matrix.flavor }}.txt
+      - if: ${{ steps.cpr.outputs.pull-request-number }}
+        run: printf " - [ ] ${{ steps.cpr.outputs.pull-request-url }}\n" > pr-url.txt
 
       - uses: actions/upload-artifact@v2
         with:
