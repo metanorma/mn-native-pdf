@@ -140,10 +140,17 @@ jobs:
       - id: prs
         run: echo "::set-output name=list::$(cat pr-url-*/pr-url.txt)"
 
+      - id: prs-issue
+        uses: peter-evans/create-issue-from-file@v4
+        with:
+          title: Metanorma PRs aggregator
+          labels: |
+            report
+            automated issue
+
       - uses: peter-evans/create-or-update-comment@v2
         with:
-          issue-number: 402
-          comment-id: 1200842309
+          issue-number: ${{ steps.prs-issue.outputs.issue-number }}
           body: |
             ${{ steps.prs.outputs.list }}
           edit-mode: replace
