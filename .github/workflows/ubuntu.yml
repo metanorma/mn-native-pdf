@@ -128,7 +128,7 @@ jobs:
       - uses: actions/upload-artifact@v2
         with:
           name: pr-url-${{ matrix.flavor }}
-          path: pr-url-${{ matrix.flavor }}.txt
+          path: pr-url.txt
 
   update-prs-list:
     runs-on: ubuntu-latest
@@ -137,7 +137,7 @@ jobs:
       - uses: actions/download-artifact@v3
 
       - id: prs
-        run: echo "::set-output name=list::$(cat pr-url-*)"
+        run: echo "::set-output name=list::$(cat pr-url-*/pr-url.txt)"
 
       - uses: peter-evans/create-or-update-comment@v2
         with:
