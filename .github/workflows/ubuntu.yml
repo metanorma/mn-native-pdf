@@ -141,14 +141,10 @@ jobs:
 
       - run: cat pr-url-*/pr-url.txt >> .github/templates/prs-list.md
 
-      - uses: peter-evans/create-issue-from-file@v4
+      - uses: JasonEtco/create-an-issue@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          title: Review and merge XSLT updates
-          issue-number: 404
-          content-filepath: .github/templates/prs-list.md
-          assignees: |
-            opoudjis
-            ronaldtse
-          labels: |
-            report
-            automated issue
+          assignees: opoudjis, ronaldtse
+          update_existing: true
+          filename: .github/templates/prs-list.md
