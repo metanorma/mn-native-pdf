@@ -124,7 +124,7 @@ jobs:
           commit-message: xslt update based on metanorma/mn-native-pdf@${{ github.sha }}
 
       - if: ${{ steps.cpr.outputs.pull-request-number }}
-        run: printf " - [ ] ${{ steps.cpr.outputs.pull-request-url }}\n" > pr-url.txt
+        run: printf " - ${{ steps.cpr.outputs.pull-request-url }}\n" > pr-url.txt
 
       - uses: actions/upload-artifact@v2
         with:
@@ -139,23 +139,16 @@ jobs:
 
       - uses: actions/download-artifact@v3
 
-      - id: prs
-        run: echo "::set-output name=list::$(cat pr-url-*/pr-url.txt)"
+      - run: cat pr-url-*/pr-url.txt >> .github/templates/prs-list.md
 
-      - id: prs-issue
-        uses: peter-evans/create-issue-from-file@v4
+      - uses: peter-evans/create-issue-from-file@v4
         with:
-          title: Metanorma PRs aggregator
+          title: Review and merge XSLT updates
           issue-number: 404
           content-filepath: .github/templates/prs-list.md
+          assignees: |
+            opoudjis
+            ronaldtse
           labels: |
             report
             automated issue
-
-      - uses: peter-evans/create-or-update-comment@v2
-        with:
-          issue-number: ${{ steps.prs-issue.outputs.issue-number }}
-          # comment-id: 1324321384 # https://github.com/metanorma/mn-native-pdf/issues/404#issue-1324321384
-          body: |
-            ${{ steps.prs.outputs.list }}
-          # edit-mode: replace
