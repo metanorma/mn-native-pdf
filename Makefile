@@ -285,7 +285,7 @@ clean: xsltsclean
 	rm -rf documents
 
 xsltsclean:
-#	rm -f $(XSLT_GENERATED)
+	rm -f $(XSLT_GENERATED)
 
 update-init:
 	git submodule update --init
