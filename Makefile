@@ -258,7 +258,7 @@ else
 	java -jar xalan/xalan.jar -IN $< -XSL xslt_src/merge.xsl -OUT $@ -PARAM xslfile $<; \
 	XMLNS=$$(xmllint --xpath "/*/*[local-name()='variable'][@name='namespace']/text()" $<); \
 	echo $${XMLNS}; \
-	echo "<?xml version="1.0" encoding="UTF-8"?><empty xmlns="https://www.metanorma.org/ns/$${XMLNS}"></empty>" > empty.xml; \
+	echo "<?xml version=\"1.0\" encoding=\"UTF-8\"?><empty xmlns=\"https://www.metanorma.org/ns/$${XMLNS}\"></empty>" > empty.xml; \
 	cat empty.xml; \
 	java -jar xalan/xalan.jar -IN empty.xml -XSL $@ >result.txt > nul 2>result.txt; \
 	cat result.txt; \
