@@ -1133,7 +1133,7 @@
 																	<xsl:value-of select="@section"/>
 																	<xsl:if test="normalize-space(@section) != ''"><xsl:text>&#xa0;</xsl:text></xsl:if>
 																	
-																	<xsl:variable name="title">
+																	<xsl:variable name="section_title">
 																		<xsl:apply-templates select="title"/>
 																	</xsl:variable>
 																	
@@ -1141,10 +1141,10 @@
 																	
 																	<xsl:choose>
 																		<xsl:when test="@level = 1">
-																			<xsl:apply-templates select="xalan:nodeset($title)" mode="uppercase"/>
+																			<xsl:apply-templates select="xalan:nodeset($section_title)" mode="uppercase"/>
 																		</xsl:when>
 																		<xsl:otherwise>
-																			<xsl:apply-templates select="xalan:nodeset($title)" mode="smallcaps"/>
+																			<xsl:apply-templates select="xalan:nodeset($section_title)" mode="smallcaps"/>
 																		</xsl:otherwise>
 																	</xsl:choose>
 																	
@@ -3010,8 +3010,6 @@
 		<xsl:param name="hideHeader" select="'false'"/>
 		<xsl:param name="hideFooter" select="'false'"/>
 		
-		<xsl:param name="copyright_year"/>
-		<xsl:param name="copyright_holder"/>
 		<xsl:param name="orientation"/>
 		
 		
