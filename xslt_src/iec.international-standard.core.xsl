@@ -9,7 +9,7 @@
 											exclude-result-prefixes="java"
 											version="1.0">
 
-	<xsl:output method="xml" encoding="UTF-8" indent="no"/>
+	<xsl:output2 method="xml" encoding="UTF-8" indent="no"/>
 	
 	<xsl:param name="additionalXMLs" select="''"/> <!-- iec-rice.fr.xml  -->
 	
