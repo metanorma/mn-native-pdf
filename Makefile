@@ -250,16 +250,13 @@ ifeq ($(OS),Windows_NT)
 	java -jar xalan/xalan.jar -IN $< -XSL xslt_src/merge.xsl -OUT $@ -PARAM xslfile $<
 	powershell -Command "$$doc = [xml](Get-Content $<); $$doc.SelectNodes(\"/*/*[local-name()='variable'][@name='namespace']\").'#text'" > XMLNS.txt
 	cmd /V /C "set /p XMLNS=<XMLNS.txt & echo ^<?xml version="1.0" encoding="UTF-8"?^>^<empty xmlns="https://www.metanorma.org/ns/!XMLNS!"^>^</empty^> > empty.xml"
-	more empty.xml
 	java -jar xalan/xalan.jar -IN empty.xml -XSL $@ >result.txt > nul 2>result.txt
-	more result.txt	
+	more result.txt
 	for %%I in (result.txt) do (if %%~zI gtr 0 exit 1)
 else
 	java -jar xalan/xalan.jar -IN $< -XSL xslt_src/merge.xsl -OUT $@ -PARAM xslfile $<; \
 	XMLNS=$$(xmllint --xpath "/*/*[local-name()='variable'][@name='namespace']/text()" $<); \
-	echo $${XMLNS}; \
 	echo "<?xml version=\"1.0\" encoding=\"UTF-8\"?><empty xmlns=\"https://www.metanorma.org/ns/$${XMLNS}\"></empty>" > empty.xml; \
-	cat empty.xml; \
 	java -jar xalan/xalan.jar -IN empty.xml -XSL $@ >result.txt > nul 2>result.txt; \
 	cat result.txt; \
 	test `wc -c <result.txt` -eq 0
