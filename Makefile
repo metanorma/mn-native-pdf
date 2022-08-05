@@ -248,14 +248,14 @@ documents/%.pdf: sources/%.xml $(MN2PDF_EXECUTABLE) | documents
 xslt/%.xsl: xslt_src/%.core.xsl xslt_src/merge.xsl xalan/xalan.jar
 ifeq ($(OS),Windows_NT)
 	java -jar xalan/xalan.jar -IN $< -XSL xslt_src/merge.xsl -OUT $@ -PARAM xslfile $<
-	powershell -Command "$$doc = [xml](Get-Content $<); $$doc.SelectNodes(\"/*/*[local-name()='variable'][@name='namespace']\").'#text'" > XMLNS.txt
-	cmd /V /C "set /p XMLNS=<XMLNS.txt & echo ^<?xml version="1.0" encoding="UTF-8"?^>^<empty xmlns="https://www.metanorma.org/ns/!XMLNS!"^>^</empty^> > empty.xml"
+	powershell -Command "$$doc = [xml](Get-Content $<); $$doc.SelectNodes(\"/*/namespace::*[starts-with(.,'https://www.metanorma.org/ns/')]\").'#text'" > XMLNS.txt
+	cmd /V /C "set /p XMLNS=<XMLNS.txt & echo ^<?xml version="1.0" encoding="UTF-8"?^>^<empty xmlns="!XMLNS!"^>^</empty^> > empty.xml"
 	java -jar xalan/xalan.jar -IN empty.xml -XSL $@ >result.txt > nul 2>result.txt
 	more result.txt
 	for %%I in (result.txt) do (if %%~zI gtr 0 exit 1)
 else
 	java -jar xalan/xalan.jar -IN $< -XSL xslt_src/merge.xsl -OUT $@ -PARAM xslfile $<; \
-	XMLNS=$$(xmllint --xpath "/*/*[local-name()='variable'][@name='namespace']/text()" $<); \
+	XMLNS=$$(xmllint --xpath "name(/*/namespace::*[starts-with(.,'https://www.metanorma.org/ns/')])" $<); \
 	echo "<?xml version=\"1.0\" encoding=\"UTF-8\"?><empty xmlns=\"https://www.metanorma.org/ns/$${XMLNS}\"></empty>" > empty.xml; \
 	java -jar xalan/xalan.jar -IN empty.xml -XSL $@ >result.txt > nul 2>result.txt; \
 	cat result.txt; \
@@ -285,7 +285,7 @@ clean: xsltsclean
 	rm -rf documents
 
 xsltsclean:
-	rm -f $(XSLT_GENERATED)
+#	rm -f $(XSLT_GENERATED)
 
 update-init:
 	git submodule update --init
