@@ -71,19 +71,4 @@
 		<xsl:value-of select="$text_without_empty_multilines"/>
 	</xsl:template>
 
-	<xsl:template match="abc/text()">
-
-		<xsl:variable name="text_without_trailing_spaces" select="java:replaceAll(java:java.lang.String.new(.),'^(\h+)(\v+)','$2')"/>
-		
-		<xsl:variable name="text_without_leading_spaces" select="java:replaceAll(java:java.lang.String.new($text_without_trailing_spaces),'(\v+)((\h+)(\v+))+','$1$1')"/>
-		
-		<xsl:variable name="text_without_empty_multilines" select="java:replaceAll(java:java.lang.String.new($text_without_leading_spaces),'^(\v+){3,}','$1$1')"/>
-		
-		<xsl:value-of select="$text_without_empty_multilines"/>
-		
-		<!-- <xsl:text>start</xsl:text>
-		<xsl:value-of select="."/>
-		<xsl:text>end</xsl:text> -->
-	</xsl:template>
-	
 </xsl:stylesheet>
