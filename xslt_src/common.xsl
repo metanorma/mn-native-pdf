@@ -8153,6 +8153,41 @@
 	</xsl:template>
 	
 	
+	<!-- Example: <span style="font-family:&quot;Noto Sans JP&quot;">styled text</span> -->
+	<xsl:template match="*[local-name() = 'span'][@style]" priority="2">
+		<xsl:variable name="styles__">
+			<xsl:call-template name="split">
+				<xsl:with-param name="pText" select="concat(@style,';')"/>
+				<xsl:with-param name="sep" select="';'"/>
+			</xsl:call-template>
+		</xsl:variable>
+		
+		<xsl:variable name="quot">"</xsl:variable>
+		<xsl:variable name="styles_">
+			<xsl:for-each select="xalan:nodeset($styles__)/item">
+				<xsl:variable name="key" select="normalize-space(substring-before(., ':'))"/>
+				<xsl:variable name="value" select="normalize-space(substring-after(translate(.,$quot,''), ':'))"/>
+				<xsl:if test="$key = 'font-family' or $key = 'color'">
+					<style name="{$key}"><xsl:value-of select="$value"/></style>
+				</xsl:if>
+			</xsl:for-each>
+		</xsl:variable>
+		<xsl:variable name="styles" select="xalan:nodeset($styles_)"/>
+		<xsl:choose>
+			<xsl:when test="$styles/style">
+				<fo:inline>
+					<xsl:for-each select="$styles/style">
+						<xsl:attribute name="{@name}"><xsl:value-of select="."/></xsl:attribute>
+					</xsl:for-each>
+					<xsl:apply-templates />
+				</fo:inline>
+			</xsl:when>
+			<xsl:otherwise>
+				<xsl:apply-templates />
+			</xsl:otherwise>
+		</xsl:choose>
+	</xsl:template> <!-- END: span[@style] -->
+	
 	<!-- Note: to enable the addition of character span markup with semantic styling for DIS Word output -->
 	<xsl:template match="*[local-name() = 'span']">
 		<xsl:apply-templates />
@@ -14368,6 +14403,12 @@
 		</xsl:copy>
 	</xsl:template>
 	
+	<xsl:template match="*[local-name() = 'span'][@style]" mode="update_xml_step1" priority="2">
+		<xsl:copy>
+			<xsl:copy-of select="@*"/>
+			<xsl:apply-templates mode="update_xml_step1"/>
+		</xsl:copy>
+	</xsl:template>
 	<!-- Note: to enable the addition of character span markup with semantic styling for DIS Word output -->
 	<xsl:template match="*[local-name() = 'span']" mode="update_xml_step1">
 		<xsl:apply-templates mode="update_xml_step1"/>
