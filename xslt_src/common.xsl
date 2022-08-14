@@ -9367,6 +9367,12 @@
 				</xsl:if>
 			</xsl:if>
 			
+			<xsl:if test="$namespace = 'iso'">
+				<xsl:if test="$doctype = 'amendment' and ancestor::*[local-name() = 'quote']">
+					<xsl:attribute name="font-size">inherit</xsl:attribute>
+				</xsl:if>
+			</xsl:if>
+			
 			<xsl:if test="$namespace = 'ogc' or $namespace = 'ogc-white-paper'">
 				<xsl:if test="ancestor::ogc:ul or ancestor::ogc:ol and not(ancestor::ogc:note[1]/following-sibling::*)">
 					<xsl:attribute name="margin-bottom">0pt</xsl:attribute>
@@ -9527,6 +9533,11 @@
 						</xsl:if>
 					</xsl:if>
 					<xsl:attribute name="color"><xsl:value-of select="$color_PAS"/></xsl:attribute>
+				</xsl:if>
+			</xsl:if>
+			<xsl:if test="$namespace = 'iso'">
+				<xsl:if test="$doctype = 'amendment' and ancestor::*[local-name() = 'quote']">
+					<xsl:attribute name="font-size">inherit</xsl:attribute>
 				</xsl:if>
 			</xsl:if>
 			<fo:inline xsl:use-attribute-sets="termnote-name-style">
@@ -11873,6 +11884,12 @@
 			</xsl:if>
 			<fo:block-container margin-left="0mm">
 				<fo:block-container xsl:use-attribute-sets="quote-style">
+					<xsl:if test="$namespace = 'iso'">
+						<xsl:if test="$doctype = 'amendment' and (*[local-name() = 'note'] or *[local-name() = 'termnote'])">
+							<xsl:attribute name="margin-left">7mm</xsl:attribute>
+							<xsl:attribute name="margin-right">0mm</xsl:attribute>
+						</xsl:if>
+					</xsl:if>
 					<xsl:if test="$namespace = 'jcgm'">
 						<xsl:if test="ancestor::*[local-name() = 'boilerplate']">
 							<xsl:attribute name="margin-left">7mm</xsl:attribute>
