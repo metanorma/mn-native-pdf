@@ -9368,7 +9368,7 @@
 			</xsl:if>
 			
 			<xsl:if test="$namespace = 'iso'">
-				<xsl:if test="$doctype = 'amendment' and ancestor::*[local-name() = 'quote']">
+				<xsl:if test="$doctype = 'amendment' and parent::*[local-name() = 'quote']">
 					<xsl:attribute name="font-size">inherit</xsl:attribute>
 				</xsl:if>
 			</xsl:if>
@@ -9536,7 +9536,7 @@
 				</xsl:if>
 			</xsl:if>
 			<xsl:if test="$namespace = 'iso'">
-				<xsl:if test="$doctype = 'amendment' and ancestor::*[local-name() = 'quote']">
+				<xsl:if test="$doctype = 'amendment' and parent::*[local-name() = 'quote']">
 					<xsl:attribute name="font-size">inherit</xsl:attribute>
 				</xsl:if>
 			</xsl:if>
