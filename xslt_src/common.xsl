@@ -11436,9 +11436,9 @@
 		</fo:block>
 	</xsl:template>
 	
-	<xsl:template match="*[local-name() = 'div'][@type = 'requirement-component'] |
-										*[local-name() = 'div'][@type = 'recommendation-component'] |
-										*[local-name() = 'div'][@type = 'permission-component']">
+	<xsl:template match="*[local-name() = 'div'][starts-with(@type, 'requirement-component')] |
+										*[local-name() = 'div'][starts-with(@type, 'recommendation-component')] |
+										*[local-name() = 'div'][starts-with(@type, 'permission-component')]">
 		<fo:block xsl:use-attribute-sets="component-style">
 			<xsl:apply-templates />
 		</fo:block>
