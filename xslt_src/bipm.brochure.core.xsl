@@ -3258,7 +3258,7 @@
 			</xsl:variable>
 			<xsl:variable name="cols-count" select="count(xalan:nodeset($toc_table_simple)/*/tr[1]/td)"/>
 			<xsl:variable name="colwidths">
-				<xsl:call-template name="calculate-column-widths">
+				<xsl:call-template name="calculate-column-widths-proportional">
 					<xsl:with-param name="cols-count" select="$cols-count"/>
 					<xsl:with-param name="table" select="$toc_table_simple"/>
 				</xsl:call-template>
