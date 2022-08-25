@@ -48,9 +48,18 @@
 	
 	<xsl:param name="table_if_debug">false</xsl:param> <!-- set 'true' to put debug width data before table or dl -->
 
+	<xsl:variable name="isApplyAutolayoutAlgorithm_">
+		<xsl:choose>
+			<xsl:when test="$namespace = 'bsi' or $namespace = 'csa' or $namespace = 'csd' or $namespace = 'ieee' or $namespace = 'iso' or $namespace = 'm3d' or $namespace = 'mpfd' or $namespace = 'unece' or $namespace = 'unece-rec'">true</xsl:when>
+			<xsl:when test="$namespace = 'bipm'">true</xsl:when>
+			<xsl:otherwise>false</xsl:otherwise>
+		</xsl:choose>
+	</xsl:variable>
+	<xsl:variable name="isApplyAutolayoutAlgorithm" select="normalize-space($isApplyAutolayoutAlgorithm_)"/>
+
 	<xsl:variable name="isGenerateTableIF_">
 		<xsl:choose>
-			<xsl:when test="$namespace = 'ieee' or $namespace = 'iso'">
+			<xsl:when test="$isApplyAutolayoutAlgorithm = 'true'">
 				<xsl:value-of select="normalize-space($table_if) = 'true'"/>
 			</xsl:when>
 			<xsl:otherwise>false</xsl:otherwise>
@@ -4879,6 +4888,7 @@
 			
 			<xsl:variable name="margin-side">
 				<xsl:choose>
+					<xsl:when test="$isApplyAutolayoutAlgorithm = 'true'">0</xsl:when>
 					<xsl:when test="sum(xalan:nodeset($colwidths)//column) &gt; 75">15</xsl:when>
 					<xsl:otherwise>0</xsl:otherwise>
 				</xsl:choose>
@@ -5359,7 +5369,7 @@
 		<xsl:param name="table"/>
 		<xsl:param name="cols-count"/>
 		<xsl:choose>
-			<xsl:when test="$namespace = 'ieee' or $namespace = 'iso'">
+			<xsl:when test="$isApplyAutolayoutAlgorithm = 'true'">
 				<xsl:call-template name="get-calculated-column-widths-autolayout-algorithm"/>
 			</xsl:when>
 			<xsl:otherwise>
@@ -6617,8 +6627,8 @@
 				
 				<xsl:apply-templates />
 				
-				<xsl:if test="$isGenerateTableIF = 'true'"><fo:inline id="{@id}_end">end</fo:inline></xsl:if> <!-- to determine width of text --> <!-- <xsl:value-of select="$hair_space"/> -->
-
+				<xsl:if test="$isGenerateTableIF = 'true'">&#xa0;<fo:inline id="{@id}_end">end</fo:inline></xsl:if> <!-- to determine width of text --> <!-- <xsl:value-of select="$hair_space"/> -->
+				
 			</fo:block>			
 		</fo:table-cell>
 	</xsl:template> <!-- td -->
@@ -8876,6 +8886,10 @@
 				<xsl:if test="ancestor::*[local-name()='table']">
 					<xsl:attribute name="font-size">10pt</xsl:attribute>
 				</xsl:if>
+			</xsl:if>
+			
+			<xsl:if test="$isGenerateTableIF = 'true' and ancestor::*[local-name() = 'td' or local-name() = 'th' or local-name() = 'dl'] and not(following-sibling::node()[not(self::comment())][normalize-space() != ''])"> <!-- math in table cell, and math is last element -->
+				<!-- <xsl:attribute name="padding-right">1mm</xsl:attribute> -->
 			</xsl:if>
 			
 			<xsl:call-template name="setTrackChangesStyles">
