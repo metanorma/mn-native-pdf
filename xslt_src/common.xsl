@@ -1960,45 +1960,30 @@
 	</xsl:attribute-set>
 	
 	<xsl:attribute-set name="dt-block-style">
-		<xsl:attribute name="margin-top">6pt</xsl:attribute>
+		<xsl:attribute name="margin-top">0pt</xsl:attribute>
 		<xsl:if test="$namespace = 'csd'">
 			<xsl:attribute name="margin-left">7mm</xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'bipm'">
-			<xsl:attribute name="margin-top">0pt</xsl:attribute>
 			<xsl:attribute name="margin-bottom">6pt</xsl:attribute>
-		</xsl:if>
-		<xsl:if test="$namespace = 'bsi'">
-			<xsl:attribute name="margin-top">0pt</xsl:attribute>
-		</xsl:if>
-		<xsl:if test="$namespace = 'iec'">
-			<xsl:attribute name="margin-top">0pt</xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'ieee'">
 			<xsl:attribute name="margin-left">2mm</xsl:attribute>
-			<xsl:attribute name="margin-top">0pt</xsl:attribute>
 			<xsl:attribute name="line-height">1.2</xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'iho'">
-			<xsl:attribute name="margin-top">0pt</xsl:attribute>
 			<xsl:attribute name="margin-bottom">12pt</xsl:attribute>
 		</xsl:if>
-		<xsl:if test="$namespace = 'iso'">
-			<xsl:attribute name="margin-top">0pt</xsl:attribute>
-		</xsl:if>
-		<xsl:if test="$namespace = 'jcgm'">
-			<xsl:attribute name="margin-top">0pt</xsl:attribute>
+		<xsl:if test="$namespace = 'itu'">
+			<xsl:attribute name="margin-top">6pt</xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'nist-cswp' or $namespace = 'nist-sp'">
-			<xsl:attribute name="margin-top">0</xsl:attribute>
 			<xsl:attribute name="margin-bottom">12pt</xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'ogc' or $namespace = 'ogc-white-paper'">
-			<xsl:attribute name="margin-top">0pt</xsl:attribute>
 			<xsl:attribute name="margin-bottom">6pt</xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'rsd'">
-			<xsl:attribute name="margin-top">0pt</xsl:attribute>
 			<xsl:attribute name="font-weight">bold</xsl:attribute>
 			<xsl:attribute name="color"><xsl:value-of select="$color_blue"/></xsl:attribute>
 		</xsl:if>
