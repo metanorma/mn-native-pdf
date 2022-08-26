@@ -50,7 +50,7 @@
 
 	<xsl:variable name="isApplyAutolayoutAlgorithm_">
 		<xsl:choose>
-			<xsl:when test="$namespace = 'bsi' or $namespace = 'csa' or $namespace = 'csd' or $namespace = 'ieee' or $namespace = 'iso' or $namespace = 'm3d' or $namespace = 'mpfd' or $namespace = 'unece' or $namespace = 'unece-rec'">true</xsl:when>
+			<xsl:when test="$namespace = 'bsi' or $namespace = 'csa' or $namespace = 'csd' or $namespace = 'ieee' or $namespace = 'iso' or $namespace = 'm3d' or $namespace = 'mpfd' or $namespace = 'nist-sp' or $namespace = 'nist-cswp' or $namespace = 'rsd' or $namespace = 'unece' or $namespace = 'unece-rec'">true</xsl:when>
 			<xsl:when test="$namespace = 'bipm'">true</xsl:when>
 			<xsl:otherwise>false</xsl:otherwise>
 		</xsl:choose>
@@ -5715,7 +5715,7 @@
 		<parent_table_id><xsl:value-of select="$parent_table_id"/></parent_table_id>
 			
 		<parent_element><xsl:value-of select="local-name(..)"/></parent_element>
-			
+		
 		<xsl:variable name="parent_table_page-width_">
 			<xsl:if test="$parent_table_id != ''">
 				<!-- determine column number in the parent table -->
@@ -5728,10 +5728,19 @@
 					</xsl:choose>
 				</xsl:variable>
 				<!-- find table by id in the file 'table_widths' and get all Nth `<column>...</column> -->
-				<xsl:value-of select="$table_widths_from_if_calculated//table[@id = $parent_table_id]/column[number($parent_table_column_number)]"/>
+				
+				<xsl:variable name="parent_table_column_" select="$table_widths_from_if_calculated//table[@id = $parent_table_id]/column[number($parent_table_column_number)]"/>
+				<xsl:variable name="parent_table_column" select="xalan:nodeset($parent_table_column_)"/>
+				<!-- <xsl:variable name="divider">
+					<xsl:value-of select="$parent_table_column/@divider"/>
+					<xsl:if test="not($parent_table_column/@divider)">1</xsl:if>
+				</xsl:variable> -->
+				<xsl:value-of select="$parent_table_column/text() * 10"/>
 			</xsl:if>
 		</xsl:variable>
 		<xsl:variable name="parent_table_page-width" select="normalize-space($parent_table_page-width_)"/>
+		
+		<parent_table_page-width><xsl:value-of select="$parent_table_page-width"/></parent_table_page-width>
 		
 		<!-- get current table id -->
 		<xsl:variable name="table_id" select="@id"/>
@@ -7831,40 +7840,16 @@
 	<!-- virtual html table for dl/[dt and dd] for IF (Intermediate Format) -->
 	<xsl:template match="*[local-name()='dt']" mode="dl_if">
 		<xsl:param name="id"/>
-		<xsl:variable name="row_number" select="count(preceding-sibling::*[local-name()='dt']) + 1"/>
 		<tr>
 			<td>
 				<xsl:copy-of select="node()"/>
 			</td>
 			<td>
-				<xsl:choose>
-					<xsl:when test="$namespace = 'nist-cswp' or $namespace = 'nist-sp'">
-						<xsl:if test="local-name(*[1]) != 'stem'">
-							<xsl:copy-of select="following-sibling::*[local-name()='dd'][1]/node()"/>
-						</xsl:if>
-					</xsl:when>
-					<xsl:otherwise>
-						<xsl:copy-of select="following-sibling::*[local-name()='dd'][1]/node()[not(local-name() = 'dl')]"/>
-						
-						<!-- get paragraphs from nested 'dl' -->
-						<xsl:apply-templates select="following-sibling::*[local-name()='dd'][1]/*[local-name() = 'dl']" mode="dl_if_nested"/>
-						
-					</xsl:otherwise>
-				</xsl:choose>
+				<xsl:copy-of select="following-sibling::*[local-name()='dd'][1]/node()[not(local-name() = 'dl')]"/>		
+				<!-- get paragraphs from nested 'dl' -->
+				<xsl:apply-templates select="following-sibling::*[local-name()='dd'][1]/*[local-name() = 'dl']" mode="dl_if_nested"/>
 			</td>
 		</tr>
-		<xsl:if test="$namespace = 'nist-cswp' or $namespace = 'nist-sp'">
-			<xsl:if test="local-name(*[1]) = 'stem'">
-				<tr>
-					<td>
-						<xsl:text>&#xA0;</xsl:text>
-					</td>
-					<td>
-						<xsl:copy-of select="following-sibling::*[local-name()='dd'][1]/node()" />
-					</td>
-				</tr>
-			</xsl:if>
-		</xsl:if>
 	</xsl:template>
 	<xsl:template match="*[local-name()='dd']" mode="dl_if"/>
 	
