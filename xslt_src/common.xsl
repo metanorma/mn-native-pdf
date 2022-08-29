@@ -50,7 +50,7 @@
 
 	<xsl:variable name="isApplyAutolayoutAlgorithm_">
 		<xsl:choose>
-			<xsl:when test="$namespace = 'bsi' or $namespace = 'csa' or $namespace = 'csd' or $namespace = 'ieee' or $namespace = 'iso' or $namespace = 'm3d' or $namespace = 'mpfd' or $namespace = 'nist-sp' or $namespace = 'nist-cswp' or $namespace = 'rsd' or $namespace = 'unece' or $namespace = 'unece-rec'">true</xsl:when>
+			<xsl:when test="$namespace = 'bsi' or $namespace = 'csa' or $namespace = 'csd' or $namespace = 'ieee' or $namespace = 'iso' or $namespace = 'jcgm' or $namespace = 'm3d' or $namespace = 'mpfd' or $namespace = 'nist-sp' or $namespace = 'nist-cswp' or $namespace = 'ogc' or $namespace = 'ogc-white-paper' or $namespace = 'rsd' or $namespace = 'unece' or $namespace = 'unece-rec'">true</xsl:when>
 			<xsl:when test="$namespace = 'bipm'">true</xsl:when>
 			<xsl:otherwise>false</xsl:otherwise>
 		</xsl:choose>
@@ -5586,9 +5586,11 @@
 		</xsl:variable>
 		<xsl:variable name="table_with_cell_widths" select="xalan:nodeset($table_with_cell_widths_)"/>
 		
-		<!-- <xsl:if test="$table_if_debug = 'true'">
-			<xsl:copy-of select="$table_with_cell_widths"/>
-		</xsl:if> -->
+		<xsl:if test="$table_if_debug = 'true'">
+			<table_with_cell_widths>
+				<xsl:copy-of select="$table_with_cell_widths"/>
+			</table_with_cell_widths>
+		</xsl:if>
 		
 		
 		<!-- The minimum and maximum cell widths are then used to determine the corresponding minimum and maximum widths for the columns. -->
@@ -5604,29 +5606,48 @@
 							<xsl:if test="position() = 1"><xsl:value-of select="."/></xsl:if>
 						</xsl:for-each>
 					</xsl:attribute>
+					<!-- <xsl:attribute name="width_max_all">
+						<xsl:for-each select="ancestor::tbody//tr/td[$pos]/@width_max">
+							<xsl:value-of select="."/><xsl:text> </xsl:text>
+						</xsl:for-each>
+					</xsl:attribute> -->
 					<xsl:attribute name="width_min">
 						<xsl:for-each select="ancestor::tbody//tr/td[$pos]/@width_min">
 							<xsl:sort select="." data-type="number" order="descending"/>
 							<xsl:if test="position() = 1"><xsl:value-of select="."/></xsl:if>
 						</xsl:for-each>
 					</xsl:attribute>
+					<!-- <xsl:attribute name="width_min_all">
+						<xsl:for-each select="ancestor::tbody//tr/td[$pos]/@width_min">
+							<xsl:value-of select="."/><xsl:text> </xsl:text>
+						</xsl:for-each>
+					</xsl:attribute> -->
 				</column>
 			</xsl:for-each>
 		</xsl:variable>
 		<xsl:variable name="column_widths" select="xalan:nodeset($column_widths_)"/>
 		
-		<!-- <column_widths>
-			<xsl:copy-of select="$column_widths"/>
-		</column_widths> -->
+		<xsl:if test="$table_if_debug = 'true'">
+			<column_widths>
+				<xsl:copy-of select="$column_widths"/>
+			</column_widths>
+		</xsl:if>
 		
 		<!-- These in turn, are used to find the minimum and maximum width for the table. -->
 		<xsl:variable name="table_widths_">
 			<table>
+				<xsl:variable name="width_max" select="sum($column_widths/column/@width_max)"/>
+				<xsl:variable name="width_min" select="sum($column_widths/column/@width_min)"/>
 				<xsl:attribute name="width_max">
-					<xsl:value-of select="sum($column_widths/column/@width_max)"/>
+					<xsl:value-of select="$width_max"/>
 				</xsl:attribute>
 				<xsl:attribute name="width_min">
-					<xsl:value-of select="sum($column_widths/column/@width_min)"/>
+					<xsl:choose>
+						<xsl:when test="$width_max - $width_min = 0"><xsl:value-of select="$width_min - 1"/></xsl:when> <!-- to prevent division by zero in 'w' calculation -->
+						<xsl:otherwise>
+							<xsl:value-of select="width_min"/>
+						</xsl:otherwise>
+					</xsl:choose>
 				</xsl:attribute>
 			</table>
 		</xsl:variable>
