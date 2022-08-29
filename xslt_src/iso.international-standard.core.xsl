@@ -661,7 +661,6 @@
 									<fo:block-container>
 										<fo:block margin-top="-1mm" font-size="20pt" text-align="right">
 											<xsl:value-of select="$stage-fullname-uppercased"/>
-											<xsl:if test="$stage-abbreviation = 'DAmd' or $stage-abbreviation = 'DAM'"><xsl:text> </xsl:text><xsl:value-of select="$doctype_uppercased"/></xsl:if>
 										</fo:block>
 										<fo:block font-size="20pt" font-weight="bold" text-align="right">
 											<xsl:value-of select="$docidentifierISO"/>
@@ -780,10 +779,10 @@
 									</fo:block-container>
 								</fo:flow>
 							
-							</xsl:when> <!-- END: $stage-abbreviation = 'DIS' 'DAmd' 'DAM''-->
+							</xsl:when> <!-- END: $stage-abbreviation = 'DIS' 'DAmd' 'DAM'-->
 							<xsl:otherwise>
 						
-								<!-- COVER PAGE  for all documents except DIS -->
+								<!-- COVER PAGE  for all documents except DIS, DAmd and DAM -->
 								<fo:flow flow-name="xsl-region-body">
 									<fo:block-container>
 										<fo:table table-layout="fixed" width="100%" font-size="24pt" line-height="1"> <!-- margin-bottom="35mm" -->
