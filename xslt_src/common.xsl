@@ -5135,6 +5135,7 @@
 									</td>
 								</tr>
 							-->
+							<!-- <xsl:copy-of select="$simple-table"/> -->
 							<xsl:apply-templates select="xalan:nodeset($simple-table)" mode="process_table-if"/>
 							
 						</xsl:when>
@@ -8577,8 +8578,14 @@
 			<xsl:copy-of select="@*" />
 			<xsl:variable name="row_number" select="count(../preceding-sibling::*) + 1"/>
 			<xsl:variable name="col_number" select="count(preceding-sibling::*) + 1"/>
+			<xsl:variable name="divide">
+				<xsl:choose>
+					<xsl:when test="@divide"><xsl:value-of select="@divide"/></xsl:when>
+					<xsl:otherwise>1</xsl:otherwise>
+				</xsl:choose>
+			</xsl:variable>
 			<xsl:attribute name="id">
-				<xsl:value-of select="concat($id,'_',$row_number,'_',$col_number)"/>
+				<xsl:value-of select="concat($id,'_',$row_number,'_',$col_number,'_',$divide)"/>
 			</xsl:attribute>
 			
 			<xsl:for-each select="*[local-name() = 'p']">
@@ -8586,7 +8593,7 @@
 					<xsl:copy-of select="@*" />
 					<xsl:variable name="p_num" select="count(preceding-sibling::*[local-name() = 'p']) + 1"/>
 					<xsl:attribute name="id">
-						<xsl:value-of select="concat($id,'_',$row_number,'_',$col_number,'_p_',$p_num)"/>
+						<xsl:value-of select="concat($id,'_',$row_number,'_',$col_number,'_p_',$p_num,'_',$divide)"/>
 					</xsl:attribute>
 					
 					<xsl:copy-of select="node()" />
@@ -8619,7 +8626,7 @@
 					<xsl:variable name="num" select="count(preceding-sibling::word) + 1"/>
 					<xsl:copy>
 						<xsl:attribute name="id">
-							<xsl:value-of select="concat($id,'_',$row_number,'_',$col_number,'_word_',$num)"/>
+							<xsl:value-of select="concat($id,'_',$row_number,'_',$col_number,'_word_',$num,'_',$divide)"/>
 						</xsl:attribute>
 						<xsl:copy-of select="node()" />
 					</xsl:copy>
