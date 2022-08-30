@@ -50,7 +50,7 @@
 
 	<xsl:variable name="isApplyAutolayoutAlgorithm_">
 		<xsl:choose>
-			<xsl:when test="$namespace = 'bsi' or $namespace = 'csa' or $namespace = 'csd' or $namespace = 'ieee' or $namespace = 'iso' or $namespace = 'itu' or $namespace = 'jcgm' or $namespace = 'm3d' or $namespace = 'mpfd' or $namespace = 'nist-sp' or $namespace = 'nist-cswp' or $namespace = 'ogc' or $namespace = 'ogc-white-paper' or $namespace = 'rsd' or $namespace = 'unece' or $namespace = 'unece-rec'">true</xsl:when>
+			<xsl:when test="$namespace = 'bsi' or $namespace = 'csa' or $namespace = 'csd' or $namespace = 'ieee' or $namespace = 'iho' or $namespace = 'iso' or $namespace = 'itu' or $namespace = 'jcgm' or $namespace = 'm3d' or $namespace = 'mpfd' or $namespace = 'nist-sp' or $namespace = 'nist-cswp' or $namespace = 'ogc' or $namespace = 'ogc-white-paper' or $namespace = 'rsd' or $namespace = 'unece' or $namespace = 'unece-rec'">true</xsl:when>
 			<xsl:when test="$namespace = 'bipm'">true</xsl:when>
 			<xsl:otherwise>false</xsl:otherwise>
 		</xsl:choose>
@@ -6086,6 +6086,7 @@
 					<xsl:when test="$table_or_dl = 'table'">
 						<xsl:for-each select="*[local-name() = 'td' or local-name() = 'th']/*">
 							<fo:table-row number-columns-spanned="{$col_count}">
+								<xsl:copy-of select="../@font-weight"/>
 								<!-- <test_table><xsl:copy-of select="."/></test_table> -->
 								<xsl:call-template name="td"/>
 							</fo:table-row>
@@ -8437,6 +8438,9 @@
 				<xsl:variable name="td">
 					<xsl:element name="td">
 						<xsl:attribute name="divide"><xsl:value-of select="@colspan"/></xsl:attribute>
+						<xsl:if test="local-name()='th'">
+							<xsl:attribute name="font-weight">bold</xsl:attribute>
+						</xsl:if>
 						<xsl:apply-templates select="@*" mode="simple-table-colspan"/>
 						<xsl:apply-templates mode="simple-table-colspan"/>
 					</xsl:element>
@@ -8449,6 +8453,9 @@
 			<xsl:otherwise>
 				<xsl:element name="td">
 					<xsl:apply-templates select="@*" mode="simple-table-colspan"/>
+					<xsl:if test="local-name()='th'">
+						<xsl:attribute name="font-weight">bold</xsl:attribute>
+					</xsl:if>
 					<xsl:apply-templates mode="simple-table-colspan"/>
 				</xsl:element>
 			</xsl:otherwise>
@@ -8596,7 +8603,9 @@
 						<xsl:value-of select="concat($id,'_',$row_number,'_',$col_number,'_p_',$p_num,'_',$divide)"/>
 					</xsl:attribute>
 					
-					<xsl:copy-of select="node()" />
+					<!-- <xsl:copy-of select="node()" /> -->
+					<xsl:apply-templates mode="simple-table-noid"/>
+					
 				</xsl:copy>
 			</xsl:for-each>
 			
@@ -8635,6 +8644,21 @@
 		</xsl:copy>
 		
 	</xsl:template>
+	
+	<xsl:template match="*[local-name()='th' or local-name()='td']/*[local-name() = 'p']//*" mode="simple-table-noid">
+		<xsl:copy>
+			<xsl:choose>
+				<xsl:when test="$isGenerateTableIF = 'true'">
+					<xsl:copy-of select="@*[local-name() != 'id']"/> <!-- to prevent repeat id in colspan/rowspan cells -->
+				</xsl:when>
+				<xsl:otherwise>
+					<xsl:copy-of select="@*"/>
+				</xsl:otherwise>
+			</xsl:choose>
+			<xsl:apply-templates select="node()" mode="simple-table-noid"/>
+		</xsl:copy>
+	</xsl:template>
+	
 	<!-- End mode: simple-table-id -->
 	<!-- ===================== -->	
 	<!-- ===================== -->	
@@ -8645,7 +8669,7 @@
 	<!-- =============================== -->
 	<xsl:template match="@*|node()" mode="td_text_with_formatting">
 		<xsl:copy>
-				<xsl:apply-templates select="@*|node()" mode="td_text_with_formatting"/>
+			<xsl:apply-templates select="@*|node()" mode="td_text_with_formatting"/>
 		</xsl:copy>
 	</xsl:template>
 
