@@ -1691,6 +1691,7 @@
 	<xsl:template match="*[local-name()='tt']" priority="2">
 		<xsl:variable name="element-name">
 			<xsl:choose>
+				<xsl:when test="$isGenerateTableIF = 'true'">fo:inline</xsl:when>
 				<xsl:when test="ancestor::itu:dd">fo:inline</xsl:when>
 				<xsl:when test="ancestor::itu:title">fo:inline</xsl:when>
 				<xsl:when test="normalize-space(ancestor::itu:p[1]//text()[not(parent::itu:tt)]) != ''">fo:inline</xsl:when>
@@ -1700,7 +1701,7 @@
 		<xsl:element name="{$element-name}">
 			<xsl:attribute name="font-family">Courier New, <xsl:value-of select="$font_noto_sans_mono"/></xsl:attribute>
 			<xsl:attribute name="font-size">10pt</xsl:attribute>
-			<xsl:if test="local-name(..) != 'dt' and not(ancestor::itu:dd) and not(ancestor::itu:title)">
+			<xsl:if test="local-name(..) != 'dt' and not(ancestor::itu:dd) and not(ancestor::itu:title) and $isGenerateTableIF = 'false'">
 				<xsl:attribute name="text-align">center</xsl:attribute>
 			</xsl:if>
 			<xsl:if test="ancestor::itu:title">
