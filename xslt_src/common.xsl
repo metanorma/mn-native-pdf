@@ -11497,16 +11497,25 @@
 	</xsl:template>
 	
 	<xsl:template match="*[local-name()='tr']" mode="requirement">
-		<fo:table-row height="7mm" border-bottom="0.5pt solid grey">			
-			<xsl:if test="parent::*[local-name()='thead']"> <!-- and not(ancestor::*[local-name() = 'table'][@class = 'recommendation' or @class='requirement' or @class='permission']) -->
-				<xsl:attribute name="background-color">rgb(33, 55, 92)</xsl:attribute>
+		<fo:table-row height="7mm" border-bottom="0.5pt solid grey">
+		
+			<xsl:if test="parent::*[local-name()='thead'] or starts-with(*[local-name()='td' or local-name()='th'][1], 'Requirement ') or starts-with(*[local-name()='td' or local-name()='th'][1], 'Recommendation ')">
+				<xsl:attribute name="font-weight">bold</xsl:attribute>
+				
+				<xsl:if test="$namespace = 'ogc' or $namespace = 'ogc-white-paper'">
+					<xsl:attribute name="font-weight">normal</xsl:attribute>
+					<xsl:if test="parent::*[local-name()='thead']"> <!-- and not(ancestor::*[local-name() = 'table'][@class = 'recommendation' or @class='requirement' or @class='permission']) -->
+						<xsl:attribute name="background-color">rgb(33, 55, 92)</xsl:attribute>
+					</xsl:if>
+					<xsl:if test="starts-with(*[local-name()='td'][1], 'Requirement ')">
+						<xsl:attribute name="background-color">rgb(252, 246, 222)</xsl:attribute>
+					</xsl:if>
+					<xsl:if test="starts-with(*[local-name()='td'][1], 'Recommendation ')">
+						<xsl:attribute name="background-color">rgb(233, 235, 239)</xsl:attribute>
+					</xsl:if>
+				</xsl:if>
 			</xsl:if>
-			<xsl:if test="starts-with(*[local-name()='td'][1], 'Requirement ')">
-				<xsl:attribute name="background-color">rgb(252, 246, 222)</xsl:attribute>
-			</xsl:if>
-			<xsl:if test="starts-with(*[local-name()='td'][1], 'Recommendation ')">
-				<xsl:attribute name="background-color">rgb(233, 235, 239)</xsl:attribute>
-			</xsl:if>
+			
 			<xsl:apply-templates mode="requirement"/>
 		</fo:table-row>
 	</xsl:template>
