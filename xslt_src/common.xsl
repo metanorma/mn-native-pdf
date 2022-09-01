@@ -5135,7 +5135,7 @@
 									</td>
 								</tr>
 							-->
-							<!-- <xsl:copy-of select="$simple-table"/> -->
+							<!-- Simple_table=<xsl:copy-of select="$simple-table"/> -->
 							<xsl:apply-templates select="xalan:nodeset($simple-table)" mode="process_table-if"/>
 							
 						</xsl:when>
@@ -7034,6 +7034,7 @@
 	<xsl:template match="*[local-name()='dl']">
 		<xsl:variable name="isAdded" select="@added"/>
 		<xsl:variable name="isDeleted" select="@deleted"/>
+		<!-- <dl><xsl:copy-of select="."/></dl> -->
 		<fo:block-container>
 			<xsl:choose>
 				<xsl:when test="$namespace = 'bipm'">
@@ -8650,6 +8651,9 @@
 			<xsl:choose>
 				<xsl:when test="$isGenerateTableIF = 'true'">
 					<xsl:copy-of select="@*[local-name() != 'id']"/> <!-- to prevent repeat id in colspan/rowspan cells -->
+					<xsl:if test="local-name() = 'dl' or local-name() = 'table'">
+						<xsl:copy-of select="@id"/>
+					</xsl:if>
 				</xsl:when>
 				<xsl:otherwise>
 					<xsl:copy-of select="@*"/>
