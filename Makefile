@@ -223,12 +223,12 @@ documents/%.presentation.pdf: sources/%.presentation.xml $(MN2PDF_EXECUTABLE) | 
 ifeq ($(OS),Windows_NT)
 	powershell -Command "Write-Host $(word 1,$(subst -, ,$(notdir $<)))" > MN_FLAVOR.txt
 	powershell -Command "$$doc = [xml](Get-Content $<); $$doc.SelectNodes(\"//*[local-name()='doctype']\").'#text'" > DOCTYPE.txt
-	cmd /V /C "set /p MN_FLAVOR=<MN_FLAVOR.txt & set /p DOCTYPE=<DOCTYPE.txt & java -Xss5m -Xmx1024m -jar $(MN2PDF_EXECUTABLE) --xml-file $< --xsl-file ${XSLT_PATH_BASE}/!MN_FLAVOR!.!DOCTYPE!.xsl --pdf-file $@ --font-manifest $(FONT_MANIFEST_PATH) "
+	cmd /V /C "set /p MN_FLAVOR=<MN_FLAVOR.txt & set /p DOCTYPE=<DOCTYPE.txt & java -Xss5m -Xmx2048m -jar $(MN2PDF_EXECUTABLE) --xml-file $< --xsl-file ${XSLT_PATH_BASE}/!MN_FLAVOR!.!DOCTYPE!.xsl --pdf-file $@ --font-manifest $(FONT_MANIFEST_PATH) "
 else
 	MN_FLAVOR=$(word 1,$(subst -, ,$(notdir $<))); \
 	DOCTYPE=$$(xmllint --huge --xpath "(//*[local-name()='doctype'])[1]/text()" $<); \
 	XSLT_PATH=${XSLT_PATH_BASE}/$${MN_FLAVOR}.$${DOCTYPE}.xsl; \
-	java -Xss5m -Xmx1024m -jar $(MN2PDF_EXECUTABLE) --xml-file $< --xsl-file $$XSLT_PATH --pdf-file $@ --font-manifest $(FONT_MANIFEST_PATH) 
+	java -Xss5m -Xmx2048m -jar $(MN2PDF_EXECUTABLE) --xml-file $< --xsl-file $$XSLT_PATH --pdf-file $@ --font-manifest $(FONT_MANIFEST_PATH) 
 endif
 
 documents/%.pdf: sources/%.xml $(MN2PDF_EXECUTABLE) | documents
