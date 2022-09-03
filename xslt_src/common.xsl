@@ -50,8 +50,7 @@
 
 	<xsl:variable name="isApplyAutolayoutAlgorithm_">
 		<xsl:choose>
-			<xsl:when test="$namespace = 'bsi' or $namespace = 'csa' or $namespace = 'csd' or $namespace = 'iec' or $namespace = 'ieee' or $namespace = 'iho' or $namespace = 'iso' or $namespace = 'itu' or $namespace = 'jcgm' or $namespace = 'm3d' or $namespace = 'mpfd' or $namespace = 'nist-sp' or $namespace = 'nist-cswp' or $namespace = 'ogc' or $namespace = 'ogc-white-paper' or $namespace = 'rsd' or $namespace = 'unece' or $namespace = 'unece-rec'">true</xsl:when>
-			<xsl:when test="$namespace = 'bipm'">true</xsl:when>
+			<xsl:when test="$namespace = 'bipm' or $namespace = 'bsi' or $namespace = 'csa' or $namespace = 'csd' or $namespace = 'iec' or $namespace = 'ieee' or $namespace = 'iho' or $namespace = 'iso' or $namespace = 'itu' or $namespace = 'jcgm' or $namespace = 'm3d' or $namespace = 'mpfd' or $namespace = 'nist-sp' or $namespace = 'nist-cswp' or $namespace = 'ogc' or $namespace = 'ogc-white-paper' or $namespace = 'rsd' or $namespace = 'unece' or $namespace = 'unece-rec'">true</xsl:when>
 			<xsl:otherwise>false</xsl:otherwise>
 		</xsl:choose>
 	</xsl:variable>
@@ -8651,9 +8650,9 @@
 			<xsl:choose>
 				<xsl:when test="$isGenerateTableIF = 'true'">
 					<xsl:copy-of select="@*[local-name() != 'id']"/> <!-- to prevent repeat id in colspan/rowspan cells -->
-					<xsl:if test="local-name() = 'dl' or local-name() = 'table'">
+					<!-- <xsl:if test="local-name() = 'dl' or local-name() = 'table'">
 						<xsl:copy-of select="@id"/>
-					</xsl:if>
+					</xsl:if> -->
 				</xsl:when>
 				<xsl:otherwise>
 					<xsl:copy-of select="@*"/>
