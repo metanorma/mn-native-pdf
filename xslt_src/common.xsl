@@ -5669,7 +5669,7 @@
 					<xsl:value-of select="$parent_table_column/@divider"/>
 					<xsl:if test="not($parent_table_column/@divider)">1</xsl:if>
 				</xsl:variable> -->
-				<xsl:value-of select="$parent_table_column/text() * 10"/>
+				<xsl:value-of select="$parent_table_column/text()"/> <!--  * 10 -->
 			</xsl:if>
 		</xsl:variable>
 		<xsl:variable name="parent_table_page-width" select="normalize-space($parent_table_page-width_)"/>
