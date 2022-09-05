@@ -229,10 +229,13 @@ documents/itu-STL-manual.doc:
 documents/itu-STL-manual.rxl:
 	echo "### skipping $@"
 
-documents/T-Editing-Guidelines-201602.pdf.fo.debug.xml:
+documents/itu-T-Editing-Guidelines-201602.pdf.fo.debug.html:
 	echo "### skipping $@"
 
-documents/itu-T-Editing-Guidelines-201602.pdf.fo.debug.xml:
+documents/itu-T-Editing-Guidelines-201602.pdf.fo.debug.doc:
+	echo "### skipping $@"
+
+documents/itu-T-Editing-Guidelines-201602.pdf.fo.debug.rxl:
 	echo "### skipping $@"
 
 
