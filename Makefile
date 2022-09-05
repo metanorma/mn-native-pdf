@@ -238,6 +238,15 @@ documents/itu-T-Editing-Guidelines-201602.pdf.fo.debug.doc:
 documents/itu-T-Editing-Guidelines-201602.pdf.fo.debug.rxl:
 	echo "### skipping $@"
 
+documents/itu-T-REC-P.1203-201710-I.MSW-E.html:
+	echo "### skipping $@"
+
+documents/itu-T-REC-P.1203-201710-I.MSW-E.doc:
+	echo "### skipping $@"
+
+documents/itu-T-REC-P.1203-201710-I.MSW-E.rxl:
+	echo "### skipping $@"
+
 
 documents/%.presentation.pdf: sources/%.presentation.xml $(MN2PDF_EXECUTABLE) | documents
 ifeq ($(OS),Windows_NT)
