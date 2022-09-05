@@ -229,6 +229,12 @@ documents/itu-STL-manual.doc:
 documents/itu-STL-manual.rxl:
 	echo "### skipping $@"
 
+documents/T-Editing-Guidelines-201602.pdf.fo.debug.xml:
+	echo "### skipping $@"
+
+documents/itu-T-Editing-Guidelines-201602.pdf.fo.debug.xml:
+	echo "### skipping $@"
+
 
 documents/%.presentation.pdf: sources/%.presentation.xml $(MN2PDF_EXECUTABLE) | documents
 ifeq ($(OS),Windows_NT)
