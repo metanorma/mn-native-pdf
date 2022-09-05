@@ -1586,7 +1586,7 @@
 	</xsl:template>
 	
 	
-	<xsl:template match="itu:preferred" priority="2">		
+	<xsl:template match="itu:preferred" priority="2">
 		<!-- DEBUG need -->
 		<xsl:variable name="level">
 			<xsl:call-template name="getLevel"/>
@@ -1632,8 +1632,11 @@
 			</xsl:if>			
 			<xsl:if test="following-sibling::itu:definition/node()">
 				<xsl:text>: </xsl:text>
-				<xsl:apply-templates select="following-sibling::itu:definition/node()" mode="process"/>			
-			</xsl:if>			
+				<!-- <xsl:apply-templates select="following-sibling::itu:definition/node()" mode="process"/>			 -->
+				<xsl:apply-templates select="following-sibling::itu:definition">
+					<xsl:with-param name="process">true</xsl:with-param>
+				</xsl:apply-templates>
+			</xsl:if>
 		</fo:block>
 		<!-- <xsl:if test="following-sibling::itu:table">
 			<fo:block space-after="18pt">&#xA0;</fo:block>
@@ -1642,11 +1645,18 @@
 	
 	<xsl:template match="itu:term[itu:preferred]/itu:termsource" priority="2"/>
 	
+	<xsl:template match="itu:term[itu:preferred]/itu:definition" priority="2">
+		<xsl:param name="process">false</xsl:param>
+		<xsl:if test="$process = 'true'">
+			<xsl:apply-templates />
+		</xsl:if>
+	</xsl:template>
 	
-	<xsl:template match="itu:definition/itu:p" priority="2"/>
-	<xsl:template match="itu:definition/itu:formula" priority="2"/>
+	<!-- <xsl:template match="itu:definition/itu:p" priority="2"/>
+	<xsl:template match="itu:definition/itu:formula" priority="2"/> -->
 	
-	<xsl:template match="itu:definition/itu:p" mode="process" priority="2">
+	<!-- <xsl:template match="itu:definition/itu:p" mode="process" priority="2"> -->
+	<xsl:template match="itu:definition/itu:p" priority="2">
 		<xsl:choose>
 			<xsl:when test="position() = 1">
 				<fo:inline>
@@ -1661,9 +1671,9 @@
 		</xsl:choose>
 	</xsl:template>
 
-	<xsl:template match="itu:definition/*" mode="process">
+	<!-- <xsl:template match="itu:definition/*" mode="process">
 		<xsl:apply-templates select="."/>
-	</xsl:template>
+	</xsl:template> -->
 
 	<!-- footnotes for title -->
 	<xsl:template match="itu:bibdata/itu:note[@type = 'title-footnote']" mode="title_footnote">
