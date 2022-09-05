@@ -219,6 +219,17 @@ documents/m3aawg-bp-document.rxl:
 	echo "### skipping $@"
 
 
+#mn-samples-itu repository issue
+documents/itu-STL-manual.html:
+	echo "### skipping $@"
+
+documents/itu-STL-manual.doc:
+	echo "### skipping $@"
+
+documents/itu-STL-manual.rxl:
+	echo "### skipping $@"
+
+
 documents/%.presentation.pdf: sources/%.presentation.xml $(MN2PDF_EXECUTABLE) | documents
 ifeq ($(OS),Windows_NT)
 	powershell -Command "Write-Host $(word 1,$(subst -, ,$(notdir $<)))" > MN_FLAVOR.txt
