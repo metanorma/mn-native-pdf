@@ -3050,7 +3050,7 @@
 			<xsl:apply-templates />
 		</fo:inline>
 		<fo:inline><xsl:value-of select="$linebreak"/></fo:inline>
-		
+		<xsl:if test="ancestor::*[local-name() = 'preface'] and following-sibling::*[local-name() = 'p']"><fo:inline font-size="2pt"><xsl:value-of select="$linebreak"/></fo:inline></xsl:if>
 	</xsl:template>
 
 	<xsl:template match="*[local-name() = 'sup_fn']">
