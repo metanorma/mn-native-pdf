@@ -2855,6 +2855,10 @@
 				<xsl:attribute name="role">BlockQuote</xsl:attribute>
 			</xsl:if>
 			
+			<xsl:if test="ancestor::bipm:preface">
+				<xsl:attribute name="space-after">6pt</xsl:attribute>
+			</xsl:if>
+			
 			<!-- last item -->		
 			<xsl:if test="not(following-sibling::*[1][local-name() = 'li'])"> 		
 				<xsl:attribute name="space-after">6pt</xsl:attribute>
