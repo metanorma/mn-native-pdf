@@ -9511,7 +9511,7 @@
 						<xsl:variable name="curr_lang" select="ancestor::bipm:bipm-standard/bipm:bibdata/bipm:language[@current = 'true']"/>
 						<xsl:choose>
 							<xsl:when test="$curr_lang = 'fr'"><xsl:text>&#xa0;: </xsl:text></xsl:when>
-							<xsl:otherwise><xsl:text>:</xsl:text></xsl:otherwise>
+							<xsl:otherwise><xsl:text>: </xsl:text></xsl:otherwise>
 						</xsl:choose>
 					</xsl:if>
 					<xsl:if test="$namespace = 'ieee'">
@@ -9544,7 +9544,7 @@
 						<xsl:variable name="curr_lang" select="ancestor::bipm:bipm-standard/bipm:bibdata/bipm:language[@current = 'true']"/>
 						<xsl:choose>
 							<xsl:when test="$curr_lang = 'fr'"><xsl:text>&#xa0;: </xsl:text></xsl:when>
-							<xsl:otherwise><xsl:text>:</xsl:text></xsl:otherwise>
+							<xsl:otherwise><xsl:text>: </xsl:text></xsl:otherwise>
 						</xsl:choose>
 					</xsl:if>
 					<xsl:if test="$namespace = 'ieee'">
@@ -10783,6 +10783,18 @@
 	</xsl:template>
 	
 	<xsl:template match="*[local-name() = 'em']" mode="contents_item">
+		<xsl:copy>
+			<xsl:apply-templates mode="contents_item"/>
+		</xsl:copy>		
+	</xsl:template>
+	
+	<xsl:template match="*[local-name() = 'sub']" mode="contents_item">
+		<xsl:copy>
+			<xsl:apply-templates mode="contents_item"/>
+		</xsl:copy>		
+	</xsl:template>
+	
+	<xsl:template match="*[local-name() = 'sup']" mode="contents_item">
 		<xsl:copy>
 			<xsl:apply-templates mode="contents_item"/>
 		</xsl:copy>		

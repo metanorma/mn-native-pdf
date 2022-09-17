@@ -2311,6 +2311,14 @@
 		<xsl:text> </xsl:text>
 	</xsl:template>
 	
+	<xsl:template match="*[local-name() = 'sub']" mode="header">
+		<xsl:apply-templates select="."/>
+	</xsl:template>
+	
+	<xsl:template match="*[local-name() = 'sup']" mode="header">
+		<xsl:apply-templates select="."/>
+	</xsl:template>
+	
 	<!-- ====== -->
 	<!-- ====== -->
 
