@@ -9509,7 +9509,7 @@
 					<xsl:if test="$namespace = 'bipm'">
 						<xsl:variable name="curr_lang" select="ancestor::bipm:bipm-standard/bipm:bibdata/bipm:language[@current = 'true']"/>
 						<xsl:choose>
-							<xsl:when test="$curr_lang = 'fr'"><xsl:text>&#xa0;:&#xa0;</xsl:text></xsl:when>
+							<xsl:when test="$curr_lang = 'fr'"><xsl:text>&#xa0;: </xsl:text></xsl:when>
 							<xsl:otherwise><xsl:text>:</xsl:text></xsl:otherwise>
 						</xsl:choose>
 					</xsl:if>

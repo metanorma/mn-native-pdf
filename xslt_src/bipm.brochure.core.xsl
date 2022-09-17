@@ -3031,8 +3031,8 @@
 				<xsl:choose>
 					<xsl:when test="$curr_lang = 'fr'">
 						<xsl:choose>
-							<xsl:when test="ancestor::bipm:li">Remarque: </xsl:when>
-							<xsl:otherwise>Note: </xsl:otherwise>
+							<xsl:when test="ancestor::bipm:li">Remarque&#xa0;: </xsl:when>
+							<xsl:otherwise>Note&#xa0;: </xsl:otherwise>
 						</xsl:choose>
 					</xsl:when>
 					<xsl:otherwise>Note: </xsl:otherwise>
