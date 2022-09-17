@@ -3046,11 +3046,26 @@
 	</xsl:template>
 
 	<xsl:template match="*[local-name() = 'note']/*[local-name() = 'p']" priority="3">
-		<fo:inline xsl:use-attribute-sets="note-p-style">
-			<xsl:apply-templates />
-		</fo:inline>
-		<fo:inline><xsl:value-of select="$linebreak"/></fo:inline>
-		<xsl:if test="ancestor::*[local-name() = 'preface'] and following-sibling::*[local-name() = 'p']"><fo:inline font-size="2pt"><xsl:value-of select="$linebreak"/></fo:inline></xsl:if>
+		<xsl:variable name="num"><xsl:number/></xsl:variable>
+		<xsl:choose>
+			<xsl:when test="$num = 1"> <!-- display first NOTE's paragraph in the same line with label NOTE -->
+				<fo:inline xsl:use-attribute-sets="note-p-style">
+					<xsl:apply-templates />
+				</fo:inline>
+			</xsl:when>
+			<xsl:when test="ancestor::*[local-name() = 'preface']">
+				<fo:block xsl:use-attribute-sets="note-p-style">
+					<xsl:attribute name="space-before">6pt</xsl:attribute>
+					<xsl:apply-templates />
+				</fo:block>
+			</xsl:when>
+			<xsl:otherwise>
+				<fo:inline xsl:use-attribute-sets="note-p-style">
+					<xsl:apply-templates />
+				</fo:inline>
+				<fo:inline><xsl:value-of select="$linebreak"/></fo:inline>
+			</xsl:otherwise>
+		</xsl:choose>
 	</xsl:template>
 
 	<xsl:template match="*[local-name() = 'sup_fn']">
