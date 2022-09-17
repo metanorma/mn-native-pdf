@@ -1113,16 +1113,18 @@
 											<xsl:for-each select="$contents/doc[@id = $docid]//item[@display='true' and not(@type = 'annex') and not(@type = 'index') and not(@parent = 'annex')]">								
 												<xsl:call-template name="insertContentItem"/>								
 											</xsl:for-each>
-											<xsl:if test="$doctype ='brochure'">
-												<!-- insert page break between main sections and appendixes in ToC -->
+											<!-- insert page break between main sections and appendixes in ToC -->
+											<!-- <xsl:if test="$doctype ='brochure'">
 												<fo:table-row>
 													<fo:table-cell number-columns-spanned="2">
 														<fo:block break-after="page"/>
 													</fo:table-cell>
 												</fo:table-row>
-											</xsl:if>
+											</xsl:if> -->
 											<xsl:for-each select="$contents/doc[@id = $docid]//item[@display='true' and (@type = 'annex')]"> <!--  or (@level = 2 and @parent = 'annex') -->
-												<xsl:call-template name="insertContentItem"/>								
+												<xsl:call-template name="insertContentItem">
+													<xsl:with-param name="keep-with-next">true</xsl:with-param>
+												</xsl:call-template>
 											</xsl:for-each>
 											<xsl:for-each select="$contents/doc[@id = $docid]//item[@display='true' and (@type = 'index')]">
 												<xsl:call-template name="insertContentItem"/>								
@@ -1814,7 +1816,11 @@
 	</xsl:template>
 		
 	<xsl:template name="insertContentItem">
+		<xsl:param name="keep-with-next"/>
 		<fo:table-row>
+			<xsl:if test="$keep-with-next = 'true'">
+				<xsl:attribute name="keep-with-next">always</xsl:attribute>
+			</xsl:if>
 			<xsl:variable name="space-before">
 				<xsl:if test="@level = 1">
 					<xsl:if test="@type = 'annex'">14pt</xsl:if>
