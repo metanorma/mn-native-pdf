@@ -1476,7 +1476,17 @@
 				
 				
 				<!-- Index -->
-				<xsl:apply-templates select="//iso:indexsect" mode="index"/>
+				<xsl:variable name="current_document_index_id">
+					<xsl:apply-templates select="//iso:indexsect" mode="index_add_id"/>
+				</xsl:variable>
+				
+				<xsl:variable name="current_document_index">
+					<xsl:apply-templates select="xalan:nodeset($current_document_index_id)" mode="index_update"/>
+				</xsl:variable>
+				
+				<!-- <xsl:apply-templates select="//iso:indexsect" mode="index"/> -->
+				<xsl:apply-templates select="xalan:nodeset($current_document_index)" mode="index"/>
+				
 				
 				<xsl:if test="$isPublished = 'true'">
 					<fo:page-sequence master-reference="last-page" force-page-count="no-force">
