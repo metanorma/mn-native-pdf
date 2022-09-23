@@ -1476,8 +1476,15 @@
 				
 				
 				<!-- Index -->
+				<xsl:variable name="docid">
+					<xsl:call-template name="getDocumentId"/>
+				</xsl:variable>
+		
 				<xsl:variable name="current_document_index_id">
-					<xsl:apply-templates select="//iso:indexsect" mode="index_add_id"/>
+					<xsl:apply-templates select="//iso:indexsect" mode="index_add_id">
+						<xsl:with-param name="docid" select="$docid"/>
+					</xsl:apply-templates>
+					
 				</xsl:variable>
 				
 				<xsl:variable name="current_document_index">

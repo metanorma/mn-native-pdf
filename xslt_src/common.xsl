@@ -12865,21 +12865,29 @@
 	</xsl:variable>
 
 	<xsl:template match="@*|node()" mode="index_add_id">
+		<xsl:param name="docid"/>
 		<xsl:copy>
-				<xsl:apply-templates select="@*|node()" mode="index_add_id"/>
+			<xsl:apply-templates select="@*|node()" mode="index_add_id">
+				<xsl:with-param name="docid" select="$docid"/>
+			</xsl:apply-templates>
 		</xsl:copy>
 	</xsl:template>
 	
 	<xsl:template match="*[local-name() = 'xref']" mode="index_add_id">
+		<xsl:param name="docid"/>
 		<xsl:variable name="id">
-			<xsl:call-template name="generateIndexXrefId"/>
+			<xsl:call-template name="generateIndexXrefId">
+				<xsl:with-param name="docid" select="$docid"/>
+			</xsl:call-template>
 		</xsl:variable>
 		<xsl:copy> <!-- add id to xref -->
 			<xsl:apply-templates select="@*" mode="index_add_id"/>
 			<xsl:attribute name="id">
 				<xsl:value-of select="$id"/>
 			</xsl:attribute>
-			<xsl:apply-templates mode="index_add_id"/>
+			<xsl:apply-templates mode="index_add_id">
+				<xsl:with-param name="docid" select="$docid"/>
+			</xsl:apply-templates>
 		</xsl:copy>
 		<!-- split <xref target="bm1" to="End" pagenumber="true"> to two xref:
 		<xref target="bm1" pagenumber="true"> and <xref target="End" pagenumber="true"> -->
@@ -12891,7 +12899,9 @@
 				<xsl:attribute name="id">
 					<xsl:value-of select="$id"/><xsl:text>_to</xsl:text>
 				</xsl:attribute>
-				<xsl:apply-templates mode="index_add_id"/>
+				<xsl:apply-templates mode="index_add_id">
+					<xsl:with-param name="docid" select="$docid"/>
+				</xsl:apply-templates>
 			</xsl:copy>
 		</xsl:if>
 	</xsl:template>
@@ -12994,11 +13004,15 @@
 	</xsl:template>
 
 	<xsl:template name="generateIndexXrefId">
+		<xsl:param name="docid">
+			<xsl:call-template name="getDocumentId"/>
+		</xsl:param>
+		
 		<xsl:variable name="level" select="count(ancestor::*[local-name() = 'ul'])"/>
 		
-		<xsl:variable name="docid">
+		<!-- <xsl:variable name="docid">
 			<xsl:call-template name="getDocumentId"/>
-		</xsl:variable>
+		</xsl:variable> -->
 		<xsl:variable name="item_number">
 			<xsl:number count="*[local-name() = 'li'][ancestor::*[local-name() = 'indexsect']]" level="any" />
 		</xsl:variable>
