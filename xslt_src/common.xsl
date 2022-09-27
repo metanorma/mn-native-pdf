@@ -1525,8 +1525,8 @@
 			<xsl:attribute name="font-weight">bold</xsl:attribute>
 			<xsl:attribute name="text-align">left</xsl:attribute>
 			<xsl:attribute name="margin-top">24pt</xsl:attribute>
-			<xsl:attribute name="margin-left">25mm</xsl:attribute>
-			<xsl:attribute name="text-indent">-25mm</xsl:attribute>
+			<!-- <xsl:attribute name="margin-left">25mm</xsl:attribute>
+			<xsl:attribute name="text-indent">-25mm</xsl:attribute> -->
 			<xsl:attribute name="margin-bottom">6pt</xsl:attribute>			
 		</xsl:if>
 		<xsl:if test="$namespace = 'rsd'">
@@ -5290,19 +5290,46 @@
 						<xsl:apply-templates />
 					</fo:inline>
 				</xsl:when>
+				
+				<xsl:when test="$namespace = 'bipm'">
+					<fo:list-block xsl:use-attribute-sets="table-name-style">
+					
+						<xsl:if test="not(*[local-name()='tab'])"> <!-- table without number -->
+							<xsl:attribute name="margin-top">0pt</xsl:attribute>
+						</xsl:if>
+						<xsl:if test="not(../preceding-sibling::*) and ancestor::node()[@orientation]">
+							<xsl:attribute name="margin-top">0pt</xsl:attribute>
+						</xsl:if>
+					
+						<xsl:attribute name="provisional-distance-between-starts">25mm</xsl:attribute>
+						
+						<fo:list-item>
+							<fo:list-item-label end-indent="label-end()">
+								<fo:block>
+									<xsl:apply-templates select="./*[local-name() = 'tab'][1]/preceding-sibling::node()"/>
+								</fo:block>
+							</fo:list-item-label>
+							<fo:list-item-body start-indent="body-start()">
+								<fo:block>
+									<xsl:choose>
+										<xsl:when test="./*[local-name() = 'tab']">
+											<xsl:apply-templates select="./*[local-name() = 'tab'][1]/following-sibling::node()"/>
+										</xsl:when>
+										<xsl:otherwise>
+											<xsl:apply-templates />
+										</xsl:otherwise>
+									</xsl:choose>
+								</fo:block>
+							</fo:list-item-body>
+						</fo:list-item>
+					</fo:list-block>
+					<!-- bipm -->
+				</xsl:when>
+				
 				<xsl:otherwise>
 				
 					<fo:block xsl:use-attribute-sets="table-name-style">
 
-						<xsl:if test="$namespace = 'bipm'">
-							<xsl:if test="not(*[local-name()='tab'])"> <!-- table without number -->
-								<xsl:attribute name="margin-top">0pt</xsl:attribute>
-							</xsl:if>
-							<xsl:if test="not(../preceding-sibling::*) and ancestor::node()[@orientation]">
-								<xsl:attribute name="margin-top">0pt</xsl:attribute>
-							</xsl:if>
-						</xsl:if>
-						
 						<xsl:if test="$namespace = 'bsi'">
 							<xsl:if test="$continued != 'true'">
 								<xsl:attribute name="margin-top">6pt</xsl:attribute>
