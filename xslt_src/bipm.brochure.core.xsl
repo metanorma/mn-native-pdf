@@ -3041,7 +3041,7 @@
 	<xsl:template match="bipm:note[not(ancestor::bipm:preface)]/bipm:name" priority="2">
 		<xsl:choose>
 			<xsl:when test="not(../preceding-sibling::bipm:note) and not((../following-sibling::bipm:note))">
-				<xsl:variable name="curr_lang" select="ancestor::bipm:bipm-standard/bipm:bibdata/bipm:language[@current = 'true']"/>
+				<!-- <xsl:variable name="curr_lang" select="ancestor::bipm:bipm-standard/bipm:bibdata/bipm:language[@current = 'true']"/>
 				<xsl:choose>
 					<xsl:when test="$curr_lang = 'fr'">
 						<xsl:choose>
@@ -3050,7 +3050,9 @@
 						</xsl:choose>
 					</xsl:when>
 					<xsl:otherwise>Note: </xsl:otherwise>
-				</xsl:choose>
+				</xsl:choose> -->
+				<xsl:apply-templates />
+				<xsl:text> </xsl:text>
 			</xsl:when>
 			<xsl:when test="ancestor::bipm:table and count(ancestor::bipm:table//bipm:note) &gt; 0">
 				<xsl:variable name="table_id" select="ancestor::bipm:table/@id"/>
@@ -3080,6 +3082,10 @@
 				<fo:inline><xsl:value-of select="$linebreak"/></fo:inline>
 			</xsl:otherwise>
 		</xsl:choose>
+	</xsl:template>
+
+	<xsl:template match="*[local-name() = 'name']/text()" priority="2">
+		<xsl:value-of select="."/>
 	</xsl:template>
 
 	<xsl:template match="*[local-name() = 'sup_fn']">
