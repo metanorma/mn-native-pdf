@@ -1251,10 +1251,10 @@
 							</fo:block>
 							
 							
-							<xsl:variable name="part_num" select="normalize-space(/bipm:bipm-standard/bipm:bibdata/bipm:ext/bipm:structuredidentifier/bipm:part)"/>
-							<xsl:if test="/bipm:bipm-standard/bipm:bibdata/bipm:title[@language = $curr_lang and @type = 'part']">
+							<!-- <xsl:variable name="part_num" select="normalize-space(/bipm:bipm-standard/bipm:bibdata/bipm:ext/bipm:structuredidentifier/bipm:part)"/> -->
+							<xsl:if test="/bipm:bipm-standard/bipm:bibdata/bipm:title[@language = $curr_lang and @type = 'part-with-numbering']">
 								<fo:block role="H2">
-									<xsl:if test="$part_num != ''">
+									<!-- <xsl:if test="$part_num != ''">
 										<xsl:call-template name="getLocalizedString">
 											<xsl:with-param name="key">Part.sg</xsl:with-param>
 											<xsl:with-param name="lang" select="$curr_lang"/>
@@ -1262,18 +1262,18 @@
 										<xsl:text> </xsl:text>
 										<xsl:value-of select="$part_num"/>
 									</xsl:if>
-									<xsl:text>: </xsl:text>
-									<xsl:apply-templates select="/bipm:bipm-standard/bipm:bibdata/bipm:title[@language = $curr_lang and @type = 'part']" mode="title"/>
+									<xsl:text>: </xsl:text> -->
+									<xsl:apply-templates select="/bipm:bipm-standard/bipm:bibdata/bipm:title[@language = $curr_lang and @type = 'part-with-numbering']" mode="title"/>
 								</fo:block>
 							</xsl:if>
-							<xsl:variable name="subpart_num" select="normalize-space(/bipm:bipm-standard/bipm:bibdata/bipm:ext/bipm:structuredidentifier/bipm:subpart)"/>
-							<xsl:if test="/bipm:bipm-standard/bipm:bibdata/bipm:title[@language = $curr_lang and @type = 'subpart']">
+							<!-- <xsl:variable name="subpart_num" select="normalize-space(/bipm:bipm-standard/bipm:bibdata/bipm:ext/bipm:structuredidentifier/bipm:subpart)"/> -->
+							<xsl:if test="/bipm:bipm-standard/bipm:bibdata/bipm:title[@language = $curr_lang and @type = 'subpart-with-numbering']">
 								<fo:block role="H3">
-									<xsl:if test="$subpart_num != ''">
+									<!-- <xsl:if test="$subpart_num != ''">
 										<xsl:value-of select="java:replaceAll(java:java.lang.String.new($titles/title-subpart[@lang=$curr_lang]),'#',$subpart_num)"/>
 									</xsl:if>
-									<xsl:text>: </xsl:text>
-									<xsl:apply-templates select="/bipm:bipm-standard/bipm:bibdata/bipm:title[@language = $curr_lang and @type = 'subpart']" mode="title"/>
+									<xsl:text>: </xsl:text> -->
+									<xsl:apply-templates select="/bipm:bipm-standard/bipm:bibdata/bipm:title[@language = $curr_lang and @type = 'subpart-with-numbering']" mode="title"/>
 								</fo:block>
 							</xsl:if>
 							
@@ -3041,7 +3041,7 @@
 	<xsl:template match="bipm:note[not(ancestor::bipm:preface)]/bipm:name" priority="2">
 		<xsl:choose>
 			<xsl:when test="not(../preceding-sibling::bipm:note) and not((../following-sibling::bipm:note))">
-				<xsl:variable name="curr_lang" select="ancestor::bipm:bipm-standard/bipm:bibdata/bipm:language[@current = 'true']"/>
+				<!-- <xsl:variable name="curr_lang" select="ancestor::bipm:bipm-standard/bipm:bibdata/bipm:language[@current = 'true']"/>
 				<xsl:choose>
 					<xsl:when test="$curr_lang = 'fr'">
 						<xsl:choose>
@@ -3050,7 +3050,9 @@
 						</xsl:choose>
 					</xsl:when>
 					<xsl:otherwise>Note: </xsl:otherwise>
-				</xsl:choose>
+				</xsl:choose> -->
+				<xsl:apply-templates />
+				<xsl:text> </xsl:text>
 			</xsl:when>
 			<xsl:when test="ancestor::bipm:table and count(ancestor::bipm:table//bipm:note) &gt; 0">
 				<xsl:variable name="table_id" select="ancestor::bipm:table/@id"/>
@@ -3080,6 +3082,10 @@
 				<fo:inline><xsl:value-of select="$linebreak"/></fo:inline>
 			</xsl:otherwise>
 		</xsl:choose>
+	</xsl:template>
+
+	<xsl:template match="*[local-name() = 'name']/text()" priority="2">
+		<xsl:value-of select="."/>
 	</xsl:template>
 
 	<xsl:template match="*[local-name() = 'sup_fn']">
