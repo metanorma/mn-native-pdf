@@ -50,6 +50,7 @@ jobs:
 
       - name: Install Fontist fonts
         run: |
+          gem install rake
           gem install fontist
           fontist update
           fontist manifest-install --confirm-license fonts/manifest.yml
