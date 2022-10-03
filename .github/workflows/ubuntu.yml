@@ -1,0 +1,173 @@
+name: ubuntu
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+
+concurrency:
+  group: '${{ github.workflow }}-${{ github.job }}-${{ github.head_ref || github.ref_name }}'
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    outputs:
+      common_changed: ${{ steps.common-changed.outputs.only_changed }}
+    steps:
+      - uses: actions/checkout@v2
+
+      - id: common-changed
+        uses: tj-actions/changed-files@v29.0.3
+        with:
+          files: |
+            xslt_src/common.xsl
+
+      - run: make update-init update-modules
+
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: 2.6
+          bundler-cache: true
+
+      - uses: actions/cache@v2
+        with:
+          path: ~/.fontist
+          key: fontist-ubuntu
+          restore-keys: fontist-ubuntu
+
+      # cabextract for fonts, gettext-base for envsubst, libxml2-utils for xmllint
+      - name: Setup prerequisites
+        run: |
+          sudo apt-get update
+          sudo apt-get -y install gettext-base cabextract libxml2-utils curl \
+            software-properties-common gcc ruby ruby-dev libffi-dev make libxml2-dev libxslt1-dev
+
+      - name: Install Fontist fonts
+        run: |
+          gem install fontist
+          fontist update
+          fontist manifest-install --confirm-license fonts/manifest.yml
+          fontist manifest-locations fonts/manifest.yml > fonts/manifest.paths.yml
+          cat fonts/manifest.paths.yml
+
+      - run: make all published
+        env:
+          GITHUB_USERNAME: ${{ github.actor }}
+          GITHUB_TOKEN: ${{ github.token }}
+
+      - uses: actions/upload-artifact@master
+        with:
+          name: published-ubuntu
+          path: published
+
+      - uses: actions/upload-artifact@master
+        with:
+          name: xslt
+          path: xslt
+
+  deploy-gh-pages:
+    if: github.ref == 'refs/heads/master'
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - uses: actions/checkout@master
+
+      - uses: actions/download-artifact@master
+        with:
+          name: published-ubuntu
+          path: published
+
+      - name: GitHub Pages action
+        uses: docker://peaceiris/gh-pages:v2
+        with:
+          emptyCommits: false
+          forceOrphan: true
+        env:
+          ACTIONS_DEPLOY_KEY: ${{ secrets.GH_DEPLOY_KEY }}
+          PUBLISH_BRANCH: gh-pages
+          PUBLISH_DIR: ./published
+
+  update-xslts:
+    if: github.ref == 'refs/heads/master'
+    runs-on: ubuntu-latest
+    needs: build
+    strategy:
+      fail-fast: false
+      matrix:
+        flavor: [csa, cc, gb, iec, ieee, iho, iso, itu, m3aawg, mpfa, ogc, ribose, un]
+        include:
+          - flavor: bipm
+            prefix: '{bipm,jcgm}'
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: actions/download-artifact@master
+        with:
+          name: xslt
+          path: xslt
+
+      - uses: actions/checkout@v3
+        with:
+          submodules: recursive
+          repository: metanorma/metanorma-${{ matrix.flavor }}
+          token: ${{ secrets.METANORMA_CI_PAT_TOKEN }}
+          path: ${{ github.workspace }}/metanorma-${{ matrix.flavor }}
+
+      - run: rsync xslt/${{ matrix.prefix || matrix.flavor }}.*.xsl ${{ github.workspace }}/metanorma-${{ matrix.flavor }}/lib/isodoc/${{ matrix.flavor }}/
+
+      - uses: peter-evans/create-pull-request@v4
+        id: cpr
+        with:
+          path: ${{ github.workspace }}/metanorma-${{ matrix.flavor }}
+          token: ${{ secrets.METANORMA_CI_PAT_TOKEN }}
+          add-paths: lib/isodoc/${{ matrix.flavor }}
+          branch: feature/xslt-update
+          delete-branch: true
+          reviewers: |
+            opoudjis
+            ronaldtse
+          title: xslt update based on metanorma/mn-native-pdf@${{ github.sha }}
+          commit-message: xslt update based on metanorma/mn-native-pdf@${{ github.sha }}
+
+      - if: ${{ steps.cpr.outputs.pull-request-number }}
+        run: printf " - ${{ steps.cpr.outputs.pull-request-url }}\n" > pr-url.txt
+
+      - uses: actions/upload-artifact@v2
+        with:
+          name: pr-url-${{ matrix.flavor }}
+          path: pr-url.txt
+
+  update-private-xslts:
+    if: github.ref == 'refs/heads/master' && needs.build.outputs.common_changed == 'true'
+    runs-on: ubuntu-latest
+    needs: build
+    strategy:
+      fail-fast: false
+      matrix:
+        flavor: [bsi, nist]
+    steps:
+      - uses: peter-evans/repository-dispatch@v1
+        with:
+          token: ${{ secrets.METANORMA_CI_PAT_TOKEN }}
+          repository: metanorma/mn-native-pdf-${{ matrix.flavor }}
+          event-type: metanorma/mn-native-pdf
+
+  update-prs-list:
+    runs-on: ubuntu-latest
+    needs: update-xslts
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: actions/download-artifact@v3
+
+      - run: cat pr-url-*/pr-url.txt >> .github/templates/prs-list.md
+
+      - uses: JasonEtco/create-an-issue@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          assignees: opoudjis, ronaldtse
+          update_existing: true
+          filename: .github/templates/prs-list.md
