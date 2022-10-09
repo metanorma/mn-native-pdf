@@ -130,6 +130,7 @@ jobs:
             ronaldtse
           title: xslt update based on metanorma/mn-native-pdf@${{ github.sha }}
           commit-message: xslt update based on metanorma/mn-native-pdf@${{ github.sha }}
+          labels: automerge
 
       - if: ${{ steps.cpr.outputs.pull-request-number }}
         run: printf " - ${{ steps.cpr.outputs.pull-request-url }}\n" > pr-url.txt
