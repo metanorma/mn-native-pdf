@@ -1323,6 +1323,7 @@
 		</fo:block>
 		<xsl:apply-templates />
 	</xsl:template>
+	<xsl:template match="itu:itu-standard/itu:preface/itu:abstract[@id = '_summary']/itu:title" priority="4"/>
 	
 	<xsl:template match="itu:preface/itu:clause" priority="3">
 		<xsl:if test="$doctype != 'service-publication'">
