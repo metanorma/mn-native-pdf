@@ -413,10 +413,18 @@
 									</xsl:variable>
 									<xsl:value-of select="java:toUpperCase(java:java.lang.String.new($tsb_full))"/>
 								</fo:block>
-								<fo:block-container height="20mm" display-align="center">
+								<fo:block-container height="20mm" display-align="center" width="90%">
 									<fo:block font-weight="bold">
 										<!-- complements -->
 										<!-- To do: Example: COMPLEMENT  TO  ITU-T  RECOMMENDATIONS  F.69  (06/1994) AND  F.68  (11/1988) -->
+										<fo:inline>COMPLEMENT TO ITU-T RECOMMENDATIONS  </fo:inline>
+										<xsl:for-each select="/*/itu:bibdata/itu:relation[@type = 'complements']">
+											<xsl:value-of select="translate(itu:bibitem/itu:docidentifier, ' ', '&#xa0;')"/>
+											<xsl:choose>
+												<xsl:when test="count(following-sibling::itu:relation[@type = 'complements']) = 1"> AND </xsl:when>
+												<xsl:when test="following-sibling::itu:relation[@type = 'complements']">, </xsl:when>
+											</xsl:choose>
+										</xsl:for-each>
 									</fo:block>
 								</fo:block-container>
 								<fo:block-container>
