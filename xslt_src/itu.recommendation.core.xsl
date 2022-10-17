@@ -705,7 +705,7 @@
 										<fo:table-cell>
 											<fo:block>&#xA0;</fo:block>
 										</fo:table-cell>
-										<fo:table-cell font-size="16pt" number-columns-spanned="3" border-bottom="0.5mm solid black" padding-right="2mm" display-align="after">
+										<fo:table-cell font-size="16pt" number-columns-spanned="3" border-bottom="0.5mm solid black" display-align="after">
 											<fo:block-container>
 												<xsl:call-template name="setWritingMode"/>
 												<fo:block padding-bottom="7mm">
@@ -749,8 +749,18 @@
 															</xsl:if>
 														</fo:block>
 													</xsl:if>
+													<xsl:if test="$doctype = 'focus-group'">
+														<xsl:attribute name="padding-bottom">0mm</xsl:attribute>
+														<xsl:attribute name="border-bottom">1pt solid black</xsl:attribute>
+													</xsl:if>
 													<fo:block text-transform="uppercase">
-														<xsl:variable name="series_title" select="normalize-space(/itu:itu-standard/itu:bibdata/itu:series[@type = 'main']/itu:title[@type = 'full'])"/>
+														<xsl:variable name="series_title_full" select="normalize-space(/itu:itu-standard/itu:bibdata/itu:series[@type = 'main']/itu:title[@type = 'full'])"/>
+														<xsl:variable name="series_title">
+															<xsl:value-of select="$series_title_full"/>
+															<xsl:if test="$series_title_full = ''">
+																<xsl:value-of select="normalize-space(/itu:itu-standard/itu:bibdata/itu:series[@type = 'main']/itu:title[@type != 'full' and @type != 'abbrev'])"/>
+															</xsl:if>
+														</xsl:variable>
 														<xsl:if test="$series_title != ''">
 															<xsl:variable name="title">
 																<xsl:if test="$doctype != 'resolution'">
