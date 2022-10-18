@@ -1974,6 +1974,9 @@
 				</xsl:choose>
 			</xsl:attribute>
 			<xsl:attribute name="margin-bottom">8pt</xsl:attribute>
+			<xsl:if test="starts-with(ancestor::*[local-name() = 'table'][1]/@type, 'recommend') and not(following-sibling::*[local-name() = 'p'])">
+				<xsl:attribute name="margin-bottom">0pt</xsl:attribute>
+			</xsl:if>
 			<xsl:if test="@id">
 				<xsl:attribute name="id"><xsl:value-of select="@id"/></xsl:attribute>
 			</xsl:if>

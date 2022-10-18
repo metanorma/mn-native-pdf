@@ -6497,6 +6497,9 @@
 				<xsl:if test="ancestor::*[local-name() = 'tfoot']">
 					<xsl:attribute name="border">solid black 0</xsl:attribute>
 				</xsl:if>
+				<xsl:if test="starts-with(ancestor::*[local-name() = 'table'][1]/@type, 'recommend')">
+					<xsl:attribute name="display-align">before</xsl:attribute>
+				</xsl:if>
 			</xsl:if>
 			
 			<xsl:if test="$namespace = 'itu'">
