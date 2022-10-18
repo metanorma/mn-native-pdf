@@ -6230,6 +6230,9 @@
 				<xsl:if test="$number mod 2 = 0">
 					<xsl:attribute name="background-color">rgb(252, 246, 222)</xsl:attribute>
 				</xsl:if>
+				<xsl:if test="$number mod 2 != 0">
+					<xsl:attribute name="background-color">rgb(254, 252, 245)</xsl:attribute>
+				</xsl:if>
 			</xsl:if>
 		
 			<xsl:if test="$namespace = 'rsd'">
