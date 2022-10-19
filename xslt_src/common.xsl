@@ -11550,7 +11550,8 @@
 	<xsl:template match="*[local-name() = 'p'][@class='RecommendationTitle' or @class = 'RecommendationTestTitle']" priority="2">
 		<fo:block font-size="11pt">
 			<xsl:if test="$namespace = 'ogc' or $namespace = 'ogc-white-paper'">
-				<xsl:attribute name="color"><xsl:value-of select="$color_design"/></xsl:attribute>
+				<!-- <xsl:attribute name="color"><xsl:value-of select="$color_design"/></xsl:attribute> -->
+				<xsl:attribute name="color">white</xsl:attribute>
 			</xsl:if>
 			<xsl:apply-templates />
 		</fo:block>
