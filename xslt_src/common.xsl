@@ -4968,9 +4968,9 @@
 				</xsl:if>
 				
 				<xsl:if test="$namespace = 'ogc'">
-					<xsl:if test="ancestor::*[local-name()='sections']">
+					<!-- <xsl:if test="ancestor::*[local-name()='sections']"> -->
 						<xsl:attribute name="font-size">9pt</xsl:attribute>
-					</xsl:if>
+					<!-- </xsl:if> -->
 				</xsl:if>
 				
 				<xsl:if test="$namespace = 'unece-rec'">
@@ -6227,12 +6227,12 @@
 		
 			<xsl:if test="$namespace = 'ogc'">
 				<xsl:variable name="number"><xsl:number/></xsl:variable>
-				<xsl:if test="$number mod 2 = 0">
-					<xsl:attribute name="background-color">rgb(252, 246, 222)</xsl:attribute>
-				</xsl:if>
-				<xsl:if test="$number mod 2 != 0">
-					<xsl:attribute name="background-color">rgb(254, 252, 245)</xsl:attribute>
-				</xsl:if>
+				<xsl:attribute name="background-color">
+					<xsl:choose>
+						<xsl:when test="$number mod 2 = 0">rgb(252, 246, 222)</xsl:when>
+						<xsl:otherwise>rgb(254, 252, 245)</xsl:otherwise>
+					</xsl:choose>
+				</xsl:attribute>
 			</xsl:if>
 		
 			<xsl:if test="$namespace = 'rsd'">
