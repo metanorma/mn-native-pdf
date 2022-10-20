@@ -1649,7 +1649,9 @@
 			<xsl:attribute name="background-color">black</xsl:attribute>
 			<xsl:attribute name="color">white</xsl:attribute>
 		</xsl:if>
-		<xsl:if test="$namespace = 'ogc'">				
+		<xsl:if test="$namespace = 'ogc'">
+			<xsl:attribute name="padding-top">1mm</xsl:attribute>
+			<xsl:attribute name="padding-bottom">1mm</xsl:attribute>
 			<xsl:attribute name="border">solid black 0pt</xsl:attribute>				
 		</xsl:if>
 		<xsl:if test="$namespace = 'ogc-white-paper'">
@@ -6336,6 +6338,13 @@
 			<xsl:if test="$namespace = 'nist-cswp' or $namespace = 'nist-sp'">
 				<xsl:attribute name="text-align">center</xsl:attribute>
 			</xsl:if>
+			<xsl:if test="$namespace = 'ogc'">
+				<xsl:if test="starts-with(ancestor::*[local-name() = 'table'][1]/@type, 'recommend') and normalize-space(@align) = ''">
+					<xsl:call-template name="setTextAlignment">
+						<xsl:with-param name="default">left</xsl:with-param>
+					</xsl:call-template>
+				</xsl:if>
+			</xsl:if>
 			<xsl:if test="$namespace = 'unece-rec'">				
 				<xsl:if test="ancestor::*[local-name()='sections']">
 					<xsl:attribute name="border">solid black 0pt</xsl:attribute>
@@ -7862,8 +7871,18 @@
 				</xsl:if>
 				<xsl:if test="$namespace = 'mpfd'"></xsl:if>
 				<xsl:if test="$namespace = 'nist-cswp'  or $namespace = 'nist-sp'"></xsl:if>
-				<xsl:if test="$namespace = 'ogc'">9.5</xsl:if>
-				<xsl:if test="$namespace = 'ogc-white-paper'">9.5</xsl:if>
+				<xsl:if test="$namespace = 'ogc'">
+					<xsl:choose>
+						<xsl:when test="ancestor::*[local-name() = 'table']">8.5</xsl:when>
+						<xsl:otherwise>9.5</xsl:otherwise>
+					</xsl:choose>
+				</xsl:if>
+				<xsl:if test="$namespace = 'ogc-white-paper'">
+					<xsl:choose>
+						<xsl:when test="ancestor::*[local-name() = 'table']">8.5</xsl:when>
+						<xsl:otherwise>9.5</xsl:otherwise>
+					</xsl:choose>
+				</xsl:if>
 				<xsl:if test="$namespace = 'rsd'">
 					<xsl:choose>
 						<xsl:when test="ancestor::*[local-name() = 'table']">inherit</xsl:when>
@@ -10940,8 +10959,18 @@
 						<xsl:if test="$namespace = 'm3d'"></xsl:if>		
 						<xsl:if test="$namespace = 'mpfd'"></xsl:if>
 						<xsl:if test="$namespace = 'nist-cswp'  or $namespace = 'nist-sp'">10</xsl:if>
-						<xsl:if test="$namespace = 'ogc'">9.5</xsl:if>
-						<xsl:if test="$namespace = 'ogc-white-paper'">9.5</xsl:if>						
+						<xsl:if test="$namespace = 'ogc'">
+							<xsl:choose>
+								<xsl:when test="ancestor::*[local-name() = 'table']">8.5</xsl:when>
+								<xsl:otherwise>9.5</xsl:otherwise>
+							</xsl:choose>
+						</xsl:if>
+						<xsl:if test="$namespace = 'ogc-white-paper'">
+							<xsl:choose>
+								<xsl:when test="ancestor::*[local-name() = 'table']">8.5</xsl:when>
+								<xsl:otherwise>9.5</xsl:otherwise>
+							</xsl:choose>
+						</xsl:if>						
 						<xsl:if test="$namespace = 'rsd'">
 							<xsl:choose>
 								<xsl:when test="ancestor::*[local-name() = 'table']">inherit</xsl:when>
