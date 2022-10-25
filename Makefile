@@ -199,54 +199,6 @@ documents/un-ECE_AGAT_2020_INF1.pdf:
 documents/un-ECE_AGAT_2020_INF1.presentation.pdf:
 	echo "### skipping $@"
 
-#mn-samples-cc repository issue
-documents/cc-18011.html:
-	echo "### skipping $@"
-
-documents/cc-18011.doc:
-	echo "### skipping $@"
-
-documents/cc-18011.rxl:
-	echo "### skipping $@"
-
-documents/m3aawg-bp-document.html:
-	echo "### skipping $@"
-
-documents/m3aawg-bp-document.doc:
-	echo "### skipping $@"
-
-documents/m3aawg-bp-document.rxl:
-	echo "### skipping $@"
-
-
-#mn-samples-itu repository issue
-documents/itu-STL-manual.html:
-	echo "### skipping $@"
-
-documents/itu-STL-manual.doc:
-	echo "### skipping $@"
-
-documents/itu-STL-manual.rxl:
-	echo "### skipping $@"
-
-documents/itu-T-Editing-Guidelines-201602.pdf.fo.debug.html:
-	echo "### skipping $@"
-
-documents/itu-T-Editing-Guidelines-201602.pdf.fo.debug.doc:
-	echo "### skipping $@"
-
-documents/itu-T-Editing-Guidelines-201602.pdf.fo.debug.rxl:
-	echo "### skipping $@"
-
-documents/itu-T-REC-P.1203-201710-I.MSW-E.html:
-	echo "### skipping $@"
-
-documents/itu-T-REC-P.1203-201710-I.MSW-E.doc:
-	echo "### skipping $@"
-
-documents/itu-T-REC-P.1203-201710-I.MSW-E.rxl:
-	echo "### skipping $@"
-
 
 documents/%.presentation.pdf: sources/%.presentation.xml $(MN2PDF_EXECUTABLE) | documents
 ifeq ($(OS),Windows_NT)
