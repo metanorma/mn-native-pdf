@@ -46,6 +46,7 @@ XSLT_GENERATED := xslt/iec.international-standard.xsl \
 	xslt/ogc.community-practice.xsl \
 	xslt/ogc.community-standard.xsl \
 	xslt/ogc.discussion-paper.xsl \
+	xslt/ogc.draft-standard.xsl \
 	xslt/ogc.engineering-report.xsl \
 	xslt/ogc.other.xsl \
 	xslt/ogc.policy.xsl \
