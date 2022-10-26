@@ -1036,9 +1036,14 @@
 										</fo:table>
 									</fo:block-container>
 									<fo:block-container position="absolute" left="60mm" top="222mm" height="25mm" display-align="after">
-										<fo:block>
+										<fo:block margin-bottom="2mm">
 											<xsl:if test="$stage-abbreviation = 'PRF'">
-												<fo:block font-size="39pt" font-weight="bold"><xsl:value-of select="$proof-text"/></fo:block>
+												<fo:block font-size="36pt" font-weight="bold" margin-left="1mm">
+													<xsl:call-template name="add-letter-spacing">
+														<xsl:with-param name="text" select="$proof-text"/>
+														<xsl:with-param name="letter-spacing" select="0.65"/>
+													</xsl:call-template>
+												</fo:block>
 											</xsl:if>
 										</fo:block>
 									</fo:block-container>
@@ -1519,7 +1524,7 @@
 											<fo:block font-size="9pt"><xsl:value-of select="$copyrightText"/></fo:block>
 										</fo:table-cell>
 										<fo:table-cell>
-											<fo:block font-size="11pt" font-weight="bold" text-align="center">
+											<fo:block font-size="10pt" font-weight="bold" text-align="center">
 												<xsl:if test="$stage-abbreviation = 'PRF'">
 													<xsl:value-of select="$proof-text"/>
 												</xsl:if>
@@ -2141,7 +2146,7 @@
 								<fo:block><fo:page-number/></fo:block>
 							</fo:table-cell>
 							<fo:table-cell display-align="center">
-								<fo:block font-size="11pt" font-weight="bold" text-align="center">
+								<fo:block font-size="10pt" font-weight="bold" text-align="center">
 									<xsl:if test="$stage-abbreviation = 'PRF'">
 										<xsl:value-of select="$proof-text"/>
 									</xsl:if>
@@ -2194,7 +2199,7 @@
 								<fo:block><xsl:value-of select="$copyrightText"/></fo:block>
 							</fo:table-cell>
 							<fo:table-cell display-align="center">
-								<fo:block font-size="11pt" font-weight="bold" text-align="center">
+								<fo:block font-size="10pt" font-weight="bold" text-align="center">
 									<xsl:if test="$stage-abbreviation = 'PRF'">
 										<xsl:value-of select="$proof-text"/>
 									</xsl:if>
