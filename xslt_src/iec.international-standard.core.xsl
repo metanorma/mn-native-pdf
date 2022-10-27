@@ -27,12 +27,13 @@
 	
 	<xsl:variable name="debug">false</xsl:variable>
 	
+	<xsl:variable name="SDO">
+		<xsl:for-each select="(//iec:iec-standard)[1]/iec:bibdata/iec:copyright/iec:owner/iec:organization/iec:abbreviation">
+			<xsl:value-of select="."/><xsl:if test="position() != last()">/</xsl:if>
+		</xsl:for-each>
+	</xsl:variable>
+		
 	<xsl:variable name="copyrightSDO">
-		<xsl:variable name="SDO">
-			<xsl:for-each select="(//iec:iec-standard)[1]/iec:bibdata/iec:copyright/iec:owner/iec:organization/iec:abbreviation">
-				<xsl:value-of select="."/><xsl:if test="position() != last()">/</xsl:if>
-			</xsl:for-each>
-		</xsl:variable>
 		<xsl:text> </xsl:text>
 		<xsl:variable name="value" select="concat('© ', $SDO, ' ', //iec:iec-standard/iec:bibdata/iec:copyright/iec:from)"/>
 		<fo:inline keep-together.within-line="always"><xsl:value-of select="$value"/></fo:inline>
@@ -1291,14 +1292,18 @@
 		<xsl:param name="lang" select="$lang"/>
 		<fo:block break-after="page"/>
 		<fo:block-container font-size="12pt" text-align="center" margin-bottom="18pt">
-			<fo:block>
-				<xsl:call-template name="getLocalizedString">
-					<xsl:with-param name="key">IEC</xsl:with-param>
-					<xsl:with-param name="lang"><xsl:value-of select="$lang"/></xsl:with-param>
-				</xsl:call-template>
-			</fo:block>
-			<fo:block>___________</fo:block>
-			<fo:block>&#xa0;</fo:block>
+		
+			<xsl:if test="not(contains($SDO, '/'))"> <!-- only one IEC -->
+				<fo:block>
+					<xsl:call-template name="getLocalizedString">
+						<xsl:with-param name="key">IEC</xsl:with-param>
+						<xsl:with-param name="lang"><xsl:value-of select="$lang"/></xsl:with-param>
+					</xsl:call-template>
+				</fo:block>
+				<fo:block>___________</fo:block>
+				<fo:block>&#xa0;</fo:block>
+			</xsl:if>
+			
 			<fo:block font-weight="bold" role="H1">				
 			
 				<xsl:call-template name="printTitles">
@@ -1837,9 +1842,6 @@
 	<xsl:template name="insertHeaderFooter">
 		<fo:static-content flow-name="header-even" role="artifact">
 			<fo:block-container height="25mm" display-align="after">
-				<xsl:if test="contains($copyrightSDO, '/')">
-					<xsl:attribute name="height">21mm</xsl:attribute>
-				</xsl:if>
 				<fo:table table-layout="fixed" width="100%">
 					<fo:table-column column-width="proportional-column-width(70)"/>
 					<fo:table-column column-width="proportional-column-width(20)"/>
@@ -1864,9 +1866,6 @@
 		
 		<fo:static-content flow-name="header-odd" role="artifact">
 			<fo:block-container height="25mm" display-align="after">
-				<xsl:if test="contains($copyrightSDO, '/')">
-					<xsl:attribute name="height">21mm</xsl:attribute>
-				</xsl:if>
 				<fo:table table-layout="fixed" width="100%">
 					<fo:table-column column-width="proportional-column-width(70)"/>
 					<fo:table-column column-width="proportional-column-width(20)"/>
