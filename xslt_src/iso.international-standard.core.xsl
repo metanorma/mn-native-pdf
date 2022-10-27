@@ -1747,6 +1747,7 @@
 		<xsl:variable name="display">
 			<xsl:choose>				
 				<xsl:when test="ancestor-or-self::iso:annex and $level &gt;= 2">false</xsl:when>
+				<xsl:when test="ancestor-or-self::iso:introduction and $level &gt;= 2">false</xsl:when>
 				<xsl:when test="$section = '' and $type = 'clause'">false</xsl:when>
 				<xsl:when test="$level &lt;= $toc_level">true</xsl:when>
 				<xsl:otherwise>false</xsl:otherwise>
@@ -1874,6 +1875,7 @@
 			<xsl:choose>
 				<xsl:when test="ancestor::iso:annex and $level = 2">13pt</xsl:when>
 				<xsl:when test="ancestor::iso:annex and $level = 3">12pt</xsl:when>
+				<xsl:when test="ancestor::iso:introduction and $level &gt;= 2">11pt</xsl:when>
 				<xsl:when test="ancestor::iso:preface">16pt</xsl:when>
 				<xsl:when test="$level = 2">12pt</xsl:when>
 				<xsl:when test="$level &gt;= 3">11pt</xsl:when>
@@ -1902,6 +1904,7 @@
 					<xsl:attribute name="font-weight">bold</xsl:attribute>
 					<xsl:attribute name="margin-top"> <!-- margin-top -->
 						<xsl:choose>
+							<xsl:when test="ancestor::iso:introduction and $level &gt;= 2 and ../preceding-sibling::iso:clause">30pt</xsl:when>
 							<xsl:when test="ancestor::iso:preface">8pt</xsl:when>
 							<xsl:when test="$level = 2 and ancestor::iso:annex">18pt</xsl:when>
 							<xsl:when test="$level = 1">18pt</xsl:when>
@@ -1912,6 +1915,7 @@
 					</xsl:attribute>
 					<xsl:attribute name="margin-bottom">
 						<xsl:choose>
+							<xsl:when test="ancestor::iso:introduction and $level &gt;= 2">8pt</xsl:when>
 							<xsl:when test="ancestor::iso:preface">18pt</xsl:when>
 							<!-- <xsl:otherwise>12pt</xsl:otherwise> -->
 							<xsl:otherwise>8pt</xsl:otherwise>
