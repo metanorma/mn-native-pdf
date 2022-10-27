@@ -9125,7 +9125,7 @@
 			</xsl:if>
 			
 			<xsl:if test="$namespace = 'iec'">
-				<xsl:if test="ancestor::*[local-name()='feedback-statement']">
+				<xsl:if test="ancestor::*[local-name()='feedback-statement' or local-name() = 'copyright-statement']">
 					<xsl:attribute name="color">blue</xsl:attribute>
 				</xsl:if>
 			</xsl:if>
