@@ -27,7 +27,16 @@
 	
 	<xsl:variable name="debug">false</xsl:variable>
 	
-	<xsl:variable name="copyrightText" select="concat('© ', //iec:iec-standard/iec:bibdata/iec:copyright/iec:owner/iec:organization/iec:abbreviation, ':', //iec:iec-standard/iec:bibdata/iec:copyright/iec:from)"/>
+	<xsl:variable name="copyrightSDO">
+		<xsl:variable name="SDO">
+			<xsl:for-each select="(//iec:iec-standard)[1]/iec:bibdata/iec:copyright/iec:owner/iec:organization/iec:abbreviation">
+				<xsl:value-of select="."/><xsl:if test="position() != last()">/</xsl:if>
+			</xsl:for-each>
+		</xsl:variable>
+		<xsl:text> </xsl:text>
+		<xsl:variable name="value" select="concat('© ', $SDO, ' ', //iec:iec-standard/iec:bibdata/iec:copyright/iec:from)"/>
+		<fo:inline keep-together.within-line="always"><xsl:value-of select="$value"/></fo:inline>
+	</xsl:variable>
   
 	<xsl:variable name="ISOname" select="//iec:iec-standard/iec:bibdata/iec:docidentifier[@type='iso' or @type='ISO']"/>
 	
@@ -850,15 +859,17 @@
 				<xsl:variable name="current_document">
 					<xsl:copy-of select="."/>
 				</xsl:variable>
+				
+				<xsl:variable name="num"><xsl:number count="iec:iec-standard" level="any"/></xsl:variable>
+				
 				<xsl:for-each select="xalan:nodeset($current_document)">
 				
 					<xsl:variable name="docid">
 						<xsl:call-template name="getDocumentId"/>
 					</xsl:variable>
 					
-					
 					<fo:page-sequence master-reference="document" format="1" force-page-count="no-force"> <!-- initial-page-number="2"   -->
-						<xsl:variable name="num"><xsl:number count="iec:iec-standard" level="any"/></xsl:variable>
+						
 						<xsl:if test="$num = '1'">
 							<xsl:attribute name="initial-page-number">2</xsl:attribute>
 						</xsl:if>
@@ -1826,12 +1837,15 @@
 	<xsl:template name="insertHeaderFooter">
 		<fo:static-content flow-name="header-even" role="artifact">
 			<fo:block-container height="25mm" display-align="after">
+				<xsl:if test="contains($copyrightSDO, '/')">
+					<xsl:attribute name="height">21mm</xsl:attribute>
+				</xsl:if>
 				<fo:table table-layout="fixed" width="100%">
-					<fo:table-column column-width="45%"/>
-					<fo:table-column column-width="10%"/>
-					<fo:table-column column-width="45%"/>
+					<fo:table-column column-width="proportional-column-width(70)"/>
+					<fo:table-column column-width="proportional-column-width(20)"/>
+					<fo:table-column column-width="proportional-column-width(70)"/>
 					<fo:table-body>
-						<fo:table-row>
+						<fo:table-row display-align="before">
 							<fo:table-cell><fo:block>&#xA0;</fo:block></fo:table-cell>
 							<fo:table-cell text-align="center">
 								<fo:block>– <fo:page-number/> –</fo:block>
@@ -1839,8 +1853,7 @@
 							<fo:table-cell text-align="right">
 								<fo:block>
 									<xsl:value-of select="$ISOname"/>
-									<xsl:text> </xsl:text>
-									<xsl:value-of select="$copyrightText"/>
+									<xsl:copy-of select="$copyrightSDO"/>
 								</fo:block>
 							</fo:table-cell>
 						</fo:table-row>
@@ -1851,17 +1864,19 @@
 		
 		<fo:static-content flow-name="header-odd" role="artifact">
 			<fo:block-container height="25mm" display-align="after">
+				<xsl:if test="contains($copyrightSDO, '/')">
+					<xsl:attribute name="height">21mm</xsl:attribute>
+				</xsl:if>
 				<fo:table table-layout="fixed" width="100%">
-					<fo:table-column column-width="45%"/>
-					<fo:table-column column-width="10%"/>
-					<fo:table-column column-width="45%"/>
+					<fo:table-column column-width="proportional-column-width(70)"/>
+					<fo:table-column column-width="proportional-column-width(20)"/>
+					<fo:table-column column-width="proportional-column-width(70)"/>
 					<fo:table-body>
-						<fo:table-row>
+						<fo:table-row display-align="before">
 							<fo:table-cell>
 								<fo:block>
 									<xsl:value-of select="$ISOname"/>
-									<xsl:text> </xsl:text>
-									<xsl:value-of select="$copyrightText"/>
+									<xsl:copy-of select="$copyrightSDO"/>
 								</fo:block>
 							</fo:table-cell>
 							<fo:table-cell text-align="center">
