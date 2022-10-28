@@ -1902,21 +1902,30 @@
 				<xsl:element name="{$element-name}">
 					<xsl:attribute name="font-size"><xsl:value-of select="$font-size"/></xsl:attribute>
 					<xsl:attribute name="font-weight">bold</xsl:attribute>
-					<xsl:attribute name="margin-top"> <!-- margin-top -->
+					<xsl:variable name="attribute-name-before">
+						<xsl:choose>
+							<xsl:when test="ancestor::iso:preface and $level = 1">margin-top</xsl:when> <!-- for Foreword and Introduction titles -->
+							<xsl:otherwise>space-before</xsl:otherwise>
+						</xsl:choose>
+					</xsl:variable>
+					<xsl:attribute name="{$attribute-name-before}"> <!-- space-before or margin-top -->
 						<xsl:choose>
 							<xsl:when test="ancestor::iso:introduction and $level &gt;= 2 and ../preceding-sibling::iso:clause">30pt</xsl:when>
 							<xsl:when test="ancestor::iso:preface">8pt</xsl:when>
 							<xsl:when test="$level = 2 and ancestor::iso:annex">18pt</xsl:when>
 							<xsl:when test="$level = 1">18pt</xsl:when>
-							<xsl:when test="$level &gt;= 3">3pt</xsl:when>
-							<xsl:when test="$level = ''">6pt</xsl:when><!-- 13.5pt -->
+							<xsl:when test="($level = 2 or $level = 3) and not(../preceding-sibling::iso:clause)">14pt</xsl:when> <!-- first title in 3rd level clause -->
+							<xsl:when test="$level = 3">14pt</xsl:when>
+							<xsl:when test="$level &gt; 3">3pt</xsl:when>
+							<xsl:when test="$level = ''">6pt</xsl:when>
 							<xsl:otherwise>12pt</xsl:otherwise>
 						</xsl:choose>
 					</xsl:attribute>
-					<xsl:attribute name="margin-bottom">
+					<xsl:attribute name="space-after"> <!-- margin-bottom -->
 						<xsl:choose>
 							<xsl:when test="ancestor::iso:introduction and $level &gt;= 2">8pt</xsl:when>
 							<xsl:when test="ancestor::iso:preface">18pt</xsl:when>
+							<xsl:when test="$level = 3">9pt</xsl:when>
 							<!-- <xsl:otherwise>12pt</xsl:otherwise> -->
 							<xsl:otherwise>8pt</xsl:otherwise>
 						</xsl:choose>
@@ -1983,6 +1992,9 @@
 				</xsl:choose>
 			</xsl:attribute>
 			<xsl:attribute name="margin-bottom">8pt</xsl:attribute>
+			<xsl:if test="count(ancestor::iso:li) = 1 and not(ancestor::iso:li[1]/following-sibling::iso:li) and not(following-sibling::iso:p)">
+				<xsl:attribute name="margin-bottom">0pt</xsl:attribute>
+			</xsl:if>
 			<xsl:if test="starts-with(ancestor::*[local-name() = 'table'][1]/@type, 'recommend') and not(following-sibling::*[local-name() = 'p'])">
 				<xsl:attribute name="margin-bottom">0pt</xsl:attribute>
 			</xsl:if>

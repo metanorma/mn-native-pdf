@@ -12826,6 +12826,12 @@
 				</xsl:if>			
 			</xsl:if>
 
+			<xsl:if test="$namespace = 'iso'">
+				<xsl:if test="not(ancestor::*[local-name() = 'ul' or local-name() = 'ol'])">
+					<xsl:attribute name="margin-bottom">8pt</xsl:attribute>
+				</xsl:if>
+			</xsl:if>
+
 			<xsl:if test="$namespace = 'nist-sp'">
 				<xsl:if test="ancestor::nist:figure and not(following-sibling::*)">
 					<xsl:attribute name="space-after">0pt</xsl:attribute>
