@@ -5794,7 +5794,8 @@
 					<xsl:attribute name="border-left">1pt solid white</xsl:attribute>
 					<xsl:attribute name="border-right">1pt solid white</xsl:attribute>
 					<xsl:attribute name="border-top">1pt solid white</xsl:attribute>
-					<xsl:attribute name="border-bottom">0.5pt solid white</xsl:attribute>
+					<!-- <xsl:attribute name="border-bottom">0.5pt solid white</xsl:attribute> -->
+					<xsl:attribute name="border-bottom">none</xsl:attribute>
 				</xsl:if>
 				
 				
@@ -6271,6 +6272,12 @@
 				</xsl:if>
 			</xsl:if>
 		
+			<xsl:if test="$namespace = 'iso'">
+				<xsl:if test="position() = 1 and not(ancestor::*[local-name() = 'table']/*[local-name() = 'thead'])">
+					<xsl:attribute name="border-top"><xsl:value-of select="$table-border"/></xsl:attribute>
+				</xsl:if>
+			</xsl:if>
+		
 			<xsl:if test="$namespace = 'ogc'">
 				<xsl:variable name="number"><xsl:number/></xsl:variable>
 				<xsl:attribute name="background-color">
@@ -6365,6 +6372,12 @@
 				<xsl:attribute name="text-align">center</xsl:attribute>
 				<xsl:if test="ancestor::*[local-name()='preface']">
 					<xsl:attribute name="font-weight">normal</xsl:attribute>
+				</xsl:if>
+			</xsl:if>
+			<xsl:if test="$namespace = 'iso'">
+				<xsl:if test="../parent::*[local-name() = 'tbody'] and (following-sibling::*[local-name() = 'td'] or preceding-sibling::*[local-name() = 'td'])">
+					<xsl:attribute name="border-top"><xsl:value-of select="$table-cell-border"/></xsl:attribute>
+					<xsl:attribute name="border-bottom"><xsl:value-of select="$table-cell-border"/></xsl:attribute>
 				</xsl:if>
 			</xsl:if>
 			<xsl:if test="$namespace = 'itu'">
@@ -6556,10 +6569,10 @@
 				<xsl:if test="starts-with(ancestor::*[local-name() = 'table'][1]/@type, 'recommend')">
 					<xsl:attribute name="display-align">before</xsl:attribute>
 				</xsl:if>
-				<xsl:if test="ancestor::*[local-name() = 'tbody'] and not(../preceding-sibling::*[local-name() = 'tr'])"> <!-- cells in 1st row in the table body -->
+				<xsl:if test="ancestor::*[local-name() = 'tbody'] and not(../preceding-sibling::*[local-name() = 'tr']) and ancestor::*[local-name() = 'table'][1]/*[local-name() = 'thead']"> <!-- cells in 1st row in the table body, and if thead exists -->
 					<xsl:attribute name="border-top">0pt solid black</xsl:attribute>
 				</xsl:if>
-				<xsl:attribute name="page-break-inside">avoid</xsl:attribute>
+				<!-- <xsl:attribute name="page-break-inside">avoid</xsl:attribute> -->
 			</xsl:if>
 			
 			<xsl:if test="$namespace = 'itu'">
