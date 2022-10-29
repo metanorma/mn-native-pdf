@@ -2007,8 +2007,8 @@
 						<xsl:attribute name="margin-bottom">5pt</xsl:attribute>
 					</xsl:otherwise>
 				</xsl:choose>
-				<!-- Special case: if first paragraph in 'strong', i.e. it's sub-header -->
-				<xsl:if test="not(preceding-sibling::*) and following-sibling::* and count(node()) = count(*[local-name() = 'strong'])">
+				<!-- Special case: if paragraph in 'strong', i.e. it's sub-header, then keeps with next -->
+				<xsl:if test="count(node()) = count(*[local-name() = 'strong']) and following-sibling::*">
 					<xsl:attribute name="keep-with-next">always</xsl:attribute>
 				</xsl:if>
 			</xsl:if>
