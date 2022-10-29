@@ -6261,6 +6261,10 @@
 	<xsl:template match="*[local-name()='tr']">
 		<fo:table-row xsl:use-attribute-sets="table-body-row-style">
 		
+			<xsl:if test="*[local-name() = 'th']">
+				<xsl:attribute name="keep-with-next">always</xsl:attribute>
+			</xsl:if>
+		
 			<xsl:if test="$namespace = 'ieee'">
 				<xsl:if test="ancestor::*[local-name() = 'feedback-statement']">
 					<xsl:attribute name="min-height">0mm</xsl:attribute>
@@ -6555,6 +6559,7 @@
 				<xsl:if test="ancestor::*[local-name() = 'tbody'] and not(../preceding-sibling::*[local-name() = 'tr'])"> <!-- cells in 1st row in the table body -->
 					<xsl:attribute name="border-top">0pt solid black</xsl:attribute>
 				</xsl:if>
+				<xsl:attribute name="page-break-inside">avoid</xsl:attribute>
 			</xsl:if>
 			
 			<xsl:if test="$namespace = 'itu'">
