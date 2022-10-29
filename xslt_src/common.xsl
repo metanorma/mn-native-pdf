@@ -1273,8 +1273,14 @@
 	<xsl:variable name="table-border_">
 		<xsl:if test="$namespace = 'bsi'">0.5pt solid black</xsl:if>
 		<xsl:if test="$namespace = 'ieee'">1pt solid black</xsl:if>
+		<xsl:if test="$namespace = 'iso'">1pt solid black</xsl:if>
 	</xsl:variable>
 	<xsl:variable name="table-border" select="normalize-space($table-border_)"/>
+	
+	<xsl:variable name="table-cell-border_">
+		<xsl:if test="$namespace = 'iso'">0.5pt solid black</xsl:if>
+	</xsl:variable>
+	<xsl:variable name="table-cell-border" select="normalize-space($table-cell-border_)"/>
 	
 	<xsl:attribute-set name="table-container-style">
 		<xsl:attribute name="margin-left">0mm</xsl:attribute>
@@ -1394,7 +1400,7 @@
 			
 		</xsl:if>
 		<xsl:if test="$namespace = 'iso'">
-			<xsl:attribute name="border">1.5pt solid black</xsl:attribute>
+			<xsl:attribute name="border"><xsl:value-of select="$table-border"/></xsl:attribute>
 		</xsl:if>
 		
 		<xsl:if test="$namespace = 'jcgm'">
@@ -1561,7 +1567,11 @@
 			<xsl:attribute name="border-top"><xsl:value-of select="$table-border"/></xsl:attribute>
 			<xsl:attribute name="border-bottom"><xsl:value-of select="$table-border"/></xsl:attribute>
 		</xsl:if>
-		<xsl:if test="$namespace = 'iso' or $namespace = 'jcgm'">
+		<xsl:if test="$namespace = 'iso'">
+			<xsl:attribute name="border-top"><xsl:value-of select="$table-border"/></xsl:attribute>
+			<xsl:attribute name="border-bottom"><xsl:value-of select="$table-border"/></xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'jcgm'">
 			<xsl:attribute name="border-top">solid black 1pt</xsl:attribute>
 			<xsl:attribute name="border-bottom">solid black 1pt</xsl:attribute>
 		</xsl:if>
@@ -1597,7 +1607,12 @@
 			<xsl:attribute name="border-left">solid black 0.5pt</xsl:attribute>
 			<xsl:attribute name="border-right">solid black 0.5pt</xsl:attribute>
 		</xsl:if>
-		<xsl:if test="$namespace = 'iso' or $namespace = 'jcgm'">
+		<xsl:if test="$namespace = 'iso'">
+			<xsl:attribute name="font-size">9pt</xsl:attribute>
+			<xsl:attribute name="border-left"><xsl:value-of select="$table-border"/></xsl:attribute>
+			<xsl:attribute name="border-right"><xsl:value-of select="$table-border"/></xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'jcgm'">
 			<xsl:attribute name="font-size">9pt</xsl:attribute>
 			<xsl:attribute name="border-left">solid black 1pt</xsl:attribute>
 			<xsl:attribute name="border-right">solid black 1pt</xsl:attribute>
@@ -1627,6 +1642,8 @@
 		</xsl:if>
 		<xsl:if test="$namespace = 'iso'">
 			<xsl:attribute name="padding-top">1mm</xsl:attribute>
+			<xsl:attribute name="border-left"><xsl:value-of select="$table-cell-border"/></xsl:attribute>
+			<xsl:attribute name="border-right"><xsl:value-of select="$table-cell-border"/></xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'iec'">
 			<xsl:attribute name="padding-top">1mm</xsl:attribute>
@@ -1696,6 +1713,7 @@
 		</xsl:if>
 		<xsl:if test="$namespace = 'iso'">
 			<xsl:attribute name="padding-top">0.5mm</xsl:attribute>
+			<xsl:attribute name="border"><xsl:value-of select="$table-cell-border"/></xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'iec'">
 			<xsl:attribute name="padding-top">0.5mm</xsl:attribute>
@@ -1760,6 +1778,7 @@
 			<xsl:attribute name="border-top">solid black 0pt</xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'iso'">
+			<xsl:attribute name="border"><xsl:value-of select="$table-border"/></xsl:attribute>
 			<xsl:attribute name="border-top">solid black 0pt</xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'iec'">
@@ -5068,11 +5087,11 @@
 						
 						<xsl:if test="$namespace = 'iso'">
 							<xsl:if test="*[local-name()='thead']">
-								<xsl:attribute name="border-top">1pt solid black</xsl:attribute>
+								<xsl:attribute name="border-top"><xsl:value-of select="$table-border"/></xsl:attribute>
 							</xsl:if>
 							<xsl:if test="ancestor::*[local-name() = 'table']">
 								<!-- for internal table in table cell -->
-								<xsl:attribute name="border">0.5pt solid black</xsl:attribute>
+								<xsl:attribute name="border"><xsl:value-of select="$table-cell-border"/></xsl:attribute>
 							</xsl:if>
 						</xsl:if>
 						
@@ -5771,6 +5790,15 @@
 					<xsl:attribute name="border-top">none</xsl:attribute>
 				</xsl:if>
 				
+				<xsl:if test="$namespace = 'iso'">
+					<xsl:attribute name="border-left">1pt solid white</xsl:attribute>
+					<xsl:attribute name="border-right">1pt solid white</xsl:attribute>
+					<xsl:attribute name="border-top">1pt solid white</xsl:attribute>
+					<!-- <xsl:attribute name="border-bottom">0.5pt solid white</xsl:attribute> -->
+					<xsl:attribute name="border-bottom">none</xsl:attribute>
+				</xsl:if>
+				
+				
 				<xsl:choose>
 					<xsl:when test="$namespace = 'ieee'">
 					
@@ -6169,7 +6197,20 @@
 				</xsl:if>
 			</xsl:if>
 			
-			<xsl:if test="$namespace = 'iso' or $namespace = 'jcgm'">
+			<xsl:if test="$namespace = 'iso'">
+				<xsl:choose>
+					<xsl:when test="position() = 1">
+						<xsl:attribute name="border-top"><xsl:value-of select="$table-border"/></xsl:attribute>
+						<xsl:attribute name="border-bottom"><xsl:value-of select="$table-cell-border"/></xsl:attribute>
+					</xsl:when>
+					<xsl:when test="position() = last()">
+						<xsl:attribute name="border-top"><xsl:value-of select="$table-cell-border"/></xsl:attribute>
+						<xsl:attribute name="border-bottom"><xsl:value-of select="$table-border"/></xsl:attribute>
+					</xsl:when>
+				</xsl:choose>
+			</xsl:if>
+			
+			<xsl:if test="$namespace = 'jcgm'">
 				<xsl:choose>
 					<xsl:when test="position() = 1">
 						<xsl:attribute name="border-top">solid black 1.5pt</xsl:attribute>
@@ -6221,9 +6262,19 @@
 	<xsl:template match="*[local-name()='tr']">
 		<fo:table-row xsl:use-attribute-sets="table-body-row-style">
 		
+			<xsl:if test="*[local-name() = 'th']">
+				<xsl:attribute name="keep-with-next">always</xsl:attribute>
+			</xsl:if>
+		
 			<xsl:if test="$namespace = 'ieee'">
 				<xsl:if test="ancestor::*[local-name() = 'feedback-statement']">
 					<xsl:attribute name="min-height">0mm</xsl:attribute>
+				</xsl:if>
+			</xsl:if>
+		
+			<xsl:if test="$namespace = 'iso'">
+				<xsl:if test="position() = 1 and not(ancestor::*[local-name() = 'table']/*[local-name() = 'thead'])">
+					<xsl:attribute name="border-top"><xsl:value-of select="$table-border"/></xsl:attribute>
 				</xsl:if>
 			</xsl:if>
 		
@@ -6321,6 +6372,12 @@
 				<xsl:attribute name="text-align">center</xsl:attribute>
 				<xsl:if test="ancestor::*[local-name()='preface']">
 					<xsl:attribute name="font-weight">normal</xsl:attribute>
+				</xsl:if>
+			</xsl:if>
+			<xsl:if test="$namespace = 'iso'">
+				<xsl:if test="../parent::*[local-name() = 'tbody'] and (following-sibling::*[local-name() = 'td'] or preceding-sibling::*[local-name() = 'td'])">
+					<xsl:attribute name="border-top"><xsl:value-of select="$table-cell-border"/></xsl:attribute>
+					<xsl:attribute name="border-bottom"><xsl:value-of select="$table-cell-border"/></xsl:attribute>
 				</xsl:if>
 			</xsl:if>
 			<xsl:if test="$namespace = 'itu'">
@@ -6512,6 +6569,10 @@
 				<xsl:if test="starts-with(ancestor::*[local-name() = 'table'][1]/@type, 'recommend')">
 					<xsl:attribute name="display-align">before</xsl:attribute>
 				</xsl:if>
+				<xsl:if test="ancestor::*[local-name() = 'tbody'] and not(../preceding-sibling::*[local-name() = 'tr']) and ancestor::*[local-name() = 'table'][1]/*[local-name() = 'thead']"> <!-- cells in 1st row in the table body, and if thead exists -->
+					<xsl:attribute name="border-top">0pt solid black</xsl:attribute>
+				</xsl:if>
+				<!-- <xsl:attribute name="page-break-inside">avoid</xsl:attribute> -->
 			</xsl:if>
 			
 			<xsl:if test="$namespace = 'itu'">
@@ -9125,7 +9186,7 @@
 			</xsl:if>
 			
 			<xsl:if test="$namespace = 'iec'">
-				<xsl:if test="ancestor::*[local-name()='feedback-statement']">
+				<xsl:if test="ancestor::*[local-name()='feedback-statement' or local-name() = 'copyright-statement']">
 					<xsl:attribute name="color">blue</xsl:attribute>
 				</xsl:if>
 			</xsl:if>
@@ -12824,6 +12885,12 @@
 				<xsl:if test="local-name() = 'ol'">
 					<xsl:attribute name="provisional-distance-between-starts">7mm</xsl:attribute>
 				</xsl:if>			
+			</xsl:if>
+
+			<xsl:if test="$namespace = 'iso'">
+				<xsl:if test="not(ancestor::*[local-name() = 'ul' or local-name() = 'ol'])">
+					<xsl:attribute name="margin-bottom">8pt</xsl:attribute>
+				</xsl:if>
 			</xsl:if>
 
 			<xsl:if test="$namespace = 'nist-sp'">

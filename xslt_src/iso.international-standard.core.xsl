@@ -1036,9 +1036,14 @@
 										</fo:table>
 									</fo:block-container>
 									<fo:block-container position="absolute" left="60mm" top="222mm" height="25mm" display-align="after">
-										<fo:block>
+										<fo:block margin-bottom="2mm">
 											<xsl:if test="$stage-abbreviation = 'PRF'">
-												<fo:block font-size="39pt" font-weight="bold"><xsl:value-of select="$proof-text"/></fo:block>
+												<fo:block font-size="36pt" font-weight="bold" margin-left="1mm">
+													<xsl:call-template name="add-letter-spacing">
+														<xsl:with-param name="text" select="$proof-text"/>
+														<xsl:with-param name="letter-spacing" select="0.65"/>
+													</xsl:call-template>
+												</fo:block>
 											</xsl:if>
 										</fo:block>
 									</fo:block-container>
@@ -1519,7 +1524,7 @@
 											<fo:block font-size="9pt"><xsl:value-of select="$copyrightText"/></fo:block>
 										</fo:table-cell>
 										<fo:table-cell>
-											<fo:block font-size="11pt" font-weight="bold" text-align="center">
+											<fo:block font-size="10pt" font-weight="bold" text-align="center">
 												<xsl:if test="$stage-abbreviation = 'PRF'">
 													<xsl:value-of select="$proof-text"/>
 												</xsl:if>
@@ -1742,6 +1747,7 @@
 		<xsl:variable name="display">
 			<xsl:choose>				
 				<xsl:when test="ancestor-or-self::iso:annex and $level &gt;= 2">false</xsl:when>
+				<xsl:when test="ancestor-or-self::iso:introduction and $level &gt;= 2">false</xsl:when>
 				<xsl:when test="$section = '' and $type = 'clause'">false</xsl:when>
 				<xsl:when test="$level &lt;= $toc_level">true</xsl:when>
 				<xsl:otherwise>false</xsl:otherwise>
@@ -1869,6 +1875,7 @@
 			<xsl:choose>
 				<xsl:when test="ancestor::iso:annex and $level = 2">13pt</xsl:when>
 				<xsl:when test="ancestor::iso:annex and $level = 3">12pt</xsl:when>
+				<xsl:when test="ancestor::iso:introduction and $level &gt;= 2">11pt</xsl:when>
 				<xsl:when test="ancestor::iso:preface">16pt</xsl:when>
 				<xsl:when test="$level = 2">12pt</xsl:when>
 				<xsl:when test="$level &gt;= 3">11pt</xsl:when>
@@ -1895,19 +1902,30 @@
 				<xsl:element name="{$element-name}">
 					<xsl:attribute name="font-size"><xsl:value-of select="$font-size"/></xsl:attribute>
 					<xsl:attribute name="font-weight">bold</xsl:attribute>
-					<xsl:attribute name="margin-top"> <!-- margin-top -->
+					<xsl:variable name="attribute-name-before">
 						<xsl:choose>
+							<xsl:when test="ancestor::iso:preface and $level = 1">margin-top</xsl:when> <!-- for Foreword and Introduction titles -->
+							<xsl:otherwise>space-before</xsl:otherwise>
+						</xsl:choose>
+					</xsl:variable>
+					<xsl:attribute name="{$attribute-name-before}"> <!-- space-before or margin-top -->
+						<xsl:choose>
+							<xsl:when test="ancestor::iso:introduction and $level &gt;= 2 and ../preceding-sibling::iso:clause">30pt</xsl:when>
 							<xsl:when test="ancestor::iso:preface">8pt</xsl:when>
 							<xsl:when test="$level = 2 and ancestor::iso:annex">18pt</xsl:when>
 							<xsl:when test="$level = 1">18pt</xsl:when>
-							<xsl:when test="$level &gt;= 3">3pt</xsl:when>
-							<xsl:when test="$level = ''">6pt</xsl:when><!-- 13.5pt -->
+							<xsl:when test="($level = 2 or $level = 3) and not(../preceding-sibling::iso:clause)">14pt</xsl:when> <!-- first title in 3rd level clause -->
+							<xsl:when test="$level = 3">14pt</xsl:when>
+							<xsl:when test="$level &gt; 3">3pt</xsl:when>
+							<xsl:when test="$level = ''">6pt</xsl:when>
 							<xsl:otherwise>12pt</xsl:otherwise>
 						</xsl:choose>
 					</xsl:attribute>
-					<xsl:attribute name="margin-bottom">
+					<xsl:attribute name="space-after"> <!-- margin-bottom -->
 						<xsl:choose>
+							<xsl:when test="ancestor::iso:introduction and $level &gt;= 2">8pt</xsl:when>
 							<xsl:when test="ancestor::iso:preface">18pt</xsl:when>
+							<xsl:when test="$level = 3">9pt</xsl:when>
 							<!-- <xsl:otherwise>12pt</xsl:otherwise> -->
 							<xsl:otherwise>8pt</xsl:otherwise>
 						</xsl:choose>
@@ -1974,8 +1992,14 @@
 				</xsl:choose>
 			</xsl:attribute>
 			<xsl:attribute name="margin-bottom">8pt</xsl:attribute>
+			<xsl:if test="count(ancestor::iso:li) = 1 and not(ancestor::iso:li[1]/following-sibling::iso:li) and not(following-sibling::iso:p)">
+				<xsl:attribute name="margin-bottom">0pt</xsl:attribute>
+			</xsl:if>
 			<xsl:if test="starts-with(ancestor::*[local-name() = 'table'][1]/@type, 'recommend') and not(following-sibling::*[local-name() = 'p'])">
 				<xsl:attribute name="margin-bottom">0pt</xsl:attribute>
+			</xsl:if>
+			<xsl:if test="parent::*[local-name() = 'td' or local-name() = 'th'] and not(following-sibling::*)">
+				<xsl:attribute name="margin-bottom">2pt</xsl:attribute>
 			</xsl:if>
 			<xsl:if test="@id">
 				<xsl:attribute name="id"><xsl:value-of select="@id"/></xsl:attribute>
@@ -2141,7 +2165,7 @@
 								<fo:block><fo:page-number/></fo:block>
 							</fo:table-cell>
 							<fo:table-cell display-align="center">
-								<fo:block font-size="11pt" font-weight="bold" text-align="center">
+								<fo:block font-size="10pt" font-weight="bold" text-align="center">
 									<xsl:if test="$stage-abbreviation = 'PRF'">
 										<xsl:value-of select="$proof-text"/>
 									</xsl:if>
@@ -2194,7 +2218,7 @@
 								<fo:block><xsl:value-of select="$copyrightText"/></fo:block>
 							</fo:table-cell>
 							<fo:table-cell display-align="center">
-								<fo:block font-size="11pt" font-weight="bold" text-align="center">
+								<fo:block font-size="10pt" font-weight="bold" text-align="center">
 									<xsl:if test="$stage-abbreviation = 'PRF'">
 										<xsl:value-of select="$proof-text"/>
 									</xsl:if>
