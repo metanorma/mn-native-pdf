@@ -13834,7 +13834,7 @@
 				<xsl:apply-templates select="*[local-name() = 'note']"/>
 				
 				<xsl:if test="normalize-space($docidentifier) != '' and *[local-name() = 'formattedref']">
-					<xsl:if test="$namespace = 'csd' or $namespace = 'iec' or $namespace = 'iso' or $namespace = 'm3d' or $namespace = 'mpfd'"><xsl:text>,</xsl:text></xsl:if>
+					<xsl:if test="$namespace = 'csd' or $namespace = 'iec' or $namespace = 'ieee' or $namespace = 'iso' or $namespace = 'm3d' or $namespace = 'mpfd'"><xsl:text>,</xsl:text></xsl:if>
 					<xsl:text> </xsl:text>
 				</xsl:if>
 				
