@@ -15327,13 +15327,14 @@
 	</xsl:template>
 
 	<xsl:template name="setId">
+		<xsl:param name="prefix"/>
 		<xsl:attribute name="id">
 			<xsl:choose>
 				<xsl:when test="@id">
-					<xsl:value-of select="@id"/>
+					<xsl:value-of select="concat($prefix, @id)"/>
 				</xsl:when>
 				<xsl:otherwise>
-					<xsl:value-of select="generate-id()"/>
+					<xsl:value-of select="concat($prefix, generate-id())"/>
 				</xsl:otherwise>
 			</xsl:choose>					
 		</xsl:attribute>

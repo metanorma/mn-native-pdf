@@ -2330,8 +2330,13 @@
 
 
 	<xsl:template match="bipm:preface/*[not(local-name() = 'note' or local-name() = 'admonition')][1]" priority="3">
-		<fo:table table-layout="fixed" width="173.5mm">
+		<fo:block keep-with-next="always">
 			<xsl:call-template name="setId"/>
+		</fo:block>
+		<fo:table table-layout="fixed" width="173.5mm">
+			<xsl:call-template name="setId">
+				<xsl:with-param name="prefix">__internal_layout__</xsl:with-param>
+			</xsl:call-template>
 			<fo:table-column column-width="137mm"/>
 			<fo:table-column column-width="2.5mm"/>
 			<fo:table-column column-width="34mm"/>
@@ -2480,12 +2485,17 @@
 			</xsl:if>						
 		</xsl:variable>					
 		<xsl:variable name="space-before-value" select="normalize-space($space-before)"/>			
-			
-		<fo:table table-layout="fixed" width="174mm" line-height="135%">
+		
+		<fo:block keep-with-next="always">
+			<xsl:call-template name="setId"/>
+		</fo:block>
+		<fo:table table-layout="fixed" width="174mm" line-height="135%" border="1pt solid black">
 			<xsl:if test="@orientation = 'landscape'">
 				<xsl:attribute name="width">261mm</xsl:attribute> <!-- 87 = (297 - 210) -->
 			</xsl:if>
-			<xsl:call-template name="setId"/>
+			<xsl:call-template name="setId">
+				<xsl:with-param name="prefix">__internal_layout__</xsl:with-param>
+			</xsl:call-template>
 			<xsl:if test="$space-before-value != ''">
 				<xsl:attribute name="space-before"><xsl:value-of select="$space-before-value"/></xsl:attribute>
 			</xsl:if>
@@ -5704,7 +5714,7 @@
 			</fo:block>
 		</fo:block-container>
 		<!-- grey opacity -->
-		<fo:block-container absolute-position="fixed" left="0" top="0">
+		<fo:block-container absolute-position="fixed" left="0" top="0" id="{concat('__internal_layout__', 'Logo-BIPM-Metro_', generate-id())}">
 			<fo:block>
 				<fo:instream-foreign-object content-height="{$pageHeight}mm" fox:alt-text="Background color">
 					<svg xmlns="http://www.w3.org/2000/svg" version="1.0" width="215.9mm" height="279.4mm">
