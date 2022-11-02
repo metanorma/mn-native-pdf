@@ -65,9 +65,9 @@
 				</fo:simple-page-master>
 				
 				<fo:simple-page-master master-name="last" page-width="{$pageWidth}mm" page-height="{$pageHeight}mm">
-					<fo:region-body margin-top="20mm" margin-bottom="53mm" margin-left="{$marginLeftRight1}mm" margin-right="{$marginLeftRight2}mm"/>
+					<fo:region-body margin-top="20mm" margin-bottom="54mm" margin-left="{$marginLeftRight1}mm" margin-right="{$marginLeftRight2}mm"/>
 					<fo:region-before region-name="header" extent="{$marginTop}mm"/>
-					<fo:region-after region-name="footer-last" extent="53mm"/>
+					<fo:region-after region-name="footer-last" extent="53.2mm"/>
 					<fo:region-start region-name="left-region" extent="17.3mm"/>
 					<fo:region-end region-name="right-region" extent="17.3mm"/>
 				</fo:simple-page-master>
@@ -119,7 +119,7 @@
 					</fo:block-container>
 				</fo:static-content>
 				<fo:static-content flow-name="footer" role="artifact">
-					<fo:block-container height="31mm" font-size="10pt">
+					<fo:block-container font-size="10pt">
 						<fo:block text-align-last="justify" margin-top="2mm">
 							<fo:inline font-weight="bold">
 								<fo:inline>M<fo:inline font-size="6.5pt" vertical-align="super">3</fo:inline>AAWG </fo:inline>
@@ -231,7 +231,7 @@
 							<xsl:for-each select="$contents//item[@display = 'true']"><!-- [not(@level = 2 and starts-with(@section, '0'))] skip clause from preface -->							
 								<xsl:choose>
 									<xsl:when test="@section = ''">
-										<fo:table table-layout="fixed" width="100%">
+										<fo:table table-layout="fixed" width="100%" id="__internal_layout__price_toc_{generate-id()}">
 											<fo:table-column column-width="180mm"/>
 											<fo:table-body>
 												<fo:table-row height="6mm">
@@ -256,7 +256,7 @@
 										</fo:table>
 									</xsl:when>
 									<xsl:otherwise>
-										<fo:table table-layout="fixed" width="100%">
+										<fo:table table-layout="fixed" width="100%" id="__internal_layout__price_toc_{generate-id()}">
 											<fo:table-column column-width="5mm"/> <!-- 25mm -->
 											<fo:table-column column-width="175mm"/> <!-- 155mm -->
 											<fo:table-body>
