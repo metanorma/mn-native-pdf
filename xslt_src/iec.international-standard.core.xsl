@@ -381,7 +381,7 @@
 							</fo:block-container>
 							
 							<xsl:variable name="price_code_value" select="//iec:iec-standard/iec:bibdata/iec:ext/iec:price-code"/>
-							<fo:table table-layout="fixed" width="102%" margin-top="-9mm" margin-bottom="2mm">
+							<fo:table table-layout="fixed" width="102%" margin-top="-9mm" margin-bottom="2mm" id="__internal_layout__price_code">
 								<fo:table-column column-width="148mm"/>
 								<fo:table-column column-width="16mm"/>
 								<fo:table-body>
