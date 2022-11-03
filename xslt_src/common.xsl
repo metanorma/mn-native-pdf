@@ -9029,8 +9029,16 @@
 	
 	<xsl:template name="getMathml_asciimath_text">
 		<xsl:variable name="asciimath" select="../*[local-name() = 'asciimath']"/>
+		<xsl:variable name="latexmath">
+			<xsl:if test="$namespace = 'ieee'">
+				<xsl:value-of select="../*[local-name() = 'latexmath']"/>
+			</xsl:if>
+		</xsl:variable>
 		<xsl:variable name="asciimath_text_following">
 			<xsl:choose>
+				<xsl:when test="normalize-space($latexmath) != ''">
+					<xsl:value-of select="$latexmath"/>
+				</xsl:when>
 				<xsl:when test="normalize-space($asciimath) != ''">
 					<xsl:value-of select="$asciimath"/>
 				</xsl:when>
