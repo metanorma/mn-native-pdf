@@ -303,7 +303,7 @@
 					</xsl:if>
 					
 					<!-- Preface Pages (except Abstract, that showed in Summary on cover page`) -->
-					<xsl:if test="/un:un-standard/un:preface/*[not(local-name() = 'abstract' or local-name() != 'note' or local-name() != 'admonition')]">
+					<xsl:if test="/un:un-standard/un:preface/*[not(local-name() = 'abstract' or local-name() = 'note' or local-name() = 'admonition')]">
 						<xsl:apply-templates select="/*/*[local-name()='preface']/*[local-name()='foreword']" />
 						<xsl:apply-templates select="/*/*[local-name()='preface']/*[local-name()='introduction']" />
 						<xsl:apply-templates select="/*/*[local-name()='preface']/*[local-name() != 'abstract' and local-name() != 'foreword' and local-name() != 'introduction' and local-name() != 'acknowledgements' and local-name() != 'note' and local-name() != 'admonition']" />
