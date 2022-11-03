@@ -9028,7 +9028,17 @@
 	<xsl:template match="*[local-name() = 'latexmath']"/>
 	
 	<xsl:template name="getMathml_asciimath_text">
-		<xsl:variable name="asciimath_text_following" select="../*[local-name() = 'asciimath']"/>
+		<xsl:variable name="asciimath" select="../*[local-name() = 'asciimath']"/>
+		<xsl:variable name="asciimath_text_following">
+			<xsl:choose>
+				<xsl:when test="normalize-space($asciimath) != ''">
+					<xsl:value-of select="$asciimath"/>
+				</xsl:when>
+				<xsl:otherwise>
+					<xsl:value-of select="following-sibling::node()[1][self::comment()]"/>
+				</xsl:otherwise>
+			</xsl:choose>
+		</xsl:variable>
 		<xsl:variable name="asciimath_text_">
 			<xsl:choose>
 				<xsl:when test="normalize-space($asciimath_text_following) != ''">
