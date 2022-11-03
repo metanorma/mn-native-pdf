@@ -557,7 +557,7 @@
 						</fo:block-container>
 						<fo:block-container font-family="Arial">
 							<xsl:variable name="annexid" select="normalize-space(/itu:itu-standard/itu:bibdata/itu:ext/itu:structuredidentifier/itu:annexid)"/>
-							<fo:table width="100%" table-layout="fixed"> <!-- 175.4mm-->
+							<fo:table width="100%" table-layout="fixed" id="__internal_layout__coverpage_{generate-id()}"> <!-- 175.4mm-->
 								<fo:table-column column-width="25.2mm"/>
 								<fo:table-column column-width="44.4mm"/>
 								<fo:table-column column-width="35.8mm"/>
