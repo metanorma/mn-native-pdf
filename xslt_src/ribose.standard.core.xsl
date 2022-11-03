@@ -335,7 +335,7 @@
 					</fo:block-container>
 					
 					<!-- Ribose logo -->
-					<fo:block-container absolute-position="fixed" left="171mm" top="{$pageHeight - 33.4}mm" height="30mm" width="40mm"> <!-- top="246mm" -->
+					<fo:block-container absolute-position="fixed" left="171mm" top="{$pageHeight - 33.4}mm" height="30mm" width="40mm" id="__internal_layout__logo_{generate-id()}"> <!-- top="246mm" -->
 						<fo:block>
 							<fo:instream-foreign-object content-width="32mm"  fox:alt-text="Ribose Logo">
 								<xsl:copy-of select="$Ribose-Logo"/>
@@ -420,7 +420,9 @@
 			
 			<!-- ToC pages -->
 			<fo:page-sequence master-reference="document" force-page-count="no-force"> <!-- master-reference="toc" -->
-				<xsl:call-template name="insertHeaderFooter"/>
+				<xsl:call-template name="insertHeaderFooter">
+					<xsl:with-param name="section">toc</xsl:with-param>
+				</xsl:call-template>
 				<fo:flow flow-name="xsl-region-body">
 					<xsl:if test="$contents//item[@display = 'true']">
 						<fo:block role="TOC">
@@ -508,7 +510,9 @@
 						<fo:leader leader-pattern="rule" leader-length="30%"/>
 					</fo:block>
 				</fo:static-content>
-				<xsl:call-template name="insertHeaderFooter"/>
+				<xsl:call-template name="insertHeaderFooter">
+					<xsl:with-param name="section">main</xsl:with-param>
+				</xsl:call-template>
 				<fo:flow flow-name="xsl-region-body">
 				
 					<fo:block line-height="130%">
@@ -1011,7 +1015,7 @@
 	
 	
 	<xsl:template name="insertHeaderFooter">
-		
+		<xsl:param name="section"/>
 		<!-- LT - left top -->
 		<!-- RT - right top -->
 		<!-- LB - left bottom -->
@@ -1023,28 +1027,28 @@
 		<xsl:variable name="top_bottom">194</xsl:variable>
 		<!-- Yellow -->
 		<fo:static-content flow-name="header-LT-yellow" role="artifact">
-			<fo:block-container absolute-position="fixed" left="{$left_left}mm" top="{$top_top}mm" font-size="0">
+			<fo:block-container absolute-position="fixed" left="{$left_left}mm" top="{$top_top}mm" font-size="0" id="__internal_layout__header-LT-yellow_{$section}_{generate-id()}">
 				<fo:block>
 						<fo:external-graphic src="{concat('data:image/png;base64,', normalize-space($Image-Page-Background-yellow-left))}" content-width="100%" content-height="scale-to-fit" scaling="uniform" fox:alt-text="Image Page"/>
 					</fo:block>
 			</fo:block-container>
 		</fo:static-content>
 		<fo:static-content flow-name="header-RT-yellow" role="artifact">
-			<fo:block-container absolute-position="fixed" left="{$left_right}mm" top="{$top_top}mm" font-size="0">
+			<fo:block-container absolute-position="fixed" left="{$left_right}mm" top="{$top_top}mm" font-size="0" id="__internal_layout__header-RT-yellow_{$section}_{generate-id()}">
 				<fo:block>
 						<fo:external-graphic src="{concat('data:image/png;base64,', normalize-space($Image-Page-Background-yellow-right))}" content-width="100%" content-height="scale-to-fit" scaling="uniform" fox:alt-text="Image Page"/>
 					</fo:block>
 			</fo:block-container>
 		</fo:static-content>
 		<fo:static-content flow-name="header-LB-yellow" role="artifact">
-			<fo:block-container absolute-position="fixed" left="{$left_left}mm" top="{$top_bottom}mm" font-size="0">
+			<fo:block-container absolute-position="fixed" left="{$left_left}mm" top="{$top_bottom}mm" font-size="0" id="__internal_layout__header-LB-yellow_{$section}_{generate-id()}">
 				<fo:block>
 						<fo:external-graphic src="{concat('data:image/png;base64,', normalize-space($Image-Page-Background-yellow-left))}" content-width="100%" content-height="scale-to-fit" scaling="uniform" fox:alt-text="Image Page"/>
 					</fo:block>
 			</fo:block-container>
 		</fo:static-content>
 		<fo:static-content flow-name="header-RB-yellow" role="artifact">
-			<fo:block-container absolute-position="fixed" left="{$left_right}mm" top="{$top_bottom}mm" font-size="0">
+			<fo:block-container absolute-position="fixed" left="{$left_right}mm" top="{$top_bottom}mm" font-size="0" id="__internal_layout__header-RB-yellow_{$section}_{generate-id()}">
 				<fo:block>
 						<fo:external-graphic src="{concat('data:image/png;base64,', normalize-space($Image-Page-Background-yellow-right))}" content-width="100%" content-height="scale-to-fit" scaling="uniform" fox:alt-text="Image Page"/>
 					</fo:block>
@@ -1052,28 +1056,28 @@
 		</fo:static-content>
 		<!-- Blue -->
 		<fo:static-content flow-name="header-LT-blue" role="artifact">
-			<fo:block-container absolute-position="fixed" left="{$left_left}mm" top="{$top_top}mm" font-size="0">
+			<fo:block-container absolute-position="fixed" left="{$left_left}mm" top="{$top_top}mm" font-size="0" id="__internal_layout__header-LT-blue_{$section}_{generate-id()}">
 				<fo:block>
 						<fo:external-graphic src="{concat('data:image/png;base64,', normalize-space($Image-Page-Background-blue-left))}" content-width="100%" content-height="scale-to-fit" scaling="uniform" fox:alt-text="Image Page"/>
 					</fo:block>
 			</fo:block-container>
 		</fo:static-content>
 		<fo:static-content flow-name="header-RT-blue" role="artifact">
-			<fo:block-container absolute-position="fixed" left="{$left_right}mm" top="{$top_top}mm" font-size="0">
+			<fo:block-container absolute-position="fixed" left="{$left_right}mm" top="{$top_top}mm" font-size="0" id="__internal_layout__header-RT-blue_{$section}_{generate-id()}">
 				<fo:block>
 						<fo:external-graphic src="{concat('data:image/png;base64,', normalize-space($Image-Page-Background-blue-right))}" content-width="100%" content-height="scale-to-fit" scaling="uniform" fox:alt-text="Image Page"/>
 					</fo:block>
 			</fo:block-container>
 		</fo:static-content>
 		<fo:static-content flow-name="header-LB-blue" role="artifact">
-			<fo:block-container absolute-position="fixed" left="{$left_left}mm" top="{$top_bottom}mm" font-size="0">
+			<fo:block-container absolute-position="fixed" left="{$left_left}mm" top="{$top_bottom}mm" font-size="0" id="__internal_layout__header-LB-blue_{$section}_{generate-id()}">
 				<fo:block>
 						<fo:external-graphic src="{concat('data:image/png;base64,', normalize-space($Image-Page-Background-blue-left))}" content-width="100%" content-height="scale-to-fit" scaling="uniform" fox:alt-text="Image Page"/>
 					</fo:block>
 			</fo:block-container>
 		</fo:static-content>
 		<fo:static-content flow-name="header-RB-blue" role="artifact">
-			<fo:block-container absolute-position="fixed" left="{$left_right}mm" top="{$top_bottom}mm" font-size="0">
+			<fo:block-container absolute-position="fixed" left="{$left_right}mm" top="{$top_bottom}mm" font-size="0" id="__internal_layout__header-RB-blue_{$section}_{generate-id()}">
 				<fo:block>
 						<fo:external-graphic src="{concat('data:image/png;base64,', normalize-space($Image-Page-Background-blue-right))}" content-width="100%" content-height="scale-to-fit" scaling="uniform" fox:alt-text="Image Page"/>
 					</fo:block>
@@ -1081,28 +1085,28 @@
 		</fo:static-content>
 		<!-- Orange -->
 		<fo:static-content flow-name="header-LT-orange" role="artifact">
-			<fo:block-container absolute-position="fixed" left="{$left_left}mm" top="{$top_top}mm" font-size="0">
+			<fo:block-container absolute-position="fixed" left="{$left_left}mm" top="{$top_top}mm" font-size="0" id="__internal_layout__header-LT-orange_{$section}_{generate-id()}">
 				<fo:block>
 						<fo:external-graphic src="{concat('data:image/png;base64,', normalize-space($Image-Page-Background-orange-left))}" content-width="100%" content-height="scale-to-fit" scaling="uniform" fox:alt-text="Image Page"/>
 					</fo:block>
 			</fo:block-container>
 		</fo:static-content>
 		<fo:static-content flow-name="header-RT-orange" role="artifact">
-			<fo:block-container absolute-position="fixed" left="{$left_right}mm" top="{$top_top}mm" font-size="0">
+			<fo:block-container absolute-position="fixed" left="{$left_right}mm" top="{$top_top}mm" font-size="0" id="__internal_layout__header-RT-orange_{$section}_{generate-id()}">
 				<fo:block>
 						<fo:external-graphic src="{concat('data:image/png;base64,', normalize-space($Image-Page-Background-orange-right))}" content-width="100%" content-height="scale-to-fit" scaling="uniform" fox:alt-text="Image Page"/>
 					</fo:block>
 			</fo:block-container>
 		</fo:static-content>
 		<fo:static-content flow-name="header-LB-orange" role="artifact">
-			<fo:block-container absolute-position="fixed" left="{$left_left}mm" top="{$top_bottom}mm" font-size="0">
+			<fo:block-container absolute-position="fixed" left="{$left_left}mm" top="{$top_bottom}mm" font-size="0" id="__internal_layout__header-LB-orange_{$section}_{generate-id()}">
 				<fo:block>
 						<fo:external-graphic src="{concat('data:image/png;base64,', normalize-space($Image-Page-Background-orange-left))}" content-width="100%" content-height="scale-to-fit" scaling="uniform" fox:alt-text="Image Page"/>
 					</fo:block>
 			</fo:block-container>
 		</fo:static-content>
 		<fo:static-content flow-name="header-RB-orange" role="artifact">
-			<fo:block-container absolute-position="fixed" left="{$left_right}mm" top="{$top_bottom}mm" font-size="0">
+			<fo:block-container absolute-position="fixed" left="{$left_right}mm" top="{$top_bottom}mm" font-size="0" id="__internal_layout__header-RB-orange_{$section}_{generate-id()}">
 				<fo:block>
 						<fo:external-graphic src="{concat('data:image/png;base64,', normalize-space($Image-Page-Background-orange-right))}" content-width="100%" content-height="scale-to-fit" scaling="uniform" fox:alt-text="Image Page"/>
 					</fo:block>

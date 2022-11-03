@@ -381,7 +381,7 @@
 							</fo:block-container>
 							
 							<xsl:variable name="price_code_value" select="//iec:iec-standard/iec:bibdata/iec:ext/iec:price-code"/>
-							<fo:table table-layout="fixed" width="102%" margin-top="-9mm" margin-bottom="2mm">
+							<fo:table table-layout="fixed" width="102%" margin-top="-9mm" margin-bottom="2mm" id="__internal_layout__price_code">
 								<fo:table-column column-width="148mm"/>
 								<fo:table-column column-width="16mm"/>
 								<fo:table-body>
@@ -504,7 +504,7 @@
 						</fo:block>
 						<fo:block-container margin-left="57mm">
 							<fo:block-container margin-left="0mm">
-								<fo:table table-layout="fixed" width="118mm" background-color="rgb(219, 229, 241)">
+								<fo:table table-layout="fixed" width="118mm" background-color="rgb(219, 229, 241)" id="__internal_layout__project_{generate-id()}">
 									<fo:table-column column-width="50%"/>
 									<fo:table-column column-width="50%"/>
 									<fo:table-body>
@@ -1748,7 +1748,10 @@
 					<xsl:if test="ancestor::iec:dl">
 						<xsl:attribute name="margin-bottom">5pt</xsl:attribute>
 					</xsl:if>
-					 
+					<xsl:if test="@id">
+						<xsl:attribute name="id"><xsl:value-of select="@id"/></xsl:attribute>
+					</xsl:if>
+					
 					<xsl:apply-templates select="@language"/>
 					<xsl:apply-templates>
 						<xsl:with-param name="split_keep-within-line" select="$split_keep-within-line"/>

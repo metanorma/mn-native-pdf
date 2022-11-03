@@ -1371,8 +1371,6 @@
 	<xsl:attribute-set name="table-style">
 		<xsl:attribute name="table-omit-footer-at-break">true</xsl:attribute>
 		<xsl:attribute name="table-layout">fixed</xsl:attribute>
-		<xsl:attribute name="margin-left">0mm</xsl:attribute>
-		<xsl:attribute name="margin-right">0mm</xsl:attribute>
 		
 		<xsl:if test="$namespace = 'bipm'">
 		
@@ -3066,7 +3064,7 @@
 			<xsl:attribute name="margin-left">-8mm</xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'unece-rec'">
-			<xsl:attribute name="provisional-distance-between-starts">3mm</xsl:attribute>
+			<xsl:attribute name="provisional-distance-between-starts">3.5mm</xsl:attribute>
 			<xsl:attribute name="margin-left">7mm</xsl:attribute>
 			<xsl:attribute name="text-indent">0mm</xsl:attribute>
 		</xsl:if>
@@ -5033,11 +5031,19 @@
 				<xsl:variable name="table_attributes">
 				
 					<xsl:element name="table_attributes" use-attribute-sets="table-style">
+						
+						<xsl:if test="$margin-side != 0">
+							<xsl:attribute name="margin-left">0mm</xsl:attribute>
+							<xsl:attribute name="margin-right">0mm</xsl:attribute>
+						</xsl:if>
+					
 						<xsl:attribute name="width"><xsl:value-of select="normalize-space($table_width)"/></xsl:attribute>
 						
 						<xsl:if test="$namespace = 'csa' or $namespace = 'csd' or $namespace = 'gb' or $namespace = 'iec' or $namespace = 'm3d' or $namespace = 'nist-cswp' or $namespace = 'nist-sp' or $namespace = 'unece' or $namespace = 'unece-rec'">
-							<xsl:attribute name="margin-left"><xsl:value-of select="$margin-side"/>mm</xsl:attribute>
-							<xsl:attribute name="margin-right"><xsl:value-of select="$margin-side"/>mm</xsl:attribute>
+							<xsl:if test="$margin-side != 0">
+								<xsl:attribute name="margin-left"><xsl:value-of select="$margin-side"/>mm</xsl:attribute>
+								<xsl:attribute name="margin-right"><xsl:value-of select="$margin-side"/>mm</xsl:attribute>
+							</xsl:if>
 						</xsl:if>
 						
 						<xsl:if test="$namespace = 'bipm'">					
@@ -12899,6 +12905,12 @@
 				</xsl:if>
 			</xsl:if>
 			
+			<xsl:if test="$namespace = 'unece' or $namespace = 'unece-rec'">
+				<xsl:if test="local-name() = 'ol'">
+					<xsl:attribute name="provisional-distance-between-starts">6mm</xsl:attribute>
+				</xsl:if>
+			</xsl:if>
+			
 			<xsl:if test="*[local-name() = 'name']">
 				<xsl:attribute name="margin-top">0pt</xsl:attribute>
 			</xsl:if>
@@ -13724,7 +13736,7 @@
 							<fo:table-column column-width="80%"/>
 							<fo:table-body>
 								<fo:table-row>
-									<fo:table-cell><fo:block><xsl:copy-of select="$bibitem_label"/></fo:block></fo:table-cell>
+									<fo:table-cell><fo:block><xsl:value-of select="$bibitem_label"/></fo:block></fo:table-cell>
 									<fo:table-cell><fo:block><xsl:copy-of select="$bibitem_body"/></fo:block></fo:table-cell>
 								</fo:table-row>
 							</fo:table-body>
@@ -13741,7 +13753,7 @@
 							<fo:list-item>
 								<fo:list-item-label end-indent="label-end()">
 									<fo:block>
-										<xsl:copy-of select="$bibitem_label"/>
+										<xsl:value-of select="$bibitem_label"/>
 									</fo:block>
 								</fo:list-item-label>
 								<fo:list-item-body start-indent="body-start()">
@@ -15321,13 +15333,14 @@
 	</xsl:template>
 
 	<xsl:template name="setId">
+		<xsl:param name="prefix"/>
 		<xsl:attribute name="id">
 			<xsl:choose>
 				<xsl:when test="@id">
-					<xsl:value-of select="@id"/>
+					<xsl:value-of select="concat($prefix, @id)"/>
 				</xsl:when>
 				<xsl:otherwise>
-					<xsl:value-of select="generate-id()"/>
+					<xsl:value-of select="concat($prefix, generate-id())"/>
 				</xsl:otherwise>
 			</xsl:choose>					
 		</xsl:attribute>
