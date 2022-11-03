@@ -1748,7 +1748,10 @@
 					<xsl:if test="ancestor::iec:dl">
 						<xsl:attribute name="margin-bottom">5pt</xsl:attribute>
 					</xsl:if>
-					 
+					<xsl:if test="@id">
+						<xsl:attribute name="id"><xsl:value-of select="@id"/></xsl:attribute>
+					</xsl:if>
+					
 					<xsl:apply-templates select="@language"/>
 					<xsl:apply-templates>
 						<xsl:with-param name="split_keep-within-line" select="$split_keep-within-line"/>
