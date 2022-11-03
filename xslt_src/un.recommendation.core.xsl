@@ -734,7 +734,18 @@
 				
 		<xsl:choose>			
 			<xsl:when test="ancestor::un:sections">
-				<fo:block font-size="{$font-size}" font-weight="bold" space-before="3pt" margin-bottom="12pt" margin-left="-9.5mm" line-height="108%" keep-with-next="always" role="H{$level}"> <!-- line-height="14.5pt" text-indent="-9.5mm" -->
+				<xsl:variable name="section">
+					<xsl:for-each select="..">
+						<xsl:call-template name="getSection"/>
+					</xsl:for-each>
+				</xsl:variable>
+				<xsl:variable name="margin-left">
+					<xsl:choose>
+						<xsl:when test="string-length($section) &gt;= 3">11mm</xsl:when>
+						<xsl:otherwise>9.5mm</xsl:otherwise>
+					</xsl:choose>
+				</xsl:variable>
+				<fo:block font-size="{$font-size}" font-weight="bold" space-before="3pt" margin-bottom="12pt" margin-left="-{$margin-left}" line-height="108%" keep-with-next="always" role="H{$level}"> <!-- line-height="14.5pt" text-indent="-9.5mm" -->
 					<xsl:if test="$level = 1">
 						<!-- <xsl:attribute name="margin-left">-8.5mm</xsl:attribute> -->
 						<xsl:attribute name="margin-top">18pt</xsl:attribute>
@@ -746,7 +757,9 @@
 					<xsl:if test="$level = 3">
 						<xsl:attribute name="margin-top">16pt</xsl:attribute>
 					</xsl:if>
-					<xsl:call-template name="insertTitleAsListItem"/>
+					<xsl:call-template name="insertTitleAsListItem">
+						<xsl:with-param name="provisional-distance-between-starts" select="$margin-left"/>
+					</xsl:call-template>
 				</fo:block>
 			</xsl:when>
 			

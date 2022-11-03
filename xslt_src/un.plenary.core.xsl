@@ -226,7 +226,7 @@
 					<xsl:variable name="charsToRemove" select="concat($upper, $lower, '.()~!@#$%^*-+:')"/>
 					<xsl:variable name="code" select="translate(/un:un-standard/un:bibdata/un:docidentifier, $charsToRemove,'')"/>
 					
-					<fo:block-container absolute-position="fixed" left="20mm" top="258mm" width="30mm" text-align="center">
+					<fo:block-container absolute-position="fixed" left="20mm" top="258mm" width="30mm" text-align="center" id="__internal_layout__barcode_{generate-id()}">
 						<fo:block font-size="10pt" text-align="left">
 							<xsl:value-of select="/un:un-standard/un:bibdata/un:docidentifier"/>
 						</fo:block>
