@@ -3064,7 +3064,7 @@
 			<xsl:attribute name="margin-left">-8mm</xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'unece-rec'">
-			<xsl:attribute name="provisional-distance-between-starts">3mm</xsl:attribute>
+			<xsl:attribute name="provisional-distance-between-starts">3.5mm</xsl:attribute>
 			<xsl:attribute name="margin-left">7mm</xsl:attribute>
 			<xsl:attribute name="text-indent">0mm</xsl:attribute>
 		</xsl:if>
@@ -13730,7 +13730,7 @@
 							<fo:table-column column-width="80%"/>
 							<fo:table-body>
 								<fo:table-row>
-									<fo:table-cell><fo:block><xsl:copy-of select="$bibitem_label"/></fo:block></fo:table-cell>
+									<fo:table-cell><fo:block><xsl:value-of select="$bibitem_label"/></fo:block></fo:table-cell>
 									<fo:table-cell><fo:block><xsl:copy-of select="$bibitem_body"/></fo:block></fo:table-cell>
 								</fo:table-row>
 							</fo:table-body>
@@ -13747,7 +13747,7 @@
 							<fo:list-item>
 								<fo:list-item-label end-indent="label-end()">
 									<fo:block>
-										<xsl:copy-of select="$bibitem_label"/>
+										<xsl:value-of select="$bibitem_label"/>
 									</fo:block>
 								</fo:list-item-label>
 								<fo:list-item-body start-indent="body-start()">
