@@ -1106,7 +1106,7 @@
 								<!-- <xsl:copy-of select="$contents"/> -->
 								
 								<xsl:if test="$contents/doc[@id = $docid]//item[@display='true']">
-									<fo:table table-layout="fixed" width="100%">
+									<fo:table table-layout="fixed" width="100%" id="__internal_layout__toc_{generate-id()}">
 										<fo:table-column column-width="127mm"/>
 										<fo:table-column column-width="12mm"/>
 										<fo:table-body>											
@@ -2489,7 +2489,7 @@
 		<fo:block keep-with-next="always">
 			<xsl:call-template name="setId"/>
 		</fo:block>
-		<fo:table table-layout="fixed" width="174mm" line-height="135%" border="1pt solid black">
+		<fo:table table-layout="fixed" width="174mm" line-height="135%">
 			<xsl:if test="@orientation = 'landscape'">
 				<xsl:attribute name="width">261mm</xsl:attribute> <!-- 87 = (297 - 210) -->
 			</xsl:if>
