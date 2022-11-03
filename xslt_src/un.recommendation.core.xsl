@@ -259,6 +259,9 @@
 								<fo:block role="TOCI">
 									<fo:block text-align-last="justify" margin-left="12mm" text-indent="-12mm">
 										<fo:basic-link internal-destination="{@id}" fox:alt-text="{@section}">
+											<xsl:if test="@section = ''">
+												<xsl:attribute name="fox:alt-text">Annex</xsl:attribute>
+											</xsl:if>
 											<xsl:if test="@section != ''">
 												<fo:inline padding-right="3mm">
 													<xsl:choose>
