@@ -236,7 +236,7 @@
 				<fo:page-sequence master-reference="TR-first-page">
 					<fo:flow flow-name="xsl-region-body">						
 							<fo:block>
-								<fo:table width="175mm" table-layout="fixed" border-top="1.5pt solid black">									
+								<fo:table width="175mm" table-layout="fixed" border-top="1.5pt solid black" id="__internal_layout__meeting_{generate-id()}">									
 									<fo:table-column column-width="29mm"/>
 									<fo:table-column column-width="45mm"/>
 									<fo:table-column column-width="28mm"/>
@@ -269,7 +269,7 @@
 									</fo:table-body>
 								</fo:table>
 								
-								<fo:table width="175mm" table-layout="fixed">									
+								<fo:table width="175mm" table-layout="fixed" id="__internal_layout__groups_{generate-id()}">									
 									<fo:table-column column-width="29mm"/>
 									<fo:table-column column-width="10mm"/>
 									<fo:table-column column-width="35mm"/>
@@ -317,7 +317,7 @@
 								</fo:table>
 								
 								<xsl:if test="/itu:itu-standard/itu:bibdata/itu:contributor/itu:person">								
-									<fo:table width="175mm" table-layout="fixed" line-height="110%">
+									<fo:table width="175mm" table-layout="fixed" line-height="110%" id="__internal_layout__person_{generate-id()}">
 										<fo:table-column column-width="29mm"/>
 										<fo:table-column column-width="75mm"/>
 										<fo:table-column column-width="71mm"/>									
