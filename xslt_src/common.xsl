@@ -12905,6 +12905,12 @@
 				</xsl:if>
 			</xsl:if>
 			
+			<xsl:if test="$namespace = 'unece' or $namespace = 'unece-rec'">
+				<xsl:if test="local-name() = 'ol'">
+					<xsl:attribute name="provisional-distance-between-starts">6mm</xsl:attribute>
+				</xsl:if>
+			</xsl:if>
+			
 			<xsl:if test="*[local-name() = 'name']">
 				<xsl:attribute name="margin-top">0pt</xsl:attribute>
 			</xsl:if>

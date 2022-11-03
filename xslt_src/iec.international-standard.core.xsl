@@ -504,7 +504,7 @@
 						</fo:block>
 						<fo:block-container margin-left="57mm">
 							<fo:block-container margin-left="0mm">
-								<fo:table table-layout="fixed" width="118mm" background-color="rgb(219, 229, 241)">
+								<fo:table table-layout="fixed" width="118mm" background-color="rgb(219, 229, 241)" id="__internal_layout__project_{generate-id()}">
 									<fo:table-column column-width="50%"/>
 									<fo:table-column column-width="50%"/>
 									<fo:table-body>

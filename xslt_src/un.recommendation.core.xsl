@@ -744,7 +744,8 @@
 				</xsl:variable>
 				<xsl:variable name="margin-left">
 					<xsl:choose>
-						<xsl:when test="string-length($section) &gt;= 3">11mm</xsl:when>
+						<xsl:when test="string-length($section) = 3">11mm</xsl:when>
+						<xsl:when test="string-length($section) &gt; 3">13mm</xsl:when>
 						<xsl:otherwise>9.5mm</xsl:otherwise>
 					</xsl:choose>
 				</xsl:variable>
