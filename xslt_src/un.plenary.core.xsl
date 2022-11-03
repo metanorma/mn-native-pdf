@@ -397,16 +397,10 @@
 				<fo:table-column column-width="17mm"/>
 				<fo:table-body>
 					<fo:table-row>
-						<fo:table-cell padding-left="6mm" padding-top="2.5mm">
+						<fo:table-cell padding-left="6mm" padding-top="2.5mm" number-columns-spanned="3">
 							<fo:block font-size="12pt" font-style="italic" margin-bottom="6pt" role="H2">
 								<xsl:apply-templates select="un:title/node()"/>
 							</fo:block>
-						</fo:table-cell>
-						<fo:table-cell>
-							<fo:block>&#xA0;</fo:block>
-						</fo:table-cell>
-						<fo:table-cell>
-							<fo:block>&#xA0;</fo:block>
 						</fo:table-cell>
 					</fo:table-row>
 					<fo:table-row>
