@@ -854,6 +854,65 @@
 		</xsl:if>
 	</xsl:attribute-set>
 
+	<xsl:attribute-set name="pre-style">
+		<xsl:attribute name="font-family">Courier New, <xsl:value-of select="$font_noto_sans_mono"/></xsl:attribute>
+		<xsl:attribute name="margin-bottom">6pt</xsl:attribute>
+		<xsl:if test="$namespace = 'bsi'">
+			<xsl:attribute name="margin-bottom">12pt</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'csa'">
+			<xsl:attribute name="font-family"><xsl:value-of select="$font_noto_sans_mono"/></xsl:attribute>
+			<xsl:attribute name="line-height">113%</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'csd'">
+			<xsl:attribute name="font-family"><xsl:value-of select="$font_noto_sans_mono"/></xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'gb'">
+			<xsl:attribute name="margin-bottom">12pt</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'iec'">
+			<xsl:attribute name="margin-top">5pt</xsl:attribute>
+			<xsl:attribute name="margin-bottom">5pt</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'ieee'">
+			<xsl:attribute name="margin-top">5pt</xsl:attribute>
+			<xsl:attribute name="margin-bottom">5pt</xsl:attribute>
+			<xsl:attribute name="font-size">95%</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'iho'">
+			<xsl:attribute name="font-family">Fira Code, <xsl:value-of select="$font_noto_sans_mono"/></xsl:attribute>
+			<xsl:attribute name="line-height">113%</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'iso'">
+			<xsl:attribute name="margin-bottom">12pt</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'itu'">
+			<xsl:attribute name="margin-top">6pt</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'jcgm'">
+			<xsl:attribute name="margin-bottom">12pt</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'm3d'">
+			<xsl:attribute name="margin-bottom">12pt</xsl:attribute>
+		</xsl:if>		
+		<xsl:if test="$namespace = 'ogc'">
+			<xsl:attribute name="font-family">Fira Code, <xsl:value-of select="$font_noto_sans_mono"/></xsl:attribute>
+			<xsl:attribute name="line-height">113%</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'ogc-white-paper'">
+			<xsl:attribute name="line-height">113%</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'rsd'">
+			<xsl:attribute name="font-family"><xsl:value-of select="$font_noto_sans_mono"/></xsl:attribute>
+			<xsl:attribute name="line-height">113%</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'nist-cswp' or $namespace = 'nist-sp'">
+			<xsl:attribute name="margin-top">6pt</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'unece' or $namespace = 'unece-rec'">
+			<xsl:attribute name="margin-top">6pt</xsl:attribute>
+		</xsl:if>
+	</xsl:attribute-set>
 
 	<xsl:attribute-set name="permission-style">
 		<xsl:if test="$namespace = 'ogc' or $namespace = 'ogc-white-paper'">
@@ -11053,9 +11112,9 @@
 		<xsl:apply-templates mode="contents_item"/>
 	</xsl:template>
 
-	<!-- ====== -->
-	<!-- sourcecode   -->	
-	<!-- ====== -->	
+	<!-- =============== -->
+	<!-- sourcecode  -->
+	<!-- =============== -->
 	<xsl:template match="*[local-name()='sourcecode']" name="sourcecode">
 	
 		<fo:block-container xsl:use-attribute-sets="sourcecode-container-style">
@@ -11429,8 +11488,23 @@
 			</fo:block>
 		</xsl:if>
 	</xsl:template>	
-	<!-- ====== -->
-	<!-- ====== -->
+	<!-- =============== -->
+	<!-- END sourcecode  -->
+	<!-- =============== -->
+	
+	
+	<!-- =============== -->
+	<!-- pre  -->
+	<!-- =============== -->
+	<xsl:template match="*[local-name()='pre']" name="pre">
+		<fo:block xsl:use-attribute-sets="pre-style">
+			<xsl:copy-of select="@id"/>
+			<xsl:apply-templates />
+		</fo:block>
+	</xsl:template>
+	<!-- =============== -->
+	<!-- pre  -->
+	<!-- =============== -->
 	
 	<!-- ========== -->
 	<!-- permission -->	
