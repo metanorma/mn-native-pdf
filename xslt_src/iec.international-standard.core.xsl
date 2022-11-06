@@ -215,7 +215,7 @@
 				<fo:page-sequence master-reference="cover" force-page-count="no-force">
 					<fo:static-content flow-name="left-region" >
 						<fo:block-container reference-orientation="90">
-							<fo:block font-size="7pt" margin-left="0.5mm" margin-top="5mm">
+							<fo:block font-size="7pt" margin-left="3.5mm" margin-top="5.5mm">
 								<xsl:value-of select="(//iec:iec-standard)[1]/iec:bibdata/iec:docidentifier[@type = 'iso-with-lang']"/>
 							</fo:block>
 						</fo:block-container>
@@ -937,7 +937,9 @@
 									<xsl:choose>
 										<xsl:when test="$telpos != 0">
 											<xsl:apply-templates select="(//iec:iec-standard)[1]/iec:boilerplate/iec:copyright-statement/iec:clause/iec:p[contains(@id, 'boilerplate-address')]/node()[position() &lt;= $telpos]" mode="coverpage"/>
-											<xsl:apply-templates select="(//iec:iec-standard)[1]/iec:boilerplate/iec:copyright-statement/iec:clause/iec:p[contains(@id, 'boilerplate-address')]/node()[position() &gt;= $telpos]" mode="coverpage"/>
+											<xsl:apply-templates select="(//iec:iec-standard)[1]/iec:boilerplate/iec:copyright-statement/iec:clause/iec:p[contains(@id, 'boilerplate-address')]/node()[position() &gt;= $telpos]" mode="coverpage">
+												<xsl:with-param name="lastpage">true</xsl:with-param>
+											</xsl:apply-templates>
 										</xsl:when>
 										<xsl:otherwise>
 											<xsl:apply-templates select="(//iec:iec-standard)[1]/iec:boilerplate/iec:copyright-statement/iec:clause/iec:p[contains(@id, 'boilerplate-address')]" mode="coverpage"/>
@@ -1570,6 +1572,17 @@
 	</xsl:template>
 	<xsl:template match="iec:br" mode="coverpage">
 		<xsl:value-of select="$linebreak"/>
+	</xsl:template>
+	<xsl:template match="iec:link" mode="coverpage">
+		<xsl:param name="lastpage">false</xsl:param>
+		<xsl:choose>
+			<xsl:when test="$lastpage = 'true'">
+				<xsl:apply-templates />
+			</xsl:when>
+			<xsl:otherwise>
+				<xsl:apply-templates select="."/>
+			</xsl:otherwise>
+		</xsl:choose>
 	</xsl:template>
 	
 	<xsl:template match="iec:copyright-statement//iec:p" priority="2">
