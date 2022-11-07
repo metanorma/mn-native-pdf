@@ -131,20 +131,18 @@
 				<!-- Cover Page -->
 				<fo:page-sequence master-reference="cover">				
 					<fo:flow flow-name="xsl-region-body">
-						<fo:block-container position="absolute" left="14.25mm" top="28.20mm" >
+						<fo:block-container position="absolute" left="14.25mm" top="12mm" >
 							<fo:table table-layout="fixed" width="181.1mm">
 									<fo:table-column column-width="26mm"/>
-									<fo:table-column column-width="45.3mm"/>
-									<fo:table-column column-width="109.8mm"/>
+									<fo:table-column column-width="19.4mm"/> 
+									<fo:table-column column-width="135.7mm"/>
 									<fo:table-body>
 										<fo:table-row>
 											<fo:table-cell><fo:block>&#xA0;</fo:block></fo:table-cell>
 											<fo:table-cell>
-												<fo:block-container width="45.3mm" height="19.3mm" background-color="rgb(241, 234, 202)" text-align="center" display-align="center" font-weight="bold">
+												<fo:block-container width="19.4mm" height="21mm" background-color="rgb(241, 234, 202)" border-bottom="0.05pt solid rgb(0, 21, 50)" text-align="center" display-align="center" font-size="10pt" font-weight="bold">
 													<fo:block>
 														<xsl:value-of select="$docidentifier"/>
-														<xsl:text> </xsl:text>
-														<xsl:apply-templates select="/iho:iho-standard/iho:bibdata/iho:edition[normalize-space(@language) = '']"/>
 													</fo:block>
 												</fo:block-container>
 											</fo:table-cell>
@@ -156,11 +154,21 @@
 													<fo:external-graphic src="{concat('data:image/png;base64,', normalize-space($Image-IHO))}" width="25.9mm" content-width="scale-to-fit" scaling="uniform" fox:alt-text="Image IHO"/>
 												</fo:block>
 											</fo:table-cell>
-											<fo:table-cell number-columns-spanned="2" border="0.5pt solid rgb(0, 21, 50)">
-												<fo:block-container height="154.4mm" text-align="center" display-align="center">
-													<fo:block font-size="28pt" font-weight="bold" color="rgb(0, 0, 76)" role="H1">
-														<xsl:value-of select="$title-en"/>
-													</fo:block>
+											<fo:table-cell number-columns-spanned="2" border="0.5pt solid rgb(0, 21, 50)" font-weight="bold" color="rgb(0, 0, 76)" padding-top="3mm">
+												<fo:block-container height="165mm" width="115mm">
+													<fo:block-container margin-left="10mm">
+														<fo:block-container margin-left="0mm">
+															<fo:block-container display-align="center" height="90mm">
+																<fo:block font-size="28pt" role="H1" line-height="115%">
+																	<xsl:value-of select="$title-en"/>
+																</fo:block>
+															</fo:block-container>
+															<fo:block font-size="14pt">
+																<xsl:apply-templates select="/iho:iho-standard/iho:bibdata/iho:edition[normalize-space(@language) = '']"/>
+																<xsl:apply-templates select="/iho:iho-standard/iho:bibdata/iho:date[@type = 'published']"/>
+															</fo:block>
+														</fo:block-container>
+													</fo:block-container>
 												</fo:block-container>
 											</fo:table-cell>
 										</fo:table-row>
@@ -176,10 +184,12 @@
 												</fo:block>
 											</fo:table-cell>
 											<fo:table-cell>
-												<fo:block-container width="79.2mm" height="66.3mm" margin-left="30.6mm" background-color="rgb(0, 172, 158)" text-align="right" display-align="after">
-													<fo:block font-size="8pt" color="white" margin-left="-30mm" margin-right="5mm" margin-bottom="9mm">
-														<xsl:apply-templates select="/iho:iho-standard/iho:boilerplate/iho:feedback-statement"/>
-													</fo:block>
+												<fo:block-container width="79mm" height="72mm" margin-left="56.8mm" background-color="rgb(0, 172, 158)" text-align="right" display-align="after">
+													<fo:block-container margin-left="0mm">
+														<fo:block font-size="8pt" color="white" margin-right="5mm" margin-bottom="5mm">
+															<xsl:apply-templates select="/iho:iho-standard/iho:boilerplate/iho:feedback-statement"/>
+														</fo:block>
+													</fo:block-container>
 												</fo:block-container>					
 											</fo:table-cell>
 										</fo:table-row>
@@ -246,7 +256,13 @@
 													<xsl:choose>
 														<xsl:when test="@level &gt;= 1 and @root = 'preface'">0mm</xsl:when>
 														<xsl:when test="@level &gt;= 1 and @root = 'annex' and not(@type = 'annex')">13mm</xsl:when>
-														<xsl:when test="@level &gt;= 1 and not(@type = 'annex')">10mm</xsl:when>													
+														<xsl:when test="@level &gt;= 1 and not(@type = 'annex')">
+															<xsl:choose>
+																<xsl:when test="$toc_level = 3">16mm</xsl:when>
+																<xsl:when test="$toc_level &gt; 3">18mm</xsl:when>
+																<xsl:otherwise>10mm</xsl:otherwise>
+															</xsl:choose>
+														</xsl:when>
 														<xsl:otherwise>0mm</xsl:otherwise>
 													</xsl:choose>											
 												</xsl:attribute>
@@ -481,6 +497,14 @@
 		</xsl:call-template>
 		<xsl:text> </xsl:text>
 		<xsl:apply-templates/>
+	</xsl:template>
+	
+	<xsl:template match="/iho:iho-standard/iho:bibdata/iho:date[@type = 'published']">
+		<xsl:text> – </xsl:text>
+		<xsl:call-template name="convertDate">
+			<xsl:with-param name="date" select="."/>
+			<xsl:with-param name="format" select="'short'"/>
+		</xsl:call-template>
 	</xsl:template>
 	
 	<xsl:template match="iho:feedback-statement//iho:br" priority="2">
