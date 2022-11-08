@@ -8406,8 +8406,11 @@
 	
 	<xsl:template name="add-zero-spaces-java">
 		<xsl:param name="text" select="."/>
-		<!-- add zero-width space (#x200B) after characters: dash, dot, colon, equal, underscore, em dash, thin space  -->
-		<xsl:value-of select="java:replaceAll(java:java.lang.String.new($text),'(-|\.|:|=|_|—| )','$1&#x200B;')"/>
+		<!-- add zero-width space (#x200B) after characters: dash, dot, colon, equal, underscore, em dash, thin space   -->
+		<xsl:variable name="text1" select="java:replaceAll(java:java.lang.String.new($text),'(-|\.|:|=|_|—| )','$1&#x200B;')"/>
+		<!-- add zero-width space (#x200B) before characters: 'less than' -->
+		<xsl:value-of select="java:replaceAll(java:java.lang.String.new($text1), '(?&lt;!\u003c)(\u003c)', '&#x200B;$1')"/> <!-- (?<!\u003c)(\u003c) --> <!-- negative lookbehind: 'less than' not preceeded by 'less than' -->
+		
 	</xsl:template>
 	
 	<xsl:template name="add-zero-spaces-link-java">
@@ -14697,7 +14700,9 @@
 	<!-- ===================================== -->
 	<!-- Update xml -->
 	<!-- ===================================== -->
+	<!-- =========================================================================== -->
 	<!-- STEP1: Re-order elements in 'preface', 'sections' based on @displayorder -->
+	<!-- =========================================================================== -->
 	<xsl:template match="@*|node()" mode="update_xml_step1">
 		<xsl:copy>
 			<xsl:apply-templates select="@*|node()" mode="update_xml_step1"/>
@@ -14791,11 +14796,14 @@
 	<xsl:template match="*[local-name() = 'span']" mode="update_xml_step1">
 		<xsl:apply-templates mode="update_xml_step1"/>
 	</xsl:template>
-	
+	<!-- =========================================================================== -->
 	<!-- END STEP1: Re-order elements in 'preface', 'sections' based on @displayorder -->
+	<!-- =========================================================================== -->
 	
 	<xsl:if test="$namespace = 'ieee' or $namespace = 'iso' or $namespace = 'bsi'">
+		<!-- =========================================================================== -->
 		<!-- STEP2: add 'fn' after 'eref' and 'origin', if referenced to bibitem with 'note' = Withdrawn.' or 'Cancelled and replaced...'  -->
+		<!-- =========================================================================== -->
 		<xsl:template match="@*|node()" mode="update_xml_step2">
 			<xsl:copy>
 				<xsl:apply-templates select="@*|node()" mode="update_xml_step2"/>
@@ -14875,9 +14883,6 @@
 			</xsl:copy>
 		</xsl:template>
 		
-		<!-- END STEP2: add 'fn' after 'eref' and 'origin', if referenced to bibitem with 'note' = Withdrawn.' or 'Cancelled and replaced...'  -->
-		
-		
 		<!-- enclose sequence of 'char x' + 'combining char y' to <lang_none>xy</lang_none> -->
 		<xsl:variable name="regex_combining_chars">(.[&#x300;-&#x36f;])</xsl:variable>
 		<xsl:variable name="element_name_lang_none">lang_none</xsl:variable>
@@ -14893,10 +14898,15 @@
 			</xsl:call-template>
 		</xsl:template>
 		
+		<!-- =========================================================================== -->
+		<!-- END STEP2: add 'fn' after 'eref' and 'origin', if referenced to bibitem with 'note' = Withdrawn.' or 'Cancelled and replaced...'  -->
+		<!-- =========================================================================== -->
 	</xsl:if>
 	
 	
+	<!-- =========================================================================== -->
 	<!-- XML UPDATE STEP: enclose standard's name into tag 'keep-together_within-line'  -->
+	<!-- =========================================================================== -->
 	<!-- Example: <keep-together_within-line>ISO 10303-51</keep-together_within-line> -->
 	<xsl:template match="@*|node()" mode="update_xml_enclose_keep-together_within-line">
 		<xsl:copy>
@@ -15013,9 +15023,8 @@
 			<xsl:otherwise><xsl:value-of select="$text"/></xsl:otherwise>
 		</xsl:choose>
 	</xsl:template>
-	
 	<!-- ===================================== -->
-	<!-- End Update xml -->
+	<!-- END XML UPDATE STEP: enclose standard's name into tag 'keep-together_within-line'  -->
 	<!-- ===================================== -->
 
 	<!-- for correct rendering combining chars -->
