@@ -4577,19 +4577,24 @@
 		</xsl:for-each>
 	</xsl:template>
 	
+	<xsl:variable name="regex_standard_reference">([A-Z]{2,}(/[A-Z]{2,})* \d+(-\d+)*(:\d{4})?)</xsl:variable>
 	<xsl:variable name="tag_fo_inline_keep-together_within-line_open">###fo:inline keep-together_within-line###</xsl:variable>
 	<xsl:variable name="tag_fo_inline_keep-together_within-line_close">###/fo:inline keep-together_within-line###</xsl:variable>
 	<xsl:template match="text()" name="text">
 		<xsl:choose>
 			<xsl:when test="$namespace = 'iso'"><xsl:value-of select="."/></xsl:when>
 			<xsl:otherwise>
-				<xsl:variable name="regex_standard_reference">([A-Z]{2,}(/[A-Z]{2,})* \d+(-\d+)*(:\d{4})?)</xsl:variable>
-				<xsl:variable name="text" select="java:replaceAll(java:java.lang.String.new(.),$regex_standard_reference,concat($tag_fo_inline_keep-together_within-line_open,'$1',$tag_fo_inline_keep-together_within-line_close))"/>
-				<xsl:call-template name="replace_fo_inline_tags">
-					<xsl:with-param name="tag_open" select="$tag_fo_inline_keep-together_within-line_open"/>
-					<xsl:with-param name="tag_close" select="$tag_fo_inline_keep-together_within-line_close"/>
-					<xsl:with-param name="text" select="$text"/>
-				</xsl:call-template>
+				<xsl:choose>
+					<xsl:when test="ancestor::*[local-name() = 'table']"><xsl:value-of select="."/></xsl:when>
+					<xsl:otherwise>
+						<xsl:variable name="text" select="java:replaceAll(java:java.lang.String.new(.),$regex_standard_reference,concat($tag_fo_inline_keep-together_within-line_open,'$1',$tag_fo_inline_keep-together_within-line_close))"/>
+						<xsl:call-template name="replace_fo_inline_tags">
+							<xsl:with-param name="tag_open" select="$tag_fo_inline_keep-together_within-line_open"/>
+							<xsl:with-param name="tag_close" select="$tag_fo_inline_keep-together_within-line_close"/>
+							<xsl:with-param name="text" select="$text"/>
+						</xsl:call-template>
+					</xsl:otherwise>
+				</xsl:choose>
 			</xsl:otherwise>
 		</xsl:choose>
 	</xsl:template>
@@ -14906,6 +14911,8 @@
 	
 	<!-- =========================================================================== -->
 	<!-- XML UPDATE STEP: enclose standard's name into tag 'keep-together_within-line'  -->
+	<!-- keep-together_within-line for: a/b, aaa/b, a/bbb, /b -->
+	<!-- keep-together_within-line for: a.b, aaa.b, a.bbb, .b  in table's cell ONLY  -->
 	<!-- =========================================================================== -->
 	<!-- Example: <keep-together_within-line>ISO 10303-51</keep-together_within-line> -->
 	<xsl:template match="@*|node()" mode="update_xml_enclose_keep-together_within-line">
@@ -14927,10 +14934,9 @@
 				starts-with(., 'http://') or starts-with(., 'https://') or starts-with(., 'www.') )]" name="keep_together_standard_number" mode="update_xml_enclose_keep-together_within-line">
 	
 		<!-- enclose standard's number into tag 'keep-together_within-line' -->
-		<xsl:variable name="regex_standard_reference">([A-Z]{2,}(/[A-Z]{2,})* \d+(-\d+)*(:\d{4})?)</xsl:variable>
 		<xsl:variable name="tag_keep-together_within-line_open">###<xsl:value-of select="$element_name_keep-together_within-line"/>###</xsl:variable>
 		<xsl:variable name="tag_keep-together_within-line_close">###/<xsl:value-of select="$element_name_keep-together_within-line"/>###</xsl:variable>
-		<xsl:variable name="text__" select="java:replaceAll(java:java.lang.String.new(.),$regex_standard_reference,concat($tag_keep-together_within-line_open,'$1',$tag_keep-together_within-line_close))"/>
+		<xsl:variable name="text__" select="java:replaceAll(java:java.lang.String.new(.), $regex_standard_reference, concat($tag_keep-together_within-line_open,'$1',$tag_keep-together_within-line_close))"/>
 		<xsl:variable name="text_">
 			<xsl:choose>
 				<xsl:when test="ancestor::*[local-name() = 'table']"><xsl:value-of select="."/></xsl:when> <!-- no need enclose standard's number into tag 'keep-together_within-line' in table cells -->
