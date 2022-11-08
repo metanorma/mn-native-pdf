@@ -14965,7 +14965,11 @@
 		</xsl:variable>
 		
 		<!-- keep-together_within-line for: a/b, aaa/b, a/bbb, /b -->
-		<xsl:variable name="regex_solidus_units">((\b((\S{1,3}\/\S+)|(\S+\/\S{1,3}))\b)|(\/\S{1,3})\b)</xsl:variable>
+		<!-- \S matches any non-whitespace character (equivalent to [^\r\n\t\f\v ]) -->
+		<!-- <xsl:variable name="regex_solidus_units">((\b((\S{1,3}\/\S+)|(\S+\/\S{1,3}))\b)|(\/\S{1,3})\b)</xsl:variable> -->
+		<!-- add &lt; and &gt; to \S -->
+		<xsl:variable name="regex_S">[^\r\n\t\f\v \&lt;&gt;]</xsl:variable>
+		<xsl:variable name="regex_solidus_units">((\b((<xsl:value-of select="$regex_S"/>{1,3}\/<xsl:value-of select="$regex_S"/>+)|(<xsl:value-of select="$regex_S"/>+\/<xsl:value-of select="$regex_S"/>{1,3}))\b)|(\/<xsl:value-of select="$regex_S"/>{1,3})\b)</xsl:variable>
 		<xsl:variable name="text3">
 			<text><xsl:for-each select="xalan:nodeset($text2)/text/node()">
 				<xsl:choose>
