@@ -8369,6 +8369,7 @@
 				</word>
 				<xsl:call-template name="tokenize_with_tags">
 					<xsl:with-param name="text" select="substring-after($text, $separator)"/>
+					<xsl:with-param name="tags" select="$tags"/>
 				</xsl:call-template>
 			</xsl:otherwise>
 		</xsl:choose>
