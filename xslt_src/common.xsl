@@ -8480,10 +8480,12 @@
 	
 	<xsl:template name="add-zero-spaces-java">
 		<xsl:param name="text" select="."/>
-		<!-- add zero-width space (#x200B) after characters: dash, dot, colon, equal, underscore, em dash, thin space   -->
-		<xsl:variable name="text1" select="java:replaceAll(java:java.lang.String.new($text),'(-|\.|:|=|_|—| )','$1&#x200B;')"/>
+		<!-- add zero-width space (#x200B) after characters: dash, dot, colon, equal, underscore, em dash, thin space, arrow right   -->
+		<xsl:variable name="text1" select="java:replaceAll(java:java.lang.String.new($text),'(-|\.|:|=|_|—| |→)','$1&#x200B;')"/>		
+		<!-- add zero-width space (#x200B) after characters: 'great than' -->
+		<xsl:variable name="text2" select="java:replaceAll(java:java.lang.String.new($text1), '(\u003e)(?!\u003e)', '$1&#x200B;')"/><!-- negative lookahead: 'great than' not followed by 'great than' -->
 		<!-- add zero-width space (#x200B) before characters: 'less than' -->
-		<xsl:value-of select="java:replaceAll(java:java.lang.String.new($text1), '(?&lt;!\u003c)(\u003c)', '&#x200B;$1')"/> <!-- (?<!\u003c)(\u003c) --> <!-- negative lookbehind: 'less than' not preceeded by 'less than' -->
+		<xsl:value-of select="java:replaceAll(java:java.lang.String.new($text2), '(?&lt;!\u003c)(\u003c)', '&#x200B;$1')"/> <!-- (?<!\u003c)(\u003c) --> <!-- negative lookbehind: 'less than' not preceeded by 'less than' -->
 		
 	</xsl:template>
 	
