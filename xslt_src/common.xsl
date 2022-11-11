@@ -8993,6 +8993,7 @@
 			<xsl:if test="ancestor::*[local-name() = 'sub']"><tag>sub</tag></xsl:if>
 			<xsl:if test="ancestor::*[local-name() = 'sup']"><tag>sup</tag></xsl:if>
 			<xsl:if test="ancestor::*[local-name() = 'tt']"><tag>tt</tag></xsl:if>
+			<xsl:if test="ancestor::*[local-name() = 'sourcecode']"><tag>sourcecode</tag></xsl:if>
 			<xsl:if test="ancestor::*[local-name() = 'keep-together_within-line']"><tag>keep-together_within-line</tag></xsl:if>
 		</tags>
 	</xsl:template>
