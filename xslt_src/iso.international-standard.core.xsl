@@ -1329,43 +1329,21 @@
 				</xsl:choose>	
 				
 				
-				<xsl:message>START updated_xml_step1</xsl:message>
-				<xsl:variable name="startTime1" select="java:getTime(java:java.util.Date.new())"/>
-				
 				<!-- STEP1: Re-order elements in 'preface', 'sections' based on @displayorder -->
 				<xsl:variable name="updated_xml_step1">
 					<xsl:apply-templates mode="update_xml_step1"/>
 				</xsl:variable>
 				<!-- DEBUG: updated_xml_step1=<xsl:copy-of select="$updated_xml_step1"/> -->
 				
-				<xsl:variable name="endTime1" select="java:getTime(java:java.util.Date.new())"/>
-				<xsl:message>DEBUG: processing time <xsl:value-of select="$endTime1 - $startTime1"/> msec.</xsl:message>
-				<xsl:message>END updated_xml_step1</xsl:message>
-				
-				
-				<xsl:message>START updated_xml_step2</xsl:message>
-				<xsl:variable name="startTime2" select="java:getTime(java:java.util.Date.new())"/>
-				
 				<!-- STEP2: add 'fn' after 'eref' and 'origin', if referenced to bibitem with 'note' = Withdrawn.' or 'Cancelled and replaced...'  -->
 				<xsl:variable name="updated_xml_step2">
 					<xsl:apply-templates select="xalan:nodeset($updated_xml_step1)" mode="update_xml_step2"/>
 				</xsl:variable>
-				
-				<xsl:variable name="endTime2" select="java:getTime(java:java.util.Date.new())"/>
-				<xsl:message>DEBUG: processing time <xsl:value-of select="$endTime2 - $startTime2"/> msec.</xsl:message>
-				<xsl:message>END updated_xml_step2</xsl:message>
 				<!-- DEBUG: updated_xml_step2=<xsl:copy-of select="$updated_xml_step2"/> -->
-				
-				<xsl:message>START updated_xml_step3</xsl:message>
-				<xsl:variable name="startTime3" select="java:getTime(java:java.util.Date.new())"/>
 				
 				<xsl:variable name="updated_xml_step3">
 					<xsl:apply-templates select="xalan:nodeset($updated_xml_step2)" mode="update_xml_enclose_keep-together_within-line"/>
 				</xsl:variable>
-				
-				<xsl:variable name="endTime3" select="java:getTime(java:java.util.Date.new())"/>
-				<xsl:message>DEBUG: processing time <xsl:value-of select="$endTime3 - $startTime3"/> msec.</xsl:message>
-				<xsl:message>END updated_xml_step3</xsl:message>
 				<!-- DEBUG: updated_xml_step3=<xsl:copy-of select="$updated_xml_step3"/> -->
 				
 				<xsl:for-each select="xalan:nodeset($updated_xml_step3)">
@@ -1571,8 +1549,6 @@
 					</fo:page-sequence>
 					
 					
-					<!-- Index -->
-					<!-- <xsl:message>START current_document_index_id</xsl:message> -->
 					
 					<xsl:variable name="docid">
 						<xsl:call-template name="getDocumentId"/>
@@ -1583,25 +1559,12 @@
 							<xsl:with-param name="docid" select="$docid"/>
 						</xsl:apply-templates>
 					</xsl:variable>
-					<!-- <xsl:message>END current_document_index_id</xsl:message> -->
 					
-					<!-- <xsl:message>START current_document_index</xsl:message> -->
-					<xsl:variable name="startTime1" select="java:getTime(java:java.util.Date.new())"/>
 					<xsl:variable name="current_document_index">
 						<xsl:apply-templates select="xalan:nodeset($current_document_index_id)" mode="index_update"/>
 					</xsl:variable>
-					<!-- <xsl:variable name="endTime1" select="java:getTime(java:java.util.Date.new())"/>
-					<xsl:message>DEBUG: processing time <xsl:value-of select="$endTime1 - $startTime1"/> msec.</xsl:message>
-					<xsl:message>END current_document_index</xsl:message> -->
 					
-					
-					<!-- <xsl:variable name="startTime2" select="java:getTime(java:java.util.Date.new())"/>
-					<xsl:message>START xalan:nodeset</xsl:message> -->
-					<!-- <xsl:apply-templates select="//iso:indexsect" mode="index"/> -->
 					<xsl:apply-templates select="xalan:nodeset($current_document_index)" mode="index"/>
-					<!-- <xsl:variable name="endTime2" select="java:getTime(java:java.util.Date.new())"/>
-					<xsl:message>DEBUG: processing time <xsl:value-of select="$endTime2 - $startTime2"/> msec.</xsl:message>
-					<xsl:message>END xalan:nodeset</xsl:message> -->
 					
 					
 					<xsl:if test="$isPublished = 'true'">
