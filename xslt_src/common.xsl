@@ -8485,8 +8485,13 @@
 		<!-- add zero-width space (#x200B) after characters: 'great than' -->
 		<xsl:variable name="text2" select="java:replaceAll(java:java.lang.String.new($text1), '(\u003e)(?!\u003e)', '$1&#x200B;')"/><!-- negative lookahead: 'great than' not followed by 'great than' -->
 		<!-- add zero-width space (#x200B) before characters: 'less than' -->
-		<xsl:value-of select="java:replaceAll(java:java.lang.String.new($text2), '(?&lt;!\u003c)(\u003c)', '&#x200B;$1')"/> <!-- (?<!\u003c)(\u003c) --> <!-- negative lookbehind: 'less than' not preceeded by 'less than' -->
+		<xsl:variable name="text3" select="java:replaceAll(java:java.lang.String.new($text2), '(?&lt;!\u003c)(\u003c)', '&#x200B;$1')"/> <!-- (?<!\u003c)(\u003c) --> <!-- negative lookbehind: 'less than' not preceeded by 'less than' -->
+		<!-- add zero-width space (#x200B) before character: { -->
+		<xsl:variable name="text4" select="java:replaceAll(java:java.lang.String.new($text3), '(?&lt;!\W)(\{)', '&#x200B;$1')"/> <!-- negative lookbehind: '{' not preceeded by 'punctuation char' -->
+		<!-- add zero-width space (#x200B) after character: , -->
+		<xsl:variable name="text5" select="java:replaceAll(java:java.lang.String.new($text4), '(\,)(?!\d)', '$1&#x200B;')"/> <!-- negative lookahead: ',' not followed by digit -->
 		
+		<xsl:value-of select="$text5"/>
 	</xsl:template>
 	
 	<xsl:template name="add-zero-spaces-link-java">
@@ -8632,7 +8637,7 @@
 		</xsl:copy>
 	</xsl:template>
 	
-	<xsl:template match="*[local-name()='th' or local-name() = 'td'][not(*[local-name()='br']) and not(*[local-name()='p'])]" mode="table-without-br">
+	<xsl:template match="*[local-name()='th' or local-name() = 'td'][not(*[local-name()='br']) and not(*[local-name()='p']) and not(*[local-name()='sourcecode'])]" mode="table-without-br">
 		<xsl:copy>
 			<xsl:copy-of select="@*"/>
 			<p>
@@ -8680,6 +8685,29 @@
 		</xsl:for-each>
 	</xsl:template>
 
+
+	<xsl:template match="*[local-name()='th' or local-name()='td']/*[local-name() = 'sourcecode']" mode="table-without-br">
+		<xsl:apply-templates mode="table-without-br"/>
+	</xsl:template>
+	
+	<xsl:template match="*[local-name()='th' or local-name()='td']/*[local-name() = 'sourcecode']/text()[contains(., '&#x0d;') or contains(., '&#x0a;')]" mode="table-without-br">
+	
+		<xsl:variable name="sep">###SOURCECODE_NEWLINE###</xsl:variable>
+		<xsl:variable name="sourcecode_text" select="java:replaceAll(java:java.lang.String.new(.),'(&#x0d;&#x0a;|&#x0d;|&#x0a;)', $sep)"/>
+		<xsl:variable name="items">
+			<xsl:call-template name="split">
+				<xsl:with-param name="pText" select="$sourcecode_text"/>
+				<xsl:with-param name="sep" select="$sep"/>
+				<xsl:with-param name="normalize-space">false</xsl:with-param>
+			</xsl:call-template>
+		</xsl:variable>
+		<xsl:for-each select="xalan:nodeset($items)/*">
+			<p>
+				<sourcecode><xsl:copy-of select="node()"/></sourcecode>
+			</p>
+		</xsl:for-each>
+	</xsl:template>
+	
 	<!-- remove redundant white spaces -->
 	<xsl:template match="text()[not(ancestor::*[local-name() = 'sourcecode'])]" mode="table-without-br">
 		<xsl:variable name="text" select="translate(.,'&#x09;&#x0a;&#x0d;','')"/>
@@ -11197,77 +11225,43 @@
 	<!-- =============== -->
 	<xsl:template match="*[local-name()='sourcecode']" name="sourcecode">
 	
-		<fo:block-container xsl:use-attribute-sets="sourcecode-container-style">
-		
-			<xsl:if test="not(ancestor::*[local-name() = 'li']) or ancestor::*[local-name() = 'example']">
-				<xsl:attribute name="margin-left">0mm</xsl:attribute>
-			</xsl:if>
-			
-			<xsl:if test="ancestor::*[local-name() = 'example']">
-				<xsl:attribute name="margin-right">0mm</xsl:attribute>
-			</xsl:if>
-			
-			<xsl:copy-of select="@id"/>
-			
-			<xsl:if test="parent::*[local-name() = 'note']">
-				<xsl:attribute name="margin-left">
-					<xsl:choose>
-						<xsl:when test="not(ancestor::*[local-name() = 'table'])"><xsl:value-of select="$note-body-indent"/></xsl:when>
-						<xsl:otherwise><xsl:value-of select="$note-body-indent-table"/></xsl:otherwise>
-					</xsl:choose>
-				</xsl:attribute>
-				<xsl:if test="$namespace = 'gb'">
-					<xsl:attribute name="margin-left">0mm</xsl:attribute>
-				</xsl:if>
-			</xsl:if>
-			<fo:block-container margin-left="0mm">
-		
-				<xsl:if test="$namespace = 'rsd'">
-					<xsl:apply-templates select="*[local-name()='name']" /> <!-- show sourcecode's name BEFORE content -->
-				</xsl:if>
-				
-				<xsl:if test="$namespace = 'ogc'">
-					<xsl:if test="parent::*[local-name() = 'example']">
-						<fo:block font-size="1pt" line-height="10%" space-after="4pt">&#xa0;</fo:block>
+		<xsl:variable name="sourcecode_attributes">
+			<xsl:element name="sourcecode_attributes" use-attribute-sets="sourcecode-style">
+				<xsl:variable name="_font-size">
+					<xsl:if test="$namespace = 'csa'">10</xsl:if>
+					<xsl:if test="$namespace = 'csd'">10</xsl:if>						
+					<xsl:if test="$namespace = 'gb'">9</xsl:if>
+					<xsl:if test="$namespace = 'iec'">9</xsl:if>
+					<xsl:if test="$namespace = 'iho'">10</xsl:if>
+					<xsl:if test="$namespace = 'iso'">inherit</xsl:if><!-- 9 -->
+					<xsl:if test="$namespace = 'bsi'">9</xsl:if>
+					<xsl:if test="$namespace = 'jcgm'">9</xsl:if>
+					<!-- <xsl:if test="$namespace = 'ieee'">							
+						<xsl:if test="$current_template = 'standard'">8</xsl:if>
+					</xsl:if> -->
+					<xsl:if test="$namespace = 'itu'">10</xsl:if>
+					<xsl:if test="$namespace = 'm3d'"></xsl:if>		
+					<xsl:if test="$namespace = 'mpfd'"></xsl:if>
+					<xsl:if test="$namespace = 'nist-cswp'  or $namespace = 'nist-sp'">10</xsl:if>
+					<xsl:if test="$namespace = 'ogc'">
+						<xsl:choose>
+							<xsl:when test="ancestor::*[local-name() = 'table']">8.5</xsl:when>
+							<xsl:otherwise>9.5</xsl:otherwise>
+						</xsl:choose>
 					</xsl:if>
-				</xsl:if>
-				
-				<fo:block xsl:use-attribute-sets="sourcecode-style">
-					<xsl:variable name="_font-size">
-						<xsl:if test="$namespace = 'csa'">10</xsl:if>
-						<xsl:if test="$namespace = 'csd'">10</xsl:if>						
-						<xsl:if test="$namespace = 'gb'">9</xsl:if>
-						<xsl:if test="$namespace = 'iec'">9</xsl:if>
-						<xsl:if test="$namespace = 'iho'">10</xsl:if>
-						<xsl:if test="$namespace = 'iso'">inherit</xsl:if><!-- 9 -->
-						<xsl:if test="$namespace = 'bsi'">9</xsl:if>
-						<xsl:if test="$namespace = 'jcgm'">9</xsl:if>
-						<!-- <xsl:if test="$namespace = 'ieee'">							
-							<xsl:if test="$current_template = 'standard'">8</xsl:if>
-						</xsl:if> -->
-						<xsl:if test="$namespace = 'itu'">10</xsl:if>
-						<xsl:if test="$namespace = 'm3d'"></xsl:if>		
-						<xsl:if test="$namespace = 'mpfd'"></xsl:if>
-						<xsl:if test="$namespace = 'nist-cswp'  or $namespace = 'nist-sp'">10</xsl:if>
-						<xsl:if test="$namespace = 'ogc'">
-							<xsl:choose>
-								<xsl:when test="ancestor::*[local-name() = 'table']">8.5</xsl:when>
-								<xsl:otherwise>9.5</xsl:otherwise>
-							</xsl:choose>
-						</xsl:if>
-						<xsl:if test="$namespace = 'ogc-white-paper'">
-							<xsl:choose>
-								<xsl:when test="ancestor::*[local-name() = 'table']">8.5</xsl:when>
-								<xsl:otherwise>9.5</xsl:otherwise>
-							</xsl:choose>
-						</xsl:if>						
-						<xsl:if test="$namespace = 'rsd'">
-							<xsl:choose>
-								<xsl:when test="ancestor::*[local-name() = 'table']">inherit</xsl:when>
-								<xsl:otherwise>95%</xsl:otherwise><!-- 110% -->
-							</xsl:choose>
-						</xsl:if>
-						<xsl:if test="$namespace = 'unece' or $namespace = 'unece-rec'">10</xsl:if>		
+					<xsl:if test="$namespace = 'ogc-white-paper'">
+						<xsl:choose>
+							<xsl:when test="ancestor::*[local-name() = 'table']">8.5</xsl:when>
+							<xsl:otherwise>9.5</xsl:otherwise>
+						</xsl:choose>
+					</xsl:if>						
+					<xsl:if test="$namespace = 'rsd'">
+						<xsl:choose>
+							<xsl:when test="ancestor::*[local-name() = 'table']">inherit</xsl:when>
+							<xsl:otherwise>95%</xsl:otherwise><!-- 110% -->
+						</xsl:choose>
+					</xsl:if>
+					<xsl:if test="$namespace = 'unece' or $namespace = 'unece-rec'">10</xsl:if>		
 				</xsl:variable>
 				
 				<xsl:variable name="font-size" select="normalize-space($_font-size)"/>		
@@ -11281,46 +11275,104 @@
 						</xsl:choose>
 					</xsl:attribute>
 				</xsl:if>
+			</xsl:element>
+		</xsl:variable>
+	
+		<xsl:choose>
+			<xsl:when test="$isGenerateTableIF = 'true' and (ancestor::*[local-name() = 'td'] or ancestor::*[local-name() = 'th'])">
+				<xsl:for-each select="xalan:nodeset($sourcecode_attributes)/sourcecode_attributes/@*">					
+					<xsl:attribute name="{local-name()}">
+						<xsl:value-of select="."/>
+					</xsl:attribute>
+				</xsl:for-each>
+				<xsl:apply-templates select="node()[not(local-name() = 'name')]" />
+			</xsl:when>
+			
+			<xsl:otherwise>
+				<fo:block-container xsl:use-attribute-sets="sourcecode-container-style">
 				
-				<xsl:if test="$namespace = 'rsd'"> <!-- background for image -->
-					<xsl:if test="starts-with(*[local-name() = 'name']/text()[1], 'Figure ')">
-						<xsl:attribute name="background-color">rgb(236,242,246)</xsl:attribute>
-						<xsl:attribute name="padding-left">11mm</xsl:attribute>
+					<xsl:if test="not(ancestor::*[local-name() = 'li']) or ancestor::*[local-name() = 'example']">
 						<xsl:attribute name="margin-left">0mm</xsl:attribute>
-						<xsl:attribute name="padding-right">11mm</xsl:attribute>
+					</xsl:if>
+					
+					<xsl:if test="ancestor::*[local-name() = 'example']">
 						<xsl:attribute name="margin-right">0mm</xsl:attribute>
-						<xsl:attribute name="padding-top">7.5mm</xsl:attribute>
-						<xsl:attribute name="padding-bottom">7.5mm</xsl:attribute>
-						<xsl:if test="following-sibling::*[1][local-name() = 'sourcecode'] and starts-with(*[local-name() = 'name']/text()[1], 'Figure ')">
-							<xsl:attribute name="margin-bottom">16pt</xsl:attribute>
+					</xsl:if>
+					
+					<xsl:copy-of select="@id"/>
+					
+					<xsl:if test="parent::*[local-name() = 'note']">
+						<xsl:attribute name="margin-left">
+							<xsl:choose>
+								<xsl:when test="not(ancestor::*[local-name() = 'table'])"><xsl:value-of select="$note-body-indent"/></xsl:when>
+								<xsl:otherwise><xsl:value-of select="$note-body-indent-table"/></xsl:otherwise>
+							</xsl:choose>
+						</xsl:attribute>
+						<xsl:if test="$namespace = 'gb'">
+							<xsl:attribute name="margin-left">0mm</xsl:attribute>
 						</xsl:if>
 					</xsl:if>
-				</xsl:if>
+					<fo:block-container margin-left="0mm">
 				
-				<xsl:if test="$namespace = 'ogc'">
-					<xsl:if test="parent::*[local-name() = 'example']">
-						<xsl:attribute name="margin-bottom">0pt</xsl:attribute>
-					</xsl:if>
-				</xsl:if>
-				
-				<xsl:apply-templates select="node()[not(local-name() = 'name')]" />
-			</fo:block>
-			
-			<xsl:choose>
-				<xsl:when test="$namespace = 'rsd'"></xsl:when>
-				<xsl:otherwise>
-					<xsl:apply-templates select="*[local-name()='name']" /> <!-- show sourcecode's name AFTER content -->
-				</xsl:otherwise>
-			</xsl:choose>
-				
-			<xsl:if test="$namespace = 'ogc'">
-				<xsl:if test="parent::*[local-name() = 'example']">
-					<fo:block font-size="1pt" line-height="10%" space-before="6pt">&#xa0;</fo:block>
-				</xsl:if>
-			</xsl:if>
-				
-			</fo:block-container>
-		</fo:block-container>
+						<xsl:if test="$namespace = 'rsd'">
+							<xsl:apply-templates select="*[local-name()='name']" /> <!-- show sourcecode's name BEFORE content -->
+						</xsl:if>
+						
+						<xsl:if test="$namespace = 'ogc'">
+							<xsl:if test="parent::*[local-name() = 'example']">
+								<fo:block font-size="1pt" line-height="10%" space-after="4pt">&#xa0;</fo:block>
+							</xsl:if>
+						</xsl:if>
+						
+						<fo:block xsl:use-attribute-sets="sourcecode-style">
+							
+							<xsl:for-each select="xalan:nodeset($sourcecode_attributes)/sourcecode_attributes/@*">					
+								<xsl:attribute name="{local-name()}">
+									<xsl:value-of select="."/>
+								</xsl:attribute>
+							</xsl:for-each>
+							
+							<xsl:if test="$namespace = 'rsd'"> <!-- background for image -->
+								<xsl:if test="starts-with(*[local-name() = 'name']/text()[1], 'Figure ')">
+									<xsl:attribute name="background-color">rgb(236,242,246)</xsl:attribute>
+									<xsl:attribute name="padding-left">11mm</xsl:attribute>
+									<xsl:attribute name="margin-left">0mm</xsl:attribute>
+									<xsl:attribute name="padding-right">11mm</xsl:attribute>
+									<xsl:attribute name="margin-right">0mm</xsl:attribute>
+									<xsl:attribute name="padding-top">7.5mm</xsl:attribute>
+									<xsl:attribute name="padding-bottom">7.5mm</xsl:attribute>
+									<xsl:if test="following-sibling::*[1][local-name() = 'sourcecode'] and starts-with(*[local-name() = 'name']/text()[1], 'Figure ')">
+										<xsl:attribute name="margin-bottom">16pt</xsl:attribute>
+									</xsl:if>
+								</xsl:if>
+							</xsl:if>
+							
+							<xsl:if test="$namespace = 'ogc'">
+								<xsl:if test="parent::*[local-name() = 'example']">
+									<xsl:attribute name="margin-bottom">0pt</xsl:attribute>
+								</xsl:if>
+							</xsl:if>
+							
+							<xsl:apply-templates select="node()[not(local-name() = 'name')]" />
+						</fo:block>
+						
+						<xsl:choose>
+							<xsl:when test="$namespace = 'rsd'"></xsl:when>
+							<xsl:otherwise>
+								<xsl:apply-templates select="*[local-name()='name']" /> <!-- show sourcecode's name AFTER content -->
+							</xsl:otherwise>
+						</xsl:choose>
+							
+						<xsl:if test="$namespace = 'ogc'">
+							<xsl:if test="parent::*[local-name() = 'example']">
+								<fo:block font-size="1pt" line-height="10%" space-before="6pt">&#xa0;</fo:block>
+							</xsl:if>
+						</xsl:if>
+						
+					</fo:block-container>
+				</fo:block-container>
+			</xsl:otherwise>
+		</xsl:choose>
 	</xsl:template>
 
 	<xsl:template match="*[local-name()='sourcecode']/text()" priority="2">
