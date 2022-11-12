@@ -572,6 +572,7 @@
 									
 										<fo:block break-after="page"/>
 										
+										<!-- Second page -->
 										
 										<fo:block font-family="Arial" text-align="justify">
 											<fo:block>
@@ -591,6 +592,7 @@
 													<xsl:if test="position() != last()">, </xsl:if>
 												</xsl:for-each>
 											</fo:block>
+											<xsl:apply-templates select="/ieee:ieee-standard/ieee:preface/ieee:acknowledgements"/>
 										</fo:block>
 										
 										<!-- Example:
@@ -755,6 +757,7 @@
 												<xsl:if test="position() != last()">, </xsl:if>
 											</xsl:for-each>
 										</fo:block>
+										<xsl:apply-templates select="/ieee:ieee-standard/ieee:preface/ieee:acknowledgements"/>
 									</fo:block>
 										
 									<!-- Example:
@@ -1641,6 +1644,12 @@
 		<fo:inline><xsl:apply-templates /></fo:inline>
 	</xsl:template>
 	
+	<xsl:template match="ieee:preface/ieee:acknowledgements" priority="3">
+		<fo:block>
+			<xsl:apply-templates />
+		</fo:block>
+	</xsl:template>
+	
 	<xsl:template match="text()" priority="2" mode="uppercase">
 		<xsl:value-of select="java:toUpperCase(java:java.lang.String.new(.))"/>
 	</xsl:template>
@@ -2379,6 +2388,7 @@
 				<xsl:otherwise>
 					<xsl:choose>
 						<xsl:when test="@type = 'section-title'">12pt</xsl:when>
+						<xsl:when test="ancestor::ieee:acknowledgements">inherit</xsl:when>
 						<xsl:when test="$level = 1">12pt</xsl:when>
 						<xsl:when test="$level = 2">11pt</xsl:when>
 						<xsl:otherwise>10pt</xsl:otherwise> <!-- 3rd, 4th, ... levels -->
