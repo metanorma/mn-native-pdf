@@ -167,7 +167,7 @@
 			<xsl:when test="$namespace = 'gb'">20</xsl:when>
 			<xsl:when test="$namespace = 'iec'">25</xsl:when>
 			<xsl:when test="$namespace = 'ieee'">31.7</xsl:when>
-			<xsl:when test="$namespace = 'iho'">24.5</xsl:when>
+			<xsl:when test="$namespace = 'iho'">25</xsl:when>
 			<xsl:when test="$namespace = 'iso'">12.5</xsl:when>
 			<xsl:when test="$namespace = 'itu'">20</xsl:when>
 			<xsl:when test="$namespace = 'jcgm'">15</xsl:when>

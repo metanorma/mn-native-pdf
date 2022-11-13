@@ -20,10 +20,17 @@
 	<xsl:variable name="debug">false</xsl:variable>
 	
 
-	<xsl:variable name="title-en" select="/iho:iho-standard/iho:bibdata/iho:title[@language = 'en']"/>
+	<xsl:variable name="title-en">
+		<xsl:apply-templates select="/iho:iho-standard/iho:bibdata/iho:title[@language = 'en']/node()"/>
+	</xsl:variable>
 	<xsl:variable name="docidentifier" select="/iho:iho-standard/iho:bibdata/iho:docidentifier[@type = 'IHO']"/>
 	<xsl:variable name="copyrightText" select="concat('© International Hydrographic Association ', /iho:iho-standard/iho:bibdata/iho:copyright/iho:from ,' – All rights reserved')"/>
-
+	<xsl:variable name="edition">
+		<xsl:apply-templates select="/iho:iho-standard/iho:bibdata/iho:edition[normalize-space(@language) = '']"/>
+	</xsl:variable>
+	<xsl:variable name="month_year">
+		<xsl:apply-templates select="/iho:iho-standard/iho:bibdata/iho:date[@type = 'published']"/>
+	</xsl:variable>
 
 	<!-- Example:
 		<item level="1" id="Foreword" display="true">Foreword</item>
@@ -58,35 +65,35 @@
 					<fo:simple-page-master master-name="first" page-width="{$pageWidth}mm" page-height="{$pageHeight}mm">
 						<fo:region-body margin-top="{$marginTop}mm" margin-bottom="{$marginBottom}mm" margin-left="{$marginLeftRight1}mm" margin-right="{$marginLeftRight2}mm"/>
 						<fo:region-before region-name="header" extent="{$marginTop}mm"/> 
-						<fo:region-after region-name="footer-even" extent="{$marginBottom}mm"/>
+						<fo:region-after region-name="footer" extent="{$marginBottom}mm"/>
 						<fo:region-start region-name="left-region" extent="{$marginLeftRight1}mm"/>
 						<fo:region-end region-name="right-region" extent="{$marginLeftRight2}mm"/>
 					</fo:simple-page-master>				
 					<fo:simple-page-master master-name="odd" page-width="{$pageWidth}mm" page-height="{$pageHeight}mm">
 						<fo:region-body margin-top="{$marginTop}mm" margin-bottom="{$marginBottom}mm" margin-left="{$marginLeftRight1}mm" margin-right="{$marginLeftRight2}mm"/>
 						<fo:region-before region-name="header-odd" extent="{$marginTop}mm"/> 
-						<fo:region-after region-name="footer-odd" extent="{$marginBottom}mm"/>
+						<fo:region-after region-name="footer" extent="{$marginBottom}mm"/>
 						<fo:region-start region-name="left-region" extent="{$marginLeftRight1}mm"/>
 						<fo:region-end region-name="right-region" extent="{$marginLeftRight2}mm"/>
 					</fo:simple-page-master>
 					<fo:simple-page-master master-name="odd-landscape" page-width="{$pageHeight}mm" page-height="{$pageWidth}mm">
 						<fo:region-body margin-top="{$marginTop}mm" margin-bottom="{$marginBottom}mm" margin-left="{$marginLeftRight1}mm" margin-right="{$marginLeftRight2}mm"/>
 						<fo:region-before region-name="header-odd" extent="{$marginTop}mm"/> 
-						<fo:region-after region-name="footer-odd" extent="{$marginBottom}mm"/>
+						<fo:region-after region-name="footer" extent="{$marginBottom}mm"/>
 						<fo:region-start region-name="left-region" extent="{$marginLeftRight1}mm"/>
 						<fo:region-end region-name="right-region" extent="{$marginLeftRight2}mm"/>
 					</fo:simple-page-master>
 					<fo:simple-page-master master-name="even" page-width="{$pageWidth}mm" page-height="{$pageHeight}mm">
 						<fo:region-body margin-top="{$marginTop}mm" margin-bottom="{$marginBottom}mm" margin-left="{$marginLeftRight2}mm" margin-right="{$marginLeftRight1}mm"/>
 						<fo:region-before region-name="header-even" extent="{$marginTop}mm"/>
-						<fo:region-after region-name="footer-even" extent="{$marginBottom}mm"/>
+						<fo:region-after region-name="footer" extent="{$marginBottom}mm"/>
 						<fo:region-start region-name="left-region" extent="{$marginLeftRight2}mm"/>
 						<fo:region-end region-name="right-region" extent="{$marginLeftRight1}mm"/>
 					</fo:simple-page-master>
 					<fo:simple-page-master master-name="even-landscape" page-width="{$pageHeight}mm" page-height="{$pageWidth}mm">
 						<fo:region-body margin-top="{$marginTop}mm" margin-bottom="{$marginBottom}mm" margin-left="{$marginLeftRight2}mm" margin-right="{$marginLeftRight1}mm"/>
 						<fo:region-before region-name="header-even" extent="{$marginTop}mm"/>
-						<fo:region-after region-name="footer-even" extent="{$marginBottom}mm"/>
+						<fo:region-after region-name="footer" extent="{$marginBottom}mm"/>
 						<fo:region-start region-name="left-region" extent="{$marginLeftRight2}mm"/>
 						<fo:region-end region-name="right-region" extent="{$marginLeftRight1}mm"/>
 					</fo:simple-page-master>
@@ -160,12 +167,15 @@
 														<fo:block-container margin-left="0mm">
 															<fo:block-container display-align="center" height="90mm">
 																<fo:block font-size="28pt" role="H1" line-height="115%">
-																	<xsl:value-of select="$title-en"/>
+																	<xsl:copy-of select="$title-en"/>
 																</fo:block>
 															</fo:block-container>
 															<fo:block font-size="14pt">
-																<xsl:apply-templates select="/iho:iho-standard/iho:bibdata/iho:edition[normalize-space(@language) = '']"/>
-																<xsl:apply-templates select="/iho:iho-standard/iho:bibdata/iho:date[@type = 'published']"/>
+																<xsl:value-of select="$edition"/>
+																<xsl:if test="normalize-space($month_year) != ''">
+																	<xsl:text> – </xsl:text>
+																	<xsl:value-of select="$month_year" />
+																</xsl:if>
 															</fo:block>
 														</fo:block-container>
 													</fo:block-container>
@@ -509,7 +519,6 @@
 	</xsl:template>
 	
 	<xsl:template match="/iho:iho-standard/iho:bibdata/iho:date[@type = 'published']">
-		<xsl:text> – </xsl:text>
 		<xsl:call-template name="convertDate">
 			<xsl:with-param name="date" select="."/>
 			<xsl:with-param name="format" select="'short'"/>
@@ -711,45 +720,56 @@
 
 
 	<xsl:template name="insertHeaderFooter">		
-		<xsl:param name="font-weight" select="'bold'"/>				
+		<xsl:param name="font-weight" select="'bold'"/>
 		<fo:static-content flow-name="header-odd" role="artifact">
-			<fo:block-container height="100%">
-				<fo:block padding-top="12.5mm" text-align="right">
-					<xsl:value-of select="$docidentifier"/>
+			<fo:block-container height="100%" font-size="8pt">
+				<fo:block padding-top="12.5mm">
+					<fo:table table-layout="fixed" width="100%">
+						<fo:table-column column-width="proportional-column-width(1)"/>
+						<fo:table-column column-width="proportional-column-width(10)"/>
+						<fo:table-column column-width="proportional-column-width(1)"/>
+						<fo:table-body>
+							<fo:table-row>
+								<fo:table-cell><fo:block>&#xa0;</fo:block></fo:table-cell>
+								<fo:table-cell text-align="center"><fo:block><xsl:copy-of select="$title-en"/></fo:block></fo:table-cell>
+								<fo:table-cell text-align="right"><fo:block><fo:page-number /></fo:block></fo:table-cell>
+							</fo:table-row>
+						</fo:table-body>
+					</fo:table>
 				</fo:block>
-			</fo:block-container>
-		</fo:static-content>
-		<fo:static-content flow-name="footer-odd" role="artifact">
-			<fo:block-container height="100%" margin-right="-10mm" display-align="after">
-				<fo:block-container margin-right="0mm">
-					<fo:block padding-bottom="17mm" font-size="10pt" text-align-last="justify">
-						<fo:inline><xsl:value-of select="$copyrightText"/></fo:inline>
-						<fo:inline keep-together.within-line="always">
-							<fo:leader leader-pattern="space"/>
-							<fo:inline font-weight="{$font-weight}"><fo:page-number/></fo:inline>
-						</fo:inline>						
-					</fo:block>
-				</fo:block-container>
 			</fo:block-container>
 		</fo:static-content>
 		<fo:static-content flow-name="header-even" role="artifact">
-			<fo:block-container height="100%">
+			<fo:block-container height="100%" font-size="8pt">
 				<fo:block padding-top="12.5mm">
-					<xsl:value-of select="$docidentifier"/>
+					<fo:table table-layout="fixed" width="100%">
+						<fo:table-column column-width="proportional-column-width(1)"/>
+						<fo:table-column column-width="proportional-column-width(10)"/>
+						<fo:table-column column-width="proportional-column-width(1)"/>
+						<fo:table-body>
+							<fo:table-row>
+								<fo:table-cell><fo:block><fo:page-number /></fo:block></fo:table-cell>
+								<fo:table-cell text-align="center"><fo:block><xsl:copy-of select="$title-en"/></fo:block></fo:table-cell>
+								<fo:table-cell><fo:block>&#xa0;</fo:block></fo:table-cell>
+							</fo:table-row>
+						</fo:table-body>
+					</fo:table>
 				</fo:block>
 			</fo:block-container>
 		</fo:static-content>
-		<fo:static-content flow-name="footer-even" role="artifact">
-			<fo:block-container height="100%" margin-right="-10mm" display-align="after">
-				<fo:block-container margin-right="0mm">
-					<fo:block padding-bottom="17mm" font-size="10pt" text-align-last="justify">
-						<fo:inline font-weight="{$font-weight}"><fo:page-number/></fo:inline>
-						<fo:inline keep-together.within-line="always">
-							<fo:leader leader-pattern="space"/>
-							<xsl:value-of select="$copyrightText"/>
-						</fo:inline>							
-					</fo:block>
-				</fo:block-container>
+		<fo:static-content flow-name="footer" role="artifact">
+			<fo:block-container height="100%" display-align="after">
+				<fo:block padding-bottom="12.5mm" font-size="8pt" text-align-last="justify">
+					<fo:inline><xsl:value-of select="$docidentifier" /></fo:inline>
+					<fo:inline keep-together.within-line="always">
+						<fo:leader leader-pattern="space"/>
+						<fo:inline>&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;<xsl:value-of select="$month_year" /></fo:inline>
+					</fo:inline>						
+					<fo:inline keep-together.within-line="always">
+						<fo:leader leader-pattern="space"/>
+						<fo:inline><xsl:value-of select="$edition" /></fo:inline>
+					</fo:inline>						
+				</fo:block>
 			</fo:block-container>
 		</fo:static-content>
 	</xsl:template>
