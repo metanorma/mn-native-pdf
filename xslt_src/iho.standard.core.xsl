@@ -216,7 +216,7 @@
 						
 						<fo:block-container margin-left="-2mm" margin-right="-2mm">
 							<fo:block-container margin-left="0mm" margin-right="0mm" border="0.5pt solid black" >
-								<fo:block-container margin-top="6.5mm" margin-left="7.5mm" margin-right="8.5mm" margin-bottom="7.5mm" font-size="10pt">
+								<fo:block-container margin-top="6.5mm" margin-left="7.5mm" margin-right="8.5mm" margin-bottom="7.5mm">
 									<fo:block-container margin="0">
 										<fo:block text-align="justify">
 											<xsl:apply-templates select="/iho:iho-standard/iho:boilerplate/*[local-name() != 'feedback-statement']"/>
@@ -229,94 +229,99 @@
 						<fo:block break-after="page"/>
 						
 						<!-- Table of Contents -->
-						<fo:block-container margin-right="-12.7mm">
-							<fo:block-container margin-right="0mm">
-								<fo:block role="TOC">
-									<fo:block color="rgb(14, 36, 133)" margin-bottom="15.5pt" role="H1">
-										<xsl:variable name="title-toc">
-											<xsl:call-template name="getTitle">
-												<xsl:with-param name="name" select="'title-toc'"/>
-											</xsl:call-template>
-										</xsl:variable>
-										<xsl:value-of select="$title-toc"/>
-									</fo:block>
-									<xsl:if test="$debug = 'true'">
-										<xsl:text disable-output-escaping="yes">&lt;!--</xsl:text>
-											DEBUG
-											contents=<xsl:copy-of select="$contents"/>
-										<xsl:text disable-output-escaping="yes">--&gt;</xsl:text>
-									</xsl:if>
+						<fo:block role="TOC">
+							<fo:block font-weight="bold" margin-bottom="7.5pt" role="H1" font-size="12pt">
+								<fo:table table-layout="fixed" width="18.3mm">
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell border-bottom="1.5pt solid black" padding-bottom="-1mm" >
+												<fo:block>
+													<xsl:call-template name="getLocalizedString">
+														<xsl:with-param name="key">table_of_contents</xsl:with-param>
+													</xsl:call-template>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+							<xsl:if test="$debug = 'true'">
+								<xsl:text disable-output-escaping="yes">&lt;!--</xsl:text>
+									DEBUG
+									contents=<xsl:copy-of select="$contents"/>
+								<xsl:text disable-output-escaping="yes">--&gt;</xsl:text>
+							</xsl:if>
+							
+							<fo:block line-height="115%">
+							
+								<xsl:for-each select="$contents//item[@display = 'true']"><!-- [not(@level = 2 and starts-with(@section, '0'))] skip clause from preface -->							
+									<fo:block role="TOCI">
+										<!-- <xsl:if test="@level = 1">
+											<xsl:attribute name="margin-top">6pt</xsl:attribute>
+										</xsl:if> -->
 									
-									<xsl:for-each select="$contents//item[@display = 'true']"><!-- [not(@level = 2 and starts-with(@section, '0'))] skip clause from preface -->							
-										<fo:block role="TOCI">
-											<xsl:if test="@level = 1">
-												<xsl:attribute name="margin-top">6pt</xsl:attribute>
-											</xsl:if>
-										
-											<fo:list-block>
-												
-												<xsl:attribute name="provisional-distance-between-starts">
-													<xsl:choose>
-														<xsl:when test="@level &gt;= 1 and @root = 'preface'">0mm</xsl:when>
-														<xsl:when test="@level &gt;= 1 and @root = 'annex' and not(@type = 'annex')">13mm</xsl:when>
-														<xsl:when test="@level &gt;= 1 and not(@type = 'annex')">
-															<xsl:choose>
-																<xsl:when test="$toc_level = 3">16mm</xsl:when>
-																<xsl:when test="$toc_level &gt; 3">18mm</xsl:when>
-																<xsl:otherwise>10mm</xsl:otherwise>
-															</xsl:choose>
-														</xsl:when>
-														<xsl:otherwise>0mm</xsl:otherwise>
-													</xsl:choose>											
-												</xsl:attribute>
-												<fo:list-item>
-													<fo:list-item-label end-indent="label-end()">
-														<fo:block>
-															<xsl:if test="@section != '' and not(@type = 'annex')"> <!-- output below   -->
-																<xsl:value-of select="@section"/>
-															</xsl:if>
+										<fo:list-block>
+											
+											<xsl:attribute name="provisional-distance-between-starts">
+												<xsl:choose>
+													<xsl:when test="@level &gt;= 1 and @root = 'preface'">0mm</xsl:when>
+													<xsl:when test="@level &gt;= 1 and @root = 'annex' and not(@type = 'annex')">13mm</xsl:when>
+													<xsl:when test="@level &gt;= 1 and not(@type = 'annex')">
+														<xsl:choose>
+															<xsl:when test="$toc_level = 3">12.5mm</xsl:when>
+															<xsl:when test="$toc_level &gt; 3">15mm</xsl:when>
+															<xsl:otherwise>10mm</xsl:otherwise>
+														</xsl:choose>
+													</xsl:when>
+													<xsl:otherwise>0mm</xsl:otherwise>
+												</xsl:choose>											
+											</xsl:attribute>
+											<fo:list-item>
+												<fo:list-item-label end-indent="label-end()">
+													<fo:block>
+														<xsl:if test="@section != '' and not(@type = 'annex')"> <!-- output below   -->
+															<xsl:value-of select="@section"/>
+														</xsl:if>
+													</fo:block>
+												</fo:list-item-label>
+													<fo:list-item-body start-indent="body-start()">
+														<fo:block text-align-last="justify" margin-left="12mm" text-indent="-12mm">
+															<fo:basic-link internal-destination="{@id}" fox:alt-text="{title}">																
+																<xsl:apply-templates select="title"/>
+																<fo:inline keep-together.within-line="always">
+																	<fo:leader font-size="9pt" font-weight="normal" leader-pattern="dots"/>
+																	<fo:inline><fo:page-number-citation ref-id="{@id}"/></fo:inline>
+																</fo:inline>
+															</fo:basic-link>
 														</fo:block>
-													</fo:list-item-label>
-														<fo:list-item-body start-indent="body-start()">
-															<fo:block text-align-last="justify" margin-left="12mm" text-indent="-12mm">
-																<fo:basic-link internal-destination="{@id}" fox:alt-text="{title}">																
-																	<xsl:apply-templates select="title"/>
-																	<fo:inline keep-together.within-line="always">
-																		<fo:leader font-size="9pt" font-weight="normal" leader-pattern="dots"/>
-																		<fo:inline><fo:page-number-citation ref-id="{@id}"/></fo:inline>
-																	</fo:inline>
-																</fo:basic-link>
-															</fo:block>
-														</fo:list-item-body>
-												</fo:list-item>
-											</fo:list-block>
-										</fo:block>
-										
+													</fo:list-item-body>
+											</fo:list-item>
+										</fo:list-block>
+									</fo:block>
+									
+								</xsl:for-each>
+								
+								<!-- List of Tables -->
+								<xsl:if test="$contents//tables/table">
+									<xsl:call-template name="insertListOf_Title">
+										<xsl:with-param name="title" select="$title-list-tables"/>
+									</xsl:call-template>
+									<xsl:for-each select="$contents//tables/table">
+										<xsl:call-template name="insertListOf_Item"/>
 									</xsl:for-each>
-									
-									<!-- List of Tables -->
-									<xsl:if test="$contents//tables/table">
-										<xsl:call-template name="insertListOf_Title">
-											<xsl:with-param name="title" select="$title-list-tables"/>
-										</xsl:call-template>
-										<xsl:for-each select="$contents//tables/table">
-											<xsl:call-template name="insertListOf_Item"/>
-										</xsl:for-each>
-									</xsl:if>
-									
-									<!-- List of Figures -->
-									<xsl:if test="$contents//figures/figure">
-										<xsl:call-template name="insertListOf_Title">
-											<xsl:with-param name="title" select="$title-list-figures"/>
-										</xsl:call-template>
-										<xsl:for-each select="$contents//figures/figure">
-											<xsl:call-template name="insertListOf_Item"/>
-										</xsl:for-each>
-									</xsl:if>
-									
-								</fo:block>
-							</fo:block-container>
-						</fo:block-container>
+								</xsl:if>
+								
+								<!-- List of Figures -->
+								<xsl:if test="$contents//figures/figure">
+									<xsl:call-template name="insertListOf_Title">
+										<xsl:with-param name="title" select="$title-list-figures"/>
+									</xsl:call-template>
+									<xsl:for-each select="$contents//figures/figure">
+										<xsl:call-template name="insertListOf_Item"/>
+									</xsl:for-each>
+								</xsl:if>
+							</fo:block>
+						</fo:block>
 						
 						<!-- Foreword, Introduction -->
 						<xsl:call-template name="processPrefaceSectionsDefault"/>
@@ -438,7 +443,8 @@
 		</xsl:variable>
 		
 		<xsl:variable name="display">
-			<xsl:choose>				
+			<xsl:choose>
+				<xsl:when test="@id = '_document_history' or iho:title = 'Document History'">false</xsl:when>
 				<xsl:when test="$level &lt;= $toc_level">true</xsl:when>
 				<xsl:otherwise>false</xsl:otherwise>
 			</xsl:choose>

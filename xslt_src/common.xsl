@@ -140,7 +140,7 @@
 			<xsl:when test="$namespace = 'gb'">25</xsl:when>
 			<xsl:when test="$namespace = 'iec'">25</xsl:when>
 			<xsl:when test="$namespace = 'ieee'">31.7</xsl:when>
-			<xsl:when test="$namespace = 'iho'">25.4</xsl:when>
+			<xsl:when test="$namespace = 'iho'">24.5</xsl:when>
 			<xsl:when test="$namespace = 'iso'">25</xsl:when>
 			<xsl:when test="$namespace = 'itu'">20</xsl:when>
 			<xsl:when test="$namespace = 'jcgm'">25</xsl:when>
@@ -167,7 +167,7 @@
 			<xsl:when test="$namespace = 'gb'">20</xsl:when>
 			<xsl:when test="$namespace = 'iec'">25</xsl:when>
 			<xsl:when test="$namespace = 'ieee'">31.7</xsl:when>
-			<xsl:when test="$namespace = 'iho'">25.4</xsl:when>
+			<xsl:when test="$namespace = 'iho'">24.5</xsl:when>
 			<xsl:when test="$namespace = 'iso'">12.5</xsl:when>
 			<xsl:when test="$namespace = 'itu'">20</xsl:when>
 			<xsl:when test="$namespace = 'jcgm'">15</xsl:when>
@@ -446,7 +446,7 @@
 		<xsl:if test="$namespace = 'iho'">
 			<xsl:attribute name="font-family">Arial, Cambria Math, <xsl:value-of select="$font_noto_sans"/></xsl:attribute>
 			<xsl:attribute name="font-family-generic">Sans</xsl:attribute>
-			<xsl:attribute name="font-size">12pt</xsl:attribute>
+			<xsl:attribute name="font-size">10pt</xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'iso'">
 			<xsl:attribute name="font-family">Cambria, Times New Roman, Cambria Math, <xsl:value-of select="$font_noto_serif"/></xsl:attribute>
@@ -2514,8 +2514,9 @@
 			<xsl:attribute name="margin-bottom">10pt</xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'iho'">			
-			<xsl:attribute name="margin-left">12.5mm</xsl:attribute>
-			<xsl:attribute name="margin-right">14mm</xsl:attribute>
+			<xsl:attribute name="font-family">Calibri</xsl:attribute>
+			<xsl:attribute name="margin-left">4.5mm</xsl:attribute>
+			<xsl:attribute name="margin-right">9mm</xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'itu'">
 			<xsl:attribute name="margin-top">6pt</xsl:attribute>
