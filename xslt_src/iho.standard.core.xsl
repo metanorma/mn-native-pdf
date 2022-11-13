@@ -357,7 +357,7 @@
 					<fo:flow flow-name="xsl-region-body">
 						<fo:block-container>
 							
-							<fo:block font-size="16pt" font-weight="bold" margin-bottom="18pt" role="H1"><xsl:value-of select="$title-en"/></fo:block>
+							<!-- <fo:block font-size="16pt" font-weight="bold" margin-bottom="18pt" role="H1"><xsl:value-of select="$title-en"/></fo:block> -->
 							
 							<xsl:apply-templates select="/*/*[local-name()='sections']/*[local-name()='clause'][@type='scope']" />
 							<!-- Normative references  -->
@@ -551,7 +551,24 @@
 			<xsl:apply-templates />
 		</fo:block>
 	</xsl:template>
-		
+	
+	<xsl:template match="*[local-name() = 'clause']" priority="3">
+		<xsl:if test="parent::iho:preface">
+			<fo:block break-after="page"/>
+		</xsl:if>
+		<xsl:choose>
+			<xsl:when test="iho:title">
+				<xsl:apply-templates />
+			</xsl:when>
+			<xsl:otherwise>
+				<fo:block>
+					<xsl:call-template name="setId"/>
+					<xsl:apply-templates />
+				</fo:block>
+			</xsl:otherwise>
+		</xsl:choose>
+	</xsl:template>
+	
 	<xsl:template match="iho:title" name="title">
 		
 		<xsl:variable name="level">
@@ -560,9 +577,9 @@
 	
 		<xsl:variable name="font-size">
 			<xsl:choose>
-				<xsl:when test="$level = 1">13pt</xsl:when>
-				<xsl:when test="$level = 2">12pt</xsl:when>
-				<xsl:when test="$level &gt;= 3">11pt</xsl:when>				
+				<xsl:when test="$level = 1">12pt</xsl:when>
+				<xsl:when test="$level = 2">11pt</xsl:when>
+				<xsl:when test="$level &gt;= 3">10pt</xsl:when>				
 				<xsl:otherwise>12pt</xsl:otherwise>
 			</xsl:choose>
 		</xsl:variable>
@@ -574,13 +591,17 @@
 			</xsl:choose>
 		</xsl:variable>
 		
-	
 		<xsl:element name="{$element-name}">
+			<xsl:for-each select="parent::*[local-name() = 'clause']">
+				<xsl:call-template name="setId"/>
+			</xsl:for-each>
 			<xsl:attribute name="font-size"><xsl:value-of select="$font-size"/></xsl:attribute>			
+			<xsl:attribute name="font-weight">bold</xsl:attribute>			
 			<xsl:attribute name="space-before">
 				<xsl:choose>
-					<xsl:when test="$level = 1">13.5pt</xsl:when>
-					<xsl:when test="$level &gt;= 2">3pt</xsl:when>
+					<xsl:when test="$level = 1">24pt</xsl:when>
+					<xsl:when test="$level = 2">24pt</xsl:when>
+					<xsl:when test="$level &gt;= 3">0pt</xsl:when>
 					<xsl:when test="ancestor::iho:preface">8pt</xsl:when>
 					<xsl:when test="$level = 2 and ancestor::iho:annex">18pt</xsl:when>
 					<xsl:when test="$level = 1">18pt</xsl:when>
@@ -588,7 +609,13 @@
 					<xsl:otherwise>12pt</xsl:otherwise>
 				</xsl:choose>
 			</xsl:attribute>
-			<xsl:attribute name="margin-bottom">12pt</xsl:attribute>
+			<xsl:attribute name="space-after">
+				<xsl:choose>
+					<xsl:when test="$level = 3">6pt</xsl:when>
+					<xsl:otherwise>10pt</xsl:otherwise>
+				</xsl:choose>
+			</xsl:attribute>
+			<!-- <xsl:attribute name="margin-bottom">10pt</xsl:attribute> -->
 				
 			<xsl:attribute name="keep-with-next">always</xsl:attribute>		
 			
@@ -630,7 +657,7 @@
 					<xsl:when test="@align"><xsl:value-of select="@align"/></xsl:when>
 					<xsl:when test="ancestor::iho:td/@align"><xsl:value-of select="ancestor::iho:td/@align"/></xsl:when>
 					<xsl:when test="ancestor::iho:th/@align"><xsl:value-of select="ancestor::iho:th/@align"/></xsl:when>
-					<xsl:otherwise>left</xsl:otherwise>
+					<xsl:otherwise>justify</xsl:otherwise>
 				</xsl:choose>
 			</xsl:attribute>
 			<xsl:attribute name="space-after">12pt</xsl:attribute>
