@@ -213,13 +213,16 @@
 						<xsl:with-param name="font-weight">normal</xsl:with-param>
 					</xsl:call-template>
 					<fo:flow flow-name="xsl-region-body">
-						<fo:block>&#xA0;</fo:block>
-						<fo:block break-after="page"/>
-						<fo:block-container margin-left="7.5mm" margin-right="-2mm">
-							<fo:block-container margin-left="0mm" margin-right="0mm" border="0.5pt solid black" padding-top="1mm" padding-left="1.8mm" padding-right="1mm">
-								<fo:block>
-									<xsl:apply-templates select="/iho:iho-standard/iho:boilerplate/*[local-name() != 'feedback-statement']"/>
-								</fo:block>
+						
+						<fo:block-container margin-left="-2mm" margin-right="-2mm">
+							<fo:block-container margin-left="0mm" margin-right="0mm" border="0.5pt solid black" >
+								<fo:block-container margin-top="6.5mm" margin-left="7.5mm" margin-right="8.5mm" margin-bottom="7.5mm" font-size="10pt">
+									<fo:block-container margin="0">
+										<fo:block text-align="justify">
+											<xsl:apply-templates select="/iho:iho-standard/iho:boilerplate/*[local-name() != 'feedback-statement']"/>
+										</fo:block>
+									</fo:block-container>
+								</fo:block-container>
 							</fo:block-container>
 						</fo:block-container>
 						
@@ -608,6 +611,7 @@
 				<xsl:choose>
 					<xsl:when test="ancestor::iho:quote">justify</xsl:when>
 					<xsl:when test="ancestor::iho:feedback-statement">right</xsl:when>
+					<xsl:when test="ancestor::iho:boilerplate and not(@align)">justify</xsl:when>
 					<xsl:when test="@align"><xsl:value-of select="@align"/></xsl:when>
 					<xsl:when test="ancestor::iho:td/@align"><xsl:value-of select="ancestor::iho:td/@align"/></xsl:when>
 					<xsl:when test="ancestor::iho:th/@align"><xsl:value-of select="ancestor::iho:th/@align"/></xsl:when>
@@ -623,6 +627,14 @@
 			</xsl:if>
 			<xsl:attribute name="line-height">115%</xsl:attribute>
 			<!-- <xsl:attribute name="border">1pt solid red</xsl:attribute> -->
+			<xsl:if test="ancestor::iho:boilerplate">
+				<xsl:attribute name="line-height">125%</xsl:attribute>
+				<xsl:attribute name="space-after">14pt</xsl:attribute>
+			</xsl:if>
+			<xsl:if test="ancestor::iho:quote">
+				<xsl:attribute name="line-height">130%</xsl:attribute>
+				<!-- <xsl:attribute name="margin-bottom">12pt</xsl:attribute> -->
+			</xsl:if>
 			
 			<xsl:if test=".//iho:fn">
 				<xsl:attribute name="line-height-shift-adjustment">disregard-shifts</xsl:attribute>
