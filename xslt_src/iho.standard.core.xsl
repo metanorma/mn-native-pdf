@@ -97,29 +97,40 @@
 						<fo:region-start region-name="left-region" extent="{$marginLeftRight2}mm"/>
 						<fo:region-end region-name="right-region" extent="{$marginLeftRight1}mm"/>
 					</fo:simple-page-master>
+					<fo:simple-page-master master-name="blankpage" page-width="{$pageWidth}mm" page-height="{$pageHeight}mm">
+						<fo:region-body margin-top="{$marginTop}mm" margin-bottom="{$marginBottom}mm" margin-left="{$marginLeftRight2}mm" margin-right="{$marginLeftRight1}mm"/>
+						<fo:region-before region-name="header-blank" extent="{$marginTop}mm"/>
+						<fo:region-after region-name="footer" extent="{$marginBottom}mm"/>
+						<fo:region-start region-name="left-region" extent="{$marginLeftRight2}mm"/>
+						<fo:region-end region-name="right-region" extent="{$marginLeftRight1}mm"/>
+					</fo:simple-page-master>
 					<!-- Preface pages -->
 					<fo:page-sequence-master master-name="preface">
 						<fo:repeatable-page-master-alternatives>
-							<fo:conditional-page-master-reference master-reference="first" page-position="first"/>
+							<!-- <fo:conditional-page-master-reference master-reference="first" page-position="first"/> -->
+							<fo:conditional-page-master-reference master-reference="blankpage" blank-or-not-blank="blank"/>
 							<fo:conditional-page-master-reference odd-or-even="even" master-reference="even"/>
 							<fo:conditional-page-master-reference odd-or-even="odd" master-reference="odd"/>
 						</fo:repeatable-page-master-alternatives>
 					</fo:page-sequence-master>
 					<!-- Document pages -->
 					<fo:page-sequence-master master-name="document">
-						<fo:repeatable-page-master-alternatives>						
+						<fo:repeatable-page-master-alternatives>
+							<fo:conditional-page-master-reference master-reference="blankpage" blank-or-not-blank="blank"/>
 							<fo:conditional-page-master-reference odd-or-even="even" master-reference="even"/>
 							<fo:conditional-page-master-reference odd-or-even="odd" master-reference="odd"/>
 						</fo:repeatable-page-master-alternatives>
 					</fo:page-sequence-master>
 					<fo:page-sequence-master master-name="document-portrait">
-						<fo:repeatable-page-master-alternatives>						
+						<fo:repeatable-page-master-alternatives>
+							<fo:conditional-page-master-reference master-reference="blankpage" blank-or-not-blank="blank"/>
 							<fo:conditional-page-master-reference odd-or-even="even" master-reference="even"/>
 							<fo:conditional-page-master-reference odd-or-even="odd" master-reference="odd"/>
 						</fo:repeatable-page-master-alternatives>
 					</fo:page-sequence-master>
 					<fo:page-sequence-master master-name="document-landscape">
-						<fo:repeatable-page-master-alternatives>						
+						<fo:repeatable-page-master-alternatives>
+							<fo:conditional-page-master-reference master-reference="blankpage" blank-or-not-blank="blank"/>
 							<fo:conditional-page-master-reference odd-or-even="even" master-reference="even-landscape"/>
 							<fo:conditional-page-master-reference odd-or-even="odd" master-reference="odd-landscape"/>
 						</fo:repeatable-page-master-alternatives>
@@ -138,7 +149,7 @@
 				<!-- Cover Page -->
 				<fo:page-sequence master-reference="cover">				
 					<fo:flow flow-name="xsl-region-body">
-						<fo:block-container position="absolute" left="14.25mm" top="12mm" >
+						<fo:block-container position="absolute" left="14.25mm" top="12mm" id="__internal_layout__coverpage_{generate-id()}">
 							<fo:table table-layout="fixed" width="181.1mm">
 									<fo:table-column column-width="26mm"/>
 									<fo:table-column column-width="19.4mm"/> 
@@ -224,7 +235,7 @@
 					</xsl:call-template>
 					<fo:flow flow-name="xsl-region-body">
 						
-						<fo:block-container margin-left="-2mm" margin-right="-2mm">
+						<fo:block-container margin-left="-1.5mm" margin-right="-1mm">
 							<fo:block-container margin-left="0mm" margin-right="0mm" border="0.5pt solid black" >
 								<fo:block-container margin-top="6.5mm" margin-left="7.5mm" margin-right="8.5mm" margin-bottom="7.5mm">
 									<fo:block-container margin="0">
@@ -240,20 +251,14 @@
 						
 						<!-- Table of Contents -->
 						<fo:block role="TOC">
-							<fo:block font-weight="bold" margin-bottom="7.5pt" role="H1" font-size="12pt">
-								<fo:table table-layout="fixed" width="18.3mm">
-									<fo:table-body>
-										<fo:table-row>
-											<fo:table-cell border-bottom="1.5pt solid black" padding-bottom="-1mm" >
-												<fo:block>
-													<xsl:call-template name="getLocalizedString">
-														<xsl:with-param name="key">table_of_contents</xsl:with-param>
-													</xsl:call-template>
-												</fo:block>
-											</fo:table-cell>
-										</fo:table-row>
-									</fo:table-body>
-								</fo:table>
+							<fo:block font-weight="bold" margin-bottom="7.5pt" role="H1" font-size="12pt" margin-top="4pt">
+								<fo:block-container width="18.3mm" border-bottom="1.25pt solid black">
+									<fo:block line-height="75%">
+										<xsl:call-template name="getLocalizedString">
+											<xsl:with-param name="key">table_of_contents</xsl:with-param>
+										</xsl:call-template>
+									</fo:block>
+								</fo:block-container>
 							</fo:block>
 							<xsl:if test="$debug = 'true'">
 								<xsl:text disable-output-escaping="yes">&lt;!--</xsl:text>
@@ -669,7 +674,7 @@
 			</xsl:if>
 			<xsl:attribute name="line-height">115%</xsl:attribute>
 			<!-- <xsl:attribute name="border">1pt solid red</xsl:attribute> -->
-			<xsl:if test="ancestor::iho:boilerplate">
+			<xsl:if test="ancestor::iho:boilerplate and not(ancestor::iho:feedback-statement)">
 				<xsl:attribute name="line-height">125%</xsl:attribute>
 				<xsl:attribute name="space-after">14pt</xsl:attribute>
 			</xsl:if>
@@ -782,6 +787,27 @@
 						</fo:table-body>
 					</fo:table>
 				</fo:block>
+			</fo:block-container>
+		</fo:static-content>
+		<fo:static-content flow-name="header-blank" role="artifact">
+			<fo:block-container height="100%" font-size="8pt">
+				<fo:block padding-top="12.5mm">
+					<fo:table table-layout="fixed" width="100%">
+						<fo:table-column column-width="proportional-column-width(1)"/>
+						<fo:table-column column-width="proportional-column-width(10)"/>
+						<fo:table-column column-width="proportional-column-width(1)"/>
+						<fo:table-body>
+							<fo:table-row>
+								<fo:table-cell><fo:block><fo:page-number /></fo:block></fo:table-cell>
+								<fo:table-cell text-align="center"><fo:block><xsl:copy-of select="$title-en"/></fo:block></fo:table-cell>
+								<fo:table-cell><fo:block>&#xa0;</fo:block></fo:table-cell>
+							</fo:table-row>
+						</fo:table-body>
+					</fo:table>
+				</fo:block>
+			</fo:block-container>
+			<fo:block-container position="absolute" left="40.5mm" top="130mm" height="4mm" width="79mm" border="0.75pt solid black" text-align="center" display-align="center" line-height="100%">
+				<fo:block>Page intentionally left blank</fo:block>
 			</fo:block-container>
 		</fo:static-content>
 		<fo:static-content flow-name="footer" role="artifact">
