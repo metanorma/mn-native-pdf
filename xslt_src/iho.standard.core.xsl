@@ -207,7 +207,7 @@
 											<fo:table-cell>
 												<fo:block-container width="79mm" height="72mm" margin-left="56.8mm" background-color="rgb(0, 172, 158)" text-align="right" display-align="after">
 													<fo:block-container margin-left="0mm">
-														<fo:block font-size="8pt" color="white" margin-right="5mm" margin-bottom="5mm">
+														<fo:block font-size="8pt" color="white" margin-right="5mm" margin-bottom="5mm" line-height-shift-adjustment="disregard-shifts">
 															<xsl:apply-templates select="/iho:iho-standard/iho:boilerplate/iho:feedback-statement"/>
 														</fo:block>
 													</fo:block-container>
@@ -532,6 +532,12 @@
 	
 	<xsl:template match="iho:feedback-statement//iho:br" priority="2">
 		<fo:block/>
+	</xsl:template>
+	
+	<xsl:template match="iho:feedback-statement//iho:sup" priority="2">
+		<fo:inline font-size="62%" baseline-shift="35%">
+			<xsl:apply-templates />
+		</fo:inline>
 	</xsl:template>
 	
 	
