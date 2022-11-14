@@ -1332,6 +1332,7 @@
 	<xsl:variable name="table-border_">
 		<xsl:if test="$namespace = 'bsi'">0.5pt solid black</xsl:if>
 		<xsl:if test="$namespace = 'ieee'">1pt solid black</xsl:if>
+		<xsl:if test="$namespace = 'iho'">0.5pt solid black</xsl:if>
 		<xsl:if test="$namespace = 'iso'">1pt solid black</xsl:if>
 	</xsl:variable>
 	<xsl:variable name="table-border" select="normalize-space($table-border_)"/>
@@ -1373,6 +1374,7 @@
 			<xsl:attribute name="margin-bottom">8pt</xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'iho'">
+			<xsl:attribute name="font-size">9pt</xsl:attribute>
 			<xsl:attribute name="space-after">18pt</xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'iso'">
@@ -1454,7 +1456,7 @@
 			<xsl:attribute name="border"><xsl:value-of select="$table-border"/></xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'iho'">
-			
+			<xsl:attribute name="border"><xsl:value-of select="$table-border"/></xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'iso'">
 			<xsl:attribute name="border"><xsl:value-of select="$table-border"/></xsl:attribute>
@@ -1530,8 +1532,8 @@
 		<xsl:if test="$namespace = 'iho'">
 			<xsl:attribute name="text-align">center</xsl:attribute>
 			<xsl:attribute name="margin-bottom">6pt</xsl:attribute>
-			<xsl:attribute name="font-weight">normal</xsl:attribute>
-			<xsl:attribute name="font-size">11pt</xsl:attribute>
+			<xsl:attribute name="font-weight">bold</xsl:attribute>
+			<xsl:attribute name="font-size">10pt</xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'iso' or $namespace = 'jcgm'">
 			<xsl:attribute name="font-size">11pt</xsl:attribute>
@@ -1610,6 +1612,9 @@
 			<xsl:attribute name="min-height">0mm</xsl:attribute>
 			<xsl:attribute name="line-height">110%</xsl:attribute>
 		</xsl:if>
+		<xsl:if test="$namespace = 'iho'">
+			<xsl:attribute name="min-height">3mm</xsl:attribute> <!-- + padding-top + padding-bottom -->
+		</xsl:if>
 		<xsl:if test="$namespace = 'ogc'">
 			<xsl:attribute name="min-height">8.5mm</xsl:attribute>
 		</xsl:if>
@@ -1635,6 +1640,9 @@
 		<xsl:if test="$namespace = 'iec'">
 			<xsl:attribute name="border-top">solid black 0.5pt</xsl:attribute>
 			<xsl:attribute name="border-bottom">solid black 0.5pt</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'iho'">
+			<xsl:attribute name="background-color">rgb(217, 217, 217)</xsl:attribute>
 		</xsl:if>
 		
 		<xsl:if test="$namespace = 'nist-cswp'  or $namespace = 'nist-sp'">
@@ -1711,6 +1719,13 @@
 			<xsl:attribute name="padding-top">1mm</xsl:attribute>
 			<xsl:attribute name="border">solid black 0.5pt</xsl:attribute>
 		</xsl:if>
+		<xsl:if test="$namespace = 'iho'">
+			<xsl:attribute name="padding-top">1.5mm</xsl:attribute>
+			<xsl:attribute name="padding-left">2mm</xsl:attribute>
+			<xsl:attribute name="padding-bottom">1.5mm</xsl:attribute>
+			<xsl:attribute name="padding-right">1.5mm</xsl:attribute>
+			<xsl:attribute name="border"><xsl:value-of select="$table-border"/></xsl:attribute>
+		</xsl:if>
 		<xsl:if test="$namespace = 'jcgm'">
 			<xsl:attribute name="padding-top">1mm</xsl:attribute>
 		</xsl:if>
@@ -1781,7 +1796,11 @@
 			<xsl:attribute name="border">solid black 0.5pt</xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'iho'">
-			<xsl:attribute name="padding-top">0.5mm</xsl:attribute>
+			<xsl:attribute name="padding-top">1.5mm</xsl:attribute>
+			<xsl:attribute name="padding-left">2mm</xsl:attribute>
+			<xsl:attribute name="padding-bottom">1.5mm</xsl:attribute>
+			<xsl:attribute name="padding-right">1.5mm</xsl:attribute>
+			<xsl:attribute name="border"><xsl:value-of select="$table-border"/></xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'itu'">
 			<xsl:attribute name="display-align">before</xsl:attribute>
@@ -1844,6 +1863,9 @@
 		<xsl:if test="$namespace = 'ieee'">
 			<xsl:attribute name="border">solid black 0.5pt</xsl:attribute>
 		</xsl:if>
+		<xsl:if test="$namespace = 'iho'">
+			<xsl:attribute name="border"><xsl:value-of select="$table-border"/></xsl:attribute>
+		</xsl:if>
 		<xsl:if test="$namespace = 'jcgm'">
 			<xsl:attribute name="border-top">solid black 0pt</xsl:attribute>
 		</xsl:if>
@@ -1884,7 +1906,7 @@
 			<xsl:attribute name="margin-bottom">6pt</xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'iho'">
-			<xsl:attribute name="font-size">12pt</xsl:attribute>					
+			<xsl:attribute name="font-size">inherit</xsl:attribute>					
 		</xsl:if>
 		<xsl:if test="$namespace = 'jcgm'">
 			<xsl:attribute name="font-size">9pt</xsl:attribute>
@@ -2251,7 +2273,7 @@
 			<xsl:attribute name="text-align">justify</xsl:attribute>
 		</xsl:if>		
 		<xsl:if test="$namespace = 'iho'">
-			<xsl:attribute name="font-size">11pt</xsl:attribute>
+			<!-- <xsl:attribute name="font-size">11pt</xsl:attribute> -->
 			<xsl:attribute name="margin-top">8pt</xsl:attribute>
 			<xsl:attribute name="margin-bottom">12pt</xsl:attribute>
 			<xsl:attribute name="text-align">justify</xsl:attribute>
@@ -2325,7 +2347,7 @@
 			<xsl:attribute name="padding-right">6mm</xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'iho'">
-			<xsl:attribute name="font-size">11pt</xsl:attribute>
+			<!-- <xsl:attribute name="font-size">11pt</xsl:attribute> -->
 			<xsl:attribute name="padding-right">2mm</xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'iso' or $namespace = 'jcgm'">
@@ -2363,7 +2385,7 @@
 			<xsl:attribute name="font-family">SimHei</xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'iho'">
-			<xsl:attribute name="font-size">11pt</xsl:attribute>
+			<!-- <xsl:attribute name="font-size">11pt</xsl:attribute> -->
 		</xsl:if>
 		<xsl:if test="$namespace = 'rsd'">
 			<xsl:attribute name="font-weight">bold</xsl:attribute>
@@ -2686,10 +2708,10 @@
 			<xsl:attribute name="keep-with-previous">always</xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'iho'">
-			<xsl:attribute name="font-size">11pt</xsl:attribute>
+			<!-- <xsl:attribute name="font-size">11pt</xsl:attribute> -->
 			<xsl:attribute name="font-weight">bold</xsl:attribute>
 			<xsl:attribute name="text-align">center</xsl:attribute>
-			<xsl:attribute name="margin-top">6pt</xsl:attribute>
+			<xsl:attribute name="margin-top">2pt</xsl:attribute>
 			<xsl:attribute name="margin-bottom">6pt</xsl:attribute>
 			<xsl:attribute name="keep-with-previous">always</xsl:attribute>
 		</xsl:if>
@@ -9594,11 +9616,11 @@
 					</xsl:if>
 				</xsl:if>
 				
-				<xsl:if test="$namespace = 'iho'">
+				<!-- <xsl:if test="$namespace = 'iho'">
 					<xsl:if test="ancestor::iho:td">
 						<xsl:attribute name="font-size">12pt</xsl:attribute>
 					</xsl:if>
-				</xsl:if>
+				</xsl:if> -->
 			
 				<xsl:choose>
 					<xsl:when test="$namespace = 'gb'">

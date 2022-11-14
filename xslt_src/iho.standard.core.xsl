@@ -611,6 +611,7 @@
 			<xsl:attribute name="space-before">
 				<xsl:choose>
 					<xsl:when test="$level = 1">24pt</xsl:when>
+					<xsl:when test="$level = 2 and ../preceding-sibling::*[1][self::iho:title]">10pt</xsl:when>
 					<xsl:when test="$level = 2">24pt</xsl:when>
 					<xsl:when test="$level &gt;= 3">0pt</xsl:when>
 					<xsl:when test="ancestor::iho:preface">8pt</xsl:when>
@@ -622,7 +623,7 @@
 			</xsl:attribute>
 			<xsl:attribute name="space-after">
 				<xsl:choose>
-					<xsl:when test="$level = 3">6pt</xsl:when>
+					<xsl:when test="$level &gt;= 3">6pt</xsl:when>
 					<xsl:otherwise>10pt</xsl:otherwise>
 				</xsl:choose>
 			</xsl:attribute>
