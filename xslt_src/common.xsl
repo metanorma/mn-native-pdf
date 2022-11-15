@@ -1907,7 +1907,9 @@
 			<xsl:attribute name="margin-bottom">6pt</xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'iho'">
-			<xsl:attribute name="font-size">inherit</xsl:attribute>					
+			<xsl:attribute name="font-size">inherit</xsl:attribute>
+			<xsl:attribute name="margin-bottom">0pt</xsl:attribute>
+			<xsl:attribute name="space-after">6pt</xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'jcgm'">
 			<xsl:attribute name="font-size">9pt</xsl:attribute>
@@ -2081,7 +2083,7 @@
 			<xsl:attribute name="line-height">1.2</xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'iho'">
-			<xsl:attribute name="margin-bottom">12pt</xsl:attribute>
+			<xsl:attribute name="margin-bottom">6pt</xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'itu'">
 			<xsl:attribute name="margin-top">6pt</xsl:attribute>
@@ -3933,7 +3935,8 @@
 			<xsl:attribute name="provisional-distance-between-starts">9.5mm</xsl:attribute>
 		</xsl:if> -->
 		<xsl:if test="$namespace = 'iho'">
-			<xsl:attribute name="line-height">115%</xsl:attribute>
+			<!-- <xsl:attribute name="line-height">115%</xsl:attribute> -->
+			<xsl:attribute name="margin-bottom">6pt</xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'iso'">
 			<xsl:attribute name="margin-bottom">6pt</xsl:attribute>
@@ -7402,7 +7405,7 @@
 							</xsl:if>
 						</xsl:if>
 						<xsl:if test="$namespace = 'iho'">
-							<xsl:attribute name="margin-left">7mm</xsl:attribute>
+							<!-- <xsl:attribute name="margin-left">7mm</xsl:attribute> -->
 						</xsl:if>
 						
 						<xsl:if test="ancestor::*[local-name() = 'dd' or local-name() = 'td']">
@@ -7422,7 +7425,7 @@
 								</xsl:if>
 							</xsl:if>
 							<xsl:if test="$namespace = 'iho'">
-								<xsl:attribute name="margin-left">-3.5mm</xsl:attribute>
+								<!-- <xsl:attribute name="margin-left">-3.5mm</xsl:attribute> -->
 							</xsl:if>
 							
 							<xsl:apply-templates select="*[local-name() = 'name']">
@@ -8008,7 +8011,7 @@
 				<xsl:if test="$namespace = 'csd'">10</xsl:if>
 				<xsl:if test="$namespace = 'gb'">10</xsl:if>
 				<xsl:if test="$namespace = 'iec'">10</xsl:if>
-				<xsl:if test="$namespace = 'iho'">10</xsl:if>
+				<xsl:if test="$namespace = 'iho'">9.5</xsl:if>
 				<xsl:if test="$namespace = 'iso'">inherit</xsl:if> <!-- 10 -->
 				<xsl:if test="$namespace = 'bsi'">10</xsl:if>
 				<xsl:if test="$namespace = 'jcgm'">10</xsl:if>
@@ -12829,7 +12832,7 @@
 			</xsl:when>
 			<xsl:when test="$namespace = 'iho'">
 				<!-- <label>&#x2014;</label> --> <!-- em dash -->
-				<label level="1" font-size="15pt" line-height="80%">•</label>
+				<label level="1" font-size="150%" line-height="80%">•</label>
 				<label level="2">&#x2014;</label><!-- em dash -->
 				<label level="3" font-size="75%">o</label> <!-- white circle -->
 			</xsl:when>
@@ -13571,16 +13574,26 @@
 							<xsl:attribute name="provisional-distance-between-starts">12.5mm</xsl:attribute>
 						</xsl:if>
 					</xsl:if>
+					
+					<xsl:variable name="docidentifier" select="normalize-space(iho:docidentifier[@type != 'metanorma'][1])"/>
+					<xsl:if test="$namespace = 'iho'">
+						<xsl:attribute name="provisional-distance-between-starts">
+							<xsl:choose>
+								<xsl:when test="string-length($docidentifier) = 0">0mm</xsl:when>
+								<xsl:when test="string-length($docidentifier) &gt; 19">46.5mm</xsl:when>
+								<xsl:when test="string-length($docidentifier) &gt; 10">37mm</xsl:when>
+								<xsl:otherwise>24.5mm</xsl:otherwise>
+							</xsl:choose>
+						</xsl:attribute>
+					</xsl:if>
+					
 					<fo:list-item>
 						<fo:list-item-label end-indent="label-end()">
 							<fo:block>
 								<fo:inline>
 									<xsl:choose>
 										<xsl:when test="$namespace = 'iho'">
-											<xsl:value-of select="*[local-name() = 'docidentifier'][@type = 'metanorma-ordinal']"/>
-											<xsl:if test="not(*[local-name() = 'docidentifier'][@type = 'metanorma-ordinal'])">
-												<xsl:number format="[1]" count="*[local-name()='bibitem'][not(@hidden = 'true')]"/>
-											</xsl:if>
+											<xsl:value-of select="$docidentifier"/>
 										</xsl:when>
 										<xsl:when test="$namespace = 'nist-cswp'">
 											<xsl:value-of select="nist:docidentifier[@display = 'true']"/>

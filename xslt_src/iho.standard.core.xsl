@@ -283,7 +283,7 @@
 													<xsl:when test="@level &gt;= 1 and @root = 'annex' and not(@type = 'annex')">13mm</xsl:when>
 													<xsl:when test="@level &gt;= 1 and not(@type = 'annex')">
 														<xsl:choose>
-															<xsl:when test="$toc_level = 3">12.5mm</xsl:when>
+															<xsl:when test="$toc_level = 3">12.9mm</xsl:when>
 															<xsl:when test="$toc_level &gt; 3">15mm</xsl:when>
 															<xsl:otherwise>10mm</xsl:otherwise>
 														</xsl:choose>
@@ -551,7 +551,7 @@
 	<!-- ====== -->
 	
 	<xsl:template match="iho:annex/iho:title">
-		<fo:block font-size="13pt" font-weight="bold" text-align="center" margin-bottom="12pt" keep-with-next="always" role="H1">			
+		<fo:block font-size="12pt" font-weight="bold" text-align="center" margin-bottom="12pt" keep-with-next="always" role="H1">			
 			<xsl:apply-templates />
 			<xsl:apply-templates select="following-sibling::*[1][local-name() = 'variant-title'][@type = 'sub']" mode="subtitle"/>
 		</fo:block>
@@ -613,10 +613,8 @@
 					<xsl:when test="$level = 1">24pt</xsl:when>
 					<xsl:when test="$level = 2 and ../preceding-sibling::*[1][self::iho:title]">10pt</xsl:when>
 					<xsl:when test="$level = 2">24pt</xsl:when>
-					<xsl:when test="$level &gt;= 3">0pt</xsl:when>
+					<xsl:when test="$level &gt;= 3">6pt</xsl:when>
 					<xsl:when test="ancestor::iho:preface">8pt</xsl:when>
-					<xsl:when test="$level = 2 and ancestor::iho:annex">18pt</xsl:when>
-					<xsl:when test="$level = 1">18pt</xsl:when>
 					<xsl:when test="$level = ''">6pt</xsl:when><!-- 13.5pt -->
 					<xsl:otherwise>12pt</xsl:otherwise>
 				</xsl:choose>
@@ -632,6 +630,10 @@
 			<xsl:attribute name="keep-with-next">always</xsl:attribute>		
 			
 			<xsl:attribute name="role">H<xsl:value-of select="$level"/></xsl:attribute>
+			
+			<xsl:if test="../@id = '_document_history' or . = 'Document History'">
+				<xsl:attribute name="text-align">center</xsl:attribute>
+			</xsl:if>
 			
 			<xsl:apply-templates />
 			<xsl:apply-templates select="following-sibling::*[1][local-name() = 'variant-title'][@type = 'sub']" mode="subtitle"/>
@@ -672,9 +674,9 @@
 					<xsl:otherwise>justify</xsl:otherwise>
 				</xsl:choose>
 			</xsl:attribute>
-			<xsl:attribute name="space-after">12pt</xsl:attribute>
+			<xsl:attribute name="space-after">6pt</xsl:attribute>
 			<xsl:if test="parent::iho:dd">
-				<xsl:attribute name="margin-bottom">12pt</xsl:attribute>
+				<xsl:attribute name="margin-bottom">6pt</xsl:attribute>
 			</xsl:if>
 			<xsl:if test="ancestor::*[2][local-name() = 'license-statement'] and not(following-sibling::iho:p)">
 				<xsl:attribute name="space-after">0pt</xsl:attribute>
@@ -685,8 +687,11 @@
 				<xsl:attribute name="line-height">125%</xsl:attribute>
 				<xsl:attribute name="space-after">14pt</xsl:attribute>
 			</xsl:if>
-			<xsl:if test="following-sibling::*[1][self::iho:ol or self::iho:ul or self::iho:note or self::iho:termnote or self::iho:example]">
+			<xsl:if test="following-sibling::*[1][self::iho:ol or self::iho:ul or self::iho:note or self::iho:termnote or self::iho:example or self::iho:dl]">
 				<xsl:attribute name="space-after">3pt</xsl:attribute>
+			</xsl:if>
+			<xsl:if test="following-sibling::*[1][self::iho:dl]">
+				<xsl:attribute name="space-after">6pt</xsl:attribute>
 			</xsl:if>
 			<xsl:if test="ancestor::iho:quote">
 				<xsl:attribute name="line-height">130%</xsl:attribute>
@@ -720,11 +725,11 @@
 	</xsl:template>
 
 	<!-- note in list item -->
-	<xsl:template match="iho:ul//iho:note  | iho:ol//iho:note" priority="2">
+	<!-- <xsl:template match="iho:ul//iho:note  | iho:ol//iho:note" priority="2">
 		<fo:block id="{@id}">
 			<xsl:apply-templates />
 		</fo:block>
-	</xsl:template>
+	</xsl:template> -->
 	
 
 	<xsl:template match="iho:li//iho:p//text()">
