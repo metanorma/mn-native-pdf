@@ -17,7 +17,7 @@
 	<xsl:include href="./common.xsl"/>
 
 	<!-- mandatory 'key' -->
-	<xsl:key name="kfn" match="*[local-name() = 'fn'][not(ancestor::*[(local-name() = 'table' or local-name() = 'figure') and not(ancestor::*[local-name() = 'name'])])]" use="@reference"/>
+	<xsl:key name="kfn" match="*[local-name() = 'fn'][not(ancestor::*[(local-name() = 'table' or local-name() = 'figure' or local-name() = 'localized-strings') and not(ancestor::*[local-name() = 'name'])])]" use="@reference"/>
 	
 	<!-- mandatory variable -->
 	<xsl:variable name="namespace">ieee</xsl:variable>
@@ -55,7 +55,7 @@
 	<!-- mandatory variable -->
 	<xsl:variable name="ids">
 		<xsl:for-each select="//*[@id]">
-			<id><xsl:value-of select="@id"/></id>
+			<id name="{local-name()}"><xsl:value-of select="@id"/></id>
 		</xsl:for-each>
 	</xsl:variable>
 
@@ -2907,7 +2907,7 @@
 			<fo:basic-link internal-destination="{@target}" fox:alt-text="{@target}" xsl:use-attribute-sets="xref-style">
 				
 				<!-- no highlight term's names -->
-				<xsl:if test="normalize-space() != '' and string-length(normalize-space()) = string-length(translate(normalize-space(), '0123456789', '')) and not(contains(normalize-space(), 'Annex'))">
+				<xsl:if test="normalize-space() != '' and xalan:nodeset($ids)/id[. = current()/@target]/@name = 'term'"> <!-- string-length(normalize-space()) = string-length(translate(normalize-space(), '0123456789', ''))  and not(contains(normalize-space(), 'Annex')) -->
 					<xsl:attribute name="color">inherit</xsl:attribute>
 					<xsl:attribute name="text-decoration">none</xsl:attribute>
 				</xsl:if>
