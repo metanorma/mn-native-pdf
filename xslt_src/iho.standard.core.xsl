@@ -20,10 +20,17 @@
 	<xsl:variable name="debug">false</xsl:variable>
 	
 
-	<xsl:variable name="title-en" select="/iho:iho-standard/iho:bibdata/iho:title[@language = 'en']"/>
+	<xsl:variable name="title-en">
+		<xsl:apply-templates select="/iho:iho-standard/iho:bibdata/iho:title[@language = 'en']/node()"/>
+	</xsl:variable>
 	<xsl:variable name="docidentifier" select="/iho:iho-standard/iho:bibdata/iho:docidentifier[@type = 'IHO']"/>
 	<xsl:variable name="copyrightText" select="concat('© International Hydrographic Association ', /iho:iho-standard/iho:bibdata/iho:copyright/iho:from ,' – All rights reserved')"/>
-
+	<xsl:variable name="edition">
+		<xsl:apply-templates select="/iho:iho-standard/iho:bibdata/iho:edition[normalize-space(@language) = '']"/>
+	</xsl:variable>
+	<xsl:variable name="month_year">
+		<xsl:apply-templates select="/iho:iho-standard/iho:bibdata/iho:date[@type = 'published']"/>
+	</xsl:variable>
 
 	<!-- Example:
 		<item level="1" id="Foreword" display="true">Foreword</item>
@@ -58,61 +65,72 @@
 					<fo:simple-page-master master-name="first" page-width="{$pageWidth}mm" page-height="{$pageHeight}mm">
 						<fo:region-body margin-top="{$marginTop}mm" margin-bottom="{$marginBottom}mm" margin-left="{$marginLeftRight1}mm" margin-right="{$marginLeftRight2}mm"/>
 						<fo:region-before region-name="header" extent="{$marginTop}mm"/> 
-						<fo:region-after region-name="footer-even" extent="{$marginBottom}mm"/>
+						<fo:region-after region-name="footer" extent="{$marginBottom}mm"/>
 						<fo:region-start region-name="left-region" extent="{$marginLeftRight1}mm"/>
 						<fo:region-end region-name="right-region" extent="{$marginLeftRight2}mm"/>
 					</fo:simple-page-master>				
 					<fo:simple-page-master master-name="odd" page-width="{$pageWidth}mm" page-height="{$pageHeight}mm">
 						<fo:region-body margin-top="{$marginTop}mm" margin-bottom="{$marginBottom}mm" margin-left="{$marginLeftRight1}mm" margin-right="{$marginLeftRight2}mm"/>
 						<fo:region-before region-name="header-odd" extent="{$marginTop}mm"/> 
-						<fo:region-after region-name="footer-odd" extent="{$marginBottom}mm"/>
+						<fo:region-after region-name="footer" extent="{$marginBottom}mm"/>
 						<fo:region-start region-name="left-region" extent="{$marginLeftRight1}mm"/>
 						<fo:region-end region-name="right-region" extent="{$marginLeftRight2}mm"/>
 					</fo:simple-page-master>
 					<fo:simple-page-master master-name="odd-landscape" page-width="{$pageHeight}mm" page-height="{$pageWidth}mm">
 						<fo:region-body margin-top="{$marginTop}mm" margin-bottom="{$marginBottom}mm" margin-left="{$marginLeftRight1}mm" margin-right="{$marginLeftRight2}mm"/>
 						<fo:region-before region-name="header-odd" extent="{$marginTop}mm"/> 
-						<fo:region-after region-name="footer-odd" extent="{$marginBottom}mm"/>
+						<fo:region-after region-name="footer" extent="{$marginBottom}mm"/>
 						<fo:region-start region-name="left-region" extent="{$marginLeftRight1}mm"/>
 						<fo:region-end region-name="right-region" extent="{$marginLeftRight2}mm"/>
 					</fo:simple-page-master>
 					<fo:simple-page-master master-name="even" page-width="{$pageWidth}mm" page-height="{$pageHeight}mm">
 						<fo:region-body margin-top="{$marginTop}mm" margin-bottom="{$marginBottom}mm" margin-left="{$marginLeftRight2}mm" margin-right="{$marginLeftRight1}mm"/>
 						<fo:region-before region-name="header-even" extent="{$marginTop}mm"/>
-						<fo:region-after region-name="footer-even" extent="{$marginBottom}mm"/>
+						<fo:region-after region-name="footer" extent="{$marginBottom}mm"/>
 						<fo:region-start region-name="left-region" extent="{$marginLeftRight2}mm"/>
 						<fo:region-end region-name="right-region" extent="{$marginLeftRight1}mm"/>
 					</fo:simple-page-master>
 					<fo:simple-page-master master-name="even-landscape" page-width="{$pageHeight}mm" page-height="{$pageWidth}mm">
 						<fo:region-body margin-top="{$marginTop}mm" margin-bottom="{$marginBottom}mm" margin-left="{$marginLeftRight2}mm" margin-right="{$marginLeftRight1}mm"/>
 						<fo:region-before region-name="header-even" extent="{$marginTop}mm"/>
-						<fo:region-after region-name="footer-even" extent="{$marginBottom}mm"/>
+						<fo:region-after region-name="footer" extent="{$marginBottom}mm"/>
+						<fo:region-start region-name="left-region" extent="{$marginLeftRight2}mm"/>
+						<fo:region-end region-name="right-region" extent="{$marginLeftRight1}mm"/>
+					</fo:simple-page-master>
+					<fo:simple-page-master master-name="blankpage" page-width="{$pageWidth}mm" page-height="{$pageHeight}mm">
+						<fo:region-body margin-top="{$marginTop}mm" margin-bottom="{$marginBottom}mm" margin-left="{$marginLeftRight2}mm" margin-right="{$marginLeftRight1}mm"/>
+						<fo:region-before region-name="header-blank" extent="{$marginTop}mm"/>
+						<fo:region-after region-name="footer" extent="{$marginBottom}mm"/>
 						<fo:region-start region-name="left-region" extent="{$marginLeftRight2}mm"/>
 						<fo:region-end region-name="right-region" extent="{$marginLeftRight1}mm"/>
 					</fo:simple-page-master>
 					<!-- Preface pages -->
 					<fo:page-sequence-master master-name="preface">
 						<fo:repeatable-page-master-alternatives>
-							<fo:conditional-page-master-reference master-reference="first" page-position="first"/>
+							<!-- <fo:conditional-page-master-reference master-reference="first" page-position="first"/> -->
+							<fo:conditional-page-master-reference master-reference="blankpage" blank-or-not-blank="blank"/>
 							<fo:conditional-page-master-reference odd-or-even="even" master-reference="even"/>
 							<fo:conditional-page-master-reference odd-or-even="odd" master-reference="odd"/>
 						</fo:repeatable-page-master-alternatives>
 					</fo:page-sequence-master>
 					<!-- Document pages -->
 					<fo:page-sequence-master master-name="document">
-						<fo:repeatable-page-master-alternatives>						
+						<fo:repeatable-page-master-alternatives>
+							<fo:conditional-page-master-reference master-reference="blankpage" blank-or-not-blank="blank"/>
 							<fo:conditional-page-master-reference odd-or-even="even" master-reference="even"/>
 							<fo:conditional-page-master-reference odd-or-even="odd" master-reference="odd"/>
 						</fo:repeatable-page-master-alternatives>
 					</fo:page-sequence-master>
 					<fo:page-sequence-master master-name="document-portrait">
-						<fo:repeatable-page-master-alternatives>						
+						<fo:repeatable-page-master-alternatives>
+							<fo:conditional-page-master-reference master-reference="blankpage" blank-or-not-blank="blank"/>
 							<fo:conditional-page-master-reference odd-or-even="even" master-reference="even"/>
 							<fo:conditional-page-master-reference odd-or-even="odd" master-reference="odd"/>
 						</fo:repeatable-page-master-alternatives>
 					</fo:page-sequence-master>
 					<fo:page-sequence-master master-name="document-landscape">
-						<fo:repeatable-page-master-alternatives>						
+						<fo:repeatable-page-master-alternatives>
+							<fo:conditional-page-master-reference master-reference="blankpage" blank-or-not-blank="blank"/>
 							<fo:conditional-page-master-reference odd-or-even="even" master-reference="even-landscape"/>
 							<fo:conditional-page-master-reference odd-or-even="odd" master-reference="odd-landscape"/>
 						</fo:repeatable-page-master-alternatives>
@@ -131,20 +149,18 @@
 				<!-- Cover Page -->
 				<fo:page-sequence master-reference="cover">				
 					<fo:flow flow-name="xsl-region-body">
-						<fo:block-container position="absolute" left="14.25mm" top="28.20mm" >
+						<fo:block-container position="absolute" left="14.25mm" top="12mm" id="__internal_layout__coverpage_{generate-id()}">
 							<fo:table table-layout="fixed" width="181.1mm">
 									<fo:table-column column-width="26mm"/>
-									<fo:table-column column-width="45.3mm"/>
-									<fo:table-column column-width="109.8mm"/>
+									<fo:table-column column-width="19.4mm"/> 
+									<fo:table-column column-width="135.7mm"/>
 									<fo:table-body>
 										<fo:table-row>
 											<fo:table-cell><fo:block>&#xA0;</fo:block></fo:table-cell>
 											<fo:table-cell>
-												<fo:block-container width="45.3mm" height="19.3mm" background-color="rgb(241, 234, 202)" text-align="center" display-align="center" font-weight="bold">
+												<fo:block-container width="19.4mm" height="21mm" background-color="rgb(241, 234, 202)" border-bottom="0.05pt solid rgb(0, 21, 50)" text-align="center" display-align="center" font-size="10pt" font-weight="bold">
 													<fo:block>
 														<xsl:value-of select="$docidentifier"/>
-														<xsl:text> </xsl:text>
-														<xsl:apply-templates select="/iho:iho-standard/iho:bibdata/iho:edition[normalize-space(@language) = '']"/>
 													</fo:block>
 												</fo:block-container>
 											</fo:table-cell>
@@ -156,11 +172,24 @@
 													<fo:external-graphic src="{concat('data:image/png;base64,', normalize-space($Image-IHO))}" width="25.9mm" content-width="scale-to-fit" scaling="uniform" fox:alt-text="Image IHO"/>
 												</fo:block>
 											</fo:table-cell>
-											<fo:table-cell number-columns-spanned="2" border="0.5pt solid rgb(0, 21, 50)">
-												<fo:block-container height="154.4mm" text-align="center" display-align="center">
-													<fo:block font-size="28pt" font-weight="bold" color="rgb(0, 0, 76)" role="H1">
-														<xsl:value-of select="$title-en"/>
-													</fo:block>
+											<fo:table-cell number-columns-spanned="2" border="0.5pt solid rgb(0, 21, 50)" font-weight="bold" color="rgb(0, 0, 76)" padding-top="3mm">
+												<fo:block-container height="165mm" width="115mm">
+													<fo:block-container margin-left="10mm">
+														<fo:block-container margin-left="0mm">
+															<fo:block-container display-align="center" height="90mm">
+																<fo:block font-size="28pt" role="H1" line-height="115%">
+																	<xsl:copy-of select="$title-en"/>
+																</fo:block>
+															</fo:block-container>
+															<fo:block font-size="14pt">
+																<xsl:value-of select="$edition"/>
+																<xsl:if test="normalize-space($month_year) != ''">
+																	<xsl:text> – </xsl:text>
+																	<xsl:value-of select="$month_year" />
+																</xsl:if>
+															</fo:block>
+														</fo:block-container>
+													</fo:block-container>
 												</fo:block-container>
 											</fo:table-cell>
 										</fo:table-row>
@@ -176,10 +205,12 @@
 												</fo:block>
 											</fo:table-cell>
 											<fo:table-cell>
-												<fo:block-container width="79.2mm" height="66.3mm" margin-left="30.6mm" background-color="rgb(0, 172, 158)" text-align="right" display-align="after">
-													<fo:block font-size="8pt" color="white" margin-left="-30mm" margin-right="5mm" margin-bottom="9mm">
-														<xsl:apply-templates select="/iho:iho-standard/iho:boilerplate/iho:feedback-statement"/>
-													</fo:block>
+												<fo:block-container width="79mm" height="72mm" margin-left="56.8mm" background-color="rgb(0, 172, 158)" text-align="right" display-align="after">
+													<fo:block-container margin-left="0mm">
+														<fo:block font-size="8pt" color="white" margin-right="5mm" margin-bottom="5mm" line-height-shift-adjustment="disregard-shifts">
+															<xsl:apply-templates select="/iho:iho-standard/iho:boilerplate/iho:feedback-statement"/>
+														</fo:block>
+													</fo:block-container>
 												</fo:block-container>					
 											</fo:table-cell>
 										</fo:table-row>
@@ -203,101 +234,109 @@
 						<xsl:with-param name="font-weight">normal</xsl:with-param>
 					</xsl:call-template>
 					<fo:flow flow-name="xsl-region-body">
-						<fo:block>&#xA0;</fo:block>
-						<fo:block break-after="page"/>
-						<fo:block-container margin-left="7.5mm" margin-right="-2mm">
-							<fo:block-container margin-left="0mm" margin-right="0mm" border="0.5pt solid black" padding-top="1mm" padding-left="1.8mm" padding-right="1mm">
-								<fo:block>
-									<xsl:apply-templates select="/iho:iho-standard/iho:boilerplate/*[local-name() != 'feedback-statement']"/>
-								</fo:block>
+						
+						<fo:block-container margin-left="-1.5mm" margin-right="-1mm">
+							<fo:block-container margin-left="0mm" margin-right="0mm" border="0.5pt solid black" >
+								<fo:block-container margin-top="6.5mm" margin-left="7.5mm" margin-right="8.5mm" margin-bottom="7.5mm">
+									<fo:block-container margin="0">
+										<fo:block text-align="justify">
+											<xsl:apply-templates select="/iho:iho-standard/iho:boilerplate/*[local-name() != 'feedback-statement']"/>
+										</fo:block>
+									</fo:block-container>
+								</fo:block-container>
 							</fo:block-container>
 						</fo:block-container>
 						
 						<fo:block break-after="page"/>
 						
 						<!-- Table of Contents -->
-						<fo:block-container margin-right="-12.7mm">
-							<fo:block-container margin-right="0mm">
-								<fo:block role="TOC">
-									<fo:block color="rgb(14, 36, 133)" margin-bottom="15.5pt" role="H1">
-										<xsl:variable name="title-toc">
-											<xsl:call-template name="getTitle">
-												<xsl:with-param name="name" select="'title-toc'"/>
-											</xsl:call-template>
-										</xsl:variable>
-										<xsl:value-of select="$title-toc"/>
+						<fo:block role="TOC">
+							<fo:block font-weight="bold" margin-bottom="7.5pt" role="H1" font-size="12pt" margin-top="4pt">
+								<fo:block-container width="18.3mm" border-bottom="1.25pt solid black">
+									<fo:block line-height="75%">
+										<xsl:call-template name="getLocalizedString">
+											<xsl:with-param name="key">table_of_contents</xsl:with-param>
+										</xsl:call-template>
 									</fo:block>
-									<xsl:if test="$debug = 'true'">
-										<xsl:text disable-output-escaping="yes">&lt;!--</xsl:text>
-											DEBUG
-											contents=<xsl:copy-of select="$contents"/>
-										<xsl:text disable-output-escaping="yes">--&gt;</xsl:text>
-									</xsl:if>
+								</fo:block-container>
+							</fo:block>
+							<xsl:if test="$debug = 'true'">
+								<xsl:text disable-output-escaping="yes">&lt;!--</xsl:text>
+									DEBUG
+									contents=<xsl:copy-of select="$contents"/>
+								<xsl:text disable-output-escaping="yes">--&gt;</xsl:text>
+							</xsl:if>
+							
+							<fo:block line-height="115%">
+							
+								<xsl:for-each select="$contents//item[@display = 'true']"><!-- [not(@level = 2 and starts-with(@section, '0'))] skip clause from preface -->							
+									<fo:block role="TOCI">
+										<!-- <xsl:if test="@level = 1">
+											<xsl:attribute name="margin-top">6pt</xsl:attribute>
+										</xsl:if> -->
 									
-									<xsl:for-each select="$contents//item[@display = 'true']"><!-- [not(@level = 2 and starts-with(@section, '0'))] skip clause from preface -->							
-										<fo:block role="TOCI">
-											<xsl:if test="@level = 1">
-												<xsl:attribute name="margin-top">6pt</xsl:attribute>
-											</xsl:if>
-										
-											<fo:list-block>
-												
-												<xsl:attribute name="provisional-distance-between-starts">
-													<xsl:choose>
-														<xsl:when test="@level &gt;= 1 and @root = 'preface'">0mm</xsl:when>
-														<xsl:when test="@level &gt;= 1 and @root = 'annex' and not(@type = 'annex')">13mm</xsl:when>
-														<xsl:when test="@level &gt;= 1 and not(@type = 'annex')">10mm</xsl:when>													
-														<xsl:otherwise>0mm</xsl:otherwise>
-													</xsl:choose>											
-												</xsl:attribute>
-												<fo:list-item>
-													<fo:list-item-label end-indent="label-end()">
-														<fo:block>
-															<xsl:if test="@section != '' and not(@type = 'annex')"> <!-- output below   -->
-																<xsl:value-of select="@section"/>
-															</xsl:if>
+										<fo:list-block>
+											
+											<xsl:attribute name="provisional-distance-between-starts">
+												<xsl:choose>
+													<xsl:when test="@level &gt;= 1 and @root = 'preface'">0mm</xsl:when>
+													<xsl:when test="@level &gt;= 1 and @root = 'annex' and not(@type = 'annex')">13mm</xsl:when>
+													<xsl:when test="@level &gt;= 1 and not(@type = 'annex')">
+														<xsl:choose>
+															<xsl:when test="$toc_level = 3">12.9mm</xsl:when>
+															<xsl:when test="$toc_level &gt; 3">15mm</xsl:when>
+															<xsl:otherwise>10mm</xsl:otherwise>
+														</xsl:choose>
+													</xsl:when>
+													<xsl:otherwise>0mm</xsl:otherwise>
+												</xsl:choose>											
+											</xsl:attribute>
+											<fo:list-item>
+												<fo:list-item-label end-indent="label-end()">
+													<fo:block>
+														<xsl:if test="@section != '' and not(@type = 'annex')"> <!-- output below   -->
+															<xsl:value-of select="@section"/>
+														</xsl:if>
+													</fo:block>
+												</fo:list-item-label>
+													<fo:list-item-body start-indent="body-start()">
+														<fo:block text-align-last="justify" margin-left="12mm" text-indent="-12mm">
+															<fo:basic-link internal-destination="{@id}" fox:alt-text="{title}">																
+																<xsl:apply-templates select="title"/>
+																<fo:inline keep-together.within-line="always">
+																	<fo:leader font-size="9pt" font-weight="normal" leader-pattern="dots"/>
+																	<fo:inline><fo:page-number-citation ref-id="{@id}"/></fo:inline>
+																</fo:inline>
+															</fo:basic-link>
 														</fo:block>
-													</fo:list-item-label>
-														<fo:list-item-body start-indent="body-start()">
-															<fo:block text-align-last="justify" margin-left="12mm" text-indent="-12mm">
-																<fo:basic-link internal-destination="{@id}" fox:alt-text="{title}">																
-																	<xsl:apply-templates select="title"/>
-																	<fo:inline keep-together.within-line="always">
-																		<fo:leader font-size="9pt" font-weight="normal" leader-pattern="dots"/>
-																		<fo:inline><fo:page-number-citation ref-id="{@id}"/></fo:inline>
-																	</fo:inline>
-																</fo:basic-link>
-															</fo:block>
-														</fo:list-item-body>
-												</fo:list-item>
-											</fo:list-block>
-										</fo:block>
-										
+													</fo:list-item-body>
+											</fo:list-item>
+										</fo:list-block>
+									</fo:block>
+									
+								</xsl:for-each>
+								
+								<!-- List of Tables -->
+								<xsl:if test="$contents//tables/table">
+									<xsl:call-template name="insertListOf_Title">
+										<xsl:with-param name="title" select="$title-list-tables"/>
+									</xsl:call-template>
+									<xsl:for-each select="$contents//tables/table">
+										<xsl:call-template name="insertListOf_Item"/>
 									</xsl:for-each>
-									
-									<!-- List of Tables -->
-									<xsl:if test="$contents//tables/table">
-										<xsl:call-template name="insertListOf_Title">
-											<xsl:with-param name="title" select="$title-list-tables"/>
-										</xsl:call-template>
-										<xsl:for-each select="$contents//tables/table">
-											<xsl:call-template name="insertListOf_Item"/>
-										</xsl:for-each>
-									</xsl:if>
-									
-									<!-- List of Figures -->
-									<xsl:if test="$contents//figures/figure">
-										<xsl:call-template name="insertListOf_Title">
-											<xsl:with-param name="title" select="$title-list-figures"/>
-										</xsl:call-template>
-										<xsl:for-each select="$contents//figures/figure">
-											<xsl:call-template name="insertListOf_Item"/>
-										</xsl:for-each>
-									</xsl:if>
-									
-								</fo:block>
-							</fo:block-container>
-						</fo:block-container>
+								</xsl:if>
+								
+								<!-- List of Figures -->
+								<xsl:if test="$contents//figures/figure">
+									<xsl:call-template name="insertListOf_Title">
+										<xsl:with-param name="title" select="$title-list-figures"/>
+									</xsl:call-template>
+									<xsl:for-each select="$contents//figures/figure">
+										<xsl:call-template name="insertListOf_Item"/>
+									</xsl:for-each>
+								</xsl:if>
+							</fo:block>
+						</fo:block>
 						
 						<!-- Foreword, Introduction -->
 						<xsl:call-template name="processPrefaceSectionsDefault"/>
@@ -323,7 +362,7 @@
 					<fo:flow flow-name="xsl-region-body">
 						<fo:block-container>
 							
-							<fo:block font-size="16pt" font-weight="bold" margin-bottom="18pt" role="H1"><xsl:value-of select="$title-en"/></fo:block>
+							<!-- <fo:block font-size="16pt" font-weight="bold" margin-bottom="18pt" role="H1"><xsl:value-of select="$title-en"/></fo:block> -->
 							
 							<xsl:apply-templates select="/*/*[local-name()='sections']/*[local-name()='clause'][@type='scope']" />
 							<!-- Normative references  -->
@@ -419,7 +458,8 @@
 		</xsl:variable>
 		
 		<xsl:variable name="display">
-			<xsl:choose>				
+			<xsl:choose>
+				<xsl:when test="@id = '_document_history' or iho:title = 'Document History'">false</xsl:when>
 				<xsl:when test="$level &lt;= $toc_level">true</xsl:when>
 				<xsl:otherwise>false</xsl:otherwise>
 			</xsl:choose>
@@ -483,8 +523,21 @@
 		<xsl:apply-templates/>
 	</xsl:template>
 	
+	<xsl:template match="/iho:iho-standard/iho:bibdata/iho:date[@type = 'published']">
+		<xsl:call-template name="convertDate">
+			<xsl:with-param name="date" select="."/>
+			<xsl:with-param name="format" select="'short'"/>
+		</xsl:call-template>
+	</xsl:template>
+	
 	<xsl:template match="iho:feedback-statement//iho:br" priority="2">
 		<fo:block/>
+	</xsl:template>
+	
+	<xsl:template match="iho:feedback-statement//iho:sup" priority="2">
+		<fo:inline font-size="62%" baseline-shift="35%">
+			<xsl:apply-templates />
+		</fo:inline>
 	</xsl:template>
 	
 	
@@ -498,7 +551,7 @@
 	<!-- ====== -->
 	
 	<xsl:template match="iho:annex/iho:title">
-		<fo:block font-size="13pt" font-weight="bold" text-align="center" margin-bottom="12pt" keep-with-next="always" role="H1">			
+		<fo:block font-size="12pt" font-weight="bold" text-align="center" margin-bottom="12pt" keep-with-next="always" role="H1">			
 			<xsl:apply-templates />
 			<xsl:apply-templates select="following-sibling::*[1][local-name() = 'variant-title'][@type = 'sub']" mode="subtitle"/>
 		</fo:block>
@@ -509,7 +562,24 @@
 			<xsl:apply-templates />
 		</fo:block>
 	</xsl:template>
-		
+	
+	<xsl:template match="*[local-name() = 'clause']" priority="3">
+		<xsl:if test="parent::iho:preface">
+			<fo:block break-after="page"/>
+		</xsl:if>
+		<xsl:choose>
+			<xsl:when test="iho:title">
+				<xsl:apply-templates />
+			</xsl:when>
+			<xsl:otherwise>
+				<fo:block>
+					<xsl:call-template name="setId"/>
+					<xsl:apply-templates />
+				</fo:block>
+			</xsl:otherwise>
+		</xsl:choose>
+	</xsl:template>
+	
 	<xsl:template match="iho:title" name="title">
 		
 		<xsl:variable name="level">
@@ -518,9 +588,9 @@
 	
 		<xsl:variable name="font-size">
 			<xsl:choose>
-				<xsl:when test="$level = 1">13pt</xsl:when>
-				<xsl:when test="$level = 2">12pt</xsl:when>
-				<xsl:when test="$level &gt;= 3">11pt</xsl:when>				
+				<xsl:when test="$level = 1">12pt</xsl:when>
+				<xsl:when test="$level = 2">11pt</xsl:when>
+				<xsl:when test="$level &gt;= 3">10pt</xsl:when>				
 				<xsl:otherwise>12pt</xsl:otherwise>
 			</xsl:choose>
 		</xsl:variable>
@@ -532,25 +602,38 @@
 			</xsl:choose>
 		</xsl:variable>
 		
-	
 		<xsl:element name="{$element-name}">
+			<xsl:for-each select="parent::*[local-name() = 'clause']">
+				<xsl:call-template name="setId"/>
+			</xsl:for-each>
 			<xsl:attribute name="font-size"><xsl:value-of select="$font-size"/></xsl:attribute>			
+			<xsl:attribute name="font-weight">bold</xsl:attribute>			
 			<xsl:attribute name="space-before">
 				<xsl:choose>
-					<xsl:when test="$level = 1">13.5pt</xsl:when>
-					<xsl:when test="$level &gt;= 2">3pt</xsl:when>
+					<xsl:when test="$level = 1">24pt</xsl:when>
+					<xsl:when test="$level = 2 and ../preceding-sibling::*[1][self::iho:title]">10pt</xsl:when>
+					<xsl:when test="$level = 2">24pt</xsl:when>
+					<xsl:when test="$level &gt;= 3">6pt</xsl:when>
 					<xsl:when test="ancestor::iho:preface">8pt</xsl:when>
-					<xsl:when test="$level = 2 and ancestor::iho:annex">18pt</xsl:when>
-					<xsl:when test="$level = 1">18pt</xsl:when>
 					<xsl:when test="$level = ''">6pt</xsl:when><!-- 13.5pt -->
 					<xsl:otherwise>12pt</xsl:otherwise>
 				</xsl:choose>
 			</xsl:attribute>
-			<xsl:attribute name="margin-bottom">12pt</xsl:attribute>
+			<xsl:attribute name="space-after">
+				<xsl:choose>
+					<xsl:when test="$level &gt;= 3">6pt</xsl:when>
+					<xsl:otherwise>10pt</xsl:otherwise>
+				</xsl:choose>
+			</xsl:attribute>
+			<!-- <xsl:attribute name="margin-bottom">10pt</xsl:attribute> -->
 				
 			<xsl:attribute name="keep-with-next">always</xsl:attribute>		
 			
 			<xsl:attribute name="role">H<xsl:value-of select="$level"/></xsl:attribute>
+			
+			<xsl:if test="../@id = '_document_history' or . = 'Document History'">
+				<xsl:attribute name="text-align">center</xsl:attribute>
+			</xsl:if>
 			
 			<xsl:apply-templates />
 			<xsl:apply-templates select="following-sibling::*[1][local-name() = 'variant-title'][@type = 'sub']" mode="subtitle"/>
@@ -584,21 +667,36 @@
 				<xsl:choose>
 					<xsl:when test="ancestor::iho:quote">justify</xsl:when>
 					<xsl:when test="ancestor::iho:feedback-statement">right</xsl:when>
+					<xsl:when test="ancestor::iho:boilerplate and not(@align)">justify</xsl:when>
 					<xsl:when test="@align"><xsl:value-of select="@align"/></xsl:when>
 					<xsl:when test="ancestor::iho:td/@align"><xsl:value-of select="ancestor::iho:td/@align"/></xsl:when>
 					<xsl:when test="ancestor::iho:th/@align"><xsl:value-of select="ancestor::iho:th/@align"/></xsl:when>
-					<xsl:otherwise>left</xsl:otherwise>
+					<xsl:otherwise>justify</xsl:otherwise>
 				</xsl:choose>
 			</xsl:attribute>
-			<xsl:attribute name="space-after">12pt</xsl:attribute>
+			<xsl:attribute name="space-after">6pt</xsl:attribute>
 			<xsl:if test="parent::iho:dd">
-				<xsl:attribute name="margin-bottom">12pt</xsl:attribute>
+				<xsl:attribute name="margin-bottom">6pt</xsl:attribute>
 			</xsl:if>
 			<xsl:if test="ancestor::*[2][local-name() = 'license-statement'] and not(following-sibling::iho:p)">
 				<xsl:attribute name="space-after">0pt</xsl:attribute>
 			</xsl:if>
 			<xsl:attribute name="line-height">115%</xsl:attribute>
 			<!-- <xsl:attribute name="border">1pt solid red</xsl:attribute> -->
+			<xsl:if test="ancestor::iho:boilerplate and not(ancestor::iho:feedback-statement)">
+				<xsl:attribute name="line-height">125%</xsl:attribute>
+				<xsl:attribute name="space-after">14pt</xsl:attribute>
+			</xsl:if>
+			<xsl:if test="following-sibling::*[1][self::iho:ol or self::iho:ul or self::iho:note or self::iho:termnote or self::iho:example or self::iho:dl]">
+				<xsl:attribute name="space-after">3pt</xsl:attribute>
+			</xsl:if>
+			<xsl:if test="following-sibling::*[1][self::iho:dl]">
+				<xsl:attribute name="space-after">6pt</xsl:attribute>
+			</xsl:if>
+			<xsl:if test="ancestor::iho:quote">
+				<xsl:attribute name="line-height">130%</xsl:attribute>
+				<!-- <xsl:attribute name="margin-bottom">12pt</xsl:attribute> -->
+			</xsl:if>
 			
 			<xsl:if test=".//iho:fn">
 				<xsl:attribute name="line-height-shift-adjustment">disregard-shifts</xsl:attribute>
@@ -627,11 +725,11 @@
 	</xsl:template>
 
 	<!-- note in list item -->
-	<xsl:template match="iho:ul//iho:note  | iho:ol//iho:note" priority="2">
+	<!-- <xsl:template match="iho:ul//iho:note  | iho:ol//iho:note" priority="2">
 		<fo:block id="{@id}">
 			<xsl:apply-templates />
 		</fo:block>
-	</xsl:template>
+	</xsl:template> -->
 	
 
 	<xsl:template match="iho:li//iho:p//text()">
@@ -647,7 +745,7 @@
 	
 
 	
-	<xsl:template match="iho:example/iho:p" priority="2">
+	<!-- <xsl:template match="iho:example/iho:p" priority="2">
 			<fo:block-container xsl:use-attribute-sets="example-p-style">
 				<fo:block-container margin-left="0mm">
 					<fo:block>
@@ -655,7 +753,7 @@
 					</fo:block>
 				</fo:block-container>
 			</fo:block-container>
-	</xsl:template>
+	</xsl:template> -->
 
 
 	
@@ -669,45 +767,77 @@
 
 
 	<xsl:template name="insertHeaderFooter">		
-		<xsl:param name="font-weight" select="'bold'"/>				
+		<xsl:param name="font-weight" select="'bold'"/>
 		<fo:static-content flow-name="header-odd" role="artifact">
-			<fo:block-container height="100%">
-				<fo:block padding-top="12.5mm" text-align="right">
-					<xsl:value-of select="$docidentifier"/>
+			<fo:block-container height="100%" font-size="8pt">
+				<fo:block padding-top="12.5mm">
+					<fo:table table-layout="fixed" width="100%">
+						<fo:table-column column-width="proportional-column-width(1)"/>
+						<fo:table-column column-width="proportional-column-width(10)"/>
+						<fo:table-column column-width="proportional-column-width(1)"/>
+						<fo:table-body>
+							<fo:table-row>
+								<fo:table-cell><fo:block>&#xa0;</fo:block></fo:table-cell>
+								<fo:table-cell text-align="center"><fo:block><xsl:copy-of select="$title-en"/></fo:block></fo:table-cell>
+								<fo:table-cell text-align="right"><fo:block><fo:page-number /></fo:block></fo:table-cell>
+							</fo:table-row>
+						</fo:table-body>
+					</fo:table>
 				</fo:block>
-			</fo:block-container>
-		</fo:static-content>
-		<fo:static-content flow-name="footer-odd" role="artifact">
-			<fo:block-container height="100%" margin-right="-10mm" display-align="after">
-				<fo:block-container margin-right="0mm">
-					<fo:block padding-bottom="17mm" font-size="10pt" text-align-last="justify">
-						<fo:inline><xsl:value-of select="$copyrightText"/></fo:inline>
-						<fo:inline keep-together.within-line="always">
-							<fo:leader leader-pattern="space"/>
-							<fo:inline font-weight="{$font-weight}"><fo:page-number/></fo:inline>
-						</fo:inline>						
-					</fo:block>
-				</fo:block-container>
 			</fo:block-container>
 		</fo:static-content>
 		<fo:static-content flow-name="header-even" role="artifact">
-			<fo:block-container height="100%">
+			<fo:block-container height="100%" font-size="8pt">
 				<fo:block padding-top="12.5mm">
-					<xsl:value-of select="$docidentifier"/>
+					<fo:table table-layout="fixed" width="100%">
+						<fo:table-column column-width="proportional-column-width(1)"/>
+						<fo:table-column column-width="proportional-column-width(10)"/>
+						<fo:table-column column-width="proportional-column-width(1)"/>
+						<fo:table-body>
+							<fo:table-row>
+								<fo:table-cell><fo:block><fo:page-number /></fo:block></fo:table-cell>
+								<fo:table-cell text-align="center"><fo:block><xsl:copy-of select="$title-en"/></fo:block></fo:table-cell>
+								<fo:table-cell><fo:block>&#xa0;</fo:block></fo:table-cell>
+							</fo:table-row>
+						</fo:table-body>
+					</fo:table>
 				</fo:block>
 			</fo:block-container>
 		</fo:static-content>
-		<fo:static-content flow-name="footer-even" role="artifact">
-			<fo:block-container height="100%" margin-right="-10mm" display-align="after">
-				<fo:block-container margin-right="0mm">
-					<fo:block padding-bottom="17mm" font-size="10pt" text-align-last="justify">
-						<fo:inline font-weight="{$font-weight}"><fo:page-number/></fo:inline>
-						<fo:inline keep-together.within-line="always">
-							<fo:leader leader-pattern="space"/>
-							<xsl:value-of select="$copyrightText"/>
-						</fo:inline>							
-					</fo:block>
-				</fo:block-container>
+		<fo:static-content flow-name="header-blank" role="artifact">
+			<fo:block-container height="100%" font-size="8pt">
+				<fo:block padding-top="12.5mm">
+					<fo:table table-layout="fixed" width="100%">
+						<fo:table-column column-width="proportional-column-width(1)"/>
+						<fo:table-column column-width="proportional-column-width(10)"/>
+						<fo:table-column column-width="proportional-column-width(1)"/>
+						<fo:table-body>
+							<fo:table-row>
+								<fo:table-cell><fo:block><fo:page-number /></fo:block></fo:table-cell>
+								<fo:table-cell text-align="center"><fo:block><xsl:copy-of select="$title-en"/></fo:block></fo:table-cell>
+								<fo:table-cell><fo:block>&#xa0;</fo:block></fo:table-cell>
+							</fo:table-row>
+						</fo:table-body>
+					</fo:table>
+				</fo:block>
+			</fo:block-container>
+			<fo:block-container position="absolute" left="40.5mm" top="130mm" height="4mm" width="79mm" border="0.75pt solid black" text-align="center" display-align="center" line-height="100%">
+				<fo:block>Page intentionally left blank</fo:block>
+			</fo:block-container>
+		</fo:static-content>
+		<fo:static-content flow-name="footer" role="artifact">
+			<fo:block-container height="100%" display-align="after">
+				<fo:block padding-bottom="12.5mm" font-size="8pt" text-align-last="justify">
+					<fo:inline><xsl:value-of select="$docidentifier" /></fo:inline>
+					<fo:inline keep-together.within-line="always">
+						<fo:leader leader-pattern="space"/>
+						<fo:inline>&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;<xsl:value-of select="$month_year" /></fo:inline>
+					</fo:inline>						
+					<fo:inline keep-together.within-line="always">
+						<fo:leader leader-pattern="space"/>
+						<fo:inline><xsl:value-of select="$edition" /></fo:inline>
+					</fo:inline>						
+				</fo:block>
 			</fo:block-container>
 		</fo:static-content>
 	</xsl:template>
