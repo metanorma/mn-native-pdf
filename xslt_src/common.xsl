@@ -5322,7 +5322,7 @@
 								$namespace = 'm3d' or $namespace = 'mpfd' or 
 								$namespace = 'nist-cswp' or $namespace = 'nist-sp' or 
 								$namespace = 'rsd'">
-					<fo:table table-layout="fixed" width="100%" >
+					<fo:table table-layout="fixed" width="100%" xsl:use-attribute-sets="table-container-style">
 						<fo:table-column column-width="proportional-column-width(1)"/>
 						<fo:table-column column-width="{@width}"/>
 						<fo:table-column column-width="proportional-column-width(1)"/>
