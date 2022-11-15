@@ -685,7 +685,7 @@
 				<xsl:attribute name="line-height">125%</xsl:attribute>
 				<xsl:attribute name="space-after">14pt</xsl:attribute>
 			</xsl:if>
-			<xsl:if test="following-sibling::*[1][self::iho:ol or self::iho:ul]">
+			<xsl:if test="following-sibling::*[1][self::iho:ol or self::iho:ul or self::iho:note or self::iho:termnote or self::iho:example]">
 				<xsl:attribute name="space-after">3pt</xsl:attribute>
 			</xsl:if>
 			<xsl:if test="ancestor::iho:quote">
@@ -740,7 +740,7 @@
 	
 
 	
-	<xsl:template match="iho:example/iho:p" priority="2">
+	<!-- <xsl:template match="iho:example/iho:p" priority="2">
 			<fo:block-container xsl:use-attribute-sets="example-p-style">
 				<fo:block-container margin-left="0mm">
 					<fo:block>
@@ -748,7 +748,7 @@
 					</fo:block>
 				</fo:block-container>
 			</fo:block-container>
-	</xsl:template>
+	</xsl:template> -->
 
 
 	
