@@ -685,6 +685,9 @@
 				<xsl:attribute name="line-height">125%</xsl:attribute>
 				<xsl:attribute name="space-after">14pt</xsl:attribute>
 			</xsl:if>
+			<xsl:if test="following-sibling::*[1][self::iho:ol or self::iho:ul]">
+				<xsl:attribute name="space-after">3pt</xsl:attribute>
+			</xsl:if>
 			<xsl:if test="ancestor::iho:quote">
 				<xsl:attribute name="line-height">130%</xsl:attribute>
 				<!-- <xsl:attribute name="margin-bottom">12pt</xsl:attribute> -->

@@ -3203,7 +3203,7 @@
 	
 	<xsl:attribute-set name="list-item-style">
 		<xsl:if test="$namespace = 'iho'">
-			<xsl:attribute name="margin-bottom">12pt</xsl:attribute>
+			<xsl:attribute name="margin-bottom">3pt</xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'rsd'">
 			<xsl:attribute name="space-after">4pt</xsl:attribute>
@@ -12826,7 +12826,10 @@
 				</xsl:choose>
 			</xsl:when>
 			<xsl:when test="$namespace = 'iho'">
-				<label>&#x2014;</label> <!-- em dash -->
+				<!-- <label>&#x2014;</label> --> <!-- em dash -->
+				<label level="1" font-size="15pt" line-height="80%">•</label>
+				<label level="2">&#x2014;</label><!-- em dash -->
+				<label level="3" font-size="75%">o</label> <!-- white circle -->
 			</xsl:when>
 			<xsl:when test="$namespace = 'iso'">
 				<label>&#x2014;</label> <!-- em dash -->
