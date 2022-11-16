@@ -301,7 +301,7 @@
 												</fo:list-item-label>
 													<fo:list-item-body start-indent="body-start()">
 														<fo:block text-align-last="justify" margin-left="12mm" text-indent="-12mm">
-															<fo:basic-link internal-destination="{@id}" fox:alt-text="{title}">																
+															<fo:basic-link internal-destination="{@id}" fox:alt-text="{title}">
 																<xsl:apply-templates select="title"/>
 																<fo:inline keep-together.within-line="always">
 																	<fo:leader font-size="9pt" font-weight="normal" leader-pattern="dots"/>
@@ -501,6 +501,10 @@
 			
 		</xsl:if>	
 		
+	</xsl:template>
+	
+	<xsl:template match="*[local-name() = 'strong']" mode="contents_item" priority="2">
+		<xsl:apply-templates mode="contents_item"/>
 	</xsl:template>
 	
 	<!-- ============================= -->
