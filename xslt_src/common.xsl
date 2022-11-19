@@ -1435,7 +1435,7 @@
 		</xsl:if>
 		<xsl:if test="$namespace = 'iso'">
 			<xsl:attribute name="font-size">10pt</xsl:attribute>
-			<xsl:attribute name="margin-top">12pt</xsl:attribute>
+			<!-- <xsl:attribute name="margin-top">12pt</xsl:attribute> -->
 			<xsl:attribute name="margin-bottom">8pt</xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'itu'">
@@ -1591,12 +1591,18 @@
 			<xsl:attribute name="font-weight">bold</xsl:attribute>
 			<xsl:attribute name="font-size">10pt</xsl:attribute>
 		</xsl:if>
-		<xsl:if test="$namespace = 'iso' or $namespace = 'jcgm'">
+		<xsl:if test="$namespace = 'iso'">
+			<xsl:attribute name="font-size">11pt</xsl:attribute>
+			<xsl:attribute name="font-weight">bold</xsl:attribute>
+			<xsl:attribute name="text-align">center</xsl:attribute>
+			<xsl:attribute name="margin-bottom">-12pt</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'jcgm'">
 			<xsl:attribute name="font-size">11pt</xsl:attribute>
 			<xsl:attribute name="font-weight">bold</xsl:attribute>
 			<xsl:attribute name="text-align">center</xsl:attribute>
 			<xsl:attribute name="margin-bottom">0pt</xsl:attribute>
-		</xsl:if>		
+		</xsl:if>
 		<xsl:if test="$namespace = 'nist-cswp'  or $namespace = 'nist-sp'">
 			<xsl:attribute name="font-weight">bold</xsl:attribute>
 			<xsl:attribute name="text-align">center</xsl:attribute>
@@ -1762,7 +1768,7 @@
 			<xsl:attribute name="padding-top">1mm</xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'iso'">
-			<xsl:attribute name="padding-top">1mm</xsl:attribute>
+			<xsl:attribute name="padding-top">0.5mm</xsl:attribute>
 			<xsl:attribute name="border-left"><xsl:value-of select="$table-cell-border"/></xsl:attribute>
 			<xsl:attribute name="border-right"><xsl:value-of select="$table-cell-border"/></xsl:attribute>
 		</xsl:if>
@@ -5006,7 +5012,7 @@
 						<xsl:apply-templates select="*[local-name()='name']" />
 					</xsl:if>
 				</xsl:when>
-				<xsl:when test="$namespace = 'ieee' or $namespace = 'iso' or $namespace = 'jcgm'"></xsl:when> <!-- table name will be rendered in table-header -->
+				<xsl:when test="$namespace = 'ieee' or $namespace = 'jcgm'"></xsl:when> <!-- table name will be rendered in table-header --> <!--  or $namespace = 'iso'  -->
 				<xsl:when test="$namespace = 'ogc-white-paper'"></xsl:when> <!-- table's title will be rendered after table -->
 				<xsl:otherwise>
 					<xsl:apply-templates select="*[local-name()='name']" /> <!-- table's title rendered before table -->
@@ -5117,6 +5123,12 @@
 						<xsl:attribute name="font-size">inherit</xsl:attribute>
 						<xsl:attribute name="margin-top">6pt</xsl:attribute>
 						<xsl:attribute name="margin-bottom">6pt</xsl:attribute>
+					</xsl:if>
+				</xsl:if>
+				
+				<xsl:if test="$namespace = 'iso'">
+					<xsl:if test="not(*[local-name() = 'name'])">
+						<xsl:attribute name="margin-top">12pt</xsl:attribute>
 					</xsl:if>
 				</xsl:if>
 				
@@ -5520,9 +5532,15 @@
 							</xsl:if>
 						</xsl:if>
 						
+						<xsl:if test="$namespace = 'iso'">
+							<xsl:if test="$continued = 'true'">
+								<xsl:attribute name="margin-bottom">2pt</xsl:attribute>
+							</xsl:if>
+						</xsl:if>
+						
 						<xsl:choose>
 							<xsl:when test="$continued = 'true'"> 
-								<xsl:if test="$namespace = 'iso' or $namespace = 'jcgm'">
+								<xsl:if test="$namespace = 'jcgm'"> <!-- $namespace = 'iso' or  -->
 									<xsl:apply-templates />
 								</xsl:if>
 							</xsl:when>
@@ -5545,6 +5563,19 @@
 								</fo:inline>
 							</xsl:if>
 						</xsl:if>
+						
+						<xsl:if test="$namespace = 'iso'">
+							<xsl:if test="$continued = 'true'">
+								<fo:inline font-weight="bold" font-style="normal">
+									<fo:retrieve-table-marker retrieve-class-name="table_number"/>
+								</fo:inline>
+								<fo:inline font-weight="normal" font-style="italic">
+									<xsl:text> </xsl:text>
+									<fo:retrieve-table-marker retrieve-class-name="table_continued"/>
+								</fo:inline>
+							</xsl:if>
+						</xsl:if>
+						
 					</fo:block>
 			
 				</xsl:otherwise>
@@ -5913,7 +5944,7 @@
 	<xsl:template match="*[local-name()='thead']">
 		<xsl:param name="cols-count"/>
 		<fo:table-header>
-			<xsl:if test="$namespace = 'ieee' or $namespace = 'iso' or $namespace = 'jcgm'">				
+			<xsl:if test="$namespace = 'ieee' or $namespace = 'iso' or $namespace = 'jcgm'">
 				<xsl:call-template name="table-header-title">
 					<xsl:with-param name="cols-count" select="$cols-count"/>
 				</xsl:call-template>				
@@ -5975,7 +6006,13 @@
 							<xsl:with-param name="continued">true</xsl:with-param>
 						</xsl:apply-templates>
 						
-						<xsl:if test="$namespace = 'iso' or $namespace = 'jcgm'">
+						<xsl:if test="$namespace = 'iso'">
+							<xsl:for-each select="ancestor::*[local-name()='table'][1]">
+								<xsl:call-template name="table_name_fn_display"/>
+							</xsl:for-each>	
+						</xsl:if>
+						
+						<xsl:if test="$namespace = 'jcgm'">
 							<xsl:for-each select="ancestor::*[local-name()='table'][1]">
 								<xsl:call-template name="table_name_fn_display"/>
 							</xsl:for-each>
@@ -6248,12 +6285,12 @@
 				<fo:table-row height="0" keep-with-next.within-page="always">
 					<fo:table-cell>
 					
-						<xsl:if test="$namespace = 'bsi'">
+						<xsl:if test="$namespace = 'bsi' or $namespace = 'iso'">
 							<fo:marker marker-class-name="table_number" />
 							<fo:marker marker-class-name="table_continued" />
 						</xsl:if>
 						
-						<xsl:if test="$namespace = 'ieee' or $namespace = 'iso' or $namespace = 'jcgm'">
+						<xsl:if test="$namespace = 'ieee' or $namespace = 'jcgm'">
 							<fo:marker marker-class-name="table_continued" />
 						</xsl:if>
 						
@@ -6262,7 +6299,7 @@
 				</fo:table-row>
 				<fo:table-row height="0" keep-with-next.within-page="always">
 					<fo:table-cell>
-						<xsl:if test="$namespace = 'bsi'">
+						<xsl:if test="$namespace = 'bsi' or $namespace = 'iso'">
 							<fo:marker marker-class-name="table_number"><xsl:value-of select="$table_number"/></fo:marker>
 						</xsl:if>
 						<fo:marker marker-class-name="table_continued">
