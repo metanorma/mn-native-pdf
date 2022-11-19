@@ -7516,7 +7516,7 @@
 									</xsl:when>
 								</xsl:choose>
 								
-								<xsl:if test="$namespace = 'iso'">
+								<xsl:if test="$namespace = 'iho' or $namespace = 'iso'">
 									<xsl:attribute name="width">100%</xsl:attribute>
 								</xsl:if>
 								
