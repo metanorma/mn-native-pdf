@@ -6299,8 +6299,11 @@
 				</fo:table-row>
 				<fo:table-row height="0" keep-with-next.within-page="always">
 					<fo:table-cell>
-						<xsl:if test="$namespace = 'bsi' or $namespace = 'iso'">
+						<xsl:if test="$namespace = 'bsi'">
 							<fo:marker marker-class-name="table_number"><xsl:value-of select="$table_number"/></fo:marker>
+						</xsl:if>
+						<xsl:if test="$namespace = 'iso'">
+							<fo:marker marker-class-name="table_number"><xsl:value-of select="normalize-space(translate($table_number, '&#xa0;', ' '))"/></fo:marker>
 						</xsl:if>
 						<fo:marker marker-class-name="table_continued">
 							<xsl:value-of select="$title_continued"/>
