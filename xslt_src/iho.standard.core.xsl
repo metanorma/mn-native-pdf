@@ -301,7 +301,7 @@
 												</fo:list-item-label>
 													<fo:list-item-body start-indent="body-start()">
 														<fo:block text-align-last="justify" margin-left="12mm" text-indent="-12mm">
-															<fo:basic-link internal-destination="{@id}" fox:alt-text="{title}">																
+															<fo:basic-link internal-destination="{@id}" fox:alt-text="{title}">
 																<xsl:apply-templates select="title"/>
 																<fo:inline keep-together.within-line="always">
 																	<fo:leader font-size="9pt" font-weight="normal" leader-pattern="dots"/>
@@ -351,30 +351,32 @@
 				<!-- Document Pages -->
 				
 				
+				<xsl:if test="/iho:iho-standard/iho:sections/*">
 				
-				<fo:page-sequence master-reference="document" initial-page-number="1" format="1" force-page-count="no-force">
-					<fo:static-content flow-name="xsl-footnote-separator">
-						<fo:block>
-							<fo:leader leader-pattern="rule" leader-length="30%"/>
-						</fo:block>
-					</fo:static-content>
-					<xsl:call-template name="insertHeaderFooter"/>
-					<fo:flow flow-name="xsl-region-body">
-						<fo:block-container>
-							
-							<!-- <fo:block font-size="16pt" font-weight="bold" margin-bottom="18pt" role="H1"><xsl:value-of select="$title-en"/></fo:block> -->
-							
-							<xsl:apply-templates select="/*/*[local-name()='sections']/*[local-name()='clause'][@type='scope']" />
-							<!-- Normative references  -->
-							<xsl:apply-templates select="/*/*[local-name()='bibliography']/*[local-name()='references'][@normative='true']" />
-							<!-- Terms and definitions -->
-							<xsl:apply-templates select="/*/*[local-name()='sections']/*[local-name()='terms']" />
-							<xsl:apply-templates select="/*/*[local-name()='sections']/*[local-name()='definitions']" />
-							<xsl:apply-templates select="/*/*[local-name()='sections']/*[local-name() != 'terms' and local-name() != 'definitions' and not(@type='scope')]" />
-							
-						</fo:block-container>
-					</fo:flow>
-				</fo:page-sequence>
+					<fo:page-sequence master-reference="document" initial-page-number="1" format="1" force-page-count="no-force">
+						<fo:static-content flow-name="xsl-footnote-separator">
+							<fo:block>
+								<fo:leader leader-pattern="rule" leader-length="30%"/>
+							</fo:block>
+						</fo:static-content>
+						<xsl:call-template name="insertHeaderFooter"/>
+						<fo:flow flow-name="xsl-region-body">
+							<fo:block-container>
+								
+								<!-- <fo:block font-size="16pt" font-weight="bold" margin-bottom="18pt" role="H1"><xsl:value-of select="$title-en"/></fo:block> -->
+								
+								<xsl:apply-templates select="/*/*[local-name()='sections']/*[local-name()='clause'][@type='scope']" />
+								<!-- Normative references  -->
+								<xsl:apply-templates select="/*/*[local-name()='bibliography']/*[local-name()='references'][@normative='true']" />
+								<!-- Terms and definitions -->
+								<xsl:apply-templates select="/*/*[local-name()='sections']/*[local-name()='terms']" />
+								<xsl:apply-templates select="/*/*[local-name()='sections']/*[local-name()='definitions']" />
+								<xsl:apply-templates select="/*/*[local-name()='sections']/*[local-name() != 'terms' and local-name() != 'definitions' and not(@type='scope')]" />
+								
+							</fo:block-container>
+						</fo:flow>
+					</fo:page-sequence>
+				</xsl:if>
 				
 				<xsl:if test="/iho:iho-standard/iho:annex">
 					<fo:page-sequence master-reference="document">
@@ -501,6 +503,10 @@
 			
 		</xsl:if>	
 		
+	</xsl:template>
+	
+	<xsl:template match="*[local-name() = 'strong']" mode="contents_item" priority="2">
+		<xsl:apply-templates mode="contents_item"/>
 	</xsl:template>
 	
 	<!-- ============================= -->
