@@ -122,7 +122,7 @@
 					<fo:block-container font-size="10pt">
 						<fo:block text-align-last="justify" margin-top="2mm">
 							<fo:inline font-weight="bold">
-								<fo:inline>M<fo:inline font-size="6.5pt" vertical-align="super">3</fo:inline>AAWG </fo:inline>
+								<fo:inline>M<fo:inline font-size="6.5pt" baseline-shift="35%">3</fo:inline>AAWG </fo:inline>
 								<xsl:value-of select="$title-en"/>								
 							</fo:inline>
 							<fo:leader font-weight="normal" leader-pattern="space"/>
@@ -151,7 +151,7 @@
 							<fo:block font-size="10pt">
 								<fo:block text-align-last="justify" margin-top="2mm">
 									<fo:inline font-weight="bold">
-										<fo:inline>M<fo:inline font-size="6.5pt" vertical-align="super">3</fo:inline>AAWG </fo:inline>
+										<fo:inline>M<fo:inline font-size="6.5pt" baseline-shift="35%">3</fo:inline>AAWG </fo:inline>
 										<xsl:value-of select="$title-en"/>								
 									</fo:inline>
 									<fo:leader font-weight="normal" leader-pattern="space"/>
@@ -173,7 +173,7 @@
 							DNS Stub Resolver-to-Recursive Resolver Traffic  -->						
 						<fo:block font-size="22pt" margin-top="16pt" >
 							<fo:inline border-bottom="1pt solid black">
-									<fo:inline>M</fo:inline><fo:inline font-size="13pt" vertical-align="super">3</fo:inline><fo:inline>AAWG Companion Document: </fo:inline>
+									<fo:inline>M</fo:inline><fo:inline font-size="13pt" baseline-shift="35%">3</fo:inline><fo:inline>AAWG Companion Document: </fo:inline>
 							</fo:inline>
 						</fo:block>
 						
@@ -206,10 +206,10 @@
 						<fo:block text-align="center" font-weight="normal" margin-bottom="10pt">
 							<xsl:text>The direct URL to this paper is:  </xsl:text><fo:inline color="blue" text-decoration="underline">www.m3aawg.org/dns-crypto-recipes</fo:inline>
 						</fo:block>
-						<fo:block margin-bottom="10pt">This document is intended to accompany and complement the companion document, “M<fo:inline font-size="7pt" vertical-align="super">3</fo:inline> AAWG Tutorial  on Third Party Recursive Resolvers and Encrypting DNS Stub Resolver-to-Recursive Resolver Traffic” 
+						<fo:block margin-bottom="10pt">This document is intended to accompany and complement the companion document, “M<fo:inline font-size="7pt" baseline-shift="35%">3</fo:inline> AAWG Tutorial  on Third Party Recursive Resolvers and Encrypting DNS Stub Resolver-to-Recursive Resolver Traffic” 
 								(<fo:inline color="blue" text-decoration="underline">www.m3aawg.org/dns-crypto-tutorial</fo:inline>). 
 						</fo:block>
-						<fo:block margin-bottom="12pt">This document was produced by the M<fo:inline font-size="7pt" vertical-align="super">3</fo:inline> AAWG Data and Identity Protection Committee. </fo:block>
+						<fo:block margin-bottom="12pt">This document was produced by the M<fo:inline font-size="7pt" baseline-shift="35%">3</fo:inline> AAWG Data and Identity Protection Committee. </fo:block>
 					</fo:block-container>
 					
 					<xsl:if test="$debug = 'true'">
@@ -652,6 +652,12 @@
 	
 	<xsl:template match="m3d:example/m3d:p" priority="2">
 		<fo:inline xsl:use-attribute-sets="example-p-style">
+			<xsl:apply-templates />
+		</fo:inline>
+	</xsl:template>
+
+	<xsl:template match="*[local-name()='sup']" priority="2">
+		<fo:inline font-size="80%" baseline-shift="30%">
 			<xsl:apply-templates />
 		</fo:inline>
 	</xsl:template>

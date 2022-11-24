@@ -2064,7 +2064,7 @@
 			<xsl:attribute name="font-size">70%</xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'm3d'">
-			<xsl:attribute name="vertical-align">super</xsl:attribute>
+			<xsl:attribute name="baseline-shift">30%</xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'nist-cswp' or $namespace = 'nist-sp'">
 			<xsl:attribute name="vertical-align">super</xsl:attribute>
@@ -2101,6 +2101,9 @@
 		<xsl:attribute name="vertical-align">super</xsl:attribute>
 		<xsl:if test="$namespace = 'iec'">
 			<xsl:attribute name="baseline-shift">65%</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'm3d'">
+			<xsl:attribute name="baseline-shift">30%</xsl:attribute>
 		</xsl:if>
 	</xsl:attribute-set>
 	
@@ -3389,7 +3392,7 @@
 		</xsl:if>
 		<xsl:if test="$namespace = 'm3d'">
 			<xsl:attribute name="font-size">7pt</xsl:attribute>
-			<xsl:attribute name="vertical-align">super</xsl:attribute>
+			<xsl:attribute name="baseline-shift">30%</xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'mpfd'">
 			<xsl:attribute name="font-size">7pt</xsl:attribute>
@@ -3571,7 +3574,7 @@
 		</xsl:if>
 		<xsl:if test="$namespace = 'm3d'">
 			<xsl:attribute name="font-size">6pt</xsl:attribute>
-			<xsl:attribute name="vertical-align">super</xsl:attribute>
+			<xsl:attribute name="baseline-shift">30%</xsl:attribute>
 			<xsl:attribute name="padding-right">1mm</xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'mpfd'">
