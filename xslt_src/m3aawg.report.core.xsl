@@ -657,7 +657,7 @@
 	</xsl:template>
 
 	<xsl:template match="*[local-name()='sup']" priority="2">
-		<fo:inline font-size="80%" baseline-shift="30%r">
+		<fo:inline font-size="80%" baseline-shift="30%">
 			<xsl:apply-templates />
 		</fo:inline>
 	</xsl:template>
