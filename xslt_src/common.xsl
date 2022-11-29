@@ -8528,7 +8528,10 @@
 	</xsl:template>
 	<xsl:template match="text()[preceding-sibling::*[1][local-name() = 'span'][@class = 'stdpublisher' or @class = 'stddocNumber' or @class = 'stddocPartNumber' or @class = 'stdyear'] and 
 	following-sibling::*[1][local-name() = 'span'][@class = 'stdpublisher' or @class = 'stddocNumber' or @class = 'stddocPartNumber' or @class = 'stdyear']]" priority="2">
-		<fo:inline keep-with-next.within-line="always"><xsl:value-of select="."/></fo:inline>
+		<xsl:choose>
+			<xsl:when test="ancestor::*[local-name() = 'table']"><xsl:value-of select="."/></xsl:when>
+			<xsl:otherwise><fo:inline keep-with-next.within-line="always"><xsl:value-of select="."/></fo:inline></xsl:otherwise>
+		</xsl:choose>
 	</xsl:template>
 	
 	<!-- ========================= -->
