@@ -8513,6 +8513,24 @@
 		<xsl:apply-templates />
 	</xsl:template>
 	
+	<!-- Don't break standard's numbers -->
+	<!-- Example : <span class="stdpublisher">ISO</span> <span class="stddocNumber">10303</span>-<span class="stddocPartNumber">1</span>:<span class="stdyear">1994</span> -->
+	<xsl:template match="*[local-name() = 'span'][@class = 'stdpublisher' or @class = 'stddocNumber' or @class = 'stddocPartNumber' or @class = 'stdyear']" priority="2">
+		<xsl:choose>
+			<xsl:when test="ancestor::*[local-name() = 'table']"><xsl:apply-templates /></xsl:when>
+			<xsl:when test="following-sibling::*[2][local-name() = 'span'][@class = 'stdpublisher' or @class = 'stddocNumber' or @class = 'stddocPartNumber' or @class = 'stdyear']">
+				<fo:inline keep-with-next.within-line="always"><xsl:apply-templates /></fo:inline>
+			</xsl:when>
+			<xsl:otherwise>
+				<xsl:apply-templates />
+			</xsl:otherwise>
+		</xsl:choose>
+	</xsl:template>
+	<xsl:template match="text()[preceding-sibling::*[1][local-name() = 'span'][@class = 'stdpublisher' or @class = 'stddocNumber' or @class = 'stddocPartNumber' or @class = 'stdyear'] and 
+	following-sibling::*[1][local-name() = 'span'][@class = 'stdpublisher' or @class = 'stddocNumber' or @class = 'stddocPartNumber' or @class = 'stdyear']]" priority="2">
+		<fo:inline keep-with-next.within-line="always"><xsl:value-of select="."/></fo:inline>
+	</xsl:template>
+	
 	<!-- ========================= -->
 	<!-- END Rich text formatting -->
 	<!-- ========================= -->
@@ -15046,7 +15064,9 @@
 	<!-- Update xml -->
 	<!-- ===================================== -->
 	<!-- =========================================================================== -->
-	<!-- STEP1: Re-order elements in 'preface', 'sections' based on @displayorder -->
+	<!-- STEP1:  -->
+	<!--   - Re-order elements in 'preface', 'sections' based on @displayorder -->
+	<!--   - Ignore 'span' without style -->
 	<!-- =========================================================================== -->
 	<xsl:template match="@*|node()" mode="update_xml_step1">
 		<xsl:copy>
@@ -15131,7 +15151,8 @@
 		</xsl:copy>
 	</xsl:template>
 	
-	<xsl:template match="*[local-name() = 'span'][@style]" mode="update_xml_step1" priority="2">
+	<!-- Example with 'class': <span class="stdpublisher">ISO</span> <span class="stddocNumber">10303</span>-<span class="stddocPartNumber">1</span>:<span class="stdyear">1994</span> -->
+	<xsl:template match="*[local-name() = 'span'][@style or @class = 'stdpublisher' or @class = 'stddocNumber' or @class = 'stddocPartNumber' or @class = 'stdyear']" mode="update_xml_step1" priority="2">
 		<xsl:copy>
 			<xsl:copy-of select="@*"/>
 			<xsl:apply-templates mode="update_xml_step1"/>
