@@ -8531,12 +8531,9 @@
 			</xsl:otherwise>
 		</xsl:choose>
 	</xsl:template>
-	<xsl:template match="text()[preceding-sibling::*[1][local-name() = 'span'][@class = 'stdpublisher' or @class = 'stddocNumber' or @class = 'stddocPartNumber' or @class = 'stdyear'] and 
+	<xsl:template match="text()[not(ancestor::*[local-name() = 'table']) and preceding-sibling::*[1][local-name() = 'span'][@class = 'stdpublisher' or @class = 'stddocNumber' or @class = 'stddocPartNumber' or @class = 'stdyear'] and 
 	following-sibling::*[1][local-name() = 'span'][@class = 'stdpublisher' or @class = 'stddocNumber' or @class = 'stddocPartNumber' or @class = 'stdyear']]" priority="2">
-		<xsl:choose>
-			<xsl:when test="ancestor::*[local-name() = 'table']"><xsl:value-of select="."/></xsl:when>
-			<xsl:otherwise><fo:inline keep-with-next.within-line="always"><xsl:value-of select="."/></fo:inline></xsl:otherwise>
-		</xsl:choose>
+		<fo:inline keep-with-next.within-line="always"><xsl:value-of select="."/></fo:inline>
 	</xsl:template>
 	
 	<!-- ========================= -->
@@ -9904,11 +9901,6 @@
 					</xsl:if>
 				</xsl:if>
 				
-				<!-- <xsl:if test="$namespace = 'iho'">
-					<xsl:if test="ancestor::iho:td">
-						<xsl:attribute name="font-size">12pt</xsl:attribute>
-					</xsl:if>
-				</xsl:if> -->
 			
 				<xsl:choose>
 					<xsl:when test="$namespace = 'gb'">
@@ -10589,7 +10581,7 @@
 				</xsl:choose>
 			</xsl:attribute>
 			
-			<xsl:apply-templates  mode="svg_update"/>
+			<xsl:apply-templates mode="svg_update"/>
 		</xsl:copy>
 	</xsl:template>
 	
