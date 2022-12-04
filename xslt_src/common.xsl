@@ -6947,7 +6947,22 @@
 		
 		<xsl:variable name="ref_id" select="concat('footnote_', $lang, '_', $reference, '_', $current_fn_number)"/>
 		<xsl:variable name="footnote_inline">
-			<fo:inline xsl:use-attribute-sets="fn-num-style">
+			<fo:inline>
+			
+				<xsl:variable name="fn_styles">
+					<xsl:choose>
+						<xsl:when test="ancestor::*[local-name() = 'bibitem']">
+							<fn_styles xsl:use-attribute-sets="bibitem-note-fn-style"/>
+						</xsl:when>
+						<xsl:otherwise>
+							<fn_styles xsl:use-attribute-sets="fn-num-style"/>
+						</xsl:otherwise>
+					</xsl:choose>
+				</xsl:variable>
+			
+				<xsl:for-each select="xalan:nodeset($fn_styles)/fn_styles/@*">
+					<xsl:copy-of select="."/>
+				</xsl:for-each>
 			
 				<xsl:if test="following-sibling::*[1][local-name() = 'fn']">
 					<xsl:attribute name="padding-right">0.5mm</xsl:attribute>
@@ -7057,8 +7072,10 @@
 					ancestor::*[contains(local-name(), '-standard')]/*[local-name()='annex'] |
 					ancestor::*[contains(local-name(), '-standard')]/*[local-name()='bibliography']/*">
 					<xsl:sort select="@displayorder" data-type="number"/>
-					<xsl:for-each select=".//*[local-name() = 'bibitem'][ancestor::*[local-name() = 'references']]/*[local-name() = 'note'] |
-					.//*[local-name() = 'fn'][not(ancestor::*[(local-name() = 'table' or local-name() = 'figure') and not(ancestor::*[local-name() = 'name'])])][generate-id(.)=generate-id(key('kfn',@reference)[1])]">
+					<!-- commented:
+					 .//*[local-name() = 'bibitem'][ancestor::*[local-name() = 'references']]/*[local-name() = 'note'] |
+					 because 'fn' there is in biblio-tag -->
+					<xsl:for-each select=".//*[local-name() = 'fn'][not(ancestor::*[(local-name() = 'table' or local-name() = 'figure') and not(ancestor::*[local-name() = 'name'])])][generate-id(.)=generate-id(key('kfn',@reference)[1])]">
 						<!-- copy unique fn -->
 						<fn gen_id="{generate-id(.)}">
 							<xsl:copy-of select="@*"/>
@@ -14078,10 +14095,15 @@
 										 <!-- ieee -->
 										</xsl:when>
 										<xsl:otherwise>
-											<xsl:value-of select="*[local-name()='docidentifier'][@type = 'metanorma-ordinal']"/>
+											<!-- <xsl:value-of select="*[local-name()='docidentifier'][@type = 'metanorma-ordinal']"/>
 											<xsl:if test="not(*[local-name()='docidentifier'][@type = 'metanorma-ordinal'])">
 												<xsl:number format="[1]" count="*[local-name()='bibitem'][not(@hidden = 'true')]"/>
-											</xsl:if>
+											</xsl:if> -->
+											
+											<xsl:apply-templates select="*[local-name() = 'biblio-tag']">
+												<xsl:with-param name="part">first</xsl:with-param>
+											</xsl:apply-templates>
+											
 										</xsl:otherwise>
 									</xsl:choose>
 								</fo:inline>
@@ -14089,7 +14111,9 @@
 						</fo:list-item-label>
 						<fo:list-item-body start-indent="body-start()">
 							<fo:block xsl:use-attribute-sets="bibitem-non-normative-list-body-style">
-								<xsl:call-template name="processBibitem"/>
+								<xsl:call-template name="processBibitem">
+									<xsl:with-param name="normative">false</xsl:with-param>
+								</xsl:call-template>
 							</fo:block>
 						</fo:list-item-body>
 					</fo:list-item>
@@ -14100,7 +14124,7 @@
 	</xsl:template> <!-- references[not(@normative='true')]/bibitem -->
 	
 	<xsl:template name="processBibitem">
-		
+		<xsl:param name="normative">true</xsl:param>
 		<xsl:choose>
 			<xsl:when test="$namespace = 'bipm'">
 				<!-- start BIPM bibitem processing -->
@@ -14359,7 +14383,7 @@
 				</xsl:if>
 				
 				<!-- display document identifier, not number [1] -->
-				<xsl:variable name="docidentifier">
+				<!-- <xsl:variable name="docidentifier">
 					<xsl:choose>
 						<xsl:when test="*[local-name() = 'docidentifier']/@type = 'metanorma'"/>
 						<xsl:otherwise><xsl:value-of select="*[local-name() = 'docidentifier'][not(@type = 'metanorma-ordinal')]"/></xsl:otherwise>
@@ -14372,6 +14396,16 @@
 				<xsl:if test="normalize-space($docidentifier) != '' and *[local-name() = 'formattedref']">
 					<xsl:if test="$namespace = 'csd' or $namespace = 'iec' or $namespace = 'ieee' or $namespace = 'iso' or $namespace = 'm3d' or $namespace = 'mpfd'"><xsl:text>,</xsl:text></xsl:if>
 					<xsl:text> </xsl:text>
+				</xsl:if> -->
+				
+				<xsl:if test="$normative = 'true'">
+					<xsl:apply-templates select="*[local-name() = 'biblio-tag']"/>
+				</xsl:if>
+				
+				<xsl:if test="$normative = 'false'">
+					<xsl:apply-templates select="*[local-name() = 'biblio-tag']">
+						<xsl:with-param name="part">last</xsl:with-param>
+					</xsl:apply-templates>
 				</xsl:if>
 				
 				<xsl:apply-templates select="*[local-name() = 'formattedref']"/>
@@ -14396,8 +14430,12 @@
 		</fo:inline>
 	</xsl:template>
 	
+	<!-- commented:
+	 .//*[local-name() = 'bibitem'][ancestor::*[local-name() = 'references']]/*[local-name() = 'note'] |
+	 because 'fn' there is in biblio-tag -->
 	<!-- bibitem/note renders as footnote -->
-	<xsl:template match="*[local-name() = 'bibitem']/*[local-name() = 'note']" priority="2">
+	<xsl:template match="*[local-name() = 'bibitem']/*[local-name() = 'note']" priority="2"/>
+	<xsl:template match="*[local-name() = 'bibitem']/*[local-name() = 'note2']" priority="2">
 	
 		<!-- list of footnotes to calculate actual footnotes number -->
 		<xsl:variable name="p_fn_">
@@ -14480,6 +14518,21 @@
 			<xsl:text>, </xsl:text>
 		</xsl:if>
 		<xsl:apply-templates />
+	</xsl:template>
+
+	<xsl:template match="*[local-name() = 'biblio-tag']">
+		<xsl:param name="part">both</xsl:param>
+		<xsl:choose>
+			<xsl:when test="$part = 'first' and *[local-name() = 'tab']">
+				<xsl:apply-templates select="./*[local-name() = 'tab'][1]/preceding-sibling::node()"/>
+			</xsl:when>
+			<xsl:when test="$part = 'last' and *[local-name() = 'tab']">
+				<xsl:apply-templates select="./*[local-name() = 'tab'][1]/following-sibling::node()"/>
+			</xsl:when>
+			<xsl:otherwise>
+				<xsl:apply-templates />
+			</xsl:otherwise>
+		</xsl:choose>
 	</xsl:template>
 
 	<!-- ======================= -->
