@@ -14381,69 +14381,7 @@
 		</xsl:choose>
 	</xsl:template> <!-- processBibitem (bibitem) -->
 	
-	<xsl:template name="processBibitemDocId">
-		<xsl:variable name="_doc_ident" select="*[local-name() = 'docidentifier'][not(@type = 'DOI' or @type = 'metanorma' or @type = 'metanorma-ordinal' or @type = 'ISSN' or @type = 'ISBN' or @type = 'rfc-anchor')]"/>
-		<xsl:choose>
-			<xsl:when test="normalize-space($_doc_ident) != ''">
-				<!-- <xsl:variable name="type" select="*[local-name() = 'docidentifier'][not(@type = 'DOI' or @type = 'metanorma' or @type = 'ISSN' or @type = 'ISBN' or @type = 'rfc-anchor')]/@type"/>
-				<xsl:if test="$type != '' and not(contains($_doc_ident, $type))">
-					<xsl:value-of select="$type"/><xsl:text> </xsl:text>
-				</xsl:if> -->
-				<xsl:value-of select="$_doc_ident"/>
-			</xsl:when>
-			<xsl:otherwise>
-				<!-- <xsl:variable name="type" select="*[local-name() = 'docidentifier'][not(@type = 'metanorma')]/@type"/>
-				<xsl:if test="$type != ''">
-					<xsl:value-of select="$type"/><xsl:text> </xsl:text>
-				</xsl:if> -->
-				<xsl:value-of select="*[local-name() = 'docidentifier'][not(@type = 'metanorma') and not(@type = 'metanorma-ordinal')]"/>
-			</xsl:otherwise>
-		</xsl:choose>
-	</xsl:template> <!-- processBibitemDocId -->
 	
-	<xsl:template name="processPersonalAuthor">
-		<xsl:choose>
-			<xsl:when test="*[local-name() = 'name']/*[local-name() = 'completename']">
-				<author>
-					<xsl:apply-templates select="*[local-name() = 'name']/*[local-name() = 'completename']"/>
-				</author>
-			</xsl:when>
-			<xsl:when test="*[local-name() = 'name']/*[local-name() = 'surname'] and *[local-name() = 'name']/*[local-name() = 'initial']">
-				<author>
-					<xsl:apply-templates select="*[local-name() = 'name']/*[local-name() = 'surname']"/>
-					<xsl:text> </xsl:text>
-					<xsl:apply-templates select="*[local-name() = 'name']/*[local-name() = 'initial']" mode="strip"/>
-				</author>
-			</xsl:when>
-			<xsl:when test="*[local-name() = 'name']/*[local-name() = 'surname'] and *[local-name() = 'name']/*[local-name() = 'forename']">
-				<author>
-					<xsl:apply-templates select="*[local-name() = 'name']/*[local-name() = 'surname']"/>
-					<xsl:text> </xsl:text>
-					<xsl:apply-templates select="*[local-name() = 'name']/*[local-name() = 'forename']" mode="strip"/>
-				</author>
-			</xsl:when>
-			<xsl:otherwise>
-				<xsl:apply-templates />
-			</xsl:otherwise>
-		</xsl:choose>
-	</xsl:template> <!-- processPersonalAuthor -->
-	
-	<xsl:template name="renderDate">		
-			<xsl:if test="normalize-space(*[local-name() = 'on']) != ''">
-				<xsl:value-of select="*[local-name() = 'on']"/>
-			</xsl:if>
-			<xsl:if test="normalize-space(*[local-name() = 'from']) != ''">
-				<xsl:value-of select="concat(*[local-name() = 'from'], '–', *[local-name() = 'to'])"/>
-			</xsl:if>
-	</xsl:template>
-	
-	<xsl:template match="*[local-name() = 'name']/*[local-name() = 'initial']/text()" mode="strip">
-		<xsl:value-of select="translate(.,'. ','')"/>
-	</xsl:template>
-	
-	<xsl:template match="*[local-name() = 'name']/*[local-name() = 'forename']/text()" mode="strip">
-		<xsl:value-of select="substring(.,1,1)"/>
-	</xsl:template>
 
 	<xsl:template match="*[local-name() = 'title']" mode="title">
 		<fo:inline><xsl:apply-templates /></fo:inline>
