@@ -13973,7 +13973,7 @@
 						<fo:list-item-label end-indent="label-end()">
 							<fo:block>
 								<fo:inline>
-									<xsl:value-of select="bipm:docidentifier[@type='metanorma-ordinal']"/>
+									<!-- <xsl:value-of select="bipm:docidentifier[@type='metanorma-ordinal']"/>
 									<xsl:if test="not(bipm:docidentifier[@type='metanorma-ordinal'])">
 										<xsl:choose>
 											<xsl:when test="bipm:docidentifier[@type='metanorma']">
@@ -13983,13 +13983,20 @@
 												<xsl:number format="[1]" count="*[local-name()='bibitem'][not(@hidden = 'true')]"/>
 											</xsl:otherwise>
 										</xsl:choose>
-									</xsl:if>
+									</xsl:if> -->
+									
+									<xsl:apply-templates select="*[local-name() = 'biblio-tag']">
+										<xsl:with-param name="biblio_tag_part">first</xsl:with-param>
+									</xsl:apply-templates>
+									
 								</fo:inline>
 							</fo:block>
 						</fo:list-item-label>
 						<fo:list-item-body start-indent="body-start()">
 							<fo:block>
-								<xsl:call-template name="processBibitem"/>
+								<xsl:call-template name="processBibitem">
+									<xsl:with-param name="biblio_tag_part">last</xsl:with-param>
+								</xsl:call-template>
 							</fo:block>
 						</fo:list-item-body>
 					</fo:list-item>
@@ -14101,7 +14108,7 @@
 											</xsl:if> -->
 											
 											<xsl:apply-templates select="*[local-name() = 'biblio-tag']">
-												<xsl:with-param name="part">first</xsl:with-param>
+												<xsl:with-param name="biblio_tag_part">first</xsl:with-param>
 											</xsl:apply-templates>
 											
 										</xsl:otherwise>
@@ -14112,7 +14119,7 @@
 						<fo:list-item-body start-indent="body-start()">
 							<fo:block xsl:use-attribute-sets="bibitem-non-normative-list-body-style">
 								<xsl:call-template name="processBibitem">
-									<xsl:with-param name="normative">false</xsl:with-param>
+									<xsl:with-param name="biblio_tag_part">last</xsl:with-param>
 								</xsl:call-template>
 							</fo:block>
 						</fo:list-item-body>
@@ -14124,25 +14131,19 @@
 	</xsl:template> <!-- references[not(@normative='true')]/bibitem -->
 	
 	<xsl:template name="processBibitem">
-		<xsl:param name="normative">true</xsl:param>
+		<xsl:param name="biblio_tag_part">both</xsl:param>
+		
 		<xsl:choose>
 			<xsl:when test="$namespace = 'bipm'">
 				<!-- start BIPM bibitem processing -->
 				<xsl:if test=".//bipm:fn">
 					<xsl:attribute name="line-height-shift-adjustment">disregard-shifts</xsl:attribute>
-				</xsl:if>			
+				</xsl:if>	
+			
+				<xsl:apply-templates select="*[local-name() = 'biblio-tag']">
+					<xsl:with-param name="biblio_tag_part" select="$biblio_tag_part"/>
+				</xsl:apply-templates>
 				
-				<xsl:variable name="docidentifier_" select="*[local-name() = 'docidentifier'][not(@type = 'URN' or @type = 'metanorma' or @type = 'metanorma-ordinal' or @type = 'BIPM' or @type = 'ISBN' or @type = 'ISSN')]"/>
-				<xsl:variable name="docidentifier_main" select="*[local-name() = 'docidentifier'][not(@type)]" />
-				<xsl:variable name="docidentifier">
-					<xsl:choose>
-						<xsl:when test="$docidentifier_ = $docidentifier_main and @suppress_identifier = 'true'"><!-- suppress indentifier --></xsl:when>
-						<xsl:otherwise><xsl:value-of select="$docidentifier_"/></xsl:otherwise>
-					</xsl:choose>
-				</xsl:variable>
-				<xsl:value-of select="normalize-space($docidentifier)"/>
-				
-				<xsl:if test="normalize-space($docidentifier) != '' and *[local-name() = 'formattedref']">, </xsl:if>
 				<xsl:apply-templates select="*[local-name() = 'formattedref']"/>
 				<!-- end BIPM bibitem processing-->
 			</xsl:when>
@@ -14398,15 +14399,9 @@
 					<xsl:text> </xsl:text>
 				</xsl:if> -->
 				
-				<xsl:if test="$normative = 'true'">
-					<xsl:apply-templates select="*[local-name() = 'biblio-tag']"/>
-				</xsl:if>
-				
-				<xsl:if test="$normative = 'false'">
-					<xsl:apply-templates select="*[local-name() = 'biblio-tag']">
-						<xsl:with-param name="part">last</xsl:with-param>
-					</xsl:apply-templates>
-				</xsl:if>
+				<xsl:apply-templates select="*[local-name() = 'biblio-tag']">
+					<xsl:with-param name="biblio_tag_part" select="$biblio_tag_part"/>
+				</xsl:apply-templates>
 				
 				<xsl:apply-templates select="*[local-name() = 'formattedref']"/>
 				<!-- end bibitem processing -->
@@ -14521,12 +14516,12 @@
 	</xsl:template>
 
 	<xsl:template match="*[local-name() = 'biblio-tag']">
-		<xsl:param name="part">both</xsl:param>
+		<xsl:param name="biblio_tag_part">both</xsl:param>
 		<xsl:choose>
-			<xsl:when test="$part = 'first' and *[local-name() = 'tab']">
+			<xsl:when test="$biblio_tag_part = 'first' and *[local-name() = 'tab']">
 				<xsl:apply-templates select="./*[local-name() = 'tab'][1]/preceding-sibling::node()"/>
 			</xsl:when>
-			<xsl:when test="$part = 'last' and *[local-name() = 'tab']">
+			<xsl:when test="$biblio_tag_part = 'last' and *[local-name() = 'tab']">
 				<xsl:apply-templates select="./*[local-name() = 'tab'][1]/following-sibling::node()"/>
 			</xsl:when>
 			<xsl:otherwise>
