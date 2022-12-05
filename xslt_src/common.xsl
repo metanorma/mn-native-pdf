@@ -13917,7 +13917,13 @@
 						</xsl:if>
 					</xsl:if>
 					
-					<xsl:variable name="docidentifier" select="normalize-space(iho:docidentifier[@type != 'metanorma'][1])"/>
+					<!-- <xsl:variable name="docidentifier" select="normalize-space(iho:docidentifier[@type != 'metanorma'][1])"/> -->
+					<xsl:variable name="docidentifier">
+						<xsl:apply-templates select="*[local-name() = 'biblio-tag']">
+							<xsl:with-param name="biblio_tag_part">first</xsl:with-param>
+						</xsl:apply-templates>
+					</xsl:variable>
+					
 					<xsl:if test="$namespace = 'iho'">
 						<xsl:attribute name="provisional-distance-between-starts">
 							<xsl:choose>
@@ -13933,20 +13939,15 @@
 						<fo:list-item-label end-indent="label-end()">
 							<fo:block>
 								<fo:inline>
-									<xsl:choose>
-										<xsl:when test="$namespace = 'iho'">
-											<xsl:value-of select="$docidentifier"/>
-										</xsl:when>
-										<xsl:when test="$namespace = 'nist-cswp'">
-											<xsl:value-of select="nist:docidentifier[@display = 'true']"/>
-										</xsl:when>
-									</xsl:choose>
+									<xsl:copy-of select="$docidentifier"/>
 								</fo:inline>
 							</fo:block>
 						</fo:list-item-label>
 						<fo:list-item-body start-indent="body-start()">
 							<fo:block xsl:use-attribute-sets="bibitem-normative-list-body-style">
-								<xsl:call-template name="processBibitem"/>						
+								<xsl:call-template name="processBibitem">
+									<xsl:with-param name="biblio_tag_part">last</xsl:with-param>
+								</xsl:call-template>
 							</fo:block>
 						</fo:list-item-body>
 					</fo:list-item>
@@ -14227,6 +14228,9 @@
 			
 			<xsl:when test="$namespace = 'iho'">
 				<!-- start IHO bibitem processing -->
+				<xsl:apply-templates select="*[local-name() = 'biblio-tag']">
+					<xsl:with-param name="biblio_tag_part" select="$biblio_tag_part"/>
+				</xsl:apply-templates>
 				<xsl:apply-templates select="iho:formattedref"/>
 				<!-- end IHO bibitem processing -->
 			</xsl:when> 
@@ -14333,6 +14337,9 @@
 			</xsl:when>
 			
 			<xsl:when test="$namespace = 'nist-cswp'">
+				<xsl:apply-templates select="*[local-name() = 'biblio-tag']">
+					<xsl:with-param name="biblio_tag_part" select="$biblio_tag_part"/>
+				</xsl:apply-templates>
 				<xsl:apply-templates select="nist:formattedref"/>
 			</xsl:when>
 			
