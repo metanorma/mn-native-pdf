@@ -14009,7 +14009,7 @@
 				<!-- start CSA bibitem processing -->
 				<fo:block id="{@id}" xsl:use-attribute-sets="bibitem-non-normative-style">
 				
-					<xsl:variable name="docidentifier">
+					<!-- <xsl:variable name="docidentifier">
 						<xsl:value-of select="csa:docidentifier[@type = 'metanorma-ordinal']"/>
 						<xsl:if test="not(csa:docidentifier[@type = 'metanorma-ordinal'])">
 							<xsl:number format="[1]" count="*[local-name()='bibitem'][not(@hidden = 'true')]"/>
@@ -14018,8 +14018,10 @@
 				
 					<xsl:value-of select="$docidentifier"/>
 					<xsl:apply-templates select="*[local-name() = 'note']"/>
-					<xsl:text> </xsl:text>
+					<xsl:text> </xsl:text> -->
 				  
+					<xsl:apply-templates select="*[local-name() = 'biblio-tag']"/>
+					
 					<xsl:apply-templates select="csa:formattedref"/>
 							
 				</fo:block>
