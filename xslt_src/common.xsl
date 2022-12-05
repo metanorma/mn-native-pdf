@@ -14332,7 +14332,7 @@
 
 			<xsl:when test="$namespace = 'jcgm'">
 				<!-- start JCGM bibitem processing -->
-				<xsl:variable name="docidentifier">
+				<!-- <xsl:variable name="docidentifier">
 					<xsl:choose>
 						<xsl:when test="*[local-name()='docidentifier']/@type = 'metanorma'"/>
 						<xsl:otherwise><xsl:value-of select="*[local-name()='docidentifier'][not(@type = 'metanorma-ordinal') and not(@type = 'BIPM')]"/></xsl:otherwise>
@@ -14340,7 +14340,10 @@
 				</xsl:variable>
 				<xsl:value-of select="$docidentifier"/>
 				
-				<xsl:if test="*[local-name()='formattedref'] and normalize-space($docidentifier) != ''">, </xsl:if>
+				<xsl:if test="*[local-name()='formattedref'] and normalize-space($docidentifier) != ''">, </xsl:if> -->
+				
+				<xsl:apply-templates select="*[local-name() = 'biblio-tag']"/>
+				
 				<xsl:apply-templates select="*[local-name()='formattedref']"/>
 					
 				<!-- end JCGM bibitem processing -->
@@ -14355,10 +14358,18 @@
 			
 			<xsl:when test="$namespace = 'nist-sp'">
 				<!-- start NIST SP bibitem processing -->
-				<xsl:variable name="docidentifier" select="normalize-space(nist:docidentifier[@display = 'true'])"/>
+				<!-- <xsl:variable name="docidentifier" select="normalize-space(nist:docidentifier[@display = 'true'])"/> -->
+				<xsl:variable name="docidentifier">
+					<xsl:apply-templates select="*[local-name() = 'biblio-tag']">
+						<xsl:with-param name="biblio_tag_part">first</xsl:with-param>
+					</xsl:apply-templates>
+				</xsl:variable>
 				<xsl:if test="$docidentifier != ''">
 					<fo:inline padding-right="5mm"><xsl:value-of select="$docidentifier"/></fo:inline>
 				</xsl:if>
+				<xsl:apply-templates select="*[local-name() = 'biblio-tag']">
+					<xsl:with-param name="biblio_tag_part">last</xsl:with-param>
+				</xsl:apply-templates>
 				<xsl:apply-templates select="nist:formattedref"/>
 				<!-- END NIST SP bibitem processing -->
 			</xsl:when>
