@@ -14245,11 +14245,11 @@
 					<xsl:attribute name="text-indent">0mm</xsl:attribute>
 				</xsl:if>
 				
-				<xsl:variable name="docidentifier_metanorma" select="normalize-space(itu:docidentifier[@type = 'metanorma'])"/>
+				<!-- <xsl:variable name="docidentifier_metanorma" select="normalize-space(itu:docidentifier[@type = 'metanorma'])"/> -->
 				<xsl:variable name="docidentifier_metanorma_ordinal" select="normalize-space(itu:docidentifier[@type = 'metanorma-ordinal'])"/>
 				
 				<xsl:variable name="bibitem_label">
-					<xsl:value-of select="$docidentifier_metanorma"/>
+					<!-- <xsl:value-of select="$docidentifier_metanorma"/>
 					<xsl:if test="$docidentifier_metanorma = ''">
 						<fo:inline padding-right="5mm">
 							<xsl:variable name="docidentifier" select="normalize-space(itu:docidentifier[not(@type = 'metanorma-ordinal')])"/>
@@ -14264,11 +14264,16 @@
 								</xsl:otherwise>
 							</xsl:choose>
 						</fo:inline>
-					</xsl:if>
+					</xsl:if> -->
+					
+					<xsl:apply-templates select="*[local-name() = 'biblio-tag']">
+						<xsl:with-param name="biblio_tag_part">first</xsl:with-param>
+					</xsl:apply-templates>
+					
 				</xsl:variable>
 				
 				<xsl:variable name="bibitem_body">
-					<xsl:variable name="docidentifier">
+					<!-- <xsl:variable name="docidentifier">
 						<xsl:text> </xsl:text>
 						<xsl:choose>
 							<xsl:when test="$docidentifier_metanorma != ''">
@@ -14280,7 +14285,10 @@
 						</xsl:choose>
 					</xsl:variable>
 					<xsl:value-of select="$docidentifier"/>
-					<xsl:if test="normalize-space($docidentifier) != ''">, </xsl:if>
+					<xsl:if test="normalize-space($docidentifier) != ''">, </xsl:if> -->
+					<xsl:apply-templates select="*[local-name() = 'biblio-tag']">
+						<xsl:with-param name="biblio_tag_part">last</xsl:with-param>
+					</xsl:apply-templates>
 					<xsl:apply-templates select="itu:formattedref"/>
 				</xsl:variable>
 				
