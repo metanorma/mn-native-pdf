@@ -14043,16 +14043,14 @@
 					<fo:list-item>
 						<fo:list-item-label end-indent="label-end()">
 							<fo:block>
-								<fo:inline>
-									<xsl:if test="$namespace = 'rsd'">
-										<xsl:number format="1." count="*[local-name()='bibitem'][not(@hidden = 'true')]"/>
-									</xsl:if>
-								</fo:inline>
+								<xsl:apply-templates select="*[local-name() = 'biblio-tag']">
+									<xsl:with-param name="biblio_tag_part">first</xsl:with-param>
+								</xsl:apply-templates>
 							</fo:block>
 						</fo:list-item-label>
 						<fo:list-item-body start-indent="body-start()">
 							<fo:block>
-								<xsl:variable name="docidentifier">
+								<!-- <xsl:variable name="docidentifier">
 									<xsl:choose>
 										<xsl:when test="rsd:docidentifier/@type = 'metanorma'"/>
 										<xsl:otherwise>
@@ -14063,7 +14061,12 @@
 								<xsl:value-of select="$docidentifier"/>
 								<xsl:if test="normalize-space($docidentifier) != '' and rsd:formattedref">
 									<xsl:text>, </xsl:text>
-								</xsl:if>
+								</xsl:if> -->
+								
+								<xsl:apply-templates select="*[local-name() = 'biblio-tag']">
+									<xsl:with-param name="biblio_tag_part">last</xsl:with-param>
+								</xsl:apply-templates>
+								
 								<xsl:apply-templates select="rsd:formattedref"/>
 							</fo:block>
 						</fo:list-item-body>
@@ -14081,9 +14084,9 @@
 							<fo:block>
 								<fo:inline>
 									<xsl:choose>
-										<xsl:when test="$namespace = 'ogc'">
+										<!-- <xsl:when test="$namespace = 'ogc'">
 											<xsl:number format="1." count="*[local-name()='bibitem'][not(@hidden = 'true')]"/>
-										</xsl:when> <!-- ogc -->
+										</xsl:when>  --><!-- ogc -->
 										<xsl:when test="$namespace = 'ieee'">
 											<xsl:value-of select="*[local-name() = 'docidentifier'][@type = 'metanorma-ordinal']"/>
 											<xsl:if test="not(*[local-name() = 'docidentifier'][@type = 'metanorma-ordinal'])">
@@ -14378,7 +14381,10 @@
 				<!-- start OGC bibitem processing -->
 				<xsl:if test=".//ogc:fn">
 					<xsl:attribute name="line-height-shift-adjustment">disregard-shifts</xsl:attribute>
-				</xsl:if>			
+				</xsl:if>
+				<xsl:apply-templates select="*[local-name() = 'biblio-tag']">
+					<xsl:with-param name="biblio_tag_part">last</xsl:with-param>
+				</xsl:apply-templates>
 				<xsl:apply-templates select="*[local-name() = 'formattedref']"/>			
 				<!-- end OGC bibitem processing-->
 			</xsl:when>
@@ -14388,18 +14394,32 @@
 				<xsl:if test=".//rsd:fn">
 					<xsl:attribute name="line-height-shift-adjustment">disregard-shifts</xsl:attribute>
 				</xsl:if>
-				<xsl:variable name="docidentifier" select="rsd:docidentifier"/>
+				<!-- <xsl:variable name="docidentifier" select="rsd:docidentifier"/>
 				<xsl:value-of select="$docidentifier"/>
 				<xsl:apply-templates select="rsd:note"/>
-				<xsl:if test="normalize-space($docidentifier) != '' and rsd:formattedref">, </xsl:if>
+				<xsl:if test="normalize-space($docidentifier) != '' and rsd:formattedref">, </xsl:if> -->
+				
+				<xsl:apply-templates select="*[local-name() = 'biblio-tag']"/>
+				
 				<xsl:apply-templates select="rsd:formattedref"/>	
 				<!-- END RSD bibitem processing -->
 			</xsl:when>
 			
 			<xsl:when test="$namespace = 'unece' or $namespace = 'unece-rec'">
 				<!-- start UNECE bibitem processing -->
-				<fo:inline padding-right="5mm">[<xsl:value-of select="un:docidentifier"/>]</fo:inline><xsl:value-of select="un:docidentifier"/>
+				<!-- <fo:inline padding-right="5mm">[<xsl:value-of select="un:docidentifier"/>]</fo:inline><xsl:value-of select="un:docidentifier"/>
 				<xsl:text> </xsl:text>
+				 -->
+				
+				<fo:inline padding-right="5mm">
+					<xsl:apply-templates select="*[local-name() = 'biblio-tag']">
+						<xsl:with-param name="biblio_tag_part">first</xsl:with-param>
+					</xsl:apply-templates>
+				</fo:inline>
+				<xsl:apply-templates select="*[local-name() = 'biblio-tag']">
+					<xsl:with-param name="biblio_tag_part">last</xsl:with-param>
+				</xsl:apply-templates>
+				
 				<xsl:apply-templates select="un:formattedref"/>
 				<!-- END UNECE bibitem processing -->
 			</xsl:when>
@@ -14519,12 +14539,13 @@
 		</fo:footnote>
 	</xsl:template>
 	
-	<xsl:template match="*[local-name() = 'bibitem']/*[local-name() = 'edition']"> <!-- for iho -->
+	<!-- for iho -->
+	<!-- <xsl:template match="*[local-name() = 'bibitem']/*[local-name() = 'edition']"> 
 		<xsl:text> edition </xsl:text>
 		<xsl:value-of select="."/>
-	</xsl:template>
-	
-	<xsl:template match="*[local-name() = 'bibitem']/*[local-name() = 'uri']"> <!-- for iho -->
+	</xsl:template> -->
+	<!-- for iho -->
+	<!-- <xsl:template match="*[local-name() = 'bibitem']/*[local-name() = 'uri']"> 
 		<xsl:text> (</xsl:text>
 		<fo:inline xsl:use-attribute-sets="link-style">
 			<fo:basic-link external-destination="." fox:alt-text=".">
@@ -14532,14 +14553,14 @@
 			</fo:basic-link>
 		</fo:inline>
 		<xsl:text>)</xsl:text>
-	</xsl:template>
+	</xsl:template> -->
 	
 	<xsl:template match="*[local-name() = 'bibitem']/*[local-name() = 'docidentifier']"/>
 	
 	<xsl:template match="*[local-name() = 'formattedref']">
-		<xsl:if test="$namespace = 'unece' or $namespace = 'unece-rec'">
+		<!-- <xsl:if test="$namespace = 'unece' or $namespace = 'unece-rec'">
 			<xsl:text>, </xsl:text>
-		</xsl:if>
+		</xsl:if> -->
 		<xsl:apply-templates />
 	</xsl:template>
 
@@ -14549,7 +14570,7 @@
 			<xsl:when test="$biblio_tag_part = 'first' and *[local-name() = 'tab']">
 				<xsl:apply-templates select="./*[local-name() = 'tab'][1]/preceding-sibling::node()"/>
 			</xsl:when>
-			<xsl:when test="$biblio_tag_part = 'last' and *[local-name() = 'tab']">
+			<xsl:when test="$biblio_tag_part = 'last'">
 				<xsl:apply-templates select="./*[local-name() = 'tab'][1]/following-sibling::node()"/>
 			</xsl:when>
 			<xsl:otherwise>
