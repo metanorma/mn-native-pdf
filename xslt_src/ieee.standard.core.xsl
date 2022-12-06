@@ -2179,25 +2179,25 @@
 		</xsl:copy>
 	</xsl:template>
 
-	<xsl:template match="*[local-name() = 'bibitem']/*[local-name() = 'note']" mode="flatxml">
+	<!-- <xsl:template match="*[local-name() = 'bibitem']/*[local-name() = 'note']" mode="flatxml">
 		<xsl:variable name="p_fn_">
 			<xsl:call-template name="get_fn_list"/>
 		</xsl:variable>
 		<xsl:variable name="p_fn" select="xalan:nodeset($p_fn_)"/>
 		<xsl:variable name="gen_id" select="generate-id(.)"/>
 		<xsl:variable name="lang" select="ancestor::*[contains(local-name(), '-standard')]/*[local-name()='bibdata']//*[local-name()='language'][@current = 'true']"/>
-		<xsl:variable name="reference" select="@reference"/> <!-- @reference added to bibitem/note in step 'update_xml_step2' -->
+		<xsl:variable name="reference" select="@reference"/>  --><!-- @reference added to bibitem/note in step 'update_xml_step2' -->
 		<!-- fn sequence number in document -->
-		<xsl:variable name="current_fn_number" select="count($p_fn//fn[@reference = $reference]/preceding-sibling::fn) + 1" />
+		<!-- <xsl:variable name="current_fn_number" select="count($p_fn//fn[@reference = $reference]/preceding-sibling::fn) + 1" />
 		<xsl:copy>
-			<xsl:apply-templates select="@*" mode="flatxml"/>
+			<xsl:apply-templates select="@*" mode="flatxml"/> -->
 			<!-- put actual reference number -->
-			<xsl:attribute name="current_fn_number">
+			<!-- <xsl:attribute name="current_fn_number">
 				<xsl:value-of select="$current_fn_number"/>
 			</xsl:attribute>
 			<xsl:apply-templates select="node()" mode="flatxml"/>
 		</xsl:copy>
-	</xsl:template>
+	</xsl:template> -->
 	
 	
 	<xsl:template match="ieee:p[@type = 'section-title']" priority="3" mode="flatxml">

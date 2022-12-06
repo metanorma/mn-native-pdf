@@ -15291,7 +15291,7 @@
 		
 		
 		<!-- add @reference for bibitem/note, similar to fn/reference -->
-		<xsl:template match="*[local-name() = 'bibitem']/*[local-name() = 'note']" mode="update_xml_step2">
+		<!-- <xsl:template match="*[local-name() = 'bibitem']/*[local-name() = 'note']" mode="update_xml_step2">
 			<xsl:copy>
 				<xsl:apply-templates select="@*" mode="update_xml_step2"/>
 				
@@ -15301,7 +15301,7 @@
 				
 				<xsl:apply-templates select="node()" mode="update_xml_step2"/>
 			</xsl:copy>
-		</xsl:template>
+		</xsl:template> -->
 		
 		<!-- enclose sequence of 'char x' + 'combining char y' to <lang_none>xy</lang_none> -->
 		<xsl:variable name="regex_combining_chars">(.[&#x300;-&#x36f;])</xsl:variable>
