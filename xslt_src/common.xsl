@@ -13908,14 +13908,14 @@
 		<xsl:choose>
 			<xsl:when test="$namespace = 'iho' or $namespace = 'nist-cswp'">
 				<fo:list-block id="{@id}" xsl:use-attribute-sets="bibitem-normative-list-style">
-					<xsl:if test="$namespace = 'ieee'">
+					<!-- <xsl:if test="$namespace = 'ieee'">
 						<xsl:if test="count(preceding-sibling::*[local-name()='bibitem'][not(@hidden = 'true')]) &gt; 99">
 							<xsl:attribute name="provisional-distance-between-starts">11mm</xsl:attribute>
 						</xsl:if>
 						<xsl:if test="($current_template = 'whitepaper' or $current_template = 'icap-whitepaper' or $current_template = 'industry-connection-report')">
 							<xsl:attribute name="provisional-distance-between-starts">12.5mm</xsl:attribute>
 						</xsl:if>
-					</xsl:if>
+					</xsl:if> -->
 					
 					<!-- <xsl:variable name="docidentifier" select="normalize-space(iho:docidentifier[@type != 'metanorma'][1])"/> -->
 					<xsl:variable name="docidentifier">
@@ -14219,9 +14219,10 @@
 					</xsl:choose>
 				</xsl:variable>
 				
-				<xsl:if test="count(*[local-name() = 'docidentifier']) &gt; 1 and *[local-name() = 'docidentifier'][@type = 'metanorma']">
+				
+				<!-- <xsl:if test="count(*[local-name() = 'docidentifier']) &gt; 1 and *[local-name() = 'docidentifier'][@type = 'metanorma']">
 					<xsl:choose>
-						<xsl:when test="starts-with(preceding-sibling::*[local-name() = 'title'][1], 'Further reading')"><!-- skip displaying [XX] --></xsl:when>
+						<xsl:when test="starts-with(preceding-sibling::*[local-name() = 'title'][1], 'Further reading')"> --><!-- skip displaying [XX] --><!-- </xsl:when>
 						<xsl:otherwise>
 							<xsl:value-of select="*[local-name() = 'docidentifier'][@type = 'metanorma']"/><xsl:text> </xsl:text>
 						</xsl:otherwise>
@@ -14231,11 +14232,14 @@
 				<xsl:value-of select="$docidentifier_"/>
 				
 				<xsl:apply-templates select="*[local-name() = 'note']"/>
-				<xsl:if test="normalize-space($docidentifier_) != '' and *[local-name() = 'formattedref']">
+				
+				<xsl:if test="normalize-space($docidentifier_) != '' and *[local-name() = 'formattedref']"> -->
 					<!-- <xsl:if test="preceding-sibling::*[local-name() = 'references'][1][@normative = 'true']">,</xsl:if> -->
-					<xsl:if test="not(starts-with($docidentifier_, '[')) and not(*[local-name() = 'formattedref']/node()[1][local-name() = 'add' and contains(., '_start')])">,</xsl:if>
+				<!-- 	<xsl:if test="not(starts-with($docidentifier_, '[')) and not(*[local-name() = 'formattedref']/node()[1][local-name() = 'add' and contains(., '_start')])">,</xsl:if>
 					<xsl:text> </xsl:text>
-				</xsl:if>
+				</xsl:if> -->
+				
+				<xsl:apply-templates select="*[local-name() = 'biblio-tag']"/>
 				
 				<xsl:apply-templates select="*[local-name() = 'formattedref']"/>
 				<!-- end BSI bibitem processing -->
@@ -14588,6 +14592,10 @@
 				<xsl:apply-templates />
 			</xsl:otherwise>
 		</xsl:choose>
+	</xsl:template>
+	
+	<xsl:template match="*[local-name() = 'biblio-tag']/*[local-name() = 'tab']" priority="2">
+		<xsl:text> </xsl:text>
 	</xsl:template>
 
 	<!-- ======================= -->
