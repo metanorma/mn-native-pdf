@@ -14083,42 +14083,53 @@
 						<fo:list-item-label end-indent="label-end()">
 							<fo:block>
 								<fo:inline>
-									<xsl:choose>
+									<xsl:if test="$namespace = 'ieee'">
+										<xsl:if test="($current_template = 'whitepaper' or $current_template = 'icap-whitepaper' or $current_template = 'industry-connection-report')">
+											<xsl:attribute name="color"><xsl:value-of select="$color_blue"/></xsl:attribute>
+										</xsl:if>
+									</xsl:if>
+								
+									<!-- <xsl:choose> -->
 										<!-- <xsl:when test="$namespace = 'ogc'">
 											<xsl:number format="1." count="*[local-name()='bibitem'][not(@hidden = 'true')]"/>
 										</xsl:when>  --><!-- ogc -->
-										<xsl:when test="$namespace = 'ieee'">
+										<!-- <xsl:when test="$namespace = 'ieee'">
 											<xsl:value-of select="*[local-name() = 'docidentifier'][@type = 'metanorma-ordinal']"/>
 											<xsl:if test="not(*[local-name() = 'docidentifier'][@type = 'metanorma-ordinal'])">
-												<xsl:choose>
-													<xsl:when test="($current_template = 'whitepaper' or $current_template = 'icap-whitepaper' or $current_template = 'industry-connection-report')">
-														<fo:inline color="{$color_blue}">
-															<xsl:text>[&#xa0;</xsl:text>
-															<xsl:number format="1" count="*[local-name()='bibitem'][not(@hidden = 'true')]"/>
-															<xsl:text>&#xa0;]</xsl:text>
-														</fo:inline>
-													</xsl:when>
-													<xsl:otherwise>
-														<xsl:text>[B</xsl:text>
+											<xsl:choose>
+												<xsl:when test="($current_template = 'whitepaper' or $current_template = 'icap-whitepaper' or $current_template = 'industry-connection-report')">
+													<fo:inline color="{$color_blue}">
+														<xsl:text>[&#xa0;</xsl:text>
 														<xsl:number format="1" count="*[local-name()='bibitem'][not(@hidden = 'true')]"/>
-														<xsl:text>]</xsl:text>
-													</xsl:otherwise>
-												</xsl:choose>
+														<xsl:text>&#xa0;]</xsl:text>
+														
+													</fo:inline>
+												</xsl:when>
+												<xsl:otherwise>
+													<xsl:text>[B</xsl:text>
+													<xsl:number format="1" count="*[local-name()='bibitem'][not(@hidden = 'true')]"/>
+													<xsl:text>]</xsl:text>
+													
+												</xsl:otherwise>
+											</xsl:choose>
 											</xsl:if>
-										 <!-- ieee -->
+										 ieee
 										</xsl:when>
 										<xsl:otherwise>
-											<!-- <xsl:value-of select="*[local-name()='docidentifier'][@type = 'metanorma-ordinal']"/>
+											<xsl:value-of select="*[local-name()='docidentifier'][@type = 'metanorma-ordinal']"/>
 											<xsl:if test="not(*[local-name()='docidentifier'][@type = 'metanorma-ordinal'])">
 												<xsl:number format="[1]" count="*[local-name()='bibitem'][not(@hidden = 'true')]"/>
-											</xsl:if> -->
+											</xsl:if>
 											
-											<xsl:apply-templates select="*[local-name() = 'biblio-tag']">
-												<xsl:with-param name="biblio_tag_part">first</xsl:with-param>
-											</xsl:apply-templates>
+											
 											
 										</xsl:otherwise>
-									</xsl:choose>
+									</xsl:choose> -->
+									
+									<xsl:apply-templates select="*[local-name() = 'biblio-tag']">
+										<xsl:with-param name="biblio_tag_part">first</xsl:with-param>
+									</xsl:apply-templates>
+									
 								</fo:inline>
 							</fo:block>
 						</fo:list-item-label>
@@ -14466,7 +14477,7 @@
 
 
 
-	<xsl:template match="*[local-name() = 'bibitem']/*[local-name() = 'title']" priority="2">
+	<xsl:template match="*[local-name() = 'bibitem2']/*[local-name() = 'title']" priority="2">
 		<!-- <fo:inline><xsl:apply-templates /></fo:inline> -->
 		<fo:inline font-style="italic"> <!-- BIPM BSI CSD CSA GB IEC IHO ISO ITU JCGM -->
 			<xsl:apply-templates />
@@ -14477,7 +14488,7 @@
 	 .//*[local-name() = 'bibitem'][ancestor::*[local-name() = 'references']]/*[local-name() = 'note'] |
 	 because 'fn' there is in biblio-tag -->
 	<!-- bibitem/note renders as footnote -->
-	<xsl:template match="*[local-name() = 'bibitem']/*[local-name() = 'note']" priority="2"/>
+	<xsl:template match="*[local-name() = 'bibitem2']/*[local-name() = 'note']" priority="2"/>
 	<xsl:template match="*[local-name() = 'bibitem']/*[local-name() = 'note2']" priority="2">
 	
 		<!-- list of footnotes to calculate actual footnotes number -->
