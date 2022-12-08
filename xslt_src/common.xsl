@@ -6472,7 +6472,7 @@
 			</xsl:if>
 		
 			<xsl:if test="$namespace = 'iso'">
-				<xsl:if test="position() = 1 and not(ancestor::*[local-name() = 'table']/*[local-name() = 'thead'])">
+				<xsl:if test="position() = 1 and not(ancestor::*[local-name() = 'table']/*[local-name() = 'thead']) and ancestor::*[local-name() = 'table']/*[local-name() = 'name']">
 					<xsl:attribute name="border-top"><xsl:value-of select="$table-border"/></xsl:attribute>
 				</xsl:if>
 			</xsl:if>
