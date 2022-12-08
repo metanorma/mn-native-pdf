@@ -11376,11 +11376,7 @@
 		<xsl:value-of select="."/>
 	</xsl:template>
 
-	<xsl:template match="text()" mode="contents">
-		<!-- to split by '_' and other chars -->
-		<xsl:call-template name="add-zero-spaces-java"/>
-	</xsl:template>
-
+	
 	<xsl:template match="*[local-name() = 'review']" mode="contents_item"/>
 
 	<xsl:template match="*[local-name() = 'tab']" mode="contents_item">
@@ -11441,7 +11437,13 @@
 	</xsl:template>
 
 	<xsl:template match="text()" mode="contents_item">
-		<xsl:call-template name="keep_together_standard_number"/>
+		<xsl:variable name="text">
+			<!-- to split by '_' and other chars -->
+			<text><xsl:call-template name="add-zero-spaces-java"/></text>
+		</xsl:variable>
+		<xsl:for-each select="xalan:nodeset($text)/text/text()">
+			<xsl:call-template name="keep_together_standard_number"/>
+		</xsl:for-each>
 	</xsl:template>
 
 	<!-- Note: to enable the addition of character span markup with semantic styling for DIS Word output -->
