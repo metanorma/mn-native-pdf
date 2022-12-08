@@ -6009,6 +6009,10 @@
 							<xsl:with-param name="continued">true</xsl:with-param>
 						</xsl:apply-templates>
 						
+						<xsl:if test="not(ancestor::*[local-name()='table']/*[local-name()='name'])"> <!-- to prevent empty fo:table-cell in case of missing table's name -->
+							<fo:block></fo:block>
+						</xsl:if>
+						
 						<xsl:if test="$namespace = 'iso'">
 							<xsl:for-each select="ancestor::*[local-name()='table'][1]">
 								<xsl:call-template name="table_name_fn_display"/>
