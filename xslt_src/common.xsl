@@ -11376,6 +11376,11 @@
 		<xsl:value-of select="."/>
 	</xsl:template>
 
+	<xsl:template match="text()" mode="contents">
+		<!-- to split by '_' and other chars -->
+		<xsl:call-template name="add-zero-spaces-java"/>
+	</xsl:template>
+
 	<xsl:template match="*[local-name() = 'review']" mode="contents_item"/>
 
 	<xsl:template match="*[local-name() = 'tab']" mode="contents_item">
