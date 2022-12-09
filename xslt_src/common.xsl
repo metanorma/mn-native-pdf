@@ -8172,7 +8172,7 @@
 				<xsl:if test="$namespace = 'gb'">10</xsl:if>
 				<xsl:if test="$namespace = 'iec'">10</xsl:if>
 				<xsl:if test="$namespace = 'iho'">9.5</xsl:if>
-				<xsl:if test="$namespace = 'iso'">inherit</xsl:if> <!-- 10 -->
+				<xsl:if test="$namespace = 'iso'">9</xsl:if> <!-- inherit -->
 				<xsl:if test="$namespace = 'bsi'">10</xsl:if>
 				<xsl:if test="$namespace = 'jcgm'">10</xsl:if>
 				<xsl:if test="$namespace = 'itu'"></xsl:if>
@@ -11464,7 +11464,7 @@
 					<xsl:if test="$namespace = 'gb'">9</xsl:if>
 					<xsl:if test="$namespace = 'iec'">9</xsl:if>
 					<xsl:if test="$namespace = 'iho'">9.5</xsl:if>
-					<xsl:if test="$namespace = 'iso'">inherit</xsl:if><!-- 9 -->
+					<xsl:if test="$namespace = 'iso'">9</xsl:if><!-- inherit -->
 					<xsl:if test="$namespace = 'bsi'">9</xsl:if>
 					<xsl:if test="$namespace = 'jcgm'">9</xsl:if>
 					<!-- <xsl:if test="$namespace = 'ieee'">							
