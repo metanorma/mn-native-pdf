@@ -381,11 +381,16 @@
 						<xsl:variable name="mathml_filename" select="@filename"/>
 						<xsl:variable name="mathml_content" select="."/>
 						
-						<xsl:variable name="basepath" select="java:org.metanorma.fop.Util.saveFileToDisk($mathml_filename,$mathml_content)"/>
+						<!-- <xsl:variable name="basepath" select="java:org.metanorma.fop.Util.saveFileToDisk($mathml_filename,$mathml_content)"/> -->
 						
-						<xsl:variable name="url" select="concat('url(file:',$basepath, ')')"/>
+						<!-- <xsl:variable name="url" select="concat('url(file:',$basepath, ')')"/> -->
 						
-						<xsl:if test="normalize-space($url) != ''">
+						<xsl:variable name="base64" select="java:org.metanorma.fop.Util.encodeBase64($mathml_content)"/>
+						
+						<xsl:variable name="url" select="concat('data:application/xml;base64,',$base64)"/>
+						
+						<!-- <xsl:if test="normalize-space($url) != ''"> -->
+						<xsl:if test="normalize-space($base64) != ''">
 							<pdf:embedded-file src="{$url}" filename="{$mathml_filename}"/>
 						</xsl:if>
 					</xsl:for-each>
