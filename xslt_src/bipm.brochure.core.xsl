@@ -16,6 +16,7 @@
 	<xsl:param name="doc_split_by_language"/>
 	
 	<xsl:param name="add_math_as_attachment">true</xsl:param>
+	<xsl:param name="final_transform">true</xsl:param>
 	
 	<xsl:key name="kfn" match="*[local-name() = 'fn'][not(ancestor::*[(local-name() = 'table' or local-name() = 'figure') and not(ancestor::*[local-name() = 'name'])])]" use="@reference"/>
 	
@@ -196,7 +197,7 @@
 	
 	
 	<xsl:variable name="mathml_attachments">
-		<xsl:if test="$add_math_as_attachment = 'true'">
+		<xsl:if test="$add_math_as_attachment = 'true' and $final_transform = 'true'">
 			<xsl:for-each select="//mathml:math">
 						
 				<xsl:variable name="sequence_number"><xsl:number level="any" format="00001"/></xsl:variable>
@@ -373,7 +374,7 @@
 			<fo:declarations>
 				<xsl:call-template name="addPDFUAmeta"/>
 				
-				<xsl:if test="$add_math_as_attachment = 'true'">
+				<xsl:if test="$add_math_as_attachment = 'true' and $final_transform = 'true'">
 					<!-- DEBUG: mathml_attachments=<xsl:copy-of select="$mathml_attachments"/> -->
 					<xsl:for-each select="xalan:nodeset($mathml_attachments)//attachment">
 						
