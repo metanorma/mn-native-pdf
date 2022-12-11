@@ -96,22 +96,25 @@
 			<xsl:when test="$doc_split_by_language = ''"><!-- all documents -->
 				<xsl:for-each select="//bipm:bipm-standard">
 					
-					<xsl:variable name="current_document">
+					<!-- <xsl:variable name="current_document">
 						<xsl:copy-of select="."/>
 					</xsl:variable>
 					
-					<xsl:for-each select="xalan:nodeset($current_document)">
+					<xsl:for-each select="xalan:nodeset($current_document)"> -->
 					
 						<xsl:variable name="docid">
-							<xsl:call-template name="getDocumentId"/>
+							<xsl:call-template name="getDocumentId_fromCurrentNode"/>
+							<!-- <xsl:call-template name="getDocumentId"/> -->
 						</xsl:variable>
 
 						<!-- add id to xref and split xref with @to into two xref -->
 						<xsl:variable name="current_document_index_id">
-							<xsl:apply-templates select=".//bipm:indexsect" mode="index_add_id"/>
+							<xsl:apply-templates select=".//bipm:indexsect" mode="index_add_id">
+								<xsl:with-param name="docid" select="$docid"/>
+							</xsl:apply-templates>
 						</xsl:variable>
 						
-						<xsl:variable name="current_document_index">
+						<!-- <xsl:variable name="current_document_index">
 							<xsl:apply-templates select="xalan:nodeset($current_document_index_id)" mode="index_update"/>
 						</xsl:variable>
 						
@@ -119,30 +122,37 @@
 							<doc id="{$docid}">
 								<xsl:copy-of select="."/>
 							</doc>
-						</xsl:for-each>
+						</xsl:for-each> -->
 						
-					</xsl:for-each>
+						<doc id="{$docid}">
+							<xsl:apply-templates select="xalan:nodeset($current_document_index_id)" mode="index_update"/>
+						</doc>
+						
+					<!-- </xsl:for-each> -->
 					
 				</xsl:for-each>
 			</xsl:when>
 			<xsl:otherwise>
 				<xsl:for-each select="(//bipm:bipm-standard)[*[local-name()='bibdata']/*[local-name()='language'][@current = 'true'] = $doc_split_by_language]">
 				
-					<xsl:variable name="current_document">
+					<!-- <xsl:variable name="current_document">
 						<xsl:copy-of select="."/>
 					</xsl:variable>
 				
-					<xsl:for-each select="xalan:nodeset($current_document)">
+					<xsl:for-each select="xalan:nodeset($current_document)"> -->
 					
 						<xsl:variable name="docid">
-							<xsl:call-template name="getDocumentId"/>
+							<!-- <xsl:call-template name="getDocumentId"/> -->
+							<xsl:call-template name="getDocumentId_fromCurrentNode"/>
 						</xsl:variable>
 						
 						<xsl:variable name="current_document_index_id">
-							<xsl:apply-templates select=".//bipm:indexsect" mode="index_add_id"/>
+							<xsl:apply-templates select=".//bipm:indexsect" mode="index_add_id">
+								<xsl:with-param name="docid" select="$docid"/>
+							</xsl:apply-templates>
 						</xsl:variable>
 						
-						<xsl:variable name="current_document_index">
+						<!-- <xsl:variable name="current_document_index">
 							<xsl:apply-templates select="xalan:nodeset($current_document_index_id)" mode="index_update"/>
 						</xsl:variable>
 						
@@ -150,9 +160,14 @@
 							<doc id="{$docid}">
 								<xsl:copy-of select="."/>
 							</doc>
-						</xsl:for-each>
+						</xsl:for-each> -->
 						
-					</xsl:for-each>
+						<doc id="{$docid}">
+							<xsl:apply-templates select="xalan:nodeset($current_document_index_id)" mode="index_update"/>
+						</doc>
+						
+						
+					<!-- </xsl:for-each> -->
 					
 				</xsl:for-each>
 			</xsl:otherwise>
