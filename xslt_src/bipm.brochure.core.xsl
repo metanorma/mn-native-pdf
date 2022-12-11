@@ -433,12 +433,13 @@
 								<xsl:variable name="lang" select="*[local-name()='bibdata']//*[local-name()='language'][@current = 'true']"/>						
 								<xsl:variable name="num"><xsl:number level="any" count="bipm:bipm-standard"/></xsl:variable>
 								
-								<xsl:variable name="title_eref">
+								<!-- <xsl:variable name="title_eref">
 									<xsl:apply-templates select="." mode="title_eref"/>
-								</xsl:variable>
+								</xsl:variable> -->
 								
 								<xsl:variable name="flatxml_">
-									<xsl:apply-templates select="xalan:nodeset($title_eref)" mode="flatxml"/>
+									<!-- <xsl:apply-templates select="xalan:nodeset($title_eref)" mode="flatxml"/> -->
+									<xsl:apply-templates select="." mode="flatxml"/>
 								</xsl:variable>
 								
 								<xsl:variable name="flatxml">
@@ -458,12 +459,13 @@
 								<xsl:variable name="lang" select="*[local-name()='bibdata']//*[local-name()='language'][@current = 'true']"/>						
 								<xsl:variable name="num"><xsl:number level="any" count="bipm:bipm-standard"/></xsl:variable>
 								
-								<xsl:variable name="title_eref">
+								<!-- <xsl:variable name="title_eref">
 									<xsl:apply-templates select="." mode="title_eref"/>
-								</xsl:variable>
+								</xsl:variable> -->
 								
 								<xsl:variable name="flatxml_">
-									<xsl:apply-templates select="xalan:nodeset($title_eref)" mode="flatxml"/>
+									<!-- <xsl:apply-templates select="xalan:nodeset($title_eref)" mode="flatxml"/> -->
+									<xsl:apply-templates select="." mode="flatxml"/>
 								</xsl:variable>
 								
 								<xsl:variable name="flatxml">
@@ -482,12 +484,13 @@
 				</xsl:when>			
 				<xsl:otherwise>
 				
-					<xsl:variable name="title_eref">
+					<!-- <xsl:variable name="title_eref">
 						<xsl:apply-templates mode="title_eref"/>
-					</xsl:variable>
+					</xsl:variable> -->
 					
 					<xsl:variable name="flatxml_">
-						<xsl:apply-templates select="xalan:nodeset($title_eref)" mode="flatxml"/>
+						<!-- <xsl:apply-templates select="xalan:nodeset($title_eref)" mode="flatxml"/> -->
+						<xsl:apply-templates select="." mode="flatxml"/>
 					</xsl:variable>
 
 					<xsl:variable name="flatxml">
