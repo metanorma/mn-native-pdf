@@ -3376,7 +3376,8 @@
 			</xsl:call-template>
 			<fo:block-container font-family="Arial" font-size="8pt" padding-top="12.5mm">
 				<fo:block text-align="right">
-					<xsl:copy-of select="$header-title"/>
+					<!-- <xsl:copy-of select="$header-title"/> -->
+					<xsl:apply-templates select="xalan:nodeset($header-title)" mode="header_title_remove_link_embedded"/>
 					<xsl:text>&#xA0;&#xA0;</xsl:text>
 					<fo:inline font-size="13pt" baseline-shift="-15%">•</fo:inline>
 					<xsl:text>&#xA0;&#xA0;</xsl:text>
@@ -3401,7 +3402,8 @@
 					<xsl:text>&#xA0;&#xA0;</xsl:text>
 					<fo:inline font-size="13pt" baseline-shift="-15%">•</fo:inline>
 					<xsl:text>&#xA0;&#xA0;</xsl:text>		
-					<xsl:copy-of select="$header-title"/>
+					<!-- <xsl:copy-of select="$header-title"/> -->
+					<xsl:apply-templates select="xalan:nodeset($header-title)" mode="header_title_remove_link_embedded"/>
 				</fo:block>
 				<fo:block-container font-size="1pt" border-top="0.5pt solid black" width="86.6mm">
 					<fo:block>&#xA0;</fo:block>
@@ -3415,6 +3417,16 @@
 			</xsl:call-template>
 			<fo:block></fo:block>
 		</fo:static-content>
+	</xsl:template>
+
+	<xsl:template match="@*|node()" mode="header_title_remove_link_embedded">
+		<xsl:copy>
+			<xsl:apply-templates select="@*|node()" mode="header_title_remove_link_embedded"/>
+		</xsl:copy>
+	</xsl:template>
+	
+	<xsl:template match="fo:basic-link[contains(@external-destination,'embedded-file')]" mode="header_title_remove_link_embedded">
+		<xsl:apply-templates mode="header_title_remove_link_embedded"/>
 	</xsl:template>
 
 	<xsl:template name="insertDraftWatermark">
