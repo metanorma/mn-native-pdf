@@ -11498,6 +11498,17 @@
 	<!-- =============== -->
 	<!-- sourcecode  -->
 	<!-- =============== -->
+	
+	<xsl:variable name="source-highlighter-css_" select="//*[contains(local-name(), '-standard')]/*[local-name() = 'misc-container']/*[local-name() = 'source-highlighter-css']"/>
+	<xsl:variable name="sourcecode_css_" select="java:org.metanorma.fop.Util.parseCSS($source-highlighter-css_)"/>
+	<xsl:variable name="sourcecode_css" select="xalan:nodeset($sourcecode_css_)"/>	
+	
+	<xsl:template match="*[local-name() = 'property']" mode="css">
+		<xsl:attribute name="{@name}">
+			<xsl:value-of select="@value"/>
+		</xsl:attribute>
+	</xsl:template>
+	
 	<xsl:template match="*[local-name()='sourcecode']" name="sourcecode">
 	
 		<xsl:variable name="sourcecode_attributes">
@@ -11550,6 +11561,7 @@
 						</xsl:choose>
 					</xsl:attribute>
 				</xsl:if>
+				<xsl:apply-templates select="$sourcecode_css//class[@name = 'sourcecode']" mode="css"/>
 			</xsl:element>
 		</xsl:variable>
 	
