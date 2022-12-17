@@ -11509,60 +11509,64 @@
 		</xsl:attribute>
 	</xsl:template>
 	
+	<xsl:template name="get_sourcecode_attributes">
+		<xsl:element name="sourcecode_attributes" use-attribute-sets="sourcecode-style">
+			<xsl:variable name="_font-size">
+				<xsl:if test="$namespace = 'csa'">10</xsl:if>
+				<xsl:if test="$namespace = 'csd'">10</xsl:if>						
+				<xsl:if test="$namespace = 'gb'">9</xsl:if>
+				<xsl:if test="$namespace = 'iec'">9</xsl:if>
+				<xsl:if test="$namespace = 'iho'">9.5</xsl:if>
+				<xsl:if test="$namespace = 'iso'">9</xsl:if><!-- inherit -->
+				<xsl:if test="$namespace = 'bsi'">9</xsl:if>
+				<xsl:if test="$namespace = 'jcgm'">9</xsl:if>
+				<!-- <xsl:if test="$namespace = 'ieee'">							
+					<xsl:if test="$current_template = 'standard'">8</xsl:if>
+				</xsl:if> -->
+				<xsl:if test="$namespace = 'itu'">10</xsl:if>
+				<xsl:if test="$namespace = 'm3d'"></xsl:if>		
+				<xsl:if test="$namespace = 'mpfd'"></xsl:if>
+				<xsl:if test="$namespace = 'nist-cswp'  or $namespace = 'nist-sp'">10</xsl:if>
+				<xsl:if test="$namespace = 'ogc'">
+					<xsl:choose>
+						<xsl:when test="ancestor::*[local-name() = 'table'][not(@type = 'sourcecode')]">8.5</xsl:when>
+						<xsl:otherwise>9.5</xsl:otherwise>
+					</xsl:choose>
+				</xsl:if>
+				<xsl:if test="$namespace = 'ogc-white-paper'">
+					<xsl:choose>
+						<xsl:when test="ancestor::*[local-name() = 'table'][not(@type = 'sourcecode')]">8.5</xsl:when>
+						<xsl:otherwise>9.5</xsl:otherwise>
+					</xsl:choose>
+				</xsl:if>						
+				<xsl:if test="$namespace = 'rsd'">
+					<xsl:choose>
+						<xsl:when test="ancestor::*[local-name() = 'table'][not(@type = 'sourcecode')]">inherit</xsl:when>
+						<xsl:otherwise>95%</xsl:otherwise><!-- 110% -->
+					</xsl:choose>
+				</xsl:if>
+				<xsl:if test="$namespace = 'unece' or $namespace = 'unece-rec'">10</xsl:if>		
+			</xsl:variable>
+			
+			<xsl:variable name="font-size" select="normalize-space($_font-size)"/>		
+			<xsl:if test="$font-size != ''">
+				<xsl:attribute name="font-size">
+					<xsl:choose>
+						<xsl:when test="$font-size = 'inherit'"><xsl:value-of select="$font-size"/></xsl:when>
+						<xsl:when test="contains($font-size, '%')"><xsl:value-of select="$font-size"/></xsl:when>
+						<xsl:when test="ancestor::*[local-name()='note']"><xsl:value-of select="$font-size * 0.91"/>pt</xsl:when>
+						<xsl:otherwise><xsl:value-of select="$font-size"/>pt</xsl:otherwise>
+					</xsl:choose>
+				</xsl:attribute>
+			</xsl:if>
+			<xsl:apply-templates select="$sourcecode_css//class[@name = 'sourcecode']" mode="css"/>
+		</xsl:element>
+	</xsl:template>
+	
 	<xsl:template match="*[local-name()='sourcecode']" name="sourcecode">
 	
 		<xsl:variable name="sourcecode_attributes">
-			<xsl:element name="sourcecode_attributes" use-attribute-sets="sourcecode-style">
-				<xsl:variable name="_font-size">
-					<xsl:if test="$namespace = 'csa'">10</xsl:if>
-					<xsl:if test="$namespace = 'csd'">10</xsl:if>						
-					<xsl:if test="$namespace = 'gb'">9</xsl:if>
-					<xsl:if test="$namespace = 'iec'">9</xsl:if>
-					<xsl:if test="$namespace = 'iho'">9.5</xsl:if>
-					<xsl:if test="$namespace = 'iso'">9</xsl:if><!-- inherit -->
-					<xsl:if test="$namespace = 'bsi'">9</xsl:if>
-					<xsl:if test="$namespace = 'jcgm'">9</xsl:if>
-					<!-- <xsl:if test="$namespace = 'ieee'">							
-						<xsl:if test="$current_template = 'standard'">8</xsl:if>
-					</xsl:if> -->
-					<xsl:if test="$namespace = 'itu'">10</xsl:if>
-					<xsl:if test="$namespace = 'm3d'"></xsl:if>		
-					<xsl:if test="$namespace = 'mpfd'"></xsl:if>
-					<xsl:if test="$namespace = 'nist-cswp'  or $namespace = 'nist-sp'">10</xsl:if>
-					<xsl:if test="$namespace = 'ogc'">
-						<xsl:choose>
-							<xsl:when test="ancestor::*[local-name() = 'table']">8.5</xsl:when>
-							<xsl:otherwise>9.5</xsl:otherwise>
-						</xsl:choose>
-					</xsl:if>
-					<xsl:if test="$namespace = 'ogc-white-paper'">
-						<xsl:choose>
-							<xsl:when test="ancestor::*[local-name() = 'table']">8.5</xsl:when>
-							<xsl:otherwise>9.5</xsl:otherwise>
-						</xsl:choose>
-					</xsl:if>						
-					<xsl:if test="$namespace = 'rsd'">
-						<xsl:choose>
-							<xsl:when test="ancestor::*[local-name() = 'table']">inherit</xsl:when>
-							<xsl:otherwise>95%</xsl:otherwise><!-- 110% -->
-						</xsl:choose>
-					</xsl:if>
-					<xsl:if test="$namespace = 'unece' or $namespace = 'unece-rec'">10</xsl:if>		
-				</xsl:variable>
-				
-				<xsl:variable name="font-size" select="normalize-space($_font-size)"/>		
-				<xsl:if test="$font-size != ''">
-					<xsl:attribute name="font-size">
-						<xsl:choose>
-							<xsl:when test="$font-size = 'inherit'"><xsl:value-of select="$font-size"/></xsl:when>
-							<xsl:when test="contains($font-size, '%')"><xsl:value-of select="$font-size"/></xsl:when>
-							<xsl:when test="ancestor::*[local-name()='note']"><xsl:value-of select="$font-size * 0.91"/>pt</xsl:when>
-							<xsl:otherwise><xsl:value-of select="$font-size"/>pt</xsl:otherwise>
-						</xsl:choose>
-					</xsl:attribute>
-				</xsl:if>
-				<xsl:apply-templates select="$sourcecode_css//class[@name = 'sourcecode']" mode="css"/>
-			</xsl:element>
+			<xsl:call-template name="get_sourcecode_attributes"/>
 		</xsl:variable>
 	
     <!-- <xsl:copy-of select="$sourcecode_css"/> -->
@@ -11699,6 +11703,58 @@
 			</xsl:otherwise>
 		</xsl:choose>
 	</xsl:template>
+	
+	<!-- outer table with line numbers for sourcecode -->
+	<xsl:template match="*[local-name()='table'][@type = 'sourcecode']" priority="2">
+		<fo:block>
+			<fo:table width="100%" table-layout="fixed">
+				<xsl:copy-of select="@id"/>
+					<fo:table-column column-width="8%"/>
+					<fo:table-column column-width="92%"/>
+					<fo:table-body>
+						<xsl:apply-templates />
+					</fo:table-body>
+			</fo:table>
+		</fo:block>
+	</xsl:template>
+	<xsl:template match="*[local-name()='table'][@type = 'sourcecode']/*[local-name() = 'tbody']" priority="2">
+		<xsl:apply-templates />
+	</xsl:template>
+	<xsl:template match="*[local-name()='table'][@type = 'sourcecode']//*[local-name()='tr']" priority="2">
+		<fo:table-row>
+			<xsl:apply-templates />
+		</fo:table-row>
+	</xsl:template>
+	<!-- first td with line numbers -->
+	<xsl:template match="*[local-name()='table'][@type = 'sourcecode']//*[local-name()='tr']/*[local-name()='td'][not(preceding-sibling::*)]" priority="2">
+		<fo:table-cell>
+			<fo:block>
+				
+				<!-- set attibutes for line numbers - same as sourcecode -->
+				<xsl:variable name="sourcecode_attributes">
+					<xsl:for-each select="following-sibling::*[local-name() = 'td']/*[local-name() = 'sourcecode']">
+						<xsl:call-template name="get_sourcecode_attributes"/>
+					</xsl:for-each>
+				</xsl:variable>
+				<xsl:for-each select="xalan:nodeset($sourcecode_attributes)/sourcecode_attributes/@*[not(starts-with(local-name(), 'margin-') or starts-with(local-name(), 'space-'))]">					
+					<xsl:attribute name="{local-name()}">
+						<xsl:value-of select="."/>
+					</xsl:attribute>
+				</xsl:for-each>
+				
+				<xsl:apply-templates />
+			</fo:block>
+		</fo:table-cell>
+	</xsl:template>
+	<!-- second td with sourcecode -->
+	<xsl:template match="*[local-name()='table'][@type = 'sourcecode']//*[local-name()='tr']/*[local-name()='td'][preceding-sibling::*]" priority="2">
+		<fo:table-cell>
+			<fo:block>
+				<xsl:apply-templates />
+			</fo:block>
+		</fo:table-cell>
+	</xsl:template>
+	<!-- END outer table with line numbers for sourcecode -->
 	
 	<xsl:template name="add_spaces_to_sourcecode">
 		<xsl:variable name="text_step1">
