@@ -11565,6 +11565,8 @@
 			</xsl:element>
 		</xsl:variable>
 	
+    <!-- <xsl:copy-of select="$sourcecode_css"/> -->
+  
 		<xsl:choose>
 			<xsl:when test="$isGenerateTableIF = 'true' and (ancestor::*[local-name() = 'td'] or ancestor::*[local-name() = 'th'])">
 				<xsl:for-each select="xalan:nodeset($sourcecode_attributes)/sourcecode_attributes/@*">					
@@ -11662,7 +11664,7 @@
 		</xsl:choose>
 	</xsl:template>
 
-	<xsl:template match="*[local-name()='sourcecode']/text()" priority="2">
+	<xsl:template match="*[local-name()='sourcecode']/text() | *[local-name()='sourcecode']//*[local-name()='span']/text()" priority="2">
 		<xsl:choose>
 			<xsl:when test="normalize-space($syntax-highlight) = 'true' and normalize-space(../@lang) != ''"> <!-- condition for turn on of highlighting -->
 				<xsl:variable name="syntax" select="java:org.metanorma.fop.Util.syntaxHighlight(., ../@lang)"/>
@@ -11679,7 +11681,22 @@
 				<xsl:call-template name="add_spaces_to_sourcecode"/>
 			</xsl:otherwise>
 		</xsl:choose>
-		
+	</xsl:template>
+	
+	<!-- add sourcecode highlighting -->
+	<xsl:template match="*[local-name()='sourcecode']//*[local-name()='span'][@class]" priority="2">
+		<xsl:variable name="class" select="@class"/>
+		<xsl:choose>
+			<xsl:when test="$sourcecode_css//class[@name = $class]">
+				<fo:inline>
+					<xsl:apply-templates select="$sourcecode_css//class[@name = $class]" mode="css"/>
+					<xsl:apply-templates />
+				</fo:inline>
+			</xsl:when>
+			<xsl:otherwise>
+				<xsl:apply-templates />
+			</xsl:otherwise>
+		</xsl:choose>
 	</xsl:template>
 	
 	<xsl:template name="add_spaces_to_sourcecode">
@@ -14883,6 +14900,12 @@
 	<!-- Note: to enable the addition of character span markup with semantic styling for DIS Word output -->
 	<xsl:template match="*[local-name() = 'span']" mode="update_xml_step1">
 		<xsl:apply-templates mode="update_xml_step1"/>
+	</xsl:template>
+	<xsl:template match="*[local-name() = 'sourcecode']//*[local-name() = 'span'][@class]" mode="update_xml_step1" priority="2">
+		<xsl:copy>
+			<xsl:copy-of select="@*"/>
+			<xsl:apply-templates mode="update_xml_step1"/>
+		</xsl:copy>
 	</xsl:template>
 	<!-- =========================================================================== -->
 	<!-- END STEP1: Re-order elements in 'preface', 'sections' based on @displayorder -->
