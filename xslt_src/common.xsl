@@ -275,7 +275,7 @@
 			<xsl:when test="$namespace = 'iec'">15</xsl:when>
 			<xsl:when test="$namespace = 'ieee'">25.4</xsl:when>
 			<xsl:when test="$namespace = 'iho'">25.4</xsl:when>
-			<xsl:when test="$namespace = 'iso'">13</xsl:when>
+			<xsl:when test="$namespace = 'iso'">15</xsl:when>
 			<xsl:when test="$namespace = 'itu'">20</xsl:when>
 			<xsl:when test="$namespace = 'jcgm'">23.5</xsl:when>
 			<xsl:when test="$namespace = 'm3d'">23</xsl:when>
@@ -2692,6 +2692,54 @@
 		<xsl:attribute name="font-weight">bold</xsl:attribute>
 	</xsl:attribute-set>
 
+	<xsl:attribute-set name="figure-block-style">
+		<xsl:if test="$namespace = 'csa'">
+			<xsl:attribute name="margin-bottom">6pt</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'csd'">
+			<xsl:attribute name="margin-bottom">12pt</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'gb'">
+			<xsl:attribute name="margin-bottom">12pt</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'ieee'">
+			<xsl:attribute name="margin-bottom">6pt</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'iec'">
+			<xsl:attribute name="margin-bottom">12pt</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'iho'">
+			<xsl:attribute name="margin-bottom">6pt</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'iso'">
+			<xsl:attribute name="space-after">12pt</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'itu'">
+			<xsl:attribute name="margin-bottom">6pt</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'jcgm'">
+			<xsl:attribute name="margin-bottom">12pt</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'nist-sp' or $namespace = 'nist-cswp'">
+			<xsl:attribute name="margin-bottom">6pt</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'm3d'">
+			<xsl:attribute name="margin-bottom">12pt</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'mpfd'">
+			<xsl:attribute name="margin-bottom">6pt</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'ogc'">
+			<xsl:attribute name="margin-bottom">12pt</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'ogc-white-paper'">
+			<xsl:attribute name="margin-bottom">6pt</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'unece' or $namespace = 'unece-rec'">
+			<xsl:attribute name="margin-bottom">6pt</xsl:attribute>
+		</xsl:if>
+	</xsl:attribute-set>
+
 	<xsl:attribute-set name="figure-style">
 		<xsl:if test="$namespace = 'rsd'"> <!-- background for image -->
 			<xsl:attribute name="background-color">rgb(236,242,246)</xsl:attribute>
@@ -2728,7 +2776,7 @@
 			<xsl:attribute name="font-weight">bold</xsl:attribute>
 			<xsl:attribute name="text-align">center</xsl:attribute>
 			<xsl:attribute name="margin-top">12pt</xsl:attribute>
-			<xsl:attribute name="margin-bottom">6pt</xsl:attribute>
+			<xsl:attribute name="space-after">6pt</xsl:attribute>
 			<xsl:attribute name="keep-with-previous">always</xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'ieee'">
@@ -2736,15 +2784,14 @@
 			<xsl:attribute name="font-weight">bold</xsl:attribute>
 			<xsl:attribute name="text-align">center</xsl:attribute>
 			<xsl:attribute name="margin-top">12pt</xsl:attribute>
-			<xsl:attribute name="margin-bottom">6pt</xsl:attribute>
+			<xsl:attribute name="space-after">6pt</xsl:attribute>
 			<xsl:attribute name="keep-with-previous">always</xsl:attribute>
 		</xsl:if>		
 		<xsl:if test="$namespace = 'ogc'">
 			<xsl:attribute name="color"><xsl:value-of select="$color_blue"/></xsl:attribute>
 			<!-- <xsl:attribute name="margin-top">12pt</xsl:attribute> -->
 			<xsl:attribute name="margin-top">6pt</xsl:attribute>
-			<!-- <xsl:attribute name="margin-bottom">6pt</xsl:attribute> -->
-			<xsl:attribute name="margin-bottom">12pt</xsl:attribute>
+			<xsl:attribute name="space-after">12pt</xsl:attribute>
 			<!-- <xsl:attribute name="keep-with-next">always</xsl:attribute> -->
 			<xsl:attribute name="keep-with-previous">always</xsl:attribute>
 			<xsl:attribute name="text-align">center</xsl:attribute>
@@ -2756,22 +2803,21 @@
 			<xsl:attribute name="font-weight">normal</xsl:attribute>
 			<xsl:attribute name="font-style">italic</xsl:attribute>
 			<xsl:attribute name="margin-top">0pt</xsl:attribute>
-			<xsl:attribute name="margin-bottom">6pt</xsl:attribute>
+			<xsl:attribute name="space-after">6pt</xsl:attribute>
 			<xsl:attribute name="keep-with-previous">always</xsl:attribute>
 		</xsl:if>
-		
-		<xsl:if test="$namespace = 'csd' or $namespace = 'iec' or $namespace = 'iso' or $namespace = 'jcgm'">			
+		<xsl:if test="$namespace = 'csd' or $namespace = 'iec' or $namespace = 'iso' or $namespace = 'jcgm'">
 			<xsl:attribute name="font-weight">bold</xsl:attribute>
 			<xsl:attribute name="text-align">center</xsl:attribute>
 			<xsl:attribute name="margin-top">12pt</xsl:attribute>
-			<xsl:attribute name="margin-bottom">12pt</xsl:attribute>
+			<xsl:attribute name="space-after">12pt</xsl:attribute>
 			<xsl:attribute name="keep-with-previous">always</xsl:attribute>
 		</xsl:if>
-		<xsl:if test="$namespace = 'gb'">			
+		<xsl:if test="$namespace = 'gb'">
 			<xsl:attribute name="font-family">SimHei</xsl:attribute>
 			<xsl:attribute name="text-align">center</xsl:attribute>
 			<xsl:attribute name="margin-top">12pt</xsl:attribute>
-			<xsl:attribute name="margin-bottom">12pt</xsl:attribute>
+			<xsl:attribute name="space-after">12pt</xsl:attribute>
 			<xsl:attribute name="keep-with-previous">always</xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'iho'">
@@ -2779,29 +2825,28 @@
 			<xsl:attribute name="font-weight">bold</xsl:attribute>
 			<xsl:attribute name="text-align">center</xsl:attribute>
 			<xsl:attribute name="margin-top">2pt</xsl:attribute>
-			<xsl:attribute name="margin-bottom">6pt</xsl:attribute>
+			<xsl:attribute name="space-after">6pt</xsl:attribute>
 			<xsl:attribute name="keep-with-previous">always</xsl:attribute>
 		</xsl:if>
-		<xsl:if test="$namespace = 'itu' or $namespace = 'nist-sp'">			
+		<xsl:if test="$namespace = 'itu' or $namespace = 'nist-sp'">
 			<xsl:attribute name="font-weight">bold</xsl:attribute>
 			<xsl:attribute name="text-align">center</xsl:attribute>
 			<xsl:attribute name="margin-top">6pt</xsl:attribute>
-			<xsl:attribute name="margin-bottom">6pt</xsl:attribute>
+			<xsl:attribute name="space-after">6pt</xsl:attribute>
 			<xsl:attribute name="keep-with-previous">always</xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'nist-cswp'">
 			<xsl:attribute name="font-weight">bold</xsl:attribute>
-			<xsl:attribute name="text-align">center</xsl:attribute>			
-			<xsl:attribute name="margin-bottom">6pt</xsl:attribute>
+			<xsl:attribute name="text-align">center</xsl:attribute>
+			<xsl:attribute name="space-after">6pt</xsl:attribute>
 			<xsl:attribute name="keep-with-previous">always</xsl:attribute>
 		</xsl:if>
-		<xsl:if test="$namespace = 'm3d'">			
+		<xsl:if test="$namespace = 'm3d'">
 			<xsl:attribute name="text-align">center</xsl:attribute>
 			<xsl:attribute name="margin-top">12pt</xsl:attribute>
-			<xsl:attribute name="margin-bottom">12pt</xsl:attribute>
+			<xsl:attribute name="space-after">12pt</xsl:attribute>
 			<xsl:attribute name="keep-with-previous">always</xsl:attribute>
 		</xsl:if>
-		
 		<xsl:if test="$namespace = 'rsd'">
 			<xsl:attribute name="font-size">13pt</xsl:attribute>
 			<xsl:attribute name="font-weight">300</xsl:attribute>
@@ -2811,18 +2856,15 @@
 			<xsl:attribute name="margin-bottom">12pt</xsl:attribute>
 			<xsl:attribute name="keep-with-next">always</xsl:attribute>
 		</xsl:if>
-		
-
 		<xsl:if test="$namespace = 'unece'">
 			<xsl:attribute name="text-align">center</xsl:attribute>
-			<xsl:attribute name="margin-bottom">6pt</xsl:attribute>
+			<xsl:attribute name="space-after">6pt</xsl:attribute>
 			<xsl:attribute name="keep-with-previous">always</xsl:attribute>
 		</xsl:if>
-		
 		<xsl:if test="$namespace = 'unece-rec'">
 			<xsl:attribute name="text-align">center</xsl:attribute>
 			<xsl:attribute name="font-size">9pt</xsl:attribute>
-			<xsl:attribute name="margin-bottom">6pt</xsl:attribute>
+			<xsl:attribute name="space-after">6pt</xsl:attribute>
 			<xsl:attribute name="keep-with-next">always</xsl:attribute>
 			<xsl:attribute name="keep-together.within-column">always</xsl:attribute>
 		</xsl:if>
@@ -2831,7 +2873,7 @@
 			<xsl:attribute name="font-weight">bold</xsl:attribute>
 			<xsl:attribute name="text-align">center</xsl:attribute>
 			<xsl:attribute name="margin-top">6pt</xsl:attribute>
-			<xsl:attribute name="margin-bottom">6pt</xsl:attribute>
+			<xsl:attribute name="space-after">6pt</xsl:attribute>
 			<xsl:attribute name="keep-with-previous">always</xsl:attribute>
 		</xsl:if>	
 	</xsl:attribute-set>
@@ -10269,7 +10311,7 @@
 	<xsl:template match="*[local-name() = 'figure']" name="figure">
 		<xsl:variable name="isAdded" select="@added"/>
 		<xsl:variable name="isDeleted" select="@deleted"/>
-		<fo:block-container id="{@id}">			
+		<fo:block-container id="{@id}" xsl:use-attribute-sets="figure-block-style">
 			<xsl:if test="$namespace = 'bipm'">
 				<xsl:if test="*[local-name() = 'name']">
 					<xsl:attribute name="space-after">12pt</xsl:attribute>
