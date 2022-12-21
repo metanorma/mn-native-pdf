@@ -18,7 +18,7 @@
 	<xsl:param name="add_math_as_attachment">true</xsl:param>
 	<xsl:param name="final_transform">true</xsl:param>
 	
-	<xsl:key name="kfn" match="*[local-name() = 'fn'][not(ancestor::*[(local-name() = 'table' or local-name() = 'figure') and not(ancestor::*[local-name() = 'name'])])]" use="@reference"/>
+	<xsl:key name="kfn" match="*[local-name() = 'fn'][not(ancestor::*[(local-name() = 'table' or local-name() = 'figure' or local-name() = 'localized-strings')] and not(ancestor::*[local-name() = 'name']))]" use="@reference"/>
 	
 	<xsl:variable name="first_pass" select="count($index//item) = 0"/>
 	

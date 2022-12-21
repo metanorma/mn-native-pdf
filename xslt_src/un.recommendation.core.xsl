@@ -12,7 +12,7 @@
 	<xsl:output version="1.0" method="xml" encoding="UTF-8" indent="no"/>
 
 
-	<xsl:key name="kfn" match="*[local-name() = 'fn'][not(ancestor::*[(local-name() = 'table' or local-name() = 'figure') and not(ancestor::*[local-name() = 'name'])])]" use="@reference"/>
+	<xsl:key name="kfn" match="*[local-name() = 'fn'][not(ancestor::*[(local-name() = 'table' or local-name() = 'figure' or local-name() = 'localized-strings')] and not(ancestor::*[local-name() = 'name']))]" use="@reference"/>
 	
 	<xsl:include href="./common.xsl"/>
 
@@ -788,7 +788,7 @@
 	
 	
 	<xsl:template match="un:figure" priority="2">
-		<fo:block-container id="{@id}">
+		<fo:block-container id="{@id}" xsl:use-attribute-sets="figure-block-style">
 			<xsl:if test="ancestor::un:admonition">				
 				<xsl:attribute name="margin-left">-5mm</xsl:attribute>
 				<xsl:attribute name="margin-right">-5mm</xsl:attribute>

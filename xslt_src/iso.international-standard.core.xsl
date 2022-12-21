@@ -15,7 +15,7 @@
 	
 	<xsl:include href="./common.xsl"/>
 
-	<xsl:key name="kfn" match="*[local-name() = 'fn'][not(ancestor::*[(local-name() = 'table' or local-name() = 'figure') and not(ancestor::*[local-name() = 'name'])])]" use="@reference"/>
+	<xsl:key name="kfn" match="*[local-name() = 'fn'][not(ancestor::*[(local-name() = 'table' or local-name() = 'figure' or local-name() = 'localized-strings')] and not(ancestor::*[local-name() = 'name']))]" use="@reference"/>
 	
 	<xsl:key name="attachments" match="iso:eref[java:endsWith(java:java.lang.String.new(@bibitemid),'.exp')]" use="@bibitemid"/>
 	<xsl:key name="attachments2" match="iso:eref[contains(@bibitemid,'.exp_')]" use="@bibitemid"/>
