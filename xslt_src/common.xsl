@@ -2989,6 +2989,7 @@
 			<xsl:attribute name="margin-bottom">12pt</xsl:attribute>
 			<xsl:attribute name="keep-with-next">always</xsl:attribute>
 			<xsl:attribute name="border">2pt solid black</xsl:attribute>			
+			<xsl:attribute name="text-indent">0</xsl:attribute>			
 		</xsl:if>
 		<xsl:if test="$namespace = 'unece-rec'">
 			<xsl:attribute name="margin-bottom">12pt</xsl:attribute>
@@ -10413,7 +10414,14 @@
 									
 									<xsl:variable name="scale" select="java:org.metanorma.fop.Util.getImageScale($img_src, $width_effective, $height_effective)"/>
 									<xsl:if test="number($scale) &lt; 100">
-										<xsl:attribute name="content-width"><xsl:value-of select="$scale"/>%</xsl:attribute>
+										<xsl:choose>
+											<xsl:when test="$namespace = 'unece'">
+												<xsl:attribute name="content-width"><xsl:value-of select="$scale * 0.985"/>%</xsl:attribute><!-- 0.985 due border around image -->
+											</xsl:when>
+											<xsl:otherwise>
+												<xsl:attribute name="content-width"><xsl:value-of select="$scale"/>%</xsl:attribute>
+											</xsl:otherwise>
+										</xsl:choose>
 									</xsl:if>
 								
 								</xsl:if>
