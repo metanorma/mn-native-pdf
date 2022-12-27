@@ -139,505 +139,514 @@
 	
 	<xsl:template match="/">
 		<xsl:call-template name="namespaceCheck"/>
-		<fo:root xmlns:fo="http://www.w3.org/1999/XSL/Format" xml:lang="{$lang}">
-			<xsl:variable name="root-style">
-				<root-style xsl:use-attribute-sets="root-style"/>
-			</xsl:variable>
-			<xsl:call-template name="insertRootStyle">
-				<xsl:with-param name="root-style" select="$root-style"/>
-			</xsl:call-template>
-			<fo:layout-master-set>
-				<!-- Cover page -->
-				<fo:simple-page-master master-name="cover-page" page-width="{$pageWidth}mm" page-height="{$pageHeight}mm">
-					<fo:region-body margin-top="16.5mm" margin-bottom="10mm" margin-left="16.5mm" margin-right="14mm"/>
-					<fo:region-before region-name="cover-page-header" extent="16.5mm" />
-					<fo:region-after extent="10mm"/>
-					<fo:region-start extent="16.5mm"/>
-					<fo:region-end extent="14mm"/>
-				</fo:simple-page-master>
+		
+		<xsl:variable name="updated_xml_step1">
+			<xsl:apply-templates mode="update_xml_step1"/>
+		</xsl:variable>
+		
+		<xsl:for-each select="xalan:nodeset($updated_xml_step1)">
+		
+			<fo:root xmlns:fo="http://www.w3.org/1999/XSL/Format" xml:lang="{$lang}">
+				<xsl:variable name="root-style">
+					<root-style xsl:use-attribute-sets="root-style"/>
+				</xsl:variable>
+				<xsl:call-template name="insertRootStyle">
+					<xsl:with-param name="root-style" select="$root-style"/>
+				</xsl:call-template>
+				<fo:layout-master-set>
+					<!-- Cover page -->
+					<fo:simple-page-master master-name="cover-page" page-width="{$pageWidth}mm" page-height="{$pageHeight}mm">
+						<fo:region-body margin-top="16.5mm" margin-bottom="10mm" margin-left="16.5mm" margin-right="14mm"/>
+						<fo:region-before region-name="cover-page-header" extent="16.5mm" />
+						<fo:region-after extent="10mm"/>
+						<fo:region-start extent="16.5mm"/>
+						<fo:region-end extent="14mm"/>
+					</fo:simple-page-master>
 
-				<!-- Preface pages -->
-				<fo:simple-page-master master-name="preface" page-width="{$pageWidth}mm" page-height="{$pageHeight}mm">
-					<fo:region-body margin-top="16.5mm" margin-bottom="22.5mm" margin-left="16.5mm" margin-right="16.5mm"/>
-					<fo:region-before region-name="header" extent="16.5mm"/> 
-					<fo:region-after region-name="footer" extent="22.5mm"/>
-					<fo:region-start region-name="left-region" extent="16.5mm"/>
-					<fo:region-end region-name="right-region" extent="16.5mm"/>
-				</fo:simple-page-master>				
+					<!-- Preface pages -->
+					<fo:simple-page-master master-name="preface" page-width="{$pageWidth}mm" page-height="{$pageHeight}mm">
+						<fo:region-body margin-top="16.5mm" margin-bottom="22.5mm" margin-left="16.5mm" margin-right="16.5mm"/>
+						<fo:region-before region-name="header" extent="16.5mm"/> 
+						<fo:region-after region-name="footer" extent="22.5mm"/>
+						<fo:region-start region-name="left-region" extent="16.5mm"/>
+						<fo:region-end region-name="right-region" extent="16.5mm"/>
+					</fo:simple-page-master>				
 
-				
-				<!-- Document pages -->
-				<fo:simple-page-master master-name="document" page-width="{$pageWidth}mm" page-height="{$pageHeight}mm">
-					<fo:region-body margin-top="{$marginTop}mm" margin-bottom="{$marginBottom}mm" margin-left="{$marginLeftRight1}mm" margin-right="{$marginLeftRight2}mm"/>
-					<fo:region-before region-name="header" extent="{$marginTop}mm"/> 
-					<fo:region-after region-name="footer" extent="{$marginBottom}mm"/>
-					<fo:region-start region-name="left-region" extent="16.5mm"/>
-					<fo:region-end region-name="right-region" extent="{$marginLeftRight2}mm"/>
-				</fo:simple-page-master>				
-				
-			</fo:layout-master-set>
-			
-			<fo:declarations>
-				<xsl:call-template name="addPDFUAmeta"/>
-			</fo:declarations>
-			
-			<xsl:call-template name="addBookmarks">
-				<xsl:with-param name="contents" select="$contents"/>
-			</xsl:call-template>
-			
-			<!-- Cover Page -->
-			<fo:page-sequence master-reference="cover-page" force-page-count="no-force">				
-				<fo:static-content flow-name="xsl-footnote-separator">
-					<fo:block>
-						<fo:leader leader-pattern="rule" leader-length="30%"/>
-					</fo:block>
-				</fo:static-content>
 					
-				<fo:flow flow-name="xsl-region-body" color="white">
+					<!-- Document pages -->
+					<fo:simple-page-master master-name="document" page-width="{$pageWidth}mm" page-height="{$pageHeight}mm">
+						<fo:region-body margin-top="{$marginTop}mm" margin-bottom="{$marginBottom}mm" margin-left="{$marginLeftRight1}mm" margin-right="{$marginLeftRight2}mm"/>
+						<fo:region-before region-name="header" extent="{$marginTop}mm"/> 
+						<fo:region-after region-name="footer" extent="{$marginBottom}mm"/>
+						<fo:region-start region-name="left-region" extent="16.5mm"/>
+						<fo:region-end region-name="right-region" extent="{$marginLeftRight2}mm"/>
+					</fo:simple-page-master>				
+					
+				</fo:layout-master-set>
 				
-					<!-- background image -->
-					<fo:block-container absolute-position="fixed" left="0mm" top="0mm" font-size="0">
+				<fo:declarations>
+					<xsl:call-template name="addPDFUAmeta"/>
+				</fo:declarations>
+				
+				<xsl:call-template name="addBookmarks">
+					<xsl:with-param name="contents" select="$contents"/>
+				</xsl:call-template>
+				
+				<!-- Cover Page -->
+				<fo:page-sequence master-reference="cover-page" force-page-count="no-force">				
+					<fo:static-content flow-name="xsl-footnote-separator">
 						<fo:block>
-							<fo:external-graphic src="{concat('data:image/png;base64,', normalize-space($Image-Cover-Background))}" width="{$pageWidth}mm" content-height="scale-to-fit" scaling="uniform" fox:alt-text="Image Front"/>
+							<fo:leader leader-pattern="rule" leader-length="30%"/>
 						</fo:block>
-					</fo:block-container>
+					</fo:static-content>
+						
+					<fo:flow flow-name="xsl-region-body" color="white">
 					
-					<!-- background color -->
-					<fo:block-container absolute-position="fixed" left="0" top="0" font-size="0">
-            <fo:block>
-              <fo:instream-foreign-object content-height="{$pageHeight}mm" fox:alt-text="Background color">
-                <svg xmlns="http://www.w3.org/2000/svg" version="1.0" width="{$pageWidth}mm" height="{$pageHeight}mm">
-                  <rect width="{$pageWidth}mm" height="{$pageHeight}mm" style="fill:rgb(33,55,92);stroke-width:0;fill-opacity:0.85"/>
-                </svg>
-              </fo:instream-foreign-object>
-            </fo:block>
-          </fo:block-container>
-					
-					<xsl:call-template name="insertCrossingLines"/>
-					
-					<!-- title and logo -->
-					<fo:block>
-						<fo:table table-layout="fixed" width="100%">
-							<fo:table-column column-width="75%"/>
-							<fo:table-column column-width="25%"/>
-							<fo:table-body>
-								<fo:table-row>
-									<fo:table-cell font-weight="bold">
-										<fo:block font-size="16pt" color="{$color_design}" margin-bottom="4pt">
-											<xsl:variable name="ogc_document" select="concat('OGC® DOCUMENT: ', $docnumber)"/>
-											<xsl:call-template name="addLetterSpacing">
-												<xsl:with-param name="text" select="$ogc_document"/>
-												<xsl:with-param name="letter-spacing" select="0.3"/>
-											</xsl:call-template>
-										</fo:block>
-										<xsl:variable name="ogc_external" select="/ogc:ogc-standard/ogc:bibdata/ogc:docidentifier[@type='ogc-external']" />
-										<xsl:if test="normalize-space($ogc_external) != ''">
-											<fo:block font-size="10pt">External identifier of this OGC<fo:inline font-size="58%" baseline-shift="30%">®</fo:inline>  document: <fo:inline font-weight="normal"><xsl:value-of select="$ogc_external"/></fo:inline></fo:block>
-										</xsl:if>
-									</fo:table-cell>
-									<fo:table-cell text-align="right">
-										<fo:block>
-											<xsl:call-template name="insertLogo" />
-										</fo:block>
-									</fo:table-cell>
-								</fo:table-row>
-							</fo:table-body>
-						</fo:table>
-					</fo:block>
-					
-					<!-- <fo:block-container absolute-position="fixed" left="16.5mm" top="83mm" height="90mm"> -->
-					<fo:block-container absolute-position="fixed" left="16.5mm" top="40mm" height="170mm">
-						<fo:block-container width="155mm" height="99%" display-align="center">
-							<fo:block font-size="33pt" role="H1">
-								<xsl:variable name="length_title" select="string-length($doctitle)"/>
-								<xsl:variable name="fit_font-size">
-									<xsl:choose>
-										<xsl:when test="$length_title &gt; 230">20</xsl:when>
-										<xsl:when test="$length_title &gt; 170">26</xsl:when>
-										<xsl:when test="$length_title &gt; 155">28</xsl:when>
-										<xsl:when test="$length_title &gt; 130">30</xsl:when>
-									</xsl:choose>
-								</xsl:variable>
-								<xsl:if test="normalize-space($fit_font-size) != ''">
-									<xsl:attribute name="font-size"><xsl:value-of select="$fit_font-size"/>pt</xsl:attribute>
-								</xsl:if>
-								<xsl:call-template name="addLetterSpacing">
-									<xsl:with-param name="text" select="java:toUpperCase(java:java.lang.String.new($doctitle))"/>
-									<xsl:with-param name="letter-spacing" select="1.1"/>
-								</xsl:call-template>
+						<!-- background image -->
+						<fo:block-container absolute-position="fixed" left="0mm" top="0mm" font-size="0">
+							<fo:block>
+								<fo:external-graphic src="{concat('data:image/png;base64,', normalize-space($Image-Cover-Background))}" width="{$pageWidth}mm" content-height="scale-to-fit" scaling="uniform" fox:alt-text="Image Front"/>
 							</fo:block>
-							<fo:block-container width="22.5mm" border-bottom="2pt solid {$color_design}" margin-bottom="24pt">
-								<fo:block margin-top="4pt">&#xA0;</fo:block>
-							</fo:block-container>
-							<fo:block color="{$color_design}">
-								<fo:block font-size="17pt" margin-bottom="14pt">
-									<xsl:call-template name="addLetterSpacing">
-										<xsl:with-param name="text" select="java:toUpperCase(java:java.lang.String.new($doctype))"/>
-									</xsl:call-template>									
-									<xsl:value-of select="$linebreak"/>
-									<xsl:variable name="docsubtype" select="normalize-space(/ogc:ogc-standard/ogc:bibdata/ogc:ext/ogc:subdoctype)"/>
-									<xsl:variable name="docsubtype_str">
+						</fo:block-container>
+						
+						<!-- background color -->
+						<fo:block-container absolute-position="fixed" left="0" top="0" font-size="0">
+							<fo:block>
+								<fo:instream-foreign-object content-height="{$pageHeight}mm" fox:alt-text="Background color">
+									<svg xmlns="http://www.w3.org/2000/svg" version="1.0" width="{$pageWidth}mm" height="{$pageHeight}mm">
+										<rect width="{$pageWidth}mm" height="{$pageHeight}mm" style="fill:rgb(33,55,92);stroke-width:0;fill-opacity:0.85"/>
+									</svg>
+								</fo:instream-foreign-object>
+							</fo:block>
+						</fo:block-container>
+						
+						<xsl:call-template name="insertCrossingLines"/>
+						
+						<!-- title and logo -->
+						<fo:block>
+							<fo:table table-layout="fixed" width="100%">
+								<fo:table-column column-width="75%"/>
+								<fo:table-column column-width="25%"/>
+								<fo:table-body>
+									<fo:table-row>
+										<fo:table-cell font-weight="bold">
+											<fo:block font-size="16pt" color="{$color_design}" margin-bottom="4pt">
+												<xsl:variable name="ogc_document" select="concat('OGC® DOCUMENT: ', $docnumber)"/>
+												<xsl:call-template name="addLetterSpacing">
+													<xsl:with-param name="text" select="$ogc_document"/>
+													<xsl:with-param name="letter-spacing" select="0.3"/>
+												</xsl:call-template>
+											</fo:block>
+											<xsl:variable name="ogc_external" select="/ogc:ogc-standard/ogc:bibdata/ogc:docidentifier[@type='ogc-external']" />
+											<xsl:if test="normalize-space($ogc_external) != ''">
+												<fo:block font-size="10pt">External identifier of this OGC<fo:inline font-size="58%" baseline-shift="30%">®</fo:inline>  document: <fo:inline font-weight="normal"><xsl:value-of select="$ogc_external"/></fo:inline></fo:block>
+											</xsl:if>
+										</fo:table-cell>
+										<fo:table-cell text-align="right">
+											<fo:block>
+												<xsl:call-template name="insertLogo" />
+											</fo:block>
+										</fo:table-cell>
+									</fo:table-row>
+								</fo:table-body>
+							</fo:table>
+						</fo:block>
+						
+						<!-- <fo:block-container absolute-position="fixed" left="16.5mm" top="83mm" height="90mm"> -->
+						<fo:block-container absolute-position="fixed" left="16.5mm" top="40mm" height="170mm">
+							<fo:block-container width="155mm" height="99%" display-align="center">
+								<fo:block font-size="33pt" role="H1">
+									<xsl:variable name="length_title" select="string-length($doctitle)"/>
+									<xsl:variable name="fit_font-size">
 										<xsl:choose>
-											<xsl:when test="$docsubtype = 'implementation'">Implementation</xsl:when>
-											<xsl:when test="$docsubtype = 'conceptual-model'">Conceptual model</xsl:when>
-											<xsl:when test="$docsubtype = 'conceptual-model-and-encoding'">Conceptual model &amp; encoding</xsl:when>
-											<xsl:when test="$docsubtype = 'conceptual-model-and-implementation'">Conceptual model &amp; implementation</xsl:when>
-											<xsl:when test="$docsubtype = 'encoding'">Encoding</xsl:when>
-											<xsl:when test="$docsubtype = 'extension'">Extension</xsl:when>
-											<xsl:when test="$docsubtype = 'profile'">Profile</xsl:when>
-											<xsl:when test="$docsubtype = 'profile-with-extension'">Profile with extension</xsl:when>
-											<xsl:when test="$docsubtype = 'general'">General</xsl:when>
+											<xsl:when test="$length_title &gt; 230">20</xsl:when>
+											<xsl:when test="$length_title &gt; 170">26</xsl:when>
+											<xsl:when test="$length_title &gt; 155">28</xsl:when>
+											<xsl:when test="$length_title &gt; 130">30</xsl:when>
 										</xsl:choose>
-									</xsl:variable>									
+									</xsl:variable>
+									<xsl:if test="normalize-space($fit_font-size) != ''">
+										<xsl:attribute name="font-size"><xsl:value-of select="$fit_font-size"/>pt</xsl:attribute>
+									</xsl:if>
 									<xsl:call-template name="addLetterSpacing">
-										<xsl:with-param name="text" select="$docsubtype_str"/>
-										<xsl:with-param name="letter-spacing" select="0.25"/>
-									</xsl:call-template>									
-								</fo:block>
-								<fo:block font-size="12pt" font-weight="bold">
-									<xsl:variable name="curr_lang" select="/ogc:ogc-standard/ogc:bibdata/ogc:language[@current = 'true']"/>					
-									<xsl:variable name="stage" select="java:toUpperCase(java:java.lang.String.new(/ogc:ogc-standard/ogc:bibdata/ogc:status/ogc:stage[@language = $curr_lang]))"/>									
-									<xsl:call-template name="addLetterSpacing">
-										<xsl:with-param name="text" select="$stage"/>
+										<xsl:with-param name="text" select="java:toUpperCase(java:java.lang.String.new($doctitle))"/>
+										<xsl:with-param name="letter-spacing" select="1.1"/>
 									</xsl:call-template>
 								</fo:block>
-							</fo:block>
-						</fo:block-container>
-					</fo:block-container>
-
-					<fo:block-container absolute-position="fixed" left="16.5mm" top="204mm" height="60mm" width="180mm" display-align="after" font-size="10pt">
-						<fo:block line-height="140%">
-							<xsl:apply-templates select="/ogc:ogc-standard/ogc:bibdata/ogc:edition[normalize-space(@language) = '']"/>
-							<fo:block>
-								<fo:inline font-weight="bold">Submission Date: </fo:inline>
-								<xsl:choose>
-									<xsl:when test="/ogc:ogc-standard/ogc:bibdata/ogc:date[@type = 'received']/ogc:on">
-										<xsl:value-of select="/ogc:ogc-standard/ogc:bibdata/ogc:date[@type = 'received']/ogc:on"/>
-									</xsl:when>
-									<xsl:otherwise>XXX</xsl:otherwise>
-								</xsl:choose>
-							</fo:block>
-							<fo:block>
-								<fo:inline font-weight="bold">Approval Date: </fo:inline>
-								<xsl:choose>
-									<xsl:when test="/ogc:ogc-standard/ogc:bibdata/ogc:date[@type = 'issued']/ogc:on">
-										<xsl:value-of select="/ogc:ogc-standard/ogc:bibdata/ogc:date[@type = 'issued']/ogc:on"/>
-									</xsl:when>
-									<xsl:otherwise>XXX</xsl:otherwise>
-								</xsl:choose>							
-							</fo:block>
-							<fo:block>
-								<fo:inline font-weight="bold">Publication Date: </fo:inline>
-								<xsl:value-of select="/ogc:ogc-standard/ogc:bibdata/ogc:date[@type = 'published']/ogc:on"/>
-							</fo:block>
-							
-							<fo:block margin-bottom="12pt">
-								<xsl:if test="/ogc:ogc-standard/ogc:bibdata/ogc:contributor[ogc:role/@type='author']/ogc:person/ogc:name/ogc:completename">
-									<fo:block>
-										<fo:inline font-weight="bold">Author: </fo:inline>
-										<xsl:for-each select="/ogc:ogc-standard/ogc:bibdata/ogc:contributor[ogc:role/@type='author']/ogc:person/ogc:name/ogc:completename">
-											<xsl:value-of select="."/>
-											<xsl:if test="position() != last()">, </xsl:if>
-										</xsl:for-each>
-									</fo:block>
-								</xsl:if>
-								<xsl:if test="/ogc:ogc-standard/ogc:bibdata/ogc:contributor[ogc:role/@type='editor']/ogc:person/ogc:name/ogc:completename">
-									<fo:block>
-										<fo:inline font-weight="bold">Editor: </fo:inline>
-										<xsl:for-each select="/ogc:ogc-standard/ogc:bibdata/ogc:contributor[ogc:role/@type='editor']/ogc:person/ogc:name/ogc:completename">
-											<xsl:value-of select="."/>
-											<xsl:if test="position() != last()">, </xsl:if>
-										</xsl:for-each>
-									</fo:block>
-								</xsl:if>
-								<xsl:if test="/ogc:ogc-standard/ogc:bibdata/ogc:contributor[ogc:role/@type='contributor']/ogc:person/ogc:name/ogc:completename">
-									<fo:block>
-										<fo:inline font-weight="bold">Contributor: </fo:inline>
-										<xsl:for-each select="/ogc:ogc-standard/ogc:bibdata/ogc:contributor[ogc:role/@type='contributor']/ogc:person/ogc:name/ogc:completename">
-											<xsl:value-of select="."/>
-											<xsl:if test="position() != last()">, </xsl:if>
-										</xsl:for-each>
-									</fo:block>
-								</xsl:if>
-							</fo:block>
-						</fo:block>
-												
-						<xsl:apply-templates select="/ogc:ogc-standard/ogc:boilerplate/ogc:legal-statement"/>
-						
-					</fo:block-container>
-
-				</fo:flow>
-			</fo:page-sequence>
-			<!-- End Cover Page -->
-			
-			
-			<!-- Copyright, Content, Foreword, etc. pages -->
-			<fo:page-sequence master-reference="preface" initial-page-number="2" format="i" force-page-count="no-force">
-				<xsl:call-template name="insertFootnoteSeparator"/>				
-				<xsl:call-template name="insertHeaderFooter"/>
-				<fo:flow flow-name="xsl-region-body">
-				
-					<xsl:if test="$debug = 'true'">
-						<xsl:text disable-output-escaping="yes">&lt;!--</xsl:text>
-							DEBUG
-							contents=<!-- <xsl:copy-of select="xalan:nodeset($contents)"/> --> 
-						<xsl:text disable-output-escaping="yes">--&gt;</xsl:text>
-					</xsl:if>
-
-					<!-- crossing lines -->					
-					<fo:block-container absolute-position="fixed" width="{$pageWidth}mm" height="{$pageHeight}mm" font-size="0">
-						<fo:block>
-							<fo:instream-foreign-object content-height="{$pageHeight}mm" content-width="{$pageWidth}mm" fox:alt-text="Crossing lines">
-								<svg viewBox="0 0 2159 2794" xmlns="http://www.w3.org/2000/svg" width="{$pageWidth}mm" height="{$pageHeight}mm">
-									<line x1="230" y1="0" x2="2159" y2="490" stroke="{$color_design_light}"/>
-									<line x1="0" y1="395" x2="820" y2="0" stroke="{$color_design_light}"/>
-									<circle style="fill:{$color_design_light};" cx="614" cy="100" r="15" />
-								</svg>
-							</fo:instream-foreign-object>
-						</fo:block>
-					</fo:block-container>
-					
-					<xsl:call-template name="insertLogoPreface"/>
-
-					<xsl:apply-templates select="/ogc:ogc-standard/ogc:boilerplate/ogc:license-statement"/>
-					<xsl:apply-templates select="/ogc:ogc-standard/ogc:boilerplate/ogc:feedback-statement"/>
-					
-					<!-- Copyright notice -->
-					<xsl:apply-templates select="/ogc:ogc-standard/ogc:boilerplate/ogc:copyright-statement"/>
-					
-				</fo:flow>
-			</fo:page-sequence>
-					
-			<!-- Copyright, Content, Foreword, etc. pages -->
-			<fo:page-sequence master-reference="document" format="i" force-page-count="no-force">
-				<xsl:call-template name="insertFootnoteSeparator"/>
-				<xsl:call-template name="insertHeaderFooter"/>
-				<fo:flow flow-name="xsl-region-body">
-				
-					<!-- crossing lines -->					
-					<fo:block-container absolute-position="fixed" width="{$pageWidth}mm" height="{$pageHeight}mm" font-size="0">
-						<fo:block>
-							<fo:instream-foreign-object content-height="{$pageHeight}mm" content-width="{$pageWidth}mm" fox:alt-text="Crossing lines">
-								<svg viewBox="0 0 2159 2794" xmlns="http://www.w3.org/2000/svg" width="{$pageWidth}mm" height="{$pageHeight}mm">
-									<line x1="0" y1="545" x2="2084" y2="0" stroke="{$color_design_light}"/>
-									<line x1="0" y1="1374" x2="355" y2="0" stroke="{$color_design_light}"/>
-									<circle style="fill:{$color_design_light};" cx="227" cy="487" r="15" />
-								</svg>
-							</fo:instream-foreign-object>
-						</fo:block>
-					</fo:block-container>
-				
-					<fo:block color="{$color_blue}">
-					
-						<xsl:variable name="title-toc">
-							<xsl:call-template name="getTitle">
-								<xsl:with-param name="name" select="'title-toc'"/>
-							</xsl:call-template>
-						</xsl:variable>
-						
-						<fo:block-container margin-left="-18mm">
-							<fo:block-container margin-left="0mm">
-								<fo:block margin-bottom="40pt">						
-									<fo:block font-size="33pt" margin-bottom="4pt" role="H1">							
+								<fo:block-container width="22.5mm" border-bottom="2pt solid {$color_design}" margin-bottom="24pt">
+									<fo:block margin-top="4pt">&#xA0;</fo:block>
+								</fo:block-container>
+								<fo:block color="{$color_design}">
+									<fo:block font-size="17pt" margin-bottom="14pt">
 										<xsl:call-template name="addLetterSpacing">
-											<xsl:with-param name="text" select="java:toUpperCase(java:java.lang.String.new($title-toc))"/>
-											<xsl:with-param name="letter-spacing" select="1.1"/>
+											<xsl:with-param name="text" select="java:toUpperCase(java:java.lang.String.new($doctype))"/>
+										</xsl:call-template>									
+										<xsl:value-of select="$linebreak"/>
+										<xsl:variable name="docsubtype" select="normalize-space(/ogc:ogc-standard/ogc:bibdata/ogc:ext/ogc:subdoctype)"/>
+										<xsl:variable name="docsubtype_str">
+											<xsl:choose>
+												<xsl:when test="$docsubtype = 'implementation'">Implementation</xsl:when>
+												<xsl:when test="$docsubtype = 'conceptual-model'">Conceptual model</xsl:when>
+												<xsl:when test="$docsubtype = 'conceptual-model-and-encoding'">Conceptual model &amp; encoding</xsl:when>
+												<xsl:when test="$docsubtype = 'conceptual-model-and-implementation'">Conceptual model &amp; implementation</xsl:when>
+												<xsl:when test="$docsubtype = 'encoding'">Encoding</xsl:when>
+												<xsl:when test="$docsubtype = 'extension'">Extension</xsl:when>
+												<xsl:when test="$docsubtype = 'profile'">Profile</xsl:when>
+												<xsl:when test="$docsubtype = 'profile-with-extension'">Profile with extension</xsl:when>
+												<xsl:when test="$docsubtype = 'general'">General</xsl:when>
+											</xsl:choose>
+										</xsl:variable>									
+										<xsl:call-template name="addLetterSpacing">
+											<xsl:with-param name="text" select="$docsubtype_str"/>
+											<xsl:with-param name="letter-spacing" select="0.25"/>
+										</xsl:call-template>									
+									</fo:block>
+									<fo:block font-size="12pt" font-weight="bold">
+										<xsl:variable name="curr_lang" select="/ogc:ogc-standard/ogc:bibdata/ogc:language[@current = 'true']"/>					
+										<xsl:variable name="stage" select="java:toUpperCase(java:java.lang.String.new(/ogc:ogc-standard/ogc:bibdata/ogc:status/ogc:stage[@language = $curr_lang]))"/>									
+										<xsl:call-template name="addLetterSpacing">
+											<xsl:with-param name="text" select="$stage"/>
 										</xsl:call-template>
 									</fo:block>
-									<fo:block-container width="22.5mm" border-bottom="2pt solid {$color_design}">
-										<fo:block margin-top="4pt">&#xA0;</fo:block>
-									</fo:block-container>						
 								</fo:block>
 							</fo:block-container>
 						</fo:block-container>
-						
-						
-						
-						<fo:block-container line-height="130%">
-							<fo:block role="TOC">
-								<xsl:for-each select="$contents//item[@display = 'true' and normalize-space(@id) != '']">
-									
-									<fo:block role="TOCI">
-										<xsl:if test="@level = 1">
-											<xsl:attribute name="margin-top">14pt</xsl:attribute>
-										</xsl:if>
-										<xsl:if test="@level = 1 or @parent = 'annex'">										
-											<xsl:attribute name="font-size">12pt</xsl:attribute>
-										</xsl:if>
-										<xsl:if test="@level &gt;= 2"> <!-- and not(@parent = 'annex') -->
-											<xsl:attribute name="font-size">10pt</xsl:attribute>
-										</xsl:if>
-										
-										<xsl:choose>
-											<xsl:when test="@level = 1">
-												<fo:list-block provisional-distance-between-starts="8mm">
-													<xsl:if test="@type = 'annex'">
-														<xsl:attribute name="provisional-distance-between-starts">0mm</xsl:attribute>
-													</xsl:if>
-													<fo:list-item>
-														<fo:list-item-label end-indent="label-end()">
-															<fo:block>												
-																<xsl:value-of select="java:toUpperCase(java:java.lang.String.new(@section))"/>
-															</fo:block>
-														</fo:list-item-label>
-														<fo:list-item-body start-indent="body-start()">
-															<fo:block text-align-last="justify" margin-left="12mm" text-indent="-12mm">
-																<fo:basic-link internal-destination="{@id}">
-																	<xsl:call-template name="setAltText">
-																		<xsl:with-param name="value" select="text()"/>
-																	</xsl:call-template>
-																	<xsl:variable name="sectionTitle">
-																		<xsl:apply-templates select="title"/>
-																	</xsl:variable>
-																	<xsl:value-of select="java:toUpperCase(java:java.lang.String.new($sectionTitle))"/>															
-																	<xsl:text> </xsl:text>															
-																	<fo:inline keep-together.within-line="always">
-																		<fo:leader leader-pattern="dots"/>																																		
-																		<fo:inline><fo:page-number-citation ref-id="{@id}"/></fo:inline>
-																	</fo:inline>
-																</fo:basic-link>
-															</fo:block>
-														</fo:list-item-body>
-													</fo:list-item>
-												</fo:list-block>
-											</xsl:when>
-											<xsl:otherwise>
-												<xsl:variable name="margin-left">
-													<xsl:choose>
-														<xsl:when test="number(@level) != 'NaN'"><xsl:value-of select="(@level - 1) * 8"/></xsl:when>
-														<xsl:otherwise>8</xsl:otherwise>
-													</xsl:choose>
-												</xsl:variable>
-												<fo:block text-align-last="justify" margin-left="{$margin-left}mm">
-													<fo:basic-link internal-destination="{@id}">
-														<xsl:call-template name="setAltText">
-															<xsl:with-param name="value" select="text()"/>
-														</xsl:call-template>
-														<xsl:value-of select="java:toUpperCase(java:java.lang.String.new(@section))"/>
-														<xsl:text> </xsl:text>
-														<xsl:apply-templates select="title"/>
-														<xsl:text> </xsl:text>
-														<fo:inline keep-together.within-line="always">
-															<fo:leader leader-pattern="dots"/>
-															<fo:inline><fo:page-number-citation ref-id="{@id}"/></fo:inline>
-														</fo:inline>
-													</fo:basic-link>
-												</fo:block>
-											</xsl:otherwise>
-										</xsl:choose>
-										
-										
-									</fo:block>
-								</xsl:for-each>
-							</fo:block>
-						</fo:block-container>	
+
+						<fo:block-container absolute-position="fixed" left="16.5mm" top="204mm" height="60mm" width="180mm" display-align="after" font-size="10pt">
+							<fo:block line-height="140%">
+								<xsl:apply-templates select="/ogc:ogc-standard/ogc:bibdata/ogc:edition[normalize-space(@language) = '']"/>
+								<fo:block>
+									<fo:inline font-weight="bold">Submission Date: </fo:inline>
+									<xsl:choose>
+										<xsl:when test="/ogc:ogc-standard/ogc:bibdata/ogc:date[@type = 'received']/ogc:on">
+											<xsl:value-of select="/ogc:ogc-standard/ogc:bibdata/ogc:date[@type = 'received']/ogc:on"/>
+										</xsl:when>
+										<xsl:otherwise>XXX</xsl:otherwise>
+									</xsl:choose>
+								</fo:block>
+								<fo:block>
+									<fo:inline font-weight="bold">Approval Date: </fo:inline>
+									<xsl:choose>
+										<xsl:when test="/ogc:ogc-standard/ogc:bibdata/ogc:date[@type = 'issued']/ogc:on">
+											<xsl:value-of select="/ogc:ogc-standard/ogc:bibdata/ogc:date[@type = 'issued']/ogc:on"/>
+										</xsl:when>
+										<xsl:otherwise>XXX</xsl:otherwise>
+									</xsl:choose>							
+								</fo:block>
+								<fo:block>
+									<fo:inline font-weight="bold">Publication Date: </fo:inline>
+									<xsl:value-of select="/ogc:ogc-standard/ogc:bibdata/ogc:date[@type = 'published']/ogc:on"/>
+								</fo:block>
 								
-
-						<!-- List of Tables -->
-						<xsl:if test="$contents//tables/table">
-							<xsl:call-template name="insertListOf_Title">
-								<xsl:with-param name="title" select="$title-list-tables"/>
-							</xsl:call-template>
-							<fo:block-container line-height="130%">
-								<xsl:for-each select="$contents//tables/table">
-									<xsl:call-template name="insertListOf_Item"/>
-								</xsl:for-each>
-							</fo:block-container>
-						</xsl:if>
-						
-						<!-- List of Figures -->
-						<xsl:if test="$contents//figures/figure">
-							<xsl:call-template name="insertListOf_Title">
-								<xsl:with-param name="title" select="$title-list-figures"/>
-							</xsl:call-template>
-							<fo:block-container line-height="130%">
-								<xsl:for-each select="$contents//figures/figure">
-									<xsl:call-template name="insertListOf_Item"/>
-								</xsl:for-each>
-							</fo:block-container>
-						</xsl:if>
-						
-						<!-- List of Recommendations -->
-						<xsl:if test="//ogc:table[.//ogc:p[@class = 'RecommendationTitle']]">							
-							<xsl:call-template name="insertListOf_Title">
-								<xsl:with-param name="title" select="$title-list-recommendations"/>
-							</xsl:call-template>
-							<fo:block-container line-height="130%">
-								<xsl:for-each select="xalan:nodeset($toc_recommendations)/*[normalize-space(@id) != '']">
-									<fo:block text-align-last="justify" margin-top="6pt" role="TOCI">
-										<fo:basic-link internal-destination="{@id}">
-											<xsl:call-template name="setAltText">
-												<xsl:with-param name="value" select="@alt-text"/>
-											</xsl:call-template>
-											<xsl:copy-of select="title/node()"/>
-											<xsl:text> </xsl:text>
-											<fo:inline keep-together.within-line="always">
-												<fo:leader leader-pattern="dots"/>
-												<fo:page-number-citation ref-id="{@id}"/>
-											</fo:inline>
-										</fo:basic-link>
-									</fo:block>
-								</xsl:for-each>
-							</fo:block-container>
-						</xsl:if>
-
-					</fo:block>
-					
-					<fo:block break-after="page"/>
-					
-					<fo:block line-height="125%">
-						<!-- Abstract, Keywords, Preface, Submitting Organizations, Submitters -->					
-						
-						<xsl:for-each select="/*/*[local-name()='preface']/*[not(local-name() = 'note' or local-name() = 'admonition')]">
-							<xsl:sort select="@displayorder" data-type="number"/>
+								<fo:block margin-bottom="12pt">
+									<xsl:if test="/ogc:ogc-standard/ogc:bibdata/ogc:contributor[ogc:role/@type='author']/ogc:person/ogc:name/ogc:completename">
+										<fo:block>
+											<fo:inline font-weight="bold">Author: </fo:inline>
+											<xsl:for-each select="/ogc:ogc-standard/ogc:bibdata/ogc:contributor[ogc:role/@type='author']/ogc:person/ogc:name/ogc:completename">
+												<xsl:value-of select="."/>
+												<xsl:if test="position() != last()">, </xsl:if>
+											</xsl:for-each>
+										</fo:block>
+									</xsl:if>
+									<xsl:if test="/ogc:ogc-standard/ogc:bibdata/ogc:contributor[ogc:role/@type='editor']/ogc:person/ogc:name/ogc:completename">
+										<fo:block>
+											<fo:inline font-weight="bold">Editor: </fo:inline>
+											<xsl:for-each select="/ogc:ogc-standard/ogc:bibdata/ogc:contributor[ogc:role/@type='editor']/ogc:person/ogc:name/ogc:completename">
+												<xsl:value-of select="."/>
+												<xsl:if test="position() != last()">, </xsl:if>
+											</xsl:for-each>
+										</fo:block>
+									</xsl:if>
+									<xsl:if test="/ogc:ogc-standard/ogc:bibdata/ogc:contributor[ogc:role/@type='contributor']/ogc:person/ogc:name/ogc:completename">
+										<fo:block>
+											<fo:inline font-weight="bold">Contributor: </fo:inline>
+											<xsl:for-each select="/ogc:ogc-standard/ogc:bibdata/ogc:contributor[ogc:role/@type='contributor']/ogc:person/ogc:name/ogc:completename">
+												<xsl:value-of select="."/>
+												<xsl:if test="position() != last()">, </xsl:if>
+											</xsl:for-each>
+										</fo:block>
+									</xsl:if>
+								</fo:block>
+							</fo:block>
+													
+							<xsl:apply-templates select="/ogc:ogc-standard/ogc:boilerplate/ogc:legal-statement"/>
 							
-							<xsl:if test="local-name() = 'foreword' or 
-							(local-name() = 'clause' and @type = 'security') or
-							(local-name() = 'clause' and @type = 'submitting_orgs') or 
-							local-name() = 'introduction'">
-								<fo:block break-after="page"/>
+						</fo:block-container>
+
+					</fo:flow>
+				</fo:page-sequence>
+				<!-- End Cover Page -->
+				
+				
+				<!-- Copyright, Content, Foreword, etc. pages -->
+				<fo:page-sequence master-reference="preface" initial-page-number="2" format="i" force-page-count="no-force">
+					<xsl:call-template name="insertFootnoteSeparator"/>				
+					<xsl:call-template name="insertHeaderFooter"/>
+					<fo:flow flow-name="xsl-region-body">
+					
+						<xsl:if test="$debug = 'true'">
+							<xsl:text disable-output-escaping="yes">&lt;!--</xsl:text>
+								DEBUG
+								contents=<!-- <xsl:copy-of select="xalan:nodeset($contents)"/> --> 
+							<xsl:text disable-output-escaping="yes">--&gt;</xsl:text>
+						</xsl:if>
+
+						<!-- crossing lines -->					
+						<fo:block-container absolute-position="fixed" width="{$pageWidth}mm" height="{$pageHeight}mm" font-size="0">
+							<fo:block>
+								<fo:instream-foreign-object content-height="{$pageHeight}mm" content-width="{$pageWidth}mm" fox:alt-text="Crossing lines">
+									<svg viewBox="0 0 2159 2794" xmlns="http://www.w3.org/2000/svg" width="{$pageWidth}mm" height="{$pageHeight}mm">
+										<line x1="230" y1="0" x2="2159" y2="490" stroke="{$color_design_light}"/>
+										<line x1="0" y1="395" x2="820" y2="0" stroke="{$color_design_light}"/>
+										<circle style="fill:{$color_design_light};" cx="614" cy="100" r="15" />
+									</svg>
+								</fo:instream-foreign-object>
+							</fo:block>
+						</fo:block-container>
+						
+						<xsl:call-template name="insertLogoPreface"/>
+
+						<xsl:apply-templates select="/ogc:ogc-standard/ogc:boilerplate/ogc:license-statement"/>
+						<xsl:apply-templates select="/ogc:ogc-standard/ogc:boilerplate/ogc:feedback-statement"/>
+						
+						<!-- Copyright notice -->
+						<xsl:apply-templates select="/ogc:ogc-standard/ogc:boilerplate/ogc:copyright-statement"/>
+						
+					</fo:flow>
+				</fo:page-sequence>
+						
+				<!-- Copyright, Content, Foreword, etc. pages -->
+				<fo:page-sequence master-reference="document" format="i" force-page-count="no-force">
+					<xsl:call-template name="insertFootnoteSeparator"/>
+					<xsl:call-template name="insertHeaderFooter"/>
+					<fo:flow flow-name="xsl-region-body">
+					
+						<!-- crossing lines -->					
+						<fo:block-container absolute-position="fixed" width="{$pageWidth}mm" height="{$pageHeight}mm" font-size="0">
+							<fo:block>
+								<fo:instream-foreign-object content-height="{$pageHeight}mm" content-width="{$pageWidth}mm" fox:alt-text="Crossing lines">
+									<svg viewBox="0 0 2159 2794" xmlns="http://www.w3.org/2000/svg" width="{$pageWidth}mm" height="{$pageHeight}mm">
+										<line x1="0" y1="545" x2="2084" y2="0" stroke="{$color_design_light}"/>
+										<line x1="0" y1="1374" x2="355" y2="0" stroke="{$color_design_light}"/>
+										<circle style="fill:{$color_design_light};" cx="227" cy="487" r="15" />
+									</svg>
+								</fo:instream-foreign-object>
+							</fo:block>
+						</fo:block-container>
+					
+						<fo:block color="{$color_blue}">
+						
+							<xsl:variable name="title-toc">
+								<xsl:call-template name="getTitle">
+									<xsl:with-param name="name" select="'title-toc'"/>
+								</xsl:call-template>
+							</xsl:variable>
+							
+							<fo:block-container margin-left="-18mm">
+								<fo:block-container margin-left="0mm">
+									<fo:block margin-bottom="40pt">						
+										<fo:block font-size="33pt" margin-bottom="4pt" role="H1">							
+											<xsl:call-template name="addLetterSpacing">
+												<xsl:with-param name="text" select="java:toUpperCase(java:java.lang.String.new($title-toc))"/>
+												<xsl:with-param name="letter-spacing" select="1.1"/>
+											</xsl:call-template>
+										</fo:block>
+										<fo:block-container width="22.5mm" border-bottom="2pt solid {$color_design}">
+											<fo:block margin-top="4pt">&#xA0;</fo:block>
+										</fo:block-container>						
+									</fo:block>
+								</fo:block-container>
+							</fo:block-container>
+							
+							
+							
+							<fo:block-container line-height="130%">
+								<fo:block role="TOC">
+									<xsl:for-each select="$contents//item[@display = 'true' and normalize-space(@id) != '']">
+										
+										<fo:block role="TOCI">
+											<xsl:if test="@level = 1">
+												<xsl:attribute name="margin-top">14pt</xsl:attribute>
+											</xsl:if>
+											<xsl:if test="@level = 1 or @parent = 'annex'">										
+												<xsl:attribute name="font-size">12pt</xsl:attribute>
+											</xsl:if>
+											<xsl:if test="@level &gt;= 2"> <!-- and not(@parent = 'annex') -->
+												<xsl:attribute name="font-size">10pt</xsl:attribute>
+											</xsl:if>
+											
+											<xsl:choose>
+												<xsl:when test="@level = 1">
+													<fo:list-block provisional-distance-between-starts="8mm">
+														<xsl:if test="@type = 'annex'">
+															<xsl:attribute name="provisional-distance-between-starts">0mm</xsl:attribute>
+														</xsl:if>
+														<fo:list-item>
+															<fo:list-item-label end-indent="label-end()">
+																<fo:block>												
+																	<xsl:value-of select="java:toUpperCase(java:java.lang.String.new(@section))"/>
+																</fo:block>
+															</fo:list-item-label>
+															<fo:list-item-body start-indent="body-start()">
+																<fo:block text-align-last="justify" margin-left="12mm" text-indent="-12mm">
+																	<fo:basic-link internal-destination="{@id}">
+																		<xsl:call-template name="setAltText">
+																			<xsl:with-param name="value" select="text()"/>
+																		</xsl:call-template>
+																		<xsl:variable name="sectionTitle">
+																			<xsl:apply-templates select="title"/>
+																		</xsl:variable>
+																		<xsl:value-of select="java:toUpperCase(java:java.lang.String.new($sectionTitle))"/>															
+																		<xsl:text> </xsl:text>															
+																		<fo:inline keep-together.within-line="always">
+																			<fo:leader leader-pattern="dots"/>																																		
+																			<fo:inline><fo:page-number-citation ref-id="{@id}"/></fo:inline>
+																		</fo:inline>
+																	</fo:basic-link>
+																</fo:block>
+															</fo:list-item-body>
+														</fo:list-item>
+													</fo:list-block>
+												</xsl:when>
+												<xsl:otherwise>
+													<xsl:variable name="margin-left">
+														<xsl:choose>
+															<xsl:when test="number(@level) != 'NaN'"><xsl:value-of select="(@level - 1) * 8"/></xsl:when>
+															<xsl:otherwise>8</xsl:otherwise>
+														</xsl:choose>
+													</xsl:variable>
+													<fo:block text-align-last="justify" margin-left="{$margin-left}mm">
+														<fo:basic-link internal-destination="{@id}">
+															<xsl:call-template name="setAltText">
+																<xsl:with-param name="value" select="text()"/>
+															</xsl:call-template>
+															<xsl:value-of select="java:toUpperCase(java:java.lang.String.new(@section))"/>
+															<xsl:text> </xsl:text>
+															<xsl:apply-templates select="title"/>
+															<xsl:text> </xsl:text>
+															<fo:inline keep-together.within-line="always">
+																<fo:leader leader-pattern="dots"/>
+																<fo:inline><fo:page-number-citation ref-id="{@id}"/></fo:inline>
+															</fo:inline>
+														</fo:basic-link>
+													</fo:block>
+												</xsl:otherwise>
+											</xsl:choose>
+											
+											
+										</fo:block>
+									</xsl:for-each>
+								</fo:block>
+							</fo:block-container>	
+									
+
+							<!-- List of Tables -->
+							<xsl:if test="$contents//tables/table">
+								<xsl:call-template name="insertListOf_Title">
+									<xsl:with-param name="title" select="$title-list-tables"/>
+								</xsl:call-template>
+								<fo:block-container line-height="130%">
+									<xsl:for-each select="$contents//tables/table">
+										<xsl:call-template name="insertListOf_Item"/>
+									</xsl:for-each>
+								</fo:block-container>
 							</xsl:if>
 							
-							<xsl:apply-templates select="."/>
-						</xsl:for-each>
+							<!-- List of Figures -->
+							<xsl:if test="$contents//figures/figure">
+								<xsl:call-template name="insertListOf_Title">
+									<xsl:with-param name="title" select="$title-list-figures"/>
+								</xsl:call-template>
+								<fo:block-container line-height="130%">
+									<xsl:for-each select="$contents//figures/figure">
+										<xsl:call-template name="insertListOf_Item"/>
+									</xsl:for-each>
+								</fo:block-container>
+							</xsl:if>
+							
+							<!-- List of Recommendations -->
+							<xsl:if test="//ogc:table[.//ogc:p[@class = 'RecommendationTitle']]">							
+								<xsl:call-template name="insertListOf_Title">
+									<xsl:with-param name="title" select="$title-list-recommendations"/>
+								</xsl:call-template>
+								<fo:block-container line-height="130%">
+									<xsl:for-each select="xalan:nodeset($toc_recommendations)/*[normalize-space(@id) != '']">
+										<fo:block text-align-last="justify" margin-top="6pt" role="TOCI">
+											<fo:basic-link internal-destination="{@id}">
+												<xsl:call-template name="setAltText">
+													<xsl:with-param name="value" select="@alt-text"/>
+												</xsl:call-template>
+												<xsl:copy-of select="title/node()"/>
+												<xsl:text> </xsl:text>
+												<fo:inline keep-together.within-line="always">
+													<fo:leader leader-pattern="dots"/>
+													<fo:page-number-citation ref-id="{@id}"/>
+												</fo:inline>
+											</fo:basic-link>
+										</fo:block>
+									</xsl:for-each>
+								</fo:block-container>
+							</xsl:if>
+
+						</fo:block>
 						
-					</fo:block>
-				</fo:flow>
-			</fo:page-sequence>
-			
-			
-			<!-- Document Pages -->
-			<xsl:for-each select="/*/*[local-name()='sections']/* | /*/*[local-name()='bibliography']/*[local-name()='references'][@normative='true']">
-				<xsl:sort select="@displayorder" data-type="number"/>
-				<xsl:choose>
-					<xsl:when test="local-name() = 'clause' and @type='scope'">
-						<xsl:apply-templates select="." mode="sections">
-							<xsl:with-param name="initial-page-number" select="1"/>
-						</xsl:apply-templates>
-					</xsl:when>
-					<xsl:otherwise>
-						<xsl:apply-templates select="." mode="sections"/>
-					</xsl:otherwise>
-				</xsl:choose>
-			</xsl:for-each>
-			
-			<xsl:for-each select="/*/*[local-name()='annex']">
-				<xsl:sort select="@displayorder" data-type="number"/>
-				<xsl:apply-templates select="." mode="sections"/>
-			</xsl:for-each>
-			
-			<!-- Bibliography -->
-			<xsl:for-each select="/*/*[local-name()='bibliography']/*[not(@normative='true')] | 
-								/*/*[local-name()='bibliography']/*[local-name()='clause'][*[local-name()='references'][not(@normative='true')]]">
-				<xsl:sort select="@displayorder" data-type="number"/>
-				<xsl:apply-templates select="." mode="sections"/>
-			</xsl:for-each>
-			
-			<xsl:apply-templates select="//ogc:indexsect" mode="sections"/>
-			
-			<!-- End Document Pages -->
-			
-		</fo:root>
+						<fo:block break-after="page"/>
+						
+						<fo:block line-height="125%">
+							<!-- Abstract, Keywords, Preface, Submitting Organizations, Submitters -->					
+							
+							<xsl:for-each select="/*/*[local-name()='preface']/*[not(local-name() = 'note' or local-name() = 'admonition')]">
+								<xsl:sort select="@displayorder" data-type="number"/>
+								
+								<xsl:if test="local-name() = 'foreword' or 
+								(local-name() = 'clause' and @type = 'security') or
+								(local-name() = 'clause' and @type = 'submitting_orgs') or 
+								local-name() = 'introduction'">
+									<fo:block break-after="page"/>
+								</xsl:if>
+								
+								<xsl:apply-templates select="."/>
+							</xsl:for-each>
+							
+						</fo:block>
+					</fo:flow>
+				</fo:page-sequence>
+				
+				
+				<!-- Document Pages -->
+				<xsl:for-each select="/*/*[local-name()='sections']/* | /*/*[local-name()='bibliography']/*[local-name()='references'][@normative='true']">
+					<xsl:sort select="@displayorder" data-type="number"/>
+					<xsl:choose>
+						<xsl:when test="local-name() = 'clause' and @type='scope'">
+							<xsl:apply-templates select="." mode="sections">
+								<xsl:with-param name="initial-page-number" select="1"/>
+							</xsl:apply-templates>
+						</xsl:when>
+						<xsl:otherwise>
+							<xsl:apply-templates select="." mode="sections"/>
+						</xsl:otherwise>
+					</xsl:choose>
+				</xsl:for-each>
+				
+				<xsl:for-each select="/*/*[local-name()='annex']">
+					<xsl:sort select="@displayorder" data-type="number"/>
+					<xsl:apply-templates select="." mode="sections"/>
+				</xsl:for-each>
+				
+				<!-- Bibliography -->
+				<xsl:for-each select="/*/*[local-name()='bibliography']/*[not(@normative='true')] | 
+									/*/*[local-name()='bibliography']/*[local-name()='clause'][*[local-name()='references'][not(@normative='true')]]">
+					<xsl:sort select="@displayorder" data-type="number"/>
+					<xsl:apply-templates select="." mode="sections"/>
+				</xsl:for-each>
+				
+				<xsl:apply-templates select="//ogc:indexsect" mode="sections"/>
+				
+				<!-- End Document Pages -->
+				
+			</fo:root>
+		
+		</xsl:for-each>
 	</xsl:template> 
 
 	<xsl:template name="insertListOf_Title">
