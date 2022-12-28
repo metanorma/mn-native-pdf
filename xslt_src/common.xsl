@@ -2428,10 +2428,10 @@
 		</xsl:if>
 		<xsl:if test="$namespace = 'ogc'">
 			<xsl:attribute name="font-weight">bold</xsl:attribute>
-			<xsl:attribute name="padding-right">1mm</xsl:attribute>
+			<!-- <xsl:attribute name="padding-right">1mm</xsl:attribute> -->
 		</xsl:if>
 		<xsl:if test="$namespace = 'ogc-white-paper'">
-			<xsl:attribute name="padding-right">4mm</xsl:attribute>
+			<!-- <xsl:attribute name="padding-right">4mm</xsl:attribute> -->
 		</xsl:if>
 		<xsl:if test="$namespace = 'unece'">
 			<xsl:attribute name="padding-right">4mm</xsl:attribute>
@@ -10183,7 +10183,7 @@
 					<xsl:if test="$namespace = 'ieee'">
 						<xsl:text>—</xsl:text>
 					</xsl:if>
-					<xsl:if test="$namespace = 'gb' or $namespace = 'iho' or $namespace = 'm3d' or  $namespace = 'ogc' or $namespace = 'unece-rec' or $namespace = 'unece'  or $namespace = 'rsd'">
+					<xsl:if test="$namespace = 'gb' or $namespace = 'iho' or $namespace = 'm3d' or $namespace = 'unece-rec' or $namespace = 'unece'  or $namespace = 'rsd'">
 						<xsl:text>:</xsl:text>
 					</xsl:if>
 					<xsl:if test="$namespace = 'itu' or $namespace = 'nist-cswp'  or $namespace = 'nist-sp'">				
@@ -12958,13 +12958,15 @@
 				</xsl:choose>
 			</xsl:if>
 			<xsl:if test="$namespace = 'ogc'">
-				<xsl:choose>					
+				<xsl:choose>
+					<xsl:when test="ancestor::*[local-name() = 'note'] and ancestor::*[local-name() = 'name']">1</xsl:when>
 					<xsl:when test="$depth = 2">2</xsl:when>
 					<xsl:otherwise>1</xsl:otherwise>
 				</xsl:choose>
 			</xsl:if>
 			<xsl:if test="$namespace = 'ogc-white-paper'">
 				<xsl:choose>
+					<xsl:when test="ancestor::*[local-name() = 'note'] and ancestor::*[local-name() = 'name']">4</xsl:when>
 					<xsl:when test="$depth &gt;= 5"/>
 					<xsl:when test="$depth &gt;= 4">5</xsl:when>
 					<xsl:when test="$depth &gt;= 3 and ancestor::ogc:terms">3</xsl:when>
