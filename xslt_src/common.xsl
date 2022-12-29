@@ -11578,19 +11578,19 @@
 				<xsl:if test="$namespace = 'nist-cswp'  or $namespace = 'nist-sp'">10</xsl:if>
 				<xsl:if test="$namespace = 'ogc'">
 					<xsl:choose>
-						<xsl:when test="ancestor::*[local-name() = 'table'][not(@type = 'sourcecode')]">8.5</xsl:when>
+						<xsl:when test="ancestor::*[local-name() = 'table'][not(parent::*[local-name() = 'sourcecode'][@linenums = 'true'])]">8.5</xsl:when>
 						<xsl:otherwise>9.5</xsl:otherwise>
 					</xsl:choose>
 				</xsl:if>
 				<xsl:if test="$namespace = 'ogc-white-paper'">
 					<xsl:choose>
-						<xsl:when test="ancestor::*[local-name() = 'table'][not(@type = 'sourcecode')]">8.5</xsl:when>
+						<xsl:when test="ancestor::*[local-name() = 'table'][not(parent::*[local-name() = 'sourcecode'][@linenums = 'true'])]">8.5</xsl:when>
 						<xsl:otherwise>9.5</xsl:otherwise>
 					</xsl:choose>
 				</xsl:if>						
 				<xsl:if test="$namespace = 'rsd'">
 					<xsl:choose>
-						<xsl:when test="ancestor::*[local-name() = 'table'][not(@type = 'sourcecode')]">inherit</xsl:when>
+						<xsl:when test="ancestor::*[local-name() = 'table'][not(parent::*[local-name() = 'sourcecode'][@linenums = 'true'])]">inherit</xsl:when>
 						<xsl:otherwise>95%</xsl:otherwise><!-- 110% -->
 					</xsl:choose>
 				</xsl:if>
@@ -11695,6 +11695,12 @@
 								</xsl:if>
 							</xsl:if>
 							
+							<!-- remove margin between rows in the table with sourcecode line numbers -->
+							<xsl:if test="ancestor::*[local-name() = 'sourcecode'][@linenums = 'true'] and ancestor::*[local-name() = 'tr'][1]/following-sibling::*[local-name() = 'tr']">
+								<xsl:attribute name="margin-top">0pt</xsl:attribute>
+								<xsl:attribute name="margin-bottom">0pt</xsl:attribute>
+							</xsl:if>
+							
 							<xsl:apply-templates select="node()[not(local-name() = 'name')]" />
 						</fo:block>
 						
@@ -11754,7 +11760,7 @@
 	</xsl:template>
 	
 	<!-- outer table with line numbers for sourcecode -->
-	<xsl:template match="*[local-name()='table'][@type = 'sourcecode']" priority="2">
+	<xsl:template match="*[local-name() = 'sourcecode'][@linenums = 'true']/*[local-name()='table']" priority="2"> <!-- *[local-name()='table'][@type = 'sourcecode'] |  -->
 		<fo:block>
 			<fo:table width="100%" table-layout="fixed">
 				<xsl:copy-of select="@id"/>
@@ -11766,16 +11772,16 @@
 			</fo:table>
 		</fo:block>
 	</xsl:template>
-	<xsl:template match="*[local-name()='table'][@type = 'sourcecode']/*[local-name() = 'tbody']" priority="2">
+	<xsl:template match="*[local-name() = 'sourcecode'][@linenums = 'true']/*[local-name()='table']/*[local-name() = 'tbody']" priority="2"> <!-- *[local-name()='table'][@type = 'sourcecode']/*[local-name() = 'tbody'] |  -->
 		<xsl:apply-templates />
 	</xsl:template>
-	<xsl:template match="*[local-name()='table'][@type = 'sourcecode']//*[local-name()='tr']" priority="2">
+	<xsl:template match="*[local-name() = 'sourcecode'][@linenums = 'true']/*[local-name()='table']//*[local-name()='tr']" priority="2"> <!-- *[local-name()='table'][@type = 'sourcecode']//*[local-name()='tr'] |  -->
 		<fo:table-row>
 			<xsl:apply-templates />
 		</fo:table-row>
 	</xsl:template>
 	<!-- first td with line numbers -->
-	<xsl:template match="*[local-name()='table'][@type = 'sourcecode']//*[local-name()='tr']/*[local-name()='td'][not(preceding-sibling::*)]" priority="2">
+	<xsl:template match="*[local-name() = 'sourcecode'][@linenums = 'true']/*[local-name()='table']//*[local-name()='tr']/*[local-name()='td'][not(preceding-sibling::*)]" priority="2"> <!-- *[local-name()='table'][@type = 'sourcecode'] -->
 		<fo:table-cell>
 			<fo:block>
 				
@@ -11795,8 +11801,9 @@
 			</fo:block>
 		</fo:table-cell>
 	</xsl:template>
+	
 	<!-- second td with sourcecode -->
-	<xsl:template match="*[local-name()='table'][@type = 'sourcecode']//*[local-name()='tr']/*[local-name()='td'][preceding-sibling::*]" priority="2">
+	<xsl:template match="*[local-name() = 'sourcecode'][@linenums = 'true']/*[local-name()='table']//*[local-name()='tr']/*[local-name()='td'][preceding-sibling::*]" priority="2"> <!-- *[local-name()='table'][@type = 'sourcecode'] -->
 		<fo:table-cell>
 			<fo:block>
 				<xsl:apply-templates />
@@ -12041,7 +12048,25 @@
 	<xsl:template match="*[local-name()='pre']" name="pre">
 		<fo:block xsl:use-attribute-sets="pre-style">
 			<xsl:copy-of select="@id"/>
-			<xsl:apply-templates />
+			<xsl:choose>
+			
+				<xsl:when test="ancestor::*[local-name() = 'sourcecode'][@linenums = 'true'] and ancestor::*[local-name()='td'][1][not(preceding-sibling::*)]"> <!-- pre in the first td in the table with @linenums = 'true' -->
+					<xsl:if test="ancestor::*[local-name() = 'tr'][1]/following-sibling::*[local-name() = 'tr']"> <!-- is current tr isn't last -->
+						<xsl:attribute name="margin-top">0pt</xsl:attribute>
+						<xsl:attribute name="margin-bottom">0pt</xsl:attribute>
+					</xsl:if>
+					<fo:instream-foreign-object fox:alt-text="{.}" content-width="95%">
+						<math xmlns="http://www.w3.org/1998/Math/MathML">
+							<mtext><xsl:value-of select="."/></mtext>
+						</math>
+					</fo:instream-foreign-object>
+				</xsl:when>
+				
+				<xsl:otherwise>
+					<xsl:apply-templates />
+				</xsl:otherwise>
+				
+			</xsl:choose>		
 		</fo:block>
 	</xsl:template>
 	<!-- =============== -->
