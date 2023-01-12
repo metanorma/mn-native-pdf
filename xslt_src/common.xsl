@@ -5176,6 +5176,9 @@
 					<xsl:if test="not(*[local-name() = 'name'])">
 						<xsl:attribute name="margin-top">12pt</xsl:attribute>
 					</xsl:if>
+					<xsl:if test="starts-with(@id, 'array_')">
+						<xsl:attribute name="margin-top">6pt</xsl:attribute>
+					</xsl:if>
 				</xsl:if>
 				
 				<xsl:if test="$namespace = 'itu'">
