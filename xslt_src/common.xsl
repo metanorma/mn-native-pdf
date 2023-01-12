@@ -5305,6 +5305,8 @@
 							</xsl:if>
 						</xsl:if>
 						
+						<xsl:call-template name="setBordersTableArray"/>
+						
 						<xsl:if test="$namespace = 'itu'">
 							<xsl:if test="$doctype = 'service-publication'">
 								<xsl:attribute name="border">1pt solid rgb(211,211,211)</xsl:attribute>
@@ -5501,6 +5503,15 @@
 			</xsl:otherwise>
 		</xsl:choose>
 		
+	</xsl:template>
+
+	<xsl:template name="setBordersTableArray">
+		<xsl:if test="$namespace = 'iec' or $namespace = 'iso'">
+			<xsl:if test="starts-with(@id, 'array_') or starts-with(ancestor::*[local-name() = 'table'][1]/@id, 'array_')">
+				<!-- array - table without borders -->
+				<xsl:attribute name="border">none</xsl:attribute>
+			</xsl:if>
+		</xsl:if>
 	</xsl:template>
 
 	<xsl:template match="*[local-name()='table']/*[local-name() = 'name']">
@@ -6452,6 +6463,8 @@
 				</xsl:choose>
 			</xsl:if>
 			
+			<xsl:call-template name="setBordersTableArray"/>
+			
 			<xsl:if test="$namespace = 'jcgm'">
 				<xsl:choose>
 					<xsl:when test="position() = 1">
@@ -6519,6 +6532,8 @@
 					<xsl:attribute name="border-top"><xsl:value-of select="$table-border"/></xsl:attribute>
 				</xsl:if>
 			</xsl:if>
+		
+			<xsl:call-template name="setBordersTableArray"/>
 		
 			<xsl:if test="$namespace = 'ogc'">
 				<xsl:variable name="number"><xsl:number/></xsl:variable>
@@ -6622,6 +6637,9 @@
 					<xsl:attribute name="border-bottom"><xsl:value-of select="$table-cell-border"/></xsl:attribute>
 				</xsl:if>
 			</xsl:if>
+			
+			<xsl:call-template name="setBordersTableArray"/>
+			
 			<xsl:if test="$namespace = 'itu'">
 				<xsl:if test="ancestor::*[local-name()='preface']">
 					<xsl:if test="$doctype != 'service-publication'">
@@ -6816,6 +6834,8 @@
 				</xsl:if>
 				<!-- <xsl:attribute name="page-break-inside">avoid</xsl:attribute> -->
 			</xsl:if>
+			
+			<xsl:call-template name="setBordersTableArray"/>
 			
 			<xsl:if test="$namespace = 'itu'">
 				<xsl:if test="ancestor::*[local-name()='preface']">
