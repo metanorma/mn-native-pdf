@@ -2051,6 +2051,7 @@
 			<xsl:attribute name="text-align">
 				<xsl:choose>
 					<!-- <xsl:when test="ancestor::iso:preface">justify</xsl:when> -->
+					<xsl:when test="@align = 'justified'">justify</xsl:when>
 					<xsl:when test="@align and not(@align = 'indent')"><xsl:value-of select="@align"/></xsl:when>
 					<xsl:when test="ancestor::iso:td/@align"><xsl:value-of select="ancestor::iso:td/@align"/></xsl:when>
 					<xsl:when test="ancestor::iso:th/@align"><xsl:value-of select="ancestor::iso:th/@align"/></xsl:when>

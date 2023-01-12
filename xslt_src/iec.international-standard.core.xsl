@@ -1737,6 +1737,7 @@
 				<xsl:element name="{$element-name}">
 					<xsl:attribute name="text-align">
 						<xsl:choose>
+							<xsl:when test="@align = 'justified'">justify</xsl:when>
 							<xsl:when test="@align and not(@align = 'indent')"><xsl:value-of select="@align"/></xsl:when>
 							<xsl:otherwise>justify</xsl:otherwise>
 						</xsl:choose>

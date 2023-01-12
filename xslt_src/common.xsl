@@ -15938,6 +15938,7 @@
 			<xsl:choose>
 				<xsl:when test="$lang = 'ar' and $align = 'left'">start</xsl:when>
 				<xsl:when test="$lang = 'ar' and $align = 'right'">end</xsl:when>
+				<xsl:when test="$align = 'justified'">justify</xsl:when>
 				<xsl:when test="$align != '' and not($align = 'indent')"><xsl:value-of select="$align"/></xsl:when>
 				<xsl:when test="ancestor::*[local-name() = 'td']/@align"><xsl:value-of select="ancestor::*[local-name() = 'td']/@align"/></xsl:when>
 				<xsl:when test="ancestor::*[local-name() = 'th']/@align"><xsl:value-of select="ancestor::*[local-name() = 'th']/@align"/></xsl:when>
