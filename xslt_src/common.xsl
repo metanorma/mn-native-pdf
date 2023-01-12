@@ -6202,6 +6202,8 @@
 									</xsl:if>
 								</xsl:if>
 								
+								<xsl:call-template name="setBordersTableArray"/>
+								
 								<!-- fn will be processed inside 'note' processing -->
 								<xsl:if test="$namespace = 'iec'">
 									<xsl:if test="../*[local-name()='note']">
@@ -6247,6 +6249,7 @@
 								<xsl:if test="$namespace = 'iec'">
 									<xsl:if test="../*[local-name()='note']">
 										<fo:block-container border-top="0.5pt solid black" padding-left="1mm" padding-right="1mm">
+											<xsl:call-template name="setBordersTableArray"/>
 											<fo:block font-size="1pt">&#xA0;</fo:block>
 										</fo:block-container>
 									</xsl:if>
