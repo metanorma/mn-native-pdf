@@ -1737,10 +1737,13 @@
 				<xsl:element name="{$element-name}">
 					<xsl:attribute name="text-align">
 						<xsl:choose>
-							<xsl:when test="@align"><xsl:value-of select="@align"/></xsl:when>
+							<xsl:when test="@align and not(@align = 'indent')"><xsl:value-of select="@align"/></xsl:when>
 							<xsl:otherwise>justify</xsl:otherwise>
 						</xsl:choose>
 					</xsl:attribute>
+					<xsl:if test="@align = 'indent'">
+						<xsl:attribute name="margin-left">7mm</xsl:attribute>
+					</xsl:if>
 					<xsl:attribute name="margin-top">5pt</xsl:attribute>
 					<xsl:if test="ancestor::iec:definition">
 						<xsl:attribute name="margin-top">1pt</xsl:attribute>
