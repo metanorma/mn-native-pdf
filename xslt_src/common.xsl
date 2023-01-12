@@ -5176,6 +5176,9 @@
 					<xsl:if test="not(*[local-name() = 'name'])">
 						<xsl:attribute name="margin-top">12pt</xsl:attribute>
 					</xsl:if>
+					<xsl:if test="starts-with(@id, 'array_')">
+						<xsl:attribute name="margin-top">6pt</xsl:attribute>
+					</xsl:if>
 				</xsl:if>
 				
 				<xsl:if test="$namespace = 'itu'">
@@ -5304,6 +5307,8 @@
 								<xsl:attribute name="border"><xsl:value-of select="$table-cell-border"/></xsl:attribute>
 							</xsl:if>
 						</xsl:if>
+						
+						<xsl:call-template name="setBordersTableArray"/>
 						
 						<xsl:if test="$namespace = 'itu'">
 							<xsl:if test="$doctype = 'service-publication'">
@@ -5501,6 +5506,15 @@
 			</xsl:otherwise>
 		</xsl:choose>
 		
+	</xsl:template>
+
+	<xsl:template name="setBordersTableArray">
+		<xsl:if test="$namespace = 'iec' or $namespace = 'iso'">
+			<xsl:if test="starts-with(@id, 'array_') or starts-with(ancestor::*[local-name() = 'table'][1]/@id, 'array_')">
+				<!-- array - table without borders -->
+				<xsl:attribute name="border">none</xsl:attribute>
+			</xsl:if>
+		</xsl:if>
 	</xsl:template>
 
 	<xsl:template match="*[local-name()='table']/*[local-name() = 'name']">
@@ -6191,6 +6205,8 @@
 									</xsl:if>
 								</xsl:if>
 								
+								<xsl:call-template name="setBordersTableArray"/>
+								
 								<!-- fn will be processed inside 'note' processing -->
 								<xsl:if test="$namespace = 'iec'">
 									<xsl:if test="../*[local-name()='note']">
@@ -6236,6 +6252,7 @@
 								<xsl:if test="$namespace = 'iec'">
 									<xsl:if test="../*[local-name()='note']">
 										<fo:block-container border-top="0.5pt solid black" padding-left="1mm" padding-right="1mm">
+											<xsl:call-template name="setBordersTableArray"/>
 											<fo:block font-size="1pt">&#xA0;</fo:block>
 										</fo:block-container>
 									</xsl:if>
@@ -6452,6 +6469,8 @@
 				</xsl:choose>
 			</xsl:if>
 			
+			<xsl:call-template name="setBordersTableArray"/>
+			
 			<xsl:if test="$namespace = 'jcgm'">
 				<xsl:choose>
 					<xsl:when test="position() = 1">
@@ -6519,6 +6538,8 @@
 					<xsl:attribute name="border-top"><xsl:value-of select="$table-border"/></xsl:attribute>
 				</xsl:if>
 			</xsl:if>
+		
+			<xsl:call-template name="setBordersTableArray"/>
 		
 			<xsl:if test="$namespace = 'ogc'">
 				<xsl:variable name="number"><xsl:number/></xsl:variable>
@@ -6622,6 +6643,9 @@
 					<xsl:attribute name="border-bottom"><xsl:value-of select="$table-cell-border"/></xsl:attribute>
 				</xsl:if>
 			</xsl:if>
+			
+			<xsl:call-template name="setBordersTableArray"/>
+			
 			<xsl:if test="$namespace = 'itu'">
 				<xsl:if test="ancestor::*[local-name()='preface']">
 					<xsl:if test="$doctype != 'service-publication'">
@@ -6816,6 +6840,8 @@
 				</xsl:if>
 				<!-- <xsl:attribute name="page-break-inside">avoid</xsl:attribute> -->
 			</xsl:if>
+			
+			<xsl:call-template name="setBordersTableArray"/>
 			
 			<xsl:if test="$namespace = 'itu'">
 				<xsl:if test="ancestor::*[local-name()='preface']">
@@ -15915,6 +15941,7 @@
 			<xsl:choose>
 				<xsl:when test="$lang = 'ar' and $align = 'left'">start</xsl:when>
 				<xsl:when test="$lang = 'ar' and $align = 'right'">end</xsl:when>
+				<xsl:when test="$align = 'justified'">justify</xsl:when>
 				<xsl:when test="$align != '' and not($align = 'indent')"><xsl:value-of select="$align"/></xsl:when>
 				<xsl:when test="ancestor::*[local-name() = 'td']/@align"><xsl:value-of select="ancestor::*[local-name() = 'td']/@align"/></xsl:when>
 				<xsl:when test="ancestor::*[local-name() = 'th']/@align"><xsl:value-of select="ancestor::*[local-name() = 'th']/@align"/></xsl:when>
