@@ -3701,6 +3701,11 @@
 			<xsl:attribute name="margin-bottom">12pt</xsl:attribute>
 			<xsl:attribute name="font-weight">bold</xsl:attribute>
 		</xsl:if>
+		<xsl:if test="$namespace = 'itu'">
+			<xsl:attribute name="border">0.5pt solid black</xsl:attribute>
+			<xsl:attribute name="space-before">12pt</xsl:attribute>
+			<xsl:attribute name="space-after">12pt</xsl:attribute>
+		</xsl:if>
 		<xsl:if test="$namespace = 'jcgm'">
 			<xsl:attribute name="margin-bottom">12pt</xsl:attribute>
 			<xsl:attribute name="font-weight">bold</xsl:attribute>
@@ -3776,6 +3781,10 @@
 			<xsl:attribute name="padding">2mm</xsl:attribute>
 			<xsl:attribute name="padding-top">3mm</xsl:attribute>
 		</xsl:if>
+		<xsl:if test="$namespace = 'itu'">
+			<xsl:attribute name="padding">2mm</xsl:attribute>
+			<xsl:attribute name="padding-top">3mm</xsl:attribute>
+		</xsl:if>
 		<xsl:if test="$namespace = 'nist-cswp'">
 			<xsl:attribute name="margin-left">8mm</xsl:attribute>
 			<xsl:attribute name="margin-right">8mm</xsl:attribute>
@@ -3837,6 +3846,11 @@
 			<xsl:attribute name="font-weight">bold</xsl:attribute>
 			<xsl:attribute name="font-style">italic</xsl:attribute>
 			<xsl:attribute name="text-align">center</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'itu'">
+			<xsl:attribute name="text-align">center</xsl:attribute>
+			<xsl:attribute name="margin-bottom">6pt</xsl:attribute>
+			<xsl:attribute name="font-weight">bold</xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'm3d'">
 			<xsl:attribute name="text-align">center</xsl:attribute>
