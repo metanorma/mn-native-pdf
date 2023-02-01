@@ -83,13 +83,24 @@
 	</xsl:variable>
 	
 	<xsl:variable name="footer-text">
+		<xsl:variable name="additionalIdentifiers_">
+			<xsl:if test="$TDnumber != ''">/<xsl:value-of select="$TDnumber"/></xsl:if>
+			<xsl:if test="$provisionalIdentifier != ''">/<xsl:value-of select="$provisionalIdentifier"/></xsl:if>
+		</xsl:variable>
+		<xsl:variable name="additionalIdentifiers" select="normalize-space($additionalIdentifiers_)"/>
 		<xsl:choose>
 			<xsl:when test="$doctype = 'technical-report' or $doctype = 'technical-paper'">
-				<xsl:variable name="date" select="concat('(',substring(/itu:itu-standard/itu:bibdata/itu:version/itu:revision-date,1,7), ')')"/>
-				<xsl:value-of select="concat($xSTR-ACRONYM, ' ', $date)"/>
+				<xsl:variable name="date_">
+					<xsl:value-of select="/itu:itu-standard/itu:bibdata/itu:version/itu:revision-date"/>
+					<xsl:if test="not(/itu:itu-standard/itu:bibdata/itu:version/itu:revision-date)"></xsl:if>
+					<xsl:value-of select="/itu:itu-standard/itu:bibdata/itu:date[@type = 'published']/itu:on"/>
+				</xsl:variable>
+				<xsl:variable name="date" select="concat('(',substring($date_,1,7), ')')"/>
+				<xsl:value-of select="concat($xSTR-ACRONYM, $additionalIdentifiers, ' ', $date)"/>
 			</xsl:when>
 			<xsl:when  test="$doctype = 'implementers-guide'">
 				<xsl:value-of select="/itu:itu-standard/itu:bibdata/itu:ext/itu:doctype[@language = $lang]"/>
+				<xsl:value-of select="$additionalIdentifiers"/>
 				<xsl:text> for </xsl:text>
 				<xsl:value-of select="/itu:itu-standard/itu:bibdata/itu:docidentifier[@type='ITU-Recommendation']"/>
 				<xsl:text> </xsl:text>
@@ -101,19 +112,22 @@
 				<xsl:value-of select="/itu:itu-standard/itu:bibdata/itu:ext/itu:meeting/@acronym"/>
 				<xsl:text> – </xsl:text>
 				<xsl:value-of select="$doctypeTitle"/>
+				<xsl:value-of select="$additionalIdentifiers"/>
 				<xsl:text> </xsl:text>
 				<xsl:value-of select="/itu:itu-standard/itu:bibdata/itu:ext/itu:structuredidentifier/itu:docnumber"/>
 			</xsl:when>
 			<xsl:when  test="$doctype = 'recommendation-supplement'">
 				<xsl:value-of select="/itu:itu-standard/itu:bibdata/itu:docidentifier[@type = 'ITU-Supplement-Short']"/>
+				<xsl:value-of select="$additionalIdentifiers"/>
 				<xsl:text> </xsl:text>
 				<xsl:value-of select="$docdate"/>
 			</xsl:when>
 			<xsl:when  test="$doctype = 'service-publication'">
 				<xsl:value-of select="/itu:itu-standard/itu:bibdata/itu:docidentifier[@type = 'ITU-lang']"/>
+				<xsl:value-of select="$additionalIdentifiers"/>
 			</xsl:when>
 			<xsl:otherwise>
-				<xsl:value-of select="concat($footerprefix, $docname, ' ', $docdate)"/>
+				<xsl:value-of select="concat($footerprefix, $docname, $additionalIdentifiers, ' ', $docdate)"/>
 			</xsl:otherwise>
 		</xsl:choose>
 	</xsl:variable>
