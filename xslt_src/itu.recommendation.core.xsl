@@ -799,7 +799,7 @@
 														<xsl:variable name="series_title">
 															<xsl:value-of select="$series_title_full"/>
 															<xsl:if test="$series_title_full = ''">
-																<xsl:value-of select="normalize-space(/itu:itu-standard/itu:bibdata/itu:series[@type = 'main']/itu:title[@type != 'full' and @type != 'abbrev'])"/>
+																<xsl:value-of select="normalize-space(/itu:itu-standard/itu:bibdata/itu:series[@type = 'main']/itu:title[(@type != 'full' and @type != 'abbrev') or not(@type)])"/>
 															</xsl:if>
 														</xsl:variable>
 														<xsl:if test="$series_title != ''">
