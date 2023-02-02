@@ -8,7 +8,7 @@ SRCDIR := sources
 DESTDIR := documents
 SRC := $(patsubst mn-samples-iso/documents/international-standard/%,sources/iso-is-%,$(wildcard mn-samples-iso/documents/international-standard/*.xml)) \
 	$(patsubst mn-samples-iso/documents/amendment/%,sources/iso-amendment-%,$(wildcard mn-samples-iso/documents/amendment/*.xml)) \
-	$(patsubst mn-samples-iso/documents/directives/part2/%,sources/iso-amendment-%,$(wildcard mn-samples-iso/documents/directives/part2/*.xml)) \
+	$(patsubst mn-samples-iso/documents/directives/part2/%,sources/iso-directives-%,$(wildcard mn-samples-iso/documents/directives/part2/*.xml)) \
 	$(patsubst mn-samples-itu/documents/%,sources/itu-%,$(wildcard mn-samples-itu/documents/*.xml)) \
 	$(patsubst mn-samples-iec/documents/%,sources/%,$(wildcard mn-samples-iec/documents/*.xml)) \
 	$(patsubst mn-samples-ogc/documents/%,sources/ogc-%,$(wildcard mn-samples-ogc/documents/*.xml)) \
@@ -32,6 +32,7 @@ XSLT_GENERATED := xslt/iec.international-standard.xsl \
 	xslt/ieee.amendment.xsl \
 	xslt/iso.international-standard.xsl \
 	xslt/iso.amendment.xsl \
+	xslt/iso.directive.xsl \
 	xslt/itu.recommendation.xsl \
 	xslt/itu.recommendation-annex.xsl \
 	xslt/itu.recommendation-supplement.xsl \
