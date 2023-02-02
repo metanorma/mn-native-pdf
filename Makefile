@@ -8,6 +8,7 @@ SRCDIR := sources
 DESTDIR := documents
 SRC := $(patsubst mn-samples-iso/documents/international-standard/%,sources/iso-is-%,$(wildcard mn-samples-iso/documents/international-standard/*.xml)) \
 	$(patsubst mn-samples-iso/documents/amendment/%,sources/iso-amendment-%,$(wildcard mn-samples-iso/documents/amendment/*.xml)) \
+	$(patsubst mn-samples-iso/documents/directives/part2/%,sources/iso-amendment-%,$(wildcard mn-samples-iso/documents/directives/part2/*.xml)) \
 	$(patsubst mn-samples-itu/documents/%,sources/itu-%,$(wildcard mn-samples-itu/documents/*.xml)) \
 	$(patsubst mn-samples-iec/documents/%,sources/%,$(wildcard mn-samples-iec/documents/*.xml)) \
 	$(patsubst mn-samples-ogc/documents/%,sources/ogc-%,$(wildcard mn-samples-ogc/documents/*.xml)) \
@@ -114,6 +115,9 @@ sources/iso-is-%: mn-samples-iso/documents/international-standard/%
 	cp $< $@
 
 sources/iso-amendment-%: mn-samples-iso/documents/amendment/%
+	cp $< $@
+
+sources/iso-directives-%: mn-samples-iso/documents/directives/part2/%
 	cp $< $@
 
 sources/iec-%: mn-samples-iec/documents/iec-%
