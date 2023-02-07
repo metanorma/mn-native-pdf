@@ -2522,6 +2522,10 @@
 	</xsl:attribute-set>
 	
 	<xsl:attribute-set name="termnote-style">
+		<xsl:if test="$namespace = 'bipm'">
+			<xsl:attribute name="margin-bottom">6pt</xsl:attribute>
+			<xsl:attribute name="text-align">justify</xsl:attribute>
+		</xsl:if>
 		<xsl:if test="$namespace = 'bsi'">
 			<xsl:attribute name="font-size">9pt</xsl:attribute>
 			<xsl:attribute name="font-style">italic</xsl:attribute>
@@ -2581,6 +2585,9 @@
 	</xsl:attribute-set>
 
 	<xsl:attribute-set name="termnote-p-style">
+		<xsl:if test="$namespace = 'bipm'">
+			<xsl:attribute name="text-align">justify</xsl:attribute>
+		</xsl:if>
 		<xsl:if test="$namespace = 'ogc' or $namespace = 'ogc-white-paper'">
 			<xsl:attribute name="space-before">4pt</xsl:attribute>
 		</xsl:if>
