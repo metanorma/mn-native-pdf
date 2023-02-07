@@ -2966,11 +2966,11 @@
 	</xsl:template>
 
 	
-	<xsl:template match="bipm:example" priority="2">
-		<fo:block margin-top="6pt"  margin-bottom="6pt" keep-together.within-column="1">
+	<xsl:template match="bipm:example | bipm:termexample" priority="2">
+		<fo:block keep-together.within-column="1" xsl:use-attribute-sets="example-style">
 			<fo:table table-layout="fixed" width="100%">
-				<fo:table-column column-width="27.5mm"/>
-				<fo:table-column column-width="108mm"/>
+				<fo:table-column column-width="proportional-column-width(27)"/>
+				<fo:table-column column-width="proportional-column-width(108)"/>
 				<fo:table-body>
 					<fo:table-row>
 						<fo:table-cell>

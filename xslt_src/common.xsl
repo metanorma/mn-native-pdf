@@ -1356,6 +1356,9 @@
 	</xsl:attribute-set> <!-- example-p-style -->
 
 	<xsl:attribute-set name="termexample-name-style">
+		<xsl:if test="$namespace = 'bipm'">
+			<xsl:attribute name="font-style">italic</xsl:attribute>
+		</xsl:if>
 		<xsl:if test="$namespace = 'csa' or $namespace = 'csd' or $namespace = 'iec' or $namespace = 'ogc' or $namespace = 'ogc-white-paper'">
 			<xsl:attribute name="padding-right">10mm</xsl:attribute>
 		</xsl:if>
