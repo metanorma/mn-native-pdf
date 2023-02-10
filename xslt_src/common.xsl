@@ -13730,6 +13730,9 @@
 						<xsl:if test="$document_type = 'PAS' and not(ancestor::*[local-name() = 'note' or local-name() = 'termnote'])">
 							<xsl:attribute name="color"><xsl:value-of select="$color_list_label_PAS"/></xsl:attribute>
 						</xsl:if>
+						<xsl:if test="$document_type = 'PAS'">
+							<xsl:attribute name="id">__internal_layout__li_<xsl:value-of select="generate-id()"/></xsl:attribute>
+						</xsl:if>
 					</xsl:if>
 				
 					<xsl:if test="$namespace = 'ieee'">
