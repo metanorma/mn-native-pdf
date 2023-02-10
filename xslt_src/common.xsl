@@ -8813,7 +8813,9 @@
 		<xsl:value-of select="java:replaceAll(java:java.lang.String.new($text), $regex_url_start, '$1')"/> <!-- http://. https:// or www. -->
 		<xsl:variable name="url_continue" select="java:replaceAll(java:java.lang.String.new($text), $regex_url_start, '$2')"/>
 		<!-- add zero-width space (#x200B) after characters: dash, dot, colon, equal, underscore, em dash, thin space  -->
-		<xsl:value-of select="java:replaceAll(java:java.lang.String.new($url_continue),'(-|\.|:|=|_|—| |,|/)','$1&#x200B;')"/>
+		<xsl:variable name="url" select="java:replaceAll(java:java.lang.String.new($url_continue),'(-|\.|:|=|_|—| |,|/)','$1&#x200B;')"/>
+		<!-- remove zero-width space at the end -->
+		<xsl:value-of select="java:replaceAll(java:java.lang.String.new($url), '&#x200B;$', '')"/>
 	</xsl:template>
 	
 	<!-- add zero space after dash character (for table's entries) -->
@@ -13729,6 +13731,9 @@
 					<xsl:if test="$namespace = 'bsi'">
 						<xsl:if test="$document_type = 'PAS' and not(ancestor::*[local-name() = 'note' or local-name() = 'termnote'])">
 							<xsl:attribute name="color"><xsl:value-of select="$color_list_label_PAS"/></xsl:attribute>
+						</xsl:if>
+						<xsl:if test="$document_type = 'PAS'">
+							<xsl:attribute name="id">__internal_layout__li_<xsl:value-of select="generate-id()"/></xsl:attribute>
 						</xsl:if>
 					</xsl:if>
 				
