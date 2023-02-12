@@ -13733,7 +13733,7 @@
 							<xsl:attribute name="color"><xsl:value-of select="$color_list_label_PAS"/></xsl:attribute>
 						</xsl:if>
 						<xsl:if test="$document_type = 'PAS'">
-							<xsl:attribute name="id">__internal_layout__li_<xsl:value-of select="generate-id()"/></xsl:attribute>
+							<xsl:attribute name="id">__internal_layout__li_<xsl:value-of select="generate-id()"/>_<xsl:value-of select="ancestor::*[@id][1]/@id"/></xsl:attribute>
 						</xsl:if>
 					</xsl:if>
 				
