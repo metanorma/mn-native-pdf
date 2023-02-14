@@ -4859,6 +4859,9 @@
 						<xsl:if test="$document_type = 'PAS'">
 							<xsl:attribute name="space-after">2pt</xsl:attribute>
 						</xsl:if>
+						<xsl:if test="$doctype = 'flex-standard'">
+							<xsl:attribute name="space-after">6pt</xsl:attribute>
+						</xsl:if>
 					</xsl:if>
 					
 					<xsl:if test="$namespace = 'bsi' or $namespace = 'ogc-white-paper'">
@@ -9767,6 +9770,9 @@
 				<xsl:if test="$document_type = 'PAS'">
 					<xsl:attribute name="color">inherit</xsl:attribute>
 					<xsl:attribute name="text-decoration">none</xsl:attribute>
+				</xsl:if>
+				<xsl:if test="$doctype = 'flex-standard' and ancestor::*[local-name() = 'copyright-statement']">
+					<xsl:attribute name="color"><xsl:value-of select="$color_PAS"/></xsl:attribute>
 				</xsl:if>
 			</xsl:if>
 			
