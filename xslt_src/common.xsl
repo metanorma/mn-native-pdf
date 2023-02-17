@@ -7494,6 +7494,12 @@
 				</xsl:otherwise>
 			</xsl:choose>
 			
+			<xsl:if test="$namespace = 'bsi'">
+				<xsl:if test="$document_type != 'PAS'">
+					<xsl:attribute name="font-size">9pt</xsl:attribute>
+				</xsl:if>
+			</xsl:if>
+			
 			<xsl:if test="parent::*[local-name() = 'note']">
 				<xsl:attribute name="margin-left">
 					<xsl:choose>
@@ -7630,6 +7636,11 @@
 				<!-- a few components -->
 				<xsl:if test="$onlyOneComponent = 'false'">
 					<fo:block>
+						<xsl:if test="$namespace = 'bsi'">
+							<xsl:if test="$document_type != 'PAS'">
+								<xsl:attribute name="line-height">1.4</xsl:attribute>
+							</xsl:if>
+						</xsl:if>
 						<xsl:if test="$namespace = 'bsi' or $namespace = 'iso' or $namespace = 'jcgm'">
 							<xsl:if test="$parent = 'formula'">
 								<xsl:attribute name="margin-left">4mm</xsl:attribute>
