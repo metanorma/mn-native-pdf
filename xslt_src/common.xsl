@@ -5294,8 +5294,14 @@
 							">
 								<xsl:attribute name="border-bottom">none</xsl:attribute>
 							</xsl:if>
-							<xsl:if test="ancestor::*[local-name()='preface'] and ancestor::*[local-name()='clause'][@type = 'corrigenda'] and normalize-space(*[local-name() = 'tbody']) = ''">
-								<xsl:attribute name="border-bottom">none</xsl:attribute>
+							<xsl:if test="ancestor::*[local-name()='preface'] and ancestor::*[local-name()='clause'][@type = 'corrigenda']">
+								<xsl:if test="normalize-space(*[local-name() = 'tbody']) = ''">
+									<xsl:attribute name="border-bottom">none</xsl:attribute>
+								</xsl:if>
+								<xsl:if test="$document_type != 'PAS'">
+									<xsl:attribute name="border">none</xsl:attribute>
+									<xsl:attribute name="border-bottom">none</xsl:attribute>
+								</xsl:if>
 							</xsl:if>
 							<xsl:if test="ancestor::*[local-name() = 'preface']">
 								<xsl:attribute name="border">0pt solid black</xsl:attribute>
@@ -6652,6 +6658,9 @@
 					<xsl:if test="$document_type != 'PAS'">
 						<xsl:attribute name="border">solid black 0pt</xsl:attribute>
 					</xsl:if>
+					<xsl:if test="ancestor::*[local-name()='clause'][@type = 'corrigenda']">
+						<xsl:attribute name="border-bottom">solid black 1pt</xsl:attribute>
+					</xsl:if>
 				</xsl:if>
 				<xsl:if test="$document_type = 'PAS'">
 					<xsl:attribute name="border">1pt solid <xsl:value-of select="$color_PAS"/></xsl:attribute>
@@ -6805,8 +6814,14 @@
 					</xsl:if>
 				</xsl:if>
 				
-				<xsl:if test="ancestor::*[local-name()='preface'] and ancestor::*[local-name()='clause'][@type = 'corrigenda'] and normalize-space(parent::*[local-name() = 'tr']) = ''">
-					<xsl:attribute name="border">none</xsl:attribute>
+				<xsl:if test="ancestor::*[local-name()='preface'] and ancestor::*[local-name()='clause'][@type = 'corrigenda']">
+					<xsl:if test="normalize-space(parent::*[local-name() = 'tr']) = ''">
+						<xsl:attribute name="border">none</xsl:attribute>
+					</xsl:if>
+					<xsl:if test="$document_type != 'PAS'">
+						<xsl:attribute name="border">none</xsl:attribute>
+						<xsl:attribute name="padding-top">1mm</xsl:attribute>
+					</xsl:if>
 				</xsl:if>
 				
 				<xsl:if test="starts-with(ancestor::*[local-name() = 'table']/@id, 'boxed-text')">
