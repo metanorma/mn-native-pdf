@@ -7090,6 +7090,10 @@
 					<xsl:if test="$document_type = 'PAS'">
 						<xsl:attribute name="font-size">5pt</xsl:attribute>
 					</xsl:if>
+					<xsl:if test="following-sibling::*[1][local-name() = 'fn']">
+						<xsl:attribute name="padding-right">0mm</xsl:attribute>
+					</xsl:if>
+					<xsl:if test="preceding-sibling::*[1][local-name() = 'fn']">,</xsl:if>
 				</xsl:if>
 				
 				<fo:basic-link internal-destination="{$ref_id}" fox:alt-text="footnote {$current_fn_number}">
