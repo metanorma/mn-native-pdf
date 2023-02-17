@@ -3685,7 +3685,6 @@
 		</xsl:if>
 		<xsl:if test="$namespace = 'bsi'">
 			<xsl:attribute name="margin-bottom">12pt</xsl:attribute>
-			<xsl:attribute name="font-style">italic</xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'iec'">
 			<xsl:attribute name="border">0.5pt solid black</xsl:attribute>
@@ -3770,6 +3769,10 @@
 	<xsl:attribute-set name="admonition-container-style">
 		<xsl:attribute name="margin-left">0mm</xsl:attribute>
 		<xsl:attribute name="margin-right">0mm</xsl:attribute>
+		<xsl:if test="$namespace = 'bsi'">
+			<xsl:attribute name="padding">0.5mm</xsl:attribute>
+			<xsl:attribute name="font-size">9pt</xsl:attribute>
+		</xsl:if>
 		<xsl:if test="$namespace = 'csa'">
 			<xsl:attribute name="padding">2mm</xsl:attribute>
 			<xsl:attribute name="padding-top">3mm</xsl:attribute>
@@ -14767,31 +14770,61 @@
 		</xsl:if>
 		
 		<xsl:choose>
-			<xsl:when test="$namespace = 'bsi' or $namespace = 'csd' or $namespace = 'iso' or $namespace = 'jcgm'">
+			<xsl:when test="$namespace = 'bsi'">
+			
+				<xsl:choose>
+					<xsl:when test="$document_type = 'PAS' or @type = 'commentary'">
+						<fo:block xsl:use-attribute-sets="admonition-style">
+							
+							<xsl:if test="$document_type = 'PAS'">
+								<xsl:if test="@type = 'commentary'">
+									<xsl:attribute name="color"><xsl:value-of select="$color_PAS"/></xsl:attribute>
+								</xsl:if>
+							</xsl:if>
+							<xsl:attribute name="font-style">italic</xsl:attribute>
+							
+							<xsl:if test="@type = 'editorial'">
+								<xsl:attribute name="color">green</xsl:attribute>
+								<xsl:attribute name="font-weight">normal</xsl:attribute>
+							</xsl:if>
+							
+							<fo:block xsl:use-attribute-sets="admonition-name-style">
+								<xsl:call-template name="displayAdmonitionName"/>
+							</fo:block>
+							
+							<xsl:apply-templates select="node()[not(local-name() = 'name')]" />
+						</fo:block>
+					</xsl:when>
+					<xsl:otherwise>	<!-- BSI -->
+						<fo:block-container id="{@id}" xsl:use-attribute-sets="admonition-style">
+							<xsl:attribute name="border">0.25pt solid black</xsl:attribute>
+							<xsl:attribute name="margin-right">5mm</xsl:attribute>
+							<fo:block-container xsl:use-attribute-sets="admonition-container-style">
+								<fo:block></fo:block>
+								<xsl:if test="*[local-name() = 'name']">
+									<fo:block xsl:use-attribute-sets="admonition-name-style">
+										<xsl:call-template name="displayAdmonitionName"/>
+									</fo:block>
+								</xsl:if>
+								<xsl:apply-templates select="node()[not(local-name() = 'name')]" />
+							</fo:block-container>
+						</fo:block-container>
+					</xsl:otherwise>
+				</xsl:choose>
+			</xsl:when>
+			
+			<xsl:when test="$namespace = 'csd' or $namespace = 'iso' or $namespace = 'jcgm'">
 				<fo:block xsl:use-attribute-sets="admonition-style">
 				
-					<xsl:if test="$namespace = 'bsi'">
-						<xsl:if test="$document_type = 'PAS' and @type = 'commentary'">
-							<xsl:attribute name="color"><xsl:value-of select="$color_PAS"/></xsl:attribute>
-						</xsl:if>
-					</xsl:if>
-					
 					<xsl:if test="@type = 'editorial'">
 						<xsl:attribute name="color">green</xsl:attribute>
 						<xsl:attribute name="font-weight">normal</xsl:attribute>
-						
 						<!-- <xsl:variable name="note-style">
 							<style xsl:use-attribute-sets="note-style"></style>
 						</xsl:variable>
 						<xsl:for-each select="xalan:nodeset($note-style)//style/@*">
 							<xsl:attribute name="{local-name()}"><xsl:value-of select="."/></xsl:attribute>
 						</xsl:for-each> -->
-					</xsl:if>
-					
-					<xsl:if test="$namespace = 'bsi'">
-						<fo:block xsl:use-attribute-sets="admonition-name-style">
-							<xsl:call-template name="displayAdmonitionName"/>
-						</fo:block>
 					</xsl:if>
 					
 					<xsl:if test="$namespace = 'iso'">
