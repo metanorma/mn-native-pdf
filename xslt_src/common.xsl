@@ -13412,7 +13412,7 @@
 				<label>
 					<xsl:choose>
 						<xsl:when test="$document_type = 'PAS'">•</xsl:when> <!-- bullet -->
-						<xsl:otherwise>&#x2014;</xsl:otherwise> <!-- em dash -->
+						<xsl:otherwise>•</xsl:otherwise> <!-- &#x2014; em dash -->
 					</xsl:choose>
 				</label>
 			</xsl:when>
