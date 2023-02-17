@@ -3685,7 +3685,6 @@
 		</xsl:if>
 		<xsl:if test="$namespace = 'bsi'">
 			<xsl:attribute name="margin-bottom">12pt</xsl:attribute>
-			<xsl:attribute name="font-style">italic</xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'iec'">
 			<xsl:attribute name="border">0.5pt solid black</xsl:attribute>
@@ -3770,6 +3769,10 @@
 	<xsl:attribute-set name="admonition-container-style">
 		<xsl:attribute name="margin-left">0mm</xsl:attribute>
 		<xsl:attribute name="margin-right">0mm</xsl:attribute>
+		<xsl:if test="$namespace = 'bsi'">
+			<xsl:attribute name="padding">0.5mm</xsl:attribute>
+			<xsl:attribute name="font-size">9pt</xsl:attribute>
+		</xsl:if>
 		<xsl:if test="$namespace = 'csa'">
 			<xsl:attribute name="padding">2mm</xsl:attribute>
 			<xsl:attribute name="padding-top">3mm</xsl:attribute>
@@ -5294,8 +5297,14 @@
 							">
 								<xsl:attribute name="border-bottom">none</xsl:attribute>
 							</xsl:if>
-							<xsl:if test="ancestor::*[local-name()='preface'] and ancestor::*[local-name()='clause'][@type = 'corrigenda'] and normalize-space(*[local-name() = 'tbody']) = ''">
-								<xsl:attribute name="border-bottom">none</xsl:attribute>
+							<xsl:if test="ancestor::*[local-name()='preface'] and ancestor::*[local-name()='clause'][@type = 'corrigenda']">
+								<xsl:if test="normalize-space(*[local-name() = 'tbody']) = ''">
+									<xsl:attribute name="border-bottom">none</xsl:attribute>
+								</xsl:if>
+								<xsl:if test="$document_type != 'PAS'">
+									<xsl:attribute name="border">none</xsl:attribute>
+									<xsl:attribute name="border-bottom">none</xsl:attribute>
+								</xsl:if>
 							</xsl:if>
 							<xsl:if test="ancestor::*[local-name() = 'preface']">
 								<xsl:attribute name="border">0pt solid black</xsl:attribute>
@@ -6652,6 +6661,9 @@
 					<xsl:if test="$document_type != 'PAS'">
 						<xsl:attribute name="border">solid black 0pt</xsl:attribute>
 					</xsl:if>
+					<xsl:if test="ancestor::*[local-name()='clause'][@type = 'corrigenda']">
+						<xsl:attribute name="border-bottom">solid black 1pt</xsl:attribute>
+					</xsl:if>
 				</xsl:if>
 				<xsl:if test="$document_type = 'PAS'">
 					<xsl:attribute name="border">1pt solid <xsl:value-of select="$color_PAS"/></xsl:attribute>
@@ -6805,8 +6817,14 @@
 					</xsl:if>
 				</xsl:if>
 				
-				<xsl:if test="ancestor::*[local-name()='preface'] and ancestor::*[local-name()='clause'][@type = 'corrigenda'] and normalize-space(parent::*[local-name() = 'tr']) = ''">
-					<xsl:attribute name="border">none</xsl:attribute>
+				<xsl:if test="ancestor::*[local-name()='preface'] and ancestor::*[local-name()='clause'][@type = 'corrigenda']">
+					<xsl:if test="normalize-space(parent::*[local-name() = 'tr']) = ''">
+						<xsl:attribute name="border">none</xsl:attribute>
+					</xsl:if>
+					<xsl:if test="$document_type != 'PAS'">
+						<xsl:attribute name="border">none</xsl:attribute>
+						<xsl:attribute name="padding-top">1mm</xsl:attribute>
+					</xsl:if>
 				</xsl:if>
 				
 				<xsl:if test="starts-with(ancestor::*[local-name() = 'table']/@id, 'boxed-text')">
@@ -7072,6 +7090,10 @@
 					<xsl:if test="$document_type = 'PAS'">
 						<xsl:attribute name="font-size">5pt</xsl:attribute>
 					</xsl:if>
+					<xsl:if test="following-sibling::*[1][local-name() = 'fn']">
+						<xsl:attribute name="padding-right">0mm</xsl:attribute>
+					</xsl:if>
+					<xsl:if test="preceding-sibling::*[1][local-name() = 'fn']">,</xsl:if>
 				</xsl:if>
 				
 				<fo:basic-link internal-destination="{$ref_id}" fox:alt-text="footnote {$current_fn_number}">
@@ -7476,6 +7498,12 @@
 				</xsl:otherwise>
 			</xsl:choose>
 			
+			<xsl:if test="$namespace = 'bsi'">
+				<xsl:if test="$document_type != 'PAS'">
+					<xsl:attribute name="font-size">9pt</xsl:attribute>
+				</xsl:if>
+			</xsl:if>
+			
 			<xsl:if test="parent::*[local-name() = 'note']">
 				<xsl:attribute name="margin-left">
 					<xsl:choose>
@@ -7612,6 +7640,11 @@
 				<!-- a few components -->
 				<xsl:if test="$onlyOneComponent = 'false'">
 					<fo:block>
+						<xsl:if test="$namespace = 'bsi'">
+							<xsl:if test="$document_type != 'PAS'">
+								<xsl:attribute name="line-height">1.4</xsl:attribute>
+							</xsl:if>
+						</xsl:if>
 						<xsl:if test="$namespace = 'bsi' or $namespace = 'iso' or $namespace = 'jcgm'">
 							<xsl:if test="$parent = 'formula'">
 								<xsl:attribute name="margin-left">4mm</xsl:attribute>
@@ -13397,7 +13430,7 @@
 				<label>
 					<xsl:choose>
 						<xsl:when test="$document_type = 'PAS'">•</xsl:when> <!-- bullet -->
-						<xsl:otherwise>&#x2014;</xsl:otherwise> <!-- em dash -->
+						<xsl:otherwise>•</xsl:otherwise> <!-- &#x2014; em dash -->
 					</xsl:choose>
 				</label>
 			</xsl:when>
@@ -14752,31 +14785,61 @@
 		</xsl:if>
 		
 		<xsl:choose>
-			<xsl:when test="$namespace = 'bsi' or $namespace = 'csd' or $namespace = 'iso' or $namespace = 'jcgm'">
+			<xsl:when test="$namespace = 'bsi'">
+			
+				<xsl:choose>
+					<xsl:when test="$document_type = 'PAS' or @type = 'commentary'">
+						<fo:block xsl:use-attribute-sets="admonition-style">
+							
+							<xsl:if test="$document_type = 'PAS'">
+								<xsl:if test="@type = 'commentary'">
+									<xsl:attribute name="color"><xsl:value-of select="$color_PAS"/></xsl:attribute>
+								</xsl:if>
+							</xsl:if>
+							<xsl:attribute name="font-style">italic</xsl:attribute>
+							
+							<xsl:if test="@type = 'editorial'">
+								<xsl:attribute name="color">green</xsl:attribute>
+								<xsl:attribute name="font-weight">normal</xsl:attribute>
+							</xsl:if>
+							
+							<fo:block xsl:use-attribute-sets="admonition-name-style">
+								<xsl:call-template name="displayAdmonitionName"/>
+							</fo:block>
+							
+							<xsl:apply-templates select="node()[not(local-name() = 'name')]" />
+						</fo:block>
+					</xsl:when>
+					<xsl:otherwise>	<!-- BSI -->
+						<fo:block-container id="{@id}" xsl:use-attribute-sets="admonition-style">
+							<xsl:attribute name="border">0.25pt solid black</xsl:attribute>
+							<xsl:attribute name="margin-right">5mm</xsl:attribute>
+							<fo:block-container xsl:use-attribute-sets="admonition-container-style">
+								<fo:block></fo:block>
+								<xsl:if test="*[local-name() = 'name']">
+									<fo:block xsl:use-attribute-sets="admonition-name-style">
+										<xsl:call-template name="displayAdmonitionName"/>
+									</fo:block>
+								</xsl:if>
+								<xsl:apply-templates select="node()[not(local-name() = 'name')]" />
+							</fo:block-container>
+						</fo:block-container>
+					</xsl:otherwise>
+				</xsl:choose>
+			</xsl:when>
+			
+			<xsl:when test="$namespace = 'csd' or $namespace = 'iso' or $namespace = 'jcgm'">
 				<fo:block xsl:use-attribute-sets="admonition-style">
 				
-					<xsl:if test="$namespace = 'bsi'">
-						<xsl:if test="$document_type = 'PAS' and @type = 'commentary'">
-							<xsl:attribute name="color"><xsl:value-of select="$color_PAS"/></xsl:attribute>
-						</xsl:if>
-					</xsl:if>
-					
 					<xsl:if test="@type = 'editorial'">
 						<xsl:attribute name="color">green</xsl:attribute>
 						<xsl:attribute name="font-weight">normal</xsl:attribute>
-						
 						<!-- <xsl:variable name="note-style">
 							<style xsl:use-attribute-sets="note-style"></style>
 						</xsl:variable>
 						<xsl:for-each select="xalan:nodeset($note-style)//style/@*">
 							<xsl:attribute name="{local-name()}"><xsl:value-of select="."/></xsl:attribute>
 						</xsl:for-each> -->
-					</xsl:if>
-					
-					<xsl:if test="$namespace = 'bsi'">
-						<fo:block xsl:use-attribute-sets="admonition-name-style">
-							<xsl:call-template name="displayAdmonitionName"/>
-						</fo:block>
 					</xsl:if>
 					
 					<xsl:if test="$namespace = 'iso'">
