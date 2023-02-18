@@ -1086,6 +1086,10 @@
 	
 	
 	<xsl:attribute-set name="termexample-style">
+		<xsl:if test="$namespace = 'bsi'">
+			<xsl:attribute name="margin-top">6pt</xsl:attribute>
+			<xsl:attribute name="margin-bottom">6pt</xsl:attribute>
+		</xsl:if>
 		<xsl:if test="$namespace = 'iec'">
 			<xsl:attribute name="margin-top">14pt</xsl:attribute>
 			<xsl:attribute name="margin-bottom">10pt</xsl:attribute>
@@ -1105,7 +1109,7 @@
 			<xsl:attribute name="margin-bottom">8pt</xsl:attribute>
 			<xsl:attribute name="text-align">justify</xsl:attribute>
 		</xsl:if>
-		<xsl:if test="$namespace = 'bsi' or $namespace = 'iho' or $namespace = 'iso' or $namespace = 'jcgm'">
+		<xsl:if test="$namespace = 'iho' or $namespace = 'iso' or $namespace = 'jcgm'">
 			<xsl:attribute name="font-size">10pt</xsl:attribute>
 			<xsl:attribute name="margin-top">8pt</xsl:attribute>
 			<xsl:attribute name="margin-bottom">8pt</xsl:attribute>
@@ -1123,6 +1127,10 @@
 	</xsl:attribute-set>
 
 	<xsl:attribute-set name="example-style">
+		<xsl:if test="$namespace = 'bsi'">
+			<xsl:attribute name="margin-top">6pt</xsl:attribute>
+			<xsl:attribute name="margin-bottom">6pt</xsl:attribute>
+		</xsl:if>
 		<xsl:if test="$namespace = 'csa'">
 			<xsl:attribute name="font-size">10pt</xsl:attribute>			
 		</xsl:if>
@@ -1134,7 +1142,7 @@
 			<xsl:attribute name="margin-bottom">8pt</xsl:attribute>
 			<xsl:attribute name="text-align">justify</xsl:attribute>
 		</xsl:if>
-		<xsl:if test="$namespace = 'bsi' or $namespace = 'gb' or $namespace = 'iso' or $namespace = 'jcgm'">
+		<xsl:if test="$namespace = 'gb' or $namespace = 'iso' or $namespace = 'jcgm'">
 			<xsl:attribute name="font-size">10pt</xsl:attribute>
 			<xsl:attribute name="margin-top">8pt</xsl:attribute>
 			<xsl:attribute name="margin-bottom">8pt</xsl:attribute>
@@ -1301,15 +1309,14 @@
 	</xsl:attribute-set> <!-- example-name-style -->
 
 	<xsl:attribute-set name="example-p-style">
+		<xsl:if test="$namespace = 'bsi'">
+			<xsl:attribute name="margin-bottom">6pt</xsl:attribute>
+		</xsl:if>
 		<xsl:if test="$namespace = 'csa'">
 			<xsl:attribute name="margin-bottom">14pt</xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'csd'">			
 			<xsl:attribute name="margin-bottom">14pt</xsl:attribute>
-		</xsl:if>
-		<xsl:if test="$namespace = 'bsi'">
-			<xsl:attribute name="font-size">10pt</xsl:attribute>
-			<xsl:attribute name="margin-bottom">8pt</xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'gb' or $namespace = 'iso' or $namespace = 'jcgm'">
 			<xsl:attribute name="font-size">10pt</xsl:attribute>
