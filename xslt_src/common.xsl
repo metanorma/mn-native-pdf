@@ -7541,7 +7541,7 @@
 				
 				<xsl:variable name="key_iso">
 					<xsl:if test="$namespace = 'bsi' or $namespace = 'iso' or $namespace = 'iec'  or $namespace = 'gb' or $namespace = 'jcgm'">
-						<xsl:if test="$parent = 'figure' or $parent = 'formula'">true</xsl:if>
+						<xsl:if test="$parent = 'figure' or $parent = 'formula' or ../@key = 'true'">true</xsl:if>
 					</xsl:if> <!-- and  (not(../@class) or ../@class !='pseudocode') -->
 				</xsl:variable>
 				
@@ -7647,16 +7647,19 @@
 				<!-- a few components -->
 				<xsl:if test="$onlyOneComponent = 'false'">
 					<fo:block>
-						<xsl:if test="$namespace = 'bsi'">
-							<xsl:if test="$document_type != 'PAS'">
-								<xsl:attribute name="line-height">1.4</xsl:attribute>
-							</xsl:if>
-						</xsl:if>
 						<xsl:if test="$namespace = 'bsi' or $namespace = 'iso' or $namespace = 'jcgm'">
 							<xsl:if test="$parent = 'formula'">
 								<xsl:attribute name="margin-left">4mm</xsl:attribute>
 							</xsl:if>
 							<xsl:attribute name="margin-top">12pt</xsl:attribute>
+						</xsl:if>
+						<xsl:if test="$namespace = 'bsi'">
+							<xsl:if test="$document_type != 'PAS'">
+								<xsl:attribute name="line-height">1.4</xsl:attribute>
+								<xsl:if test="@key = 'true'">
+									<xsl:attribute name="margin-top">2pt</xsl:attribute>
+								</xsl:if>
+							</xsl:if>
 						</xsl:if>
 						<xsl:if test="$namespace = 'itu'">
 							<xsl:if test="$parent = 'figure' or $parent = 'formula'">
@@ -7716,6 +7719,11 @@
 										<xsl:attribute name="font-size">10pt</xsl:attribute>
 										<xsl:if test="$namespace = 'iec'">
 											<xsl:attribute name="font-size">8pt</xsl:attribute>
+										</xsl:if>
+										<xsl:if test="$namespace = 'bsi'">
+											<xsl:if test="$document_type != 'PAS'">
+												<xsl:attribute name="font-size">9pt</xsl:attribute>
+											</xsl:if>
 										</xsl:if>
 									</xsl:when>
 								</xsl:choose>
