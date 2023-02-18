@@ -11472,6 +11472,12 @@
 				<xsl:if test="$namespace = 'bsi'">
 					<xsl:if test="count(ancestor::*[local-name() = 'figure']) &gt; 1">
 						<xsl:attribute name="margin-left">0mm</xsl:attribute>
+						<xsl:if test="$document_type != 'PAS'">
+							<!-- for sub-figures -->
+							<xsl:attribute name="font-style">normal</xsl:attribute>
+							<xsl:attribute name="font-size">9pt</xsl:attribute>
+							<xsl:attribute name="space-before">2pt</xsl:attribute>
+						</xsl:if>
 					</xsl:if>
 					<xsl:if test="$document_type = 'PAS'">
 						<xsl:attribute name="margin-left">0mm</xsl:attribute>
