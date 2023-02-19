@@ -7600,7 +7600,13 @@
 					</xsl:when> <!-- END: only one component -->
 					<xsl:when test="$parent = 'formula'"> <!-- a few components -->
 						<fo:block margin-bottom="12pt" text-align="left">
-							<xsl:if test="$namespace = 'bsi' or $namespace = 'iso' or $namespace = 'jcgm'">
+							<xsl:if test="$namespace = 'bsi'">
+								<xsl:attribute name="margin-bottom">3pt</xsl:attribute>
+								<xsl:if test="$document_type != 'PAS'">
+									<xsl:attribute name="font-size">10pt</xsl:attribute>
+								</xsl:if>
+							</xsl:if>
+							<xsl:if test="$namespace = 'iso' or $namespace = 'jcgm'">
 								<xsl:attribute name="margin-bottom">6pt</xsl:attribute>
 							</xsl:if>
 							<xsl:if test="$namespace = 'iec'">
@@ -7618,7 +7624,7 @@
 									<xsl:with-param name="key">where</xsl:with-param>
 								</xsl:call-template>
 							</xsl:variable>
-							<xsl:value-of select="$title-where"/><xsl:if test="$namespace = 'itu'">:</xsl:if>
+							<xsl:value-of select="$title-where"/><xsl:if test="$namespace = 'bsi' or $namespace = 'itu'">:</xsl:if>
 						</fo:block>
 					</xsl:when>  <!-- END: a few components -->
 					<xsl:when test="$parent = 'figure' and  (not(../@class) or ../@class !='pseudocode')"> <!-- definition list in a figure -->
@@ -7652,13 +7658,17 @@
 				<!-- a few components -->
 				<xsl:if test="$onlyOneComponent = 'false'">
 					<fo:block>
-						<xsl:if test="$namespace = 'bsi' or $namespace = 'iso' or $namespace = 'jcgm'">
+						<xsl:if test="$namespace = 'iso' or $namespace = 'jcgm'">
 							<xsl:if test="$parent = 'formula'">
 								<xsl:attribute name="margin-left">4mm</xsl:attribute>
 							</xsl:if>
 							<xsl:attribute name="margin-top">12pt</xsl:attribute>
 						</xsl:if>
 						<xsl:if test="$namespace = 'bsi'">
+							<xsl:if test="$parent = 'formula'">
+								<xsl:attribute name="margin-left">4mm</xsl:attribute>
+							</xsl:if>
+							<xsl:attribute name="margin-top">12pt</xsl:attribute>
 							<xsl:if test="$document_type != 'PAS'">
 								<xsl:attribute name="line-height">1.4</xsl:attribute>
 								<xsl:if test="@key = 'true'">
@@ -7685,6 +7695,11 @@
 						</xsl:if>
 						
 						<fo:block>
+							<xsl:if test="$namespace = 'bsi'">
+								<xsl:if test="$document_type != 'PAS' and $parent = 'formula'">
+									<xsl:attribute name="margin-left">-1mm</xsl:attribute>
+								</xsl:if>
+							</xsl:if>
 							<xsl:if test="$namespace = 'nist-cswp'  or $namespace = 'nist-sp'">
 								<xsl:if test="not(.//*[local-name()='dt']//*[local-name()='stem'])">
 									<xsl:attribute name="margin-left">-2.5mm</xsl:attribute>
