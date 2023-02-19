@@ -34,6 +34,7 @@
 		</xsl:if>
 	</xsl:variable>
 	<xsl:variable name="docidentifierISO" select="normalize-space($docidentifierISO_)"/>
+	<xsl:variable name="docidentifierISO_with_break" select="java:replaceAll(java:java.lang.String.new($docidentifierISO),'^([^\d]+) (\d)', concat('$1', $linebreak, '$2'))"/> <!-- add line break before 1st sequence 'space digit' -->
 
 	<xsl:variable name="all_rights_reserved">
 		<xsl:call-template name="getLocalizedString">
@@ -908,7 +909,7 @@
 																<xsl:if test="$font-size != ''">
 																	<xsl:attribute name="font-size"><xsl:value-of select="$font-size"/></xsl:attribute>
 																</xsl:if>
-																<xsl:value-of select="$docidentifierISO"/>
+																<xsl:value-of select="$docidentifierISO_with_break"/>
 															</fo:block>
 														</fo:table-cell>
 													</fo:table-row>
@@ -1162,7 +1163,7 @@
 												</fo:table-cell>
 												<fo:table-cell>
 													<fo:block text-align="right" font-weight="bold" margin-bottom="13mm">
-														<xsl:value-of select="$docidentifierISO"/>
+														<xsl:value-of select="$docidentifierISO_with_break"/>
 													</fo:block>
 												</fo:table-cell>
 											</fo:table-row>
