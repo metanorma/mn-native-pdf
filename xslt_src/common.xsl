@@ -4126,6 +4126,11 @@
 		<xsl:if test="$namespace = 'bipm'">
 			<xsl:attribute name="provisional-distance-between-starts">13mm</xsl:attribute>
 		</xsl:if>
+		<xsl:if test="$namespace = 'bsi'">
+			<xsl:attribute name="provisional-distance-between-starts">10mm</xsl:attribute>
+			<xsl:attribute name="margin-bottom">6pt</xsl:attribute>
+			<xsl:attribute name="line-height">1.4</xsl:attribute>
+		</xsl:if>
 		<xsl:if test="$namespace = 'csd'">
 			
 		</xsl:if>
