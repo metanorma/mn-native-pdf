@@ -7238,48 +7238,61 @@
 		<xsl:for-each select="xalan:nodeset($references)//fn">
 			<xsl:variable name="reference" select="@reference"/>
 			<xsl:if test="not(preceding-sibling::*[@reference = $reference])"> <!-- only unique reference puts in note-->
-				<fo:block xsl:use-attribute-sets="table-fn-style">
+			
+				<xsl:choose>
+					<xsl:when test="$namespace = 'bsi'">
+						<fo:list-block xsl:use-attribute-sets="table-fn-style" provisional-distance-between-starts="4mm">
+							<xsl:if test="$document_type = 'PAS'">
+								<xsl:attribute name="font-size">inherit</xsl:attribute>
+							</xsl:if>
+							<fo:list-item>
+								<fo:list-item-label end-indent="label-end()">
+									<fo:block>
+										<xsl:attribute name="font-size">5.5pt</xsl:attribute>
+										<xsl:if test="$document_type = 'PAS'">
+											<xsl:attribute name="padding-right">0.5mm</xsl:attribute>
+											<xsl:attribute name="font-size">4.5pt</xsl:attribute>
+										</xsl:if>
+										<xsl:value-of select="@reference"/>
+										<xsl:text>)</xsl:text>								
+									</fo:block>
+								</fo:list-item-label>
+								<fo:list-item-body start-indent="body-start()" xsl:use-attribute-sets="table-fn-body-style">>
+									<fo:block>
+										<xsl:copy-of select="./node()"/>
+									</fo:block>
+								</fo:list-item-body>
+							</fo:list-item>
+						</fo:list-block>
+					</xsl:when>
+					<xsl:otherwise>
+						<fo:block xsl:use-attribute-sets="table-fn-style">
 				
-					<xsl:if test="$namespace = 'bsi'">
-						<xsl:if test="$document_type = 'PAS'">
-							<xsl:attribute name="font-size">inherit</xsl:attribute>
-						</xsl:if>
-					</xsl:if>
-					
-					<fo:inline id="{@id}" xsl:use-attribute-sets="table-fn-number-style">
-						
-						<xsl:if test="$namespace = 'bsi'">
-							<xsl:if test="$document_type = 'PAS'">
-								<xsl:attribute name="padding-right">0.5mm</xsl:attribute>
-								<xsl:attribute name="font-size">4.5pt</xsl:attribute>
-							</xsl:if>
-						</xsl:if>
-						
-						<xsl:if test="$namespace = 'bipm'">
-							<fo:inline font-style="normal">(</fo:inline>
-						</xsl:if>
-						
-						<xsl:value-of select="@reference"/>
-						
-						<xsl:if test="$namespace = 'bipm'">
-							<fo:inline font-style="normal">)</fo:inline>
-						</xsl:if>
-						
-						<xsl:if test="$namespace = 'bsi'">
-							<xsl:if test="$document_type = 'PAS'">
-								<xsl:text>)</xsl:text>
-							</xsl:if>
-						</xsl:if>
-						
-						<xsl:if test="$namespace = 'itu'">
-							<xsl:text>)</xsl:text>
-						</xsl:if>
-						
-					</fo:inline>
-					<fo:inline xsl:use-attribute-sets="table-fn-body-style">
-						<xsl:copy-of select="./node()"/>
-					</fo:inline>
-				</fo:block>
+							<fo:inline id="{@id}" xsl:use-attribute-sets="table-fn-number-style">
+								
+								<xsl:if test="$namespace = 'bipm'">
+									<fo:inline font-style="normal">(</fo:inline>
+								</xsl:if>
+								
+								<xsl:value-of select="@reference"/>
+								
+								<xsl:if test="$namespace = 'bipm'">
+									<fo:inline font-style="normal">)</fo:inline>
+								</xsl:if>
+								
+								<xsl:if test="$namespace = 'itu'">
+									<xsl:text>)</xsl:text>
+								</xsl:if>
+							</fo:inline>
+							<fo:inline xsl:use-attribute-sets="table-fn-body-style">
+								<xsl:copy-of select="./node()"/>
+							</fo:inline>
+							
+						</fo:block>
+					</xsl:otherwise>
+				</xsl:choose>
+			
+				
 			</xsl:if>
 		</xsl:for-each>
 	</xsl:template>
@@ -7450,6 +7463,10 @@
 				</xsl:if>
 			</xsl:if>
 			
+			<xsl:if test="$namespace = 'bsi'">
+				<xsl:if test="preceding-sibling::*[1][local-name() = 'fn']">,&#xa0;</xsl:if>
+			</xsl:if>
+			
 			<fo:basic-link internal-destination="{@reference}_{ancestor::*[@id][1]/@id}" fox:alt-text="{@reference}"> <!-- @reference   | ancestor::*[local-name()='clause'][1]/@id-->
 				<xsl:if test="$namespace = 'ogc' or $namespace = 'ogc-white-paper'">
 					<xsl:attribute name="internal-destination">
@@ -7465,9 +7482,10 @@
 					<fo:inline font-style="normal">)</fo:inline>
 				</xsl:if>
 				<xsl:if test="$namespace = 'bsi'">
-					<xsl:if test="$document_type = 'PAS'">
+					<!-- <xsl:if test="$document_type = 'PAS'"> -->
 						<xsl:text>)</xsl:text>
-					</xsl:if>
+					<!-- </xsl:if> -->
+					
 				</xsl:if>
 			</fo:basic-link>
 		</fo:inline>
