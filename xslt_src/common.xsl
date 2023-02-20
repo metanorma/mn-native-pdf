@@ -7241,7 +7241,7 @@
 			
 				<xsl:choose>
 					<xsl:when test="$namespace = 'bsi'">
-						<fo:list-block xsl:use-attribute-sets="table-fn-style" provisional-distance-between-starts="4mm">
+						<fo:list-block id="{@id}" xsl:use-attribute-sets="table-fn-style" provisional-distance-between-starts="4mm">
 							<xsl:if test="$document_type = 'PAS'">
 								<xsl:attribute name="font-size">inherit</xsl:attribute>
 							</xsl:if>
