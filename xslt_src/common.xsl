@@ -10499,11 +10499,14 @@
 				<xsl:apply-templates select="*[local-name() = 'name']" />
 			</xsl:if>
 			
+			<!-- Example: Dimensions in millimeters -->
+			<xsl:apply-templates select="*[local-name() = 'note'][@type = 'units']" />
+			
 			<fo:block xsl:use-attribute-sets="figure-style">
-				<xsl:apply-templates select="node()[not(local-name() = 'name')]" />
+				<xsl:apply-templates select="node()[not(local-name() = 'name') and not(local-name() = 'note' and @type = 'units')]" />
 			</fo:block>
 			<xsl:call-template name="fn_display_figure"/>
-			<xsl:for-each select="*[local-name() = 'note']">
+			<xsl:for-each select="*[local-name() = 'note'][not(@type = 'units')]">
 				<xsl:call-template name="note"/>
 			</xsl:for-each>
 			
@@ -11590,6 +11593,14 @@
 	
 	<xsl:template match="*[local-name() = 'figure']/*[local-name() = 'fn']" priority="2"/>
 	<xsl:template match="*[local-name() = 'figure']/*[local-name() = 'note']"/>
+	
+	
+	<xsl:template match="*[local-name() = 'figure']/*[local-name() = 'note'][@type = 'units'] |
+								*[local-name() = 'image']/*[local-name() = 'note'][@type = 'units']" priority="2">
+		<fo:block text-align="right" keep-with-next="always">
+			<xsl:apply-templates />
+		</fo:block>
+	</xsl:template>
 	
 	<!-- ====== -->
 	<!-- ====== -->
