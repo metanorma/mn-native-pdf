@@ -2319,6 +2319,7 @@
 			<xsl:attribute name="font-style">italic</xsl:attribute>
 			<xsl:attribute name="space-before">5pt</xsl:attribute>
 			<xsl:attribute name="space-after">5pt</xsl:attribute>
+			<xsl:attribute name="margin-right">10mm</xsl:attribute>
 			<xsl:attribute name="line-height">1.4</xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'csa'">
@@ -10114,12 +10115,16 @@
 					<xsl:attribute name="font-size">inherit</xsl:attribute>
 					<xsl:attribute name="color"><xsl:value-of select="$color_PAS"/></xsl:attribute>
 					<xsl:attribute name="line-height">1.3</xsl:attribute>
+					<xsl:attribute name="margin-right">0mm</xsl:attribute>
 					<xsl:if test="following-sibling::*[1][local-name() = 'clause' or local-name() = 'term']">
 						<xsl:attribute name="space-after">12pt</xsl:attribute>
 						<xsl:if test="following-sibling::*[2][local-name() = 'title']/@depth = 2">
 							<xsl:attribute name="space-after">24pt</xsl:attribute>
 						</xsl:if>
 					</xsl:if>
+				</xsl:if>
+				<xsl:if test="$document_type != 'PAS'">
+					<xsl:attribute name="text-align">justify</xsl:attribute>
 				</xsl:if>
 			</xsl:if>
 			
@@ -10148,7 +10153,7 @@
 				</xsl:if>
 			</xsl:if>
 			
-			<fo:block-container margin-left="0mm">
+			<fo:block-container margin-left="0mm" margin-right="0mm">
 			
 				<xsl:if test="$namespace = 'csa'">
 					<xsl:if test="ancestor::csa:ul or ancestor::csa:ol and not(ancestor::csa:note[1]/following-sibling::*)">
@@ -10220,6 +10225,9 @@
 									<xsl:if test="$document_type = 'PAS'">
 										<xsl:attribute name="padding-right">0.5mm</xsl:attribute>
 										<xsl:attribute name="font-weight">bold</xsl:attribute>
+									</xsl:if>
+									<xsl:if test="@type = 'assessed-capability'">
+										<xsl:attribute name="padding-right">1mm</xsl:attribute>
 									</xsl:if>
 								</xsl:if>
 								
