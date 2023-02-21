@@ -14923,7 +14923,9 @@
 					</xsl:when>
 					<xsl:otherwise>	<!-- BSI -->
 						<fo:block-container id="{@id}" xsl:use-attribute-sets="admonition-style">
-							<xsl:attribute name="border">0.25pt solid black</xsl:attribute>
+							<xsl:if test="@type = 'caution' or @type = 'warning'">
+								<xsl:attribute name="border">0.25pt solid black</xsl:attribute>
+							</xsl:if>
 							<xsl:attribute name="margin-right">5mm</xsl:attribute>
 							<fo:block-container xsl:use-attribute-sets="admonition-container-style">
 								<fo:block></fo:block>
