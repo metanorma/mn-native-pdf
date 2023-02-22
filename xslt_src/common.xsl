@@ -5196,6 +5196,9 @@
 						<xsl:attribute name="space-before">12pt</xsl:attribute>
 						<xsl:attribute name="space-after">12pt</xsl:attribute>
 					</xsl:if>
+					<xsl:if test="$document_type != 'PAS' and not(following-sibling::*[2][@depth = '1']) and not (ancestor::*[local-name()='preface'] and ancestor::*[local-name()='clause'][@type = 'corrigenda'])">
+						<xsl:attribute name="margin-bottom">24pt</xsl:attribute>
+					</xsl:if>
 				</xsl:if>
 			
 				<xsl:if test="$namespace = 'iec'">
@@ -5262,6 +5265,7 @@
 					<xsl:choose>
 						<xsl:when test="$namespace = 'bipm' or $namespace = 'ogc' or $namespace = 'ogc-white-paper' or $namespace = 'unece' or $namespace = 'unece-rec'">
 							<xsl:choose>
+								<xsl:when test="@width = 'full-page-width' or @width = 'text-width'">100%</xsl:when>
 								<xsl:when test="@width"><xsl:value-of select="@width"/></xsl:when>
 								<xsl:otherwise><xsl:value-of select="$table_width_default"/></xsl:otherwise>
 							</xsl:choose>
@@ -5269,6 +5273,7 @@
 						<xsl:when test="$namespace = 'ieee'">
 							<xsl:choose>
 								<xsl:when test="ancestor::*[local-name() = 'feedback-statement']">50%</xsl:when>
+								<xsl:when test="@width = 'full-page-width' or @width = 'text-width'">100%</xsl:when>
 								<xsl:when test="@width"><xsl:value-of select="@width"/></xsl:when>
 								<xsl:otherwise><xsl:value-of select="$table_width_default"/></xsl:otherwise>
 							</xsl:choose>
@@ -5304,6 +5309,9 @@
 						</xsl:if>
 						
 						<xsl:if test="$namespace = 'bsi'">
+							<xsl:if test="$document_type != 'PAS'">
+								<xsl:attribute name="border-bottom">2.5pt solid black</xsl:attribute>
+							</xsl:if>
 							<xsl:if test=".//*[local-name() = 'tr'][1]/*[local-name() = 'td'][normalize-space() = 'Key'] or
 							normalize-space(substring-after(*[local-name() = 'name'], '—')) = 'Key' or 
 							normalize-space(*[local-name() = 'name']) = 'Key'
@@ -5316,6 +5324,7 @@
 								</xsl:if>
 								<xsl:if test="$document_type != 'PAS'">
 									<xsl:attribute name="border">none</xsl:attribute>
+									<xsl:attribute name="border-top">none</xsl:attribute>
 									<xsl:attribute name="border-bottom">none</xsl:attribute>
 								</xsl:if>
 							</xsl:if>
@@ -5485,7 +5494,7 @@
 		<xsl:variable name="isDeleted" select="@deleted"/>
 		
 		<xsl:choose>
-			<xsl:when test="@width">
+			<xsl:when test="@width and @width != 'full-page-width' and @width != 'text-width'">
 	
 				<!-- centered table when table name is centered (see table-name-style) -->
 				<xsl:if test="$namespace = 'bsi' or $namespace = 'csa' or $namespace = 'csd' or $namespace = 'gb' or 
@@ -5638,6 +5647,9 @@
 									<xsl:attribute name="margin-top">0pt</xsl:attribute>
 									<xsl:attribute name="margin-bottom">8pt</xsl:attribute>
 								</xsl:if>
+							</xsl:if>
+							<xsl:if test="../@width = 'full-page-width'">
+								<xsl:attribute name="margin-left">0mm</xsl:attribute>
 							</xsl:if>
 						</xsl:if>
 						
@@ -6058,7 +6070,7 @@
 					<xsl:with-param name="cols-count" select="$cols-count"/>
 				</xsl:call-template>				
 			</xsl:if>
-			<xsl:if test="$namespace = 'bsi'">				
+			<xsl:if test="$namespace = 'bsi'">
 				<xsl:if test="ancestor::*[local-name()='table']/*[local-name()='name']">
 					<xsl:call-template name="table-header-title">
 						<xsl:with-param name="cols-count" select="$cols-count"/>
@@ -6238,6 +6250,11 @@
 							<fo:table-cell xsl:use-attribute-sets="table-footer-cell-style" number-columns-spanned="{$cols-count}">
 								
 								<xsl:if test="$namespace = 'bsi'">
+									<xsl:if test="$document_type != 'PAS'">
+										<xsl:attribute name="border">none</xsl:attribute>
+										<xsl:attribute name="border-top"><xsl:value-of select="$table-border"/></xsl:attribute>
+										<xsl:attribute name="border-bottom"><xsl:value-of select="$table-border"/></xsl:attribute>
+									</xsl:if>
 									<xsl:if test="$document_type = 'PAS'">
 										<xsl:attribute name="border">1pt solid <xsl:value-of select="$color_PAS"/></xsl:attribute>
 									</xsl:if>
@@ -6495,6 +6512,9 @@
 		<fo:table-row xsl:use-attribute-sets="table-header-row-style">
 		
 			<xsl:if test="$namespace = 'bsi'">
+				<xsl:if test="position() = 1 and $document_type != 'PAS'">
+					<xsl:attribute name="border-top">2.5pt solid black</xsl:attribute>
+				</xsl:if>
 				<xsl:if test="position() = last()">
 					<xsl:attribute name="border-bottom">none</xsl:attribute>
 				</xsl:if>
@@ -6574,6 +6594,13 @@
 		
 			<xsl:if test="count(*) = count(*[local-name() = 'th'])"> <!-- row contains 'th' only -->
 				<xsl:attribute name="keep-with-next">always</xsl:attribute>
+			</xsl:if>
+		
+			<xsl:if test="$namespace = 'bsi'">
+				<xsl:if test="position() = 1 and $document_type != 'PAS' and not(ancestor::*[local-name() = 'table'][1]/*[local-name() = 'thead'])">
+					<!-- set border for 1st row if thead is missing -->
+					<xsl:attribute name="border-top">2.5pt solid black</xsl:attribute>
+				</xsl:if>
 			</xsl:if>
 		
 			<xsl:if test="$namespace = 'ieee'">
@@ -6669,12 +6696,20 @@
 			</xsl:if>
 			
 			<xsl:if test="$namespace = 'bsi'">
+				<xsl:if test="$document_type != 'PAS'">
+					<xsl:attribute name="border">none</xsl:attribute>
+					<xsl:attribute name="border-top"><xsl:value-of select="$table-border"/></xsl:attribute>
+					<xsl:attribute name="border-bottom"><xsl:value-of select="$table-border"/></xsl:attribute>
+				</xsl:if>
 				<xsl:if test="ancestor::*[local-name() = 'preface']">
 					<xsl:attribute name="font-weight">normal</xsl:attribute>
 					<xsl:if test="$document_type != 'PAS'">
 						<xsl:attribute name="border">solid black 0pt</xsl:attribute>
 					</xsl:if>
 					<xsl:if test="ancestor::*[local-name()='clause'][@type = 'corrigenda']">
+						<xsl:if test="$document_type != 'PAS'">
+							<xsl:attribute name="border-top">none</xsl:attribute>
+						</xsl:if>
 						<xsl:attribute name="border-bottom">solid black 1pt</xsl:attribute>
 					</xsl:if>
 				</xsl:if>
@@ -6803,6 +6838,12 @@
 			</xsl:if>
 			
 			<xsl:if test="$namespace = 'bsi'">
+				<xsl:if test="$document_type != 'PAS'">
+					<xsl:attribute name="border">none</xsl:attribute>
+					<xsl:attribute name="border-top"><xsl:value-of select="$table-border"/></xsl:attribute>
+					<xsl:attribute name="border-bottom"><xsl:value-of select="$table-border"/></xsl:attribute>
+				</xsl:if>
+
 				<xsl:if test="not(ancestor::*[local-name()='preface']) and ancestor::*[local-name() = 'table']/*[local-name() = 'thead'] and not(ancestor::*[local-name() = 'tr']/preceding-sibling::*[local-name() = 'tr'])">
 					<!-- first row in table body, and if exists header -->
 					<xsl:attribute name="border-top">0pt solid black</xsl:attribute>
@@ -6833,9 +6874,17 @@
 				<xsl:if test="ancestor::*[local-name()='preface'] and ancestor::*[local-name()='clause'][@type = 'corrigenda']">
 					<xsl:if test="normalize-space(parent::*[local-name() = 'tr']) = ''">
 						<xsl:attribute name="border">none</xsl:attribute>
+						<xsl:if test="$document_type != 'PAS'">
+							<xsl:attribute name="border-top">none</xsl:attribute>
+							<xsl:attribute name="border-bottom">none</xsl:attribute>
+						</xsl:if>
 					</xsl:if>
 					<xsl:if test="$document_type != 'PAS'">
 						<xsl:attribute name="border">none</xsl:attribute>
+						<xsl:if test="$document_type != 'PAS'">
+							<xsl:attribute name="border-top">none</xsl:attribute>
+							<xsl:attribute name="border-bottom">none</xsl:attribute>
+						</xsl:if>
 						<xsl:attribute name="padding-top">1mm</xsl:attribute>
 					</xsl:if>
 				</xsl:if>
@@ -11585,6 +11634,9 @@
 						<xsl:attribute name="margin-left">0mm</xsl:attribute>
 						<xsl:attribute name="font-size">12pt</xsl:attribute>
 						<xsl:attribute name="font-style">normal</xsl:attribute>
+					</xsl:if>
+					<xsl:if test="../@width = 'full-page-width'">
+						<xsl:attribute name="margin-left">0mm</xsl:attribute>
 					</xsl:if>
 				</xsl:if>
 				
