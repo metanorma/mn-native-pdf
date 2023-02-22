@@ -5262,6 +5262,7 @@
 					<xsl:choose>
 						<xsl:when test="$namespace = 'bipm' or $namespace = 'ogc' or $namespace = 'ogc-white-paper' or $namespace = 'unece' or $namespace = 'unece-rec'">
 							<xsl:choose>
+								<xsl:when test="@width = 'full-page-width' or @width = 'text-width'">100%</xsl:when>
 								<xsl:when test="@width"><xsl:value-of select="@width"/></xsl:when>
 								<xsl:otherwise><xsl:value-of select="$table_width_default"/></xsl:otherwise>
 							</xsl:choose>
@@ -5269,6 +5270,7 @@
 						<xsl:when test="$namespace = 'ieee'">
 							<xsl:choose>
 								<xsl:when test="ancestor::*[local-name() = 'feedback-statement']">50%</xsl:when>
+								<xsl:when test="@width = 'full-page-width' or @width = 'text-width'">100%</xsl:when>
 								<xsl:when test="@width"><xsl:value-of select="@width"/></xsl:when>
 								<xsl:otherwise><xsl:value-of select="$table_width_default"/></xsl:otherwise>
 							</xsl:choose>
@@ -5485,7 +5487,7 @@
 		<xsl:variable name="isDeleted" select="@deleted"/>
 		
 		<xsl:choose>
-			<xsl:when test="@width">
+			<xsl:when test="@width and @width != 'full-page-width' and @width != 'text-width'">
 	
 				<!-- centered table when table name is centered (see table-name-style) -->
 				<xsl:if test="$namespace = 'bsi' or $namespace = 'csa' or $namespace = 'csd' or $namespace = 'gb' or 
@@ -5638,6 +5640,9 @@
 									<xsl:attribute name="margin-top">0pt</xsl:attribute>
 									<xsl:attribute name="margin-bottom">8pt</xsl:attribute>
 								</xsl:if>
+							</xsl:if>
+							<xsl:if test="../@width = 'full-page-width'">
+								<xsl:attribute name="margin-left">0mm</xsl:attribute>
 							</xsl:if>
 						</xsl:if>
 						
@@ -11585,6 +11590,9 @@
 						<xsl:attribute name="margin-left">0mm</xsl:attribute>
 						<xsl:attribute name="font-size">12pt</xsl:attribute>
 						<xsl:attribute name="font-style">normal</xsl:attribute>
+					</xsl:if>
+					<xsl:if test="../@width = 'full-page-width'">
+						<xsl:attribute name="margin-left">0mm</xsl:attribute>
 					</xsl:if>
 				</xsl:if>
 				
