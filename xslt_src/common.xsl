@@ -5654,6 +5654,13 @@
 							<xsl:if test="../@width = 'full-page-width'">
 								<xsl:attribute name="margin-left">0mm</xsl:attribute>
 							</xsl:if>
+							<xsl:if test="../@unnumbered = 'true' and ancestor::*[@type = 'corrigenda']">
+								<xsl:attribute name="margin-left">0mm</xsl:attribute>
+								<xsl:attribute name="font-size">9pt</xsl:attribute>
+								<xsl:attribute name="font-weight">bold</xsl:attribute>
+								<xsl:attribute name="font-style">normal</xsl:attribute>
+								<xsl:attribute name="margin-bottom">4pt</xsl:attribute>
+							</xsl:if>
 						</xsl:if>
 						
 						<xsl:if test="$namespace = 'iso'">
