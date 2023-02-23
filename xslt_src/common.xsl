@@ -11134,6 +11134,8 @@
 		<xsl:value-of select="."/>
 	</xsl:template>
 	
+	<xsl:template match="*[local-name() = 'add'][starts-with(., $ace_tag)]/text()" mode="bookmarks" priority="3"/>
+	
 	<xsl:template match="node()" mode="contents">
 		<xsl:apply-templates mode="contents"/>
 	</xsl:template>
@@ -11606,7 +11608,15 @@
 							<xsl:value-of select="@section"/> 
 							<xsl:text> </xsl:text>
 						</xsl:if>
-						<xsl:value-of select="normalize-space(title)"/>
+						<xsl:variable name="title">
+							<xsl:for-each select="title/node()">
+								<xsl:choose>
+									<xsl:when test="local-name() = 'add' and starts-with(., $ace_tag)"><!-- skip --></xsl:when>
+									<xsl:otherwise><xsl:value-of select="."/></xsl:otherwise>
+								</xsl:choose>
+							</xsl:for-each>
+						</xsl:variable>
+						<xsl:value-of select="normalize-space($title)"/>
 					</fo:bookmark-title>
 					<xsl:apply-templates mode="bookmark"/>
 				</fo:bookmark>
