@@ -11823,6 +11823,10 @@
 		</xsl:for-each>
 	</xsl:template>
 
+	<xsl:template match="*[local-name() = 'add'][starts-with(., $ace_tag)]/text()" mode="contents_item" priority="2">
+		<xsl:value-of select="."/>
+	</xsl:template>
+
 	<!-- Note: to enable the addition of character span markup with semantic styling for DIS Word output -->
 	<xsl:template match="*[local-name() = 'span']" mode="contents_item">
 		<xsl:apply-templates mode="contents_item"/>
