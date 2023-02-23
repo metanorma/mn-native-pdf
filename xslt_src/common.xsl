@@ -5177,7 +5177,10 @@
 					<xsl:if test="$document_type != 'PAS' and *[local-name() = 'name']">
 						<xsl:attribute name="margin-top">-14pt</xsl:attribute>
 					</xsl:if>
-					<xsl:if test="ancestor::*[local-name() = 'preface'] and not(*[local-name() = 'tbody'])">
+					<xsl:if test="not(*[local-name()='tbody']) and *[local-name()='thead']">
+						<xsl:attribute name="margin-top">4pt</xsl:attribute>
+					</xsl:if>
+					<xsl:if test="(ancestor::*[local-name() = 'preface'] and not(*[local-name() = 'tbody']))">
 						<xsl:attribute name="margin-top">0pt</xsl:attribute>
 						<xsl:attribute name="margin-bottom">0pt</xsl:attribute>
 					</xsl:if>
