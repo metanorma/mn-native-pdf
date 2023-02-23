@@ -373,6 +373,7 @@
 								<xsl:apply-templates select="/*/*[local-name()='sections']/*[local-name()='definitions']" />
 								<xsl:apply-templates select="/*/*[local-name()='sections']/*[local-name() != 'terms' and local-name() != 'definitions' and not(@type='scope')]" />
 								
+								<xsl:if test="$table_if = 'true'"><fo:block/></xsl:if>
 							</fo:block-container>
 						</fo:flow>
 					</fo:page-sequence>
@@ -389,6 +390,8 @@
 						<fo:flow flow-name="xsl-region-body">
 							<fo:block-container>								
 								<xsl:apply-templates select="/*/*[local-name()='annex']" />
+								
+								<xsl:if test="$table_if = 'true'"><fo:block/></xsl:if>
 							</fo:block-container>
 						</fo:flow>
 					</fo:page-sequence>
@@ -406,6 +409,8 @@
 							<fo:block-container>								
 								<!-- Bibliography -->
 								<xsl:apply-templates select="/*/*[local-name()='bibliography']/*[local-name()='references'][not(@normative='true')]" />
+								
+								<xsl:if test="$table_if = 'true'"><fo:block/></xsl:if>
 							</fo:block-container>
 						</fo:flow>
 					</fo:page-sequence>
