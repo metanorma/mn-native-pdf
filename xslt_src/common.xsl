@@ -10194,6 +10194,15 @@
 							<xsl:attribute name="space-after">24pt</xsl:attribute>
 						</xsl:if>
 					</xsl:if>
+					<!-- note inside p or ul or ul : p/note ul/note ol/note -->
+					<xsl:if test="parent::*[local-name() = 'p' or local-name() = 'ul' or local-name() = 'ol']">
+						<xsl:if test="../following-sibling::*[1][local-name() = 'clause' or local-name() = 'term']">
+							<xsl:attribute name="margin-bottom">12pt</xsl:attribute>
+							<xsl:if test="../following-sibling::*[2][local-name() = 'title']/@depth = 2">
+								<xsl:attribute name="margin-bottom">24pt</xsl:attribute>
+							</xsl:if>
+						</xsl:if>
+					</xsl:if>
 				</xsl:if>
 				<xsl:if test="$document_type != 'PAS'">
 					<xsl:attribute name="text-align">justify</xsl:attribute>
