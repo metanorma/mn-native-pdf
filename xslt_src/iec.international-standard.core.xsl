@@ -1087,75 +1087,77 @@
 						Electromagnetic compatibility (EMC) – 
 						Part 4-5: Testing and measurement techniques – Surge immunity test
 					-->
-					<xsl:variable name="title-intro" select="//iec:iec-standard/iec:bibdata/iec:title[@language = $lang and @type = 'title-intro']"/>
-					<xsl:value-of select="$title-intro"/>
-					<xsl:variable name="title-main" select="//iec:iec-standard/iec:bibdata/iec:title[@language = $lang and @type = 'title-main']"/>
-					<xsl:if test="$title-main != ''">
-						<!-- <xsl:text> — </xsl:text> -->
-						<xsl:value-of select="concat(' ',$en_dash ,' ')"/>
-						<xsl:value-of select="$title-main"/>
-					</xsl:if>
-					<xsl:variable name="title-part" select="//iec:iec-standard/iec:bibdata/iec:title[@language = $lang and @type = 'title-part']"/>
-					<xsl:if test="$title-part != ''">
-						<!-- <xsl:text> — </xsl:text> -->
-						<xsl:value-of select="concat(' ',$en_dash ,' ')"/>
-						<xsl:value-of select="$linebreak"/>
-						<xsl:if test="$part != ''">
-							<xsl:variable name="localized_part">
-								<xsl:call-template name="getLocalizedString">
-									<xsl:with-param name="key">locality.part</xsl:with-param>
-									<xsl:with-param name="lang"><xsl:value-of select="$lang"/></xsl:with-param>
-								</xsl:call-template>
-							</xsl:variable>
-							
-							<xsl:value-of select="concat($localized_part ,' ',$part, ': ')"/>
-							
+					<xsl:variable name="titles_first_">
+						<title-intro><xsl:value-of select="//iec:iec-standard/iec:bibdata/iec:title[@language = $lang and @type = 'title-intro']"/></title-intro>
+						<title-main><xsl:value-of select="//iec:iec-standard/iec:bibdata/iec:title[@language = $lang and @type = 'title-main']"/></title-main>
+						<title-part><xsl:value-of select="//iec:iec-standard/iec:bibdata/iec:title[@language = $lang and @type = 'title-part']"/></title-part>
+					</xsl:variable>
+					<xsl:variable name="titles_first" select="xalan:nodeset($titles_first_)"/>
+					
+					<xsl:for-each select="$titles_first/*[normalize-space() != '']">
+						<xsl:if test="position() != 1">
+							<xsl:value-of select="concat(' ',$en_dash ,' ')"/>
 						</xsl:if>
-						<xsl:value-of select="$title-part"/>
-					</xsl:if>
+						<xsl:if test="self::title-part">
+							<xsl:value-of select="$linebreak"/>
+							<xsl:if test="$part != ''">
+								<xsl:variable name="localized_part">
+									<xsl:call-template name="getLocalizedString">
+										<xsl:with-param name="key">locality.part</xsl:with-param>
+										<xsl:with-param name="lang"><xsl:value-of select="$lang"/></xsl:with-param>
+									</xsl:call-template>
+								</xsl:variable>
+								<xsl:value-of select="concat($localized_part ,' ',$part, ': ')"/>
+							</xsl:if>
+						</xsl:if>
+						<xsl:value-of select="."/>
+					</xsl:for-each>
+
 				</fo:block>
 				<fo:block font-size="12pt" font-weight="bold" role="H1">
 				<!-- Example: Compatibilité électromagnétique (CEM) –
 					Partie 4-5: Techniques d'essai et de mesure – Essai d'immunité aux ondes de
 					choc -->
-					<xsl:variable name="title-intro-second" select="//iec:iec-standard/iec:bibdata/iec:title[@language = $lang_second and @type = 'title-intro']"/>
-					<xsl:value-of select="$title-intro-second"/>
-					<xsl:variable name="title-main-second" select="//iec:iec-standard/iec:bibdata/iec:title[@language = $lang_second and @type = 'title-main']"/>
-					<xsl:if test="$title-main-second != ''">
-						<!-- <xsl:text> — </xsl:text> -->
-						<xsl:value-of select="concat(' ',$en_dash ,' ')"/>
-						<xsl:value-of select="$title-main-second"/>
-					</xsl:if>
-					<xsl:variable name="part-second" select="//iec:iec-standard/iec:bibdata/iec:title[@language = $lang_second and @type = 'title-part']"/>
-					<xsl:if test="$part-second != ''">
-						<!-- <xsl:text> — </xsl:text> -->
-						<xsl:value-of select="concat(' ',$en_dash ,' ')"/>
-						<xsl:value-of select="$linebreak"/>
-						<xsl:if test="$part != ''">
-							
-							<xsl:variable name="locality_part_lang_second">
-								<xsl:call-template name="getLocalizedString">
-									<xsl:with-param name="key">locality.part</xsl:with-param>
-									<xsl:with-param name="lang"><xsl:value-of select="$lang_second"/></xsl:with-param>
-									<xsl:with-param name="returnEmptyIfNotFound">true</xsl:with-param>
-								</xsl:call-template>
-							</xsl:variable>
-							
-							<xsl:choose>
-								<xsl:when test="normalize-space($locality_part_lang_second) != ''">
-									<xsl:variable name="localized_part">
-										<xsl:value-of select="$locality_part_lang_second"/>
-									</xsl:variable>
-									<xsl:value-of select="concat($localized_part ,' ',$part, ': ')"/>
-								</xsl:when>
-								<xsl:otherwise>
-									<xsl:value-of select="java:replaceAll(java:java.lang.String.new($titles/title-part[@lang = $lang_second]),'#',$part)"/>
-								</xsl:otherwise>
-							</xsl:choose>
-							
+					
+					<xsl:variable name="titles_second_">
+						<title-intro><xsl:value-of select="//iec:iec-standard/iec:bibdata/iec:title[@language = $lang_second and @type = 'title-intro']"/></title-intro>
+						<title-main><xsl:value-of select="//iec:iec-standard/iec:bibdata/iec:title[@language = $lang_second and @type = 'title-main']"/></title-main>
+						<title-part><xsl:value-of select="//iec:iec-standard/iec:bibdata/iec:title[@language = $lang_second and @type = 'title-part']"/></title-part>
+					</xsl:variable>
+					<xsl:variable name="titles_second" select="xalan:nodeset($titles_second_)"/>
+					
+					<xsl:for-each select="$titles_second/*[normalize-space() != '']">
+						<xsl:if test="position() != 1">
+							<xsl:value-of select="concat(' ',$en_dash ,' ')"/>
 						</xsl:if>
-						<xsl:value-of select="$part-second"/>
-					</xsl:if>
+						<xsl:if test="self::title-part">
+							<xsl:value-of select="$linebreak"/>
+							<xsl:if test="$part != ''">
+								<xsl:variable name="locality_part_lang_second">
+									<xsl:call-template name="getLocalizedString">
+										<xsl:with-param name="key">locality.part</xsl:with-param>
+										<xsl:with-param name="lang"><xsl:value-of select="$lang_second"/></xsl:with-param>
+										<xsl:with-param name="returnEmptyIfNotFound">true</xsl:with-param>
+									</xsl:call-template>
+								</xsl:variable>
+								<xsl:value-of select="concat($locality_part_lang_second ,' ',$part, ': ')"/>
+								
+								<xsl:choose>
+									<xsl:when test="normalize-space($locality_part_lang_second) != ''">
+										<xsl:variable name="localized_part">
+											<xsl:value-of select="$locality_part_lang_second"/>
+										</xsl:variable>
+										<xsl:value-of select="concat($localized_part ,' ',$part, ': ')"/>
+									</xsl:when>
+									<xsl:otherwise>
+										<xsl:value-of select="java:replaceAll(java:java.lang.String.new($titles/title-part[@lang = $lang_second]),'#',$part)"/>
+									</xsl:otherwise>
+								</xsl:choose>
+							</xsl:if>
+						</xsl:if>
+						<xsl:value-of select="."/>
+					</xsl:for-each>
+					
 				</fo:block>
 			</fo:block-container>
 		</fo:block-container>
@@ -1363,34 +1365,38 @@
 	<xsl:template name="printTitles">
 		<xsl:param name="lang"/>
 		
-		<xsl:value-of select="java:toUpperCase(java:java.lang.String.new(/iec:iec-standard/iec:bibdata/iec:title[@language = $lang and @type = 'title-intro']))"/>
-				
-		<xsl:variable name="title-main" select="java:toUpperCase(java:java.lang.String.new(/iec:iec-standard/iec:bibdata/iec:title[@language = $lang and @type = 'title-main']))"/>
-		<xsl:if test="normalize-space($title-main) != ''">
-			<!-- <xsl:text> — </xsl:text> -->
-			<xsl:value-of select="concat(' ',$en_dash ,' ')"/>
-			<xsl:value-of select="$title-main"/>
-		</xsl:if>
+		<xsl:variable name="titles_doc_">
+			<title-intro><xsl:value-of select="java:toUpperCase(java:java.lang.String.new(/iec:iec-standard/iec:bibdata/iec:title[@language = $lang and @type = 'title-intro']))"/></title-intro>
+			<title-main><xsl:value-of select="java:toUpperCase(java:java.lang.String.new(/iec:iec-standard/iec:bibdata/iec:title[@language = $lang and @type = 'title-main']))"/></title-main>
+			<title-part><xsl:value-of select="/iec:iec-standard/iec:bibdata/iec:title[@language = $lang and @type = 'title-part']"/></title-part>
+		</xsl:variable>
+		<xsl:variable name="titles_doc" select="xalan:nodeset($titles_doc_)"/>
 		
-		<xsl:variable name="title-part" select="/iec:iec-standard/iec:bibdata/iec:title[@language = $lang and @type = 'title-part']"/>
-		<xsl:if test="$title-part != ''">
-			<!-- <xsl:text> — </xsl:text> -->
-			<xsl:value-of select="concat(' ',$en_dash ,' ')"/>
-			<fo:block>&#xa0;</fo:block>
-			<fo:block>
-				<xsl:if test="$part != ''">
-					<!-- Example: Part 1: Riz -->
-					<xsl:variable name="localized_part">
-						<xsl:call-template name="getLocalizedString">
-							<xsl:with-param name="key">Part.sg</xsl:with-param>
-							<xsl:with-param name="lang" select="$lang"/>
-						</xsl:call-template>
-					</xsl:variable>
-					<xsl:value-of select="concat($localized_part ,' ', $part, ': ')"/>
-				</xsl:if>
-				<xsl:value-of select="$title-part"/>
-			</fo:block>
-		</xsl:if>
+		<xsl:for-each select="$titles_doc/*[normalize-space() != '']">
+			<xsl:if test="position() != 1">
+				<xsl:value-of select="concat(' ',$en_dash ,' ')"/>
+			</xsl:if>
+			<xsl:choose>
+				<xsl:when test="self::title-part">
+					<fo:block>&#xa0;</fo:block>
+					<fo:block>
+						<xsl:if test="$part != ''">
+							<xsl:variable name="localized_part">
+								<xsl:call-template name="getLocalizedString">
+									<xsl:with-param name="key">Part.sg</xsl:with-param>
+									<xsl:with-param name="lang" select="$lang"/>
+								</xsl:call-template>
+							</xsl:variable>
+							<xsl:value-of select="concat($localized_part ,' ',$part, ': ')"/>
+						</xsl:if>
+						<xsl:value-of select="."/>
+					</fo:block>
+				</xsl:when>
+				<xsl:otherwise>
+					<xsl:value-of select="."/>
+				</xsl:otherwise>
+			</xsl:choose>
+		</xsl:for-each>
 	</xsl:template>
 	
 	<xsl:template match="node()">		
