@@ -8690,7 +8690,7 @@
 	</xsl:template>
 	
 	
-	<xsl:if test="$namespace = 'iho' or $namespace = 'iso'">
+	<xsl:if test="$namespace = 'iec' or $namespace = 'iho' or $namespace = 'iso'">
 		<!-- ================================================================ -->
 		<!-- landscape/portrait orientation processing (post-processing step) -->
 		<!-- ================================================================ -->

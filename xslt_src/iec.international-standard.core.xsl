@@ -132,827 +132,863 @@
 	
 	<xsl:template match="/">
 		<xsl:call-template name="namespaceCheck"/>
-		<!-- https://stackoverflow.com/questions/25261949/xsl-fo-letter-spacing-with-text-align -->
-		<!-- https://xmlgraphics.apache.org/fop/knownissues.html -->
-		<fo:root xmlns:fo="http://www.w3.org/1999/XSL/Format" xml:lang="{$lang}">
-			<xsl:variable name="root-style">
-				<root-style xsl:use-attribute-sets="root-style"/>
-			</xsl:variable>
-			<xsl:call-template name="insertRootStyle">
-				<xsl:with-param name="root-style" select="$root-style"/>
-			</xsl:call-template>
-			<fo:layout-master-set>
-				<!-- cover pages -->
-				<fo:simple-page-master master-name="cover" page-width="{$pageWidth}mm" page-height="{$pageHeight}mm">
-					<fo:region-body margin-top="17.5mm" margin-bottom="12.5mm" margin-left="18mm" margin-right="20.5mm"/>
-					<fo:region-before region-name="header" extent="17.5mm"/> 
-					<fo:region-after region-name="footer" extent="12.5mm" precedence="true"/>
-					<fo:region-start region-name="left-region" extent="18mm"/>
-					<fo:region-end region-name="right-region" extent="20.5mm"/>
-				</fo:simple-page-master>
-				<fo:simple-page-master master-name="cover_2nd" page-width="{$pageWidth}mm" page-height="{$pageHeight}mm">
-					<fo:region-body margin-top="17.5mm" margin-bottom="12.5mm" margin-left="25mm" margin-right="25mm" column-count="2" column-gap="5mm"/>
-					<fo:region-before region-name="header" extent="17.5mm"/> 
-					<fo:region-after region-name="footer" extent="12.5mm" precedence="true"/>
-					<fo:region-start region-name="left-region" extent="25mm"/>
-					<fo:region-end region-name="right-region" extent="25mm"/>
-				</fo:simple-page-master>
-				
-				<fo:simple-page-master master-name="cover-FDIS" page-width="{$pageWidth}mm" page-height="{$pageHeight}mm">
-					<fo:region-body margin-top="17.5mm" margin-bottom="29mm" margin-left="18mm" margin-right="19mm"/>
-					<fo:region-before region-name="header" extent="17.5mm"/> 
-					<fo:region-after region-name="footer-FDIS" extent="29mm"/> 
-					<fo:region-start region-name="left-region" extent="18mm"/>
-					<fo:region-end region-name="right-region" extent="19mm"/>
-				</fo:simple-page-master>
-				
-				<!-- odd pages -->
-				<fo:simple-page-master master-name="odd" page-width="{$pageWidth}mm" page-height="{$pageHeight}mm">
-					<fo:region-body margin-top="{$marginTop}mm" margin-bottom="{$marginBottom}mm" margin-left="{$marginLeftRight1}mm" margin-right="{$marginLeftRight2}mm"/>
-					<fo:region-before region-name="header-odd" extent="{$marginTop}mm"/> 
-					<fo:region-after region-name="footer" extent="{$marginBottom}mm"/>
-					<fo:region-start region-name="left-region" extent="{$marginLeftRight1}mm"/>
-					<fo:region-end region-name="right-region" extent="{$marginLeftRight2}mm"/>
-				</fo:simple-page-master>
-				<!-- even pages -->
-				<fo:simple-page-master master-name="even" page-width="{$pageWidth}mm" page-height="{$pageHeight}mm">
-					<fo:region-body margin-top="{$marginTop}mm" margin-bottom="{$marginBottom}mm" margin-left="{$marginLeftRight1}mm" margin-right="{$marginLeftRight2}mm"/>
-					<fo:region-before region-name="header-even" extent="{$marginTop}mm"/>
-					<fo:region-after region-name="footer" extent="{$marginBottom}mm"/>
-					<fo:region-start region-name="left-region" extent="{$marginLeftRight1}mm"/>
-					<fo:region-end region-name="right-region" extent="{$marginLeftRight2}mm"/>
-				</fo:simple-page-master>
-				<fo:page-sequence-master master-name="document">
-					<fo:repeatable-page-master-alternatives>
-						<fo:conditional-page-master-reference odd-or-even="even" master-reference="even"/>
-						<fo:conditional-page-master-reference odd-or-even="odd" master-reference="odd"/>
-					</fo:repeatable-page-master-alternatives>
-				</fo:page-sequence-master>
-				
-				<fo:simple-page-master master-name="blank-page" page-width="{$pageWidth}mm" page-height="{$pageHeight}mm">
-					<fo:region-body margin-top="107mm" margin-bottom="0mm" margin-left="18mm" margin-right="0mm"/>
-				</fo:simple-page-master>
-				
-				<fo:simple-page-master master-name="last-page" page-width="{$pageWidth}mm" page-height="{$pageHeight}mm">
-					<fo:region-body margin-top="107mm" margin-bottom="0mm" margin-left="18mm" margin-right="0mm" background-color="rgb(236, 236, 236)"/>
-					<fo:region-before region-name="header" extent="107mm"/> 
-					<fo:region-start region-name="left-region" extent="18mm"/>
-				</fo:simple-page-master>
-			</fo:layout-master-set>
+		
+		<xsl:variable name="xslfo">
+			<!-- https://stackoverflow.com/questions/25261949/xsl-fo-letter-spacing-with-text-align -->
+			<!-- https://xmlgraphics.apache.org/fop/knownissues.html -->
+			<fo:root xmlns:fo="http://www.w3.org/1999/XSL/Format" xml:lang="{$lang}">
+				<xsl:variable name="root-style">
+					<root-style xsl:use-attribute-sets="root-style"/>
+				</xsl:variable>
+				<xsl:call-template name="insertRootStyle">
+					<xsl:with-param name="root-style" select="$root-style"/>
+				</xsl:call-template>
+				<fo:layout-master-set>
+					<!-- cover pages -->
+					<fo:simple-page-master master-name="cover" page-width="{$pageWidth}mm" page-height="{$pageHeight}mm">
+						<fo:region-body margin-top="17.5mm" margin-bottom="12.5mm" margin-left="18mm" margin-right="20.5mm"/>
+						<fo:region-before region-name="header" extent="17.5mm"/> 
+						<fo:region-after region-name="footer" extent="12.5mm" precedence="true"/>
+						<fo:region-start region-name="left-region" extent="18mm"/>
+						<fo:region-end region-name="right-region" extent="20.5mm"/>
+					</fo:simple-page-master>
+					<fo:simple-page-master master-name="cover_2nd" page-width="{$pageWidth}mm" page-height="{$pageHeight}mm">
+						<fo:region-body margin-top="17.5mm" margin-bottom="12.5mm" margin-left="25mm" margin-right="25mm" column-count="2" column-gap="5mm"/>
+						<fo:region-before region-name="header" extent="17.5mm"/> 
+						<fo:region-after region-name="footer" extent="12.5mm" precedence="true"/>
+						<fo:region-start region-name="left-region" extent="25mm"/>
+						<fo:region-end region-name="right-region" extent="25mm"/>
+					</fo:simple-page-master>
+					
+					<fo:simple-page-master master-name="cover-FDIS" page-width="{$pageWidth}mm" page-height="{$pageHeight}mm">
+						<fo:region-body margin-top="17.5mm" margin-bottom="29mm" margin-left="18mm" margin-right="19mm"/>
+						<fo:region-before region-name="header" extent="17.5mm"/> 
+						<fo:region-after region-name="footer-FDIS" extent="29mm"/> 
+						<fo:region-start region-name="left-region" extent="18mm"/>
+						<fo:region-end region-name="right-region" extent="19mm"/>
+					</fo:simple-page-master>
+					
+					<!-- odd pages -->
+					<fo:simple-page-master master-name="odd" page-width="{$pageWidth}mm" page-height="{$pageHeight}mm">
+						<fo:region-body margin-top="{$marginTop}mm" margin-bottom="{$marginBottom}mm" margin-left="{$marginLeftRight1}mm" margin-right="{$marginLeftRight2}mm"/>
+						<fo:region-before region-name="header-odd" extent="{$marginTop}mm"/> 
+						<fo:region-after region-name="footer" extent="{$marginBottom}mm"/>
+						<fo:region-start region-name="left-region" extent="{$marginLeftRight1}mm"/>
+						<fo:region-end region-name="right-region" extent="{$marginLeftRight2}mm"/>
+					</fo:simple-page-master>
+					<fo:simple-page-master master-name="odd-landscape" page-width="{$pageHeight}mm" page-height="{$pageWidth}mm">
+						<fo:region-body margin-top="{$marginTop}mm" margin-bottom="{$marginBottom}mm" margin-left="{$marginLeftRight1}mm" margin-right="{$marginLeftRight2}mm"/>
+						<fo:region-before region-name="header-odd" extent="{$marginTop}mm"/> 
+						<fo:region-after region-name="footer" extent="{$marginBottom}mm"/>
+						<fo:region-start region-name="left-region" extent="{$marginLeftRight1}mm"/>
+						<fo:region-end region-name="right-region" extent="{$marginLeftRight2}mm"/>
+					</fo:simple-page-master>
+					<!-- even pages -->
+					<fo:simple-page-master master-name="even" page-width="{$pageWidth}mm" page-height="{$pageHeight}mm">
+						<fo:region-body margin-top="{$marginTop}mm" margin-bottom="{$marginBottom}mm" margin-left="{$marginLeftRight1}mm" margin-right="{$marginLeftRight2}mm"/>
+						<fo:region-before region-name="header-even" extent="{$marginTop}mm"/>
+						<fo:region-after region-name="footer" extent="{$marginBottom}mm"/>
+						<fo:region-start region-name="left-region" extent="{$marginLeftRight1}mm"/>
+						<fo:region-end region-name="right-region" extent="{$marginLeftRight2}mm"/>
+					</fo:simple-page-master>
+					<fo:simple-page-master master-name="even-landscape" page-width="{$pageHeight}mm" page-height="{$pageWidth}mm">
+						<fo:region-body margin-top="{$marginTop}mm" margin-bottom="{$marginBottom}mm" margin-left="{$marginLeftRight1}mm" margin-right="{$marginLeftRight2}mm"/>
+						<fo:region-before region-name="header-even" extent="{$marginTop}mm"/>
+						<fo:region-after region-name="footer" extent="{$marginBottom}mm"/>
+						<fo:region-start region-name="left-region" extent="{$marginLeftRight1}mm"/>
+						<fo:region-end region-name="right-region" extent="{$marginLeftRight2}mm"/>
+					</fo:simple-page-master>
+					<fo:page-sequence-master master-name="document">
+						<fo:repeatable-page-master-alternatives>
+							<fo:conditional-page-master-reference odd-or-even="even" master-reference="even"/>
+							<fo:conditional-page-master-reference odd-or-even="odd" master-reference="odd"/>
+						</fo:repeatable-page-master-alternatives>
+					</fo:page-sequence-master>
+					<fo:page-sequence-master master-name="document-portrait">
+						<fo:repeatable-page-master-alternatives>
+							<fo:conditional-page-master-reference odd-or-even="even" master-reference="even"/>
+							<fo:conditional-page-master-reference odd-or-even="odd" master-reference="odd"/>
+						</fo:repeatable-page-master-alternatives>
+					</fo:page-sequence-master>
+					<fo:page-sequence-master master-name="document-landscape">
+						<fo:repeatable-page-master-alternatives>
+							<fo:conditional-page-master-reference odd-or-even="even" master-reference="even-landscape"/>
+							<fo:conditional-page-master-reference odd-or-even="odd" master-reference="odd-landscape"/>
+						</fo:repeatable-page-master-alternatives>
+					</fo:page-sequence-master>
+					
+					<fo:simple-page-master master-name="blank-page" page-width="{$pageWidth}mm" page-height="{$pageHeight}mm">
+						<fo:region-body margin-top="107mm" margin-bottom="0mm" margin-left="18mm" margin-right="0mm"/>
+					</fo:simple-page-master>
+					
+					<fo:simple-page-master master-name="last-page" page-width="{$pageWidth}mm" page-height="{$pageHeight}mm">
+						<fo:region-body margin-top="107mm" margin-bottom="0mm" margin-left="18mm" margin-right="0mm" background-color="rgb(236, 236, 236)"/>
+						<fo:region-before region-name="header" extent="107mm"/> 
+						<fo:region-start region-name="left-region" extent="18mm"/>
+					</fo:simple-page-master>
+				</fo:layout-master-set>
 
-			<fo:declarations>
-				<xsl:call-template name="addPDFUAmeta"/>
-			</fo:declarations>
+				<fo:declarations>
+					<xsl:call-template name="addPDFUAmeta"/>
+				</fo:declarations>
 
-			<xsl:call-template name="addBookmarks">
-				<xsl:with-param name="contents" select="$contents"/>
-			</xsl:call-template>
+				<xsl:call-template name="addBookmarks">
+					<xsl:with-param name="contents" select="$contents"/>
+				</xsl:call-template>
 
-			<!-- For 'Published' documents insert two cover pages -->
-			<xsl:if test="$stage &gt;= 60">
-			
-				<!-- 1st Cover Page -->
-				<fo:page-sequence master-reference="cover" force-page-count="no-force">
-					<fo:static-content flow-name="left-region" >
-						<fo:block-container reference-orientation="90">
-							<fo:block font-size="7pt" margin-left="3.5mm" margin-top="5.5mm">
-								<xsl:value-of select="(//iec:iec-standard)[1]/iec:bibdata/iec:docidentifier[@type = 'iso-with-lang']"/>
-							</fo:block>
-						</fo:block-container>
-					</fo:static-content>
-					<fo:flow flow-name="xsl-region-body">
-						<fo:block-container absolute-position="fixed" left="18mm" top="107mm">
-								<fo:block>
-								<fo:external-graphic src="{concat('data:image/png;base64,', normalize-space($Image-Cover-Background))}" width="192mm" content-height="scale-to-fit" scaling="uniform" fox:alt-text="Image Front"/>
-							</fo:block>
-						</fo:block-container>
-						<xsl:call-template name="insertCoverPart1"/>
-					</fo:flow>
-				</fo:page-sequence>
+				<!-- For 'Published' documents insert two cover pages -->
+				<xsl:if test="$stage &gt;= 60">
 				
-				<!-- 2nd Cover Page -->
-				<fo:page-sequence master-reference="cover_2nd" force-page-count="no-force"  font-size="8pt">
-					<fo:flow flow-name="xsl-region-body">
-						<fo:block span="all">
-							<fo:block-container border="0.5pt solid black" margin-top="7mm">
-								<fo:block-container margin-left="2.5mm" margin-right="2.5mm" margin-top="1mm" margin-bottom="1mm">
-									<fo:block-container margin-left="0mm" margin-right="0mm">
-										<fo:table table-layout="fixed" width="100%">
-											<fo:table-column column-width="20mm"/>
-											<fo:table-column column-width="130mm"/>
-											<fo:table-body>
-												<fo:table-row>
-													<fo:table-cell>
-														<fo:block>
-															<fo:external-graphic src="{concat('data:image/png;base64,', normalize-space($Image-Attention))}" width="17.8mm" content-height="scale-to-fit" scaling="uniform" fox:alt-text="Image Front"/>
-														</fo:block>
-													</fo:table-cell>
-													<fo:table-cell font-size="10pt" font-weight="bold" display-align="after">
-														<fo:block margin-bottom="3pt">THIS PUBLICATION IS COPYRIGHT PROTECTED</fo:block>
-														<fo:block margin-bottom="10pt">
-															<!-- Example: Copyright © 2014 IEC, Geneva, Switzerland -->
-															<xsl:apply-templates select="(//iec:iec-standard)[1]/iec:boilerplate/iec:copyright-statement/iec:clause/iec:p[contains(@id, 'boilerplate-year')]"/>
-														</fo:block>
-													</fo:table-cell>
-												</fo:table-row>
-											</fo:table-body>
-										</fo:table>
-										<fo:block>
-											<fo:block margin-bottom="8pt" text-align="justify">
-											<!-- Example: All rights reserved. Unless otherwise specified, no part of this publication may be reproduced or utilized in any form
-		or by any means, electronic or mechanical, including photocopying and microfilm, without permission in writing from
-		either IEC or IEC's member National Committee in the country of the requester. If you have any questions about IEC
-		copyright or have an enquiry about obtaining additional rights to this publication, please contact the address below or
-		your local IEC member National Committee for further information. -->
-											<xsl:apply-templates select="(//iec:iec-standard)[1]/iec:boilerplate/iec:copyright-statement/iec:clause/iec:p[contains(@id, 'boilerplate-message')]"/>
-											</fo:block>
-											<!-- Droits de reproduction réservés. Sauf indication contraire, aucune partie de cette publication ne peut être reproduite
-		ni utilisée sous quelque forme que ce soit et par aucun procédé, électronique ou mécanique, y compris la photocopie
-		et les microfilms, sans l'accord écrit de l'IEC ou du Comité national de l'IEC du pays du demandeur. Si vous avez des
-		questions sur le copyright de l'IEC ou si vous désirez obtenir des droits supplémentaires sur cette publication, utilisez
-		les coordonnées ci-après ou contactez le Comité national de l'IEC de votre pays de résidence. -->
-											<fo:block margin-bottom="8pt" text-align="justify">
-												<xsl:apply-templates select="(//iec:iec-standard)[2]/iec:boilerplate/iec:copyright-statement/iec:clause/iec:p[contains(@id, 'boilerplate-message')]"/>
-											</fo:block>
-										
-											<xsl:variable name="telpos" select="count((//iec:iec-standard)[1]/iec:boilerplate/iec:copyright-statement/iec:clause/iec:p[contains(@id, 'boilerplate-address')]/text()[contains(., 'Tel.')]/preceding-sibling::node())"/>
+					<!-- 1st Cover Page -->
+					<fo:page-sequence master-reference="cover" force-page-count="no-force">
+						<fo:static-content flow-name="left-region" >
+							<fo:block-container reference-orientation="90">
+								<fo:block font-size="7pt" margin-left="3.5mm" margin-top="5.5mm">
+									<xsl:value-of select="(//iec:iec-standard)[1]/iec:bibdata/iec:docidentifier[@type = 'iso-with-lang']"/>
+								</fo:block>
+							</fo:block-container>
+						</fo:static-content>
+						<fo:flow flow-name="xsl-region-body">
+							<fo:block-container absolute-position="fixed" left="18mm" top="107mm">
+									<fo:block>
+									<fo:external-graphic src="{concat('data:image/png;base64,', normalize-space($Image-Cover-Background))}" width="192mm" content-height="scale-to-fit" scaling="uniform" fox:alt-text="Image Front"/>
+								</fo:block>
+							</fo:block-container>
+							<xsl:call-template name="insertCoverPart1"/>
+						</fo:flow>
+					</fo:page-sequence>
+					
+					<!-- 2nd Cover Page -->
+					<fo:page-sequence master-reference="cover_2nd" force-page-count="no-force"  font-size="8pt">
+						<fo:flow flow-name="xsl-region-body">
+							<fo:block span="all">
+								<fo:block-container border="0.5pt solid black" margin-top="7mm">
+									<fo:block-container margin-left="2.5mm" margin-right="2.5mm" margin-top="1mm" margin-bottom="1mm">
+										<fo:block-container margin-left="0mm" margin-right="0mm">
 											<fo:table table-layout="fixed" width="100%">
-												<fo:table-column column-width="59mm"/>
-												<fo:table-column column-width="90mm"/>
+												<fo:table-column column-width="20mm"/>
+												<fo:table-column column-width="130mm"/>
 												<fo:table-body>
 													<fo:table-row>
 														<fo:table-cell>
 															<fo:block>
-																<!-- Example: IEC Central Office
-																	3, rue de Varembé
-																	CH-1211 Geneva 20
-																	Switzerland -->
-																<xsl:apply-templates select="(//iec:iec-standard)[1]/iec:boilerplate/iec:copyright-statement/iec:clause/iec:p[contains(@id, 'boilerplate-name')]" mode="coverpage"/>
-																<xsl:choose>
-																	<xsl:when test="$telpos != 0">
-																		<xsl:apply-templates select="(//iec:iec-standard)[1]/iec:boilerplate/iec:copyright-statement/iec:clause/iec:p[contains(@id, 'boilerplate-address')]/node()[position() &lt; $telpos]" mode="coverpage"/>
-																	</xsl:when>
-																	<xsl:otherwise>
-																		<xsl:apply-templates select="(//iec:iec-standard)[1]/iec:boilerplate/iec:copyright-statement/iec:clause/iec:p[contains(@id, 'boilerplate-address')]" mode="coverpage"/>
-																	</xsl:otherwise>
-																</xsl:choose>
+																<fo:external-graphic src="{concat('data:image/png;base64,', normalize-space($Image-Attention))}" width="17.8mm" content-height="scale-to-fit" scaling="uniform" fox:alt-text="Image Front"/>
 															</fo:block>
 														</fo:table-cell>
-														<fo:table-cell>
-															<fo:block>
-																<!-- Example: Tel.: +41 22 919 02 11
-																 Fax: +41 22 919 0
-																 info@iec.ch
-																www.iec.ch -->
-																<xsl:choose>
-																	<xsl:when test="$telpos != 0">
-																		<xsl:apply-templates select="(//iec:iec-standard)[1]/iec:boilerplate/iec:copyright-statement/iec:clause/iec:p[contains(@id, 'boilerplate-address')]/node()[position() &gt; $telpos]" mode="coverpage"/>
-																	</xsl:when>
-																	<xsl:otherwise>&#xA0;</xsl:otherwise>
-																</xsl:choose>
+														<fo:table-cell font-size="10pt" font-weight="bold" display-align="after">
+															<fo:block margin-bottom="3pt">THIS PUBLICATION IS COPYRIGHT PROTECTED</fo:block>
+															<fo:block margin-bottom="10pt">
+																<!-- Example: Copyright © 2014 IEC, Geneva, Switzerland -->
+																<xsl:apply-templates select="(//iec:iec-standard)[1]/iec:boilerplate/iec:copyright-statement/iec:clause/iec:p[contains(@id, 'boilerplate-year')]"/>
 															</fo:block>
 														</fo:table-cell>
 													</fo:table-row>
 												</fo:table-body>
 											</fo:table>
-										
-										</fo:block>
+											<fo:block>
+												<fo:block margin-bottom="8pt" text-align="justify">
+												<!-- Example: All rights reserved. Unless otherwise specified, no part of this publication may be reproduced or utilized in any form
+			or by any means, electronic or mechanical, including photocopying and microfilm, without permission in writing from
+			either IEC or IEC's member National Committee in the country of the requester. If you have any questions about IEC
+			copyright or have an enquiry about obtaining additional rights to this publication, please contact the address below or
+			your local IEC member National Committee for further information. -->
+												<xsl:apply-templates select="(//iec:iec-standard)[1]/iec:boilerplate/iec:copyright-statement/iec:clause/iec:p[contains(@id, 'boilerplate-message')]"/>
+												</fo:block>
+												<!-- Droits de reproduction réservés. Sauf indication contraire, aucune partie de cette publication ne peut être reproduite
+			ni utilisée sous quelque forme que ce soit et par aucun procédé, électronique ou mécanique, y compris la photocopie
+			et les microfilms, sans l'accord écrit de l'IEC ou du Comité national de l'IEC du pays du demandeur. Si vous avez des
+			questions sur le copyright de l'IEC ou si vous désirez obtenir des droits supplémentaires sur cette publication, utilisez
+			les coordonnées ci-après ou contactez le Comité national de l'IEC de votre pays de résidence. -->
+												<fo:block margin-bottom="8pt" text-align="justify">
+													<xsl:apply-templates select="(//iec:iec-standard)[2]/iec:boilerplate/iec:copyright-statement/iec:clause/iec:p[contains(@id, 'boilerplate-message')]"/>
+												</fo:block>
+											
+												<xsl:variable name="telpos" select="count((//iec:iec-standard)[1]/iec:boilerplate/iec:copyright-statement/iec:clause/iec:p[contains(@id, 'boilerplate-address')]/text()[contains(., 'Tel.')]/preceding-sibling::node())"/>
+												<fo:table table-layout="fixed" width="100%">
+													<fo:table-column column-width="59mm"/>
+													<fo:table-column column-width="90mm"/>
+													<fo:table-body>
+														<fo:table-row>
+															<fo:table-cell>
+																<fo:block>
+																	<!-- Example: IEC Central Office
+																		3, rue de Varembé
+																		CH-1211 Geneva 20
+																		Switzerland -->
+																	<xsl:apply-templates select="(//iec:iec-standard)[1]/iec:boilerplate/iec:copyright-statement/iec:clause/iec:p[contains(@id, 'boilerplate-name')]" mode="coverpage"/>
+																	<xsl:choose>
+																		<xsl:when test="$telpos != 0">
+																			<xsl:apply-templates select="(//iec:iec-standard)[1]/iec:boilerplate/iec:copyright-statement/iec:clause/iec:p[contains(@id, 'boilerplate-address')]/node()[position() &lt; $telpos]" mode="coverpage"/>
+																		</xsl:when>
+																		<xsl:otherwise>
+																			<xsl:apply-templates select="(//iec:iec-standard)[1]/iec:boilerplate/iec:copyright-statement/iec:clause/iec:p[contains(@id, 'boilerplate-address')]" mode="coverpage"/>
+																		</xsl:otherwise>
+																	</xsl:choose>
+																</fo:block>
+															</fo:table-cell>
+															<fo:table-cell>
+																<fo:block>
+																	<!-- Example: Tel.: +41 22 919 02 11
+																	 Fax: +41 22 919 0
+																	 info@iec.ch
+																	www.iec.ch -->
+																	<xsl:choose>
+																		<xsl:when test="$telpos != 0">
+																			<xsl:apply-templates select="(//iec:iec-standard)[1]/iec:boilerplate/iec:copyright-statement/iec:clause/iec:p[contains(@id, 'boilerplate-address')]/node()[position() &gt; $telpos]" mode="coverpage"/>
+																		</xsl:when>
+																		<xsl:otherwise>&#xA0;</xsl:otherwise>
+																	</xsl:choose>
+																</fo:block>
+															</fo:table-cell>
+														</fo:table-row>
+													</fo:table-body>
+												</fo:table>
+											
+											</fo:block>
+										</fo:block-container>
 									</fo:block-container>
 								</fo:block-container>
-							</fo:block-container>
-						</fo:block>
-						
-						<xsl:apply-templates select="(//iec:iec-standard)[1]/iec:boilerplate/iec:feedback-statement"/> <!-- //iec:clause[not(@id) or @id != 'boilerplate-cenelec-attention'] -->
-						<fo:block span="all" border-bottom="0.5pt solid black"/>
-						<!-- About the IEC
-						The International Electrotechnical Commission (IEC) is the leading global organization that prepares and publishes
-						International Standards for all electrical, electronic and related technologies.
-						About IEC publications
-						The technical content of IEC publications is kept under constant review by the IEC. Please make sure that you have the
-						latest edition, a corrigenda or an amendment might have been published.
-						...
-						-->
-						<xsl:if test="(//iec:iec-standard)[2]/iec:boilerplate/iec:feedback-statement">
-							<xsl:apply-templates select="(//iec:iec-standard)[2]/iec:boilerplate/iec:feedback-statement"/>
-							<fo:block span="all"/>
-						</xsl:if>
-						
-					</fo:flow>
-				</fo:page-sequence>
-			</xsl:if>
-			<xsl:variable name="lang_second" select="(//iec:iec-standard)[2]/iec:bibdata/iec:language[@current = 'true']"/>
-			<!-- For 'Published' documents insert 3rd Cover Page 
-			    OR insert first Covert Page for FDIS -->
-			<xsl:if test="$stage &gt;= 60 or $stage-abbreviation = 'FDIS'">
-				<fo:page-sequence master-reference="cover" force-page-count="no-force">
-					<fo:flow flow-name="xsl-region-body">
-						<xsl:call-template name="insertCoverPart1" />
-						<fo:block-container absolute-position="fixed" left="26.5mm" top="214mm" width="163mm">
-							<fo:block-container height="32mm" display-align="after">
-								<fo:block font-size="9pt" color="{$color_blue}" line-height="150%">
-									<fo:block-container width="40mm">
-										<fo:block>
-											<xsl:call-template name="getLocalizedString">
-												<xsl:with-param name="key">IEC</xsl:with-param>
-												<xsl:with-param name="lang"><xsl:value-of select="$lang"/></xsl:with-param>
-											</xsl:call-template>
-										</fo:block>
-									</fo:block-container>
-								</fo:block>
-								
-								<xsl:variable name="IEC_lang_second">
-									<xsl:call-template name="getLocalizedString">
-										<xsl:with-param name="key">IEC</xsl:with-param>
-										<xsl:with-param name="lang"><xsl:value-of select="$lang_second"/></xsl:with-param>
-										<xsl:with-param name="returnEmptyIfNotFound">true</xsl:with-param>
-									</xsl:call-template>
-								</xsl:variable>
-								
-								<xsl:if test="normalize-space($IEC_lang_second) != ''">
-									<fo:block font-size="9pt" line-height="150%" margin-top="8pt">
+							</fo:block>
+							
+							<xsl:apply-templates select="(//iec:iec-standard)[1]/iec:boilerplate/iec:feedback-statement"/> <!-- //iec:clause[not(@id) or @id != 'boilerplate-cenelec-attention'] -->
+							<fo:block span="all" border-bottom="0.5pt solid black"/>
+							<!-- About the IEC
+							The International Electrotechnical Commission (IEC) is the leading global organization that prepares and publishes
+							International Standards for all electrical, electronic and related technologies.
+							About IEC publications
+							The technical content of IEC publications is kept under constant review by the IEC. Please make sure that you have the
+							latest edition, a corrigenda or an amendment might have been published.
+							...
+							-->
+							<xsl:if test="(//iec:iec-standard)[2]/iec:boilerplate/iec:feedback-statement">
+								<xsl:apply-templates select="(//iec:iec-standard)[2]/iec:boilerplate/iec:feedback-statement"/>
+								<fo:block span="all"/>
+							</xsl:if>
+							
+						</fo:flow>
+					</fo:page-sequence>
+				</xsl:if>
+				<xsl:variable name="lang_second" select="(//iec:iec-standard)[2]/iec:bibdata/iec:language[@current = 'true']"/>
+				<!-- For 'Published' documents insert 3rd Cover Page 
+						OR insert first Covert Page for FDIS -->
+				<xsl:if test="$stage &gt;= 60 or $stage-abbreviation = 'FDIS'">
+					<fo:page-sequence master-reference="cover" force-page-count="no-force">
+						<fo:flow flow-name="xsl-region-body">
+							<xsl:call-template name="insertCoverPart1" />
+							<fo:block-container absolute-position="fixed" left="26.5mm" top="214mm" width="163mm">
+								<fo:block-container height="32mm" display-align="after">
+									<fo:block font-size="9pt" color="{$color_blue}" line-height="150%">
 										<fo:block-container width="40mm">
 											<fo:block>
-												<!-- 'COMMISSION ELECTROTECHNIQUE INTERNATIONALE' -->
-												<xsl:value-of select="$IEC_lang_second"/>
+												<xsl:call-template name="getLocalizedString">
+													<xsl:with-param name="key">IEC</xsl:with-param>
+													<xsl:with-param name="lang"><xsl:value-of select="$lang"/></xsl:with-param>
+												</xsl:call-template>
 											</fo:block>
 										</fo:block-container>
 									</fo:block>
-								</xsl:if>
-							</fo:block-container>
-							
-							<xsl:variable name="price_code_value" select="//iec:iec-standard/iec:bibdata/iec:ext/iec:price-code"/>
-							<fo:table table-layout="fixed" width="102%" margin-top="-9mm" margin-bottom="2mm" id="__internal_layout__price_code">
-								<fo:table-column column-width="148mm"/>
-								<fo:table-column column-width="16mm"/>
-								<fo:table-body>
-									<fo:table-row border-bottom="0.5pt solid {$color_gray}" height="16mm">
-										<fo:table-cell font-size="8pt" text-align="right" display-align="center">
-											<fo:block>
-												<xsl:if test="normalize-space($price_code_value) != ''">
-													<fo:block color="{$color_blue}" margin-bottom="3pt">
-														<!-- PRICE CODE -->
-														<xsl:variable name="price_code">
-															<xsl:call-template name="getLocalizedString">
-																<xsl:with-param name="key">price-code</xsl:with-param>
-																<xsl:with-param name="lang"><xsl:value-of select="$lang"/></xsl:with-param>
-															</xsl:call-template>
-														</xsl:variable>
-														<xsl:value-of select="java:toUpperCase(java:java.lang.String.new($price_code))"/>
-													</fo:block>
-													
-													<fo:block>
-														<xsl:variable name="price_code">
-															<xsl:call-template name="getLocalizedString">
-																<xsl:with-param name="key">price-code</xsl:with-param>
-																<xsl:with-param name="lang"><xsl:value-of select="$lang_second"/></xsl:with-param>
-															</xsl:call-template>
-														</xsl:variable>
-														<xsl:value-of select="java:toUpperCase(java:java.lang.String.new($price_code))"/>
-													</fo:block>
-												</xsl:if>
-											</fo:block>
-										</fo:table-cell>
-										<fo:table-cell font-size="25pt" font-weight="bold" color="{$color_gray}" text-align="right" display-align="center">
-											<fo:block padding-top="1mm"><xsl:value-of select="$price_code_value"/></fo:block>
-										</fo:table-cell>
-									</fo:table-row>
-								</fo:table-body>
-							</fo:table>
-							<fo:block font-size="8pt" text-align-last="justify">
-								<xsl:for-each select="//iec:iec-standard/iec:bibdata/iec:ext/iec:ics">
-									<xsl:if test="position() = 1">ICS </xsl:if>
-									<xsl:value-of select="iec:code"/>
-									<xsl:if test="position() != last()"><xsl:text>; </xsl:text></xsl:if>
-								</xsl:for-each>
-								<xsl:text>&#xA0;</xsl:text>
-								<fo:inline keep-together.within-line="always"><fo:leader leader-pattern="space"/>
-									<xsl:text>&#xA0;</xsl:text>
-									<xsl:if test="//iec:iec-standard/iec:bibdata/iec:docidentifier[@type='ISBN']">
-										<!-- Example: ISBN 978-2-8322-1532-6 -->
-										<xsl:text>ISBN </xsl:text>
-										<xsl:value-of select="//iec:iec-standard/iec:bibdata/iec:docidentifier[@type='ISBN']"/>
+									
+									<xsl:variable name="IEC_lang_second">
+										<xsl:call-template name="getLocalizedString">
+											<xsl:with-param name="key">IEC</xsl:with-param>
+											<xsl:with-param name="lang"><xsl:value-of select="$lang_second"/></xsl:with-param>
+											<xsl:with-param name="returnEmptyIfNotFound">true</xsl:with-param>
+										</xsl:call-template>
+									</xsl:variable>
+									
+									<xsl:if test="normalize-space($IEC_lang_second) != ''">
+										<fo:block font-size="9pt" line-height="150%" margin-top="8pt">
+											<fo:block-container width="40mm">
+												<fo:block>
+													<!-- 'COMMISSION ELECTROTECHNIQUE INTERNATIONALE' -->
+													<xsl:value-of select="$IEC_lang_second"/>
+												</fo:block>
+											</fo:block-container>
+										</fo:block>
 									</xsl:if>
-								</fo:inline>
-							</fo:block>
-							<fo:block-container margin-left="1.5mm">
-								<fo:block-container margin-left="0mm">
-									<fo:block-container border="0.5pt solid black" font-size="10pt" margin-top="8mm" font-weight="bold" padding-left="1.5mm" padding-top="0.5mm" width="102%" height="11mm" display-align="center">
-										<fo:block margin-left="2mm">Warning! Make sure that you obtained this publication from an authorized distributor.</fo:block>
-										<xsl:if test="//iec:iec-standard/iec:bibdata/iec:title[@language = 'fr']">
-											<fo:block margin-left="2mm" margin-top="3pt">Attention! Veuillez vous assurer que vous avez obtenu cette publication via un distributeur agréé.</fo:block>
+								</fo:block-container>
+								
+								<xsl:variable name="price_code_value" select="//iec:iec-standard/iec:bibdata/iec:ext/iec:price-code"/>
+								<fo:table table-layout="fixed" width="102%" margin-top="-9mm" margin-bottom="2mm" id="__internal_layout__price_code">
+									<fo:table-column column-width="148mm"/>
+									<fo:table-column column-width="16mm"/>
+									<fo:table-body>
+										<fo:table-row border-bottom="0.5pt solid {$color_gray}" height="16mm">
+											<fo:table-cell font-size="8pt" text-align="right" display-align="center">
+												<fo:block>
+													<xsl:if test="normalize-space($price_code_value) != ''">
+														<fo:block color="{$color_blue}" margin-bottom="3pt">
+															<!-- PRICE CODE -->
+															<xsl:variable name="price_code">
+																<xsl:call-template name="getLocalizedString">
+																	<xsl:with-param name="key">price-code</xsl:with-param>
+																	<xsl:with-param name="lang"><xsl:value-of select="$lang"/></xsl:with-param>
+																</xsl:call-template>
+															</xsl:variable>
+															<xsl:value-of select="java:toUpperCase(java:java.lang.String.new($price_code))"/>
+														</fo:block>
+														
+														<fo:block>
+															<xsl:variable name="price_code">
+																<xsl:call-template name="getLocalizedString">
+																	<xsl:with-param name="key">price-code</xsl:with-param>
+																	<xsl:with-param name="lang"><xsl:value-of select="$lang_second"/></xsl:with-param>
+																</xsl:call-template>
+															</xsl:variable>
+															<xsl:value-of select="java:toUpperCase(java:java.lang.String.new($price_code))"/>
+														</fo:block>
+													</xsl:if>
+												</fo:block>
+											</fo:table-cell>
+											<fo:table-cell font-size="25pt" font-weight="bold" color="{$color_gray}" text-align="right" display-align="center">
+												<fo:block padding-top="1mm"><xsl:value-of select="$price_code_value"/></fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+								<fo:block font-size="8pt" text-align-last="justify">
+									<xsl:for-each select="//iec:iec-standard/iec:bibdata/iec:ext/iec:ics">
+										<xsl:if test="position() = 1">ICS </xsl:if>
+										<xsl:value-of select="iec:code"/>
+										<xsl:if test="position() != last()"><xsl:text>; </xsl:text></xsl:if>
+									</xsl:for-each>
+									<xsl:text>&#xA0;</xsl:text>
+									<fo:inline keep-together.within-line="always"><fo:leader leader-pattern="space"/>
+										<xsl:text>&#xA0;</xsl:text>
+										<xsl:if test="//iec:iec-standard/iec:bibdata/iec:docidentifier[@type='ISBN']">
+											<!-- Example: ISBN 978-2-8322-1532-6 -->
+											<xsl:text>ISBN </xsl:text>
+											<xsl:value-of select="//iec:iec-standard/iec:bibdata/iec:docidentifier[@type='ISBN']"/>
 										</xsl:if>
+									</fo:inline>
+								</fo:block>
+								<fo:block-container margin-left="1.5mm">
+									<fo:block-container margin-left="0mm">
+										<fo:block-container border="0.5pt solid black" font-size="10pt" margin-top="8mm" font-weight="bold" padding-left="1.5mm" padding-top="0.5mm" width="102%" height="11mm" display-align="center">
+											<fo:block margin-left="2mm">Warning! Make sure that you obtained this publication from an authorized distributor.</fo:block>
+											<xsl:if test="//iec:iec-standard/iec:bibdata/iec:title[@language = 'fr']">
+												<fo:block margin-left="2mm" margin-top="3pt">Attention! Veuillez vous assurer que vous avez obtenu cette publication via un distributeur agréé.</fo:block>
+											</xsl:if>
+										</fo:block-container>
 									</fo:block-container>
 								</fo:block-container>
-							</fo:block-container>
-							<fo:block font-size="6pt" margin-top="6mm" margin-left="1mm">
-								<xsl:if test="count((//iec:iec-standard)[1]/iec:bibdata/iec:copyright) = 1">
-									<fo:block>® Registered trademark of the International Electrotechnical Commission</fo:block>
-									<xsl:if test="//iec:iec-standard/iec:bibdata/iec:title[@language = 'fr']">
-										<fo:block margin-left="2mm">Marque déposée de la Commission Electrotechnique Internationale</fo:block>
+								<fo:block font-size="6pt" margin-top="6mm" margin-left="1mm">
+									<xsl:if test="count((//iec:iec-standard)[1]/iec:bibdata/iec:copyright) = 1">
+										<fo:block>® Registered trademark of the International Electrotechnical Commission</fo:block>
+										<xsl:if test="//iec:iec-standard/iec:bibdata/iec:title[@language = 'fr']">
+											<fo:block margin-left="2mm">Marque déposée de la Commission Electrotechnique Internationale</fo:block>
+										</xsl:if>
 									</xsl:if>
-								</xsl:if>
-							</fo:block>
-						</fo:block-container>
-					</fo:flow>
-				</fo:page-sequence>
-			</xsl:if>
-			
-			<!-- for non-published documents insert  cover page (2nd for FDIS) ) -->
-			<xsl:if test="$stage-abbreviation = 'NWIP' or 
-												$stage-abbreviation = 'PWI' or 
-												$stage-abbreviation = 'NP' or 
-												$stage-abbreviation = 'AWI' or 
-												$stage-abbreviation = 'WD' or 
-												$stage-abbreviation = 'CD' or 
-												$stage-abbreviation = 'CDV' or 
-												$stage-abbreviation = 'CD-TSTR' or 
-												$stage-abbreviation = 'DTS' or 
-												$stage-abbreviation = 'DTR' or 
-												$stage-abbreviation = 'DPAS' or 
-												$stage-abbreviation = 'FDIS'">
-				<!-- circulation cover page -->
-				<fo:page-sequence master-reference="cover-FDIS" force-page-count="no-force">
-					<fo:static-content flow-name="footer-FDIS">
-						<fo:block-container background-color="rgb(236, 232, 232)" padding="2mm" border="1.5pt solid white">
-							<fo:block font-size="8pt" margin-bottom="6pt">
-							
-								<xsl:apply-templates select="(//iec:iec-standard)[1]/iec:boilerplate/iec:copyright-statement/iec:clause/iec:p[not(@id)]"/>
-							
-							</fo:block>
-						</fo:block-container>
-					</fo:static-content>
-					<fo:flow flow-name="xsl-region-body">
-						
-						<fo:block text-align-last="justify" margin-left="-0.5mm">
-							<xsl:call-template name="outputLogo"/>
-							
-							<xsl:if test="$stage-abbreviation = 'FDIS'">
-								<fo:inline font-size="8pt" padding-left="0.5mm" color="{$color_blue}">®</fo:inline>
-							</xsl:if>
-							<fo:inline keep-together.within-line="always" font-size="18pt" font-weight="bold" baseline-shift="10mm"><fo:leader leader-pattern="space"/>
-								<!-- Ex: 34D/1511/FDIS -->
-								<xsl:value-of select="//iec:iec-standard/iec:bibdata/iec:docidentifier[@type='iso-tc']"/>
-								<xsl:text>&#xA0;</xsl:text>
-							</fo:inline>
-						</fo:block>
-						<fo:block font-size="10pt" text-align="right" margin-top="-2mm" margin-bottom="8pt">						
-							<!-- Examples: 'FINAL DRAFT INTERNATIONAL STANDARD (FDIS)', 'COMMITTEE DRAFT FOR VOTE (CDV)' -->
-							<xsl:call-template name="addLetterSpacing">
-								<xsl:with-param name="text" select="concat($stage-fullname-uppercased, ' (', $stage-abbreviation ,')')"/>
-							</xsl:call-template>
-							<xsl:text>&#xA0;</xsl:text>
-						</fo:block>
-						<fo:block-container margin-left="57mm">
-							<fo:block-container margin-left="0mm">
-								<fo:table table-layout="fixed" width="118mm" background-color="rgb(219, 229, 241)" id="__internal_layout__project_{generate-id()}">
-									<fo:table-column column-width="50%"/>
-									<fo:table-column column-width="50%"/>
-									<fo:table-body>
-										<fo:table-row height="12mm">
-											<fo:table-cell number-columns-spanned="2" border="1.5pt solid white" padding="1.5mm" padding-bottom="0mm">
-												<fo:block font-size="6.5pt" margin-bottom="6pt">
-													<xsl:call-template name="addLetterSpacingSmallCaps">
-														<xsl:with-param name="text" select="'Project number:'"/>
-													</xsl:call-template>
-												</fo:block>
-												<fo:block font-size="9pt" font-weight="bold">
-													<xsl:call-template name="addLetterSpacing">
-														<xsl:with-param name="text"><xsl:value-of select="//iec:iec-standard/iec:bibdata/iec:ext/iec:structuredidentifier/iec:project-number"/></xsl:with-param>
-													</xsl:call-template>
-												</fo:block>
-											</fo:table-cell>
-										</fo:table-row>
-										<fo:table-row height="12mm">
-											<fo:table-cell border="1.5pt solid white" padding="1.5mm" padding-bottom="0mm">
-												<fo:block font-size="6.5pt" margin-bottom="6pt">
-													<xsl:call-template name="addLetterSpacingSmallCaps">
-														<xsl:with-param name="text" select="'Date of circulation:'"/>
-													</xsl:call-template>
-												</fo:block>
-												<fo:block font-size="9pt" font-weight="bold">
-													<xsl:call-template name="addLetterSpacing">
-														<xsl:with-param name="text"><xsl:value-of select="//iec:iec-standard/iec:bibdata/iec:date[@type ='circulated']/iec:on"/></xsl:with-param>
-													</xsl:call-template>
-												</fo:block>
-											</fo:table-cell>
-											<fo:table-cell border="1.5pt solid white" padding="1.5mm" padding-bottom="0mm">
-												<fo:block font-size="6.5pt" margin-bottom="6pt">
-													<xsl:call-template name="addLetterSpacingSmallCaps">
-														<xsl:with-param name="text" select="'Closing date for voting:'"/>
-													</xsl:call-template>
-												</fo:block>
-												<fo:block font-size="9pt" font-weight="bold">
-													<xsl:call-template name="addLetterSpacing">
-														<!-- 2019-12-06 -->
-														<xsl:with-param name="text"><xsl:value-of select="//iec:iec-standard/iec:bibdata/iec:date[@type='vote-ended']/iec:on"/></xsl:with-param>
-													</xsl:call-template>
-												</fo:block>
-											</fo:table-cell>
-										</fo:table-row>
-										<fo:table-row height="12mm">
-											<fo:table-cell number-columns-spanned="2" border="1.5pt solid white" padding="1.5mm" padding-bottom="0mm">
-												<fo:block font-size="6.5pt" margin-bottom="6pt">
-													<xsl:call-template name="addLetterSpacingSmallCaps">
-														<xsl:with-param name="text" select="'Supersedes documents:'"/>
-													</xsl:call-template>
-												</fo:block>
-												<fo:block font-size="9pt" font-weight="bold">
-													<xsl:variable name="supersedes_documents">
-														<!-- <xsl:for-each select="//iec:iec-standard/iec:bibdata/iec:relation[@type='supersedes']/iec:bibitem/iec:docnumber"> -->
-														<xsl:for-each select="//iec:iec-standard/iec:bibdata/iec:relation[@type='obsoletes']/iec:bibitem/iec:docidentifier">
-															<xsl:value-of select="."/>
-															<xsl:if test="position() != last()">,</xsl:if>
-														</xsl:for-each>
-													</xsl:variable>
-													<xsl:call-template name="addLetterSpacing">
-														<xsl:with-param name="text"><xsl:value-of select="$supersedes_documents"/></xsl:with-param>
-													</xsl:call-template>
-												</fo:block>
-											</fo:table-cell>
-										</fo:table-row>
-									</fo:table-body>
-								</fo:table>
+								</fo:block>
 							</fo:block-container>
-						</fo:block-container>
-						
-						<fo:block-container margin-left="-2mm" margin-right="-2mm" margin-top="5mm">
-							<fo:block-container margin-left="0mm" margin-right="0mm">
-								<xsl:variable name="border-color">rgb(221, 213, 213)</xsl:variable>
-								<fo:table table-layout="fixed" width="100%" border="1.5pt solid {$border-color}">
-									<fo:table-column column-width="50%"/>
-									<fo:table-column column-width="50%"/>
-									<fo:table-body>
-										<fo:table-row height="4mm">
-											<fo:table-cell number-columns-spanned="2" border="1.5pt solid {$border-color}" padding="1.5mm" padding-bottom="0mm">
-												<fo:block>
-													<!-- If //bibdata/ext/editorialgroup/subcommittee exists, use "IEC SC" + //bibdata/ext/editorialgroup/subcommittee/@number + //bibdata/ext/editorialgroup/subcommittee, 
-													else use "IEC TC" + //bibdata/ext/editorialgroup/technical-committee/@number + //bibdata/ext/editorialgroup/technical-committee -->
-													<xsl:choose>
-														<xsl:when test="//iec:iec-standard/iec:bibdata/iec:ext/iec:editorialgroup/iec:subcommittee">
-															<fo:block font-size="6.5pt">
-																<fo:inline font-size="8pt">IEC SC <xsl:value-of select="//iec:iec-standard/iec:bibdata/iec:ext/iec:editorialgroup/iec:subcommittee/@number"/> : </fo:inline>
-																<xsl:call-template name="addLetterSpacingSmallCaps">
-																	<xsl:with-param name="text" select="//iec:iec-standard/iec:bibdata/iec:ext/iec:editorialgroup/iec:subcommittee"/>
-																</xsl:call-template>
-															</fo:block>
-														</xsl:when>
-														<xsl:when test="//iec:iec-standard/iec:bibdata/iec:ext/iec:editorialgroup/iec:technical-committee">
-															<fo:block font-size="6.5pt">
-																<fo:inline font-size="8pt">IEC TC <xsl:value-of select="//iec:iec-standard/iec:bibdata/iec:ext/iec:editorialgroup/iec:technical-committee/@number"/> : </fo:inline>
-																<xsl:call-template name="addLetterSpacingSmallCaps">
-																	<xsl:with-param name="text" select="//iec:iec-standard/iec:bibdata/iec:ext/iec:editorialgroup/iec:technical-committee"/>
-																</xsl:call-template>
-															</fo:block>
-														</xsl:when>
-													</xsl:choose>
-												</fo:block>
-											</fo:table-cell>
-										</fo:table-row>
-										<fo:table-row height="12mm">
-											<fo:table-cell border="1.5pt solid {$border-color}" padding="1.5mm" padding-bottom="0mm">
-												<fo:block font-size="6.5pt" margin-bottom="6pt">
-													<xsl:call-template name="addLetterSpacingSmallCaps">
-														<xsl:with-param name="text" select="'Secretariat:'"/>
-													</xsl:call-template>
-												</fo:block>
-												<fo:block font-size="9pt">
-													<xsl:call-template name="addLetterSpacing">
-														<xsl:with-param name="text" select="//iec:iec-standard/iec:bibdata/iec:ext/iec:editorialgroup/iec:secretariat"/>
-													</xsl:call-template>
-												</fo:block>
-											</fo:table-cell>
-											<fo:table-cell border="1.5pt solid {$border-color}" padding="1.5mm" padding-bottom="0mm">
-												<fo:block font-size="6.5pt" margin-bottom="6pt">
-													<xsl:call-template name="addLetterSpacingSmallCaps">
-														<xsl:with-param name="text" select="'Secretary:'"/>
-													</xsl:call-template>
-												</fo:block>
-												<fo:block font-size="9pt">
-													<!-- Example: Ms Shanti Conn -->
-													<xsl:call-template name="addLetterSpacing">
-														<xsl:with-param name="text" select="//iec:iec-standard/iec:bibdata/iec:ext/iec:secretary"/>
-													</xsl:call-template>
-												</fo:block>
-											</fo:table-cell>
-										</fo:table-row>
-										<fo:table-row height="12mm">											
-											<fo:table-cell border="1.5pt solid {$border-color}" padding="1.5mm" padding-bottom="0mm">
-												<xsl:if test="not($stage-abbreviation = 'FDIS' or $stage-abbreviation = 'CDV' or $stage-abbreviation = 'CD')">
-													<xsl:attribute name="number-columns-spanned">2</xsl:attribute>
-												</xsl:if>
-												<fo:block font-size="6.5pt" margin-bottom="6pt">
-													<xsl:call-template name="addLetterSpacingSmallCaps">
-														<xsl:with-param name="text" select="'Of interest to the following committees:'"/>
-													</xsl:call-template>
-												</fo:block>
-												<fo:block font-size="9pt">
-													<xsl:call-template name="addLetterSpacing">
-														<xsl:with-param name="text" select="//iec:iec-standard/iec:bibdata/iec:ext/iec:interest-to-committees"/>
-													</xsl:call-template>
-												</fo:block>
-											</fo:table-cell>
-											<xsl:if test="$stage-abbreviation = 'FDIS' or $stage-abbreviation = 'CDV' or $stage-abbreviation = 'CD'">
-												<fo:table-cell border="1.5pt solid {$border-color}" padding="1.5mm" padding-bottom="0mm">
+						</fo:flow>
+					</fo:page-sequence>
+				</xsl:if>
+				
+				<!-- for non-published documents insert  cover page (2nd for FDIS) ) -->
+				<xsl:if test="$stage-abbreviation = 'NWIP' or 
+													$stage-abbreviation = 'PWI' or 
+													$stage-abbreviation = 'NP' or 
+													$stage-abbreviation = 'AWI' or 
+													$stage-abbreviation = 'WD' or 
+													$stage-abbreviation = 'CD' or 
+													$stage-abbreviation = 'CDV' or 
+													$stage-abbreviation = 'CD-TSTR' or 
+													$stage-abbreviation = 'DTS' or 
+													$stage-abbreviation = 'DTR' or 
+													$stage-abbreviation = 'DPAS' or 
+													$stage-abbreviation = 'FDIS'">
+					<!-- circulation cover page -->
+					<fo:page-sequence master-reference="cover-FDIS" force-page-count="no-force">
+						<fo:static-content flow-name="footer-FDIS">
+							<fo:block-container background-color="rgb(236, 232, 232)" padding="2mm" border="1.5pt solid white">
+								<fo:block font-size="8pt" margin-bottom="6pt">
+								
+									<xsl:apply-templates select="(//iec:iec-standard)[1]/iec:boilerplate/iec:copyright-statement/iec:clause/iec:p[not(@id)]"/>
+								
+								</fo:block>
+							</fo:block-container>
+						</fo:static-content>
+						<fo:flow flow-name="xsl-region-body">
+							
+							<fo:block text-align-last="justify" margin-left="-0.5mm">
+								<xsl:call-template name="outputLogo"/>
+								
+								<xsl:if test="$stage-abbreviation = 'FDIS'">
+									<fo:inline font-size="8pt" padding-left="0.5mm" color="{$color_blue}">®</fo:inline>
+								</xsl:if>
+								<fo:inline keep-together.within-line="always" font-size="18pt" font-weight="bold" baseline-shift="10mm"><fo:leader leader-pattern="space"/>
+									<!-- Ex: 34D/1511/FDIS -->
+									<xsl:value-of select="//iec:iec-standard/iec:bibdata/iec:docidentifier[@type='iso-tc']"/>
+									<xsl:text>&#xA0;</xsl:text>
+								</fo:inline>
+							</fo:block>
+							<fo:block font-size="10pt" text-align="right" margin-top="-2mm" margin-bottom="8pt">						
+								<!-- Examples: 'FINAL DRAFT INTERNATIONAL STANDARD (FDIS)', 'COMMITTEE DRAFT FOR VOTE (CDV)' -->
+								<xsl:call-template name="addLetterSpacing">
+									<xsl:with-param name="text" select="concat($stage-fullname-uppercased, ' (', $stage-abbreviation ,')')"/>
+								</xsl:call-template>
+								<xsl:text>&#xA0;</xsl:text>
+							</fo:block>
+							<fo:block-container margin-left="57mm">
+								<fo:block-container margin-left="0mm">
+									<fo:table table-layout="fixed" width="118mm" background-color="rgb(219, 229, 241)" id="__internal_layout__project_{generate-id()}">
+										<fo:table-column column-width="50%"/>
+										<fo:table-column column-width="50%"/>
+										<fo:table-body>
+											<fo:table-row height="12mm">
+												<fo:table-cell number-columns-spanned="2" border="1.5pt solid white" padding="1.5mm" padding-bottom="0mm">
 													<fo:block font-size="6.5pt" margin-bottom="6pt">
-														<xsl:if test="$stage-abbreviation = 'FDIS'">
-															<xsl:call-template name="addLetterSpacingSmallCaps">
-																<xsl:with-param name="text" select="'horizontal standard:'"/>
-															</xsl:call-template>
-														</xsl:if>
-														<xsl:if test="$stage-abbreviation = 'CDV' or $stage-abbreviation = 'CD'">
-															<xsl:call-template name="addLetterSpacingSmallCaps">
-																<xsl:with-param name="text" select="'Proposed horizontal standard:'"/>
-															</xsl:call-template>
-														</xsl:if>
+														<xsl:call-template name="addLetterSpacingSmallCaps">
+															<xsl:with-param name="text" select="'Project number:'"/>
+														</xsl:call-template>
 													</fo:block>
+													<fo:block font-size="9pt" font-weight="bold">
+														<xsl:call-template name="addLetterSpacing">
+															<xsl:with-param name="text"><xsl:value-of select="//iec:iec-standard/iec:bibdata/iec:ext/iec:structuredidentifier/iec:project-number"/></xsl:with-param>
+														</xsl:call-template>
+													</fo:block>
+												</fo:table-cell>
+											</fo:table-row>
+											<fo:table-row height="12mm">
+												<fo:table-cell border="1.5pt solid white" padding="1.5mm" padding-bottom="0mm">
+													<fo:block font-size="6.5pt" margin-bottom="6pt">
+														<xsl:call-template name="addLetterSpacingSmallCaps">
+															<xsl:with-param name="text" select="'Date of circulation:'"/>
+														</xsl:call-template>
+													</fo:block>
+													<fo:block font-size="9pt" font-weight="bold">
+														<xsl:call-template name="addLetterSpacing">
+															<xsl:with-param name="text"><xsl:value-of select="//iec:iec-standard/iec:bibdata/iec:date[@type ='circulated']/iec:on"/></xsl:with-param>
+														</xsl:call-template>
+													</fo:block>
+												</fo:table-cell>
+												<fo:table-cell border="1.5pt solid white" padding="1.5mm" padding-bottom="0mm">
+													<fo:block font-size="6.5pt" margin-bottom="6pt">
+														<xsl:call-template name="addLetterSpacingSmallCaps">
+															<xsl:with-param name="text" select="'Closing date for voting:'"/>
+														</xsl:call-template>
+													</fo:block>
+													<fo:block font-size="9pt" font-weight="bold">
+														<xsl:call-template name="addLetterSpacing">
+															<!-- 2019-12-06 -->
+															<xsl:with-param name="text"><xsl:value-of select="//iec:iec-standard/iec:bibdata/iec:date[@type='vote-ended']/iec:on"/></xsl:with-param>
+														</xsl:call-template>
+													</fo:block>
+												</fo:table-cell>
+											</fo:table-row>
+											<fo:table-row height="12mm">
+												<fo:table-cell number-columns-spanned="2" border="1.5pt solid white" padding="1.5mm" padding-bottom="0mm">
+													<fo:block font-size="6.5pt" margin-bottom="6pt">
+														<xsl:call-template name="addLetterSpacingSmallCaps">
+															<xsl:with-param name="text" select="'Supersedes documents:'"/>
+														</xsl:call-template>
+													</fo:block>
+													<fo:block font-size="9pt" font-weight="bold">
+														<xsl:variable name="supersedes_documents">
+															<!-- <xsl:for-each select="//iec:iec-standard/iec:bibdata/iec:relation[@type='supersedes']/iec:bibitem/iec:docnumber"> -->
+															<xsl:for-each select="//iec:iec-standard/iec:bibdata/iec:relation[@type='obsoletes']/iec:bibitem/iec:docidentifier">
+																<xsl:value-of select="."/>
+																<xsl:if test="position() != last()">,</xsl:if>
+															</xsl:for-each>
+														</xsl:variable>
+														<xsl:call-template name="addLetterSpacing">
+															<xsl:with-param name="text"><xsl:value-of select="$supersedes_documents"/></xsl:with-param>
+														</xsl:call-template>
+													</fo:block>
+												</fo:table-cell>
+											</fo:table-row>
+										</fo:table-body>
+									</fo:table>
+								</fo:block-container>
+							</fo:block-container>
+							
+							<fo:block-container margin-left="-2mm" margin-right="-2mm" margin-top="5mm">
+								<fo:block-container margin-left="0mm" margin-right="0mm">
+									<xsl:variable name="border-color">rgb(221, 213, 213)</xsl:variable>
+									<fo:table table-layout="fixed" width="100%" border="1.5pt solid {$border-color}">
+										<fo:table-column column-width="50%"/>
+										<fo:table-column column-width="50%"/>
+										<fo:table-body>
+											<fo:table-row height="4mm">
+												<fo:table-cell number-columns-spanned="2" border="1.5pt solid {$border-color}" padding="1.5mm" padding-bottom="0mm">
 													<fo:block>
+														<!-- If //bibdata/ext/editorialgroup/subcommittee exists, use "IEC SC" + //bibdata/ext/editorialgroup/subcommittee/@number + //bibdata/ext/editorialgroup/subcommittee, 
+														else use "IEC TC" + //bibdata/ext/editorialgroup/technical-committee/@number + //bibdata/ext/editorialgroup/technical-committee -->
 														<xsl:choose>
-															<xsl:when test="//iec:iec-standard/iec:bibdata/iec:ext/iec:horizontal = 'true'">
-																<xsl:call-template name="insertCheckBoxOn"/>
-															</xsl:when>
-															<xsl:otherwise>
-																<xsl:call-template name="insertCheckBoxOff"/>
-															</xsl:otherwise>
-														</xsl:choose>
-													</fo:block>
-													
-													<xsl:if test="$stage-abbreviation = 'CDV' or $stage-abbreviation = 'CD'">
-														<fo:block-container background-color="rgb(236, 232, 232)" margin-left="-2mm" margin-right="-2mm">
-															<fo:block-container margin-left="1mm" margin-right="1mm">
-																<fo:block font-size="8pt" padding="2mm">
-																	<xsl:call-template name="addLetterSpacing">
-																		<xsl:with-param name="text" select="'Other TC/SCs are requested to indicate their interest, if any, in this CDV to the secretary.'"/>
+															<xsl:when test="//iec:iec-standard/iec:bibdata/iec:ext/iec:editorialgroup/iec:subcommittee">
+																<fo:block font-size="6.5pt">
+																	<fo:inline font-size="8pt">IEC SC <xsl:value-of select="//iec:iec-standard/iec:bibdata/iec:ext/iec:editorialgroup/iec:subcommittee/@number"/> : </fo:inline>
+																	<xsl:call-template name="addLetterSpacingSmallCaps">
+																		<xsl:with-param name="text" select="//iec:iec-standard/iec:bibdata/iec:ext/iec:editorialgroup/iec:subcommittee"/>
 																	</xsl:call-template>
 																</fo:block>
-															</fo:block-container>
-														</fo:block-container>
-													</xsl:if>
-												</fo:table-cell>
-											</xsl:if>
-										</fo:table-row>
-										
-										<xsl:if test="not($stage-abbreviation = 'DPAS')">
-											<fo:table-row height="10mm">
-												<fo:table-cell padding="1.5mm" padding-bottom="0mm">
-													<fo:block font-size="6.5pt" margin-bottom="4pt">
-														<xsl:call-template name="addLetterSpacingSmallCaps">
-															<xsl:with-param name="text" select="'Functions concerned:'"/>
-														</xsl:call-template>
-													</fo:block>
-													<!-- function: { emc | safety | environment | quality-assurance } -->
-													<fo:block font-size="6.5pt">
-														<xsl:choose>
-															<xsl:when test="//iec:iec-standard/iec:bibdata/iec:ext/iec:function = 'emc'">
-																<xsl:call-template name="insertCheckBoxOn"/>
 															</xsl:when>
-															<xsl:otherwise>
-																<xsl:call-template name="insertCheckBoxOff"/>
-															</xsl:otherwise>
-														</xsl:choose>
-														<xsl:call-template name="addLetterSpacingSmallCaps">
-															<xsl:with-param name="text" select="'EMC'"/>
-														</xsl:call-template>
-														<fo:inline padding-right="33mm">&#xA0;</fo:inline>
-														<xsl:choose>
-															<xsl:when test="//iec:iec-standard/iec:bibdata/iec:ext/iec:function = 'environment'">
-																<xsl:call-template name="insertCheckBoxOn"/>
+															<xsl:when test="//iec:iec-standard/iec:bibdata/iec:ext/iec:editorialgroup/iec:technical-committee">
+																<fo:block font-size="6.5pt">
+																	<fo:inline font-size="8pt">IEC TC <xsl:value-of select="//iec:iec-standard/iec:bibdata/iec:ext/iec:editorialgroup/iec:technical-committee/@number"/> : </fo:inline>
+																	<xsl:call-template name="addLetterSpacingSmallCaps">
+																		<xsl:with-param name="text" select="//iec:iec-standard/iec:bibdata/iec:ext/iec:editorialgroup/iec:technical-committee"/>
+																	</xsl:call-template>
+																</fo:block>
 															</xsl:when>
-															<xsl:otherwise>
-																<xsl:call-template name="insertCheckBoxOff"/>
-															</xsl:otherwise>
 														</xsl:choose>
-														<xsl:call-template name="addLetterSpacingSmallCaps">
-															<xsl:with-param name="text" select="'Environment'"/>
-														</xsl:call-template>
-													</fo:block>
-												</fo:table-cell>
-												<fo:table-cell padding="1.5mm" padding-bottom="0mm">
-													<fo:block font-size="6.5pt" margin-bottom="6pt">&#xA0;</fo:block>
-													<fo:block font-size="6.5pt">
-														<xsl:choose>
-															<xsl:when test="//iec:iec-standard/iec:bibdata/iec:ext/iec:function = 'quality-assurance'">
-																<xsl:call-template name="insertCheckBoxOn"/>
-															</xsl:when>
-															<xsl:otherwise>
-																<xsl:call-template name="insertCheckBoxOff"/>
-															</xsl:otherwise>
-														</xsl:choose>
-														<xsl:call-template name="addLetterSpacingSmallCaps">
-															<xsl:with-param name="text" select="'Quality assurance'"/>
-														</xsl:call-template>
-														<fo:inline padding-right="13mm">&#xA0;</fo:inline>
-														<xsl:choose>
-															<xsl:when test="//iec:iec-standard/iec:bibdata/iec:ext/iec:function = 'safety'">
-																<xsl:call-template name="insertCheckBoxOn"/>
-															</xsl:when>
-															<xsl:otherwise>
-																<xsl:call-template name="insertCheckBoxOff"/>
-															</xsl:otherwise>
-														</xsl:choose>
-														<xsl:call-template name="addLetterSpacingSmallCaps">
-															<xsl:with-param name="text" select="'Safety'"/>
-														</xsl:call-template>
 													</fo:block>
 												</fo:table-cell>
 											</fo:table-row>
-										</xsl:if>
-										
-										<xsl:if test="not($stage-abbreviation = 'CD' or $stage-abbreviation = 'CD-TSTR' or $stage-abbreviation = 'DTS' or $stage-abbreviation = 'DTR' or $stage-abbreviation = 'DPAS')">
-										
-											<fo:table-row >
+											<fo:table-row height="12mm">
 												<fo:table-cell border="1.5pt solid {$border-color}" padding="1.5mm" padding-bottom="0mm">
-													<fo:block font-size="6.5pt" margin-bottom="12pt">
-														<xsl:choose>
-															<xsl:when test="/iec:iec-standard/iec:bibdata/iec:ext/iec:cen-processing = 'true'">
-																<xsl:call-template name="insertCheckBoxOn"/>
-															</xsl:when>
-															<xsl:otherwise>
-																<xsl:call-template name="insertCheckBoxOff"/>
-															</xsl:otherwise>
-														</xsl:choose>
+													<fo:block font-size="6.5pt" margin-bottom="6pt">
 														<xsl:call-template name="addLetterSpacingSmallCaps">
-															<xsl:with-param name="text" select="'Submitted for CENELEC parallel voting'"/>
+															<xsl:with-param name="text" select="'Secretariat:'"/>
 														</xsl:call-template>
 													</fo:block>
-													
-													<xsl:apply-templates select="(//iec:iec-standard)[1]/iec:boilerplate/iec:feedback-statement/iec:clause[@id = 'boilerplate-cenelec-attention']"/>
-													
+													<fo:block font-size="9pt">
+														<xsl:call-template name="addLetterSpacing">
+															<xsl:with-param name="text" select="//iec:iec-standard/iec:bibdata/iec:ext/iec:editorialgroup/iec:secretariat"/>
+														</xsl:call-template>
+													</fo:block>
 												</fo:table-cell>
 												<fo:table-cell border="1.5pt solid {$border-color}" padding="1.5mm" padding-bottom="0mm">
 													<fo:block font-size="6.5pt" margin-bottom="6pt">
-														<xsl:choose>
-															<xsl:when test="/iec:iec-standard/iec:bibdata/iec:ext/iec:cen-processing = 'true'">
-																<xsl:call-template name="insertCheckBoxOff"/>
-															</xsl:when>
-															<xsl:otherwise>
-																<xsl:call-template name="insertCheckBoxOn"/>
-															</xsl:otherwise>
-														</xsl:choose>
 														<xsl:call-template name="addLetterSpacingSmallCaps">
-															<xsl:with-param name="text" select="'Not submitted for CENELEC parallel voting'"/>
+															<xsl:with-param name="text" select="'Secretary:'"/>
+														</xsl:call-template>
+													</fo:block>
+													<fo:block font-size="9pt">
+														<!-- Example: Ms Shanti Conn -->
+														<xsl:call-template name="addLetterSpacing">
+															<xsl:with-param name="text" select="//iec:iec-standard/iec:bibdata/iec:ext/iec:secretary"/>
 														</xsl:call-template>
 													</fo:block>
 												</fo:table-cell>
 											</fo:table-row>
-										</xsl:if>
-									</fo:table-body>
-								</fo:table>
+											<fo:table-row height="12mm">											
+												<fo:table-cell border="1.5pt solid {$border-color}" padding="1.5mm" padding-bottom="0mm">
+													<xsl:if test="not($stage-abbreviation = 'FDIS' or $stage-abbreviation = 'CDV' or $stage-abbreviation = 'CD')">
+														<xsl:attribute name="number-columns-spanned">2</xsl:attribute>
+													</xsl:if>
+													<fo:block font-size="6.5pt" margin-bottom="6pt">
+														<xsl:call-template name="addLetterSpacingSmallCaps">
+															<xsl:with-param name="text" select="'Of interest to the following committees:'"/>
+														</xsl:call-template>
+													</fo:block>
+													<fo:block font-size="9pt">
+														<xsl:call-template name="addLetterSpacing">
+															<xsl:with-param name="text" select="//iec:iec-standard/iec:bibdata/iec:ext/iec:interest-to-committees"/>
+														</xsl:call-template>
+													</fo:block>
+												</fo:table-cell>
+												<xsl:if test="$stage-abbreviation = 'FDIS' or $stage-abbreviation = 'CDV' or $stage-abbreviation = 'CD'">
+													<fo:table-cell border="1.5pt solid {$border-color}" padding="1.5mm" padding-bottom="0mm">
+														<fo:block font-size="6.5pt" margin-bottom="6pt">
+															<xsl:if test="$stage-abbreviation = 'FDIS'">
+																<xsl:call-template name="addLetterSpacingSmallCaps">
+																	<xsl:with-param name="text" select="'horizontal standard:'"/>
+																</xsl:call-template>
+															</xsl:if>
+															<xsl:if test="$stage-abbreviation = 'CDV' or $stage-abbreviation = 'CD'">
+																<xsl:call-template name="addLetterSpacingSmallCaps">
+																	<xsl:with-param name="text" select="'Proposed horizontal standard:'"/>
+																</xsl:call-template>
+															</xsl:if>
+														</fo:block>
+														<fo:block>
+															<xsl:choose>
+																<xsl:when test="//iec:iec-standard/iec:bibdata/iec:ext/iec:horizontal = 'true'">
+																	<xsl:call-template name="insertCheckBoxOn"/>
+																</xsl:when>
+																<xsl:otherwise>
+																	<xsl:call-template name="insertCheckBoxOff"/>
+																</xsl:otherwise>
+															</xsl:choose>
+														</fo:block>
+														
+														<xsl:if test="$stage-abbreviation = 'CDV' or $stage-abbreviation = 'CD'">
+															<fo:block-container background-color="rgb(236, 232, 232)" margin-left="-2mm" margin-right="-2mm">
+																<fo:block-container margin-left="1mm" margin-right="1mm">
+																	<fo:block font-size="8pt" padding="2mm">
+																		<xsl:call-template name="addLetterSpacing">
+																			<xsl:with-param name="text" select="'Other TC/SCs are requested to indicate their interest, if any, in this CDV to the secretary.'"/>
+																		</xsl:call-template>
+																	</fo:block>
+																</fo:block-container>
+															</fo:block-container>
+														</xsl:if>
+													</fo:table-cell>
+												</xsl:if>
+											</fo:table-row>
+											
+											<xsl:if test="not($stage-abbreviation = 'DPAS')">
+												<fo:table-row height="10mm">
+													<fo:table-cell padding="1.5mm" padding-bottom="0mm">
+														<fo:block font-size="6.5pt" margin-bottom="4pt">
+															<xsl:call-template name="addLetterSpacingSmallCaps">
+																<xsl:with-param name="text" select="'Functions concerned:'"/>
+															</xsl:call-template>
+														</fo:block>
+														<!-- function: { emc | safety | environment | quality-assurance } -->
+														<fo:block font-size="6.5pt">
+															<xsl:choose>
+																<xsl:when test="//iec:iec-standard/iec:bibdata/iec:ext/iec:function = 'emc'">
+																	<xsl:call-template name="insertCheckBoxOn"/>
+																</xsl:when>
+																<xsl:otherwise>
+																	<xsl:call-template name="insertCheckBoxOff"/>
+																</xsl:otherwise>
+															</xsl:choose>
+															<xsl:call-template name="addLetterSpacingSmallCaps">
+																<xsl:with-param name="text" select="'EMC'"/>
+															</xsl:call-template>
+															<fo:inline padding-right="33mm">&#xA0;</fo:inline>
+															<xsl:choose>
+																<xsl:when test="//iec:iec-standard/iec:bibdata/iec:ext/iec:function = 'environment'">
+																	<xsl:call-template name="insertCheckBoxOn"/>
+																</xsl:when>
+																<xsl:otherwise>
+																	<xsl:call-template name="insertCheckBoxOff"/>
+																</xsl:otherwise>
+															</xsl:choose>
+															<xsl:call-template name="addLetterSpacingSmallCaps">
+																<xsl:with-param name="text" select="'Environment'"/>
+															</xsl:call-template>
+														</fo:block>
+													</fo:table-cell>
+													<fo:table-cell padding="1.5mm" padding-bottom="0mm">
+														<fo:block font-size="6.5pt" margin-bottom="6pt">&#xA0;</fo:block>
+														<fo:block font-size="6.5pt">
+															<xsl:choose>
+																<xsl:when test="//iec:iec-standard/iec:bibdata/iec:ext/iec:function = 'quality-assurance'">
+																	<xsl:call-template name="insertCheckBoxOn"/>
+																</xsl:when>
+																<xsl:otherwise>
+																	<xsl:call-template name="insertCheckBoxOff"/>
+																</xsl:otherwise>
+															</xsl:choose>
+															<xsl:call-template name="addLetterSpacingSmallCaps">
+																<xsl:with-param name="text" select="'Quality assurance'"/>
+															</xsl:call-template>
+															<fo:inline padding-right="13mm">&#xA0;</fo:inline>
+															<xsl:choose>
+																<xsl:when test="//iec:iec-standard/iec:bibdata/iec:ext/iec:function = 'safety'">
+																	<xsl:call-template name="insertCheckBoxOn"/>
+																</xsl:when>
+																<xsl:otherwise>
+																	<xsl:call-template name="insertCheckBoxOff"/>
+																</xsl:otherwise>
+															</xsl:choose>
+															<xsl:call-template name="addLetterSpacingSmallCaps">
+																<xsl:with-param name="text" select="'Safety'"/>
+															</xsl:call-template>
+														</fo:block>
+													</fo:table-cell>
+												</fo:table-row>
+											</xsl:if>
+											
+											<xsl:if test="not($stage-abbreviation = 'CD' or $stage-abbreviation = 'CD-TSTR' or $stage-abbreviation = 'DTS' or $stage-abbreviation = 'DTR' or $stage-abbreviation = 'DPAS')">
+											
+												<fo:table-row >
+													<fo:table-cell border="1.5pt solid {$border-color}" padding="1.5mm" padding-bottom="0mm">
+														<fo:block font-size="6.5pt" margin-bottom="12pt">
+															<xsl:choose>
+																<xsl:when test="/iec:iec-standard/iec:bibdata/iec:ext/iec:cen-processing = 'true'">
+																	<xsl:call-template name="insertCheckBoxOn"/>
+																</xsl:when>
+																<xsl:otherwise>
+																	<xsl:call-template name="insertCheckBoxOff"/>
+																</xsl:otherwise>
+															</xsl:choose>
+															<xsl:call-template name="addLetterSpacingSmallCaps">
+																<xsl:with-param name="text" select="'Submitted for CENELEC parallel voting'"/>
+															</xsl:call-template>
+														</fo:block>
+														
+														<xsl:apply-templates select="(//iec:iec-standard)[1]/iec:boilerplate/iec:feedback-statement/iec:clause[@id = 'boilerplate-cenelec-attention']"/>
+														
+													</fo:table-cell>
+													<fo:table-cell border="1.5pt solid {$border-color}" padding="1.5mm" padding-bottom="0mm">
+														<fo:block font-size="6.5pt" margin-bottom="6pt">
+															<xsl:choose>
+																<xsl:when test="/iec:iec-standard/iec:bibdata/iec:ext/iec:cen-processing = 'true'">
+																	<xsl:call-template name="insertCheckBoxOff"/>
+																</xsl:when>
+																<xsl:otherwise>
+																	<xsl:call-template name="insertCheckBoxOn"/>
+																</xsl:otherwise>
+															</xsl:choose>
+															<xsl:call-template name="addLetterSpacingSmallCaps">
+																<xsl:with-param name="text" select="'Not submitted for CENELEC parallel voting'"/>
+															</xsl:call-template>
+														</fo:block>
+													</fo:table-cell>
+												</fo:table-row>
+											</xsl:if>
+										</fo:table-body>
+									</fo:table>
+								</fo:block-container>
 							</fo:block-container>
-						</fo:block-container>
-						
-						<fo:block-container font-size="8pt" background-color="rgb(236, 232, 232)" margin-top="5mm" padding="2mm" text-align="justify" border="1.5pt solid white">
-							<fo:block>
-								<xsl:apply-templates select="(//iec:iec-standard)[1]/iec:boilerplate/iec:license-statement" mode="cover-page-internal"/>
-							</fo:block>
-						</fo:block-container>
-						
-						<fo:block-container background-color="rgb(219, 229, 241)" margin-top="4mm" padding="2mm" padding-top="1mm" border="1.5pt solid white">
-							<fo:block font-size="6.5pt" margin-bottom="6pt">
-								<xsl:call-template name="addLetterSpacingSmallCaps">
-									<xsl:with-param name="text">Title:</xsl:with-param>
-								</xsl:call-template>
-							</fo:block>
-							<fo:block font-size="9pt" font-weight="bold">
-								<xsl:call-template name="addLetterSpacing">
-									<xsl:with-param name="text"><xsl:value-of select="(//iec:iec-standard)[1]/iec:bibdata/iec:title[@language = $lang and @type = 'main']"/></xsl:with-param>
-								</xsl:call-template>
-							</fo:block>
-						</fo:block-container>
-						
-						<xsl:if test="$stage-abbreviation = 'FDIS' or $stage-abbreviation = 'CDV' or $stage-abbreviation = 'DTS' or $stage-abbreviation = 'DTR' or $stage-abbreviation = 'DPAS'">
-							<fo:block-container border="1.5 solid" border-color="rgb(221, 213, 213)" height="6.5mm" padding="1mm" margin-top="3mm" display-align="center">
-								<fo:block font-size="6.5pt">
-									<xsl:call-template name="addLetterSpacing">
-										<xsl:with-param name="text">
-											<xsl:text>PROPOSED STABILITY DATE: </xsl:text>
-										</xsl:with-param>
-									</xsl:call-template>
-									<!-- 2023 -->
-									<fo:inline font-size="9pt"><xsl:value-of select="//iec:iec-standard/iec:bibdata/iec:date[@type='unchanged']/iec:on"/></fo:inline>
+							
+							<fo:block-container font-size="8pt" background-color="rgb(236, 232, 232)" margin-top="5mm" padding="2mm" text-align="justify" border="1.5pt solid white">
+								<fo:block>
+									<xsl:apply-templates select="(//iec:iec-standard)[1]/iec:boilerplate/iec:license-statement" mode="cover-page-internal"/>
 								</fo:block>
 							</fo:block-container>
-						</xsl:if>
-						
-						<fo:block-container border="1.5 solid" border-color="rgb(221, 213, 213)" padding="1mm" margin-top="3mm">
-							<fo:block font-size="6.5pt" margin-bottom="6pt">
-								<xsl:call-template name="addLetterSpacingSmallCaps">
-									<xsl:with-param name="text">Note from TC/SC officers:</xsl:with-param>
-								</xsl:call-template>
-							</fo:block>
-							<!-- Example: This FDIS is the result of the discussion between the IEC SC21A experts WG 3 during the meeting held in -->
-							<xsl:apply-templates select="(//iec:iec-standard)[1]/iec:bibdata/iec:ext/iec:tc-sc-officers-note"/>
-						</fo:block-container>
-								
-						
-					</fo:flow>
-				</fo:page-sequence>
-			</xsl:if>
-			
-			<xsl:if test="$debug = 'true'">
-					<xsl:text disable-output-escaping="yes">&lt;!--</xsl:text>
-						DEBUG
-						contents=<xsl:copy-of select="$contents"/>
-					<xsl:text disable-output-escaping="yes">--&gt;</xsl:text>
+							
+							<fo:block-container background-color="rgb(219, 229, 241)" margin-top="4mm" padding="2mm" padding-top="1mm" border="1.5pt solid white">
+								<fo:block font-size="6.5pt" margin-bottom="6pt">
+									<xsl:call-template name="addLetterSpacingSmallCaps">
+										<xsl:with-param name="text">Title:</xsl:with-param>
+									</xsl:call-template>
+								</fo:block>
+								<fo:block font-size="9pt" font-weight="bold">
+									<xsl:call-template name="addLetterSpacing">
+										<xsl:with-param name="text"><xsl:value-of select="(//iec:iec-standard)[1]/iec:bibdata/iec:title[@language = $lang and @type = 'main']"/></xsl:with-param>
+									</xsl:call-template>
+								</fo:block>
+							</fo:block-container>
+							
+							<xsl:if test="$stage-abbreviation = 'FDIS' or $stage-abbreviation = 'CDV' or $stage-abbreviation = 'DTS' or $stage-abbreviation = 'DTR' or $stage-abbreviation = 'DPAS'">
+								<fo:block-container border="1.5 solid" border-color="rgb(221, 213, 213)" height="6.5mm" padding="1mm" margin-top="3mm" display-align="center">
+									<fo:block font-size="6.5pt">
+										<xsl:call-template name="addLetterSpacing">
+											<xsl:with-param name="text">
+												<xsl:text>PROPOSED STABILITY DATE: </xsl:text>
+											</xsl:with-param>
+										</xsl:call-template>
+										<!-- 2023 -->
+										<fo:inline font-size="9pt"><xsl:value-of select="//iec:iec-standard/iec:bibdata/iec:date[@type='unchanged']/iec:on"/></fo:inline>
+									</fo:block>
+								</fo:block-container>
+							</xsl:if>
+							
+							<fo:block-container border="1.5 solid" border-color="rgb(221, 213, 213)" padding="1mm" margin-top="3mm">
+								<fo:block font-size="6.5pt" margin-bottom="6pt">
+									<xsl:call-template name="addLetterSpacingSmallCaps">
+										<xsl:with-param name="text">Note from TC/SC officers:</xsl:with-param>
+									</xsl:call-template>
+								</fo:block>
+								<!-- Example: This FDIS is the result of the discussion between the IEC SC21A experts WG 3 during the meeting held in -->
+								<xsl:apply-templates select="(//iec:iec-standard)[1]/iec:bibdata/iec:ext/iec:tc-sc-officers-note"/>
+							</fo:block-container>
+									
+							
+						</fo:flow>
+					</fo:page-sequence>
 				</xsl:if>
-			
-			<xsl:for-each select="//iec:iec-standard">
-				<xsl:variable name="lang" select="*[local-name()='bibdata']/*[local-name()='language'][@current = 'true']"/>
-				<xsl:variable name="current_document">
-					<xsl:copy-of select="."/>
-				</xsl:variable>
 				
-				<xsl:variable name="num"><xsl:number count="iec:iec-standard" level="any"/></xsl:variable>
+				<xsl:if test="$debug = 'true'">
+						<xsl:text disable-output-escaping="yes">&lt;!--</xsl:text>
+							DEBUG
+							contents=<xsl:copy-of select="$contents"/>
+						<xsl:text disable-output-escaping="yes">--&gt;</xsl:text>
+					</xsl:if>
 				
-				<xsl:for-each select="xalan:nodeset($current_document)">
-				
-					<xsl:variable name="docid">
-						<xsl:call-template name="getDocumentId"/>
+				<xsl:for-each select="//iec:iec-standard">
+					<xsl:variable name="lang" select="*[local-name()='bibdata']/*[local-name()='language'][@current = 'true']"/>
+					<xsl:variable name="current_document">
+						<xsl:copy-of select="."/>
 					</xsl:variable>
 					
-					<fo:page-sequence master-reference="document" format="1" force-page-count="no-force"> <!-- initial-page-number="2"   -->
+					<xsl:variable name="num"><xsl:number count="iec:iec-standard" level="any"/></xsl:variable>
+					
+					<xsl:for-each select="xalan:nodeset($current_document)">
+					
+						<xsl:variable name="docid">
+							<xsl:call-template name="getDocumentId"/>
+						</xsl:variable>
 						
-						<xsl:if test="$num = '1'">
-							<xsl:attribute name="initial-page-number">2</xsl:attribute>
-						</xsl:if>
-						<xsl:if test="$isIEV = 'true'">
-							<xsl:attribute name="format">I</xsl:attribute>
-						</xsl:if>
-						
-						<xsl:call-template name="insertHeaderFooter"/>
-							<fo:flow flow-name="xsl-region-body">
+						<fo:page-sequence master-reference="document" format="1" force-page-count="no-force"> <!-- initial-page-number="2"   -->
 							
-							<xsl:call-template name="insertTOCpages">
-								<xsl:with-param name="contents" select="$contents/doc[@id = $docid]"/>
-							</xsl:call-template>
+							<xsl:if test="$num = '1'">
+								<xsl:attribute name="initial-page-number">2</xsl:attribute>
+							</xsl:if>
+							<xsl:if test="$isIEV = 'true'">
+								<xsl:attribute name="format">I</xsl:attribute>
+							</xsl:if>
 							
-							<xsl:call-template name="insertPrefacepages">
-								<xsl:with-param name="lang" select="$lang"/>
-							</xsl:call-template>
+							<xsl:call-template name="insertHeaderFooter"/>
+								<fo:flow flow-name="xsl-region-body">
 								
-							
-							</fo:flow>
+								<xsl:call-template name="insertTOCpages">
+									<xsl:with-param name="contents" select="$contents/doc[@id = $docid]"/>
+								</xsl:call-template>
+								
+								<xsl:call-template name="insertPrefacepages">
+									<xsl:with-param name="lang" select="$lang"/>
+								</xsl:call-template>
+									
+								
+								</fo:flow>
+						</fo:page-sequence>
+						
+						<xsl:call-template name="insertBodypages">
+							<xsl:with-param name="lang" select="$lang"/>
+						</xsl:call-template>
+						
+					</xsl:for-each>				
+				</xsl:for-each>
+				
+			
+				
+				
+				<xsl:if test="$stage &gt;= 60">
+					<fo:page-sequence master-reference="blank-page">
+						<fo:flow flow-name="xsl-region-body">
+							<fo:block>&#xA0;</fo:block>
+						</fo:flow>
 					</fo:page-sequence>
 					
-					<xsl:call-template name="insertBodypages">
-						<xsl:with-param name="lang" select="$lang"/>
-					</xsl:call-template>
-					
-				</xsl:for-each>				
-			</xsl:for-each>
-			
-		
-			
-			
-			<xsl:if test="$stage &gt;= 60">
-				<fo:page-sequence master-reference="blank-page">
-					<fo:flow flow-name="xsl-region-body">
-						<fo:block>&#xA0;</fo:block>
-					</fo:flow>
-				</fo:page-sequence>
-				
-				<fo:page-sequence master-reference="last-page">
-					<fo:flow flow-name="xsl-region-body">
-						<fo:block-container margin-left="20mm" margin-top="19mm">
-							<fo:block-container margin-left="0mm" margin-top="0mm">
-								<fo:block font-size="11pt" color="{$color_blue}" margin-bottom="12pt" line-height="150%">
-									<fo:block-container width="42mm">
-										<fo:block>
-											<xsl:variable name="publisher" select="java:toUpperCase(java:java.lang.String.new(//iec:iec-standard/iec:bibdata/iec:contributor[iec:role/@type = 'publisher']/iec:organization/iec:name))"/>
-											<xsl:value-of select="$publisher"/>
-										</fo:block>
-									</fo:block-container>
-								</fo:block>
-								<fo:block font-size="9pt" line-height="150%">
-									<!-- Example:
-									3, rue de Varembé
-									PO Box 131
-									CH-1211 Geneva 20
-									Switzerland
-									
-									Tel: + 41 22 919 02 11
-									Fax: + 41 22 919 03 00
-									info@iec.ch
-									www.iec.ch -->
-									<xsl:variable name="telpos" select="count((//iec:iec-standard)[1]/iec:boilerplate/iec:copyright-statement/iec:clause/iec:p[contains(@id, 'boilerplate-address')]/text()[contains(., 'Tel.')]/preceding-sibling::node())"/>
-									<xsl:choose>
-										<xsl:when test="$telpos != 0">
-											<xsl:apply-templates select="(//iec:iec-standard)[1]/iec:boilerplate/iec:copyright-statement/iec:clause/iec:p[contains(@id, 'boilerplate-address')]/node()[position() &lt;= $telpos]" mode="coverpage"/>
-											<xsl:apply-templates select="(//iec:iec-standard)[1]/iec:boilerplate/iec:copyright-statement/iec:clause/iec:p[contains(@id, 'boilerplate-address')]/node()[position() &gt;= $telpos]" mode="coverpage">
-												<xsl:with-param name="lastpage">true</xsl:with-param>
-											</xsl:apply-templates>
-										</xsl:when>
-										<xsl:otherwise>
-											<xsl:apply-templates select="(//iec:iec-standard)[1]/iec:boilerplate/iec:copyright-statement/iec:clause/iec:p[contains(@id, 'boilerplate-address')]" mode="coverpage"/>
-										</xsl:otherwise>
-									</xsl:choose>
-								</fo:block>
+					<fo:page-sequence master-reference="last-page">
+						<fo:flow flow-name="xsl-region-body">
+							<fo:block-container margin-left="20mm" margin-top="19mm">
+								<fo:block-container margin-left="0mm" margin-top="0mm">
+									<fo:block font-size="11pt" color="{$color_blue}" margin-bottom="12pt" line-height="150%">
+										<fo:block-container width="42mm">
+											<fo:block>
+												<xsl:variable name="publisher" select="java:toUpperCase(java:java.lang.String.new(//iec:iec-standard/iec:bibdata/iec:contributor[iec:role/@type = 'publisher']/iec:organization/iec:name))"/>
+												<xsl:value-of select="$publisher"/>
+											</fo:block>
+										</fo:block-container>
+									</fo:block>
+									<fo:block font-size="9pt" line-height="150%">
+										<!-- Example:
+										3, rue de Varembé
+										PO Box 131
+										CH-1211 Geneva 20
+										Switzerland
+										
+										Tel: + 41 22 919 02 11
+										Fax: + 41 22 919 03 00
+										info@iec.ch
+										www.iec.ch -->
+										<xsl:variable name="telpos" select="count((//iec:iec-standard)[1]/iec:boilerplate/iec:copyright-statement/iec:clause/iec:p[contains(@id, 'boilerplate-address')]/text()[contains(., 'Tel.')]/preceding-sibling::node())"/>
+										<xsl:choose>
+											<xsl:when test="$telpos != 0">
+												<xsl:apply-templates select="(//iec:iec-standard)[1]/iec:boilerplate/iec:copyright-statement/iec:clause/iec:p[contains(@id, 'boilerplate-address')]/node()[position() &lt;= $telpos]" mode="coverpage"/>
+												<xsl:apply-templates select="(//iec:iec-standard)[1]/iec:boilerplate/iec:copyright-statement/iec:clause/iec:p[contains(@id, 'boilerplate-address')]/node()[position() &gt;= $telpos]" mode="coverpage">
+													<xsl:with-param name="lastpage">true</xsl:with-param>
+												</xsl:apply-templates>
+											</xsl:when>
+											<xsl:otherwise>
+												<xsl:apply-templates select="(//iec:iec-standard)[1]/iec:boilerplate/iec:copyright-statement/iec:clause/iec:p[contains(@id, 'boilerplate-address')]" mode="coverpage"/>
+											</xsl:otherwise>
+										</xsl:choose>
+									</fo:block>
+								</fo:block-container>
 							</fo:block-container>
-						</fo:block-container>
-					</fo:flow>
-				</fo:page-sequence>
-			</xsl:if>
-		</fo:root>
+						</fo:flow>
+					</fo:page-sequence>
+				</xsl:if>
+			</fo:root>
+		</xsl:variable>
+		
+		<xsl:apply-templates select="xalan:nodeset($xslfo)" mode="landscape_portrait"/>
+		
 	</xsl:template> 
+
+	<xsl:template match="iec:pagebreak" priority="2">
+		<xsl:copy-of select="."/>
+	</xsl:template>
 
 	<xsl:template match="iec:tc-sc-officers-note/iec:p">
 		<fo:block><xsl:apply-templates /></fo:block>
