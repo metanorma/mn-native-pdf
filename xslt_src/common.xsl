@@ -9127,7 +9127,7 @@
 		</xsl:copy>
 	</xsl:template>
 	
-	<xsl:template match="*[local-name()='th' or local-name() = 'td'][not(*[local-name()='br']) and not(*[local-name()='p']) and not(*[local-name()='sourcecode'])]" mode="table-without-br">
+	<xsl:template match="*[local-name()='th' or local-name() = 'td'][not(*[local-name()='br']) and not(*[local-name()='p']) and not(*[local-name()='sourcecode']) and not(*[local-name()='ul']) and not(*[local-name()='ol'])]" mode="table-without-br">
 		<xsl:copy>
 			<xsl:copy-of select="@*"/>
 			<p>
@@ -9204,6 +9204,14 @@
 		<xsl:value-of select="java:replaceAll(java:java.lang.String.new($text),' {2,}',' ')"/>
 	</xsl:template>
 
+	<xsl:template match="*[local-name()='th' or local-name()='td']//*[local-name() = 'ol' or local-name() = 'ul']" mode="table-without-br">
+		<xsl:apply-templates mode="table-without-br"/>
+	</xsl:template>
+	
+	<xsl:template match="*[local-name()='th' or local-name()='td']//*[local-name() = 'li']" mode="table-without-br">
+		<xsl:apply-templates mode="table-without-br"/>
+	</xsl:template>
+	
 	<!-- mode="table-without-br" -->
 	<!-- ================================== -->
 	<!-- END: Step 0. replace <br/> to <p>...</p> -->
