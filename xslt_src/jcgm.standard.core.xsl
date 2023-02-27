@@ -46,7 +46,7 @@
 	<xsl:variable name="doc_first">
 		<xsl:if test="*[local-name()='metanorma-collection']">
 			<xsl:variable name="doc_first_step1">
-				<xsl:apply-templates  select="(/*[local-name()='metanorma-collection']//*[contains(local-name(), '-standard')])[1]" mode="flatxml_step1">
+				<xsl:apply-templates  select="(/*[local-name()='metanorma-collection']//*[local-name() = 'bipm-standard'])[1]" mode="flatxml_step1">
 					<xsl:with-param name="num" select="'first'"/>
 				</xsl:apply-templates>
 			</xsl:variable>
@@ -58,7 +58,7 @@
 	</xsl:variable>
 	<xsl:variable name="docs_slave">
 		<xsl:if test="*[local-name()='metanorma-collection']">
-			<xsl:for-each select="(/*[local-name()='metanorma-collection']//*[contains(local-name(), '-standard')])[position() &gt; 1]">
+			<xsl:for-each select="(/*[local-name()='metanorma-collection']//*[local-name() = 'bipm-standard'])[position() &gt; 1]">
 				<xsl:variable name="doc_first_step1">
 					<xsl:apply-templates  select="." mode="flatxml_step1">
 					<xsl:with-param name="num" select="'slave'"/>
@@ -77,7 +77,7 @@
 	<xsl:variable name="docs_count">
 		<xsl:choose>
 			<xsl:when test="/*[local-name()='metanorma-collection']">
-				<xsl:value-of select="count(/*[local-name()='metanorma-collection']//*[contains(local-name(), '-standard')])"/>
+				<xsl:value-of select="count(/*[local-name()='metanorma-collection']//*[local-name() = 'bipm-standard'])"/>
 			</xsl:when>
 			<xsl:otherwise>1</xsl:otherwise>
 		</xsl:choose>
@@ -103,7 +103,7 @@
 	-->
 	<xsl:variable name="contents_">
 	
-		<xsl:for-each select="//*[contains(local-name(), '-standard')]">
+		<xsl:for-each select="//*[local-name() = 'bipm-standard']">
 			<xsl:variable name="lang" select="*[local-name()='bibdata']/*[local-name()='language'][@current = 'true']"/>
 			<xsl:variable name="current_document">
 				<xsl:copy-of select="."/>
@@ -350,12 +350,12 @@
 				<fo:flow flow-name="xsl-region-body" line-height="115%">
 				
 					<!-- Copyright -->
-					<xsl:for-each select="//*[contains(local-name(), '-standard')]">
+					<xsl:for-each select="//*[local-name() = 'bipm-standard']">
 						<xsl:apply-templates select="./*[local-name()='boilerplate']/*" />
 						<fo:block break-after="page"/>
 					</xsl:for-each>
 				
-					<xsl:for-each select="//*[contains(local-name(), '-standard')]">
+					<xsl:for-each select="//*[local-name() = 'bipm-standard']">
 						<xsl:variable name="current_document">
 							<xsl:copy-of select="."/>
 						</xsl:variable>				
@@ -436,23 +436,23 @@
 					
 					<!-- Foreword, Introduction -->					
 					<!-- <xsl:call-template name="processPrefaceSectionsDefault"/> -->
-					<xsl:for-each select="//*[contains(local-name(), '-standard')]">
+					<xsl:for-each select="//*[local-name() = 'bipm-standard']">
 						<fo:block break-after="page"/>
 						<xsl:apply-templates select="./*[local-name()='preface']/*[local-name()='abstract']" />
 					</xsl:for-each>
-					<xsl:for-each select="//*[contains(local-name(), '-standard')]">
+					<xsl:for-each select="//*[local-name() = 'bipm-standard']">
 						<fo:block break-after="page"/>
 						<xsl:apply-templates select="./*[local-name()='preface']/*[local-name()='foreword']" />
 					</xsl:for-each>
-					<xsl:for-each select="//*[contains(local-name(), '-standard')]">
+					<xsl:for-each select="//*[local-name() = 'bipm-standard']">
 						<fo:block break-after="page"/>
 						<xsl:apply-templates select="./*[local-name()='preface']/*[local-name()='introduction']" />
 					</xsl:for-each>
-					<xsl:for-each select="//*[contains(local-name(), '-standard')]">
+					<xsl:for-each select="//*[local-name() = 'bipm-standard']">
 						<fo:block break-after="page"/>
 						<xsl:apply-templates select="./*[local-name()='preface']/*[local-name() != 'abstract' and local-name() != 'foreword' and local-name() != 'introduction' and local-name() != 'acknowledgements' and local-name() != 'note' and local-name() != 'admonition']" />
 					</xsl:for-each>
-					<xsl:for-each select="//*[contains(local-name(), '-standard')]">
+					<xsl:for-each select="//*[local-name() = 'bipm-standard']">
 						<fo:block break-after="page"/>
 						<xsl:apply-templates select="./*[local-name()='preface']/*[local-name()='acknowledgements']" />
 					</xsl:for-each>
@@ -476,7 +476,7 @@
 						<!-- Show title -->
 						<!-- Example: Evaluation of measurement data — An introduction to the `Guide to the expression of uncertainty in measurement' and related documents -->
 						
-						<xsl:for-each select="//*[contains(local-name(), '-standard')]">
+						<xsl:for-each select="//*[local-name() = 'bipm-standard']">
 							<fo:block font-size="20pt" font-weight="bold" margin-bottom="20pt" space-before="36pt" line-height="1.1">
 								<xsl:variable name="curr_lang" select="*[local-name()='bibdata']/*[local-name()='language'][@current = 'true']"/>
 								
@@ -512,7 +512,7 @@
 					<!-- Clause(s) -->
 					<fo:block>
 						<xsl:choose>
-							<xsl:when test="count(//*[contains(local-name(), '-standard')]) = 1 ">
+							<xsl:when test="count(//*[local-name() = 'bipm-standard']) = 1 ">
 								<xsl:call-template name="processMainSectionsDefault"/>
 							</xsl:when>
 							<xsl:otherwise>
@@ -1425,7 +1425,7 @@
 		</xsl:copy>
 	</xsl:template>
 	
-	<xsl:template match="*[contains(local-name(), '-standard')]" mode="flatxml_step1">
+	<xsl:template match="*[local-name() = 'bipm-standard']" mode="flatxml_step1">
 		<xsl:param name="num"/>
 		<xsl:copy>
 			<xsl:apply-templates select="@*" mode="flatxml_step1"/>
