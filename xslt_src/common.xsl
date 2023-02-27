@@ -1958,6 +1958,7 @@
 		</xsl:if>
 		<xsl:if test="$namespace = 'bsi'">
 			<xsl:attribute name="font-size">9pt</xsl:attribute>
+			<xsl:attribute name="font-style">italic</xsl:attribute>
 			<xsl:attribute name="margin-bottom">6pt</xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'gb'">
@@ -5185,7 +5186,7 @@
 						<xsl:attribute name="margin-bottom">0pt</xsl:attribute>
 					</xsl:if>
 					<xsl:if test="$document_type = 'PAS'">
-						<xsl:attribute name="font-size">8pt</xsl:attribute>
+						<xsl:attribute name="font-size">9pt</xsl:attribute>
 						<!-- two-columns table without name renders in column (not spanned) -->
 						<xsl:choose>
 							<xsl:when test="count(*[local-name()='colgroup']/*[local-name()='col']) = 2 and not(*[local-name() = 'name']) and not(*[local-name() = 'thead'])">
@@ -5642,7 +5643,7 @@
 						
 							<xsl:if test="$document_type = 'PAS'">
 								<xsl:attribute name="margin-left">0.5mm</xsl:attribute>
-								<xsl:attribute name="font-size">12pt</xsl:attribute>
+								<xsl:attribute name="font-size">11pt</xsl:attribute>
 								<xsl:attribute name="font-style">normal</xsl:attribute>
 								<xsl:attribute name="margin-bottom">-16pt</xsl:attribute> <!-- to overlap title on empty header row -->
 								<xsl:if test="$continued = 'true'"> <!-- in continued table header -->
@@ -6267,7 +6268,7 @@
 										<xsl:attribute name="border-bottom"><xsl:value-of select="$table-border"/></xsl:attribute>
 									</xsl:if>
 									<xsl:if test="$document_type = 'PAS'">
-										<xsl:attribute name="border">1pt solid <xsl:value-of select="$color_PAS"/></xsl:attribute>
+										<xsl:attribute name="border">0.75pt solid <xsl:value-of select="$color_PAS"/></xsl:attribute>
 									</xsl:if>
 								</xsl:if>
 
@@ -6725,7 +6726,15 @@
 					</xsl:if>
 				</xsl:if>
 				<xsl:if test="$document_type = 'PAS'">
-					<xsl:attribute name="border">1pt solid <xsl:value-of select="$color_PAS"/></xsl:attribute>
+					<xsl:attribute name="border">0.75pt solid <xsl:value-of select="$color_PAS"/></xsl:attribute>
+					<xsl:attribute name="background-color"><xsl:value-of select="$color_PAS"/></xsl:attribute>
+					<xsl:attribute name="color">white</xsl:attribute>
+				</xsl:if>
+				<xsl:if test="following-sibling::*[1][local-name() = 'th']">
+					<xsl:attribute name="border-right">0.75pt solid white</xsl:attribute>
+				</xsl:if>
+				<xsl:if test="preceding-sibling::*[1][local-name() = 'th']">
+					<xsl:attribute name="border-left">0.75pt solid white</xsl:attribute>
 				</xsl:if>
 			</xsl:if>
 
@@ -6912,7 +6921,7 @@
 				</xsl:if>
 				
 				<xsl:if test="$document_type = 'PAS'">
-					<xsl:attribute name="border">1pt solid <xsl:value-of select="$color_PAS"/></xsl:attribute>
+					<xsl:attribute name="border">0.75pt solid <xsl:value-of select="$color_PAS"/></xsl:attribute>
 					<!-- two-columns table without name renders without borders -->
 					<xsl:if test="ancestor::*[local-name() = 'table'][count(*[local-name()='colgroup']/*[local-name()='col']) = 2 and not(*[local-name() = 'name']) and not(*[local-name() = 'thead'])]">
 						<xsl:attribute name="border">none</xsl:attribute>
@@ -7061,7 +7070,7 @@
 				<xsl:if test="$namespace = 'bsi'">
 					<xsl:if test="$document_type = 'PAS'">
 						<xsl:attribute name="padding-right">1mm</xsl:attribute>
-						<xsl:attribute name="font-style">italic</xsl:attribute>
+						<!-- <xsl:attribute name="font-style">italic</xsl:attribute> -->
 					</xsl:if>
 				</xsl:if>
 				
@@ -11675,7 +11684,7 @@
 					</xsl:if>
 					<xsl:if test="$document_type = 'PAS'">
 						<xsl:attribute name="margin-left">0mm</xsl:attribute>
-						<xsl:attribute name="font-size">12pt</xsl:attribute>
+						<xsl:attribute name="font-size">11pt</xsl:attribute>
 						<xsl:attribute name="font-style">normal</xsl:attribute>
 					</xsl:if>
 					<xsl:if test="../@width = 'full-page-width'">
