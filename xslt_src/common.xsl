@@ -1958,6 +1958,7 @@
 		</xsl:if>
 		<xsl:if test="$namespace = 'bsi'">
 			<xsl:attribute name="font-size">9pt</xsl:attribute>
+			<xsl:attribute name="font-style">italic</xsl:attribute>
 			<xsl:attribute name="margin-bottom">6pt</xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'gb'">
@@ -7069,7 +7070,7 @@
 				<xsl:if test="$namespace = 'bsi'">
 					<xsl:if test="$document_type = 'PAS'">
 						<xsl:attribute name="padding-right">1mm</xsl:attribute>
-						<xsl:attribute name="font-style">italic</xsl:attribute>
+						<!-- <xsl:attribute name="font-style">italic</xsl:attribute> -->
 					</xsl:if>
 				</xsl:if>
 				
