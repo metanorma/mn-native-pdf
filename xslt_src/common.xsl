@@ -16292,6 +16292,23 @@
 		</xsl:if>
 	</xsl:template>
  
+	<xsl:template name="setBlockAttributes">
+		<xsl:param name="text_align_default">left</xsl:param>
+		<xsl:call-template name="setTextAlignment">
+			<xsl:with-param name="default" select="$text_align_default"/>
+		</xsl:call-template>
+		
+		<!-- https://www.metanorma.org/author/topics/document-format/text/#avoiding-page-breaks -->
+		<!-- Example: keep-lines-together="true" -->
+		<xsl:if test="@keep-lines-together = 'true'">
+			<xsl:attribute name="keep-together.within-column">always</xsl:attribute>
+		</xsl:if>
+		<!-- Example: keep-with-next="true" -->
+		<xsl:if test="@keep-with-next =  'true'">
+			<xsl:attribute name="keep-with-next">always</xsl:attribute>
+		</xsl:if>
+	</xsl:template>
+ 
 	<xsl:template name="number-to-words">
 		<xsl:param name="number" />
 		<xsl:param name="first"/>
