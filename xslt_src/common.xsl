@@ -7201,10 +7201,10 @@
 							
 							<fo:block xsl:use-attribute-sets="fn-body-style">
 								<xsl:if test="$namespace = 'bsi'">
+									<xsl:attribute name="color">black</xsl:attribute>
 									<xsl:if test="$document_type = 'PAS'">
 										<xsl:attribute name="start-indent">0mm</xsl:attribute>
 										<xsl:attribute name="text-indent">0mm</xsl:attribute>
-										<xsl:attribute name="color">black</xsl:attribute>
 										<xsl:attribute name="margin-top">6pt</xsl:attribute>
 										<xsl:attribute name="margin-bottom">-7mm</xsl:attribute>
 									</xsl:if>
