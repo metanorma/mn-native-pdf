@@ -4682,8 +4682,8 @@
 			<xsl:apply-templates select="." mode="contents"/>
 		</xsl:for-each>
 		
-		<xsl:for-each select="/*/*[local-name()='bibliography']/*[not(@normative='true') and not(*[local-name()='references'][@normative='true'])] | 
-								/*/*[local-name()='bibliography']/*[local-name()='clause'][*[local-name()='references'][not(@normative='true')]]">
+		<xsl:for-each select="/*/*[local-name()='bibliography']/*[not(@normative='true') and not(*[local-name()='references'][@normative='true'])][count(.//*[local-name() = 'bibitem'][not(@hidden) = 'true']) &gt; 0] | 
+								/*/*[local-name()='bibliography']/*[local-name()='clause'][*[local-name()='references'][not(@normative='true')]][count(.//*[local-name() = 'bibitem'][not(@hidden) = 'true']) &gt; 0]">
 			<xsl:sort select="@displayorder" data-type="number"/>
 			<xsl:apply-templates select="." mode="contents"/>
 		</xsl:for-each>
@@ -7201,10 +7201,10 @@
 							
 							<fo:block xsl:use-attribute-sets="fn-body-style">
 								<xsl:if test="$namespace = 'bsi'">
+									<xsl:attribute name="color">black</xsl:attribute>
 									<xsl:if test="$document_type = 'PAS'">
 										<xsl:attribute name="start-indent">0mm</xsl:attribute>
 										<xsl:attribute name="text-indent">0mm</xsl:attribute>
-										<xsl:attribute name="color">black</xsl:attribute>
 										<xsl:attribute name="margin-top">6pt</xsl:attribute>
 										<xsl:attribute name="margin-bottom">-7mm</xsl:attribute>
 									</xsl:if>
@@ -13282,6 +13282,7 @@
 							<xsl:otherwise>1</xsl:otherwise>
 						</xsl:choose>
 					</xsl:when>
+					<xsl:when test="$doctype = 'expert-commentary'">1</xsl:when>
 					<xsl:otherwise>
 						<xsl:choose>
 							<xsl:when test="$depth = 1 and ../@ancestor = 'annex'">1.5</xsl:when>
