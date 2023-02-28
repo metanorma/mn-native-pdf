@@ -13282,6 +13282,7 @@
 							<xsl:otherwise>1</xsl:otherwise>
 						</xsl:choose>
 					</xsl:when>
+					<xsl:when test="$doctype = 'expert-commentary'">1</xsl:when>
 					<xsl:otherwise>
 						<xsl:choose>
 							<xsl:when test="$depth = 1 and ../@ancestor = 'annex'">1.5</xsl:when>
