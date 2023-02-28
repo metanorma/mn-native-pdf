@@ -6729,12 +6729,12 @@
 					<xsl:attribute name="border">0.75pt solid <xsl:value-of select="$color_PAS"/></xsl:attribute>
 					<xsl:attribute name="background-color"><xsl:value-of select="$color_PAS"/></xsl:attribute>
 					<xsl:attribute name="color">white</xsl:attribute>
-				</xsl:if>
-				<xsl:if test="following-sibling::*[1][local-name() = 'th']">
-					<xsl:attribute name="border-right">0.75pt solid white</xsl:attribute>
-				</xsl:if>
-				<xsl:if test="preceding-sibling::*[1][local-name() = 'th']">
-					<xsl:attribute name="border-left">0.75pt solid white</xsl:attribute>
+					<xsl:if test="following-sibling::*[1][local-name() = 'th']">
+						<xsl:attribute name="border-right">0.75pt solid white</xsl:attribute>
+					</xsl:if>
+					<xsl:if test="preceding-sibling::*[1][local-name() = 'th']">
+						<xsl:attribute name="border-left">0.75pt solid white</xsl:attribute>
+					</xsl:if>
 				</xsl:if>
 			</xsl:if>
 
@@ -10681,7 +10681,26 @@
 										</xsl:choose>
 									</xsl:variable>
 									
-									<xsl:variable name="scale" select="java:org.metanorma.fop.Util.getImageScale($img_src, $width_effective, $height_effective)"/>
+									<xsl:variable name="image_width_effective">
+										<xsl:choose>
+											<xsl:when test="$namespace = 'bsi'">
+												<xsl:choose>
+													<xsl:when test="$document_type = 'PAS'"><xsl:value-of select="$width_effective"/></xsl:when>
+													<xsl:otherwise><!-- BSI -->
+														<xsl:choose>
+															<xsl:when test="../@width = 'full-page-width'"><xsl:value-of select="$width_effective - $image_border_padding * 2"/></xsl:when>
+															<xsl:otherwise><xsl:value-of select="$width_effective - $body_margin_left - $image_border_padding * 2"/></xsl:otherwise>
+														</xsl:choose>
+													</xsl:otherwise>
+												</xsl:choose>
+											</xsl:when>
+											<xsl:otherwise>
+												<xsl:value-of select="$width_effective"/>
+											</xsl:otherwise>
+										</xsl:choose>
+									</xsl:variable>
+									
+									<xsl:variable name="scale" select="java:org.metanorma.fop.Util.getImageScale($img_src, $image_width_effective, $height_effective)"/>
 									<xsl:if test="number($scale) &lt; 100">
 										<xsl:choose>
 											<xsl:when test="$namespace = 'unece'">
@@ -16289,6 +16308,23 @@
 		</xsl:attribute>
 		<xsl:if test="$align = 'indent'">
 			<xsl:attribute name="margin-left">7mm</xsl:attribute>
+		</xsl:if>
+	</xsl:template>
+ 
+	<xsl:template name="setBlockAttributes">
+		<xsl:param name="text_align_default">left</xsl:param>
+		<xsl:call-template name="setTextAlignment">
+			<xsl:with-param name="default" select="$text_align_default"/>
+		</xsl:call-template>
+		
+		<!-- https://www.metanorma.org/author/topics/document-format/text/#avoiding-page-breaks -->
+		<!-- Example: keep-lines-together="true" -->
+		<xsl:if test="@keep-lines-together = 'true'">
+			<xsl:attribute name="keep-together.within-column">always</xsl:attribute>
+		</xsl:if>
+		<!-- Example: keep-with-next="true" -->
+		<xsl:if test="@keep-with-next =  'true'">
+			<xsl:attribute name="keep-with-next">always</xsl:attribute>
 		</xsl:if>
 	</xsl:template>
  
