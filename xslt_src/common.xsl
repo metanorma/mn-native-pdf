@@ -11713,7 +11713,7 @@
 						<xsl:attribute name="font-size">11pt</xsl:attribute>
 						<xsl:attribute name="font-style">normal</xsl:attribute>
 					</xsl:if>
-					<xsl:if test="../@width = 'full-page-width'">
+					<xsl:if test="../@width = 'full-page-width' or ../*[local-name() = 'figure']/@width = 'full-page-width'">
 						<xsl:attribute name="margin-left">0mm</xsl:attribute>
 					</xsl:if>
 				</xsl:if>
