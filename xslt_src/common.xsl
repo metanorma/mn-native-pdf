@@ -4212,7 +4212,7 @@
 			<xsl:attribute name="vertical-align">super</xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'bsi'">
-			<xsl:attribute name="font-size">8pt</xsl:attribute>
+			<xsl:attribute name="font-size">6pt</xsl:attribute>
 			<xsl:attribute name="baseline-shift">30%</xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'csa'">
