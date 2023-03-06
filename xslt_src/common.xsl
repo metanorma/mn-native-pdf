@@ -1761,7 +1761,6 @@
 
 	<xsl:attribute-set name="table-header-cell-style">
 		<xsl:attribute name="font-weight">bold</xsl:attribute>
-		<xsl:attribute name="border">solid black 1pt</xsl:attribute>
 		<xsl:attribute name="padding-left">1mm</xsl:attribute>
 		<xsl:attribute name="padding-right">1mm</xsl:attribute>
 		<xsl:attribute name="display-align">center</xsl:attribute>
@@ -6599,19 +6598,25 @@
 	</xsl:template>	
 		
 	<xsl:template name="setBorderUnderRow">
-		<xsl:variable name="table_id" select="ancestor::*[local-name() = 'table'][1]/@id"/>
-		<xsl:variable name="row_num_"><xsl:number level="any" count="*[local-name() = 'table'][@id = $table_id]//*[local-name() = 'tr']"/></xsl:variable>
-		<xsl:variable name="row_num" select="number($row_num_) - 1"/> <!-- because values in border-under-row start with 0 -->
-		
-		<xsl:variable name="border_under_row_" select="ancestor::*[local-name() = 'table'][1]/@border-under-row"/>
-		<xsl:variable name="border_under_row">
-			<xsl:call-template name="split">
-				<xsl:with-param name="pText" select="$border_under_row_"/>
-			</xsl:call-template>
-		</xsl:variable>
-		<xsl:if test="xalan:nodeset($border_under_row)/item[. = normalize-space($row_num)]">
-			<xsl:attribute name="border-bottom"><xsl:value-of select="$table-border"/></xsl:attribute>
-		</xsl:if>
+		<xsl:variable name="border_under_row_" select="normalize-space(ancestor::*[local-name() = 'table'][1]/@border-under-row)"/>
+		<xsl:choose>
+			<xsl:when test="$border_under_row_ != ''">
+				<xsl:variable name="table_id" select="ancestor::*[local-name() = 'table'][1]/@id"/>
+				<xsl:variable name="row_num_"><xsl:number level="any" count="*[local-name() = 'table'][@id = $table_id]//*[local-name() = 'tr']"/></xsl:variable>
+				<xsl:variable name="row_num" select="number($row_num_) - 1"/> <!-- because values in border-under-row start with 0 -->
+				<xsl:variable name="border_under_row">
+					<xsl:call-template name="split">
+						<xsl:with-param name="pText" select="$border_under_row_"/>
+					</xsl:call-template>
+				</xsl:variable>
+				<xsl:if test="xalan:nodeset($border_under_row)/item[. = normalize-space($row_num)]">
+					<xsl:attribute name="border-bottom"><xsl:value-of select="$table-border"/></xsl:attribute>
+				</xsl:if>
+			</xsl:when>
+			<xsl:otherwise>
+				<xsl:attribute name="border-bottom"><xsl:value-of select="$table-border"/></xsl:attribute>
+			</xsl:otherwise>
+		</xsl:choose>
 	</xsl:template>
 		
 	<!-- row in table footer (tfoot) -->
@@ -6642,6 +6647,11 @@
 				<xsl:if test="position() = 1 and $document_type != 'PAS' and not(ancestor::*[local-name() = 'table'][1]/*[local-name() = 'thead'])">
 					<!-- set border for 1st row if thead is missing -->
 					<xsl:attribute name="border-top">2.5pt solid black</xsl:attribute>
+				</xsl:if>
+				
+				<xsl:if test="ancestor::*[local-name() = 'preface']">
+					<xsl:attribute name="border-top">none</xsl:attribute>
+					<xsl:attribute name="border-bottom">none</xsl:attribute>
 				</xsl:if>
 			</xsl:if>
 		
