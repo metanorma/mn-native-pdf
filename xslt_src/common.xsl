@@ -6218,6 +6218,9 @@
 				</xsl:choose>
 			</xsl:variable>
 			
+			<xsl:variable name="table_fn_block">
+				<xsl:call-template name="table_fn_display" />
+			</xsl:variable>
 			
 			<xsl:variable name="tableWithNotesAndFootnotes">
 			
@@ -6329,31 +6332,33 @@
 								</xsl:choose>
 								
 								
+								<xsl:variable name="isDisplayRowSeparator">
+									<xsl:if test="$namespace = 'iec'">true</xsl:if>
+									<xsl:if test="$namespace = 'bsi'">
+										<xsl:if test="$document_type != 'PAS'">true</xsl:if>
+									</xsl:if>
+								</xsl:variable>
+								
 								<!-- horizontal row separator -->
-								<xsl:if test="$namespace = 'iec'">
-									<xsl:if test="../*[local-name()='note']">
+								<xsl:if test="normalize-space($isDisplayRowSeparator) = 'true'">
+									<xsl:if test="../*[local-name()='note'] and normalize-space($table_fn_block) != ''">
 										<fo:block-container border-top="0.5pt solid black" padding-left="1mm" padding-right="1mm">
+											<xsl:if test="$namespace = 'bsi'">
+												<xsl:attribute name="margin-bottom">6pt</xsl:attribute>
+											</xsl:if>
 											<xsl:call-template name="setBordersTableArray"/>
 											<fo:block font-size="1pt">&#xA0;</fo:block>
 										</fo:block-container>
 									</xsl:if>
 								</xsl:if>
 								
-								<xsl:if test="$namespace = 'bsi'">
-									<xsl:if test="$document_type != 'PAS'">
-										<xsl:if test="../*[local-name()='note']">
-											<fo:block-container border-top="0.5pt solid black" padding-left="1mm" padding-right="1mm" margin-bottom="6pt">
-												<fo:block font-size="1pt">&#xA0;</fo:block>
-											</fo:block-container>
-										</xsl:if>
-									</xsl:if>
-								</xsl:if>
 								
 								<!-- fn processing -->
 								<xsl:choose>
 									<xsl:when test="$namespace = 'ieee'"><fo:block></fo:block><!-- display fn after table --></xsl:when>
 									<xsl:otherwise>
-										<xsl:call-template name="table_fn_display" />
+										<!-- <xsl:call-template name="table_fn_display" /> -->
+										<xsl:copy-of select="$table_fn_block"/>
 									</xsl:otherwise>
 								</xsl:choose>
 								
@@ -6377,7 +6382,8 @@
 			</xsl:if>
 			
 			<xsl:if test="$namespace = 'ieee'">
-				<xsl:call-template name="table_fn_display" />
+				<!-- <xsl:call-template name="table_fn_display" /> -->
+				<xsl:copy-of select="$table_fn_block"/>
 			</xsl:if>
 			
 		</xsl:if>
