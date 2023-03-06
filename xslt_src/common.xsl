@@ -1698,6 +1698,7 @@
 	<xsl:attribute-set name="table-header-row-style" use-attribute-sets="table-row-style">
 		<xsl:attribute name="font-weight">bold</xsl:attribute>
 		<xsl:if test="$namespace = 'bsi'">
+			<xsl:attribute name="font-weight">normal</xsl:attribute>
 			<xsl:attribute name="border-top"><xsl:value-of select="$table-border"/></xsl:attribute>
 			<xsl:attribute name="border-bottom"><xsl:value-of select="$table-border"/></xsl:attribute>
 		</xsl:if>
@@ -1774,6 +1775,7 @@
 			<xsl:attribute name="padding-top">2mm</xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'bsi'">
+			<xsl:attribute name="font-weight">normal</xsl:attribute>
 			<xsl:attribute name="border"><xsl:value-of select="$table-border"/></xsl:attribute>
 			<xsl:attribute name="padding-top">1mm</xsl:attribute>
 		</xsl:if>
