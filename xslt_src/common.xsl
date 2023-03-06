@@ -2048,7 +2048,7 @@
 		</xsl:if>
 		<xsl:if test="$namespace = 'bsi'">
 			<xsl:attribute name="baseline-shift">30%</xsl:attribute>
-			<xsl:attribute name="font-size">80%</xsl:attribute>
+			<xsl:attribute name="font-size">6pt</xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'bipm'">
 			<xsl:attribute name="font-style">italic</xsl:attribute>
@@ -6339,6 +6339,16 @@
 									</xsl:if>
 								</xsl:if>
 								
+								<xsl:if test="$namespace = 'bsi'">
+									<xsl:if test="$document_type != 'PAS'">
+										<xsl:if test="../*[local-name()='note']">
+											<fo:block-container border-top="0.5pt solid black" padding-left="1mm" padding-right="1mm" margin-bottom="6pt">
+												<fo:block font-size="1pt">&#xA0;</fo:block>
+											</fo:block-container>
+										</xsl:if>
+									</xsl:if>
+								</xsl:if>
+								
 								<!-- fn processing -->
 								<xsl:choose>
 									<xsl:when test="$namespace = 'ieee'"><fo:block></fo:block><!-- display fn after table --></xsl:when>
@@ -7380,6 +7390,12 @@
 				
 							<fo:inline id="{@id}" xsl:use-attribute-sets="table-fn-number-style">
 								
+								<xsl:if test="$namespace = 'bsi'">
+									<xsl:if test="$document_type = 'PAS'">
+										<xsl:attribute name="font-size">80%</xsl:attribute>
+									</xsl:if>
+								</xsl:if>
+								
 								<xsl:if test="$namespace = 'bipm'">
 									<fo:inline font-style="normal">(</fo:inline>
 								</xsl:if>
@@ -7559,6 +7575,7 @@
 				<xsl:if test="ancestor::*[local-name()='table'] or ancestor::*[local-name()='table']">
 					<xsl:attribute name="font-weight">normal</xsl:attribute>
 					<xsl:attribute name="baseline-shift">25%</xsl:attribute>
+					<xsl:attribute name="font-size">5.5pt</xsl:attribute>
 					<xsl:if test="$document_type = 'PAS'">
 						<xsl:attribute name="font-size">4.5pt</xsl:attribute>
 						<xsl:attribute name="padding-left">0.5mm</xsl:attribute>
