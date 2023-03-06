@@ -1699,8 +1699,6 @@
 		<xsl:attribute name="font-weight">bold</xsl:attribute>
 		<xsl:if test="$namespace = 'bsi'">
 			<xsl:attribute name="font-weight">normal</xsl:attribute>
-			<xsl:attribute name="border-top"><xsl:value-of select="$table-border"/></xsl:attribute>
-			<xsl:attribute name="border-bottom"><xsl:value-of select="$table-border"/></xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'iso'">
 			<xsl:attribute name="border-top"><xsl:value-of select="$table-border"/></xsl:attribute>
@@ -1738,8 +1736,8 @@
 	<xsl:attribute-set name="table-footer-row-style" use-attribute-sets="table-row-style">
 		<xsl:if test="$namespace = 'bsi'">
 			<xsl:attribute name="font-size">9pt</xsl:attribute>
-			<xsl:attribute name="border-left"><xsl:value-of select="$table-border"/></xsl:attribute>
-			<xsl:attribute name="border-right"><xsl:value-of select="$table-border"/></xsl:attribute>
+			<!-- <xsl:attribute name="border-left"><xsl:value-of select="$table-border"/></xsl:attribute>
+			<xsl:attribute name="border-right"><xsl:value-of select="$table-border"/></xsl:attribute> -->
 		</xsl:if>
 		<xsl:if test="$namespace = 'iec'">
 			<xsl:attribute name="border-left">solid black 0.5pt</xsl:attribute>
@@ -1776,10 +1774,10 @@
 		</xsl:if>
 		<xsl:if test="$namespace = 'bsi'">
 			<xsl:attribute name="font-weight">normal</xsl:attribute>
-			<xsl:attribute name="border"><xsl:value-of select="$table-border"/></xsl:attribute>
 			<xsl:attribute name="padding-top">1mm</xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'iso'">
+			<xsl:attribute name="border">solid black 1pt</xsl:attribute>
 			<xsl:attribute name="padding-top">0.5mm</xsl:attribute>
 			<xsl:attribute name="border-left"><xsl:value-of select="$table-cell-border"/></xsl:attribute>
 			<xsl:attribute name="border-right"><xsl:value-of select="$table-cell-border"/></xsl:attribute>
@@ -1801,13 +1799,16 @@
 			<xsl:attribute name="border"><xsl:value-of select="$table-border"/></xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'jcgm'">
+			<xsl:attribute name="border">solid black 1pt</xsl:attribute>
 			<xsl:attribute name="padding-top">1mm</xsl:attribute>
 		</xsl:if>
-		<xsl:if test="$namespace = 'mpfd'">								
+		<xsl:if test="$namespace = 'mpfd'">
+			<xsl:attribute name="border">solid black 1pt</xsl:attribute>
 			<xsl:attribute name="border-top">solid black 2pt</xsl:attribute>
 			<xsl:attribute name="border-bottom">solid black 2pt</xsl:attribute>
 		</xsl:if>
-		<xsl:if test="$namespace = 'nist-cswp'  or $namespace = 'nist-sp'">
+		<xsl:if test="$namespace = 'nist-cswp' or $namespace = 'nist-sp'">
+			<xsl:attribute name="border">solid black 1pt</xsl:attribute>
 			<xsl:attribute name="text-align">center</xsl:attribute>
 			<xsl:attribute name="background-color">black</xsl:attribute>
 			<xsl:attribute name="color">white</xsl:attribute>
@@ -1840,13 +1841,13 @@
 			<xsl:attribute name="text-indent">0mm</xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'unece-rec'">
+			<xsl:attribute name="border">solid black 1pt</xsl:attribute>
 			<xsl:attribute name="text-indent">0mm</xsl:attribute>
 		</xsl:if>
 	</xsl:attribute-set> <!-- table-header-cell-style -->
 
 	<xsl:attribute-set name="table-cell-style">
 		<xsl:attribute name="display-align">center</xsl:attribute>
-		<xsl:attribute name="border">solid black 1pt</xsl:attribute>
 		<xsl:attribute name="padding-left">1mm</xsl:attribute>
 		<xsl:attribute name="padding-right">1mm</xsl:attribute>
 		
@@ -1855,7 +1856,6 @@
 		</xsl:if>
 		<xsl:if test="$namespace = 'bsi'">
 			<xsl:attribute name="padding-top">0.5mm</xsl:attribute>
-			<xsl:attribute name="border"><xsl:value-of select="$table-border"/></xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'iso'">
 			<xsl:attribute name="padding-top">0.5mm</xsl:attribute>
@@ -1877,9 +1877,11 @@
 			<xsl:attribute name="border"><xsl:value-of select="$table-border"/></xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'itu'">
+			<xsl:attribute name="border">solid black 1pt</xsl:attribute>
 			<xsl:attribute name="display-align">before</xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'jcgm'">
+			<xsl:attribute name="border">solid black 1pt</xsl:attribute>
 			<xsl:attribute name="padding-top">0.5mm</xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'ogc'">
@@ -1906,8 +1908,8 @@
 			<xsl:attribute name="text-indent">0mm</xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'unece-rec'">
+			<xsl:attribute name="border">solid black 1pt</xsl:attribute>
 			<xsl:attribute name="text-indent">0mm</xsl:attribute>
-			
 		</xsl:if>
 	</xsl:attribute-set> <!-- table-cell-style -->
 
@@ -6526,10 +6528,17 @@
 		<fo:table-row xsl:use-attribute-sets="table-header-row-style">
 		
 			<xsl:if test="$namespace = 'bsi'">
+			
+				<xsl:call-template name="setBorderUnderRow" />
+			
+				<xsl:if test="$document_type = 'PAS'">
+					<xsl:attribute name="border-top"><xsl:value-of select="$table-border"/></xsl:attribute>
+					<xsl:attribute name="border-bottom"><xsl:value-of select="$table-border"/></xsl:attribute>
+				</xsl:if>
 				<xsl:if test="position() = 1 and $document_type != 'PAS'">
 					<xsl:attribute name="border-top">2.5pt solid black</xsl:attribute>
 				</xsl:if>
-				<xsl:if test="position() = last()">
+				<xsl:if test="position() = last() and $document_type = 'PAS'">
 					<xsl:attribute name="border-bottom">none</xsl:attribute>
 				</xsl:if>
 				<xsl:if test="ancestor::*[local-name() = 'preface']">
@@ -6589,12 +6598,30 @@
 		</fo:table-row>
 	</xsl:template>	
 		
+	<xsl:template name="setBorderUnderRow">
+		<xsl:variable name="table_id" select="ancestor::*[local-name() = 'table'][1]/@id"/>
+		<xsl:variable name="row_num_"><xsl:number level="any" count="*[local-name() = 'table'][@id = $table_id]//*[local-name() = 'tr']"/></xsl:variable>
+		<xsl:variable name="row_num" select="number($row_num_) - 1"/> <!-- because values in border-under-row start with 0 -->
+		
+		<xsl:variable name="border_under_row_" select="ancestor::*[local-name() = 'table'][1]/@border-under-row"/>
+		<xsl:variable name="border_under_row">
+			<xsl:call-template name="split">
+				<xsl:with-param name="pText" select="$border_under_row_"/>
+			</xsl:call-template>
+		</xsl:variable>
+		<xsl:if test="xalan:nodeset($border_under_row)/item[. = normalize-space($row_num)]">
+			<xsl:attribute name="border-bottom"><xsl:value-of select="$table-border"/></xsl:attribute>
+		</xsl:if>
+	</xsl:template>
+		
 	<!-- row in table footer (tfoot) -->
 	<xsl:template match="*[local-name()='tfoot']/*[local-name()='tr']" priority="2">
 		<fo:table-row xsl:use-attribute-sets="table-footer-row-style">
 			<xsl:if test="$namespace = 'bsi'">
 				<xsl:if test="$document_type = 'PAS'">
 					<xsl:attribute name="font-size">inherit</xsl:attribute>
+					<xsl:attribute name="border-left"><xsl:value-of select="$table-border"/></xsl:attribute>
+					<xsl:attribute name="border-right"><xsl:value-of select="$table-border"/></xsl:attribute>
 				</xsl:if>
 			</xsl:if>
 			<xsl:call-template name="setTableRowAttributes"/>
@@ -6611,6 +6638,7 @@
 			</xsl:if>
 		
 			<xsl:if test="$namespace = 'bsi'">
+				<xsl:call-template name="setBorderUnderRow" />
 				<xsl:if test="position() = 1 and $document_type != 'PAS' and not(ancestor::*[local-name() = 'table'][1]/*[local-name() = 'thead'])">
 					<!-- set border for 1st row if thead is missing -->
 					<xsl:attribute name="border-top">2.5pt solid black</xsl:attribute>
@@ -6711,9 +6739,9 @@
 			
 			<xsl:if test="$namespace = 'bsi'">
 				<xsl:if test="$document_type != 'PAS'">
-					<xsl:attribute name="border">none</xsl:attribute>
+					<!-- <xsl:attribute name="border">none</xsl:attribute>
 					<xsl:attribute name="border-top"><xsl:value-of select="$table-border"/></xsl:attribute>
-					<xsl:attribute name="border-bottom"><xsl:value-of select="$table-border"/></xsl:attribute>
+					<xsl:attribute name="border-bottom"><xsl:value-of select="$table-border"/></xsl:attribute> -->
 				</xsl:if>
 				<xsl:if test="ancestor::*[local-name() = 'preface']">
 					<xsl:attribute name="font-weight">normal</xsl:attribute>
@@ -6861,9 +6889,9 @@
 			
 			<xsl:if test="$namespace = 'bsi'">
 				<xsl:if test="$document_type != 'PAS'">
-					<xsl:attribute name="border">none</xsl:attribute>
+					<!-- <xsl:attribute name="border">none</xsl:attribute>
 					<xsl:attribute name="border-top"><xsl:value-of select="$table-border"/></xsl:attribute>
-					<xsl:attribute name="border-bottom"><xsl:value-of select="$table-border"/></xsl:attribute>
+					<xsl:attribute name="border-bottom"><xsl:value-of select="$table-border"/></xsl:attribute> -->
 				</xsl:if>
 
 				<xsl:if test="not(ancestor::*[local-name()='preface']) and ancestor::*[local-name() = 'table']/*[local-name() = 'thead'] and not(ancestor::*[local-name() = 'tr']/preceding-sibling::*[local-name() = 'tr'])">
