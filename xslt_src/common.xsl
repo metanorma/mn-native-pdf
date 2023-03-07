@@ -7575,8 +7575,8 @@
 									</xsl:call-template>
 								</xsl:when>
 								<xsl:otherwise>
-									<fo:table-column column-width="15%"/>
-									<fo:table-column column-width="85%"/>
+									<fo:table-column column-width="5%"/>
+									<fo:table-column column-width="95%"/>
 								</xsl:otherwise>
 							</xsl:choose>
 							<fo:table-body>
@@ -10704,10 +10704,10 @@
 			<fo:block xsl:use-attribute-sets="figure-style">
 				<xsl:apply-templates select="node()[not(local-name() = 'name') and not(local-name() = 'note' and @type = 'units')]" />
 			</fo:block>
-			<xsl:call-template name="fn_display_figure"/>
 			<xsl:for-each select="*[local-name() = 'note'][not(@type = 'units')]">
 				<xsl:call-template name="note"/>
 			</xsl:for-each>
+			<xsl:call-template name="fn_display_figure"/>
 			
 			<xsl:choose>
 				<xsl:when test="$namespace = 'bsi' or $namespace = 'rsd'"></xsl:when>
