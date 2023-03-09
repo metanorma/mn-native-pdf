@@ -9630,6 +9630,27 @@
 		</xsl:call-template>
 	</xsl:template>
 
+	<xsl:template match="*[local-name() = 'link'][normalize-space() = '']" mode="td_text_with_formatting">
+		<xsl:variable name="link">
+			<link_updated>
+				<xsl:variable name="target_text">
+					<xsl:choose>
+						<xsl:when test="starts-with(normalize-space(@target), 'mailto:')">
+							<xsl:value-of select="normalize-space(substring-after(@target, 'mailto:'))"/>
+						</xsl:when>
+						<xsl:otherwise>
+							<xsl:value-of select="normalize-space(@target)"/>
+						</xsl:otherwise>
+					</xsl:choose>
+				</xsl:variable>
+				<xsl:value-of select="$target_text"/>
+			</link_updated>
+		</xsl:variable>
+		<xsl:for-each select="xalan:nodeset($link)/*">
+			<xsl:apply-templates mode="td_text_with_formatting"/>
+		</xsl:for-each>
+	</xsl:template>
+
 	<xsl:template name="getFormattingTags">
 		<tags>
 			<xsl:if test="ancestor::*[local-name() = 'strong']"><tag>strong</tag></xsl:if>
