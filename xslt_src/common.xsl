@@ -5199,6 +5199,7 @@
 							<xsl:when test="count(*[local-name()='colgroup']/*[local-name()='col']) = 2 and not(*[local-name() = 'name']) and not(*[local-name() = 'thead'])">
 								<xsl:attribute name="font-size">inherit</xsl:attribute>
 							</xsl:when>
+							<xsl:when test="@width = 'text-width'"><!-- renders in column, not spanned --></xsl:when>
 							<xsl:otherwise>
 								<xsl:attribute name="span">all</xsl:attribute>
 							</xsl:otherwise>
