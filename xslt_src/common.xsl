@@ -9092,8 +9092,8 @@
 		
 		<!-- add zero-width space (#x200B) after dot with next non-digit -->
 		<xsl:variable name="text1" select="java:replaceAll(java:java.lang.String.new($text),'(\.)([^\d\s])','$1&#x200B;$2')"/>
-		<!-- add zero-width space (#x200B) after characters: dash, equal, underscore, em dash, thin space, arrow right   -->
-		<xsl:variable name="text2" select="java:replaceAll(java:java.lang.String.new($text1),'(-|=|_|—| |→)','$1&#x200B;')"/>
+		<!-- add zero-width space (#x200B) after characters: dash, equal, underscore, em dash, thin space, arrow right, ;   -->
+		<xsl:variable name="text2" select="java:replaceAll(java:java.lang.String.new($text1),'(-|=|_|—| |→|;)','$1&#x200B;')"/>
 		<!-- add zero-width space (#x200B) after characters: colon, if there aren't digits after -->
 		<xsl:variable name="text3" select="java:replaceAll(java:java.lang.String.new($text2),'(:)(\D)','$1&#x200B;$2')"/>
 		<!-- add zero-width space (#x200B) after characters: 'great than' -->
@@ -9113,8 +9113,8 @@
 		
 		<xsl:value-of select="java:replaceAll(java:java.lang.String.new($text), $regex_url_start, '$1')"/> <!-- http://. https:// or www. -->
 		<xsl:variable name="url_continue" select="java:replaceAll(java:java.lang.String.new($text), $regex_url_start, '$2')"/>
-		<!-- add zero-width space (#x200B) after characters: dash, dot, colon, equal, underscore, em dash, thin space  -->
-		<xsl:variable name="url" select="java:replaceAll(java:java.lang.String.new($url_continue),'(-|\.|:|=|_|—| |,|/)','$1&#x200B;')"/>
+		<!-- add zero-width space (#x200B) after characters: dash, dot, colon, equal, underscore, em dash, thin space, comma, slash, @  -->
+		<xsl:variable name="url" select="java:replaceAll(java:java.lang.String.new($url_continue),'(-|\.|:|=|_|—| |,|/|@)','$1&#x200B;')"/>
 		<!-- remove zero-width space at the end -->
 		<xsl:value-of select="java:replaceAll(java:java.lang.String.new($url), '&#x200B;$', '')"/>
 	</xsl:template>
@@ -10089,7 +10089,7 @@
 		</xsl:variable>
 		<fo:inline xsl:use-attribute-sets="link-style">
 			
-			<xsl:if test="starts-with(normalize-space(@target), 'mailto:')">
+			<xsl:if test="starts-with(normalize-space(@target), 'mailto:') and not(ancestor::*[local-name() = 'td'])">
 				<xsl:attribute name="keep-together.within-line">always</xsl:attribute>
 			</xsl:if>
 			
