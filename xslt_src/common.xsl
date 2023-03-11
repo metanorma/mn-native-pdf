@@ -9105,17 +9105,20 @@
 		<xsl:variable name="text6" select="java:replaceAll(java:java.lang.String.new($text5), '(?&lt;!\W)(\{)', '&#x200B;$1')"/> <!-- negative lookbehind: '{' not preceeded by 'punctuation char' -->
 		<!-- add zero-width space (#x200B) after character: , -->
 		<xsl:variable name="text7" select="java:replaceAll(java:java.lang.String.new($text6), '(\,)(?!\d)', '$1&#x200B;')"/> <!-- negative lookahead: ',' not followed by digit -->
+		<!-- add zero-width space (#x200B) after character: '/' -->
+		<xsl:variable name="text8" select="java:replaceAll(java:java.lang.String.new($text7), '(\u002f)(?!\u002f)', '$1&#x200B;')"/><!-- negative lookahead: '/' not followed by '/' -->
 		
-		<xsl:variable name="text8">
+		
+		<xsl:variable name="text9">
 			<xsl:choose>
 				<xsl:when test="$isGenerateTableIF = 'true'">
-					<xsl:value-of select="java:replaceAll(java:java.lang.String.new($text7), '([\u3000-\u9FFF])', '$1&#x200B;')"/> <!-- 3000 - CJK Symbols and Punctuation ... 9FFF CJK Unified Ideographs-->
+					<xsl:value-of select="java:replaceAll(java:java.lang.String.new($text8), '([\u3000-\u9FFF])', '$1&#x200B;')"/> <!-- 3000 - CJK Symbols and Punctuation ... 9FFF CJK Unified Ideographs-->
 				</xsl:when>
-				<xsl:otherwise><xsl:value-of select="$text7"/></xsl:otherwise>
+				<xsl:otherwise><xsl:value-of select="$text8"/></xsl:otherwise>
 			</xsl:choose>
 		</xsl:variable>
 		
-		<xsl:value-of select="$text8"/>
+		<xsl:value-of select="$text9"/>
 	</xsl:template>
 	
 	<xsl:template name="add-zero-spaces-link-java">
@@ -15806,7 +15809,7 @@
 		<!-- \S matches any non-whitespace character (equivalent to [^\r\n\t\f\v ]) -->
 		<!-- <xsl:variable name="regex_solidus_units">((\b((\S{1,3}\/\S+)|(\S+\/\S{1,3}))\b)|(\/\S{1,3})\b)</xsl:variable> -->
 		<!-- add &lt; and &gt; to \S -->
-		<xsl:variable name="regex_S">[^\r\n\t\f\v \&lt;&gt;]</xsl:variable>
+		<xsl:variable name="regex_S">[^\r\n\t\f\v \&lt;&gt;\u3000-\u9FFF]</xsl:variable>
 		<xsl:variable name="regex_solidus_units">((\b((<xsl:value-of select="$regex_S"/>{1,3}\/<xsl:value-of select="$regex_S"/>+)|(<xsl:value-of select="$regex_S"/>+\/<xsl:value-of select="$regex_S"/>{1,3}))\b)|(\/<xsl:value-of select="$regex_S"/>{1,3})\b)</xsl:variable>
 		<xsl:variable name="text3">
 			<text><xsl:for-each select="xalan:nodeset($text2)/text/node()">
