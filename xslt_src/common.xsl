@@ -9106,7 +9106,16 @@
 		<!-- add zero-width space (#x200B) after character: , -->
 		<xsl:variable name="text7" select="java:replaceAll(java:java.lang.String.new($text6), '(\,)(?!\d)', '$1&#x200B;')"/> <!-- negative lookahead: ',' not followed by digit -->
 		
-		<xsl:value-of select="$text7"/>
+		<xsl:variable name="text8">
+			<xsl:choose>
+				<xsl:when test="$isGenerateTableIF = 'true'">
+					<xsl:value-of select="java:replaceAll(java:java.lang.String.new($text7), '([\u3000-\u9FFF])', '$1&#x200B;')"/> <!-- 3000 - CJK Symbols and Punctuation ... 9FFF CJK Unified Ideographs-->
+				</xsl:when>
+				<xsl:otherwise><xsl:value-of select="$text7"/></xsl:otherwise>
+			</xsl:choose>
+		</xsl:variable>
+		
+		<xsl:value-of select="$text8"/>
 	</xsl:template>
 	
 	<xsl:template name="add-zero-spaces-link-java">
