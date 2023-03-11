@@ -415,7 +415,7 @@
 									<fo:table-body>
 										<fo:table-row border-bottom="0.5pt solid {$color_gray}" height="16mm">
 											<fo:table-cell font-size="8pt" text-align="right" display-align="center">
-												<fo:block>
+												<fo:block padding-top="1mm">
 													<xsl:if test="normalize-space($price_code_value) != ''">
 														<fo:block color="{$color_blue}" margin-bottom="3pt">
 															<!-- PRICE CODE -->
@@ -428,15 +428,18 @@
 															<xsl:value-of select="java:toUpperCase(java:java.lang.String.new($price_code))"/>
 														</fo:block>
 														
-														<fo:block>
-															<xsl:variable name="price_code">
-																<xsl:call-template name="getLocalizedString">
-																	<xsl:with-param name="key">price-code</xsl:with-param>
-																	<xsl:with-param name="lang"><xsl:value-of select="$lang_second"/></xsl:with-param>
-																</xsl:call-template>
-															</xsl:variable>
-															<xsl:value-of select="java:toUpperCase(java:java.lang.String.new($price_code))"/>
-														</fo:block>
+														<xsl:variable name="price_code_lang_second">
+															<xsl:call-template name="getLocalizedString">
+																<xsl:with-param name="key">price-code</xsl:with-param>
+																<xsl:with-param name="lang"><xsl:value-of select="$lang_second"/></xsl:with-param>
+																<xsl:with-param name="returnEmptyIfNotFound">true</xsl:with-param>
+															</xsl:call-template>
+														</xsl:variable>
+														<xsl:if test="normalize-space($price_code_lang_second) != ''">
+															<fo:block>
+																<xsl:value-of select="java:toUpperCase(java:java.lang.String.new($price_code_lang_second))"/>
+															</fo:block>
+														</xsl:if>
 													</xsl:if>
 												</fo:block>
 											</fo:table-cell>
