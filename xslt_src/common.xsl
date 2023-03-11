@@ -15831,7 +15831,8 @@
 		<xsl:choose>
 			<xsl:when test="ancestor::*[local-name() = 'td' or local-name() = 'th']">
 				<!-- keep-together_within-line for: a.b, aaa.b, a.bbb, .b  in table's cell ONLY -->
-				<xsl:variable name="regex_dots_units">((\b((\S{1,3}\.\S+)|(\S+\.\S{1,3}))\b)|(\.\S{1,3})\b)</xsl:variable>
+				<xsl:variable name="non_white_space">[^\s\u3000-\u9FFF]</xsl:variable>
+				<xsl:variable name="regex_dots_units">((\b((<xsl:value-of select="$non_white_space"/>{1,3}\.<xsl:value-of select="$non_white_space"/>+)|(<xsl:value-of select="$non_white_space"/>+\.<xsl:value-of select="$non_white_space"/>{1,3}))\b)|(\.<xsl:value-of select="$non_white_space"/>{1,3})\b)</xsl:variable>
 				<xsl:for-each select="xalan:nodeset($text3)/text/node()">
 					<xsl:choose>
 						<xsl:when test="self::text()">
