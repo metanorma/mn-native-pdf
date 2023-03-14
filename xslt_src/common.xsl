@@ -5690,17 +5690,19 @@
 						</xsl:choose>
 						
 						<xsl:if test="$namespace = 'bsi'">
-							<xsl:if test="$continued = 'true'">
-								<fo:inline font-weight="bold" font-style="normal">
-									<xsl:if test="$document_type = 'PAS'">
-										<xsl:attribute name="color"><xsl:value-of select="$color_PAS"/></xsl:attribute>
-									</xsl:if>
-									<fo:retrieve-table-marker retrieve-class-name="table_number"/>
-								</fo:inline>
-								<fo:inline font-style="italic">
-									<xsl:text> </xsl:text>
-									<fo:retrieve-table-marker retrieve-class-name="table_continued"/>
-								</fo:inline>
+							<xsl:if test="not(ancestor::*[local-name() = 'table']/@class = 'corrigenda')">
+								<xsl:if test="$continued = 'true'">
+									<fo:inline font-weight="bold" font-style="normal">
+										<xsl:if test="$document_type = 'PAS'">
+											<xsl:attribute name="color"><xsl:value-of select="$color_PAS"/></xsl:attribute>
+										</xsl:if>
+										<fo:retrieve-table-marker retrieve-class-name="table_number"/>
+									</fo:inline>
+									<fo:inline font-style="italic">
+										<xsl:text> </xsl:text>
+										<fo:retrieve-table-marker retrieve-class-name="table_continued"/>
+									</fo:inline>
+								</xsl:if>
 							</xsl:if>
 						</xsl:if>
 						
