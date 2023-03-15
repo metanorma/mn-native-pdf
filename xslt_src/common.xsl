@@ -42,6 +42,9 @@
 		<xsl:when test="$namespace = 'jcgm'">
 			<xsl:strip-space elements="jcgm:xref"/>
 		</xsl:when>
+		<xsl:when test="$namespace = 'jis'">
+			<xsl:strip-space elements="jis:xref"/>
+		</xsl:when>
 		<xsl:when test="$namespace = 'm3d'">
 			<xsl:strip-space elements="m3d:xref"/>
 		</xsl:when>
@@ -199,6 +202,7 @@
 			<xsl:when test="$namespace = 'iso'">25</xsl:when>
 			<xsl:when test="$namespace = 'itu'">20</xsl:when>
 			<xsl:when test="$namespace = 'jcgm'">25</xsl:when>
+			<xsl:when test="$namespace = 'jis'">22</xsl:when>
 			<xsl:when test="$namespace = 'm3d'">17.3</xsl:when>
 			<xsl:when test="$namespace = 'mpfd'">19</xsl:when>
 			<xsl:when test="$namespace = 'nist-cswp' or $namespace = 'nist-sp'">25.4</xsl:when>
@@ -226,6 +230,7 @@
 			<xsl:when test="$namespace = 'iso'">12.5</xsl:when>
 			<xsl:when test="$namespace = 'itu'">20</xsl:when>
 			<xsl:when test="$namespace = 'jcgm'">15</xsl:when>
+			<xsl:when test="$namespace = 'jis'">22</xsl:when>
 			<xsl:when test="$namespace = 'm3d'">17.3</xsl:when>
 			<xsl:when test="$namespace = 'mpfd'">19</xsl:when>
 			<xsl:when test="$namespace = 'nist-cswp' or $namespace = 'nist-sp'">25.4</xsl:when>
@@ -252,6 +257,7 @@
 			<xsl:when test="$namespace = 'iso'">27.4</xsl:when>
 			<xsl:when test="$namespace = 'itu'">20</xsl:when>
 			<xsl:when test="$namespace = 'jcgm'">29.5</xsl:when>
+			<xsl:when test="$namespace = 'jis'">30</xsl:when>
 			<xsl:when test="$namespace = 'm3d'">35</xsl:when>
 			<xsl:when test="$namespace = 'mpfd'">16.5</xsl:when>
 			<xsl:when test="$namespace = 'nist-cswp' or $namespace = 'nist-sp'">25.4</xsl:when>
@@ -278,6 +284,7 @@
 			<xsl:when test="$namespace = 'iso'">15</xsl:when>
 			<xsl:when test="$namespace = 'itu'">20</xsl:when>
 			<xsl:when test="$namespace = 'jcgm'">23.5</xsl:when>
+			<xsl:when test="$namespace = 'jis'">24.5</xsl:when>
 			<xsl:when test="$namespace = 'm3d'">23</xsl:when>
 			<xsl:when test="$namespace = 'mpfd'">10</xsl:when>
 			<xsl:when test="$namespace = 'nist-cswp' or $namespace = 'nist-sp'">25.4</xsl:when>
@@ -512,6 +519,11 @@
 			<xsl:attribute name="font-family">Times New Roman, STIX Two Math, <xsl:value-of select="$font_noto_serif"/></xsl:attribute>
 			<xsl:attribute name="font-family-generic">Serif</xsl:attribute>
 			<xsl:attribute name="font-size">12pt</xsl:attribute>
+		</xsl:if>
+    <xsl:if test="$namespace = 'jis'">
+			<xsl:attribute name="font-family">IPA Mincho, STIX Two Math, <xsl:value-of select="$font_noto_serif"/></xsl:attribute>
+			<xsl:attribute name="font-family-generic">Serif</xsl:attribute>
+			<xsl:attribute name="font-size">10pt</xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'm3d'">
 			<xsl:attribute name="font-family">EB Garamond 12, <xsl:value-of select="$font_noto_sans"/></xsl:attribute>
@@ -15642,7 +15654,7 @@
 	<!-- END STEP1: Re-order elements in 'preface', 'sections' based on @displayorder -->
 	<!-- =========================================================================== -->
 	
-	<xsl:if test="$namespace = 'ieee' or $namespace = 'iso' or $namespace = 'bsi'">
+	<xsl:if test="$namespace = 'ieee' or $namespace = 'iso' or $namespace = 'jis' or $namespace = 'bsi'">
 		<!-- =========================================================================== -->
 		<!-- STEP2: add 'fn' after 'eref' and 'origin', if referenced to bibitem with 'note' = Withdrawn.' or 'Cancelled and replaced...'  -->
 		<!-- =========================================================================== -->
