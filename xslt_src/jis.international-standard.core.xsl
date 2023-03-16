@@ -38,6 +38,7 @@
 			<xsl:variable name="current_document">
 				<xsl:copy-of select="."/>
 			</xsl:variable>
+			
 			<xsl:for-each select="xalan:nodeset($current_document)"> <!-- . -->
 				<doc num="{$num}" firstpage_id="firstpage_id_{$num}" title-part="{$docnumber}" bundle="{$bundle}"> <!-- 'bundle' means several different documents (not language versions) in one xml -->
 					<contents>
@@ -141,14 +142,107 @@
 						<fo:inline font-family="Arial"><xsl:value-of select="substring(/*/jis:bibdata/jis:version/jis:revision-date, 1, 4)"/></fo:inline>
 					</xsl:variable>
 				
+					<xsl:variable name="copyrightText">著作権法により無断での複製，転載等は禁止されております。</xsl:variable>
+				
 					<xsl:call-template name="insertCoverPage">
 						<xsl:with-param name="num" select="$num"/>
+						<xsl:with-param name="copyrightText" select="$copyrightText"/>
 					</xsl:call-template>
 										
 				
 					<xsl:call-template name="insertInnerCoverPage">
 						<xsl:with-param name="docidentifier" select="$docidentifier"/>
+						<xsl:with-param name="copyrightText" select="$copyrightText"/>
 					</xsl:call-template>
+				
+				
+					<!-- BSI Contents -->
+					<fo:page-sequence master-reference="document" initial-page-number="1">
+						<xsl:call-template name="insertHeaderFooter">
+							<xsl:with-param name="docidentifier" select="$docidentifier"/>
+							<xsl:with-param name="copyrightText" select="$copyrightText"/>
+						</xsl:call-template>
+						
+						<fo:flow flow-name="xsl-region-body">
+						
+							<xsl:if test="$debug = 'true'">
+								<xsl:text disable-output-escaping="yes">&lt;!--</xsl:text>
+									DEBUG
+									contents=<xsl:copy-of select="$contents"/>
+								<xsl:text disable-output-escaping="yes">--&gt;</xsl:text>
+							</xsl:if>
+						
+							<fo:block text-align="center" font-size="14pt" font-family="IPAexGothic" margin-top="8.5mm">
+								<!-- Contents -->
+								<!-- <xsl:call-template name="getLocalizedString">
+									<xsl:with-param name="key">table_of_contents</xsl:with-param>
+								</xsl:call-template> -->
+								<xsl:text>目 次</xsl:text>
+							</fo:block>
+							
+							<fo:block text-align="right" font-size="8pt" font-family="IPAexMincho" margin-top="10mm">
+								<!-- Page -->
+								<!-- <xsl:call-template name="getLocalizedString">
+									<xsl:with-param name="key">locality.page</xsl:with-param>
+								</xsl:call-template> -->
+								<xsl:text>ページ</xsl:text>
+							</fo:block>
+						
+							<fo:block role="TOC" font-family="IPAexGothic">
+								<xsl:if test="$contents/doc[@num = $num]//item[@display = 'true']">
+									<xsl:for-each select="$contents/doc[@num = $num]//item[@display = 'true'][@level &lt;= $toc_level or @type='figure' or @type = 'table']">
+										<fo:block role="TOCI">
+											<xsl:choose>
+												<xsl:when test="@type = 'bibliography'">
+												</xsl:when>
+												<xsl:otherwise>
+													<fo:list-block>
+														<xsl:attribute name="provisional-distance-between-starts">
+															<xsl:choose>
+																<xsl:when test="string-length(@section) = 1">5mm</xsl:when>
+																<xsl:when test="string-length(@section) = 2">7mm</xsl:when>
+																<xsl:when test="string-length(@section) = 3">9mm</xsl:when>
+																<xsl:when test="@type = 'annex'">16mm</xsl:when>
+																<xsl:otherwise>5mm</xsl:otherwise>
+															</xsl:choose>
+														</xsl:attribute>
+														<fo:list-item>
+															<fo:list-item-label end-indent="label-end()">
+																<fo:block>
+																	<xsl:if test="@section != '' and @type != 'annex'">
+																		<xsl:attribute name="font-family">Times New Roman</xsl:attribute>
+																		<xsl:attribute name="font-weight">bold</xsl:attribute>
+																	</xsl:if>
+																	<xsl:value-of select="@section"/>
+																</fo:block>
+															</fo:list-item-label>
+															<fo:list-item-body start-indent="body-start()">
+																<fo:block text-align-last="justify" role="TOCI">
+																	<fo:basic-link internal-destination="{@id}" fox:alt-text="{title}">
+																		<fo:inline><xsl:apply-templates select="title" /></fo:inline>
+																		<fo:inline keep-together.within-line="always">
+																			<fo:leader leader-pattern="dots"/>
+																			<fo:inline font-size="8pt" font-family="Times New Roman">
+																				<fo:page-number-citation ref-id="{@id}"/>
+																			</fo:inline>
+																		</fo:inline>
+																	</fo:basic-link>
+																</fo:block>
+															</fo:list-item-body>
+														</fo:list-item>
+													</fo:list-block>
+												</xsl:otherwise>
+											</xsl:choose>
+										</fo:block>
+									</xsl:for-each>
+								</xsl:if>
+							</fo:block>
+						
+						
+						</fo:flow>
+						
+						
+					</fo:page-sequence>
 				
 				</xsl:for-each>
 			
@@ -159,8 +253,11 @@
 	
 	<xsl:template name="insertCoverPage">
 		<xsl:param name="num"/>
+		<xsl:param name="copyrightText"/>
 		<fo:page-sequence master-reference="cover-page" force-page-count="no-force">
-			<xsl:call-template name="insertFooter"/>
+			<xsl:call-template name="insertFooter">
+				<xsl:with-param name="copyrightText" select="$copyrightText"/>
+			</xsl:call-template>
 				
 			<fo:flow flow-name="xsl-region-body">
 				<!-- JIS -->
@@ -192,9 +289,11 @@
 	
 	<xsl:template name="insertInnerCoverPage">
 		<xsl:param name="docidentifier"/>
+		<xsl:param name="copyrightText"/>
 		<fo:page-sequence master-reference="document" force-page-count="no-force">
 			<xsl:call-template name="insertHeaderFooter">
 				<xsl:with-param name="docidentifier" select="$docidentifier"/>
+				<xsl:with-param name="copyrightText" select="$copyrightText"/>
 			</xsl:call-template>
 				
 			<fo:flow flow-name="xsl-region-body">
@@ -202,11 +301,97 @@
 					<fo:block text-align="center">日本産業標準調査会標準第一部会 構成表</fo:block>
 					
 					
-					
 				</fo:block-container>
 			</fo:flow>
 		</fo:page-sequence>
 	</xsl:template> <!-- insertInnerCoverPage -->
+	
+	<!-- ============================= -->
+	<!-- CONTENTS                      -->
+	<!-- ============================= -->
+	
+	<!-- element with title -->
+	<xsl:template match="*[jis:title]" mode="contents">
+	
+		<xsl:variable name="level">
+			<xsl:call-template name="getLevel">
+				<xsl:with-param name="depth" select="jis:title/@depth"/>
+			</xsl:call-template>
+		</xsl:variable>
+		
+		<!-- if previous clause contains section-title as latest element (section-title may contain  note's, admonition's, etc.),
+		and if @depth of current clause equals to section-title @depth,
+		then put section-title before current clause -->
+		<xsl:if test="local-name() = 'clause'">
+			<xsl:apply-templates select="preceding-sibling::*[1][local-name() = 'clause']//*[local-name() = 'p' and @type = 'section-title'
+				and @depth = $level 
+				and not(following-sibling::*[local-name()='clause'])]" mode="contents_in_clause"/>
+		</xsl:if>
+		
+		<xsl:variable name="section">
+			<xsl:call-template name="getSection"/>
+		</xsl:variable>
+		
+		<xsl:variable name="type">
+			<xsl:choose>
+				<xsl:when test="local-name() = 'indexsect'">index</xsl:when>
+				<xsl:when test="(ancestor-or-self::jis:bibliography and local-name() = 'clause' and not(.//*[local-name() = 'references' and @normative='true'])) or self::jis:references[not(@normative) or @normative='false']">bibliography</xsl:when>
+				<xsl:otherwise><xsl:value-of select="local-name()"/></xsl:otherwise>
+			</xsl:choose>
+		</xsl:variable>
+			
+		<xsl:variable name="display">
+			<xsl:choose>
+				<xsl:when test="normalize-space(@id) = ''">false</xsl:when>
+				<xsl:when test="ancestor-or-self::jis:annex and $level &gt;= 2">false</xsl:when>
+				<xsl:when test="$type = 'bibliography' and $level &gt;= 2">false</xsl:when>
+				<xsl:when test="$type = 'bibliography'">true</xsl:when>
+				<xsl:when test="$type = 'references' and $level &gt;= 2">false</xsl:when>
+				<xsl:when test="ancestor-or-self::jis:colophon">true</xsl:when>
+				<xsl:when test="$section = '' and $type = 'clause' and $level = 1 and ancestor::jis:preface">true</xsl:when>
+				<xsl:when test="$section = '' and $type = 'clause'">false</xsl:when>
+				<xsl:when test="$level &lt;= $toc_level">true</xsl:when>
+				<xsl:otherwise>false</xsl:otherwise>
+			</xsl:choose>
+		</xsl:variable>
+		
+		<xsl:variable name="skip">
+			<xsl:choose>
+				<xsl:when test="ancestor-or-self::jis:bibitem">true</xsl:when>
+				<xsl:when test="ancestor-or-self::jis:term">true</xsl:when>				
+				<xsl:when test="@type = 'corrigenda'">true</xsl:when>
+				<xsl:when test="@type = 'policy'">true</xsl:when>
+				<xsl:otherwise>false</xsl:otherwise>
+			</xsl:choose>
+		</xsl:variable>
+		
+		
+		<xsl:if test="$skip = 'false'">		
+		
+			<xsl:variable name="title">
+				<xsl:call-template name="getName"/>
+			</xsl:variable>
+			
+			<xsl:variable name="root">
+				<xsl:if test="ancestor-or-self::jis:preface">preface</xsl:if>
+				<xsl:if test="ancestor-or-self::jis:annex">annex</xsl:if>
+			</xsl:variable>
+			
+			<item id="{@id}" level="{$level}" section="{$section}" type="{$type}" root="{$root}" display="{$display}">
+				<xsl:if test="$type = 'index'">
+					<xsl:attribute name="level">1</xsl:attribute>
+				</xsl:if>
+				<title>
+					<xsl:apply-templates select="xalan:nodeset($title)" mode="contents_item">
+						<xsl:with-param name="mode">contents</xsl:with-param>
+					</xsl:apply-templates>
+				</title>
+				<xsl:if test="$type != 'index'">
+					<xsl:apply-templates  mode="contents" />
+				</xsl:if>
+			</item>
+		</xsl:if>
+	</xsl:template>
 	
 	
 	<xsl:template match="jis:title" priority="2" name="title">
@@ -402,18 +587,20 @@
 		</fo:static-content>
 		<xsl:call-template name="insertFooter">
 			<xsl:with-param name="section" select="$section"/>
+			<xsl:with-param name="copyrightText" select="$copyrightText"/>
 		</xsl:call-template>
 	</xsl:template>
 	
 	<xsl:template name="insertFooter">
 		<xsl:param name="section"/>
+		<xsl:param name="copyrightText"/>
 		<fo:static-content flow-name="footer">
 			<fo:block-container height="24.5mm" display-align="after">
 				<xsl:if test="$section = 'preface'">
 					<fo:block font-family="Times New Roman" font-size="9pt">(<fo:page-number />)</fo:block>
 				</xsl:if>
 				<!-- copyright restriction -->
-				<fo:block font-size="7pt" text-align="center" font-family="IPAexMincho" margin-bottom="13mm">著作権法により無断での複製，転載等は禁止されております。</fo:block>
+				<fo:block font-size="7pt" text-align="center" font-family="IPAexMincho" margin-bottom="13mm"><xsl:value-of select="$copyrightText"/></fo:block>
 			</fo:block-container>
 		</fo:static-content>
 	</xsl:template>
