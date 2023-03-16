@@ -521,7 +521,7 @@
 			<xsl:attribute name="font-size">12pt</xsl:attribute>
 		</xsl:if>
     <xsl:if test="$namespace = 'jis'">
-			<xsl:attribute name="font-family">IPA Mincho, STIX Two Math, <xsl:value-of select="$font_noto_serif"/></xsl:attribute>
+			<xsl:attribute name="font-family">IPAexMincho, STIX Two Math, <xsl:value-of select="$font_noto_serif"/></xsl:attribute>
 			<xsl:attribute name="font-family-generic">Serif</xsl:attribute>
 			<xsl:attribute name="font-size">10pt</xsl:attribute>
 		</xsl:if>

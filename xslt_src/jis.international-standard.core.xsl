@@ -34,7 +34,7 @@
 		
 		<xsl:for-each select="//jis:jis-standard">
 			<xsl:variable name="num"><xsl:number level="any" count="jis:jis-standard"/></xsl:variable>
-			<xsl:variable name="docnumber"><xsl:value-of select="jis:bibdata/jis:docidentifier[@type = 'BS']"/></xsl:variable>
+			<xsl:variable name="docnumber"><xsl:value-of select="jis:bibdata/jis:docidentifier[@type = 'JIS']"/></xsl:variable>
 			<xsl:variable name="current_document">
 				<xsl:copy-of select="."/>
 			</xsl:variable>
@@ -82,14 +82,26 @@
 					<fo:region-end region-name="right-region" extent="22mm"/>
 				</fo:simple-page-master>
 			
-				<!-- odd pages -->
-				<fo:simple-page-master master-name="document" page-width="{$pageWidth}mm" page-height="{$pageHeight}mm">
+				<fo:simple-page-master master-name="odd" page-width="{$pageWidth}mm" page-height="{$pageHeight}mm">
 					<fo:region-body margin-top="{$marginTop}mm" margin-bottom="{$marginBottom}mm" margin-left="{$marginLeftRight1}mm" margin-right="{$marginLeftRight2}mm"/>
-					<fo:region-before region-name="header" extent="{$marginTop}mm"/>
+					<fo:region-before region-name="header-odd" extent="{$marginTop}mm"/>
 					<fo:region-after region-name="footer" extent="{$marginBottom}mm"/>
 					<fo:region-start region-name="left-region" extent="{$marginLeftRight1}mm"/>
 					<fo:region-end region-name="right-region" extent="{$marginLeftRight2}mm"/>
 				</fo:simple-page-master>
+				<fo:simple-page-master master-name="even" page-width="{$pageWidth}mm" page-height="{$pageHeight}mm">
+					<fo:region-body margin-top="{$marginTop}mm" margin-bottom="{$marginBottom}mm" margin-left="{$marginLeftRight1}mm" margin-right="{$marginLeftRight2}mm"/>
+					<fo:region-before region-name="header-even" extent="{$marginTop}mm"/>
+					<fo:region-after region-name="footer" extent="{$marginBottom}mm"/>
+					<fo:region-start region-name="left-region" extent="{$marginLeftRight1}mm"/>
+					<fo:region-end region-name="right-region" extent="{$marginLeftRight2}mm"/>
+				</fo:simple-page-master>
+				<fo:page-sequence-master master-name="document">
+					<fo:repeatable-page-master-alternatives>
+						<fo:conditional-page-master-reference odd-or-even="even" master-reference="even"/>
+						<fo:conditional-page-master-reference odd-or-even="odd" master-reference="odd"/>
+					</fo:repeatable-page-master-alternatives>
+				</fo:page-sequence-master>
 			
 			</fo:layout-master-set>
 			
@@ -123,10 +135,20 @@
 				
 				<xsl:for-each select="xalan:nodeset($current_document)">
 				
+					<xsl:variable name="docidentifier">
+						<fo:inline font-family="Arial"><xsl:value-of select="/*/jis:bibdata/jis:docidentifier[@type = 'JIS']"/></fo:inline>
+						<fo:inline font-family="IPAexGothic">：</fo:inline>
+						<fo:inline font-family="Arial"><xsl:value-of select="substring(/*/jis:bibdata/jis:version/jis:revision-date, 1, 4)"/></fo:inline>
+					</xsl:variable>
+				
 					<xsl:call-template name="insertCoverPage">
 						<xsl:with-param name="num" select="$num"/>
 					</xsl:call-template>
 										
+				
+					<xsl:call-template name="insertInnerCoverPage">
+						<xsl:with-param name="docidentifier" select="$docidentifier"/>
+					</xsl:call-template>
 				
 				</xsl:for-each>
 			
@@ -138,12 +160,8 @@
 	<xsl:template name="insertCoverPage">
 		<xsl:param name="num"/>
 		<fo:page-sequence master-reference="cover-page" force-page-count="no-force">
-			<fo:static-content flow-name="footer">
-				<fo:block-container height="24.5mm" display-align="after">
-					<!-- copyright restriction -->
-					<fo:block font-size="7pt" text-align="center" font-family="IPAexMincho" margin-bottom="13mm">著作権法により無断での複製，転載等は禁止されております。</fo:block>
-				</fo:block-container>
-			</fo:static-content>
+			<xsl:call-template name="insertFooter"/>
+				
 			<fo:flow flow-name="xsl-region-body">
 				<!-- JIS -->
 				<fo:block id="firstpage_id_{$num}">
@@ -171,6 +189,25 @@
 			</fo:flow>
 		</fo:page-sequence>
 	</xsl:template> <!-- insertCoverPage -->
+	
+	<xsl:template name="insertInnerCoverPage">
+		<xsl:param name="docidentifier"/>
+		<fo:page-sequence master-reference="document" force-page-count="no-force">
+			<xsl:call-template name="insertHeaderFooter">
+				<xsl:with-param name="docidentifier" select="$docidentifier"/>
+			</xsl:call-template>
+				
+			<fo:flow flow-name="xsl-region-body">
+				<fo:block-container font-size="9pt" margin-top="5mm">
+					<fo:block text-align="center">日本産業標準調査会標準第一部会 構成表</fo:block>
+					
+					
+					
+				</fo:block-container>
+			</fo:flow>
+		</fo:page-sequence>
+	</xsl:template> <!-- insertInnerCoverPage -->
+	
 	
 	<xsl:template match="jis:title" priority="2" name="title">
 	
@@ -345,8 +382,40 @@
 		
 			</xsl:otherwise>
 		</xsl:choose>
-				
-		
+
+	</xsl:template>
+	
+	<xsl:template name="insertHeaderFooter">
+		<xsl:param name="docidentifier" />
+		<xsl:param name="hidePageNumber">false</xsl:param>
+		<xsl:param name="section"/>
+		<xsl:param name="copyrightText"/>
+		<fo:static-content flow-name="header-odd" role="artifact">
+			<fo:block-container height="26mm" display-align="after" text-align="right">
+				<fo:block font-size="9pt"><xsl:copy-of select="$docidentifier"/></fo:block>
+			</fo:block-container>
+		</fo:static-content>
+		<fo:static-content flow-name="header-even" role="artifact">
+			<fo:block-container height="26mm" display-align="after">
+				<fo:block font-size="9pt"><xsl:copy-of select="$docidentifier"/></fo:block>
+			</fo:block-container>
+		</fo:static-content>
+		<xsl:call-template name="insertFooter">
+			<xsl:with-param name="section" select="$section"/>
+		</xsl:call-template>
+	</xsl:template>
+	
+	<xsl:template name="insertFooter">
+		<xsl:param name="section"/>
+		<fo:static-content flow-name="footer">
+			<fo:block-container height="24.5mm" display-align="after">
+				<xsl:if test="$section = 'preface'">
+					<fo:block font-family="Times New Roman" font-size="9pt">(<fo:page-number />)</fo:block>
+				</xsl:if>
+				<!-- copyright restriction -->
+				<fo:block font-size="7pt" text-align="center" font-family="IPAexMincho" margin-bottom="13mm">著作権法により無断での複製，転載等は禁止されております。</fo:block>
+			</fo:block-container>
+		</fo:static-content>
 	</xsl:template>
 	
 	<xsl:variable name="JIS-Logo">
