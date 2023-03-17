@@ -15638,6 +15638,16 @@
 			<xsl:apply-templates mode="update_xml_step1"/>
 		</xsl:copy>
 	</xsl:template>
+	
+	<!-- remove semantic xml -->
+	<xsl:template match="*[local-name() = 'metanorma-extension']/*[local-name() = 'metanorma']/*[local-name() = 'source']" mode="update_xml_step1"/>
+	
+	<!-- remove image/emf -->
+	<xsl:template match="*[local-name() = 'image']/*[local-name() = 'emf']" mode="update_xml_step1"/>
+	
+	<xsl:template match="*[local-name() = 'stem'] | *[local-name() = 'image']" mode="update_xml_step1">
+		<xsl:copy-of select="."/>
+	</xsl:template>
 	<!-- =========================================================================== -->
 	<!-- END STEP1: Re-order elements in 'preface', 'sections' based on @displayorder -->
 	<!-- =========================================================================== -->
@@ -15738,6 +15748,10 @@
 				<xsl:with-param name="tag_close" select="$tag_element_name_lang_none_close"/>
 				<xsl:with-param name="text" select="$text_"/>
 			</xsl:call-template>
+		</xsl:template>
+		
+		<xsl:template match="*[local-name() = 'stem'] | *[local-name() = 'image']" mode="update_xml_step2">
+			<xsl:copy-of select="."/>
 		</xsl:template>
 		
 		<!-- =========================================================================== -->
@@ -15854,6 +15868,10 @@
 			<xsl:otherwise><xsl:copy-of select="xalan:nodeset($text3)/text/node()"/></xsl:otherwise>
 		</xsl:choose>
 		
+	</xsl:template>
+	
+	<xsl:template match="*[local-name() = 'stem'] | *[local-name() = 'image']" mode="update_xml_enclose_keep-together_within-line">
+		<xsl:copy-of select="."/>
 	</xsl:template>
 	
 	<xsl:template name="replace_text_tags">
