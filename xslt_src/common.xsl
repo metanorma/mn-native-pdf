@@ -15768,6 +15768,7 @@
 				ancestor::*[local-name() = 'link'][not(contains(.,' '))] or 
 				ancestor::*[local-name() = 'sourcecode'] or 
 				ancestor::*[local-name() = 'math'] or
+				ancestor::*[local-name() = 'svg'] or
 				starts-with(., 'http://') or starts-with(., 'https://') or starts-with(., 'www.') )]" name="keep_together_standard_number" mode="update_xml_enclose_keep-together_within-line">
 	
 		<!-- enclose standard's number into tag 'keep-together_within-line' -->
