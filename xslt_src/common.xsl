@@ -15638,6 +15638,16 @@
 			<xsl:apply-templates mode="update_xml_step1"/>
 		</xsl:copy>
 	</xsl:template>
+	
+	<!-- remove semantic xml -->
+	<xsl:template match="*[local-name() = 'metanorma-extension']/*[local-name() = 'metanorma']/*[local-name() = 'source']" mode="update_xml_step1"/>
+	
+	<!-- remove image/emf -->
+	<xsl:template match="*[local-name() = 'image']/*[local-name() = 'emf']" mode="update_xml_step1"/>
+	
+	<xsl:template match="*[local-name() = 'stem'] | *[local-name() = 'image']" mode="update_xml_step1">
+		<xsl:copy-of select="."/>
+	</xsl:template>
 	<!-- =========================================================================== -->
 	<!-- END STEP1: Re-order elements in 'preface', 'sections' based on @displayorder -->
 	<!-- =========================================================================== -->
@@ -15740,6 +15750,10 @@
 			</xsl:call-template>
 		</xsl:template>
 		
+		<xsl:template match="*[local-name() = 'stem'] | *[local-name() = 'image']" mode="update_xml_step2">
+			<xsl:copy-of select="."/>
+		</xsl:template>
+		
 		<!-- =========================================================================== -->
 		<!-- END STEP2: add 'fn' after 'eref' and 'origin', if referenced to bibitem with 'note' = Withdrawn.' or 'Cancelled and replaced...'  -->
 		<!-- =========================================================================== -->
@@ -15768,6 +15782,7 @@
 				ancestor::*[local-name() = 'link'][not(contains(.,' '))] or 
 				ancestor::*[local-name() = 'sourcecode'] or 
 				ancestor::*[local-name() = 'math'] or
+				ancestor::*[local-name() = 'svg'] or
 				starts-with(., 'http://') or starts-with(., 'https://') or starts-with(., 'www.') )]" name="keep_together_standard_number" mode="update_xml_enclose_keep-together_within-line">
 	
 		<!-- enclose standard's number into tag 'keep-together_within-line' -->
@@ -15853,6 +15868,10 @@
 			<xsl:otherwise><xsl:copy-of select="xalan:nodeset($text3)/text/node()"/></xsl:otherwise>
 		</xsl:choose>
 		
+	</xsl:template>
+	
+	<xsl:template match="*[local-name() = 'stem'] | *[local-name() = 'image']" mode="update_xml_enclose_keep-together_within-line">
+		<xsl:copy-of select="."/>
 	</xsl:template>
 	
 	<xsl:template name="replace_text_tags">
