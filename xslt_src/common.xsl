@@ -5499,6 +5499,16 @@
 					</fo:block>
 				</xsl:if>
 				
+				<xsl:if test="$namespace = 'bsi'">
+					<!-- clear 'table_number' and 'table_continued' to fix Apache FOP issue: https://github.com/metanorma/metanorma-bsi/issues/381 -->
+					<xsl:if test="$document_type = 'PAS'">
+						<fo:block font-size="0">
+							<fo:marker marker-class-name="table_number"/>
+							<fo:marker marker-class-name="table_continued"/>
+						</fo:block>
+					</xsl:if>
+				</xsl:if>
+				
 			</fo:block-container>
 		</xsl:variable>
 		
@@ -7691,6 +7701,9 @@
 		<xsl:variable name="isDeleted" select="@deleted"/>
 		<!-- <dl><xsl:copy-of select="."/></dl> -->
 		<fo:block-container>
+		
+			<xsl:call-template name="setBlockSpanAll"/>
+		
 			<xsl:choose>
 				<xsl:when test="$namespace = 'bipm'">
 					<xsl:if test="not(ancestor::*[local-name() = 'li'])">
@@ -10346,6 +10359,10 @@
 	<!-- ====== -->
 	<!-- ====== -->
 	
+	<xsl:template name="setBlockSpanAll">
+		<xsl:if test="@columns = 1 or 
+			(local-name() = 'p' and *[@columns = 1])"><xsl:attribute name="span">all</xsl:attribute></xsl:if>
+	</xsl:template>
 	
 	<!-- ====== -->
 	<!-- note      -->
@@ -10355,6 +10372,8 @@
 	<xsl:template match="*[local-name() = 'note']" name="note">
 	
 		<fo:block-container id="{@id}" xsl:use-attribute-sets="note-style">
+		
+			<xsl:call-template name="setBlockSpanAll"/>
 		
 			<xsl:if test="$namespace = 'bipm'">
 				<xsl:if test="parent::*[local-name() = 'li']">
@@ -10538,7 +10557,10 @@
 	
 	
 	<xsl:template match="*[local-name() = 'termnote']">
-		<fo:block id="{@id}" xsl:use-attribute-sets="termnote-style">			
+		<fo:block id="{@id}" xsl:use-attribute-sets="termnote-style">
+		
+			<xsl:call-template name="setBlockSpanAll"/>
+		
 			<xsl:if test="$namespace = 'bsi'">
 				<xsl:if test="$document_type = 'PAS'">
 					<xsl:attribute name="space-before">0pt</xsl:attribute>
@@ -12916,7 +12938,10 @@
 	<!-- termexample -->	
 	<!-- ====== -->
 	<xsl:template match="*[local-name() = 'termexample']">
-		<fo:block id="{@id}" xsl:use-attribute-sets="termexample-style">			
+		<fo:block id="{@id}" xsl:use-attribute-sets="termexample-style">
+			
+			<xsl:call-template name="setBlockSpanAll"/>
+			
 			<xsl:apply-templates select="*[local-name()='name']" />
 			<xsl:apply-templates select="node()[not(local-name() = 'name')]" />
 		</fo:block>
@@ -12973,6 +12998,8 @@
 	<xsl:template match="*[local-name() = 'example']">
 		
 		<fo:block-container id="{@id}" xsl:use-attribute-sets="example-style">
+		
+			<xsl:call-template name="setBlockSpanAll"/>
 		
 			<xsl:if test="$namespace = 'rsd'">
 				<xsl:if test="ancestor::rsd:ul or ancestor::rsd:ol">
@@ -13244,6 +13271,9 @@
 	<!-- ====== -->
 	<xsl:template match="*[local-name() = 'quote']">		
 		<fo:block-container margin-left="0mm">
+		
+			<xsl:call-template name="setBlockSpanAll"/>
+			
 			<xsl:if test="parent::*[local-name() = 'note']">
 				<xsl:if test="not(ancestor::*[local-name() = 'table'])">
 					<xsl:attribute name="margin-left">5mm</xsl:attribute>
@@ -13788,6 +13818,9 @@
 	<xsl:template match="*[local-name() = 'clause']">
 		<fo:block>
 			<xsl:call-template name="setId"/>
+			
+			<xsl:call-template name="setBlockSpanAll"/>
+			
 			<xsl:if test="$namespace = 'bipm'">
 				<xsl:attribute name="keep-with-next">always</xsl:attribute>
 			</xsl:if>
@@ -13814,6 +13847,9 @@
 	<xsl:template match="*[local-name() = 'annex']">
 		<fo:block break-after="page"/>
 		<fo:block id="{@id}">
+		
+			<xsl:call-template name="setBlockSpanAll"/>
+			
 			<xsl:if test="$namespace = 'unece' or $namespace = 'unece-rec'">
 				<xsl:variable name="num"><xsl:number /></xsl:variable>
 				<xsl:if test="$num = 1">
@@ -15263,6 +15299,8 @@
 					<xsl:when test="$document_type = 'PAS' or @type = 'commentary'">
 						<fo:block xsl:use-attribute-sets="admonition-style">
 							
+							<xsl:call-template name="setBlockSpanAll"/>
+							
 							<xsl:if test="$document_type = 'PAS'">
 								<xsl:if test="@type = 'commentary'">
 									<xsl:attribute name="color"><xsl:value-of select="$color_PAS"/></xsl:attribute>
@@ -15284,6 +15322,9 @@
 					</xsl:when>
 					<xsl:otherwise>	<!-- BSI -->
 						<fo:block-container id="{@id}" xsl:use-attribute-sets="admonition-style">
+						
+							<xsl:call-template name="setBlockSpanAll"/>
+						
 							<xsl:if test="@type = 'caution' or @type = 'warning'">
 								<xsl:attribute name="border">0.25pt solid black</xsl:attribute>
 							</xsl:if>
@@ -15305,6 +15346,8 @@
 			<xsl:when test="$namespace = 'csd' or $namespace = 'iso' or $namespace = 'jcgm'">
 				<fo:block xsl:use-attribute-sets="admonition-style">
 				
+					<xsl:call-template name="setBlockSpanAll"/>
+					
 					<xsl:if test="@type = 'editorial'">
 						<xsl:attribute name="color">green</xsl:attribute>
 						<xsl:attribute name="font-weight">normal</xsl:attribute>
@@ -15343,6 +15386,8 @@
 			
 			<xsl:otherwise> <!-- text in the box -->
 				<fo:block-container id="{@id}" xsl:use-attribute-sets="admonition-style">
+					
+					<xsl:call-template name="setBlockSpanAll"/>
 					
 					<xsl:if test="$namespace = 'ieee'">
 						<xsl:if test="@type = 'editorial'">
