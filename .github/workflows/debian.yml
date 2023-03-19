@@ -28,7 +28,7 @@ jobs:
           ruby --version
           rbenv -v
           rbenv install -l
-          rbenv install 2.7.7
+          rbenv install 2.8.0-dev
           ruby --version
 
       - uses: actions/checkout@v2
