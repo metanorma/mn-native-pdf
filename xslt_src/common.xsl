@@ -5499,6 +5499,16 @@
 					</fo:block>
 				</xsl:if>
 				
+				<xsl:if test="$namespace = 'bsi'">
+					<!-- clear 'table_number' and 'table_continued' to fix Apache FOP issue: https://github.com/metanorma/metanorma-bsi/issues/381 -->
+					<xsl:if test="$document_type = 'PAS'">
+						<fo:block font-size="0">
+							<fo:marker marker-class-name="table_number"/>
+							<fo:marker marker-class-name="table_continued"/>
+						</fo:block>
+					</xsl:if>
+				</xsl:if>
+				
 			</fo:block-container>
 		</xsl:variable>
 		
