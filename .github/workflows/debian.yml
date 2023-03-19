@@ -28,16 +28,12 @@ jobs:
 
       - run: |
           ruby --version
-          rbenv -v
-          rbenv install -l
           rbenv install 2.8.0-dev
-          ruby --version
 
       - uses: actions/checkout@v2
 
       - run: |
           git config --global --add safe.directory /__w/mn-native-pdf/mn-native-pdf
-
 
       - run: make update-init update-modules
 
