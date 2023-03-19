@@ -27,7 +27,7 @@ jobs:
       - uses: actions/checkout@v2
 
       - run: |
-          git config --global --add safe.directory ~
+          git config --global --add safe.directory /__w/mn-native-pdf/mn-native-pdf
 
       - run: make update-init update-modules
 
