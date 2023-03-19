@@ -20,9 +20,16 @@ jobs:
         run: |
           apt-get update
           apt-get -y install gettext-base cabextract wget libxml2-utils curl \
-            software-properties-common gcc ruby ruby-dev libffi-dev libsass-dev make \
+            software-properties-common gcc ruby ruby-dev rbenv libffi-dev libsass-dev make \
             libxml2-dev libxslt1-dev zlib1g-dev zlib1g pkg-config g++ default-jre gnupg \
             git
+
+      - run: |
+          ruby --version
+          rbenv -v
+          rbenv install -l
+          rbenv install 2.7.7
+          ruby --version
 
       - uses: actions/checkout@v2
 
@@ -31,14 +38,6 @@ jobs:
 
 
       - run: make update-init update-modules
-
-      - uses: ruby/setup-ruby@v1
-        with:
-          ruby-version: 2.7
-          bundler-cache: true
-
-      - run: |
-          ruby --version
 
       - name: Update gems
         run: |
