@@ -28,9 +28,17 @@ jobs:
 
       - run: |
           git config --global --add safe.directory /__w/mn-native-pdf/mn-native-pdf
-          ruby --version
+
 
       - run: make update-init update-modules
+
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: 2.7
+          bundler-cache: true
+
+      - run: |
+          ruby --version
 
       - name: Update gems
         run: |
