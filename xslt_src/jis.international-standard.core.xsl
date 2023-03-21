@@ -272,33 +272,33 @@
 					<xsl:variable name="structured_xml_">
 						
 						<xsl:if test="not(/*/*[local-name()='preface']/*[local-name() = 'p' and @type = 'section-title'][following-sibling::*[1][local-name() = 'introduction']])">
-							<item><xsl:apply-templates select="/*/*[local-name()='preface']/*[local-name() = 'introduction']" mode="flatxml" /></item>
+							<item><xsl:apply-templates select="/*/*[local-name()='preface']/*[local-name() = 'introduction']" mode="linear_xml" /></item>
 						</xsl:if>
 						
 						<item>
 							<xsl:choose>
 								<xsl:when test="/*/*[local-name()='preface']/*[local-name() = 'p' and @type = 'section-title'][following-sibling::*[1][local-name() = 'introduction']]">
-									<xsl:apply-templates select="/*/*[local-name()='preface']/*[local-name() = 'p' and @type = 'section-title'][following-sibling::*[1][local-name() = 'introduction']]" mode="flatxml" />
-									<xsl:apply-templates select="/*/*[local-name()='preface']/*[local-name() = 'introduction']" mode="flatxml" />
+									<xsl:apply-templates select="/*/*[local-name()='preface']/*[local-name() = 'p' and @type = 'section-title'][following-sibling::*[1][local-name() = 'introduction']]" mode="linear_xml" />
+									<xsl:apply-templates select="/*/*[local-name()='preface']/*[local-name() = 'introduction']" mode="linear_xml" />
 								</xsl:when>
 								<xsl:otherwise>
-									<xsl:apply-templates select="/*/*[local-name()='preface']/*[local-name() = 'p' and @type = 'section-title'][not(following-sibling::*) or following-sibling::*[1][local-name() = 'clause' and @type = 'corrigenda']]" mode="flatxml" />
+									<xsl:apply-templates select="/*/*[local-name()='preface']/*[local-name() = 'p' and @type = 'section-title'][not(following-sibling::*) or following-sibling::*[1][local-name() = 'clause' and @type = 'corrigenda']]" mode="linear_xml" />
 								</xsl:otherwise>
 							</xsl:choose>
 							
-							<xsl:apply-templates select="/*/*[local-name()='sections']/*" mode="flatxml"/>
+							<xsl:apply-templates select="/*/*[local-name()='sections']/*" mode="linear_xml"/>
 						</item>	
 						
 						
 						<!-- Annexes -->
 						<item>
-							<xsl:apply-templates select="/*/*[local-name()='annex']" mode="flatxml"/>
+							<xsl:apply-templates select="/*/*[local-name()='annex']" mode="linear_xml"/>
 						</item>
 						
 						<!-- Bibliography -->
 						
 						<xsl:for-each select="/*/*[local-name()='bibliography']/*[count(.//*[local-name() = 'bibitem'][not(@hidden) = 'true']) &gt; 0 and not(@hidden = 'true')]">
-							<item><xsl:apply-templates select="." mode="flatxml"/></item>
+							<item><xsl:apply-templates select="." mode="linear_xml"/></item>
 						</xsl:for-each>
 						
 						<item>
