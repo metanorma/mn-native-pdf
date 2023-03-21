@@ -104,6 +104,28 @@
 					</fo:repeatable-page-master-alternatives>
 				</fo:page-sequence-master>
 			
+				<!-- landscape -->
+				<fo:simple-page-master master-name="odd-landscape" page-width="{$pageHeight}mm" page-height="{$pageWidth}mm">
+					<fo:region-body margin-top="{$marginLeftRight1}mm" margin-bottom="{$marginLeftRight2}mm" margin-left="{$marginBottom}mm" margin-right="{$marginTop}mm"/>
+					<fo:region-before region-name="header" extent="{$marginLeftRight1}mm" precedence="true"/>
+					<fo:region-after region-name="footer" extent="{$marginLeftRight2}mm" precedence="true"/>
+					<fo:region-start region-name="left-region-landscape" extent="{$marginBottom}mm"/>
+					<fo:region-end region-name="right-region-landscape" extent="{$marginTop}mm"/>
+				</fo:simple-page-master>
+				<fo:simple-page-master master-name="even-landscape" page-width="{$pageHeight}mm" page-height="{$pageWidth}mm">
+					<fo:region-body margin-top="{$marginLeftRight2}mm" margin-bottom="{$marginLeftRight1}mm" margin-left="{$marginBottom}mm" margin-right="{$marginTop}mm"/>
+					<fo:region-before region-name="header" extent="{$marginLeftRight2}mm" precedence="true"/>
+					<fo:region-after region-name="footer" extent="{$marginLeftRight1}mm" precedence="true"/>
+					<fo:region-start region-name="left-region-landscape" extent="{$marginBottom}mm"/>
+					<fo:region-end region-name="right-region-landspace" extent="{$marginTop}mm"/>
+				</fo:simple-page-master>
+				<fo:page-sequence-master master-name="document-landscape">
+					<fo:repeatable-page-master-alternatives>
+						<fo:conditional-page-master-reference odd-or-even="even" master-reference="even-landscape"/>
+						<fo:conditional-page-master-reference odd-or-even="odd" master-reference="odd-landscape"/>
+					</fo:repeatable-page-master-alternatives>
+				</fo:page-sequence-master>
+			
 			</fo:layout-master-set>
 			
 			<fo:declarations>
@@ -156,11 +178,14 @@
 					</xsl:call-template>
 				
 				
-					<!-- BSI Contents -->
+					<!-- ========================== -->
+					<!-- Contents and preface pages -->
+					<!-- ========================== -->
 					<fo:page-sequence master-reference="document" initial-page-number="1">
 						<xsl:call-template name="insertHeaderFooter">
 							<xsl:with-param name="docidentifier" select="$docidentifier"/>
 							<xsl:with-param name="copyrightText" select="$copyrightText"/>
+							<xsl:with-param name="section">preface</xsl:with-param>
 						</xsl:call-template>
 						
 						<fo:flow flow-name="xsl-region-body">
@@ -195,13 +220,20 @@
 											<xsl:choose>
 												<xsl:when test="@type = 'bibliography'">
 												</xsl:when>
+												<xsl:when test="@type = 'annex'">
+													<fo:block space-after="5pt">
+														<xsl:call-template name="insertTocItem"/>
+													</fo:block>
+												</xsl:when>
 												<xsl:otherwise>
-													<fo:list-block>
+													<fo:list-block space-after="5pt">
 														<xsl:attribute name="provisional-distance-between-starts">
 															<xsl:choose>
 																<xsl:when test="string-length(@section) = 1">5mm</xsl:when>
-																<xsl:when test="string-length(@section) = 2">7mm</xsl:when>
+																<xsl:when test="string-length(@section) &gt;= 2"><xsl:value-of select="5 + (string-length(@section) - 1) * 2"/>mm</xsl:when>
+																<!-- <xsl:when test="string-length(@section) = 2">7mm</xsl:when>
 																<xsl:when test="string-length(@section) = 3">9mm</xsl:when>
+																<xsl:when test="string-length(@section) = 4">9mm</xsl:when> -->
 																<xsl:when test="@type = 'annex'">16mm</xsl:when>
 																<xsl:otherwise>5mm</xsl:otherwise>
 															</xsl:choose>
@@ -217,17 +249,7 @@
 																</fo:block>
 															</fo:list-item-label>
 															<fo:list-item-body start-indent="body-start()">
-																<fo:block text-align-last="justify" role="TOCI">
-																	<fo:basic-link internal-destination="{@id}" fox:alt-text="{title}">
-																		<fo:inline><xsl:apply-templates select="title" /></fo:inline>
-																		<fo:inline keep-together.within-line="always">
-																			<fo:leader leader-pattern="dots"/>
-																			<fo:inline font-size="8pt" font-family="Times New Roman">
-																				<fo:page-number-citation ref-id="{@id}"/>
-																			</fo:inline>
-																		</fo:inline>
-																	</fo:basic-link>
-																</fo:block>
+																<xsl:call-template name="insertTocItem"/>
 															</fo:list-item-body>
 														</fo:list-item>
 													</fo:list-block>
@@ -238,18 +260,128 @@
 								</xsl:if>
 							</fo:block>
 						
-						
 						</fo:flow>
 						
-						
 					</fo:page-sequence>
+					<!-- ========================== -->
+					<!-- END Contents and preface pages -->
+					<!-- ========================== -->
+					
+					
+					<!-- item - page sequence -->
+					<xsl:variable name="structured_xml_">
+						
+						<xsl:if test="not(/*/*[local-name()='preface']/*[local-name() = 'p' and @type = 'section-title'][following-sibling::*[1][local-name() = 'introduction']])">
+							<item><xsl:apply-templates select="/*/*[local-name()='preface']/*[local-name() = 'introduction']" mode="flatxml" /></item>
+						</xsl:if>
+						
+						<item>
+							<xsl:choose>
+								<xsl:when test="/*/*[local-name()='preface']/*[local-name() = 'p' and @type = 'section-title'][following-sibling::*[1][local-name() = 'introduction']]">
+									<xsl:apply-templates select="/*/*[local-name()='preface']/*[local-name() = 'p' and @type = 'section-title'][following-sibling::*[1][local-name() = 'introduction']]" mode="flatxml" />
+									<xsl:apply-templates select="/*/*[local-name()='preface']/*[local-name() = 'introduction']" mode="flatxml" />
+								</xsl:when>
+								<xsl:otherwise>
+									<xsl:apply-templates select="/*/*[local-name()='preface']/*[local-name() = 'p' and @type = 'section-title'][not(following-sibling::*) or following-sibling::*[1][local-name() = 'clause' and @type = 'corrigenda']]" mode="flatxml" />
+								</xsl:otherwise>
+							</xsl:choose>
+							
+							<xsl:apply-templates select="/*/*[local-name()='sections']/*" mode="flatxml"/>
+						</item>	
+						
+						
+						<!-- Annexes -->
+						<item>
+							<xsl:apply-templates select="/*/*[local-name()='annex']" mode="flatxml"/>
+						</item>
+						
+						<!-- Bibliography -->
+						
+						<xsl:for-each select="/*/*[local-name()='bibliography']/*[count(.//*[local-name() = 'bibitem'][not(@hidden) = 'true']) &gt; 0 and not(@hidden = 'true')]">
+							<item><xsl:apply-templates select="." mode="flatxml"/></item>
+						</xsl:for-each>
+						
+						<item>
+							<xsl:copy-of select="//jis:indexsect" />
+						</item>
+						
+					</xsl:variable>
+					
+					<!-- page break before each section -->
+					<xsl:variable name="structured_xml">
+						<xsl:for-each select="xalan:nodeset($structured_xml_)/item[*]">
+							<xsl:element name="pagebreak" namespace="https://www.metanorma.org/ns/jis"/>
+							<xsl:copy-of select="./*"/>
+						</xsl:for-each>
+					</xsl:variable>
+					<!-- structured_xml=<xsl:copy-of select="$structured_xml" /> -->
+					
+					<xsl:variable name="paged_xml">
+						<xsl:call-template name="makePagedXML">
+							<xsl:with-param name="structured_xml" select="$structured_xml"/>
+						</xsl:call-template>
+					</xsl:variable>
+					<!-- paged_xml=<xsl:copy-of select="$paged_xml"/> -->
+					
+					<xsl:for-each select="xalan:nodeset($paged_xml)/*[local-name()='page'][*]">
+						<fo:page-sequence master-reference="document" force-page-count="no-force">
+							<xsl:if test="@orientation = 'landscape'">
+								<xsl:attribute name="master-reference">document-<xsl:value-of select="@orientation"/></xsl:attribute>
+							</xsl:if>
+							<xsl:if test="position() = 1">
+								<xsl:attribute name="initial-page-number">1</xsl:attribute>
+							</xsl:if>
+							<fo:static-content flow-name="xsl-footnote-separator">
+								<fo:block>
+									<fo:leader leader-pattern="rule" leader-length="15%"/>
+								</fo:block>
+							</fo:static-content>
+							
+							<xsl:call-template name="insertHeaderFooter">
+								<xsl:with-param name="docidentifier" select="$docidentifier"/>
+								<xsl:with-param name="copyrightText" select="$copyrightText"/>
+								<xsl:with-param name="section">preface</xsl:with-param>
+							</xsl:call-template>
+							
+							<fo:flow flow-name="xsl-region-body">
+								
+								<xsl:apply-templates select="*" mode="page"/>
+								
+							</fo:flow>
+						</fo:page-sequence>
+					</xsl:for-each>
+					
+					
 				
 				</xsl:for-each>
 			
 			</xsl:for-each>
 			
+			<xsl:if test="not(//jis:jis-standard)">
+				<fo:page-sequence master-reference="document" force-page-count="no-force">
+					<fo:flow flow-name="xsl-region-body">
+						<fo:block><!-- prevent fop error for empty document --></fo:block>
+					</fo:flow>
+				</fo:page-sequence>
+			</xsl:if>
+			
 		</fo:root>
 	</xsl:template>
+	
+	<xsl:template name="insertTocItem">
+		<fo:block text-align-last="justify" role="TOCI">
+			<fo:basic-link internal-destination="{@id}" fox:alt-text="{title}">
+				<fo:inline><xsl:apply-templates select="title" /></fo:inline>
+				<fo:inline keep-together.within-line="always">
+					<fo:leader leader-pattern="dots"/>
+					<fo:inline font-size="8pt" font-family="Times New Roman">
+						<fo:page-number-citation ref-id="{@id}"/>
+					</fo:inline>
+				</fo:inline>
+			</fo:basic-link>
+		</fo:block>
+	</xsl:template>
+	
 	
 	<xsl:template name="insertCoverPage">
 		<xsl:param name="num"/>
@@ -393,6 +525,32 @@
 		</xsl:if>
 	</xsl:template>
 	
+	<xsl:template match="*" priority="3" mode="page">
+		<xsl:call-template name="elementProcessing"/>
+	</xsl:template>
+	
+	<xsl:template name="elementProcessing">
+		<xsl:choose>
+			<xsl:when test="local-name() = 'p' and count(node()) = count(processing-instruction())"><!-- skip --></xsl:when> <!-- empty paragraph with processing-instruction -->
+			<xsl:when test="@hidden = 'true'"><!-- skip --></xsl:when>
+			<xsl:otherwise>
+				<xsl:choose>
+					<xsl:when test="local-name() = 'title' or local-name() = 'term'">
+						<xsl:apply-templates select="."/>
+					</xsl:when>
+					<xsl:when test="local-name() = 'indexsect'">
+						<xsl:apply-templates select="." mode="index"/>
+					</xsl:when>
+					<xsl:otherwise>
+						<fo:block>
+							<xsl:apply-templates select="."/>
+						</fo:block>
+					</xsl:otherwise>
+				</xsl:choose>
+			</xsl:otherwise>
+		</xsl:choose>
+	</xsl:template>
+	
 	
 	<xsl:template match="jis:title" priority="2" name="title">
 	
@@ -495,7 +653,7 @@
 			
 	</xsl:template>
 	
-		<xsl:template match="*[local-name() = 'annex']" priority="2">
+	<xsl:template match="*[local-name() = 'annex']" priority="2">
 		<fo:block id="{@id}">
 		</fo:block>
 		<xsl:apply-templates />
@@ -570,6 +728,45 @@
 
 	</xsl:template>
 	
+	
+	<xsl:template name="makePagedXML">
+		<xsl:param name="structured_xml"/>
+		<xsl:choose>
+			<xsl:when test="not(xalan:nodeset($structured_xml)/*[local-name()='pagebreak'])">
+				<xsl:element name="page" namespace="https://www.metanorma.org/ns/jis">
+					<xsl:copy-of select="xalan:nodeset($structured_xml)"/>
+				</xsl:element>
+			</xsl:when>
+			<xsl:otherwise>
+				<xsl:for-each select="xalan:nodeset($structured_xml)/*[local-name()='pagebreak']">
+			
+					<xsl:variable name="pagebreak_id" select="generate-id()"/>
+					
+					<!-- copy elements before pagebreak -->
+					<xsl:element name="page" namespace="https://www.metanorma.org/ns/jis">
+						<xsl:if test="not(preceding-sibling::jis:pagebreak)">
+							<xsl:copy-of select="../@*" />
+						</xsl:if>
+						<!-- copy previous pagebreak orientation -->
+						<xsl:copy-of select="preceding-sibling::jis:pagebreak[1]/@orientation"/>
+					
+						<xsl:copy-of select="preceding-sibling::node()[following-sibling::jis:pagebreak[1][generate-id(.) = $pagebreak_id]][not(local-name() = 'pagebreak')]" />
+					</xsl:element>
+					
+					<!-- copy elements after last page break -->
+					<xsl:if test="position() = last() and following-sibling::node()">
+						<xsl:element name="page" namespace="https://www.metanorma.org/ns/jis">
+							<xsl:copy-of select="@orientation" />
+							<xsl:copy-of select="following-sibling::node()" />
+						</xsl:element>
+					</xsl:if>
+	
+				</xsl:for-each>
+			</xsl:otherwise>
+		</xsl:choose>
+	</xsl:template>
+	
+	
 	<xsl:template name="insertHeaderFooter">
 		<xsl:param name="docidentifier" />
 		<xsl:param name="hidePageNumber">false</xsl:param>
@@ -597,7 +794,7 @@
 		<fo:static-content flow-name="footer">
 			<fo:block-container height="24.5mm" display-align="after">
 				<xsl:if test="$section = 'preface'">
-					<fo:block font-family="Times New Roman" font-size="9pt">(<fo:page-number />)</fo:block>
+					<fo:block font-size="9pt" text-align="center" space-after="10pt">(<fo:inline font-family="Times New Roman"><fo:page-number /></fo:inline>)</fo:block>
 				</xsl:if>
 				<!-- copyright restriction -->
 				<fo:block font-size="7pt" text-align="center" font-family="IPAexMincho" margin-bottom="13mm"><xsl:value-of select="$copyrightText"/></fo:block>
