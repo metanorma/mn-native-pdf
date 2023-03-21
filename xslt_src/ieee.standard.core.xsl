@@ -2830,11 +2830,6 @@
 			</xsl:otherwise>
 		</xsl:choose>
 	</xsl:template>
-
-	<xsl:template match="*[local-name() = 'inlineChar']">
-		<fo:inline><xsl:value-of select="."/></fo:inline>
-	</xsl:template>
-
 	
 
 <!--
@@ -3811,28 +3806,5 @@
 	<!-- =============================== -->
 	<!-- End Back Pages -->
 	<!-- =============================== -->
-	
-	<xsl:template name="replaceChar">
-		<xsl:param name="text" />
-		<xsl:param name="replace" />
-		<xsl:param name="by" />
-		<xsl:choose>
-			<xsl:when test="$text = '' or $replace = '' or not($replace)" >
-				<xsl:value-of select="$text" />
-			</xsl:when>
-			<xsl:when test="contains($text, $replace)">
-				<xsl:value-of select="substring-before($text,$replace)" />
-				<xsl:element name="inlineChar" namespace="https://www.metanorma.org/ns/ieee"><xsl:value-of select="$by"/></xsl:element>
-				<xsl:call-template name="replaceChar">
-						<xsl:with-param name="text" select="substring-after($text,$replace)" />
-						<xsl:with-param name="replace" select="$replace" />
-						<xsl:with-param name="by" select="$by" />
-				</xsl:call-template>
-			</xsl:when>
-			<xsl:otherwise>
-				<xsl:value-of select="$text" />
-			</xsl:otherwise>
-		</xsl:choose>
-	</xsl:template>
-	
+		
 </xsl:stylesheet>
