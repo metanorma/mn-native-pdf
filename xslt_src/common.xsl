@@ -108,7 +108,7 @@
 
 	<xsl:variable name="isApplyAutolayoutAlgorithm_">
 		<xsl:choose>
-			<xsl:when test="$namespace = 'bipm' or $namespace = 'bsi' or $namespace = 'csa' or $namespace = 'csd' or $namespace = 'iec' or $namespace = 'ieee' or $namespace = 'iho' or $namespace = 'iso' or $namespace = 'itu' or $namespace = 'jcgm' or $namespace = 'm3d' or $namespace = 'mpfd' or $namespace = 'nist-sp' or $namespace = 'nist-cswp' or $namespace = 'ogc' or $namespace = 'ogc-white-paper' or $namespace = 'rsd' or $namespace = 'unece' or $namespace = 'unece-rec'">true</xsl:when>
+			<xsl:when test="$namespace = 'bipm' or $namespace = 'bsi' or $namespace = 'csa' or $namespace = 'csd' or $namespace = 'iec' or $namespace = 'ieee' or $namespace = 'iho' or $namespace = 'iso' or $namespace = 'itu' or $namespace = 'jcgm' or $namespace = 'jis' or $namespace = 'm3d' or $namespace = 'mpfd' or $namespace = 'nist-sp' or $namespace = 'nist-cswp' or $namespace = 'ogc' or $namespace = 'ogc-white-paper' or $namespace = 'rsd' or $namespace = 'unece' or $namespace = 'unece-rec'">true</xsl:when>
 			<xsl:otherwise>false</xsl:otherwise>
 		</xsl:choose>
 	</xsl:variable>
@@ -5475,8 +5475,8 @@
 									<xsl:apply-templates select="*[local-name()='thead']" mode="process_tbody"/>
 								</xsl:when>
 								<xsl:otherwise>
-									<xsl:apply-templates select="node()[not(local-name() = 'name') and not(local-name() = 'note')
-									and not(local-name() = 'thead') and not(local-name() = 'tfoot')]" /> <!-- process all table' elements, except name, header, footer and note that renders separaterely -->
+									<xsl:apply-templates select="node()[not(local-name() = 'name') and not(local-name() = 'note') and not(local-name() = 'dl')
+									and not(local-name() = 'thead') and not(local-name() = 'tfoot')]" /> <!-- process all table' elements, except name, header, footer, note and dl which render separaterely -->
 								</xsl:otherwise>
 							</xsl:choose>
 					
@@ -6226,11 +6226,11 @@
 		<xsl:param name="colwidths"/>
 		<xsl:param name="colgroup"/>
 		
-		<xsl:variable name="isNoteOrFnExist" select="../*[local-name()='note'] or ..//*[local-name()='fn'][local-name(..) != 'name']"/>
+		<xsl:variable name="isNoteOrFnExist" select="../*[local-name()='note'] or ../*[local-name()='dl'] or ..//*[local-name()='fn'][local-name(..) != 'name']"/>
 		
 		<xsl:variable name="isNoteOrFnExistShowAfterTable">
 			<xsl:if test="$namespace = 'bsi'">
-				 <xsl:value-of select="../*[local-name()='note'] or ..//*[local-name()='fn']"/>
+				 <xsl:value-of select="../*[local-name()='note'] or ../*[local-name()='dl'] or ..//*[local-name()='fn']"/>
 			</xsl:if>
 		</xsl:variable>
 		
@@ -6348,6 +6348,7 @@
 								<!-- for BSI (not PAS) display Notes before footnotes -->
 								<xsl:if test="$namespace = 'bsi'">
 									<xsl:if test="$document_type != 'PAS'">
+										<xsl:apply-templates select="../*[local-name()='dl']" />
 										<xsl:apply-templates select="../*[local-name()='note']" />
 									</xsl:if>
 								</xsl:if>
@@ -6356,6 +6357,7 @@
 								<xsl:choose>
 									<xsl:when test="$namespace = 'gb' or $namespace = 'bsi'"></xsl:when>
 									<xsl:otherwise>
+										<xsl:apply-templates select="../*[local-name()='dl']" />
 										<xsl:apply-templates select="../*[local-name()='note']" />
 									</xsl:otherwise>
 								</xsl:choose>
@@ -6395,6 +6397,7 @@
 								<!-- for PAS display Notes after footnotes -->
 								<xsl:if test="$namespace = 'bsi'">
 									<xsl:if test="$document_type = 'PAS'">
+										<xsl:apply-templates select="../*[local-name()='dl']" />
 										<xsl:apply-templates select="../*[local-name()='note']" />
 									</xsl:if>
 								</xsl:if>

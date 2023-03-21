@@ -159,9 +159,9 @@
 				<xsl:for-each select="xalan:nodeset($current_document)">
 				
 					<xsl:variable name="docidentifier">
-						<fo:inline font-family="Arial"><xsl:value-of select="/*/jis:bibdata/jis:docidentifier[@type = 'JIS']"/></fo:inline>
+						<fo:inline><xsl:value-of select="/*/jis:bibdata/jis:docidentifier[@type = 'JIS']"/></fo:inline>
 						<fo:inline font-family="IPAexGothic">：</fo:inline>
-						<fo:inline font-family="Arial"><xsl:value-of select="substring(/*/jis:bibdata/jis:version/jis:revision-date, 1, 4)"/></fo:inline>
+						<fo:inline><xsl:value-of select="substring(/*/jis:bibdata/jis:version/jis:revision-date, 1, 4)"/></fo:inline>
 					</xsl:variable>
 				
 					<xsl:variable name="copyrightText">著作権法により無断での複製，転載等は禁止されております。</xsl:variable>
@@ -340,7 +340,7 @@
 							<xsl:call-template name="insertHeaderFooter">
 								<xsl:with-param name="docidentifier" select="$docidentifier"/>
 								<xsl:with-param name="copyrightText" select="$copyrightText"/>
-								<xsl:with-param name="section">preface</xsl:with-param>
+								<xsl:with-param name="section">main</xsl:with-param>
 							</xsl:call-template>
 							
 							<fo:flow flow-name="xsl-region-body">
@@ -636,32 +636,43 @@
 			</xsl:choose>
 		</xsl:variable>
 		
-	
-		<xsl:element name="{$element-name}">
-			<xsl:attribute name="font-size"><xsl:value-of select="$font-size"/></xsl:attribute>
-			<xsl:attribute name="font-weight"><xsl:value-of select="$font-weight"/></xsl:attribute>
-			<xsl:attribute name="space-before"><xsl:value-of select="$margin-top"/></xsl:attribute>
-			<xsl:attribute name="margin-bottom"><xsl:value-of select="$margin-bottom"/></xsl:attribute>
-			<xsl:attribute name="keep-with-next">always</xsl:attribute>
-			<xsl:attribute name="role">H<xsl:value-of select="$level"/></xsl:attribute>
-			
-			
-			<xsl:if test="@type = 'floating-title' or @type = 'section-title'">
-				<xsl:copy-of select="@id"/>
-			</xsl:if>
-			
-			
-			<!-- if first and last childs are `add` ace-tag, then move start ace-tag before title -->
-			<xsl:if test="*[local-name() = 'tab'][1]/following-sibling::node()[last()][local-name() = 'add'][starts-with(text(), $ace_tag)]">
-				<xsl:apply-templates select="*[local-name() = 'tab'][1]/following-sibling::node()[1][local-name() = 'add'][starts-with(text(), $ace_tag)]">
-					<xsl:with-param name="skip">false</xsl:with-param>
-				</xsl:apply-templates> 
-			</xsl:if>
-			
-			<xsl:apply-templates />
-			<xsl:apply-templates select="following-sibling::*[1][local-name() = 'variant-title'][@type = 'sub']" mode="subtitle"/>
-		</xsl:element>
-			
+		
+		
+		<xsl:choose>
+			<xsl:when test="@inline-header = 'true' and following-sibling::*[1][self::jis:p]">
+				<fo:block role="H{$level}">
+					<xsl:for-each select="following-sibling::*[1][self::jis:p]">
+						<xsl:call-template name="paragraph">
+							<xsl:with-param name="inline-header">true</xsl:with-param>
+						</xsl:call-template>
+					</xsl:for-each>
+				</fo:block>
+			</xsl:when>
+			<xsl:otherwise>
+				<xsl:element name="{$element-name}">
+					<xsl:attribute name="font-size"><xsl:value-of select="$font-size"/></xsl:attribute>
+					<xsl:attribute name="font-weight"><xsl:value-of select="$font-weight"/></xsl:attribute>
+					<xsl:attribute name="space-before"><xsl:value-of select="$margin-top"/></xsl:attribute>
+					<xsl:attribute name="margin-bottom"><xsl:value-of select="$margin-bottom"/></xsl:attribute>
+					<xsl:attribute name="keep-with-next">always</xsl:attribute>
+					<xsl:attribute name="role">H<xsl:value-of select="$level"/></xsl:attribute>
+					
+					<xsl:if test="@type = 'floating-title' or @type = 'section-title'">
+						<xsl:copy-of select="@id"/>
+					</xsl:if>
+					
+					<!-- if first and last childs are `add` ace-tag, then move start ace-tag before title -->
+					<xsl:if test="*[local-name() = 'tab'][1]/following-sibling::node()[last()][local-name() = 'add'][starts-with(text(), $ace_tag)]">
+						<xsl:apply-templates select="*[local-name() = 'tab'][1]/following-sibling::node()[1][local-name() = 'add'][starts-with(text(), $ace_tag)]">
+							<xsl:with-param name="skip">false</xsl:with-param>
+						</xsl:apply-templates> 
+					</xsl:if>
+					
+					<xsl:apply-templates />
+					<xsl:apply-templates select="following-sibling::*[1][local-name() = 'variant-title'][@type = 'sub']" mode="subtitle"/>
+				</xsl:element>
+			</xsl:otherwise>
+		</xsl:choose>
 	</xsl:template>
 	
 	<xsl:template match="*[local-name() = 'annex']" priority="2">
@@ -784,13 +795,15 @@
 		<xsl:param name="section"/>
 		<xsl:param name="copyrightText"/>
 		<fo:static-content flow-name="header-odd" role="artifact">
-			<fo:block-container height="26mm" display-align="after" text-align="right">
-				<fo:block font-size="9pt"><xsl:copy-of select="$docidentifier"/></fo:block>
+			<fo:block-container font-family="Arial" font-size="9pt" height="26mm" display-align="after" text-align="right">
+				<xsl:if test="$section = 'main'"><fo:block><fo:page-number /></fo:block></xsl:if>
+				<fo:block><xsl:copy-of select="$docidentifier"/></fo:block>
 			</fo:block-container>
 		</fo:static-content>
 		<fo:static-content flow-name="header-even" role="artifact">
-			<fo:block-container height="26mm" display-align="after">
-				<fo:block font-size="9pt"><xsl:copy-of select="$docidentifier"/></fo:block>
+			<fo:block-container font-family="Arial" font-size="9pt" height="26mm" display-align="after">
+				<xsl:if test="$section = 'main'"><fo:block><fo:page-number /></fo:block></xsl:if>
+				<fo:block><xsl:copy-of select="$docidentifier"/></fo:block>
 			</fo:block-container>
 		</fo:static-content>
 		<xsl:call-template name="insertFooter">
