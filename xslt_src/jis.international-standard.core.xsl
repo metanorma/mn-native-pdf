@@ -538,11 +538,24 @@
 					<xsl:when test="local-name() = 'title' or local-name() = 'term'">
 						<xsl:apply-templates select="."/>
 					</xsl:when>
+					<xsl:when test="@mainsection = 'true'">
+						<!-- page break before section's title -->
+						<xsl:if test="local-name() = 'p' and @type='section-title'">
+							<fo:block break-after="page"/>
+						</xsl:if>
+						<fo:block-container>
+							<xsl:attribute name="keep-with-next">always</xsl:attribute>
+							<fo:block><xsl:apply-templates select="."/></fo:block>
+						</fo:block-container>
+					</xsl:when>
 					<xsl:when test="local-name() = 'indexsect'">
 						<xsl:apply-templates select="." mode="index"/>
 					</xsl:when>
 					<xsl:otherwise>
 						<fo:block>
+							<xsl:if test="not(node())">
+								<xsl:attribute name="keep-with-next">always</xsl:attribute>
+							</xsl:if>
 							<xsl:apply-templates select="."/>
 						</fo:block>
 					</xsl:otherwise>
@@ -625,8 +638,6 @@
 		
 	
 		<xsl:element name="{$element-name}">
-			<!-- copy @id from empty preceding clause -->
-			<xsl:copy-of select="preceding-sibling::*[1][local-name() = 'clause' and count(node()) = 0]/@id"/>
 			<xsl:attribute name="font-size"><xsl:value-of select="$font-size"/></xsl:attribute>
 			<xsl:attribute name="font-weight"><xsl:value-of select="$font-weight"/></xsl:attribute>
 			<xsl:attribute name="space-before"><xsl:value-of select="$margin-top"/></xsl:attribute>

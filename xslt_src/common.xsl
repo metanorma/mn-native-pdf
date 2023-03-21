@@ -16051,7 +16051,7 @@
 											*[local-name() = 'colophon']//*[local-name() = 'clause'] | 
 											*[local-name()='sections']//*[local-name()='terms'] | 
 											*[local-name()='sections']//*[local-name()='definitions'] |
-											*[local-name()='annex']//*[local-name()='definitions']" mode="linear_xml" name="clause">
+											*[local-name()='annex']//*[local-name()='definitions']" mode="linear_xml" name="clause_linear">
 		
 		<xsl:copy>
 			<xsl:apply-templates select="@*" mode="linear_xml"/>
@@ -16187,7 +16187,7 @@
 			<p id="_8e5cf917-f75a-4a49-b0aa-1714cb6cf954">Formerly denoted as 15 % (m/m).</p>
 		</fn>
 	-->
-	<xsl:template match="*[local-name() = 'fn'][not(ancestor::*[(local-name() = 'table' or local-name() = 'figure')] and not(ancestor::*[local-name() = 'name']))]" mode="linear_xml" name="flatxml_fn">
+	<xsl:template match="*[local-name() = 'fn'][not(ancestor::*[(local-name() = 'table' or local-name() = 'figure')] and not(ancestor::*[local-name() = 'name']))]" mode="linear_xml" name="linear_xml_fn">
 		<xsl:variable name="p_fn_">
 			<xsl:call-template name="get_fn_list"/>
 		</xsl:variable>
