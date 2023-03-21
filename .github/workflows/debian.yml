@@ -20,11 +20,20 @@ jobs:
         run: |
           apt-get update
           apt-get -y install gettext-base cabextract wget libxml2-utils curl \
-            software-properties-common gcc ruby ruby-dev libffi-dev libsass-dev make \
+            software-properties-common gcc ruby ruby-dev rbenv libffi-dev libsass-dev make \
             libxml2-dev libxslt1-dev zlib1g-dev zlib1g pkg-config g++ default-jre gnupg \
+            autoconf bison patch build-essential rustc libssl-dev libyaml-dev libreadline6-dev \
+            libgmp-dev libncurses5-dev libgdbm6 libgdbm-dev libdb-dev uuid-dev \
             git
 
+      - run: |
+          ruby --version
+          rbenv install 2.8.0-dev
+
       - uses: actions/checkout@v2
+
+      - run: |
+          git config --global --add safe.directory /__w/mn-native-pdf/mn-native-pdf
 
       - run: make update-init update-modules
 
