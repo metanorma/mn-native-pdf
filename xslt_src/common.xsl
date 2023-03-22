@@ -2723,11 +2723,17 @@
 		<xsl:if test="$namespace = 'bsi' or $namespace = 'iho' or $namespace = 'iso' or $namespace = 'jcgm'">
 			<xsl:attribute name="margin-bottom">10pt</xsl:attribute>
 		</xsl:if>
+		<xsl:if test="$namespace = 'jis'">
+			<xsl:attribute name="space-before">12pt</xsl:attribute>
+		</xsl:if>
 	</xsl:attribute-set>
 	
 	<xsl:attribute-set name="term-name-style">
 		<xsl:attribute name="keep-with-next">always</xsl:attribute>
 		<xsl:attribute name="font-weight">bold</xsl:attribute>
+		<xsl:if test="$namespace = 'jis'">
+			<xsl:attribute name="font-family">Times New Roman</xsl:attribute>
+		</xsl:if>
 	</xsl:attribute-set>
 
 	<xsl:attribute-set name="figure-block-style">

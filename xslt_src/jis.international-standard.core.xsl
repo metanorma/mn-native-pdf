@@ -83,6 +83,13 @@
 					<fo:region-end region-name="right-region" extent="22mm"/>
 				</fo:simple-page-master>
 			
+				<fo:simple-page-master master-name="first_page" page-width="{$pageWidth}mm" page-height="{$pageHeight}mm">
+					<fo:region-body margin-top="{$marginTop}mm" margin-bottom="{$marginBottom}mm" margin-left="{$marginLeftRight1}mm" margin-right="{$marginLeftRight2}mm"/>
+					<fo:region-before region-name="header" extent="{$marginTop}mm"/>
+					<fo:region-after region-name="footer" extent="{$marginBottom}mm"/>
+					<fo:region-start region-name="left-region" extent="{$marginLeftRight1}mm"/>
+					<fo:region-end region-name="right-region" extent="{$marginLeftRight2}mm"/>
+				</fo:simple-page-master>
 				<fo:simple-page-master master-name="odd" page-width="{$pageWidth}mm" page-height="{$pageHeight}mm">
 					<fo:region-body margin-top="{$marginTop}mm" margin-bottom="{$marginBottom}mm" margin-left="{$marginLeftRight1}mm" margin-right="{$marginLeftRight2}mm"/>
 					<fo:region-before region-name="header-odd" extent="{$marginTop}mm"/>
@@ -97,8 +104,17 @@
 					<fo:region-start region-name="left-region" extent="{$marginLeftRight1}mm"/>
 					<fo:region-end region-name="right-region" extent="{$marginLeftRight2}mm"/>
 				</fo:simple-page-master>
+				
+				<fo:page-sequence-master master-name="document_preface">
+					<fo:repeatable-page-master-alternatives>
+						<fo:conditional-page-master-reference odd-or-even="even" master-reference="even"/>
+						<fo:conditional-page-master-reference odd-or-even="odd" master-reference="odd"/>
+					</fo:repeatable-page-master-alternatives>
+				</fo:page-sequence-master>
+				
 				<fo:page-sequence-master master-name="document">
 					<fo:repeatable-page-master-alternatives>
+						<fo:conditional-page-master-reference page-position="first" master-reference="first_page"/>
 						<fo:conditional-page-master-reference odd-or-even="even" master-reference="even"/>
 						<fo:conditional-page-master-reference odd-or-even="odd" master-reference="odd"/>
 					</fo:repeatable-page-master-alternatives>
@@ -157,13 +173,23 @@
 				
 				<xsl:for-each select="xalan:nodeset($current_document)">
 				
-					<xsl:variable name="docidentifier">
-						<fo:inline><xsl:value-of select="/*/jis:bibdata/jis:docnumber"/></fo:inline>
-						<fo:inline font-family="IPAexGothic">：</fo:inline>
-						<fo:inline><xsl:value-of select="substring(/*/jis:bibdata/jis:date[@type = 'published']/jis:on, 1, 4)"/></fo:inline>
-					</xsl:variable>
+					<xsl:variable name="docnumber" select="/*/jis:bibdata/jis:docnumber"/>
 				
+					<xsl:variable name="year_published" select="substring(/*/jis:bibdata/jis:date[@type = 'published']/jis:on, 1, 4)"/>
+					
+					<xsl:variable name="docidentifier">
+						<fo:inline><xsl:value-of select="$docnumber"/></fo:inline>
+						<fo:inline font-family="IPAexGothic">：</fo:inline>
+						<fo:inline><xsl:value-of select="$year_published"/></fo:inline>
+					</xsl:variable>
+					
+					
 					<xsl:variable name="copyrightText">著作権法により無断での複製，転載等は禁止されております。</xsl:variable>
+				
+					<xsl:variable name="doctype" select="/*/jis:bibdata/jis:ext/jis:doctype"/>
+					
+					<xsl:variable name="title_ja" select="/*/jis:bibdata/jis:title[@language = 'ja' and @type = 'main']"/>
+					<xsl:variable name="title_en" select="/*/jis:bibdata/jis:title[@language = 'en' and @type = 'main']"/>
 				
 					<xsl:call-template name="insertCoverPage">
 						<xsl:with-param name="num" select="$num"/>
@@ -180,7 +206,7 @@
 					<!-- Contents and preface pages -->
 					<!-- ========================== -->
 					
-					<fo:page-sequence master-reference="document" initial-page-number="1" force-page-count="no-force">
+					<fo:page-sequence master-reference="document_preface" initial-page-number="1" force-page-count="no-force">
 						
 						
 						<xsl:call-template name="insertHeaderFooter">
@@ -232,9 +258,6 @@
 															<xsl:choose>
 																<xsl:when test="string-length(@section) = 1">5mm</xsl:when>
 																<xsl:when test="string-length(@section) &gt;= 2"><xsl:value-of select="5 + (string-length(@section) - 1) * 2"/>mm</xsl:when>
-																<!-- <xsl:when test="string-length(@section) = 2">7mm</xsl:when>
-																<xsl:when test="string-length(@section) = 3">9mm</xsl:when>
-																<xsl:when test="string-length(@section) = 4">9mm</xsl:when> -->
 																<xsl:when test="@type = 'annex'">16mm</xsl:when>
 																<xsl:otherwise>5mm</xsl:otherwise>
 															</xsl:choose>
@@ -283,7 +306,7 @@
 					
 					<xsl:if test="$paged_xml_preface/*[local-name()='page'] and count($paged_xml_preface/*[local-name()='page']/*) != 0">
 						<!-- BSI Preface pages -->
-						<fo:page-sequence master-reference="document" force-page-count="no-force">
+						<fo:page-sequence master-reference="document_preface" force-page-count="no-force">
 							
 							<fo:static-content flow-name="xsl-footnote-separator">
 								<fo:block text-align="center" margin-bottom="6pt">
@@ -313,7 +336,7 @@
 					
 					
 					<!-- Document type rendering -->
-					<fo:page-sequence master-reference="document" force-page-count="no-force">
+					<fo:page-sequence master-reference="document_preface" force-page-count="no-force">
 						<xsl:call-template name="insertHeaderFooter">
 							<xsl:with-param name="docidentifier" select="$docidentifier"/>
 							<xsl:with-param name="copyrightText" select="$copyrightText"/>
@@ -357,14 +380,12 @@
 							<xsl:apply-templates select="/*/*[local-name()='sections']/*" mode="linear_xml"/>
 						</item>	
 						
-						
 						<!-- Annexes -->
 						<item>
 							<xsl:apply-templates select="/*/*[local-name()='annex']" mode="linear_xml"/>
 						</item>
 						
 						<!-- Bibliography -->
-						
 						<xsl:for-each select="/*/*[local-name()='bibliography']/*[count(.//*[local-name() = 'bibitem'][not(@hidden) = 'true']) &gt; 0 and not(@hidden = 'true')]">
 							<item><xsl:apply-templates select="." mode="linear_xml"/></item>
 						</xsl:for-each>
@@ -412,6 +433,47 @@
 							</xsl:call-template>
 							
 							<fo:flow flow-name="xsl-region-body">
+								
+								<xsl:if test="position() = 1">
+									<fo:table table-layout="fixed" width="100%">
+										<fo:table-column column-width="proportional-column-width(35)"/>
+										<fo:table-column column-width="proportional-column-width(97)"/>
+										<fo:table-column column-width="proportional-column-width(23)"/>
+										<fo:table-column column-width="proportional-column-width(12)"/>
+										<fo:table-body>
+											<fo:table-row>
+												<fo:table-cell><fo:block></fo:block></fo:table-cell>
+												<fo:table-cell font-family="IPAexGothic" font-size="14pt" text-align="center">
+													<fo:block>
+														<xsl:call-template name="getLocalizedString">
+															<xsl:with-param name="key">doctype_dict.<xsl:value-of select="$doctype"/></xsl:with-param>
+														</xsl:call-template>
+													</fo:block>
+													</fo:table-cell>
+												<fo:table-cell text-align="right">
+													<fo:block font-family="Arial" font-size="16pt">
+														<xsl:value-of select="java:replaceAll(java:java.lang.String.new($docnumber), '^(JIS)(.*)', '$1')"/>
+														<fo:block/>
+														<xsl:value-of select="java:replaceAll(java:java.lang.String.new($docnumber), '^(JIS)?(.*)', '$2')"/>
+													</fo:block>
+												</fo:table-cell>
+												<fo:table-cell display-align="after">
+													<fo:block font-size="10pt">
+														<fo:inline baseline-shift="40%">
+															<fo:inline font-family="IPAexMincho">：</fo:inline><fo:inline font-family="Times New Roman"><xsl:value-of select="$year_published"/></fo:inline>
+														</fo:inline>
+													</fo:block>
+												</fo:table-cell>
+												
+											</fo:table-row>
+										</fo:table-body>
+									</fo:table>
+									
+									<fo:block font-family="IPAexGothic" font-size="19pt" text-align="center" margin-top="12mm" margin-bottom="4mm"><xsl:value-of select="$title_ja"/></fo:block>
+									<fo:block font-family="Arial" font-size="13pt" text-align="center" margin-bottom="10mm"><xsl:value-of select="$title_en"/></fo:block>
+									
+								</xsl:if>
+								
 								
 								<xsl:apply-templates select="*" mode="page"/>
 								
@@ -658,15 +720,14 @@
 			<xsl:choose>
 				<xsl:when test="@type = 'section-title'">18pt</xsl:when>
 				<xsl:when test="@ancestor = 'foreword' and $level = '1'">14pt</xsl:when>
-				<xsl:when test="@ancestor = 'foreword' and $level &gt;= '2'">12pt</xsl:when>
+				<!-- <xsl:when test="@ancestor = 'foreword' and $level &gt;= '2'">12pt</xsl:when>
 				<xsl:when test=". = 'Executive summary'">18pt</xsl:when>
-				<!-- <xsl:when test="@ancestor = 'introduction' and $level = '1'">11.5pt</xsl:when> -->
 				<xsl:when test="@ancestor = 'introduction' and $level = '1'">18pt</xsl:when>
 				<xsl:when test="@ancestor = 'introduction' and $level &gt;= '2'">11pt</xsl:when>
 				<xsl:when test="@ancestor = 'sections' and $level = '1'">14pt</xsl:when>
 				<xsl:when test="@ancestor = 'sections' and $level = '2'">11pt</xsl:when>
 				<xsl:when test="@ancestor = 'sections' and $level &gt;= '3'">10pt</xsl:when>
-				<xsl:when test="@ancestor = 'sections' and $level = '2' and preceding-sibling::*[1][local-name() = 'references']">inherit</xsl:when> <!-- Normative references -->
+				<xsl:when test="@ancestor = 'sections' and $level = '2' and preceding-sibling::*[1][local-name() = 'references']">inherit</xsl:when>
 				<xsl:when test="@ancestor = 'sections' and $level = '2'">11pt</xsl:when>
 				<xsl:when test="@ancestor = 'sections' and $level &gt;= '3' and preceding-sibling::*[1][local-name() = 'terms']">11pt</xsl:when>
 				<xsl:when test="@ancestor = 'sections' and $level = '3'">10.5pt</xsl:when>
@@ -676,8 +737,8 @@
 				<xsl:when test="@ancestor = 'annex' and $level &gt;= '3'">11.5pt</xsl:when>
 				<xsl:when test="@ancestor = 'bibliography' and $level = '1' and preceding-sibling::*[local-name() = 'references']">11.5pt</xsl:when>
 				<xsl:when test="@ancestor = 'bibliography' and $level = '1'">13pt</xsl:when>
-				<xsl:when test="@ancestor = 'bibliography' and $level &gt;= '2'">10pt</xsl:when>
-				<xsl:otherwise>11.5pt</xsl:otherwise>
+				<xsl:when test="@ancestor = 'bibliography' and $level &gt;= '2'">10pt</xsl:when> -->
+				<xsl:otherwise>10pt</xsl:otherwise>
 			</xsl:choose>
 		</xsl:variable>
 		
@@ -765,14 +826,24 @@
 						</xsl:apply-templates> 
 					</xsl:if>
 					
-					<xsl:apply-templates />
+					<xsl:variable name="section">
+						<xsl:call-template name="extractSection"/>
+					</xsl:variable>
+					<xsl:if test="normalize-space($section) != ''">
+						<fo:inline font-family="Times New Roman" font-weight="bold">
+							<xsl:value-of select="$section"/>
+							<fo:inline padding-right="4mm">&#xa0;</fo:inline>
+						</fo:inline>
+					</xsl:if>
+					
+					<xsl:call-template name="extractTitle"/>
+					
 					<xsl:apply-templates select="following-sibling::*[1][local-name() = 'variant-title'][@type = 'sub']" mode="subtitle"/>
 				</xsl:element>
 			</xsl:otherwise>
 		</xsl:choose>
 	</xsl:template>
 
-	
 	<xsl:template match="*[local-name() = 'annex']" priority="2">
 		<fo:block id="{@id}">
 		</fo:block>
