@@ -1110,7 +1110,7 @@
 			<xsl:call-template name="getLevelTermName"/>
 		</xsl:variable>
 		<fo:block space-before="36pt" margin-bottom="10pt" keep-with-next="always" role="H{$levelTerm}">
-			<fo:list-block color="{$color_blue}" keep-with-next="always" provisional-distance-between-starts="{string-length()*3.2}mm">
+			<fo:list-block color="{$color_blue}" keep-with-next="always" provisional-distance-between-starts="{string-length()*3.25}mm">
 				<fo:list-item>
 					<fo:list-item-label end-indent="label-end()">
 						<fo:block><fo:inline font-size="18pt"><xsl:apply-templates /></fo:inline></fo:block> <!-- padding-right="1mm" -->
