@@ -775,13 +775,14 @@
 		<xsl:variable name="margin-bottom">
 			<xsl:choose>
 				<!-- <xsl:when test="$level = 1 and following-sibling::*[1][self::jis:clause]">4mm</xsl:when> -->
+				<xsl:when test="$level = 1">12pt</xsl:when>
 				<xsl:when test="@type = 'section-title'">6mm</xsl:when>
 				<xsl:when test="@inline-header = 'true'">0pt</xsl:when>
 				<xsl:when test="@ancestor = 'foreword' and $level = 1">9mm</xsl:when>
 				<xsl:when test=". = 'Executive summary'">5.5mm</xsl:when>
 				<xsl:when test="@ancestor = 'introduction' and $level = 1">5.5mm</xsl:when>
 				<xsl:when test="@ancestor = 'annex' and $level = 1">6mm</xsl:when>
-				<xsl:when test="$level = 1">2mm</xsl:when>
+				
 				<xsl:when test="$level = 2">6pt</xsl:when>
 				<xsl:when test="$level &gt;= 3">6pt</xsl:when>
 				<!-- <xsl:when test="local-name() = 'term' and @level = 2">0mm</xsl:when> -->
@@ -870,7 +871,7 @@
 					<xsl:call-template name="setBlockAttributes"/>
 					<xsl:attribute name="margin-bottom">10pt</xsl:attribute>
 					
-					<xsl:if test="not(parent::jis:note)">
+					<xsl:if test="not(parent::jis:note or parent::jis:li)">
 						<xsl:attribute name="text-indent"><xsl:value-of select="$text_indent"/>mm</xsl:attribute>
 					</xsl:if>
 					
@@ -892,6 +893,11 @@
 					<xsl:if test="parent::jis:definition">
 						<xsl:attribute name="margin-bottom">2pt</xsl:attribute>
 					</xsl:if>
+					
+					<xsl:if test="parent::jis:li or following-sibling::*[1][self::jis:ol or self::jis:ul]">
+						<xsl:attribute name="margin-bottom">4pt</xsl:attribute>
+					</xsl:if>
+					
 					
 					<xsl:apply-templates>
 						<xsl:with-param name="split_keep-within-line" select="$split_keep-within-line"/>

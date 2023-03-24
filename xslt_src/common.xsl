@@ -3287,6 +3287,9 @@
 			<xsl:attribute name="provisional-distance-between-starts">7mm</xsl:attribute>
 			<xsl:attribute name="margin-top">8pt</xsl:attribute>
 		</xsl:if>
+		<xsl:if test="$namespace = 'jis'">
+			<xsl:attribute name="provisional-distance-between-starts">7.5mm</xsl:attribute>
+		</xsl:if>
 		<xsl:if test="$namespace = 'm3d'">
 			<xsl:attribute name="provisional-distance-between-starts">6mm</xsl:attribute>
 			<xsl:attribute name="margin-bottom">12pt</xsl:attribute>
@@ -3386,6 +3389,10 @@
 		<xsl:if test="$namespace = 'iho'">
 			<xsl:attribute name="line-height">115%</xsl:attribute>
 		</xsl:if>
+		<xsl:if test="$namespace = 'jis'">
+			<xsl:attribute name="line-height">1.5</xsl:attribute>
+		</xsl:if>
+		
 		<xsl:if test="$namespace = 'nist-sp'">
 			<xsl:attribute name="display-align">center</xsl:attribute>
 		</xsl:if>
@@ -14417,6 +14424,13 @@
 						</xsl:if>
 					</xsl:if>
 				
+					<xsl:if test="$namespace = 'jis'">
+						<xsl:if test="parent::*[local-name() = 'ol']">
+							<xsl:attribute name="font-family">Times New Roman</xsl:attribute>
+							<xsl:attribute name="font-weight">bold</xsl:attribute>
+						</xsl:if>
+					</xsl:if>
+					
 					<!-- if 'p' contains all text in 'add' first and last elements in first p are 'add' -->
 					<xsl:if test="*[1][count(node()[normalize-space() != '']) = 1 and *[local-name() = 'add']]">
 						<xsl:call-template name="append_add-style"/>
