@@ -850,6 +850,9 @@
 		<xsl:apply-templates />
 	</xsl:template>
 	
+	
+	<xsl:variable name="text_indent">3</xsl:variable>
+	
 	<xsl:template match="jis:p" name="paragraph">
 		<xsl:param name="inline-header">false</xsl:param>
 		<xsl:param name="split_keep-within-line"/>
@@ -867,7 +870,9 @@
 					<xsl:call-template name="setBlockAttributes"/>
 					<xsl:attribute name="margin-bottom">10pt</xsl:attribute>
 					
-					<xsl:attribute name="text-indent">3mm</xsl:attribute>
+					<xsl:if test="parent::jis:clause">
+						<xsl:attribute name="text-indent"><xsl:value-of select="$text_indent"/>mm</xsl:attribute>
+					</xsl:if>
 					
 					<xsl:copy-of select="@id"/>
 					
@@ -938,7 +943,32 @@
 			</xsl:otherwise>
 		</xsl:choose>
 	</xsl:template>
+
+	<!-- ========================= -->
+	<!-- Allocate non-Japanese text -->
+	<!-- ========================= -->
+	<!-- <name>注記  1</name> to <name>注記<font_en>  1</font_en></name> -->
+	<xsl:template match="jis:note/jis:name/text()" mode="update_xml_step1">
+		<xsl:variable name="regex_en">([^\u3000-\u9FFF]{2,})</xsl:variable>
+		<xsl:variable name="element_name_font_en">font_en</xsl:variable>
+		<xsl:variable name="tag_font_en_open">###<xsl:value-of select="$element_name_font_en"/>###</xsl:variable>
+		<xsl:variable name="tag_font_en_close">###/<xsl:value-of select="$element_name_font_en"/>###</xsl:variable>
+		<xsl:variable name="text_en_" select="java:replaceAll(java:java.lang.String.new(.), $regex_en, concat($tag_font_en_open,'$1',$tag_font_en_close))"/>
+		<xsl:variable name="text_en"><text><xsl:call-template name="replace_text_tags">
+			<xsl:with-param name="tag_open" select="$tag_font_en_open"/>
+			<xsl:with-param name="tag_close" select="$tag_font_en_close"/>
+			<xsl:with-param name="text" select="$text_en_"/>
+		</xsl:call-template></text></xsl:variable>
+		<xsl:copy-of select="xalan:nodeset($text_en)/text/node()"/>
+	</xsl:template>
 	
+	<xsl:template match="*[local-name() = 'font_en']">
+		<fo:inline font-family="Times New Roman" font-weight="bold"><xsl:apply-templates/></fo:inline>
+	</xsl:template>
+	
+	<!-- ========================= -->
+	<!-- END: Allocate non-Japanese text -->
+	<!-- ========================= -->
 	
 	<xsl:template name="insertHeaderFooter">
 		<xsl:param name="docidentifier" />

@@ -2453,6 +2453,9 @@
 		</xsl:if>
 		<xsl:if test="$namespace = 'itu'">
 		</xsl:if>
+		<xsl:if test="$namespace = 'jis'">
+			<xsl:attribute name="font-family">IPAexGothic</xsl:attribute>
+		</xsl:if>
 		<xsl:if test="$namespace = 'm3d'">
 			<xsl:attribute name="padding-right">5mm</xsl:attribute>
 			<xsl:attribute name="font-weight">bold</xsl:attribute>			
@@ -10491,6 +10494,10 @@
 				</xsl:if>
 			</xsl:if>
 			
+			<xsl:if test="$namespace = 'jis'">
+				<xsl:attribute name="space-before">2pt</xsl:attribute>
+			</xsl:if>
+			
 			<xsl:if test="$namespace = 'ogc' or $namespace = 'ogc-white-paper'">
 				<xsl:if test="ancestor::ogc:ul or ancestor::ogc:ol and not(ancestor::ogc:note[1]/following-sibling::*)">
 					<xsl:attribute name="margin-bottom">0pt</xsl:attribute>
@@ -10540,6 +10547,26 @@
 							</fo:table-body>
 						</fo:table>
 						<!-- gb -->
+					</xsl:when>
+					
+					<xsl:when test="$namespace = 'jis'">
+						<!-- <fo:block-container margin-left> -->
+							<fo:list-block provisional-distance-between-starts="{14 + $text_indent}mm">
+								<fo:list-item>
+									<fo:list-item-label start-indent="{$text_indent}mm" end-indent="label-end()">
+										<fo:block xsl:use-attribute-sets="note-name-style">
+											<xsl:apply-templates select="*[local-name() = 'name']" />
+										</fo:block>
+									</fo:list-item-label>
+									<fo:list-item-body start-indent="body-start()">
+										<fo:block>
+											<xsl:apply-templates select="node()[not(local-name() = 'name')]" />
+										</fo:block>
+									</fo:list-item-body>
+								</fo:list-item>
+							</fo:list-block>
+						<!-- </fo:block-container> -->
+						<!-- jis -->
 					</xsl:when>
 					
 					<xsl:otherwise>
