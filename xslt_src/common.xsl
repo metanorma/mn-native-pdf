@@ -2608,6 +2608,9 @@
 		<xsl:if test="$namespace = 'bipm'">
 			<xsl:attribute name="padding-right">1mm</xsl:attribute>
 		</xsl:if>
+		<xsl:if test="$namespace = 'jis'">
+			<xsl:attribute name="font-family">IPAexGothic</xsl:attribute>
+		</xsl:if>
 		<xsl:if test="$namespace = 'rsd'">
 			<xsl:attribute name="font-weight">bold</xsl:attribute>
 			<xsl:attribute name="color"><xsl:value-of select="$color_blue"/></xsl:attribute>
@@ -2693,6 +2696,9 @@
 		<xsl:if test="$namespace = 'iso' or $namespace = 'jcgm'">
 			<xsl:attribute name="margin-bottom">8pt</xsl:attribute>
 		</xsl:if>
+		<xsl:if test="$namespace = 'jis'">
+			<xsl:attribute name="margin-left">6mm</xsl:attribute>
+		</xsl:if>
 		<xsl:if test="$namespace = 'rsd'">
 			<xsl:attribute name="keep-with-previous">always</xsl:attribute>
 		</xsl:if>
@@ -2736,6 +2742,7 @@
 		<xsl:attribute name="font-weight">bold</xsl:attribute>
 		<xsl:if test="$namespace = 'jis'">
 			<xsl:attribute name="font-family">Times New Roman</xsl:attribute>
+			<xsl:attribute name="space-after">2pt</xsl:attribute>
 		</xsl:if>
 	</xsl:attribute-set>
 
@@ -3142,6 +3149,10 @@
 		<xsl:if test="$namespace = 'ogc-white-paper'">
 			<xsl:attribute name="line-height">1</xsl:attribute>
 		</xsl:if>
+		<xsl:if test="$namespace = 'jis'">
+			<xsl:attribute name="font-weight">normal</xsl:attribute>
+			<xsl:attribute name="font-family">IPAexGothic</xsl:attribute>
+		</xsl:if>
 	</xsl:attribute-set>
 
 	<xsl:attribute-set name="domain-style">
@@ -3182,6 +3193,10 @@
 		</xsl:if>
 		<xsl:if test="$namespace = 'csd' or $namespace = 'iec' or $namespace = 'iho' or $namespace = 'iso' or $namespace = 'jcgm'">
 			<xsl:attribute name="margin-bottom">6pt</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'jis'">
+			<xsl:attribute name="space-before">2pt</xsl:attribute>
+			<xsl:attribute name="space-after">2pt</xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'rsd'">
 			<xsl:attribute name="keep-with-previous">always</xsl:attribute>
@@ -10556,22 +10571,20 @@
 					</xsl:when>
 					
 					<xsl:when test="$namespace = 'jis'">
-						<!-- <fo:block-container margin-left> -->
-							<fo:list-block provisional-distance-between-starts="{14 + $text_indent}mm">
-								<fo:list-item>
-									<fo:list-item-label start-indent="{$text_indent}mm" end-indent="label-end()">
-										<fo:block xsl:use-attribute-sets="note-name-style">
-											<xsl:apply-templates select="*[local-name() = 'name']" />
-										</fo:block>
-									</fo:list-item-label>
-									<fo:list-item-body start-indent="body-start()">
-										<fo:block>
-											<xsl:apply-templates select="node()[not(local-name() = 'name')]" />
-										</fo:block>
-									</fo:list-item-body>
-								</fo:list-item>
-							</fo:list-block>
-						<!-- </fo:block-container> -->
+						<fo:list-block provisional-distance-between-starts="{14 + $text_indent}mm">
+							<fo:list-item>
+								<fo:list-item-label start-indent="{$text_indent}mm" end-indent="label-end()">
+									<fo:block xsl:use-attribute-sets="note-name-style">
+										<xsl:apply-templates select="*[local-name() = 'name']" />
+									</fo:block>
+								</fo:list-item-label>
+								<fo:list-item-body start-indent="body-start()">
+									<fo:block>
+										<xsl:apply-templates select="node()[not(local-name() = 'name')]" />
+									</fo:block>
+								</fo:list-item-body>
+							</fo:list-item>
+						</fo:list-block>
 						<!-- jis -->
 					</xsl:when>
 					

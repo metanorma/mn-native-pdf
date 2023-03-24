@@ -889,6 +889,10 @@
 						<xsl:attribute name="margin-bottom">2pt</xsl:attribute>
 					</xsl:if>
 					
+					<xsl:if test="parent::jis:definition">
+						<xsl:attribute name="margin-bottom">2pt</xsl:attribute>
+					</xsl:if>
+					
 					<xsl:apply-templates>
 						<xsl:with-param name="split_keep-within-line" select="$split_keep-within-line"/>
 					</xsl:apply-templates>
@@ -905,6 +909,29 @@
 			</xsl:otherwise>
 		</xsl:choose>
 	</xsl:template>
+	
+	
+	<xsl:template match="jis:termnote" priority="2">
+		<fo:block id="{@id}" xsl:use-attribute-sets="termnote-style">
+			<xsl:attribute name="text-indent">0mm</xsl:attribute>
+			<xsl:attribute name="space-before">2pt</xsl:attribute>
+			<fo:list-block provisional-distance-between-starts="{14 + $text_indent}mm">
+				<fo:list-item>
+					<fo:list-item-label start-indent="{$text_indent}mm" end-indent="label-end()">
+						<fo:block xsl:use-attribute-sets="note-name-style">
+							<xsl:apply-templates select="*[local-name() = 'name']" />
+						</fo:block>
+					</fo:list-item-label>
+					<fo:list-item-body start-indent="body-start()">
+						<fo:block>
+							<xsl:apply-templates select="node()[not(local-name() = 'name')]" />
+						</fo:block>
+					</fo:list-item-body>
+				</fo:list-item>
+			</fo:list-block>
+		</fo:block>
+	</xsl:template>
+	
 	
 	
 	<xsl:template name="makePagedXML">
@@ -948,8 +975,10 @@
 	<!-- Allocate non-Japanese text -->
 	<!-- ========================= -->
 	<!-- <name>注記  1</name> to <name>注記<font_en>  1</font_en></name> -->
-	<xsl:template match="jis:note/jis:name/text()" mode="update_xml_step1">
-		<xsl:variable name="regex_en">([^\u3000-\u9FFF]{2,})</xsl:variable>
+	<xsl:template match="jis:note/jis:name/text() | 
+						jis:term/jis:preferred//text() |
+						jis:termnote/jis:name/text()" mode="update_xml_step1">
+		<xsl:variable name="regex_en">([^\u3000-\u9FFF\uF900-\uFFFF]{1,})</xsl:variable>
 		<xsl:variable name="element_name_font_en">font_en</xsl:variable>
 		<xsl:variable name="tag_font_en_open">###<xsl:value-of select="$element_name_font_en"/>###</xsl:variable>
 		<xsl:variable name="tag_font_en_close">###/<xsl:value-of select="$element_name_font_en"/>###</xsl:variable>
@@ -963,7 +992,12 @@
 	</xsl:template>
 	
 	<xsl:template match="*[local-name() = 'font_en']">
-		<fo:inline font-family="Times New Roman" font-weight="bold"><xsl:apply-templates/></fo:inline>
+		<fo:inline font-family="Times New Roman" font-weight="bold">
+			<xsl:if test="ancestor::*[local-name() = 'preferred']">
+				<xsl:attribute name="font-weight">normal</xsl:attribute>
+			</xsl:if>
+			<xsl:apply-templates/>
+		</fo:inline>
 	</xsl:template>
 	
 	<!-- ========================= -->
