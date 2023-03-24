@@ -871,7 +871,7 @@
 					<xsl:call-template name="setBlockAttributes"/>
 					<xsl:attribute name="margin-bottom">10pt</xsl:attribute>
 					
-					<xsl:if test="not(parent::jis:note or parent::jis:li)">
+					<xsl:if test="not(parent::jis:note or parent::jis:li or ancestor::jis:table)">
 						<xsl:attribute name="text-indent"><xsl:value-of select="$text_indent"/>mm</xsl:attribute>
 					</xsl:if>
 					
@@ -983,7 +983,8 @@
 	<!-- <name>注記  1</name> to <name>注記<font_en>  1</font_en></name> -->
 	<xsl:template match="jis:note/jis:name/text() | 
 						jis:term/jis:preferred//text() |
-						jis:termnote/jis:name/text()" mode="update_xml_step1">
+						jis:termnote/jis:name/text() |
+						jis:table/jis:name/text()" mode="update_xml_step1">
 		<xsl:variable name="regex_en">([^\u3000-\u9FFF\uF900-\uFFFF]{1,})</xsl:variable>
 		<xsl:variable name="element_name_font_en">font_en</xsl:variable>
 		<xsl:variable name="tag_font_en_open">###<xsl:value-of select="$element_name_font_en"/>###</xsl:variable>

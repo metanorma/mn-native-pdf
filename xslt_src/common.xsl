@@ -1412,6 +1412,7 @@
 		<xsl:if test="$namespace = 'ieee'">1pt solid black</xsl:if>
 		<xsl:if test="$namespace = 'iho'">0.5pt solid black</xsl:if>
 		<xsl:if test="$namespace = 'iso'">1pt solid black</xsl:if>
+		<xsl:if test="$namespace = 'jis'">0.5pt solid black</xsl:if>
 	</xsl:variable>
 	<xsl:variable name="table-border" select="normalize-space($table-border_)"/>
 	
@@ -1468,6 +1469,9 @@
 			<xsl:attribute name="font-size">10pt</xsl:attribute>
 			<xsl:attribute name="margin-top">12pt</xsl:attribute>
 			<xsl:attribute name="margin-bottom">8pt</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'jis'">
+			<xsl:attribute name="font-size">9pt</xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'm3d'">
 			
@@ -1542,6 +1546,9 @@
 		
 		<xsl:if test="$namespace = 'jcgm'">
 			<xsl:attribute name="border">1.5pt solid black</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'jis'">
+			<xsl:attribute name="border"><xsl:value-of select="$table-border"/></xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'm3d'">
 			
@@ -1624,6 +1631,11 @@
 			<xsl:attribute name="font-weight">bold</xsl:attribute>
 			<xsl:attribute name="text-align">center</xsl:attribute>
 			<xsl:attribute name="margin-bottom">0pt</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'jis'">
+			<xsl:attribute name="font-family">IPAexGothic</xsl:attribute>
+			<xsl:attribute name="text-align">center</xsl:attribute>
+			<xsl:attribute name="margin-bottom">4pt</xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'nist-cswp'  or $namespace = 'nist-sp'">
 			<xsl:attribute name="font-weight">bold</xsl:attribute>
@@ -1727,7 +1739,10 @@
 		<xsl:if test="$namespace = 'iho'">
 			<xsl:attribute name="background-color">rgb(217, 217, 217)</xsl:attribute>
 		</xsl:if>
-		
+		<xsl:if test="$namespace = 'jis'">
+			<xsl:attribute name="border-top"><xsl:value-of select="$table-border"/></xsl:attribute>
+			<xsl:attribute name="border-bottom"><xsl:value-of select="$table-border"/></xsl:attribute>
+		</xsl:if>
 		<xsl:if test="$namespace = 'nist-cswp'  or $namespace = 'nist-sp'">
 			<xsl:attribute name="font-family">Arial</xsl:attribute>
 			<xsl:attribute name="font-size">10pt</xsl:attribute>
@@ -1757,6 +1772,10 @@
 		</xsl:if>
 		<xsl:if test="$namespace = 'iso'">
 			<xsl:attribute name="font-size">9pt</xsl:attribute>
+			<xsl:attribute name="border-left"><xsl:value-of select="$table-border"/></xsl:attribute>
+			<xsl:attribute name="border-right"><xsl:value-of select="$table-border"/></xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'jis'">
 			<xsl:attribute name="border-left"><xsl:value-of select="$table-border"/></xsl:attribute>
 			<xsl:attribute name="border-right"><xsl:value-of select="$table-border"/></xsl:attribute>
 		</xsl:if>
@@ -1812,6 +1831,10 @@
 		<xsl:if test="$namespace = 'jcgm'">
 			<xsl:attribute name="border">solid black 1pt</xsl:attribute>
 			<xsl:attribute name="padding-top">1mm</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'jis'">
+			<xsl:attribute name="border"><xsl:value-of select="$table-border"/></xsl:attribute>
+			<xsl:attribute name="padding-top">0.5mm</xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'mpfd'">
 			<xsl:attribute name="border">solid black 1pt</xsl:attribute>
@@ -1895,6 +1918,10 @@
 			<xsl:attribute name="border">solid black 1pt</xsl:attribute>
 			<xsl:attribute name="padding-top">0.5mm</xsl:attribute>
 		</xsl:if>
+		<xsl:if test="$namespace = 'jis'">
+			<xsl:attribute name="padding-top">0.5mm</xsl:attribute>
+			<xsl:attribute name="border"><xsl:value-of select="$table-border"/></xsl:attribute>
+		</xsl:if>
 		<xsl:if test="$namespace = 'ogc'">
 			<xsl:attribute name="border">solid 0pt white</xsl:attribute>
 			<xsl:attribute name="padding-top">1mm</xsl:attribute>			
@@ -1954,6 +1981,10 @@
 			<xsl:attribute name="border"><xsl:value-of select="$table-border"/></xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'jcgm'">
+			<xsl:attribute name="border-top">solid black 0pt</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'jis'">
+			<xsl:attribute name="border"><xsl:value-of select="$table-border"/></xsl:attribute>
 			<xsl:attribute name="border-top">solid black 0pt</xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'ogc'">
@@ -14076,6 +14107,9 @@
 				<label level="1">&#x2014;</label> <!-- em dash -->
 				<label level="2">&#x2212;</label><!-- minus sign -->
 				<label level="3" font-size="75%">o</label> <!-- white circle -->
+			</xsl:when>
+			<xsl:when test="$namespace = 'jcgm'">
+				<label>－</label> <!-- full-width hyphen minus -->
 			</xsl:when>
 			<xsl:when test="$namespace = 'm3d'">
 				<label font-size="18pt" margin-top="-0.5mm">•</label> <!-- margin-top to vertical align big dot -->
