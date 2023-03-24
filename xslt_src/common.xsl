@@ -10296,6 +10296,11 @@
 		<xsl:variable name="annotation-id" select="@id"/>
 		<xsl:variable name="callout" select="//*[@target = $annotation-id]/text()"/>		
 		<fo:block id="{$annotation-id}" white-space="nowrap">			
+			<xsl:if test="$namespace = 'ogc'">
+				<xsl:if test="not(preceding-sibling::*[local-name() = 'annotation'])">
+					<xsl:attribute name="space-before">6pt</xsl:attribute>
+				</xsl:if>
+			</xsl:if>
 			<fo:inline>				
 				<xsl:apply-templates>
 					<xsl:with-param name="callout" select="concat('&lt;', $callout, '&gt; ')"/>
