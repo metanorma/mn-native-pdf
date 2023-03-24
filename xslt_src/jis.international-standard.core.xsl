@@ -870,7 +870,7 @@
 					<xsl:call-template name="setBlockAttributes"/>
 					<xsl:attribute name="margin-bottom">10pt</xsl:attribute>
 					
-					<xsl:if test="parent::jis:clause">
+					<xsl:if test="not(parent::jis:note)">
 						<xsl:attribute name="text-indent"><xsl:value-of select="$text_indent"/>mm</xsl:attribute>
 					</xsl:if>
 					

@@ -4045,6 +4045,11 @@
 		<xsl:if test="$namespace = 'jcgm'">
 			<xsl:attribute name="margin-bottom">6pt</xsl:attribute>
 		</xsl:if>
+		<xsl:if test="$namespace = 'jis'">
+			<xsl:attribute name="margin-bottom">6pt</xsl:attribute>
+			<xsl:attribute name="start-indent">6mm</xsl:attribute>
+			<xsl:attribute name="text-indent">-6mm</xsl:attribute>
+		</xsl:if>
 		<xsl:if test="$namespace = 'm3d'">
 			<xsl:attribute name="margin-bottom">12pt</xsl:attribute>
 			<xsl:attribute name="text-indent">-11.7mm</xsl:attribute>
@@ -10495,6 +10500,7 @@
 			</xsl:if>
 			
 			<xsl:if test="$namespace = 'jis'">
+				<xsl:attribute name="text-indent">0mm</xsl:attribute>
 				<xsl:attribute name="space-before">2pt</xsl:attribute>
 			</xsl:if>
 			
@@ -14850,6 +14856,16 @@
 				</fo:list-block>
 			</xsl:when>
 			
+			<xsl:when test="$namespace = 'jis'">
+				<fo:block-container margin-left="6mm">
+					<fo:block-container margin-left="0mm">
+						<fo:block id="{@id}" xsl:use-attribute-sets="bibitem-normative-style">
+							<xsl:call-template name="processBibitem"/>
+						</fo:block>
+					</fo:block-container>
+				</fo:block-container>
+			</xsl:when>
+			
 			<xsl:otherwise>
 				<fo:block id="{@id}" xsl:use-attribute-sets="bibitem-normative-style">
 					<xsl:call-template name="processBibitem"/>
@@ -15029,6 +15045,18 @@
 					</xsl:otherwise>
 				</xsl:choose>
 				<!-- end ITU bibitem processing -->
+			</xsl:when>
+			
+			<xsl:when test="$namespace = 'jis'">
+				<xsl:if test=".//*[local-name() = 'fn']">
+					<xsl:attribute name="line-height-shift-adjustment">disregard-shifts</xsl:attribute>
+				</xsl:if>
+				<fo:inline font-family="Times New Roman" font-weight="bold">
+					<xsl:apply-templates select="*[local-name() = 'biblio-tag']">
+						<xsl:with-param name="biblio_tag_part" select="$biblio_tag_part"/>
+					</xsl:apply-templates>
+				</fo:inline>
+				<xsl:apply-templates select="*[local-name() = 'formattedref']"/>
 			</xsl:when>
 
 			<xsl:when test="$namespace = 'nist-sp'">
