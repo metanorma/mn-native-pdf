@@ -13283,9 +13283,23 @@
 					</xsl:when> <!-- end block -->
 					
 					<xsl:when test="contains(normalize-space($fo_element), 'list')">
-						<fo:list-block provisional-distance-between-starts="{10 + $text_indent}mm">
+					
+						<xsl:variable name="provisional_distance_between_starts">
+							<xsl:choose>
+								<xsl:when test="$namespace = 'jis'"><xsl:value-of select="10 + $text_indent"/></xsl:when>
+								<xsl:otherwise>7</xsl:otherwise>
+							</xsl:choose>
+						</xsl:variable>
+						<xsl:variable name="indent">
+							<xsl:choose>
+								<xsl:when test="$namespace = 'jis'"><xsl:value-of select="$text_indent"/></xsl:when>
+								<xsl:otherwise>0</xsl:otherwise>
+							</xsl:choose>
+						</xsl:variable>
+					
+						<fo:list-block provisional-distance-between-starts="{$provisional_distance_between_starts}mm">
 							<fo:list-item>
-								<fo:list-item-label start-indent="{$text_indent}mm" end-indent="label-end()">
+								<fo:list-item-label start-indent="{$indent}mm" end-indent="label-end()">
 									<fo:block>
 										<xsl:apply-templates select="*[local-name()='name']">
 											<xsl:with-param name="fo_element">block</xsl:with-param>
