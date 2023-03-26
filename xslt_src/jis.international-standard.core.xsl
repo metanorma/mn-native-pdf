@@ -997,7 +997,8 @@
 						jis:example/jis:name/text() | 
 						jis:termexample/jis:name/text() |
 						jis:xref//text() |
-						jis:origin/text()" mode="update_xml_step1">
+						jis:origin/text() |
+						jis:strong/text()" mode="update_xml_step1">
 		<xsl:variable name="regex_en">([^\u3000-\u9FFF\uF900-\uFFFF]{1,})</xsl:variable>
 		<xsl:variable name="element_name_font_en">font_en</xsl:variable>
 		<xsl:variable name="tag_font_en_open">###<xsl:value-of select="$element_name_font_en"/>###</xsl:variable>
