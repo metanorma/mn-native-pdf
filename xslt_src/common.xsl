@@ -1127,6 +1127,10 @@
 			<xsl:attribute name="margin-bottom">8pt</xsl:attribute>
 			<xsl:attribute name="text-align">justify</xsl:attribute>
 		</xsl:if>
+		<xsl:if test="$namespace = 'jis'">
+			<xsl:attribute name="margin-top">4pt</xsl:attribute>
+			<xsl:attribute name="margin-bottom">4pt</xsl:attribute>
+		</xsl:if>
 		<xsl:if test="$namespace = 'm3d'">			
 			<xsl:attribute name="margin-top">14pt</xsl:attribute>
 			<xsl:attribute name="margin-bottom">14pt</xsl:attribute>
@@ -1172,6 +1176,10 @@
 		<xsl:if test="$namespace = 'itu'">
 			<xsl:attribute name="font-size">10pt</xsl:attribute>
 			<xsl:attribute name="margin-top">12pt</xsl:attribute>			
+		</xsl:if>
+		<xsl:if test="$namespace = 'jis'">
+			<xsl:attribute name="margin-top">4pt</xsl:attribute>			
+			<xsl:attribute name="margin-bottom">4pt</xsl:attribute>			
 		</xsl:if>
 		<xsl:if test="$namespace = 'm3d'">
 			<xsl:attribute name="margin-top">8pt</xsl:attribute>
@@ -1268,6 +1276,9 @@
 		<xsl:if test="$namespace = 'itu'">
 			<xsl:attribute name="keep-with-next">always</xsl:attribute>
 			<xsl:attribute name="font-weight">bold</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'jis'">
+			<xsl:attribute name="font-family">IPAexGothic</xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'm3d'">
 			<xsl:attribute name="padding-right">5mm</xsl:attribute>
@@ -1392,6 +1403,9 @@
 			<xsl:attribute name="keep-with-next">always</xsl:attribute>
 			<xsl:attribute name="padding-right">9mm</xsl:attribute>
 			<xsl:attribute name="font-style">italic</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'jis'">
+			<xsl:attribute name="font-family">IPAexGothic</xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'm3d'">
 			<xsl:attribute name="padding-right">1mm</xsl:attribute>
@@ -13185,6 +13199,7 @@
 							<xsl:otherwise>block</xsl:otherwise>
 						</xsl:choose>
 					</xsl:when>
+					<xsl:when test="$namespace= 'jis'">list</xsl:when>
 					<xsl:otherwise>block</xsl:otherwise>
 				</xsl:choose>
 			</xsl:variable>
@@ -13210,6 +13225,27 @@
 							</fo:block-container>
 						</fo:block-container>
 					</xsl:when> <!-- end block -->
+					
+					<xsl:when test="contains(normalize-space($fo_element), 'list')">
+						<fo:list-block provisional-distance-between-starts="{10 + $text_indent}mm">
+							<fo:list-item>
+								<fo:list-item-label start-indent="{$text_indent}mm" end-indent="label-end()">
+									<fo:block>
+										<xsl:apply-templates select="*[local-name()='name']">
+											<xsl:with-param name="fo_element">block</xsl:with-param>
+										</xsl:apply-templates>
+									</fo:block>
+								</fo:list-item-label>
+								<fo:list-item-body start-indent="body-start()">
+									<fo:block>
+										<xsl:apply-templates select="node()[not(local-name() = 'name')]">
+											<xsl:with-param name="fo_element" select="$fo_element"/>
+										</xsl:apply-templates>
+									</fo:block>
+								</fo:list-item-body>
+							</fo:list-item>
+						</fo:list-block>
+					</xsl:when> <!-- end list -->
 					
 					<xsl:otherwise> <!-- inline -->
 					
@@ -13299,6 +13335,11 @@
 						<xsl:apply-templates/>
 					</fo:block>
 				</fo:block-container>
+			</xsl:when>
+			<xsl:when test="starts-with(normalize-space($element), 'list')">
+				<fo:block xsl:use-attribute-sets="example-p-style">
+					<xsl:apply-templates/>
+				</fo:block>
 			</xsl:when>
 			<xsl:otherwise>
 				<fo:inline xsl:use-attribute-sets="example-p-style">
