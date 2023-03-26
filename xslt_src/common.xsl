@@ -2095,6 +2095,10 @@
 			<xsl:attribute name="text-indent">-5mm</xsl:attribute>
 			<xsl:attribute name="start-indent">5mm</xsl:attribute>
 		</xsl:if>
+		<xsl:if test="$namespace = 'jis'">
+			<xsl:attribute name="font-size">inherit</xsl:attribute>
+			<xsl:attribute name="margin-bottom">0pt</xsl:attribute>
+		</xsl:if>
 	</xsl:attribute-set> <!-- table-fn-style -->
 	
 	<xsl:attribute-set name="table-fn-number-style">
@@ -2133,6 +2137,13 @@
 			<xsl:attribute name="vertical-align">super</xsl:attribute>
 			<xsl:attribute name="padding-right">3mm</xsl:attribute>
 			<xsl:attribute name="font-size">70%</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'jis'">
+			<xsl:attribute name="font-family">Times New Roman</xsl:attribute>
+			<xsl:attribute name="font-size">67%</xsl:attribute>
+			<xsl:attribute name="font-weight">bold</xsl:attribute>
+			<xsl:attribute name="vertical-align">super</xsl:attribute>
+			<xsl:attribute name="padding-right">3mm</xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'm3d'">
 			<xsl:attribute name="baseline-shift">30%</xsl:attribute>
@@ -2431,6 +2442,10 @@
 			<xsl:attribute name="font-size">11pt</xsl:attribute>
 			<xsl:attribute name="space-before">4pt</xsl:attribute>
 			<xsl:attribute name="text-align">justify</xsl:attribute>		
+		</xsl:if>
+		<xsl:if test="$namespace = 'jis'">
+			<xsl:attribute name="text-indent">0mm</xsl:attribute>
+			<xsl:attribute name="space-before">2pt</xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'm3d'">
 			<xsl:attribute name="margin-left">0mm</xsl:attribute>
@@ -3480,6 +3495,12 @@
 			<xsl:attribute name="vertical-align">super</xsl:attribute>
 			<xsl:attribute name="color">blue</xsl:attribute>
 		</xsl:if>
+		<xsl:if test="$namespace = 'jis'">
+			<xsl:attribute name="font-family">Times New Roman</xsl:attribute>
+			<xsl:attribute name="font-size">67%</xsl:attribute>
+			<xsl:attribute name="font-weight">bold</xsl:attribute>
+			<xsl:attribute name="vertical-align">super</xsl:attribute>
+		</xsl:if>
 		<xsl:if test="$namespace = 'nist-cswp' or $namespace = 'nist-sp'">
 			<xsl:attribute name="vertical-align">super</xsl:attribute>
 			<xsl:attribute name="color">blue</xsl:attribute>
@@ -3545,6 +3566,12 @@
 		</xsl:if>
 		<xsl:if test="$namespace = 'itu'">
 			<xsl:attribute name="font-size">60%</xsl:attribute>
+			<xsl:attribute name="vertical-align">super</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'jis'">
+			<xsl:attribute name="font-family">Times New Roman</xsl:attribute>
+			<xsl:attribute name="font-size">67%</xsl:attribute>
+			<xsl:attribute name="font-weight">bold</xsl:attribute>
 			<xsl:attribute name="vertical-align">super</xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'm3d'">
@@ -3728,6 +3755,12 @@
 			<xsl:attribute name="font-size">85%</xsl:attribute>
 			<xsl:attribute name="padding-right">2mm</xsl:attribute>
 			<xsl:attribute name="baseline-shift">30%</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'jis'">
+			<xsl:attribute name="font-family">Times New Roman</xsl:attribute>
+			<xsl:attribute name="font-size">67%</xsl:attribute>
+			<xsl:attribute name="font-weight">bold</xsl:attribute>
+			<xsl:attribute name="vertical-align">super</xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'm3d'">
 			<xsl:attribute name="font-size">6pt</xsl:attribute>
@@ -7551,6 +7584,29 @@
 										<xsl:text>)</xsl:text>								
 									</fo:block>
 								</fo:list-item-label>
+								<fo:list-item-body start-indent="body-start()" xsl:use-attribute-sets="table-fn-body-style">
+									<fo:block>
+										<xsl:copy-of select="./node()"/>
+									</fo:block>
+								</fo:list-item-body>
+							</fo:list-item>
+						</fo:list-block>
+						<!-- bsi -->
+					</xsl:when>
+					
+					<xsl:when test="$namespace = 'jis'">
+						<fo:list-block id="{@id}" xsl:use-attribute-sets="table-fn-style" provisional-distance-between-starts="{12 + $text_indent}mm">
+							<fo:list-item>
+								<fo:list-item-label start-indent="{$text_indent}mm" end-indent="label-end()">
+									<fo:block>
+										<fo:inline font-size="9pt" font-family="IPAexGothic">注</fo:inline>
+										<xsl:text> </xsl:text>
+										<fo:inline xsl:use-attribute-sets="table-fn-number-style">
+											<xsl:value-of select="@reference"/>
+											<fo:inline font-weight="normal">)</fo:inline>
+										</fo:inline>
+									</fo:block>
+								</fo:list-item-label>
 								<fo:list-item-body start-indent="body-start()" xsl:use-attribute-sets="table-fn-body-style">>
 									<fo:block>
 										<xsl:copy-of select="./node()"/>
@@ -7558,7 +7614,9 @@
 								</fo:list-item-body>
 							</fo:list-item>
 						</fo:list-block>
+						<!-- jis -->
 					</xsl:when>
+					
 					<xsl:otherwise>
 						<fo:block xsl:use-attribute-sets="table-fn-style">
 				
@@ -7826,6 +7884,9 @@
 						<xsl:text>)</xsl:text>
 					<!-- </xsl:if> -->
 					
+				</xsl:if>
+				<xsl:if test="$namespace = 'jis'">
+					<fo:inline font-weight="normal">)</fo:inline>
 				</xsl:if>
 			</fo:basic-link>
 		</fo:inline>
@@ -10564,11 +10625,6 @@
 				<xsl:if test="$doctype = 'amendment' and parent::*[local-name() = 'quote']">
 					<xsl:attribute name="font-size">inherit</xsl:attribute>
 				</xsl:if>
-			</xsl:if>
-			
-			<xsl:if test="$namespace = 'jis'">
-				<xsl:attribute name="text-indent">0mm</xsl:attribute>
-				<xsl:attribute name="space-before">2pt</xsl:attribute>
 			</xsl:if>
 			
 			<xsl:if test="$namespace = 'ogc' or $namespace = 'ogc-white-paper'">
