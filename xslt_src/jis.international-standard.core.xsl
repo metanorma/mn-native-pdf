@@ -112,9 +112,16 @@
 					</fo:repeatable-page-master-alternatives>
 				</fo:page-sequence-master>
 				
-				<fo:page-sequence-master master-name="document">
+				<fo:page-sequence-master master-name="document_first_section">
 					<fo:repeatable-page-master-alternatives>
 						<fo:conditional-page-master-reference page-position="first" master-reference="first_page"/>
+						<fo:conditional-page-master-reference odd-or-even="even" master-reference="even"/>
+						<fo:conditional-page-master-reference odd-or-even="odd" master-reference="odd"/>
+					</fo:repeatable-page-master-alternatives>
+				</fo:page-sequence-master>
+				
+				<fo:page-sequence-master master-name="document">
+					<fo:repeatable-page-master-alternatives>
 						<fo:conditional-page-master-reference odd-or-even="even" master-reference="even"/>
 						<fo:conditional-page-master-reference odd-or-even="odd" master-reference="odd"/>
 					</fo:repeatable-page-master-alternatives>
@@ -381,9 +388,11 @@
 						</item>	
 						
 						<!-- Annexes -->
-						<item>
-							<xsl:apply-templates select="/*/*[local-name()='annex']" mode="linear_xml"/>
-						</item>
+						<xsl:for-each select="/*/*[local-name()='annex']">
+							<item>
+								<xsl:apply-templates select="." mode="linear_xml"/>
+							</item>
+						</xsl:for-each>
 						
 						<!-- Bibliography -->
 						<xsl:for-each select="/*/*[local-name()='bibliography']/*[count(.//*[local-name() = 'bibitem'][not(@hidden) = 'true']) &gt; 0 and not(@hidden = 'true')]">
@@ -414,6 +423,9 @@
 					
 					<xsl:for-each select="xalan:nodeset($paged_xml)/*[local-name()='page'][*]">
 						<fo:page-sequence master-reference="document" force-page-count="no-force">
+							<xsl:if test="position() = 1">
+								<xsl:attribute name="master-reference">document_first_section</xsl:attribute>
+							</xsl:if>
 							<xsl:if test="@orientation = 'landscape'">
 								<xsl:attribute name="master-reference">document-<xsl:value-of select="@orientation"/></xsl:attribute>
 							</xsl:if>
@@ -720,6 +732,7 @@
 			<xsl:choose>
 				<xsl:when test="@type = 'section-title'">18pt</xsl:when>
 				<xsl:when test="@ancestor = 'foreword' and $level = '1'">14pt</xsl:when>
+				<xsl:when test="@ancestor = 'annex' and $level = '1'">14pt</xsl:when>
 				<!-- <xsl:when test="@ancestor = 'foreword' and $level &gt;= '2'">12pt</xsl:when>
 				<xsl:when test=". = 'Executive summary'">18pt</xsl:when>
 				<xsl:when test="@ancestor = 'introduction' and $level = '1'">18pt</xsl:when>
@@ -732,7 +745,7 @@
 				<xsl:when test="@ancestor = 'sections' and $level &gt;= '3' and preceding-sibling::*[1][local-name() = 'terms']">11pt</xsl:when>
 				<xsl:when test="@ancestor = 'sections' and $level = '3'">10.5pt</xsl:when>
 				<xsl:when test="@ancestor = 'sections' and $level &gt;= '4'">10pt</xsl:when>
-				<xsl:when test="@ancestor = 'annex' and $level = '1'">18pt</xsl:when>
+				
 				<xsl:when test="@ancestor = 'annex' and $level = '2'">13pt</xsl:when>
 				<xsl:when test="@ancestor = 'annex' and $level &gt;= '3'">11.5pt</xsl:when>
 				<xsl:when test="@ancestor = 'bibliography' and $level = '1' and preceding-sibling::*[local-name() = 'references']">11.5pt</xsl:when>
@@ -747,6 +760,7 @@
 		<xsl:variable name="text-align">
 			<xsl:choose>
 				<xsl:when test="@ancestor = 'foreword' and $level = 1">center</xsl:when>
+				<xsl:when test="@ancestor = 'annex' and $level = 1">center</xsl:when>
 				<xsl:otherwise>left</xsl:otherwise>
 			</xsl:choose>
 		</xsl:variable>
@@ -775,8 +789,7 @@
 		<xsl:variable name="margin-bottom">
 			<xsl:choose>
 				<xsl:when test="$level = 1">12pt</xsl:when>
-				<xsl:when test="$level = 2">12pt</xsl:when>
-				<xsl:when test="$level &gt;= 3">6pt</xsl:when>
+				<xsl:when test="$level &gt;= 2">12pt</xsl:when>
 				<xsl:when test="@type = 'section-title'">6mm</xsl:when>
 				<xsl:when test="@inline-header = 'true'">0pt</xsl:when>
 				<xsl:when test="@ancestor = 'foreword' and $level = 1">9mm</xsl:when>
