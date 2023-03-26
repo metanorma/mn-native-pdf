@@ -40,6 +40,7 @@ XSLT_GENERATED := xslt/iec.international-standard.xsl \
 	xslt/itu.resolution.xsl \
 	xslt/itu.service-publication.xsl \
 	xslt/itu.in-force.xsl \
+	xslt/jis.international-standard.xsl \
 	xslt/ogc.abstract-specification-topic.xsl \
 	xslt/ogc.best-practice.xsl \
 	xslt/ogc.change-request-supporting-document.xsl \
@@ -315,6 +316,7 @@ update-xslts-in-processor-all:
 	$(MAKE) update-xslts-in-processor MN_PROCR=iso
 	$(MAKE) update-xslts-in-processor MN_PROCR=itu
 	$(MAKE) update-xslts-in-processor MN_PROCR=iec
+	$(MAKE) update-xslts-in-processor MN_PROCR=jis
 	$(MAKE) update-xslts-in-processor MN_PROCR=m3aawg
 	$(MAKE) update-xslts-in-processor MN_PROCR=mpfa
 	$(MAKE) update-xslts-in-processor MN_PROCR=ogc
