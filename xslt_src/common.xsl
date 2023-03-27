@@ -10687,7 +10687,14 @@
 					</xsl:when>
 					
 					<xsl:when test="$namespace = 'jis'">
-						<fo:list-block provisional-distance-between-starts="{14 + $text_indent}mm">
+						<fo:list-block>
+							<xsl:attribute name="provisional-distance-between-starts">
+								<xsl:choose>
+									<!-- if last char is digit -->
+									<xsl:when test="translate(substring(*[local-name() = 'name'], string-length(*[local-name() = 'name'])),'0123456789','') = ''"><xsl:value-of select="14 + $text_indent"/>mm</xsl:when>
+									<xsl:otherwise><xsl:value-of select="10 + $text_indent"/>mm</xsl:otherwise>
+								</xsl:choose>
+							</xsl:attribute>
 							<fo:list-item>
 								<fo:list-item-label start-indent="{$text_indent}mm" end-indent="label-end()">
 									<fo:block xsl:use-attribute-sets="note-name-style">

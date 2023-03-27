@@ -543,10 +543,10 @@
 				
 				<fo:block-container text-align="center">
 					<!-- title -->
-					<fo:block role="H1" font-family="IPAexGothic" font-size="22pt" margin-top="27mm">規格票の様式及び作成方法</fo:block>
+					<fo:block role="H1" font-family="IPAexGothic" font-size="22pt" margin-top="27mm"><xsl:apply-templates select="/*/jis:bibdata/jis:title[@language = 'ja' and @type = 'main']/node()"/></fo:block>
 					<!-- docidentifier, 3 part: number, colon and year-->
-					<fo:block font-family="IPAexGothic" font-size="20pt" margin-top="15mm">JIS Z 8301<fo:inline baseline-shift="20%"><fo:inline font-size="10pt">：</fo:inline><fo:inline font-family="IPAexMincho" font-size="10pt">2019</fo:inline></fo:inline></fo:block>
-					<fo:block font-family="IPAexGothic" font-size="14pt" margin-top="12mm"><fo:inline font-family="IPAexMincho">（</fo:inline>JSA<fo:inline font-family="IPAexMincho">）</fo:inline></fo:block>
+					<fo:block font-family="IPAexGothic" font-size="20pt" margin-top="15mm"><fo:inline font-family="Arial">JIS Z 8301</fo:inline><fo:inline baseline-shift="20%"><fo:inline font-size="10pt">：</fo:inline><fo:inline font-family="Times New Roman" font-size="10pt">2019</fo:inline></fo:inline></fo:block>
+					<fo:block font-family="Arial" font-size="14pt" margin-top="12mm"><fo:inline font-family="IPAexMincho">（</fo:inline>JSA<fo:inline font-family="IPAexMincho">）</fo:inline></fo:block>
 				</fo:block-container>
 				
 				<fo:block-container absolute-position="fixed" left="0mm" top="200mm" height="69mm" text-align="center" display-align="after" font-family="IPAexMincho">
@@ -684,6 +684,13 @@
 		</xsl:if>
 	</xsl:template>
 	
+	<xsl:template match="*[local-name() = 'preface']/*[local-name() = 'clause']" priority="3">
+		<fo:block>
+			<xsl:call-template name="setId"/>
+			<xsl:apply-templates />
+		</fo:block>
+	</xsl:template>
+	
 	<xsl:template match="*" priority="3" mode="page">
 		<xsl:call-template name="elementProcessing"/>
 	</xsl:template>
@@ -788,12 +795,11 @@
 		
 		<xsl:variable name="margin-bottom">
 			<xsl:choose>
+				<xsl:when test="@ancestor = 'foreword' and $level = 1">9mm</xsl:when>
 				<xsl:when test="$level = 1">12pt</xsl:when>
 				<xsl:when test="$level &gt;= 2">12pt</xsl:when>
 				<xsl:when test="@type = 'section-title'">6mm</xsl:when>
 				<xsl:when test="@inline-header = 'true'">0pt</xsl:when>
-				<xsl:when test="@ancestor = 'foreword' and $level = 1">9mm</xsl:when>
-				<xsl:when test="@ancestor = 'introduction' and $level = 1">5.5mm</xsl:when>
 				<xsl:when test="@ancestor = 'annex' and $level = 1">6mm</xsl:when>
 				<xsl:otherwise>0mm</xsl:otherwise>
 			</xsl:choose>
@@ -877,7 +883,9 @@
 				<xsl:variable name="element-name">fo:block</xsl:variable>
 				
 				<xsl:element name="{$element-name}">
-					<xsl:call-template name="setBlockAttributes"/>
+					<xsl:call-template name="setBlockAttributes">
+						<xsl:with-param name="text_align_default">justify</xsl:with-param>
+					</xsl:call-template>
 					<xsl:attribute name="margin-bottom">10pt</xsl:attribute>
 					
 					<xsl:if test="not(parent::jis:note or parent::jis:li or ancestor::jis:table)">
@@ -989,17 +997,10 @@
 	<!-- ========================= -->
 	<!-- Allocate non-Japanese text -->
 	<!-- ========================= -->
-	<!-- <name>注記  1</name> to <name>注記<font_en>  1</font_en></name> -->
-	<xsl:template match="jis:note/jis:name/text() | 
-						jis:term/jis:preferred//text() |
-						jis:termnote/jis:name/text() |
-						jis:table/jis:name/text() |
-						jis:example/jis:name/text() | 
-						jis:termexample/jis:name/text() |
-						jis:xref//text() |
-						jis:origin/text() |
-						jis:strong/text()" mode="update_xml_step1">
-		<xsl:variable name="regex_en">([^\u3000-\u9FFF\uF900-\uFFFF]{1,})</xsl:variable>
+	
+	<xsl:variable name="regex_en">([^\u3000-\u9FFF\uF900-\uFFFF]{1,})</xsl:variable>
+	
+	<xsl:template match="jis:p//text()" mode="update_xml_step1">
 		<xsl:variable name="element_name_font_en">font_en</xsl:variable>
 		<xsl:variable name="tag_font_en_open">###<xsl:value-of select="$element_name_font_en"/>###</xsl:variable>
 		<xsl:variable name="tag_font_en_close">###/<xsl:value-of select="$element_name_font_en"/>###</xsl:variable>
@@ -1012,8 +1013,39 @@
 		<xsl:copy-of select="xalan:nodeset($text_en)/text/node()"/>
 	</xsl:template>
 	
-	<xsl:template match="*[local-name() = 'font_en']">
+	<!-- <name>注記  1</name> to <name>注記<font_en>  1</font_en></name> -->
+	<xsl:template match="jis:note/jis:name/text() | 
+						jis:term/jis:preferred//text() |
+						jis:termnote/jis:name/text() |
+						jis:table/jis:name/text() |
+						jis:example/jis:name/text() | 
+						jis:termexample/jis:name/text() |
+						jis:xref//text() |
+						jis:origin/text() |
+						jis:strong/text()" mode="update_xml_step1">
+		<xsl:variable name="element_name_font_en">font_en_bold</xsl:variable>
+		<xsl:variable name="tag_font_en_open">###<xsl:value-of select="$element_name_font_en"/>###</xsl:variable>
+		<xsl:variable name="tag_font_en_close">###/<xsl:value-of select="$element_name_font_en"/>###</xsl:variable>
+		<xsl:variable name="text_en_" select="java:replaceAll(java:java.lang.String.new(.), $regex_en, concat($tag_font_en_open,'$1',$tag_font_en_close))"/>
+		<xsl:variable name="text_en"><text><xsl:call-template name="replace_text_tags">
+			<xsl:with-param name="tag_open" select="$tag_font_en_open"/>
+			<xsl:with-param name="tag_close" select="$tag_font_en_close"/>
+			<xsl:with-param name="text" select="$text_en_"/>
+		</xsl:call-template></text></xsl:variable>
+		<xsl:copy-of select="xalan:nodeset($text_en)/text/node()"/>
+	</xsl:template>
+	
+	<xsl:template match="*[local-name() = 'font_en_bold']">
 		<fo:inline font-family="Times New Roman" font-weight="bold">
+			<xsl:if test="ancestor::*[local-name() = 'preferred']">
+				<xsl:attribute name="font-weight">normal</xsl:attribute>
+			</xsl:if>
+			<xsl:apply-templates/>
+		</fo:inline>
+	</xsl:template>
+	
+	<xsl:template match="*[local-name() = 'font_en']">
+		<fo:inline font-family="Times New Roman">
 			<xsl:if test="ancestor::*[local-name() = 'preferred']">
 				<xsl:attribute name="font-weight">normal</xsl:attribute>
 			</xsl:if>
