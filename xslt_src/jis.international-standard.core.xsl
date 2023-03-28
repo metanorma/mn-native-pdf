@@ -1028,6 +1028,7 @@
 						jis:table/jis:name/text() |
 						jis:example/jis:name/text() | 
 						jis:termexample/jis:name/text() |
+						jis:eref//text() |
 						jis:xref//text() |
 						jis:origin/text() |
 						jis:strong/text()" mode="update_xml_step1">
