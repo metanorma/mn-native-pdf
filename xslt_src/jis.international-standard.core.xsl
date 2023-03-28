@@ -919,6 +919,10 @@
 						<xsl:attribute name="margin-bottom">0pt</xsl:attribute>
 					</xsl:if>
 					
+					<xsl:if test="parent::jis:clause[@type = 'inner-cover-note']">
+						<xsl:attribute name="margin-bottom">0pt</xsl:attribute>
+					</xsl:if>
+					
 					
 					<xsl:apply-templates>
 						<xsl:with-param name="split_keep-within-line" select="$split_keep-within-line"/>
