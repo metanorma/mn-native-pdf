@@ -7631,7 +7631,11 @@
 							<fo:list-item>
 								<fo:list-item-label start-indent="{$text_indent}mm" end-indent="label-end()">
 									<fo:block>
-										<fo:inline font-size="9pt" font-family="IPAexGothic">注</fo:inline>
+										<fo:inline font-size="9pt" font-family="IPAexGothic">
+											<xsl:call-template name="getLocalizedString">
+												<xsl:with-param name="key">table_footnote</xsl:with-param>
+											</xsl:call-template>
+										</fo:inline>
 										<xsl:text> </xsl:text>
 										<fo:inline xsl:use-attribute-sets="table-fn-number-style">
 											<xsl:value-of select="@reference"/>
