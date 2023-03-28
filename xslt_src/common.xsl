@@ -1847,8 +1847,10 @@
 			<xsl:attribute name="padding-top">1mm</xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'jis'">
+			<xsl:attribute name="font-weight">normal</xsl:attribute>
 			<xsl:attribute name="border"><xsl:value-of select="$table-border"/></xsl:attribute>
 			<xsl:attribute name="padding-top">0.5mm</xsl:attribute>
+			<xsl:attribute name="text-align">center</xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'mpfd'">
 			<xsl:attribute name="border">solid black 1pt</xsl:attribute>
@@ -5518,6 +5520,12 @@
 							</xsl:if>
 						</xsl:if>
 						
+						<xsl:if test="$namespace = 'jis'">
+							<xsl:if test="ancestor::*[local-name()='preface']">
+								<xsl:attribute name="border">none</xsl:attribute>
+							</xsl:if>
+						</xsl:if>
+						
 						<xsl:if test="$namespace = 'unece-rec'">
 							<xsl:if test="ancestor::*[local-name()='sections']">
 								<xsl:attribute name="border-top">1.5pt solid black</xsl:attribute>
@@ -6753,6 +6761,13 @@
 				</xsl:if>
 			</xsl:if>
 			
+			<xsl:if test="$namespace = 'jis'">
+				<xsl:if test="ancestor::*[local-name() = 'preface']">
+					<xsl:attribute name="border-top">none</xsl:attribute>
+					<xsl:attribute name="border-bottom">none</xsl:attribute>
+				</xsl:if>
+			</xsl:if>
+			
 			<xsl:call-template name="setTableRowAttributes"/>
 			
 			<xsl:apply-templates />
@@ -6984,8 +6999,8 @@
 						</xsl:otherwise>
 					</xsl:choose>
 					
-					
 				</xsl:if>
+				<!-- bsi -->
 			</xsl:if>
 
 			<xsl:if test="$namespace = 'iec'">
@@ -6999,6 +7014,10 @@
 					<xsl:attribute name="border-top"><xsl:value-of select="$table-cell-border"/></xsl:attribute>
 					<xsl:attribute name="border-bottom"><xsl:value-of select="$table-cell-border"/></xsl:attribute>
 				</xsl:if>
+			</xsl:if>
+			
+			<xsl:if test="$namespace = 'jis'">
+				<xsl:attribute name="text-align">center</xsl:attribute>
 			</xsl:if>
 			
 			<xsl:call-template name="setBordersTableArray"/>
@@ -7015,6 +7034,13 @@
 					<xsl:attribute name="padding-top">1mm</xsl:attribute>
 				</xsl:if>
 			</xsl:if>
+			
+			<xsl:if test="$namespace = 'jis'">
+				<xsl:if test="ancestor::*[local-name()='preface']">
+					<xsl:attribute name="border">none</xsl:attribute>
+				</xsl:if>
+			</xsl:if>
+			
 			<xsl:if test="$namespace = 'nist-cswp' or $namespace = 'nist-sp'">
 				<xsl:attribute name="text-align">center</xsl:attribute>
 			</xsl:if>
@@ -7243,6 +7269,12 @@
 				</xsl:if>
 				<xsl:if test="ancestor::*[local-name() = 'tfoot']">
 					<xsl:attribute name="border">solid black 0</xsl:attribute>
+				</xsl:if>
+			</xsl:if>
+			
+			<xsl:if test="$namespace = 'jis'">
+				<xsl:if test="ancestor::*[local-name() = 'preface']">
+					<xsl:attribute name="border">none</xsl:attribute>
 				</xsl:if>
 			</xsl:if>
 			

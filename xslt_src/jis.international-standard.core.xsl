@@ -587,7 +587,7 @@
 							<fo:inline></fo:inline>
 							<fo:footnote-body>
 								<fo:block font-size="8.5pt">
-									<xsl:apply-templates select="/*/*[local-name() = 'preface']/*[local-name() = 'clause'][@type = 'inner-cover-note']/*[not(local-name() = 'title')]" />
+									<xsl:apply-templates select="/*/*[local-name() = 'preface']/*[local-name() = 'clause'][@type = 'inner-cover-note']" /> <!-- /*[not(local-name() = 'title')] -->
 								</fo:block>
 							</fo:footnote-body>
 						</fo:footnote>
@@ -913,6 +913,10 @@
 					
 					<xsl:if test="parent::jis:li or following-sibling::*[1][self::jis:ol or self::jis:ul]">
 						<xsl:attribute name="margin-bottom">4pt</xsl:attribute>
+					</xsl:if>
+					
+					<xsl:if test="parent::jis:td or parent::jis:th">
+						<xsl:attribute name="margin-bottom">0pt</xsl:attribute>
 					</xsl:if>
 					
 					
