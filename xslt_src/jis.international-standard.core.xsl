@@ -568,7 +568,7 @@
 		
 			<fo:static-content flow-name="xsl-footnote-separator">
 				<fo:block text-align="center" margin-bottom="6pt">
-					<fo:leader leader-pattern="rule" leader-length="80mm"/>
+					<fo:leader leader-pattern="rule" leader-length="80mm" rule-style="solid" rule-thickness="0.3pt"/>
 				</fo:block>
 			</fo:static-content>
 			
@@ -1015,7 +1015,7 @@
 	<xsl:variable name="tag_font_en_bold_open">###<xsl:value-of select="$element_name_font_en_bold"/>###</xsl:variable>
 	<xsl:variable name="tag_font_en_bold_close">###/<xsl:value-of select="$element_name_font_en_bold"/>###</xsl:variable>
 	
-	<xsl:template match="jis:p//text()" mode="update_xml_step1">
+	<xsl:template match="jis:p//text()[not(ancestor::jis:strong)]" mode="update_xml_step1">
 		<xsl:variable name="text_en_" select="java:replaceAll(java:java.lang.String.new(.), $regex_en, concat($tag_font_en_open,'$1',$tag_font_en_close))"/>
 		<xsl:variable name="text_en"><text><xsl:call-template name="replace_text_tags">
 			<xsl:with-param name="tag_open" select="$tag_font_en_open"/>
@@ -1025,16 +1025,16 @@
 		<xsl:copy-of select="xalan:nodeset($text_en)/text/node()"/>
 	</xsl:template>
 	
+	<!-- jis:term/jis:preferred2//text() | -->
+	
 	<!-- <name>注記  1</name> to <name>注記<font_en>  1</font_en></name> -->
 	<xsl:template match="jis:note/jis:name/text() | 
-						jis:term/jis:preferred//text() |
 						jis:termnote/jis:name/text() |
 						jis:table/jis:name/text() |
 						jis:example/jis:name/text() | 
 						jis:termexample/jis:name/text() |
 						jis:xref//text() |
-						jis:origin/text() |
-						jis:strong/text()" mode="update_xml_step1">
+						jis:origin/text()" mode="update_xml_step1">
 		<xsl:variable name="text_en_" select="java:replaceAll(java:java.lang.String.new(.), $regex_en, concat($tag_font_en_bold_open,'$1',$tag_font_en_bold_close))"/>
 		<xsl:variable name="text_en"><text><xsl:call-template name="replace_text_tags">
 			<xsl:with-param name="tag_open" select="$tag_font_en_bold_open"/>
@@ -1119,7 +1119,7 @@
 		<xsl:param name="section"/>
 		<xsl:param name="copyrightText"/>
 		<fo:static-content flow-name="footer">
-			<fo:block-container height="24.5mm" display-align="after">
+			<fo:block-container height="24mm" display-align="after">
 				<xsl:if test="$section = 'preface'">
 					<fo:block font-size="9pt" text-align="center" space-after="10pt">(<fo:inline font-family="Times New Roman"><fo:page-number /></fo:inline>)</fo:block>
 				</xsl:if>

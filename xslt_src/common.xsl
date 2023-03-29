@@ -8781,6 +8781,9 @@
 	<xsl:template match="*[local-name()='strong'] | *[local-name()='b']">
 		<xsl:param name="split_keep-within-line"/>
 		<fo:inline font-weight="bold">
+			<xsl:if test="$namespace = 'jis'">
+				<xsl:attribute name="font-family">Times New Roman</xsl:attribute>
+			</xsl:if>
 			<xsl:if test="$namespace = 'rsd'">
 				<xsl:if test="not(parent::*[local-name() = 'termsource'])">
 					<xsl:attribute name="font-weight">normal</xsl:attribute>
@@ -9176,6 +9179,11 @@
 				<fo:inline>
 					<xsl:for-each select="$styles/style">
 						<xsl:attribute name="{@name}"><xsl:value-of select="."/></xsl:attribute>
+						<xsl:if test="$namespace = 'jis'">
+							<xsl:if test="@name = 'font-family' and . = 'MS Gothic'">
+								<xsl:attribute name="{@name}">IPAexGothic</xsl:attribute>
+							</xsl:if>
+						</xsl:if>
 					</xsl:for-each>
 					<xsl:apply-templates />
 				</fo:inline>
