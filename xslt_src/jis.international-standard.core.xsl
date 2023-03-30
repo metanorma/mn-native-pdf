@@ -1070,6 +1070,19 @@
 		</xsl:for-each>
 	</xsl:template>
 	
+	<xsl:template match="jis:strong" priority="2" mode="update_xml_step1">
+		<xsl:apply-templates mode="update_xml_step1"/>
+	</xsl:template>
+	<xsl:template match="jis:strong/text()" priority="2" mode="update_xml_step1">
+		<xsl:variable name="text_en_" select="java:replaceAll(java:java.lang.String.new(.), $regex_en, concat($tag_font_en_bold_open,'$1',$tag_font_en_bold_close))"/>
+		<xsl:variable name="text_en"><text><xsl:call-template name="replace_text_tags">
+			<xsl:with-param name="tag_open" select="$tag_font_en_bold_open"/>
+			<xsl:with-param name="tag_close" select="$tag_font_en_bold_close"/>
+			<xsl:with-param name="text" select="$text_en_"/>
+		</xsl:call-template></text></xsl:variable>
+		<xsl:copy-of select="xalan:nodeset($text_en)/text/node()"/>
+	</xsl:template>
+	
 	<xsl:template match="*[local-name() = 'font_en_bold']">
 		<fo:inline font-family="Times New Roman" font-weight="bold">
 			<xsl:if test="ancestor::*[local-name() = 'preferred']">
