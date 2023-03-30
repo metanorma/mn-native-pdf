@@ -2210,6 +2210,13 @@
 	<!-- ========================== -->
 	<!-- Definition's list styles -->
 	<!-- ========================== -->
+	
+	<xsl:attribute-set name="dl-block-style">
+		<xsl:if test="$namespace = 'ogc'">
+			<xsl:attribute name="margin-bottom">8pt</xsl:attribute>
+		</xsl:if>
+	</xsl:attribute-set>
+	
 	<xsl:attribute-set name="dt-row-style">
 		<xsl:if test="$namespace = 'ogc'">
 			<xsl:attribute name="min-height">8.5mm</xsl:attribute>
@@ -2220,6 +2227,11 @@
 	</xsl:attribute-set>
 	
 	<xsl:attribute-set name="dt-cell-style">
+		<xsl:if test="$namespace = 'ogc'">
+			<xsl:attribute name="padding-top">0.5mm</xsl:attribute>
+			<xsl:attribute name="padding-right">5mm</xsl:attribute>
+			<xsl:attribute name="padding-left">1mm</xsl:attribute>
+		</xsl:if>
 	</xsl:attribute-set>
 	
 	<xsl:attribute-set name="dt-block-style">
@@ -2306,6 +2318,9 @@
 	
 	<xsl:attribute-set name="dd-cell-style">
 		<xsl:attribute name="padding-left">2mm</xsl:attribute>
+		<xsl:if test="$namespace = 'ogc'">
+			<xsl:attribute name="padding-top">0.5mm</xsl:attribute>
+		</xsl:if>
 	</xsl:attribute-set>
 	
 	<!-- ========================== -->
@@ -7948,7 +7963,7 @@
 		<xsl:variable name="isAdded" select="@added"/>
 		<xsl:variable name="isDeleted" select="@deleted"/>
 		<!-- <dl><xsl:copy-of select="."/></dl> -->
-		<fo:block-container>
+		<fo:block-container xsl:use-attribute-sets="dl-block-style">
 		
 			<xsl:call-template name="setBlockSpanAll"/>
 		
@@ -8575,6 +8590,11 @@
 		<xsl:param name="split_keep-within-line"/>
 		
 		<fo:table-row xsl:use-attribute-sets="dt-row-style">
+			<xsl:if test="$namespace = 'ogc'">
+				<xsl:if test="not(following-sibling::ogc:dt)"> <!-- last item -->
+					<xsl:attribute name="min-height">3mm</xsl:attribute>
+				</xsl:if>
+			</xsl:if>
 			<xsl:call-template name="insert_dt_cell">
 				<xsl:with-param name="key_iso" select="$key_iso"/>
 				<xsl:with-param name="split_keep-within-line" select="$split_keep-within-line"/>
@@ -8596,6 +8616,11 @@
 				<!-- border is mandatory, to calculate real width -->
 				<xsl:attribute name="border">0.1pt solid black</xsl:attribute>
 				<xsl:attribute name="text-align">left</xsl:attribute>
+				
+				<xsl:if test="$namespace = 'ogc'">
+					<xsl:attribute name="padding-left">6mm</xsl:attribute>
+					<!-- <xsl:attribute name="padding-left">6.5mm</xsl:attribute> -->
+				</xsl:if>
 			</xsl:if>
 			
 			<xsl:if test="$namespace = 'itu'">
@@ -8603,6 +8628,12 @@
 					<xsl:attribute name="padding-right">3mm</xsl:attribute>
 				</xsl:if>
 			</xsl:if>
+			
+			<xsl:if test="$namespace = 'ogc'">
+				<!-- <xsl:attribute name="border-left">1pt solid <xsl:value-of select="$color_design"/></xsl:attribute> -->
+				<xsl:attribute name="background-color"><xsl:value-of select="$color_dl_dt"/></xsl:attribute>
+			</xsl:if>
+			
 			<fo:block xsl:use-attribute-sets="dt-block-style">
 				<xsl:copy-of select="@id"/>
 				
@@ -8613,6 +8644,12 @@
 				<xsl:if test="$namespace = 'itu'">
 					<xsl:if test="ancestor::*[1][local-name() = 'dl']/preceding-sibling::*[1][local-name() = 'formula']">
 						<xsl:attribute name="text-align">right</xsl:attribute>							
+					</xsl:if>
+				</xsl:if>
+				
+				<xsl:if test="$namespace = 'ogc'">
+					<xsl:if test="not(following-sibling::ogc:dt)"> <!-- last dt -->
+						<xsl:attribute name="margin-bottom">0</xsl:attribute>
 					</xsl:if>
 				</xsl:if>
 				
@@ -8633,6 +8670,10 @@
 			<xsl:if test="$isGenerateTableIF = 'true'">
 				<!-- border is mandatory, to calculate real width -->
 				<xsl:attribute name="border">0.1pt solid black</xsl:attribute>
+			</xsl:if>
+		
+			<xsl:if test="$namespace = 'ogc'">
+				<xsl:attribute name="background-color"><xsl:value-of select="$color_dl_dd"/></xsl:attribute>
 			</xsl:if>
 		
 			<fo:block>

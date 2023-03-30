@@ -57,6 +57,8 @@
 			<xsl:otherwise>rgb(246, 223, 140)</xsl:otherwise>
 		</xsl:choose>
 	</xsl:variable>
+	<xsl:variable name="color_dl_dt">rgb(215,243,255)</xsl:variable>
+	<xsl:variable name="color_dl_dd">rgb(242,251,255)</xsl:variable>
 	<xsl:variable name="color_blue">rgb(33, 55, 92)</xsl:variable>
 	
 	<xsl:variable name="toc_recommendations_">
@@ -873,9 +875,8 @@
 	
 	
 	<!-- ====== -->
-	<!-- title      -->
+	<!-- title  -->
 	<!-- ====== -->
-	
 	<xsl:template match="ogc:title" name="title">
 		
 		<xsl:variable name="level">
@@ -985,11 +986,9 @@
 				</xsl:element>
 			</xsl:otherwise>
 		</xsl:choose>
-		
-		
-			
 	</xsl:template>
 	<!-- ====== -->
+	<!-- END: title  -->
 	<!-- ====== -->
 	
 	<xsl:template match="ogc:p" name="paragraph">
@@ -1023,6 +1022,9 @@
 			</xsl:if>			
 			<xsl:if test="ancestor::ogc:dd and not(ancestor::ogc:table)">
 				<xsl:attribute name="margin-bottom">4pt</xsl:attribute>
+				<xsl:if test="not(ancestor::ogc:dd[1]/following-sibling::ogc:dt)">
+					<xsl:attribute name="margin-bottom">0pt</xsl:attribute>
+				</xsl:if>
 			</xsl:if>
 			
 			<xsl:apply-templates>
