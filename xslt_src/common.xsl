@@ -3356,6 +3356,7 @@
 		</xsl:if>
 		<xsl:if test="$namespace = 'jis'">
 			<xsl:attribute name="provisional-distance-between-starts">7.5mm</xsl:attribute>
+			<xsl:attribute name="space-after">4pt</xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'm3d'">
 			<xsl:attribute name="provisional-distance-between-starts">6mm</xsl:attribute>

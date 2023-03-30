@@ -776,7 +776,7 @@
 		<xsl:variable name="margin-top">
 			<xsl:choose>
 				<xsl:when test="@ancestor = 'foreword' and $level = 1">9mm</xsl:when>
-				<xsl:when test="$level = 1">4.5mm</xsl:when>
+				<xsl:when test="$level = 1">6.5mm</xsl:when>
 				<xsl:when test="@ancestor = 'foreword' and $level = 2">0mm</xsl:when>
 				<xsl:when test="@ancestor = 'annex' and $level = 2">4.5mm</xsl:when>
 				<xsl:when test="@ancestor = 'bibliography' and $level = 2">0mm</xsl:when>
@@ -796,6 +796,7 @@
 		<xsl:variable name="margin-bottom">
 			<xsl:choose>
 				<xsl:when test="@ancestor = 'foreword' and $level = 1">9mm</xsl:when>
+				<xsl:when test="$level = 1 and following-sibling::jis:clause">8pt</xsl:when>
 				<xsl:when test="$level = 1">12pt</xsl:when>
 				<xsl:when test="$level &gt;= 2">12pt</xsl:when>
 				<xsl:when test="@type = 'section-title'">6mm</xsl:when>
