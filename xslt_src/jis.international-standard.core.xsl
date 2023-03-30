@@ -944,8 +944,6 @@
 	
 	<xsl:template match="jis:termnote" priority="2">
 		<fo:block id="{@id}" xsl:use-attribute-sets="termnote-style">
-			<xsl:attribute name="text-indent">0mm</xsl:attribute>
-			<xsl:attribute name="space-before">2pt</xsl:attribute>
 			<fo:list-block provisional-distance-between-starts="{14 + $text_indent}mm">
 				<fo:list-item>
 					<fo:list-item-label start-indent="{$text_indent}mm" end-indent="label-end()">

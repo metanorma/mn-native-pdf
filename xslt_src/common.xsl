@@ -2650,6 +2650,11 @@
 		<xsl:if test="$namespace = 'itu' or $namespace = 'nist-cswp'  or $namespace = 'nist-sp' or $namespace = 'unece' or $namespace = 'unece-rec'">			
 			<xsl:attribute name="margin-top">4pt</xsl:attribute>			
 		</xsl:if>
+		<xsl:if test="$namespace = 'jis'">
+			<xsl:attribute name="text-indent">0mm</xsl:attribute>
+			<xsl:attribute name="space-before">4pt</xsl:attribute>
+			<xsl:attribute name="space-after">4pt</xsl:attribute>
+		</xsl:if>
 		<xsl:if test="$namespace = 'ogc'">			
 			<xsl:attribute name="margin-top">12pt</xsl:attribute>			
 			<xsl:attribute name="margin-bottom">12pt</xsl:attribute>						
