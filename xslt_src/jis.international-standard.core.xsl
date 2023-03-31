@@ -1031,6 +1031,7 @@
 	<xsl:template match="jis:note/jis:name/text() | 
 						jis:termnote/jis:name/text() |
 						jis:table/jis:name/text() |
+						jis:figure/jis:name/text() |
 						jis:example/jis:name/text() | 
 						jis:termexample/jis:name/text() |
 						jis:xref//text() |
