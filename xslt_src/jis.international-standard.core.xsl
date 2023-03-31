@@ -568,7 +568,7 @@
 		
 			<fo:static-content flow-name="xsl-footnote-separator">
 				<fo:block text-align="center" margin-bottom="6pt">
-					<fo:leader leader-pattern="rule" leader-length="80mm"/>
+					<fo:leader leader-pattern="rule" leader-length="80mm" rule-style="solid" rule-thickness="0.3pt"/>
 				</fo:block>
 			</fo:static-content>
 			
@@ -776,7 +776,7 @@
 		<xsl:variable name="margin-top">
 			<xsl:choose>
 				<xsl:when test="@ancestor = 'foreword' and $level = 1">9mm</xsl:when>
-				<xsl:when test="$level = 1">4.5mm</xsl:when>
+				<xsl:when test="$level = 1">6.5mm</xsl:when>
 				<xsl:when test="@ancestor = 'foreword' and $level = 2">0mm</xsl:when>
 				<xsl:when test="@ancestor = 'annex' and $level = 2">4.5mm</xsl:when>
 				<xsl:when test="@ancestor = 'bibliography' and $level = 2">0mm</xsl:when>
@@ -796,7 +796,9 @@
 		<xsl:variable name="margin-bottom">
 			<xsl:choose>
 				<xsl:when test="@ancestor = 'foreword' and $level = 1">9mm</xsl:when>
+				<xsl:when test="$level = 1 and following-sibling::jis:clause">8pt</xsl:when>
 				<xsl:when test="$level = 1">12pt</xsl:when>
+				<xsl:when test="$level = 2 and following-sibling::jis:clause">8pt</xsl:when>
 				<xsl:when test="$level &gt;= 2">12pt</xsl:when>
 				<xsl:when test="@type = 'section-title'">6mm</xsl:when>
 				<xsl:when test="@inline-header = 'true'">0pt</xsl:when>
@@ -911,11 +913,11 @@
 						<xsl:attribute name="margin-bottom">2pt</xsl:attribute>
 					</xsl:if>
 					
-					<xsl:if test="parent::jis:li or following-sibling::*[1][self::jis:ol or self::jis:ul]">
+					<xsl:if test="parent::jis:li or following-sibling::*[1][self::jis:ol or self::jis:ul or self::jis:note or self::jis:example]">
 						<xsl:attribute name="margin-bottom">4pt</xsl:attribute>
 					</xsl:if>
 					
-					<xsl:if test="parent::jis:td or parent::jis:th">
+					<xsl:if test="parent::jis:td or parent::jis:th or parent::jis:dd">
 						<xsl:attribute name="margin-bottom">0pt</xsl:attribute>
 					</xsl:if>
 					
@@ -944,8 +946,6 @@
 	
 	<xsl:template match="jis:termnote" priority="2">
 		<fo:block id="{@id}" xsl:use-attribute-sets="termnote-style">
-			<xsl:attribute name="text-indent">0mm</xsl:attribute>
-			<xsl:attribute name="space-before">2pt</xsl:attribute>
 			<fo:list-block provisional-distance-between-starts="{14 + $text_indent}mm">
 				<fo:list-item>
 					<fo:list-item-label start-indent="{$text_indent}mm" end-indent="label-end()">
@@ -1008,10 +1008,15 @@
 	
 	<xsl:variable name="regex_en">([^\u3000-\u9FFF\uF900-\uFFFF]{1,})</xsl:variable>
 	
-	<xsl:template match="jis:p//text()" mode="update_xml_step1">
-		<xsl:variable name="element_name_font_en">font_en</xsl:variable>
-		<xsl:variable name="tag_font_en_open">###<xsl:value-of select="$element_name_font_en"/>###</xsl:variable>
-		<xsl:variable name="tag_font_en_close">###/<xsl:value-of select="$element_name_font_en"/>###</xsl:variable>
+	<xsl:variable name="element_name_font_en">font_en</xsl:variable>
+	<xsl:variable name="tag_font_en_open">###<xsl:value-of select="$element_name_font_en"/>###</xsl:variable>
+	<xsl:variable name="tag_font_en_close">###/<xsl:value-of select="$element_name_font_en"/>###</xsl:variable>
+	<xsl:variable name="element_name_font_en_bold">font_en_bold</xsl:variable>
+	<xsl:variable name="tag_font_en_bold_open">###<xsl:value-of select="$element_name_font_en_bold"/>###</xsl:variable>
+	<xsl:variable name="tag_font_en_bold_close">###/<xsl:value-of select="$element_name_font_en_bold"/>###</xsl:variable>
+	
+	<xsl:template match="jis:p//text()[not(ancestor::jis:strong)] |
+						jis:dt/text()" mode="update_xml_step1">
 		<xsl:variable name="text_en_" select="java:replaceAll(java:java.lang.String.new(.), $regex_en, concat($tag_font_en_open,'$1',$tag_font_en_close))"/>
 		<xsl:variable name="text_en"><text><xsl:call-template name="replace_text_tags">
 			<xsl:with-param name="tag_open" select="$tag_font_en_open"/>
@@ -1021,24 +1026,61 @@
 		<xsl:copy-of select="xalan:nodeset($text_en)/text/node()"/>
 	</xsl:template>
 	
+	<!-- jis:term/jis:preferred2//text() | -->
+	
 	<!-- <name>注記  1</name> to <name>注記<font_en>  1</font_en></name> -->
-	<xsl:template match="jis:note/jis:name/text() | 
-						jis:term/jis:preferred//text() |
+	<xsl:template match="jis:title/text() | 
+						jis:note/jis:name/text() | 
 						jis:termnote/jis:name/text() |
 						jis:table/jis:name/text() |
+						jis:figure/jis:name/text() |
 						jis:example/jis:name/text() | 
 						jis:termexample/jis:name/text() |
-						jis:eref//text() |
 						jis:xref//text() |
-						jis:origin/text() |
-						jis:strong/text()" mode="update_xml_step1">
-		<xsl:variable name="element_name_font_en">font_en_bold</xsl:variable>
-		<xsl:variable name="tag_font_en_open">###<xsl:value-of select="$element_name_font_en"/>###</xsl:variable>
-		<xsl:variable name="tag_font_en_close">###/<xsl:value-of select="$element_name_font_en"/>###</xsl:variable>
-		<xsl:variable name="text_en_" select="java:replaceAll(java:java.lang.String.new(.), $regex_en, concat($tag_font_en_open,'$1',$tag_font_en_close))"/>
+						jis:origin/text()" mode="update_xml_step1">
+		<xsl:variable name="text_en_" select="java:replaceAll(java:java.lang.String.new(.), $regex_en, concat($tag_font_en_bold_open,'$1',$tag_font_en_bold_close))"/>
 		<xsl:variable name="text_en"><text><xsl:call-template name="replace_text_tags">
-			<xsl:with-param name="tag_open" select="$tag_font_en_open"/>
-			<xsl:with-param name="tag_close" select="$tag_font_en_close"/>
+			<xsl:with-param name="tag_open" select="$tag_font_en_bold_open"/>
+			<xsl:with-param name="tag_close" select="$tag_font_en_bold_close"/>
+			<xsl:with-param name="text" select="$text_en_"/>
+		</xsl:call-template></text></xsl:variable>
+		<xsl:copy-of select="xalan:nodeset($text_en)/text/node()"/>
+	</xsl:template>
+	
+	<xsl:template match="jis:eref//text()" mode="update_xml_step1">
+		<!-- Example: JIS Z 8301:2011 to <font_en_bold>JIS Z 8301</font_en_bold><font_en>:2011</font_en> -->
+		<xsl:variable name="parts">
+			<xsl:choose>
+				<xsl:when test="contains(., ':')">
+					<xsl:element name="{$element_name_font_en_bold}"><xsl:value-of select="substring-before(., ':')"/></xsl:element>
+					<xsl:element name="{$element_name_font_en}">:<xsl:value-of select="substring-after(., ':')"/></xsl:element>
+				</xsl:when>
+				<xsl:otherwise>
+					<xsl:element name="{$element_name_font_en_bold}"><xsl:value-of select="."/></xsl:element>
+				</xsl:otherwise>
+			</xsl:choose>
+		</xsl:variable>
+		<xsl:for-each select="xalan:nodeset($parts)/*">
+			<xsl:variable name="tag_open">###<xsl:value-of select="local-name()"/>###</xsl:variable>
+			<xsl:variable name="tag_close">###/<xsl:value-of select="local-name()"/>###</xsl:variable>
+			<xsl:variable name="text_en_" select="java:replaceAll(java:java.lang.String.new(.), $regex_en, concat($tag_open,'$1',$tag_close))"/>
+			<xsl:variable name="text_en"><text><xsl:call-template name="replace_text_tags">
+				<xsl:with-param name="tag_open" select="$tag_open"/>
+				<xsl:with-param name="tag_close" select="$tag_close"/>
+				<xsl:with-param name="text" select="$text_en_"/>
+			</xsl:call-template></text></xsl:variable>
+			<xsl:copy-of select="xalan:nodeset($text_en)/text/node()"/>
+		</xsl:for-each>
+	</xsl:template>
+	
+	<xsl:template match="jis:strong" priority="2" mode="update_xml_step1">
+		<xsl:apply-templates mode="update_xml_step1"/>
+	</xsl:template>
+	<xsl:template match="jis:strong/text()" priority="2" mode="update_xml_step1">
+		<xsl:variable name="text_en_" select="java:replaceAll(java:java.lang.String.new(.), $regex_en, concat($tag_font_en_bold_open,'$1',$tag_font_en_bold_close))"/>
+		<xsl:variable name="text_en"><text><xsl:call-template name="replace_text_tags">
+			<xsl:with-param name="tag_open" select="$tag_font_en_bold_open"/>
+			<xsl:with-param name="tag_close" select="$tag_font_en_bold_close"/>
 			<xsl:with-param name="text" select="$text_en_"/>
 		</xsl:call-template></text></xsl:variable>
 		<xsl:copy-of select="xalan:nodeset($text_en)/text/node()"/>
@@ -1093,7 +1135,7 @@
 		<xsl:param name="section"/>
 		<xsl:param name="copyrightText"/>
 		<fo:static-content flow-name="footer">
-			<fo:block-container height="24.5mm" display-align="after">
+			<fo:block-container height="24mm" display-align="after">
 				<xsl:if test="$section = 'preface'">
 					<fo:block font-size="9pt" text-align="center" space-after="10pt">(<fo:inline font-family="Times New Roman"><fo:page-number /></fo:inline>)</fo:block>
 				</xsl:if>

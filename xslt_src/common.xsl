@@ -1361,6 +1361,9 @@
 			<xsl:attribute name="margin-top">12pt</xsl:attribute>
 			<xsl:attribute name="margin-bottom">12pt</xsl:attribute>
 		</xsl:if>
+		<xsl:if test="$namespace = 'jis'">
+			<xsl:attribute name="margin-bottom">2pt</xsl:attribute>
+		</xsl:if>
 		<xsl:if test="$namespace = 'm3d'">
 			<xsl:attribute name="margin-top">8pt</xsl:attribute>
 			<xsl:attribute name="margin-bottom">8pt</xsl:attribute>
@@ -2650,6 +2653,11 @@
 		<xsl:if test="$namespace = 'itu' or $namespace = 'nist-cswp'  or $namespace = 'nist-sp' or $namespace = 'unece' or $namespace = 'unece-rec'">			
 			<xsl:attribute name="margin-top">4pt</xsl:attribute>			
 		</xsl:if>
+		<xsl:if test="$namespace = 'jis'">
+			<xsl:attribute name="text-indent">0mm</xsl:attribute>
+			<xsl:attribute name="space-before">4pt</xsl:attribute>
+			<xsl:attribute name="space-after">4pt</xsl:attribute>
+		</xsl:if>
 		<xsl:if test="$namespace = 'ogc'">			
 			<xsl:attribute name="margin-top">12pt</xsl:attribute>			
 			<xsl:attribute name="margin-bottom">12pt</xsl:attribute>						
@@ -3351,6 +3359,7 @@
 		</xsl:if>
 		<xsl:if test="$namespace = 'jis'">
 			<xsl:attribute name="provisional-distance-between-starts">7.5mm</xsl:attribute>
+			<xsl:attribute name="space-after">4pt</xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'm3d'">
 			<xsl:attribute name="provisional-distance-between-starts">6mm</xsl:attribute>
@@ -8781,6 +8790,9 @@
 	<xsl:template match="*[local-name()='strong'] | *[local-name()='b']">
 		<xsl:param name="split_keep-within-line"/>
 		<fo:inline font-weight="bold">
+			<xsl:if test="$namespace = 'jis'">
+				<xsl:attribute name="font-family">Times New Roman</xsl:attribute>
+			</xsl:if>
 			<xsl:if test="$namespace = 'rsd'">
 				<xsl:if test="not(parent::*[local-name() = 'termsource'])">
 					<xsl:attribute name="font-weight">normal</xsl:attribute>
@@ -9176,6 +9188,11 @@
 				<fo:inline>
 					<xsl:for-each select="$styles/style">
 						<xsl:attribute name="{@name}"><xsl:value-of select="."/></xsl:attribute>
+						<xsl:if test="$namespace = 'jis'">
+							<xsl:if test="@name = 'font-family' and . = 'MS Gothic'">
+								<xsl:attribute name="{@name}">IPAexGothic</xsl:attribute>
+							</xsl:if>
+						</xsl:if>
 					</xsl:for-each>
 					<xsl:apply-templates />
 				</fo:inline>
