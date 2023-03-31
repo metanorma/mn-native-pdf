@@ -1361,6 +1361,9 @@
 			<xsl:attribute name="margin-top">12pt</xsl:attribute>
 			<xsl:attribute name="margin-bottom">12pt</xsl:attribute>
 		</xsl:if>
+		<xsl:if test="$namespace = 'jis'">
+			<xsl:attribute name="margin-bottom">2pt</xsl:attribute>
+		</xsl:if>
 		<xsl:if test="$namespace = 'm3d'">
 			<xsl:attribute name="margin-top">8pt</xsl:attribute>
 			<xsl:attribute name="margin-bottom">8pt</xsl:attribute>

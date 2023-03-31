@@ -798,6 +798,7 @@
 				<xsl:when test="@ancestor = 'foreword' and $level = 1">9mm</xsl:when>
 				<xsl:when test="$level = 1 and following-sibling::jis:clause">8pt</xsl:when>
 				<xsl:when test="$level = 1">12pt</xsl:when>
+				<xsl:when test="$level = 2 and following-sibling::jis:clause">8pt</xsl:when>
 				<xsl:when test="$level &gt;= 2">12pt</xsl:when>
 				<xsl:when test="@type = 'section-title'">6mm</xsl:when>
 				<xsl:when test="@inline-header = 'true'">0pt</xsl:when>
@@ -912,11 +913,11 @@
 						<xsl:attribute name="margin-bottom">2pt</xsl:attribute>
 					</xsl:if>
 					
-					<xsl:if test="parent::jis:li or following-sibling::*[1][self::jis:ol or self::jis:ul]">
+					<xsl:if test="parent::jis:li or following-sibling::*[1][self::jis:ol or self::jis:ul or self::jis:note or self::jis:example]">
 						<xsl:attribute name="margin-bottom">4pt</xsl:attribute>
 					</xsl:if>
 					
-					<xsl:if test="parent::jis:td or parent::jis:th">
+					<xsl:if test="parent::jis:td or parent::jis:th or parent::jis:dd">
 						<xsl:attribute name="margin-bottom">0pt</xsl:attribute>
 					</xsl:if>
 					
