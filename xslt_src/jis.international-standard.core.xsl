@@ -1015,7 +1015,8 @@
 	<xsl:variable name="tag_font_en_bold_open">###<xsl:value-of select="$element_name_font_en_bold"/>###</xsl:variable>
 	<xsl:variable name="tag_font_en_bold_close">###/<xsl:value-of select="$element_name_font_en_bold"/>###</xsl:variable>
 	
-	<xsl:template match="jis:p//text()[not(ancestor::jis:strong)]" mode="update_xml_step1">
+	<xsl:template match="jis:p//text()[not(ancestor::jis:strong)] |
+						jis:dt/text()" mode="update_xml_step1">
 		<xsl:variable name="text_en_" select="java:replaceAll(java:java.lang.String.new(.), $regex_en, concat($tag_font_en_open,'$1',$tag_font_en_close))"/>
 		<xsl:variable name="text_en"><text><xsl:call-template name="replace_text_tags">
 			<xsl:with-param name="tag_open" select="$tag_font_en_open"/>
@@ -1028,7 +1029,8 @@
 	<!-- jis:term/jis:preferred2//text() | -->
 	
 	<!-- <name>注記  1</name> to <name>注記<font_en>  1</font_en></name> -->
-	<xsl:template match="jis:note/jis:name/text() | 
+	<xsl:template match="jis:title/text() | 
+						jis:note/jis:name/text() | 
 						jis:termnote/jis:name/text() |
 						jis:table/jis:name/text() |
 						jis:figure/jis:name/text() |
