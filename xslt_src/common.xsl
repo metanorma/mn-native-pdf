@@ -3003,6 +3003,14 @@
 		</xsl:if>	
 	</xsl:attribute-set>
 	
+	<xsl:attribute-set name="figure-source-style">
+		<xsl:if test="$namespace = 'iec'">
+			<xsl:attribute name="font-size">6pt</xsl:attribute>
+			<xsl:attribute name="font-style">italic</xsl:attribute>
+			<xsl:attribute name="text-align">right</xsl:attribute>
+		</xsl:if>
+	</xsl:attribute-set>
+	
 	<!-- Formula's styles -->
 	<xsl:attribute-set name="formula-style">
 		<xsl:attribute name="margin-top">6pt</xsl:attribute>
@@ -5562,7 +5570,7 @@
 						</xsl:attribute>
 					</xsl:for-each>
 					
-					<xsl:variable name="isNoteOrFnExist" select="./*[local-name()='note'] or .//*[local-name()='fn'][local-name(..) != 'name']"/>				
+					<xsl:variable name="isNoteOrFnExist" select="./*[local-name()='note'] or .//*[local-name()='fn'][local-name(..) != 'name'] or ./*[local-name()='source']"/>				
 					<xsl:if test="$isNoteOrFnExist = 'true'">
 						<xsl:attribute name="border-bottom">0pt solid black</xsl:attribute> <!-- set 0pt border, because there is a separete table below for footer  -->
 					</xsl:if>
@@ -5607,8 +5615,8 @@
 									<xsl:apply-templates select="*[local-name()='thead']" mode="process_tbody"/>
 								</xsl:when>
 								<xsl:otherwise>
-									<xsl:apply-templates select="node()[not(local-name() = 'name') and not(local-name() = 'note') and not(local-name() = 'dl')
-									and not(local-name() = 'thead') and not(local-name() = 'tfoot')]" /> <!-- process all table' elements, except name, header, footer, note and dl which render separaterely -->
+									<xsl:apply-templates select="node()[not(local-name() = 'name') and not(local-name() = 'note') and not(local-name() = 'dl') and not(local-name() = 'source')
+									and not(local-name() = 'thead') and not(local-name() = 'tfoot')]" /> <!-- process all table' elements, except name, header, footer, note, source and dl which render separaterely -->
 								</xsl:otherwise>
 							</xsl:choose>
 					
@@ -5887,6 +5895,11 @@
 		</xsl:if>
 	</xsl:template> <!-- table/name -->
 	
+	
+	<!-- SOURCE: ... -->
+	<xsl:template match="*[local-name()='table']/*[local-name() = 'source']" priority="2">
+		<xsl:call-template name="termsource"/>
+	</xsl:template>
 	
 	
 	<xsl:template name="calculate-columns-numbers">
@@ -6372,11 +6385,11 @@
 		<xsl:param name="colwidths"/>
 		<xsl:param name="colgroup"/>
 		
-		<xsl:variable name="isNoteOrFnExist" select="../*[local-name()='note'] or ../*[local-name()='dl'] or ..//*[local-name()='fn'][local-name(..) != 'name']"/>
+		<xsl:variable name="isNoteOrFnExist" select="../*[local-name()='note'] or ../*[local-name()='dl'] or ..//*[local-name()='fn'][local-name(..) != 'name'] or ../*[local-name()='source']"/>
 		
 		<xsl:variable name="isNoteOrFnExistShowAfterTable">
 			<xsl:if test="$namespace = 'bsi'">
-				 <xsl:value-of select="../*[local-name()='note'] or ../*[local-name()='dl'] or ..//*[local-name()='fn']"/>
+				 <xsl:value-of select="../*[local-name()='note'] or ../*[local-name()='source'] or ../*[local-name()='dl'] or ..//*[local-name()='fn']"/>
 			</xsl:if>
 		</xsl:variable>
 		
@@ -6496,6 +6509,7 @@
 									<xsl:if test="$document_type != 'PAS'">
 										<xsl:apply-templates select="../*[local-name()='dl']" />
 										<xsl:apply-templates select="../*[local-name()='note']" />
+										<xsl:apply-templates select="../*[local-name()='source']" />
 									</xsl:if>
 								</xsl:if>
 								
@@ -6505,6 +6519,7 @@
 									<xsl:otherwise>
 										<xsl:apply-templates select="../*[local-name()='dl']" />
 										<xsl:apply-templates select="../*[local-name()='note']" />
+										<xsl:apply-templates select="../*[local-name()='source']" />
 									</xsl:otherwise>
 								</xsl:choose>
 								
@@ -6545,6 +6560,7 @@
 									<xsl:if test="$document_type = 'PAS'">
 										<xsl:apply-templates select="../*[local-name()='dl']" />
 										<xsl:apply-templates select="../*[local-name()='note']" />
+										<xsl:apply-templates select="../*[local-name()='source']" />
 									</xsl:if>
 								</xsl:if>
 								
@@ -11130,6 +11146,19 @@
 		</fo:block>
 	</xsl:template>
 
+	<!-- SOURCE: ... -->
+	<xsl:template match="*[local-name() = 'figure']/*[local-name() = 'source']" priority="2">
+		<xsl:choose>
+			<xsl:when test="$namespace = 'iec'">
+				<fo:block xsl:use-attribute-sets="figure-source-style">
+					<xsl:apply-templates />
+				</fo:block>
+			</xsl:when>
+			<xsl:otherwise>
+				<xsl:call-template name="termsource"/>
+			</xsl:otherwise>
+		</xsl:choose>
+	</xsl:template>
 	
 	<xsl:template match="*[local-name() = 'image']">
 		<xsl:variable name="isAdded" select="../@added"/>
