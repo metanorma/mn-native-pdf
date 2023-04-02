@@ -1622,7 +1622,8 @@
 		<xsl:if test="$namespace = 'iec'">
 			<xsl:attribute name="font-weight">bold</xsl:attribute>
 			<xsl:attribute name="text-align">center</xsl:attribute>
-			<xsl:attribute name="margin-bottom">6pt</xsl:attribute>
+			<!-- <xsl:attribute name="margin-bottom">6pt</xsl:attribute> -->
+			<xsl:attribute name="margin-bottom">-12pt</xsl:attribute>
 			<xsl:attribute name="space-before">12pt</xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'ieee'">
@@ -5825,6 +5826,13 @@
 							</xsl:if>
 						</xsl:if>
 						
+						<xsl:if test="$namespace = 'iec'">
+							<xsl:if test="$continued = 'true'">
+								<xsl:attribute name="font-size">10pt</xsl:attribute>
+								<xsl:attribute name="margin-bottom">6pt</xsl:attribute>
+							</xsl:if>
+						</xsl:if>
+						
 						<xsl:if test="$namespace = 'iso'">
 							<xsl:if test="$continued = 'true'">
 								<xsl:attribute name="margin-bottom">2pt</xsl:attribute>
@@ -5859,7 +5867,7 @@
 							</xsl:if>
 						</xsl:if>
 						
-						<xsl:if test="$namespace = 'iso'">
+						<xsl:if test="$namespace = 'iec' or $namespace = 'iso'">
 							<xsl:if test="$continued = 'true'">
 								<fo:inline font-weight="bold" font-style="normal">
 									<fo:retrieve-table-marker retrieve-class-name="table_number"/>
@@ -6240,7 +6248,7 @@
 	<xsl:template match="*[local-name()='thead']">
 		<xsl:param name="cols-count"/>
 		<fo:table-header>
-			<xsl:if test="$namespace = 'ieee' or $namespace = 'iso' or $namespace = 'jcgm'">
+			<xsl:if test="$namespace = 'iec' or $namespace = 'ieee' or $namespace = 'iso' or $namespace = 'jcgm'">
 				<xsl:call-template name="table-header-title">
 					<xsl:with-param name="cols-count" select="$cols-count"/>
 				</xsl:call-template>				
@@ -6256,7 +6264,7 @@
 		</fo:table-header>
 	</xsl:template> <!-- thead -->
 	
-	<!-- template is using for iso, jcgm, bsi only -->
+	<!-- template is using for iec, iso, jcgm, bsi only -->
 	<xsl:template name="table-header-title">
 		<xsl:param name="cols-count"/>
 		<!-- row for title -->
@@ -6267,6 +6275,13 @@
 					<xsl:attribute name="border-left">none</xsl:attribute>
 					<xsl:attribute name="border-right">none</xsl:attribute>
 					<xsl:attribute name="border-top">none</xsl:attribute>
+				</xsl:if>
+				
+				<xsl:if test="$namespace = 'iec'">
+					<xsl:attribute name="border-left">1pt solid white</xsl:attribute>
+					<xsl:attribute name="border-right">1pt solid white</xsl:attribute>
+					<xsl:attribute name="border-top">1pt solid white</xsl:attribute>
+					<xsl:attribute name="border-bottom">none</xsl:attribute>
 				</xsl:if>
 				
 				<xsl:if test="$namespace = 'iso'">
@@ -6569,7 +6584,7 @@
 			</xsl:choose>
 		</xsl:variable>
 		
-		<xsl:if test="$namespace = 'bsi' or $namespace = 'ieee' or $namespace = 'iso' or $namespace = 'jcgm'">
+		<xsl:if test="$namespace = 'bsi' or $namespace = 'iec' or $namespace = 'ieee' or $namespace = 'iso' or $namespace = 'jcgm'">
 			<!-- if there isn't 'thead' and there is a table's title -->
 			<xsl:if test="not(ancestor::*[local-name()='table']/*[local-name()='thead']) and ancestor::*[local-name()='table']/*[local-name()='name']">
 				<fo:table-header>
@@ -6589,7 +6604,7 @@
 		</xsl:call-template>
 		
 		<fo:table-body>
-			<xsl:if test="$namespace = 'bsi' or $namespace = 'ieee' or $namespace = 'iso' or $namespace = 'jcgm'">				
+			<xsl:if test="$namespace = 'bsi' or $namespace = 'iec' or $namespace = 'ieee' or $namespace = 'iso' or $namespace = 'jcgm'">				
 				<xsl:variable name="title_continued_">
 					<xsl:call-template name="getTitle">
 						<xsl:with-param name="name" select="'title-continued'"/>
@@ -6597,7 +6612,7 @@
 				</xsl:variable>
 				
 				<xsl:variable name="title_continued">
-					<xsl:if test="$namespace = 'ieee' or $namespace = 'iso' or $namespace = 'jcgm'"><xsl:value-of select="$title_continued_"/></xsl:if>
+					<xsl:if test="$namespace = 'iec' or $namespace = 'ieee' or $namespace = 'iso' or $namespace = 'jcgm'"><xsl:value-of select="$title_continued_"/></xsl:if>
 					<xsl:if test="$namespace = 'bsi'">
 						<xsl:choose>
 							<xsl:when test="$document_type = 'PAS'">— <xsl:value-of select="translate($title_continued_, '()', '')"/></xsl:when>
@@ -6612,7 +6627,7 @@
 				<fo:table-row height="0" keep-with-next.within-page="always">
 					<fo:table-cell>
 					
-						<xsl:if test="$namespace = 'bsi' or $namespace = 'iso'">
+						<xsl:if test="$namespace = 'bsi' or $namespace = 'iec' or $namespace = 'iso'">
 							<fo:marker marker-class-name="table_number" />
 							<fo:marker marker-class-name="table_continued" />
 						</xsl:if>
@@ -6629,7 +6644,7 @@
 						<xsl:if test="$namespace = 'bsi'">
 							<fo:marker marker-class-name="table_number"><xsl:value-of select="$table_number"/></fo:marker>
 						</xsl:if>
-						<xsl:if test="$namespace = 'iso'">
+						<xsl:if test="$namespace = 'iec' or $namespace = 'iso'">
 							<fo:marker marker-class-name="table_number"><xsl:value-of select="normalize-space(translate($table_number, '&#xa0;', ' '))"/></fo:marker>
 						</xsl:if>
 						<fo:marker marker-class-name="table_continued">
