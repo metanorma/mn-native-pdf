@@ -7128,6 +7128,7 @@
 					<xsl:if test="ancestor::bsi:clause[@type = 'corrigenda'] and ancestor::bsi:thead">
 						<xsl:attribute name="display-align">center</xsl:attribute>
 						<xsl:attribute name="font-weight">bold</xsl:attribute>
+						<xsl:attribute name="padding-left">3mm</xsl:attribute>
 					</xsl:if>
 				</xsl:if>
 			</xsl:if>
