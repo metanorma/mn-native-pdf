@@ -5353,6 +5353,9 @@
 						<xsl:attribute name="margin-top">12pt</xsl:attribute>
 						<xsl:attribute name="space-before">12pt</xsl:attribute>
 						<xsl:attribute name="space-after">12pt</xsl:attribute>
+						<xsl:if test="not(*[local-name() = 'name']) and ancestor::*[local-name()='clause'][@type = 'corrigenda']">
+							<xsl:attribute name="margin-top">2pt</xsl:attribute>
+						</xsl:if>
 					</xsl:if>
 					<xsl:if test="$document_type != 'PAS' and not(following-sibling::*[2][@depth = '1']) and not (ancestor::*[local-name()='preface'] and ancestor::*[local-name()='clause'][@type = 'corrigenda'])">
 						<xsl:attribute name="margin-bottom">24pt</xsl:attribute>
@@ -6875,6 +6878,7 @@
 					<xsl:variable name="number"><xsl:number/></xsl:variable>
 					<xsl:attribute name="background-color">
 						<xsl:choose>
+							<xsl:when test="ancestor::*[local-name()='clause'][@type = 'corrigenda']">transparent</xsl:when>
 							<xsl:when test="preceding::*[local-name() = 'foreword' or local-name() = 'introduction']">
 								<!-- for preface sections -->
 								<xsl:choose>
@@ -6891,6 +6895,9 @@
 							</xsl:otherwise>
 						</xsl:choose>
 					</xsl:attribute>
+					<xsl:if test="ancestor::*[local-name()='clause'][@type = 'corrigenda'] and not(following-sibling::tr)">
+						<xsl:attribute name="border-bottom">2pt solid <xsl:value-of select="$color_secondary_shade_1_PAS"/></xsl:attribute>
+					</xsl:if>
 				</xsl:if>
 			</xsl:if>
 		
@@ -7000,14 +7007,12 @@
 					<xsl:if test="ancestor::*[local-name()='clause'][@type = 'corrigenda']">
 						<xsl:if test="$document_type != 'PAS'">
 							<xsl:attribute name="border-top">none</xsl:attribute>
+							<xsl:attribute name="border-bottom">solid black 1pt</xsl:attribute>
 						</xsl:if>
-						<xsl:attribute name="border-bottom">solid black 1pt</xsl:attribute>
 					</xsl:if>
 				</xsl:if>
 				<xsl:if test="$document_type = 'PAS'">
 					<xsl:attribute name="border">0.75pt solid <xsl:value-of select="$color_secondary_shade_1_PAS"/></xsl:attribute>
-					<!-- <xsl:attribute name="background-color"><xsl:value-of select="$color_secondary_shade_1_PAS"/></xsl:attribute> -->
-					
 					
 					<!-- row number -->
 					<xsl:variable name="number">
@@ -7030,11 +7035,14 @@
 						</xsl:when>
 						<xsl:otherwise>
 							<xsl:attribute name="color">white</xsl:attribute>
-							<xsl:if test="following-sibling::*[1][local-name() = 'th']">
-								<xsl:attribute name="border-right">0.75pt solid white</xsl:attribute>
-							</xsl:if>
-							<xsl:if test="preceding-sibling::*[1][local-name() = 'th']">
-								<xsl:attribute name="border-left">0.75pt solid white</xsl:attribute>
+							
+							<xsl:if test="not(ancestor::bsi:clause[@type = 'corrigenda'] and ancestor::bsi:thead)">
+								<xsl:if test="following-sibling::*[1][local-name() = 'th']">
+									<xsl:attribute name="border-right">0.75pt solid white</xsl:attribute>
+								</xsl:if>
+								<xsl:if test="preceding-sibling::*[1][local-name() = 'th']">
+									<xsl:attribute name="border-left">0.75pt solid white</xsl:attribute>
+								</xsl:if>
 							</xsl:if>
 						</xsl:otherwise>
 					</xsl:choose>
@@ -7114,7 +7122,17 @@
 			</xsl:if>
 			
 			<xsl:call-template name="setTableCellAttributes"/>
-
+			
+			<xsl:if test="$namespace = 'bsi'">
+				<xsl:if test="$document_type = 'PAS'">
+					<xsl:if test="ancestor::bsi:clause[@type = 'corrigenda'] and ancestor::bsi:thead">
+						<xsl:attribute name="display-align">center</xsl:attribute>
+						<xsl:attribute name="font-weight">bold</xsl:attribute>
+						<xsl:attribute name="padding-left">3mm</xsl:attribute>
+					</xsl:if>
+				</xsl:if>
+			</xsl:if>
+			
 			<fo:block>
 				<xsl:apply-templates />
 			</fo:block>
@@ -7229,6 +7247,15 @@
 							<xsl:attribute name="border-bottom">none</xsl:attribute>
 						</xsl:if>
 						<xsl:attribute name="padding-top">1mm</xsl:attribute>
+					</xsl:if>
+					
+					<xsl:if test="$document_type = 'PAS'">
+						<!-- if left column -->
+						<xsl:if test="not(preceding-sibling::*)">
+							<xsl:attribute name="background-color"><xsl:value-of select="$color_secondary_shade_3_PAS"/></xsl:attribute>
+						</xsl:if>
+						<xsl:attribute name="border-right">none</xsl:attribute>
+						<xsl:attribute name="border-left">none</xsl:attribute>
 					</xsl:if>
 				</xsl:if>
 				
