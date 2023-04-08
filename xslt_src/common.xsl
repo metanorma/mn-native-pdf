@@ -12617,8 +12617,10 @@
 								<xsl:attribute name="margin-bottom">0pt</xsl:attribute>
 							</xsl:if>
 							
-							<xsl:apply-templates select="node()[not(local-name() = 'name')]" />
+							<xsl:apply-templates select="node()[not(local-name() = 'name' or local-name() = 'dl')]" />
 						</fo:block>
+						
+						<xsl:apply-templates select="*[local-name() = 'dl']"/> <!-- Key table -->
 						
 						<xsl:choose>
 							<xsl:when test="$namespace = 'rsd'"></xsl:when>
