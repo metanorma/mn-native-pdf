@@ -1034,11 +1034,36 @@
 						jis:termnote/jis:name/text() |
 						jis:table/jis:name/text() |
 						jis:figure/jis:name/text() |
-						jis:example/jis:name/text() | 
 						jis:termexample/jis:name/text() |
 						jis:xref//text() |
 						jis:origin/text()" mode="update_xml_step1">
 		<xsl:variable name="text_en_" select="java:replaceAll(java:java.lang.String.new(.), $regex_en, concat($tag_font_en_bold_open,'$1',$tag_font_en_bold_close))"/>
+		<xsl:variable name="text_en"><text><xsl:call-template name="replace_text_tags">
+			<xsl:with-param name="tag_open" select="$tag_font_en_bold_open"/>
+			<xsl:with-param name="tag_close" select="$tag_font_en_bold_close"/>
+			<xsl:with-param name="text" select="$text_en_"/>
+		</xsl:call-template></text></xsl:variable>
+		<xsl:copy-of select="xalan:nodeset($text_en)/text/node()"/>
+	</xsl:template>
+	
+	<!-- move example title to the first paragraph -->
+	<xsl:template match="jis:example[contains(jis:name/text(), ' — ')]" mode="update_xml_step1">
+		<xsl:copy>
+			<xsl:copy-of select="@*"/>
+			<xsl:element name="p" namespace="https://www.metanorma.org/ns/jis">
+				<xsl:value-of select="substring-after(jis:name/text(), ' — ')"/>
+			</xsl:element>
+			<xsl:apply-templates mode="update_xml_step1"/>
+		</xsl:copy>
+	</xsl:template>
+	<xsl:template match="jis:example/jis:name/text()" mode="update_xml_step1">
+		<xsl:variable name="example_name">
+			<xsl:choose>
+				<xsl:when test="contains(., ' — ')"><xsl:value-of select="substring-before(., ' — ')"/></xsl:when>
+				<xsl:otherwise><xsl:value-of select="."/></xsl:otherwise>
+			</xsl:choose>
+		</xsl:variable>
+		<xsl:variable name="text_en_" select="java:replaceAll(java:java.lang.String.new($example_name), $regex_en, concat($tag_font_en_bold_open,'$1',$tag_font_en_bold_close))"/>
 		<xsl:variable name="text_en"><text><xsl:call-template name="replace_text_tags">
 			<xsl:with-param name="tag_open" select="$tag_font_en_bold_open"/>
 			<xsl:with-param name="tag_close" select="$tag_font_en_bold_close"/>
