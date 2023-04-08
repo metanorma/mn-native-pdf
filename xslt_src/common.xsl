@@ -2256,6 +2256,9 @@
 		<xsl:if test="$namespace = 'itu'">
 			<xsl:attribute name="margin-top">6pt</xsl:attribute>
 		</xsl:if>
+		<xsl:if test="$namespace = 'jis'">
+			<xsl:attribute name="line-height">1.5</xsl:attribute>
+		</xsl:if>
 		<xsl:if test="$namespace = 'nist-cswp' or $namespace = 'nist-sp'">
 			<xsl:attribute name="margin-bottom">12pt</xsl:attribute>
 		</xsl:if>
@@ -2973,6 +2976,13 @@
 			<xsl:attribute name="text-align">center</xsl:attribute>
 			<xsl:attribute name="margin-top">6pt</xsl:attribute>
 			<xsl:attribute name="space-after">6pt</xsl:attribute>
+			<xsl:attribute name="keep-with-previous">always</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'jis'">
+			<xsl:attribute name="font-family">IPAexGothic</xsl:attribute>
+			<xsl:attribute name="text-align">center</xsl:attribute>
+			<xsl:attribute name="margin-top">6pt</xsl:attribute>
+			<xsl:attribute name="margin-bottom">12pt</xsl:attribute>
 			<xsl:attribute name="keep-with-previous">always</xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'nist-cswp'">
@@ -12342,6 +12352,13 @@
 					<xsl:if test="$current_template = 'whitepaper' or $current_template = 'icap-whitepaper' or $current_template = 'industry-connection-report'">
 						<xsl:attribute name="font-size">inherit</xsl:attribute>
 						<xsl:attribute name="font-family">Arial Black</xsl:attribute>
+					</xsl:if>
+				</xsl:if>
+				
+				<xsl:if test="$namespace = 'jis'">
+					<xsl:if test="ancestor::jis:figure">
+						<xsl:attribute name="margin-top">0</xsl:attribute>
+						<xsl:attribute name="margin-bottom">6pt</xsl:attribute>
 					</xsl:if>
 				</xsl:if>
 				
