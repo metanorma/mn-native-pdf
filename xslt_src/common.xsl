@@ -14447,8 +14447,9 @@
 				<label level="2">&#x2212;</label><!-- minus sign -->
 				<label level="3" font-size="75%">o</label> <!-- white circle -->
 			</xsl:when>
-			<xsl:when test="$namespace = 'jcgm'">
-				<label>－</label> <!-- full-width hyphen minus -->
+			<xsl:when test="$namespace = 'jis'">
+				<label level="1">－</label> <!-- full-width hyphen minus -->
+				<label level="2" font-size="125%" line-height="1.2">・</label> <!-- Katakana Middle Dot -->
 			</xsl:when>
 			<xsl:when test="$namespace = 'm3d'">
 				<label font-size="18pt" margin-top="-0.5mm">•</label> <!-- margin-top to vertical align big dot -->
@@ -14489,7 +14490,13 @@
 	<xsl:variable name="ul_labels" select="xalan:nodeset($ul_labels_)"/>
 
 	<xsl:template name="setULLabel">
-		<xsl:variable name="list_level_" select="count(ancestor::*[local-name() = 'ul']) + count(ancestor::*[local-name() = 'ol'])" />
+		<xsl:variable name="list_level__">
+			<xsl:choose>
+				<xsl:when test="$namespace = 'jis'"><xsl:value-of select="count(ancestor::*[local-name() = 'ul'])"/></xsl:when>
+				<xsl:otherwise><xsl:value-of select="count(ancestor::*[local-name() = 'ul']) + count(ancestor::*[local-name() = 'ol'])" />/></xsl:otherwise>
+			</xsl:choose>
+		</xsl:variable>
+		<xsl:variable name="list_level_" select="number($list_level__)"/>
 		<xsl:variable name="list_level">
 			<xsl:choose>
 				<xsl:when test="$list_level_ &lt;= 3"><xsl:value-of select="$list_level_"/></xsl:when>
@@ -14652,9 +14659,25 @@
 				</fo:block-container>
 			</xsl:when>
 			<xsl:otherwise>
-				<fo:block>
-					<xsl:apply-templates select="." mode="list"/>
-				</fo:block>
+				<xsl:choose>
+					<xsl:when test="$namespace = 'jis'">
+						<fo:block-container>
+							<xsl:if test="ancestor::jis:ol or ancestor::jis:ul">
+								<xsl:attribute name="margin-left">3.5mm</xsl:attribute>
+							</xsl:if>
+							<fo:block-container margin-left="0mm">
+								<fo:block>
+									<xsl:apply-templates select="." mode="list"/>
+								</fo:block>
+							</fo:block-container>
+						</fo:block-container>
+					</xsl:when>
+					<xsl:otherwise>
+						<fo:block>
+							<xsl:apply-templates select="." mode="list"/>
+						</fo:block>
+					</xsl:otherwise>
+				</xsl:choose>
 			</xsl:otherwise>
 		</xsl:choose>
 	</xsl:template>
