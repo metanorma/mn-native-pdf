@@ -8041,6 +8041,12 @@
 				</xsl:if>
 			</xsl:if>
 			
+			<xsl:if test="$namespace = 'ogc'">
+				<xsl:if test="ancestor::ogc:sourcecode">
+					<xsl:attribute name="font-size">10pt</xsl:attribute>
+				</xsl:if>
+			</xsl:if>
+			
 			<xsl:if test="parent::*[local-name() = 'note']">
 				<xsl:attribute name="margin-left">
 					<xsl:choose>
@@ -8642,6 +8648,11 @@
 		<xsl:param name="split_keep-within-line"/>
 		
 		<fo:table-row xsl:use-attribute-sets="dt-row-style">
+			<xsl:if test="$namespace = 'ogc'">
+				<xsl:if test="not(following-sibling::ogc:dt) or ancestor::ogc:sourcecode"> <!-- last item -->
+					<xsl:attribute name="min-height">3mm</xsl:attribute>
+				</xsl:if>
+			</xsl:if>
 			<xsl:call-template name="insert_dt_cell">
 				<xsl:with-param name="key_iso" select="$key_iso"/>
 				<xsl:with-param name="split_keep-within-line" select="$split_keep-within-line"/>
@@ -8670,6 +8681,13 @@
 					<xsl:attribute name="padding-right">3mm</xsl:attribute>
 				</xsl:if>
 			</xsl:if>
+			
+			<xsl:if test="$namespace = 'ogc'">
+				<xsl:if test="not(ancestor::ogc:sourcecode)">
+					<xsl:attribute name="background-color"><xsl:value-of select="$color_dl_dt"/></xsl:attribute>
+				</xsl:if>
+			</xsl:if>
+			
 			<fo:block xsl:use-attribute-sets="dt-block-style">
 				<xsl:copy-of select="@id"/>
 				
@@ -8680,6 +8698,15 @@
 				<xsl:if test="$namespace = 'itu'">
 					<xsl:if test="ancestor::*[1][local-name() = 'dl']/preceding-sibling::*[1][local-name() = 'formula']">
 						<xsl:attribute name="text-align">right</xsl:attribute>							
+					</xsl:if>
+				</xsl:if>
+				
+				<xsl:if test="$namespace = 'ogc'">
+					<xsl:if test="ancestor::ogc:sourcecode">
+						<xsl:attribute name="margin-bottom">2pt</xsl:attribute>
+					</xsl:if>
+					<xsl:if test="not(following-sibling::ogc:dt)"> <!-- last dt -->
+						<xsl:attribute name="margin-bottom">0</xsl:attribute>
 					</xsl:if>
 				</xsl:if>
 				
@@ -8700,6 +8727,12 @@
 			<xsl:if test="$isGenerateTableIF = 'true'">
 				<!-- border is mandatory, to calculate real width -->
 				<xsl:attribute name="border">0.1pt solid black</xsl:attribute>
+			</xsl:if>
+		
+			<xsl:if test="$namespace = 'ogc'">
+				<xsl:if test="not(ancestor::ogc:sourcecode)">
+					<xsl:attribute name="background-color"><xsl:value-of select="$color_dl_dd"/></xsl:attribute>
+				</xsl:if>
 			</xsl:if>
 		
 			<fo:block>
@@ -12664,11 +12697,22 @@
 	<!-- add sourcecode highlighting -->
 	<xsl:template match="*[local-name()='sourcecode']//*[local-name()='span'][@class]" priority="2">
 		<xsl:variable name="class" select="@class"/>
+		
+		<!-- Example: <1> -->
+		<xsl:variable name="is_callout">
+			<xsl:if test="parent::*[local-name() = 'dt']">
+				<xsl:variable name="dt_id" select="../@id"/>
+				<xsl:if test="ancestor::*[local-name() = 'sourcecode']//*[local-name() = 'callout'][@target = $dt_id]">true</xsl:if>
+			</xsl:if>
+		</xsl:variable>
+		
 		<xsl:choose>
 			<xsl:when test="$sourcecode_css//class[@name = $class]">
 				<fo:inline>
 					<xsl:apply-templates select="$sourcecode_css//class[@name = $class]" mode="css"/>
+					<xsl:if test="$is_callout = 'true'">&lt;</xsl:if>
 					<xsl:apply-templates />
+					<xsl:if test="$is_callout = 'true'">&gt;</xsl:if>
 				</fo:inline>
 			</xsl:when>
 			<xsl:otherwise>
