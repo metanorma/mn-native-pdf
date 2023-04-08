@@ -14449,7 +14449,7 @@
 			</xsl:when>
 			<xsl:when test="$namespace = 'jis'">
 				<label level="1">－</label> <!-- full-width hyphen minus -->
-				<label level="2" font-size="125%" line-height="1.2">・</label> <!-- Katakana Middle Dot -->
+				<label level="2" font-size="130%" line-height="1.2">・</label> <!-- Katakana Middle Dot -->
 			</xsl:when>
 			<xsl:when test="$namespace = 'm3d'">
 				<label font-size="18pt" margin-top="-0.5mm">•</label> <!-- margin-top to vertical align big dot -->
