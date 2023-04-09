@@ -2373,6 +2373,7 @@
 	</xsl:attribute-set>
 	
 	<xsl:attribute-set name="xref-style">
+		<xsl:attribute name="keep-together.within-line">always</xsl:attribute>
 		<xsl:if test="$namespace = 'bsi'">
 			<xsl:attribute name="color">rgb(58,88,168)</xsl:attribute>
 			<xsl:attribute name="text-decoration">underline</xsl:attribute>
