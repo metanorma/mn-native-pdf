@@ -2385,6 +2385,9 @@
 			<xsl:attribute name="color">blue</xsl:attribute>
 			<xsl:attribute name="text-decoration">underline</xsl:attribute>
 		</xsl:if>
+		<xsl:if test="$namespace = 'jis'">
+			<xsl:attribute name="font-family">IPAexGothic</xsl:attribute>
+		</xsl:if>
 		<xsl:if test="$namespace = 'ogc'">
 		</xsl:if>
 		<xsl:if test="$namespace = 'rsd'">
