@@ -200,8 +200,12 @@
 						<xsl:apply-templates select="xalan:nodeset($docidentifier__)/node()"/>
 					</xsl:variable>
 					
-					<xsl:variable name="copyrightText">著作権法により無断での複製，転載等は禁止されております。</xsl:variable>
-				
+					<xsl:variable name="copyrightText">
+						<xsl:call-template name="getLocalizedString">
+							<xsl:with-param name="key">permission_footer</xsl:with-param>
+						</xsl:call-template>
+					</xsl:variable>
+					
 					<xsl:variable name="doctype" select="/*/jis:bibdata/jis:ext/jis:doctype"/>
 					
 					<xsl:variable name="title_ja" select="/*/jis:bibdata/jis:title[@language = 'ja' and @type = 'main']"/>
@@ -242,18 +246,16 @@
 							
 							<fo:block text-align="center" font-size="14pt" font-family="IPAexGothic" margin-top="8.5mm">
 								<!-- Contents -->
-								<!-- <xsl:call-template name="getLocalizedString">
+								<xsl:call-template name="getLocalizedString">
 									<xsl:with-param name="key">table_of_contents</xsl:with-param>
-								</xsl:call-template> -->
-								<xsl:text>目 次</xsl:text>
+								</xsl:call-template>
 							</fo:block>
 							
 							<fo:block text-align="right" font-size="8pt" font-family="IPAexMincho" margin-top="10mm">
 								<!-- Page -->
-								<!-- <xsl:call-template name="getLocalizedString">
+								<xsl:call-template name="getLocalizedString">
 									<xsl:with-param name="key">locality.page</xsl:with-param>
-								</xsl:call-template> -->
-								<xsl:text>ページ</xsl:text>
+								</xsl:call-template>
 							</fo:block>
 						
 							<fo:block role="TOC" font-family="IPAexGothic">
