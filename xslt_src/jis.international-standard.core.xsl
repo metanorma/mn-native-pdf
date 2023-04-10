@@ -1111,7 +1111,7 @@
 		<xsl:copy-of select="xalan:nodeset($text_en)/text/node()"/>
 	</xsl:template>
 	
-	<xsl:template match="*[local-name() = 'font_en_bold']">
+	<xsl:template match="*[local-name() = 'font_en_bold'][normalize-space() != '']">
 		<fo:inline font-family="Times New Roman" font-weight="bold">
 			<xsl:if test="ancestor::*[local-name() = 'preferred']">
 				<xsl:attribute name="font-weight">normal</xsl:attribute>
@@ -1120,7 +1120,7 @@
 		</fo:inline>
 	</xsl:template>
 	
-	<xsl:template match="*[local-name() = 'font_en']">
+	<xsl:template match="*[local-name() = 'font_en'][normalize-space() != '']">
 		<fo:inline font-family="Times New Roman">
 			<xsl:if test="ancestor::*[local-name() = 'preferred']">
 				<xsl:attribute name="font-weight">normal</xsl:attribute>
