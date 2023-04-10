@@ -184,12 +184,21 @@
 				
 					<xsl:variable name="year_published" select="substring(/*/jis:bibdata/jis:date[@type = 'published']/jis:on, 1, 4)"/>
 					
-					<xsl:variable name="docidentifier">
-						<fo:inline><xsl:value-of select="$docnumber"/></fo:inline>
-						<fo:inline font-family="IPAexGothic">：</fo:inline>
-						<fo:inline><xsl:value-of select="$year_published"/></fo:inline>
-					</xsl:variable>
+					<xsl:variable name="element_name_colon_gothic">colon_gothic</xsl:variable>
+					<xsl:variable name="tag_colon_gothic_open">###<xsl:value-of select="$element_name_colon_gothic"/>###</xsl:variable>
+					<xsl:variable name="tag_colon_gothic_close">###/<xsl:value-of select="$element_name_colon_gothic"/>###</xsl:variable>
 					
+					<xsl:variable name="docidentifier_" select="java:replaceAll(java:java.lang.String.new(/*/jis:bibdata/jis:docidentifier), '(:)', concat($tag_colon_gothic_open,'$1',$tag_colon_gothic_close))"/>
+					
+					<xsl:variable name="docidentifier__"><text><xsl:call-template name="replace_text_tags">
+						<xsl:with-param name="tag_open" select="$tag_colon_gothic_open"/>
+						<xsl:with-param name="tag_close" select="$tag_colon_gothic_close"/>
+						<xsl:with-param name="text" select="$docidentifier_"/>
+					</xsl:call-template></text></xsl:variable>
+					
+					<xsl:variable name="docidentifier">
+						<xsl:apply-templates select="xalan:nodeset($docidentifier__)/node()"/>
+					</xsl:variable>
 					
 					<xsl:variable name="copyrightText">著作権法により無断での複製，転載等は禁止されております。</xsl:variable>
 				
@@ -508,6 +517,11 @@
 			</xsl:if>
 			
 		</fo:root>
+	</xsl:template>
+	
+	<xsl:template match="*[local-name() = 'colon_gothic']">
+		<!-- replace : to ： (Fullwidth colon) and render it in the font IPAexGothic -->
+		<fo:inline font-family="IPAexGothic">：</fo:inline>
 	</xsl:template>
 	
 	<xsl:template name="insertTocItem">
