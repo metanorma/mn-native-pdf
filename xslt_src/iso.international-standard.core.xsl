@@ -2175,7 +2175,7 @@
 	<xsl:template match="iso:indexsect" mode="index">
 	
 		<fo:page-sequence master-reference="index" force-page-count="no-force">
-			<xsl:variable name="header-title">
+			<!-- <xsl:variable name="header-title">
 				<xsl:choose>
 					<xsl:when test="./iso:title[1]/*[local-name() = 'tab']">
 						<xsl:apply-templates select="./iso:title[1]/*[local-name() = 'tab'][1]/following-sibling::node()" mode="header"/>
@@ -2184,9 +2184,10 @@
 						<xsl:apply-templates select="./iso:title[1]" mode="header"/>
 					</xsl:otherwise>
 				</xsl:choose>
-			</xsl:variable>
+			</xsl:variable> -->
 			<xsl:call-template name="insertHeaderFooter">
-				<xsl:with-param name="header-title" select="$header-title"/>
+				<!-- <xsl:with-param name="header-title" select="$header-title"/> -->
+				<xsl:with-param name="font-weight">normal</xsl:with-param>
 			</xsl:call-template>
 			
 			<fo:flow flow-name="xsl-region-body">
