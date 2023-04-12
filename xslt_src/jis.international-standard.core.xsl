@@ -105,6 +105,22 @@
 					<fo:region-end region-name="right-region" extent="{$marginLeftRight2}mm"/>
 				</fo:simple-page-master>
 				
+				<fo:simple-page-master master-name="first_page_toc" page-width="{$pageWidth}mm" page-height="{$pageHeight}mm">
+					<fo:region-body margin-top="{$marginTop}mm" margin-bottom="{$marginBottom}mm" margin-left="{$marginLeftRight1}mm" margin-right="{$marginLeftRight2}mm"/>
+					<fo:region-before region-name="header-odd-first" extent="{$marginTop}mm"/>
+					<fo:region-after region-name="footer" extent="{$marginBottom}mm"/>
+					<fo:region-start region-name="left-region" extent="{$marginLeftRight1}mm"/>
+					<fo:region-end region-name="right-region" extent="{$marginLeftRight2}mm"/>
+				</fo:simple-page-master>
+				
+				<fo:page-sequence-master master-name="document_toc">
+					<fo:repeatable-page-master-alternatives>
+						<fo:conditional-page-master-reference page-position="first" master-reference="first_page_toc"/>
+						<fo:conditional-page-master-reference odd-or-even="even" master-reference="even"/>
+						<fo:conditional-page-master-reference odd-or-even="odd" master-reference="odd"/>
+					</fo:repeatable-page-master-alternatives>
+				</fo:page-sequence-master>
+				
 				<fo:page-sequence-master master-name="document_preface">
 					<fo:repeatable-page-master-alternatives>
 						<fo:conditional-page-master-reference odd-or-even="even" master-reference="even"/>
@@ -130,14 +146,14 @@
 				<!-- landscape -->
 				<fo:simple-page-master master-name="odd-landscape" page-width="{$pageHeight}mm" page-height="{$pageWidth}mm">
 					<fo:region-body margin-top="{$marginLeftRight1}mm" margin-bottom="{$marginLeftRight2}mm" margin-left="{$marginBottom}mm" margin-right="{$marginTop}mm"/>
-					<fo:region-before region-name="header" extent="{$marginLeftRight1}mm" precedence="true"/>
+					<fo:region-before region-name="header-odd" extent="{$marginLeftRight1}mm" precedence="true"/>
 					<fo:region-after region-name="footer" extent="{$marginLeftRight2}mm" precedence="true"/>
 					<fo:region-start region-name="left-region-landscape" extent="{$marginBottom}mm"/>
 					<fo:region-end region-name="right-region-landscape" extent="{$marginTop}mm"/>
 				</fo:simple-page-master>
 				<fo:simple-page-master master-name="even-landscape" page-width="{$pageHeight}mm" page-height="{$pageWidth}mm">
 					<fo:region-body margin-top="{$marginLeftRight2}mm" margin-bottom="{$marginLeftRight1}mm" margin-left="{$marginBottom}mm" margin-right="{$marginTop}mm"/>
-					<fo:region-before region-name="header" extent="{$marginLeftRight2}mm" precedence="true"/>
+					<fo:region-before region-name="header-even" extent="{$marginLeftRight2}mm" precedence="true"/>
 					<fo:region-after region-name="footer" extent="{$marginLeftRight1}mm" precedence="true"/>
 					<fo:region-start region-name="left-region-landscape" extent="{$marginBottom}mm"/>
 					<fo:region-end region-name="right-region-landspace" extent="{$marginTop}mm"/>
@@ -226,13 +242,20 @@
 					<!-- Contents and preface pages -->
 					<!-- ========================== -->
 					
-					<fo:page-sequence master-reference="document_preface" initial-page-number="1" force-page-count="no-force">
-						
+					<fo:page-sequence master-reference="document_toc" initial-page-number="1" force-page-count="no-force">
 						
 						<xsl:call-template name="insertHeaderFooter">
 							<xsl:with-param name="docidentifier" select="$docidentifier"/>
 							<xsl:with-param name="copyrightText" select="$copyrightText"/>
 							<xsl:with-param name="section">preface</xsl:with-param>
+							<xsl:with-param name="section_title">
+								<fo:inline font-family="IPAexGothic">
+									<xsl:text>&#xa0;</xsl:text>
+									<xsl:call-template name="getLocalizedString">
+										<xsl:with-param name="key">table_of_contents</xsl:with-param>
+									</xsl:call-template>
+								</fo:inline>
+							</xsl:with-param>
 						</xsl:call-template>
 						
 						<fo:flow flow-name="xsl-region-body">
@@ -1164,16 +1187,31 @@
 		<xsl:param name="hidePageNumber">false</xsl:param>
 		<xsl:param name="section"/>
 		<xsl:param name="copyrightText"/>
+		<xsl:param name="section_title"/>
+		<fo:static-content flow-name="header-odd-first" role="artifact">
+			<fo:block-container font-family="Arial" font-size="9pt" height="26mm" display-align="after" text-align="right">
+				<xsl:if test="$section = 'main'"><fo:block><fo:page-number /></fo:block></xsl:if>
+				<fo:block>
+					<xsl:copy-of select="$docidentifier"/>
+				</fo:block>
+			</fo:block-container>
+		</fo:static-content>
 		<fo:static-content flow-name="header-odd" role="artifact">
 			<fo:block-container font-family="Arial" font-size="9pt" height="26mm" display-align="after" text-align="right">
 				<xsl:if test="$section = 'main'"><fo:block><fo:page-number /></fo:block></xsl:if>
-				<fo:block><xsl:copy-of select="$docidentifier"/></fo:block>
+				<fo:block>
+					<xsl:copy-of select="$docidentifier"/>
+					<xsl:copy-of select="$section_title"/>
+				</fo:block>
 			</fo:block-container>
 		</fo:static-content>
 		<fo:static-content flow-name="header-even" role="artifact">
 			<fo:block-container font-family="Arial" font-size="9pt" height="26mm" display-align="after">
 				<xsl:if test="$section = 'main'"><fo:block><fo:page-number /></fo:block></xsl:if>
-				<fo:block><xsl:copy-of select="$docidentifier"/></fo:block>
+				<fo:block>
+					<xsl:copy-of select="$docidentifier"/>
+					<xsl:copy-of select="$section_title"/>
+				</fo:block>
 			</fo:block-container>
 		</fo:static-content>
 		<xsl:call-template name="insertFooter">
