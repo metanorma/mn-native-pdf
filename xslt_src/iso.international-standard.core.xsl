@@ -2191,7 +2191,7 @@
 			</xsl:call-template>
 			
 			<fo:flow flow-name="xsl-region-body">
-				<fo:block id="{@id}" span="all">
+				<fo:block id="{@id}" text-align="center" span="all">
 					<xsl:apply-templates select="iso:title"/>
 				</fo:block>
 				<fo:block role="Index">
