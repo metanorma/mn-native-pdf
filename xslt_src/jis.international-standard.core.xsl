@@ -561,7 +561,15 @@
 					<!-- title -->
 					<fo:block role="H1" font-family="IPAexGothic" font-size="22pt" margin-top="27mm"><xsl:apply-templates select="/*/jis:bibdata/jis:title[@language = 'ja' and @type = 'main']/node()"/></fo:block>
 					<!-- docidentifier, 3 part: number, colon and year-->
-					<fo:block font-family="IPAexGothic" font-size="20pt" margin-top="15mm"><fo:inline font-family="Arial">JIS Z 8301</fo:inline><fo:inline baseline-shift="20%"><fo:inline font-size="10pt">：</fo:inline><fo:inline font-family="Times New Roman" font-size="10pt">2019</fo:inline></fo:inline></fo:block>
+					<xsl:variable name="docidentifier" select="/*/jis:bibdata/jis:docidentifier[@type = 'JIS']"/>
+					<xsl:variable name="docidentifier_number" select="java:replaceAll(java:java.lang.String.new($docidentifier), '^(.*)(:)(.*)$', '$1')"/>
+					<xsl:variable name="docidentifier_year" select="java:replaceAll(java:java.lang.String.new($docidentifier), '^(.*)(:)(.*)$', '$3')"/>
+					
+					<fo:block font-family="IPAexGothic" font-size="20pt" margin-top="15mm">
+						<fo:inline font-family="Arial">JIS <xsl:value-of select="$docidentifier_number"/></fo:inline>
+						<fo:inline baseline-shift="20%"><fo:inline font-size="10pt">：</fo:inline>
+						<fo:inline font-family="Times New Roman" font-size="10pt"><xsl:value-of select="$docidentifier_year"/></fo:inline></fo:inline>
+					</fo:block>
 					<fo:block font-family="Arial" font-size="14pt" margin-top="12mm"><fo:inline font-family="IPAexMincho">（</fo:inline>JSA<fo:inline font-family="IPAexMincho">）</fo:inline></fo:block>
 				</fo:block-container>
 				
