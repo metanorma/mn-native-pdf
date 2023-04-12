@@ -2256,6 +2256,9 @@
 		<xsl:if test="$namespace = 'itu'">
 			<xsl:attribute name="margin-top">6pt</xsl:attribute>
 		</xsl:if>
+		<xsl:if test="$namespace = 'jis'">
+			<xsl:attribute name="line-height">1.5</xsl:attribute>
+		</xsl:if>
 		<xsl:if test="$namespace = 'nist-cswp' or $namespace = 'nist-sp'">
 			<xsl:attribute name="margin-bottom">12pt</xsl:attribute>
 		</xsl:if>
@@ -2370,6 +2373,7 @@
 	</xsl:attribute-set>
 	
 	<xsl:attribute-set name="xref-style">
+		<xsl:attribute name="keep-together.within-line">always</xsl:attribute>
 		<xsl:if test="$namespace = 'bsi'">
 			<xsl:attribute name="color">rgb(58,88,168)</xsl:attribute>
 			<xsl:attribute name="text-decoration">underline</xsl:attribute>
@@ -2380,6 +2384,9 @@
 		<xsl:if test="$namespace = 'ieee' or $namespace = 'iho' or $namespace = 'iso' or $namespace = 'itu' or $namespace = 'nist-cswp'  or $namespace = 'nist-sp' or $namespace = 'ogc-white-paper' or $namespace = 'mpfd' or $namespace = 'jcgm'">
 			<xsl:attribute name="color">blue</xsl:attribute>
 			<xsl:attribute name="text-decoration">underline</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'jis'">
+			<xsl:attribute name="font-family">IPAexGothic</xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'ogc'">
 		</xsl:if>
@@ -2973,6 +2980,13 @@
 			<xsl:attribute name="text-align">center</xsl:attribute>
 			<xsl:attribute name="margin-top">6pt</xsl:attribute>
 			<xsl:attribute name="space-after">6pt</xsl:attribute>
+			<xsl:attribute name="keep-with-previous">always</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'jis'">
+			<xsl:attribute name="font-family">IPAexGothic</xsl:attribute>
+			<xsl:attribute name="text-align">center</xsl:attribute>
+			<xsl:attribute name="margin-top">6pt</xsl:attribute>
+			<xsl:attribute name="margin-bottom">12pt</xsl:attribute>
 			<xsl:attribute name="keep-with-previous">always</xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'nist-cswp'">
@@ -12345,6 +12359,13 @@
 					</xsl:if>
 				</xsl:if>
 				
+				<xsl:if test="$namespace = 'jis'">
+					<xsl:if test="ancestor::jis:figure">
+						<xsl:attribute name="margin-top">0</xsl:attribute>
+						<xsl:attribute name="margin-bottom">6pt</xsl:attribute>
+					</xsl:if>
+				</xsl:if>
+				
 				<xsl:apply-templates />
 			</fo:block>
 		</xsl:if>
@@ -14430,8 +14451,9 @@
 				<label level="2">&#x2212;</label><!-- minus sign -->
 				<label level="3" font-size="75%">o</label> <!-- white circle -->
 			</xsl:when>
-			<xsl:when test="$namespace = 'jcgm'">
-				<label>－</label> <!-- full-width hyphen minus -->
+			<xsl:when test="$namespace = 'jis'">
+				<label level="1">－</label> <!-- full-width hyphen minus -->
+				<label level="2" font-size="130%" line-height="1.2">・</label> <!-- Katakana Middle Dot -->
 			</xsl:when>
 			<xsl:when test="$namespace = 'm3d'">
 				<label font-size="18pt" margin-top="-0.5mm">•</label> <!-- margin-top to vertical align big dot -->
@@ -14472,7 +14494,13 @@
 	<xsl:variable name="ul_labels" select="xalan:nodeset($ul_labels_)"/>
 
 	<xsl:template name="setULLabel">
-		<xsl:variable name="list_level_" select="count(ancestor::*[local-name() = 'ul']) + count(ancestor::*[local-name() = 'ol'])" />
+		<xsl:variable name="list_level__">
+			<xsl:choose>
+				<xsl:when test="$namespace = 'jis'"><xsl:value-of select="count(ancestor::*[local-name() = 'ul'])"/></xsl:when>
+				<xsl:otherwise><xsl:value-of select="count(ancestor::*[local-name() = 'ul']) + count(ancestor::*[local-name() = 'ol'])" />/></xsl:otherwise>
+			</xsl:choose>
+		</xsl:variable>
+		<xsl:variable name="list_level_" select="number($list_level__)"/>
 		<xsl:variable name="list_level">
 			<xsl:choose>
 				<xsl:when test="$list_level_ &lt;= 3"><xsl:value-of select="$list_level_"/></xsl:when>
@@ -14635,9 +14663,25 @@
 				</fo:block-container>
 			</xsl:when>
 			<xsl:otherwise>
-				<fo:block>
-					<xsl:apply-templates select="." mode="list"/>
-				</fo:block>
+				<xsl:choose>
+					<xsl:when test="$namespace = 'jis'">
+						<fo:block-container>
+							<xsl:if test="ancestor::jis:ol or ancestor::jis:ul">
+								<xsl:attribute name="margin-left">3.5mm</xsl:attribute>
+							</xsl:if>
+							<fo:block-container margin-left="0mm">
+								<fo:block>
+									<xsl:apply-templates select="." mode="list"/>
+								</fo:block>
+							</fo:block-container>
+						</fo:block-container>
+					</xsl:when>
+					<xsl:otherwise>
+						<fo:block>
+							<xsl:apply-templates select="." mode="list"/>
+						</fo:block>
+					</xsl:otherwise>
+				</xsl:choose>
 			</xsl:otherwise>
 		</xsl:choose>
 	</xsl:template>

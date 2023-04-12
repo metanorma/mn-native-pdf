@@ -105,6 +105,22 @@
 					<fo:region-end region-name="right-region" extent="{$marginLeftRight2}mm"/>
 				</fo:simple-page-master>
 				
+				<fo:simple-page-master master-name="first_page_toc" page-width="{$pageWidth}mm" page-height="{$pageHeight}mm">
+					<fo:region-body margin-top="{$marginTop}mm" margin-bottom="{$marginBottom}mm" margin-left="{$marginLeftRight1}mm" margin-right="{$marginLeftRight2}mm"/>
+					<fo:region-before region-name="header-odd-first" extent="{$marginTop}mm"/>
+					<fo:region-after region-name="footer" extent="{$marginBottom}mm"/>
+					<fo:region-start region-name="left-region" extent="{$marginLeftRight1}mm"/>
+					<fo:region-end region-name="right-region" extent="{$marginLeftRight2}mm"/>
+				</fo:simple-page-master>
+				
+				<fo:page-sequence-master master-name="document_toc">
+					<fo:repeatable-page-master-alternatives>
+						<fo:conditional-page-master-reference page-position="first" master-reference="first_page_toc"/>
+						<fo:conditional-page-master-reference odd-or-even="even" master-reference="even"/>
+						<fo:conditional-page-master-reference odd-or-even="odd" master-reference="odd"/>
+					</fo:repeatable-page-master-alternatives>
+				</fo:page-sequence-master>
+				
 				<fo:page-sequence-master master-name="document_preface">
 					<fo:repeatable-page-master-alternatives>
 						<fo:conditional-page-master-reference odd-or-even="even" master-reference="even"/>
@@ -130,14 +146,14 @@
 				<!-- landscape -->
 				<fo:simple-page-master master-name="odd-landscape" page-width="{$pageHeight}mm" page-height="{$pageWidth}mm">
 					<fo:region-body margin-top="{$marginLeftRight1}mm" margin-bottom="{$marginLeftRight2}mm" margin-left="{$marginBottom}mm" margin-right="{$marginTop}mm"/>
-					<fo:region-before region-name="header" extent="{$marginLeftRight1}mm" precedence="true"/>
+					<fo:region-before region-name="header-odd" extent="{$marginLeftRight1}mm" precedence="true"/>
 					<fo:region-after region-name="footer" extent="{$marginLeftRight2}mm" precedence="true"/>
 					<fo:region-start region-name="left-region-landscape" extent="{$marginBottom}mm"/>
 					<fo:region-end region-name="right-region-landscape" extent="{$marginTop}mm"/>
 				</fo:simple-page-master>
 				<fo:simple-page-master master-name="even-landscape" page-width="{$pageHeight}mm" page-height="{$pageWidth}mm">
 					<fo:region-body margin-top="{$marginLeftRight2}mm" margin-bottom="{$marginLeftRight1}mm" margin-left="{$marginBottom}mm" margin-right="{$marginTop}mm"/>
-					<fo:region-before region-name="header" extent="{$marginLeftRight2}mm" precedence="true"/>
+					<fo:region-before region-name="header-even" extent="{$marginLeftRight2}mm" precedence="true"/>
 					<fo:region-after region-name="footer" extent="{$marginLeftRight1}mm" precedence="true"/>
 					<fo:region-start region-name="left-region-landscape" extent="{$marginBottom}mm"/>
 					<fo:region-end region-name="right-region-landspace" extent="{$marginTop}mm"/>
@@ -184,15 +200,28 @@
 				
 					<xsl:variable name="year_published" select="substring(/*/jis:bibdata/jis:date[@type = 'published']/jis:on, 1, 4)"/>
 					
+					<xsl:variable name="element_name_colon_gothic">colon_gothic</xsl:variable>
+					<xsl:variable name="tag_colon_gothic_open">###<xsl:value-of select="$element_name_colon_gothic"/>###</xsl:variable>
+					<xsl:variable name="tag_colon_gothic_close">###/<xsl:value-of select="$element_name_colon_gothic"/>###</xsl:variable>
+					
+					<xsl:variable name="docidentifier_" select="java:replaceAll(java:java.lang.String.new(/*/jis:bibdata/jis:docidentifier), '(:)', concat($tag_colon_gothic_open,'$1',$tag_colon_gothic_close))"/>
+					
+					<xsl:variable name="docidentifier__"><text><xsl:call-template name="replace_text_tags">
+						<xsl:with-param name="tag_open" select="$tag_colon_gothic_open"/>
+						<xsl:with-param name="tag_close" select="$tag_colon_gothic_close"/>
+						<xsl:with-param name="text" select="$docidentifier_"/>
+					</xsl:call-template></text></xsl:variable>
+					
 					<xsl:variable name="docidentifier">
-						<fo:inline><xsl:value-of select="$docnumber"/></fo:inline>
-						<fo:inline font-family="IPAexGothic">：</fo:inline>
-						<fo:inline><xsl:value-of select="$year_published"/></fo:inline>
+						<xsl:apply-templates select="xalan:nodeset($docidentifier__)/node()"/>
 					</xsl:variable>
 					
+					<xsl:variable name="copyrightText">
+						<xsl:call-template name="getLocalizedString">
+							<xsl:with-param name="key">permission_footer</xsl:with-param>
+						</xsl:call-template>
+					</xsl:variable>
 					
-					<xsl:variable name="copyrightText">著作権法により無断での複製，転載等は禁止されております。</xsl:variable>
-				
 					<xsl:variable name="doctype" select="/*/jis:bibdata/jis:ext/jis:doctype"/>
 					
 					<xsl:variable name="title_ja" select="/*/jis:bibdata/jis:title[@language = 'ja' and @type = 'main']"/>
@@ -213,13 +242,20 @@
 					<!-- Contents and preface pages -->
 					<!-- ========================== -->
 					
-					<fo:page-sequence master-reference="document_preface" initial-page-number="1" force-page-count="no-force">
-						
+					<fo:page-sequence master-reference="document_toc" initial-page-number="1" force-page-count="no-force">
 						
 						<xsl:call-template name="insertHeaderFooter">
 							<xsl:with-param name="docidentifier" select="$docidentifier"/>
 							<xsl:with-param name="copyrightText" select="$copyrightText"/>
 							<xsl:with-param name="section">preface</xsl:with-param>
+							<xsl:with-param name="section_title">
+								<fo:inline font-family="IPAexGothic">
+									<xsl:text>&#xa0;</xsl:text>
+									<xsl:call-template name="getLocalizedString">
+										<xsl:with-param name="key">table_of_contents</xsl:with-param>
+									</xsl:call-template>
+								</fo:inline>
+							</xsl:with-param>
 						</xsl:call-template>
 						
 						<fo:flow flow-name="xsl-region-body">
@@ -233,18 +269,16 @@
 							
 							<fo:block text-align="center" font-size="14pt" font-family="IPAexGothic" margin-top="8.5mm">
 								<!-- Contents -->
-								<!-- <xsl:call-template name="getLocalizedString">
+								<xsl:call-template name="getLocalizedString">
 									<xsl:with-param name="key">table_of_contents</xsl:with-param>
-								</xsl:call-template> -->
-								<xsl:text>目 次</xsl:text>
+								</xsl:call-template>
 							</fo:block>
 							
 							<fo:block text-align="right" font-size="8pt" font-family="IPAexMincho" margin-top="10mm">
 								<!-- Page -->
-								<!-- <xsl:call-template name="getLocalizedString">
+								<xsl:call-template name="getLocalizedString">
 									<xsl:with-param name="key">locality.page</xsl:with-param>
-								</xsl:call-template> -->
-								<xsl:text>ページ</xsl:text>
+								</xsl:call-template>
 							</fo:block>
 						
 							<fo:block role="TOC" font-family="IPAexGothic">
@@ -354,7 +388,9 @@
 							<fo:block-container margin-left="70mm">
 								<fo:block-container margin-left="0mm" margin-top="30mm" width="26.5mm" height="8.5mm" text-align="center" display-align="center" border="1pt solid black">
 									<fo:block>
-										<xsl:text>白 紙</xsl:text>
+										<xsl:call-template name="getLocalizedString">
+											<xsl:with-param name="key">white-paper</xsl:with-param>
+										</xsl:call-template>
 									</fo:block>
 								</fo:block-container>
 							</fo:block-container>
@@ -510,6 +546,11 @@
 		</fo:root>
 	</xsl:template>
 	
+	<xsl:template match="*[local-name() = 'colon_gothic']">
+		<!-- replace : to ： (Fullwidth colon) and render it in the font IPAexGothic -->
+		<fo:inline font-family="IPAexGothic">：</fo:inline>
+	</xsl:template>
+	
 	<xsl:template name="insertTocItem">
 		<fo:block text-align-last="justify" role="TOCI">
 			<fo:basic-link internal-destination="{@id}" fox:alt-text="{title}">
@@ -545,7 +586,15 @@
 					<!-- title -->
 					<fo:block role="H1" font-family="IPAexGothic" font-size="22pt" margin-top="27mm"><xsl:apply-templates select="/*/jis:bibdata/jis:title[@language = 'ja' and @type = 'main']/node()"/></fo:block>
 					<!-- docidentifier, 3 part: number, colon and year-->
-					<fo:block font-family="IPAexGothic" font-size="20pt" margin-top="15mm"><fo:inline font-family="Arial">JIS Z 8301</fo:inline><fo:inline baseline-shift="20%"><fo:inline font-size="10pt">：</fo:inline><fo:inline font-family="Times New Roman" font-size="10pt">2019</fo:inline></fo:inline></fo:block>
+					<xsl:variable name="docidentifier" select="/*/jis:bibdata/jis:docidentifier[@type = 'JIS']"/>
+					<xsl:variable name="docidentifier_number" select="java:replaceAll(java:java.lang.String.new($docidentifier), '^(.*)(:)(.*)$', '$1')"/>
+					<xsl:variable name="docidentifier_year" select="java:replaceAll(java:java.lang.String.new($docidentifier), '^(.*)(:)(.*)$', '$3')"/>
+					
+					<fo:block font-family="IPAexGothic" font-size="20pt" margin-top="15mm">
+						<fo:inline font-family="Arial">JIS <xsl:value-of select="$docidentifier_number"/></fo:inline>
+						<fo:inline baseline-shift="20%"><fo:inline font-size="10pt">：</fo:inline>
+						<fo:inline font-family="Times New Roman" font-size="10pt"><xsl:value-of select="$docidentifier_year"/></fo:inline></fo:inline>
+					</fo:block>
 					<fo:block font-family="Arial" font-size="14pt" margin-top="12mm"><fo:inline font-family="IPAexMincho">（</fo:inline>JSA<fo:inline font-family="IPAexMincho">）</fo:inline></fo:block>
 				</fo:block-container>
 				
@@ -1034,11 +1083,36 @@
 						jis:termnote/jis:name/text() |
 						jis:table/jis:name/text() |
 						jis:figure/jis:name/text() |
-						jis:example/jis:name/text() | 
 						jis:termexample/jis:name/text() |
 						jis:xref//text() |
 						jis:origin/text()" mode="update_xml_step1">
 		<xsl:variable name="text_en_" select="java:replaceAll(java:java.lang.String.new(.), $regex_en, concat($tag_font_en_bold_open,'$1',$tag_font_en_bold_close))"/>
+		<xsl:variable name="text_en"><text><xsl:call-template name="replace_text_tags">
+			<xsl:with-param name="tag_open" select="$tag_font_en_bold_open"/>
+			<xsl:with-param name="tag_close" select="$tag_font_en_bold_close"/>
+			<xsl:with-param name="text" select="$text_en_"/>
+		</xsl:call-template></text></xsl:variable>
+		<xsl:copy-of select="xalan:nodeset($text_en)/text/node()"/>
+	</xsl:template>
+	
+	<!-- move example title to the first paragraph -->
+	<xsl:template match="jis:example[contains(jis:name/text(), ' — ')]" mode="update_xml_step1">
+		<xsl:copy>
+			<xsl:copy-of select="@*"/>
+			<xsl:element name="p" namespace="https://www.metanorma.org/ns/jis">
+				<xsl:value-of select="substring-after(jis:name/text(), ' — ')"/>
+			</xsl:element>
+			<xsl:apply-templates mode="update_xml_step1"/>
+		</xsl:copy>
+	</xsl:template>
+	<xsl:template match="jis:example/jis:name/text()" mode="update_xml_step1">
+		<xsl:variable name="example_name">
+			<xsl:choose>
+				<xsl:when test="contains(., ' — ')"><xsl:value-of select="substring-before(., ' — ')"/></xsl:when>
+				<xsl:otherwise><xsl:value-of select="."/></xsl:otherwise>
+			</xsl:choose>
+		</xsl:variable>
+		<xsl:variable name="text_en_" select="java:replaceAll(java:java.lang.String.new($example_name), $regex_en, concat($tag_font_en_bold_open,'$1',$tag_font_en_bold_close))"/>
 		<xsl:variable name="text_en"><text><xsl:call-template name="replace_text_tags">
 			<xsl:with-param name="tag_open" select="$tag_font_en_bold_open"/>
 			<xsl:with-param name="tag_close" select="$tag_font_en_bold_close"/>
@@ -1086,7 +1160,7 @@
 		<xsl:copy-of select="xalan:nodeset($text_en)/text/node()"/>
 	</xsl:template>
 	
-	<xsl:template match="*[local-name() = 'font_en_bold']">
+	<xsl:template match="*[local-name() = 'font_en_bold'][normalize-space() != '']">
 		<fo:inline font-family="Times New Roman" font-weight="bold">
 			<xsl:if test="ancestor::*[local-name() = 'preferred']">
 				<xsl:attribute name="font-weight">normal</xsl:attribute>
@@ -1095,7 +1169,7 @@
 		</fo:inline>
 	</xsl:template>
 	
-	<xsl:template match="*[local-name() = 'font_en']">
+	<xsl:template match="*[local-name() = 'font_en'][normalize-space() != '']">
 		<fo:inline font-family="Times New Roman">
 			<xsl:if test="ancestor::*[local-name() = 'preferred']">
 				<xsl:attribute name="font-weight">normal</xsl:attribute>
@@ -1113,16 +1187,31 @@
 		<xsl:param name="hidePageNumber">false</xsl:param>
 		<xsl:param name="section"/>
 		<xsl:param name="copyrightText"/>
+		<xsl:param name="section_title"/>
+		<fo:static-content flow-name="header-odd-first" role="artifact">
+			<fo:block-container font-family="Arial" font-size="9pt" height="26mm" display-align="after" text-align="right">
+				<xsl:if test="$section = 'main'"><fo:block><fo:page-number /></fo:block></xsl:if>
+				<fo:block>
+					<xsl:copy-of select="$docidentifier"/>
+				</fo:block>
+			</fo:block-container>
+		</fo:static-content>
 		<fo:static-content flow-name="header-odd" role="artifact">
 			<fo:block-container font-family="Arial" font-size="9pt" height="26mm" display-align="after" text-align="right">
 				<xsl:if test="$section = 'main'"><fo:block><fo:page-number /></fo:block></xsl:if>
-				<fo:block><xsl:copy-of select="$docidentifier"/></fo:block>
+				<fo:block>
+					<xsl:copy-of select="$docidentifier"/>
+					<xsl:copy-of select="$section_title"/>
+				</fo:block>
 			</fo:block-container>
 		</fo:static-content>
 		<fo:static-content flow-name="header-even" role="artifact">
 			<fo:block-container font-family="Arial" font-size="9pt" height="26mm" display-align="after">
 				<xsl:if test="$section = 'main'"><fo:block><fo:page-number /></fo:block></xsl:if>
-				<fo:block><xsl:copy-of select="$docidentifier"/></fo:block>
+				<fo:block>
+					<xsl:copy-of select="$docidentifier"/>
+					<xsl:copy-of select="$section_title"/>
+				</fo:block>
 			</fo:block-container>
 		</fo:static-content>
 		<xsl:call-template name="insertFooter">
