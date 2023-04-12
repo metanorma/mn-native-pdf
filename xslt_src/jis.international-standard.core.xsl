@@ -365,7 +365,9 @@
 							<fo:block-container margin-left="70mm">
 								<fo:block-container margin-left="0mm" margin-top="30mm" width="26.5mm" height="8.5mm" text-align="center" display-align="center" border="1pt solid black">
 									<fo:block>
-										<xsl:text>白 紙</xsl:text>
+										<xsl:call-template name="getLocalizedString">
+											<xsl:with-param name="key">white-paper</xsl:with-param>
+										</xsl:call-template>
 									</fo:block>
 								</fo:block-container>
 							</fo:block-container>
