@@ -3014,62 +3014,70 @@
 	</xsl:template>
 
 	
-	<xsl:template match="bipm:xref" priority="2">		
-		<fo:basic-link internal-destination="{@target}" fox:alt-text="{@target}">
-		
-			<xsl:if test="parent::*[local-name() = 'title']">
-				<xsl:attribute name="font-weight">normal</xsl:attribute>
-			</xsl:if>
-			
-			<xsl:choose>
-				<xsl:when test="@pagenumber='true'"><!-- ToC in Appendix, and page in references like this: « Le BIPM et la Convention du Mètre » (page 5). -->
-					<fo:inline>
-						<!-- DEBUG -->
-						<xsl:if test="@id">
-							<xsl:attribute name="id"><xsl:value-of select="@id"/></xsl:attribute>
-						</xsl:if>
-						<fo:page-number-citation ref-id="{@target}"/>
-						<!-- <xsl:if test="@to">&#x2013;<fo:page-number-citation ref-id="{@to}"/></xsl:if> -->
-					</fo:inline>
-				</xsl:when>
-				<xsl:when test="starts-with(normalize-space(following-sibling::node()[1]), ')')">										
-					<!-- add , see p. N -->				
-					<!-- add , voir p. N -->
-					<xsl:apply-templates />	
-					
-					<xsl:variable name="nopage" select="normalize-space(@nopage)"/>
-					
-					<xsl:if test="$nopage != 'true'">
-						<xsl:text>, </xsl:text>
-						<xsl:variable name="nosee" select="normalize-space(@nosee)"/>
-						<xsl:if test="$nosee != 'true'">
-							<xsl:variable name="curr_lang" select="ancestor::bipm:bipm-standard/bipm:bibdata/bipm:language[@current = 'true']"/>					
-							<fo:inline>
-								<xsl:if test="ancestor::bipm:note_side">
-									<xsl:attribute name="font-style">italic</xsl:attribute>
-								</xsl:if>
-								<xsl:value-of select="ancestor::bipm:bipm-standard/bipm:localized-strings/bipm:localized-string[@key='see' and @language=$curr_lang]"/>
-							</fo:inline>
-							<xsl:text> </xsl:text>
-						</xsl:if>
-						<xsl:text>p. </xsl:text>
-						<fo:page-number-citation ref-id="{@target}"/>
+	<xsl:template match="bipm:xref" priority="2">
+		<xsl:call-template name="insert_basic_link">
+			<xsl:with-param name="element">
+				<fo:basic-link internal-destination="{@target}" fox:alt-text="{@target}">
+				
+					<xsl:if test="parent::*[local-name() = 'title']">
+						<xsl:attribute name="font-weight">normal</xsl:attribute>
 					</xsl:if>
-				</xsl:when>
-				<xsl:otherwise>
-					<fo:inline><xsl:apply-templates /></fo:inline>
-				</xsl:otherwise>
-			</xsl:choose>
-		</fo:basic-link>
+					
+					<xsl:choose>
+						<xsl:when test="@pagenumber='true'"><!-- ToC in Appendix, and page in references like this: « Le BIPM et la Convention du Mètre » (page 5). -->
+							<fo:inline>
+								<!-- DEBUG -->
+								<xsl:if test="@id">
+									<xsl:attribute name="id"><xsl:value-of select="@id"/></xsl:attribute>
+								</xsl:if>
+								<fo:page-number-citation ref-id="{@target}"/>
+								<!-- <xsl:if test="@to">&#x2013;<fo:page-number-citation ref-id="{@to}"/></xsl:if> -->
+							</fo:inline>
+						</xsl:when>
+						<xsl:when test="starts-with(normalize-space(following-sibling::node()[1]), ')')">										
+							<!-- add , see p. N -->				
+							<!-- add , voir p. N -->
+							<xsl:apply-templates />	
+							
+							<xsl:variable name="nopage" select="normalize-space(@nopage)"/>
+							
+							<xsl:if test="$nopage != 'true'">
+								<xsl:text>, </xsl:text>
+								<xsl:variable name="nosee" select="normalize-space(@nosee)"/>
+								<xsl:if test="$nosee != 'true'">
+									<xsl:variable name="curr_lang" select="ancestor::bipm:bipm-standard/bipm:bibdata/bipm:language[@current = 'true']"/>					
+									<fo:inline>
+										<xsl:if test="ancestor::bipm:note_side">
+											<xsl:attribute name="font-style">italic</xsl:attribute>
+										</xsl:if>
+										<xsl:value-of select="ancestor::bipm:bipm-standard/bipm:localized-strings/bipm:localized-string[@key='see' and @language=$curr_lang]"/>
+									</fo:inline>
+									<xsl:text> </xsl:text>
+								</xsl:if>
+								<xsl:text>p. </xsl:text>
+								<fo:page-number-citation ref-id="{@target}"/>
+							</xsl:if>
+						</xsl:when>
+						<xsl:otherwise>
+							<fo:inline><xsl:apply-templates /></fo:inline>
+						</xsl:otherwise>
+					</xsl:choose>
+				</fo:basic-link>
+			</xsl:with-param>
+		</xsl:call-template>
 	</xsl:template>
 	
 	<xsl:template match="bipm:eref[.//bipm:locality[@type = 'anchor']]" priority="2">
 		<xsl:variable name="target" select=".//bipm:locality[@type = 'anchor']/bipm:referenceFrom"/>
-		<fo:basic-link internal-destination="{$target}" fox:alt-text="{$target}">
-			<xsl:if test="xalan:nodeset($ids)//id = $target">
-				<fo:page-number-citation ref-id="{$target}"/>
-			</xsl:if>
-		</fo:basic-link>
+		<xsl:call-template name="insert_basic_link">
+			<xsl:with-param name="element">
+				<fo:basic-link internal-destination="{$target}" fox:alt-text="{$target}">
+					<xsl:if test="xalan:nodeset($ids)//id = $target">
+						<fo:page-number-citation ref-id="{$target}"/>
+					</xsl:if>
+				</fo:basic-link>
+			</xsl:with-param>
+		</xsl:call-template>
 	</xsl:template>
 	
 	<xsl:template match="bipm:note[not(ancestor::bipm:preface)]/bipm:name" priority="2">
