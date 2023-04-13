@@ -1677,19 +1677,23 @@
 				<xsl:variable name="bibitemid" select="../itu:termsource/itu:origin/@bibitemid"/>
 				<xsl:variable name="origin_text" select="normalize-space(../itu:termsource/itu:origin/text())"/>
 				
-				<fo:basic-link internal-destination="{$bibitemid}" fox:alt-text="{$citeas}">
-					<xsl:choose>
-						<xsl:when test="$origin_text != ''">
-							<xsl:text> </xsl:text><xsl:apply-templates select="../itu:termsource/itu:origin/node()"/>
-						</xsl:when>
-						<xsl:when test="contains($citeas, '[')">
-							<xsl:text> </xsl:text><xsl:value-of select="$citeas"/> <!--  disable-output-escaping="yes" -->
-						</xsl:when>
-						<xsl:otherwise>
-							<xsl:text> [</xsl:text><xsl:value-of select="$citeas"/><xsl:text>]</xsl:text>
-						</xsl:otherwise>
-					</xsl:choose>
-				</fo:basic-link>
+				<xsl:call-template name="insert_basic_link">
+					<xsl:with-param name="element">
+						<fo:basic-link internal-destination="{$bibitemid}" fox:alt-text="{$citeas}">
+							<xsl:choose>
+								<xsl:when test="$origin_text != ''">
+									<xsl:text> </xsl:text><xsl:apply-templates select="../itu:termsource/itu:origin/node()"/>
+								</xsl:when>
+								<xsl:when test="contains($citeas, '[')">
+									<xsl:text> </xsl:text><xsl:value-of select="$citeas"/> <!--  disable-output-escaping="yes" -->
+								</xsl:when>
+								<xsl:otherwise>
+									<xsl:text> [</xsl:text><xsl:value-of select="$citeas"/><xsl:text>]</xsl:text>
+								</xsl:otherwise>
+							</xsl:choose>
+						</fo:basic-link>
+					</xsl:with-param>
+				</xsl:call-template>
 			</xsl:if>			
 			<xsl:if test="following-sibling::itu:definition/node()">
 				<xsl:text>: </xsl:text>

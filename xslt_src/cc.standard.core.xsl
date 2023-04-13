@@ -514,13 +514,17 @@
 	
 		
 	<xsl:template match="csd:xref" priority="2">
-		<fo:basic-link internal-destination="{@target}" fox:alt-text="{@target}">			
-			<xsl:if test="not(starts-with(text(), 'Figure') or starts-with(text(), 'Table'))">
-				<xsl:attribute name="color">blue</xsl:attribute>
-				<xsl:attribute name="text-decoration">underline</xsl:attribute>
-			</xsl:if>
-			<xsl:apply-templates />			
-      </fo:basic-link>
+		<xsl:call-template name="insert_basic_link">
+			<xsl:with-param name="element">
+				<fo:basic-link internal-destination="{@target}" fox:alt-text="{@target}">
+					<xsl:if test="not(starts-with(text(), 'Figure') or starts-with(text(), 'Table'))">
+						<xsl:attribute name="color">blue</xsl:attribute>
+						<xsl:attribute name="text-decoration">underline</xsl:attribute>
+					</xsl:if>
+					<xsl:apply-templates />
+				</fo:basic-link>
+			</xsl:with-param>
+		</xsl:call-template>
 	</xsl:template>
 
 	
