@@ -7563,9 +7563,13 @@
 					<xsl:if test="preceding-sibling::*[1][local-name() = 'fn']">,</xsl:if>
 				</xsl:if>
 				
-				<fo:basic-link internal-destination="{$ref_id}" fox:alt-text="footnote {$current_fn_number}">
-					<xsl:value-of select="$current_fn_number_text"/>
-				</fo:basic-link>
+				<xsl:call-template name="insert_basic_link">
+					<xsl:with-param name="element">
+						<fo:basic-link internal-destination="{$ref_id}" fox:alt-text="footnote {$current_fn_number}">
+							<xsl:value-of select="$current_fn_number_text"/>
+						</fo:basic-link>
+					</xsl:with-param>
+				</xsl:call-template>
 			</fo:inline>
 		</xsl:variable>
 		
@@ -10581,19 +10585,23 @@
 					<xsl:apply-templates />
 				</xsl:when>
 				<xsl:otherwise>
-					<fo:basic-link external-destination="{$target}" fox:alt-text="{$target}">
-						<xsl:choose>
-							<xsl:when test="normalize-space(.) = ''">
-								<xsl:call-template name="add-zero-spaces-link-java">
-									<xsl:with-param name="text" select="$target_text"/>
-								</xsl:call-template>
-							</xsl:when>
-							<xsl:otherwise>
-								<!-- output text from <link>text</link> -->
-								<xsl:apply-templates />
-							</xsl:otherwise>
-						</xsl:choose>
-					</fo:basic-link>
+					<xsl:call-template name="insert_basic_link">
+						<xsl:with-param name="element">
+							<fo:basic-link external-destination="{$target}" fox:alt-text="{$target}">
+								<xsl:choose>
+									<xsl:when test="normalize-space(.) = ''">
+										<xsl:call-template name="add-zero-spaces-link-java">
+											<xsl:with-param name="text" select="$target_text"/>
+										</xsl:call-template>
+									</xsl:when>
+									<xsl:otherwise>
+										<!-- output text from <link>text</link> -->
+										<xsl:apply-templates />
+									</xsl:otherwise>
+								</xsl:choose>
+							</fo:basic-link>
+						</xsl:with-param>
+					</xsl:call-template>
 				</xsl:otherwise>
 			</xsl:choose>
 		</fo:inline>
@@ -10661,12 +10669,16 @@
 	</xsl:template>
 
 	<xsl:template match="*[local-name() = 'xref']">
-		<fo:basic-link internal-destination="{@target}" fox:alt-text="{@target}" xsl:use-attribute-sets="xref-style">
-			<xsl:if test="parent::*[local-name() = 'add']">
-				<xsl:call-template name="append_add-style"/>
-			</xsl:if>
-			<xsl:apply-templates />
-		</fo:basic-link>
+		<xsl:call-template name="insert_basic_link">
+			<xsl:with-param name="element">
+				<fo:basic-link internal-destination="{@target}" fox:alt-text="{@target}" xsl:use-attribute-sets="xref-style">
+					<xsl:if test="parent::*[local-name() = 'add']">
+						<xsl:call-template name="append_add-style"/>
+					</xsl:if>
+					<xsl:apply-templates />
+				</fo:basic-link>
+			</xsl:with-param>
+		</xsl:call-template>
 	</xsl:template>
 	
 	<!-- ====== -->
@@ -11773,15 +11785,19 @@
 		<xsl:param name="dest"/>
 		<fo:block-container position="absolute" left="{$left}px" top="{$top}px" width="{$width}px" height="{$height}px">
 		 <fo:block font-size="1pt">
-			<fo:basic-link internal-destination="{$dest}" fox:alt-text="svg link">
-				<fo:inline-container inline-progression-dimension="100%">
-					<fo:block-container height="{$height - 1}px" width="100%">
-						<!-- DEBUG <xsl:if test="local-name()='polygon'">
-							<xsl:attribute name="background-color">magenta</xsl:attribute>
-						</xsl:if> -->
-					<fo:block>&#xa0;</fo:block></fo:block-container>
-				</fo:inline-container>
-			</fo:basic-link>
+			<xsl:call-template name="insert_basic_link">
+				<xsl:with-param name="element">
+					<fo:basic-link internal-destination="{$dest}" fox:alt-text="svg link">
+						<fo:inline-container inline-progression-dimension="100%">
+							<fo:block-container height="{$height - 1}px" width="100%">
+								<!-- DEBUG <xsl:if test="local-name()='polygon'">
+									<xsl:attribute name="background-color">magenta</xsl:attribute>
+								</xsl:if> -->
+							<fo:block>&#xa0;</fo:block></fo:block-container>
+						</fo:inline-container>
+					</fo:basic-link>
+				</xsl:with-param>
+			</xsl:call-template>
 		 </fo:block>
 	  </fo:block-container>
 	</xsl:template>
@@ -13730,14 +13746,18 @@
 	</xsl:template>
 	
 	<xsl:template match="*[local-name() = 'origin']">
-		<fo:basic-link internal-destination="{@bibitemid}" fox:alt-text="{@citeas}">
-			<xsl:if test="normalize-space(@citeas) = ''">
-				<xsl:attribute name="fox:alt-text"><xsl:value-of select="@bibitemid"/></xsl:attribute>
-			</xsl:if>
-			<fo:inline xsl:use-attribute-sets="origin-style">
-				<xsl:apply-templates/>
-			</fo:inline>
-		</fo:basic-link>
+		<xsl:call-template name="insert_basic_link">
+			<xsl:with-param name="element">
+				<fo:basic-link internal-destination="{@bibitemid}" fox:alt-text="{@citeas}">
+					<xsl:if test="normalize-space(@citeas) = ''">
+						<xsl:attribute name="fox:alt-text"><xsl:value-of select="@bibitemid"/></xsl:attribute>
+					</xsl:if>
+					<fo:inline xsl:use-attribute-sets="origin-style">
+						<xsl:apply-templates/>
+					</fo:inline>
+				</fo:basic-link>
+			</xsl:with-param>
+		</xsl:call-template>
 	</xsl:template>
 	
 	
@@ -13832,9 +13852,13 @@
 		<xsl:if test="../*[local-name() = 'author']">
 			<xsl:text>, </xsl:text>
 		</xsl:if>
-		<fo:basic-link internal-destination="{@bibitemid}" fox:alt-text="{@citeas}">
-			<xsl:apply-templates />
-		</fo:basic-link>
+		<xsl:call-template name="insert_basic_link">
+			<xsl:with-param name="element">
+				<fo:basic-link internal-destination="{@bibitemid}" fox:alt-text="{@citeas}">
+					<xsl:apply-templates />
+				</fo:basic-link>
+			</xsl:with-param>
+		</xsl:call-template>
 	</xsl:template>
 	
 	<xsl:template match="*[local-name() = 'author']">
@@ -13899,40 +13923,44 @@
 						</xsl:if>
 					</xsl:if>
 					
-					<fo:basic-link fox:alt-text="{@citeas}">
-						<xsl:if test="normalize-space(@citeas) = ''">
-							<xsl:attribute name="fox:alt-text"><xsl:value-of select="."/></xsl:attribute>
-						</xsl:if>
-						<xsl:if test="@type = 'inline'">
-							<xsl:if test="$namespace = 'csd' or $namespace = 'iho' or $namespace = 'ogc-white-paper' or $namespace = 'mpfd' or $namespace = 'bipm'">
-								<xsl:attribute name="color">blue</xsl:attribute>
-								<xsl:attribute name="text-decoration">underline</xsl:attribute>
-							</xsl:if>
-							<xsl:if test="$namespace = 'bipm'">
-								<xsl:if test="parent::*[local-name() = 'title']">
-									<xsl:attribute name="color">inherit</xsl:attribute>
-									<xsl:attribute name="text-decoration">inherit</xsl:attribute>
-									<xsl:attribute name="font-weight">normal</xsl:attribute>
+					<xsl:call-template name="insert_basic_link">
+						<xsl:with-param name="element">
+							<fo:basic-link fox:alt-text="{@citeas}">
+								<xsl:if test="normalize-space(@citeas) = ''">
+									<xsl:attribute name="fox:alt-text"><xsl:value-of select="."/></xsl:attribute>
 								</xsl:if>
-							</xsl:if>
-							<xsl:if test="$namespace = 'nist-cswp' or 
-																$namespace = 'nist-sp' or 
-																$namespace = 'unece'">
-								<xsl:attribute name="text-decoration">underline</xsl:attribute>
-							</xsl:if>
-						</xsl:if>
-						
-						<xsl:choose>
-							<xsl:when test="$external-destination != ''"> <!-- external hyperlink -->
-								<xsl:attribute name="external-destination"><xsl:value-of select="$external-destination"/></xsl:attribute>
-							</xsl:when>
-							<xsl:otherwise>
-								<xsl:attribute name="internal-destination"><xsl:value-of select="@bibitemid"/></xsl:attribute>
-							</xsl:otherwise>
-						</xsl:choose>
-						
-						<xsl:apply-templates />
-					</fo:basic-link>
+								<xsl:if test="@type = 'inline'">
+									<xsl:if test="$namespace = 'csd' or $namespace = 'iho' or $namespace = 'ogc-white-paper' or $namespace = 'mpfd' or $namespace = 'bipm'">
+										<xsl:attribute name="color">blue</xsl:attribute>
+										<xsl:attribute name="text-decoration">underline</xsl:attribute>
+									</xsl:if>
+									<xsl:if test="$namespace = 'bipm'">
+										<xsl:if test="parent::*[local-name() = 'title']">
+											<xsl:attribute name="color">inherit</xsl:attribute>
+											<xsl:attribute name="text-decoration">inherit</xsl:attribute>
+											<xsl:attribute name="font-weight">normal</xsl:attribute>
+										</xsl:if>
+									</xsl:if>
+									<xsl:if test="$namespace = 'nist-cswp' or 
+																		$namespace = 'nist-sp' or 
+																		$namespace = 'unece'">
+										<xsl:attribute name="text-decoration">underline</xsl:attribute>
+									</xsl:if>
+								</xsl:if>
+								
+								<xsl:choose>
+									<xsl:when test="$external-destination != ''"> <!-- external hyperlink -->
+										<xsl:attribute name="external-destination"><xsl:value-of select="$external-destination"/></xsl:attribute>
+									</xsl:when>
+									<xsl:otherwise>
+										<xsl:attribute name="internal-destination"><xsl:value-of select="@bibitemid"/></xsl:attribute>
+									</xsl:otherwise>
+								</xsl:choose>
+								
+								<xsl:apply-templates />
+							</fo:basic-link>
+						</xsl:with-param>
+					</xsl:call-template>
 					
 				</fo:inline>
 			</xsl:when>
@@ -15751,23 +15779,31 @@
 			<xsl:variable name="current_id" select="generate-id()"/>
 			<fo:table-cell>
 				<fo:block>
-					<fo:basic-link internal-destination="{$target}" fox:alt-text="{.}">
-						<xsl:for-each select="following-sibling::node()[not(self::*[local-name() = 'tab']) and preceding-sibling::*[local-name() = 'tab'][1][generate-id() = $current_id]]">
-							<xsl:choose>
-								<xsl:when test="self::text()"><xsl:value-of select="."/></xsl:when>
-								<xsl:otherwise><xsl:apply-templates select="."/></xsl:otherwise>
-							</xsl:choose>
-						</xsl:for-each>
-					</fo:basic-link>
+					<xsl:call-template name="insert_basic_link">
+						<xsl:with-param name="element">
+							<fo:basic-link internal-destination="{$target}" fox:alt-text="{.}">
+								<xsl:for-each select="following-sibling::node()[not(self::*[local-name() = 'tab']) and preceding-sibling::*[local-name() = 'tab'][1][generate-id() = $current_id]]">
+									<xsl:choose>
+										<xsl:when test="self::text()"><xsl:value-of select="."/></xsl:when>
+										<xsl:otherwise><xsl:apply-templates select="."/></xsl:otherwise>
+									</xsl:choose>
+								</xsl:for-each>
+							</fo:basic-link>
+						</xsl:with-param>
+					</xsl:call-template>
 				</fo:block>
 			</fo:table-cell>
 		</xsl:for-each>
 		<!-- last column - for page numbers -->
 		<fo:table-cell text-align="right" font-size="10pt" font-weight="bold" font-family="Arial">
 			<fo:block>
-				<fo:basic-link internal-destination="{$target}" fox:alt-text="{.}">
-					<fo:page-number-citation ref-id="{$target}"/>
-				</fo:basic-link>
+				<xsl:call-template name="insert_basic_link">
+					<xsl:with-param name="element">
+						<fo:basic-link internal-destination="{$target}" fox:alt-text="{.}">
+							<fo:page-number-citation ref-id="{$target}"/>
+						</fo:basic-link>
+					</xsl:with-param>
+				</xsl:call-template>
 			</fo:block>
 		</fo:table-cell>
 	</xsl:template>
