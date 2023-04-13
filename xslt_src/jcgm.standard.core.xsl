@@ -1193,21 +1193,25 @@
 	
 	
 	<xsl:template match="jcgm:xref"  priority="2">
-		<fo:basic-link internal-destination="{@target}" fox:alt-text="{@target}" xsl:use-attribute-sets="xref-style">
-			<xsl:choose>
-				<xsl:when test="@pagenumber='true'">
-					<fo:inline>
-						<xsl:if test="@id">
-							<xsl:attribute name="id"><xsl:value-of select="@id"/></xsl:attribute>
-						</xsl:if>
-						<fo:page-number-citation ref-id="{@target}"/>
-					</fo:inline>
-				</xsl:when>
-				<xsl:otherwise>
-					<fo:inline><xsl:apply-templates /></fo:inline>
-				</xsl:otherwise>
-			</xsl:choose>
-		</fo:basic-link>
+		<xsl:call-template name="insert_basic_link">
+			<xsl:with-param name="element">
+				<fo:basic-link internal-destination="{@target}" fox:alt-text="{@target}" xsl:use-attribute-sets="xref-style">
+					<xsl:choose>
+						<xsl:when test="@pagenumber='true'">
+							<fo:inline>
+								<xsl:if test="@id">
+									<xsl:attribute name="id"><xsl:value-of select="@id"/></xsl:attribute>
+								</xsl:if>
+								<fo:page-number-citation ref-id="{@target}"/>
+							</fo:inline>
+						</xsl:when>
+						<xsl:otherwise>
+							<fo:inline><xsl:apply-templates /></fo:inline>
+						</xsl:otherwise>
+					</xsl:choose>
+				</fo:basic-link>
+			</xsl:with-param>
+		</xsl:call-template>
 	</xsl:template>
 
 	<!-- =================== -->
