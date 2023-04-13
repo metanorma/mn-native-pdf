@@ -2135,12 +2135,16 @@
 	<xsl:template match="*[local-name() = 'eref'][java:endsWith(java:java.lang.String.new(@bibitemid),'.exp')]" priority="2">
 		<fo:inline xsl:use-attribute-sets="eref-style">
 			<xsl:variable name="url" select="concat('url(embedded-file:', @bibitemid, ')')"/>
-			<fo:basic-link external-destination="{$url}" fox:alt-text="{@citeas}">
-				<xsl:if test="normalize-space(@citeas) = ''">
-					<xsl:attribute name="fox:alt-text"><xsl:value-of select="."/></xsl:attribute>
-				</xsl:if>
-				<xsl:apply-templates />
-			</fo:basic-link>
+			<xsl:call-template name="insert_basic_link">
+				<xsl:with-param name="element">
+					<fo:basic-link external-destination="{$url}" fox:alt-text="{@citeas}">
+						<xsl:if test="normalize-space(@citeas) = ''">
+							<xsl:attribute name="fox:alt-text"><xsl:value-of select="."/></xsl:attribute>
+						</xsl:if>
+						<xsl:apply-templates />
+					</fo:basic-link>
+				</xsl:with-param>
+			</xsl:call-template>
 		</fo:inline>
 	</xsl:template>
 	
@@ -2152,12 +2156,16 @@
 				<xsl:variable name="filename" select="concat(substring-before($bibitemid, '.exp_'), '.exp')"/>
 				<fo:inline xsl:use-attribute-sets="eref-style">
 					<xsl:variable name="url" select="concat('url(embedded-file:', $filename, ')')"/>
-					<fo:basic-link external-destination="{$url}" fox:alt-text="{@citeas}">
-						<xsl:if test="normalize-space(@citeas) = ''">
-							<xsl:attribute name="fox:alt-text"><xsl:value-of select="."/></xsl:attribute>
-						</xsl:if>
-						<xsl:apply-templates />
-					</fo:basic-link>
+					<xsl:call-template name="insert_basic_link">
+						<xsl:with-param name="element">
+							<fo:basic-link external-destination="{$url}" fox:alt-text="{@citeas}">
+								<xsl:if test="normalize-space(@citeas) = ''">
+									<xsl:attribute name="fox:alt-text"><xsl:value-of select="."/></xsl:attribute>
+								</xsl:if>
+								<xsl:apply-templates />
+							</fo:basic-link>
+						</xsl:with-param>
+					</xsl:call-template>
 				</fo:inline>
 			</xsl:when>
 			<xsl:otherwise>
@@ -2203,21 +2211,25 @@
 	
 	
 	<xsl:template match="iso:xref" priority="2">
-		<fo:basic-link internal-destination="{@target}" fox:alt-text="{@target}" xsl:use-attribute-sets="xref-style">
-			<xsl:choose>
-				<xsl:when test="@pagenumber='true'">
-					<fo:inline>
-						<xsl:if test="@id">
-							<xsl:attribute name="id"><xsl:value-of select="@id"/></xsl:attribute>
-						</xsl:if>
-						<fo:page-number-citation ref-id="{@target}"/>
-					</fo:inline>
-				</xsl:when>
-				<xsl:otherwise>
-					<xsl:apply-templates />
-				</xsl:otherwise>
-			</xsl:choose>
-		</fo:basic-link>
+		<xsl:call-template name="insert_basic_link">
+			<xsl:with-param name="element">
+				<fo:basic-link internal-destination="{@target}" fox:alt-text="{@target}" xsl:use-attribute-sets="xref-style">
+					<xsl:choose>
+						<xsl:when test="@pagenumber='true'">
+							<fo:inline>
+								<xsl:if test="@id">
+									<xsl:attribute name="id"><xsl:value-of select="@id"/></xsl:attribute>
+								</xsl:if>
+								<fo:page-number-citation ref-id="{@target}"/>
+							</fo:inline>
+						</xsl:when>
+						<xsl:otherwise>
+							<xsl:apply-templates />
+						</xsl:otherwise>
+					</xsl:choose>
+				</fo:basic-link>
+			</xsl:with-param>
+		</xsl:call-template>
 	</xsl:template>
 	
 	<!-- =================== -->
