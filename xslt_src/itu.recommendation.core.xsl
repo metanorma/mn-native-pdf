@@ -1745,13 +1745,9 @@
 		<xsl:variable name="number" select="position()"/>
 		<fo:footnote>
 			<fo:inline font-size="60%" keep-with-previous.within-line="always" vertical-align="super">
-				<xsl:call-template name="insert_basic_link">
-					<xsl:with-param name="element">
-						<fo:basic-link internal-destination="title_footnote_{$number}" fox:alt-text="titlefootnote  {$number}">
-							<xsl:value-of select="$number"/>
-						</fo:basic-link>
-					</xsl:with-param>
-				</xsl:call-template>
+				<fo:basic-link internal-destination="title_footnote_{$number}" fox:alt-text="titlefootnote  {$number}">
+					<xsl:value-of select="$number"/>
+				</fo:basic-link>
 				<xsl:if test="position() != last()">,</xsl:if><!-- <fo:inline  baseline-shift="20%">,</fo:inline> -->
 			</fo:inline>
 			<fo:footnote-body>

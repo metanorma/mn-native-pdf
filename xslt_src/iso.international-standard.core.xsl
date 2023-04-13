@@ -2135,16 +2135,12 @@
 	<xsl:template match="*[local-name() = 'eref'][java:endsWith(java:java.lang.String.new(@bibitemid),'.exp')]" priority="2">
 		<fo:inline xsl:use-attribute-sets="eref-style">
 			<xsl:variable name="url" select="concat('url(embedded-file:', @bibitemid, ')')"/>
-			<xsl:call-template name="insert_basic_link">
-				<xsl:with-param name="element">
-					<fo:basic-link external-destination="{$url}" fox:alt-text="{@citeas}">
-						<xsl:if test="normalize-space(@citeas) = ''">
-							<xsl:attribute name="fox:alt-text"><xsl:value-of select="."/></xsl:attribute>
-						</xsl:if>
-						<xsl:apply-templates />
-					</fo:basic-link>
-				</xsl:with-param>
-			</xsl:call-template>
+			<fo:basic-link external-destination="{$url}" fox:alt-text="{@citeas}">
+				<xsl:if test="normalize-space(@citeas) = ''">
+					<xsl:attribute name="fox:alt-text"><xsl:value-of select="."/></xsl:attribute>
+				</xsl:if>
+				<xsl:apply-templates />
+			</fo:basic-link>
 		</fo:inline>
 	</xsl:template>
 	
@@ -2156,16 +2152,12 @@
 				<xsl:variable name="filename" select="concat(substring-before($bibitemid, '.exp_'), '.exp')"/>
 				<fo:inline xsl:use-attribute-sets="eref-style">
 					<xsl:variable name="url" select="concat('url(embedded-file:', $filename, ')')"/>
-					<xsl:call-template name="insert_basic_link">
-						<xsl:with-param name="element">
-							<fo:basic-link external-destination="{$url}" fox:alt-text="{@citeas}">
-								<xsl:if test="normalize-space(@citeas) = ''">
-									<xsl:attribute name="fox:alt-text"><xsl:value-of select="."/></xsl:attribute>
-								</xsl:if>
-								<xsl:apply-templates />
-							</fo:basic-link>
-						</xsl:with-param>
-					</xsl:call-template>
+					<fo:basic-link external-destination="{$url}" fox:alt-text="{@citeas}">
+						<xsl:if test="normalize-space(@citeas) = ''">
+							<xsl:attribute name="fox:alt-text"><xsl:value-of select="."/></xsl:attribute>
+						</xsl:if>
+						<xsl:apply-templates />
+					</fo:basic-link>
 				</fo:inline>
 			</xsl:when>
 			<xsl:otherwise>
