@@ -1890,14 +1890,18 @@
 
 	
 	<xsl:template match="iec:xref[@pagenumber = 'true']"  priority="2">
-		<fo:basic-link internal-destination="{@target}" fox:alt-text="{@target}" xsl:use-attribute-sets="xref-style">
-			<fo:inline>
-				<xsl:if test="@id">
-					<xsl:attribute name="id"><xsl:value-of select="@id"/></xsl:attribute>
-				</xsl:if>
-				<fo:page-number-citation ref-id="{@target}"/>
-			</fo:inline>
-		</fo:basic-link>
+		<xsl:call-template name="insert_basic_link">
+			<xsl:with-param name="element">
+				<fo:basic-link internal-destination="{@target}" fox:alt-text="{@target}" xsl:use-attribute-sets="xref-style">
+					<fo:inline>
+						<xsl:if test="@id">
+							<xsl:attribute name="id"><xsl:value-of select="@id"/></xsl:attribute>
+						</xsl:if>
+						<fo:page-number-citation ref-id="{@target}"/>
+					</fo:inline>
+				</fo:basic-link>
+			</xsl:with-param>
+		</xsl:call-template>
 	</xsl:template>
 	
 	<!-- =================== -->
