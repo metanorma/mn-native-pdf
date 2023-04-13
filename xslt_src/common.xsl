@@ -15810,6 +15810,27 @@
 	<!-- =================== -->
 	
 	
+	<!-- insert fo:basic-link, if external-destination or internal-destination is non-empty, otherwise insert fo:inline -->
+	<xsl:template name="insert_basic_link">
+		<xsl:param name="element"/>
+		<xsl:variable name="element_node" select="xalan:nodeset($element)"/>
+		<xsl:variable name="external-destination" select="normalize-space(count($element_node/fo:basic-link/@external-destination[. != '']) = 1)"/>
+		<xsl:variable name="internal-destination" select="normalize-space(count($element_node/fo:basic-link/@internal-destination[. != '']) = 1)"/>
+		<xsl:choose>
+			<xsl:when test="$external-destination = 'true' or $internal-destination = 'true'">
+				<xsl:copy-of select="$element_node"/>
+			</xsl:when>
+			<xsl:otherwise>
+				<fo:inline>
+					<xsl:for-each select="$element_node/fo:basic-link/@*[local-name() != 'external-destination' and local-name() != 'internal-destination' and local-name() != 'alt-text']">
+						<xsl:attribute name="{local-name()}"><xsl:value-of select="."/></xsl:attribute>
+					</xsl:for-each>
+					<xsl:copy-of select="$element_node/fo:basic-link/node()"/>
+				</fo:inline>
+			</xsl:otherwise>
+		</xsl:choose>
+	</xsl:template>
+	
 	<xsl:template match="*[local-name() = 'variant-title']"/> <!-- [@type = 'sub'] -->
 	<xsl:template match="*[local-name() = 'variant-title'][@type = 'sub']" mode="subtitle">
 		<fo:inline padding-right="5mm">&#xa0;</fo:inline>
