@@ -13942,14 +13942,17 @@
 									<xsl:attribute name="fox:alt-text"><xsl:value-of select="."/></xsl:attribute>
 								</xsl:if>
 								<xsl:if test="@type = 'inline'">
-									<xsl:if test="$namespace = 'csd' or $namespace = 'iho' or $namespace = 'ogc-white-paper' or $namespace = 'mpfd' or $namespace = 'bipm'">
+									<xsl:if test="$namespace = 'csd' or $namespace = 'iho' or $namespace = 'ogc-white-paper' or $namespace = 'mpfd'">
 										<xsl:attribute name="color">blue</xsl:attribute>
 										<xsl:attribute name="text-decoration">underline</xsl:attribute>
 									</xsl:if>
 									<xsl:if test="$namespace = 'bipm'">
+										<xsl:attribute name="color">blue</xsl:attribute>
+										<xsl:if test="not(parent::*[local-name() = 'title'])">
+											<xsl:attribute name="text-decoration">underline</xsl:attribute>
+										</xsl:if>
 										<xsl:if test="parent::*[local-name() = 'title']">
 											<xsl:attribute name="color">inherit</xsl:attribute>
-											<xsl:attribute name="text-decoration">inherit</xsl:attribute>
 											<xsl:attribute name="font-weight">normal</xsl:attribute>
 										</xsl:if>
 									</xsl:if>
