@@ -267,63 +267,9 @@
 								<xsl:text disable-output-escaping="yes">--&gt;</xsl:text>
 							</xsl:if>
 							
-							<fo:block text-align="center" font-size="14pt" font-family="IPAexGothic" margin-top="8.5mm">
-								<!-- Contents -->
-								<xsl:call-template name="getLocalizedString">
-									<xsl:with-param name="key">table_of_contents</xsl:with-param>
-								</xsl:call-template>
-							</fo:block>
-							
-							<fo:block text-align="right" font-size="8pt" font-family="IPAexMincho" margin-top="10mm">
-								<!-- Page -->
-								<xsl:call-template name="getLocalizedString">
-									<xsl:with-param name="key">locality.page</xsl:with-param>
-								</xsl:call-template>
-							</fo:block>
-						
-							<fo:block role="TOC" font-family="IPAexGothic">
-								<xsl:if test="$contents/doc[@num = $num]//item[@display = 'true']">
-									<xsl:for-each select="$contents/doc[@num = $num]//item[@display = 'true'][@level &lt;= $toc_level or @type='figure' or @type = 'table']">
-										<fo:block role="TOCI">
-											<xsl:choose>
-												<xsl:when test="@type = 'bibliography'">
-												</xsl:when>
-												<xsl:when test="@type = 'annex'">
-													<fo:block space-after="5pt">
-														<xsl:call-template name="insertTocItem"/>
-													</fo:block>
-												</xsl:when>
-												<xsl:otherwise>
-													<fo:list-block space-after="5pt">
-														<xsl:attribute name="provisional-distance-between-starts">
-															<xsl:choose>
-																<xsl:when test="string-length(@section) = 1">5mm</xsl:when>
-																<xsl:when test="string-length(@section) &gt;= 2"><xsl:value-of select="5 + (string-length(@section) - 1) * 2"/>mm</xsl:when>
-																<xsl:when test="@type = 'annex'">16mm</xsl:when>
-																<xsl:otherwise>5mm</xsl:otherwise>
-															</xsl:choose>
-														</xsl:attribute>
-														<fo:list-item>
-															<fo:list-item-label end-indent="label-end()">
-																<fo:block>
-																	<xsl:if test="@section != '' and @type != 'annex'">
-																		<xsl:attribute name="font-family">Times New Roman</xsl:attribute>
-																		<xsl:attribute name="font-weight">bold</xsl:attribute>
-																	</xsl:if>
-																	<xsl:value-of select="@section"/>
-																</fo:block>
-															</fo:list-item-label>
-															<fo:list-item-body start-indent="body-start()">
-																<xsl:call-template name="insertTocItem"/>
-															</fo:list-item-body>
-														</fo:list-item>
-													</fo:list-block>
-												</xsl:otherwise>
-											</xsl:choose>
-										</fo:block>
-									</xsl:for-each>
-								</xsl:if>
-							</fo:block>
+							<xsl:apply-templates select="/*/*[local-name()='preface']/*[local-name() = 'clause'][@type = 'toc']">
+								<xsl:with-param name="num" select="$num"/>
+							</xsl:apply-templates>
 							
 						</fo:flow>
 						
@@ -550,6 +496,74 @@
 		<!-- replace : to ： (Fullwidth colon) and render it in the font IPAexGothic -->
 		<fo:inline font-family="IPAexGothic">：</fo:inline>
 	</xsl:template>
+	
+	<xsl:template match="*[local-name()='preface']/*[local-name() = 'clause'][@type = 'toc']" priority="4">
+		<xsl:param name="num"/>
+		<xsl:apply-templates />
+		<xsl:if test="count(*) = 1 and *[local-name() = 'title']"> <!-- if there isn't user ToC -->
+			<!-- fill ToC -->
+			<fo:block role="TOC" font-family="IPAexGothic">
+				<xsl:if test="$contents/doc[@num = $num]//item[@display = 'true']">
+					<xsl:for-each select="$contents/doc[@num = $num]//item[@display = 'true'][@level &lt;= $toc_level or @type='figure' or @type = 'table']">
+						<fo:block role="TOCI">
+							<xsl:choose>
+								<xsl:when test="@type = 'bibliography'">
+								</xsl:when>
+								<xsl:when test="@type = 'annex'">
+									<fo:block space-after="5pt">
+										<xsl:call-template name="insertTocItem"/>
+									</fo:block>
+								</xsl:when>
+								<xsl:otherwise>
+									<fo:list-block space-after="5pt">
+										<xsl:attribute name="provisional-distance-between-starts">
+											<xsl:choose>
+												<xsl:when test="string-length(@section) = 1">5mm</xsl:when>
+												<xsl:when test="string-length(@section) &gt;= 2"><xsl:value-of select="5 + (string-length(@section) - 1) * 2"/>mm</xsl:when>
+												<xsl:when test="@type = 'annex'">16mm</xsl:when>
+												<xsl:otherwise>5mm</xsl:otherwise>
+											</xsl:choose>
+										</xsl:attribute>
+										<fo:list-item>
+											<fo:list-item-label end-indent="label-end()">
+												<fo:block>
+													<xsl:if test="@section != '' and @type != 'annex'">
+														<xsl:attribute name="font-family">Times New Roman</xsl:attribute>
+														<xsl:attribute name="font-weight">bold</xsl:attribute>
+													</xsl:if>
+													<xsl:value-of select="@section"/>
+												</fo:block>
+											</fo:list-item-label>
+											<fo:list-item-body start-indent="body-start()">
+												<xsl:call-template name="insertTocItem"/>
+											</fo:list-item-body>
+										</fo:list-item>
+									</fo:list-block>
+								</xsl:otherwise>
+							</xsl:choose>
+						</fo:block>
+					</xsl:for-each>
+				</xsl:if>
+			</fo:block>
+		</xsl:if>
+	</xsl:template>
+	
+	<xsl:template match="*[local-name() = 'clause'][@type = 'toc']/*[local-name() = 'title']" priority="3">
+		<fo:block text-align="center" font-size="14pt" font-family="IPAexGothic" margin-top="8.5mm">
+			<!-- Contents -->
+			<!-- <xsl:call-template name="getLocalizedString">
+				<xsl:with-param name="key">table_of_contents</xsl:with-param>
+			</xsl:call-template> -->
+			<xsl:apply-templates/>
+		</fo:block>
+		<fo:block text-align="right" font-size="8pt" font-family="IPAexMincho" margin-top="10mm">
+			<!-- Page -->
+			<xsl:call-template name="getLocalizedString">
+				<xsl:with-param name="key">locality.page</xsl:with-param>
+			</xsl:call-template>
+		</fo:block>
+	</xsl:template>
+	
 	
 	<xsl:template name="insertTocItem">
 		<fo:block text-align-last="justify" role="TOCI">
