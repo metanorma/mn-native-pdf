@@ -14813,7 +14813,7 @@
 			<xsl:variable name="provisional_distance_between_starts_">
 				<attributes xsl:use-attribute-sets="list-style">
 					<xsl:if test="$namespace = 'iec'">
-						<xsl:if test="ancestor::iec:legal-statement">
+						<xsl:if test="ancestor::iec:legal-statement or ancestor::iec:clause[@type = 'boilerplate_legal']">
 							<xsl:attribute name="provisional-distance-between-starts">5mm</xsl:attribute>
 						</xsl:if>
 					</xsl:if>
