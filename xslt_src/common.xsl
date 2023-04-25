@@ -14613,7 +14613,7 @@
 		<xsl:variable name="list_level__">
 			<xsl:choose>
 				<xsl:when test="$namespace = 'jis'"><xsl:value-of select="count(ancestor::*[local-name() = 'ul'])"/></xsl:when>
-				<xsl:otherwise><xsl:value-of select="count(ancestor::*[local-name() = 'ul']) + count(ancestor::*[local-name() = 'ol'])" />/></xsl:otherwise>
+				<xsl:otherwise><xsl:value-of select="count(ancestor::*[local-name() = 'ul']) + count(ancestor::*[local-name() = 'ol'])" /></xsl:otherwise>
 			</xsl:choose>
 		</xsl:variable>
 		<xsl:variable name="list_level_" select="number($list_level__)"/>
