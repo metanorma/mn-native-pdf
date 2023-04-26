@@ -193,7 +193,7 @@
 	<xsl:template name="generateContents">
 		<contents>
 
-			<xsl:apply-templates select="/*/bipm:preface/*[not(local-name() = 'note' or local-name() = 'admonition')][position() &gt; 1]" mode="contents" />
+			<xsl:apply-templates select="/*/bipm:preface/*[not(local-name() = 'note' or local-name() = 'admonition' or (local-name() = 'clause' and @type = 'toc'))][position() &gt; 1]" mode="contents" />
 			
 			<xsl:apply-templates select="/*/bipm:sections/*" mode="contents" />
 			<xsl:apply-templates select="/*/bipm:bibliography/bipm:references[@normative='true']" mode="contents"/>
@@ -561,9 +561,13 @@
 		</xsl:copy>
 	</xsl:template>
 	
+	<xsl:template match="bipm:semantic__bipm-standard" mode="flatxml" priority="2"/>
+	
 	<xsl:template match="mathml:math" mode="flatxml" priority="2">
 		<xsl:copy-of select="."/>
 	</xsl:template>
+
+	<xsl:template match="bipm:preface/bipm:clause[@type = 'toc']" mode="flatxml" priority="2"/>
 
 	<!-- enclosing starting elements annex/... in clause -->
 	<xsl:template match="bipm:annex" mode="flatxml">
@@ -766,7 +770,7 @@
 	</xsl:template>
 	
 	
-	<xsl:template match="bipm:preface/bipm:clause[position() &gt; 1]" mode="flatxml">
+	<xsl:template match="bipm:preface/bipm:clause[not(@type = 'toc')][position() &gt; 1]" mode="flatxml">
 		<xsl:copy-of select="."/>
 	</xsl:template>
 	
