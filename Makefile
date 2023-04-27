@@ -240,6 +240,7 @@ else
 	java -jar xalan/xalan.jar -IN $< -XSL xslt_src/merge.xsl -OUT $@ -PARAM xslfile $<; \
 	XMLNS=$$(xmllint --xpath "name(/*/namespace::*[starts-with(.,'https://www.metanorma.org/ns/')])" $<); \
 	echo "<?xml version=\"1.0\" encoding=\"UTF-8\"?><empty xmlns=\"https://www.metanorma.org/ns/$${XMLNS}\"></empty>" > empty.xml; \
+	cat empty.xml; \
 	java -jar xalan/xalan.jar -IN empty.xml -XSL $@ >result.txt > nul 2>result.txt; \
 	cat result.txt; \
 	test `wc -c <result.txt` -eq 0
