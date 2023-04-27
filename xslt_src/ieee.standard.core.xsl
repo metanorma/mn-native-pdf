@@ -1345,7 +1345,7 @@
 								</xsl:when> <!-- $stage = 'published' or 'approved' -->
 							</xsl:choose>
 					
-						</xsl:when>m <!-- 'standard' or 'draft' -->
+						</xsl:when> <!-- 'standard' or 'draft' -->
 						
 						<xsl:when test="$current_template = 'whitepaper' or $current_template = 'icap-whitepaper' or $current_template = 'industry-connection-report'">
 							<xsl:attribute name="font-size">10pt</xsl:attribute>
