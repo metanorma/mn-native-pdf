@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" 
 											xmlns:fo="http://www.w3.org/1999/XSL/Format" 
-											xmlns:rsd="https://www.metanorma.org/ns/rsd" 
+											xmlns:ribose="https://www.metanorma.org/ns/ribose" 
 											xmlns:mathml="http://www.w3.org/1998/Math/MathML" 
 											xmlns:xalan="http://xml.apache.org/xalan" 
 											xmlns:fox="http://xmlgraphics.apache.org/fop/extensions" 
@@ -19,25 +19,25 @@
 	
 	<xsl:variable name="color_blue">rgb(22, 97, 173)</xsl:variable>
 	
-	<xsl:variable name="copyright_year" select="/rsd:rsd-standard/rsd:bibdata/rsd:copyright/rsd:from"/>
+	<xsl:variable name="copyright_year" select="/ribose:rsd-standard/ribose:bibdata/ribose:copyright/ribose:from"/>
 	
 	<xsl:variable name="copyright">
 		<xsl:text>© </xsl:text>
 		<xsl:value-of select="$copyright_year"/>
 		<xsl:text> </xsl:text>
-		<xsl:value-of select="/rsd:rsd-standard/rsd:bibdata/rsd:copyright/rsd:owner/rsd:organization/rsd:name"/>
+		<xsl:value-of select="/ribose:rsd-standard/ribose:bibdata/ribose:copyright/ribose:owner/ribose:organization/ribose:name"/>
 	</xsl:variable>
 	
 	
 	<xsl:variable name="contents_">
 		<contents>
 		
-			<xsl:apply-templates select="/rsd:rsd-standard/rsd:preface/rsd:abstract" mode="contents"/>
-			<xsl:apply-templates select="/rsd:rsd-standard/rsd:preface/rsd:foreword" mode="contents"/>
-			<xsl:apply-templates select="/rsd:rsd-standard/rsd:preface/rsd:executivesummary" mode="contents"/>
-			<xsl:apply-templates select="/rsd:rsd-standard/rsd:preface/rsd:introduction" mode="contents"/>
-			<xsl:apply-templates select="/rsd:rsd-standard/rsd:preface/rsd:clause" mode="contents"/>
-			<xsl:apply-templates select="/rsd:rsd-standard/rsd:preface/rsd:acknowledgements" mode="contents"/>
+			<xsl:apply-templates select="/ribose:rsd-standard/ribose:preface/ribose:abstract" mode="contents"/>
+			<xsl:apply-templates select="/ribose:rsd-standard/ribose:preface/ribose:foreword" mode="contents"/>
+			<xsl:apply-templates select="/ribose:rsd-standard/ribose:preface/ribose:executivesummary" mode="contents"/>
+			<xsl:apply-templates select="/ribose:rsd-standard/ribose:preface/ribose:introduction" mode="contents"/>
+			<xsl:apply-templates select="/ribose:rsd-standard/ribose:preface/ribose:clause" mode="contents"/>
+			<xsl:apply-templates select="/ribose:rsd-standard/ribose:preface/ribose:acknowledgements" mode="contents"/>
 					
 			<xsl:call-template name="processMainSectionsDefault_Contents"/>
 			
@@ -47,11 +47,11 @@
 	<xsl:variable name="contents" select="xalan:nodeset($contents_)"/>
 	
 	<xsl:variable name="docnumber_version">
-		<xsl:value-of select="/rsd:rsd-standard/rsd:bibdata/rsd:docidentifier[@type = 'rsd' or @type = 'Ribose']"/>
+		<xsl:value-of select="/ribose:rsd-standard/ribose:bibdata/ribose:docidentifier[@type = 'rsd' or @type = 'Ribose']"/>
 			<xsl:text>:</xsl:text>
 			<xsl:value-of select="$copyright_year"/>
 			
-			<xsl:variable name="edition" select="normalize-space(/rsd:rsd-standard/rsd:bibdata/rsd:edition[normalize-space(@language) = ''])"/>
+			<xsl:variable name="edition" select="normalize-space(/ribose:rsd-standard/ribose:bibdata/ribose:edition[normalize-space(@language) = ''])"/>
 			<xsl:if test="$edition != ''">
 				<xsl:variable name="title-version">
 					<xsl:call-template name="capitalize">
@@ -357,7 +357,7 @@
 										<fo:table-cell display-align="before" border-right="0.5pt solid black" padding-top="1.5mm" padding-right="5mm">
 											<!-- Author's list -->
 											<fo:block>
-												<xsl:for-each select="/rsd:rsd-standard/rsd:bibdata/rsd:contributor[rsd:role/@type='author']/rsd:person/rsd:name/rsd:completename">
+												<xsl:for-each select="/ribose:rsd-standard/ribose:bibdata/ribose:contributor[ribose:role/@type='author']/ribose:person/ribose:name/ribose:completename">
 													<fo:block>
 														<xsl:apply-templates />
 													</fo:block>
@@ -366,20 +366,20 @@
 										</fo:table-cell>
 										<fo:table-cell display-align="before" padding-top="1.5mm" padding-left="8mm">
 											<fo:block>
-												<xsl:apply-templates select="/rsd:rsd-standard/rsd:bibdata/rsd:ext/rsd:security"/>
+												<xsl:apply-templates select="/ribose:rsd-standard/ribose:bibdata/ribose:ext/ribose:security"/>
 												<fo:block>
 													<xsl:call-template name="convertDate">
-														<xsl:with-param name="date" select="/rsd:rsd-standard/rsd:bibdata/rsd:date[@type = 'published']/rsd:on"/>
+														<xsl:with-param name="date" select="/ribose:rsd-standard/ribose:bibdata/ribose:date[@type = 'published']/ribose:on"/>
 														<xsl:with-param name="format" select="'Month DD, YYYY'"/>
 													</xsl:call-template>
 												</fo:block>
 												<fo:block><xsl:value-of select="$docnumber_version"/></fo:block>
-												<xsl:apply-templates select="/rsd:rsd-standard/rsd:bibdata/rsd:ext/rsd:editorialgroup/rsd:committee"/>
+												<xsl:apply-templates select="/ribose:rsd-standard/ribose:bibdata/ribose:ext/ribose:editorialgroup/ribose:committee"/>
 												<fo:block>
 													<xsl:text>© </xsl:text>
 													<xsl:value-of select="$copyright_year"/>
 													<xsl:text> </xsl:text>
-													<xsl:variable name="publisher" select="/rsd:rsd-standard/rsd:bibdata/rsd:contributor[rsd:role/@type='publisher']/rsd:organization/rsd:name"/>
+													<xsl:variable name="publisher" select="/ribose:rsd-standard/ribose:bibdata/ribose:contributor[ribose:role/@type='publisher']/ribose:organization/ribose:name"/>
 													<xsl:value-of select="$publisher"/>
 													<xsl:if test="substring($publisher, string-length($publisher)) != '.'"><xsl:text>.</xsl:text></xsl:if>
 													<xsl:text> </xsl:text>
@@ -403,12 +403,12 @@
 					
 					<!-- title and version  -->
 					<fo:block-container margin-top="{$pageHeight - 279.4}mm" height="60mm" display-align="center">
-						<xsl:variable name="title" select="/rsd:rsd-standard/rsd:bibdata/rsd:title[@language = $lang]"/>
+						<xsl:variable name="title" select="/ribose:rsd-standard/ribose:bibdata/ribose:title[@language = $lang]"/>
 						<xsl:if test="string-length($title) &gt; 80">
 							<xsl:attribute name="margin-right">-30mm</xsl:attribute>
 						</xsl:if>
 						<fo:block font-size="27pt" font-weight="bold" role="H1">
-								<xsl:apply-templates select="/rsd:rsd-standard/rsd:bibdata/rsd:title[@language = $lang]" mode="cover_page"/>
+								<xsl:apply-templates select="/ribose:rsd-standard/ribose:bibdata/ribose:title[@language = $lang]" mode="cover_page"/>
 						</fo:block>
 						<fo:block space-before="9pt" font-size="16.8pt" font-weight="600">
 							<xsl:value-of select="$docnumber_version"/>
@@ -424,79 +424,12 @@
 					<xsl:with-param name="section">toc</xsl:with-param>
 				</xsl:call-template>
 				<fo:flow flow-name="xsl-region-body">
-					<xsl:if test="$contents//item[@display = 'true']">
-						<fo:block role="TOC">
-						<!-- <fo:block-container absolute-position="fixed" left="13mm" top="15mm"> -->
-							<fo:block font-size="27pt" font-weight="bold" color="black" margin-left="-15mm" margin-bottom="13mm" role="H1">
-								<xsl:call-template name="getLocalizedString">
-									<xsl:with-param name="key">table_of_contents</xsl:with-param>
-								</xsl:call-template>
-							</fo:block>
-						<!-- </fo:block-container> -->
-						
-							<fo:block-container margin-left="32mm" margin-right="-17mm">
-								<fo:block-container margin-left="0mm" margin-right="0mm">
-									<xsl:for-each select="$contents//item[@display = 'true']">
-										<fo:block font-size="13pt" role="TOCI">
-											<xsl:if test="@level = 1">
-												<xsl:if test="preceding-sibling::item[@display = 'true' and @level = 1]">
-													<xsl:attribute name="space-before">16pt</xsl:attribute>
-												</xsl:if>
-												<xsl:attribute name="space-after">4pt</xsl:attribute>
-												<xsl:attribute name="font-weight">bold</xsl:attribute>
-												<xsl:attribute name="keep-with-next">always</xsl:attribute>
-												<xsl:attribute name="color">black</xsl:attribute>
-											</xsl:if>
-											<xsl:if test="@level &gt;= 2">
-												<xsl:attribute name="margin-left"><xsl:value-of select="(@level - 1) * 16.5"/>mm</xsl:attribute>
-												<xsl:attribute name="space-before">4pt</xsl:attribute>
-												<xsl:attribute name="space-after">5pt</xsl:attribute>
-											</xsl:if>
-											<fo:block text-align-last="justify">
-												<fo:basic-link internal-destination="{@id}" fox:alt-text="{title}">
-													<xsl:value-of select="@section"/>
-													<xsl:text> </xsl:text>
-													<xsl:apply-templates select="title"/>
-													<xsl:text> &#xA0;</xsl:text>
-													<fo:inline>
-														<fo:leader leader-pattern="rule" rule-thickness="0.2mm"/>
-														<fo:inline padding-left="2mm"><fo:page-number-citation ref-id="{@id}"/></fo:inline>
-													</fo:inline>
-												</fo:basic-link>
-											</fo:block>
-										</fo:block>
-									</xsl:for-each>
-									
-									<!-- List of Tables -->
-									<xsl:if test="$contents//tables/table">
-										<xsl:call-template name="insertListOf_Title">
-											<xsl:with-param name="title" select="$title-list-tables"/>
-										</xsl:call-template>
-										<xsl:for-each select="$contents//tables/table">
-											<xsl:call-template name="insertListOf_Item"/>
-										</xsl:for-each>
-									</xsl:if>
-									
-									<!-- List of Figures -->
-									<xsl:if test="$contents//figures/figure">
-										<xsl:call-template name="insertListOf_Title">
-											<xsl:with-param name="title" select="$title-list-figures"/>
-										</xsl:call-template>
-										<xsl:for-each select="$contents//figures/figure">
-											<xsl:call-template name="insertListOf_Item"/>
-										</xsl:for-each>
-									</xsl:if>
-									
-								</fo:block-container>
-							</fo:block-container>
-						</fo:block>
-						<fo:block break-after="page"/>
-					</xsl:if>
-					<fo:block margin-bottom="12pt">&#xA0;</fo:block>
+				
+					<xsl:apply-templates select="/ribose:rsd-standard/ribose:preface/ribose:clause[@type = 'toc']" />
+				
+					<xsl:apply-templates select="/ribose:rsd-standard/ribose:boilerplate/ribose:legal-statement"/>
 					
-					<xsl:apply-templates select="/rsd:rsd-standard/rsd:boilerplate/rsd:legal-statement"/>
-					
-					<xsl:apply-templates select="/rsd:rsd-standard/rsd:boilerplate/rsd:feedback-statement"/>
+					<xsl:apply-templates select="/ribose:rsd-standard/ribose:boilerplate/ribose:feedback-statement"/>
 				
 				</fo:flow>
 			</fo:page-sequence>
@@ -517,12 +450,12 @@
 				
 					<fo:block line-height="130%">
 					
-						<xsl:apply-templates select="/rsd:rsd-standard/rsd:preface/rsd:abstract" />
-						<xsl:apply-templates select="/rsd:rsd-standard/rsd:preface/rsd:foreword" />
-						<xsl:apply-templates select="/rsd:rsd-standard/rsd:preface/rsd:executivesummary" />
-						<xsl:apply-templates select="/rsd:rsd-standard/rsd:preface/rsd:introduction" />
-						<xsl:apply-templates select="/rsd:rsd-standard/rsd:preface/rsd:clause" />
-						<xsl:apply-templates select="/rsd:rsd-standard/rsd:preface/rsd:acknowledgements" />
+						<xsl:apply-templates select="/ribose:rsd-standard/ribose:preface/ribose:abstract" />
+						<xsl:apply-templates select="/ribose:rsd-standard/ribose:preface/ribose:foreword" />
+						<xsl:apply-templates select="/ribose:rsd-standard/ribose:preface/ribose:executivesummary" />
+						<xsl:apply-templates select="/ribose:rsd-standard/ribose:preface/ribose:introduction" />
+						<xsl:apply-templates select="/ribose:rsd-standard/ribose:preface/ribose:clause[not(@type = 'toc')]" />
+						<xsl:apply-templates select="/ribose:rsd-standard/ribose:preface/ribose:acknowledgements" />
 					
 						<xsl:call-template name="processMainSectionsDefault"/>
 						
@@ -558,11 +491,91 @@
 		</fo:block>
 	</xsl:template>
 
-	<xsl:template match="rsd:title" mode="cover_page">
+	<xsl:template match="ribose:title" mode="cover_page">
 		<xsl:apply-templates />
 	</xsl:template>
 
-	<xsl:template match="rsd:bibdata/rsd:ext/rsd:security">
+	<xsl:template match="ribose:preface/ribose:clause[@type = 'toc']" priority="3">
+		<fo:block role="TOC">
+			<xsl:apply-templates />	
+			
+			<xsl:if test="count(*) = 1 and *[local-name() = 'title']"> <!-- if there isn't user ToC -->
+			
+				<xsl:if test="$contents//item[@display = 'true']">
+				
+					<fo:block-container margin-left="32mm" margin-right="-17mm">
+						<fo:block-container margin-left="0mm" margin-right="0mm">
+							<xsl:for-each select="$contents//item[@display = 'true']">
+								<fo:block font-size="13pt" role="TOCI">
+									<xsl:if test="@level = 1">
+										<xsl:if test="preceding-sibling::item[@display = 'true' and @level = 1]">
+											<xsl:attribute name="space-before">16pt</xsl:attribute>
+										</xsl:if>
+										<xsl:attribute name="space-after">4pt</xsl:attribute>
+										<xsl:attribute name="font-weight">bold</xsl:attribute>
+										<xsl:attribute name="keep-with-next">always</xsl:attribute>
+										<xsl:attribute name="color">black</xsl:attribute>
+									</xsl:if>
+									<xsl:if test="@level &gt;= 2">
+										<xsl:attribute name="margin-left"><xsl:value-of select="(@level - 1) * 16.5"/>mm</xsl:attribute>
+										<xsl:attribute name="space-before">4pt</xsl:attribute>
+										<xsl:attribute name="space-after">5pt</xsl:attribute>
+									</xsl:if>
+									<fo:block text-align-last="justify">
+										<fo:basic-link internal-destination="{@id}" fox:alt-text="{title}">
+											<xsl:value-of select="@section"/>
+											<xsl:text> </xsl:text>
+											<xsl:apply-templates select="title"/>
+											<xsl:text> &#xA0;</xsl:text>
+											<fo:inline>
+												<fo:leader leader-pattern="rule" rule-thickness="0.2mm"/>
+												<fo:inline padding-left="2mm"><fo:page-number-citation ref-id="{@id}"/></fo:inline>
+											</fo:inline>
+										</fo:basic-link>
+									</fo:block>
+								</fo:block>
+							</xsl:for-each>
+							
+							<!-- List of Tables -->
+							<xsl:if test="$contents//tables/table">
+								<xsl:call-template name="insertListOf_Title">
+									<xsl:with-param name="title" select="$title-list-tables"/>
+								</xsl:call-template>
+								<xsl:for-each select="$contents//tables/table">
+									<xsl:call-template name="insertListOf_Item"/>
+								</xsl:for-each>
+							</xsl:if>
+							
+							<!-- List of Figures -->
+							<xsl:if test="$contents//figures/figure">
+								<xsl:call-template name="insertListOf_Title">
+									<xsl:with-param name="title" select="$title-list-figures"/>
+								</xsl:call-template>
+								<xsl:for-each select="$contents//figures/figure">
+									<xsl:call-template name="insertListOf_Item"/>
+								</xsl:for-each>
+							</xsl:if>
+							
+						</fo:block-container>
+					</fo:block-container>
+				
+					<fo:block break-after="page"/>
+				</xsl:if>
+			</xsl:if>
+			<fo:block margin-bottom="12pt">&#xA0;</fo:block>
+		</fo:block>
+	</xsl:template>
+
+	<xsl:template match="ribose:preface/ribose:clause[@type = 'toc']/ribose:title" priority="3">
+		<fo:block font-size="27pt" font-weight="bold" color="black" margin-left="-15mm" margin-bottom="13mm" role="H1">
+			<!-- <xsl:call-template name="getLocalizedString">
+				<xsl:with-param name="key">table_of_contents</xsl:with-param>
+			</xsl:call-template> -->
+			<xsl:apply-templates />
+		</fo:block>
+	</xsl:template>
+
+	<xsl:template match="ribose:bibdata/ribose:ext/ribose:security">
 		<fo:block>
 			<xsl:call-template name="capitalize">
 				<xsl:with-param name="str" select="."/>
@@ -570,7 +583,7 @@
 		</fo:block>
 	</xsl:template>
 
-	<xsl:template match="rsd:bibdata/rsd:ext/rsd:editorialgroup/rsd:committee">
+	<xsl:template match="ribose:bibdata/ribose:ext/ribose:editorialgroup/ribose:committee">
 		<fo:block><xsl:apply-templates /></fo:block>
 	</xsl:template>
 
@@ -583,10 +596,10 @@
 	<!-- ============================= -->
 
 	<!-- element with title -->
-	<xsl:template match="*[rsd:title]" mode="contents">
+	<xsl:template match="*[ribose:title]" mode="contents">
 		<xsl:variable name="level">
 			<xsl:call-template name="getLevel">
-				<xsl:with-param name="depth" select="rsd:title/@depth"/>
+				<xsl:with-param name="depth" select="ribose:title/@depth"/>
 			</xsl:call-template>
 		</xsl:variable>
 		
@@ -599,8 +612,9 @@
 		
 		<xsl:variable name="skip">
 			<xsl:choose>
-				<xsl:when test="ancestor-or-self::rsd:bibitem">true</xsl:when>
-				<xsl:when test="ancestor-or-self::rsd:term">true</xsl:when>				
+				<xsl:when test="@type = 'toc'">true</xsl:when>
+				<xsl:when test="ancestor-or-self::ribose:bibitem">true</xsl:when>
+				<xsl:when test="ancestor-or-self::ribose:term">true</xsl:when>				
 				<xsl:otherwise>false</xsl:otherwise>
 			</xsl:choose>
 		</xsl:variable>
@@ -635,7 +649,7 @@
 	<!-- ============================= -->
 	
 	
-	<xsl:template match="rsd:feedback-statement" priority="2">
+	<xsl:template match="ribose:feedback-statement" priority="2">
 		<fo:block-container border="1pt solid black" padding="1mm" padding-left="2mm">
 			<fo:block>
 				<xsl:apply-templates />
@@ -644,7 +658,7 @@
 	</xsl:template>
 
 	
-	<xsl:template match="rsd:legal-statement" priority="2">
+	<xsl:template match="ribose:legal-statement" priority="2">
 		<xsl:apply-templates/>
 	</xsl:template>
 		
@@ -653,7 +667,7 @@
 	<!-- title      -->
 	<!-- ====== -->
 	
-	<!-- <xsl:template match="rsd:annex/rsd:title">
+	<!-- <xsl:template match="ribose:annex/ribose:title">
 		<xsl:variable name="level">
 			<xsl:call-template name="getLevel"/>
 		</xsl:variable>
@@ -668,7 +682,7 @@
 		</fo:block>
 	</xsl:template> -->
 	
-	<xsl:template match="rsd:title" name="title">
+	<xsl:template match="ribose:title" name="title">
 		
 		<xsl:variable name="level">
 			<xsl:call-template name="getLevel"/>
@@ -676,8 +690,8 @@
 		
 		<xsl:variable name="font-size">
 			<xsl:choose>
-				<!-- <xsl:when test="ancestor::rsd:preface and $level &gt;= 2">12pt</xsl:when>
-				<xsl:when test="ancestor::rsd:preface">13pt</xsl:when> -->
+				<!-- <xsl:when test="ancestor::ribose:preface and $level &gt;= 2">12pt</xsl:when>
+				<xsl:when test="ancestor::ribose:preface">13pt</xsl:when> -->
 				<xsl:when test="$level = 1">22pt</xsl:when>
 				<xsl:when test="$level = 2">13pt</xsl:when>
 				<xsl:when test="$level &gt;= 3">11pt</xsl:when>
@@ -789,7 +803,7 @@
 		</fo:block>
 	</xsl:template>
 	
-	<xsl:template match="rsd:p" name="paragraph">
+	<xsl:template match="ribose:p" name="paragraph">
 		<xsl:param name="inline" select="'false'"/>
 		<xsl:param name="split_keep-within-line"/>
 		<xsl:variable name="previous-element" select="local-name(preceding-sibling::*[1])"/>
@@ -807,19 +821,19 @@
 			</xsl:attribute>
 			<xsl:attribute name="text-align">
 				<xsl:choose>
-					<!-- <xsl:when test="ancestor::rsd:preface">justify</xsl:when> -->
+					<!-- <xsl:when test="ancestor::ribose:preface">justify</xsl:when> -->
 					<xsl:when test="@align"><xsl:value-of select="@align"/></xsl:when>
 					<xsl:otherwise>left</xsl:otherwise><!-- justify -->
 				</xsl:choose>
 			</xsl:attribute>
 			<xsl:attribute name="space-after">
 				<xsl:choose>
-					<xsl:when test="ancestor::rsd:li">6pt</xsl:when>
-					<xsl:when test="ancestor::rsd:feedback-statement and not(following-sibling::rsd:p)">0pt</xsl:when>
+					<xsl:when test="ancestor::ribose:li">6pt</xsl:when>
+					<xsl:when test="ancestor::ribose:feedback-statement and not(following-sibling::ribose:p)">0pt</xsl:when>
 					<xsl:otherwise>6pt</xsl:otherwise> <!-- 12pt-->
 				</xsl:choose>
 			</xsl:attribute>
-			<xsl:if  test="ancestor::rsd:dl"> <!-- ancestor::rsd:li or  -->
+			<xsl:if  test="ancestor::ribose:dl"> <!-- ancestor::ribose:li or  -->
 				<xsl:attribute name="margin-bottom">0pt</xsl:attribute>
 			</xsl:if>
 			
@@ -830,7 +844,7 @@
 		</xsl:element>
 		<xsl:if test="$element-name = 'fo:inline' and not($inline = 'true') and not(local-name(..) = 'admonition')">
 			<fo:block margin-bottom="12pt">
-				 <xsl:if test="ancestor::rsd:annex">
+				 <xsl:if test="ancestor::ribose:annex">
 					<xsl:attribute name="margin-bottom">0</xsl:attribute>
 				 </xsl:if>
 				<xsl:value-of select="$linebreak"/>
@@ -842,18 +856,18 @@
 	</xsl:template>
 	
 	
-	<xsl:template match="rsd:fn/rsd:p">
+	<xsl:template match="ribose:fn/ribose:p">
 		<fo:block>
 			<xsl:apply-templates />
 		</fo:block>
 	</xsl:template>
 	
 
-	<xsl:template match="rsd:ul | rsd:ol" mode="list" priority="2">
+	<xsl:template match="ribose:ul | ribose:ol" mode="list" priority="2">
 		<fo:block-container>
 			<fo:block-container margin-left="0mm">
 				<xsl:choose>
-					<xsl:when test="not(ancestor::rsd:ul) and not(ancestor::rsd:ol)">
+					<xsl:when test="not(ancestor::ribose:ul) and not(ancestor::ribose:ol)">
 						<fo:block padding-bottom="12pt" padding-top="4pt">
 							<xsl:call-template name="listProcessing"/>
 						</fo:block>
@@ -873,15 +887,15 @@
 	</xsl:template>
 	
 	
-	<xsl:template match="rsd:ul/rsd:note | rsd:ol/rsd:note" priority="2">
+	<xsl:template match="ribose:ul/ribose:note | ribose:ol/ribose:note" priority="2">
 		<fo:list-item font-size="10pt">
-			<xsl:if test="ancestor::rsd:table">
+			<xsl:if test="ancestor::ribose:table">
 				<xsl:attribute name="font-size">8pt</xsl:attribute>
 			</xsl:if>
 			<fo:list-item-label><fo:block></fo:block></fo:list-item-label>
 			<fo:list-item-body>
 				<fo:block>
-					<xsl:apply-templates select="rsd:name" />
+					<xsl:apply-templates select="ribose:name" />
 					<xsl:apply-templates select="node()[not(local-name() = 'name')]" />
 				</fo:block>
 			</fo:list-item-body>
@@ -890,7 +904,7 @@
 	
 	
 	
-	<xsl:template match="rsd:preferred | rsd:deprecates | rsd:admitted" priority="2">
+	<xsl:template match="ribose:preferred | ribose:deprecates | ribose:admitted" priority="2">
 		<xsl:variable name="level">
 			<xsl:call-template name="getLevel"/>
 		</xsl:variable>
@@ -904,10 +918,10 @@
 			<xsl:call-template name="getLevelTermName"/>
 		</xsl:variable>
 		<fo:block font-weight="bold" color="black" font-size="{$font-size}" keep-with-next="always" role="H{$levelTerm}"> <!-- 600 - semibold -->
-			<xsl:if test="preceding-sibling::*[1][self::rsd:name]">
+			<xsl:if test="preceding-sibling::*[1][self::ribose:name]">
 				<xsl:attribute name="space-before">11mm</xsl:attribute>
 				<fo:inline padding-right="1mm">
-					<xsl:apply-templates select="ancestor::rsd:term[1]/rsd:name" />
+					<xsl:apply-templates select="ancestor::ribose:term[1]/ribose:name" />
 				</fo:inline>
 			</xsl:if>
 			
@@ -943,7 +957,7 @@
 		</fo:block>
 	</xsl:template>
 	
-	<xsl:template match="rsd:references[not(@normative='true')]" priority="3">
+	<xsl:template match="ribose:references[not(@normative='true')]" priority="3">
 		<fo:block break-after="page"/>
 		<fo:block id="{@id}">
 			<fo:table width="100%" table-layout="fixed" >
@@ -957,7 +971,7 @@
 								<xsl:attribute name="margin-bottom">16pt</xsl:attribute>
 								<xsl:attribute name="color">black</xsl:attribute>
 								<xsl:attribute name="line-height">125%</xsl:attribute>
-								<xsl:apply-templates select="rsd:title/node()"/>
+								<xsl:apply-templates select="ribose:title/node()"/>
 							</fo:block>
 						</fo:table-cell>
 					</fo:table-row>
@@ -997,7 +1011,7 @@
 	<xsl:template match="*[local-name() = 'clause']" priority="2">
 		<xsl:variable name="level">
 			<xsl:call-template name="getLevel">
-				<xsl:with-param name="depth" select="rsd:title/@depth"/>
+				<xsl:with-param name="depth" select="ribose:title/@depth"/>
 			</xsl:call-template>
 		</xsl:variable>
 		<fo:block-container>
@@ -1122,7 +1136,7 @@
 			<xsl:text>Ribose</xsl:text>
 			<xsl:text>&#xA0;</xsl:text>
 			<xsl:call-template name="capitalize">
-				<xsl:with-param name="str" select="/rsd:rsd-standard/rsd:bibdata/rsd:ext/rsd:doctype"/>
+				<xsl:with-param name="str" select="/ribose:rsd-standard/ribose:bibdata/ribose:ext/ribose:doctype"/>
 			</xsl:call-template>
 		</xsl:variable>
 		<fo:static-content flow-name="footer-odd" role="artifact">

@@ -303,10 +303,11 @@
 					</xsl:if>
 					
 					<!-- Preface Pages (except Abstract, that showed in Summary on cover page`) -->
-					<xsl:if test="/un:un-standard/un:preface/*[not(local-name() = 'abstract' or local-name() = 'note' or local-name() = 'admonition')]">
+					<xsl:if test="/un:un-standard/un:preface/*[not(local-name() = 'abstract' or local-name() = 'note' or local-name() = 'admonition' or (local-name() = 'clause' and @type = 'toc'))]">
 						<xsl:apply-templates select="/*/*[local-name()='preface']/*[local-name()='foreword']" />
 						<xsl:apply-templates select="/*/*[local-name()='preface']/*[local-name()='introduction']" />
-						<xsl:apply-templates select="/*/*[local-name()='preface']/*[local-name() != 'abstract' and local-name() != 'foreword' and local-name() != 'introduction' and local-name() != 'acknowledgements' and local-name() != 'note' and local-name() != 'admonition']" />
+						<xsl:apply-templates select="/*/*[local-name()='preface']/*[local-name() != 'abstract' and local-name() != 'foreword' and local-name() != 'introduction' and local-name() != 'acknowledgements' and local-name() != 'note' and local-name() != 'admonition' and
+						not(local-name() = 'clause' and @type = 'toc')]" />
 						<xsl:apply-templates select="/*/*[local-name()='preface']/*[local-name()='acknowledgements']" />
 						<fo:block break-after="page"/>
 					</xsl:if>
@@ -351,6 +352,7 @@
 		
 		<xsl:variable name="skip">
 			<xsl:choose>
+				<xsl:when test="@type = 'toc'">true</xsl:when>
 				<xsl:when test="ancestor-or-self::un:bibitem">true</xsl:when>
 				<xsl:when test="ancestor-or-self::un:term">true</xsl:when>
 				<xsl:when test="@inline-header = 'true'">true</xsl:when>

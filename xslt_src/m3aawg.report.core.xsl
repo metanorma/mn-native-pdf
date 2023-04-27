@@ -219,120 +219,10 @@
 						<xsl:text disable-output-escaping="yes">--&gt;</xsl:text>
 					</xsl:if>
 					
-					<!-- Table of content -->
-					<fo:block-container>
-						<xsl:variable name="title-toc">
-							<xsl:call-template name="getTitle">
-								<xsl:with-param name="name" select="'title-toc'"/>
-							</xsl:call-template>
-						</xsl:variable>
-						<fo:block font-size="12pt" font-weight="bold" text-decoration="underline" margin-bottom="4pt" role="H1"><xsl:value-of select="$title-toc"/></fo:block>
-						<fo:block font-size="10pt" role="TOC">
-							<xsl:for-each select="$contents//item[@display = 'true']"><!-- [not(@level = 2 and starts-with(@section, '0'))] skip clause from preface -->							
-								<xsl:choose>
-									<xsl:when test="@section = ''">
-										<fo:table table-layout="fixed" width="100%" id="__internal_layout__price_toc_{generate-id()}">
-											<fo:table-column column-width="180mm"/>
-											<fo:table-body>
-												<fo:table-row height="6mm">
-													<fo:table-cell>
-														<fo:block text-align-last="justify" role="TOCI">
-															<xsl:if test="@level = 1">
-																<xsl:attribute name="font-weight">bold</xsl:attribute>
-															</xsl:if>
-															<fo:basic-link internal-destination="{@id}" fox:alt-text="{title}">
-																<fo:inline font-weight="bold">
-																	<xsl:apply-templates select="title"/><xsl:text>&#xa0;</xsl:text>
-																</fo:inline>
-																<fo:inline keep-together.within-line="always">
-																	<fo:leader font-weight="normal" leader-pattern="dots"/>
-																	<fo:inline><fo:page-number-citation ref-id="{@id}"/></fo:inline>
-																</fo:inline>
-															</fo:basic-link>
-														</fo:block>
-													</fo:table-cell>
-												</fo:table-row>
-											</fo:table-body>
-										</fo:table>
-									</xsl:when>
-									<xsl:otherwise>
-										<fo:table table-layout="fixed" width="100%" id="__internal_layout__price_toc_{generate-id()}">
-											<fo:table-column column-width="5mm"/> <!-- 25mm -->
-											<fo:table-column column-width="175mm"/> <!-- 155mm -->
-											<fo:table-body>
-												<fo:table-row height="6mm">
-													<fo:table-cell>
-														<fo:block font-weight="bold" role="TOCI">
-															<fo:basic-link internal-destination="{@id}" fox:alt-text="{title}">
-																<xsl:choose>
-																	<!-- <xsl:when test="@section = ''">
-																		<xsl:apply-templates select="title"/>
-																	</xsl:when> -->
-																	<!-- <xsl:when test="@type = 'references' and @section = ''">
-																		<xsl:apply-templates select="title"/>
-																	</xsl:when> -->
-																	<xsl:when test="@level = 1">
-																		<xsl:value-of select="@section"/>
-																	</xsl:when>
-																	<xsl:otherwise></xsl:otherwise>
-																</xsl:choose>
-															</fo:basic-link>
-														</fo:block>
-													</fo:table-cell>
-													<fo:table-cell>
-														<fo:block text-align-last="justify" role="TOCI">
-															<xsl:if test="@level = 1">
-																<xsl:attribute name="font-weight">bold</xsl:attribute>
-															</xsl:if>
-															<fo:basic-link internal-destination="{@id}" fox:alt-text="{title}">
-																<!-- <xsl:choose>
-																	<xsl:when test="@section = ''"></xsl:when>
-																	<xsl:otherwise>
-																		<xsl:apply-templates select="title"/>
-																	</xsl:otherwise>
-																</xsl:choose> -->
-																<xsl:apply-templates select="title"/><xsl:text>&#xa0;</xsl:text>
-																<fo:inline keep-together.within-line="always">
-																	<fo:leader font-weight="normal" leader-pattern="dots"/>
-																	<fo:inline><fo:page-number-citation ref-id="{@id}"/></fo:inline>
-																</fo:inline>
-															</fo:basic-link>
-														</fo:block>
-													</fo:table-cell>
-												</fo:table-row>
-											</fo:table-body>
-										</fo:table>
-									</xsl:otherwise>
-									
-								</xsl:choose>
-								
-							</xsl:for-each>
-							
-							<!-- List of Tables -->
-							<xsl:if test="$contents//tables/table">
-								<xsl:call-template name="insertListOf_Title">
-									<xsl:with-param name="title" select="$title-list-tables"/>
-								</xsl:call-template>
-								<xsl:for-each select="$contents//tables/table">
-									<xsl:call-template name="insertListOf_Item"/>
-								</xsl:for-each>
-							</xsl:if>
-							
-							<!-- List of Figures -->
-							<xsl:if test="$contents//figures/figure">
-								<xsl:call-template name="insertListOf_Title">
-									<xsl:with-param name="title" select="$title-list-figures"/>
-								</xsl:call-template>
-								<xsl:for-each select="$contents//figures/figure">
-									<xsl:call-template name="insertListOf_Item"/>
-								</xsl:for-each>
-							</xsl:if>
-								
-							
-						</fo:block>
-					</fo:block-container>
-					
-					<fo:block break-after="page"/>
+					<!-- Table of contents -->
+					<xsl:apply-templates select="/*/m3d:preface/m3d:clause[@type = 'toc']">
+						<xsl:with-param name="process">true</xsl:with-param>
+					</xsl:apply-templates>
 					
 					<fo:block>
 						<xsl:apply-templates select="/m3d:m3d-standard/m3d:boilerplate"/>
@@ -403,6 +293,141 @@
 		</fo:block>
 	</xsl:template>
 	
+	<xsl:template match="m3d:preface/m3d:clause[@type = 'toc']" priority="3">
+		<xsl:param name="process">false</xsl:param>
+		<xsl:if test="$process = 'true'">
+			
+			<!-- Table of content -->
+			<fo:block-container>
+			
+				<xsl:apply-templates />
+				
+				<xsl:if test="count(*) = 1 and *[local-name() = 'title']"> <!-- if there isn't user ToC -->
+				
+					<fo:block font-size="10pt" role="TOC">
+						<xsl:for-each select="$contents//item[@display = 'true']"><!-- [not(@level = 2 and starts-with(@section, '0'))] skip clause from preface -->							
+							<xsl:choose>
+								<xsl:when test="@section = ''">
+									<fo:table table-layout="fixed" width="100%" id="__internal_layout__price_toc_{generate-id()}">
+										<fo:table-column column-width="180mm"/>
+										<fo:table-body>
+											<fo:table-row height="6mm">
+												<fo:table-cell>
+													<fo:block text-align-last="justify" role="TOCI">
+														<xsl:if test="@level = 1">
+															<xsl:attribute name="font-weight">bold</xsl:attribute>
+														</xsl:if>
+														<fo:basic-link internal-destination="{@id}" fox:alt-text="{title}">
+															<fo:inline font-weight="bold">
+																<xsl:apply-templates select="title"/><xsl:text>&#xa0;</xsl:text>
+															</fo:inline>
+															<fo:inline keep-together.within-line="always">
+																<fo:leader font-weight="normal" leader-pattern="dots"/>
+																<fo:inline><fo:page-number-citation ref-id="{@id}"/></fo:inline>
+															</fo:inline>
+														</fo:basic-link>
+													</fo:block>
+												</fo:table-cell>
+											</fo:table-row>
+										</fo:table-body>
+									</fo:table>
+								</xsl:when>
+								<xsl:otherwise>
+									<fo:table table-layout="fixed" width="100%" id="__internal_layout__price_toc_{generate-id()}">
+										<fo:table-column column-width="5mm"/> <!-- 25mm -->
+										<fo:table-column column-width="175mm"/> <!-- 155mm -->
+										<fo:table-body>
+											<fo:table-row height="6mm">
+												<fo:table-cell>
+													<fo:block font-weight="bold" role="TOCI">
+														<fo:basic-link internal-destination="{@id}" fox:alt-text="{title}">
+															<xsl:choose>
+																<!-- <xsl:when test="@section = ''">
+																	<xsl:apply-templates select="title"/>
+																</xsl:when> -->
+																<!-- <xsl:when test="@type = 'references' and @section = ''">
+																	<xsl:apply-templates select="title"/>
+																</xsl:when> -->
+																<xsl:when test="@level = 1">
+																	<xsl:value-of select="@section"/>
+																</xsl:when>
+																<xsl:otherwise></xsl:otherwise>
+															</xsl:choose>
+														</fo:basic-link>
+													</fo:block>
+												</fo:table-cell>
+												<fo:table-cell>
+													<fo:block text-align-last="justify" role="TOCI">
+														<xsl:if test="@level = 1">
+															<xsl:attribute name="font-weight">bold</xsl:attribute>
+														</xsl:if>
+														<fo:basic-link internal-destination="{@id}" fox:alt-text="{title}">
+															<!-- <xsl:choose>
+																<xsl:when test="@section = ''"></xsl:when>
+																<xsl:otherwise>
+																	<xsl:apply-templates select="title"/>
+																</xsl:otherwise>
+															</xsl:choose> -->
+															<xsl:apply-templates select="title"/><xsl:text>&#xa0;</xsl:text>
+															<fo:inline keep-together.within-line="always">
+																<fo:leader font-weight="normal" leader-pattern="dots"/>
+																<fo:inline><fo:page-number-citation ref-id="{@id}"/></fo:inline>
+															</fo:inline>
+														</fo:basic-link>
+													</fo:block>
+												</fo:table-cell>
+											</fo:table-row>
+										</fo:table-body>
+									</fo:table>
+								</xsl:otherwise>
+								
+							</xsl:choose>
+							
+						</xsl:for-each>
+						
+						<!-- List of Tables -->
+						<xsl:if test="$contents//tables/table">
+							<xsl:call-template name="insertListOf_Title">
+								<xsl:with-param name="title" select="$title-list-tables"/>
+							</xsl:call-template>
+							<xsl:for-each select="$contents//tables/table">
+								<xsl:call-template name="insertListOf_Item"/>
+							</xsl:for-each>
+						</xsl:if>
+						
+						<!-- List of Figures -->
+						<xsl:if test="$contents//figures/figure">
+							<xsl:call-template name="insertListOf_Title">
+								<xsl:with-param name="title" select="$title-list-figures"/>
+							</xsl:call-template>
+							<xsl:for-each select="$contents//figures/figure">
+								<xsl:call-template name="insertListOf_Item"/>
+							</xsl:for-each>
+						</xsl:if>
+						
+					</fo:block>
+				</xsl:if>
+				
+				<fo:block/> <!-- prevent empty toc -->
+			</fo:block-container>
+			
+			<fo:block break-after="page"/>
+			
+		</xsl:if>
+	</xsl:template>
+	
+	<xsl:template match="m3d:preface/m3d:clause[@type = 'toc']/m3d:title" priority="3">
+		<!-- <xsl:variable name="title-toc">
+			<xsl:call-template name="getTitle">
+				<xsl:with-param name="name" select="'title-toc'"/>
+			</xsl:call-template>
+		</xsl:variable> -->
+		<fo:block font-size="12pt" font-weight="bold" text-decoration="underline" margin-bottom="4pt" role="H1">
+			<!-- <xsl:value-of select="$title-toc"/> -->
+			<xsl:apply-templates/>
+		</fo:block>
+	</xsl:template>
+	
 	<xsl:template match="node()">		
 		<xsl:apply-templates />			
 	</xsl:template>
@@ -430,6 +455,7 @@
 		
 		<xsl:variable name="skip">
 			<xsl:choose>
+				<xsl:when test="@type = 'toc'">true</xsl:when>
 				<xsl:when test="ancestor-or-self::m3d:bibitem">true</xsl:when>
 				<xsl:when test="ancestor-or-self::m3d:term">true</xsl:when>				
 				<xsl:otherwise>false</xsl:otherwise>
