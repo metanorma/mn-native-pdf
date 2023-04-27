@@ -424,76 +424,9 @@
 					<xsl:with-param name="section">toc</xsl:with-param>
 				</xsl:call-template>
 				<fo:flow flow-name="xsl-region-body">
-					<xsl:if test="$contents//item[@display = 'true']">
-						<fo:block role="TOC">
-						<!-- <fo:block-container absolute-position="fixed" left="13mm" top="15mm"> -->
-							<fo:block font-size="27pt" font-weight="bold" color="black" margin-left="-15mm" margin-bottom="13mm" role="H1">
-								<xsl:call-template name="getLocalizedString">
-									<xsl:with-param name="key">table_of_contents</xsl:with-param>
-								</xsl:call-template>
-							</fo:block>
-						<!-- </fo:block-container> -->
-						
-							<fo:block-container margin-left="32mm" margin-right="-17mm">
-								<fo:block-container margin-left="0mm" margin-right="0mm">
-									<xsl:for-each select="$contents//item[@display = 'true']">
-										<fo:block font-size="13pt" role="TOCI">
-											<xsl:if test="@level = 1">
-												<xsl:if test="preceding-sibling::item[@display = 'true' and @level = 1]">
-													<xsl:attribute name="space-before">16pt</xsl:attribute>
-												</xsl:if>
-												<xsl:attribute name="space-after">4pt</xsl:attribute>
-												<xsl:attribute name="font-weight">bold</xsl:attribute>
-												<xsl:attribute name="keep-with-next">always</xsl:attribute>
-												<xsl:attribute name="color">black</xsl:attribute>
-											</xsl:if>
-											<xsl:if test="@level &gt;= 2">
-												<xsl:attribute name="margin-left"><xsl:value-of select="(@level - 1) * 16.5"/>mm</xsl:attribute>
-												<xsl:attribute name="space-before">4pt</xsl:attribute>
-												<xsl:attribute name="space-after">5pt</xsl:attribute>
-											</xsl:if>
-											<fo:block text-align-last="justify">
-												<fo:basic-link internal-destination="{@id}" fox:alt-text="{title}">
-													<xsl:value-of select="@section"/>
-													<xsl:text> </xsl:text>
-													<xsl:apply-templates select="title"/>
-													<xsl:text> &#xA0;</xsl:text>
-													<fo:inline>
-														<fo:leader leader-pattern="rule" rule-thickness="0.2mm"/>
-														<fo:inline padding-left="2mm"><fo:page-number-citation ref-id="{@id}"/></fo:inline>
-													</fo:inline>
-												</fo:basic-link>
-											</fo:block>
-										</fo:block>
-									</xsl:for-each>
-									
-									<!-- List of Tables -->
-									<xsl:if test="$contents//tables/table">
-										<xsl:call-template name="insertListOf_Title">
-											<xsl:with-param name="title" select="$title-list-tables"/>
-										</xsl:call-template>
-										<xsl:for-each select="$contents//tables/table">
-											<xsl:call-template name="insertListOf_Item"/>
-										</xsl:for-each>
-									</xsl:if>
-									
-									<!-- List of Figures -->
-									<xsl:if test="$contents//figures/figure">
-										<xsl:call-template name="insertListOf_Title">
-											<xsl:with-param name="title" select="$title-list-figures"/>
-										</xsl:call-template>
-										<xsl:for-each select="$contents//figures/figure">
-											<xsl:call-template name="insertListOf_Item"/>
-										</xsl:for-each>
-									</xsl:if>
-									
-								</fo:block-container>
-							</fo:block-container>
-						</fo:block>
-						<fo:block break-after="page"/>
-					</xsl:if>
-					<fo:block margin-bottom="12pt">&#xA0;</fo:block>
-					
+				
+					<xsl:apply-templates select="/rsd:rsd-standard/rsd:preface/rsd:clause[@type = 'toc']" />
+				
 					<xsl:apply-templates select="/rsd:rsd-standard/rsd:boilerplate/rsd:legal-statement"/>
 					
 					<xsl:apply-templates select="/rsd:rsd-standard/rsd:boilerplate/rsd:feedback-statement"/>
@@ -521,7 +454,7 @@
 						<xsl:apply-templates select="/rsd:rsd-standard/rsd:preface/rsd:foreword" />
 						<xsl:apply-templates select="/rsd:rsd-standard/rsd:preface/rsd:executivesummary" />
 						<xsl:apply-templates select="/rsd:rsd-standard/rsd:preface/rsd:introduction" />
-						<xsl:apply-templates select="/rsd:rsd-standard/rsd:preface/rsd:clause" />
+						<xsl:apply-templates select="/rsd:rsd-standard/rsd:preface/rsd:clause[not(@type = 'toc')]" />
 						<xsl:apply-templates select="/rsd:rsd-standard/rsd:preface/rsd:acknowledgements" />
 					
 						<xsl:call-template name="processMainSectionsDefault"/>
@@ -562,6 +495,86 @@
 		<xsl:apply-templates />
 	</xsl:template>
 
+	<xsl:template match="rsd:preface/rsd:clause[@type = 'toc']" priority="3">
+		<fo:block role="TOC">
+			<xsl:apply-templates />	
+			
+			<xsl:if test="count(*) = 1 and *[local-name() = 'title']"> <!-- if there isn't user ToC -->
+			
+				<xsl:if test="$contents//item[@display = 'true']">
+				
+					<fo:block-container margin-left="32mm" margin-right="-17mm">
+						<fo:block-container margin-left="0mm" margin-right="0mm">
+							<xsl:for-each select="$contents//item[@display = 'true']">
+								<fo:block font-size="13pt" role="TOCI">
+									<xsl:if test="@level = 1">
+										<xsl:if test="preceding-sibling::item[@display = 'true' and @level = 1]">
+											<xsl:attribute name="space-before">16pt</xsl:attribute>
+										</xsl:if>
+										<xsl:attribute name="space-after">4pt</xsl:attribute>
+										<xsl:attribute name="font-weight">bold</xsl:attribute>
+										<xsl:attribute name="keep-with-next">always</xsl:attribute>
+										<xsl:attribute name="color">black</xsl:attribute>
+									</xsl:if>
+									<xsl:if test="@level &gt;= 2">
+										<xsl:attribute name="margin-left"><xsl:value-of select="(@level - 1) * 16.5"/>mm</xsl:attribute>
+										<xsl:attribute name="space-before">4pt</xsl:attribute>
+										<xsl:attribute name="space-after">5pt</xsl:attribute>
+									</xsl:if>
+									<fo:block text-align-last="justify">
+										<fo:basic-link internal-destination="{@id}" fox:alt-text="{title}">
+											<xsl:value-of select="@section"/>
+											<xsl:text> </xsl:text>
+											<xsl:apply-templates select="title"/>
+											<xsl:text> &#xA0;</xsl:text>
+											<fo:inline>
+												<fo:leader leader-pattern="rule" rule-thickness="0.2mm"/>
+												<fo:inline padding-left="2mm"><fo:page-number-citation ref-id="{@id}"/></fo:inline>
+											</fo:inline>
+										</fo:basic-link>
+									</fo:block>
+								</fo:block>
+							</xsl:for-each>
+							
+							<!-- List of Tables -->
+							<xsl:if test="$contents//tables/table">
+								<xsl:call-template name="insertListOf_Title">
+									<xsl:with-param name="title" select="$title-list-tables"/>
+								</xsl:call-template>
+								<xsl:for-each select="$contents//tables/table">
+									<xsl:call-template name="insertListOf_Item"/>
+								</xsl:for-each>
+							</xsl:if>
+							
+							<!-- List of Figures -->
+							<xsl:if test="$contents//figures/figure">
+								<xsl:call-template name="insertListOf_Title">
+									<xsl:with-param name="title" select="$title-list-figures"/>
+								</xsl:call-template>
+								<xsl:for-each select="$contents//figures/figure">
+									<xsl:call-template name="insertListOf_Item"/>
+								</xsl:for-each>
+							</xsl:if>
+							
+						</fo:block-container>
+					</fo:block-container>
+				
+					<fo:block break-after="page"/>
+				</xsl:if>
+			</xsl:if>
+			<fo:block margin-bottom="12pt">&#xA0;</fo:block>
+		</fo:block>
+	</xsl:template>
+
+	<xsl:template match="rsd:preface/rsd:clause[@type = 'toc']/rsd:title" priority="3">
+		<fo:block font-size="27pt" font-weight="bold" color="black" margin-left="-15mm" margin-bottom="13mm" role="H1">
+			<!-- <xsl:call-template name="getLocalizedString">
+				<xsl:with-param name="key">table_of_contents</xsl:with-param>
+			</xsl:call-template> -->
+			<xsl:apply-templates />
+		</fo:block>
+	</xsl:template>
+
 	<xsl:template match="rsd:bibdata/rsd:ext/rsd:security">
 		<fo:block>
 			<xsl:call-template name="capitalize">
@@ -599,6 +612,7 @@
 		
 		<xsl:variable name="skip">
 			<xsl:choose>
+				<xsl:when test="@type = 'toc'">true</xsl:when>
 				<xsl:when test="ancestor-or-self::rsd:bibitem">true</xsl:when>
 				<xsl:when test="ancestor-or-self::rsd:term">true</xsl:when>				
 				<xsl:otherwise>false</xsl:otherwise>
