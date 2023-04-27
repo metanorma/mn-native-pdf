@@ -185,82 +185,20 @@
 							contents=<xsl:copy-of select="$contents"/>
 						<xsl:text disable-output-escaping="yes">--&gt;</xsl:text>
 					</xsl:if>
+					
 					<!-- Table of content -->
-					<fo:block-container font-weight="bold">
-						<xsl:variable name="title-toc">
-							<xsl:call-template name="getTitle">
-								<xsl:with-param name="name" select="'title-toc'"/>
-							</xsl:call-template>
-						</xsl:variable>						
-						<fo:block font-size="14pt" margin-bottom="15.5pt" role="H1"><xsl:value-of select="$title-toc"/></fo:block>						
-						<fo:block line-height="115%" role="TOC">
-							<xsl:for-each select="$contents//item[@display = 'true']">
-								<fo:block role="TOCI">
-									<xsl:if test="@level = 1">
-										<xsl:attribute name="margin-top">6pt</xsl:attribute>
-									</xsl:if>								
-									<fo:list-block provisional-label-separation="3mm">
-										<xsl:attribute name="provisional-distance-between-starts">
-											<xsl:choose>
-												<xsl:when test="@section != ''">7mm</xsl:when>
-												<xsl:otherwise>0mm</xsl:otherwise>
-											</xsl:choose>
-										</xsl:attribute>
-										<fo:list-item>
-											<fo:list-item-label end-indent="label-end()">											
-												<fo:block>
-													<xsl:if test="@section">															
-														<xsl:value-of select="@section"/>
-													</xsl:if>
-												</fo:block>
-											</fo:list-item-label>
-											<fo:list-item-body start-indent="body-start()">
-												<fo:block text-align-last="justify">															
-													<fo:basic-link internal-destination="{@id}" fox:alt-text="{title}">
-														<xsl:apply-templates select="title"/>
-														<fo:inline keep-together.within-line="always">
-															<fo:leader leader-pattern="dots"/>
-															<fo:page-number-citation ref-id="{@id}"/>
-														</fo:inline>
-													</fo:basic-link>
-												</fo:block>
-											</fo:list-item-body>
-										</fo:list-item>
-									</fo:list-block>
-								</fo:block>									
-							</xsl:for-each>
-							
-							
-							<!-- List of Tables -->
-							<xsl:if test="$contents//tables/table">
-								<xsl:call-template name="insertListOf_Title">
-									<xsl:with-param name="title" select="$title-list-tables"/>
-								</xsl:call-template>
-								<xsl:for-each select="$contents//tables/table">
-									<xsl:call-template name="insertListOf_Item"/>
-								</xsl:for-each>
-							</xsl:if>
-							
-							<!-- List of Figures -->
-							<xsl:if test="$contents//figures/figure">
-								<xsl:call-template name="insertListOf_Title">
-									<xsl:with-param name="title" select="$title-list-figures"/>
-								</xsl:call-template>
-								<xsl:for-each select="$contents//figures/figure">
-									<xsl:call-template name="insertListOf_Item"/>
-								</xsl:for-each>
-							</xsl:if>
-							
-						</fo:block>
-					</fo:block-container>
-					<xsl:if test="/mpfd:mpfd-standard/mpfd:preface/*[not(local-name() = 'note' or local-name() = 'admonition')]">
+					<xsl:apply-templates select="/*/mpfd:preface/mpfd:clause[@type = 'toc']"/>
+					
+					<xsl:if test="/mpfd:mpfd-standard/mpfd:preface/*[not(local-name() = 'note' or local-name() = 'admonition' or (local-name() = 'clause' and @type = 'toc'))]">
 						<fo:block break-after="page"/>
 						<!-- Foreword, Introduction -->
 						<fo:block>
-							<xsl:apply-templates select="/mpfd:mpfd-standard/mpfd:preface/*[not(local-name() = 'terms' or local-name() = 'note' or local-name() = 'admonition')]"/>
+							<xsl:apply-templates select="/mpfd:mpfd-standard/mpfd:preface/*[not(local-name() = 'terms' or local-name() = 'note' or local-name() = 'admonition' or (local-name() = 'clause' and @type = 'toc'))]"/>
 							<xsl:apply-templates select="/mpfd:mpfd-standard/mpfd:preface/mpfd:terms"/>
 						</fo:block>
 					</xsl:if>
+					
+					<fo:block/> <!-- prevent empty toc -->
 				</fo:flow>
 			</fo:page-sequence>
 			
@@ -313,6 +251,89 @@
 		</fo:block>
 	</xsl:template>
 	
+	<xsl:template match="mpfd:preface/mpfd:clause[@type = 'toc']" priority="3">
+		<!-- Table of content -->
+		<fo:block-container font-weight="bold">
+		
+			<xsl:apply-templates />
+		
+			<xsl:if test="count(*) = 1 and *[local-name() = 'title']"> <!-- if there isn't user ToC -->
+			
+				<fo:block line-height="115%" role="TOC">
+					<xsl:for-each select="$contents//item[@display = 'true']">
+						<fo:block role="TOCI">
+							<xsl:if test="@level = 1">
+								<xsl:attribute name="margin-top">6pt</xsl:attribute>
+							</xsl:if>								
+							<fo:list-block provisional-label-separation="3mm">
+								<xsl:attribute name="provisional-distance-between-starts">
+									<xsl:choose>
+										<xsl:when test="@section != ''">7mm</xsl:when>
+										<xsl:otherwise>0mm</xsl:otherwise>
+									</xsl:choose>
+								</xsl:attribute>
+								<fo:list-item>
+									<fo:list-item-label end-indent="label-end()">											
+										<fo:block>
+											<xsl:if test="@section">															
+												<xsl:value-of select="@section"/>
+											</xsl:if>
+										</fo:block>
+									</fo:list-item-label>
+									<fo:list-item-body start-indent="body-start()">
+										<fo:block text-align-last="justify">															
+											<fo:basic-link internal-destination="{@id}" fox:alt-text="{title}">
+												<xsl:apply-templates select="title"/>
+												<fo:inline keep-together.within-line="always">
+													<fo:leader leader-pattern="dots"/>
+													<fo:page-number-citation ref-id="{@id}"/>
+												</fo:inline>
+											</fo:basic-link>
+										</fo:block>
+									</fo:list-item-body>
+								</fo:list-item>
+							</fo:list-block>
+						</fo:block>									
+					</xsl:for-each>
+					
+					<!-- List of Tables -->
+					<xsl:if test="$contents//tables/table">
+						<xsl:call-template name="insertListOf_Title">
+							<xsl:with-param name="title" select="$title-list-tables"/>
+						</xsl:call-template>
+						<xsl:for-each select="$contents//tables/table">
+							<xsl:call-template name="insertListOf_Item"/>
+						</xsl:for-each>
+					</xsl:if>
+					
+					<!-- List of Figures -->
+					<xsl:if test="$contents//figures/figure">
+						<xsl:call-template name="insertListOf_Title">
+							<xsl:with-param name="title" select="$title-list-figures"/>
+						</xsl:call-template>
+						<xsl:for-each select="$contents//figures/figure">
+							<xsl:call-template name="insertListOf_Item"/>
+						</xsl:for-each>
+					</xsl:if>
+					
+				</fo:block>
+			</xsl:if>
+			<fo:block/> <!-- prevent empty toc -->
+		</fo:block-container>
+	</xsl:template>
+	
+	<xsl:template match="mpfd:preface/mpfd:clause[@type = 'toc']/mpfd:title" priority="3">
+		<!-- <xsl:variable name="title-toc">
+			<xsl:call-template name="getTitle">
+				<xsl:with-param name="name" select="'title-toc'"/>
+			</xsl:call-template> 
+		</xsl:variable> -->
+		<fo:block font-size="14pt" margin-bottom="15.5pt" role="H1">
+			<!-- <xsl:value-of select="$title-toc"/> -->
+			<xsl:apply-templates />
+		</fo:block>	
+	</xsl:template>
+	
 	<xsl:template match="node()">
 		<xsl:apply-templates />			
 	</xsl:template>
@@ -346,6 +367,7 @@
 		
 		<xsl:variable name="skip">
 			<xsl:choose>
+				<xsl:when test="@type = 'toc'">true</xsl:when>
 				<xsl:when test="ancestor-or-self::mpfd:bibitem">true</xsl:when>
 				<xsl:when test="ancestor-or-self::mpfd:term">true</xsl:when>				
 				<xsl:otherwise>false</xsl:otherwise>
