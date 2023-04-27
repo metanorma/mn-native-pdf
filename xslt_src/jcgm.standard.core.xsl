@@ -360,72 +360,17 @@
 							<xsl:copy-of select="."/>
 						</xsl:variable>				
 						<xsl:for-each select="xalan:nodeset($current_document)">
-							<xsl:variable name="docid">
-								<xsl:call-template name="getDocumentId"/>
-							</xsl:variable>
 							
+							<xsl:if test="$debug = 'true'">
+								<xsl:text disable-output-escaping="yes">&lt;!--</xsl:text>
+									DEBUG
+									contents=<xsl:copy-of select="$contents"/>
+								<xsl:text disable-output-escaping="yes">--&gt;</xsl:text>
+							</xsl:if>
+						
 							<!-- Table of Contents -->
-							<fo:block-container>
-								<fo:block role="TOC">
-									<fo:block text-align-last="justify">
-										<fo:inline font-size="15pt" font-weight="bold" role="H1">
-											<xsl:call-template name="getLocalizedString">
-												<xsl:with-param name="key">table_of_contents</xsl:with-param>
-											</xsl:call-template>
-										</fo:inline>
-										<fo:inline keep-together.within-line="always">
-											<fo:leader leader-pattern="space"/>
-											<xsl:call-template name="getLocalizedString">
-												<xsl:with-param name="key">Page.sg</xsl:with-param>
-											</xsl:call-template>
-										</fo:inline>
-									</fo:block>
-									
-									<xsl:if test="$debug = 'true'">
-										<xsl:text disable-output-escaping="yes">&lt;!--</xsl:text>
-											DEBUG
-											contents=<xsl:copy-of select="$contents"/>
-										<xsl:text disable-output-escaping="yes">--&gt;</xsl:text>
-									</xsl:if>
-									
-									<xsl:variable name="annexes_title">
-										<xsl:call-template name="getLocalizedString">
-											<xsl:with-param name="key">Annex.pl</xsl:with-param>
-										</xsl:call-template>
-									</xsl:variable>
-									
-									<xsl:for-each select="$contents/doc[@id=$docid]//item[@display = 'true']"> <!-- and not (@type = 'annex') and not (@type = 'references') -->
-										<xsl:if test="@type = 'annex' and not(preceding-sibling::item[@display = 'true' and @type = 'annex'])">
-											<fo:block font-size="12pt" space-before="16pt" font-weight="bold" role="TOCI">
-												<xsl:value-of select="$annexes_title"/>
-											</fo:block>
-										</xsl:if>
-										<xsl:call-template name="print_JCGN_toc_item"/>
-									</xsl:for-each>	
-									
-									<!-- List of Tables -->
-									<xsl:if test="$contents//tables/table">
-										<xsl:call-template name="insertListOf_Title">
-											<xsl:with-param name="title" select="$title-list-tables"/>
-										</xsl:call-template>
-										<xsl:for-each select="$contents//tables/table">
-											<xsl:call-template name="insertListOf_Item"/>
-										</xsl:for-each>
-									</xsl:if>
-									
-									<!-- List of Figures -->
-									<xsl:if test="$contents//figures/figure">
-										<xsl:call-template name="insertListOf_Title">
-											<xsl:with-param name="title" select="$title-list-figures"/>
-										</xsl:call-template>
-										<xsl:for-each select="$contents//figures/figure">
-											<xsl:call-template name="insertListOf_Item"/>
-										</xsl:for-each>
-									</xsl:if>
-									
-								</fo:block>
-							</fo:block-container>
-
+							<xsl:apply-templates select="/*/*[local-name()='preface']/*[local-name()='clause'][@type = 'toc']" />
+							
 						</xsl:for-each>
 						
 						<xsl:if test="position() != last()">
@@ -450,7 +395,8 @@
 					</xsl:for-each>
 					<xsl:for-each select="//*[local-name() = 'bipm-standard']">
 						<fo:block break-after="page"/>
-						<xsl:apply-templates select="./*[local-name()='preface']/*[local-name() != 'abstract' and local-name() != 'foreword' and local-name() != 'introduction' and local-name() != 'acknowledgements' and local-name() != 'note' and local-name() != 'admonition']" />
+						<xsl:apply-templates select="./*[local-name()='preface']/*[local-name() != 'abstract' and local-name() != 'foreword' and local-name() != 'introduction' and local-name() != 'acknowledgements' and local-name() != 'note' and local-name() != 'admonition' and 
+						not(local-name() = 'clause' and @type = 'toc')]" />
 					</xsl:for-each>
 					<xsl:for-each select="//*[local-name() = 'bipm-standard']">
 						<fo:block break-after="page"/>
@@ -597,6 +543,69 @@
 		</fo:block>
 	</xsl:template>
 
+	<xsl:template match="jcgm:preface/jcgm:clause[@type = 'toc']" priority="3">
+		<fo:block-container>
+			<fo:block role="TOC">
+			
+				<xsl:apply-templates />
+
+				<xsl:if test="count(*) = 1 and *[local-name() = 'title']"> <!-- if there isn't user ToC -->
+				
+					<xsl:variable name="docid">
+						<xsl:call-template name="getDocumentId"/>
+					</xsl:variable>
+				
+					<xsl:for-each select="$contents/doc[@id=$docid]//item[@display = 'true']"> <!-- and not (@type = 'annex') and not (@type = 'references') -->
+						<xsl:if test="@type = 'annex' and not(preceding-sibling::item[@display = 'true' and @type = 'annex'])">
+							<fo:block font-size="12pt" space-before="16pt" font-weight="bold" role="TOCI">
+								<xsl:call-template name="getLocalizedString">
+									<xsl:with-param name="key">Annex.pl</xsl:with-param>
+								</xsl:call-template>
+							</fo:block>
+						</xsl:if>
+						<xsl:call-template name="print_JCGN_toc_item"/>
+					</xsl:for-each>	
+					
+					<!-- List of Tables -->
+					<xsl:if test="$contents//tables/table">
+						<xsl:call-template name="insertListOf_Title">
+							<xsl:with-param name="title" select="$title-list-tables"/>
+						</xsl:call-template>
+						<xsl:for-each select="$contents//tables/table">
+							<xsl:call-template name="insertListOf_Item"/>
+						</xsl:for-each>
+					</xsl:if>
+					
+					<!-- List of Figures -->
+					<xsl:if test="$contents//figures/figure">
+						<xsl:call-template name="insertListOf_Title">
+							<xsl:with-param name="title" select="$title-list-figures"/>
+						</xsl:call-template>
+						<xsl:for-each select="$contents//figures/figure">
+							<xsl:call-template name="insertListOf_Item"/>
+						</xsl:for-each>
+					</xsl:if>
+				</xsl:if>
+			</fo:block>
+		</fo:block-container>
+	</xsl:template>
+
+	<xsl:template match="jcgm:preface/jcgm:clause[@type = 'toc']/jcgm:title" priority="3">
+		<fo:block text-align-last="justify">
+			<fo:inline font-size="15pt" font-weight="bold" role="H1">
+				<xsl:call-template name="getLocalizedString">
+					<xsl:with-param name="key">table_of_contents</xsl:with-param>
+				</xsl:call-template>
+			</fo:inline>
+			<fo:inline keep-together.within-line="always">
+				<fo:leader leader-pattern="space"/>
+				<xsl:call-template name="getLocalizedString">
+					<xsl:with-param name="key">Page.sg</xsl:with-param>
+				</xsl:call-template>
+			</fo:inline>
+		</fo:block>
+	</xsl:template>
+
 	<xsl:template match="node()">		
 		<xsl:apply-templates />			
 	</xsl:template>
@@ -637,6 +646,7 @@
 		
 		<xsl:variable name="skip">
 			<xsl:choose>
+				<xsl:when test="@type = 'toc'">true</xsl:when>
 				<xsl:when test="ancestor-or-self::*[local-name()='bibitem']">true</xsl:when>
 				<xsl:when test="ancestor-or-self::*[local-name()='term']">true</xsl:when>				
 				<xsl:otherwise>false</xsl:otherwise>
