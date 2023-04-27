@@ -5347,7 +5347,7 @@
 					<xsl:if test="not(ancestor::*[local-name()='note_side'])">
 						<xsl:attribute name="font-size">10pt</xsl:attribute>
 					</xsl:if>
-					<xsl:if test="@parent-type = 'quote'">
+					<xsl:if test="ancestor-or-self::*[@parent-type = 'quote']">
 						<xsl:attribute name="font-family">Arial</xsl:attribute>
 						<xsl:attribute name="font-size">9pt</xsl:attribute>
 					</xsl:if>
