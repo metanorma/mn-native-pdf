@@ -292,7 +292,7 @@
 					<xsl:variable name="paged_xml_preface" select="xalan:nodeset($paged_xml_preface_)"/>
 					
 					<xsl:if test="$paged_xml_preface/*[local-name()='page'] and count($paged_xml_preface/*[local-name()='page']/*) != 0">
-						<!-- BSI Preface pages -->
+						<!-- Preface pages -->
 						<fo:page-sequence master-reference="document_preface" force-page-count="no-force">
 							
 							<fo:static-content flow-name="xsl-footnote-separator">
@@ -318,7 +318,7 @@
 									</xsl:for-each>
 								</fo:block>
 							</fo:flow>
-						</fo:page-sequence> <!-- END BSI Preface pages -->
+						</fo:page-sequence> <!-- END Preface pages -->
 					</xsl:if>
 					
 					
@@ -1026,7 +1026,27 @@
 		</fo:block>
 	</xsl:template>
 	
-	
+	<xsl:template match="jis:fn" mode="fn_after_element">
+		<fo:block-container margin-left="11mm" margin-bottom="4pt">
+			<xsl:if test="position() = last()">
+				<xsl:attribute name="margin-bottom">10pt</xsl:attribute>
+			</xsl:if>
+			<fo:block-container margin-left="0mm">
+				<fo:list-block provisional-distance-between-starts="10mm">
+					<fo:list-item>
+						<fo:list-item-label end-indent="label-end()">
+							<fo:block xsl:use-attribute-sets="note-name-style">注 <fo:inline xsl:use-attribute-sets="fn-num-style"><xsl:value-of select="@current_fn_number"/><fo:inline font-weight="normal">)</fo:inline></fo:inline></fo:block>
+						</fo:list-item-label>
+						<fo:list-item-body start-indent="body-start()">
+							<fo:block>
+								<xsl:apply-templates />
+							</fo:block>
+						</fo:list-item-body>
+					</fo:list-item>
+				</fo:list-block>
+			</fo:block-container>
+		</fo:block-container>
+	</xsl:template>
 	
 	<xsl:template name="makePagedXML">
 		<xsl:param name="structured_xml"/>
