@@ -7501,14 +7501,15 @@
 	
 		<!-- list of footnotes to calculate actual footnotes number -->
 		<xsl:variable name="p_fn_">
-			<xsl:choose>
+			<xsl:call-template name="get_fn_list"/>
+			<!-- <xsl:choose>
 				<xsl:when test="$namespace = 'jis'">
 					<xsl:call-template name="get_fn_list_for_element"/>
 				</xsl:when>
 				<xsl:otherwise>
 					<xsl:call-template name="get_fn_list"/>
 				</xsl:otherwise>
-			</xsl:choose>
+			</xsl:choose> -->
 		</xsl:variable>
 		<xsl:variable name="p_fn" select="xalan:nodeset($p_fn_)"/>
 		
@@ -7543,7 +7544,14 @@
 			</xsl:if>
 		</xsl:variable>
 		
-		<xsl:variable name="ref_id" select="concat('footnote_', $lang, '_', $reference, '_', $current_fn_number)"/>
+		<xsl:variable name="ref_id">
+			<xsl:choose>
+				<xsl:when test="normalize-space(@ref_id) != ''"><xsl:value-of select="@ref_id"/></xsl:when>
+				<xsl:otherwise>
+					<xsl:value-of select="concat('footnote_', $lang, '_', $reference, '_', $current_fn_number)"/>
+				</xsl:otherwise>
+			</xsl:choose>
+		</xsl:variable>
 		<xsl:variable name="footnote_inline">
 			<fo:inline>
 			
@@ -7621,6 +7629,9 @@
 									<xsl:if test="$doctype = 'service-publication'">
 										<xsl:attribute name="font-size">10pt</xsl:attribute>
 									</xsl:if>
+								</xsl:if>
+								<xsl:if test="$namespace = 'jis'">
+									<xsl:attribute name="font-family">IPAexMincho</xsl:attribute> <!-- prevent font for footnote in Times New Roman main text -->
 								</xsl:if>
 								<fo:inline id="{$ref_id}" xsl:use-attribute-sets="fn-body-num-style">
 									<xsl:if test="$namespace = 'bsi'">
@@ -16881,14 +16892,15 @@
 	-->
 	<xsl:template match="*[local-name() = 'fn'][not(ancestor::*[(local-name() = 'table' or local-name() = 'figure')] and not(ancestor::*[local-name() = 'name']))]" mode="linear_xml" name="linear_xml_fn">
 		<xsl:variable name="p_fn_">
-			<xsl:choose>
+			<xsl:call-template name="get_fn_list"/>
+			<!-- <xsl:choose>
 				<xsl:when test="$namespace = 'jis'">
 					<xsl:call-template name="get_fn_list_for_element"/>
 				</xsl:when>
 				<xsl:otherwise>
 					<xsl:call-template name="get_fn_list"/>
 				</xsl:otherwise>
-			</xsl:choose>
+			</xsl:choose> -->
 		</xsl:variable>
 		<xsl:variable name="p_fn" select="xalan:nodeset($p_fn_)"/>
 		<xsl:variable name="gen_id" select="generate-id(.)"/>
@@ -16916,6 +16928,9 @@
 						<xsl:value-of select="$skip_footnote_body_"/>
 					</xsl:otherwise>
 				</xsl:choose>
+			</xsl:attribute>
+			<xsl:attribute name="ref_id">
+				<xsl:value-of  select="concat('footnote_', $lang, '_', $reference, '_', $current_fn_number)"/>
 			</xsl:attribute>
 			<xsl:apply-templates select="node()" mode="linear_xml"/>
 		</xsl:copy>

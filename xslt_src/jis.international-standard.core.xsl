@@ -1027,7 +1027,8 @@
 	</xsl:template>
 	
 	<xsl:template match="jis:fn" mode="fn_after_element">
-		<fo:block-container margin-left="11mm" margin-bottom="4pt">
+		<fo:block-container margin-left="11mm" margin-bottom="4pt" id="{@ref_id}">
+			
 			<xsl:if test="position() = last()">
 				<xsl:attribute name="margin-bottom">10pt</xsl:attribute>
 			</xsl:if>
