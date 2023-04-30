@@ -15360,6 +15360,11 @@
 		
 		<fo:block id="{@id}">
 			<xsl:apply-templates />
+			
+			<xsl:if test="$namespace = 'jis'">
+				<!-- render footnotes after references -->
+				<xsl:apply-templates select=".//jis:fn[generate-id(.)=generate-id(key('kfn',@reference)[1])]" mode="fn_after_element"/>
+			</xsl:if>
 		</fo:block>
 	</xsl:template>
 	
@@ -15382,6 +15387,11 @@
 		
 		<fo:block id="{@id}" xsl:use-attribute-sets="references-non-normative-style">
 			<xsl:apply-templates />
+			
+			<xsl:if test="$namespace = 'jis'">
+				<!-- render footnotes after references -->
+				<xsl:apply-templates select=".//jis:fn[generate-id(.)=generate-id(key('kfn',@reference)[1])]" mode="fn_after_element"/>
+			</xsl:if>
 		</fo:block>
 		
 		<xsl:if test="$namespace = 'gb' or $namespace = 'm3d'">
@@ -16920,7 +16930,7 @@
 				<xsl:choose>
 					<xsl:when test="$namespace = 'jis'">
 						<xsl:choose>
-							<xsl:when test="ancestor::*[local-name() = 'ul' or local-name() ='ol']">true</xsl:when>
+							<xsl:when test="ancestor::*[local-name() = 'ul' or local-name() ='ol' or local-name() = 'bibitem']">true</xsl:when>
 							<xsl:otherwise><xsl:value-of select="$skip_footnote_body_"/></xsl:otherwise>
 						</xsl:choose>
 					</xsl:when>

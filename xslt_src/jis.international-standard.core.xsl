@@ -492,6 +492,12 @@
 		</fo:root>
 	</xsl:template>
 	
+	<xsl:template match="*[local-name() = 'references'][not(@hidden = 'true')]" mode="linear_xml" priority="2">
+		<xsl:copy>
+			<xsl:apply-templates select="@*|node()" mode="linear_xml"/>
+		</xsl:copy>
+	</xsl:template>
+	
 	<xsl:template match="*[local-name() = 'colon_gothic']">
 		<!-- replace : to ： (Fullwidth colon) and render it in the font IPAexGothic -->
 		<fo:inline font-family="IPAexGothic">：</fo:inline>
