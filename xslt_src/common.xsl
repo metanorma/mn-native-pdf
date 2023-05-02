@@ -14047,7 +14047,7 @@
 					<xsl:variable name="text" select="normalize-space()"/>
 					
 					<xsl:if test="$namespace = 'bsi'">
-						<xsl:if test="not(xalan:nodeset($ids)/id = current()/@bibitemid) or $document_type = 'PAS' or not(contains($citeas, $text))"> <!-- if reference can't be resolved or PAS document -->
+						<xsl:if test="not($ids/id = current()/@bibitemid) or $document_type = 'PAS' or not(contains($citeas, $text))"> <!-- if reference can't be resolved or PAS document -->
 							<xsl:attribute name="color">inherit</xsl:attribute>
 							<xsl:attribute name="text-decoration">none</xsl:attribute>
 						</xsl:if>
