@@ -5656,7 +5656,7 @@
 									<xsl:apply-templates select="*[local-name()='thead']" mode="process_tbody"/>
 								</xsl:when>
 								<xsl:otherwise>
-									<xsl:apply-templates select="node()[not(local-name() = 'name') and not(local-name() = 'note') and not(local-name() = 'dl') and not(local-name() = 'source')
+									<xsl:apply-templates select="node()[not(local-name() = 'name') and not(local-name() = 'note') and not(local-name() = 'dl') and not(local-name() = 'source') and not(local-name() = 'p')
 									and not(local-name() = 'thead') and not(local-name() = 'tfoot')]" /> <!-- process all table' elements, except name, header, footer, note, source and dl which render separaterely -->
 								</xsl:otherwise>
 							</xsl:choose>
@@ -6426,7 +6426,7 @@
 		<xsl:param name="colwidths"/>
 		<xsl:param name="colgroup"/>
 		
-		<xsl:variable name="isNoteOrFnExist" select="../*[local-name()='note'] or ../*[local-name()='dl'] or ..//*[local-name()='fn'][local-name(..) != 'name'] or ../*[local-name()='source']"/>
+		<xsl:variable name="isNoteOrFnExist" select="../*[local-name()='note'] or ../*[local-name()='dl'] or ..//*[local-name()='fn'][local-name(..) != 'name'] or ../*[local-name()='source'] or ../*[local-name()='p']"/>
 		
 		<xsl:variable name="isNoteOrFnExistShowAfterTable">
 			<xsl:if test="$namespace = 'bsi'">
@@ -6558,6 +6558,7 @@
 								<xsl:choose>
 									<xsl:when test="$namespace = 'gb' or $namespace = 'bsi'"></xsl:when>
 									<xsl:otherwise>
+										<xsl:apply-templates select="../*[local-name()='p']" />
 										<xsl:apply-templates select="../*[local-name()='dl']" />
 										<xsl:apply-templates select="../*[local-name()='note']" />
 										<xsl:apply-templates select="../*[local-name()='source']" />
