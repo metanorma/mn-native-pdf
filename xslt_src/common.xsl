@@ -15009,7 +15009,27 @@
 						<xsl:call-template name="append_add-style"/>
 					</xsl:if>
 					
-					<xsl:call-template name="getListItemFormat" />
+					<xsl:choose>
+						<xsl:when test="$namespace = 'jis'">
+							<xsl:variable name="list_item_label">
+								<xsl:call-template name="getListItemFormat" />
+							</xsl:variable>
+							<xsl:choose>
+								<xsl:when test="contains($list_item_label, ')')">
+									<xsl:value-of select="substring-before($list_item_label,')')"/>
+									<fo:inline font-weight="normal">)</fo:inline>
+									<xsl:value-of select="substring-after($list_item_label,')')"/>
+								</xsl:when>
+								<xsl:otherwise>
+									<xsl:value-of select="$list_item_label"/>
+								</xsl:otherwise>
+							</xsl:choose>
+						</xsl:when>
+						<xsl:otherwise>
+							<xsl:call-template name="getListItemFormat" />
+						</xsl:otherwise>
+					</xsl:choose>
+					
 				</fo:block>
 			</fo:list-item-label>
 			<fo:list-item-body start-indent="body-start()" xsl:use-attribute-sets="list-item-body-style">
