@@ -16473,6 +16473,9 @@
 		</xsl:copy>
 	</xsl:template>
 	
+	<!-- prevent empty thead processing in XSL-FO, remove it -->
+	<xsl:template match="*[local-name() = 'table']/*[local-name() = 'thead'][count(*) = 0]" mode="update_xml_step1"/>
+	
 	<xsl:template name="add_id">
 		<xsl:if test="not(@id)">
 			<!-- add @id - first element with @id plus '_element_name' -->
