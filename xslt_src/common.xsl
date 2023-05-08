@@ -1463,6 +1463,7 @@
 			</xsl:if>
 		</xsl:if>
 		<xsl:if test="$namespace = 'nist-cswp' or $namespace = 'unece' or $namespace = 'unece-rec'">
+			<xsl:variable name="num"><xsl:number/></xsl:variable>
 			<xsl:if test="$num = 1">
 				<xsl:attribute name="margin-left">5mm</xsl:attribute>
 			</xsl:if>
@@ -1610,6 +1611,7 @@
 	</xsl:attribute-set> <!-- table-container-style -->
 	
 	<xsl:template name="refine_table-container-style">
+		<xsl:param name="margin-side"/>
 		<xsl:if test="$namespace = 'csa' or $namespace = 'csd' or $namespace = 'gb' or $namespace = 'iec' or $namespace = 'm3d' or $namespace = 'nist-cswp' or $namespace = 'nist-sp' or $namespace = 'unece' or $namespace = 'unece-rec'">
 			<xsl:attribute name="margin-left"><xsl:value-of select="-$margin-side"/>mm</xsl:attribute>
 			<xsl:attribute name="margin-right"><xsl:value-of select="-$margin-side"/>mm</xsl:attribute>
@@ -1787,6 +1789,7 @@
 	
 	
 	<xsl:template name="refine_table-style">
+		<xsl:param name="margin-side"/>
 		<xsl:if test="$namespace = 'csa' or $namespace = 'csd' or $namespace = 'gb' or $namespace = 'iec' or $namespace = 'm3d' or $namespace = 'nist-cswp' or $namespace = 'nist-sp' or $namespace = 'unece' or $namespace = 'unece-rec'">
 			<xsl:if test="$margin-side != 0">
 				<xsl:attribute name="margin-left"><xsl:value-of select="$margin-side"/>mm</xsl:attribute>
@@ -6671,7 +6674,9 @@
 			
 			<fo:block-container xsl:use-attribute-sets="table-container-style">
 			
-				<xsl:call-template name="refine_table-container-style"/>
+				<xsl:call-template name="refine_table-container-style">
+					<xsl:with-param name="margin-side" select="$margin-side"/>
+				</xsl:call-template>
 			
 				<!-- display table's name before table for PAS inside block-container (2-columnn layout) -->
 				<xsl:if test="$namespace = 'bsi'">
@@ -6715,7 +6720,9 @@
 					
 						<xsl:attribute name="width"><xsl:value-of select="normalize-space($table_width)"/></xsl:attribute>
 						
-						<xsl:call-template name="refine_table-style"/>
+						<xsl:call-template name="refine_table-style">
+							<xsl:with-param name="margin-side" select="$margin-side"/>
+						</xsl:call-template>
 						
 					</xsl:element>
 				</xsl:variable>
