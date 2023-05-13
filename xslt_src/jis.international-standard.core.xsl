@@ -982,7 +982,7 @@
 						<xsl:attribute name="margin-bottom">2pt</xsl:attribute>
 					</xsl:if>
 					
-					<xsl:if test="parent::jis:li or following-sibling::*[1][self::jis:ol or self::jis:ul or self::jis:note or self::jis:example]">
+					<xsl:if test="parent::jis:li or following-sibling::*[1][self::jis:ol or self::jis:ul or self::jis:note or self::jis:example] or parent::jis:quote">
 						<xsl:attribute name="margin-bottom">4pt</xsl:attribute>
 					</xsl:if>
 					
@@ -1077,8 +1077,6 @@
 						<xsl:call-template name="note"/>
 					</xsl:for-each> -->
 				</fo:block>
-
-        
 			</fo:list-item-body>
 		</fo:list-item>
 	</xsl:template>
@@ -1096,31 +1094,46 @@
 		<!-- i.e. i.e. if list-item is latest with footnote -->
 		<xsl:if test="ancestor::*[local-name() = 'li'][1]//jis:fn[ancestor::*[local-name() = 'ul' or local-name() = 'ol'][1][@id = $list_id]] and
 		not(ancestor::*[local-name() = 'li'][1]/following-sibling::*[local-name() = 'li'][.//jis:fn[ancestor::*[local-name() = 'ul' or local-name() = 'ol'][1][@id = $list_id]]])">
-			<xsl:apply-templates select="ancestor::*[local-name() = 'ul' or local-name() = 'ol'][1]//jis:fn[ancestor::*[local-name() = 'ul' or local-name() = 'ol'][1][@id = $list_id]][generate-id(.)=generate-id(key('kfn',@reference)[1])]" mode="fn_after_element"/>
+			<xsl:apply-templates select="ancestor::*[local-name() = 'ul' or local-name() = 'ol'][1]//jis:fn[ancestor::*[local-name() = 'ul' or local-name() = 'ol'][1][@id = $list_id]][generate-id(.)=generate-id(key('kfn',@reference)[1])]" mode="fn_after_element">
+				<xsl:with-param name="ancestor">li</xsl:with-param>
+			</xsl:apply-templates>
 		</xsl:if>
 	</xsl:template>
 	
 	<xsl:template match="jis:fn" mode="fn_after_element">
-		<fo:block-container margin-left="11mm" margin-bottom="4pt" id="{@ref_id}">
-			
-			<xsl:if test="position() = last()">
-				<xsl:attribute name="margin-bottom">10pt</xsl:attribute>
-			</xsl:if>
-			<fo:block-container margin-left="0mm">
-				<fo:list-block provisional-distance-between-starts="10mm">
-					<fo:list-item>
-						<fo:list-item-label end-indent="label-end()">
-							<fo:block xsl:use-attribute-sets="note-name-style">注 <fo:inline xsl:use-attribute-sets="fn-num-style"><xsl:value-of select="@current_fn_number"/><fo:inline font-weight="normal">)</fo:inline></fo:inline></fo:block>
-						</fo:list-item-label>
-						<fo:list-item-body start-indent="body-start()">
-							<fo:block>
-								<xsl:apply-templates />
-							</fo:block>
-						</fo:list-item-body>
-					</fo:list-item>
-				</fo:list-block>
+		<xsl:param name="ancestor">li</xsl:param>
+		
+		<xsl:variable name="ancestor_tree_">
+			<xsl:for-each select="ancestor::*[local-name() != 'p' and local-name() != 'bibitem' and local-name() != 'biblio-tag']">
+				<item><xsl:value-of select="local-name()"/></item>
+			</xsl:for-each>
+		</xsl:variable>
+		<xsl:variable name="ancestor_tree" select="xalan:nodeset($ancestor_tree_)"/>
+		<!-- <debug><xsl:copy-of select="$ancestor_tree"/></debug>
+		<debug><ancestor><xsl:value-of select="$ancestor"/></ancestor></debug> -->
+		
+		<xsl:if test="$ancestor_tree//item[last()][. = $ancestor]">
+			<fo:block-container margin-left="11mm" margin-bottom="4pt" id="{@ref_id}">
+				
+				<xsl:if test="position() = last()">
+					<xsl:attribute name="margin-bottom">10pt</xsl:attribute>
+				</xsl:if>
+				<fo:block-container margin-left="0mm">
+					<fo:list-block provisional-distance-between-starts="10mm">
+						<fo:list-item>
+							<fo:list-item-label end-indent="label-end()">
+								<fo:block xsl:use-attribute-sets="note-name-style">注 <fo:inline xsl:use-attribute-sets="fn-num-style"><xsl:value-of select="@current_fn_number"/><fo:inline font-weight="normal">)</fo:inline></fo:inline></fo:block>
+							</fo:list-item-label>
+							<fo:list-item-body start-indent="body-start()">
+								<fo:block>
+									<xsl:apply-templates />
+								</fo:block>
+							</fo:list-item-body>
+						</fo:list-item>
+					</fo:list-block>
+				</fo:block-container>
 			</fo:block-container>
-		</fo:block-container>
+		</xsl:if>
 	</xsl:template>
 	
 	<xsl:template name="makePagedXML">
