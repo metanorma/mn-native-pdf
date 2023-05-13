@@ -15133,10 +15133,6 @@
 								<fo:block>
 									<xsl:apply-templates select="." mode="list"/>
 								</fo:block>
-								
-								<xsl:variable name="list_id" select="@id"/>
-								<!-- render footnotes after list -->
-								<xsl:apply-templates select=".//jis:fn[ancestor::*[local-name() = 'ul' or local-name() = 'ol'][1][@id = $list_id]][generate-id(.)=generate-id(key('kfn',@reference)[1])]" mode="fn_after_element"/>
 							</fo:block-container>
 						</fo:block-container>
 					</xsl:when>
@@ -15274,26 +15270,7 @@
 						<xsl:call-template name="append_add-style"/>
 					</xsl:if>
 					
-					<xsl:choose>
-						<xsl:when test="$namespace = 'jis'">
-							<xsl:variable name="list_item_label">
-								<xsl:call-template name="getListItemFormat" />
-							</xsl:variable>
-							<xsl:choose>
-								<xsl:when test="contains($list_item_label, ')')">
-									<xsl:value-of select="substring-before($list_item_label,')')"/>
-									<fo:inline font-weight="normal">)</fo:inline>
-									<xsl:value-of select="substring-after($list_item_label,')')"/>
-								</xsl:when>
-								<xsl:otherwise>
-									<xsl:value-of select="$list_item_label"/>
-								</xsl:otherwise>
-							</xsl:choose>
-						</xsl:when>
-						<xsl:otherwise>
-							<xsl:call-template name="getListItemFormat" />
-						</xsl:otherwise>
-					</xsl:choose>
+					<xsl:call-template name="getListItemFormat" />
 					
 				</fo:block>
 			</fo:list-item-label>
@@ -15301,7 +15278,7 @@
 				<fo:block>
 				
 					<xsl:call-template name="refine_list-item-body-style"/>
-				
+					
 					<xsl:apply-templates />
 				
 					<!-- <xsl:apply-templates select="node()[not(local-name() = 'note')]" />
@@ -15314,7 +15291,6 @@
 		</fo:list-item>
 	</xsl:template>
 
-	
 	
 	<!-- ===================================== -->
 	<!-- END Lists processing -->

@@ -1032,6 +1032,74 @@
 		</fo:block>
 	</xsl:template>
 	
+	<xsl:template match="*[local-name()='li']" priority="2">
+		<fo:list-item xsl:use-attribute-sets="list-item-style">
+			<xsl:copy-of select="@id"/>
+			
+			<xsl:call-template name="refine_list-item-style"/>
+			
+			<fo:list-item-label end-indent="label-end()">
+				<fo:block xsl:use-attribute-sets="list-item-label-style">
+				
+					<xsl:call-template name="refine_list-item-label-style"/>
+					
+					<!-- if 'p' contains all text in 'add' first and last elements in first p are 'add' -->
+					<xsl:if test="*[1][count(node()[normalize-space() != '']) = 1 and *[local-name() = 'add']]">
+						<xsl:call-template name="append_add-style"/>
+					</xsl:if>
+					
+					<xsl:variable name="list_item_label">
+						<xsl:call-template name="getListItemFormat" />
+					</xsl:variable>
+					<xsl:choose>
+						<xsl:when test="contains($list_item_label, ')')">
+							<xsl:value-of select="substring-before($list_item_label,')')"/>
+							<fo:inline font-weight="normal">)</fo:inline>
+							<xsl:value-of select="substring-after($list_item_label,')')"/>
+						</xsl:when>
+						<xsl:otherwise>
+							<xsl:value-of select="$list_item_label"/>
+						</xsl:otherwise>
+					</xsl:choose>
+					
+				</fo:block>
+			</fo:list-item-label>
+			<fo:list-item-body start-indent="body-start()" xsl:use-attribute-sets="list-item-body-style">
+				<fo:block>
+				
+					<xsl:call-template name="refine_list-item-body-style"/>
+								
+					<xsl:apply-templates mode="list_jis"/>
+				
+					<!-- <xsl:apply-templates select="node()[not(local-name() = 'note')]" />
+					
+					<xsl:for-each select="./bsi:note">
+						<xsl:call-template name="note"/>
+					</xsl:for-each> -->
+				</fo:block>
+
+        
+			</fo:list-item-body>
+		</fo:list-item>
+	</xsl:template>
+	
+	<xsl:template match="node()" priority="2" mode="list_jis">
+		<xsl:apply-templates select="."/>
+	</xsl:template>
+	
+	<!-- display footnote after last element in li, except ol or ul -->
+	<xsl:template match="*[local-name()='li']/*[not(local-name() = 'ul') and not(local-name() = 'ol')][last()]" priority="3" mode="list_jis">
+		<xsl:apply-templates select="."/>
+		
+		<xsl:variable name="list_id" select="ancestor::*[local-name() = 'ul' or local-name() = 'ol'][1]/@id"/>
+		<!-- render footnotes after current list-item, if there aren't footnotes anymore in the list -->
+		<!-- i.e. i.e. if list-item is latest with footnote -->
+		<xsl:if test="ancestor::*[local-name() = 'li'][1]//jis:fn[ancestor::*[local-name() = 'ul' or local-name() = 'ol'][1][@id = $list_id]] and
+		not(ancestor::*[local-name() = 'li'][1]/following-sibling::*[local-name() = 'li'][.//jis:fn[ancestor::*[local-name() = 'ul' or local-name() = 'ol'][1][@id = $list_id]]])">
+			<xsl:apply-templates select="ancestor::*[local-name() = 'ul' or local-name() = 'ol'][1]//jis:fn[ancestor::*[local-name() = 'ul' or local-name() = 'ol'][1][@id = $list_id]][generate-id(.)=generate-id(key('kfn',@reference)[1])]" mode="fn_after_element"/>
+		</xsl:if>
+	</xsl:template>
+	
 	<xsl:template match="jis:fn" mode="fn_after_element">
 		<fo:block-container margin-left="11mm" margin-bottom="4pt" id="{@ref_id}">
 			
