@@ -3828,6 +3828,10 @@
 		<xsl:if test="$namespace = 'itu'">
 			<xsl:attribute name="margin-top">6pt</xsl:attribute>
 		</xsl:if>
+		<xsl:if test="$namespace = 'jis'">
+			<xsl:attribute name="margin-left">0mm</xsl:attribute>
+			<xsl:attribute name="margin-right">0mm</xsl:attribute>
+		</xsl:if>
 		<xsl:if test="$namespace = 'mpfd'">
 			<xsl:attribute name="margin-top">12pt</xsl:attribute>
 			<xsl:attribute name="text-align">justify</xsl:attribute>
@@ -3846,6 +3850,11 @@
 				<xsl:attribute name="margin-left">7mm</xsl:attribute>
 				<xsl:attribute name="margin-right">7mm</xsl:attribute>
 				<xsl:attribute name="font-style">normal</xsl:attribute>
+			</xsl:if>
+		</xsl:if>
+		<xsl:if test="$namespace = 'jis'">
+			<xsl:if test="ancestor::*[local-name() = 'li']">
+				<xsl:attribute name="margin-left">7.5mm</xsl:attribute>
 			</xsl:if>
 		</xsl:if>
 	</xsl:template>
@@ -14278,6 +14287,13 @@
 					</fo:block>
 				</xsl:if>
 				
+				<xsl:if test="$namespace = 'jis'">
+					<!-- render footnotes after references -->
+					<xsl:apply-templates select=".//jis:fn[generate-id(.)=generate-id(key('kfn',@reference)[1])]" mode="fn_after_element">
+						<xsl:with-param name="ancestor">quote</xsl:with-param>
+					</xsl:apply-templates>
+				</xsl:if>
+        
 			</fo:block-container>
 		</fo:block-container>
 	</xsl:template>
@@ -15133,10 +15149,6 @@
 								<fo:block>
 									<xsl:apply-templates select="." mode="list"/>
 								</fo:block>
-								
-								<xsl:variable name="list_id" select="@id"/>
-								<!-- render footnotes after list -->
-								<xsl:apply-templates select=".//jis:fn[ancestor::*[local-name() = 'ul' or local-name() = 'ol'][1][@id = $list_id]][generate-id(.)=generate-id(key('kfn',@reference)[1])]" mode="fn_after_element"/>
 							</fo:block-container>
 						</fo:block-container>
 					</xsl:when>
@@ -15274,26 +15286,7 @@
 						<xsl:call-template name="append_add-style"/>
 					</xsl:if>
 					
-					<xsl:choose>
-						<xsl:when test="$namespace = 'jis'">
-							<xsl:variable name="list_item_label">
-								<xsl:call-template name="getListItemFormat" />
-							</xsl:variable>
-							<xsl:choose>
-								<xsl:when test="contains($list_item_label, ')')">
-									<xsl:value-of select="substring-before($list_item_label,')')"/>
-									<fo:inline font-weight="normal">)</fo:inline>
-									<xsl:value-of select="substring-after($list_item_label,')')"/>
-								</xsl:when>
-								<xsl:otherwise>
-									<xsl:value-of select="$list_item_label"/>
-								</xsl:otherwise>
-							</xsl:choose>
-						</xsl:when>
-						<xsl:otherwise>
-							<xsl:call-template name="getListItemFormat" />
-						</xsl:otherwise>
-					</xsl:choose>
+					<xsl:call-template name="getListItemFormat" />
 					
 				</fo:block>
 			</fo:list-item-label>
@@ -15301,7 +15294,7 @@
 				<fo:block>
 				
 					<xsl:call-template name="refine_list-item-body-style"/>
-				
+					
 					<xsl:apply-templates />
 				
 					<!-- <xsl:apply-templates select="node()[not(local-name() = 'note')]" />
@@ -15314,7 +15307,6 @@
 		</fo:list-item>
 	</xsl:template>
 
-	
 	
 	<!-- ===================================== -->
 	<!-- END Lists processing -->
@@ -15643,7 +15635,9 @@
 			
 			<xsl:if test="$namespace = 'jis'">
 				<!-- render footnotes after references -->
-				<xsl:apply-templates select=".//jis:fn[generate-id(.)=generate-id(key('kfn',@reference)[1])]" mode="fn_after_element"/>
+				<xsl:apply-templates select=".//jis:fn[generate-id(.)=generate-id(key('kfn',@reference)[1])]" mode="fn_after_element">
+					<xsl:with-param name="ancestor">references</xsl:with-param>
+				</xsl:apply-templates>
 			</xsl:if>
 		</fo:block>
 	</xsl:template>
@@ -15670,7 +15664,9 @@
 			
 			<xsl:if test="$namespace = 'jis'">
 				<!-- render footnotes after references -->
-				<xsl:apply-templates select=".//jis:fn[generate-id(.)=generate-id(key('kfn',@reference)[1])]" mode="fn_after_element"/>
+				<xsl:apply-templates select=".//jis:fn[generate-id(.)=generate-id(key('kfn',@reference)[1])]" mode="fn_after_element">
+					<xsl:with-param name="ancestor">references</xsl:with-param>
+				</xsl:apply-templates>
 			</xsl:if>
 		</fo:block>
 		
@@ -17213,7 +17209,7 @@
 				<xsl:choose>
 					<xsl:when test="$namespace = 'jis'">
 						<xsl:choose>
-							<xsl:when test="ancestor::*[local-name() = 'ul' or local-name() ='ol' or local-name() = 'bibitem']">true</xsl:when>
+							<xsl:when test="ancestor::*[local-name() = 'ul' or local-name() ='ol' or local-name() = 'bibitem' or local-name() = 'quote']">true</xsl:when>
 							<xsl:otherwise><xsl:value-of select="$skip_footnote_body_"/></xsl:otherwise>
 						</xsl:choose>
 					</xsl:when>
