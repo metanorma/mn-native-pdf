@@ -24,6 +24,13 @@ jobs:
           files: |
             xslt_src/common.xsl
 
+      # cabextract for fonts, gettext-base for envsubst, libxml2-utils for xmllint
+      - name: Setup prerequisites
+        run: |
+          sudo apt-get update
+          sudo apt-get -y install gettext-base cabextract libxml2-utils curl \
+            software-properties-common gcc ruby ruby-dev libffi-dev make libxml2-dev libxslt1-dev libcurl4-gnutls-dev
+
       - run: make update-init update-modules
 
       - uses: ruby/setup-ruby@v1
@@ -36,13 +43,6 @@ jobs:
           path: ~/.fontist
           key: fontist-ubuntu
           restore-keys: fontist-ubuntu
-
-      # cabextract for fonts, gettext-base for envsubst, libxml2-utils for xmllint
-      - name: Setup prerequisites
-        run: |
-          sudo apt-get update
-          sudo apt-get -y install gettext-base cabextract libxml2-utils curl \
-            software-properties-common gcc ruby ruby-dev libffi-dev make libxml2-dev libxslt1-dev
 
       - name: Install Fontist fonts
         run: |
