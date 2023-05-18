@@ -23,7 +23,7 @@ jobs:
             software-properties-common gcc ruby ruby-dev rbenv libffi-dev libsass-dev make \
             libxml2-dev libxslt1-dev zlib1g-dev zlib1g pkg-config g++ default-jre gnupg \
             autoconf bison patch build-essential rustc libssl-dev libyaml-dev libreadline6-dev \
-            libgmp-dev libncurses5-dev libgdbm6 libgdbm-dev libdb-dev libcurl-dev uuid-dev \
+            libgmp-dev libncurses5-dev libgdbm6 libgdbm-dev libdb-dev libcurl4-gnutls-dev uuid-dev \
             git
 
       - run: |
