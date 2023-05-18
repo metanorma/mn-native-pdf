@@ -29,7 +29,7 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get -y install gettext-base cabextract libxml2-utils curl \
-            software-properties-common gcc ruby ruby-dev libffi-dev make libxml2-dev libxslt1-dev libcurl-dev
+            software-properties-common gcc ruby ruby-dev libffi-dev make libxml2-dev libxslt1-dev libcurl4-gnutls-dev
 
       - run: make update-init update-modules
 
