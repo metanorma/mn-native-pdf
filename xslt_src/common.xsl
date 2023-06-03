@@ -15037,6 +15037,9 @@
 					<xsl:otherwise><xsl:call-template name="setULLabel"/></xsl:otherwise>
 				</xsl:choose>
 			</xsl:when>
+			<xsl:when test="local-name(..) = 'ol' and @label"> <!-- for ordered lists 'ol', and if there is @label, for instance label="1.1.2" -->
+				<xsl:value-of select="@label"/>
+			</xsl:when>
 			<xsl:otherwise> <!-- for ordered lists 'ol' -->
 			
 				<!-- Example: for BSI <?list-start 2?> -->
