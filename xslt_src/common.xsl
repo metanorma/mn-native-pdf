@@ -15101,13 +15101,13 @@
 								<xsl:otherwise>1)</xsl:otherwise>
 							</xsl:choose>
 						</xsl:when>
-						<xsl:when test="$type = 'alphabet'">
+						<xsl:when test="$type = 'alphabet' or $type = 'alphabetic'">
 							<xsl:choose>
 								<xsl:when test="$namespace = 'rsd'">a.</xsl:when>
 								<xsl:otherwise>a)</xsl:otherwise>
 							</xsl:choose>
 						</xsl:when>
-						<xsl:when test="$type = 'alphabet_upper'">
+						<xsl:when test="$type = 'alphabet_upper' or $type = 'alphabetic_upper'">
 							<xsl:choose>
 								<xsl:when test="$namespace = 'csa' or $namespace = 'nist-cswp' or $namespace = 'nist-sp' or $namespace = 'ogc' or $namespace = 'ogc-white-paper'">A)</xsl:when>
 								<xsl:otherwise>A.</xsl:otherwise>
