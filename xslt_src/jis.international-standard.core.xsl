@@ -1048,9 +1048,19 @@
 						<xsl:call-template name="append_add-style"/>
 					</xsl:if>
 					
-					<xsl:variable name="list_item_label">
+					<xsl:variable name="list_item_label_">
 						<xsl:call-template name="getListItemFormat" />
 					</xsl:variable>
+					
+					<xsl:variable name="list_item_label">
+						<xsl:choose>
+							<xsl:when test="(../@type = 'arabic' or ../@type = 'alphabet' or ../@type = 'alphabetic' or ../@type = 'roman') and not(java:endsWith(java:java.lang.String.new($list_item_label_),')'))">
+								<xsl:value-of select="concat($list_item_label_, ')')"/>
+							</xsl:when>
+							<xsl:otherwise><xsl:value-of select="$list_item_label_"/></xsl:otherwise>
+						</xsl:choose>
+					</xsl:variable>
+					
 					<xsl:choose>
 						<xsl:when test="contains($list_item_label, ')')">
 							<xsl:value-of select="substring-before($list_item_label,')')"/>
