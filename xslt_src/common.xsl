@@ -14931,9 +14931,10 @@
 						<label level="2">&#x2014;</label><!-- em dash --> 
 					</xsl:when>
 					<xsl:otherwise>
-						<label level="1">–</label>
+						<label>–</label>
+						<!-- <label level="1">–</label>
 						<label level="2">•</label>
-						<label level="3" font-size="75%">o</label> <!-- white circle -->
+						<label level="3" font-size="75%">o</label> --> <!-- white circle -->
 					</xsl:otherwise>
 				</xsl:choose>
 			</xsl:when>
