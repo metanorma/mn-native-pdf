@@ -9520,8 +9520,17 @@
 	<!-- ========================= -->
 	<xsl:template match="*[local-name()='em']">
 		<fo:inline font-style="italic">
+			<xsl:call-template name="refine_italic_style"/>
 			<xsl:apply-templates />
 		</fo:inline>
+	</xsl:template>
+
+	<xsl:template name="refine_italic_style">
+		<xsl:if test="$namespace = 'iso'">
+			<xsl:if test="ancestor::*[local-name() = 'item']">
+				<xsl:attribute name="role">SKIP</xsl:attribute>
+			</xsl:if>
+		</xsl:if>
 	</xsl:template>
 
 	<xsl:template match="*[local-name()='strong'] | *[local-name()='b']">
@@ -9537,6 +9546,11 @@
 	</xsl:template>
 	
 	<xsl:template name="refine_strong_style">
+		<xsl:if test="$namespace = 'iso'">
+			<xsl:if test="ancestor::*[local-name() = 'item']">
+				<xsl:attribute name="role">SKIP</xsl:attribute>
+			</xsl:if>
+		</xsl:if>
 		<xsl:if test="$namespace = 'jis'">
 			<xsl:attribute name="font-family">Times New Roman</xsl:attribute>
 		</xsl:if>
