@@ -10076,6 +10076,9 @@
 		
 			<xsl:when test="not(contains($text, $separator))">
 				<word>
+					<xsl:if test="ancestor::*[local-name() = 'p'][@from_dl = 'true']">
+						<xsl:text>&#xa;&#xa0;</xsl:text> <!-- to add distance between dt and dd -->
+					</xsl:if>
 					<xsl:call-template name="enclose_text_in_tags">
 						<xsl:with-param name="text" select="normalize-space($text)"/>
 						<xsl:with-param name="tags" select="$tags"/>
@@ -10084,6 +10087,9 @@
 			</xsl:when>
 			<xsl:otherwise>
 				<word>
+					<xsl:if test="ancestor::*[local-name() = 'p'][@from_dl = 'true']">
+						<xsl:text>&#xa;&#xa0;</xsl:text> <!-- to add distance between dt and dd -->
+					</xsl:if>
 					<xsl:call-template name="enclose_text_in_tags">
 						<xsl:with-param name="text" select="normalize-space(substring-before($text, $separator))"/>
 						<xsl:with-param name="tags" select="$tags"/>
@@ -10270,6 +10276,10 @@
 	<!-- Table normalization (colspan,rowspan processing for adding TDs) for column width calculation -->
 	<xsl:template name="getSimpleTable">
 		<xsl:param name="id"/>
+		
+		<!-- <test0>
+			<xsl:copy-of select="."/>
+		</test0> -->
 		
 		<xsl:variable name="simple-table">
 		
