@@ -15063,7 +15063,61 @@
 				</xsl:choose>
 			</xsl:when>
 			<xsl:when test="local-name(..) = 'ol' and @label"> <!-- for ordered lists 'ol', and if there is @label, for instance label="1.1.2" -->
-				<xsl:value-of select="@label"/>
+				
+				<xsl:variable name="label">
+				
+					<xsl:variable name="type" select="../@type"/>
+					
+					<xsl:variable name="style_prefix_">
+						<xsl:if test="$type = 'roman'">
+							<xsl:if test="$namespace = 'bipm'">(</xsl:if> <!-- Example: (i) -->
+						</xsl:if>
+					</xsl:variable>
+					<xsl:variable name="style_prefix" select="normalize-space($style_prefix_)"/>
+					
+					<xsl:variable name="style_suffix_">
+						<xsl:choose>
+							<xsl:when test="$type = 'arabic'">
+								<xsl:choose>
+									<xsl:when test="$namespace = 'bipm' or $namespace = 'jcgm' or $namespace = 'm3d' or 
+									$namespace = 'mpfd' or $namespace = 'ogc' or $namespace = 'rsd' or $namespace = 'unece' or $namespace = 'nist-cswp' or $namespace = 'nist-sp'">.</xsl:when> <!-- Example: 1. -->
+									<xsl:otherwise>)</xsl:otherwise> <!-- Example: 1) -->
+								</xsl:choose>
+							</xsl:when>
+							<xsl:when test="$type = 'alphabet' or $type = 'alphabetic'">
+								<xsl:choose>
+									<xsl:when test="$namespace = 'rsd'">.</xsl:when> <!-- Example: a. -->
+									<xsl:otherwise>)</xsl:otherwise> <!-- Example: a) -->
+								</xsl:choose>
+							</xsl:when>
+							<xsl:when test="$type = 'alphabet_upper' or $type = 'alphabetic_upper'">
+								<xsl:choose>
+									<xsl:when test="$namespace = 'csa' or $namespace = 'nist-cswp' or $namespace = 'nist-sp' or $namespace = 'ogc' or $namespace = 'ogc-white-paper'">)</xsl:when> <!-- Example: A) -->
+									<xsl:otherwise>.</xsl:otherwise> <!-- Example: A. -->
+								</xsl:choose>
+							</xsl:when>
+							<xsl:when test="$type = 'roman'">
+								<xsl:choose>
+									<xsl:when test="$namespace = 'rsd'">.</xsl:when> <!-- Example: i. -->
+									<xsl:otherwise>)</xsl:otherwise> <!-- Example: (i) or i) -->
+								</xsl:choose>
+							</xsl:when>
+							<xsl:when test="$type = 'roman_upper'">.</xsl:when> <!-- Example: I. -->
+						</xsl:choose>
+					</xsl:variable>
+					<xsl:variable name="style_suffix" select="normalize-space($style_suffix_)"/>
+					
+					<xsl:if test="$style_prefix != '' and not(starts-with(@label, $style_prefix))">
+						<xsl:value-of select="$style_prefix"/>
+					</xsl:if>
+					<xsl:value-of select="@label"/>
+					<xsl:if test="not(java:endsWith(java:java.lang.String.new(@label),$style_suffix))">
+						<xsl:value-of select="$style_suffix"/>
+					</xsl:if>
+				</xsl:variable>
+				
+				<xsl:value-of select="normalize-space($label)"/>
+				
 			</xsl:when>
 			<xsl:otherwise> <!-- for ordered lists 'ol' -->
 			
