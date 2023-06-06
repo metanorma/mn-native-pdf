@@ -4300,6 +4300,13 @@
 	</xsl:attribute-set> <!-- formula-stem-number-style -->
 	<!-- End Formula's styles -->
 	
+	<xsl:template name="refine_formula-stem-number-style">
+		<xsl:if test="$namespace = 'iec'">
+			<xsl:if test="ancestor::*[local-name() = 'table']">
+				<xsl:attribute name="margin-right">0mm</xsl:attribute>
+			</xsl:if>
+		</xsl:if>
+	</xsl:template>
 	
 	<xsl:attribute-set name="image-style">
 		<xsl:attribute name="text-align">center</xsl:attribute>
@@ -11402,6 +11409,9 @@
 						</fo:table-cell>
 						<fo:table-cell display-align="center">
 							<fo:block xsl:use-attribute-sets="formula-stem-number-style">
+							
+								<xsl:call-template name="refine_formula-stem-number-style"/>
+								
 								<xsl:apply-templates select="../*[local-name() = 'name']"/>
 							</fo:block>
 						</fo:table-cell>
