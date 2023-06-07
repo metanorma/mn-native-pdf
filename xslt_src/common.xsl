@@ -6874,7 +6874,7 @@
 							<fo:table-row>
 								<fo:table-cell column-number="2">
 									<xsl:copy-of select="$table-preamble"/>
-									<fo:block>
+									<fo:block role="SKIP">
 										<xsl:call-template name="setTrackChangesStyles">
 											<xsl:with-param name="isAdded" select="$isAdded"/>
 											<xsl:with-param name="isDeleted" select="$isDeleted"/>
@@ -6993,7 +6993,7 @@
 				
 				<xsl:otherwise>
 				
-					<fo:block xsl:use-attribute-sets="table-name-style">
+					<fo:block xsl:use-attribute-sets="table-name-style" role="SKIP">
 
 						<xsl:call-template name="refine_table-name-style">
 							<xsl:with-param name="continued" select="$continued"/>
@@ -7013,13 +7013,13 @@
 						<xsl:if test="$namespace = 'bsi'">
 							<xsl:if test="not(ancestor::*[local-name() = 'table']/@class = 'corrigenda')">
 								<xsl:if test="$continued = 'true'">
-									<fo:inline font-weight="bold" font-style="normal">
+									<fo:inline font-weight="bold" font-style="normal" role="SKIP">
 										<xsl:if test="$document_type = 'PAS'">
 											<xsl:attribute name="color"><xsl:value-of select="$color_secondary_shade_1_PAS"/></xsl:attribute>
 										</xsl:if>
 										<fo:retrieve-table-marker retrieve-class-name="table_number"/>
 									</fo:inline>
-									<fo:inline font-style="italic">
+									<fo:inline font-style="italic" role="SKIP">
 										<xsl:text> </xsl:text>
 										<fo:retrieve-table-marker retrieve-class-name="table_continued"/>
 									</fo:inline>
@@ -7029,10 +7029,10 @@
 						
 						<xsl:if test="$namespace = 'iec' or $namespace = 'iso'">
 							<xsl:if test="$continued = 'true'">
-								<fo:inline font-weight="bold" font-style="normal">
+								<fo:inline font-weight="bold" font-style="normal" role="SKIP">
 									<fo:retrieve-table-marker retrieve-class-name="table_number"/>
 								</fo:inline>
-								<fo:inline font-weight="normal" font-style="italic">
+								<fo:inline font-weight="normal" font-style="italic" role="SKIP">
 									<xsl:text> </xsl:text>
 									<fo:retrieve-table-marker retrieve-class-name="table_continued"/>
 								</fo:inline>
@@ -7433,8 +7433,8 @@
 	<xsl:template name="table-header-title">
 		<xsl:param name="cols-count"/>
 		<!-- row for title -->
-		<fo:table-row>
-			<fo:table-cell number-columns-spanned="{$cols-count}" border-left="1.5pt solid white" border-right="1.5pt solid white" border-top="1.5pt solid white" border-bottom="1.5pt solid black">
+		<fo:table-row role="SKIP">
+			<fo:table-cell number-columns-spanned="{$cols-count}" border-left="1.5pt solid white" border-right="1.5pt solid white" border-top="1.5pt solid white" border-bottom="1.5pt solid black" role="SKIP">
 			
 				<xsl:call-template name="refine_table-header-title-style"/>
 			
@@ -7445,12 +7445,12 @@
 							<xsl:attribute name="border-bottom">0.5 solid black</xsl:attribute>
 						</xsl:if>
 					
-						<fo:block xsl:use-attribute-sets="table-name-style">
+						<fo:block xsl:use-attribute-sets="table-name-style" role="SKIP">
 							<xsl:apply-templates select="ancestor::*[local-name()='table']/*[local-name()='name']">
 								<xsl:with-param name="continued">true</xsl:with-param>
 							</xsl:apply-templates>
 							
-							<fo:inline font-weight="normal" font-style="italic">
+							<fo:inline font-weight="normal" font-style="italic" role="SKIP">
 								<xsl:text>&#xA0;</xsl:text>
 								<fo:retrieve-table-marker retrieve-class-name="table_continued"/>
 							</fo:inline>
@@ -7463,7 +7463,7 @@
 						</xsl:apply-templates>
 						
 						<xsl:if test="not(ancestor::*[local-name()='table']/*[local-name()='name'])"> <!-- to prevent empty fo:table-cell in case of missing table's name -->
-							<fo:block></fo:block>
+							<fo:block role="SKIP"></fo:block>
 						</xsl:if>
 						
 						<xsl:if test="$namespace = 'iso'">
@@ -7477,7 +7477,7 @@
 								<xsl:call-template name="table_name_fn_display"/>
 							</xsl:for-each>
 
-							<fo:block text-align="right" font-style="italic">
+							<fo:block text-align="right" font-style="italic" role="SKIP">
 								<xsl:text>&#xA0;</xsl:text>
 								<fo:retrieve-table-marker retrieve-class-name="table_continued"/>
 							</fo:block>
@@ -7485,7 +7485,6 @@
 				
 					</xsl:otherwise>
 				</xsl:choose>
-				
 				
 			</fo:table-cell>
 		</fo:table-row>
@@ -7618,13 +7617,13 @@
 								<!-- fn will be processed inside 'note' processing -->
 								<xsl:if test="$namespace = 'iec'">
 									<xsl:if test="../*[local-name()='note']">
-										<fo:block margin-bottom="6pt">&#xA0;</fo:block>
+										<fo:block margin-bottom="6pt" role="SKIP">&#xA0;</fo:block>
 									</xsl:if>
 								</xsl:if>
 								
 								<xsl:if test="$namespace = 'bipm'">
 									<xsl:if test="count(ancestor::bipm:table//*[local-name()='note']) &gt; 1">
-										<fo:block font-weight="bold">
+										<fo:block font-weight="bold" role="SKIP">
 											<xsl:variable name="curr_lang" select="ancestor::bipm:bipm-standard/bipm:bibdata/bipm:language"/>
 											<xsl:choose>
 												<xsl:when test="$curr_lang = 'fr'">Remarques</xsl:when>
@@ -7636,7 +7635,7 @@
 								
 								<xsl:if test="$namespace = 'itu'">
 									<xsl:if test="$doctype = 'service-publication'">
-										<fo:block margin-top="7pt" margin-bottom="2pt"><fo:inline>____________</fo:inline></fo:block>
+										<fo:block margin-top="7pt" margin-bottom="2pt" role="SKIP"><fo:inline>____________</fo:inline></fo:block>
 									</xsl:if>
 								</xsl:if>
 								
@@ -7779,8 +7778,8 @@
 				<xsl:variable name="title_start" select="ancestor::*[local-name()='table'][1]/*[local-name()='name']/node()[1][self::text()]"/>
 				<xsl:variable name="table_number" select="substring-before($title_start, '—')"/>
 				
-				<fo:table-row height="0" keep-with-next.within-page="always">
-					<fo:table-cell>
+				<fo:table-row height="0" keep-with-next.within-page="always" role="SKIP">
+					<fo:table-cell role="SKIP">
 					
 						<xsl:if test="$namespace = 'bsi' or $namespace = 'iec' or $namespace = 'iso'">
 							<fo:marker marker-class-name="table_number" />
@@ -7791,11 +7790,11 @@
 							<fo:marker marker-class-name="table_continued" />
 						</xsl:if>
 						
-						<fo:block/>
+						<fo:block role="SKIP"/>
 					</fo:table-cell>
 				</fo:table-row>
-				<fo:table-row height="0" keep-with-next.within-page="always">
-					<fo:table-cell>
+				<fo:table-row height="0" keep-with-next.within-page="always" role="SKIP">
+					<fo:table-cell role="SKIP">
 						<xsl:if test="$namespace = 'bsi'">
 							<fo:marker marker-class-name="table_number"><xsl:value-of select="$table_number"/></fo:marker>
 						</xsl:if>
@@ -7805,7 +7804,7 @@
 						<fo:marker marker-class-name="table_continued">
 							<xsl:value-of select="$title_continued"/>
 						</fo:marker>
-						 <fo:block/>
+						 <fo:block role="SKIP"/>
 					</fo:table-cell>
 				</fo:table-row>
 			</xsl:if>
@@ -7978,7 +7977,7 @@
 			
 			<xsl:call-template name="refine_table-header-cell-style"/>
 			
-			<fo:block>
+			<fo:block role="SKIP">
 				<xsl:apply-templates />
 			</fo:block>
 		</fo:table-cell>
@@ -8032,7 +8031,7 @@
 				<xsl:attribute name="text-align">left</xsl:attribute>
 			</xsl:if>
 			
-			<fo:block>
+			<fo:block role="SKIP">
 			
 				<xsl:if test="$isGenerateTableIF = 'true'">
 					<xsl:attribute name="id"><xsl:value-of select="@id"/></xsl:attribute>
@@ -9247,7 +9246,7 @@
 		-->
 		<fo:table-row>
 			<fo:table-cell number-columns-spanned="2">
-				<fo:block>
+				<fo:block role="SKIP">
 					<xsl:call-template name="note"/>
 				</fo:block>
 			</fo:table-cell>
@@ -9346,7 +9345,7 @@
 			
 			<xsl:call-template name="refine_dt-cell-style"/>
 			
-			<fo:block xsl:use-attribute-sets="dt-block-style">
+			<fo:block xsl:use-attribute-sets="dt-block-style" role="SKIP">
 				<xsl:copy-of select="@id"/>
 				
 				<xsl:if test="normalize-space($key_iso) = 'true'">
@@ -9377,7 +9376,7 @@
 		
 			<xsl:call-template name="refine_dd-cell-style"/>
 		
-			<fo:block>
+			<fo:block role="SKIP">
 			
 				<xsl:if test="$isGenerateTableIF = 'true'">
 					<xsl:attribute name="id"><xsl:value-of select="@id"/></xsl:attribute>
@@ -11410,7 +11409,7 @@
 				<fo:table-body>
 					<fo:table-row>
 						<fo:table-cell display-align="center">
-							<fo:block xsl:use-attribute-sets="formula-stem-block-style">
+							<fo:block xsl:use-attribute-sets="formula-stem-block-style" role="SKIP">
 							
 								<xsl:call-template name="refine_formula-stem-block-style"/>
 								
@@ -11418,7 +11417,7 @@
 							</fo:block>
 						</fo:table-cell>
 						<fo:table-cell display-align="center">
-							<fo:block xsl:use-attribute-sets="formula-stem-number-style">
+							<fo:block xsl:use-attribute-sets="formula-stem-number-style" role="SKIP">
 							
 								<xsl:call-template name="refine_formula-stem-number-style"/>
 								
@@ -11479,12 +11478,12 @@
 							<fo:table-body>
 								<fo:table-row>
 									<fo:table-cell>
-										<fo:block font-family="SimHei" xsl:use-attribute-sets="note-name-style">
+										<fo:block font-family="SimHei" xsl:use-attribute-sets="note-name-style" role="SKIP">
 											<xsl:apply-templates select="gb:name" />
 										</fo:block>
 									</fo:table-cell>
 									<fo:table-cell>
-										<fo:block text-align="justify">
+										<fo:block text-align="justify" role="SKIP">
 											<xsl:apply-templates select="node()[not(local-name() = 'name')]" />
 										</fo:block>
 									</fo:table-cell>
@@ -13337,7 +13336,7 @@
 	<!-- second td with sourcecode -->
 	<xsl:template match="*[local-name() = 'sourcecode'][@linenums = 'true']/*[local-name()='table']//*[local-name()='tr']/*[local-name()='td'][preceding-sibling::*]" priority="2"> <!-- *[local-name()='table'][@type = 'sourcecode'] -->
 		<fo:table-cell>
-			<fo:block>
+			<fo:block role="SKIP">
 				<xsl:apply-templates />
 			</fo:block>
 		</fo:table-cell>
@@ -13875,7 +13874,7 @@
 			
 			<xsl:call-template name="setTableCellAttributes"/>
 			
-			<fo:block>
+			<fo:block role="SKIP">
 				<xsl:apply-templates />
 			</fo:block>
 		</fo:table-cell>
@@ -13898,7 +13897,7 @@
 			
 			<xsl:call-template name="setTableCellAttributes"/>
 			
-			<fo:block>			
+			<fo:block role="SKIP">			
 				<xsl:apply-templates />
 			</fo:block>			
 		</fo:table-cell>
@@ -15685,10 +15684,10 @@
 					<xsl:if test="$namespace = 'nist-cswp' or $namespace = 'nist-sp'">
 						<xsl:attribute name="font-family">Arial</xsl:attribute>
 					</xsl:if>
-					<fo:table-cell border="1pt solid black"><fo:block>Date</fo:block></fo:table-cell>
-					<fo:table-cell border="1pt solid black"><fo:block>Type</fo:block></fo:table-cell>
-					<fo:table-cell border="1pt solid black"><fo:block>Change</fo:block></fo:table-cell>
-					<fo:table-cell border="1pt solid black"><fo:block>Pages</fo:block></fo:table-cell>
+					<fo:table-cell border="1pt solid black"><fo:block role="SKIP">Date</fo:block></fo:table-cell>
+					<fo:table-cell border="1pt solid black"><fo:block role="SKIP">Type</fo:block></fo:table-cell>
+					<fo:table-cell border="1pt solid black"><fo:block role="SKIP">Change</fo:block></fo:table-cell>
+					<fo:table-cell border="1pt solid black"><fo:block role="SKIP">Pages</fo:block></fo:table-cell>
 				</fo:table-row>
 				<xsl:apply-templates />
 			</fo:table-body>
@@ -15703,7 +15702,7 @@
 
 	<xsl:template match="*[local-name() = 'errata']/*[local-name() = 'row']/*">
 		<fo:table-cell border="1pt solid black" padding-left="1mm" padding-top="0.5mm">
-			<fo:block><xsl:apply-templates /></fo:block>
+			<fo:block role="SKIP"><xsl:apply-templates /></fo:block>
 		</fo:table-cell>
 	</xsl:template>
 	<!-- ============ -->
@@ -15996,8 +15995,8 @@
 							<fo:table-column column-width="80%"/>
 							<fo:table-body>
 								<fo:table-row>
-									<fo:table-cell><fo:block><xsl:value-of select="$bibitem_label"/></fo:block></fo:table-cell>
-									<fo:table-cell><fo:block><xsl:copy-of select="$bibitem_body"/></fo:block></fo:table-cell>
+									<fo:table-cell><fo:block role="SKIP"><xsl:value-of select="$bibitem_label"/></fo:block></fo:table-cell>
+									<fo:table-cell><fo:block role="SKIP"><xsl:copy-of select="$bibitem_body"/></fo:block></fo:table-cell>
 								</fo:table-row>
 							</fo:table-body>
 						</fo:table>
@@ -16304,7 +16303,7 @@
 		<xsl:for-each select="*[local-name() = 'tab']">
 			<xsl:variable name="current_id" select="generate-id()"/>
 			<fo:table-cell>
-				<fo:block line-height-shift-adjustment="disregard-shifts">
+				<fo:block line-height-shift-adjustment="disregard-shifts" role="SKIP">
 					<xsl:call-template name="insert_basic_link">
 						<xsl:with-param name="element">
 							<fo:basic-link internal-destination="{$target}" fox:alt-text="{.}">
@@ -16322,7 +16321,7 @@
 		</xsl:for-each>
 		<!-- last column - for page numbers -->
 		<fo:table-cell text-align="right" font-size="10pt" font-weight="bold" font-family="Arial">
-			<fo:block>
+			<fo:block role="SKIP">
 				<xsl:call-template name="insert_basic_link">
 					<xsl:with-param name="element">
 						<fo:basic-link internal-destination="{$target}" fox:alt-text="{.}">
