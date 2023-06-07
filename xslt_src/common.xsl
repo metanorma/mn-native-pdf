@@ -9814,7 +9814,7 @@
 	
 	<xsl:template match="text()[ancestor::*[local-name()='smallcap']]">
 		<xsl:variable name="text" select="normalize-space(.)"/>
-		<fo:inline font-size="75%">
+		<fo:inline font-size="75%" role="SKIP">
 				<xsl:if test="string-length($text) &gt; 0">
 					<xsl:call-template name="recursiveSmallCaps">
 						<xsl:with-param name="text" select="$text"/>
@@ -9830,7 +9830,7 @@
 		<xsl:variable name="upperCase" select="java:toUpperCase(java:java.lang.String.new($char))"/>
     <xsl:choose>
       <xsl:when test="$char=$upperCase">
-        <fo:inline font-size="{100 div 0.75}%">
+        <fo:inline font-size="{100 div 0.75}%" role="SKIP">
           <xsl:value-of select="$upperCase"/>
         </fo:inline>
       </xsl:when>
@@ -15933,8 +15933,8 @@
 				<fo:list-block id="{@id}" xsl:use-attribute-sets="bibitem-non-normative-list-style">
 					<fo:list-item>
 						<fo:list-item-label end-indent="label-end()">
-							<fo:block>
-								<fo:inline>
+							<fo:block role="SKIP">
+								<fo:inline role="SKIP">
 									<xsl:if test="$namespace = 'ieee'">
 										<xsl:if test="($current_template = 'whitepaper' or $current_template = 'icap-whitepaper' or $current_template = 'industry-connection-report')">
 											<xsl:attribute name="color"><xsl:value-of select="$color_blue"/></xsl:attribute>
@@ -15947,7 +15947,7 @@
 							</fo:block>
 						</fo:list-item-label>
 						<fo:list-item-body start-indent="body-start()">
-							<fo:block xsl:use-attribute-sets="bibitem-non-normative-list-body-style">
+							<fo:block xsl:use-attribute-sets="bibitem-non-normative-list-body-style" role="SKIP">
 								<xsl:call-template name="processBibitem">
 									<xsl:with-param name="biblio_tag_part">last</xsl:with-param>
 								</xsl:call-template>
