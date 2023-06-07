@@ -15379,7 +15379,7 @@
 			<xsl:call-template name="refine_list-item-style"/>
 			
 			<fo:list-item-label end-indent="label-end()">
-				<fo:block xsl:use-attribute-sets="list-item-label-style">
+				<fo:block xsl:use-attribute-sets="list-item-label-style" role="SKIP">
 				
 					<xsl:call-template name="refine_list-item-label-style"/>
 					
@@ -15393,7 +15393,7 @@
 				</fo:block>
 			</fo:list-item-label>
 			<fo:list-item-body start-indent="body-start()" xsl:use-attribute-sets="list-item-body-style">
-				<fo:block>
+				<fo:block role="SKIP">
 				
 					<xsl:call-template name="refine_list-item-body-style"/>
 					
