@@ -9538,6 +9538,11 @@
 				<xsl:attribute name="role">SKIP</xsl:attribute>
 			</xsl:if>
 		</xsl:if>
+		<xsl:if test="$namespace = 'itu'">
+			<xsl:if test="$lang = 'ar'"> <!-- to prevent rendering `###` due the missing Arabic glyphs in the italic font (Times New Roman) -->
+				<xsl:attribute name="font-style">normal</xsl:attribute>
+			</xsl:if>
+		</xsl:if>
 	</xsl:template>
 
 	<xsl:template match="*[local-name()='strong'] | *[local-name()='b']">
