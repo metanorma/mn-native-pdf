@@ -430,6 +430,8 @@
 					<!-- paged_xml=<xsl:copy-of select="$paged_xml"/> -->
 					
 					<xsl:for-each select="xalan:nodeset($paged_xml)/*[local-name()='page'][*]">
+					
+						<xsl:variable name="isCommentary" select="normalize-space(.//jis:annex[@commentary = 'true'] and 1 = 1)"/> <!-- true or false -->
 						<!-- DEBUG: <xsl:copy-of select="."/> -->
 						<fo:page-sequence master-reference="document" force-page-count="no-force">
 							<xsl:if test="position() = 1">
@@ -438,7 +440,7 @@
 							<xsl:if test="@orientation = 'landscape'">
 								<xsl:attribute name="master-reference">document-<xsl:value-of select="@orientation"/></xsl:attribute>
 							</xsl:if>
-							<xsl:if test=".//jis:annex[@commentary = 'true']">
+							<xsl:if test="$isCommentary = 'true'">
 								<xsl:attribute name="master-reference">document_commentary_section</xsl:attribute>
 							</xsl:if>
 							<xsl:if test="position() = 1">
@@ -452,7 +454,7 @@
 							
 							
 							<xsl:variable name="section_title">
-								<xsl:if test=".//jis:annex[@commentary = 'true']">
+								<xsl:if test="$isCommentary = 'true'">
 									<fo:inline font-family="IPAexGothic" padding-left="2mm">
 										<xsl:text>&#xa0;</xsl:text>
 										<xsl:call-template name="getLocalizedString">
@@ -462,10 +464,17 @@
 								</xsl:if>
 							</xsl:variable>
 							
+							<xsl:variable name="section">
+								<xsl:choose>
+									<xsl:when test="$isCommentary = 'true'">commentary</xsl:when>
+									<xsl:otherwise>main</xsl:otherwise>
+								</xsl:choose>
+							</xsl:variable>
+							
 							<xsl:call-template name="insertHeaderFooter">
 								<xsl:with-param name="docidentifier" select="$docidentifier"/>
 								<xsl:with-param name="copyrightText" select="$copyrightText"/>
-								<xsl:with-param name="section">main</xsl:with-param>
+								<xsl:with-param name="section" select="$section"/>
 								<xsl:with-param name="section_title">
 									<xsl:copy-of select="$section_title"/>
 								</xsl:with-param>
@@ -515,7 +524,7 @@
 								
 								
 								<!-- Annex Commentary first page -->
-								<xsl:if test=".//jis:annex[@commentary = 'true']">
+								<xsl:if test="$isCommentary = 'true'">
 									
 									<!-- Example: JIS Z 8301：2019  -->
 									<fo:block font-family="IPAexGothic" font-size="15pt" text-align="center">
@@ -1396,7 +1405,7 @@
 		</fo:static-content>
 		<fo:static-content flow-name="header-odd" role="artifact">
 			<fo:block-container font-family="Arial" font-size="9pt" height="26mm" display-align="after" text-align="right">
-				<xsl:if test="$section = 'main'"><fo:block><fo:page-number /></fo:block></xsl:if>
+				<xsl:if test="$section = 'main' or $section = 'commentary'"><fo:block><fo:page-number /></fo:block></xsl:if>
 				<fo:block>
 					<xsl:copy-of select="$docidentifier"/>
 					<xsl:copy-of select="$section_title"/>
@@ -1405,7 +1414,7 @@
 		</fo:static-content>
 		<fo:static-content flow-name="header-even" role="artifact">
 			<fo:block-container font-family="Arial" font-size="9pt" height="26mm" display-align="after">
-				<xsl:if test="$section = 'main'"><fo:block><fo:page-number /></fo:block></xsl:if>
+				<xsl:if test="$section = 'main' or $section = 'commentary'"><fo:block><fo:page-number /></fo:block></xsl:if>
 				<fo:block>
 					<xsl:copy-of select="$docidentifier"/>
 					<xsl:copy-of select="$section_title"/>
@@ -1440,6 +1449,16 @@
 			<fo:block-container height="24mm" display-align="after">
 				<xsl:if test="$section = 'preface'">
 					<fo:block font-size="9pt" text-align="center" space-after="10pt">(<fo:inline font-family="Times New Roman"><fo:page-number /></fo:inline>)</fo:block>
+				</xsl:if>
+				<xsl:if test="$section = 'commentary'">
+					<fo:block font-size="9pt" text-align="center" space-after="12pt">
+						<fo:inline font-family="IPAexGothic" padding-right="3mm">
+							<xsl:call-template name="getLocalizedString">
+								<xsl:with-param name="key">commentary_page</xsl:with-param>
+							</xsl:call-template>
+						</fo:inline>
+						<fo:inline font-weight="bold" font-family="Times New Roman"><fo:page-number /></fo:inline>
+					</fo:block>
 				</xsl:if>
 				<!-- copyright restriction -->
 				<fo:block font-size="7pt" text-align="center" font-family="IPAexMincho" margin-bottom="13mm"><xsl:value-of select="$copyrightText"/></fo:block>
