@@ -513,9 +513,7 @@
 					<xsl:for-each select="$contents/doc[@num = $num]//item[@display = 'true'][@level &lt;= $toc_level or @type='figure' or @type = 'table']">
 						<fo:block role="TOCI">
 							<xsl:choose>
-								<xsl:when test="@type = 'bibliography'">
-								</xsl:when>
-								<xsl:when test="@type = 'annex'">
+								<xsl:when test="@type = 'annex' or @type = 'bibliography'">
 									<fo:block space-after="5pt">
 										<xsl:call-template name="insertTocItem"/>
 									</fo:block>
