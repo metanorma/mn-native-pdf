@@ -370,14 +370,15 @@
 						</item>	
 						
 						<!-- Annexes -->
-						<xsl:for-each select="/*/*[local-name()='annex']">
+						<!-- <xsl:for-each select="/*/*[local-name()='annex']">
 							<item>
 								<xsl:apply-templates select="." mode="linear_xml"/>
 							</item>
-						</xsl:for-each>
+						</xsl:for-each> -->
 						
-						<!-- Bibliography -->
-						<xsl:for-each select="/*/*[local-name()='bibliography']/*[count(.//*[local-name() = 'bibitem'][not(@hidden) = 'true']) &gt; 0 and not(@hidden = 'true')]">
+						<!-- Annexes and Bibliography -->
+						<xsl:for-each select="/*/*[local-name()='annex'] | /*/*[local-name()='bibliography']/*[count(.//*[local-name() = 'bibitem'][not(@hidden) = 'true']) &gt; 0 and not(@hidden = 'true')]">
+							<xsl:sort select="@displayorder" data-type="number"/>
 							<item><xsl:apply-templates select="." mode="linear_xml"/></item>
 						</xsl:for-each>
 						
