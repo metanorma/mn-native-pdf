@@ -1457,7 +1457,7 @@
 								<xsl:with-param name="key">commentary_page</xsl:with-param>
 							</xsl:call-template>
 						</fo:inline>
-						<fo:inline font-weight="bold" font-family="Times New Roman"><fo:page-number /></fo:inline>
+						<fo:inline font-weight="bold" font-family="Times New Roman" id="_independent_page_number_commentary"><fo:page-number /></fo:inline>
 					</fo:block>
 				</xsl:if>
 				<!-- copyright restriction -->
