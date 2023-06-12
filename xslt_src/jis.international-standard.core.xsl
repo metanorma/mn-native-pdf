@@ -143,6 +143,31 @@
 					</fo:repeatable-page-master-alternatives>
 				</fo:page-sequence-master>
 			
+				<fo:simple-page-master master-name="commentary_first_page_even" page-width="{$pageWidth}mm" page-height="{$pageHeight}mm">
+					<fo:region-body margin-top="{$marginTop}mm" margin-bottom="{$marginBottom}mm" margin-left="{$marginLeftRight1}mm" margin-right="{$marginLeftRight2}mm"/>
+					<fo:region-before region-name="header-commentary-even-first" extent="{$marginTop}mm"/>
+					<fo:region-after region-name="footer" extent="{$marginBottom}mm"/>
+					<fo:region-start region-name="left-region" extent="{$marginLeftRight1}mm"/>
+					<fo:region-end region-name="right-region" extent="{$marginLeftRight2}mm"/>
+				</fo:simple-page-master>
+				
+				<fo:simple-page-master master-name="commentary_first_page_odd" page-width="{$pageWidth}mm" page-height="{$pageHeight}mm">
+					<fo:region-body margin-top="{$marginTop}mm" margin-bottom="{$marginBottom}mm" margin-left="{$marginLeftRight1}mm" margin-right="{$marginLeftRight2}mm"/>
+					<fo:region-before region-name="header-commentary-odd-first" extent="{$marginTop}mm"/>
+					<fo:region-after region-name="footer" extent="{$marginBottom}mm"/>
+					<fo:region-start region-name="left-region" extent="{$marginLeftRight1}mm"/>
+					<fo:region-end region-name="right-region" extent="{$marginLeftRight2}mm"/>
+				</fo:simple-page-master>
+			
+				<fo:page-sequence-master master-name="document_commentary_section">
+					<fo:repeatable-page-master-alternatives>
+						<fo:conditional-page-master-reference page-position="first" odd-or-even="even" master-reference="commentary_first_page_even"/>
+						<fo:conditional-page-master-reference page-position="first" odd-or-even="odd" master-reference="commentary_first_page_odd"/>
+						<fo:conditional-page-master-reference odd-or-even="even" master-reference="even"/>
+						<fo:conditional-page-master-reference odd-or-even="odd" master-reference="odd"/>
+					</fo:repeatable-page-master-alternatives>
+				</fo:page-sequence-master>
+			
 				<!-- landscape -->
 				<fo:simple-page-master master-name="odd-landscape" page-width="{$pageHeight}mm" page-height="{$pageWidth}mm">
 					<fo:region-body margin-top="{$marginLeftRight1}mm" margin-bottom="{$marginLeftRight2}mm" margin-left="{$marginBottom}mm" margin-right="{$marginTop}mm"/>
@@ -370,14 +395,15 @@
 						</item>	
 						
 						<!-- Annexes -->
-						<xsl:for-each select="/*/*[local-name()='annex']">
+						<!-- <xsl:for-each select="/*/*[local-name()='annex']">
 							<item>
 								<xsl:apply-templates select="." mode="linear_xml"/>
 							</item>
-						</xsl:for-each>
+						</xsl:for-each> -->
 						
-						<!-- Bibliography -->
-						<xsl:for-each select="/*/*[local-name()='bibliography']/*[count(.//*[local-name() = 'bibitem'][not(@hidden) = 'true']) &gt; 0 and not(@hidden = 'true')]">
+						<!-- Annexes and Bibliography -->
+						<xsl:for-each select="/*/*[local-name()='annex'] | /*/*[local-name()='bibliography']/*[count(.//*[local-name() = 'bibitem'][not(@hidden) = 'true']) &gt; 0 and not(@hidden = 'true')]">
+							<xsl:sort select="@displayorder" data-type="number"/>
 							<item><xsl:apply-templates select="." mode="linear_xml"/></item>
 						</xsl:for-each>
 						
@@ -404,12 +430,18 @@
 					<!-- paged_xml=<xsl:copy-of select="$paged_xml"/> -->
 					
 					<xsl:for-each select="xalan:nodeset($paged_xml)/*[local-name()='page'][*]">
+					
+						<xsl:variable name="isCommentary" select="normalize-space(.//jis:annex[@commentary = 'true'] and 1 = 1)"/> <!-- true or false -->
+						<!-- DEBUG: <xsl:copy-of select="."/> -->
 						<fo:page-sequence master-reference="document" force-page-count="no-force">
 							<xsl:if test="position() = 1">
 								<xsl:attribute name="master-reference">document_first_section</xsl:attribute>
 							</xsl:if>
 							<xsl:if test="@orientation = 'landscape'">
 								<xsl:attribute name="master-reference">document-<xsl:value-of select="@orientation"/></xsl:attribute>
+							</xsl:if>
+							<xsl:if test="$isCommentary = 'true'">
+								<xsl:attribute name="master-reference">document_commentary_section</xsl:attribute>
 							</xsl:if>
 							<xsl:if test="position() = 1">
 								<xsl:attribute name="initial-page-number">1</xsl:attribute>
@@ -420,10 +452,32 @@
 								</fo:block>
 							</fo:static-content>
 							
+							
+							<xsl:variable name="section_title">
+								<xsl:if test="$isCommentary = 'true'">
+									<fo:inline font-family="IPAexGothic" padding-left="2mm">
+										<xsl:text>&#xa0;</xsl:text>
+										<xsl:call-template name="getLocalizedString">
+											<xsl:with-param name="key">commentary</xsl:with-param>
+										</xsl:call-template>
+									</fo:inline>
+								</xsl:if>
+							</xsl:variable>
+							
+							<xsl:variable name="section">
+								<xsl:choose>
+									<xsl:when test="$isCommentary = 'true'">commentary</xsl:when>
+									<xsl:otherwise>main</xsl:otherwise>
+								</xsl:choose>
+							</xsl:variable>
+							
 							<xsl:call-template name="insertHeaderFooter">
 								<xsl:with-param name="docidentifier" select="$docidentifier"/>
 								<xsl:with-param name="copyrightText" select="$copyrightText"/>
-								<xsl:with-param name="section">main</xsl:with-param>
+								<xsl:with-param name="section" select="$section"/>
+								<xsl:with-param name="section_title">
+									<xsl:copy-of select="$section_title"/>
+								</xsl:with-param>
 							</xsl:call-template>
 							
 							<fo:flow flow-name="xsl-region-body">
@@ -469,6 +523,20 @@
 								</xsl:if>
 								
 								
+								<!-- Annex Commentary first page -->
+								<xsl:if test="$isCommentary = 'true'">
+									
+									<!-- Example: JIS Z 8301：2019  -->
+									<fo:block font-family="IPAexGothic" font-size="15pt" text-align="center">
+										<fo:inline font-family="Arial">JIS <xsl:value-of select="$docidentifier_number"/></fo:inline>
+										<fo:inline baseline-shift="10%"><fo:inline font-size="10pt">：</fo:inline>
+										<fo:inline font-family="Times New Roman" font-size="10pt"><xsl:value-of select="$docidentifier_year"/></fo:inline></fo:inline>
+									</fo:block>
+
+									<!-- title -->
+									<fo:block role="H1" font-family="IPAexGothic" font-size="16pt" text-align="center" margin-top="6mm"><xsl:value-of select="$title_ja"/></fo:block>
+								</xsl:if>
+								
 								<xsl:apply-templates select="*" mode="page"/>
 								
 							</fo:flow>
@@ -513,9 +581,7 @@
 					<xsl:for-each select="$contents/doc[@num = $num]//item[@display = 'true'][@level &lt;= $toc_level or @type='figure' or @type = 'table']">
 						<fo:block role="TOCI">
 							<xsl:choose>
-								<xsl:when test="@type = 'bibliography'">
-								</xsl:when>
-								<xsl:when test="@type = 'annex'">
+								<xsl:when test="@type = 'annex' or @type = 'bibliography'">
 									<fo:block space-after="5pt">
 										<xsl:call-template name="insertTocItem"/>
 									</fo:block>
@@ -585,7 +651,10 @@
 		</fo:block>
 	</xsl:template>
 	
-	
+	<!-- docidentifier, 3 part: number, colon and year-->
+	<xsl:variable name="docidentifier_jis" select="/*/jis:bibdata/jis:docidentifier[@type = 'JIS']"/>
+	<xsl:variable name="docidentifier_number" select="java:replaceAll(java:java.lang.String.new($docidentifier_jis), '^(.*)(:)(.*)$', '$1')"/>
+	<xsl:variable name="docidentifier_year" select="java:replaceAll(java:java.lang.String.new($docidentifier_jis), '^(.*)(:)(.*)$', '$3')"/>
 	<xsl:template name="insertCoverPage">
 		<xsl:param name="num"/>
 		<xsl:param name="copyrightText"/>
@@ -605,10 +674,6 @@
 				<fo:block-container text-align="center">
 					<!-- title -->
 					<fo:block role="H1" font-family="IPAexGothic" font-size="22pt" margin-top="27mm"><xsl:apply-templates select="/*/jis:bibdata/jis:title[@language = 'ja' and @type = 'main']/node()"/></fo:block>
-					<!-- docidentifier, 3 part: number, colon and year-->
-					<xsl:variable name="docidentifier" select="/*/jis:bibdata/jis:docidentifier[@type = 'JIS']"/>
-					<xsl:variable name="docidentifier_number" select="java:replaceAll(java:java.lang.String.new($docidentifier), '^(.*)(:)(.*)$', '$1')"/>
-					<xsl:variable name="docidentifier_year" select="java:replaceAll(java:java.lang.String.new($docidentifier), '^(.*)(:)(.*)$', '$3')"/>
 					
 					<fo:block font-family="IPAexGothic" font-size="20pt" margin-top="15mm">
 						<fo:inline font-family="Arial">JIS <xsl:value-of select="$docidentifier_number"/></fo:inline>
@@ -808,6 +873,7 @@
 			<xsl:choose>
 				<xsl:when test="@type = 'section-title'">18pt</xsl:when>
 				<xsl:when test="@ancestor = 'foreword' and $level = '1'">14pt</xsl:when>
+				<xsl:when test="@ancestor = 'annex' and $level = '1' and preceding-sibling::*[1][local-name() = 'annex' and @commentary = 'true']">16pt</xsl:when>
 				<xsl:when test="@ancestor = 'annex' and $level = '1'">14pt</xsl:when>
 				<!-- <xsl:when test="@ancestor = 'foreword' and $level &gt;= '2'">12pt</xsl:when>
 				<xsl:when test=". = 'Executive summary'">18pt</xsl:when>
@@ -845,6 +911,7 @@
 		<xsl:variable name="margin-top">
 			<xsl:choose>
 				<xsl:when test="@ancestor = 'foreword' and $level = 1">9mm</xsl:when>
+				<xsl:when test="@ancestor = 'annex' and $level = '1' and preceding-sibling::*[1][local-name() = 'annex' and @commentary = 'true']">1mm</xsl:when>
 				<xsl:when test="$level = 1">6.5mm</xsl:when>
 				<xsl:when test="@ancestor = 'foreword' and $level = 2">0mm</xsl:when>
 				<xsl:when test="@ancestor = 'annex' and $level = 2">4.5mm</xsl:when>
@@ -865,6 +932,7 @@
 		<xsl:variable name="margin-bottom">
 			<xsl:choose>
 				<xsl:when test="@ancestor = 'foreword' and $level = 1">9mm</xsl:when>
+				<xsl:when test="@ancestor = 'annex' and $level = '1' and preceding-sibling::*[1][local-name() = 'annex' and @commentary = 'true']">7mm</xsl:when>
 				<xsl:when test="$level = 1 and following-sibling::jis:clause">8pt</xsl:when>
 				<xsl:when test="$level = 1">12pt</xsl:when>
 				<xsl:when test="$level = 2 and following-sibling::jis:clause">8pt</xsl:when>
@@ -1337,7 +1405,7 @@
 		</fo:static-content>
 		<fo:static-content flow-name="header-odd" role="artifact">
 			<fo:block-container font-family="Arial" font-size="9pt" height="26mm" display-align="after" text-align="right">
-				<xsl:if test="$section = 'main'"><fo:block><fo:page-number /></fo:block></xsl:if>
+				<xsl:if test="$section = 'main' or $section = 'commentary'"><fo:block><fo:page-number /></fo:block></xsl:if>
 				<fo:block>
 					<xsl:copy-of select="$docidentifier"/>
 					<xsl:copy-of select="$section_title"/>
@@ -1346,13 +1414,28 @@
 		</fo:static-content>
 		<fo:static-content flow-name="header-even" role="artifact">
 			<fo:block-container font-family="Arial" font-size="9pt" height="26mm" display-align="after">
-				<xsl:if test="$section = 'main'"><fo:block><fo:page-number /></fo:block></xsl:if>
+				<xsl:if test="$section = 'main' or $section = 'commentary'"><fo:block><fo:page-number /></fo:block></xsl:if>
 				<fo:block>
 					<xsl:copy-of select="$docidentifier"/>
 					<xsl:copy-of select="$section_title"/>
 				</fo:block>
 			</fo:block-container>
 		</fo:static-content>
+		
+		<fo:static-content flow-name="header-commentary-even-first" role="artifact">
+			<fo:block-container font-family="Arial" font-size="9pt" height="26mm" display-align="after" text-align="left">
+				<fo:block><fo:page-number /></fo:block>
+				<fo:block>&#xa0;</fo:block>
+			</fo:block-container>
+		</fo:static-content>
+		
+		<fo:static-content flow-name="header-commentary-odd-first" role="artifact">
+			<fo:block-container font-family="Arial" font-size="9pt" height="26mm" display-align="after" text-align="right">
+				<fo:block><fo:page-number /></fo:block>
+				<fo:block>&#xa0;</fo:block>
+			</fo:block-container>
+		</fo:static-content>		
+		
 		<xsl:call-template name="insertFooter">
 			<xsl:with-param name="section" select="$section"/>
 			<xsl:with-param name="copyrightText" select="$copyrightText"/>
@@ -1366,6 +1449,16 @@
 			<fo:block-container height="24mm" display-align="after">
 				<xsl:if test="$section = 'preface'">
 					<fo:block font-size="9pt" text-align="center" space-after="10pt">(<fo:inline font-family="Times New Roman"><fo:page-number /></fo:inline>)</fo:block>
+				</xsl:if>
+				<xsl:if test="$section = 'commentary'">
+					<fo:block font-size="9pt" text-align="center" space-after="12pt">
+						<fo:inline font-family="IPAexGothic" padding-right="3mm">
+							<xsl:call-template name="getLocalizedString">
+								<xsl:with-param name="key">commentary_page</xsl:with-param>
+							</xsl:call-template>
+						</fo:inline>
+						<fo:inline font-weight="bold" font-family="Times New Roman" id="_independent_page_number_commentary"><fo:page-number /></fo:inline>
+					</fo:block>
 				</xsl:if>
 				<!-- copyright restriction -->
 				<fo:block font-size="7pt" text-align="center" font-family="IPAexMincho" margin-bottom="13mm"><xsl:value-of select="$copyrightText"/></fo:block>
