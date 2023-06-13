@@ -9816,9 +9816,39 @@
 		<xsl:variable name="text" select="normalize-space(.)"/>
 		<fo:inline font-size="75%" role="SKIP">
 				<xsl:if test="string-length($text) &gt; 0">
-					<xsl:call-template name="recursiveSmallCaps">
-						<xsl:with-param name="text" select="$text"/>
-					</xsl:call-template>
+					<xsl:variable name="smallCapsText">
+						<xsl:call-template name="recursiveSmallCaps">
+							<xsl:with-param name="text" select="$text"/>
+						</xsl:call-template>
+					</xsl:variable>
+					<!-- merge neighboring fo:inline -->
+					<xsl:for-each select="xalan:nodeset($smallCapsText)/node()">
+						<xsl:choose>
+							<xsl:when test="self::fo:inline and preceding-sibling::node()[1][self::fo:inline]"><!-- <xsl:copy-of select="."/> --></xsl:when>
+							<xsl:when test="self::fo:inline and @font-size">
+								<xsl:variable name="curr_pos" select="count(preceding-sibling::node()) + 1"/>
+								<!-- <curr_pos><xsl:value-of select="$curr_pos"/></curr_pos> -->
+								<xsl:variable name="next_text_" select="count(following-sibling::node()[not(local-name() = 'inline')][1]/preceding-sibling::node())"/>
+								<xsl:variable name="next_text">
+									<xsl:choose>
+										<xsl:when test="$next_text_ = 0">99999999</xsl:when>
+										<xsl:otherwise><xsl:value-of select="$next_text_ + 1"/></xsl:otherwise>
+									</xsl:choose>
+								</xsl:variable>
+								<!-- <next_text><xsl:value-of select="$next_text"/></next_text> -->
+								<fo:inline>
+									<xsl:copy-of select="@*"/>
+									<xsl:copy-of select="./node()"/>
+									<xsl:for-each select="following-sibling::node()[position() &lt; $next_text - $curr_pos]"> <!-- [self::fo:inline] -->
+										<xsl:copy-of select="./node()"/>
+									</xsl:for-each>
+								</fo:inline>
+							</xsl:when>
+							<xsl:otherwise>
+								<xsl:copy-of select="."/>
+							</xsl:otherwise>
+						</xsl:choose>
+					</xsl:for-each>
 				</xsl:if>
 			</fo:inline> 
 	</xsl:template>
