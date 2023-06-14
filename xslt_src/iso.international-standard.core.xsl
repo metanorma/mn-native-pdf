@@ -2118,6 +2118,9 @@
 				<xsl:attribute name="margin-bottom">0pt</xsl:attribute>
 				<xsl:attribute name="line-height">0</xsl:attribute>
 			</xsl:if>
+			<xsl:if test="ancestor::*[local-name() = 'li' or local-name() = 'td' or local-name() = 'th' or local-name() = 'dd']">
+				<xsl:attribute name="role">SKIP</xsl:attribute>
+			</xsl:if>
 			<xsl:apply-templates>
 				<xsl:with-param name="split_keep-within-line" select="$split_keep-within-line"/>
 			</xsl:apply-templates>
