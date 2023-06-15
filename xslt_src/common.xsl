@@ -2873,6 +2873,8 @@
 			</xsl:if>
 			<xsl:if test="$doctype = 'service-publication'">
 				<xsl:attribute name="border">none</xsl:attribute>
+				<xsl:attribute name="font-family">Arial</xsl:attribute>
+				<xsl:attribute name="font-size">8pt</xsl:attribute>
 			</xsl:if>
 		</xsl:if>
 	</xsl:template> <!-- refine_table-footer-cell-style -->
@@ -6759,10 +6761,10 @@
 						</xsl:attribute>
 					</xsl:for-each>
 					
-					<xsl:variable name="isNoteOrFnExist" select="./*[local-name()='note'] or ./*[local-name()='example'] or .//*[local-name()='fn'][local-name(..) != 'name'] or ./*[local-name()='source']"/>				
+					<!-- <xsl:variable name="isNoteOrFnExist" select="./*[local-name()='note'] or ./*[local-name()='example'] or .//*[local-name()='fn'][local-name(..) != 'name'] or ./*[local-name()='source']"/>				
 					<xsl:if test="$isNoteOrFnExist = 'true'">
-						<xsl:attribute name="border-bottom">0pt solid black</xsl:attribute> <!-- set 0pt border, because there is a separete table below for footer  -->
-					</xsl:if>
+						<xsl:attribute name="border-bottom">0pt solid black</xsl:attribute> set 0pt border, because there is a separete table below for footer
+					</xsl:if> -->
 					
 					
 					<xsl:choose>
@@ -6814,14 +6816,22 @@
 					
 				</fo:table>
 				
-				<xsl:variable name="colgroup" select="*[local-name()='colgroup']"/>				
-				<xsl:for-each select="*[local-name()='tbody']"><!-- select context to tbody -->
-					<xsl:call-template name="insertTableFooterInSeparateTable">
+				<!-- <xsl:variable name="colgroup" select="*[local-name()='colgroup']"/>				 -->
+				<!-- <xsl:for-each select="*[local-name()='tbody']"> --><!-- select context to tbody -->
+					<!-- <xsl:call-template name="insertTableFooterInSeparateTable">
 						<xsl:with-param name="table_attributes" select="$table_attributes"/>
 						<xsl:with-param name="colwidths" select="$colwidths"/>				
 						<xsl:with-param name="colgroup" select="$colgroup"/>				
 					</xsl:call-template>
-				</xsl:for-each>
+				</xsl:for-each> -->
+				<xsl:if test="$namespace = 'ieee'">
+					<xsl:for-each select="*[local-name()='tbody']"> <!-- select context to tbody -->
+						<xsl:variable name="table_fn_block">
+							<xsl:call-template name="table_fn_display" />
+						</xsl:variable>
+						<xsl:copy-of select="$table_fn_block"/>
+					</xsl:for-each>
+				</xsl:if>
 				
 				
 				<xsl:if test="$namespace = 'gb'">
@@ -7527,9 +7537,18 @@
 	
 	<xsl:template name="insertTableFooter">
 		<xsl:param name="cols-count" />
-		<xsl:if test="../*[local-name()='tfoot']">
-			<fo:table-footer>			
+		
+		<xsl:variable name="tableFooterAdditional_">
+			<xsl:call-template name="insertTableFooterInSeparateTable">
+				<xsl:with-param name="cols-count" select="$cols-count"/>
+			</xsl:call-template>
+		</xsl:variable>
+		<xsl:variable name="tableFooterAdditional" select="xalan:nodeset($tableFooterAdditional_)"/>
+		
+		<xsl:if test="../*[local-name()='tfoot'] or $tableFooterAdditional/*">
+			<fo:table-footer>
 				<xsl:apply-templates select="../*[local-name()='tfoot']" />
+				<xsl:copy-of select="$tableFooterAdditional"/>
 			</fo:table-footer>
 		</xsl:if>
 	</xsl:template>
@@ -7539,6 +7558,7 @@
 		<xsl:param name="table_attributes"/>
 		<xsl:param name="colwidths"/>
 		<xsl:param name="colgroup"/>
+		<xsl:param name="cols-count"/>
 		
 		<xsl:variable name="isNoteOrFnExist" select="../*[local-name()='note'] or ../*[local-name()='example'] or ../*[local-name()='dl'] or ..//*[local-name()='fn'][local-name(..) != 'name'] or ../*[local-name()='source'] or ../*[local-name()='p']"/>
 		
@@ -7550,7 +7570,7 @@
 		
 		<xsl:if test="$isNoteOrFnExist = 'true' or normalize-space($isNoteOrFnExistShowAfterTable) = 'true'">
 		
-			<xsl:variable name="cols-count">
+			<!-- <xsl:variable name="cols-count">
 				<xsl:choose>
 					<xsl:when test="xalan:nodeset($colgroup)//*[local-name()='col']">
 						<xsl:value-of select="count(xalan:nodeset($colgroup)//*[local-name()='col'])"/>
@@ -7559,16 +7579,16 @@
 						<xsl:value-of select="count(xalan:nodeset($colwidths)//column)"/>
 					</xsl:otherwise>
 				</xsl:choose>
-			</xsl:variable>
+			</xsl:variable> -->
 			
 			<xsl:variable name="table_fn_block">
 				<xsl:call-template name="table_fn_display" />
 			</xsl:variable>
 			
-			<xsl:variable name="tableWithNotesAndFootnotes">
+			<xsl:variable name="tableFooterRowWithNotesAndFootnotes">
 			
-				<fo:table keep-with-previous="always">
-					<xsl:for-each select="xalan:nodeset($table_attributes)/table_attributes/@*">
+				<!-- <fo:table keep-with-previous="always"> -->
+					<!-- <xsl:for-each select="xalan:nodeset($table_attributes)/table_attributes/@*">
 						<xsl:variable name="name" select="local-name()"/>
 						<xsl:choose>
 							<xsl:when test="$name = 'border-top'">
@@ -7582,31 +7602,30 @@
 								<xsl:attribute name="{$name}"><xsl:value-of select="."/></xsl:attribute>
 							</xsl:otherwise>
 						</xsl:choose>
-					</xsl:for-each>
+					</xsl:for-each> -->
 					
-					<xsl:if test="$namespace = 'itu'">
+					<!-- <xsl:if test="$namespace = 'itu'">
 						<xsl:if test="$doctype = 'service-publication'">
 							<xsl:attribute name="border">none</xsl:attribute>
 							<xsl:attribute name="font-family">Arial</xsl:attribute>
 							<xsl:attribute name="font-size">8pt</xsl:attribute>
 						</xsl:if>
-					</xsl:if>
+					</xsl:if> -->
 					
-					<xsl:choose>
+					<!-- <xsl:choose>
 						<xsl:when test="xalan:nodeset($colgroup)//*[local-name()='col']">
 							<xsl:for-each select="xalan:nodeset($colgroup)//*[local-name()='col']">
 								<fo:table-column column-width="{@width}"/>
 							</xsl:for-each>
 						</xsl:when>
 						<xsl:otherwise>
-							<!-- $colwidths=<xsl:copy-of select="$colwidths"/> -->
 							<xsl:call-template name="insertTableColumnWidth">
 								<xsl:with-param name="colwidths" select="$colwidths"/>
 							</xsl:call-template>
 						</xsl:otherwise>
-					</xsl:choose>
+					</xsl:choose> -->
 					
-					<fo:table-body>
+					<!-- <fo:table-body> -->
 						<fo:table-row>
 							<fo:table-cell xsl:use-attribute-sets="table-footer-cell-style" number-columns-spanned="{$cols-count}">
 								
@@ -7703,19 +7722,18 @@
 								
 							</fo:table-cell>
 						</fo:table-row>
-					</fo:table-body>
+					<!-- </fo:table-body>
 					
-				</fo:table>
+				</fo:table> -->
 			</xsl:variable>
 			
-			<xsl:if test="normalize-space($tableWithNotesAndFootnotes) != ''">
-				<xsl:copy-of select="$tableWithNotesAndFootnotes"/>
+			<xsl:if test="normalize-space($tableFooterRowWithNotesAndFootnotes) != ''">
+				<xsl:copy-of select="$tableFooterRowWithNotesAndFootnotes"/>
 			</xsl:if>
 			
-			<xsl:if test="$namespace = 'ieee'">
-				<!-- <xsl:call-template name="table_fn_display" /> -->
+			<!-- <xsl:if test="$namespace = 'ieee'">
 				<xsl:copy-of select="$table_fn_block"/>
-			</xsl:if>
+			</xsl:if> -->
 			
 		</xsl:if>
 	</xsl:template> <!-- insertTableFooterInSeparateTable -->
