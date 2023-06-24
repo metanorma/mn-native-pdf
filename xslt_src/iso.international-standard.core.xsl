@@ -599,7 +599,7 @@
 												</fo:block>
 											</fo:table-cell>
 											<fo:table-cell role="SKIP">
-												<fo:block>&#xA0;</fo:block>
+												<fo:block role="SKIP"><fo:wrapper role="artifact">&#xA0;</fo:wrapper></fo:block>
 											</fo:table-cell>
 											<fo:table-cell display-align="after" padding-bottom="3mm" role="SKIP">
 												<fo:block-container height="22.5mm" display-align="center" role="SKIP">
@@ -1037,7 +1037,7 @@
 															</fo:block>
 														</fo:table-cell>
 														<fo:table-cell role="SKIP">
-															<fo:block>&#xA0;</fo:block>
+															<fo:block role="SKIP"><fo:wrapper role="artifact">&#xA0;</fo:wrapper></fo:block>
 														</fo:table-cell>
 														<fo:table-cell role="SKIP">
 															<xsl:call-template name="insertTripleLine"/>
@@ -1315,7 +1315,7 @@
 										</xsl:when>
 										<xsl:otherwise>
 											<xsl:attribute name="border">0pt solid white</xsl:attribute>
-											<fo:block>&#xa0;</fo:block>
+											<fo:block role="SKIP">&#xa0;</fo:block>
 										</xsl:otherwise>
 									</xsl:choose>
 								</fo:block-container>
