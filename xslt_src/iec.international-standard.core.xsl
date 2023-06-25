@@ -244,7 +244,7 @@
 						<fo:static-content flow-name="left-region" >
 							<fo:block-container reference-orientation="90">
 								<fo:block font-size="7pt" margin-left="3.5mm" margin-top="5.5mm">
-									<xsl:value-of select="(//iec:iec-standard)[1]/iec:bibdata/iec:docidentifier[@type = 'iso-with-lang']"/>
+									<xsl:value-of select="(//iec:iec-standard)[1]/iec:bibdata/iec:docidentifier[@type = 'iso-revdate']"/>
 								</fo:block>
 							</fo:block-container>
 						</fo:static-content>
@@ -1020,7 +1020,7 @@
 					<xsl:otherwise><xsl:attribute name="padding-left">1mm</xsl:attribute>&#xa0;</xsl:otherwise>
 				</xsl:choose>
 			</fo:inline>
-			<fo:inline keep-together.within-line="always" font-size="25pt" font-weight="bold" color="{$color_gray}" border-bottom="0.5pt solid {$color_gray}" padding-bottom="3.5mm" baseline-shift="5.5mm"><fo:leader leader-pattern="space"/><xsl:value-of select="//iec:iec-standard/iec:bibdata/iec:docidentifier[@type = 'iso' or @type = 'ISO']"/></fo:inline>
+			<fo:inline keep-together.within-line="always" font-size="25pt" font-weight="bold" color="{$color_gray}" border-bottom="0.5pt solid {$color_gray}" padding-bottom="3.5mm" baseline-shift="5.5mm"><fo:leader leader-pattern="space"/><xsl:value-of select="//iec:iec-standard/iec:bibdata/iec:docidentifier[@type = 'iso-undated']"/></fo:inline>
 		</fo:block>
 		<fo:block font-size="10.5pt" text-align="right" margin-top="0.5mm">			
 			<xsl:call-template name="capitalize">
