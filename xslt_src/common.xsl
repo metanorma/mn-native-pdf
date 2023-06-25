@@ -6359,14 +6359,14 @@
 							<xsl:value-of select="$sep"/><xsl:value-of select="$zero_width_space"/>
 						</xsl:when>
 						<xsl:otherwise>
-							<fo:inline keep-together.within-line="always"><xsl:apply-templates/></fo:inline>
+							<fo:inline keep-together.within-line="always" role="SKIP"><xsl:apply-templates/></fo:inline>
 						</xsl:otherwise>
 					</xsl:choose>
 				</xsl:for-each>
 			</xsl:when>
 			
 			<xsl:otherwise>
-				<fo:inline keep-together.within-line="always"><xsl:apply-templates/></fo:inline>
+				<fo:inline keep-together.within-line="always" role="SKIP"><xsl:apply-templates/></fo:inline>
 			</xsl:otherwise>
 			
 		</xsl:choose>
@@ -8155,7 +8155,7 @@
 			</xsl:choose>
 		</xsl:variable>
 		<xsl:variable name="footnote_inline">
-			<fo:inline>
+			<fo:inline role="Reference">
 			
 				<xsl:variable name="fn_styles">
 					<xsl:choose>
@@ -8188,7 +8188,7 @@
 				
 				<xsl:call-template name="insert_basic_link">
 					<xsl:with-param name="element">
-						<fo:basic-link internal-destination="{$ref_id}" fox:alt-text="footnote {$current_fn_number}">
+						<fo:basic-link internal-destination="{$ref_id}" fox:alt-text="footnote {$current_fn_number}" role="Lbl">
 							<xsl:copy-of select="$current_fn_number_text"/>
 						</fo:basic-link>
 					</xsl:with-param>
@@ -8201,21 +8201,21 @@
 				<xsl:copy-of select="$footnote_inline"/>
 			</xsl:when>
 			<xsl:when test="$p_fn//fn[@gen_id = $gen_id] or normalize-space(@skip_footnote_body) = 'false'">
-				<fo:footnote xsl:use-attribute-sets="fn-style">
+				<fo:footnote xsl:use-attribute-sets="fn-style" role="SKIP">
 					<xsl:copy-of select="$footnote_inline"/>
-					<fo:footnote-body>
+					<fo:footnote-body role="Note">
 						<xsl:if test="$namespace = 'bsi'">
 							<xsl:if test="$document_type = 'PAS'">
-								<fo:block>&#xa0;</fo:block>
+								<fo:block role="SKIP">&#xa0;</fo:block>
 							</xsl:if>
 						</xsl:if>
-						<fo:block-container xsl:use-attribute-sets="fn-container-body-style">
+						<fo:block-container xsl:use-attribute-sets="fn-container-body-style" role="SKIP">
 							
-							<fo:block xsl:use-attribute-sets="fn-body-style">
+							<fo:block xsl:use-attribute-sets="fn-body-style" role="SKIP">
 							
 								<xsl:call-template name="refine_fn-body-style"/>
 							
-								<fo:inline id="{$ref_id}" xsl:use-attribute-sets="fn-body-num-style">
+								<fo:inline id="{$ref_id}" xsl:use-attribute-sets="fn-body-num-style" role="Lbl">
 								
 									<xsl:call-template name="refine_fn-body-num-style"/>
 									
@@ -8626,11 +8626,11 @@
 
 	
 	<xsl:template match="*[local-name()='fn']/text()[normalize-space() != '']">
-		<fo:inline><xsl:value-of select="."/></fo:inline>
+		<fo:inline role="SKIP"><xsl:value-of select="."/></fo:inline>
 	</xsl:template>
 	
 	<xsl:template match="*[local-name()='fn']//*[local-name()='p']">
-		<fo:inline>
+		<fo:inline role="P">
 			<xsl:apply-templates />
 		</fo:inline>
 	</xsl:template>
