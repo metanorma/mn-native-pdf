@@ -1360,13 +1360,13 @@
 						<fo:flow flow-name="xsl-region-body" line-height="115%">
 							<xsl:if test="/iso:iso-standard/iso:boilerplate/iso:copyright-statement">
 							
-								<fo:block-container height="252mm" display-align="after">
+								<fo:block-container height="252mm" display-align="after" role="SKIP">
 									<!-- <fo:block margin-bottom="3mm">
 										<fo:external-graphic src="{concat('data:image/png;base64,', normalize-space($Image-Attention))}" width="14mm" content-height="13mm" content-width="scale-to-fit" scaling="uniform" fox:alt-text="Image {@alt}"/>								
 										<fo:inline padding-left="6mm" font-size="12pt" font-weight="bold"></fo:inline>
 									</fo:block> -->
-									<fo:block line-height="90%">
-										<fo:block font-size="9pt" text-align="justify">
+									<fo:block line-height="90%" role="SKIP">
+										<fo:block font-size="9pt" text-align="justify" role="SKIP">
 											<xsl:apply-templates select="/iso:iso-standard/iso:boilerplate/iso:copyright-statement"/>
 										</fo:block>
 									</fo:block>
@@ -1905,7 +1905,7 @@
 		<fo:block margin-left="0.5mm" margin-bottom="3mm" role="H1">
 				<fo:external-graphic src="{concat('data:image/png;base64,', normalize-space($Image-Attention))}" width="14mm" content-height="13mm" content-width="scale-to-fit" scaling="uniform" fox:alt-text="Image {@alt}"/>
 				<!-- <fo:inline padding-left="6mm" font-size="12pt" font-weight="bold">COPYRIGHT PROTECTED DOCUMENT</fo:inline> -->
-				<fo:inline padding-left="6mm" font-size="12pt" font-weight="bold"><xsl:apply-templates /></fo:inline>
+				<fo:inline padding-left="6mm" font-size="12pt" font-weight="bold" role="SKIP"><xsl:apply-templates /></fo:inline>
 			</fo:block>
 	</xsl:template>
 	

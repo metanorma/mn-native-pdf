@@ -6377,7 +6377,7 @@
 	<!-- Preface boilerplate sections processing -->
 	<!-- ================================= -->
 	<xsl:template match="*[local-name()='copyright-statement']">
-		<fo:block xsl:use-attribute-sets="copyright-statement-style">
+		<fo:block xsl:use-attribute-sets="copyright-statement-style" role="SKIP">
 			<xsl:apply-templates />
 		</fo:block>
 	</xsl:template> <!-- copyright-statement -->
@@ -14921,6 +14921,10 @@
 	
 	<xsl:template match="*[local-name() = 'clause']">
 		<fo:block>
+			<xsl:if test="parent::*[local-name() = 'copyright-statement']">
+				<xsl:attribute name="role">SKIP</xsl:attribute>
+			</xsl:if>
+			
 			<xsl:call-template name="setId"/>
 			
 			<xsl:call-template name="setBlockSpanAll"/>
