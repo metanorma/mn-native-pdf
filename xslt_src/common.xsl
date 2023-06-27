@@ -3956,6 +3956,7 @@
 	</xsl:attribute-set>
 
 	<xsl:attribute-set name="figure-block-style">
+		<xsl:attribute name="role">SKIP</xsl:attribute>
 		<xsl:if test="$namespace = 'csa'">
 			<xsl:attribute name="margin-bottom">6pt</xsl:attribute>
 		</xsl:if>
@@ -4017,6 +4018,7 @@
 	</xsl:attribute-set>
 
 	<xsl:attribute-set name="figure-name-style">
+		<xsl:attribute name="role">Caption</xsl:attribute>
 		<xsl:if test="$namespace = 'bipm'">
 			<xsl:attribute name="keep-with-previous">always</xsl:attribute>
 			<xsl:attribute name="font-weight">bold</xsl:attribute>
@@ -4309,6 +4311,7 @@
 	</xsl:template>
 	
 	<xsl:attribute-set name="image-style">
+		<xsl:attribute name="role">SKIP</xsl:attribute>
 		<xsl:attribute name="text-align">center</xsl:attribute>
 		<xsl:if test="$namespace = 'bsi'">
 			
@@ -11870,7 +11873,7 @@
 			<!-- Example: Dimensions in millimeters -->
 			<xsl:apply-templates select="*[local-name() = 'note'][@type = 'units']" />
 			
-			<fo:block xsl:use-attribute-sets="figure-style">
+			<fo:block xsl:use-attribute-sets="figure-style" role="SKIP">
 				<xsl:apply-templates select="node()[not(local-name() = 'name') and not(local-name() = 'note' and @type = 'units')]" />
 			</fo:block>
 			<xsl:for-each select="*[local-name() = 'note'][not(@type = 'units')]">
