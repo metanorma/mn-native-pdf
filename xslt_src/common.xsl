@@ -5664,7 +5664,6 @@
 			<xsl:attribute name="line-height">1.4</xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'csd'">
-			
 		</xsl:if>
 		<xsl:if test="$namespace = 'gb'">
 			<xsl:attribute name="font-size">11pt</xsl:attribute>
@@ -5687,20 +5686,54 @@
 			<xsl:attribute name="margin-bottom">6pt</xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'nist-cswp'">
-			
 		</xsl:if>
 		<xsl:if test="$namespace = 'ogc'">
-			
 			<xsl:attribute name="provisional-distance-between-starts">13mm</xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'ogc-white-paper'">
-			
 		</xsl:if>
 		<xsl:if test="$namespace = 'rsd'">
 			<xsl:attribute name="margin-bottom">4pt</xsl:attribute>
 			<xsl:attribute name="provisional-distance-between-starts">8mm</xsl:attribute>
 		</xsl:if>
 	</xsl:attribute-set> <!-- bibitem-non-normative-list-style -->
+	
+	<xsl:attribute-set name="bibitem-non-normative-list-item-style">
+		<xsl:attribute name="margin-bottom">12pt</xsl:attribute>
+		<xsl:if test="$namespace = 'bipm'">
+		</xsl:if>
+		<xsl:if test="$namespace = 'bsi'">
+			<xsl:attribute name="margin-bottom">6pt</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'csd'">
+		</xsl:if>
+		<xsl:if test="$namespace = 'gb'">
+		</xsl:if>
+		<xsl:if test="$namespace = 'iec'">
+			<xsl:attribute name="margin-top">5pt</xsl:attribute>
+			<xsl:attribute name="margin-bottom">14pt</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'ieee'">
+			<xsl:attribute name="margin-bottom">6pt</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'iho'">
+		</xsl:if>
+		<xsl:if test="$namespace = 'iso'">
+			<xsl:attribute name="margin-bottom">6pt</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'jcgm'">
+			<xsl:attribute name="margin-bottom">6pt</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'nist-cswp'">
+		</xsl:if>
+		<xsl:if test="$namespace = 'ogc'">
+		</xsl:if>
+		<xsl:if test="$namespace = 'ogc-white-paper'">
+		</xsl:if>
+		<xsl:if test="$namespace = 'rsd'">
+			<xsl:attribute name="margin-bottom">4pt</xsl:attribute>
+		</xsl:if>
+	</xsl:attribute-set>
 	
 	<!-- bibitem in bibliography section (references/@normative="false"), list body -->
 	<xsl:attribute-set name="bibitem-normative-list-body-style">
@@ -15802,7 +15835,16 @@
 	<!-- Reference sections (Normative References and Bibliography) -->
 	<!-- ========================================================== -->
 	<xsl:template match="*[local-name() = 'references'][@hidden='true']" priority="3"/>
-	<xsl:template match="*[local-name() = 'bibitem'][@hidden='true']" priority="3"/>
+	<xsl:template match="*[local-name() = 'bibitem'][@hidden='true']" priority="3">
+		<xsl:param name="skip" select="normalize-space(preceding-sibling::*[1][local-name() = 'bibitem'] and 1 = 1)"/>
+		<xsl:if test="$namespace = 'iso'">
+			<xsl:if test="ancestor::*[local-name() = 'references'][not(@normative='true')] or preceding-sibling::*[local-name() = 'references'][1][not(@normative='true')]">
+				<xsl:apply-templates select="following-sibling::*[1][local-name() = 'bibitem']">
+					<xsl:with-param name="skip" select="$skip"/>
+				</xsl:apply-templates>
+			</xsl:if>
+		</xsl:if>
+	</xsl:template>
 	<!-- don't display bibitem with @id starts with '_hidden', that was introduced for references integrity -->
 	<xsl:template match="*[local-name() = 'bibitem'][starts-with(@id, 'hidden_bibitem_')]" priority="3"/>
 	
@@ -15940,9 +15982,23 @@
 	</xsl:template> <!-- bibitem -->
 	
 	
+	<xsl:if test="$namespace = 'iso'">
+	<!-- start list for bibitem sequence -->
+	<xsl:template match="*[local-name() = 'references'][not(@normative='true')]/*[local-name() = 'bibitem'][1]" priority="4">
+		<xsl:variable name="list_items">
+			<xsl:call-template name="insertListItem_Bibitem"/>
+		</xsl:variable>
+		<xsl:if test="normalize-space($list_items) != ''">
+			<fo:list-block xsl:use-attribute-sets="bibitem-non-normative-list-style">
+				<xsl:copy-of select="$list_items"/>
+			</fo:list-block>
+		</xsl:if>
+	</xsl:template>
+	</xsl:if>
+	
 	<!-- Bibliography (non-normative references) -->
 	<xsl:template match="*[local-name() = 'references'][not(@normative='true')]/*[local-name() = 'bibitem']" name="bibitem_non_normative" priority="2">
-		
+		<xsl:param name="skip" select="normalize-space(preceding-sibling::*[1][local-name() = 'bibitem'] and 1 = 1)"/> <!-- current bibiitem is non-first -->
 		<xsl:choose>
 			<xsl:when test="$namespace = 'bipm'">
 				<!-- start BIPM bibitem processing -->
@@ -16011,6 +16067,15 @@
 				 <!-- rsd -->
 			</xsl:when>
 			
+			<xsl:when test="$namespace = 'iso'">
+				<xsl:choose>
+					<xsl:when test="$skip = 'true'"><!-- skip bibitem --></xsl:when>
+					<xsl:otherwise>
+						<xsl:call-template name="insertListItem_Bibitem"/>
+					</xsl:otherwise>
+				</xsl:choose>
+			</xsl:when>
+			
 			<xsl:otherwise> <!-- $namespace = 'csd' or $namespace = 'gb' or $namespace = 'iec' or $namespace = 'ieee' or $namespace = 'iso' or $namespace = 'jcgm' or $namespace = 'm3d' or 
 			$namespace = 'mpfd' or $namespace = 'ogc' or $namespace = 'ogc-white-paper' -->
 				<!-- Example: [1] ISO 9:1995, Information and documentation – Transliteration of Cyrillic characters into Latin characters – Slavic and non-Slavic languages -->	
@@ -16043,6 +16108,35 @@
 		</xsl:choose>
 		
 	</xsl:template> <!-- references[not(@normative='true')]/bibitem -->
+	
+	<xsl:template name="insertListItem_Bibitem">
+		<xsl:choose>
+			<xsl:when test="@hidden = 'true'"><!-- skip --></xsl:when>
+			<xsl:otherwise>
+				<fo:list-item id="{@id}" xsl:use-attribute-sets="bibitem-non-normative-list-item-style">
+					<fo:list-item-label end-indent="label-end()">
+						<fo:block role="SKIP">
+							<fo:inline role="SKIP">
+								<xsl:apply-templates select="*[local-name() = 'biblio-tag']">
+									<xsl:with-param name="biblio_tag_part">first</xsl:with-param>
+								</xsl:apply-templates>
+							</fo:inline>
+						</fo:block>
+					</fo:list-item-label>
+					<fo:list-item-body start-indent="body-start()">
+						<fo:block xsl:use-attribute-sets="bibitem-non-normative-list-body-style" role="SKIP">
+							<xsl:call-template name="processBibitem">
+								<xsl:with-param name="biblio_tag_part">last</xsl:with-param>
+							</xsl:call-template>
+						</fo:block>
+					</fo:list-item-body>
+				</fo:list-item>
+			</xsl:otherwise>
+		</xsl:choose>
+		<xsl:apply-templates select="following-sibling::*[1][local-name() = 'bibitem']">
+			<xsl:with-param name="skip">false</xsl:with-param>
+		</xsl:apply-templates>
+	</xsl:template>
 	
 	<xsl:template name="processBibitem">
 		<xsl:param name="biblio_tag_part">both</xsl:param>
