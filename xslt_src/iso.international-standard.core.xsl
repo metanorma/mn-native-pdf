@@ -1400,9 +1400,9 @@
 									<xsl:value-of select="$title-en"/>
 								</fo:block>
 								 -->
-								<fo:block font-size="18pt" font-weight="bold" margin-top="40pt" margin-bottom="20pt" line-height="1.1">
+								<fo:block font-size="18pt" font-weight="bold" margin-top="40pt" margin-bottom="20pt" line-height="1.1" role="H1">
 								
-									<fo:block role="H1">
+									<fo:block role="SKIP">
 									
 										<xsl:apply-templates select="/iso:iso-standard/iso:bibdata/iso:title[@language = $lang and @type = 'title-intro']"/>
 										
@@ -1414,7 +1414,7 @@
 										</xsl:apply-templates>
 										
 									</fo:block>
-									<fo:block role="H1">
+									<fo:block role="SKIP">
 										<xsl:apply-templates select="/iso:iso-standard/iso:bibdata/iso:title[@language = $lang and @type = 'title-part']/node()"/>
 									</fo:block>
 									
@@ -1750,18 +1750,18 @@
 			</xsl:variable>
 			<xsl:choose>
 				<xsl:when test="$isMainBody = 'true'">
-					<fo:block font-weight="normal" margin-top="12pt" line-height="1.1">
+					<fo:block font-weight="normal" margin-top="12pt" line-height="1.1" role="SKIP">
 						<xsl:value-of select="$part-text"/>
 					</fo:block>
 				</xsl:when>
 				<xsl:when test="$isMainLang = 'true'">
-					<fo:block font-weight="normal" margin-top="6pt">
+					<fo:block font-weight="normal" margin-top="6pt" role="SKIP">
 						<xsl:value-of select="$part-text"/>
 					</fo:block>
 				</xsl:when>
 				<xsl:otherwise>
 					<!-- <xsl:value-of select="$linebreak"/> -->
-					<fo:block font-size="1pt" margin-top="5pt">&#xa0;</fo:block>
+					<fo:block font-size="1pt" margin-top="5pt" role="SKIP">&#xa0;</fo:block>
 					<xsl:value-of select="$part-text"/>
 					<xsl:text>&#xa0;</xsl:text>
 				</xsl:otherwise>
@@ -1785,7 +1785,7 @@
 					<xsl:attribute name="margin-right">0mm</xsl:attribute>
 				</xsl:if>
 				
-				<fo:block font-weight="normal" line-height="1.1">
+				<fo:block font-weight="normal" line-height="1.1" role="SKIP">
 					<xsl:choose>
 						<xsl:when test="$isMainLang = 'false' and $curr_lang = 'fr'">AMENDEMENT</xsl:when>
 						<xsl:otherwise><xsl:value-of select="$doctype_uppercased"/></xsl:otherwise>
