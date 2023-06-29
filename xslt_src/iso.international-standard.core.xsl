@@ -599,7 +599,7 @@
 												</fo:block>
 											</fo:table-cell>
 											<fo:table-cell role="SKIP">
-												<fo:block>&#xA0;</fo:block>
+												<fo:block role="SKIP"><fo:wrapper role="artifact">&#xA0;</fo:wrapper></fo:block>
 											</fo:table-cell>
 											<fo:table-cell display-align="after" padding-bottom="3mm" role="SKIP">
 												<fo:block-container height="22.5mm" display-align="center" role="SKIP">
@@ -681,7 +681,7 @@
 																				<xsl:otherwise></xsl:otherwise>
 																			</xsl:choose>
 																			<xsl:if test="position() != last()">
-																				<fo:inline padding-right="1mm">&#xA0;</fo:inline>
+																				<fo:inline padding-right="1mm" role="SKIP">&#xA0;</fo:inline>
 																			</xsl:if>
 																		</xsl:for-each>
 																		<xsl:if test="$copyrightAbbrIEEE != ''">
@@ -1037,7 +1037,7 @@
 															</fo:block>
 														</fo:table-cell>
 														<fo:table-cell role="SKIP">
-															<fo:block>&#xA0;</fo:block>
+															<fo:block role="SKIP"><fo:wrapper role="artifact">&#xA0;</fo:wrapper></fo:block>
 														</fo:table-cell>
 														<fo:table-cell role="SKIP">
 															<xsl:call-template name="insertTripleLine"/>
@@ -1315,7 +1315,7 @@
 										</xsl:when>
 										<xsl:otherwise>
 											<xsl:attribute name="border">0pt solid white</xsl:attribute>
-											<fo:block>&#xa0;</fo:block>
+											<fo:block role="SKIP">&#xa0;</fo:block>
 										</xsl:otherwise>
 									</xsl:choose>
 								</fo:block-container>
@@ -1360,13 +1360,13 @@
 						<fo:flow flow-name="xsl-region-body" line-height="115%">
 							<xsl:if test="/iso:iso-standard/iso:boilerplate/iso:copyright-statement">
 							
-								<fo:block-container height="252mm" display-align="after">
+								<fo:block-container height="252mm" display-align="after" role="SKIP">
 									<!-- <fo:block margin-bottom="3mm">
 										<fo:external-graphic src="{concat('data:image/png;base64,', normalize-space($Image-Attention))}" width="14mm" content-height="13mm" content-width="scale-to-fit" scaling="uniform" fox:alt-text="Image {@alt}"/>								
 										<fo:inline padding-left="6mm" font-size="12pt" font-weight="bold"></fo:inline>
 									</fo:block> -->
-									<fo:block line-height="90%">
-										<fo:block font-size="9pt" text-align="justify">
+									<fo:block line-height="90%" role="SKIP">
+										<fo:block font-size="9pt" text-align="justify" role="SKIP">
 											<xsl:apply-templates select="/iso:iso-standard/iso:boilerplate/iso:copyright-statement"/>
 										</fo:block>
 									</fo:block>
@@ -1400,9 +1400,9 @@
 									<xsl:value-of select="$title-en"/>
 								</fo:block>
 								 -->
-								<fo:block font-size="18pt" font-weight="bold" margin-top="40pt" margin-bottom="20pt" line-height="1.1">
+								<fo:block font-size="18pt" font-weight="bold" margin-top="40pt" margin-bottom="20pt" line-height="1.1" role="H1">
 								
-									<fo:block role="H1">
+									<fo:block role="SKIP">
 									
 										<xsl:apply-templates select="/iso:iso-standard/iso:bibdata/iso:title[@language = $lang and @type = 'title-intro']"/>
 										
@@ -1414,7 +1414,7 @@
 										</xsl:apply-templates>
 										
 									</fo:block>
-									<fo:block role="H1">
+									<fo:block role="SKIP">
 										<xsl:apply-templates select="/iso:iso-standard/iso:bibdata/iso:title[@language = $lang and @type = 'title-part']/node()"/>
 									</fo:block>
 									
@@ -1438,7 +1438,7 @@
 									</xsl:otherwise>
 								</xsl:choose>
 								
-								<fo:block id="lastBlock" font-size="1pt">&#xA0;</fo:block>
+								<fo:block id="lastBlock" font-size="1pt" role="SKIP">&#xA0;</fo:block>
 							</fo:block>
 							
 						</fo:flow>
@@ -1750,18 +1750,18 @@
 			</xsl:variable>
 			<xsl:choose>
 				<xsl:when test="$isMainBody = 'true'">
-					<fo:block font-weight="normal" margin-top="12pt" line-height="1.1">
+					<fo:block font-weight="normal" margin-top="12pt" line-height="1.1" role="SKIP">
 						<xsl:value-of select="$part-text"/>
 					</fo:block>
 				</xsl:when>
 				<xsl:when test="$isMainLang = 'true'">
-					<fo:block font-weight="normal" margin-top="6pt">
+					<fo:block font-weight="normal" margin-top="6pt" role="SKIP">
 						<xsl:value-of select="$part-text"/>
 					</fo:block>
 				</xsl:when>
 				<xsl:otherwise>
 					<!-- <xsl:value-of select="$linebreak"/> -->
-					<fo:block font-size="1pt" margin-top="5pt">&#xa0;</fo:block>
+					<fo:block font-size="1pt" margin-top="5pt" role="SKIP">&#xa0;</fo:block>
 					<xsl:value-of select="$part-text"/>
 					<xsl:text>&#xa0;</xsl:text>
 				</xsl:otherwise>
@@ -1785,7 +1785,7 @@
 					<xsl:attribute name="margin-right">0mm</xsl:attribute>
 				</xsl:if>
 				
-				<fo:block font-weight="normal" line-height="1.1">
+				<fo:block font-weight="normal" line-height="1.1" role="SKIP">
 					<xsl:choose>
 						<xsl:when test="$isMainLang = 'false' and $curr_lang = 'fr'">AMENDEMENT</xsl:when>
 						<xsl:otherwise><xsl:value-of select="$doctype_uppercased"/></xsl:otherwise>
@@ -1905,7 +1905,7 @@
 		<fo:block margin-left="0.5mm" margin-bottom="3mm" role="H1">
 				<fo:external-graphic src="{concat('data:image/png;base64,', normalize-space($Image-Attention))}" width="14mm" content-height="13mm" content-width="scale-to-fit" scaling="uniform" fox:alt-text="Image {@alt}"/>
 				<!-- <fo:inline padding-left="6mm" font-size="12pt" font-weight="bold">COPYRIGHT PROTECTED DOCUMENT</fo:inline> -->
-				<fo:inline padding-left="6mm" font-size="12pt" font-weight="bold"><xsl:apply-templates /></fo:inline>
+				<fo:inline padding-left="6mm" font-size="12pt" font-weight="bold" role="SKIP"><xsl:apply-templates /></fo:inline>
 			</fo:block>
 	</xsl:template>
 	
@@ -2040,7 +2040,7 @@
 				</xsl:element>
 				
 				<xsl:if test="$element-name = 'fo:inline' and not(following-sibling::iso:p)">
-					<fo:block > <!-- margin-bottom="12pt" -->
+					<fo:block role="SKIP"> <!-- margin-bottom="12pt" -->
 						<xsl:value-of select="$linebreak"/>
 					</fo:block>
 				</xsl:if>
@@ -2118,6 +2118,9 @@
 				<xsl:attribute name="margin-bottom">0pt</xsl:attribute>
 				<xsl:attribute name="line-height">0</xsl:attribute>
 			</xsl:if>
+			<xsl:if test="$element-name = 'fo:inline'">
+				<xsl:attribute name="role">P</xsl:attribute>
+			</xsl:if>
 			<xsl:if test="ancestor::*[local-name() = 'li' or local-name() = 'td' or local-name() = 'th' or local-name() = 'dd']">
 				<xsl:attribute name="role">SKIP</xsl:attribute>
 			</xsl:if>
@@ -2126,7 +2129,7 @@
 			</xsl:apply-templates>
 		</xsl:element>
 		<xsl:if test="$element-name = 'fo:inline' and not($inline = 'true') and not(local-name(..) = 'admonition')">
-			<fo:block margin-bottom="12pt">
+			<fo:block margin-bottom="12pt" role="SKIP">
 				 <xsl:if test="ancestor::iso:annex or following-sibling::iso:table">
 					<xsl:attribute name="margin-bottom">0</xsl:attribute>
 				 </xsl:if>
@@ -2134,7 +2137,7 @@
 			</fo:block>
 		</xsl:if>
 		<xsl:if test="$inline = 'true'">
-			<fo:block>&#xA0;</fo:block>
+			<fo:block role="SKIP">&#xA0;</fo:block>
 		</xsl:if>
 	</xsl:template>
 	
