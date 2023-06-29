@@ -681,7 +681,7 @@
 																				<xsl:otherwise></xsl:otherwise>
 																			</xsl:choose>
 																			<xsl:if test="position() != last()">
-																				<fo:inline padding-right="1mm">&#xA0;</fo:inline>
+																				<fo:inline padding-right="1mm" role="SKIP">&#xA0;</fo:inline>
 																			</xsl:if>
 																		</xsl:for-each>
 																		<xsl:if test="$copyrightAbbrIEEE != ''">
@@ -1438,7 +1438,7 @@
 									</xsl:otherwise>
 								</xsl:choose>
 								
-								<fo:block id="lastBlock" font-size="1pt">&#xA0;</fo:block>
+								<fo:block id="lastBlock" font-size="1pt" role="SKIP">&#xA0;</fo:block>
 							</fo:block>
 							
 						</fo:flow>
