@@ -2040,7 +2040,7 @@
 				</xsl:element>
 				
 				<xsl:if test="$element-name = 'fo:inline' and not(following-sibling::iso:p)">
-					<fo:block > <!-- margin-bottom="12pt" -->
+					<fo:block role="SKIP"> <!-- margin-bottom="12pt" -->
 						<xsl:value-of select="$linebreak"/>
 					</fo:block>
 				</xsl:if>
@@ -2118,6 +2118,9 @@
 				<xsl:attribute name="margin-bottom">0pt</xsl:attribute>
 				<xsl:attribute name="line-height">0</xsl:attribute>
 			</xsl:if>
+			<xsl:if test="$element-name = 'fo:inline'">
+				<xsl:attribute name="role">P</xsl:attribute>
+			</xsl:if>
 			<xsl:if test="ancestor::*[local-name() = 'li' or local-name() = 'td' or local-name() = 'th' or local-name() = 'dd']">
 				<xsl:attribute name="role">SKIP</xsl:attribute>
 			</xsl:if>
@@ -2126,7 +2129,7 @@
 			</xsl:apply-templates>
 		</xsl:element>
 		<xsl:if test="$element-name = 'fo:inline' and not($inline = 'true') and not(local-name(..) = 'admonition')">
-			<fo:block margin-bottom="12pt">
+			<fo:block margin-bottom="12pt" role="SKIP">
 				 <xsl:if test="ancestor::iso:annex or following-sibling::iso:table">
 					<xsl:attribute name="margin-bottom">0</xsl:attribute>
 				 </xsl:if>
@@ -2134,7 +2137,7 @@
 			</fo:block>
 		</xsl:if>
 		<xsl:if test="$inline = 'true'">
-			<fo:block>&#xA0;</fo:block>
+			<fo:block role="SKIP">&#xA0;</fo:block>
 		</xsl:if>
 	</xsl:template>
 	
