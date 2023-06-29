@@ -14728,10 +14728,10 @@
 		
 		<xsl:choose>
 			<xsl:when test="$lang = 'zh'">
-				<fo:inline><xsl:value-of select="$tab_zh"/></fo:inline>
+				<fo:inline role="SKIP"><xsl:value-of select="$tab_zh"/></fo:inline>
 			</xsl:when>
 			<xsl:when test="../../@inline-header = 'true'">
-				<fo:inline font-size="90%">
+				<fo:inline font-size="90%" role="SKIP">
 					<xsl:call-template name="insertNonBreakSpaces">
 						<xsl:with-param name="count" select="$padding-right"/>
 					</xsl:call-template>
@@ -14739,7 +14739,7 @@
 			</xsl:when>
 			<xsl:otherwise>
 				<xsl:variable name="direction"><xsl:if test="$lang = 'ar'"><xsl:value-of select="$RLM"/></xsl:if></xsl:variable>
-				<fo:inline padding-right="{$padding-right}mm"><xsl:value-of select="$direction"/>&#x200B;</fo:inline>
+				<fo:inline padding-right="{$padding-right}mm" role="SKIP"><xsl:value-of select="$direction"/>&#x200B;</fo:inline>
 			</xsl:otherwise>
 		</xsl:choose>
 		
