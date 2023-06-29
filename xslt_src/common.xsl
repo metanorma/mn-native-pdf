@@ -15371,7 +15371,7 @@
 						</fo:block-container>
 					</xsl:when>
 					<xsl:otherwise>
-						<fo:block>
+						<fo:block role="SKIP">
 							<xsl:apply-templates select="." mode="list"/>
 						</fo:block>
 					</xsl:otherwise>
