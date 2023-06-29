@@ -9607,6 +9607,9 @@
 				<xsl:attribute name="color">black</xsl:attribute>
 			</xsl:if>
 		</xsl:if>
+		<xsl:if test="ancestor::*['preferred']">
+			<xsl:attribute name="role">SKIP</xsl:attribute>
+		</xsl:if>
 	</xsl:template>
 	
 	<xsl:template match="*[local-name()='padding']">
@@ -11869,12 +11872,13 @@
 	
 	<xsl:template match="*[local-name() = 'term']/*[local-name() = 'name']">
 		<xsl:if test="normalize-space() != ''">
-			<xsl:variable name="level">
+			<!-- <xsl:variable name="level">
 				<xsl:call-template name="getLevelTermName"/>
 			</xsl:variable>
 			<fo:inline role="H{$level}">
 				<xsl:apply-templates />
-			</fo:inline>
+			</fo:inline> -->
+			<xsl:apply-templates />
 		</xsl:if>
 	</xsl:template>
 	<!-- ====== -->
@@ -14795,12 +14799,12 @@
 			</xsl:if>
 			
 			<xsl:if test="parent::*[local-name() = 'term'] and not(preceding-sibling::*[local-name() = 'preferred'])"> <!-- if first preffered in term, then display term's name -->
-				<fo:block xsl:use-attribute-sets="term-name-style">
+				<fo:block xsl:use-attribute-sets="term-name-style" role="SKIP">
 					<xsl:apply-templates select="ancestor::*[local-name() = 'term'][1]/*[local-name() = 'name']" />
 				</fo:block>
 			</xsl:if>
 			
-			<fo:block xsl:use-attribute-sets="preferred-term-style">
+			<fo:block xsl:use-attribute-sets="preferred-term-style" role="SKIP">
 				<xsl:call-template name="setStyle_preferred"/>
 				<xsl:apply-templates />
 			</fo:block>
@@ -14841,7 +14845,7 @@
 	<!-- definition -->
 	<!-- ========== -->
 	<xsl:template match="*[local-name() = 'definition']">
-		<fo:block xsl:use-attribute-sets="definition-style">
+		<fo:block xsl:use-attribute-sets="definition-style" role="SKIP">
 			<xsl:apply-templates />
 		</fo:block>
 	</xsl:template>
