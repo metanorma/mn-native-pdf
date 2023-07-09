@@ -2124,10 +2124,17 @@
 			<xsl:if test="ancestor::*[local-name() = 'li' or local-name() = 'td' or local-name() = 'th' or local-name() = 'dd']">
 				<xsl:attribute name="role">SKIP</xsl:attribute>
 			</xsl:if>
-			<xsl:apply-templates>
+			<!-- <xsl:apply-templates>
+				<xsl:with-param name="split_keep-within-line" select="$split_keep-within-line"/>
+			</xsl:apply-templates> -->
+			<!-- <xsl:apply-templates select="node()[not(self::iso:note[not(following-sibling::*) or count(following-sibling::*) = count(../iso:note) - 1])]"> -->
+			<xsl:apply-templates select="node()[not(self::iso:note)]"> <!-- note renders below paragraph for correct PDF tags order (see https://github.com/metanorma/metanorma-iso/issues/1003) -->
 				<xsl:with-param name="split_keep-within-line" select="$split_keep-within-line"/>
 			</xsl:apply-templates>
 		</xsl:element>
+		
+		<xsl:apply-templates select="iso:note"/> <!-- [not(following-sibling::*) or count(following-sibling::*) = count(../iso:note) - 1] -->
+		
 		<xsl:if test="$element-name = 'fo:inline' and not($inline = 'true') and not(local-name(..) = 'admonition')">
 			<fo:block margin-bottom="12pt" role="SKIP">
 				 <xsl:if test="ancestor::iso:annex or following-sibling::iso:table">
