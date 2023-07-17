@@ -367,10 +367,6 @@
 		<title-subpart lang="en">Sub-part #</title-subpart>
 		<title-subpart lang="fr">Partie de sub #</title-subpart>
 		
-		<title-list-tables lang="en">List of Tables</title-list-tables>
-		
-		<title-list-figures lang="en">List of Figures</title-list-figures>
-		
 		<title-table-figures lang="en">Table of Figures</title-table-figures>
 		
 		<title-list-recommendations lang="en">List of Recommendations</title-list-recommendations>
@@ -388,8 +384,8 @@
 		<xsl:variable name="toc_table_title" select="//*[contains(local-name(), '-standard')]/*[local-name() = 'metanorma-extension']/*[local-name() = 'toc'][@type='table']/*[local-name() = 'title']"/>
 		<xsl:value-of select="$toc_table_title"/>
 		<xsl:if test="normalize-space($toc_table_title) = ''">
-			<xsl:call-template name="getTitle">
-				<xsl:with-param name="name" select="'title-list-tables'"/>
+			<xsl:call-template name="getLocalizedString">
+				<xsl:with-param name="key">toc_tables</xsl:with-param>
 			</xsl:call-template>
 		</xsl:if>
 	</xsl:variable>
@@ -398,8 +394,8 @@
 		<xsl:variable name="toc_figure_title" select="//*[contains(local-name(), '-standard')]/*[local-name() = 'metanorma-extension']/*[local-name() = 'toc'][@type='figure']/*[local-name() = 'title']"/>
 		<xsl:value-of select="$toc_figure_title"/>
 		<xsl:if test="normalize-space($toc_figure_title) = ''">
-			<xsl:call-template name="getTitle">
-				<xsl:with-param name="name" select="'title-list-figures'"/>
+			<xsl:call-template name="getLocalizedString">
+				<xsl:with-param name="key">toc_figures</xsl:with-param>
 			</xsl:call-template>
 		</xsl:if>
 	</xsl:variable>
