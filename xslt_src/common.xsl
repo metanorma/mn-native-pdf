@@ -367,12 +367,6 @@
 		<title-subpart lang="en">Sub-part #</title-subpart>
 		<title-subpart lang="fr">Partie de sub #</title-subpart>
 		
-		<title-summary lang="en">Summary</title-summary>
-		
-		<title-continued lang="ru">(продолжение)</title-continued>
-		<title-continued lang="en">(continued)</title-continued>
-		<title-continued lang="fr">(continué)</title-continued>
-		
 	</xsl:variable>
 	<xsl:variable name="titles" select="xalan:nodeset($titles_)"/>
 	
@@ -7786,17 +7780,17 @@
 		<fo:table-body>
 			<xsl:if test="$namespace = 'bsi' or $namespace = 'iec' or $namespace = 'ieee' or $namespace = 'iso' or $namespace = 'jcgm'">				
 				<xsl:variable name="title_continued_">
-					<xsl:call-template name="getTitle">
-						<xsl:with-param name="name" select="'title-continued'"/>
+					<xsl:call-template name="getLocalizedString">
+						<xsl:with-param name="key">continued</xsl:with-param>
 					</xsl:call-template>
 				</xsl:variable>
-				
+				<xsl:variable name="title_continued_in_parenthesis" select="concat('(',$title_continued_,')')"/>
 				<xsl:variable name="title_continued">
-					<xsl:if test="$namespace = 'iec' or $namespace = 'ieee' or $namespace = 'iso' or $namespace = 'jcgm'"><xsl:value-of select="$title_continued_"/></xsl:if>
+					<xsl:if test="$namespace = 'iec' or $namespace = 'ieee' or $namespace = 'iso' or $namespace = 'jcgm'"><xsl:value-of select="$title_continued_in_parenthesis"/></xsl:if>
 					<xsl:if test="$namespace = 'bsi'">
 						<xsl:choose>
-							<xsl:when test="$document_type = 'PAS'">— <xsl:value-of select="translate($title_continued_, '()', '')"/></xsl:when>
-							<xsl:otherwise><xsl:value-of select="$title_continued_"/></xsl:otherwise>
+							<xsl:when test="$document_type = 'PAS'">— <xsl:value-of select="$title_continued_"/></xsl:when>
+							<xsl:otherwise><xsl:value-of select="$title_continued_in_parenthesis"/></xsl:otherwise>
 						</xsl:choose>
 					</xsl:if>
 				</xsl:variable>
