@@ -369,8 +369,6 @@
 		
 		<title-table-figures lang="en">Table of Figures</title-table-figures>
 		
-		<title-list-recommendations lang="en">List of Recommendations</title-list-recommendations>
-		
 		<title-summary lang="en">Summary</title-summary>
 		
 		<title-continued lang="ru">(продолжение)</title-continued>
@@ -404,8 +402,8 @@
 		<xsl:variable name="toc_requirement_title" select="//*[contains(local-name(), '-standard')]/*[local-name() = 'metanorma-extension']/*[local-name() = 'toc'][@type='requirement']/*[local-name() = 'title']"/>
 		<xsl:value-of select="$toc_requirement_title"/>
 		<xsl:if test="normalize-space($toc_requirement_title) = ''">
-			<xsl:call-template name="getTitle">
-				<xsl:with-param name="name" select="'title-list-recommendations'"/>
+			<xsl:call-template name="getLocalizedString">
+				<xsl:with-param name="key">toc_recommendations</xsl:with-param>
 			</xsl:call-template>
 		</xsl:if>
 	</xsl:variable>
