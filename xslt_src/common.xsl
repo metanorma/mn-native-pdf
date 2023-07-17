@@ -307,7 +307,7 @@
 		
 		
 		<!-- These titles of Table of contents renders different than determined in localized-strings -->
-		<title-toc lang="en">
+		<!-- <title-toc lang="en">
 			<xsl:if test="$namespace = 'csd' or $namespace = 'ieee' or $namespace = 'iho' or $namespace = 'mpfd' or $namespace = 'ogc' or $namespace = 'unece-rec'">
 				<xsl:text>Contents</xsl:text>
 			</xsl:if>
@@ -317,11 +317,12 @@
 			<xsl:if test="$namespace = 'gb'">
 				<xsl:text>Table of contents</xsl:text>
 			</xsl:if>
-		</title-toc>
-		<title-toc lang="fr">
+		</title-toc> -->
+		<title-toc lang="en">Table of contents</title-toc>
+		<!-- <title-toc lang="fr">
 			<xsl:text>Sommaire</xsl:text>
-		</title-toc>
-		<title-toc lang="zh">
+		</title-toc> -->
+		<!-- <title-toc lang="zh">
 			<xsl:choose>
 				<xsl:when test="$namespace = 'gb'">
 					<xsl:text>目次</xsl:text>
@@ -330,7 +331,8 @@
 					<xsl:text>Contents</xsl:text>
 				</xsl:otherwise>
 			</xsl:choose>
-		</title-toc>
+		</title-toc> -->
+		<title-toc lang="zh">目次</title-toc>
 		
 		<title-part lang="en">
 			<xsl:if test="$namespace = 'bsi' or $namespace = 'iso'">
