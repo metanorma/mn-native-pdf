@@ -1510,8 +1510,8 @@
 										<xsl:if test="/iso:iso-standard/iso:bibdata/iso:keyword">
 											<fo:block font-size="9pt" margin-bottom="6pt">
 												<xsl:variable name="title-descriptors">
-													<xsl:call-template name="getTitle">
-														<xsl:with-param name="name" select="'title-descriptors'"/>
+													<xsl:call-template name="getLocalizedString">
+														<xsl:with-param name="key">Descriptor.pl</xsl:with-param>
 													</xsl:call-template>
 												</xsl:variable>
 												<fo:inline font-weight="bold"><xsl:value-of select="$title-descriptors"/>: </fo:inline>

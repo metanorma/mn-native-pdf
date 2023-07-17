@@ -332,8 +332,6 @@
 			</xsl:choose>
 		</title-toc>
 		
-		<title-descriptors lang="en">Descriptors</title-descriptors>
-		
 		<title-part lang="en">
 			<xsl:if test="$namespace = 'bsi' or $namespace = 'iso'">
 				<xsl:text>Part #:</xsl:text>
