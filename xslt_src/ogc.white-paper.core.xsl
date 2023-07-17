@@ -283,8 +283,8 @@
 						<fo:block font-size="11pt" margin-top="8pt">&#xA0;</fo:block>							
 						<fo:block xsl:use-attribute-sets="title-toc-style">
 							<!-- <xsl:text>Table of Figures</xsl:text> -->
-							<xsl:call-template name="getTitle">
-								<xsl:with-param name="name" select="'title-table-figures'"/>
+							<xsl:call-template name="getLocalizedString">
+								<xsl:with-param name="key">table_of_figures</xsl:with-param>
 							</xsl:call-template>
 						</fo:block>
 						<xsl:for-each select="//ogc:figure[@id and ogc:name] | //ogc:table[@id and ogc:name]">

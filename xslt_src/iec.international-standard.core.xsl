@@ -840,7 +840,13 @@
 							<fo:block-container background-color="rgb(219, 229, 241)" margin-top="4mm" padding="2mm" padding-top="1mm" border="1.5pt solid white">
 								<fo:block font-size="6.5pt" margin-bottom="6pt">
 									<xsl:call-template name="addLetterSpacingSmallCaps">
-										<xsl:with-param name="text">Title:</xsl:with-param>
+										<xsl:with-param name="text">
+											<!-- Title: -->
+											<xsl:call-template name="getLocalizedString">
+												<xsl:with-param name="key">title</xsl:with-param>
+											</xsl:call-template>
+											<xsl:text>:</xsl:text>
+										</xsl:with-param>
 									</xsl:call-template>
 								</fo:block>
 								<fo:block font-size="9pt" font-weight="bold">
@@ -855,7 +861,11 @@
 									<fo:block font-size="6.5pt">
 										<xsl:call-template name="addLetterSpacing">
 											<xsl:with-param name="text">
-												<xsl:text>PROPOSED STABILITY DATE: </xsl:text>
+												<!-- PROPOSED STABILITY DATE:  -->
+												<xsl:call-template name="getLocalizedString">
+													<xsl:with-param name="key">proposed_stability_date</xsl:with-param>
+												</xsl:call-template>
+												<xsl:text>: </xsl:text>
 											</xsl:with-param>
 										</xsl:call-template>
 										<!-- 2023 -->
@@ -867,7 +877,13 @@
 							<fo:block-container border="1.5 solid" border-color="rgb(221, 213, 213)" padding="1mm" margin-top="3mm">
 								<fo:block font-size="6.5pt" margin-bottom="6pt">
 									<xsl:call-template name="addLetterSpacingSmallCaps">
-										<xsl:with-param name="text">Note from TC/SC officers:</xsl:with-param>
+										<xsl:with-param name="text">
+											<!-- Note from TC/SC officers: -->
+											<xsl:call-template name="getLocalizedString">
+												<xsl:with-param name="key">tc_sc_note</xsl:with-param>
+											</xsl:call-template>
+											<xsl:text>:</xsl:text>
+										</xsl:with-param>
 									</xsl:call-template>
 								</fo:block>
 								<!-- Example: This FDIS is the result of the discussion between the IEC SC21A experts WG 3 during the meeting held in -->

@@ -318,7 +318,12 @@
 							<fo:block line-height="140%">
 								<xsl:apply-templates select="/ogc:ogc-standard/ogc:bibdata/ogc:edition[normalize-space(@language) = '']"/>
 								<fo:block>
-									<fo:inline font-weight="bold">Submission Date: </fo:inline>
+									<fo:inline font-weight="bold">
+										<!-- Submission Date:  -->
+										<xsl:call-template name="getLocalizedString">
+											<xsl:with-param name="key">submission_date</xsl:with-param>
+										</xsl:call-template><xsl:text>: </xsl:text>
+									</fo:inline>
 									<xsl:choose>
 										<xsl:when test="/ogc:ogc-standard/ogc:bibdata/ogc:date[@type = 'received']/ogc:on">
 											<xsl:value-of select="/ogc:ogc-standard/ogc:bibdata/ogc:date[@type = 'received']/ogc:on"/>
@@ -327,7 +332,12 @@
 									</xsl:choose>
 								</fo:block>
 								<fo:block>
-									<fo:inline font-weight="bold">Approval Date: </fo:inline>
+									<fo:inline font-weight="bold">
+									<!-- Approval Date:  -->
+									<xsl:call-template name="getLocalizedString">
+										<xsl:with-param name="key">approval_date</xsl:with-param>
+									</xsl:call-template><xsl:text>: </xsl:text>
+									</fo:inline>
 									<xsl:choose>
 										<xsl:when test="/ogc:ogc-standard/ogc:bibdata/ogc:date[@type = 'issued']/ogc:on">
 											<xsl:value-of select="/ogc:ogc-standard/ogc:bibdata/ogc:date[@type = 'issued']/ogc:on"/>
@@ -336,14 +346,24 @@
 									</xsl:choose>							
 								</fo:block>
 								<fo:block>
-									<fo:inline font-weight="bold">Publication Date: </fo:inline>
+									<fo:inline font-weight="bold">
+										<!-- Publication Date:  -->
+										<xsl:call-template name="getLocalizedString">
+											<xsl:with-param name="key">publication_date</xsl:with-param>
+										</xsl:call-template><xsl:text>: </xsl:text>
+									</fo:inline>
 									<xsl:value-of select="/ogc:ogc-standard/ogc:bibdata/ogc:date[@type = 'published']/ogc:on"/>
 								</fo:block>
 								
 								<fo:block margin-bottom="12pt">
 									<xsl:if test="/ogc:ogc-standard/ogc:bibdata/ogc:contributor[ogc:role/@type='author']/ogc:person/ogc:name/ogc:completename">
 										<fo:block>
-											<fo:inline font-weight="bold">Author: </fo:inline>
+											<fo:inline font-weight="bold">
+												<!-- Author:  -->
+												<xsl:call-template name="getLocalizedString">
+													<xsl:with-param name="key">author</xsl:with-param>
+												</xsl:call-template><xsl:text>: </xsl:text>
+											</fo:inline>
 											<xsl:for-each select="/ogc:ogc-standard/ogc:bibdata/ogc:contributor[ogc:role/@type='author']/ogc:person/ogc:name/ogc:completename">
 												<xsl:value-of select="."/>
 												<xsl:if test="position() != last()">, </xsl:if>
@@ -352,7 +372,12 @@
 									</xsl:if>
 									<xsl:if test="/ogc:ogc-standard/ogc:bibdata/ogc:contributor[ogc:role/@type='editor']/ogc:person/ogc:name/ogc:completename">
 										<fo:block>
-											<fo:inline font-weight="bold">Editor: </fo:inline>
+											<fo:inline font-weight="bold">
+												<!-- Editor:  -->
+												<xsl:call-template name="getLocalizedString">
+													<xsl:with-param name="key">editor</xsl:with-param>
+												</xsl:call-template><xsl:text>: </xsl:text>
+											</fo:inline>
 											<xsl:for-each select="/ogc:ogc-standard/ogc:bibdata/ogc:contributor[ogc:role/@type='editor']/ogc:person/ogc:name/ogc:completename">
 												<xsl:value-of select="."/>
 												<xsl:if test="position() != last()">, </xsl:if>
@@ -361,7 +386,12 @@
 									</xsl:if>
 									<xsl:if test="/ogc:ogc-standard/ogc:bibdata/ogc:contributor[ogc:role/@type='contributor']/ogc:person/ogc:name/ogc:completename">
 										<fo:block>
-											<fo:inline font-weight="bold">Contributor: </fo:inline>
+											<fo:inline font-weight="bold">
+												<!-- Contributor:  -->
+												<xsl:call-template name="getLocalizedString">
+													<xsl:with-param name="key">contributor</xsl:with-param>
+												</xsl:call-template><xsl:text>: </xsl:text>
+											</fo:inline>
 											<xsl:for-each select="/ogc:ogc-standard/ogc:bibdata/ogc:contributor[ogc:role/@type='contributor']/ogc:person/ogc:name/ogc:completename">
 												<xsl:value-of select="."/>
 												<xsl:if test="position() != last()">, </xsl:if>

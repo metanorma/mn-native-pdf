@@ -330,12 +330,9 @@
 	</xsl:template>
 
 	<xsl:template match="csa:preface/csa:clause[@type = 'toc']/csa:title" priority="3">
-		<xsl:variable name="title-toc">
-			<xsl:call-template name="getTitle">
-				<xsl:with-param name="name" select="'title-toc'"/>
-			</xsl:call-template>
-		</xsl:variable>
-		<fo:block font-size="26pt" color="black" margin-top="2pt" margin-bottom="30pt" role="H1"><xsl:value-of select="$title-toc"/></fo:block>
+		<fo:block font-size="26pt" color="black" margin-top="2pt" margin-bottom="30pt" role="H1">
+			<xsl:apply-templates />
+		</fo:block>
 	</xsl:template>
 
 	<xsl:template match="node()">		
