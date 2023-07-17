@@ -763,10 +763,20 @@
 															<fo:block>&#xA0;</fo:block>
 														</fo:table-cell>
 														<fo:table-cell>
-															<fo:block>Voting begins on:</fo:block>
+															<fo:block>
+																<!-- Voting begins on: -->
+																<xsl:call-template name="getLocalizedString">
+																	<xsl:with-param name="key">voting_begins_on</xsl:with-param>
+																</xsl:call-template><xsl:text>:</xsl:text>
+															</fo:block>
 														</fo:table-cell>
 														<fo:table-cell>
-															<fo:block>Voting terminates on:</fo:block>
+															<fo:block>
+																<!-- Voting terminates on: -->
+																<xsl:call-template name="getLocalizedString">
+																	<xsl:with-param name="key">voting_terminates_on</xsl:with-param>
+																</xsl:call-template><xsl:text>:</xsl:text>
+															</fo:block>
 														</fo:table-cell>
 													</fo:table-row>
 													<fo:table-row>
@@ -1011,7 +1021,12 @@
 																		<fo:block margin="2mm" role="SKIP">
 																				<fo:block margin-bottom="8pt"><xsl:copy-of select="$editorialgroup"/></fo:block>
 																				<fo:block margin-bottom="6pt"><xsl:copy-of select="$secretariat"/></fo:block>
-																				<fo:block margin-bottom="6pt">Voting begins on:<xsl:value-of select="$linebreak"/>
+																				<fo:block margin-bottom="6pt">
+																					<!-- Voting begins on: -->
+																					<xsl:call-template name="getLocalizedString">
+																						<xsl:with-param name="key">voting_begins_on</xsl:with-param>
+																					</xsl:call-template><xsl:text>:</xsl:text>
+																					<xsl:value-of select="$linebreak"/>
 																					<fo:inline font-weight="bold">
 																						<xsl:choose>
 																							<xsl:when test="/iso:iso-standard/iso:bibdata/iso:date[@type = 'vote-started']/iso:on">
@@ -1021,7 +1036,12 @@
 																						</xsl:choose>
 																					</fo:inline>
 																				</fo:block>
-																				<fo:block>Voting terminates on:<xsl:value-of select="$linebreak"/>
+																				<fo:block>
+																					<!-- Voting terminates on: -->
+																					<xsl:call-template name="getLocalizedString">
+																						<xsl:with-param name="key">voting_terminates_on</xsl:with-param>
+																					</xsl:call-template><xsl:text>:</xsl:text>
+																					<xsl:value-of select="$linebreak"/>
 																					<fo:inline font-weight="bold">
 																						<xsl:choose>
 																							<xsl:when test="/iso:iso-standard/iso:bibdata/iso:date[@type = 'vote-ended']/iso:on">
