@@ -367,8 +367,6 @@
 		<title-subpart lang="en">Sub-part #</title-subpart>
 		<title-subpart lang="fr">Partie de sub #</title-subpart>
 		
-		<title-table-figures lang="en">Table of Figures</title-table-figures>
-		
 		<title-summary lang="en">Summary</title-summary>
 		
 		<title-continued lang="ru">(продолжение)</title-continued>
@@ -12832,8 +12830,8 @@
 					<xsl:if test="$list_of_tables_figures//table_figure">
 						<fo:bookmark internal-destination="empty_bookmark" starting-state="hide">
 							<fo:bookmark-title>
-								<xsl:call-template name="getTitle">
-									<xsl:with-param name="name" select="'title-table-figures'"/>
+								<xsl:call-template name="getLocalizedString">
+									<xsl:with-param name="key">table_of_figures</xsl:with-param>
 								</xsl:call-template>
 							</fo:bookmark-title>
 							<xsl:for-each select="$list_of_tables_figures//table_figure">
