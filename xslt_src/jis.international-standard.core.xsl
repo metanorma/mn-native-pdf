@@ -1205,6 +1205,46 @@
 		</xsl:if>
 	</xsl:template>
 	
+	<xsl:template match="*[local-name() = 'span'][@class = 'surname' or @class = 'givenname']" mode="update_xml_step1" priority="2">
+		<xsl:copy>
+			<xsl:apply-templates select="@* | node()" mode="update_xml_step1"/>
+		</xsl:copy>
+	</xsl:template>
+	
+	<xsl:template match="jis:clause[@type = 'contributors']//jis:table//jis:span[@class = 'surname']/text()[string-length() &lt; 3]" priority="2">
+		<xsl:choose>
+			<xsl:when test="string-length() = 1">
+				<xsl:value-of select="concat(.,'&#x3000;&#x3000;')"/>
+			</xsl:when>
+			<xsl:when test="string-length() = 2">
+				<xsl:value-of select="concat(substring(.,1,1), '&#x3000;', substring(., 2))"/>
+			</xsl:when>
+		</xsl:choose>
+		<xsl:if test="../following-sibling::node()[1][self::jis:span and @class = 'surname']"> <!-- if no space between surname and given name -->
+			<xsl:text>&#x3000;</xsl:text>
+		</xsl:if>
+	</xsl:template>
+	
+	<xsl:template match="jis:clause[@type = 'contributors']//jis:table//jis:span[@class = 'givenname']/text()[string-length() &lt; 3]" priority="2">
+		<xsl:choose>
+			<xsl:when test="string-length() = 1">
+				<xsl:value-of select="concat('&#x3000;&#x3000;', .)"/>
+			</xsl:when>
+			<xsl:when test="string-length() = 2">
+				<xsl:value-of select="concat(substring(.,1,1), '&#x3000;', substring(., 2))"/>
+			</xsl:when>
+			<xsl:otherwise>
+				<xsl:value-of select="."/>
+			</xsl:otherwise>
+		</xsl:choose>
+	</xsl:template>
+	
+	<!-- space between surname and givenname replace by 'ideographic space' -->
+	<!-- and following-sibling::node()[1][self::jis:span and @class = 'givenname'] -->
+	<xsl:template match="jis:clause[@type = 'contributors']//jis:table//node()[preceding-sibling::node()[1][self::jis:span and @class = 'surname']][. = ' ']" priority="2">
+		<xsl:text>&#x3000;</xsl:text>
+	</xsl:template>
+	
 	<xsl:template name="makePagedXML">
 		<xsl:param name="structured_xml"/>
 		<xsl:choose>
