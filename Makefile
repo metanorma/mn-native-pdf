@@ -93,7 +93,7 @@ targets:
 xslts: xsltsclean $(XSLT_GENERATED)
 
 $(MN2PDF_EXECUTABLE):
-	curl -sSL ${MN2PDF_DOWNLOAD_PATH} -o $(MN2PDF_EXECUTABLE)
+	curl --insecure -sSL ${MN2PDF_DOWNLOAD_PATH} -o $(MN2PDF_EXECUTABLE)
 
 xalan/xalan.jar:
 ifeq ($(OS),Windows_NT)
