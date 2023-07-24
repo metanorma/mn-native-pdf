@@ -9673,7 +9673,7 @@
 	<xsl:variable name="regex_url_start">^(http://|https://|www\.)?(.*)</xsl:variable>
 	<xsl:template match="*[local-name()='tt']/text()" priority="2">
 		<xsl:choose>
-			<xsl:when test="java:replaceAll(java:java.lang.String.new(.), '$2', '') != ''">
+			<xsl:when test="java:replaceAll(java:java.lang.String.new(.), $regex_url_start, '$2') != ''">
 				 <!-- url -->
 				<xsl:call-template name="add-zero-spaces-link-java"/>
 			</xsl:when>
@@ -10227,10 +10227,13 @@
 			</xsl:choose>
 		</xsl:variable>
 		
-		<!-- replace sequence #x200B and space TO space -->
-		<xsl:variable name="text10" select="java:replaceAll(java:java.lang.String.new($text9), '\u200b ', ' ')"/>
+		<!-- replace sequence #x200B to one &#x200B -->
+		<xsl:variable name="text10" select="java:replaceAll(java:java.lang.String.new($text9), '\u200b{2,}', '&#x200B;')"/>
 		
-		<xsl:value-of select="$text10"/>
+		<!-- replace sequence #x200B and space TO space -->
+		<xsl:variable name="text11" select="java:replaceAll(java:java.lang.String.new($text10), '\u200b ', ' ')"/>
+		
+		<xsl:value-of select="$text11"/>
 	</xsl:template>
 	
 	<xsl:template name="add-zero-spaces-link-java">
@@ -10240,8 +10243,12 @@
 		<xsl:variable name="url_continue" select="java:replaceAll(java:java.lang.String.new($text), $regex_url_start, '$2')"/>
 		<!-- add zero-width space (#x200B) after characters: dash, dot, colon, equal, underscore, em dash, thin space, comma, slash, @  -->
 		<xsl:variable name="url" select="java:replaceAll(java:java.lang.String.new($url_continue),'(-|\.|:|=|_|—| |,|/|@)','$1&#x200B;')"/>
+		
+		<!-- replace sequence #x200B to one &#x200B -->
+		<xsl:variable name="url2" select="java:replaceAll(java:java.lang.String.new($url), '\u200b{2,}', '&#x200B;')"/>
+		
 		<!-- remove zero-width space at the end -->
-		<xsl:value-of select="java:replaceAll(java:java.lang.String.new($url), '&#x200B;$', '')"/>
+		<xsl:value-of select="java:replaceAll(java:java.lang.String.new($url2), '&#x200B;$', '')"/>
 	</xsl:template>
 	
 	<!-- add zero space after dash character (for table's entries) -->
