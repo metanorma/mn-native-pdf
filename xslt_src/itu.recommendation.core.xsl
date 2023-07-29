@@ -1092,7 +1092,7 @@
 				
 				<fo:flow flow-name="xsl-region-body">
 				
-					<xsl:if test="$doctype != 'service-publication'">
+					<!-- <xsl:if test="$doctype != 'service-publication' and 1 = 2"> 
 						<fo:block-container font-size="14pt" >
 							<xsl:choose>
 								<xsl:when test="$doctype = 'resolution'">
@@ -1121,7 +1121,7 @@
 								<xsl:variable name="subtitle" select="/itu:itu-standard/itu:bibdata/itu:title[@type = 'subtitle' and @language = $lang]"/>
 								<xsl:if test="$subtitle != ''">
 									<fo:block margin-top="18pt" font-weight="normal" font-style="italic">
-										<xsl:if test="$lang = 'ar'"> <!-- to prevent rendering `###` due the missing Arabic glyphs in the italic font (Times New Roman) -->
+										<xsl:if test="$lang = 'ar'">
 											<xsl:attribute name="font-style">normal</xsl:attribute>
 										</xsl:if>
 										<xsl:value-of select="$subtitle"/>
@@ -1132,7 +1132,7 @@
 								<xsl:if test="$doctype = 'resolution' and $resolution-placedate != ''">
 									<fo:block font-size="11pt" margin-top="6pt" font-weight="normal">
 										<fo:inline font-style="italic">
-											<xsl:if test="$lang = 'ar'"> <!-- to prevent rendering `###` due the missing Arabic glyphs in the italic font (Times New Roman) -->
+											<xsl:if test="$lang = 'ar'">
 												<xsl:attribute name="font-style">normal</xsl:attribute>
 											</xsl:if>
 											<xsl:text>(</xsl:text><xsl:value-of select="$resolution-placedate"/><xsl:text>)</xsl:text>
@@ -1142,7 +1142,7 @@
 								</xsl:if>
 							</fo:block>
 						</fo:block-container>
-					</xsl:if>
+					</xsl:if> -->
 					
 					
 					<!-- Clause(s) -->
@@ -1315,6 +1315,35 @@
 	</xsl:template>
 
 	<xsl:template match="itu:clause[@type = 'keyword']" priority="4"/>
+
+	<xsl:template match="itu:sections/itu:p[@class = 'zzSTDTitle1']" priority="4">
+		<fo:block font-size="14pt">
+			<xsl:choose>
+				<xsl:when test="$doctype = 'resolution'">
+					<xsl:attribute name="text-align">center</xsl:attribute>
+				</xsl:when>
+				<xsl:otherwise>
+					<xsl:attribute name="font-weight">bold</xsl:attribute>
+				</xsl:otherwise>
+			</xsl:choose>
+			<xsl:apply-templates />
+		</fo:block>
+	</xsl:template>
+	
+	<xsl:template match="itu:sections/itu:p[@class = 'zzSTDTitle2']" priority="4">
+		<fo:block font-size="14pt" font-weight="bold" text-align="center" margin-top="15pt" margin-bottom="15pt" role="H1">
+			<xsl:if test="$lang = 'ar'"> <!-- to prevent rendering `###` due the missing Arabic glyphs in the italic font (Times New Roman) -->
+				<xsl:attribute name="font-style">normal</xsl:attribute>
+			</xsl:if>
+			<!-- Example: <p align="center" class="zzSTDTitle2" displayorder="4"><em>(Hammamet, 2016</em>) -->
+			<xsl:if test="@align = 'center'">
+				<xsl:attribute name="font-size">11pt</xsl:attribute>
+				<xsl:attribute name="margin-top">6pt</xsl:attribute>
+				<xsl:attribute name="font-weight">normal</xsl:attribute>
+			</xsl:if>
+			<xsl:apply-templates />
+		</fo:block>
+	</xsl:template>
 
 	<xsl:template match="node()">		
 		<xsl:apply-templates />			
@@ -1779,14 +1808,14 @@
 	</xsl:template> -->
 
 	<!-- footnotes for title -->
-	<xsl:template match="itu:bibdata/itu:note[@type = 'title-footnote']" mode="title_footnote">
+	<!-- <xsl:template match="itu:bibdata/itu:note[@type = 'title-footnote']" mode="title_footnote">
 		<xsl:variable name="number" select="position()"/>
 		<fo:footnote>
 			<fo:inline font-size="60%" keep-with-previous.within-line="always" vertical-align="super">
 				<fo:basic-link internal-destination="title_footnote_{$number}" fox:alt-text="titlefootnote  {$number}">
 					<xsl:value-of select="$number"/>
 				</fo:basic-link>
-				<xsl:if test="position() != last()">,</xsl:if><!-- <fo:inline  baseline-shift="20%">,</fo:inline> -->
+				<xsl:if test="position() != last()">,</xsl:if>
 			</fo:inline>
 			<fo:footnote-body>
 				<fo:block font-size="11pt" margin-bottom="12pt" text-align="justify">
@@ -1797,7 +1826,7 @@
 				</fo:block>
 			</fo:footnote-body>
 		</fo:footnote>
-	</xsl:template>
+	</xsl:template> -->
 
 	
 	
