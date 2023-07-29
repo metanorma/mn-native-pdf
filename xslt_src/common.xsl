@@ -9542,6 +9542,8 @@
 	<!-- END Definition List -->
 	<!-- ===================== -->
 	
+	<!-- default: ignore title in sections/p -->
+	<xsl:template match="*[local-name() = 'sections']/*[local-name() = 'p'][starts-with(@class, 'zzSTDTitle')]" priority="3" />
 	
 	<!-- ========================= -->
 	<!-- Rich text formatting -->
