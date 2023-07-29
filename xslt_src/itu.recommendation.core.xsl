@@ -48,17 +48,19 @@
 	<xsl:variable name="contents_">
 		<contents>
 			<!-- <xsl:apply-templates select="/itu:itu-standard/itu:preface/node()" mode="contents"/> -->
-			<xsl:apply-templates select="/itu:itu-standard/itu:sections/itu:clause[@type='scope']" mode="contents" /> <!-- @id = 'scope' -->
+			<!-- <xsl:apply-templates select="/itu:itu-standard/itu:sections/itu:clause[@type='scope']" mode="contents" /> -->
 				
 			<!-- Normative references -->
-			<xsl:apply-templates select="/itu:itu-standard/itu:bibliography/itu:references[@normative='true']" mode="contents" /> <!-- @id = 'references' -->
+			<!-- <xsl:apply-templates select="/itu:itu-standard/itu:bibliography/itu:references[@normative='true']" mode="contents" />
 			
-			<xsl:apply-templates select="/itu:itu-standard/itu:sections/*[not(@type='scope')]" mode="contents" /> <!-- @id != 'scope' -->
+			<xsl:apply-templates select="/itu:itu-standard/itu:sections/*[not(@type='scope')]" mode="contents" />
 				
-			<xsl:apply-templates select="/itu:itu-standard/itu:annex" mode="contents"/>
+			<xsl:apply-templates select="/itu:itu-standard/itu:annex" mode="contents"/> -->
 			
 			<!-- Bibliography -->
-			<xsl:apply-templates select="/itu:itu-standard/itu:bibliography/itu:references[not(@normative='true')]" mode="contents"/> <!-- @id = 'bibliography' -->
+			<!-- <xsl:apply-templates select="/itu:itu-standard/itu:bibliography/itu:references[not(@normative='true')]" mode="contents"/> -->
+			
+			<xsl:call-template name="processMainSectionsDefault_Contents"/>
 			
 			<xsl:apply-templates select="//itu:table" mode="contents"/>
 			
@@ -1146,17 +1148,20 @@
 					<!-- Clause(s) -->
 					<fo:block>
 						<!-- Scope -->
-						<xsl:apply-templates select="/itu:itu-standard/itu:sections/itu:clause[@type='scope']" /> <!-- @id = 'scope' -->
+						<!-- <xsl:apply-templates select="/itu:itu-standard/itu:sections/itu:clause[@type='scope']" /> -->
 							
 						<!-- Normative references -->						
-						<xsl:apply-templates select="/itu:itu-standard/itu:bibliography/itu:references[@normative='true']" /> <!-- @id = 'references' -->
+						<!-- <xsl:apply-templates select="/itu:itu-standard/itu:bibliography/itu:references[@normative='true']" />
 							
-						<xsl:apply-templates select="/itu:itu-standard/itu:sections/*[not(@type='scope')]" /> <!-- @id != 'scope' -->
+						<xsl:apply-templates select="/itu:itu-standard/itu:sections/*[not(@type='scope')]" />
 							
-						<xsl:apply-templates select="/itu:itu-standard/itu:annex"/>
+						<xsl:apply-templates select="/itu:itu-standard/itu:annex"/> -->
 						
 						<!-- Bibliography -->
-						<xsl:apply-templates select="/itu:itu-standard/itu:bibliography/itu:references[not(@normative='true')]"/> <!-- @id = 'bibliography' -->
+						<!-- <xsl:apply-templates select="/itu:itu-standard/itu:bibliography/itu:references[not(@normative='true')]"/> -->
+						
+						<xsl:call-template name="processMainSectionsDefault"/>
+						
 					</fo:block>
 					
 				</fo:flow>
@@ -1308,6 +1313,8 @@
 			</xsl:call-template>
 		</fo:block>
 	</xsl:template>
+
+	<xsl:template match="itu:clause[@type = 'keyword']" priority="4"/>
 
 	<xsl:template match="node()">		
 		<xsl:apply-templates />			
