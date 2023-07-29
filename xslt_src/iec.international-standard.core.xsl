@@ -1380,7 +1380,7 @@
 		<fo:block break-after="page"/>
 	</xsl:template>
 	
-	<xsl:template match="*[local-name() = 'preface' or local-name() = 'sections']/iec:p[starts-with(@class, 'zzSTDTitle')]" priority="3">
+	<xsl:template match="*[local-name() = 'preface' or local-name() = 'sections']/iec:p[starts-with(@class, 'zzSTDTitle')]" priority="4">
 		<fo:block-container font-size="12pt" text-align="center">
 			<xsl:if test="following-sibling::*[1][not(self::iec:p[starts-with(@class, 'zzSTDTitle')])]">
 				<xsl:attribute name="margin-bottom">18pt</xsl:attribute>
