@@ -619,6 +619,17 @@
 			</xsl:if>
 			<xsl:apply-templates />
 		</fo:block>
+		<xsl:variable name="curr_lang" select="ancestor::jcgm:bipm-standard/*[local-name()='bibdata']/*[local-name()='language'][@current = 'true']"/>
+		<xsl:variable name="edition">
+			<xsl:apply-templates select="ancestor::jcgm:bipm-standard/*[local-name() = 'bibdata']/*[local-name() = 'edition'][normalize-space(@language) = '']">
+				<xsl:with-param name="curr_lang" select="$curr_lang"/>
+			</xsl:apply-templates>
+		</xsl:variable>
+		<xsl:if test="normalize-space($edition) != ''">
+			<fo:block font-size="20pt" font-weight="bold" margin-top="12pt" margin-bottom="20pt" line-height="1.1">
+				<xsl:copy-of select="$edition"/>
+			</fo:block>
+		</xsl:if>
 	</xsl:template>
 	
 	<xsl:template match="jcgm:sections/jcgm:p[@class = 'zzSTDTitle2']" priority="4">
