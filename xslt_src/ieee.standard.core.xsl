@@ -1100,7 +1100,7 @@
 							<fo:flow flow-name="xsl-region-body">
 								<!-- debugpage=<xsl:copy-of select="."/> -->
 								
-								<xsl:if test="position() = 1">
+								<!-- <xsl:if test="position() = 1">
 									
 									<xsl:choose>
 										<xsl:when test="$current_template = 'draft'">
@@ -1113,8 +1113,6 @@
 												<xsl:copy-of select="$title_prefix"/>
 												<xsl:copy-of select="$title"/>
 												
-												
-												<!-- <xsl:copy-of select="$draft_title_part"/> -->
 											</fo:block>
 										</xsl:when>
 										
@@ -1126,29 +1124,20 @@
 											</fo:block>
 										</xsl:when>
 										
-										<xsl:otherwise> <!-- $current_template = 'whitepaper' or $current_template = 'icap-whitepaper' or $current_template = 'industry-connection-report' -->
+										<xsl:otherwise>  --><!-- $current_template = 'whitepaper' or $current_template = 'icap-whitepaper' or $current_template = 'industry-connection-report' -->
 										
-											<xsl:attribute name="font-family">Calibri Light</xsl:attribute>
+											<!-- <xsl:attribute name="font-family">Calibri Light</xsl:attribute>
 											<xsl:attribute name="font-size">12pt</xsl:attribute>
 											
 											<fo:block font-family="Arial Black" font-size="20pt" margin-top="18pt">
 												<xsl:copy-of select="$title"/>
-												<!-- <xsl:copy-of select="$draft_title_part"/> -->
 											</fo:block>
 											<xsl:call-template name="addBlueBox"/>
-											<!-- <fo:block font-size="1" margin-top="3mm">
-												<fo:instream-foreign-object content-width="57mm" content-height="3mm" scaling="non-uniform" fox:alt-text="Image Box">
-													<xsl:call-template name="insertImageBoxSVG">
-														<xsl:with-param name="color"><xsl:value-of select="$color_blue"/></xsl:with-param>
-													</xsl:call-template>
-												</fo:instream-foreign-object>
-											</fo:block>
-											<fo:block margin-top="12pt" margin-bottom="12pt">&#xa0;</fo:block> -->
 											<fo:block margin-bottom="12pt">&#xa0;</fo:block>
 										</xsl:otherwise>
 									</xsl:choose>
 									
-								</xsl:if>
+								</xsl:if> -->
 								
 								<xsl:apply-templates select="*" mode="page"/>
 								<xsl:if test="position() = last()"><fo:block id="lastBlockMain"/></xsl:if>
@@ -1777,6 +1766,32 @@
 					</xsl:if>
 	
 				</xsl:for-each>
+			</xsl:otherwise>
+		</xsl:choose>
+	</xsl:template>
+
+	<xsl:template match="ieee:p[@class = 'zzSTDTitle1']" priority="4">
+		<xsl:choose>
+			<xsl:when test="$current_template = 'draft'">
+				<fo:block font-family="Arial" font-size="23pt" font-weight="bold" margin-top="70pt" margin-bottom="48pt">
+					<xsl:if test="contains('amendment corrigendum erratum', $subdoctype) and $subdoctype != ''">
+						<xsl:attribute name="font-size">24pt</xsl:attribute>
+					</xsl:if>
+					<xsl:apply-templates />
+				</fo:block>
+			</xsl:when>
+			<xsl:when test="$current_template = 'standard'">
+				<fo:block font-family="Arial" font-weight="bold" margin-top="13mm" space-after="12pt">
+					<xsl:apply-templates />
+				</fo:block>
+			</xsl:when>
+			<xsl:otherwise> <!-- $current_template = 'whitepaper' or $current_template = 'icap-whitepaper' or $current_template = 'industry-connection-report' -->
+			
+				<fo:block font-family="Arial Black" font-size="20pt" margin-top="18pt">
+					<xsl:apply-templates />
+				</fo:block>
+				<xsl:call-template name="addBlueBox"/>
+				<fo:block margin-bottom="12pt">&#xa0;</fo:block>
 			</xsl:otherwise>
 		</xsl:choose>
 	</xsl:template>
