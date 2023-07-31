@@ -524,18 +524,18 @@
 								
 								
 								<!-- Annex Commentary first page -->
-								<xsl:if test="$isCommentary = 'true'">
+								<!-- <xsl:if test="$isCommentary = 'true'"> -->
 									
 									<!-- Example: JIS Z 8301：2019  -->
-									<fo:block font-family="IPAexGothic" font-size="15pt" text-align="center">
+									<!-- <fo:block font-family="IPAexGothic" font-size="15pt" text-align="center">
 										<fo:inline font-family="Arial">JIS <xsl:value-of select="$docidentifier_number"/></fo:inline>
 										<fo:inline baseline-shift="10%"><fo:inline font-size="10pt">：</fo:inline>
 										<fo:inline font-family="Times New Roman" font-size="10pt"><xsl:value-of select="$docidentifier_year"/></fo:inline></fo:inline>
-									</fo:block>
+									</fo:block> -->
 
 									<!-- title -->
-									<fo:block role="H1" font-family="IPAexGothic" font-size="16pt" text-align="center" margin-top="6mm"><xsl:value-of select="$title_ja"/></fo:block>
-								</xsl:if>
+									<!-- <fo:block role="H1" font-family="IPAexGothic" font-size="16pt" text-align="center" margin-top="6mm"><xsl:value-of select="$title_ja"/></fo:block> -->
+								<!-- </xsl:if> -->
 								
 								<xsl:apply-templates select="*" mode="page"/>
 								
@@ -822,6 +822,38 @@
 		</fo:block>
 	</xsl:template>
 	
+	<!-- for commentary annex -->
+	<xsl:template match="jis:p[@class = 'CommentaryStandardNumber']" priority="4">
+		<fo:block font-family="IPAexGothic" font-size="15pt" text-align="center">
+			<xsl:apply-templates/>
+		</fo:block>
+	</xsl:template>
+	
+	<xsl:template match="jis:p[@class = 'CommentaryStandardNumber']//text()[not(ancestor::jis:span)]" priority="4">
+		<fo:inline font-family="Arial">
+			<xsl:choose>
+				<xsl:when test="contains(., ':')">
+					<xsl:value-of select="substring-before(., ':')"/>
+					<fo:inline baseline-shift="10%" font-size="10pt" font-family="IPAexMincho">：</fo:inline>
+					<xsl:value-of select="substring-after(., ':')"/>
+				</xsl:when>
+				<xsl:otherwise>
+					<xsl:value-of select="."/>
+				</xsl:otherwise>
+			</xsl:choose>
+		</fo:inline>
+	</xsl:template>
+	
+	<xsl:template match="jis:p[@class = 'CommentaryStandardNumber']/jis:span[@class = 'CommentaryEffectiveYear']" priority="4">
+		<fo:inline  baseline-shift="10%" font-family="Times New Roman" font-size="10pt"><xsl:apply-templates/></fo:inline>
+	</xsl:template>
+	
+	<xsl:template match="jis:p[@class = 'CommentaryStandardName']" priority="4">
+		<fo:block role="H1" font-family="IPAexGothic" font-size="16pt" text-align="center" margin-top="6mm">
+			<xsl:apply-templates />
+		</fo:block>
+	</xsl:template>
+	
 	
 	<!-- ============================= -->
 	<!-- CONTENTS                      -->
@@ -965,7 +997,7 @@
 			<xsl:choose>
 				<xsl:when test="@type = 'section-title'">18pt</xsl:when>
 				<xsl:when test="@ancestor = 'foreword' and $level = '1'">14pt</xsl:when>
-				<xsl:when test="@ancestor = 'annex' and $level = '1' and preceding-sibling::*[1][local-name() = 'annex' and @commentary = 'true']">16pt</xsl:when>
+				<xsl:when test="@ancestor = 'annex' and $level = '1' and preceding-sibling::*[local-name() = 'annex'][1][@commentary = 'true']">16pt</xsl:when>
 				<xsl:when test="@ancestor = 'annex' and $level = '1'">14pt</xsl:when>
 				<!-- <xsl:when test="@ancestor = 'foreword' and $level &gt;= '2'">12pt</xsl:when>
 				<xsl:when test=". = 'Executive summary'">18pt</xsl:when>
@@ -1003,7 +1035,7 @@
 		<xsl:variable name="margin-top">
 			<xsl:choose>
 				<xsl:when test="@ancestor = 'foreword' and $level = 1">9mm</xsl:when>
-				<xsl:when test="@ancestor = 'annex' and $level = '1' and preceding-sibling::*[1][local-name() = 'annex' and @commentary = 'true']">1mm</xsl:when>
+				<xsl:when test="@ancestor = 'annex' and $level = '1' and preceding-sibling::*[local-name() = 'annex'][1][@commentary = 'true']">1mm</xsl:when>
 				<xsl:when test="$level = 1">6.5mm</xsl:when>
 				<xsl:when test="@ancestor = 'foreword' and $level = 2">0mm</xsl:when>
 				<xsl:when test="@ancestor = 'annex' and $level = 2">4.5mm</xsl:when>
@@ -1024,7 +1056,7 @@
 		<xsl:variable name="margin-bottom">
 			<xsl:choose>
 				<xsl:when test="@ancestor = 'foreword' and $level = 1">9mm</xsl:when>
-				<xsl:when test="@ancestor = 'annex' and $level = '1' and preceding-sibling::*[1][local-name() = 'annex' and @commentary = 'true']">7mm</xsl:when>
+				<xsl:when test="@ancestor = 'annex' and $level = '1' and preceding-sibling::*[local-name() = 'annex'][1][@commentary = 'true']">7mm</xsl:when>
 				<xsl:when test="$level = 1 and following-sibling::jis:clause">8pt</xsl:when>
 				<xsl:when test="$level = 1">12pt</xsl:when>
 				<xsl:when test="$level = 2 and following-sibling::jis:clause">8pt</xsl:when>
@@ -1297,7 +1329,7 @@
 		</xsl:if>
 	</xsl:template>
 	
-	<xsl:template match="*[local-name() = 'span'][@class = 'surname' or @class = 'givenname' or @class = 'JIS' or @class = 'EffectiveYear']" mode="update_xml_step1" priority="2">
+	<xsl:template match="*[local-name() = 'span'][@class = 'surname' or @class = 'givenname' or @class = 'JIS' or @class = 'EffectiveYear' or @class = 'CommentaryEffectiveYear']" mode="update_xml_step1" priority="2">
 		<xsl:copy>
 			<xsl:apply-templates select="@* | node()" mode="update_xml_step1"/>
 		</xsl:copy>
