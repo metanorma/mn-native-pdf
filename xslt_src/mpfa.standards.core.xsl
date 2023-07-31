@@ -208,12 +208,10 @@
 				</xsl:call-template>
 				<fo:flow flow-name="xsl-region-body">
 					<fo:block-container>
-					
 						
-						
-						<fo:block font-size="16pt" font-weight="bold" margin-bottom="18pt" role="H1">
+						<!-- <fo:block font-size="16pt" font-weight="bold" margin-bottom="18pt" role="H1">
 							<xsl:value-of select="$title-en"/>
-						</fo:block>
+						</fo:block> -->
 						
 						<!-- Main sections -->
 						<xsl:apply-templates select="/mpfd:mpfd-standard/mpfd:sections/*"/>
@@ -332,6 +330,12 @@
 			<!-- <xsl:value-of select="$title-toc"/> -->
 			<xsl:apply-templates />
 		</fo:block>	
+	</xsl:template>
+	
+	<xsl:template match="mpfd:p[@class = 'zzSTDTitle1']" priority="4">
+		<fo:block font-size="16pt" font-weight="bold" margin-bottom="18pt" role="H1">
+			<xsl:apply-templates />
+		</fo:block>
 	</xsl:template>
 	
 	<xsl:template match="node()">
