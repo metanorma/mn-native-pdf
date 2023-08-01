@@ -482,7 +482,7 @@
 							
 							<fo:flow flow-name="xsl-region-body">
 								
-								<xsl:if test="position() = 1">
+								<!-- <xsl:if test="position() = 1">
 									<fo:table table-layout="fixed" width="100%">
 										<fo:table-column column-width="proportional-column-width(35)"/>
 										<fo:table-column column-width="proportional-column-width(97)"/>
@@ -497,7 +497,7 @@
 															<xsl:with-param name="key">doctype_dict.<xsl:value-of select="$doctype"/></xsl:with-param>
 														</xsl:call-template>
 													</fo:block>
-													</fo:table-cell>
+												</fo:table-cell>
 												<fo:table-cell text-align="right">
 													<fo:block font-family="Arial" font-size="16pt">
 														<xsl:value-of select="java:replaceAll(java:java.lang.String.new($docnumber), '^(JIS)(.*)', '$1')"/>
@@ -520,22 +520,22 @@
 									<fo:block font-family="IPAexGothic" font-size="19pt" text-align="center" margin-top="12mm" margin-bottom="4mm"><xsl:value-of select="$title_ja"/></fo:block>
 									<fo:block font-family="Arial" font-size="13pt" text-align="center" margin-bottom="10mm"><xsl:value-of select="$title_en"/></fo:block>
 									
-								</xsl:if>
+								</xsl:if> -->
 								
 								
 								<!-- Annex Commentary first page -->
-								<xsl:if test="$isCommentary = 'true'">
+								<!-- <xsl:if test="$isCommentary = 'true'"> -->
 									
 									<!-- Example: JIS Z 8301：2019  -->
-									<fo:block font-family="IPAexGothic" font-size="15pt" text-align="center">
+									<!-- <fo:block font-family="IPAexGothic" font-size="15pt" text-align="center">
 										<fo:inline font-family="Arial">JIS <xsl:value-of select="$docidentifier_number"/></fo:inline>
 										<fo:inline baseline-shift="10%"><fo:inline font-size="10pt">：</fo:inline>
 										<fo:inline font-family="Times New Roman" font-size="10pt"><xsl:value-of select="$docidentifier_year"/></fo:inline></fo:inline>
-									</fo:block>
+									</fo:block> -->
 
 									<!-- title -->
-									<fo:block role="H1" font-family="IPAexGothic" font-size="16pt" text-align="center" margin-top="6mm"><xsl:value-of select="$title_ja"/></fo:block>
-								</xsl:if>
+									<!-- <fo:block role="H1" font-family="IPAexGothic" font-size="16pt" text-align="center" margin-top="6mm"><xsl:value-of select="$title_ja"/></fo:block> -->
+								<!-- </xsl:if> -->
 								
 								<xsl:apply-templates select="*" mode="page"/>
 								
@@ -731,6 +731,130 @@
 		</fo:page-sequence>
 	</xsl:template> <!-- insertInnerCoverPage -->
 	
+	<xsl:template match="jis:p[@class = 'JapaneseIndustrialStandard']" priority="4">
+		<fo:table table-layout="fixed" width="100%">
+			<fo:table-column column-width="proportional-column-width(36)"/>
+			<fo:table-column column-width="proportional-column-width(92)"/>
+			<fo:table-column column-width="proportional-column-width(36)"/>
+			<fo:table-body>
+				<fo:table-row>
+					<fo:table-cell>
+						<fo:block>&#xa0;</fo:block>
+					</fo:table-cell>
+					<fo:table-cell font-family="IPAexGothic" font-size="14pt" text-align="center">
+						<fo:block><xsl:apply-templates /></fo:block>
+					</fo:table-cell>
+					<fo:table-cell padding-left="5mm">
+						<fo:block font-family="Arial" font-size="16pt">
+							<xsl:apply-templates select="jis:span[@class = 'JIS']">
+								<xsl:with-param name="process">true</xsl:with-param>
+							</xsl:apply-templates>
+						</fo:block>
+					</fo:table-cell>
+				</fo:table-row>
+			</fo:table-body>
+		</fo:table>
+	</xsl:template>
+	
+	<xsl:template match="jis:p[@class = 'StandardNumber']" priority="4">
+		<fo:table table-layout="fixed" width="100%">
+			<fo:table-column column-width="proportional-column-width(36)"/>
+			<fo:table-column column-width="proportional-column-width(92)"/>
+			<fo:table-column column-width="proportional-column-width(36)"/>
+			<fo:table-body>
+				<fo:table-row>
+					<fo:table-cell>
+						<fo:block>&#xa0;</fo:block>
+					</fo:table-cell>
+					<fo:table-cell>
+						<fo:block>&#xa0;</fo:block>
+					</fo:table-cell>
+					<fo:table-cell>
+						<fo:block>
+							<xsl:apply-templates />
+						</fo:block>
+					</fo:table-cell>
+				</fo:table-row>
+			</fo:table-body>
+		</fo:table>
+	</xsl:template>
+	
+	<xsl:template match="jis:p[@class = 'StandardNumber']//text()[not(ancestor::jis:span)]" priority="4">
+		<fo:inline font-family="Arial" font-size="16pt">
+			<xsl:choose>
+				<xsl:when test="contains(., ':')">
+					<xsl:value-of select="substring-before(., ':')"/>
+					<fo:inline baseline-shift="10%" font-size="10pt" font-family="IPAexMincho">：</fo:inline>
+					<xsl:value-of select="substring-after(., ':')"/>
+				</xsl:when>
+				<xsl:otherwise>
+					<xsl:value-of select="."/>
+				</xsl:otherwise>
+			</xsl:choose>
+		</fo:inline>
+	</xsl:template>
+	
+	<xsl:template match="jis:p[@class = 'StandardNumber']/jis:span[@class = 'EffectiveYear']" priority="4">
+		<fo:inline font-size="10pt" baseline-shift="10%">
+			<fo:inline font-family="Times New Roman"><xsl:apply-templates/></fo:inline>
+		</fo:inline>
+	</xsl:template>
+	
+	<xsl:template match="jis:p[@class = 'JapaneseIndustrialStandard']/jis:tab" priority="4"/>
+		<!-- <fo:inline role="SKIP" padding-right="0mm">&#x200B;</fo:inline>
+	</xsl:template> -->
+	<xsl:template match="jis:p[@class = 'JapaneseIndustrialStandard']/jis:span[@class = 'JIS']" priority="4">
+		<xsl:param name="process">false</xsl:param>
+		<xsl:if test="$process = 'true'">
+			<fo:inline font-size="16pt" font-family="Arial"><xsl:apply-templates/></fo:inline>
+		</xsl:if>
+	</xsl:template>
+	
+	<xsl:template match="jis:p[@class = 'zzSTDTitle1']" priority="4">
+		<fo:block font-family="IPAexGothic" font-size="19pt" text-align="center" margin-top="12mm" margin-bottom="4mm">
+			<xsl:apply-templates />
+		</fo:block>
+	</xsl:template>
+	
+	<xsl:template match="jis:p[@class = 'zzSTDTitle2']" priority="4">
+		<fo:block font-family="Arial" font-size="13pt" text-align="center" margin-bottom="10mm">
+			<xsl:apply-templates />
+		</fo:block>
+	</xsl:template>
+	
+	<!-- for commentary annex -->
+	<xsl:template match="jis:p[@class = 'CommentaryStandardNumber']" priority="4">
+		<fo:block font-family="IPAexGothic" font-size="15pt" text-align="center">
+			<xsl:apply-templates/>
+		</fo:block>
+	</xsl:template>
+	
+	<xsl:template match="jis:p[@class = 'CommentaryStandardNumber']//text()[not(ancestor::jis:span)]" priority="4">
+		<fo:inline font-family="Arial">
+			<xsl:choose>
+				<xsl:when test="contains(., ':')">
+					<xsl:value-of select="substring-before(., ':')"/>
+					<fo:inline baseline-shift="10%" font-size="10pt" font-family="IPAexMincho">：</fo:inline>
+					<xsl:value-of select="substring-after(., ':')"/>
+				</xsl:when>
+				<xsl:otherwise>
+					<xsl:value-of select="."/>
+				</xsl:otherwise>
+			</xsl:choose>
+		</fo:inline>
+	</xsl:template>
+	
+	<xsl:template match="jis:p[@class = 'CommentaryStandardNumber']/jis:span[@class = 'CommentaryEffectiveYear']" priority="4">
+		<fo:inline  baseline-shift="10%" font-family="Times New Roman" font-size="10pt"><xsl:apply-templates/></fo:inline>
+	</xsl:template>
+	
+	<xsl:template match="jis:p[@class = 'CommentaryStandardName']" priority="4">
+		<fo:block role="H1" font-family="IPAexGothic" font-size="16pt" text-align="center" margin-top="6mm">
+			<xsl:apply-templates />
+		</fo:block>
+	</xsl:template>
+	
+	
 	<!-- ============================= -->
 	<!-- CONTENTS                      -->
 	<!-- ============================= -->
@@ -873,7 +997,7 @@
 			<xsl:choose>
 				<xsl:when test="@type = 'section-title'">18pt</xsl:when>
 				<xsl:when test="@ancestor = 'foreword' and $level = '1'">14pt</xsl:when>
-				<xsl:when test="@ancestor = 'annex' and $level = '1' and preceding-sibling::*[1][local-name() = 'annex' and @commentary = 'true']">16pt</xsl:when>
+				<xsl:when test="@ancestor = 'annex' and $level = '1' and preceding-sibling::*[local-name() = 'annex'][1][@commentary = 'true']">16pt</xsl:when>
 				<xsl:when test="@ancestor = 'annex' and $level = '1'">14pt</xsl:when>
 				<!-- <xsl:when test="@ancestor = 'foreword' and $level &gt;= '2'">12pt</xsl:when>
 				<xsl:when test=". = 'Executive summary'">18pt</xsl:when>
@@ -911,7 +1035,7 @@
 		<xsl:variable name="margin-top">
 			<xsl:choose>
 				<xsl:when test="@ancestor = 'foreword' and $level = 1">9mm</xsl:when>
-				<xsl:when test="@ancestor = 'annex' and $level = '1' and preceding-sibling::*[1][local-name() = 'annex' and @commentary = 'true']">1mm</xsl:when>
+				<xsl:when test="@ancestor = 'annex' and $level = '1' and preceding-sibling::*[local-name() = 'annex'][1][@commentary = 'true']">1mm</xsl:when>
 				<xsl:when test="$level = 1">6.5mm</xsl:when>
 				<xsl:when test="@ancestor = 'foreword' and $level = 2">0mm</xsl:when>
 				<xsl:when test="@ancestor = 'annex' and $level = 2">4.5mm</xsl:when>
@@ -932,7 +1056,7 @@
 		<xsl:variable name="margin-bottom">
 			<xsl:choose>
 				<xsl:when test="@ancestor = 'foreword' and $level = 1">9mm</xsl:when>
-				<xsl:when test="@ancestor = 'annex' and $level = '1' and preceding-sibling::*[1][local-name() = 'annex' and @commentary = 'true']">7mm</xsl:when>
+				<xsl:when test="@ancestor = 'annex' and $level = '1' and preceding-sibling::*[local-name() = 'annex'][1][@commentary = 'true']">7mm</xsl:when>
 				<xsl:when test="$level = 1 and following-sibling::jis:clause">8pt</xsl:when>
 				<xsl:when test="$level = 1">12pt</xsl:when>
 				<xsl:when test="$level = 2 and following-sibling::jis:clause">8pt</xsl:when>
@@ -1205,7 +1329,7 @@
 		</xsl:if>
 	</xsl:template>
 	
-	<xsl:template match="*[local-name() = 'span'][@class = 'surname' or @class = 'givenname']" mode="update_xml_step1" priority="2">
+	<xsl:template match="*[local-name() = 'span'][@class = 'surname' or @class = 'givenname' or @class = 'JIS' or @class = 'EffectiveYear' or @class = 'CommentaryEffectiveYear']" mode="update_xml_step1" priority="2">
 		<xsl:copy>
 			<xsl:apply-templates select="@* | node()" mode="update_xml_step1"/>
 		</xsl:copy>
@@ -1416,7 +1540,10 @@
 	
 	<xsl:template match="*[local-name() = 'font_en'][normalize-space() != '']">
 		<xsl:if test="ancestor::*[local-name() = 'td' or local-name() = 'th']"><xsl:value-of select="$zero_width_space"/></xsl:if>
-		<fo:inline font-family="Times New Roman">
+		<fo:inline>
+			<xsl:if test="not(ancestor::jis:p[@class = 'zzSTDTitle2']) and not(ancestor::jis:span[@class = 'JIS'])">
+				<xsl:attribute name="font-family">Times New Roman</xsl:attribute>
+			</xsl:if>
 			<xsl:if test="ancestor::*[local-name() = 'preferred']">
 				<xsl:attribute name="font-weight">normal</xsl:attribute>
 			</xsl:if>

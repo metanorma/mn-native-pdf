@@ -1414,12 +1414,9 @@
 						<fo:flow flow-name="xsl-region-body">
 						
 							
-							<fo:block-container>
-								<!-- Information and documentation — Codes for transcription systems -->
-								<!-- <fo:block font-size="16pt" font-weight="bold" margin-bottom="18pt">
-									<xsl:value-of select="$title-en"/>
-								</fo:block>
-								 -->
+							<!-- Information and documentation — Codes for transcription systems -->
+							<!-- <fo:block-container>
+								
 								<fo:block font-size="18pt" font-weight="bold" margin-top="40pt" margin-bottom="20pt" line-height="1.1" role="H1">
 								
 									<fo:block role="SKIP">
@@ -1445,7 +1442,7 @@
 									
 								</fo:block>
 							
-							</fo:block-container>
+							</fo:block-container> -->
 							<!-- Clause(s) -->
 							<fo:block>
 								
@@ -1825,6 +1822,31 @@
 		</xsl:if>
 	</xsl:template>
 	
+	<xsl:template match="iso:sections/iso:p[@class = 'zzSTDTitle1']" priority="4">
+		<fo:block font-size="18pt" font-weight="bold" margin-top="40pt" margin-bottom="20pt" line-height="1.1" role="H1">
+			<xsl:if test="following-sibling::*[1][self::iso:p][starts-with(@class, 'zzSTDTitle')]">
+				<xsl:attribute name="margin-bottom">0pt</xsl:attribute>
+			</xsl:if>
+			<xsl:apply-templates />
+		</fo:block>
+	</xsl:template>
+	
+	<xsl:template match="iso:sections/iso:p[@class = 'zzSTDTitle1']/iso:span[@class = 'nonboldtitle']" priority="3">
+		<!-- Example: <span class="nonboldtitle">Part 1:</span> -->
+		<fo:block font-weight="normal" margin-top="12pt" line-height="1.1" role="SKIP">
+			<xsl:apply-templates />
+		</fo:block>
+	</xsl:template>
+	
+	
+	<xsl:template match="iso:sections/iso:p[@class = 'zzSTDTitle2']" priority="4">
+		<!-- Example: <p class="zzSTDTitle2" displayorder="3">AMENDMENT 1: Mass fraction of extraneous matter, milled rice (nonglutinous), sample dividers and recommendations relating to storage and transport conditions</p> -->
+		<xsl:if test="$doctype = 'amendment'">
+			<fo:block font-size="18pt" margin-top="12pt" margin-bottom="20pt" margin-right="0mm" font-weight="normal" line-height="1.1" role="H1">
+				<xsl:apply-templates />
+			</fo:block>
+		</xsl:if>
+	</xsl:template>
 	
 	<!-- ==================== -->
 	<!-- END display titles   -->

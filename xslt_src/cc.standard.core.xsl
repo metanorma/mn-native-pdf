@@ -248,9 +248,9 @@
 				</fo:static-content>
 				<xsl:call-template name="insertHeaderFooter"/>
 				<fo:flow flow-name="xsl-region-body">
-					<fo:block font-size="16pt" font-weight="bold" margin-bottom="17pt" role="H1">
+					<!-- <fo:block font-size="16pt" font-weight="bold" margin-bottom="17pt" role="H1">
 						<xsl:value-of select="/csd:csd-standard/csd:bibdata/csd:title[@language = 'en']"/>
-					</fo:block>
+					</fo:block> -->
 					<fo:block>
 						<xsl:call-template name="processMainSectionsDefault"/>
 					</fo:block>
@@ -432,6 +432,11 @@
 	<!-- ============================= -->
 	<!-- ============================= -->
 	
+	<xsl:template match="csd:sections/csd:p[@class = 'zzSTDTitle1']" priority="4">
+		<fo:block font-size="16pt" font-weight="bold" margin-bottom="17pt" role="H1">
+			<xsl:apply-templates />
+		</fo:block>
+	</xsl:template>
 	
 	<xsl:template match="csd:title" name="title">
 		

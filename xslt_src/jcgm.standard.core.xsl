@@ -418,12 +418,15 @@
 				
 				<fo:flow flow-name="xsl-region-body" line-height="115%">
 					
-					<fo:block-container>
+					
+					<xsl:if test="count(//*[local-name() = 'bipm-standard']) != 1 ">
+						<!-- <fo:block-container> -->
 						<!-- Show title -->
 						<!-- Example: Evaluation of measurement data — An introduction to the `Guide to the expression of uncertainty in measurement' and related documents -->
 						
 						<xsl:for-each select="//*[local-name() = 'bipm-standard']">
-							<fo:block font-size="20pt" font-weight="bold" margin-bottom="20pt" space-before="36pt" line-height="1.1">
+						
+							<!-- <fo:block font-size="20pt" font-weight="bold" margin-bottom="20pt" space-before="36pt" line-height="1.1">
 								<xsl:variable name="curr_lang" select="*[local-name()='bibdata']/*[local-name()='language'][@current = 'true']"/>
 								
 								<xsl:variable name="title-main">
@@ -451,10 +454,13 @@
 									<fo:block margin-top="12pt"><xsl:copy-of select="$edition"/></fo:block>
 								</xsl:if>
 								
-							</fo:block>
+							</fo:block> -->
+							
+							<xsl:apply-templates select="jcgmsections/jcgm:p[starts-with(@class, 'zzSTDTitle')]"/>
+							
 						</xsl:for-each>
-					
-					</fo:block-container>
+						<!-- </fo:block-container> -->
+					</xsl:if>
 					<!-- Clause(s) -->
 					<fo:block>
 						<xsl:choose>
@@ -603,6 +609,32 @@
 					<xsl:with-param name="key">Page.sg</xsl:with-param>
 				</xsl:call-template>
 			</fo:inline>
+		</fo:block>
+	</xsl:template>
+
+	<xsl:template match="jcgm:sections/jcgm:p[@class = 'zzSTDTitle1']" priority="4">
+		<fo:block font-size="20pt" font-weight="bold" margin-bottom="20pt" space-before="36pt" line-height="1.1" role="H1">
+			<xsl:if test="following-sibling::*[1][self::jcgm:p][starts-with(@class, 'zzSTDTitle')]">
+				<xsl:attribute name="margin-bottom">0</xsl:attribute>
+			</xsl:if>
+			<xsl:apply-templates />
+		</fo:block>
+		<xsl:variable name="curr_lang" select="ancestor::jcgm:bipm-standard/*[local-name()='bibdata']/*[local-name()='language'][@current = 'true']"/>
+		<xsl:variable name="edition">
+			<xsl:apply-templates select="ancestor::jcgm:bipm-standard/*[local-name() = 'bibdata']/*[local-name() = 'edition'][normalize-space(@language) = '']">
+				<xsl:with-param name="curr_lang" select="$curr_lang"/>
+			</xsl:apply-templates>
+		</xsl:variable>
+		<xsl:if test="normalize-space($edition) != ''">
+			<fo:block font-size="20pt" font-weight="bold" margin-top="12pt" margin-bottom="20pt" line-height="1.1">
+				<xsl:copy-of select="$edition"/>
+			</fo:block>
+		</xsl:if>
+	</xsl:template>
+	
+	<xsl:template match="jcgm:sections/jcgm:p[@class = 'zzSTDTitle2']" priority="4">
+		<fo:block font-size="20pt" font-weight="bold" margin-top="12pt" margin-bottom="20pt" line-height="1.1">
+			<xsl:apply-templates />
 		</fo:block>
 	</xsl:template>
 
