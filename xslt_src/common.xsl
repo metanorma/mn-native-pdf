@@ -17744,7 +17744,7 @@
 							<xsl:for-each select="(//*[contains(local-name(), '-standard')])[1]/*[local-name() = 'bibdata']">
 								<xsl:choose>
 									<xsl:when test="$namespace = 'jcgm'">
-										<xsl:value-of select="*[local-name() = 'title'][@language = $lang and @type = 'part']"/>
+										<xsl:value-of select="*[local-name() = 'title'][@language = $lang and @type = 'title-part']"/>
 									</xsl:when>
 									<xsl:when test="$namespace = 'ieee'">
 										<xsl:value-of select="$title_prefix"/>
@@ -17802,7 +17802,7 @@
 						<xsl:variable name="abstract">
 							<xsl:choose>
 								<xsl:when test="$namespace = 'jcgm'">
-									<xsl:value-of select="//*[contains(local-name(), '-standard')]/*[local-name() = 'bibdata']/*[local-name() = 'title'][@language = $lang and @type = 'main']"/>
+									<xsl:value-of select="//*[contains(local-name(), '-standard')]/*[local-name() = 'bibdata']/*[local-name() = 'title'][@language = $lang and @type = 'title-main']"/>
 								</xsl:when>
 								<xsl:otherwise>
 									<xsl:copy-of select="//*[contains(local-name(), '-standard')]/*[local-name() = 'preface']/*[local-name() = 'abstract']//text()[not(ancestor::*[local-name() = 'title'])]"/>									
