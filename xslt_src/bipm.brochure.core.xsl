@@ -45,7 +45,7 @@
 						<xsl:for-each select="//bipm:bipm-standard">
 							<xsl:variable name="lang" select="*[local-name()='bibdata']/*[local-name()='language'][@current = 'true']"/>
 							<xsl:variable name="num"><xsl:number level="any" count="bipm:bipm-standard"/></xsl:variable>
-							<xsl:variable name="title-part"><xsl:value-of select="bipm:bibdata/bipm:title[@type = 'part']"/></xsl:variable>
+							<xsl:variable name="title-part"><xsl:value-of select="bipm:bibdata/bipm:title[@type = 'title-part']"/></xsl:variable>
 							<xsl:variable name="current_document">
 								<xsl:copy-of select="."/>
 							</xsl:variable>				
@@ -1029,7 +1029,7 @@
 						
 						<fo:block-container font-size="18pt" font-weight="bold" text-align="center">
 							<fo:block role="H1">						
-								<xsl:value-of select="//bipm:bipm-standard/bipm:bibdata/bipm:title[@language = $curr_lang and @type='cover']"/>
+								<xsl:value-of select="//bipm:bipm-standard/bipm:bibdata/bipm:title[@language = $curr_lang and @type='title-cover']"/>
 							</fo:block>	
 						</fo:block-container>
 						
@@ -1124,7 +1124,7 @@
 						<fo:block-container margin-left="-14mm"  margin-right="0mm">
 							<fo:block-container margin-left="0mm" margin-right="0mm">							
 								<fo:block font-family="Arial" font-size="16pt" font-weight="bold" text-align-last="justify" margin-bottom="82pt" role="H1">
-									<fo:inline><xsl:value-of select="//bipm:bipm-standard/bipm:bibdata/bipm:title[@language = $curr_lang and @type='main']"/></fo:inline>
+									<fo:inline><xsl:value-of select="//bipm:bipm-standard/bipm:bibdata/bipm:title[@language = $curr_lang and @type='title-main']"/></fo:inline>
 									<fo:inline keep-together.within-line="always">
 										<fo:leader leader-pattern="space"/>
 										<fo:inline>
@@ -1271,13 +1271,13 @@
 								
 								<xsl:choose>
 									<xsl:when test="$independentAppendix != ''">
-										<xsl:apply-templates select="//bipm:bipm-standard/bipm:bibdata/bipm:title[@language = $curr_lang and @type='appendix']" mode="title"/>
+										<xsl:apply-templates select="//bipm:bipm-standard/bipm:bibdata/bipm:title[@language = $curr_lang and @type='title-appendix']" mode="title"/>
 										<fo:block>
-											<xsl:apply-templates select="//bipm:bipm-standard/bipm:bibdata/bipm:title[@language = $curr_lang and @type='annex']" mode="title"/>
+											<xsl:apply-templates select="//bipm:bipm-standard/bipm:bibdata/bipm:title[@language = $curr_lang and @type='title-annex']" mode="title"/>
 										</fo:block>
 									</xsl:when>
 									<xsl:otherwise> <!-- doctype = 'guide' -->
-										<xsl:apply-templates select="//bipm:bipm-standard/bipm:bibdata/bipm:title[@language = $curr_lang and @type='main']" mode="title"/>
+										<xsl:apply-templates select="//bipm:bipm-standard/bipm:bibdata/bipm:title[@language = $curr_lang and @type='title-main']" mode="title"/>
 									</xsl:otherwise>
 								</xsl:choose>
 								
@@ -1286,7 +1286,7 @@
 							
 							
 							<!-- <xsl:variable name="part_num" select="normalize-space(/bipm:bipm-standard/bipm:bibdata/bipm:ext/bipm:structuredidentifier/bipm:part)"/> -->
-							<xsl:if test="/bipm:bipm-standard/bipm:bibdata/bipm:title[@language = $curr_lang and @type = 'part-with-numbering']">
+							<xsl:if test="/bipm:bipm-standard/bipm:bibdata/bipm:title[@language = $curr_lang and @type = 'title-part-with-numbering']">
 								<fo:block role="H2">
 									<!-- <xsl:if test="$part_num != ''">
 										<xsl:call-template name="getLocalizedString">
@@ -1297,17 +1297,17 @@
 										<xsl:value-of select="$part_num"/>
 									</xsl:if>
 									<xsl:text>: </xsl:text> -->
-									<xsl:apply-templates select="/bipm:bipm-standard/bipm:bibdata/bipm:title[@language = $curr_lang and @type = 'part-with-numbering']" mode="title"/>
+									<xsl:apply-templates select="/bipm:bipm-standard/bipm:bibdata/bipm:title[@language = $curr_lang and @type = 'title-part-with-numbering']" mode="title"/>
 								</fo:block>
 							</xsl:if>
 							<!-- <xsl:variable name="subpart_num" select="normalize-space(/bipm:bipm-standard/bipm:bibdata/bipm:ext/bipm:structuredidentifier/bipm:subpart)"/> -->
-							<xsl:if test="/bipm:bipm-standard/bipm:bibdata/bipm:title[@language = $curr_lang and @type = 'subpart-with-numbering']">
+							<xsl:if test="/bipm:bipm-standard/bipm:bibdata/bipm:title[@language = $curr_lang and @type = 'title-subpart-with-numbering']">
 								<fo:block role="H3">
 									<!-- <xsl:if test="$subpart_num != ''">
 										<xsl:value-of select="java:replaceAll(java:java.lang.String.new($titles/title-subpart[@lang=$curr_lang]),'#',$subpart_num)"/>
 									</xsl:if>
 									<xsl:text>: </xsl:text> -->
-									<xsl:apply-templates select="/bipm:bipm-standard/bipm:bibdata/bipm:title[@language = $curr_lang and @type = 'subpart-with-numbering']" mode="title"/>
+									<xsl:apply-templates select="/bipm:bipm-standard/bipm:bibdata/bipm:title[@language = $curr_lang and @type = 'title-subpart-with-numbering']" mode="title"/>
 								</fo:block>
 							</xsl:if>
 							
@@ -1427,7 +1427,7 @@
 						<xsl:for-each select="xalan:nodeset($languages)/lang">
 							<xsl:variable name="title_num" select="position()"/>							
 							<xsl:variable name="curr_lang" select="."/>
-							<xsl:variable name="title-cover" select="xalan:nodeset($titles)//bipm:title[@language = $curr_lang and @type='main']"/>							
+							<xsl:variable name="title-cover" select="xalan:nodeset($titles)//bipm:title[@language = $curr_lang and @type='title-main']"/>							
 							<xsl:variable name="title-cover_" select="java:replaceAll(java:java.lang.String.new($title-cover),'( (of )| (and )| (or ))','#$2')"/>
 							<xsl:variable name="titleParts">
 								<xsl:call-template name="splitTitle">
@@ -1487,8 +1487,8 @@
 				
 				<fo:block-container absolute-position="fixed" left="12.5mm" top="60mm">
 					
-					<fo:block font-size="22.2pt" font-weight="{$weight-normal}" role="H1"><xsl:value-of select="(//bipm:bipm-standard)[1]/bipm:bibdata/bipm:title[@language = 'fr' and @type = 'main']"/></fo:block>
-					<fo:block font-size="22.2pt" font-weight="{$weight-bold}" margin-top="1mm" role="H1"><xsl:value-of select="(//bipm:bipm-standard)[1]/bipm:bibdata/bipm:title[@language = 'en' and @type = 'main']"/></fo:block>
+					<fo:block font-size="22.2pt" font-weight="{$weight-normal}" role="H1"><xsl:value-of select="(//bipm:bipm-standard)[1]/bipm:bibdata/bipm:title[@language = 'fr' and @type = 'title-main']"/></fo:block>
+					<fo:block font-size="22.2pt" font-weight="{$weight-bold}" margin-top="1mm" role="H1"><xsl:value-of select="(//bipm:bipm-standard)[1]/bipm:bibdata/bipm:title[@language = 'en' and @type = 'title-main']"/></fo:block>
 					
 					<xsl:variable name="edition_str">édition</xsl:variable>
 						
@@ -1499,28 +1499,28 @@
 					<fo:block role="H1">
 					
 						<xsl:variable name="title_appendix_fr">
-							<xsl:apply-templates select="(//bipm:bipm-standard)[1]/bipm:bibdata/bipm:title[@language = 'fr' and @type = 'appendix']" mode="title"/>
+							<xsl:apply-templates select="(//bipm:bipm-standard)[1]/bipm:bibdata/bipm:title[@language = 'fr' and @type = 'title-appendix']" mode="title"/>
 						</xsl:variable>
 						<xsl:variable name="title_appendix_en">
-							<xsl:apply-templates select="(//bipm:bipm-standard)[1]/bipm:bibdata/bipm:title[@language = 'en' and @type = 'appendix']" mode="title"/>
+							<xsl:apply-templates select="(//bipm:bipm-standard)[1]/bipm:bibdata/bipm:title[@language = 'en' and @type = 'title-appendix']" mode="title"/>
 						</xsl:variable>
 						<xsl:variable name="title_annex_fr">
-							<xsl:apply-templates select="(//bipm:bipm-standard)[1]/bipm:bibdata/bipm:title[@language = 'fr' and @type = 'annex']" mode="title"/>
+							<xsl:apply-templates select="(//bipm:bipm-standard)[1]/bipm:bibdata/bipm:title[@language = 'fr' and @type = 'title-annex']" mode="title"/>
 						</xsl:variable>
 						<xsl:variable name="title_annex_en">
-							<xsl:apply-templates select="(//bipm:bipm-standard)[1]/bipm:bibdata/bipm:title[@language = 'en' and @type = 'annex']" mode="title"/>
+							<xsl:apply-templates select="(//bipm:bipm-standard)[1]/bipm:bibdata/bipm:title[@language = 'en' and @type = 'title-annex']" mode="title"/>
 						</xsl:variable>
 						<xsl:variable name="title_part_fr">
-							<xsl:apply-templates select="(//bipm:bipm-standard)[1]/bipm:bibdata/bipm:title[@language = 'fr' and @type = 'part']" mode="title"/>
+							<xsl:apply-templates select="(//bipm:bipm-standard)[1]/bipm:bibdata/bipm:title[@language = 'fr' and @type = 'title-part']" mode="title"/>
 						</xsl:variable>
 						<xsl:variable name="title_part_en">
-							<xsl:apply-templates select="(//bipm:bipm-standard)[1]/bipm:bibdata/bipm:title[@language = 'en' and @type = 'part']" mode="title"/>
+							<xsl:apply-templates select="(//bipm:bipm-standard)[1]/bipm:bibdata/bipm:title[@language = 'en' and @type = 'title-part']" mode="title"/>
 						</xsl:variable>
 						<xsl:variable name="title_subpart_fr">
-							<xsl:apply-templates select="(//bipm:bipm-standard)[1]/bipm:bibdata/bipm:title[@language = 'fr' and @type = 'subpart']" mode="title"/>
+							<xsl:apply-templates select="(//bipm:bipm-standard)[1]/bipm:bibdata/bipm:title[@language = 'fr' and @type = 'title-subpart']" mode="title"/>
 						</xsl:variable>
 						<xsl:variable name="title_subpart_en">
-							<xsl:apply-templates select="(//bipm:bipm-standard)[1]/bipm:bibdata/bipm:title[@language = 'en' and @type = 'subpart']" mode="title"/>
+							<xsl:apply-templates select="(//bipm:bipm-standard)[1]/bipm:bibdata/bipm:title[@language = 'en' and @type = 'title-subpart']" mode="title"/>
 						</xsl:variable>
 						
 						<xsl:variable name="titles_length" select="string-length($title_appendix_fr) + 
@@ -1567,7 +1567,7 @@
 						</xsl:if>
 
 
-						<xsl:if test="(//bipm:bipm-standard)[1]/bipm:bibdata/bipm:title[@type = 'appendix']">
+						<xsl:if test="(//bipm:bipm-standard)[1]/bipm:bibdata/bipm:title[@type = 'title-appendix']">
 							<fo:block font-size="{$font-size-factor * 30.4}pt">
 								<fo:block font-size="{$space-factor * 30.4}pt">&#xA0;</fo:block>
 								<fo:block font-weight="{$weight-normal}"><xsl:copy-of select="$title_appendix_fr"/></fo:block>
@@ -1580,7 +1580,7 @@
 						<!-- End Appendix titles processing -->
 						
 						<!-- Annex title processing -->
-						<xsl:if test="(//bipm:bipm-standard)[1]/bipm:bibdata/bipm:title[@type = 'annex']">
+						<xsl:if test="(//bipm:bipm-standard)[1]/bipm:bibdata/bipm:title[@type = 'title-annex']">
 							<xsl:variable name="annex_num" select="normalize-space((//bipm:bipm-standard)[1]/bipm:bibdata/bipm:ext/bipm:structuredidentifier/bipm:annexid)"/>					
 							<xsl:if test="$annex_num != ''">
 								<fo:block font-size="{$space-factor * 30.4}pt">&#xA0;</fo:block>
@@ -1608,7 +1608,7 @@
 						<!-- End Annex titles  processing -->
 						
 						<!--  Part titles processing -->
-						<xsl:if test="(//bipm:bipm-standard)[1]/bipm:bibdata/bipm:title[@type = 'part']">
+						<xsl:if test="(//bipm:bipm-standard)[1]/bipm:bibdata/bipm:title[@type = 'title-part']">
 							<xsl:variable name="part_num" select="normalize-space((//bipm:bipm-standard)[1]/bipm:bibdata/bipm:ext/bipm:structuredidentifier/bipm:part)"/>					
 							<xsl:if test="$part_num != ''">
 								<fo:block font-size="{$space-factor * 30.4}pt">&#xA0;</fo:block>
@@ -1640,7 +1640,7 @@
 						<!-- End Part titles  processing -->
 						
 						<!-- Sub-part titles  processing -->
-						<xsl:if test="(//bipm:bipm-standard)[1]/bipm:bibdata/bipm:title[@type = 'subpart']">
+						<xsl:if test="(//bipm:bipm-standard)[1]/bipm:bibdata/bipm:title[@type = 'title-subpart']">
 							<xsl:variable name="subpart_num" select="normalize-space((//bipm:bipm-standard)[1]/bipm:bibdata/bipm:ext/bipm:structuredidentifier/bipm:subpart)"/>
 							<xsl:if test="$subpart_num != ''">
 								<fo:block font-size="{$space-factor * 30.4}pt">&#xA0;</fo:block>
@@ -1733,7 +1733,7 @@
 	
 	<xsl:template name="insertInnerCoverPage">
 		
-		<xsl:if test="(//bipm:bipm-standard)[1]/bipm:bibdata/bipm:title[@type='cover']">
+		<xsl:if test="(//bipm:bipm-standard)[1]/bipm:bibdata/bipm:title[@type='title-cover']">
 	
 			<fo:page-sequence master-reference="title-page" format="1" initial-page-number="1" force-page-count="even">
 				
@@ -1753,7 +1753,7 @@
 				
 					<xsl:for-each select="xalan:nodeset($languages)/lang">
 						<xsl:variable name="curr_lang" select="."/>
-						<xsl:variable name="title" select="xalan:nodeset($titles)//bipm:title[@language = $curr_lang and @type='cover']"/>
+						<xsl:variable name="title" select="xalan:nodeset($titles)//bipm:title[@language = $curr_lang and @type='title-cover']"/>
 						<xsl:choose>
 							<xsl:when test="position() = 1">				
 								<fo:block-container font-size="12pt" font-weight="bold" width="55mm">
