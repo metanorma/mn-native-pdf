@@ -260,13 +260,13 @@
 							<xsl:value-of select="(//jcgm:bipm-standard)[1]/jcgm:bibdata/jcgm:copyright/jcgm:from"/>
 						</fo:block>
 						<fo:block font-size="13pt" font-weight="normal" space-after="19.5mm">
-							<xsl:value-of select="(//jcgm:bipm-standard)[1]/jcgm:bibdata/jcgm:title[@type = 'provenance']"/>
+							<xsl:value-of select="(//jcgm:bipm-standard)[1]/jcgm:bibdata/jcgm:title[@type = 'title-provenance']"/>
 						</fo:block>
 						<fo:block border-bottom="1pt solid black">&#xa0;</fo:block>
 						<fo:block font-size="16.5pt" margin-left="-0.5mm"  padding-top="3.5mm" space-after="7mm" margin-right="7mm" line-height="105%" role="H1">
-							<xsl:apply-templates select="(//jcgm:bipm-standard)[1]/jcgm:bibdata/jcgm:title[@language = $lang and @type = 'main']" mode="title"/>
+							<xsl:apply-templates select="(//jcgm:bipm-standard)[1]/jcgm:bibdata/jcgm:title[@language = $lang and @type = 'title-main']" mode="title"/>
 							<xsl:variable name="title_part">
-								<xsl:apply-templates select="(//jcgm:bipm-standard)[1]/jcgm:bibdata/jcgm:title[@language = $lang and @type = 'part']" mode="title"/>
+								<xsl:apply-templates select="(//jcgm:bipm-standard)[1]/jcgm:bibdata/jcgm:title[@language = $lang and @type = 'title-part']" mode="title"/>
 							</xsl:variable>
 							<xsl:if test="normalize-space($title_part) != ''">
 								<xsl:text> — </xsl:text>
@@ -275,9 +275,9 @@
 						</fo:block>
 						<fo:block font-size="12pt" font-style="italic" line-height="140%" role="H1">
 							<xsl:variable name="secondLang" select="(//jcgm:bipm-standard)[1]/jcgm:bibdata/jcgm:title/@language[. != $lang]"/>
-							<xsl:apply-templates select="(//jcgm:bipm-standard)[1]/jcgm:bibdata/jcgm:title[@language = $secondLang and @type = 'main']" mode="title"/>
+							<xsl:apply-templates select="(//jcgm:bipm-standard)[1]/jcgm:bibdata/jcgm:title[@language = $secondLang and @type = 'title-main']" mode="title"/>
 							<xsl:variable name="title_part">
-								<xsl:apply-templates select="(//jcgm:bipm-standard)[1]/jcgm:bibdata/jcgm:title[@language = $secondLang and @type = 'part']" mode="title"/>
+								<xsl:apply-templates select="(//jcgm:bipm-standard)[1]/jcgm:bibdata/jcgm:title[@language = $secondLang and @type = 'title-part']" mode="title"/>
 							</xsl:variable>
 							<xsl:if test="normalize-space($title_part) != ''">
 								<xsl:text> — </xsl:text>
@@ -314,9 +314,9 @@
 						</fo:table-body>
 					</fo:table>
 					<fo:block font-size="18pt" space-before="70mm" role="H1">
-						<xsl:apply-templates select="(//jcgm:bipm-standard)[1]/jcgm:bibdata/jcgm:title[@language = $lang and @type = 'main']" mode="title"/>
+						<xsl:apply-templates select="(//jcgm:bipm-standard)[1]/jcgm:bibdata/jcgm:title[@language = $lang and @type = 'title-main']" mode="title"/>
 						<xsl:variable name="title_part">
-							<xsl:apply-templates select="(//jcgm:bipm-standard)[1]/jcgm:bibdata/jcgm:title[@language = $lang and @type = 'part']" mode="title"/>
+							<xsl:apply-templates select="(//jcgm:bipm-standard)[1]/jcgm:bibdata/jcgm:title[@language = $lang and @type = 'title-part']" mode="title"/>
 						</xsl:variable>
 						<xsl:if test="normalize-space($title_part) != ''">
 							<xsl:text> — </xsl:text>
@@ -325,9 +325,9 @@
 					</fo:block>
 					<fo:block font-size="13pt" space-before="35mm" role="H1">
 						<xsl:variable name="secondLang" select="(//jcgm:bipm-standard)[1]/jcgm:bibdata/jcgm:title/@language[. != $lang]"/>
-						<xsl:apply-templates select="(//jcgm:bipm-standard)[1]/jcgm:bibdata/jcgm:title[@language = $secondLang and @type = 'main']" mode="title"/>
+						<xsl:apply-templates select="(//jcgm:bipm-standard)[1]/jcgm:bibdata/jcgm:title[@language = $secondLang and @type = 'title-main']" mode="title"/>
 						<xsl:variable name="title_part">
-							<xsl:apply-templates select="(//jcgm:bipm-standard)[1]/jcgm:bibdata/jcgm:title[@language = $secondLang and @type = 'part']" mode="title"/>
+							<xsl:apply-templates select="(//jcgm:bipm-standard)[1]/jcgm:bibdata/jcgm:title[@language = $secondLang and @type = 'title-part']" mode="title"/>
 						</xsl:variable>
 						<xsl:if test="normalize-space($title_part) != ''">
 							<xsl:text> — </xsl:text>
