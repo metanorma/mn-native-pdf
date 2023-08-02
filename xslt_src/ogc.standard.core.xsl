@@ -1215,7 +1215,7 @@
 	</xsl:template>
 	
 	
-	<xsl:template match="*[local-name()='th']//text()" priority="2">		
+	<xsl:template match="*[local-name()='th']//text()[not(ancestor::ogc:fn)]" priority="2">		
 		<xsl:variable name="text">
 			<xsl:call-template name="add-zero-spaces-java"/>
 		</xsl:variable>
