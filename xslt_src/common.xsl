@@ -12009,47 +12009,67 @@
 						<xsl:otherwise>
 							<fo:external-graphic src="{$src}" fox:alt-text="Image {@alt}" xsl:use-attribute-sets="image-graphic-style">
 								<xsl:if test="not(@mimetype = 'image/svg+xml') and ../*[local-name() = 'name'] and not(ancestor::*[local-name() = 'table'])">
-										
-									<xsl:variable name="img_src">
-										<xsl:choose>
-											<xsl:when test="not(starts-with(@src, 'data:'))"><xsl:value-of select="concat($basepath, @src)"/></xsl:when>
-											<xsl:otherwise><xsl:value-of select="@src"/></xsl:otherwise>
-										</xsl:choose>
-									</xsl:variable>
 									
-									<xsl:variable name="image_width_effective">
-										<xsl:choose>
-											<xsl:when test="$namespace = 'bsi'">
+									<xsl:if test="@width != '' and @width != 'auto'">
+										<xsl:attribute name="width">
+											<xsl:value-of select="@width"/>
+										</xsl:attribute>
+									</xsl:if>
+									
+									<xsl:if test="@height != '' and @height != 'auto'">
+										<xsl:attribute name="height">
+											<xsl:value-of select="@height"/>
+										</xsl:attribute>
+									</xsl:if>
+									
+									<xsl:choose>
+										<xsl:when test="@width != '' and @width != 'auto' and @height != '' and @height != 'auto'">
+											<xsl:attribute name="scaling">non-uniform</xsl:attribute>
+										</xsl:when>
+										<xsl:otherwise>
+										
+											<xsl:variable name="img_src">
 												<xsl:choose>
-													<xsl:when test="$document_type = 'PAS'"><xsl:value-of select="$width_effective"/></xsl:when>
-													<xsl:otherwise><!-- BSI -->
+													<xsl:when test="not(starts-with(@src, 'data:'))"><xsl:value-of select="concat($basepath, @src)"/></xsl:when>
+													<xsl:otherwise><xsl:value-of select="@src"/></xsl:otherwise>
+												</xsl:choose>
+											</xsl:variable>
+											
+											<xsl:variable name="image_width_effective">
+												<xsl:choose>
+													<xsl:when test="$namespace = 'bsi'">
 														<xsl:choose>
-															<xsl:when test="../@width = 'full-page-width'"><xsl:value-of select="$width_effective - $image_border_padding * 2"/></xsl:when>
-															<xsl:otherwise><xsl:value-of select="$width_effective - $body_margin_left - $image_border_padding * 2"/></xsl:otherwise>
+															<xsl:when test="$document_type = 'PAS'"><xsl:value-of select="$width_effective"/></xsl:when>
+															<xsl:otherwise><!-- BSI -->
+																<xsl:choose>
+																	<xsl:when test="../@width = 'full-page-width'"><xsl:value-of select="$width_effective - $image_border_padding * 2"/></xsl:when>
+																	<xsl:otherwise><xsl:value-of select="$width_effective - $body_margin_left - $image_border_padding * 2"/></xsl:otherwise>
+																</xsl:choose>
+															</xsl:otherwise>
 														</xsl:choose>
+													</xsl:when>
+													<xsl:otherwise>
+														<xsl:value-of select="$width_effective"/>
 													</xsl:otherwise>
 												</xsl:choose>
-											</xsl:when>
-											<xsl:otherwise>
-												<xsl:value-of select="$width_effective"/>
-											</xsl:otherwise>
-										</xsl:choose>
-									</xsl:variable>
-									
-									<xsl:variable name="scale" select="java:org.metanorma.fop.Util.getImageScale($img_src, $image_width_effective, $height_effective)"/>
-									<xsl:if test="number($scale) &lt; 100">
-										<xsl:choose>
-											<xsl:when test="$namespace = 'unece'">
-												<xsl:attribute name="content-width"><xsl:value-of select="$scale * 0.985"/>%</xsl:attribute><!-- 0.985 due border around image -->
-											</xsl:when>
-											<xsl:otherwise>
-												<xsl:attribute name="content-width"><xsl:value-of select="$scale"/>%</xsl:attribute>
-											</xsl:otherwise>
-										</xsl:choose>
-									</xsl:if>
+											</xsl:variable>
+											
+											<xsl:variable name="scale" select="java:org.metanorma.fop.Util.getImageScale($img_src, $image_width_effective, $height_effective)"/>
+											<xsl:if test="number($scale) &lt; 100">
+												<xsl:choose>
+													<xsl:when test="$namespace = 'unece'">
+														<xsl:attribute name="content-width"><xsl:value-of select="$scale * 0.985"/>%</xsl:attribute><!-- 0.985 due border around image -->
+													</xsl:when>
+													<xsl:otherwise>
+														<xsl:attribute name="content-width"><xsl:value-of select="$scale"/>%</xsl:attribute>
+													</xsl:otherwise>
+												</xsl:choose>
+											</xsl:if>
+										</xsl:otherwise>
+									</xsl:choose>
 								
 								</xsl:if>
-							
+								
 							</fo:external-graphic>
 						</xsl:otherwise>
 					</xsl:choose>
