@@ -1557,6 +1557,7 @@
 		</xsl:if>
 		<xsl:if test="$namespace = 'jis'">
 			<xsl:attribute name="font-size">9pt</xsl:attribute>
+			<xsl:attribute name="margin-bottom">8pt</xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'm3d'">
 			
@@ -2902,6 +2903,11 @@
 			<xsl:attribute name="font-size">9pt</xsl:attribute>
 			<xsl:attribute name="margin-bottom">6pt</xsl:attribute>
 		</xsl:if>
+		<xsl:if test="$namespace = 'jis'">
+			<xsl:attribute name="font-size">inherit</xsl:attribute>
+			<xsl:attribute name="margin-bottom">1pt</xsl:attribute>
+			<xsl:attribute name="margin-left"><xsl:value-of select="$text_indent"/></xsl:attribute>
+		</xsl:if>
 		<xsl:if test="$namespace = 'rsd'">
 			<xsl:attribute name="font-size">8pt</xsl:attribute>					
 		</xsl:if>
@@ -2914,7 +2920,6 @@
 				<xsl:attribute name="margin-bottom">12pt</xsl:attribute>
 			</xsl:if>
 		</xsl:if>
-		
 		<xsl:if test="$namespace = 'bsi'">
 			<xsl:if test="$document_type = 'PAS'">
 				<xsl:attribute name="font-size">inherit</xsl:attribute>
@@ -2968,7 +2973,7 @@
 		</xsl:if>
 		<xsl:if test="$namespace = 'jis'">
 			<xsl:attribute name="font-size">inherit</xsl:attribute>
-			<xsl:attribute name="margin-bottom">0pt</xsl:attribute>
+			<xsl:attribute name="margin-bottom">1pt</xsl:attribute>
 		</xsl:if>
 	</xsl:attribute-set> <!-- table-fn-style -->
 	
@@ -3014,7 +3019,7 @@
 			<xsl:attribute name="font-size">67%</xsl:attribute>
 			<xsl:attribute name="font-weight">bold</xsl:attribute>
 			<xsl:attribute name="vertical-align">super</xsl:attribute>
-			<xsl:attribute name="padding-right">3mm</xsl:attribute>
+			<xsl:attribute name="padding-right">0mm</xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'm3d'">
 			<xsl:attribute name="baseline-shift">30%</xsl:attribute>
@@ -8085,29 +8090,48 @@
 
 	
 	<xsl:template match="*[local-name()='table']/*[local-name()='note' or local-name() = 'example']" priority="2">
+		<xsl:choose>
+			<xsl:when test="$namespace = 'jis'">
+				<fo:list-block id="{@id}" xsl:use-attribute-sets="table-note-style" provisional-distance-between-starts="{9 + $text_indent}mm"> <!-- 12 -->
+					<fo:list-item>
+						<fo:list-item-label start-indent="{$text_indent}mm" end-indent="label-end()">
+							<fo:block>
+								<xsl:apply-templates select="*[local-name() = 'name']" />
+							</fo:block>
+						</fo:list-item-label>
+						<fo:list-item-body start-indent="body-start()" xsl:use-attribute-sets="table-fn-body-style">
+							<fo:block>
+								<xsl:apply-templates select="node()[not(local-name() = 'name')]" />
+							</fo:block>
+						</fo:list-item-body>
+					</fo:list-item>
+				</fo:list-block>
+				<!-- jis -->
+			</xsl:when>
+			<xsl:otherwise>
+				<fo:block xsl:use-attribute-sets="table-note-style">
 
-		<fo:block xsl:use-attribute-sets="table-note-style">
+					<xsl:call-template name="refine_table-note-style"/>
 
-			<xsl:call-template name="refine_table-note-style"/>
-
-			<!-- Table's note/example name (NOTE, for example) -->
-			<fo:inline xsl:use-attribute-sets="table-note-name-style">
-				
-				<xsl:call-template name="refine_table-note-name-style"/>
-				
-				<xsl:apply-templates select="*[local-name() = 'name']" />
-				
-			</fo:inline>
-			
-			<xsl:if test="$namespace = 'bipm'">
-				<xsl:if test="ancestor::bipm:preface">
-					<fo:block>&#xA0;</fo:block>
-				</xsl:if>
-			</xsl:if>
-			
-			<xsl:apply-templates select="node()[not(local-name() = 'name')]" />
-		</fo:block>
-		
+					<!-- Table's note/example name (NOTE, for example) -->
+					<fo:inline xsl:use-attribute-sets="table-note-name-style">
+						
+						<xsl:call-template name="refine_table-note-name-style"/>
+						
+						<xsl:apply-templates select="*[local-name() = 'name']" />
+						
+					</fo:inline>
+					
+					<xsl:if test="$namespace = 'bipm'">
+						<xsl:if test="ancestor::bipm:preface">
+							<fo:block>&#xA0;</fo:block>
+						</xsl:if>
+					</xsl:if>
+					
+					<xsl:apply-templates select="node()[not(local-name() = 'name')]" />
+				</fo:block>
+			</xsl:otherwise>
+		</xsl:choose>
 	</xsl:template> <!-- table/note -->
 	
 	
@@ -8371,7 +8395,7 @@
 					</xsl:when>
 					
 					<xsl:when test="$namespace = 'jis'">
-						<fo:list-block id="{@id}" xsl:use-attribute-sets="table-fn-style" provisional-distance-between-starts="{12 + $text_indent}mm">
+						<fo:list-block id="{@id}" xsl:use-attribute-sets="table-fn-style" provisional-distance-between-starts="{9 + $text_indent}mm"> <!-- 12 -->
 							<fo:list-item>
 								<fo:list-item-label start-indent="{$text_indent}mm" end-indent="label-end()">
 									<fo:block>
@@ -8387,7 +8411,7 @@
 										</fo:inline>
 									</fo:block>
 								</fo:list-item-label>
-								<fo:list-item-body start-indent="body-start()" xsl:use-attribute-sets="table-fn-body-style">>
+								<fo:list-item-body start-indent="body-start()" xsl:use-attribute-sets="table-fn-body-style">
 									<fo:block>
 										<xsl:copy-of select="./node()"/>
 									</fo:block>
