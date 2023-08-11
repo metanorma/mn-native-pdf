@@ -7673,6 +7673,9 @@
 								<!-- except gb and bsi  -->
 								<xsl:choose>
 									<xsl:when test="$namespace = 'gb' or $namespace = 'bsi'"></xsl:when>
+									<xsl:when test="$namespace = 'jis'">
+										<xsl:apply-templates select="../*[local-name()='p' or local-name()='dl' or local-name()='note' or local-name()='example' or local-name()='source']" />
+									</xsl:when>
 									<xsl:otherwise>
 										<xsl:apply-templates select="../*[local-name()='p']" />
 										<xsl:apply-templates select="../*[local-name()='dl']" />
