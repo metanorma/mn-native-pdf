@@ -680,16 +680,22 @@
 						<fo:inline baseline-shift="20%"><fo:inline font-size="10pt">：</fo:inline>
 						<fo:inline font-family="Times New Roman" font-size="10pt"><xsl:value-of select="$docidentifier_year"/></fo:inline></fo:inline>
 					</fo:block>
-					<fo:block font-family="Arial" font-size="14pt" margin-top="12mm"><fo:inline font-family="IPAexMincho">（</fo:inline>JSA<fo:inline font-family="IPAexMincho">）</fo:inline></fo:block>
+					<fo:block font-family="Arial" font-size="14pt" margin-top="12mm">
+						<fo:inline font-family="IPAexMincho">（</fo:inline>
+						<!-- JSA -->
+						<xsl:value-of select="/*/jis:bibdata/jis:copyright/jis:owner/jis:organization/jis:abbreviation"/>
+						<fo:inline font-family="IPAexMincho">）</fo:inline></fo:block>
 				</fo:block-container>
 				
 				<fo:block-container absolute-position="fixed" left="0mm" top="200mm" height="69mm" text-align="center" display-align="after" font-family="IPAexMincho">
 					<!-- Revised on July 22, 2019 -->
 					<fo:block font-size="9pt">令和元年<fo:inline font-family="Times New Roman"> 7 </fo:inline>月<fo:inline font-family="Times New Roman"> 22 </fo:inline>日 改正</fo:block>
 					<!-- Japan Industrial Standards Survey Council deliberations -->
-					<fo:block font-size="14pt" margin-top="7mm">日本産業標準調査会 審議</fo:block>
+					<!-- 日本産業標準調査会 -->
+					<fo:block font-size="14pt" margin-top="7mm"><xsl:value-of select="/*/jis:bibdata/jis:contributor[jis:role/@type = 'authorizer']/jis:organization/jis:name/jis:variant[@language = 'ja']"/> 審議</fo:block>
 					<!-- (Issued by the Japan Standards Association) -->
-					<fo:block font-size="9pt" margin-top="6.5mm">（日本規格協会 発行）</fo:block>
+					<!-- 日本規格協会 -->
+					<fo:block font-size="9pt" margin-top="6.5mm">（<xsl:value-of select="/*/jis:bibdata/jis:contributor[jis:role/@type = 'publisher']/jis:organization/jis:name/jis:variant[@language = 'ja']"/> 発行）</fo:block>
 				</fo:block-container>
 			</fo:flow>
 		</fo:page-sequence>
