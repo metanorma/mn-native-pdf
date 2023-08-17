@@ -309,7 +309,6 @@ update-xslts-in-processor-all:
 	$(MAKE) update-xslts-in-processor MN_PROCR=bipm XSLT_PREFIX="{bipm,jcgm}"
 	$(MAKE) update-xslts-in-processor MN_PROCR=csa
 	$(MAKE) update-xslts-in-processor MN_PROCR=cc
-	$(MAKE) update-xslts-in-processor MN_PROCR=gb
 	$(MAKE) update-xslts-in-processor MN_PROCR=iec
 	$(MAKE) update-xslts-in-processor MN_PROCR=ieee
 	$(MAKE) update-xslts-in-processor MN_PROCR=iho
@@ -318,9 +317,12 @@ update-xslts-in-processor-all:
 	$(MAKE) update-xslts-in-processor MN_PROCR=iec
 	$(MAKE) update-xslts-in-processor MN_PROCR=jis
 	$(MAKE) update-xslts-in-processor MN_PROCR=m3aawg
-	$(MAKE) update-xslts-in-processor MN_PROCR=mpfa
 	$(MAKE) update-xslts-in-processor MN_PROCR=ogc
 	$(MAKE) update-xslts-in-processor MN_PROCR=ribose
 	$(MAKE) update-xslts-in-processor MN_PROCR=un
+
+# stop updating the XSLT for GB and MPFA, those gems have been frozen, https://github.com/metanorma/mn-native-pdf/issues/610
+# 	$(MAKE) update-xslts-in-processor MN_PROCR=gb
+# 	$(MAKE) update-xslts-in-processor MN_PROCR=mpfa
 
 .PHONY: all clean update-init update-modules bundle publish xslts update-xslts-in-processor update-xslts-in-processor-all
