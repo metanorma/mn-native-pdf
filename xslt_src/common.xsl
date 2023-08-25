@@ -3485,6 +3485,10 @@
 						</xsl:if>
 					</xsl:if>
 				</xsl:if>
+				<!-- if 1st note -->
+				<xsl:if test="parent::bsi:figure and preceding-sibling::*[1][self::bsi:image]">
+					<xsl:attribute name="space-before">0pt</xsl:attribute>
+				</xsl:if>
 			</xsl:if>
 			<xsl:if test="$document_type != 'PAS'">
 				<xsl:attribute name="text-align">justify</xsl:attribute>
@@ -12017,8 +12021,12 @@
 		<xsl:variable name="isAdded" select="../@added"/>
 		<xsl:variable name="isDeleted" select="../@deleted"/>
 		<xsl:choose>
-			<xsl:when test="ancestor::*[local-name() = 'title']">
+			<xsl:when test="ancestor::*[local-name() = 'title'] or not(parent::*[local-name() = 'figure']) or parent::*[local-name() = 'p']">
 				<fo:inline padding-left="1mm" padding-right="1mm">
+					<xsl:if test="not(parent::*[local-name() = 'figure']) or parent::*[local-name() = 'p']">
+						<xsl:attribute name="padding-left">0mm</xsl:attribute>
+						<xsl:attribute name="padding-right">0mm</xsl:attribute>
+					</xsl:if>
 					<xsl:variable name="src">
 						<xsl:call-template name="image_src"/>
 					</xsl:variable>
