@@ -3485,6 +3485,10 @@
 						</xsl:if>
 					</xsl:if>
 				</xsl:if>
+				<!-- if 1st note -->
+				<xsl:if test="parent::bsi:figure and preceding-sibling::*[1][self::bsi:image]">
+					<xsl:attribute name="space-before">0pt</xsl:attribute>
+				</xsl:if>
 			</xsl:if>
 			<xsl:if test="$document_type != 'PAS'">
 				<xsl:attribute name="text-align">justify</xsl:attribute>
