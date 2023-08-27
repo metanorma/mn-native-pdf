@@ -3477,7 +3477,7 @@
 					</xsl:if>
 				</xsl:if>
 				<!-- note inside p or ul or ul : p/note ul/note ol/note -->
-				<xsl:if test="parent::*[local-name() = 'p' or local-name() = 'ul' or local-name() = 'ol']">
+				<xsl:if test="parent::*[local-name() = 'p' or local-name() = 'ul' or local-name() = 'ol'] and not(following-sibling::*)">
 					<xsl:if test="../following-sibling::*[1][local-name() = 'clause' or local-name() = 'term']">
 						<xsl:attribute name="margin-bottom">12pt</xsl:attribute>
 						<xsl:if test="../following-sibling::*[2][local-name() = 'title']/@depth = 2">
@@ -3581,7 +3581,7 @@
 				<xsl:attribute name="padding-right">3.5mm</xsl:attribute>
 			</xsl:if>
 			<xsl:if test="$document_type = 'PAS'">
-				<xsl:attribute name="padding-right">0.5mm</xsl:attribute>
+				<xsl:attribute name="padding-right">1mm</xsl:attribute>
 				<xsl:attribute name="font-weight">bold</xsl:attribute>
 			</xsl:if>
 			<xsl:if test="@type = 'assessed-capability'">
