@@ -4980,6 +4980,7 @@
 			<xsl:attribute name="text-align">justify</xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'bsi'">
+			<xsl:attribute name="color">black</xsl:attribute>
 			<xsl:attribute name="font-size">8pt</xsl:attribute>
 			<xsl:attribute name="start-indent">5mm</xsl:attribute>
 			<xsl:attribute name="text-indent">-5mm</xsl:attribute>
@@ -5078,8 +5079,8 @@
 	
 	<xsl:template name="refine_fn-body-style">
 		<xsl:if test="$namespace = 'bsi'">
-			<xsl:attribute name="color">black</xsl:attribute>
 			<xsl:if test="$document_type = 'PAS'">
+				<xsl:attribute name="color"><xsl:value-of select="$color_secondary_shade_1_PAS"/></xsl:attribute>
 				<xsl:attribute name="start-indent">0mm</xsl:attribute>
 				<xsl:attribute name="text-indent">0mm</xsl:attribute>
 				<xsl:attribute name="margin-top">6pt</xsl:attribute>
