@@ -615,7 +615,9 @@
 												<xsl:call-template name="setWritingMode"/>
 												<fo:block font-family="Arial" font-size="36pt" font-weight="bold" margin-top="6pt" letter-spacing="2pt"> <!-- Helvetica for letter-spacing working -->
 													<fo:block>
-														<xsl:value-of select="substring-before(/itu:itu-standard/itu:bibdata/itu:docidentifier[@type = 'ITU'], ' ')"/>
+														<xsl:variable name="docidentifier_left_part" select="normalize-space(substring-before(/itu:itu-standard/itu:bibdata/itu:docidentifier[@type = 'ITU'], ' '))"/>
+														<xsl:value-of select="$docidentifier_left_part"/>
+														<xsl:if test="$docidentifier_left_part = ''"><xsl:text>ITU-T</xsl:text></xsl:if>
 													</fo:block>
 												</fo:block>
 											</fo:block-container>
