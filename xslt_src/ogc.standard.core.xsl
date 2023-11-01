@@ -1168,7 +1168,7 @@
 					</fo:list-item-label>
 					<fo:list-item-body start-indent="body-start()">
 						<fo:block>
-							<xsl:apply-templates select="../ogc:preferred | ../ogc:deprecated | ../ogc:admitted" mode="term_name"/>
+							<xsl:apply-templates select="../ogc:preferred | ../ogc:deprecated | ../ogc:deprecates | ../ogc:admitted" mode="term_name"/>
 						</fo:block>
 					</fo:list-item-body>
 				</fo:list-item>
@@ -1177,7 +1177,7 @@
 		</fo:block>
 	</xsl:template>
 	
-	<xsl:template match="ogc:preferred | ogc:deprecated | ogc:admitted" priority="2"/>
+	<xsl:template match="ogc:preferred | ogc:deprecated | ogc:deprecates | ogc:admitted" priority="2"/>
 	
 	<!-- first preferred displays on the same line as term/name -->
 	<xsl:template match="ogc:preferred[not(preceding-sibling::ogc:preferred)]" mode="term_name" priority="2">
@@ -1185,9 +1185,9 @@
 		<fo:inline padding-right="2mm">&#xA0;</fo:inline>
 	</xsl:template>
 	
-	<xsl:template match="ogc:preferred | ogc:deprecated | ogc:admitted" mode="term_name">
+	<xsl:template match="ogc:preferred | ogc:deprecated | ogc:deprecates | ogc:admitted" mode="term_name">
 		<xsl:choose>
-			<xsl:when test="preceding-sibling::*[self::ogc:preferred or self::deprecated or self::admitted]">
+			<xsl:when test="preceding-sibling::*[self::ogc:preferred or self::ogc:deprecated or self::ogc:deprecates or self::admitted]">
 				<fo:block space-before="6pt"><xsl:call-template name="displayTerm"/></fo:block> <!-- block wrapper -->
 			</xsl:when>
 			<xsl:otherwise><xsl:call-template name="displayTerm"/></xsl:otherwise>
@@ -1195,8 +1195,8 @@
 	</xsl:template>
 	
 	<xsl:template name="displayTerm">
-		<fo:inline font-size="18pt" padding-right="3mm"><xsl:apply-templates /></fo:inline>		
-		<fo:inline font-size="11pt" padding="1mm" padding-bottom="0.5mm" baseline-shift="25%">
+		<fo:inline font-size="18pt" padding-right="3mm"><xsl:apply-templates /></fo:inline>
+		<!-- <fo:inline font-size="11pt" padding="1mm" padding-bottom="0.5mm" baseline-shift="25%">
 			<xsl:variable name="kind" select="local-name()"/>
 			<xsl:attribute name="background-color">
 				<xsl:choose>
@@ -1208,11 +1208,36 @@
 			<xsl:call-template name="addLetterSpacing">
 				<xsl:with-param name="text" select="java:toUpperCase(java:java.lang.String.new($kind))"/>
 			</xsl:call-template>			
-		</fo:inline>
-		<xsl:if test="following-sibling::*[self::ogc:preferred or self::deprecated or self::admitted]">
+		</fo:inline> -->
+		<xsl:if test="following-sibling::*[self::ogc:preferred or self::ogc:deprecated or self::ogc:deprecates or self::ogc:admitted]">
 			<fo:inline padding-right="2mm">&#xA0;</fo:inline>
 		</xsl:if>
 	</xsl:template>
+	
+	<xsl:template match="*[local-name() = 'span'][@class = 'PreferredLabel' or @class = 'DeprecatedLabel' or @class = 'AdmittedLabel']" mode="update_xml_step1" priority="2">
+		<xsl:copy>
+			<xsl:apply-templates select="@*|node()" mode="update_xml_step1"/>
+		</xsl:copy>
+	</xsl:template>
+	
+	<xsl:template match="ogc:span[@class = 'PreferredLabel' or @class = 'DeprecatedLabel' or @class = 'AdmittedLabel']" priority="3">
+		<fo:inline>&#xa0;</fo:inline>
+		<fo:inline font-size="11pt" padding="1mm" padding-bottom="0.5mm" baseline-shift="25%">
+			<xsl:variable name="kind" select="@class"/>
+			<xsl:variable name="label" select="text()"/>
+			<xsl:attribute name="background-color">
+				<xsl:choose>
+					<xsl:when test="$kind = 'PreferredLabel' or $label = 'PREFERRED'">rgb(249, 235, 187)</xsl:when>
+					<xsl:when test="$kind = 'DeprecatedLabel' or $label = 'DEPRECATED'">rgb(237, 237, 238)</xsl:when>
+					<xsl:when test="$kind = 'AdmittedLabel' or $label = 'ADMITTED'">rgb(223, 236, 249)</xsl:when>							
+				</xsl:choose>
+			</xsl:attribute>
+			<xsl:call-template name="addLetterSpacing">
+				<xsl:with-param name="text" select="java:toUpperCase(java:java.lang.String.new($label))"/>
+			</xsl:call-template>			
+		</fo:inline>
+	</xsl:template>
+	
 	
 	
 	<xsl:template match="*[local-name()='th']//text()[not(ancestor::ogc:fn)]" priority="2">		
