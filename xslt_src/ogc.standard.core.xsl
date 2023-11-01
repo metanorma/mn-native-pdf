@@ -1195,8 +1195,8 @@
 	</xsl:template>
 	
 	<xsl:template name="displayTerm">
-		<fo:inline font-size="18pt" padding-right="3mm"><xsl:apply-templates /></fo:inline>		
-		<fo:inline font-size="11pt" padding="1mm" padding-bottom="0.5mm" baseline-shift="25%">
+		<fo:inline font-size="18pt" padding-right="3mm"><xsl:apply-templates /></fo:inline>
+		<!-- <fo:inline font-size="11pt" padding="1mm" padding-bottom="0.5mm" baseline-shift="25%">
 			<xsl:variable name="kind" select="local-name()"/>
 			<xsl:attribute name="background-color">
 				<xsl:choose>
@@ -1208,11 +1208,35 @@
 			<xsl:call-template name="addLetterSpacing">
 				<xsl:with-param name="text" select="java:toUpperCase(java:java.lang.String.new($kind))"/>
 			</xsl:call-template>			
-		</fo:inline>
+		</fo:inline> -->
 		<xsl:if test="following-sibling::*[self::ogc:preferred or self::deprecated or self::admitted]">
 			<fo:inline padding-right="2mm">&#xA0;</fo:inline>
 		</xsl:if>
 	</xsl:template>
+	
+	<xsl:template match="*[local-name() = 'span'][@class = 'PreferredLabel' or @class = 'DeprecatedLabel' or @class = 'AdmittedLabel']" mode="update_xml_step1" priority="2">
+		<xsl:copy>
+			<xsl:apply-templates select="@*|node()" mode="update_xml_step1"/>
+		</xsl:copy>
+	</xsl:template>
+	
+	<xsl:template match="ogc:span[@class = 'PreferredLabel' or @class = 'DeprecatedLabel' or @class = 'AdmittedLabel']" priority="3">
+		<fo:inline>&#xa0;</fo:inline>
+		<fo:inline font-size="11pt" padding="1mm" padding-bottom="0.5mm" baseline-shift="25%">
+			<xsl:variable name="kind" select="@class"/>
+			<xsl:attribute name="background-color">
+				<xsl:choose>
+					<xsl:when test="$kind = 'PreferredLabel'">rgb(249, 235, 187)</xsl:when>
+					<xsl:when test="$kind = 'DeprecatedLabel'">rgb(237, 237, 238)</xsl:when>
+					<xsl:when test="$kind = 'AdmittedLabel'">rgb(223, 236, 249)</xsl:when>							
+				</xsl:choose>
+			</xsl:attribute>
+			<xsl:call-template name="addLetterSpacing">
+				<xsl:with-param name="text" select="java:toUpperCase(java:java.lang.String.new(text()))"/>
+			</xsl:call-template>			
+		</fo:inline>
+	</xsl:template>
+	
 	
 	
 	<xsl:template match="*[local-name()='th']//text()[not(ancestor::ogc:fn)]" priority="2">		
