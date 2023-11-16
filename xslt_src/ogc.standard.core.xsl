@@ -5,6 +5,7 @@
 											xmlns:mathml="http://www.w3.org/1998/Math/MathML" 
 											xmlns:xalan="http://xml.apache.org/xalan" 
 											xmlns:fox="http://xmlgraphics.apache.org/fop/extensions" 
+											xmlns:pdf="http://xmlgraphics.apache.org/fop/extensions/pdf"
 											xmlns:java="http://xml.apache.org/xalan/java" 
 											exclude-result-prefixes="java"
 											version="1.0">
@@ -12,6 +13,8 @@
 	<xsl:output version="1.0" method="xml" encoding="UTF-8" indent="no"/>
 		
 	<xsl:key name="kfn" match="*[local-name() = 'fn'][not(ancestor::*[(local-name() = 'table' or local-name() = 'figure' or local-name() = 'localized-strings')] and not(ancestor::*[local-name() = 'name']))]" use="@reference"/>
+
+	<xsl:key name="attachments" match="ogc:video[@embedded = 'true']" use="@src"/>
 	
 	<xsl:variable name="namespace">ogc</xsl:variable>
 
@@ -188,6 +191,10 @@
 				
 				<fo:declarations>
 					<xsl:call-template name="addPDFUAmeta"/>
+					<xsl:for-each select="//*[local-name() = 'video'][@embedded = 'true'][generate-id(.)=generate-id(key('attachments',@src)[1])]">
+						<xsl:variable name="url" select="concat('url(file:',$basepath, @src, ')')"/>
+						<pdf:embedded-file src="{$url}" filename="{@src}"/>
+					</xsl:for-each>
 				</fo:declarations>
 				
 				<xsl:call-template name="addBookmarks">
@@ -1564,6 +1571,24 @@
 				<fo:leader leader-pattern="rule" leader-length="20%" color="{$color_design}"/>
 			</fo:block>
 		</fo:static-content>
+	</xsl:template>
+	
+	<xsl:template match="ogc:video">
+		<fo:inline xsl:use-attribute-sets="eref-style" color="rgb(63,72,204)">
+			<xsl:variable name="url">
+				<xsl:choose>
+					<xsl:when test="@embedded = 'true'">
+						<xsl:value-of select="concat('url(embedded-file:', @src, ')')"/>
+					</xsl:when>
+					<xsl:otherwise>
+						<xsl:value-of select="@src"/>
+					</xsl:otherwise>
+				</xsl:choose>
+			</xsl:variable>
+			<fo:basic-link external-destination="{$url}" fox:alt-text="Video {@src}">
+				<xsl:value-of select="@src"/>
+			</fo:basic-link>
+		</fo:inline>
 	</xsl:template>
 	
 </xsl:stylesheet>
