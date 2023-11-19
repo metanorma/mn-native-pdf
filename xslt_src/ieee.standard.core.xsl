@@ -809,22 +809,11 @@
 								
 								<fo:flow flow-name="xsl-region-body">
 									<fo:block-container>
-										<fo:block font-family="Arial Black" font-size="13pt">TRADEMARKS AND DISCLAIMERS</fo:block>
-										<fo:block font-size="10pt" margin-top="12pt" margin-bottom="12pt" text-align="justify" line-height="{$line-height}">IEEE believes the information in this publication is accurate as of its publication date; such information is subject to change without notice. IEEE is not responsible for any inadvertent errors.</fo:block>
-										<fo:block font-size="10pt" margin-top="12pt" margin-bottom="12pt" text-align="justify" line-height="{$line-height}">The ideas and proposals in this specification are the respective author’s views and do not represent the views of the affiliated organization.</fo:block>
-										<fo:block font-family="Arial Black" font-size="13pt">ACKNOWLEDGEMENTS</fo:block>
-										<fo:block font-family="Calibri">
-											<fo:block margin-top="12pt" margin-bottom="12pt" line-height="{$line-height}">Special thanks are given to the following reviewers of this paper:</fo:block>
-											<fo:block font-size="10pt">
-												<fo:block margin-bottom="6pt">Firstname Lastname</fo:block>
-												<fo:block margin-bottom="6pt">Firstname Lastname</fo:block>
-												<fo:block margin-bottom="6pt">Firstname Lastname</fo:block>
-												<fo:block margin-bottom="6pt">Firstname Lastname</fo:block>
-												<fo:block margin-bottom="6pt">Firstname Lastname</fo:block>
-												<fo:block margin-bottom="6pt">Firstname Lastname</fo:block>
-												<fo:block margin-bottom="6pt">Firstname Lastname</fo:block>
-												<fo:block margin-bottom="6pt">Firstname Lastname</fo:block>
-											</fo:block>
+									
+										<fo:block>
+											<!-- TRADEMARKS AND DISCLAIMERS -->
+											<!-- ACKNOWLEDGEMENTS -->
+											<xsl:apply-templates select="/ieee:ieee-standard/ieee:boilerplate/ieee:legal-statement/*[@id = 'boilerplate-tm' or ieee:title = 'Trademarks and Disclaimers' or @id = 'boilerplate-participants' or ieee:title = 'Acknowledgements']" mode="whitepaper"/>
 										</fo:block>
 										
 										<!-- Example:
@@ -837,7 +826,8 @@
 										</fo:block>
 										
 										<!-- NOTICE AND DISCLAIMER OF LIABILITY CONCERNING THE USE OF IEEE SA DOCUMENTS -->
-										<xsl:apply-templates select="/ieee:ieee-standard/ieee:boilerplate/ieee:legal-statement"/>
+										<fo:block break-after="page"/>
+										<xsl:apply-templates select="/ieee:ieee-standard/ieee:boilerplate/ieee:legal-statement/*[not(@id = 'boilerplate-tm') and not(ieee:title = 'Trademarks and Disclaimers') and not(@id = 'boilerplate-participants') and not(ieee:title = 'Acknowledgements')]"/>
 										
 									</fo:block-container>
 								</fo:flow>
@@ -945,7 +935,7 @@
 									
 								</fo:static-content>
 								<fo:static-content flow-name="left-region" role="artifact">
-									<fo:block-container font-family="Arial Black" font-weight="normal" reference-orientation="90" font-size="48pt" text-align="left" color="white">
+									<fo:block-container font-family="Arial Black" font-weight="normal" reference-orientation="90" font-size="48pt" text-align="left" color="white" id="__internal_layout__toc_{generate-id()}">
 										<fo:block margin-left="31.4mm" margin-top="20mm">TABLE OF CONTENTS</fo:block>
 									</fo:block-container>
 								</fo:static-content>
@@ -980,6 +970,15 @@
 						<xsl:choose>
 						
 							<xsl:when test="$current_template = 'whitepaper' or $current_template = 'icap-whitepaper' or $current_template = 'industry-connection-report'">
+							
+								<item>
+									<xsl:apply-templates select="/ieee:ieee-standard/ieee:preface/ieee:introduction" mode="flatxml"/>
+								</item>
+							
+								<item>
+									<xsl:apply-templates select="/ieee:ieee-standard/ieee:preface/ieee:acknowledgements" mode="flatxml"/>
+								</item>
+							
 								<item>
 									<xsl:apply-templates select="/ieee:ieee-standard/ieee:preface/ieee:abstract" mode="flatxml"/>
 								</item>
@@ -1656,6 +1655,41 @@
 		</xsl:choose>
 	</xsl:template>
 	
+	<xsl:template match="ieee:boilerplate/ieee:legal-statement" mode="whitepaper">
+		<xsl:apply-templates mode="whitepaper"/>
+	</xsl:template>
+	
+	<xsl:template match="ieee:boilerplate/ieee:legal-statement/ieee:clause/ieee:title" mode="whitepaper">
+		<fo:block font-family="Arial Black" font-size="13pt"><xsl:apply-templates mode="whitepaper"/></fo:block>
+	</xsl:template>
+	
+	<xsl:template match="ieee:boilerplate/ieee:legal-statement/ieee:clause/ieee:title//text()" mode="whitepaper">
+		<xsl:value-of select="java:toUpperCase(java:java.lang.String.new(.))"/>
+	</xsl:template>
+	
+	<xsl:template match="ieee:boilerplate/ieee:legal-statement/ieee:clause/ieee:p" mode="whitepaper">
+		<fo:block font-size="10pt" margin-top="12pt" margin-bottom="12pt" text-align="justify" line-height="{$line-height}">
+			<xsl:apply-templates />
+		</fo:block>
+	</xsl:template>
+	
+	<xsl:template match="ieee:boilerplate/ieee:legal-statement/ieee:clause/ieee:clause" mode="whitepaper">
+		<fo:block font-family="Calibri">
+			<xsl:apply-templates mode="whitepaper"/>
+		</fo:block>
+	</xsl:template>
+	
+	<xsl:template match="ieee:boilerplate/ieee:legal-statement/ieee:clause/ieee:clause/ieee:p" mode="whitepaper">
+		<fo:block font-size="10pt" margin-bottom="6pt">
+			<xsl:if test="not(preceding-sibling::ieee:p)">
+				<xsl:attribute name="margin-top">12pt</xsl:attribute>
+				<xsl:attribute name="margin-bottom">12pt</xsl:attribute>
+				<xsl:attribute name="font-size">inherit</xsl:attribute>
+			</xsl:if>
+			<xsl:apply-templates />
+		</fo:block>
+	</xsl:template>
+	
 	<xsl:template match="ieee:abstract">
 		<fo:block>
 			<xsl:call-template name="setId"/>
@@ -2320,7 +2354,7 @@
 	</xsl:template>
 
 					
-	<xsl:template match="*[local-name() = 'introduction'] | *[local-name() = 'foreword']">
+	<xsl:template match="*[local-name() = 'introduction'] | *[local-name() = 'foreword'] | *[local-name() = 'acknowledgements']">
 		<fo:block>
 			<xsl:call-template name="setId"/>
 			<xsl:apply-templates />
@@ -2525,7 +2559,7 @@
 				
 					<fo:list-item>
 						<fo:list-item-label end-indent="label-end()">
-							<fo:block>
+							<fo:block id="__internal_layout__toc_section_{generate-id()}">
 								<xsl:if test="$level = 1">
 									<xsl:attribute name="color"><xsl:value-of select="$color_blue"/></xsl:attribute>
 								</xsl:if>
@@ -3551,7 +3585,7 @@
 		<xsl:param name="title"/>
 		<fo:page-sequence master-reference="cover-page-nonstandard" force-page-count="no-force">
 			<fo:static-content flow-name="header" role="artifact">
-				<fo:block-container position="absolute" left="65mm"> <!-- top="-2.6mm" -->
+				<fo:block-container position="absolute" left="65mm" id="__internal_layout__bluebox_{generate-id()}"> <!-- top="-2.6mm" -->
 					<xsl:if test="$current_template = 'industry-connection-report'">
 						<xsl:attribute name="left">76.5mm</xsl:attribute>
 					</xsl:if>
@@ -3657,8 +3691,8 @@
 								<xsl:attribute name="margin-right">-10mm</xsl:attribute>
 								<xsl:text>IEEE CONFORMITY ASSESSMENT PROGRAM (ICAP)</xsl:text>
 							</xsl:when>
-							<xsl:otherwise>
-								PROGRAM TITLE TO GO HERE
+							<xsl:otherwise> <!-- PROGRAM TITLE TO GO HERE -->
+								<xsl:value-of select="/ieee:ieee-standard/ieee:bibdata/ieee:ext/ieee:program"/>
 							</xsl:otherwise>
 						</xsl:choose>
 					</fo:block>
@@ -3668,10 +3702,14 @@
 				</fo:block-container>
 				<fo:block-container font-family="Calibri Light" font-size="12pt" line-height="1.7">
 					<fo:block space-after="6mm">Authored by</fo:block>
-					<fo:block>Firstname Lastname</fo:block>
+					<!-- <fo:block>Firstname Lastname</fo:block>
 					<fo:block font-style="italic">Title</fo:block>
 					<fo:block>Firstname Lastname</fo:block>
-					<fo:block font-style="italic">Title</fo:block>
+					<fo:block font-style="italic">Title</fo:block> -->
+					<xsl:for-each select="/ieee:ieee-standard/ieee:bibdata/ieee:contributor[ieee:role[@type = 'author']]">
+						<fo:block><xsl:value-of select="concat(ieee:person/ieee:name/ieee:forename, ' ', ieee:person/ieee:name/ieee:surname)"/></fo:block>
+					<fo:block font-style="italic"><xsl:value-of select="ieee:person/ieee:affiliation/ieee:name"/></fo:block>
+					</xsl:for-each>
 				</fo:block-container>
 			</fo:flow>
 		</fo:page-sequence>
