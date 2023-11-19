@@ -3657,8 +3657,8 @@
 								<xsl:attribute name="margin-right">-10mm</xsl:attribute>
 								<xsl:text>IEEE CONFORMITY ASSESSMENT PROGRAM (ICAP)</xsl:text>
 							</xsl:when>
-							<xsl:otherwise>
-								PROGRAM TITLE TO GO HERE
+							<xsl:otherwise> <!-- PROGRAM TITLE TO GO HERE -->
+								<xsl:value-of select="/ieee:ieee-standard/ieee:bibdata/ieee:ext/ieee:program"/>
 							</xsl:otherwise>
 						</xsl:choose>
 					</fo:block>
@@ -3668,10 +3668,14 @@
 				</fo:block-container>
 				<fo:block-container font-family="Calibri Light" font-size="12pt" line-height="1.7">
 					<fo:block space-after="6mm">Authored by</fo:block>
-					<fo:block>Firstname Lastname</fo:block>
+					<!-- <fo:block>Firstname Lastname</fo:block>
 					<fo:block font-style="italic">Title</fo:block>
 					<fo:block>Firstname Lastname</fo:block>
-					<fo:block font-style="italic">Title</fo:block>
+					<fo:block font-style="italic">Title</fo:block> -->
+					<xsl:for-each select="/ieee:ieee-standard/ieee:bibdata/ieee:contributor[ieee:role[@type = 'author']]">
+						<fo:block><xsl:value-of select="concat(ieee:person/ieee:name/ieee:forename, ' ', ieee:person/ieee:name/ieee:surname)"/></fo:block>
+					<fo:block font-style="italic"><xsl:value-of select="ieee:person/ieee:affiliation/ieee:name"/></fo:block>
+					</xsl:for-each>
 				</fo:block-container>
 			</fo:flow>
 		</fo:page-sequence>
