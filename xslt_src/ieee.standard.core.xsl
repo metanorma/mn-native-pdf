@@ -945,7 +945,7 @@
 									
 								</fo:static-content>
 								<fo:static-content flow-name="left-region" role="artifact">
-									<fo:block-container font-family="Arial Black" font-weight="normal" reference-orientation="90" font-size="48pt" text-align="left" color="white">
+									<fo:block-container font-family="Arial Black" font-weight="normal" reference-orientation="90" font-size="48pt" text-align="left" color="white" id="__internal_layout__toc_{generate-id()}">
 										<fo:block margin-left="31.4mm" margin-top="20mm">TABLE OF CONTENTS</fo:block>
 									</fo:block-container>
 								</fo:static-content>
@@ -2525,7 +2525,7 @@
 				
 					<fo:list-item>
 						<fo:list-item-label end-indent="label-end()">
-							<fo:block>
+							<fo:block id="__internal_layout__toc_section_{generate-id()}">
 								<xsl:if test="$level = 1">
 									<xsl:attribute name="color"><xsl:value-of select="$color_blue"/></xsl:attribute>
 								</xsl:if>
@@ -3551,7 +3551,7 @@
 		<xsl:param name="title"/>
 		<fo:page-sequence master-reference="cover-page-nonstandard" force-page-count="no-force">
 			<fo:static-content flow-name="header" role="artifact">
-				<fo:block-container position="absolute" left="65mm"> <!-- top="-2.6mm" -->
+				<fo:block-container position="absolute" left="65mm" id="__internal_layout__bluebox_{generate-id()}"> <!-- top="-2.6mm" -->
 					<xsl:if test="$current_template = 'industry-connection-report'">
 						<xsl:attribute name="left">76.5mm</xsl:attribute>
 					</xsl:if>
