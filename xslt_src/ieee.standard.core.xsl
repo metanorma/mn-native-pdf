@@ -94,6 +94,7 @@
 			<xsl:when test="($doctype = 'standard' or $doctype = 'guide' or $doctype = 'recommended-practice') and $stage = 'draft'">draft</xsl:when>
 			<xsl:when test="($doctype = 'standard' or $doctype = 'guide' or $doctype = 'recommended-practice') and ($stage = 'published' or $stage = 'approved')">standard</xsl:when>
 			<xsl:when test="$doctype = 'whitepaper' and $subdoctype = 'icap'">icap-whitepaper</xsl:when>
+			<xsl:when test="$doctype = 'whitepaper' and $subdoctype = 'industry-connection-report'">industry-connection-report</xsl:when>
 			<xsl:otherwise><xsl:value-of select="$doctype"/></xsl:otherwise>
 		</xsl:choose>
 	</xsl:variable>
