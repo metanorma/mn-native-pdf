@@ -689,7 +689,8 @@
 				
 				<fo:block-container absolute-position="fixed" left="0mm" top="200mm" height="69mm" text-align="center" display-align="after" font-family="IPAexMincho">
 					<!-- Revised on July 22, 2019 -->
-					<fo:block font-size="9pt">令和元年<fo:inline font-family="Times New Roman"> 7 </fo:inline>月<fo:inline font-family="Times New Roman"> 22 </fo:inline>日 改正</fo:block>
+					<!-- <fo:block font-size="9pt">令和元年<fo:inline font-family="Times New Roman"> 7 </fo:inline>月<fo:inline font-family="Times New Roman"> 22 </fo:inline>日 改正</fo:block> -->
+					<fo:block font-size="9pt"><xsl:apply-templates select="/*/jis:bibdata/jis:date[@type = 'published']/text()"/> 改正</fo:block>
 					<!-- Japan Industrial Standards Survey Council deliberations -->
 					<!-- 日本産業標準調査会 -->
 					<fo:block font-size="14pt" margin-top="7mm"><xsl:value-of select="/*/jis:bibdata/jis:contributor[jis:role/@type = 'authorizer']/jis:organization/jis:name/jis:variant[@language = 'ja']"/> 審議</fo:block>
