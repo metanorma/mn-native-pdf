@@ -16180,6 +16180,16 @@
 			$namespace = 'mpfd' or $namespace = 'ogc' or $namespace = 'ogc-white-paper' -->
 				<!-- Example: [1] ISO 9:1995, Information and documentation – Transliteration of Cyrillic characters into Latin characters – Slavic and non-Slavic languages -->	
 				<fo:list-block id="{@id}" xsl:use-attribute-sets="bibitem-non-normative-list-style">
+					<xsl:if test="$namespace = 'ieee'">
+						<xsl:variable name="bibitem_label">
+							<xsl:apply-templates select="*[local-name() = 'biblio-tag']">
+								<xsl:with-param name="biblio_tag_part">first</xsl:with-param>
+							</xsl:apply-templates>
+						</xsl:variable>
+						<xsl:if test="string-length(normalize-space($bibitem_label)) &gt; 5">
+							<xsl:attribute name="provisional-distance-between-starts">12mm</xsl:attribute>
+						</xsl:if>
+					</xsl:if>
 					<fo:list-item>
 						<fo:list-item-label end-indent="label-end()">
 							<fo:block role="SKIP">
