@@ -728,7 +728,8 @@
 							<fo:inline></fo:inline>
 							<fo:footnote-body>
 								<fo:block font-size="8.5pt">
-									<xsl:apply-templates select="/*/*[local-name() = 'preface']/*[local-name() = 'clause'][@type = 'inner-cover-note']" /> <!-- /*[not(local-name() = 'title')] -->
+									<!-- <xsl:apply-templates select="/*/*[local-name() = 'preface']/*[local-name() = 'clause'][@type = 'inner-cover-note']" /> -->
+									<xsl:apply-templates select="/*/*[local-name() = 'boilerplate']" />
 								</fo:block>
 							</fo:footnote-body>
 						</fo:footnote>
@@ -1189,7 +1190,7 @@
 						<xsl:attribute name="margin-bottom">0pt</xsl:attribute>
 					</xsl:if>
 					
-					<xsl:if test="parent::jis:clause[@type = 'inner-cover-note']">
+					<xsl:if test="parent::jis:clause[@type = 'inner-cover-note'] or ancestor::jis:boilerplate">
 						<xsl:attribute name="margin-bottom">0pt</xsl:attribute>
 					</xsl:if>
 					
