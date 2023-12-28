@@ -30,7 +30,7 @@ jobs:
           sudo apt-get update
           sudo apt-get -y install gettext-base cabextract libxml2-utils curl \
             software-properties-common gcc ruby ruby-dev libffi-dev make libxml2-dev libxslt1-dev libcurl4-gnutls-dev
-          gem install bundler -v "2.3.22"
+          sudo gem install bundler -v "2.3.22"
 
       - run: make update-init update-modules
 
