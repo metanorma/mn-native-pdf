@@ -1658,11 +1658,11 @@
 				<xsl:attribute name="margin-top">12pt</xsl:attribute>
 				<xsl:attribute name="space-before">12pt</xsl:attribute>
 				<xsl:attribute name="space-after">12pt</xsl:attribute>
-				<xsl:if test="not(*[local-name() = 'name']) and ancestor::*[local-name()='clause'][@type = 'corrigenda']">
+				<xsl:if test="not(*[local-name() = 'name']) and (ancestor::*[local-name()='clause'][@type = 'corrigenda'] or contains(ancestor::*[local-name()='clause'][1]/*[local-name()='title'], 'Amendments/corrigenda'))">
 					<xsl:attribute name="margin-top">2pt</xsl:attribute>
 				</xsl:if>
 			</xsl:if>
-			<xsl:if test="$document_type != 'PAS' and not(following-sibling::*[2][@depth = '1']) and not (ancestor::*[local-name()='preface'] and ancestor::*[local-name()='clause'][@type = 'corrigenda'])">
+			<xsl:if test="$document_type != 'PAS' and not(following-sibling::*[2][@depth = '1']) and not (ancestor::*[local-name()='preface'] and (ancestor::*[local-name()='clause'][@type = 'corrigenda'] or contains(ancestor::*[local-name()='clause'][1]/*[local-name()='title'], 'Amendments/corrigenda')))">
 				<xsl:attribute name="margin-bottom">24pt</xsl:attribute>
 			</xsl:if>
 		</xsl:if>
@@ -1816,7 +1816,8 @@
 			">
 				<xsl:attribute name="border-bottom">none</xsl:attribute>
 			</xsl:if>
-			<xsl:if test="ancestor::*[local-name()='preface'] and ancestor::*[local-name()='clause'][@type = 'corrigenda']">
+			<xsl:if test="(ancestor::*[local-name()='preface'] and ancestor::*[local-name()='clause'][@type = 'corrigenda']) or
+			(ancestor::*[local-name()='copyright-statement'] and contains(ancestor::*[local-name()='clause'][1]/*[local-name()='title'], 'Amendments/corrigenda'))">
 				<xsl:if test="normalize-space(*[local-name() = 'tbody']) = ''">
 					<xsl:attribute name="border-bottom">none</xsl:attribute>
 				</xsl:if>
@@ -2034,7 +2035,7 @@
 			<xsl:if test="../@width = 'full-page-width'">
 				<xsl:attribute name="margin-left">0mm</xsl:attribute>
 			</xsl:if>
-			<xsl:if test="../@unnumbered = 'true' and ancestor::*[@type = 'corrigenda']">
+			<xsl:if test="../@unnumbered = 'true' and (ancestor::*[@type = 'corrigenda'] or contains(ancestor::*[local-name()='clause'][1]/*[local-name()='title'], 'Amendments/corrigenda'))">
 				<xsl:attribute name="margin-left">0mm</xsl:attribute>
 				<xsl:attribute name="font-size">9pt</xsl:attribute>
 				<xsl:attribute name="font-weight">bold</xsl:attribute>
@@ -2240,7 +2241,7 @@
 				<xsl:attribute name="border-top">2.5pt solid black</xsl:attribute>
 			</xsl:if>
 			
-			<xsl:if test="ancestor::*[local-name() = 'preface']">
+			<xsl:if test="ancestor::*[local-name() = 'preface'] or ancestor::*[local-name() = 'boilerplate']">
 				<xsl:attribute name="border-top">none</xsl:attribute>
 				<xsl:attribute name="border-bottom">none</xsl:attribute>
 			</xsl:if>
@@ -2249,7 +2250,7 @@
 				<xsl:variable name="number"><xsl:number/></xsl:variable>
 				<xsl:attribute name="background-color">
 					<xsl:choose>
-						<xsl:when test="ancestor::*[local-name()='clause'][@type = 'corrigenda']">transparent</xsl:when>
+						<xsl:when test="ancestor::*[local-name()='clause'][@type = 'corrigenda' or contains(*[local-name()='title'], 'Amendments/corrigenda')]">transparent</xsl:when>
 						<xsl:when test="preceding::*[local-name() = 'foreword' or local-name() = 'introduction']">
 							<!-- for preface sections -->
 							<xsl:choose>
@@ -2266,7 +2267,7 @@
 						</xsl:otherwise>
 					</xsl:choose>
 				</xsl:attribute>
-				<xsl:if test="ancestor::*[local-name()='clause'][@type = 'corrigenda'] and not(following-sibling::tr)">
+				<xsl:if test="ancestor::*[local-name()='clause'][@type = 'corrigenda' or contains(*[local-name()='title'], 'Amendments/corrigenda')] and not(following-sibling::*[local-name() = 'tr'])">
 					<xsl:attribute name="border-bottom">2pt solid <xsl:value-of select="$color_secondary_shade_1_PAS"/></xsl:attribute>
 				</xsl:if>
 			</xsl:if>
@@ -2417,12 +2418,13 @@
 				<xsl:attribute name="border-top"><xsl:value-of select="$table-border"/></xsl:attribute>
 				<xsl:attribute name="border-bottom"><xsl:value-of select="$table-border"/></xsl:attribute> -->
 			</xsl:if>
-			<xsl:if test="ancestor::*[local-name() = 'preface']">
+			<xsl:if test="ancestor::*[local-name() = 'preface'] or ancestor::*[local-name() = 'boilerplate']">
 				<xsl:attribute name="font-weight">normal</xsl:attribute>
+				<xsl:attribute name="text-align">left</xsl:attribute>
 				<xsl:if test="$document_type != 'PAS'">
 					<xsl:attribute name="border">solid black 0pt</xsl:attribute>
 				</xsl:if>
-				<xsl:if test="ancestor::*[local-name()='clause'][@type = 'corrigenda']">
+				<xsl:if test="ancestor::*[local-name()='clause'][@type = 'corrigenda' or contains(*[local-name()='title'], 'Amendments/corrigenda')]">
 					<xsl:if test="$document_type != 'PAS'">
 						<xsl:attribute name="border-top">none</xsl:attribute>
 						<xsl:attribute name="border-bottom">solid black 1pt</xsl:attribute>
@@ -2454,7 +2456,7 @@
 					<xsl:otherwise>
 						<xsl:attribute name="color">white</xsl:attribute>
 						
-						<xsl:if test="not(ancestor::bsi:clause[@type = 'corrigenda'] and ancestor::bsi:thead)">
+						<xsl:if test="not(ancestor::bsi:clause[@type = 'corrigenda' or contains(*[local-name()='title'], 'Amendments/corrigenda')] and ancestor::bsi:thead)">
 							<xsl:if test="following-sibling::*[1][local-name() = 'th']">
 								<xsl:attribute name="border-right">0.75pt solid white</xsl:attribute>
 							</xsl:if>
@@ -2543,7 +2545,7 @@
 		
 		<xsl:if test="$namespace = 'bsi'">
 			<xsl:if test="$document_type = 'PAS'">
-				<xsl:if test="ancestor::bsi:clause[@type = 'corrigenda'] and ancestor::bsi:thead">
+				<xsl:if test="ancestor::bsi:clause[@type = 'corrigenda' or contains(*[local-name()='title'], 'Amendments/corrigenda')] and ancestor::bsi:thead">
 					<xsl:attribute name="display-align">center</xsl:attribute>
 					<xsl:attribute name="font-weight">bold</xsl:attribute>
 					<xsl:attribute name="padding-left">3mm</xsl:attribute>
@@ -2683,7 +2685,8 @@
 				</xsl:if>
 			</xsl:if>
 			
-			<xsl:if test="ancestor::*[local-name()='preface'] and ancestor::*[local-name()='clause'][@type = 'corrigenda']">
+			<xsl:if test="(ancestor::*[local-name()='preface'] and ancestor::*[local-name()='clause'][@type = 'corrigenda']) or
+			(ancestor::*[local-name()='copyright-statement'] and contains(ancestor::*[local-name()='clause'][1]/*[local-name()='title'], 'Amendments/corrigenda'))">
 				<xsl:if test="normalize-space(parent::*[local-name() = 'tr']) = ''">
 					<xsl:attribute name="border">none</xsl:attribute>
 					<xsl:if test="$document_type != 'PAS'">
@@ -6459,6 +6462,9 @@
 						<xsl:if test="$doctype = 'flex-standard'">
 							<xsl:attribute name="space-after">6pt</xsl:attribute>
 						</xsl:if>
+						<xsl:if test="ancestor::*[local-name() = 'boilerplate'] and contains(ancestor::*[local-name()='clause'][1]/*[local-name()='title'], 'Publication history')">
+							<xsl:attribute name="space-after">0pt</xsl:attribute>
+						</xsl:if>
 					</xsl:if>
 					
 					<xsl:if test="$namespace = 'bsi' or $namespace = 'ogc-white-paper'">
@@ -6540,7 +6546,7 @@
 	
 	<xsl:template match="*[local-name()='legal-statement']//*[local-name()='title']">
 		<xsl:choose>
-			<xsl:when test="$namespace = 'itu' or $namespace = 'nist-cswp' or $namespace = 'nist-sp' or $namespace = 'ogc-white-paper' or or $namespace = 'rsd'">
+			<xsl:when test="$namespace = 'itu' or $namespace = 'nist-cswp' or $namespace = 'nist-sp' or $namespace = 'ogc-white-paper' or $namespace = 'rsd'">
 				<!-- ogc-white-paper rsd -->
 				<xsl:variable name="level">
 					<xsl:call-template name="getLevel"/>
@@ -7058,7 +7064,8 @@
 						</xsl:choose>
 						
 						<xsl:if test="$namespace = 'bsi'">
-							<xsl:if test="not(ancestor::*[local-name() = 'table']/@class = 'corrigenda')">
+							<xsl:if test="not(ancestor::*[local-name() = 'table']/@class = 'corrigenda') and 
+							not(contains(ancestor::*[local-name()='clause'][1]/*[local-name()='title'], 'Amendments/corrigenda'))">
 								<xsl:if test="$continued = 'true'">
 									<fo:inline font-weight="bold" font-style="normal" role="SKIP">
 										<xsl:if test="$document_type = 'PAS'">
@@ -7994,7 +8001,8 @@
 		</xsl:if>
 	
 		<xsl:if test="$namespace = 'bsi'">
-			<xsl:if test="ancestor::*[local-name()='preface'] and ancestor::*[local-name()='clause'][@type = 'corrigenda'] and normalize-space() = ''">
+			<xsl:if test="(ancestor::*[local-name()='preface'] and ancestor::*[local-name()='clause'][@type = 'corrigenda'] and normalize-space() = '') or
+			(ancestor::*[local-name()='copyright-statement'] and contains(ancestor::*[local-name()='clause'][1]/*[local-name()='title'], 'Amendments/corrigenda') and normalize-space() = '')">
 				<xsl:attribute name="min-height">0mm</xsl:attribute>
 			</xsl:if>
 			<xsl:if test="$document_type = 'PAS'">
