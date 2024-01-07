@@ -296,6 +296,10 @@
 								<xsl:with-param name="num" select="$num"/>
 							</xsl:apply-templates>
 							
+							<xsl:if test="not(/*/*[local-name()='preface']/*[local-name() = 'clause'][@type = 'toc'])">
+								<fo:block><!-- prevent fop error for empty document --></fo:block>
+							</xsl:if>
+							
 						</fo:flow>
 						
 					</fo:page-sequence>
@@ -538,6 +542,10 @@
 								<!-- </xsl:if> -->
 								
 								<xsl:apply-templates select="*" mode="page"/>
+								
+								<xsl:if test="not(*)">
+									<fo:block><!-- prevent fop error for empty document --></fo:block>
+								</xsl:if>
 								
 							</fo:flow>
 						</fo:page-sequence>
