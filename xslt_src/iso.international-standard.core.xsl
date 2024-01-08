@@ -633,7 +633,13 @@
 																	<fo:block background-color="rgb(77,77,77)" color="white" fox:border-radius="5pt" text-align="center" display-align="center" font-size="19pt" font-weight="bold" role="SKIP">
 																		<fo:block-container height="13.2mm" role="SKIP">
 																			<fo:block>
-																				<xsl:text>FAST TRACK PROCEDURE</xsl:text>
+																				<!-- <xsl:text>FAST TRACK PROCEDURE</xsl:text>  -->
+																				<xsl:variable name="fast_track_procedure_text">
+																					<xsl:call-template name="getLocalizedString">
+																						<xsl:with-param name="key">fast-track-procedure</xsl:with-param>
+																					</xsl:call-template>
+																				</xsl:variable>
+																				<xsl:value-of select="java:toUpperCase(java:java.lang.String.new($fast_track_procedure_text))"/>
 																			</fo:block>
 																		</fo:block-container>
 																	</fo:block>
