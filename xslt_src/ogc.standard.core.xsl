@@ -60,6 +60,8 @@
 	<xsl:variable name="color_dl_dt">rgb(215,243,255)</xsl:variable>
 	<xsl:variable name="color_dl_dd">rgb(242,251,255)</xsl:variable>
 	<xsl:variable name="color_blue">rgb(33, 55, 92)</xsl:variable>
+	<xsl:variable name="color_background_blue">rgb(33,60,107)</xsl:variable>
+	
 	
 	<xsl:variable name="toc_recommendations_">
 		<xsl:for-each select="//ogc:table[.//ogc:p[@class = 'RecommendationTitle']]">
@@ -204,6 +206,10 @@
 						
 					<fo:flow flow-name="xsl-region-body" color="white">
 					
+						<xsl:variable name="curr_lang" select="/ogc:ogc-standard/ogc:bibdata/ogc:language[@current = 'true']"/>					
+						<xsl:variable name="stage" select="/ogc:ogc-standard/ogc:bibdata/ogc:status/ogc:stage[@language = $curr_lang] | /ogc:ogc-standard/ogc:bibdata/ogc:status/ogc:stage[not(@language)]"/>
+						<xsl:variable name="isLegacy" select="normalize-space($stage = 'deprecated' or $stage = 'legacy' or $stage = 'retired' or $stage = 'rescinded')"/>
+						
 						<!-- background image -->
 						<fo:block-container absolute-position="fixed" left="0mm" top="0mm" font-size="0">
 							<fo:block>
@@ -279,7 +285,7 @@
 									<fo:block margin-top="4pt">&#xA0;</fo:block>
 								</fo:block-container>
 								<fo:block color="{$color_design}">
-									<fo:block font-size="17pt" margin-bottom="14pt">
+									<fo:block font-size="17pt">
 										<xsl:call-template name="addLetterSpacing">
 											<xsl:with-param name="text" select="java:toUpperCase(java:java.lang.String.new($doctype))"/>
 										</xsl:call-template>									
@@ -303,13 +309,31 @@
 											<xsl:with-param name="letter-spacing" select="0.25"/>
 										</xsl:call-template>									
 									</fo:block>
-									<fo:block font-size="12pt" font-weight="bold">
-										<xsl:variable name="curr_lang" select="/ogc:ogc-standard/ogc:bibdata/ogc:language[@current = 'true']"/>					
-										<xsl:variable name="stage" select="java:toUpperCase(java:java.lang.String.new(/ogc:ogc-standard/ogc:bibdata/ogc:status/ogc:stage[@language = $curr_lang]))"/>									
-										<xsl:call-template name="addLetterSpacing">
-											<xsl:with-param name="text" select="$stage"/>
-										</xsl:call-template>
-									</fo:block>
+									<xsl:variable name="stage_uc" select="java:toUpperCase(java:java.lang.String.new($stage))"/>
+									
+									<xsl:choose>
+										<xsl:when test="$isLegacy = 'true'">
+											<fo:block-container font-size="17pt" background-color="{$color_background_blue}" margin-left="-2.5mm" height="11.5mm" width="56mm" display-align="center" margin-top="0.5mm">
+												<fo:block-container margin-left="2.5mm">
+													<fo:block-container margin-left="0mm">
+														<fo:block margin-top="1mm">
+															<xsl:call-template name="addLetterSpacing">
+																<xsl:with-param name="text" select="$stage_uc"/>
+															</xsl:call-template>
+														</fo:block>
+													</fo:block-container>
+												</fo:block-container>
+											</fo:block-container>
+										</xsl:when>
+										<xsl:otherwise>
+											<fo:block font-size="12pt" font-weight="bold" margin-top="14pt">
+												<xsl:call-template name="addLetterSpacing">
+													<xsl:with-param name="text" select="$stage_uc"/>
+												</xsl:call-template>
+											</fo:block>
+										</xsl:otherwise>
+									</xsl:choose>
+									
 								</fo:block>
 							</fo:block-container>
 						</fo:block-container>
@@ -401,7 +425,24 @@
 								</fo:block>
 							</fo:block>
 													
-							<xsl:apply-templates select="/ogc:ogc-standard/ogc:boilerplate/ogc:legal-statement"/>
+							<xsl:choose>
+								<xsl:when test="$isLegacy = 'true'">
+									<fo:block-container margin-left="-7mm" color="{$color_design}" background-color="{$color_background_blue}" width="202mm">
+										<fo:block-container margin-left="2.5mm" margin-right="1mm" padding-top="0.5mm" padding-bottom="0.5mm">
+											<fo:block-container margin-left="0mm" margin-right="0mm">
+												<fo:block>
+													<xsl:apply-templates select="/ogc:ogc-standard/ogc:boilerplate/ogc:legal-statement">
+														<xsl:with-param name="isLegacy" select="$isLegacy"/>	
+													</xsl:apply-templates>
+												</fo:block>
+											</fo:block-container>
+										</fo:block-container>
+									</fo:block-container>
+								</xsl:when>
+								<xsl:otherwise>
+									<xsl:apply-templates select="/ogc:ogc-standard/ogc:boilerplate/ogc:legal-statement"/>
+								</xsl:otherwise>
+							</xsl:choose>
 							
 						</fo:block-container>
 
