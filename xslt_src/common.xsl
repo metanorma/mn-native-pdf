@@ -9757,13 +9757,14 @@
 	<!-- ================= -->
 	<!-- Added,deleted text -->
 	<!-- ================= -->
-	<xsl:template match="*[local-name()='add']" name="tag_add">
+	<xsl:template match="*[local-name()='add'] | *[local-name() = 'change-open-tag'] | *[local-name() = 'change-close-tag']" name="tag_add">
 		<xsl:param name="skip">true</xsl:param>
 		<xsl:param name="block">false</xsl:param>
 		<xsl:param name="type"/>
 		<xsl:param name="text-align"/>
 		<xsl:choose>
-			<xsl:when test="starts-with(., $ace_tag)"> <!-- examples: ace-tag_A1_start, ace-tag_A2_end, C1_start, AC_start -->
+			<xsl:when test="starts-with(., $ace_tag) or local-name() = 'change-open-tag' or local-name() = 'change-close-tag'"> <!-- examples: ace-tag_A1_start, ace-tag_A2_end, C1_start, AC_start, or
+							<change-open-tag>A<sub>1</sub></change-open-tag>, <change-close-tag>A<sub>1</sub></change-close-tag> -->
 				<xsl:choose>
 					<xsl:when test="$skip = 'true' and 
 					((local-name(../..) = 'note' and not(preceding-sibling::node())) or 
@@ -9776,12 +9777,32 @@
 							<xsl:call-template name="insertTag">
 								<xsl:with-param name="type">
 									<xsl:choose>
+										<xsl:when test="local-name() = 'change-open-tag'">start</xsl:when>
+										<xsl:when test="local-name() = 'change-close-tag'">end</xsl:when>
 										<xsl:when test="$type = ''"><xsl:value-of select="substring-after(substring-after(., $ace_tag), '_')"/> <!-- start or end --></xsl:when>
 										<xsl:otherwise><xsl:value-of select="$type"/></xsl:otherwise>
 									</xsl:choose>
 								</xsl:with-param>
-								<xsl:with-param name="kind" select="substring(substring-before(substring-after(., $ace_tag), '_'), 1, 1)"/> <!-- A or C -->
-								<xsl:with-param name="value" select="substring(substring-before(substring-after(., $ace_tag), '_'), 2)"/> <!-- 1, 2, C -->
+								<xsl:with-param name="kind">
+									<xsl:choose>
+										<xsl:when test="local-name() = 'change-open-tag' or local-name() = 'change-close-tag'">
+											<xsl:value-of select="text()"/>
+										</xsl:when>
+										<xsl:otherwise>
+											<xsl:value-of select="substring(substring-before(substring-after(., $ace_tag), '_'), 1, 1)"/> <!-- A or C -->
+										</xsl:otherwise>
+									</xsl:choose>
+								</xsl:with-param>
+								<xsl:with-param name="value">
+									<xsl:choose>
+										<xsl:when test="local-name() = 'change-open-tag' or local-name() = 'change-close-tag'">
+											<xsl:value-of select="*[local-name() = 'sub']"/>
+										</xsl:when>
+										<xsl:otherwise>
+											<xsl:value-of select="substring(substring-before(substring-after(., $ace_tag), '_'), 2)"/> <!-- 1, 2, C -->
+										</xsl:otherwise>
+									</xsl:choose>
+								</xsl:with-param>
 							</xsl:call-template>
 						</xsl:variable>
 						<xsl:choose>
@@ -15143,12 +15164,18 @@
 				<fo:block id="{@id}" font-size="1pt"><xsl:value-of select="$hair_space"/></fo:block>
 			</xsl:when>
 			<!-- if there isn't element with id 'from', then create 'bookmark' here -->
-			<xsl:when test="not(ancestor::*[contains(local-name(), '-standard')]//*[@id = $id_from])">
+			<xsl:when test="ancestor::*[contains(local-name(), '-standard')] and not(ancestor::*[contains(local-name(), '-standard')]//*[@id = $id_from])">
+				<fo:block id="{@from}" font-size="1pt"><xsl:value-of select="$hair_space"/></fo:block>
+			</xsl:when>
+			<xsl:when test="not(//*[@id = $id_from]) and not(preceding-sibling::*[@id = $id_from])">
 				<fo:block id="{@from}" font-size="1pt"><xsl:value-of select="$hair_space"/></fo:block>
 			</xsl:when>
 		</xsl:choose>
 		
 	</xsl:template>
+
+	<!-- https://github.com/metanorma/mn-samples-bsi/issues/312 -->
+	<xsl:template match="*[local-name() = 'review'][@type = 'other']"/>
 
 	<xsl:template match="*[local-name() = 'name']/text()">
 		<!-- 0xA0 to space replacement -->
