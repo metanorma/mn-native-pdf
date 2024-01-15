@@ -12351,9 +12351,15 @@
 			</xsl:when>
 			<xsl:otherwise>
 			
+				<xsl:variable name="image_class" select="ancestor::*[local-name() = 'image']/@class"/>
+				<xsl:variable name="ancestor_table_cell" select="normalize-space(ancestor::*[local-name() = 'td'] or ancestor::*[local-name() = 'th'])"/>
+			
 				<xsl:variable name="element">
 					<xsl:choose>
 						<xsl:when test="ancestor::*[local-name() = 'tr'] and $isGenerateTableIF = 'true'">
+							<fo:inline xsl:use-attribute-sets="image-style" text-align="left"/>
+						</xsl:when>
+						<xsl:when test="not(ancestor::*[local-name() = 'figure'])">
 							<fo:inline xsl:use-attribute-sets="image-style" text-align="left"/>
 						</xsl:when>
 						<xsl:otherwise>
@@ -12371,10 +12377,24 @@
 						<xsl:copy-of select="@*"/>
 					<!-- <fo:block xsl:use-attribute-sets="image-style"> -->
 						<fo:instream-foreign-object fox:alt-text="{$alt-text}">
-							<xsl:if test="$isGenerateTableIF = 'false'">
-								<xsl:attribute name="width">100%</xsl:attribute>
-							</xsl:if>
-							<xsl:attribute name="content-height">100%</xsl:attribute>
+						
+							<xsl:choose>
+								<xsl:when test="$image_class = 'corrigenda-tag'">
+									<xsl:attribute name="fox:alt-text">OpeningTag</xsl:attribute>
+									<xsl:attribute name="baseline-shift">-10%</xsl:attribute>
+									<xsl:if test="$ancestor_table_cell = 'true'">
+										<xsl:attribute name="baseline-shift">-25%</xsl:attribute>
+									</xsl:if>
+									<xsl:attribute name="height">3.5mm</xsl:attribute>
+								</xsl:when>
+								<xsl:otherwise>
+									<xsl:if test="$isGenerateTableIF = 'false'">
+										<xsl:attribute name="width">100%</xsl:attribute>
+									</xsl:if>
+									<xsl:attribute name="content-height">100%</xsl:attribute>
+								</xsl:otherwise>
+							</xsl:choose>
+							
 							<xsl:attribute name="content-width">scale-down-to-fit</xsl:attribute>
 							<xsl:variable name="svg_width" select="xalan:nodeset($svg_content)/*/@width"/>
 							<xsl:variable name="svg_height" select="xalan:nodeset($svg_content)/*/@height"/>
