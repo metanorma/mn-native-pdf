@@ -12380,7 +12380,7 @@
 						
 							<xsl:choose>
 								<xsl:when test="$image_class = 'corrigenda-tag'">
-									<xsl:attribute name="fox:alt-text">OpeningTag</xsl:attribute>
+									<xsl:attribute name="fox:alt-text">CorrigendaTag</xsl:attribute>
 									<xsl:attribute name="baseline-shift">-10%</xsl:attribute>
 									<xsl:if test="$ancestor_table_cell = 'true'">
 										<xsl:attribute name="baseline-shift">-25%</xsl:attribute>
