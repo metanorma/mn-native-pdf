@@ -1422,6 +1422,9 @@
 							<xsl:if test="/iso:iso-standard/iso:boilerplate/iso:copyright-statement">
 							
 								<fo:block-container height="252mm" display-align="after" role="SKIP">
+									<xsl:if test="$layoutVersion2024 = 'true'">
+										<xsl:attribute name="height">241.5mm</xsl:attribute>
+									</xsl:if>
 									<!-- <fo:block margin-bottom="3mm">
 										<fo:external-graphic src="{concat('data:image/png;base64,', normalize-space($Image-Attention))}" width="14mm" content-height="13mm" content-width="scale-to-fit" scaling="uniform" fox:alt-text="Image {@alt}"/>								
 										<fo:inline padding-left="6mm" font-size="12pt" font-weight="bold"></fo:inline>
@@ -2284,35 +2287,26 @@
 	<xsl:template name="insertHeaderFooter">
 		<xsl:param name="font-weight" select="'bold'"/>
 		<xsl:call-template name="insertHeaderEven"/>
-		<fo:static-content flow-name="footer-even" role="artifact">
-			<fo:block-container> <!--  display-align="after" -->
-				<fo:table table-layout="fixed" width="100%">
-					<fo:table-column column-width="33%"/>
-					<fo:table-column column-width="33%"/>
-					<fo:table-column column-width="34%"/>
-					<fo:table-body>
-						<fo:table-row>
-							<fo:table-cell display-align="center" padding-top="0mm" font-size="11pt" font-weight="{$font-weight}">
-								<xsl:if test="contains($copyrightText, 'IEEE')">
-									<xsl:attribute name="display-align">before</xsl:attribute>
-								</xsl:if>
-								<fo:block><fo:page-number/></fo:block>
-							</fo:table-cell>
-							<fo:table-cell display-align="center">
-								<fo:block font-size="10pt" font-weight="bold" text-align="center">
-									<xsl:if test="$stage-abbreviation = 'PRF'">
-										<xsl:value-of select="$proof-text"/>
-									</xsl:if>
-								</fo:block>
-							</fo:table-cell>
-							<fo:table-cell display-align="center" padding-top="0mm"  font-size="9pt">
-								<fo:block text-align="right"><xsl:value-of select="$copyrightText"/></fo:block>
-							</fo:table-cell>
-						</fo:table-row>
-					</fo:table-body>
-				</fo:table>
+		<xsl:call-template name="insertFooterEven">
+			<xsl:with-param name="font-weight" select="$font-weight"/>
+		</xsl:call-template>
+		<xsl:call-template name="insertHeaderFirst"/>
+		<xsl:call-template name="insertHeaderOdd"/>
+		<xsl:call-template name="insertFooterOdd">
+			<xsl:with-param name="font-weight" select="$font-weight"/>
+		</xsl:call-template>
+	</xsl:template>
+	<xsl:template name="insertHeaderEven">
+		<fo:static-content flow-name="header-even" role="artifact">
+			<fo:block-container height="24mm" display-align="before">
+				<fo:block font-size="12pt" font-weight="bold" padding-top="12.5mm">
+					<xsl:call-template name="insertLayoutVersion2014AttributesTop"/>
+					<xsl:value-of select="$ISOnumber"/>
+				</fo:block>
 			</fo:block-container>
 		</fo:static-content>
+	</xsl:template>
+	<xsl:template name="insertHeaderFirst">
 		<fo:static-content flow-name="header-first" role="artifact">
 			<xsl:choose>
 				<xsl:when test="$stage-abbreviation = 'FDAmd' or $stage-abbreviation = 'FDAM' or $stage-abbreviation = 'DAmd' or $stage-abbreviation = 'DAM'">
@@ -2338,6 +2332,8 @@
 				</xsl:otherwise>
 			</xsl:choose>
 		</fo:static-content>
+	</xsl:template>
+	<xsl:template name="insertHeaderOdd">
 		<fo:static-content flow-name="header-odd" role="artifact">
 			<fo:block-container height="24mm" display-align="before">
 				<fo:block font-size="12pt" font-weight="bold" text-align="right" padding-top="12.5mm">
@@ -2346,47 +2342,99 @@
 				</fo:block>
 			</fo:block-container>
 		</fo:static-content>
+	</xsl:template>
+		
+	<xsl:template name="insertFooterEven">
+		<xsl:param name="font-weight" select="'bold'"/>
+		<fo:static-content flow-name="footer-even" role="artifact">
+			<fo:block-container>
+				<xsl:choose>
+					<xsl:when test="$layoutVersion2024 = 'true'">
+						<xsl:call-template name="insertFooter2024">
+							<xsl:with-param name="font-weight" select="$font-weight"/>
+						</xsl:call-template>
+					</xsl:when>
+					<xsl:otherwise>
+						<fo:table table-layout="fixed" width="100%">
+							<fo:table-column column-width="33%"/>
+							<fo:table-column column-width="33%"/>
+							<fo:table-column column-width="34%"/>
+							<fo:table-body>
+								<fo:table-row>
+									<fo:table-cell display-align="center" padding-top="0mm" font-size="11pt" font-weight="{$font-weight}">
+										<xsl:if test="contains($copyrightText, 'IEEE')">
+											<xsl:attribute name="display-align">before</xsl:attribute>
+										</xsl:if>
+										<fo:block><fo:page-number/></fo:block>
+									</fo:table-cell>
+									<fo:table-cell display-align="center">
+										<fo:block font-size="10pt" font-weight="bold" text-align="center">
+											<xsl:if test="$stage-abbreviation = 'PRF'">
+												<xsl:value-of select="$proof-text"/>
+											</xsl:if>
+										</fo:block>
+									</fo:table-cell>
+									<fo:table-cell display-align="center" padding-top="0mm" font-size="9pt">
+										<fo:block text-align="right"><xsl:value-of select="$copyrightText"/></fo:block>
+									</fo:table-cell>
+								</fo:table-row>
+							</fo:table-body>
+						</fo:table>
+					</xsl:otherwise>
+				</xsl:choose>
+			</fo:block-container>
+		</fo:static-content>
+	</xsl:template>
+	<xsl:template name="insertFooterOdd">
+		<xsl:param name="font-weight" select="'bold'"/>
 		<fo:static-content flow-name="footer-odd" role="artifact">
-			<fo:block-container> <!--  display-align="after" -->
-				<fo:table table-layout="fixed" width="100%">
-					<fo:table-column column-width="33%"/>
-					<fo:table-column column-width="33%"/>
-					<fo:table-column column-width="34%"/>
-					<fo:table-body>
-						<fo:table-row>
-							<fo:table-cell display-align="center" padding-top="0mm" font-size="9pt">
-								<fo:block><xsl:value-of select="$copyrightText"/></fo:block>
-							</fo:table-cell>
-							<fo:table-cell display-align="center">
-								<fo:block font-size="10pt" font-weight="bold" text-align="center">
-									<xsl:if test="$stage-abbreviation = 'PRF'">
-										<xsl:value-of select="$proof-text"/>
-									</xsl:if>
-								</fo:block>
-							</fo:table-cell>
-							<fo:table-cell display-align="center" padding-top="0mm" font-size="11pt" font-weight="{$font-weight}">
-								<xsl:if test="contains($copyrightText, 'IEEE')">
-									<xsl:attribute name="display-align">before</xsl:attribute>
-								</xsl:if>
-								<fo:block text-align="right"><fo:page-number/></fo:block>
-							</fo:table-cell>
-						</fo:table-row>
-					</fo:table-body>
-				</fo:table>
+			<fo:block-container>
+				<xsl:choose>
+					<xsl:when test="$layoutVersion2024 = 'true'">
+						<xsl:call-template name="insertFooter2024">
+							<xsl:with-param name="font-weight" select="$font-weight"/>
+						</xsl:call-template>
+					</xsl:when>
+					<xsl:otherwise>
+						<fo:table table-layout="fixed" width="100%">
+							<fo:table-column column-width="33%"/>
+							<fo:table-column column-width="33%"/>
+							<fo:table-column column-width="34%"/>
+							<fo:table-body>
+								<fo:table-row>
+									<fo:table-cell display-align="center" padding-top="0mm" font-size="9pt">
+										<fo:block><xsl:value-of select="$copyrightText"/></fo:block>
+									</fo:table-cell>
+									<fo:table-cell display-align="center">
+										<fo:block font-size="10pt" font-weight="bold" text-align="center">
+											<xsl:if test="$stage-abbreviation = 'PRF'">
+												<xsl:value-of select="$proof-text"/>
+											</xsl:if>
+										</fo:block>
+									</fo:table-cell>
+									<fo:table-cell display-align="center" padding-top="0mm" font-size="11pt" font-weight="{$font-weight}">
+										<xsl:if test="contains($copyrightText, 'IEEE')">
+											<xsl:attribute name="display-align">before</xsl:attribute>
+										</xsl:if>
+										<fo:block text-align="right"><fo:page-number/></fo:block>
+									</fo:table-cell>
+								</fo:table-row>
+							</fo:table-body>
+						</fo:table>
+					</xsl:otherwise>
+				</xsl:choose>
 			</fo:block-container>
 		</fo:static-content>
 	</xsl:template>
-	<xsl:template name="insertHeaderEven">
-		<fo:static-content flow-name="header-even" role="artifact">
-			<fo:block-container height="24mm" display-align="before">
-				<fo:block font-size="12pt" font-weight="bold" padding-top="12.5mm">
-					<xsl:call-template name="insertLayoutVersion2014AttributesTop"/>
-					<xsl:value-of select="$ISOnumber"/>
-				</fo:block>
-			</fo:block-container>
-		</fo:static-content>
+	<xsl:template name="insertFooter2024">
+		<xsl:param name="font-weight" select="'bold'"/>
+		<xsl:attribute  name="text-align">center</xsl:attribute>
+		<fo:block font-family="Inter" font-size="8.6pt">
+			<xsl:value-of select="$copyrightText"/>
+		</fo:block>
+		<xsl:if test="$copyrightAbbrIEEE = ''"><fo:block>&#xa0;</fo:block></xsl:if>
+		<fo:block font-size="11pt" font-weight="{$font-weight}"><fo:page-number/></fo:block>
 	</xsl:template>
-	
 	<xsl:template name="insertLayoutVersion2014AttributesTop">
 		<xsl:if test="$layoutVersion2024 = 'true'">
 			<xsl:attribute name="padding-top">18mm</xsl:attribute>
