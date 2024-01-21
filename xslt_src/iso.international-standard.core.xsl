@@ -60,8 +60,16 @@
 	<xsl:variable name="lang-1st-letter_tmp" select="substring-before(substring-after(/iso:iso-standard/iso:bibdata/iso:docidentifier[@type = 'iso-with-lang'], '('), ')')"/>
 	<xsl:variable name="lang-1st-letter" select="concat('(', $lang-1st-letter_tmp , ')')"/>
   
-	<!-- <xsl:variable name="ISOname" select="concat(/iso:iso-standard/iso:bibdata/iso:docidentifier, ':', /iso:iso-standard/iso:bibdata/iso:copyright/iso:from , $lang-1st-letter)"/> -->
-	<xsl:variable name="ISOname" select="/iso:iso-standard/iso:bibdata/iso:docidentifier[@type = 'iso-reference']"/>
+	<xsl:variable name="ISOnumber">
+		<xsl:choose>
+			<xsl:when test="$layoutVersion2024 = 'true'">
+				<xsl:value-of select="/iso:iso-standard/iso:bibdata/iso:docidentifier[@type = 'iso-with-lang']"/>
+			</xsl:when>
+			<xsl:otherwise>
+				<xsl:value-of select="/iso:iso-standard/iso:bibdata/iso:docidentifier[@type = 'iso-reference']"/>
+			</xsl:otherwise>
+		</xsl:choose>
+	</xsl:variable>
 
 	<xsl:variable name="part" select="/iso:iso-standard/iso:bibdata/iso:ext/iso:structuredidentifier/iso:project-number/@part"/>
 	
@@ -722,7 +730,7 @@
 																			</xsl:call-template>
 																		</fo:block>
 																		<fo:block>
-																			<xsl:value-of select="$ISOname"/>																		
+																			<xsl:value-of select="$ISOnumber"/>																		
 																		</fo:block>
 																		<fo:block space-before="28pt">
 																			<xsl:if test="$copyrightAbbrIEEE != ''">
@@ -1191,7 +1199,7 @@
 															<xsl:with-param name="key">reference_number</xsl:with-param>																			
 														</xsl:call-template>
 													</fo:block>
-													<fo:block><xsl:value-of select="$ISOname"/></fo:block>
+													<fo:block><xsl:value-of select="$ISOnumber"/></fo:block>
 													<fo:block role="SKIP">&#xA0;</fo:block>
 													<fo:block role="SKIP">&#xA0;</fo:block>
 													<fo:block><fo:inline font-size="9pt">©</fo:inline><xsl:value-of select="concat(' ', $copyrightAbbr, ' ', $copyrightYear)"/>
@@ -2309,7 +2317,10 @@
 			<xsl:choose>
 				<xsl:when test="$stage-abbreviation = 'FDAmd' or $stage-abbreviation = 'FDAM' or $stage-abbreviation = 'DAmd' or $stage-abbreviation = 'DAM'">
 					<fo:block-container height="24mm" display-align="before">
-						<fo:block font-size="12pt" font-weight="bold" text-align="right" padding-top="12.5mm"><xsl:value-of select="$ISOname"/></fo:block>
+						<fo:block font-size="12pt" font-weight="bold" text-align="right" padding-top="12.5mm">
+							<xsl:call-template name="insertLayoutVersion2014AttributesTop"/>
+							<xsl:value-of select="$ISOnumber"/>
+						</fo:block>
 					</fo:block-container>
 				</xsl:when>
 				<xsl:otherwise>
@@ -2320,7 +2331,7 @@
 							
 							<fo:inline keep-together.within-line="always">
 								<fo:leader leader-pattern="space"/>
-								<fo:inline><xsl:value-of select="$ISOname"/></fo:inline>
+								<fo:inline><xsl:value-of select="$ISOnumber"/></fo:inline>
 							</fo:inline>
 						</fo:block>
 					</fo:block-container>
@@ -2329,7 +2340,10 @@
 		</fo:static-content>
 		<fo:static-content flow-name="header-odd" role="artifact">
 			<fo:block-container height="24mm" display-align="before">
-				<fo:block font-size="12pt" font-weight="bold" text-align="right" padding-top="12.5mm"><xsl:value-of select="$ISOname"/></fo:block>
+				<fo:block font-size="12pt" font-weight="bold" text-align="right" padding-top="12.5mm">
+					<xsl:call-template name="insertLayoutVersion2014AttributesTop"/>
+					<xsl:value-of select="$ISOnumber"/>
+				</fo:block>
 			</fo:block-container>
 		</fo:static-content>
 		<fo:static-content flow-name="footer-odd" role="artifact">
@@ -2365,9 +2379,19 @@
 	<xsl:template name="insertHeaderEven">
 		<fo:static-content flow-name="header-even" role="artifact">
 			<fo:block-container height="24mm" display-align="before">
-				<fo:block font-size="12pt" font-weight="bold" padding-top="12.5mm"><xsl:value-of select="$ISOname"/></fo:block>
+				<fo:block font-size="12pt" font-weight="bold" padding-top="12.5mm">
+					<xsl:call-template name="insertLayoutVersion2014AttributesTop"/>
+					<xsl:value-of select="$ISOnumber"/>
+				</fo:block>
 			</fo:block-container>
 		</fo:static-content>
+	</xsl:template>
+	
+	<xsl:template name="insertLayoutVersion2014AttributesTop">
+		<xsl:if test="$layoutVersion2024 = 'true'">
+			<xsl:attribute name="padding-top">18mm</xsl:attribute>
+			<xsl:attribute name="text-align">center</xsl:attribute>
+		</xsl:if>
 	</xsl:template>
 	
 	<xsl:variable name="price_based_on">
