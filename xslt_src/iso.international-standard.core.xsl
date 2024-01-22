@@ -591,7 +591,12 @@
 											<!-- International 
 											Standard -->
 											<fo:table-cell number-columns-spanned="2" padding-left="6mm">
-												<fo:block font-size="19.2pt" font-weight="bold">
+												<fo:block font-size="19.2pt" font-weight="bold" line-height="1.25">
+													<xsl:if test="$stage &lt;60 and $stagename != ''">
+														<xsl:attribute name="margin-top">12pt</xsl:attribute>
+														<xsl:value-of select="java:toUpperCase(java:java.lang.String.new($stagename))"/>
+														<xsl:value-of select="$linebreak"/>
+													</xsl:if>
 													<xsl:value-of select="$doctype_localized"/>
 												</fo:block>
 											</fo:table-cell>
@@ -640,7 +645,8 @@
 															</xsl:for-each>
 														</xsl:if>
 														
-														<xsl:if test="$stage-abbreviation = 'NWIP' or $stage-abbreviation = 'NP' or $stage-abbreviation = 'PWI' or $stage-abbreviation = 'AWI' or $stage-abbreviation = 'WD' or $stage-abbreviation = 'CD' or $stage-abbreviation = 'FDIS'">
+														<xsl:if test="$stage-abbreviation = 'NWIP' or $stage-abbreviation = 'NP' or $stage-abbreviation = 'PWI' or $stage-abbreviation = 'AWI' or $stage-abbreviation = 'WD' or $stage-abbreviation = 'CD' or $stage-abbreviation = 'FDIS'
+															or $stage-abbreviation = 'DIS' or $stage-abbreviation = 'DAmd' or $stage-abbreviation = 'DAM'">
 															<fo:block margin-top="10mm">
 																<xsl:copy-of select="$ics"/>
 															</fo:block>
@@ -650,8 +656,46 @@
 												</fo:block-container>
 											</fo:table-cell>
 											<fo:table-cell number-columns-spanned="2" padding-left="6mm">
-												<fo:block font-size="17.2pt" font-weight="bold" margin-top="6pt">
-													<xsl:call-template name="insertEditionAndDate"/>
+												<fo:block margin-top="6pt">
+													<xsl:variable name="edition_and_date">
+														<xsl:call-template name="insertEditionAndDate"/>
+													</xsl:variable>
+													<xsl:if test="normalize-space($edition_and_date) != ''">
+														<fo:block font-size="17.2pt" font-weight="bold">
+															<xsl:value-of select="$edition_and_date"/>
+														</fo:block>
+													</xsl:if>
+													<xsl:if test="$stage-abbreviation = 'DIS' or $stage-abbreviation = 'DAmd' or $stage-abbreviation = 'DAM' or
+																			$stage-abbreviation = 'FDIS' or $stage-abbreviation = 'FDAmd' or $stage-abbreviation = 'FDAM'">
+														<xsl:if test="normalize-space($editorialgroup) != ''">
+															<fo:block margin-bottom="3mm">
+																<xsl:copy-of select="$editorialgroup"/>
+															</fo:block>
+														</xsl:if>
+														<fo:block margin-bottom="3mm">
+															<xsl:copy-of select="$secretariat"/>
+														</fo:block>
+														<fo:block margin-bottom="3mm">
+														<!-- Voting begins on: -->
+															<xsl:call-template name="getLocalizedString">
+																<xsl:with-param name="key">voting_begins_on</xsl:with-param>
+															</xsl:call-template><xsl:text>:</xsl:text>
+															<fo:block font-weight="bold">
+																<xsl:call-template name="insertVoteStarted"/>
+															</fo:block>
+														</fo:block>
+													
+														<fo:block margin-bottom="3mm">
+															<!-- Voting terminates on: -->
+															<xsl:call-template name="getLocalizedString">
+																<xsl:with-param name="key">voting_terminates_on</xsl:with-param>
+															</xsl:call-template><xsl:text>:</xsl:text>
+															
+															<fo:block font-weight="bold">
+																<xsl:call-template name="insertVoteEnded"/>
+															</fo:block>
+														</fo:block>
+													</xsl:if>
 												</fo:block>
 											</fo:table-cell>
 										</fo:table-row>
@@ -702,6 +746,9 @@
 												</fo:block>
 											</fo:table-cell>
 											<fo:table-cell number-columns-spanned="2" padding-left="6mm" display-align="after" padding-bottom="-1mm">
+												<fo:block font-size="6.5pt" margin-bottom="9mm" margin-right="15mm">
+													<xsl:call-template name="insertDraftComments"/>
+												</fo:block>
 												<fo:block font-size="9.6pt">
 													<xsl:value-of select="concat('© ', $copyrightAbbr, ' ', $copyrightYear)"/>
 													<xsl:if test="$copyrightAbbrIEEE != ''">
@@ -731,49 +778,7 @@
 												</xsl:if>
 												<!-- margin-top="-30mm"  -->
 												<fo:block> <!-- margin-top="-100mm" -->
-													<xsl:if test="$stage-abbreviation = 'DIS' or 
-																						$stage-abbreviation = 'DAmd' or 
-																						$stage-abbreviation = 'DAM' or 
-																						$stage-abbreviation = 'NWIP' or 
-																						$stage-abbreviation = 'NP' or 
-																						$stage-abbreviation = 'PWI' or 
-																						$stage-abbreviation = 'AWI' or 
-																						$stage-abbreviation = 'WD' or 
-																						$stage-abbreviation = 'CD'">
-														<fo:block margin-bottom="1.5mm">
-															<xsl:text>THIS DOCUMENT IS A DRAFT CIRCULATED FOR COMMENT AND APPROVAL. IT IS THEREFORE SUBJECT TO CHANGE AND MAY NOT BE REFERRED TO AS AN INTERNATIONAL STANDARD UNTIL PUBLISHED AS SUCH.</xsl:text>
-														</fo:block>
-													</xsl:if>
-													<xsl:if test="$stage-abbreviation = 'FDIS' or 
-																						$stage-abbreviation = 'DIS' or 
-																						$stage-abbreviation = 'FDAmd' or 
-																						$stage-abbreviation = 'FDAM' or 
-																						$stage-abbreviation = 'DAmd' or 
-																						$stage-abbreviation = 'DAM' or 
-																						$stage-abbreviation = 'NWIP' or 
-																						$stage-abbreviation = 'NP' or 
-																						$stage-abbreviation = 'PWI' or 
-																						$stage-abbreviation = 'AWI' or 
-																						$stage-abbreviation = 'WD' or 
-																						$stage-abbreviation = 'CD'">
-														<fo:block margin-bottom="1.5mm">
-															<xsl:text>RECIPIENTS OF THIS DRAFT ARE INVITED TO
-																				SUBMIT, WITH THEIR COMMENTS, NOTIFICATION
-																				OF ANY RELEVANT PATENT RIGHTS OF WHICH
-																				THEY ARE AWARE AND TO PROVIDE SUPPORTING
-																				DOCUMENTATION.</xsl:text>
-														</fo:block>
-														<fo:block>
-															<xsl:text>IN ADDITION TO THEIR EVALUATION AS
-																	BEING ACCEPTABLE FOR INDUSTRIAL, TECHNOLOGICAL,
-																	COMMERCIAL AND USER PURPOSES,
-																	DRAFT INTERNATIONAL STANDARDS MAY ON
-																	OCCASION HAVE TO BE CONSIDERED IN THE
-																	LIGHT OF THEIR POTENTIAL TO BECOME STANDARDS
-																	TO WHICH REFERENCE MAY BE MADE IN
-																	NATIONAL REGULATIONS.</xsl:text>
-														</fo:block>
-													</xsl:if>
+													<xsl:call-template name="insertDraftComments"/>
 												</fo:block>
 											</fo:table-cell>
 											<fo:table-cell role="SKIP">
@@ -969,22 +974,12 @@
 														</fo:table-cell>
 														<fo:table-cell>
 															<fo:block font-weight="bold">
-																<xsl:choose>
-																	<xsl:when test="/iso:iso-standard/iso:bibdata/iso:date[@type = 'vote-started']/iso:on">
-																		<xsl:value-of select="/iso:iso-standard/iso:bibdata/iso:date[@type = 'vote-started']/iso:on"/>
-																	</xsl:when>
-																	<xsl:otherwise>YYYY-MM-DD</xsl:otherwise>
-																</xsl:choose>
+																<xsl:call-template name="insertVoteStarted"/>
 															</fo:block>
 														</fo:table-cell>
 														<fo:table-cell>
 															<fo:block font-weight="bold">
-																<xsl:choose>
-																	<xsl:when test="/iso:iso-standard/iso:bibdata/iso:date[@type = 'vote-ended']/iso:on">
-																		<xsl:value-of select="/iso:iso-standard/iso:bibdata/iso:date[@type = 'vote-ended']/iso:on"/>
-																	</xsl:when>
-																	<xsl:otherwise>YYYY-MM-DD</xsl:otherwise>
-																</xsl:choose>
+																<xsl:call-template name="insertVoteEnded"/>
 															</fo:block>
 														</fo:table-cell>
 													</fo:table-row>
@@ -1179,12 +1174,7 @@
 																					</xsl:call-template><xsl:text>:</xsl:text>
 																					<xsl:value-of select="$linebreak"/>
 																					<fo:inline font-weight="bold">
-																						<xsl:choose>
-																							<xsl:when test="/iso:iso-standard/iso:bibdata/iso:date[@type = 'vote-started']/iso:on">
-																								<xsl:value-of select="/iso:iso-standard/iso:bibdata/iso:date[@type = 'vote-started']/iso:on"/>
-																							</xsl:when>
-																							<xsl:otherwise>YYYY-MM-DD</xsl:otherwise>
-																						</xsl:choose>
+																						<xsl:call-template name="insertVoteStarted"/>
 																					</fo:inline>
 																				</fo:block>
 																				<fo:block>
@@ -1194,12 +1184,7 @@
 																					</xsl:call-template><xsl:text>:</xsl:text>
 																					<xsl:value-of select="$linebreak"/>
 																					<fo:inline font-weight="bold">
-																						<xsl:choose>
-																							<xsl:when test="/iso:iso-standard/iso:bibdata/iso:date[@type = 'vote-ended']/iso:on">
-																								<xsl:value-of select="/iso:iso-standard/iso:bibdata/iso:date[@type = 'vote-ended']/iso:on"/>
-																							</xsl:when>
-																							<xsl:otherwise>YYYY-MM-DD</xsl:otherwise>
-																						</xsl:choose>
+																						<xsl:call-template name="insertVoteEnded"/>
 																					</fo:inline>
 																				</fo:block>
 																		</fo:block>
@@ -1648,6 +1633,71 @@
 				<xsl:value-of select="$linebreak"/>
 				<xsl:value-of select="substring(/iso:iso-standard/iso:bibdata/iso:version/iso:revision-date,1, 7)"/>
 			</xsl:when>
+		</xsl:choose>
+	</xsl:template>
+	
+	<xsl:template name="insertDraftComments">
+		<xsl:if test="$stage-abbreviation = 'DIS' or 
+											$stage-abbreviation = 'DAmd' or 
+											$stage-abbreviation = 'DAM' or 
+											$stage-abbreviation = 'NWIP' or 
+											$stage-abbreviation = 'NP' or 
+											$stage-abbreviation = 'PWI' or 
+											$stage-abbreviation = 'AWI' or 
+											$stage-abbreviation = 'WD' or 
+											$stage-abbreviation = 'CD'">
+			<fo:block margin-bottom="1.5mm">
+				<xsl:text>THIS DOCUMENT IS A DRAFT CIRCULATED FOR COMMENT AND APPROVAL. IT IS THEREFORE SUBJECT TO CHANGE AND MAY NOT BE REFERRED TO AS AN INTERNATIONAL STANDARD UNTIL PUBLISHED AS SUCH.</xsl:text>
+			</fo:block>
+		</xsl:if>
+		<xsl:if test="$stage-abbreviation = 'FDIS' or 
+											$stage-abbreviation = 'DIS' or 
+											$stage-abbreviation = 'FDAmd' or 
+											$stage-abbreviation = 'FDAM' or 
+											$stage-abbreviation = 'DAmd' or 
+											$stage-abbreviation = 'DAM' or 
+											$stage-abbreviation = 'NWIP' or 
+											$stage-abbreviation = 'NP' or 
+											$stage-abbreviation = 'PWI' or 
+											$stage-abbreviation = 'AWI' or 
+											$stage-abbreviation = 'WD' or 
+											$stage-abbreviation = 'CD'">
+			<fo:block margin-bottom="1.5mm">
+				<xsl:text>RECIPIENTS OF THIS DRAFT ARE INVITED TO
+									SUBMIT, WITH THEIR COMMENTS, NOTIFICATION
+									OF ANY RELEVANT PATENT RIGHTS OF WHICH
+									THEY ARE AWARE AND TO PROVIDE SUPPORTING
+									DOCUMENTATION.</xsl:text>
+			</fo:block>
+			<fo:block>
+				<xsl:text>IN ADDITION TO THEIR EVALUATION AS
+						BEING ACCEPTABLE FOR INDUSTRIAL, TECHNOLOGICAL,
+						COMMERCIAL AND USER PURPOSES,
+						DRAFT INTERNATIONAL STANDARDS MAY ON
+						OCCASION HAVE TO BE CONSIDERED IN THE
+						LIGHT OF THEIR POTENTIAL TO BECOME STANDARDS
+						TO WHICH REFERENCE MAY BE MADE IN
+						NATIONAL REGULATIONS.</xsl:text>
+			</fo:block>
+		</xsl:if>
+	</xsl:template>
+	
+	<xsl:template name="insertVoteStarted">
+		<xsl:variable name="vote_started" select="normalize-space(/iso:iso-standard/iso:bibdata/iso:date[@type = 'vote-started']/iso:on)"/>
+		<xsl:choose>
+			<xsl:when test="$vote_started != ''">
+				<xsl:value-of select="$vote_started"/>
+			</xsl:when>
+			<xsl:otherwise>YYYY-MM-DD</xsl:otherwise>
+		</xsl:choose>
+	</xsl:template>
+	<xsl:template name="insertVoteEnded">
+		<xsl:variable name="vote_ended" select="normalize-space(/iso:iso-standard/iso:bibdata/iso:date[@type = 'vote-ended']/iso:on)"/>
+		<xsl:choose>
+			<xsl:when test="$vote_ended != ''">
+				<xsl:value-of select="$vote_ended"/>
+			</xsl:when>
+			<xsl:otherwise>YYYY-MM-DD</xsl:otherwise>
 		</xsl:choose>
 	</xsl:template>
 	
