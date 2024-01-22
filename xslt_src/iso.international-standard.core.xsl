@@ -8,6 +8,7 @@
 											xmlns:pdf="http://xmlgraphics.apache.org/fop/extensions/pdf"
 											xmlns:xlink="http://www.w3.org/1999/xlink"
 											xmlns:java="http://xml.apache.org/xalan/java"
+											xmlns:barcode="http://barcode4j.krysalis.org/ns" 
 											exclude-result-prefixes="java"
 											version="1.0">
 
@@ -74,18 +75,19 @@
 	<xsl:variable name="part" select="/iso:iso-standard/iso:bibdata/iso:ext/iso:structuredidentifier/iso:project-number/@part"/>
 	
 	<xsl:variable name="doctype" select="/iso:iso-standard/iso:bibdata/iso:ext/iso:doctype"/>	 
-  <xsl:variable name="doctype_localized" select="/iso:iso-standard/iso:bibdata/iso:ext/iso:doctype[@language = $lang]"/>
+	<xsl:variable name="doctype_localized_" select="/iso:iso-standard/iso:bibdata/iso:ext/iso:doctype[@language = $lang]"/>
+	<xsl:variable name="doctype_localized">
+		<xsl:choose>
+			<xsl:when test="$doctype_localized_ != ''">
+				<xsl:value-of select="translate(normalize-space($doctype_localized_),'-',' ')"/>
+			</xsl:when>
+			<xsl:otherwise>
+				<xsl:value-of select="translate(normalize-space($doctype),'-',' ')"/>
+			</xsl:otherwise>
+		</xsl:choose>
+	</xsl:variable>
     
-	<xsl:variable name="doctype_uppercased">
-    <xsl:choose>
-      <xsl:when test="$doctype_localized != ''">
-        <xsl:value-of select="java:toUpperCase(java:java.lang.String.new(translate(normalize-space($doctype_localized),'-',' ')))"/>
-      </xsl:when>
-      <xsl:otherwise>
-        <xsl:value-of select="java:toUpperCase(java:java.lang.String.new(translate(normalize-space($doctype),'-',' ')))"/>
-      </xsl:otherwise>
-    </xsl:choose>
-  </xsl:variable> 
+	<xsl:variable name="doctype_uppercased" select="java:toUpperCase(java:java.lang.String.new($doctype_localized))"/>
 	 	
 	<xsl:variable name="stage" select="number(/iso:iso-standard/iso:bibdata/iso:status/iso:stage)"/>
 	<xsl:variable name="substage" select="number(/iso:iso-standard/iso:bibdata/iso:status/iso:substage)"/>	
@@ -361,7 +363,14 @@
 							<fo:conditional-page-master-reference odd-or-even="odd" master-reference="cover-page-publishedISO-odd"/>
 						</fo:repeatable-page-master-alternatives>
 					</fo:page-sequence-master>
-
+					
+					<fo:simple-page-master master-name="cover-page_2024" page-width="{$pageWidth}mm" page-height="{$pageHeight}mm">
+						<fo:region-body margin-top="{$marginTopBottom_cover_page_2024}mm" margin-bottom="{$marginTopBottom_cover_page_2024}mm" margin-left="{$marginLeftRight_cover_page_2024}mm" margin-right="{$marginLeftRight_cover_page_2024}mm"/>
+						<fo:region-before region-name="header" extent="{$marginTopBottom_cover_page_2024}mm"/>
+						<fo:region-after region-name="footer" extent="{$marginTopBottom_cover_page_2024}mm"/>
+						<fo:region-start region-name="left-region" extent="{$marginLeftRight_cover_page_2024}mm"/>
+						<fo:region-end region-name="right-region" extent="{$marginLeftRight_cover_page_2024}mm"/>
+					</fo:simple-page-master>
 
 					<!-- contents pages -->
 					<!-- odd pages -->
@@ -562,6 +571,151 @@
 				
 				<!-- cover page -->
 				<xsl:choose>
+					<xsl:when test="$layoutVersion2024 = 'true'">
+						<fo:page-sequence master-reference="cover-page_2024" force-page-count="no-force">
+							<fo:flow flow-name="xsl-region-body">
+								<fo:table table-layout="fixed" width="100%" font-family="Inter">
+									<fo:table-column column-width="proportional-column-width(109)"/>
+									<fo:table-column column-width="proportional-column-width(1.9)"/>
+									<fo:table-column column-width="proportional-column-width(1.9)"/>
+									<fo:table-column column-width="proportional-column-width(70)"/>
+									<fo:table-body>
+										<fo:table-row height="44mm">
+											<fo:table-cell number-columns-spanned="2" border-right="{$cover_page_border}">
+												<fo:block>
+													<fo:instream-foreign-object content-height="19.4mm" content-width="19.4mm"  fox:alt-text="Image ISO Logo">
+														<xsl:copy-of select="$Image-ISO-Logo-SVG"/>
+													</fo:instream-foreign-object>
+												</fo:block>
+											</fo:table-cell>
+											<!-- International 
+											Standard -->
+											<fo:table-cell number-columns-spanned="2" padding-left="6mm">
+												<fo:block font-size="19.2pt" font-weight="bold">
+													<xsl:value-of select="$doctype_localized"/>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+										<fo:table-row height="44mm">
+											<fo:table-cell number-columns-spanned="2" border-right="{$cover_page_border}">
+												<fo:block>&#xa0;
+													</fo:block>
+											</fo:table-cell>
+											<fo:table-cell number-columns-spanned="2" display-align="after" padding-left="6mm">
+												<fo:block font-size="18.2pt" font-weight="bold">
+													<xsl:if test="$stage &gt;=60">
+														<xsl:attribute name="color"><xsl:value-of select="$color_red"/></xsl:attribute>
+													</xsl:if>
+													<xsl:value-of select="$docidentifierISO"/>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+										<fo:table-row height="1.4mm" font-size="0pt">
+											<fo:table-cell border-bottom="{$cover_page_border}"><fo:block>&#xa0;</fo:block></fo:table-cell>
+											<fo:table-cell number-columns-spanned="2"><fo:block>&#xa0;</fo:block></fo:table-cell>
+											<fo:table-cell border-bottom="{$cover_page_border}"><fo:block>&#xa0;</fo:block></fo:table-cell>
+										</fo:table-row>
+										<fo:table-row height="2mm" font-size="0pt">
+											<fo:table-cell number-columns-spanned="4"><fo:block>&#xa0;</fo:block></fo:table-cell>
+										</fo:table-row>
+										<fo:table-row height="88mm">
+											<fo:table-cell number-columns-spanned="2" border-right="{$cover_page_border}">
+											
+												<fo:block-container font-family="Cambria" line-height="1.1" role="SKIP">
+													<fo:block margin-right="3.5mm" role="SKIP">
+														<fo:block font-size="18pt" font-weight="bold" margin-top="6pt" role="H1">
+															<xsl:call-template name="insertTitlesLangMain"/>
+														</fo:block>
+																	
+														<xsl:if test="not($stage-abbreviation = 'FDAmd' or $stage-abbreviation = 'FDAM')">
+															<xsl:for-each select="xalan:nodeset($lang_other)/lang">
+																<xsl:variable name="lang_other" select="."/>
+																<fo:block font-size="12pt" role="SKIP"><xsl:value-of select="$linebreak"/></fo:block>
+																<fo:block font-size="11pt" font-style="italic" line-height="1.1" role="H1">
+																	<!-- Example: title-intro fr -->
+																	<xsl:call-template name="insertTitlesLangOther">
+																		<xsl:with-param name="lang_other" select="$lang_other"/>
+																	</xsl:call-template>
+																</fo:block>
+															</xsl:for-each>
+														</xsl:if>
+														
+														<xsl:if test="$stage-abbreviation = 'NWIP' or $stage-abbreviation = 'NP' or $stage-abbreviation = 'PWI' or $stage-abbreviation = 'AWI' or $stage-abbreviation = 'WD' or $stage-abbreviation = 'CD' or $stage-abbreviation = 'FDIS'">
+															<fo:block margin-top="10mm">
+																<xsl:copy-of select="$ics"/>
+															</fo:block>
+														</xsl:if>
+														
+													</fo:block>
+												</fo:block-container>
+											</fo:table-cell>
+											<fo:table-cell number-columns-spanned="2" padding-left="6mm">
+												<fo:block font-size="17.2pt" font-weight="bold" margin-top="6pt">
+													<xsl:call-template name="insertEditionAndDate"/>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+										<fo:table-row height="87mm">
+											<fo:table-cell number-columns-spanned="2" border-right="{$cover_page_border}" display-align="after" padding-bottom="-1mm">
+											
+												<xsl:if test="$stage &gt;=60">
+													<fo:block-container width="66.4mm" background-color="rgb(242,242,242)" display-align="before">
+														<fo:table table-layout="fixed" width="100%" role="SKIP">
+															<fo:table-column column-width="proportional-column-width(23)"/>
+															<fo:table-column column-width="proportional-column-width(43.5)"/>
+															<fo:table-body>
+																<fo:table-row>
+																	<fo:table-cell text-align="right" padding-top="3mm">
+																		<fo:block>
+																			<fo:instream-foreign-object fox:alt-text="QRcode">
+																				<!-- Todo: link generation -->
+																				<barcode:barcode
+																							xmlns:barcode="http://barcode4j.krysalis.org/ns"
+																							message="{concat('http://iso.org/', docid)}">
+																					<barcode:qr>
+																						<barcode:module-width>0.7mm</barcode:module-width>
+																						<barcode:ec-level>M</barcode:ec-level>
+																					</barcode:qr>
+																				</barcode:barcode>
+																			</fo:instream-foreign-object>
+																		</fo:block>
+																	</fo:table-cell>
+																	<fo:table-cell padding="4mm">
+																		<fo:block color="black" font-size="7.2pt" line-height="1.35">
+																			<xsl:text>Please share your feedback about the standard. Scan the QR code with your phone or click the link</xsl:text>
+																			<fo:block margin-top="2pt">[Insert link]</fo:block>
+																		</fo:block>
+																	</fo:table-cell>
+																</fo:table-row>
+															</fo:table-body>
+														</fo:table>
+													</fo:block-container>
+												</xsl:if>
+											
+												<fo:block font-size="9.6pt" margin-top="8mm">
+													<xsl:call-template name="getLocalizedString">
+														<xsl:with-param name="key">reference_number</xsl:with-param>
+													</xsl:call-template>
+												</fo:block>
+												<fo:block font-size="9.6pt">
+													<xsl:value-of select="$ISOnumber"/>																		
+												</fo:block>
+											</fo:table-cell>
+											<fo:table-cell number-columns-spanned="2" padding-left="6mm" display-align="after" padding-bottom="-1mm">
+												<fo:block font-size="9.6pt">
+													<xsl:value-of select="concat('© ', $copyrightAbbr, ' ', $copyrightYear)"/>
+													<xsl:if test="$copyrightAbbrIEEE != ''">
+														<xsl:value-of select="$linebreak"/>
+														<xsl:value-of select="concat('© ', $copyrightAbbrIEEE, ' ', $copyrightYear)"/>
+													</xsl:if>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:flow>
+						</fo:page-sequence>
+					</xsl:when> <!-- END: $layoutVersion2024 = 'true' -->
 					<xsl:when test="$stage-abbreviation != ''">
 						<fo:page-sequence master-reference="cover-page-publishedISO" force-page-count="no-force">
 							<fo:static-content flow-name="cover-page-footer" font-size="10pt">
@@ -841,19 +995,7 @@
 												<xsl:call-template name="insertTripleLine"/>
 												<fo:block margin-right="5mm" role="SKIP">
 													<fo:block font-size="18pt" font-weight="bold" margin-top="6pt" role="H1">
-													
-														<xsl:apply-templates select="/iso:iso-standard/iso:bibdata/iso:title[@language = $lang and @type = 'title-intro']"/>
-																		
-														<xsl:apply-templates select="/iso:iso-standard/iso:bibdata/iso:title[@language = $lang and @type = 'title-main']"/>
-														
-														<xsl:apply-templates select="/iso:iso-standard/iso:bibdata/iso:title[@language = $lang and @type = 'title-part']">
-															<xsl:with-param name="isMainLang">true</xsl:with-param>
-														</xsl:apply-templates>
-														
-														<xsl:apply-templates select="/iso:iso-standard/iso:bibdata/iso:title[@language = $lang and @type = 'title-amd']">
-															<xsl:with-param name="isMainLang">true</xsl:with-param>
-														</xsl:apply-templates>
-													
+														<xsl:call-template name="insertTitlesLangMain"/>
 													</fo:block>
 													
 													
@@ -862,20 +1004,10 @@
 													
 														<fo:block font-size="12pt" role="SKIP"><xsl:value-of select="$linebreak"/></fo:block>
 														<fo:block font-size="11pt" font-style="italic" line-height="1.1" role="H1">
-															
 															<!-- Example: title-intro fr -->
-															<xsl:apply-templates select="$XML/iso:iso-standard/iso:bibdata/iso:title[@language = $lang_other and @type = 'title-intro']"/>
-															
-															<xsl:apply-templates select="$XML/iso:iso-standard/iso:bibdata/iso:title[@language = $lang_other and @type = 'title-main']"/>
-															
-															<xsl:apply-templates select="$XML/iso:iso-standard/iso:bibdata/iso:title[@language = $lang_other and @type = 'title-part']">
-																<xsl:with-param name="curr_lang" select="$lang_other"/>
-															</xsl:apply-templates>
-															
-															<xsl:apply-templates select="$XML/iso:iso-standard/iso:bibdata/iso:title[@language = $lang_other and @type = 'title-amd']">
-																<xsl:with-param name="curr_lang" select="$lang_other"/>
-															</xsl:apply-templates>
-															
+															<xsl:call-template name="insertTitlesLangOther">
+																<xsl:with-param name="lang_other" select="$lang_other"/>
+															</xsl:call-template>
 														</fo:block>
 													</xsl:for-each>
 												</fo:block>
@@ -960,30 +1092,7 @@
 													<fo:table-row height="25mm" role="SKIP">
 														<fo:table-cell number-columns-spanned="3" font-size="10pt" line-height="1.2" role="SKIP">
 															<fo:block text-align="right">
-																<xsl:if test="$stage-abbreviation = 'PRF' or 
-																									$stage-abbreviation = 'IS' or 
-																									$stage-abbreviation = 'D' or 
-																									$stage-abbreviation = 'published'">
-																	<xsl:call-template name="printEdition"/>
-																</xsl:if>
-																<xsl:choose>
-																	<xsl:when test="($stage-abbreviation = 'NWIP' or $stage-abbreviation = 'NP' or $stage-abbreviation = 'PWI' or $stage-abbreviation = 'AWI' or $stage-abbreviation = 'WD' or $stage-abbreviation = 'CD' or $stage-abbreviation = 'FDIS') and /iso:iso-standard/iso:bibdata/iso:version/iso:revision-date">
-																		<xsl:value-of select="$linebreak"/>
-																		<xsl:value-of select="/iso:iso-standard/iso:bibdata/iso:version/iso:revision-date"/>
-																	</xsl:when>
-																	<xsl:when test="$stage-abbreviation = 'IS' and /iso:iso-standard/iso:bibdata/iso:date[@type = 'published']">
-																		<xsl:value-of select="$linebreak"/>
-																		<xsl:value-of select="/iso:iso-standard/iso:bibdata/iso:date[@type = 'published']"/>
-																	</xsl:when>
-																	<xsl:when test="($stage-abbreviation = 'IS' or $stage-abbreviation = 'D') and /iso:iso-standard/iso:bibdata/iso:date[@type = 'created']">
-																		<xsl:value-of select="$linebreak"/>
-																		<xsl:value-of select="/iso:iso-standard/iso:bibdata/iso:date[@type = 'created']"/>
-																	</xsl:when>
-																	<xsl:when test="$stage-abbreviation = 'IS' or $stage-abbreviation = 'published'">
-																		<xsl:value-of select="$linebreak"/>
-																		<xsl:value-of select="substring(/iso:iso-standard/iso:bibdata/iso:version/iso:revision-date,1, 7)"/>
-																	</xsl:when>
-																</xsl:choose>
+																<xsl:call-template name="insertEditionAndDate"/>
 															</fo:block>
 															<!-- <xsl:value-of select="$linebreak"/>
 															<xsl:value-of select="/iso:iso-standard/iso:bibdata/iso:version/iso:revision-date"/> -->
@@ -1106,19 +1215,7 @@
 															<fo:block-container line-height="1.1" role="SKIP">
 																<fo:block margin-right="3.5mm" role="SKIP">
 																	<fo:block font-size="18pt" font-weight="bold" margin-top="12pt" role="H1">
-																		
-																		<xsl:apply-templates select="/iso:iso-standard/iso:bibdata/iso:title[@language = $lang and @type = 'title-intro']"/>
-																		
-																		<xsl:apply-templates select="/iso:iso-standard/iso:bibdata/iso:title[@language = $lang and @type = 'title-main']"/>
-																		
-																		<xsl:apply-templates select="/iso:iso-standard/iso:bibdata/iso:title[@language = $lang and @type = 'title-part']">
-																			<xsl:with-param name="isMainLang">true</xsl:with-param>
-																		</xsl:apply-templates>
-																		
-																		<xsl:apply-templates select="/iso:iso-standard/iso:bibdata/iso:title[@language = $lang and @type = 'title-amd']">
-																			<xsl:with-param name="isMainLang">true</xsl:with-param>
-																		</xsl:apply-templates>
-																		
+																		<xsl:call-template name="insertTitlesLangMain"/>
 																	</fo:block>
 																				
 																	<xsl:if test="not($stage-abbreviation = 'FDAmd' or $stage-abbreviation = 'FDAM')">
@@ -1127,20 +1224,10 @@
 																			
 																			<fo:block font-size="12pt" role="SKIP"><xsl:value-of select="$linebreak"/></fo:block>
 																			<fo:block font-size="11pt" font-style="italic" line-height="1.1" role="H1">
-																				
 																				<!-- Example: title-intro fr -->
-																				<xsl:apply-templates select="$XML/iso:iso-standard/iso:bibdata/iso:title[@language = $lang_other and @type = 'title-intro']"/>
-																				
-																				<xsl:apply-templates select="$XML/iso:iso-standard/iso:bibdata/iso:title[@language = $lang_other and @type = 'title-main']"/>
-																				
-																				<xsl:apply-templates select="$XML/iso:iso-standard/iso:bibdata/iso:title[@language = $lang_other and @type = 'title-part']">
-																					<xsl:with-param name="curr_lang" select="$lang_other"/>
-																				</xsl:apply-templates>
-																				
-																				<xsl:apply-templates select="$XML/iso:iso-standard/iso:bibdata/iso:title[@language = $lang_other and @type = 'title-amd']">
-																					<xsl:with-param name="curr_lang" select="$lang_other"/>
-																				</xsl:apply-templates>
-																				
+																				<xsl:call-template name="insertTitlesLangOther">
+																					<xsl:with-param name="lang_other" select="$lang_other"/>
+																				</xsl:call-template>
 																			</fo:block>
 																		</xsl:for-each>
 																	</xsl:if>
@@ -1248,15 +1335,7 @@
 									<fo:block-container line-height="1.1" role="SKIP">
 										<fo:block margin-right="40mm" role="SKIP">
 											<fo:block font-size="18pt" font-weight="bold" margin-top="12pt" role="H1">
-											
-												<xsl:apply-templates select="/iso:iso-standard/iso:bibdata/iso:title[@language = $lang and @type = 'title-intro']"/>
-																			
-												<xsl:apply-templates select="/iso:iso-standard/iso:bibdata/iso:title[@language = $lang and @type = 'title-main']"/>
-												
-												<xsl:apply-templates select="/iso:iso-standard/iso:bibdata/iso:title[@language = $lang and @type = 'title-part']">
-													<xsl:with-param name="isMainLang">true</xsl:with-param>
-												</xsl:apply-templates>
-												
+												<xsl:call-template name="insertTitlesLangMain"/>
 											</fo:block>
 												
 											<xsl:for-each select="xalan:nodeset($lang_other)/lang">
@@ -1264,16 +1343,10 @@
 												
 												<fo:block font-size="12pt" role="SKIP"><xsl:value-of select="$linebreak"/></fo:block>
 												<fo:block font-size="11pt" font-style="italic" line-height="1.1" role="H1">
-													
 													<!-- Example: title-intro fr -->
-													<xsl:apply-templates select="$XML/iso:iso-standard/iso:bibdata/iso:title[@language = $lang_other and @type = 'title-intro']"/>
-													
-													<xsl:apply-templates select="$XML/iso:iso-standard/iso:bibdata/iso:title[@language = $lang_other and @type = 'title-main']"/>
-													
-													<xsl:apply-templates select="$XML/iso:iso-standard/iso:bibdata/iso:title[@language = $lang_other and @type = 'title-part']">
-														<xsl:with-param name="curr_lang" select="$lang_other"/>
-													</xsl:apply-templates>
-													
+													<xsl:call-template name="insertTitlesLangOther">
+														<xsl:with-param name="lang_other" select="$lang_other"/>
+													</xsl:call-template>
 												</fo:block>
 											</xsl:for-each>
 										</fo:block>
@@ -1336,15 +1409,7 @@
 								<fo:block-container font-size="16pt" role="SKIP">
 									<!-- Information and documentation — Codes for transcription systems  -->
 										<fo:block font-weight="bold" role="H1">
-										
-											<xsl:apply-templates select="/iso:iso-standard/iso:bibdata/iso:title[@language = $lang and @type = 'title-intro']"/>
-																		
-											<xsl:apply-templates select="/iso:iso-standard/iso:bibdata/iso:title[@language = $lang and @type = 'title-main']"/>
-											
-											<xsl:apply-templates select="/iso:iso-standard/iso:bibdata/iso:title[@language = $lang and @type = 'title-part']">
-												<xsl:with-param name="isMainLang">true</xsl:with-param>
-											</xsl:apply-templates>
-										
+											<xsl:call-template name="insertTitlesLangMain"/>
 										</fo:block>
 										
 										<xsl:for-each select="xalan:nodeset($lang_other)/lang">
@@ -1352,16 +1417,10 @@
 										
 											<fo:block font-size="12pt" role="SKIP"><xsl:value-of select="$linebreak"/></fo:block>
 											<fo:block role="H1">
-											
 												<!-- Example: title-intro fr -->
-												<xsl:apply-templates select="$XML/iso:iso-standard/iso:bibdata/iso:title[@language = $lang_other and @type = 'title-intro']"/>
-												
-												<xsl:apply-templates select="$XML/iso:iso-standard/iso:bibdata/iso:title[@language = $lang_other and @type = 'title-main']"/>
-												
-												<xsl:apply-templates select="$XML/iso:iso-standard/iso:bibdata/iso:title[@language = $lang_other and @type = 'title-part']">
-													<xsl:with-param name="curr_lang" select="$lang_other"/>
-												</xsl:apply-templates>
-													
+												<xsl:call-template name="insertTitlesLangOther">
+													<xsl:with-param name="lang_other" select="$lang_other"/>
+												</xsl:call-template>
 											</fo:block>
 											
 										</xsl:for-each>
@@ -1542,6 +1601,55 @@
 		
 	</xsl:template> 
 	
+	<xsl:template name="insertTitlesLangMain">
+		<xsl:apply-templates select="/iso:iso-standard/iso:bibdata/iso:title[@language = $lang and @type = 'title-intro']"/>
+		<xsl:apply-templates select="/iso:iso-standard/iso:bibdata/iso:title[@language = $lang and @type = 'title-main']"/>
+		<xsl:apply-templates select="/iso:iso-standard/iso:bibdata/iso:title[@language = $lang and @type = 'title-part']">
+			<xsl:with-param name="isMainLang">true</xsl:with-param>
+		</xsl:apply-templates>
+		<xsl:apply-templates select="/iso:iso-standard/iso:bibdata/iso:title[@language = $lang and @type = 'title-amd']">
+			<xsl:with-param name="isMainLang">true</xsl:with-param>
+		</xsl:apply-templates>
+	</xsl:template>
+	
+	<xsl:template name="insertTitlesLangOther">
+		<xsl:param name="lang_other"/>
+		<xsl:apply-templates select="$XML/iso:iso-standard/iso:bibdata/iso:title[@language = $lang_other and @type = 'title-intro']"/>
+		<xsl:apply-templates select="$XML/iso:iso-standard/iso:bibdata/iso:title[@language = $lang_other and @type = 'title-main']"/>
+		<xsl:apply-templates select="$XML/iso:iso-standard/iso:bibdata/iso:title[@language = $lang_other and @type = 'title-part']">
+			<xsl:with-param name="curr_lang" select="$lang_other"/>
+		</xsl:apply-templates>
+		<xsl:apply-templates select="$XML/iso:iso-standard/iso:bibdata/iso:title[@language = $lang_other and @type = 'title-amd']">
+			<xsl:with-param name="curr_lang" select="$lang_other"/>
+		</xsl:apply-templates>																
+	</xsl:template>
+	
+	<xsl:template name="insertEditionAndDate">
+		<xsl:if test="$stage-abbreviation = 'PRF' or 
+											$stage-abbreviation = 'IS' or 
+											$stage-abbreviation = 'D' or 
+											$stage-abbreviation = 'published'">
+			<xsl:call-template name="printEdition"/>
+		</xsl:if>
+		<xsl:choose>
+			<xsl:when test="($stage-abbreviation = 'NWIP' or $stage-abbreviation = 'NP' or $stage-abbreviation = 'PWI' or $stage-abbreviation = 'AWI' or $stage-abbreviation = 'WD' or $stage-abbreviation = 'CD' or $stage-abbreviation = 'FDIS') and /iso:iso-standard/iso:bibdata/iso:version/iso:revision-date">
+				<xsl:value-of select="$linebreak"/>
+				<xsl:value-of select="/iso:iso-standard/iso:bibdata/iso:version/iso:revision-date"/>
+			</xsl:when>
+			<xsl:when test="$stage-abbreviation = 'IS' and /iso:iso-standard/iso:bibdata/iso:date[@type = 'published']">
+				<xsl:value-of select="$linebreak"/>
+				<xsl:value-of select="/iso:iso-standard/iso:bibdata/iso:date[@type = 'published']"/>
+			</xsl:when>
+			<xsl:when test="($stage-abbreviation = 'IS' or $stage-abbreviation = 'D') and /iso:iso-standard/iso:bibdata/iso:date[@type = 'created']">
+				<xsl:value-of select="$linebreak"/>
+				<xsl:value-of select="/iso:iso-standard/iso:bibdata/iso:date[@type = 'created']"/>
+			</xsl:when>
+			<xsl:when test="$stage-abbreviation = 'IS' or $stage-abbreviation = 'published'">
+				<xsl:value-of select="$linebreak"/>
+				<xsl:value-of select="substring(/iso:iso-standard/iso:bibdata/iso:version/iso:revision-date,1, 7)"/>
+			</xsl:when>
+		</xsl:choose>
+	</xsl:template>
 	
 	<xsl:template match="iso:preface/iso:clause[@type = 'toc']" priority="3">
 		<xsl:choose>
@@ -1719,7 +1827,8 @@
 		<xsl:param name="isMainLang">false</xsl:param>
 		<xsl:param name="isMainBody">false</xsl:param>
 		<xsl:if test="$part != ''">
-			<xsl:text> — </xsl:text>
+			<!-- <xsl:text> — </xsl:text> -->
+			<xsl:text>&#xa0;— </xsl:text>
 			<xsl:variable name="part-text">
 				<xsl:choose>
 					<xsl:when test="$isMainLang = 'true'">
@@ -2300,7 +2409,7 @@
 		<fo:static-content flow-name="header-even" role="artifact">
 			<fo:block-container height="24mm" display-align="before">
 				<fo:block font-size="12pt" font-weight="bold" padding-top="12.5mm">
-					<xsl:call-template name="insertLayoutVersion2014AttributesTop"/>
+					<xsl:call-template name="insertLayoutVersion2024AttributesTop"/>
 					<xsl:value-of select="$ISOnumber"/>
 				</fo:block>
 			</fo:block-container>
@@ -2312,7 +2421,7 @@
 				<xsl:when test="$stage-abbreviation = 'FDAmd' or $stage-abbreviation = 'FDAM' or $stage-abbreviation = 'DAmd' or $stage-abbreviation = 'DAM'">
 					<fo:block-container height="24mm" display-align="before">
 						<fo:block font-size="12pt" font-weight="bold" text-align="right" padding-top="12.5mm">
-							<xsl:call-template name="insertLayoutVersion2014AttributesTop"/>
+							<xsl:call-template name="insertLayoutVersion2024AttributesTop"/>
 							<xsl:value-of select="$ISOnumber"/>
 						</fo:block>
 					</fo:block-container>
@@ -2337,7 +2446,7 @@
 		<fo:static-content flow-name="header-odd" role="artifact">
 			<fo:block-container height="24mm" display-align="before">
 				<fo:block font-size="12pt" font-weight="bold" text-align="right" padding-top="12.5mm">
-					<xsl:call-template name="insertLayoutVersion2014AttributesTop"/>
+					<xsl:call-template name="insertLayoutVersion2024AttributesTop"/>
 					<xsl:value-of select="$ISOnumber"/>
 				</fo:block>
 			</fo:block-container>
@@ -2435,7 +2544,7 @@
 		<xsl:if test="$copyrightAbbrIEEE = ''"><fo:block>&#xa0;</fo:block></xsl:if>
 		<fo:block font-size="11pt" font-weight="{$font-weight}"><fo:page-number/></fo:block>
 	</xsl:template>
-	<xsl:template name="insertLayoutVersion2014AttributesTop">
+	<xsl:template name="insertLayoutVersion2024AttributesTop">
 		<xsl:if test="$layoutVersion2024 = 'true'">
 			<xsl:attribute name="padding-top">18mm</xsl:attribute>
 			<xsl:attribute name="text-align">center</xsl:attribute>
