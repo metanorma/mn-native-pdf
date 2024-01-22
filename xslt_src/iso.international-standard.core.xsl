@@ -624,7 +624,7 @@
 											<fo:table-cell number-columns-spanned="4"><fo:block>&#xa0;</fo:block></fo:table-cell>
 										</fo:table-row>
 										<fo:table-row height="88mm">
-											<fo:table-cell number-columns-spanned="2" border-right="{$cover_page_border}">
+											<fo:table-cell number-columns-spanned="2" border-right="{$cover_page_border}" padding-right="4mm">
 											
 												<fo:block-container font-family="Cambria" line-height="1.1" role="SKIP">
 													<fo:block margin-right="3.5mm" role="SKIP">
@@ -644,14 +644,6 @@
 																</fo:block>
 															</xsl:for-each>
 														</xsl:if>
-														
-														<xsl:if test="$stage-abbreviation = 'NWIP' or $stage-abbreviation = 'NP' or $stage-abbreviation = 'PWI' or $stage-abbreviation = 'AWI' or $stage-abbreviation = 'WD' or $stage-abbreviation = 'CD' or $stage-abbreviation = 'FDIS'
-															or $stage-abbreviation = 'DIS' or $stage-abbreviation = 'DAmd' or $stage-abbreviation = 'DAM'">
-															<fo:block margin-top="10mm">
-																<xsl:copy-of select="$ics"/>
-															</fo:block>
-														</xsl:if>
-														
 													</fo:block>
 												</fo:block-container>
 											</fo:table-cell>
@@ -699,44 +691,80 @@
 												</fo:block>
 											</fo:table-cell>
 										</fo:table-row>
-										<fo:table-row height="87mm">
-											<fo:table-cell number-columns-spanned="2" border-right="{$cover_page_border}" display-align="after" padding-bottom="-1mm">
+										<fo:table-row border="0.5pt solid green">
+											<fo:table-cell number-columns-spanned="2" border-right="{$cover_page_border}" padding-right="4mm">
+												<fo:block-container height="15mm">
+													<fo:block>
+														<xsl:if test="$stage-abbreviation = 'NWIP' or $stage-abbreviation = 'NP' or $stage-abbreviation = 'PWI' or $stage-abbreviation = 'AWI' or $stage-abbreviation = 'WD' or $stage-abbreviation = 'CD' or $stage-abbreviation = 'FDIS'
+															or $stage-abbreviation = 'DIS' or $stage-abbreviation = 'DAmd' or $stage-abbreviation = 'DAM'">
+															<xsl:copy-of select="$ics"/>
+														</xsl:if>
+													</fo:block>
+												</fo:block-container>
+											</fo:table-cell>
+											<fo:table-cell number-columns-spanned="2" padding-left="6mm">
+												<fo:block>&#xa0;</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+										<fo:table-row height="60mm" border="0.5pt solid blue">
+											<fo:table-cell number-columns-spanned="2" border-right="{$cover_page_border}" display-align="after" padding-right="4mm">
 											
-												<xsl:if test="$stage &gt;=60">
-													<fo:block-container width="66.4mm" background-color="rgb(242,242,242)" display-align="before">
-														<fo:table table-layout="fixed" width="100%" role="SKIP">
-															<fo:table-column column-width="proportional-column-width(23)"/>
-															<fo:table-column column-width="proportional-column-width(43.5)"/>
-															<fo:table-body>
-																<fo:table-row>
-																	<fo:table-cell text-align="right" padding-top="3mm">
-																		<fo:block>
-																			<fo:instream-foreign-object fox:alt-text="QRcode">
-																				<!-- Todo: link generation -->
-																				<barcode:barcode
-																							xmlns:barcode="http://barcode4j.krysalis.org/ns"
-																							message="{concat('http://iso.org/', docid)}">
-																					<barcode:qr>
-																						<barcode:module-width>0.7mm</barcode:module-width>
-																						<barcode:ec-level>M</barcode:ec-level>
-																					</barcode:qr>
-																				</barcode:barcode>
-																			</fo:instream-foreign-object>
-																		</fo:block>
-																	</fo:table-cell>
-																	<fo:table-cell padding="4mm">
-																		<fo:block color="black" font-size="7.2pt" line-height="1.35">
-																			<xsl:text>Please share your feedback about the standard. Scan the QR code with your phone or click the link</xsl:text>
-																			<fo:block margin-top="2pt">[Insert link]</fo:block>
-																		</fo:block>
-																	</fo:table-cell>
-																</fo:table-row>
-															</fo:table-body>
-														</fo:table>
-													</fo:block-container>
+												<xsl:variable name="additionalNotes">
+													<xsl:call-template name="insertCoverPageAdditionalNotes"/>
+												</xsl:variable>
+												<xsl:if test="normalize-space($additionalNotes) != ''">
+													<xsl:attribute name="display-align">center</xsl:attribute>
+													<fo:block>
+														<xsl:copy-of select="$additionalNotes"/>												
+													</fo:block>
 												</xsl:if>
-											
-												<fo:block font-size="9.6pt" margin-top="8mm">
+												
+												<fo:block>
+													<xsl:if test="$stage &gt;=60">
+														<fo:block-container width="66.4mm" background-color="rgb(242,242,242)" display-align="before">
+															<fo:table table-layout="fixed" width="100%" role="SKIP">
+																<fo:table-column column-width="proportional-column-width(23)"/>
+																<fo:table-column column-width="proportional-column-width(43.5)"/>
+																<fo:table-body>
+																	<fo:table-row>
+																		<fo:table-cell text-align="right" padding-top="3mm">
+																			<fo:block>
+																				<fo:instream-foreign-object fox:alt-text="QRcode">
+																					<!-- Todo: link generation -->
+																					<barcode:barcode
+																								xmlns:barcode="http://barcode4j.krysalis.org/ns"
+																								message="{concat('http://iso.org/', docid)}">
+																						<barcode:qr>
+																							<barcode:module-width>0.7mm</barcode:module-width>
+																							<barcode:ec-level>M</barcode:ec-level>
+																						</barcode:qr>
+																					</barcode:barcode>
+																				</fo:instream-foreign-object>
+																			</fo:block>
+																		</fo:table-cell>
+																		<fo:table-cell padding="4mm">
+																			<fo:block color="black" font-size="7.2pt" line-height="1.35">
+																				<xsl:text>Please share your feedback about the standard. Scan the QR code with your phone or click the link</xsl:text>
+																				<fo:block margin-top="2pt">[Insert link]</fo:block>
+																			</fo:block>
+																		</fo:table-cell>
+																	</fo:table-row>
+																</fo:table-body>
+															</fo:table>
+														</fo:block-container>
+													</xsl:if>
+												</fo:block>
+											</fo:table-cell>
+											<fo:table-cell number-columns-spanned="2" padding-left="6mm" display-align="after">
+												<fo:block font-size="6.5pt" margin-right="15mm">
+													<xsl:call-template name="insertDraftComments"/>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+										
+										<fo:table-row height="12mm">
+											<fo:table-cell number-columns-spanned="2" border-right="{$cover_page_border}" display-align="after" padding-bottom="-1mm">
+												<fo:block font-size="9.6pt">
 													<xsl:call-template name="getLocalizedString">
 														<xsl:with-param name="key">reference_number</xsl:with-param>
 													</xsl:call-template>
@@ -746,9 +774,6 @@
 												</fo:block>
 											</fo:table-cell>
 											<fo:table-cell number-columns-spanned="2" padding-left="6mm" display-align="after" padding-bottom="-1mm">
-												<fo:block font-size="6.5pt" margin-bottom="9mm" margin-right="15mm">
-													<xsl:call-template name="insertDraftComments"/>
-												</fo:block>
 												<fo:block font-size="9.6pt">
 													<xsl:value-of select="concat('© ', $copyrightAbbr, ' ', $copyrightYear)"/>
 													<xsl:if test="$copyrightAbbrIEEE != ''">
@@ -794,41 +819,7 @@
 													</xsl:if>
 													
 													<fo:block>
-														<xsl:if test="$stage-abbreviation = 'NWIP' or $stage-abbreviation = 'NP' or $stage-abbreviation = 'PWI' or $stage-abbreviation = 'AWI' or $stage-abbreviation = 'WD' or $stage-abbreviation = 'CD' or $stage-abbreviation = 'DIS' or $stage-abbreviation = 'FDIS' or $stage-abbreviation = 'DAmd' or $stage-abbreviation = 'DAM'">
-															<xsl:variable name="text">
-																<xsl:for-each select="/iso:iso-standard/iso:preface/iso:note[@coverpage='true']/iso:p">
-																	<fo:block>
-																		<xsl:apply-templates />
-																	</fo:block>
-																</xsl:for-each>
-															</xsl:variable>
-															<xsl:if test="normalize-space($text) != ''">
-																<fo:block-container margin-left="1mm" role="SKIP"> <!-- margin-bottom="7mm" margin-top="-15mm" -->
-																	<fo:block font-size="9pt" border="0.5pt solid black" fox:border-radius="5pt" padding-left="2mm" padding-top="2mm" padding-bottom="2mm">
-																		<!-- <xsl:text>This document is circulated as received from the committee secretariat.</xsl:text> -->
-																		<xsl:copy-of select="xalan:nodeset($text)/node()"/>
-																	</fo:block>
-																</fo:block-container>
-															</xsl:if>
-															
-															<xsl:if test="normalize-space($iso-fast-track) = 'true'">
-																<fo:block-container space-before="2mm" role="SKIP">
-																	<fo:block background-color="rgb(77,77,77)" color="white" fox:border-radius="5pt" text-align="center" display-align="center" font-size="19pt" font-weight="bold" role="SKIP">
-																		<fo:block-container height="13.2mm" role="SKIP">
-																			<fo:block>
-																				<!-- <xsl:text>FAST TRACK PROCEDURE</xsl:text>  -->
-																				<xsl:variable name="fast_track_procedure_text">
-																					<xsl:call-template name="getLocalizedString">
-																						<xsl:with-param name="key">fast-track-procedure</xsl:with-param>
-																					</xsl:call-template>
-																				</xsl:variable>
-																				<xsl:value-of select="java:toUpperCase(java:java.lang.String.new($fast_track_procedure_text))"/>
-																			</fo:block>
-																		</fo:block-container>
-																	</fo:block>
-																</fo:block-container>
-															</xsl:if>
-														</xsl:if>
+														<xsl:call-template name="insertCoverPageAdditionalNotes"/>
 													</fo:block>
 												</fo:block-container>
 												<fo:block role="SKIP">
@@ -1699,6 +1690,56 @@
 			</xsl:when>
 			<xsl:otherwise>YYYY-MM-DD</xsl:otherwise>
 		</xsl:choose>
+	</xsl:template>
+	
+	<xsl:template name="insertCoverPageAdditionalNotes">
+		<xsl:if test="$stage-abbreviation = 'NWIP' or $stage-abbreviation = 'NP' or $stage-abbreviation = 'PWI' or $stage-abbreviation = 'AWI' or $stage-abbreviation = 'WD' or $stage-abbreviation = 'CD' or $stage-abbreviation = 'DIS' or $stage-abbreviation = 'FDIS' or $stage-abbreviation = 'DAmd' or $stage-abbreviation = 'DAM'">
+			<xsl:variable name="text">
+				<xsl:for-each select="/iso:iso-standard/iso:preface/iso:note[@coverpage='true']/iso:p">
+					<fo:block>
+						<xsl:apply-templates />
+					</fo:block>
+				</xsl:for-each>
+			</xsl:variable>
+			<xsl:if test="normalize-space($text) != ''">
+				<fo:block-container margin-left="1mm" role="SKIP"> <!-- margin-bottom="7mm" margin-top="-15mm" -->
+					<fo:block font-size="9pt" border="0.5pt solid black" fox:border-radius="5pt" padding-left="2mm" padding-top="2mm" padding-bottom="2mm">
+						<xsl:if test="$layoutVersion2024 = 'true'">
+							<xsl:attribute name="fox:border-radius">0pt</xsl:attribute>
+						</xsl:if>
+						<!-- <xsl:text>This document is circulated as received from the committee secretariat.</xsl:text> -->
+						<xsl:copy-of select="xalan:nodeset($text)/node()"/>
+					</fo:block>
+				</fo:block-container>
+			</xsl:if>
+			
+			<xsl:variable name="iso-fast-track" select="normalize-space(/iso:iso-standard/iso:bibdata/iso:ext/iso:fast-track)"/>
+			
+			<xsl:if test="normalize-space($iso-fast-track) = 'true'">
+				<fo:block-container space-before="2mm" role="SKIP">
+					<fo:block background-color="rgb(77,77,77)" color="white" fox:border-radius="5pt" text-align="center" display-align="center" font-size="19pt" font-weight="bold" role="SKIP">
+						<xsl:if test="$layoutVersion2024 = 'true'">
+							<xsl:attribute name="fox:border-radius">0pt</xsl:attribute>
+						</xsl:if>
+						<fo:block-container height="13.2mm" role="SKIP">
+							<xsl:if test="$layoutVersion2024 = 'true'">
+								<xsl:attribute name="height">11.2mm</xsl:attribute>
+								<xsl:attribute name="padding-top">2mm</xsl:attribute>
+							</xsl:if>
+							<fo:block>
+								<!-- <xsl:text>FAST TRACK PROCEDURE</xsl:text>  -->
+								<xsl:variable name="fast_track_procedure_text">
+									<xsl:call-template name="getLocalizedString">
+										<xsl:with-param name="key">fast-track-procedure</xsl:with-param>
+									</xsl:call-template>
+								</xsl:variable>
+								<xsl:value-of select="java:toUpperCase(java:java.lang.String.new($fast_track_procedure_text))"/>
+							</fo:block>
+						</fo:block-container>
+					</fo:block>
+				</fo:block-container>
+			</xsl:if>
+		</xsl:if>
 	</xsl:template>
 	
 	<xsl:template match="iso:preface/iso:clause[@type = 'toc']" priority="3">
