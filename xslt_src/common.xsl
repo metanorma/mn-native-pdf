@@ -281,7 +281,12 @@
 			<xsl:when test="$namespace = 'iec'">15</xsl:when>
 			<xsl:when test="$namespace = 'ieee'">25.4</xsl:when>
 			<xsl:when test="$namespace = 'iho'">25.4</xsl:when>
-			<xsl:when test="$namespace = 'iso'">15</xsl:when>
+			<xsl:when test="$namespace = 'iso'">
+				<xsl:choose>
+					<xsl:when test="$layoutVersion2024 = 'true'">25.5</xsl:when>
+					<xsl:otherwise>15</xsl:otherwise>
+				</xsl:choose>
+			</xsl:when>
 			<xsl:when test="$namespace = 'itu'">20</xsl:when>
 			<xsl:when test="$namespace = 'jcgm'">23.5</xsl:when>
 			<xsl:when test="$namespace = 'jis'">24.5</xsl:when>
@@ -17699,7 +17704,12 @@
 
 	<xsl:template name="printEdition">
 		<xsl:variable name="edition_i18n" select="normalize-space((//*[contains(local-name(), '-standard')])[1]/*[local-name() = 'bibdata']/*[local-name() = 'edition'][normalize-space(@language) != ''])"/>
-		<xsl:text>&#xA0;</xsl:text>
+		<xsl:if test="$namespace = 'jcgm'"><xsl:text>&#xA0;</xsl:text></xsl:if>
+		<xsl:if test="$namespace = 'iso'">
+			<xsl:if test="$layoutVersion2024 = 'false'">
+				<xsl:text>&#xA0;</xsl:text>
+			</xsl:if>
+		</xsl:if>
 		<xsl:choose>
 			<xsl:when test="$edition_i18n != ''">
 				<!-- Example: <edition language="fr">deuxième édition</edition> -->
