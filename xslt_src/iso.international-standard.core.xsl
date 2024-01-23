@@ -116,7 +116,7 @@
 
 	<xsl:variable name="stage-fullname-uppercased">
 		<xsl:choose>
-			<xsl:when test="$stagename_localized != ''">
+			<xsl:when test="$stagename_localized != '' and $layoutVersion2024 = 'false'">
 				<xsl:value-of select="java:toUpperCase(java:java.lang.String.new($stagename_localized))"/>
 			</xsl:when>
 			<xsl:when test="$stagename != ''">
@@ -616,12 +616,50 @@
 											Standard -->
 											<fo:table-cell number-columns-spanned="2" padding-left="6mm">
 												<fo:block font-size="19.2pt" font-weight="bold" line-height="1.25">
-													<xsl:if test="$stage &lt;60 and $stagename != ''">
-														<xsl:attribute name="margin-top">12pt</xsl:attribute>
-														<xsl:value-of select="java:toUpperCase(java:java.lang.String.new($stagename))"/>
-														<xsl:value-of select="$linebreak"/>
+												
+													
+													<xsl:choose>
+														<xsl:when test="$stage-abbreviation = 'FDAmd' or $stage-abbreviation = 'FDAM'"><xsl:value-of select="$doctype_uppercased"/></xsl:when>
+														<xsl:when test="$doctype = 'amendment'">
+															<xsl:value-of select="java:toUpperCase(java:java.lang.String.new(translate(/iso:iso-standard/iso:bibdata/iso:ext/iso:updates-document-type,'-',' ')))"/>
+														</xsl:when>
+														<xsl:when test="$stagename-header-coverpage != ''">
+															<xsl:attribute name="margin-top">12pt</xsl:attribute>
+															
+															<xsl:value-of select="$stagename-header-coverpage"/>
+															<!-- if there is iteration number, then print it -->
+															<xsl:variable name="iteration" select="number(/iso:iso-standard/iso:bibdata/iso:status/iso:iteration)"/>
+															
+															<xsl:if test="number($iteration) = $iteration and 
+																																							($stage-abbreviation = 'NWIP' or 
+																																							$stage-abbreviation = 'NP' or 
+																																							$stage-abbreviation = 'PWI' or 
+																																							$stage-abbreviation = 'AWI' or 
+																																							$stage-abbreviation = 'WD' or 
+																																							$stage-abbreviation = 'CD')">
+																<xsl:text>&#xA0;</xsl:text><xsl:value-of select="$iteration"/>
+															</xsl:if>
+															
+															<xsl:value-of select="$linebreak"/>
+															
+															<xsl:value-of select="$doctype_localized"/>
+															
+														</xsl:when>
+														<xsl:otherwise>
+															<xsl:value-of select="$doctype_localized"/>
+														</xsl:otherwise>
+													</xsl:choose>
+													
+													
+													<xsl:if test="$doctype = 'amendment' and not($stage-abbreviation = 'FDAmd' or $stage-abbreviation = 'FDAM')">
+														<xsl:text> </xsl:text>
+														<xsl:variable name="amendment-number" select="/iso:iso-standard/iso:bibdata/iso:ext/iso:structuredidentifier/iso:project-number/@amendment"/>
+														<xsl:if test="normalize-space($amendment-number) != ''">
+															<xsl:value-of select="$amendment-number"/><xsl:text> </xsl:text>
+														</xsl:if>
+
 													</xsl:if>
-													<xsl:value-of select="$doctype_localized"/>
+													
 												</fo:block>
 											</fo:table-cell>
 										</fo:table-row>
@@ -676,14 +714,38 @@
 											</fo:table-cell>
 											<fo:table-cell number-columns-spanned="2" padding-left="6mm">
 												<fo:block margin-top="6pt">
-													<xsl:variable name="edition_and_date">
-														<xsl:call-template name="insertEditionAndDate"/>
-													</xsl:variable>
-													<xsl:if test="normalize-space($edition_and_date) != ''">
+												
+													<xsl:choose>
+														<xsl:when test="$doctype = 'amendment' and not($stage-abbreviation = 'FDAmd' or $stage-abbreviation = 'FDAM')">
+															<fo:block font-size="17.2pt" font-weight="bold">
+																<xsl:if test="/iso:iso-standard/iso:bibdata/iso:date[@type = 'updated']">																		
+																	<xsl:value-of select="/iso:iso-standard/iso:bibdata/iso:date[@type = 'updated']"/>
+																</xsl:if>
+															</fo:block>
+														</xsl:when>
+														<xsl:when test="$stage-abbreviation = 'IS'">
+															<xsl:variable name="edition_and_date">
+																<xsl:call-template name="insertEditionAndDate"/>
+															</xsl:variable>
+															<xsl:if test="normalize-space($edition_and_date) != ''">
+																<fo:block font-size="17.2pt" font-weight="bold">
+																	<xsl:value-of select="$edition_and_date"/>
+																</fo:block>
+															</xsl:if>
+														</xsl:when> 
+													</xsl:choose>
+												
+													<xsl:variable name="date_corrected" select="normalize-space(/iso:iso-standard/iso:bibdata/iso:date[@type = 'corrected'])"/>
+													<xsl:if test="$date_corrected != ''">
 														<fo:block font-size="17.2pt" font-weight="bold">
-															<xsl:value-of select="$edition_and_date"/>
+															<xsl:call-template name="getLocalizedString">
+																<xsl:with-param name="key">corrected_version</xsl:with-param>
+															</xsl:call-template>
+															<xsl:value-of select="$linebreak"/>
+															<xsl:value-of select="$date_corrected"/>
 														</fo:block>
 													</xsl:if>
+												
 													<xsl:if test="$stage-abbreviation = 'DIS' or $stage-abbreviation = 'DAmd' or $stage-abbreviation = 'DAM' or
 																			$stage-abbreviation = 'FDIS' or $stage-abbreviation = 'FDAmd' or $stage-abbreviation = 'FDAM'">
 														<xsl:if test="normalize-space($editorialgroup) != ''">
@@ -741,10 +803,19 @@
 												<xsl:variable name="additionalNotes">
 													<xsl:call-template name="insertCoverPageAdditionalNotes"/>
 												</xsl:variable>
-												<xsl:if test="normalize-space($additionalNotes) != ''">
+												<xsl:if test="normalize-space($additionalNotes) != '' or $stage-abbreviation = 'PRF'">
 													<xsl:attribute name="display-align">center</xsl:attribute>
 													<fo:block>
 														<xsl:copy-of select="$additionalNotes"/>												
+													</fo:block>
+												</xsl:if>
+												
+												<xsl:if test="$stage-abbreviation = 'PRF'">
+													<fo:block font-size="28pt" font-weight="bold">
+														<xsl:call-template name="add-letter-spacing">
+															<xsl:with-param name="text" select="$proof-text"/>
+															<xsl:with-param name="letter-spacing" select="0.65"/>
+														</xsl:call-template>
 													</fo:block>
 												</xsl:if>
 												
@@ -817,6 +888,7 @@
 							</fo:flow>
 						</fo:page-sequence>
 					</xsl:when> <!-- END: $layoutVersion2024 = 'true' -->
+					
 					<xsl:when test="$stage-abbreviation != ''">
 						<fo:page-sequence master-reference="cover-page-publishedISO" force-page-count="no-force">
 							<fo:static-content flow-name="cover-page-footer" font-size="10pt">
