@@ -63,7 +63,7 @@
   
 	<xsl:variable name="ISOnumber">
 		<xsl:choose>
-			<xsl:when test="$layoutVersion2024 = 'true'">
+			<xsl:when test="$layoutVersion = '2024'">
 				<xsl:value-of select="/iso:iso-standard/iso:bibdata/iso:docidentifier[@type = 'iso-with-lang']"/>
 			</xsl:when>
 			<xsl:otherwise>
@@ -116,7 +116,7 @@
 
 	<xsl:variable name="stage-fullname">
 		<xsl:choose>
-			<xsl:when test="$stagename_localized != '' and $layoutVersion2024 = 'false'">
+			<xsl:when test="$stagename_localized != '' and $layoutVersion != '2024'">
 				<xsl:value-of select="$stagename_localized"/>
 			</xsl:when>
 			<xsl:when test="$stagename != ''">
@@ -139,7 +139,7 @@
 	<xsl:variable name="stagename-header-firstpage">
 		<xsl:choose>
 			<xsl:when test="$stage-abbreviation = 'PRF'"><xsl:value-of select="$doctype_localized"/></xsl:when>
-			<xsl:when test="$layoutVersion2024 = 'true' and $stagename_localized != ''">
+			<xsl:when test="$layoutVersion = '2024' and $stagename_localized != ''">
 				<xsl:value-of select="$stagename_localized"/>
 			</xsl:when>
 			<xsl:otherwise>
@@ -295,7 +295,13 @@
 	</xsl:variable>
 	<xsl:variable name="ics" select="xalan:nodeset($ics_)"/>
 	
-	<xsl:variable name="layoutVersion2024" select="normalize-space(number($copyrightYear) &gt;= 2024)"/>
+	<xsl:variable name="layoutVersion_">
+		<xsl:choose>
+			<xsl:when test="normalize-space(number($copyrightYear) &gt;= 2024)">2024</xsl:when>
+			<xsl:otherwise>default</xsl:otherwise>
+		</xsl:choose>
+	</xsl:variable>
+	<xsl:variable name="layoutVersion" select="normalize-space($layoutVersion_)"/>
 	<xsl:variable name="cover_page_border">0.25pt solid black</xsl:variable>
 	<xsl:variable name="color_red">rgb(237, 28, 36)</xsl:variable>
 	
@@ -319,7 +325,7 @@
 					<xsl:with-param name="root-style" select="$root-style"/>
 				</xsl:call-template>
 				
-				<xsl:if test="$layoutVersion2024 = 'true'">
+				<xsl:if test="$layoutVersion = '2024'">
 					<xsl:attribute name="color">rgb(35,31,32)</xsl:attribute>
 				</xsl:if>
 				
@@ -578,7 +584,7 @@
 				
 				<!-- cover page -->
 				<xsl:choose>
-					<xsl:when test="$layoutVersion2024 = 'true'">
+					<xsl:when test="$layoutVersion = '2024'">
 						<fo:page-sequence master-reference="cover-page_2024" force-page-count="no-force">
 							<fo:flow flow-name="xsl-region-body">
 								<fo:table table-layout="fixed" width="100%" font-family="Inter">
@@ -599,19 +605,32 @@
 											<fo:table-cell number-columns-spanned="2" padding-left="6mm">
 												<fo:block font-size="19.2pt" font-weight="bold" line-height="1.25">
 												
+													<xsl:variable name="updates-document-type" select="/iso:iso-standard/iso:bibdata/iso:ext/iso:updates-document-type"/>
+													<xsl:variable name="updates-document-type_localized">
+														<xsl:call-template name="getLocalizedString">
+															<xsl:with-param name="key" select="concat('doctype_dict.',$updates-document-type)"/>
+														</xsl:call-template>
+													</xsl:variable>
+													<xsl:variable name="updates-document-type_str">
+														<xsl:choose>
+															<xsl:when test="$updates-document-type != '' and $updates-document-type_localized != $updates-document-type">
+																<xsl:value-of select="$updates-document-type_localized"/>
+															</xsl:when>
+															<xsl:otherwise>
+																<xsl:value-of select="java:toUpperCase(java:java.lang.String.new(translate($updates-document-type,'-',' ')))"/>
+															</xsl:otherwise>
+														</xsl:choose>
+													</xsl:variable>
 													
 													<xsl:choose>
 														<xsl:when test="$stage-abbreviation = 'FDAmd' or $stage-abbreviation = 'FDAM'"><xsl:value-of select="$doctype_uppercased"/></xsl:when>
-														<xsl:when test="$doctype = 'amendment'">
-															<xsl:value-of select="java:toUpperCase(java:java.lang.String.new(translate(/iso:iso-standard/iso:bibdata/iso:ext/iso:updates-document-type,'-',' ')))"/>
-														</xsl:when>
 														<xsl:when test="$stagename-header-coverpage != ''">
 															<xsl:attribute name="margin-top">12pt</xsl:attribute>
 															
 															<xsl:value-of select="$stagename-header-coverpage"/>
+															
 															<!-- if there is iteration number, then print it -->
 															<xsl:variable name="iteration" select="number(/iso:iso-standard/iso:bibdata/iso:status/iso:iteration)"/>
-															
 															<xsl:if test="number($iteration) = $iteration and 
 																																							($stage-abbreviation = 'NWIP' or 
 																																							$stage-abbreviation = 'NP' or 
@@ -624,23 +643,22 @@
 															
 															<xsl:value-of select="$linebreak"/>
 															
-															<xsl:value-of select="$doctype_localized"/>
-															
+															<xsl:choose>
+																<xsl:when test="$doctype = 'amendment'">
+																	<xsl:value-of select="$updates-document-type_str"/>
+																</xsl:when>
+																<xsl:otherwise>
+																	<xsl:value-of select="$doctype_localized"/>
+																</xsl:otherwise>
+															</xsl:choose>
+														</xsl:when>
+														<xsl:when test="$doctype = 'amendment'">
+															<xsl:value-of select="$updates-document-type_str"/>
 														</xsl:when>
 														<xsl:otherwise>
 															<xsl:value-of select="$doctype_localized"/>
 														</xsl:otherwise>
 													</xsl:choose>
-													
-													
-													<xsl:if test="$doctype = 'amendment' and not($stage-abbreviation = 'FDAmd' or $stage-abbreviation = 'FDAM')">
-														<xsl:text> </xsl:text>
-														<xsl:variable name="amendment-number" select="/iso:iso-standard/iso:bibdata/iso:ext/iso:structuredidentifier/iso:project-number/@amendment"/>
-														<xsl:if test="normalize-space($amendment-number) != ''">
-															<xsl:value-of select="$amendment-number"/><xsl:text> </xsl:text>
-														</xsl:if>
-
-													</xsl:if>
 													
 												</fo:block>
 											</fo:table-cell>
@@ -697,25 +715,35 @@
 											<fo:table-cell number-columns-spanned="2" padding-left="6mm">
 												<fo:block margin-top="6pt">
 												
-													<xsl:choose>
-														<xsl:when test="$doctype = 'amendment' and not($stage-abbreviation = 'FDAmd' or $stage-abbreviation = 'FDAM')">
+													<xsl:if test="$stage-abbreviation = 'IS'">
+														<xsl:variable name="edition_and_date">
+															<xsl:call-template name="insertEditionAndDate"/>
+														</xsl:variable>
+														<xsl:if test="normalize-space($edition_and_date) != ''">
 															<fo:block font-size="17.2pt" font-weight="bold">
-																<xsl:if test="/iso:iso-standard/iso:bibdata/iso:date[@type = 'updated']">																		
-																	<xsl:value-of select="/iso:iso-standard/iso:bibdata/iso:date[@type = 'updated']"/>
-																</xsl:if>
+																<xsl:value-of select="$edition_and_date"/>
 															</fo:block>
-														</xsl:when>
-														<xsl:when test="$stage-abbreviation = 'IS'">
-															<xsl:variable name="edition_and_date">
-																<xsl:call-template name="insertEditionAndDate"/>
-															</xsl:variable>
-															<xsl:if test="normalize-space($edition_and_date) != ''">
-																<fo:block font-size="17.2pt" font-weight="bold">
-																	<xsl:value-of select="$edition_and_date"/>
-																</fo:block>
+														</xsl:if>
+													</xsl:if>
+												
+													<xsl:if test="$doctype = 'amendment' and not($stage-abbreviation = 'FDAmd' or $stage-abbreviation = 'FDAM')">
+														<fo:block font-size="17.2pt" font-weight="bold">
+															<xsl:value-of select="$doctype_uppercased"/>
+															<xsl:text> </xsl:text>
+															<xsl:variable name="amendment-number" select="/iso:iso-standard/iso:bibdata/iso:ext/iso:structuredidentifier/iso:project-number/@amendment"/>
+															<xsl:if test="normalize-space($amendment-number) != ''">
+																<xsl:value-of select="$amendment-number"/><xsl:text> </xsl:text>
 															</xsl:if>
-														</xsl:when> 
-													</xsl:choose>
+														</fo:block>
+													</xsl:if>
+												
+													<xsl:if test="$doctype = 'amendment' and not($stage-abbreviation = 'FDAmd' or $stage-abbreviation = 'FDAM')">
+														<xsl:if test="/iso:iso-standard/iso:bibdata/iso:date[@type = 'updated']">																		
+															<fo:block font-size="17.2pt" font-weight="bold">
+																<xsl:value-of select="/iso:iso-standard/iso:bibdata/iso:date[@type = 'updated']"/>
+															</fo:block>
+														</xsl:if>
+													</xsl:if>
 												
 													<xsl:variable name="date_corrected" select="normalize-space(/iso:iso-standard/iso:bibdata/iso:date[@type = 'corrected'])"/>
 													<xsl:if test="$date_corrected != ''">
@@ -859,7 +887,7 @@
 								</fo:table>
 							</fo:flow>
 						</fo:page-sequence>
-					</xsl:when> <!-- END: $layoutVersion2024 = 'true' -->
+					</xsl:when> <!-- END: $layoutVersion = '2024' -->
 					
 					<xsl:when test="$stage-abbreviation != ''">
 						<fo:page-sequence master-reference="cover-page-publishedISO" force-page-count="no-force">
@@ -1530,7 +1558,7 @@
 							<xsl:if test="/iso:iso-standard/iso:boilerplate/iso:copyright-statement">
 							
 								<fo:block-container height="252mm" display-align="after" role="SKIP">
-									<xsl:if test="$layoutVersion2024 = 'true'">
+									<xsl:if test="$layoutVersion = '2024'">
 										<xsl:attribute name="height">241.5mm</xsl:attribute>
 									</xsl:if>
 									<!-- <fo:block margin-bottom="3mm">
@@ -1632,7 +1660,7 @@
 					<xsl:apply-templates select="xalan:nodeset($current_document_index)" mode="index"/>
 					
 					<xsl:choose>
-						<xsl:when test="$layoutVersion2024 = 'true'">
+						<xsl:when test="$layoutVersion = '2024'">
 							<xsl:call-template name="insertLastPage_2024"/>
 						</xsl:when>
 						<xsl:otherwise>
@@ -1728,7 +1756,7 @@
 		</xsl:variable>
 		<xsl:if test="normalize-space($date) != ''">
 			<xsl:choose>
-				<xsl:when test="$layoutVersion2024 = 'true'">
+				<xsl:when test="$layoutVersion = '2024'">
 					<xsl:if test="normalize-space($edition) != ''">
 						<xsl:value-of select="$linebreak"/>
 					</xsl:if>
@@ -1818,7 +1846,7 @@
 			<xsl:if test="normalize-space($text) != ''">
 				<fo:block-container margin-left="1mm" role="SKIP"> <!-- margin-bottom="7mm" margin-top="-15mm" -->
 					<fo:block font-size="9pt" border="0.5pt solid black" fox:border-radius="5pt" padding-left="2mm" padding-top="2mm" padding-bottom="2mm">
-						<xsl:if test="$layoutVersion2024 = 'true'">
+						<xsl:if test="$layoutVersion = '2024'">
 							<xsl:attribute name="font-size">9pt</xsl:attribute>
 							<xsl:attribute name="fox:border-radius">0pt</xsl:attribute>
 							<xsl:attribute name="border">1pt solid black</xsl:attribute>
@@ -1834,11 +1862,11 @@
 			<xsl:if test="normalize-space($iso-fast-track) = 'true'">
 				<fo:block-container space-before="2mm" role="SKIP">
 					<fo:block background-color="rgb(77,77,77)" color="white" fox:border-radius="5pt" text-align="center" display-align="center" font-size="19pt" font-weight="bold" role="SKIP">
-						<xsl:if test="$layoutVersion2024 = 'true'">
+						<xsl:if test="$layoutVersion = '2024'">
 							<xsl:attribute name="fox:border-radius">0pt</xsl:attribute>
 						</xsl:if>
 						<fo:block-container height="13.2mm" role="SKIP">
-							<xsl:if test="$layoutVersion2024 = 'true'">
+							<xsl:if test="$layoutVersion = '2024'">
 								<xsl:attribute name="height">11.2mm</xsl:attribute>
 								<xsl:attribute name="padding-top">2mm</xsl:attribute>
 							</xsl:if>
@@ -2635,14 +2663,14 @@
 				</xsl:when>
 				<xsl:otherwise>
 					<fo:block-container margin-top="13mm" height="9mm" width="172mm" border-top="0.5mm solid black" border-bottom="0.5mm solid black" display-align="center" background-color="white">
-						<xsl:if test="$layoutVersion2024 = 'true'">
+						<xsl:if test="$layoutVersion = '2024'">
 							<xsl:attribute name="border-top">0.8mm solid black</xsl:attribute>
 							<xsl:attribute name="border-bottom">0.8mm solid black</xsl:attribute>
 						</xsl:if>
 						<fo:block text-align-last="justify" font-size="12pt" font-weight="bold">
 							
 							<xsl:choose>
-								<xsl:when test="$layoutVersion2024 = 'true'">
+								<xsl:when test="$layoutVersion = '2024'">
 									<xsl:value-of select="$stagename-header-firstpage"/>
 								</xsl:when>
 								<xsl:otherwise>
@@ -2676,7 +2704,7 @@
 		<fo:static-content flow-name="footer-even" role="artifact">
 			<fo:block-container>
 				<xsl:choose>
-					<xsl:when test="$layoutVersion2024 = 'true'">
+					<xsl:when test="$layoutVersion = '2024'">
 						<xsl:call-template name="insertFooter2024">
 							<xsl:with-param name="font-weight" select="$font-weight"/>
 						</xsl:call-template>
@@ -2717,7 +2745,7 @@
 		<fo:static-content flow-name="footer-odd" role="artifact">
 			<fo:block-container>
 				<xsl:choose>
-					<xsl:when test="$layoutVersion2024 = 'true'">
+					<xsl:when test="$layoutVersion = '2024'">
 						<xsl:call-template name="insertFooter2024">
 							<xsl:with-param name="font-weight" select="$font-weight"/>
 						</xsl:call-template>
@@ -2763,7 +2791,7 @@
 		<fo:block font-size="11pt" font-weight="{$font-weight}"><fo:page-number/></fo:block>
 	</xsl:template>
 	<xsl:template name="insertLayoutVersion2024AttributesTop">
-		<xsl:if test="$layoutVersion2024 = 'true'">
+		<xsl:if test="$layoutVersion = '2024'">
 			<xsl:attribute name="padding-top">17mm</xsl:attribute>
 			<xsl:attribute name="text-align">center</xsl:attribute>
 		</xsl:if>
@@ -2977,7 +3005,7 @@
 	<xsl:variable name="Image-IEC-Logo-SVG">
 		<xsl:variable name="logo_color">
 			<xsl:choose>
-				<xsl:when test="$stage &gt;=60 and $layoutVersion2024 = 'true'">rgb(0,96,170)</xsl:when>
+				<xsl:when test="$stage &gt;=60 and $layoutVersion = '2024'">rgb(0,96,170)</xsl:when>
 				<xsl:otherwise>rgb(35,31,32)</xsl:otherwise>
 			</xsl:choose>
 		</xsl:variable>

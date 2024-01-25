@@ -201,7 +201,7 @@
 			<xsl:when test="$namespace = 'iho'">24.5</xsl:when>
 			<xsl:when test="$namespace = 'iso'">
 				<xsl:choose>
-					<xsl:when test="$layoutVersion2024 = 'true'">18.7</xsl:when>
+					<xsl:when test="$layoutVersion = '2024'">18.7</xsl:when>
 					<xsl:otherwise>25</xsl:otherwise>
 				</xsl:choose>
 			</xsl:when>
@@ -234,7 +234,7 @@
 			<xsl:when test="$namespace = 'iho'">25</xsl:when>
 			<xsl:when test="$namespace = 'iso'">
 				<xsl:choose>
-					<xsl:when test="$layoutVersion2024 = 'true'">18.7</xsl:when>
+					<xsl:when test="$layoutVersion = '2024'">18.7</xsl:when>
 					<xsl:otherwise>12.5</xsl:otherwise>
 				</xsl:choose>
 			</xsl:when>
@@ -293,7 +293,7 @@
 			<xsl:when test="$namespace = 'iho'">25.4</xsl:when>
 			<xsl:when test="$namespace = 'iso'">
 				<xsl:choose>
-					<xsl:when test="$layoutVersion2024 = 'true'">25.5</xsl:when>
+					<xsl:when test="$layoutVersion = '2024'">25.5</xsl:when>
 					<xsl:otherwise>15</xsl:otherwise>
 				</xsl:choose>
 			</xsl:when>
@@ -17716,7 +17716,7 @@
 		<xsl:variable name="edition_i18n" select="normalize-space((//*[contains(local-name(), '-standard')])[1]/*[local-name() = 'bibdata']/*[local-name() = 'edition'][normalize-space(@language) != ''])"/>
 		<xsl:if test="$namespace = 'jcgm'"><xsl:text>&#xA0;</xsl:text></xsl:if>
 		<xsl:if test="$namespace = 'iso'">
-			<xsl:if test="$layoutVersion2024 = 'false'">
+			<xsl:if test="$layoutVersion != '2024'">
 				<xsl:text>&#xA0;</xsl:text>
 			</xsl:if>
 		</xsl:if>
