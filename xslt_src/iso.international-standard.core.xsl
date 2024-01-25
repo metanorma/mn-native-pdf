@@ -58,13 +58,15 @@
 		</xsl:if>
 	</xsl:variable>
   
-	<xsl:variable name="lang-1st-letter_tmp" select="substring-before(substring-after(/iso:iso-standard/iso:bibdata/iso:docidentifier[@type = 'iso-with-lang'], '('), ')')"/>
+	<xsl:variable name="docidentifier_iso_with_lang" select="/iso:iso-standard/iso:bibdata/iso:docidentifier[@type = 'iso-with-lang']"/>
+	
+	<xsl:variable name="lang-1st-letter_tmp" select="substring-before(substring-after($docidentifier_iso_with_lang, '('), ')')"/>
 	<xsl:variable name="lang-1st-letter" select="concat('(', $lang-1st-letter_tmp , ')')"/>
   
 	<xsl:variable name="ISOnumber">
 		<xsl:choose>
-			<xsl:when test="$layoutVersion = '2024'">
-				<xsl:value-of select="/iso:iso-standard/iso:bibdata/iso:docidentifier[@type = 'iso-with-lang']"/>
+			<xsl:when test="$layoutVersion = '2024' and $docidentifier_iso_with_lang != ''">
+				<xsl:value-of select="$docidentifier_iso_with_lang"/>
 			</xsl:when>
 			<xsl:otherwise>
 				<xsl:value-of select="/iso:iso-standard/iso:bibdata/iso:docidentifier[@type = 'iso-reference']"/>
@@ -116,7 +118,7 @@
 
 	<xsl:variable name="stage-fullname">
 		<xsl:choose>
-			<xsl:when test="$stagename_localized != '' and $layoutVersion != '2024'">
+			<xsl:when test="$stagename_localized != ''"> <!--  and $layoutVersion != '2024' -->
 				<xsl:value-of select="$stagename_localized"/>
 			</xsl:when>
 			<xsl:when test="$stagename != ''">
@@ -297,7 +299,7 @@
 	
 	<xsl:variable name="layoutVersion_">
 		<xsl:choose>
-			<xsl:when test="normalize-space(number($copyrightYear) &gt;= 2024)">2024</xsl:when>
+			<xsl:when test="number($copyrightYear) &gt;= 2024">2024</xsl:when>
 			<xsl:otherwise>default</xsl:otherwise>
 		</xsl:choose>
 	</xsl:variable>
@@ -622,8 +624,14 @@
 														</xsl:choose>
 													</xsl:variable>
 													
+													
 													<xsl:choose>
-														<xsl:when test="$stage-abbreviation = 'FDAmd' or $stage-abbreviation = 'FDAM'"><xsl:value-of select="$doctype_uppercased"/></xsl:when>
+														<xsl:when test="$stage-abbreviation = 'DIS' or $stage-abbreviation = 'DAmd' or $stage-abbreviation = 'DAM'">
+															<xsl:value-of select="java:toUpperCase(java:java.lang.String.new($stagename))"/>
+															<xsl:value-of select="$linebreak"/>
+															<xsl:value-of select="$doctype_localized"/>
+														</xsl:when>
+														<!-- <xsl:when test="$stage-abbreviation = 'FDAmd' or $stage-abbreviation = 'FDAM'"><xsl:value-of select="$doctype_uppercased"/></xsl:when> -->
 														<xsl:when test="$stagename-header-coverpage != ''">
 															<xsl:attribute name="margin-top">12pt</xsl:attribute>
 															
@@ -709,6 +717,14 @@
 																</fo:block>
 															</xsl:for-each>
 														</xsl:if>
+														
+														<xsl:if test="$stage-abbreviation = 'NWIP' or $stage-abbreviation = 'NP' or $stage-abbreviation = 'PWI' or $stage-abbreviation = 'AWI' or $stage-abbreviation = 'WD' or $stage-abbreviation = 'CD' or $stage-abbreviation = 'FDIS'
+															or $stage-abbreviation = 'DIS' or $stage-abbreviation = 'DAmd' or $stage-abbreviation = 'DAM'">
+															<fo:block margin-top="20mm">
+																<xsl:copy-of select="$ics"/>
+															</fo:block>
+														</xsl:if>
+														
 													</fo:block>
 												</fo:block-container>
 											</fo:table-cell>
@@ -788,12 +804,7 @@
 														</fo:block>
 													</xsl:if>
 												</fo:block>
-												<xsl:if test="$stage-abbreviation = 'NWIP' or $stage-abbreviation = 'NP' or $stage-abbreviation = 'PWI' or $stage-abbreviation = 'AWI' or $stage-abbreviation = 'WD' or $stage-abbreviation = 'CD' or $stage-abbreviation = 'FDIS'
-													or $stage-abbreviation = 'DIS' or $stage-abbreviation = 'DAmd' or $stage-abbreviation = 'DAM'">
-													<fo:block margin-top="20mm">
-														<xsl:copy-of select="$ics"/>
-													</fo:block>
-												</xsl:if>
+												
 											</fo:table-cell>
 										</fo:table-row>
 										
@@ -870,7 +881,7 @@
 													</xsl:call-template>
 												</fo:block>
 												<fo:block font-size="9.6pt">
-													<xsl:value-of select="$ISOnumber"/>																		
+													<xsl:value-of select="$ISOnumber"/>
 												</fo:block>
 											</fo:table-cell>
 											<fo:table-cell number-columns-spanned="2" padding-left="6mm" display-align="after" padding-bottom="-1mm">
