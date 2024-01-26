@@ -2070,6 +2070,9 @@
 			<xsl:if test="$continued = 'true'">
 				<xsl:attribute name="margin-bottom">2pt</xsl:attribute>
 			</xsl:if>
+			<xsl:if test="$layoutVersion = '2024'">
+				<xsl:attribute name="font-size">10.5pt</xsl:attribute>
+			</xsl:if>
 		</xsl:if>
 	</xsl:template> <!-- refine_table-name-style -->
 	

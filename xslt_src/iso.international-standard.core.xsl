@@ -304,7 +304,7 @@
 		</xsl:choose>
 	</xsl:variable>
 	<xsl:variable name="layoutVersion" select="normalize-space($layoutVersion_)"/>
-	<xsl:variable name="cover_page_border">0.25pt solid black</xsl:variable>
+	<xsl:variable name="cover_page_border">0.5pt solid black</xsl:variable>
 	<xsl:variable name="color_red">rgb(237, 28, 36)</xsl:variable>
 	
 	
@@ -318,6 +318,9 @@
 				
 				<xsl:variable name="root-style">
 					<root-style xsl:use-attribute-sets="root-style">
+						<xsl:if test="$layoutVersion = '2024'">
+							<xsl:attribute name="font-size">10.5pt</xsl:attribute>
+						</xsl:if>
 						<!-- <xsl:if test="$lang = 'zh'">
 							<xsl:attribute name="font-family">Source Han Sans, Times New Roman, Cambria Math</xsl:attribute>
 						</xsl:if> -->
@@ -2021,7 +2024,13 @@
 	
 	<xsl:template match="iso:preface/iso:clause[@type = 'toc']/iso:title" priority="3">
 		<fo:block text-align-last="justify" font-size="16pt" margin-top="10pt" margin-bottom="18pt">
+			<xsl:if test="$layoutVersion = '2024'">
+				<xsl:attribute name="font-size">15.3pt</xsl:attribute>
+			</xsl:if>
 			<fo:inline font-size="16pt" font-weight="bold" role="SKIP">
+				<xsl:if test="$layoutVersion = '2024'">
+					<xsl:attribute name="font-size">15.3pt</xsl:attribute>
+				</xsl:if>
 				<!-- Contents -->
 				<!-- <xsl:call-template name="getLocalizedString">
 					<xsl:with-param name="key">table_of_contents</xsl:with-param>
@@ -2031,6 +2040,9 @@
 			<fo:inline keep-together.within-line="always" role="SKIP">
 				<fo:leader leader-pattern="space"/>
 				<fo:inline font-weight="normal" font-size="10pt" role="SKIP">
+					<xsl:if test="$layoutVersion = '2024'">
+						<xsl:attribute name="font-size">9.6pt</xsl:attribute>
+					</xsl:if>
 					<!-- Page -->
 					<xsl:call-template name="getLocalizedString">
 					<xsl:with-param name="key">locality.page</xsl:with-param>
@@ -2162,6 +2174,9 @@
 	
 	<xsl:template match="iso:sections/iso:p[@class = 'zzSTDTitle1']" priority="4">
 		<fo:block font-size="18pt" font-weight="bold" margin-top="40pt" margin-bottom="20pt" line-height="1.1" role="H1">
+			<xsl:if test="$layoutVersion = '2024'">
+				<xsl:attribute name="font-size">17.2pt</xsl:attribute>
+			</xsl:if>
 			<xsl:if test="following-sibling::*[1][self::iso:p][starts-with(@class, 'zzSTDTitle')]">
 				<xsl:attribute name="margin-bottom">0pt</xsl:attribute>
 			</xsl:if>
@@ -2180,6 +2195,9 @@
 		<!-- Example: <p class="zzSTDTitle2" displayorder="3">AMENDMENT 1: Mass fraction of extraneous matter, milled rice (nonglutinous), sample dividers and recommendations relating to storage and transport conditions</p> -->
 		<xsl:if test="$doctype = 'amendment'">
 			<fo:block font-size="18pt" margin-top="12pt" margin-bottom="20pt" margin-right="0mm" font-weight="normal" line-height="1.1" role="H1">
+				<xsl:if test="$layoutVersion = '2024'">
+					<xsl:attribute name="font-size">17.2pt</xsl:attribute>
+				</xsl:if>
 				<xsl:apply-templates />
 			</fo:block>
 		</xsl:if>
@@ -2282,9 +2300,19 @@
 	
 	<xsl:template match="iso:copyright-statement/iso:clause[1]/iso:title" priority="2">
 		<fo:block margin-left="0.5mm" margin-bottom="3mm" role="H1">
-				<fo:external-graphic src="{concat('data:image/png;base64,', normalize-space($Image-Attention))}" width="14mm" content-height="13mm" content-width="scale-to-fit" scaling="uniform" fox:alt-text="Image {@alt}"/>
+				<fo:external-graphic src="{concat('data:image/png;base64,', normalize-space($Image-Attention))}" width="14mm" content-height="13mm" content-width="scale-to-fit" scaling="uniform" fox:alt-text="Image {@alt}">
+					<xsl:if test="$layoutVersion = '2024'">
+						<xsl:attribute name="width">13mm</xsl:attribute>
+						<xsl:attribute name="content-height">11.5mm</xsl:attribute>
+						<xsl:attribute name="margin-bottom">-1mm</xsl:attribute>
+					</xsl:if>
+				</fo:external-graphic>
 				<!-- <fo:inline padding-left="6mm" font-size="12pt" font-weight="bold">COPYRIGHT PROTECTED DOCUMENT</fo:inline> -->
-				<fo:inline padding-left="6mm" font-size="12pt" font-weight="bold" role="SKIP"><xsl:apply-templates /></fo:inline>
+				<fo:inline padding-left="6mm" font-size="12pt" font-weight="bold" role="SKIP">
+					<xsl:if test="$layoutVersion = '2024'">
+						<xsl:attribute name="font-size">11.5pt</xsl:attribute>
+					</xsl:if>
+				<xsl:apply-templates /></fo:inline>
 			</fo:block>
 	</xsl:template>
 	
@@ -2316,6 +2344,9 @@
 			</xsl:when>
 			<xsl:otherwise>
 				<fo:block font-size="16pt" text-align="center" margin-bottom="48pt" keep-with-next="always" role="H1">
+					<xsl:if test="$layoutVersion = '2024'">
+						<xsl:attribute name="font-size">15.3pt</xsl:attribute>
+					</xsl:if>
 					<xsl:apply-templates />
 					<xsl:apply-templates select="following-sibling::*[1][local-name() = 'variant-title'][@type = 'sub']" mode="subtitle"/>
 				</fo:block>
@@ -2331,6 +2362,9 @@
 			</xsl:when>
 			<xsl:otherwise>
 				<fo:block font-size="16pt" font-weight="bold" text-align="center" margin-top="6pt" margin-bottom="36pt" keep-with-next="always" role="H1">
+					<xsl:if test="$layoutVersion = '2024'">
+						<xsl:attribute name="font-size">15.3pt</xsl:attribute>
+					</xsl:if>
 					<xsl:apply-templates />
 				</fo:block>
 			</xsl:otherwise>
@@ -2345,13 +2379,28 @@
 		
 		<xsl:variable name="font-size">
 			<xsl:choose>
-				<xsl:when test="ancestor::iso:annex and $level = 2">13pt</xsl:when>
-				<xsl:when test="ancestor::iso:annex and $level = 3">12pt</xsl:when>
-				<xsl:when test="ancestor::iso:introduction and $level &gt;= 2">11pt</xsl:when>
-				<xsl:when test="ancestor::iso:preface">16pt</xsl:when>
-				<xsl:when test="$level = 2">12pt</xsl:when>
-				<xsl:when test="$level &gt;= 3">11pt</xsl:when>
-				<xsl:otherwise>13pt</xsl:otherwise>
+				<xsl:when test="$layoutVersion = '2024'">
+					<xsl:choose>
+						<xsl:when test="ancestor::iso:annex and $level = 2">12.5pt</xsl:when>
+						<xsl:when test="ancestor::iso:annex and $level = 3">11.5pt</xsl:when>
+						<xsl:when test="ancestor::iso:introduction and $level &gt;= 2">10.5pt</xsl:when>
+						<xsl:when test="ancestor::iso:preface">15.3pt</xsl:when>
+						<xsl:when test="$level = 2">11.5pt</xsl:when>
+						<xsl:when test="$level &gt;= 3">10.5pt</xsl:when>
+						<xsl:otherwise>12.5pt</xsl:otherwise>
+					</xsl:choose>
+				</xsl:when>
+				<xsl:otherwise>
+					<xsl:choose>
+						<xsl:when test="ancestor::iso:annex and $level = 2">13pt</xsl:when>
+						<xsl:when test="ancestor::iso:annex and $level = 3">12pt</xsl:when>
+						<xsl:when test="ancestor::iso:introduction and $level &gt;= 2">11pt</xsl:when>
+						<xsl:when test="ancestor::iso:preface">16pt</xsl:when>
+						<xsl:when test="$level = 2">12pt</xsl:when>
+						<xsl:when test="$level &gt;= 3">11pt</xsl:when>
+						<xsl:otherwise>13pt</xsl:otherwise>
+					</xsl:choose>
+				</xsl:otherwise>
 			</xsl:choose>
 		</xsl:variable>
 		
@@ -2365,6 +2414,9 @@
 		<xsl:choose>
 			<xsl:when test="$doctype = 'amendment' and not(ancestor::iso:preface)">
 				<fo:block font-size="11pt" font-style="italic" margin-bottom="12pt" keep-with-next="always" role="H{$level}">
+					<xsl:if test="$layoutVersion = '2024'">
+						<xsl:attribute name="font-size">10.5pt</xsl:attribute>
+					</xsl:if>
 					<xsl:apply-templates />
 					<xsl:apply-templates select="following-sibling::*[1][local-name() = 'variant-title'][@type = 'sub']" mode="subtitle"/>
 				</fo:block>
@@ -2433,6 +2485,9 @@
 			<xsl:call-template name="getId"/>
 		</xsl:variable> id="{$id}"  -->
 		<fo:block font-size="11pt" font-style="italic" margin-bottom="12pt" keep-with-next="always">
+			<xsl:if test="$layoutVersion = '2024'">
+				<xsl:attribute name="font-size">10.5pt</xsl:attribute>
+			</xsl:if>
 			<xsl:apply-templates />
 		</fo:block>
 	</xsl:template>
@@ -2817,6 +2872,7 @@
 	</xsl:template>
 	<xsl:template name="insertLayoutVersion2024AttributesTop">
 		<xsl:if test="$layoutVersion = '2024'">
+			<xsl:attribute name="font-size">11.5pt</xsl:attribute>
 			<xsl:attribute name="padding-top">17mm</xsl:attribute>
 			<xsl:attribute name="text-align">center</xsl:attribute>
 		</xsl:if>
