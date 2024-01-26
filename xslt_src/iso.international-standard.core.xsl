@@ -589,14 +589,15 @@
 					<xsl:when test="$layoutVersion = '2024'">
 						<fo:page-sequence master-reference="cover-page_2024" force-page-count="no-force">
 							<fo:flow flow-name="xsl-region-body">
-								<fo:table table-layout="fixed" width="100%" font-family="Inter">
+								<fo:table table-layout="fixed" width="100%">
+									<xsl:call-template name="insertInterFont"/>
 									<fo:table-column column-width="proportional-column-width(109)"/>
 									<fo:table-column column-width="proportional-column-width(1.9)"/>
 									<fo:table-column column-width="proportional-column-width(1.9)"/>
 									<fo:table-column column-width="proportional-column-width(70)"/>
 									<fo:table-body>
 									
-										<fo:table-row height="44mm">
+										<fo:table-row>
 											<fo:table-cell number-columns-spanned="2" border-right="{$cover_page_border}">
 												<fo:block>
 													<xsl:call-template name="insertLogoImages2024"/>
@@ -605,70 +606,72 @@
 											<!-- International 
 											Standard -->
 											<fo:table-cell number-columns-spanned="2" padding-left="6mm">
-												<fo:block font-size="19.2pt" font-weight="bold" line-height="1.25">
-												
-													<xsl:variable name="updates-document-type" select="/iso:iso-standard/iso:bibdata/iso:ext/iso:updates-document-type"/>
-													<xsl:variable name="updates-document-type_localized">
-														<xsl:call-template name="getLocalizedString">
-															<xsl:with-param name="key" select="concat('doctype_dict.',$updates-document-type)"/>
-														</xsl:call-template>
-													</xsl:variable>
-													<xsl:variable name="updates-document-type_str">
-														<xsl:choose>
-															<xsl:when test="$updates-document-type != '' and $updates-document-type_localized != $updates-document-type">
-																<xsl:value-of select="$updates-document-type_localized"/>
-															</xsl:when>
-															<xsl:otherwise>
-																<xsl:value-of select="java:toUpperCase(java:java.lang.String.new(translate($updates-document-type,'-',' ')))"/>
-															</xsl:otherwise>
-														</xsl:choose>
-													</xsl:variable>
+												<fo:block-container height="44mm">
+													<fo:block font-size="19.2pt" font-weight="bold" line-height="1.25">
 													
-													
-													<xsl:choose>
-														<xsl:when test="$stage-abbreviation = 'DIS' or $stage-abbreviation = 'DAmd' or $stage-abbreviation = 'DAM'">
-															<xsl:value-of select="java:toUpperCase(java:java.lang.String.new($stagename))"/>
-															<xsl:value-of select="$linebreak"/>
-															<xsl:value-of select="$doctype_localized"/>
-														</xsl:when>
-														<!-- <xsl:when test="$stage-abbreviation = 'FDAmd' or $stage-abbreviation = 'FDAM'"><xsl:value-of select="$doctype_uppercased"/></xsl:when> -->
-														<xsl:when test="$stagename-header-coverpage != ''">
-															<xsl:attribute name="margin-top">12pt</xsl:attribute>
-															
-															<xsl:value-of select="$stagename-header-coverpage"/>
-															
-															<!-- if there is iteration number, then print it -->
-															<xsl:variable name="iteration" select="number(/iso:iso-standard/iso:bibdata/iso:status/iso:iteration)"/>
-															<xsl:if test="number($iteration) = $iteration and 
-																																							($stage-abbreviation = 'NWIP' or 
-																																							$stage-abbreviation = 'NP' or 
-																																							$stage-abbreviation = 'PWI' or 
-																																							$stage-abbreviation = 'AWI' or 
-																																							$stage-abbreviation = 'WD' or 
-																																							$stage-abbreviation = 'CD')">
-																<xsl:text>&#xA0;</xsl:text><xsl:value-of select="$iteration"/>
-															</xsl:if>
-															
-															<xsl:value-of select="$linebreak"/>
-															
+														<xsl:variable name="updates-document-type" select="/iso:iso-standard/iso:bibdata/iso:ext/iso:updates-document-type"/>
+														<xsl:variable name="updates-document-type_localized">
+															<xsl:call-template name="getLocalizedString">
+																<xsl:with-param name="key" select="concat('doctype_dict.',$updates-document-type)"/>
+															</xsl:call-template>
+														</xsl:variable>
+														<xsl:variable name="updates-document-type_str">
 															<xsl:choose>
-																<xsl:when test="$doctype = 'amendment'">
-																	<xsl:value-of select="$updates-document-type_str"/>
+																<xsl:when test="$updates-document-type != '' and $updates-document-type_localized != $updates-document-type">
+																	<xsl:value-of select="$updates-document-type_localized"/>
 																</xsl:when>
 																<xsl:otherwise>
-																	<xsl:value-of select="$doctype_localized"/>
+																	<xsl:value-of select="java:toUpperCase(java:java.lang.String.new(translate($updates-document-type,'-',' ')))"/>
 																</xsl:otherwise>
 															</xsl:choose>
-														</xsl:when>
-														<xsl:when test="$doctype = 'amendment'">
-															<xsl:value-of select="$updates-document-type_str"/>
-														</xsl:when>
-														<xsl:otherwise>
-															<xsl:value-of select="$doctype_localized"/>
-														</xsl:otherwise>
-													</xsl:choose>
-													
-												</fo:block>
+														</xsl:variable>
+														
+														
+														<xsl:choose>
+															<xsl:when test="$stage-abbreviation = 'DIS' or $stage-abbreviation = 'DAmd' or $stage-abbreviation = 'DAM'">
+																<xsl:value-of select="java:toUpperCase(java:java.lang.String.new($stagename))"/>
+																<xsl:value-of select="$linebreak"/>
+																<xsl:value-of select="$doctype_localized"/>
+															</xsl:when>
+															<!-- <xsl:when test="$stage-abbreviation = 'FDAmd' or $stage-abbreviation = 'FDAM'"><xsl:value-of select="$doctype_uppercased"/></xsl:when> -->
+															<xsl:when test="$stagename-header-coverpage != ''">
+																<xsl:attribute name="margin-top">12pt</xsl:attribute>
+																
+																<xsl:value-of select="$stagename-header-coverpage"/>
+																
+																<!-- if there is iteration number, then print it -->
+																<xsl:variable name="iteration" select="number(/iso:iso-standard/iso:bibdata/iso:status/iso:iteration)"/>
+																<xsl:if test="number($iteration) = $iteration and 
+																																								($stage-abbreviation = 'NWIP' or 
+																																								$stage-abbreviation = 'NP' or 
+																																								$stage-abbreviation = 'PWI' or 
+																																								$stage-abbreviation = 'AWI' or 
+																																								$stage-abbreviation = 'WD' or 
+																																								$stage-abbreviation = 'CD')">
+																	<xsl:text>&#xA0;</xsl:text><xsl:value-of select="$iteration"/>
+																</xsl:if>
+																
+																<xsl:value-of select="$linebreak"/>
+																
+																<xsl:choose>
+																	<xsl:when test="$doctype = 'amendment'">
+																		<xsl:value-of select="$updates-document-type_str"/>
+																	</xsl:when>
+																	<xsl:otherwise>
+																		<xsl:value-of select="$doctype_localized"/>
+																	</xsl:otherwise>
+																</xsl:choose>
+															</xsl:when>
+															<xsl:when test="$doctype = 'amendment'">
+																<xsl:value-of select="$updates-document-type_str"/>
+															</xsl:when>
+															<xsl:otherwise>
+																<xsl:value-of select="$doctype_localized"/>
+															</xsl:otherwise>
+														</xsl:choose>
+														
+													</fo:block>
+												</fo:block-container>
 											</fo:table-cell>
 										</fo:table-row>
 										
@@ -731,19 +734,19 @@
 											<fo:table-cell number-columns-spanned="2" padding-left="6mm">
 												<fo:block margin-top="6pt">
 												
-													<xsl:if test="$stage-abbreviation = 'IS'">
+													<xsl:if test="not($stage-abbreviation = 'DIS' or $stage-abbreviation = 'DAmd' or $stage-abbreviation = 'DAM')">
 														<xsl:variable name="edition_and_date">
 															<xsl:call-template name="insertEditionAndDate"/>
 														</xsl:variable>
 														<xsl:if test="normalize-space($edition_and_date) != ''">
-															<fo:block font-size="17.2pt" font-weight="bold">
+															<fo:block font-size="17.2pt" font-weight="bold" margin-bottom="3mm">
 																<xsl:value-of select="$edition_and_date"/>
 															</fo:block>
 														</xsl:if>
 													</xsl:if>
 												
 													<xsl:if test="$doctype = 'amendment' and not($stage-abbreviation = 'FDAmd' or $stage-abbreviation = 'FDAM')">
-														<fo:block font-size="17.2pt" font-weight="bold">
+														<fo:block font-size="17.2pt" font-weight="bold" margin-bottom="3mm">
 															<xsl:value-of select="$doctype_uppercased"/>
 															<xsl:text> </xsl:text>
 															<xsl:variable name="amendment-number" select="/iso:iso-standard/iso:bibdata/iso:ext/iso:structuredidentifier/iso:project-number/@amendment"/>
@@ -755,7 +758,7 @@
 												
 													<xsl:if test="$doctype = 'amendment' and not($stage-abbreviation = 'FDAmd' or $stage-abbreviation = 'FDAM')">
 														<xsl:if test="/iso:iso-standard/iso:bibdata/iso:date[@type = 'updated']">																		
-															<fo:block font-size="17.2pt" font-weight="bold">
+															<fo:block font-size="17.2pt" font-weight="bold" margin-bottom="3mm">
 																<xsl:value-of select="/iso:iso-standard/iso:bibdata/iso:date[@type = 'updated']"/>
 															</fo:block>
 														</xsl:if>
@@ -763,7 +766,7 @@
 												
 													<xsl:variable name="date_corrected" select="normalize-space(/iso:iso-standard/iso:bibdata/iso:date[@type = 'corrected'])"/>
 													<xsl:if test="$date_corrected != ''">
-														<fo:block font-size="17.2pt" font-weight="bold">
+														<fo:block font-size="17.2pt" font-weight="bold" margin-bottom="3mm">
 															<xsl:call-template name="getLocalizedString">
 																<xsl:with-param name="key">corrected_version</xsl:with-param>
 															</xsl:call-template>
@@ -772,16 +775,22 @@
 														</fo:block>
 													</xsl:if>
 												
-													<xsl:if test="$stage-abbreviation = 'DIS' or $stage-abbreviation = 'DAmd' or $stage-abbreviation = 'DAM' or
-																			$stage-abbreviation = 'FDIS' or $stage-abbreviation = 'FDAmd' or $stage-abbreviation = 'FDAM'">
-														<xsl:if test="normalize-space($editorialgroup) != ''">
-															<fo:block margin-bottom="3mm">
-																<xsl:copy-of select="$editorialgroup"/>
-															</fo:block>
-														</xsl:if>
+													
+													
+													<xsl:if test="normalize-space($editorialgroup) != ''">
+														<fo:block margin-bottom="3mm">
+															<xsl:copy-of select="$editorialgroup"/>
+														</fo:block>
+													</xsl:if>
+													<xsl:if test="normalize-space($secretariat) != ''">
 														<fo:block margin-bottom="3mm">
 															<xsl:copy-of select="$secretariat"/>
 														</fo:block>
+													</xsl:if>
+													
+													<xsl:if test="$stage-abbreviation = 'DIS' or $stage-abbreviation = 'DAmd' or $stage-abbreviation = 'DAM' or
+																			$stage-abbreviation = 'FDIS' or $stage-abbreviation = 'FDAmd' or $stage-abbreviation = 'FDAM'">
+														
 														<fo:block margin-bottom="3mm">
 														<!-- Voting begins on: -->
 															<xsl:call-template name="getLocalizedString">
@@ -2795,7 +2804,8 @@
 	<xsl:template name="insertFooter2024">
 		<xsl:param name="font-weight" select="'bold'"/>
 		<xsl:attribute  name="text-align">center</xsl:attribute>
-		<fo:block font-family="Inter" font-size="8.6pt">
+		<fo:block font-size="8.6pt">
+			<xsl:call-template name="insertInterFont"/>
 			<xsl:value-of select="$copyrightText"/>
 		</fo:block>
 		<xsl:if test="$copyrightAbbrIEEE = ''"><fo:block>&#xa0;</fo:block></xsl:if>
@@ -2896,7 +2906,8 @@
 	<xsl:template name="insertLastPage_2024">
 		<fo:page-sequence master-reference="last-page_2024" force-page-count="no-force">
 			<fo:flow flow-name="xsl-region-body">
-				<fo:table table-layout="fixed" width="100%" font-family="Inter">
+				<fo:table table-layout="fixed" width="100%">
+					<xsl:call-template name="insertInterFont"/>
 					<fo:table-column column-width="proportional-column-width(70)"/>
 					<fo:table-column column-width="proportional-column-width(1.4)"/>
 					<fo:table-column column-width="proportional-column-width(1.4)"/>
@@ -3048,5 +3059,25 @@
 	<xsl:variable name="Image-Attention">
 		<xsl:text>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</xsl:text>
 	</xsl:variable>
-	
+
+	<xsl:template name="insertInterFont">
+		<xsl:variable name="font_family">
+			<font-family>
+				<xsl:variable name="inter-font-style">
+					<root-style>
+						<xsl:attribute name="font-family">Cambria Math, <xsl:value-of select="$font_noto_sans"/></xsl:attribute>
+						<xsl:attribute name="font-family-generic">Sans</xsl:attribute>
+					</root-style>
+				</xsl:variable>
+				<xsl:call-template name="insertRootStyle">
+					<xsl:with-param name="root-style" select="$inter-font-style"/>
+				</xsl:call-template>
+			</font-family>
+		</xsl:variable>
+		<xsl:attribute name="font-family">
+			<xsl:text>Inter, </xsl:text>
+			<xsl:value-of select="xalan:nodeset($font_family)/*/@font-family"/>
+		</xsl:attribute>
+	</xsl:template>
+
 </xsl:stylesheet>
