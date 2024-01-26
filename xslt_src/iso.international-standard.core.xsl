@@ -777,15 +777,19 @@
 												
 													
 													
-													<xsl:if test="normalize-space($editorialgroup) != ''">
-														<fo:block margin-bottom="3mm">
-															<xsl:copy-of select="$editorialgroup"/>
-														</fo:block>
-													</xsl:if>
-													<xsl:if test="normalize-space($secretariat) != ''">
-														<fo:block margin-bottom="3mm">
-															<xsl:copy-of select="$secretariat"/>
-														</fo:block>
+													<xsl:if test="$stage-abbreviation = 'DIS' or $stage-abbreviation = 'DAmd' or $stage-abbreviation = 'DAM' or
+														$stage-abbreviation = 'FDIS' or $stage-abbreviation = 'FDAmd' or $stage-abbreviation = 'FDAM' or
+														$stage-abbreviation = 'NWIP' or $stage-abbreviation = 'NP' or $stage-abbreviation = 'PWI' or $stage-abbreviation = 'AWI' or $stage-abbreviation = 'WD' or $stage-abbreviation = 'CD'">
+														<xsl:if test="normalize-space($editorialgroup) != ''">
+															<fo:block margin-bottom="3mm">
+																<xsl:copy-of select="$editorialgroup"/>
+															</fo:block>
+														</xsl:if>
+														<xsl:if test="normalize-space($secretariat) != ''">
+															<fo:block margin-bottom="3mm">
+																<xsl:copy-of select="$secretariat"/>
+															</fo:block>
+														</xsl:if>
 													</xsl:if>
 													
 													<xsl:if test="$stage-abbreviation = 'DIS' or $stage-abbreviation = 'DAmd' or $stage-abbreviation = 'DAM' or
