@@ -199,7 +199,12 @@
 			<xsl:when test="$namespace = 'iec'">25</xsl:when>
 			<xsl:when test="$namespace = 'ieee'">31.7</xsl:when>
 			<xsl:when test="$namespace = 'iho'">24.5</xsl:when>
-			<xsl:when test="$namespace = 'iso'">25</xsl:when>
+			<xsl:when test="$namespace = 'iso'">
+				<xsl:choose>
+					<xsl:when test="$layoutVersion = '2024'">18.7</xsl:when>
+					<xsl:otherwise>25</xsl:otherwise>
+				</xsl:choose>
+			</xsl:when>
 			<xsl:when test="$namespace = 'itu'">20</xsl:when>
 			<xsl:when test="$namespace = 'jcgm'">25</xsl:when>
 			<xsl:when test="$namespace = 'jis'">22</xsl:when>
@@ -227,7 +232,12 @@
 			<xsl:when test="$namespace = 'iec'">25</xsl:when>
 			<xsl:when test="$namespace = 'ieee'">31.7</xsl:when>
 			<xsl:when test="$namespace = 'iho'">25</xsl:when>
-			<xsl:when test="$namespace = 'iso'">12.5</xsl:when>
+			<xsl:when test="$namespace = 'iso'">
+				<xsl:choose>
+					<xsl:when test="$layoutVersion = '2024'">18.7</xsl:when>
+					<xsl:otherwise>12.5</xsl:otherwise>
+				</xsl:choose>
+			</xsl:when>
 			<xsl:when test="$namespace = 'itu'">20</xsl:when>
 			<xsl:when test="$namespace = 'jcgm'">15</xsl:when>
 			<xsl:when test="$namespace = 'jis'">22</xsl:when>
@@ -281,7 +291,12 @@
 			<xsl:when test="$namespace = 'iec'">15</xsl:when>
 			<xsl:when test="$namespace = 'ieee'">25.4</xsl:when>
 			<xsl:when test="$namespace = 'iho'">25.4</xsl:when>
-			<xsl:when test="$namespace = 'iso'">15</xsl:when>
+			<xsl:when test="$namespace = 'iso'">
+				<xsl:choose>
+					<xsl:when test="$layoutVersion = '2024'">25.5</xsl:when>
+					<xsl:otherwise>15</xsl:otherwise>
+				</xsl:choose>
+			</xsl:when>
 			<xsl:when test="$namespace = 'itu'">20</xsl:when>
 			<xsl:when test="$namespace = 'jcgm'">23.5</xsl:when>
 			<xsl:when test="$namespace = 'jis'">24.5</xsl:when>
@@ -2054,6 +2069,9 @@
 		<xsl:if test="$namespace = 'iso'">
 			<xsl:if test="$continued = 'true'">
 				<xsl:attribute name="margin-bottom">2pt</xsl:attribute>
+			</xsl:if>
+			<xsl:if test="$layoutVersion = '2024'">
+				<xsl:attribute name="font-size">10.5pt</xsl:attribute>
 			</xsl:if>
 		</xsl:if>
 	</xsl:template> <!-- refine_table-name-style -->
@@ -17699,7 +17717,12 @@
 
 	<xsl:template name="printEdition">
 		<xsl:variable name="edition_i18n" select="normalize-space((//*[contains(local-name(), '-standard')])[1]/*[local-name() = 'bibdata']/*[local-name() = 'edition'][normalize-space(@language) != ''])"/>
-		<xsl:text>&#xA0;</xsl:text>
+		<xsl:if test="$namespace = 'jcgm'"><xsl:text>&#xA0;</xsl:text></xsl:if>
+		<xsl:if test="$namespace = 'iso'">
+			<xsl:if test="$layoutVersion != '2024'">
+				<xsl:text>&#xA0;</xsl:text>
+			</xsl:if>
+		</xsl:if>
 		<xsl:choose>
 			<xsl:when test="$edition_i18n != ''">
 				<!-- Example: <edition language="fr">deuxième édition</edition> -->
