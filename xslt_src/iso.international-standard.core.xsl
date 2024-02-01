@@ -852,9 +852,9 @@
 												<fo:block>
 													<xsl:variable name="feedback_link" select="normalize-space(/iso:iso-standard/iso:metanorma-extension/iso:semantic-metadata/iso:feedback-link)"/>
 													<xsl:if test="$stage &gt;=60 and $feedback_link != ''">
-														<fo:block-container width="66.4mm" background-color="rgb(242,242,242)" display-align="before">
+														<fo:block-container width="69mm" background-color="rgb(242,242,242)" display-align="before">
 															<fo:table table-layout="fixed" width="100%" role="SKIP">
-																<fo:table-column column-width="proportional-column-width(23)"/>
+																<fo:table-column column-width="proportional-column-width(26)"/>
 																<fo:table-column column-width="proportional-column-width(43.5)"/>
 																<fo:table-body>
 																	<fo:table-row>
