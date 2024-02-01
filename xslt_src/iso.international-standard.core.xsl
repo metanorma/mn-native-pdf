@@ -297,9 +297,10 @@
 	</xsl:variable>
 	<xsl:variable name="ics" select="xalan:nodeset($ics_)"/>
 	
+	<xsl:variable name="document_scheme" select="normalize-space(/iso:iso-standard/iso:metanorma-extension/iso:presentation-metadata[iso:name = 'document-scheme']/iso:value)"/>
 	<xsl:variable name="layoutVersion_">
 		<xsl:choose>
-			<xsl:when test="number($copyrightYear) &gt;= 2024">2024</xsl:when>
+			<xsl:when test="$document_scheme = '2024' or $document_scheme = ''">2024</xsl:when>
 			<xsl:otherwise>default</xsl:otherwise>
 		</xsl:choose>
 	</xsl:variable>
@@ -847,7 +848,8 @@
 												</xsl:if>
 												
 												<fo:block>
-													<xsl:if test="$stage &gt;=60">
+													<xsl:variable name="feedback_link" select="normalize-space(/iso:iso-standard/iso:metanorma-extension/iso:semantic-metadata/iso:feedback-link)"/>
+													<xsl:if test="$stage &gt;=60 and $feedback_link != ''">
 														<fo:block-container width="66.4mm" background-color="rgb(242,242,242)" display-align="before">
 															<fo:table table-layout="fixed" width="100%" role="SKIP">
 																<fo:table-column column-width="proportional-column-width(23)"/>
@@ -860,7 +862,7 @@
 																					<!-- Todo: link generation -->
 																					<barcode:barcode
 																								xmlns:barcode="http://barcode4j.krysalis.org/ns"
-																								message="{concat('http://iso.org/', docid)}">
+																								message="{$feedback_link}">
 																						<barcode:qr>
 																							<barcode:module-width>0.7mm</barcode:module-width>
 																							<barcode:ec-level>M</barcode:ec-level>
@@ -872,7 +874,13 @@
 																		<fo:table-cell padding="4mm">
 																			<fo:block color="black" font-size="7.2pt" line-height="1.35">
 																				<xsl:text>Please share your feedback about the standard. Scan the QR code with your phone or click the link</xsl:text>
-																				<fo:block margin-top="2pt">[Insert link]</fo:block>
+																				<fo:block margin-top="2pt">
+																					<fo:basic-link external-destination="{$feedback_link}" fox:alt-text="{$feedback_link}">
+																						<xsl:call-template name="add-zero-spaces-link-java">
+																							<xsl:with-param name="text" select="$feedback_link"/>
+																						</xsl:call-template>
+																					</fo:basic-link>
+																				</fo:block>
 																			</fo:block>
 																		</fo:table-cell>
 																	</fo:table-row>
@@ -1594,6 +1602,9 @@
 									</fo:block> -->
 									<fo:block line-height="90%" role="SKIP">
 										<fo:block font-size="9pt" text-align="justify" role="SKIP">
+											<xsl:if test="$layoutVersion = '2024'">
+												<xsl:attribute name="font-size">8.6pt</xsl:attribute>
+											</xsl:if>
 											<xsl:apply-templates select="/iso:iso-standard/iso:boilerplate/iso:copyright-statement"/>
 										</fo:block>
 									</fo:block>
