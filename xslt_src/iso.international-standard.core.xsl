@@ -303,6 +303,7 @@
 	<xsl:variable name="layoutVersion_">
 		<xsl:choose>
 			<xsl:when test="$document_scheme = '2024' or $document_scheme = ''">2024</xsl:when>
+			<xsl:when test="$document_scheme = '1951'"><xsl:value-of select="$document_scheme"/></xsl:when>
 			<xsl:otherwise>default</xsl:otherwise>
 		</xsl:choose>
 	</xsl:variable>
@@ -342,6 +343,10 @@
 				</xsl:if>
 				
 				<fo:layout-master-set>
+					
+					<xsl:variable name="marginLeftRight_cover_page_1951">12.5</xsl:variable>
+					<xsl:variable name="marginTop_cover_page_1951">18</xsl:variable>
+					<xsl:variable name="marginBottom_cover_page_1951">94.5</xsl:variable>
 					
 					<xsl:variable name="marginLeftRight_cover_page_2024">14</xsl:variable>
 					<xsl:variable name="marginTopBottom_cover_page_2024">15</xsl:variable>
@@ -384,6 +389,14 @@
 							<fo:conditional-page-master-reference odd-or-even="odd" master-reference="cover-page-publishedISO-odd"/>
 						</fo:repeatable-page-master-alternatives>
 					</fo:page-sequence-master>
+					
+					<fo:simple-page-master master-name="cover-page_1951" page-width="{$pageWidth}mm" page-height="{$pageHeight}mm">
+						<fo:region-body margin-top="{$marginTop_cover_page_1951}mm" margin-bottom="{$marginBottom_cover_page_1951}mm" margin-left="{$marginLeftRight_cover_page_1951}mm" margin-right="{$marginLeftRight_cover_page_1951}mm"/>
+						<fo:region-before region-name="cover-page-header" extent="{$marginTop_cover_page_1951}mm"/>
+						<fo:region-after region-name="cover-page-footer" extent="{$marginBottom_cover_page_1951}mm"/>
+						<fo:region-start region-name="left-region" extent="{$marginLeftRight_cover_page_1951}mm"/>
+						<fo:region-end region-name="right-region" extent="{$marginLeftRight_cover_page_1951}mm"/>
+					</fo:simple-page-master>
 					
 					<fo:simple-page-master master-name="cover-page_2024" page-width="{$pageWidth}mm" page-height="{$pageHeight}mm">
 						<fo:region-body margin-top="{$marginTopBottom_cover_page_2024}mm" margin-bottom="{$marginTopBottom_cover_page_2024}mm" margin-left="{$marginLeftRight_cover_page_2024}mm" margin-right="{$marginLeftRight_cover_page_2024}mm"/>
@@ -592,6 +605,84 @@
 				
 				<!-- cover page -->
 				<xsl:choose>
+					<xsl:when test="$layoutVersion = '1951'">
+						<fo:page-sequence master-reference="cover-page_1951" force-page-count="no-force">
+							<fo:static-content flow-name="cover-page-header" font-weight="bold" font-size="9pt">
+								<fo:block-container height="99%" display-align="after">
+									<fo:block text-align-last="justify" role="SKIP">
+										<xsl:text>UDC 669.7 : 620.178.1</xsl:text>
+										<fo:inline keep-together.within-line="always" role="SKIP">
+											<fo:leader leader-pattern="space"/>
+											<fo:inline font-weight="normal">Ref. No. : </fo:inline><xsl:text>ISO/R 191-1971 (E)</xsl:text>
+										</fo:inline>
+									</fo:block>
+								</fo:block-container>
+							</fo:static-content>
+							<fo:static-content flow-name="cover-page-footer" font-size="9.5pt">
+								<fo:block text-align="center">
+									<fo:block font-weight="bold">COPYRIGHT RESERVED</fo:block>
+									<fo:block>&#xa0;</fo:block>
+									<fo:block-container  width="85.5mm" margin-left="50mm" margin-right="50mm">
+										<fo:block-container margin-left="0" margin-right="0">
+											<fo:block text-align="justify" text-align-last="center">The copyright of ISO Recommendations and 1SO Standards
+											belongs to ISO Member Bodies. Reproduction of these 
+											documents, in any country, may be authorized therefore only
+											by the national standards organization of that country, being
+											a member of ISO.</fo:block>
+										</fo:block-container>
+									</fo:block-container>
+									<fo:block>&#xa0;</fo:block>
+									<fo:block>&#xa0;</fo:block>
+									<fo:block>&#xa0;</fo:block>
+									<fo:block>&#xa0;</fo:block>
+									<fo:block>For each individual country the only valid standard is the national standard of that country.</fo:block>
+									<fo:block>&#xa0;</fo:block>
+									<fo:block>&#xa0;</fo:block>
+									<fo:block>Printed in Switzerland</fo:block>
+									<fo:block>&#xa0;</fo:block>
+									<fo:block>&#xa0;</fo:block>
+									<fo:block>Also issued in French and Russian. Copies to be obtained through the national standards organizations.</fo:block>
+									
+								</fo:block>
+							</fo:static-content>
+							<fo:flow flow-name="xsl-region-body">
+								<fo:block text-align="center" font-family="Arial" margin-top="18mm">
+									<fo:block>
+										<fo:instream-foreign-object content-width="23mm" fox:alt-text="Image ISO Logo">
+											<xsl:copy-of select="$Image-ISO-Logo-1951-SVG"/>
+										</fo:instream-foreign-object>
+									</fo:block>
+									<fo:block margin-top="3mm" font-size="8pt" font-weight="bold">
+										<xsl:call-template name="add-letter-spacing">
+											<xsl:with-param name="text" select="java:toUpperCase(java:java.lang.String.new(/iso:iso-standard/iso:bibdata/iso:copyright/iso:owner/iso:organization/iso:name))"/>
+											<xsl:with-param name="letter-spacing" select="0.65"/>
+										</xsl:call-template>
+									</fo:block>
+									<fo:block-container margin-top="12mm" height="78mm" display-align="center">
+										<fo:block font-size="20pt">
+											<xsl:call-template name="add-letter-spacing">
+												<xsl:with-param name="text" select="'ISO RECOMMENDATION'"/>
+												<xsl:with-param name="letter-spacing" select="0.65"/>
+											</xsl:call-template>
+										</fo:block>
+										<fo:block font-size="24pt" margin-top="5mm">R 191</fo:block>
+										
+										<fo:block font-size="11pt" margin-top="12mm">
+											<xsl:call-template name="insertTitlesLangMain"/>
+										</fo:block>
+										
+									</fo:block-container>
+									<fo:block-container height="40mm" display-align="center" font-size="9pt">
+										<fo:block>2nd <fo:inline font-weight="bold">EDITION</fo:inline></fo:block>
+										<fo:block>&#xa0;</fo:block>
+										<fo:block>October 1971</fo:block>
+										<fo:block margin-top="14mm">This second edition supersedes the first edition</fo:block>
+									</fo:block-container>
+								</fo:block>
+							</fo:flow>
+						</fo:page-sequence>
+					</xsl:when>
+				
 					<xsl:when test="$layoutVersion = '2024'">
 						<fo:page-sequence master-reference="cover-page_2024" force-page-count="no-force">
 							<fo:flow flow-name="xsl-region-body">
@@ -2102,12 +2193,26 @@
 	<!-- display titles       -->
 	<!-- ==================== -->
 	<xsl:template match="iso:bibdata/iso:title[@type = 'title-intro']">
-		<xsl:apply-templates />
-		<xsl:text> — </xsl:text>
+		<xsl:choose>
+			<xsl:when test="$layoutVersion = '1951'">
+				<fo:block text-transform="uppercase"><xsl:apply-templates /></fo:block>
+				</xsl:when>
+			<xsl:otherwise>
+				<xsl:apply-templates />
+				<xsl:text> — </xsl:text>
+			</xsl:otherwise>
+		</xsl:choose>
 	</xsl:template>
 
 	<xsl:template match="iso:bibdata/iso:title[@type = 'title-main']">
-		<xsl:apply-templates />
+		<xsl:choose>
+			<xsl:when test="$layoutVersion = '1951'">
+				<fo:block text-transform="uppercase" font-weight="bold" margin-top="5mm"><xsl:apply-templates /></fo:block>
+			</xsl:when>
+			<xsl:otherwise>
+				<xsl:apply-templates />
+			</xsl:otherwise>
+		</xsl:choose>
 	</xsl:template>
 
 	<xsl:template match="iso:bibdata/iso:title[@type = 'title-part']">
@@ -2116,7 +2221,10 @@
 		<xsl:param name="isMainBody">false</xsl:param>
 		<xsl:if test="$part != ''">
 			<!-- <xsl:text> — </xsl:text> -->
-			<xsl:text>&#xa0;— </xsl:text>
+			<xsl:choose>
+				<xsl:when test="$layoutVersion = '1951'"></xsl:when>
+				<xsl:otherwise><xsl:text>&#xa0;— </xsl:text></xsl:otherwise>
+			</xsl:choose>
 			<xsl:variable name="part-text">
 				<xsl:choose>
 					<xsl:when test="$isMainLang = 'true'">
@@ -2139,9 +2247,17 @@
 					</fo:block>
 				</xsl:when>
 				<xsl:when test="$isMainLang = 'true'">
-					<fo:block font-weight="normal" margin-top="6pt" role="SKIP">
-						<xsl:value-of select="$part-text"/>
-					</fo:block>
+					<xsl:choose>
+						<xsl:when test="$layoutVersion = '1951'">
+							<xsl:value-of select="$part-text"/>
+							<xsl:apply-templates />
+						</xsl:when>
+						<xsl:otherwise>
+						<fo:block font-weight="normal" margin-top="6pt" role="SKIP">
+							<xsl:value-of select="$part-text"/>
+						</fo:block>
+						</xsl:otherwise>
+					</xsl:choose>
 				</xsl:when>
 				<xsl:otherwise>
 					<!-- <xsl:value-of select="$linebreak"/> -->
@@ -2152,7 +2268,12 @@
 			</xsl:choose>
 		</xsl:if>
 		<xsl:if test="$isMainBody = 'false'">
-			<xsl:apply-templates />
+			<xsl:choose>
+				<xsl:when test="$layoutVersion = '1951'"></xsl:when>
+				<xsl:otherwise>
+					<xsl:apply-templates />
+				</xsl:otherwise>
+			</xsl:choose>
 		</xsl:if>
 	</xsl:template>
 	
