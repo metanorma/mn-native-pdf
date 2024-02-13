@@ -610,7 +610,18 @@
 							<fo:static-content flow-name="cover-page-header" font-weight="bold" font-size="9pt">
 								<fo:block-container height="99%" display-align="after">
 									<fo:block text-align-last="justify" role="SKIP">
-										<xsl:text>UDC 669.7 : 620.178.1</xsl:text>
+										<!-- Example: UDC 669.7 : 620.178.1 -->
+										<xsl:variable name="udc" select="normalize-space(/iso:iso-standard/iso:bibdata/iso:classification[@type = 'UDC'])"/>
+										<xsl:choose>
+											<xsl:when test="$udc != ''">
+												<xsl:call-template name="getLocalizedString">
+													<xsl:with-param name="key">classification-UDC</xsl:with-param>
+												</xsl:call-template>
+												<xsl:text>&#xa0;</xsl:text>
+												<xsl:value-of select="java:replaceAll(java:java.lang.String.new($udc),'(:)',' $1 ')"/>
+											</xsl:when>
+											<xsl:otherwise>&#xa0;</xsl:otherwise>
+										</xsl:choose>
 										<fo:inline keep-together.within-line="always" role="SKIP">
 											<fo:leader leader-pattern="space"/>
 											<fo:inline font-weight="normal">Ref. No. : </fo:inline><xsl:text>ISO/R 191-1971 (E)</xsl:text>
