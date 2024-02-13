@@ -302,8 +302,8 @@
 	<xsl:variable name="document_scheme" select="normalize-space(/iso:iso-standard/iso:metanorma-extension/iso:presentation-metadata[iso:name = 'document-scheme']/iso:value)"/>
 	<xsl:variable name="layoutVersion_">
 		<xsl:choose>
-			<xsl:when test="$document_scheme = '2024' or $document_scheme = ''">2024</xsl:when>
-			<xsl:when test="$document_scheme = '1951'"><xsl:value-of select="$document_scheme"/></xsl:when>
+			<xsl:when test="$document_scheme = ''">2024</xsl:when>
+			<xsl:when test="$document_scheme = '1951' or $document_scheme = '1972' or $document_scheme = '1987' or $document_scheme = '1989' or $document_scheme = '2012' or $document_scheme = '2013' or $document_scheme = '2024'"><xsl:value-of select="$document_scheme"/></xsl:when>
 			<xsl:otherwise>default</xsl:otherwise>
 		</xsl:choose>
 	</xsl:variable>
@@ -671,8 +671,9 @@
 									</fo:block>
 									<fo:block-container margin-top="12mm" height="78mm" display-align="center">
 										<fo:block font-size="20pt">
+											<!-- ISO RECOMMENDATION -->
 											<xsl:call-template name="add-letter-spacing">
-												<xsl:with-param name="text" select="'ISO RECOMMENDATION'"/>
+												<xsl:with-param name="text" select="$doctype_uppercased"/>
 												<xsl:with-param name="letter-spacing" select="0.65"/>
 											</xsl:call-template>
 										</fo:block>
@@ -692,7 +693,7 @@
 								</fo:block>
 							</fo:flow>
 						</fo:page-sequence>
-					</xsl:when>
+					</xsl:when> <!-- END: $layoutVersion = '1951' -->
 				
 					<xsl:when test="$layoutVersion = '2024'">
 						<fo:page-sequence master-reference="cover-page_2024" force-page-count="no-force">
