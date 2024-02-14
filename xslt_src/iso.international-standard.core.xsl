@@ -631,29 +631,8 @@
 							</fo:static-content>
 							<fo:static-content flow-name="cover-page-footer" font-size="9.5pt">
 								<fo:block text-align="center">
-									<fo:block font-weight="bold">COPYRIGHT RESERVED</fo:block>
-									<fo:block>&#xa0;</fo:block>
-									<fo:block-container  width="85.5mm" margin-left="50mm" margin-right="50mm">
-										<fo:block-container margin-left="0" margin-right="0">
-											<fo:block text-align="justify" text-align-last="center">The copyright of ISO Recommendations and 1SO Standards
-											belongs to ISO Member Bodies. Reproduction of these 
-											documents, in any country, may be authorized therefore only
-											by the national standards organization of that country, being
-											a member of ISO.</fo:block>
-										</fo:block-container>
-									</fo:block-container>
-									<fo:block>&#xa0;</fo:block>
-									<fo:block>&#xa0;</fo:block>
-									<fo:block>&#xa0;</fo:block>
-									<fo:block>&#xa0;</fo:block>
-									<fo:block>For each individual country the only valid standard is the national standard of that country.</fo:block>
-									<fo:block>&#xa0;</fo:block>
-									<fo:block>&#xa0;</fo:block>
-									<fo:block>Printed in Switzerland</fo:block>
-									<fo:block>&#xa0;</fo:block>
-									<fo:block>&#xa0;</fo:block>
-									<fo:block>Also issued in French and Russian. Copies to be obtained through the national standards organizations.</fo:block>
-									
+									<!-- COPYRIGHT RESERVED -->
+									<xsl:apply-templates select="/iso:iso-standard/iso:boilerplate/iso:copyright-statement"/>
 								</fo:block>
 							</fo:static-content>
 							<fo:flow flow-name="xsl-region-body">
@@ -2449,35 +2428,78 @@
 			</fo:block> -->
 	
 	<xsl:template match="iso:copyright-statement/iso:clause[1]/iso:title" priority="2">
-		<fo:block margin-left="0.5mm" margin-bottom="3mm" role="H1">
-				<fo:external-graphic src="{concat('data:image/png;base64,', normalize-space($Image-Attention))}" width="14mm" content-height="13mm" content-width="scale-to-fit" scaling="uniform" fox:alt-text="Image {@alt}">
-					<xsl:if test="$layoutVersion = '2024'">
-						<xsl:attribute name="width">13mm</xsl:attribute>
-						<xsl:attribute name="content-height">11.5mm</xsl:attribute>
-						<xsl:attribute name="margin-bottom">-1mm</xsl:attribute>
-					</xsl:if>
-				</fo:external-graphic>
-				<!-- <fo:inline padding-left="6mm" font-size="12pt" font-weight="bold">COPYRIGHT PROTECTED DOCUMENT</fo:inline> -->
-				<fo:inline padding-left="6mm" font-size="12pt" font-weight="bold" role="SKIP">
-					<xsl:if test="$layoutVersion = '2024'">
-						<xsl:attribute name="font-size">11.5pt</xsl:attribute>
-					</xsl:if>
-				<xsl:apply-templates /></fo:inline>
-			</fo:block>
+		<xsl:choose>
+			<xsl:when test="$layoutVersion = '1951'">
+				<fo:block font-weight="bold"><xsl:apply-templates /></fo:block>
+				<fo:block>&#xa0;</fo:block>
+			</xsl:when>
+			<xsl:otherwise>
+				<fo:block margin-left="0.5mm" margin-bottom="3mm" role="H1">
+					<fo:external-graphic src="{concat('data:image/png;base64,', normalize-space($Image-Attention))}" width="14mm" content-height="13mm" content-width="scale-to-fit" scaling="uniform" fox:alt-text="Image {@alt}">
+						<xsl:if test="$layoutVersion = '2024'">
+							<xsl:attribute name="width">13mm</xsl:attribute>
+							<xsl:attribute name="content-height">11.5mm</xsl:attribute>
+							<xsl:attribute name="margin-bottom">-1mm</xsl:attribute>
+						</xsl:if>
+					</fo:external-graphic>
+					<!-- <fo:inline padding-left="6mm" font-size="12pt" font-weight="bold">COPYRIGHT PROTECTED DOCUMENT</fo:inline> -->
+					<fo:inline padding-left="6mm" font-size="12pt" font-weight="bold" role="SKIP">
+						<xsl:if test="$layoutVersion = '2024'">
+							<xsl:attribute name="font-size">11.5pt</xsl:attribute>
+						</xsl:if>
+					<xsl:apply-templates /></fo:inline>
+				</fo:block>
+			</xsl:otherwise>
+		</xsl:choose>
 	</xsl:template>
 	
 	<xsl:template match="iso:copyright-statement//iso:p" priority="2">
-		<fo:block>
-			<xsl:if test="following-sibling::iso:p">
-				<xsl:attribute name="margin-bottom">3pt</xsl:attribute>
-				<xsl:attribute name="margin-left">0.5mm</xsl:attribute>
-				<xsl:attribute name="margin-right">0.5mm</xsl:attribute>
-			</xsl:if>
-			<xsl:if test="contains(@id, 'address')">
-				<xsl:attribute name="margin-left">4.5mm</xsl:attribute>
-			</xsl:if>
-			<xsl:apply-templates />
-		</fo:block>
+		<xsl:choose>
+			<xsl:when test="$layoutVersion = '1951'">
+				<xsl:choose>
+					<xsl:when test="@id = 'boilerplate-message'">
+						<fo:block-container width="85.5mm" margin-left="50mm" margin-right="50mm" border="1pt solid blue">
+							<fo:block-container margin-left="0" margin-right="0">
+								<fo:block text-align="justify" text-align-last="center">
+								<!-- The copyright of ISO Recommendations and 1SO Standards
+								belongs to ISO Member Bodies. Reproduction of these 
+								documents, in any country, may be authorized therefore only
+								by the national standards organization of that country, being
+								a member of ISO. -->
+									<xsl:apply-templates />
+								</fo:block>
+							</fo:block-container>
+						</fo:block-container>
+						<fo:block>&#xa0;</fo:block>
+						<fo:block>&#xa0;</fo:block>
+						<fo:block>&#xa0;</fo:block>
+					</xsl:when>
+					<xsl:when test="@id = 'boilerplate-place'">
+						<fo:block>&#xa0;</fo:block>
+						<fo:block>&#xa0;</fo:block>
+						<fo:block><xsl:apply-templates /></fo:block>
+						<fo:block>&#xa0;</fo:block>
+						<fo:block>&#xa0;</fo:block>
+					</xsl:when>
+					<xsl:otherwise>
+						<fo:block><xsl:apply-templates /></fo:block>
+					</xsl:otherwise>
+				</xsl:choose>
+			</xsl:when>
+			<xsl:otherwise>
+				<fo:block>
+					<xsl:if test="following-sibling::iso:p">
+						<xsl:attribute name="margin-bottom">3pt</xsl:attribute>
+						<xsl:attribute name="margin-left">0.5mm</xsl:attribute>
+						<xsl:attribute name="margin-right">0.5mm</xsl:attribute>
+					</xsl:if>
+					<xsl:if test="contains(@id, 'address')">
+						<xsl:attribute name="margin-left">4.5mm</xsl:attribute>
+					</xsl:if>
+					<xsl:apply-templates />
+				</fo:block>
+			</xsl:otherwise>
+		</xsl:choose>
 	</xsl:template>
 	
 
