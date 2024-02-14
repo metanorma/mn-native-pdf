@@ -656,7 +656,10 @@
 												<xsl:with-param name="letter-spacing" select="0.65"/>
 											</xsl:call-template>
 										</fo:block>
-										<fo:block font-size="24pt" margin-top="5mm">R 191</fo:block>
+										<fo:block font-size="24pt" margin-top="5mm">
+											<xsl:if test="$doctype = 'recommendation'">R&#xa0;</xsl:if>
+											<xsl:value-of select="/iso:iso-standard/iso:bibdata/iso:docnumber"/>
+										</fo:block>
 										
 										<fo:block font-size="11pt" margin-top="12mm">
 											<xsl:call-template name="insertTitlesLangMain"/>
@@ -666,7 +669,15 @@
 									<fo:block-container height="40mm" display-align="center" font-size="9pt">
 										<fo:block>2nd <fo:inline font-weight="bold">EDITION</fo:inline></fo:block>
 										<fo:block>&#xa0;</fo:block>
-										<fo:block>October 1971</fo:block>
+										<xsl:variable name="revision_date" select="/iso:iso-standard/iso:bibdata/iso:version/iso:revision-date"/>
+										<xsl:variable name="revision_date_year" select="substring($revision_date,1,4)"/>
+										<xsl:variable name="revision_date_month" select="substring($revision_date,6,2)"/>
+										<!-- Example: October 1971 -->
+										<fo:block>
+											<xsl:call-template name="convertDate">
+												<xsl:with-param name="date" select="/iso:iso-standard/iso:bibdata/iso:version/iso:revision-date"/>
+											</xsl:call-template>
+										</fo:block>
 										<fo:block margin-top="14mm">This second edition supersedes the first edition</fo:block>
 									</fo:block-container>
 								</fo:block>
