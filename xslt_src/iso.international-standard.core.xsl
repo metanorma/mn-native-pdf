@@ -1081,13 +1081,17 @@
 																			</xsl:choose>
 																		</xsl:variable>
 																		
-																		<xsl:for-each select="/iso:iso-standard/iso:bibdata/iso:copyright/iso:owner/iso:organization/iso:abbreviation[. != 'IEEE']">
+																		<xsl:for-each select="/iso:iso-standard/iso:bibdata/iso:copyright/iso:owner/iso:organization">
 																			<xsl:choose>
-																				<xsl:when test=". = 'ISO'">
-																					<fo:external-graphic src="{concat('data:image/png;base64,', normalize-space($Image-ISO-Logo))}" content-height="{$content-height}mm" content-width="scale-to-fit" scaling="uniform" fox:alt-text="Image {@alt}"/>
+																				<xsl:when test="iso:abbreviation = 'ISO'">
+																					<fo:external-graphic src="{concat('data:image/png;base64,', normalize-space($Image-ISO-Logo))}" content-height="{$content-height}mm" content-width="scale-to-fit" scaling="uniform" fox:alt-text="Image ISO Logo"/>
 																				</xsl:when>
-																				<xsl:when test=". = 'IEC'">
-																					<fo:external-graphic src="{concat('data:image/png;base64,', normalize-space($Image-IEC-Logo))}" content-height="{$content-height}mm" content-width="scale-to-fit" scaling="uniform" fox:alt-text="Image {@alt}"/>
+																				<xsl:when test="iso:abbreviation = 'IEC'">
+																					<fo:external-graphic src="{concat('data:image/png;base64,', normalize-space($Image-IEC-Logo))}" content-height="{$content-height}mm" content-width="scale-to-fit" scaling="uniform" fox:alt-text="Image IEC Logo"/>
+																				</xsl:when>
+																				<xsl:when test="iso:abbreviation = 'IEEE'"></xsl:when>
+																				<xsl:when test="iso:abbreviation = 'IDF' or iso:name = 'IDF'">
+																					<fo:external-graphic src="{concat('data:image/png;base64,', normalize-space($Image-IDF-Logo))}" content-height="{$content-height}mm" content-width="scale-to-fit" scaling="uniform" fox:alt-text="Image IDF Logo"/>
 																				</xsl:when>
 																				<xsl:otherwise></xsl:otherwise>
 																			</xsl:choose>
@@ -1813,17 +1817,21 @@
 		
 	<xsl:template name="insertLogoImages2024">
 		<xsl:variable name="content-height">19.4</xsl:variable>
-		<xsl:for-each select="/iso:iso-standard/iso:bibdata/iso:copyright/iso:owner/iso:organization/iso:abbreviation[. != 'IEEE']">
+		<xsl:for-each select="/iso:iso-standard/iso:bibdata/iso:copyright/iso:owner/iso:organization">
 			<xsl:choose>
-				<xsl:when test=". = 'ISO'">
+				<xsl:when test="iso:abbreviation = 'ISO'">
 					<fo:instream-foreign-object content-height="{$content-height}mm" fox:alt-text="Image ISO Logo">
 						<xsl:copy-of select="$Image-ISO-Logo-SVG"/>
 					</fo:instream-foreign-object>
 				</xsl:when>
-				<xsl:when test=". = 'IEC'">
+				<xsl:when test="iso:abbreviation = 'IEC'">
 					<fo:instream-foreign-object content-height="{$content-height}mm" fox:alt-text="Image IEC Logo">
 						<xsl:copy-of select="$Image-IEC-Logo-SVG"/>
 					</fo:instream-foreign-object>
+				</xsl:when>
+				<xsl:when test="iso:abbreviation = 'IEEE'"></xsl:when>
+				<xsl:when test="iso:abbreviation = 'IDF' or iso:name = 'IDF'">
+					<fo:external-graphic src="{concat('data:image/png;base64,', normalize-space($Image-IDF-Logo))}" content-height="{$content-height}mm" content-width="scale-to-fit" scaling="uniform" fox:alt-text="Image IDF Logo"/>
 				</xsl:when>
 				<xsl:otherwise></xsl:otherwise>
 			</xsl:choose>
@@ -2469,7 +2477,7 @@
 			<xsl:when test="$layoutVersion = '1951'">
 				<xsl:choose>
 					<xsl:when test="@id = 'boilerplate-message'">
-						<fo:block-container width="85.5mm" margin-left="50mm" margin-right="50mm" border="1pt solid blue">
+						<fo:block-container width="85.5mm" margin-left="50mm" margin-right="50mm">
 							<fo:block-container margin-left="0" margin-right="0">
 								<fo:block text-align="justify" text-align-last="center">
 								<!-- The copyright of ISO Recommendations and 1SO Standards
