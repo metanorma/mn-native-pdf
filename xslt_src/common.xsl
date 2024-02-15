@@ -1217,6 +1217,14 @@
 
 	</xsl:attribute-set>
 
+	<xsl:template name="refine_termexample-style">
+		<xsl:if test="$namespace = 'iso'">
+			<xsl:if test="$layoutVersion = '1989'">
+				<xsl:attribute name="font-size">9pt</xsl:attribute>
+			</xsl:if>
+		</xsl:if>
+	</xsl:template>
+
 	<xsl:attribute-set name="example-style">
 		<xsl:if test="$namespace = 'bsi'">
 			<xsl:attribute name="margin-top">6pt</xsl:attribute>
@@ -1293,6 +1301,11 @@
 	</xsl:attribute-set> <!-- example-style -->
 
 	<xsl:template name="refine_example-style">
+		<xsl:if test="$namespace = 'iso'">
+			<xsl:if test="$layoutVersion = '1989'">
+				<xsl:attribute name="font-size">9pt</xsl:attribute>
+			</xsl:if>
+		</xsl:if>
 		<xsl:if test="$namespace = 'rsd'">
 			<xsl:if test="ancestor::ribose:ul or ancestor::ribose:ol">
 				<xsl:attribute name="margin-top">6pt</xsl:attribute>
@@ -3517,6 +3530,9 @@
 		</xsl:if>
 		
 		<xsl:if test="$namespace = 'iso'">
+			<xsl:if test="$layoutVersion = '1989'">
+				<xsl:attribute name="font-size">9pt</xsl:attribute>
+			</xsl:if>
 			<xsl:if test="$doctype = 'amendment' and parent::*[local-name() = 'quote']">
 				<xsl:attribute name="font-size">inherit</xsl:attribute>
 			</xsl:if>
@@ -3777,6 +3793,9 @@
 			</xsl:if>
 		</xsl:if>
 		<xsl:if test="$namespace = 'iso'">
+			<xsl:if test="$layoutVersion = '1989'">
+				<xsl:attribute name="font-size">9pt</xsl:attribute>
+			</xsl:if>
 			<xsl:if test="$doctype = 'amendment' and parent::*[local-name() = 'quote']">
 				<xsl:attribute name="font-size">inherit</xsl:attribute>
 			</xsl:if>
@@ -5112,6 +5131,11 @@
 			<xsl:if test="$current_template = 'whitepaper' or $current_template = 'icap-whitepaper' or $current_template = 'industry-connection-report'">
 				<xsl:attribute name="font-size">7pt</xsl:attribute>
 				<xsl:attribute name="line-height">1.1</xsl:attribute>
+			</xsl:if>
+		</xsl:if>
+		<xsl:if test="$namespace = 'iso'">
+			<xsl:if test="$layoutVersion = '1989'">
+				<xsl:attribute name="font-size">9pt</xsl:attribute>
 			</xsl:if>
 		</xsl:if>
 		<xsl:if test="$namespace = 'itu'">
@@ -14213,7 +14237,7 @@
 	<!-- ====== -->
 	<xsl:template match="*[local-name() = 'termexample']">
 		<fo:block id="{@id}" xsl:use-attribute-sets="termexample-style">
-			
+			<xsl:call-template name="refine_termexample-style"/>
 			<xsl:call-template name="setBlockSpanAll"/>
 			
 			<xsl:apply-templates select="*[local-name()='name']" />
