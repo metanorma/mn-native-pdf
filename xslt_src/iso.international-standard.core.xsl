@@ -298,6 +298,22 @@
 		</xsl:for-each>
 	</xsl:variable>
 	<xsl:variable name="ics" select="xalan:nodeset($ics_)"/>
+	<xsl:variable name="udc">
+		<xsl:variable name="classification_udc" select="normalize-space(/iso:iso-standard/iso:bibdata/iso:classification[@type = 'UDC'])"/>
+		<xsl:choose>
+			<xsl:when test="$classification_udc != ''">
+				<xsl:call-template name="getLocalizedString">
+					<xsl:with-param name="key">classification-UDC</xsl:with-param>
+				</xsl:call-template>
+				<xsl:text>&#xa0;</xsl:text>
+				<xsl:value-of select="java:replaceAll(java:java.lang.String.new($classification_udc),'(:)',' $1 ')"/>
+			</xsl:when>
+			<xsl:otherwise>&#xa0;</xsl:otherwise>
+		</xsl:choose>
+	</xsl:variable>
+
+	<xsl:variable name="revision_date" select="normalize-space(/iso:iso-standard/iso:bibdata/iso:version/iso:revision-date)"/>
+	<xsl:variable name="revision_date_num" select="number(translate($revision_date,'-',''))"/>
 	
 	<xsl:variable name="document_scheme" select="normalize-space(/iso:iso-standard/iso:metanorma-extension/iso:presentation-metadata[iso:name = 'document-scheme']/iso:value)"/>
 	<xsl:variable name="layoutVersion_">
@@ -468,6 +484,28 @@
 					</fo:page-sequence-master>
 					
 					
+					<fo:simple-page-master master-name="odd-preface_1989-1998" page-width="{$pageWidth}mm" page-height="{$pageHeight}mm">
+						<fo:region-body margin-top="{$marginTop}mm" margin-bottom="{$marginBottom}mm" margin-left="82mm" margin-right="{$marginLeftRight2}mm"/>
+						<fo:region-before region-name="header-odd" extent="{$marginTop}mm"/> <!--   display-align="center" -->
+						<fo:region-after region-name="footer-odd" extent="{$marginBottom - 2}mm"/>
+						<fo:region-start region-name="left-region" extent="82mm"/>
+						<fo:region-end region-name="right-region" extent="{$marginLeftRight2}mm"/>
+					</fo:simple-page-master>
+					<fo:simple-page-master master-name="even-preface_1989-1998" page-width="{$pageWidth}mm" page-height="{$pageHeight}mm">
+						<fo:region-body margin-top="{$marginTop}mm" margin-bottom="{$marginBottom}mm" margin-left="{$marginLeftRight2}mm" margin-right="82mm"/>
+						<fo:region-before region-name="header-even" extent="{$marginTop}mm"/>
+						<fo:region-after region-name="footer-even" extent="{$marginBottom - 2}mm"/>
+						<fo:region-start region-name="left-region" extent="{$marginLeftRight2}mm"/>
+						<fo:region-end region-name="right-region" extent="82mm"/>
+					</fo:simple-page-master>
+					<fo:page-sequence-master master-name="preface-1989-1998">
+						<fo:repeatable-page-master-alternatives>
+							<fo:conditional-page-master-reference master-reference="blankpage" blank-or-not-blank="blank" />
+							<fo:conditional-page-master-reference odd-or-even="even" master-reference="even-preface_1989-1998"/>
+							<fo:conditional-page-master-reference odd-or-even="odd" master-reference="odd-preface_1989-1998"/>
+						</fo:repeatable-page-master-alternatives>
+					</fo:page-sequence-master>
+					
 					<!-- first page -->
 					<fo:simple-page-master master-name="first-publishedISO" page-width="{$pageWidth}mm" page-height="{$pageHeight}mm">
 						<fo:region-body margin-top="{$marginTop}mm" margin-bottom="{$marginBottom}mm" margin-left="{$marginLeftRight1}mm" margin-right="{$marginLeftRight2}mm"/>
@@ -606,9 +644,6 @@
 					<xsl:with-param name="contents" select="$contents"/>
 				</xsl:call-template>
 				
-				<xsl:variable name="revision_date" select="normalize-space(/iso:iso-standard/iso:bibdata/iso:version/iso:revision-date)"/>
-				<xsl:variable name="revision_date_num" select="number(translate($revision_date,'-',''))"/>
-				
 				<!-- cover page -->
 				<xsl:choose>
 					<xsl:when test="$layoutVersion = '1951'">
@@ -617,17 +652,7 @@
 								<fo:block-container height="99%" display-align="after">
 									<fo:block text-align-last="justify" role="SKIP">
 										<!-- Example: UDC 669.7 : 620.178.1 -->
-										<xsl:variable name="udc" select="normalize-space(/iso:iso-standard/iso:bibdata/iso:classification[@type = 'UDC'])"/>
-										<xsl:choose>
-											<xsl:when test="$udc != ''">
-												<xsl:call-template name="getLocalizedString">
-													<xsl:with-param name="key">classification-UDC</xsl:with-param>
-												</xsl:call-template>
-												<xsl:text>&#xa0;</xsl:text>
-												<xsl:value-of select="java:replaceAll(java:java.lang.String.new($udc),'(:)',' $1 ')"/>
-											</xsl:when>
-											<xsl:otherwise>&#xa0;</xsl:otherwise>
-										</xsl:choose>
+										<xsl:value-of select="$udc"/>
 										<fo:inline keep-together.within-line="always" role="SKIP">
 											<fo:leader leader-pattern="space"/>
 											<fo:inline font-weight="normal">Ref. No. : </fo:inline><xsl:text>ISO/R 191-1971 (E)</xsl:text>
@@ -1736,41 +1761,50 @@
 				
 				<xsl:for-each select="xalan:nodeset($updated_xml_step3)">
 				
-					<fo:page-sequence master-reference="preface{$document-master-reference}" format="i" force-page-count="{$force-page-count-preface}">
-						<xsl:call-template name="insertHeaderFooter">
-							<xsl:with-param name="font-weight">normal</xsl:with-param>
-						</xsl:call-template>
-						<fo:flow flow-name="xsl-region-body" line-height="115%">
-							<xsl:if test="/iso:iso-standard/iso:boilerplate/iso:copyright-statement">
-							
-								<fo:block-container height="252mm" display-align="after" role="SKIP">
-									<xsl:if test="$layoutVersion = '2024'">
-										<xsl:attribute name="height">241.5mm</xsl:attribute>
-									</xsl:if>
-									<!-- <fo:block margin-bottom="3mm">
-										<fo:external-graphic src="{concat('data:image/png;base64,', normalize-space($Image-Attention))}" width="14mm" content-height="13mm" content-width="scale-to-fit" scaling="uniform" fox:alt-text="Image {@alt}"/>								
-										<fo:inline padding-left="6mm" font-size="12pt" font-weight="bold"></fo:inline>
-									</fo:block> -->
-									<fo:block line-height="90%" role="SKIP">
-										<fo:block font-size="9pt" text-align="justify" role="SKIP">
-											<xsl:if test="$layoutVersion = '2024'">
-												<xsl:attribute name="font-size">8.6pt</xsl:attribute>
-											</xsl:if>
-											<xsl:apply-templates select="/iso:iso-standard/iso:boilerplate/iso:copyright-statement"/>
-										</fo:block>
-									</fo:block>
-								</fo:block-container>
-								<xsl:if test="/iso:iso-standard/iso:preface/*">
-									<fo:block break-after="page"/>
+					<xsl:choose>
+						<xsl:when test="$layoutVersion = '1951'"><!-- To do --></xsl:when>
+						<xsl:otherwise>
+						
+							<fo:page-sequence master-reference="preface{$document-master-reference}" format="i" force-page-count="{$force-page-count-preface}">
+								<xsl:if test="$layoutVersion = '1989' and $revision_date_num &lt;= 19981231">
+									<xsl:attribute name="master-reference">preface-1989-1998</xsl:attribute>
 								</xsl:if>
-							</xsl:if>
-							
-							<!-- ToC, Foreword, Introduction -->					
-							<xsl:call-template name="processPrefaceSectionsDefault"/>
-							
-							<fo:block/> <!-- for prevent empty preface -->
-						</fo:flow>
-					</fo:page-sequence>
+								<xsl:call-template name="insertHeaderFooter">
+									<xsl:with-param name="font-weight">normal</xsl:with-param>
+								</xsl:call-template>
+								<fo:flow flow-name="xsl-region-body" line-height="115%">
+									<xsl:if test="/iso:iso-standard/iso:boilerplate/iso:copyright-statement">
+									
+										<fo:block-container height="252mm" display-align="after" role="SKIP">
+											<xsl:if test="$layoutVersion = '2024'">
+												<xsl:attribute name="height">241.5mm</xsl:attribute>
+											</xsl:if>
+											<!-- <fo:block margin-bottom="3mm">
+												<fo:external-graphic src="{concat('data:image/png;base64,', normalize-space($Image-Attention))}" width="14mm" content-height="13mm" content-width="scale-to-fit" scaling="uniform" fox:alt-text="Image {@alt}"/>								
+												<fo:inline padding-left="6mm" font-size="12pt" font-weight="bold"></fo:inline>
+											</fo:block> -->
+											<fo:block line-height="90%" role="SKIP">
+												<fo:block font-size="9pt" text-align="justify" role="SKIP">
+													<xsl:if test="$layoutVersion = '2024'">
+														<xsl:attribute name="font-size">8.6pt</xsl:attribute>
+													</xsl:if>
+													<xsl:apply-templates select="/iso:iso-standard/iso:boilerplate/iso:copyright-statement"/>
+												</fo:block>
+											</fo:block>
+										</fo:block-container>
+										<xsl:if test="/iso:iso-standard/iso:preface/*">
+											<fo:block break-after="page"/>
+										</xsl:if>
+									</xsl:if>
+									
+									<!-- ToC, Foreword, Introduction -->					
+									<xsl:call-template name="processPrefaceSectionsDefault"/>
+									
+									<fo:block/> <!-- for prevent empty preface -->
+								</fo:flow>
+							</fo:page-sequence>
+						</xsl:otherwise>
+					</xsl:choose>
 					
 					<!-- BODY -->
 					<fo:page-sequence master-reference="document{$document-master-reference}" initial-page-number="1" force-page-count="no-force">
@@ -2698,6 +2732,7 @@
 					<xsl:attribute name="{$attribute-name-before}"> <!-- space-before or margin-top -->
 						<xsl:choose>
 							<xsl:when test="ancestor::iso:introduction and $level &gt;= 2 and ../preceding-sibling::iso:clause">30pt</xsl:when>
+							<xsl:when test="$layoutVersion = '1989' and $revision_date_num &lt;= 19981231 and ancestor::iso:preface and $level = 1">62mm</xsl:when>
 							<xsl:when test="$layoutVersion = '1989' and ancestor::iso:preface and $level = 1">56pt</xsl:when>
 							<xsl:when test="ancestor::iso:preface">8pt</xsl:when>
 							<xsl:when test="$level = 2 and ancestor::iso:annex">18pt</xsl:when>
@@ -3084,7 +3119,12 @@
 										</fo:block>
 									</fo:table-cell>
 									<fo:table-cell display-align="center" padding-top="0mm" font-size="{$font-size_footer_copyright}">
-										<fo:block text-align="right"><xsl:value-of select="$copyrightText"/></fo:block>
+										<fo:block text-align="right">
+											<xsl:choose>
+												<xsl:when test="$layoutVersion = '1989' and $revision_date_num &lt;= 19981231"></xsl:when>
+												<xsl:otherwise><xsl:value-of select="$copyrightText"/></xsl:otherwise>
+											</xsl:choose>
+										</fo:block>
 									</fo:table-cell>
 								</fo:table-row>
 							</fo:table-body>
@@ -3112,7 +3152,12 @@
 							<fo:table-body>
 								<fo:table-row>
 									<fo:table-cell display-align="center" padding-top="0mm" font-size="{$font-size_footer_copyright}">
-										<fo:block><xsl:value-of select="$copyrightText"/></fo:block>
+										<fo:block>
+											<xsl:choose>
+												<xsl:when test="$layoutVersion = '1989' and $revision_date_num &lt;= 19981231"></xsl:when>
+												<xsl:otherwise><xsl:value-of select="$copyrightText"/></xsl:otherwise>
+											</xsl:choose>
+										</fo:block>
 									</fo:table-cell>
 									<fo:table-cell display-align="center">
 										<fo:block font-size="10pt" font-weight="bold" text-align="center">
@@ -3177,7 +3222,12 @@
 					<fo:table-body>
 						<fo:table-row>
 							<fo:table-cell display-align="center">
-								<fo:block font-size="{$font-size_footer_copyright}"><xsl:value-of select="$copyrightText"/></fo:block>
+								<fo:block font-size="{$font-size_footer_copyright}">
+									<xsl:choose>
+										<xsl:when test="$layoutVersion = '1989' and $revision_date_num &lt;= 19981231"></xsl:when>
+										<xsl:otherwise><xsl:value-of select="$copyrightText"/></xsl:otherwise>
+									</xsl:choose>
+								</fo:block>
 							</fo:table-cell>
 							<fo:table-cell>
 								<fo:block font-size="10pt" font-weight="bold" text-align="center">
@@ -3202,6 +3252,15 @@
 								<xsl:attribute name="font-size">11pt</xsl:attribute>
 								<xsl:attribute name="padding-top">5.5mm</xsl:attribute>
 								<xsl:attribute name="padding-bottom">1mm</xsl:attribute>
+								<xsl:if test="$revision_date_num &lt;= 19981231">
+									<xsl:attribute name="padding-top">2mm</xsl:attribute>
+									<xsl:attribute name="padding-bottom">2mm</xsl:attribute>
+								</xsl:if>
+							</xsl:if>
+							<xsl:if test="$layoutVersion = '1989' and $revision_date_num &lt;= 19981231">
+								<fo:block margin-bottom="6pt">
+									<xsl:value-of select="$udc"/>
+								</fo:block>
 							</xsl:if>
 							<xsl:for-each select="/iso:iso-standard/iso:bibdata/iso:ext/iso:ics/iso:code">
 								<xsl:if test="position() = 1"><fo:inline>ICS&#xA0;&#xA0;</fo:inline></xsl:if>
@@ -3219,7 +3278,7 @@
 								<xsl:when test="$stage-name = 'published'">ICS&#xA0;&#xA0;35.240.30</xsl:when>
 								<xsl:otherwise>ICS&#xA0;&#xA0;67.060</xsl:otherwise>
 							</xsl:choose> -->
-							</fo:block>
+						</fo:block>
 						<xsl:if test="/iso:iso-standard/iso:bibdata/iso:keyword">
 							<fo:block font-size="{$font-size_footer_copyright}" margin-bottom="6pt">
 								<xsl:variable name="title-descriptors">
@@ -3242,10 +3301,13 @@
 								</xsl:if>										
 							</xsl:for-each>
 						</fo:block>
-						<xsl:if test="$layoutVersion = '1989'">
+						<xsl:if test="$layoutVersion = '1989' and $revision_date_num &gt;= 19990101">
 							<fo:block>&#xa0;</fo:block>
 						</xsl:if>
 					</fo:block-container>
+					<xsl:if test="$layoutVersion = '1989' and $revision_date_num &lt;= 19981231">
+						<xsl:call-template name="insertTripleLine"/>
+					</xsl:if>
 				</fo:block-container>
 			</fo:flow>
 		</fo:page-sequence>
