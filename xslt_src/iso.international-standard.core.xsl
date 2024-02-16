@@ -484,6 +484,13 @@
 					</fo:page-sequence-master>
 					
 					
+					<fo:simple-page-master master-name="first-preface_1989-1998" page-width="{$pageWidth}mm" page-height="{$pageHeight}mm">
+						<fo:region-body margin-top="{$marginTop}mm" margin-bottom="95mm" margin-left="{$marginLeftRight2}mm" margin-right="82mm"/>
+						<fo:region-before region-name="header-even" extent="{$marginTop}mm"/>
+						<fo:region-after region-name="footer-preface-first_1989-1998" extent="95mm"/>
+						<fo:region-start region-name="left-region" extent="{$marginLeftRight2}mm"/>
+						<fo:region-end region-name="right-region" extent="82mm"/>
+					</fo:simple-page-master>
 					<fo:simple-page-master master-name="odd-preface_1989-1998" page-width="{$pageWidth}mm" page-height="{$pageHeight}mm">
 						<fo:region-body margin-top="{$marginTop}mm" margin-bottom="{$marginBottom}mm" margin-left="82mm" margin-right="{$marginLeftRight2}mm"/>
 						<fo:region-before region-name="header-odd" extent="{$marginTop}mm"/> <!--   display-align="center" -->
@@ -501,6 +508,7 @@
 					<fo:page-sequence-master master-name="preface-1989-1998">
 						<fo:repeatable-page-master-alternatives>
 							<fo:conditional-page-master-reference master-reference="blankpage" blank-or-not-blank="blank" />
+							<fo:conditional-page-master-reference master-reference="first-preface_1989-1998" page-position="first"/>
 							<fo:conditional-page-master-reference odd-or-even="even" master-reference="even-preface_1989-1998"/>
 							<fo:conditional-page-master-reference odd-or-even="odd" master-reference="odd-preface_1989-1998"/>
 						</fo:repeatable-page-master-alternatives>
@@ -1771,6 +1779,7 @@
 								</xsl:if>
 								<xsl:call-template name="insertHeaderFooter">
 									<xsl:with-param name="font-weight">normal</xsl:with-param>
+									<xsl:with-param name="is_footer">true</xsl:with-param>
 								</xsl:call-template>
 								<fo:flow flow-name="xsl-region-body" line-height="115%">
 									<xsl:if test="$layoutVersion = '1989' and $revision_date_num &gt;= 19990101">
@@ -1822,32 +1831,39 @@
 										</fo:block-container>
 									</xsl:if>
 									
-									<xsl:if test="/iso:iso-standard/iso:boilerplate/iso:copyright-statement">
 									
-										<fo:block-container height="252mm" display-align="after" role="SKIP">
-											<xsl:if test="$layoutVersion = '2024' or $layoutVersion = '1989'">
-												<xsl:attribute name="height">241.5mm</xsl:attribute>
+									<xsl:choose>
+										<xsl:when test="$layoutVersion = '1989' and $revision_date_num &lt;= 19981231"><!-- copyright renders in the footer footer-preface-first_1989-1998--></xsl:when>
+										<xsl:otherwise>
+										
+											<xsl:if test="/iso:iso-standard/iso:boilerplate/iso:copyright-statement">
+											
+												<fo:block-container height="252mm" display-align="after" role="SKIP">
+													<xsl:if test="$layoutVersion = '2024' or $layoutVersion = '1989'">
+														<xsl:attribute name="height">241.5mm</xsl:attribute>
+													</xsl:if>
+													<!-- <fo:block margin-bottom="3mm">
+														<fo:external-graphic src="{concat('data:image/png;base64,', normalize-space($Image-Attention))}" width="14mm" content-height="13mm" content-width="scale-to-fit" scaling="uniform" fox:alt-text="Image {@alt}"/>								
+														<fo:inline padding-left="6mm" font-size="12pt" font-weight="bold"></fo:inline>
+													</fo:block> -->
+													<fo:block line-height="90%" role="SKIP">
+														<fo:block font-size="9pt" text-align="justify" role="SKIP">
+															<xsl:if test="$layoutVersion = '1989'">
+																<xsl:attribute name="font-size">8pt</xsl:attribute>
+															</xsl:if>
+															<xsl:if test="$layoutVersion = '2024'">
+																<xsl:attribute name="font-size">8.6pt</xsl:attribute>
+															</xsl:if>
+															<xsl:apply-templates select="/iso:iso-standard/iso:boilerplate/iso:copyright-statement"/>
+														</fo:block>
+													</fo:block>
+												</fo:block-container>
+												<xsl:if test="/iso:iso-standard/iso:preface/*">
+													<fo:block break-after="page"/>
+												</xsl:if>
 											</xsl:if>
-											<!-- <fo:block margin-bottom="3mm">
-												<fo:external-graphic src="{concat('data:image/png;base64,', normalize-space($Image-Attention))}" width="14mm" content-height="13mm" content-width="scale-to-fit" scaling="uniform" fox:alt-text="Image {@alt}"/>								
-												<fo:inline padding-left="6mm" font-size="12pt" font-weight="bold"></fo:inline>
-											</fo:block> -->
-											<fo:block line-height="90%" role="SKIP">
-												<fo:block font-size="9pt" text-align="justify" role="SKIP">
-													<xsl:if test="$layoutVersion = '1989'">
-														<xsl:attribute name="font-size">8pt</xsl:attribute>
-													</xsl:if>
-													<xsl:if test="$layoutVersion = '2024'">
-														<xsl:attribute name="font-size">8.6pt</xsl:attribute>
-													</xsl:if>
-													<xsl:apply-templates select="/iso:iso-standard/iso:boilerplate/iso:copyright-statement"/>
-												</fo:block>
-											</fo:block>
-										</fo:block-container>
-										<xsl:if test="/iso:iso-standard/iso:preface/*">
-											<fo:block break-after="page"/>
-										</xsl:if>
-									</xsl:if>
+										</xsl:otherwise>
+									</xsl:choose>
 									
 									<!-- ToC, Foreword, Introduction -->					
 									<xsl:call-template name="processPrefaceSectionsDefault"/>
@@ -3063,6 +3079,12 @@
 	
 	<xsl:template name="insertHeaderFooter">
 		<xsl:param name="font-weight" select="'bold'"/>
+		<xsl:param name="is_footer">false</xsl:param>
+		<xsl:if test="$layoutVersion = '1989' and $revision_date_num &lt;= 19981231 and $is_footer = 'true'">
+			<xsl:call-template name="insertFooterFirst1989_1998">
+				<xsl:with-param name="font-weight" select="$font-weight"/>
+			</xsl:call-template>
+		</xsl:if>
 		<xsl:call-template name="insertHeaderEven"/>
 		<xsl:call-template name="insertFooterEven">
 			<xsl:with-param name="font-weight" select="$font-weight"/>
@@ -3143,6 +3165,45 @@
 			<xsl:otherwise>9pt</xsl:otherwise>
 		</xsl:choose>
 	</xsl:variable>
+	<xsl:template name="insertFooterFirst1989_1998">
+		<xsl:param name="font-weight" select="'bold'"/>
+		<fo:static-content flow-name="footer-preface-first_1989-1998" role="artifact">
+			<fo:block-container display-align="after" height="86mm">
+					
+				<fo:block line-height="90%" role="SKIP" margin-bottom="9mm">
+					<fo:block font-size="8pt" text-align="justify" role="SKIP">
+						<xsl:apply-templates select="/iso:iso-standard/iso:boilerplate/iso:copyright-statement"/>
+					</fo:block>
+				</fo:block>
+			
+				<fo:table table-layout="fixed" width="100%">
+					<fo:table-column column-width="33%"/>
+					<fo:table-column column-width="33%"/>
+					<fo:table-column column-width="34%"/>
+					<fo:table-body>
+						<fo:table-row>
+							<fo:table-cell display-align="center" padding-top="0mm" font-size="11pt" font-weight="{$font-weight}">
+								<xsl:if test="contains($copyrightText, 'IEEE')">
+									<xsl:attribute name="display-align">before</xsl:attribute>
+								</xsl:if>
+								<fo:block><fo:page-number/></fo:block>
+							</fo:table-cell>
+							<fo:table-cell display-align="center">
+								<fo:block font-size="10pt" font-weight="bold" text-align="center">
+									<xsl:if test="$stage-abbreviation = 'PRF'">
+										<xsl:value-of select="$proof-text"/>
+									</xsl:if>
+								</fo:block>
+							</fo:table-cell>
+							<fo:table-cell display-align="center" padding-top="0mm" font-size="{$font-size_footer_copyright}">
+								<fo:block text-align="right"></fo:block>
+							</fo:table-cell>
+						</fo:table-row>
+					</fo:table-body>
+				</fo:table>
+			</fo:block-container>
+		</fo:static-content>
+	</xsl:template>
 	<xsl:template name="insertFooterEven">
 		<xsl:param name="font-weight" select="'bold'"/>
 		<fo:static-content flow-name="footer-even" role="artifact">
