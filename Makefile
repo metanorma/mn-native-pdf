@@ -195,6 +195,9 @@ documents/%.xml: sources/%.xml | documents
 
 # This document is currently broken
 #un.agenda.xsl required
+documents/un-ECE_AGAT_2020_INF1.html:
+	echo "### skipping $@"
+
 documents/un-ECE_AGAT_2020_INF1.pdf:
 	echo "### skipping $@"
 
