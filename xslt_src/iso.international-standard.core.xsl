@@ -2192,6 +2192,10 @@
 				
 				<fo:block-container font-weight="bold">
 				
+					<xsl:if test="$layoutVersion = '1989' and $revision_date_num &lt;= 19981231">
+						<xsl:attribute name="margin-top">62mm</xsl:attribute>
+					</xsl:if>
+				
 					<!-- render 'Contents' outside if role="TOC" -->
 					<xsl:apply-templates select="*[local-name() = 'title']"/>
 				
