@@ -1048,7 +1048,13 @@
 			</xsl:call-template>
 			<xsl:text> </xsl:text>
 			<fo:inline>
-				<xsl:variable name="edition" select="//iec:iec-standard/iec:bibdata/iec:edition[normalize-space(@language) = '']"/>
+				<xsl:variable name="edition_" select="normalize-space(//iec:iec-standard/iec:bibdata/iec:edition[normalize-space(@language) = ''])"/>
+				<xsl:variable name="edition">
+					<xsl:choose>
+						<xsl:when test="$edition_ = ''">1</xsl:when>
+						<xsl:otherwise><xsl:value-of select="$edition_"/></xsl:otherwise>
+					</xsl:choose>
+				</xsl:variable>
 				<xsl:value-of select="$edition"/>
 				<xsl:if test="not(contains($edition, '.'))">.0</xsl:if>
 			</fo:inline>
