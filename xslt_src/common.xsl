@@ -1722,6 +1722,9 @@
 			<xsl:if test="$layoutVersion = '1989' and $revision_date_num &lt;= 19981231">
 				<xsl:attribute name="span">all</xsl:attribute>
 			</xsl:if>
+			<xsl:if test="$layoutVersion = '1989'">
+				<xsl:attribute name="font-size">9pt</xsl:attribute>
+			</xsl:if>
 		</xsl:if>
 		
 		<xsl:if test="$namespace = 'itu'">
@@ -2085,6 +2088,9 @@
 		<xsl:if test="$namespace = 'iso'">
 			<xsl:if test="$continued = 'true'">
 				<xsl:attribute name="margin-bottom">2pt</xsl:attribute>
+			</xsl:if>
+			<xsl:if test="$layoutVersion = '1989'">
+				<xsl:attribute name="font-size">10pt</xsl:attribute>
 			</xsl:if>
 			<xsl:if test="$layoutVersion = '2024'">
 				<xsl:attribute name="font-size">10.5pt</xsl:attribute>
