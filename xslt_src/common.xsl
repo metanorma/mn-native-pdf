@@ -1719,6 +1719,9 @@
 			<xsl:if test="starts-with(@id, 'array_')">
 				<xsl:attribute name="margin-top">6pt</xsl:attribute>
 			</xsl:if>
+			<xsl:if test="$layoutVersion = '1989' and $revision_date_num &lt;= 19981231">
+				<xsl:attribute name="span">all</xsl:attribute>
+			</xsl:if>
 		</xsl:if>
 		
 		<xsl:if test="$namespace = 'itu'">
