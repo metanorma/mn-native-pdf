@@ -195,31 +195,31 @@ documents/%.xml: sources/%.xml | documents
 
 # This document is currently broken
 #un.agenda.xsl required
-documents/un-ECE_AGAT_2020_INF1.html:
+documents/un-ECE_AGAT_2020_INF1.*:
 	echo "### skipping $@"
 
-documents/un-ECE_TRADE_C_CEFACT_2018_1E.html:
+documents/un-ECE_TRADE_C_CEFACT_2018_1E.*:
 	echo "### skipping $@"
 
-documents/un-ECE_TRADE_C_CEFACT_2018_6E.html:
+documents/un-ECE_TRADE_C_CEFACT_2018_6E.*:
 	echo "### skipping $@"
 
-documents/un-ECE_TRADE_C_CEFACT_2019_09.html:
+documents/un-ECE_TRADE_C_CEFACT_2019_09.*:
 	echo "### skipping $@"
 
-documents/un-ECE_TRADE_C_CEFACT_2019_22_REV1.html:
+documents/un-ECE_TRADE_C_CEFACT_2019_22_REV1.*:
 	echo "### skipping $@"
 
-documents/un-ECE_TRADE_C_CEFACT_2019_26.html:
+documents/un-ECE_TRADE_C_CEFACT_2019_26.*:
 	echo "### skipping $@"
 
-documents/un-ECE_TRADE_C_CEFACT_2019_27.html:
+documents/un-ECE_TRADE_C_CEFACT_2019_27.*:
 	echo "### skipping $@"
 
-documents/un-ECE_TRADE_C_CEFACT_2020_18E.html:
+documents/un-ECE_TRADE_C_CEFACT_2020_18E.*:
 	echo "### skipping $@"
 
-documents/un-ECE_TRADE_C_CEFACT_2020_19E.html:
+documents/un-ECE_TRADE_C_CEFACT_2020_19E.*:
 	echo "### skipping $@"
 
 documents/un-ECE_AGAT_2020_INF1.pdf:
