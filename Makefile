@@ -198,6 +198,30 @@ documents/%.xml: sources/%.xml | documents
 documents/un-ECE_AGAT_2020_INF1.html:
 	echo "### skipping $@"
 
+documents/un-ECE_TRADE_C_CEFACT_2018_1E.html:
+	echo "### skipping $@"
+
+documents/un-ECE_TRADE_C_CEFACT_2018_6E.html:
+	echo "### skipping $@"
+
+documents/un-ECE_TRADE_C_CEFACT_2019_09.html:
+	echo "### skipping $@"
+
+documents/un-ECE_TRADE_C_CEFACT_2019_22_REV1.html:
+	echo "### skipping $@"
+
+documents/un-ECE_TRADE_C_CEFACT_2019_26.html:
+	echo "### skipping $@"
+
+documents/un-ECE_TRADE_C_CEFACT_2019_27.html:
+	echo "### skipping $@"
+
+documents/un-ECE_TRADE_C_CEFACT_2020_18E.html:
+	echo "### skipping $@"
+
+documents/un-ECE_TRADE_C_CEFACT_2020_19E.html:
+	echo "### skipping $@"
+
 documents/un-ECE_AGAT_2020_INF1.pdf:
 	echo "### skipping $@"
 
