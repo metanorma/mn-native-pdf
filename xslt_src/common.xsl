@@ -2091,6 +2091,7 @@
 			</xsl:if>
 			<xsl:if test="$layoutVersion = '1989'">
 				<xsl:attribute name="font-size">10pt</xsl:attribute>
+				<xsl:attribute name="span">all</xsl:attribute>
 			</xsl:if>
 			<xsl:if test="$layoutVersion = '2024'">
 				<xsl:attribute name="font-size">10.5pt</xsl:attribute>
@@ -6383,6 +6384,43 @@
 								/*/*[local-name()='bibliography']/*[local-name()='clause'][*[local-name()='references'][not(@normative='true')]]">
 			<xsl:sort select="@displayorder" data-type="number"/>
 			<xsl:apply-templates select="."/>
+		</xsl:for-each>
+	</xsl:template>
+	
+	<xsl:template name="processMainSectionsDefault_flatxml">
+		<xsl:for-each select="/*/*[local-name()='sections']/* | /*/*[local-name()='bibliography']/*[local-name()='references'][@normative='true']">
+			<xsl:sort select="@displayorder" data-type="number"/>
+			<xsl:variable name="flatxml">
+				<xsl:apply-templates select="." mode="flatxml"/>
+			</xsl:variable>
+			<!-- debug_flatxml='<xsl:copy-of select="$flatxml"/>' -->
+			<xsl:apply-templates select="xalan:nodeset($flatxml)/*"/>
+			<xsl:if test="$namespace = 'm3d'">
+				<xsl:if test="local-name()='clause' and @type='scope'">
+					<xsl:if test="/*/*[local-name()='bibliography']/*[local-name()='references'][@normative='true']">
+						<fo:block break-after="page"/>			
+					</xsl:if>
+				</xsl:if>
+			</xsl:if>
+		</xsl:for-each>
+		
+		<xsl:for-each select="/*/*[local-name()='annex']">
+			<xsl:sort select="@displayorder" data-type="number"/>
+			<xsl:variable name="flatxml">
+				<xsl:apply-templates select="." mode="flatxml"/>
+			</xsl:variable>
+			<!-- debug_flatxml='<xsl:copy-of select="$flatxml"/>' -->
+			<xsl:apply-templates select="xalan:nodeset($flatxml)/*"/>
+		</xsl:for-each>
+		
+		<xsl:for-each select="/*/*[local-name()='bibliography']/*[not(@normative='true')] | 
+								/*/*[local-name()='bibliography']/*[local-name()='clause'][*[local-name()='references'][not(@normative='true')]]">
+			<xsl:sort select="@displayorder" data-type="number"/>
+			<xsl:variable name="flatxml">
+				<xsl:apply-templates select="." mode="flatxml"/>
+			</xsl:variable>
+			<!-- debug_flatxml='<xsl:copy-of select="$flatxml"/>' -->
+			<xsl:apply-templates select="xalan:nodeset($flatxml)/*"/>
 		</xsl:for-each>
 	</xsl:template>
 	

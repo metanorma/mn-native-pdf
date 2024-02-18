@@ -1941,11 +1941,28 @@
 							<!-- <fo:block> -->
 								
 								<xsl:choose>
-									<xsl:when test="$doctype = 'amendment'">
-										<xsl:apply-templates select="/iso:iso-standard/iso:sections/*"/>
-									</xsl:when>
+									<xsl:when test="$layoutVersion = '1989' and $layout_columns != 1">
+										<xsl:choose>
+											<xsl:when test="$doctype = 'amendment'">
+												<xsl:variable name="flatxml">
+													<xsl:apply-templates select="/iso:iso-standard/iso:sections/*" mode="flatxml"/>
+												</xsl:variable>
+												<xsl:apply-templates select="xalan:nodeset($flatxml)/*"/>
+											</xsl:when>
+											<xsl:otherwise>
+												<xsl:call-template name="processMainSectionsDefault_flatxml"/>
+											</xsl:otherwise>
+										</xsl:choose>
+									</xsl:when> <!-- $layoutVersion = '1989' and $layout_columns != 1 -->
 									<xsl:otherwise>
-										<xsl:call-template name="processMainSectionsDefault"/>
+										<xsl:choose>
+											<xsl:when test="$doctype = 'amendment'">
+												<xsl:apply-templates select="/iso:iso-standard/iso:sections/*"/>
+											</xsl:when>
+											<xsl:otherwise>
+												<xsl:call-template name="processMainSectionsDefault"/>
+											</xsl:otherwise>
+										</xsl:choose>
 									</xsl:otherwise>
 								</xsl:choose>
 								
@@ -2727,7 +2744,7 @@
 	<!-- title      -->
 	<!-- ====== -->
 	
-	<xsl:template match="iso:annex/iso:title">
+	<xsl:template match="iso:annex/iso:title | iso:title[@ancestor = 'annex' and @depth = '1']">
 		<xsl:choose>
 			<xsl:when test="$doctype = 'amendment'">
 				<xsl:call-template name="titleAmendment"/>				
@@ -2748,7 +2765,7 @@
 	</xsl:template>
 	
 	<!-- Bibliography -->
-	<xsl:template match="iso:references[not(@normative='true')]/iso:title">
+	<xsl:template match="iso:references[not(@normative='true')]/iso:title | iso:title[@ancestor = 'bibliography']">
 		<xsl:choose>
 			<xsl:when test="$doctype = 'amendment'">
 				<xsl:call-template name="titleAmendment"/>				
@@ -3111,33 +3128,135 @@
 	<!-- End of Index processing -->
 	<!-- =================== -->
 
-	<!-- customized, from common.xsl -->
-	<xsl:template match="*[local-name() = 'annex']" priority="2">
-		<fo:block break-after="page"/>
-		<fo:block>
-		
-			<xsl:call-template name="setBlockSpanAll"/>
-			
-			<xsl:call-template name="refine_annex_style"/>
-			
-		</fo:block>
-		<fo:block id="{@id}"/>
-		<xsl:apply-templates />
+	<!-- ================================= -->
+	<!-- XML Flattening -->
+	<!-- ================================= -->
+	<xsl:template match="@*|node()" mode="flatxml">
+		<xsl:copy>
+			<xsl:apply-templates select="@*|node()" mode="flatxml"/>
+		</xsl:copy>
 	</xsl:template>
 	
-	<!-- customized, from common.xsl -->
-	<!-- Bibliography (non-normative references) -->
-	<xsl:template match="*[local-name() = 'references']" priority="2">
-		<xsl:if test="not(ancestor::*[local-name() = 'annex'])">
-			<fo:block break-after="page"/>
-		</xsl:if>
-		<fo:block id="{@id}" xsl:use-attribute-sets="references-non-normative-style">
-			<xsl:if test="$layoutVersion = '1989'">
-				<xsl:attribute name="span">all</xsl:attribute>
+	<xsl:template match="processing-instruction()" mode="flatxml">
+		<xsl:copy-of select="."/>
+	</xsl:template>
+
+	<xsl:template match="iso:foreword |
+											iso:foreword//iso:clause |
+											iso:introduction |
+											iso:introduction//iso:clause |
+											iso:sections//iso:clause | 
+											iso:annex | 
+											iso:annex//iso:clause | 
+											iso:references[not(@hidden = 'true')] |
+											iso:bibliography/iso:clause | 
+											iso:colophon | 
+											iso:colophon//iso:clause | 
+											*[local-name()='sections']//*[local-name()='terms'] | 
+											*[local-name()='sections']//*[local-name()='definitions'] |
+											*[local-name()='annex']//*[local-name()='definitions']" mode="flatxml"> <!-- [not(@type = 'national-foreword')] [not(@type = 'national-foreword')] -->
+		<!-- From:
+		<clause>
+			<title>...</title>
+			<p>...</p>
+		</clause>
+		To:
+			<clause/>
+			<title>...</title>
+			<p>...</p>
+		-->
+		<xsl:copy>
+			<xsl:apply-templates select="@*" mode="flatxml"/>
+			<xsl:attribute name="keep-with-next">always</xsl:attribute>
+			<xsl:if test="local-name() = 'foreword' or local-name() = 'introduction' or
+			local-name(..) = 'preface' or local-name(..) = 'sections' or 
+			(local-name() = 'references' and parent::*[local-name() = 'bibliography']) or
+			(local-name() = 'clause' and parent::*[local-name() = 'bibliography']) or
+			local-name() = 'annex' or 
+			local-name(..) = 'annex' or
+			local-name(..) = 'colophon'">
+				<xsl:attribute name="mainsection">true</xsl:attribute>
 			</xsl:if>
-			<xsl:apply-templates />
-		</fo:block>
-	</xsl:template> <!-- references -->
+		</xsl:copy>
+		<xsl:apply-templates mode="flatxml"/>
+	</xsl:template>
+
+	<xsl:template match="iso:term" mode="flatxml" priority="2">
+		<xsl:copy>
+			<xsl:apply-templates select="@*" mode="flatxml"/>
+			<xsl:attribute name="keep-with-next">always</xsl:attribute>
+			<xsl:variable name="level">
+				<xsl:call-template name="getLevel"/>
+			</xsl:variable>
+			<xsl:attribute name="depth"><xsl:value-of select="$level"/></xsl:attribute>
+			<xsl:attribute name="ancestor">sections</xsl:attribute>
+			<xsl:apply-templates select="node()[not(local-name() = 'term')]" mode="flatxml"/>
+		</xsl:copy>
+		<xsl:apply-templates select="iso:term" mode="flatxml"/>
+	</xsl:template>
+
+	<xsl:template match="iso:introduction//iso:title | iso:foreword//iso:title | iso:sections//iso:title | iso:annex//iso:title | iso:bibliography/iso:clause/iso:title | iso:references/iso:title | iso:colophon//iso:title" mode="flatxml" priority="2"> <!-- | iso:term -->
+		<xsl:copy>
+			<xsl:apply-templates select="@*" mode="flatxml"/>
+			<xsl:attribute name="keep-with-next">always</xsl:attribute>
+			<xsl:variable name="level">
+				<xsl:call-template name="getLevel"/>
+			</xsl:variable>
+			<xsl:attribute name="depth"><xsl:value-of select="$level"/></xsl:attribute>
+			<xsl:if test="parent::iso:annex">
+				<xsl:attribute name="depth">1</xsl:attribute>
+			</xsl:if>
+			<xsl:if test="../@inline-header = 'true' and following-sibling::*[1][self::iso:p]">
+				<xsl:copy-of select="../@inline-header"/>
+			</xsl:if>
+			<xsl:attribute name="ancestor">
+				<xsl:choose>
+					<xsl:when test="ancestor::iso:foreword">foreword</xsl:when>
+					<xsl:when test="ancestor::iso:introduction">introduction</xsl:when>
+					<xsl:when test="ancestor::iso:sections">sections</xsl:when>
+					<xsl:when test="ancestor::iso:annex">annex</xsl:when>
+					<xsl:when test="ancestor::iso:bibliography">bibliography</xsl:when>
+				</xsl:choose>
+			</xsl:attribute>
+			<xsl:apply-templates mode="flatxml"/>
+		</xsl:copy>
+	</xsl:template>
+
+	<!-- copy sections/p 'as is' -->
+	<xsl:template match="*[local-name() = 'sections']/*[local-name() = 'p'][starts-with(@class, 'zzSTDTitle')]" priority="3"  mode="flatxml">
+		<xsl:element name="sections"  namespace="https://www.metanorma.org/ns/iso">
+			<xsl:copy-of select="."/>>
+		</xsl:element>
+	</xsl:template>
+	
+
+	<xsl:template match="*[local-name() = 'fn'][not(ancestor::*[(local-name() = 'table' or local-name() = 'figure')] and not(ancestor::*[local-name() = 'name']))]" mode="flatxml" name="flatxml_fn">
+		<xsl:variable name="p_fn_">
+			<xsl:call-template name="get_fn_list"/>
+		</xsl:variable>
+		<xsl:variable name="p_fn" select="xalan:nodeset($p_fn_)"/>
+		<xsl:variable name="gen_id" select="generate-id(.)"/>
+		<xsl:variable name="lang" select="ancestor::*[contains(local-name(), '-standard')]/*[local-name()='bibdata']//*[local-name()='language'][@current = 'true']"/>
+		<xsl:variable name="reference" select="@reference"/>
+		<!-- fn sequence number in document -->
+		<xsl:variable name="current_fn_number" select="count($p_fn//fn[@reference = $reference]/preceding-sibling::fn) + 1" />
+		
+		<xsl:copy>
+			<xsl:apply-templates select="@*" mode="flatxml"/>
+			<!-- put actual reference number -->
+			<xsl:attribute name="current_fn_number">
+				<xsl:value-of select="$current_fn_number"/>
+			</xsl:attribute>
+			<xsl:attribute name="skip_footnote_body"> <!-- false for repeatable footnote -->
+				<xsl:value-of select="not($p_fn//fn[@gen_id = $gen_id] and (1 = 1))"/>
+			</xsl:attribute>
+			<xsl:apply-templates select="node()" mode="flatxml"/>
+		</xsl:copy>
+	</xsl:template>
+
+	<!-- ================================= -->
+	<!-- END: XML Flattening -->
+	<!-- ================================= -->
 	
 	<!-- 
 	<xsl:template match="text()[contains(., $thin_space)]">
