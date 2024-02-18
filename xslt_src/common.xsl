@@ -1217,6 +1217,14 @@
 
 	</xsl:attribute-set>
 
+	<xsl:template name="refine_termexample-style">
+		<xsl:if test="$namespace = 'iso'">
+			<xsl:if test="$layoutVersion = '1989'">
+				<xsl:attribute name="font-size">9pt</xsl:attribute>
+			</xsl:if>
+		</xsl:if>
+	</xsl:template>
+
 	<xsl:attribute-set name="example-style">
 		<xsl:if test="$namespace = 'bsi'">
 			<xsl:attribute name="margin-top">6pt</xsl:attribute>
@@ -1293,6 +1301,11 @@
 	</xsl:attribute-set> <!-- example-style -->
 
 	<xsl:template name="refine_example-style">
+		<xsl:if test="$namespace = 'iso'">
+			<xsl:if test="$layoutVersion = '1989'">
+				<xsl:attribute name="font-size">9pt</xsl:attribute>
+			</xsl:if>
+		</xsl:if>
 		<xsl:if test="$namespace = 'rsd'">
 			<xsl:if test="ancestor::ribose:ul or ancestor::ribose:ol">
 				<xsl:attribute name="margin-top">6pt</xsl:attribute>
@@ -1706,6 +1719,12 @@
 			<xsl:if test="starts-with(@id, 'array_')">
 				<xsl:attribute name="margin-top">6pt</xsl:attribute>
 			</xsl:if>
+			<xsl:if test="$layoutVersion = '1989' and $revision_date_num &lt;= 19981231">
+				<xsl:attribute name="span">all</xsl:attribute>
+			</xsl:if>
+			<xsl:if test="$layoutVersion = '1989'">
+				<xsl:attribute name="font-size">9pt</xsl:attribute>
+			</xsl:if>
 		</xsl:if>
 		
 		<xsl:if test="$namespace = 'itu'">
@@ -2069,6 +2088,10 @@
 		<xsl:if test="$namespace = 'iso'">
 			<xsl:if test="$continued = 'true'">
 				<xsl:attribute name="margin-bottom">2pt</xsl:attribute>
+			</xsl:if>
+			<xsl:if test="$layoutVersion = '1989'">
+				<xsl:attribute name="font-size">10pt</xsl:attribute>
+				<xsl:attribute name="span">all</xsl:attribute>
 			</xsl:if>
 			<xsl:if test="$layoutVersion = '2024'">
 				<xsl:attribute name="font-size">10.5pt</xsl:attribute>
@@ -3517,6 +3540,9 @@
 		</xsl:if>
 		
 		<xsl:if test="$namespace = 'iso'">
+			<xsl:if test="$layoutVersion = '1989'">
+				<xsl:attribute name="font-size">9pt</xsl:attribute>
+			</xsl:if>
 			<xsl:if test="$doctype = 'amendment' and parent::*[local-name() = 'quote']">
 				<xsl:attribute name="font-size">inherit</xsl:attribute>
 			</xsl:if>
@@ -3777,6 +3803,9 @@
 			</xsl:if>
 		</xsl:if>
 		<xsl:if test="$namespace = 'iso'">
+			<xsl:if test="$layoutVersion = '1989'">
+				<xsl:attribute name="font-size">9pt</xsl:attribute>
+			</xsl:if>
 			<xsl:if test="$doctype = 'amendment' and parent::*[local-name() = 'quote']">
 				<xsl:attribute name="font-size">inherit</xsl:attribute>
 			</xsl:if>
@@ -5114,6 +5143,11 @@
 				<xsl:attribute name="line-height">1.1</xsl:attribute>
 			</xsl:if>
 		</xsl:if>
+		<xsl:if test="$namespace = 'iso'">
+			<xsl:if test="$layoutVersion = '1989'">
+				<xsl:attribute name="font-size">9pt</xsl:attribute>
+			</xsl:if>
+		</xsl:if>
 		<xsl:if test="$namespace = 'itu'">
 			<xsl:if test="$doctype = 'service-publication'">
 				<xsl:attribute name="font-size">10pt</xsl:attribute>
@@ -6350,6 +6384,43 @@
 								/*/*[local-name()='bibliography']/*[local-name()='clause'][*[local-name()='references'][not(@normative='true')]]">
 			<xsl:sort select="@displayorder" data-type="number"/>
 			<xsl:apply-templates select="."/>
+		</xsl:for-each>
+	</xsl:template>
+	
+	<xsl:template name="processMainSectionsDefault_flatxml">
+		<xsl:for-each select="/*/*[local-name()='sections']/* | /*/*[local-name()='bibliography']/*[local-name()='references'][@normative='true']">
+			<xsl:sort select="@displayorder" data-type="number"/>
+			<xsl:variable name="flatxml">
+				<xsl:apply-templates select="." mode="flatxml"/>
+			</xsl:variable>
+			<!-- debug_flatxml='<xsl:copy-of select="$flatxml"/>' -->
+			<xsl:apply-templates select="xalan:nodeset($flatxml)/*"/>
+			<xsl:if test="$namespace = 'm3d'">
+				<xsl:if test="local-name()='clause' and @type='scope'">
+					<xsl:if test="/*/*[local-name()='bibliography']/*[local-name()='references'][@normative='true']">
+						<fo:block break-after="page"/>			
+					</xsl:if>
+				</xsl:if>
+			</xsl:if>
+		</xsl:for-each>
+		
+		<xsl:for-each select="/*/*[local-name()='annex']">
+			<xsl:sort select="@displayorder" data-type="number"/>
+			<xsl:variable name="flatxml">
+				<xsl:apply-templates select="." mode="flatxml"/>
+			</xsl:variable>
+			<!-- debug_flatxml='<xsl:copy-of select="$flatxml"/>' -->
+			<xsl:apply-templates select="xalan:nodeset($flatxml)/*"/>
+		</xsl:for-each>
+		
+		<xsl:for-each select="/*/*[local-name()='bibliography']/*[not(@normative='true')] | 
+								/*/*[local-name()='bibliography']/*[local-name()='clause'][*[local-name()='references'][not(@normative='true')]]">
+			<xsl:sort select="@displayorder" data-type="number"/>
+			<xsl:variable name="flatxml">
+				<xsl:apply-templates select="." mode="flatxml"/>
+			</xsl:variable>
+			<!-- debug_flatxml='<xsl:copy-of select="$flatxml"/>' -->
+			<xsl:apply-templates select="xalan:nodeset($flatxml)/*"/>
 		</xsl:for-each>
 	</xsl:template>
 	
@@ -14218,7 +14289,7 @@
 	<!-- ====== -->
 	<xsl:template match="*[local-name() = 'termexample']">
 		<fo:block id="{@id}" xsl:use-attribute-sets="termexample-style">
-			
+			<xsl:call-template name="refine_termexample-style"/>
 			<xsl:call-template name="setBlockSpanAll"/>
 			
 			<xsl:apply-templates select="*[local-name()='name']" />
