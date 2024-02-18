@@ -73,13 +73,21 @@
 	<xsl:variable name="lang-1st-letter_tmp" select="substring-before(substring-after($docidentifier_iso_with_lang, '('), ')')"/>
 	<xsl:variable name="lang-1st-letter" select="concat('(', $lang-1st-letter_tmp , ')')"/>
   
+	<xsl:variable name="iso_reference" select="/iso:iso-standard/iso:bibdata/iso:docidentifier[@type = 'iso-reference']"/>
 	<xsl:variable name="ISOnumber">
 		<xsl:choose>
 			<xsl:when test="$layoutVersion = '2024' and $docidentifier_iso_with_lang != ''">
 				<xsl:value-of select="$docidentifier_iso_with_lang"/>
 			</xsl:when>
 			<xsl:otherwise>
-				<xsl:value-of select="/iso:iso-standard/iso:bibdata/iso:docidentifier[@type = 'iso-reference']"/>
+				<xsl:choose>
+					<xsl:when test="$layoutVersion = '1951'">
+						<xsl:value-of select="java:replaceAll(java:java.lang.String.new($iso_reference),':',' - ')"/>
+					</xsl:when>
+					<xsl:otherwise>
+						<xsl:value-of select="$iso_reference"/>
+					</xsl:otherwise>
+				</xsl:choose>
 			</xsl:otherwise>
 		</xsl:choose>
 	</xsl:variable>
@@ -673,7 +681,10 @@
 										<xsl:value-of select="$udc"/>
 										<fo:inline keep-together.within-line="always" role="SKIP">
 											<fo:leader leader-pattern="space"/>
-											<fo:inline font-weight="normal">Ref. No. : </fo:inline><xsl:text>ISO/R 191-1971 (E)</xsl:text>
+											<fo:inline font-weight="normal">
+												<xsl:call-template name="getLocalizedString">
+													<xsl:with-param name="key">reference_number</xsl:with-param>
+												</xsl:call-template><xsl:text>:</xsl:text></fo:inline><xsl:value-of select="$ISOnumber"/>
 										</fo:inline>
 									</fo:block>
 								</fo:block-container>
