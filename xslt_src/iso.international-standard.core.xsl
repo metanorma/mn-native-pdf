@@ -716,7 +716,7 @@
 										
 									</fo:block-container>
 									<fo:block-container height="40mm" display-align="center" font-size="9pt">
-										<fo:block>2nd <fo:inline font-weight="bold">EDITION</fo:inline></fo:block>
+										<fo:block><xsl:apply-templates select="/iso:iso-standard/iso:bibdata/iso:edition[@language != '']" /></fo:block>
 										<fo:block>&#xa0;</fo:block>
 										<xsl:variable name="revision_date_year" select="substring($revision_date,1,4)"/>
 										<xsl:variable name="revision_date_month" select="substring($revision_date,6,2)"/>
@@ -2033,6 +2033,14 @@
 		<xsl:apply-templates select="$XML/iso:iso-standard/iso:bibdata/iso:title[@language = $lang_other and @type = 'title-amd']">
 			<xsl:with-param name="curr_lang" select="$lang_other"/>
 		</xsl:apply-templates>																
+	</xsl:template>
+	
+	<!-- for 1951 layout -->
+	<xsl:template match="iso:edition/text()" priority="3">
+		<xsl:choose>
+			<xsl:when test="contains(., ' ')"><xsl:value-of select="substring-before(., ' ')"/><xsl:text> </xsl:text><fo:inline font-weight="bold"><xsl:value-of select="substring-after(., ' ')"/></fo:inline></xsl:when>
+			<xsl:otherwise><xsl:value-of select="."/></xsl:otherwise>
+		</xsl:choose>
 	</xsl:template>
 	
 	<xsl:template name="insertEditionAndDate">
