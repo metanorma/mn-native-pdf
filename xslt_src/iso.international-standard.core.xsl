@@ -2737,6 +2737,9 @@
 					<xsl:if test="$layoutVersion = '2024'">
 						<xsl:attribute name="font-size">15.3pt</xsl:attribute>
 					</xsl:if>
+					<xsl:if test="$layoutVersion = '1989'">
+						<xsl:attribute name="span">all</xsl:attribute>
+					</xsl:if>
 					<xsl:apply-templates />
 					<xsl:apply-templates select="following-sibling::*[1][local-name() = 'variant-title'][@type = 'sub']" mode="subtitle"/>
 				</fo:block>
@@ -2754,6 +2757,7 @@
 				<fo:block font-size="16pt" font-weight="bold" text-align="center" margin-top="6pt" margin-bottom="36pt" keep-with-next="always" role="H1">
 					<xsl:if test="$layoutVersion = '1989'">
 						<xsl:attribute name="font-size">14pt</xsl:attribute>
+						<xsl:attribute name="span">all</xsl:attribute>
 					</xsl:if>
 					<xsl:if test="$layoutVersion = '2024'">
 						<xsl:attribute name="font-size">15.3pt</xsl:attribute>
@@ -3106,6 +3110,34 @@
 	<!-- =================== -->
 	<!-- End of Index processing -->
 	<!-- =================== -->
+
+	<!-- customized, from common.xsl -->
+	<xsl:template match="*[local-name() = 'annex']" priority="2">
+		<fo:block break-after="page"/>
+		<fo:block>
+		
+			<xsl:call-template name="setBlockSpanAll"/>
+			
+			<xsl:call-template name="refine_annex_style"/>
+			
+		</fo:block>
+		<fo:block id="{@id}"/>
+		<xsl:apply-templates />
+	</xsl:template>
+	
+	<!-- customized, from common.xsl -->
+	<!-- Bibliography (non-normative references) -->
+	<xsl:template match="*[local-name() = 'references']" priority="2">
+		<xsl:if test="not(ancestor::*[local-name() = 'annex'])">
+			<fo:block break-after="page"/>
+		</xsl:if>
+		<fo:block id="{@id}" xsl:use-attribute-sets="references-non-normative-style">
+			<xsl:if test="$layoutVersion = '1989'">
+				<xsl:attribute name="span">all</xsl:attribute>
+			</xsl:if>
+			<xsl:apply-templates />
+		</fo:block>
+	</xsl:template> <!-- references -->
 	
 	<!-- 
 	<xsl:template match="text()[contains(., $thin_space)]">
