@@ -726,7 +726,9 @@
 												<xsl:with-param name="date" select="/iso:iso-standard/iso:bibdata/iso:version/iso:revision-date"/>
 											</xsl:call-template>
 										</fo:block>
-										<fo:block margin-top="14mm">This second edition supersedes the first edition</fo:block>
+										<fo:block margin-top="14mm">
+											<xsl:value-of select="/iso:iso-standard/iso:bibdata/iso:ext/iso:edn-replacement"/>
+										</fo:block>
 									</fo:block-container>
 								</fo:block>
 							</fo:flow>
