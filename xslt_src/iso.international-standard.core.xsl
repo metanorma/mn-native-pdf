@@ -751,16 +751,13 @@
 										<fo:block-container margin-left="0" margin-top="0" margin-right="0">
 											<fo:block font-family="Times New Roman" font-size="24pt">
 												<!-- INTERNATIONAL STANDARD -->
-												<!-- <xsl:value-of select="$doctype_uppercased"/> -->
 												<xsl:call-template name="add-letter-spacing">
 													<xsl:with-param name="text" select="$doctype_uppercased"/>
 													<xsl:with-param name="letter-spacing" select="0.1"/>
 												</xsl:call-template>
 											</fo:block>
-										
 											<fo:table table-layout="fixed" width="100%" margin-top="16mm">
 												<fo:table-column column-width="proportional-column-width(23)"/>
-												<!-- <fo:table-column column-width="proportional-column-width(30)"/> -->
 												<fo:table-column column-width="proportional-column-width(108)"/>
 												<fo:table-body>
 													<fo:table-row>
@@ -770,7 +767,6 @@
 																<fo:external-graphic src="{concat('data:image/png;base64,', normalize-space($Image-ISO-Logo-1987))}" content-height="{$content-height}mm" content-width="scale-to-fit" scaling="uniform" fox:alt-text="Image ISO Logo"/>
 																</fo:block>
 														</fo:table-cell>
-														<!-- <fo:table-cell><fo:block>&#xa0;</fo:block></fo:table-cell> -->
 														<fo:table-cell font-size="7.5pt" border-top="0.5pt solid black" border-bottom="0.5pt solid black" text-align-last="justify" display-align="center" line-height="1.6" padding-left="32mm">
 															<fo:block>INTERNATIONAL ORGANIZATION FOR STANDARDIZATION</fo:block>
 															<fo:block>ORGANISATION INTERNATIONALE DE NORMALISATION</fo:block>
@@ -779,7 +775,6 @@
 													</fo:table-row>
 												</fo:table-body>
 											</fo:table>
-											
 											
 											<fo:block font-size="13pt" font-weight="bold" margin-top="32mm" margin-bottom="9mm" role="H1">
 												<xsl:call-template name="insertTitlesLangMain"/>
@@ -2598,6 +2593,11 @@
 							<xsl:value-of select="$part-text"/>
 							<xsl:apply-templates />
 						</xsl:when>
+						<xsl:when test="$layoutVersion = '1987'">
+							<fo:block font-weight="bold" margin-top="12pt" role="SKIP">
+								<xsl:value-of select="$part-text"/>
+							</fo:block>
+						</xsl:when>
 						<xsl:otherwise>
 						<fo:block font-weight="normal" margin-top="6pt" role="SKIP">
 							<xsl:value-of select="$part-text"/>
@@ -2616,6 +2616,9 @@
 		<xsl:if test="$isMainBody = 'false'">
 			<xsl:choose>
 				<xsl:when test="$layoutVersion = '1951'"></xsl:when>
+				<xsl:when test="$layoutVersion = '1987'">
+					<fo:inline font-weight="normal"><xsl:apply-templates /></fo:inline>
+				</xsl:when>
 				<xsl:otherwise>
 					<xsl:apply-templates />
 				</xsl:otherwise>
