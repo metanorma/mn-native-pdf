@@ -47,15 +47,45 @@
 	<xsl:variable name="docidentifierISO" select="normalize-space($docidentifierISO_)"/>
 	<xsl:variable name="docidentifierISO_with_break" select="java:replaceAll(java:java.lang.String.new($docidentifierISO),'^([^\d]+) (\d)', concat('$1', $linebreak, '$2'))"/> <!-- add line break before 1st sequence 'space digit' -->
 
+	<xsl:variable name="docidentifier_another_">
+		<xsl:for-each select="/iso:iso-standard/iso:bibdata/iso:docidentifier[@type != '' and @type != 'ISO' and not(starts-with(@type, 'iso-')) and @type != 'URN']">
+			<xsl:value-of select="."/>
+			<xsl:if test="position() != last()"><xsl:value-of select="$linebreak"/></xsl:if>
+		</xsl:for-each>
+	</xsl:variable>
+	<xsl:variable name="docidentifier_another">
+		<xsl:if test="normalize-space($docidentifier_another_) != ''">
+			<fo:block margin-top="12pt">
+				<xsl:value-of select="java:replaceAll(java:java.lang.String.new($docidentifier_another_),'^([^\d]+) (\d)', concat('$1', $linebreak, '$2'))"/>
+			</fo:block>
+		</xsl:if>
+	</xsl:variable>
+
 	<xsl:variable name="all_rights_reserved">
 		<xsl:call-template name="getLocalizedString">
 			<xsl:with-param name="key">all_rights_reserved</xsl:with-param>
 		</xsl:call-template>
 	</xsl:variable>	
 	<xsl:variable name="copyrightYear" select="/iso:iso-standard/iso:bibdata/iso:copyright/iso:from"/>
+	<xsl:variable name="copyrightAbbr__">
+		<xsl:for-each select="/iso:iso-standard/iso:bibdata/iso:copyright/iso:owner/iso:organization[normalize-space(iso:abbreviation) != 'IEEE']">
+			<abbr>
+				<xsl:choose>
+					<xsl:when test="iso:abbreviation"><xsl:value-of select="iso:abbreviation"/></xsl:when>
+					<xsl:otherwise><xsl:value-of select="iso:name"/></xsl:otherwise>
+				</xsl:choose>
+			</abbr>
+		</xsl:for-each>
+	</xsl:variable>
 	<xsl:variable name="copyrightAbbr_">
-		<xsl:for-each select="/iso:iso-standard/iso:bibdata/iso:copyright/iso:owner/iso:organization/iso:abbreviation[. != 'IEEE']">
-			<xsl:value-of select="."/><xsl:if test="position() != last()">/</xsl:if>
+		<xsl:for-each select="xalan:nodeset($copyrightAbbr__)//*">
+			<xsl:value-of select="."/>
+			<xsl:if test="position() != last()">
+				<xsl:choose>
+					<xsl:when test="following-sibling::*[1]/text() = 'IDF'"> and </xsl:when>
+					<xsl:otherwise>/</xsl:otherwise>
+				</xsl:choose>
+			</xsl:if>
 		</xsl:for-each>
 	</xsl:variable>
 	<xsl:variable name="copyrightAbbr" select="normalize-space($copyrightAbbr_)"/>
@@ -1397,6 +1427,7 @@
 																	<xsl:attribute name="font-size"><xsl:value-of select="$font-size"/></xsl:attribute>
 																</xsl:if>
 																<xsl:value-of select="$docidentifierISO_with_break"/>
+																<xsl:copy-of select="$docidentifier_another"/>
 															</fo:block>
 														</fo:table-cell>
 													</fo:table-row>
@@ -1630,6 +1661,7 @@
 												<fo:table-cell role="SKIP">
 													<fo:block text-align="right" font-weight="bold" margin-bottom="13mm">
 														<xsl:value-of select="$docidentifierISO_with_break"/>
+														<xsl:copy-of select="$docidentifier_another"/>
 													</fo:block>
 												</fo:table-cell>
 											</fo:table-row>
