@@ -11,6 +11,7 @@ SRC := $(patsubst mn-samples-iso/documents/international-standard/%,sources/iso-
 	$(patsubst mn-samples-itu/documents/%,sources/itu-%,$(wildcard mn-samples-itu/documents/*.xml)) \
 	$(patsubst mn-samples-iec/documents/%,sources/%,$(wildcard mn-samples-iec/documents/*.xml)) \
 	$(patsubst mn-samples-ogc/documents/%,sources/ogc-%,$(wildcard mn-samples-ogc/documents/*.xml)) \
+ 	$(patsubst mn-samples-un/documents/%,sources/un-%,$(wildcard mn-samples-un/documents/*.xml)) \
 	$(patsubst mn-samples-cc/documents/%,sources/%,$(wildcard mn-samples-cc/documents/*.xml)) \
 	$(patsubst mn-samples-m3aawg/documents/best-practice/%,sources/m3aawg-bp-%,$(wildcard mn-samples-m3aawg/documents/best-practice/*.xml)) \
 	$(patsubst mn-samples-m3aawg/documents/policy/%,sources/m3aawg-p-%,$(wildcard mn-samples-m3aawg/documents/policy/*.xml)) \
@@ -20,7 +21,6 @@ SRC := $(patsubst mn-samples-iso/documents/international-standard/%,sources/iso-
 	$(patsubst mn-samples-iho/documents/%,sources/iho-%,$(wildcard mn-samples-iho/documents/*.xml)) \
 	$(patsubst mn-samples-mpfa/documents/mpfa-%,sources/mpfa-%,$(wildcard mn-samples-mpfa/documents/*.xml))
 
-# 	$(patsubst mn-samples-un/documents/%,sources/un-%,$(wildcard mn-samples-un/documents/*.xml)) \
  
 PDF := $(patsubst sources/%,documents/%,$(patsubst %.xml,%.pdf,$(SRC)))
 HTML := $(patsubst sources/%,documents/%,$(patsubst %.xml,%.html,$(SRC)))
@@ -196,33 +196,6 @@ documents/%.xml: sources/%.xml | documents
 
 # This document is currently broken
 #un.agenda.xsl required
-documents/un-ECE_AGAT_2020_INF1.htnk:
-	echo "### skipping $@"
-
-documents/un-ECE_TRADE_C_CEFACT_2018_1E.html:
-	echo "### skipping $@"
-
-documents/un-ECE_TRADE_C_CEFACT_2018_6E.html:
-	echo "### skipping $@"
-
-documents/un-ECE_TRADE_C_CEFACT_2019_09.html:
-	echo "### skipping $@"
-
-documents/un-ECE_TRADE_C_CEFACT_2019_22_REV1.html:
-	echo "### skipping $@"
-
-documents/un-ECE_TRADE_C_CEFACT_2019_26.html:
-	echo "### skipping $@"
-
-documents/un-ECE_TRADE_C_CEFACT_2019_27.html:
-	echo "### skipping $@"
-
-documents/un-ECE_TRADE_C_CEFACT_2020_18E.html:
-	echo "### skipping $@"
-
-documents/un-ECE_TRADE_C_CEFACT_2020_19E.html:
-	echo "### skipping $@"
-
 documents/un-ECE_AGAT_2020_INF1.pdf:
 	echo "### skipping $@"
 
