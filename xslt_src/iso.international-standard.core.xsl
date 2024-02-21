@@ -114,6 +114,9 @@
 					<xsl:when test="$layoutVersion = '1951'">
 						<xsl:value-of select="java:replaceAll(java:java.lang.String.new($iso_reference),':',' - ')"/>
 					</xsl:when>
+					<xsl:when test="$layoutVersion = '1972'">
+						<xsl:value-of select="java:replaceAll(java:java.lang.String.new($iso_reference),':','-')"/>
+					</xsl:when>
 					<xsl:otherwise>
 						<xsl:value-of select="$iso_reference"/>
 					</xsl:otherwise>
@@ -386,7 +389,7 @@
 				
 				<xsl:variable name="root-style">
 					<root-style xsl:use-attribute-sets="root-style">
-						<xsl:if test="$layoutVersion = '1987' or $layoutVersion = '1989'">
+						<xsl:if test="$layoutVersion = '1972' or $layoutVersion = '1987' or $layoutVersion = '1989'">
 							<xsl:attribute name="font-family">Arial, Times New Roman, Cambria Math, <xsl:value-of select="$font_noto_sans"/></xsl:attribute>
 							<xsl:attribute name="font-family-generic">Sans</xsl:attribute>
 							<xsl:attribute name="font-size">10pt</xsl:attribute>
@@ -417,6 +420,11 @@
 					<xsl:variable name="marginTop_cover_page_1951">18</xsl:variable>
 					<xsl:variable name="marginBottom_cover_page_1951">94.5</xsl:variable>
 					
+					<xsl:variable name="marginLeft_cover_page_1972">21</xsl:variable>
+					<xsl:variable name="marginRight_cover_page_1972">12</xsl:variable>
+					<xsl:variable name="marginTop_cover_page_1972">15</xsl:variable>
+					<xsl:variable name="marginBottom_cover_page_1972">33</xsl:variable>
+					
 					<xsl:variable name="marginLeft_cover_page_1987">20</xsl:variable>
 					<xsl:variable name="marginRight_cover_page_1987">37</xsl:variable>
 					<xsl:variable name="marginTopBottom_cover_page_1987">20</xsl:variable>
@@ -440,7 +448,6 @@
 						<fo:region-start region-name="cover-left-region" extent="78mm"/>
 						<fo:region-end region-name="cover-right-region" extent="18.5mm"/>
 					</fo:simple-page-master>
-					
 					
 					<fo:simple-page-master master-name="cover-page-publishedISO-odd" page-width="{$pageWidth}mm" page-height="{$pageHeight}mm">
 						<fo:region-body margin-top="12.7mm" margin-bottom="75mm" margin-left="{$marginLeftRight1}mm" margin-right="{$marginLeftRight2}mm"/>
@@ -469,6 +476,14 @@
 						<fo:region-after region-name="cover-page-footer" extent="{$marginBottom_cover_page_1951}mm"/>
 						<fo:region-start region-name="left-region" extent="{$marginLeftRight_cover_page_1951}mm"/>
 						<fo:region-end region-name="right-region" extent="{$marginLeftRight_cover_page_1951}mm"/>
+					</fo:simple-page-master>
+					
+					<fo:simple-page-master master-name="cover-page_1972" page-width="{$pageWidth}mm" page-height="{$pageHeight}mm">
+						<fo:region-body margin-top="{$marginTop_cover_page_1972}mm" margin-bottom="{$marginBottom_cover_page_1972}mm" margin-left="{$marginLeft_cover_page_1972}mm" margin-right="{$marginRight_cover_page_1972}mm"/>
+						<fo:region-before region-name="cover-page-header" extent="{$marginTop_cover_page_1972}mm"/>
+						<fo:region-after region-name="cover-page-footer" extent="{$marginBottom_cover_page_1972}mm"/>
+						<fo:region-start region-name="left-region" extent="{$marginLeft_cover_page_1972}mm"/>
+						<fo:region-end region-name="right-region" extent="{$marginRight_cover_page_1972}mm"/>
 					</fo:simple-page-master>
 					
 					<fo:simple-page-master master-name="cover-page_1987" page-width="{$pageWidth}mm" page-height="{$pageHeight}mm">
@@ -714,89 +729,6 @@
 				
 				<!-- cover page -->
 				<xsl:choose>
-					<xsl:when test="$layoutVersion = '1987'">
-						<fo:page-sequence master-reference="cover-page_1987" force-page-count="no-force">
-							<fo:static-content flow-name="right-region" >
-								<fo:block-container height="50%">
-									<fo:block-container margin-top="8mm" margin-left="2mm">
-										<fo:block-container margin-top="0" margin-left="0" font-family="Times New Roman">
-											<fo:block font-size="24pt" line-height="1.1">
-												<xsl:value-of select="$docidentifierISO_with_break"/>
-											</fo:block>
-											<fo:block line-height="1">
-												<xsl:call-template name="printEdition"/>
-												<xsl:value-of select="$linebreak"/>
-												<xsl:text>&#xa0;</xsl:text><xsl:value-of select="/iso:iso-standard/iso:bibdata/iso:version/iso:revision-date"/>
-											</fo:block>
-									</fo:block-container>
-									</fo:block-container>
-								</fo:block-container>
-								<fo:block-container height="50%" display-align="after">
-									<fo:block-container margin-left="3mm">
-										<fo:block-container margin-left="0" font-family="Times New Roman">
-											<fo:block font-size="8pt" font-family="Times New Roman" margin-bottom="-0.5mm">
-												<xsl:call-template name="getLocalizedString">
-													<xsl:with-param name="key">reference_number</xsl:with-param>
-												</xsl:call-template>
-												<xsl:value-of select="$linebreak"/>
-												<xsl:value-of select="$ISOnumber"/>
-											</fo:block>
-										</fo:block-container>
-									</fo:block-container>
-								</fo:block-container>
-							</fo:static-content>
-							<fo:flow flow-name="xsl-region-body">
-								<fo:block-container height="99.5%" border="1.25pt solid black">
-									<fo:block-container margin-left="11mm" margin-top="16mm" margin-right="10.5mm">
-										<fo:block-container margin-left="0" margin-top="0" margin-right="0">
-											<fo:block font-family="Times New Roman" font-size="24pt">
-												<!-- INTERNATIONAL STANDARD -->
-												<xsl:call-template name="add-letter-spacing">
-													<xsl:with-param name="text" select="$doctype_uppercased"/>
-													<xsl:with-param name="letter-spacing" select="0.1"/>
-												</xsl:call-template>
-											</fo:block>
-											<fo:table table-layout="fixed" width="100%" margin-top="16mm">
-												<fo:table-column column-width="proportional-column-width(23)"/>
-												<fo:table-column column-width="proportional-column-width(108)"/>
-												<fo:table-body>
-													<fo:table-row>
-														<fo:table-cell>
-															<fo:block margin-top="-0.5mm" font-size="0">
-																<xsl:variable name="content-height">18</xsl:variable>
-																<fo:external-graphic src="{concat('data:image/png;base64,', normalize-space($Image-ISO-Logo-1987))}" content-height="{$content-height}mm" content-width="scale-to-fit" scaling="uniform" fox:alt-text="Image ISO Logo"/>
-																</fo:block>
-														</fo:table-cell>
-														<fo:table-cell font-size="7.5pt" border-top="0.5pt solid black" border-bottom="0.5pt solid black" text-align-last="justify" display-align="center" line-height="1.6" padding-left="32mm">
-															<fo:block>INTERNATIONAL ORGANIZATION FOR STANDARDIZATION</fo:block>
-															<fo:block>ORGANISATION INTERNATIONALE DE NORMALISATION</fo:block>
-															<fo:block>МЕЖДУНАРОДНАЯ ОРГАНИЗАЦИЯ ПО СТАНДАРТИЗАЦИИ</fo:block>
-														</fo:table-cell>
-													</fo:table-row>
-												</fo:table-body>
-											</fo:table>
-											
-											<fo:block font-size="13pt" font-weight="bold" margin-top="32mm" margin-bottom="9mm" role="H1">
-												<xsl:call-template name="insertTitlesLangMain"/>
-											</fo:block>
-											
-											<xsl:for-each select="xalan:nodeset($lang_other)/lang">
-												<xsl:variable name="lang_other" select="."/>
-												<!-- <fo:block font-size="12pt" role="SKIP"><xsl:value-of select="$linebreak"/></fo:block> -->
-												<fo:block font-size="8pt" font-style="italic" line-height="1.1" role="H1">
-													<!-- Example: title-intro fr -->
-													<xsl:call-template name="insertTitlesLangOther">
-														<xsl:with-param name="lang_other" select="$lang_other"/>
-													</xsl:call-template>
-												</fo:block>
-											</xsl:for-each>
-											
-										</fo:block-container>
-									</fo:block-container>
-								</fo:block-container>
-							</fo:flow>
-						</fo:page-sequence>
-					</xsl:when>
 					<xsl:when test="$layoutVersion = '1951'">
 						<fo:page-sequence master-reference="cover-page_1951" force-page-count="no-force">
 							<fo:static-content flow-name="cover-page-header" font-weight="bold" font-size="9pt">
@@ -868,6 +800,191 @@
 							</fo:flow>
 						</fo:page-sequence>
 					</xsl:when> <!-- END: $layoutVersion = '1951' -->
+					
+					<xsl:when test="$layoutVersion = '1972'">
+						<fo:page-sequence master-reference="cover-page_1972" force-page-count="no-force">
+							<fo:static-content flow-name="cover-page-footer" font-size="7pt">
+								<xsl:call-template name="insertSingleLine"/>
+								<fo:block font-size="11pt" font-weight="bold" text-align-last="justify" margin-right="1mm">
+									<fo:inline keep-together.within-line="always" role="SKIP">
+										<xsl:value-of select="$udc"/>
+										<fo:leader leader-pattern="space"/>
+										<fo:inline role="SKIP">
+											<xsl:call-template name="getLocalizedString">
+												<xsl:with-param name="key">reference_number</xsl:with-param>
+											</xsl:call-template>
+											<xsl:text>&#xa0;</xsl:text>
+											<xsl:value-of select="$ISOnumber"/>
+										</fo:inline>
+									</fo:inline>
+								</fo:block>
+								
+								<xsl:if test="/iso:iso-standard/iso:bibdata/iso:keyword">
+									<fo:block margin-top="10pt">
+										<xsl:variable name="title-descriptors">
+											<xsl:call-template name="getLocalizedString">
+												<xsl:with-param name="key">Descriptor.pl</xsl:with-param>
+											</xsl:call-template>
+										</xsl:variable>
+										<fo:inline font-weight="bold"><xsl:value-of select="$title-descriptors"/> : </fo:inline>
+										<xsl:call-template name="insertKeywords">
+											<xsl:with-param name="sorting">no</xsl:with-param>
+											<xsl:with-param name="charDelim" select="',  '"/>
+										</xsl:call-template>
+									</fo:block>
+								</xsl:if>
+								<fo:block-container position="absolute" left="0mm" top="0mm" height="25mm" text-align="right" display-align="after" role="SKIP">
+									<fo:block>
+										<xsl:for-each select="xalan:nodeset($price_based_on_items)/item">
+											<xsl:value-of select="."/>
+											<xsl:if test="position() != last()">
+												<fo:page-number-citation ref-id="lastBlock"/>
+											</xsl:if>										
+										</xsl:for-each>
+									</fo:block>
+								</fo:block-container>
+							</fo:static-content>
+							<fo:static-content flow-name="left-region" >
+								<fo:block-container reference-orientation="90">
+									<fo:block font-size="8pt" margin-left="7mm" margin-top="10mm">
+										<xsl:value-of select="$ISOnumber"/>
+									</fo:block>
+								</fo:block-container>
+							</fo:static-content>
+							<fo:flow flow-name="xsl-region-body">
+								<fo:table table-layout="fixed" width="100%" border-top="2pt solid black" border-bottom="2pt solid black">
+									<fo:table-column column-width="proportional-column-width(123)"/>
+									<fo:table-column column-width="proportional-column-width(27)"/>
+									<fo:table-column column-width="proportional-column-width(30)"/>
+									<fo:table-body>
+										<fo:table-row height="39mm" display-align="center">
+											<fo:table-cell>
+												<fo:block font-size="33pt" margin-top="2mm"><xsl:value-of select="$doctype_localized"/></fo:block>
+											</fo:table-cell>
+											<fo:table-cell>
+												<fo:block font-size="0">
+													<xsl:variable name="content-height">27</xsl:variable>
+													<fo:external-graphic src="{concat('data:image/png;base64,', normalize-space($Image-ISO-Logo-1972))}" content-height="{$content-height}mm" content-width="scale-to-fit" scaling="uniform" fox:alt-text="Image ISO Logo"/>
+												</fo:block>
+											</fo:table-cell>
+											<fo:table-cell text-align="right">
+												<fo:block font-size="34pt" font-weight="bold" margin-top="2mm"><xsl:value-of select="/iso:iso-standard/iso:bibdata/iso:docnumber"/></fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+										<fo:table-row border-top="2pt solid black" height="4.5mm" display-align="center">
+											<fo:table-cell number-columns-spanned="3" font-size="5.6pt" text-align-last="justify">
+												<fo:block>INTERNATIONAL ORGANIZATION FOR STANDARDIZATION&#x25cf;МЕЖДУНАРОДНАЯ ОРГАНИЗАЦИЯ ПО СТАНДАРТИЗАЦИИ&#x25cf;ORGANISATION INTERNATIONALE DE NORMALISATION</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+								
+								<fo:block font-size="16pt" font-weight="bold" margin-top="44mm" margin-bottom="6mm" role="H1">
+									<xsl:call-template name="insertTitlesLangMain"/>
+								</fo:block>
+								
+								<xsl:for-each select="xalan:nodeset($lang_other)/lang">
+									<xsl:variable name="lang_other" select="."/>
+									<fo:block font-size="8pt" font-style="italic" line-height="1.1" role="H1">
+										<!-- Example: title-intro fr -->
+										<xsl:call-template name="insertTitlesLangOther">
+											<xsl:with-param name="lang_other" select="$lang_other"/>
+										</xsl:call-template>
+									</fo:block>
+								</xsl:for-each>
+								
+								<fo:block margin-top="6mm" font-weight="bold">
+									<xsl:call-template name="printEdition"/>
+									<xsl:text>&#xa0;— </xsl:text>
+									<xsl:value-of select="/iso:iso-standard/iso:bibdata/iso:version/iso:revision-date"/>
+								</fo:block>
+								
+							</fo:flow>
+						</fo:page-sequence>
+					</xsl:when> <!-- END: $layoutVersion = '1972' -->
+					
+					<xsl:when test="$layoutVersion = '1987'">
+						<fo:page-sequence master-reference="cover-page_1987" force-page-count="no-force">
+							<fo:static-content flow-name="right-region" >
+								<fo:block-container height="50%">
+									<fo:block-container margin-top="8mm" margin-left="2mm">
+										<fo:block-container margin-top="0" margin-left="0" font-family="Times New Roman">
+											<fo:block font-size="24pt" line-height="1.1">
+												<xsl:value-of select="$docidentifierISO_with_break"/>
+											</fo:block>
+											<fo:block line-height="1">
+												<xsl:call-template name="printEdition"/>
+												<xsl:value-of select="$linebreak"/>
+												<xsl:text>&#xa0;</xsl:text><xsl:value-of select="/iso:iso-standard/iso:bibdata/iso:version/iso:revision-date"/>
+											</fo:block>
+									</fo:block-container>
+									</fo:block-container>
+								</fo:block-container>
+								<fo:block-container height="50%" display-align="after">
+									<fo:block-container margin-left="3mm">
+										<fo:block-container margin-left="0" font-family="Times New Roman">
+											<fo:block font-size="8pt" font-family="Times New Roman" margin-bottom="-0.5mm">
+												<xsl:call-template name="getLocalizedString">
+													<xsl:with-param name="key">reference_number</xsl:with-param>
+												</xsl:call-template>
+												<xsl:value-of select="$linebreak"/>
+												<xsl:value-of select="$ISOnumber"/>
+											</fo:block>
+										</fo:block-container>
+									</fo:block-container>
+								</fo:block-container>
+							</fo:static-content>
+							<fo:flow flow-name="xsl-region-body">
+								<fo:block-container height="99.5%" border="1.25pt solid black">
+									<fo:block-container margin-left="11mm" margin-top="16mm" margin-right="10.5mm">
+										<fo:block-container margin-left="0" margin-top="0" margin-right="0">
+											<fo:block font-family="Times New Roman" font-size="24pt">
+												<!-- INTERNATIONAL STANDARD -->
+												<xsl:call-template name="add-letter-spacing">
+													<xsl:with-param name="text" select="$doctype_uppercased"/>
+													<xsl:with-param name="letter-spacing" select="0.1"/>
+												</xsl:call-template>
+											</fo:block>
+											<fo:table table-layout="fixed" width="100%" margin-top="16mm">
+												<fo:table-column column-width="proportional-column-width(23)"/>
+												<fo:table-column column-width="proportional-column-width(108)"/>
+												<fo:table-body>
+													<fo:table-row>
+														<fo:table-cell>
+															<fo:block margin-top="-0.5mm" font-size="0">
+																<xsl:variable name="content-height">18</xsl:variable>
+																<fo:external-graphic src="{concat('data:image/png;base64,', normalize-space($Image-ISO-Logo-1987))}" content-height="{$content-height}mm" content-width="scale-to-fit" scaling="uniform" fox:alt-text="Image ISO Logo"/>
+															</fo:block>
+														</fo:table-cell>
+														<fo:table-cell font-size="7.5pt" border-top="0.5pt solid black" border-bottom="0.5pt solid black" text-align-last="justify" display-align="center" line-height="1.6" padding-left="32mm">
+															<fo:block>INTERNATIONAL ORGANIZATION FOR STANDARDIZATION</fo:block>
+															<fo:block>ORGANISATION INTERNATIONALE DE NORMALISATION</fo:block>
+															<fo:block>МЕЖДУНАРОДНАЯ ОРГАНИЗАЦИЯ ПО СТАНДАРТИЗАЦИИ</fo:block>
+														</fo:table-cell>
+													</fo:table-row>
+												</fo:table-body>
+											</fo:table>
+											
+											<fo:block font-size="13pt" font-weight="bold" margin-top="32mm" margin-bottom="9mm" role="H1">
+												<xsl:call-template name="insertTitlesLangMain"/>
+											</fo:block>
+											
+											<xsl:for-each select="xalan:nodeset($lang_other)/lang">
+												<xsl:variable name="lang_other" select="."/>
+												<fo:block font-size="8pt" font-style="italic" line-height="1.1" role="H1">
+													<!-- Example: title-intro fr -->
+													<xsl:call-template name="insertTitlesLangOther">
+														<xsl:with-param name="lang_other" select="$lang_other"/>
+													</xsl:call-template>
+												</fo:block>
+											</xsl:for-each>
+											
+										</fo:block-container>
+									</fo:block-container>
+								</fo:block-container>
+							</fo:flow>
+						</fo:page-sequence>
+					</xsl:when>
 				
 					<xsl:when test="$layoutVersion = '2024'">
 						<fo:page-sequence master-reference="cover-page_2024" force-page-count="no-force">
@@ -3695,10 +3812,22 @@
 			</fo:static-content>
 			<fo:flow flow-name="xsl-region-body">
 				<fo:block-container height="252mm" display-align="after">
-					<xsl:call-template name="insertTripleLine"/>
+					<xsl:choose>
+						<xsl:when test="$layoutVersion = '1987'">
+							<xsl:call-template name="insertSingleLine"/>
+						</xsl:when>
+						<xsl:otherwise>
+							<xsl:call-template name="insertTripleLine"/>
+						</xsl:otherwise>
+					</xsl:choose>
 					<fo:block-container>
 						<fo:block font-size="12pt" font-weight="bold" padding-top="3.5mm" padding-bottom="0.5mm">
-							<xsl:if test="$layoutVersion = '1987' or $layoutVersion = '1989'">
+							<xsl:if test="$layoutVersion = '1987'">
+								<xsl:attribute name="font-size">11pt</xsl:attribute>
+								<xsl:attribute name="padding-top">1mm</xsl:attribute>
+								<xsl:attribute name="padding-bottom">1mm</xsl:attribute>
+							</xsl:if>
+							<xsl:if test="$layoutVersion = '1989'">
 								<xsl:attribute name="font-size">11pt</xsl:attribute>
 								<xsl:attribute name="padding-top">5.5mm</xsl:attribute>
 								<xsl:attribute name="padding-bottom">1mm</xsl:attribute>
@@ -3755,9 +3884,14 @@
 							<fo:block>&#xa0;</fo:block>
 						</xsl:if>
 					</fo:block-container>
-					<xsl:if test="$layoutVersion = '1987' or ($layoutVersion = '1989' and $revision_date_num &lt;= 19981231)">
-						<xsl:call-template name="insertTripleLine"/>
-					</xsl:if>
+					<xsl:choose>
+						<xsl:when test="$layoutVersion = '1987'">
+							<xsl:call-template name="insertSingleLine"/>
+						</xsl:when>
+						<xsl:when test="$layoutVersion = '1989' and $revision_date_num &lt;= 19981231">
+							<xsl:call-template name="insertTripleLine"/>
+						</xsl:when>
+					</xsl:choose>
 				</fo:block-container>
 			</fo:flow>
 		</fo:page-sequence>
@@ -3827,6 +3961,12 @@
 		</fo:page-sequence>
 	</xsl:template> <!-- END: insertLastPage_2024 -->
 	
+	<xsl:template name="insertSingleLine">
+		<fo:block font-size="1.25pt" role="SKIP">
+			<fo:block role="SKIP"><fo:leader leader-pattern="rule" rule-thickness="1.25pt" leader-length="100%"/></fo:block>
+		</fo:block>
+	</xsl:template>
+			
 	<xsl:template name="insertTripleLine">
 		<fo:block font-size="1.25pt" role="SKIP">
 			<fo:block role="SKIP"><fo:leader leader-pattern="rule" rule-thickness="0.75pt" leader-length="100%"/></fo:block>
@@ -3947,6 +4087,10 @@
 				</g>
 			</g>
 			</svg>
+	</xsl:variable>
+	
+	<xsl:variable name="Image-ISO-Logo-1972">
+		<xsl:text>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</xsl:text>
 	</xsl:variable>
 	
 	<xsl:variable name="Image-ISO-Logo-1993-SVG">
