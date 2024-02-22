@@ -110,12 +110,15 @@
 				<xsl:value-of select="$docidentifier_iso_with_lang"/>
 			</xsl:when>
 			<xsl:otherwise>
+				<!-- part separator '-' replace to '/' -->
+				<xsl:variable name="iso_reference_tmp" select="java:replaceAll(java:java.lang.String.new($iso_reference),'-','/')"/>
 				<xsl:choose>
+					<!-- year separator replace to '-' -->
 					<xsl:when test="$layoutVersion = '1951'">
-						<xsl:value-of select="java:replaceAll(java:java.lang.String.new($iso_reference),':',' - ')"/>
+						<xsl:value-of select="java:replaceAll(java:java.lang.String.new($iso_reference_tmp),':',' - ')"/>
 					</xsl:when>
 					<xsl:when test="$layoutVersion = '1972'">
-						<xsl:value-of select="java:replaceAll(java:java.lang.String.new($iso_reference),':','-')"/>
+						<xsl:value-of select="java:replaceAll(java:java.lang.String.new($iso_reference_tmp),':','-')"/>
 					</xsl:when>
 					<xsl:otherwise>
 						<xsl:value-of select="$iso_reference"/>
@@ -125,7 +128,7 @@
 		</xsl:choose>
 	</xsl:variable>
 
-	<xsl:variable name="part" select="/iso:iso-standard/iso:bibdata/iso:ext/iso:structuredidentifier/iso:project-number/@part"/>
+	<xsl:variable name="part" select="normalize-space(/iso:iso-standard/iso:bibdata/iso:ext/iso:structuredidentifier/iso:project-number/@part)"/>
 	
 	<xsl:variable name="doctype" select="/iso:iso-standard/iso:bibdata/iso:ext/iso:doctype"/>	 
 	<xsl:variable name="doctype_localized_" select="/iso:iso-standard/iso:bibdata/iso:ext/iso:doctype[@language = $lang]"/>
@@ -813,7 +816,7 @@
 											<xsl:call-template name="getLocalizedString">
 												<xsl:with-param name="key">reference_number</xsl:with-param>
 											</xsl:call-template>
-											<xsl:text>&#xa0;</xsl:text>
+											<xsl:text>&#xa0;&#xa0;</xsl:text>
 											<xsl:value-of select="$ISOnumber"/>
 										</fo:inline>
 									</fo:inline>
@@ -852,14 +855,34 @@
 								</fo:block-container>
 							</fo:static-content>
 							<fo:flow flow-name="xsl-region-body">
+								<xsl:variable name="docnumber">
+									<xsl:variable name="value" select="/iso:iso-standard/iso:bibdata/iso:docnumber"/>
+									<xsl:value-of select="$value"/>
+									<xsl:if test="$part != ''">/<xsl:value-of select="$part"/></xsl:if>
+								</xsl:variable>
 								<fo:table table-layout="fixed" width="100%" border-top="2pt solid black" border-bottom="2pt solid black">
-									<fo:table-column column-width="proportional-column-width(123)"/>
-									<fo:table-column column-width="proportional-column-width(27)"/>
-									<fo:table-column column-width="proportional-column-width(30)"/>
+									<xsl:choose>
+										<xsl:when test="string-length($docnumber) &gt; 4">
+											<fo:table-column column-width="proportional-column-width(110)"/>
+											<fo:table-column column-width="proportional-column-width(27)"/>
+											<fo:table-column column-width="proportional-column-width(43)"/>
+										</xsl:when>
+										<xsl:otherwise>
+											<fo:table-column column-width="proportional-column-width(123)"/>
+											<fo:table-column column-width="proportional-column-width(27)"/>
+											<fo:table-column column-width="proportional-column-width(30)"/>
+										</xsl:otherwise>
+									</xsl:choose>
+									
 									<fo:table-body>
 										<fo:table-row height="39mm" display-align="center">
 											<fo:table-cell>
-												<fo:block font-size="33pt" margin-top="2mm"><xsl:value-of select="$doctype_localized"/></fo:block>
+												<fo:block font-size="33pt" margin-top="2mm">
+													<xsl:if test="string-length($docnumber) &gt; 4">
+														<xsl:attribute name="font-size">30pt</xsl:attribute>
+													</xsl:if>
+													<xsl:value-of select="$doctype_localized"/>
+												</fo:block>
 											</fo:table-cell>
 											<fo:table-cell>
 												<fo:block font-size="0">
@@ -868,7 +891,9 @@
 												</fo:block>
 											</fo:table-cell>
 											<fo:table-cell text-align="right">
-												<fo:block font-size="34pt" font-weight="bold" margin-top="2mm"><xsl:value-of select="/iso:iso-standard/iso:bibdata/iso:docnumber"/></fo:block>
+												<fo:block font-size="34pt" font-weight="bold" margin-top="2mm">
+													<xsl:value-of select="$docnumber"/>
+												</fo:block>
 											</fo:table-cell>
 										</fo:table-row>
 										<fo:table-row border-top="2pt solid black" height="4.5mm" display-align="center">
@@ -2683,14 +2708,13 @@
 	<xsl:template match="iso:bibdata/iso:title[@type = 'title-part']">
 		<xsl:param name="curr_lang" select="$lang"/>
 		<xsl:param name="isMainLang">false</xsl:param>
-		<xsl:param name="isMainBody">false</xsl:param>
 		<xsl:if test="$part != ''">
 			<!-- <xsl:text> — </xsl:text> -->
 			<xsl:choose>
 				<xsl:when test="$layoutVersion = '1951'"></xsl:when>
 				<xsl:otherwise><xsl:text>&#xa0;— </xsl:text></xsl:otherwise>
 			</xsl:choose>
-			<xsl:variable name="part-text">
+			<xsl:variable name="part-word">
 				<xsl:choose>
 					<xsl:when test="$isMainLang = 'true'">
 						<xsl:call-template name="getLocalizedString">
@@ -2706,48 +2730,57 @@
 				</xsl:choose>
 			</xsl:variable>
 			<xsl:choose>
-				<xsl:when test="$isMainBody = 'true'">
-					<fo:block font-weight="normal" margin-top="12pt" line-height="1.1" role="SKIP">
-						<xsl:value-of select="$part-text"/>
-					</fo:block>
-				</xsl:when>
 				<xsl:when test="$isMainLang = 'true'">
 					<xsl:choose>
 						<xsl:when test="$layoutVersion = '1951'">
-							<xsl:value-of select="$part-text"/>
+							<xsl:value-of select="$part-word"/>
 							<xsl:apply-templates />
 						</xsl:when>
-						<xsl:when test="$layoutVersion = '1972' or $layoutVersion = '1987'">
+						<xsl:when test="$layoutVersion = '1972'">
+							<fo:block font-weight="bold" role="SKIP">
+								<xsl:value-of select="$part-word"/>
+								<xsl:text>&#xa0;</xsl:text>
+								<xsl:apply-templates />
+							</fo:block>
+						</xsl:when>
+						<xsl:when test="$layoutVersion = '1987'">
 							<fo:block font-weight="bold" margin-top="12pt" role="SKIP">
-								<xsl:value-of select="$part-text"/>
+								<xsl:value-of select="$part-word"/>
 							</fo:block>
 						</xsl:when>
 						<xsl:otherwise>
 						<fo:block font-weight="normal" margin-top="6pt" role="SKIP">
-							<xsl:value-of select="$part-text"/>
+							<xsl:value-of select="$part-word"/>
 						</fo:block>
 						</xsl:otherwise>
 					</xsl:choose>
 				</xsl:when>
 				<xsl:otherwise>
 					<!-- <xsl:value-of select="$linebreak"/> -->
-					<fo:block font-size="1pt" margin-top="5pt" role="SKIP">&#xa0;</fo:block>
-					<xsl:value-of select="$part-text"/>
+					<xsl:choose>
+						<xsl:when test="$layoutVersion = '1972'"></xsl:when>
+						<xsl:otherwise>
+							<fo:block font-size="1pt" margin-top="5pt" role="SKIP">&#xa0;</fo:block>
+						</xsl:otherwise>
+					</xsl:choose>
+					<xsl:value-of select="$part-word"/>
 					<xsl:text>&#xa0;</xsl:text>
 				</xsl:otherwise>
 			</xsl:choose>
 		</xsl:if>
-		<xsl:if test="$isMainBody = 'false'">
-			<xsl:choose>
-				<xsl:when test="$layoutVersion = '1951'"></xsl:when>
-				<xsl:when test="$layoutVersion = '1972' or $layoutVersion = '1987'">
-					<fo:inline font-weight="normal"><xsl:apply-templates /></fo:inline>
-				</xsl:when>
-				<xsl:otherwise>
-					<xsl:apply-templates />
-				</xsl:otherwise>
-			</xsl:choose>
-		</xsl:if>
+		<xsl:choose>
+			<xsl:when test="$layoutVersion = '1951'"></xsl:when>
+			<xsl:when test="$layoutVersion = '1972' and $isMainLang = 'true'"/>
+			<xsl:when test="$layoutVersion = '1972' and $isMainLang = 'false'">
+				<fo:inline font-weight="normal"><xsl:apply-templates /></fo:inline>
+			</xsl:when>
+			<xsl:when test="$layoutVersion = '1987'">
+				<fo:inline font-weight="normal"><xsl:apply-templates /></fo:inline>
+			</xsl:when>
+			<xsl:otherwise>
+				<xsl:apply-templates />
+			</xsl:otherwise>
+		</xsl:choose>
 	</xsl:template>
 	
 	<xsl:template match="iso:bibdata/iso:title[@type = 'title-amd']">
@@ -2802,9 +2835,18 @@
 	
 	<xsl:template match="iso:sections/iso:p[@class = 'zzSTDTitle1']/iso:span[@class = 'nonboldtitle']" priority="3">
 		<!-- Example: <span class="nonboldtitle">Part 1:</span> -->
-		<fo:block font-weight="normal" margin-top="12pt" line-height="1.1" role="SKIP">
-			<xsl:apply-templates />
-		</fo:block>
+		<xsl:choose>
+			<xsl:when test="$layoutVersion = '1972'">
+				<fo:inline font-weight="bold" role="SKIP">
+					<xsl:apply-templates />
+				</fo:inline>
+			</xsl:when>
+			<xsl:otherwise>
+				<fo:block font-weight="normal" margin-top="12pt" line-height="1.1" role="SKIP">
+					<xsl:apply-templates />
+				</fo:block>
+			</xsl:otherwise>
+		</xsl:choose>
 	</xsl:template>
 	
 	<xsl:template match="iso:sections/iso:p[@class = 'zzSTDTitle2']" priority="4">
