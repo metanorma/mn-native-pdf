@@ -864,12 +864,12 @@
 									<xsl:choose>
 										<xsl:when test="string-length($docnumber) &gt; 4">
 											<fo:table-column column-width="proportional-column-width(110)"/>
-											<fo:table-column column-width="proportional-column-width(27)"/>
+											<fo:table-column column-width="proportional-column-width(28)"/>
 											<fo:table-column column-width="proportional-column-width(43)"/>
 										</xsl:when>
 										<xsl:otherwise>
 											<fo:table-column column-width="proportional-column-width(123)"/>
-											<fo:table-column column-width="proportional-column-width(27)"/>
+											<fo:table-column column-width="proportional-column-width(28)"/>
 											<fo:table-column column-width="proportional-column-width(30)"/>
 										</xsl:otherwise>
 									</xsl:choose>
@@ -2265,6 +2265,7 @@
 					<xsl:apply-templates select="xalan:nodeset($current_document_index)" mode="index"/>
 					
 					<xsl:choose>
+						<xsl:when test="$layoutVersion = '1972'"/>
 						<xsl:when test="$layoutVersion = '2024'">
 							<xsl:call-template name="insertLastPage_2024"/>
 						</xsl:when>
@@ -3137,6 +3138,7 @@
 		
 		<xsl:variable name="element-name">
 			<xsl:choose>
+				<xsl:when test="@inline-header = 'true'">fo:inline</xsl:when>
 				<xsl:when test="../@inline-header = 'true'">fo:inline</xsl:when>
 				<xsl:otherwise>fo:block</xsl:otherwise>
 			</xsl:choose>
@@ -3155,6 +3157,12 @@
 			
 			<xsl:otherwise>
 				<xsl:element name="{$element-name}">
+				
+					<xsl:if test="$layoutVersion = '1951' or $layoutVersion = '1972' or $layoutVersion = '1987' or $layoutVersion = '1989'">
+						<!-- copy @id from empty preceding clause -->
+						<xsl:copy-of select="preceding-sibling::*[1][local-name() = 'clause' and count(node()) = 0]/@id"/>
+					</xsl:if>
+				
 					<xsl:attribute name="font-size"><xsl:value-of select="$font-size"/></xsl:attribute>
 					<xsl:attribute name="font-weight">bold</xsl:attribute>
 					<xsl:variable name="attribute-name-before">
@@ -3213,6 +3221,15 @@
 		
 	</xsl:template>
 	
+	<xsl:template match="iso:title[@inline-header = 'true'][following-sibling::*[1][local-name() = 'p']]" priority="3">
+		<xsl:choose>
+			<xsl:when test="($layoutVersion = '1972' or $layoutVersion = '1987' or $layoutVersion = '1989') and $layout_columns != 1"/> <!-- don't show 'title' with inline-header='true' if next element is 'p' -->
+			<xsl:otherwise>
+				<xsl:call-template name="title"/>
+			</xsl:otherwise>
+		</xsl:choose>
+	</xsl:template>
+	
 	<xsl:template name="titleAmendment">
 		<!-- <xsl:variable name="id">
 			<xsl:call-template name="getId"/>
@@ -3227,6 +3244,28 @@
 	
 	<!-- ====== -->
 	<!-- ====== -->
+
+	<xsl:template match="*[local-name() = 'clause']" priority="2">
+		<xsl:choose>
+			<xsl:when test="($layoutVersion = '1951' or $layoutVersion = '1972' or $layoutVersion = '1987' or $layoutVersion = '1989') and
+				local-name() = 'clause' and count(node()) = 0 and following-sibling::*[1][local-name() = 'title' and not(@id)]"></xsl:when> <!-- @id will be added to title -->
+			<xsl:otherwise>
+				<fo:block>
+					<xsl:if test="parent::*[local-name() = 'copyright-statement']">
+						<xsl:attribute name="role">SKIP</xsl:attribute>
+					</xsl:if>
+					
+					<xsl:call-template name="setId"/>
+					
+					<xsl:call-template name="setBlockSpanAll"/>
+					
+					<xsl:call-template name="refine_clause_style"/>
+					
+					<xsl:apply-templates />
+				</fo:block>
+			</xsl:otherwise>
+		</xsl:choose>
+	</xsl:template>
 
 	
 	<xsl:template match="iso:p" name="paragraph">
@@ -3295,6 +3334,19 @@
 				<xsl:with-param name="split_keep-within-line" select="$split_keep-within-line"/>
 			</xsl:apply-templates> -->
 			<!-- <xsl:apply-templates select="node()[not(self::iso:note[not(following-sibling::*) or count(following-sibling::*) = count(../iso:note) - 1])]"> -->
+			
+			
+			<!-- put inline title in the first paragraph -->
+			<xsl:if test="($layoutVersion = '1972' or $layoutVersion = '1987' or $layoutVersion = '1989') and $layout_columns != 1">
+				<xsl:if test="preceding-sibling::*[1]/@inline-header = 'true' and preceding-sibling::*[1][self::iso:title]">
+					<xsl:attribute name="space-before">0pt</xsl:attribute>
+					<xsl:for-each select="preceding-sibling::*[1]">
+						<xsl:call-template name="title"/>
+					</xsl:for-each>
+					<xsl:text> </xsl:text>
+				</xsl:if>
+			</xsl:if>
+			
 			<xsl:apply-templates select="node()[not(self::iso:note)]"> <!-- note renders below paragraph for correct PDF tags order (see https://github.com/metanorma/metanorma-iso/issues/1003) -->
 				<xsl:with-param name="split_keep-within-line" select="$split_keep-within-line"/>
 			</xsl:apply-templates>
