@@ -217,7 +217,7 @@
 				<fo:simple-page-master master-name="cover-page_2023_" page-width="{$pageWidth}mm" page-height="{$pageHeight}mm">
 					<fo:region-body margin-top="33.5mm" margin-bottom="31mm" margin-left="25mm" margin-right="9.3mm"/>
 					<fo:region-before region-name="header" extent="33.5mm" precedence="true"/>
-					<fo:region-after region-name="footer" extent="31mm"/>
+					<fo:region-after region-name="footer" extent="31mm" precedence="true"/>
 					<fo:region-start region-name="left-region" extent="25mm"/>
 					<fo:region-end region-name="right-region" extent="9.3mm"/>
 				</fo:simple-page-master>
@@ -603,25 +603,28 @@
 						<fo:page-sequence master-reference="cover-page_2023" writing-mode="lr-tb" font-family="Arial" font-size="12pt">
 							<fo:static-content flow-name="header" role="artifact" id="__internal_layout__coverpage_header_{generate-id()}">
 								<fo:block-container margin-left="13mm">
+									<xsl:call-template name="setWritingMode"/>
 									<fo:block-container margin-left="0mm">
 										<fo:table width="185.5mm" table-layout="fixed" margin-top="11.5mm">
 											<fo:table-column column-width="proportional-column-width(1)"/>
 											<fo:table-column column-width="proportional-column-width(1)"/>
 											<fo:table-body>
 												<fo:table-row height="7mm" font-weight="bold">
-													<fo:table-cell>
+													<fo:table-cell text-align="start">
 														<fo:block font-size="16pt">
-															<fo:inline color="rgb(0,156,214)">ITU</fo:inline>
+															<xsl:if test="$lang != 'ar'">
+																<fo:inline color="rgb(0,156,214)">ITU</fo:inline>
+															</xsl:if>
 															<xsl:choose>
 																<xsl:when test="$lang = 'es'">Publicaciones</xsl:when>
 																<xsl:when test="$lang = 'ru'">Публикации</xsl:when>
 																<xsl:when test="$lang = 'zh'">出版物</xsl:when>
-																<xsl:when test="$lang = 'ar'">منشورات</xsl:when>
+																<xsl:when test="$lang = 'ar'">منشورات<fo:inline color="rgb(0,156,214)">ITU</fo:inline></xsl:when>
 																<xsl:otherwise>Publications</xsl:otherwise> <!-- default, en or fr -->
 															</xsl:choose>
 														</fo:block>
 													</fo:table-cell>
-													<fo:table-cell text-align="right" display-align="center">
+													<fo:table-cell text-align="end" display-align="center">
 														<fo:block>
 															<xsl:call-template name="getLocalizedString">
 																<xsl:with-param name="key">international_telecommunication_union</xsl:with-param>
@@ -631,7 +634,7 @@
 												</fo:table-row>
 												<fo:table-row>
 													<!-- collection/series (optional) -->
-													<fo:table-cell>
+													<fo:table-cell text-align="start">
 														<fo:block>
 															<xsl:variable name="collection" select="normalize-space(/itu:itu-standard/itu:metanorma-extension/itu:presentation-metadata/itu:collection)"/>
 															<xsl:if test="$collection != ''">
@@ -640,7 +643,7 @@
 														</fo:block>
 													</fo:table-cell>
 													<!-- Sector or Bureau name -->
-													<fo:table-cell text-align="right">
+													<fo:table-cell text-align="end">
 														<fo:block>
 															<xsl:variable name="sector" select="normalize-space(/itu:itu-standard/itu:metanorma-extension/itu:presentation-metadata/itu:sector)"/>
 															<xsl:value-of select="$sector"/>
@@ -664,13 +667,17 @@
 									</fo:block-container>
 								</fo:block-container>
 								<fo:block margin-top="3.4mm">
+									<xsl:call-template name="setWritingMode"/>
 									<fo:instream-foreign-object fox:alt-text="Color bar">
 										<xsl:call-template name="insertImageCoverColorBand"/>
 									</fo:instream-foreign-object>
 								</fo:block>
 							</fo:static-content>
 							<fo:static-content flow-name="footer" role="artifact">
-								<fo:block text-align="right" margin-right="4mm">
+								<fo:block text-align="right" margin-left="13mm" margin-right="13.3mm">
+									<xsl:if test="$lang = 'ar'">
+										<xsl:attribute name="text-align">left</xsl:attribute>
+									</xsl:if>
 									<fo:instream-foreign-object content-width="20.5mm" fox:alt-text="Image Logo">
 										<xsl:copy-of select="$Image-ITU-Globe-Logo-Blue"/>
 									</fo:instream-foreign-object>
@@ -678,6 +685,7 @@
 							</fo:static-content>
 							<fo:flow flow-name="xsl-region-body">
 								<fo:block-container font-size="22pt" font-weight="bold">
+									<xsl:call-template name="setWritingMode"/>
 									<fo:block margin-top="11.5mm">
 										<xsl:choose>
 											<xsl:when test="$doctype = 'technical-report' or $doctype = 'technical-paper'">
@@ -709,7 +717,7 @@
 									
 									<fo:block-container font-size="14pt" margin-top="1mm" margin-right="2mm">
 										<xsl:if test="$bureau = 'T'">
-											<xsl:attribute name="text-align">right</xsl:attribute>
+											<xsl:attribute name="text-align">end</xsl:attribute>
 										</xsl:if>
 										<fo:block-container margin-right="0mm">
 											
@@ -2761,7 +2769,14 @@
 				<g>
 					<rect x="0.9" y="0.6" class="st0" width="612" height="16.5"/>
 				</g>
-				<polygon class="st1" points="90.1,-1.1 57.9,-1.1 74,14.6 	"/>
+				<xsl:choose>
+					<xsl:when test="$lang = 'ar'">
+						<polygon class="st1" points="505.3,-1.1 537.5,-1.1 521.4,14.6"/>
+					</xsl:when>
+					<xsl:otherwise>
+						<polygon class="st1" points="90.1,-1.1 57.9,-1.1 74,14.6"/>
+					</xsl:otherwise>
+				</xsl:choose>
 			</g>
 		</svg>
 	</xsl:template>
