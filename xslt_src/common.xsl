@@ -1719,8 +1719,10 @@
 			<xsl:if test="starts-with(@id, 'array_')">
 				<xsl:attribute name="margin-top">6pt</xsl:attribute>
 			</xsl:if>
-			<xsl:if test="$layoutVersion = '1972' or $layoutVersion = '1987' or ($layoutVersion = '1989' and $revision_date_num &lt;= 19981231)">
-				<xsl:attribute name="span">all</xsl:attribute>
+			<xsl:if test="$layoutVersion = '1972' or $layoutVersion = '1987' or $layoutVersion = '1989'">
+				<xsl:if test="normalize-space(@width) != 'text-width'">
+					<xsl:attribute name="span">all</xsl:attribute>
+				</xsl:if>
 			</xsl:if>
 			<xsl:if test="$layoutVersion = '1972' or $layoutVersion = '1987' or $layoutVersion = '1989'">
 				<xsl:attribute name="font-size">9pt</xsl:attribute>
@@ -2091,7 +2093,9 @@
 			</xsl:if>
 			<xsl:if test="$layoutVersion = '1972' or $layoutVersion = '1987' or $layoutVersion = '1989'">
 				<xsl:attribute name="font-size">10pt</xsl:attribute>
-				<xsl:attribute name="span">all</xsl:attribute>
+				<xsl:if test="normalize-space(../@width) != 'text-width'">
+					<xsl:attribute name="span">all</xsl:attribute>
+				</xsl:if>
 			</xsl:if>
 			<xsl:if test="$layoutVersion = '2024'">
 				<xsl:attribute name="font-size">10.5pt</xsl:attribute>
@@ -4064,6 +4068,23 @@
 		</xsl:if>
 	</xsl:attribute-set>
 
+	<xsl:template name="refine_figure-block-style">
+		<xsl:if test="$namespace = 'bipm'">
+			<xsl:if test="*[local-name() = 'name']">
+				<xsl:attribute name="space-after">12pt</xsl:attribute>
+			</xsl:if>
+		</xsl:if>
+		<xsl:if test="$namespace = 'iso'">
+			<xsl:if test="$layoutVersion = '1972' or $layoutVersion = '1987' or $layoutVersion = '1989'">
+				<xsl:if test="normalize-space(@width) != 'text-width'">
+					<xsl:attribute name="span">all</xsl:attribute>
+					<xsl:attribute name="margin-top">6pt</xsl:attribute>
+					<xsl:attribute name="margin-bottom">6pt</xsl:attribute>
+				</xsl:if>
+			</xsl:if>
+		</xsl:if>
+	</xsl:template>
+
 	<xsl:attribute-set name="figure-style">
 		<xsl:if test="$namespace = 'rsd'"> <!-- background for image -->
 			<xsl:attribute name="background-color">rgb(236,242,246)</xsl:attribute>
@@ -4242,7 +4263,7 @@
 				<xsl:attribute name="font-family">Arial Black</xsl:attribute>
 			</xsl:if>
 		</xsl:if>
-		
+    
 		<xsl:if test="$namespace = 'jis'">
 			<xsl:if test="ancestor::jis:figure">
 				<xsl:attribute name="margin-top">0</xsl:attribute>
@@ -12149,11 +12170,8 @@
 		<xsl:variable name="isAdded" select="@added"/>
 		<xsl:variable name="isDeleted" select="@deleted"/>
 		<fo:block-container id="{@id}" xsl:use-attribute-sets="figure-block-style">
-			<xsl:if test="$namespace = 'bipm'">
-				<xsl:if test="*[local-name() = 'name']">
-					<xsl:attribute name="space-after">12pt</xsl:attribute>
-				</xsl:if>
-			</xsl:if>
+			<xsl:call-template name="refine_figure-block-style" />
+			
 			<xsl:call-template name="setTrackChangesStyles">
 				<xsl:with-param name="isAdded" select="$isAdded"/>
 				<xsl:with-param name="isDeleted" select="$isDeleted"/>
