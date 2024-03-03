@@ -685,6 +685,23 @@
 							</fo:block-container>
 						</fo:flow>
 					</fo:page-sequence>
+					<!-- Second cover page -->
+					<xsl:variable name="secondCoverPageData_">
+						<xsl:call-template name="insertBackgroundPageImage">
+							<xsl:with-param name="number">2</xsl:with-param>
+						</xsl:call-template>
+					</xsl:variable>
+					<xsl:variable name="secondCoverPageData" select="xalan:nodeset($secondCoverPageData_)"/>
+					<xsl:if test="$secondCoverPageData//*[self::fo:instream-foreign-object or self::fo:external-graphic]">
+						<fo:page-sequence master-reference="cover-page_2023">
+							<fo:static-content flow-name="header" role="artifact" id="__internal_layout__coverpage2_header_{generate-id()}">
+								<xsl:copy-of select="$secondCoverPageData"/>
+							</fo:static-content>
+							<fo:flow flow-name="xsl-region-body">
+								<fo:block>&#xa0;</fo:block>
+							</fo:flow>
+						</fo:page-sequence>
+					</xsl:if> <!-- End: Second cover page -->
 				</xsl:when> <!-- $layoutVersion = '2023' -->
 					
 				<xsl:otherwise>
@@ -2920,9 +2937,9 @@
 		<xsl:param name="name">coverpage-image</xsl:param>
 		<xsl:variable name="num" select="number($number)"/>
 		<!-- background image -->
-		<fo:block-container absolute-position="fixed" left="0mm" top="0mm" font-size="0" id="__internal_layout__coverpage_{$name}_{generate-id()}">
+		<fo:block-container absolute-position="fixed" left="0mm" top="0mm" font-size="0" id="__internal_layout__coverpage_{$name}_{$number}_{generate-id()}">
 			<fo:block>
-				<xsl:for-each select="/itu:itu-standard/itu:metanorma-extension/itu:presentation-metadata[itu:name = $name][1]/itu:value/itu:image">
+				<xsl:for-each select="/itu:itu-standard/itu:metanorma-extension/itu:presentation-metadata[itu:name = $name][1]/itu:value/itu:image[$num]">
 					<xsl:choose>
 						<xsl:when test="*[local-name() = 'svg'] or java:endsWith(java:java.lang.String.new(@src), '.svg')">
 							<fo:instream-foreign-object fox:alt-text="Image Front">
