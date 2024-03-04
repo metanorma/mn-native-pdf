@@ -175,7 +175,12 @@
 								</xsl:for-each>
 							</xsl:variable>
 							<xsl:if test="normalize-space($editors) != ''">
-								<fo:block margin-top="6pt">Editor: <xsl:value-of select="$editors"/></fo:block>
+								<fo:block margin-top="6pt">
+									<!-- Editor: -->
+									<xsl:call-template name="getLocalizedString">
+										<xsl:with-param name="key">editor_full</xsl:with-param>
+									</xsl:call-template><xsl:text>: </xsl:text><xsl:value-of select="$editors"/>
+								</fo:block>
 							</xsl:if>
 						</fo:block>
 						

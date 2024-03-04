@@ -399,7 +399,7 @@
 											<fo:inline font-weight="bold">
 												<!-- Editor:  -->
 												<xsl:call-template name="getLocalizedString">
-													<xsl:with-param name="key">editor</xsl:with-param>
+													<xsl:with-param name="key">editor_full</xsl:with-param>
 												</xsl:call-template><xsl:text>: </xsl:text>
 											</fo:inline>
 											<xsl:for-each select="/ogc:ogc-standard/ogc:bibdata/ogc:contributor[ogc:role/@type='editor']/ogc:person/ogc:name/ogc:completename">
