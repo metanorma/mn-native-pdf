@@ -15318,15 +15318,24 @@
 	</xsl:template> <!-- sections_element_style -->
 	
 	<xsl:template match="//*[contains(local-name(), '-standard')]/*[local-name() = 'preface']/*" priority="2"> <!-- /*/*[local-name() = 'preface']/* -->
-		<fo:block break-after="page"/>
+		<xsl:choose>
+			<xsl:when test="$namespace = 'iso'">
+				<xsl:choose>
+					<xsl:when test="$layoutVersion = '1987' and $doctype = 'technical-report'"></xsl:when>
+					<xsl:otherwise>
+						<fo:block break-after="page"/>
+					</xsl:otherwise>
+				</xsl:choose>
+			</xsl:when>
+			<xsl:otherwise>
+				<fo:block break-after="page"/>
+			</xsl:otherwise>
+		</xsl:choose>
 		<fo:block>
 			<xsl:call-template name="setId"/>
 			<xsl:apply-templates />
 		</fo:block>
 	</xsl:template>
-
-
-
 	
 	<xsl:template match="*[local-name() = 'clause']">
 		<fo:block>

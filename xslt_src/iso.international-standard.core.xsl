@@ -126,6 +126,12 @@
 					<xsl:when test="$layoutVersion = '1972'">
 						<xsl:value-of select="java:replaceAll(java:java.lang.String.new($iso_reference_tmp),':','-')"/>
 					</xsl:when>
+					<xsl:when test="$layoutVersion = '1987'">
+						<!-- insert space around : -->
+						<xsl:variable name="iso_reference_tmp_" select="java:replaceAll(java:java.lang.String.new($iso_reference_tmp),':',' : ')"/>
+						<!-- insert space before ( -->
+						<xsl:value-of select="java:replaceAll(java:java.lang.String.new($iso_reference_tmp_),'\(',' \(')"/>
+					</xsl:when>
 					<xsl:otherwise>
 						<xsl:value-of select="$iso_reference"/>
 					</xsl:otherwise>
@@ -270,6 +276,11 @@
 	</xsl:variable>
 	
 	<xsl:variable name="proof-text">PROOF/ÉPREUVE</xsl:variable>
+
+	<xsl:variable name="ISO_title_en">INTERNATIONAL ORGANIZATION FOR STANDARDIZATION</xsl:variable>
+	<xsl:variable name="ISO_title_ru">МЕЖДУНАРОДНАЯ ОРГАНИЗАЦИЯ ПО СТАНДАРТИЗАЦИИ</xsl:variable>
+	<xsl:variable name="ISO_title_fr">ORGANISATION INTERNATIONALE DE NORMALISATION</xsl:variable>
+	
 	
 	<!-- Example:
 		<item level="1" id="Foreword" display="true">Foreword</item>
@@ -404,6 +415,11 @@
 							<xsl:attribute name="font-family-generic">Sans</xsl:attribute>
 							<xsl:attribute name="font-size">10pt</xsl:attribute>
 						</xsl:if>
+						
+						<xsl:if test="$layoutVersion = '1987' and $doctype = 'technical-report'">
+							<xsl:attribute name="font-size">8.5pt</xsl:attribute>
+						 </xsl:if>
+						
 						<xsl:if test="$layoutVersion = '2024'">
 							<xsl:attribute name="font-size">10.5pt</xsl:attribute>
 						</xsl:if>
@@ -602,7 +618,11 @@
 					<!-- first page -->
 					<fo:simple-page-master master-name="first-publishedISO" page-width="{$pageWidth}mm" page-height="{$pageHeight}mm">
 						<fo:region-body margin-top="{$marginTop}mm" margin-bottom="{$marginBottom}mm" margin-left="{$marginLeftRight1}mm" margin-right="{$marginLeftRight2}mm" column-count="{$layout_columns}" column-gap="{$column_gap}"/>
-						<fo:region-before region-name="header-first" extent="{$marginTop}mm"/> <!--   display-align="center" -->
+						<fo:region-before region-name="header-first" extent="{$marginTop}mm">
+							<xsl:if test="$layoutVersion = '1987' and $doctype = 'technical-report'">
+								<xsl:attribute name="region-name">header-odd</xsl:attribute>
+							</xsl:if>
+						</fo:region-before>
 						<fo:region-after region-name="footer-odd" extent="{$marginBottom - 2}mm"/>
 						<fo:region-start region-name="left-region" extent="{$marginLeftRight1}mm"/>
 						<fo:region-end region-name="right-region" extent="{$marginLeftRight2}mm"/>
@@ -652,6 +672,21 @@
 						</fo:repeatable-page-master-alternatives>
 					</fo:page-sequence-master>
 					
+					<!-- First pages for Technical Report (layout 1987) -->
+					<fo:simple-page-master master-name="first-preface_1987_TR" page-width="{$pageWidth}mm" page-height="{$pageHeight}mm">
+						<fo:region-body margin-top="13mm" margin-bottom="30mm" margin-left="19mm" margin-right="{$marginLeftRight2}mm"/>
+						<fo:region-before region-name="header-empty" extent="13mm"/>
+						<fo:region-after region-name="footer-preface-first_1987_TR" extent="30mm" display-align="after"/>
+						<fo:region-start region-name="left-region-first_1987_TR" extent="19mm"/>
+						<fo:region-end region-name="right-region" extent="{$marginLeftRight2}mm"/>
+					</fo:simple-page-master>
+					<fo:page-sequence-master master-name="preface-1987_TR">
+						<fo:repeatable-page-master-alternatives>
+							<fo:conditional-page-master-reference master-reference="first-preface_1987_TR" page-position="first"/>
+							<fo:conditional-page-master-reference odd-or-even="even" master-reference="even-publishedISO"/>
+							<fo:conditional-page-master-reference odd-or-even="odd" master-reference="odd-publishedISO"/>
+						</fo:repeatable-page-master-alternatives>
+					</fo:page-sequence-master>
 					
 					<fo:page-sequence-master master-name="document-publishedISO">
 						<fo:repeatable-page-master-alternatives>
@@ -905,7 +940,7 @@
 										</fo:table-row>
 										<fo:table-row border-top="2pt solid black" height="4.5mm" display-align="center">
 											<fo:table-cell number-columns-spanned="3" font-size="5.6pt" text-align-last="justify">
-												<fo:block>INTERNATIONAL ORGANIZATION FOR STANDARDIZATION&#x25cf;МЕЖДУНАРОДНАЯ ОРГАНИЗАЦИЯ ПО СТАНДАРТИЗАЦИИ&#x25cf;ORGANISATION INTERNATIONALE DE NORMALISATION</fo:block>
+												<fo:block><xsl:value-of select="$ISO_title_en"/>&#x25cf;<xsl:value-of select="$ISO_title_ru"/>&#x25cf;<xsl:value-of select="$ISO_title_fr"/></fo:block>
 											</fo:table-cell>
 										</fo:table-row>
 									</fo:table-body>
@@ -934,7 +969,7 @@
 							</fo:flow>
 						</fo:page-sequence>
 					</xsl:when> <!-- END: $layoutVersion = '1972' -->
-					
+					<xsl:when test="$layoutVersion = '1987' and $doctype = 'technical-report'"><!-- see preface pages below --></xsl:when>
 					<xsl:when test="$layoutVersion = '1987'">
 						<fo:page-sequence master-reference="cover-page_1987" force-page-count="no-force">
 							<fo:static-content flow-name="right-region" >
@@ -989,9 +1024,9 @@
 															</fo:block>
 														</fo:table-cell>
 														<fo:table-cell font-size="7.5pt" border-top="0.5pt solid black" border-bottom="0.5pt solid black" text-align-last="justify" display-align="center" line-height="1.6" padding-left="32mm">
-															<fo:block>INTERNATIONAL ORGANIZATION FOR STANDARDIZATION</fo:block>
-															<fo:block>ORGANISATION INTERNATIONALE DE NORMALISATION</fo:block>
-															<fo:block>МЕЖДУНАРОДНАЯ ОРГАНИЗАЦИЯ ПО СТАНДАРТИЗАЦИИ</fo:block>
+															<fo:block><xsl:value-of select="$ISO_title_en"/></fo:block>
+															<fo:block><xsl:value-of select="$ISO_title_fr"/></fo:block>
+															<fo:block><xsl:value-of select="$ISO_title_ru"/></fo:block>
 														</fo:table-cell>
 													</fo:table-row>
 												</fo:table-body>
@@ -2068,6 +2103,126 @@
 				
 					<xsl:choose>
 						<xsl:when test="$layoutVersion = '1951'"><!-- To do --></xsl:when>
+						<xsl:when test="$layoutVersion = '1987' and $doctype = 'technical-report'">
+							<fo:page-sequence master-reference="preface-1987_TR"  format="i" force-page-count="no-force">
+								
+								<xsl:call-template name="insertHeaderFooter">
+									<xsl:with-param name="font-weight">normal</xsl:with-param>
+									<xsl:with-param name="is_footer">false</xsl:with-param>
+								</xsl:call-template>
+								
+								<fo:static-content flow-name="left-region-first_1987_TR" role="artifact">
+									<fo:block-container reference-orientation="90">
+										<fo:block font-size="8pt" margin-left="5mm" margin-top="8mm">
+											<xsl:value-of select="$ISOnumber"/>
+										</fo:block>
+									</fo:block-container>
+								</fo:static-content>
+								
+								<fo:static-content flow-name="footer-preface-first_1987_TR" role="artifact">
+									<fo:block-container font-size="8pt" margin-bottom="3mm">
+										<xsl:call-template name="insertSingleLine"/>
+										<fo:block font-size="11pt" font-weight="bold" text-align-last="justify" margin-top="0.5mm" margin-right="1mm">
+											<fo:inline keep-together.within-line="always" role="SKIP">
+												<xsl:value-of select="$udc"/>
+												<fo:leader leader-pattern="space"/>
+												<fo:inline role="SKIP">
+													<xsl:call-template name="getLocalizedString">
+														<xsl:with-param name="key">reference_number_abbrev</xsl:with-param>
+													</xsl:call-template>
+													<xsl:text>&#xa0;</xsl:text>
+													<xsl:value-of select="$ISOnumber"/>
+												</fo:inline>
+											</fo:inline>
+										</fo:block>
+										
+										<xsl:if test="/iso:iso-standard/iso:bibdata/iso:keyword">
+											<fo:block margin-top="6pt">
+												<xsl:variable name="title-descriptors">
+													<xsl:call-template name="getLocalizedString">
+														<xsl:with-param name="key">Descriptor.pl</xsl:with-param>
+													</xsl:call-template>
+												</xsl:variable>
+												<fo:inline font-weight="bold"><xsl:value-of select="$title-descriptors"/> : </fo:inline>
+												<xsl:call-template name="insertKeywords">
+													<xsl:with-param name="sorting">no</xsl:with-param>
+													<xsl:with-param name="charDelim" select="',  '"/>
+												</xsl:call-template>
+											</fo:block>
+										</xsl:if>
+									
+										<fo:table table-layout="fixed" width="100%" margin-top="14pt" font-size="7.5pt">
+											<fo:table-body>
+												<fo:table-row>
+													<fo:table-cell>
+														<fo:block>
+															<xsl:apply-templates select="/iso:iso-standard/iso:boilerplate/iso:copyright-statement"/>
+														</fo:block>
+													</fo:table-cell>
+													<fo:table-cell display-align="after" text-align="right">
+														<fo:block>
+															<xsl:for-each select="xalan:nodeset($price_based_on_items)/item">
+																<xsl:value-of select="."/>
+																<xsl:if test="position() != last()">
+																	<fo:page-number-citation ref-id="lastBlock"/>
+																</xsl:if>										
+															</xsl:for-each>
+														</fo:block>
+													</fo:table-cell>
+												</fo:table-row>
+											</fo:table-body>
+										</fo:table>
+									</fo:block-container>
+								</fo:static-content> <!-- footer-preface-first_1987_TR -->
+								
+								<fo:flow flow-name="xsl-region-body">
+									<fo:table table-layout="fixed" width="100%">
+										<fo:table-column column-width="proportional-column-width(68)"/>
+										<fo:table-column column-width="proportional-column-width(112)"/>
+										<fo:table-body>
+											<fo:table-row>
+												<fo:table-cell number-rows-spanned="2">
+													<fo:block font-size="0">
+														<xsl:variable name="content-height">25</xsl:variable>
+														<fo:external-graphic src="{concat('data:image/png;base64,', normalize-space($Image-ISO-Logo-1987))}" content-height="{$content-height}mm" content-width="scale-to-fit" scaling="uniform" fox:alt-text="Image ISO Logo"/>
+													</fo:block>
+												</fo:table-cell>
+												<fo:table-cell font-size="11pt" font-weight="bold">
+													<fo:block><xsl:value-of select="$doctype_uppercased"/>&#xa0;<xsl:value-of select="/iso:iso-standard/iso:bibdata/iso:docnumber"/></fo:block>
+												</fo:table-cell>
+											</fo:table-row>
+											<fo:table-row display-align="after">
+												<fo:table-cell>
+													<fo:block margin-bottom="-1mm">Published <xsl:value-of select="/iso:iso-standard/iso:bibdata/iso:date[@type = 'published']"/></fo:block>
+												</fo:table-cell>
+											</fo:table-row>
+										</fo:table-body>
+									</fo:table>
+									
+									<fo:block font-size="6pt" margin-top="8mm" margin-bottom="18mm" text-align-last="justify"><xsl:value-of select="$ISO_title_en"/>&#x25cf;<xsl:value-of select="$ISO_title_ru"/>&#x25cf;<xsl:value-of select="$ISO_title_fr"/></fo:block>
+									
+									<fo:block-container margin-bottom="22mm" role="SKIP">
+										<fo:block font-size="18pt" font-weight="bold" role="H1" line-height="1.05">
+											<xsl:call-template name="insertTitlesLangMain"/>
+										</fo:block>
+										<xsl:for-each select="xalan:nodeset($lang_other)/lang">
+											<xsl:variable name="lang_other" select="."/>
+											<fo:block font-size="12pt" role="SKIP"><xsl:value-of select="$linebreak"/></fo:block>
+											<fo:block role="H1" font-style="italic" line-height="1.2">
+												<!-- Example: title-intro fr -->
+												<xsl:call-template name="insertTitlesLangOther">
+													<xsl:with-param name="lang_other" select="$lang_other"/>
+												</xsl:call-template>
+											</fo:block>
+										</xsl:for-each>
+									</fo:block-container>
+													
+									<!-- ToC, Foreword, Introduction -->					
+									<xsl:call-template name="processPrefaceSectionsDefault"/>
+									
+								</fo:flow>
+							</fo:page-sequence>
+						</xsl:when>
 						<xsl:otherwise>
 						
 							<fo:page-sequence master-reference="preface{$document-master-reference}" format="i" force-page-count="{$force-page-count-preface}">
@@ -2273,6 +2428,7 @@
 					
 					<xsl:choose>
 						<xsl:when test="$layoutVersion = '1972'"/>
+						<xsl:when test="$layoutVersion = '1987' and $doctype = 'technical-report'"><!-- UDC, Keywords and Price renders on the first page for technical-report --></xsl:when>
 						<xsl:when test="$layoutVersion = '2024'">
 							<xsl:call-template name="insertLastPage_2024"/>
 						</xsl:when>
@@ -2518,6 +2674,7 @@
 	<xsl:template match="iso:preface/iso:clause[@type = 'toc']" priority="3">
 		<xsl:choose>
 			<xsl:when test="$doctype = 'amendment'"></xsl:when><!-- ToC shouldn't be generated in amendments. -->
+			<xsl:when test="$layoutVersion = '1987' and $doctype = 'technical-report'"></xsl:when>
 			<xsl:otherwise>
 				
 				<fo:block-container font-weight="bold">
@@ -2825,6 +2982,7 @@
 	</xsl:template>
 	
 	<xsl:template match="iso:sections/iso:p[@class = 'zzSTDTitle1']" priority="4">
+		<xsl:if test="not($layoutVersion = '1987' and $doctype = 'technical-report')">
 		<fo:block font-size="18pt" font-weight="bold" margin-top="40pt" margin-bottom="20pt" line-height="1.1" role="H1">
 			<xsl:if test="$layoutVersion = '1972' or $layoutVersion = '1987' or $layoutVersion = '1989'">
 				<xsl:attribute name="font-size">16pt</xsl:attribute>
@@ -2839,6 +2997,7 @@
 			</xsl:if>
 			<xsl:apply-templates />
 		</fo:block>
+		</xsl:if>
 	</xsl:template>
 	
 	<xsl:template match="iso:sections/iso:p[@class = 'zzSTDTitle1']/iso:span[@class = 'nonboldtitle']" priority="3">
@@ -3031,7 +3190,7 @@
 			</xsl:when>
 			<xsl:when test="$layoutVersion = '1972' or $layoutVersion = '1987'">
 				<xsl:if test="@id = 'boilerplate-place'">
-						<fo:block margin-top="6pt">&#xa0;</fo:block>
+						<fo:block margin-top="6pt"><xsl:if test="$layoutVersion = '1987' and $doctype = 'technical-report'"><xsl:attribute name="margin-top">0</xsl:attribute></xsl:if>&#xa0;</fo:block>
 				</xsl:if>
 				<fo:block><xsl:apply-templates /></fo:block>
 			</xsl:when>
@@ -3107,6 +3266,13 @@
 		
 		<xsl:variable name="font-size">
 			<xsl:choose>
+				<xsl:when test="$layoutVersion = '1987' and $doctype = 'technical-report'">
+					<xsl:choose>
+						<xsl:when test="$level = 1">11pt</xsl:when>
+						<xsl:when test="$level = 2">10pt</xsl:when>
+						<xsl:when test="$level &gt;= 3">9pt</xsl:when>
+					</xsl:choose>
+				</xsl:when>
 				<xsl:when test="$layoutVersion = '1972' or $layoutVersion = '1987' or $layoutVersion = '1989'">
 					<xsl:choose>
 						<xsl:when test="ancestor::iso:annex and $level = 2">12pt</xsl:when>
@@ -3152,6 +3318,7 @@
 		</xsl:variable>
 		
 		<xsl:choose>
+			<xsl:when test="$layoutVersion = '1987' and $doctype = 'technical-report' and parent::iso:foreword"><!-- skip Foreword title --></xsl:when>
 			<xsl:when test="$doctype = 'amendment' and not(ancestor::iso:preface)">
 				<fo:block font-size="11pt" font-style="italic" margin-bottom="12pt" keep-with-next="always" role="H{$level}">
 					<xsl:if test="$layoutVersion = '2024'">
@@ -3163,6 +3330,14 @@
 			</xsl:when>
 			
 			<xsl:otherwise>
+			
+				<xsl:if test="$layoutVersion = '1987' and $doctype = 'technical-report' and parent::iso:introduction">
+					<fo:block span="all" text-align="center" margin-top="15mm" keep-with-previous="always" role="SKIP">
+						<fo:leader leader-pattern="rule" leader-length="12%"/>
+					</fo:block>
+				</xsl:if>
+				
+			
 				<xsl:element name="{$element-name}">
 				
 					<xsl:if test="$layoutVersion = '1951' or $layoutVersion = '1972' or $layoutVersion = '1987' or $layoutVersion = '1989'">
@@ -3181,6 +3356,7 @@
 					<xsl:attribute name="{$attribute-name-before}"> <!-- space-before or margin-top -->
 						<xsl:choose>
 							<xsl:when test="ancestor::iso:introduction and $level &gt;= 2 and ../preceding-sibling::iso:clause">30pt</xsl:when>
+							<xsl:when test="$layoutVersion = '1987' and $doctype = 'technical-report' and ancestor::iso:preface and $level = 1">10mm</xsl:when>
 							<xsl:when test="($layoutVersion = '1972' or $layoutVersion = '1987' or ($layoutVersion = '1989' and $revision_date_num &lt;= 19981231)) and ancestor::iso:preface and $level = 1">62mm</xsl:when>
 							<xsl:when test="$layoutVersion = '1989' and ancestor::iso:preface and $level = 1">56pt</xsl:when>
 							<xsl:when test="ancestor::iso:preface">8pt</xsl:when>
@@ -3641,7 +3817,9 @@
 		<xsl:call-template name="insertFooterEven">
 			<xsl:with-param name="font-weight" select="$font-weight"/>
 		</xsl:call-template>
-		<xsl:call-template name="insertHeaderFirst"/>
+		<xsl:if test="not($layoutVersion = '1987' and $doctype = 'technical-report')">
+			<xsl:call-template name="insertHeaderFirst"/>
+		</xsl:if>
 		<xsl:call-template name="insertHeaderOdd"/>
 		<xsl:call-template name="insertFooterOdd">
 			<xsl:with-param name="font-weight" select="$font-weight"/>
