@@ -156,7 +156,7 @@
 	<xsl:variable name="document_scheme" select="normalize-space(/itu:itu-standard/itu:metanorma-extension/itu:presentation-metadata[itu:name = 'document-scheme']/itu:value)"/>
 	<xsl:variable name="layoutVersion_">
 		<xsl:choose>
-			<xsl:when test="$document_scheme = ''">2023</xsl:when>
+			<xsl:when test="$document_scheme = '' or $document_scheme = 'current'">2023</xsl:when>
 			<xsl:otherwise>default</xsl:otherwise>
 		</xsl:choose>
 	</xsl:variable>
@@ -182,6 +182,21 @@
 		<xsl:if test="$color_cover_itu_logo_value = ''">#1DA0DB</xsl:if>
 	</xsl:variable>
 	<xsl:variable name="color_cover_itu_logo" select="normalize-space($color_cover_itu_logo_)"/>
+	
+	<xsl:variable name="i18n_international_telecommunication_union"><xsl:call-template name="getLocalizedString"><xsl:with-param name="key">international_telecommunication_union</xsl:with-param></xsl:call-template></xsl:variable>
+	<xsl:variable name="i18n_edition"><xsl:call-template name="getLocalizedString"><xsl:with-param name="key">edition</xsl:with-param></xsl:call-template></xsl:variable>
+	<xsl:variable name="i18n_edition_Capitalized"><xsl:call-template name="capitalize"><xsl:with-param name="str" select="$i18n_edition"/></xsl:call-template></xsl:variable>
+	<xsl:variable name="i18n_annex"><xsl:call-template name="getLocalizedString"><xsl:with-param name="key">annex</xsl:with-param></xsl:call-template></xsl:variable>
+	<xsl:variable name="i18n_annex_to_itu_ob"><xsl:call-template name="getLocalizedString"><xsl:with-param name="key">annex_to_itu_ob</xsl:with-param></xsl:call-template></xsl:variable>
+	<xsl:variable name="i18n_number_abbrev"><xsl:call-template name="getLocalizedString"><xsl:with-param name="key">number_abbrev</xsl:with-param></xsl:call-template></xsl:variable>
+	<xsl:variable name="i18n_tsb"><xsl:call-template name="getLocalizedString"><xsl:with-param name="key">tsb</xsl:with-param></xsl:call-template></xsl:variable>
+	<xsl:variable name="i18n_tsb_full"><xsl:call-template name="getLocalizedString"><xsl:with-param name="key">tsb_full</xsl:with-param><xsl:with-param name="formatted">true</xsl:with-param></xsl:call-template></xsl:variable>
+	<xsl:variable name="i18n_placedate"><xsl:call-template name="getLocalizedString"><xsl:with-param name="key">placedate</xsl:with-param></xsl:call-template></xsl:variable>
+	<xsl:variable name="i18n_series"><xsl:call-template name="getLocalizedString"><xsl:with-param name="key">series</xsl:with-param></xsl:call-template></xsl:variable>
+	<xsl:variable name="i18n_series_Capitalized"><xsl:call-template name="capitalize"><xsl:with-param name="str" select="$i18n_series"/></xsl:call-template></xsl:variable>
+	<xsl:variable name="i18n_keywords"><xsl:call-template name="getLocalizedString"><xsl:with-param name="key">keywords</xsl:with-param></xsl:call-template></xsl:variable>
+	<xsl:variable name="i18n_page"><xsl:call-template name="getLocalizedString"><xsl:with-param name="key">Page.sg</xsl:with-param></xsl:call-template></xsl:variable>
+	
 	
 	<xsl:template match="/">
 		<xsl:call-template name="namespaceCheck"/>
@@ -354,9 +369,7 @@
 														</fo:table-cell>
 														<fo:table-cell text-align="end" display-align="center">
 															<fo:block>
-																<xsl:call-template name="getLocalizedString">
-																	<xsl:with-param name="key">international_telecommunication_union</xsl:with-param>
-																</xsl:call-template>
+																<xsl:value-of select="$i18n_international_telecommunication_union"/>
 															</fo:block>
 														</fo:table-cell>
 													</fo:table-row>
@@ -445,26 +458,12 @@
 												2020 年版
 												Издание 2020 года  -->
 											<fo:block margin-top="3mm" font-size="18pt">
-												<xsl:variable name="editionTitle">
-													<xsl:call-template name="getLocalizedString">
-														<xsl:with-param name="key">edition</xsl:with-param>
-													</xsl:call-template>
-												</xsl:variable>
-												<xsl:variable name="editionTitleCapitalized">
-													<xsl:call-template name="capitalize">
-														<xsl:with-param name="str" select="$editionTitle"/>
-													</xsl:call-template>
-												</xsl:variable>
 												<xsl:choose>
 													<xsl:when test="$lang = 'en' or $lang = 'ar' or $lang = 'zh'">
-														<xsl:value-of select="$year_published"/> 
-														<xsl:text> </xsl:text>
-														<xsl:value-of select="$editionTitle"/>
+														<xsl:value-of select="concat($year_published, ' ', $i18n_edition)"/>
 													</xsl:when>
 													<xsl:otherwise>
-														<xsl:value-of select="$editionTitleCapitalized"/>
-														<xsl:text> </xsl:text>
-														<xsl:value-of select="$year_published"/> 
+														<xsl:value-of select="concat($i18n_edition_Capitalized, ' ', $year_published)"/>
 														<xsl:if test="$lang = 'ru'"> года</xsl:if>
 													</xsl:otherwise>
 												</xsl:choose>
@@ -529,9 +528,7 @@
 														<fo:block-container>
 															<xsl:call-template name="setWritingMode"/>
 															<fo:block>
-																<xsl:call-template name="getLocalizedString">
-																	<xsl:with-param name="key">annex</xsl:with-param>
-																</xsl:call-template>
+																<xsl:value-of select="$i18n_annex"/>
 																<xsl:text> </xsl:text>
 																<xsl:value-of select="$annexid"/>
 															</fo:block>
@@ -632,9 +629,7 @@
 										<!-- Example: Annex F1 - ... -->
 										<xsl:for-each select="/itu:itu-standard/itu:bibdata/itu:title[@type = 'annex' and @language = $lang]">
 											<fo:block font-size="18pt" margin-top="3mm" role="H1">
-												<xsl:call-template name="getLocalizedString">
-													<xsl:with-param name="key">annex</xsl:with-param>
-												</xsl:call-template>
+												<xsl:value-of select="$i18n_annex"/>
 												<xsl:text> </xsl:text>
 												<xsl:value-of select="$annexid"/>
 												<xsl:value-of select="$en_dash_separator"/>
@@ -847,14 +842,10 @@
 											<xsl:attribute name="font-style">normal</xsl:attribute>
 										</xsl:if>
 										<fo:block>
-											<xsl:call-template name="getLocalizedString">
-												<xsl:with-param name="key">annex_to_itu_ob</xsl:with-param>
-											</xsl:call-template>
+											<xsl:value-of select="$i18n_annex_to_itu_ob"/>
 										</fo:block>
 										<fo:block>
-											<xsl:call-template name="getLocalizedString">
-												<xsl:with-param name="key">number_abbrev</xsl:with-param>
-											</xsl:call-template>
+											<xsl:value-of selcet="$i18n_number_abbrev"/>
 											<xsl:value-of select="/*/itu:bibdata/itu:docnumber"/>
 											<xsl:text> – </xsl:text>
 											<xsl:value-of select="translate(normalize-space(/*/itu:bibdata/itu:date[@type='published' and @format]),' ','')"/>
@@ -872,30 +863,17 @@
 													<xsl:copy-of select="$Image-ITU-Globe-Logo"/>
 												</fo:instream-foreign-object>
 											</fo:inline>
-											<xsl:variable name="itu_name">
-												<xsl:call-template name="getLocalizedString">
-													<xsl:with-param name="key">international_telecommunication_union</xsl:with-param>
-												</xsl:call-template>
-											</xsl:variable>
-											<xsl:value-of select="java:toUpperCase(java:java.lang.String.new($itu_name))"/>
+											<xsl:value-of select="java:toUpperCase(java:java.lang.String.new($i18n_international_telecommunication_union))"/>
 										</fo:block>
 									</fo:block>
 									<fo:block-container margin-left="10mm">
 										<fo:block-container margin-left="0mm">
 											
 											<fo:block font-size="20pt" font-weight="bold" space-before="30mm">
-												<xsl:call-template name="getLocalizedString">
-													<xsl:with-param name="key">tsb</xsl:with-param>
-												</xsl:call-template>
+												<xsl:value-of select="$i18n_tsb"/>
 											</fo:block>
 											<fo:block font-size="14pt" font-weight="bold">
-												<xsl:variable name="tsb_full">
-													<xsl:call-template name="getLocalizedString">
-														<xsl:with-param name="key">tsb_full</xsl:with-param>
-														<xsl:with-param name="formatted">true</xsl:with-param>
-													</xsl:call-template>
-												</xsl:variable>
-												<xsl:value-of select="java:toUpperCase(java:java.lang.String.new($tsb_full))"/>
+												<xsl:value-of select="java:toUpperCase(java:java.lang.String.new($i18n_tsb_full))"/>
 											</fo:block>
 											<fo:block-container height="20mm" display-align="center" width="90%">
 												<fo:block font-weight="bold">
@@ -991,14 +969,9 @@
 									</fo:block-container>
 									
 									<fo:block space-before="25mm" font-weight="bold">
-										<xsl:variable name="placedate">
-											<xsl:call-template name="getLocalizedString">
-												<xsl:with-param name="key">placedate</xsl:with-param>
-											</xsl:call-template>
-										</xsl:variable>
 										<xsl:variable name="year" select="substring(/*/itu:bibdata/itu:date[@type = 'published']/itu:on,1,4)"/>
 										<xsl:if test="normalize-space($year) != ''">
-											<xsl:value-of select="java:replaceAll(java:java.lang.String.new($placedate),'%',$year)"/>
+											<xsl:value-of select="java:replaceAll(java:java.lang.String.new($i18n_placedate),'%',$year)"/>
 										</xsl:if>
 									</fo:block>
 								</fo:flow>
@@ -1091,14 +1064,7 @@
 																<xsl:when test="$doctype = 'resolution'"/>
 																<xsl:when test="$doctype = 'recommendation-supplement'">
 																	<!-- Series L -->
-																	<xsl:variable name="title-series">
-																		<xsl:call-template name="getLocalizedString">
-																			<xsl:with-param name="key">series</xsl:with-param>
-																		</xsl:call-template>
-																	</xsl:variable>
-																	<xsl:call-template name="capitalize">
-																		<xsl:with-param name="str" select="$title-series"/>
-																	</xsl:call-template>
+																	<xsl:value-of select="$i18n_series_Capitalized"/>
 																	<xsl:text> </xsl:text>
 																	<xsl:value-of select="/itu:itu-standard/itu:bibdata/itu:series[@type='main']/itu:title[@type='abbrev']"/>
 																	<!-- Ex. Supplement 37 -->
@@ -1135,11 +1101,7 @@
 													<fo:block-container>
 														<xsl:call-template name="setWritingMode"/>
 														<fo:block font-size="18pt" font-weight="bold">
-															<xsl:call-template name="getLocalizedString">
-																<xsl:with-param name="key">annex</xsl:with-param>
-															</xsl:call-template>
-															<xsl:text> </xsl:text>
-															<xsl:value-of select="$annexid"/>
+															<xsl:value-of select="concat($i18n_annex, ' ', $annexid)"/>
 														</fo:block>
 													</fo:block-container>
 												</xsl:if>
@@ -1366,12 +1328,7 @@
 															</xsl:choose>
 															
 															<xsl:if test="$annexid != ''">
-																<xsl:text> — </xsl:text>
-																<xsl:call-template name="getLocalizedString">
-																	<xsl:with-param name="key">annex</xsl:with-param>
-																</xsl:call-template>
-																<xsl:text> </xsl:text>
-																<xsl:value-of select="$annexid"/>
+																<xsl:value-of select="concat(' — ', $i18n_annex, ' ', $annexid)"/>
 															</xsl:if>
 														</fo:block>
 													</fo:block-container>
@@ -1442,9 +1399,7 @@
 								<xsl:value-of select="$linebreak"/>
 							</fo:block>
 							<fo:block font-weight="bold" margin-top="18pt" margin-bottom="18pt">
-								<xsl:call-template name="getLocalizedString">
-									<xsl:with-param name="key">keywords</xsl:with-param>
-								</xsl:call-template>
+								<xsl:value-of select="$i18n_keywords"/>
 							</fo:block>
 							<fo:block>
 								<xsl:call-template name="insertKeywords"/>
@@ -1630,9 +1585,7 @@
 		<xsl:if test="$series_title != ''">
 			<!-- Series -->
 			<fo:inline text-transform="uppercase">
-				<xsl:call-template name="getLocalizedString">
-					<xsl:with-param name="key">series</xsl:with-param>
-				</xsl:call-template>
+				<xsl:value-of select="$i18n_series"/>
 			</fo:inline>
 			<xsl:text> </xsl:text>
 			<xsl:value-of select="$series_title"/>
@@ -1741,9 +1694,7 @@
 									<xsl:with-param name="title" select="$title-list-tables"/>
 								</xsl:call-template>
 								<fo:block margin-top="6pt" text-align="end" font-weight="bold"  keep-with-next="always">
-									<xsl:call-template name="getLocalizedString">
-										<xsl:with-param name="key">Page.sg</xsl:with-param>
-									</xsl:call-template>
+									<xsl:value-of select="$i18n_page"/>
 								</fo:block>
 								<fo:block-container>
 									<xsl:for-each select="$contents//tables/table">
@@ -1758,9 +1709,7 @@
 									<xsl:with-param name="title" select="$title-list-figures"/>
 								</xsl:call-template>
 								<fo:block margin-top="6pt" text-align="end" font-weight="bold" keep-with-next="always">
-									<xsl:call-template name="getLocalizedString">
-										<xsl:with-param name="key">Page.sg</xsl:with-param>
-									</xsl:call-template>
+									<xsl:value-of select="$i18n_page"/>
 								</fo:block>
 								<fo:block-container>
 									<xsl:for-each select="$contents//figures/figure">
@@ -1784,9 +1733,7 @@
 			<xsl:apply-templates />
 		</fo:block>
 		<fo:block margin-top="6pt" text-align="end" font-weight="bold">
-			<xsl:call-template name="getLocalizedString">
-				<xsl:with-param name="key">Page.sg</xsl:with-param>
-			</xsl:call-template>
+			<xsl:value-of select="$i18n_page"/>
 		</fo:block>
 	</xsl:template>
 
