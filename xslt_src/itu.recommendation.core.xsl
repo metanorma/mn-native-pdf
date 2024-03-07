@@ -364,10 +364,7 @@
 														<!-- collection/series (optional) -->
 														<fo:table-cell text-align="start">
 															<fo:block>
-																<xsl:variable name="collection" select="normalize-space(/itu:itu-standard/itu:metanorma-extension/itu:presentation-metadata/itu:collection)"/>
-																<xsl:if test="$collection != ''">
-																	<xsl:value-of select="$collection"/>
-																</xsl:if>
+																<xsl:value-of select="/itu:itu-standard/itu:bibdata/itu:title[@type = 'collection']"/>
 															</fo:block>
 														</fo:table-cell>
 														<!-- Sector or Bureau name -->
