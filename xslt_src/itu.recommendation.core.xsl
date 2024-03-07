@@ -373,7 +373,7 @@
 														<!-- Sector or Bureau name -->
 														<fo:table-cell text-align="end">
 															<fo:block>
-																<xsl:variable name="sector" select="normalize-space(/itu:itu-standard/itu:metanorma-extension/itu:presentation-metadata/itu:sector)"/>
+																<xsl:variable name="sector" select="normalize-space(/itu:itu-standard/itu:bibdata/itu:ext/itu:editorialgroup/itu:sector)"/>
 																<xsl:value-of select="$sector"/>
 																<xsl:if test="$sector = ''">
 																	<xsl:variable name="bureau_key">
