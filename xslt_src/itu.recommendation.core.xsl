@@ -426,6 +426,15 @@
 										<fo:block margin-top="2mm">
 											<xsl:value-of select="/itu:itu-standard/itu:bibdata/itu:title[@type = 'subtitle' and @language = $lang]"/>
 										</fo:block>
+										<!-- https://github.com/metanorma/metanorma-itu/issues/474#issuecomment-1966298384 -->
+										<fo:block margin-top="2mm" font-family="Adelle">
+											<xsl:choose>
+												<xsl:when test="$lang = 'ar'"><xsl:attribute name="font-family">Traditional Arabic</xsl:attribute></xsl:when>
+												<xsl:when test="$lang = 'zh'"><xsl:attribute name="font-family">STKaiti</xsl:attribute></xsl:when>
+												<xsl:otherwise><xsl:attribute name="font-style">italic</xsl:attribute></xsl:otherwise>
+											</xsl:choose>
+											<xsl:value-of select="/itu:itu-standard/itu:bibdata/itu:title[@type = 'slogan']"/>
+										</fo:block>
 										<xsl:variable name="year_published" select="substring($date_published,1,4)"/>
 										<xsl:if test="$year_published != ''">
 											<!-- Examples:
