@@ -3339,6 +3339,9 @@
 					</xsl:attribute>
 					<xsl:attribute name="keep-with-next">always</xsl:attribute>		
 					<xsl:attribute name="role">H<xsl:value-of select="$level"/></xsl:attribute>
+					<xsl:if test="@type = 'floating-title' or @type = 'section-title'">
+						<xsl:copy-of select="@id"/>
+					</xsl:if>
 					<xsl:if test="$element-name = 'fo:inline'">
 						<xsl:choose>
 							<xsl:when test="$lang = 'zh'">
