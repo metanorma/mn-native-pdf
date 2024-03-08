@@ -2668,14 +2668,29 @@
 											<xsl:if test="@level &gt;= 2 or @type = 'annex'">
 												<xsl:attribute name="font-weight">normal</xsl:attribute>
 											</xsl:if>
-											<xsl:attribute name="provisional-distance-between-starts">
+											<xsl:variable name="provisional_distance_between_starts">
 												<xsl:choose>
 													<!-- skip 0 section without subsections -->
-													<xsl:when test="@level &gt;= 3"><xsl:value-of select="$margin-left * 1.2"/>mm</xsl:when>
-													<xsl:when test="@section != ''"><xsl:value-of select="$margin-left"/>mm</xsl:when>
-													<xsl:otherwise>0mm</xsl:otherwise>
+													<xsl:when test="@level &gt;= 3"><xsl:value-of select="$margin-left * 1.2"/></xsl:when>
+													<xsl:when test="@section != ''"><xsl:value-of select="$margin-left"/></xsl:when>
+													<xsl:otherwise>0</xsl:otherwise>
+												</xsl:choose>
+											</xsl:variable>
+											<xsl:variable name="section_length_str" select="string-length(normalize-space(@section))"/>
+											<xsl:variable name="section_length_mm" select="$section_length_str * 2"/>
+											
+											<!-- refine the distance depends on the section string length -->
+											<xsl:attribute name="provisional-distance-between-starts">
+												<xsl:choose>
+													<xsl:when test="$section_length_mm &gt; $provisional_distance_between_starts">
+														<xsl:value-of select="concat($section_length_mm, 'mm')"/>
+													</xsl:when>
+													<xsl:otherwise>
+														<xsl:value-of select="concat($provisional_distance_between_starts, 'mm')"/>
+													</xsl:otherwise>
 												</xsl:choose>
 											</xsl:attribute>
+											
 											<fo:list-item role="SKIP">
 												<fo:list-item-label end-indent="label-end()" role="SKIP">
 													<fo:block role="SKIP">
