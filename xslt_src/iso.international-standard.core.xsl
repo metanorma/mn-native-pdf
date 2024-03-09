@@ -61,11 +61,6 @@
 		</xsl:if>
 	</xsl:variable>
 
-	<xsl:variable name="all_rights_reserved">
-		<xsl:call-template name="getLocalizedString">
-			<xsl:with-param name="key">all_rights_reserved</xsl:with-param>
-		</xsl:call-template>
-	</xsl:variable>	
 	<xsl:variable name="copyrightYear" select="/iso:iso-standard/iso:bibdata/iso:copyright/iso:from"/>
 	<xsl:variable name="copyrightAbbr__">
 		<xsl:for-each select="/iso:iso-standard/iso:bibdata/iso:copyright/iso:owner/iso:organization[normalize-space(iso:abbreviation) != 'IEEE']">
@@ -91,10 +86,10 @@
 	<xsl:variable name="copyrightAbbr" select="normalize-space($copyrightAbbr_)"/>
 	<xsl:variable name="copyrightAbbrIEEE" select="normalize-space(/iso:iso-standard/iso:bibdata/iso:copyright/iso:owner/iso:organization/iso:abbreviation[. = 'IEEE'])"/>
 	<xsl:variable name="copyrightText">
-		<xsl:value-of select="concat('© ', $copyrightAbbr, ' ', $copyrightYear ,' – ', $all_rights_reserved)"/>
+		<xsl:value-of select="concat('© ', $copyrightAbbr, ' ', $copyrightYear ,' – ', $i18n_all_rights_reserved)"/>
 		<xsl:if test="$copyrightAbbrIEEE != ''">
 			<xsl:value-of select="$linebreak"/>
-			<xsl:value-of select="concat('© ', $copyrightAbbrIEEE, ' ', $copyrightYear ,' – ', $all_rights_reserved)"/>
+			<xsl:value-of select="concat('© ', $copyrightAbbrIEEE, ' ', $copyrightYear ,' – ', $i18n_all_rights_reserved)"/>
 		</xsl:if>
 	</xsl:variable>
   
@@ -125,6 +120,12 @@
 					</xsl:when>
 					<xsl:when test="$layoutVersion = '1972'">
 						<xsl:value-of select="java:replaceAll(java:java.lang.String.new($iso_reference_tmp),':','-')"/>
+					</xsl:when>
+					<xsl:when test="$layoutVersion = '1987'">
+						<!-- insert space around : -->
+						<xsl:variable name="iso_reference_tmp_" select="java:replaceAll(java:java.lang.String.new($iso_reference_tmp),':',' : ')"/>
+						<!-- insert space before ( -->
+						<xsl:value-of select="java:replaceAll(java:java.lang.String.new($iso_reference_tmp_),'\(',' \(')"/>
 					</xsl:when>
 					<xsl:otherwise>
 						<xsl:value-of select="$iso_reference"/>
@@ -270,6 +271,24 @@
 	</xsl:variable>
 	
 	<xsl:variable name="proof-text">PROOF/ÉPREUVE</xsl:variable>
+
+	<xsl:variable name="ISO_title_en">INTERNATIONAL ORGANIZATION FOR STANDARDIZATION</xsl:variable>
+	<xsl:variable name="ISO_title_ru">МЕЖДУНАРОДНАЯ ОРГАНИЗАЦИЯ ПО СТАНДАРТИЗАЦИИ</xsl:variable>
+	<xsl:variable name="ISO_title_fr">ORGANISATION INTERNATIONALE DE NORMALISATION</xsl:variable>
+
+	<xsl:variable name="i18n_reference_number_abbrev"><xsl:call-template name="getLocalizedString"><xsl:with-param name="key">reference_number_abbrev</xsl:with-param></xsl:call-template></xsl:variable>
+	<xsl:variable name="i18n_reference_number"><xsl:call-template name="getLocalizedString"><xsl:with-param name="key">reference_number</xsl:with-param></xsl:call-template></xsl:variable>
+	<xsl:variable name="i18n_descriptors"><xsl:call-template name="getLocalizedString"><xsl:with-param name="key">Descriptor.pl</xsl:with-param></xsl:call-template></xsl:variable>	
+	<xsl:variable name="i18n_voting_begins_on"><xsl:call-template name="getLocalizedString"><xsl:with-param name="key">voting_begins_on</xsl:with-param></xsl:call-template></xsl:variable>
+	<xsl:variable name="i18n_voting_terminates_on"><xsl:call-template name="getLocalizedString"><xsl:with-param name="key">voting_terminates_on</xsl:with-param></xsl:call-template></xsl:variable>
+	<xsl:variable name="i18n_price_based_on"><xsl:call-template name="getLocalizedString"><xsl:with-param name="key">price_based_on</xsl:with-param></xsl:call-template></xsl:variable>
+	<xsl:variable name="i18n_corrected_version"><xsl:call-template name="getLocalizedString"><xsl:with-param name="key">corrected_version</xsl:with-param></xsl:call-template></xsl:variable>
+	<xsl:variable name="i18n_fast_track_procedure"><xsl:call-template name="getLocalizedString"><xsl:with-param name="key">fast-track-procedure</xsl:with-param></xsl:call-template></xsl:variable>
+	<xsl:variable name="i18n_all_rights_reserved"><xsl:call-template name="getLocalizedString"><xsl:with-param name="key">all_rights_reserved</xsl:with-param></xsl:call-template></xsl:variable>	
+	<xsl:variable name="i18n_locality_page"><xsl:call-template name="getLocalizedString"><xsl:with-param name="key">locality.page</xsl:with-param></xsl:call-template></xsl:variable>
+	<xsl:variable name="i18n_locality_part"><xsl:call-template name="getLocalizedString"><xsl:with-param name="key">locality.part</xsl:with-param></xsl:call-template></xsl:variable>
+	<xsl:variable name="i18n_secretariat"><xsl:call-template name="getLocalizedString"><xsl:with-param name="key">secretariat</xsl:with-param></xsl:call-template></xsl:variable>
+	<xsl:variable name="i18n_classification_UDC"><xsl:call-template name="getLocalizedString"><xsl:with-param name="key">classification-UDC</xsl:with-param></xsl:call-template></xsl:variable>
 	
 	<!-- Example:
 		<item level="1" id="Foreword" display="true">Foreword</item>
@@ -342,10 +361,7 @@
 	<xsl:variable name="secretariat_">
 		<xsl:variable name="value" select="normalize-space(/iso:iso-standard/iso:bibdata/iso:ext/iso:editorialgroup/iso:secretariat)"/>
 		<xsl:if test="$value != ''">
-			<xsl:call-template name="getLocalizedString">
-				<xsl:with-param name="key">secretariat</xsl:with-param>
-			</xsl:call-template>
-			<xsl:text>: </xsl:text>
+			<xsl:value-of select="concat($i18n_secretariat, ': ')"/>
 			<fo:inline font-weight="bold"><xsl:value-of select="$value"/></fo:inline>
 		</xsl:if>
 	</xsl:variable>
@@ -363,10 +379,7 @@
 		<xsl:variable name="classification_udc" select="normalize-space(/iso:iso-standard/iso:bibdata/iso:classification[@type = 'UDC'])"/>
 		<xsl:choose>
 			<xsl:when test="$classification_udc != ''">
-				<xsl:call-template name="getLocalizedString">
-					<xsl:with-param name="key">classification-UDC</xsl:with-param>
-				</xsl:call-template>
-				<xsl:text>&#xa0;</xsl:text>
+				<xsl:value-of select="concat($i18n_classification_UDC, '&#xa0;')"/>
 				<xsl:value-of select="java:replaceAll(java:java.lang.String.new($classification_udc),'(:)',' $1 ')"/>
 			</xsl:when>
 			<xsl:otherwise>&#xa0;</xsl:otherwise>
@@ -404,6 +417,11 @@
 							<xsl:attribute name="font-family-generic">Sans</xsl:attribute>
 							<xsl:attribute name="font-size">10pt</xsl:attribute>
 						</xsl:if>
+						
+						<xsl:if test="$layoutVersion = '1987' and $doctype = 'technical-report'">
+							<xsl:attribute name="font-size">8.5pt</xsl:attribute>
+						 </xsl:if>
+						
 						<xsl:if test="$layoutVersion = '2024'">
 							<xsl:attribute name="font-size">10.5pt</xsl:attribute>
 						</xsl:if>
@@ -602,7 +620,11 @@
 					<!-- first page -->
 					<fo:simple-page-master master-name="first-publishedISO" page-width="{$pageWidth}mm" page-height="{$pageHeight}mm">
 						<fo:region-body margin-top="{$marginTop}mm" margin-bottom="{$marginBottom}mm" margin-left="{$marginLeftRight1}mm" margin-right="{$marginLeftRight2}mm" column-count="{$layout_columns}" column-gap="{$column_gap}"/>
-						<fo:region-before region-name="header-first" extent="{$marginTop}mm"/> <!--   display-align="center" -->
+						<fo:region-before region-name="header-first" extent="{$marginTop}mm">
+							<xsl:if test="$layoutVersion = '1987' and $doctype = 'technical-report'">
+								<xsl:attribute name="region-name">header-odd</xsl:attribute>
+							</xsl:if>
+						</fo:region-before>
 						<fo:region-after region-name="footer-odd" extent="{$marginBottom - 2}mm"/>
 						<fo:region-start region-name="left-region" extent="{$marginLeftRight1}mm"/>
 						<fo:region-end region-name="right-region" extent="{$marginLeftRight2}mm"/>
@@ -652,6 +674,21 @@
 						</fo:repeatable-page-master-alternatives>
 					</fo:page-sequence-master>
 					
+					<!-- First pages for Technical Report (layout 1987) -->
+					<fo:simple-page-master master-name="first-preface_1987_TR" page-width="{$pageWidth}mm" page-height="{$pageHeight}mm">
+						<fo:region-body margin-top="13mm" margin-bottom="30mm" margin-left="19mm" margin-right="{$marginLeftRight2}mm"/>
+						<fo:region-before region-name="header-empty" extent="13mm"/>
+						<fo:region-after region-name="footer-preface-first_1987_TR" extent="30mm" display-align="after"/>
+						<fo:region-start region-name="left-region-first_1987_TR" extent="19mm"/>
+						<fo:region-end region-name="right-region" extent="{$marginLeftRight2}mm"/>
+					</fo:simple-page-master>
+					<fo:page-sequence-master master-name="preface-1987_TR">
+						<fo:repeatable-page-master-alternatives>
+							<fo:conditional-page-master-reference master-reference="first-preface_1987_TR" page-position="first"/>
+							<fo:conditional-page-master-reference odd-or-even="even" master-reference="even-publishedISO"/>
+							<fo:conditional-page-master-reference odd-or-even="odd" master-reference="odd-publishedISO"/>
+						</fo:repeatable-page-master-alternatives>
+					</fo:page-sequence-master>
 					
 					<fo:page-sequence-master master-name="document-publishedISO">
 						<fo:repeatable-page-master-alternatives>
@@ -748,10 +785,7 @@
 										<xsl:value-of select="$udc"/>
 										<fo:inline keep-together.within-line="always" role="SKIP">
 											<fo:leader leader-pattern="space"/>
-											<fo:inline font-weight="normal">
-												<xsl:call-template name="getLocalizedString">
-													<xsl:with-param name="key">reference_number</xsl:with-param>
-												</xsl:call-template><xsl:text>:</xsl:text></fo:inline><xsl:value-of select="$ISOnumber"/>
+											<fo:inline font-weight="normal"><xsl:value-of select="concat($i18n_reference_number, ':')"/></fo:inline><xsl:value-of select="$ISOnumber"/>
 										</fo:inline>
 									</fo:block>
 								</fo:block-container>
@@ -820,23 +854,14 @@
 										<xsl:value-of select="$udc"/>
 										<fo:leader leader-pattern="space"/>
 										<fo:inline role="SKIP">
-											<xsl:call-template name="getLocalizedString">
-												<xsl:with-param name="key">reference_number</xsl:with-param>
-											</xsl:call-template>
-											<xsl:text>&#xa0;&#xa0;</xsl:text>
-											<xsl:value-of select="$ISOnumber"/>
+											<xsl:value-of select="concat($i18n_reference_number, '&#xa0;&#xa0;', $ISOnumber)"/>
 										</fo:inline>
 									</fo:inline>
 								</fo:block>
 								
 								<xsl:if test="/iso:iso-standard/iso:bibdata/iso:keyword">
 									<fo:block margin-top="10pt">
-										<xsl:variable name="title-descriptors">
-											<xsl:call-template name="getLocalizedString">
-												<xsl:with-param name="key">Descriptor.pl</xsl:with-param>
-											</xsl:call-template>
-										</xsl:variable>
-										<fo:inline font-weight="bold"><xsl:value-of select="$title-descriptors"/> : </fo:inline>
+										<fo:inline font-weight="bold"><xsl:value-of select="$i18n_descriptors"/> : </fo:inline>
 										<xsl:call-template name="insertKeywords">
 											<xsl:with-param name="sorting">no</xsl:with-param>
 											<xsl:with-param name="charDelim" select="',  '"/>
@@ -905,7 +930,7 @@
 										</fo:table-row>
 										<fo:table-row border-top="2pt solid black" height="4.5mm" display-align="center">
 											<fo:table-cell number-columns-spanned="3" font-size="5.6pt" text-align-last="justify">
-												<fo:block>INTERNATIONAL ORGANIZATION FOR STANDARDIZATION&#x25cf;МЕЖДУНАРОДНАЯ ОРГАНИЗАЦИЯ ПО СТАНДАРТИЗАЦИИ&#x25cf;ORGANISATION INTERNATIONALE DE NORMALISATION</fo:block>
+												<fo:block><xsl:value-of select="$ISO_title_en"/>&#x25cf;<xsl:value-of select="$ISO_title_ru"/>&#x25cf;<xsl:value-of select="$ISO_title_fr"/></fo:block>
 											</fo:table-cell>
 										</fo:table-row>
 									</fo:table-body>
@@ -934,7 +959,7 @@
 							</fo:flow>
 						</fo:page-sequence>
 					</xsl:when> <!-- END: $layoutVersion = '1972' -->
-					
+					<xsl:when test="$layoutVersion = '1987' and $doctype = 'technical-report'"><!-- see preface pages below --></xsl:when>
 					<xsl:when test="$layoutVersion = '1987'">
 						<fo:page-sequence master-reference="cover-page_1987" force-page-count="no-force">
 							<fo:static-content flow-name="right-region" >
@@ -956,9 +981,7 @@
 									<fo:block-container margin-left="3mm">
 										<fo:block-container margin-left="0" font-family="Times New Roman">
 											<fo:block font-size="8pt" font-family="Times New Roman" margin-bottom="-0.5mm">
-												<xsl:call-template name="getLocalizedString">
-													<xsl:with-param name="key">reference_number</xsl:with-param>
-												</xsl:call-template>
+												<xsl:value-of select="$i18n_reference_number"/>
 												<xsl:value-of select="$linebreak"/>
 												<xsl:value-of select="$ISOnumber"/>
 											</fo:block>
@@ -989,9 +1012,9 @@
 															</fo:block>
 														</fo:table-cell>
 														<fo:table-cell font-size="7.5pt" border-top="0.5pt solid black" border-bottom="0.5pt solid black" text-align-last="justify" display-align="center" line-height="1.6" padding-left="32mm">
-															<fo:block>INTERNATIONAL ORGANIZATION FOR STANDARDIZATION</fo:block>
-															<fo:block>ORGANISATION INTERNATIONALE DE NORMALISATION</fo:block>
-															<fo:block>МЕЖДУНАРОДНАЯ ОРГАНИЗАЦИЯ ПО СТАНДАРТИЗАЦИИ</fo:block>
+															<fo:block><xsl:value-of select="$ISO_title_en"/></fo:block>
+															<fo:block><xsl:value-of select="$ISO_title_fr"/></fo:block>
+															<fo:block><xsl:value-of select="$ISO_title_ru"/></fo:block>
 														</fo:table-cell>
 													</fo:table-row>
 												</fo:table-body>
@@ -1199,9 +1222,7 @@
 													<xsl:variable name="date_corrected" select="normalize-space(/iso:iso-standard/iso:bibdata/iso:date[@type = 'corrected'])"/>
 													<xsl:if test="$date_corrected != ''">
 														<fo:block font-size="17.2pt" font-weight="bold" margin-bottom="3mm">
-															<xsl:call-template name="getLocalizedString">
-																<xsl:with-param name="key">corrected_version</xsl:with-param>
-															</xsl:call-template>
+															<xsl:value-of select="$i18n_corrected_version"/>
 															<xsl:value-of select="$linebreak"/>
 															<xsl:value-of select="$date_corrected"/>
 														</fo:block>
@@ -1229,9 +1250,7 @@
 														
 														<fo:block margin-bottom="3mm">
 														<!-- Voting begins on: -->
-															<xsl:call-template name="getLocalizedString">
-																<xsl:with-param name="key">voting_begins_on</xsl:with-param>
-															</xsl:call-template><xsl:text>:</xsl:text>
+															<xsl:value-of select="concat($i18n_voting_begins_on, ':')"/>
 															<fo:block font-weight="bold">
 																<xsl:call-template name="insertVoteStarted"/>
 															</fo:block>
@@ -1239,10 +1258,7 @@
 													
 														<fo:block margin-bottom="3mm">
 															<!-- Voting terminates on: -->
-															<xsl:call-template name="getLocalizedString">
-																<xsl:with-param name="key">voting_terminates_on</xsl:with-param>
-															</xsl:call-template><xsl:text>:</xsl:text>
-															
+															<xsl:value-of select="concat($i18n_voting_terminates_on, ':')"/>
 															<fo:block font-weight="bold">
 																<xsl:call-template name="insertVoteEnded"/>
 															</fo:block>
@@ -1328,9 +1344,7 @@
 										<fo:table-row height="12mm">
 											<fo:table-cell number-columns-spanned="2" border-right="{$cover_page_border}" display-align="after" padding-bottom="-1mm">
 												<fo:block font-size="9.6pt">
-													<xsl:call-template name="getLocalizedString">
-														<xsl:with-param name="key">reference_number</xsl:with-param>
-													</xsl:call-template>
+													<xsl:value-of select="$i18n_reference_number"/>
 												</fo:block>
 												<fo:block font-size="9.6pt">
 													<xsl:value-of select="$ISOnumber"/>
@@ -1460,9 +1474,7 @@
 																	<fo:block text-align="right" role="SKIP">																	
 																		<!-- Reference number -->
 																		<fo:block>
-																			<xsl:call-template name="getLocalizedString">
-																				<xsl:with-param name="key">reference_number</xsl:with-param>
-																			</xsl:call-template>
+																			<xsl:value-of select="$i18n_reference_number"/>
 																		</fo:block>
 																		<fo:block>
 																			<xsl:value-of select="$ISOnumber"/>																		
@@ -1530,17 +1542,13 @@
 														<fo:table-cell>
 															<fo:block>
 																<!-- Voting begins on: -->
-																<xsl:call-template name="getLocalizedString">
-																	<xsl:with-param name="key">voting_begins_on</xsl:with-param>
-																</xsl:call-template><xsl:text>:</xsl:text>
+																<xsl:value-of select="concat($i18n_voting_begins_on, ':')"/>
 															</fo:block>
 														</fo:table-cell>
 														<fo:table-cell>
 															<fo:block>
 																<!-- Voting terminates on: -->
-																<xsl:call-template name="getLocalizedString">
-																	<xsl:with-param name="key">voting_terminates_on</xsl:with-param>
-																</xsl:call-template><xsl:text>:</xsl:text>
+																<xsl:value-of select="concat($i18n_voting_terminates_on, ':')"/>
 															</fo:block>
 														</fo:table-cell>
 													</fo:table-row>
@@ -1705,9 +1713,7 @@
 																<fo:block text-align="right" font-size="9.5pt">
 																	<xsl:value-of select="$linebreak"/>
 																	<xsl:value-of select="$linebreak"/>
-																	<xsl:call-template name="getLocalizedString">
-																		<xsl:with-param name="key">corrected_version</xsl:with-param>
-																	</xsl:call-template>
+																	<xsl:value-of select="$i18n_corrected_version"/>
 																	<xsl:value-of select="$linebreak"/>
 																	<xsl:value-of select="$date_corrected"/>
 																</fo:block>
@@ -1761,9 +1767,7 @@
 																				<fo:block margin-bottom="6pt"><xsl:copy-of select="$secretariat"/></fo:block>
 																				<fo:block margin-bottom="6pt">
 																					<!-- Voting begins on: -->
-																					<xsl:call-template name="getLocalizedString">
-																						<xsl:with-param name="key">voting_begins_on</xsl:with-param>
-																					</xsl:call-template><xsl:text>:</xsl:text>
+																					<xsl:value-of select="concat($i18n_voting_begins_on, ':')"/>
 																					<xsl:value-of select="$linebreak"/>
 																					<fo:inline font-weight="bold">
 																						<xsl:call-template name="insertVoteStarted"/>
@@ -1771,9 +1775,7 @@
 																				</fo:block>
 																				<fo:block>
 																					<!-- Voting terminates on: -->
-																					<xsl:call-template name="getLocalizedString">
-																						<xsl:with-param name="key">voting_terminates_on</xsl:with-param>
-																					</xsl:call-template><xsl:text>:</xsl:text>
+																					<xsl:value-of select="concat($i18n_voting_terminates_on, ':')"/>
 																					<xsl:value-of select="$linebreak"/>
 																					<fo:inline font-weight="bold">
 																						<xsl:call-template name="insertVoteEnded"/>
@@ -1865,9 +1867,7 @@
 											<fo:table-cell display-align="center" role="SKIP">
 												<fo:block text-align="right" role="SKIP">
 													<fo:block>
-														<xsl:call-template name="getLocalizedString">
-															<xsl:with-param name="key">reference_number</xsl:with-param>																			
-														</xsl:call-template>
+														<xsl:value-of select="$i18n_reference_number"/>
 													</fo:block>
 													<fo:block><xsl:value-of select="$ISOnumber"/></fo:block>
 													<fo:block role="SKIP">&#xA0;</fo:block>
@@ -2068,6 +2068,117 @@
 				
 					<xsl:choose>
 						<xsl:when test="$layoutVersion = '1951'"><!-- To do --></xsl:when>
+						<xsl:when test="$layoutVersion = '1987' and $doctype = 'technical-report'">
+							<fo:page-sequence master-reference="preface-1987_TR"  format="i" force-page-count="no-force">
+								
+								<xsl:call-template name="insertHeaderFooter">
+									<xsl:with-param name="font-weight">normal</xsl:with-param>
+									<xsl:with-param name="is_footer">false</xsl:with-param>
+								</xsl:call-template>
+								
+								<fo:static-content flow-name="left-region-first_1987_TR" role="artifact">
+									<fo:block-container reference-orientation="90">
+										<fo:block font-size="8pt" margin-left="5mm" margin-top="8mm">
+											<xsl:value-of select="$ISOnumber"/>
+										</fo:block>
+									</fo:block-container>
+								</fo:static-content>
+								
+								<fo:static-content flow-name="footer-preface-first_1987_TR" role="artifact">
+									<fo:block-container font-size="8pt" margin-bottom="3mm">
+										<xsl:call-template name="insertSingleLine"/>
+										<fo:block font-size="11pt" font-weight="bold" text-align-last="justify" margin-top="0.5mm" margin-right="1mm">
+											<fo:inline keep-together.within-line="always" role="SKIP">
+												<xsl:value-of select="$udc"/>
+												<fo:leader leader-pattern="space"/>
+												<fo:inline role="SKIP">
+													<xsl:value-of select="concat($i18n_reference_number_abbrev, '&#xa0;', $ISOnumber)"/>
+												</fo:inline>
+											</fo:inline>
+										</fo:block>
+										
+										<xsl:if test="/iso:iso-standard/iso:bibdata/iso:keyword">
+											<fo:block margin-top="6pt">
+												<fo:inline font-weight="bold"><xsl:value-of select="$i18n_descriptors"/> : </fo:inline>
+												<xsl:call-template name="insertKeywords">
+													<xsl:with-param name="sorting">no</xsl:with-param>
+													<xsl:with-param name="charDelim" select="',  '"/>
+												</xsl:call-template>
+											</fo:block>
+										</xsl:if>
+									
+										<fo:table table-layout="fixed" width="100%" margin-top="14pt" font-size="7.5pt">
+											<fo:table-body>
+												<fo:table-row>
+													<fo:table-cell>
+														<fo:block>
+															<xsl:apply-templates select="/iso:iso-standard/iso:boilerplate/iso:copyright-statement"/>
+														</fo:block>
+													</fo:table-cell>
+													<fo:table-cell display-align="after" text-align="right">
+														<fo:block>
+															<xsl:for-each select="xalan:nodeset($price_based_on_items)/item">
+																<xsl:value-of select="."/>
+																<xsl:if test="position() != last()">
+																	<fo:page-number-citation ref-id="lastBlock"/>
+																</xsl:if>										
+															</xsl:for-each>
+														</fo:block>
+													</fo:table-cell>
+												</fo:table-row>
+											</fo:table-body>
+										</fo:table>
+									</fo:block-container>
+								</fo:static-content> <!-- footer-preface-first_1987_TR -->
+								
+								<fo:flow flow-name="xsl-region-body">
+									<fo:table table-layout="fixed" width="100%">
+										<fo:table-column column-width="proportional-column-width(68)"/>
+										<fo:table-column column-width="proportional-column-width(112)"/>
+										<fo:table-body>
+											<fo:table-row>
+												<fo:table-cell number-rows-spanned="2">
+													<fo:block font-size="0">
+														<xsl:variable name="content-height">25</xsl:variable>
+														<fo:external-graphic src="{concat('data:image/png;base64,', normalize-space($Image-ISO-Logo-1987))}" content-height="{$content-height}mm" content-width="scale-to-fit" scaling="uniform" fox:alt-text="Image ISO Logo"/>
+													</fo:block>
+												</fo:table-cell>
+												<fo:table-cell font-size="11pt" font-weight="bold">
+													<fo:block><xsl:value-of select="$doctype_uppercased"/>&#xa0;<xsl:value-of select="/iso:iso-standard/iso:bibdata/iso:docnumber"/></fo:block>
+												</fo:table-cell>
+											</fo:table-row>
+											<fo:table-row display-align="after">
+												<fo:table-cell>
+													<fo:block margin-bottom="-1mm">Published <xsl:value-of select="/iso:iso-standard/iso:bibdata/iso:date[@type = 'published']"/></fo:block>
+												</fo:table-cell>
+											</fo:table-row>
+										</fo:table-body>
+									</fo:table>
+									
+									<fo:block font-size="6pt" margin-top="8mm" margin-bottom="18mm" text-align-last="justify"><xsl:value-of select="$ISO_title_en"/>&#x25cf;<xsl:value-of select="$ISO_title_ru"/>&#x25cf;<xsl:value-of select="$ISO_title_fr"/></fo:block>
+									
+									<fo:block-container margin-bottom="22mm" role="SKIP">
+										<fo:block font-size="18pt" font-weight="bold" role="H1" line-height="1.05">
+											<xsl:call-template name="insertTitlesLangMain"/>
+										</fo:block>
+										<xsl:for-each select="xalan:nodeset($lang_other)/lang">
+											<xsl:variable name="lang_other" select="."/>
+											<fo:block font-size="12pt" role="SKIP"><xsl:value-of select="$linebreak"/></fo:block>
+											<fo:block role="H1" font-style="italic" line-height="1.2">
+												<!-- Example: title-intro fr -->
+												<xsl:call-template name="insertTitlesLangOther">
+													<xsl:with-param name="lang_other" select="$lang_other"/>
+												</xsl:call-template>
+											</fo:block>
+										</xsl:for-each>
+									</fo:block-container>
+													
+									<!-- ToC, Foreword, Introduction -->					
+									<xsl:call-template name="processPrefaceSectionsDefault"/>
+									
+								</fo:flow>
+							</fo:page-sequence>
+						</xsl:when>
 						<xsl:otherwise>
 						
 							<fo:page-sequence master-reference="preface{$document-master-reference}" format="i" force-page-count="{$force-page-count-preface}">
@@ -2273,6 +2384,7 @@
 					
 					<xsl:choose>
 						<xsl:when test="$layoutVersion = '1972'"/>
+						<xsl:when test="$layoutVersion = '1987' and $doctype = 'technical-report'"><!-- UDC, Keywords and Price renders on the first page for technical-report --></xsl:when>
 						<xsl:when test="$layoutVersion = '2024'">
 							<xsl:call-template name="insertLastPage_2024"/>
 						</xsl:when>
@@ -2501,12 +2613,7 @@
 							</xsl:if>
 							<fo:block>
 								<!-- <xsl:text>FAST TRACK PROCEDURE</xsl:text>  -->
-								<xsl:variable name="fast_track_procedure_text">
-									<xsl:call-template name="getLocalizedString">
-										<xsl:with-param name="key">fast-track-procedure</xsl:with-param>
-									</xsl:call-template>
-								</xsl:variable>
-								<xsl:value-of select="java:toUpperCase(java:java.lang.String.new($fast_track_procedure_text))"/>
+								<xsl:value-of select="java:toUpperCase(java:java.lang.String.new($i18n_fast_track_procedure))"/>
 							</fo:block>
 						</fo:block-container>
 					</fo:block>
@@ -2518,6 +2625,7 @@
 	<xsl:template match="iso:preface/iso:clause[@type = 'toc']" priority="3">
 		<xsl:choose>
 			<xsl:when test="$doctype = 'amendment'"></xsl:when><!-- ToC shouldn't be generated in amendments. -->
+			<xsl:when test="$layoutVersion = '1987' and $doctype = 'technical-report'"></xsl:when>
 			<xsl:otherwise>
 				
 				<fo:block-container font-weight="bold">
@@ -2560,14 +2668,29 @@
 											<xsl:if test="@level &gt;= 2 or @type = 'annex'">
 												<xsl:attribute name="font-weight">normal</xsl:attribute>
 											</xsl:if>
-											<xsl:attribute name="provisional-distance-between-starts">
+											<xsl:variable name="provisional_distance_between_starts">
 												<xsl:choose>
 													<!-- skip 0 section without subsections -->
-													<xsl:when test="@level &gt;= 3"><xsl:value-of select="$margin-left * 1.2"/>mm</xsl:when>
-													<xsl:when test="@section != ''"><xsl:value-of select="$margin-left"/>mm</xsl:when>
-													<xsl:otherwise>0mm</xsl:otherwise>
+													<xsl:when test="@level &gt;= 3"><xsl:value-of select="$margin-left * 1.2"/></xsl:when>
+													<xsl:when test="@section != ''"><xsl:value-of select="$margin-left"/></xsl:when>
+													<xsl:otherwise>0</xsl:otherwise>
+												</xsl:choose>
+											</xsl:variable>
+											<xsl:variable name="section_length_str" select="string-length(normalize-space(@section))"/>
+											<xsl:variable name="section_length_mm" select="$section_length_str * 2"/>
+											
+											<!-- refine the distance depends on the section string length -->
+											<xsl:attribute name="provisional-distance-between-starts">
+												<xsl:choose>
+													<xsl:when test="$section_length_mm &gt; $provisional_distance_between_starts">
+														<xsl:value-of select="concat($section_length_mm, 'mm')"/>
+													</xsl:when>
+													<xsl:otherwise>
+														<xsl:value-of select="concat($provisional_distance_between_starts, 'mm')"/>
+													</xsl:otherwise>
 												</xsl:choose>
 											</xsl:attribute>
+											
 											<fo:list-item role="SKIP">
 												<fo:list-item-label end-indent="label-end()" role="SKIP">
 													<fo:block role="SKIP">
@@ -2650,9 +2773,7 @@
 						<xsl:attribute name="font-size">9.6pt</xsl:attribute>
 					</xsl:if>
 					<!-- Page -->
-					<xsl:call-template name="getLocalizedString">
-					<xsl:with-param name="key">locality.page</xsl:with-param>
-				</xsl:call-template>
+					<xsl:value-of select="$i18n_locality_page"/>
 				</fo:inline>
 			</fo:inline>
 		</fo:block>
@@ -2725,12 +2846,7 @@
 			<xsl:variable name="part-word">
 				<xsl:choose>
 					<xsl:when test="$isMainLang = 'true'">
-						<xsl:call-template name="getLocalizedString">
-							<xsl:with-param name="key">locality.part</xsl:with-param>
-						</xsl:call-template>
-						<xsl:text> </xsl:text>
-						<xsl:value-of select="$part"/>
-						<xsl:text>:</xsl:text>
+						<xsl:value-of select="concat($i18n_locality_part, ' ', $part, ':')"/>
 					</xsl:when>
 					<xsl:otherwise>
 						<xsl:value-of select="java:replaceAll(java:java.lang.String.new($titles/title-part[@lang=$curr_lang]),'#',$part)"/>
@@ -2825,6 +2941,7 @@
 	</xsl:template>
 	
 	<xsl:template match="iso:sections/iso:p[@class = 'zzSTDTitle1']" priority="4">
+		<xsl:if test="not($layoutVersion = '1987' and $doctype = 'technical-report')">
 		<fo:block font-size="18pt" font-weight="bold" margin-top="40pt" margin-bottom="20pt" line-height="1.1" role="H1">
 			<xsl:if test="$layoutVersion = '1972' or $layoutVersion = '1987' or $layoutVersion = '1989'">
 				<xsl:attribute name="font-size">16pt</xsl:attribute>
@@ -2839,6 +2956,7 @@
 			</xsl:if>
 			<xsl:apply-templates />
 		</fo:block>
+		</xsl:if>
 	</xsl:template>
 	
 	<xsl:template match="iso:sections/iso:p[@class = 'zzSTDTitle1']/iso:span[@class = 'nonboldtitle']" priority="3">
@@ -3031,7 +3149,7 @@
 			</xsl:when>
 			<xsl:when test="$layoutVersion = '1972' or $layoutVersion = '1987'">
 				<xsl:if test="@id = 'boilerplate-place'">
-						<fo:block margin-top="6pt">&#xa0;</fo:block>
+						<fo:block margin-top="6pt"><xsl:if test="$layoutVersion = '1987' and $doctype = 'technical-report'"><xsl:attribute name="margin-top">0</xsl:attribute></xsl:if>&#xa0;</fo:block>
 				</xsl:if>
 				<fo:block><xsl:apply-templates /></fo:block>
 			</xsl:when>
@@ -3107,6 +3225,13 @@
 		
 		<xsl:variable name="font-size">
 			<xsl:choose>
+				<xsl:when test="$layoutVersion = '1987' and $doctype = 'technical-report'">
+					<xsl:choose>
+						<xsl:when test="$level = 1">11pt</xsl:when>
+						<xsl:when test="$level = 2">10pt</xsl:when>
+						<xsl:when test="$level &gt;= 3">9pt</xsl:when>
+					</xsl:choose>
+				</xsl:when>
 				<xsl:when test="$layoutVersion = '1972' or $layoutVersion = '1987' or $layoutVersion = '1989'">
 					<xsl:choose>
 						<xsl:when test="ancestor::iso:annex and $level = 2">12pt</xsl:when>
@@ -3152,6 +3277,7 @@
 		</xsl:variable>
 		
 		<xsl:choose>
+			<xsl:when test="$layoutVersion = '1987' and $doctype = 'technical-report' and parent::iso:foreword"><!-- skip Foreword title --></xsl:when>
 			<xsl:when test="$doctype = 'amendment' and not(ancestor::iso:preface)">
 				<fo:block font-size="11pt" font-style="italic" margin-bottom="12pt" keep-with-next="always" role="H{$level}">
 					<xsl:if test="$layoutVersion = '2024'">
@@ -3163,6 +3289,14 @@
 			</xsl:when>
 			
 			<xsl:otherwise>
+			
+				<xsl:if test="$layoutVersion = '1987' and $doctype = 'technical-report' and parent::iso:introduction">
+					<fo:block span="all" text-align="center" margin-top="15mm" keep-with-previous="always" role="SKIP">
+						<fo:leader leader-pattern="rule" leader-length="12%"/>
+					</fo:block>
+				</xsl:if>
+				
+			
 				<xsl:element name="{$element-name}">
 				
 					<xsl:if test="$layoutVersion = '1951' or $layoutVersion = '1972' or $layoutVersion = '1987' or $layoutVersion = '1989'">
@@ -3181,6 +3315,7 @@
 					<xsl:attribute name="{$attribute-name-before}"> <!-- space-before or margin-top -->
 						<xsl:choose>
 							<xsl:when test="ancestor::iso:introduction and $level &gt;= 2 and ../preceding-sibling::iso:clause">30pt</xsl:when>
+							<xsl:when test="$layoutVersion = '1987' and $doctype = 'technical-report' and ancestor::iso:preface and $level = 1">10mm</xsl:when>
 							<xsl:when test="($layoutVersion = '1972' or $layoutVersion = '1987' or ($layoutVersion = '1989' and $revision_date_num &lt;= 19981231)) and ancestor::iso:preface and $level = 1">62mm</xsl:when>
 							<xsl:when test="$layoutVersion = '1989' and ancestor::iso:preface and $level = 1">56pt</xsl:when>
 							<xsl:when test="ancestor::iso:preface">8pt</xsl:when>
@@ -3204,6 +3339,9 @@
 					</xsl:attribute>
 					<xsl:attribute name="keep-with-next">always</xsl:attribute>		
 					<xsl:attribute name="role">H<xsl:value-of select="$level"/></xsl:attribute>
+					<xsl:if test="@type = 'floating-title' or @type = 'section-title'">
+						<xsl:copy-of select="@id"/>
+					</xsl:if>
 					<xsl:if test="$element-name = 'fo:inline'">
 						<xsl:choose>
 							<xsl:when test="$lang = 'zh'">
@@ -3641,7 +3779,9 @@
 		<xsl:call-template name="insertFooterEven">
 			<xsl:with-param name="font-weight" select="$font-weight"/>
 		</xsl:call-template>
-		<xsl:call-template name="insertHeaderFirst"/>
+		<xsl:if test="not($layoutVersion = '1987' and $doctype = 'technical-report')">
+			<xsl:call-template name="insertHeaderFirst"/>
+		</xsl:if>
 		<xsl:call-template name="insertHeaderOdd"/>
 		<xsl:call-template name="insertFooterOdd">
 			<xsl:with-param name="font-weight" select="$font-weight"/>
@@ -3905,14 +4045,10 @@
 		</xsl:if>
 	</xsl:template>
 	
-	<xsl:variable name="price_based_on">
-		<xsl:call-template name="getLocalizedString">
-			<xsl:with-param name="key">price_based_on</xsl:with-param>
-		</xsl:call-template>
-	</xsl:variable>
+	
 	<xsl:variable name="price_based_on_items">
 		<xsl:call-template name="split">
-			<xsl:with-param name="pText" select="$price_based_on"/>
+			<xsl:with-param name="pText" select="$i18n_price_based_on"/>
 			<xsl:with-param name="sep" select="'%'"/>
 			<xsl:with-param name="normalize-space">false</xsl:with-param>
 		</xsl:call-template>
@@ -4000,12 +4136,7 @@
 						</fo:block>
 						<xsl:if test="/iso:iso-standard/iso:bibdata/iso:keyword">
 							<fo:block font-size="{$font-size_footer_copyright}" margin-bottom="6pt">
-								<xsl:variable name="title-descriptors">
-									<xsl:call-template name="getLocalizedString">
-										<xsl:with-param name="key">Descriptor.pl</xsl:with-param>
-									</xsl:call-template>
-								</xsl:variable>
-								<fo:inline font-weight="bold"><xsl:value-of select="$title-descriptors"/>: </fo:inline>
+								<fo:inline font-weight="bold"><xsl:value-of select="$i18n_descriptors"/>: </fo:inline>
 								<xsl:call-template name="insertKeywords">
 									<xsl:with-param name="sorting">no</xsl:with-param>
 								</xsl:call-template>
