@@ -432,22 +432,25 @@
 								
 								<xsl:choose>
 								
-									<xsl:when test="$doctype = 'service-publication'">
-										<fo:block margin-top="11.5mm" font-size="26pt">
+									<xsl:when test="$doctype = 'service-publication'"> <!-- Flagship -->
+										<fo:block margin-top="11.5mm" font-size="34pt">
 											<xsl:value-of select="/itu:itu-standard/itu:bibdata/itu:title[@type = 'main' and @language = $lang]"/>
 										</fo:block>
-										<fo:block margin-top="2mm">
+										<fo:block margin-top="2mm" font-size="26pt">
 											<xsl:value-of select="/itu:itu-standard/itu:bibdata/itu:title[@type = 'subtitle' and @language = $lang]"/>
 										</fo:block>
 										<!-- https://github.com/metanorma/metanorma-itu/issues/474#issuecomment-1966298384 -->
-										<fo:block margin-top="2mm" font-family="Adelle">
-											<xsl:choose>
-												<xsl:when test="$lang = 'ar'"><xsl:attribute name="font-family">Traditional Arabic</xsl:attribute></xsl:when>
-												<xsl:when test="$lang = 'zh'"><xsl:attribute name="font-family">STKaiti</xsl:attribute></xsl:when>
-												<xsl:otherwise><xsl:attribute name="font-style">italic</xsl:attribute></xsl:otherwise>
-											</xsl:choose>
-											<xsl:value-of select="/itu:itu-standard/itu:bibdata/itu:title[@type = 'slogan']"/>
-										</fo:block>
+										<xsl:variable name="title_slogan" select="normalize-space(/itu:itu-standard/itu:bibdata/itu:title[@type = 'slogan'])"/>
+										<xsl:if test="$title_slogan != ''">
+											<fo:block margin-top="2mm" font-family="Adelle Devanagari" font-size="26pt">
+												<xsl:choose>
+													<xsl:when test="$lang = 'ar'"><xsl:attribute name="font-family">Traditional Arabic</xsl:attribute></xsl:when>
+													<xsl:when test="$lang = 'zh'"><xsl:attribute name="font-family">STKaiti</xsl:attribute></xsl:when>
+													<!-- <xsl:otherwise><xsl:attribute name="font-style">italic</xsl:attribute></xsl:otherwise> -->
+												</xsl:choose>
+												<xsl:value-of select="$title_slogan"/>
+											</fo:block>
+										</xsl:if>
 										<xsl:variable name="year_published" select="substring($date_published,1,4)"/>
 										<xsl:if test="$year_published != ''">
 											<!-- Examples:
@@ -457,7 +460,7 @@
 												طبعة 2020
 												2020 年版
 												Издание 2020 года  -->
-											<fo:block margin-top="3mm" font-size="18pt">
+											<fo:block margin-top="3mm" font-size="22pt">
 												<xsl:choose>
 													<xsl:when test="$lang = 'en' or $lang = 'ar' or $lang = 'zh'">
 														<xsl:value-of select="concat($year_published, ' ', $i18n_edition)"/>
