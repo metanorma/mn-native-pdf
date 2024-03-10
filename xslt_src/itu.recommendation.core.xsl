@@ -848,7 +848,7 @@
 											<xsl:value-of select="$i18n_annex_to_itu_ob"/>
 										</fo:block>
 										<fo:block>
-											<xsl:value-of selcet="$i18n_number_abbrev"/>
+											<xsl:value-of select="$i18n_number_abbrev"/>
 											<xsl:value-of select="/*/itu:bibdata/itu:docnumber"/>
 											<xsl:text> – </xsl:text>
 											<xsl:value-of select="translate(normalize-space(/*/itu:bibdata/itu:date[@type='published' and @format]),' ','')"/>
