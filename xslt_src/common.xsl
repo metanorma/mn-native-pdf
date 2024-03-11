@@ -217,6 +217,7 @@
 			<xsl:when test="$namespace = 'iho'">24.5</xsl:when>
 			<xsl:when test="$namespace = 'iso'">
 				<xsl:choose>
+					<xsl:when test="$layoutVersion = '1951'">36</xsl:when>
 					<xsl:when test="$layoutVersion = '2024'">18.7</xsl:when>
 					<xsl:otherwise>25</xsl:otherwise>
 				</xsl:choose>
@@ -250,6 +251,7 @@
 			<xsl:when test="$namespace = 'iho'">25</xsl:when>
 			<xsl:when test="$namespace = 'iso'">
 				<xsl:choose>
+					<xsl:when test="$layoutVersion = '1951'">29</xsl:when>
 					<xsl:when test="$layoutVersion = '2024'">18.7</xsl:when>
 					<xsl:otherwise>12.5</xsl:otherwise>
 				</xsl:choose>
@@ -309,6 +311,7 @@
 			<xsl:when test="$namespace = 'iho'">25.4</xsl:when>
 			<xsl:when test="$namespace = 'iso'">
 				<xsl:choose>
+					<xsl:when test="$layoutVersion = '1951'">25.5</xsl:when>
 					<xsl:when test="$layoutVersion = '2024'">25.5</xsl:when>
 					<xsl:otherwise>15</xsl:otherwise>
 				</xsl:choose>
@@ -446,6 +449,7 @@
 	<xsl:variable name="zero_width_space">&#x200B;</xsl:variable>
 	<xsl:variable name="hair_space">&#x200A;</xsl:variable>
 	<xsl:variable name="en_dash">&#x2013;</xsl:variable>
+	<xsl:variable name="em_dash">&#x2014;</xsl:variable>
 	
 	<xsl:template name="getTitle">
 		<xsl:param name="name"/>
