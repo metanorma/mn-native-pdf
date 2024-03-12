@@ -418,6 +418,11 @@
 				
 				<xsl:variable name="root-style">
 					<root-style xsl:use-attribute-sets="root-style">
+					
+						<xsl:if test="$layoutVersion = '1951'">
+							<xsl:attribute name="font-size">10pt</xsl:attribute>
+						</xsl:if>
+					
 						<xsl:if test="$layoutVersion = '1972' or $layoutVersion = '1987' or $layoutVersion = '1989'">
 							<xsl:attribute name="font-family">Arial, Times New Roman, Cambria Math, <xsl:value-of select="$font_noto_sans"/></xsl:attribute>
 							<xsl:attribute name="font-family-generic">Sans</xsl:attribute>
@@ -2086,7 +2091,22 @@
 				<xsl:for-each select="xalan:nodeset($updated_xml_step3)">
 				
 					<xsl:choose>
-						<xsl:when test="$layoutVersion = '1951'"><!-- To do --></xsl:when>
+						<xsl:when test="$layoutVersion = '1951'">
+							<fo:page-sequence master-reference="document{$document-master-reference}" initial-page-number="1" force-page-count="no-force">
+								<fo:static-content flow-name="xsl-footnote-separator">
+									<fo:block>
+										<fo:leader leader-pattern="rule" leader-length="30%"/>
+									</fo:block>
+								</fo:static-content>
+								<xsl:call-template name="insertHeaderFooter"/>
+								<fo:flow flow-name="xsl-region-body">
+									<fo:block>
+										<xsl:call-template name="processPrefaceSectionsDefault"/>
+									</fo:block>
+								</fo:flow>
+							</fo:page-sequence>
+						</xsl:when><!-- END: preface sections (Foreword, Brief history for layout 1951 ($layoutVersion = '1951') -->
+						
 						<xsl:when test="$layoutVersion = '1987' and $doctype = 'technical-report'">
 							<fo:page-sequence master-reference="preface-1987_TR"  format="i" force-page-count="no-force">
 								
@@ -2303,6 +2323,9 @@
 					
 					<!-- BODY -->
 					<fo:page-sequence master-reference="document{$document-master-reference}" initial-page-number="1" force-page-count="no-force">
+						<xsl:if test="$layoutVersion = '1951'">
+							<xsl:attribute name="initial-page-number">auto</xsl:attribute>
+						</xsl:if>
 						<fo:static-content flow-name="xsl-footnote-separator">
 							<fo:block>
 								<fo:leader leader-pattern="rule" leader-length="30%"/>
@@ -3282,6 +3305,14 @@
 		
 		<xsl:variable name="font-size">
 			<xsl:choose>
+				<xsl:when test="$layoutVersion = '1951'">
+					<xsl:choose>
+						<xsl:when test="$level = 1">9pt</xsl:when>
+						<xsl:otherwise>inherit</xsl:otherwise>
+						<!-- <xsl:when test="$level = 2">10pt</xsl:when>
+						<xsl:when test="$level &gt;= 3">9pt</xsl:when> -->
+					</xsl:choose>
+				</xsl:when>
 				<xsl:when test="$layoutVersion = '1987' and $doctype = 'technical-report'">
 					<xsl:choose>
 						<xsl:when test="$level = 1">11pt</xsl:when>
@@ -3387,6 +3418,7 @@
 					</xsl:attribute>
 					<xsl:attribute name="space-after"> <!-- margin-bottom -->
 						<xsl:choose>
+							<xsl:when test="$layoutVersion = '1951' and $level = 1">12pt</xsl:when>
 							<xsl:when test="ancestor::iso:introduction and $level &gt;= 2">8pt</xsl:when>
 							<xsl:when test="ancestor::iso:preface">18pt</xsl:when>
 							<xsl:when test="$level = 3">9pt</xsl:when>
@@ -3398,6 +3430,12 @@
 					<xsl:attribute name="role">H<xsl:value-of select="$level"/></xsl:attribute>
 					<xsl:if test="@type = 'floating-title' or @type = 'section-title'">
 						<xsl:copy-of select="@id"/>
+					</xsl:if>
+					<xsl:if test="$layoutVersion = '1951'">
+						<xsl:if test="$element-name = 'fo:block' and $level  = 1">
+							<xsl:attribute name="text-align">center</xsl:attribute>
+							<xsl:attribute name="text-transform">uppercase</xsl:attribute>
+						</xsl:if>
 					</xsl:if>
 					<xsl:if test="$element-name = 'fo:inline'">
 						<xsl:choose>
@@ -3425,7 +3463,7 @@
 	
 	<xsl:template match="iso:title[@inline-header = 'true'][following-sibling::*[1][local-name() = 'p']]" priority="3">
 		<xsl:choose>
-			<xsl:when test="($layoutVersion = '1972' or $layoutVersion = '1987' or $layoutVersion = '1989') and $layout_columns != 1"/> <!-- don't show 'title' with inline-header='true' if next element is 'p' -->
+			<xsl:when test="($layoutVersion = '1951' or $layoutVersion = '1972' or $layoutVersion = '1987' or $layoutVersion = '1989') and $layout_columns != 1"/> <!-- don't show 'title' with inline-header='true' if next element is 'p' -->
 			<xsl:otherwise>
 				<xsl:call-template name="title"/>
 			</xsl:otherwise>
@@ -3539,7 +3577,7 @@
 			
 			
 			<!-- put inline title in the first paragraph -->
-			<xsl:if test="($layoutVersion = '1972' or $layoutVersion = '1987' or $layoutVersion = '1989') and $layout_columns != 1">
+			<xsl:if test="($layoutVersion = '1951' or $layoutVersion = '1972' or $layoutVersion = '1987' or $layoutVersion = '1989') and $layout_columns != 1">
 				<xsl:if test="preceding-sibling::*[1]/@inline-header = 'true' and preceding-sibling::*[1][self::iso:title]">
 					<xsl:attribute name="space-before">0pt</xsl:attribute>
 					<xsl:for-each select="preceding-sibling::*[1]">

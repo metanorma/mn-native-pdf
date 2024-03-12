@@ -15135,6 +15135,9 @@
 			</xsl:choose>
 		</xsl:variable>
 		
+		<xsl:if test="$namespace = 'iso'">
+			<xsl:if test="$layoutVersion = '1951' and $depth = 1">.</xsl:if>
+		</xsl:if>
 		<xsl:choose>
 			<xsl:when test="$lang = 'zh'">
 				<fo:inline role="SKIP"><xsl:value-of select="$tab_zh"/></fo:inline>
