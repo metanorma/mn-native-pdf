@@ -2092,16 +2092,28 @@
 				
 					<xsl:choose>
 						<xsl:when test="$layoutVersion = '1951'">
-							<fo:page-sequence master-reference="document{$document-master-reference}" initial-page-number="1" force-page-count="no-force">
+							<fo:page-sequence master-reference="document{$document-master-reference}" initial-page-number="auto" force-page-count="no-force">
 								<fo:static-content flow-name="xsl-footnote-separator">
 									<fo:block>
 										<fo:leader leader-pattern="rule" leader-length="30%"/>
 									</fo:block>
 								</fo:static-content>
-								<xsl:call-template name="insertHeaderFooter"/>
+								<xsl:call-template name="insertHeaderFooter">
+									<xsl:with-param name="is_header">false</xsl:with-param>
+								</xsl:call-template>
 								<fo:flow flow-name="xsl-region-body">
 									<fo:block>
-										<xsl:call-template name="processPrefaceSectionsDefault"/>
+										<!-- <xsl:call-template name="processPrefaceSectionsDefault"/> -->
+										<!-- Introduction will be showed in the main section -->
+										<xsl:for-each select="/*/*[local-name()='preface']/*[not(local-name() = 'note' or local-name() = 'admonition' or local-name() = 'introduction')]">
+											<xsl:sort select="@displayorder" data-type="number"/>
+											<xsl:apply-templates select="."/>
+										</xsl:for-each>
+										
+										<fo:block span="all" text-align="center" margin-top="15mm" keep-with-next="always" role="SKIP">
+											<fo:leader leader-pattern="rule" leader-length="22mm"/>
+										</fo:block>
+										
 									</fo:block>
 								</fo:flow>
 							</fo:page-sequence>
@@ -2331,7 +2343,11 @@
 								<fo:leader leader-pattern="rule" leader-length="30%"/>
 							</fo:block>
 						</fo:static-content>
-						<xsl:call-template name="insertHeaderFooter"/>
+						
+						<xsl:variable name="border_around_page"><xsl:if test="$layoutVersion = '1951'">true</xsl:if></xsl:variable>
+						<xsl:call-template name="insertHeaderFooter">
+							<xsl:with-param name="border_around_page" select="$border_around_page"/>
+						</xsl:call-template>
 						<fo:flow flow-name="xsl-region-body">
 						
 							
@@ -2396,7 +2412,12 @@
 										</fo:table>
 									</fo:block-container>
 								</fo:block-container>
-							</xsl:if>
+								
+								<!-- Show Introduction in the main section -->
+								<xsl:apply-templates select="/*/*[local-name()='preface']/*[local-name() = 'introduction']"/>
+							</xsl:if> <!-- $layoutVersion = '1951' -->
+								
+								
 								
 								<xsl:choose>
 									<xsl:when test="($layoutVersion = '1951' or $layoutVersion = '1972' or $layoutVersion = '1987' or $layoutVersion = '1989') and $layout_columns != 1">
@@ -3307,6 +3328,7 @@
 			<xsl:choose>
 				<xsl:when test="$layoutVersion = '1951'">
 					<xsl:choose>
+						<xsl:when test="$level = 1 and ancestor::iso:preface">13pt</xsl:when>
 						<xsl:when test="$level = 1">9pt</xsl:when>
 						<xsl:otherwise>inherit</xsl:otherwise>
 						<!-- <xsl:when test="$level = 2">10pt</xsl:when>
@@ -3402,6 +3424,7 @@
 					</xsl:variable>
 					<xsl:attribute name="{$attribute-name-before}"> <!-- space-before or margin-top -->
 						<xsl:choose>
+							<xsl:when test="$layoutVersion = '1951' and ancestor::iso:preface and $level = 1">20mm</xsl:when>
 							<xsl:when test="ancestor::iso:introduction and $level &gt;= 2 and ../preceding-sibling::iso:clause">30pt</xsl:when>
 							<xsl:when test="$layoutVersion = '1987' and $doctype = 'technical-report' and ancestor::iso:preface and $level = 1">10mm</xsl:when>
 							<xsl:when test="($layoutVersion = '1972' or $layoutVersion = '1987' or ($layoutVersion = '1989' and $revision_date_num &lt;= 19981231)) and ancestor::iso:preface and $level = 1">62mm</xsl:when>
@@ -3418,6 +3441,7 @@
 					</xsl:attribute>
 					<xsl:attribute name="space-after"> <!-- margin-bottom -->
 						<xsl:choose>
+							<xsl:when test="$layoutVersion = '1951' and $level = 1 and ancestor::iso:preface">14.7mm</xsl:when>
 							<xsl:when test="$layoutVersion = '1951' and $level = 1">12pt</xsl:when>
 							<xsl:when test="ancestor::iso:introduction and $level &gt;= 2">8pt</xsl:when>
 							<xsl:when test="ancestor::iso:preface">18pt</xsl:when>
@@ -3435,6 +3459,9 @@
 						<xsl:if test="$element-name = 'fo:block' and $level  = 1">
 							<xsl:attribute name="text-align">center</xsl:attribute>
 							<xsl:attribute name="text-transform">uppercase</xsl:attribute>
+							<xsl:if test="ancestor::iso:preface">
+								<xsl:attribute name="font-weight">normal</xsl:attribute>
+							</xsl:if>
 						</xsl:if>
 					</xsl:if>
 					<xsl:if test="$element-name = 'fo:inline'">
@@ -3447,7 +3474,17 @@
 							</xsl:otherwise>
 						</xsl:choose>						
 					</xsl:if>
-					<xsl:apply-templates />
+					<xsl:choose>
+						<xsl:when test="$layoutVersion = '1951' and ancestor::iso:preface and $level  = 1">
+							<xsl:call-template name="add-letter-spacing">
+								<xsl:with-param name="text" select="."/>
+								<xsl:with-param name="letter-spacing" select="0.65"/>
+							</xsl:call-template>
+						</xsl:when>
+						<xsl:otherwise>
+							<xsl:apply-templates />
+						</xsl:otherwise>
+					</xsl:choose>
 					<xsl:apply-templates select="following-sibling::*[1][local-name() = 'variant-title'][@type = 'sub']" mode="subtitle"/>
 				</xsl:element>
 				
@@ -3575,6 +3612,15 @@
 			</xsl:apply-templates> -->
 			<!-- <xsl:apply-templates select="node()[not(self::iso:note[not(following-sibling::*) or count(following-sibling::*) = count(../iso:note) - 1])]"> -->
 			
+			<xsl:if test="$layoutVersion = '1951'">
+				<xsl:if test="not(ancestor::*[local-name() = 'li' or local-name() = 'td' or local-name() = 'th' or local-name() = 'dd'])">
+					<!-- for paragraphs in the main text -->
+					<xsl:attribute name="margin-bottom">14pt</xsl:attribute>
+				</xsl:if>
+				<xsl:if test="ancestor::iso:preface and parent::iso:clause">
+					<xsl:attribute name="text-indent">7.1mm</xsl:attribute>
+				</xsl:if>
+			</xsl:if>
 			
 			<!-- put inline title in the first paragraph -->
 			<xsl:if test="($layoutVersion = '1951' or $layoutVersion = '1972' or $layoutVersion = '1987' or $layoutVersion = '1989') and $layout_columns != 1">
@@ -3865,12 +3911,17 @@
 	<xsl:template name="insertHeaderFooter">
 		<xsl:param name="font-weight" select="'bold'"/>
 		<xsl:param name="is_footer">false</xsl:param>
+		<xsl:param name="is_header">true</xsl:param>
+		<xsl:param name="border_around_page">false</xsl:param>
 		<xsl:if test="($layoutVersion = '1972' or $layoutVersion = '1987' or ($layoutVersion = '1989' and $revision_date_num &lt;= 19981231)) and $is_footer = 'true'">
 			<xsl:call-template name="insertFooterFirst1972_1998">
 				<xsl:with-param name="font-weight" select="$font-weight"/>
 			</xsl:call-template>
 		</xsl:if>
-		<xsl:call-template name="insertHeaderEven"/>
+		<xsl:call-template name="insertHeaderEven">
+			<xsl:with-param name="border_around_page" select="$border_around_page"/>
+			<xsl:with-param name="is_header" select="$is_header"/>
+		</xsl:call-template>
 		<xsl:call-template name="insertFooterEven">
 			<xsl:with-param name="font-weight" select="$font-weight"/>
 		</xsl:call-template>
@@ -3880,7 +3931,10 @@
 				<xsl:call-template name="insertHeaderFirst"/>
 			</xsl:when>
 		</xsl:choose>
-		<xsl:call-template name="insertHeaderOdd"/>
+		<xsl:call-template name="insertHeaderOdd">
+			<xsl:with-param name="border_around_page" select="$border_around_page"/>
+			<xsl:with-param name="is_header" select="$is_header"/>
+		</xsl:call-template>
 		<xsl:call-template name="insertFooterOdd">
 			<xsl:with-param name="font-weight" select="$font-weight"/>
 		</xsl:call-template>
@@ -3892,8 +3946,10 @@
 		</xsl:choose>
 	</xsl:variable>
 	<xsl:template name="insertHeaderEven">
+		<xsl:param name="is_header">true</xsl:param>
+		<xsl:param name="border_around_page">false</xsl:param>
 		<fo:static-content flow-name="header-even" role="artifact">
-			<xsl:if test="$layoutVersion = '1951'">
+			<xsl:if test="$layoutVersion = '1951' and $border_around_page = 'true'">
 				<!-- box around page -->
 				<fo:block-container position="absolute" left="16.5mm" top="10mm" height="271.5mm" width="170mm" border="1.25pt solid black" role="SKIP">
 					<fo:block>&#xa0;</fo:block>
@@ -3904,7 +3960,9 @@
 					<xsl:call-template name="insertLayoutVersionAttributesTop">
 						<xsl:with-param name="odd_or_even">even</xsl:with-param>
 					</xsl:call-template>
-					<xsl:value-of select="$ISOnumber"/>
+					<xsl:if test="$is_header = 'true'">
+						<xsl:value-of select="$ISOnumber"/>
+					</xsl:if>
 				</fo:block>
 			</fo:block-container>
 		</fo:static-content>
@@ -3983,8 +4041,10 @@
 		</fo:static-content>
 	</xsl:template>
 	<xsl:template name="insertHeaderOdd">
+		<xsl:param name="is_header">true</xsl:param>
+		<xsl:param name="border_around_page">false</xsl:param>
 		<fo:static-content flow-name="header-odd" role="artifact">
-			<xsl:if test="$layoutVersion = '1951'">
+			<xsl:if test="$layoutVersion = '1951' and $border_around_page = 'true'">
 				<!-- box around page -->
 				<fo:block-container position="absolute" left="23.5mm" top="10mm" height="271.5mm" width="170mm" border="1.25pt solid black" role="SKIP">
 					<fo:block>&#xa0;</fo:block>
@@ -3995,7 +4055,9 @@
 					<xsl:call-template name="insertLayoutVersionAttributesTop">
 						<xsl:with-param name="odd_or_even">odd</xsl:with-param>
 					</xsl:call-template>
-					<xsl:value-of select="$ISOnumber"/>
+					<xsl:if test="$is_header = 'true'">
+						<xsl:value-of select="$ISOnumber"/>
+					</xsl:if>
 				</fo:block>
 			</fo:block-container>
 		</fo:static-content>

@@ -15360,6 +15360,7 @@
 		<xsl:choose>
 			<xsl:when test="$namespace = 'iso'">
 				<xsl:choose>
+					<xsl:when test="$layoutVersion = '1951' and (local-name() = 'clause' or local-name() = 'introduction')"></xsl:when>
 					<xsl:when test="$layoutVersion = '1987' and $doctype = 'technical-report'"></xsl:when>
 					<xsl:otherwise>
 						<fo:block break-after="page"/>
