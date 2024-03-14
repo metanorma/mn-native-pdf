@@ -1037,7 +1037,7 @@
 													</fo:block-container>
 												</fo:table-cell>
 											</fo:table-row>
-											<fo:table-row border="1pt solid green">
+											<fo:table-row>
 												<fo:table-cell>
 													<fo:block>&#xA0;</fo:block>
 												</fo:table-cell>
@@ -1125,7 +1125,7 @@
 													</fo:block-container>
 												</xsl:if>
 											</xsl:variable>
-											<fo:table-row height="17.2mm" border="1pt solid blue">
+											<fo:table-row height="17.2mm">
 												<fo:table-cell>
 													<fo:block>&#xA0;</fo:block>
 												</fo:table-cell>
@@ -1163,7 +1163,7 @@
 												</fo:table-cell>
 											</fo:table-row>
 											<xsl:variable name="countAdditionalNumbers" select="count(xalan:nodeset($additionalNumbers)/*)"/>
-											<fo:table-row height="64mm" border="1pt solid red"> <!-- 59mm -->
+											<fo:table-row height="64mm"> <!-- 59mm -->
 												<xsl:if test="$countAdditionalNumbers != 0">
 													<xsl:attribute name="height"><xsl:value-of select="64 - $countAdditionalNumbers * 5"/>mm</xsl:attribute>
 												</xsl:if>
@@ -1198,7 +1198,7 @@
 													</fo:block-container>
 												</fo:table-cell>
 											</fo:table-row>
-											<fo:table-row height="40mm" border="1pt solid green">
+											<fo:table-row height="40mm">
 												<fo:table-cell>
 													<fo:block>&#xA0;</fo:block>
 												</fo:table-cell>
@@ -1251,7 +1251,7 @@
 													</fo:block-container>
 												</fo:table-cell>
 											</fo:table-row>
-											<fo:table-row height="40mm" border="1pt solid blue">
+											<fo:table-row height="40mm">
 												<fo:table-cell>
 													<fo:block>&#xA0;</fo:block>
 												</fo:table-cell>
@@ -1272,7 +1272,7 @@
 													</fo:block-container>
 												</fo:table-cell>
 											</fo:table-row>
-											<fo:table-row height="25mm" border="1pt solid red">
+											<fo:table-row height="25mm">
 												<fo:table-cell>
 													<fo:block>&#xA0;</fo:block>
 												</fo:table-cell>
