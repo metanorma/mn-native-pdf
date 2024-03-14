@@ -9,7 +9,9 @@
 											xmlns:xlink="http://www.w3.org/1999/xlink"
 											xmlns:java="http://xml.apache.org/xalan/java"
 											xmlns:barcode="http://barcode4j.krysalis.org/ns" 
+											xmlns:redirect="http://xml.apache.org/xalan/redirect"
 											exclude-result-prefixes="java"
+											extension-element-prefixes="redirect"
 											version="1.0">
 
 	<xsl:output method="xml" encoding="UTF-8" indent="no"/>
@@ -2071,21 +2073,53 @@
 				</xsl:choose>	
 				
 				
+				<xsl:if test="$debug = 'true'"><xsl:message>START updated_xml_step1</xsl:message></xsl:if>
+				<xsl:variable name="startTime1" select="java:getTime(java:java.util.Date.new())"/>
+				
 				<!-- STEP1: Re-order elements in 'preface', 'sections' based on @displayorder -->
 				<xsl:variable name="updated_xml_step1">
 					<xsl:apply-templates mode="update_xml_step1"/>
 				</xsl:variable>
-				<!-- DEBUG: updated_xml_step1=<xsl:copy-of select="$updated_xml_step1"/> -->
+				
+				<!-- DEBUG -->
+				<!-- <redirect:write file="updated_xml_step1_{java:getTime(java:java.util.Date.new())}.xml">
+					<xsl:copy-of select="$updated_xml_step1"/>
+				</redirect:write> -->
+				
+				<xsl:variable name="endTime1" select="java:getTime(java:java.util.Date.new())"/>
+				<xsl:if test="$debug = 'true'">
+				<xsl:message>DEBUG: processing time <xsl:value-of select="$endTime1 - $startTime1"/> msec.</xsl:message>
+				<xsl:message>END updated_xml_step1</xsl:message>
+				</xsl:if>
+				
+				
+				<xsl:if test="$debug = 'true'"><xsl:message>START updated_xml_step2</xsl:message></xsl:if>
+				<xsl:variable name="startTime2" select="java:getTime(java:java.util.Date.new())"/>
 				
 				<!-- STEP2: add 'fn' after 'eref' and 'origin', if referenced to bibitem with 'note' = Withdrawn.' or 'Cancelled and replaced...'  -->
 				<xsl:variable name="updated_xml_step2">
 					<xsl:apply-templates select="xalan:nodeset($updated_xml_step1)" mode="update_xml_step2"/>
 				</xsl:variable>
+				
+				<xsl:variable name="endTime2" select="java:getTime(java:java.util.Date.new())"/>
+				<xsl:if test="$debug = 'true'">
+				<xsl:message>DEBUG: processing time <xsl:value-of select="$endTime2 - $startTime2"/> msec.</xsl:message>
+				<xsl:message>END updated_xml_step2</xsl:message>
+				</xsl:if>
 				<!-- DEBUG: updated_xml_step2=<xsl:copy-of select="$updated_xml_step2"/> -->
+				
+				<xsl:if test="$debug = 'true'"><xsl:message>START updated_xml_step3</xsl:message></xsl:if>
+				<xsl:variable name="startTime3" select="java:getTime(java:java.util.Date.new())"/>
 				
 				<xsl:variable name="updated_xml_step3">
 					<xsl:apply-templates select="xalan:nodeset($updated_xml_step2)" mode="update_xml_enclose_keep-together_within-line"/>
 				</xsl:variable>
+				
+				<xsl:variable name="endTime3" select="java:getTime(java:java.util.Date.new())"/>
+				<xsl:if test="$debug = 'true'">
+				<xsl:message>DEBUG: processing time <xsl:value-of select="$endTime3 - $startTime3"/> msec.</xsl:message>
+				<xsl:message>END updated_xml_step3</xsl:message>
+				</xsl:if>
 				<!-- DEBUG: updated_xml_step3=<xsl:copy-of select="$updated_xml_step3"/> -->
 				
 				<xsl:for-each select="xalan:nodeset($updated_xml_step3)">
@@ -2459,6 +2493,8 @@
 					</fo:page-sequence>
 					
 					
+					<!-- Index -->
+					<!-- <xsl:message>START current_document_index_id</xsl:message> -->
 					
 					<xsl:variable name="docid">
 						<xsl:call-template name="getDocumentId"/>
@@ -2469,12 +2505,25 @@
 							<xsl:with-param name="docid" select="$docid"/>
 						</xsl:apply-templates>
 					</xsl:variable>
+					<!-- <xsl:message>END current_document_index_id</xsl:message> -->
 					
+					<!-- <xsl:message>START current_document_index</xsl:message> -->
+					<xsl:variable name="startTime1" select="java:getTime(java:java.util.Date.new())"/>
 					<xsl:variable name="current_document_index">
 						<xsl:apply-templates select="xalan:nodeset($current_document_index_id)" mode="index_update"/>
 					</xsl:variable>
+					<!-- <xsl:variable name="endTime1" select="java:getTime(java:java.util.Date.new())"/>
+					<xsl:message>DEBUG: processing time <xsl:value-of select="$endTime1 - $startTime1"/> msec.</xsl:message>
+					<xsl:message>END current_document_index</xsl:message> -->
 					
+					
+					<!-- <xsl:variable name="startTime2" select="java:getTime(java:java.util.Date.new())"/>
+					<xsl:message>START xalan:nodeset</xsl:message> -->
+					<!-- <xsl:apply-templates select="//iso:indexsect" mode="index"/> -->
 					<xsl:apply-templates select="xalan:nodeset($current_document_index)" mode="index"/>
+					<!-- <xsl:variable name="endTime2" select="java:getTime(java:java.util.Date.new())"/>
+					<xsl:message>DEBUG: processing time <xsl:value-of select="$endTime2 - $startTime2"/> msec.</xsl:message>
+					<xsl:message>END xalan:nodeset</xsl:message> -->
 					
 					<xsl:choose>
 						<xsl:when test="$layoutVersion = '1951'"/>
@@ -2497,6 +2546,40 @@
 		<xsl:apply-templates select="xalan:nodeset($xslfo)" mode="landscape_portrait"/>
 		
 	</xsl:template> 
+		
+	
+	<xsl:template match="iso:preface/iso:introduction" mode="update_xml_step1" priority="3">
+		<xsl:param name="process">false</xsl:param>
+		<xsl:choose>
+			<xsl:when test="$layoutVersion = '1951'">
+				<xsl:if test="$process = 'true'">
+					<xsl:copy>
+						<xsl:apply-templates select="@*" mode="update_xml_step1"/>
+						<xsl:attribute name="displayorder">
+							<xsl:value-of select="concat(../../iso:sections/iso:p[@class = 'zzSTDTitle1']/@displayorder, '.1')"/>
+						</xsl:attribute>
+						<xsl:apply-templates select="node()" mode="update_xml_step1"/>
+					</xsl:copy>
+				</xsl:if>
+			</xsl:when>
+			<xsl:otherwise>
+				<xsl:copy>
+					<xsl:apply-templates select="@*|node()" mode="update_xml_step1"/>
+				</xsl:copy>
+			</xsl:otherwise>
+		</xsl:choose>
+	</xsl:template>
+	
+	<xsl:template match="iso:sections/iso:p[@class = 'zzSTDTitle1']" mode="update_xml_step1" priority="3">
+		<xsl:copy>
+			<xsl:apply-templates select="@*|node()" mode="update_xml_step1"/>
+		</xsl:copy>
+		<xsl:if test="$layoutVersion = '1951'">
+			<xsl:apply-templates select="../../iso:preface/iso:introduction" mode="update_xml_step1">
+				<xsl:with-param name="process">true</xsl:with-param>
+			</xsl:apply-templates>
+		</xsl:if>
+	</xsl:template>
 		
 	<xsl:template name="insertLogoImages2024">
 		<xsl:variable name="content-height">19.4</xsl:variable>
@@ -3456,10 +3539,10 @@
 						<xsl:copy-of select="@id"/>
 					</xsl:if>
 					<xsl:if test="$layoutVersion = '1951'">
-						<xsl:if test="$element-name = 'fo:block' and $level  = 1">
+						<xsl:if test="$element-name = 'fo:block' and ($level  = 1 or parent::iso:introduction)">
 							<xsl:attribute name="text-align">center</xsl:attribute>
 							<xsl:attribute name="text-transform">uppercase</xsl:attribute>
-							<xsl:if test="ancestor::iso:preface">
+							<xsl:if test="ancestor::iso:preface or ancestor::iso:introduction">
 								<xsl:attribute name="font-weight">normal</xsl:attribute>
 							</xsl:if>
 						</xsl:if>
@@ -3475,7 +3558,7 @@
 						</xsl:choose>						
 					</xsl:if>
 					<xsl:choose>
-						<xsl:when test="$layoutVersion = '1951' and ancestor::iso:preface and $level  = 1">
+						<xsl:when test="$layoutVersion = '1951' and ((ancestor::iso:preface and $level  = 1) or parent::iso:introduction)">
 							<xsl:call-template name="add-letter-spacing">
 								<xsl:with-param name="text" select="."/>
 								<xsl:with-param name="letter-spacing" select="0.65"/>
