@@ -654,6 +654,16 @@
 						<fo:region-start region-name="left-region" extent="{$marginLeftRight1}mm"/>
 						<fo:region-end region-name="right-region" extent="{$marginLeftRight2}mm"/>
 					</fo:simple-page-master>
+					
+					<!-- for 1951 layout only -->
+					<fo:simple-page-master master-name="odd-last-publishedISO" page-width="{$pageWidth}mm" page-height="{$pageHeight}mm">
+						<fo:region-body margin-top="{$marginTop}mm" margin-bottom="{$marginBottom}mm" margin-left="{$marginLeftRight1}mm" margin-right="{$marginLeftRight2}mm" column-count="{$layout_columns}" column-gap="{$column_gap}"/>
+						<fo:region-before region-name="header-odd" extent="{$marginTop}mm" precedence="true"/>
+						<fo:region-after region-name="footer-odd-last" extent="{$marginBottom - 2}mm"/>
+						<fo:region-start region-name="left-region" extent="{$marginLeftRight1}mm"/>
+						<fo:region-end region-name="right-region" extent="{$marginLeftRight2}mm"/>
+					</fo:simple-page-master>
+					
 					<fo:simple-page-master master-name="odd-publishedISO-landscape" page-width="{$pageHeight}mm" page-height="{$pageWidth}mm">
 						<fo:region-body margin-top="{$marginTop}mm" margin-bottom="{$marginBottom}mm" margin-left="{$marginLeftRight1}mm" margin-right="{$marginLeftRight2}mm" column-count="{$layout_columns}" column-gap="{$column_gap}"/>
 						<fo:region-before region-name="header-odd" extent="{$marginTop}mm"/> <!--   display-align="center" -->
@@ -673,6 +683,16 @@
 						<fo:region-start region-name="left-region" extent="{$marginLeftRight2}mm"/>
 						<fo:region-end region-name="right-region" extent="{$marginLeftRight1}mm"/>
 					</fo:simple-page-master>
+					
+					<!-- for 1951 layout only -->
+					<fo:simple-page-master master-name="even-last-publishedISO" page-width="{$pageWidth}mm" page-height="{$pageHeight}mm">
+						<fo:region-body margin-top="{$marginTop}mm" margin-bottom="{$marginBottom}mm" margin-left="{$marginLeftRight2}mm" margin-right="{$marginLeftRight1}mm" column-count="{$layout_columns}" column-gap="{$column_gap}"/>
+						<fo:region-before region-name="header-even" extent="{$marginTop}mm" precedence="true"/>
+						<fo:region-after region-name="footer-even-last" extent="{$marginBottom - 2}mm"/>
+						<fo:region-start region-name="left-region" extent="{$marginLeftRight2}mm"/>
+						<fo:region-end region-name="right-region" extent="{$marginLeftRight1}mm"/>
+					</fo:simple-page-master>
+					
 					<fo:simple-page-master master-name="even-publishedISO-landscape" page-width="{$pageHeight}mm" page-height="{$pageWidth}mm">
 						<fo:region-body margin-top="{$marginTop}mm" margin-bottom="{$marginBottom}mm" margin-left="{$marginLeftRight2}mm" margin-right="{$marginLeftRight1}mm" column-count="{$layout_columns}" column-gap="{$column_gap}"/>
 						<fo:region-before region-name="header-even" extent="{$marginTop}mm"/>
@@ -715,6 +735,10 @@
 						<fo:repeatable-page-master-alternatives>
 							<xsl:if test="not($layoutVersion = '1951')">
 								<fo:conditional-page-master-reference master-reference="first-publishedISO" page-position="first"/>
+							</xsl:if>
+							<xsl:if test="$layoutVersion = '1951'">
+								<fo:conditional-page-master-reference odd-or-even="even" page-position="last" master-reference="even-last-publishedISO"/>
+								<fo:conditional-page-master-reference odd-or-even="odd" page-position="last" master-reference="odd-last-publishedISO"/>
 							</xsl:if>
 							<fo:conditional-page-master-reference odd-or-even="even" master-reference="even-publishedISO"/>
 							<fo:conditional-page-master-reference odd-or-even="odd" master-reference="odd-publishedISO"/>
@@ -2134,6 +2158,7 @@
 								</fo:static-content>
 								<xsl:call-template name="insertHeaderFooter">
 									<xsl:with-param name="is_header">false</xsl:with-param>
+									<xsl:with-param name="insert_footer_last">false</xsl:with-param>
 								</xsl:call-template>
 								<fo:flow flow-name="xsl-region-body">
 									<fo:block>
@@ -2371,6 +2396,7 @@
 					<fo:page-sequence master-reference="document{$document-master-reference}" initial-page-number="1" force-page-count="no-force">
 						<xsl:if test="$layoutVersion = '1951'">
 							<xsl:attribute name="initial-page-number">auto</xsl:attribute>
+							<xsl:attribute name="force-page-count">end-on-even</xsl:attribute>
 						</xsl:if>
 						<fo:static-content flow-name="xsl-footnote-separator">
 							<fo:block>
@@ -3996,6 +4022,7 @@
 		<xsl:param name="is_footer">false</xsl:param>
 		<xsl:param name="is_header">true</xsl:param>
 		<xsl:param name="border_around_page">false</xsl:param>
+		<xsl:param name="insert_footer_last">true</xsl:param>
 		<xsl:if test="($layoutVersion = '1972' or $layoutVersion = '1987' or ($layoutVersion = '1989' and $revision_date_num &lt;= 19981231)) and $is_footer = 'true'">
 			<xsl:call-template name="insertFooterFirst1972_1998">
 				<xsl:with-param name="font-weight" select="$font-weight"/>
@@ -4007,6 +4034,7 @@
 		</xsl:call-template>
 		<xsl:call-template name="insertFooterEven">
 			<xsl:with-param name="font-weight" select="$font-weight"/>
+			<xsl:with-param name="insert_footer_last" select="$insert_footer_last"/>
 		</xsl:call-template>
 		<xsl:choose>
 			<xsl:when test="$layoutVersion = '1951'"></xsl:when>
@@ -4196,6 +4224,7 @@
 	</xsl:template>
 	<xsl:template name="insertFooterEven">
 		<xsl:param name="font-weight" select="'bold'"/>
+		<xsl:param name="insert_footer_last">true</xsl:param>
 		<fo:static-content flow-name="footer-even" role="artifact">
 			<fo:block-container>
 				<xsl:choose>
@@ -4242,6 +4271,16 @@
 				</xsl:choose>
 			</fo:block-container>
 		</fo:static-content>
+		<!-- for layout 1951 only -->
+		<xsl:if test="$layoutVersion = '1951'">
+			<fo:static-content flow-name="footer-even-last" role="artifact">
+				<fo:block-container>
+					<xsl:call-template name="insertFooter1951">
+						<xsl:with-param name="insert_footer_last" select="$insert_footer_last"/>
+					</xsl:call-template>
+				</fo:block-container>
+			</fo:static-content>
+		</xsl:if>
 	</xsl:template>
 	<xsl:template name="insertFooterOdd">
 		<xsl:param name="font-weight" select="'bold'"/>
@@ -4293,10 +4332,50 @@
 		</fo:static-content>
 	</xsl:template>
 	<xsl:template name="insertFooter1951">
+		<xsl:param name="insert_footer_last">false</xsl:param>
 		<xsl:attribute name="height"><xsl:value-of select="$marginBottom - 2"/>mm</xsl:attribute>
 		<xsl:attribute name="display-align">after</xsl:attribute>
 		<xsl:attribute name="text-align">center</xsl:attribute>
-		<fo:block font-size="9.5pt" font-weight="bold" margin-bottom="8mm"><xsl:value-of select="$em_dash"/>&#xa0;&#xa0;<fo:page-number/>&#xa0;&#xa0;<xsl:value-of select="$em_dash"/></fo:block>
+		<fo:block-container margin-left="-13mm" margin-right="-13mm">
+		<fo:block-container margin-left="0mm" margin-right="0mm">
+				<fo:table table-layout="fixed" width="100%" margin-bottom="8mm">
+					<fo:table-column column-width="proportional-column-width(35)"/>
+					<fo:table-column column-width="proportional-column-width(100)"/>
+					<fo:table-column column-width="proportional-column-width(35)"/>
+					<fo:table-body>
+						<fo:table-row>
+							<fo:table-cell font-size="8pt">
+								<fo:block line-height="1" margin-top="2mm">
+									<xsl:variable name="date_first_printing" select="normalize-space(/iso:iso-standard/iso:metanorma-extension/iso:presentation-metadata/iso:first-printing-date)"/>
+									<xsl:if test="$insert_footer_last = 'true' and $date_first_printing != ''">
+										<fo:block><xsl:value-of select="$i18n_date_first_printing"/>:</fo:block>
+										<fo:block>
+											<!-- Example: December 1965 -->
+											<xsl:call-template name="convertDate">
+												<xsl:with-param name="date" select="$date_first_printing"/>
+											</xsl:call-template>
+										</fo:block>
+									</xsl:if>
+								</fo:block>
+							</fo:table-cell>
+							<fo:table-cell>
+								<fo:block font-size="9.5pt" font-weight="bold"><xsl:value-of select="$em_dash"/>&#xa0;&#xa0;<fo:page-number/>&#xa0;&#xa0;<xsl:value-of select="$em_dash"/></fo:block>
+							</fo:table-cell>
+							<fo:table-cell>
+								<fo:block font-size="8.5pt" text-align="right" font-weight="bold">
+									<xsl:variable name="price_" select="normalize-space(/iso:iso-standard/iso:metanorma-extension/iso:presentation-metadata/iso:price)"/>
+									<xsl:variable name="price" select="java:replaceAll(java:java.lang.String.new($price_), '-{2}', $em_dash)"/>
+									<xsl:if test="$insert_footer_last = 'true' and $price != ''">
+										<!-- Example: Price: Sw. fr. 3.- -->
+										<xsl:value-of select="concat($i18n_price, ': ', $price)"/>
+									</xsl:if>
+								</fo:block>
+							</fo:table-cell>
+						</fo:table-row>
+					</fo:table-body>
+				</fo:table>
+			</fo:block-container>
+		</fo:block-container>
 	</xsl:template>
 	<xsl:template name="insertFooter2024">
 		<xsl:param name="font-weight" select="'bold'"/>
