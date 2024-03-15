@@ -290,6 +290,8 @@
 	<xsl:variable name="i18n_voting_begins_on"><xsl:call-template name="getLocalizedString"><xsl:with-param name="key">voting_begins_on</xsl:with-param></xsl:call-template></xsl:variable>
 	<xsl:variable name="i18n_voting_terminates_on"><xsl:call-template name="getLocalizedString"><xsl:with-param name="key">voting_terminates_on</xsl:with-param></xsl:call-template></xsl:variable>
 	<xsl:variable name="i18n_price_based_on"><xsl:call-template name="getLocalizedString"><xsl:with-param name="key">price_based_on</xsl:with-param></xsl:call-template></xsl:variable>
+	<xsl:variable name="i18n_price"><xsl:call-template name="getLocalizedString"><xsl:with-param name="key">price</xsl:with-param></xsl:call-template></xsl:variable>
+	<xsl:variable name="i18n_date_first_printing"><xsl:call-template name="getLocalizedString"><xsl:with-param name="key">date_first_printing</xsl:with-param></xsl:call-template></xsl:variable>
 	<xsl:variable name="i18n_corrected_version"><xsl:call-template name="getLocalizedString"><xsl:with-param name="key">corrected_version</xsl:with-param></xsl:call-template></xsl:variable>
 	<xsl:variable name="i18n_fast_track_procedure"><xsl:call-template name="getLocalizedString"><xsl:with-param name="key">fast-track-procedure</xsl:with-param></xsl:call-template></xsl:variable>
 	<xsl:variable name="i18n_all_rights_reserved"><xsl:call-template name="getLocalizedString"><xsl:with-param name="key">all_rights_reserved</xsl:with-param></xsl:call-template></xsl:variable>	
@@ -655,15 +657,6 @@
 						<fo:region-end region-name="right-region" extent="{$marginLeftRight2}mm"/>
 					</fo:simple-page-master>
 					
-					<!-- for 1951 layout only -->
-					<fo:simple-page-master master-name="odd-last-publishedISO" page-width="{$pageWidth}mm" page-height="{$pageHeight}mm">
-						<fo:region-body margin-top="{$marginTop}mm" margin-bottom="{$marginBottom}mm" margin-left="{$marginLeftRight1}mm" margin-right="{$marginLeftRight2}mm" column-count="{$layout_columns}" column-gap="{$column_gap}"/>
-						<fo:region-before region-name="header-odd" extent="{$marginTop}mm" precedence="true"/>
-						<fo:region-after region-name="footer-odd-last" extent="{$marginBottom - 2}mm"/>
-						<fo:region-start region-name="left-region" extent="{$marginLeftRight1}mm"/>
-						<fo:region-end region-name="right-region" extent="{$marginLeftRight2}mm"/>
-					</fo:simple-page-master>
-					
 					<fo:simple-page-master master-name="odd-publishedISO-landscape" page-width="{$pageHeight}mm" page-height="{$pageWidth}mm">
 						<fo:region-body margin-top="{$marginTop}mm" margin-bottom="{$marginBottom}mm" margin-left="{$marginLeftRight1}mm" margin-right="{$marginLeftRight2}mm" column-count="{$layout_columns}" column-gap="{$column_gap}"/>
 						<fo:region-before region-name="header-odd" extent="{$marginTop}mm"/> <!--   display-align="center" -->
@@ -737,8 +730,7 @@
 								<fo:conditional-page-master-reference master-reference="first-publishedISO" page-position="first"/>
 							</xsl:if>
 							<xsl:if test="$layoutVersion = '1951'">
-								<fo:conditional-page-master-reference odd-or-even="even" page-position="last" master-reference="even-last-publishedISO"/>
-								<fo:conditional-page-master-reference odd-or-even="odd" page-position="last" master-reference="odd-last-publishedISO"/>
+								<fo:conditional-page-master-reference page-position="last" master-reference="even-last-publishedISO"/> <!-- odd-or-even="even" -->
 							</xsl:if>
 							<fo:conditional-page-master-reference odd-or-even="even" master-reference="even-publishedISO"/>
 							<fo:conditional-page-master-reference odd-or-even="odd" master-reference="odd-publishedISO"/>
@@ -2506,13 +2498,15 @@
 								</xsl:choose>
 								
 								<xsl:if test="($layoutVersion = '1951' or $layoutVersion = '1972' or $layoutVersion = '1987' or $layoutVersion = '1989')">
-									<fo:block span="all" text-align="center" margin-top="15mm" keep-with-next="always" role="SKIP">
+									<fo:block text-align="center" margin-top="12mm" keep-with-previous="always" role="SKIP">
+										<xsl:if test="$layout_columns != 1">
+											<xsl:attribute name="span">all</xsl:attribute>
+										</xsl:if>
 										<fo:leader leader-pattern="rule" leader-length="20%"/>
 									</fo:block>
 								</xsl:if>
 								
-								
-								<fo:block id="lastBlock" font-size="1pt" role="SKIP">&#xA0;</fo:block>
+								<fo:block id="lastBlock" font-size="1pt" keep-with-previous="always" role="SKIP">&#xA0;</fo:block>
 							<!-- </fo:block> -->
 							
 						</fo:flow>
