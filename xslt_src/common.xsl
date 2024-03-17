@@ -218,7 +218,7 @@
 			<xsl:when test="$namespace = 'iso'">
 				<xsl:choose>
 					<xsl:when test="$layoutVersion = '1951'">36</xsl:when>
-					<xsl:when test="$layoutVersion = '2024'">18.7</xsl:when>
+					<xsl:when test="$layoutVersion = '2024'">15.2</xsl:when>
 					<xsl:otherwise>25</xsl:otherwise>
 				</xsl:choose>
 			</xsl:when>
@@ -252,7 +252,7 @@
 			<xsl:when test="$namespace = 'iso'">
 				<xsl:choose>
 					<xsl:when test="$layoutVersion = '1951'">29</xsl:when>
-					<xsl:when test="$layoutVersion = '2024'">18.7</xsl:when>
+					<xsl:when test="$layoutVersion = '2024'">15.2</xsl:when>
 					<xsl:otherwise>12.5</xsl:otherwise>
 				</xsl:choose>
 			</xsl:when>
@@ -312,7 +312,7 @@
 			<xsl:when test="$namespace = 'iso'">
 				<xsl:choose>
 					<xsl:when test="$layoutVersion = '1951'">25.5</xsl:when>
-					<xsl:when test="$layoutVersion = '2024'">25.5</xsl:when>
+					<xsl:when test="$layoutVersion = '2024'">18.5</xsl:when>
 					<xsl:otherwise>15</xsl:otherwise>
 				</xsl:choose>
 			</xsl:when>
@@ -2117,9 +2117,9 @@
 					<xsl:attribute name="span">all</xsl:attribute>
 				</xsl:if>
 			</xsl:if>
-			<xsl:if test="$layoutVersion = '2024'">
+			<!-- <xsl:if test="$layoutVersion = '2024'">
 				<xsl:attribute name="font-size">10.5pt</xsl:attribute>
-			</xsl:if>
+			</xsl:if> -->
 		</xsl:if>
 	</xsl:template> <!-- refine_table-name-style -->
 	
