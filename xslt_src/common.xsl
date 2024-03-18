@@ -898,6 +898,12 @@
 				<xsl:attribute name="color">blue</xsl:attribute>
 			</xsl:if>
 		</xsl:if>
+		<xsl:if test="$namespace = 'iso'">
+			<xsl:if test="ancestor::*[local-name() = 'copyright-statement'] and contains(@target, 'mailto:')">
+				<xsl:attribute name="color">inherit</xsl:attribute>
+				<xsl:attribute name="text-decoration">none</xsl:attribute>
+			</xsl:if>
+		</xsl:if>
 		<xsl:if test="$namespace = 'rsd'">
 			<xsl:if test="ancestor::*[local-name() = 'bibitem']">
 				<xsl:attribute name="color">black</xsl:attribute>
