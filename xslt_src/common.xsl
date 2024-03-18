@@ -282,7 +282,12 @@
 			<xsl:when test="$namespace = 'iec'">31</xsl:when>
 			<xsl:when test="$namespace = 'ieee'">25.4</xsl:when>
 			<xsl:when test="$namespace = 'iho'">25.4</xsl:when>
-			<xsl:when test="$namespace = 'iso'">27.4</xsl:when>
+			<xsl:when test="$namespace = 'iso'">
+				<xsl:choose>
+					<xsl:when test="$layoutVersion = '2024'">23.5</xsl:when>
+					<xsl:otherwise>27.4</xsl:otherwise>
+				</xsl:choose>
+			</xsl:when>
 			<xsl:when test="$namespace = 'itu'">20</xsl:when>
 			<xsl:when test="$namespace = 'jcgm'">29.5</xsl:when>
 			<xsl:when test="$namespace = 'jis'">30</xsl:when>
@@ -312,7 +317,7 @@
 			<xsl:when test="$namespace = 'iso'">
 				<xsl:choose>
 					<xsl:when test="$layoutVersion = '1951'">25.5</xsl:when>
-					<xsl:when test="$layoutVersion = '2024'">18.5</xsl:when>
+					<xsl:when test="$layoutVersion = '2024'">19.5</xsl:when>
 					<xsl:otherwise>15</xsl:otherwise>
 				</xsl:choose>
 			</xsl:when>

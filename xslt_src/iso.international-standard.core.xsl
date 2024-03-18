@@ -448,9 +448,6 @@
 							<xsl:attribute name="font-size">8.5pt</xsl:attribute>
 						 </xsl:if>
 						
-						<!-- <xsl:if test="$layoutVersion = '2024'">
-							<xsl:attribute name="font-size">10.5pt</xsl:attribute>
-						</xsl:if> -->
 						<!-- <xsl:if test="$lang = 'zh'">
 							<xsl:attribute name="font-family">Source Han Sans, Times New Roman, Cambria Math</xsl:attribute>
 						</xsl:if> -->
@@ -1189,7 +1186,7 @@
 													</fo:block>
 											</fo:table-cell>
 											<fo:table-cell number-columns-spanned="2" display-align="after" padding-left="6mm">
-												<fo:block font-size="19pt" font-weight="bold">
+												<fo:block font-size="19pt" font-weight="bold" line-height="1">
 													<xsl:if test="$stage &gt;=60">
 														<xsl:attribute name="color"><xsl:value-of select="$color_red"/></xsl:attribute>
 													</xsl:if>
@@ -2360,8 +2357,11 @@
 											<xsl:if test="/iso:iso-standard/iso:boilerplate/iso:copyright-statement">
 											
 												<fo:block-container height="252mm" display-align="after" role="SKIP">
-													<xsl:if test="$layoutVersion = '1989' or $layoutVersion = '2024'">
+													<xsl:if test="$layoutVersion = '1989'">
 														<xsl:attribute name="height">241.5mm</xsl:attribute>
+													</xsl:if>
+													<xsl:if test="$layoutVersion = '2024'">
+														<xsl:attribute name="width">172mm</xsl:attribute>
 													</xsl:if>
 													<!-- <fo:block margin-bottom="3mm">
 														<fo:external-graphic src="{concat('data:image/png;base64,', normalize-space($Image-Attention))}" width="14mm" content-height="13mm" content-width="scale-to-fit" scaling="uniform" fox:alt-text="Image {@alt}"/>								
@@ -2613,7 +2613,7 @@
 	</xsl:template>
 		
 	<xsl:template name="insertLogoImages2024">
-		<xsl:variable name="content-height">19.6</xsl:variable>
+		<xsl:variable name="content-height">20</xsl:variable>
 		<xsl:for-each select="/iso:iso-standard/iso:bibdata/iso:copyright/iso:owner/iso:organization">
 			<xsl:choose>
 				<xsl:when test="iso:abbreviation = 'ISO'">
@@ -2962,9 +2962,9 @@
 	
 	<xsl:template match="iso:preface/iso:clause[@type = 'toc']/iso:title" priority="3">
 		<fo:block text-align-last="justify" font-size="16pt" margin-top="10pt" margin-bottom="18pt">
-			<!-- <xsl:if test="$layoutVersion = '2024'">
-				<xsl:attribute name="font-size">15.3pt</xsl:attribute>
-			</xsl:if> -->
+			<xsl:if test="$layoutVersion = '2024'">
+				<xsl:attribute name="margin-top">0</xsl:attribute>
+			</xsl:if>
 			<fo:inline font-size="16pt" font-weight="bold" role="SKIP">
 				<!-- <xsl:if test="$layoutVersion = '2024'">
 					<xsl:attribute name="font-size">15.3pt</xsl:attribute>
@@ -3163,9 +3163,9 @@
 				<xsl:attribute name="span">all</xsl:attribute>
 				<xsl:attribute name="margin-bottom">40pt</xsl:attribute>
 			</xsl:if>
-			<!-- <xsl:if test="$layoutVersion = '2024'">
-				<xsl:attribute name="font-size">17.2pt</xsl:attribute>
-			</xsl:if> -->
+			<xsl:if test="$layoutVersion = '2024'">
+				<xsl:attribute name="margin-top">50pt</xsl:attribute>
+			</xsl:if>
 			<xsl:if test="following-sibling::*[1][self::iso:p][starts-with(@class, 'zzSTDTitle')]">
 				<xsl:attribute name="margin-bottom">0pt</xsl:attribute>
 			</xsl:if>
@@ -3308,6 +3308,9 @@
 			</xsl:when>
 			<xsl:otherwise>
 				<fo:block margin-left="0.5mm" margin-bottom="3mm" role="H1">
+					<xsl:if test="$layoutVersion = '2024'">
+							<xsl:attribute name="margin-bottom">3.5mm</xsl:attribute>
+						</xsl:if>
 					<fo:external-graphic src="{concat('data:image/png;base64,', normalize-space($Image-Attention))}" width="14mm" content-height="13mm" content-width="scale-to-fit" scaling="uniform" fox:alt-text="Image {@alt}">
 						<!-- <xsl:if test="$layoutVersion = '2024'">
 							<xsl:attribute name="width">13mm</xsl:attribute>
@@ -3320,9 +3323,9 @@
 						<xsl:if test="$layoutVersion = '1989'">
 							<xsl:attribute name="font-size">11pt</xsl:attribute>
 						</xsl:if>
-						<!-- <xsl:if test="$layoutVersion = '2024'">
-							<xsl:attribute name="font-size">11.5pt</xsl:attribute>
-						</xsl:if> -->
+						<xsl:if test="$layoutVersion = '2024'">
+							<xsl:attribute name="baseline-shift">5%</xsl:attribute>
+						</xsl:if>
 					<xsl:apply-templates /></fo:inline>
 				</fo:block>
 			</xsl:otherwise>
@@ -3543,6 +3546,7 @@
 							<xsl:when test="$layoutVersion = '1987' and $doctype = 'technical-report' and ancestor::iso:preface and $level = 1">10mm</xsl:when>
 							<xsl:when test="($layoutVersion = '1972' or $layoutVersion = '1987' or ($layoutVersion = '1989' and $revision_date_num &lt;= 19981231)) and ancestor::iso:preface and $level = 1">62mm</xsl:when>
 							<xsl:when test="$layoutVersion = '1989' and ancestor::iso:preface and $level = 1">56pt</xsl:when>
+							<xsl:when test="$layoutVersion = '2024' and ancestor::iso:preface and $level = 1">0pt</xsl:when>
 							<xsl:when test="ancestor::iso:preface">8pt</xsl:when>
 							<xsl:when test="$level = 2 and ancestor::iso:annex">18pt</xsl:when>
 							<xsl:when test="$level = 1">18pt</xsl:when>
@@ -4072,6 +4076,9 @@
 				</fo:block-container>
 			</xsl:if>
 			<fo:block-container height="24mm" display-align="before">
+				<xsl:if test="$layoutVersion = '2024'">
+					<xsl:attribute name="height">23mm</xsl:attribute>
+				</xsl:if>
 				<fo:block font-size="{$font-size_header}" font-weight="bold" padding-top="12.5mm" line-height="1.1">
 					<xsl:call-template name="insertLayoutVersionAttributesTop">
 						<xsl:with-param name="odd_or_even">even</xsl:with-param>
@@ -4101,6 +4108,7 @@
 							<xsl:attribute name="border-bottom">0.5mm solid black</xsl:attribute>
 						</xsl:if>
 						<xsl:if test=" $layoutVersion = '2024'">
+							<xsl:attribute name="width">180mm</xsl:attribute>
 							<xsl:attribute name="border-top">0.8mm solid black</xsl:attribute>
 							<xsl:attribute name="border-bottom">0.8mm solid black</xsl:attribute>
 						</xsl:if>
@@ -4126,6 +4134,9 @@
 							<fo:table-column column-width="50%"/>
 							<fo:table-body>
 								<fo:table-row display-align="center" height="9mm">
+									<xsl:if test="$layoutVersion = '2024'">
+										<xsl:attribute name="height">8.5mm</xsl:attribute>
+									</xsl:if>
 									<fo:table-cell>
 										<fo:block>
 											<xsl:choose>
@@ -4167,6 +4178,9 @@
 				</fo:block-container>
 			</xsl:if>
 			<fo:block-container height="24mm" display-align="before">
+				<xsl:if test="$layoutVersion = '2024'">
+					<xsl:attribute name="height">23mm</xsl:attribute>
+				</xsl:if>
 				<fo:block font-size="{$font-size_header}" font-weight="bold" text-align="right" padding-top="12.5mm" line-height="1.1">
 					<xsl:call-template name="insertLayoutVersionAttributesTop">
 						<xsl:with-param name="odd_or_even">odd</xsl:with-param>
@@ -4385,8 +4399,9 @@
 	<xsl:template name="insertFooter2024">
 		<xsl:param name="font-weight" select="'bold'"/>
 		<xsl:attribute name="text-align">center</xsl:attribute>
-		<fo:block font-size="8.6pt">
-			<xsl:call-template name="insertInterFont"/>
+		<xsl:attribute name="line-height">1.1</xsl:attribute>
+		<fo:block font-size="9pt">
+			<!-- <xsl:call-template name="insertInterFont"/> -->
 			<xsl:value-of select="$copyrightText"/>
 		</fo:block>
 		<xsl:if test="$copyrightAbbrIEEE = ''"><fo:block>&#xa0;</fo:block></xsl:if>
@@ -4539,7 +4554,7 @@
 	<xsl:template name="insertLastPage_2024">
 		<fo:page-sequence master-reference="last-page_2024" force-page-count="no-force">
 			<fo:flow flow-name="xsl-region-body">
-				<fo:table table-layout="fixed" width="100%">
+				<fo:table table-layout="fixed" width="100%" margin-bottom="-1mm">
 					<xsl:call-template name="insertInterFont"/>
 					<fo:table-column column-width="proportional-column-width(73)"/>
 					<fo:table-column column-width="proportional-column-width(1.45)"/>
@@ -4562,7 +4577,7 @@
 						<fo:table-row height="2mm" font-size="0pt">
 							<fo:table-cell number-columns-spanned="4"><fo:block>&#xa0;</fo:block></fo:table-cell>
 						</fo:table-row>
-						<fo:table-row height="181.9mm"> <!-- 174 -->
+						<fo:table-row height="182mm"> <!-- 174 -->
 							<fo:table-cell number-columns-spanned="2" display-align="after" border-right="{$cover_page_border}">
 								<fo:block font-size="12pt" font-weight="bold">
 									<xsl:for-each select="/iso:iso-standard/iso:bibdata/iso:ext/iso:ics/iso:code">
@@ -4582,11 +4597,11 @@
 											</xsl:if>										
 										</xsl:for-each>
 									</fo:block>
-									<fo:block margin-top="12pt" margin-bottom="2.5mm"><xsl:value-of select="$copyrightTextLastPage2024"/></fo:block>
+									<fo:block margin-top="18pt" margin-bottom="-1mm" line-height="1.1"><xsl:value-of select="$copyrightTextLastPage2024"/></fo:block>
 								</fo:block>
 							</fo:table-cell>
 							<fo:table-cell number-columns-spanned="2" text-align="right" display-align="after">
-								<fo:block font-size="16pt" font-weight="bold" margin-bottom="1.5mm" margin-right="2mm">
+								<fo:block font-size="16pt" font-weight="bold" margin-bottom="1mm" margin-right="1.5mm">
 									<xsl:if test="$stage &gt;=60">
 										<xsl:attribute name="color"><xsl:value-of select="$color_red"/></xsl:attribute>
 									</xsl:if>
