@@ -218,7 +218,7 @@
 			<xsl:when test="$namespace = 'iso'">
 				<xsl:choose>
 					<xsl:when test="$layoutVersion = '1951'">36</xsl:when>
-					<xsl:when test="$layoutVersion = '2024'">18.7</xsl:when>
+					<xsl:when test="$layoutVersion = '2024'">15.2</xsl:when>
 					<xsl:otherwise>25</xsl:otherwise>
 				</xsl:choose>
 			</xsl:when>
@@ -252,7 +252,7 @@
 			<xsl:when test="$namespace = 'iso'">
 				<xsl:choose>
 					<xsl:when test="$layoutVersion = '1951'">29</xsl:when>
-					<xsl:when test="$layoutVersion = '2024'">18.7</xsl:when>
+					<xsl:when test="$layoutVersion = '2024'">15.2</xsl:when>
 					<xsl:otherwise>12.5</xsl:otherwise>
 				</xsl:choose>
 			</xsl:when>
@@ -282,7 +282,12 @@
 			<xsl:when test="$namespace = 'iec'">31</xsl:when>
 			<xsl:when test="$namespace = 'ieee'">25.4</xsl:when>
 			<xsl:when test="$namespace = 'iho'">25.4</xsl:when>
-			<xsl:when test="$namespace = 'iso'">27.4</xsl:when>
+			<xsl:when test="$namespace = 'iso'">
+				<xsl:choose>
+					<xsl:when test="$layoutVersion = '2024'">23.5</xsl:when>
+					<xsl:otherwise>27.4</xsl:otherwise>
+				</xsl:choose>
+			</xsl:when>
 			<xsl:when test="$namespace = 'itu'">20</xsl:when>
 			<xsl:when test="$namespace = 'jcgm'">29.5</xsl:when>
 			<xsl:when test="$namespace = 'jis'">30</xsl:when>
@@ -312,7 +317,7 @@
 			<xsl:when test="$namespace = 'iso'">
 				<xsl:choose>
 					<xsl:when test="$layoutVersion = '1951'">25.5</xsl:when>
-					<xsl:when test="$layoutVersion = '2024'">25.5</xsl:when>
+					<xsl:when test="$layoutVersion = '2024'">19.5</xsl:when>
 					<xsl:otherwise>15</xsl:otherwise>
 				</xsl:choose>
 			</xsl:when>
@@ -891,6 +896,12 @@
 		<xsl:if test="$namespace = 'iec'">
 			<xsl:if test="ancestor::*[local-name()='feedback-statement' or local-name() = 'copyright-statement']">
 				<xsl:attribute name="color">blue</xsl:attribute>
+			</xsl:if>
+		</xsl:if>
+		<xsl:if test="$namespace = 'iso'">
+			<xsl:if test="ancestor::*[local-name() = 'copyright-statement'] and contains(@target, 'mailto:')">
+				<xsl:attribute name="color">inherit</xsl:attribute>
+				<xsl:attribute name="text-decoration">none</xsl:attribute>
 			</xsl:if>
 		</xsl:if>
 		<xsl:if test="$namespace = 'rsd'">
@@ -2117,9 +2128,9 @@
 					<xsl:attribute name="span">all</xsl:attribute>
 				</xsl:if>
 			</xsl:if>
-			<xsl:if test="$layoutVersion = '2024'">
+			<!-- <xsl:if test="$layoutVersion = '2024'">
 				<xsl:attribute name="font-size">10.5pt</xsl:attribute>
-			</xsl:if>
+			</xsl:if> -->
 		</xsl:if>
 	</xsl:template> <!-- refine_table-name-style -->
 	
