@@ -3757,7 +3757,7 @@
 			
 			<xsl:if test="$layoutVersion = '2024'">
 				<xsl:attribute name="line-height">1.13</xsl:attribute>
-				<xsl:if test="parent::iso:li/following-sibling::*">
+				<xsl:if test="parent::iso:li/following-sibling::* or parent::iso:dd">
 					<xsl:attribute name="margin-bottom">9pt</xsl:attribute>
 				</xsl:if>
 			</xsl:if>

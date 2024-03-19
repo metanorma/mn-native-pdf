@@ -3262,6 +3262,11 @@
 	</xsl:attribute-set>
 	
 	<xsl:template name="refine_dt-block-style">
+		<xsl:if test="$namespace = 'iso'">
+			<xsl:if test="$layoutVersion = '2024'">
+				<xsl:attribute name="margin-bottom">9pt</xsl:attribute>
+			</xsl:if>
+		</xsl:if>
 		<xsl:if test="$namespace = 'itu'">
 			<xsl:if test="ancestor::*[1][local-name() = 'dl']/preceding-sibling::*[1][local-name() = 'formula']">
 				<xsl:attribute name="text-align">right</xsl:attribute>							
