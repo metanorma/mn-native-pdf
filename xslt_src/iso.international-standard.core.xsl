@@ -2295,6 +2295,13 @@
 								<xsl:if test="$layoutVersion = '1972' or $layoutVersion = '1987' or ($layoutVersion = '1989' and $revision_date_num &lt;= 19981231)">
 									<xsl:attribute name="master-reference">preface-1972-1998</xsl:attribute>
 								</xsl:if>
+								<xsl:if test="$layoutVersion = '2024'">
+									<fo:static-content flow-name="xsl-footnote-separator">
+										<fo:block margin-bottom="6pt">
+											<fo:leader leader-pattern="rule" leader-length="51mm" rule-thickness="0.5pt"/>
+										</fo:block>
+									</fo:static-content>
+								</xsl:if>
 								<xsl:call-template name="insertHeaderFooter">
 									<xsl:with-param name="font-weight">normal</xsl:with-param>
 									<xsl:with-param name="is_footer">true</xsl:with-param>
@@ -2403,7 +2410,15 @@
 						</xsl:if>
 						<fo:static-content flow-name="xsl-footnote-separator">
 							<fo:block>
-								<fo:leader leader-pattern="rule" leader-length="30%"/>
+								<xsl:if test="$layoutVersion = '2024'">
+									<xsl:attribute name="margin-bottom">6pt</xsl:attribute>
+								</xsl:if>
+								<fo:leader leader-pattern="rule" leader-length="30%">
+									<xsl:if test="$layoutVersion = '2024'">
+										<xsl:attribute name="leader-length">51mm</xsl:attribute>
+										<xsl:attribute name="rule-thickness">0.5pt</xsl:attribute>
+									</xsl:if>
+								</fo:leader>
 							</fo:block>
 						</fo:static-content>
 						
@@ -3737,6 +3752,13 @@
 				</xsl:if>
 				<xsl:if test="ancestor::iso:preface and parent::iso:clause">
 					<xsl:attribute name="text-indent">7.1mm</xsl:attribute>
+				</xsl:if>
+			</xsl:if>
+			
+			<xsl:if test="$layoutVersion = '2024'">
+				<xsl:attribute name="line-height">1.13</xsl:attribute>
+				<xsl:if test="parent::iso:li/following-sibling::*">
+					<xsl:attribute name="margin-bottom">9pt</xsl:attribute>
 				</xsl:if>
 			</xsl:if>
 			

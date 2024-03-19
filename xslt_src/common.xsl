@@ -3578,6 +3578,11 @@
 			<xsl:if test="$layoutVersion = '1972' or $layoutVersion = '1987' or $layoutVersion = '1989'">
 				<xsl:attribute name="font-size">9pt</xsl:attribute>
 			</xsl:if>
+			<xsl:if test="$layoutVersion  = '2024'">
+				<xsl:if test="ancestor::*[local-name() = 'li'] and not(following-sibling::*)">
+					<xsl:attribute name="margin-bottom">8pt</xsl:attribute>
+				</xsl:if>
+			</xsl:if>
 			<xsl:if test="$doctype = 'amendment' and parent::*[local-name() = 'quote']">
 				<xsl:attribute name="font-size">inherit</xsl:attribute>
 			</xsl:if>
@@ -4893,6 +4898,9 @@
 		<xsl:if test="$namespace = 'csa'">
 			<xsl:attribute name="line-height-shift-adjustment">disregard-shifts</xsl:attribute>
 		</xsl:if>
+		<xsl:if test="$namespace = 'iso'">
+			<xsl:attribute name="line-height-shift-adjustment">disregard-shifts</xsl:attribute>
+		</xsl:if>
 		<xsl:if test="$namespace = 'ogc' or $namespace = 'ogc-white-paper'">
 			<xsl:attribute name="line-height-shift-adjustment">disregard-shifts</xsl:attribute>
 		</xsl:if>
@@ -5028,7 +5036,8 @@
 		</xsl:if>
 		<xsl:if test="$namespace = 'iso'">
 			<xsl:attribute name="font-size">80%</xsl:attribute>
-			<xsl:attribute name="vertical-align">super</xsl:attribute>
+			<!--<xsl:attribute name="vertical-align">super</xsl:attribute> -->
+			<xsl:attribute name="baseline-shift">30%</xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'itu'">
 			<xsl:attribute name="font-size">60%</xsl:attribute>
@@ -5198,6 +5207,9 @@
 		<xsl:if test="$namespace = 'iso'">
 			<xsl:if test="$layoutVersion = '1972' or $layoutVersion = '1987' or $layoutVersion = '1989'">
 				<xsl:attribute name="font-size">9pt</xsl:attribute>
+			</xsl:if>
+			<xsl:if test="$layoutVersion = '2024'">
+				<xsl:attribute name="margin-bottom">6pt</xsl:attribute>
 			</xsl:if>
 		</xsl:if>
 		<xsl:if test="$namespace = 'itu'">
@@ -8413,6 +8425,12 @@
 						<xsl:attribute name="padding-right">0mm</xsl:attribute>
 					</xsl:if>
 					<xsl:if test="preceding-sibling::*[1][local-name() = 'fn']">,</xsl:if>
+				</xsl:if>
+				
+				<xsl:if test="$namespace = 'iso'">
+					<xsl:if test="$layoutVersion = '2024'">
+						<xsl:attribute name="font-size">70%</xsl:attribute>
+					</xsl:if>
 				</xsl:if>
 				
 				<xsl:call-template name="insert_basic_link">
@@ -16415,6 +16433,11 @@
 			
 			<xsl:otherwise>
 				<fo:block id="{@id}" xsl:use-attribute-sets="bibitem-normative-style">
+					<xsl:if test="$namespace = 'iso'">
+						<xsl:if test="$layoutVersion = '2024'">
+							<xsl:attribute name="margin-bottom">8pt</xsl:attribute>
+						</xsl:if>
+					</xsl:if>
 					<xsl:call-template name="processBibitem"/>
 				</fo:block>
 			</xsl:otherwise>
