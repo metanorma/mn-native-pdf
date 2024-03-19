@@ -899,7 +899,8 @@
 			</xsl:if>
 		</xsl:if>
 		<xsl:if test="$namespace = 'iso'">
-			<xsl:if test="ancestor::*[local-name() = 'copyright-statement'] and contains(@target, 'mailto:')">
+			<xsl:if test="(ancestor::*[local-name() = 'copyright-statement'] and contains(@target, 'mailto:')) or
+							($layoutVersion = '2024' and ancestor::iso:termsource)">
 				<xsl:attribute name="color">inherit</xsl:attribute>
 				<xsl:attribute name="text-decoration">none</xsl:attribute>
 			</xsl:if>
@@ -1562,6 +1563,14 @@
 			<xsl:attribute name="padding-right">0.5mm</xsl:attribute>
 		</xsl:if>		
 	</xsl:attribute-set> <!-- termexample-name-style -->
+
+	<xsl:template name="refine_termexample-name-style">
+		<xsl:if test="$namespace = 'iso'">
+			<xsl:if test="$layoutVersion = '2024' and translate(.,'0123456789','') = ."> <!-- EXAMPLE without number -->
+				<xsl:attribute name="padding-right">8mm</xsl:attribute>
+			</xsl:if>
+		</xsl:if>
+	</xsl:template>
 
 	<!-- ========================== -->
 	<!-- Table styles -->
@@ -14489,6 +14498,7 @@
 	<xsl:template match="*[local-name() = 'termexample']/*[local-name() = 'name']">
 		<xsl:if test="normalize-space() != ''">
 			<fo:inline xsl:use-attribute-sets="termexample-name-style">
+				<xsl:call-template name="refine_termexample-name-style"/>
 				<xsl:apply-templates /><xsl:if test="$namespace = 'ieee' or $namespace = 'rsd'">: </xsl:if>
 			</fo:inline>
 		</xsl:if>

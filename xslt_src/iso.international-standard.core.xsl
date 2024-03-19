@@ -3890,6 +3890,10 @@
 		<xsl:call-template name="insert_basic_link">
 			<xsl:with-param name="element">
 				<fo:basic-link internal-destination="{@target}" fox:alt-text="{@target}" xsl:use-attribute-sets="xref-style">
+					<xsl:if test="$layoutVersion = '2024' and ancestor::iso:termsource">
+						<xsl:attribute name="color">inherit</xsl:attribute>
+						<xsl:attribute name="text-decoration">none</xsl:attribute>
+					</xsl:if>
 					<xsl:choose>
 						<xsl:when test="@pagenumber='true'">
 							<fo:inline>
