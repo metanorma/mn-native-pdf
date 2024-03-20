@@ -1460,6 +1460,14 @@
 		</xsl:if>
 	</xsl:attribute-set> <!-- example-name-style -->
 
+	<xsl:template name="refine_example-name-style">
+		<xsl:if test="$namespace = 'iso'">
+			<xsl:if test="$layoutVersion = '2024' and translate(.,'0123456789','') = ."> <!-- EXAMPLE without number -->
+				<xsl:attribute name="padding-right">8mm</xsl:attribute>
+			</xsl:if>
+		</xsl:if>
+	</xsl:template>
+	
 	<xsl:attribute-set name="example-p-style">
 		<xsl:if test="$namespace = 'bsi'">
 			<xsl:attribute name="margin-bottom">6pt</xsl:attribute>
@@ -4153,6 +4161,9 @@
 					<xsl:attribute name="margin-top">6pt</xsl:attribute>
 					<xsl:attribute name="margin-bottom">6pt</xsl:attribute>
 				</xsl:if>
+			</xsl:if>
+			<xsl:if test="$layoutVersion = '2024'">
+				<xsl:attribute name="space-after">18pt</xsl:attribute>
 			</xsl:if>
 		</xsl:if>
 	</xsl:template>
@@ -14712,6 +14723,7 @@
 			</xsl:when>
 			<xsl:otherwise>
 				<fo:inline xsl:use-attribute-sets="example-name-style">
+					<xsl:call-template name="refine_example-name-style"/>
 					<xsl:apply-templates/><xsl:if test="$namespace = 'ieee' or $namespace = 'iho' or $namespace = 'ogc' or $namespace = 'rsd'">: </xsl:if>
 				</fo:inline>
 			</xsl:otherwise>
