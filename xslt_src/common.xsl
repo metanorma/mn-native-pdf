@@ -1763,8 +1763,6 @@
 				<xsl:if test="normalize-space(@width) != 'text-width'">
 					<xsl:attribute name="span">all</xsl:attribute>
 				</xsl:if>
-			</xsl:if>
-			<xsl:if test="$layoutVersion = '1972' or $layoutVersion = '1987' or $layoutVersion = '1989'">
 				<xsl:attribute name="font-size">9pt</xsl:attribute>
 			</xsl:if>
 		</xsl:if>
@@ -2137,9 +2135,6 @@
 					<xsl:attribute name="span">all</xsl:attribute>
 				</xsl:if>
 			</xsl:if>
-			<!-- <xsl:if test="$layoutVersion = '2024'">
-				<xsl:attribute name="font-size">10.5pt</xsl:attribute>
-			</xsl:if> -->
 		</xsl:if>
 	</xsl:template> <!-- refine_table-name-style -->
 	
@@ -2954,7 +2949,11 @@
 				<xsl:attribute name="border">0.75pt solid <xsl:value-of select="$color_secondary_shade_1_PAS"/></xsl:attribute>
 			</xsl:if>
 		</xsl:if>
-
+		<xsl:if test="$namespace = 'iso'">
+			<xsl:if test="$layoutVersion = '2024'">
+				<xsl:attribute name="border-top"><xsl:value-of select="$table-border"/></xsl:attribute>
+			</xsl:if>
+		</xsl:if>
 		<xsl:if test="$namespace = 'itu'">
 			<xsl:if test="ancestor::*[local-name()='preface']">
 				<xsl:if test="$doctype != 'service-publication'">
@@ -3080,6 +3079,17 @@
 		</xsl:if>
 	</xsl:attribute-set> <!-- table-fn-style -->
 	
+	<xsl:template name="refine_table-fn-style">
+		<xsl:if test="$namespace = 'iso'">
+			<xsl:if test="$layoutVersion = '2024'">
+				<xsl:attribute name="margin-bottom">5pt</xsl:attribute>
+				<xsl:if test="position() = last()">
+					<xsl:attribute name="margin-bottom">0pt</xsl:attribute>
+				</xsl:if>
+			</xsl:if>
+		</xsl:if>
+	</xsl:template>
+	
 	<xsl:attribute-set name="table-fn-number-style">
 		<xsl:attribute name="font-size">80%</xsl:attribute>
 		<xsl:attribute name="padding-right">5mm</xsl:attribute>
@@ -3138,6 +3148,15 @@
 			<xsl:attribute name="vertical-align">super</xsl:attribute>
 		</xsl:if>
 	</xsl:attribute-set> <!-- table-fn-number-style -->
+	
+	<xsl:template name="refine_table-fn-number-style">
+		<xsl:if test="$namespace = 'iso'">
+			<xsl:if test="$layoutVersion = '2024'">
+				<xsl:attribute name="alignment-baseline">inherit</xsl:attribute>
+				<xsl:attribute name="baseline-shift">15%</xsl:attribute>
+			</xsl:if>
+		</xsl:if>
+	</xsl:template>
 	
 	<xsl:attribute-set name="fn-container-body-style">
 		<xsl:attribute name="text-indent">0</xsl:attribute>
@@ -3595,6 +3614,9 @@
 			<xsl:if test="$layoutVersion  = '2024'">
 				<xsl:if test="ancestor::*[local-name() = 'li'] and not(following-sibling::*)">
 					<xsl:attribute name="margin-bottom">8pt</xsl:attribute>
+				</xsl:if>
+				<xsl:if test="preceding-sibling::*[1][local-name() = 'table']">
+					<xsl:attribute name="margin-top">0pt</xsl:attribute>
 				</xsl:if>
 			</xsl:if>
 			<xsl:if test="$doctype = 'amendment' and parent::*[local-name() = 'quote']">
@@ -7098,6 +7120,12 @@
 								$namespace = 'nist-cswp' or $namespace = 'nist-sp' or 
 								$namespace = 'rsd'">
 					<fo:table table-layout="fixed" width="100%" xsl:use-attribute-sets="table-container-style">
+						<xsl:if test="$namespace = 'iso'">
+							<xsl:if test="$layoutVersion = '2024'">
+								<xsl:attribute name="margin-top">12pt</xsl:attribute>
+								<xsl:attribute name="margin-bottom">2pt</xsl:attribute>
+							</xsl:if>
+						</xsl:if>
 						<fo:table-column column-width="proportional-column-width(1)"/>
 						<fo:table-column column-width="{@width}"/>
 						<fo:table-column column-width="proportional-column-width(1)"/>
@@ -8635,9 +8663,9 @@
 					
 					<xsl:otherwise>
 						<fo:block xsl:use-attribute-sets="table-fn-style">
-				
+							<xsl:call-template name="refine_table-fn-style"/>
 							<fo:inline id="{@id}" xsl:use-attribute-sets="table-fn-number-style">
-								
+								<xsl:call-template name="refine_table-fn-number-style"/>
 								<xsl:if test="$namespace = 'bsi'">
 									<xsl:if test="$document_type = 'PAS'">
 										<xsl:attribute name="font-size">80%</xsl:attribute>
