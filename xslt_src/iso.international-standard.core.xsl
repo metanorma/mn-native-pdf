@@ -3908,7 +3908,7 @@
 							</fo:inline>
 						</xsl:when>
 						<xsl:when test="$layoutVersion = '2024' and $bibitems/*[local-name() ='bibitem'][@id = current()/@target and not(@type = 'standard')]"> <!-- if reference to bibitem -->
-							<fo:inline baseline-shift="30%" font-size="80%">
+							<!-- <fo:inline baseline-shift="30%" font-size="80%"> -->
 								<xsl:choose>
 									<xsl:when test="contains(., '[') and contains(., ']')">
 										<fo:inline color="black" text-decoration="none">[</fo:inline>
@@ -3919,7 +3919,7 @@
 										<xsl:apply-templates />
 									</xsl:otherwise>
 								</xsl:choose>
-							</fo:inline>
+							<!-- </fo:inline> -->
 						</xsl:when>
 						<xsl:otherwise>
 							<xsl:apply-templates />
@@ -3928,6 +3928,20 @@
 				</fo:basic-link>
 			</xsl:with-param>
 		</xsl:call-template>
+	</xsl:template>
+	
+	<xsl:template match="*[local-name()='sup'][*[local-name()='xref'][@type = 'footnote']]" priority="2">
+		<fo:inline font-size="80%">
+			<xsl:choose>
+				<xsl:when test="$layoutVersion = '2024'">
+					<xsl:attribute name="baseline-shift">20%</xsl:attribute>
+				</xsl:when>
+				<xsl:otherwise>
+					<xsl:attribute name="vertical-align">super</xsl:attribute>
+				</xsl:otherwise>
+			</xsl:choose>
+			<xsl:apply-templates />
+		</fo:inline>
 	</xsl:template>
 	
 	<!-- =================== -->
