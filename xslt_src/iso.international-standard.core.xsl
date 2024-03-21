@@ -3416,9 +3416,10 @@
 			</xsl:when>
 			<xsl:otherwise>
 				<fo:block font-size="16pt" text-align="center" margin-bottom="48pt" keep-with-next="always" role="H1">
-					<!-- <xsl:if test="$layoutVersion = '2024'">
-						<xsl:attribute name="font-size">15.3pt</xsl:attribute>
-					</xsl:if> -->
+					<xsl:if test="$layoutVersion = '2024'">
+						<xsl:attribute name="line-height">1.1</xsl:attribute>
+						<!-- <xsl:attribute name="margin-bottom">52pt</xsl:attribute> -->
+					</xsl:if>
 					<xsl:if test="$layoutVersion = '1972' or $layoutVersion = '1987' or $layoutVersion = '1989'">
 						<xsl:attribute name="span">all</xsl:attribute>
 					</xsl:if>
@@ -3441,9 +3442,10 @@
 						<xsl:attribute name="font-size">14pt</xsl:attribute>
 						<xsl:attribute name="span">all</xsl:attribute>
 					</xsl:if>
-					<!-- <xsl:if test="$layoutVersion = '2024'">
-						<xsl:attribute name="font-size">15.3pt</xsl:attribute>
-					</xsl:if> -->
+					<xsl:if test="$layoutVersion = '2024'">
+						<xsl:attribute name="margin-top">0pt</xsl:attribute>
+						<xsl:attribute name="margin-bottom">30pt</xsl:attribute>
+					</xsl:if>
 					<xsl:apply-templates />
 				</fo:block>
 			</xsl:otherwise>
@@ -3565,6 +3567,7 @@
 							<xsl:when test="ancestor::iso:preface">8pt</xsl:when>
 							<xsl:when test="$level = 2 and ancestor::iso:annex">18pt</xsl:when>
 							<xsl:when test="$level = 1">18pt</xsl:when>
+							<xsl:when test="($level = 2 or $level = 3) and not(../preceding-sibling::iso:clause) and $layoutVersion = '2024'">12pt</xsl:when> <!-- first title in 3rd level clause -->
 							<xsl:when test="($level = 2 or $level = 3) and not(../preceding-sibling::iso:clause)">14pt</xsl:when> <!-- first title in 3rd level clause -->
 							<xsl:when test="$level = 3">14pt</xsl:when>
 							<xsl:when test="$level &gt; 3">3pt</xsl:when>
@@ -3579,6 +3582,7 @@
 							<xsl:when test="ancestor::iso:introduction and $level &gt;= 2">8pt</xsl:when>
 							<xsl:when test="ancestor::iso:preface">18pt</xsl:when>
 							<xsl:when test="$level = 3">9pt</xsl:when>
+							<!-- <xsl:when test="$level = 2 and ancestor::iso:annex and $layoutVersion = '2024'">2pt</xsl:when> -->
 							<!-- <xsl:otherwise>12pt</xsl:otherwise> -->
 							<xsl:otherwise>8pt</xsl:otherwise>
 						</xsl:choose>

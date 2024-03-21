@@ -10206,11 +10206,24 @@
 	<xsl:template match="text()[ancestor::*[local-name()='smallcap']]">
 		<!-- <xsl:variable name="text" select="normalize-space(.)"/> --> <!-- https://github.com/metanorma/metanorma-iso/issues/1115 -->
 		<xsl:variable name="text" select="."/>
-		<fo:inline font-size="75%" role="SKIP">
+		<xsl:variable name="ratio_">
+			<xsl:choose>
+				<xsl:when test="$namespace = 'iso'">
+					<xsl:choose>
+						<xsl:when test="$layoutVersion = '2024'">0.8</xsl:when>
+						<xsl:otherwise>0.75</xsl:otherwise>
+					</xsl:choose>
+				</xsl:when>
+				<xsl:otherwise>0.75</xsl:otherwise>
+			</xsl:choose>
+		</xsl:variable>
+		<xsl:variable name="ratio" select="number(normalize-space($ratio_))"/>
+		<fo:inline font-size="{$ratio * 100}%" role="SKIP">
 				<xsl:if test="string-length($text) &gt; 0">
 					<xsl:variable name="smallCapsText">
 						<xsl:call-template name="recursiveSmallCaps">
 							<xsl:with-param name="text" select="$text"/>
+							<xsl:with-param name="ratio" select="$ratio"/>
 						</xsl:call-template>
 					</xsl:variable>
 					<!-- merge neighboring fo:inline -->
@@ -10247,12 +10260,13 @@
 	
 	<xsl:template name="recursiveSmallCaps">
     <xsl:param name="text"/>
+    <xsl:param name="ratio"/>
     <xsl:variable name="char" select="substring($text,1,1)"/>
     <!-- <xsl:variable name="upperCase" select="translate($char, $lower, $upper)"/> -->
 		<xsl:variable name="upperCase" select="java:toUpperCase(java:java.lang.String.new($char))"/>
     <xsl:choose>
       <xsl:when test="$char=$upperCase">
-        <fo:inline font-size="{100 div 0.75}%" role="SKIP">
+        <fo:inline font-size="{100 div $ratio}%" role="SKIP">
           <xsl:value-of select="$upperCase"/>
         </fo:inline>
       </xsl:when>
@@ -10263,6 +10277,7 @@
     <xsl:if test="string-length($text) &gt; 1">
       <xsl:call-template name="recursiveSmallCaps">
         <xsl:with-param name="text" select="substring($text,2)"/>
+        <xsl:with-param name="ratio" select="$ratio"/>
       </xsl:call-template>
     </xsl:if>
   </xsl:template>
@@ -16653,6 +16668,11 @@
 			<xsl:when test="@hidden = 'true'"><!-- skip --></xsl:when>
 			<xsl:otherwise>
 				<fo:list-item id="{@id}" xsl:use-attribute-sets="bibitem-non-normative-list-item-style">
+					<xsl:if test="$namespace = 'iso'">
+						<xsl:if test="$layoutVersion = '2024'">
+							<xsl:attribute name="margin-bottom">8pt</xsl:attribute>
+						</xsl:if>
+					</xsl:if>
 					<fo:list-item-label end-indent="label-end()">
 						<fo:block role="SKIP">
 							<fo:inline role="SKIP">
