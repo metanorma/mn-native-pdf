@@ -11876,6 +11876,29 @@
 		</xsl:call-template>
 	</xsl:template>
 	
+	<!-- command between two xref points to non-standard bibitem -->
+	<xsl:template match="text()[. = ','][preceding-sibling::node()[1][local-name() = 'xref'] and following-sibling::node()[1][local-name() = 'xref']]">
+		<xsl:choose>
+			<xsl:when test="$namespace = 'iso'">
+				<xsl:choose>
+					<xsl:when test="$layoutVersion = '2024'">
+						<xsl:variable name="xref_target_preceding" select="preceding-sibling::node()[1]/@target"/>
+						<xsl:variable name="xref_target_following" select="following-sibling::node()[1]/@target"/>
+						<xsl:choose>
+							<xsl:when test="$bibitems/*[local-name() ='bibitem'][@id = $xref_target_preceding and not(@type = 'standard')] and
+									$bibitems/*[local-name() ='bibitem'][@id = $xref_target_following and not(@type = 'standard')]">
+									<fo:inline baseline-shift="30%" font-size="80%"><xsl:value-of select="."/></fo:inline>
+							</xsl:when>
+							<xsl:otherwise><xsl:value-of select="."/></xsl:otherwise>
+						</xsl:choose>
+					</xsl:when>
+					<xsl:otherwise><xsl:value-of select="."/></xsl:otherwise>
+				</xsl:choose>
+			</xsl:when>
+			<xsl:otherwise><xsl:value-of select="."/></xsl:otherwise>
+		</xsl:choose>
+	</xsl:template>
+	
 	<!-- ====== -->
 	<!-- formula  -->
 	<!-- ====== -->	
