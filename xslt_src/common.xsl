@@ -2570,6 +2570,10 @@
 				<xsl:attribute name="border-top"><xsl:value-of select="$table-cell-border"/></xsl:attribute>
 				<xsl:attribute name="border-bottom"><xsl:value-of select="$table-cell-border"/></xsl:attribute>
 			</xsl:if>
+			<!-- vertical table header -->
+			<xsl:if test="ancestor::*[local-name() = 'tbody'] and not(following-sibling::*[local-name() = 'th'])">
+				<xsl:attribute name="border-right"><xsl:value-of select="$table-border"/></xsl:attribute>
+			</xsl:if>
 		</xsl:if>
 		
 		<xsl:if test="$namespace = 'jis'">
@@ -3160,7 +3164,7 @@
 	<xsl:template name="refine_table-fn-number-style">
 		<xsl:if test="$namespace = 'iso'">
 			<xsl:if test="$layoutVersion = '2024'">
-				<xsl:attribute name="alignment-baseline">inherit</xsl:attribute>
+				<xsl:attribute name="alignment-baseline">auto</xsl:attribute>
 				<xsl:attribute name="baseline-shift">15%</xsl:attribute>
 			</xsl:if>
 		</xsl:if>
@@ -3717,6 +3721,12 @@
 			</xsl:if>
 			<xsl:if test="@type = 'assessed-capability'">
 				<xsl:attribute name="padding-right">1mm</xsl:attribute>
+			</xsl:if>
+		</xsl:if>
+		<xsl:if test="$namespace = 'iso'">
+			<xsl:variable name="note_name" select="*[local-name() = 'name']"/>
+			<xsl:if test="$layoutVersion = '2024' and translate($note_name,'0123456789','') = $note_name"> <!-- NOTE without number -->
+				<xsl:attribute name="padding-right">8mm</xsl:attribute>
 			</xsl:if>
 		</xsl:if>
 	</xsl:template> <!-- refine_note-name-style -->
