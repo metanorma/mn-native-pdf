@@ -3907,6 +3907,20 @@
 								<fo:page-number-citation ref-id="{@target}"/>
 							</fo:inline>
 						</xsl:when>
+						<xsl:when test="$layoutVersion = '2024' and $bibitems/*[local-name() ='bibitem'][@id = current()/@target and not(@type = 'standard')]"> <!-- if reference to bibitem -->
+							<fo:inline baseline-shift="30%" font-size="80%">
+								<xsl:choose>
+									<xsl:when test="contains(., '[') and contains(., ']')">
+										<fo:inline color="black" text-decoration="none">[</fo:inline>
+										<xsl:value-of select="translate(.,'[]','')"/>
+										<fo:inline color="black" text-decoration="none">]</fo:inline>
+									</xsl:when>
+									<xsl:otherwise>
+										<xsl:apply-templates />
+									</xsl:otherwise>
+								</xsl:choose>
+							</fo:inline>
+						</xsl:when>
 						<xsl:otherwise>
 							<xsl:apply-templates />
 						</xsl:otherwise>
