@@ -2295,6 +2295,13 @@
 								<xsl:if test="$layoutVersion = '1972' or $layoutVersion = '1987' or ($layoutVersion = '1989' and $revision_date_num &lt;= 19981231)">
 									<xsl:attribute name="master-reference">preface-1972-1998</xsl:attribute>
 								</xsl:if>
+								<xsl:if test="$layoutVersion = '2024'">
+									<fo:static-content flow-name="xsl-footnote-separator">
+										<fo:block margin-bottom="6pt">
+											<fo:leader leader-pattern="rule" leader-length="51mm" rule-thickness="0.5pt"/>
+										</fo:block>
+									</fo:static-content>
+								</xsl:if>
 								<xsl:call-template name="insertHeaderFooter">
 									<xsl:with-param name="font-weight">normal</xsl:with-param>
 									<xsl:with-param name="is_footer">true</xsl:with-param>
@@ -2403,7 +2410,15 @@
 						</xsl:if>
 						<fo:static-content flow-name="xsl-footnote-separator">
 							<fo:block>
-								<fo:leader leader-pattern="rule" leader-length="30%"/>
+								<xsl:if test="$layoutVersion = '2024'">
+									<xsl:attribute name="margin-bottom">6pt</xsl:attribute>
+								</xsl:if>
+								<fo:leader leader-pattern="rule" leader-length="30%">
+									<xsl:if test="$layoutVersion = '2024'">
+										<xsl:attribute name="leader-length">51mm</xsl:attribute>
+										<xsl:attribute name="rule-thickness">0.5pt</xsl:attribute>
+									</xsl:if>
+								</fo:leader>
 							</fo:block>
 						</fo:static-content>
 						
@@ -3401,9 +3416,10 @@
 			</xsl:when>
 			<xsl:otherwise>
 				<fo:block font-size="16pt" text-align="center" margin-bottom="48pt" keep-with-next="always" role="H1">
-					<!-- <xsl:if test="$layoutVersion = '2024'">
-						<xsl:attribute name="font-size">15.3pt</xsl:attribute>
-					</xsl:if> -->
+					<xsl:if test="$layoutVersion = '2024'">
+						<xsl:attribute name="line-height">1.1</xsl:attribute>
+						<!-- <xsl:attribute name="margin-bottom">52pt</xsl:attribute> -->
+					</xsl:if>
 					<xsl:if test="$layoutVersion = '1972' or $layoutVersion = '1987' or $layoutVersion = '1989'">
 						<xsl:attribute name="span">all</xsl:attribute>
 					</xsl:if>
@@ -3426,9 +3442,10 @@
 						<xsl:attribute name="font-size">14pt</xsl:attribute>
 						<xsl:attribute name="span">all</xsl:attribute>
 					</xsl:if>
-					<!-- <xsl:if test="$layoutVersion = '2024'">
-						<xsl:attribute name="font-size">15.3pt</xsl:attribute>
-					</xsl:if> -->
+					<xsl:if test="$layoutVersion = '2024'">
+						<xsl:attribute name="margin-top">0pt</xsl:attribute>
+						<xsl:attribute name="margin-bottom">30pt</xsl:attribute>
+					</xsl:if>
 					<xsl:apply-templates />
 				</fo:block>
 			</xsl:otherwise>
@@ -3550,6 +3567,7 @@
 							<xsl:when test="ancestor::iso:preface">8pt</xsl:when>
 							<xsl:when test="$level = 2 and ancestor::iso:annex">18pt</xsl:when>
 							<xsl:when test="$level = 1">18pt</xsl:when>
+							<xsl:when test="($level = 2 or $level = 3) and not(../preceding-sibling::iso:clause) and $layoutVersion = '2024'">12pt</xsl:when> <!-- first title in 3rd level clause -->
 							<xsl:when test="($level = 2 or $level = 3) and not(../preceding-sibling::iso:clause)">14pt</xsl:when> <!-- first title in 3rd level clause -->
 							<xsl:when test="$level = 3">14pt</xsl:when>
 							<xsl:when test="$level &gt; 3">3pt</xsl:when>
@@ -3564,6 +3582,7 @@
 							<xsl:when test="ancestor::iso:introduction and $level &gt;= 2">8pt</xsl:when>
 							<xsl:when test="ancestor::iso:preface">18pt</xsl:when>
 							<xsl:when test="$level = 3">9pt</xsl:when>
+							<!-- <xsl:when test="$level = 2 and ancestor::iso:annex and $layoutVersion = '2024'">2pt</xsl:when> -->
 							<!-- <xsl:otherwise>12pt</xsl:otherwise> -->
 							<xsl:otherwise>8pt</xsl:otherwise>
 						</xsl:choose>
@@ -3740,6 +3759,13 @@
 				</xsl:if>
 			</xsl:if>
 			
+			<xsl:if test="$layoutVersion = '2024'">
+				<xsl:attribute name="line-height">1.13</xsl:attribute>
+				<xsl:if test="parent::iso:li/following-sibling::* or parent::iso:dd">
+					<xsl:attribute name="margin-bottom">9pt</xsl:attribute>
+				</xsl:if>
+			</xsl:if>
+			
 			<!-- put inline title in the first paragraph -->
 			<xsl:if test="($layoutVersion = '1951' or $layoutVersion = '1972' or $layoutVersion = '1987' or $layoutVersion = '1989') and $layout_columns != 1">
 				<xsl:if test="preceding-sibling::*[1]/@inline-header = 'true' and preceding-sibling::*[1][self::iso:title]">
@@ -3868,6 +3894,10 @@
 		<xsl:call-template name="insert_basic_link">
 			<xsl:with-param name="element">
 				<fo:basic-link internal-destination="{@target}" fox:alt-text="{@target}" xsl:use-attribute-sets="xref-style">
+					<xsl:if test="$layoutVersion = '2024' and (ancestor::iso:termsource or $bibitems/*[local-name() ='bibitem'][@id = current()/@target and @type = 'standard'])">
+						<xsl:attribute name="color">inherit</xsl:attribute>
+						<xsl:attribute name="text-decoration">none</xsl:attribute>
+					</xsl:if>
 					<xsl:choose>
 						<xsl:when test="@pagenumber='true'">
 							<fo:inline>
@@ -3877,6 +3907,20 @@
 								<fo:page-number-citation ref-id="{@target}"/>
 							</fo:inline>
 						</xsl:when>
+						<xsl:when test="$layoutVersion = '2024' and $bibitems/*[local-name() ='bibitem'][@id = current()/@target and not(@type = 'standard')]"> <!-- if reference to bibitem -->
+							<!-- <fo:inline baseline-shift="30%" font-size="80%"> -->
+								<xsl:choose>
+									<xsl:when test="contains(., '[') and contains(., ']')">
+										<fo:inline color="black" text-decoration="none">[</fo:inline>
+										<xsl:value-of select="translate(.,'[]','')"/>
+										<fo:inline color="black" text-decoration="none">]</fo:inline>
+									</xsl:when>
+									<xsl:otherwise>
+										<xsl:apply-templates />
+									</xsl:otherwise>
+								</xsl:choose>
+							<!-- </fo:inline> -->
+						</xsl:when>
 						<xsl:otherwise>
 							<xsl:apply-templates />
 						</xsl:otherwise>
@@ -3884,6 +3928,20 @@
 				</fo:basic-link>
 			</xsl:with-param>
 		</xsl:call-template>
+	</xsl:template>
+	
+	<xsl:template match="*[local-name()='sup'][*[local-name()='xref'][@type = 'footnote']]" priority="2">
+		<fo:inline font-size="80%">
+			<xsl:choose>
+				<xsl:when test="$layoutVersion = '2024'">
+					<xsl:attribute name="baseline-shift">20%</xsl:attribute>
+				</xsl:when>
+				<xsl:otherwise>
+					<xsl:attribute name="vertical-align">super</xsl:attribute>
+				</xsl:otherwise>
+			</xsl:choose>
+			<xsl:apply-templates />
+		</fo:inline>
 	</xsl:template>
 	
 	<!-- =================== -->
