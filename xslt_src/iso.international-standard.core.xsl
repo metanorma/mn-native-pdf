@@ -2851,6 +2851,7 @@
 	
 	<xsl:template match="iso:preface/iso:clause[@type = 'toc']" priority="3">
 		<xsl:choose>
+			<xsl:when test="$toc_level = 0"/>
 			<xsl:when test="$doctype = 'amendment'"></xsl:when><!-- ToC shouldn't be generated in amendments. -->
 			<xsl:when test="$layoutVersion = '1987' and $doctype = 'technical-report'"></xsl:when>
 			<xsl:otherwise>
