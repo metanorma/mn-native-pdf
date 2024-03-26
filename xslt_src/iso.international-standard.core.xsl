@@ -467,8 +467,8 @@
 				
 				<fo:layout-master-set>
 					
-					<xsl:variable name="marginLeftRight_cover_page_1951">12.5</xsl:variable>
-					<xsl:variable name="marginTop_cover_page_1951">18</xsl:variable>
+					<xsl:variable name="marginLeftRight_cover_page_1951">16.5</xsl:variable> <!-- 12.5 -->
+					<xsl:variable name="marginTop_cover_page_1951">19.5</xsl:variable>
 					<xsl:variable name="marginBottom_cover_page_1951">94.5</xsl:variable>
 					
 					<xsl:variable name="marginLeft_cover_page_1972">21</xsl:variable>
@@ -829,14 +829,14 @@
 				<xsl:choose>
 					<xsl:when test="$layoutVersion = '1951'">
 						<fo:page-sequence master-reference="cover-page_1951" force-page-count="no-force">
-							<fo:static-content flow-name="cover-page-header" font-weight="bold" font-size="9pt">
+							<fo:static-content flow-name="cover-page-header" font-family="Times New Roman" font-size="8.5pt" font-weight="bold">
 								<fo:block-container height="99%" display-align="after">
 									<fo:block text-align-last="justify" role="SKIP">
 										<!-- Example: UDC 669.7 : 620.178.1 -->
 										<xsl:value-of select="$udc"/>
 										<fo:inline keep-together.within-line="always" role="SKIP">
 											<fo:leader leader-pattern="space"/>
-											<fo:inline font-weight="normal"><xsl:value-of select="concat($i18n_reference_number_abbrev, ': ')"/></fo:inline><xsl:value-of select="$ISOnumber"/>
+											<fo:inline font-weight="normal"><xsl:value-of select="concat($i18n_reference_number_abbrev, ' : ')"/></fo:inline><xsl:value-of select="$ISOnumber"/> <!-- font-family="Arial" -->
 										</fo:inline>
 									</fo:block>
 								</fo:block-container>
@@ -848,40 +848,43 @@
 								</fo:block>
 							</fo:static-content>
 							<fo:flow flow-name="xsl-region-body">
-								<fo:block text-align="center" font-family="Arial" margin-top="18mm">
+								<fo:block text-align="center" font-family="Arial" margin-top="14mm">
 									<fo:block>
 										<fo:instream-foreign-object content-width="23mm" fox:alt-text="Image ISO Logo">
 											<xsl:copy-of select="$Image-ISO-Logo-1951-SVG"/>
 										</fo:instream-foreign-object>
 									</fo:block>
-									<fo:block margin-top="3mm" font-size="8pt" font-weight="bold">
+									<fo:block margin-top="2mm" font-size="8pt" font-weight="bold">
 										<xsl:call-template name="add-letter-spacing">
 											<xsl:with-param name="text" select="java:toUpperCase(java:java.lang.String.new(/iso:iso-standard/iso:bibdata/iso:copyright/iso:owner/iso:organization/iso:name))"/>
-											<xsl:with-param name="letter-spacing" select="0.65"/>
+											<xsl:with-param name="letter-spacing" select="0.55"/>
 										</xsl:call-template>
 									</fo:block>
-									<fo:block-container margin-top="12mm" height="78mm" display-align="center">
-										<fo:block font-size="20pt">
-											<!-- ISO RECOMMENDATION -->
-											<xsl:call-template name="add-letter-spacing">
-												<xsl:with-param name="text" select="$doctype_uppercased"/>
-												<xsl:with-param name="letter-spacing" select="0.65"/>
-											</xsl:call-template>
-										</fo:block>
-										<fo:block font-size="24pt" margin-top="5mm">
-											<xsl:value-of select="$docnumber_with_prefix"/>
-										</fo:block>
-										
-										<fo:block font-size="11pt" margin-top="12mm">
+									
+									<fo:block font-size="20pt" margin-top="31mm">
+										<!-- ISO RECOMMENDATION -->
+										<xsl:call-template name="add-letter-spacing">
+											<xsl:with-param name="text" select="$doctype_uppercased"/>
+											<xsl:with-param name="letter-spacing" select="0.35"/>
+										</xsl:call-template>
+									</fo:block>
+									<fo:block font-size="24pt" margin-top="5mm">
+										<xsl:value-of select="$docnumber_with_prefix"/>
+									</fo:block>
+									
+									<fo:block-container height="39mm" display-align="center">
+										<fo:block font-size="11pt" >
 											<xsl:call-template name="insertTitlesLangMain"/>
 										</fo:block>
-										
 									</fo:block-container>
-									<fo:block-container height="40mm" display-align="center" font-size="9pt">
-										<fo:block><xsl:apply-templates select="/iso:iso-standard/iso:bibdata/iso:edition[@language != '']" /></fo:block>
-										<fo:block>&#xa0;</fo:block>
+									
+									<fo:block-container margin-top="8.5mm" font-size="10pt"> <!--  height="40mm" display-align="center"  -->
+										<!-- Example: 1st EDITION -->
+										<!-- <fo:block><xsl:apply-templates select="/iso:iso-standard/iso:bibdata/iso:edition[@language != '']" /></fo:block> -->
+										<fo:block font-weight="bold"><xsl:value-of select="/iso:iso-standard/iso:bibdata/iso:edition[@language != '']" /></fo:block>
+										<!-- <fo:block>&#xa0;</fo:block> -->
 										<!-- Example: October 1971 -->
-										<fo:block>
+										<fo:block margin-top="2mm" font-size="9pt">
 											<xsl:call-template name="convertDate">
 												<xsl:with-param name="date" select="/iso:iso-standard/iso:bibdata/iso:version/iso:revision-date"/>
 											</xsl:call-template>
@@ -3352,7 +3355,7 @@
 			<xsl:when test="$layoutVersion = '1951'">
 				<xsl:choose>
 					<xsl:when test="@id = 'boilerplate-message'">
-						<fo:block-container width="85.5mm" margin-left="50mm" margin-right="50mm">
+						<fo:block-container width="87mm" margin-left="45mm" margin-right="45mm">
 							<fo:block-container margin-left="0" margin-right="0">
 								<fo:block text-align="justify" text-align-last="center">
 								<!-- The copyright of ISO Recommendations and 1SO Standards
