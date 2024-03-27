@@ -448,9 +448,10 @@
 							<xsl:attribute name="font-size">8.5pt</xsl:attribute>
 						 </xsl:if>
 						
-						<!-- <xsl:if test="$lang = 'zh'">
-							<xsl:attribute name="font-family">Source Han Sans, Times New Roman, Cambria Math</xsl:attribute>
-						</xsl:if> -->
+						<xsl:if test="$lang = 'zh'">
+							<!-- <xsl:attribute name="font-family">Source Han Sans, Times New Roman, Cambria Math</xsl:attribute> -->
+							<xsl:attribute name="font-selection-strategy">character-by-character</xsl:attribute>
+						</xsl:if>
 					</root-style>
 				</xsl:variable>
 				<xsl:call-template name="insertRootStyle">
