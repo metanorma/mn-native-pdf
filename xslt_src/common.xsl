@@ -1945,6 +1945,11 @@
 				<!-- for internal table in table cell -->
 				<xsl:attribute name="border"><xsl:value-of select="$table-cell-border"/></xsl:attribute>
 			</xsl:if>
+			<xsl:if test="$layoutVersion = '1951'">
+				<xsl:if test="@unnumbered = 'true' and ancestor::*[local-name() = 'preface']">
+					<xsl:attribute name="border">none</xsl:attribute>
+				</xsl:if>
+			</xsl:if>
 		</xsl:if>
 		
 		<xsl:call-template name="setBordersTableArray"/>
@@ -2860,6 +2865,11 @@
 			</xsl:if>
 			<xsl:if test="ancestor::*[local-name() = 'tbody'] and not(../preceding-sibling::*[local-name() = 'tr']) and ancestor::*[local-name() = 'table'][1]/*[local-name() = 'thead']"> <!-- cells in 1st row in the table body, and if thead exists -->
 				<xsl:attribute name="border-top">0pt solid black</xsl:attribute>
+			</xsl:if>
+			<xsl:if test="$layoutVersion = '1951'">
+				<xsl:if test="ancestor::*[local-name() = 'table'][1]/@unnumbered = 'true' and ancestor::*[local-name() = 'preface']">
+					<xsl:attribute name="border">none</xsl:attribute>
+				</xsl:if>
 			</xsl:if>
 			<!-- <xsl:attribute name="page-break-inside">avoid</xsl:attribute> -->
 		</xsl:if>
@@ -19057,7 +19067,5 @@
 			</fo:block>
 		</xsl:if>
 	</xsl:template>
-	
-	<!-- update -->
 	
 </xsl:stylesheet>
