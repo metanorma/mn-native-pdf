@@ -2468,8 +2468,16 @@
 								<!-- first page header -->
 								<!-- Example: ISO Recommendation R 453 November 1965 -->
 								<fo:block-container margin-top="-8mm" margin-left="-12mm" margin-right="-12mm">
+									<xsl:if test="$revision_date_num &gt;= 19690101">
+										<xsl:attribute name="margin-top">-9mm</xsl:attribute>
+										<xsl:attribute name="margin-left">-12.5mm</xsl:attribute>
+										<xsl:attribute name="margin-right">-12.5mm</xsl:attribute>
+									</xsl:if>
 									<fo:block-container margin-left="0" margin-right="0" border-bottom="1.25pt solid black">
 										<fo:table table-layout="fixed" width="100%" font-family="Arial" font-size="13pt">
+											<xsl:if test="$revision_date_num &gt;= 19690101">
+												<xsl:attribute name="font-size">10pt</xsl:attribute>
+											</xsl:if>
 											<fo:table-column column-width="proportional-column-width(9.5)"/>
 											<fo:table-column column-width="proportional-column-width(65)"/>
 											<fo:table-column column-width="proportional-column-width(34)"/>
@@ -2477,6 +2485,9 @@
 											<fo:table-column column-width="proportional-column-width(9.5)"/>
 											<fo:table-body>
 												<fo:table-row height="10mm">
+													<xsl:if test="$revision_date_num &gt;= 19690101">
+														<xsl:attribute name="height">7mm</xsl:attribute>
+													</xsl:if>
 													<fo:table-cell><fo:block>&#xa0;</fo:block></fo:table-cell>
 													<fo:table-cell><fo:block><xsl:value-of select="$doctype_localized"/></fo:block></fo:table-cell>
 													<fo:table-cell text-align="center"><fo:block><xsl:value-of select="$docnumber_with_prefix"/></fo:block></fo:table-cell>
