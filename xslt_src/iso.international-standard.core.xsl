@@ -3187,6 +3187,10 @@
 				<xsl:attribute name="text-align">center</xsl:attribute>
 				<xsl:attribute name="margin-top">49mm</xsl:attribute>
 				<xsl:attribute name="text-transform">uppercase</xsl:attribute>
+				<xsl:if test="$revision_date_num &gt;= 19690101">
+					<xsl:attribute name="font-family">Arial</xsl:attribute>
+					<xsl:attribute name="font-size">11pt</xsl:attribute>
+				</xsl:if>
 			</xsl:if>
 			<xsl:if test="$layoutVersion = '1972' or $layoutVersion = '1987' or $layoutVersion = '1989'">
 				<xsl:attribute name="font-size">16pt</xsl:attribute>
