@@ -317,10 +317,12 @@
 	-->
 	<xsl:variable name="contents_">
 		<contents>
-			<xsl:call-template name="processPrefaceSectionsDefault_Contents"/>
-			<xsl:call-template name="processMainSectionsDefault_Contents"/>
-			<xsl:apply-templates select="//iso:indexsect" mode="contents"/>
-			<xsl:call-template name="processTablesFigures_Contents"/>
+      <xsl:if test="$isGenerateTableIF = 'false'">
+        <xsl:call-template name="processPrefaceSectionsDefault_Contents"/>
+        <xsl:call-template name="processMainSectionsDefault_Contents"/>
+        <xsl:apply-templates select="//iso:indexsect" mode="contents"/>
+        <xsl:call-template name="processTablesFigures_Contents"/>
+      </xsl:if>
 		</contents>
 	</xsl:variable>
 	<xsl:variable name="contents" select="xalan:nodeset($contents_)"/>
@@ -825,6 +827,8 @@
 				<xsl:call-template name="addBookmarks">
 					<xsl:with-param name="contents" select="$contents"/>
 				</xsl:call-template>
+				
+				<xsl:if test="$isGenerateTableIF = 'false'"> <!-- no need cover page for auto-layout algorithm -->
 				
 				<!-- cover page -->
 				<xsl:choose>
@@ -2100,6 +2104,7 @@
 					</xsl:otherwise>
 				</xsl:choose>	
 				
+				</xsl:if> <!-- $isGenerateTableIF = ' false' -->
 				
 				<xsl:if test="$debug = 'true'"><xsl:message>START updated_xml_step1</xsl:message></xsl:if>
 				<xsl:variable name="startTime1" select="java:getTime(java:java.util.Date.new())"/>
@@ -2587,6 +2592,7 @@
 					<xsl:message>END xalan:nodeset</xsl:message> -->
 					
 					<xsl:choose>
+						<xsl:when test="$isGenerateTableIF = 'true'"><!-- skip last page --></xsl:when>
 						<xsl:when test="$layoutVersion = '1951'"/>
 						<xsl:when test="$layoutVersion = '1972'"/>
 						<xsl:when test="$layoutVersion = '1987' and $doctype = 'technical-report'"><!-- UDC, Keywords and Price renders on the first page for technical-report --></xsl:when>
@@ -2863,6 +2869,7 @@
 	
 	<xsl:template match="iso:preface/iso:clause[@type = 'toc']" priority="3">
 		<xsl:choose>
+			<xsl:when test="$isGenerateTableIF = 'true'"/>
 			<xsl:when test="$toc_level = 0"/>
 			<xsl:when test="$doctype = 'amendment'"></xsl:when><!-- ToC shouldn't be generated in amendments. -->
 			<xsl:when test="$layoutVersion = '1987' and $doctype = 'technical-report'"></xsl:when>

@@ -78,7 +78,7 @@
 	<xsl:param name="add_math_as_text">true</xsl:param> <!-- add math in text behind svg formula, to copy-paste formula from PDF as text -->
   
 	<xsl:param name="table_if">false</xsl:param> <!-- generate extended table in IF for autolayout-algorithm -->
-	<xsl:param name="table_widths" /> <!-- path to xml with table's widths, generated on 1st pass, based on FOP Intermediate Format -->
+	<xsl:param name="table_widths" /> <!-- (debug: path to) xml with table's widths, generated on 1st pass, based on FOP Intermediate Format -->
 	<!-- Example: <tables>
 			<table id="table_if_tab-symdu" page-width="75"> - table id prefixed by 'table_if_' to simple search in IF 
 				<tbody>
