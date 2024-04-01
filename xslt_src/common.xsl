@@ -6924,9 +6924,11 @@
 		<xsl:variable name="table">
 	
 			<xsl:variable name="simple-table">
-				<xsl:call-template name="getSimpleTable">
-					<xsl:with-param name="id" select="@id"/>
-				</xsl:call-template>
+				<xsl:if test="$isGenerateTableIF = 'true' and $isApplyAutolayoutAlgorithm = 'true'">
+					<xsl:call-template name="getSimpleTable">
+						<xsl:with-param name="id" select="@id"/>
+					</xsl:call-template>
+				</xsl:if>
 			</xsl:variable>
 			<!-- <xsl:variable name="simple-table" select="xalan:nodeset($simple-table_)"/> -->
 		
