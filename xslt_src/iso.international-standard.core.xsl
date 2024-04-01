@@ -2111,7 +2111,9 @@
 				
 				<!-- STEP1: Re-order elements in 'preface', 'sections' based on @displayorder -->
 				<xsl:variable name="updated_xml_step1">
-					<xsl:apply-templates mode="update_xml_step1"/>
+					<xsl:if test="$table_if = 'false'">
+						<xsl:apply-templates mode="update_xml_step1"/>
+					</xsl:if>
 				</xsl:variable>
 				
 				<!-- DEBUG -->
@@ -2131,7 +2133,9 @@
 				
 				<!-- STEP2: add 'fn' after 'eref' and 'origin', if referenced to bibitem with 'note' = Withdrawn.' or 'Cancelled and replaced...'  -->
 				<xsl:variable name="updated_xml_step2">
-					<xsl:apply-templates select="xalan:nodeset($updated_xml_step1)" mode="update_xml_step2"/>
+					<xsl:if test="$table_if = 'false'">
+						<xsl:apply-templates select="xalan:nodeset($updated_xml_step1)" mode="update_xml_step2"/>
+					</xsl:if>
 				</xsl:variable>
 				
 				<xsl:variable name="endTime2" select="java:getTime(java:java.util.Date.new())"/>
@@ -2145,7 +2149,14 @@
 				<xsl:variable name="startTime3" select="java:getTime(java:java.util.Date.new())"/>
 				
 				<xsl:variable name="updated_xml_step3">
-					<xsl:apply-templates select="xalan:nodeset($updated_xml_step2)" mode="update_xml_enclose_keep-together_within-line"/>
+					<xsl:choose>
+						<xsl:when test="$table_if = 'false'">
+							<xsl:apply-templates select="xalan:nodeset($updated_xml_step2)" mode="update_xml_enclose_keep-together_within-line"/>
+						</xsl:when>
+						<xsl:otherwise>
+							<xsl:copy-of select="."/>
+						</xsl:otherwise>
+					</xsl:choose>
 				</xsl:variable>
 				
 				<xsl:variable name="endTime3" select="java:getTime(java:java.util.Date.new())"/>
