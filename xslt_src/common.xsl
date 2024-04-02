@@ -7331,7 +7331,15 @@
 						</xsl:if>
 						
 					</fo:block>
-			
+					
+					<!-- <xsl:if test="$namespace = 'bsi' or $namespace = 'iec' or $namespace = 'iso'"> -->
+					<xsl:if test="$continued = 'true'">
+						<fo:block text-align="right">
+							<xsl:apply-templates select="../*[local-name() = 'note'][@type = 'units']/node()" />
+						</fo:block>
+					</xsl:if>
+					<!-- </xsl:if> -->
+					
 				</xsl:otherwise>
 			</xsl:choose>
 			
@@ -7831,11 +7839,11 @@
 		<xsl:param name="colwidths"/>
 		<xsl:param name="colgroup"/>
 		
-		<xsl:variable name="isNoteOrFnExist" select="../*[local-name()='note'] or ../*[local-name()='example'] or ../*[local-name()='dl'] or ..//*[local-name()='fn'][local-name(..) != 'name'] or ../*[local-name()='source'] or ../*[local-name()='p']"/>
+		<xsl:variable name="isNoteOrFnExist" select="../*[local-name()='note'][not(@type = 'units')] or ../*[local-name()='example'] or ../*[local-name()='dl'] or ..//*[local-name()='fn'][local-name(..) != 'name'] or ../*[local-name()='source'] or ../*[local-name()='p']"/>
 		
 		<xsl:variable name="isNoteOrFnExistShowAfterTable">
 			<xsl:if test="$namespace = 'bsi'">
-				 <xsl:value-of select="../*[local-name()='note'] or ../*[local-name()='source'] or ../*[local-name()='dl'] or ..//*[local-name()='fn']"/>
+				 <xsl:value-of select="../*[local-name()='note'][not(@type = 'units')] or ../*[local-name()='source'] or ../*[local-name()='dl'] or ..//*[local-name()='fn']"/>
 			</xsl:if>
 		</xsl:variable>
 		
@@ -7907,13 +7915,13 @@
 								
 								<!-- fn will be processed inside 'note' processing -->
 								<xsl:if test="$namespace = 'iec'">
-									<xsl:if test="../*[local-name()='note']">
+									<xsl:if test="../*[local-name()='note'][not(@type = 'units')]">
 										<fo:block margin-bottom="6pt" role="SKIP">&#xA0;</fo:block>
 									</xsl:if>
 								</xsl:if>
 								
 								<xsl:if test="$namespace = 'bipm'">
-									<xsl:if test="count(ancestor::bipm:table//*[local-name()='note']) &gt; 1">
+									<xsl:if test="count(ancestor::bipm:table//*[local-name()='note'][not(@type = 'units')]) &gt; 1">
 										<fo:block font-weight="bold" role="SKIP">
 											<xsl:variable name="curr_lang" select="ancestor::bipm:bipm-standard/bipm:bibdata/bipm:language"/>
 											<xsl:choose>
@@ -7934,7 +7942,7 @@
 								<xsl:if test="$namespace = 'bsi'">
 									<xsl:if test="$document_type != 'PAS'">
 										<xsl:apply-templates select="../*[local-name()='dl']" />
-										<xsl:apply-templates select="../*[local-name()='note']" />
+										<xsl:apply-templates select="../*[local-name()='note'][not(@type = 'units')]" />
 										<xsl:apply-templates select="../*[local-name()='source']" />
 									</xsl:if>
 								</xsl:if>
@@ -7943,12 +7951,12 @@
 								<xsl:choose>
 									<xsl:when test="$namespace = 'gb' or $namespace = 'bsi'"></xsl:when>
 									<xsl:when test="$namespace = 'jis'">
-										<xsl:apply-templates select="../*[local-name()='p' or local-name()='dl' or local-name()='note' or local-name()='example' or local-name()='source']" />
+										<xsl:apply-templates select="../*[local-name()='p' or local-name()='dl' or (local-name()='note' and not(@type = 'units')) or local-name()='example' or local-name()='source']" />
 									</xsl:when>
 									<xsl:otherwise>
 										<xsl:apply-templates select="../*[local-name()='p']" />
 										<xsl:apply-templates select="../*[local-name()='dl']" />
-										<xsl:apply-templates select="../*[local-name()='note']" />
+										<xsl:apply-templates select="../*[local-name()='note'][not(@type = 'units')]" />
 										<xsl:apply-templates select="../*[local-name()='example']" />
 										<xsl:apply-templates select="../*[local-name()='source']" />
 									</xsl:otherwise>
@@ -7964,7 +7972,7 @@
 								
 								<!-- horizontal row separator -->
 								<xsl:if test="normalize-space($isDisplayRowSeparator) = 'true'">
-									<xsl:if test="(../*[local-name()='note'] or ../*[local-name()='example']) and normalize-space($table_fn_block) != ''">
+									<xsl:if test="(../*[local-name()='note'][not(@type = 'units')] or ../*[local-name()='example']) and normalize-space($table_fn_block) != ''">
 										<fo:block-container border-top="0.5pt solid black" padding-left="1mm" padding-right="1mm">
 											<xsl:if test="$namespace = 'bsi'">
 												<xsl:attribute name="margin-bottom">6pt</xsl:attribute>
@@ -7990,7 +7998,7 @@
 								<xsl:if test="$namespace = 'bsi'">
 									<xsl:if test="$document_type = 'PAS'">
 										<xsl:apply-templates select="../*[local-name()='dl']" />
-										<xsl:apply-templates select="../*[local-name()='note']" />
+										<xsl:apply-templates select="../*[local-name()='note'][not(@type = 'units')]" />
 										<xsl:apply-templates select="../*[local-name()='source']" />
 									</xsl:if>
 								</xsl:if>
