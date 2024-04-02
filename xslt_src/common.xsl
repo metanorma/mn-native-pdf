@@ -6901,7 +6901,7 @@
 			<xsl:when test="$table_only_with_id != '' and @id = $table_only_with_id">
 				<xsl:call-template name="table"/>
 			</xsl:when>
-			<xsl:when test="$table_only_with_id != ''"></xsl:when>
+			<xsl:when test="$table_only_with_id != ''"><fo:block/><!-- to prevent empty fo:block-container --></xsl:when>
 			<xsl:otherwise>
 				<xsl:call-template name="table"/>
 			</xsl:otherwise>
@@ -9049,7 +9049,7 @@
 			<xsl:when test="$table_only_with_id != '' and @id = $table_only_with_id">
 				<xsl:call-template name="dl"/>
 			</xsl:when>
-			<xsl:when test="$table_only_with_id != ''"></xsl:when>
+			<xsl:when test="$table_only_with_id != ''"><fo:block/><!-- to prevent empty fo:block-container --></xsl:when>
 			<xsl:otherwise>
 				<xsl:call-template name="dl"/>
 			</xsl:otherwise>
