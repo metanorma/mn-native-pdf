@@ -6965,21 +6965,6 @@
 						<xsl:with-param name="cols-count" select="$cols-count"/>
 						<xsl:with-param name="table" select="$simple-table"/>
 					</xsl:call-template>
-					<!-- debug  -->
-					<xsl:if test="@id = 'table11111'">
-						<xsl:variable name="current_table">
-							<xsl:copy-of select="."/>
-						</xsl:variable>
-						<xsl:variable name="columns" select="java:org.metanorma.fop.Util.calculateTableColumnsWidths($current_table)"/>
-						<xsl:for-each select="xalan:nodeset($columns)//column">
-							<xsl:copy-of select="."/>
-						</xsl:for-each>
-						
-						<!-- <column>394</column>
-						<column>754</column>
-						<column>1088</column> -->
-					</xsl:if>
-					
 				</xsl:if>
 			</xsl:variable>
 			<!-- <xsl:variable name="colwidths" select="xalan:nodeset($colwidths_)"/> -->

@@ -317,12 +317,12 @@
 	-->
 	<xsl:variable name="contents_">
 		<contents>
-      <xsl:if test="$isGenerateTableIF = 'false'">
-        <xsl:call-template name="processPrefaceSectionsDefault_Contents"/>
-        <xsl:call-template name="processMainSectionsDefault_Contents"/>
-        <xsl:apply-templates select="//iso:indexsect" mode="contents"/>
-        <xsl:call-template name="processTablesFigures_Contents"/>
-      </xsl:if>
+			<xsl:if test="$isGenerateTableIF = 'false'">
+				<xsl:call-template name="processPrefaceSectionsDefault_Contents"/>
+				<xsl:call-template name="processMainSectionsDefault_Contents"/>
+				<xsl:apply-templates select="//iso:indexsect" mode="contents"/>
+				<xsl:call-template name="processTablesFigures_Contents"/>
+			</xsl:if>
 		</contents>
 	</xsl:variable>
 	<xsl:variable name="contents" select="xalan:nodeset($contents_)"/>
