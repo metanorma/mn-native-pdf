@@ -455,6 +455,8 @@
 	<xsl:variable name="hair_space">&#x200A;</xsl:variable>
 	<xsl:variable name="en_dash">&#x2013;</xsl:variable>
 	<xsl:variable name="em_dash">&#x2014;</xsl:variable>
+	<xsl:variable name="cr">&#x0d;</xsl:variable>
+	<xsl:variable name="lf">&#x0a;</xsl:variable>
 	
 	<xsl:template name="getTitle">
 		<xsl:param name="name"/>
@@ -7038,9 +7040,9 @@
 						</xsl:attribute>
 					</xsl:for-each>
 					
-					<xsl:variable name="isNoteOrFnExist" select="./*[local-name()='note'] or ./*[local-name()='example'] or .//*[local-name()='fn'][local-name(..) != 'name'] or ./*[local-name()='source']"/>				
+					<xsl:variable name="isNoteOrFnExist" select="./*[local-name()='note'][not(@type = 'units')] or ./*[local-name()='example'] or .//*[local-name()='fn'][local-name(..) != 'name'] or ./*[local-name()='source']"/>				
 					<xsl:if test="$isNoteOrFnExist = 'true'">
-						<xsl:attribute name="border-bottom">0pt solid black</xsl:attribute> <!-- set 0pt border, because there is a separete table below for footer  -->
+						<xsl:attribute name="border-bottom">0pt solid black</xsl:attribute><!-- set 0pt border, because there is a separete table below for footer -->
 					</xsl:if>
 					
 					
@@ -7346,6 +7348,16 @@
 		</xsl:if>
 	</xsl:template> <!-- table/name -->
 
+	<!-- workaround solution for https://github.com/metanorma/metanorma-iso/issues/1151#issuecomment-2033087938 -->
+	<xsl:template match="*[local-name()='table']/*[local-name() = 'note'][@type = 'units']/*[local-name() = 'p']/text()" priority="4">
+		<xsl:choose>
+			<xsl:when test="preceding-sibling::*[local-name() = 'br']">
+				<!-- remove CR or LF at start -->
+				<xsl:value-of select="java:replaceAll(java:java.lang.String.new(.),'^(&#x0d;&#x0a;|&#x0d;|&#x0a;)', '')"/>
+			</xsl:when>
+			<xsl:otherwise><xsl:value-of select="."/></xsl:otherwise>
+		</xsl:choose>
+	</xsl:template>
 	
 	<!-- SOURCE: ... -->
 	<xsl:template match="*[local-name()='table']/*[local-name() = 'source']" priority="2">
