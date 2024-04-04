@@ -1630,6 +1630,9 @@
 		<xsl:param name="copyrightText"/>
 		<fo:static-content flow-name="footer">
 			<fo:block-container height="24mm" display-align="after">
+        <xsl:if test="$section = 'commentary'">
+          <xsl:attribute name="height">24.5mm</xsl:attribute>
+        </xsl:if>
 				<xsl:if test="$section = 'preface'">
 					<fo:block font-size="9pt" text-align="center" space-after="10pt">(<fo:inline font-family="Times New Roman"><fo:page-number /></fo:inline>)</fo:block>
 				</xsl:if>
