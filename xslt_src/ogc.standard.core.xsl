@@ -1084,6 +1084,8 @@
 	<xsl:template match="ogc:p" name="paragraph">
 		<xsl:param name="inline" select="'false'"/>
 		<xsl:param name="split_keep-within-line"/>
+		<xsl:param name="indent">0</xsl:param>
+		<!-- <fo:block>debug p indent=<xsl:value-of select="$indent"/></fo:block> -->
 		<xsl:variable name="previous-element" select="local-name(preceding-sibling::*[1])"/>
 		<xsl:variable name="element-name">
 			<xsl:choose>
@@ -1119,6 +1121,7 @@
 			
 			<xsl:apply-templates>
 				<xsl:with-param name="split_keep-within-line" select="$split_keep-within-line"/>
+				<xsl:with-param name="indent" select="$indent"/>
 			</xsl:apply-templates>
 		</xsl:element>
 		<xsl:if test="$element-name = 'fo:inline' and not($inline = 'true') and not(local-name(..) = 'admonition')">
@@ -1144,17 +1147,18 @@
 	
 	
 	<xsl:template match="ogc:ul | ogc:ol" mode="list" priority="2">
-		<xsl:variable name="ul_indent">6mm</xsl:variable>
-		<fo:block-container margin-left="13mm">
-			<xsl:if test="self::ogc:ul and not(ancestor::ogc:ul) and not(ancestor::ogc:ol)"> <!-- if first level -->
-				<xsl:attribute name="margin-left">4mm</xsl:attribute>
-			</xsl:if>
-			<xsl:if test="self::ogc:ul and ancestor::*[2][self::ogc:ul]"> <!-- ul/li/ul -->
-				<xsl:attribute name="margin-left"><xsl:value-of select="$ul_indent"/></xsl:attribute>
-			</xsl:if>
-			<xsl:if test="ancestor::ogc:table">
-				<xsl:attribute name="margin-left">4mm</xsl:attribute>
-			</xsl:if>
+		<xsl:param name="indent">0</xsl:param>
+		<!-- <fo:block>debug ul ol indent=<xsl:value-of select="$indent"/></fo:block> -->
+		<xsl:variable name="ul_indent">6</xsl:variable>
+		<xsl:variable name="margin_left">
+			<xsl:choose>
+				<xsl:when test="self::ogc:ul and not(ancestor::ogc:ul) and not(ancestor::ogc:ol)">4</xsl:when> <!-- if first level -->
+				<xsl:when test="self::ogc:ul and ancestor::*[2][self::ogc:ul]"><xsl:value-of select="$ul_indent"/></xsl:when> <!-- ul/li/ul -->
+				<xsl:when test="ancestor::ogc:table">4</xsl:when>
+				<xsl:otherwise>13</xsl:otherwise>
+			</xsl:choose>
+		</xsl:variable>
+		<fo:block-container margin-left="{$margin_left}mm">
 			<xsl:if test="ancestor::ogc:ul or ancestor::ogc:ol">
 				<xsl:attribute name="margin-top">10pt</xsl:attribute>
 				<xsl:if test="ancestor::ogc:table">
@@ -1164,7 +1168,7 @@
 			<fo:block-container margin-left="0mm">
 				<fo:list-block xsl:use-attribute-sets="list-style">
 					<xsl:if test="self::ogc:ul">
-						<xsl:attribute name="provisional-distance-between-starts"><xsl:value-of select="$ul_indent"/></xsl:attribute>
+						<xsl:attribute name="provisional-distance-between-starts"><xsl:value-of select="$ul_indent"/>mm</xsl:attribute>
 					</xsl:if>
 					<xsl:if test="ancestor::ogc:table">
 						<xsl:attribute name="provisional-distance-between-starts">5mm</xsl:attribute>
@@ -1178,7 +1182,9 @@
 					<xsl:if test="following-sibling::*[1][local-name() = 'ul' or local-name() = 'ol']">
 						<xsl:attribute name="margin-bottom">0pt</xsl:attribute>
 					</xsl:if>
-					<xsl:apply-templates />
+					<xsl:apply-templates>
+						<xsl:with-param name="indent" select="$indent + $ul_indent"/>
+					</xsl:apply-templates>
 				</fo:list-block>
 			</fo:block-container>
 		</fo:block-container>
@@ -1289,9 +1295,13 @@
 	</xsl:template>
 	
 	<xsl:template match="ogc:figure" priority="2">
+		<xsl:param name="indent"/>
+		<!-- <fo:block>debug figure indent=<xsl:value-of select="$indent"/></fo:block> -->
 		<fo:block-container id="{@id}" margin-top="12pt" margin-bottom="12pt">			
 			<fo:block>
-				<xsl:apply-templates select="node()[not(local-name() = 'name')]" />
+				<xsl:apply-templates select="node()[not(local-name() = 'name')]">
+					<xsl:with-param name="indent" select="$indent"/>
+				</xsl:apply-templates>
 			</fo:block>
 			<xsl:call-template name="fn_display_figure"/>
 			<xsl:for-each select="ogc:note">
