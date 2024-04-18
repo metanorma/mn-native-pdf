@@ -763,11 +763,15 @@
 	
 	<!-- Lato font doesn't contain 'thin space' glyph -->
 	<xsl:template match="text()" priority="1">
-		<xsl:value-of select="translate(., $thin_space, ' ')"/>
+		<xsl:call-template name="add_fo_character">
+			<xsl:with-param name="text" select="translate(., $thin_space, ' ')"/>
+		</xsl:call-template>
 	</xsl:template>
-	
+
 	<xsl:template match="ogc:title//text() | ogc:name//text()" priority="3" mode="contents">
-		<xsl:value-of select="translate(., $thin_space, ' ')"/>
+		<xsl:call-template name="add_fo_character">
+			<xsl:with-param name="text" select="translate(., $thin_space, ' ')"/>
+		</xsl:call-template>
 	</xsl:template>
 
 	<xsl:template match="*[local-name()='td']//text() | *[local-name()='th']//text()" priority="2">
@@ -783,9 +787,56 @@
 		<!-- replace sequence #x200B to one &#x200B -->
 		<xsl:variable name="content4" select="java:replaceAll(java:java.lang.String.new($content3), '\u200b{2,}', '&#x200B;')"/>
 		
-		<xsl:value-of select="translate($content4, $thin_space, ' ')"/>
+		<xsl:call-template name="add_fo_character">
+			<xsl:with-param name="text" select="translate($content4, $thin_space, ' ')"/>
+		</xsl:call-template>
 	</xsl:template>
 
+	<xsl:template name="add_fo_character">
+		<xsl:param name="text"/>
+		<!-- https://github.com/metanorma/mn-native-pdf/issues/672, https://issues.apache.org/jira/browse/FOP-3175 -->
+		<!-- Miscellaneous Symbols https://www.compart.com/en/unicode/block/U+2600  U+2600 - U+26FF  -->
+		<!-- Dingbats https://www.compart.com/en/unicode/block/U+2700  U+2700 - U+27BF -->
+		<!-- Miscellaneous Symbols and Arrows https://www.compart.com/en/unicode/block/U+2b55 U+2B00 - U+2BFF-->
+		<!-- enclose  chars into <fo:character character="..."/>  -->
+		<xsl:variable name="regex_dingbats_chars">([\u2100-\u2BFF])</xsl:variable> <!-- \u1F300;-\u1F5FF; not working in fo:character -->
+		<xsl:variable name="element_name_fo_character">fo:character</xsl:variable>
+		<xsl:variable name="tag_element_name_fo_character_open">###<xsl:value-of select="$element_name_fo_character"/>###</xsl:variable>
+		<xsl:variable name="tag_element_name_fo_character_close">###/<xsl:value-of select="$element_name_fo_character"/>###</xsl:variable>
+		<xsl:variable name="text_" select="java:replaceAll(java:java.lang.String.new($text), $regex_dingbats_chars, concat($tag_element_name_fo_character_open,'$1',$tag_element_name_fo_character_close))"/>
+		<xsl:call-template name="replace_text_tags_fo_character">
+			<xsl:with-param name="tag_open" select="$tag_element_name_fo_character_open"/>
+			<xsl:with-param name="tag_close" select="$tag_element_name_fo_character_close"/>
+			<xsl:with-param name="text" select="$text_"/>
+		</xsl:call-template>
+	</xsl:template>
+
+		<!-- ###fo:character###A###/fo:character### -->
+	<xsl:template name="replace_text_tags_fo_character">
+		<xsl:param name="tag_open"/>
+		<xsl:param name="tag_close"/>
+		<xsl:param name="text"/>
+		<xsl:choose>
+			<xsl:when test="contains($text, $tag_open)">
+				<xsl:value-of select="substring-before($text, $tag_open)"/>
+				<xsl:variable name="text_after" select="substring-after($text, $tag_open)"/>
+				
+				<xsl:element name="{substring-before(substring-after($tag_open, '###'),'###')}">
+					<xsl:attribute name="character">
+						<xsl:value-of select="substring-before($text_after, $tag_close)"/>
+					</xsl:attribute>
+				</xsl:element>
+				
+				<xsl:call-template name="replace_text_tags_fo_character">
+					<xsl:with-param name="tag_open" select="$tag_open"/>
+					<xsl:with-param name="tag_close" select="$tag_close"/>
+					<xsl:with-param name="text" select="substring-after($text_after, $tag_close)"/>
+				</xsl:call-template>
+			</xsl:when>
+			<xsl:otherwise><xsl:value-of select="$text"/></xsl:otherwise>
+		</xsl:choose>
+	</xsl:template>
+	
 
 	<xsl:template match="node()" mode="sections">
 		<xsl:param name="initial-page-number"/>
