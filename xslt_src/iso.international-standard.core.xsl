@@ -1142,7 +1142,7 @@
 														
 														
 														<xsl:choose>
-															<xsl:when test="$stage-abbreviation = 'DIS' or $stage-abbreviation = 'DAMD' or $stage-abbreviation = 'DAM'">
+															<xsl:when test="$stage-abbreviation = 'DIS'"> <!--  or $stage-abbreviation = 'DAMD' or $stage-abbreviation = 'DAM' -->
 																<xsl:value-of select="java:toUpperCase(java:java.lang.String.new($stagename))"/>
 																<xsl:value-of select="$linebreak"/>
 																<xsl:value-of select="$doctype_localized"/>
@@ -1259,7 +1259,7 @@
 														</xsl:if>
 													</xsl:if>
 												
-													<xsl:if test="$doctype = 'amendment' and not($stage-abbreviation = 'FDAMD' or $stage-abbreviation = 'FDAM')">
+													<xsl:if test="$doctype = 'amendment'"> <!-- and not($stage-abbreviation = 'FDAMD' or $stage-abbreviation = 'FDAM') -->
 														<fo:block font-size="18pt" font-weight="bold" margin-bottom="3mm">
 															<xsl:value-of select="$doctype_uppercased"/>
 															<xsl:text> </xsl:text>
@@ -1268,9 +1268,9 @@
 																<xsl:value-of select="$amendment-number"/><xsl:text> </xsl:text>
 															</xsl:if>
 														</fo:block>
-													</xsl:if>
+													<!-- </xsl:if>
 												
-													<xsl:if test="$doctype = 'amendment' and not($stage-abbreviation = 'FDAMD' or $stage-abbreviation = 'FDAM')">
+													<xsl:if test="$doctype = 'amendment' and not($stage-abbreviation = 'FDAMD' or $stage-abbreviation = 'FDAM')"> -->
 														<xsl:if test="/iso:iso-standard/iso:bibdata/iso:date[@type = 'updated']">																		
 															<fo:block font-size="18pt" font-weight="bold" margin-bottom="3mm">
 																<xsl:value-of select="/iso:iso-standard/iso:bibdata/iso:date[@type = 'updated']"/>
@@ -1783,7 +1783,7 @@
 														<fo:table-cell role="SKIP"><fo:block role="SKIP"></fo:block></fo:table-cell>
 														<fo:table-cell number-columns-spanned="2" font-size="10pt" line-height="1.2" display-align="center" role="SKIP">
 															<fo:block role="SKIP">
-																<xsl:if test="$stage-abbreviation = 'NWIP' or $stage-abbreviation = 'NP' or $stage-abbreviation = 'PWI' or $stage-abbreviation = 'AWI' or $stage-abbreviation = 'WD' or $stage-abbreviation = 'CD' or $stage-abbreviation = 'FDIS' or $stagename_abbreviation = 'FDIS'">
+																<xsl:if test="$stage-abbreviation = 'NWIP' or $stage-abbreviation = 'NP' or $stage-abbreviation = 'PWI' or $stage-abbreviation = 'AWI' or $stage-abbreviation = 'WD' or $stage-abbreviation = 'CD'">
 																	<fo:table table-layout="fixed" width="100%" role="SKIP">
 																		<fo:table-column column-width="50%"/>
 																		<fo:table-column column-width="50%"/>
