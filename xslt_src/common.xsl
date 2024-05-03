@@ -17652,7 +17652,11 @@
 	<!-- =========================================================================== -->
 	<!-- STEP1:  -->
 	<!--   - Re-order elements in 'preface', 'sections' based on @displayorder -->
+	<!--   - Put Section title in the correct position -->
 	<!--   - Ignore 'span' without style -->
+	<!--   - Remove semantic xml part -->
+	<!--   - Remove image/emf (EMF vector image for Word) -->
+	<!--   - add @id, redundant for table auto-layout algorithm -->
 	<!-- =========================================================================== -->
 	<xsl:template match="@*|node()" mode="update_xml_step1">
 		<xsl:copy>
@@ -17765,7 +17769,7 @@
 		<xsl:copy-of select="."/>
 	</xsl:template>
 	
-	<!-- add @id, redundant for table auto-layout algorithm -->
+	<!-- add @id, mandatory for table auto-layout algorithm -->
 	<xsl:template match="*[local-name() = 'dl' or local-name() = 'table'][not(@id)]" mode="update_xml_step1">
 		<xsl:copy>
 			<xsl:copy-of select="@*"/>
