@@ -17765,7 +17765,14 @@
 	<!-- remove image/emf -->
 	<xsl:template match="*[local-name() = 'image']/*[local-name() = 'emf']" mode="update_xml_step1"/>
 	
-	<xsl:template match="*[local-name() = 'stem'] | *[local-name() = 'image']" mode="update_xml_step1">
+	<!-- remove preprocess-xslt -->
+	<xsl:template match="*[local-name() = 'preprocess-xslt']" mode="update_xml_step1"/>
+	
+	<xsl:template match="*[local-name() = 'stem'] | 
+						*[local-name() = 'image'] | 
+						*[local-name() = 'sourcecode'] | 
+						*[local-name() = 'bibdata'] | 
+						*[local-name() = 'localized-strings']" mode="update_xml_step1">
 		<xsl:copy-of select="."/>
 	</xsl:template>
 	
