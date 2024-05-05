@@ -2129,13 +2129,37 @@
 				</xsl:if>
 				
 				
+				<xsl:variable name="updated_xml_step_move_pagebreak">
+					<xsl:if test="$table_if = 'false'">
+						<xsl:apply-templates select="xalan:nodeset($updated_xml_step1)" mode="update_xml_step_move_pagebreak"/>
+					</xsl:if>
+				</xsl:variable>
+				
+				<xsl:variable name="updated_xml_step_move_pagebreak_filename" select="concat($output_path,'_', java:getTime(java:java.util.Date.new()), '.xml')"/>
+				
+				<redirect:write file="{$updated_xml_step_move_pagebreak_filename}">
+					<xsl:copy-of select="$updated_xml_step_move_pagebreak"/>
+				</redirect:write>
+				
+				<xsl:variable name="updated_xml_step_move_pagebreak_xml" select="document($updated_xml_step_move_pagebreak_filename)"/>
+				<xsl:variable name="updated_xml_step_move_pagebreak_file" select="java:java.io.File.new($updated_xml_step_move_pagebreak_filename)"/>
+				<xsl:variable name="updated_xml_step_move_pagebreak_path" select="java:toPath($updated_xml_step_move_pagebreak_file)"/>
+				<xsl:variable name="deletefile" select="java:java.nio.file.Files.deleteIfExists($updated_xml_step_move_pagebreak_path)"/>
+				
+				<redirect:write file="{concat($updated_xml_step_move_pagebreak_filename, '.xml')}">
+					<xsl:copy-of select="$updated_xml_step_move_pagebreak_xml"/>
+				</redirect:write>
+				
+				
+				
+				
 				<xsl:if test="$debug = 'true'"><xsl:message>START updated_xml_step2</xsl:message></xsl:if>
 				<xsl:variable name="startTime2" select="java:getTime(java:java.util.Date.new())"/>
 				
 				<!-- STEP2: add 'fn' after 'eref' and 'origin', if referenced to bibitem with 'note' = Withdrawn.' or 'Cancelled and replaced...'  -->
 				<xsl:variable name="updated_xml_step2">
 					<xsl:if test="$table_if = 'false'">
-						<xsl:apply-templates select="xalan:nodeset($updated_xml_step1)" mode="update_xml_step2"/>
+						<xsl:apply-templates select="xalan:nodeset($updated_xml_step_move_pagebreak)" mode="update_xml_step2"/>
 					</xsl:if>
 				</xsl:variable>
 				
