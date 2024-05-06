@@ -829,1283 +829,8 @@
 					<xsl:with-param name="contents" select="$contents"/>
 				</xsl:call-template>
 				
-				<xsl:if test="$isGenerateTableIF = 'false'"> <!-- no need cover page for auto-layout algorithm -->
+				<xsl:call-template name="insertCoverPage"/>
 				
-				<!-- cover page -->
-				<xsl:choose>
-					<xsl:when test="$layoutVersion = '1951'">
-						<fo:page-sequence master-reference="cover-page_1951" force-page-count="no-force">
-							<fo:static-content flow-name="cover-page-header" font-family="Times New Roman" font-size="8.5pt" font-weight="bold">
-								<fo:block-container height="99%" display-align="after">
-									<fo:block text-align-last="justify" role="SKIP">
-										<!-- Example: UDC 669.7 : 620.178.1 -->
-										<xsl:value-of select="$udc"/>
-										<fo:inline keep-together.within-line="always" role="SKIP">
-											<fo:leader leader-pattern="space"/>
-											<fo:inline font-weight="normal"><xsl:value-of select="concat($i18n_reference_number_abbrev, ' : ')"/></fo:inline><xsl:value-of select="$ISOnumber"/> <!-- font-family="Arial" -->
-										</fo:inline>
-									</fo:block>
-								</fo:block-container>
-							</fo:static-content>
-							<fo:static-content flow-name="cover-page-footer" font-size="9.5pt">
-								<fo:block text-align="center">
-									<!-- COPYRIGHT RESERVED -->
-									<xsl:apply-templates select="/iso:iso-standard/iso:boilerplate/iso:copyright-statement"/>
-								</fo:block>
-							</fo:static-content>
-							<fo:flow flow-name="xsl-region-body">
-								<fo:block text-align="center" font-family="Arial" margin-top="14mm">
-									<fo:block>
-										<fo:instream-foreign-object content-width="23mm" fox:alt-text="Image ISO Logo">
-											<xsl:copy-of select="$Image-ISO-Logo-1951-SVG"/>
-										</fo:instream-foreign-object>
-									</fo:block>
-									<fo:block margin-top="2mm" font-size="8pt" font-weight="bold">
-										<xsl:call-template name="add-letter-spacing">
-											<xsl:with-param name="text" select="java:toUpperCase(java:java.lang.String.new(/iso:iso-standard/iso:bibdata/iso:copyright/iso:owner/iso:organization/iso:name))"/>
-											<xsl:with-param name="letter-spacing" select="0.55"/>
-										</xsl:call-template>
-									</fo:block>
-									
-									<fo:block font-size="20pt" margin-top="31mm">
-										<!-- ISO RECOMMENDATION -->
-										<xsl:call-template name="add-letter-spacing">
-											<xsl:with-param name="text" select="$doctype_uppercased"/>
-											<xsl:with-param name="letter-spacing" select="0.35"/>
-										</xsl:call-template>
-									</fo:block>
-									<fo:block font-size="24pt" margin-top="5mm">
-										<xsl:value-of select="$docnumber_with_prefix"/>
-									</fo:block>
-									
-									<fo:block-container height="39mm" display-align="center">
-										<fo:block font-size="11pt" >
-											<xsl:call-template name="insertTitlesLangMain"/>
-										</fo:block>
-									</fo:block-container>
-									
-									<fo:block-container margin-top="8.5mm" font-size="10pt"> <!--  height="40mm" display-align="center"  -->
-										<!-- Example: 1st EDITION -->
-										<!-- <fo:block><xsl:apply-templates select="/iso:iso-standard/iso:bibdata/iso:edition[@language != '']" /></fo:block> -->
-										<fo:block font-weight="bold"><xsl:value-of select="/iso:iso-standard/iso:bibdata/iso:edition[@language != '']" /></fo:block>
-										<!-- <fo:block>&#xa0;</fo:block> -->
-										<!-- Example: October 1971 -->
-										<fo:block margin-top="2mm" font-size="9pt">
-											<xsl:call-template name="convertDate">
-												<xsl:with-param name="date" select="/iso:iso-standard/iso:bibdata/iso:version/iso:revision-date"/>
-											</xsl:call-template>
-										</fo:block>
-										<fo:block margin-top="14mm">
-											<xsl:value-of select="/iso:iso-standard/iso:bibdata/iso:ext/iso:edn-replacement"/>
-										</fo:block>
-									</fo:block-container>
-								</fo:block>
-							</fo:flow>
-						</fo:page-sequence>
-					</xsl:when> <!-- END: $layoutVersion = '1951' -->
-					
-					<xsl:when test="$layoutVersion = '1972'">
-						<fo:page-sequence master-reference="cover-page_1972" force-page-count="no-force">
-							<fo:static-content flow-name="cover-page-footer" font-size="7pt">
-								<xsl:call-template name="insertSingleLine"/>
-								<fo:block font-size="11pt" font-weight="bold" text-align-last="justify" margin-right="1mm">
-									<fo:inline keep-together.within-line="always" role="SKIP">
-										<xsl:value-of select="$udc"/>
-										<fo:leader leader-pattern="space"/>
-										<fo:inline role="SKIP">
-											<xsl:value-of select="concat($i18n_reference_number, '&#xa0;&#xa0;', $ISOnumber)"/>
-										</fo:inline>
-									</fo:inline>
-								</fo:block>
-								
-								<xsl:if test="/iso:iso-standard/iso:bibdata/iso:keyword">
-									<fo:block margin-top="10pt">
-										<fo:inline font-weight="bold"><xsl:value-of select="$i18n_descriptors"/> : </fo:inline>
-										<xsl:call-template name="insertKeywords">
-											<xsl:with-param name="sorting">no</xsl:with-param>
-											<xsl:with-param name="charDelim" select="',  '"/>
-										</xsl:call-template>
-									</fo:block>
-								</xsl:if>
-								<fo:block-container position="absolute" left="0mm" top="0mm" height="25mm" text-align="right" display-align="after" role="SKIP">
-									<fo:block>
-										<xsl:for-each select="xalan:nodeset($price_based_on_items)/item">
-											<xsl:value-of select="."/>
-											<xsl:if test="position() != last()">
-												<fo:page-number-citation ref-id="lastBlock"/>
-											</xsl:if>										
-										</xsl:for-each>
-									</fo:block>
-								</fo:block-container>
-							</fo:static-content>
-							<fo:static-content flow-name="left-region" >
-								<fo:block-container reference-orientation="90">
-									<fo:block font-size="8pt" margin-left="7mm" margin-top="10mm">
-										<xsl:value-of select="$ISOnumber"/>
-									</fo:block>
-								</fo:block-container>
-							</fo:static-content>
-							<fo:flow flow-name="xsl-region-body">
-								<xsl:variable name="docnumber">
-									<xsl:variable name="value" select="/iso:iso-standard/iso:bibdata/iso:docnumber"/>
-									<xsl:value-of select="$value"/>
-									<xsl:if test="$part != ''">/<xsl:value-of select="$part"/></xsl:if>
-								</xsl:variable>
-								<fo:table table-layout="fixed" width="100%" border-top="2pt solid black" border-bottom="2pt solid black">
-									<xsl:choose>
-										<xsl:when test="string-length($docnumber) &gt; 4">
-											<fo:table-column column-width="proportional-column-width(110)"/>
-											<fo:table-column column-width="proportional-column-width(28)"/>
-											<fo:table-column column-width="proportional-column-width(43)"/>
-										</xsl:when>
-										<xsl:otherwise>
-											<fo:table-column column-width="proportional-column-width(123)"/>
-											<fo:table-column column-width="proportional-column-width(28)"/>
-											<fo:table-column column-width="proportional-column-width(30)"/>
-										</xsl:otherwise>
-									</xsl:choose>
-									
-									<fo:table-body>
-										<fo:table-row height="39mm" display-align="center">
-											<fo:table-cell>
-												<fo:block font-size="33pt" margin-top="2mm">
-													<xsl:if test="string-length($docnumber) &gt; 4">
-														<xsl:attribute name="font-size">30pt</xsl:attribute>
-													</xsl:if>
-													<xsl:value-of select="$doctype_localized"/>
-												</fo:block>
-											</fo:table-cell>
-											<fo:table-cell>
-												<fo:block font-size="0">
-													<xsl:variable name="content-height">27</xsl:variable>
-													<fo:external-graphic src="{concat('data:image/png;base64,', normalize-space($Image-ISO-Logo-1972))}" content-height="{$content-height}mm" content-width="scale-to-fit" scaling="uniform" fox:alt-text="Image ISO Logo"/>
-												</fo:block>
-											</fo:table-cell>
-											<fo:table-cell text-align="right">
-												<fo:block font-size="34pt" font-weight="bold" margin-top="2mm">
-													<xsl:value-of select="$docnumber"/>
-												</fo:block>
-											</fo:table-cell>
-										</fo:table-row>
-										<fo:table-row border-top="2pt solid black" height="4.5mm" display-align="center">
-											<fo:table-cell number-columns-spanned="3" font-size="5.6pt" text-align-last="justify">
-												<fo:block><xsl:value-of select="$ISO_title_en"/>&#x25cf;<xsl:value-of select="$ISO_title_ru"/>&#x25cf;<xsl:value-of select="$ISO_title_fr"/></fo:block>
-											</fo:table-cell>
-										</fo:table-row>
-									</fo:table-body>
-								</fo:table>
-								
-								<fo:block font-size="16pt" font-weight="bold" margin-top="44mm" margin-bottom="6mm" role="H1">
-									<xsl:call-template name="insertTitlesLangMain"/>
-								</fo:block>
-								
-								<xsl:for-each select="xalan:nodeset($lang_other)/lang">
-									<xsl:variable name="lang_other" select="."/>
-									<fo:block font-size="8pt" font-style="italic" line-height="1.1" role="H1">
-										<!-- Example: title-intro fr -->
-										<xsl:call-template name="insertTitlesLangOther">
-											<xsl:with-param name="lang_other" select="$lang_other"/>
-										</xsl:call-template>
-									</fo:block>
-								</xsl:for-each>
-								
-								<fo:block margin-top="6mm" font-weight="bold">
-									<xsl:call-template name="printEdition"/>
-									<xsl:text>&#xa0;— </xsl:text>
-									<xsl:value-of select="/iso:iso-standard/iso:bibdata/iso:version/iso:revision-date"/>
-								</fo:block>
-								
-							</fo:flow>
-						</fo:page-sequence>
-					</xsl:when> <!-- END: $layoutVersion = '1972' -->
-					<xsl:when test="$layoutVersion = '1987' and $doctype = 'technical-report'"><!-- see preface pages below --></xsl:when>
-					<xsl:when test="$layoutVersion = '1987'">
-						<fo:page-sequence master-reference="cover-page_1987" force-page-count="no-force">
-							<fo:static-content flow-name="right-region" >
-								<fo:block-container height="50%">
-									<fo:block-container margin-top="8mm" margin-left="2mm">
-										<fo:block-container margin-top="0" margin-left="0" font-family="Times New Roman">
-											<fo:block font-size="24pt" line-height="1.1">
-												<xsl:value-of select="$docidentifierISO_with_break"/>
-											</fo:block>
-											<fo:block line-height="1">
-												<xsl:call-template name="printEdition"/>
-												<xsl:value-of select="$linebreak"/>
-												<xsl:text>&#xa0;</xsl:text><xsl:value-of select="/iso:iso-standard/iso:bibdata/iso:version/iso:revision-date"/>
-											</fo:block>
-									</fo:block-container>
-									</fo:block-container>
-								</fo:block-container>
-								<fo:block-container height="50%" display-align="after">
-									<fo:block-container margin-left="3mm">
-										<fo:block-container margin-left="0" font-family="Times New Roman">
-											<fo:block font-size="8pt" font-family="Times New Roman" margin-bottom="-0.5mm">
-												<xsl:value-of select="$i18n_reference_number"/>
-												<xsl:value-of select="$linebreak"/>
-												<xsl:value-of select="$ISOnumber"/>
-											</fo:block>
-										</fo:block-container>
-									</fo:block-container>
-								</fo:block-container>
-							</fo:static-content>
-							<fo:flow flow-name="xsl-region-body">
-								<fo:block-container height="99.5%" border="1.25pt solid black">
-									<fo:block-container margin-left="11mm" margin-top="16mm" margin-right="10.5mm">
-										<fo:block-container margin-left="0" margin-top="0" margin-right="0">
-											<fo:block font-family="Times New Roman" font-size="24pt">
-												<!-- INTERNATIONAL STANDARD -->
-												<xsl:call-template name="add-letter-spacing">
-													<xsl:with-param name="text" select="$doctype_uppercased"/>
-													<xsl:with-param name="letter-spacing" select="0.1"/>
-												</xsl:call-template>
-											</fo:block>
-											<fo:table table-layout="fixed" width="100%" margin-top="16mm">
-												<fo:table-column column-width="proportional-column-width(23)"/>
-												<fo:table-column column-width="proportional-column-width(108)"/>
-												<fo:table-body>
-													<fo:table-row>
-														<fo:table-cell>
-															<fo:block margin-top="-0.5mm" font-size="0">
-																<xsl:variable name="content-height">18</xsl:variable>
-																<fo:external-graphic src="{concat('data:image/png;base64,', normalize-space($Image-ISO-Logo-1987))}" content-height="{$content-height}mm" content-width="scale-to-fit" scaling="uniform" fox:alt-text="Image ISO Logo"/>
-															</fo:block>
-														</fo:table-cell>
-														<fo:table-cell font-size="7.5pt" border-top="0.5pt solid black" border-bottom="0.5pt solid black" text-align-last="justify" display-align="center" line-height="1.6" padding-left="32mm">
-															<fo:block><xsl:value-of select="$ISO_title_en"/></fo:block>
-															<fo:block><xsl:value-of select="$ISO_title_fr"/></fo:block>
-															<fo:block><xsl:value-of select="$ISO_title_ru"/></fo:block>
-														</fo:table-cell>
-													</fo:table-row>
-												</fo:table-body>
-											</fo:table>
-											
-											<fo:block font-size="13pt" font-weight="bold" margin-top="32mm" margin-bottom="9mm" role="H1">
-												<xsl:call-template name="insertTitlesLangMain"/>
-											</fo:block>
-											
-											<xsl:for-each select="xalan:nodeset($lang_other)/lang">
-												<xsl:variable name="lang_other" select="."/>
-												<fo:block font-size="8pt" font-style="italic" line-height="1.1" role="H1">
-													<!-- Example: title-intro fr -->
-													<xsl:call-template name="insertTitlesLangOther">
-														<xsl:with-param name="lang_other" select="$lang_other"/>
-													</xsl:call-template>
-												</fo:block>
-											</xsl:for-each>
-											
-										</fo:block-container>
-									</fo:block-container>
-								</fo:block-container>
-							</fo:flow>
-						</fo:page-sequence>
-					</xsl:when>
-				
-					<xsl:when test="$layoutVersion = '2024'">
-						<fo:page-sequence master-reference="cover-page_2024" force-page-count="no-force">
-							<fo:flow flow-name="xsl-region-body">
-								<fo:table table-layout="fixed" width="100%">
-									<xsl:call-template name="insertInterFont"/>
-									<fo:table-column column-width="proportional-column-width(113.8)"/>
-									<fo:table-column column-width="proportional-column-width(2)"/>
-									<fo:table-column column-width="proportional-column-width(2)"/>
-									<fo:table-column column-width="proportional-column-width(72.2)"/>
-									<fo:table-body>
-									
-										<fo:table-row>
-											<fo:table-cell number-columns-spanned="2" border-right="{$cover_page_border}">
-												<fo:block>
-													<xsl:call-template name="insertLogoImages2024"/>
-												</fo:block>
-											</fo:table-cell>
-											<!-- International 
-											Standard -->
-											<fo:table-cell number-columns-spanned="2" padding-left="6mm">
-												<fo:block-container height="46mm">
-													<fo:block font-size="20pt" font-weight="bold" line-height="1.25" margin-top="3mm">
-													
-														<xsl:variable name="updates-document-type" select="/iso:iso-standard/iso:bibdata/iso:ext/iso:updates-document-type"/>
-														<xsl:variable name="updates-document-type_localized">
-															<xsl:call-template name="getLocalizedString">
-																<xsl:with-param name="key" select="concat('doctype_dict.',$updates-document-type)"/>
-															</xsl:call-template>
-														</xsl:variable>
-														<xsl:variable name="updates-document-type_str">
-															<xsl:choose>
-																<xsl:when test="$updates-document-type != '' and $updates-document-type_localized != $updates-document-type">
-																	<xsl:value-of select="$updates-document-type_localized"/>
-																</xsl:when>
-																<xsl:otherwise>
-																	<xsl:value-of select="java:toUpperCase(java:java.lang.String.new(translate($updates-document-type,'-',' ')))"/>
-																</xsl:otherwise>
-															</xsl:choose>
-														</xsl:variable>
-														
-														
-														<xsl:choose>
-															<xsl:when test="$stage-abbreviation = 'DIS'"> <!--  or $stage-abbreviation = 'DAMD' or $stage-abbreviation = 'DAM' -->
-																<xsl:value-of select="java:toUpperCase(java:java.lang.String.new($stagename))"/>
-																<xsl:value-of select="$linebreak"/>
-																<xsl:value-of select="$doctype_localized"/>
-															</xsl:when>
-															<!-- <xsl:when test="$stage-abbreviation = 'FDAmd' or $stage-abbreviation = 'FDAM'"><xsl:value-of select="$doctype_uppercased"/></xsl:when> -->
-															<xsl:when test="$stagename-header-coverpage != ''">
-																<xsl:attribute name="margin-top">12pt</xsl:attribute>
-																
-																<xsl:value-of select="$stagename-header-coverpage"/>
-																
-																<!-- if there is iteration number, then print it -->
-																<xsl:variable name="iteration" select="number(/iso:iso-standard/iso:bibdata/iso:status/iso:iteration)"/>
-																<xsl:if test="number($iteration) = $iteration and 
-																																								($stage-abbreviation = 'NWIP' or 
-																																								$stage-abbreviation = 'NP' or 
-																																								$stage-abbreviation = 'PWI' or 
-																																								$stage-abbreviation = 'AWI' or 
-																																								$stage-abbreviation = 'WD' or 
-																																								$stage-abbreviation = 'CD')">
-																	<xsl:text>&#xA0;</xsl:text><xsl:value-of select="$iteration"/>
-																</xsl:if>
-																
-																<xsl:value-of select="$linebreak"/>
-																
-																<xsl:choose>
-																	<xsl:when test="$doctype = 'amendment'">
-																		<xsl:value-of select="$updates-document-type_str"/>
-																	</xsl:when>
-																	<xsl:otherwise>
-																		<xsl:value-of select="$doctype_localized"/>
-																	</xsl:otherwise>
-																</xsl:choose>
-															</xsl:when>
-															<xsl:when test="$doctype = 'amendment'">
-																<xsl:value-of select="$updates-document-type_str"/>
-															</xsl:when>
-															<xsl:otherwise>
-																<xsl:value-of select="$doctype_localized"/>
-															</xsl:otherwise>
-														</xsl:choose>
-														
-													</fo:block>
-												</fo:block-container>
-											</fo:table-cell>
-										</fo:table-row>
-										
-										<fo:table-row height="46mm">
-											<fo:table-cell number-columns-spanned="2" border-right="{$cover_page_border}">
-												<fo:block>&#xa0;
-													</fo:block>
-											</fo:table-cell>
-											<fo:table-cell number-columns-spanned="2" display-align="after" padding-left="6mm">
-												<fo:block font-size="19pt" font-weight="bold" line-height="1">
-													<xsl:if test="$stage &gt;=60">
-														<xsl:attribute name="color"><xsl:value-of select="$color_red"/></xsl:attribute>
-													</xsl:if>
-													<xsl:value-of select="$docidentifierISO"/>
-												</fo:block>
-											</fo:table-cell>
-										</fo:table-row>
-										
-										<fo:table-row height="1.4mm" font-size="0pt">
-											<fo:table-cell border-bottom="{$cover_page_border}"><fo:block>&#xa0;</fo:block></fo:table-cell>
-											<fo:table-cell number-columns-spanned="2"><fo:block>&#xa0;</fo:block></fo:table-cell>
-											<fo:table-cell border-bottom="{$cover_page_border}"><fo:block>&#xa0;</fo:block></fo:table-cell>
-										</fo:table-row>
-										<fo:table-row height="1.4mm" font-size="0pt">
-											<fo:table-cell number-columns-spanned="4"><fo:block>&#xa0;</fo:block></fo:table-cell>
-										</fo:table-row>
-										
-										<fo:table-row>
-											<fo:table-cell number-columns-spanned="2" border-right="{$cover_page_border}" padding-right="4mm">
-											
-												<fo:block-container font-family="Cambria" line-height="1.1" role="SKIP" height="110mm">
-													<fo:block margin-right="3.5mm" role="SKIP">
-														<fo:block font-size="18pt" font-weight="bold" margin-top="2.5mm" role="H1">
-															<xsl:call-template name="insertTitlesLangMain"/>
-														</fo:block>
-																	
-														<xsl:if test="not($stage-abbreviation = 'FDAMD' or $stage-abbreviation = 'FDAM')">
-															<xsl:for-each select="xalan:nodeset($lang_other)/lang">
-																<xsl:variable name="lang_other" select="."/>
-																<fo:block font-size="12pt" role="SKIP"><xsl:value-of select="$linebreak"/></fo:block>
-																<fo:block font-size="11pt" font-style="italic" line-height="1.1" role="H1">
-																	<!-- Example: title-intro fr -->
-																	<xsl:call-template name="insertTitlesLangOther">
-																		<xsl:with-param name="lang_other" select="$lang_other"/>
-																	</xsl:call-template>
-																</fo:block>
-															</xsl:for-each>
-														</xsl:if>
-														
-														<xsl:if test="$stage-abbreviation = 'NWIP' or $stage-abbreviation = 'NP' or $stage-abbreviation = 'PWI' or $stage-abbreviation = 'AWI' or $stage-abbreviation = 'WD' or $stage-abbreviation = 'CD' or $stage-abbreviation = 'FDIS' or $stagename_abbreviation = 'FDIS' 
-															or $stage-abbreviation = 'DIS' or $stage-abbreviation = 'DAMD' or $stage-abbreviation = 'DAM' or $stagename_abbreviation = 'DIS'">
-															<fo:block margin-top="20mm">
-																<xsl:copy-of select="$ics"/>
-															</fo:block>
-														</xsl:if>
-														
-													</fo:block>
-												</fo:block-container>
-											</fo:table-cell>
-											<fo:table-cell number-columns-spanned="2" padding-left="6mm">
-												<fo:block margin-top="2.5mm" line-height="1.1">
-												
-													<xsl:if test="not($stage-abbreviation = 'DIS' or $stage-abbreviation = 'DAMD' or $stage-abbreviation = 'DAM')">
-														<xsl:variable name="edition_and_date">
-															<xsl:call-template name="insertEditionAndDate"/>
-														</xsl:variable>
-														<xsl:if test="normalize-space($edition_and_date) != ''">
-															<fo:block font-size="18pt" font-weight="bold" margin-bottom="3mm">
-																<xsl:value-of select="$edition_and_date"/>
-															</fo:block>
-														</xsl:if>
-													</xsl:if>
-												
-													<xsl:if test="$doctype = 'amendment'"> <!-- and not($stage-abbreviation = 'FDAMD' or $stage-abbreviation = 'FDAM') -->
-														<fo:block font-size="18pt" font-weight="bold" margin-bottom="3mm">
-															<xsl:value-of select="$doctype_uppercased"/>
-															<xsl:text> </xsl:text>
-															<xsl:variable name="amendment-number" select="/iso:iso-standard/iso:bibdata/iso:ext/iso:structuredidentifier/iso:project-number/@amendment"/>
-															<xsl:if test="normalize-space($amendment-number) != ''">
-																<xsl:value-of select="$amendment-number"/><xsl:text> </xsl:text>
-															</xsl:if>
-														</fo:block>
-													<!-- </xsl:if>
-												
-													<xsl:if test="$doctype = 'amendment' and not($stage-abbreviation = 'FDAMD' or $stage-abbreviation = 'FDAM')"> -->
-														<xsl:if test="/iso:iso-standard/iso:bibdata/iso:date[@type = 'updated']">																		
-															<fo:block font-size="18pt" font-weight="bold" margin-bottom="3mm">
-																<xsl:value-of select="/iso:iso-standard/iso:bibdata/iso:date[@type = 'updated']"/>
-															</fo:block>
-														</xsl:if>
-													</xsl:if>
-												
-													<xsl:variable name="date_corrected" select="normalize-space(/iso:iso-standard/iso:bibdata/iso:date[@type = 'corrected'])"/>
-													<xsl:if test="$date_corrected != ''">
-														<fo:block font-size="18pt" font-weight="bold" margin-bottom="3mm">
-															<xsl:value-of select="$i18n_corrected_version"/>
-															<xsl:value-of select="$linebreak"/>
-															<xsl:value-of select="$date_corrected"/>
-														</fo:block>
-													</xsl:if>
-												
-													
-													
-													<xsl:if test="$stage-abbreviation = 'DIS' or $stage-abbreviation = 'DAMD' or $stage-abbreviation = 'DAM' or $stagename_abbreviation = 'DIS' or
-														$stage-abbreviation = 'FDIS' or $stage-abbreviation = 'FDAMD' or $stage-abbreviation = 'FDAM' or $stagename_abbreviation = 'FDIS' or
-														$stage-abbreviation = 'NWIP' or $stage-abbreviation = 'NP' or $stage-abbreviation = 'PWI' or $stage-abbreviation = 'AWI' or $stage-abbreviation = 'WD' or $stage-abbreviation = 'CD'">
-														<xsl:if test="normalize-space($editorialgroup) != ''">
-															<fo:block margin-bottom="3mm">
-																<xsl:copy-of select="$editorialgroup"/>
-															</fo:block>
-														</xsl:if>
-														<xsl:if test="normalize-space($secretariat) != ''">
-															<fo:block margin-bottom="3mm">
-																<xsl:copy-of select="$secretariat"/>
-															</fo:block>
-														</xsl:if>
-													</xsl:if>
-													
-													<xsl:if test="$stage-abbreviation = 'DIS' or $stage-abbreviation = 'DAMD' or $stage-abbreviation = 'DAM' or $stagename_abbreviation = 'DIS' or
-																			$stage-abbreviation = 'FDIS' or $stage-abbreviation = 'FDAMD' or $stage-abbreviation = 'FDAM' or $stagename_abbreviation = 'FDIS'">
-														
-														<fo:block margin-bottom="3mm">
-														<!-- Voting begins on: -->
-															<xsl:value-of select="concat($i18n_voting_begins_on, ':')"/>
-															<fo:block font-weight="bold">
-																<xsl:call-template name="insertVoteStarted"/>
-															</fo:block>
-														</fo:block>
-													
-														<fo:block margin-bottom="3mm">
-															<!-- Voting terminates on: -->
-															<xsl:value-of select="concat($i18n_voting_terminates_on, ':')"/>
-															<fo:block font-weight="bold">
-																<xsl:call-template name="insertVoteEnded"/>
-															</fo:block>
-														</fo:block>
-													</xsl:if>
-												</fo:block>
-												
-											</fo:table-cell>
-										</fo:table-row>
-										
-										<fo:table-row height="60mm">
-											<fo:table-cell number-columns-spanned="2" border-right="{$cover_page_border}" display-align="after" padding-right="4mm">
-											
-												<xsl:variable name="additionalNotes">
-													<xsl:call-template name="insertCoverPageAdditionalNotes"/>
-												</xsl:variable>
-												<xsl:if test="normalize-space($additionalNotes) != '' or $stage-abbreviation = 'PRF'">
-													<xsl:attribute name="display-align">center</xsl:attribute>
-													<fo:block>
-														<xsl:copy-of select="$additionalNotes"/>												
-													</fo:block>
-												</xsl:if>
-												
-												<xsl:if test="$stage-abbreviation = 'PRF'">
-													<fo:block font-size="28pt" font-weight="bold">
-														<xsl:call-template name="add-letter-spacing">
-															<xsl:with-param name="text" select="$proof-text"/>
-															<xsl:with-param name="letter-spacing" select="0.65"/>
-														</xsl:call-template>
-													</fo:block>
-												</xsl:if>
-												
-												<fo:block>
-													<xsl:variable name="feedback_link" select="normalize-space(/iso:iso-standard/iso:metanorma-extension/iso:semantic-metadata/iso:feedback-link)"/>
-													<xsl:if test="$stage &gt;=60 and $feedback_link != ''">
-														<fo:block-container width="69mm" background-color="rgb(242,242,242)" display-align="before">
-															<fo:table table-layout="fixed" width="100%" role="SKIP">
-																<fo:table-column column-width="proportional-column-width(26)"/>
-																<fo:table-column column-width="proportional-column-width(43.5)"/>
-																<fo:table-body>
-																	<fo:table-row>
-																		<fo:table-cell text-align="right" padding-top="3mm">
-																			<fo:block>
-																				<fo:instream-foreign-object fox:alt-text="QRcode">
-																					<!-- Todo: link generation -->
-																					<barcode:barcode
-																								xmlns:barcode="http://barcode4j.krysalis.org/ns"
-																								message="{$feedback_link}">
-																						<barcode:qr>
-																							<barcode:module-width>0.7mm</barcode:module-width>
-																							<barcode:ec-level>M</barcode:ec-level>
-																						</barcode:qr>
-																					</barcode:barcode>
-																				</fo:instream-foreign-object>
-																			</fo:block>
-																		</fo:table-cell>
-																		<fo:table-cell padding="4mm">
-																			<fo:block color="black" font-size="7.5pt" line-height="1.35">
-																				<xsl:text>Please share your feedback about the standard. Scan the QR code with your phone or click the link</xsl:text>
-																				<fo:block margin-top="2pt">
-																					<fo:basic-link external-destination="{$feedback_link}" fox:alt-text="{$feedback_link}">
-																						<xsl:call-template name="add-zero-spaces-link-java">
-																							<xsl:with-param name="text" select="$feedback_link"/>
-																						</xsl:call-template>
-																					</fo:basic-link>
-																				</fo:block>
-																			</fo:block>
-																		</fo:table-cell>
-																	</fo:table-row>
-																</fo:table-body>
-															</fo:table>
-														</fo:block-container>
-													</xsl:if>
-												</fo:block>
-											</fo:table-cell>
-											<fo:table-cell number-columns-spanned="2" padding-left="6mm" display-align="after">
-												<fo:block font-size="6.5pt" margin-right="15mm">
-													<xsl:call-template name="insertDraftComments"/>
-												</fo:block>
-											</fo:table-cell>
-										</fo:table-row>
-										
-										<fo:table-row height="13mm">
-											<fo:table-cell number-columns-spanned="2" border-right="{$cover_page_border}" display-align="after" padding-bottom="-1mm" line-height="1.1">>
-												<fo:block font-size="10pt">
-													<xsl:value-of select="$i18n_reference_number"/>
-												</fo:block>
-												<fo:block font-size="10pt">
-													<xsl:value-of select="$ISOnumber"/>
-												</fo:block>
-											</fo:table-cell>
-											<fo:table-cell number-columns-spanned="2" padding-left="6mm" display-align="after" padding-bottom="-1mm">
-												<fo:block font-size="10pt" line-height="1.1">
-													<xsl:value-of select="concat('© ', $copyrightAbbr, ' ', $copyrightYear)"/>
-													<xsl:if test="$copyrightAbbrIEEE != ''">
-														<xsl:value-of select="$linebreak"/>
-														<xsl:value-of select="concat('© ', $copyrightAbbrIEEE, ' ', $copyrightYear)"/>
-													</xsl:if>
-												</fo:block>
-											</fo:table-cell>
-										</fo:table-row>
-									</fo:table-body>
-								</fo:table>
-							</fo:flow>
-						</fo:page-sequence>
-					</xsl:when> <!-- END: $layoutVersion = '2024' -->
-					
-					<xsl:when test="$stage-abbreviation != ''">
-						<fo:page-sequence master-reference="cover-page-publishedISO" force-page-count="no-force">
-							<fo:static-content flow-name="cover-page-footer" font-size="10pt">
-								<xsl:if test="$layoutVersion = '1989'">
-									<xsl:attribute name="font-size">9pt</xsl:attribute>
-								</xsl:if>
-								<fo:table table-layout="fixed" width="100%" role="SKIP">
-									<fo:table-column column-width="52mm"/>
-									<fo:table-column column-width="7.5mm"/>
-									<fo:table-column column-width="112.5mm"/>
-									<fo:table-body role="SKIP">
-										<fo:table-row role="SKIP">
-											<fo:table-cell font-size="6.5pt" text-align="justify" display-align="after" padding-bottom="8mm" role="SKIP">
-												<xsl:if test="$stage-abbreviation = 'DAMD' or $stage-abbreviation = 'DAM'">
-													<xsl:attribute name="font-size">7pt</xsl:attribute>
-												</xsl:if>
-												<!-- margin-top="-30mm"  -->
-												<fo:block> <!-- margin-top="-100mm" -->
-													<xsl:call-template name="insertDraftComments"/>
-												</fo:block>
-											</fo:table-cell>
-											<fo:table-cell role="SKIP">
-												<fo:block role="SKIP"><fo:wrapper role="artifact">&#xA0;</fo:wrapper></fo:block>
-											</fo:table-cell>
-											<fo:table-cell display-align="after" padding-bottom="3mm" role="SKIP">
-												<fo:block-container height="22.5mm" display-align="center" role="SKIP">
-												
-													<xsl:variable name="iso-fast-track" select="normalize-space(/iso:iso-standard/iso:bibdata/iso:ext/iso:fast-track)"/>
-													
-													<xsl:if test="normalize-space($iso-fast-track) = 'true'">
-														<xsl:attribute name="height">28mm</xsl:attribute>
-													</xsl:if>
-													
-													<fo:block>
-														<xsl:call-template name="insertCoverPageAdditionalNotes"/>
-													</fo:block>
-												</fo:block-container>
-												<fo:block role="SKIP">
-													<xsl:call-template name="insertTripleLine"/>
-													<fo:table table-layout="fixed" width="100%" role="SKIP"> <!-- margin-bottom="3mm" -->
-														<fo:table-column column-width="50%"/>
-														<fo:table-column column-width="50%"/>
-														<fo:table-body role="SKIP">
-															<fo:table-row height="34mm" role="SKIP">
-																<fo:table-cell display-align="center" role="SKIP">
-																
-																	<xsl:if test="$copyrightAbbrIEEE != ''">
-																		<xsl:attribute name="display-align">before</xsl:attribute>
-																	</xsl:if>
-																	
-																	<fo:block text-align="left" margin-top="2mm">
-																		
-																		<xsl:if test="$copyrightAbbrIEEE != ''">
-																			<xsl:attribute name="margin-top">0</xsl:attribute>
-																		</xsl:if>
-																	
-																		<!-- <xsl:variable name="docid" select="substring-before(/iso:iso-standard/iso:bibdata/iso:docidentifier, ' ')"/>
-																		<xsl:for-each select="xalan:tokenize($docid, '/')"> -->
-																		<xsl:variable name="content-height">
-																			<xsl:choose>
-																				<xsl:when test="$copyrightAbbrIEEE != ''">13.9</xsl:when>
-																				<xsl:otherwise>19</xsl:otherwise>
-																			</xsl:choose>
-																		</xsl:variable>
-																		
-																		<xsl:for-each select="/iso:iso-standard/iso:bibdata/iso:copyright/iso:owner/iso:organization">
-																			<xsl:choose>
-																				<xsl:when test="iso:abbreviation = 'ISO'">
-																					<xsl:choose>
-																						<xsl:when test="$layoutVersion = '1989' and $revision_date_num &lt; 19930101">
-																							<fo:external-graphic src="{concat('data:image/png;base64,', normalize-space($Image-ISO-Logo-1987))}" content-height="{$content-height}mm" content-width="scale-to-fit" scaling="uniform" fox:alt-text="Image ISO Logo"/>
-																						</xsl:when>
-																						<xsl:otherwise>
-																							<fo:external-graphic src="{concat('data:image/png;base64,', normalize-space($Image-ISO-Logo))}" content-height="{$content-height}mm" content-width="scale-to-fit" scaling="uniform" fox:alt-text="Image ISO Logo"/>
-																						</xsl:otherwise>
-																					</xsl:choose>
-																				</xsl:when>
-																				<xsl:when test="iso:abbreviation = 'IEC'">
-																					<xsl:choose>
-																						<xsl:when test="$layoutVersion = '1989' and $revision_date_num &lt; 19930101">
-																							<fo:external-graphic src="{concat('data:image/png;base64,', normalize-space($Image-IEC-Logo-1989))}" content-height="{$content-height}mm" content-width="scale-to-fit" scaling="uniform" fox:alt-text="Image IEC Logo"/>
-																						</xsl:when>
-																						<xsl:otherwise>
-																							<fo:external-graphic src="{concat('data:image/png;base64,', normalize-space($Image-IEC-Logo))}" content-height="{$content-height}mm" content-width="scale-to-fit" scaling="uniform" fox:alt-text="Image IEC Logo"/>
-																						</xsl:otherwise>
-																					</xsl:choose>
-																				</xsl:when>
-																				<xsl:when test="iso:abbreviation = 'IEEE'"></xsl:when>
-																				<xsl:when test="iso:abbreviation = 'IDF' or iso:name = 'IDF'">
-																					<fo:external-graphic src="{concat('data:image/png;base64,', normalize-space($Image-IDF-Logo))}" content-height="{$content-height}mm" content-width="scale-to-fit" scaling="uniform" fox:alt-text="Image IDF Logo"/>
-																				</xsl:when>
-																				<xsl:otherwise></xsl:otherwise>
-																			</xsl:choose>
-																			<xsl:if test="position() != last()">
-																				<fo:inline padding-right="1mm" role="SKIP">&#xA0;</fo:inline>
-																			</xsl:if>
-																		</xsl:for-each>
-																		<xsl:if test="$copyrightAbbrIEEE != ''">
-																			<fo:block>
-																				<fo:external-graphic src="{concat('data:image/png;base64,', normalize-space($Image-IEEE-Logo))}" content-height="11mm" content-width="scale-to-fit" scaling="uniform" fox:alt-text="Image {@alt}"/>
-																			</fo:block>
-																		</xsl:if>
-																	</fo:block>
-																</fo:table-cell>
-																<fo:table-cell  display-align="center" role="SKIP">
-																	<fo:block text-align="right" role="SKIP">																	
-																		<!-- Reference number -->
-																		<fo:block>
-																			<xsl:value-of select="$i18n_reference_number"/>
-																		</fo:block>
-																		<fo:block>
-																			<xsl:value-of select="$ISOnumber"/>																		
-																		</fo:block>
-																		<fo:block space-before="28pt">
-																			<xsl:if test="$copyrightAbbrIEEE != ''">
-																				<xsl:attribute name="space-before">14pt</xsl:attribute>
-																			</xsl:if>
-																			<fo:inline font-size="9pt">©</fo:inline><xsl:value-of select="concat(' ', $copyrightAbbr, ' ', $copyrightYear)"/>
-																			<xsl:if test="$copyrightAbbrIEEE != ''">
-																				<xsl:value-of select="$linebreak"/>
-																				<fo:inline font-size="9pt">©</fo:inline>
-																				<xsl:value-of select="concat(' ', $copyrightAbbrIEEE, ' ', $copyrightYear)"/>
-																			</xsl:if>
-																		</fo:block>
-																	</fo:block>
-																</fo:table-cell>
-															</fo:table-row>
-														</fo:table-body>
-													</fo:table>
-												</fo:block>
-											</fo:table-cell>
-										</fo:table-row>
-									</fo:table-body>
-								</fo:table>
-							</fo:static-content>
-							
-							<xsl:choose>
-								<!-- COVER PAGE for DIS document only -->
-								<xsl:when test="$stage-abbreviation = 'DIS' or $stage-abbreviation = 'DAMD' or $stage-abbreviation = 'DAM' or $stagename_abbreviation = 'DIS'">
-									<fo:flow flow-name="xsl-region-body">
-										<fo:block-container role="SKIP">
-											<fo:block margin-top="-1mm" font-size="20pt" text-align="right">
-												<xsl:value-of select="$stage-fullname-uppercased"/>
-											</fo:block>
-											<fo:block font-size="20pt" font-weight="bold" text-align="right">
-												<xsl:value-of select="$docidentifierISO"/>
-											</fo:block>
-											
-											
-											<fo:table table-layout="fixed" width="100%" margin-top="18mm">
-												<fo:table-column column-width="59.5mm"/>
-												<fo:table-column column-width="52mm"/>
-												<fo:table-column column-width="59mm"/>
-												<fo:table-body>
-													<fo:table-row>
-														<fo:table-cell>
-															<fo:block>&#xA0;</fo:block>
-														</fo:table-cell>
-														<fo:table-cell>
-															<fo:block margin-bottom="3mm">
-																<xsl:copy-of select="$editorialgroup"/>
-															</fo:block>
-														</fo:table-cell>
-														<fo:table-cell>
-															<fo:block margin-bottom="3mm">
-																<xsl:copy-of select="$secretariat"/>
-															</fo:block>
-														</fo:table-cell>
-													</fo:table-row>
-													<fo:table-row>
-														<fo:table-cell>
-															<fo:block>&#xA0;</fo:block>
-														</fo:table-cell>
-														<fo:table-cell>
-															<fo:block>
-																<!-- Voting begins on: -->
-																<xsl:value-of select="concat($i18n_voting_begins_on, ':')"/>
-															</fo:block>
-														</fo:table-cell>
-														<fo:table-cell>
-															<fo:block>
-																<!-- Voting terminates on: -->
-																<xsl:value-of select="concat($i18n_voting_terminates_on, ':')"/>
-															</fo:block>
-														</fo:table-cell>
-													</fo:table-row>
-													<fo:table-row>
-														<fo:table-cell>
-															<fo:block>&#xA0;</fo:block>
-														</fo:table-cell>
-														<fo:table-cell>
-															<fo:block font-weight="bold">
-																<xsl:call-template name="insertVoteStarted"/>
-															</fo:block>
-														</fo:table-cell>
-														<fo:table-cell>
-															<fo:block font-weight="bold">
-																<xsl:call-template name="insertVoteEnded"/>
-															</fo:block>
-														</fo:table-cell>
-													</fo:table-row>
-												</fo:table-body>
-											</fo:table>
-											
-											<fo:block-container line-height="1.1" margin-top="3mm" role="SKIP">
-												<xsl:call-template name="insertTripleLine"/>
-												<fo:block margin-right="5mm" role="SKIP">
-													<fo:block font-size="18pt" font-weight="bold" margin-top="6pt" role="H1">
-														<xsl:if test="$layoutVersion = '1989'">
-															<xsl:attribute name="font-size">16pt</xsl:attribute>
-														</xsl:if>
-														<xsl:call-template name="insertTitlesLangMain"/>
-													</fo:block>
-													
-													
-													<xsl:for-each select="xalan:nodeset($lang_other)/lang">
-														<xsl:variable name="lang_other" select="."/>
-													
-														<fo:block font-size="12pt" role="SKIP"><xsl:value-of select="$linebreak"/></fo:block>
-														<fo:block font-size="11pt" font-style="italic" line-height="1.1" role="H1">
-															<xsl:if test="$layoutVersion = '1989'">
-																<xsl:attribute name="font-size">10pt</xsl:attribute>
-															</xsl:if>
-															<!-- Example: title-intro fr -->
-															<xsl:call-template name="insertTitlesLangOther">
-																<xsl:with-param name="lang_other" select="$lang_other"/>
-															</xsl:call-template>
-														</fo:block>
-													</xsl:for-each>
-												</fo:block>
-												
-												<fo:block margin-top="10mm">
-													<xsl:copy-of select="$ics"/>
-												</fo:block>
-												
-											</fo:block-container>
-											
-											
-										</fo:block-container>
-									</fo:flow>
-								
-								</xsl:when> <!-- END: $stage-abbreviation = 'DIS' 'DAMD' 'DAM'-->
-								<xsl:otherwise>
-							
-									<!-- COVER PAGE  for all documents except DIS, DAMD and DAM -->
-									<fo:flow flow-name="xsl-region-body">
-										<fo:block-container role="SKIP">
-											<fo:table table-layout="fixed" width="100%" font-size="24pt" line-height="1" role="SKIP"> <!-- margin-bottom="35mm" -->
-												<xsl:if test="$layoutVersion = '1989'">
-													<xsl:attribute name="line-height">1.14</xsl:attribute>
-												</xsl:if>
-												<xsl:if test="$layoutVersion = '1989'">
-													<xsl:attribute name="font-size">22pt</xsl:attribute>
-												</xsl:if>
-												<fo:table-column column-width="59.5mm"/>
-												<fo:table-column column-width="67.5mm"/>
-												<fo:table-column column-width="45.5mm"/>
-												<fo:table-body role="SKIP">
-													<fo:table-row role="SKIP">
-														<fo:table-cell role="SKIP">
-															<fo:block font-size="18pt">
-																
-																<xsl:value-of select="translate($stagename-header-coverpage, ' ', $linebreak)"/>
-																
-																<!-- if there is iteration number, then print it -->
-																<xsl:variable name="iteration" select="number(/iso:iso-standard/iso:bibdata/iso:status/iso:iteration)"/>	
-																
-																<xsl:if test="number($iteration) = $iteration and 
-																																								($stage-abbreviation = 'NWIP' or 
-																																								$stage-abbreviation = 'NP' or 
-																																								$stage-abbreviation = 'PWI' or 
-																																								$stage-abbreviation = 'AWI' or 
-																																								$stage-abbreviation = 'WD' or 
-																																								$stage-abbreviation = 'CD')">
-																	<xsl:text>&#xA0;</xsl:text><xsl:value-of select="$iteration"/>
-																</xsl:if>
-																<!-- <xsl:if test="$stage-name = 'draft'">DRAFT</xsl:if>
-																<xsl:if test="$stage-name = 'final-draft'">FINAL<xsl:value-of select="$linebreak"/>DRAFT</xsl:if> -->
-															</fo:block>
-														</fo:table-cell>
-														
-														<xsl:variable name="lastWord">
-															<xsl:call-template name="substring-after-last">
-																<xsl:with-param name="value" select="$doctype_uppercased"/>
-																<xsl:with-param name="delimiter" select="' '"/>
-															</xsl:call-template>
-														</xsl:variable>
-														<xsl:variable name="font-size"><xsl:if test="string-length($lastWord) &gt;= 12">90%</xsl:if></xsl:variable> <!-- to prevent overlapping 'NORME INTERNATIONALE' to number -->
-														
-														<fo:table-cell role="SKIP">
-															<fo:block text-align="left">
-																<xsl:choose>
-																	<xsl:when test="$stage-abbreviation = 'FDAMD' or $stage-abbreviation = 'FDAM'"><xsl:value-of select="$doctype_uppercased"/></xsl:when>
-																	<xsl:when test="$doctype = 'amendment'">
-																		<xsl:value-of select="java:toUpperCase(java:java.lang.String.new(translate(/iso:iso-standard/iso:bibdata/iso:ext/iso:updates-document-type,'-',' ')))"/>
-																	</xsl:when>
-																	<xsl:otherwise>
-																		<xsl:if test="$font-size != ''">
-																			<xsl:attribute name="font-size"><xsl:value-of select="$font-size"/></xsl:attribute>
-																		</xsl:if>
-																		<xsl:value-of select="$doctype_uppercased"/>
-																	</xsl:otherwise>
-																</xsl:choose>
-															</fo:block>
-														</fo:table-cell>
-														<fo:table-cell role="SKIP">
-															<fo:block text-align="right" font-weight="bold" margin-bottom="13mm">
-																<xsl:if test="$font-size != ''">
-																	<xsl:attribute name="font-size"><xsl:value-of select="$font-size"/></xsl:attribute>
-																</xsl:if>
-																<xsl:value-of select="$docidentifierISO_with_break"/>
-																<xsl:copy-of select="$docidentifier_another"/>
-															</fo:block>
-														</fo:table-cell>
-													</fo:table-row>
-													<fo:table-row height="25mm" role="SKIP">
-														<fo:table-cell number-columns-spanned="3" font-size="10pt" line-height="1.2" role="SKIP">
-															<xsl:if test="$layoutVersion = '1989'">
-																<xsl:attribute name="font-size">9pt</xsl:attribute>
-															</xsl:if>
-															<fo:block text-align="right">
-																<xsl:call-template name="insertEditionAndDate"/>
-															</fo:block>
-															<!-- <xsl:value-of select="$linebreak"/>
-															<xsl:value-of select="/iso:iso-standard/iso:bibdata/iso:version/iso:revision-date"/> -->
-															<xsl:if test="$doctype = 'amendment' and not($stage-abbreviation = 'FDAMD' or $stage-abbreviation = 'FDAM')">
-																<fo:block text-align="right" margin-right="0.5mm" role="SKIP">
-																	<fo:block font-weight="bold" margin-top="4pt" role="H1">
-																		<xsl:value-of select="$doctype_uppercased"/>
-																		<xsl:text> </xsl:text>
-																		<xsl:variable name="amendment-number" select="/iso:iso-standard/iso:bibdata/iso:ext/iso:structuredidentifier/iso:project-number/@amendment"/>
-																		<xsl:if test="normalize-space($amendment-number) != ''">
-																			<xsl:value-of select="$amendment-number"/><xsl:text> </xsl:text>
-																		</xsl:if>
-																	</fo:block>
-																	<fo:block>
-																		<xsl:if test="/iso:iso-standard/iso:bibdata/iso:date[@type = 'updated']">																		
-																			<xsl:value-of select="/iso:iso-standard/iso:bibdata/iso:date[@type = 'updated']"/>
-																		</xsl:if>
-																	</fo:block>
-																</fo:block>
-															</xsl:if>
-															<xsl:variable name="date_corrected" select="normalize-space(/iso:iso-standard/iso:bibdata/iso:date[@type = 'corrected'])"/>
-															<xsl:if test="$date_corrected != ''">
-																<fo:block text-align="right" font-size="9.5pt">
-																	<xsl:value-of select="$linebreak"/>
-																	<xsl:value-of select="$linebreak"/>
-																	<xsl:value-of select="$i18n_corrected_version"/>
-																	<xsl:value-of select="$linebreak"/>
-																	<xsl:value-of select="$date_corrected"/>
-																</fo:block>
-															</xsl:if>
-														</fo:table-cell>
-													</fo:table-row>
-													<fo:table-row height="17mm" role="SKIP">
-														<fo:table-cell role="SKIP"><fo:block role="SKIP"></fo:block></fo:table-cell>
-														<fo:table-cell number-columns-spanned="2" font-size="10pt" line-height="1.2" display-align="center" role="SKIP">
-															<fo:block role="SKIP">
-																<xsl:if test="$stage-abbreviation = 'NWIP' or $stage-abbreviation = 'NP' or $stage-abbreviation = 'PWI' or $stage-abbreviation = 'AWI' or $stage-abbreviation = 'WD' or $stage-abbreviation = 'CD'">
-																	<fo:table table-layout="fixed" width="100%" role="SKIP">
-																		<fo:table-column column-width="50%"/>
-																		<fo:table-column column-width="50%"/>
-																		<fo:table-body role="SKIP">
-																			<fo:table-row role="SKIP">
-																				<fo:table-cell role="SKIP">
-																					<fo:block>
-																						<xsl:copy-of select="$editorialgroup"/>
-																					</fo:block>
-																				</fo:table-cell>
-																				<fo:table-cell role="SKIP">
-																					<fo:block>
-																						<xsl:copy-of select="$secretariat"/>
-																					</fo:block>
-																				</fo:table-cell>
-																			</fo:table-row>
-																		</fo:table-body>
-																	</fo:table>
-																</xsl:if>
-															</fo:block>
-														</fo:table-cell>
-													</fo:table-row>
-													
-												</fo:table-body>
-											</fo:table>
-											
-											
-											<fo:table table-layout="fixed" width="100%" role="SKIP">
-												<fo:table-column column-width="52mm"/>
-												<fo:table-column column-width="7.5mm"/>
-												<fo:table-column column-width="112.5mm"/>
-												<fo:table-body role="SKIP">
-													<fo:table-row role="SKIP"> <!--  border="1pt solid black" height="150mm"  -->
-														<fo:table-cell font-size="11pt" role="SKIP">
-															<fo:block role="SKIP">
-																<xsl:if test="$stage-abbreviation = 'FDIS' or $stage-abbreviation = 'FDAMD' or $stage-abbreviation = 'FDAM' or $stagename_abbreviation = 'FDIS'">
-																	<fo:block-container border="0.5mm solid black" width="51mm" role="SKIP">
-																		<fo:block margin="2mm" role="SKIP">
-																				<fo:block margin-bottom="8pt"><xsl:copy-of select="$editorialgroup"/></fo:block>
-																				<fo:block margin-bottom="6pt"><xsl:copy-of select="$secretariat"/></fo:block>
-																				<fo:block margin-bottom="6pt">
-																					<!-- Voting begins on: -->
-																					<xsl:value-of select="concat($i18n_voting_begins_on, ':')"/>
-																					<xsl:value-of select="$linebreak"/>
-																					<fo:inline font-weight="bold">
-																						<xsl:call-template name="insertVoteStarted"/>
-																					</fo:inline>
-																				</fo:block>
-																				<fo:block>
-																					<!-- Voting terminates on: -->
-																					<xsl:value-of select="concat($i18n_voting_terminates_on, ':')"/>
-																					<xsl:value-of select="$linebreak"/>
-																					<fo:inline font-weight="bold">
-																						<xsl:call-template name="insertVoteEnded"/>
-																					</fo:inline>
-																				</fo:block>
-																		</fo:block>
-																	</fo:block-container>
-																</xsl:if>
-															</fo:block>
-														</fo:table-cell>
-														<fo:table-cell role="SKIP">
-															<fo:block role="SKIP"><fo:wrapper role="artifact">&#xA0;</fo:wrapper></fo:block>
-														</fo:table-cell>
-														<fo:table-cell role="SKIP">
-															<xsl:call-template name="insertTripleLine"/>
-															<fo:block-container line-height="1.1" role="SKIP">
-																<fo:block margin-right="3.5mm" role="SKIP">
-																	<fo:block font-size="18pt" font-weight="bold" margin-top="12pt" role="H1">
-																		<xsl:if test="$layoutVersion = '1989'">
-																			<xsl:attribute name="font-size">16pt</xsl:attribute>
-																		</xsl:if>
-																		<xsl:call-template name="insertTitlesLangMain"/>
-																	</fo:block>
-																				
-																	<xsl:if test="not($stage-abbreviation = 'FDAMD' or $stage-abbreviation = 'FDAM')">
-																		<xsl:for-each select="xalan:nodeset($lang_other)/lang">
-																			<xsl:variable name="lang_other" select="."/>
-																			
-																			<fo:block font-size="12pt" role="SKIP"><xsl:value-of select="$linebreak"/></fo:block>
-																			<fo:block font-size="11pt" font-style="italic" line-height="1.1" role="H1">
-																				<xsl:if test="$layoutVersion = '1989'">
-																					<xsl:attribute name="font-size">10pt</xsl:attribute>
-																				</xsl:if>
-																				<!-- Example: title-intro fr -->
-																				<xsl:call-template name="insertTitlesLangOther">
-																					<xsl:with-param name="lang_other" select="$lang_other"/>
-																				</xsl:call-template>
-																			</fo:block>
-																		</xsl:for-each>
-																	</xsl:if>
-																	
-																	<xsl:if test="$stage-abbreviation = 'NWIP' or $stage-abbreviation = 'NP' or $stage-abbreviation = 'PWI' or $stage-abbreviation = 'AWI' or $stage-abbreviation = 'WD' or $stage-abbreviation = 'CD' or $stage-abbreviation = 'FDIS' or $stagename_abbreviation = 'FDIS'">
-																		<fo:block margin-top="10mm">
-																			<xsl:copy-of select="$ics"/>
-																		</fo:block>
-																	</xsl:if>
-																	
-																</fo:block>
-															</fo:block-container>
-														</fo:table-cell>
-													</fo:table-row>
-												</fo:table-body>
-											</fo:table>
-										</fo:block-container>
-										<fo:block-container position="absolute" left="60mm" top="222mm" height="25mm" display-align="after" role="SKIP">
-											<fo:block margin-bottom="2mm" role="SKIP">
-												<xsl:if test="$stage-abbreviation = 'PRF'">
-													<fo:block font-size="36pt" font-weight="bold" margin-left="1mm">
-														<xsl:call-template name="add-letter-spacing">
-															<xsl:with-param name="text" select="$proof-text"/>
-															<xsl:with-param name="letter-spacing" select="0.65"/>
-														</xsl:call-template>
-													</fo:block>
-												</xsl:if>
-											</fo:block>
-										</fo:block-container>
-									</fo:flow>
-							</xsl:otherwise>
-							</xsl:choose>
-							
-							
-						</fo:page-sequence>
-					</xsl:when> <!-- $stage-abbreviation != '' -->
-						
-					<xsl:when test="$isPublished = 'true'">
-						<fo:page-sequence master-reference="cover-page-published" force-page-count="no-force">
-							<fo:static-content flow-name="cover-page-footer" font-size="10pt">
-								<xsl:call-template name="insertTripleLine"/>
-								<fo:table table-layout="fixed" width="100%" margin-bottom="3mm" role="SKIP">
-									<fo:table-column column-width="50%"/>
-									<fo:table-column column-width="50%"/>
-									<fo:table-body role="SKIP">
-										<fo:table-row height="32mm" role="SKIP">
-											<fo:table-cell display-align="center" role="SKIP">
-												<fo:block text-align="left">
-													<fo:external-graphic src="{concat('data:image/png;base64,', normalize-space($Image-ISO-Logo))}" width="21mm" content-height="21mm" content-width="scale-to-fit" scaling="uniform" fox:alt-text="Image {@alt}"/>
-												</fo:block>
-											</fo:table-cell>
-											<fo:table-cell display-align="center" role="SKIP">
-												<fo:block text-align="right" role="SKIP">
-													<fo:block>
-														<xsl:value-of select="$i18n_reference_number"/>
-													</fo:block>
-													<fo:block><xsl:value-of select="$ISOnumber"/></fo:block>
-													<fo:block role="SKIP">&#xA0;</fo:block>
-													<fo:block role="SKIP">&#xA0;</fo:block>
-													<fo:block><fo:inline font-size="9pt">©</fo:inline><xsl:value-of select="concat(' ', $copyrightAbbr, ' ', $copyrightYear)"/>
-														<xsl:if test="$copyrightAbbrIEEE != ''">
-															<xsl:value-of select="$linebreak"/>
-															<fo:inline font-size="9pt">©</fo:inline>
-															<xsl:value-of select="concat(' ', $copyrightAbbrIEEE, ' ', $copyrightYear)"/>
-														</xsl:if>
-													</fo:block>
-												</fo:block>
-											</fo:table-cell>
-										</fo:table-row>
-									</fo:table-body>
-								</fo:table>
-							</fo:static-content>
-							<fo:flow flow-name="xsl-region-body">
-								<fo:block-container role="SKIP">
-									<fo:table table-layout="fixed" width="100%" font-size="24pt" line-height="1" margin-bottom="35mm" role="SKIP">
-										<xsl:if test="$layoutVersion = '1989'">
-											<xsl:attribute name="font-size">22pt</xsl:attribute>
-										</xsl:if>
-										<fo:table-column column-width="60%"/>
-										<fo:table-column column-width="40%"/>
-										<fo:table-body role="SKIP">
-											<fo:table-row role="SKIP">
-												<fo:table-cell role="SKIP">
-													<fo:block text-align="left">
-														<xsl:value-of select="$doctype_uppercased"/>
-													</fo:block>
-												</fo:table-cell>
-												<fo:table-cell role="SKIP">
-													<fo:block text-align="right" font-weight="bold" margin-bottom="13mm">
-														<xsl:value-of select="$docidentifierISO_with_break"/>
-														<xsl:copy-of select="$docidentifier_another"/>
-													</fo:block>
-												</fo:table-cell>
-											</fo:table-row>
-											<fo:table-row role="SKIP">
-												<fo:table-cell number-columns-spanned="2" font-size="10pt" line-height="1.2" role="SKIP">
-													<fo:block text-align="right">
-														<xsl:call-template name="printEdition"/>
-														<xsl:value-of select="$linebreak"/>
-														<xsl:value-of select="/iso:iso-standard/iso:bibdata/iso:version/iso:revision-date"/></fo:block>
-												</fo:table-cell>
-											</fo:table-row>
-										</fo:table-body>
-									</fo:table>
-									
-									<xsl:call-template name="insertTripleLine"/>
-									<fo:block-container line-height="1.1" role="SKIP">
-										<fo:block margin-right="40mm" role="SKIP">
-											<fo:block font-size="18pt" font-weight="bold" margin-top="12pt" role="H1">
-												<xsl:if test="$layoutVersion = '1989'">
-													<xsl:attribute name="font-size">16pt</xsl:attribute>
-												</xsl:if>
-												<xsl:call-template name="insertTitlesLangMain"/>
-											</fo:block>
-												
-											<xsl:for-each select="xalan:nodeset($lang_other)/lang">
-												<xsl:variable name="lang_other" select="."/>
-												
-												<fo:block font-size="12pt" role="SKIP"><xsl:value-of select="$linebreak"/></fo:block>
-												<fo:block font-size="11pt" font-style="italic" line-height="1.1" role="H1">
-													<xsl:if test="$layoutVersion = '1989'">
-														<xsl:attribute name="font-size">10pt</xsl:attribute>
-													</xsl:if>
-													<!-- Example: title-intro fr -->
-													<xsl:call-template name="insertTitlesLangOther">
-														<xsl:with-param name="lang_other" select="$lang_other"/>
-													</xsl:call-template>
-												</fo:block>
-											</xsl:for-each>
-										</fo:block>
-									</fo:block-container>
-								</fo:block-container>
-							</fo:flow>
-						</fo:page-sequence>
-					</xsl:when> <!-- $isPublished = 'true' -->
-					<xsl:otherwise>
-						<fo:page-sequence master-reference="cover-page" force-page-count="no-force">
-							<fo:static-content flow-name="cover-page-header" font-size="10pt">
-								<fo:block-container height="24mm" display-align="before">
-									<fo:block padding-top="12.5mm">
-										<xsl:value-of select="$copyrightText"/>
-									</fo:block>
-								</fo:block-container>
-							</fo:static-content>
-							<fo:flow flow-name="xsl-region-body">
-								<fo:block-container text-align="right" role="SKIP">
-									<xsl:choose>
-										<xsl:when test="/iso:iso-standard/iso:bibdata/iso:docidentifier[@type = 'iso-tc']">
-											<!-- 17301  -->
-											<fo:block font-size="14pt" font-weight="bold" margin-bottom="12pt">
-												<xsl:value-of select="/iso:iso-standard/iso:bibdata/iso:docidentifier[@type = 'iso-tc']"/>
-											</fo:block>
-											<!-- Date: 2016-05-01  -->
-											<fo:block margin-bottom="12pt">
-												<xsl:text>Date: </xsl:text><xsl:value-of select="/iso:iso-standard/iso:bibdata/iso:version/iso:revision-date"/>
-											</fo:block>
-										
-											<!-- ISO/CD 17301-1(E)  -->
-											<fo:block margin-bottom="12pt">
-												<xsl:value-of select="concat(/iso:iso-standard/iso:bibdata/iso:docidentifier, $lang-1st-letter)"/>
-											</fo:block>
-										</xsl:when>
-										<xsl:otherwise>
-											<fo:block font-size="14pt" font-weight="bold" margin-bottom="12pt">
-												<!-- ISO/WD 24229(E)  -->
-												<xsl:value-of select="concat(/iso:iso-standard/iso:bibdata/iso:docidentifier, $lang-1st-letter)"/>
-											</fo:block>
-											
-										</xsl:otherwise>
-									</xsl:choose>
-									
-									 
-									<xsl:if test="normalize-space($editorialgroup) != ''">
-										<!-- ISO/TC 34/SC 4/WG 3 -->
-										<fo:block margin-bottom="12pt">
-											<xsl:copy-of select="$editorialgroup"/>
-										</fo:block>
-									</xsl:if>
-									
-									<!-- Secretariat: AFNOR  -->
-									<fo:block margin-bottom="100pt">
-										<xsl:value-of select="$secretariat"/>
-										<xsl:text>&#xA0;</xsl:text>
-									</fo:block>
-								</fo:block-container>
-								
-								<fo:block-container font-size="16pt" role="SKIP">
-									<!-- Information and documentation — Codes for transcription systems  -->
-										<fo:block font-weight="bold" role="H1">
-											<xsl:call-template name="insertTitlesLangMain"/>
-										</fo:block>
-										
-										<xsl:for-each select="xalan:nodeset($lang_other)/lang">
-											<xsl:variable name="lang_other" select="."/>
-										
-											<fo:block font-size="12pt" role="SKIP"><xsl:value-of select="$linebreak"/></fo:block>
-											<fo:block role="H1">
-												<!-- Example: title-intro fr -->
-												<xsl:call-template name="insertTitlesLangOther">
-													<xsl:with-param name="lang_other" select="$lang_other"/>
-												</xsl:call-template>
-											</fo:block>
-											
-										</xsl:for-each>
-										
-								</fo:block-container>
-								<fo:block font-size="11pt" margin-bottom="8pt" role="SKIP"><xsl:value-of select="$linebreak"/></fo:block>
-								<fo:block-container font-size="40pt" text-align="center" margin-bottom="12pt" border="0.5pt solid black" role="SKIP">
-									<xsl:variable name="stage-title" select="substring-after(substring-before($docidentifierISO, ' '), '/')"/>
-									<xsl:choose>
-										<xsl:when test="normalize-space($stage-title) != ''">
-											<fo:block padding-top="2mm"><xsl:value-of select="$stage-title"/><xsl:text> stage</xsl:text></fo:block>
-										</xsl:when>
-										<xsl:otherwise>
-											<xsl:attribute name="border">0pt solid white</xsl:attribute>
-											<fo:block role="SKIP">&#xa0;</fo:block>
-										</xsl:otherwise>
-									</xsl:choose>
-								</fo:block-container>
-								<fo:block role="SKIP"><xsl:value-of select="$linebreak"/></fo:block>
-								
-								<xsl:if test="/iso:iso-standard/iso:boilerplate/iso:license-statement">
-									<fo:block-container font-size="10pt" margin-top="12pt" margin-bottom="6pt" border="0.5pt solid black" role="SKIP">
-										<fo:block padding-top="1mm">
-											<xsl:apply-templates select="/iso:iso-standard/iso:boilerplate/iso:license-statement"/>
-										</fo:block>
-									</fo:block-container>
-								</xsl:if>
-							</fo:flow>
-						</fo:page-sequence>
-					</xsl:otherwise>
-				</xsl:choose>	
-				
-				</xsl:if> <!-- $isGenerateTableIF = ' false' -->
 				
 				<xsl:if test="$debug = 'true'"><xsl:message>START updated_xml_step1</xsl:message></xsl:if>
 				<xsl:variable name="startTime1" select="java:getTime(java:java.util.Date.new())"/>
@@ -2649,6 +1374,1285 @@
 		<xsl:apply-templates select="xalan:nodeset($xslfo)" mode="landscape_portrait"/>
 		
 	</xsl:template> 
+
+
+	<xsl:template name="insertCoverPage">
+		<xsl:if test="$isGenerateTableIF = 'false'"> <!-- no need cover page for auto-layout algorithm -->
+			<!-- cover page -->
+			<xsl:choose>
+				<xsl:when test="$layoutVersion = '1951'">
+					<fo:page-sequence master-reference="cover-page_1951" force-page-count="no-force">
+						<fo:static-content flow-name="cover-page-header" font-family="Times New Roman" font-size="8.5pt" font-weight="bold">
+							<fo:block-container height="99%" display-align="after">
+								<fo:block text-align-last="justify" role="SKIP">
+									<!-- Example: UDC 669.7 : 620.178.1 -->
+									<xsl:value-of select="$udc"/>
+									<fo:inline keep-together.within-line="always" role="SKIP">
+										<fo:leader leader-pattern="space"/>
+										<fo:inline font-weight="normal"><xsl:value-of select="concat($i18n_reference_number_abbrev, ' : ')"/></fo:inline><xsl:value-of select="$ISOnumber"/> <!-- font-family="Arial" -->
+									</fo:inline>
+								</fo:block>
+							</fo:block-container>
+						</fo:static-content>
+						<fo:static-content flow-name="cover-page-footer" font-size="9.5pt">
+							<fo:block text-align="center">
+								<!-- COPYRIGHT RESERVED -->
+								<xsl:apply-templates select="/iso:iso-standard/iso:boilerplate/iso:copyright-statement"/>
+							</fo:block>
+						</fo:static-content>
+						<fo:flow flow-name="xsl-region-body">
+							<fo:block text-align="center" font-family="Arial" margin-top="14mm">
+								<fo:block>
+									<fo:instream-foreign-object content-width="23mm" fox:alt-text="Image ISO Logo">
+										<xsl:copy-of select="$Image-ISO-Logo-1951-SVG"/>
+									</fo:instream-foreign-object>
+								</fo:block>
+								<fo:block margin-top="2mm" font-size="8pt" font-weight="bold">
+									<xsl:call-template name="add-letter-spacing">
+										<xsl:with-param name="text" select="java:toUpperCase(java:java.lang.String.new(/iso:iso-standard/iso:bibdata/iso:copyright/iso:owner/iso:organization/iso:name))"/>
+										<xsl:with-param name="letter-spacing" select="0.55"/>
+									</xsl:call-template>
+								</fo:block>
+								
+								<fo:block font-size="20pt" margin-top="31mm">
+									<!-- ISO RECOMMENDATION -->
+									<xsl:call-template name="add-letter-spacing">
+										<xsl:with-param name="text" select="$doctype_uppercased"/>
+										<xsl:with-param name="letter-spacing" select="0.35"/>
+									</xsl:call-template>
+								</fo:block>
+								<fo:block font-size="24pt" margin-top="5mm">
+									<xsl:value-of select="$docnumber_with_prefix"/>
+								</fo:block>
+								
+								<fo:block-container height="39mm" display-align="center">
+									<fo:block font-size="11pt" >
+										<xsl:call-template name="insertTitlesLangMain"/>
+									</fo:block>
+								</fo:block-container>
+								
+								<fo:block-container margin-top="8.5mm" font-size="10pt"> <!--  height="40mm" display-align="center"  -->
+									<!-- Example: 1st EDITION -->
+									<!-- <fo:block><xsl:apply-templates select="/iso:iso-standard/iso:bibdata/iso:edition[@language != '']" /></fo:block> -->
+									<fo:block font-weight="bold"><xsl:value-of select="/iso:iso-standard/iso:bibdata/iso:edition[@language != '']" /></fo:block>
+									<!-- <fo:block>&#xa0;</fo:block> -->
+									<!-- Example: October 1971 -->
+									<fo:block margin-top="2mm" font-size="9pt">
+										<xsl:call-template name="convertDate">
+											<xsl:with-param name="date" select="/iso:iso-standard/iso:bibdata/iso:version/iso:revision-date"/>
+										</xsl:call-template>
+									</fo:block>
+									<fo:block margin-top="14mm">
+										<xsl:value-of select="/iso:iso-standard/iso:bibdata/iso:ext/iso:edn-replacement"/>
+									</fo:block>
+								</fo:block-container>
+							</fo:block>
+						</fo:flow>
+					</fo:page-sequence>
+				</xsl:when> <!-- END: $layoutVersion = '1951' -->
+				
+				<xsl:when test="$layoutVersion = '1972'">
+					<fo:page-sequence master-reference="cover-page_1972" force-page-count="no-force">
+						<fo:static-content flow-name="cover-page-footer" font-size="7pt">
+							<xsl:call-template name="insertSingleLine"/>
+							<fo:block font-size="11pt" font-weight="bold" text-align-last="justify" margin-right="1mm">
+								<fo:inline keep-together.within-line="always" role="SKIP">
+									<xsl:value-of select="$udc"/>
+									<fo:leader leader-pattern="space"/>
+									<fo:inline role="SKIP">
+										<xsl:value-of select="concat($i18n_reference_number, '&#xa0;&#xa0;', $ISOnumber)"/>
+									</fo:inline>
+								</fo:inline>
+							</fo:block>
+							
+							<xsl:if test="/iso:iso-standard/iso:bibdata/iso:keyword">
+								<fo:block margin-top="10pt">
+									<fo:inline font-weight="bold"><xsl:value-of select="$i18n_descriptors"/> : </fo:inline>
+									<xsl:call-template name="insertKeywords">
+										<xsl:with-param name="sorting">no</xsl:with-param>
+										<xsl:with-param name="charDelim" select="',  '"/>
+									</xsl:call-template>
+								</fo:block>
+							</xsl:if>
+							<fo:block-container position="absolute" left="0mm" top="0mm" height="25mm" text-align="right" display-align="after" role="SKIP">
+								<fo:block>
+									<xsl:for-each select="xalan:nodeset($price_based_on_items)/item">
+										<xsl:value-of select="."/>
+										<xsl:if test="position() != last()">
+											<fo:page-number-citation ref-id="lastBlock"/>
+										</xsl:if>										
+									</xsl:for-each>
+								</fo:block>
+							</fo:block-container>
+						</fo:static-content>
+						<fo:static-content flow-name="left-region" >
+							<fo:block-container reference-orientation="90">
+								<fo:block font-size="8pt" margin-left="7mm" margin-top="10mm">
+									<xsl:value-of select="$ISOnumber"/>
+								</fo:block>
+							</fo:block-container>
+						</fo:static-content>
+						<fo:flow flow-name="xsl-region-body">
+							<xsl:variable name="docnumber">
+								<xsl:variable name="value" select="/iso:iso-standard/iso:bibdata/iso:docnumber"/>
+								<xsl:value-of select="$value"/>
+								<xsl:if test="$part != ''">/<xsl:value-of select="$part"/></xsl:if>
+							</xsl:variable>
+							<fo:table table-layout="fixed" width="100%" border-top="2pt solid black" border-bottom="2pt solid black">
+								<xsl:choose>
+									<xsl:when test="string-length($docnumber) &gt; 4">
+										<fo:table-column column-width="proportional-column-width(110)"/>
+										<fo:table-column column-width="proportional-column-width(28)"/>
+										<fo:table-column column-width="proportional-column-width(43)"/>
+									</xsl:when>
+									<xsl:otherwise>
+										<fo:table-column column-width="proportional-column-width(123)"/>
+										<fo:table-column column-width="proportional-column-width(28)"/>
+										<fo:table-column column-width="proportional-column-width(30)"/>
+									</xsl:otherwise>
+								</xsl:choose>
+								
+								<fo:table-body>
+									<fo:table-row height="39mm" display-align="center">
+										<fo:table-cell>
+											<fo:block font-size="33pt" margin-top="2mm">
+												<xsl:if test="string-length($docnumber) &gt; 4">
+													<xsl:attribute name="font-size">30pt</xsl:attribute>
+												</xsl:if>
+												<xsl:value-of select="$doctype_localized"/>
+											</fo:block>
+										</fo:table-cell>
+										<fo:table-cell>
+											<fo:block font-size="0">
+												<xsl:variable name="content-height">27</xsl:variable>
+												<fo:external-graphic src="{concat('data:image/png;base64,', normalize-space($Image-ISO-Logo-1972))}" content-height="{$content-height}mm" content-width="scale-to-fit" scaling="uniform" fox:alt-text="Image ISO Logo"/>
+											</fo:block>
+										</fo:table-cell>
+										<fo:table-cell text-align="right">
+											<fo:block font-size="34pt" font-weight="bold" margin-top="2mm">
+												<xsl:value-of select="$docnumber"/>
+											</fo:block>
+										</fo:table-cell>
+									</fo:table-row>
+									<fo:table-row border-top="2pt solid black" height="4.5mm" display-align="center">
+										<fo:table-cell number-columns-spanned="3" font-size="5.6pt" text-align-last="justify">
+											<fo:block><xsl:value-of select="$ISO_title_en"/>&#x25cf;<xsl:value-of select="$ISO_title_ru"/>&#x25cf;<xsl:value-of select="$ISO_title_fr"/></fo:block>
+										</fo:table-cell>
+									</fo:table-row>
+								</fo:table-body>
+							</fo:table>
+							
+							<fo:block font-size="16pt" font-weight="bold" margin-top="44mm" margin-bottom="6mm" role="H1">
+								<xsl:call-template name="insertTitlesLangMain"/>
+							</fo:block>
+							
+							<xsl:for-each select="xalan:nodeset($lang_other)/lang">
+								<xsl:variable name="lang_other" select="."/>
+								<fo:block font-size="8pt" font-style="italic" line-height="1.1" role="H1">
+									<!-- Example: title-intro fr -->
+									<xsl:call-template name="insertTitlesLangOther">
+										<xsl:with-param name="lang_other" select="$lang_other"/>
+									</xsl:call-template>
+								</fo:block>
+							</xsl:for-each>
+							
+							<fo:block margin-top="6mm" font-weight="bold">
+								<xsl:call-template name="printEdition"/>
+								<xsl:text>&#xa0;— </xsl:text>
+								<xsl:value-of select="/iso:iso-standard/iso:bibdata/iso:version/iso:revision-date"/>
+							</fo:block>
+							
+						</fo:flow>
+					</fo:page-sequence>
+				</xsl:when> <!-- END: $layoutVersion = '1972' -->
+				<xsl:when test="$layoutVersion = '1987' and $doctype = 'technical-report'"><!-- see preface pages below --></xsl:when>
+				<xsl:when test="$layoutVersion = '1987'">
+					<fo:page-sequence master-reference="cover-page_1987" force-page-count="no-force">
+						<fo:static-content flow-name="right-region" >
+							<fo:block-container height="50%">
+								<fo:block-container margin-top="8mm" margin-left="2mm">
+									<fo:block-container margin-top="0" margin-left="0" font-family="Times New Roman">
+										<fo:block font-size="24pt" line-height="1.1">
+											<xsl:value-of select="$docidentifierISO_with_break"/>
+										</fo:block>
+										<fo:block line-height="1">
+											<xsl:call-template name="printEdition"/>
+											<xsl:value-of select="$linebreak"/>
+											<xsl:text>&#xa0;</xsl:text><xsl:value-of select="/iso:iso-standard/iso:bibdata/iso:version/iso:revision-date"/>
+										</fo:block>
+								</fo:block-container>
+								</fo:block-container>
+							</fo:block-container>
+							<fo:block-container height="50%" display-align="after">
+								<fo:block-container margin-left="3mm">
+									<fo:block-container margin-left="0" font-family="Times New Roman">
+										<fo:block font-size="8pt" font-family="Times New Roman" margin-bottom="-0.5mm">
+											<xsl:value-of select="$i18n_reference_number"/>
+											<xsl:value-of select="$linebreak"/>
+											<xsl:value-of select="$ISOnumber"/>
+										</fo:block>
+									</fo:block-container>
+								</fo:block-container>
+							</fo:block-container>
+						</fo:static-content>
+						<fo:flow flow-name="xsl-region-body">
+							<fo:block-container height="99.5%" border="1.25pt solid black">
+								<fo:block-container margin-left="11mm" margin-top="16mm" margin-right="10.5mm">
+									<fo:block-container margin-left="0" margin-top="0" margin-right="0">
+										<fo:block font-family="Times New Roman" font-size="24pt">
+											<!-- INTERNATIONAL STANDARD -->
+											<xsl:call-template name="add-letter-spacing">
+												<xsl:with-param name="text" select="$doctype_uppercased"/>
+												<xsl:with-param name="letter-spacing" select="0.1"/>
+											</xsl:call-template>
+										</fo:block>
+										<fo:table table-layout="fixed" width="100%" margin-top="16mm">
+											<fo:table-column column-width="proportional-column-width(23)"/>
+											<fo:table-column column-width="proportional-column-width(108)"/>
+											<fo:table-body>
+												<fo:table-row>
+													<fo:table-cell>
+														<fo:block margin-top="-0.5mm" font-size="0">
+															<xsl:variable name="content-height">18</xsl:variable>
+															<fo:external-graphic src="{concat('data:image/png;base64,', normalize-space($Image-ISO-Logo-1987))}" content-height="{$content-height}mm" content-width="scale-to-fit" scaling="uniform" fox:alt-text="Image ISO Logo"/>
+														</fo:block>
+													</fo:table-cell>
+													<fo:table-cell font-size="7.5pt" border-top="0.5pt solid black" border-bottom="0.5pt solid black" text-align-last="justify" display-align="center" line-height="1.6" padding-left="32mm">
+														<fo:block><xsl:value-of select="$ISO_title_en"/></fo:block>
+														<fo:block><xsl:value-of select="$ISO_title_fr"/></fo:block>
+														<fo:block><xsl:value-of select="$ISO_title_ru"/></fo:block>
+													</fo:table-cell>
+												</fo:table-row>
+											</fo:table-body>
+										</fo:table>
+										
+										<fo:block font-size="13pt" font-weight="bold" margin-top="32mm" margin-bottom="9mm" role="H1">
+											<xsl:call-template name="insertTitlesLangMain"/>
+										</fo:block>
+										
+										<xsl:for-each select="xalan:nodeset($lang_other)/lang">
+											<xsl:variable name="lang_other" select="."/>
+											<fo:block font-size="8pt" font-style="italic" line-height="1.1" role="H1">
+												<!-- Example: title-intro fr -->
+												<xsl:call-template name="insertTitlesLangOther">
+													<xsl:with-param name="lang_other" select="$lang_other"/>
+												</xsl:call-template>
+											</fo:block>
+										</xsl:for-each>
+										
+									</fo:block-container>
+								</fo:block-container>
+							</fo:block-container>
+						</fo:flow>
+					</fo:page-sequence>
+				</xsl:when>
+			
+				<xsl:when test="$layoutVersion = '2024'">
+					<fo:page-sequence master-reference="cover-page_2024" force-page-count="no-force">
+						<fo:flow flow-name="xsl-region-body">
+							<fo:table table-layout="fixed" width="100%">
+								<xsl:call-template name="insertInterFont"/>
+								<fo:table-column column-width="proportional-column-width(113.8)"/>
+								<fo:table-column column-width="proportional-column-width(2)"/>
+								<fo:table-column column-width="proportional-column-width(2)"/>
+								<fo:table-column column-width="proportional-column-width(72.2)"/>
+								<fo:table-body>
+								
+									<fo:table-row>
+										<fo:table-cell number-columns-spanned="2" border-right="{$cover_page_border}">
+											<fo:block>
+												<xsl:call-template name="insertLogoImages2024"/>
+											</fo:block>
+										</fo:table-cell>
+										<!-- International 
+										Standard -->
+										<fo:table-cell number-columns-spanned="2" padding-left="6mm">
+											<fo:block-container height="46mm">
+												<fo:block font-size="20pt" font-weight="bold" line-height="1.25" margin-top="3mm">
+												
+													<xsl:variable name="updates-document-type" select="/iso:iso-standard/iso:bibdata/iso:ext/iso:updates-document-type"/>
+													<xsl:variable name="updates-document-type_localized">
+														<xsl:call-template name="getLocalizedString">
+															<xsl:with-param name="key" select="concat('doctype_dict.',$updates-document-type)"/>
+														</xsl:call-template>
+													</xsl:variable>
+													<xsl:variable name="updates-document-type_str">
+														<xsl:choose>
+															<xsl:when test="$updates-document-type != '' and $updates-document-type_localized != $updates-document-type">
+																<xsl:value-of select="$updates-document-type_localized"/>
+															</xsl:when>
+															<xsl:otherwise>
+																<xsl:value-of select="java:toUpperCase(java:java.lang.String.new(translate($updates-document-type,'-',' ')))"/>
+															</xsl:otherwise>
+														</xsl:choose>
+													</xsl:variable>
+													
+													
+													<xsl:choose>
+														<xsl:when test="$stage-abbreviation = 'DIS'"> <!--  or $stage-abbreviation = 'DAMD' or $stage-abbreviation = 'DAM' -->
+															<xsl:value-of select="java:toUpperCase(java:java.lang.String.new($stagename))"/>
+															<xsl:value-of select="$linebreak"/>
+															<xsl:value-of select="$doctype_localized"/>
+														</xsl:when>
+														<!-- <xsl:when test="$stage-abbreviation = 'FDAmd' or $stage-abbreviation = 'FDAM'"><xsl:value-of select="$doctype_uppercased"/></xsl:when> -->
+														<xsl:when test="$stagename-header-coverpage != ''">
+															<xsl:attribute name="margin-top">12pt</xsl:attribute>
+															
+															<xsl:value-of select="$stagename-header-coverpage"/>
+															
+															<!-- if there is iteration number, then print it -->
+															<xsl:variable name="iteration" select="number(/iso:iso-standard/iso:bibdata/iso:status/iso:iteration)"/>
+															<xsl:if test="number($iteration) = $iteration and 
+																																							($stage-abbreviation = 'NWIP' or 
+																																							$stage-abbreviation = 'NP' or 
+																																							$stage-abbreviation = 'PWI' or 
+																																							$stage-abbreviation = 'AWI' or 
+																																							$stage-abbreviation = 'WD' or 
+																																							$stage-abbreviation = 'CD')">
+																<xsl:text>&#xA0;</xsl:text><xsl:value-of select="$iteration"/>
+															</xsl:if>
+															
+															<xsl:value-of select="$linebreak"/>
+															
+															<xsl:choose>
+																<xsl:when test="$doctype = 'amendment'">
+																	<xsl:value-of select="$updates-document-type_str"/>
+																</xsl:when>
+																<xsl:otherwise>
+																	<xsl:value-of select="$doctype_localized"/>
+																</xsl:otherwise>
+															</xsl:choose>
+														</xsl:when>
+														<xsl:when test="$doctype = 'amendment'">
+															<xsl:value-of select="$updates-document-type_str"/>
+														</xsl:when>
+														<xsl:otherwise>
+															<xsl:value-of select="$doctype_localized"/>
+														</xsl:otherwise>
+													</xsl:choose>
+													
+												</fo:block>
+											</fo:block-container>
+										</fo:table-cell>
+									</fo:table-row>
+									
+									<fo:table-row height="46mm">
+										<fo:table-cell number-columns-spanned="2" border-right="{$cover_page_border}">
+											<fo:block>&#xa0;
+												</fo:block>
+										</fo:table-cell>
+										<fo:table-cell number-columns-spanned="2" display-align="after" padding-left="6mm">
+											<fo:block font-size="19pt" font-weight="bold" line-height="1">
+												<xsl:if test="$stage &gt;=60">
+													<xsl:attribute name="color"><xsl:value-of select="$color_red"/></xsl:attribute>
+												</xsl:if>
+												<xsl:value-of select="$docidentifierISO"/>
+											</fo:block>
+										</fo:table-cell>
+									</fo:table-row>
+									
+									<fo:table-row height="1.4mm" font-size="0pt">
+										<fo:table-cell border-bottom="{$cover_page_border}"><fo:block>&#xa0;</fo:block></fo:table-cell>
+										<fo:table-cell number-columns-spanned="2"><fo:block>&#xa0;</fo:block></fo:table-cell>
+										<fo:table-cell border-bottom="{$cover_page_border}"><fo:block>&#xa0;</fo:block></fo:table-cell>
+									</fo:table-row>
+									<fo:table-row height="1.4mm" font-size="0pt">
+										<fo:table-cell number-columns-spanned="4"><fo:block>&#xa0;</fo:block></fo:table-cell>
+									</fo:table-row>
+									
+									<fo:table-row>
+										<fo:table-cell number-columns-spanned="2" border-right="{$cover_page_border}" padding-right="4mm">
+										
+											<fo:block-container font-family="Cambria" line-height="1.1" role="SKIP" height="110mm">
+												<fo:block margin-right="3.5mm" role="SKIP">
+													<fo:block font-size="18pt" font-weight="bold" margin-top="2.5mm" role="H1">
+														<xsl:call-template name="insertTitlesLangMain"/>
+													</fo:block>
+																
+													<xsl:if test="not($stage-abbreviation = 'FDAMD' or $stage-abbreviation = 'FDAM')">
+														<xsl:for-each select="xalan:nodeset($lang_other)/lang">
+															<xsl:variable name="lang_other" select="."/>
+															<fo:block font-size="12pt" role="SKIP"><xsl:value-of select="$linebreak"/></fo:block>
+															<fo:block font-size="11pt" font-style="italic" line-height="1.1" role="H1">
+																<!-- Example: title-intro fr -->
+																<xsl:call-template name="insertTitlesLangOther">
+																	<xsl:with-param name="lang_other" select="$lang_other"/>
+																</xsl:call-template>
+															</fo:block>
+														</xsl:for-each>
+													</xsl:if>
+													
+													<xsl:if test="$stage-abbreviation = 'NWIP' or $stage-abbreviation = 'NP' or $stage-abbreviation = 'PWI' or $stage-abbreviation = 'AWI' or $stage-abbreviation = 'WD' or $stage-abbreviation = 'CD' or $stage-abbreviation = 'FDIS' or $stagename_abbreviation = 'FDIS' 
+														or $stage-abbreviation = 'DIS' or $stage-abbreviation = 'DAMD' or $stage-abbreviation = 'DAM' or $stagename_abbreviation = 'DIS'">
+														<fo:block margin-top="20mm">
+															<xsl:copy-of select="$ics"/>
+														</fo:block>
+													</xsl:if>
+													
+												</fo:block>
+											</fo:block-container>
+										</fo:table-cell>
+										<fo:table-cell number-columns-spanned="2" padding-left="6mm">
+											<fo:block margin-top="2.5mm" line-height="1.1">
+											
+												<xsl:if test="not($stage-abbreviation = 'DIS' or $stage-abbreviation = 'DAMD' or $stage-abbreviation = 'DAM')">
+													<xsl:variable name="edition_and_date">
+														<xsl:call-template name="insertEditionAndDate"/>
+													</xsl:variable>
+													<xsl:if test="normalize-space($edition_and_date) != ''">
+														<fo:block font-size="18pt" font-weight="bold" margin-bottom="3mm">
+															<xsl:value-of select="$edition_and_date"/>
+														</fo:block>
+													</xsl:if>
+												</xsl:if>
+											
+												<xsl:if test="$doctype = 'amendment'"> <!-- and not($stage-abbreviation = 'FDAMD' or $stage-abbreviation = 'FDAM') -->
+													<fo:block font-size="18pt" font-weight="bold" margin-bottom="3mm">
+														<xsl:value-of select="$doctype_uppercased"/>
+														<xsl:text> </xsl:text>
+														<xsl:variable name="amendment-number" select="/iso:iso-standard/iso:bibdata/iso:ext/iso:structuredidentifier/iso:project-number/@amendment"/>
+														<xsl:if test="normalize-space($amendment-number) != ''">
+															<xsl:value-of select="$amendment-number"/><xsl:text> </xsl:text>
+														</xsl:if>
+													</fo:block>
+												<!-- </xsl:if>
+											
+												<xsl:if test="$doctype = 'amendment' and not($stage-abbreviation = 'FDAMD' or $stage-abbreviation = 'FDAM')"> -->
+													<xsl:if test="/iso:iso-standard/iso:bibdata/iso:date[@type = 'updated']">																		
+														<fo:block font-size="18pt" font-weight="bold" margin-bottom="3mm">
+															<xsl:value-of select="/iso:iso-standard/iso:bibdata/iso:date[@type = 'updated']"/>
+														</fo:block>
+													</xsl:if>
+												</xsl:if>
+											
+												<xsl:variable name="date_corrected" select="normalize-space(/iso:iso-standard/iso:bibdata/iso:date[@type = 'corrected'])"/>
+												<xsl:if test="$date_corrected != ''">
+													<fo:block font-size="18pt" font-weight="bold" margin-bottom="3mm">
+														<xsl:value-of select="$i18n_corrected_version"/>
+														<xsl:value-of select="$linebreak"/>
+														<xsl:value-of select="$date_corrected"/>
+													</fo:block>
+												</xsl:if>
+											
+												
+												
+												<xsl:if test="$stage-abbreviation = 'DIS' or $stage-abbreviation = 'DAMD' or $stage-abbreviation = 'DAM' or $stagename_abbreviation = 'DIS' or
+													$stage-abbreviation = 'FDIS' or $stage-abbreviation = 'FDAMD' or $stage-abbreviation = 'FDAM' or $stagename_abbreviation = 'FDIS' or
+													$stage-abbreviation = 'NWIP' or $stage-abbreviation = 'NP' or $stage-abbreviation = 'PWI' or $stage-abbreviation = 'AWI' or $stage-abbreviation = 'WD' or $stage-abbreviation = 'CD'">
+													<xsl:if test="normalize-space($editorialgroup) != ''">
+														<fo:block margin-bottom="3mm">
+															<xsl:copy-of select="$editorialgroup"/>
+														</fo:block>
+													</xsl:if>
+													<xsl:if test="normalize-space($secretariat) != ''">
+														<fo:block margin-bottom="3mm">
+															<xsl:copy-of select="$secretariat"/>
+														</fo:block>
+													</xsl:if>
+												</xsl:if>
+												
+												<xsl:if test="$stage-abbreviation = 'DIS' or $stage-abbreviation = 'DAMD' or $stage-abbreviation = 'DAM' or $stagename_abbreviation = 'DIS' or
+																		$stage-abbreviation = 'FDIS' or $stage-abbreviation = 'FDAMD' or $stage-abbreviation = 'FDAM' or $stagename_abbreviation = 'FDIS'">
+													
+													<fo:block margin-bottom="3mm">
+													<!-- Voting begins on: -->
+														<xsl:value-of select="concat($i18n_voting_begins_on, ':')"/>
+														<fo:block font-weight="bold">
+															<xsl:call-template name="insertVoteStarted"/>
+														</fo:block>
+													</fo:block>
+												
+													<fo:block margin-bottom="3mm">
+														<!-- Voting terminates on: -->
+														<xsl:value-of select="concat($i18n_voting_terminates_on, ':')"/>
+														<fo:block font-weight="bold">
+															<xsl:call-template name="insertVoteEnded"/>
+														</fo:block>
+													</fo:block>
+												</xsl:if>
+											</fo:block>
+											
+										</fo:table-cell>
+									</fo:table-row>
+									
+									<fo:table-row height="60mm">
+										<fo:table-cell number-columns-spanned="2" border-right="{$cover_page_border}" display-align="after" padding-right="4mm">
+										
+											<xsl:variable name="additionalNotes">
+												<xsl:call-template name="insertCoverPageAdditionalNotes"/>
+											</xsl:variable>
+											<xsl:if test="normalize-space($additionalNotes) != '' or $stage-abbreviation = 'PRF'">
+												<xsl:attribute name="display-align">center</xsl:attribute>
+												<fo:block>
+													<xsl:copy-of select="$additionalNotes"/>												
+												</fo:block>
+											</xsl:if>
+											
+											<xsl:if test="$stage-abbreviation = 'PRF'">
+												<fo:block font-size="28pt" font-weight="bold">
+													<xsl:call-template name="add-letter-spacing">
+														<xsl:with-param name="text" select="$proof-text"/>
+														<xsl:with-param name="letter-spacing" select="0.65"/>
+													</xsl:call-template>
+												</fo:block>
+											</xsl:if>
+											
+											<fo:block>
+												<xsl:variable name="feedback_link" select="normalize-space(/iso:iso-standard/iso:metanorma-extension/iso:semantic-metadata/iso:feedback-link)"/>
+												<xsl:if test="$stage &gt;=60 and $feedback_link != ''">
+													<fo:block-container width="69mm" background-color="rgb(242,242,242)" display-align="before">
+														<fo:table table-layout="fixed" width="100%" role="SKIP">
+															<fo:table-column column-width="proportional-column-width(26)"/>
+															<fo:table-column column-width="proportional-column-width(43.5)"/>
+															<fo:table-body>
+																<fo:table-row>
+																	<fo:table-cell text-align="right" padding-top="3mm">
+																		<fo:block>
+																			<fo:instream-foreign-object fox:alt-text="QRcode">
+																				<!-- Todo: link generation -->
+																				<barcode:barcode
+																							xmlns:barcode="http://barcode4j.krysalis.org/ns"
+																							message="{$feedback_link}">
+																					<barcode:qr>
+																						<barcode:module-width>0.7mm</barcode:module-width>
+																						<barcode:ec-level>M</barcode:ec-level>
+																					</barcode:qr>
+																				</barcode:barcode>
+																			</fo:instream-foreign-object>
+																		</fo:block>
+																	</fo:table-cell>
+																	<fo:table-cell padding="4mm">
+																		<fo:block color="black" font-size="7.5pt" line-height="1.35">
+																			<xsl:text>Please share your feedback about the standard. Scan the QR code with your phone or click the link</xsl:text>
+																			<fo:block margin-top="2pt">
+																				<fo:basic-link external-destination="{$feedback_link}" fox:alt-text="{$feedback_link}">
+																					<xsl:call-template name="add-zero-spaces-link-java">
+																						<xsl:with-param name="text" select="$feedback_link"/>
+																					</xsl:call-template>
+																				</fo:basic-link>
+																			</fo:block>
+																		</fo:block>
+																	</fo:table-cell>
+																</fo:table-row>
+															</fo:table-body>
+														</fo:table>
+													</fo:block-container>
+												</xsl:if>
+											</fo:block>
+										</fo:table-cell>
+										<fo:table-cell number-columns-spanned="2" padding-left="6mm" display-align="after">
+											<fo:block font-size="6.5pt" margin-right="15mm">
+												<xsl:call-template name="insertDraftComments"/>
+											</fo:block>
+										</fo:table-cell>
+									</fo:table-row>
+									
+									<fo:table-row height="13mm">
+										<fo:table-cell number-columns-spanned="2" border-right="{$cover_page_border}" display-align="after" padding-bottom="-1mm" line-height="1.1">>
+											<fo:block font-size="10pt">
+												<xsl:value-of select="$i18n_reference_number"/>
+											</fo:block>
+											<fo:block font-size="10pt">
+												<xsl:value-of select="$ISOnumber"/>
+											</fo:block>
+										</fo:table-cell>
+										<fo:table-cell number-columns-spanned="2" padding-left="6mm" display-align="after" padding-bottom="-1mm">
+											<fo:block font-size="10pt" line-height="1.1">
+												<xsl:value-of select="concat('© ', $copyrightAbbr, ' ', $copyrightYear)"/>
+												<xsl:if test="$copyrightAbbrIEEE != ''">
+													<xsl:value-of select="$linebreak"/>
+													<xsl:value-of select="concat('© ', $copyrightAbbrIEEE, ' ', $copyrightYear)"/>
+												</xsl:if>
+											</fo:block>
+										</fo:table-cell>
+									</fo:table-row>
+								</fo:table-body>
+							</fo:table>
+						</fo:flow>
+					</fo:page-sequence>
+				</xsl:when> <!-- END: $layoutVersion = '2024' -->
+				
+				<xsl:when test="$stage-abbreviation != ''">
+					<fo:page-sequence master-reference="cover-page-publishedISO" force-page-count="no-force">
+						<fo:static-content flow-name="cover-page-footer" font-size="10pt">
+							<xsl:if test="$layoutVersion = '1989'">
+								<xsl:attribute name="font-size">9pt</xsl:attribute>
+							</xsl:if>
+							<fo:table table-layout="fixed" width="100%" role="SKIP">
+								<fo:table-column column-width="52mm"/>
+								<fo:table-column column-width="7.5mm"/>
+								<fo:table-column column-width="112.5mm"/>
+								<fo:table-body role="SKIP">
+									<fo:table-row role="SKIP">
+										<fo:table-cell font-size="6.5pt" text-align="justify" display-align="after" padding-bottom="8mm" role="SKIP">
+											<xsl:if test="$stage-abbreviation = 'DAMD' or $stage-abbreviation = 'DAM'">
+												<xsl:attribute name="font-size">7pt</xsl:attribute>
+											</xsl:if>
+											<!-- margin-top="-30mm"  -->
+											<fo:block> <!-- margin-top="-100mm" -->
+												<xsl:call-template name="insertDraftComments"/>
+											</fo:block>
+										</fo:table-cell>
+										<fo:table-cell role="SKIP">
+											<fo:block role="SKIP"><fo:wrapper role="artifact">&#xA0;</fo:wrapper></fo:block>
+										</fo:table-cell>
+										<fo:table-cell display-align="after" padding-bottom="3mm" role="SKIP">
+											<fo:block-container height="22.5mm" display-align="center" role="SKIP">
+											
+												<xsl:variable name="iso-fast-track" select="normalize-space(/iso:iso-standard/iso:bibdata/iso:ext/iso:fast-track)"/>
+												
+												<xsl:if test="normalize-space($iso-fast-track) = 'true'">
+													<xsl:attribute name="height">28mm</xsl:attribute>
+												</xsl:if>
+												
+												<fo:block>
+													<xsl:call-template name="insertCoverPageAdditionalNotes"/>
+												</fo:block>
+											</fo:block-container>
+											<fo:block role="SKIP">
+												<xsl:call-template name="insertTripleLine"/>
+												<fo:table table-layout="fixed" width="100%" role="SKIP"> <!-- margin-bottom="3mm" -->
+													<fo:table-column column-width="50%"/>
+													<fo:table-column column-width="50%"/>
+													<fo:table-body role="SKIP">
+														<fo:table-row height="34mm" role="SKIP">
+															<fo:table-cell display-align="center" role="SKIP">
+															
+																<xsl:if test="$copyrightAbbrIEEE != ''">
+																	<xsl:attribute name="display-align">before</xsl:attribute>
+																</xsl:if>
+																
+																<fo:block text-align="left" margin-top="2mm">
+																	
+																	<xsl:if test="$copyrightAbbrIEEE != ''">
+																		<xsl:attribute name="margin-top">0</xsl:attribute>
+																	</xsl:if>
+																
+																	<!-- <xsl:variable name="docid" select="substring-before(/iso:iso-standard/iso:bibdata/iso:docidentifier, ' ')"/>
+																	<xsl:for-each select="xalan:tokenize($docid, '/')"> -->
+																	<xsl:variable name="content-height">
+																		<xsl:choose>
+																			<xsl:when test="$copyrightAbbrIEEE != ''">13.9</xsl:when>
+																			<xsl:otherwise>19</xsl:otherwise>
+																		</xsl:choose>
+																	</xsl:variable>
+																	
+																	<xsl:for-each select="/iso:iso-standard/iso:bibdata/iso:copyright/iso:owner/iso:organization">
+																		<xsl:choose>
+																			<xsl:when test="iso:abbreviation = 'ISO'">
+																				<xsl:choose>
+																					<xsl:when test="$layoutVersion = '1989' and $revision_date_num &lt; 19930101">
+																						<fo:external-graphic src="{concat('data:image/png;base64,', normalize-space($Image-ISO-Logo-1987))}" content-height="{$content-height}mm" content-width="scale-to-fit" scaling="uniform" fox:alt-text="Image ISO Logo"/>
+																					</xsl:when>
+																					<xsl:otherwise>
+																						<fo:external-graphic src="{concat('data:image/png;base64,', normalize-space($Image-ISO-Logo))}" content-height="{$content-height}mm" content-width="scale-to-fit" scaling="uniform" fox:alt-text="Image ISO Logo"/>
+																					</xsl:otherwise>
+																				</xsl:choose>
+																			</xsl:when>
+																			<xsl:when test="iso:abbreviation = 'IEC'">
+																				<xsl:choose>
+																					<xsl:when test="$layoutVersion = '1989' and $revision_date_num &lt; 19930101">
+																						<fo:external-graphic src="{concat('data:image/png;base64,', normalize-space($Image-IEC-Logo-1989))}" content-height="{$content-height}mm" content-width="scale-to-fit" scaling="uniform" fox:alt-text="Image IEC Logo"/>
+																					</xsl:when>
+																					<xsl:otherwise>
+																						<fo:external-graphic src="{concat('data:image/png;base64,', normalize-space($Image-IEC-Logo))}" content-height="{$content-height}mm" content-width="scale-to-fit" scaling="uniform" fox:alt-text="Image IEC Logo"/>
+																					</xsl:otherwise>
+																				</xsl:choose>
+																			</xsl:when>
+																			<xsl:when test="iso:abbreviation = 'IEEE'"></xsl:when>
+																			<xsl:when test="iso:abbreviation = 'IDF' or iso:name = 'IDF'">
+																				<fo:external-graphic src="{concat('data:image/png;base64,', normalize-space($Image-IDF-Logo))}" content-height="{$content-height}mm" content-width="scale-to-fit" scaling="uniform" fox:alt-text="Image IDF Logo"/>
+																			</xsl:when>
+																			<xsl:otherwise></xsl:otherwise>
+																		</xsl:choose>
+																		<xsl:if test="position() != last()">
+																			<fo:inline padding-right="1mm" role="SKIP">&#xA0;</fo:inline>
+																		</xsl:if>
+																	</xsl:for-each>
+																	<xsl:if test="$copyrightAbbrIEEE != ''">
+																		<fo:block>
+																			<fo:external-graphic src="{concat('data:image/png;base64,', normalize-space($Image-IEEE-Logo))}" content-height="11mm" content-width="scale-to-fit" scaling="uniform" fox:alt-text="Image {@alt}"/>
+																		</fo:block>
+																	</xsl:if>
+																</fo:block>
+															</fo:table-cell>
+															<fo:table-cell  display-align="center" role="SKIP">
+																<fo:block text-align="right" role="SKIP">																	
+																	<!-- Reference number -->
+																	<fo:block>
+																		<xsl:value-of select="$i18n_reference_number"/>
+																	</fo:block>
+																	<fo:block>
+																		<xsl:value-of select="$ISOnumber"/>																		
+																	</fo:block>
+																	<fo:block space-before="28pt">
+																		<xsl:if test="$copyrightAbbrIEEE != ''">
+																			<xsl:attribute name="space-before">14pt</xsl:attribute>
+																		</xsl:if>
+																		<fo:inline font-size="9pt">©</fo:inline><xsl:value-of select="concat(' ', $copyrightAbbr, ' ', $copyrightYear)"/>
+																		<xsl:if test="$copyrightAbbrIEEE != ''">
+																			<xsl:value-of select="$linebreak"/>
+																			<fo:inline font-size="9pt">©</fo:inline>
+																			<xsl:value-of select="concat(' ', $copyrightAbbrIEEE, ' ', $copyrightYear)"/>
+																		</xsl:if>
+																	</fo:block>
+																</fo:block>
+															</fo:table-cell>
+														</fo:table-row>
+													</fo:table-body>
+												</fo:table>
+											</fo:block>
+										</fo:table-cell>
+									</fo:table-row>
+								</fo:table-body>
+							</fo:table>
+						</fo:static-content>
+						
+						<xsl:choose>
+							<!-- COVER PAGE for DIS document only -->
+							<xsl:when test="$stage-abbreviation = 'DIS' or $stage-abbreviation = 'DAMD' or $stage-abbreviation = 'DAM' or $stagename_abbreviation = 'DIS'">
+								<fo:flow flow-name="xsl-region-body">
+									<fo:block-container role="SKIP">
+										<fo:block margin-top="-1mm" font-size="20pt" text-align="right">
+											<xsl:value-of select="$stage-fullname-uppercased"/>
+										</fo:block>
+										<fo:block font-size="20pt" font-weight="bold" text-align="right">
+											<xsl:value-of select="$docidentifierISO"/>
+										</fo:block>
+										
+										
+										<fo:table table-layout="fixed" width="100%" margin-top="18mm">
+											<fo:table-column column-width="59.5mm"/>
+											<fo:table-column column-width="52mm"/>
+											<fo:table-column column-width="59mm"/>
+											<fo:table-body>
+												<fo:table-row>
+													<fo:table-cell>
+														<fo:block>&#xA0;</fo:block>
+													</fo:table-cell>
+													<fo:table-cell>
+														<fo:block margin-bottom="3mm">
+															<xsl:copy-of select="$editorialgroup"/>
+														</fo:block>
+													</fo:table-cell>
+													<fo:table-cell>
+														<fo:block margin-bottom="3mm">
+															<xsl:copy-of select="$secretariat"/>
+														</fo:block>
+													</fo:table-cell>
+												</fo:table-row>
+												<fo:table-row>
+													<fo:table-cell>
+														<fo:block>&#xA0;</fo:block>
+													</fo:table-cell>
+													<fo:table-cell>
+														<fo:block>
+															<!-- Voting begins on: -->
+															<xsl:value-of select="concat($i18n_voting_begins_on, ':')"/>
+														</fo:block>
+													</fo:table-cell>
+													<fo:table-cell>
+														<fo:block>
+															<!-- Voting terminates on: -->
+															<xsl:value-of select="concat($i18n_voting_terminates_on, ':')"/>
+														</fo:block>
+													</fo:table-cell>
+												</fo:table-row>
+												<fo:table-row>
+													<fo:table-cell>
+														<fo:block>&#xA0;</fo:block>
+													</fo:table-cell>
+													<fo:table-cell>
+														<fo:block font-weight="bold">
+															<xsl:call-template name="insertVoteStarted"/>
+														</fo:block>
+													</fo:table-cell>
+													<fo:table-cell>
+														<fo:block font-weight="bold">
+															<xsl:call-template name="insertVoteEnded"/>
+														</fo:block>
+													</fo:table-cell>
+												</fo:table-row>
+											</fo:table-body>
+										</fo:table>
+										
+										<fo:block-container line-height="1.1" margin-top="3mm" role="SKIP">
+											<xsl:call-template name="insertTripleLine"/>
+											<fo:block margin-right="5mm" role="SKIP">
+												<fo:block font-size="18pt" font-weight="bold" margin-top="6pt" role="H1">
+													<xsl:if test="$layoutVersion = '1989'">
+														<xsl:attribute name="font-size">16pt</xsl:attribute>
+													</xsl:if>
+													<xsl:call-template name="insertTitlesLangMain"/>
+												</fo:block>
+												
+												
+												<xsl:for-each select="xalan:nodeset($lang_other)/lang">
+													<xsl:variable name="lang_other" select="."/>
+												
+													<fo:block font-size="12pt" role="SKIP"><xsl:value-of select="$linebreak"/></fo:block>
+													<fo:block font-size="11pt" font-style="italic" line-height="1.1" role="H1">
+														<xsl:if test="$layoutVersion = '1989'">
+															<xsl:attribute name="font-size">10pt</xsl:attribute>
+														</xsl:if>
+														<!-- Example: title-intro fr -->
+														<xsl:call-template name="insertTitlesLangOther">
+															<xsl:with-param name="lang_other" select="$lang_other"/>
+														</xsl:call-template>
+													</fo:block>
+												</xsl:for-each>
+											</fo:block>
+											
+											<fo:block margin-top="10mm">
+												<xsl:copy-of select="$ics"/>
+											</fo:block>
+											
+										</fo:block-container>
+										
+										
+									</fo:block-container>
+								</fo:flow>
+							
+							</xsl:when> <!-- END: $stage-abbreviation = 'DIS' 'DAMD' 'DAM'-->
+							<xsl:otherwise>
+						
+								<!-- COVER PAGE  for all documents except DIS, DAMD and DAM -->
+								<fo:flow flow-name="xsl-region-body">
+									<fo:block-container role="SKIP">
+										<fo:table table-layout="fixed" width="100%" font-size="24pt" line-height="1" role="SKIP"> <!-- margin-bottom="35mm" -->
+											<xsl:if test="$layoutVersion = '1989'">
+												<xsl:attribute name="line-height">1.14</xsl:attribute>
+											</xsl:if>
+											<xsl:if test="$layoutVersion = '1989'">
+												<xsl:attribute name="font-size">22pt</xsl:attribute>
+											</xsl:if>
+											<fo:table-column column-width="59.5mm"/>
+											<fo:table-column column-width="67.5mm"/>
+											<fo:table-column column-width="45.5mm"/>
+											<fo:table-body role="SKIP">
+												<fo:table-row role="SKIP">
+													<fo:table-cell role="SKIP">
+														<fo:block font-size="18pt">
+															
+															<xsl:value-of select="translate($stagename-header-coverpage, ' ', $linebreak)"/>
+															
+															<!-- if there is iteration number, then print it -->
+															<xsl:variable name="iteration" select="number(/iso:iso-standard/iso:bibdata/iso:status/iso:iteration)"/>	
+															
+															<xsl:if test="number($iteration) = $iteration and 
+																																							($stage-abbreviation = 'NWIP' or 
+																																							$stage-abbreviation = 'NP' or 
+																																							$stage-abbreviation = 'PWI' or 
+																																							$stage-abbreviation = 'AWI' or 
+																																							$stage-abbreviation = 'WD' or 
+																																							$stage-abbreviation = 'CD')">
+																<xsl:text>&#xA0;</xsl:text><xsl:value-of select="$iteration"/>
+															</xsl:if>
+															<!-- <xsl:if test="$stage-name = 'draft'">DRAFT</xsl:if>
+															<xsl:if test="$stage-name = 'final-draft'">FINAL<xsl:value-of select="$linebreak"/>DRAFT</xsl:if> -->
+														</fo:block>
+													</fo:table-cell>
+													
+													<xsl:variable name="lastWord">
+														<xsl:call-template name="substring-after-last">
+															<xsl:with-param name="value" select="$doctype_uppercased"/>
+															<xsl:with-param name="delimiter" select="' '"/>
+														</xsl:call-template>
+													</xsl:variable>
+													<xsl:variable name="font-size"><xsl:if test="string-length($lastWord) &gt;= 12">90%</xsl:if></xsl:variable> <!-- to prevent overlapping 'NORME INTERNATIONALE' to number -->
+													
+													<fo:table-cell role="SKIP">
+														<fo:block text-align="left">
+															<xsl:choose>
+																<xsl:when test="$stage-abbreviation = 'FDAMD' or $stage-abbreviation = 'FDAM'"><xsl:value-of select="$doctype_uppercased"/></xsl:when>
+																<xsl:when test="$doctype = 'amendment'">
+																	<xsl:value-of select="java:toUpperCase(java:java.lang.String.new(translate(/iso:iso-standard/iso:bibdata/iso:ext/iso:updates-document-type,'-',' ')))"/>
+																</xsl:when>
+																<xsl:otherwise>
+																	<xsl:if test="$font-size != ''">
+																		<xsl:attribute name="font-size"><xsl:value-of select="$font-size"/></xsl:attribute>
+																	</xsl:if>
+																	<xsl:value-of select="$doctype_uppercased"/>
+																</xsl:otherwise>
+															</xsl:choose>
+														</fo:block>
+													</fo:table-cell>
+													<fo:table-cell role="SKIP">
+														<fo:block text-align="right" font-weight="bold" margin-bottom="13mm">
+															<xsl:if test="$font-size != ''">
+																<xsl:attribute name="font-size"><xsl:value-of select="$font-size"/></xsl:attribute>
+															</xsl:if>
+															<xsl:value-of select="$docidentifierISO_with_break"/>
+															<xsl:copy-of select="$docidentifier_another"/>
+														</fo:block>
+													</fo:table-cell>
+												</fo:table-row>
+												<fo:table-row height="25mm" role="SKIP">
+													<fo:table-cell number-columns-spanned="3" font-size="10pt" line-height="1.2" role="SKIP">
+														<xsl:if test="$layoutVersion = '1989'">
+															<xsl:attribute name="font-size">9pt</xsl:attribute>
+														</xsl:if>
+														<fo:block text-align="right">
+															<xsl:call-template name="insertEditionAndDate"/>
+														</fo:block>
+														<!-- <xsl:value-of select="$linebreak"/>
+														<xsl:value-of select="/iso:iso-standard/iso:bibdata/iso:version/iso:revision-date"/> -->
+														<xsl:if test="$doctype = 'amendment' and not($stage-abbreviation = 'FDAMD' or $stage-abbreviation = 'FDAM')">
+															<fo:block text-align="right" margin-right="0.5mm" role="SKIP">
+																<fo:block font-weight="bold" margin-top="4pt" role="H1">
+																	<xsl:value-of select="$doctype_uppercased"/>
+																	<xsl:text> </xsl:text>
+																	<xsl:variable name="amendment-number" select="/iso:iso-standard/iso:bibdata/iso:ext/iso:structuredidentifier/iso:project-number/@amendment"/>
+																	<xsl:if test="normalize-space($amendment-number) != ''">
+																		<xsl:value-of select="$amendment-number"/><xsl:text> </xsl:text>
+																	</xsl:if>
+																</fo:block>
+																<fo:block>
+																	<xsl:if test="/iso:iso-standard/iso:bibdata/iso:date[@type = 'updated']">																		
+																		<xsl:value-of select="/iso:iso-standard/iso:bibdata/iso:date[@type = 'updated']"/>
+																	</xsl:if>
+																</fo:block>
+															</fo:block>
+														</xsl:if>
+														<xsl:variable name="date_corrected" select="normalize-space(/iso:iso-standard/iso:bibdata/iso:date[@type = 'corrected'])"/>
+														<xsl:if test="$date_corrected != ''">
+															<fo:block text-align="right" font-size="9.5pt">
+																<xsl:value-of select="$linebreak"/>
+																<xsl:value-of select="$linebreak"/>
+																<xsl:value-of select="$i18n_corrected_version"/>
+																<xsl:value-of select="$linebreak"/>
+																<xsl:value-of select="$date_corrected"/>
+															</fo:block>
+														</xsl:if>
+													</fo:table-cell>
+												</fo:table-row>
+												<fo:table-row height="17mm" role="SKIP">
+													<fo:table-cell role="SKIP"><fo:block role="SKIP"></fo:block></fo:table-cell>
+													<fo:table-cell number-columns-spanned="2" font-size="10pt" line-height="1.2" display-align="center" role="SKIP">
+														<fo:block role="SKIP">
+															<xsl:if test="$stage-abbreviation = 'NWIP' or $stage-abbreviation = 'NP' or $stage-abbreviation = 'PWI' or $stage-abbreviation = 'AWI' or $stage-abbreviation = 'WD' or $stage-abbreviation = 'CD'">
+																<fo:table table-layout="fixed" width="100%" role="SKIP">
+																	<fo:table-column column-width="50%"/>
+																	<fo:table-column column-width="50%"/>
+																	<fo:table-body role="SKIP">
+																		<fo:table-row role="SKIP">
+																			<fo:table-cell role="SKIP">
+																				<fo:block>
+																					<xsl:copy-of select="$editorialgroup"/>
+																				</fo:block>
+																			</fo:table-cell>
+																			<fo:table-cell role="SKIP">
+																				<fo:block>
+																					<xsl:copy-of select="$secretariat"/>
+																				</fo:block>
+																			</fo:table-cell>
+																		</fo:table-row>
+																	</fo:table-body>
+																</fo:table>
+															</xsl:if>
+														</fo:block>
+													</fo:table-cell>
+												</fo:table-row>
+												
+											</fo:table-body>
+										</fo:table>
+										
+										
+										<fo:table table-layout="fixed" width="100%" role="SKIP">
+											<fo:table-column column-width="52mm"/>
+											<fo:table-column column-width="7.5mm"/>
+											<fo:table-column column-width="112.5mm"/>
+											<fo:table-body role="SKIP">
+												<fo:table-row role="SKIP"> <!--  border="1pt solid black" height="150mm"  -->
+													<fo:table-cell font-size="11pt" role="SKIP">
+														<fo:block role="SKIP">
+															<xsl:if test="$stage-abbreviation = 'FDIS' or $stage-abbreviation = 'FDAMD' or $stage-abbreviation = 'FDAM' or $stagename_abbreviation = 'FDIS'">
+																<fo:block-container border="0.5mm solid black" width="51mm" role="SKIP">
+																	<fo:block margin="2mm" role="SKIP">
+																			<fo:block margin-bottom="8pt"><xsl:copy-of select="$editorialgroup"/></fo:block>
+																			<fo:block margin-bottom="6pt"><xsl:copy-of select="$secretariat"/></fo:block>
+																			<fo:block margin-bottom="6pt">
+																				<!-- Voting begins on: -->
+																				<xsl:value-of select="concat($i18n_voting_begins_on, ':')"/>
+																				<xsl:value-of select="$linebreak"/>
+																				<fo:inline font-weight="bold">
+																					<xsl:call-template name="insertVoteStarted"/>
+																				</fo:inline>
+																			</fo:block>
+																			<fo:block>
+																				<!-- Voting terminates on: -->
+																				<xsl:value-of select="concat($i18n_voting_terminates_on, ':')"/>
+																				<xsl:value-of select="$linebreak"/>
+																				<fo:inline font-weight="bold">
+																					<xsl:call-template name="insertVoteEnded"/>
+																				</fo:inline>
+																			</fo:block>
+																	</fo:block>
+																</fo:block-container>
+															</xsl:if>
+														</fo:block>
+													</fo:table-cell>
+													<fo:table-cell role="SKIP">
+														<fo:block role="SKIP"><fo:wrapper role="artifact">&#xA0;</fo:wrapper></fo:block>
+													</fo:table-cell>
+													<fo:table-cell role="SKIP">
+														<xsl:call-template name="insertTripleLine"/>
+														<fo:block-container line-height="1.1" role="SKIP">
+															<fo:block margin-right="3.5mm" role="SKIP">
+																<fo:block font-size="18pt" font-weight="bold" margin-top="12pt" role="H1">
+																	<xsl:if test="$layoutVersion = '1989'">
+																		<xsl:attribute name="font-size">16pt</xsl:attribute>
+																	</xsl:if>
+																	<xsl:call-template name="insertTitlesLangMain"/>
+																</fo:block>
+																			
+																<xsl:if test="not($stage-abbreviation = 'FDAMD' or $stage-abbreviation = 'FDAM')">
+																	<xsl:for-each select="xalan:nodeset($lang_other)/lang">
+																		<xsl:variable name="lang_other" select="."/>
+																		
+																		<fo:block font-size="12pt" role="SKIP"><xsl:value-of select="$linebreak"/></fo:block>
+																		<fo:block font-size="11pt" font-style="italic" line-height="1.1" role="H1">
+																			<xsl:if test="$layoutVersion = '1989'">
+																				<xsl:attribute name="font-size">10pt</xsl:attribute>
+																			</xsl:if>
+																			<!-- Example: title-intro fr -->
+																			<xsl:call-template name="insertTitlesLangOther">
+																				<xsl:with-param name="lang_other" select="$lang_other"/>
+																			</xsl:call-template>
+																		</fo:block>
+																	</xsl:for-each>
+																</xsl:if>
+																
+																<xsl:if test="$stage-abbreviation = 'NWIP' or $stage-abbreviation = 'NP' or $stage-abbreviation = 'PWI' or $stage-abbreviation = 'AWI' or $stage-abbreviation = 'WD' or $stage-abbreviation = 'CD' or $stage-abbreviation = 'FDIS' or $stagename_abbreviation = 'FDIS'">
+																	<fo:block margin-top="10mm">
+																		<xsl:copy-of select="$ics"/>
+																	</fo:block>
+																</xsl:if>
+																
+															</fo:block>
+														</fo:block-container>
+													</fo:table-cell>
+												</fo:table-row>
+											</fo:table-body>
+										</fo:table>
+									</fo:block-container>
+									<fo:block-container position="absolute" left="60mm" top="222mm" height="25mm" display-align="after" role="SKIP">
+										<fo:block margin-bottom="2mm" role="SKIP">
+											<xsl:if test="$stage-abbreviation = 'PRF'">
+												<fo:block font-size="36pt" font-weight="bold" margin-left="1mm">
+													<xsl:call-template name="add-letter-spacing">
+														<xsl:with-param name="text" select="$proof-text"/>
+														<xsl:with-param name="letter-spacing" select="0.65"/>
+													</xsl:call-template>
+												</fo:block>
+											</xsl:if>
+										</fo:block>
+									</fo:block-container>
+								</fo:flow>
+						</xsl:otherwise>
+						</xsl:choose>
+						
+						
+					</fo:page-sequence>
+				</xsl:when> <!-- $stage-abbreviation != '' -->
+					
+				<xsl:when test="$isPublished = 'true'">
+					<fo:page-sequence master-reference="cover-page-published" force-page-count="no-force">
+						<fo:static-content flow-name="cover-page-footer" font-size="10pt">
+							<xsl:call-template name="insertTripleLine"/>
+							<fo:table table-layout="fixed" width="100%" margin-bottom="3mm" role="SKIP">
+								<fo:table-column column-width="50%"/>
+								<fo:table-column column-width="50%"/>
+								<fo:table-body role="SKIP">
+									<fo:table-row height="32mm" role="SKIP">
+										<fo:table-cell display-align="center" role="SKIP">
+											<fo:block text-align="left">
+												<fo:external-graphic src="{concat('data:image/png;base64,', normalize-space($Image-ISO-Logo))}" width="21mm" content-height="21mm" content-width="scale-to-fit" scaling="uniform" fox:alt-text="Image {@alt}"/>
+											</fo:block>
+										</fo:table-cell>
+										<fo:table-cell display-align="center" role="SKIP">
+											<fo:block text-align="right" role="SKIP">
+												<fo:block>
+													<xsl:value-of select="$i18n_reference_number"/>
+												</fo:block>
+												<fo:block><xsl:value-of select="$ISOnumber"/></fo:block>
+												<fo:block role="SKIP">&#xA0;</fo:block>
+												<fo:block role="SKIP">&#xA0;</fo:block>
+												<fo:block><fo:inline font-size="9pt">©</fo:inline><xsl:value-of select="concat(' ', $copyrightAbbr, ' ', $copyrightYear)"/>
+													<xsl:if test="$copyrightAbbrIEEE != ''">
+														<xsl:value-of select="$linebreak"/>
+														<fo:inline font-size="9pt">©</fo:inline>
+														<xsl:value-of select="concat(' ', $copyrightAbbrIEEE, ' ', $copyrightYear)"/>
+													</xsl:if>
+												</fo:block>
+											</fo:block>
+										</fo:table-cell>
+									</fo:table-row>
+								</fo:table-body>
+							</fo:table>
+						</fo:static-content>
+						<fo:flow flow-name="xsl-region-body">
+							<fo:block-container role="SKIP">
+								<fo:table table-layout="fixed" width="100%" font-size="24pt" line-height="1" margin-bottom="35mm" role="SKIP">
+									<xsl:if test="$layoutVersion = '1989'">
+										<xsl:attribute name="font-size">22pt</xsl:attribute>
+									</xsl:if>
+									<fo:table-column column-width="60%"/>
+									<fo:table-column column-width="40%"/>
+									<fo:table-body role="SKIP">
+										<fo:table-row role="SKIP">
+											<fo:table-cell role="SKIP">
+												<fo:block text-align="left">
+													<xsl:value-of select="$doctype_uppercased"/>
+												</fo:block>
+											</fo:table-cell>
+											<fo:table-cell role="SKIP">
+												<fo:block text-align="right" font-weight="bold" margin-bottom="13mm">
+													<xsl:value-of select="$docidentifierISO_with_break"/>
+													<xsl:copy-of select="$docidentifier_another"/>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+										<fo:table-row role="SKIP">
+											<fo:table-cell number-columns-spanned="2" font-size="10pt" line-height="1.2" role="SKIP">
+												<fo:block text-align="right">
+													<xsl:call-template name="printEdition"/>
+													<xsl:value-of select="$linebreak"/>
+													<xsl:value-of select="/iso:iso-standard/iso:bibdata/iso:version/iso:revision-date"/></fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+								
+								<xsl:call-template name="insertTripleLine"/>
+								<fo:block-container line-height="1.1" role="SKIP">
+									<fo:block margin-right="40mm" role="SKIP">
+										<fo:block font-size="18pt" font-weight="bold" margin-top="12pt" role="H1">
+											<xsl:if test="$layoutVersion = '1989'">
+												<xsl:attribute name="font-size">16pt</xsl:attribute>
+											</xsl:if>
+											<xsl:call-template name="insertTitlesLangMain"/>
+										</fo:block>
+											
+										<xsl:for-each select="xalan:nodeset($lang_other)/lang">
+											<xsl:variable name="lang_other" select="."/>
+											
+											<fo:block font-size="12pt" role="SKIP"><xsl:value-of select="$linebreak"/></fo:block>
+											<fo:block font-size="11pt" font-style="italic" line-height="1.1" role="H1">
+												<xsl:if test="$layoutVersion = '1989'">
+													<xsl:attribute name="font-size">10pt</xsl:attribute>
+												</xsl:if>
+												<!-- Example: title-intro fr -->
+												<xsl:call-template name="insertTitlesLangOther">
+													<xsl:with-param name="lang_other" select="$lang_other"/>
+												</xsl:call-template>
+											</fo:block>
+										</xsl:for-each>
+									</fo:block>
+								</fo:block-container>
+							</fo:block-container>
+						</fo:flow>
+					</fo:page-sequence>
+				</xsl:when> <!-- $isPublished = 'true' -->
+				<xsl:otherwise>
+					<fo:page-sequence master-reference="cover-page" force-page-count="no-force">
+						<fo:static-content flow-name="cover-page-header" font-size="10pt">
+							<fo:block-container height="24mm" display-align="before">
+								<fo:block padding-top="12.5mm">
+									<xsl:value-of select="$copyrightText"/>
+								</fo:block>
+							</fo:block-container>
+						</fo:static-content>
+						<fo:flow flow-name="xsl-region-body">
+							<fo:block-container text-align="right" role="SKIP">
+								<xsl:choose>
+									<xsl:when test="/iso:iso-standard/iso:bibdata/iso:docidentifier[@type = 'iso-tc']">
+										<!-- 17301  -->
+										<fo:block font-size="14pt" font-weight="bold" margin-bottom="12pt">
+											<xsl:value-of select="/iso:iso-standard/iso:bibdata/iso:docidentifier[@type = 'iso-tc']"/>
+										</fo:block>
+										<!-- Date: 2016-05-01  -->
+										<fo:block margin-bottom="12pt">
+											<xsl:text>Date: </xsl:text><xsl:value-of select="/iso:iso-standard/iso:bibdata/iso:version/iso:revision-date"/>
+										</fo:block>
+									
+										<!-- ISO/CD 17301-1(E)  -->
+										<fo:block margin-bottom="12pt">
+											<xsl:value-of select="concat(/iso:iso-standard/iso:bibdata/iso:docidentifier, $lang-1st-letter)"/>
+										</fo:block>
+									</xsl:when>
+									<xsl:otherwise>
+										<fo:block font-size="14pt" font-weight="bold" margin-bottom="12pt">
+											<!-- ISO/WD 24229(E)  -->
+											<xsl:value-of select="concat(/iso:iso-standard/iso:bibdata/iso:docidentifier, $lang-1st-letter)"/>
+										</fo:block>
+										
+									</xsl:otherwise>
+								</xsl:choose>
+								
+								 
+								<xsl:if test="normalize-space($editorialgroup) != ''">
+									<!-- ISO/TC 34/SC 4/WG 3 -->
+									<fo:block margin-bottom="12pt">
+										<xsl:copy-of select="$editorialgroup"/>
+									</fo:block>
+								</xsl:if>
+								
+								<!-- Secretariat: AFNOR  -->
+								<fo:block margin-bottom="100pt">
+									<xsl:value-of select="$secretariat"/>
+									<xsl:text>&#xA0;</xsl:text>
+								</fo:block>
+							</fo:block-container>
+							
+							<fo:block-container font-size="16pt" role="SKIP">
+								<!-- Information and documentation — Codes for transcription systems  -->
+									<fo:block font-weight="bold" role="H1">
+										<xsl:call-template name="insertTitlesLangMain"/>
+									</fo:block>
+									
+									<xsl:for-each select="xalan:nodeset($lang_other)/lang">
+										<xsl:variable name="lang_other" select="."/>
+									
+										<fo:block font-size="12pt" role="SKIP"><xsl:value-of select="$linebreak"/></fo:block>
+										<fo:block role="H1">
+											<!-- Example: title-intro fr -->
+											<xsl:call-template name="insertTitlesLangOther">
+												<xsl:with-param name="lang_other" select="$lang_other"/>
+											</xsl:call-template>
+										</fo:block>
+										
+									</xsl:for-each>
+									
+							</fo:block-container>
+							<fo:block font-size="11pt" margin-bottom="8pt" role="SKIP"><xsl:value-of select="$linebreak"/></fo:block>
+							<fo:block-container font-size="40pt" text-align="center" margin-bottom="12pt" border="0.5pt solid black" role="SKIP">
+								<xsl:variable name="stage-title" select="substring-after(substring-before($docidentifierISO, ' '), '/')"/>
+								<xsl:choose>
+									<xsl:when test="normalize-space($stage-title) != ''">
+										<fo:block padding-top="2mm"><xsl:value-of select="$stage-title"/><xsl:text> stage</xsl:text></fo:block>
+									</xsl:when>
+									<xsl:otherwise>
+										<xsl:attribute name="border">0pt solid white</xsl:attribute>
+										<fo:block role="SKIP">&#xa0;</fo:block>
+									</xsl:otherwise>
+								</xsl:choose>
+							</fo:block-container>
+							<fo:block role="SKIP"><xsl:value-of select="$linebreak"/></fo:block>
+							
+							<xsl:if test="/iso:iso-standard/iso:boilerplate/iso:license-statement">
+								<fo:block-container font-size="10pt" margin-top="12pt" margin-bottom="6pt" border="0.5pt solid black" role="SKIP">
+									<fo:block padding-top="1mm">
+										<xsl:apply-templates select="/iso:iso-standard/iso:boilerplate/iso:license-statement"/>
+									</fo:block>
+								</fo:block-container>
+							</xsl:if>
+						</fo:flow>
+					</fo:page-sequence>
+				</xsl:otherwise>
+			</xsl:choose>
+		</xsl:if> <!-- $isGenerateTableIF = ' false' -->
+	</xsl:template> <!-- END insertCoverPage -->
 		
 	
 	<xsl:template match="iso:preface/iso:introduction" mode="update_xml_step1" priority="3">
