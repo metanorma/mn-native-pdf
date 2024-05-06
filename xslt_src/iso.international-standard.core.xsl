@@ -842,40 +842,11 @@
 					</xsl:if>
 				</xsl:variable>
 				
-				<!-- DEBUG -->
-				<!-- <redirect:write file="updated_xml_step1_{java:getTime(java:java.util.Date.new())}.xml">
-					<xsl:copy-of select="$updated_xml_step1"/>
-				</redirect:write> -->
-				
 				<xsl:variable name="endTime1" select="java:getTime(java:java.util.Date.new())"/>
 				<xsl:if test="$debug = 'true'">
 				<xsl:message>DEBUG: processing time <xsl:value-of select="$endTime1 - $startTime1"/> msec.</xsl:message>
 				<xsl:message>END updated_xml_step1</xsl:message>
 				</xsl:if>
-				
-				
-				<xsl:variable name="updated_xml_step_move_pagebreak">
-					<xsl:if test="$table_if = 'false'">
-						<xsl:apply-templates select="xalan:nodeset($updated_xml_step1)" mode="update_xml_step_move_pagebreak"/>
-					</xsl:if>
-				</xsl:variable>
-				
-				<xsl:variable name="updated_xml_step_move_pagebreak_filename" select="concat($output_path,'_', java:getTime(java:java.util.Date.new()), '.xml')"/>
-				
-				<redirect:write file="{$updated_xml_step_move_pagebreak_filename}">
-					<xsl:copy-of select="$updated_xml_step_move_pagebreak"/>
-				</redirect:write>
-				
-				<xsl:variable name="updated_xml_step_move_pagebreak_xml" select="document($updated_xml_step_move_pagebreak_filename)"/>
-				<xsl:variable name="updated_xml_step_move_pagebreak_file" select="java:java.io.File.new($updated_xml_step_move_pagebreak_filename)"/>
-				<xsl:variable name="updated_xml_step_move_pagebreak_path" select="java:toPath($updated_xml_step_move_pagebreak_file)"/>
-				<xsl:variable name="deletefile" select="java:java.nio.file.Files.deleteIfExists($updated_xml_step_move_pagebreak_path)"/>
-				
-				<redirect:write file="{concat($updated_xml_step_move_pagebreak_filename, '.xml')}">
-					<xsl:copy-of select="$updated_xml_step_move_pagebreak_xml"/>
-				</redirect:write>
-				
-				
 				
 				
 				<xsl:if test="$debug = 'true'"><xsl:message>START updated_xml_step2</xsl:message></xsl:if>
@@ -884,7 +855,7 @@
 				<!-- STEP2: add 'fn' after 'eref' and 'origin', if referenced to bibitem with 'note' = Withdrawn.' or 'Cancelled and replaced...'  -->
 				<xsl:variable name="updated_xml_step2">
 					<xsl:if test="$table_if = 'false'">
-						<xsl:apply-templates select="xalan:nodeset($updated_xml_step_move_pagebreak)" mode="update_xml_step2"/>
+						<xsl:apply-templates select="xalan:nodeset($updated_xml_step1)" mode="update_xml_step2"/>
 					</xsl:if>
 				</xsl:variable>
 				
@@ -915,6 +886,10 @@
 				<xsl:message>END updated_xml_step3</xsl:message>
 				</xsl:if>
 				<!-- DEBUG: updated_xml_step3=<xsl:copy-of select="$updated_xml_step3"/> -->
+				
+				<!-- <redirect:write file="updated_xml_step3_{java:getTime(java:java.util.Date.new())}.xml">
+					<xsl:copy-of select="$updated_xml_step3"/>
+				</redirect:write> -->
 				
 				<xsl:for-each select="xalan:nodeset($updated_xml_step3)">
 				
@@ -1058,117 +1033,159 @@
 									
 								</fo:flow>
 							</fo:page-sequence>
-						</xsl:when>
+						</xsl:when> <!-- $layoutVersion = '1987' and $doctype = 'technical-report' -->
 						<xsl:otherwise>
 						
-							<fo:page-sequence master-reference="preface{$document-master-reference}" format="i" force-page-count="{$force-page-count-preface}">
-								<xsl:if test="$layoutVersion = '1972' or $layoutVersion = '1987' or ($layoutVersion = '1989' and $revision_date_num &lt;= 19981231)">
-									<xsl:attribute name="master-reference">preface-1972-1998</xsl:attribute>
-								</xsl:if>
-								<xsl:if test="$layoutVersion = '2024'">
-									<fo:static-content flow-name="xsl-footnote-separator">
-										<fo:block margin-bottom="6pt">
-											<fo:leader leader-pattern="rule" leader-length="51mm" rule-thickness="0.5pt"/>
-										</fo:block>
-									</fo:static-content>
-								</xsl:if>
-								<xsl:call-template name="insertHeaderFooter">
-									<xsl:with-param name="font-weight">normal</xsl:with-param>
-									<xsl:with-param name="is_footer">true</xsl:with-param>
-								</xsl:call-template>
-								<fo:flow flow-name="xsl-region-body" line-height="115%">
-									<xsl:if test="$layoutVersion = '1989' and $revision_date_num &gt;= 19990101">
-										<!-- PDF disclaimer -->
-										<fo:block-container position="absolute" left="0mm" top="0mm" width="172mm" role="SKIP" border="0.5pt solid black">
-											<fo:block-container border="0.5pt solid black">
-												<fo:block font-size="8pt" text-align="justify" line-height="1.2" margin="1.8mm">
-													<xsl:choose>
-														<xsl:when test="$lang = 'fr'">
-															<fo:block text-align="center" font-size="9pt" font-weight="bold" margin-bottom="6pt">PDF — Exonération de responsabilité</fo:block>
-															<fo:block margin-bottom="4pt">Le présent fichier PDF peut contenir des polices de caractères intégrées. Conformément aux conditions de licence d'Adobe, ce fichier peut
-															être imprimé ou visualisé, mais ne doit pas être modifié à moins que l'ordinateur employé à cet effet ne bénéficie d'une licence autorisant l'utilisation
-															de ces polices et que celles-ci y soient installées. Lors du téléchargement de ce fichier, les parties concernées acceptent de fait la responsabilité
-															de ne pas enfreindre les conditions de licence d'Adobe. Le Secrétariat central de l'ISO décline toute responsabilité en la matière. </fo:block>
-															<fo:block margin-bottom="4pt">Adobe est une marque déposée d'Adobe Systems Incorporated.</fo:block>
-															<fo:block>Les détails relatifs aux produits logiciels utilisés pour la création du présent fichier PDF sont disponibles dans la rubrique General Info du fichier;
-															les paramètres de création PDF ont été optimisés pour l'impression. Toutes les mesures ont été prises pour garantir l'exploitation de ce 
-															fichier par les comités membres de l'ISO. Dans le cas peu probable où surviendrait un problème d'utilisation, veuillez en informer le Secrétariat
-															central à l'adresse donnée ci-dessous.</fo:block>
-														</xsl:when>
-														<xsl:when test="$lang = 'ru'">
-															<fo:block text-align="center" font-size="9pt" font-weight="bold" margin-bottom="6pt">Oткaз oт oтвeтствeннoсти при рaбoтe в PDF</fo:block>
-															<fo:block margin-bottom="4pt">Нaстoящий фaйл PDF мoжeт сoдeржaть интeгрирoвaнныe шрифты. В сooтвeтствии с услoвиями лицeнзирoвaния, принятыми 
-															фирмoй Adobe, этoт фaйл мoжeт быть oтпeчaтaн или прoсмoтрeн нa экрaнe, oднaкo oн нe дoлжeн быть измeнeн, пoкa нe будeт 
-															пoлучeнa лицeнзия нa интeгрирoвaнныe шрифты и oни нe будут устaнoвлeны нa кoмпьютeрe, нa кoтoрoм вeдeтся рeдaктирoвaниe. 
-															В случae зaгрузки нaстoящeгo фaйлa зaинтeрeсoвaнныe стoрoны принимaют нa сeбя oтвeтствeннoсть зa сoблюдeниe лицeнзиoнныx 
-															услoвий фирмы Adobe. Цeнтрaльный сeкрeтaриaт ИСO нe нeсeт никaкoй oтвeтствeннoсти в этoм oтнoшeнии.</fo:block>
-															<fo:block margin-bottom="4pt">Adobe являeтся тoргoвым знaкoм фирмы Adobe Systems Incorporated.</fo:block>
-															<fo:block>Пoдрoбнoсти, oтнoсящиeся к прoгрaммным прoдуктaм, испoльзoвaнныe для сoздaния нaстoящeгo фaйлa PDF, мoгут быть нaйдeны 
-															в рубрикe General Info фaйлa; пaрaмeтры для сoздaния PDF были oптимизирoвaны для пeчaти. Были приняты вo внимaниe всe 
-															мeры прeдoстoрoжнoсти с тeм,чтoбы oбeспeчить пригoднoсть нaстoящeгo фaйлa для испoльзoвaния кoмитeтaми-члeнaми ИСO. В 
-															рeдкиx случaяx вoзникнoвeния прoблeмы, связaннoй сo скaзaнным вышe, прoсьбa прoинфoрмирoвaть Цeнтрaльный сeкрeтaриaт пo 
-															aдрeсу, привeдeннoму нижe.</fo:block>
-														</xsl:when>
-														<xsl:otherwise> <!-- by default -->
-															<fo:block text-align="center" font-size="9pt" font-weight="bold" margin-bottom="6pt">PDF disclaimer</fo:block>
-															<fo:block margin-bottom="4pt">This PDF file may contain embedded typefaces. In accordance with Adobe's licensing policy, this file may be printed or viewed but 
-																shall not be edited unless the typefaces which are embedded are licensed to and installed on the computer performing the editing. In 
-																downloading this file, parties accept therein the responsibility of not infringing Adobe's licensing policy. The ISO Central Secretariat
-																accepts no liability in this area.</fo:block>
-															<fo:block margin-bottom="4pt">Adobe is a trademark of Adobe Systems Incorporated.</fo:block>
-															<fo:block>Details of the software products used to create this PDF file can be found in the General Info relative to the file; the PDF-creation 
-																parameters were optimized for printing. Every care has been taken to ensure that the file is suitable for use by ISO member bodies. In
-																the unlikely event that a problem relating to it is found, please inform the Central Secretariat at the address given below.</fo:block>
-														</xsl:otherwise>
-													</xsl:choose>
+							<xsl:variable name="update_xml_step4_with_pages">
+								<xsl:call-template name="processPrefaceSectionsDefault_items"/>
+							</xsl:variable>
+							
+							<redirect:write file="update_xml_step4_with_pages.xml">
+								<xsl:copy-of select="$update_xml_step4_with_pages"/>
+							</redirect:write>
+							
+							
+							<xsl:variable name="copyright-statement">
+								<xsl:apply-templates select="/iso:iso-standard/iso:boilerplate/iso:copyright-statement"/>
+							</xsl:variable>
+							
+							<xsl:for-each select="xalan:nodeset($update_xml_step4_with_pages)"> <!-- set context to preface -->
+							
+								<xsl:for-each select=".//*[local-name() = 'page_sequence']">
+								
+									<fo:page-sequence master-reference="preface{$document-master-reference}" format="i" force-page-count="no-force">
+									
+										<xsl:if test="position() = last()">
+											<xsl:attribute name="force-page-count"><xsl:value-of select="$force-page-count-preface"/></xsl:attribute> <!-- to prevent empty pages -->
+										</xsl:if>
+									
+									
+										<xsl:if test="$layoutVersion = '1972' or $layoutVersion = '1987' or ($layoutVersion = '1989' and $revision_date_num &lt;= 19981231)">
+											<xsl:attribute name="master-reference">preface-1972-1998</xsl:attribute>
+										</xsl:if>
+										<xsl:if test="$layoutVersion = '2024'">
+											<fo:static-content flow-name="xsl-footnote-separator">
+												<fo:block margin-bottom="6pt">
+													<fo:leader leader-pattern="rule" leader-length="51mm" rule-thickness="0.5pt"/>
 												</fo:block>
-											</fo:block-container>
-										</fo:block-container>
-									</xsl:if>
-									
-									
-									<xsl:choose>
-										<xsl:when test="$layoutVersion = '1972' or $layoutVersion = '1987' or ($layoutVersion = '1989' and $revision_date_num &lt;= 19981231)"><!-- copyright renders in the footer footer-preface-first_1987-1998--></xsl:when>
-										<xsl:otherwise>
+											</fo:static-content>
+										</xsl:if>
+										<xsl:call-template name="insertHeaderFooter">
+											<xsl:with-param name="font-weight">normal</xsl:with-param>
+											<xsl:with-param name="is_footer">true</xsl:with-param>
+										</xsl:call-template>
+										<fo:flow flow-name="xsl-region-body" line-height="115%">
 										
-											<xsl:if test="/iso:iso-standard/iso:boilerplate/iso:copyright-statement">
-											
-												<fo:block-container height="252mm" display-align="after" role="SKIP">
-													<xsl:if test="$layoutVersion = '1989'">
-														<xsl:attribute name="height">241.5mm</xsl:attribute>
-													</xsl:if>
-													<xsl:if test="$layoutVersion = '2024'">
-														<xsl:attribute name="width">172mm</xsl:attribute>
-													</xsl:if>
-													<!-- <fo:block margin-bottom="3mm">
-														<fo:external-graphic src="{concat('data:image/png;base64,', normalize-space($Image-Attention))}" width="14mm" content-height="13mm" content-width="scale-to-fit" scaling="uniform" fox:alt-text="Image {@alt}"/>								
-														<fo:inline padding-left="6mm" font-size="12pt" font-weight="bold"></fo:inline>
-													</fo:block> -->
-													<fo:block line-height="90%" role="SKIP">
-														<fo:block font-size="9pt" text-align="justify" role="SKIP">
-															<xsl:if test="$layoutVersion = '1989'">
-																<xsl:attribute name="font-size">8pt</xsl:attribute>
-															</xsl:if>
-															<!-- <xsl:if test="$layoutVersion = '2024'">
-																<xsl:attribute name="font-size">8.6pt</xsl:attribute>
-															</xsl:if> -->
-															<xsl:apply-templates select="/iso:iso-standard/iso:boilerplate/iso:copyright-statement"/>
-														</fo:block>
-													</fo:block>
-												</fo:block-container>
-												<xsl:if test="/iso:iso-standard/iso:preface/*">
-													<fo:block break-after="page"/>
+											<xsl:if test="position() = 1">
+										
+												<xsl:if test="$layoutVersion = '1989' and $revision_date_num &gt;= 19990101">
+													<!-- PDF disclaimer -->
+													<fo:block-container position="absolute" left="0mm" top="0mm" width="172mm" role="SKIP" border="0.5pt solid black">
+														<fo:block-container border="0.5pt solid black">
+															<fo:block font-size="8pt" text-align="justify" line-height="1.2" margin="1.8mm">
+																<xsl:choose>
+																	<xsl:when test="$lang = 'fr'">
+																		<fo:block text-align="center" font-size="9pt" font-weight="bold" margin-bottom="6pt">PDF — Exonération de responsabilité</fo:block>
+																		<fo:block margin-bottom="4pt">Le présent fichier PDF peut contenir des polices de caractères intégrées. Conformément aux conditions de licence d'Adobe, ce fichier peut
+																		être imprimé ou visualisé, mais ne doit pas être modifié à moins que l'ordinateur employé à cet effet ne bénéficie d'une licence autorisant l'utilisation
+																		de ces polices et que celles-ci y soient installées. Lors du téléchargement de ce fichier, les parties concernées acceptent de fait la responsabilité
+																		de ne pas enfreindre les conditions de licence d'Adobe. Le Secrétariat central de l'ISO décline toute responsabilité en la matière. </fo:block>
+																		<fo:block margin-bottom="4pt">Adobe est une marque déposée d'Adobe Systems Incorporated.</fo:block>
+																		<fo:block>Les détails relatifs aux produits logiciels utilisés pour la création du présent fichier PDF sont disponibles dans la rubrique General Info du fichier;
+																		les paramètres de création PDF ont été optimisés pour l'impression. Toutes les mesures ont été prises pour garantir l'exploitation de ce 
+																		fichier par les comités membres de l'ISO. Dans le cas peu probable où surviendrait un problème d'utilisation, veuillez en informer le Secrétariat
+																		central à l'adresse donnée ci-dessous.</fo:block>
+																	</xsl:when>
+																	<xsl:when test="$lang = 'ru'">
+																		<fo:block text-align="center" font-size="9pt" font-weight="bold" margin-bottom="6pt">Oткaз oт oтвeтствeннoсти при рaбoтe в PDF</fo:block>
+																		<fo:block margin-bottom="4pt">Нaстoящий фaйл PDF мoжeт сoдeржaть интeгрирoвaнныe шрифты. В сooтвeтствии с услoвиями лицeнзирoвaния, принятыми 
+																		фирмoй Adobe, этoт фaйл мoжeт быть oтпeчaтaн или прoсмoтрeн нa экрaнe, oднaкo oн нe дoлжeн быть измeнeн, пoкa нe будeт 
+																		пoлучeнa лицeнзия нa интeгрирoвaнныe шрифты и oни нe будут устaнoвлeны нa кoмпьютeрe, нa кoтoрoм вeдeтся рeдaктирoвaниe. 
+																		В случae зaгрузки нaстoящeгo фaйлa зaинтeрeсoвaнныe стoрoны принимaют нa сeбя oтвeтствeннoсть зa сoблюдeниe лицeнзиoнныx 
+																		услoвий фирмы Adobe. Цeнтрaльный сeкрeтaриaт ИСO нe нeсeт никaкoй oтвeтствeннoсти в этoм oтнoшeнии.</fo:block>
+																		<fo:block margin-bottom="4pt">Adobe являeтся тoргoвым знaкoм фирмы Adobe Systems Incorporated.</fo:block>
+																		<fo:block>Пoдрoбнoсти, oтнoсящиeся к прoгрaммным прoдуктaм, испoльзoвaнныe для сoздaния нaстoящeгo фaйлa PDF, мoгут быть нaйдeны 
+																		в рубрикe General Info фaйлa; пaрaмeтры для сoздaния PDF были oптимизирoвaны для пeчaти. Были приняты вo внимaниe всe 
+																		мeры прeдoстoрoжнoсти с тeм,чтoбы oбeспeчить пригoднoсть нaстoящeгo фaйлa для испoльзoвaния кoмитeтaми-члeнaми ИСO. В 
+																		рeдкиx случaяx вoзникнoвeния прoблeмы, связaннoй сo скaзaнным вышe, прoсьбa прoинфoрмирoвaть Цeнтрaльный сeкрeтaриaт пo 
+																		aдрeсу, привeдeннoму нижe.</fo:block>
+																	</xsl:when>
+																	<xsl:otherwise> <!-- by default -->
+																		<fo:block text-align="center" font-size="9pt" font-weight="bold" margin-bottom="6pt">PDF disclaimer</fo:block>
+																		<fo:block margin-bottom="4pt">This PDF file may contain embedded typefaces. In accordance with Adobe's licensing policy, this file may be printed or viewed but 
+																			shall not be edited unless the typefaces which are embedded are licensed to and installed on the computer performing the editing. In 
+																			downloading this file, parties accept therein the responsibility of not infringing Adobe's licensing policy. The ISO Central Secretariat
+																			accepts no liability in this area.</fo:block>
+																		<fo:block margin-bottom="4pt">Adobe is a trademark of Adobe Systems Incorporated.</fo:block>
+																		<fo:block>Details of the software products used to create this PDF file can be found in the General Info relative to the file; the PDF-creation 
+																			parameters were optimized for printing. Every care has been taken to ensure that the file is suitable for use by ISO member bodies. In
+																			the unlikely event that a problem relating to it is found, please inform the Central Secretariat at the address given below.</fo:block>
+																	</xsl:otherwise>
+																</xsl:choose>
+															</fo:block>
+														</fo:block-container>
+													</fo:block-container>
 												</xsl:if>
-											</xsl:if>
-										</xsl:otherwise>
-									</xsl:choose>
-									
-									<!-- ToC, Foreword, Introduction -->					
-									<xsl:call-template name="processPrefaceSectionsDefault"/>
-									
-									<fo:block/> <!-- for prevent empty preface -->
-								</fo:flow>
-							</fo:page-sequence>
+												
+												
+												<xsl:choose>
+													<xsl:when test="$layoutVersion = '1972' or $layoutVersion = '1987' or ($layoutVersion = '1989' and $revision_date_num &lt;= 19981231)"><!-- copyright renders in the footer footer-preface-first_1987-1998--></xsl:when>
+													<xsl:otherwise>
+													
+														<!-- <xsl:if test="/iso:iso-standard/iso:boilerplate/iso:copyright-statement"> -->
+														<xsl:if test="normalize-space($copyright-statement) != ''">
+														
+															<fo:block-container height="252mm" display-align="after" role="SKIP">
+																<xsl:if test="$layoutVersion = '1989'">
+																	<xsl:attribute name="height">241.5mm</xsl:attribute>
+																</xsl:if>
+																<xsl:if test="$layoutVersion = '2024'">
+																	<xsl:attribute name="width">172mm</xsl:attribute>
+																</xsl:if>
+																<!-- <fo:block margin-bottom="3mm">
+																	<fo:external-graphic src="{concat('data:image/png;base64,', normalize-space($Image-Attention))}" width="14mm" content-height="13mm" content-width="scale-to-fit" scaling="uniform" fox:alt-text="Image {@alt}"/>								
+																	<fo:inline padding-left="6mm" font-size="12pt" font-weight="bold"></fo:inline>
+																</fo:block> -->
+																<fo:block line-height="90%" role="SKIP">
+																	<fo:block font-size="9pt" text-align="justify" role="SKIP">
+																		<xsl:if test="$layoutVersion = '1989'">
+																			<xsl:attribute name="font-size">8pt</xsl:attribute>
+																		</xsl:if>
+																		<!-- <xsl:if test="$layoutVersion = '2024'">
+																			<xsl:attribute name="font-size">8.6pt</xsl:attribute>
+																		</xsl:if> -->
+																		<!-- <xsl:apply-templates select="/iso:iso-standard/iso:boilerplate/iso:copyright-statement"/> -->
+																		<xsl:copy-of select="$copyright-statement"/>
+																	</fo:block>
+																</fo:block>
+															</fo:block-container>
+															<!-- <xsl:if test="/iso:iso-standard/iso:preface/*"> -->
+															<!-- <xsl:copy-of select="."/> -->
+															
+															<xsl:if test="//iso:preface/*">
+																<fo:block break-after="page"/>
+															</xsl:if>
+														</xsl:if>
+													</xsl:otherwise>
+												</xsl:choose>
+											</xsl:if> <!-- for 1st page_sequence only -->
+											
+											<!-- ToC, Foreword, Introduction -->					
+											<!-- <xsl:call-template name="processPrefaceSectionsDefault"/> -->
+											
+											<!-- <current_node>
+												<xsl:copy-of select="."/>
+											</current_node> -->
+											
+											<xsl:apply-templates />
+											
+											<fo:block/> <!-- for prevent empty preface -->
+										</fo:flow>
+									</fo:page-sequence>
+								
+								</xsl:for-each>
+							</xsl:for-each>
+							
 						</xsl:otherwise>
 					</xsl:choose>
 					
@@ -2907,7 +2924,7 @@
 		</xsl:if>
 	</xsl:template>
 	
-	<xsl:template match="iso:preface/iso:clause[@type = 'toc']" priority="3">
+	<xsl:template match="iso:preface//iso:clause[@type = 'toc']" priority="3">
 		<xsl:choose>
 			<xsl:when test="$isGenerateTableIF = 'true'"/>
 			<xsl:when test="$toc_level = 0"/>
@@ -3038,7 +3055,7 @@
 		</xsl:choose>
 	</xsl:template>
 	
-	<xsl:template match="iso:preface/iso:clause[@type = 'toc']/iso:title" priority="3">
+	<xsl:template match="iso:preface//iso:clause[@type = 'toc']/iso:title" priority="3">
 		<fo:block text-align-last="justify" font-size="16pt" margin-top="10pt" margin-bottom="18pt">
 			<xsl:if test="$layoutVersion = '2024'">
 				<xsl:attribute name="margin-top">0</xsl:attribute>

@@ -4,8 +4,10 @@
 											xmlns:mathml="http://www.w3.org/1998/Math/MathML" 
 											xmlns:xalan="http://xml.apache.org/xalan"  
 											xmlns:fox="http://xmlgraphics.apache.org/fop/extensions" 
+											xmlns:redirect="http://xml.apache.org/xalan/redirect"
 											xmlns:java="http://xml.apache.org/xalan/java"
 											exclude-result-prefixes="java"
+											extension-element-prefixes="redirect"
 											version="1.0">
 
 	<xsl:choose>
@@ -6511,6 +6513,42 @@
 			<xsl:sort select="@displayorder" data-type="number"/>
 			<xsl:apply-templates select="."/>
 		</xsl:for-each>
+	</xsl:template>
+
+	<xsl:template name="processPrefaceSectionsDefault_items">
+		<xsl:element name="preface" namespace="{$namespace_full}"> <!-- save context element -->
+			<page_sequence>
+			
+				<xsl:for-each select="/*/*[local-name()='preface']/*[not(local-name() = 'note' or local-name() = 'admonition')]">
+					<xsl:sort select="@displayorder" data-type="number"/>
+					
+					<!-- <xsl:apply-templates select="."/> -->
+					
+					<xsl:variable name="updated_xml_step_move_pagebreak_">
+						<xsl:apply-templates select="." mode="update_xml_step_move_pagebreak"/>
+					</xsl:variable>
+					
+					<xsl:variable name="updated_xml_step_move_pagebreak_filename" select="concat($output_path,'_', java:getTime(java:java.util.Date.new()), '.xml')"/>
+					
+					<redirect:write file="{$updated_xml_step_move_pagebreak_filename}">
+						<xsl:copy-of select="$updated_xml_step_move_pagebreak_"/>
+					</redirect:write>
+					
+					<xsl:variable name="updated_xml_step_move_pagebreak" select="document($updated_xml_step_move_pagebreak_filename)"/>
+					<xsl:variable name="updated_xml_step_move_pagebreak_file" select="java:java.io.File.new($updated_xml_step_move_pagebreak_filename)"/>
+					<xsl:variable name="updated_xml_step_move_pagebreak_path" select="java:toPath($updated_xml_step_move_pagebreak_file)"/>
+					<xsl:variable name="deletefile" select="java:java.nio.file.Files.deleteIfExists($updated_xml_step_move_pagebreak_path)"/>
+					
+					<redirect:write file="{concat($updated_xml_step_move_pagebreak_filename, '.xml')}">
+						<xsl:copy-of select="$updated_xml_step_move_pagebreak"/>
+					</redirect:write>
+					
+					<xsl:copy-of select="$updated_xml_step_move_pagebreak"/>
+					
+				</xsl:for-each>
+			
+			</page_sequence>
+		</xsl:element>
 	</xsl:template>
 	
 	
@@ -15644,7 +15682,7 @@
 		</xsl:if>
 	</xsl:template> <!-- sections_element_style -->
 	
-	<xsl:template match="//*[contains(local-name(), '-standard')]/*[local-name() = 'preface']/*" priority="2"> <!-- /*/*[local-name() = 'preface']/* -->
+	<xsl:template match="//*[contains(local-name(), '-standard')]/*[local-name() = 'preface']/*" priority="2" name="preface_node"> <!-- /*/*[local-name() = 'preface']/* -->
 		<xsl:choose>
 			<xsl:when test="$namespace = 'iso'">
 				<xsl:choose>
@@ -15664,6 +15702,12 @@
 			<xsl:apply-templates />
 		</fo:block>
 	</xsl:template>
+	
+	
+	<xsl:template match="*[local-name() = 'preface']/*[local-name() = 'page_sequence']/*" priority="2"> <!-- /*/*[local-name() = 'preface']/* -->
+		<xsl:call-template name="preface_node"/>
+	</xsl:template>
+	
 	
 	<xsl:template match="*[local-name() = 'clause']">
 		<fo:block>
