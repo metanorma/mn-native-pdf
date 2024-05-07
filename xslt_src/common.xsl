@@ -68,6 +68,8 @@
 	</xsl:choose>
 
 	<xsl:variable name="namespace_full" select="namespace-uri(/*)"/> <!-- example: https://www.metanorma.org/ns/iso -->
+	<xsl:variable name="root_element" select="local-name(/*)"/>
+	
 
 	<!-- external parameters -->
 	
@@ -6517,16 +6519,30 @@
 	</xsl:template>
 
 	<xsl:template name="processPrefaceSectionsDefault_items">
-		<xsl:element name="xyz-standard" namespace="{$namespace_full}">
-			<xsl:element name="preface" namespace="{$namespace_full}"> <!-- save context element -->
-				<page_sequence>
-					<xsl:for-each select="/*/*[local-name()='preface']/*[not(local-name() = 'note' or local-name() = 'admonition')]">
-						<xsl:sort select="@displayorder" data-type="number"/>
-						<xsl:call-template name="update_xml_step_move_pagebreak"/>
-					</xsl:for-each>
-				</page_sequence>
+		<xsl:variable name="updated_xml_step_move_pagebreak_">
+			<xsl:element name="{$root_element}" namespace="{$namespace_full}">
+				<xsl:element name="preface" namespace="{$namespace_full}"> <!-- save context element -->
+					<page_sequence>
+						<xsl:for-each select="/*/*[local-name()='preface']/*[not(local-name() = 'note' or local-name() = 'admonition')]">
+							<xsl:sort select="@displayorder" data-type="number"/>
+							<xsl:call-template name="update_xml_step_move_pagebreak"/>
+						</xsl:for-each>
+					</page_sequence>
+				</xsl:element>
 			</xsl:element>
-		</xsl:element>
+		</xsl:variable>
+		
+		<xsl:variable name="updated_xml_step_move_pagebreak_filename" select="concat($output_path,'_preface_', java:getTime(java:java.util.Date.new()), '.xml')"/>
+		
+		<redirect:write file="{$updated_xml_step_move_pagebreak_filename}">
+			<xsl:copy-of select="$updated_xml_step_move_pagebreak_"/>
+		</redirect:write>
+		
+		<xsl:copy-of select="document($updated_xml_step_move_pagebreak_filename)"/>
+		
+		<xsl:call-template name="deleteFile">
+			<xsl:with-param name="filepath" select="$updated_xml_step_move_pagebreak_filename"/>
+		</xsl:call-template>
 	</xsl:template>
 	
 	
@@ -6579,7 +6595,7 @@
 	
 		<xsl:variable name="updated_xml_step_move_pagebreak_">
 			
-			<xsl:element name="xyz-standard" namespace="{$namespace_full}">
+			<xsl:element name="{$root_element}" namespace="{$namespace_full}">
 	
 				<xsl:element name="sections" namespace="{$namespace_full}"> <!-- save context element -->
 					<page_sequence>
@@ -6621,20 +6637,26 @@
 			</xsl:element>
 		</xsl:variable>
 		
-		<xsl:variable name="updated_xml_step_move_pagebreak_filename" select="concat($output_path,'_', java:getTime(java:java.util.Date.new()), '.xml')"/>
+		<xsl:variable name="updated_xml_step_move_pagebreak_filename" select="concat($output_path,'_main_', java:getTime(java:java.util.Date.new()), '.xml')"/>
 		
 		<redirect:write file="{$updated_xml_step_move_pagebreak_filename}">
 			<xsl:copy-of select="$updated_xml_step_move_pagebreak_"/>
 		</redirect:write>
 		
-		<xsl:variable name="updated_xml_step_move_pagebreak" select="document($updated_xml_step_move_pagebreak_filename)"/>
-		<xsl:variable name="updated_xml_step_move_pagebreak_file" select="java:java.io.File.new($updated_xml_step_move_pagebreak_filename)"/>
-		<xsl:variable name="updated_xml_step_move_pagebreak_path" select="java:toPath($updated_xml_step_move_pagebreak_file)"/>
-		<xsl:variable name="deletefile" select="java:java.nio.file.Files.deleteIfExists($updated_xml_step_move_pagebreak_path)"/>
+		<xsl:copy-of select="document($updated_xml_step_move_pagebreak_filename)"/>
 		
-		<xsl:copy-of select="$updated_xml_step_move_pagebreak"/>
-		
+		<xsl:call-template name="deleteFile">
+			<xsl:with-param name="filepath" select="$updated_xml_step_move_pagebreak_filename"/>
+		</xsl:call-template>
 	</xsl:template> <!-- END: processMainSectionsDefault_items -->
+	
+	
+	<xsl:template name="deleteFile">
+		<xsl:param name="filepath"/>
+		<xsl:variable name="xml_file" select="java:java.io.File.new($filepath)"/>
+		<xsl:variable name="xml_file_path" select="java:toPath($xml_file)"/>
+		<xsl:variable name="deletefile" select="java:java.nio.file.Files.deleteIfExists($xml_file_path)"/>
+	</xsl:template>
 	
 	<xsl:template name="processMainSectionsDefault_flatxml">
 		<xsl:for-each select="/*/*[local-name()='sections']/* | /*/*[local-name()='bibliography']/*[local-name()='references'][@normative='true']">
