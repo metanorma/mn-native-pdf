@@ -733,8 +733,8 @@
 							<fo:conditional-page-master-reference odd-or-even="odd" master-reference="odd-publishedISO"/>
 						</fo:repeatable-page-master-alternatives>
 					</fo:page-sequence-master>
-					
-					<fo:page-sequence-master master-name="document-publishedISO">
+
+					<fo:page-sequence-master master-name="document-publishedISO_first_sequence">
 						<fo:repeatable-page-master-alternatives>
 							<xsl:if test="not($layoutVersion = '1951')">
 								<fo:conditional-page-master-reference master-reference="first-publishedISO" page-position="first"/>
@@ -746,6 +746,17 @@
 							<fo:conditional-page-master-reference odd-or-even="odd" master-reference="odd-publishedISO"/>
 						</fo:repeatable-page-master-alternatives>
 					</fo:page-sequence-master>
+
+					<fo:page-sequence-master master-name="document-publishedISO">
+						<fo:repeatable-page-master-alternatives>
+							<xsl:if test="$layoutVersion = '1951'">
+								<fo:conditional-page-master-reference page-position="last" master-reference="even-last-publishedISO"/> <!-- odd-or-even="even" -->
+							</xsl:if>
+							<fo:conditional-page-master-reference odd-or-even="even" master-reference="even-publishedISO"/>
+							<fo:conditional-page-master-reference odd-or-even="odd" master-reference="odd-publishedISO"/>
+						</fo:repeatable-page-master-alternatives>
+					</fo:page-sequence-master>
+					
 					<fo:page-sequence-master master-name="document-publishedISO-portrait">
 						<fo:repeatable-page-master-alternatives>
 							<xsl:if test="not($layoutVersion = '1951')">
@@ -755,11 +766,18 @@
 							<fo:conditional-page-master-reference odd-or-even="odd" master-reference="odd-publishedISO"/>
 						</fo:repeatable-page-master-alternatives>
 					</fo:page-sequence-master>
-					<fo:page-sequence-master master-name="document-publishedISO-landscape">
+					
+					<fo:page-sequence-master master-name="document-publishedISO-landscape_first_sequence">
 						<fo:repeatable-page-master-alternatives>
 							<xsl:if test="not($layoutVersion = '1951')">
 								<fo:conditional-page-master-reference master-reference="first-publishedISO" page-position="first"/>
 							</xsl:if>
+							<fo:conditional-page-master-reference odd-or-even="even" master-reference="even-publishedISO-landscape"/>
+							<fo:conditional-page-master-reference odd-or-even="odd" master-reference="odd-publishedISO-landscape"/>
+						</fo:repeatable-page-master-alternatives>
+					</fo:page-sequence-master>
+					<fo:page-sequence-master master-name="document-publishedISO-landscape">
+						<fo:repeatable-page-master-alternatives>
 							<fo:conditional-page-master-reference odd-or-even="even" master-reference="even-publishedISO-landscape"/>
 							<fo:conditional-page-master-reference odd-or-even="odd" master-reference="odd-publishedISO-landscape"/>
 						</fo:repeatable-page-master-alternatives>
@@ -1048,7 +1066,7 @@
 							
 							<xsl:for-each select="xalan:nodeset($update_xml_step4_with_pages_preface)"> <!-- set context to preface -->
 							
-								<xsl:for-each select=".//*[local-name() = 'page_sequence']">
+								<xsl:for-each select=".//*[local-name() = 'page_sequence'][*]"> <!-- * means skip last empty page_sequence -->
 								
 									<fo:page-sequence master-reference="preface{$document-master-reference}" format="i" force-page-count="no-force">
 									
@@ -1200,6 +1218,7 @@
 							<!-- BODY -->
 							<fo:page-sequence master-reference="document{$document-master-reference}" force-page-count="no-force">
 								<xsl:if test="position() = 1">
+									<xsl:attribute name="master-reference"><xsl:value-of select="concat('document',$document-master-reference)"/><xsl:if test="normalize-space($document-master-reference) != ''">_first_sequence</xsl:if></xsl:attribute>
 									<xsl:attribute name="initial-page-number">1</xsl:attribute>
 								</xsl:if>
 								<xsl:if test="$layoutVersion = '1951'">
