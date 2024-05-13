@@ -15832,7 +15832,7 @@
 	
 	
 	
-	<xsl:template match="*[local-name() = 'annex']">
+	<xsl:template match="*[local-name() = 'annex'][normalize-space() != '']">
 		<fo:block break-after="page"/>
 		<fo:block>
 		
