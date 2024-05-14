@@ -591,6 +591,12 @@
 						<fo:conditional-page-master-reference odd-or-even="odd" master-reference="odd"/>
 					</fo:repeatable-page-master-alternatives>
 				</fo:page-sequence-master>
+				<fo:page-sequence-master master-name="preface-landscape">
+					<fo:repeatable-page-master-alternatives>
+						<fo:conditional-page-master-reference odd-or-even="even" master-reference="even-landscape"/>
+						<fo:conditional-page-master-reference odd-or-even="odd" master-reference="odd-landscape"/>
+					</fo:repeatable-page-master-alternatives>
+				</fo:page-sequence-master>
 				<fo:page-sequence-master master-name="document">
 					<fo:repeatable-page-master-alternatives>
 						<fo:conditional-page-master-reference odd-or-even="even" master-reference="even"/>
@@ -708,6 +714,13 @@
 						<fo:conditional-page-master-reference master-reference="blankpage" blank-or-not-blank="blank" />
 						<fo:conditional-page-master-reference odd-or-even="even" master-reference="even-publishedISO"/>
 						<fo:conditional-page-master-reference odd-or-even="odd" master-reference="odd-publishedISO"/>
+					</fo:repeatable-page-master-alternatives>
+				</fo:page-sequence-master>
+				<fo:page-sequence-master master-name="preface-publishedISO-landscape">
+					<fo:repeatable-page-master-alternatives>
+						<fo:conditional-page-master-reference master-reference="blankpage" blank-or-not-blank="blank" />
+						<fo:conditional-page-master-reference odd-or-even="even" master-reference="even-publishedISO-landscape"/>
+						<fo:conditional-page-master-reference odd-or-even="odd" master-reference="odd-publishedISO-landscape"/>
 					</fo:repeatable-page-master-alternatives>
 				</fo:page-sequence-master>
 				
@@ -1050,14 +1063,19 @@
 						
 						<xsl:for-each select="xalan:nodeset($update_xml_step4_with_pages_preface)"> <!-- set context to preface -->
 						
-							<xsl:for-each select=".//*[local-name() = 'page_sequence'][*]"> <!-- * means skip last empty page_sequence -->
+							<xsl:for-each select=".//*[local-name() = 'page_sequence'][normalize-space() != '' or .//image or .//svg]">
 							
-								<fo:page-sequence master-reference="preface{$document-master-reference}" format="i" force-page-count="no-force">
+								<fo:page-sequence format="i" force-page-count="no-force">
+								
+									<xsl:attribute name="master-reference">
+										<xsl:value-of select="concat('preface',$document-master-reference)"/>
+										<xsl:variable name="previous_orientation" select="preceding-sibling::page_sequence[@orientation][1]/@orientation"/>
+										<xsl:if test="(@orientation = 'landscape' or $previous_orientation = 'landscape') and not(@orientation = 'portrait')">-<xsl:value-of select="@orientation"/></xsl:if>
+									</xsl:attribute>
 								
 									<xsl:if test="position() = last()">
 										<xsl:attribute name="force-page-count"><xsl:value-of select="$force-page-count-preface"/></xsl:attribute> <!-- to prevent empty pages -->
 									</xsl:if>
-								
 								
 									<xsl:if test="$layoutVersion = '1972' or $layoutVersion = '1987' or ($layoutVersion = '1989' and $revision_date_num &lt;= 19981231)">
 										<xsl:attribute name="master-reference">preface-1972-1998</xsl:attribute>
@@ -1200,7 +1218,7 @@
 					<xsl:for-each select=".//*[local-name() = 'page_sequence'][normalize-space() != '' or .//image or .//svg]">
 				
 						<!-- BODY -->
-						<fo:page-sequence master-reference="document{$document-master-reference}" force-page-count="no-force">
+						<fo:page-sequence force-page-count="no-force">
 						
 							<!-- Example: msster-reference document-publishedISO-landscape_first_sequence -->
 							<xsl:attribute name="master-reference">
