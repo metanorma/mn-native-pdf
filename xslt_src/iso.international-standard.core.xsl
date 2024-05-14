@@ -874,7 +874,8 @@
 						<xsl:apply-templates select="xalan:nodeset($updated_xml_step2)" mode="update_xml_enclose_keep-together_within-line"/>
 					</xsl:when>
 					<xsl:otherwise>
-						<xsl:copy-of select="."/>
+						<!-- <xsl:copy-of select="."/> -->
+						<xsl:apply-templates select="." mode="update_xml_enclose_keep-together_within-line"/>
 					</xsl:otherwise>
 				</xsl:choose>
 			</xsl:variable>
