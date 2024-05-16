@@ -1209,7 +1209,14 @@
 				</xsl:variable>
 				
 				<xsl:variable name="update_xml_step4_with_pages_main">
-					<xsl:call-template name="processMainSectionsDefault_items"/>
+					<xsl:choose>
+						<xsl:when test="$doctype = 'amendment'">
+							<xsl:call-template name="processMainSectionsAmendmentDefault_items"/>
+						</xsl:when>
+						<xsl:otherwise>
+							<xsl:call-template name="processMainSectionsDefault_items"/>
+						</xsl:otherwise>
+					</xsl:choose>
 				</xsl:variable>
 				
 				
@@ -1336,7 +1343,6 @@
 									<xsl:copy-of select="$preface_introduction"/>
 								</xsl:if> <!-- $layoutVersion = '1951' -->
 									
-									
 									<!-- <xsl:choose>
 										<xsl:when test="($layoutVersion = '1951' or $layoutVersion = '1972' or $layoutVersion = '1987' or $layoutVersion = '1989') and $layout_columns != 1">
 											<xsl:choose>
@@ -1351,18 +1357,20 @@
 												</xsl:otherwise>
 											</xsl:choose>
 										</xsl:when> ($layoutVersion = '1972' or $layoutVersion = '1987' or $layoutVersion = '1989') and $layout_columns != 1 
-										<xsl:otherwise> -->
+										<xsl:otherwise>
 											<xsl:choose>
 												<xsl:when test="$doctype = 'amendment'">
 													<xsl:apply-templates select="/iso:iso-standard/iso:sections/*"/>
 												</xsl:when>
-												<xsl:otherwise>
+												<xsl:otherwise>  -->
 													<!-- <xsl:call-template name="processMainSectionsDefault"/> -->
-													<xsl:apply-templates />
+													<!-- 	<xsl:apply-templates />
 												</xsl:otherwise>
 											</xsl:choose>
-										<!-- </xsl:otherwise>
+										</xsl:otherwise>
 									</xsl:choose> -->
+									
+									<xsl:apply-templates />
 									
 									<xsl:if test="position() = last()">
 										<xsl:call-template name="insertSmallHorizontalLine"/>
@@ -1427,6 +1435,44 @@
 		</fo:root>
 		
 	</xsl:template> 
+
+
+	<xsl:template name="processMainSectionsAmendmentDefault_items">
+		<xsl:variable name="updated_xml_step_move_pagebreak_">
+			<xsl:element name="{$root_element}" namespace="{$namespace_full}">
+				<xsl:element name="sections" namespace="{$namespace_full}"> <!-- save context element -->
+					<page_sequence>
+						<xsl:for-each select="/*/*[local-name()='sections']/*">
+							<xsl:sort select="@displayorder" data-type="number"/>
+							<!-- <xsl:apply-templates select="."/> -->
+							<!-- <xsl:call-template name="update_xml_step_move_pagebreak"/> -->
+							<xsl:apply-templates select="." mode="update_xml_step_move_pagebreak"/>
+							<xsl:if test="$namespace = 'm3d'">
+								<xsl:if test="local-name()='clause' and @type='scope'">
+									<xsl:if test="/*/*[local-name()='bibliography']/*[local-name()='references'][@normative='true']">
+										<fo:block break-after="page"/>
+										<xsl:element name="pagebreak" namespace="{$namespace_full}"/>
+									</xsl:if>
+								</xsl:if>
+							</xsl:if>
+						</xsl:for-each>
+					</page_sequence>
+				</xsl:element>
+			</xsl:element>
+		</xsl:variable>
+		
+		<xsl:variable name="updated_xml_step_move_pagebreak_filename" select="concat($output_path,'_main_', java:getTime(java:java.util.Date.new()), '.xml')"/>
+		
+		<redirect:write file="{$updated_xml_step_move_pagebreak_filename}">
+			<xsl:copy-of select="$updated_xml_step_move_pagebreak_"/>
+		</redirect:write>
+		
+		<xsl:copy-of select="document($updated_xml_step_move_pagebreak_filename)"/>
+		
+		<xsl:call-template name="deleteFile">
+			<xsl:with-param name="filepath" select="$updated_xml_step_move_pagebreak_filename"/>
+		</xsl:call-template>
+	</xsl:template> <!-- END: processMainSectionsAmendmentDefault_items -->
 
 
 	<xsl:template name="insertCoverPage">
