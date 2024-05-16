@@ -1337,7 +1337,7 @@
 								</xsl:if> <!-- $layoutVersion = '1951' -->
 									
 									
-									<xsl:choose>
+									<!-- <xsl:choose>
 										<xsl:when test="($layoutVersion = '1951' or $layoutVersion = '1972' or $layoutVersion = '1987' or $layoutVersion = '1989') and $layout_columns != 1">
 											<xsl:choose>
 												<xsl:when test="$doctype = 'amendment'">
@@ -1350,8 +1350,8 @@
 													<xsl:call-template name="processMainSectionsDefault_flatxml"/>
 												</xsl:otherwise>
 											</xsl:choose>
-										</xsl:when> <!-- ($layoutVersion = '1972' or $layoutVersion = '1987' or $layoutVersion = '1989') and $layout_columns != 1 -->
-										<xsl:otherwise>
+										</xsl:when> ($layoutVersion = '1972' or $layoutVersion = '1987' or $layoutVersion = '1989') and $layout_columns != 1 
+										<xsl:otherwise> -->
 											<xsl:choose>
 												<xsl:when test="$doctype = 'amendment'">
 													<xsl:apply-templates select="/iso:iso-standard/iso:sections/*"/>
@@ -1361,8 +1361,8 @@
 													<xsl:apply-templates />
 												</xsl:otherwise>
 											</xsl:choose>
-										</xsl:otherwise>
-									</xsl:choose>
+										<!-- </xsl:otherwise>
+									</xsl:choose> -->
 									
 									<xsl:if test="position() = last()">
 										<xsl:call-template name="insertSmallHorizontalLine"/>

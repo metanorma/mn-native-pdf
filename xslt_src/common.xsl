@@ -6626,13 +6626,15 @@
 				</page_sequence>
 				
 				<page_sequence>
-					<xsl:for-each select="/*/*[local-name()='bibliography']/*[not(@normative='true')] | 
-											/*/*[local-name()='bibliography']/*[local-name()='clause'][*[local-name()='references'][not(@normative='true')]]">
-						<xsl:sort select="@displayorder" data-type="number"/>
-						<!-- <xsl:apply-templates select="."/> -->
-						<!-- <xsl:call-template name="update_xml_step_move_pagebreak"/> -->
-						<xsl:apply-templates select="." mode="update_xml_step_move_pagebreak"/>
-					</xsl:for-each>
+					<xsl:element name="bibliography" namespace="{$namespace_full}"> <!-- save context element -->
+						<xsl:for-each select="/*/*[local-name()='bibliography']/*[not(@normative='true')] | 
+												/*/*[local-name()='bibliography']/*[local-name()='clause'][*[local-name()='references'][not(@normative='true')]]">
+							<xsl:sort select="@displayorder" data-type="number"/>
+							<!-- <xsl:apply-templates select="."/> -->
+							<!-- <xsl:call-template name="update_xml_step_move_pagebreak"/> -->
+							<xsl:apply-templates select="." mode="update_xml_step_move_pagebreak"/>
+						</xsl:for-each>
+					</xsl:element>
 				</page_sequence>
 			</xsl:element>
 		</xsl:variable>
@@ -8752,8 +8754,8 @@
 				<xsl:for-each select="ancestor::*[contains(local-name(), '-standard')]/*[local-name()='boilerplate']/* | 
 					ancestor::*[contains(local-name(), '-standard')]/*[local-name()='preface']/* |
 					ancestor::*[contains(local-name(), '-standard')]/*[local-name()='sections']/* | 
-					ancestor::*[contains(local-name(), '-standard')]/*[local-name()='annex'] |
-					ancestor::*[contains(local-name(), '-standard')]/*[local-name()='bibliography']/*">
+					ancestor::*[contains(local-name(), '-standard')]//*[local-name()='annex'] |
+					ancestor::*[contains(local-name(), '-standard')]//*[local-name()='bibliography']/*">
 					<xsl:sort select="@displayorder" data-type="number"/>
 					<!-- commented:
 					 .//*[local-name() = 'bibitem'][ancestor::*[local-name() = 'references']]/*[local-name() = 'note'] |
