@@ -1444,8 +1444,6 @@
 					<page_sequence>
 						<xsl:for-each select="/*/*[local-name()='sections']/*">
 							<xsl:sort select="@displayorder" data-type="number"/>
-							<!-- <xsl:apply-templates select="."/> -->
-							<!-- <xsl:call-template name="update_xml_step_move_pagebreak"/> -->
 							<xsl:apply-templates select="." mode="update_xml_step_move_pagebreak"/>
 							<xsl:if test="$namespace = 'm3d'">
 								<xsl:if test="local-name()='clause' and @type='scope'">

@@ -6530,7 +6530,7 @@
 					<page_sequence>
 						<xsl:for-each select="/*/*[local-name()='preface']/*[not(local-name() = 'note' or local-name() = 'admonition')]">
 							<xsl:sort select="@displayorder" data-type="number"/>
-							<xsl:call-template name="update_xml_step_move_pagebreak"/>
+							<xsl:apply-templates select="." mode="update_xml_step_move_pagebreak"/>
 						</xsl:for-each>
 					</page_sequence>
 				</xsl:element>
@@ -6611,8 +6611,6 @@
 					<page_sequence>
 						<xsl:for-each select="/*/*[local-name()='sections']/* | /*/*[local-name()='bibliography']/*[local-name()='references'][@normative='true']">
 							<xsl:sort select="@displayorder" data-type="number"/>
-							<!-- <xsl:apply-templates select="."/> -->
-							<!-- <xsl:call-template name="update_xml_step_move_pagebreak"/> -->
 							<xsl:apply-templates select="." mode="update_xml_step_move_pagebreak"/>
 							<xsl:if test="$namespace = 'm3d'">
 								<xsl:if test="local-name()='clause' and @type='scope'">
@@ -6629,8 +6627,6 @@
 				<page_sequence>
 					<xsl:for-each select="/*/*[local-name()='annex']">
 						<xsl:sort select="@displayorder" data-type="number"/>
-						<!-- <xsl:apply-templates select="."/> -->
-						<!-- <xsl:call-template name="update_xml_step_move_pagebreak"/> -->
 						<xsl:apply-templates select="." mode="update_xml_step_move_pagebreak"/>
 					</xsl:for-each>
 				</page_sequence>
@@ -6640,8 +6636,6 @@
 						<xsl:for-each select="/*/*[local-name()='bibliography']/*[not(@normative='true')] | 
 												/*/*[local-name()='bibliography']/*[local-name()='clause'][*[local-name()='references'][not(@normative='true')]]">
 							<xsl:sort select="@displayorder" data-type="number"/>
-							<!-- <xsl:apply-templates select="."/> -->
-							<!-- <xsl:call-template name="update_xml_step_move_pagebreak"/> -->
 							<xsl:apply-templates select="." mode="update_xml_step_move_pagebreak"/>
 						</xsl:for-each>
 					</xsl:element>
@@ -17945,26 +17939,6 @@
 	<!-- =========================================================================== -->
 	<!-- STEP MOVE PAGEBREAK: move <pagebreak/> at top level under 'preface' and 'sections' -->
 	<!-- =========================================================================== -->
-	
-	<xsl:template name="update_xml_step_move_pagebreak">
-		<xsl:variable name="updated_xml_step_move_pagebreak_">
-			<xsl:apply-templates select="." mode="update_xml_step_move_pagebreak"/>
-		</xsl:variable>
-		
-		<xsl:variable name="updated_xml_step_move_pagebreak_filename" select="concat($output_path,'_', java:getTime(java:java.util.Date.new()), '.xml')"/>
-		
-		<redirect:write file="{$updated_xml_step_move_pagebreak_filename}">
-			<xsl:copy-of select="$updated_xml_step_move_pagebreak_"/>
-		</redirect:write>
-		
-		<xsl:variable name="updated_xml_step_move_pagebreak" select="document($updated_xml_step_move_pagebreak_filename)"/>
-		<xsl:variable name="updated_xml_step_move_pagebreak_file" select="java:java.io.File.new($updated_xml_step_move_pagebreak_filename)"/>
-		<xsl:variable name="updated_xml_step_move_pagebreak_path" select="java:toPath($updated_xml_step_move_pagebreak_file)"/>
-		<xsl:variable name="deletefile" select="java:java.nio.file.Files.deleteIfExists($updated_xml_step_move_pagebreak_path)"/>
-		
-		<xsl:copy-of select="$updated_xml_step_move_pagebreak"/>
-	</xsl:template>
-	
 	<xsl:template match="@*|node()" mode="update_xml_step_move_pagebreak">
 		<xsl:copy>
 			<xsl:apply-templates select="@*|node()" mode="update_xml_step_move_pagebreak"/>
