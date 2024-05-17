@@ -15847,8 +15847,11 @@
 			<xsl:call-template name="refine_annex_style"/>
 			
 		</fo:block>
+		
+		<xsl:apply-templates select="*[local-name() = 'title'][@columns = 1]"/>
+		
 		<fo:block id="{@id}">
-			<xsl:apply-templates />
+			<xsl:apply-templates select="node()[not(local-name() = 'title' and @columns = 1)]" />
 		</fo:block>
 	</xsl:template>
 	
@@ -18012,7 +18015,6 @@
 		</xsl:if>
 	</xsl:template>	
 
-	
 	<!-- =========================================================================== -->
 	<!-- END STEP MOVE PAGEBREAK: move <pagebreak/> at top level under 'preface' and 'sections' -->
 	<!-- =========================================================================== -->

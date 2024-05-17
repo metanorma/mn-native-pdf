@@ -3799,7 +3799,7 @@
 		
 	</xsl:template>
 	
-	<xsl:template match="iso:title[@inline-header = 'true'][following-sibling::*[1][local-name() = 'p']]" priority="3">
+	<xsl:template match="iso:title[../@inline-header = 'true'][following-sibling::*[1][local-name() = 'p']]" priority="3">
 		<xsl:choose>
 			<xsl:when test="($layoutVersion = '1951' or $layoutVersion = '1972' or $layoutVersion = '1987' or $layoutVersion = '1989') and $layout_columns != 1"/> <!-- don't show 'title' with inline-header='true' if next element is 'p' -->
 			<xsl:otherwise>
@@ -3932,7 +3932,8 @@
 			
 			<!-- put inline title in the first paragraph -->
 			<xsl:if test="($layoutVersion = '1951' or $layoutVersion = '1972' or $layoutVersion = '1987' or $layoutVersion = '1989') and $layout_columns != 1">
-				<xsl:if test="preceding-sibling::*[1]/@inline-header = 'true' and preceding-sibling::*[1][self::iso:title]">
+				<!-- <xsl:if test="preceding-sibling::*[1]/@inline-header = 'true' and preceding-sibling::*[1][self::iso:title]"> -->
+				<xsl:if test="ancestor::*[1]/@inline-header = 'true' and preceding-sibling::*[1][self::iso:title]">
 					<xsl:attribute name="space-before">0pt</xsl:attribute>
 					<xsl:for-each select="preceding-sibling::*[1]">
 						<xsl:call-template name="title"/>
@@ -4111,6 +4112,16 @@
 	<!-- =================== -->
 	<!-- End of Index processing -->
 	<!-- =================== -->
+
+	<xsl:template match="*[local-name() = 'annex']/*[local-name() = 'title']" mode="update_xml_step_move_pagebreak">
+		<xsl:copy>
+			<xsl:copy-of select="@*"/>
+			<xsl:if test="$layout_columns != 1">
+				<xsl:attribute name="columns">1</xsl:attribute>
+			</xsl:if>
+			<xsl:apply-templates mode="update_xml_step_move_pagebreak"/>
+		</xsl:copy>
+	</xsl:template>
 
 	<!-- ================================= -->
 	<!-- XML Flattening -->
