@@ -6527,12 +6527,12 @@
 				<xsl:call-template name="copyCommonElements"/>
 				
 				<xsl:element name="preface" namespace="{$namespace_full}"> <!-- save context element -->
-					<page_sequence>
+					<xsl:element name="page_sequence" namespace="{$namespace_full}">
 						<xsl:for-each select="/*/*[local-name()='preface']/*[not(local-name() = 'note' or local-name() = 'admonition')]">
 							<xsl:sort select="@displayorder" data-type="number"/>
 							<xsl:apply-templates select="." mode="update_xml_step_move_pagebreak"/>
 						</xsl:for-each>
-					</page_sequence>
+					</xsl:element>
 				</xsl:element>
 			</xsl:element>
 		</xsl:variable>
@@ -6608,7 +6608,7 @@
 				<xsl:call-template name="copyCommonElements"/>
 	
 				<xsl:element name="sections" namespace="{$namespace_full}"> <!-- save context element -->
-					<page_sequence>
+					<xsl:element name="page_sequence" namespace="{$namespace_full}">
 						<xsl:for-each select="/*/*[local-name()='sections']/* | /*/*[local-name()='bibliography']/*[local-name()='references'][@normative='true']">
 							<xsl:sort select="@displayorder" data-type="number"/>
 							<xsl:apply-templates select="." mode="update_xml_step_move_pagebreak"/>
@@ -6621,17 +6621,17 @@
 								</xsl:if>
 							</xsl:if>
 						</xsl:for-each>
-					</page_sequence>
+					</xsl:element>
 				</xsl:element>
 				
-				<page_sequence>
+				<xsl:element name="page_sequence" namespace="{$namespace_full}">
 					<xsl:for-each select="/*/*[local-name()='annex']">
 						<xsl:sort select="@displayorder" data-type="number"/>
 						<xsl:apply-templates select="." mode="update_xml_step_move_pagebreak"/>
 					</xsl:for-each>
-				</page_sequence>
+				</xsl:element>
 				
-				<page_sequence>
+				<xsl:element name="page_sequence" namespace="{$namespace_full}">
 					<xsl:element name="bibliography" namespace="{$namespace_full}"> <!-- save context element -->
 						<xsl:for-each select="/*/*[local-name()='bibliography']/*[not(@normative='true')] | 
 												/*/*[local-name()='bibliography']/*[local-name()='clause'][*[local-name()='references'][not(@normative='true')]]">
@@ -6639,7 +6639,7 @@
 							<xsl:apply-templates select="." mode="update_xml_step_move_pagebreak"/>
 						</xsl:for-each>
 					</xsl:element>
-				</page_sequence>
+				</xsl:element>
 			</xsl:element>
 		</xsl:variable>
 		
@@ -15800,7 +15800,7 @@
 	</xsl:template>
 	
 	
-	<xsl:template match="*[local-name() = 'clause']">
+	<xsl:template match="*[local-name() = 'clause'][normalize-space() != '' or *[local-name() = 'figure']]" name="template_clause"> <!-- if clause isn't empty -->
 		<fo:block>
 			<xsl:if test="parent::*[local-name() = 'copyright-statement']">
 				<xsl:attribute name="role">SKIP</xsl:attribute>
@@ -15839,20 +15839,30 @@
 	
 	
 	<xsl:template match="*[local-name() = 'annex'][normalize-space() != '']">
-		<fo:block break-after="page"/>
-		<fo:block>
-		
-			<xsl:call-template name="setBlockSpanAll"/>
+		<xsl:choose>
+			<xsl:when test="@continue = 'true'"> <!-- it's using for figure/table on top level for block span -->
+				<fo:block>
+					<xsl:apply-templates />
+				</fo:block>
+			</xsl:when>
+			<xsl:otherwise>
 			
-			<xsl:call-template name="refine_annex_style"/>
-			
-		</fo:block>
-		
-		<xsl:apply-templates select="*[local-name() = 'title'][@columns = 1]"/>
-		
-		<fo:block id="{@id}">
-			<xsl:apply-templates select="node()[not(local-name() = 'title' and @columns = 1)]" />
-		</fo:block>
+				<fo:block break-after="page"/>
+				<fo:block id="{@id}">
+				
+					<xsl:call-template name="setBlockSpanAll"/>
+					
+					<xsl:call-template name="refine_annex_style"/>
+					
+				</fo:block>
+				
+				<xsl:apply-templates select="*[local-name() = 'title'][@columns = 1]"/>
+				
+				<fo:block>
+					<xsl:apply-templates select="node()[not(local-name() = 'title' and @columns = 1)]" />
+				</fo:block>
+			</xsl:otherwise>
+		</xsl:choose>
 	</xsl:template>
 	
 	<xsl:template name="refine_annex_style">
@@ -16758,8 +16768,12 @@
 			</xsl:if>
 		</xsl:if> -->
 		
-		<fo:block id="{@id}" xsl:use-attribute-sets="references-non-normative-style">
-			<xsl:apply-templates />
+		<fo:block id="{@id}"/>
+		
+		<xsl:apply-templates select="*[local-name() = 'title'][@columns = 1]"/>
+		
+		<fo:block xsl:use-attribute-sets="references-non-normative-style">
+			<xsl:apply-templates select="node()[not(local-name() = 'title' and @columns = 1)]" />
 			
 			<xsl:if test="$namespace = 'jis'">
 				<!-- render footnotes after references -->
@@ -17975,45 +17989,91 @@
 			<xsl:variable name="orientation" select="normalize-space(@orientation)"/>
 			
 			<xsl:variable name="tree_">
-				<xsl:for-each select="ancestor::*[ancestor::*[local-name() = 'sections'] or ancestor-or-self::*[local-name() = 'annex']]">
-					<element pos="{position()}">
-						<xsl:copy-of select="@*[local-name() != 'id']"/>
-						<xsl:value-of select="name()"/>
-					</element>
-				</xsl:for-each>
+				<xsl:call-template name="makeAncestorsElementsTree"/>
 			</xsl:variable>
 			<xsl:variable name="tree" select="xalan:nodeset($tree_)"/>
 			
 			<!-- close fo:page-sequence (closing preceding fo elements) -->
-			<xsl:for-each select="$tree//element">
-				<xsl:sort data-type="number" order="descending" select="@pos"/>
-				<xsl:text disable-output-escaping="yes">&lt;/</xsl:text>
-					<xsl:value-of select="."/>
-				<xsl:text disable-output-escaping="yes">&gt;</xsl:text>
-				<xsl:message>&lt;/<xsl:value-of select="."/>&gt;</xsl:message>
-			</xsl:for-each>
+			<xsl:call-template name="insertClosingElements">
+				<xsl:with-param name="tree" select="$tree"/>
+			</xsl:call-template>
 			
 			<xsl:text disable-output-escaping="yes">&lt;/page_sequence&gt;</xsl:text>
 			
 			<!-- create a new page_sequence (opening elements) -->
-			<xsl:text disable-output-escaping="yes">&lt;page_sequence</xsl:text><xsl:if test="$orientation != ''"> orientation="<xsl:value-of select="$orientation"/>"</xsl:if><xsl:text disable-output-escaping="yes">&gt;</xsl:text>
-						
-			<xsl:for-each select="$tree//element">
-				<xsl:text disable-output-escaping="yes">&lt;</xsl:text>
-					<xsl:value-of select="."/>
-					<xsl:for-each select="@*[local-name() != 'pos']">
-						<xsl:text> </xsl:text>
-						<xsl:value-of select="local-name()"/>
-						<xsl:text>="</xsl:text>
-						<xsl:value-of select="."/>
-						<xsl:text>"</xsl:text>
-					</xsl:for-each>				
-				<xsl:text disable-output-escaping="yes">&gt;</xsl:text>
-				<xsl:message>&lt;<xsl:value-of select="."/>&gt;</xsl:message>
-			</xsl:for-each>
+			<xsl:text disable-output-escaping="yes">&lt;page_sequence namespace="</xsl:text><xsl:value-of select="$namespace_full"/>"<xsl:if test="$orientation != ''"> orientation="<xsl:value-of select="$orientation"/>"</xsl:if><xsl:text disable-output-escaping="yes">&gt;</xsl:text>
+
+			<xsl:call-template name="insertOpeningElements">
+				<xsl:with-param name="tree" select="$tree"/>
+			</xsl:call-template>
 				
 		</xsl:if>
 	</xsl:template>	
+
+	<xsl:template name="makeAncestorsElementsTree">
+		<xsl:for-each select="ancestor::*[ancestor::*[local-name() = 'sections'] or ancestor-or-self::*[local-name() = 'annex']]">
+			<element pos="{position()}">
+				<xsl:copy-of select="@*[local-name() != 'id']"/>
+				<xsl:value-of select="name()"/>
+			</element>
+		</xsl:for-each>
+	</xsl:template>
+	
+	<xsl:template name="insertClosingElements">
+		<xsl:param name="tree"/>
+		<xsl:for-each select="$tree//element">
+			<xsl:sort data-type="number" order="descending" select="@pos"/>
+			<xsl:text disable-output-escaping="yes">&lt;/</xsl:text>
+				<xsl:value-of select="."/>
+			<xsl:text disable-output-escaping="yes">&gt;</xsl:text>
+			<xsl:message>&lt;/<xsl:value-of select="."/>&gt;</xsl:message>
+		</xsl:for-each>
+	</xsl:template>
+	
+	<xsl:template name="insertOpeningElements">
+		<xsl:param name="tree"/>
+		<xsl:for-each select="$tree//element">
+			<xsl:text disable-output-escaping="yes">&lt;</xsl:text>
+				<xsl:value-of select="."/>
+				<xsl:for-each select="@*[local-name() != 'pos']">
+					<xsl:text> </xsl:text>
+					<xsl:value-of select="local-name()"/>
+					<xsl:text>="</xsl:text>
+					<xsl:value-of select="."/>
+					<xsl:text>"</xsl:text>
+				</xsl:for-each>
+				<xsl:if test="position() = 1"> continue="true"</xsl:if>
+			<xsl:text disable-output-escaping="yes">&gt;</xsl:text>
+			<xsl:message>&lt;<xsl:value-of select="."/>&gt;</xsl:message>
+		</xsl:for-each>
+	</xsl:template>
+
+	<!-- move figure   at top level -->
+	<xsl:template match="*[local-name() = 'figure'][normalize-space(@width) != 'text-width']" mode="update_xml_step_move_pagebreak">
+		<xsl:choose>
+			<xsl:when test="$layout_columns != 1">
+				
+				<xsl:variable name="tree_">
+				<xsl:call-template name="makeAncestorsElementsTree"/>
+				</xsl:variable>
+				<xsl:variable name="tree" select="xalan:nodeset($tree_)"/>
+				
+				<xsl:call-template name="insertClosingElements">
+					<xsl:with-param name="tree" select="$tree"/>
+				</xsl:call-template>
+				
+				<xsl:copy-of select="."/>
+				
+				<xsl:call-template name="insertOpeningElements">
+					<xsl:with-param name="tree" select="$tree"/>
+				</xsl:call-template>
+				
+			</xsl:when>
+			<xsl:otherwise>
+				<xsl:copy-of select="."/>
+			</xsl:otherwise>
+		</xsl:choose>
+	</xsl:template>
 
 	<!-- =========================================================================== -->
 	<!-- END STEP MOVE PAGEBREAK: move <pagebreak/> at top level under 'preface' and 'sections' -->

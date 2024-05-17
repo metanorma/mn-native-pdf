@@ -1441,7 +1441,7 @@
 		<xsl:variable name="updated_xml_step_move_pagebreak_">
 			<xsl:element name="{$root_element}" namespace="{$namespace_full}">
 				<xsl:element name="sections" namespace="{$namespace_full}"> <!-- save context element -->
-					<page_sequence>
+					<xsl:element name="page_sequence" namespace="{$namespace_full}">
 						<xsl:for-each select="/*/*[local-name()='sections']/*">
 							<xsl:sort select="@displayorder" data-type="number"/>
 							<xsl:apply-templates select="." mode="update_xml_step_move_pagebreak"/>
@@ -1454,7 +1454,7 @@
 								</xsl:if>
 							</xsl:if>
 						</xsl:for-each>
-					</page_sequence>
+					</xsl:element>
 				</xsl:element>
 			</xsl:element>
 		</xsl:variable>
@@ -3796,7 +3796,6 @@
 				</xsl:if>
 			</xsl:otherwise>
 		</xsl:choose>
-		
 	</xsl:template>
 	
 	<xsl:template match="iso:title[../@inline-header = 'true'][following-sibling::*[1][local-name() = 'p']]" priority="3">
@@ -3823,24 +3822,12 @@
 	<!-- ====== -->
 	<!-- ====== -->
 
-	<xsl:template match="*[local-name() = 'clause']" priority="2">
+	<xsl:template match="*[local-name() = 'clause'][normalize-space() != '' or *[local-name() = 'figure']]" priority="2">
 		<xsl:choose>
 			<xsl:when test="($layoutVersion = '1951' or $layoutVersion = '1972' or $layoutVersion = '1987' or $layoutVersion = '1989') and
 				local-name() = 'clause' and count(node()) = 0 and following-sibling::*[1][local-name() = 'title' and not(@id)]"></xsl:when> <!-- @id will be added to title -->
 			<xsl:otherwise>
-				<fo:block>
-					<xsl:if test="parent::*[local-name() = 'copyright-statement']">
-						<xsl:attribute name="role">SKIP</xsl:attribute>
-					</xsl:if>
-					
-					<xsl:call-template name="setId"/>
-					
-					<xsl:call-template name="setBlockSpanAll"/>
-					
-					<xsl:call-template name="refine_clause_style"/>
-					
-					<xsl:apply-templates />
-				</fo:block>
+				<xsl:call-template name="template_clause"/>
 			</xsl:otherwise>
 		</xsl:choose>
 	</xsl:template>
@@ -4113,6 +4100,7 @@
 	<!-- End of Index processing -->
 	<!-- =================== -->
 
+	<!-- add columns=1 for elements which should be rendered in <block span="all"> -->
 	<xsl:template match="*[local-name() = 'annex']/*[local-name() = 'title']" mode="update_xml_step_move_pagebreak">
 		<xsl:copy>
 			<xsl:copy-of select="@*"/>
@@ -4122,6 +4110,17 @@
 			<xsl:apply-templates mode="update_xml_step_move_pagebreak"/>
 		</xsl:copy>
 	</xsl:template>
+	
+	<xsl:template match="*[local-name() = 'references'][not(@normative='true')]/*[local-name() = 'title']" mode="update_xml_step_move_pagebreak">
+		<xsl:copy>
+			<xsl:copy-of select="@*"/>
+			<xsl:if test="$layout_columns != 1">
+				<xsl:attribute name="columns">1</xsl:attribute>
+			</xsl:if>
+			<xsl:apply-templates mode="update_xml_step_move_pagebreak"/>
+		</xsl:copy>
+	</xsl:template>
+	
 
 	<!-- ================================= -->
 	<!-- XML Flattening -->
