@@ -3952,7 +3952,7 @@
 		
 		<xsl:if test="$element-name = 'fo:inline' and not($inline = 'true') and not(local-name(..) = 'admonition')">
 			<fo:block margin-bottom="12pt" role="SKIP">
-				 <xsl:if test="ancestor::iso:annex or following-sibling::iso:table">
+				 <xsl:if test="ancestor::iso:sections or ancestor::iso:annex or following-sibling::iso:table">
 					<xsl:attribute name="margin-bottom">0</xsl:attribute>
 				 </xsl:if>
 				<xsl:value-of select="$linebreak"/>
