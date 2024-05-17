@@ -6519,8 +6519,13 @@
 	</xsl:template>
 
 	<xsl:template name="processPrefaceSectionsDefault_items">
+	
 		<xsl:variable name="updated_xml_step_move_pagebreak_">
+		
 			<xsl:element name="{$root_element}" namespace="{$namespace_full}">
+			
+				<xsl:call-template name="copyCommonElements"/>
+				
 				<xsl:element name="preface" namespace="{$namespace_full}"> <!-- save context element -->
 					<page_sequence>
 						<xsl:for-each select="/*/*[local-name()='preface']/*[not(local-name() = 'note' or local-name() = 'admonition')]">
@@ -6545,6 +6550,10 @@
 		</xsl:call-template>
 	</xsl:template>
 	
+	<xsl:template name="copyCommonElements">
+		<!-- copy bibdata, localized-strings, metanorma-extension and boilerplate -->
+		<xsl:copy-of select="/*/*[local-name() != 'preface' and local-name() != 'sections' and local-name() != 'annex' and local-name() != 'bibliography']"/>
+	</xsl:template>
 	
 	<xsl:template name="processMainSectionsDefault">
 		<xsl:for-each select="/*/*[local-name()='sections']/* | /*/*[local-name()='bibliography']/*[local-name()='references'][@normative='true']">
@@ -6572,7 +6581,6 @@
 	</xsl:template><!-- END: processMainSectionsDefault -->
 	
 	
-
 	<!-- Example:
 	<iso-standard>
 		<sections>
@@ -6596,6 +6604,8 @@
 		<xsl:variable name="updated_xml_step_move_pagebreak_">
 			
 			<xsl:element name="{$root_element}" namespace="{$namespace_full}">
+			
+				<xsl:call-template name="copyCommonElements"/>
 	
 				<xsl:element name="sections" namespace="{$namespace_full}"> <!-- save context element -->
 					<page_sequence>
