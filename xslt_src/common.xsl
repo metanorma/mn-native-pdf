@@ -2167,6 +2167,7 @@
 				<xsl:attribute name="font-size">10pt</xsl:attribute>
 				<xsl:if test="normalize-space(../@width) != 'text-width'">
 					<xsl:attribute name="span">all</xsl:attribute>
+					<xsl:attribute name="margin-top">6pt</xsl:attribute>
 				</xsl:if>
 			</xsl:if>
 		</xsl:if>
@@ -15704,7 +15705,8 @@
 		
 	</xsl:template>
 	
-	<xsl:template match="*[local-name() = 'sections']/*[local-name() = 'page_sequence']/*" priority="2">
+	<!-- note: @top-level added in mode=" update_xml_step_move_pagebreak" -->
+	<xsl:template match="*[local-name() = 'sections']/*[local-name() = 'page_sequence']/*[not(@top-level)]" priority="2">
 		<xsl:call-template name="sections_node"/>
 	</xsl:template>
 	
@@ -18026,7 +18028,9 @@
 			<xsl:text disable-output-escaping="yes">&lt;/</xsl:text>
 				<xsl:value-of select="."/>
 			<xsl:text disable-output-escaping="yes">&gt;</xsl:text>
-			<xsl:message>&lt;/<xsl:value-of select="."/>&gt;</xsl:message>
+			<xsl:if test="$debug = 'true'">
+				<xsl:message>&lt;/<xsl:value-of select="."/>&gt;</xsl:message>
+			</xsl:if>
 		</xsl:for-each>
 	</xsl:template>
 	
@@ -18044,12 +18048,14 @@
 				</xsl:for-each>
 				<xsl:if test="position() = 1"> continue="true"</xsl:if>
 			<xsl:text disable-output-escaping="yes">&gt;</xsl:text>
-			<xsl:message>&lt;<xsl:value-of select="."/>&gt;</xsl:message>
+			<xsl:if test="$debug = 'true'">
+				<xsl:message>&lt;<xsl:value-of select="."/>&gt;</xsl:message>
+			</xsl:if>
 		</xsl:for-each>
 	</xsl:template>
 
-	<!-- move figure   at top level -->
-	<xsl:template match="*[local-name() = 'figure'][normalize-space(@width) != 'text-width']" mode="update_xml_step_move_pagebreak">
+	<!-- move full page width figures, tables at top level -->
+	<xsl:template match="*[local-name() = 'figure' or local-name() = 'table'][normalize-space(@width) != 'text-width']" mode="update_xml_step_move_pagebreak">
 		<xsl:choose>
 			<xsl:when test="$layout_columns != 1">
 				
@@ -18062,7 +18068,12 @@
 					<xsl:with-param name="tree" select="$tree"/>
 				</xsl:call-template>
 				
-				<xsl:copy-of select="."/>
+				<!-- <xsl:copy-of select="."/> -->
+				<xsl:copy>
+					<xsl:copy-of select="@*"/>
+					<xsl:attribute name="top-level">true</xsl:attribute>
+					<xsl:copy-of select="node()"/>
+				</xsl:copy>
 				
 				<xsl:call-template name="insertOpeningElements">
 					<xsl:with-param name="tree" select="$tree"/>
