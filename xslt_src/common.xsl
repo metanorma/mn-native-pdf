@@ -6665,42 +6665,6 @@
 		<xsl:variable name="deletefile" select="java:java.nio.file.Files.deleteIfExists($xml_file_path)"/>
 	</xsl:template>
 	
-	<xsl:template name="processMainSectionsDefault_flatxml">
-		<xsl:for-each select="/*/*[local-name()='sections']/* | /*/*[local-name()='bibliography']/*[local-name()='references'][@normative='true']">
-			<xsl:sort select="@displayorder" data-type="number"/>
-			<xsl:variable name="flatxml">
-				<xsl:apply-templates select="." mode="flatxml"/>
-			</xsl:variable>
-			<!-- debug_flatxml='<xsl:copy-of select="$flatxml"/>' -->
-			<xsl:apply-templates select="xalan:nodeset($flatxml)/*"/>
-			<xsl:if test="$namespace = 'm3d'">
-				<xsl:if test="local-name()='clause' and @type='scope'">
-					<xsl:if test="/*/*[local-name()='bibliography']/*[local-name()='references'][@normative='true']">
-						<fo:block break-after="page"/>			
-					</xsl:if>
-				</xsl:if>
-			</xsl:if>
-		</xsl:for-each>
-		
-		<xsl:for-each select="/*/*[local-name()='annex']">
-			<xsl:sort select="@displayorder" data-type="number"/>
-			<xsl:variable name="flatxml">
-				<xsl:apply-templates select="." mode="flatxml"/>
-			</xsl:variable>
-			<!-- debug_flatxml='<xsl:copy-of select="$flatxml"/>' -->
-			<xsl:apply-templates select="xalan:nodeset($flatxml)/*"/>
-		</xsl:for-each>
-		
-		<xsl:for-each select="/*/*[local-name()='bibliography']/*[not(@normative='true')] | 
-								/*/*[local-name()='bibliography']/*[local-name()='clause'][*[local-name()='references'][not(@normative='true')]]">
-			<xsl:sort select="@displayorder" data-type="number"/>
-			<xsl:variable name="flatxml">
-				<xsl:apply-templates select="." mode="flatxml"/>
-			</xsl:variable>
-			<!-- debug_flatxml='<xsl:copy-of select="$flatxml"/>' -->
-			<xsl:apply-templates select="xalan:nodeset($flatxml)/*"/>
-		</xsl:for-each>
-	</xsl:template>
 	
 	<xsl:variable name="regex_standard_reference">([A-Z]{2,}(/[A-Z]{2,})* \d+(-\d+)*(:\d{4})?)</xsl:variable>
 	<xsl:variable name="tag_fo_inline_keep-together_within-line_open">###fo:inline keep-together_within-line###</xsl:variable>
