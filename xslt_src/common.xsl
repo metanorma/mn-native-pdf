@@ -356,6 +356,15 @@
 	</xsl:variable>
 	<xsl:variable name="marginBottom" select="normalize-space($marginBottom_)"/>
 	
+	<xsl:variable name="layout_columns_default">1</xsl:variable>
+	<xsl:variable name="layout_columns_" select="normalize-space((//*[contains(local-name(), '-standard')])[1]/*[local-name() = 'metanorma-extension']/*[local-name() = 'presentation-metadata']/*[local-name() = 'layout-columns'])"/>
+	<xsl:variable name="layout_columns">
+		<xsl:choose>
+			<xsl:when test="$layout_columns_ != ''"><xsl:value-of select="$layout_columns_"/></xsl:when>
+			<xsl:otherwise><xsl:value-of select="$layout_columns_default"/></xsl:otherwise>
+		</xsl:choose>
+	</xsl:variable>
+	
 	<!-- Note 2: almost all localized string determined in the element //localized-strings in metanorma xml, but there are a few cases when:
 	 - string didn't determined yet
 	 - we need to put the string on two-languages (for instance, on English and French both), but xml contains only localized strings for one language
