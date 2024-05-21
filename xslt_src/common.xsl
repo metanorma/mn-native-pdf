@@ -4,8 +4,10 @@
 											xmlns:mathml="http://www.w3.org/1998/Math/MathML" 
 											xmlns:xalan="http://xml.apache.org/xalan"  
 											xmlns:fox="http://xmlgraphics.apache.org/fop/extensions" 
+											xmlns:redirect="http://xml.apache.org/xalan/redirect"
 											xmlns:java="http://xml.apache.org/xalan/java"
 											exclude-result-prefixes="java"
+											extension-element-prefixes="redirect"
 											version="1.0">
 
 	<xsl:choose>
@@ -68,6 +70,9 @@
 		</xsl:when>
 	</xsl:choose>
 
+	<xsl:variable name="namespace_full" select="namespace-uri(/*)"/> <!-- example: https://www.metanorma.org/ns/iso -->
+	<xsl:variable name="root_element" select="local-name(/*)"/>
+	
 
 	<!-- external parameters -->
 	
@@ -76,6 +81,7 @@
 	<xsl:param name="basepath"/> <!-- base path for images -->
 	<xsl:param name="inputxml_basepath"/> <!-- input xml file path -->
 	<xsl:param name="inputxml_filename"/> <!-- input xml file name -->
+	<xsl:param name="output_path"/> <!-- output PDF file name -->
 	<xsl:param name="external_index" /><!-- path to index xml, generated on 1st pass, based on FOP Intermediate Format -->
 	<xsl:param name="syntax-highlight">false</xsl:param> <!-- syntax highlighting feature, default - off -->
 	<xsl:param name="add_math_as_text">true</xsl:param> <!-- add math in text behind svg formula, to copy-paste formula from PDF as text -->
@@ -356,6 +362,15 @@
 		</xsl:choose>
 	</xsl:variable>
 	<xsl:variable name="marginBottom" select="normalize-space($marginBottom_)"/>
+	
+	<xsl:variable name="layout_columns_default">1</xsl:variable>
+	<xsl:variable name="layout_columns_" select="normalize-space((//*[contains(local-name(), '-standard')])[1]/*[local-name() = 'metanorma-extension']/*[local-name() = 'presentation-metadata']/*[local-name() = 'layout-columns'])"/>
+	<xsl:variable name="layout_columns">
+		<xsl:choose>
+			<xsl:when test="$layout_columns_ != ''"><xsl:value-of select="$layout_columns_"/></xsl:when>
+			<xsl:otherwise><xsl:value-of select="$layout_columns_default"/></xsl:otherwise>
+		</xsl:choose>
+	</xsl:variable>
 	
 	<!-- Note 2: almost all localized string determined in the element //localized-strings in metanorma xml, but there are a few cases when:
 	 - string didn't determined yet
@@ -6620,7 +6635,43 @@
 			<xsl:apply-templates select="."/>
 		</xsl:for-each>
 	</xsl:template>
+
+	<xsl:template name="processPrefaceSectionsDefault_items">
 	
+		<xsl:variable name="updated_xml_step_move_pagebreak_">
+		
+			<xsl:element name="{$root_element}" namespace="{$namespace_full}">
+			
+				<xsl:call-template name="copyCommonElements"/>
+				
+				<xsl:element name="preface" namespace="{$namespace_full}"> <!-- save context element -->
+					<xsl:element name="page_sequence" namespace="{$namespace_full}">
+						<xsl:for-each select="/*/*[local-name()='preface']/*[not(local-name() = 'note' or local-name() = 'admonition')]">
+							<xsl:sort select="@displayorder" data-type="number"/>
+							<xsl:apply-templates select="." mode="update_xml_step_move_pagebreak"/>
+						</xsl:for-each>
+					</xsl:element>
+				</xsl:element>
+			</xsl:element>
+		</xsl:variable>
+		
+		<xsl:variable name="updated_xml_step_move_pagebreak_filename" select="concat($output_path,'_preface_', java:getTime(java:java.util.Date.new()), '.xml')"/>
+		
+		<redirect:write file="{$updated_xml_step_move_pagebreak_filename}">
+			<xsl:copy-of select="$updated_xml_step_move_pagebreak_"/>
+		</redirect:write>
+		
+		<xsl:copy-of select="document($updated_xml_step_move_pagebreak_filename)"/>
+		
+		<xsl:call-template name="deleteFile">
+			<xsl:with-param name="filepath" select="$updated_xml_step_move_pagebreak_filename"/>
+		</xsl:call-template>
+	</xsl:template>
+	
+	<xsl:template name="copyCommonElements">
+		<!-- copy bibdata, localized-strings, metanorma-extension and boilerplate -->
+		<xsl:copy-of select="/*/*[local-name() != 'preface' and local-name() != 'sections' and local-name() != 'annex' and local-name() != 'bibliography']"/>
+	</xsl:template>
 	
 	<xsl:template name="processMainSectionsDefault">
 		<xsl:for-each select="/*/*[local-name()='sections']/* | /*/*[local-name()='bibliography']/*[local-name()='references'][@normative='true']">
@@ -6645,44 +6696,92 @@
 			<xsl:sort select="@displayorder" data-type="number"/>
 			<xsl:apply-templates select="."/>
 		</xsl:for-each>
+	</xsl:template><!-- END: processMainSectionsDefault -->
+	
+	
+	<!-- Example:
+	<iso-standard>
+		<sections>
+			<page_sequence>
+				<clause...
+			</page_sequence>
+			<page_sequence>
+				<clause...
+			</page_sequence>
+		</sections>
+		<page_sequence>
+			<annex ..
+		</page_sequence>
+		<page_sequence>
+			<annex ..
+		</page_sequence>
+	</iso-standard>
+	-->
+	<xsl:template name="processMainSectionsDefault_items">
+	
+		<xsl:variable name="updated_xml_step_move_pagebreak_">
+			
+			<xsl:element name="{$root_element}" namespace="{$namespace_full}">
+			
+				<xsl:call-template name="copyCommonElements"/>
+	
+				<xsl:element name="sections" namespace="{$namespace_full}"> <!-- save context element -->
+					<xsl:element name="page_sequence" namespace="{$namespace_full}">
+						<xsl:for-each select="/*/*[local-name()='sections']/* | /*/*[local-name()='bibliography']/*[local-name()='references'][@normative='true']">
+							<xsl:sort select="@displayorder" data-type="number"/>
+							<xsl:apply-templates select="." mode="update_xml_step_move_pagebreak"/>
+							<xsl:if test="$namespace = 'm3d'">
+								<xsl:if test="local-name()='clause' and @type='scope'">
+									<xsl:if test="/*/*[local-name()='bibliography']/*[local-name()='references'][@normative='true']">
+										<fo:block break-after="page"/>
+										<xsl:element name="pagebreak" namespace="{$namespace_full}"/>
+									</xsl:if>
+								</xsl:if>
+							</xsl:if>
+						</xsl:for-each>
+					</xsl:element>
+				</xsl:element>
+				
+				<xsl:element name="page_sequence" namespace="{$namespace_full}">
+					<xsl:for-each select="/*/*[local-name()='annex']">
+						<xsl:sort select="@displayorder" data-type="number"/>
+						<xsl:apply-templates select="." mode="update_xml_step_move_pagebreak"/>
+					</xsl:for-each>
+				</xsl:element>
+				
+				<xsl:element name="page_sequence" namespace="{$namespace_full}">
+					<xsl:element name="bibliography" namespace="{$namespace_full}"> <!-- save context element -->
+						<xsl:for-each select="/*/*[local-name()='bibliography']/*[not(@normative='true')] | 
+												/*/*[local-name()='bibliography']/*[local-name()='clause'][*[local-name()='references'][not(@normative='true')]]">
+							<xsl:sort select="@displayorder" data-type="number"/>
+							<xsl:apply-templates select="." mode="update_xml_step_move_pagebreak"/>
+						</xsl:for-each>
+					</xsl:element>
+				</xsl:element>
+			</xsl:element>
+		</xsl:variable>
+		
+		<xsl:variable name="updated_xml_step_move_pagebreak_filename" select="concat($output_path,'_main_', java:getTime(java:java.util.Date.new()), '.xml')"/>
+		
+		<redirect:write file="{$updated_xml_step_move_pagebreak_filename}">
+			<xsl:copy-of select="$updated_xml_step_move_pagebreak_"/>
+		</redirect:write>
+		
+		<xsl:copy-of select="document($updated_xml_step_move_pagebreak_filename)"/>
+		
+		<xsl:call-template name="deleteFile">
+			<xsl:with-param name="filepath" select="$updated_xml_step_move_pagebreak_filename"/>
+		</xsl:call-template>
+	</xsl:template> <!-- END: processMainSectionsDefault_items -->
+	
+	
+	<xsl:template name="deleteFile">
+		<xsl:param name="filepath"/>
+		<xsl:variable name="xml_file" select="java:java.io.File.new($filepath)"/>
+		<xsl:variable name="xml_file_path" select="java:toPath($xml_file)"/>
+		<xsl:variable name="deletefile" select="java:java.nio.file.Files.deleteIfExists($xml_file_path)"/>
 	</xsl:template>
 	
-	<xsl:template name="processMainSectionsDefault_flatxml">
-		<xsl:for-each select="/*/*[local-name()='sections']/* | /*/*[local-name()='bibliography']/*[local-name()='references'][@normative='true']">
-			<xsl:sort select="@displayorder" data-type="number"/>
-			<xsl:variable name="flatxml">
-				<xsl:apply-templates select="." mode="flatxml"/>
-			</xsl:variable>
-			<!-- debug_flatxml='<xsl:copy-of select="$flatxml"/>' -->
-			<xsl:apply-templates select="xalan:nodeset($flatxml)/*"/>
-			<xsl:if test="$namespace = 'm3d'">
-				<xsl:if test="local-name()='clause' and @type='scope'">
-					<xsl:if test="/*/*[local-name()='bibliography']/*[local-name()='references'][@normative='true']">
-						<fo:block break-after="page"/>			
-					</xsl:if>
-				</xsl:if>
-			</xsl:if>
-		</xsl:for-each>
-		
-		<xsl:for-each select="/*/*[local-name()='annex']">
-			<xsl:sort select="@displayorder" data-type="number"/>
-			<xsl:variable name="flatxml">
-				<xsl:apply-templates select="." mode="flatxml"/>
-			</xsl:variable>
-			<!-- debug_flatxml='<xsl:copy-of select="$flatxml"/>' -->
-			<xsl:apply-templates select="xalan:nodeset($flatxml)/*"/>
-		</xsl:for-each>
-		
-		<xsl:for-each select="/*/*[local-name()='bibliography']/*[not(@normative='true')] | 
-								/*/*[local-name()='bibliography']/*[local-name()='clause'][*[local-name()='references'][not(@normative='true')]]">
-			<xsl:sort select="@displayorder" data-type="number"/>
-			<xsl:variable name="flatxml">
-				<xsl:apply-templates select="." mode="flatxml"/>
-			</xsl:variable>
-			<!-- debug_flatxml='<xsl:copy-of select="$flatxml"/>' -->
-			<xsl:apply-templates select="xalan:nodeset($flatxml)/*"/>
-		</xsl:for-each>
-	</xsl:template>
 	
 	<xsl:variable name="regex_standard_reference">([A-Z]{2,}(/[A-Z]{2,})* \d+(-\d+)*(:\d{4})?)</xsl:variable>
 	<xsl:variable name="tag_fo_inline_keep-together_within-line_open">###fo:inline keep-together_within-line###</xsl:variable>
@@ -8741,8 +8840,8 @@
 				<xsl:for-each select="ancestor::*[contains(local-name(), '-standard')]/*[local-name()='boilerplate']/* | 
 					ancestor::*[contains(local-name(), '-standard')]/*[local-name()='preface']/* |
 					ancestor::*[contains(local-name(), '-standard')]/*[local-name()='sections']/* | 
-					ancestor::*[contains(local-name(), '-standard')]/*[local-name()='annex'] |
-					ancestor::*[contains(local-name(), '-standard')]/*[local-name()='bibliography']/*">
+					ancestor::*[contains(local-name(), '-standard')]//*[local-name()='annex'] |
+					ancestor::*[contains(local-name(), '-standard')]//*[local-name()='bibliography']/*">
 					<xsl:sort select="@displayorder" data-type="number"/>
 					<!-- commented:
 					 .//*[local-name() = 'bibitem'][ancestor::*[local-name() = 'references']]/*[local-name() = 'note'] |
@@ -15667,7 +15766,7 @@
 	
 	
 	<!-- main sections -->
-	<xsl:template match="/*/*[local-name() = 'sections']/*" priority="2">
+	<xsl:template match="/*/*[local-name() = 'sections']/*" name="sections_node" priority="2">
 		<xsl:if test="$namespace = 'm3d' or $namespace = 'unece-rec'">
 				<fo:block break-after="page"/>
 		</xsl:if>
@@ -15685,6 +15784,11 @@
 				</xsl:if>
 		</xsl:if>
 		
+	</xsl:template>
+	
+	<!-- note: @top-level added in mode=" update_xml_step_move_pagebreak" -->
+	<xsl:template match="*[local-name() = 'sections']/*[local-name() = 'page_sequence']/*[not(@top-level)]" priority="2">
+		<xsl:call-template name="sections_node"/>
 	</xsl:template>
 	
 	<xsl:template name="sections_element_style">
@@ -15752,7 +15856,7 @@
 		</xsl:if>
 	</xsl:template> <!-- sections_element_style -->
 	
-	<xsl:template match="//*[contains(local-name(), '-standard')]/*[local-name() = 'preface']/*" priority="2"> <!-- /*/*[local-name() = 'preface']/* -->
+	<xsl:template match="//*[contains(local-name(), '-standard')]/*[local-name() = 'preface']/*" priority="2" name="preface_node"> <!-- /*/*[local-name() = 'preface']/* -->
 		<xsl:choose>
 			<xsl:when test="$namespace = 'iso'">
 				<xsl:choose>
@@ -15773,7 +15877,13 @@
 		</fo:block>
 	</xsl:template>
 	
-	<xsl:template match="*[local-name() = 'clause']">
+	
+	<xsl:template match="*[local-name() = 'preface']/*[local-name() = 'page_sequence']/*" priority="2"> <!-- /*/*[local-name() = 'preface']/* -->
+		<xsl:call-template name="preface_node"/>
+	</xsl:template>
+	
+	
+	<xsl:template match="*[local-name() = 'clause'][normalize-space() != '' or *[local-name() = 'figure']]" name="template_clause"> <!-- if clause isn't empty -->
 		<fo:block>
 			<xsl:if test="parent::*[local-name() = 'copyright-statement']">
 				<xsl:attribute name="role">SKIP</xsl:attribute>
@@ -15811,18 +15921,31 @@
 	
 	
 	
-	<xsl:template match="*[local-name() = 'annex']">
-		<fo:block break-after="page"/>
-		<fo:block>
-		
-			<xsl:call-template name="setBlockSpanAll"/>
+	<xsl:template match="*[local-name() = 'annex'][normalize-space() != '']">
+		<xsl:choose>
+			<xsl:when test="@continue = 'true'"> <!-- it's using for figure/table on top level for block span -->
+				<fo:block>
+					<xsl:apply-templates />
+				</fo:block>
+			</xsl:when>
+			<xsl:otherwise>
 			
-			<xsl:call-template name="refine_annex_style"/>
-			
-		</fo:block>
-		<fo:block id="{@id}">
-			<xsl:apply-templates />
-		</fo:block>
+				<fo:block break-after="page"/>
+				<fo:block id="{@id}">
+				
+					<xsl:call-template name="setBlockSpanAll"/>
+					
+					<xsl:call-template name="refine_annex_style"/>
+					
+				</fo:block>
+				
+				<xsl:apply-templates select="*[local-name() = 'title'][@columns = 1]"/>
+				
+				<fo:block>
+					<xsl:apply-templates select="node()[not(local-name() = 'title' and @columns = 1)]" />
+				</fo:block>
+			</xsl:otherwise>
+		</xsl:choose>
 	</xsl:template>
 	
 	<xsl:template name="refine_annex_style">
@@ -16728,8 +16851,12 @@
 			</xsl:if>
 		</xsl:if> -->
 		
-		<fo:block id="{@id}" xsl:use-attribute-sets="references-non-normative-style">
-			<xsl:apply-templates />
+		<fo:block id="{@id}"/>
+		
+		<xsl:apply-templates select="*[local-name() = 'title'][@columns = 1]"/>
+		
+		<fo:block xsl:use-attribute-sets="references-non-normative-style">
+			<xsl:apply-templates select="node()[not(local-name() = 'title' and @columns = 1)]" />
 			
 			<xsl:if test="$namespace = 'jis'">
 				<!-- render footnotes after references -->
@@ -17761,7 +17888,11 @@
 	<!-- =========================================================================== -->
 	<!-- STEP1:  -->
 	<!--   - Re-order elements in 'preface', 'sections' based on @displayorder -->
+	<!--   - Put Section title in the correct position -->
 	<!--   - Ignore 'span' without style -->
+	<!--   - Remove semantic xml part -->
+	<!--   - Remove image/emf (EMF vector image for Word) -->
+	<!--   - add @id, redundant for table auto-layout algorithm -->
 	<!-- =========================================================================== -->
 	<xsl:template match="@*|node()" mode="update_xml_step1">
 		<xsl:copy>
@@ -17870,11 +18001,18 @@
 	<!-- remove image/emf -->
 	<xsl:template match="*[local-name() = 'image']/*[local-name() = 'emf']" mode="update_xml_step1"/>
 	
-	<xsl:template match="*[local-name() = 'stem'] | *[local-name() = 'image']" mode="update_xml_step1">
+	<!-- remove preprocess-xslt -->
+	<xsl:template match="*[local-name() = 'preprocess-xslt']" mode="update_xml_step1"/>
+	
+	<xsl:template match="*[local-name() = 'stem'] | 
+						*[local-name() = 'image'] | 
+						*[local-name() = 'sourcecode'] | 
+						*[local-name() = 'bibdata'] | 
+						*[local-name() = 'localized-strings']" mode="update_xml_step1">
 		<xsl:copy-of select="."/>
 	</xsl:template>
 	
-	<!-- add @id, redundant for table auto-layout algorithm -->
+	<!-- add @id, mandatory for table auto-layout algorithm -->
 	<xsl:template match="*[local-name() = 'dl' or local-name() = 'table'][not(@id)]" mode="update_xml_step1">
 		<xsl:copy>
 			<xsl:copy-of select="@*"/>
@@ -17914,6 +18052,143 @@
 	<!-- =========================================================================== -->
 	<!-- END STEP1: Re-order elements in 'preface', 'sections' based on @displayorder -->
 	<!-- =========================================================================== -->
+	
+	
+	<!-- =========================================================================== -->
+	<!-- STEP MOVE PAGEBREAK: move <pagebreak/> at top level under 'preface' and 'sections' -->
+	<!-- =========================================================================== -->
+	<xsl:template match="@*|node()" mode="update_xml_step_move_pagebreak">
+		<xsl:copy>
+			<xsl:apply-templates select="@*|node()" mode="update_xml_step_move_pagebreak"/>
+		</xsl:copy>
+	</xsl:template>
+	
+	
+	<!-- replace 'pagebreak' by closing tags + page_sequence and  opening page_sequence + tags -->
+	<xsl:template match="*[local-name() = 'pagebreak'][not(following-sibling::*[1][local-name() = 'pagebreak'])]" mode="update_xml_step_move_pagebreak">	
+	
+		<!-- <xsl:choose>
+			<xsl:when test="ancestor::*[local-name() = 'sections']">
+			
+			</xsl:when>
+			<xsl:when test="ancestor::*[local-name() = 'annex']">
+			</xsl:when>
+			<xsl:otherwise>
+				<xsl:copy-of select="."/>
+			</xsl:otherwise>
+		</xsl:choose> -->
+		
+		<!-- determine pagebreak is last element before </fo:flow> or not -->
+		<xsl:variable name="isLast">
+			<xsl:for-each select="ancestor-or-self::*[ancestor::*[local-name() = 'sections'] or ancestor-or-self::*[local-name() = 'annex']]">
+				<xsl:if test="following-sibling::*">false</xsl:if>
+			</xsl:for-each>
+		</xsl:variable>
+	
+		<xsl:if test="contains($isLast, 'false')">
+	
+			<xsl:variable name="orientation" select="normalize-space(@orientation)"/>
+			
+			<xsl:variable name="tree_">
+				<xsl:call-template name="makeAncestorsElementsTree"/>
+			</xsl:variable>
+			<xsl:variable name="tree" select="xalan:nodeset($tree_)"/>
+			
+			<!-- close fo:page-sequence (closing preceding fo elements) -->
+			<xsl:call-template name="insertClosingElements">
+				<xsl:with-param name="tree" select="$tree"/>
+			</xsl:call-template>
+			
+			<xsl:text disable-output-escaping="yes">&lt;/page_sequence&gt;</xsl:text>
+			
+			<!-- create a new page_sequence (opening elements) -->
+			<xsl:text disable-output-escaping="yes">&lt;page_sequence namespace="</xsl:text><xsl:value-of select="$namespace_full"/>"<xsl:if test="$orientation != ''"> orientation="<xsl:value-of select="$orientation"/>"</xsl:if><xsl:text disable-output-escaping="yes">&gt;</xsl:text>
+
+			<xsl:call-template name="insertOpeningElements">
+				<xsl:with-param name="tree" select="$tree"/>
+			</xsl:call-template>
+				
+		</xsl:if>
+	</xsl:template>	
+
+	<xsl:template name="makeAncestorsElementsTree">
+		<xsl:for-each select="ancestor::*[ancestor::*[local-name() = 'sections'] or ancestor-or-self::*[local-name() = 'annex']]">
+			<element pos="{position()}">
+				<xsl:copy-of select="@*[local-name() != 'id']"/>
+				<xsl:value-of select="name()"/>
+			</element>
+		</xsl:for-each>
+	</xsl:template>
+	
+	<xsl:template name="insertClosingElements">
+		<xsl:param name="tree"/>
+		<xsl:for-each select="$tree//element">
+			<xsl:sort data-type="number" order="descending" select="@pos"/>
+			<xsl:text disable-output-escaping="yes">&lt;/</xsl:text>
+				<xsl:value-of select="."/>
+			<xsl:text disable-output-escaping="yes">&gt;</xsl:text>
+			<xsl:if test="$debug = 'true'">
+				<xsl:message>&lt;/<xsl:value-of select="."/>&gt;</xsl:message>
+			</xsl:if>
+		</xsl:for-each>
+	</xsl:template>
+	
+	<xsl:template name="insertOpeningElements">
+		<xsl:param name="tree"/>
+		<xsl:for-each select="$tree//element">
+			<xsl:text disable-output-escaping="yes">&lt;</xsl:text>
+				<xsl:value-of select="."/>
+				<xsl:for-each select="@*[local-name() != 'pos']">
+					<xsl:text> </xsl:text>
+					<xsl:value-of select="local-name()"/>
+					<xsl:text>="</xsl:text>
+					<xsl:value-of select="."/>
+					<xsl:text>"</xsl:text>
+				</xsl:for-each>
+				<xsl:if test="position() = 1"> continue="true"</xsl:if>
+			<xsl:text disable-output-escaping="yes">&gt;</xsl:text>
+			<xsl:if test="$debug = 'true'">
+				<xsl:message>&lt;<xsl:value-of select="."/>&gt;</xsl:message>
+			</xsl:if>
+		</xsl:for-each>
+	</xsl:template>
+
+	<!-- move full page width figures, tables at top level -->
+	<xsl:template match="*[local-name() = 'figure' or local-name() = 'table'][normalize-space(@width) != 'text-width']" mode="update_xml_step_move_pagebreak">
+		<xsl:choose>
+			<xsl:when test="$layout_columns != 1">
+				
+				<xsl:variable name="tree_">
+				<xsl:call-template name="makeAncestorsElementsTree"/>
+				</xsl:variable>
+				<xsl:variable name="tree" select="xalan:nodeset($tree_)"/>
+				
+				<xsl:call-template name="insertClosingElements">
+					<xsl:with-param name="tree" select="$tree"/>
+				</xsl:call-template>
+				
+				<!-- <xsl:copy-of select="."/> -->
+				<xsl:copy>
+					<xsl:copy-of select="@*"/>
+					<xsl:attribute name="top-level">true</xsl:attribute>
+					<xsl:copy-of select="node()"/>
+				</xsl:copy>
+				
+				<xsl:call-template name="insertOpeningElements">
+					<xsl:with-param name="tree" select="$tree"/>
+				</xsl:call-template>
+				
+			</xsl:when>
+			<xsl:otherwise>
+				<xsl:copy-of select="."/>
+			</xsl:otherwise>
+		</xsl:choose>
+	</xsl:template>
+
+	<!-- =========================================================================== -->
+	<!-- END STEP MOVE PAGEBREAK: move <pagebreak/> at top level under 'preface' and 'sections' -->
+	<!-- =========================================================================== -->
+	
 	
 	<xsl:if test="$namespace = 'ieee' or $namespace = 'iso' or $namespace = 'jis' or $namespace = 'bsi'">
 		<!-- =========================================================================== -->
@@ -18726,7 +19001,7 @@
 				<xsl:value-of select="$depth"/>
 			</xsl:when>
 			<xsl:otherwise>
-				<xsl:variable name="level_total" select="count(ancestor::*)"/>
+				<xsl:variable name="level_total" select="count(ancestor::*[local-name() != 'page_sequence'])"/>
 				<xsl:variable name="level">
 					<xsl:choose>
 						<xsl:when test="parent::*[local-name() = 'preface']">
