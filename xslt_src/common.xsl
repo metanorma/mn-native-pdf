@@ -57,6 +57,9 @@
 		<xsl:when test="$namespace = 'ogc' or $namespace = 'ogc-white-paper'">
 			<xsl:strip-space elements="ogc:xref"/>
 		</xsl:when>
+		<xsl:when test="$namespace = 'plateau'">
+			<xsl:strip-space elements="plateau:xref"/>
+		</xsl:when>
 		<xsl:when test="$namespace = 'rsd'">
 			<xsl:strip-space elements="ribose:xref"/>
 		</xsl:when>
@@ -123,7 +126,7 @@
 
 	<xsl:variable name="isApplyAutolayoutAlgorithm_">
 		<xsl:choose>
-			<xsl:when test="$namespace = 'bipm' or $namespace = 'bsi' or $namespace = 'csa' or $namespace = 'csd' or $namespace = 'iec' or $namespace = 'ieee' or $namespace = 'iho' or $namespace = 'iso' or $namespace = 'itu' or $namespace = 'jcgm' or $namespace = 'jis' or $namespace = 'm3d' or $namespace = 'mpfd' or $namespace = 'nist-sp' or $namespace = 'nist-cswp' or $namespace = 'ogc' or $namespace = 'ogc-white-paper' or $namespace = 'rsd' or $namespace = 'unece' or $namespace = 'unece-rec'">true</xsl:when>
+			<xsl:when test="$namespace = 'bipm' or $namespace = 'bsi' or $namespace = 'csa' or $namespace = 'csd' or $namespace = 'iec' or $namespace = 'ieee' or $namespace = 'iho' or $namespace = 'iso' or $namespace = 'itu' or $namespace = 'jcgm' or $namespace = 'jis' or $namespace = 'm3d' or $namespace = 'mpfd' or $namespace = 'nist-sp' or $namespace = 'nist-cswp' or $namespace = 'ogc' or $namespace = 'ogc-white-paper' or $namespace = 'plateau' or $namespace = 'rsd' or $namespace = 'unece' or $namespace = 'unece-rec'">true</xsl:when>
 			<xsl:otherwise>false</xsl:otherwise>
 		</xsl:choose>
 	</xsl:variable>
@@ -243,6 +246,7 @@
 			<xsl:when test="$namespace = 'nist-cswp' or $namespace = 'nist-sp'">25.4</xsl:when>
 			<xsl:when test="$namespace = 'ogc'">35</xsl:when>
 			<xsl:when test="$namespace = 'ogc-white-paper'">25.4</xsl:when>
+			<xsl:when test="$namespace = 'plateau'">15.4</xsl:when>
 			<xsl:when test="$namespace = 'rsd'">29</xsl:when>
 			<xsl:when test="$namespace = 'unece'">40</xsl:when>
 			<xsl:when test="$namespace = 'unece-rec'">40</xsl:when>
@@ -277,6 +281,7 @@
 			<xsl:when test="$namespace = 'nist-cswp' or $namespace = 'nist-sp'">25.4</xsl:when>
 			<xsl:when test="$namespace = 'ogc'">17</xsl:when>
 			<xsl:when test="$namespace = 'ogc-white-paper'">25.4</xsl:when>
+			<xsl:when test="$namespace = 'plateau'">15.4</xsl:when>
 			<xsl:when test="$namespace = 'rsd'">29</xsl:when>
 			<xsl:when test="$namespace = 'unece'">40</xsl:when>
 			<xsl:when test="$namespace = 'unece-rec'">40</xsl:when>
@@ -309,6 +314,7 @@
 			<xsl:when test="$namespace = 'nist-cswp' or $namespace = 'nist-sp'">25.4</xsl:when>
 			<xsl:when test="$namespace = 'ogc'">16.5</xsl:when>
 			<xsl:when test="$namespace = 'ogc-white-paper'">25.4</xsl:when>
+			<xsl:when test="$namespace = 'plateau'">15</xsl:when>
 			<xsl:when test="$namespace = 'rsd'">14</xsl:when>
 			<xsl:when test="$namespace = 'unece'">30</xsl:when>
 			<xsl:when test="$namespace = 'unece-rec'">30</xsl:when>
@@ -342,6 +348,7 @@
 			<xsl:when test="$namespace = 'nist-cswp' or $namespace = 'nist-sp'">25.4</xsl:when>
 			<xsl:when test="$namespace = 'ogc'">22.5</xsl:when>
 			<xsl:when test="$namespace = 'ogc-white-paper'">25.4</xsl:when>
+			<xsl:when test="$namespace = 'plateau'">20</xsl:when>
 			<xsl:when test="$namespace = 'rsd'">22</xsl:when>
 			<xsl:when test="$namespace = 'unece'">40</xsl:when>
 			<xsl:when test="$namespace = 'unece-rec'">34</xsl:when>
@@ -591,6 +598,11 @@
 			<xsl:attribute name="font-family">Arial, STIX Two Math, <xsl:value-of select="$font_noto_sans"/></xsl:attribute>
 			<xsl:attribute name="font-family-generic">Sans</xsl:attribute>
 			<xsl:attribute name="font-size">11pt</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'plateau'">
+			<xsl:attribute name="font-family">Yu Gothic, STIX Two Math, <xsl:value-of select="$font_noto_sans"/></xsl:attribute>
+			<xsl:attribute name="font-family-generic">Sans</xsl:attribute>
+			<xsl:attribute name="font-size">10.5pt</xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'rsd'">
 			<xsl:attribute name="font-family">OpenSans, STIX Two Math, <xsl:value-of select="$font_noto_sans"/></xsl:attribute>
@@ -1249,7 +1261,7 @@
 			<xsl:attribute name="margin-bottom">8pt</xsl:attribute>
 			<xsl:attribute name="text-align">justify</xsl:attribute>
 		</xsl:if>
-		<xsl:if test="$namespace = 'jis'">
+		<xsl:if test="$namespace = 'jis' or $namespace = 'plateau'">
 			<xsl:attribute name="margin-top">4pt</xsl:attribute>
 			<xsl:attribute name="margin-bottom">4pt</xsl:attribute>
 		</xsl:if>
@@ -1307,7 +1319,7 @@
 			<xsl:attribute name="font-size">10pt</xsl:attribute>
 			<xsl:attribute name="margin-top">12pt</xsl:attribute>			
 		</xsl:if>
-		<xsl:if test="$namespace = 'jis'">
+		<xsl:if test="$namespace = 'jis' or $namespace = 'plateau'">
 			<xsl:attribute name="margin-top">4pt</xsl:attribute>			
 			<xsl:attribute name="margin-bottom">4pt</xsl:attribute>			
 		</xsl:if>
@@ -1513,7 +1525,7 @@
 			<xsl:attribute name="margin-top">12pt</xsl:attribute>
 			<xsl:attribute name="margin-bottom">12pt</xsl:attribute>
 		</xsl:if>
-		<xsl:if test="$namespace = 'jis'">
+		<xsl:if test="$namespace = 'jis' or $namespace = 'plateau'">
 			<xsl:attribute name="margin-bottom">2pt</xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'm3d'">
@@ -1604,6 +1616,7 @@
 		<xsl:if test="$namespace = 'iho'">0.5pt solid black</xsl:if>
 		<xsl:if test="$namespace = 'iso'">1pt solid black</xsl:if>
 		<xsl:if test="$namespace = 'jis'">0.5pt solid black</xsl:if>
+		<xsl:if test="$namespace = 'plateau''">0.5pt solid black</xsl:if>
 	</xsl:variable>
 	<xsl:variable name="table-border" select="normalize-space($table-border_)"/>
 	
@@ -1689,6 +1702,10 @@
 		<xsl:if test="$namespace = 'ogc-white-paper'">
 			<xsl:attribute name="font-size">10pt</xsl:attribute>
 			<xsl:attribute name="space-after">12pt</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'plateau'">
+			<xsl:attribute name="font-size">10pt</xsl:attribute>
+			<xsl:attribute name="margin-bottom">8pt</xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'rsd'">
 			<xsl:attribute name="margin-bottom">12pt</xsl:attribute>
@@ -1873,6 +1890,9 @@
 		</xsl:if>
 		<xsl:if test="$namespace = 'ogc-white-paper'">
 			
+		</xsl:if>
+		<xsl:if test="$namespace = 'plateau'">
+			<xsl:attribute name="border"><xsl:value-of select="$table-border"/></xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'rsd'">
 			<xsl:attribute name="border">0pt solid black</xsl:attribute>
@@ -2076,6 +2096,11 @@
 			<xsl:attribute name="margin-bottom">6pt</xsl:attribute>
 			<xsl:attribute name="keep-with-previous">always</xsl:attribute>
 		</xsl:if>
+		<xsl:if test="$namespace = 'plateau'">
+			<xsl:attribute name="font-weight">bold</xsl:attribute>
+			<xsl:attribute name="text-align">center</xsl:attribute>
+			<xsl:attribute name="margin-bottom">4pt</xsl:attribute>
+		</xsl:if>
 		<xsl:if test="$namespace = 'unece'">
 			<xsl:attribute name="margin-bottom">6pt</xsl:attribute>
 			<xsl:attribute name="font-weight">normal</xsl:attribute>
@@ -2218,7 +2243,10 @@
 			<xsl:attribute name="background-color">rgb(33, 55, 92)</xsl:attribute>
 			<xsl:attribute name="color">white</xsl:attribute>
 		</xsl:if>
-				
+		<xsl:if test="$namespace = 'plateau'">
+			<xsl:attribute name="border-top"><xsl:value-of select="$table-border"/></xsl:attribute>
+			<xsl:attribute name="border-bottom"><xsl:value-of select="$table-border"/></xsl:attribute>
+		</xsl:if>
 		<xsl:if test="$namespace = 'rsd'">
 			<xsl:attribute name="font-weight">normal</xsl:attribute>
 			<xsl:attribute name="background-color">rgb(32, 98, 169)</xsl:attribute>
@@ -2322,6 +2350,10 @@
 			<xsl:attribute name="font-size">9pt</xsl:attribute>
 			<xsl:attribute name="border-left">solid black 1pt</xsl:attribute>
 			<xsl:attribute name="border-right">solid black 1pt</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'plateau'">
+			<xsl:attribute name="border-left"><xsl:value-of select="$table-border"/></xsl:attribute>
+			<xsl:attribute name="border-right"><xsl:value-of select="$table-border"/></xsl:attribute>
 		</xsl:if>
 	</xsl:attribute-set>
 	
@@ -2483,6 +2515,10 @@
 			<xsl:attribute name="color">white</xsl:attribute>
 			<xsl:attribute name="border">solid 0.5pt rgb(153, 153, 153)</xsl:attribute>
 			<xsl:attribute name="height">5mm</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'plateau'">
+			<xsl:attribute name="border"><xsl:value-of select="$table-border"/></xsl:attribute>
+			<xsl:attribute name="padding-top">0.5mm</xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'rsd'">
 			<xsl:attribute name="font-weight">normal</xsl:attribute>
@@ -2717,6 +2753,10 @@
 			<xsl:attribute name="padding-top">1mm</xsl:attribute>			
 			<xsl:attribute name="border">solid 0.5pt rgb(153, 153, 153)</xsl:attribute>
 			<xsl:attribute name="height">5mm</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'plateau'">
+			<xsl:attribute name="padding-top">0.5mm</xsl:attribute>
+			<xsl:attribute name="border"><xsl:value-of select="$table-border"/></xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'rsd'">
 			<xsl:attribute name="border">0pt solid black</xsl:attribute>
@@ -2970,6 +3010,10 @@
 		<xsl:if test="$namespace = 'ogc'">
 			<xsl:attribute name="border">solid black 0pt</xsl:attribute>
 		</xsl:if>
+		<xsl:if test="$namespace = 'plateau'">
+			<xsl:attribute name="border"><xsl:value-of select="$table-border"/></xsl:attribute>
+			<xsl:attribute name="border-top">solid black 0pt</xsl:attribute>
+		</xsl:if>
 		<xsl:if test="$namespace = 'rsd'">
 			<xsl:attribute name="border">solid black 0pt</xsl:attribute>
 		</xsl:if>
@@ -3050,6 +3094,10 @@
 		<xsl:if test="$namespace = 'rsd'">
 			<xsl:attribute name="font-size">8pt</xsl:attribute>					
 		</xsl:if>
+		<xsl:if test="$namespace = 'plateau'">
+			<xsl:attribute name="font-size">inherit</xsl:attribute>
+			<xsl:attribute name="margin-bottom">1pt</xsl:attribute>
+		</xsl:if>
 	</xsl:attribute-set><!-- table-note-style -->
 	
 	<xsl:template name="refine_table-note-style">
@@ -3111,6 +3159,10 @@
 			<xsl:attribute name="start-indent">5mm</xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'jis'">
+			<xsl:attribute name="font-size">inherit</xsl:attribute>
+			<xsl:attribute name="margin-bottom">1pt</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'plateau'">
 			<xsl:attribute name="font-size">inherit</xsl:attribute>
 			<xsl:attribute name="margin-bottom">1pt</xsl:attribute>
 		</xsl:if>
@@ -3180,6 +3232,11 @@
 		</xsl:if>
 		<xsl:if test="$namespace = 'ogc' or $namespace = 'ogc-white-paper'">
 			<xsl:attribute name="vertical-align">super</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'plateau'">
+			<xsl:attribute name="font-size">67%</xsl:attribute>
+			<xsl:attribute name="vertical-align">super</xsl:attribute>
+			<xsl:attribute name="padding-right">0mm</xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'unece' or $namespace = 'unece-rec'">
 			<xsl:attribute name="vertical-align">super</xsl:attribute>
@@ -3587,6 +3644,10 @@
 			<xsl:attribute name="margin-bottom">12pt</xsl:attribute>			
 			<xsl:attribute name="line-height">115%</xsl:attribute>
 		</xsl:if>
+		<xsl:if test="$namespace = 'plateau'">
+			<xsl:attribute name="text-indent">0mm</xsl:attribute>
+			<xsl:attribute name="space-before">2pt</xsl:attribute>
+		</xsl:if>
 		<xsl:if test="$namespace = 'unece'">			
 			<xsl:attribute name="margin-bottom">12pt</xsl:attribute>
 		</xsl:if>
@@ -3898,6 +3959,11 @@
 			<xsl:attribute name="margin-top">12pt</xsl:attribute>			
 			<xsl:attribute name="margin-bottom">12pt</xsl:attribute>						
 		</xsl:if>
+		<xsl:if test="$namespace = 'plateau'">
+			<xsl:attribute name="text-indent">0mm</xsl:attribute>
+			<xsl:attribute name="space-before">4pt</xsl:attribute>
+			<xsl:attribute name="space-after">4pt</xsl:attribute>
+		</xsl:if>
 		<xsl:if test="$namespace = 'rsd'">
 			<xsl:attribute name="margin-bottom">6pt</xsl:attribute>
 		</xsl:if>
@@ -4014,6 +4080,10 @@
 		<xsl:if test="$namespace = 'mpfd'">
 			<xsl:attribute name="margin-top">12pt</xsl:attribute>
 			<xsl:attribute name="text-align">justify</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'plateau'">
+			<xsl:attribute name="margin-left">0mm</xsl:attribute>
+			<xsl:attribute name="margin-right">0mm</xsl:attribute>
 		</xsl:if>
 	</xsl:attribute-set>
 	
@@ -4321,6 +4391,12 @@
 			<xsl:attribute name="text-align">center</xsl:attribute>
 			<xsl:attribute name="margin-top">12pt</xsl:attribute>
 			<xsl:attribute name="space-after">12pt</xsl:attribute>
+			<xsl:attribute name="keep-with-previous">always</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'plateau'">
+			<xsl:attribute name="text-align">center</xsl:attribute>
+			<xsl:attribute name="margin-top">6pt</xsl:attribute>
+			<xsl:attribute name="margin-bottom">12pt</xsl:attribute>
 			<xsl:attribute name="keep-with-previous">always</xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'rsd'">
@@ -4706,6 +4782,10 @@
 			<xsl:attribute name="space-before">12pt</xsl:attribute>
 			<xsl:attribute name="space-after">6pt</xsl:attribute>
 		</xsl:if>
+		<xsl:if test="$namespace = 'plateau'">
+			<xsl:attribute name="space-before">2pt</xsl:attribute>
+			<xsl:attribute name="space-after">2pt</xsl:attribute>
+		</xsl:if>
 	</xsl:attribute-set>
 
 	<xsl:variable name="color-added-text">
@@ -4829,6 +4909,10 @@
 			<xsl:attribute name="provisional-distance-between-starts">6.5mm</xsl:attribute>
 			<xsl:attribute name="margin-bottom">12pt</xsl:attribute>
 			<xsl:attribute name="line-height">115%</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'plateau'">
+			<xsl:attribute name="provisional-distance-between-starts">5mm</xsl:attribute>
+			<xsl:attribute name="space-after">20pt</xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'rsd'">
 			<xsl:attribute name="provisional-distance-between-starts">6mm</xsl:attribute>
@@ -5054,6 +5138,11 @@
 			<xsl:attribute name="color">blue</xsl:attribute>
 			<xsl:attribute name="text-decoration">underline</xsl:attribute>
 		</xsl:if>
+		<xsl:if test="$namespace = 'plateau'">
+			<xsl:attribute name="font-size">67%</xsl:attribute>
+			<xsl:attribute name="font-weight">bold</xsl:attribute>
+			<xsl:attribute name="vertical-align">super</xsl:attribute>
+		</xsl:if>
 		<xsl:if test="$namespace = 'rsd'">
 			<xsl:attribute name="font-size">70%</xsl:attribute>
 			<xsl:attribute name="vertical-align">super</xsl:attribute>
@@ -5150,6 +5239,11 @@
 		</xsl:if>
 		<xsl:if test="$namespace = 'ogc' or $namespace = 'ogc-white-paper'">
 			<xsl:attribute name="font-size">65%</xsl:attribute>
+			<xsl:attribute name="vertical-align">super</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'plateau'">
+			<xsl:attribute name="font-size">67%</xsl:attribute>
+			<xsl:attribute name="font-weight">bold</xsl:attribute>
 			<xsl:attribute name="vertical-align">super</xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'rsd'">
@@ -5381,6 +5475,11 @@
 		</xsl:if>
 		<xsl:if test="$namespace = 'ogc' or $namespace = 'ogc-white-paper'">
 			<xsl:attribute name="font-size">60%</xsl:attribute>
+			<xsl:attribute name="vertical-align">super</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'plateau'">
+			<xsl:attribute name="font-size">67%</xsl:attribute>
+			<xsl:attribute name="font-weight">bold</xsl:attribute>
 			<xsl:attribute name="vertical-align">super</xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'rsd'">
@@ -5792,6 +5891,11 @@
 			<xsl:attribute name="text-indent">-12mm</xsl:attribute>
 			<xsl:attribute name="line-height">115%</xsl:attribute>
 		</xsl:if>
+		<xsl:if test="$namespace = 'plateau'">
+			<xsl:attribute name="margin-bottom">6pt</xsl:attribute>
+			<xsl:attribute name="start-indent">6mm</xsl:attribute>
+			<xsl:attribute name="text-indent">-6mm</xsl:attribute>
+		</xsl:if>
 		<xsl:if test="$namespace = 'rsd'">
 			<xsl:attribute name="margin-bottom">12pt</xsl:attribute>
 			<xsl:attribute name="font-weight">normal</xsl:attribute>
@@ -6047,6 +6151,11 @@
 			<xsl:attribute name="vertical-align">super</xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'ogc' or $namespace = 'ogc-white-paper'">
+			<xsl:attribute name="vertical-align">super</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'plateau'">
+			<xsl:attribute name="font-size">67%</xsl:attribute>
+			<xsl:attribute name="font-weight">bold</xsl:attribute>
 			<xsl:attribute name="vertical-align">super</xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'rsd'">
