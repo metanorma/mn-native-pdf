@@ -358,7 +358,7 @@
 							
 							<fo:static-content flow-name="footer">
 								<fo:block-container height="24mm" display-align="after">
-									<fo:block text-align="center" font-family="IPAexMincho" margin-bottom="16mm"><fo:page-number /></fo:block>
+									<fo:block text-align="center" margin-bottom="16mm"><fo:page-number /></fo:block>
 								</fo:block-container>
 							</fo:static-content>
 							
@@ -538,7 +538,7 @@
 			<xsl:choose>
 				<xsl:when test="contains(., ':')">
 					<xsl:value-of select="substring-before(., ':')"/>
-					<fo:inline baseline-shift="10%" font-size="10pt" font-family="IPAexMincho">：</fo:inline>
+					<fo:inline baseline-shift="10%" font-size="10pt">：</fo:inline>
 					<xsl:value-of select="substring-after(., ':')"/>
 				</xsl:when>
 				<xsl:otherwise>
@@ -1122,7 +1122,7 @@
 	<!-- Allocate non-Japanese text -->
 	<!-- ========================= -->
 	
-	<xsl:variable name="regex_en">([^\u3000-\u9FFF\uF900-\uFFFF]{1,})</xsl:variable>
+	<xsl:variable name="regex_en">([^\u2F00-\u2FD5\u3000-\u9FFF\uF900-\uFFFF]{1,})</xsl:variable>
 	
 	<xsl:variable name="element_name_font_en">font_en</xsl:variable>
 	<xsl:variable name="tag_font_en_open">###<xsl:value-of select="$element_name_font_en"/>###</xsl:variable>
