@@ -90,109 +90,31 @@
 					<fo:region-start region-name="left-region" extent="26mm"/>
 					<fo:region-end region-name="right-region" extent="34mm"/>
 				</fo:simple-page-master>
-			
-				<fo:simple-page-master master-name="first_page" page-width="{$pageWidth}mm" page-height="{$pageHeight}mm">
-					<fo:region-body margin-top="{$marginTop}mm" margin-bottom="{$marginBottom}mm" margin-left="{$marginLeftRight1}mm" margin-right="{$marginLeftRight2}mm"/>
-					<fo:region-before region-name="header" extent="{$marginTop}mm"/>
-					<fo:region-after region-name="footer" extent="{$marginBottom}mm"/>
-					<fo:region-start region-name="left-region" extent="{$marginLeftRight1}mm"/>
-					<fo:region-end region-name="right-region" extent="{$marginLeftRight2}mm"/>
+				
+				<fo:simple-page-master master-name="document_toc" page-width="{$pageWidth}mm" page-height="{$pageHeight}mm">
+					<fo:region-body margin-top="16.5mm" margin-bottom="22mm" margin-left="14.5mm" margin-right="22.3mm"/>
+					<fo:region-before region-name="header" extent="16.5mm"/>
+					<fo:region-after region-name="footer" extent="22mm"/>
+					<fo:region-start region-name="left-region" extent="14.5mm"/>
+					<fo:region-end region-name="right-region" extent="22.3mm"/>
 				</fo:simple-page-master>
-				<fo:simple-page-master master-name="odd" page-width="{$pageWidth}mm" page-height="{$pageHeight}mm">
+				
+				<fo:simple-page-master master-name="document" page-width="{$pageWidth}mm" page-height="{$pageHeight}mm">
 					<fo:region-body margin-top="{$marginTop}mm" margin-bottom="{$marginBottom}mm" margin-left="{$marginLeftRight1}mm" margin-right="{$marginLeftRight2}mm"/>
 					<fo:region-before region-name="header-odd" extent="{$marginTop}mm"/>
 					<fo:region-after region-name="footer" extent="{$marginBottom}mm"/>
 					<fo:region-start region-name="left-region" extent="{$marginLeftRight1}mm"/>
 					<fo:region-end region-name="right-region" extent="{$marginLeftRight2}mm"/>
 				</fo:simple-page-master>
-				<fo:simple-page-master master-name="even" page-width="{$pageWidth}mm" page-height="{$pageHeight}mm">
-					<fo:region-body margin-top="{$marginTop}mm" margin-bottom="{$marginBottom}mm" margin-left="{$marginLeftRight1}mm" margin-right="{$marginLeftRight2}mm"/>
-					<fo:region-before region-name="header-even" extent="{$marginTop}mm"/>
-					<fo:region-after region-name="footer" extent="{$marginBottom}mm"/>
-					<fo:region-start region-name="left-region" extent="{$marginLeftRight1}mm"/>
-					<fo:region-end region-name="right-region" extent="{$marginLeftRight2}mm"/>
-				</fo:simple-page-master>
 				
-				<fo:simple-page-master master-name="first_page_toc" page-width="{$pageWidth}mm" page-height="{$pageHeight}mm">
-					<fo:region-body margin-top="{$marginTop}mm" margin-bottom="{$marginBottom}mm" margin-left="{$marginLeftRight1}mm" margin-right="{$marginLeftRight2}mm"/>
-					<fo:region-before region-name="header-odd-first" extent="{$marginTop}mm"/>
-					<fo:region-after region-name="footer" extent="{$marginBottom}mm"/>
-					<fo:region-start region-name="left-region" extent="{$marginLeftRight1}mm"/>
-					<fo:region-end region-name="right-region" extent="{$marginLeftRight2}mm"/>
-				</fo:simple-page-master>
-				
-				<fo:page-sequence-master master-name="document_toc">
-					<fo:repeatable-page-master-alternatives>
-						<fo:conditional-page-master-reference page-position="first" master-reference="first_page_toc"/>
-						<fo:conditional-page-master-reference odd-or-even="even" master-reference="even"/>
-						<fo:conditional-page-master-reference odd-or-even="odd" master-reference="odd"/>
-					</fo:repeatable-page-master-alternatives>
-				</fo:page-sequence-master>
-				
-				
-				
-				<fo:page-sequence-master master-name="document_first_section">
-					<fo:repeatable-page-master-alternatives>
-						<fo:conditional-page-master-reference page-position="first" master-reference="first_page"/>
-						<fo:conditional-page-master-reference odd-or-even="even" master-reference="even"/>
-						<fo:conditional-page-master-reference odd-or-even="odd" master-reference="odd"/>
-					</fo:repeatable-page-master-alternatives>
-				</fo:page-sequence-master>
-				
-				<fo:page-sequence-master master-name="document">
-					<fo:repeatable-page-master-alternatives>
-						<fo:conditional-page-master-reference odd-or-even="even" master-reference="even"/>
-						<fo:conditional-page-master-reference odd-or-even="odd" master-reference="odd"/>
-					</fo:repeatable-page-master-alternatives>
-				</fo:page-sequence-master>
-			
-				<fo:simple-page-master master-name="commentary_first_page_even" page-width="{$pageWidth}mm" page-height="{$pageHeight}mm">
-					<fo:region-body margin-top="{$marginTop}mm" margin-bottom="{$marginBottom}mm" margin-left="{$marginLeftRight1}mm" margin-right="{$marginLeftRight2}mm"/>
-					<fo:region-before region-name="header-commentary-even-first" extent="{$marginTop}mm"/>
-					<fo:region-after region-name="footer" extent="{$marginBottom}mm"/>
-					<fo:region-start region-name="left-region" extent="{$marginLeftRight1}mm"/>
-					<fo:region-end region-name="right-region" extent="{$marginLeftRight2}mm"/>
-				</fo:simple-page-master>
-				
-				<fo:simple-page-master master-name="commentary_first_page_odd" page-width="{$pageWidth}mm" page-height="{$pageHeight}mm">
-					<fo:region-body margin-top="{$marginTop}mm" margin-bottom="{$marginBottom}mm" margin-left="{$marginLeftRight1}mm" margin-right="{$marginLeftRight2}mm"/>
-					<fo:region-before region-name="header-commentary-odd-first" extent="{$marginTop}mm"/>
-					<fo:region-after region-name="footer" extent="{$marginBottom}mm"/>
-					<fo:region-start region-name="left-region" extent="{$marginLeftRight1}mm"/>
-					<fo:region-end region-name="right-region" extent="{$marginLeftRight2}mm"/>
-				</fo:simple-page-master>
-			
-				<fo:page-sequence-master master-name="document_commentary_section">
-					<fo:repeatable-page-master-alternatives>
-						<fo:conditional-page-master-reference page-position="first" odd-or-even="even" master-reference="commentary_first_page_even"/>
-						<fo:conditional-page-master-reference page-position="first" odd-or-even="odd" master-reference="commentary_first_page_odd"/>
-						<fo:conditional-page-master-reference odd-or-even="even" master-reference="even"/>
-						<fo:conditional-page-master-reference odd-or-even="odd" master-reference="odd"/>
-					</fo:repeatable-page-master-alternatives>
-				</fo:page-sequence-master>
-			
 				<!-- landscape -->
-				<fo:simple-page-master master-name="odd-landscape" page-width="{$pageHeight}mm" page-height="{$pageWidth}mm">
+				<fo:simple-page-master master-name="document-landscape" page-width="{$pageHeight}mm" page-height="{$pageWidth}mm">
 					<fo:region-body margin-top="{$marginLeftRight1}mm" margin-bottom="{$marginLeftRight2}mm" margin-left="{$marginBottom}mm" margin-right="{$marginTop}mm"/>
 					<fo:region-before region-name="header-odd" extent="{$marginLeftRight1}mm" precedence="true"/>
 					<fo:region-after region-name="footer" extent="{$marginLeftRight2}mm" precedence="true"/>
 					<fo:region-start region-name="left-region-landscape" extent="{$marginBottom}mm"/>
 					<fo:region-end region-name="right-region-landscape" extent="{$marginTop}mm"/>
 				</fo:simple-page-master>
-				<fo:simple-page-master master-name="even-landscape" page-width="{$pageHeight}mm" page-height="{$pageWidth}mm">
-					<fo:region-body margin-top="{$marginLeftRight2}mm" margin-bottom="{$marginLeftRight1}mm" margin-left="{$marginBottom}mm" margin-right="{$marginTop}mm"/>
-					<fo:region-before region-name="header-even" extent="{$marginLeftRight2}mm" precedence="true"/>
-					<fo:region-after region-name="footer" extent="{$marginLeftRight1}mm" precedence="true"/>
-					<fo:region-start region-name="left-region-landscape" extent="{$marginBottom}mm"/>
-					<fo:region-end region-name="right-region-landspace" extent="{$marginTop}mm"/>
-				</fo:simple-page-master>
-				<fo:page-sequence-master master-name="document-landscape">
-					<fo:repeatable-page-master-alternatives>
-						<fo:conditional-page-master-reference odd-or-even="even" master-reference="even-landscape"/>
-						<fo:conditional-page-master-reference odd-or-even="odd" master-reference="odd-landscape"/>
-					</fo:repeatable-page-master-alternatives>
-				</fo:page-sequence-master>
-			
 			</fo:layout-master-set>
 			
 			<fo:declarations>
@@ -338,28 +260,15 @@
 					
 					<fo:page-sequence master-reference="document_toc" initial-page-number="1" force-page-count="no-force">
 						
-						<xsl:call-template name="insertHeaderFooter">
-							<xsl:with-param name="docidentifier" select="$docidentifier"/>
-							<xsl:with-param name="copyrightText" select="$copyrightText"/>
-							<xsl:with-param name="section">preface</xsl:with-param>
-							<xsl:with-param name="section_title">
-								<fo:inline font-family="IPAexGothic">
-									<xsl:text>&#xa0;</xsl:text>
-									<xsl:call-template name="getLocalizedString">
-										<xsl:with-param name="key">table_of_contents</xsl:with-param>
-									</xsl:call-template>
-								</fo:inline>
-							</xsl:with-param>
-						</xsl:call-template>
-						
 						<fo:flow flow-name="xsl-region-body">
 						
-							<xsl:if test="$debug = 'true'">
-								<xsl:text disable-output-escaping="yes">&lt;!--</xsl:text>
-									DEBUG
-									contents=<xsl:copy-of select="$contents"/>
-								<xsl:text disable-output-escaping="yes">--&gt;</xsl:text>
-							</xsl:if>
+							<!-- <xsl:if test="$debug = 'true'"> -->
+							<!-- <xsl:message>start contents redirect</xsl:message>
+							<redirect:write file="contents.xml">
+								<xsl:copy-of select="$contents"/>
+							</redirect:write>
+							<xsl:message>end contents redirect</xsl:message> -->
+							<!-- </xsl:if> -->
 							
 							<xsl:apply-templates select="/*/*[local-name()='preface']/*[local-name() = 'clause'][@type = 'toc']">
 								<xsl:with-param name="num" select="$num"/>
@@ -442,15 +351,11 @@
 						<xsl:variable name="isCommentary" select="normalize-space(.//plateau:annex[@commentary = 'true'] and 1 = 1)"/> <!-- true or false -->
 						<!-- DEBUG: <xsl:copy-of select="."/> -->
 						<fo:page-sequence master-reference="document" force-page-count="no-force">
-							<xsl:if test="position() = 1">
-								<xsl:attribute name="master-reference">document_first_section</xsl:attribute>
-							</xsl:if>
+							
 							<xsl:if test="@orientation = 'landscape'">
 								<xsl:attribute name="master-reference">document-<xsl:value-of select="@orientation"/></xsl:attribute>
 							</xsl:if>
-							<xsl:if test="$isCommentary = 'true'">
-								<xsl:attribute name="master-reference">document_commentary_section</xsl:attribute>
-							</xsl:if>
+							
 							<xsl:if test="position() = 1">
 								<xsl:attribute name="initial-page-number">1</xsl:attribute>
 							</xsl:if>
@@ -463,7 +368,7 @@
 							
 							<xsl:variable name="section_title">
 								<xsl:if test="$isCommentary = 'true'">
-									<fo:inline font-family="IPAexGothic" padding-left="2mm">
+									<fo:inline padding-left="2mm">
 										<xsl:text>&#xa0;</xsl:text>
 										<xsl:call-template name="getLocalizedString">
 											<xsl:with-param name="key">commentary</xsl:with-param>
@@ -489,61 +394,7 @@
 							</xsl:call-template>
 							
 							<fo:flow flow-name="xsl-region-body">
-								
-								<!-- <xsl:if test="position() = 1">
-									<fo:table table-layout="fixed" width="100%">
-										<fo:table-column column-width="proportional-column-width(35)"/>
-										<fo:table-column column-width="proportional-column-width(97)"/>
-										<fo:table-column column-width="proportional-column-width(23)"/>
-										<fo:table-column column-width="proportional-column-width(12)"/>
-										<fo:table-body>
-											<fo:table-row>
-												<fo:table-cell><fo:block></fo:block></fo:table-cell>
-												<fo:table-cell font-family="IPAexGothic" font-size="14pt" text-align="center">
-													<fo:block>
-														<xsl:call-template name="getLocalizedString">
-															<xsl:with-param name="key">doctype_dict.<xsl:value-of select="$doctype"/></xsl:with-param>
-														</xsl:call-template>
-													</fo:block>
-												</fo:table-cell>
-												<fo:table-cell text-align="right">
-													<fo:block font-family="Arial" font-size="16pt">
-														<xsl:value-of select="java:replaceAll(java:java.lang.String.new($docnumber), '^(JIS)(.*)', '$1')"/>
-														<fo:block/>
-														<xsl:value-of select="java:replaceAll(java:java.lang.String.new($docnumber), '^(JIS)?(.*)', '$2')"/>
-													</fo:block>
-												</fo:table-cell>
-												<fo:table-cell display-align="after">
-													<fo:block font-size="10pt">
-														<fo:inline baseline-shift="40%">
-															<fo:inline font-family="IPAexMincho">：</fo:inline><fo:inline font-family="Noto Sans Condensed"><xsl:value-of select="$year_published"/></fo:inline>
-														</fo:inline>
-													</fo:block>
-												</fo:table-cell>
-												
-											</fo:table-row>
-										</fo:table-body>
-									</fo:table>
-									
-									<fo:block font-family="IPAexGothic" font-size="19pt" text-align="center" margin-top="12mm" margin-bottom="4mm"><xsl:value-of select="$title_ja"/></fo:block>
-									<fo:block font-family="Arial" font-size="13pt" text-align="center" margin-bottom="10mm"><xsl:value-of select="$title_en"/></fo:block>
-									
-								</xsl:if> -->
-								
-								
-								<!-- Annex Commentary first page -->
-								<!-- <xsl:if test="$isCommentary = 'true'"> -->
-									
-									<!-- Example: JIS Z 8301：2019  -->
-									<!-- <fo:block font-family="IPAexGothic" font-size="15pt" text-align="center">
-										<fo:inline font-family="Arial">JIS <xsl:value-of select="$docidentifier_number"/></fo:inline>
-										<fo:inline baseline-shift="10%"><fo:inline font-size="10pt">：</fo:inline>
-										<fo:inline font-family="Noto Sans Condensed" font-size="10pt"><xsl:value-of select="$docidentifier_year"/></fo:inline></fo:inline>
-									</fo:block> -->
-
-									<!-- title -->
-									<!-- <fo:block role="H1" font-family="IPAexGothic" font-size="16pt" text-align="center" margin-top="6mm"><xsl:value-of select="$title_ja"/></fo:block> -->
-								<!-- </xsl:if> -->
+						
 								
 								<xsl:apply-templates select="*" mode="page"/>
 								
@@ -580,7 +431,7 @@
 	
 	<xsl:template match="*[local-name() = 'colon_gothic']">
 		<!-- replace : to ： (Fullwidth colon) and render it in the font IPAexGothic -->
-		<fo:inline font-family="IPAexGothic">：</fo:inline>
+		<fo:inline>：</fo:inline>
 	</xsl:template>
 	
 	<xsl:template match="*[local-name()='preface']/*[local-name() = 'clause'][@type = 'toc']" priority="4">
@@ -588,7 +439,7 @@
 		<xsl:apply-templates />
 		<xsl:if test="count(*) = 1 and *[local-name() = 'title']"> <!-- if there isn't user ToC -->
 			<!-- fill ToC -->
-			<fo:block role="TOC" font-family="IPAexGothic">
+			<fo:block role="TOC" font-weight="bold">
 				<xsl:if test="$contents/doc[@num = $num]//item[@display = 'true']">
 					<xsl:for-each select="$contents/doc[@num = $num]//item[@display = 'true'][@level &lt;= $toc_level or @type='figure' or @type = 'table']">
 						<fo:block role="TOCI">
@@ -599,22 +450,19 @@
 									</fo:block>
 								</xsl:when>
 								<xsl:otherwise>
-									<fo:list-block space-after="5pt">
+									<xsl:variable name="margin_left" select="number(@level - 1) * 3"/>
+									<fo:list-block space-after="2pt" margin-left="{$margin_left}mm">
 										<xsl:attribute name="provisional-distance-between-starts">
 											<xsl:choose>
-												<xsl:when test="string-length(@section) = 1">5mm</xsl:when>
-												<xsl:when test="string-length(@section) &gt;= 2"><xsl:value-of select="5 + (string-length(@section) - 1) * 2"/>mm</xsl:when>
-												<xsl:when test="@type = 'annex'">16mm</xsl:when>
-												<xsl:otherwise>5mm</xsl:otherwise>
+												<xsl:when test="@level = 1">7mm</xsl:when>
+												<xsl:when test="@level = 2">10mm</xsl:when>
+												<xsl:when test="@level = 3">14mm</xsl:when>
+												<xsl:otherwise>14mm</xsl:otherwise>
 											</xsl:choose>
 										</xsl:attribute>
 										<fo:list-item>
 											<fo:list-item-label end-indent="label-end()">
 												<fo:block>
-													<xsl:if test="@section != '' and @type != 'annex'">
-														<xsl:attribute name="font-family">Noto Sans Condensed</xsl:attribute>
-														<xsl:attribute name="font-weight">bold</xsl:attribute>
-													</xsl:if>
 													<xsl:value-of select="@section"/>
 												</fo:block>
 											</fo:list-item-label>
@@ -632,30 +480,15 @@
 		</xsl:if>
 	</xsl:template>
 	
-	<xsl:template match="*[local-name() = 'clause'][@type = 'toc']/*[local-name() = 'title']" priority="3">
-		<fo:block text-align="center" font-size="14pt" font-family="IPAexGothic" margin-top="8.5mm">
-			<!-- Contents -->
-			<!-- <xsl:call-template name="getLocalizedString">
-				<xsl:with-param name="key">table_of_contents</xsl:with-param>
-			</xsl:call-template> -->
-			<xsl:apply-templates/>
-		</fo:block>
-		<fo:block text-align="right" font-size="8pt" font-family="IPAexMincho" margin-top="10mm">
-			<!-- Page -->
-			<xsl:call-template name="getLocalizedString">
-				<xsl:with-param name="key">locality.page</xsl:with-param>
-			</xsl:call-template>
-		</fo:block>
-	</xsl:template>
-	
-	
+	<xsl:template match="*[local-name() = 'clause'][@type = 'toc']/*[local-name() = 'title']" priority="3"/>
+		
 	<xsl:template name="insertTocItem">
 		<fo:block text-align-last="justify" role="TOCI">
 			<fo:basic-link internal-destination="{@id}" fox:alt-text="{title}">
 				<fo:inline><xsl:apply-templates select="title" /></fo:inline>
 				<fo:inline keep-together.within-line="always">
 					<fo:leader leader-pattern="dots"/>
-					<fo:inline font-size="8pt" font-family="Noto Sans Condensed">
+					<fo:inline>
 						<fo:page-number-citation ref-id="{@id}"/>
 					</fo:inline>
 				</fo:inline>
@@ -733,7 +566,7 @@
 					<fo:table-cell>
 						<fo:block>&#xa0;</fo:block>
 					</fo:table-cell>
-					<fo:table-cell font-family="IPAexGothic" font-size="14pt" text-align="center">
+					<fo:table-cell font-size="14pt" text-align="center">
 						<fo:block><xsl:apply-templates /></fo:block>
 					</fo:table-cell>
 					<fo:table-cell padding-left="5mm">
@@ -803,7 +636,7 @@
 	</xsl:template>
 	
 	<xsl:template match="plateau:p[@class = 'zzSTDTitle1']" priority="4">
-		<fo:block font-family="IPAexGothic" font-size="19pt" text-align="center" margin-top="12mm" margin-bottom="4mm">
+		<fo:block font-size="19pt" text-align="center" margin-top="12mm" margin-bottom="4mm">
 			<xsl:apply-templates />
 		</fo:block>
 	</xsl:template>
@@ -816,7 +649,7 @@
 	
 	<!-- for commentary annex -->
 	<xsl:template match="plateau:p[@class = 'CommentaryStandardNumber']" priority="4">
-		<fo:block font-family="IPAexGothic" font-size="15pt" text-align="center">
+		<fo:block font-size="15pt" text-align="center">
 			<xsl:apply-templates/>
 		</fo:block>
 	</xsl:template>
@@ -841,7 +674,7 @@
 	</xsl:template>
 	
 	<xsl:template match="plateau:p[@class = 'CommentaryStandardName']" priority="4">
-		<fo:block role="H1" font-family="IPAexGothic" font-size="16pt" text-align="center" margin-top="6mm">
+		<fo:block role="H1" font-size="16pt" text-align="center" margin-top="6mm">
 			<xsl:apply-templates />
 		</fo:block>
 	</xsl:template>
@@ -1098,7 +931,7 @@
 						<xsl:call-template name="extractSection"/>
 					</xsl:variable>
 					<xsl:if test="normalize-space($section) != ''">
-						<fo:inline font-family="Noto Sans Condensed" font-weight="bold">
+						<fo:inline font-family="Noto Sans Condensed"> <!--  font-weight="bold" -->
 							<xsl:value-of select="$section"/>
 							<fo:inline padding-right="4mm">&#xa0;</fo:inline>
 						</fo:inline>
@@ -1520,7 +1353,7 @@
 	
 	<xsl:template match="*[local-name() = 'font_en_bold'][normalize-space() != '']">
 		<xsl:if test="ancestor::*[local-name() = 'td' or local-name() = 'th']"><xsl:value-of select="$zero_width_space"/></xsl:if>
-		<fo:inline font-family="Noto Sans Condensed" font-weight="bold">
+		<fo:inline font-family="Noto Sans Condensed"> <!--  font-weight="bold" -->
 			<xsl:if test="ancestor::*[local-name() = 'preferred']">
 				<xsl:attribute name="font-weight">normal</xsl:attribute>
 			</xsl:if>
@@ -1553,46 +1386,6 @@
 		<xsl:param name="section"/>
 		<xsl:param name="copyrightText"/>
 		<xsl:param name="section_title"/>
-		<fo:static-content flow-name="header-odd-first" role="artifact">
-			<fo:block-container font-family="Arial" font-size="9pt" height="26mm" display-align="after" text-align="right">
-				<xsl:if test="$section = 'main'"><fo:block><fo:page-number /></fo:block></xsl:if>
-				<fo:block>
-					<xsl:copy-of select="$docidentifier"/>
-				</fo:block>
-			</fo:block-container>
-		</fo:static-content>
-		<fo:static-content flow-name="header-odd" role="artifact">
-			<fo:block-container font-family="Arial" font-size="9pt" height="26mm" display-align="after" text-align="right">
-				<xsl:if test="$section = 'main' or $section = 'commentary'"><fo:block><fo:page-number /></fo:block></xsl:if>
-				<fo:block>
-					<xsl:copy-of select="$docidentifier"/>
-					<xsl:copy-of select="$section_title"/>
-				</fo:block>
-			</fo:block-container>
-		</fo:static-content>
-		<fo:static-content flow-name="header-even" role="artifact">
-			<fo:block-container font-family="Arial" font-size="9pt" height="26mm" display-align="after">
-				<xsl:if test="$section = 'main' or $section = 'commentary'"><fo:block><fo:page-number /></fo:block></xsl:if>
-				<fo:block>
-					<xsl:copy-of select="$docidentifier"/>
-					<xsl:copy-of select="$section_title"/>
-				</fo:block>
-			</fo:block-container>
-		</fo:static-content>
-		
-		<fo:static-content flow-name="header-commentary-even-first" role="artifact">
-			<fo:block-container font-family="Arial" font-size="9pt" height="26mm" display-align="after" text-align="left">
-				<fo:block><fo:page-number /></fo:block>
-				<fo:block>&#xa0;</fo:block>
-			</fo:block-container>
-		</fo:static-content>
-		
-		<fo:static-content flow-name="header-commentary-odd-first" role="artifact">
-			<fo:block-container font-family="Arial" font-size="9pt" height="26mm" display-align="after" text-align="right">
-				<fo:block><fo:page-number /></fo:block>
-				<fo:block>&#xa0;</fo:block>
-			</fo:block-container>
-		</fo:static-content>		
 		
 		<xsl:call-template name="insertFooter">
 			<xsl:with-param name="section" select="$section"/>
@@ -1613,7 +1406,7 @@
 				</xsl:if>
 				<xsl:if test="$section = 'commentary'">
 					<fo:block font-size="9pt" text-align="center" space-after="12pt">
-						<fo:inline font-family="IPAexGothic" padding-right="3mm">
+						<fo:inline padding-right="3mm">
 							<xsl:call-template name="getLocalizedString">
 								<xsl:with-param name="key">commentary_page</xsl:with-param>
 							</xsl:call-template>
