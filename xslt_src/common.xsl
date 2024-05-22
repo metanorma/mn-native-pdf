@@ -132,7 +132,8 @@
 
 	<xsl:variable name="isApplyAutolayoutAlgorithm_">
 		<xsl:choose>
-			<xsl:when test="$namespace = 'bipm' or $namespace = 'bsi' or $namespace = 'csa' or $namespace = 'csd' or $namespace = 'iec' or $namespace = 'ieee' or $namespace = 'iho' or $namespace = 'iso' or $namespace = 'itu' or $namespace = 'jcgm' or $namespace = 'jis' or $namespace = 'm3d' or $namespace = 'mpfd' or $namespace = 'nist-sp' or $namespace = 'nist-cswp' or $namespace = 'ogc' or $namespace = 'ogc-white-paper' or $namespace = 'plateau' or $namespace = 'rsd' or $namespace = 'unece' or $namespace = 'unece-rec'">true</xsl:when>
+			<xsl:when test="$namespace = 'bipm' or $namespace = 'bsi' or $namespace = 'csa' or $namespace = 'csd' or $namespace = 'iec' or $namespace = 'ieee' or $namespace = 'iho' or $namespace = 'iso' or $namespace = 'itu' or $namespace = 'jcgm' or $namespace = 'jis' or $namespace = 'm3d' or $namespace = 'mpfd' or $namespace = 'nist-sp' or $namespace = 'nist-cswp' or $namespace = 'ogc' or $namespace = 'ogc-white-paper' or $namespace = 'rsd' or $namespace = 'unece' or $namespace = 'unece-rec'">true</xsl:when>
+			<xsl:when test="$namespace = 'plateau'">skip</xsl:when>
 			<xsl:otherwise>false</xsl:otherwise>
 		</xsl:choose>
 	</xsl:variable>
@@ -7204,6 +7205,7 @@
 			<xsl:variable name="margin-side">
 				<xsl:choose>
 					<xsl:when test="$isApplyAutolayoutAlgorithm = 'true'">0</xsl:when>
+					<xsl:when test="$isApplyAutolayoutAlgorithm = 'skip'">0</xsl:when>
 					<xsl:when test="sum(xalan:nodeset($colwidths)//column) &gt; 75">15</xsl:when>
 					<xsl:otherwise>0</xsl:otherwise>
 				</xsl:choose>
@@ -7623,6 +7625,7 @@
 			<xsl:when test="$isApplyAutolayoutAlgorithm = 'true'">
 				<xsl:call-template name="get-calculated-column-widths-autolayout-algorithm"/>
 			</xsl:when>
+			<xsl:when test="$isApplyAutolayoutAlgorithm = 'skip'"></xsl:when>
 			<xsl:otherwise>
 				<xsl:call-template name="calculate-column-widths-proportional">
 					<xsl:with-param name="cols-count" select="$cols-count"/>
@@ -18190,7 +18193,7 @@
 	<!-- =========================================================================== -->
 	
 	
-	<xsl:if test="$namespace = 'ieee' or $namespace = 'iso' or $namespace = 'jis' or $namespace = 'bsi'">
+	<xsl:if test="$namespace = 'ieee' or $namespace = 'iso' or $namespace = 'jis' or $namespace = 'plateau' or $namespace = 'bsi'">
 		<!-- =========================================================================== -->
 		<!-- STEP2: add 'fn' after 'eref' and 'origin', if referenced to bibitem with 'note' = Withdrawn.' or 'Cancelled and replaced...'  -->
 		<!-- =========================================================================== -->
