@@ -23,8 +23,6 @@
 	
 	<xsl:variable name="namespace">plateau</xsl:variable>
 	
-	<xsl:variable name="namespace_full">https://www.metanorma.org/ns/plateau</xsl:variable>
-	
 	<xsl:variable name="debug">false</xsl:variable>
 	
 	<xsl:variable name="contents_">
@@ -78,11 +76,11 @@
 			
 				<!-- Cover page -->
 				<fo:simple-page-master master-name="cover-page" page-width="{$pageWidth}mm" page-height="{$pageHeight}mm">
-					<fo:region-body margin-top="28.5mm" margin-bottom="25mm" margin-left="22mm" margin-right="22mm"/>
-					<fo:region-before region-name="header" extent="28.5mm"/>
-					<fo:region-after region-name="footer" extent="25mm"/>
-					<fo:region-start region-name="left-region" extent="22mm"/>
-					<fo:region-end region-name="right-region" extent="22mm"/>
+					<fo:region-body margin-top="15mm" margin-bottom="45mm" margin-left="36mm" margin-right="8.5mm"/>
+					<fo:region-before region-name="header" extent="15mm"/>
+					<fo:region-after region-name="footer" extent="45mm"/>
+					<fo:region-start region-name="left-region" extent="36mm"/>
+					<fo:region-end region-name="right-region" extent="8.5mm"/>
 				</fo:simple-page-master>
 			
 				<fo:simple-page-master master-name="first_page" page-width="{$pageWidth}mm" page-height="{$pageHeight}mm">
@@ -265,12 +263,7 @@
 						<xsl:with-param name="copyrightText" select="$copyrightText"/>
 					</xsl:call-template>
 										
-					<xsl:call-template name="insertInnerCoverPage">
-						<xsl:with-param name="docidentifier" select="$docidentifier"/>
-						<xsl:with-param name="copyrightText" select="$copyrightText"/>
-					</xsl:call-template>
-				
-				
+					
 					<!-- ========================== -->
 					<!-- Contents and preface pages -->
 					<!-- ========================== -->
@@ -667,93 +660,65 @@
 		</fo:block>
 	</xsl:template>
 	
-	<!-- docidentifier, 3 part: number, colon and year-->
-	<xsl:variable name="docidentifier_jis" select="/*/plateau:bibdata/plateau:docidentifier[@type = 'JIS']"/>
-	<xsl:variable name="docidentifier_number" select="java:replaceAll(java:java.lang.String.new($docidentifier_jis), '^(.*)(:)(.*)$', '$1')"/>
-	<xsl:variable name="docidentifier_year" select="java:replaceAll(java:java.lang.String.new($docidentifier_jis), '^(.*)(:)(.*)$', '$3')"/>
 	<xsl:template name="insertCoverPage">
 		<xsl:param name="num"/>
 		<xsl:param name="copyrightText"/>
-		<fo:page-sequence master-reference="cover-page" force-page-count="no-force">
-			<xsl:call-template name="insertFooter">
-				<xsl:with-param name="copyrightText" select="$copyrightText"/>
-			</xsl:call-template>
-				
-			<fo:flow flow-name="xsl-region-body">
-				<!-- JIS -->
-				<fo:block id="firstpage_id_{$num}">
-					<fo:instream-foreign-object content-width="81mm" fox:alt-text="PLATEAU Logo">
+		<fo:page-sequence master-reference="cover-page" force-page-count="no-force" font-family="Tokyo CityFont Cond StdN R">
+			
+			<fo:static-content flow-name="header" role="artifact" id="__internal_layout__coverpage_header_{generate-id()}">
+				<!-- background cover image -->
+				<xsl:call-template name="insertBackgroundPageImage"/>
+			</fo:static-content>
+			
+			<fo:static-content flow-name="footer" role="artifact">
+				<fo:block-container>
+					<fo:table table-layout="fixed" width="100%">
+						<fo:table-column column-width="proportional-column-width(140)"/>
+						<fo:table-column column-width="proportional-column-width(13.5)"/>
+						<fo:table-column column-width="proportional-column-width(12)"/>
+						<fo:table-body>
+							<fo:table-row>
+								<fo:table-cell>
+									<fo:block font-size="30.5pt"><xsl:apply-templates select="/*/plateau:bibdata/plateau:title[@language = 'ja' and @type = 'title-main']/node()"/></fo:block>
+									<fo:block font-size="14pt" margin-top="3mm"><xsl:apply-templates select="/*/plateau:bibdata/plateau:title[@language = 'en' and @type = 'title-main']/node()"/></fo:block>
+								</fo:table-cell>
+								<fo:table-cell text-align="right" font-size="8.5pt" padding-right="2mm">
+									<fo:block>&#xa0;</fo:block>
+									<fo:block margin-top="1mm">series</fo:block>
+									<fo:block>No.</fo:block>
+								</fo:table-cell>
+								<fo:table-cell>
+									<fo:block font-size="32pt">
+										<xsl:variable name="docnumber" select="/*/plateau:bibdata/plateau:docnumber"/>
+										<xsl:if test="string-length($docnumber) = 1">0</xsl:if><xsl:value-of select="$docnumber"/>
+									</fo:block>
+								</fo:table-cell>
+							</fo:table-row>
+						</fo:table-body>
+					</fo:table>
+					
+					
+				</fo:block-container>
+			</fo:static-content>
+		
+			<fo:static-content flow-name="left-region" role="artifact" id="__internal_layout__coverpage_left_region_{generate-id()}">				
+				<fo:block text-align="center" margin-top="14.5mm" margin-left="2mm">
+					<fo:instream-foreign-object content-width="24mm" fox:alt-text="PLATEAU Logo">
 						<xsl:copy-of select="$PLATEAU-Logo"/>
 					</fo:instream-foreign-object>
 				</fo:block>
-				
-				<fo:block-container text-align="center">
-					<!-- title -->
-					<fo:block role="H1" font-family="IPAexGothic" font-size="22pt" margin-top="27mm"><xsl:apply-templates select="/*/plateau:bibdata/plateau:title[@language = 'ja' and @type = 'main']/node()"/></fo:block>
-					
-					<fo:block font-family="IPAexGothic" font-size="20pt" margin-top="15mm">
-						<fo:inline font-family="Arial">JIS <xsl:value-of select="$docidentifier_number"/></fo:inline>
-						<fo:inline baseline-shift="20%"><fo:inline font-size="10pt">：</fo:inline>
-						<fo:inline font-family="Times New Roman" font-size="10pt"><xsl:value-of select="$docidentifier_year"/></fo:inline></fo:inline>
-					</fo:block>
-					<fo:block font-family="Arial" font-size="14pt" margin-top="12mm">
-						<fo:inline font-family="IPAexMincho">（</fo:inline>
-						<!-- JSA -->
-						<xsl:value-of select="/*/plateau:bibdata/plateau:copyright/plateau:owner/plateau:organization/plateau:abbreviation"/>
-						<fo:inline font-family="IPAexMincho">）</fo:inline></fo:block>
+				<fo:block-container reference-orientation="-90" width="205mm" height="36mm" margin-top="6mm">
+					<fo:block font-size="21.2pt" margin-top="7mm"><xsl:apply-templates select="/*/plateau:bibdata/plateau:title[@language = 'en' and @type = 'title-intro']/node()"/></fo:block>
+					<fo:block font-size="14.2pt" margin-top="3mm"><xsl:apply-templates select="/*/plateau:bibdata/plateau:title[@language = 'ja' and @type = 'title-intro']/node()"/></fo:block>
 				</fo:block-container>
-				
-				<fo:block-container absolute-position="fixed" left="0mm" top="200mm" height="69mm" text-align="center" display-align="after" font-family="IPAexMincho">
-					<!-- Revised on July 22, 2019 -->
-					<!-- <fo:block font-size="9pt">令和元年<fo:inline font-family="Times New Roman"> 7 </fo:inline>月<fo:inline font-family="Times New Roman"> 22 </fo:inline>日 改正</fo:block> -->
-					<fo:block font-size="9pt"><xsl:apply-templates select="/*/plateau:bibdata/plateau:date[@type = 'published']/text()"/> 改正</fo:block>
-					<!-- Japan Industrial Standards Survey Council deliberations -->
-					<!-- 日本産業標準調査会 -->
-					<fo:block font-size="14pt" margin-top="7mm"><xsl:value-of select="/*/plateau:bibdata/plateau:contributor[plateau:role/@type = 'authorizer']/plateau:organization/plateau:name/plateau:variant[@language = 'ja']"/> 審議</fo:block>
-					<!-- (Issued by the Japan Standards Association) -->
-					<!-- 日本規格協会 -->
-					<fo:block font-size="9pt" margin-top="6.5mm">（<xsl:value-of select="/*/plateau:bibdata/plateau:contributor[plateau:role/@type = 'publisher']/plateau:organization/plateau:name/plateau:variant[@language = 'ja']"/> 発行）</fo:block>
-				</fo:block-container>
+			</fo:static-content>
+			
+			<fo:flow flow-name="xsl-region-body">
+				<fo:block id="firstpage_id_{$num}">&#xa0;</fo:block>
 			</fo:flow>
 		</fo:page-sequence>
 	</xsl:template> <!-- insertCoverPage -->
 	
-	<xsl:template name="insertInnerCoverPage">
-		<xsl:param name="docidentifier"/>
-		<xsl:param name="copyrightText"/>
-		<fo:page-sequence master-reference="document" force-page-count="no-force">
-		
-			<fo:static-content flow-name="xsl-footnote-separator">
-				<fo:block text-align="center" margin-bottom="6pt">
-					<fo:leader leader-pattern="rule" leader-length="80mm" rule-style="solid" rule-thickness="0.3pt"/>
-				</fo:block>
-			</fo:static-content>
-			
-			<xsl:call-template name="insertHeaderFooter">
-				<xsl:with-param name="docidentifier" select="$docidentifier"/>
-				<xsl:with-param name="copyrightText" select="$copyrightText"/>
-			</xsl:call-template>
-				
-			<fo:flow flow-name="xsl-region-body">
-				<fo:block-container font-size="9pt" margin-top="5mm">
-					
-					<xsl:apply-templates select="/*/*[local-name() = 'preface']/*[local-name() = 'clause'][@type = 'contributors']" />
-					
-					<fo:block>
-						<fo:footnote>
-							<fo:inline></fo:inline>
-							<fo:footnote-body>
-								<fo:block font-size="8.5pt">
-									<!-- <xsl:apply-templates select="/*/*[local-name() = 'preface']/*[local-name() = 'clause'][@type = 'inner-cover-note']" /> -->
-									<xsl:apply-templates select="/*/*[local-name() = 'boilerplate']" />
-								</fo:block>
-							</fo:footnote-body>
-						</fo:footnote>
-					</fo:block>
-				</fo:block-container>
-			</fo:flow>
-		</fo:page-sequence>
-	</xsl:template> <!-- insertInnerCoverPage -->
 	
 	<xsl:template match="plateau:p[@class = 'JapaneseIndustrialStandard']" priority="4">
 		<fo:table table-layout="fixed" width="100%">
@@ -1659,6 +1624,70 @@
 			</fo:block-container>
 		</fo:static-content>
 	</xsl:template>
+	
+	<!-- background cover image -->
+	<xsl:template name="insertBackgroundPageImage">
+		<xsl:param name="number">1</xsl:param>
+		<xsl:param name="name">coverpage-image</xsl:param>
+		<xsl:variable name="num" select="number($number)"/>
+		<!-- background image -->
+		<fo:block-container absolute-position="fixed" left="0mm" top="0mm" font-size="0" id="__internal_layout__coverpage_{$name}_{$number}_{generate-id()}">
+			<fo:block>
+				<xsl:for-each select="/plateau:plateau-standard/plateau:metanorma-extension/plateau:presentation-metadata[plateau:name = $name][1]/plateau:value/plateau:image[$num]">
+					<xsl:choose>
+						<xsl:when test="*[local-name() = 'svg'] or java:endsWith(java:java.lang.String.new(@src), '.svg')">
+							<fo:instream-foreign-object fox:alt-text="Image Front">
+								<xsl:attribute name="content-height"><xsl:value-of select="$pageHeight"/>mm</xsl:attribute>
+								<xsl:call-template name="getSVG"/>
+							</fo:instream-foreign-object>
+						</xsl:when>
+						<xsl:when test="starts-with(@src, 'data:application/pdf;base64')">
+							<fo:external-graphic src="{@src}" fox:alt-text="Image Front"/>
+						</xsl:when>
+						<xsl:otherwise> <!-- bitmap image -->
+							<xsl:variable name="coverimage_src" select="normalize-space(@src)"/>
+							<xsl:if test="$coverimage_src != ''">
+								<xsl:variable name="coverpage">
+									<xsl:call-template name="getImageURL">
+										<xsl:with-param name="src" select="$coverimage_src"/>
+									</xsl:call-template>
+								</xsl:variable>
+								<!-- <xsl:variable name="coverpage" select="concat('url(file:',$basepath, 'coverpage1.png', ')')"/> --> <!-- for DEBUG -->
+								<fo:external-graphic src="{$coverpage}" width="{$pageWidth}mm" content-height="scale-to-fit" scaling="uniform" fox:alt-text="Image Front"/>
+							</xsl:if>
+						</xsl:otherwise>
+					</xsl:choose>
+				</xsl:for-each>
+			</fo:block>
+		</fo:block-container>
+	</xsl:template>
+	
+	<xsl:template name="getImageURL">
+		<xsl:param name="src"/>
+		<xsl:choose>
+			<xsl:when test="starts-with($src, 'data:image')">
+				<xsl:value-of select="$src"/>
+			</xsl:when>
+			<xsl:otherwise>
+				<xsl:value-of select="concat('url(file:///',$basepath, $src, ')')"/>
+			</xsl:otherwise>
+		</xsl:choose>
+	</xsl:template>
+	
+	<xsl:template name="getSVG">
+		<xsl:choose>
+			<xsl:when test="*[local-name() = 'svg']">
+				<xsl:apply-templates select="*[local-name() = 'svg']" mode="svg_update"/>
+			</xsl:when>
+			<xsl:otherwise>
+				<xsl:variable name="svg_content" select="document(@src)"/>
+				<xsl:for-each select="xalan:nodeset($svg_content)/node()">
+					<xsl:apply-templates select="." mode="svg_update"/>
+				</xsl:for-each>
+			</xsl:otherwise>
+		</xsl:choose>
+	</xsl:template>
+
 	
 	<xsl:variable name="PLATEAU-Logo">
 		<svg id="Layer_1" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 141.72 172.64">

@@ -15886,7 +15886,7 @@
 	</xsl:template>
 	
 	
-	<xsl:template match="*[local-name() = 'clause'][normalize-space() != '' or *[local-name() = 'figure']]" name="template_clause"> <!-- if clause isn't empty -->
+	<xsl:template match="*[local-name() = 'clause'][normalize-space() != '' or *[local-name() = 'figure'] or @id]" name="template_clause"> <!-- if clause isn't empty -->
 		<fo:block>
 			<xsl:if test="parent::*[local-name() = 'copyright-statement']">
 				<xsl:attribute name="role">SKIP</xsl:attribute>
