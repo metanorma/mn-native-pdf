@@ -1632,12 +1632,13 @@
 		<xsl:if test="$namespace = 'iho'">0.5pt solid black</xsl:if>
 		<xsl:if test="$namespace = 'iso'">1pt solid black</xsl:if>
 		<xsl:if test="$namespace = 'jis'">0.5pt solid black</xsl:if>
-		<xsl:if test="$namespace = 'plateau''">0.5pt solid black</xsl:if>
+		<xsl:if test="$namespace = 'plateau''">1pt solid black</xsl:if>
 	</xsl:variable>
 	<xsl:variable name="table-border" select="normalize-space($table-border_)"/>
 	
 	<xsl:variable name="table-cell-border_">
 		<xsl:if test="$namespace = 'iso'">0.5pt solid black</xsl:if>
+		<xsl:if test="$namespace = 'plateau''">0.5pt solid black</xsl:if>
 	</xsl:variable>
 	<xsl:variable name="table-cell-border" select="normalize-space($table-cell-border_)"/>
 	
@@ -2260,8 +2261,8 @@
 			<xsl:attribute name="color">white</xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'plateau'">
-			<xsl:attribute name="border-top"><xsl:value-of select="$table-border"/></xsl:attribute>
-			<xsl:attribute name="border-bottom"><xsl:value-of select="$table-border"/></xsl:attribute>
+			<xsl:attribute name="border-top"><xsl:value-of select="$table-cell-border"/></xsl:attribute>
+			<xsl:attribute name="border-bottom"><xsl:value-of select="$table-cell-border"/></xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'rsd'">
 			<xsl:attribute name="font-weight">normal</xsl:attribute>
@@ -2368,8 +2369,8 @@
 			<xsl:attribute name="border-right">solid black 1pt</xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'plateau'">
-			<xsl:attribute name="border-left"><xsl:value-of select="$table-border"/></xsl:attribute>
-			<xsl:attribute name="border-right"><xsl:value-of select="$table-border"/></xsl:attribute>
+			<xsl:attribute name="border-left"><xsl:value-of select="$table-cell-border"/></xsl:attribute>
+			<xsl:attribute name="border-right"><xsl:value-of select="$table-cell-border"/></xsl:attribute>
 		</xsl:if>
 	</xsl:attribute-set>
 	
@@ -2533,8 +2534,10 @@
 			<xsl:attribute name="height">5mm</xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'plateau'">
-			<xsl:attribute name="border"><xsl:value-of select="$table-border"/></xsl:attribute>
+			<xsl:attribute name="font-weight">normal</xsl:attribute>
+			<xsl:attribute name="border"><xsl:value-of select="$table-cell-border"/></xsl:attribute>
 			<xsl:attribute name="padding-top">0.5mm</xsl:attribute>
+			<xsl:attribute name="background-color">rgb(206,206,206)</xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'rsd'">
 			<xsl:attribute name="font-weight">normal</xsl:attribute>
@@ -2772,7 +2775,7 @@
 		</xsl:if>
 		<xsl:if test="$namespace = 'plateau'">
 			<xsl:attribute name="padding-top">0.5mm</xsl:attribute>
-			<xsl:attribute name="border"><xsl:value-of select="$table-border"/></xsl:attribute>
+			<xsl:attribute name="border"><xsl:value-of select="$table-cell-border"/></xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'rsd'">
 			<xsl:attribute name="border">0pt solid black</xsl:attribute>
@@ -3027,7 +3030,7 @@
 			<xsl:attribute name="border">solid black 0pt</xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'plateau'">
-			<xsl:attribute name="border"><xsl:value-of select="$table-border"/></xsl:attribute>
+			<xsl:attribute name="border"><xsl:value-of select="$table-cell-border"/></xsl:attribute>
 			<xsl:attribute name="border-top">solid black 0pt</xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'rsd'">
@@ -4410,6 +4413,7 @@
 			<xsl:attribute name="keep-with-previous">always</xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'plateau'">
+			<xsl:attribute name="font-weight">bold</xsl:attribute>
 			<xsl:attribute name="text-align">center</xsl:attribute>
 			<xsl:attribute name="margin-top">6pt</xsl:attribute>
 			<xsl:attribute name="margin-bottom">12pt</xsl:attribute>
