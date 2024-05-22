@@ -157,40 +157,8 @@
 				
 				<xsl:for-each select="xalan:nodeset($current_document)">
 				
-					<xsl:variable name="docnumber" select="/*/plateau:bibdata/plateau:docnumber"/>
-				
-					<xsl:variable name="year_published" select="substring(/*/plateau:bibdata/plateau:date[@type = 'published']/plateau:on, 1, 4)"/>
-					
-					<xsl:variable name="element_name_colon_gothic">colon_gothic</xsl:variable>
-					<xsl:variable name="tag_colon_gothic_open">###<xsl:value-of select="$element_name_colon_gothic"/>###</xsl:variable>
-					<xsl:variable name="tag_colon_gothic_close">###/<xsl:value-of select="$element_name_colon_gothic"/>###</xsl:variable>
-					
-					<xsl:variable name="docidentifier_" select="java:replaceAll(java:java.lang.String.new(/*/plateau:bibdata/plateau:docidentifier), '(:)', concat($tag_colon_gothic_open,'$1',$tag_colon_gothic_close))"/>
-					
-					<xsl:variable name="docidentifier__"><text><xsl:call-template name="replace_text_tags">
-						<xsl:with-param name="tag_open" select="$tag_colon_gothic_open"/>
-						<xsl:with-param name="tag_close" select="$tag_colon_gothic_close"/>
-						<xsl:with-param name="text" select="$docidentifier_"/>
-					</xsl:call-template></text></xsl:variable>
-					
-					<xsl:variable name="docidentifier">
-						<xsl:apply-templates select="xalan:nodeset($docidentifier__)/node()"/>
-					</xsl:variable>
-					
-					<xsl:variable name="copyrightText">
-						<xsl:call-template name="getLocalizedString">
-							<xsl:with-param name="key">permission_footer</xsl:with-param>
-						</xsl:call-template>
-					</xsl:variable>
-					
-					<xsl:variable name="doctype" select="/*/plateau:bibdata/plateau:ext/plateau:doctype"/>
-					
-					<xsl:variable name="title_ja" select="/*/plateau:bibdata/plateau:title[@language = 'ja' and @type = 'main']"/>
-					<xsl:variable name="title_en" select="/*/plateau:bibdata/plateau:title[@language = 'en' and @type = 'main']"/>
-				
 					<xsl:call-template name="insertCoverPage">
 						<xsl:with-param name="num" select="$num"/>
-						<xsl:with-param name="copyrightText" select="$copyrightText"/>
 					</xsl:call-template>
 										
 					<!-- ========================== -->
@@ -393,10 +361,6 @@
 		</xsl:copy>
 	</xsl:template>
 	
-	<xsl:template match="*[local-name() = 'colon_gothic']">
-		<!-- replace : to ： (Fullwidth colon) and render it in the font IPAexGothic -->
-		<fo:inline>：</fo:inline>
-	</xsl:template>
 	
 	<xsl:template match="*[local-name()='preface']/*[local-name() = 'clause'][@type = 'toc']" priority="4">
 		<xsl:param name="num"/>
@@ -462,7 +426,6 @@
 	
 	<xsl:template name="insertCoverPage">
 		<xsl:param name="num"/>
-		<xsl:param name="copyrightText"/>
 		<fo:page-sequence master-reference="cover-page" force-page-count="no-force" font-family="Noto Sans Condensed">
 			
 			<fo:static-content flow-name="header" role="artifact" id="__internal_layout__coverpage_header_{generate-id()}">
@@ -496,8 +459,6 @@
 							</fo:table-row>
 						</fo:table-body>
 					</fo:table>
-					
-					
 				</fo:block-container>
 			</fo:static-content>
 		
@@ -1122,7 +1083,8 @@
 	<!-- Allocate non-Japanese text -->
 	<!-- ========================= -->
 	
-	<xsl:variable name="regex_en">([^\u2F00-\u2FD5\u3000-\u9FFF\uF900-\uFFFF]{1,})</xsl:variable>
+	<!-- <xsl:variable name="regex_en">([^\u2160-\u2188\u25A0-\u25E5\u2F00-\u2FD5\u3000-\u9FFF\uF900-\uFFFF]{1,})</xsl:variable> -->
+	<xsl:variable name="regex_en">([^\u2160-\uFFFF]{1,})</xsl:variable>
 	
 	<xsl:variable name="element_name_font_en">font_en</xsl:variable>
 	<xsl:variable name="tag_font_en_open">###<xsl:value-of select="$element_name_font_en"/>###</xsl:variable>
