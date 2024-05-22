@@ -58,6 +58,7 @@ XSLT_GENERATED := xslt/iec.international-standard.xsl \
 	xslt/ogc.test-suite.xsl \
 	xslt/ogc.user-guide.xsl \
 	xslt/ogc.white-paper.xsl \
+	xslt/plateau.international-standard.xsl \
 	xslt/un.plenary.xsl \
 	xslt/un.plenary-attachment.xsl \
 	xslt/un.recommendation.xsl \
@@ -319,6 +320,7 @@ update-xslts-in-processor-all:
 	$(MAKE) update-xslts-in-processor MN_PROCR=jis
 	$(MAKE) update-xslts-in-processor MN_PROCR=m3aawg
 	$(MAKE) update-xslts-in-processor MN_PROCR=ogc
+	$(MAKE) update-xslts-in-processor MN_PROCR=plateau
 	$(MAKE) update-xslts-in-processor MN_PROCR=ribose
 	$(MAKE) update-xslts-in-processor MN_PROCR=un
 
