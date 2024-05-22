@@ -4927,7 +4927,7 @@
 			<xsl:attribute name="line-height">115%</xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'plateau'">
-			<xsl:attribute name="provisional-distance-between-starts">5mm</xsl:attribute>
+			<xsl:attribute name="provisional-distance-between-starts">7mm</xsl:attribute>
 			<xsl:attribute name="space-after">20pt</xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'rsd'">
@@ -16076,6 +16076,11 @@
 			<xsl:when test="$namespace = 'ogc-white-paper'">
 				<label>&#x2014;</label> <!-- em dash -->
 			</xsl:when>
+			<xsl:when test="$namespace = 'plateau'">
+				<label level="1" font-size="130%" line-height="1.2">・</label> <!-- Katakana Middle Dot -->
+				<label level="2">－</label> <!-- full-width hyphen minus -->
+				<label level="3" font-size="130%" line-height="1.2">・</label>
+			</xsl:when>
 			<xsl:when test="$namespace = 'rsd'">
 				<label level="1" font-size="75%">o</label> <!-- white circle -->
 				<label level="2">&#x2014;</label> <!-- em dash -->
@@ -18517,6 +18522,7 @@
 	
 	<xsl:template match="*[local-name() = 'introduction']//*[local-name() = 'title'] | 
 			*[local-name() = 'foreword']//*[local-name() = 'title'] | 
+			*[local-name() = 'preface']//*[local-name() = 'title'] | 
 			*[local-name() = 'sections']//*[local-name() = 'title'] | 
 			*[local-name() = 'annex']//*[local-name() = 'title'] | 
 			*[local-name() = 'bibliography']/*[local-name() = 'clause']/*[local-name() = 'title'] | 
@@ -18540,13 +18546,23 @@
 				<xsl:copy-of select="../@inline-header"/>
 			</xsl:if>
 			
-			<xsl:attribute name="ancestor">
+			<xsl:variable name="ancestor">
 				<xsl:choose>
 					<xsl:when test="ancestor::*[local-name() = 'foreword']">foreword</xsl:when>
 					<xsl:when test="ancestor::*[local-name() = 'introduction']">introduction</xsl:when>
 					<xsl:when test="ancestor::*[local-name() = 'sections']">sections</xsl:when>
 					<xsl:when test="ancestor::*[local-name() = 'annex']">annex</xsl:when>
 					<xsl:when test="ancestor::*[local-name() = 'bibliography']">bibliography</xsl:when>
+				</xsl:choose>
+			</xsl:variable>
+			<xsl:attribute name="ancestor">
+				<xsl:value-of select="$ancestor"/>
+			</xsl:attribute>
+			
+			<xsl:attribute name="parent">
+				<xsl:choose>
+					<xsl:when test="ancestor::*[local-name() = 'preface']">preface</xsl:when>
+					<xsl:otherwise><xsl:value-of select="$ancestor"/></xsl:otherwise>
 				</xsl:choose>
 			</xsl:attribute>
 			

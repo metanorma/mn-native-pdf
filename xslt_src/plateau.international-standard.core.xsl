@@ -83,6 +83,14 @@
 					<fo:region-end region-name="right-region" extent="8.5mm"/>
 				</fo:simple-page-master>
 			
+				<fo:simple-page-master master-name="document_preface" page-width="{$pageWidth}mm" page-height="{$pageHeight}mm">
+					<fo:region-body margin-top="50mm" margin-bottom="35mm" margin-left="26mm" margin-right="34mm"/>
+					<fo:region-before region-name="header" extent="50mm"/>
+					<fo:region-after region-name="footer" extent="35mm"/>
+					<fo:region-start region-name="left-region" extent="26mm"/>
+					<fo:region-end region-name="right-region" extent="34mm"/>
+				</fo:simple-page-master>
+			
 				<fo:simple-page-master master-name="first_page" page-width="{$pageWidth}mm" page-height="{$pageHeight}mm">
 					<fo:region-body margin-top="{$marginTop}mm" margin-bottom="{$marginBottom}mm" margin-left="{$marginLeftRight1}mm" margin-right="{$marginLeftRight2}mm"/>
 					<fo:region-before region-name="header" extent="{$marginTop}mm"/>
@@ -121,12 +129,7 @@
 					</fo:repeatable-page-master-alternatives>
 				</fo:page-sequence-master>
 				
-				<fo:page-sequence-master master-name="document_preface">
-					<fo:repeatable-page-master-alternatives>
-						<fo:conditional-page-master-reference odd-or-even="even" master-reference="even"/>
-						<fo:conditional-page-master-reference odd-or-even="odd" master-reference="odd"/>
-					</fo:repeatable-page-master-alternatives>
-				</fo:page-sequence-master>
+				
 				
 				<fo:page-sequence-master master-name="document_first_section">
 					<fo:repeatable-page-master-alternatives>
@@ -216,6 +219,11 @@
 			</xsl:variable>
 			<xsl:variable name="updated_xml_step2" select="xalan:nodeset($updated_xml_step2_)"/>
 			<!-- DEBUG: updated_xml_step2=<xsl:copy-of select="$updated_xml_step2"/> -->
+			<!-- <xsl:message>start redirect</xsl:message>
+			<redirect:write file="update_xml_step2.xml">
+				<xsl:copy-of select="$updated_xml_step2"/>
+			</redirect:write>
+			<xsl:message>end redirect</xsl:message> -->
 			
 			
 			<xsl:for-each select="$updated_xml_step2//plateau:plateau-standard">
@@ -263,10 +271,70 @@
 						<xsl:with-param name="copyrightText" select="$copyrightText"/>
 					</xsl:call-template>
 										
+					<!-- ========================== -->
+					<!-- Preface and contents pages -->
+					<!-- ========================== -->
 					
-					<!-- ========================== -->
-					<!-- Contents and preface pages -->
-					<!-- ========================== -->
+					<xsl:variable name="structured_xml_preface_">
+						<xsl:for-each select="/*/*[local-name()='preface']/*[not(@type = 'toc')]">
+							<xsl:sort select="@displayorder" data-type="number"/>
+							<item><xsl:apply-templates select="." mode="linear_xml"/></item>
+						</xsl:for-each>
+					</xsl:variable>
+					
+					<!-- <xsl:message>start redirect</xsl:message>
+					<redirect:write file="structured_xml_preface_.xml">
+						<xsl:copy-of select="$structured_xml_preface_"/>
+					</redirect:write>
+					<xsl:message>end redirect</xsl:message> -->
+					
+					<!-- structured_xml_preface=<xsl:copy-of select="$structured_xml_preface"/> -->
+					
+					<!-- page break before each section -->
+					<xsl:variable name="structured_xml_preface">
+						<xsl:for-each select="xalan:nodeset($structured_xml_preface_)/item[*]">
+							<xsl:element name="pagebreak" namespace="https://www.metanorma.org/ns/plateau"/>
+							<xsl:copy-of select="./*"/>
+						</xsl:for-each>
+					</xsl:variable>
+					
+					<xsl:variable name="paged_xml_preface_">
+						<xsl:call-template name="makePagedXML">
+							<xsl:with-param name="structured_xml" select="$structured_xml_preface"/>
+						</xsl:call-template>
+					</xsl:variable>
+					<xsl:variable name="paged_xml_preface" select="xalan:nodeset($paged_xml_preface_)"/>
+					
+					<!-- <xsl:message>start redirect</xsl:message>
+					<redirect:write file="paged_xml_preface.xml">
+						<xsl:copy-of select="$paged_xml_preface"/>
+					</redirect:write>
+					<xsl:message>end redirect</xsl:message> -->
+					
+					<xsl:if test="$paged_xml_preface/*[local-name()='page'] and count($paged_xml_preface/*[local-name()='page']/*) != 0">
+						<!-- Preface pages -->
+						<fo:page-sequence master-reference="document_preface" force-page-count="no-force" font-family="Noto Sans JP">
+						
+							<fo:static-content flow-name="header" role="artifact" id="__internal_layout__preface_header_{generate-id()}">
+								<!-- background  -->
+								<fo:block-container absolute-position="fixed" left="24.2mm" top="40mm" height="231.4mm" width="161mm" background-color="rgb(242,242,242)" id="__internal_layout__preface_header_{$num}_{generate-id()}">
+									<fo:block>&#xa0;</fo:block>
+								</fo:block-container>
+							</fo:static-content>
+						
+							<fo:flow flow-name="xsl-region-body">
+								<fo:block>
+									<xsl:for-each select="$paged_xml_preface/*[local-name()='page']">
+										<xsl:if test="position() != 1">
+											<fo:block break-after="page"/>
+										</xsl:if>
+										<xsl:apply-templates select="*" mode="page"/>
+									</xsl:for-each>
+								</fo:block>
+							</fo:flow>
+						</fo:page-sequence> <!-- END Preface pages -->
+					</xsl:if>
+					
 					
 					<fo:page-sequence master-reference="document_toc" initial-page-number="1" force-page-count="no-force">
 						
@@ -306,75 +374,10 @@
 					</fo:page-sequence>
 					
 					
-					<xsl:variable name="structured_xml_preface">
-
-						<xsl:apply-templates select="/*/*[local-name()='preface']/*[local-name() = 'foreword']" mode="linear_xml" />
-						
-					</xsl:variable>
 					
-					<!-- structured_xml_preface=<xsl:copy-of select="$structured_xml_preface"/> -->
-					
-					<xsl:variable name="paged_xml_preface_">
-						<xsl:call-template name="makePagedXML">
-							<xsl:with-param name="structured_xml" select="$structured_xml_preface"/>
-						</xsl:call-template>
-					</xsl:variable>
-					<xsl:variable name="paged_xml_preface" select="xalan:nodeset($paged_xml_preface_)"/>
-					
-					<xsl:if test="$paged_xml_preface/*[local-name()='page'] and count($paged_xml_preface/*[local-name()='page']/*) != 0">
-						<!-- Preface pages -->
-						<fo:page-sequence master-reference="document_preface" force-page-count="no-force">
-							
-							<fo:static-content flow-name="xsl-footnote-separator">
-								<fo:block text-align="center" margin-bottom="6pt">
-									<fo:leader leader-pattern="rule" leader-length="80mm"/>
-								</fo:block>
-							</fo:static-content>
-							
-							<xsl:call-template name="insertHeaderFooter">
-								<xsl:with-param name="docidentifier" select="$docidentifier"/>
-								<xsl:with-param name="copyrightText" select="$copyrightText"/>
-								<xsl:with-param name="section">preface</xsl:with-param>
-							</xsl:call-template>
-							
-							<fo:flow flow-name="xsl-region-body">
-							
-								<fo:block>
-									<xsl:for-each select="$paged_xml_preface/*[local-name()='page']">
-										<xsl:if test="position() != 1">
-											<fo:block break-after="page"/>
-										</xsl:if>
-										<xsl:apply-templates select="*" mode="page"/>
-									</xsl:for-each>
-								</fo:block>
-							</fo:flow>
-						</fo:page-sequence> <!-- END Preface pages -->
-					</xsl:if>
-					
-					
-					<!-- Document type rendering -->
-					<fo:page-sequence master-reference="document_preface" force-page-count="no-force">
-						<xsl:call-template name="insertHeaderFooter">
-							<xsl:with-param name="docidentifier" select="$docidentifier"/>
-							<xsl:with-param name="copyrightText" select="$copyrightText"/>
-							<xsl:with-param name="section">preface</xsl:with-param>
-						</xsl:call-template>
-						
-						<fo:flow flow-name="xsl-region-body">
-							<fo:block-container margin-left="70mm">
-								<fo:block-container margin-left="0mm" margin-top="30mm" width="26.5mm" height="8.5mm" text-align="center" display-align="center" border="1pt solid black">
-									<fo:block>
-										<xsl:call-template name="getLocalizedString">
-											<xsl:with-param name="key">white-paper</xsl:with-param>
-										</xsl:call-template>
-									</fo:block>
-								</fo:block-container>
-							</fo:block-container>
-						</fo:flow>
-					</fo:page-sequence>
 					
 					<!-- ========================== -->
-					<!-- END Contents and preface pages -->
+					<!-- END Preface and contents pages -->
 					<!-- ========================== -->
 					
 					
@@ -513,7 +516,7 @@
 												<fo:table-cell display-align="after">
 													<fo:block font-size="10pt">
 														<fo:inline baseline-shift="40%">
-															<fo:inline font-family="IPAexMincho">：</fo:inline><fo:inline font-family="Times New Roman"><xsl:value-of select="$year_published"/></fo:inline>
+															<fo:inline font-family="IPAexMincho">：</fo:inline><fo:inline font-family="Noto Sans Condensed"><xsl:value-of select="$year_published"/></fo:inline>
 														</fo:inline>
 													</fo:block>
 												</fo:table-cell>
@@ -535,7 +538,7 @@
 									<!-- <fo:block font-family="IPAexGothic" font-size="15pt" text-align="center">
 										<fo:inline font-family="Arial">JIS <xsl:value-of select="$docidentifier_number"/></fo:inline>
 										<fo:inline baseline-shift="10%"><fo:inline font-size="10pt">：</fo:inline>
-										<fo:inline font-family="Times New Roman" font-size="10pt"><xsl:value-of select="$docidentifier_year"/></fo:inline></fo:inline>
+										<fo:inline font-family="Noto Sans Condensed" font-size="10pt"><xsl:value-of select="$docidentifier_year"/></fo:inline></fo:inline>
 									</fo:block> -->
 
 									<!-- title -->
@@ -609,7 +612,7 @@
 											<fo:list-item-label end-indent="label-end()">
 												<fo:block>
 													<xsl:if test="@section != '' and @type != 'annex'">
-														<xsl:attribute name="font-family">Times New Roman</xsl:attribute>
+														<xsl:attribute name="font-family">Noto Sans Condensed</xsl:attribute>
 														<xsl:attribute name="font-weight">bold</xsl:attribute>
 													</xsl:if>
 													<xsl:value-of select="@section"/>
@@ -652,7 +655,7 @@
 				<fo:inline><xsl:apply-templates select="title" /></fo:inline>
 				<fo:inline keep-together.within-line="always">
 					<fo:leader leader-pattern="dots"/>
-					<fo:inline font-size="8pt" font-family="Times New Roman">
+					<fo:inline font-size="8pt" font-family="Noto Sans Condensed">
 						<fo:page-number-citation ref-id="{@id}"/>
 					</fo:inline>
 				</fo:inline>
@@ -663,7 +666,7 @@
 	<xsl:template name="insertCoverPage">
 		<xsl:param name="num"/>
 		<xsl:param name="copyrightText"/>
-		<fo:page-sequence master-reference="cover-page" force-page-count="no-force" font-family="Tokyo CityFont Cond StdN R">
+		<fo:page-sequence master-reference="cover-page" force-page-count="no-force" font-family="Noto Sans Condensed">
 			
 			<fo:static-content flow-name="header" role="artifact" id="__internal_layout__coverpage_header_{generate-id()}">
 				<!-- background cover image -->
@@ -675,19 +678,19 @@
 					<fo:table table-layout="fixed" width="100%">
 						<fo:table-column column-width="proportional-column-width(140)"/>
 						<fo:table-column column-width="proportional-column-width(13.5)"/>
-						<fo:table-column column-width="proportional-column-width(12)"/>
+						<fo:table-column column-width="proportional-column-width(11)"/>
 						<fo:table-body>
 							<fo:table-row>
 								<fo:table-cell>
-									<fo:block font-size="30.5pt"><xsl:apply-templates select="/*/plateau:bibdata/plateau:title[@language = 'ja' and @type = 'title-main']/node()"/></fo:block>
+									<fo:block font-size="28pt" font-family="Noto Sans JP"><xsl:apply-templates select="/*/plateau:bibdata/plateau:title[@language = 'ja' and @type = 'title-main']/node()"/></fo:block>
 									<fo:block font-size="14pt" margin-top="3mm"><xsl:apply-templates select="/*/plateau:bibdata/plateau:title[@language = 'en' and @type = 'title-main']/node()"/></fo:block>
 								</fo:table-cell>
 								<fo:table-cell text-align="right" font-size="8.5pt" padding-right="2mm">
 									<fo:block>&#xa0;</fo:block>
-									<fo:block margin-top="1mm">series</fo:block>
+									<fo:block>series</fo:block>
 									<fo:block>No.</fo:block>
 								</fo:table-cell>
-								<fo:table-cell>
+								<fo:table-cell text-align="right">
 									<fo:block font-size="32pt">
 										<xsl:variable name="docnumber" select="/*/plateau:bibdata/plateau:docnumber"/>
 										<xsl:if test="string-length($docnumber) = 1">0</xsl:if><xsl:value-of select="$docnumber"/>
@@ -709,7 +712,7 @@
 				</fo:block>
 				<fo:block-container reference-orientation="-90" width="205mm" height="36mm" margin-top="6mm">
 					<fo:block font-size="21.2pt" margin-top="7mm"><xsl:apply-templates select="/*/plateau:bibdata/plateau:title[@language = 'en' and @type = 'title-intro']/node()"/></fo:block>
-					<fo:block font-size="14.2pt" margin-top="3mm"><xsl:apply-templates select="/*/plateau:bibdata/plateau:title[@language = 'ja' and @type = 'title-intro']/node()"/></fo:block>
+					<fo:block font-family="Noto Sans JP" font-size="14.2pt" margin-top="2mm"><xsl:apply-templates select="/*/plateau:bibdata/plateau:title[@language = 'ja' and @type = 'title-intro']/node()"/></fo:block>
 				</fo:block-container>
 			</fo:static-content>
 			
@@ -785,7 +788,7 @@
 	
 	<xsl:template match="plateau:p[@class = 'StandardNumber']/plateau:span[@class = 'EffectiveYear']" priority="4">
 		<fo:inline font-size="10pt" baseline-shift="10%">
-			<fo:inline font-family="Times New Roman"><xsl:apply-templates/></fo:inline>
+			<fo:inline font-family="Noto Sans Condensed"><xsl:apply-templates/></fo:inline>
 		</fo:inline>
 	</xsl:template>
 	
@@ -834,7 +837,7 @@
 	</xsl:template>
 	
 	<xsl:template match="plateau:p[@class = 'CommentaryStandardNumber']/plateau:span[@class = 'CommentaryEffectiveYear']" priority="4">
-		<fo:inline  baseline-shift="10%" font-family="Times New Roman" font-size="10pt"><xsl:apply-templates/></fo:inline>
+		<fo:inline  baseline-shift="10%" font-family="Noto Sans Condensed" font-size="10pt"><xsl:apply-templates/></fo:inline>
 	</xsl:template>
 	
 	<xsl:template match="plateau:p[@class = 'CommentaryStandardName']" priority="4">
@@ -980,8 +983,6 @@
 			<xsl:call-template name="getLevel"/>
 		</xsl:variable>
 		
-		<xsl:variable name="font-family">IPAexGothic</xsl:variable>
-		
 		<xsl:variable name="font-size">
 			<xsl:choose>
 				<xsl:when test="@type = 'section-title'">18pt</xsl:when>
@@ -1010,7 +1011,7 @@
 			</xsl:choose>
 		</xsl:variable>
 		
-		<xsl:variable name="font-weight">normal</xsl:variable>
+		<xsl:variable name="font-weight">bold</xsl:variable>
 		
 		<xsl:variable name="text-align">
 			<xsl:choose>
@@ -1025,7 +1026,7 @@
 			<xsl:choose>
 				<xsl:when test="@ancestor = 'foreword' and $level = 1">9mm</xsl:when>
 				<xsl:when test="@ancestor = 'annex' and $level = '1' and preceding-sibling::*[local-name() = 'annex'][1][@commentary = 'true']">1mm</xsl:when>
-				<xsl:when test="$level = 1">6.5mm</xsl:when>
+				<xsl:when test="$level = 1 and not(@parent = 'preface')">6.5mm</xsl:when>
 				<xsl:when test="@ancestor = 'foreword' and $level = 2">0mm</xsl:when>
 				<xsl:when test="@ancestor = 'annex' and $level = 2">4.5mm</xsl:when>
 				<xsl:when test="@ancestor = 'bibliography' and $level = 2">0mm</xsl:when>
@@ -1074,7 +1075,6 @@
 			</xsl:when>
 			<xsl:otherwise>
 				<xsl:element name="{$element-name}">
-					<xsl:attribute name="font-family"><xsl:value-of select="$font-family"/></xsl:attribute>
 					<xsl:attribute name="font-size"><xsl:value-of select="$font-size"/></xsl:attribute>
 					<xsl:attribute name="font-weight"><xsl:value-of select="$font-weight"/></xsl:attribute>
 					<xsl:attribute name="text-align"><xsl:value-of select="$text-align"/></xsl:attribute>
@@ -1098,7 +1098,7 @@
 						<xsl:call-template name="extractSection"/>
 					</xsl:variable>
 					<xsl:if test="normalize-space($section) != ''">
-						<fo:inline font-family="Times New Roman" font-weight="bold">
+						<fo:inline font-family="Noto Sans Condensed" font-weight="bold">
 							<xsl:value-of select="$section"/>
 							<fo:inline padding-right="4mm">&#xa0;</fo:inline>
 						</fo:inline>
@@ -1146,7 +1146,7 @@
 					
 					<xsl:copy-of select="@id"/>
 					
-					<xsl:attribute name="line-height">1.5</xsl:attribute>
+					<xsl:attribute name="line-height">2</xsl:attribute>
 					<!-- bookmarks only in paragraph -->
 				
 					<xsl:if test="count(plateau:bookmark) != 0 and count(*) = count(plateau:bookmark) and normalize-space() = ''">
@@ -1164,7 +1164,7 @@
 					</xsl:if>
 					
 					<xsl:if test="parent::plateau:li or following-sibling::*[1][self::plateau:ol or self::plateau:ul or self::plateau:note or self::plateau:example] or parent::plateau:quote">
-						<xsl:attribute name="margin-bottom">4pt</xsl:attribute>
+						<xsl:attribute name="margin-bottom">6pt</xsl:attribute>
 					</xsl:if>
 					
 					<xsl:if test="parent::plateau:td or parent::plateau:th or parent::plateau:dd">
@@ -1223,6 +1223,8 @@
 				<fo:block xsl:use-attribute-sets="list-item-label-style">
 				
 					<xsl:call-template name="refine_list-item-label-style"/>
+					
+					<xsl:attribute name="line-height">2</xsl:attribute>
 					
 					<!-- if 'p' contains all text in 'add' first and last elements in first p are 'add' -->
 					<xsl:if test="*[1][count(node()[normalize-space() != '']) = 1 and *[local-name() = 'add']]">
@@ -1518,7 +1520,7 @@
 	
 	<xsl:template match="*[local-name() = 'font_en_bold'][normalize-space() != '']">
 		<xsl:if test="ancestor::*[local-name() = 'td' or local-name() = 'th']"><xsl:value-of select="$zero_width_space"/></xsl:if>
-		<fo:inline font-family="Times New Roman" font-weight="bold">
+		<fo:inline font-family="Noto Sans Condensed" font-weight="bold">
 			<xsl:if test="ancestor::*[local-name() = 'preferred']">
 				<xsl:attribute name="font-weight">normal</xsl:attribute>
 			</xsl:if>
@@ -1531,7 +1533,7 @@
 		<xsl:if test="ancestor::*[local-name() = 'td' or local-name() = 'th']"><xsl:value-of select="$zero_width_space"/></xsl:if>
 		<fo:inline>
 			<xsl:if test="not(ancestor::plateau:p[@class = 'zzSTDTitle2']) and not(ancestor::plateau:span[@class = 'JIS'])">
-				<xsl:attribute name="font-family">Times New Roman</xsl:attribute>
+				<xsl:attribute name="font-family">Noto Sans Condensed</xsl:attribute>
 			</xsl:if>
 			<xsl:if test="ancestor::*[local-name() = 'preferred']">
 				<xsl:attribute name="font-weight">normal</xsl:attribute>
@@ -1607,7 +1609,7 @@
           <xsl:attribute name="height">24.5mm</xsl:attribute>
         </xsl:if>
 				<xsl:if test="$section = 'preface'">
-					<fo:block font-size="9pt" text-align="center" space-after="10pt">(<fo:inline font-family="Times New Roman"><fo:page-number /></fo:inline>)</fo:block>
+					<fo:block font-size="9pt" text-align="center" space-after="10pt">(<fo:inline font-family="Noto Sans Condensed"><fo:page-number /></fo:inline>)</fo:block>
 				</xsl:if>
 				<xsl:if test="$section = 'commentary'">
 					<fo:block font-size="9pt" text-align="center" space-after="12pt">
@@ -1616,7 +1618,7 @@
 								<xsl:with-param name="key">commentary_page</xsl:with-param>
 							</xsl:call-template>
 						</fo:inline>
-						<fo:inline font-weight="bold" font-family="Times New Roman" id="_independent_page_number_commentary"><fo:page-number /></fo:inline>
+						<fo:inline font-weight="bold" font-family="Noto Sans Condensed" id="_independent_page_number_commentary"><fo:page-number /></fo:inline>
 					</fo:block>
 				</xsl:if>
 				<!-- copyright restriction -->
