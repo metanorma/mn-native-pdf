@@ -115,6 +115,14 @@
 					<fo:region-start region-name="left-region-landscape" extent="{$marginBottom}mm"/>
 					<fo:region-end region-name="right-region-landscape" extent="{$marginTop}mm"/>
 				</fo:simple-page-master>
+				
+				<fo:simple-page-master master-name="last-page" page-width="{$pageWidth}mm" page-height="{$pageHeight}mm">
+					<fo:region-body margin-top="179.5mm" margin-bottom="30mm" margin-left="15mm" margin-right="22.7mm"/>
+					<fo:region-before region-name="header" extent="179.5mm"/>
+					<fo:region-after region-name="footer" extent="30mm"/>
+					<fo:region-start region-name="left-region" extent="15mm"/>
+					<fo:region-end region-name="right-region" extent="22.7mm"/>
+				</fo:simple-page-master>
 			</fo:layout-master-set>
 			
 			<fo:declarations>
@@ -344,6 +352,24 @@
 							</fo:flow>
 						</fo:page-sequence>
 					</xsl:for-each>
+					
+					
+					<fo:page-sequence master-reference="last-page" force-page-count="no-force">
+						<fo:flow flow-name="xsl-region-body">
+							<fo:block-container width="100%" border="0.75pt solid black" font-size="10pt" line-height="1.7">
+								<fo:block margin-left="4.5mm" margin-top="1mm">
+									<xsl:value-of select="/*/plateau:bibdata/plateau:title[@language = 'ja' and @type = 'title-main']"/>
+									<fo:inline padding-left="4mm"><xsl:value-of select="/*/plateau:bibdata/plateau:edition[@language = 'ja']"/></fo:inline>
+								</fo:block>
+								<fo:block margin-left="7.7mm"><xsl:value-of select="/*/plateau:bibdata/plateau:date[@type = 'published']"/><xsl:text> 発行</xsl:text></fo:block>
+								<!-- MLIT Department -->
+								<fo:block margin-left="7.7mm">国土交通省 都市局<xsl:value-of select="/*/plateau:bibdata/plateau:author-organization"/></fo:block>
+								<fo:block margin-left="9mm">（協力）内閣府 地方創生推進事務局<xsl:value-of select="/*/plateau:bibdata/plateau:author-cooperation"/></fo:block>
+							</fo:block-container>
+						</fo:flow>
+					</fo:page-sequence>
+
+
 					
 				</xsl:for-each>
 			
