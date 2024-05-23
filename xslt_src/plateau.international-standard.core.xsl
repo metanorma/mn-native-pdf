@@ -363,8 +363,8 @@
 								</fo:block>
 								<fo:block margin-left="7.7mm"><xsl:value-of select="/*/plateau:bibdata/plateau:date[@type = 'published']"/><xsl:text> 発行</xsl:text></fo:block>
 								<!-- MLIT Department -->
-								<fo:block margin-left="7.7mm">国土交通省 都市局<xsl:value-of select="/*/plateau:bibdata/plateau:author-organization"/></fo:block>
-								<fo:block margin-left="9mm">（協力）内閣府 地方創生推進事務局<xsl:value-of select="/*/plateau:bibdata/plateau:author-cooperation"/></fo:block>
+								<fo:block margin-left="7.7mm"><xsl:value-of select="/*/plateau:bibdata/plateau:contributor[plateau:role/@type = 'author']/plateau:organization/plateau:name"/></fo:block>
+								<fo:block margin-left="9mm"><xsl:value-of select="/*/plateau:bibdata/plateau:ext/plateau:author-cooperation"/></fo:block>
 							</fo:block-container>
 						</fo:flow>
 					</fo:page-sequence>
@@ -1036,6 +1036,13 @@
 	<xsl:template match="*[local-name() = 'span'][@class = 'surname' or @class = 'givenname' or @class = 'JIS' or @class = 'EffectiveYear' or @class = 'CommentaryEffectiveYear']" mode="update_xml_step1" priority="2">
 		<xsl:copy>
 			<xsl:apply-templates select="@* | node()" mode="update_xml_step1"/>
+		</xsl:copy>
+	</xsl:template>
+	
+	<xsl:template match="*[local-name() = 'span'][@style = 'font-family:&quot;MS Gothic&quot;']" mode="update_xml_step1" priority="3">
+		<xsl:copy>
+			<xsl:copy-of select="@*[not(name() = 'style')]"/>
+			<xsl:apply-templates mode="update_xml_step1"/>
 		</xsl:copy>
 	</xsl:template>
 	
