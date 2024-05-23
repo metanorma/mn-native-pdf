@@ -277,8 +277,13 @@
 							</item>
 						</xsl:for-each> -->
 						
-						<!-- Annexes and Bibliography -->
-						<xsl:for-each select="/*/*[local-name()='annex'] | /*/*[local-name()='bibliography']/*[count(.//*[local-name() = 'bibitem'][not(@hidden) = 'true']) &gt; 0 and not(@hidden = 'true')]">
+						<!-- Bibliography -->
+						<xsl:for-each select="/*/*[local-name()='bibliography']/*[count(.//*[local-name() = 'bibitem'][not(@hidden) = 'true']) &gt; 0 and not(@hidden = 'true')]">
+							<xsl:sort select="@displayorder" data-type="number"/>
+							<item><xsl:apply-templates select="." mode="linear_xml"/></item>
+						</xsl:for-each>
+						<!-- Annexes -->
+						<xsl:for-each select="/*/*[local-name()='annex']">
 							<xsl:sort select="@displayorder" data-type="number"/>
 							<item><xsl:apply-templates select="." mode="linear_xml"/></item>
 						</xsl:for-each>
