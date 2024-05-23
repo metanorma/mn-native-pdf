@@ -115,6 +115,14 @@
 					<fo:region-start region-name="left-region-landscape" extent="{$marginBottom}mm"/>
 					<fo:region-end region-name="right-region-landscape" extent="{$marginTop}mm"/>
 				</fo:simple-page-master>
+				
+				<fo:simple-page-master master-name="last-page" page-width="{$pageWidth}mm" page-height="{$pageHeight}mm">
+					<fo:region-body margin-top="179.5mm" margin-bottom="30mm" margin-left="15mm" margin-right="22.7mm"/>
+					<fo:region-before region-name="header" extent="179.5mm"/>
+					<fo:region-after region-name="footer" extent="30mm"/>
+					<fo:region-start region-name="left-region" extent="15mm"/>
+					<fo:region-end region-name="right-region" extent="22.7mm"/>
+				</fo:simple-page-master>
 			</fo:layout-master-set>
 			
 			<fo:declarations>
@@ -277,8 +285,13 @@
 							</item>
 						</xsl:for-each> -->
 						
-						<!-- Annexes and Bibliography -->
-						<xsl:for-each select="/*/*[local-name()='annex'] | /*/*[local-name()='bibliography']/*[count(.//*[local-name() = 'bibitem'][not(@hidden) = 'true']) &gt; 0 and not(@hidden = 'true')]">
+						<!-- Bibliography -->
+						<xsl:for-each select="/*/*[local-name()='bibliography']/*[count(.//*[local-name() = 'bibitem'][not(@hidden) = 'true']) &gt; 0 and not(@hidden = 'true')]">
+							<xsl:sort select="@displayorder" data-type="number"/>
+							<item><xsl:apply-templates select="." mode="linear_xml"/></item>
+						</xsl:for-each>
+						<!-- Annexes -->
+						<xsl:for-each select="/*/*[local-name()='annex']">
 							<xsl:sort select="@displayorder" data-type="number"/>
 							<item><xsl:apply-templates select="." mode="linear_xml"/></item>
 						</xsl:for-each>
@@ -339,6 +352,24 @@
 							</fo:flow>
 						</fo:page-sequence>
 					</xsl:for-each>
+					
+					
+					<fo:page-sequence master-reference="last-page" force-page-count="no-force">
+						<fo:flow flow-name="xsl-region-body">
+							<fo:block-container width="100%" border="0.75pt solid black" font-size="10pt" line-height="1.7">
+								<fo:block margin-left="4.5mm" margin-top="1mm">
+									<xsl:value-of select="/*/plateau:bibdata/plateau:title[@language = 'ja' and @type = 'title-main']"/>
+									<fo:inline padding-left="4mm"><xsl:value-of select="/*/plateau:bibdata/plateau:edition[@language = 'ja']"/></fo:inline>
+								</fo:block>
+								<fo:block margin-left="7.7mm"><xsl:value-of select="/*/plateau:bibdata/plateau:date[@type = 'published']"/><xsl:text> 発行</xsl:text></fo:block>
+								<!-- MLIT Department -->
+								<fo:block margin-left="7.7mm"><xsl:value-of select="/*/plateau:bibdata/plateau:contributor[plateau:role/@type = 'author']/plateau:organization/plateau:name"/></fo:block>
+								<fo:block margin-left="9mm"><xsl:value-of select="/*/plateau:bibdata/plateau:ext/plateau:author-cooperation"/></fo:block>
+							</fo:block-container>
+						</fo:flow>
+					</fo:page-sequence>
+
+
 					
 				</xsl:for-each>
 			
@@ -689,6 +720,8 @@
 		<xsl:variable name="font-weight">
 			<xsl:choose>
 				<xsl:when test="@parent = 'preface'">bold</xsl:when>
+				<xsl:when test="@parent = 'annex'">bold</xsl:when>
+				<xsl:when test="@parent = 'bibliography'">bold</xsl:when>
 				<xsl:otherwise>normal</xsl:otherwise>
 			</xsl:choose>
 		</xsl:variable>
@@ -696,7 +729,7 @@
 		<xsl:variable name="text-align">
 			<xsl:choose>
 				<xsl:when test="@ancestor = 'foreword' and $level = 1">center</xsl:when>
-				<xsl:when test="@ancestor = 'annex' and $level = 1">center</xsl:when>
+				<!-- <xsl:when test="@ancestor = 'annex' and $level = 1">center</xsl:when> -->
 				<xsl:otherwise>left</xsl:otherwise>
 			</xsl:choose>
 		</xsl:variable>
@@ -706,6 +739,7 @@
 			<xsl:choose>
 				<xsl:when test="@ancestor = 'foreword' and $level = 1">9mm</xsl:when>
 				<xsl:when test="@ancestor = 'annex' and $level = '1' and preceding-sibling::*[local-name() = 'annex'][1][@commentary = 'true']">1mm</xsl:when>
+				<xsl:when test="@ancestor = 'annex' and $level = 1">0mm</xsl:when>
 				<xsl:when test="$level = 1 and not(@parent = 'preface')">6.5mm</xsl:when>
 				<xsl:when test="@ancestor = 'foreword' and $level = 2">0mm</xsl:when>
 				<xsl:when test="@ancestor = 'annex' and $level = 2">4.5mm</xsl:when>
@@ -727,13 +761,13 @@
 			<xsl:choose>
 				<xsl:when test="@ancestor = 'foreword' and $level = 1">9mm</xsl:when>
 				<xsl:when test="@ancestor = 'annex' and $level = '1' and preceding-sibling::*[local-name() = 'annex'][1][@commentary = 'true']">7mm</xsl:when>
+				<xsl:when test="@ancestor = 'annex' and $level = 1">1mm</xsl:when>
 				<xsl:when test="$level = 1 and following-sibling::plateau:clause">8pt</xsl:when>
 				<xsl:when test="$level = 1">12pt</xsl:when>
 				<xsl:when test="$level = 2 and following-sibling::plateau:clause">8pt</xsl:when>
 				<xsl:when test="$level &gt;= 2">12pt</xsl:when>
 				<xsl:when test="@type = 'section-title'">6mm</xsl:when>
 				<xsl:when test="@inline-header = 'true'">0pt</xsl:when>
-				<xsl:when test="@ancestor = 'annex' and $level = 1">6mm</xsl:when>
 				<xsl:otherwise>0mm</xsl:otherwise>
 			</xsl:choose>
 		</xsl:variable>
@@ -1008,6 +1042,21 @@
 		</xsl:copy>
 	</xsl:template>
 	
+	<xsl:template match="*[local-name() = 'span'][@style = 'font-family:&quot;MS Gothic&quot;']" mode="update_xml_step1" priority="3">
+		<xsl:copy>
+			<xsl:copy-of select="@*[not(name() = 'style')]"/>
+			<xsl:apply-templates mode="update_xml_step1"/>
+		</xsl:copy>
+	</xsl:template>
+	
+	<!-- remove Annex and (normative) -->
+	<xsl:template match="*[local-name() = 'annex']/*[local-name() = 'title']" mode="update_xml_step1" priority="3">
+		<xsl:copy>
+			<xsl:copy-of select="@*"/>
+			<xsl:apply-templates select="*[local-name() = 'br'][2]/following-sibling::node()" mode="update_xml_step1"/>
+		</xsl:copy>
+	</xsl:template>
+	
 	<xsl:template match="plateau:clause[@type = 'contributors']//plateau:table//plateau:span[@class = 'surname']/text()[string-length() &lt; 3]" priority="2">
 		<xsl:choose>
 			<xsl:when test="string-length() = 1">
@@ -1203,7 +1252,7 @@
 	
 	<xsl:template match="*[local-name() = 'font_en_bold'][normalize-space() != '']">
 		<xsl:if test="ancestor::*[local-name() = 'td' or local-name() = 'th']"><xsl:value-of select="$zero_width_space"/></xsl:if>
-		<fo:inline font-family="Noto Sans Condensed"> <!--  font-weight="bold" -->
+		<fo:inline font-family="Noto Sans Condensed" font-weight="300"> <!--  font-weight="bold" -->
 			<xsl:if test="ancestor::*[local-name() = 'preferred']">
 				<xsl:attribute name="font-weight">normal</xsl:attribute>
 			</xsl:if>
@@ -1217,6 +1266,7 @@
 		<fo:inline>
 			<xsl:if test="not(ancestor::plateau:p[@class = 'zzSTDTitle2']) and not(ancestor::plateau:span[@class = 'JIS'])">
 				<xsl:attribute name="font-family">Noto Sans Condensed</xsl:attribute>
+				<xsl:attribute name="font-weight">300</xsl:attribute>
 			</xsl:if>
 			<xsl:if test="ancestor::*[local-name() = 'preferred']">
 				<xsl:attribute name="font-weight">normal</xsl:attribute>

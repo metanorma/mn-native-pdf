@@ -6033,6 +6033,11 @@
 		</xsl:if>
 		<xsl:if test="$namespace = 'ogc-white-paper'">
 		</xsl:if>
+		<xsl:if test="$namespace = 'plateau'">
+			<xsl:attribute name="provisional-distance-between-starts">8mm</xsl:attribute>
+			<xsl:attribute name="margin-bottom">2pt</xsl:attribute>
+			<xsl:attribute name="line-height">1.5</xsl:attribute>
+		</xsl:if>
 		<xsl:if test="$namespace = 'rsd'">
 			<xsl:attribute name="margin-bottom">4pt</xsl:attribute>
 			<xsl:attribute name="provisional-distance-between-starts">8mm</xsl:attribute>
