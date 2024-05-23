@@ -720,6 +720,8 @@
 		<xsl:variable name="font-weight">
 			<xsl:choose>
 				<xsl:when test="@parent = 'preface'">bold</xsl:when>
+				<xsl:when test="@parent = 'annex'">bold</xsl:when>
+				<xsl:when test="@parent = 'bibliography'">bold</xsl:when>
 				<xsl:otherwise>normal</xsl:otherwise>
 			</xsl:choose>
 		</xsl:variable>
@@ -727,7 +729,7 @@
 		<xsl:variable name="text-align">
 			<xsl:choose>
 				<xsl:when test="@ancestor = 'foreword' and $level = 1">center</xsl:when>
-				<xsl:when test="@ancestor = 'annex' and $level = 1">center</xsl:when>
+				<!-- <xsl:when test="@ancestor = 'annex' and $level = 1">center</xsl:when> -->
 				<xsl:otherwise>left</xsl:otherwise>
 			</xsl:choose>
 		</xsl:variable>
@@ -737,6 +739,7 @@
 			<xsl:choose>
 				<xsl:when test="@ancestor = 'foreword' and $level = 1">9mm</xsl:when>
 				<xsl:when test="@ancestor = 'annex' and $level = '1' and preceding-sibling::*[local-name() = 'annex'][1][@commentary = 'true']">1mm</xsl:when>
+				<xsl:when test="@ancestor = 'annex' and $level = 1">0mm</xsl:when>
 				<xsl:when test="$level = 1 and not(@parent = 'preface')">6.5mm</xsl:when>
 				<xsl:when test="@ancestor = 'foreword' and $level = 2">0mm</xsl:when>
 				<xsl:when test="@ancestor = 'annex' and $level = 2">4.5mm</xsl:when>
@@ -758,13 +761,13 @@
 			<xsl:choose>
 				<xsl:when test="@ancestor = 'foreword' and $level = 1">9mm</xsl:when>
 				<xsl:when test="@ancestor = 'annex' and $level = '1' and preceding-sibling::*[local-name() = 'annex'][1][@commentary = 'true']">7mm</xsl:when>
+				<xsl:when test="@ancestor = 'annex' and $level = 1">1mm</xsl:when>
 				<xsl:when test="$level = 1 and following-sibling::plateau:clause">8pt</xsl:when>
 				<xsl:when test="$level = 1">12pt</xsl:when>
 				<xsl:when test="$level = 2 and following-sibling::plateau:clause">8pt</xsl:when>
 				<xsl:when test="$level &gt;= 2">12pt</xsl:when>
 				<xsl:when test="@type = 'section-title'">6mm</xsl:when>
 				<xsl:when test="@inline-header = 'true'">0pt</xsl:when>
-				<xsl:when test="@ancestor = 'annex' and $level = 1">6mm</xsl:when>
 				<xsl:otherwise>0mm</xsl:otherwise>
 			</xsl:choose>
 		</xsl:variable>
@@ -1043,6 +1046,14 @@
 		<xsl:copy>
 			<xsl:copy-of select="@*[not(name() = 'style')]"/>
 			<xsl:apply-templates mode="update_xml_step1"/>
+		</xsl:copy>
+	</xsl:template>
+	
+	<!-- remove Annex and (normative) -->
+	<xsl:template match="*[local-name() = 'annex']/*[local-name() = 'title']" mode="update_xml_step1" priority="3">
+		<xsl:copy>
+			<xsl:copy-of select="@*"/>
+			<xsl:apply-templates select="*[local-name() = 'br'][2]/following-sibling::node()" mode="update_xml_step1"/>
 		</xsl:copy>
 	</xsl:template>
 	
