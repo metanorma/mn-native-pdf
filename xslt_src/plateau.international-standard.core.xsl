@@ -958,16 +958,16 @@
 				
 					<xsl:call-template name="refine_list-item-label-style"/>
 					
+					<xsl:variable name="list_item_label">
+						<xsl:call-template name="getListItemFormat" />
+					</xsl:variable>
+					
 					<!-- <xsl:attribute name="line-height">2</xsl:attribute> -->
 					
 					<!-- if 'p' contains all text in 'add' first and last elements in first p are 'add' -->
 					<xsl:if test="*[1][count(node()[normalize-space() != '']) = 1 and *[local-name() = 'add']]">
 						<xsl:call-template name="append_add-style"/>
 					</xsl:if>
-					
-					<xsl:variable name="list_item_label">
-						<xsl:call-template name="getListItemFormat" />
-					</xsl:variable>
 					
 					<xsl:choose>
 						<xsl:when test="contains($list_item_label, ')')">
@@ -976,7 +976,18 @@
 							<xsl:value-of select="substring-after($list_item_label,')')"/>
 						</xsl:when>
 						<xsl:otherwise>
-							<xsl:value-of select="$list_item_label"/>
+							<xsl:choose>
+								<xsl:when test="parent::*[local-name() = 'ul'] and @ancestor = 'sections' and $list_item_label = '・'">
+									<fo:inline>
+										<fo:instream-foreign-object content-width="2.5mm" fox:alt-text="ul list label">
+											<xsl:copy-of select="$black_circle"/>
+										</fo:instream-foreign-object>
+									</fo:inline>
+								</xsl:when>
+								<xsl:otherwise>
+									<xsl:value-of select="$list_item_label"/>
+								</xsl:otherwise>
+							</xsl:choose>
 						</xsl:otherwise>
 					</xsl:choose>
 					
@@ -1395,6 +1406,12 @@
 			<polygon class="cls-1" points="80.9 162.05 82.72 162.05 82.72 168.39 85.16 168.39 85.16 169.93 80.9 169.93 80.9 162.05"/>
 			<polyline class="cls-1" points="91.43 162.05 93.25 162.05 93.25 169.93 91.43 169.93 91.43 162.05"/>
 			<polygon class="cls-1" points="99.44 162.05 104.69 162.05 104.69 163.58 102.98 163.58 102.98 169.93 101.16 169.93 101.16 163.58 99.44 163.58 99.44 162.05"/>
+		</svg>
+	</xsl:variable>
+	
+	<xsl:variable name="black_circle">
+		<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20">
+			<circle cx="10" cy="10" r="5" stroke="black" stroke-width="5" fill="black"/>
 		</svg>
 	</xsl:variable>
 	
