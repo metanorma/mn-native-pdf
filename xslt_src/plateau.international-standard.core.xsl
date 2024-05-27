@@ -25,6 +25,8 @@
 	
 	<xsl:variable name="debug">false</xsl:variable>
 	
+	<xsl:variable name="i18n_doctype_dict_annex"><xsl:call-template name="getLocalizedString"><xsl:with-param name="key">doctype_dict.annex</xsl:with-param></xsl:call-template></xsl:variable>
+	
 	<xsl:variable name="contents_">
 		<xsl:variable name="bundle" select="count(//plateau:plateau-standard) &gt; 1"/>
 		
@@ -459,6 +461,8 @@
 		<xsl:param name="num"/>
 		<fo:page-sequence master-reference="cover-page" force-page-count="no-force" font-family="Noto Sans Condensed">
 			
+			<xsl:variable name="doctype" select="/*/plateau:bibdata/plateau:ext/plateau:doctype[@language = '' or not(@language)]"/>
+			
 			<fo:static-content flow-name="header" role="artifact" id="__internal_layout__coverpage_header_{generate-id()}">
 				<!-- background cover image -->
 				<xsl:call-template name="insertBackgroundPageImage"/>
@@ -473,7 +477,14 @@
 						<fo:table-body>
 							<fo:table-row>
 								<fo:table-cell>
-									<fo:block font-size="28pt" font-family="Noto Sans JP"><xsl:apply-templates select="/*/plateau:bibdata/plateau:title[@language = 'ja' and @type = 'title-main']/node()"/></fo:block>
+									<fo:block font-size="28pt" font-family="Noto Sans JP">
+										<xsl:if test="$doctype = 'annex'">
+											<xsl:attribute name="text-indent">-7mm</xsl:attribute>
+											<xsl:value-of select="concat('（', $i18n_doctype_dict_annex)"/>
+											<fo:inline letter-spacing="-3mm">）</fo:inline>
+										</xsl:if>
+										<xsl:apply-templates select="/*/plateau:bibdata/plateau:title[@language = 'ja' and @type = 'title-main']/node()"/>
+									</fo:block>
 									<fo:block font-size="14pt" margin-top="3mm"><xsl:apply-templates select="/*/plateau:bibdata/plateau:title[@language = 'en' and @type = 'title-main']/node()"/></fo:block>
 								</fo:table-cell>
 								<fo:table-cell text-align="right" font-size="8.5pt" padding-right="2mm">
@@ -501,7 +512,14 @@
 				</fo:block>
 				<fo:block-container reference-orientation="-90" width="205mm" height="36mm" margin-top="6mm">
 					<fo:block font-size="21.2pt" margin-top="7mm"><xsl:apply-templates select="/*/plateau:bibdata/plateau:title[@language = 'en' and @type = 'title-intro']/node()"/></fo:block>
-					<fo:block font-family="Noto Sans JP" font-size="14.2pt" margin-top="2mm"><xsl:apply-templates select="/*/plateau:bibdata/plateau:title[@language = 'ja' and @type = 'title-intro']/node()"/></fo:block>
+					<fo:block font-family="Noto Sans JP" font-size="14.2pt" margin-top="2mm">
+						<xsl:if test="$doctype = 'annex'">
+							<xsl:attribute name="text-indent">-3.5mm</xsl:attribute>
+							<xsl:value-of select="concat('（', $i18n_doctype_dict_annex)"/>
+							<fo:inline letter-spacing="-1mm">）</fo:inline>
+						</xsl:if>
+						<xsl:apply-templates select="/*/plateau:bibdata/plateau:title[@language = 'ja' and @type = 'title-intro']/node()"/>
+					</fo:block>
 				</fo:block-container>
 			</fo:static-content>
 			
