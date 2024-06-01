@@ -213,7 +213,7 @@
 					
 					<xsl:if test="$paged_xml_preface/*[local-name()='page'] and count($paged_xml_preface/*[local-name()='page']/*) != 0">
 						<!-- Preface pages -->
-						<fo:page-sequence master-reference="document_preface" force-page-count="no-force" font-family="Noto Sans JP">
+						<fo:page-sequence master-reference="document_preface" force-page-count="no-force" font-family="Noto Sans JP" font-size="10pt">
 						
 							<fo:static-content flow-name="header" role="artifact" id="__internal_layout__preface_header_{generate-id()}">
 								<!-- grey background  -->
@@ -777,6 +777,7 @@
 		
 		<xsl:variable name="margin-bottom">
 			<xsl:choose>
+				<xsl:when test="@parent = 'preface'">6pt</xsl:when>
 				<xsl:when test="@ancestor = 'foreword' and $level = 1">9mm</xsl:when>
 				<xsl:when test="@ancestor = 'annex' and $level = '1' and preceding-sibling::*[local-name() = 'annex'][1][@commentary = 'true']">7mm</xsl:when>
 				<xsl:when test="@ancestor = 'annex' and $level = 1">1mm</xsl:when>
@@ -897,8 +898,12 @@
 						<xsl:attribute name="margin-bottom">2pt</xsl:attribute>
 					</xsl:if>
 					
-					<xsl:if test="parent::plateau:li or following-sibling::*[1][self::plateau:ol or self::plateau:ul or self::plateau:note or self::plateau:example] or parent::plateau:quote">
-						<xsl:attribute name="margin-bottom">6pt</xsl:attribute>
+					<xsl:if test="parent::plateau:li or parent::plateau:quote">
+						<xsl:attribute name="margin-bottom">8pt</xsl:attribute>
+					</xsl:if>
+					
+					<xsl:if test="parent::plateau:li and following-sibling::*[1][self::plateau:ol or self::plateau:ul or self::plateau:note or self::plateau:example]">
+						<xsl:attribute name="margin-bottom">4pt</xsl:attribute>
 					</xsl:if>
 					
 					<xsl:if test="parent::plateau:td or parent::plateau:th or parent::plateau:dd">

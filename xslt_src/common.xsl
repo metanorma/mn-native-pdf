@@ -16405,6 +16405,20 @@
 							</fo:block-container>
 						</fo:block-container>
 					</xsl:when>
+					<xsl:when test="$namespace = 'plateau'">
+						<fo:block-container role="SKIP">
+							<xsl:if test="local-name() = 'ol' and (ancestor::plateau:li)">
+								<xsl:attribute name="margin-left"><xsl:value-of select="count(ancestor::plateau:li) * 6 + 6"/>mm</xsl:attribute>
+							</xsl:if>
+							<fo:block-container margin-left="0mm" role="SKIP">
+								<fo:block>
+									<xsl:apply-templates select="." mode="list">
+										<xsl:with-param name="indent" select="$indent"/>
+									</xsl:apply-templates>
+								</fo:block>
+							</fo:block-container>
+						</fo:block-container>
+					</xsl:when>
 					<xsl:otherwise>
 						<fo:block role="SKIP">
 							<xsl:apply-templates select="." mode="list">
