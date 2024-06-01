@@ -1290,6 +1290,9 @@
 			<xsl:if test="ancestor::*[local-name() = 'preferred']">
 				<xsl:attribute name="font-weight">normal</xsl:attribute>
 			</xsl:if>
+			<xsl:if test="ancestor::*[local-name() = 'name']">
+				<xsl:attribute name="font-weight">bold</xsl:attribute>
+			</xsl:if>
 			<xsl:apply-templates/>
 		</fo:inline>
 		<xsl:if test="ancestor::*[local-name() = 'td' or local-name() = 'th']"><xsl:value-of select="$zero_width_space"/></xsl:if>
