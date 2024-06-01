@@ -276,9 +276,33 @@
 									<xsl:apply-templates select="/*/*[local-name()='preface']/*[local-name() = 'p' and @type = 'section-title'][not(following-sibling::*) or following-sibling::*[1][local-name() = 'clause' and @type = 'corrigenda']]" mode="linear_xml" />
 								</xsl:otherwise>
 							</xsl:choose>
-							
-							<xsl:apply-templates select="/*/*[local-name()='sections']/*" mode="linear_xml"/>
-						</item>	
+						</item>
+						
+						<item>							
+							<xsl:apply-templates select="/*/*[local-name()='sections']/*[1]" mode="linear_xml"/>
+						</item>
+						<!-- second clause is scope -->
+						<xsl:choose>
+							<xsl:when test="count(/*/*[local-name()='sections']/*[2]/*) = 2"> <!-- title and paragraph -->
+								<item>
+									<xsl:apply-templates select="/*/*[local-name()='sections']/*[2]" mode="linear_xml"/>
+									<xsl:apply-templates select="/*/*[local-name()='sections']/*[3]" mode="linear_xml"/>
+								</item>
+							</xsl:when>
+							<xsl:otherwise>
+								<item>
+									<xsl:apply-templates select="/*/*[local-name()='sections']/*[2]" mode="linear_xml"/>
+								</item>
+								<item>
+									<xsl:apply-templates select="/*/*[local-name()='sections']/*[3]" mode="linear_xml"/>
+								</item>
+							</xsl:otherwise>
+						</xsl:choose>
+						<xsl:for-each select="/*/*[local-name()='sections']/*[position() &gt; 3]">
+							<item>
+									<xsl:apply-templates select="." mode="linear_xml"/>
+								</item>
+						</xsl:for-each>
 						
 						<!-- Annexes -->
 						<!-- <xsl:for-each select="/*/*[local-name()='annex']">
