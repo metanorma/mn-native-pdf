@@ -2116,6 +2116,7 @@
 		<xsl:if test="$namespace = 'plateau'">
 			<xsl:attribute name="font-weight">bold</xsl:attribute>
 			<xsl:attribute name="text-align">center</xsl:attribute>
+			<xsl:attribute name="margin-top">20pt</xsl:attribute>
 			<xsl:attribute name="margin-bottom">4pt</xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'unece'">
