@@ -1287,10 +1287,10 @@
 	<xsl:template match="*[local-name() = 'font_en_bold'][normalize-space() != '']">
 		<xsl:if test="ancestor::*[local-name() = 'td' or local-name() = 'th']"><xsl:value-of select="$zero_width_space"/></xsl:if>
 		<fo:inline font-family="Noto Sans Condensed" font-weight="300"> <!--  font-weight="bold" -->
-			<xsl:if test="ancestor::*[local-name() = 'preferred']">
+			<!-- <xsl:if test="ancestor::*[local-name() = 'preferred']">
 				<xsl:attribute name="font-weight">normal</xsl:attribute>
-			</xsl:if>
-			<xsl:if test="ancestor::*[local-name() = 'name']">
+			</xsl:if> -->
+			<xsl:if test="(ancestor::*[local-name() = 'figure'] or ancestor::*[local-name() = 'table']) and parent::*[local-name() = 'name']">
 				<xsl:attribute name="font-weight">bold</xsl:attribute>
 			</xsl:if>
 			<xsl:apply-templates/>

@@ -4212,6 +4212,9 @@
 		<xsl:if test="$namespace = 'jis'">
 			<xsl:attribute name="space-before">12pt</xsl:attribute>
 		</xsl:if>
+		<xsl:if test="$namespace = 'plateau'">
+			<xsl:attribute name="space-after">12pt</xsl:attribute>
+		</xsl:if>
 	</xsl:attribute-set>
 	
 	<xsl:attribute-set name="term-name-style">
@@ -4219,6 +4222,10 @@
 		<xsl:attribute name="font-weight">bold</xsl:attribute>
 		<xsl:if test="$namespace = 'jis'">
 			<xsl:attribute name="font-family">Times New Roman</xsl:attribute>
+			<xsl:attribute name="space-after">2pt</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'plateau'">
+			<xsl:attribute name="font-weight">normal</xsl:attribute>
 			<xsl:attribute name="space-after">2pt</xsl:attribute>
 		</xsl:if>
 	</xsl:attribute-set>
@@ -4745,6 +4752,9 @@
 		<xsl:if test="$namespace = 'jis'">
 			<xsl:attribute name="font-weight">normal</xsl:attribute>
 			<xsl:attribute name="font-family">IPAexGothic</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'plateau'">
+			<xsl:attribute name="font-weight">normal</xsl:attribute>
 		</xsl:if>
 	</xsl:attribute-set>
 
