@@ -844,6 +844,10 @@
 						<xsl:copy-of select="@id"/>
 					</xsl:if>
 					
+					<xsl:if test="$level = '3'">
+						<xsl:attribute name="margin-left">7.5mm</xsl:attribute>
+					</xsl:if>
+					
 					<!-- if first and last childs are `add` ace-tag, then move start ace-tag before title -->
 					<xsl:if test="*[local-name() = 'tab'][1]/following-sibling::node()[last()][local-name() = 'add'][starts-with(text(), $ace_tag)]">
 						<xsl:apply-templates select="*[local-name() = 'tab'][1]/following-sibling::node()[1][local-name() = 'add'][starts-with(text(), $ace_tag)]">
