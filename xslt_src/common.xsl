@@ -3324,6 +3324,9 @@
 		<xsl:if test="$namespace = 'ogc'">
 			<xsl:attribute name="margin-bottom">8pt</xsl:attribute>
 		</xsl:if>
+		<xsl:if test="$namespace = 'plateau'">
+			<xsl:attribute name="margin-bottom">16pt</xsl:attribute>
+		</xsl:if>
 	</xsl:attribute-set>
 	
 	<xsl:attribute-set name="dt-row-style">

@@ -906,8 +906,12 @@
 						<xsl:attribute name="margin-bottom">4pt</xsl:attribute>
 					</xsl:if>
 					
-					<xsl:if test="parent::plateau:td or parent::plateau:th or parent::plateau:dd">
+					<xsl:if test="parent::plateau:td or parent::plateau:th">
 						<xsl:attribute name="margin-bottom">0pt</xsl:attribute>
+					</xsl:if>
+					
+					<xsl:if test="parent::plateau:dd">
+						<xsl:attribute name="margin-bottom">5pt</xsl:attribute>
 					</xsl:if>
 					
 					<xsl:if test="parent::plateau:clause[@type = 'inner-cover-note'] or ancestor::plateau:boilerplate">
