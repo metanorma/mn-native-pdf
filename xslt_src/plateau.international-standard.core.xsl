@@ -111,11 +111,11 @@
 				
 				<!-- landscape -->
 				<fo:simple-page-master master-name="document-landscape" page-width="{$pageHeight}mm" page-height="{$pageWidth}mm">
-					<fo:region-body margin-top="{$marginLeftRight1}mm" margin-bottom="{$marginLeftRight2}mm" margin-left="{$marginBottom}mm" margin-right="{$marginTop}mm"/>
-					<fo:region-before region-name="header-odd" extent="{$marginLeftRight1}mm" precedence="true"/>
-					<fo:region-after region-name="footer" extent="{$marginLeftRight2}mm" precedence="true"/>
-					<fo:region-start region-name="left-region-landscape" extent="{$marginBottom}mm"/>
-					<fo:region-end region-name="right-region-landscape" extent="{$marginTop}mm"/>
+					<fo:region-body margin-top="{$marginTop}mm" margin-bottom="{$marginBottom}mm" margin-left="{$marginLeftRight1}mm" margin-right="{$marginLeftRight2}mm"/>
+					<fo:region-before region-name="header-odd" extent="{$marginTop}mm" precedence="true"/>
+					<fo:region-after region-name="footer" extent="{$marginBottom}mm" precedence="true"/>
+					<fo:region-start region-name="left-region-landscape" extent="{$marginLeftRight1}mm"/>
+					<fo:region-end region-name="right-region-landscape" extent="{$marginLeftRight2}mm"/>
 				</fo:simple-page-master>
 				
 				<fo:simple-page-master master-name="last-page" page-width="{$pageWidth}mm" page-height="{$pageHeight}mm">

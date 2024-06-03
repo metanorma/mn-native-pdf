@@ -8603,6 +8603,22 @@
 			
 			<xsl:call-template name="refine_table-header-cell-style"/>
 			
+			<!-- experimental feature, see https://github.com/metanorma/metanorma-plateau/issues/30#issuecomment-2145461828 -->
+			<!-- <xsl:choose>
+				<xsl:when test="count(node()) = 1 and *[local-name() = 'span'][contains(@style, 'text-orientation')]">
+					<fo:block-container reference-orientation="270">
+						<fo:block role="SKIP" text-align="start">
+							<xsl:apply-templates />
+						</fo:block>
+					</fo:block-container>
+				</xsl:when>
+				<xsl:otherwise>
+					<fo:block role="SKIP">
+						<xsl:apply-templates />
+					</fo:block>
+				</xsl:otherwise>
+			</xsl:choose> -->
+			
 			<fo:block role="SKIP">
 				<xsl:apply-templates />
 			</fo:block>
