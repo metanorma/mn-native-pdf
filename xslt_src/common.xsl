@@ -7342,7 +7342,7 @@
 						<xsl:attribute name="wrap-option">no-wrap</xsl:attribute>
 					</xsl:if>
 					
-					<xsl:for-each select="xalan:nodeset($table_attributes)/table_attributes/@*">					
+					<xsl:for-each select="xalan:nodeset($table_attributes)/table_attributes/@*">
 						<xsl:attribute name="{local-name()}">
 							<xsl:value-of select="."/>
 						</xsl:attribute>
@@ -7949,8 +7949,10 @@
 					<width_min><xsl:value-of select="@width_min"/></width_min>
 					<e><xsl:value-of select="$d * $W div $D"/></e>
 					<!-- set the column's width to the minimum width plus d times W over D.  -->
+					<xsl:variable name="column_width_" select="round(@width_min + $d * $W div $D)"/> <!--  * 10 -->
+					<xsl:variable name="column_width" select="$column_width_*($column_width_ >= 0) - $column_width_*($column_width_ &lt; 0)"/> <!-- absolute value -->
 					<column divider="100">
-						<xsl:value-of select="round(@width_min + $d * $W div $D)"/> <!--  * 10 -->
+						<xsl:value-of select="$column_width"/>
 					</column>
 				</xsl:for-each>
 				
