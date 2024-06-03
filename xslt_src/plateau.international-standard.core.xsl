@@ -390,7 +390,7 @@
 								<fo:block margin-left="7.7mm"><xsl:value-of select="/*/plateau:bibdata/plateau:date[@type = 'published']"/><xsl:text> 発行</xsl:text></fo:block>
 								<!-- MLIT Department -->
 								<fo:block margin-left="7.7mm"><xsl:value-of select="/*/plateau:bibdata/plateau:contributor[plateau:role/@type = 'author']/plateau:organization/plateau:name"/></fo:block>
-								<fo:block margin-left="9mm"><xsl:value-of select="/*/plateau:bibdata/plateau:ext/plateau:author-cooperation"/></fo:block>
+								<fo:block margin-left="9mm"><xsl:value-of select="/*/plateau:bibdata/plateau:contributor[plateau:role/@type = 'enabler']/plateau:organization/plateau:name"/></fo:block>
 							</fo:block-container>
 						</fo:flow>
 					</fo:page-sequence>
