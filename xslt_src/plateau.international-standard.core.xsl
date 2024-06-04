@@ -111,11 +111,11 @@
 				
 				<!-- landscape -->
 				<fo:simple-page-master master-name="document-landscape" page-width="{$pageHeight}mm" page-height="{$pageWidth}mm">
-					<fo:region-body margin-top="{$marginLeftRight1}mm" margin-bottom="{$marginLeftRight2}mm" margin-left="{$marginBottom}mm" margin-right="{$marginTop}mm"/>
-					<fo:region-before region-name="header-odd" extent="{$marginLeftRight1}mm" precedence="true"/>
-					<fo:region-after region-name="footer" extent="{$marginLeftRight2}mm" precedence="true"/>
-					<fo:region-start region-name="left-region-landscape" extent="{$marginBottom}mm"/>
-					<fo:region-end region-name="right-region-landscape" extent="{$marginTop}mm"/>
+					<fo:region-body margin-top="{$marginTop}mm" margin-bottom="{$marginBottom}mm" margin-left="{$marginLeftRight1}mm" margin-right="{$marginLeftRight2}mm"/>
+					<fo:region-before region-name="header-odd" extent="{$marginTop}mm" precedence="true"/>
+					<fo:region-after region-name="footer" extent="{$marginBottom}mm" precedence="true"/>
+					<fo:region-start region-name="left-region-landscape" extent="{$marginLeftRight1}mm"/>
+					<fo:region-end region-name="right-region-landscape" extent="{$marginLeftRight2}mm"/>
 				</fo:simple-page-master>
 				
 				<fo:simple-page-master master-name="last-page" page-width="{$pageWidth}mm" page-height="{$pageHeight}mm">
@@ -213,7 +213,7 @@
 					
 					<xsl:if test="$paged_xml_preface/*[local-name()='page'] and count($paged_xml_preface/*[local-name()='page']/*) != 0">
 						<!-- Preface pages -->
-						<fo:page-sequence master-reference="document_preface" force-page-count="no-force" font-family="Noto Sans JP">
+						<fo:page-sequence master-reference="document_preface" force-page-count="no-force" font-family="Noto Sans JP" font-size="10pt">
 						
 							<fo:static-content flow-name="header" role="artifact" id="__internal_layout__preface_header_{generate-id()}">
 								<!-- grey background  -->
@@ -276,9 +276,33 @@
 									<xsl:apply-templates select="/*/*[local-name()='preface']/*[local-name() = 'p' and @type = 'section-title'][not(following-sibling::*) or following-sibling::*[1][local-name() = 'clause' and @type = 'corrigenda']]" mode="linear_xml" />
 								</xsl:otherwise>
 							</xsl:choose>
-							
-							<xsl:apply-templates select="/*/*[local-name()='sections']/*" mode="linear_xml"/>
-						</item>	
+						</item>
+						
+						<item>							
+							<xsl:apply-templates select="/*/*[local-name()='sections']/*[1]" mode="linear_xml"/>
+						</item>
+						<!-- second clause is scope -->
+						<xsl:choose>
+							<xsl:when test="count(/*/*[local-name()='sections']/*[2]/*) = 2"> <!-- title and paragraph -->
+								<item>
+									<xsl:apply-templates select="/*/*[local-name()='sections']/*[2]" mode="linear_xml"/>
+									<xsl:apply-templates select="/*/*[local-name()='sections']/*[3]" mode="linear_xml"/>
+								</item>
+							</xsl:when>
+							<xsl:otherwise>
+								<item>
+									<xsl:apply-templates select="/*/*[local-name()='sections']/*[2]" mode="linear_xml"/>
+								</item>
+								<item>
+									<xsl:apply-templates select="/*/*[local-name()='sections']/*[3]" mode="linear_xml"/>
+								</item>
+							</xsl:otherwise>
+						</xsl:choose>
+						<xsl:for-each select="/*/*[local-name()='sections']/*[position() &gt; 3]">
+							<item>
+									<xsl:apply-templates select="." mode="linear_xml"/>
+								</item>
+						</xsl:for-each>
 						
 						<!-- Annexes -->
 						<!-- <xsl:for-each select="/*/*[local-name()='annex']">
@@ -366,7 +390,7 @@
 								<fo:block margin-left="7.7mm"><xsl:value-of select="/*/plateau:bibdata/plateau:date[@type = 'published']"/><xsl:text> 発行</xsl:text></fo:block>
 								<!-- MLIT Department -->
 								<fo:block margin-left="7.7mm"><xsl:value-of select="/*/plateau:bibdata/plateau:contributor[plateau:role/@type = 'author']/plateau:organization/plateau:name"/></fo:block>
-								<fo:block margin-left="9mm"><xsl:value-of select="/*/plateau:bibdata/plateau:ext/plateau:author-cooperation"/></fo:block>
+								<fo:block margin-left="9mm"><xsl:value-of select="/*/plateau:bibdata/plateau:contributor[plateau:role/@type = 'enabler']/plateau:organization/plateau:name"/></fo:block>
 							</fo:block-container>
 						</fo:flow>
 					</fo:page-sequence>
@@ -777,6 +801,7 @@
 		
 		<xsl:variable name="margin-bottom">
 			<xsl:choose>
+				<xsl:when test="@parent = 'preface'">6pt</xsl:when>
 				<xsl:when test="@ancestor = 'foreword' and $level = 1">9mm</xsl:when>
 				<xsl:when test="@ancestor = 'annex' and $level = '1' and preceding-sibling::*[local-name() = 'annex'][1][@commentary = 'true']">7mm</xsl:when>
 				<xsl:when test="@ancestor = 'annex' and $level = 1">1mm</xsl:when>
@@ -817,6 +842,10 @@
 					
 					<xsl:if test="@type = 'floating-title' or @type = 'section-title'">
 						<xsl:copy-of select="@id"/>
+					</xsl:if>
+					
+					<xsl:if test="$level = '3'">
+						<xsl:attribute name="margin-left">7.5mm</xsl:attribute>
 					</xsl:if>
 					
 					<!-- if first and last childs are `add` ace-tag, then move start ace-tag before title -->
@@ -897,12 +926,20 @@
 						<xsl:attribute name="margin-bottom">2pt</xsl:attribute>
 					</xsl:if>
 					
-					<xsl:if test="parent::plateau:li or following-sibling::*[1][self::plateau:ol or self::plateau:ul or self::plateau:note or self::plateau:example] or parent::plateau:quote">
-						<xsl:attribute name="margin-bottom">6pt</xsl:attribute>
+					<xsl:if test="parent::plateau:li or parent::plateau:quote">
+						<xsl:attribute name="margin-bottom">8pt</xsl:attribute>
 					</xsl:if>
 					
-					<xsl:if test="parent::plateau:td or parent::plateau:th or parent::plateau:dd">
+					<xsl:if test="parent::plateau:li and following-sibling::*[1][self::plateau:ol or self::plateau:ul or self::plateau:note or self::plateau:example]">
+						<xsl:attribute name="margin-bottom">4pt</xsl:attribute>
+					</xsl:if>
+					
+					<xsl:if test="ancestor::plateau:td or ancestor::plateau:th">
 						<xsl:attribute name="margin-bottom">0pt</xsl:attribute>
+					</xsl:if>
+					
+					<xsl:if test="parent::plateau:dd">
+						<xsl:attribute name="margin-bottom">5pt</xsl:attribute>
 					</xsl:if>
 					
 					<xsl:if test="parent::plateau:clause[@type = 'inner-cover-note'] or ancestor::plateau:boilerplate">
@@ -977,7 +1014,7 @@
 						</xsl:when>
 						<xsl:otherwise>
 							<xsl:choose>
-								<xsl:when test="parent::*[local-name() = 'ul'] and @ancestor = 'sections' and $list_item_label = '・'">
+								<xsl:when test="parent::*[local-name() = 'ul'] and @ancestor = 'sections' and $list_item_label = '・' and not(ancestor::*[local-name() = 'table'])">
 									<fo:inline>
 										<fo:instream-foreign-object content-width="2.5mm" fox:alt-text="ul list label">
 											<xsl:copy-of select="$black_circle"/>
@@ -1279,11 +1316,17 @@
 		<xsl:copy-of select="xalan:nodeset($text_en)/text/node()"/>
 	</xsl:template>
 	
+	<!-- Key title after the table -->
+	<xsl:template match="plateau:table/plateau:p[@class = 'ListTitle']" priority="2" mode="update_xml_step1"/>
+	
 	<xsl:template match="*[local-name() = 'font_en_bold'][normalize-space() != '']">
 		<xsl:if test="ancestor::*[local-name() = 'td' or local-name() = 'th']"><xsl:value-of select="$zero_width_space"/></xsl:if>
 		<fo:inline font-family="Noto Sans Condensed" font-weight="300"> <!--  font-weight="bold" -->
-			<xsl:if test="ancestor::*[local-name() = 'preferred']">
+			<!-- <xsl:if test="ancestor::*[local-name() = 'preferred']">
 				<xsl:attribute name="font-weight">normal</xsl:attribute>
+			</xsl:if> -->
+			<xsl:if test="(ancestor::*[local-name() = 'figure'] or ancestor::*[local-name() = 'table']) and parent::*[local-name() = 'name']">
+				<xsl:attribute name="font-weight">bold</xsl:attribute>
 			</xsl:if>
 			<xsl:apply-templates/>
 		</fo:inline>
@@ -1308,6 +1351,21 @@
 	<!-- ========================= -->
 	<!-- END: Allocate non-Japanese text -->
 	<!-- ========================= -->
+	
+	<!-- Table key -->
+	<xsl:template match="plateau:table/plateau:p[@class = 'dl']" priority="2">
+		<fo:block-container margin-left="90mm">
+			<xsl:if test="not(following-sibling::*[1][self::plateau:p[@class = 'dl']])"> <!-- last dl -->
+				<xsl:attribute name="margin-bottom">2pt</xsl:attribute>
+			</xsl:if>
+			<fo:block-container margin-left="0mm">
+				<fo:block font-size="10pt">
+					<xsl:copy-of select="@id"/>
+					<xsl:apply-templates/>
+				</fo:block>
+			</fo:block-container>
+		</fo:block-container>
+	</xsl:template>
 	
 	
 	<!-- background cover image -->
