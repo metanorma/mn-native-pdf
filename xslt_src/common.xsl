@@ -3183,7 +3183,7 @@
 			<xsl:attribute name="margin-bottom">1pt</xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'plateau'">
-			<xsl:attribute name="font-size">inherit</xsl:attribute>
+			<xsl:attribute name="font-size">10.5pt</xsl:attribute>
 			<xsl:attribute name="margin-bottom">1pt</xsl:attribute>
 		</xsl:if>
 	</xsl:attribute-set> <!-- table-fn-style -->
@@ -3254,8 +3254,7 @@
 			<xsl:attribute name="vertical-align">super</xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'plateau'">
-			<xsl:attribute name="font-size">67%</xsl:attribute>
-			<xsl:attribute name="vertical-align">super</xsl:attribute>
+			<xsl:attribute name="font-size">100%</xsl:attribute>
 			<xsl:attribute name="padding-right">0mm</xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'unece' or $namespace = 'unece-rec'">
@@ -4980,6 +4979,7 @@
 		<xsl:if test="$namespace = 'plateau'">
 			<xsl:if test="ancestor::*[local-name() = 'table']">
 				<xsl:attribute name="provisional-distance-between-starts">4.5mm</xsl:attribute>
+				<xsl:attribute name="space-after">0pt</xsl:attribute>
 			</xsl:if>
 		</xsl:if>
 	</xsl:template> <!-- refine_list-style -->
@@ -5172,9 +5172,8 @@
 			<xsl:attribute name="text-decoration">underline</xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'plateau'">
-			<xsl:attribute name="font-size">67%</xsl:attribute>
-			<xsl:attribute name="font-weight">bold</xsl:attribute>
-			<xsl:attribute name="vertical-align">super</xsl:attribute>
+			<xsl:attribute name="font-size">6pt</xsl:attribute>
+			<xsl:attribute name="baseline-shift">25%</xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'rsd'">
 			<xsl:attribute name="font-size">70%</xsl:attribute>
@@ -5275,9 +5274,8 @@
 			<xsl:attribute name="vertical-align">super</xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'plateau'">
-			<xsl:attribute name="font-size">67%</xsl:attribute>
-			<xsl:attribute name="font-weight">bold</xsl:attribute>
-			<xsl:attribute name="vertical-align">super</xsl:attribute>
+			<xsl:attribute name="font-size">6pt</xsl:attribute>
+			<xsl:attribute name="baseline-shift">25%</xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'rsd'">
 			<xsl:attribute name="font-size">65%</xsl:attribute>
@@ -5511,9 +5509,8 @@
 			<xsl:attribute name="vertical-align">super</xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'plateau'">
-			<xsl:attribute name="font-size">67%</xsl:attribute>
-			<xsl:attribute name="font-weight">bold</xsl:attribute>
-			<xsl:attribute name="vertical-align">super</xsl:attribute>
+			<xsl:attribute name="font-size">6pt</xsl:attribute>
+			<xsl:attribute name="baseline-shift">25%</xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'rsd'">
 			<xsl:attribute name="font-size">60%</xsl:attribute>
@@ -6192,9 +6189,8 @@
 			<xsl:attribute name="vertical-align">super</xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'plateau'">
-			<xsl:attribute name="font-size">67%</xsl:attribute>
-			<xsl:attribute name="font-weight">bold</xsl:attribute>
-			<xsl:attribute name="vertical-align">super</xsl:attribute>
+			<xsl:attribute name="font-size">6pt</xsl:attribute>
+			<xsl:attribute name="baseline-shift">25%</xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'rsd'">
 			<xsl:attribute name="vertical-align">super</xsl:attribute>
@@ -7350,7 +7346,12 @@
 					
 					<xsl:variable name="isNoteOrFnExist" select="./*[local-name()='note'][not(@type = 'units')] or ./*[local-name()='example'] or .//*[local-name()='fn'][local-name(..) != 'name'] or ./*[local-name()='source']"/>				
 					<xsl:if test="$isNoteOrFnExist = 'true'">
-						<xsl:attribute name="border-bottom">0pt solid black</xsl:attribute><!-- set 0pt border, because there is a separete table below for footer -->
+						<xsl:choose>
+							<xsl:when test="$namespace = 'plateau'"></xsl:when>
+							<xsl:otherwise>
+								<xsl:attribute name="border-bottom">0pt solid black</xsl:attribute><!-- set 0pt border, because there is a separete table below for footer -->
+							</xsl:otherwise>
+						</xsl:choose>
 					</xsl:if>
 					
 					
@@ -7408,15 +7409,21 @@
 					
 				</fo:table>
 				
-				<xsl:variable name="colgroup" select="*[local-name()='colgroup']"/>				
-				<xsl:for-each select="*[local-name()='tbody']"><!-- select context to tbody -->
-					<xsl:call-template name="insertTableFooterInSeparateTable">
-						<xsl:with-param name="table_attributes" select="$table_attributes"/>
-						<xsl:with-param name="colwidths" select="$colwidths"/>				
-						<xsl:with-param name="colgroup" select="$colgroup"/>				
-					</xsl:call-template>
-				</xsl:for-each>
+				<xsl:variable name="colgroup" select="*[local-name()='colgroup']"/>
 				
+				
+				<xsl:choose>
+					<xsl:when test="$namespace = 'plateau'"><!-- table footer after table --></xsl:when>
+					<xsl:otherwise>
+						<xsl:for-each select="*[local-name()='tbody']"><!-- select context to tbody -->
+							<xsl:call-template name="insertTableFooterInSeparateTable">
+								<xsl:with-param name="table_attributes" select="$table_attributes"/>
+								<xsl:with-param name="colwidths" select="$colwidths"/>				
+								<xsl:with-param name="colgroup" select="$colgroup"/>				
+							</xsl:call-template>
+						</xsl:for-each>
+					</xsl:otherwise>
+				</xsl:choose>
 				
 				<xsl:if test="$namespace = 'gb'">
 					<xsl:apply-templates select="*[local-name()='note']" />
@@ -7424,6 +7431,16 @@
 				
 				<xsl:if test="$namespace = 'ogc-white-paper'">
 					<xsl:apply-templates select="*[local-name()='name']" />
+				</xsl:if>
+				
+				<xsl:if test="$namespace = 'plateau'">
+					<xsl:apply-templates select="*[not(local-name()='thead') and not(local-name()='tbody') and not(local-name()='tfoot')]" />
+					<xsl:for-each select="*[local-name()='tbody']"> <!-- select context to tbody -->
+						<xsl:variable name="table_fn_block">
+							<xsl:call-template name="table_fn_display" />
+						</xsl:variable>
+						<xsl:copy-of select="$table_fn_block"/>
+					</xsl:for-each>
 				</xsl:if>
 				
 				<xsl:if test="*[local-name()='bookmark']"> <!-- special case: table/bookmark -->
@@ -7456,8 +7473,9 @@
 				<!-- centered table when table name is centered (see table-name-style) -->
 				<xsl:if test="$namespace = 'bsi' or $namespace = 'csa' or $namespace = 'csd' or $namespace = 'gb' or 
 								$namespace = 'iec' or $namespace = 'iho' or  $namespace = 'iso' or $namespace = 'itu' or 
-								$namespace = 'jcgm' or
+								$namespace = 'jcgm' or $namespace = 'jis' 
 								$namespace = 'm3d' or $namespace = 'mpfd' or 
+								$namespace = 'plateau' or 
 								$namespace = 'nist-cswp' or $namespace = 'nist-sp' or 
 								$namespace = 'rsd'">
 					<fo:table table-layout="fixed" width="100%" xsl:use-attribute-sets="table-container-style">
@@ -9054,6 +9072,10 @@
 									<fo:inline font-style="normal">(</fo:inline>
 								</xsl:if>
 								
+								<xsl:if test="$namespace = 'plateau'">
+									<xsl:text>※</xsl:text>
+								</xsl:if>
+								
 								<xsl:value-of select="@reference"/>
 								
 								<xsl:if test="$namespace = 'bipm'">
@@ -9063,6 +9085,11 @@
 								<xsl:if test="$namespace = 'itu'">
 									<xsl:text>)</xsl:text>
 								</xsl:if>
+								
+								<xsl:if test="$namespace = 'plateau'">
+									<xsl:text>：</xsl:text>
+								</xsl:if>
+								
 							</fo:inline>
 							<fo:inline xsl:use-attribute-sets="table-fn-body-style">
 								<xsl:copy-of select="./node()"/>
@@ -9275,6 +9302,9 @@
 				</xsl:if>
 				<xsl:if test="$namespace = 'bipm'">
 					<fo:inline font-style="normal">&#xA0;(</fo:inline>
+				</xsl:if>
+				<xsl:if test="$namespace = 'plateau'">
+					<xsl:text>※</xsl:text>
 				</xsl:if>
 				<xsl:value-of select="@reference"/>
 				<xsl:if test="$namespace = 'bipm'">

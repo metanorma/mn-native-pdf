@@ -934,7 +934,7 @@
 						<xsl:attribute name="margin-bottom">4pt</xsl:attribute>
 					</xsl:if>
 					
-					<xsl:if test="parent::plateau:td or parent::plateau:th">
+					<xsl:if test="ancestor::plateau:td or ancestor::plateau:th">
 						<xsl:attribute name="margin-bottom">0pt</xsl:attribute>
 					</xsl:if>
 					
@@ -1316,6 +1316,9 @@
 		<xsl:copy-of select="xalan:nodeset($text_en)/text/node()"/>
 	</xsl:template>
 	
+	<!-- Key title after the table -->
+	<xsl:template match="plateau:table/plateau:p[@class = 'ListTitle']" priority="2" mode="update_xml_step1"/>
+	
 	<xsl:template match="*[local-name() = 'font_en_bold'][normalize-space() != '']">
 		<xsl:if test="ancestor::*[local-name() = 'td' or local-name() = 'th']"><xsl:value-of select="$zero_width_space"/></xsl:if>
 		<fo:inline font-family="Noto Sans Condensed" font-weight="300"> <!--  font-weight="bold" -->
@@ -1348,6 +1351,21 @@
 	<!-- ========================= -->
 	<!-- END: Allocate non-Japanese text -->
 	<!-- ========================= -->
+	
+	<!-- Table key -->
+	<xsl:template match="plateau:table/plateau:p[@class = 'dl']" priority="2">
+		<fo:block-container margin-left="90mm">
+			<xsl:if test="not(following-sibling::*[1][self::plateau:p[@class = 'dl']])"> <!-- last dl -->
+				<xsl:attribute name="margin-bottom">2pt</xsl:attribute>
+			</xsl:if>
+			<fo:block-container margin-left="0mm">
+				<fo:block font-size="10pt">
+					<xsl:copy-of select="@id"/>
+					<xsl:apply-templates/>
+				</fo:block>
+			</fo:block-container>
+		</fo:block-container>
+	</xsl:template>
 	
 	
 	<!-- background cover image -->
