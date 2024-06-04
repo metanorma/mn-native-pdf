@@ -486,6 +486,10 @@
 		<fo:page-sequence master-reference="cover-page" force-page-count="no-force" font-family="Noto Sans Condensed">
 			
 			<xsl:variable name="doctype" select="/*/plateau:bibdata/plateau:ext/plateau:doctype[@language = '' or not(@language)]"/>
+      
+			<xsl:if test="$doctype = 'annex'">
+				<xsl:attribute name="color">white</xsl:attribute>
+			</xsl:if>
 			
 			<fo:static-content flow-name="header" role="artifact" id="__internal_layout__coverpage_header_{generate-id()}">
 				<!-- background cover image -->
@@ -531,7 +535,14 @@
 			<fo:static-content flow-name="left-region" role="artifact" id="__internal_layout__coverpage_left_region_{generate-id()}">				
 				<fo:block text-align="center" margin-top="14.5mm" margin-left="2mm">
 					<fo:instream-foreign-object content-width="24mm" fox:alt-text="PLATEAU Logo">
-						<xsl:copy-of select="$PLATEAU-Logo"/>
+						<xsl:choose>
+							<xsl:when test="$doctype = 'annex'">
+								<xsl:copy-of select="$PLATEAU-Logo-inverted"/>
+							</xsl:when>
+							<xsl:otherwise>
+								<xsl:copy-of select="$PLATEAU-Logo"/>
+							</xsl:otherwise>
+						</xsl:choose>
 					</fo:instream-foreign-object>
 				</fo:block>
 				<fo:block-container reference-orientation="-90" width="205mm" height="36mm" margin-top="6mm">
@@ -1443,6 +1454,42 @@
 					}
 				</style>
 			</defs>
+			<polygon class="cls-1" points="27.54 25.75 60.03 44.51 69.57 50.02 79.53 55.77 91.88 62.9 96.85 65.77 114.18 75.78 114.18 124.32 27.54 74.29 27.54 25.75"/>
+			<polygon class="cls-1" points="69.57 0 69.57 47.05 59.39 41.17 28.83 23.52 69.57 0"/>
+			<polygon class="cls-1" points="72.15 0 112.9 23.52 91.88 35.66 91.88 59.93 80.04 53.09 72.15 48.53 72.15 0"/>
+			<polygon class="cls-1" points="114.18 25.75 114.18 72.8 98.4 63.69 94.45 61.41 94.45 37.14 114.18 25.75"/>
+			<polygon class="cls-1" points="0 137.06 2.97 137.06 3.84 137.14 3.84 139.1 2.97 138.96 2.06 138.96 2.06 143.16 2.99 143.16 3.84 142.91 3.84 144.96 2.99 145.06 2.06 145.06 2.06 150.53 0 150.53 0 137.06"/>
+			<path class="cls-1" d="m3.84,137.14l.55.05c.51.1,1.04.28,1.53.6,1.13.75,1.68,2.04,1.68,3.27,0,.79-.2,2-1.31,2.95-.54.46-1.11.72-1.68.87l-.77.08v-2.05l1.13-.34c.43-.37.65-.9.65-1.53,0-.56-.17-1.45-1.24-1.86l-.53-.08v-1.96Z"/>
+			<polygon class="cls-1" points="21.93 137.06 23.99 137.06 23.99 148.59 27.95 148.59 27.95 150.53 21.93 150.53 21.93 137.06"/>
+			<polygon class="cls-1" points="47.63 136.54 47.63 140.87 45.59 145.34 47.63 145.34 47.63 147.28 44.74 147.28 43.27 150.53 41.05 150.53 47.63 136.54"/>
+			<polygon class="cls-1" points="47.75 136.28 54.13 150.53 51.91 150.53 50.5 147.28 47.63 147.28 47.63 145.34 49.67 145.34 47.67 140.78 47.63 140.87 47.63 136.54 47.75 136.28"/>
+			<polygon class="cls-1" points="65.99 137.07 74.22 137.07 74.22 139 71.13 139 71.13 150.53 69.07 150.53 69.07 139 65.99 139 65.99 137.07"/>
+			<polygon class="cls-1" points="88.4 137.07 95.83 137.07 95.83 139 90.46 139 90.46 142.42 95.67 142.42 95.67 144.35 90.46 144.35 90.46 148.59 95.83 148.59 95.83 150.53 88.4 150.53 88.4 137.07"/>
+			<polygon class="cls-1" points="114.26 136.53 114.26 140.87 112.23 145.34 114.26 145.34 114.26 147.28 111.38 147.28 109.9 150.53 107.68 150.53 114.26 136.53"/>
+			<polygon class="cls-1" points="114.38 136.28 120.77 150.53 118.54 150.53 117.13 147.28 114.26 147.28 114.26 145.34 116.3 145.34 114.3 140.78 114.26 140.87 114.26 136.53 114.38 136.28"/>
+			<path class="cls-1" d="m131.75,137.06h2.06v8.12c0,.73.02,1.62.42,2.32.41.69,1.32,1.4,2.51,1.4s2.1-.71,2.5-1.4c.4-.7.42-1.59.42-2.32v-8.12h2.06v8.67c0,1.07-.22,2.36-1.25,3.49-.7.77-1.9,1.58-3.73,1.58s-3.03-.81-3.74-1.58c-1.03-1.13-1.25-2.42-1.25-3.49v-8.67Z"/>
+			<path class="cls-1" d="m37.65,161.31h1.7v3.94c.22-.29.48-.48.77-.6l.46-.09v1.39l-.96.39c-.2.21-.37.52-.37.97s.19.75.39.94l.94.38v1.37l-.65-.16c-.26-.15-.45-.36-.58-.55v.64h-1.7v-8.62Z"/>
+			<path class="cls-1" d="m40.99,164.48c.73,0,1.38.27,1.84.71.51.49.82,1.21.82,2.08,0,.82-.28,1.57-.82,2.12-.46.47-1.03.72-1.81.72l-.44-.11v-1.37h.02c.3,0,.63-.11.89-.35.25-.24.42-.58.42-.97,0-.43-.17-.77-.42-1.01-.27-.26-.57-.35-.91-.35v-1.39l.41-.08Z"/>
+			<polygon class="cls-1" points="47.39 164.66 49.35 164.66 50.84 167.52 52.3 164.66 54.21 164.66 49.97 172.64 48.05 172.64 49.91 169.26 47.39 164.66"/>
+			<polygon class="cls-1" points="66.6 162.05 68.11 162.05 70.07 166.76 72.03 162.05 73.55 162.05 74.81 169.93 72.99 169.93 72.36 165.23 70.39 169.93 69.75 169.93 67.78 165.23 67.15 169.93 65.33 169.93 66.6 162.05"/>
+			<polygon class="cls-1" points="80.9 162.05 82.72 162.05 82.72 168.39 85.16 168.39 85.16 169.93 80.9 169.93 80.9 162.05"/>
+			<polyline class="cls-1" points="91.43 162.05 93.25 162.05 93.25 169.93 91.43 169.93 91.43 162.05"/>
+			<polygon class="cls-1" points="99.44 162.05 104.69 162.05 104.69 163.58 102.98 163.58 102.98 169.93 101.16 169.93 101.16 163.58 99.44 163.58 99.44 162.05"/>
+		</svg>
+	</xsl:variable>
+  
+	<xsl:variable name="PLATEAU-Logo-inverted">
+		<svg id="Layer_1" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 141.72 172.64">
+			<defs>
+				<style>
+					.cls-1 {
+						fill: #ffffff;
+						fill-rule: evenodd;
+						stroke-width: 0px;
+					}
+				</style>
+			</defs>
+			<rect width="100%" height="100%" fill="black"/>
 			<polygon class="cls-1" points="27.54 25.75 60.03 44.51 69.57 50.02 79.53 55.77 91.88 62.9 96.85 65.77 114.18 75.78 114.18 124.32 27.54 74.29 27.54 25.75"/>
 			<polygon class="cls-1" points="69.57 0 69.57 47.05 59.39 41.17 28.83 23.52 69.57 0"/>
 			<polygon class="cls-1" points="72.15 0 112.9 23.52 91.88 35.66 91.88 59.93 80.04 53.09 72.15 48.53 72.15 0"/>
