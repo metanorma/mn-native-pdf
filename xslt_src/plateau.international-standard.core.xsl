@@ -371,8 +371,8 @@
 							
 							<fo:flow flow-name="xsl-region-body">
 								<xsl:apply-templates select="*" mode="page"/>
-								
-								<xsl:if test="not(*)">
+
+								<xsl:if test="not(*[normalize-space() != ''])">
 									<fo:block><!-- prevent fop error for empty document --></fo:block>
 								</xsl:if>
 							</fo:flow>
