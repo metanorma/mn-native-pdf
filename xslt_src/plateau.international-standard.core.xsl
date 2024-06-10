@@ -25,7 +25,10 @@
 	
 	<xsl:variable name="debug">false</xsl:variable>
 	
+	<xsl:variable name="doctype" select="//plateau:plateau-standard[1]/plateau:bibdata/plateau:ext/plateau:doctype[@language = '' or not(@language)]"/>
+	
 	<xsl:variable name="i18n_doctype_dict_annex"><xsl:call-template name="getLocalizedString"><xsl:with-param name="key">doctype_dict.annex</xsl:with-param></xsl:call-template></xsl:variable>
+	<xsl:variable name="i18n_doctype_dict_technical_report"><xsl:call-template name="getLocalizedString"><xsl:with-param name="key">doctype_dict.technical-report</xsl:with-param></xsl:call-template></xsl:variable>
 	
 	<xsl:variable name="contents_">
 		<xsl:variable name="bundle" select="count(//plateau:plateau-standard) &gt; 1"/>
@@ -77,10 +80,16 @@
 			<fo:layout-master-set>
 			
 				<!-- Cover page -->
+				<xsl:variable name="cover_page_margin_bottom">
+					<xsl:choose>
+						<xsl:when test="$doctype = 'technical-report'">48</xsl:when>
+						<xsl:otherwise>45</xsl:otherwise>
+					</xsl:choose>
+				</xsl:variable>
 				<fo:simple-page-master master-name="cover-page" page-width="{$pageWidth}mm" page-height="{$pageHeight}mm">
-					<fo:region-body margin-top="15mm" margin-bottom="45mm" margin-left="36mm" margin-right="8.5mm"/>
+					<fo:region-body margin-top="15mm" margin-bottom="{$cover_page_margin_bottom}mm" margin-left="36mm" margin-right="8.5mm"/>
 					<fo:region-before region-name="header" extent="15mm"/>
-					<fo:region-after region-name="footer" extent="45mm"/>
+					<fo:region-after region-name="footer" extent="{$cover_page_margin_bottom}mm"/>
 					<fo:region-start region-name="left-region" extent="36mm"/>
 					<fo:region-end region-name="right-region" extent="8.5mm"/>
 				</fo:simple-page-master>
@@ -124,6 +133,14 @@
 					<fo:region-after region-name="footer" extent="30mm"/>
 					<fo:region-start region-name="left-region" extent="15mm"/>
 					<fo:region-end region-name="right-region" extent="22.7mm"/>
+				</fo:simple-page-master>
+				
+				<fo:simple-page-master master-name="last-page_technical-report" page-width="{$pageWidth}mm" page-height="{$pageHeight}mm">
+					<fo:region-body margin-top="191mm" margin-bottom="41mm" margin-left="26mm" margin-right="26mm"/>
+					<fo:region-before region-name="header" extent="{$marginTop}mm"/>
+					<fo:region-after region-name="footer" extent="{$marginBottom}mm"/>
+					<fo:region-start region-name="left-region" extent="26mm"/>
+					<fo:region-end region-name="right-region" extent="26mm"/>
 				</fo:simple-page-master>
 			</fo:layout-master-set>
 			
@@ -363,11 +380,7 @@
 								</fo:block>
 							</fo:static-content>
 							
-							<fo:static-content flow-name="footer">
-								<fo:block-container height="24mm" display-align="after">
-									<fo:block text-align="center" margin-bottom="16mm"><fo:page-number /></fo:block>
-								</fo:block-container>
-							</fo:static-content>
+							<xsl:call-template name="insertHeaderFooter"/>
 							
 							<fo:flow flow-name="xsl-region-body">
 								<xsl:apply-templates select="*" mode="page"/>
@@ -380,20 +393,48 @@
 					</xsl:for-each>
 					
 					
-					<fo:page-sequence master-reference="last-page" force-page-count="no-force">
-						<fo:flow flow-name="xsl-region-body">
-							<fo:block-container width="100%" border="0.75pt solid black" font-size="10pt" line-height="1.7">
-								<fo:block margin-left="4.5mm" margin-top="1mm">
-									<xsl:value-of select="/*/plateau:bibdata/plateau:title[@language = 'ja' and @type = 'title-main']"/>
-									<fo:inline padding-left="4mm"><xsl:value-of select="/*/plateau:bibdata/plateau:edition[@language = 'ja']"/></fo:inline>
-								</fo:block>
-								<fo:block margin-left="7.7mm"><xsl:value-of select="/*/plateau:bibdata/plateau:date[@type = 'published']"/><xsl:text> 発行</xsl:text></fo:block>
-								<!-- MLIT Department -->
-								<fo:block margin-left="7.7mm"><xsl:value-of select="/*/plateau:bibdata/plateau:contributor[plateau:role/@type = 'author']/plateau:organization/plateau:name"/></fo:block>
-								<fo:block margin-left="9mm"><xsl:value-of select="/*/plateau:bibdata/plateau:contributor[plateau:role/@type = 'enabler']/plateau:organization/plateau:name"/></fo:block>
-							</fo:block-container>
-						</fo:flow>
-					</fo:page-sequence>
+					<xsl:choose>
+						<xsl:when test="$doctype = 'technical-report'">
+							<fo:page-sequence master-reference="last-page_technical-report" force-page-count="no-force">
+								<xsl:call-template name="insertHeaderFooter"/>
+								<fo:flow flow-name="xsl-region-body">
+									<fo:block-container width="100%" height="64mm" border="0.75pt solid black" font-size="14pt" text-align="center" display-align="center" line-height="1.7">
+										<fo:block>
+											<xsl:value-of select="/*/plateau:bibdata/plateau:title[@language = 'ja' and @type = 'title-main']"/>
+										</fo:block>
+										<fo:block>
+											<xsl:value-of select="$i18n_doctype_dict_technical_report"/>
+										</fo:block>
+										<fo:block font-size="12pt" margin-top="18pt">
+											<fo:block><xsl:value-of select="/*/plateau:bibdata/plateau:date[@type = 'published']"/><xsl:text> 発行</xsl:text></fo:block>
+											<!-- 委託者 (Contractor) -->
+											<fo:block>委託者：<xsl:value-of select="/*/plateau:bibdata/plateau:contributor[plateau:role/@type = 'author']/plateau:organization/plateau:name"/></fo:block>
+											<!-- 受託者 (Trustees) -->
+											<fo:block>受託者：<xsl:value-of select="/*/plateau:bibdata/plateau:contributor[plateau:role/@type = 'enabler']/plateau:organization/plateau:name"/></fo:block>
+										</fo:block>
+									</fo:block-container>
+								</fo:flow>
+							</fo:page-sequence>
+						</xsl:when>
+						<xsl:otherwise> <!-- handbook -->
+							<fo:page-sequence master-reference="last-page" force-page-count="no-force">
+								<fo:flow flow-name="xsl-region-body">
+									<fo:block-container width="100%" border="0.75pt solid black" font-size="10pt" line-height="1.7">
+										<fo:block margin-left="4.5mm" margin-top="1mm">
+											<xsl:value-of select="/*/plateau:bibdata/plateau:title[@language = 'ja' and @type = 'title-main']"/>
+											<fo:inline padding-left="4mm"><xsl:value-of select="/*/plateau:bibdata/plateau:edition[@language = 'ja']"/></fo:inline>
+										</fo:block>
+										<fo:block margin-left="7.7mm"><xsl:value-of select="/*/plateau:bibdata/plateau:date[@type = 'published']"/><xsl:text> 発行</xsl:text></fo:block>
+										<!-- MLIT Department -->
+										<fo:block margin-left="7.7mm"><xsl:value-of select="/*/plateau:bibdata/plateau:contributor[plateau:role/@type = 'author']/plateau:organization/plateau:name"/></fo:block>
+										<fo:block margin-left="9mm"><xsl:value-of select="/*/plateau:bibdata/plateau:contributor[plateau:role/@type = 'enabler']/plateau:organization/plateau:name"/></fo:block>
+									</fo:block-container>
+								</fo:flow>
+							</fo:page-sequence>
+						</xsl:otherwise>
+					</xsl:choose>
+					
+					
 
 
 					
@@ -485,10 +526,11 @@
 		<xsl:param name="num"/>
 		<fo:page-sequence master-reference="cover-page" force-page-count="no-force" font-family="Noto Sans Condensed">
 			
-			<xsl:variable name="doctype" select="/*/plateau:bibdata/plateau:ext/plateau:doctype[@language = '' or not(@language)]"/>
-      
 			<xsl:if test="$doctype = 'annex'">
 				<xsl:attribute name="color">white</xsl:attribute>
+			</xsl:if>
+			<xsl:if test="$doctype = 'technical-report'">
+				<xsl:attribute name="font-family">Noto Sans</xsl:attribute>
 			</xsl:if>
 			
 			<fo:static-content flow-name="header" role="artifact" id="__internal_layout__coverpage_header_{generate-id()}">
@@ -501,7 +543,14 @@
 					<fo:table table-layout="fixed" width="100%">
 						<fo:table-column column-width="proportional-column-width(140)"/>
 						<fo:table-column column-width="proportional-column-width(13.5)"/>
-						<fo:table-column column-width="proportional-column-width(11)"/>
+						<xsl:choose>
+							<xsl:when test="$doctype = 'technical-report'">
+								<fo:table-column column-width="proportional-column-width(20)"/>
+							</xsl:when>
+							<xsl:otherwise>
+								<fo:table-column column-width="proportional-column-width(11)"/>
+							</xsl:otherwise>
+						</xsl:choose>
 						<fo:table-body>
 							<fo:table-row>
 								<fo:table-cell>
@@ -511,17 +560,49 @@
 											<xsl:value-of select="concat('（', $i18n_doctype_dict_annex)"/>
 											<fo:inline letter-spacing="-3mm">）</fo:inline>
 										</xsl:if>
-										<xsl:apply-templates select="/*/plateau:bibdata/plateau:title[@language = 'ja' and @type = 'title-main']/node()"/>
+										<xsl:if test="$doctype = 'technical-report'">
+											<xsl:attribute name="font-size">18pt</xsl:attribute>
+											<xsl:attribute name="line-height">1.8</xsl:attribute>
+										</xsl:if>
+										<xsl:variable name="title">
+											<xsl:apply-templates select="/*/plateau:bibdata/plateau:title[@language = 'ja' and @type = 'title-main']/node()"/>
+										</xsl:variable>
+										<xsl:copy-of select="$title"/>
+										<xsl:if test="$doctype = 'technical-report'">
+											<xsl:choose>
+												<xsl:when test="string-length($title) &gt; 60">
+													<fo:inline> <xsl:value-of select="$i18n_doctype_dict_technical_report"/></fo:inline>
+												</xsl:when>
+												<xsl:otherwise>
+													<fo:block><xsl:value-of select="$i18n_doctype_dict_technical_report"/></fo:block>
+												</xsl:otherwise>
+											</xsl:choose>
+										</xsl:if>
 									</fo:block>
-									<fo:block font-size="14pt" margin-top="3mm"><xsl:apply-templates select="/*/plateau:bibdata/plateau:title[@language = 'en' and @type = 'title-main']/node()"/></fo:block>
+									<fo:block font-size="14pt" margin-top="3mm">
+										<xsl:if test="$doctype = 'technical-report'">
+											<xsl:attribute name="font-size">9pt</xsl:attribute>
+											<xsl:attribute name="margin-top">1mm</xsl:attribute>
+										</xsl:if>
+										<xsl:apply-templates select="/*/plateau:bibdata/plateau:title[@language = 'en' and @type = 'title-main']/node()"/>
+									</fo:block>
 								</fo:table-cell>
-								<fo:table-cell text-align="right" font-size="8.5pt" padding-right="2mm">
-									<fo:block>&#xa0;</fo:block>
+								<fo:table-cell text-align="right" font-size="8.5pt" padding-top="3mm" padding-right="2mm">
+									<xsl:if test="$doctype = 'technical-report'">
+										<xsl:attribute name="font-size">9.5pt</xsl:attribute>
+										<xsl:attribute name="padding-top">2mm</xsl:attribute>
+									</xsl:if>
 									<fo:block>series</fo:block>
 									<fo:block>No.</fo:block>
 								</fo:table-cell>
 								<fo:table-cell text-align="right">
+									<xsl:if test="$doctype = 'technical-report'">
+										<xsl:attribute name="text-align">center</xsl:attribute>
+									</xsl:if>
 									<fo:block font-size="32pt">
+										<xsl:if test="$doctype = 'technical-report'">
+											<xsl:attribute name="font-size">28pt</xsl:attribute>
+										</xsl:if>
 										<xsl:variable name="docnumber" select="/*/plateau:bibdata/plateau:docnumber"/>
 										<xsl:if test="string-length($docnumber) = 1">0</xsl:if><xsl:value-of select="$docnumber"/>
 									</fo:block>
@@ -534,7 +615,13 @@
 		
 			<fo:static-content flow-name="left-region" role="artifact" id="__internal_layout__coverpage_left_region_{generate-id()}">				
 				<fo:block text-align="center" margin-top="14.5mm" margin-left="2mm">
+					<xsl:if test="$doctype = 'technical-report'">
+						<xsl:attribute name="margin-left">5.5mm</xsl:attribute>
+					</xsl:if>
 					<fo:instream-foreign-object content-width="24mm" fox:alt-text="PLATEAU Logo">
+						<xsl:if test="$doctype = 'technical-report'">
+							<xsl:attribute name="content-width">20.5mm</xsl:attribute>
+						</xsl:if>
 						<xsl:choose>
 							<xsl:when test="$doctype = 'annex'">
 								<xsl:copy-of select="$PLATEAU-Logo-inverted"/>
@@ -546,12 +633,24 @@
 					</fo:instream-foreign-object>
 				</fo:block>
 				<fo:block-container reference-orientation="-90" width="205mm" height="36mm" margin-top="6mm">
-					<fo:block font-size="21.2pt" margin-top="7mm"><xsl:apply-templates select="/*/plateau:bibdata/plateau:title[@language = 'en' and @type = 'title-intro']/node()"/></fo:block>
+					<xsl:if test="$doctype = 'technical-report'">
+						<xsl:attribute name="margin-top">2mm</xsl:attribute>
+					</xsl:if>
+					<fo:block font-size="21.2pt" margin-top="7mm">
+						<xsl:if test="$doctype = 'technical-report'">
+							<xsl:attribute name="font-size">16pt</xsl:attribute>
+							<xsl:attribute name="margin-top">8mm</xsl:attribute>
+						</xsl:if>
+						<xsl:apply-templates select="/*/plateau:bibdata/plateau:title[@language = 'en' and @type = 'title-intro']/node()"/>
+					</fo:block>
 					<fo:block font-family="Noto Sans JP" font-size="14.2pt" margin-top="2mm">
 						<xsl:if test="$doctype = 'annex'">
 							<xsl:attribute name="text-indent">-3.5mm</xsl:attribute>
 							<xsl:value-of select="concat('（', $i18n_doctype_dict_annex)"/>
 							<fo:inline letter-spacing="-1mm">）</fo:inline>
+						</xsl:if>
+						<xsl:if test="$doctype = 'technical-report'">
+							<xsl:attribute name="font-size">12pt</xsl:attribute>
 						</xsl:if>
 						<xsl:apply-templates select="/*/plateau:bibdata/plateau:title[@language = 'ja' and @type = 'title-intro']/node()"/>
 					</fo:block>
@@ -1378,6 +1477,22 @@
 		</fo:block-container>
 	</xsl:template>
 	
+	<xsl:template name="insertHeaderFooter">
+		<fo:static-content flow-name="footer">
+			<xsl:choose>
+				<xsl:when test="$doctype = 'technical-report'">
+					<fo:block-container height="23mm" display-align="after">
+						<fo:block text-align="center" margin-bottom="16mm">- <fo:page-number /> -</fo:block>
+					</fo:block-container>
+				</xsl:when>
+				<xsl:otherwise>
+					<fo:block-container height="24mm" display-align="after">
+						<fo:block text-align="center" margin-bottom="16mm"><fo:page-number /></fo:block>
+					</fo:block-container>
+				</xsl:otherwise>
+			</xsl:choose>
+		</fo:static-content>
+	</xsl:template>
 	
 	<!-- background cover image -->
 	<xsl:template name="insertBackgroundPageImage">

@@ -253,7 +253,12 @@
 			<xsl:when test="$namespace = 'nist-cswp' or $namespace = 'nist-sp'">25.4</xsl:when>
 			<xsl:when test="$namespace = 'ogc'">35</xsl:when>
 			<xsl:when test="$namespace = 'ogc-white-paper'">25.4</xsl:when>
-			<xsl:when test="$namespace = 'plateau'">15.4</xsl:when>
+			<xsl:when test="$namespace = 'plateau'">
+				<xsl:choose>
+					<xsl:when test="$doctype = 'technical-report'">19.5</xsl:when>
+					<xsl:otherwise>15.4</xsl:otherwise> <!-- handbook -->
+				</xsl:choose>
+			</xsl:when>
 			<xsl:when test="$namespace = 'rsd'">29</xsl:when>
 			<xsl:when test="$namespace = 'unece'">40</xsl:when>
 			<xsl:when test="$namespace = 'unece-rec'">40</xsl:when>
@@ -288,7 +293,12 @@
 			<xsl:when test="$namespace = 'nist-cswp' or $namespace = 'nist-sp'">25.4</xsl:when>
 			<xsl:when test="$namespace = 'ogc'">17</xsl:when>
 			<xsl:when test="$namespace = 'ogc-white-paper'">25.4</xsl:when>
-			<xsl:when test="$namespace = 'plateau'">15.4</xsl:when>
+			<xsl:when test="$namespace = 'plateau'">
+				<xsl:choose>
+					<xsl:when test="$doctype = 'technical-report'">18</xsl:when>
+					<xsl:otherwise>15.4</xsl:otherwise> <!-- handbook -->
+				</xsl:choose>
+			</xsl:when>
 			<xsl:when test="$namespace = 'rsd'">29</xsl:when>
 			<xsl:when test="$namespace = 'unece'">40</xsl:when>
 			<xsl:when test="$namespace = 'unece-rec'">40</xsl:when>
@@ -321,7 +331,12 @@
 			<xsl:when test="$namespace = 'nist-cswp' or $namespace = 'nist-sp'">25.4</xsl:when>
 			<xsl:when test="$namespace = 'ogc'">16.5</xsl:when>
 			<xsl:when test="$namespace = 'ogc-white-paper'">25.4</xsl:when>
-			<xsl:when test="$namespace = 'plateau'">16</xsl:when>
+			<xsl:when test="$namespace = 'plateau'">
+				<xsl:choose>
+					<xsl:when test="$doctype = 'technical-report'">26</xsl:when>
+					<xsl:otherwise>16</xsl:otherwise> <!-- handbook -->
+				</xsl:choose>
+			</xsl:when>
 			<xsl:when test="$namespace = 'rsd'">14</xsl:when>
 			<xsl:when test="$namespace = 'unece'">30</xsl:when>
 			<xsl:when test="$namespace = 'unece-rec'">30</xsl:when>
@@ -355,7 +370,12 @@
 			<xsl:when test="$namespace = 'nist-cswp' or $namespace = 'nist-sp'">25.4</xsl:when>
 			<xsl:when test="$namespace = 'ogc'">22.5</xsl:when>
 			<xsl:when test="$namespace = 'ogc-white-paper'">25.4</xsl:when>
-			<xsl:when test="$namespace = 'plateau'">32</xsl:when>
+			<xsl:when test="$namespace = 'plateau'">
+				<xsl:choose>
+					<xsl:when test="$doctype = 'technical-report'">26</xsl:when>
+					<xsl:otherwise>32</xsl:otherwise> <!-- handbook -->
+				</xsl:choose>
+			</xsl:when>
 			<xsl:when test="$namespace = 'rsd'">22</xsl:when>
 			<xsl:when test="$namespace = 'unece'">40</xsl:when>
 			<xsl:when test="$namespace = 'unece-rec'">34</xsl:when>
