@@ -1362,6 +1362,9 @@
 		</fo:block-container>
 	</xsl:template>
 
+	<xsl:template match="*[local-name() = 'pagebreak']" priority="2">
+		<fo:block break-after="page"/>
+	</xsl:template>
 		
 	<xsl:template name="insertHeaderFooter">
 		<xsl:param name="color" select="$color_blue"/>
