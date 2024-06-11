@@ -490,13 +490,9 @@
 			<xsl:attribute name="id">
 				<xsl:value-of select="@id"/>
 			</xsl:attribute>
-			<xsl:attribute name="text-align">
-				<xsl:choose>
-					<!-- <xsl:when test="ancestor::csa:preface">justify</xsl:when> -->
-					<xsl:when test="@align"><xsl:value-of select="@align"/></xsl:when>
-					<xsl:otherwise>left</xsl:otherwise><!-- justify -->
-				</xsl:choose>
-			</xsl:attribute>
+			
+			<xsl:call-template name="setBlockAttributes"/>
+			
 			<xsl:attribute name="space-after">
 				<xsl:choose>
 					<xsl:when test="ancestor::csa:li">0pt</xsl:when>

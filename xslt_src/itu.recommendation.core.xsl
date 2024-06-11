@@ -1924,9 +1924,9 @@
 		</xsl:variable>
 		<xsl:element name="{$element-name}">
 			<xsl:attribute name="margin-top">6pt</xsl:attribute>
-			<xsl:if test="@keep-with-next = 'true'">
-				<xsl:attribute name="keep-with-next">always</xsl:attribute>
-			</xsl:if>
+			
+			<xsl:call-template name="setKeepAttributes"/>
+			
 			<xsl:if test="@class='supertitle'">
 				<xsl:attribute name="space-before">36pt</xsl:attribute>
 				<xsl:attribute name="margin-bottom">24pt</xsl:attribute>

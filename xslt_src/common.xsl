@@ -19558,7 +19558,10 @@
 		<xsl:call-template name="setTextAlignment">
 			<xsl:with-param name="default" select="$text_align_default"/>
 		</xsl:call-template>
-		
+		<xsl:call-template name="setKeepAttributes"/>
+	</xsl:template>
+	
+	<xsl:template name="setKeepAttributes">
 		<!-- https://www.metanorma.org/author/topics/document-format/text/#avoiding-page-breaks -->
 		<!-- Example: keep-lines-together="true" -->
 		<xsl:if test="@keep-lines-together = 'true'">
