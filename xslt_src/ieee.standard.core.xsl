@@ -2740,9 +2740,10 @@
 					</xsl:choose>
 				</xsl:variable> -->
 				<xsl:element name="{$element-name}">
-					<xsl:call-template name="setTextAlignment">
-						<xsl:with-param name="default">justify</xsl:with-param>
+					<xsl:call-template name="setBlockAttributes">
+						<xsl:with-param name="text_align_default">justify</xsl:with-param>
 					</xsl:call-template>
+					
 					<xsl:attribute name="margin-bottom">6pt</xsl:attribute><!-- 8pt -->
 					<xsl:if test="($current_template = 'whitepaper' or $current_template = 'icap-whitepaper' or $current_template = 'industry-connection-report') and (ancestor::ieee:sections or ancestor::ieee:annex)">
 						<xsl:attribute name="margin-bottom">12pt</xsl:attribute>

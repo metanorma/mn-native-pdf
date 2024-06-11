@@ -493,13 +493,9 @@
 			</xsl:choose>
 		</xsl:variable>
 		<xsl:element name="{$element-name}">
-			<xsl:attribute name="text-align">
-				<xsl:choose>
-					<!-- <xsl:when test="ancestor::csd:preface">justify</xsl:when> -->
-					<xsl:when test="@align"><xsl:value-of select="@align"/></xsl:when>
-					<xsl:otherwise>left</xsl:otherwise><!-- justify -->
-				</xsl:choose>
-			</xsl:attribute>
+		
+			<xsl:call-template name="setBlockAttributes"/>
+			
 			<xsl:attribute name="margin-bottom">
 				<xsl:choose>
 					<xsl:when test="ancestor::csd:li">0pt</xsl:when>

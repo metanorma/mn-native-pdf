@@ -593,15 +593,12 @@
 			</xsl:choose>
 		</xsl:variable>
 		<xsl:element name="{$element-name}">
-			<xsl:attribute name="text-align">
-				<xsl:choose>
-					<xsl:when test="@align"><xsl:value-of select="@align"/></xsl:when>
-					<xsl:when test="ancestor::m3d:td/@align"><xsl:value-of select="ancestor::m3d:td/@align"/></xsl:when>
-					<xsl:when test="ancestor::m3d:th/@align"><xsl:value-of select="ancestor::m3d:th/@align"/></xsl:when>
-					<xsl:otherwise>justify</xsl:otherwise><!-- left -->
-				</xsl:choose>
-			</xsl:attribute>
 			<xsl:attribute name="text-indent">0mm</xsl:attribute>
+			
+			<xsl:call-template name="setBlockAttributes">
+				<xsl:with-param name="text_align_default">justify</xsl:with-param>
+			</xsl:call-template>
+			
 			<xsl:attribute name="margin-bottom">6pt</xsl:attribute>
 			<xsl:apply-templates>
 				<xsl:with-param name="split_keep-within-line" select="$split_keep-within-line"/>
