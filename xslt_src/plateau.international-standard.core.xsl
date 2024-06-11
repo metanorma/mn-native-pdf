@@ -29,6 +29,15 @@
 	
 	<xsl:variable name="i18n_doctype_dict_annex"><xsl:call-template name="getLocalizedString"><xsl:with-param name="key">doctype_dict.annex</xsl:with-param></xsl:call-template></xsl:variable>
 	<xsl:variable name="i18n_doctype_dict_technical_report"><xsl:call-template name="getLocalizedString"><xsl:with-param name="key">doctype_dict.technical-report</xsl:with-param></xsl:call-template></xsl:variable>
+	<xsl:variable name="i18n_table_of_contents"><xsl:call-template name="getLocalizedString"><xsl:with-param name="key">table_of_contents</xsl:with-param></xsl:call-template></xsl:variable>
+	
+	<xsl:variable name="page_header">
+		<xsl:value-of select="/*/plateau:metanorma-extension/plateau:presentation-metadata/plateau:use-case"/>
+		<xsl:text>_</xsl:text>
+		<xsl:value-of select="$i18n_doctype_dict_technical_report"/>
+		<xsl:text>_</xsl:text>
+		<xsl:value-of select="/*/plateau:bibdata/plateau:title[@language = 'ja' and @type = 'title-main']"/>
+	</xsl:variable>
 	
 	<xsl:variable name="contents_">
 		<xsl:variable name="bundle" select="count(//plateau:plateau-standard) &gt; 1"/>
@@ -112,7 +121,7 @@
 				
 				<fo:simple-page-master master-name="document" page-width="{$pageWidth}mm" page-height="{$pageHeight}mm">
 					<fo:region-body margin-top="{$marginTop}mm" margin-bottom="{$marginBottom}mm" margin-left="{$marginLeftRight1}mm" margin-right="{$marginLeftRight2}mm"/>
-					<fo:region-before region-name="header-odd" extent="{$marginTop}mm"/>
+					<fo:region-before region-name="header" extent="{$marginTop}mm"/>
 					<fo:region-after region-name="footer" extent="{$marginBottom}mm"/>
 					<fo:region-start region-name="left-region" extent="{$marginLeftRight1}mm"/>
 					<fo:region-end region-name="right-region" extent="{$marginLeftRight2}mm"/>
@@ -121,7 +130,7 @@
 				<!-- landscape -->
 				<fo:simple-page-master master-name="document-landscape" page-width="{$pageHeight}mm" page-height="{$pageWidth}mm">
 					<fo:region-body margin-top="{$marginTop}mm" margin-bottom="{$marginBottom}mm" margin-left="{$marginLeftRight1}mm" margin-right="{$marginLeftRight2}mm"/>
-					<fo:region-before region-name="header-odd" extent="{$marginTop}mm" precedence="true"/>
+					<fo:region-before region-name="header" extent="{$marginTop}mm" precedence="true"/>
 					<fo:region-after region-name="footer" extent="{$marginBottom}mm" precedence="true"/>
 					<fo:region-start region-name="left-region-landscape" extent="{$marginLeftRight1}mm"/>
 					<fo:region-end region-name="right-region-landscape" extent="{$marginLeftRight2}mm"/>
@@ -139,8 +148,8 @@
 					<fo:region-body margin-top="191mm" margin-bottom="41mm" margin-left="26mm" margin-right="26mm"/>
 					<fo:region-before region-name="header" extent="{$marginTop}mm"/>
 					<fo:region-after region-name="footer" extent="{$marginBottom}mm"/>
-					<fo:region-start region-name="left-region" extent="26mm"/>
-					<fo:region-end region-name="right-region" extent="26mm"/>
+					<fo:region-start region-name="left-region" extent="{$marginLeftRight1}mm"/>
+					<fo:region-end region-name="right-region" extent="{$marginLeftRight2}mm"/>
 				</fo:simple-page-master>
 			</fo:layout-master-set>
 			
@@ -253,6 +262,10 @@
 					</xsl:if>
 					
 					<fo:page-sequence master-reference="document_toc" initial-page-number="1" force-page-count="no-force">
+						<xsl:if test="$doctype = 'technical-report'">
+							<xsl:attribute name="master-reference">document</xsl:attribute>
+						</xsl:if>
+						<xsl:call-template name="insertHeader"/>
 						<fo:flow flow-name="xsl-region-body">
 							<!-- <xsl:if test="$debug = 'true'"> -->
 							<!-- <xsl:message>start contents redirect</xsl:message>
@@ -462,41 +475,68 @@
 	
 	<xsl:template match="*[local-name()='preface']/*[local-name() = 'clause'][@type = 'toc']" priority="4">
 		<xsl:param name="num"/>
+		<xsl:if test="$doctype = 'technical-report'">
+			<fo:block font-size="16pt" margin-top="5mm"><xsl:value-of select="$i18n_table_of_contents"/></fo:block>
+			<fo:block><fo:leader leader-pattern="rule" rule-style="double" rule-thickness="1.5pt" leader-length="100%"/></fo:block>
+		</xsl:if>
 		<xsl:apply-templates />
 		<xsl:if test="count(*) = 1 and *[local-name() = 'title']"> <!-- if there isn't user ToC -->
 			<!-- fill ToC -->
 			<fo:block role="TOC" font-weight="bold">
+				<xsl:if test="$doctype = 'technical-report'">
+					<xsl:attribute name="font-weight">normal</xsl:attribute>
+					<xsl:attribute name="line-height">1.2</xsl:attribute>
+				</xsl:if>
 				<xsl:if test="$contents/doc[@num = $num]//item[@display = 'true']">
 					<xsl:for-each select="$contents/doc[@num = $num]//item[@display = 'true'][@level &lt;= $toc_level or @type='figure' or @type = 'table']">
 						<fo:block role="TOCI">
 							<xsl:choose>
-								<xsl:when test="@type = 'annex' or @type = 'bibliography'">
+								<xsl:when test="$doctype = 'technical-report'">
 									<fo:block space-after="5pt">
-										<xsl:call-template name="insertTocItem"/>
+										<xsl:attribute name="margin-left">
+											<xsl:choose>
+												<xsl:when test="@level = 1">1mm</xsl:when>
+												<xsl:when test="@level = 2">3.5mm</xsl:when>
+												<xsl:when test="@level = 3">7mm</xsl:when>
+												<xsl:otherwise>10mm</xsl:otherwise>
+											</xsl:choose>
+										</xsl:attribute>
+										<xsl:call-template name="insertTocItem">
+											<xsl:with-param name="printSection">true</xsl:with-param>
+										</xsl:call-template>
 									</fo:block>
 								</xsl:when>
 								<xsl:otherwise>
-									<xsl:variable name="margin_left" select="number(@level - 1) * 3"/>
-									<fo:list-block space-after="2pt" margin-left="{$margin_left}mm">
-										<xsl:attribute name="provisional-distance-between-starts">
-											<xsl:choose>
-												<xsl:when test="@level = 1">7mm</xsl:when>
-												<xsl:when test="@level = 2">10mm</xsl:when>
-												<xsl:when test="@level = 3">14mm</xsl:when>
-												<xsl:otherwise>14mm</xsl:otherwise>
-											</xsl:choose>
-										</xsl:attribute>
-										<fo:list-item>
-											<fo:list-item-label end-indent="label-end()">
-												<fo:block>
-													<xsl:value-of select="@section"/>
-												</fo:block>
-											</fo:list-item-label>
-											<fo:list-item-body start-indent="body-start()">
+									<xsl:choose>
+										<xsl:when test="@type = 'annex' or @type = 'bibliography'">
+											<fo:block space-after="5pt">
 												<xsl:call-template name="insertTocItem"/>
-											</fo:list-item-body>
-										</fo:list-item>
-									</fo:list-block>
+											</fo:block>
+										</xsl:when>
+										<xsl:otherwise>
+											<xsl:variable name="margin_left" select="number(@level - 1) * 3"/>
+											<fo:list-block space-after="2pt" margin-left="{$margin_left}mm">
+												<xsl:attribute name="provisional-distance-between-starts">
+													<xsl:choose>
+														<xsl:when test="@level = 1">7mm</xsl:when>
+														<xsl:when test="@level = 2">10mm</xsl:when>
+														<xsl:when test="@level = 3">14mm</xsl:when>
+														<xsl:otherwise>14mm</xsl:otherwise>
+													</xsl:choose>
+												</xsl:attribute>
+												<fo:list-item>
+													<fo:list-item-label end-indent="label-end()">
+														<fo:block>
+															<xsl:value-of select="@section"/>
+														</fo:block>
+													</fo:list-item-label>
+													<fo:list-item-body start-indent="body-start()">
+														<xsl:call-template name="insertTocItem"/>
+													</fo:list-item-body>
+												</fo:list-item>
+											</fo:list-block>
+										</xsl:otherwise>
+									</xsl:choose>
 								</xsl:otherwise>
 							</xsl:choose>
 						</fo:block>
@@ -509,13 +549,20 @@
 	<xsl:template match="*[local-name() = 'clause'][@type = 'toc']/*[local-name() = 'title']" priority="3"/>
 		
 	<xsl:template name="insertTocItem">
+		<xsl:param name="printSection">false</xsl:param>
 		<fo:block text-align-last="justify" role="TOCI">
 			<fo:basic-link internal-destination="{@id}" fox:alt-text="{title}">
-				<fo:inline><xsl:apply-templates select="title" /></fo:inline>
+				<xsl:if test="$printSection = 'true' and @section != ''">
+					<xsl:value-of select="@section"/>
+					<xsl:text>. </xsl:text>
+				</xsl:if>
+				<fo:inline><xsl:apply-templates select="title" /><xsl:text> </xsl:text></fo:inline>
 				<fo:inline keep-together.within-line="always">
 					<fo:leader leader-pattern="dots"/>
 					<fo:inline>
+						<xsl:if test="$doctype = 'technical-report'"><xsl:text>- </xsl:text></xsl:if>
 						<fo:page-number-citation ref-id="{@id}"/>
+						<xsl:if test="$doctype = 'technical-report'"><xsl:text> -</xsl:text></xsl:if>
 					</fo:inline>
 				</fo:inline>
 			</fo:basic-link>
@@ -1478,6 +1525,7 @@
 	</xsl:template>
 	
 	<xsl:template name="insertHeaderFooter">
+		<xsl:call-template name="insertHeader"/>
 		<fo:static-content flow-name="footer">
 			<xsl:choose>
 				<xsl:when test="$doctype = 'technical-report'">
@@ -1492,6 +1540,18 @@
 				</xsl:otherwise>
 			</xsl:choose>
 		</fo:static-content>
+	</xsl:template>
+	
+	<xsl:template name="insertHeader">
+		<xsl:if test="$doctype = 'technical-report'">
+			<fo:static-content flow-name="header">
+				<fo:block-container height="19.5mm" display-align="after">
+					<fo:block>
+						<xsl:value-of select="$page_header"/>
+					</fo:block>
+				</fo:block-container>
+			</fo:static-content>
+		</xsl:if>
 	</xsl:template>
 	
 	<!-- background cover image -->

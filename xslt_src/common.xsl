@@ -7454,7 +7454,7 @@
 				</xsl:if>
 				
 				<xsl:if test="$namespace = 'plateau'">
-					<xsl:apply-templates select="*[not(local-name()='thead') and not(local-name()='tbody') and not(local-name()='tfoot')]" />
+					<xsl:apply-templates select="*[not(local-name()='thead') and not(local-name()='tbody') and not(local-name()='tfoot') and not(local-name()='name')]" />
 					<xsl:for-each select="*[local-name()='tbody']"> <!-- select context to tbody -->
 						<xsl:variable name="table_fn_block">
 							<xsl:call-template name="table_fn_display" />
@@ -10762,7 +10762,7 @@
 						<fo:leader leader-pattern="rule" leader-length="30%"/>
 					</fo:block>
 				</fo:static-content>
-				<xsl:call-template name="insertHeaderFooter"/>					
+				<xsl:call-template name="insertHeaderFooter"/>
 				<xsl:text disable-output-escaping="yes">&lt;fo:flow flow-name="xsl-region-body"&gt;</xsl:text>	
 				
 				<xsl:for-each select="$tree//element">
