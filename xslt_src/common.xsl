@@ -253,7 +253,12 @@
 			<xsl:when test="$namespace = 'nist-cswp' or $namespace = 'nist-sp'">25.4</xsl:when>
 			<xsl:when test="$namespace = 'ogc'">35</xsl:when>
 			<xsl:when test="$namespace = 'ogc-white-paper'">25.4</xsl:when>
-			<xsl:when test="$namespace = 'plateau'">15.4</xsl:when>
+			<xsl:when test="$namespace = 'plateau'">
+				<xsl:choose>
+					<xsl:when test="$doctype = 'technical-report'">19.5</xsl:when>
+					<xsl:otherwise>15.4</xsl:otherwise> <!-- handbook -->
+				</xsl:choose>
+			</xsl:when>
 			<xsl:when test="$namespace = 'rsd'">29</xsl:when>
 			<xsl:when test="$namespace = 'unece'">40</xsl:when>
 			<xsl:when test="$namespace = 'unece-rec'">40</xsl:when>
@@ -288,7 +293,12 @@
 			<xsl:when test="$namespace = 'nist-cswp' or $namespace = 'nist-sp'">25.4</xsl:when>
 			<xsl:when test="$namespace = 'ogc'">17</xsl:when>
 			<xsl:when test="$namespace = 'ogc-white-paper'">25.4</xsl:when>
-			<xsl:when test="$namespace = 'plateau'">15.4</xsl:when>
+			<xsl:when test="$namespace = 'plateau'">
+				<xsl:choose>
+					<xsl:when test="$doctype = 'technical-report'">18</xsl:when>
+					<xsl:otherwise>15.4</xsl:otherwise> <!-- handbook -->
+				</xsl:choose>
+			</xsl:when>
 			<xsl:when test="$namespace = 'rsd'">29</xsl:when>
 			<xsl:when test="$namespace = 'unece'">40</xsl:when>
 			<xsl:when test="$namespace = 'unece-rec'">40</xsl:when>
@@ -321,7 +331,12 @@
 			<xsl:when test="$namespace = 'nist-cswp' or $namespace = 'nist-sp'">25.4</xsl:when>
 			<xsl:when test="$namespace = 'ogc'">16.5</xsl:when>
 			<xsl:when test="$namespace = 'ogc-white-paper'">25.4</xsl:when>
-			<xsl:when test="$namespace = 'plateau'">16</xsl:when>
+			<xsl:when test="$namespace = 'plateau'">
+				<xsl:choose>
+					<xsl:when test="$doctype = 'technical-report'">26</xsl:when>
+					<xsl:otherwise>16</xsl:otherwise> <!-- handbook -->
+				</xsl:choose>
+			</xsl:when>
 			<xsl:when test="$namespace = 'rsd'">14</xsl:when>
 			<xsl:when test="$namespace = 'unece'">30</xsl:when>
 			<xsl:when test="$namespace = 'unece-rec'">30</xsl:when>
@@ -355,7 +370,12 @@
 			<xsl:when test="$namespace = 'nist-cswp' or $namespace = 'nist-sp'">25.4</xsl:when>
 			<xsl:when test="$namespace = 'ogc'">22.5</xsl:when>
 			<xsl:when test="$namespace = 'ogc-white-paper'">25.4</xsl:when>
-			<xsl:when test="$namespace = 'plateau'">32</xsl:when>
+			<xsl:when test="$namespace = 'plateau'">
+				<xsl:choose>
+					<xsl:when test="$doctype = 'technical-report'">26</xsl:when>
+					<xsl:otherwise>32</xsl:otherwise> <!-- handbook -->
+				</xsl:choose>
+			</xsl:when>
 			<xsl:when test="$namespace = 'rsd'">22</xsl:when>
 			<xsl:when test="$namespace = 'unece'">40</xsl:when>
 			<xsl:when test="$namespace = 'unece-rec'">34</xsl:when>
@@ -2205,6 +2225,11 @@
 				<xsl:if test="normalize-space(../@width) != 'text-width'">
 					<xsl:attribute name="span">all</xsl:attribute>
 				</xsl:if>
+			</xsl:if>
+		</xsl:if>
+		<xsl:if test="$namespace = 'plateau'">
+			<xsl:if test="$doctype = 'technical-report'">
+				<xsl:attribute name="font-weight">normal</xsl:attribute>
 			</xsl:if>
 		</xsl:if>
 	</xsl:template> <!-- refine_table-name-style -->
@@ -4497,6 +4522,12 @@
 			<xsl:if test="ancestor::jis:figure">
 				<xsl:attribute name="margin-top">0</xsl:attribute>
 				<xsl:attribute name="margin-bottom">6pt</xsl:attribute>
+			</xsl:if>
+		</xsl:if>
+		
+		<xsl:if test="$namespace = 'plateau'">
+			<xsl:if test="$doctype = 'technical-report'">
+				<xsl:attribute name="font-weight">normal</xsl:attribute>
 			</xsl:if>
 		</xsl:if>
 	</xsl:template> <!-- refine_figure-name-style -->
@@ -7434,7 +7465,7 @@
 				</xsl:if>
 				
 				<xsl:if test="$namespace = 'plateau'">
-					<xsl:apply-templates select="*[not(local-name()='thead') and not(local-name()='tbody') and not(local-name()='tfoot')]" />
+					<xsl:apply-templates select="*[not(local-name()='thead') and not(local-name()='tbody') and not(local-name()='tfoot') and not(local-name()='name')]" />
 					<xsl:for-each select="*[local-name()='tbody']"> <!-- select context to tbody -->
 						<xsl:variable name="table_fn_block">
 							<xsl:call-template name="table_fn_display" />
@@ -10742,7 +10773,7 @@
 						<fo:leader leader-pattern="rule" leader-length="30%"/>
 					</fo:block>
 				</fo:static-content>
-				<xsl:call-template name="insertHeaderFooter"/>					
+				<xsl:call-template name="insertHeaderFooter"/>
 				<xsl:text disable-output-escaping="yes">&lt;fo:flow flow-name="xsl-region-body"&gt;</xsl:text>	
 				
 				<xsl:for-each select="$tree//element">
@@ -16228,9 +16259,19 @@
 				<label>&#x2014;</label> <!-- em dash -->
 			</xsl:when>
 			<xsl:when test="$namespace = 'plateau'">
-				<label level="1" font-size="130%" line-height="1.2">・</label> <!-- Katakana Middle Dot -->
-				<label level="2">－</label> <!-- full-width hyphen minus -->
-				<label level="3" font-size="130%" line-height="1.2">・</label>
+				<xsl:choose>
+					<xsl:when test="$doctype = 'technical-report'">
+						<label level="1" font-size="130%" line-height="1.2">・</label> <!-- Katakana Middle Dot -->
+						<label level="2">→</label> <!-- will be replaced in the template 'li' -->
+						<label level="3">☆</label> <!-- will be replaced in the template 'li' -->
+					</xsl:when>
+					<xsl:otherwise>
+						<label level="1" font-size="130%" line-height="1.2">・</label> <!-- Katakana Middle Dot -->
+						<label level="2">－</label> <!-- full-width hyphen minus -->
+						<label level="3" font-size="130%" line-height="1.2">・</label>
+					</xsl:otherwise>
+				</xsl:choose>
+				
 			</xsl:when>
 			<xsl:when test="$namespace = 'rsd'">
 				<label level="1" font-size="75%">o</label> <!-- white circle -->
