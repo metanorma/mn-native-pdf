@@ -693,7 +693,7 @@
 
 
 	
-	<xsl:template match="un:dl" priority="2">
+	<xsl:template match="un:dl" priority="3">
 		<fo:block-container margin-left="0mm">
 			<xsl:if test="parent::*[local-name() = 'note']">
 				<xsl:attribute name="margin-left">
@@ -716,6 +716,7 @@
 	<xsl:template match="un:dt" priority="2">
 		<fo:block margin-bottom="6pt">
 			<xsl:apply-templates />
+			<xsl:text> </xsl:text>
 			<xsl:apply-templates select="following-sibling::un:dd[1]" mode="dd"/>
 		</fo:block>
 	</xsl:template>
