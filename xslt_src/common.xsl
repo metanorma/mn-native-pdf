@@ -2227,6 +2227,11 @@
 				</xsl:if>
 			</xsl:if>
 		</xsl:if>
+		<xsl:if test="$namespace = 'plateau'">
+			<xsl:if test="$doctype = 'technical-report'">
+				<xsl:attribute name="font-weight">normal</xsl:attribute>
+			</xsl:if>
+		</xsl:if>
 	</xsl:template> <!-- refine_table-name-style -->
 	
 
@@ -4517,6 +4522,12 @@
 			<xsl:if test="ancestor::jis:figure">
 				<xsl:attribute name="margin-top">0</xsl:attribute>
 				<xsl:attribute name="margin-bottom">6pt</xsl:attribute>
+			</xsl:if>
+		</xsl:if>
+		
+		<xsl:if test="$namespace = 'plateau'">
+			<xsl:if test="$doctype = 'technical-report'">
+				<xsl:attribute name="font-weight">normal</xsl:attribute>
 			</xsl:if>
 		</xsl:if>
 	</xsl:template> <!-- refine_figure-name-style -->
@@ -16248,9 +16259,19 @@
 				<label>&#x2014;</label> <!-- em dash -->
 			</xsl:when>
 			<xsl:when test="$namespace = 'plateau'">
-				<label level="1" font-size="130%" line-height="1.2">・</label> <!-- Katakana Middle Dot -->
-				<label level="2">－</label> <!-- full-width hyphen minus -->
-				<label level="3" font-size="130%" line-height="1.2">・</label>
+				<xsl:choose>
+					<xsl:when test="$doctype = 'technical-report'">
+						<label level="1" font-size="130%" line-height="1.2">・</label> <!-- Katakana Middle Dot -->
+						<label level="2">→</label> <!-- will be replaced in the template 'li' -->
+						<label level="3">☆</label> <!-- will be replaced in the template 'li' -->
+					</xsl:when>
+					<xsl:otherwise>
+						<label level="1" font-size="130%" line-height="1.2">・</label> <!-- Katakana Middle Dot -->
+						<label level="2">－</label> <!-- full-width hyphen minus -->
+						<label level="3" font-size="130%" line-height="1.2">・</label>
+					</xsl:otherwise>
+				</xsl:choose>
+				
 			</xsl:when>
 			<xsl:when test="$namespace = 'rsd'">
 				<label level="1" font-size="75%">o</label> <!-- white circle -->

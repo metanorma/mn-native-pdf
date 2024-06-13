@@ -85,6 +85,9 @@
 			<xsl:call-template name="insertRootStyle">
 				<xsl:with-param name="root-style" select="$root-style"/>
 			</xsl:call-template>
+			<xsl:if test="$doctype = 'technical-report'">
+				<xsl:attribute name="font-size">10pt</xsl:attribute>
+			</xsl:if>
 			
 			<fo:layout-master-set>
 			
@@ -889,29 +892,11 @@
 		<xsl:variable name="font-size">
 			<xsl:choose>
 				<xsl:when test="@parent = 'preface'">10pt</xsl:when>
+				<xsl:when test="$doctype = 'technical-report' and $level = 1">16pt</xsl:when>
+				<xsl:when test="$doctype = 'technical-report' and $level = 2">14pt</xsl:when>
+				<xsl:when test="$doctype = 'technical-report' and $level = 3">12pt</xsl:when>
+				<xsl:when test="$doctype = 'technical-report' and $level &gt;= 4">10pt</xsl:when>
 				<xsl:when test="@ancestor = 'sections'">12pt</xsl:when>
-				<!-- <xsl:when test="@type = 'section-title'">18pt</xsl:when>
-				<xsl:when test="@ancestor = 'foreword' and $level = '1'">14pt</xsl:when>
-				<xsl:when test="@ancestor = 'annex' and $level = '1' and preceding-sibling::*[local-name() = 'annex'][1][@commentary = 'true']">16pt</xsl:when>
-				<xsl:when test="@ancestor = 'annex' and $level = '1'">14pt</xsl:when> -->
-				<!-- <xsl:when test="@ancestor = 'foreword' and $level &gt;= '2'">12pt</xsl:when>
-				<xsl:when test=". = 'Executive summary'">18pt</xsl:when>
-				<xsl:when test="@ancestor = 'introduction' and $level = '1'">18pt</xsl:when>
-				<xsl:when test="@ancestor = 'introduction' and $level &gt;= '2'">11pt</xsl:when>
-				<xsl:when test="@ancestor = 'sections' and $level = '1'">14pt</xsl:when>
-				<xsl:when test="@ancestor = 'sections' and $level = '2'">11pt</xsl:when>
-				<xsl:when test="@ancestor = 'sections' and $level &gt;= '3'">10pt</xsl:when>
-				<xsl:when test="@ancestor = 'sections' and $level = '2' and preceding-sibling::*[1][local-name() = 'references']">inherit</xsl:when>
-				<xsl:when test="@ancestor = 'sections' and $level = '2'">11pt</xsl:when>
-				<xsl:when test="@ancestor = 'sections' and $level &gt;= '3' and preceding-sibling::*[1][local-name() = 'terms']">11pt</xsl:when>
-				<xsl:when test="@ancestor = 'sections' and $level = '3'">10.5pt</xsl:when>
-				<xsl:when test="@ancestor = 'sections' and $level &gt;= '4'">10pt</xsl:when>
-				
-				<xsl:when test="@ancestor = 'annex' and $level = '2'">13pt</xsl:when>
-				<xsl:when test="@ancestor = 'annex' and $level &gt;= '3'">11.5pt</xsl:when>
-				<xsl:when test="@ancestor = 'bibliography' and $level = '1' and preceding-sibling::*[local-name() = 'references']">11.5pt</xsl:when>
-				<xsl:when test="@ancestor = 'bibliography' and $level = '1'">13pt</xsl:when>
-				<xsl:when test="@ancestor = 'bibliography' and $level &gt;= '2'">10pt</xsl:when> -->
 				<xsl:otherwise>10pt</xsl:otherwise>
 			</xsl:choose>
 		</xsl:variable>
@@ -943,6 +928,8 @@
 				<xsl:when test="@ancestor = 'foreword' and $level = 2">0mm</xsl:when>
 				<xsl:when test="@ancestor = 'annex' and $level = 2">4.5mm</xsl:when>
 				<xsl:when test="@ancestor = 'bibliography' and $level = 2">0mm</xsl:when>
+				<xsl:when test="$doctype = 'technical-report' and $level = 2 and preceding-sibling::*[2][self::plateau:title]">0mm</xsl:when>
+				<xsl:when test="$doctype = 'technical-report' and $level = 3 and preceding-sibling::*[2][self::plateau:title]">0mm</xsl:when>
 				<xsl:when test="$level = 2">2mm</xsl:when>
 				<xsl:when test="$level &gt;= 3">2mm</xsl:when>
 				<xsl:otherwise>0mm</xsl:otherwise>
@@ -958,17 +945,28 @@
 		
 		<xsl:variable name="margin-bottom">
 			<xsl:choose>
-				<xsl:when test="@parent = 'preface'">6pt</xsl:when>
-				<xsl:when test="@ancestor = 'foreword' and $level = 1">9mm</xsl:when>
-				<xsl:when test="@ancestor = 'annex' and $level = '1' and preceding-sibling::*[local-name() = 'annex'][1][@commentary = 'true']">7mm</xsl:when>
-				<xsl:when test="@ancestor = 'annex' and $level = 1">1mm</xsl:when>
-				<xsl:when test="$level = 1 and following-sibling::plateau:clause">8pt</xsl:when>
-				<xsl:when test="$level = 1">12pt</xsl:when>
-				<xsl:when test="$level = 2 and following-sibling::plateau:clause">8pt</xsl:when>
-				<xsl:when test="$level &gt;= 2">12pt</xsl:when>
-				<xsl:when test="@type = 'section-title'">6mm</xsl:when>
-				<xsl:when test="@inline-header = 'true'">0pt</xsl:when>
-				<xsl:otherwise>0mm</xsl:otherwise>
+				<xsl:when test="$doctype = 'technical-report'">
+					<xsl:choose>
+						<xsl:when test="following-sibling::*[1][self::plateau:clause]">0</xsl:when>
+						<xsl:when test="following-sibling::*[1][self::plateau:p]">16pt</xsl:when>
+						<xsl:otherwise>12pt</xsl:otherwise>
+					</xsl:choose>
+				</xsl:when>
+				<xsl:otherwise>
+					<xsl:choose>
+						<xsl:when test="@parent = 'preface'">6pt</xsl:when>
+						<xsl:when test="@ancestor = 'foreword' and $level = 1">9mm</xsl:when>
+						<xsl:when test="@ancestor = 'annex' and $level = '1' and preceding-sibling::*[local-name() = 'annex'][1][@commentary = 'true']">7mm</xsl:when>
+						<xsl:when test="@ancestor = 'annex' and $level = 1">1mm</xsl:when>
+						<xsl:when test="$level = 1 and following-sibling::plateau:clause">8pt</xsl:when>
+						<xsl:when test="$level = 1">12pt</xsl:when>
+						<xsl:when test="$level = 2 and following-sibling::plateau:clause">8pt</xsl:when>
+						<xsl:when test="$level &gt;= 2">12pt</xsl:when>
+						<xsl:when test="@type = 'section-title'">6mm</xsl:when>
+						<xsl:when test="@inline-header = 'true'">0pt</xsl:when>
+						<xsl:otherwise>0mm</xsl:otherwise>
+					</xsl:choose>
+				</xsl:otherwise>
 			</xsl:choose>
 		</xsl:variable>
 	
@@ -1005,6 +1003,19 @@
 						<xsl:attribute name="margin-left">7.5mm</xsl:attribute>
 					</xsl:if>
 					
+					<xsl:if test="$doctype = 'technical-report'">
+						<xsl:choose>
+							<xsl:when test="$level = 2">
+								<xsl:attribute name="background-color">rgb(229,229,229)</xsl:attribute>
+								<xsl:attribute name="padding-top">2mm</xsl:attribute>
+								<xsl:attribute name="padding-bottom">2mm</xsl:attribute>
+							</xsl:when>
+							<xsl:when test="$level = 3">
+								<xsl:attribute name="background-color">rgb(204,204,204)</xsl:attribute>
+							</xsl:when>
+						</xsl:choose>
+					</xsl:if>
+					
 					<!-- if first and last childs are `add` ace-tag, then move start ace-tag before title -->
 					<xsl:if test="*[local-name() = 'tab'][1]/following-sibling::node()[last()][local-name() = 'add'][starts-with(text(), $ace_tag)]">
 						<xsl:apply-templates select="*[local-name() = 'tab'][1]/following-sibling::node()[1][local-name() = 'add'][starts-with(text(), $ace_tag)]">
@@ -1025,6 +1036,9 @@
 					<xsl:call-template name="extractTitle"/>
 					
 					<xsl:apply-templates select="following-sibling::*[1][local-name() = 'variant-title'][@type = 'sub']" mode="subtitle"/>
+					<xsl:if test="$doctype = 'technical-report' and $level = 1">
+						<fo:block margin-top="-3mm" margin-bottom="-1.5mm"><fo:leader leader-pattern="rule" rule-style="double" rule-thickness="1.5pt" leader-length="100%"/></fo:block>
+					</xsl:if>
 				</xsl:element>
 			</xsl:otherwise>
 		</xsl:choose>
@@ -1057,6 +1071,9 @@
 						<xsl:with-param name="text_align_default">justify</xsl:with-param>
 					</xsl:call-template>
 					<xsl:attribute name="margin-bottom">10pt</xsl:attribute>
+					<xsl:if test="$doctype = 'technical-report'">
+						<xsl:attribute name="margin-bottom">18pt</xsl:attribute>
+					</xsl:if>
 					
 					<!--
 					<xsl:if test="not(parent::plateau:note or parent::plateau:li or ancestor::plateau:table)">
@@ -1066,9 +1083,11 @@
 					
 					<xsl:copy-of select="@id"/>
 					
-					<!-- <xsl:attribute name="line-height">2</xsl:attribute> -->
+					<xsl:if test="$doctype = 'technical-report'">
+						<xsl:attribute name="line-height">1.8</xsl:attribute>
+					</xsl:if>
+					
 					<!-- bookmarks only in paragraph -->
-				
 					<xsl:if test="count(plateau:bookmark) != 0 and count(*) = count(plateau:bookmark) and normalize-space() = ''">
 						<xsl:attribute name="font-size">0</xsl:attribute>
 						<xsl:attribute name="margin-bottom">0pt</xsl:attribute>
@@ -1152,6 +1171,10 @@
 				
 					<xsl:call-template name="refine_list-item-label-style"/>
 					
+					<xsl:if test="$doctype = 'technical-report'">
+						<xsl:attribute name="line-height">1.8</xsl:attribute>
+					</xsl:if>
+					
 					<xsl:variable name="list_item_label">
 						<xsl:call-template name="getListItemFormat" />
 					</xsl:variable>
@@ -1174,7 +1197,21 @@
 								<xsl:when test="parent::*[local-name() = 'ul'] and @ancestor = 'sections' and $list_item_label = '・' and not(ancestor::*[local-name() = 'table'])">
 									<fo:inline>
 										<fo:instream-foreign-object content-width="2.5mm" fox:alt-text="ul list label">
-											<xsl:copy-of select="$black_circle"/>
+											<xsl:copy-of select="$list_label_black_circle"/>
+										</fo:instream-foreign-object>
+									</fo:inline>
+								</xsl:when>
+								<xsl:when test="parent::*[local-name() = 'ul'] and $list_item_label = '→'">
+									<fo:inline>
+										<fo:instream-foreign-object content-width="2.5mm" fox:alt-text="ul list label">
+											<xsl:copy-of select="$list_label_arrow"/>
+										</fo:instream-foreign-object>
+									</fo:inline>
+								</xsl:when>
+								<xsl:when test="parent::*[local-name() = 'ul'] and $list_item_label = '☆'">
+									<fo:inline>
+										<fo:instream-foreign-object content-width="2.5mm" fox:alt-text="ul list label">
+											<xsl:copy-of select="$list_label_star"/>
 										</fo:instream-foreign-object>
 									</fo:inline>
 								</xsl:when>
@@ -1484,6 +1521,9 @@
 			</xsl:if> -->
 			<xsl:if test="(ancestor::*[local-name() = 'figure'] or ancestor::*[local-name() = 'table']) and parent::*[local-name() = 'name']">
 				<xsl:attribute name="font-weight">bold</xsl:attribute>
+				<xsl:if test="$doctype = 'technical-report'">
+					<xsl:attribute name="font-weight">normal</xsl:attribute>
+				</xsl:if>
 			</xsl:if>
 			<xsl:apply-templates/>
 		</fo:inline>
@@ -1689,9 +1729,37 @@
 		</svg>
 	</xsl:variable>
 	
-	<xsl:variable name="black_circle">
+	<xsl:variable name="list_label_black_circle">
 		<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20">
 			<circle cx="10" cy="10" r="5" stroke="black" stroke-width="5" fill="black"/>
+		</svg>
+	</xsl:variable>
+	
+	<xsl:variable name="list_label_arrow">
+		<svg id="Layer_1" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 7.51 8.67">
+			<defs>
+				<style>
+					.cls-1 {
+						fill: #231f20;
+						stroke-width: 0px;
+					}
+				</style>
+			</defs>
+			<path class="cls-1" d="m2.51,4.34L0,0l7.51,4.34L0,8.67l2.51-4.34ZM.78.77l2.06,3.56h4.1L.78.77Z"/>
+		</svg>
+	</xsl:variable>
+	
+	<xsl:variable name="list_label_star">
+		<svg id="Layer_1" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 8.68 8.68">
+			<defs>
+				<style>
+					.cls-1 {
+						fill: #231f20;
+						stroke-width: 0px;
+					}
+				</style>
+			</defs>
+			<path class="cls-1" d="m0,4.04c1.04-.05,1.92-.37,2.63-.97.88-.75,1.36-1.77,1.43-3.07h.58c.08,1.31.56,2.34,1.42,3.07.7.6,1.57.92,2.62.97v.58c-1.05.05-1.92.38-2.62.97-.88.75-1.36,1.78-1.42,3.08h-.58c-.05-1.04-.37-1.92-.98-2.63-.75-.89-1.78-1.36-3.07-1.43v-.58Zm7.09.29c-1.33-.5-2.24-1.42-2.75-2.75-.47,1.32-1.39,2.24-2.75,2.75.65.23,1.21.58,1.68,1.06s.83,1.04,1.07,1.69c.24-.65.6-1.22,1.07-1.7s1.04-.83,1.68-1.06Z"/>
 		</svg>
 	</xsl:variable>
 	
