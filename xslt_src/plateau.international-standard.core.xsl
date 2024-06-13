@@ -1594,69 +1594,6 @@
 		</xsl:if>
 	</xsl:template>
 	
-	<!-- background cover image -->
-	<xsl:template name="insertBackgroundPageImage">
-		<xsl:param name="number">1</xsl:param>
-		<xsl:param name="name">coverpage-image</xsl:param>
-		<xsl:variable name="num" select="number($number)"/>
-		<!-- background image -->
-		<fo:block-container absolute-position="fixed" left="0mm" top="0mm" font-size="0" id="__internal_layout__coverpage_{$name}_{$number}_{generate-id()}">
-			<fo:block>
-				<xsl:for-each select="/plateau:plateau-standard/plateau:metanorma-extension/plateau:presentation-metadata[plateau:name = $name][1]/plateau:value/plateau:image[$num]">
-					<xsl:choose>
-						<xsl:when test="*[local-name() = 'svg'] or java:endsWith(java:java.lang.String.new(@src), '.svg')">
-							<fo:instream-foreign-object fox:alt-text="Image Front">
-								<xsl:attribute name="content-height"><xsl:value-of select="$pageHeight"/>mm</xsl:attribute>
-								<xsl:call-template name="getSVG"/>
-							</fo:instream-foreign-object>
-						</xsl:when>
-						<xsl:when test="starts-with(@src, 'data:application/pdf;base64')">
-							<fo:external-graphic src="{@src}" fox:alt-text="Image Front"/>
-						</xsl:when>
-						<xsl:otherwise> <!-- bitmap image -->
-							<xsl:variable name="coverimage_src" select="normalize-space(@src)"/>
-							<xsl:if test="$coverimage_src != ''">
-								<xsl:variable name="coverpage">
-									<xsl:call-template name="getImageURL">
-										<xsl:with-param name="src" select="$coverimage_src"/>
-									</xsl:call-template>
-								</xsl:variable>
-								<!-- <xsl:variable name="coverpage" select="concat('url(file:',$basepath, 'coverpage1.png', ')')"/> --> <!-- for DEBUG -->
-								<fo:external-graphic src="{$coverpage}" width="{$pageWidth}mm" content-height="scale-to-fit" scaling="uniform" fox:alt-text="Image Front"/>
-							</xsl:if>
-						</xsl:otherwise>
-					</xsl:choose>
-				</xsl:for-each>
-			</fo:block>
-		</fo:block-container>
-	</xsl:template>
-	
-	<xsl:template name="getImageURL">
-		<xsl:param name="src"/>
-		<xsl:choose>
-			<xsl:when test="starts-with($src, 'data:image')">
-				<xsl:value-of select="$src"/>
-			</xsl:when>
-			<xsl:otherwise>
-				<xsl:value-of select="concat('url(file:///',$basepath, $src, ')')"/>
-			</xsl:otherwise>
-		</xsl:choose>
-	</xsl:template>
-	
-	<xsl:template name="getSVG">
-		<xsl:choose>
-			<xsl:when test="*[local-name() = 'svg']">
-				<xsl:apply-templates select="*[local-name() = 'svg']" mode="svg_update"/>
-			</xsl:when>
-			<xsl:otherwise>
-				<xsl:variable name="svg_content" select="document(@src)"/>
-				<xsl:for-each select="xalan:nodeset($svg_content)/node()">
-					<xsl:apply-templates select="." mode="svg_update"/>
-				</xsl:for-each>
-			</xsl:otherwise>
-		</xsl:choose>
-	</xsl:template>
-
 	
 	<xsl:variable name="PLATEAU-Logo">
 		<svg id="Layer_1" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 141.72 172.64">
