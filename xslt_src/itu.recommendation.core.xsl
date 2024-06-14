@@ -16,7 +16,6 @@
 	<xsl:key name="kfn" match="*[local-name() = 'fn'][not(ancestor::*[(local-name() = 'table' or local-name() = 'figure' or local-name() = 'localized-strings')] and not(ancestor::*[local-name() = 'name']))]" use="@reference"/>
 	
 	<xsl:variable name="namespace">itu</xsl:variable>
-	<xsl:variable name="namespace_full">https://www.metanorma.org/ns/itu</xsl:variable>
 	
 	<xsl:variable name="debug">false</xsl:variable>
 	

@@ -21,8 +21,6 @@
 	
 	<xsl:variable name="namespace">jis</xsl:variable>
 	
-	<xsl:variable name="namespace_full">https://www.metanorma.org/ns/jis</xsl:variable>
-	
 	<xsl:variable name="debug">false</xsl:variable>
 	
 	<xsl:variable name="contents_">

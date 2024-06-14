@@ -23,9 +23,6 @@
 	<xsl:variable name="namespace">ieee</xsl:variable>
 	
 	<!-- mandatory variable -->
-	<xsl:variable name="namespace_full">https://www.metanorma.org/ns/ieee</xsl:variable>
-	
-	<!-- mandatory variable -->
 	<xsl:variable name="debug">false</xsl:variable>
 	
 	<!-- mandatory variable -->
