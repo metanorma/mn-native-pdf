@@ -27,14 +27,6 @@
 	
 	<xsl:variable name="debug">false</xsl:variable>
 	
-	<xsl:variable name="layout_columns_default">1</xsl:variable>
-	<xsl:variable name="layout_columns_" select="normalize-space((//iso:iso-standard)[1]/iso:metanorma-extension/iso:presentation-metadata/iso:layout-columns)"/>
-	<xsl:variable name="layout_columns">
-		<xsl:choose>
-			<xsl:when test="$layout_columns_ != ''"><xsl:value-of select="$layout_columns_"/></xsl:when>
-			<xsl:otherwise><xsl:value-of select="$layout_columns_default"/></xsl:otherwise>
-		</xsl:choose>
-	</xsl:variable>
 	<xsl:variable name="column_gap">8.5mm</xsl:variable>
 	
 	<xsl:variable name="docidentifierISO_undated"><xsl:if test="not($stage-abbreviation = 'FDAMD' or $stage-abbreviation = 'FDAM' or $stage-abbreviation = 'DAMD' or $stage-abbreviation = 'DAM')"><xsl:value-of select="normalize-space(/iso:iso-standard/iso:bibdata/iso:docidentifier[@type = 'iso-undated'])"/></xsl:if></xsl:variable>
