@@ -496,12 +496,11 @@
 			<xsl:if test="following-sibling::*">
 				<xsl:attribute name="margin-bottom">6pt</xsl:attribute>
 			</xsl:if>
-			<xsl:attribute name="text-align">
-				<xsl:choose>
-					<xsl:when test="@align"><xsl:value-of select="@align"/></xsl:when>
-					<xsl:otherwise>justify</xsl:otherwise>
-				</xsl:choose>
-			</xsl:attribute>
+			
+			<xsl:call-template name="setBlockAttributes">
+				<xsl:with-param name="text_align_default">justify</xsl:with-param>
+			</xsl:call-template>
+			
 			<xsl:apply-templates>
 				<xsl:with-param name="split_keep-within-line" select="$split_keep-within-line"/>
 			</xsl:apply-templates>
@@ -694,7 +693,7 @@
 
 
 	
-	<xsl:template match="un:dl" priority="2">
+	<xsl:template match="un:dl" priority="3">
 		<fo:block-container margin-left="0mm">
 			<xsl:if test="parent::*[local-name() = 'note']">
 				<xsl:attribute name="margin-left">
@@ -717,6 +716,7 @@
 	<xsl:template match="un:dt" priority="2">
 		<fo:block margin-bottom="6pt">
 			<xsl:apply-templates />
+			<xsl:text> </xsl:text>
 			<xsl:apply-templates select="following-sibling::un:dd[1]" mode="dd"/>
 		</fo:block>
 	</xsl:template>

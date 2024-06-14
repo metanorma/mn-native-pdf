@@ -1152,13 +1152,9 @@
 					<xsl:value-of select="@id"/>
 				</xsl:attribute>
 			</xsl:if>
-			<xsl:attribute name="text-align">
-				<xsl:choose>
-					<!-- <xsl:when test="ancestor::ogc:preface">justify</xsl:when> -->
-					<xsl:when test="@align"><xsl:value-of select="@align"/></xsl:when>
-					<xsl:otherwise>left</xsl:otherwise><!-- justify -->
-				</xsl:choose>
-			</xsl:attribute>
+			
+			<xsl:call-template name="setBlockAttributes"/>
+			
 			<xsl:if test="not(ancestor::ogc:table)">
 				<xsl:attribute name="line-height">124%</xsl:attribute>
 				<xsl:attribute name="margin-bottom">10pt</xsl:attribute>
@@ -1362,6 +1358,9 @@
 		</fo:block-container>
 	</xsl:template>
 
+	<xsl:template match="*[local-name() = 'pagebreak']" priority="2">
+		<fo:block break-after="page"/>
+	</xsl:template>
 		
 	<xsl:template name="insertHeaderFooter">
 		<xsl:param name="color" select="$color_blue"/>

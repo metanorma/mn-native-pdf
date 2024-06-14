@@ -657,12 +657,11 @@
 			<xsl:if test="following-sibling::*">
 				<xsl:attribute name="margin-bottom">6pt</xsl:attribute>
 			</xsl:if>
-			<xsl:attribute name="text-align">
-				<xsl:choose>
-					<xsl:when test="@align"><xsl:value-of select="@align"/></xsl:when>
-					<xsl:otherwise>justify</xsl:otherwise>
-				</xsl:choose>
-			</xsl:attribute>
+			
+			<xsl:call-template name="setBlockAttributes">
+				<xsl:with-param name="text_align_default">justify</xsl:with-param>
+			</xsl:call-template>
+			
 			<xsl:apply-templates>
 				<xsl:with-param name="split_keep-within-line" select="$split_keep-within-line"/>
 			</xsl:apply-templates>

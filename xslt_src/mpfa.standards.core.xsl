@@ -468,15 +468,10 @@
 			</xsl:choose>
 		</xsl:variable>
 		<xsl:element name="{$element-name}">
-			<xsl:attribute name="text-align">
-				<xsl:choose>
-					<xsl:when test="@align"><xsl:value-of select="@align"/></xsl:when>
-					<xsl:when test="ancestor::mpfd:td/@align"><xsl:value-of select="ancestor::mpfd:td/@align"/></xsl:when>
-					<xsl:when test="ancestor::mpfd:th/@align"><xsl:value-of select="ancestor::mpfd:th/@align"/></xsl:when>
-					<xsl:otherwise>left</xsl:otherwise><!-- left. justify -->
-				</xsl:choose>
-			</xsl:attribute>
 			<xsl:attribute name="text-indent">0mm</xsl:attribute>
+			
+			<xsl:call-template name="setBlockAttributes"/>
+			
 			<xsl:attribute name="margin-bottom">12pt</xsl:attribute>
 			<xsl:if test="parent::mpfd:li">
 				<xsl:attribute name="margin-bottom">0pt</xsl:attribute>

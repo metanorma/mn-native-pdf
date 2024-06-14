@@ -11,6 +11,7 @@ SRC := $(patsubst mn-samples-iso/documents/international-standard/%,sources/iso-
 	$(patsubst mn-samples-itu/documents/%,sources/itu-%,$(wildcard mn-samples-itu/documents/*.xml)) \
 	$(patsubst mn-samples-iec/documents/%,sources/%,$(wildcard mn-samples-iec/documents/*.xml)) \
 	$(patsubst mn-samples-ogc/documents/%,sources/ogc-%,$(wildcard mn-samples-ogc/documents/*.xml)) \
+ 	$(patsubst mn-samples-un/documents/%,sources/un-%,$(wildcard mn-samples-un/documents/*.xml)) \
 	$(patsubst mn-samples-cc/documents/%,sources/%,$(wildcard mn-samples-cc/documents/*.xml)) \
 	$(patsubst mn-samples-m3aawg/documents/best-practice/%,sources/m3aawg-bp-%,$(wildcard mn-samples-m3aawg/documents/best-practice/*.xml)) \
 	$(patsubst mn-samples-m3aawg/documents/policy/%,sources/m3aawg-p-%,$(wildcard mn-samples-m3aawg/documents/policy/*.xml)) \
@@ -20,7 +21,6 @@ SRC := $(patsubst mn-samples-iso/documents/international-standard/%,sources/iso-
 	$(patsubst mn-samples-iho/documents/%,sources/iho-%,$(wildcard mn-samples-iho/documents/*.xml)) \
 	$(patsubst mn-samples-mpfa/documents/mpfa-%,sources/mpfa-%,$(wildcard mn-samples-mpfa/documents/*.xml))
 
-# 	$(patsubst mn-samples-un/documents/%,sources/un-%,$(wildcard mn-samples-un/documents/*.xml)) \
  
 PDF := $(patsubst sources/%,documents/%,$(patsubst %.xml,%.pdf,$(SRC)))
 HTML := $(patsubst sources/%,documents/%,$(patsubst %.xml,%.html,$(SRC)))
@@ -58,6 +58,7 @@ XSLT_GENERATED := xslt/iec.international-standard.xsl \
 	xslt/ogc.test-suite.xsl \
 	xslt/ogc.user-guide.xsl \
 	xslt/ogc.white-paper.xsl \
+	xslt/plateau.international-standard.xsl \
 	xslt/un.plenary.xsl \
 	xslt/un.plenary-attachment.xsl \
 	xslt/un.recommendation.xsl \
@@ -319,6 +320,7 @@ update-xslts-in-processor-all:
 	$(MAKE) update-xslts-in-processor MN_PROCR=jis
 	$(MAKE) update-xslts-in-processor MN_PROCR=m3aawg
 	$(MAKE) update-xslts-in-processor MN_PROCR=ogc
+	$(MAKE) update-xslts-in-processor MN_PROCR=plateau
 	$(MAKE) update-xslts-in-processor MN_PROCR=ribose
 	$(MAKE) update-xslts-in-processor MN_PROCR=un
 
