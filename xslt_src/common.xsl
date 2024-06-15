@@ -2224,6 +2224,7 @@
 				<xsl:attribute name="font-size">10pt</xsl:attribute>
 				<xsl:if test="normalize-space(../@width) != 'text-width'">
 					<xsl:attribute name="span">all</xsl:attribute>
+					<xsl:attribute name="margin-top">6pt</xsl:attribute>
 				</xsl:if>
 			</xsl:if>
 		</xsl:if>
@@ -6706,16 +6707,20 @@
 		</xsl:variable>
 		
 		<xsl:variable name="updated_xml_step_move_pagebreak_filename" select="concat($output_path,'_preface_', java:getTime(java:java.util.Date.new()), '.xml')"/>
-		
+		<!-- <xsl:message>updated_xml_step_move_pagebreak_filename=<xsl:value-of select="$updated_xml_step_move_pagebreak_filename"/></xsl:message>
+		<xsl:message>start write updated_xml_step_move_pagebreak_filename</xsl:message> -->
 		<redirect:write file="{$updated_xml_step_move_pagebreak_filename}">
 			<xsl:copy-of select="$updated_xml_step_move_pagebreak_"/>
 		</redirect:write>
+		<!-- <xsl:message>end write updated_xml_step_move_pagebreak_filename</xsl:message> -->
 		
 		<xsl:copy-of select="document($updated_xml_step_move_pagebreak_filename)"/>
 		
+		<!-- <xsl:message>start delete updated_xml_step_move_pagebreak_filename</xsl:message> -->
 		<xsl:call-template name="deleteFile">
 			<xsl:with-param name="filepath" select="$updated_xml_step_move_pagebreak_filename"/>
 		</xsl:call-template>
+		<!-- <xsl:message>end delete updated_xml_step_move_pagebreak_filename</xsl:message> -->
 	</xsl:template>
 	
 	<xsl:template name="copyCommonElements">
@@ -6747,45 +6752,8 @@
 			<xsl:apply-templates select="."/>
 		</xsl:for-each>
 	</xsl:template><!-- END: processMainSectionsDefault -->
-	
-	<xsl:template name="processMainSectionsDefault_flatxml">
-		<xsl:for-each select="/*/*[local-name()='sections']/* | /*/*[local-name()='bibliography']/*[local-name()='references'][@normative='true']">
-			<xsl:sort select="@displayorder" data-type="number"/>
-			<xsl:variable name="flatxml">
-				<xsl:apply-templates select="." mode="flatxml"/>
-			</xsl:variable>
-			<!-- debug_flatxml='<xsl:copy-of select="$flatxml"/>' -->
-			<xsl:apply-templates select="xalan:nodeset($flatxml)/*"/>
-			<xsl:if test="$namespace = 'm3d'">
-				<xsl:if test="local-name()='clause' and @type='scope'">
-					<xsl:if test="/*/*[local-name()='bibliography']/*[local-name()='references'][@normative='true']">
-						<fo:block break-after="page"/>			
-					</xsl:if>
-				</xsl:if>
-			</xsl:if>
-		</xsl:for-each>
-		
-		<xsl:for-each select="/*/*[local-name()='annex']">
-			<xsl:sort select="@displayorder" data-type="number"/>
-			<xsl:variable name="flatxml">
-				<xsl:apply-templates select="." mode="flatxml"/>
-			</xsl:variable>
-			<!-- debug_flatxml='<xsl:copy-of select="$flatxml"/>' -->
-			<xsl:apply-templates select="xalan:nodeset($flatxml)/*"/>
-		</xsl:for-each>
-		
-		<xsl:for-each select="/*/*[local-name()='bibliography']/*[not(@normative='true')] | 
-								/*/*[local-name()='bibliography']/*[local-name()='clause'][*[local-name()='references'][not(@normative='true')]]">
-			<xsl:sort select="@displayorder" data-type="number"/>
-			<xsl:variable name="flatxml">
-				<xsl:apply-templates select="." mode="flatxml"/>
-			</xsl:variable>
-			<!-- debug_flatxml='<xsl:copy-of select="$flatxml"/>' -->
-			<xsl:apply-templates select="xalan:nodeset($flatxml)/*"/>
-		</xsl:for-each>
-	</xsl:template>
-	
-	<!-- Example:
+
+  <!-- Example:
 	<iso-standard>
 		<sections>
 			<page_sequence>
