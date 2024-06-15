@@ -6707,16 +6707,20 @@
 		</xsl:variable>
 		
 		<xsl:variable name="updated_xml_step_move_pagebreak_filename" select="concat($output_path,'_preface_', java:getTime(java:java.util.Date.new()), '.xml')"/>
-		
+		<!-- <xsl:message>updated_xml_step_move_pagebreak_filename=<xsl:value-of select="$updated_xml_step_move_pagebreak_filename"/></xsl:message>
+		<xsl:message>start write updated_xml_step_move_pagebreak_filename</xsl:message> -->
 		<redirect:write file="{$updated_xml_step_move_pagebreak_filename}">
 			<xsl:copy-of select="$updated_xml_step_move_pagebreak_"/>
 		</redirect:write>
+		<!-- <xsl:message>end write updated_xml_step_move_pagebreak_filename</xsl:message> -->
 		
 		<xsl:copy-of select="document($updated_xml_step_move_pagebreak_filename)"/>
 		
+		<!-- <xsl:message>start delete updated_xml_step_move_pagebreak_filename</xsl:message> -->
 		<xsl:call-template name="deleteFile">
 			<xsl:with-param name="filepath" select="$updated_xml_step_move_pagebreak_filename"/>
 		</xsl:call-template>
+		<!-- <xsl:message>end delete updated_xml_step_move_pagebreak_filename</xsl:message> -->
 	</xsl:template>
 	
 	<xsl:template name="copyCommonElements">
