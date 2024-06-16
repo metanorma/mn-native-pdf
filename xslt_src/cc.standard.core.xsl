@@ -6,7 +6,9 @@
 											xmlns:xalan="http://xml.apache.org/xalan" 
 											xmlns:fox="http://xmlgraphics.apache.org/fop/extensions" 
 											xmlns:java="http://xml.apache.org/xalan/java" 
-											exclude-result-prefixes="java"
+											xmlns:redirect="http://xml.apache.org/xalan/redirect"
+											exclude-result-prefixes="java xalan"
+											extension-element-prefixes="redirect"
 											version="1.0">
 
 	<xsl:output version="1.0" method="xml" encoding="UTF-8" indent="no"/>
@@ -60,26 +62,49 @@
 				
 				<!-- Document pages -->
 				
+				<xsl:variable name="prefaceMarginTop">17</xsl:variable>
+				<xsl:variable name="prefaceMarginBottom">10</xsl:variable>
 				<!-- Preface odd pages -->
 				<fo:simple-page-master master-name="odd-preface" page-width="{$pageWidth}mm" page-height="{$pageHeight}mm">
-					<fo:region-body margin-top="17mm" margin-bottom="10mm" margin-left="{$marginLeftRight1}mm" margin-right="{$marginLeftRight2}mm"/>
-					<fo:region-before region-name="header-odd" extent="17mm"/> 
-					<fo:region-after region-name="footer-odd" extent="10mm"/>
+					<fo:region-body margin-top="{$prefaceMarginTop}mm" margin-bottom="{$prefaceMarginBottom}mm" margin-left="{$marginLeftRight1}mm" margin-right="{$marginLeftRight2}mm"/>
+					<fo:region-before region-name="header-odd" extent="{$prefaceMarginTop}mm"/> 
+					<fo:region-after region-name="footer-odd" extent="{$prefaceMarginBottom}mm"/>
+					<fo:region-start region-name="left-region" extent="{$marginLeftRight1}mm"/>
+					<fo:region-end region-name="right-region" extent="{$marginLeftRight2}mm"/>
+				</fo:simple-page-master>
+				<fo:simple-page-master master-name="odd-preface-landscape" page-width="{$pageHeight}mm" page-height="{$pageWidth}mm">
+					<fo:region-body margin-top="{$prefaceMarginTop}mm" margin-bottom="{$prefaceMarginBottom}mm" margin-left="{$marginLeftRight1}mm" margin-right="{$marginLeftRight2}mm"/>
+					<fo:region-before region-name="header-odd" extent="{$prefaceMarginTop}mm"/> 
+					<fo:region-after region-name="footer-odd" extent="{$prefaceMarginBottom}mm"/>
 					<fo:region-start region-name="left-region" extent="{$marginLeftRight1}mm"/>
 					<fo:region-end region-name="right-region" extent="{$marginLeftRight2}mm"/>
 				</fo:simple-page-master>
 				<!-- Preface even pages -->
 				<fo:simple-page-master master-name="even-preface" page-width="{$pageWidth}mm" page-height="{$pageHeight}mm">
-					<fo:region-body margin-top="17mm" margin-bottom="10mm" margin-left="{$marginLeftRight1}mm" margin-right="{$marginLeftRight2}mm"/>
-					<fo:region-before region-name="header-even" extent="17mm"/>
-					<fo:region-after region-name="footer-even" extent="10mm"/>
+					<fo:region-body margin-top="{$prefaceMarginTop}mm" margin-bottom="{$prefaceMarginBottom}mm" margin-left="{$marginLeftRight1}mm" margin-right="{$marginLeftRight2}mm"/>
+					<fo:region-before region-name="header-even" extent="{$prefaceMarginTop}mm"/>
+					<fo:region-after region-name="footer-even" extent="{$prefaceMarginBottom}mm"/>
+					<fo:region-start region-name="left-region" extent="{$marginLeftRight1}mm"/>
+					<fo:region-end region-name="right-region" extent="{$marginLeftRight2}mm"/>
+				</fo:simple-page-master>
+				<fo:simple-page-master master-name="even-preface-landscape" page-width="{$pageHeight}mm" page-height="{$pageWidth}mm">
+					<fo:region-body margin-top="{$prefaceMarginTop}mm" margin-bottom="{$prefaceMarginBottom}mm" margin-left="{$marginLeftRight1}mm" margin-right="{$marginLeftRight2}mm"/>
+					<fo:region-before region-name="header-even" extent="{$prefaceMarginTop}mm"/>
+					<fo:region-after region-name="footer-even" extent="{$prefaceMarginBottom}mm"/>
 					<fo:region-start region-name="left-region" extent="{$marginLeftRight1}mm"/>
 					<fo:region-end region-name="right-region" extent="{$marginLeftRight2}mm"/>
 				</fo:simple-page-master>
 				<fo:simple-page-master master-name="blankpage" page-width="{$pageWidth}mm" page-height="{$pageHeight}mm">
-					<fo:region-body margin-top="17mm" margin-bottom="10mm" margin-left="{$marginLeftRight1}mm" margin-right="{$marginLeftRight2}mm"/>
-					<fo:region-before region-name="header" extent="17mm"/>
-					<fo:region-after region-name="footer" extent="10mm"/>
+					<fo:region-body margin-top="{$prefaceMarginTop}mm" margin-bottom="{$prefaceMarginBottom}mm" margin-left="{$marginLeftRight1}mm" margin-right="{$marginLeftRight2}mm"/>
+					<fo:region-before region-name="header" extent="{$prefaceMarginTop}mm"/>
+					<fo:region-after region-name="footer" extent="{$prefaceMarginBottom}mm"/>
+					<fo:region-start region-name="left" extent="{$marginLeftRight1}mm"/>
+					<fo:region-end region-name="right" extent="{$marginLeftRight2}mm"/>
+				</fo:simple-page-master>
+				<fo:simple-page-master master-name="blankpage-landscape" page-width="{$pageHeight}mm" page-height="{$pageWidth}mm">
+					<fo:region-body margin-top="{$prefaceMarginTop}mm" margin-bottom="{$prefaceMarginBottom}mm" margin-left="{$marginLeftRight1}mm" margin-right="{$marginLeftRight2}mm"/>
+					<fo:region-before region-name="header" extent="{$prefaceMarginTop}mm"/>
+					<fo:region-after region-name="footer" extent="{$prefaceMarginBottom}mm"/>
 					<fo:region-start region-name="left" extent="{$marginLeftRight1}mm"/>
 					<fo:region-end region-name="right" extent="{$marginLeftRight2}mm"/>
 				</fo:simple-page-master>
@@ -90,9 +115,23 @@
 						<fo:conditional-page-master-reference odd-or-even="odd" master-reference="odd-preface"/>
 					</fo:repeatable-page-master-alternatives>
 				</fo:page-sequence-master>
+				<fo:page-sequence-master master-name="preface-landscape">
+					<fo:repeatable-page-master-alternatives>
+						<fo:conditional-page-master-reference master-reference="blankpage-landscape" blank-or-not-blank="blank" />
+						<fo:conditional-page-master-reference odd-or-even="even" master-reference="even-preface-landscape"/>
+						<fo:conditional-page-master-reference odd-or-even="odd" master-reference="odd-preface-landscape"/>
+					</fo:repeatable-page-master-alternatives>
+				</fo:page-sequence-master>
 				
 				<!-- Document odd pages -->
 				<fo:simple-page-master master-name="odd" page-width="{$pageWidth}mm" page-height="{$pageHeight}mm">
+					<fo:region-body margin-top="{$marginTop}mm" margin-bottom="{$marginBottom}mm" margin-left="{$marginLeftRight1}mm" margin-right="{$marginLeftRight2}mm"/>
+					<fo:region-before region-name="header-odd" extent="{$marginTop}mm"/> 
+					<fo:region-after region-name="footer-odd" extent="{$marginBottom}mm"/>
+					<fo:region-start region-name="left-region" extent="{$marginLeftRight1}mm"/>
+					<fo:region-end region-name="right-region" extent="{$marginLeftRight2}mm"/>
+				</fo:simple-page-master>
+				<fo:simple-page-master master-name="odd-landscape" page-width="{$pageHeight}mm" page-height="{$pageWidth}mm">
 					<fo:region-body margin-top="{$marginTop}mm" margin-bottom="{$marginBottom}mm" margin-left="{$marginLeftRight1}mm" margin-right="{$marginLeftRight2}mm"/>
 					<fo:region-before region-name="header-odd" extent="{$marginTop}mm"/> 
 					<fo:region-after region-name="footer-odd" extent="{$marginBottom}mm"/>
@@ -107,11 +146,25 @@
 					<fo:region-start region-name="left-region" extent="{$marginLeftRight1}mm"/>
 					<fo:region-end region-name="right-region" extent="{$marginLeftRight2}mm"/>
 				</fo:simple-page-master>
+				<fo:simple-page-master master-name="even-landscape" page-width="{$pageHeight}mm" page-height="{$pageWidth}mm">
+					<fo:region-body margin-top="{$marginTop}mm" margin-bottom="{$marginBottom}mm" margin-left="{$marginLeftRight1}mm" margin-right="{$marginLeftRight2}mm"/>
+					<fo:region-before region-name="header-even" extent="{$marginTop}mm"/>
+					<fo:region-after region-name="footer-even" extent="{$marginBottom}mm"/>
+					<fo:region-start region-name="left-region" extent="{$marginLeftRight1}mm"/>
+					<fo:region-end region-name="right-region" extent="{$marginLeftRight2}mm"/>
+				</fo:simple-page-master>
 				<fo:page-sequence-master master-name="document">
 					<fo:repeatable-page-master-alternatives>
 						<fo:conditional-page-master-reference master-reference="blankpage" blank-or-not-blank="blank" />
 						<fo:conditional-page-master-reference odd-or-even="even" master-reference="even"/>
 						<fo:conditional-page-master-reference odd-or-even="odd" master-reference="odd"/>
+					</fo:repeatable-page-master-alternatives>
+				</fo:page-sequence-master>
+				<fo:page-sequence-master master-name="document-landscape">
+					<fo:repeatable-page-master-alternatives>
+						<fo:conditional-page-master-reference master-reference="blankpage-landscape" blank-or-not-blank="blank" />
+						<fo:conditional-page-master-reference odd-or-even="even" master-reference="even-landscape"/>
+						<fo:conditional-page-master-reference odd-or-even="odd" master-reference="odd-landscape"/>
 					</fo:repeatable-page-master-alternatives>
 				</fo:page-sequence-master>
 				
@@ -193,71 +246,124 @@
 			</fo:page-sequence>
 			<!-- End Cover Page -->
 			
+			<xsl:variable name="updated_xml">
+				<xsl:call-template name="updateXML"/>
+			</xsl:variable>
 			
-			<!-- Copyright, Content, Foreword, etc. pages -->
-			<fo:page-sequence master-reference="preface" initial-page-number="2" format="i" force-page-count="end-on-even">
-				<fo:static-content flow-name="xsl-footnote-separator">
-					<fo:block>
-						<fo:leader leader-pattern="rule" leader-length="30%"/>
-					</fo:block>
-				</fo:static-content>
-				<xsl:call-template name="insertHeaderFooter"/>
-				<fo:flow flow-name="xsl-region-body">
-					
-					<xsl:if test="$debug = 'true'">
-						<xsl:text disable-output-escaping="yes">&lt;!--</xsl:text>
-							DEBUG
-							contents=<xsl:copy-of select="$contents"/>
-						<xsl:text disable-output-escaping="yes">--&gt;</xsl:text>
-					</xsl:if>
-					
-					<fo:block margin-bottom="15pt">&#xA0;</fo:block>
-					<fo:block margin-bottom="14pt">
-						<xsl:text>© </xsl:text>
-						<xsl:value-of select="/csd:csd-standard/csd:bibdata/csd:copyright/csd:from"/>
-						<xsl:text> </xsl:text>
-						<fo:inline>
-							<xsl:apply-templates select="/csd:csd-standard/csd:boilerplate/csd:feedback-statement/csd:clause/csd:p[@id = 'boilerplate-name']"/>
-						</fo:inline>
-					</fo:block>
-					<fo:block margin-bottom="12pt">
-						<xsl:apply-templates select="/csd:csd-standard/csd:boilerplate/csd:legal-statement"/>
-					</fo:block>
-					<fo:block margin-bottom="12pt">
-						<xsl:apply-templates select="/csd:csd-standard/csd:boilerplate/csd:feedback-statement/csd:clause/csd:p[@id = 'boilerplate-name']"/>
-					</fo:block>
-					<fo:block>
-						<xsl:apply-templates select="/csd:csd-standard/csd:boilerplate/csd:feedback-statement/csd:clause/csd:p[@id = 'boilerplate-address']"/>
-					</fo:block>
-					
-					<fo:block break-after="page"/>
-					
-					<!-- Table of contents, Foreword, Introduction -->					
-					<xsl:call-template name="processPrefaceSectionsDefault"/>
-					
-				</fo:flow>
-			</fo:page-sequence>
+			<xsl:for-each select="xalan:nodeset($updated_xml)/*">
 			
+				<xsl:variable name="updated_xml_with_pages_preface">
+					<xsl:call-template name="processPrefaceSectionsDefault_items"/>
+				</xsl:variable>
 			
-			<!-- Document Pages -->
-			<fo:page-sequence master-reference="document" initial-page-number="1" format="1" force-page-count="no-force">
-				<fo:static-content flow-name="xsl-footnote-separator">
-					<fo:block>
-						<fo:leader leader-pattern="rule" leader-length="30%"/>
-					</fo:block>
-				</fo:static-content>
-				<xsl:call-template name="insertHeaderFooter"/>
-				<fo:flow flow-name="xsl-region-body">
-					<!-- <fo:block font-size="16pt" font-weight="bold" margin-bottom="17pt" role="H1">
-						<xsl:value-of select="/csd:csd-standard/csd:bibdata/csd:title[@language = 'en']"/>
-					</fo:block> -->
-					<fo:block>
-						<xsl:call-template name="processMainSectionsDefault"/>
-					</fo:block>
-				</fo:flow>
-			</fo:page-sequence>
+				<xsl:for-each select="xalan:nodeset($updated_xml_with_pages_preface)"> <!-- set context to preface -->
+					<xsl:for-each select=".//*[local-name() = 'page_sequence'][normalize-space() != '' or .//image or .//svg]">
 			
-			<!-- End Document Pages -->
+						<!-- Copyright, Content, Foreword, etc. pages -->
+						<fo:page-sequence master-reference="preface" format="i">
+						
+							<xsl:attribute name="master-reference">
+								<xsl:text>preface</xsl:text>
+								<xsl:call-template name="getPageSequenceOrientation"/>
+							</xsl:attribute>
+						
+							<xsl:if test="position() = 1">
+								<xsl:attribute name="initial-page-number">2</xsl:attribute>
+							</xsl:if>
+							<xsl:if test="position() = last()">
+								<xsl:attribute name="force-page-count">end-on-even</xsl:attribute>
+							</xsl:if>
+						
+							<fo:static-content flow-name="xsl-footnote-separator">
+								<fo:block>
+									<fo:leader leader-pattern="rule" leader-length="30%"/>
+								</fo:block>
+							</fo:static-content>
+							<xsl:call-template name="insertHeaderFooter"/>
+							<fo:flow flow-name="xsl-region-body">
+								
+								<!-- <xsl:if test="$debug = 'true'">
+									<redirect:write file="contents_{java:getTime(java:java.util.Date.new())}.xml">
+										<xsl:copy-of select="$contents"/>
+									</redirect:write>
+								</xsl:if> -->
+								
+								<xsl:if test="position() = 1">
+									<fo:block margin-bottom="15pt">&#xA0;</fo:block>
+									<fo:block margin-bottom="14pt">
+										<xsl:text>© </xsl:text>
+										<xsl:value-of select="/csd:csd-standard/csd:bibdata/csd:copyright/csd:from"/>
+										<xsl:text> </xsl:text>
+										<fo:inline>
+											<xsl:apply-templates select="/csd:csd-standard/csd:boilerplate/csd:feedback-statement/csd:clause/csd:p[@id = 'boilerplate-name']"/>
+										</fo:inline>
+									</fo:block>
+									<fo:block margin-bottom="12pt">
+										<xsl:apply-templates select="/csd:csd-standard/csd:boilerplate/csd:legal-statement"/>
+									</fo:block>
+									<fo:block margin-bottom="12pt">
+										<xsl:apply-templates select="/csd:csd-standard/csd:boilerplate/csd:feedback-statement/csd:clause/csd:p[@id = 'boilerplate-name']"/>
+									</fo:block>
+									<fo:block>
+										<xsl:apply-templates select="/csd:csd-standard/csd:boilerplate/csd:feedback-statement/csd:clause/csd:p[@id = 'boilerplate-address']"/>
+									</fo:block>
+									
+									<fo:block break-after="page"/>
+								</xsl:if>  <!-- for 1st page_sequence only -->
+								
+								<!-- Table of contents, Foreword, Introduction -->					
+								<!-- <xsl:call-template name="processPrefaceSectionsDefault"/> -->
+								<xsl:apply-templates />
+								
+								<fo:block/> <!-- for prevent empty preface -->
+							</fo:flow>
+						</fo:page-sequence>
+					</xsl:for-each>
+				</xsl:for-each>
+				
+				
+				<xsl:variable name="updated_xml_with_pages_main">
+					<xsl:call-template name="processMainSectionsDefault_items"/>
+				</xsl:variable>
+			
+				<xsl:for-each select="xalan:nodeset($updated_xml_with_pages_main)"> <!-- set context to preface -->
+					<xsl:for-each select=".//*[local-name() = 'page_sequence'][normalize-space() != '' or .//image or .//svg]">
+				
+						<!-- Document Pages -->
+						<fo:page-sequence master-reference="document" format="1" force-page-count="no-force">
+						
+							<xsl:attribute name="master-reference">
+								<xsl:text>document</xsl:text>
+								<xsl:call-template name="getPageSequenceOrientation"/>
+							</xsl:attribute>
+						
+							<xsl:if test="position() = 1">
+								<xsl:attribute name="initial-page-number">1</xsl:attribute>
+							</xsl:if>
+							
+							
+							<fo:static-content flow-name="xsl-footnote-separator">
+								<fo:block>
+									<fo:leader leader-pattern="rule" leader-length="30%"/>
+								</fo:block>
+							</fo:static-content>
+							<xsl:call-template name="insertHeaderFooter"/>
+							<fo:flow flow-name="xsl-region-body">
+								<!-- <fo:block font-size="16pt" font-weight="bold" margin-bottom="17pt" role="H1">
+									<xsl:value-of select="/csd:csd-standard/csd:bibdata/csd:title[@language = 'en']"/>
+								</fo:block> -->
+								<fo:block>
+									<!-- <xsl:call-template name="processMainSectionsDefault"/> -->
+									<xsl:apply-templates />
+								</fo:block>
+							</fo:flow>
+						</fo:page-sequence>
+						
+						<!-- End Document Pages -->
+					</xsl:for-each>
+				</xsl:for-each>
+			
+			</xsl:for-each>
 			
 		</fo:root>
 	</xsl:template> 
@@ -295,7 +401,7 @@
 		</fo:block>
 	</xsl:template>
 
-	<xsl:template match="csd:preface/csd:clause[@type = 'toc']" priority="3">
+	<xsl:template match="csd:preface//csd:clause[@type = 'toc']" priority="3">
 		<fo:block-container font-weight="bold" line-height="115%">
 			<fo:block role="TOC">
 				
@@ -364,7 +470,7 @@
 		</fo:block-container>
 	</xsl:template>
 
-	<xsl:template match="csd:preface/csd:clause[@type = 'toc']/csd:title" priority="3">
+	<xsl:template match="csd:preface//csd:clause[@type = 'toc']/csd:title" priority="3">
 		<!-- <xsl:variable name="title-toc">
 			<xsl:call-template name="getTitle">
 				<xsl:with-param name="name" select="'title-toc'"/>
@@ -432,7 +538,7 @@
 	<!-- ============================= -->
 	<!-- ============================= -->
 	
-	<xsl:template match="csd:sections/csd:p[@class = 'zzSTDTitle1']" priority="4">
+	<xsl:template match="csd:sections//csd:p[@class = 'zzSTDTitle1']" priority="4">
 		<fo:block font-size="16pt" font-weight="bold" margin-bottom="17pt" role="H1">
 			<xsl:apply-templates />
 		</fo:block>

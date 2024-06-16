@@ -835,68 +835,11 @@
 			
 			<xsl:call-template name="insertCoverPage"/>
 			
-			
-			<xsl:if test="$debug = 'true'"><xsl:message>START updated_xml_step1</xsl:message></xsl:if>
-			<xsl:variable name="startTime1" select="java:getTime(java:java.util.Date.new())"/>
-			
-			<!-- STEP1: Re-order elements in 'preface', 'sections' based on @displayorder -->
-			<xsl:variable name="updated_xml_step1">
-				<xsl:if test="$table_if = 'false'">
-					<xsl:apply-templates mode="update_xml_step1"/>
-				</xsl:if>
+			<xsl:variable name="updated_xml">
+				<xsl:call-template name="updateXML"/>
 			</xsl:variable>
 			
-			<xsl:variable name="endTime1" select="java:getTime(java:java.util.Date.new())"/>
-			<xsl:if test="$debug = 'true'">
-			<xsl:message>DEBUG: processing time <xsl:value-of select="$endTime1 - $startTime1"/> msec.</xsl:message>
-			<xsl:message>END updated_xml_step1</xsl:message>
-			</xsl:if>
-			
-			
-			<xsl:if test="$debug = 'true'"><xsl:message>START updated_xml_step2</xsl:message></xsl:if>
-			<xsl:variable name="startTime2" select="java:getTime(java:java.util.Date.new())"/>
-			
-			<!-- STEP2: add 'fn' after 'eref' and 'origin', if referenced to bibitem with 'note' = Withdrawn.' or 'Cancelled and replaced...'  -->
-			<xsl:variable name="updated_xml_step2">
-				<xsl:if test="$table_if = 'false'">
-					<xsl:apply-templates select="xalan:nodeset($updated_xml_step1)" mode="update_xml_step2"/>
-				</xsl:if>
-			</xsl:variable>
-			
-			<xsl:variable name="endTime2" select="java:getTime(java:java.util.Date.new())"/>
-			<xsl:if test="$debug = 'true'">
-			<xsl:message>DEBUG: processing time <xsl:value-of select="$endTime2 - $startTime2"/> msec.</xsl:message>
-			<xsl:message>END updated_xml_step2</xsl:message>
-			</xsl:if>
-			<!-- DEBUG: updated_xml_step2=<xsl:copy-of select="$updated_xml_step2"/> -->
-			
-			<xsl:if test="$debug = 'true'"><xsl:message>START updated_xml_step3</xsl:message></xsl:if>
-			<xsl:variable name="startTime3" select="java:getTime(java:java.util.Date.new())"/>
-			
-			<xsl:variable name="updated_xml_step3">
-				<xsl:choose>
-					<xsl:when test="$table_if = 'false'">
-						<xsl:apply-templates select="xalan:nodeset($updated_xml_step2)" mode="update_xml_enclose_keep-together_within-line"/>
-					</xsl:when>
-					<xsl:otherwise>
-						<!-- <xsl:copy-of select="."/> -->
-						<xsl:apply-templates select="." mode="update_xml_enclose_keep-together_within-line"/>
-					</xsl:otherwise>
-				</xsl:choose>
-			</xsl:variable>
-			
-			<xsl:variable name="endTime3" select="java:getTime(java:java.util.Date.new())"/>
-			<xsl:if test="$debug = 'true'">
-			<xsl:message>DEBUG: processing time <xsl:value-of select="$endTime3 - $startTime3"/> msec.</xsl:message>
-			<xsl:message>END updated_xml_step3</xsl:message>
-			</xsl:if>
-			<!-- DEBUG: updated_xml_step3=<xsl:copy-of select="$updated_xml_step3"/> -->
-			
-			<!-- <redirect:write file="updated_xml_step3_{java:getTime(java:java.util.Date.new())}.xml">
-				<xsl:copy-of select="$updated_xml_step3"/>
-			</redirect:write> -->
-			
-			<xsl:for-each select="xalan:nodeset($updated_xml_step3)">
+			<xsl:for-each select="xalan:nodeset($updated_xml)/*">
 			
 				<xsl:choose>
 					<xsl:when test="$layoutVersion = '1951'">
@@ -1045,9 +988,13 @@
 							<xsl:call-template name="processPrefaceSectionsDefault_items"/>
 						</xsl:variable>
 						
-						<!-- <redirect:write file="update_xml_step4_with_pages_preface.xml">
-							<xsl:copy-of select="$update_xml_step4_with_pages_preface"/>
-						</redirect:write> -->
+						<xsl:if test="$debug = 'true'">
+							<xsl:message>start redirect</xsl:message>
+							<redirect:write file="update_xml_step4_with_pages_preface.xml">
+								<xsl:copy-of select="$update_xml_step4_with_pages_preface"/>
+							</redirect:write>
+							<xsl:message>end redirect</xsl:message>
+						</xsl:if>
 						
 						<xsl:variable name="copyright-statement">
 							<xsl:apply-templates select="/iso:iso-standard/iso:boilerplate/iso:copyright-statement"/>
@@ -1061,8 +1008,7 @@
 								
 									<xsl:attribute name="master-reference">
 										<xsl:value-of select="concat('preface',$document-master-reference)"/>
-										<xsl:variable name="previous_orientation" select="preceding-sibling::page_sequence[@orientation][1]/@orientation"/>
-										<xsl:if test="(@orientation = 'landscape' or $previous_orientation = 'landscape') and not(@orientation = 'portrait')">-<xsl:value-of select="@orientation"/></xsl:if>
+										<xsl:call-template name="getPageSequenceOrientation"/>
 									</xsl:attribute>
 								
 									<xsl:if test="position() = last()">
@@ -1212,6 +1158,15 @@
 				</xsl:variable>
 				
 				
+				<xsl:if test="$debug = 'true'">
+					<xsl:message>start redirect</xsl:message>
+					<redirect:write file="update_xml_step4_with_pages_main.xml">
+						<xsl:copy-of select="$update_xml_step4_with_pages_main"/>
+					</redirect:write>
+					<xsl:message>end redirect</xsl:message>
+				</xsl:if>
+				
+				
 				<xsl:for-each select="xalan:nodeset($update_xml_step4_with_pages_main)"> <!-- set context to sections, if top element in 'sections' -->
 				
 					<xsl:for-each select=".//*[local-name() = 'page_sequence'][normalize-space() != '' or .//image or .//svg]">
@@ -1222,8 +1177,9 @@
 							<!-- Example: msster-reference document-publishedISO-landscape_first_sequence -->
 							<xsl:attribute name="master-reference">
 								<xsl:value-of select="concat('document',$document-master-reference)"/>
-								<xsl:variable name="previous_orientation" select="preceding-sibling::page_sequence[@orientation][1]/@orientation"/>
-								<xsl:if test="(@orientation = 'landscape' or $previous_orientation = 'landscape') and not(@orientation = 'portrait')">-<xsl:value-of select="@orientation"/></xsl:if>
+								<!-- <xsl:variable name="previous_orientation" select="preceding-sibling::page_sequence[@orientation][1]/@orientation"/>
+								<xsl:if test="(@orientation = 'landscape' or $previous_orientation = 'landscape') and not(@orientation = 'portrait')">-<xsl:value-of select="@orientation"/></xsl:if> -->
+								<xsl:call-template name="getPageSequenceOrientation"/>
 								<xsl:if test="position() = 1">
 									<xsl:if test="normalize-space($document-master-reference) != ''">_first_sequence</xsl:if>
 								</xsl:if>
@@ -3019,12 +2975,11 @@
 					
 						<xsl:if test="count(*) = 1 and *[local-name() = 'title']"> <!-- if there isn't user ToC -->
 			
-							<xsl:if test="$debug = 'true'">
-								<xsl:text disable-output-escaping="yes">&lt;!--</xsl:text>
-									DEBUG
-									contents=<xsl:copy-of select="$contents"/>
-								<xsl:text disable-output-escaping="yes">--&gt;</xsl:text>
-							</xsl:if>
+							<!-- <xsl:if test="$debug = 'true'">
+								<redirect:write file="contents_{java:getTime(java:java.util.Date.new())}.xml">
+									<xsl:copy-of select="$contents"/>
+								</redirect:write>
+							</xsl:if> -->
 							
 							<xsl:variable name="margin-left">12</xsl:variable>
 							<xsl:for-each select="$contents//item[@display = 'true']"><!-- [not(@level = 2 and starts-with(@section, '0'))] skip clause from preface -->
