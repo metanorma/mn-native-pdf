@@ -6,7 +6,9 @@
 											xmlns:xalan="http://xml.apache.org/xalan" 
 											xmlns:fox="http://xmlgraphics.apache.org/fop/extensions" 
 											xmlns:java="http://xml.apache.org/xalan/java" 
-											exclude-result-prefixes="java"
+											xmlns:redirect="http://xml.apache.org/xalan/redirect"
+											exclude-result-prefixes="java xalan"
+											extension-element-prefixes="redirect"
 											version="1.0">
 
 	<xsl:output version="1.0" method="xml" encoding="UTF-8" indent="yes"/>
@@ -52,6 +54,14 @@
 				</fo:simple-page-master>
 				
 				<fo:simple-page-master master-name="document" page-width="{$pageWidth}mm" page-height="{$pageHeight}mm">
+					<fo:region-body margin-top="{$marginTop}mm" margin-bottom="{$marginBottom}mm" margin-left="{$marginLeftRight1}mm" margin-right="{$marginLeftRight2}mm"/>
+					<fo:region-before region-name="header" extent="{$marginTop}mm" precedence="true"/> 
+					<fo:region-after region-name="footer" extent="{$marginBottom}mm"/>
+					<fo:region-start region-name="left-region" extent="{$marginLeftRight1}mm"/>
+					<fo:region-end region-name="right-region" extent="{$marginLeftRight2}mm"/>
+				</fo:simple-page-master>
+				
+				<fo:simple-page-master master-name="document-landscape" page-width="{$pageHeight}mm" page-height="{$pageWidth}mm">
 					<fo:region-body margin-top="{$marginTop}mm" margin-bottom="{$marginBottom}mm" margin-left="{$marginLeftRight1}mm" margin-right="{$marginLeftRight2}mm"/>
 					<fo:region-before region-name="header" extent="{$marginTop}mm" precedence="true"/> 
 					<fo:region-after region-name="footer" extent="{$marginBottom}mm"/>
@@ -118,12 +128,11 @@
 				<xsl:call-template name="insertHeaderFooter"/>
 				<fo:flow flow-name="xsl-region-body">
 				
-					<xsl:if test="$debug = 'true'">
-						<xsl:text disable-output-escaping="yes">&lt;!--</xsl:text>
-							DEBUG
-							contents=<xsl:copy-of select="$contents"/> 
-						<xsl:text disable-output-escaping="yes">--&gt;</xsl:text>
-					</xsl:if>
+					<!-- <xsl:if test="$debug = 'true'">
+						<redirect:write file="contents_{java:getTime(java:java.util.Date.new())}.xml">
+							<xsl:copy-of select="$contents"/>
+						</redirect:write>
+					</xsl:if> -->
 					
 					<fo:block>
 						<fo:block>The permanent and official location for Cloud Security Alliance DevSecOps is</fo:block>
@@ -198,21 +207,70 @@
 						</xsl:for-each>
 					</xsl:for-each>
 					
-					<fo:block break-after="page"/>
+					<!-- <fo:block break-after="page"/> -->
 
 					<!-- Table of Contents -->
-					<xsl:apply-templates select="/*/csa:preface/csa:clause[@type = 'toc']">
+					<!-- <xsl:apply-templates select="/*/csa:preface/csa:clause[@type = 'toc']">
 						<xsl:with-param name="process">true</xsl:with-param>
-					</xsl:apply-templates>
+					</xsl:apply-templates> -->
 
-					<fo:block line-height="145%">
+					<!-- <fo:block line-height="145%">
 						<xsl:call-template name="processPrefaceSectionsDefault"/>					
 						<xsl:call-template name="processMainSectionsDefault"/>
-					</fo:block>
-					
+					</fo:block> -->
 					
 				</fo:flow>
 			</fo:page-sequence>
+			
+			<xsl:variable name="updated_xml">
+				<xsl:call-template name="updateXML"/>
+			</xsl:variable>
+			
+			<xsl:for-each select="xalan:nodeset($updated_xml)/*">
+			
+				<xsl:variable name="updated_xml_with_pages">
+					<xsl:call-template name="processAllSectionsDefault_items"/>
+				</xsl:variable>
+			
+				<xsl:for-each select="xalan:nodeset($updated_xml_with_pages)"> <!-- set context to preface -->
+					<xsl:for-each select=".//*[local-name() = 'page_sequence'][normalize-space() != '' or .//image or .//svg]">
+						<fo:page-sequence master-reference="document" format="1" force-page-count="no-force">
+							
+							<xsl:attribute name="master-reference">
+								<xsl:text>document</xsl:text>
+								<xsl:call-template name="getPageSequenceOrientation"/>
+							</xsl:attribute>
+							
+							<fo:static-content flow-name="xsl-footnote-separator">
+								<fo:block>
+									<fo:leader leader-pattern="rule" leader-length="30%"/>
+								</fo:block>
+							</fo:static-content>
+							<xsl:call-template name="insertHeaderFooter"/>
+							<fo:flow flow-name="xsl-region-body">
+							
+								<!-- Table of Contents -->
+								<xsl:apply-templates select=".//csa:preface//csa:clause[@type = 'toc']">
+									<xsl:with-param name="process">true</xsl:with-param>
+								</xsl:apply-templates>
+
+								<fo:block line-height="145%">
+									<!-- <xsl:call-template name="processPrefaceSectionsDefault"/>					
+									<xsl:call-template name="processMainSectionsDefault"/> -->
+									<xsl:apply-templates />
+								</fo:block>
+								
+								
+							
+								<fo:block/> <!-- for prevent empty preface -->
+							</fo:flow>
+						</fo:page-sequence>
+						
+					</xsl:for-each>
+				</xsl:for-each>
+				
+			</xsl:for-each>
+			
 			<!-- End Document Pages -->
 			
 		</fo:root>
@@ -262,7 +320,7 @@
 		</fo:block>
 	</xsl:template>
 
-	<xsl:template match="csa:preface/csa:clause[@type = 'toc']" priority="3">
+	<xsl:template match="csa:preface//csa:clause[@type = 'toc']" priority="3">
 		<xsl:param name="process">false</xsl:param>
 		<xsl:if test="$process = 'true'">
 			<fo:block-container font-size="12pt" line-height="170%" color="rgb(7, 72, 156)">
@@ -329,7 +387,7 @@
 		</xsl:if>
 	</xsl:template>
 
-	<xsl:template match="csa:preface/csa:clause[@type = 'toc']/csa:title" priority="3">
+	<xsl:template match="csa:preface//csa:clause[@type = 'toc']/csa:title" priority="3">
 		<fo:block font-size="26pt" color="black" margin-top="2pt" margin-bottom="30pt" role="H1">
 			<xsl:apply-templates />
 		</fo:block>
