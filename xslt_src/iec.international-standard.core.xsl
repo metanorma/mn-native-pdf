@@ -6,7 +6,9 @@
 											xmlns:xalan="http://xml.apache.org/xalan" 
 											xmlns:fox="http://xmlgraphics.apache.org/fop/extensions" 
 											xmlns:java="http://xml.apache.org/xalan/java" 
-											exclude-result-prefixes="java"
+											xmlns:redirect="http://xml.apache.org/xalan/redirect"
+											exclude-result-prefixes="java xalan"
+											extension-element-prefixes="redirect"
 											version="1.0">
 
 	<xsl:output method="xml" encoding="UTF-8" indent="no"/>
@@ -133,7 +135,7 @@
 	<xsl:template match="/">
 		<xsl:call-template name="namespaceCheck"/>
 		
-		<xsl:variable name="xslfo">
+		<!-- <xsl:variable name="xslfo"> -->
 			<!-- https://stackoverflow.com/questions/25261949/xsl-fo-letter-spacing-with-text-align -->
 			<!-- https://xmlgraphics.apache.org/fop/knownissues.html -->
 			<fo:root xmlns:fo="http://www.w3.org/1999/XSL/Format" xml:lang="{$lang}">
@@ -256,7 +258,7 @@
 							</fo:block-container>
 							<xsl:call-template name="insertCoverPart1"/>
 						</fo:flow>
-					</fo:page-sequence>
+					</fo:page-sequence> <!-- END: 1st Cover Page --> 
 					
 					<!-- 2nd Cover Page -->
 					<fo:page-sequence master-reference="cover_2nd" force-page-count="no-force"  font-size="8pt">
@@ -366,11 +368,11 @@
 							</xsl:if>
 							
 						</fo:flow>
-					</fo:page-sequence>
+					</fo:page-sequence> <!-- END: 2nd Cover Page -->
 				</xsl:if>
 				<xsl:variable name="lang_second" select="(//iec:iec-standard)[2]/iec:bibdata/iec:language[@current = 'true']"/>
 				<!-- For 'Published' documents insert 3rd Cover Page 
-						OR insert first Covert Page for FDIS -->
+						OR insert first Cover Page for FDIS -->
 				<xsl:if test="$stage &gt;= 60 or $stage-abbreviation = 'FDIS'">
 					<fo:page-sequence master-reference="cover" force-page-count="no-force">
 						<fo:flow flow-name="xsl-region-body">
@@ -485,7 +487,7 @@
 								</fo:block>
 							</fo:block-container>
 						</fo:flow>
-					</fo:page-sequence>
+					</fo:page-sequence> <!-- END: cover -->
 				</xsl:if>
 				
 				<!-- for non-published documents insert  cover page (2nd for FDIS) ) -->
@@ -892,15 +894,14 @@
 									
 							
 						</fo:flow>
-					</fo:page-sequence>
+					</fo:page-sequence> <!-- END: cover-FDIS -->
 				</xsl:if>
 				
-				<xsl:if test="$debug = 'true'">
-						<xsl:text disable-output-escaping="yes">&lt;!--</xsl:text>
-							DEBUG
-							contents=<xsl:copy-of select="$contents"/>
-						<xsl:text disable-output-escaping="yes">--&gt;</xsl:text>
-					</xsl:if>
+				<!-- <xsl:if test="$debug = 'true'">
+					<redirect:write file="contents_{java:getTime(java:java.util.Date.new())}.xml">
+						<xsl:copy-of select="$contents"/>
+					</redirect:write>
+				</xsl:if> -->
 				
 				<xsl:for-each select="//iec:iec-standard">
 					<xsl:variable name="lang" select="*[local-name()='bibdata']/*[local-name()='language'][@current = 'true']"/>
@@ -910,39 +911,24 @@
 					
 					<xsl:variable name="num"><xsl:number count="iec:iec-standard" level="any"/></xsl:variable>
 					
-					<xsl:for-each select="xalan:nodeset($current_document)">
+					
+					<xsl:variable name="updated_xml">
+						<xsl:for-each select="xalan:nodeset($current_document)">
+							<xsl:call-template name="updateXML"/>
+						</xsl:for-each>
+					</xsl:variable>
+					
+					<xsl:for-each select="xalan:nodeset($updated_xml)/*">
+
+						<!-- <xsl:for-each select="xalan:nodeset($current_document)"> -->
 					
 						<!-- <xsl:variable name="docid">
 							<xsl:call-template name="getDocumentId"/>
 						</xsl:variable> -->
 						
-						<fo:page-sequence master-reference="document" format="1" force-page-count="no-force"> <!-- initial-page-number="2"   -->
-							
-							<xsl:if test="$num = '1'">
-								<xsl:attribute name="initial-page-number">2</xsl:attribute>
-							</xsl:if>
-							<xsl:if test="$isIEV = 'true'">
-								<xsl:attribute name="format">I</xsl:attribute>
-							</xsl:if>
-							
-							<xsl:call-template name="insertHeaderFooter"/>
-							<fo:flow flow-name="xsl-region-body">
-							
-								<xsl:call-template name="processPrefaceSectionsDefault"/>
-								
-								<!--
-								<xsl:call-template name="insertTOCpages">
-									<xsl:with-param name="contents" select="$contents/doc[@id = $docid]"/>
-								</xsl:call-template>
-								
-								<xsl:call-template name="insertPrefacepages">
-									<xsl:with-param name="lang" select="$lang"/>
-								</xsl:call-template>
-								-->
-								
-								<fo:block/> <!-- for prevent empty preface -->
-							</fo:flow>
-						</fo:page-sequence>
+						<xsl:call-template name="insertPrefacepages">
+							<xsl:with-param name="num" select="$num"/>
+						</xsl:call-template>
 						
 						<xsl:call-template name="insertBodypages">
 							<xsl:with-param name="lang" select="$lang"/>
@@ -1003,9 +989,9 @@
 					</fo:page-sequence>
 				</xsl:if>
 			</fo:root>
-		</xsl:variable>
+		<!-- </xsl:variable> -->
 		
-		<xsl:apply-templates select="xalan:nodeset($xslfo)" mode="landscape_portrait"/>
+		<!-- <xsl:apply-templates select="xalan:nodeset($xslfo)" mode="landscape_portrait"/> -->
 		
 	</xsl:template> 
 
@@ -1226,7 +1212,7 @@
 				</fo:block>
 			</fo:block-container>
 		</fo:block-container>
-	</xsl:template>
+	</xsl:template> <!-- END: insertCoverPart1 -->
 	
 	<xsl:template name="outputLogo">
 		<!-- <fo:external-graphic src="{concat('data:image/png;base64,', normalize-space($Image-Logo-IEC))}" width="18mm" content-height="scale-to-fit" scaling="uniform" fox:alt-text="Image Logo IEC"/> -->
@@ -1343,7 +1329,7 @@
 				
 			<!-- </fo:block>
 		</fo:block-container> -->
-	</xsl:template>
+	</xsl:template> <!-- END: insertTOCpages -->
 	
 	<xsl:template name="insertListOf_Item">
 		<fo:block text-align-last="justify" margin-bottom="5pt" margin-left="8mm" text-indent="-8mm" role="TOCI">
@@ -1357,7 +1343,7 @@
 		</fo:block>
 	</xsl:template>
 
-	<xsl:template match="iec:preface/iec:clause[@type = 'toc']" priority="3">
+	<xsl:template match="iec:preface//iec:clause[@type = 'toc']" priority="3">
 		<fo:block-container>
 			<fo:block role="TOC">
 				<xsl:apply-templates />
@@ -1374,7 +1360,7 @@
 		</fo:block-container>
 	</xsl:template>
 	
-	<xsl:template match="iec:preface/iec:clause[@type = 'toc']/iec:title" priority="3">
+	<xsl:template match="iec:preface//iec:clause[@type = 'toc']/iec:title" priority="3">
 		<fo:block font-size="12pt" text-align="center" margin-bottom="22pt" role="H1">
 			<xsl:call-template name="addLetterSpacing">
 				<xsl:with-param name="text" select="java:toUpperCase(java:java.lang.String.new(.))"/>
@@ -1386,7 +1372,7 @@
 		<fo:block break-after="page"/>
 	</xsl:template>
 	
-	<xsl:template match="*[local-name() = 'preface' or local-name() = 'sections']/iec:p[starts-with(@class, 'zzSTDTitle')]" priority="4">
+	<xsl:template match="*[local-name() = 'preface' or local-name() = 'sections']//iec:p[starts-with(@class, 'zzSTDTitle')]" priority="4">
 		<fo:block-container font-size="12pt" text-align="center">
 			<xsl:if test="following-sibling::*[1][not(self::iec:p[starts-with(@class, 'zzSTDTitle')])]">
 				<xsl:attribute name="margin-bottom">18pt</xsl:attribute>
@@ -1403,11 +1389,11 @@
 		</fo:block-container>
 	</xsl:template>
 	
-	<xsl:template match="*[local-name() = 'sections']/iec:p[@class = 'zzSTDTitle1']//text()" priority="4">
+	<xsl:template match="*[local-name() = 'sections']//iec:p[@class = 'zzSTDTitle1']//text()" priority="4">
 		<xsl:value-of select="java:toUpperCase(java:java.lang.String.new(.))"/>
 	</xsl:template>
 	
-	<xsl:template name="insertPrefacepages">
+	<xsl:template name="insertPrefacepages_old">
 		<xsl:param name="lang" select="$lang"/>
 		<fo:block break-after="page"/>
 		<fo:block-container font-size="12pt" text-align="center" margin-bottom="18pt">
@@ -1436,41 +1422,96 @@
 		<xsl:call-template name="processPrefaceSectionsDefault"/>
 	</xsl:template>
 	
+	<xsl:template name="insertPrefacepages">
+		<xsl:param name="num"/>
+		
+		<xsl:variable name="updated_xml_with_pages_preface">
+			<xsl:call-template name="processPrefaceSectionsDefault_items"/>
+		</xsl:variable>
+	
+		<xsl:for-each select="xalan:nodeset($updated_xml_with_pages_preface)"> <!-- set context to preface -->
+			<xsl:for-each select=".//*[local-name() = 'page_sequence'][normalize-space() != '' or .//image or .//svg]">
+		
+				<fo:page-sequence master-reference="document" format="1" force-page-count="no-force">
+					
+					<xsl:attribute name="master-reference">
+						<xsl:text>document</xsl:text>
+						<xsl:call-template name="getPageSequenceOrientation"/>
+					</xsl:attribute>
+					
+					<xsl:if test="position() = 1 and $num = '1'">
+						<xsl:attribute name="initial-page-number">2</xsl:attribute>
+					</xsl:if>
+					<xsl:if test="$isIEV = 'true'">
+						<xsl:attribute name="format">I</xsl:attribute>
+					</xsl:if>
+					
+					<xsl:call-template name="insertHeaderFooter"/>
+					
+					<fo:flow flow-name="xsl-region-body">
+					
+						<!-- <xsl:call-template name="processPrefaceSectionsDefault"/> -->
+						<xsl:apply-templates />
+						
+						<fo:block/> <!-- for prevent empty preface -->
+					</fo:flow>
+				</fo:page-sequence>
+			</xsl:for-each>
+		</xsl:for-each>
+	</xsl:template>
 	
 	<xsl:template name="insertBodypages">
 		<xsl:param name="lang" select="'en'"/>
 		<!-- BODY -->
-		<fo:page-sequence master-reference="document" force-page-count="no-force">						
-			<xsl:if test="$isIEV = 'true'">
-				<xsl:attribute name="initial-page-number">1</xsl:attribute>
-			</xsl:if>
-			<fo:static-content flow-name="xsl-footnote-separator">
-				<fo:block>
-					<fo:leader leader-pattern="rule" leader-length="30%"/>
-				</fo:block>
-			</fo:static-content>
-			<xsl:call-template name="insertHeaderFooter"/>
-			<fo:flow flow-name="xsl-region-body">
+		
+		<xsl:variable name="updated_xml_with_pages_main">
+			<xsl:call-template name="processMainSectionsDefault_items"/>
+		</xsl:variable>
+	
+		<xsl:for-each select="xalan:nodeset($updated_xml_with_pages_main)"> <!-- set context to preface -->
+			<xsl:for-each select=".//*[local-name() = 'page_sequence'][normalize-space() != '' or .//image or .//svg]">
+		
+				<fo:page-sequence master-reference="document" force-page-count="no-force">						
 				
-				<!-- <fo:block-container font-size="12pt" text-align="center" margin-bottom="36pt">
-					
-					<fo:block font-weight="bold" role="H1">						
-					
-						<xsl:call-template name="printTitles">
-							<xsl:with-param name="lang" select="$lang"/>
-						</xsl:call-template>
+					<xsl:attribute name="master-reference">
+						<xsl:text>document</xsl:text>
+						<xsl:call-template name="getPageSequenceOrientation"/>
+					</xsl:attribute>
+				
+					<xsl:if test="position() = 1 and $isIEV = 'true'">
+						<xsl:attribute name="initial-page-number">1</xsl:attribute>
+					</xsl:if>
+					<fo:static-content flow-name="xsl-footnote-separator">
+						<fo:block>
+							<fo:leader leader-pattern="rule" leader-length="30%"/>
+						</fo:block>
+					</fo:static-content>
+					<xsl:call-template name="insertHeaderFooter"/>
+					<fo:flow flow-name="xsl-region-body">
 						
-						<fo:block>&#xa0;</fo:block>
-					</fo:block>
-				</fo:block-container> -->
-				
-				<!-- Main sections -->
-				<fo:block>				
-					<xsl:call-template name="processMainSectionsDefault"/>					
-				</fo:block>
-				
-			</fo:flow>
-		</fo:page-sequence>
+						<!-- <fo:block-container font-size="12pt" text-align="center" margin-bottom="36pt">
+							
+							<fo:block font-weight="bold" role="H1">						
+							
+								<xsl:call-template name="printTitles">
+									<xsl:with-param name="lang" select="$lang"/>
+								</xsl:call-template>
+								
+								<fo:block>&#xa0;</fo:block>
+							</fo:block>
+						</fo:block-container> -->
+						
+						<!-- Main sections -->
+						<fo:block>				
+							<!-- <xsl:call-template name="processMainSectionsDefault"/> -->
+							<xsl:apply-templates />
+						</fo:block>
+						
+						<fo:block/> <!-- for prevent empty preface -->
+					</fo:flow>
+				</fo:page-sequence>
+			</xsl:for-each>
+		</xsl:for-each>
 		
 		<!-- Index -->
 		<xsl:apply-templates select="//iec:indexsect" mode="index"/>
@@ -1728,7 +1769,7 @@
 	</xsl:template>
 	
 	
-	<xsl:template match="iec:iec-standard/iec:preface/iec:foreword" priority="3">
+	<xsl:template match="iec:iec-standard/iec:preface//iec:foreword" priority="3">
 		<fo:block id="{@id}" margin-bottom="12pt" font-size="12pt" text-align="center">
 			<xsl:call-template name="addLetterSpacing">
 				<!-- <xsl:with-param name="text" select="java:toUpperCase(java:java.lang.String.new(iec:title))"/> -->
