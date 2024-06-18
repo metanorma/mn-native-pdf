@@ -22,6 +22,7 @@
 	
 	<xsl:key name="attachments" match="iso:eref[java:endsWith(java:java.lang.String.new(@bibitemid),'.exp')]" use="@bibitemid"/>
 	<xsl:key name="attachments2" match="iso:eref[contains(@bibitemid,'.exp_')]" use="@bibitemid"/>
+	<xsl:key name="attachments3" match="iso:link[not(starts-with(@target, 'http:') or starts-with(@target, 'https') or starts-with(@target, 'www') or starts-with(@target, 'mailto') or starts-with(@target, 'ftp'))]" use="@target"/>
 	
 	<xsl:variable name="namespace">iso</xsl:variable>
 	
@@ -824,6 +825,25 @@
 					<xsl:if test="$uri != ''">
 						<xsl:variable name="url" select="concat('url(file:',$basepath, $uri, ')')"/>
 						<xsl:variable name="filename" select="concat(substring-before($bibitemid, '.exp_'), '.exp')"/>
+						<pdf:embedded-file src="{$url}" filename="{$filename}"/>
+					</xsl:if>
+				</xsl:for-each>
+				<xsl:for-each select="//*[local-name() = 'link'][generate-id(.)=generate-id(key('attachments3',@target)[1])]">
+					<xsl:variable name="target" select="translate(@target, '\', '/')"/>
+					<!-- <xsl:message>target=<xsl:value-of select="$target"/></xsl:message> -->
+					<xsl:variable name="filename">
+						<xsl:call-template name="substring-after-last">
+							<xsl:with-param name="value" select="$target"/>
+							<xsl:with-param name="delimiter" select="'/'"/>
+						</xsl:call-template>
+					</xsl:variable>
+					<!-- <xsl:message>filename=<xsl:value-of select="$filename"/></xsl:message> -->
+					<xsl:variable name="target_filepath" select="concat($inputxml_basepath, @target)"/>
+					<!-- <xsl:message>target_filepath=<xsl:value-of select="$target_filepath"/></xsl:message> -->
+					<xsl:variable name="file_exists" select="normalize-space(java:exists(java:java.io.File.new($target_filepath)))"/>
+					<!-- <xsl:message>file_exists=<xsl:value-of select="$file_exists"/></xsl:message> -->
+					<xsl:if test="$file_exists = 'true'">
+						<xsl:variable name="url" select="concat('url(file:///',$target_filepath, ')')"/>
 						<pdf:embedded-file src="{$url}" filename="{$filename}"/>
 					</xsl:if>
 				</xsl:for-each>

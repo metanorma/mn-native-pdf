@@ -12273,12 +12273,34 @@
 				<xsl:when test="@updatetype = 'true'">
 					<xsl:value-of select="concat(normalize-space(@target), '.pdf')"/>
 				</xsl:when>
+				
 				<xsl:when test="contains(@target, concat('_', $inputxml_filename_prefix, '_attachments'))">
 					<!-- link to the PDF attachment -->
 					<xsl:variable name="target_" select="translate(@target, '\', '/')"/>
 					<xsl:variable name="target__" select="substring-after($target_, concat('_', $inputxml_filename_prefix, '_attachments', '/'))"/>
 					<xsl:value-of select="concat('url(embedded-file:', $target__, ')')"/>
 				</xsl:when>
+				
+				<xsl:when test="not(starts-with(@target, 'http:') or starts-with(@target, 'https') or starts-with(@target, 'www') or starts-with(@target, 'mailto') or starts-with(@target, 'ftp'))">
+					<xsl:variable name="target_" select="translate(@target, '\', '/')"/>
+					<xsl:variable name="filename">
+						<xsl:call-template name="substring-after-last">
+							<xsl:with-param name="value" select="$target_"/>
+							<xsl:with-param name="delimiter" select="'/'"/>
+						</xsl:call-template>
+					</xsl:variable>
+					<xsl:variable name="target_filepath" select="concat($inputxml_basepath, @target)"/>
+					<xsl:variable name="file_exists" select="normalize-space(java:exists(java:java.io.File.new($target_filepath)))"/>
+					<xsl:choose>
+						<xsl:when test="$file_exists = 'true'">
+							<xsl:value-of select="concat('url(embedded-file:', $filename, ')')"/>
+						</xsl:when>
+						<xsl:otherwise>
+							<xsl:value-of select="normalize-space(@target)"/>
+						</xsl:otherwise>
+					</xsl:choose>
+				</xsl:when>
+				
 				<xsl:otherwise>
 					<xsl:value-of select="normalize-space(@target)"/>
 				</xsl:otherwise>
