@@ -1472,6 +1472,12 @@
 			<xsl:for-each select=".//*[local-name() = 'page_sequence'][normalize-space() != '' or .//image or .//svg]">
 		
 				<fo:page-sequence master-reference="document" force-page-count="no-force">						
+				
+					<xsl:attribute name="master-reference">
+						<xsl:text>document</xsl:text>
+						<xsl:call-template name="getPageSequenceOrientation"/>
+					</xsl:attribute>
+				
 					<xsl:if test="position() = 1 and $isIEV = 'true'">
 						<xsl:attribute name="initial-page-number">1</xsl:attribute>
 					</xsl:if>
