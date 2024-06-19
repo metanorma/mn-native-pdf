@@ -6,7 +6,9 @@
 											xmlns:xalan="http://xml.apache.org/xalan" 
 											xmlns:fox="http://xmlgraphics.apache.org/fop/extensions" 
 											xmlns:java="http://xml.apache.org/xalan/java" 
-											exclude-result-prefixes="java"
+											xmlns:redirect="http://xml.apache.org/xalan/redirect"
+											exclude-result-prefixes="java xalan"
+											extension-element-prefixes="redirect"
 											version="1.0">
 
 	<xsl:output method="xml" encoding="UTF-8" indent="no"/>
@@ -276,13 +278,16 @@
 								
 								<!-- <fo:block font-size="16pt" font-weight="bold" margin-bottom="18pt" role="H1"><xsl:value-of select="$title-en"/></fo:block> -->
 								
-								<xsl:apply-templates select="/*/*[local-name()='sections']/*[local-name()='clause'][@type='scope']" />
+								<!-- <xsl:apply-templates select="/*/*[local-name()='sections']/*[local-name()='clause'][@type='scope']" /> -->
 								<!-- Normative references  -->
-								<xsl:apply-templates select="/*/*[local-name()='bibliography']/*[local-name()='references'][@normative='true']" />
+								<!-- <xsl:apply-templates select="/*/*[local-name()='bibliography']/*[local-name()='references'][@normative='true']" /> -->
 								<!-- Terms and definitions -->
-								<xsl:apply-templates select="/*/*[local-name()='sections']/*[local-name()='terms']" />
+								<!-- <xsl:apply-templates select="/*/*[local-name()='sections']/*[local-name()='terms']" />
 								<xsl:apply-templates select="/*/*[local-name()='sections']/*[local-name()='definitions']" />
-								<xsl:apply-templates select="/*/*[local-name()='sections']/*[local-name() != 'terms' and local-name() != 'definitions' and not(@type='scope')]" />
+								<xsl:apply-templates select="/*/*[local-name()='sections']/*[local-name() != 'terms' and local-name() != 'definitions' and not(@type='scope')]" /> -->
+								
+								<xsl:call-template name="processMainSectionsDefault"/>
+								
 								
 								<xsl:if test="$table_if = 'true'"><fo:block/></xsl:if>
 							</fo:block-container>
@@ -290,7 +295,7 @@
 					</fo:page-sequence>
 				</xsl:if>
 				
-				<xsl:if test="/iho:iho-standard/iho:annex">
+				<!-- <xsl:if test="/iho:iho-standard/iho:annex">
 					<fo:page-sequence master-reference="document">
 						<fo:static-content flow-name="xsl-footnote-separator">
 							<fo:block>
@@ -306,9 +311,9 @@
 							</fo:block-container>
 						</fo:flow>
 					</fo:page-sequence>
-				</xsl:if>
+				</xsl:if> -->
 				
-				<xsl:if test="/*/*[local-name()='bibliography']/*[local-name()='references'][not(@normative='true')]">
+				<!-- <xsl:if test="/*/*[local-name()='bibliography']/*[local-name()='references'][not(@normative='true')]">
 					<fo:page-sequence master-reference="document">
 						<fo:static-content flow-name="xsl-footnote-separator">
 							<fo:block>
@@ -317,15 +322,15 @@
 						</fo:static-content>
 						<xsl:call-template name="insertHeaderFooter"/>
 						<fo:flow flow-name="xsl-region-body">
-							<fo:block-container>								
+							<fo:block-container>	 -->							
 								<!-- Bibliography -->
-								<xsl:apply-templates select="/*/*[local-name()='bibliography']/*[local-name()='references'][not(@normative='true')]" />
+								<!-- <xsl:apply-templates select="/*/*[local-name()='bibliography']/*[local-name()='references'][not(@normative='true')]" />
 								
 								<xsl:if test="$table_if = 'true'"><fo:block/></xsl:if>
 							</fo:block-container>
 						</fo:flow>
 					</fo:page-sequence>
-				</xsl:if>
+				</xsl:if> -->
 				
 				
 				
@@ -369,12 +374,11 @@
 			
 			<xsl:apply-templates />
 			
-			<xsl:if test="$debug = 'true'">
-				<xsl:text disable-output-escaping="yes">&lt;!--</xsl:text>
-					DEBUG
-					contents=<xsl:copy-of select="$contents"/>
-				<xsl:text disable-output-escaping="yes">--&gt;</xsl:text>
-			</xsl:if>
+			<!-- <xsl:if test="$debug = 'true'">
+				<redirect:write file="contents_{java:getTime(java:java.util.Date.new())}.xml">
+					<xsl:copy-of select="$contents"/>
+				</redirect:write>
+			</xsl:if> -->
 			
 			<xsl:if test="count(*) = 1 and *[local-name() = 'title']"> <!-- if there isn't user ToC -->
 			
