@@ -8858,6 +8858,7 @@
 			</xsl:when>
 			<xsl:otherwise>
 				<fo:block xsl:use-attribute-sets="table-note-style">
+					<xsl:copy-of select="@id"/>
 
 					<xsl:call-template name="refine_table-note-style"/>
 
