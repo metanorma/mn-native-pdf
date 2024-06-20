@@ -19433,6 +19433,15 @@
 				</xsl:otherwise>
 			</xsl:choose>
 		</xsl:for-each>
+		<!-- references to external attachments (no binary-encoded within the Metanorma XML file) -->
+		<xsl:if test="not(//*[contains(local-name(), '-standard')]/*[local-name() = 'metanorma-extension']/*[local-name() = 'attachment'])">
+			<xsl:for-each select="//*[local-name() = 'bibitem'][@hidden = 'true'][*[local-name() = 'uri'][@type = 'attachment']]">
+				<xsl:variable name="attachment_path" select="*[local-name() = 'uri'][@type = 'attachment']"/>
+				<xsl:variable name="url" select="concat('url(file:///',$inputxml_basepath, $attachment_path, ')')"/>
+				<xsl:variable name="filename_embedded" select="substring-after($attachment_path, concat('_', $inputxml_filename_prefix, '_attachments', '/'))"/>
+				<pdf:embedded-file src="{$url}" filename="{$filename_embedded}" xmlns:pdf="http://xmlgraphics.apache.org/fop/extensions/pdf"/>
+			</xsl:for-each>
+		</xsl:if>
 	</xsl:template> <!-- addPDFUAmeta -->
 	
 	<xsl:template name="getId">
