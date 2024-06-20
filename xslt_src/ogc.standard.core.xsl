@@ -22,7 +22,7 @@
 	<xsl:variable name="docnumber" select="java:toUpperCase(java:java.lang.String.new(/ogc:ogc-standard/ogc:bibdata/ogc:docnumber))"/>
 	<xsl:variable name="doctitle" select="/ogc:ogc-standard/ogc:bibdata/ogc:title[@language = 'en']"/>
 	
-	<xsl:variable name="docLatestDate_">
+	<!-- <xsl:variable name="docLatestDate_">
 		<xsl:for-each select="/*/ogc:bibdata/ogc:date[normalize-space(ogc:on) != '']">
 			<xsl:sort order="descending" select="ogc:on"/>
 			<xsl:if test="position() = 1"><xsl:value-of select="translate(ogc:on, '-', '')"/></xsl:if>
@@ -30,7 +30,7 @@
 	</xsl:variable>
 	<xsl:variable name="docLatestDate" select="normalize-space($docLatestDate_)"/>
 
-	<!-- <xsl:variable name="selectedStyle_">
+	<xsl:variable name="selectedStyle_">
 		<xsl:choose>
 			<xsl:when test="$docLatestDate &gt;= '20211108'">2</xsl:when>
 			<xsl:otherwise>1</xsl:otherwise>

@@ -73,6 +73,7 @@
 	<xsl:variable name="namespace_full" select="namespace-uri(/*)"/> <!-- example: https://www.metanorma.org/ns/iso -->
 	<xsl:variable name="root_element" select="local-name(/*)"/> <!-- example: iso-standard -->
 	
+	<xsl:variable name="document_scheme" select="normalize-space(//*[contains(local-name(), '-standard')]/*[local-name() = 'metanorma-extension']/*[local-name() = 'presentation-metadata'][*[local-name() = 'name'] = 'document-scheme']/*[local-name() = 'value'])"/>
 
 	<!-- external parameters -->
 	
