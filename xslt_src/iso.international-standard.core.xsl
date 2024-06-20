@@ -403,7 +403,6 @@
 	<xsl:variable name="revision_date" select="normalize-space(/iso:iso-standard/iso:bibdata/iso:version/iso:revision-date)"/>
 	<xsl:variable name="revision_date_num" select="number(translate($revision_date,'-',''))"/>
 	
-	<xsl:variable name="document_scheme" select="normalize-space(/iso:iso-standard/iso:metanorma-extension/iso:presentation-metadata[iso:name = 'document-scheme']/iso:value)"/>
 	<xsl:variable name="layoutVersion_">
 		<xsl:choose>
 			<xsl:when test="$document_scheme = ''">2024</xsl:when>

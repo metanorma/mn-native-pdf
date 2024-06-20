@@ -153,7 +153,6 @@
 	
 	<xsl:variable name="en_dash_separator"> – </xsl:variable>
 	
-	<xsl:variable name="document_scheme" select="normalize-space(/itu:itu-standard/itu:metanorma-extension/itu:presentation-metadata[itu:name = 'document-scheme']/itu:value)"/>
 	<xsl:variable name="layoutVersion_">
 		<xsl:choose>
 			<xsl:when test="$document_scheme = '' or $document_scheme = 'current'">2023</xsl:when>
