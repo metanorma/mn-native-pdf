@@ -249,6 +249,12 @@
 				<xsl:call-template name="addPDFUAmeta"/>
 			</fo:declarations>
 				
+			<!-- <xsl:if test="$debug = 'true'">
+				<redirect:write file="contents_{java:getTime(java:java.util.Date.new())}.xml">
+					<xsl:copy-of select="$contents"/>
+				</redirect:write>
+			</xsl:if> -->
+				
 			<xsl:call-template name="addBookmarks">
 				<xsl:with-param name="contents" select="$contents"/>
 			</xsl:call-template>
@@ -511,11 +517,6 @@
 							<xsl:copy-of select="."/>
 						</xsl:variable>				
 						<xsl:for-each select="xalan:nodeset($current_document)">
-							<!-- <xsl:if test="$debug = 'true'">
-								<redirect:write file="contents_{java:getTime(java:java.util.Date.new())}.xml">
-									<xsl:copy-of select="$contents"/>
-								</redirect:write>
-							</xsl:if> -->
 							<!-- Table of Contents -->
 							<xsl:element name="page_sequence" namespace="{$namespace_full}">
 								<xsl:copy-of select="/*/*[local-name()='preface']/*[local-name()='clause'][@type = 'toc']" />
@@ -850,7 +851,7 @@
 	
 	<xsl:template match="*[local-name()='ul'][not(*)] | *[local-name()='ol'][not(*)]" priority="2"/>
 	
-	<xsl:template match="*[local-name()='li'][not(parent::*[local-name()='ul'] or parent::*[local-name()='ol'])]">
+	<xsl:template match="*[local-name()='li'][not(parent::*[local-name()='ul'] or parent::*[local-name()='ol'])]" priority="2">
 		<fo:list-block provisional-distance-between-starts="7mm" margin-top="8pt">
 			<fo:list-item id="{@id}">
 				<fo:list-item-label end-indent="label-end()">

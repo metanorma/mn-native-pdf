@@ -13905,7 +13905,7 @@
 								</xsl:if>
 							
 								<xsl:for-each select="$contents_nodes/doc">
-									<fo:bookmark internal-destination="{contents/item[1]/@id}" starting-state="hide">
+									<fo:bookmark internal-destination="{contents/item[@display = 'true'][1]/@id}" starting-state="hide">
 										<xsl:if test="@bundle = 'true'">
 											<xsl:attribute name="internal-destination"><xsl:value-of select="@firstpage_id"/></xsl:attribute>
 										</xsl:if>
