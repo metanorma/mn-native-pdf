@@ -88,7 +88,7 @@
 	<!-- example: for two-column layout: 82mm 8mm 82mm -->
 	<xsl:variable name="column_width" select="($page_width - $column_gap) div $docs_count"/>
 	
-	<xsl:variable name="debug">true</xsl:variable>
+	<xsl:variable name="debug">false</xsl:variable>
 	
 	<xsl:variable name="all_rights_reserved">
 		<xsl:call-template name="getLocalizedString">
