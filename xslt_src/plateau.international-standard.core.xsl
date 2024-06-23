@@ -11,7 +11,7 @@
 											xmlns:jeuclid="http://jeuclid.sf.net/ns/ext"
 											xmlns:barcode="http://barcode4j.krysalis.org/ns" 
 											xmlns:redirect="http://xml.apache.org/xalan/redirect"
-											exclude-result-prefixes="java"
+											exclude-result-prefixes="java redirect"
 											extension-element-prefixes="redirect"
 											version="1.0">
 
@@ -901,14 +901,14 @@
 			</xsl:choose>
 		</xsl:variable>
 		
-		<xsl:variable name="font-weight">
-			<xsl:choose>
+		<xsl:variable name="font-weight">bold</xsl:variable>
+			<!-- <xsl:choose>
 				<xsl:when test="@parent = 'preface'">bold</xsl:when>
 				<xsl:when test="@parent = 'annex'">bold</xsl:when>
 				<xsl:when test="@parent = 'bibliography'">bold</xsl:when>
 				<xsl:otherwise>normal</xsl:otherwise>
 			</xsl:choose>
-		</xsl:variable>
+		</xsl:variable> -->
 		
 		<xsl:variable name="text-align">
 			<xsl:choose>
