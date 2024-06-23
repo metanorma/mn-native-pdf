@@ -2724,8 +2724,9 @@
 				<xsl:attribute name="font-weight">normal</xsl:attribute>
 				<xsl:attribute name="padding-top">1mm</xsl:attribute>
 				<xsl:attribute name="background-color">rgb(218, 218, 218)</xsl:attribute>
-				<xsl:if test="starts-with(text(), '1') or starts-with(text(), '2') or starts-with(text(), '3') or starts-with(text(), '4') or starts-with(text(), '5') or
-					starts-with(text(), '6') or starts-with(text(), '7') or starts-with(text(), '8') or starts-with(text(), '9')">
+				<xsl:variable name="header_text" select="normalize-space()"/>
+				<xsl:if test="starts-with($header_text, '1') or starts-with($header_text, '2') or starts-with($header_text, '3') or starts-with($header_text, '4') or starts-with($header_text, '5') or
+					starts-with($header_text, '6') or starts-with($header_text, '7') or starts-with($header_text, '8') or starts-with($header_text, '9')">
 					<xsl:attribute name="color">rgb(46, 116, 182)</xsl:attribute>
 					<xsl:attribute name="font-weight">bold</xsl:attribute>
 				</xsl:if>

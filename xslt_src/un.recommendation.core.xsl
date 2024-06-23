@@ -5,8 +5,10 @@
 											xmlns:mathml="http://www.w3.org/1998/Math/MathML" 
 											xmlns:xalan="http://xml.apache.org/xalan" 
 											xmlns:fox="http://xmlgraphics.apache.org/fop/extensions" 
+											xmlns:redirect="http://xml.apache.org/xalan/redirect"
 											xmlns:java="http://xml.apache.org/xalan/java" 
-											exclude-result-prefixes="java"
+											exclude-result-prefixes="java redirect"
+											extension-element-prefixes="redirect"
 											version="1.0">
 
 	<xsl:output version="1.0" method="xml" encoding="UTF-8" indent="no"/>
@@ -68,6 +70,13 @@
 					<fo:region-start region-name="left" extent="19.5mm"/>
 					<fo:region-end region-name="right" extent="19.5mm"/>
 				</fo:simple-page-master>
+				<fo:simple-page-master master-name="document-preface-landscape" page-width="{$pageHeight}mm" page-height="{$pageWidth}mm">
+					<fo:region-body margin-top="{$marginTop}mm" margin-bottom="{$marginBottom}mm" margin-left="19.5mm" margin-right="19.5mm"/>
+					<fo:region-before region-name="header" extent="{$marginTop}mm"/>
+					<fo:region-after region-name="footer" extent="{$marginBottom}mm"/>
+					<fo:region-start region-name="left" extent="19.5mm"/>
+					<fo:region-end region-name="right" extent="19.5mm"/>
+				</fo:simple-page-master>
 				
 				<fo:simple-page-master master-name="blank" page-width="{$pageWidth}mm" page-height="{$pageHeight}mm">
 					<fo:region-body margin-top="{$marginTop}mm" margin-bottom="{$marginBottom}mm" margin-left="19.5mm" margin-right="19.5mm"/>
@@ -83,12 +92,26 @@
 					<fo:region-start region-name="left" extent="19.5mm"/>
 					<fo:region-end region-name="right" extent="19.5mm"/>
 				</fo:simple-page-master>
+				<fo:simple-page-master master-name="document-landscape" page-width="{$pageHeight}mm" page-height="{$pageWidth}mm">
+					<fo:region-body margin-top="{$marginTop}mm" margin-bottom="{$marginBottom}mm" margin-left="{$marginLeftRight1}mm" margin-right="{$marginLeftRight2}mm"/>
+					<fo:region-before region-name="header" extent="{$marginTop}mm"/>
+					<fo:region-after region-name="footer" extent="{$marginBottom}mm"/>
+					<fo:region-start region-name="left" extent="19.5mm"/>
+					<fo:region-end region-name="right" extent="19.5mm"/>
+				</fo:simple-page-master>
 				
 				<fo:page-sequence-master master-name="document-preface-master">
 					<fo:repeatable-page-master-alternatives>
 						<fo:conditional-page-master-reference master-reference="blank" blank-or-not-blank="blank"/>
 						<fo:conditional-page-master-reference master-reference="document-preface" odd-or-even="odd"/>
 						<fo:conditional-page-master-reference master-reference="document-preface" odd-or-even="even"/>
+					</fo:repeatable-page-master-alternatives>
+				</fo:page-sequence-master>
+				<fo:page-sequence-master master-name="document-preface-master-landscape">
+					<fo:repeatable-page-master-alternatives>
+						<fo:conditional-page-master-reference master-reference="blank" blank-or-not-blank="blank"/>
+						<fo:conditional-page-master-reference master-reference="document-preface-landscape" odd-or-even="odd"/>
+						<fo:conditional-page-master-reference master-reference="document-preface-landscape" odd-or-even="even"/>
 					</fo:repeatable-page-master-alternatives>
 				</fo:page-sequence-master>
 				
@@ -180,62 +203,111 @@
 				</fo:flow>
 			</fo:page-sequence>
 			
-			<fo:page-sequence master-reference="document-preface-master" initial-page-number="3" format="i" force-page-count="even" line-height="115%">
-				<fo:static-content flow-name="xsl-footnote-separator">
-					<fo:block-container margin-left="-9mm">
-						<fo:block>
-							<fo:leader leader-pattern="rule" leader-length="30%"/>
-						</fo:block>
-					</fo:block-container>
-				</fo:static-content>
-				<xsl:call-template name="insertHeaderPreface"/>
-				<xsl:call-template name="insertFooter"/>
-				<fo:flow flow-name="xsl-region-body" text-align="justify">
-					<fo:block>						
-						<xsl:call-template name="processPrefaceSectionsDefault"/>
-					</fo:block>
-				</fo:flow>
-			</fo:page-sequence>
+			<xsl:variable name="updated_xml">
+				<xsl:call-template name="updateXML"/>
+				<!-- <xsl:copy-of select="."/> -->
+			</xsl:variable>
 			
-			<!-- Table of contents -->
-			<xsl:apply-templates select="/*/un:preface/un:clause[@type = 'toc']">
-				<xsl:with-param name="process">true</xsl:with-param>
-			</xsl:apply-templates>
+			<xsl:for-each select="xalan:nodeset($updated_xml)/*">
 			
-			<!-- End Preface Pages -->
+				<xsl:variable name="updated_xml_with_pages">
+					<xsl:call-template name="processPrefaceAndMainSectionsDefault_items"/>
+				</xsl:variable>
 			
-			<!-- Document Pages -->
-			<fo:page-sequence master-reference="document" initial-page-number="1" format="1" force-page-count="no-force" line-height="115%">
-				<fo:static-content flow-name="xsl-footnote-separator">
-					<fo:block margin-left="-20mm">
-						<fo:leader leader-pattern="rule" leader-length="35%"/>
-					</fo:block>
-				</fo:static-content>
-				<xsl:call-template name="insertHeader"/>
-				<xsl:call-template name="insertFooter"/>
-				<fo:flow flow-name="xsl-region-body">
+				<xsl:for-each select="xalan:nodeset($updated_xml_with_pages)"> <!-- set context -->
 					
-					<xsl:if test="$debug = 'true'">
-						<xsl:text disable-output-escaping="yes">&lt;!--</xsl:text>
-							DEBUG
-							contents=<xsl:copy-of select="$contents"/>
-						<xsl:text disable-output-escaping="yes">--&gt;</xsl:text>
-					</xsl:if>
-					
-					<fo:block>
-						<xsl:apply-templates select="/un:un-standard/un:sections/*"/>
-						<xsl:apply-templates select="/un:un-standard/un:annex"/>
-						<xsl:apply-templates select="/un:un-standard/un:bibliography/un:references"/>
-					</fo:block>
-					
-					
-					<fo:block-container margin-left="50mm" width="30mm" border-bottom="1pt solid black">
-						<fo:block>&#xA0;</fo:block>
-					</fo:block-container>
-					
-				</fo:flow>
-			</fo:page-sequence>
-			<!-- End Document Pages -->
+					<xsl:for-each select=".//*[local-name() = 'page_sequence'][parent::*[local-name() = 'preface']][normalize-space() != '' or .//image or .//svg]">
+			
+						<fo:page-sequence master-reference="document-preface-master" format="i" line-height="115%">
+						
+							<xsl:attribute name="master-reference">
+								<xsl:text>document-preface-master</xsl:text>
+								<xsl:call-template name="getPageSequenceOrientation"/>
+							</xsl:attribute>
+							
+							<xsl:if test="position() = 1">
+								<xsl:attribute name="initial-page-number">3</xsl:attribute>
+							</xsl:if>
+							<xsl:if test="position() = last()">
+								<xsl:attribute name="force-page-count">even</xsl:attribute>
+							</xsl:if>
+						
+							<fo:static-content flow-name="xsl-footnote-separator">
+								<fo:block-container margin-left="-9mm">
+									<fo:block>
+										<fo:leader leader-pattern="rule" leader-length="30%"/>
+									</fo:block>
+								</fo:block-container>
+							</fo:static-content>
+							<xsl:call-template name="insertHeaderPreface"/>
+							<xsl:call-template name="insertFooter"/>
+							<fo:flow flow-name="xsl-region-body" text-align="justify">
+								<fo:block>						
+									<!-- <xsl:call-template name="processPrefaceSectionsDefault"/> -->
+									<xsl:apply-templates />
+								</fo:block>
+							</fo:flow>
+						</fo:page-sequence>
+					</xsl:for-each>
+				</xsl:for-each>
+			
+				<!-- Table of contents -->
+				<xsl:apply-templates select="/*/un:preface/un:clause[@type = 'toc']">
+					<xsl:with-param name="process">true</xsl:with-param>
+				</xsl:apply-templates>
+			
+				<!-- End Preface Pages -->
+			
+				<xsl:for-each select="xalan:nodeset($updated_xml_with_pages)"> <!-- set context -->
+					<xsl:for-each select=".//*[local-name() = 'page_sequence'][not(parent::*[local-name() = 'preface'])][normalize-space() != '' or .//image or .//svg]">
+						<!-- Document Pages -->
+						<fo:page-sequence master-reference="document" format="1" force-page-count="no-force" line-height="115%">
+						
+							<xsl:attribute name="master-reference">
+								<xsl:text>document</xsl:text>
+								<xsl:call-template name="getPageSequenceOrientation"/>
+							</xsl:attribute>
+						
+							<xsl:if test="position() = 1">
+								<xsl:attribute name="initial-page-number">1</xsl:attribute>
+							</xsl:if>
+						
+							<fo:static-content flow-name="xsl-footnote-separator">
+								<fo:block margin-left="-20mm">
+									<fo:leader leader-pattern="rule" leader-length="35%"/>
+								</fo:block>
+							</fo:static-content>
+							<xsl:call-template name="insertHeader"/>
+							<xsl:call-template name="insertFooter"/>
+							<fo:flow flow-name="xsl-region-body">
+								
+								<!-- <xsl:if test="$debug = 'true'">
+									<redirect:write file="contents_{java:getTime(java:java.util.Date.new())}.xml">
+										<xsl:copy-of select="$contents"/>
+									</redirect:write>
+								</xsl:if> -->
+								
+								<fo:block>
+									<!-- <xsl:apply-templates select="/un:un-standard/un:sections/*"/>
+									<xsl:apply-templates select="/un:un-standard/un:annex"/>
+									<xsl:apply-templates select="/un:un-standard/un:bibliography/un:references"/> -->
+									<xsl:apply-templates />
+								</fo:block>
+								
+								
+								<xsl:if test="position() = last()">
+									<fo:block-container margin-left="50mm" width="30mm" border-bottom="1pt solid black">
+										<fo:block>&#xA0;</fo:block>
+									</fo:block-container>
+								</xsl:if>
+								
+							</fo:flow>
+						</fo:page-sequence>
+						<!-- End Document Pages -->
+					</xsl:for-each>
+				</xsl:for-each>
+			
+			</xsl:for-each>
 			
 			<!-- Back Page -->
 			<fo:page-sequence master-reference="cover-page" force-page-count="no-force">
