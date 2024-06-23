@@ -840,6 +840,10 @@
 			
 			<xsl:for-each select="xalan:nodeset($updated_xml)/*">
 			
+				<xsl:variable name="updated_xml_with_pages">
+					<xsl:call-template name="processPrefaceAndMainSectionsISO_items"/>
+				</xsl:variable>
+			
 				<xsl:choose>
 					<xsl:when test="$layoutVersion = '1951'">
 						<fo:page-sequence master-reference="document{$document-master-reference}" initial-page-number="auto" force-page-count="no-force">
@@ -983,17 +987,13 @@
 					</xsl:when> <!-- $layoutVersion = '1987' and $doctype = 'technical-report' -->
 					<xsl:otherwise>
 					
-						<xsl:variable name="update_xml_step4_with_pages_preface">
-							<xsl:call-template name="processPrefaceSectionsDefault_items"/>
-						</xsl:variable>
-						
 						<xsl:variable name="copyright-statement">
 							<xsl:apply-templates select="/iso:iso-standard/iso:boilerplate/iso:copyright-statement"/>
 						</xsl:variable>
 						
-						<xsl:for-each select="xalan:nodeset($update_xml_step4_with_pages_preface)"> <!-- set context to preface -->
+						<xsl:for-each select="xalan:nodeset($updated_xml_with_pages)"> <!-- set context to preface/sections -->
 						
-							<xsl:for-each select=".//*[local-name() = 'page_sequence'][normalize-space() != '' or .//image or .//svg]">
+							<xsl:for-each select=".//*[local-name() = 'page_sequence'][parent::*[local-name() = 'preface']][normalize-space() != '' or .//image or .//svg]">
 							
 								<fo:page-sequence format="i" force-page-count="no-force">
 								
@@ -1136,22 +1136,11 @@
 				<xsl:variable name="preface_introduction">
 					<xsl:apply-templates select="/*/*[local-name()='preface']/*[local-name() = 'introduction']"/>
 				</xsl:variable>
+		
+		
+				<xsl:for-each select="xalan:nodeset($updated_xml_with_pages)"> <!-- set context to sections, if top element in 'sections' -->
 				
-				<xsl:variable name="update_xml_step4_with_pages_main">
-					<xsl:choose>
-						<xsl:when test="$doctype = 'amendment'">
-							<xsl:call-template name="processMainSectionsAmendmentDefault_items"/>
-						</xsl:when>
-						<xsl:otherwise>
-							<xsl:call-template name="processMainSectionsDefault_items"/>
-						</xsl:otherwise>
-					</xsl:choose>
-				</xsl:variable>
-				
-				
-				<xsl:for-each select="xalan:nodeset($update_xml_step4_with_pages_main)"> <!-- set context to sections, if top element in 'sections' -->
-				
-					<xsl:for-each select=".//*[local-name() = 'page_sequence'][normalize-space() != '' or .//image or .//svg]">
+					<xsl:for-each select=".//*[local-name() = 'page_sequence'][not(parent::*[local-name() = 'preface'])][normalize-space() != '' or .//image or .//svg]">
 				
 						<!-- BODY -->
 						<fo:page-sequence force-page-count="no-force">
@@ -1367,41 +1356,61 @@
 	</xsl:template> 
 
 
-	<xsl:template name="processMainSectionsAmendmentDefault_items">
-		<xsl:variable name="updated_xml_step_move_pagebreak_">
-			<xsl:element name="{$root_element}" namespace="{$namespace_full}">
-				<xsl:element name="sections" namespace="{$namespace_full}"> <!-- save context element -->
-					<xsl:element name="page_sequence" namespace="{$namespace_full}">
-						<xsl:for-each select="/*/*[local-name()='sections']/*">
-							<xsl:sort select="@displayorder" data-type="number"/>
-							<xsl:apply-templates select="." mode="update_xml_step_move_pagebreak"/>
-							<xsl:if test="$namespace = 'm3d'">
-								<xsl:if test="local-name()='clause' and @type='scope'">
-									<xsl:if test="/*/*[local-name()='bibliography']/*[local-name()='references'][@normative='true']">
-										<fo:block break-after="page"/>
-										<xsl:element name="pagebreak" namespace="{$namespace_full}"/>
-									</xsl:if>
-								</xsl:if>
+	<xsl:template name="insertMainSectionsAmendmentPageSequences">
+		<xsl:element name="sections" namespace="{$namespace_full}"> <!-- save context element -->
+			<xsl:element name="page_sequence" namespace="{$namespace_full}">
+				<xsl:for-each select="/*/*[local-name()='sections']/*">
+					<xsl:sort select="@displayorder" data-type="number"/>
+					<xsl:apply-templates select="." mode="update_xml_step_move_pagebreak"/>
+					<xsl:if test="$namespace = 'm3d'">
+						<xsl:if test="local-name()='clause' and @type='scope'">
+							<xsl:if test="/*/*[local-name()='bibliography']/*[local-name()='references'][@normative='true']">
+								<fo:block break-after="page"/>
+								<xsl:element name="pagebreak" namespace="{$namespace_full}"/>
 							</xsl:if>
-						</xsl:for-each>
-					</xsl:element>
-				</xsl:element>
+						</xsl:if>
+					</xsl:if>
+				</xsl:for-each>
+			</xsl:element>
+		</xsl:element>
+	</xsl:template> <!-- END: processMainSectionsAmendmentDefault_items -->
+
+
+	<xsl:template name="processPrefaceAndMainSectionsISO_items">
+			
+		<xsl:variable name="updated_xml_step_move_pagebreak">
+			<xsl:element name="{$root_element}" namespace="{$namespace_full}">
+				<xsl:call-template name="copyCommonElements"/>
+				<xsl:call-template name="insertPrefaceSectionsPageSequences"/>
+				<xsl:choose>
+					<xsl:when test="$doctype = 'amendment'">
+						<xsl:call-template name="insertMainSectionsAmendmentPageSequences"/>
+					</xsl:when>
+					<xsl:otherwise>
+						<xsl:call-template name="insertMainSectionsPageSequences"/>
+					</xsl:otherwise>
+				</xsl:choose>
 			</xsl:element>
 		</xsl:variable>
 		
 		<xsl:variable name="updated_xml_step_move_pagebreak_filename" select="concat($output_path,'_main_', java:getTime(java:java.util.Date.new()), '.xml')"/>
 		
 		<redirect:write file="{$updated_xml_step_move_pagebreak_filename}">
-			<xsl:copy-of select="$updated_xml_step_move_pagebreak_"/>
+			<xsl:copy-of select="$updated_xml_step_move_pagebreak"/>
 		</redirect:write>
 		
 		<xsl:copy-of select="document($updated_xml_step_move_pagebreak_filename)"/>
 		
+		<xsl:if test="$debug = 'true'">
+			<redirect:write file="page_sequence_preface_and_main.xml">
+				<xsl:copy-of select="$updated_xml_step_move_pagebreak"/>
+			</redirect:write>
+		</xsl:if>
+		
 		<xsl:call-template name="deleteFile">
 			<xsl:with-param name="filepath" select="$updated_xml_step_move_pagebreak_filename"/>
 		</xsl:call-template>
-	</xsl:template> <!-- END: processMainSectionsAmendmentDefault_items -->
-
+	</xsl:template> <!-- END: processPrefaceAndMainSectionsISO_items -->
 
 	<xsl:template name="insertCoverPage">
 		<xsl:if test="$isGenerateTableIF = 'false'"> <!-- no need cover page for auto-layout algorithm -->
