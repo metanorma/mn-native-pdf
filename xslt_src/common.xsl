@@ -16272,7 +16272,7 @@
 		<xsl:choose>
 			<xsl:when test="local-name() = 'clause' and normalize-space() = '' and count(*) = 0"></xsl:when>
 			<xsl:otherwise>
-				<xsl:call-template name="sections_node"/>
+				<xsl:call-template name="preface_node"/>
 			</xsl:otherwise>
 		</xsl:choose>
 	</xsl:template>
@@ -16282,7 +16282,7 @@
 		<xsl:choose>
 			<xsl:when test="local-name() = 'clause' and normalize-space() = '' and count(*) = 0"></xsl:when>
 			<xsl:otherwise>
-				<xsl:call-template name="sections_node"/>
+				<xsl:call-template name="preface_node"/>
 			</xsl:otherwise>
 		</xsl:choose>
 	</xsl:template>
