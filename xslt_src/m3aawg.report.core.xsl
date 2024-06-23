@@ -218,8 +218,8 @@
 			
 			
 			<xsl:variable name="updated_xml">
-				<!-- <xsl:call-template name="updateXML"/> -->
-				<xsl:copy-of select="."/>
+				<xsl:call-template name="updateXML"/>
+				<!-- <xsl:copy-of select="."/> -->
 			</xsl:variable>
 			
 			<xsl:for-each select="xalan:nodeset($updated_xml)/*">
