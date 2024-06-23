@@ -926,13 +926,21 @@
 							<xsl:call-template name="getDocumentId"/>
 						</xsl:variable> -->
 						
-						<xsl:call-template name="insertPrefacepages">
-							<xsl:with-param name="num" select="$num"/>
-						</xsl:call-template>
+						<xsl:variable name="updated_xml_with_pages">
+							<xsl:call-template name="processPrefaceAndMainSectionsDefault_items"/>
+						</xsl:variable>
 						
-						<xsl:call-template name="insertBodypages">
-							<xsl:with-param name="lang" select="$lang"/>
-						</xsl:call-template>
+						<xsl:for-each select="xalan:nodeset($updated_xml_with_pages)"> <!-- set context to preface/sections -->
+						
+							<xsl:call-template name="insertPrefacepages">
+								<xsl:with-param name="num" select="$num"/>
+							</xsl:call-template>
+							
+							<xsl:call-template name="insertBodypages">
+								<xsl:with-param name="lang" select="$lang"/>
+							</xsl:call-template>
+						
+						</xsl:for-each>
 						
 					</xsl:for-each>				
 				</xsl:for-each>
@@ -1425,38 +1433,32 @@
 	<xsl:template name="insertPrefacepages">
 		<xsl:param name="num"/>
 		
-		<xsl:variable name="updated_xml_with_pages_preface">
-			<xsl:call-template name="processPrefaceSectionsDefault_items"/>
-		</xsl:variable>
+		<xsl:for-each select=".//*[local-name() = 'page_sequence'][parent::*[local-name() = 'preface']][normalize-space() != '' or .//image or .//svg]">
 	
-		<xsl:for-each select="xalan:nodeset($updated_xml_with_pages_preface)"> <!-- set context to preface -->
-			<xsl:for-each select=".//*[local-name() = 'page_sequence'][normalize-space() != '' or .//image or .//svg]">
-		
-				<fo:page-sequence master-reference="document" format="1" force-page-count="no-force">
+			<fo:page-sequence master-reference="document" format="1" force-page-count="no-force">
+				
+				<xsl:attribute name="master-reference">
+					<xsl:text>document</xsl:text>
+					<xsl:call-template name="getPageSequenceOrientation"/>
+				</xsl:attribute>
+				
+				<xsl:if test="position() = 1 and $num = '1'">
+					<xsl:attribute name="initial-page-number">2</xsl:attribute>
+				</xsl:if>
+				<xsl:if test="$isIEV = 'true'">
+					<xsl:attribute name="format">I</xsl:attribute>
+				</xsl:if>
+				
+				<xsl:call-template name="insertHeaderFooter"/>
+				
+				<fo:flow flow-name="xsl-region-body">
+				
+					<!-- <xsl:call-template name="processPrefaceSectionsDefault"/> -->
+					<xsl:apply-templates />
 					
-					<xsl:attribute name="master-reference">
-						<xsl:text>document</xsl:text>
-						<xsl:call-template name="getPageSequenceOrientation"/>
-					</xsl:attribute>
-					
-					<xsl:if test="position() = 1 and $num = '1'">
-						<xsl:attribute name="initial-page-number">2</xsl:attribute>
-					</xsl:if>
-					<xsl:if test="$isIEV = 'true'">
-						<xsl:attribute name="format">I</xsl:attribute>
-					</xsl:if>
-					
-					<xsl:call-template name="insertHeaderFooter"/>
-					
-					<fo:flow flow-name="xsl-region-body">
-					
-						<!-- <xsl:call-template name="processPrefaceSectionsDefault"/> -->
-						<xsl:apply-templates />
-						
-						<fo:block/> <!-- for prevent empty preface -->
-					</fo:flow>
-				</fo:page-sequence>
-			</xsl:for-each>
+					<fo:block/> <!-- for prevent empty preface -->
+				</fo:flow>
+			</fo:page-sequence>
 		</xsl:for-each>
 	</xsl:template>
 	
@@ -1464,53 +1466,47 @@
 		<xsl:param name="lang" select="'en'"/>
 		<!-- BODY -->
 		
-		<xsl:variable name="updated_xml_with_pages_main">
-			<xsl:call-template name="processMainSectionsDefault_items"/>
-		</xsl:variable>
+		<xsl:for-each select=".//*[local-name() = 'page_sequence'][not(parent::*[local-name() = 'preface'])][normalize-space() != '' or .//image or .//svg]">
 	
-		<xsl:for-each select="xalan:nodeset($updated_xml_with_pages_main)"> <!-- set context to preface -->
-			<xsl:for-each select=".//*[local-name() = 'page_sequence'][normalize-space() != '' or .//image or .//svg]">
-		
-				<fo:page-sequence master-reference="document" force-page-count="no-force">						
-				
-					<xsl:attribute name="master-reference">
-						<xsl:text>document</xsl:text>
-						<xsl:call-template name="getPageSequenceOrientation"/>
-					</xsl:attribute>
-				
-					<xsl:if test="position() = 1 and $isIEV = 'true'">
-						<xsl:attribute name="initial-page-number">1</xsl:attribute>
-					</xsl:if>
-					<fo:static-content flow-name="xsl-footnote-separator">
-						<fo:block>
-							<fo:leader leader-pattern="rule" leader-length="30%"/>
-						</fo:block>
-					</fo:static-content>
-					<xsl:call-template name="insertHeaderFooter"/>
-					<fo:flow flow-name="xsl-region-body">
+			<fo:page-sequence master-reference="document" force-page-count="no-force">						
+			
+				<xsl:attribute name="master-reference">
+					<xsl:text>document</xsl:text>
+					<xsl:call-template name="getPageSequenceOrientation"/>
+				</xsl:attribute>
+			
+				<xsl:if test="position() = 1 and $isIEV = 'true'">
+					<xsl:attribute name="initial-page-number">1</xsl:attribute>
+				</xsl:if>
+				<fo:static-content flow-name="xsl-footnote-separator">
+					<fo:block>
+						<fo:leader leader-pattern="rule" leader-length="30%"/>
+					</fo:block>
+				</fo:static-content>
+				<xsl:call-template name="insertHeaderFooter"/>
+				<fo:flow flow-name="xsl-region-body">
+					
+					<!-- <fo:block-container font-size="12pt" text-align="center" margin-bottom="36pt">
 						
-						<!-- <fo:block-container font-size="12pt" text-align="center" margin-bottom="36pt">
+						<fo:block font-weight="bold" role="H1">						
+						
+							<xsl:call-template name="printTitles">
+								<xsl:with-param name="lang" select="$lang"/>
+							</xsl:call-template>
 							
-							<fo:block font-weight="bold" role="H1">						
-							
-								<xsl:call-template name="printTitles">
-									<xsl:with-param name="lang" select="$lang"/>
-								</xsl:call-template>
-								
-								<fo:block>&#xa0;</fo:block>
-							</fo:block>
-						</fo:block-container> -->
-						
-						<!-- Main sections -->
-						<fo:block>				
-							<!-- <xsl:call-template name="processMainSectionsDefault"/> -->
-							<xsl:apply-templates />
+							<fo:block>&#xa0;</fo:block>
 						</fo:block>
-						
-						<fo:block/> <!-- for prevent empty preface -->
-					</fo:flow>
-				</fo:page-sequence>
-			</xsl:for-each>
+					</fo:block-container> -->
+					
+					<!-- Main sections -->
+					<fo:block>				
+						<!-- <xsl:call-template name="processMainSectionsDefault"/> -->
+						<xsl:apply-templates />
+					</fo:block>
+					
+					<fo:block/> <!-- for prevent empty preface -->
+				</fo:flow>
+			</fo:page-sequence>
 		</xsl:for-each>
 		
 		<!-- Index -->
