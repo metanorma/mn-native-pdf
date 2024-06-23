@@ -6869,22 +6869,10 @@
 	<xsl:template name="processPrefaceAndMainSectionsDefault_items">
 	
 		<xsl:variable name="updated_xml_step_move_pagebreak">
-			
 			<xsl:element name="{$root_element}" namespace="{$namespace_full}">
-			
 				<xsl:call-template name="copyCommonElements"/>
-	
-				<xsl:element name="preface" namespace="{$namespace_full}"> <!-- save context element -->
-					<xsl:element name="page_sequence" namespace="{$namespace_full}">
-						<xsl:for-each select="/*/*[local-name()='preface']/*[not(local-name() = 'note' or local-name() = 'admonition')]">
-							<xsl:sort select="@displayorder" data-type="number"/>
-							<xsl:apply-templates select="." mode="update_xml_step_move_pagebreak"/>
-						</xsl:for-each>
-					</xsl:element>
-				</xsl:element>
-	
+				<xsl:call-template name="insertPrefaceSectionsPageSequences"/>
 				<xsl:call-template name="insertMainSectionsPageSequences"/>
-	
 			</xsl:element>
 		</xsl:variable>
 		
@@ -6907,6 +6895,17 @@
 		</xsl:call-template>
 	</xsl:template> <!-- END: processPrefaceAndMainSectionsDefault_items -->
 	
+	
+	<xsl:template name="insertPrefaceSectionsPageSequences">
+		<xsl:element name="preface" namespace="{$namespace_full}"> <!-- save context element -->
+			<xsl:element name="page_sequence" namespace="{$namespace_full}">
+				<xsl:for-each select="/*/*[local-name()='preface']/*[not(local-name() = 'note' or local-name() = 'admonition')]">
+					<xsl:sort select="@displayorder" data-type="number"/>
+					<xsl:apply-templates select="." mode="update_xml_step_move_pagebreak"/>
+				</xsl:for-each>
+			</xsl:element>
+		</xsl:element>
+	</xsl:template> <!-- END: insertPrefaceSectionsPageSequences -->
 	
 	<xsl:template name="insertMainSectionsPageSequences">
 		<xsl:element name="sections" namespace="{$namespace_full}"> <!-- save context element -->
@@ -6942,7 +6941,7 @@
 				</xsl:for-each>
 			</xsl:element>
 		</xsl:element>
-	</xsl:template>
+	</xsl:template> <!-- END: insertMainSectionsPageSequences -->
 	
 	
 	<xsl:template name="processAllSectionsDefault_items">
@@ -16160,12 +16159,22 @@
 	
 	<!-- note: @top-level added in mode=" update_xml_step_move_pagebreak" -->
 	<xsl:template match="*[local-name() = 'sections']/*[local-name() = 'page_sequence']/*[not(@top-level)]" priority="2">
-		<xsl:call-template name="sections_node"/>
+		<xsl:choose>
+			<xsl:when test="local-name() = 'clause' and normalize-space() = '' and count(*) = 0"></xsl:when>
+			<xsl:otherwise>
+				<xsl:call-template name="sections_node"/>
+			</xsl:otherwise>
+		</xsl:choose>
 	</xsl:template>
 	
 	<!-- page_sequence/sections/clause -->
 	<xsl:template match="*[local-name() = 'page_sequence']/*[local-name() = 'sections']/*[not(@top-level)]" priority="2">
-		<xsl:call-template name="sections_node"/>
+		<xsl:choose>
+			<xsl:when test="local-name() = 'clause' and normalize-space() = '' and count(*) = 0"></xsl:when>
+			<xsl:otherwise>
+				<xsl:call-template name="sections_node"/>
+			</xsl:otherwise>
+		</xsl:choose>
 	</xsl:template>
 	
 	<xsl:template name="sections_element_style">
@@ -16202,7 +16211,7 @@
 			</xsl:if>
 		</xsl:if>
 		<xsl:if test="$namespace = 'm3d'">
-			<xsl:variable name="pos"><xsl:number count="m3d:sections/m3d:clause | m3d:sections/m3d:terms"/></xsl:variable>
+			<xsl:variable name="pos"><xsl:number count="m3d:sections/*/m3d:clause | m3d:sections/*/m3d:terms"/></xsl:variable>
 			<xsl:if test="$pos &gt;= 2">
 				<xsl:attribute name="space-before">18pt</xsl:attribute>
 			</xsl:if>
@@ -16258,12 +16267,22 @@
 	
 	<!-- preface/ page_sequence/clause -->
 	<xsl:template match="*[local-name() = 'preface']/*[local-name() = 'page_sequence']/*[not(@top-level)]" priority="2"> <!-- /*/*[local-name() = 'preface']/* -->
-		<xsl:call-template name="preface_node"/>
+		<xsl:choose>
+			<xsl:when test="local-name() = 'clause' and normalize-space() = '' and count(*) = 0"></xsl:when>
+			<xsl:otherwise>
+				<xsl:call-template name="sections_node"/>
+			</xsl:otherwise>
+		</xsl:choose>
 	</xsl:template>
 	
 	<!-- page_sequence/preface/clause -->
 	<xsl:template match="*[local-name() = 'page_sequence']/*[local-name() = 'preface']/*[not(@top-level)]" priority="2"> <!-- /*/*[local-name() = 'preface']/* -->
-		<xsl:call-template name="preface_node"/>
+		<xsl:choose>
+			<xsl:when test="local-name() = 'clause' and normalize-space() = '' and count(*) = 0"></xsl:when>
+			<xsl:otherwise>
+				<xsl:call-template name="sections_node"/>
+			</xsl:otherwise>
+		</xsl:choose>
 	</xsl:template>
 	
 	

@@ -5,8 +5,10 @@
 											xmlns:mathml="http://www.w3.org/1998/Math/MathML" 
 											xmlns:xalan="http://xml.apache.org/xalan" 
 											xmlns:fox="http://xmlgraphics.apache.org/fop/extensions" 
+											xmlns:redirect="http://xml.apache.org/xalan/redirect"
 											xmlns:java="http://xml.apache.org/xalan/java" 
-											exclude-result-prefixes="java"
+											exclude-result-prefixes="java redirect"
+											extension-element-prefixes="redirect"
 											version="1.0">
 
 	<xsl:output method="xml" encoding="UTF-8" indent="no"/>
@@ -19,7 +21,6 @@
 	
 	<xsl:variable name="debug">false</xsl:variable>
 
-		
 	<xsl:variable name="title-en" select="/m3d:m3d-standard/m3d:bibdata/m3d:title[@language = 'en']"/>
 	<!-- Example:
 		<item level="1" id="Foreword" display="true">Foreword</item>
@@ -47,7 +48,7 @@
 			<fo:layout-master-set>
 				
 				<!-- cover page -->
-				<fo:simple-page-master master-name="cover" page-width="{$pageWidth}mm" page-height="{$pageHeight}mm">
+				<fo:simple-page-master master-name="coverpage" page-width="{$pageWidth}mm" page-height="{$pageHeight}mm">
 					<fo:region-body margin-top="31mm" margin-bottom="32mm" margin-left="17.3mm" margin-right="22mm"/>
 					<fo:region-before region-name="cover-header" extent="31mm" />
 					<fo:region-after region-name="cover-footer" extent="32mm" />
@@ -63,6 +64,13 @@
 					<fo:region-start region-name="left-region" extent="{$marginLeftRight1}mm"/>
 					<fo:region-end region-name="right-region" extent="{$marginLeftRight2}mm"/>
 				</fo:simple-page-master>
+				<fo:simple-page-master master-name="page-landscape" page-width="{$pageHeight}mm" page-height="{$pageWidth}mm">
+					<fo:region-body margin-top="20mm" margin-bottom="23mm" margin-left="{$marginLeftRight1}mm" margin-right="{$marginLeftRight2}mm"/>
+					<fo:region-before region-name="header" extent="{$marginTop}mm"/>
+					<fo:region-after region-name="footer" extent="{$marginBottom}mm"/>
+					<fo:region-start region-name="left-region" extent="{$marginLeftRight1}mm"/>
+					<fo:region-end region-name="right-region" extent="{$marginLeftRight2}mm"/>
+				</fo:simple-page-master>
 				
 				<fo:simple-page-master master-name="last" page-width="{$pageWidth}mm" page-height="{$pageHeight}mm">
 					<fo:region-body margin-top="20mm" margin-bottom="54mm" margin-left="{$marginLeftRight1}mm" margin-right="{$marginLeftRight2}mm"/>
@@ -72,14 +80,36 @@
 					<fo:region-end region-name="right-region" extent="17.3mm"/>
 				</fo:simple-page-master>
 				
+				<fo:page-sequence-master master-name="cover">
+					<fo:repeatable-page-master-alternatives>
+						<fo:conditional-page-master-reference page-position="first" master-reference="coverpage"/>
+						<fo:conditional-page-master-reference page-position="any" master-reference="page"/>
+					</fo:repeatable-page-master-alternatives>
+				</fo:page-sequence-master>
+				
 				<fo:page-sequence-master master-name="document">
 					<fo:repeatable-page-master-alternatives>
-						<fo:conditional-page-master-reference page-position="first" master-reference="cover"/>
+						<fo:conditional-page-master-reference page-position="any" master-reference="page"/>
+					</fo:repeatable-page-master-alternatives>
+				</fo:page-sequence-master>
+				<fo:page-sequence-master master-name="document-last">
+					<fo:repeatable-page-master-alternatives>
 						<fo:conditional-page-master-reference page-position="last" master-reference="last"/>
 						<fo:conditional-page-master-reference page-position="any" master-reference="page"/>
 					</fo:repeatable-page-master-alternatives>
 				</fo:page-sequence-master>
 				
+				<fo:page-sequence-master master-name="document-landscape">
+					<fo:repeatable-page-master-alternatives>
+						<fo:conditional-page-master-reference page-position="any" master-reference="page-landscape"/>
+					</fo:repeatable-page-master-alternatives>
+				</fo:page-sequence-master>
+				<fo:page-sequence-master master-name="document-landscape-last">
+					<fo:repeatable-page-master-alternatives>
+						<fo:conditional-page-master-reference page-position="last" master-reference="last"/>
+						<fo:conditional-page-master-reference page-position="any" master-reference="page-landscape"/>
+					</fo:repeatable-page-master-alternatives>
+				</fo:page-sequence-master>
 				
 			</fo:layout-master-set>
 
@@ -91,8 +121,7 @@
 				<xsl:with-param name="contents" select="$contents"/>
 			</xsl:call-template>
 			
-			<fo:page-sequence master-reference="document" force-page-count="no-force">
-			
+			<fo:page-sequence master-reference="cover" force-page-count="no-force">
 				<fo:static-content flow-name="cover-header">
 					<fo:block-container height="18mm" border-bottom="0.5pt solid red">
 						<fo:block-container height="100%" display-align="after">
@@ -118,49 +147,7 @@
 							</fo:block>
 					</fo:block-container>
 				</fo:static-content>
-				<fo:static-content flow-name="footer" role="artifact">
-					<fo:block-container font-size="10pt">
-						<fo:block text-align-last="justify" margin-top="2mm">
-							<fo:inline font-weight="bold">
-								<fo:inline>M<fo:inline font-size="6.5pt" baseline-shift="35%">3</fo:inline>AAWG </fo:inline>
-								<xsl:value-of select="$title-en"/>								
-							</fo:inline>
-							<fo:leader font-weight="normal" leader-pattern="space"/>
-							<fo:inline font-size="9pt"><fo:page-number /></fo:inline>
-						</fo:block>
-					</fo:block-container>				
-				</fo:static-content>
-
-				<fo:static-content flow-name="footer-last">
-					<fo:block-container height="53mm" border-top="0.5pt solid rgb(103, 141, 207)" display-align="after">
-						<fo:block-container padding-bottom="16mm">
-							<fo:block text-align="justify">
-								<fo:inline>As with all M3AAWG documents that we publish, please check the M3AAWG website (<fo:inline color="blue" text-decoration="underline">www.m3aawg.org</fo:inline>) for updates to this paper.</fo:inline>
-							</fo:block>
-							<fo:block>&#xA0;</fo:block>
-							<fo:block>&#xA0;</fo:block>						
-							<fo:block>
-								<xsl:text>© </xsl:text>
-								<xsl:value-of select="/m3d:m3d-standard/m3d:bibdata/m3d:copyright/m3d:from"/>
-								<xsl:text> copyright by the </xsl:text>
-								<xsl:value-of select="/m3d:m3d-standard/m3d:bibdata/m3d:copyright/m3d:owner/m3d:organization/m3d:name"/>
-								<xsl:text> (</xsl:text>
-								<xsl:value-of select="/m3d:m3d-standard/m3d:bibdata/m3d:copyright/m3d:owner/m3d:organization/m3d:abbreviation"/>
-								<xsl:text>)</xsl:text>							
-							</fo:block>
-							<fo:block font-size="10pt">
-								<fo:block text-align-last="justify" margin-top="2mm">
-									<fo:inline font-weight="bold">
-										<fo:inline>M<fo:inline font-size="6.5pt" baseline-shift="35%">3</fo:inline>AAWG </fo:inline>
-										<xsl:value-of select="$title-en"/>								
-									</fo:inline>
-									<fo:leader font-weight="normal" leader-pattern="space"/>
-									<fo:inline font-size="9pt"><fo:page-number /></fo:inline>
-								</fo:block>
-							</fo:block>
-						</fo:block-container>
-					</fo:block-container>
-				</fo:static-content>
+				<xsl:call-template name="insertFooter"/>
 				
 				<fo:flow flow-name="xsl-region-body">
 					<fo:block-container font-weight="bold" text-align="center">
@@ -212,12 +199,11 @@
 						<fo:block margin-bottom="12pt">This document was produced by the M<fo:inline font-size="7pt" baseline-shift="35%">3</fo:inline> AAWG Data and Identity Protection Committee. </fo:block>
 					</fo:block-container>
 					
-					<xsl:if test="$debug = 'true'">
-						<xsl:text disable-output-escaping="yes">&lt;!--</xsl:text>
-							DEBUG
-							contents=<xsl:copy-of select="$contents"/>
-						<xsl:text disable-output-escaping="yes">--&gt;</xsl:text>
-					</xsl:if>
+					<!-- <xsl:if test="$debug = 'true'">
+						<redirect:write file="contents_{java:getTime(java:java.util.Date.new())}.xml">
+							<xsl:copy-of select="$contents"/>
+						</redirect:write>
+					</xsl:if> -->
 					
 					<!-- Table of contents -->
 					<xsl:apply-templates select="/*/m3d:preface/m3d:clause[@type = 'toc']">
@@ -227,21 +213,102 @@
 					<fo:block>
 						<xsl:apply-templates select="/m3d:m3d-standard/m3d:boilerplate"/>
 					</fo:block>
-					
-					<!-- Foreword, Introduction -->
-					<fo:block>						
-						<xsl:call-template name="processPrefaceSectionsDefault"/>
-					</fo:block>
-					
-					<fo:block break-after="page"/>
-					
-					<xsl:call-template name="processMainSectionsDefault"/>
-					
 				</fo:flow>
-			</fo:page-sequence>
+			</fo:page-sequence> <!-- END: cover -->
 			
+			
+			<xsl:variable name="updated_xml">
+				<!-- <xsl:call-template name="updateXML"/> -->
+				<xsl:copy-of select="."/>
+			</xsl:variable>
+			
+			<xsl:for-each select="xalan:nodeset($updated_xml)/*">
+			
+				<xsl:variable name="updated_xml_with_pages">
+					<xsl:call-template name="processPrefaceAndMainSectionsDefault_items"/>
+				</xsl:variable>
+			
+				<xsl:for-each select="xalan:nodeset($updated_xml_with_pages)"> <!-- set context to preface -->
+				
+					<xsl:for-each select=".//*[local-name() = 'page_sequence'][normalize-space() != '' or .//image or .//svg]">
+			
+						<fo:page-sequence master-reference="document" force-page-count="no-force">
+						
+							<xsl:attribute name="master-reference">
+								<xsl:text>document</xsl:text>
+								<xsl:call-template name="getPageSequenceOrientation"/>
+								<xsl:if test="position() = last()">-last</xsl:if>
+							</xsl:attribute>
+						
+							<xsl:call-template name="insertFooter"/>
+							
+							<fo:static-content flow-name="footer-last">
+								<fo:block-container height="53mm" border-top="0.5pt solid rgb(103, 141, 207)" display-align="after">
+									<fo:block-container padding-bottom="16mm">
+										<fo:block text-align="justify">
+											<fo:inline>As with all M3AAWG documents that we publish, please check the M3AAWG website (<fo:inline color="blue" text-decoration="underline">www.m3aawg.org</fo:inline>) for updates to this paper.</fo:inline>
+										</fo:block>
+										<fo:block>&#xA0;</fo:block>
+										<fo:block>&#xA0;</fo:block>						
+										<fo:block>
+											<xsl:text>© </xsl:text>
+											<xsl:value-of select="/m3d:m3d-standard/m3d:bibdata/m3d:copyright/m3d:from"/>
+											<xsl:text> copyright by the </xsl:text>
+											<xsl:value-of select="/m3d:m3d-standard/m3d:bibdata/m3d:copyright/m3d:owner/m3d:organization/m3d:name"/>
+											<xsl:text> (</xsl:text>
+											<xsl:value-of select="/m3d:m3d-standard/m3d:bibdata/m3d:copyright/m3d:owner/m3d:organization/m3d:abbreviation"/>
+											<xsl:text>)</xsl:text>							
+										</fo:block>
+										<fo:block font-size="10pt">
+											<fo:block text-align-last="justify" margin-top="2mm">
+												<fo:inline font-weight="bold">
+													<fo:inline>M<fo:inline font-size="6.5pt" baseline-shift="35%">3</fo:inline>AAWG </fo:inline>
+													<xsl:value-of select="$title-en"/>								
+												</fo:inline>
+												<fo:leader font-weight="normal" leader-pattern="space"/>
+												<fo:inline font-size="9pt"><fo:page-number /></fo:inline>
+											</fo:block>
+										</fo:block>
+									</fo:block-container>
+								</fo:block-container>
+							</fo:static-content>
+							
+							<fo:flow flow-name="xsl-region-body">
+								
+								<!-- Foreword, Introduction -->
+								<!-- <fo:block>						
+									<xsl:call-template name="processPrefaceSectionsDefault"/>
+								</fo:block>
+								
+								<fo:block break-after="page"/>
+								
+								<xsl:call-template name="processMainSectionsDefault"/> -->
+								
+								<xsl:apply-templates />
+								<fo:block/> <!-- for prevent empty preface -->
+								
+							</fo:flow>
+						</fo:page-sequence>
+					</xsl:for-each>
+				</xsl:for-each>
+			</xsl:for-each>
 		</fo:root>
 	</xsl:template> 
+
+	<xsl:template name="insertFooter">
+		<fo:static-content flow-name="footer" role="artifact">
+			<fo:block-container font-size="10pt">
+				<fo:block text-align-last="justify" margin-top="2mm">
+					<fo:inline font-weight="bold">
+						<fo:inline>M<fo:inline font-size="6.5pt" baseline-shift="35%">3</fo:inline>AAWG </fo:inline>
+						<xsl:value-of select="$title-en"/>								
+					</fo:inline>
+					<fo:leader font-weight="normal" leader-pattern="space"/>
+					<fo:inline font-size="9pt"><fo:page-number /></fo:inline>
+				</fo:block>
+			</fo:block-container>				
+		</fo:static-content>
+	</xsl:template>
 
 	<xsl:template name="insertListOf_Title">
 		<xsl:param name="title"/>
@@ -293,7 +360,7 @@
 		</fo:block>
 	</xsl:template>
 	
-	<xsl:template match="m3d:preface/m3d:clause[@type = 'toc']" priority="3">
+	<xsl:template match="m3d:preface//m3d:clause[@type = 'toc']" priority="3">
 		<xsl:param name="process">false</xsl:param>
 		<xsl:if test="$process = 'true'">
 			
@@ -416,7 +483,7 @@
 		</xsl:if>
 	</xsl:template>
 	
-	<xsl:template match="m3d:preface/m3d:clause[@type = 'toc']/m3d:title" priority="3">
+	<xsl:template match="m3d:preface//m3d:clause[@type = 'toc']/m3d:title" priority="3">
 		<!-- <xsl:variable name="title-toc">
 			<xsl:call-template name="getTitle">
 				<xsl:with-param name="name" select="'title-toc'"/>
