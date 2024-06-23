@@ -6,8 +6,10 @@
 											xmlns:mathml="http://www.w3.org/1998/Math/MathML" 
 											xmlns:xalan="http://xml.apache.org/xalan" 
 											xmlns:fox="http://xmlgraphics.apache.org/fop/extensions" 
+											xmlns:redirect="http://xml.apache.org/xalan/redirect"
 											xmlns:java="http://xml.apache.org/xalan/java" 
-											exclude-result-prefixes="java"
+											exclude-result-prefixes="java redirect"
+											extension-element-prefixes="redirect"
 											version="1.0">
 
 	<xsl:output method="xml" encoding="UTF-8" indent="no"/>
@@ -206,7 +208,21 @@
 					<fo:region-start region-name="left-region" extent="{$marginLeftRight1}mm"/>
 					<fo:region-end region-name="right-region" extent="{$marginLeftRight2}mm"/>
 				</fo:simple-page-master>
+				<fo:simple-page-master master-name="odd-jcgm-landscape" page-width="{$pageHeight}mm" page-height="{$pageWidth}mm">
+					<fo:region-body margin-top="{$marginTop}mm" margin-bottom="{$marginBottom}mm" margin-left="{$marginLeftRight1}mm" margin-right="{$marginLeftRight2}mm"/>
+					<fo:region-before region-name="header-odd-jcgm" extent="{$marginTop}mm"/> <!--   display-align="center" -->
+					<fo:region-after region-name="footer-odd-jcgm" extent="{$marginBottom}mm"/>
+					<fo:region-start region-name="left-region" extent="{$marginLeftRight1}mm"/>
+					<fo:region-end region-name="right-region" extent="{$marginLeftRight2}mm"/>
+				</fo:simple-page-master>
 				<fo:simple-page-master master-name="even-jcgm" page-width="{$pageWidth}mm" page-height="{$pageHeight}mm">
+					<fo:region-body margin-top="{$marginTop}mm" margin-bottom="{$marginBottom}mm" margin-left="{$marginLeftRight2}mm" margin-right="{$marginLeftRight1}mm"/>
+					<fo:region-before region-name="header-even-jcgm" extent="{$marginTop}mm"/> <!--   display-align="center" -->
+					<fo:region-after region-name="footer-even-jcgm" extent="{$marginBottom}mm"/>
+					<fo:region-start region-name="left-region" extent="{$marginLeftRight2}mm"/>
+					<fo:region-end region-name="right-region" extent="{$marginLeftRight1}mm"/>
+				</fo:simple-page-master>
+				<fo:simple-page-master master-name="even-jcgm-landscape" page-width="{$pageHeight}mm" page-height="{$pageWidth}mm">
 					<fo:region-body margin-top="{$marginTop}mm" margin-bottom="{$marginBottom}mm" margin-left="{$marginLeftRight2}mm" margin-right="{$marginLeftRight1}mm"/>
 					<fo:region-before region-name="header-even-jcgm" extent="{$marginTop}mm"/> <!--   display-align="center" -->
 					<fo:region-after region-name="footer-even-jcgm" extent="{$marginBottom}mm"/>
@@ -220,11 +236,24 @@
 						<fo:conditional-page-master-reference odd-or-even="odd" master-reference="odd-jcgm"/>
 					</fo:repeatable-page-master-alternatives>
 				</fo:page-sequence-master>
+				<fo:page-sequence-master master-name="document-jcgm-landscape">
+					<fo:repeatable-page-master-alternatives>
+						<fo:conditional-page-master-reference master-reference="blankpage" blank-or-not-blank="blank"/>
+						<fo:conditional-page-master-reference odd-or-even="even" master-reference="even-jcgm-landscape"/>
+						<fo:conditional-page-master-reference odd-or-even="odd" master-reference="odd-jcgm-landscape"/>
+					</fo:repeatable-page-master-alternatives>
+				</fo:page-sequence-master>
 			</fo:layout-master-set>
 			
 			<fo:declarations>
 				<xsl:call-template name="addPDFUAmeta"/>
 			</fo:declarations>
+				
+			<!-- <xsl:if test="$debug = 'true'">
+				<redirect:write file="contents_{java:getTime(java:java.util.Date.new())}.xml">
+					<xsl:copy-of select="$contents"/>
+				</redirect:write>
+			</xsl:if> -->
 				
 			<xsl:call-template name="addBookmarks">
 				<xsl:with-param name="contents" select="$contents"/>
@@ -335,149 +364,103 @@
 						</xsl:if>
 					</fo:block>
 				</fo:flow>
-			</fo:page-sequence>
+			</fo:page-sequence> <!-- END: internal-cover-page-jcgm -->
 			
 			
-			<fo:page-sequence master-reference="document-jcgm" format="i" initial-page-number="2" force-page-count="odd">
-				<fo:static-content flow-name="xsl-footnote-separator">
-					<fo:block>
-						<fo:leader leader-pattern="rule" leader-length="30%"/>
-					</fo:block>
-				</fo:static-content>
-        
-				<xsl:call-template name="insertHeaderFooter"/>
+			<xsl:variable name="updated_xml">
+				<xsl:call-template name="updateXML"/>
+				<!-- <xsl:copy-of select="."/> -->
+			</xsl:variable>
+			
+			<xsl:for-each select="xalan:nodeset($updated_xml)/*">
+			
+				<xsl:variable name="updated_xml_with_pages">
+					<xsl:call-template name="processPrefaceAndMainSectionsJCGM_items"/>
+				</xsl:variable>
+			
+				<xsl:for-each select="xalan:nodeset($updated_xml_with_pages)"> <!-- set context to preface -->
+				
+					<xsl:for-each select=".//*[local-name() = 'page_sequence'][parent::*[local-name() = 'boilerplate'] or parent::*[local-name() = 'preface']][normalize-space() != '' or .//image or .//svg]">
 					
-				<fo:flow flow-name="xsl-region-body" line-height="115%">
+						<fo:page-sequence master-reference="document-jcgm" format="i">
 				
-					<!-- Copyright -->
-					<xsl:for-each select="//*[local-name() = 'bipm-standard']">
-						<xsl:apply-templates select="./*[local-name()='boilerplate']/*" />
-						<fo:block break-after="page"/>
-					</xsl:for-each>
+							<xsl:attribute name="master-reference">
+								<xsl:text>document-jcgm</xsl:text>
+								<xsl:call-template name="getPageSequenceOrientation"/>
+							</xsl:attribute>
 				
-					<xsl:for-each select="//*[local-name() = 'bipm-standard']">
-						<xsl:variable name="current_document">
-							<xsl:copy-of select="."/>
-						</xsl:variable>				
-						<xsl:for-each select="xalan:nodeset($current_document)">
+							<xsl:if test="position() = 1">
+								<xsl:attribute name="initial-page-number">2</xsl:attribute>
+							</xsl:if>
 							
-							<xsl:if test="$debug = 'true'">
-								<xsl:text disable-output-escaping="yes">&lt;!--</xsl:text>
-									DEBUG
-									contents=<xsl:copy-of select="$contents"/>
-								<xsl:text disable-output-escaping="yes">--&gt;</xsl:text>
+							<xsl:if test="position() = last()">
+								<xsl:attribute name="force-page-count">odd</xsl:attribute>
 							</xsl:if>
 						
-							<!-- Table of Contents -->
-							<xsl:apply-templates select="/*/*[local-name()='preface']/*[local-name()='clause'][@type = 'toc']" />
+							<xsl:call-template name="insertHeaderFooter"/>
+								
+							<fo:flow flow-name="xsl-region-body" line-height="115%">
+								<xsl:apply-templates/>
+							</fo:flow>
+						</fo:page-sequence>
+					
+					</xsl:for-each>
+				</xsl:for-each> <!-- END: preface pages -->
+			
+			
+				<xsl:choose>
+					<xsl:when test="count(..//*[local-name() = 'bipm-standard']) = 1">
+					
+						<xsl:for-each select="xalan:nodeset($updated_xml_with_pages)"> <!-- set context to preface -->
 							
-						</xsl:for-each>
-						
-						<xsl:if test="position() != last()">
-							<fo:block break-after="page"/>
-						</xsl:if>
-					</xsl:for-each>
+							<xsl:for-each select=".//*[local-name() = 'page_sequence'][not(parent::*[local-name() = 'boilerplate'] or parent::*[local-name() = 'preface'])][normalize-space() != '' or .//image or .//svg]">
 					
-					
-					<!-- Foreword, Introduction -->					
-					<!-- <xsl:call-template name="processPrefaceSectionsDefault"/> -->
-					<xsl:for-each select="//*[local-name() = 'bipm-standard']">
-						<fo:block break-after="page"/>
-						<xsl:apply-templates select="./*[local-name()='preface']/*[local-name()='abstract']" />
-					</xsl:for-each>
-					<xsl:for-each select="//*[local-name() = 'bipm-standard']">
-						<fo:block break-after="page"/>
-						<xsl:apply-templates select="./*[local-name()='preface']/*[local-name()='foreword']" />
-					</xsl:for-each>
-					<xsl:for-each select="//*[local-name() = 'bipm-standard']">
-						<fo:block break-after="page"/>
-						<xsl:apply-templates select="./*[local-name()='preface']/*[local-name()='introduction']" />
-					</xsl:for-each>
-					<xsl:for-each select="//*[local-name() = 'bipm-standard']">
-						<fo:block break-after="page"/>
-						<xsl:apply-templates select="./*[local-name()='preface']/*[local-name() != 'abstract' and local-name() != 'foreword' and local-name() != 'introduction' and local-name() != 'acknowledgements' and local-name() != 'note' and local-name() != 'admonition' and 
-						not(local-name() = 'clause' and @type = 'toc')]" />
-					</xsl:for-each>
-					<xsl:for-each select="//*[local-name() = 'bipm-standard']">
-						<fo:block break-after="page"/>
-						<xsl:apply-templates select="./*[local-name()='preface']/*[local-name()='acknowledgements']" />
-					</xsl:for-each>
-
-				</fo:flow>
-			</fo:page-sequence>
-			
-			
-			<!-- JCGM BODY -->
-			<fo:page-sequence master-reference="document-jcgm" initial-page-number="1" force-page-count="no-force">
-				<fo:static-content flow-name="xsl-footnote-separator">
-					<fo:block>
-						<fo:leader leader-pattern="rule" leader-length="30%"/>
-					</fo:block>
-				</fo:static-content>
-				<xsl:call-template name="insertHeaderFooter"/>
-				
-				<fo:flow flow-name="xsl-region-body" line-height="115%">
-					
-					
-					<xsl:if test="count(//*[local-name() = 'bipm-standard']) != 1 ">
-						<!-- <fo:block-container> -->
-						<!-- Show title -->
-						<!-- Example: Evaluation of measurement data — An introduction to the `Guide to the expression of uncertainty in measurement' and related documents -->
-						
-						<xsl:for-each select="//*[local-name() = 'bipm-standard']">
-						
-							<!-- <fo:block font-size="20pt" font-weight="bold" margin-bottom="20pt" space-before="36pt" line-height="1.1">
-								<xsl:variable name="curr_lang" select="*[local-name()='bibdata']/*[local-name()='language'][@current = 'true']"/>
+								<!-- JCGM BODY -->
+								<fo:page-sequence master-reference="document-jcgm" force-page-count="no-force">
 								
-								<xsl:variable name="title-main">
-									<xsl:apply-templates select="./*[local-name() = 'bibdata']/*[local-name() = 'title'][@language = $curr_lang and @type = 'main']" mode="title"/>
-								</xsl:variable>
-
-								<xsl:variable name="title-part">
-									<xsl:apply-templates select="./*[local-name() = 'bibdata']/*[local-name() = 'title'][@language = $curr_lang and @type = 'part']" mode="title"/>
-								</xsl:variable>
+									<xsl:attribute name="master-reference">
+										<xsl:text>document-jcgm</xsl:text>
+										<xsl:call-template name="getPageSequenceOrientation"/>
+									</xsl:attribute>
 								
-								<fo:block role="H1">
-									<xsl:copy-of select="$title-main"/>
-									<xsl:if test="normalize-space($title-main) != '' and normalize-space($title-part) != ''">
-										<xsl:text> — </xsl:text>
+									<xsl:if test="position() = 1">
+										<xsl:attribute name="initial-page-number">1</xsl:attribute>
 									</xsl:if>
-									<xsl:copy-of select="$title-part"/>
-								</fo:block>
 								
-								<xsl:variable name="edition">
-									<xsl:apply-templates select="./*[local-name() = 'bibdata']/*[local-name() = 'edition'][normalize-space(@language) = '']">
-										<xsl:with-param name="curr_lang" select="$curr_lang"/>
-									</xsl:apply-templates>
-								</xsl:variable>
-								<xsl:if test="normalize-space($edition) != ''">
-									<fo:block margin-top="12pt"><xsl:copy-of select="$edition"/></fo:block>
-								</xsl:if>
-								
-							</fo:block> -->
-							
-							<xsl:apply-templates select="jcgmsections/jcgm:p[starts-with(@class, 'zzSTDTitle')]"/>
-							
+									<xsl:call-template name="insertHeaderFooter"/>
+									
+									<fo:flow flow-name="xsl-region-body" line-height="115%">
+
+										<fo:block>
+											<!-- <xsl:call-template name="processMainSectionsDefault"/> -->
+											
+											<xsl:apply-templates />
+											
+										</fo:block>
+									</fo:flow>
+								</fo:page-sequence>
+							</xsl:for-each>
 						</xsl:for-each>
-						<!-- </fo:block-container> -->
-					</xsl:if>
-					<!-- Clause(s) -->
-					<fo:block>
-						<xsl:choose>
-							<xsl:when test="count(//*[local-name() = 'bipm-standard']) = 1 ">
-								<xsl:call-template name="processMainSectionsDefault"/>
-							</xsl:when>
-							<xsl:otherwise>
+					</xsl:when> <!-- END: count(//*[local-name() = 'bipm-standard']) = 1 -->
+					
+					<xsl:otherwise> <!-- count(//*[local-name() = 'bipm-standard']) != 1 -->
+						<fo:page-sequence master-reference="document-jcgm" initial-page-number="1" force-page-count="no-force">
+							
+							<xsl:call-template name="insertHeaderFooter"/>
+							
+							<fo:flow flow-name="xsl-region-body" line-height="115%">
+								<!-- Show title -->
+								<!-- Example: Evaluation of measurement data — An introduction to the `Guide to the expression of uncertainty in measurement' and related documents -->
+								
+								<xsl:for-each select="..//*[local-name() = 'bipm-standard']">	
+									<xsl:apply-templates select="jcgm:sections/jcgm:p[starts-with(@class, 'zzSTDTitle')]"/>
+								</xsl:for-each>
+								
 								<!-- output each clause pair in two-column table -->
-						
-								<!-- <xsl:variable name="flatxml">
-									<xsl:apply-templates select="." mode="flatxml"/>
-								</xsl:variable> -->
-						
+							
 								<!-- doc_first=<xsl:copy-of select="$doc_first"/>
 								docs_slave=<xsl:copy-of select="$docs_slave"/> -->
 						
-								<!-- <xsl:apply-templates select="xalan:nodeset($doc_first)/*/*[local-name()='sections']/*[local-name()='clause'][@type='scope']" mode="multi_columns"/> -->
 								<xsl:apply-templates select="xalan:nodeset($doc_first)/*/*[local-name()='sections']/*[local-name()='section_scope']/*" mode="multi_columns"/>
 								
 								<!-- Normative references  -->
@@ -485,42 +468,123 @@
 								<!-- Terms and definitions -->
 								<xsl:apply-templates select="xalan:nodeset($doc_first)/*/*[local-name()='sections']/*[local-name()='section_terms']/*" mode="multi_columns"/>
 																												
-								<!-- <xsl:apply-templates select="xalan:nodeset($doc_first)/*/*[local-name()='sections']/*[local-name()='terms'] | 
-																												xalan:nodeset($doc_first)/*/*[local-name()='sections']/*[local-name()='clause'][.//*[local-name()='terms']] |
-																												xalan:nodeset($doc_first)/*/*[local-name()='sections']/*[local-name()='definitions'] | 
-																												xalan:nodeset($doc_first)/*/*[local-name()='sections']/*[local-name()='clause'][.//*[local-name()='definitions']]" mode="multi_columns"/> -->
 																												
 								<!-- Another main sections -->
-								<!-- <xsl:apply-templates select="xalan:nodeset($doc_first)/*/*[local-name()='sections']/*[local-name() != 'terms' and 
-																																																				local-name() != 'definitions' and 
-																																																				not(@type='scope') and
-																																																				not(local-name() = 'clause' and .//*[local-name()='terms']) and
-																																																				not(local-name() = 'clause' and .//*[local-name()='definitions'])]" mode="multi_columns"/> -->
 								<xsl:apply-templates select="xalan:nodeset($doc_first)/*/*[local-name()='sections']/*[local-name() != 'section_terms' and 
-																																																			local-name() != 'section_scope']" mode="multi_columns"/>																																											
-                                                                                                        
+																																																			local-name() != 'section_scope']" mode="multi_columns"/>
+								
 								<xsl:apply-templates select="xalan:nodeset($doc_first)/*/*[local-name()='annex']" mode="multi_columns"/>
 								<!-- Bibliography -->
 								<xsl:apply-templates select="xalan:nodeset($doc_first)/*/*[local-name()='bibliography']/*[local-name()='references'][not(@normative='true')]" mode="multi_columns"/>
 								
-							
-							</xsl:otherwise>
-						</xsl:choose>
-						<!--  -->
-						
-						
-						
-					</fo:block>
-				</fo:flow>
-			</fo:page-sequence>
-
-				<!-- indexes=<xsl:copy-of select="$indexes"/> -->
+							</fo:flow>
+						</fo:page-sequence>
+					</xsl:otherwise> <!-- count(//*[local-name() = 'bipm-standard']) != 1  -->
+				</xsl:choose>
+			
+			</xsl:for-each> 
+			
 			<!-- Index -->
-			<!-- <xsl:apply-templates select="xalan:nodeset($indexes)/doc//jcgm:clause[@type = 'index']" mode="index" /> -->
 			<xsl:apply-templates select="xalan:nodeset($indexes)/doc//jcgm:indexsect" mode="index" />
 			
 		</fo:root>
 	</xsl:template>
+
+
+	<xsl:template name="processPrefaceAndMainSectionsJCGM_items">
+		
+		<xsl:variable name="updated_xml_step_move_pagebreak">
+		
+			<xsl:element name="{$root_element}" namespace="{$namespace_full}">
+			
+				<xsl:call-template name="copyCommonElements"/>
+				
+				<xsl:element name="boilerplate" namespace="{$namespace_full}"> <!-- save context element -->
+				
+					<!-- Copyright -->
+					<xsl:for-each select="..//*[local-name() = 'bipm-standard']">
+						<xsl:element name="page_sequence" namespace="{$namespace_full}">
+							<xsl:apply-templates select="./*[local-name()='boilerplate']/*" mode="update_xml_step_move_pagebreak"/>
+						</xsl:element>
+					</xsl:for-each>
+				
+				</xsl:element>
+				
+				<xsl:element name="preface" namespace="{$namespace_full}"> <!-- save context element -->
+				
+					<!-- Table of Contents -->
+					<xsl:for-each select="..//*[local-name() = 'bipm-standard']">
+						<xsl:variable name="current_document">
+							<xsl:copy-of select="."/>
+						</xsl:variable>				
+						<xsl:for-each select="xalan:nodeset($current_document)">
+							<!-- Table of Contents -->
+							<xsl:element name="page_sequence" namespace="{$namespace_full}">
+								<xsl:copy-of select="/*/*[local-name()='preface']/*[local-name()='clause'][@type = 'toc']" />
+							</xsl:element>
+						</xsl:for-each>
+					</xsl:for-each>
+					
+					<!-- Foreword, Introduction -->					
+					<!-- <xsl:call-template name="processPrefaceSectionsDefault"/> -->
+					<xsl:for-each select="..//*[local-name() = 'bipm-standard']">
+						<xsl:element name="page_sequence" namespace="{$namespace_full}">
+							<xsl:apply-templates select="./*[local-name()='preface']/*[local-name()='abstract']" mode="update_xml_step_move_pagebreak"/>
+						</xsl:element>
+					</xsl:for-each>
+					<xsl:for-each select="..//*[local-name() = 'bipm-standard']">
+						<xsl:element name="page_sequence" namespace="{$namespace_full}">
+							<xsl:apply-templates select="./*[local-name()='preface']/*[local-name()='foreword']" mode="update_xml_step_move_pagebreak"/>
+						</xsl:element>
+					</xsl:for-each>
+					<xsl:for-each select="..//*[local-name() = 'bipm-standard']">
+						<xsl:element name="page_sequence" namespace="{$namespace_full}">
+							<xsl:apply-templates select="./*[local-name()='preface']/*[local-name()='introduction']" mode="update_xml_step_move_pagebreak"/>
+						</xsl:element>
+					</xsl:for-each>
+					<xsl:for-each select="..//*[local-name() = 'bipm-standard']">
+						<xsl:element name="page_sequence" namespace="{$namespace_full}">
+							<xsl:apply-templates select="./*[local-name()='preface']/*[local-name() != 'abstract' and local-name() != 'foreword' and local-name() != 'introduction' and local-name() != 'acknowledgements' and local-name() != 'note' and local-name() != 'admonition' and 
+					not(local-name() = 'clause' and @type = 'toc')]" mode="update_xml_step_move_pagebreak"/>
+						</xsl:element>
+					</xsl:for-each>
+					<xsl:for-each select="..//*[local-name() = 'bipm-standard']">
+						<xsl:element name="page_sequence" namespace="{$namespace_full}">
+							<xsl:apply-templates select="./*[local-name()='preface']/*[local-name()='acknowledgements']" mode="update_xml_step_move_pagebreak"/>
+						</xsl:element>
+					</xsl:for-each>
+				
+				</xsl:element> <!-- preface -->
+				
+				<xsl:call-template name="insertMainSectionsPageSequences"/>
+				
+			</xsl:element>
+		</xsl:variable>
+		
+		<xsl:variable name="updated_xml_step_move_pagebreak_filename" select="concat($output_path,'_preface_', java:getTime(java:java.util.Date.new()), '.xml')"/>
+		
+		<redirect:write file="{$updated_xml_step_move_pagebreak_filename}">
+			<xsl:copy-of select="$updated_xml_step_move_pagebreak"/>
+		</redirect:write>
+		
+		<xsl:copy-of select="document($updated_xml_step_move_pagebreak_filename)"/>
+		
+		<!-- TODO: instead of 
+		<xsl:for-each select=".//*[local-name() = 'page_sequence'][normalize-space() != '' or .//image or .//svg]">
+		in each template, add removing empty page_sequence here
+		-->
+		
+		<xsl:if test="$debug = 'true'">
+			<redirect:write file="page_sequence.xml">
+				<xsl:copy-of select="$updated_xml_step_move_pagebreak"/>
+			</redirect:write>
+		</xsl:if>
+		
+		<xsl:call-template name="deleteFile">
+			<xsl:with-param name="filepath" select="$updated_xml_step_move_pagebreak_filename"/>
+		</xsl:call-template>
+	</xsl:template> <!-- END: processPrefaceAndMainSectionsJCGM_items -->
+	
 
 	<xsl:template name="insertListOf_Title">
 		<xsl:param name="title"/>
@@ -549,7 +613,7 @@
 		</fo:block>
 	</xsl:template>
 
-	<xsl:template match="jcgm:preface/jcgm:clause[@type = 'toc']" priority="3">
+	<xsl:template match="jcgm:preface//jcgm:clause[@type = 'toc']" priority="3">
 		<fo:block-container>
 			<fo:block role="TOC">
 			
@@ -596,7 +660,7 @@
 		</fo:block-container>
 	</xsl:template>
 
-	<xsl:template match="jcgm:preface/jcgm:clause[@type = 'toc']/jcgm:title" priority="3">
+	<xsl:template match="jcgm:preface//jcgm:clause[@type = 'toc']/jcgm:title" priority="3">
 		<fo:block text-align-last="justify">
 			<fo:inline font-size="15pt" font-weight="bold" role="H1">
 				<xsl:call-template name="getLocalizedString">
@@ -612,7 +676,7 @@
 		</fo:block>
 	</xsl:template>
 
-	<xsl:template match="jcgm:sections/jcgm:p[@class = 'zzSTDTitle1']" priority="4">
+	<xsl:template match="jcgm:sections//jcgm:p[@class = 'zzSTDTitle1']" priority="4">
 		<fo:block font-size="20pt" font-weight="bold" margin-bottom="20pt" space-before="36pt" line-height="1.1" role="H1">
 			<xsl:if test="following-sibling::*[1][self::jcgm:p][starts-with(@class, 'zzSTDTitle')]">
 				<xsl:attribute name="margin-bottom">0</xsl:attribute>
@@ -632,7 +696,7 @@
 		</xsl:if>
 	</xsl:template>
 	
-	<xsl:template match="jcgm:sections/jcgm:p[@class = 'zzSTDTitle2']" priority="4">
+	<xsl:template match="jcgm:sections//jcgm:p[@class = 'zzSTDTitle2']" priority="4">
 		<fo:block font-size="20pt" font-weight="bold" margin-top="12pt" margin-bottom="20pt" line-height="1.1">
 			<xsl:apply-templates />
 		</fo:block>
@@ -788,7 +852,7 @@
 	
 	<xsl:template match="*[local-name()='ul'][not(*)] | *[local-name()='ol'][not(*)]" priority="2"/>
 	
-	<xsl:template match="*[local-name()='li'][not(parent::*[local-name()='ul'] or parent::*[local-name()='ol'])]">
+	<xsl:template match="*[local-name()='li'][not(parent::*[local-name()='ul'] or parent::*[local-name()='ol'])]" priority="2">
 		<fo:list-block provisional-distance-between-starts="7mm" margin-top="8pt">
 			<fo:list-item id="{@id}">
 				<fo:list-item-label end-indent="label-end()">
@@ -1003,6 +1067,11 @@
 	
 	<xsl:template name="insertHeaderFooter">
 		<xsl:param name="isDraft"/>
+		<fo:static-content flow-name="xsl-footnote-separator">
+			<fo:block>
+				<fo:leader leader-pattern="rule" leader-length="30%"/>
+			</fo:block>
+		</fo:static-content>
 		<fo:static-content flow-name="header-even-jcgm" role="artifact">
 			<xsl:call-template name="insertDraftWatermark">
 				<xsl:with-param name="isDraft" select="$isDraft"/>

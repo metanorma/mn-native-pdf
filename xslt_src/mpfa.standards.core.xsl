@@ -5,8 +5,10 @@
 											xmlns:mathml="http://www.w3.org/1998/Math/MathML" 
 											xmlns:xalan="http://xml.apache.org/xalan" 
 											xmlns:fox="http://xmlgraphics.apache.org/fop/extensions" 
+											xmlns:redirect="http://xml.apache.org/xalan/redirect"
 											xmlns:java="http://xml.apache.org/xalan/java" 
-											exclude-result-prefixes="java"
+											exclude-result-prefixes="java redirect"
+											extension-element-prefixes="redirect"
 											version="1.0">
 
 	<xsl:output method="xml" encoding="UTF-8" indent="no"/>
@@ -85,7 +87,21 @@
 					<fo:region-start region-name="left-region" extent="{$marginLeftRight1}mm"/>
 					<fo:region-end region-name="right-region" extent="{$marginLeftRight2}mm"/>
 				</fo:simple-page-master>
+				<fo:simple-page-master master-name="odd-landscape" page-width="{$pageHeight}mm" page-height="{$pageWidth}mm">
+					<fo:region-body margin-top="{$marginTop}mm" margin-bottom="{$marginBottom}mm" margin-left="{$marginLeftRight1}mm" margin-right="{$marginLeftRight2}mm"/>
+					<fo:region-before region-name="header-odd" extent="{$marginTop}mm" />
+					<fo:region-after region-name="footer-odd" extent="{$marginBottom}mm" />
+					<fo:region-start region-name="left-region" extent="{$marginLeftRight1}mm"/>
+					<fo:region-end region-name="right-region" extent="{$marginLeftRight2}mm"/>
+				</fo:simple-page-master>
 				<fo:simple-page-master master-name="even" page-width="{$pageWidth}mm" page-height="{$pageHeight}mm">
+					<fo:region-body margin-top="{$marginTop}mm" margin-bottom="{$marginBottom}mm" margin-left="{$marginLeftRight2}mm" margin-right="{$marginLeftRight1}mm"/>
+					<fo:region-before region-name="header-even" extent="{$marginTop}mm" />
+					<fo:region-after region-name="footer-even" extent="{$marginBottom}mm" />
+					<fo:region-start region-name="left-region" extent="{$marginLeftRight2}mm"/>
+					<fo:region-end region-name="right-region" extent="{$marginLeftRight1}mm"/>
+				</fo:simple-page-master>
+				<fo:simple-page-master master-name="even-landscape" page-width="{$pageHeight}mm" page-height="{$pageWidth}mm">
 					<fo:region-body margin-top="{$marginTop}mm" margin-bottom="{$marginBottom}mm" margin-left="{$marginLeftRight2}mm" margin-right="{$marginLeftRight1}mm"/>
 					<fo:region-before region-name="header-even" extent="{$marginTop}mm" />
 					<fo:region-after region-name="footer-even" extent="{$marginBottom}mm" />
@@ -97,6 +113,12 @@
 					<fo:repeatable-page-master-alternatives>						
 						<fo:conditional-page-master-reference odd-or-even="even" master-reference="even"/>
 						<fo:conditional-page-master-reference odd-or-even="odd" master-reference="odd"/>
+					</fo:repeatable-page-master-alternatives>
+				</fo:page-sequence-master>
+				<fo:page-sequence-master master-name="document-landscape">
+					<fo:repeatable-page-master-alternatives>						
+						<fo:conditional-page-master-reference odd-or-even="even" master-reference="even-landscape"/>
+						<fo:conditional-page-master-reference odd-or-even="odd" master-reference="odd-landscape"/>
 					</fo:repeatable-page-master-alternatives>
 				</fo:page-sequence-master>
 				
@@ -175,57 +197,155 @@
 				</fo:flow>
 			</fo:page-sequence>
 			
-			<fo:page-sequence master-reference="document" initial-page-number="2" format="i"  force-page-count="no-force">
-				<xsl:call-template name="insertHeaderFooter"/>
-				<fo:flow flow-name="xsl-region-body">
-				
-					<xsl:if test="$debug = 'true'">
-						<xsl:text disable-output-escaping="yes">&lt;!--</xsl:text>
-							DEBUG
-							contents=<xsl:copy-of select="$contents"/>
-						<xsl:text disable-output-escaping="yes">--&gt;</xsl:text>
-					</xsl:if>
-					
-					<!-- Table of content -->
-					<xsl:apply-templates select="/*/mpfd:preface/mpfd:clause[@type = 'toc']"/>
-					
-					<xsl:if test="/mpfd:mpfd-standard/mpfd:preface/*[not(local-name() = 'note' or local-name() = 'admonition' or (local-name() = 'clause' and @type = 'toc'))]">
-						<fo:block break-after="page"/>
-						<!-- Foreword, Introduction -->
-						<fo:block>
-							<xsl:apply-templates select="/mpfd:mpfd-standard/mpfd:preface/*[not(local-name() = 'terms' or local-name() = 'note' or local-name() = 'admonition' or (local-name() = 'clause' and @type = 'toc'))]"/>
-							<xsl:apply-templates select="/mpfd:mpfd-standard/mpfd:preface/mpfd:terms"/>
-						</fo:block>
-					</xsl:if>
-					
-					<fo:block/> <!-- prevent empty toc -->
-				</fo:flow>
-			</fo:page-sequence>
+			<xsl:variable name="updated_xml">
+				<xsl:call-template name="updateXML"/>
+				<!-- <xsl:copy-of select="."/> -->
+			</xsl:variable>
 			
-			<fo:page-sequence master-reference="document" initial-page-number="1" format="1"  force-page-count="no-force">
-				<xsl:call-template name="insertHeaderFooter">
-					<xsl:with-param name="font-weight">bold</xsl:with-param>
-				</xsl:call-template>
-				<fo:flow flow-name="xsl-region-body">
-					<fo:block-container>
+			<xsl:for-each select="xalan:nodeset($updated_xml)/*">
+			
+				<xsl:variable name="updated_xml_with_pages">
+					<xsl:call-template name="processPrefaceAndMainSectionsMPFA_items"/>
+				</xsl:variable>
+			
+				<xsl:for-each select="xalan:nodeset($updated_xml_with_pages)"> <!-- set context to preface -->
+				
+					<xsl:for-each select=".//*[local-name() = 'page_sequence'][parent::*[local-name() = 'preface']][normalize-space() != '' or .//image or .//svg]">
+			
+						<fo:page-sequence master-reference="document" format="i" force-page-count="no-force">
 						
-						<!-- <fo:block font-size="16pt" font-weight="bold" margin-bottom="18pt" role="H1">
-							<xsl:value-of select="$title-en"/>
-						</fo:block> -->
+							<xsl:attribute name="master-reference">
+								<xsl:text>document</xsl:text>
+								<xsl:call-template name="getPageSequenceOrientation"/>
+							</xsl:attribute>
+							
+							<xsl:if test="position() = 1">
+								<xsl:attribute name="initial-page-number">2</xsl:attribute>
+							</xsl:if>
 						
-						<!-- Main sections -->
-						<xsl:apply-templates select="/mpfd:mpfd-standard/mpfd:sections/*"/>
+							<xsl:call-template name="insertHeaderFooter"/>
+							
+							<fo:flow flow-name="xsl-region-body">
+							
+								<!-- <xsl:if test="$debug = 'true'">
+									<redirect:write file="contents_{java:getTime(java:java.util.Date.new())}.xml">
+										<xsl:copy-of select="$contents"/>
+									</redirect:write>
+								</xsl:if> -->
+
+								<!-- Table of content -->
+								<!-- <xsl:apply-templates select="/*/mpfd:preface/mpfd:clause[@type = 'toc']"/> -->
+								
+								<!-- <xsl:if test="/mpfd:mpfd-standard/mpfd:preface/*[not(local-name() = 'note' or local-name() = 'admonition' or (local-name() = 'clause' and @type = 'toc'))]">
+									<fo:block break-after="page"/> -->
+									<!-- Foreword, Introduction -->
+									<!-- <fo:block>
+										<xsl:apply-templates select="/mpfd:mpfd-standard/mpfd:preface/*[not(local-name() = 'terms' or local-name() = 'note' or local-name() = 'admonition' or (local-name() = 'clause' and @type = 'toc'))]"/>
+										<xsl:apply-templates select="/mpfd:mpfd-standard/mpfd:preface/mpfd:terms"/>
+									</fo:block>
+								</xsl:if> -->
+								
+								<xsl:apply-templates />
+								
+								<fo:block/> <!-- prevent empty toc -->
+							</fo:flow>
+						</fo:page-sequence>
+					</xsl:for-each>
+				</xsl:for-each>
+			
+				<xsl:for-each select="xalan:nodeset($updated_xml_with_pages)"> <!-- set context to preface -->
+							
+					<xsl:for-each select=".//*[local-name() = 'page_sequence'][not(parent::*[local-name() = 'preface'])][normalize-space() != '' or .//image or .//svg]">
+			
+						<fo:page-sequence master-reference="document" format="1" force-page-count="no-force">
 						
-						<!-- Annex(s) -->
-						<xsl:apply-templates select="/mpfd:mpfd-standard/mpfd:annex"/>
+							<xsl:attribute name="master-reference">
+								<xsl:text>document</xsl:text>
+								<xsl:call-template name="getPageSequenceOrientation"/>
+							</xsl:attribute>
 						
-						<!-- Bibliography -->
-						<xsl:apply-templates select="/mpfd:mpfd-standard/mpfd:bibliography"/>
-					</fo:block-container>
-				</fo:flow>
-			</fo:page-sequence>
+							<xsl:if test="position() = 1">
+								<xsl:attribute name="initial-page-number">1</xsl:attribute>
+							</xsl:if>
+						
+							<xsl:call-template name="insertHeaderFooter">
+								<xsl:with-param name="font-weight">bold</xsl:with-param>
+							</xsl:call-template>
+							<fo:flow flow-name="xsl-region-body">
+								<fo:block-container>
+									
+									<!-- <fo:block font-size="16pt" font-weight="bold" margin-bottom="18pt" role="H1">
+										<xsl:value-of select="$title-en"/>
+									</fo:block> -->
+									
+									<!-- Main sections -->
+									<!-- <xsl:apply-templates select="/mpfd:mpfd-standard/mpfd:sections/*"/> -->
+									
+									<!-- Annex(s) -->
+									<!-- <xsl:apply-templates select="/mpfd:mpfd-standard/mpfd:annex"/> -->
+									
+									<!-- Bibliography -->
+									<!-- <xsl:apply-templates select="/mpfd:mpfd-standard/mpfd:bibliography"/> -->
+									<xsl:apply-templates />
+									
+									<fo:block/> <!-- prevent empty toc -->
+								</fo:block-container>
+							</fo:flow>
+						</fo:page-sequence>
+					</xsl:for-each>
+				</xsl:for-each>
+			</xsl:for-each>
 		</fo:root>
 	</xsl:template> 
+	
+	<xsl:template name="processPrefaceAndMainSectionsMPFA_items">
+		<xsl:variable name="updated_xml_step_move_pagebreak">
+		
+			<xsl:element name="{$root_element}" namespace="{$namespace_full}">
+			
+				<xsl:call-template name="copyCommonElements"/>
+				
+				<xsl:element name="preface" namespace="{$namespace_full}"> <!-- save context element -->
+					<!-- Table of Contents -->
+					<xsl:element name="page_sequence" namespace="{$namespace_full}">
+						<xsl:copy-of select="/*/*[local-name()='preface']/*[local-name()='clause'][@type = 'toc']" />
+					</xsl:element>
+						
+					<xsl:element name="page_sequence" namespace="{$namespace_full}">
+						<xsl:apply-templates select="/mpfd:mpfd-standard/mpfd:preface/*[not(local-name() = 'terms' or local-name() = 'note' or local-name() = 'admonition' or (local-name() = 'clause' and @type = 'toc'))]" mode="update_xml_step_move_pagebreak"/>
+						<xsl:apply-templates select="/mpfd:mpfd-standard/mpfd:preface/mpfd:terms" mode="update_xml_step_move_pagebreak"/>
+					</xsl:element>
+				</xsl:element> <!-- preface -->
+				
+				<xsl:call-template name="insertMainSectionsPageSequences"/>
+				
+			</xsl:element>
+		</xsl:variable>
+		
+		<xsl:variable name="updated_xml_step_move_pagebreak_filename" select="concat($output_path,'_preface_', java:getTime(java:java.util.Date.new()), '.xml')"/>
+		
+		<redirect:write file="{$updated_xml_step_move_pagebreak_filename}">
+			<xsl:copy-of select="$updated_xml_step_move_pagebreak"/>
+		</redirect:write>
+		
+		<xsl:copy-of select="document($updated_xml_step_move_pagebreak_filename)"/>
+		
+		<!-- TODO: instead of 
+		<xsl:for-each select=".//*[local-name() = 'page_sequence'][normalize-space() != '' or .//image or .//svg]">
+		in each template, add removing empty page_sequence here
+		-->
+		
+		<xsl:if test="$debug = 'true'">
+			<redirect:write file="page_sequence.xml">
+				<xsl:copy-of select="$updated_xml_step_move_pagebreak"/>
+			</redirect:write>
+		</xsl:if>
+		
+		<xsl:call-template name="deleteFile">
+			<xsl:with-param name="filepath" select="$updated_xml_step_move_pagebreak_filename"/>
+		</xsl:call-template>
+	</xsl:template> <!-- END: processPrefaceAndMainSectionsMPFA_items -->
+	
 	
 	<xsl:template name="insertListOf_Title">
 		<xsl:param name="title"/>
@@ -249,7 +369,7 @@
 		</fo:block>
 	</xsl:template>
 	
-	<xsl:template match="mpfd:preface/mpfd:clause[@type = 'toc']" priority="3">
+	<xsl:template match="mpfd:preface//mpfd:clause[@type = 'toc']" priority="3">
 		<!-- Table of content -->
 		<fo:block-container font-weight="bold">
 		
@@ -320,7 +440,7 @@
 		</fo:block-container>
 	</xsl:template>
 	
-	<xsl:template match="mpfd:preface/mpfd:clause[@type = 'toc']/mpfd:title" priority="3">
+	<xsl:template match="mpfd:preface//mpfd:clause[@type = 'toc']/mpfd:title" priority="3">
 		<!-- <xsl:variable name="title-toc">
 			<xsl:call-template name="getTitle">
 				<xsl:with-param name="name" select="'title-toc'"/>

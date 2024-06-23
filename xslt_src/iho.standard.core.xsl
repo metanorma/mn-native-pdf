@@ -239,13 +239,13 @@
 			
 			<xsl:for-each select="xalan:nodeset($updated_xml)/*">
 			
-				<xsl:variable name="updated_xml_with_pages_preface">
-					<xsl:call-template name="processPrefaceSectionsDefault_items"/>
+				<xsl:variable name="updated_xml_with_pages">
+					<xsl:call-template name="processPrefaceAndMainSectionsDefault_items"/>
 				</xsl:variable>
 			
-				<xsl:for-each select="xalan:nodeset($updated_xml_with_pages_preface)"> <!-- set context to preface -->
+				<xsl:for-each select="xalan:nodeset($updated_xml_with_pages)"> <!-- set context to preface/sections -->
 					
-					<xsl:for-each select=".//*[local-name() = 'page_sequence'][normalize-space() != '' or .//image or .//svg]">
+					<xsl:for-each select=".//*[local-name() = 'page_sequence'][parent::*[local-name() = 'preface']][normalize-space() != '' or .//image or .//svg]">
 		
 						<!-- Preface Pages -->
 						<fo:page-sequence master-reference="preface" format="i">
@@ -291,20 +291,9 @@
 						<!-- =========================== -->
 						<!-- =========================== -->
 					</xsl:for-each>
-				</xsl:for-each>
-			
-			
-				<!-- Document Pages -->
-				<xsl:variable name="updated_xml_with_pages_main">
-					<xsl:call-template name="processMainSectionsDefault_items"/>
-				</xsl:variable>
-			
-			
-				<!-- <xsl:if test="/iho:iho-standard/iho:sections/*"> -->
 				
-				<xsl:for-each select="xalan:nodeset($updated_xml_with_pages_main)"> <!-- set context to main sections -->
 				
-					<xsl:for-each select=".//*[local-name() = 'page_sequence'][normalize-space() != '' or .//image or .//svg]">
+					<xsl:for-each select=".//*[local-name() = 'page_sequence'][not(parent::*[local-name() = 'preface'])][normalize-space() != '' or .//image or .//svg]">
 				
 						<fo:page-sequence master-reference="document" format="1" force-page-count="no-force">
 						

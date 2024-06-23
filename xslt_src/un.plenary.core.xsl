@@ -5,9 +5,11 @@
 											xmlns:mathml="http://www.w3.org/1998/Math/MathML" 
 											xmlns:xalan="http://xml.apache.org/xalan" 
 											xmlns:fox="http://xmlgraphics.apache.org/fop/extensions" 
+											xmlns:redirect="http://xml.apache.org/xalan/redirect"
 											xmlns:barcode="http://barcode4j.krysalis.org/ns" 
 											xmlns:java="http://xml.apache.org/xalan/java" 
-											exclude-result-prefixes="java"
+											exclude-result-prefixes="java redirect"
+											extension-element-prefixes="redirect"
 											version="1.0">
 
 	<xsl:output version="1.0" method="xml" encoding="UTF-8" indent="no"/>
@@ -67,8 +69,22 @@
 					<fo:region-start region-name="left-region" extent="{$marginLeftRight1}mm"/>
 					<fo:region-end region-name="right-region" extent="{$marginLeftRight2}mm"/>
 				</fo:simple-page-master>
+				<fo:simple-page-master master-name="odd-landscape" page-width="{$pageHeight}mm" page-height="{$pageWidth}mm">
+					<fo:region-body margin-top="{$marginTop}mm" margin-bottom="{$marginBottom}mm" margin-left="{$marginLeftRight1}mm" margin-right="{$marginLeftRight2}mm"/>
+					<fo:region-before region-name="header-odd" extent="26mm"/> 
+					<fo:region-after region-name="footer-odd" extent="{$marginBottom}mm"/>
+					<fo:region-start region-name="left-region" extent="{$marginLeftRight1}mm"/>
+					<fo:region-end region-name="right-region" extent="{$marginLeftRight2}mm"/>
+				</fo:simple-page-master>
 				<!-- Document even pages -->
 				<fo:simple-page-master master-name="even" page-width="{$pageWidth}mm" page-height="{$pageHeight}mm">
+					<fo:region-body margin-top="{$marginTop}mm" margin-bottom="{$marginBottom}mm" margin-left="{$marginLeftRight2}mm" margin-right="{$marginLeftRight1}mm"/>
+					<fo:region-before region-name="header-even" extent="26mm"/>
+					<fo:region-after region-name="footer-even" extent="{$marginBottom}mm"/>
+					<fo:region-start region-name="left-region" extent="{$marginLeftRight2}mm"/>
+					<fo:region-end region-name="right-region" extent="{$marginLeftRight1}mm"/>
+				</fo:simple-page-master>
+				<fo:simple-page-master master-name="even-landscape" page-width="{$pageHeight}mm" page-height="{$pageWidth}mm">
 					<fo:region-body margin-top="{$marginTop}mm" margin-bottom="{$marginBottom}mm" margin-left="{$marginLeftRight2}mm" margin-right="{$marginLeftRight1}mm"/>
 					<fo:region-before region-name="header-even" extent="26mm"/>
 					<fo:region-after region-name="footer-even" extent="{$marginBottom}mm"/>
@@ -79,6 +95,12 @@
 					<fo:repeatable-page-master-alternatives>
 						<fo:conditional-page-master-reference odd-or-even="even" master-reference="even"/>
 						<fo:conditional-page-master-reference odd-or-even="odd" master-reference="odd"/>
+					</fo:repeatable-page-master-alternatives>
+				</fo:page-sequence-master>
+				<fo:page-sequence-master master-name="document-landscape">
+					<fo:repeatable-page-master-alternatives>
+						<fo:conditional-page-master-reference odd-or-even="even" master-reference="even-landscape"/>
+						<fo:conditional-page-master-reference odd-or-even="odd" master-reference="odd-landscape"/>
 					</fo:repeatable-page-master-alternatives>
 				</fo:page-sequence-master>
 			</fo:layout-master-set>
@@ -282,53 +304,135 @@
 			</fo:page-sequence>
 			<!-- End Cover Page -->
 			
+			<xsl:variable name="updated_xml">
+				<xsl:call-template name="updateXML"/>
+				<!-- <xsl:copy-of select="."/> -->
+			</xsl:variable>
 			
-			<!-- Document Pages -->
-			<fo:page-sequence master-reference="document" initial-page-number="2" format="1" force-page-count="no-force" line-height="115%">
-				<fo:static-content flow-name="xsl-footnote-separator">
-					<fo:block-container margin-left="-8mm">
-						<fo:block margin-left="8mm">
-							<fo:leader leader-pattern="rule" leader-length="20%"/>
-						</fo:block>
-					</fo:block-container>
-				</fo:static-content>
-				<xsl:call-template name="insertHeaderFooter"/>
-				<fo:flow flow-name="xsl-region-body">
-					
-					<xsl:if test="$debug = 'true'">
-						<xsl:text disable-output-escaping="yes">&lt;!--</xsl:text>
-							DEBUG
-							contents=<xsl:copy-of select="$contents"/>
-						<xsl:text disable-output-escaping="yes">--&gt;</xsl:text>
-					</xsl:if>
-					
-					<!-- Preface Pages (except Abstract, that showed in Summary on cover page`) -->
-					<xsl:if test="/un:un-standard/un:preface/*[not(local-name() = 'abstract' or local-name() = 'note' or local-name() = 'admonition' or (local-name() = 'clause' and @type = 'toc'))]">
-						<xsl:apply-templates select="/*/*[local-name()='preface']/*[local-name()='foreword']" />
-						<xsl:apply-templates select="/*/*[local-name()='preface']/*[local-name()='introduction']" />
-						<xsl:apply-templates select="/*/*[local-name()='preface']/*[local-name() != 'abstract' and local-name() != 'foreword' and local-name() != 'introduction' and local-name() != 'acknowledgements' and local-name() != 'note' and local-name() != 'admonition' and
-						not(local-name() = 'clause' and @type = 'toc')]" />
-						<xsl:apply-templates select="/*/*[local-name()='preface']/*[local-name()='acknowledgements']" />
-						<fo:block break-after="page"/>
-					</xsl:if>
-					
-					<fo:block>
-						<xsl:apply-templates select="/un:un-standard/un:sections/*"/>
-						<xsl:apply-templates select="/un:un-standard/un:annex"/>
-						<xsl:apply-templates select="/un:un-standard/un:bibliography/un:references"/>
-					</fo:block>
-					
-					<fo:block-container margin-left="50mm" width="30mm" border-bottom="0.5pt solid black" margin-top="12pt" keep-with-previous="always">
-						<fo:block>&#xA0;</fo:block>
-					</fo:block-container>
-					
-				</fo:flow>
-			</fo:page-sequence>
-			<!-- End Document Pages -->
+			<xsl:for-each select="xalan:nodeset($updated_xml)/*">
+			
+				<xsl:variable name="updated_xml_with_pages">
+					<xsl:call-template name="processPrefaceAndMainSectionsUN_items"/>
+				</xsl:variable>
+			
+				<xsl:for-each select="xalan:nodeset($updated_xml_with_pages)"> <!-- set context to preface -->
+				
+					<xsl:for-each select=".//*[local-name() = 'page_sequence'][normalize-space() != '' or .//image or .//svg]">
+			
+						<!-- Document Pages -->
+						<fo:page-sequence master-reference="document" format="1" force-page-count="no-force" line-height="115%">
+						
+							<xsl:attribute name="master-reference">
+								<xsl:text>document</xsl:text>
+								<xsl:call-template name="getPageSequenceOrientation"/>
+							</xsl:attribute>
+							
+							<xsl:if test="position() = 1">
+								<xsl:attribute name="initial-page-number">2</xsl:attribute>
+							</xsl:if>
+						
+							<fo:static-content flow-name="xsl-footnote-separator">
+								<fo:block-container margin-left="-8mm">
+									<fo:block margin-left="8mm">
+										<fo:leader leader-pattern="rule" leader-length="20%"/>
+									</fo:block>
+								</fo:block-container>
+							</fo:static-content>
+							<xsl:call-template name="insertHeaderFooter"/>
+							<fo:flow flow-name="xsl-region-body">
+								
+								<!-- <xsl:if test="$debug = 'true'">
+									<redirect:write file="contents_{java:getTime(java:java.util.Date.new())}.xml">
+										<xsl:copy-of select="$contents"/>
+									</redirect:write>
+								</xsl:if> -->					
+								
+								<!-- Preface Pages (except Abstract, that showed in Summary on cover page`) -->
+								<!-- <xsl:if test="/un:un-standard/un:preface/*[not(local-name() = 'abstract' or local-name() = 'note' or local-name() = 'admonition' or (local-name() = 'clause' and @type = 'toc'))]">
+									<xsl:apply-templates select="/*/*[local-name()='preface']/*[local-name()='foreword']" />
+									<xsl:apply-templates select="/*/*[local-name()='preface']/*[local-name()='introduction']" />
+									<xsl:apply-templates select="/*/*[local-name()='preface']/*[local-name() != 'abstract' and local-name() != 'foreword' and local-name() != 'introduction' and local-name() != 'acknowledgements' and local-name() != 'note' and local-name() != 'admonition' and
+									not(local-name() = 'clause' and @type = 'toc')]" />
+									<xsl:apply-templates select="/*/*[local-name()='preface']/*[local-name()='acknowledgements']" />
+									<fo:block break-after="page"/>
+								</xsl:if>
+								
+								<fo:block>
+									<xsl:apply-templates select="/un:un-standard/un:sections/*"/>
+									<xsl:apply-templates select="/un:un-standard/un:annex"/>
+									<xsl:apply-templates select="/un:un-standard/un:bibliography/un:references"/>
+								</fo:block> -->
+								
+								<xsl:apply-templates />
+								
+								<fo:block/> <!-- prevent empty fo:flow -->
+								
+								<xsl:if test="position() = last()">
+									<fo:block-container margin-left="50mm" width="30mm" border-bottom="0.5pt solid black" margin-top="12pt" keep-with-previous="always">
+										<fo:block>&#xA0;</fo:block>
+									</fo:block-container>
+								</xsl:if>
+							</fo:flow>
+						</fo:page-sequence>
+						<!-- End Document Pages -->
+					</xsl:for-each>
+				</xsl:for-each>
+			</xsl:for-each>
 			
 		</fo:root>
 	</xsl:template> 
 
+
+	<xsl:template name="processPrefaceAndMainSectionsUN_items">
+		<xsl:variable name="updated_xml_step_move_pagebreak">
+		
+			<xsl:element name="{$root_element}" namespace="{$namespace_full}">
+			
+				<xsl:call-template name="copyCommonElements"/>
+				
+				<xsl:element name="page_sequence" namespace="{$namespace_full}">
+					<xsl:element name="preface" namespace="{$namespace_full}"> <!-- save context element -->
+						
+						<!-- Preface Pages (except Abstract, that showed in Summary on cover page`) -->
+						<xsl:apply-templates select="/*/*[local-name()='preface']/*[local-name()='foreword']" mode="update_xml_step_move_pagebreak"/>
+						<xsl:apply-templates select="/*/*[local-name()='preface']/*[local-name()='introduction']" mode="update_xml_step_move_pagebreak"/>
+						<xsl:apply-templates select="/*/*[local-name()='preface']/*[local-name() != 'abstract' and local-name() != 'foreword' and local-name() != 'introduction' and local-name() != 'acknowledgements' and local-name() != 'note' and local-name() != 'admonition' and
+						not(local-name() = 'clause' and @type = 'toc')]" mode="update_xml_step_move_pagebreak"/>
+						<xsl:apply-templates select="/*/*[local-name()='preface']/*[local-name()='acknowledgements']" mode="update_xml_step_move_pagebreak"/>
+					
+					</xsl:element> <!-- preface -->
+				</xsl:element>  
+				
+				<xsl:element name="page_sequence" namespace="{$namespace_full}">
+					<xsl:call-template name="insertMainSections"/>
+				</xsl:element>
+				
+			</xsl:element>
+		</xsl:variable>
+		
+		<xsl:variable name="updated_xml_step_move_pagebreak_filename" select="concat($output_path,'_preface_', java:getTime(java:java.util.Date.new()), '.xml')"/>
+		
+		<redirect:write file="{$updated_xml_step_move_pagebreak_filename}">
+			<xsl:copy-of select="$updated_xml_step_move_pagebreak"/>
+		</redirect:write>
+		
+		<xsl:copy-of select="document($updated_xml_step_move_pagebreak_filename)"/>
+		
+		<!-- TODO: instead of 
+		<xsl:for-each select=".//*[local-name() = 'page_sequence'][normalize-space() != '' or .//image or .//svg]">
+		in each template, add removing empty page_sequence here
+		-->
+		
+		<xsl:if test="$debug = 'true'">
+			<redirect:write file="page_sequence.xml">
+				<xsl:copy-of select="$updated_xml_step_move_pagebreak"/>
+			</redirect:write>
+		</xsl:if>
+		
+		<xsl:call-template name="deleteFile">
+			<xsl:with-param name="filepath" select="$updated_xml_step_move_pagebreak_filename"/>
+		</xsl:call-template>
+	</xsl:template> <!-- END: processPrefaceAndMainSectionsUN_items -->
 
 
 	<!-- ============================= -->
