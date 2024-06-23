@@ -5,8 +5,10 @@
 											xmlns:mathml="http://www.w3.org/1998/Math/MathML" 
 											xmlns:xalan="http://xml.apache.org/xalan" 
 											xmlns:fox="http://xmlgraphics.apache.org/fop/extensions" 
+											xmlns:redirect="http://xml.apache.org/xalan/redirect"
 											xmlns:java="http://xml.apache.org/xalan/java" 
-											exclude-result-prefixes="java"
+											exclude-result-prefixes="java redirect"
+											extension-element-prefixes="redirect"
 											version="1.0">
 
 	<xsl:output version="1.0" method="xml" encoding="UTF-8" indent="no"/>
@@ -119,6 +121,7 @@
 					<fo:region-end region-name="right-region" extent="12mm"/>
 				</fo:simple-page-master>
 				
+				<xsl:variable name="pages">
 				<!-- Page 2 and 3: (left bottom + right top, yellow) -->
 				<fo:simple-page-master master-name="page2" page-width="{$pageWidth}mm" page-height="{$pageHeight}mm">
 					<fo:region-body margin-top="{$marginTop}mm" margin-bottom="{$marginBottom}mm" margin-left="{$marginLeftRight1}mm" margin-right="{$marginLeftRight2}mm"/>
@@ -302,15 +305,33 @@
 					<fo:region-start region-name="left-region" extent="13mm"/>
 					<fo:region-end region-name="right-region" extent="12mm"/>
 				</fo:simple-page-master>
+				</xsl:variable>
+				<xsl:copy-of select="$pages"/>
+				<xsl:for-each select="xalan:nodeset($pages)/*">
+					<xsl:copy>
+						<xsl:copy-of select="@*"/>
+						<xsl:attribute name="master-name"><xsl:value-of select="@master-name"/>-landscape</xsl:attribute>
+						<xsl:attribute name="page-width"><xsl:value-of select="@page-height"/></xsl:attribute>
+						<xsl:attribute name="page-height"><xsl:value-of select="@page-width"/></xsl:attribute>
+						<xsl:copy-of select="node()"/>
+					</xsl:copy>
+				</xsl:for-each>
 				
 				<fo:page-sequence-master master-name="document">
 					<fo:single-page-master-reference  master-reference="first"/>
 					<xsl:call-template name="insert_single-page-master-reference">
 						<xsl:with-param name="initial">true</xsl:with-param>
 					</xsl:call-template>
-					<fo:repeatable-page-master-reference  master-reference="page2" />
+					<fo:repeatable-page-master-reference master-reference="page2" />
 				</fo:page-sequence-master>
 				
+				<fo:page-sequence-master master-name="document-landscape">
+					<xsl:call-template name="insert_single-page-master-reference">
+						<xsl:with-param name="initial">true</xsl:with-param>
+						<xsl:with-param name="landscape_sfx">-landscape</xsl:with-param>
+					</xsl:call-template>
+					<fo:repeatable-page-master-reference master-reference="page2-landscape" />
+				</fo:page-sequence-master>
 				
 			</fo:layout-master-set>
 			
@@ -437,34 +458,124 @@
 			<!-- END ToC  pages -->
 			<!-- ============== -->
 			
-			<fo:page-sequence master-reference="document" force-page-count="no-force">
-				<fo:static-content flow-name="xsl-footnote-separator">
-					<fo:block>
-						<fo:leader leader-pattern="rule" leader-length="30%"/>
-					</fo:block>
-				</fo:static-content>
-				<xsl:call-template name="insertHeaderFooter">
-					<xsl:with-param name="section">main</xsl:with-param>
-				</xsl:call-template>
-				<fo:flow flow-name="xsl-region-body">
+			
+			<xsl:variable name="updated_xml">
+				<!-- <xsl:call-template name="updateXML"/> -->
+				<xsl:copy-of select="."/>
+			</xsl:variable>
+			
+			<xsl:for-each select="xalan:nodeset($updated_xml)/*">
+			
+				<xsl:variable name="updated_xml_with_pages">
+					<xsl:call-template name="processPrefaceAndMainSectionsRibose_items"/>
+				</xsl:variable>
+			
+				<xsl:for-each select="xalan:nodeset($updated_xml_with_pages)"> <!-- set context to preface -->
 				
-					<fo:block line-height="130%">
-					
-						<xsl:apply-templates select="/ribose:rsd-standard/ribose:preface/ribose:abstract" />
-						<xsl:apply-templates select="/ribose:rsd-standard/ribose:preface/ribose:foreword" />
-						<xsl:apply-templates select="/ribose:rsd-standard/ribose:preface/ribose:executivesummary" />
-						<xsl:apply-templates select="/ribose:rsd-standard/ribose:preface/ribose:introduction" />
-						<xsl:apply-templates select="/ribose:rsd-standard/ribose:preface/ribose:clause[not(@type = 'toc')]" />
-						<xsl:apply-templates select="/ribose:rsd-standard/ribose:preface/ribose:acknowledgements" />
-					
-						<xsl:call-template name="processMainSectionsDefault"/>
+					<xsl:for-each select=".//*[local-name() = 'page_sequence'][normalize-space() != '' or .//image or .//svg]">
+			
+						<fo:page-sequence master-reference="document" force-page-count="no-force">
 						
-					</fo:block>
-				</fo:flow>
-			</fo:page-sequence>
+							<xsl:attribute name="master-reference">
+								<xsl:text>document</xsl:text>
+								<xsl:call-template name="getPageSequenceOrientation"/>
+							</xsl:attribute>
+						
+							<fo:static-content flow-name="xsl-footnote-separator">
+								<fo:block>
+									<fo:leader leader-pattern="rule" leader-length="30%"/>
+								</fo:block>
+							</fo:static-content>
+							<xsl:call-template name="insertHeaderFooter">
+								<xsl:with-param name="section">main</xsl:with-param>
+							</xsl:call-template>
+							<fo:flow flow-name="xsl-region-body">
+							
+								<fo:block line-height="130%">
+								
+									<!-- <xsl:apply-templates select="/ribose:rsd-standard/ribose:preface/ribose:abstract" />
+									<xsl:apply-templates select="/ribose:rsd-standard/ribose:preface/ribose:foreword" />
+									<xsl:apply-templates select="/ribose:rsd-standard/ribose:preface/ribose:executivesummary" />
+									<xsl:apply-templates select="/ribose:rsd-standard/ribose:preface/ribose:introduction" />
+									<xsl:apply-templates select="/ribose:rsd-standard/ribose:preface/ribose:clause[not(@type = 'toc')]" />
+									<xsl:apply-templates select="/ribose:rsd-standard/ribose:preface/ribose:acknowledgements" />
+								
+									<xsl:call-template name="processMainSectionsDefault"/> -->
+									
+									<xsl:apply-templates />
+									
+								</fo:block>
+							</fo:flow>
+						</fo:page-sequence>
+					</xsl:for-each>
+				</xsl:for-each>
+			</xsl:for-each>
 			
 		</fo:root>
 	</xsl:template> 
+
+
+	<xsl:template name="processPrefaceAndMainSectionsRibose_items">
+		<xsl:variable name="updated_xml_step_move_pagebreak">
+		
+			<xsl:element name="{$root_element}" namespace="{$namespace_full}">
+			
+				<xsl:call-template name="copyCommonElements"/>
+				
+				<xsl:element name="page_sequence" namespace="{$namespace_full}">
+				
+					<xsl:element name="preface" namespace="{$namespace_full}"> <!-- save context element -->
+						
+						<xsl:apply-templates select="/ribose:rsd-standard/ribose:preface/ribose:abstract" mode="update_xml_step_move_pagebreak">
+							<xsl:with-param name="page_sequence_at_top">true</xsl:with-param>
+						</xsl:apply-templates>
+						<xsl:apply-templates select="/ribose:rsd-standard/ribose:preface/ribose:foreword" mode="update_xml_step_move_pagebreak">
+							<xsl:with-param name="page_sequence_at_top">true</xsl:with-param>
+						</xsl:apply-templates>
+						<xsl:apply-templates select="/ribose:rsd-standard/ribose:preface/ribose:executivesummary" mode="update_xml_step_move_pagebreak">
+							<xsl:with-param name="page_sequence_at_top">true</xsl:with-param>
+						</xsl:apply-templates>
+						<xsl:apply-templates select="/ribose:rsd-standard/ribose:preface/ribose:introduction" mode="update_xml_step_move_pagebreak">
+							<xsl:with-param name="page_sequence_at_top">true</xsl:with-param>
+						</xsl:apply-templates>
+						<xsl:apply-templates select="/ribose:rsd-standard/ribose:preface/ribose:clause[not(@type = 'toc')]" mode="update_xml_step_move_pagebreak">
+							<xsl:with-param name="page_sequence_at_top">true</xsl:with-param>
+						</xsl:apply-templates>
+						<xsl:apply-templates select="/ribose:rsd-standard/ribose:preface/ribose:acknowledgements" mode="update_xml_step_move_pagebreak">
+							<xsl:with-param name="page_sequence_at_top">true</xsl:with-param>
+						</xsl:apply-templates>
+						
+					</xsl:element>  <!-- preface -->
+					<xsl:call-template name="insertMainSections"/>
+					
+				</xsl:element>
+				
+			</xsl:element>
+		</xsl:variable>
+		
+		<xsl:variable name="updated_xml_step_move_pagebreak_filename" select="concat($output_path,'_preface_', java:getTime(java:java.util.Date.new()), '.xml')"/>
+		
+		<redirect:write file="{$updated_xml_step_move_pagebreak_filename}">
+			<xsl:copy-of select="$updated_xml_step_move_pagebreak"/>
+		</redirect:write>
+		
+		<xsl:copy-of select="document($updated_xml_step_move_pagebreak_filename)"/>
+		
+		<!-- TODO: instead of 
+		<xsl:for-each select=".//*[local-name() = 'page_sequence'][normalize-space() != '' or .//image or .//svg]">
+		in each template, add removing empty page_sequence here
+		-->
+		
+		<xsl:if test="$debug = 'true'">
+			<redirect:write file="page_sequence.xml">
+				<xsl:copy-of select="$updated_xml_step_move_pagebreak"/>
+			</redirect:write>
+		</xsl:if>
+		
+		<xsl:call-template name="deleteFile">
+			<xsl:with-param name="filepath" select="$updated_xml_step_move_pagebreak_filename"/>
+		</xsl:call-template>
+	</xsl:template> <!-- END: processPrefaceAndMainSectionsRibose_items -->
 
 	<xsl:template name="insertListOf_Title">
 		<xsl:param name="title"/>
@@ -1201,35 +1312,37 @@
 	<xsl:template name="insert_single-page-master-reference">
 		<xsl:param name="initial">false</xsl:param>
 		<xsl:param name="counter" select="50"/>
+		<xsl:param name="landscape_sfx"/>
 		<xsl:if test="$counter &gt; 0">
 			<xsl:if test="$initial = 'false'">
-				<fo:single-page-master-reference master-reference="page2"/>
+				<fo:single-page-master-reference master-reference="page2{$landscape_sfx}"/>
 			</xsl:if>
-			<fo:single-page-master-reference master-reference="page3"/>
-			<fo:single-page-master-reference master-reference="page4"/>
-			<fo:single-page-master-reference master-reference="page5"/>
-			<fo:single-page-master-reference master-reference="page6"/>
-			<fo:single-page-master-reference master-reference="page7"/>
-			<fo:single-page-master-reference master-reference="page8"/>
-			<fo:single-page-master-reference master-reference="page9"/>
-			<fo:single-page-master-reference master-reference="page10"/>
-			<fo:single-page-master-reference master-reference="page11"/>
-			<fo:single-page-master-reference master-reference="page12"/>
-			<fo:single-page-master-reference master-reference="page13"/>
-			<fo:single-page-master-reference master-reference="page14"/>
-			<fo:single-page-master-reference master-reference="page15"/>
-			<fo:single-page-master-reference master-reference="page16"/>
-			<fo:single-page-master-reference master-reference="page17"/>
-			<fo:single-page-master-reference master-reference="page18"/>
-			<fo:single-page-master-reference master-reference="page19"/>
-			<fo:single-page-master-reference master-reference="page20"/>
-			<fo:single-page-master-reference master-reference="page21"/>
-			<fo:single-page-master-reference master-reference="page22"/>
-			<fo:single-page-master-reference master-reference="page23"/>
-			<fo:single-page-master-reference master-reference="page24"/>
-			<fo:single-page-master-reference master-reference="page25"/>
+			<fo:single-page-master-reference master-reference="page3{$landscape_sfx}"/>
+			<fo:single-page-master-reference master-reference="page4{$landscape_sfx}"/>
+			<fo:single-page-master-reference master-reference="page5{$landscape_sfx}"/>
+			<fo:single-page-master-reference master-reference="page6{$landscape_sfx}"/>
+			<fo:single-page-master-reference master-reference="page7{$landscape_sfx}"/>
+			<fo:single-page-master-reference master-reference="page8{$landscape_sfx}"/>
+			<fo:single-page-master-reference master-reference="page9{$landscape_sfx}"/>
+			<fo:single-page-master-reference master-reference="page10{$landscape_sfx}"/>
+			<fo:single-page-master-reference master-reference="page11{$landscape_sfx}"/>
+			<fo:single-page-master-reference master-reference="page12{$landscape_sfx}"/>
+			<fo:single-page-master-reference master-reference="page13{$landscape_sfx}"/>
+			<fo:single-page-master-reference master-reference="page14{$landscape_sfx}"/>
+			<fo:single-page-master-reference master-reference="page15{$landscape_sfx}"/>
+			<fo:single-page-master-reference master-reference="page16{$landscape_sfx}"/>
+			<fo:single-page-master-reference master-reference="page17{$landscape_sfx}"/>
+			<fo:single-page-master-reference master-reference="page18{$landscape_sfx}"/>
+			<fo:single-page-master-reference master-reference="page19{$landscape_sfx}"/>
+			<fo:single-page-master-reference master-reference="page20{$landscape_sfx}"/>
+			<fo:single-page-master-reference master-reference="page21{$landscape_sfx}"/>
+			<fo:single-page-master-reference master-reference="page22{$landscape_sfx}"/>
+			<fo:single-page-master-reference master-reference="page23{$landscape_sfx}"/>
+			<fo:single-page-master-reference master-reference="page24{$landscape_sfx}"/>
+			<fo:single-page-master-reference master-reference="page25{$landscape_sfx}"/>
 			<xsl:call-template name="insert_single-page-master-reference">
 				<xsl:with-param name="counter" select="$counter - 1"/>
+				<xsl:with-param name="landscape_sfx" select="$landscape_sfx"/>
 			</xsl:call-template>
 		</xsl:if>
 	</xsl:template>
