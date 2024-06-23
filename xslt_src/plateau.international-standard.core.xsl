@@ -1403,7 +1403,7 @@
 	<xsl:variable name="tag_font_en_bold_close">###/<xsl:value-of select="$element_name_font_en_bold"/>###</xsl:variable>
 	
 	<xsl:template match="plateau:p//text()[not(ancestor::plateau:strong)] |
-						plateau:dt/text()" mode="update_xml_step1">
+						plateau:dt/text() | plateau:td/text() | plateau:th/text()" mode="update_xml_step1">
 		<xsl:variable name="text_en_" select="java:replaceAll(java:java.lang.String.new(.), $regex_en, concat($tag_font_en_open,'$1',$tag_font_en_close))"/>
 		<xsl:variable name="text_en"><text><xsl:call-template name="replace_text_tags">
 			<xsl:with-param name="tag_open" select="$tag_font_en_open"/>
