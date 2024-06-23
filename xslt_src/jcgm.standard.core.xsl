@@ -384,6 +384,11 @@
 					
 						<fo:page-sequence master-reference="document-jcgm" format="i">
 				
+							<xsl:attribute name="master-reference">
+								<xsl:text>document-jcgm</xsl:text>
+								<xsl:call-template name="getPageSequenceOrientation"/>
+							</xsl:attribute>
+				
 							<xsl:if test="position() = 1">
 								<xsl:attribute name="initial-page-number">2</xsl:attribute>
 							</xsl:if>
@@ -405,10 +410,6 @@
 			
 				<xsl:choose>
 					<xsl:when test="count(..//*[local-name() = 'bipm-standard']) = 1">
-					
-						<!-- <xsl:variable name="updated_xml_with_pages_main">
-							<xsl:call-template name="processMainSectionsDefault_items"/>
-						</xsl:variable> -->
 					
 						<xsl:for-each select="xalan:nodeset($updated_xml_with_pages)"> <!-- set context to preface -->
 							
