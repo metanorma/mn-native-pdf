@@ -1404,7 +1404,18 @@
 	
 	<xsl:template match="plateau:p//text()[not(ancestor::plateau:strong)] |
 						plateau:dt/text() | plateau:td/text() | plateau:th/text()" mode="update_xml_step1">
-		<xsl:variable name="text_en_" select="java:replaceAll(java:java.lang.String.new(.), $regex_en, concat($tag_font_en_open,'$1',$tag_font_en_close))"/>
+		<xsl:variable name="text_en__">
+			<xsl:choose>
+				<xsl:when test="ancestor::plateau:td or ancestor::plateau:th">
+					<xsl:value-of select="java:replaceAll(java:java.lang.String.new(.), '([a-z]{2,})([A-Z]+)', concat('$1',$zero_width_space,'$2'))"/>
+				</xsl:when>
+				<xsl:otherwise>
+					<xsl:value-of select="."/>
+				</xsl:otherwise>
+			</xsl:choose>
+		</xsl:variable>
+		<!-- <xsl:if test="ancestor::*[local-name() = 'td' or local-name() = 'th']">table cell </xsl:if> -->
+		<xsl:variable name="text_en_" select="java:replaceAll(java:java.lang.String.new($text_en__), $regex_en, concat($tag_font_en_open,'$1',$tag_font_en_close))"/>
 		<xsl:variable name="text_en"><text><xsl:call-template name="replace_text_tags">
 			<xsl:with-param name="tag_open" select="$tag_font_en_open"/>
 			<xsl:with-param name="tag_close" select="$tag_font_en_close"/>
@@ -1476,11 +1487,11 @@
 		<xsl:variable name="parts">
 			<xsl:choose>
 				<xsl:when test="contains(., ':')">
-					<xsl:element name="{$element_name_font_en_bold}"><xsl:value-of select="substring-before(., ':')"/></xsl:element>
-					<xsl:element name="{$element_name_font_en}">:<xsl:value-of select="substring-after(., ':')"/></xsl:element>
+					<xsl:element name="{$element_name_font_en_bold}" namespace="{$namespace_full}"><xsl:value-of select="substring-before(., ':')"/></xsl:element>
+					<xsl:element name="{$element_name_font_en}" namespace="{$namespace_full}">:<xsl:value-of select="substring-after(., ':')"/></xsl:element>
 				</xsl:when>
 				<xsl:otherwise>
-					<xsl:element name="{$element_name_font_en_bold}"><xsl:value-of select="."/></xsl:element>
+					<xsl:element name="{$element_name_font_en_bold}" namespace="{$namespace_full}"><xsl:value-of select="."/></xsl:element>
 				</xsl:otherwise>
 			</xsl:choose>
 		</xsl:variable>
