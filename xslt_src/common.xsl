@@ -19114,7 +19114,7 @@
 			<xsl:variable name="skip_footnote_body_" select="not($p_fn//fn[@gen_id = $gen_id] and (1 = 1))"/>
 			<xsl:attribute name="skip_footnote_body"> <!-- false for repeatable footnote -->
 				<xsl:choose>
-					<xsl:when test="$namespace = 'jis'">
+					<xsl:when test="$namespace = 'jis' or $namespace = 'plateau'">
 						<xsl:choose>
 							<xsl:when test="ancestor::*[local-name() = 'ul' or local-name() ='ol' or local-name() = 'bibitem' or local-name() = 'quote']">true</xsl:when>
 							<xsl:otherwise><xsl:value-of select="$skip_footnote_body_"/></xsl:otherwise>
