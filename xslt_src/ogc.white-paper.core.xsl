@@ -5,8 +5,10 @@
 											xmlns:mathml="http://www.w3.org/1998/Math/MathML" 
 											xmlns:xalan="http://xml.apache.org/xalan" 
 											xmlns:fox="http://xmlgraphics.apache.org/fop/extensions" 
+											xmlns:redirect="http://xml.apache.org/xalan/redirect"
 											xmlns:java="http://xml.apache.org/xalan/java" 
-											exclude-result-prefixes="java"
+											exclude-result-prefixes="java redirect"
+											extension-element-prefixes="redirect"
 											version="1.0">
 
 	<xsl:output version="1.0" method="xml" encoding="UTF-8" indent="no"/>
@@ -121,6 +123,14 @@
 						<fo:region-end region-name="right" extent="{$marginLeftRight2}mm"/>
 					</fo:simple-page-master>
 					
+					<fo:simple-page-master master-name="document-landscape" page-width="{$pageHeight}mm" page-height="{$pageWidth}mm">
+						<fo:region-body margin-top="{$marginTop}mm" margin-bottom="{$marginBottom}mm" margin-left="{$marginLeftRight1}mm" margin-right="{$marginLeftRight2}mm"/>
+						<fo:region-before region-name="header" extent="{$marginTop}mm" precedence="true"/> 
+						<fo:region-after region-name="footer" extent="{$marginBottom}mm" precedence="true"/>
+						<fo:region-start region-name="left" extent="{$marginLeftRight1}mm"/>
+						<fo:region-end region-name="right" extent="{$marginLeftRight2}mm"/>
+					</fo:simple-page-master>
+					
 				</fo:layout-master-set>
 				
 				<fo:declarations>
@@ -199,67 +209,157 @@
 						
 						<xsl:call-template name="insertLogo" />
 						
-						
-
 					</fo:flow>
 				</fo:page-sequence>
 				<!-- End Cover Page -->
 				
+				<xsl:variable name="updated_xml">
+					<xsl:call-template name="updateXML"/>
+					<!-- <xsl:copy-of select="."/> -->
+				</xsl:variable>
 				
-				<!-- Copyright, Content, Foreword, etc. pages -->
-				<fo:page-sequence master-reference="document" force-page-count="no-force"> <!--  -->
+				<xsl:for-each select="xalan:nodeset($updated_xml)/*">
+			
+					<xsl:variable name="updated_xml_with_pages">
+						<xsl:call-template name="processPrefaceAndMainSectionsOGC_items"/>
+					</xsl:variable>
+				
+					<xsl:for-each select="xalan:nodeset($updated_xml_with_pages)"> <!-- set context to preface/sections -->
 					
-					<xsl:call-template name="insertHeaderFooter"/>
-					<fo:flow flow-name="xsl-region-body">
+						<xsl:for-each select=".//*[local-name() = 'page_sequence'][parent::*[local-name() = 'preface' or local-name() = 'boilerplate']][normalize-space() != '' or .//image or .//svg]">
 					
-						<xsl:if test="$debug = 'true'">
-							<xsl:text disable-output-escaping="yes">&lt;!--</xsl:text>
-								DEBUG
-								contents=<!-- <xsl:copy-of select="xalan:nodeset($contents)"/> --> 
-							<xsl:text disable-output-escaping="yes">--&gt;</xsl:text>
-						</xsl:if>
-						
-						<xsl:apply-templates select="/ogc:ogc-standard/ogc:boilerplate/ogc:license-statement"/>
-						<xsl:apply-templates select="/ogc:ogc-standard/ogc:boilerplate/ogc:feedback-statement"/>
-						
-						<!-- Abstract, Keywords, Preface, Submitting Organizations, Submitters -->
-						<xsl:for-each select="/*/*[local-name()='preface']/*[not(local-name() = 'note' or local-name() = 'admonition')]">
-							<xsl:sort select="@displayorder" data-type="number"/>
-							
-							<xsl:if test="local-name() = 'abstract' or local-name() = 'foreword' or local-name() = 'introduction' or (local-name() = 'clause' and @type = 'toc')">
-								<fo:block break-after="page"/>
-							</xsl:if>
-							
-							<xsl:apply-templates select="."/>
+							<!-- Copyright, Content, Foreword, etc. pages -->
+							<fo:page-sequence master-reference="document" force-page-count="no-force">
+								
+								<xsl:attribute name="master-reference">
+									<xsl:text>document</xsl:text>
+									<xsl:call-template name="getPageSequenceOrientation"/>
+								</xsl:attribute>
+								
+								<xsl:call-template name="insertHeaderFooter"/>
+								<fo:flow flow-name="xsl-region-body">
+								
+									<!-- <xsl:if test="$debug = 'true'">
+										<redirect:write file="contents_{java:getTime(java:java.util.Date.new())}.xml">
+											<xsl:copy-of select="$contents"/>
+										</redirect:write>
+									</xsl:if> -->
+									
+									<!-- <xsl:apply-templates select="/ogc:ogc-standard/ogc:boilerplate/ogc:license-statement"/>
+									<xsl:apply-templates select="/ogc:ogc-standard/ogc:boilerplate/ogc:feedback-statement"/> -->
+									
+									<!-- Abstract, Keywords, Preface, Submitting Organizations, Submitters -->
+									<!-- <xsl:for-each select="/*/*[local-name()='preface']/*[not(local-name() = 'note' or local-name() = 'admonition')]">
+										<xsl:sort select="@displayorder" data-type="number"/>
+										
+										<xsl:if test="local-name() = 'abstract' or local-name() = 'foreword' or local-name() = 'introduction' or (local-name() = 'clause' and @type = 'toc')">
+											<fo:block break-after="page"/>
+										</xsl:if>
+										
+										<xsl:apply-templates select="."/>
+									</xsl:for-each> -->
+									
+									<xsl:apply-templates />
+									
+								</fo:flow>
+							</fo:page-sequence>
 						</xsl:for-each>
-						
-					</fo:flow>
-				</fo:page-sequence>
-				
-				
-				<!-- Document Pages -->
-				<fo:page-sequence master-reference="document" initial-page-number="1" format="1" force-page-count="no-force">
 					
-					<xsl:call-template name="insertHeaderFooter" />
-						
-					<fo:flow flow-name="xsl-region-body">
-						
-						<fo:block line-height="125%">
-						
-							<xsl:call-template name="processMainSectionsDefault"/>
+						<xsl:for-each select=".//*[local-name() = 'page_sequence'][not(parent::*[local-name() = 'preface' or local-name() = 'boilerplate'])][normalize-space() != '' or .//image or .//svg]">
+					
+							<!-- Document Pages -->
+							<fo:page-sequence master-reference="document" format="1" force-page-count="no-force">
+								
+								<xsl:attribute name="master-reference">
+									<xsl:text>document</xsl:text>
+									<xsl:call-template name="getPageSequenceOrientation"/>
+								</xsl:attribute>
+								
+								<xsl:if test="position() = 1">
+									<xsl:attribute name="initial-page-number">1</xsl:attribute>
+								</xsl:if>
+								
+								<xsl:call-template name="insertHeaderFooter" />
+									
+								<fo:flow flow-name="xsl-region-body">
+									
+									<fo:block line-height="125%">
+									
+										<!-- <xsl:call-template name="processMainSectionsDefault"/> -->
+										<xsl:apply-templates/>
+										
+									</fo:block>
+								</fo:flow>
+							</fo:page-sequence>
 							
-						</fo:block>
-					</fo:flow>
-				</fo:page-sequence>
-				
-				<!-- End Document Pages -->
+							<!-- End Document Pages -->
+						</xsl:for-each>
+					</xsl:for-each>
+				</xsl:for-each>
 				
 			</fo:root>
 		
 		</xsl:for-each>
 	</xsl:template> 
 
-	<xsl:template match="ogc:preface/ogc:clause[@type = 'toc']" priority="4">
+
+	<xsl:template name="processPrefaceAndMainSectionsOGC_items">
+		<xsl:variable name="updated_xml_step_move_pagebreak">
+		
+			<xsl:element name="{$root_element}" namespace="{$namespace_full}">
+			
+				<xsl:call-template name="copyCommonElements"/>
+				
+				<xsl:element name="boilerplate" namespace="{$namespace_full}"> <!-- save context element -->
+					<xsl:element name="page_sequence" namespace="{$namespace_full}">
+						<xsl:apply-templates select="/ogc:ogc-standard/ogc:boilerplate/ogc:license-statement" mode="update_xml_step_move_pagebreak"/>
+						<xsl:apply-templates select="/ogc:ogc-standard/ogc:boilerplate/ogc:feedback-statement" mode="update_xml_step_move_pagebreak"/>
+					</xsl:element>
+				</xsl:element>
+				
+				<!-- Abstract, Keywords, Preface, Submitting Organizations, Submitters -->
+				<xsl:element name="preface" namespace="{$namespace_full}"> <!-- save context element -->
+					<xsl:element name="page_sequence" namespace="{$namespace_full}">
+					
+						<xsl:for-each select="/*/*[local-name()='preface']/*[not(local-name() = 'note' or local-name() = 'admonition')]">
+							<xsl:sort select="@displayorder" data-type="number"/>
+							
+							<xsl:apply-templates select="." mode="update_xml_step_move_pagebreak"/>
+						</xsl:for-each>
+					</xsl:element>
+				</xsl:element> <!-- preface -->
+				
+				<xsl:call-template name="insertMainSectionsPageSequences"/>
+				
+			</xsl:element>
+		</xsl:variable>
+		
+		<xsl:variable name="updated_xml_step_move_pagebreak_filename" select="concat($output_path,'_preface_', java:getTime(java:java.util.Date.new()), '.xml')"/>
+		
+		<redirect:write file="{$updated_xml_step_move_pagebreak_filename}">
+			<xsl:copy-of select="$updated_xml_step_move_pagebreak"/>
+		</redirect:write>
+		
+		<xsl:copy-of select="document($updated_xml_step_move_pagebreak_filename)"/>
+		
+		<!-- TODO: instead of 
+		<xsl:for-each select=".//*[local-name() = 'page_sequence'][normalize-space() != '' or .//image or .//svg]">
+		in each template, add removing empty page_sequence here
+		-->
+		
+		<xsl:if test="$debug = 'true'">
+			<redirect:write file="page_sequence.xml">
+				<xsl:copy-of select="$updated_xml_step_move_pagebreak"/>
+			</redirect:write>
+		</xsl:if>
+		
+		<xsl:call-template name="deleteFile">
+			<xsl:with-param name="filepath" select="$updated_xml_step_move_pagebreak_filename"/>
+		</xsl:call-template>
+	</xsl:template> <!-- END: processPrefaceAndMainSectionsOGC_items -->
+
+	<xsl:template match="ogc:preface//ogc:clause[@type = 'toc']" priority="4">
+		<fo:block break-after="page"/>
 		<fo:block-container line-height="1.08" font-family="Lato">
 			<fo:block role="TOC">
 				
@@ -309,7 +409,7 @@
 		</fo:block-container>
 	</xsl:template>
 
-	<xsl:template match="ogc:preface/ogc:clause[@type = 'toc']/ogc:title" priority="3">
+	<xsl:template match="ogc:preface//ogc:clause[@type = 'toc']/ogc:title" priority="3">
 		<fo:block xsl:use-attribute-sets="title-toc-style" role="H1">
 			<!-- <xsl:call-template name="getTitle">
 				<xsl:with-param name="name" select="'title-toc'"/>
@@ -432,7 +532,12 @@
 	</xsl:template>
 	
 	
-	<xsl:template match="/*/*[local-name() = 'preface']/*" priority="3">		
+	<xsl:template match="/*/*[local-name() = 'preface']/*[local-name() = 'page_sequence']/*" priority="3">		
+	
+		<xsl:if test="local-name() = 'abstract' or local-name() = 'foreword' or local-name() = 'introduction' or (local-name() = 'clause' and @type = 'toc')">
+			<fo:block break-after="page"/>
+		</xsl:if>
+	
 		<fo:block>
 			<xsl:call-template name="setId"/>
 			<xsl:apply-templates />
