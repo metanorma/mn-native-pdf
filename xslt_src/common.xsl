@@ -8949,7 +8949,7 @@
 					<xsl:copy-of select="."/>
 				</xsl:for-each>
 			
-				<xsl:if test="following-sibling::*[1][local-name() = 'fn']">
+				<xsl:if test="following-sibling::node()[normalize-space() != ''][1][local-name() = 'fn']">
 					<xsl:attribute name="padding-right">0.5mm</xsl:attribute>
 				</xsl:if>
 			
@@ -16120,12 +16120,18 @@
 				<xsl:attribute name="space-before">18pt</xsl:attribute>
 			</xsl:if>
 		</xsl:if>
-		<xsl:if test="$namespace = 'ogc' or $namespace = 'ogc-white-paper'">
+		<xsl:if test="$namespace = 'ogc'">
 			<xsl:variable name="pos"><xsl:number count="ogc:sections/ogc:clause[not(@type='scope') and not(@type='conformance')]"/></xsl:variable> <!--  | ogc:sections/ogc:terms -->
 			<xsl:if test="$pos &gt;= 2">
 				<xsl:attribute name="space-before">18pt</xsl:attribute>
 			</xsl:if>
-		</xsl:if>			
+		</xsl:if>
+		<xsl:if test="$namespace = 'ogc-white-paper'">
+			<xsl:variable name="pos"><xsl:number count="ogc:sections/*/ogc:clause[not(@type='scope') and not(@type='conformance')]"/></xsl:variable> <!--  | ogc:sections/ogc:terms -->
+			<xsl:if test="$pos &gt;= 2">
+				<xsl:attribute name="space-before">18pt</xsl:attribute>
+			</xsl:if>
+		</xsl:if>
 		<xsl:if test="$namespace = 'unece'">
 			<xsl:variable name="num"><xsl:number /></xsl:variable>
 			<xsl:if test="$num = 1">
