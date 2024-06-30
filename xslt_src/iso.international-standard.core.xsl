@@ -834,15 +834,35 @@
 			
 			<xsl:call-template name="insertCoverPage"/>
 			
+			<xsl:if test="$debug = 'true'">
+				<xsl:message>START updated_xml</xsl:message>
+			</xsl:if>
+			<xsl:variable name="startTime0" select="java:getTime(java:java.util.Date.new())"/>
+			
 			<xsl:variable name="updated_xml">
 				<xsl:call-template name="updateXML"/>
 			</xsl:variable>
 			
+			<xsl:if test="$debug = 'true'">
+				<xsl:message>End updated_xml</xsl:message>
+				<xsl:message>DEBUG: processing time <xsl:value-of select="java:getTime(java:java.util.Date.new()) - $startTime0"/> msec.</xsl:message>
+			</xsl:if>
+			
 			<xsl:for-each select="xalan:nodeset($updated_xml)/*">
 			
+				<xsl:if test="$debug = 'true'">
+					<xsl:message>START updated_xml_with_pages</xsl:message>
+				</xsl:if>
+				<xsl:variable name="startTimeA" select="java:getTime(java:java.util.Date.new())"/>
+				
 				<xsl:variable name="updated_xml_with_pages">
 					<xsl:call-template name="processPrefaceAndMainSectionsISO_items"/>
 				</xsl:variable>
+				
+				<xsl:if test="$debug = 'true'">
+					<xsl:message>END updated_xml_with_pages</xsl:message>
+					<xsl:message>DEBUG: processing time <xsl:value-of select="java:getTime(java:java.util.Date.new()) - $startTimeA"/> msec.</xsl:message>
+				</xsl:if>
 			
 				<xsl:choose>
 					<xsl:when test="$layoutVersion = '1951'">
@@ -1138,6 +1158,11 @@
 				</xsl:variable>
 		
 		
+				<xsl:if test="$debug = 'true'">
+					<xsl:message>START xalan:nodeset($updated_xml_with_pages) for sections</xsl:message>
+				</xsl:if>
+				<xsl:variable name="startTimeC" select="java:getTime(java:java.util.Date.new())"/>
+				
 				<xsl:for-each select="xalan:nodeset($updated_xml_with_pages)"> <!-- set context to sections, if top element in 'sections' -->
 				
 					<xsl:for-each select=".//*[local-name() = 'page_sequence'][not(parent::*[local-name() = 'preface'])][normalize-space() != '' or .//image or .//svg]">
@@ -1302,6 +1327,11 @@
 					</xsl:for-each>
 				</xsl:for-each>
 				
+				<xsl:if test="$debug = 'true'">
+					<xsl:message>END  xalan:nodeset($updated_xml_with_pages) for sections</xsl:message>
+					<xsl:message>DEBUG: processing time <xsl:value-of select="java:getTime(java:java.util.Date.new()) - $startTimeC"/> msec.</xsl:message>
+				</xsl:if>
+				
 				
 				<!-- Index -->
 				<!-- <xsl:message>START current_document_index_id</xsl:message> -->
@@ -1378,6 +1408,9 @@
 
 	<xsl:template name="processPrefaceAndMainSectionsISO_items">
 			
+		<!-- <xsl:if test="$debug = 'true'"><xsl:message>START updated_xml_step_move_pagebreak</xsl:message></xsl:if>
+		<xsl:variable name="startTime1" select="java:getTime(java:java.util.Date.new())"/> -->
+		
 		<xsl:variable name="updated_xml_step_move_pagebreak">
 			<xsl:element name="{$root_element}" namespace="{$namespace_full}">
 				<xsl:call-template name="copyCommonElements"/>
@@ -1392,14 +1425,36 @@
 				</xsl:choose>
 			</xsl:element>
 		</xsl:variable>
+		<!-- <xsl:variable name="endTime1" select="java:getTime(java:java.util.Date.new())"/>
+		<xsl:if test="$debug = 'true'">
+			<xsl:message>DEBUG: processing time <xsl:value-of select="$endTime1 - $startTime1"/> msec.</xsl:message>
+			<xsl:message>END updated_xml_step_move_pagebreak</xsl:message>
+		</xsl:if> -->
 		
 		<xsl:variable name="updated_xml_step_move_pagebreak_filename" select="concat($output_path,'_main_', java:getTime(java:java.util.Date.new()), '.xml')"/>
 		
+	<!-- 	<xsl:if test="$debug = 'true'"><xsl:message>START write updated_xml_step_move_pagebreak</xsl:message></xsl:if>
+		<xsl:variable name="startTime2" select="java:getTime(java:java.util.Date.new())"/> -->
 		<redirect:write file="{$updated_xml_step_move_pagebreak_filename}">
 			<xsl:copy-of select="$updated_xml_step_move_pagebreak"/>
 		</redirect:write>
+		<!-- <xsl:variable name="endTime2" select="java:getTime(java:java.util.Date.new())"/>
+		<xsl:if test="$debug = 'true'">
+			<xsl:message>DEBUG: processing time <xsl:value-of select="$endTime2 - $startTime2"/> msec.</xsl:message>
+			<xsl:message>END write updated_xml_step_move_pagebreak</xsl:message>
+		</xsl:if> -->
 		
+		
+		<!-- <xsl:if test="$debug = 'true'"><xsl:message>START loading document() updated_xml_step_move_pagebreak</xsl:message></xsl:if>
+		<xsl:variable name="startTime3" select="java:getTime(java:java.util.Date.new())"/> -->
 		<xsl:copy-of select="document($updated_xml_step_move_pagebreak_filename)"/>
+		
+		<!-- <xsl:variable name="endTime3" select="java:getTime(java:java.util.Date.new())"/>
+		<xsl:if test="$debug = 'true'">
+			<xsl:message>DEBUG: processing time <xsl:value-of select="$endTime3 - $startTime3"/> msec.</xsl:message>
+			<xsl:message>END loading document() updated_xml_step_move_pagebreak</xsl:message>
+		</xsl:if>
+		 -->
 		
 		<xsl:if test="$debug = 'true'">
 			<redirect:write file="page_sequence_preface_and_main.xml">
