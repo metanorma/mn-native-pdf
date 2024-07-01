@@ -6831,18 +6831,18 @@
 				<xsl:element name="page_sequence" namespace="{$namespace_full}">
 					<xsl:attribute name="main_page_sequence"/>
 					<xsl:apply-templates select="." mode="update_xml_step_move_pagebreak"/>
-					<xsl:if test="$namespace = 'm3d'">
-						<xsl:if test="local-name()='clause' and @type='scope'">
-							<xsl:if test="/*/*[local-name()='bibliography']/*[local-name()='references'][@normative='true']">
-								<fo:block break-after="page"/>
-								<xsl:element name="pagebreak" namespace="{$namespace_full}"/>
-							</xsl:if>
-						</xsl:if>
-					</xsl:if>
 				</xsl:element>
 			</xsl:for-each>
 		</xsl:element>
-				
+		
+		<xsl:call-template name="insertAnnexInSeparatePageSequences"/>
+		
+		<xsl:call-template name="insertBibliographyInSeparatePageSequences"/>
+		
+		<!-- <xsl:call-template name="insertIndexInSeparatePageSequences"/> -->
+	</xsl:template> <!-- END: insertMainSectionsInSeparatePageSequences -->
+	
+	<xsl:template name="insertAnnexInSeparatePageSequences">
 		<xsl:for-each select="/*/*[local-name()='annex']">
 			<xsl:sort select="@displayorder" data-type="number"/>
 			<xsl:element name="page_sequence" namespace="{$namespace_full}">
@@ -6850,7 +6850,8 @@
 				<xsl:apply-templates select="." mode="update_xml_step_move_pagebreak"/>
 			</xsl:element>
 		</xsl:for-each>
-		
+	</xsl:template>
+	<xsl:template name="insertBibliographyInSeparatePageSequences">
 		<xsl:element name="bibliography" namespace="{$namespace_full}"> <!-- save context element -->
 			<xsl:for-each select="/*/*[local-name()='bibliography']/*[not(@normative='true')] | 
 									/*/*[local-name()='bibliography']/*[local-name()='clause'][*[local-name()='references'][not(@normative='true')]]">
@@ -6861,7 +6862,16 @@
 				</xsl:element>
 			</xsl:for-each>
 		</xsl:element>
-	</xsl:template> <!-- END: insertMainSectionsInSeparatePageSequences -->
+	</xsl:template>
+	<xsl:template name="insertIndexInSeparatePageSequences">
+		<xsl:for-each select="/*/*[local-name()='indexsect']">
+			<xsl:sort select="@displayorder" data-type="number"/>
+			<xsl:element name="page_sequence" namespace="{$namespace_full}">
+				<xsl:attribute name="main_page_sequence"/>
+				<xsl:apply-templates select="." mode="update_xml_step_move_pagebreak"/>
+			</xsl:element>
+		</xsl:for-each>
+	</xsl:template>
 	
 	<xsl:template name="processAllSectionsDefault_items">
 		<xsl:variable name="updated_xml_step_move_pagebreak">

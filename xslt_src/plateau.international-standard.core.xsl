@@ -190,11 +190,16 @@
 			<xsl:for-each select="$updated_xml_step2//plateau:plateau-standard">
 				<xsl:variable name="num"><xsl:number level="any" count="plateau:plateau-standard"/></xsl:variable>
 				
-				<xsl:variable name="current_document">
+				<!-- <xsl:variable name="current_document">
 					<xsl:copy-of select="."/>
+				</xsl:variable> -->
+				
+				<xsl:variable name="updated_xml_with_pages">
+					<xsl:call-template name="processPrefaceAndMainSectionsPlateau_items"/>
 				</xsl:variable>
 				
-				<xsl:for-each select="xalan:nodeset($current_document)">
+				<!-- <xsl:for-each select="xalan:nodeset($current_document)"> -->
+				<xsl:for-each select="xalan:nodeset($updated_xml_with_pages)">
 				
 					<xsl:call-template name="insertCoverPage">
 						<xsl:with-param name="num" select="$num"/>
@@ -204,192 +209,90 @@
 					<!-- Preface and contents pages -->
 					<!-- ========================== -->
 					
-					<xsl:variable name="structured_xml_preface_">
-						<xsl:for-each select="/*/*[local-name()='preface']/*[not(@type = 'toc')]">
-							<xsl:sort select="@displayorder" data-type="number"/>
-							<item><xsl:apply-templates select="." mode="linear_xml"/></item>
-						</xsl:for-each>
-					</xsl:variable>
+					<!-- Preface pages -->
+					<xsl:for-each select=".//*[local-name() = 'page_sequence'][parent::*[local-name() = 'preface']][normalize-space() != '' or .//image or .//svg]">
 					
-					<!-- <xsl:message>start redirect</xsl:message>
-					<redirect:write file="structured_xml_preface_.xml">
-						<xsl:copy-of select="$structured_xml_preface_"/>
-					</redirect:write>
-					<xsl:message>end redirect</xsl:message> -->
+						<xsl:choose>
+							<xsl:when test="*[local-name() = 'clause'][@type = 'toc']">
+								<fo:page-sequence master-reference="document_toc" initial-page-number="1" force-page-count="no-force">
+									<xsl:if test="$doctype = 'technical-report'">
+										<xsl:attribute name="master-reference">document</xsl:attribute>
+									</xsl:if>
+									<xsl:call-template name="insertHeader"/>
+									<fo:flow flow-name="xsl-region-body">
+										<!-- <xsl:if test="$debug = 'true'"> -->
+										<!-- <xsl:message>start contents redirect</xsl:message>
+										<redirect:write file="contents.xml">
+											<xsl:copy-of select="$contents"/>
+										</redirect:write>
+										<xsl:message>end contents redirect</xsl:message> -->
+										<!-- </xsl:if> -->
+										
+										<!-- <xsl:apply-templates select="/*/*[local-name()='preface']/*[local-name() = 'clause'][@type = 'toc']">
+											<xsl:with-param name="num" select="$num"/>
+										</xsl:apply-templates>
+										
+										<xsl:if test="not(/*/*[local-name()='preface']/*[local-name() = 'clause'][@type = 'toc'])">
+											<fo:block> --><!-- prevent fop error for empty document --><!-- </fo:block>
+										</xsl:if> -->
+										
+										<xsl:apply-templates select="*">
+											<xsl:with-param name="num" select="$num"/>
+										</xsl:apply-templates>
+									</fo:flow>
+								</fo:page-sequence>
+							</xsl:when>
+							<xsl:otherwise>
 					
-					<!-- structured_xml_preface=<xsl:copy-of select="$structured_xml_preface"/> -->
+								<fo:page-sequence master-reference="document_preface" force-page-count="no-force" font-family="Noto Sans JP" font-size="10pt">
+								
+									<xsl:attribute name="master-reference">
+										<xsl:text>document_preface</xsl:text>
+										<xsl:call-template name="getPageSequenceOrientation"/>
+									</xsl:attribute>
+									
+									<fo:static-content flow-name="header" role="artifact" id="__internal_layout__preface_header_{generate-id()}">
+										<!-- grey background  -->
+										<fo:block-container absolute-position="fixed" left="24.2mm" top="40mm" height="231.4mm" width="161mm" background-color="rgb(242,242,242)" id="__internal_layout__preface_header_{$num}_{generate-id()}">
+											<fo:block>&#xa0;</fo:block>
+										</fo:block-container>
+									</fo:static-content>
+								
+									<fo:flow flow-name="xsl-region-body">
+										<fo:block line-height="2">
+											<!-- <xsl:for-each select="$paged_xml_preface/*[local-name()='page']">
+												<xsl:if test="position() != 1">
+													<fo:block break-after="page"/>
+												</xsl:if>
+												<xsl:apply-templates select="*" mode="page"/>
+											</xsl:for-each> -->
+											<xsl:apply-templates />
+										</fo:block>
+									</fo:flow>
+								
+								</fo:page-sequence>
+							</xsl:otherwise>
+						</xsl:choose>
 					
-					<!-- page break before each section -->
-					<xsl:variable name="structured_xml_preface">
-						<xsl:for-each select="xalan:nodeset($structured_xml_preface_)/item[*]">
-							<xsl:element name="pagebreak" namespace="https://www.metanorma.org/ns/plateau"/>
-							<xsl:copy-of select="./*"/>
-						</xsl:for-each>
-					</xsl:variable>
 					
-					<xsl:variable name="paged_xml_preface_">
-						<xsl:call-template name="makePagedXML">
-							<xsl:with-param name="structured_xml" select="$structured_xml_preface"/>
-						</xsl:call-template>
-					</xsl:variable>
-					<xsl:variable name="paged_xml_preface" select="xalan:nodeset($paged_xml_preface_)"/>
-					
-					<!-- <xsl:message>start redirect</xsl:message>
-					<redirect:write file="paged_xml_preface.xml">
-						<xsl:copy-of select="$paged_xml_preface"/>
-					</redirect:write>
-					<xsl:message>end redirect</xsl:message> -->
-					
-					<xsl:if test="$paged_xml_preface/*[local-name()='page'] and count($paged_xml_preface/*[local-name()='page']/*) != 0">
-						<!-- Preface pages -->
-						<fo:page-sequence master-reference="document_preface" force-page-count="no-force" font-family="Noto Sans JP" font-size="10pt">
-						
-							<fo:static-content flow-name="header" role="artifact" id="__internal_layout__preface_header_{generate-id()}">
-								<!-- grey background  -->
-								<fo:block-container absolute-position="fixed" left="24.2mm" top="40mm" height="231.4mm" width="161mm" background-color="rgb(242,242,242)" id="__internal_layout__preface_header_{$num}_{generate-id()}">
-									<fo:block>&#xa0;</fo:block>
-								</fo:block-container>
-							</fo:static-content>
-						
-							<fo:flow flow-name="xsl-region-body">
-								<fo:block line-height="2">
-									<xsl:for-each select="$paged_xml_preface/*[local-name()='page']">
-										<xsl:if test="position() != 1">
-											<fo:block break-after="page"/>
-										</xsl:if>
-										<xsl:apply-templates select="*" mode="page"/>
-									</xsl:for-each>
-								</fo:block>
-							</fo:flow>
-						</fo:page-sequence> <!-- END Preface pages -->
-					</xsl:if>
-					
-					<fo:page-sequence master-reference="document_toc" initial-page-number="1" force-page-count="no-force">
-						<xsl:if test="$doctype = 'technical-report'">
-							<xsl:attribute name="master-reference">document</xsl:attribute>
-						</xsl:if>
-						<xsl:call-template name="insertHeader"/>
-						<fo:flow flow-name="xsl-region-body">
-							<!-- <xsl:if test="$debug = 'true'"> -->
-							<!-- <xsl:message>start contents redirect</xsl:message>
-							<redirect:write file="contents.xml">
-								<xsl:copy-of select="$contents"/>
-							</redirect:write>
-							<xsl:message>end contents redirect</xsl:message> -->
-							<!-- </xsl:if> -->
-							
-							<xsl:apply-templates select="/*/*[local-name()='preface']/*[local-name() = 'clause'][@type = 'toc']">
-								<xsl:with-param name="num" select="$num"/>
-							</xsl:apply-templates>
-							
-							<xsl:if test="not(/*/*[local-name()='preface']/*[local-name() = 'clause'][@type = 'toc'])">
-								<fo:block><!-- prevent fop error for empty document --></fo:block>
-							</xsl:if>
-						</fo:flow>
-					</fo:page-sequence>
+					</xsl:for-each>
+				
 					<!-- ========================== -->
 					<!-- END Preface and contents pages -->
 					<!-- ========================== -->
 					
-					
-					<!-- item - page sequence -->
-					<xsl:variable name="structured_xml_">
-						
-						<xsl:if test="not(/*/*[local-name()='preface']/*[local-name() = 'p' and @type = 'section-title'][following-sibling::*[1][local-name() = 'introduction']])">
-							<item><xsl:apply-templates select="/*/*[local-name()='preface']/*[local-name() = 'introduction']" mode="linear_xml" /></item>
-						</xsl:if>
-						
-						<item>
-							<xsl:choose>
-								<xsl:when test="/*/*[local-name()='preface']/*[local-name() = 'p' and @type = 'section-title'][following-sibling::*[1][local-name() = 'introduction']]">
-									<xsl:apply-templates select="/*/*[local-name()='preface']/*[local-name() = 'p' and @type = 'section-title'][following-sibling::*[1][local-name() = 'introduction']]" mode="linear_xml" />
-									<xsl:apply-templates select="/*/*[local-name()='preface']/*[local-name() = 'introduction']" mode="linear_xml" />
-								</xsl:when>
-								<xsl:otherwise>
-									<xsl:apply-templates select="/*/*[local-name()='preface']/*[local-name() = 'p' and @type = 'section-title'][not(following-sibling::*) or following-sibling::*[1][local-name() = 'clause' and @type = 'corrigenda']]" mode="linear_xml" />
-								</xsl:otherwise>
-							</xsl:choose>
-						</item>
-						
-						<item>							
-							<xsl:apply-templates select="/*/*[local-name()='sections']/*[1]" mode="linear_xml"/>
-						</item>
-						<!-- second clause is scope -->
-						<xsl:choose>
-							<xsl:when test="count(/*/*[local-name()='sections']/*[2]/*) = 2"> <!-- title and paragraph -->
-								<item>
-									<xsl:apply-templates select="/*/*[local-name()='sections']/*[2]" mode="linear_xml"/>
-									<xsl:apply-templates select="/*/*[local-name()='sections']/*[3]" mode="linear_xml"/>
-								</item>
-							</xsl:when>
-							<xsl:otherwise>
-								<item>
-									<xsl:apply-templates select="/*/*[local-name()='sections']/*[2]" mode="linear_xml"/>
-								</item>
-								<item>
-									<xsl:apply-templates select="/*/*[local-name()='sections']/*[3]" mode="linear_xml"/>
-								</item>
-							</xsl:otherwise>
-						</xsl:choose>
-						<xsl:for-each select="/*/*[local-name()='sections']/*[position() &gt; 3]">
-							<item>
-									<xsl:apply-templates select="." mode="linear_xml"/>
-								</item>
-						</xsl:for-each>
-						
-						<!-- Annexes -->
-						<!-- <xsl:for-each select="/*/*[local-name()='annex']">
-							<item>
-								<xsl:apply-templates select="." mode="linear_xml"/>
-							</item>
-						</xsl:for-each> -->
-						
-						<!-- Bibliography -->
-						<xsl:for-each select="/*/*[local-name()='bibliography']/*[count(.//*[local-name() = 'bibitem'][not(@hidden) = 'true']) &gt; 0 and not(@hidden = 'true')]">
-							<xsl:sort select="@displayorder" data-type="number"/>
-							<item><xsl:apply-templates select="." mode="linear_xml"/></item>
-						</xsl:for-each>
-						<!-- Annexes -->
-						<xsl:for-each select="/*/*[local-name()='annex']">
-							<xsl:sort select="@displayorder" data-type="number"/>
-							<item><xsl:apply-templates select="." mode="linear_xml"/></item>
-						</xsl:for-each>
-						
-						<item>
-							<xsl:copy-of select="//plateau:indexsect" />
-						</item>
-						
-					</xsl:variable>
-					
-					<!-- page break before each section -->
-					<xsl:variable name="structured_xml">
-						<xsl:for-each select="xalan:nodeset($structured_xml_)/item[*]">
-							<xsl:element name="pagebreak" namespace="https://www.metanorma.org/ns/plateau"/>
-							<xsl:copy-of select="./*"/>
-						</xsl:for-each>
-					</xsl:variable>
-					<!-- structured_xml=<xsl:copy-of select="$structured_xml" /> -->
-					
-					<xsl:variable name="paged_xml">
-						<xsl:call-template name="makePagedXML">
-							<xsl:with-param name="structured_xml" select="$structured_xml"/>
-						</xsl:call-template>
-					</xsl:variable>
-					<!-- paged_xml=<xsl:copy-of select="$paged_xml"/> -->
-					
-					<xsl:for-each select="xalan:nodeset($paged_xml)/*[local-name()='page'][*]">
-					
-						<xsl:variable name="isCommentary" select="normalize-space(.//plateau:annex[@commentary = 'true'] and 1 = 1)"/> <!-- true or false -->
-						<!-- DEBUG: <xsl:copy-of select="."/> -->
+					<xsl:for-each select=".//*[local-name() = 'page_sequence'][not(parent::*[local-name() = 'preface'])][normalize-space() != '' or .//image or .//svg]">
 						<fo:page-sequence master-reference="document" force-page-count="no-force">
 							
-							<xsl:if test="@orientation = 'landscape'">
-								<xsl:attribute name="master-reference">document-<xsl:value-of select="@orientation"/></xsl:attribute>
-							</xsl:if>
+							<xsl:attribute name="master-reference">
+								<xsl:text>document</xsl:text>
+								<xsl:call-template name="getPageSequenceOrientation"/>
+							</xsl:attribute>
 							
 							<xsl:if test="position() = 1">
 								<xsl:attribute name="initial-page-number">1</xsl:attribute>
 							</xsl:if>
+							
 							<fo:static-content flow-name="xsl-footnote-separator">
 								<fo:block>
 									<fo:leader leader-pattern="rule" leader-length="15%"/>
@@ -399,14 +302,14 @@
 							<xsl:call-template name="insertHeaderFooter"/>
 							
 							<fo:flow flow-name="xsl-region-body">
-								<xsl:apply-templates select="*" mode="page"/>
+								<xsl:apply-templates />
 
-								<xsl:if test="not(*[normalize-space() != ''])">
-									<fo:block><!-- prevent fop error for empty document --></fo:block>
-								</xsl:if>
+								<fo:block/><!-- prevent fop error for empty document -->
+								
 							</fo:flow>
 						</fo:page-sequence>
 					</xsl:for-each>
+					
 					
 					
 					<xsl:choose>
@@ -469,6 +372,96 @@
 		</fo:root>
 	</xsl:template>
 	
+	<xsl:template name="processPrefaceAndMainSectionsPlateau_items">
+			
+		<xsl:variable name="updated_xml_step_move_pagebreak">
+			<xsl:element name="{$root_element}" namespace="{$namespace_full}">
+				<xsl:call-template name="copyCommonElements"/>
+				
+				
+				<xsl:element name="preface" namespace="{$namespace_full}"> <!-- save context element -->
+					<xsl:for-each select="/*/*[local-name()='preface']/*[not(local-name() = 'note' or local-name() = 'admonition' or (local-name() = 'clause' and @type = 'toc'))]">
+						<xsl:sort select="@displayorder" data-type="number"/>
+						<xsl:element name="page_sequence" namespace="{$namespace_full}">
+							<xsl:apply-templates select="." mode="update_xml_step_move_pagebreak"/>
+						</xsl:element>
+					</xsl:for-each>
+				</xsl:element>
+			
+				<xsl:element name="preface" namespace="{$namespace_full}"> <!-- save context element -->
+					<xsl:for-each select="/*/*[local-name()='preface']/*[local-name() = 'clause' and @type = 'toc']">
+						<xsl:element name="page_sequence" namespace="{$namespace_full}">
+							<xsl:apply-templates select="." mode="update_xml_step_move_pagebreak"/>
+						</xsl:element>
+					</xsl:for-each>
+				</xsl:element>
+				
+				
+				<xsl:element name="sections" namespace="{$namespace_full}"> <!-- save context element -->
+					
+					<xsl:element name="page_sequence" namespace="{$namespace_full}">
+						<xsl:attribute name="main_page_sequence"/>
+						<xsl:apply-templates select="/*/*[local-name()='sections']/*[1]" mode="update_xml_step_move_pagebreak"/>
+					</xsl:element>
+					
+					<!-- second clause is scope -->
+					<xsl:choose>
+						<xsl:when test="count(/*/*[local-name()='sections']/*[2]/*) = 2"> <!-- title and paragraph -->
+							<xsl:element name="page_sequence" namespace="{$namespace_full}">
+								<xsl:apply-templates select="/*/*[local-name()='sections']/*[2]" mode="update_xml_step_move_pagebreak"/>
+								<xsl:apply-templates select="/*/*[local-name()='sections']/*[3]" mode="update_xml_step_move_pagebreak"/>
+							</xsl:element>
+						</xsl:when>
+						<xsl:otherwise>
+							<xsl:element name="page_sequence" namespace="{$namespace_full}">
+								<xsl:apply-templates select="/*/*[local-name()='sections']/*[2]" mode="update_xml_step_move_pagebreak"/>
+							</xsl:element>
+							<xsl:element name="page_sequence" namespace="{$namespace_full}">
+								<xsl:apply-templates select="/*/*[local-name()='sections']/*[3]" mode="update_xml_step_move_pagebreak"/>
+							</xsl:element>
+						</xsl:otherwise>
+					</xsl:choose>
+					
+					<xsl:for-each select="/*/*[local-name()='sections']/*[position() &gt; 3]">
+						<xsl:sort select="@displayorder" data-type="number"/>
+						<xsl:element name="page_sequence" namespace="{$namespace_full}">
+							<xsl:attribute name="main_page_sequence"/>
+							<xsl:apply-templates select="." mode="update_xml_step_move_pagebreak"/>
+						</xsl:element>
+					</xsl:for-each>
+				</xsl:element>
+				
+				<xsl:call-template name="insertBibliographyInSeparatePageSequences"/>
+				
+				<xsl:call-template name="insertAnnexInSeparatePageSequences"/>
+				<xsl:call-template name="insertIndexInSeparatePageSequences"/>
+		
+				
+			</xsl:element>
+		</xsl:variable>
+		
+		<xsl:variable name="updated_xml_step_move_pagebreak_filename" select="concat($output_path,'_main_', java:getTime(java:java.util.Date.new()), '.xml')"/>
+		
+	
+		<redirect:write file="{$updated_xml_step_move_pagebreak_filename}">
+			<xsl:copy-of select="$updated_xml_step_move_pagebreak"/>
+		</redirect:write>
+		
+	
+		<xsl:copy-of select="document($updated_xml_step_move_pagebreak_filename)"/>
+		
+		<xsl:if test="$debug = 'true'">
+			<redirect:write file="page_sequence_preface_and_main.xml">
+				<xsl:copy-of select="$updated_xml_step_move_pagebreak"/>
+			</redirect:write>
+		</xsl:if>
+		
+		<xsl:call-template name="deleteFile">
+			<xsl:with-param name="filepath" select="$updated_xml_step_move_pagebreak_filename"/>
+		</xsl:call-template>
+	</xsl:template> <!-- END: processPrefaceAndMainSectionsPlateau_items -->
+	
+	
 	<xsl:template match="*[local-name() = 'references'][not(@hidden = 'true')]" mode="linear_xml" priority="2">
 		<xsl:copy>
 			<xsl:apply-templates select="@*|node()" mode="linear_xml"/>
@@ -476,7 +469,7 @@
 	</xsl:template>
 	
 	
-	<xsl:template match="*[local-name()='preface']/*[local-name() = 'clause'][@type = 'toc']" priority="4">
+	<xsl:template match="*[local-name()='preface']//*[local-name() = 'clause'][@type = 'toc']" priority="4">
 		<xsl:param name="num"/>
 		<xsl:if test="$doctype = 'technical-report'">
 			<fo:block font-size="16pt" margin-top="5mm"><xsl:value-of select="$i18n_table_of_contents"/></fo:block>
@@ -840,7 +833,7 @@
 		</xsl:if>
 	</xsl:template>
 	
-	<xsl:template match="*[local-name() = 'preface']/*[local-name() = 'clause']" priority="3">
+	<xsl:template match="*[local-name() = 'preface']/*[local-name() = 'page_sequence']/*[local-name() = 'clause']" priority="3">
 		<fo:block>
 			<xsl:call-template name="setId"/>
 			<xsl:apply-templates />
@@ -891,12 +884,12 @@
 		
 		<xsl:variable name="font-size">
 			<xsl:choose>
-				<xsl:when test="@parent = 'preface'">10pt</xsl:when>
+				<!-- <xsl:when test="@parent = 'preface'">10pt</xsl:when> -->
 				<xsl:when test="$doctype = 'technical-report' and $level = 1">16pt</xsl:when>
 				<xsl:when test="$doctype = 'technical-report' and $level = 2">14pt</xsl:when>
 				<xsl:when test="$doctype = 'technical-report' and $level = 3">12pt</xsl:when>
 				<xsl:when test="$doctype = 'technical-report' and $level &gt;= 4">10pt</xsl:when>
-				<xsl:when test="@ancestor = 'sections'">12pt</xsl:when>
+				<xsl:when test="ancestor::*[local-name() = 'sections']">12pt</xsl:when>
 				<xsl:otherwise>10pt</xsl:otherwise>
 			</xsl:choose>
 		</xsl:variable>
@@ -912,7 +905,7 @@
 		
 		<xsl:variable name="text-align">
 			<xsl:choose>
-				<xsl:when test="@ancestor = 'foreword' and $level = 1">center</xsl:when>
+				<xsl:when test="ancestor::*[local-name() = 'foreword'] and $level = 1">center</xsl:when>
 				<!-- <xsl:when test="@ancestor = 'annex' and $level = 1">center</xsl:when> -->
 				<xsl:otherwise>left</xsl:otherwise>
 			</xsl:choose>
@@ -921,13 +914,13 @@
 		
 		<xsl:variable name="margin-top">
 			<xsl:choose>
-				<xsl:when test="@ancestor = 'foreword' and $level = 1">9mm</xsl:when>
-				<xsl:when test="@ancestor = 'annex' and $level = '1' and preceding-sibling::*[local-name() = 'annex'][1][@commentary = 'true']">1mm</xsl:when>
-				<xsl:when test="@ancestor = 'annex' and $level = 1">0mm</xsl:when>
-				<xsl:when test="$level = 1 and not(@parent = 'preface')">6.5mm</xsl:when>
-				<xsl:when test="@ancestor = 'foreword' and $level = 2">0mm</xsl:when>
-				<xsl:when test="@ancestor = 'annex' and $level = 2">4.5mm</xsl:when>
-				<xsl:when test="@ancestor = 'bibliography' and $level = 2">0mm</xsl:when>
+				<xsl:when test="ancestor::*[local-name() = 'foreword'] and $level = 1">9mm</xsl:when>
+				<xsl:when test="ancestor::*[local-name() = 'annex'] and $level = '1' and ancestor::*[local-name() = 'annex'][1][@commentary = 'true']">1mm</xsl:when>
+				<xsl:when test="ancestor::*[local-name() = 'annex'] and $level = 1">0mm</xsl:when>
+				<xsl:when test="$level = 1 and not(ancestor::*[local-name() = 'preface'])">6.5mm</xsl:when>
+				<xsl:when test="ancestor::*[local-name() = 'foreword'] and $level = 2">0mm</xsl:when>
+				<xsl:when test="ancestor::*[local-name() = 'annex'] and $level = 2">4.5mm</xsl:when>
+				<xsl:when test="ancestor::*[local-name() = 'bibliography'] and $level = 2">0mm</xsl:when>
 				<xsl:when test="$doctype = 'technical-report' and $level = 2 and preceding-sibling::*[2][self::plateau:title]">0mm</xsl:when>
 				<xsl:when test="$doctype = 'technical-report' and $level = 3 and preceding-sibling::*[2][self::plateau:title]">0mm</xsl:when>
 				<xsl:when test="$level = 2">2mm</xsl:when>
@@ -954,13 +947,13 @@
 				</xsl:when>
 				<xsl:otherwise>
 					<xsl:choose>
-						<xsl:when test="@parent = 'preface'">6pt</xsl:when>
-						<xsl:when test="@ancestor = 'foreword' and $level = 1">9mm</xsl:when>
-						<xsl:when test="@ancestor = 'annex' and $level = '1' and preceding-sibling::*[local-name() = 'annex'][1][@commentary = 'true']">7mm</xsl:when>
-						<xsl:when test="@ancestor = 'annex' and $level = 1">1mm</xsl:when>
-						<xsl:when test="$level = 1 and following-sibling::plateau:clause">8pt</xsl:when>
+						<xsl:when test="ancestor::*[local-name() = 'preface']">6pt</xsl:when>
+						<xsl:when test="ancestor::*[local-name() = 'foreword'] and $level = 1">9mm</xsl:when>
+						<xsl:when test="ancestor::*[local-name() = 'annex'] and $level = '1' and ancestor::*[local-name() = 'annex'][1][@commentary = 'true']">7mm</xsl:when>
+						<xsl:when test="ancestor::*[local-name() = 'annex'] and $level = 1">1mm</xsl:when>
+						<xsl:when test="$level = 1 and following-sibling::*[1][self::plateau:clause]">8pt</xsl:when>
 						<xsl:when test="$level = 1">12pt</xsl:when>
-						<xsl:when test="$level = 2 and following-sibling::plateau:clause">8pt</xsl:when>
+						<xsl:when test="$level = 2 and following-sibling::*[1][self::plateau:clause]">8pt</xsl:when>
 						<xsl:when test="$level &gt;= 2">12pt</xsl:when>
 						<xsl:when test="@type = 'section-title'">6mm</xsl:when>
 						<xsl:when test="@inline-header = 'true'">0pt</xsl:when>
@@ -972,7 +965,7 @@
 	
 
 		<!-- to space-before Foreword -->
-		<xsl:if test="@ancestor = 'foreword' and $level = '1'"><fo:block></fo:block></xsl:if>
+		<xsl:if test="ancestor::*[local-name() = 'foreword'] and $level = '1'"><fo:block></fo:block></xsl:if>
 	
 
 		<xsl:choose>
@@ -1043,6 +1036,24 @@
 			</xsl:otherwise>
 		</xsl:choose>
 	</xsl:template>
+
+
+	<xsl:template match="*[local-name() = 'sections']/*[local-name() = 'page_sequence']//*[local-name() = 'clause']" priority="20">
+		<fo:block keep-with-next="always">
+			<fo:block id="{@id}" />
+		</fo:block>
+		<xsl:apply-templates/>
+	</xsl:template>
+
+	<xsl:template match="*[local-name() = 'sections']/*[local-name() = 'page_sequence']/*[local-name() = 'clause']" priority="21">
+		<fo:block-container keep-with-next="always">
+			<fo:block>
+				<fo:block id="{@id}" />
+			</fo:block>
+		</fo:block-container>
+		<xsl:apply-templates/>
+	</xsl:template>
+	
 
 	<xsl:template match="*[local-name() = 'annex']" priority="2">
 		<fo:block id="{@id}">
@@ -1194,7 +1205,7 @@
 						</xsl:when>
 						<xsl:otherwise>
 							<xsl:choose>
-								<xsl:when test="parent::*[local-name() = 'ul'] and @ancestor = 'sections' and $list_item_label = '・' and not(ancestor::*[local-name() = 'table'])">
+								<xsl:when test="parent::*[local-name() = 'ul'] and ancestor::*[local-name() = 'sections'] and $list_item_label = '・' and not(ancestor::*[local-name() = 'table'])">
 									<fo:inline>
 										<fo:instream-foreign-object content-width="2.5mm" fox:alt-text="ul list label">
 											<xsl:copy-of select="$list_label_black_circle"/>
@@ -1416,12 +1427,16 @@
 		</xsl:variable>
 		<!-- <xsl:if test="ancestor::*[local-name() = 'td' or local-name() = 'th']">table cell </xsl:if> -->
 		<xsl:variable name="text_en_" select="java:replaceAll(java:java.lang.String.new($text_en__), $regex_en, concat($tag_font_en_open,'$1',$tag_font_en_close))"/>
-		<xsl:variable name="text_en"><text><xsl:call-template name="replace_text_tags">
-			<xsl:with-param name="tag_open" select="$tag_font_en_open"/>
-			<xsl:with-param name="tag_close" select="$tag_font_en_close"/>
-			<xsl:with-param name="text" select="$text_en_"/>
-		</xsl:call-template></text></xsl:variable>
-		<xsl:copy-of select="xalan:nodeset($text_en)/text/node()"/>
+		<xsl:variable name="text_en">
+			<xsl:element name="text" namespace="{$namespace_full}">
+				<xsl:call-template name="replace_text_tags">
+					<xsl:with-param name="tag_open" select="$tag_font_en_open"/>
+					<xsl:with-param name="tag_close" select="$tag_font_en_close"/>
+					<xsl:with-param name="text" select="$text_en_"/>
+				</xsl:call-template>
+			</xsl:element>
+		</xsl:variable>
+		<xsl:copy-of select="xalan:nodeset($text_en)/*[local-name() = 'text']/node()"/>
 	</xsl:template>
 	
 	<!-- plateau:term/plateau:preferred2//text() | -->
@@ -1436,24 +1451,32 @@
 						plateau:xref//text() |
 						plateau:origin/text()" mode="update_xml_step1">
 		<xsl:variable name="text_en_" select="java:replaceAll(java:java.lang.String.new(.), $regex_en, concat($tag_font_en_bold_open,'$1',$tag_font_en_bold_close))"/>
-		<xsl:variable name="text_en"><text><xsl:call-template name="replace_text_tags">
-			<xsl:with-param name="tag_open" select="$tag_font_en_bold_open"/>
-			<xsl:with-param name="tag_close" select="$tag_font_en_bold_close"/>
-			<xsl:with-param name="text" select="$text_en_"/>
-		</xsl:call-template></text></xsl:variable>
-		<xsl:copy-of select="xalan:nodeset($text_en)/text/node()"/>
+		<xsl:variable name="text_en">
+			<xsl:element name="text" namespace="{$namespace_full}">
+				<xsl:call-template name="replace_text_tags">
+					<xsl:with-param name="tag_open" select="$tag_font_en_bold_open"/>
+					<xsl:with-param name="tag_close" select="$tag_font_en_bold_close"/>
+					<xsl:with-param name="text" select="$text_en_"/>
+				</xsl:call-template>
+			</xsl:element>
+		</xsl:variable>
+		<xsl:copy-of select="xalan:nodeset($text_en)/*[local-name() = 'text']/node()"/>
 	</xsl:template>
 	
 	<!-- for $contents -->
 	<xsl:template match="title/text()">
 		<xsl:variable name="regex_en_contents">([^\u3000-\u9FFF\uF900-\uFFFF\(\)]{1,})</xsl:variable>
 		<xsl:variable name="text_en_" select="java:replaceAll(java:java.lang.String.new(.), $regex_en_contents, concat($tag_font_en_bold_open,'$1',$tag_font_en_bold_close))"/>
-		<xsl:variable name="text_en"><text><xsl:call-template name="replace_text_tags">
-			<xsl:with-param name="tag_open" select="$tag_font_en_bold_open"/>
-			<xsl:with-param name="tag_close" select="$tag_font_en_bold_close"/>
-			<xsl:with-param name="text" select="$text_en_"/>
-		</xsl:call-template></text></xsl:variable>
-		<xsl:apply-templates select="xalan:nodeset($text_en)/text/node()"/>
+		<xsl:variable name="text_en">
+			<xsl:element name="text" namespace="{$namespace_full}">
+				<xsl:call-template name="replace_text_tags">
+					<xsl:with-param name="tag_open" select="$tag_font_en_bold_open"/>
+					<xsl:with-param name="tag_close" select="$tag_font_en_bold_close"/>
+					<xsl:with-param name="text" select="$text_en_"/>
+				</xsl:call-template>
+			</xsl:element>
+			</xsl:variable>
+		<xsl:apply-templates select="xalan:nodeset($text_en)/*[local-name() = 'text']/node()"/>
 	</xsl:template>
 	
 	<!-- move example title to the first paragraph -->
@@ -1474,12 +1497,16 @@
 			</xsl:choose>
 		</xsl:variable>
 		<xsl:variable name="text_en_" select="java:replaceAll(java:java.lang.String.new($example_name), $regex_en, concat($tag_font_en_bold_open,'$1',$tag_font_en_bold_close))"/>
-		<xsl:variable name="text_en"><text><xsl:call-template name="replace_text_tags">
-			<xsl:with-param name="tag_open" select="$tag_font_en_bold_open"/>
-			<xsl:with-param name="tag_close" select="$tag_font_en_bold_close"/>
-			<xsl:with-param name="text" select="$text_en_"/>
-		</xsl:call-template></text></xsl:variable>
-		<xsl:copy-of select="xalan:nodeset($text_en)/text/node()"/>
+		<xsl:variable name="text_en">
+			<xsl:element name="text" namespace="{$namespace_full}">
+				<xsl:call-template name="replace_text_tags">
+					<xsl:with-param name="tag_open" select="$tag_font_en_bold_open"/>
+					<xsl:with-param name="tag_close" select="$tag_font_en_bold_close"/>
+					<xsl:with-param name="text" select="$text_en_"/>
+				</xsl:call-template>
+			</xsl:element>
+		</xsl:variable>
+		<xsl:copy-of select="xalan:nodeset($text_en)/*[local-name() = 'text']/node()"/>
 	</xsl:template>
 	
 	<xsl:template match="plateau:eref//text()" mode="update_xml_step1">
@@ -1499,12 +1526,16 @@
 			<xsl:variable name="tag_open">###<xsl:value-of select="local-name()"/>###</xsl:variable>
 			<xsl:variable name="tag_close">###/<xsl:value-of select="local-name()"/>###</xsl:variable>
 			<xsl:variable name="text_en_" select="java:replaceAll(java:java.lang.String.new(.), $regex_en, concat($tag_open,'$1',$tag_close))"/>
-			<xsl:variable name="text_en"><text><xsl:call-template name="replace_text_tags">
-				<xsl:with-param name="tag_open" select="$tag_open"/>
-				<xsl:with-param name="tag_close" select="$tag_close"/>
-				<xsl:with-param name="text" select="$text_en_"/>
-			</xsl:call-template></text></xsl:variable>
-			<xsl:copy-of select="xalan:nodeset($text_en)/text/node()"/>
+			<xsl:variable name="text_en">
+				<xsl:element name="text" namespace="{$namespace_full}">
+					<xsl:call-template name="replace_text_tags">
+						<xsl:with-param name="tag_open" select="$tag_open"/>
+						<xsl:with-param name="tag_close" select="$tag_close"/>
+						<xsl:with-param name="text" select="$text_en_"/>
+					</xsl:call-template>
+				</xsl:element>
+			</xsl:variable>
+			<xsl:copy-of select="xalan:nodeset($text_en)/*[local-name() = 'text']/node()"/>
 		</xsl:for-each>
 	</xsl:template>
 	
@@ -1513,12 +1544,16 @@
 	</xsl:template>
 	<xsl:template match="plateau:strong/text()" priority="2" mode="update_xml_step1">
 		<xsl:variable name="text_en_" select="java:replaceAll(java:java.lang.String.new(.), $regex_en, concat($tag_font_en_bold_open,'$1',$tag_font_en_bold_close))"/>
-		<xsl:variable name="text_en"><text><xsl:call-template name="replace_text_tags">
-			<xsl:with-param name="tag_open" select="$tag_font_en_bold_open"/>
-			<xsl:with-param name="tag_close" select="$tag_font_en_bold_close"/>
-			<xsl:with-param name="text" select="$text_en_"/>
-		</xsl:call-template></text></xsl:variable>
-		<xsl:copy-of select="xalan:nodeset($text_en)/text/node()"/>
+		<xsl:variable name="text_en">
+			<xsl:element name="text" namespace="{$namespace_full}">
+				<xsl:call-template name="replace_text_tags">
+					<xsl:with-param name="tag_open" select="$tag_font_en_bold_open"/>
+					<xsl:with-param name="tag_close" select="$tag_font_en_bold_close"/>
+					<xsl:with-param name="text" select="$text_en_"/>
+				</xsl:call-template>
+			</xsl:element>
+		</xsl:variable>
+		<xsl:copy-of select="xalan:nodeset($text_en)/*[local-name() = 'text']/node()"/>
 	</xsl:template>
 	
 	<!-- Key title after the table -->
