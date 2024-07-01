@@ -6839,7 +6839,7 @@
 		
 		<xsl:call-template name="insertBibliographyInSeparatePageSequences"/>
 		
-		<xsl:call-template name="insertIndexInSeparatePageSequences"/>
+		<!-- <xsl:call-template name="insertIndexInSeparatePageSequences"/> -->
 	</xsl:template> <!-- END: insertMainSectionsInSeparatePageSequences -->
 	
 	<xsl:template name="insertAnnexInSeparatePageSequences">
