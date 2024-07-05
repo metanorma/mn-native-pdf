@@ -3008,6 +3008,11 @@
 				
 				<fo:block-container font-weight="bold">
 				
+					<xsl:if test="$layoutVersion = '1987'">
+						<xsl:attribute name="font-size">9pt</xsl:attribute>
+						<xsl:attribute name="font-weight">normal</xsl:attribute>
+					</xsl:if>
+				
 					<xsl:if test="$layoutVersion = '1972' or $layoutVersion = '1987' or ($layoutVersion = '1989' and $revision_date_num &lt;= 19981231)">
 						<xsl:attribute name="margin-top">62mm</xsl:attribute>
 					</xsl:if>
@@ -3022,13 +3027,24 @@
 						<xsl:if test="count(*) = 1 and *[local-name() = 'title']"> <!-- if there isn't user ToC -->
 			
 							<!-- <xsl:if test="$debug = 'true'">
-								<redirect:write file="contents_{java:getTime(java:java.util.Date.new())}.xml">
+								<redirect:write file="contents_.xml">
 									<xsl:copy-of select="$contents"/>
 								</redirect:write>
 							</xsl:if> -->
 							
 							<xsl:variable name="margin-left">12</xsl:variable>
+							
 							<xsl:for-each select="$contents//item[@display = 'true']"><!-- [not(@level = 2 and starts-with(@section, '0'))] skip clause from preface -->
+								
+								<xsl:if test="$layoutVersion = '1987'">
+									<xsl:if test="@type = 'annex'	and @level = 1 and not(preceding-sibling::item[@type = 'annex' and @level = 1])">
+										<fo:block role="TOCI" font-weight="bold" margin-top="12pt" margin-bottom="6pt" keep-with-next="always">
+											<xsl:call-template name="getLocalizedString">
+												<xsl:with-param name="key">Annex.pl</xsl:with-param>
+											</xsl:call-template>
+										</fo:block>
+									</xsl:if>
+								</xsl:if>
 								
 								<fo:block role="TOCI">
 									<xsl:if test="@level = 1">
@@ -3038,17 +3054,35 @@
 										<xsl:attribute name="margin-top">-0.7pt</xsl:attribute>
 									</xsl:if>
 									
+									<xsl:if test="$layoutVersion = '1987'">
+										<xsl:if test="@type = 'section'">
+											<xsl:attribute name="margin-top">12pt</xsl:attribute>
+										</xsl:if>
+										<xsl:attribute name="margin-bottom">6pt</xsl:attribute>
+									</xsl:if>
+									
 									<fo:basic-link internal-destination="{@id}" fox:alt-text="{@section} {title}"> <!-- link at this level needs for PDF structure tags -->
 									
 										<fo:list-block role="SKIP">
 											<xsl:attribute name="margin-left"><xsl:value-of select="$margin-left * (@level - 1)"/>mm</xsl:attribute>
+											
+											<xsl:if test="$layoutVersion = '1987'">
+												<xsl:attribute name="margin-left">0</xsl:attribute>
+												<xsl:if test="@level &gt;= 3">
+													<xsl:attribute name="margin-left"><xsl:value-of select="$margin-left div 2 * 1.2 * (@level - 2)"/>mm</xsl:attribute>
+												</xsl:if>
+											</xsl:if>
+											
 											<xsl:if test="@level &gt;= 2 or @type = 'annex'">
 												<xsl:attribute name="font-weight">normal</xsl:attribute>
 											</xsl:if>
 											<xsl:variable name="provisional_distance_between_starts">
 												<xsl:choose>
 													<!-- skip 0 section without subsections -->
+													<xsl:when test="$layoutVersion = '1987' and @level &gt;= 3"><xsl:value-of select="$margin-left div 2 * 1.2"/></xsl:when>
 													<xsl:when test="@level &gt;= 3"><xsl:value-of select="$margin-left * 1.2"/></xsl:when>
+													<xsl:when test="$layoutVersion = '1987' and @type = 'section'">0</xsl:when>
+													<xsl:when test="$layoutVersion = '1987' and @section != ''"><xsl:value-of select="$margin-left div 2 * 1.2"/></xsl:when>
 													<xsl:when test="@section != ''"><xsl:value-of select="$margin-left"/></xsl:when>
 													<xsl:otherwise>0</xsl:otherwise>
 												</xsl:choose>
@@ -3059,6 +3093,7 @@
 											<!-- refine the distance depends on the section string length -->
 											<xsl:attribute name="provisional-distance-between-starts">
 												<xsl:choose>
+													<xsl:when test="$layoutVersion = '1987' and @type = 'section'">0</xsl:when>
 													<xsl:when test="$section_length_mm &gt; $provisional_distance_between_starts">
 														<xsl:value-of select="concat($section_length_mm, 'mm')"/>
 													</xsl:when>
@@ -3071,13 +3106,29 @@
 											<fo:list-item role="SKIP">
 												<fo:list-item-label end-indent="label-end()" role="SKIP">
 													<fo:block role="SKIP">
-															<xsl:value-of select="@section"/>														
+														<xsl:if test="$layoutVersion = '1987'">
+															<xsl:attribute name="font-weight">bold</xsl:attribute>
+														</xsl:if>
+														<xsl:choose>
+															<xsl:when test="$layoutVersion = '1987' and @type = 'section'"></xsl:when>
+															<xsl:otherwise>
+																<xsl:value-of select="@section"/>
+															</xsl:otherwise>
+														</xsl:choose>
 													</fo:block>
 												</fo:list-item-label>
 												<fo:list-item-body start-indent="body-start()" role="SKIP">
 													<fo:block text-align-last="justify" margin-left="12mm" text-indent="-12mm" role="SKIP">
+													
+														<xsl:if test="$layoutVersion = '1987' and @type = 'section'">
+															<xsl:attribute name="font-weight">bold</xsl:attribute>
+														</xsl:if>
+													
 														<fo:basic-link internal-destination="{@id}" fox:alt-text="{title}" role="SKIP">
 														
+															<xsl:if test="$layoutVersion = '1987' and @type = 'section'">
+																<xsl:value-of select="concat(@section, ' ')"/>
+															</xsl:if>
 															<xsl:apply-templates select="title"/>
 															
 															<fo:inline keep-together.within-line="always" role="SKIP">
@@ -3085,6 +3136,9 @@
 																<fo:inline role="SKIP">
 																	<xsl:if test="@level = 1 and @type = 'annex'">
 																		<xsl:attribute name="font-weight">bold</xsl:attribute>
+																	</xsl:if>
+																	<xsl:if test="$layoutVersion = '1987'">
+																		<xsl:attribute name="font-weight">normal</xsl:attribute>
 																	</xsl:if>
 																	<fo:wrapper role="artifact">
 																		<fo:page-number-citation ref-id="{@id}"/>
@@ -3134,6 +3188,9 @@
 				<xsl:attribute name="margin-top">0</xsl:attribute>
 			</xsl:if>
 			<fo:inline font-size="16pt" font-weight="bold" role="SKIP">
+				<xsl:if test="$layoutVersion = '1987'">
+					<xsl:attribute name="font-size">14pt</xsl:attribute>
+				</xsl:if>
 				<!-- <xsl:if test="$layoutVersion = '2024'">
 					<xsl:attribute name="font-size">15.3pt</xsl:attribute>
 				</xsl:if> -->
@@ -3146,6 +3203,9 @@
 			<fo:inline keep-together.within-line="always" role="SKIP">
 				<fo:leader leader-pattern="space"/>
 				<fo:inline font-weight="normal" font-size="10pt" role="SKIP">
+					<xsl:if test="$layoutVersion = '1987'">
+						<xsl:attribute name="font-size">8pt</xsl:attribute>
+					</xsl:if>
 					<!-- <xsl:if test="$layoutVersion = '2024'">
 						<xsl:attribute name="font-size">9.6pt</xsl:attribute>
 					</xsl:if> -->
@@ -3404,6 +3464,7 @@
 		<xsl:variable name="type">
 			<xsl:choose>
 				<xsl:when test="local-name() = 'indexsect'">index</xsl:when>
+				<xsl:when test="@type = 'section'"><xsl:value-of select="@type"/></xsl:when>
 				<xsl:otherwise><xsl:value-of select="local-name()"/></xsl:otherwise>
 			</xsl:choose>
 		</xsl:variable>
@@ -3443,7 +3504,11 @@
 					<xsl:attribute name="level">1</xsl:attribute>
 				</xsl:if>
 				<title>
-					<xsl:apply-templates select="xalan:nodeset($title)" mode="contents_item"/>
+					<xsl:apply-templates select="xalan:nodeset($title)" mode="contents_item">
+						<xsl:with-param name="element">
+							<xsl:if test="$level = 1"><xsl:value-of select="$root"/></xsl:if>
+						</xsl:with-param>
+					</xsl:apply-templates>
 				</title>
 				<xsl:if test="$type != 'index'">
 					<xsl:apply-templates  mode="contents" />
@@ -3454,6 +3519,35 @@
 	
 	<xsl:template match="iso:p | iso:termsource | iso:termnote" mode="contents" />
 
+	<xsl:template match="/" mode="contents_item">
+		<xsl:param name="element"/>
+		<xsl:apply-templates mode="contents_item">
+			<xsl:with-param name="element" select="$element"/>
+		</xsl:apply-templates>
+	</xsl:template>
+
+	<xsl:template match="*[local-name() = 'strong']/text()" mode="contents_item">
+		<xsl:param name="element"/>
+		<xsl:choose>
+			<xsl:when test="$layoutVersion = '1987' and $element = 'annex' and not(../preceding-sibling::node())"> <!-- omit Annex -->
+					<xsl:value-of select="substring-after(., ' ')"/><xsl:text>&#xa0;&#xa0;</xsl:text>
+			</xsl:when>
+			<xsl:otherwise>
+				<xsl:value-of select="."/>
+			</xsl:otherwise>
+		</xsl:choose>
+	</xsl:template>
+	
+	<xsl:template match="*[local-name() = 'span'][@class = 'obligation']/text()" mode="contents_item">
+		<xsl:param name="element"/>
+		<xsl:choose>
+			<xsl:when test="$layoutVersion = '1987' and $element = 'annex'"></xsl:when>
+			<xsl:otherwise>
+				<xsl:value-of select="."/>
+			</xsl:otherwise>
+		</xsl:choose>
+	</xsl:template>
+	
 	
 	
 	<!-- ============================= -->
