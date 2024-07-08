@@ -3852,6 +3852,12 @@
 							</xsl:if>
 						</xsl:if>
 					</xsl:if>
+					<xsl:if test="$layoutVersion = '1987' and ../@type = 'section'">
+						<xsl:attribute name="font-size">14pt</xsl:attribute>
+						<xsl:attribute name="text-align">center</xsl:attribute>
+						<xsl:attribute name="margin-bottom">18pt</xsl:attribute>
+						<xsl:attribute name="keep-with-next">always</xsl:attribute>
+					</xsl:if>
 					<xsl:if test="$element-name = 'fo:inline'">
 						<xsl:choose>
 							<xsl:when test="$lang = 'zh'">
@@ -4093,6 +4099,25 @@
 			<xsl:otherwise><xsl:value-of select="."/></xsl:otherwise>
 		</xsl:choose>
 	</xsl:template>
+	
+	
+	<xsl:template match="iso:clause[@type = 'section']" priority="3">
+		<xsl:choose>
+			<!-- skip empty clause after templates mode="update_xml_step_move_pagebreak" -->
+			<xsl:when test="not(iso:title) and normalize-space() = ''"></xsl:when>
+			<xsl:otherwise>
+				<xsl:if test="preceding-sibling::iso:clause[@type = 'section']">
+					<fo:block break-after="page"/>
+				</xsl:if>
+				<fo:block span="all">
+					<xsl:copy-of select="@id"/>
+					<xsl:apply-templates select="iso:title"/>
+				</fo:block>
+				<xsl:apply-templates select="*[not(self::iso:title)]"/>
+			</xsl:otherwise>
+		</xsl:choose>
+	</xsl:template>
+	
 	<!-- =================== -->
 	<!-- Index processing -->
 	<!-- =================== -->
