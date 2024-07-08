@@ -3864,14 +3864,17 @@
 		</xsl:if>
 		<xsl:if test="$namespace = 'iso'">
 			<xsl:variable name="note_name" select="*[local-name() = 'name']"/>
-			<xsl:if test="$layoutVersion = '2024' and translate($note_name,'0123456789','') = $note_name"> <!-- NOTE without number -->
-				<xsl:attribute name="padding-right">8mm</xsl:attribute>
-			</xsl:if>
 			<xsl:if test="$layoutVersion = '1987'">
 				<xsl:attribute name="padding-right">1mm</xsl:attribute>
 				<xsl:if test="not(translate($note_name,'0123456789','') = $note_name)"> <!-- NOTE with number -->
 					<xsl:attribute name="padding-right">3mm</xsl:attribute>
 				</xsl:if>
+				<xsl:if test="translate($note_name,'0123456789','') = $note_name"> <!-- NOTE without number -->
+					<xsl:attribute name="font-size">9.5pt</xsl:attribute>
+				</xsl:if>
+			</xsl:if>
+			<xsl:if test="$layoutVersion = '2024' and translate($note_name,'0123456789','') = $note_name"> <!-- NOTE without number -->
+				<xsl:attribute name="padding-right">8mm</xsl:attribute>
 			</xsl:if>
 		</xsl:if>
 	</xsl:template> <!-- refine_note-name-style -->
@@ -12686,7 +12689,7 @@
 			<xsl:if test="$layoutVersion = '1987'">
 				<xsl:if test="following-sibling::*[1][self::iso:note] and not(preceding-sibling::*[1][self::iso:note])">
 					<!-- NOTES -->
-					<fo:block font-size="110%" keep-with-next="always" margin-bottom="6pt" text-transform="uppercase">
+					<fo:block font-size="9.5pt" keep-with-next="always" margin-bottom="6pt" text-transform="uppercase">
 						<xsl:call-template name="getLocalizedString">
 							<xsl:with-param name="key">Note.pl</xsl:with-param>
 						</xsl:call-template>
