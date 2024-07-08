@@ -3759,6 +3759,9 @@
 			<xsl:if test="$layoutVersion = '1972' or $layoutVersion = '1987' or $layoutVersion = '1989'">
 				<xsl:attribute name="font-size">9pt</xsl:attribute>
 			</xsl:if>
+			<xsl:if test="$layoutVersion  = '1987'">
+				<xsl:attribute name="margin-bottom">6pt</xsl:attribute>
+			</xsl:if>
 			<xsl:if test="$layoutVersion  = '2024'">
 				<xsl:if test="ancestor::*[local-name() = 'li'] and not(following-sibling::*)">
 					<xsl:attribute name="margin-bottom">8pt</xsl:attribute>
@@ -3861,6 +3864,15 @@
 		</xsl:if>
 		<xsl:if test="$namespace = 'iso'">
 			<xsl:variable name="note_name" select="*[local-name() = 'name']"/>
+			<xsl:if test="$layoutVersion = '1987'">
+				<xsl:attribute name="padding-right">1mm</xsl:attribute>
+				<xsl:if test="not(translate($note_name,'0123456789','') = $note_name)"> <!-- NOTE with number -->
+					<xsl:attribute name="padding-right">3mm</xsl:attribute>
+				</xsl:if>
+				<xsl:if test="translate($note_name,'0123456789','') = $note_name"> <!-- NOTE without number -->
+					<xsl:attribute name="font-size">9.5pt</xsl:attribute>
+				</xsl:if>
+			</xsl:if>
 			<xsl:if test="$layoutVersion = '2024' and translate($note_name,'0123456789','') = $note_name"> <!-- NOTE without number -->
 				<xsl:attribute name="padding-right">8mm</xsl:attribute>
 			</xsl:if>
@@ -12673,6 +12685,18 @@
 				<xsl:attribute name="text-align">justify</xsl:attribute>
 			</xsl:if>
 		</xsl:if>
+		<xsl:if test="$namespace = 'iso'">
+			<xsl:if test="$layoutVersion = '1987'">
+				<xsl:if test="following-sibling::*[1][self::iso:note] and not(preceding-sibling::*[1][self::iso:note])">
+					<!-- NOTES -->
+					<fo:block font-size="9.5pt" keep-with-next="always" margin-bottom="6pt" text-transform="uppercase">
+						<xsl:call-template name="getLocalizedString">
+							<xsl:with-param name="key">Note.pl</xsl:with-param>
+						</xsl:call-template>
+					</fo:block>
+				</xsl:if>
+			</xsl:if>
+		</xsl:if>
 		<xsl:if test="$namespace = 'itu'">
 			<xsl:if test="ancestor::itu:figure">
 				<xsl:attribute name="keep-with-previous">always</xsl:attribute>
@@ -12760,6 +12784,11 @@
 					</xsl:if>
 					<xsl:if test="$namespace = 'gb' or $namespace = 'iho' or $namespace = 'm3d' or $namespace = 'unece-rec' or $namespace = 'unece'  or $namespace = 'rsd'">
 						<xsl:text>:</xsl:text>
+					</xsl:if>
+					<xsl:if test="$namespace = 'iso'">
+						<xsl:if test="$layoutVersion = '1987' and . = translate(.,'1234567890','')"> <!-- NOTE without number -->
+							<xsl:text> — </xsl:text>
+						</xsl:if>
 					</xsl:if>
 					<xsl:if test="$namespace = 'itu' or $namespace = 'nist-cswp'  or $namespace = 'nist-sp'">				
 						<xsl:text> – </xsl:text>
@@ -14348,8 +14377,11 @@
 	</xsl:template>
 
 	<xsl:template match="*[local-name() = 'strong']" mode="contents_item">
+		<xsl:param name="element"/>
 		<xsl:copy>
-			<xsl:apply-templates mode="contents_item"/>
+			<xsl:apply-templates mode="contents_item">
+				<xsl:with-param name="element" select="$element"/>
+			</xsl:apply-templates>
 		</xsl:copy>		
 	</xsl:template>
 	
@@ -14416,7 +14448,10 @@
 
 	<!-- Note: to enable the addition of character span markup with semantic styling for DIS Word output -->
 	<xsl:template match="*[local-name() = 'span']" mode="contents_item">
-		<xsl:apply-templates mode="contents_item"/>
+		<xsl:param name="element"/>
+		<xsl:apply-templates mode="contents_item">
+			<xsl:with-param name="element" select="$element"/>
+		</xsl:apply-templates>
 	</xsl:template>
 
 	<!-- =============== -->
