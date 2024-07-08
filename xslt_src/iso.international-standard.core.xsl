@@ -4085,7 +4085,14 @@
 		</xsl:choose>
 	</xsl:template>
 	
-	
+	<xsl:template match="*[local-name() = 'note']/*[local-name() = 'name']/text()" priority="5">
+		<xsl:choose>
+			<xsl:when test="$layoutVersion = '1987' and not(translate(.,'0123456789','') = .)"> <!-- NOTE with number -->
+				<xsl:value-of select="substring-after(., ' ')"/>
+			</xsl:when>
+			<xsl:otherwise><xsl:value-of select="."/></xsl:otherwise>
+		</xsl:choose>
+	</xsl:template>
 	<!-- =================== -->
 	<!-- Index processing -->
 	<!-- =================== -->
