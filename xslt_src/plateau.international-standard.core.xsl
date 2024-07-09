@@ -1429,13 +1429,15 @@
 	
 	<xsl:template match="plateau:p//text()[not(ancestor::plateau:strong)] |
 						plateau:dt/text() | plateau:td/text() | plateau:th/text()" mode="update_xml_step1">
+		<!-- add hairspace after 'IDEOGRAPHIC SPACE' (U+3000) -->
+		<xsl:variable name="text" select="java:replaceAll(java:java.lang.String.new(.), '(\u3000)', concat('$1',$hair_space))"/>
 		<xsl:variable name="text_en__">
 			<xsl:choose>
 				<xsl:when test="ancestor::plateau:td or ancestor::plateau:th">
-					<xsl:value-of select="java:replaceAll(java:java.lang.String.new(.), '([a-z]{2,})([A-Z]+)', concat('$1',$zero_width_space,'$2'))"/>
+					<xsl:value-of select="java:replaceAll(java:java.lang.String.new($text), '([a-z]{2,})([A-Z]+)', concat('$1',$zero_width_space,'$2'))"/>
 				</xsl:when>
 				<xsl:otherwise>
-					<xsl:value-of select="."/>
+					<xsl:value-of select="$text"/>
 				</xsl:otherwise>
 			</xsl:choose>
 		</xsl:variable>
