@@ -399,30 +399,44 @@
 				
 				<xsl:element name="sections" namespace="{$namespace_full}"> <!-- save context element -->
 					
-					<xsl:element name="page_sequence" namespace="{$namespace_full}">
-						<xsl:attribute name="main_page_sequence"/>
-						<xsl:apply-templates select="/*/*[local-name()='sections']/*[1]" mode="update_xml_step_move_pagebreak"/>
-					</xsl:element>
+					<!-- determine clause 2 element number -->
+					<xsl:variable name="clause_2_num_" select="count(/*/*[local-name()='sections']/*[normalize-space(*[local-name() = 'title']/*[local-name() = 'tab']/preceding-sibling::*) = '2']/preceding-sibling::*)"/>
+					<xsl:variable name="clause_2_num__">
+						<xsl:choose>
+							<xsl:when test="$clause_2_num_ = 0">2</xsl:when>
+							<xsl:otherwise><xsl:value-of select="$clause_2_num_ + 1"/></xsl:otherwise>
+						</xsl:choose>
+					</xsl:variable>
+					<xsl:variable name="clause_2_num" select="number($clause_2_num__)"/>
+					
+					
+					<xsl:for-each select="/*/*[local-name()='sections']/*[position() &lt; $clause_2_num]">
+						<xsl:sort select="@displayorder" data-type="number"/>
+						<xsl:element name="page_sequence" namespace="{$namespace_full}">
+							<xsl:attribute name="main_page_sequence"/>
+							<xsl:apply-templates select="." mode="update_xml_step_move_pagebreak"/>
+						</xsl:element>
+					</xsl:for-each>
 					
 					<!-- second clause is scope -->
 					<xsl:choose>
-						<xsl:when test="count(/*/*[local-name()='sections']/*[2]/*) = 2"> <!-- title and paragraph -->
+						<xsl:when test="count(/*/*[local-name()='sections']/*[$clause_2_num]/*) = 2"> <!-- title and paragraph -->
 							<xsl:element name="page_sequence" namespace="{$namespace_full}">
-								<xsl:apply-templates select="/*/*[local-name()='sections']/*[2]" mode="update_xml_step_move_pagebreak"/>
-								<xsl:apply-templates select="/*/*[local-name()='sections']/*[3]" mode="update_xml_step_move_pagebreak"/>
+								<xsl:apply-templates select="/*/*[local-name()='sections']/*[$clause_2_num]" mode="update_xml_step_move_pagebreak"/>
+								<xsl:apply-templates select="/*/*[local-name()='sections']/*[$clause_2_num + 1]" mode="update_xml_step_move_pagebreak"/>
 							</xsl:element>
 						</xsl:when>
 						<xsl:otherwise>
 							<xsl:element name="page_sequence" namespace="{$namespace_full}">
-								<xsl:apply-templates select="/*/*[local-name()='sections']/*[2]" mode="update_xml_step_move_pagebreak"/>
+								<xsl:apply-templates select="/*/*[local-name()='sections']/*[$clause_2_num]" mode="update_xml_step_move_pagebreak"/>
 							</xsl:element>
 							<xsl:element name="page_sequence" namespace="{$namespace_full}">
-								<xsl:apply-templates select="/*/*[local-name()='sections']/*[3]" mode="update_xml_step_move_pagebreak"/>
+								<xsl:apply-templates select="/*/*[local-name()='sections']/*[$clause_2_num + 1]" mode="update_xml_step_move_pagebreak"/>
 							</xsl:element>
 						</xsl:otherwise>
 					</xsl:choose>
 					
-					<xsl:for-each select="/*/*[local-name()='sections']/*[position() &gt; 3]">
+					<xsl:for-each select="/*/*[local-name()='sections']/*[position() &gt; $clause_2_num + 1]">
 						<xsl:sort select="@displayorder" data-type="number"/>
 						<xsl:element name="page_sequence" namespace="{$namespace_full}">
 							<xsl:attribute name="main_page_sequence"/>
@@ -1415,13 +1429,15 @@
 	
 	<xsl:template match="plateau:p//text()[not(ancestor::plateau:strong)] |
 						plateau:dt/text() | plateau:td/text() | plateau:th/text()" mode="update_xml_step1">
+		<!-- add hairspace after 'IDEOGRAPHIC SPACE' (U+3000) -->
+		<xsl:variable name="text" select="java:replaceAll(java:java.lang.String.new(.), '(\u3000)', concat('$1',$hair_space))"/>
 		<xsl:variable name="text_en__">
 			<xsl:choose>
 				<xsl:when test="ancestor::plateau:td or ancestor::plateau:th">
-					<xsl:value-of select="java:replaceAll(java:java.lang.String.new(.), '([a-z]{2,})([A-Z]+)', concat('$1',$zero_width_space,'$2'))"/>
+					<xsl:value-of select="java:replaceAll(java:java.lang.String.new($text), '([a-z]{2,})([A-Z]+)', concat('$1',$zero_width_space,'$2'))"/>
 				</xsl:when>
 				<xsl:otherwise>
-					<xsl:value-of select="."/>
+					<xsl:value-of select="$text"/>
 				</xsl:otherwise>
 			</xsl:choose>
 		</xsl:variable>
