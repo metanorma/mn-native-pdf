@@ -1424,7 +1424,7 @@
 	<!-- Allocate non-Japanese text -->
 	<!-- ========================= -->
 	
-	<xsl:variable name="regex_en">([^\u3000-\u9FFF\uF900-\uFFFF]{1,})</xsl:variable>
+	<xsl:variable name="regex_en">([^\u00A0\u2002-\u200B\u3000-\u9FFF\uF900-\uFFFF]{1,})</xsl:variable>
 	
 	<xsl:variable name="element_name_font_en">font_en</xsl:variable>
 	<xsl:variable name="tag_font_en_open">###<xsl:value-of select="$element_name_font_en"/>###</xsl:variable>
@@ -1466,7 +1466,7 @@
 	
 	<!-- for $contents -->
 	<xsl:template match="title/text()">
-		<xsl:variable name="regex_en_contents">([^\u3000-\u9FFF\uF900-\uFFFF\(\)]{1,})</xsl:variable>
+		<xsl:variable name="regex_en_contents">([^\u00A0\u2002-\u200B\u3000-\u9FFF\uF900-\uFFFF\(\)]{1,})</xsl:variable>
 		<xsl:variable name="text_en_" select="java:replaceAll(java:java.lang.String.new(.), $regex_en_contents, concat($tag_font_en_bold_open,'$1',$tag_font_en_bold_close))"/>
 		<xsl:variable name="text_en"><text><xsl:call-template name="replace_text_tags">
 			<xsl:with-param name="tag_open" select="$tag_font_en_bold_open"/>
