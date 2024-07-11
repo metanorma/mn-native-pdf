@@ -10,7 +10,9 @@
 											xmlns:java="http://xml.apache.org/xalan/java"
 											xmlns:jeuclid="http://jeuclid.sf.net/ns/ext"
 											xmlns:barcode="http://barcode4j.krysalis.org/ns" 
+											xmlns:redirect="http://xml.apache.org/xalan/redirect"
 											exclude-result-prefixes="java"
+											extension-element-prefixes="redirect"
 											version="1.0">
 
 	<xsl:output method="xml" encoding="UTF-8" indent="no"/>
@@ -1320,27 +1322,30 @@
 		<debug><ancestor><xsl:value-of select="$ancestor"/></ancestor></debug> -->
 		
 		<xsl:if test="$ancestor_tree//item[last()][. = $ancestor]">
-			<fo:block-container margin-left="11mm" margin-bottom="4pt" id="{@ref_id}">
-				
-				<xsl:if test="position() = last()">
-					<xsl:attribute name="margin-bottom">10pt</xsl:attribute>
-				</xsl:if>
-				<fo:block-container margin-left="0mm">
-					<fo:list-block provisional-distance-between-starts="10mm">
-						<fo:list-item>
-							<fo:list-item-label end-indent="label-end()">
-								<fo:block xsl:use-attribute-sets="note-name-style">注 <fo:inline xsl:use-attribute-sets="fn-num-style"><xsl:value-of select="@current_fn_number"/><fo:inline font-weight="normal">)</fo:inline></fo:inline></fo:block>
-							</fo:list-item-label>
-							<fo:list-item-body start-indent="body-start()">
-								<fo:block>
-									<xsl:apply-templates />
-								</fo:block>
-							</fo:list-item-body>
-						</fo:list-item>
-					</fo:list-block>
-				</fo:block-container>
-			</fo:block-container>
+			<xsl:call-template name="fn_jis"/>
 		</xsl:if>
+	</xsl:template>
+	
+	<xsl:template name="fn_jis">
+		<fo:block-container margin-left="11mm" margin-bottom="4pt" id="{@ref_id}">
+			<xsl:if test="position() = last()">
+				<xsl:attribute name="margin-bottom">10pt</xsl:attribute>
+			</xsl:if>
+			<fo:block-container margin-left="0mm">
+				<fo:list-block provisional-distance-between-starts="10mm">
+					<fo:list-item>
+						<fo:list-item-label end-indent="label-end()">
+							<fo:block xsl:use-attribute-sets="note-name-style">注 <fo:inline xsl:use-attribute-sets="fn-num-style"><xsl:value-of select="@current_fn_number"/><fo:inline font-weight="normal">)</fo:inline></fo:inline></fo:block>
+						</fo:list-item-label>
+						<fo:list-item-body start-indent="body-start()">
+							<fo:block>
+								<xsl:apply-templates />
+							</fo:block>
+						</fo:list-item-body>
+					</fo:list-item>
+				</fo:list-block>
+			</fo:block-container>
+		</fo:block-container>
 	</xsl:template>
 	
 	<xsl:template match="*[local-name() = 'span'][@class = 'surname' or @class = 'givenname' or @class = 'JIS' or @class = 'EffectiveYear' or @class = 'CommentaryEffectiveYear']" mode="update_xml_step1" priority="2">
