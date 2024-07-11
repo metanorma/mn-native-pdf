@@ -9925,6 +9925,15 @@
 			<xsl:apply-templates select="*[local-name() = 'dd']/*[local-name() = 'dl']"/>
 		</xsl:if>
 		
+		<xsl:if test="$namespace = 'jis'">
+			<!-- display footnotes after after upper-level `dl` -->
+			<xsl:if test="not(ancestor::*[local-name() = 'dl'])">
+				<xsl:for-each select=".//jis:fn[generate-id(.)=generate-id(key('kfn',@reference)[1])]">
+					<xsl:call-template name="fn_jis"/>
+				</xsl:for-each>
+			</xsl:if>
+		</xsl:if>
+		
 	</xsl:template> <!-- END: dl -->
 	
 	<xsl:template name="refine_dl_formula_where_style">
