@@ -1611,22 +1611,41 @@
 								
 								<fo:table-body>
 									<fo:table-row height="39mm" display-align="center">
+										<xsl:if test="$layoutVersion = '1972'">
+											<xsl:attribute name="height">42mm</xsl:attribute>
+											<xsl:attribute name="font-family">Univers 59 Ultra Condensed</xsl:attribute>
+											<xsl:attribute name="text-transform">uppercase</xsl:attribute>
+										</xsl:if>
 										<fo:table-cell>
-											<fo:block font-size="32pt" margin-top="2mm" letter-spacing="-0.02em">
+											<fo:block font-size="32pt" margin-top="2mm">
 												<xsl:if test="string-length($docnumber) &gt; 4">
 													<xsl:attribute name="font-size">29pt</xsl:attribute>
+												</xsl:if>
+												<xsl:if test="$layoutVersion = '1972'">
+													<xsl:attribute name="font-size">40pt</xsl:attribute>
+												</xsl:if>
+												<xsl:if test="$layoutVersion = '1979'">
+													<xsl:attribute name="letter-spacing">-0.02em</xsl:attribute>
 												</xsl:if>
 												<xsl:value-of select="$doctype_localized"/>
 											</fo:block>
 										</fo:table-cell>
 										<fo:table-cell>
 											<fo:block font-size="0">
-												<xsl:variable name="content-height">27</xsl:variable>
+												<xsl:variable name="content-height">
+													<xsl:choose>
+														<xsl:when test="$layoutVersion = '1972'">33</xsl:when>
+														<xsl:otherwise>27</xsl:otherwise>
+													</xsl:choose>
+												</xsl:variable>
 												<fo:external-graphic src="{concat('data:image/png;base64,', normalize-space($Image-ISO-Logo-1972))}" content-height="{$content-height}mm" content-width="scale-to-fit" scaling="uniform" fox:alt-text="Image ISO Logo"/>
 											</fo:block>
 										</fo:table-cell>
 										<fo:table-cell text-align="right">
 											<fo:block font-size="34pt" margin-top="2mm">
+												<xsl:if test="$layoutVersion = '1972'">
+													<xsl:attribute name="font-size">38pt</xsl:attribute>
+												</xsl:if>
 												<xsl:value-of select="$docnumber"/>
 											</fo:block>
 										</fo:table-cell>
