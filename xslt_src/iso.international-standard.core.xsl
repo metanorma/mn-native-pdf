@@ -123,7 +123,7 @@
 						<!-- insert space before ( -->
 						<xsl:value-of select="java:replaceAll(java:java.lang.String.new($iso_reference_tmp_),'\(',' \(')"/>
 					</xsl:when>
-					<xsl:when test="$layoutVersion = '1972'">
+					<xsl:when test="$layoutVersion = '1972' or $layoutVersion = '1979'">
 						<xsl:value-of select="java:replaceAll(java:java.lang.String.new($iso_reference_tmp),':','-')"/>
 					</xsl:when>
 					<xsl:when test="$layoutVersion = '1987'">
@@ -406,7 +406,7 @@
 	<xsl:variable name="layoutVersion_">
 		<xsl:choose>
 			<xsl:when test="$document_scheme = ''">2024</xsl:when>
-			<xsl:when test="$document_scheme = '1951' or $document_scheme = '1972' or $document_scheme = '1987' or $document_scheme = '1989' or $document_scheme = '2012' or $document_scheme = '2013' or $document_scheme = '2024'"><xsl:value-of select="$document_scheme"/></xsl:when>
+			<xsl:when test="$document_scheme = '1951' or $document_scheme = '1972' or $document_scheme = '1979' or $document_scheme = '1987' or $document_scheme = '1989' or $document_scheme = '2012' or $document_scheme = '2013' or $document_scheme = '2024'"><xsl:value-of select="$document_scheme"/></xsl:when>
 			<xsl:otherwise>default</xsl:otherwise>
 		</xsl:choose>
 	</xsl:variable>
@@ -429,7 +429,7 @@
 						<xsl:attribute name="font-size">10pt</xsl:attribute>
 					</xsl:if>
 				
-					<xsl:if test="$layoutVersion = '1972' or $layoutVersion = '1987' or $layoutVersion = '1989'">
+					<xsl:if test="$layoutVersion = '1972' or $layoutVersion = '1979' or $layoutVersion = '1987' or $layoutVersion = '1989'">
 						<xsl:attribute name="font-family">Arial, Times New Roman, Cambria Math, <xsl:value-of select="$font_noto_sans"/></xsl:attribute>
 						<xsl:attribute name="font-family-generic">Sans</xsl:attribute>
 						<xsl:attribute name="font-size">10pt</xsl:attribute>
@@ -1026,7 +1026,7 @@
 										<xsl:attribute name="force-page-count"><xsl:value-of select="$force-page-count-preface"/></xsl:attribute> <!-- to prevent empty pages -->
 									</xsl:if>
 								
-									<xsl:if test="$layoutVersion = '1972' or $layoutVersion = '1987' or ($layoutVersion = '1989' and $revision_date_num &lt;= 19981231)">
+									<xsl:if test="$layoutVersion = '1972' or $layoutVersion = '1979' or $layoutVersion = '1987' or ($layoutVersion = '1989' and $revision_date_num &lt;= 19981231)">
 										<xsl:attribute name="master-reference">preface-1972-1998</xsl:attribute>
 									</xsl:if>
 									<xsl:if test="$layoutVersion = '2024'">
@@ -1095,7 +1095,7 @@
 											
 											
 											<xsl:choose>
-												<xsl:when test="$layoutVersion = '1972' or $layoutVersion = '1987' or ($layoutVersion = '1989' and $revision_date_num &lt;= 19981231)"><!-- copyright renders in the footer footer-preface-first_1987-1998--></xsl:when>
+												<xsl:when test="$layoutVersion = '1972' or $layoutVersion = '1979' or $layoutVersion = '1987' or ($layoutVersion = '1989' and $revision_date_num &lt;= 19981231)"><!-- copyright renders in the footer footer-preface-first_1987-1998--></xsl:when>
 												<xsl:otherwise>
 												
 													<!-- <xsl:if test="/iso:iso-standard/iso:boilerplate/iso:copyright-statement"> -->
@@ -1288,7 +1288,7 @@
 								</xsl:if> <!-- $layoutVersion = '1951' -->
 									
 									<!-- <xsl:choose>
-										<xsl:when test="($layoutVersion = '1951' or $layoutVersion = '1972' or $layoutVersion = '1987' or $layoutVersion = '1989') and $layout_columns != 1">
+										<xsl:when test="($layoutVersion = '1951' or $layoutVersion = '1972' or $layoutVersion = '1979' or $layoutVersion = '1987' or $layoutVersion = '1989') and $layout_columns != 1">
 											<xsl:choose>
 												<xsl:when test="$doctype = 'amendment'">
 													<xsl:variable name="flatxml">
@@ -1300,7 +1300,7 @@
 													<xsl:call-template name="processMainSectionsDefault_flatxml"/>
 												</xsl:otherwise>
 											</xsl:choose>
-										</xsl:when> ($layoutVersion = '1972' or $layoutVersion = '1987' or $layoutVersion = '1989') and $layout_columns != 1 
+										</xsl:when> ($layoutVersion = '1972' or $layoutVersion = '1979' or $layoutVersion = '1987' or $layoutVersion = '1989') and $layout_columns != 1 
 										<xsl:otherwise>
 											<xsl:choose>
 												<xsl:when test="$doctype = 'amendment'">
@@ -1369,6 +1369,7 @@
 					<xsl:when test="$isGenerateTableIF = 'true'"><!-- skip last page --></xsl:when>
 					<xsl:when test="$layoutVersion = '1951'"/>
 					<xsl:when test="$layoutVersion = '1972'"/>
+					<xsl:when test="$layoutVersion = '1979'"/>
 					<xsl:when test="$layoutVersion = '1987' and $doctype = 'technical-report'"><!-- UDC, Keywords and Price renders on the first page for technical-report --></xsl:when>
 					<xsl:when test="$layoutVersion = '2024'">
 						<xsl:call-template name="insertLastPage_2024"/>
@@ -1542,7 +1543,7 @@
 					</fo:page-sequence>
 				</xsl:when> <!-- END: $layoutVersion = '1951' -->
 				
-				<xsl:when test="$layoutVersion = '1972'">
+				<xsl:when test="$layoutVersion = '1972' or $layoutVersion = '1979'">
 					<fo:page-sequence master-reference="cover-page_1972" force-page-count="no-force">
 						<fo:static-content flow-name="cover-page-footer" font-size="7pt">
 							<xsl:call-template name="insertSingleLine"/>
@@ -1655,7 +1656,7 @@
 							
 						</fo:flow>
 					</fo:page-sequence>
-				</xsl:when> <!-- END: $layoutVersion = '1972' -->
+				</xsl:when> <!-- END: $layoutVersion = '1972' or $layoutVersion = '1979' -->
 				<xsl:when test="$layoutVersion = '1987' and $doctype = 'technical-report'"><!-- see preface pages below --></xsl:when>
 				<xsl:when test="$layoutVersion = '1987'">
 					<fo:page-sequence master-reference="cover-page_1987" force-page-count="no-force">
@@ -3013,7 +3014,7 @@
 						<xsl:attribute name="font-weight">normal</xsl:attribute>
 					</xsl:if>
 				
-					<xsl:if test="$layoutVersion = '1972' or $layoutVersion = '1987' or ($layoutVersion = '1989' and $revision_date_num &lt;= 19981231)">
+					<xsl:if test="$layoutVersion = '1972' or $layoutVersion = '1979' or $layoutVersion = '1987' or ($layoutVersion = '1989' and $revision_date_num &lt;= 19981231)">
 						<xsl:attribute name="margin-top">62mm</xsl:attribute>
 					</xsl:if>
 				
@@ -3297,7 +3298,7 @@
 							<xsl:value-of select="$part-word"/>
 							<xsl:apply-templates />
 						</xsl:when>
-						<xsl:when test="$layoutVersion = '1972'">
+						<xsl:when test="$layoutVersion = '1972' or $layoutVersion = '1979'">
 							<fo:block font-weight="bold" role="SKIP">
 								<xsl:value-of select="$part-word"/>
 								<xsl:text>&#xa0;</xsl:text>
@@ -3319,7 +3320,7 @@
 				<xsl:otherwise>
 					<!-- <xsl:value-of select="$linebreak"/> -->
 					<xsl:choose>
-						<xsl:when test="$layoutVersion = '1972'"></xsl:when>
+						<xsl:when test="$layoutVersion = '1972' or $layoutVersion = '1979'"></xsl:when>
 						<xsl:otherwise>
 							<fo:block font-size="1pt" margin-top="5pt" role="SKIP">&#xa0;</fo:block>
 						</xsl:otherwise>
@@ -3331,8 +3332,8 @@
 		</xsl:if>
 		<xsl:choose>
 			<xsl:when test="$layoutVersion = '1951'"></xsl:when>
-			<xsl:when test="$layoutVersion = '1972' and $isMainLang = 'true'"/>
-			<xsl:when test="$layoutVersion = '1972' and $isMainLang = 'false'">
+			<xsl:when test="($layoutVersion = '1972' or $layoutVersion = '1979') and $isMainLang = 'true'"/>
+			<xsl:when test="($layoutVersion = '1972' or $layoutVersion = '1979') and $isMainLang = 'false'">
 				<fo:inline font-weight="normal"><xsl:apply-templates /></fo:inline>
 			</xsl:when>
 			<xsl:when test="$layoutVersion = '1987'">
@@ -3390,7 +3391,7 @@
 					<xsl:attribute name="font-size">11pt</xsl:attribute>
 				</xsl:if>
 			</xsl:if>
-			<xsl:if test="$layoutVersion = '1972' or $layoutVersion = '1987' or $layoutVersion = '1989'">
+			<xsl:if test="$layoutVersion = '1972' or $layoutVersion = '1979' or $layoutVersion = '1987' or $layoutVersion = '1989'">
 				<xsl:attribute name="font-size">16pt</xsl:attribute>
 				<xsl:attribute name="span">all</xsl:attribute>
 				<xsl:attribute name="margin-bottom">40pt</xsl:attribute>
@@ -3409,7 +3410,7 @@
 	<xsl:template match="iso:sections//iso:p[@class = 'zzSTDTitle1']/iso:span[@class = 'nonboldtitle']" priority="3">
 		<!-- Example: <span class="nonboldtitle">Part 1:</span> -->
 		<xsl:choose>
-			<xsl:when test="$layoutVersion = '1972'">
+			<xsl:when test="$layoutVersion = '1972' or $layoutVersion = '1979'">
 				<fo:inline font-weight="bold" role="SKIP">
 					<xsl:apply-templates />
 				</fo:inline>
@@ -3426,7 +3427,7 @@
 		<!-- Example: <p class="zzSTDTitle2" displayorder="3">AMENDMENT 1: Mass fraction of extraneous matter, milled rice (nonglutinous), sample dividers and recommendations relating to storage and transport conditions</p> -->
 		<xsl:if test="$doctype = 'amendment'">
 			<fo:block font-size="18pt" margin-top="12pt" margin-bottom="20pt" margin-right="0mm" font-weight="normal" line-height="1.1" role="H1">
-				<xsl:if test="$layoutVersion = '1972' or $layoutVersion = '1987' or $layoutVersion = '1989'">
+				<xsl:if test="$layoutVersion = '1972' or $layoutVersion = '1979' or $layoutVersion = '1987' or $layoutVersion = '1989'">
 				<xsl:attribute name="font-size">16pt</xsl:attribute>
 			</xsl:if>
 				<!-- <xsl:if test="$layoutVersion = '2024'">
@@ -3631,7 +3632,7 @@
 					</xsl:otherwise>
 				</xsl:choose>
 			</xsl:when>
-			<xsl:when test="$layoutVersion = '1972' or $layoutVersion = '1987'">
+			<xsl:when test="$layoutVersion = '1972' or $layoutVersion = '1979' or $layoutVersion = '1987'">
 				<xsl:if test="@id = 'boilerplate-place'">
 						<fo:block margin-top="6pt"><xsl:if test="$layoutVersion = '1987' and $doctype = 'technical-report'"><xsl:attribute name="margin-top">0</xsl:attribute></xsl:if>&#xa0;</fo:block>
 				</xsl:if>
@@ -3671,7 +3672,7 @@
 						<xsl:attribute name="line-height">1.1</xsl:attribute>
 						<!-- <xsl:attribute name="margin-bottom">52pt</xsl:attribute> -->
 					</xsl:if>
-					<xsl:if test="$layoutVersion = '1972' or $layoutVersion = '1987' or $layoutVersion = '1989'">
+					<xsl:if test="$layoutVersion = '1972' or $layoutVersion = '1979' or $layoutVersion = '1987' or $layoutVersion = '1989'">
 						<xsl:attribute name="span">all</xsl:attribute>
 					</xsl:if>
 					<xsl:apply-templates />
@@ -3689,7 +3690,7 @@
 			</xsl:when>
 			<xsl:otherwise>
 				<fo:block font-size="16pt" font-weight="bold" text-align="center" margin-top="6pt" margin-bottom="36pt" keep-with-next="always" role="H1">
-					<xsl:if test="$layoutVersion = '1972' or $layoutVersion = '1987' or $layoutVersion = '1989'">
+					<xsl:if test="$layoutVersion = '1972' or $layoutVersion = '1979' or $layoutVersion = '1987' or $layoutVersion = '1989'">
 						<xsl:attribute name="font-size">14pt</xsl:attribute>
 						<xsl:attribute name="span">all</xsl:attribute>
 					</xsl:if>
@@ -3727,7 +3728,7 @@
 						<xsl:when test="$level &gt;= 3">9pt</xsl:when>
 					</xsl:choose>
 				</xsl:when>
-				<xsl:when test="$layoutVersion = '1972' or $layoutVersion = '1987' or $layoutVersion = '1989'">
+				<xsl:when test="$layoutVersion = '1972' or $layoutVersion = '1979' or $layoutVersion = '1987' or $layoutVersion = '1989'">
 					<xsl:choose>
 						<xsl:when test="ancestor::iso:annex and $level = 2">12pt</xsl:when>
 						<xsl:when test="ancestor::iso:annex and $level = 3">11pt</xsl:when>
@@ -3794,7 +3795,7 @@
 			
 				<xsl:element name="{$element-name}">
 				
-					<xsl:if test="$layoutVersion = '1951' or $layoutVersion = '1972' or $layoutVersion = '1987' or $layoutVersion = '1989'">
+					<xsl:if test="$layoutVersion = '1951' or $layoutVersion = '1972' or $layoutVersion = '1979' or $layoutVersion = '1987' or $layoutVersion = '1989'">
 						<!-- copy @id from empty preceding clause -->
 						<xsl:copy-of select="preceding-sibling::*[1][local-name() = 'clause' and count(node()) = 0]/@id"/>
 					</xsl:if>
@@ -3812,7 +3813,7 @@
 							<xsl:when test="$layoutVersion = '1951' and ancestor::iso:preface and $level = 1">20mm</xsl:when>
 							<xsl:when test="ancestor::iso:introduction and $level &gt;= 2 and ../preceding-sibling::iso:clause">30pt</xsl:when>
 							<xsl:when test="$layoutVersion = '1987' and $doctype = 'technical-report' and ancestor::iso:preface and $level = 1">10mm</xsl:when>
-							<xsl:when test="($layoutVersion = '1972' or $layoutVersion = '1987' or ($layoutVersion = '1989' and $revision_date_num &lt;= 19981231)) and ancestor::iso:preface and $level = 1">62mm</xsl:when>
+							<xsl:when test="($layoutVersion = '1972' or $layoutVersion = '1979' or $layoutVersion = '1987' or ($layoutVersion = '1989' and $revision_date_num &lt;= 19981231)) and ancestor::iso:preface and $level = 1">62mm</xsl:when>
 							<xsl:when test="$layoutVersion = '1989' and ancestor::iso:preface and $level = 1">56pt</xsl:when>
 							<xsl:when test="$layoutVersion = '2024' and ancestor::iso:preface and $level = 1">0pt</xsl:when>
 							<xsl:when test="ancestor::iso:preface">8pt</xsl:when>
@@ -3893,7 +3894,7 @@
 	
 	<xsl:template match="iso:title[../@inline-header = 'true'][following-sibling::*[1][local-name() = 'p']]" priority="3">
 		<xsl:choose>
-			<xsl:when test="($layoutVersion = '1951' or $layoutVersion = '1972' or $layoutVersion = '1987' or $layoutVersion = '1989') and $layout_columns != 1"/> <!-- don't show 'title' with inline-header='true' if next element is 'p' -->
+			<xsl:when test="($layoutVersion = '1951' or $layoutVersion = '1972' or $layoutVersion = '1979' or $layoutVersion = '1987' or $layoutVersion = '1989') and $layout_columns != 1"/> <!-- don't show 'title' with inline-header='true' if next element is 'p' -->
 			<xsl:otherwise>
 				<xsl:call-template name="title"/>
 			</xsl:otherwise>
@@ -3917,7 +3918,7 @@
 
 	<xsl:template match="*[local-name() = 'clause'][normalize-space() != '' or *[local-name() = 'figure']]" priority="2">
 		<xsl:choose>
-			<xsl:when test="($layoutVersion = '1951' or $layoutVersion = '1972' or $layoutVersion = '1987' or $layoutVersion = '1989') and
+			<xsl:when test="($layoutVersion = '1951' or $layoutVersion = '1972' or $layoutVersion = '1979' or $layoutVersion = '1987' or $layoutVersion = '1989') and
 				local-name() = 'clause' and count(node()) = 0 and following-sibling::*[1][local-name() = 'title' and not(@id)]"></xsl:when> <!-- @id will be added to title -->
 			<xsl:otherwise>
 				<xsl:call-template name="template_clause"/>
@@ -4003,7 +4004,7 @@
 			</xsl:if>
 			
 			<!-- put inline title in the first paragraph -->
-			<xsl:if test="($layoutVersion = '1951' or $layoutVersion = '1972' or $layoutVersion = '1987' or $layoutVersion = '1989') and $layout_columns != 1">
+			<xsl:if test="($layoutVersion = '1951' or $layoutVersion = '1972' or $layoutVersion = '1979' or $layoutVersion = '1987' or $layoutVersion = '1989') and $layout_columns != 1">
 				<!-- <xsl:if test="preceding-sibling::*[1]/@inline-header = 'true' and preceding-sibling::*[1][self::iso:title]"> -->
 				<xsl:if test="ancestor::*[1]/@inline-header = 'true' and preceding-sibling::*[1][self::iso:title]">
 					<xsl:attribute name="space-before">0pt</xsl:attribute>
@@ -4245,7 +4246,7 @@
 		<xsl:param name="border_around_page">false</xsl:param>
 		<xsl:param name="insert_header_first">true</xsl:param>
 		<xsl:param name="insert_footer_last">true</xsl:param>
-		<xsl:if test="($layoutVersion = '1972' or $layoutVersion = '1987' or ($layoutVersion = '1989' and $revision_date_num &lt;= 19981231)) and $is_footer = 'true'">
+		<xsl:if test="($layoutVersion = '1972' or $layoutVersion = '1979' or $layoutVersion = '1987' or ($layoutVersion = '1989' and $revision_date_num &lt;= 19981231)) and $is_footer = 'true'">
 			<xsl:call-template name="insertFooterFirst1972_1998">
 				<xsl:with-param name="font-weight" select="$font-weight"/>
 			</xsl:call-template>
@@ -4274,7 +4275,7 @@
 	</xsl:template>
 	<xsl:variable name="font-size_header">
 		<xsl:choose>
-			<xsl:when test="$layoutVersion = '1972' or $layoutVersion = '1987' or $layoutVersion = '1989'">11pt</xsl:when>
+			<xsl:when test="$layoutVersion = '1972' or $layoutVersion = '1979' or $layoutVersion = '1987' or $layoutVersion = '1989'">11pt</xsl:when>
 			<xsl:otherwise>12pt</xsl:otherwise>
 		</xsl:choose>
 	</xsl:variable>
@@ -4326,7 +4327,7 @@
 				</xsl:when>
 				<xsl:otherwise>
 					<fo:block-container margin-top="13mm" width="172mm" border-top="0.5mm solid black" border-bottom="0.5mm solid black" display-align="center" background-color="white">
-						<xsl:if test="$layoutVersion = '1972' or $layoutVersion = '1987' or $layoutVersion = '1989'">
+						<xsl:if test="$layoutVersion = '1972' or $layoutVersion = '1979' or $layoutVersion = '1987' or $layoutVersion = '1989'">
 							<xsl:attribute name="border-top">0.5mm solid black</xsl:attribute>
 							<xsl:attribute name="border-bottom">0.5mm solid black</xsl:attribute>
 						</xsl:if>
@@ -4466,7 +4467,7 @@
 	
 	<xsl:variable name="font-size_footer_copyright">
 		<xsl:choose>
-			<xsl:when test="$layoutVersion = '1972' or $layoutVersion = '1987' or $layoutVersion = '1989'">8pt</xsl:when>
+			<xsl:when test="$layoutVersion = '1972' or $layoutVersion = '1979' or $layoutVersion = '1987' or $layoutVersion = '1989'">8pt</xsl:when>
 			<xsl:otherwise>9pt</xsl:otherwise>
 		</xsl:choose>
 	</xsl:variable>
@@ -4476,7 +4477,7 @@
 			<fo:block-container display-align="after" height="86mm">
 				
 				<fo:block line-height="90%" role="SKIP" margin-bottom="9mm">
-					<xsl:if test="$layoutVersion = '1972' or $layoutVersion = '1987'">
+					<xsl:if test="$layoutVersion = '1972' or $layoutVersion = '1979' or $layoutVersion = '1987'">
 						<xsl:attribute name="margin-bottom">5mm</xsl:attribute>
 					</xsl:if>
 					<fo:block font-size="8pt" text-align="justify" role="SKIP">
@@ -4549,7 +4550,7 @@
 									<fo:table-cell display-align="center" padding-top="0mm" font-size="{$font-size_footer_copyright}">
 										<fo:block text-align="right">
 											<xsl:choose>
-												<xsl:when test="$layoutVersion = '1972' or $layoutVersion = '1987' or ($layoutVersion = '1989' and $revision_date_num &lt;= 19981231)"></xsl:when>
+												<xsl:when test="$layoutVersion = '1972' or $layoutVersion = '1979' or $layoutVersion = '1987' or ($layoutVersion = '1989' and $revision_date_num &lt;= 19981231)"></xsl:when>
 												<xsl:otherwise><xsl:value-of select="$copyrightText"/></xsl:otherwise>
 											</xsl:choose>
 										</fo:block>
@@ -4595,7 +4596,7 @@
 									<fo:table-cell display-align="center" padding-top="0mm" font-size="{$font-size_footer_copyright}">
 										<fo:block>
 											<xsl:choose>
-												<xsl:when test="$layoutVersion = '1972' or $layoutVersion = '1987' or ($layoutVersion = '1989' and $revision_date_num &lt;= 19981231)"></xsl:when>
+												<xsl:when test="$layoutVersion = '1972' or $layoutVersion = '1979' or $layoutVersion = '1987' or ($layoutVersion = '1989' and $revision_date_num &lt;= 19981231)"></xsl:when>
 												<xsl:otherwise><xsl:value-of select="$copyrightText"/></xsl:otherwise>
 											</xsl:choose>
 										</fo:block>
@@ -4735,7 +4736,7 @@
 							<fo:table-cell display-align="center">
 								<fo:block font-size="{$font-size_footer_copyright}">
 									<xsl:choose>
-										<xsl:when test="$layoutVersion = '1972' or $layoutVersion = '1987' or ($layoutVersion = '1989' and $revision_date_num &lt;= 19981231)"></xsl:when>
+										<xsl:when test="$layoutVersion = '1972' or $layoutVersion = '1979' or $layoutVersion = '1987' or ($layoutVersion = '1989' and $revision_date_num &lt;= 19981231)"></xsl:when>
 										<xsl:otherwise><xsl:value-of select="$copyrightText"/></xsl:otherwise>
 									</xsl:choose>
 								</fo:block>
@@ -4757,7 +4758,7 @@
 			<fo:flow flow-name="xsl-region-body">
 				<fo:block-container height="252mm" display-align="after">
 					<xsl:choose>
-						<xsl:when test="$layoutVersion = '1972' or $layoutVersion = '1987'">
+						<xsl:when test="$layoutVersion = '1972' or $layoutVersion = '1979' or $layoutVersion = '1987'">
 							<xsl:call-template name="insertSingleLine"/>
 						</xsl:when>
 						<xsl:otherwise>
@@ -4766,7 +4767,7 @@
 					</xsl:choose>
 					<fo:block-container>
 						<fo:block font-size="12pt" font-weight="bold" padding-top="3.5mm" padding-bottom="0.5mm">
-							<xsl:if test="$layoutVersion = '1972' or $layoutVersion = '1987'">
+							<xsl:if test="$layoutVersion = '1972' or $layoutVersion = '1979' or $layoutVersion = '1987'">
 								<xsl:attribute name="font-size">11pt</xsl:attribute>
 								<xsl:attribute name="padding-top">1mm</xsl:attribute>
 								<xsl:attribute name="padding-bottom">1mm</xsl:attribute>
@@ -4780,7 +4781,7 @@
 									<xsl:attribute name="padding-bottom">2mm</xsl:attribute>
 								</xsl:if>
 							</xsl:if>
-							<xsl:if test="$layoutVersion = '1972' or $layoutVersion = '1987' or ($layoutVersion = '1989' and $revision_date_num &lt;= 19981231)">
+							<xsl:if test="$layoutVersion = '1972' or $layoutVersion = '1979' or $layoutVersion = '1987' or ($layoutVersion = '1989' and $revision_date_num &lt;= 19981231)">
 								<fo:block margin-bottom="6pt">
 									<xsl:value-of select="$udc"/>
 								</fo:block>
@@ -4790,7 +4791,7 @@
 								<xsl:value-of select="."/>
 								<xsl:if test="position() != last()">
 									<xsl:choose>
-										<xsl:when test="$layoutVersion = '1972' or $layoutVersion = '1987' or $layoutVersion = '1989'"><xsl:text>: </xsl:text></xsl:when>
+										<xsl:when test="$layoutVersion = '1972' or $layoutVersion = '1979' or $layoutVersion = '1987' or $layoutVersion = '1989'"><xsl:text>: </xsl:text></xsl:when>
 										<xsl:otherwise><xsl:text>; </xsl:text></xsl:otherwise>
 									</xsl:choose>
 								</xsl:if>
@@ -4824,7 +4825,7 @@
 						</xsl:if>
 					</fo:block-container>
 					<xsl:choose>
-						<xsl:when test="$layoutVersion = '1972' or $layoutVersion = '1987'">
+						<xsl:when test="$layoutVersion = '1972' or $layoutVersion = '1979' or $layoutVersion = '1987'">
 							<xsl:call-template name="insertSingleLine"/>
 						</xsl:when>
 						<xsl:when test="$layoutVersion = '1989' and $revision_date_num &lt;= 19981231">
@@ -5197,7 +5198,7 @@
 	</xsl:template>
 
 	<xsl:template name="insertSmallHorizontalLine">
-		<xsl:if test="($layoutVersion = '1951' or $layoutVersion = '1972' or $layoutVersion = '1987' or $layoutVersion = '1989')">
+		<xsl:if test="($layoutVersion = '1951' or $layoutVersion = '1972' or $layoutVersion = '1979' or $layoutVersion = '1987' or $layoutVersion = '1989')">
 			<!-- small horizontal line -->
 			<fo:block text-align="center" margin-top="12mm" keep-with-previous="always" role="SKIP">
 				<xsl:if test="$layout_columns != 1">
