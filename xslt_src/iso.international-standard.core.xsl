@@ -429,7 +429,12 @@
 						<xsl:attribute name="font-size">10pt</xsl:attribute>
 					</xsl:if>
 				
-					<xsl:if test="$layoutVersion = '1972' or $layoutVersion = '1979' or $layoutVersion = '1987' or $layoutVersion = '1989'">
+					<xsl:if test="$layoutVersion = '1972' or $layoutVersion = '1979'">
+						<xsl:attribute name="font-family">Univers, Times New Roman, Cambria Math, <xsl:value-of select="$font_noto_sans"/></xsl:attribute>
+						<xsl:attribute name="font-family-generic">Sans</xsl:attribute>
+						<xsl:attribute name="font-size">10pt</xsl:attribute>
+					</xsl:if>
+					<xsl:if test="$layoutVersion = '1987' or $layoutVersion = '1989'">
 						<xsl:attribute name="font-family">Arial, Times New Roman, Cambria Math, <xsl:value-of select="$font_noto_sans"/></xsl:attribute>
 						<xsl:attribute name="font-family-generic">Sans</xsl:attribute>
 						<xsl:attribute name="font-size">10pt</xsl:attribute>
@@ -1607,9 +1612,9 @@
 								<fo:table-body>
 									<fo:table-row height="39mm" display-align="center">
 										<fo:table-cell>
-											<fo:block font-size="33pt" margin-top="2mm">
+											<fo:block font-size="32pt" margin-top="2mm" letter-spacing="-0.02em">
 												<xsl:if test="string-length($docnumber) &gt; 4">
-													<xsl:attribute name="font-size">30pt</xsl:attribute>
+													<xsl:attribute name="font-size">29pt</xsl:attribute>
 												</xsl:if>
 												<xsl:value-of select="$doctype_localized"/>
 											</fo:block>
@@ -1621,20 +1626,26 @@
 											</fo:block>
 										</fo:table-cell>
 										<fo:table-cell text-align="right">
-											<fo:block font-size="34pt" font-weight="bold" margin-top="2mm">
+											<fo:block font-size="34pt" margin-top="2mm">
 												<xsl:value-of select="$docnumber"/>
 											</fo:block>
 										</fo:table-cell>
 									</fo:table-row>
 									<fo:table-row border-top="2pt solid black" height="4.5mm" display-align="center">
 										<fo:table-cell number-columns-spanned="3" font-size="5.6pt" text-align-last="justify">
-											<fo:block><xsl:value-of select="$ISO_title_en"/>&#x25cf;<xsl:value-of select="$ISO_title_ru"/>&#x25cf;<xsl:value-of select="$ISO_title_fr"/></fo:block>
+											<!-- <fo:block><xsl:value-of select="$ISO_title_en"/>&#x25cf;<xsl:value-of select="$ISO_title_ru"/>&#x25cf;<xsl:value-of select="$ISO_title_fr"/></fo:block> -->
+											<fo:block>
+												<xsl:value-of select="$ISO_title_en"/>
+												<xsl:call-template name="insertBlackCircle"/>
+												<xsl:value-of select="$ISO_title_ru"/>
+												<xsl:call-template name="insertBlackCircle"/>
+												<xsl:value-of select="$ISO_title_fr"/></fo:block>
 										</fo:table-cell>
 									</fo:table-row>
 								</fo:table-body>
 							</fo:table>
 							
-							<fo:block font-size="16pt" font-weight="bold" margin-top="44mm" margin-bottom="6mm" role="H1">
+							<fo:block font-size="18pt" font-family="Univers" font-weight="bold" margin-top="44mm" margin-bottom="6mm" role="H1">
 								<xsl:call-template name="insertTitlesLangMain"/>
 							</fo:block>
 							
@@ -3969,6 +3980,11 @@
 			<xsl:if test="@id">
 				<xsl:attribute name="id"><xsl:value-of select="@id"/></xsl:attribute>
 			</xsl:if>
+			
+			<xsl:if test="$layout_columns = 2">
+				<xsl:attribute name="font-size">90%</xsl:attribute>
+			</xsl:if>
+			
 			<!-- bookmarks only in paragraph -->
 			<xsl:if test="count(iso:bookmark) != 0 and count(*) = count(iso:bookmark) and normalize-space() = ''">
 				<xsl:attribute name="font-size">0</xsl:attribute>
@@ -5207,6 +5223,14 @@
 				<fo:leader leader-pattern="rule" leader-length="20%"/>
 			</fo:block>
 		</xsl:if>
+	</xsl:template>
+
+	<xsl:template name="insertBlackCircle">
+		<fo:instream-foreign-object content-width="1.3mm" fox:alt-text="black circle">	
+			<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20">
+				<circle cx="10" cy="10" r="5" stroke="black" stroke-width="5" fill="black"/>
+			</svg>
+		</fo:instream-foreign-object>
 	</xsl:template>
 
 	<xsl:template name="insertLastBlock">
