@@ -433,6 +433,9 @@
 						<xsl:attribute name="font-family">Univers, Times New Roman, Cambria Math, <xsl:value-of select="$font_noto_sans"/></xsl:attribute>
 						<xsl:attribute name="font-family-generic">Sans</xsl:attribute>
 						<xsl:attribute name="font-size">10pt</xsl:attribute>
+						<xsl:if test="$layout_columns = 2">
+							<xsl:attribute name="font-size">9pt</xsl:attribute>
+						</xsl:if>
 					</xsl:if>
 					<xsl:if test="$layoutVersion = '1987' or $layoutVersion = '1989'">
 						<xsl:attribute name="font-family">Arial, Times New Roman, Cambria Math, <xsl:value-of select="$font_noto_sans"/></xsl:attribute>
@@ -3751,6 +3754,12 @@
 						<xsl:when test="$level &gt;= 3">9pt</xsl:when> -->
 					</xsl:choose>
 				</xsl:when>
+				<xsl:when test="$layoutVersion = '1972'">
+					<xsl:choose>
+						<xsl:when test="$level = 1">9pt</xsl:when>
+						<xsl:otherwise>9pt</xsl:otherwise>
+					</xsl:choose>
+				</xsl:when>
 				<xsl:when test="$layoutVersion = '1987' and $doctype = 'technical-report'">
 					<xsl:choose>
 						<xsl:when test="$level = 1">11pt</xsl:when>
@@ -3844,6 +3853,7 @@
 							<xsl:when test="ancestor::iso:introduction and $level &gt;= 2 and ../preceding-sibling::iso:clause">30pt</xsl:when>
 							<xsl:when test="$layoutVersion = '1987' and $doctype = 'technical-report' and ancestor::iso:preface and $level = 1">10mm</xsl:when>
 							<xsl:when test="($layoutVersion = '1972' or $layoutVersion = '1979' or $layoutVersion = '1987' or ($layoutVersion = '1989' and $revision_date_num &lt;= 19981231)) and ancestor::iso:preface and $level = 1">62mm</xsl:when>
+							<xsl:when test="$layoutVersion = '1972' and $level = 1">30pt</xsl:when>
 							<xsl:when test="$layoutVersion = '1989' and ancestor::iso:preface and $level = 1">56pt</xsl:when>
 							<xsl:when test="$layoutVersion = '2024' and ancestor::iso:preface and $level = 1">0pt</xsl:when>
 							<xsl:when test="ancestor::iso:preface">8pt</xsl:when>
@@ -3883,6 +3893,13 @@
 							</xsl:if>
 						</xsl:if>
 					</xsl:if>
+					
+					<xsl:if test="$layoutVersion = '1972'">
+						<xsl:if test="$level = 1">
+							<xsl:attribute name="text-transform">uppercase</xsl:attribute>
+						</xsl:if>
+					</xsl:if>
+					
 					<xsl:if test="$layoutVersion = '1987' and ../@type = 'section'">
 						<xsl:attribute name="font-size">14pt</xsl:attribute>
 						<xsl:attribute name="text-align">center</xsl:attribute>
@@ -3906,6 +3923,62 @@
 								<xsl:with-param name="letter-spacing" select="0.65"/>
 							</xsl:call-template>
 						</xsl:when>
+						
+						<xsl:when test="$layoutVersion = '1972' and ($level = 3 or $level = 4)">
+							<fo:inline><xsl:apply-templates select="*[local-name() = 'tab'][1]/preceding-sibling::node()"/></fo:inline>
+							<xsl:apply-templates select="*[local-name() = 'tab'][1]"/>
+							<xsl:choose>
+								<xsl:when test="$level = 3">
+									<fo:inline font-weight="normal" font-style="italic"><xsl:apply-templates select="*[local-name() = 'tab'][1]/following-sibling::node()"/></fo:inline>
+								</xsl:when>
+								<xsl:otherwise> <!-- i.e. $level = 4 -->
+								
+									<!-- small caps text with letter spacing -->
+									<fo:inline font-weight="normal">
+										<xsl:for-each select="*[local-name() = 'tab'][1]/following-sibling::node()">
+											<xsl:choose>
+												<xsl:when test="self::text()">
+													<fo:inline font-size="70%" letter-spacing="0.1em">
+														<xsl:variable name="textSmallCaps">
+															<xsl:call-template name="recursiveSmallCaps">
+																<xsl:with-param name="text" select="."/>
+																<xsl:with-param name="ratio" select="0.70"/>
+																<xsl:with-param name="letter-spacing" select="'0.1em'"/>
+															</xsl:call-template>
+														</xsl:variable>
+														<xsl:for-each select="xalan:nodeset($textSmallCaps)/node()">
+															<xsl:choose>
+																<xsl:when test="self::fo:inline">
+																	<xsl:copy>
+																		<xsl:copy-of select="@*"/>
+																		<xsl:call-template name="add-letter-spacing">
+																			<xsl:with-param name="text" select="."/>
+																			<xsl:with-param name="letter-spacing">0.2</xsl:with-param>
+																		</xsl:call-template>
+																	</xsl:copy>
+																</xsl:when>
+																<xsl:otherwise>
+																	<xsl:call-template name="add-letter-spacing">
+																		<xsl:with-param name="text" select="."/>
+																		<xsl:with-param name="letter-spacing">0.2</xsl:with-param>
+																	</xsl:call-template>
+																</xsl:otherwise>
+															</xsl:choose>
+														</xsl:for-each>
+													</fo:inline>
+												</xsl:when>
+												<xsl:otherwise>
+													<xsl:apply-templates select="."/>
+												</xsl:otherwise>
+											</xsl:choose>
+										</xsl:for-each>
+									</fo:inline> <!-- END:  small caps text with letter spacing -->
+								
+								</xsl:otherwise> <!-- END: $level = 4 -->
+							</xsl:choose>
+							
+						</xsl:when>
+						
 						<xsl:otherwise>
 							<xsl:apply-templates />
 						</xsl:otherwise>
@@ -3998,10 +4071,6 @@
 			</xsl:if>
 			<xsl:if test="@id">
 				<xsl:attribute name="id"><xsl:value-of select="@id"/></xsl:attribute>
-			</xsl:if>
-			
-			<xsl:if test="$layout_columns = 2">
-				<xsl:attribute name="font-size">90%</xsl:attribute>
 			</xsl:if>
 			
 			<!-- bookmarks only in paragraph -->
@@ -4393,6 +4462,9 @@
 							<fo:table-column column-width="50%"/>
 							<fo:table-body>
 								<fo:table-row display-align="center" height="9mm">
+									<xsl:if test="$layoutVersion = '1972' or $layoutVersion = '1979'">
+										<xsl:attribute name="height">11mm</xsl:attribute>
+									</xsl:if>
 									<xsl:if test="$layoutVersion = '2024'">
 										<xsl:attribute name="height">8.5mm</xsl:attribute>
 									</xsl:if>
