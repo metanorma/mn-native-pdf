@@ -1058,6 +1058,21 @@
 		</fo:block>
 		<xsl:apply-templates/>
 	</xsl:template>
+	
+	<!-- indent for clause level 4 and more -->
+	<xsl:template match="*[local-name() = 'sections']/*[local-name() = 'page_sequence']//*[local-name() = 'clause'][*[local-name() = 'title'][@depth &gt;= 4]]" priority="20">
+		<fo:block keep-with-next="always">
+			<fo:block id="{@id}" />
+		</fo:block>
+		<xsl:apply-templates select="*[local-name() = 'title']"/>
+		<fo:block-container margin-left="6mm">
+			<fo:block-container margin-left="0">
+				<fo:block>
+					<xsl:apply-templates select="*[not(local-name() = 'title')]"/>
+				</fo:block>
+			</fo:block-container>
+		</fo:block-container>
+	</xsl:template>
 
 	<xsl:template match="*[local-name() = 'sections']/*[local-name() = 'page_sequence']/*[local-name() = 'clause']" priority="21">
 		<fo:block-container keep-with-next="always">
