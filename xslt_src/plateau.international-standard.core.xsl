@@ -1147,6 +1147,9 @@
 						<xsl:attribute name="margin-bottom">0pt</xsl:attribute>
 					</xsl:if>
 					
+					<xsl:if test="parent::plateau:clause">
+						<xsl:text>&#x3000;</xsl:text>
+					</xsl:if>
 					
 					<xsl:apply-templates>
 						<xsl:with-param name="split_keep-within-line" select="$split_keep-within-line"/>
