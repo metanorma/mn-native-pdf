@@ -1006,9 +1006,9 @@
 						<xsl:copy-of select="@id"/>
 					</xsl:if>
 					
-					<xsl:if test="$level = '3'">
+					<!-- <xsl:if test="$level = '3'">
 						<xsl:attribute name="margin-left">7.5mm</xsl:attribute>
-					</xsl:if>
+					</xsl:if> -->
 					
 					<xsl:if test="$doctype = 'technical-report'">
 						<xsl:choose>
