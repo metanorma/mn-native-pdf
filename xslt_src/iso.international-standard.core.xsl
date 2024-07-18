@@ -1526,7 +1526,10 @@
 								</fo:block>
 								
 								<fo:block-container height="39mm" display-align="center">
-									<fo:block font-size="11pt" >
+									<fo:block font-size="11pt">
+										<xsl:if test="$revision_date_num &lt; 19680101">
+											<xsl:attribute name="font-size">14pt</xsl:attribute>
+										</xsl:if>
 										<xsl:call-template name="insertTitlesLangMain"/>
 									</fo:block>
 								</fo:block-container>
