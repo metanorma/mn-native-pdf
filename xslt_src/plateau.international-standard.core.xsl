@@ -1614,7 +1614,7 @@
 				</xsl:if>
 			</xsl:if>
 			
-			<xsl:if test="ancestor::*[local-name() = 'annex'] and ancestor::*[local-name() = 'title']">
+			<xsl:if test="ancestor::*[local-name() = 'annex'] and ancestor::*[local-name() = 'title'] and not(ancestor::*[local-name() = 'clause'])">
 				<xsl:attribute name="font-family">inherit</xsl:attribute>
 				<xsl:attribute name="font-weight">bold</xsl:attribute>
 			</xsl:if>
