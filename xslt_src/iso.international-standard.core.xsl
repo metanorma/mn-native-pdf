@@ -3741,7 +3741,8 @@
 	</xsl:template>
 	
 	<xsl:template match="iso:title" name="title">
-	
+		<xsl:param name="without_number">false</xsl:param>
+		
 		<xsl:variable name="level">
 			<xsl:call-template name="getLevel"/>
 		</xsl:variable>
@@ -3751,7 +3752,7 @@
 				<xsl:when test="$layoutVersion = '1951'">
 					<xsl:choose>
 						<xsl:when test="$level = 1 and ancestor::iso:preface">13pt</xsl:when>
-						<xsl:when test="$level = 1">9pt</xsl:when>
+						<!-- <xsl:when test="$level = 1">9pt</xsl:when> -->
 						<xsl:otherwise>inherit</xsl:otherwise>
 						<!-- <xsl:when test="$level = 2">10pt</xsl:when>
 						<xsl:when test="$level &gt;= 3">9pt</xsl:when> -->
@@ -3889,8 +3890,13 @@
 					</xsl:if>
 					<xsl:if test="$layoutVersion = '1951'">
 						<xsl:if test="$element-name = 'fo:block' and ($level  = 1 or parent::iso:introduction)">
+						
+							<xsl:if test="$revision_date_num &lt; 19690101">
 							<xsl:attribute name="text-align">center</xsl:attribute>
+							</xsl:if>
+							
 							<xsl:attribute name="text-transform">uppercase</xsl:attribute>
+								
 							<xsl:if test="ancestor::iso:preface or ancestor::iso:introduction">
 								<xsl:attribute name="font-weight">normal</xsl:attribute>
 							</xsl:if>
@@ -3980,10 +3986,18 @@
 								</xsl:otherwise> <!-- END: $level = 4 -->
 							</xsl:choose>
 							
-						</xsl:when>
+						</xsl:when> <!-- $layoutVersion = '1972' and ($level = 3 or $level = 4) -->
 						
 						<xsl:otherwise>
-							<xsl:apply-templates />
+							<xsl:choose>
+								<xsl:when test="$without_number = 'true'">
+									<xsl:apply-templates select="*[local-name() = 'tab'][1]/following-sibling::node()"/>
+								</xsl:when>
+								<xsl:otherwise>
+									<xsl:apply-templates />
+								</xsl:otherwise>
+							</xsl:choose>
+							
 						</xsl:otherwise>
 					</xsl:choose>
 					<xsl:apply-templates select="following-sibling::*[1][local-name() = 'variant-title'][@type = 'sub']" mode="subtitle"/>
@@ -3999,10 +4013,13 @@
 	</xsl:template>
 	
 	<xsl:template match="iso:title[../@inline-header = 'true'][following-sibling::*[1][local-name() = 'p']]" priority="3">
+		<xsl:param name="without_number">false</xsl:param>
 		<xsl:choose>
 			<xsl:when test="($layoutVersion = '1951' or $layoutVersion = '1972' or $layoutVersion = '1979' or $layoutVersion = '1987' or $layoutVersion = '1989') and $layout_columns != 1"/> <!-- don't show 'title' with inline-header='true' if next element is 'p' -->
 			<xsl:otherwise>
-				<xsl:call-template name="title"/>
+				<xsl:call-template name="title">
+					<xsl:with-param name="without_number" select="$without_number"/>
+				</xsl:call-template>
 			</xsl:otherwise>
 		</xsl:choose>
 	</xsl:template>
@@ -4027,7 +4044,7 @@
 			<xsl:when test="($layoutVersion = '1951' or $layoutVersion = '1972' or $layoutVersion = '1979' or $layoutVersion = '1987' or $layoutVersion = '1989') and
 				local-name() = 'clause' and count(node()) = 0 and following-sibling::*[1][local-name() = 'title' and not(@id)]"></xsl:when> <!-- @id will be added to title -->
 			<xsl:otherwise>
-				<xsl:call-template name="template_clause"/>
+				<xsl:call-template name="template_clause_iso"/>
 			</xsl:otherwise>
 		</xsl:choose>
 	</xsl:template>
@@ -4222,6 +4239,101 @@
 					<xsl:apply-templates select="iso:title"/>
 				</fo:block>
 				<xsl:apply-templates select="*[not(self::iso:title)]"/>
+			</xsl:otherwise>
+		</xsl:choose>
+	</xsl:template>
+	
+	<!-- main sections -->
+	<xsl:template match="/*/*[local-name() = 'sections']/*" name="sections_node_iso" priority="3">
+		<fo:block>
+			<xsl:call-template name="setId"/>
+			
+			<xsl:call-template name="sections_element_style"/>
+			
+			
+			<xsl:call-template name="processElementContent"/>
+		</fo:block>
+	</xsl:template>
+	
+	
+	<xsl:template match="*[local-name() = 'clause'][normalize-space() != '' or *[local-name() = 'figure'] or @id]" name="template_clause_iso"> <!-- if clause isn't empty -->
+		<fo:block>
+			<xsl:if test="parent::*[local-name() = 'copyright-statement']">
+				<xsl:attribute name="role">SKIP</xsl:attribute>
+			</xsl:if>
+			
+			<xsl:call-template name="setId"/>
+			
+			<xsl:call-template name="setBlockSpanAll"/>
+			
+			<xsl:call-template name="refine_clause_style"/>
+			
+			<xsl:call-template name="processElementContent"/>
+			
+		</fo:block>
+	</xsl:template>
+	
+	
+	<xsl:template name="processElementContent">
+		<xsl:choose>
+			<xsl:when test="$layoutVersion = '1951'">
+			
+				<fo:list-block role="SKIP">
+					<xsl:variable name="level">
+						<xsl:for-each select="iso:title">
+							<xsl:call-template name="getLevel"/>
+						</xsl:for-each>
+					</xsl:variable>
+					<xsl:attribute name="provisional-distance-between-starts">
+						<xsl:choose>
+							<xsl:when test="$level = 2">8mm</xsl:when>
+							<xsl:when test="$level = 3">12mm</xsl:when>
+							<xsl:when test="$level = 4">14mm</xsl:when>
+							<xsl:when test="$level &gt; 4">16mm</xsl:when>
+							<xsl:otherwise>6mm</xsl:otherwise>
+						</xsl:choose>
+					</xsl:attribute>
+					
+					<fo:list-item>
+						<fo:list-item-label end-indent="label-end()">
+							<fo:block>
+								<xsl:variable name="element_title">
+									<xsl:apply-templates select="iso:title"/>
+								</xsl:variable>
+								<xsl:for-each select="xalan:nodeset($element_title)/*[1]"> <!-- process fo: element -->
+									<xsl:copy-of select="@font-size"/>
+									<xsl:copy-of select="@role"/>
+									<xsl:copy-of select="@font-weight"/>
+									<xsl:copy-of select="@font-style"/>
+								</xsl:for-each>
+								<xsl:value-of select="xalan:nodeset($element_title)/*[1]/text()"/>
+							</fo:block>
+						</fo:list-item-label>
+						<fo:list-item-body start-indent="body-start()">
+							<fo:block>
+								<xsl:apply-templates select="iso:title">
+									<xsl:with-param name="without_number">true</xsl:with-param>
+								</xsl:apply-templates>
+								<xsl:apply-templates select="node()[not(local-name() = 'title')]"/>
+							</fo:block>
+						</fo:list-item-body>
+					</fo:list-item>
+				</fo:list-block>
+
+			</xsl:when>
+			<xsl:otherwise>
+				<xsl:apply-templates />
+			</xsl:otherwise>
+		</xsl:choose>
+	</xsl:template>
+	
+	
+	<!-- page_sequence/sections/clause -->
+	<xsl:template match="*[local-name() = 'sections']/*[local-name() = 'page_sequence']/*[not(@top-level)]" priority="3">
+		<xsl:choose>
+			<xsl:when test="local-name() = 'clause' and normalize-space() = '' and count(*) = 0"></xsl:when>
+			<xsl:otherwise>
+				<xsl:call-template name="sections_node_iso"/>
 			</xsl:otherwise>
 		</xsl:choose>
 	</xsl:template>

@@ -15918,7 +15918,14 @@
 				</xsl:choose>
 			</xsl:if>
 			<xsl:if test="$namespace = 'ieee'">1</xsl:if>
-			<xsl:if test="$namespace = 'iso' or $namespace = 'jcgm'">
+			<xsl:if test="$namespace = 'iso'">
+				<xsl:choose>
+					<xsl:when test="$layoutVersion = '1951'">2</xsl:when>
+					<xsl:when test="$depth = 2">3</xsl:when>
+					<xsl:otherwise>4</xsl:otherwise>
+				</xsl:choose>
+			</xsl:if>
+			<xsl:if test=" $namespace = 'jcgm'">
 				<xsl:choose>
 					<xsl:when test="$depth = 2">3</xsl:when>
 					<xsl:otherwise>4</xsl:otherwise>
