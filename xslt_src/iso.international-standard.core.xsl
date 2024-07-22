@@ -4256,7 +4256,7 @@
 	</xsl:template>
 	
 	
-	<xsl:template match="*[local-name() = 'clause'][normalize-space() != '' or *[local-name() = 'figure'] or @id]" name="template_clause_iso"> <!-- if clause isn't empty -->
+	<xsl:template match="*[local-name() = 'sections' or local-name() = 'annex']//*[local-name() = 'clause'][normalize-space() != '' or *[local-name() = 'figure'] or @id]" name="template_clause_iso"> <!-- if clause isn't empty -->
 		<fo:block>
 			<xsl:if test="parent::*[local-name() = 'copyright-statement']">
 				<xsl:attribute name="role">SKIP</xsl:attribute>
@@ -4276,7 +4276,7 @@
 	
 	<xsl:template name="processElementContent">
 		<xsl:choose>
-			<xsl:when test="$layoutVersion = '1951'">
+			<xsl:when test="$layoutVersion = '1951' and $revision_date &gt;= 19690101">
 			
 				<fo:list-block role="SKIP">
 					<xsl:variable name="level">
