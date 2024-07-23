@@ -204,6 +204,12 @@
 				<xsl:apply-templates mode="update_xml_step1"/>
 			</xsl:variable>
 			<!-- DEBUG: updated_xml_step1=<xsl:copy-of select="$updated_xml_step1"/> -->
+			<!-- <xsl:message>start redirect</xsl:message>
+			<redirect:write file="update_xml_step1.xml">
+				<xsl:copy-of select="$updated_xml_step1"/>
+			</redirect:write>
+			<xsl:message>end redirect</xsl:message> -->
+			
 			
 			<xsl:variable name="updated_xml_step2_">
 				<xsl:apply-templates select="xalan:nodeset($updated_xml_step1)" mode="update_xml_step2"/>
@@ -267,88 +273,101 @@
 					<!-- Contents and preface pages -->
 					<!-- ========================== -->
 					
-					<fo:page-sequence master-reference="document_toc" initial-page-number="1" force-page-count="no-force">
+					
+					
+					<xsl:for-each select="/*/*[local-name()='preface']/*">
+						<xsl:sort select="@displayorder" data-type="number"/>
 						
-						<xsl:call-template name="insertHeaderFooter">
-							<xsl:with-param name="docidentifier" select="$docidentifier"/>
-							<xsl:with-param name="copyrightText" select="$copyrightText"/>
-							<xsl:with-param name="section">preface</xsl:with-param>
-							<xsl:with-param name="section_title">
-								<fo:inline font-family="IPAexGothic">
-									<xsl:text>&#xa0;</xsl:text>
-									<xsl:call-template name="getLocalizedString">
-										<xsl:with-param name="key">table_of_contents</xsl:with-param>
+						<xsl:choose>
+							<xsl:when test="local-name() = 'clause' and @type = 'toc'">
+								<fo:page-sequence master-reference="document_toc" force-page-count="no-force">
+						
+									<xsl:if test="position() = 1">
+										<xsl:attribute name="initial-page-number">1</xsl:attribute>
+									</xsl:if>
+						
+									<xsl:call-template name="insertHeaderFooter">
+										<xsl:with-param name="docidentifier" select="$docidentifier"/>
+										<xsl:with-param name="copyrightText" select="$copyrightText"/>
+										<xsl:with-param name="section">preface</xsl:with-param>
+										<xsl:with-param name="section_title">
+											<fo:inline font-family="IPAexGothic">
+												<xsl:text>&#xa0;</xsl:text>
+												<xsl:call-template name="getLocalizedString">
+													<xsl:with-param name="key">table_of_contents</xsl:with-param>
+												</xsl:call-template>
+											</fo:inline>
+										</xsl:with-param>
 									</xsl:call-template>
-								</fo:inline>
-							</xsl:with-param>
-						</xsl:call-template>
-						
-						<fo:flow flow-name="xsl-region-body">
-						
-							<xsl:if test="$debug = 'true'">
-								<xsl:text disable-output-escaping="yes">&lt;!--</xsl:text>
-									DEBUG
-									contents=<xsl:copy-of select="$contents"/>
-								<xsl:text disable-output-escaping="yes">--&gt;</xsl:text>
-							</xsl:if>
-							
-							<xsl:apply-templates select="/*/*[local-name()='preface']/*[local-name() = 'clause'][@type = 'toc']">
-								<xsl:with-param name="num" select="$num"/>
-							</xsl:apply-templates>
-							
-							<xsl:if test="not(/*/*[local-name()='preface']/*[local-name() = 'clause'][@type = 'toc'])">
-								<fo:block><!-- prevent fop error for empty document --></fo:block>
-							</xsl:if>
-							
-						</fo:flow>
-						
-					</fo:page-sequence>
-					
-					
-					<xsl:variable name="structured_xml_preface">
-
-						<xsl:apply-templates select="/*/*[local-name()='preface']/*[local-name() = 'foreword']" mode="linear_xml" />
-						
-					</xsl:variable>
-					
-					<!-- structured_xml_preface=<xsl:copy-of select="$structured_xml_preface"/> -->
-					
-					<xsl:variable name="paged_xml_preface_">
-						<xsl:call-template name="makePagedXML">
-							<xsl:with-param name="structured_xml" select="$structured_xml_preface"/>
-						</xsl:call-template>
-					</xsl:variable>
-					<xsl:variable name="paged_xml_preface" select="xalan:nodeset($paged_xml_preface_)"/>
-					
-					<xsl:if test="$paged_xml_preface/*[local-name()='page'] and count($paged_xml_preface/*[local-name()='page']/*) != 0">
-						<!-- Preface pages -->
-						<fo:page-sequence master-reference="document_preface" force-page-count="no-force">
-							
-							<fo:static-content flow-name="xsl-footnote-separator">
-								<fo:block text-align="center" margin-bottom="6pt">
-									<fo:leader leader-pattern="rule" leader-length="80mm"/>
-								</fo:block>
-							</fo:static-content>
-							
-							<xsl:call-template name="insertHeaderFooter">
-								<xsl:with-param name="docidentifier" select="$docidentifier"/>
-								<xsl:with-param name="copyrightText" select="$copyrightText"/>
-								<xsl:with-param name="section">preface</xsl:with-param>
-							</xsl:call-template>
-							
-							<fo:flow flow-name="xsl-region-body">
-							
-								<fo:block>
-									<xsl:for-each select="$paged_xml_preface/*[local-name()='page']">
-										<xsl:if test="position() != 1">
-											<fo:block break-after="page"/>
+									
+									<fo:flow flow-name="xsl-region-body">
+									
+										<!-- <xsl:if test="$debug = 'true'">
+											<redirect:write file="contents_.xml">
+												<xsl:copy-of select="$contents"/>
+											</redirect:write>
+										</xsl:if> -->
+										
+										<xsl:apply-templates select=".">
+											<xsl:with-param name="num" select="$num"/>
+										</xsl:apply-templates>
+										
+										<!-- <xsl:if test="not(/*/*[local-name()='preface']/*[local-name() = 'clause'][@type = 'toc'])">
+											<fo:block> --><!-- prevent fop error for empty document --><!-- </fo:block>
+										</xsl:if> -->
+										
+									</fo:flow>
+									
+								</fo:page-sequence>
+							</xsl:when><!-- end ToC -->
+							<xsl:otherwise>
+								<xsl:variable name="structured_xml_preface">
+									<xsl:apply-templates select="." mode="linear_xml" />
+								</xsl:variable>
+								
+								<xsl:variable name="paged_xml_preface_">
+									<xsl:call-template name="makePagedXML">
+										<xsl:with-param name="structured_xml" select="$structured_xml_preface"/>
+									</xsl:call-template>
+								</xsl:variable>
+								<xsl:variable name="paged_xml_preface" select="xalan:nodeset($paged_xml_preface_)"/>
+								
+								<xsl:if test="$paged_xml_preface/*[local-name()='page'] and count($paged_xml_preface/*[local-name()='page']/*) != 0">
+									<!-- Preface pages -->
+									<fo:page-sequence master-reference="document_preface" force-page-count="no-force">
+										
+										<xsl:if test="position() = 1">
+											<xsl:attribute name="initial-page-number">1</xsl:attribute>
 										</xsl:if>
-										<xsl:apply-templates select="*" mode="page"/>
-									</xsl:for-each>
-								</fo:block>
-							</fo:flow>
-						</fo:page-sequence> <!-- END Preface pages -->
-					</xsl:if>
+										
+										<fo:static-content flow-name="xsl-footnote-separator">
+											<fo:block text-align="center" margin-bottom="6pt">
+												<fo:leader leader-pattern="rule" leader-length="80mm"/>
+											</fo:block>
+										</fo:static-content>
+										
+										<xsl:call-template name="insertHeaderFooter">
+											<xsl:with-param name="docidentifier" select="$docidentifier"/>
+											<xsl:with-param name="copyrightText" select="$copyrightText"/>
+											<xsl:with-param name="section">preface</xsl:with-param>
+										</xsl:call-template>
+										
+										<fo:flow flow-name="xsl-region-body">
+										
+											<fo:block>
+												<xsl:for-each select="$paged_xml_preface/*[local-name()='page']">
+													<xsl:if test="position() != 1">
+														<fo:block break-after="page"/>
+													</xsl:if>
+													<xsl:apply-templates select="*" mode="page"/>
+												</xsl:for-each>
+											</fo:block>
+										</fo:flow>
+									</fo:page-sequence> <!-- END Preface pages -->
+								</xsl:if>
+							</xsl:otherwise>
+						</xsl:choose>
+					</xsl:for-each>
 					
 					
 					<!-- Document type rendering -->
@@ -424,7 +443,12 @@
 							<xsl:copy-of select="./*"/>
 						</xsl:for-each>
 					</xsl:variable>
-					<!-- structured_xml=<xsl:copy-of select="$structured_xml" /> -->
+					
+					<!-- <xsl:if test="$debug = 'true'">
+						<redirect:write file="structured_xml_.xml">
+							<xsl:copy-of select="$structured_xml"/>
+						</redirect:write>
+					</xsl:if> -->
 					
 					<xsl:variable name="paged_xml">
 						<xsl:call-template name="makePagedXML">
@@ -1137,6 +1161,12 @@
 				</xsl:element>
 			</xsl:otherwise>
 		</xsl:choose>
+	</xsl:template>
+
+	<xsl:template match="*[local-name() = 'introduction']">
+		<fo:block id="{@id}">
+			<xsl:apply-templates />
+		</fo:block>
 	</xsl:template>
 
 	<xsl:template match="*[local-name() = 'annex']" priority="2">
