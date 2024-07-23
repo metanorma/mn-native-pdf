@@ -8982,14 +8982,27 @@
 			</xsl:choose>
 		</xsl:variable>
 		<xsl:variable name="current_fn_number_text">
-			<xsl:value-of select="$current_fn_number"/>
+			<xsl:choose>
+				<xsl:when test="$namespace = 'iso'">
+					<xsl:choose>
+						<xsl:when test="$layoutVersion = '1951' and translate($current_fn_number, '0123456789', '') = ''">
+							<!-- replace number to asterisks -->
+							<xsl:call-template name="repeat">
+								<xsl:with-param name="char" select="'*'"/>
+								<xsl:with-param name="count" select="$current_fn_number"/>
+							</xsl:call-template>
+						</xsl:when>
+						<xsl:otherwise><xsl:value-of select="$current_fn_number"/><xsl:text>)</xsl:text></xsl:otherwise>
+					</xsl:choose>
+				</xsl:when>
+				<xsl:otherwise>
+					<xsl:value-of select="$current_fn_number"/>
+				</xsl:otherwise>
+			</xsl:choose>
 			<xsl:if test="$namespace = 'bsi'">
 				<xsl:if test="$document_type = 'PAS'">
 					<xsl:text>)</xsl:text>
 				</xsl:if>
-			</xsl:if>
-			<xsl:if test="$namespace = 'iso'">
-				<xsl:text>)</xsl:text>
 			</xsl:if>
 			<xsl:if test="$namespace = 'jis'">
 				<fo:inline font-weight="normal">)</fo:inline>
