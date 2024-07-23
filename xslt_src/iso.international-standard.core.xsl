@@ -427,6 +427,9 @@
 				
 					<xsl:if test="$layoutVersion = '1951'">
 						<xsl:attribute name="font-size">10pt</xsl:attribute>
+						<xsl:if test="$revision_date_num &gt;= 19680101">
+							<xsl:attribute name="font-size">9pt</xsl:attribute>
+						</xsl:if>
 					</xsl:if>
 				
 					<xsl:if test="$layoutVersion = '1972' or $layoutVersion = '1979'">
@@ -1773,7 +1776,7 @@
 							</fo:block-container>
 						</fo:flow>
 					</fo:page-sequence>
-				</xsl:when>
+				</xsl:when> <!-- END: $layoutVersion = '1987' -->
 			
 				<xsl:when test="$layoutVersion = '2024'">
 					<fo:page-sequence master-reference="cover-page_2024" force-page-count="no-force">
@@ -3415,32 +3418,52 @@
 	</xsl:template>
 	
 	<xsl:template match="iso:sections//iso:p[@class = 'zzSTDTitle1']" priority="4">
-		<xsl:if test="not($layoutVersion = '1987' and $doctype = 'technical-report')">
-		<fo:block font-size="18pt" font-weight="bold" margin-top="40pt" margin-bottom="20pt" line-height="1.1" role="H1">
-			<xsl:if test="$layoutVersion = '1951'">
-				<xsl:attribute name="font-size">13pt</xsl:attribute>
-				<xsl:attribute name="text-align">center</xsl:attribute>
-				<xsl:attribute name="margin-top">49mm</xsl:attribute>
-				<xsl:attribute name="text-transform">uppercase</xsl:attribute>
-				<xsl:if test="$revision_date_num &gt;= 19690101">
-					<xsl:attribute name="font-family">Arial</xsl:attribute>
-					<xsl:attribute name="font-size">11pt</xsl:attribute>
-				</xsl:if>
-			</xsl:if>
-			<xsl:if test="$layoutVersion = '1972' or $layoutVersion = '1979' or $layoutVersion = '1987' or $layoutVersion = '1989'">
-				<xsl:attribute name="font-size">16pt</xsl:attribute>
-				<xsl:attribute name="span">all</xsl:attribute>
-				<xsl:attribute name="margin-bottom">40pt</xsl:attribute>
-			</xsl:if>
-			<xsl:if test="$layoutVersion = '2024'">
-				<xsl:attribute name="margin-top">50pt</xsl:attribute>
-			</xsl:if>
-			<xsl:if test="following-sibling::*[1][self::iso:p][starts-with(@class, 'zzSTDTitle')]">
-				<xsl:attribute name="margin-bottom">0pt</xsl:attribute>
-			</xsl:if>
-			<xsl:apply-templates />
-		</fo:block>
-		</xsl:if>
+		<xsl:choose>
+			<xsl:when test="$layoutVersion = '1951'">
+				<fo:block font-size="13pt" font-weight="bold" text-align="center" margin-top="49mm" margin-bottom="20pt" text-transform="uppercase" line-height="1.1" role="H1">
+					<xsl:if test="$revision_date_num &gt;= 19680101">
+						<xsl:attribute name="font-family">Arial</xsl:attribute>
+						<xsl:attribute name="font-size">10.5pt</xsl:attribute>
+						<xsl:attribute name="margin-top">24mm</xsl:attribute>
+						<xsl:attribute name="margin-bottom">20mm</xsl:attribute>
+					</xsl:if>
+					<xsl:if test="following-sibling::*[1][self::iso:p][starts-with(@class, 'zzSTDTitle')]">
+						<xsl:attribute name="margin-bottom">0pt</xsl:attribute>
+					</xsl:if>
+					
+					<xsl:choose>
+						<xsl:when test="$revision_date_num &gt;= 19680101">
+							<fo:block font-weight="normal"><xsl:apply-templates select="/iso:iso-standard/iso:bibdata/iso:title[@language = $lang and @type = 'title-intro']"/></fo:block>
+							<fo:block space-before="24pt"><xsl:apply-templates select="/iso:iso-standard/iso:bibdata/iso:title[@language = $lang and @type = 'title-main']"/></fo:block>
+						</xsl:when>
+						<xsl:otherwise>
+							<xsl:apply-templates/>
+						</xsl:otherwise>
+					</xsl:choose>
+					
+				</fo:block>
+			</xsl:when>
+			<xsl:when test="$layoutVersion = '1987' and $doctype = 'technical-report'"></xsl:when>
+			<xsl:when test="$layoutVersion = '1972' or $layoutVersion = '1979' or $layoutVersion = '1987' or $layoutVersion = '1989'">
+				<fo:block font-size="16pt" font-weight="bold" margin-top="40pt" margin-bottom="40pt" line-height="1.1" role="H1" span="all">
+					<xsl:if test="following-sibling::*[1][self::iso:p][starts-with(@class, 'zzSTDTitle')]">
+						<xsl:attribute name="margin-bottom">0pt</xsl:attribute>
+					</xsl:if>
+					<xsl:apply-templates />
+				</fo:block>
+			</xsl:when>
+			<xsl:otherwise>
+				<fo:block font-size="18pt" font-weight="bold" margin-top="40pt" margin-bottom="20pt" line-height="1.1" role="H1">
+					<xsl:if test="$layoutVersion = '2024'">
+						<xsl:attribute name="margin-top">50pt</xsl:attribute>
+					</xsl:if>
+					<xsl:if test="following-sibling::*[1][self::iso:p][starts-with(@class, 'zzSTDTitle')]">
+						<xsl:attribute name="margin-bottom">0pt</xsl:attribute>
+					</xsl:if>
+					<xsl:apply-templates />
+				</fo:block>
+			</xsl:otherwise>
+		</xsl:choose>
 	</xsl:template>
 	
 	<xsl:template match="iso:sections//iso:p[@class = 'zzSTDTitle1']/iso:span[@class = 'nonboldtitle']" priority="3">
@@ -3751,6 +3774,7 @@
 			<xsl:choose>
 				<xsl:when test="$layoutVersion = '1951'">
 					<xsl:choose>
+						<xsl:when test="$level = 1 and ancestor::iso:preface and $revision_date_num &gt;= 19680101">9.5pt</xsl:when> <!-- BRIEF HISTORY, FOREWORD -->
 						<xsl:when test="$level = 1 and ancestor::iso:preface">13pt</xsl:when>
 						<!-- <xsl:when test="$level = 1">9pt</xsl:when> -->
 						<xsl:otherwise>inherit</xsl:otherwise>
@@ -3805,7 +3829,7 @@
 					</xsl:choose>
 				</xsl:otherwise>
 			</xsl:choose>
-		</xsl:variable>
+		</xsl:variable> <!-- font-size -->
 		
 		<xsl:variable name="element-name">
 			<xsl:choose>
@@ -3854,6 +3878,7 @@
 					<xsl:attribute name="{$attribute-name-before}"> <!-- space-before or margin-top -->
 						<xsl:choose>
 							<xsl:when test="$layoutVersion = '1951' and ancestor::iso:preface and $level = 1">20mm</xsl:when>
+							<xsl:when test="$layoutVersion = '1951' and $level = 1 and $revision_date_num &gt;= 19680101">12pt</xsl:when>
 							<xsl:when test="ancestor::iso:introduction and $level &gt;= 2 and ../preceding-sibling::iso:clause">30pt</xsl:when>
 							<xsl:when test="$layoutVersion = '1987' and $doctype = 'technical-report' and ancestor::iso:preface and $level = 1">10mm</xsl:when>
 							<xsl:when test="($layoutVersion = '1972' or $layoutVersion = '1979' or $layoutVersion = '1987' or ($layoutVersion = '1989' and $revision_date_num &lt;= 19981231)) and ancestor::iso:preface and $level = 1">62mm</xsl:when>
@@ -3874,6 +3899,7 @@
 					<xsl:attribute name="space-after"> <!-- margin-bottom -->
 						<xsl:choose>
 							<xsl:when test="$layoutVersion = '1951' and $level = 1 and ancestor::iso:preface">14.7mm</xsl:when>
+							<xsl:when test="$layoutVersion = '1951' and $revision_date_num &gt;= 19680101">4pt</xsl:when>
 							<xsl:when test="$layoutVersion = '1951' and $level = 1">12pt</xsl:when>
 							<xsl:when test="ancestor::iso:introduction and $level &gt;= 2">8pt</xsl:when>
 							<xsl:when test="ancestor::iso:preface">18pt</xsl:when>
@@ -3891,7 +3917,7 @@
 					<xsl:if test="$layoutVersion = '1951'">
 						<xsl:if test="$element-name = 'fo:block' and ($level  = 1 or parent::iso:introduction)">
 						
-							<xsl:if test="$revision_date_num &lt; 19690101">
+							<xsl:if test="($revision_date_num &lt; 19690101) or ancestor::iso:preface">
 							<xsl:attribute name="text-align">center</xsl:attribute>
 							</xsl:if>
 							
@@ -4250,6 +4276,9 @@
 			
 			<xsl:call-template name="sections_element_style"/>
 			
+			<xsl:if test="$layoutVersion = '1951' and $revision_date_num &gt;= 19680101">
+				<xsl:attribute name="space-before">6pt</xsl:attribute>
+			</xsl:if>
 			
 			<xsl:call-template name="processElementContent"/>
 		</fo:block>
@@ -4276,7 +4305,7 @@
 	
 	<xsl:template name="processElementContent">
 		<xsl:choose>
-			<xsl:when test="$layoutVersion = '1951' and $revision_date &gt;= 19690101">
+			<xsl:when test="$layoutVersion = '1951' and $revision_date_num &gt;= 19680101 and ancestor::*[local-name() = 'sections' or local-name() = 'annex']">
 			
 				<fo:list-block role="SKIP">
 					<xsl:variable name="level">
@@ -4667,9 +4696,9 @@
 								<fo:block>&#xa0;</fo:block>
 							</fo:table-cell>
 							<fo:table-cell padding-top="-0.5mm">
-								<fo:block font-size="9.5pt" text-align="center">
+								<fo:block font-size="9.5pt" font-weight="normal" text-align="center">
 									<xsl:if test="$revision_date_num &gt;= 19690101">
-										<xsl:value-of select="$em_dash"/>&#xa0;&#xa0;<fo:page-number/>&#xa0;&#xa0;<xsl:value-of select="$em_dash"/>
+										<xsl:value-of select="$en_dash"/>&#xa0;&#xa0;<fo:page-number/>&#xa0;&#xa0;<xsl:value-of select="$en_dash"/>
 									</xsl:if>
 								</fo:block>
 							</fo:table-cell>

@@ -1837,6 +1837,9 @@
 			<xsl:if test="starts-with(@id, 'array_')">
 				<xsl:attribute name="margin-top">6pt</xsl:attribute>
 			</xsl:if>
+			<xsl:if test="$layoutVersion = '1951'">
+				<xsl:attribute name="font-size">inherit</xsl:attribute>
+			</xsl:if>
 			<xsl:if test="$layoutVersion = '1972' or $layoutVersion = '1979' or $layoutVersion = '1987' or $layoutVersion = '1989'">
 				<xsl:if test="normalize-space(@width) != 'text-width'">
 					<xsl:attribute name="span">all</xsl:attribute>
@@ -5463,6 +5466,11 @@
 			</xsl:if>
 		</xsl:if>
 		<xsl:if test="$namespace = 'iso'">
+			<xsl:if test="$layoutVersion = '1951'">
+				<xsl:if test="$revision_date_num &gt;= 19680101">
+					<xsl:attribute name="font-size">9pt</xsl:attribute>
+				</xsl:if>
+			</xsl:if>
 			<xsl:if test="$layoutVersion = '1972' or $layoutVersion = '1979' or $layoutVersion = '1987' or $layoutVersion = '1989'">
 				<xsl:attribute name="font-size">9pt</xsl:attribute>
 			</xsl:if>
