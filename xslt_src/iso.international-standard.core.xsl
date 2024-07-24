@@ -3903,6 +3903,7 @@
 					<xsl:attribute name="space-after"> <!-- margin-bottom -->
 						<xsl:choose>
 							<xsl:when test="$layoutVersion = '1951' and $level = 1 and ancestor::iso:preface">14.7mm</xsl:when>
+							<xsl:when test="$layoutVersion = '1951' and parent::iso:introduction">2mm</xsl:when>
 							<xsl:when test="$layoutVersion = '1951' and $revision_date_num &gt;= 19680101">4pt</xsl:when>
 							<xsl:when test="$layoutVersion = '1951' and $level = 1">12pt</xsl:when>
 							<xsl:when test="ancestor::iso:introduction and $level &gt;= 2">8pt</xsl:when>
@@ -3921,7 +3922,7 @@
 					<xsl:if test="$layoutVersion = '1951'">
 						<xsl:if test="$element-name = 'fo:block' and ($level  = 1 or parent::iso:introduction)">
 						
-							<xsl:if test="($revision_date_num &lt; 19690101) or ancestor::iso:preface">
+							<xsl:if test="($revision_date_num &lt; 19690101) or ancestor::iso:preface or (parent::iso:introduction and $revision_date_num &gt;= 19680101)">
 							<xsl:attribute name="text-align">center</xsl:attribute>
 							</xsl:if>
 							
@@ -3956,7 +3957,7 @@
 						</xsl:choose>						
 					</xsl:if>
 					<xsl:choose>
-						<xsl:when test="$layoutVersion = '1951' and ((ancestor::iso:preface and $level  = 1) or parent::iso:introduction)">
+						<xsl:when test="$layoutVersion = '1951' and ((ancestor::iso:preface and $level  = 1) or (parent::iso:introduction and $revision_date_num &lt; 19680101))">
 							<xsl:call-template name="add-letter-spacing">
 								<xsl:with-param name="text" select="."/>
 								<xsl:with-param name="letter-spacing" select="0.65"/>
@@ -4282,6 +4283,9 @@
 			
 			<xsl:if test="$layoutVersion = '1951' and $revision_date_num &gt;= 19680101">
 				<xsl:attribute name="space-before">6pt</xsl:attribute>
+				<xsl:if test="self::iso:introduction">
+					<xsl:attribute name="space-after">36pt</xsl:attribute>
+				</xsl:if>
 			</xsl:if>
 			
 			<xsl:call-template name="processElementContent"/>
@@ -4309,7 +4313,7 @@
 	
 	<xsl:template name="processElementContent">
 		<xsl:choose>
-			<xsl:when test="$layoutVersion = '1951' and $revision_date_num &gt;= 19680101 and ancestor::*[local-name() = 'sections' or local-name() = 'annex']">
+			<xsl:when test="$layoutVersion = '1951' and $revision_date_num &gt;= 19680101 and ancestor::*[local-name() = 'sections' or local-name() = 'annex'] and not(self::iso:introduction)">
 			
 				<fo:list-block role="SKIP">
 					<xsl:variable name="level">
