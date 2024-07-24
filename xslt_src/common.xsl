@@ -16486,7 +16486,14 @@
 				<label level="3" font-size="75%">o</label> <!-- white circle -->
 			</xsl:when>
 			<xsl:when test="$namespace = 'iso'">
-				<label>&#x2014;</label> <!-- em dash -->
+				<xsl:choose>
+					<xsl:when test="$layoutVersion = '1951'">
+						<label>&#x2013;</label> <!-- en dash -->
+					</xsl:when>
+					<xsl:otherwise>
+						<label>&#x2014;</label> <!-- em dash -->
+					</xsl:otherwise>
+				</xsl:choose>
 			</xsl:when>
 			<xsl:when test="$namespace = 'jcgm'">
 				<label level="1">&#x2014;</label> <!-- em dash -->
@@ -16767,6 +16774,28 @@
 			</xsl:when>
 			<xsl:otherwise>
 				<xsl:choose>
+					<xsl:when test="$namespace = 'iso'">
+						<xsl:choose>
+							<xsl:when test="$layoutVersion = '1951'">
+								<fo:block-container margin-left="8mm">
+									<fo:block-container margin-left="0">
+										<fo:block role="SKIP">
+											<xsl:apply-templates select="." mode="list">
+												<xsl:with-param name="indent" select="$indent"/>
+											</xsl:apply-templates>
+										</fo:block>
+									</fo:block-container>
+								</fo:block-container>
+							</xsl:when>
+							<xsl:otherwise>
+								<fo:block role="SKIP">
+									<xsl:apply-templates select="." mode="list">
+										<xsl:with-param name="indent" select="$indent"/>
+									</xsl:apply-templates>
+								</fo:block>
+							</xsl:otherwise>
+						</xsl:choose>
+					</xsl:when>
 					<xsl:when test="$namespace = 'jis'">
 						<fo:block-container role="SKIP">
 							<xsl:if test="ancestor::jis:ol or ancestor::jis:ul">
@@ -16893,6 +16922,13 @@
 				<xsl:attribute name="provisional-distance-between-starts">5mm</xsl:attribute>
 			</xsl:if>
 		</xsl:if>
+		
+		<xsl:if test="$namespace = 'iso'">
+			<xsl:if test="$layoutVersion = '1951' and local-name() = 'ul'">
+				<xsl:attribute name="provisional-distance-between-starts">5mm</xsl:attribute>
+			</xsl:if>
+		</xsl:if>
+		
 		<xsl:if test="$namespace = 'gb' or $namespace = 'm3d' or $namespace = 'mpfd'">
 			<xsl:if test="local-name() = 'ol'">
 				<xsl:attribute name="provisional-distance-between-starts">7mm</xsl:attribute>
