@@ -3501,6 +3501,10 @@
 	<!-- END display titles   -->
 	<!-- ==================== -->
 	
+	<xsl:template match="*[local-name() = 'title']/*[local-name() = 'span'][contains(@style, 'text-transform:none')]//text()" priority="6">
+		<fo:inline font-weight="normal"><xsl:value-of select="."/></fo:inline>
+	</xsl:template>
+	
 	<xsl:template match="node()">		
 		<xsl:apply-templates />			
 	</xsl:template>
