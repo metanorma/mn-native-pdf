@@ -4915,9 +4915,19 @@
 								<fo:block font-size="8.5pt" text-align="right" font-weight="bold">
 									<xsl:variable name="price_" select="normalize-space(/iso:iso-standard/iso:metanorma-extension/iso:presentation-metadata/iso:price)"/>
 									<xsl:variable name="price" select="java:replaceAll(java:java.lang.String.new($price_), '-{2}', $em_dash)"/>
-									<xsl:if test="$insert_footer_last = 'true' and $price != ''">
-										<!-- Example: Price: Sw. fr. 3.- -->
-										<xsl:value-of select="concat($i18n_price, ': ', $price)"/>
+									<xsl:if test="$insert_footer_last = 'true'">
+									
+										<xsl:choose>
+											<xsl:when test="$price != ''">
+												<!-- Example: Price: Sw. fr. 3.- -->
+												<xsl:value-of select="concat($i18n_price, ': ', $price)"/>
+											</xsl:when>
+											<xsl:otherwise>
+												<xsl:attribute name="font-size">7pt</xsl:attribute>
+												<xsl:attribute name="font-weight">normal</xsl:attribute>
+												<xsl:call-template name="insertPriceBasedOn"/>
+											</xsl:otherwise>
+										</xsl:choose>
 									</xsl:if>
 								</fo:block>
 							</fo:table-cell>
@@ -4977,6 +4987,15 @@
 			<xsl:with-param name="normalize-space">false</xsl:with-param>
 		</xsl:call-template>
 	</xsl:variable>
+	
+	<xsl:template name="insertPriceBasedOn">
+		<xsl:for-each select="xalan:nodeset($price_based_on_items)/item">
+			<xsl:value-of select="."/>
+			<xsl:if test="position() != last()">
+				<fo:page-number-citation ref-id="lastBlock"/>
+			</xsl:if>										
+		</xsl:for-each>
+	</xsl:template>
 	
 	<xsl:template name="insertLastPage">
 		<fo:page-sequence master-reference="last-page" force-page-count="no-force">
