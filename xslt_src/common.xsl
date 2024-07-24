@@ -16603,13 +16603,18 @@
 			</xsl:when>
 			<xsl:when test="local-name(..) = 'ol' and @label"> <!-- for ordered lists 'ol', and if there is @label, for instance label="1.1.2" -->
 				
-				<xsl:variable name="label">
+				<xsl:variable name="type" select="../@type"/>
 				
-					<xsl:variable name="type" select="../@type"/>
+				<xsl:variable name="label">
 					
 					<xsl:variable name="style_prefix_">
 						<xsl:if test="$type = 'roman'">
 							<xsl:if test="$namespace = 'bipm'">(</xsl:if> <!-- Example: (i) -->
+						</xsl:if>
+						<xsl:if test="$type = 'alphabet'">
+							<xsl:if test="$namespace = 'iso'">
+								<xsl:if test="$layoutVersion = '1951'">(</xsl:if> <!-- Example: (a) -->
+							</xsl:if>
 						</xsl:if>
 					</xsl:variable>
 					<xsl:variable name="style_prefix" select="normalize-space($style_prefix_)"/>
@@ -16649,13 +16654,28 @@
 					<xsl:if test="$style_prefix != '' and not(starts-with(@label, $style_prefix))">
 						<xsl:value-of select="$style_prefix"/>
 					</xsl:if>
+					
 					<xsl:value-of select="@label"/>
+					
 					<xsl:if test="not(java:endsWith(java:java.lang.String.new(@label),$style_suffix))">
 						<xsl:value-of select="$style_suffix"/>
 					</xsl:if>
 				</xsl:variable>
 				
-				<xsl:value-of select="normalize-space($label)"/>
+				
+				<xsl:choose>
+					<xsl:when test="$namespace = 'iso'">
+						<xsl:choose>
+							<xsl:when test="$layoutVersion = '1951' and $type = 'alphabet'">(<fo:inline font-style="italic"><xsl:value-of select="@label"/></fo:inline>)</xsl:when>
+							<xsl:otherwise>
+								<xsl:value-of select="normalize-space($label)"/>
+							</xsl:otherwise>
+						</xsl:choose>
+					</xsl:when>
+					<xsl:otherwise>
+						<xsl:value-of select="normalize-space($label)"/>
+					</xsl:otherwise>
+				</xsl:choose>
 				
 			</xsl:when>
 			<xsl:otherwise> <!-- for ordered lists 'ol' -->
@@ -16776,8 +16796,19 @@
 				<xsl:choose>
 					<xsl:when test="$namespace = 'iso'">
 						<xsl:choose>
-							<xsl:when test="$layoutVersion = '1951'">
+							<xsl:when test="$layoutVersion = '1951' and local-name() = 'ul'">
 								<fo:block-container margin-left="8mm">
+									<xsl:if test="ancestor::*[local-name() = 'sections' or local-name() = 'annex']">
+										<xsl:variable name="level">
+											<xsl:for-each select="ancestor::*[1]">
+												<xsl:call-template name="getLevel"/>
+											</xsl:for-each>
+										</xsl:variable>
+										<!-- 5 + 6 (from list-block provisional-distance-between-starts) mm -->
+										<xsl:attribute name="margin-left">
+											<xsl:value-of select="5 + (($level - 1) * 6)"/>mm
+										</xsl:attribute>
+									</xsl:if>
 									<fo:block-container margin-left="0">
 										<fo:block role="SKIP">
 											<xsl:apply-templates select="." mode="list">
