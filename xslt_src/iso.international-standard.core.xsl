@@ -1486,6 +1486,10 @@
 				<xsl:when test="$layoutVersion = '1951'">
 					<fo:page-sequence master-reference="cover-page_1951" force-page-count="no-force">
 						<fo:static-content flow-name="cover-page-header" font-family="Times New Roman" font-size="8.5pt" font-weight="bold">
+							<xsl:if test="$revision_date_num &lt; 19680101">
+								<xsl:attribute name="font-family">Arial</xsl:attribute>
+								<xsl:attribute name="font-size">8pt</xsl:attribute>
+							</xsl:if>
 							<fo:block-container height="99%" display-align="after">
 								<fo:block text-align-last="justify" role="SKIP">
 									<!-- Example: UDC 669.7 : 620.178.1 -->
@@ -1533,14 +1537,20 @@
 										<xsl:if test="$revision_date_num &lt; 19680101">
 											<xsl:attribute name="font-size">14pt</xsl:attribute>
 										</xsl:if>
-										<xsl:call-template name="insertTitlesLangMain"/>
+										
+										<xsl:apply-templates select="/iso:iso-standard/iso:bibdata/iso:title[@language = $lang and @type = 'title-intro']"/>
+										<xsl:apply-templates select="/iso:iso-standard/iso:bibdata/iso:title[@language = $lang and @type = 'title-main']"/>
+										<fo:block font-size="11pt" text-transform="uppercase" margin-top="2mm">
+											<xsl:apply-templates select="/iso:iso-standard/iso:bibdata/iso:title[@language = $lang and @type = 'title-part']/node()"/>
+										</fo:block>
+										
 									</fo:block>
 								</fo:block-container>
 								
 								<fo:block-container margin-top="8.5mm" font-size="10pt"> <!--  height="40mm" display-align="center"  -->
 									<!-- Example: 1st EDITION -->
 									<!-- <fo:block><xsl:apply-templates select="/iso:iso-standard/iso:bibdata/iso:edition[@language != '']" /></fo:block> -->
-									<fo:block font-weight="bold"><xsl:value-of select="/iso:iso-standard/iso:bibdata/iso:edition[@language != '']" /></fo:block>
+									<fo:block><xsl:value-of select="/iso:iso-standard/iso:bibdata/iso:edition[@language != '']" /></fo:block> <!--  font-weight="bold" -->
 									<!-- <fo:block>&#xa0;</fo:block> -->
 									<!-- Example: October 1971 -->
 									<fo:block margin-top="2mm" font-size="9pt">
@@ -2819,6 +2829,19 @@
 		</xsl:if>
 	</xsl:template>
 		
+	<!-- transform NOTE to Note for smallcaps feature working -->
+	<xsl:template match="iso:note/iso:name/text()" mode="update_xml_step1" priority="3">
+		<xsl:choose>
+			<xsl:when test="$layoutVersion = '1951' and $revision_date_num &lt; 19680101">
+				<xsl:value-of select="substring(., 1, 1)"/>
+				<xsl:value-of select="java:toLowerCase(java:java.lang.String.new(substring(., 2)))"/>
+			</xsl:when>
+			<xsl:otherwise>
+				<xsl:value-of select="."/>
+			</xsl:otherwise>
+		</xsl:choose>
+	</xsl:template>
+		
 	<xsl:template name="insertLogoImages2024">
 		<xsl:variable name="content-height">20</xsl:variable>
 		<xsl:for-each select="/iso:iso-standard/iso:bibdata/iso:copyright/iso:owner/iso:organization">
@@ -3301,9 +3324,19 @@
 	</xsl:template>
 
 	<xsl:template match="iso:bibdata/iso:title[@type = 'title-main']">
+		<xsl:param name="body">false</xsl:param>
 		<xsl:choose>
 			<xsl:when test="$layoutVersion = '1951'">
-				<fo:block text-transform="uppercase" font-weight="bold" margin-top="5mm"><xsl:apply-templates /></fo:block>
+				<fo:block text-transform="uppercase" font-weight="bold" margin-top="5mm">
+					<xsl:if test="$revision_date_num &lt; 19680101">
+						<xsl:if test="$body = 'false'">
+							<xsl:attribute name="font-weight">normal</xsl:attribute>
+						</xsl:if>
+						<xsl:attribute name="font-size">11pt</xsl:attribute>
+						<xsl:attribute name="margin-top">3mm</xsl:attribute>
+					</xsl:if>
+					<xsl:apply-templates />
+				</fo:block>
 			</xsl:when>
 			<xsl:otherwise>
 				<xsl:apply-templates />
@@ -3370,7 +3403,7 @@
 			</xsl:choose>
 		</xsl:if>
 		<xsl:choose>
-			<xsl:when test="$layoutVersion = '1951'"></xsl:when>
+			<xsl:when test="$layoutVersion = '1951'"><fo:inline font-weight="normal"><xsl:apply-templates /></fo:inline></xsl:when>
 			<xsl:when test="($layoutVersion = '1972' or $layoutVersion = '1979') and $isMainLang = 'true'"/>
 			<xsl:when test="($layoutVersion = '1972' or $layoutVersion = '1979') and $isMainLang = 'false'">
 				<fo:inline font-weight="normal"><xsl:apply-templates /></fo:inline>
@@ -3420,12 +3453,11 @@
 	<xsl:template match="iso:sections//iso:p[@class = 'zzSTDTitle1']" priority="4">
 		<xsl:choose>
 			<xsl:when test="$layoutVersion = '1951'">
-				<fo:block font-size="13pt" font-weight="bold" text-align="center" margin-top="49mm" margin-bottom="20pt" text-transform="uppercase" line-height="1.1" role="H1">
+				<fo:block font-size="13pt" font-weight="bold" text-align="center" margin-top="49mm" margin-bottom="20mm" text-transform="uppercase" line-height="1.1" role="H1">
 					<xsl:if test="$revision_date_num &gt;= 19680101">
 						<xsl:attribute name="font-family">Arial</xsl:attribute>
 						<xsl:attribute name="font-size">10.5pt</xsl:attribute>
 						<xsl:attribute name="margin-top">24mm</xsl:attribute>
-						<xsl:attribute name="margin-bottom">20mm</xsl:attribute>
 					</xsl:if>
 					<xsl:if test="following-sibling::*[1][self::iso:p][starts-with(@class, 'zzSTDTitle')]">
 						<xsl:attribute name="margin-bottom">0pt</xsl:attribute>
@@ -3437,7 +3469,16 @@
 							<fo:block space-before="24pt"><xsl:apply-templates select="/iso:iso-standard/iso:bibdata/iso:title[@language = $lang and @type = 'title-main']"/></fo:block>
 						</xsl:when>
 						<xsl:otherwise>
-							<xsl:apply-templates/>
+						
+							<xsl:apply-templates select="/iso:iso-standard/iso:bibdata/iso:title[@language = $lang and @type = 'title-intro']"/>
+							<xsl:apply-templates select="/iso:iso-standard/iso:bibdata/iso:title[@language = $lang and @type = 'title-main']">
+								<xsl:with-param name="body">true</xsl:with-param>
+							</xsl:apply-templates>
+							<fo:block font-size="11pt" text-transform="uppercase" margin-top="2mm">
+								<xsl:apply-templates select="/iso:iso-standard/iso:bibdata/iso:title[@language = $lang and @type = 'title-part']/node()"/>
+							</fo:block>
+						
+							<!-- <xsl:apply-templates/> -->
 						</xsl:otherwise>
 					</xsl:choose>
 					
@@ -3633,7 +3674,7 @@
 	<xsl:template match="iso:copyright-statement/iso:clause[1]/iso:title" priority="2">
 		<xsl:choose>
 			<xsl:when test="$layoutVersion = '1951'">
-				<fo:block font-weight="bold"><xsl:apply-templates /></fo:block>
+				<fo:block><xsl:apply-templates /></fo:block> <!--  font-weight="bold" -->
 				<fo:block>&#xa0;</fo:block>
 			</xsl:when>
 			<xsl:otherwise>
@@ -3780,6 +3821,7 @@
 					<xsl:choose>
 						<xsl:when test="$level = 1 and ancestor::iso:preface and $revision_date_num &gt;= 19680101">9.5pt</xsl:when> <!-- BRIEF HISTORY, FOREWORD -->
 						<xsl:when test="$level = 1 and ancestor::iso:preface">13pt</xsl:when>
+						<xsl:when test="$revision_date_num &lt; 19680101 and ancestor::*[local-name() = 'sections'] and not(ancestor::*[local-name() = 'introduction'])">9pt</xsl:when>
 						<!-- <xsl:when test="$level = 1">9pt</xsl:when> -->
 						<xsl:otherwise>inherit</xsl:otherwise>
 						<!-- <xsl:when test="$level = 2">10pt</xsl:when>
@@ -3903,6 +3945,7 @@
 					<xsl:attribute name="space-after"> <!-- margin-bottom -->
 						<xsl:choose>
 							<xsl:when test="$layoutVersion = '1951' and $level = 1 and ancestor::iso:preface">14.7mm</xsl:when>
+							<xsl:when test="$layoutVersion = '1951' and parent::iso:introduction and $revision_date_num &lt; 19680101">6mm</xsl:when>
 							<xsl:when test="$layoutVersion = '1951' and parent::iso:introduction">2mm</xsl:when>
 							<xsl:when test="$layoutVersion = '1951' and $revision_date_num &gt;= 19680101">4pt</xsl:when>
 							<xsl:when test="$layoutVersion = '1951' and $level = 1">12pt</xsl:when>
@@ -4249,6 +4292,10 @@
 	
 	<xsl:template match="*[local-name() = 'note']/*[local-name() = 'name']/text()" priority="5">
 		<xsl:choose>
+			<xsl:when test="$layoutVersion = '1951' and $revision_date_num &lt; 19680101">
+				<xsl:call-template name="smallcaps"/>
+				<xsl:value-of select="concat('. ', $em_dash, ' ')"/>
+			</xsl:when>
 			<xsl:when test="$layoutVersion = '1987' and not(translate(.,'0123456789','') = .)"> <!-- NOTE with number -->
 				<xsl:value-of select="substring-after(., ' ')"/>
 			</xsl:when>
@@ -4312,15 +4359,15 @@
 	
 	
 	<xsl:template name="processElementContent">
+		<xsl:variable name="level">
+			<xsl:for-each select="iso:title">
+				<xsl:call-template name="getLevel"/>
+			</xsl:for-each>
+		</xsl:variable>
 		<xsl:choose>
-			<xsl:when test="$layoutVersion = '1951' and $revision_date_num &gt;= 19680101 and ancestor::*[local-name() = 'sections' or local-name() = 'annex'] and not(self::iso:introduction)">
+			<xsl:when test="$layoutVersion = '1951' and ($revision_date_num &gt;= 19680101 or $level &gt;= 2) and ancestor::*[local-name() = 'sections' or local-name() = 'annex'] and not(self::iso:introduction)">
 			
 				<fo:list-block role="SKIP">
-					<xsl:variable name="level">
-						<xsl:for-each select="iso:title">
-							<xsl:call-template name="getLevel"/>
-						</xsl:for-each>
-					</xsl:variable>
 					<xsl:attribute name="provisional-distance-between-starts">
 						<xsl:choose>
 							<xsl:when test="$level = 2">8mm</xsl:when>
