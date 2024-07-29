@@ -18556,7 +18556,7 @@
 		<xsl:copy-of select="."/>
 	</xsl:template>
 	
-	<xsl:template match="*[local-name() = 'metanorma-extension']/*[local-name() = 'attachment'])" mode="update_xml_step1">
+	<xsl:template match="*[local-name() = 'metanorma-extension']/*[local-name() = 'attachment']" mode="update_xml_step1">
 		<xsl:copy>
 			<xsl:copy-of select="@*"/>
 			<xsl:variable name="name_filepath" select="concat($inputxml_basepath, @name)"/>
