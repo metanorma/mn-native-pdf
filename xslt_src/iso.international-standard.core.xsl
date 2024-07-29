@@ -294,6 +294,7 @@
 	<xsl:variable name="i18n_price_based_on"><xsl:call-template name="getLocalizedString"><xsl:with-param name="key">price_based_on</xsl:with-param></xsl:call-template></xsl:variable>
 	<xsl:variable name="i18n_price"><xsl:call-template name="getLocalizedString"><xsl:with-param name="key">price</xsl:with-param></xsl:call-template></xsl:variable>
 	<xsl:variable name="i18n_date_first_printing"><xsl:call-template name="getLocalizedString"><xsl:with-param name="key">date_first_printing</xsl:with-param></xsl:call-template></xsl:variable>
+	<xsl:variable name="i18n_date_printing"><xsl:call-template name="getLocalizedString"><xsl:with-param name="key">date_printing</xsl:with-param></xsl:call-template></xsl:variable>
 	<xsl:variable name="i18n_corrected_version"><xsl:call-template name="getLocalizedString"><xsl:with-param name="key">corrected_version</xsl:with-param></xsl:call-template></xsl:variable>
 	<xsl:variable name="i18n_fast_track_procedure"><xsl:call-template name="getLocalizedString"><xsl:with-param name="key">fast-track-procedure</xsl:with-param></xsl:call-template></xsl:variable>
 	<xsl:variable name="i18n_all_rights_reserved"><xsl:call-template name="getLocalizedString"><xsl:with-param name="key">all_rights_reserved</xsl:with-param></xsl:call-template></xsl:variable>	
@@ -4945,13 +4946,25 @@
 						<fo:table-row>
 							<fo:table-cell font-size="8pt">
 								<fo:block line-height="1" margin-top="2mm">
-									<xsl:variable name="date_first_printing" select="normalize-space(/iso:iso-standard/iso:metanorma-extension/iso:presentation-metadata/iso:first-printing-date)"/>
-									<xsl:if test="$insert_footer_last = 'true' and $date_first_printing != ''">
-										<fo:block><xsl:value-of select="$i18n_date_first_printing"/>:</fo:block>
+									<!-- <xsl:variable name="date_first_printing" select="normalize-space(/iso:iso-standard/iso:metanorma-extension/iso:presentation-metadata/iso:first-printing-date)"/> -->
+									<xsl:variable name="number_printing" select="normalize-space(/iso:iso-standard/iso:metanorma-extension/iso:presentation-metadata[iso:printing-date][1]/iso:printing-date)"/>
+									<xsl:variable name="date_printing" select="normalize-space(/iso:iso-standard/iso:metanorma-extension/iso:presentation-metadata[iso:printing-date][last()]/iso:printing-date)"/>
+									<xsl:if test="$insert_footer_last = 'true' and $date_printing != ''">
+										<xsl:variable name="date_number_printing">
+											<xsl:choose>
+												<xsl:when test="$number_printing != $date_printing">
+													<xsl:value-of select="java:replaceAll(java:java.lang.String.new($i18n_date_printing), '%', $number_printing)"/>
+												</xsl:when>
+												<xsl:otherwise>
+													<xsl:value-of select="$i18n_date_first_printing"/>
+												</xsl:otherwise>
+											</xsl:choose>
+										</xsl:variable>
+										<fo:block><xsl:value-of select="$date_number_printing"/>:</fo:block>
 										<fo:block>
 											<!-- Example: December 1965 -->
 											<xsl:call-template name="convertDate">
-												<xsl:with-param name="date" select="$date_first_printing"/>
+												<xsl:with-param name="date" select="$date_printing"/>
 											</xsl:call-template>
 										</fo:block>
 									</xsl:if>
