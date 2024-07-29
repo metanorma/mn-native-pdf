@@ -3332,7 +3332,9 @@
 						<xsl:if test="$body = 'false'">
 							<xsl:attribute name="font-weight">normal</xsl:attribute>
 						</xsl:if>
-						<xsl:attribute name="font-size">11pt</xsl:attribute>
+						<xsl:if test="../iso:title[@type = 'title-intro']"> <!-- in title-intro and title-main exist both -->
+							<xsl:attribute name="font-size">11pt</xsl:attribute>
+						</xsl:if>
 						<xsl:attribute name="margin-top">3mm</xsl:attribute>
 					</xsl:if>
 					<xsl:apply-templates />
@@ -4360,9 +4362,9 @@
 	
 	<xsl:template name="processElementContent">
 		<xsl:variable name="level">
-			<xsl:for-each select="iso:title">
-				<xsl:call-template name="getLevel"/>
-			</xsl:for-each>
+			<xsl:call-template name="getLevel">
+				<xsl:with-param name="depth" select="iso:title/@depth"/>
+			</xsl:call-template>
 		</xsl:variable>
 		<xsl:choose>
 			<xsl:when test="$layoutVersion = '1951' and ($revision_date_num &gt;= 19680101 or $level &gt;= 2) and ancestor::*[local-name() = 'sections' or local-name() = 'annex'] and not(self::iso:introduction)">
