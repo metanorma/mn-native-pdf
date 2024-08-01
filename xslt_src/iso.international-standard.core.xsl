@@ -2831,7 +2831,7 @@
 	</xsl:template>
 		
 	<!-- transform NOTE to Note for smallcaps feature working -->
-	<xsl:template match="iso:note/iso:name/text()" mode="update_xml_step1" priority="3">
+	<xsl:template match="iso:note/iso:name/text() | iso:example/iso:name/text()" mode="update_xml_step1" priority="3">
 		<xsl:choose>
 			<xsl:when test="$layoutVersion = '1951' and $revision_date_num &lt; 19680101">
 				<xsl:value-of select="substring(., 1, 1)"/>
@@ -4192,7 +4192,7 @@
 					<!-- for paragraphs in the main text -->
 					<xsl:attribute name="margin-bottom">14pt</xsl:attribute>
 				</xsl:if>
-				<xsl:if test="ancestor::iso:preface and parent::iso:clause">
+				<xsl:if test="(ancestor::iso:preface and parent::iso:clause) or ancestor::iso:foreword">
 					<xsl:attribute name="text-indent">7.1mm</xsl:attribute>
 				</xsl:if>
 			</xsl:if>
@@ -4301,6 +4301,16 @@
 			</xsl:when>
 			<xsl:when test="$layoutVersion = '1987' and not(translate(.,'0123456789','') = .)"> <!-- NOTE with number -->
 				<xsl:value-of select="substring-after(., ' ')"/>
+			</xsl:when>
+			<xsl:otherwise><xsl:value-of select="."/></xsl:otherwise>
+		</xsl:choose>
+	</xsl:template>
+	
+	<xsl:template match="*[local-name() = 'example']/*[local-name() = 'name']/text()" priority="5">
+		<xsl:choose>
+			<xsl:when test="$layoutVersion = '1951' and $revision_date_num &lt; 19680101">
+				<xsl:call-template name="smallcaps"/>
+				<xsl:text>:</xsl:text>
 			</xsl:when>
 			<xsl:otherwise><xsl:value-of select="."/></xsl:otherwise>
 		</xsl:choose>

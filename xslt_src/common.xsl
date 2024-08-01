@@ -15411,11 +15411,16 @@
 				<xsl:choose>			
 					<xsl:when test="$namespace = 'bsi' or 
 														$namespace = 'iho' or 
-														$namespace = 'iso' or 
 														$namespace = 'jcgm' or 
 														$namespace = 'm3d' or
 														$namespace = 'ogc' or 
 														$namespace = 'rsd'">inline</xsl:when> <!-- display first Example paragraph on the same line as EXAMPLE title -->
+					<xsl:when test="$namespace = 'iso'">
+						<xsl:choose>
+							<xsl:when test="$layoutVersion = '1951'">list</xsl:when>
+							<xsl:otherwise>inline</xsl:otherwise>
+						</xsl:choose>
+					</xsl:when>
 					<xsl:when test="$namespace = 'iec'">
 						<xsl:choose>
 							<!-- if example contains only one (except 'name') element (paragraph for example), then display it on the same line as EXAMPLE title -->
@@ -15460,18 +15465,22 @@
 					
 					<xsl:when test="contains(normalize-space($fo_element), 'list')">
 					
-						<xsl:variable name="provisional_distance_between_starts">
+						<xsl:variable name="provisional_distance_between_starts_">
 							<xsl:choose>
+								<xsl:when test="$namespace = 'iso'">45</xsl:when>
 								<xsl:when test="$namespace = 'jis'"><xsl:value-of select="10 + $text_indent"/></xsl:when>
 								<xsl:otherwise>7</xsl:otherwise>
 							</xsl:choose>
 						</xsl:variable>
-						<xsl:variable name="indent">
+						<xsl:variable name="provisional_distance_between_starts" select="normalize-space($provisional_distance_between_starts_)"/>
+						<xsl:variable name="indent_">
 							<xsl:choose>
+								<xsl:when test="$namespace = 'iso'">28</xsl:when>
 								<xsl:when test="$namespace = 'jis'"><xsl:value-of select="$text_indent"/></xsl:when>
 								<xsl:otherwise>0</xsl:otherwise>
 							</xsl:choose>
 						</xsl:variable>
+						<xsl:variable name="indent" select="normalize-space($indent_)"/>
 					
 						<fo:list-block provisional-distance-between-starts="{$provisional_distance_between_starts}mm">
 							<fo:list-item>
@@ -15560,7 +15569,18 @@
 		
 		<xsl:variable name="num"><xsl:number/></xsl:variable>
 		<xsl:variable name="element">
-			<xsl:if test="$namespace = 'iso' or $namespace = 'jcgm' or $namespace = 'rsd'">
+			<xsl:if test="$namespace = 'iso'">
+				<xsl:choose>
+					<xsl:when test="$num = 1 and not(contains($fo_element, 'block'))">inline</xsl:when>
+					<xsl:otherwise>
+						<xsl:choose>
+							<xsl:when test="$layoutVersion = '1951'">list</xsl:when>
+							<xsl:otherwise>block</xsl:otherwise>
+						</xsl:choose>
+					</xsl:otherwise>
+				</xsl:choose>
+			</xsl:if>
+			<xsl:if test="$namespace = 'jcgm' or $namespace = 'rsd'">
 				<xsl:choose>
 					<xsl:when test="$num = 1 and not(contains($fo_element, 'block'))">inline</xsl:when>
 					<xsl:otherwise>block</xsl:otherwise>
