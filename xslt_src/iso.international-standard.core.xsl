@@ -1517,7 +1517,14 @@
 								</fo:block>
 								<fo:block margin-top="2mm" font-size="8pt" font-weight="bold">
 									<xsl:call-template name="add-letter-spacing">
-										<xsl:with-param name="text" select="java:toUpperCase(java:java.lang.String.new(/iso:iso-standard/iso:bibdata/iso:copyright/iso:owner/iso:organization/iso:name))"/>
+										<xsl:with-param name="text">
+											<xsl:choose>
+												<xsl:when test="$lang = 'fr'"><xsl:value-of select="java:toUpperCase(java:java.lang.String.new('Organisation Internationale de Normalisation'))"/></xsl:when>
+												<xsl:otherwise>
+													<xsl:value-of select="java:toUpperCase(java:java.lang.String.new(/iso:iso-standard/iso:bibdata/iso:copyright/iso:owner/iso:organization/iso:name))"/>
+												</xsl:otherwise>
+											</xsl:choose>
+										</xsl:with-param>
 										<xsl:with-param name="letter-spacing" select="0.55"/>
 									</xsl:call-template>
 								</fo:block>
@@ -4295,7 +4302,7 @@
 	
 	<xsl:template match="*[local-name() = 'note']/*[local-name() = 'name']/text()" priority="5">
 		<xsl:choose>
-			<xsl:when test="$layoutVersion = '1951' and $revision_date_num &lt; 19680101">
+			<xsl:when test="$layoutVersion = '1951' and $revision_date_num &lt; 19610101">
 				<xsl:call-template name="smallcaps"/>
 				<xsl:value-of select="concat('. ', $em_dash, ' ')"/>
 			</xsl:when>
@@ -4308,7 +4315,7 @@
 	
 	<xsl:template match="*[local-name() = 'example']/*[local-name() = 'name']/text()" priority="5">
 		<xsl:choose>
-			<xsl:when test="$layoutVersion = '1951' and $revision_date_num &lt; 19680101">
+			<xsl:when test="$layoutVersion = '1951' and $revision_date_num &lt; 19610101">
 				<xsl:call-template name="smallcaps"/>
 				<xsl:text>:</xsl:text>
 			</xsl:when>

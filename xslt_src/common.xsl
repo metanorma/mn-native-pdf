@@ -3873,7 +3873,7 @@
 		<xsl:if test="$namespace = 'iso'">
 			<xsl:variable name="note_name" select="*[local-name() = 'name']"/>
 			<xsl:if test="$layoutVersion = '1951'">
-				<xsl:if test="$revision_date_num &lt; 19680101">
+				<xsl:if test="$revision_date_num &lt; 19610101">
 					<xsl:attribute name="padding-right">0mm</xsl:attribute>
 				</xsl:if>
 			</xsl:if>
@@ -15417,7 +15417,7 @@
 														$namespace = 'rsd'">inline</xsl:when> <!-- display first Example paragraph on the same line as EXAMPLE title -->
 					<xsl:when test="$namespace = 'iso'">
 						<xsl:choose>
-							<xsl:when test="$layoutVersion = '1951'">list</xsl:when>
+							<xsl:when test="$layoutVersion = '1951' and $revision_date_num &lt; 19610101">list</xsl:when>
 							<xsl:otherwise>inline</xsl:otherwise>
 						</xsl:choose>
 					</xsl:when>
@@ -15574,7 +15574,7 @@
 					<xsl:when test="$num = 1 and not(contains($fo_element, 'block'))">inline</xsl:when>
 					<xsl:otherwise>
 						<xsl:choose>
-							<xsl:when test="$layoutVersion = '1951'">list</xsl:when>
+							<xsl:when test="$layoutVersion = '1951' and $revision_date_num &lt; 19610101">list</xsl:when>
 							<xsl:otherwise>block</xsl:otherwise>
 						</xsl:choose>
 					</xsl:otherwise>
