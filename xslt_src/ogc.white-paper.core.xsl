@@ -36,12 +36,9 @@
 	<xsl:variable name="selectedStyle" select="normalize-space($selectedStyle_)"/>
 
 	<xsl:variable name="color">rgb(0, 51, 102)</xsl:variable>
-	<xsl:variable name="color_design">
-		<xsl:choose>
-			<xsl:when test="$selectedStyle = '2'">rgb(0, 177, 255)</xsl:when>
-			<xsl:otherwise>rgb(237, 193, 35)</xsl:otherwise>
-		</xsl:choose>
-	</xsl:variable>
+	
+	<xsl:variable name="color_text_title" select="/ogc:ogc-standard/ogc:metanorma-extension/ogc:presentation-metadata[ogc:name = 'color-text-title']/ogc:value"/>
+	<xsl:variable name="color_table_header_row" select="/ogc:ogc-standard/ogc:metanorma-extension/ogc:presentation-metadata[ogc:name = 'color-background-table-header']/ogc:value"/>
 	
 	<xsl:attribute-set name="title-toc-style">
 		<xsl:attribute name="font-size">26pt</xsl:attribute>		
