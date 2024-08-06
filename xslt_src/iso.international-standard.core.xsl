@@ -2840,7 +2840,7 @@
 	<!-- transform NOTE to Note for smallcaps feature working -->
 	<xsl:template match="iso:note/iso:name/text() | iso:example/iso:name/text()" mode="update_xml_step1" priority="3">
 		<xsl:choose>
-			<xsl:when test="$layoutVersion = '1951' and $revision_date_num &lt; 19680101">
+			<xsl:when test="$layoutVersion = '1951'"> <!--  and $revision_date_num &lt; 19680101 -->
 				<xsl:value-of select="substring(., 1, 1)"/>
 				<xsl:value-of select="java:toLowerCase(java:java.lang.String.new(substring(., 2)))"/>
 			</xsl:when>
@@ -4197,7 +4197,14 @@
 			<xsl:if test="$layoutVersion = '1951'">
 				<xsl:if test="not(ancestor::*[local-name() = 'li' or local-name() = 'td' or local-name() = 'th' or local-name() = 'dd'])">
 					<!-- for paragraphs in the main text -->
-					<xsl:attribute name="margin-bottom">14pt</xsl:attribute>
+					<xsl:choose>
+						<xsl:when test="$revision_date_num &lt; 19600101">
+							<xsl:attribute name="margin-bottom">14pt</xsl:attribute>
+						</xsl:when>
+						<xsl:otherwise>
+							<xsl:attribute name="margin-bottom">6pt</xsl:attribute>
+						</xsl:otherwise>
+					</xsl:choose>
 				</xsl:if>
 				<xsl:if test="(ancestor::iso:preface and parent::iso:clause) or ancestor::iso:foreword">
 					<xsl:attribute name="text-indent">7.1mm</xsl:attribute>
@@ -4302,7 +4309,7 @@
 	
 	<xsl:template match="*[local-name() = 'note']/*[local-name() = 'name']/text()" priority="5">
 		<xsl:choose>
-			<xsl:when test="$layoutVersion = '1951' and $revision_date_num &lt; 19610101">
+			<xsl:when test="$layoutVersion = '1951'"> <!-- and $revision_date_num &lt; 19610101 -->
 				<xsl:call-template name="smallcaps"/>
 				<xsl:value-of select="concat('. ', $em_dash, ' ')"/>
 			</xsl:when>
@@ -4315,7 +4322,7 @@
 	
 	<xsl:template match="*[local-name() = 'example']/*[local-name() = 'name']/text()" priority="5">
 		<xsl:choose>
-			<xsl:when test="$layoutVersion = '1951' and $revision_date_num &lt; 19610101">
+			<xsl:when test="$layoutVersion = '1951'"> <!--  and $revision_date_num &lt; 19610101 -->
 				<xsl:call-template name="smallcaps"/>
 				<xsl:text>:</xsl:text>
 			</xsl:when>
@@ -4385,7 +4392,7 @@
 			</xsl:call-template>
 		</xsl:variable>
 		<xsl:choose>
-			<xsl:when test="$layoutVersion = '1951' and ($revision_date_num &gt;= 19680101 or $level &gt;= 2) and ancestor::*[local-name() = 'sections' or local-name() = 'annex'] and not(self::iso:introduction)">
+			<xsl:when test="$layoutVersion = '1951' and ($revision_date_num &gt;= 19690101 or $level &gt;= 2) and ancestor::*[local-name() = 'sections' or local-name() = 'annex'] and not(self::iso:introduction)">
 			
 				<fo:list-block role="SKIP">
 					<xsl:attribute name="provisional-distance-between-starts">

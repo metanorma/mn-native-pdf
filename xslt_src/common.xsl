@@ -3760,9 +3760,9 @@
 		
 		<xsl:if test="$namespace = 'iso'">
 			<xsl:if test="$layoutVersion = '1951'">
-				<xsl:if test="$revision_date_num &lt; 19680101">
+				<!-- <xsl:if test="$revision_date_num &lt; 19680101"> -->
 					<xsl:attribute name="font-size">8.5pt</xsl:attribute>
-				</xsl:if>
+				<!-- </xsl:if> -->
 			</xsl:if>
 			<xsl:if test="$layoutVersion = '1972' or $layoutVersion = '1979' or $layoutVersion = '1987' or $layoutVersion = '1989'">
 				<xsl:attribute name="font-size">9pt</xsl:attribute>
@@ -3873,7 +3873,7 @@
 		<xsl:if test="$namespace = 'iso'">
 			<xsl:variable name="note_name" select="*[local-name() = 'name']"/>
 			<xsl:if test="$layoutVersion = '1951'">
-				<xsl:if test="$revision_date_num &lt; 19610101">
+				<xsl:if test="$revision_date_num"> <!--  &lt; 19610101 -->
 					<xsl:attribute name="padding-right">0mm</xsl:attribute>
 				</xsl:if>
 			</xsl:if>
