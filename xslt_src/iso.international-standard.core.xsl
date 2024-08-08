@@ -4016,8 +4016,7 @@
 								<xsl:with-param name="letter-spacing" select="0.65"/>
 							</xsl:call-template>
 						</xsl:when>
-						
-						<xsl:when test="$layoutVersion = '1972' and ($level = 3 or $level = 4)">
+						<xsl:when test="($layoutVersion = '1951' or $layoutVersion = '1972') and ($level = 3 or $level = 4)">
 							<fo:inline><xsl:apply-templates select="*[local-name() = 'tab'][1]/preceding-sibling::node()"/></fo:inline>
 							<xsl:apply-templates select="*[local-name() = 'tab'][1]"/>
 							<xsl:choose>
@@ -4325,6 +4324,42 @@
 			<xsl:when test="$layoutVersion = '1951'"> <!--  and $revision_date_num &lt; 19610101 -->
 				<xsl:call-template name="smallcaps"/>
 				<xsl:text>:</xsl:text>
+			</xsl:when>
+			<xsl:otherwise><xsl:value-of select="."/></xsl:otherwise>
+		</xsl:choose>
+	</xsl:template>
+	
+	<xsl:template match="*[local-name() = 'figure']/*[local-name() = 'name']/text()" priority="5">
+		<xsl:choose>
+			<xsl:when test="$layoutVersion = '1951' and not(ancestor::*[local-name() = 'figure'][1]/@unnumbered = 'true') and not(preceding-sibling::node())">
+				<xsl:choose>
+					<xsl:when test="contains(., '—')">
+						<xsl:call-template name="smallcaps">
+							<xsl:with-param name="txt" select="substring-before(., '—')"/>
+						</xsl:call-template>
+						<xsl:text>— </xsl:text>
+						<xsl:value-of select="substring-after(., '—')"/>
+					</xsl:when>
+					<xsl:otherwise><xsl:call-template name="smallcaps"/></xsl:otherwise>
+				</xsl:choose>
+			</xsl:when>
+			<xsl:otherwise><xsl:value-of select="."/></xsl:otherwise>
+		</xsl:choose>
+	</xsl:template>
+	
+	<xsl:template match="*[local-name() = 'table']/*[local-name() = 'name']/text()" priority="5">
+		<xsl:choose>
+			<xsl:when test="$layoutVersion = '1951' and not(ancestor::*[local-name() = 'table'][1]/@unnumbered = 'true') and not(preceding-sibling::node())">
+				<xsl:choose>
+					<xsl:when test="contains(., '—')">
+						<xsl:call-template name="smallcaps">
+							<xsl:with-param name="txt" select="substring-before(., '—')"/>
+						</xsl:call-template>
+						<xsl:text>— </xsl:text>
+						<xsl:value-of select="substring-after(., '—')"/>
+					</xsl:when>
+					<xsl:otherwise><xsl:call-template name="smallcaps"/></xsl:otherwise>
+				</xsl:choose>
 			</xsl:when>
 			<xsl:otherwise><xsl:value-of select="."/></xsl:otherwise>
 		</xsl:choose>

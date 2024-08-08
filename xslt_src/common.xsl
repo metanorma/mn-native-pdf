@@ -2224,6 +2224,9 @@
 			<xsl:if test="$continued = 'true'">
 				<xsl:attribute name="margin-bottom">2pt</xsl:attribute>
 			</xsl:if>
+			<xsl:if test="$layoutVersion = '1951'">
+				<xsl:attribute name="font-size">inherit</xsl:attribute>
+			</xsl:if>
 			<xsl:if test="$layoutVersion = '1972' or $layoutVersion = '1979' or $layoutVersion = '1987' or $layoutVersion = '1989'">
 				<xsl:attribute name="font-size">10pt</xsl:attribute>
 				<xsl:if test="normalize-space(../@width) != 'text-width'">
@@ -7656,6 +7659,9 @@
 								$namespace = 'rsd'">
 					<fo:table table-layout="fixed" width="100%" xsl:use-attribute-sets="table-container-style">
 						<xsl:if test="$namespace = 'iso'">
+							<xsl:if test="$layoutVersion = '1951'">
+								<xsl:attribute name="font-size">inherit</xsl:attribute>
+							</xsl:if>
 							<xsl:if test="$layoutVersion = '2024'">
 								<xsl:attribute name="margin-top">12pt</xsl:attribute>
 								<xsl:attribute name="margin-bottom">2pt</xsl:attribute>
@@ -10820,12 +10826,23 @@
 	</xsl:template>
 	
 	<xsl:template match="text()[ancestor::*[local-name()='smallcap']]" name="smallcaps">
+		<xsl:param name="txt"/>
 		<!-- <xsl:variable name="text" select="normalize-space(.)"/> --> <!-- https://github.com/metanorma/metanorma-iso/issues/1115 -->
-		<xsl:variable name="text" select="."/>
+		<xsl:variable name="text">
+			<xsl:choose>
+				<xsl:when test="$txt != ''">
+					<xsl:value-of select="$txt"/>
+				</xsl:when>
+				<xsl:otherwise>
+					<xsl:value-of select="."/>
+				</xsl:otherwise>
+			</xsl:choose>
+		</xsl:variable>
 		<xsl:variable name="ratio_">
 			<xsl:choose>
 				<xsl:when test="$namespace = 'iso'">
 					<xsl:choose>
+						<xsl:when test="$layoutVersion = '1951'">0.9</xsl:when>
 						<xsl:when test="$layoutVersion = '2024'">0.8</xsl:when>
 						<xsl:otherwise>0.75</xsl:otherwise>
 					</xsl:choose>
