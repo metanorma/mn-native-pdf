@@ -12747,9 +12747,21 @@
 				<xsl:if test="following-sibling::*[1][self::iso:note] and not(preceding-sibling::*[1][self::iso:note])">
 					<!-- NOTES -->
 					<fo:block font-size="9.5pt" keep-with-next="always" margin-bottom="6pt" text-transform="uppercase">
-						<xsl:call-template name="getLocalizedString">
-							<xsl:with-param name="key">Note.pl</xsl:with-param>
-						</xsl:call-template>
+						<xsl:variable name="i18n_notes">
+							<xsl:call-template name="getLocalizedString">
+								<xsl:with-param name="key">Note.pl</xsl:with-param>
+							</xsl:call-template>
+						</xsl:variable>
+						<xsl:choose>
+							<xsl:when test="$layoutVersion = '1951'">
+								<xsl:call-template name="smallcaps">
+									<xsl:with-param name="txt" select="$i18n_notes"/>
+								</xsl:call-template>
+							</xsl:when>
+							<xsl:otherwise>
+								<xsl:value-of select="$i18n_notes"/>
+							</xsl:otherwise>
+						</xsl:choose>
 					</fo:block>
 				</xsl:if>
 			</xsl:if>
