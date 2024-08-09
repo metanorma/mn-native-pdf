@@ -4016,9 +4016,13 @@
 								<xsl:with-param name="letter-spacing" select="0.65"/>
 							</xsl:call-template>
 						</xsl:when>
-						<xsl:when test="($layoutVersion = '1951' or $layoutVersion = '1972') and ($level = 3 or $level = 4)">
-							<fo:inline><xsl:apply-templates select="*[local-name() = 'tab'][1]/preceding-sibling::node()"/></fo:inline>
-							<xsl:apply-templates select="*[local-name() = 'tab'][1]"/>
+						<xsl:when test="($layoutVersion = '1951' or $layoutVersion = '1972') and ($level = 3 or $level = 4) and *[local-name() = 'tab']">
+							<xsl:if test="$without_number = 'false'">
+								<fo:inline>
+									<xsl:apply-templates select="*[local-name() = 'tab'][1]/preceding-sibling::node() | node()"/>
+								</fo:inline>
+								<xsl:apply-templates select="*[local-name() = 'tab'][1]"/>
+							</xsl:if>
 							<xsl:choose>
 								<xsl:when test="$level = 3">
 									<fo:inline font-weight="normal" font-style="italic"><xsl:apply-templates select="*[local-name() = 'tab'][1]/following-sibling::node()"/></fo:inline>
@@ -4452,7 +4456,7 @@
 									<xsl:copy-of select="@font-weight"/>
 									<xsl:copy-of select="@font-style"/>
 								</xsl:for-each>
-								<xsl:value-of select="xalan:nodeset($element_title)/*[1]/text()"/>
+								<xsl:value-of select="xalan:nodeset($element_title)/*[1]/node()[1]"/>
 							</fo:block>
 						</fo:list-item-label>
 						<fo:list-item-body start-indent="body-start()">
