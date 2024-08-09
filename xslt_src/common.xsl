@@ -12743,7 +12743,7 @@
 			</xsl:if>
 		</xsl:if>
 		<xsl:if test="$namespace = 'iso'">
-			<xsl:if test="$layoutVersion = '1987'">
+			<xsl:if test="$layoutVersion = '1951' or $layoutVersion = '1987'">
 				<xsl:if test="following-sibling::*[1][self::iso:note] and not(preceding-sibling::*[1][self::iso:note])">
 					<!-- NOTES -->
 					<fo:block font-size="9.5pt" keep-with-next="always" margin-bottom="6pt" text-transform="uppercase">

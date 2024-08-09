@@ -3957,7 +3957,7 @@
 							<xsl:when test="$layoutVersion = '1951' and $level = 1 and ancestor::iso:preface">14.7mm</xsl:when>
 							<xsl:when test="$layoutVersion = '1951' and parent::iso:introduction and $revision_date_num &lt; 19680101">6mm</xsl:when>
 							<xsl:when test="$layoutVersion = '1951' and parent::iso:introduction">2mm</xsl:when>
-							<xsl:when test="$layoutVersion = '1951' and $revision_date_num &gt;= 19680101">4pt</xsl:when>
+							<!-- <xsl:when test="$layoutVersion = '1951' and $revision_date_num &gt;= 19680101">4pt</xsl:when> -->
 							<xsl:when test="$layoutVersion = '1951' and $level = 1">12pt</xsl:when>
 							<xsl:when test="ancestor::iso:introduction and $level &gt;= 2">8pt</xsl:when>
 							<xsl:when test="ancestor::iso:preface">18pt</xsl:when>
@@ -4312,6 +4312,12 @@
 	
 	<xsl:template match="*[local-name() = 'note']/*[local-name() = 'name']/text()" priority="5">
 		<xsl:choose>
+			<xsl:when test="$layoutVersion = '1951' and not(translate(.,'0123456789','') = .)"> <!-- NOTE with number -->
+				<fo:inline padding-right="2mm" role="SKIP">
+					<xsl:value-of select="substring-after(., ' ')"/>
+					<xsl:text>. </xsl:text>
+				</fo:inline>
+			</xsl:when>
 			<xsl:when test="$layoutVersion = '1951'"> <!-- and $revision_date_num &lt; 19610101 -->
 				<xsl:call-template name="smallcaps"/>
 				<xsl:value-of select="concat('. ', $em_dash, ' ')"/>
