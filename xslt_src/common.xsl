@@ -750,7 +750,7 @@
 	<xsl:attribute-set name="copyright-statement-title-style">
 		<xsl:if test="$namespace = 'ogc'">
 			<xsl:attribute name="font-weight">bold</xsl:attribute>
-			<xsl:attribute name="color"><xsl:value-of select="$color_blue"/></xsl:attribute>
+			<xsl:attribute name="color"><xsl:value-of select="$color_text_title"/></xsl:attribute>
 			<xsl:attribute name="margin-top">24pt</xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'ogc-white-paper'">
@@ -804,7 +804,7 @@
 		</xsl:if>
 		<xsl:if test="$namespace = 'ogc'">
 			<xsl:attribute name="font-weight">bold</xsl:attribute>
-			<xsl:attribute name="color"><xsl:value-of select="$color_blue"/></xsl:attribute>
+			<xsl:attribute name="color"><xsl:value-of select="$color_text_title"/></xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'ogc-white-paper'">
 			<xsl:attribute name="font-family">Lato</xsl:attribute>
@@ -2121,7 +2121,7 @@
 			<xsl:attribute name="text-align">left</xsl:attribute>
 			<xsl:attribute name="margin-bottom">6pt</xsl:attribute>
 			<xsl:attribute name="font-weight">normal</xsl:attribute>
-			<xsl:attribute name="color"><xsl:value-of select="$color_blue"/></xsl:attribute>
+			<xsl:attribute name="color"><xsl:value-of select="$color_text_title"/></xsl:attribute>
 			<xsl:attribute name="font-size">11pt</xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'ogc-white-paper'">
@@ -2285,7 +2285,7 @@
 		</xsl:if>
 		
 		<xsl:if test="$namespace = 'ogc'">
-			<xsl:attribute name="background-color">rgb(33, 55, 92)</xsl:attribute>
+			<xsl:attribute name="background-color"><xsl:value-of select="$color_table_header_row"/></xsl:attribute>
 			<xsl:attribute name="color">white</xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'plateau'">
@@ -2476,8 +2476,8 @@
 			<xsl:variable name="number"><xsl:number/></xsl:variable>
 			<xsl:attribute name="background-color">
 				<xsl:choose>
-					<xsl:when test="$number mod 2 = 0">rgb(252, 246, 222)</xsl:when>
-					<xsl:otherwise>rgb(254, 252, 245)</xsl:otherwise>
+					<xsl:when test="$number mod 2 = 0"><xsl:value-of select="$color_table_row_even"/></xsl:when>
+					<xsl:otherwise><xsl:value-of select="$color_table_row_odd"/></xsl:otherwise>
 				</xsl:choose>
 			</xsl:attribute>
 		</xsl:if>
@@ -3475,7 +3475,7 @@
 		</xsl:if>
 		<xsl:if test="$namespace = 'ogc'">							
 			<xsl:attribute name="font-weight">normal</xsl:attribute>
-			<xsl:attribute name="color"><xsl:value-of select="$color_blue"/></xsl:attribute>
+			<xsl:attribute name="color"><xsl:value-of select="$color_text_title"/></xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'ogc-white-paper'">
 			<xsl:attribute name="color">rgb(68, 84, 106)</xsl:attribute>
@@ -4396,7 +4396,7 @@
 			<xsl:attribute name="keep-with-previous">always</xsl:attribute>
 		</xsl:if>		
 		<xsl:if test="$namespace = 'ogc'">
-			<xsl:attribute name="color"><xsl:value-of select="$color_blue"/></xsl:attribute>
+			<xsl:attribute name="color"><xsl:value-of select="$color_text_title"/></xsl:attribute>
 			<!-- <xsl:attribute name="margin-top">12pt</xsl:attribute> -->
 			<xsl:attribute name="margin-top">6pt</xsl:attribute>
 			<xsl:attribute name="space-after">12pt</xsl:attribute>
@@ -5057,7 +5057,7 @@
 		</xsl:if>
 		<xsl:if test="$namespace = 'ogc'">							
 			<xsl:attribute name="font-weight">normal</xsl:attribute>
-			<xsl:attribute name="color"><xsl:value-of select="$color_blue"/></xsl:attribute>
+			<xsl:attribute name="color"><xsl:value-of select="$color_text_title"/></xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'ogc-white-paper'">
 			<xsl:attribute name="color">rgb(68, 84, 106)</xsl:attribute>
@@ -6847,13 +6847,39 @@
 			</xsl:for-each>
 		</xsl:element>
 		
-		<xsl:call-template name="insertAnnexInSeparatePageSequences"/>
+		<xsl:call-template name="insertAnnexAndBibliographyInSeparatePageSequences"/>
 		
-		<xsl:call-template name="insertBibliographyInSeparatePageSequences"/>
+		<!-- <xsl:call-template name="insertBibliographyInSeparatePageSequences"/> -->
 		
 		<!-- <xsl:call-template name="insertIndexInSeparatePageSequences"/> -->
 	</xsl:template> <!-- END: insertMainSectionsInSeparatePageSequences -->
 	
+  
+  <xsl:template name="insertAnnexAndBibliographyInSeparatePageSequences">
+		<xsl:for-each select="/*/*[local-name()='annex'] | 
+									/*/*[local-name()='bibliography']/*[not(@normative='true')] | 
+									/*/*[local-name()='bibliography']/*[local-name()='clause'][*[local-name()='references'][not(@normative='true')]] |
+									/*/*[local-name()='indexsect']">
+			<xsl:sort select="@displayorder" data-type="number"/>
+			<xsl:choose>
+				<xsl:when test="local-name() = 'annex' or local-name() = 'indexsect'">
+					<xsl:element name="page_sequence" namespace="{$namespace_full}">
+						<xsl:attribute name="main_page_sequence"/>
+						<xsl:apply-templates select="." mode="update_xml_step_move_pagebreak"/>
+					</xsl:element>
+				</xsl:when>
+				<xsl:otherwise> <!-- bibliography -->
+					<xsl:element name="bibliography" namespace="{$namespace_full}"> <!-- save context element -->
+						<xsl:element name="page_sequence" namespace="{$namespace_full}">
+							<xsl:attribute name="main_page_sequence"/>
+							<xsl:apply-templates select="." mode="update_xml_step_move_pagebreak"/>
+						</xsl:element>
+					</xsl:element>
+				</xsl:otherwise>
+			</xsl:choose>
+		</xsl:for-each>
+	</xsl:template>
+  
 	<xsl:template name="insertAnnexInSeparatePageSequences">
 		<xsl:for-each select="/*/*[local-name()='annex']">
 			<xsl:sort select="@displayorder" data-type="number"/>
@@ -15248,7 +15274,7 @@
 				<xsl:if test="$namespace = 'ogc' or $namespace = 'ogc-white-paper'">
 					<xsl:attribute name="font-weight">normal</xsl:attribute>
 					<xsl:if test="parent::*[local-name()='thead']"> <!-- and not(ancestor::*[local-name() = 'table'][@class = 'recommendation' or @class='requirement' or @class='permission']) -->
-						<xsl:attribute name="background-color">rgb(33, 55, 92)</xsl:attribute>
+						<xsl:attribute name="background-color"><xsl:value-of select="$color_table_header_row"/></xsl:attribute>
 					</xsl:if>
 					<xsl:if test="starts-with(*[local-name()='td'][1], 'Requirement ')">
 						<xsl:attribute name="background-color">rgb(252, 246, 222)</xsl:attribute>
@@ -18168,6 +18194,14 @@
 						<xsl:if test="not(@type)">
 							<xsl:attribute name="font-size">9pt</xsl:attribute>
 							<xsl:attribute name="text-align">left</xsl:attribute>
+						</xsl:if>
+					</xsl:if>
+					
+					<xsl:if test="$namespace = 'ogc' or $namespace = 'ogc-white-paper'">
+						<xsl:variable name="admonition_color" select="normalize-space(/ogc:ogc-standard/ogc:metanorma-extension/ogc:presentation-metadata[ogc:name = concat('color-admonition-', @type)]/ogc:value)"/>
+						<xsl:if test="$admonition_color != ''">
+							<xsl:attribute name="border">0.5pt solid <xsl:value-of select="$admonition_color"/></xsl:attribute>
+							<xsl:attribute name="color"><xsl:value-of select="$admonition_color"/></xsl:attribute>
 						</xsl:if>
 					</xsl:if>
 					
