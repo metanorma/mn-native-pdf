@@ -250,12 +250,6 @@
 	<xsl:template match="/">
 		<xsl:call-template name="namespaceCheck"/>
 		
-		<xsl:variable name="updated_xml_step1">
-			<xsl:apply-templates mode="update_xml_step1"/>
-		</xsl:variable>
-		
-		<xsl:for-each select="xalan:nodeset($updated_xml_step1)">
-		
 			<fo:root xmlns:fo="http://www.w3.org/1999/XSL/Format" xml:lang="{$lang}">
 				<xsl:variable name="root-style">
 					<root-style xsl:use-attribute-sets="root-style"/>
@@ -608,6 +602,12 @@
 				
 				<xsl:for-each select="xalan:nodeset($updated_xml)/*"> -->
 			
+			<xsl:variable name="updated_xml_step1">
+				<xsl:apply-templates mode="update_xml_step1"/>
+			</xsl:variable>
+			
+			<xsl:for-each select="xalan:nodeset($updated_xml_step1)">
+			
 					<xsl:variable name="updated_xml_with_pages">
 						<xsl:call-template name="processPrefaceAndMainSectionsOGC_items"/>
 					</xsl:variable>
@@ -721,13 +721,13 @@
 						</xsl:for-each>
 					</xsl:for-each>
 				<!-- </xsl:for-each> -->
-				
+			
 				<xsl:apply-templates select="//ogc:indexsect" mode="sections"/>
 				
+			</xsl:for-each>
 				
-			</fo:root>
+		</fo:root>
 		
-		</xsl:for-each>
 	</xsl:template> 
 
 
