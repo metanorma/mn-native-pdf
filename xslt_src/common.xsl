@@ -6854,8 +6854,8 @@
 		<!-- <xsl:call-template name="insertIndexInSeparatePageSequences"/> -->
 	</xsl:template> <!-- END: insertMainSectionsInSeparatePageSequences -->
 	
-  
-  <xsl:template name="insertAnnexAndBibliographyInSeparatePageSequences">
+	
+	<xsl:template name="insertAnnexAndBibliographyInSeparatePageSequences">
 		<xsl:for-each select="/*/*[local-name()='annex'] | 
 									/*/*[local-name()='bibliography']/*[not(@normative='true')] | 
 									/*/*[local-name()='bibliography']/*[local-name()='clause'][*[local-name()='references'][not(@normative='true')]] |
@@ -18593,10 +18593,12 @@
 	<xsl:template match="*[local-name() = 'metanorma-extension']/*[local-name() = 'attachment']" mode="update_xml_step1">
 		<xsl:copy>
 			<xsl:copy-of select="@*"/>
-			<xsl:variable name="name_filepath" select="concat($inputxml_basepath, @name)"/>
-			<xsl:variable name="file_exists" select="normalize-space(java:exists(java:java.io.File.new($name_filepath)))"/>
-			<xsl:if test="$file_exists = 'false'"> <!-- copy attachment content only if file on disk doesnt exist -->
-				<xsl:value-of select="."/>
+			<xsl:if test="1 = 2"> <!-- remove attachment/text(), because attachments added in the template 'addPDFUAmeta' before applying 'update_xml_step1' -->
+				<xsl:variable name="name_filepath" select="concat($inputxml_basepath, @name)"/>
+				<xsl:variable name="file_exists" select="normalize-space(java:exists(java:java.io.File.new($name_filepath)))"/>
+				<xsl:if test="$file_exists = 'false'"> <!-- copy attachment content only if file on disk doesnt exist -->
+					<xsl:value-of select="normalize-space(.)"/>
+				</xsl:if>
 			</xsl:if>
 		</xsl:copy>
 	</xsl:template>
@@ -19697,7 +19699,8 @@
 		<xsl:for-each select="//*[contains(local-name(), '-standard')]/*[local-name() = 'metanorma-extension']/*[local-name() = 'attachment']">
 			<xsl:choose>
 				<xsl:when test="normalize-space() != ''">
-					<pdf:embedded-file src="{.}" filename="{@name}" xmlns:pdf="http://xmlgraphics.apache.org/fop/extensions/pdf"/>
+					<xsl:variable name="src_attachment" select="java:replaceAll(java:java.lang.String.new(.),'(&#x0d;&#x0a;|&#x0d;|&#x0a;)', '')"/> <!-- remove line breaks -->
+					<pdf:embedded-file src="{$src_attachment}" filename="{@name}" xmlns:pdf="http://xmlgraphics.apache.org/fop/extensions/pdf"/>
 				</xsl:when>
 				<xsl:otherwise>
 					<!-- _{filename}_attachments -->
