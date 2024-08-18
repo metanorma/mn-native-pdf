@@ -1471,12 +1471,16 @@
 	<xsl:template match="jis:p//text()[not(ancestor::jis:strong)] |
 						jis:dt/text()" mode="update_xml_step1">
 		<xsl:variable name="text_en_" select="java:replaceAll(java:java.lang.String.new(.), $regex_en, concat($tag_font_en_open,'$1',$tag_font_en_close))"/>
-		<xsl:variable name="text_en"><text><xsl:call-template name="replace_text_tags">
-			<xsl:with-param name="tag_open" select="$tag_font_en_open"/>
-			<xsl:with-param name="tag_close" select="$tag_font_en_close"/>
-			<xsl:with-param name="text" select="$text_en_"/>
-		</xsl:call-template></text></xsl:variable>
-		<xsl:copy-of select="xalan:nodeset($text_en)/text/node()"/>
+		<xsl:variable name="text_en">
+			<xsl:element name="text" namespace="{$namespace_full}">
+				<xsl:call-template name="replace_text_tags">
+					<xsl:with-param name="tag_open" select="$tag_font_en_open"/>
+					<xsl:with-param name="tag_close" select="$tag_font_en_close"/>
+					<xsl:with-param name="text" select="$text_en_"/>
+				</xsl:call-template>
+			</xsl:element>
+		</xsl:variable>
+		<xsl:copy-of select="xalan:nodeset($text_en)/*[local-name() = 'text']/node()"/>
 	</xsl:template>
 	
 	<!-- jis:term/jis:preferred2//text() | -->
@@ -1491,24 +1495,32 @@
 						jis:xref//text() |
 						jis:origin/text()" mode="update_xml_step1">
 		<xsl:variable name="text_en_" select="java:replaceAll(java:java.lang.String.new(.), $regex_en, concat($tag_font_en_bold_open,'$1',$tag_font_en_bold_close))"/>
-		<xsl:variable name="text_en"><text><xsl:call-template name="replace_text_tags">
-			<xsl:with-param name="tag_open" select="$tag_font_en_bold_open"/>
-			<xsl:with-param name="tag_close" select="$tag_font_en_bold_close"/>
-			<xsl:with-param name="text" select="$text_en_"/>
-		</xsl:call-template></text></xsl:variable>
-		<xsl:copy-of select="xalan:nodeset($text_en)/text/node()"/>
+		<xsl:variable name="text_en">
+			<xsl:element name="text" namespace="{$namespace_full}">
+				<xsl:call-template name="replace_text_tags">
+					<xsl:with-param name="tag_open" select="$tag_font_en_bold_open"/>
+					<xsl:with-param name="tag_close" select="$tag_font_en_bold_close"/>
+					<xsl:with-param name="text" select="$text_en_"/>
+				</xsl:call-template>
+			</xsl:element>
+		</xsl:variable>
+		<xsl:copy-of select="xalan:nodeset($text_en)/*[local-name() = 'text']/node()"/>
 	</xsl:template>
 	
 	<!-- for $contents -->
 	<xsl:template match="title/text()">
 		<xsl:variable name="regex_en_contents">([^\u00A0\u2002-\u200B\u3000-\u9FFF\uF900-\uFFFF\(\)]{1,})</xsl:variable>
 		<xsl:variable name="text_en_" select="java:replaceAll(java:java.lang.String.new(.), $regex_en_contents, concat($tag_font_en_bold_open,'$1',$tag_font_en_bold_close))"/>
-		<xsl:variable name="text_en"><text><xsl:call-template name="replace_text_tags">
-			<xsl:with-param name="tag_open" select="$tag_font_en_bold_open"/>
-			<xsl:with-param name="tag_close" select="$tag_font_en_bold_close"/>
-			<xsl:with-param name="text" select="$text_en_"/>
-		</xsl:call-template></text></xsl:variable>
-		<xsl:apply-templates select="xalan:nodeset($text_en)/text/node()"/>
+		<xsl:variable name="text_en">
+			<xsl:element name="text" namespace="{$namespace_full}">
+				<xsl:call-template name="replace_text_tags">
+					<xsl:with-param name="tag_open" select="$tag_font_en_bold_open"/>
+					<xsl:with-param name="tag_close" select="$tag_font_en_bold_close"/>
+					<xsl:with-param name="text" select="$text_en_"/>
+				</xsl:call-template>
+			</xsl:element>
+		</xsl:variable>
+		<xsl:apply-templates select="xalan:nodeset($text_en)/*[local-name() = 'text']/node()"/>
 	</xsl:template>
 	
 	<!-- move example title to the first paragraph -->
@@ -1529,12 +1541,16 @@
 			</xsl:choose>
 		</xsl:variable>
 		<xsl:variable name="text_en_" select="java:replaceAll(java:java.lang.String.new($example_name), $regex_en, concat($tag_font_en_bold_open,'$1',$tag_font_en_bold_close))"/>
-		<xsl:variable name="text_en"><text><xsl:call-template name="replace_text_tags">
-			<xsl:with-param name="tag_open" select="$tag_font_en_bold_open"/>
-			<xsl:with-param name="tag_close" select="$tag_font_en_bold_close"/>
-			<xsl:with-param name="text" select="$text_en_"/>
-		</xsl:call-template></text></xsl:variable>
-		<xsl:copy-of select="xalan:nodeset($text_en)/text/node()"/>
+		<xsl:variable name="text_en">
+			<xsl:element name="text" namespace="{$namespace_full}">
+				<xsl:call-template name="replace_text_tags">
+					<xsl:with-param name="tag_open" select="$tag_font_en_bold_open"/>
+					<xsl:with-param name="tag_close" select="$tag_font_en_bold_close"/>
+					<xsl:with-param name="text" select="$text_en_"/>
+				</xsl:call-template>
+			</xsl:element>
+		</xsl:variable>
+		<xsl:copy-of select="xalan:nodeset($text_en)/*[local-name() = 'text']/node()"/>
 	</xsl:template>
 	
 	<xsl:template match="jis:eref//text()" mode="update_xml_step1">
@@ -1542,11 +1558,11 @@
 		<xsl:variable name="parts">
 			<xsl:choose>
 				<xsl:when test="contains(., ':')">
-					<xsl:element name="{$element_name_font_en_bold}"><xsl:value-of select="substring-before(., ':')"/></xsl:element>
-					<xsl:element name="{$element_name_font_en}">:<xsl:value-of select="substring-after(., ':')"/></xsl:element>
+					<xsl:element name="{$element_name_font_en_bold}" namespace="{$namespace_full}"><xsl:value-of select="substring-before(., ':')"/></xsl:element>
+					<xsl:element name="{$element_name_font_en}" namespace="{$namespace_full}">:<xsl:value-of select="substring-after(., ':')"/></xsl:element>
 				</xsl:when>
 				<xsl:otherwise>
-					<xsl:element name="{$element_name_font_en_bold}"><xsl:value-of select="."/></xsl:element>
+					<xsl:element name="{$element_name_font_en_bold}" namespace="{$namespace_full}"><xsl:value-of select="."/></xsl:element>
 				</xsl:otherwise>
 			</xsl:choose>
 		</xsl:variable>
@@ -1554,12 +1570,16 @@
 			<xsl:variable name="tag_open">###<xsl:value-of select="local-name()"/>###</xsl:variable>
 			<xsl:variable name="tag_close">###/<xsl:value-of select="local-name()"/>###</xsl:variable>
 			<xsl:variable name="text_en_" select="java:replaceAll(java:java.lang.String.new(.), $regex_en, concat($tag_open,'$1',$tag_close))"/>
-			<xsl:variable name="text_en"><text><xsl:call-template name="replace_text_tags">
-				<xsl:with-param name="tag_open" select="$tag_open"/>
-				<xsl:with-param name="tag_close" select="$tag_close"/>
-				<xsl:with-param name="text" select="$text_en_"/>
-			</xsl:call-template></text></xsl:variable>
-			<xsl:copy-of select="xalan:nodeset($text_en)/text/node()"/>
+			<xsl:variable name="text_en">
+				<xsl:element name="text" namespace="{$namespace_full}">
+					<xsl:call-template name="replace_text_tags">
+						<xsl:with-param name="tag_open" select="$tag_open"/>
+						<xsl:with-param name="tag_close" select="$tag_close"/>
+						<xsl:with-param name="text" select="$text_en_"/>
+					</xsl:call-template>
+				</xsl:element>
+			</xsl:variable>
+			<xsl:copy-of select="xalan:nodeset($text_en)/*[local-name() = 'text']/node()"/>
 		</xsl:for-each>
 	</xsl:template>
 	
@@ -1568,12 +1588,16 @@
 	</xsl:template>
 	<xsl:template match="jis:strong/text()" priority="2" mode="update_xml_step1">
 		<xsl:variable name="text_en_" select="java:replaceAll(java:java.lang.String.new(.), $regex_en, concat($tag_font_en_bold_open,'$1',$tag_font_en_bold_close))"/>
-		<xsl:variable name="text_en"><text><xsl:call-template name="replace_text_tags">
-			<xsl:with-param name="tag_open" select="$tag_font_en_bold_open"/>
-			<xsl:with-param name="tag_close" select="$tag_font_en_bold_close"/>
-			<xsl:with-param name="text" select="$text_en_"/>
-		</xsl:call-template></text></xsl:variable>
-		<xsl:copy-of select="xalan:nodeset($text_en)/text/node()"/>
+		<xsl:variable name="text_en">
+			<xsl:element name="text" namespace="{$namespace_full}">
+				<xsl:call-template name="replace_text_tags">
+					<xsl:with-param name="tag_open" select="$tag_font_en_bold_open"/>
+					<xsl:with-param name="tag_close" select="$tag_font_en_bold_close"/>
+					<xsl:with-param name="text" select="$text_en_"/>
+				</xsl:call-template>
+			</xsl:element>
+		</xsl:variable>
+		<xsl:copy-of select="xalan:nodeset($text_en)/*[local-name() = 'text']/node()"/>
 	</xsl:template>
 	
 	<xsl:template match="*[local-name() = 'font_en_bold'][normalize-space() != '']">
