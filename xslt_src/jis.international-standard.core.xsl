@@ -1528,9 +1528,16 @@
 		<xsl:copy>
 			<xsl:copy-of select="@*"/>
 			<xsl:element name="p" namespace="https://www.metanorma.org/ns/jis">
-				<xsl:value-of select="substring-after(jis:name/text(), ' — ')"/>
+				<xsl:value-of select="substring-after(jis:name/text()[1], ' — ')"/>
+				<xsl:apply-templates select="jis:name/text()[1]/following-sibling::node()" mode="update_xml_step1"/>
 			</xsl:element>
 			<xsl:apply-templates mode="update_xml_step1"/>
+		</xsl:copy>
+	</xsl:template>
+	<xsl:template match="jis:example/jis:name[contains(text(), ' — ')]" mode="update_xml_step1">
+		<xsl:copy>
+			<xsl:copy-of select="@*"/>
+			<xsl:apply-templates select="text()[1]" mode="update_xml_step1"/>
 		</xsl:copy>
 	</xsl:template>
 	<xsl:template match="jis:example/jis:name/text()" mode="update_xml_step1">
