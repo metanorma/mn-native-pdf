@@ -274,8 +274,8 @@
 					<!-- ========================== -->
 					
 					
-					
-					<xsl:for-each select="/*/*[local-name()='preface']/*">
+					 
+					<xsl:for-each select="/*/*[local-name()='preface']/*[not(local-name() = 'clause' and @type = 'contributors')]">
 						<xsl:sort select="@displayorder" data-type="number"/>
 						
 						<xsl:choose>
