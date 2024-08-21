@@ -1170,7 +1170,11 @@
 						<xsl:attribute name="margin-bottom">0pt</xsl:attribute>
 					</xsl:if>
 					
-					<xsl:if test="parent::plateau:clause">
+					<xsl:if test="parent::plateau:note and not(following-sibling::*)">
+						<xsl:attribute name="margin-bottom">0pt</xsl:attribute>
+					</xsl:if>
+					
+					<xsl:if test="parent::plateau:clause or (ancestor::plateau:note and not(plateau:table))">
 						<xsl:text>&#x3000;</xsl:text>
 					</xsl:if>
 					
@@ -1189,6 +1193,11 @@
 		
 			</xsl:otherwise>
 		</xsl:choose>
+	</xsl:template>
+	
+	
+	<xsl:template match="*[local-name() = 'note'][not(ancestor::plateau:table)]/*[local-name() = 'p']" priority="2">
+		<xsl:call-template name="paragraph"/>
 	</xsl:template>
 	
 	

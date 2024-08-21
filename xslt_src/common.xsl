@@ -3696,7 +3696,8 @@
 		</xsl:if>
 		<xsl:if test="$namespace = 'plateau'">
 			<xsl:attribute name="text-indent">0mm</xsl:attribute>
-			<xsl:attribute name="space-before">2pt</xsl:attribute>
+			<xsl:attribute name="margin-top">6pt</xsl:attribute>
+			<xsl:attribute name="margin-bottom">6pt</xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'unece'">			
 			<xsl:attribute name="margin-bottom">12pt</xsl:attribute>
@@ -3837,6 +3838,10 @@
 		<xsl:if test="$namespace = 'ogc-white-paper'">
 			<!-- <xsl:attribute name="padding-right">4mm</xsl:attribute> -->
 		</xsl:if>
+		<xsl:if test="$namespace = 'plateau'">
+			<xsl:attribute name="keep-with-next">always</xsl:attribute>
+			<xsl:attribute name="margin-bottom">10pt</xsl:attribute>
+		</xsl:if>
 		<xsl:if test="$namespace = 'unece'">
 			<xsl:attribute name="padding-right">4mm</xsl:attribute>
 		</xsl:if>
@@ -3956,6 +3961,9 @@
 		<xsl:if test="$namespace = 'ogc' or $namespace = 'ogc-white-paper' or $namespace = 'rsd'">
 			<xsl:attribute name="margin-top">12pt</xsl:attribute>			
 			<xsl:attribute name="margin-bottom">12pt</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'plateau'">
+			<xsl:attribute name="space-after">4pt</xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'nist-cswp'">			
 			<xsl:attribute name="space-before">4pt</xsl:attribute>
@@ -12690,6 +12698,22 @@
 						</fo:list-block>
 						<!-- jis -->
 					</xsl:when>
+					<xsl:when test="$namespace = 'plateau'">
+						<fo:table table-layout="fixed" width="99%" border="1pt solid black">
+							<fo:table-body>
+								<fo:table-row>
+									<fo:table-cell padding="2mm">
+										<fo:block xsl:use-attribute-sets="note-name-style" role="SKIP">
+											<xsl:apply-templates select="*[local-name() = 'name']" />
+										</fo:block>
+										<fo:block>
+											<xsl:apply-templates select="node()[not(local-name() = 'name')]" />
+										</fo:block>
+									</fo:table-cell>
+								</fo:table-row>
+							</fo:table-body>
+						</fo:table>
+					</xsl:when> <!-- plateau -->
 					
 					<xsl:otherwise>
 						<fo:block>
@@ -12775,7 +12799,7 @@
 				</fo:inline>
 			</xsl:when>
 			<xsl:otherwise>
-				<fo:block xsl:use-attribute-sets="note-p-style" role="SKIP">						
+				<fo:block xsl:use-attribute-sets="note-p-style" role="SKIP">
 					<xsl:apply-templates />
 				</fo:block>
 			</xsl:otherwise>
