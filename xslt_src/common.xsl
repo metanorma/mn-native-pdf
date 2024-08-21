@@ -12775,7 +12775,7 @@
 				</fo:inline>
 			</xsl:when>
 			<xsl:otherwise>
-				<fo:block xsl:use-attribute-sets="note-p-style" role="SKIP">						
+				<fo:block xsl:use-attribute-sets="note-p-style" role="SKIP">
 					<xsl:apply-templates />
 				</fo:block>
 			</xsl:otherwise>

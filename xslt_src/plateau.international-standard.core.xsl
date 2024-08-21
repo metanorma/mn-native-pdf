@@ -1170,7 +1170,11 @@
 						<xsl:attribute name="margin-bottom">0pt</xsl:attribute>
 					</xsl:if>
 					
-					<xsl:if test="parent::plateau:clause">
+					<xsl:if test="parent::plateau:note and not(following-sibling::*)">
+						<xsl:attribute name="margin-bottom">0pt</xsl:attribute>
+					</xsl:if>
+					
+					<xsl:if test="parent::plateau:clause or (ancestor::plateau:note and not(ancestor::plateau:table))">
 						<xsl:text>&#x3000;</xsl:text>
 					</xsl:if>
 					
@@ -1189,6 +1193,41 @@
 		
 			</xsl:otherwise>
 		</xsl:choose>
+	</xsl:template>
+	
+	
+	<xsl:template match="*[local-name() = 'note'][not(ancestor::plateau:table)]" priority="2">
+	
+		<fo:block-container id="{@id}" xsl:use-attribute-sets="note-style" role="SKIP">
+			<xsl:attribute name="margin-top">6pt</xsl:attribute>
+			<xsl:attribute name="margin-bottom">6pt</xsl:attribute>
+			
+			<xsl:call-template name="setBlockSpanAll"/>
+			
+			<xsl:call-template name="refine_note-style"/>
+			
+			<fo:block-container margin-left="0mm" margin-right="0mm" role="SKIP">
+	
+				<fo:table table-layout="fixed" width="99%" border="1pt solid black">
+					<fo:table-body>
+						<fo:table-row>
+							<fo:table-cell padding="2mm">
+								<fo:block keep-with-next="always" margin-bottom="10pt" role="SKIP">
+									<xsl:apply-templates select="*[local-name() = 'name']" />
+								</fo:block>
+								<fo:block>
+									<xsl:apply-templates select="node()[not(local-name() = 'name')]" />
+								</fo:block>
+							</fo:table-cell>
+						</fo:table-row>
+					</fo:table-body>
+				</fo:table>
+			</fo:block-container>
+		</fo:block-container>
+	</xsl:template>
+	
+	<xsl:template match="*[local-name() = 'note'][not(ancestor::plateau:table)]/*[local-name() = 'p']" priority="2">
+		<xsl:call-template name="paragraph"/>
 	</xsl:template>
 	
 	
