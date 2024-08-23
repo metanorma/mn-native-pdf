@@ -1226,6 +1226,8 @@
 		</fo:block-container>
 	</xsl:template>
 	
+	<xsl:template match="*[local-name() = 'figure']/*[local-name() = 'note']" priority="3"/>
+	
 	<xsl:template match="*[local-name() = 'note'][not(ancestor::plateau:table)]/*[local-name() = 'p']" priority="2">
 		<xsl:call-template name="paragraph"/>
 	</xsl:template>
