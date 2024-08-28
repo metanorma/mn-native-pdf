@@ -25,6 +25,8 @@
 	
 	<xsl:variable name="debug">false</xsl:variable>
 	
+	<xsl:variable name="isIgnoreComplexScripts">true</xsl:variable>
+	
 	<xsl:variable name="doctype" select="//plateau:plateau-standard[1]/plateau:bibdata/plateau:ext/plateau:doctype[@language = '' or not(@language)]"/>
 	
 	<xsl:variable name="i18n_doctype_dict_annex"><xsl:call-template name="getLocalizedString"><xsl:with-param name="key">doctype_dict.annex</xsl:with-param></xsl:call-template></xsl:variable>
