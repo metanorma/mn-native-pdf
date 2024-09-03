@@ -23,6 +23,11 @@ jobs:
         run: |
           docker pull verapdf/rest:latest
           docker run -d -p 8080:8080 -p 8081:8081 -v ./:/home/folder verapdf/rest:latest
+          
+      - name: Wait Docker image running
+        run: |
+          timeout 20s sh -c 'until curl http://localhost:8080/api/ | grep ReleaseDetails; do echo "Waiting until container to be healthy..."; sleep 1; done'
+           
     
       - name: Check PDFs using veraPDF
         run: |
