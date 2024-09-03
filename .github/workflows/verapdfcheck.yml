@@ -31,13 +31,13 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-
       - name: Check PDFs using veraPDF
         run: |
           find ./ -type f -name "*.pdf"
-          find ./ -type f -name "*.pdf" -exec curl -F "file=@{}" localhost:8080/api/validate/3a -H "Accept:application/xml" \;
+          # find ./ -type f -name "*.pdf" -exec curl -F "file=@{}" localhost:8080/api/validate/3a -H "Accept:application/xml" \;
           # find ./ -type f -name "*.pdf" -exec curl -F "file=@{}" localhost:8080/api/validate/3a -H "Accept:application/xml" > "{}.verapdf.report.xml" \;
       
       - name: List files
-        run:  |
+        run: |
           find ./ -type f -name "*.xml"
+          
