@@ -16,16 +16,16 @@ jobs:
     runs-on: ubuntu-latest
     
     steps:
-    - name: Download workflow artifact
-        uses: dawidd6/action-download-artifact@v6
-        with:
-          workflow: ubuntu.yml
-          workflow_conclusion: success
+      - name: Download workflow artifact
+          uses: dawidd6/action-download-artifact@v6
+          with:
+            workflow: ubuntu.yml
+            workflow_conclusion: success
 
-      - name: Run Docker image veraPDF
-        run: |
-          docker pull verapdf/rest:latest
-          docker run -d -p 8080:8080 -p 8081:8081 -v ./:/home/folder verapdf/rest:latest
+        - name: Run Docker image veraPDF
+          run: |
+            docker pull verapdf/rest:latest
+            docker run -d -p 8080:8080 -p 8081:8081 -v ./:/home/folder verapdf/rest:latest
     
   job2:
     name: Check PDFs by veraPDF
@@ -33,7 +33,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-          
+
       - name: Check PDFs using veraPDF
         run: |
           find ./ -type f -name "*.pdf" -exec curl -F "file=@{}" localhost:8080/api/validate/3a -H "Accept:application/xml" > "{}.verapdf.report.xml" \;
