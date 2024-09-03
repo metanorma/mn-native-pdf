@@ -27,6 +27,7 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           checkName: ubuntu_build
           ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          timeoutSeconds: 7200
      
       - name: Download workflow artifact
         uses: dawidd6/action-download-artifact@v6
