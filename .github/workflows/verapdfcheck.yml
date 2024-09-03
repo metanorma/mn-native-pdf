@@ -1,14 +1,10 @@
 name: verapdfcheck
 
 on:
-  push:
-    branches:
-      - master
-  pull_request:
-
-concurrency:
-  group: '${{ github.workflow }}-${{ github.job }}-${{ github.head_ref || github.ref_name }}'
-  cancel-in-progress: true
+  workflow_run:
+    workflows: ["ubuntu"]
+    types:
+      - completed
 
 jobs:
   job1:
@@ -21,7 +17,6 @@ jobs:
         with:
           workflow: ubuntu.yml
           workflow_conclusion: success
-          commit: ${{github.event.pull_request.head.sha}}
 
       - name: Run Docker image veraPDF
         run: |
