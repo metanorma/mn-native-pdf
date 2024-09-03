@@ -33,7 +33,7 @@ jobs:
         run: |
           find ./ -type f -name "*.pdf"
           #find ./ -type f -name "*.pdf" -exec curl -F "file=@{}" localhost:8080/api/validate/3a -H "Accept:application/xml" \;
-          find ./ -type f -name "*.pdf" -exec curl -F "file=@{}" localhost:8080/api/validate/3a -H "Accept:application/xml" > "{}.verapdf.report.xml" \;
+          find ./ -type f -name "*.pdf" -exec curl -F "file=@{}" localhost:8080/api/validate/3a -H "Accept:application/xml" -o "{}.verapdf.report.xml" \;
       
       - name: List files
         run: |
