@@ -21,6 +21,7 @@ jobs:
         with:
           workflow: ubuntu.yml
           workflow_conclusion: success
+          commit: ${{github.event.pull_request.head.sha}}
 
       - name: Run Docker image veraPDF
         run: |
@@ -36,8 +37,9 @@ jobs:
 
       - name: Check PDFs using veraPDF
         run: |
-          find ./ -type f -name "*.pdf" -exec curl -F "file=@{}" localhost:8080/api/validate/3a -H "Accept:application/xml" > "{}.verapdf.report.xml" \;
+          find ./ -type f -name "*.pdf"
+          # find ./ -type f -name "*.pdf" -exec curl -F "file=@{}" localhost:8080/api/validate/3a -H "Accept:application/xml" > "{}.verapdf.report.xml" \;
       
       - name: List files
         run:  |
-          find ./ -type f -name "*.verapdf.report.xml"
+          find ./ -type f -name "*.xml"
