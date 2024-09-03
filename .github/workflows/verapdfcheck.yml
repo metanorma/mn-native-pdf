@@ -24,7 +24,7 @@ jobs:
           docker pull verapdf/rest:latest
           docker run -d -p 8080:8080 -p 8081:8081 -v ./:/home/folder verapdf/rest:latest
 
-      - name: Wait Docker image running
+      - name: Wait for a Docker container to be up and running
         run: |
           timeout 20s sh -c 'until curl http://localhost:8080/api/ | grep -q verapdf-rest; do echo "Waiting until container to be healthy..."; sleep 1; done'
            
@@ -32,8 +32,8 @@ jobs:
       - name: Check PDFs using veraPDF
         run: |
           find ./ -type f -name "*.pdf"
-          find ./ -type f -name "*.pdf" -exec curl -F "file=@{}" localhost:8080/api/validate/3a -H "Accept:application/xml" \;
-          # find ./ -type f -name "*.pdf" -exec curl -F "file=@{}" localhost:8080/api/validate/3a -H "Accept:application/xml" > "{}.verapdf.report.xml" \;
+          #find ./ -type f -name "*.pdf" -exec curl -F "file=@{}" localhost:8080/api/validate/3a -H "Accept:application/xml" \;
+          find ./ -type f -name "*.pdf" -exec curl -F "file=@{}" localhost:8080/api/validate/3a -H "Accept:application/xml" > "{}.verapdf.report.xml" \;
       
       - name: List files
         run: |
