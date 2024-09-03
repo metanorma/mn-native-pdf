@@ -45,6 +45,6 @@ jobs:
           for f in $(find ./ -type f -name '*.verapdf.report.xml'); do grep -l 'status=\"failed\"' $f >> $err_files_name && cat $f; done
           if [ -s $err_files_name ]; then
               echo "veraPDF found PDF errors:"
-		          cat $err_files_name
+              cat $err_files_name
               exit 1
           fi
