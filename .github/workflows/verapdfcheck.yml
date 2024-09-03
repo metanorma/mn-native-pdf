@@ -13,13 +13,20 @@ jobs:
     runs-on: ubuntu-latest
     
     steps:
-      - name: Wait for tests to succeed
-        uses: lewagon/wait-on-check-action@v1.3.4
+      #- name: Wait for main task to succeed
+      #  uses: lewagon/wait-on-check-action@v1.3.4
+      #  with:
+      #    ref: ${{ github.ref }}
+      #    check-name: 'ubuntu'
+      #    repo-token: ${{ secrets.GITHUB_TOKEN }}
+      #    wait-interval: 10
+      - name: Wait for main task to succeed
+        uses: fountainhead/action-wait-for-check@v1.2.0
+        id: wait-for-build
         with:
-          ref: ${{ github.ref }}
-          check-name: 'ubuntu'
-          repo-token: ${{ secrets.GITHUB_TOKEN }}
-          wait-interval: 10
+          token: ${{ secrets.GITHUB_TOKEN }}
+          checkName: ubuntu
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
      
       - name: Download workflow artifact
         uses: dawidd6/action-download-artifact@v6
