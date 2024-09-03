@@ -12,6 +12,7 @@ concurrency:
 
 jobs:
   build:
+    name: ubuntu_build
     runs-on: ubuntu-latest
     outputs:
       common_changed: ${{ steps.common-changed.outputs.only_changed }}
