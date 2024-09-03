@@ -16,7 +16,9 @@ jobs:
       - name: Wait for tests to succeed
         uses: lewagon/wait-on-check-action@v1.3.4
         with:
+          ref: ${{ github.ref }}
           check-name: 'ubuntu'
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
           wait-interval: 10
      
       - name: Download workflow artifact
