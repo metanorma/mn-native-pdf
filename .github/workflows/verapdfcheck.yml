@@ -9,10 +9,16 @@ name: verapdfcheck
 on: push
 
 jobs:
-  build:
+  check:
     runs-on: ubuntu-latest
     
     steps:
+      - name: Wait for tests to succeed
+        uses: lewagon/wait-on-check-action@v1.3.4
+        with:
+          check-name: 'ubuntu'
+          wait-interval: 10
+     
       - name: Download workflow artifact
         uses: dawidd6/action-download-artifact@v6
         with:
