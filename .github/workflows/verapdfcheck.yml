@@ -1,0 +1,27 @@
+name: ubuntu
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+
+concurrency:
+  group: '${{ github.workflow }}-${{ github.job }}-${{ github.head_ref || github.ref_name }}'
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    outputs:
+      common_changed: ${{ steps.common-changed.outputs.only_changed }}
+    steps:
+              
+      - name: Download workflow artifact
+        uses: dawidd6/action-download-artifact@v6
+        with:
+          workflow: ubuntu.yml
+          workflow_conclusion: success
+
+      - name: List files
+        run: ls -l
