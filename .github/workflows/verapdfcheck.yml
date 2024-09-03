@@ -9,8 +9,7 @@ name: verapdfcheck
 on: push
 
 jobs:
-  job1:
-    name: Prepare steps
+  build:
     runs-on: ubuntu-latest
     
     steps:
@@ -25,16 +24,10 @@ jobs:
           docker pull verapdf/rest:latest
           docker run -d -p 8080:8080 -p 8081:8081 -v ./:/home/folder verapdf/rest:latest
     
-  job2:
-    name: Check PDFs by veraPDF
-    needs: job1
-    runs-on: ubuntu-latest
-
-    steps:
       - name: Check PDFs using veraPDF
         run: |
           find ./ -type f -name "*.pdf"
-          # find ./ -type f -name "*.pdf" -exec curl -F "file=@{}" localhost:8080/api/validate/3a -H "Accept:application/xml" \;
+          find ./ -type f -name "*.pdf" -exec curl -F "file=@{}" localhost:8080/api/validate/3a -H "Accept:application/xml" \;
           # find ./ -type f -name "*.pdf" -exec curl -F "file=@{}" localhost:8080/api/validate/3a -H "Accept:application/xml" > "{}.verapdf.report.xml" \;
       
       - name: List files
