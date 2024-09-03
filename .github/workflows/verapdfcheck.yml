@@ -25,7 +25,7 @@ jobs:
         id: wait-for-build
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          checkName: build
+          checkName: ubuntu_build
           ref: ${{ github.event.pull_request.head.sha || github.sha }}
      
       - name: Download workflow artifact
