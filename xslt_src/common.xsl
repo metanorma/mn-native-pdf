@@ -19637,6 +19637,39 @@
 		</pdf:catalog>
 		<x:xmpmeta xmlns:x="adobe:ns:meta/">
 			<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+				<rdf:Description xmlns:pdfaExtension="http://www.aiim.org/pdfa/ns/extension/" xmlns:pdfaProperty="http://www.aiim.org/pdfa/ns/property#" xmlns:pdfaSchema="http://www.aiim.org/pdfa/ns/schema#" rdf:about="">
+					<pdfaExtension:schemas>
+						<rdf:Bag>
+							<rdf:li rdf:parseType="Resource">
+								<pdfaSchema:namespaceURI>http://www.aiim.org/pdfua/ns/id/</pdfaSchema:namespaceURI>
+								<pdfaSchema:prefix>pdfuaid</pdfaSchema:prefix>
+								<pdfaSchema:schema>PDF/UA identification schema</pdfaSchema:schema>
+								<pdfaSchema:property>
+									<rdf:Seq>
+										<rdf:li rdf:parseType="Resource">
+											<pdfaProperty:category>internal</pdfaProperty:category>
+											<pdfaProperty:description>PDF/UA version identifier</pdfaProperty:description>
+											<pdfaProperty:name>part</pdfaProperty:name>
+											<pdfaProperty:valueType>Integer</pdfaProperty:valueType>
+										</rdf:li>
+										<rdf:li rdf:parseType="Resource">
+											<pdfaProperty:category>internal</pdfaProperty:category>
+											<pdfaProperty:description>PDF/UA amendment identifier</pdfaProperty:description>
+											<pdfaProperty:name>amd</pdfaProperty:name>
+											<pdfaProperty:valueType>Text</pdfaProperty:valueType>
+										</rdf:li>
+										<rdf:li rdf:parseType="Resource">
+											<pdfaProperty:category>internal</pdfaProperty:category>
+											<pdfaProperty:description>PDF/UA corrigenda identifier</pdfaProperty:description>
+											<pdfaProperty:name>corr</pdfaProperty:name>
+											<pdfaProperty:valueType>Text</pdfaProperty:valueType>
+										</rdf:li>
+									</rdf:Seq>
+								</pdfaSchema:property>
+							</rdf:li>
+						</rdf:Bag>
+					</pdfaExtension:schemas>
+				</rdf:Description>
 				<rdf:Description rdf:about="" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:pdf="http://ns.adobe.com/pdf/1.3/">
 				<!-- Dublin Core properties go here -->
 					<dc:title>
@@ -19665,35 +19698,59 @@
 								</xsl:choose>
 							</xsl:for-each>
 						</xsl:variable>
-						<xsl:choose>
-							<xsl:when test="normalize-space($title) != ''">
-								<xsl:value-of select="$title"/>
-							</xsl:when>
-							<xsl:otherwise>
-								<xsl:text>&#xA0;</xsl:text>
-							</xsl:otherwise>
-						</xsl:choose>							
+						<rdf:Alt>
+							<rdf:li xml:lang="x-default">
+								<xsl:choose>
+									<xsl:when test="normalize-space($title) != ''">
+										<xsl:value-of select="$title"/>
+									</xsl:when>
+									<xsl:otherwise>
+										<xsl:text>&#xA0;</xsl:text>
+									</xsl:otherwise>
+								</xsl:choose>
+							</rdf:li>
+						</rdf:Alt>
 					</dc:title>
 					<dc:creator>
 						<xsl:for-each select="(//*[contains(local-name(), '-standard')])[1]/*[local-name() = 'bibdata']">
 							<xsl:choose>
 								<xsl:when test="$namespace = 'ieee'">
-									<xsl:value-of select="ieee:ext/ieee:editorialgroup/ieee:committee"/>
+									<rdf:Seq>
+										<rdf:li>
+											<xsl:value-of select="ieee:ext/ieee:editorialgroup/ieee:committee"/>
+										</rdf:li>
+									</rdf:Seq>
 								</xsl:when>
 								<xsl:when test="$namespace = 'jcgm'">
-									<xsl:value-of select="normalize-space(*[local-name() = 'ext']/*[local-name() = 'editorialgroup']/*[local-name() = 'committee'])"/>
+									<rdf:Seq>
+										<rdf:li>
+											<xsl:value-of select="normalize-space(*[local-name() = 'ext']/*[local-name() = 'editorialgroup']/*[local-name() = 'committee'])"/>
+										</rdf:li>
+									</rdf:Seq>
 								</xsl:when>
 								<xsl:when test="$namespace = 'nist-cswp'  or $namespace = 'nist-sp'">
+									<rdf:Seq>
 									<xsl:for-each select="*[local-name() = 'contributor'][*[local-name() = 'role']/@type='author']">
-										<xsl:value-of select="*[local-name() = 'person']/*[local-name() = 'name']/*[local-name() = 'completename']"/>
-										<xsl:if test="position() != last()">; </xsl:if>
+										
+											<rdf:li>
+												<xsl:value-of select="*[local-name() = 'person']/*[local-name() = 'name']/*[local-name() = 'completename']"/>
+											</rdf:li>
+											<!-- <xsl:if test="position() != last()">; </xsl:if> -->
+										
 									</xsl:for-each>
+									</rdf:Seq>
 								</xsl:when>
 								<xsl:otherwise>
+									<rdf:Seq>
 									<xsl:for-each select="*[local-name() = 'contributor'][*[local-name() = 'role']/@type='author']">
-										<xsl:value-of select="*[local-name() = 'organization']/*[local-name() = 'name']"/>
-										<xsl:if test="position() != last()">; </xsl:if>
+										
+											<rdf:li>
+												<xsl:value-of select="*[local-name() = 'organization']/*[local-name() = 'name']"/>
+											</rdf:li>
+											<!-- <xsl:if test="position() != last()">; </xsl:if> -->
+										
 									</xsl:for-each>
+									</rdf:Seq>
 								</xsl:otherwise>
 							</xsl:choose>
 						</xsl:for-each>
@@ -19709,7 +19766,11 @@
 								</xsl:otherwise>
 							</xsl:choose>
 						</xsl:variable>
-						<xsl:value-of select="normalize-space($abstract)"/>
+						<rdf:Alt>
+							<rdf:li xml:lang="x-default">
+								<xsl:value-of select="normalize-space($abstract)"/>
+							</rdf:li>
+						</rdf:Alt>
 					</dc:description>
 					<pdf:Keywords>
 						<xsl:call-template name="insertKeywords">
