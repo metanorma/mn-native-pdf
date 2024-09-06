@@ -19438,7 +19438,48 @@
 	<xsl:template match="*[local-name() = 'lang_none']">
 		<fo:inline xml:lang="none"><xsl:value-of select="."/></fo:inline>
 	</xsl:template>
-
+	
+	<!-- ===================================== -->
+	<!-- ===================================== -->
+	<!-- Ruby text (CJK languages) rendering -->
+	<!-- ===================================== -->
+	<!-- ===================================== -->
+	<xsl:template match="*[local-name() = 'ruby']">
+		<fo:inline-container text-indent="0mm" last-line-end-indent="0mm" alignment-baseline="central">
+			<xsl:variable name="rt_text" select="*[local-name() = 'rt']"/>
+			<xsl:variable name="rb_text" select="*[local-name() = 'rb']"/>
+			<!-- Example: width="2em"  -->
+			<xsl:variable name="text_rt_width" select="java:org.metanorma.fop.Util.getStringWidthByFontSize($rt_text, $font_main, 6)"/>
+			<xsl:variable name="text_rb_width" select="java:org.metanorma.fop.Util.getStringWidthByFontSize($rb_text, $font_main, 10)"/>
+			<xsl:variable name="text_width">
+				<xsl:choose>
+					<xsl:when test="$text_rt_width &gt;= $text_rb_width"><xsl:value-of select="$text_rt_width"/></xsl:when>
+					<xsl:otherwise><xsl:value-of select="$text_rb_width"/></xsl:otherwise>
+				</xsl:choose>
+			</xsl:variable>
+			<xsl:attribute name="width"><xsl:value-of select="$text_width div 10"/>em</xsl:attribute>
+			<xsl:apply-templates select="*[local-name() = 'rt']"/>
+			<xsl:apply-templates select="*[local-name() = 'rb']"/>
+			<xsl:apply-templates select="node()[not(local-name() = 'rt') and not(local-name() = 'rb')]"/>
+		</fo:inline-container>
+	</xsl:template>
+	
+	<xsl:template match="*[local-name() = 'rb']">
+		<!-- border="0.3pt solid blue" -->
+		<fo:block line-height="1em" text-align="center"><xsl:apply-templates /></fo:block>
+	</xsl:template>
+	
+	<xsl:template match="*[local-name() = 'rt']">
+		<!-- border="0.3pt solid red" -->
+		<fo:block font-size="0.5em" text-align="center" line-height="1.2em" space-before="-1.4em" space-before.conditionality="retain"><xsl:apply-templates /></fo:block>
+	</xsl:template>
+	
+	<!-- ===================================== -->
+	<!-- ===================================== -->
+	<!-- END: Ruby text (CJK languages) rendering -->
+	<!-- ===================================== -->
+	<!-- ===================================== -->	
+	
 	<xsl:template name="printEdition">
 		<xsl:variable name="edition_i18n" select="normalize-space((//*[contains(local-name(), '-standard')])[1]/*[local-name() = 'bibdata']/*[local-name() = 'edition'][normalize-space(@language) != ''])"/>
 		<xsl:if test="$namespace = 'jcgm'"><xsl:text>&#xA0;</xsl:text></xsl:if>
