@@ -25,7 +25,7 @@
 	
 	<xsl:variable name="debug">false</xsl:variable>
 	
-	<xsl:variable name="isIgnoreComplexScripts">true</xsl:variable>
+	<!-- <xsl:variable name="isIgnoreComplexScripts">true</xsl:variable> -->
 	
 	<xsl:variable name="doctype" select="//plateau:plateau-standard[1]/plateau:bibdata/plateau:ext/plateau:doctype[@language = '' or not(@language)]"/>
 	
