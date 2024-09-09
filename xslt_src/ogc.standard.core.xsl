@@ -839,7 +839,7 @@
 								<xsl:choose>
 									<xsl:when test="@level = 1">
 										<fo:list-block provisional-distance-between-starts="8mm">
-											<xsl:if test="@type = 'annex'">
+											<xsl:if test="@type = 'annex' or (@type = 'references' and normalize-space(@section) = '')">
 												<xsl:attribute name="provisional-distance-between-starts">0mm</xsl:attribute>
 											</xsl:if>
 											<fo:list-item>
