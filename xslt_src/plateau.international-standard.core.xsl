@@ -25,13 +25,15 @@
 	
 	<xsl:variable name="debug">false</xsl:variable>
 	
-	<xsl:variable name="isIgnoreComplexScripts">true</xsl:variable>
+	<!-- <xsl:variable name="isIgnoreComplexScripts">true</xsl:variable> -->
 	
 	<xsl:variable name="doctype" select="//plateau:plateau-standard[1]/plateau:bibdata/plateau:ext/plateau:doctype[@language = '' or not(@language)]"/>
 	
 	<xsl:variable name="i18n_doctype_dict_annex"><xsl:call-template name="getLocalizedString"><xsl:with-param name="key">doctype_dict.annex</xsl:with-param></xsl:call-template></xsl:variable>
 	<xsl:variable name="i18n_doctype_dict_technical_report"><xsl:call-template name="getLocalizedString"><xsl:with-param name="key">doctype_dict.technical-report</xsl:with-param></xsl:call-template></xsl:variable>
 	<xsl:variable name="i18n_table_of_contents"><xsl:call-template name="getLocalizedString"><xsl:with-param name="key">table_of_contents</xsl:with-param></xsl:call-template></xsl:variable>
+	
+	<xsl:variable name="vertical_layout" select="normalize-space(/*/plateau:metanorma-extension/plateau:presentation-metadata/plateau:vertical-layout)"/>
 	
 	<xsl:variable name="page_header">
 		<xsl:value-of select="/*/plateau:metanorma-extension/plateau:presentation-metadata/plateau:use-case"/>
@@ -109,7 +111,15 @@
 				</fo:simple-page-master>
 			
 				<fo:simple-page-master master-name="document_preface" page-width="{$pageWidth}mm" page-height="{$pageHeight}mm">
-					<fo:region-body margin-top="50mm" margin-bottom="35mm" margin-left="26mm" margin-right="34mm"/>
+					<xsl:if test="$vertical_layout = 'true'">
+						<xsl:attribute name="page-width"><xsl:value-of select="$pageHeight"/>mm</xsl:attribute>
+						<xsl:attribute name="page-height"><xsl:value-of select="$pageWidth"/>mm</xsl:attribute>
+					</xsl:if>
+					<fo:region-body margin-top="50mm" margin-bottom="35mm" margin-left="26mm" margin-right="34mm">
+						<xsl:if test="$vertical_layout = 'true'">
+							<xsl:attribute name="writing-mode">tb-rl</xsl:attribute>
+						</xsl:if>
+					</fo:region-body>
 					<fo:region-before region-name="header" extent="50mm"/>
 					<fo:region-after region-name="footer" extent="35mm"/>
 					<fo:region-start region-name="left-region" extent="26mm"/>
@@ -117,7 +127,15 @@
 				</fo:simple-page-master>
 				
 				<fo:simple-page-master master-name="document_toc" page-width="{$pageWidth}mm" page-height="{$pageHeight}mm">
-					<fo:region-body margin-top="16.5mm" margin-bottom="22mm" margin-left="14.5mm" margin-right="22.3mm"/>
+					<xsl:if test="$vertical_layout = 'true'">
+						<xsl:attribute name="page-width"><xsl:value-of select="$pageHeight"/>mm</xsl:attribute>
+						<xsl:attribute name="page-height"><xsl:value-of select="$pageWidth"/>mm</xsl:attribute>
+					</xsl:if>
+					<fo:region-body margin-top="16.5mm" margin-bottom="22mm" margin-left="14.5mm" margin-right="22.3mm">
+						<xsl:if test="$vertical_layout = 'true'">
+							<xsl:attribute name="writing-mode">tb-rl</xsl:attribute>
+						</xsl:if>
+					</fo:region-body>
 					<fo:region-before region-name="header" extent="16.5mm"/>
 					<fo:region-after region-name="footer" extent="22mm"/>
 					<fo:region-start region-name="left-region" extent="14.5mm"/>
@@ -125,7 +143,15 @@
 				</fo:simple-page-master>
 				
 				<fo:simple-page-master master-name="document" page-width="{$pageWidth}mm" page-height="{$pageHeight}mm">
-					<fo:region-body margin-top="{$marginTop}mm" margin-bottom="{$marginBottom}mm" margin-left="{$marginLeftRight1}mm" margin-right="{$marginLeftRight2}mm"/>
+					<xsl:if test="$vertical_layout = 'true'">
+						<xsl:attribute name="page-width"><xsl:value-of select="$pageHeight"/>mm</xsl:attribute>
+						<xsl:attribute name="page-height"><xsl:value-of select="$pageWidth"/>mm</xsl:attribute>
+					</xsl:if>
+					<fo:region-body margin-top="{$marginTop}mm" margin-bottom="{$marginBottom}mm" margin-left="{$marginLeftRight1}mm" margin-right="{$marginLeftRight2}mm">
+						<xsl:if test="$vertical_layout = 'true'">
+							<xsl:attribute name="writing-mode">tb-rl</xsl:attribute>
+						</xsl:if>
+					</fo:region-body>
 					<fo:region-before region-name="header" extent="{$marginTop}mm"/>
 					<fo:region-after region-name="footer" extent="{$marginBottom}mm"/>
 					<fo:region-start region-name="left-region" extent="{$marginLeftRight1}mm"/>
@@ -256,6 +282,11 @@
 									<fo:static-content flow-name="header" role="artifact" id="__internal_layout__preface_header_{generate-id()}">
 										<!-- grey background  -->
 										<fo:block-container absolute-position="fixed" left="24.2mm" top="40mm" height="231.4mm" width="161mm" background-color="rgb(242,242,242)" id="__internal_layout__preface_header_{$num}_{generate-id()}">
+											<xsl:if test="$vertical_layout = 'true'">
+												<xsl:attribute name="top">24.2mm</xsl:attribute>
+												<xsl:attribute name="left">40mm</xsl:attribute>
+												<xsl:attribute name="writing-mode">tb-rl</xsl:attribute>
+											</xsl:if>
 											<fo:block>&#xa0;</fo:block>
 										</fo:block-container>
 									</fo:static-content>
