@@ -21,6 +21,8 @@ jobs:
         with:
           workflow: ubuntu.yml
           workflow_conclusion: success
+          commit: ${{github.event.pull_request.head.sha}}
+          name: published-ubuntu
 
       - name: Run Docker image veraPDF
         run: |
