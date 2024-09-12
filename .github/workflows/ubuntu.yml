@@ -136,7 +136,7 @@ jobs:
       - if: ${{ steps.cpr.outputs.pull-request-number }}
         run: printf " - ${{ steps.cpr.outputs.pull-request-url }}\n" > pr-url.txt
 
-      - uses: actions/upload-artifact@v2
+      - uses: actions/upload-artifact@v4
         with:
           name: pr-url-${{ matrix.flavor }}
           path: pr-url.txt
