@@ -1,0 +1,53 @@
+name: verapdfcheck
+
+on: push
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Wait for main task to succeed
+        uses: fountainhead/action-wait-for-check@v1.2.0
+        id: wait-for-build
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          checkName: ubuntu_build
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          timeoutSeconds: 7200
+     
+      - name: Download workflow artifact
+        uses: dawidd6/action-download-artifact@v6
+        with:
+          workflow: ubuntu.yml
+          workflow_conclusion: success
+          commit: ${{github.event.pull_request.head.sha}}
+          name: published-ubuntu
+
+      - name: Run Docker image veraPDF
+        run: |
+          docker pull verapdf/rest:latest
+          docker run -d -p 8080:8080 -p 8081:8081 -v ./:/home/folder verapdf/rest:latest
+
+      - name: Wait for a Docker container to be up and running
+        run: |
+          timeout 20s sh -c 'until curl http://localhost:8080/api/ | grep -q verapdf-rest; do echo "Waiting until container to be healthy..."; sleep 1; done'
+           
+      - name: Check PDFs using veraPDF
+        run: |
+          find ./ -type f -name "*.pdf" -exec curl -F "file=@{}" localhost:8080/api/validate/3a -H "Accept:application/xml" -o "{}.verapdf.report.xml" \;
+      
+      - name: List files
+        run: |
+          find ./ -type f -name "*.verapdf.report.xml"
+          
+      - name: Check veraPDF XML reports on errors
+        run: |
+          err_files_name=err.files.txt
+          [ -e $err_files_name ] && rm $err_files_name
+          for f in $(find ./ -type f -name '*.verapdf.report.xml'); do grep -l 'status=\"failed\"' $f >> $err_files_name && cat $f; done
+          if [ -s $err_files_name ]; then
+              echo "veraPDF found PDF errors:"
+              cat $err_files_name
+              exit 1
+          fi
