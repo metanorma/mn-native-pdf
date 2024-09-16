@@ -1738,12 +1738,24 @@
 			<xsl:choose>
 				<xsl:when test="$doctype = 'technical-report'">
 					<fo:block-container height="23mm" display-align="after">
-						<fo:block text-align="center" margin-bottom="16mm">- <fo:page-number /> -</fo:block>
+						<fo:block text-align="center" margin-bottom="16mm">
+							<xsl:if test="$vertical_layout = 'true'">
+								<xsl:attribute name="margin-bottom">0mm</xsl:attribute>
+							</xsl:if>
+							<xsl:text>- </xsl:text>
+							<fo:page-number />
+							<xsl:text> -</xsl:text>
+						</fo:block>
 					</fo:block-container>
 				</xsl:when>
 				<xsl:otherwise>
 					<fo:block-container height="24mm" display-align="after">
-						<fo:block text-align="center" margin-bottom="16mm"><fo:page-number /></fo:block>
+						<fo:block text-align="center" margin-bottom="16mm">
+							<xsl:if test="$vertical_layout = 'true'">
+								<xsl:attribute name="margin-bottom">0mm</xsl:attribute>
+							</xsl:if>
+							<fo:page-number />
+						</fo:block>
 					</fo:block-container>
 				</xsl:otherwise>
 			</xsl:choose>
