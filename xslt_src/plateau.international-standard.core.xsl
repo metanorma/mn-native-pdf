@@ -34,6 +34,7 @@
 	<xsl:variable name="i18n_table_of_contents"><xsl:call-template name="getLocalizedString"><xsl:with-param name="key">table_of_contents</xsl:with-param></xsl:call-template></xsl:variable>
 	
 	<xsl:variable name="vertical_layout" select="normalize-space(/*/plateau:metanorma-extension/plateau:presentation-metadata/plateau:vertical-layout)"/>
+	<xsl:variable name="vertical_layout_rotate_clause_numbers" select="normalize-space(/*/plateau:metanorma-extension/plateau:presentation-metadata/plateau:vertical-layout-rotate-clause-numbers)"/>
 	
 	<xsl:variable name="page_header">
 		<xsl:value-of select="/*/plateau:metanorma-extension/plateau:presentation-metadata/plateau:use-case"/>
@@ -536,12 +537,22 @@
 							<xsl:choose>
 								<xsl:when test="$doctype = 'technical-report'">
 									<fo:block space-after="5pt">
+										<xsl:variable name="margin-left">
+											<xsl:choose>
+												<xsl:when test="@level = 1">1</xsl:when>
+												<xsl:when test="@level = 2">3.5</xsl:when>
+												<xsl:when test="@level = 3">7</xsl:when>
+												<xsl:otherwise>10</xsl:otherwise>
+											</xsl:choose>
+										</xsl:variable>
 										<xsl:attribute name="margin-left">
 											<xsl:choose>
-												<xsl:when test="@level = 1">1mm</xsl:when>
-												<xsl:when test="@level = 2">3.5mm</xsl:when>
-												<xsl:when test="@level = 3">7mm</xsl:when>
-												<xsl:otherwise>10mm</xsl:otherwise>
+												<xsl:when test="$vertical_layout_rotate_clause_numbers = 'true'">
+													<xsl:value-of select="concat($margin-left * 1.5, 'mm')"/>
+												</xsl:when>
+												<xsl:otherwise>
+													<xsl:value-of select="concat($margin-left, 'mm')"/>
+												</xsl:otherwise>
 											</xsl:choose>
 										</xsl:attribute>
 										<xsl:call-template name="insertTocItem">
@@ -559,18 +570,38 @@
 										<xsl:otherwise>
 											<xsl:variable name="margin_left" select="number(@level - 1) * 3"/>
 											<fo:list-block space-after="2pt" margin-left="{$margin_left}mm">
+												<xsl:variable name="provisional-distance-between-starts">
+													<xsl:choose>
+														<xsl:when test="@level = 1">7</xsl:when>
+														<xsl:when test="@level = 2">10</xsl:when>
+														<xsl:when test="@level = 3">14</xsl:when>
+														<xsl:otherwise>14</xsl:otherwise>
+													</xsl:choose>
+												</xsl:variable>
+													
 												<xsl:attribute name="provisional-distance-between-starts">
 													<xsl:choose>
-														<xsl:when test="@level = 1">7mm</xsl:when>
-														<xsl:when test="@level = 2">10mm</xsl:when>
-														<xsl:when test="@level = 3">14mm</xsl:when>
-														<xsl:otherwise>14mm</xsl:otherwise>
+														<xsl:when test="$vertical_layout_rotate_clause_numbers = 'true'">
+															<xsl:value-of select="concat($provisional-distance-between-starts * 1.5, 'mm')"/>
+														</xsl:when>
+														<xsl:otherwise>
+															<xsl:value-of select="concat($provisional-distance-between-starts, 'mm')"/>
+														</xsl:otherwise>
 													</xsl:choose>
 												</xsl:attribute>
 												<fo:list-item>
 													<fo:list-item-label end-indent="label-end()">
 														<fo:block>
-															<xsl:value-of select="@section"/>
+															<xsl:choose>
+																<xsl:when test="$vertical_layout_rotate_clause_numbers = 'true'">
+																	<xsl:call-template name="insertVerticalChar">
+																		<xsl:with-param name="str" select="@section"/>
+																	</xsl:call-template>
+																</xsl:when>
+																<xsl:otherwise>
+																	<xsl:value-of select="@section"/>
+																</xsl:otherwise>
+															</xsl:choose>
 														</fo:block>
 													</fo:list-item-label>
 													<fo:list-item-body start-indent="body-start()">
@@ -1069,10 +1100,20 @@
 						<xsl:call-template name="extractSection"/>
 					</xsl:variable>
 					<xsl:if test="normalize-space($section) != ''">
-						<fo:inline> <!--  font-family="Noto Sans Condensed" font-weight="bold" -->
-							<xsl:value-of select="$section"/>
-							<fo:inline padding-right="4mm">&#xa0;</fo:inline>
-						</fo:inline>
+						<xsl:choose>
+							<xsl:when test="$vertical_layout_rotate_clause_numbers = 'true'">
+								<xsl:call-template name="insertVerticalChar">
+									<xsl:with-param name="str" select="$section"/>
+								</xsl:call-template>
+								<fo:inline padding-right="4mm">&#xa0;</fo:inline>
+							</xsl:when>
+							<xsl:otherwise>
+								<fo:inline> <!--  font-family="Noto Sans Condensed" font-weight="bold" -->
+									<xsl:value-of select="$section"/>
+									<fo:inline padding-right="4mm">&#xa0;</fo:inline>
+								</fo:inline>
+							</xsl:otherwise>
+						</xsl:choose>
 					</xsl:if>
 					
 					<xsl:call-template name="extractTitle"/>
@@ -1091,7 +1132,6 @@
 			</xsl:otherwise>
 		</xsl:choose>
 	</xsl:template>
-
 
 	<xsl:template match="*[local-name() = 'sections']/*[local-name() = 'page_sequence']//*[local-name() = 'clause']" priority="20">
 		<fo:block keep-with-next="always">
@@ -1738,12 +1778,24 @@
 			<xsl:choose>
 				<xsl:when test="$doctype = 'technical-report'">
 					<fo:block-container height="23mm" display-align="after">
-						<fo:block text-align="center" margin-bottom="16mm">- <fo:page-number /> -</fo:block>
+						<fo:block text-align="center" margin-bottom="16mm">
+							<xsl:if test="$vertical_layout = 'true'">
+								<xsl:attribute name="margin-bottom">0mm</xsl:attribute>
+							</xsl:if>
+							<xsl:text>- </xsl:text>
+							<fo:page-number />
+							<xsl:text> -</xsl:text>
+						</fo:block>
 					</fo:block-container>
 				</xsl:when>
 				<xsl:otherwise>
 					<fo:block-container height="24mm" display-align="after">
-						<fo:block text-align="center" margin-bottom="16mm"><fo:page-number /></fo:block>
+						<fo:block text-align="center" margin-bottom="16mm">
+							<xsl:if test="$vertical_layout = 'true'">
+								<xsl:attribute name="margin-bottom">0mm</xsl:attribute>
+							</xsl:if>
+							<fo:page-number />
+						</fo:block>
 					</fo:block-container>
 				</xsl:otherwise>
 			</xsl:choose>

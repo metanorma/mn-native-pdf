@@ -25,7 +25,10 @@
 	
 	<xsl:variable name="debug">false</xsl:variable>
 	
-	<xsl:variable name="isIgnoreComplexScripts">true</xsl:variable>
+	<!-- <xsl:variable name="isIgnoreComplexScripts">true</xsl:variable> -->
+	
+	<xsl:variable name="vertical_layout" select="normalize-space(/*/jis:metanorma-extension/jis:presentation-metadata/jis:vertical-layout)"/>
+	<xsl:variable name="vertical_layout_rotate_clause_numbers" select="normalize-space(/*/jis:metanorma-extension/jis:presentation-metadata/jis:vertical-layout-rotate-clause-numbers)"/>
 	
 	<xsl:variable name="contents_">
 		<xsl:variable name="bundle" select="count(//jis:jis-standard) &gt; 1"/>
@@ -86,21 +89,45 @@
 				</fo:simple-page-master>
 			
 				<fo:simple-page-master master-name="first_page" page-width="{$pageWidth}mm" page-height="{$pageHeight}mm">
-					<fo:region-body margin-top="{$marginTop}mm" margin-bottom="{$marginBottom}mm" margin-left="{$marginLeftRight1}mm" margin-right="{$marginLeftRight2}mm"/>
+					<xsl:if test="$vertical_layout = 'true'">
+						<xsl:attribute name="page-width"><xsl:value-of select="$pageHeight"/>mm</xsl:attribute>
+						<xsl:attribute name="page-height"><xsl:value-of select="$pageWidth"/>mm</xsl:attribute>
+					</xsl:if>
+					<fo:region-body margin-top="{$marginTop}mm" margin-bottom="{$marginBottom}mm" margin-left="{$marginLeftRight1}mm" margin-right="{$marginLeftRight2}mm">
+						<xsl:if test="$vertical_layout = 'true'">
+							<xsl:attribute name="writing-mode">tb-rl</xsl:attribute>
+						</xsl:if>
+					</fo:region-body>
 					<fo:region-before region-name="header" extent="{$marginTop}mm"/>
 					<fo:region-after region-name="footer" extent="{$marginBottom}mm"/>
 					<fo:region-start region-name="left-region" extent="{$marginLeftRight1}mm"/>
 					<fo:region-end region-name="right-region" extent="{$marginLeftRight2}mm"/>
 				</fo:simple-page-master>
 				<fo:simple-page-master master-name="odd" page-width="{$pageWidth}mm" page-height="{$pageHeight}mm">
-					<fo:region-body margin-top="{$marginTop}mm" margin-bottom="{$marginBottom}mm" margin-left="{$marginLeftRight1}mm" margin-right="{$marginLeftRight2}mm"/>
+					<xsl:if test="$vertical_layout = 'true'">
+						<xsl:attribute name="page-width"><xsl:value-of select="$pageHeight"/>mm</xsl:attribute>
+						<xsl:attribute name="page-height"><xsl:value-of select="$pageWidth"/>mm</xsl:attribute>
+					</xsl:if>
+					<fo:region-body margin-top="{$marginTop}mm" margin-bottom="{$marginBottom}mm" margin-left="{$marginLeftRight1}mm" margin-right="{$marginLeftRight2}mm">
+						<xsl:if test="$vertical_layout = 'true'">
+							<xsl:attribute name="writing-mode">tb-rl</xsl:attribute>
+						</xsl:if>
+					</fo:region-body>
 					<fo:region-before region-name="header-odd" extent="{$marginTop}mm"/>
 					<fo:region-after region-name="footer" extent="{$marginBottom}mm"/>
 					<fo:region-start region-name="left-region" extent="{$marginLeftRight1}mm"/>
 					<fo:region-end region-name="right-region" extent="{$marginLeftRight2}mm"/>
 				</fo:simple-page-master>
 				<fo:simple-page-master master-name="even" page-width="{$pageWidth}mm" page-height="{$pageHeight}mm">
-					<fo:region-body margin-top="{$marginTop}mm" margin-bottom="{$marginBottom}mm" margin-left="{$marginLeftRight1}mm" margin-right="{$marginLeftRight2}mm"/>
+					<xsl:if test="$vertical_layout = 'true'">
+						<xsl:attribute name="page-width"><xsl:value-of select="$pageHeight"/>mm</xsl:attribute>
+						<xsl:attribute name="page-height"><xsl:value-of select="$pageWidth"/>mm</xsl:attribute>
+					</xsl:if>
+					<fo:region-body margin-top="{$marginTop}mm" margin-bottom="{$marginBottom}mm" margin-left="{$marginLeftRight1}mm" margin-right="{$marginLeftRight2}mm">
+						<xsl:if test="$vertical_layout = 'true'">
+							<xsl:attribute name="writing-mode">tb-rl</xsl:attribute>
+						</xsl:if>
+					</fo:region-body>
 					<fo:region-before region-name="header-even" extent="{$marginTop}mm"/>
 					<fo:region-after region-name="footer" extent="{$marginBottom}mm"/>
 					<fo:region-start region-name="left-region" extent="{$marginLeftRight1}mm"/>
@@ -108,7 +135,15 @@
 				</fo:simple-page-master>
 				
 				<fo:simple-page-master master-name="first_page_toc" page-width="{$pageWidth}mm" page-height="{$pageHeight}mm">
-					<fo:region-body margin-top="{$marginTop}mm" margin-bottom="{$marginBottom}mm" margin-left="{$marginLeftRight1}mm" margin-right="{$marginLeftRight2}mm"/>
+					<xsl:if test="$vertical_layout = 'true'">
+						<xsl:attribute name="page-width"><xsl:value-of select="$pageHeight"/>mm</xsl:attribute>
+						<xsl:attribute name="page-height"><xsl:value-of select="$pageWidth"/>mm</xsl:attribute>
+					</xsl:if>
+					<fo:region-body margin-top="{$marginTop}mm" margin-bottom="{$marginBottom}mm" margin-left="{$marginLeftRight1}mm" margin-right="{$marginLeftRight2}mm">
+						<xsl:if test="$vertical_layout = 'true'">
+							<xsl:attribute name="writing-mode">tb-rl</xsl:attribute>
+						</xsl:if>
+					</fo:region-body>
 					<fo:region-before region-name="header-odd-first" extent="{$marginTop}mm"/>
 					<fo:region-after region-name="footer" extent="{$marginBottom}mm"/>
 					<fo:region-start region-name="left-region" extent="{$marginLeftRight1}mm"/>
@@ -146,7 +181,15 @@
 				</fo:page-sequence-master>
 			
 				<fo:simple-page-master master-name="commentary_first_page_even" page-width="{$pageWidth}mm" page-height="{$pageHeight}mm">
-					<fo:region-body margin-top="{$marginTop}mm" margin-bottom="{$marginBottom}mm" margin-left="{$marginLeftRight1}mm" margin-right="{$marginLeftRight2}mm"/>
+					<xsl:if test="$vertical_layout = 'true'">
+						<xsl:attribute name="page-width"><xsl:value-of select="$pageHeight"/>mm</xsl:attribute>
+						<xsl:attribute name="page-height"><xsl:value-of select="$pageWidth"/>mm</xsl:attribute>
+					</xsl:if>
+					<fo:region-body margin-top="{$marginTop}mm" margin-bottom="{$marginBottom}mm" margin-left="{$marginLeftRight1}mm" margin-right="{$marginLeftRight2}mm">
+						<xsl:if test="$vertical_layout = 'true'">
+							<xsl:attribute name="writing-mode">tb-rl</xsl:attribute>
+						</xsl:if>
+					</fo:region-body>
 					<fo:region-before region-name="header-commentary-even-first" extent="{$marginTop}mm"/>
 					<fo:region-after region-name="footer" extent="{$marginBottom}mm"/>
 					<fo:region-start region-name="left-region" extent="{$marginLeftRight1}mm"/>
@@ -154,7 +197,15 @@
 				</fo:simple-page-master>
 				
 				<fo:simple-page-master master-name="commentary_first_page_odd" page-width="{$pageWidth}mm" page-height="{$pageHeight}mm">
-					<fo:region-body margin-top="{$marginTop}mm" margin-bottom="{$marginBottom}mm" margin-left="{$marginLeftRight1}mm" margin-right="{$marginLeftRight2}mm"/>
+					<xsl:if test="$vertical_layout = 'true'">
+						<xsl:attribute name="page-width"><xsl:value-of select="$pageHeight"/>mm</xsl:attribute>
+						<xsl:attribute name="page-height"><xsl:value-of select="$pageWidth"/>mm</xsl:attribute>
+					</xsl:if>
+					<fo:region-body margin-top="{$marginTop}mm" margin-bottom="{$marginBottom}mm" margin-left="{$marginLeftRight1}mm" margin-right="{$marginLeftRight2}mm">
+						<xsl:if test="$vertical_layout = 'true'">
+							<xsl:attribute name="writing-mode">tb-rl</xsl:attribute>
+						</xsl:if>
+					</fo:region-body>
 					<fo:region-before region-name="header-commentary-odd-first" extent="{$marginTop}mm"/>
 					<fo:region-after region-name="footer" extent="{$marginBottom}mm"/>
 					<fo:region-start region-name="left-region" extent="{$marginLeftRight1}mm"/>
@@ -622,12 +673,22 @@
 								</xsl:when>
 								<xsl:otherwise>
 									<fo:list-block space-after="5pt">
+										<xsl:variable name="provisional-distance-between-starts">
+											<xsl:choose>
+												<xsl:when test="string-length(@section) = 1">5</xsl:when>
+												<xsl:when test="string-length(@section) &gt;= 2"><xsl:value-of select="5 + (string-length(@section) - 1) * 2"/></xsl:when>
+												<xsl:when test="@type = 'annex'">16</xsl:when>
+												<xsl:otherwise>5</xsl:otherwise>
+											</xsl:choose>
+										</xsl:variable>
 										<xsl:attribute name="provisional-distance-between-starts">
 											<xsl:choose>
-												<xsl:when test="string-length(@section) = 1">5mm</xsl:when>
-												<xsl:when test="string-length(@section) &gt;= 2"><xsl:value-of select="5 + (string-length(@section) - 1) * 2"/>mm</xsl:when>
-												<xsl:when test="@type = 'annex'">16mm</xsl:when>
-												<xsl:otherwise>5mm</xsl:otherwise>
+												<xsl:when test="$vertical_layout_rotate_clause_numbers = 'true'">
+													<xsl:value-of select="concat($provisional-distance-between-starts * 1.5, 'mm')"/>
+												</xsl:when>
+												<xsl:otherwise>
+													<xsl:value-of select="concat($provisional-distance-between-starts, 'mm')"/>
+												</xsl:otherwise>
 											</xsl:choose>
 										</xsl:attribute>
 										<fo:list-item>
@@ -1151,10 +1212,24 @@
 						<xsl:call-template name="extractSection"/>
 					</xsl:variable>
 					<xsl:if test="normalize-space($section) != ''">
-						<fo:inline font-family="Times New Roman" font-weight="bold">
-							<xsl:value-of select="$section"/>
-							<fo:inline padding-right="4mm">&#xa0;</fo:inline>
-						</fo:inline>
+					
+						<xsl:choose>
+							<xsl:when test="$vertical_layout_rotate_clause_numbers = 'true'">
+								<fo:inline font-family="Times New Roman" font-weight="bold">
+									<xsl:call-template name="insertVerticalChar">
+										<xsl:with-param name="str" select="$section"/>
+									</xsl:call-template>
+								</fo:inline>
+								<fo:inline padding-right="4mm">&#xa0;</fo:inline>
+							</xsl:when>
+							<xsl:otherwise>
+								<fo:inline font-family="Times New Roman" font-weight="bold">
+									<xsl:value-of select="$section"/>
+									<fo:inline padding-right="4mm">&#xa0;</fo:inline>
+								</fo:inline>
+							</xsl:otherwise>
+						</xsl:choose>
+						
 					</xsl:if>
 					
 					<xsl:call-template name="extractTitle"/>
@@ -1646,6 +1721,9 @@
 		<xsl:param name="section_title"/>
 		<fo:static-content flow-name="header-odd-first" role="artifact">
 			<fo:block-container font-family="Arial" font-size="9pt" height="26mm" display-align="after" text-align="right">
+				<xsl:if test="$vertical_layout = 'true'">
+					<xsl:attribute name="display-align">center</xsl:attribute>
+				</xsl:if>
 				<xsl:if test="$section = 'main'"><fo:block><fo:page-number /></fo:block></xsl:if>
 				<fo:block>
 					<xsl:copy-of select="$docidentifier"/>
@@ -1654,6 +1732,9 @@
 		</fo:static-content>
 		<fo:static-content flow-name="header-odd" role="artifact">
 			<fo:block-container font-family="Arial" font-size="9pt" height="26mm" display-align="after" text-align="right">
+				<xsl:if test="$vertical_layout = 'true'">
+					<xsl:attribute name="display-align">center</xsl:attribute>
+				</xsl:if>
 				<xsl:if test="$section = 'main' or $section = 'commentary'"><fo:block><fo:page-number /></fo:block></xsl:if>
 				<fo:block>
 					<xsl:copy-of select="$docidentifier"/>
@@ -1663,6 +1744,9 @@
 		</fo:static-content>
 		<fo:static-content flow-name="header-even" role="artifact">
 			<fo:block-container font-family="Arial" font-size="9pt" height="26mm" display-align="after">
+				<xsl:if test="$vertical_layout = 'true'">
+					<xsl:attribute name="display-align">center</xsl:attribute>
+				</xsl:if>
 				<xsl:if test="$section = 'main' or $section = 'commentary'"><fo:block><fo:page-number /></fo:block></xsl:if>
 				<fo:block>
 					<xsl:copy-of select="$docidentifier"/>
@@ -1673,6 +1757,9 @@
 		
 		<fo:static-content flow-name="header-commentary-even-first" role="artifact">
 			<fo:block-container font-family="Arial" font-size="9pt" height="26mm" display-align="after" text-align="left">
+				<xsl:if test="$vertical_layout = 'true'">
+					<xsl:attribute name="display-align">center</xsl:attribute>
+				</xsl:if>
 				<fo:block><fo:page-number /></fo:block>
 				<fo:block>&#xa0;</fo:block>
 			</fo:block-container>
@@ -1680,6 +1767,9 @@
 		
 		<fo:static-content flow-name="header-commentary-odd-first" role="artifact">
 			<fo:block-container font-family="Arial" font-size="9pt" height="26mm" display-align="after" text-align="right">
+				<xsl:if test="$vertical_layout = 'true'">
+					<xsl:attribute name="display-align">center</xsl:attribute>
+				</xsl:if>
 				<fo:block><fo:page-number /></fo:block>
 				<fo:block>&#xa0;</fo:block>
 			</fo:block-container>
@@ -1713,7 +1803,12 @@
 					</fo:block>
 				</xsl:if>
 				<!-- copyright restriction -->
-				<fo:block font-size="7pt" text-align="center" font-family="IPAexMincho" margin-bottom="13mm"><xsl:value-of select="$copyrightText"/></fo:block>
+				<fo:block font-size="7pt" text-align="center" font-family="IPAexMincho" margin-bottom="13mm">
+					<xsl:if test="$vertical_layout = 'true'">
+						<xsl:attribute name="margin-bottom">5mm</xsl:attribute>
+					</xsl:if>
+					<xsl:value-of select="$copyrightText"/>
+				</fo:block>
 			</fo:block-container>
 		</fo:static-content>
 	</xsl:template>
