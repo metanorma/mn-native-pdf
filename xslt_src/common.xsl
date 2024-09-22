@@ -12373,13 +12373,14 @@
 	<xsl:template match="*[local-name()='link']" name="link">
 		<xsl:variable name="target_normalized" select="translate(@target, '\', '/')"/>
 		<xsl:variable name="target_attachment_name" select="substring-after($target_normalized, '_attachments/')"/>
+		<xsl:variable name="isLinkToEmbeddedFile" select="normalize-space(@attachment = 'true' and $pdfAttachmentsList//attachment[@filename = current()/@target])"/>
 		<xsl:variable name="target">
 			<xsl:choose>
 				<xsl:when test="@updatetype = 'true'">
 					<xsl:value-of select="concat(normalize-space(@target), '.pdf')"/>
 				</xsl:when>
 				<!-- link to the PDF attachment -->
-				<xsl:when test="@attachment = 'true' and $pdfAttachmentsList//attachment[@filename = current()/@target]">
+				<xsl:when test="$isLinkToEmbeddedFile = 'true'">
 					<xsl:value-of select="concat('url(embedded-file:', @target, ')')"/>
 				</xsl:when>
 				<!-- <xsl:when test="starts-with($target_normalized, '_') and contains($target_normalized, '_attachments/') and $pdfAttachmentsList//attachment[@filename = $target_attachment_name]">
@@ -12411,6 +12412,11 @@
 				<xsl:attribute name="keep-together.within-line">always</xsl:attribute>
 			</xsl:if>
 			
+			<xsl:if test="$isLinkToEmbeddedFile = 'true'">
+				<xsl:attribute name="color">inherit</xsl:attribute>
+				<xsl:attribute name="text-decoration">none</xsl:attribute>
+			</xsl:if>
+			
 			<xsl:call-template name="refine_link-style"/>
 			
 			<xsl:choose>
@@ -12433,6 +12439,10 @@
 									</xsl:otherwise>
 								</xsl:choose>
 							</fo:basic-link>
+							<xsl:if test="$isLinkToEmbeddedFile = 'true'">
+								<!-- reserve space at right for PaperClip icon -->
+								<fo:inline keep-with-previous.within-line="always">&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;</fo:inline>
+							</xsl:if>
 						</xsl:with-param>
 					</xsl:call-template>
 				</xsl:otherwise>
