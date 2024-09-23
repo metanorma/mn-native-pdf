@@ -12381,7 +12381,8 @@
 				</xsl:when>
 				<!-- link to the PDF attachment -->
 				<xsl:when test="$isLinkToEmbeddedFile = 'true'">
-					<xsl:value-of select="concat('url(embedded-file:', @target, ')')"/>
+					<xsl:variable name="target_file" select="java:org.metanorma.fop.Util.getFilenameFromPath(@target)"/>
+					<xsl:value-of select="concat('url(embedded-file:', $target_file, ')')"/>
 				</xsl:when>
 				<!-- <xsl:when test="starts-with($target_normalized, '_') and contains($target_normalized, '_attachments/') and $pdfAttachmentsList//attachment[@filename = $target_attachment_name]">
 					<xsl:value-of select="concat('url(embedded-file:', $target_attachment_name, ')')"/>
@@ -19806,8 +19807,9 @@
 		<!-- add attachments -->
 		<xsl:for-each select="//*[contains(local-name(), '-standard')]/*[local-name() = 'metanorma-extension']/*[local-name() = 'attachment']">
 			<xsl:variable name="description" select="normalize-space(//*[local-name() = 'bibitem'][@hidden = 'true'][*[local-name() = 'uri'][@type = 'attachment'] = current()/@name]/*[local-name() = 'formattedref'])"/>
+			<xsl:variable name="filename" select="java:org.metanorma.fop.Util.getFilenameFromPath(@name)"/>
 			
-			<pdf:embedded-file filename="{@name}" xmlns:pdf="http://xmlgraphics.apache.org/fop/extensions/pdf">
+			<pdf:embedded-file filename="{$filename}" xmlns:pdf="http://xmlgraphics.apache.org/fop/extensions/pdf">
 				<xsl:attribute name="src">
 					<xsl:choose>
 						<xsl:when test="normalize-space() != ''">
@@ -19829,9 +19831,10 @@
 		<xsl:if test="not(//*[contains(local-name(), '-standard')]/*[local-name() = 'metanorma-extension']/*[local-name() = 'attachment'])">
 			<xsl:for-each select="//*[local-name() = 'bibitem'][@hidden = 'true'][*[local-name() = 'uri'][@type = 'attachment']]">
 				<xsl:variable name="attachment_path" select="*[local-name() = 'uri'][@type = 'attachment']"/>
+				<xsl:variable name="attachment_name" select="java:org.metanorma.fop.Util.getFilenameFromPath($attachment_path)"/>
 				<xsl:variable name="url" select="concat('url(file:///',$basepath, $attachment_path, ')')"/>
 				<xsl:variable name="description" select="normalize-space(*[local-name() = 'formattedref'])"/>
-				<pdf:embedded-file src="{$url}" filename="{$attachment_path}" xmlns:pdf="http://xmlgraphics.apache.org/fop/extensions/pdf">
+				<pdf:embedded-file src="{$url}" filename="{$attachment_name}" xmlns:pdf="http://xmlgraphics.apache.org/fop/extensions/pdf">
 					<xsl:if test="$description != ''">
 						<xsl:attribute name="description"><xsl:value-of select="$description"/></xsl:attribute>
 					</xsl:if>
