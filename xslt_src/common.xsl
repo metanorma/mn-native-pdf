@@ -19806,8 +19806,12 @@
 		</x:xmpmeta>
 		<!-- add attachments -->
 		<xsl:for-each select="//*[contains(local-name(), '-standard')]/*[local-name() = 'metanorma-extension']/*[local-name() = 'attachment']">
-			<xsl:variable name="description" select="normalize-space(//*[local-name() = 'bibitem'][@hidden = 'true'][*[local-name() = 'uri'][@type = 'attachment'] = current()/@name]/*[local-name() = 'formattedref'])"/>
+			<xsl:variable name="bibitem_attachment_" select="//*[local-name() = 'bibitem'][@hidden = 'true'][*[local-name() = 'uri'][@type = 'attachment'] = current()/@name]"/>
+			<xsl:variable name="bibitem_attachment" select="xalan:nodeset($bibitem_attachment_)"/>
+			<xsl:variable name="description" select="normalize-space($bibitem_attachment/*[local-name() = 'formattedref'])"/>
 			<xsl:variable name="filename" select="java:org.metanorma.fop.Util.getFilenameFromPath(@name)"/>
+			<!-- Todo: need update -->
+			<xsl:variable name="afrelationship" select="normalize-space($bibitem_attachment//*[local-name() = 'span'][@class = 'pdf-AFRelationship'])"/>
 			
 			<pdf:embedded-file filename="{$filename}" xmlns:pdf="http://xmlgraphics.apache.org/fop/extensions/pdf">
 				<xsl:attribute name="src">
@@ -19825,6 +19829,9 @@
 				<xsl:if test="$description != ''">
 					<xsl:attribute name="description"><xsl:value-of select="$description"/></xsl:attribute>
 				</xsl:if>
+				<xsl:if test="$afrelationship != ''">
+					<xsl:attribute name="afrelationship"><xsl:value-of select="$afrelationship"/></xsl:attribute>
+				</xsl:if>
 			</pdf:embedded-file>
 		</xsl:for-each>
 		<!-- references to external attachments (no binary-encoded within the Metanorma XML file) -->
@@ -19834,10 +19841,15 @@
 				<xsl:variable name="attachment_name" select="java:org.metanorma.fop.Util.getFilenameFromPath($attachment_path)"/>
 				<xsl:variable name="url" select="concat('url(file:///',$basepath, $attachment_path, ')')"/>
 				<xsl:variable name="description" select="normalize-space(*[local-name() = 'formattedref'])"/>
+				<!-- Todo: need update -->
+			<xsl:variable name="afrelationship" select="normalize-space(.//*[local-name() = 'span'][@class = 'pdf-AFRelationship'])"/>
 				<pdf:embedded-file src="{$url}" filename="{$attachment_name}" xmlns:pdf="http://xmlgraphics.apache.org/fop/extensions/pdf">
 					<xsl:if test="$description != ''">
 						<xsl:attribute name="description"><xsl:value-of select="$description"/></xsl:attribute>
 					</xsl:if>
+					<xsl:if test="$afrelationship != ''">
+					<xsl:attribute name="afrelationship"><xsl:value-of select="$afrelationship"/></xsl:attribute>
+				</xsl:if>
 				</pdf:embedded-file>
 			</xsl:for-each>
 		</xsl:if>
