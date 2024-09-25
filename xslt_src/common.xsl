@@ -19813,7 +19813,7 @@
 			<!-- Todo: need update -->
 			<xsl:variable name="afrelationship" select="normalize-space($bibitem_attachment//*[local-name() = 'span'][@class = 'pdf-AFRelationship'])"/>
 			
-			<pdf:embedded-file filename="{$filename}" xmlns:pdf="http://xmlgraphics.apache.org/fop/extensions/pdf">
+			<pdf:embedded-file filename="{$filename}" xmlns:pdf="http://xmlgraphics.apache.org/fop/extensions/pdf" link-as-file-annotation="true">
 				<xsl:attribute name="src">
 					<xsl:choose>
 						<xsl:when test="normalize-space() != ''">
@@ -19843,7 +19843,7 @@
 				<xsl:variable name="description" select="normalize-space(*[local-name() = 'formattedref'])"/>
 				<!-- Todo: need update -->
 			<xsl:variable name="afrelationship" select="normalize-space(.//*[local-name() = 'span'][@class = 'pdf-AFRelationship'])"/>
-				<pdf:embedded-file src="{$url}" filename="{$attachment_name}" xmlns:pdf="http://xmlgraphics.apache.org/fop/extensions/pdf">
+				<pdf:embedded-file src="{$url}" filename="{$attachment_name}" xmlns:pdf="http://xmlgraphics.apache.org/fop/extensions/pdf" link-as-file-annotation="true">
 					<xsl:if test="$description != ''">
 						<xsl:attribute name="description"><xsl:value-of select="$description"/></xsl:attribute>
 					</xsl:if>
