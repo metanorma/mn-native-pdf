@@ -12431,6 +12431,9 @@
 					<xsl:call-template name="insert_basic_link">
 						<xsl:with-param name="element">
 							<fo:basic-link external-destination="{$target}" fox:alt-text="{$target}">
+								<xsl:if test="$isLinkToEmbeddedFile = 'true'">
+									<xsl:attribute name="role">Annot</xsl:attribute>
+								</xsl:if>
 								<xsl:choose>
 									<xsl:when test="normalize-space(.) = ''">
 										<xsl:call-template name="add-zero-spaces-link-java">
