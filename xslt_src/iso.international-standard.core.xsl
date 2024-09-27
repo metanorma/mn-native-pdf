@@ -1863,8 +1863,7 @@
 									
 									<fo:table-row height="46mm">
 										<fo:table-cell number-columns-spanned="2" border-right="{$cover_page_border}">
-											<fo:block>&#xa0;
-												</fo:block>
+											<fo:block>&#xa0;</fo:block>
 										</fo:table-cell>
 										<fo:table-cell number-columns-spanned="2" display-align="after" padding-left="6mm">
 											<fo:block font-size="19pt" font-weight="bold" line-height="1">

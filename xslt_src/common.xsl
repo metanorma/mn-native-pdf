@@ -8825,6 +8825,7 @@
 			
 			<fo:block role="SKIP">
 				<xsl:apply-templates />
+				<xsl:if test="$isGenerateTableIF = 'false' and count(node()) = 0">&#xa0;</xsl:if>
 			</fo:block>
 		</fo:table-cell>
 	</xsl:template> <!-- cell in table header row - 'th' -->
@@ -8900,6 +8901,8 @@
 				<xsl:apply-templates />
 				
 				<xsl:if test="$isGenerateTableIF = 'true'">&#xa0;<fo:inline id="{@id}_end">end</fo:inline></xsl:if> <!-- to determine width of text --> <!-- <xsl:value-of select="$hair_space"/> -->
+				
+				<xsl:if test="$isGenerateTableIF = 'false' and count(node()) = 0">&#xa0;</xsl:if>
 				
 			</fo:block>			
 		</fo:table-cell>
