@@ -20615,4 +20615,19 @@
 		</xsl:if>
 	</xsl:template>
 	
+	<xsl:template match="@*|node()" mode="set_table_role_skip">
+		<xsl:copy>
+			<xsl:apply-templates select="@*|node()" mode="set_table_role_skip"/>
+		</xsl:copy>
+	</xsl:template>
+	
+	<xsl:template match="*[starts-with(local-name(), 'table')]" mode="set_table_role_skip">
+		<xsl:copy>
+			<xsl:apply-templates select="@*" mode="set_table_role_skip"/>
+			<xsl:attribute name="role">SKIP</xsl:attribute>
+			<xsl:apply-templates select="node()" mode="set_table_role_skip"/>
+		</xsl:copy>
+	</xsl:template>
+	
+	
 </xsl:stylesheet>
