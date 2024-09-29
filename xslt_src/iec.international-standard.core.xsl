@@ -1355,9 +1355,11 @@
 	</xsl:template>
 
 	<xsl:template match="iec:preface//iec:clause[@type = 'toc']" priority="3">
-		<fo:block-container>
+		<fo:block-container role="SKIP">
+			<!-- render 'Contents' outside if role="TOC" -->
+			<xsl:apply-templates select="*[local-name() = 'title']"/>
 			<fo:block role="TOC">
-				<xsl:apply-templates />
+				<xsl:apply-templates select="node()[not(local-name() = 'title')]"/>
 				
 				<xsl:if test="count(*) = 1 and *[local-name() = 'title']"> <!-- if there isn't user ToC -->
 					<xsl:variable name="docid">
@@ -1372,7 +1374,7 @@
 	</xsl:template>
 	
 	<xsl:template match="iec:preface//iec:clause[@type = 'toc']/iec:title" priority="3">
-		<fo:block font-size="12pt" text-align="center" margin-bottom="22pt" role="H1">
+		<fo:block font-size="12pt" text-align="center" margin-bottom="22pt">
 			<xsl:call-template name="addLetterSpacing">
 				<xsl:with-param name="text" select="java:toUpperCase(java:java.lang.String.new(.))"/>
 			</xsl:call-template>
@@ -1842,7 +1844,7 @@
 		<xsl:variable name="level">
 			<xsl:call-template name="getLevel"/>
 		</xsl:variable>
-				
+		
 		<xsl:variable name="font-size">
 			<xsl:choose>
 				<xsl:when test="ancestor::iec:sections and $level = 1">11pt</xsl:when>

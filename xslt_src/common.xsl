@@ -19875,6 +19875,12 @@
 	<!-- Get or calculate depth of the element -->
 	<xsl:template name="getLevel">
 		<xsl:param name="depth"/>
+		<!-- <xsl:message>
+			<xsl:choose>
+				<xsl:when test="local-name() = 'title'">title=<xsl:value-of select="."/></xsl:when>
+				<xsl:when test="local-name() = 'clause'">clause/title=<xsl:value-of select="*[local-name() = 'title']"/></xsl:when>
+			</xsl:choose>
+		</xsl:message> -->
 		<xsl:choose>
 			<xsl:when test="normalize-space(@depth) != ''">
 				<xsl:value-of select="@depth"/>
@@ -19895,6 +19901,9 @@
 						<xsl:when test="ancestor::*[local-name() = 'preface']">
 							<xsl:value-of select="$level_total - 2"/>
 						</xsl:when>
+						<xsl:when test="ancestor::*[local-name() = 'sections'] and self::*[local-name() = 'title']">
+							<xsl:value-of select="$level_total - 2"/>
+						</xsl:when>
 						<xsl:when test="ancestor::*[local-name() = 'sections']">
 							<xsl:value-of select="$level_total - 1"/>
 						</xsl:when>
@@ -19902,6 +19911,9 @@
 							<xsl:value-of select="$level_total - 1"/>
 						</xsl:when>
 						<xsl:when test="parent::*[local-name() = 'annex']">
+							<xsl:value-of select="$level_total - 1"/>
+						</xsl:when>
+						<xsl:when test="ancestor::*[local-name() = 'annex'] and self::*[local-name() = 'title']">
 							<xsl:value-of select="$level_total - 1"/>
 						</xsl:when>
 						<xsl:when test="ancestor::*[local-name() = 'annex']">
