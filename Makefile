@@ -81,7 +81,7 @@ XSLT_GENERATED := xslt/iec.international-standard.xsl \
 	xslt/bipm.rapport.xsl \
 	xslt/jcgm.standard.xsl
 
-MN2PDF_DOWNLOAD_PATH := https://github.com/metanorma/mn2pdf/releases/download/v2.01/mn2pdf-2.01.jar
+MN2PDF_DOWNLOAD_PATH := https://github.com/metanorma/mn2pdf/releases/download/v2.02/mn2pdf-2.02.jar
 # MN2PDF_DOWNLOAD_PATH := https://maven.pkg.github.com/metanorma/mn2pdf/com/metanorma/fop/mn2pdf/1.7/mn2pdf-1.7.jar
 MN2PDF_EXECUTABLE := $(notdir $(MN2PDF_DOWNLOAD_PATH))
 

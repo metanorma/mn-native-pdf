@@ -1,6 +1,6 @@
 name: verapdfcheck
 
-on: push
+on: pull_request
 
 jobs:
   check:
@@ -33,21 +33,40 @@ jobs:
         run: |
           timeout 20s sh -c 'until curl http://localhost:8080/api/ | grep -q verapdf-rest; do echo "Waiting until container to be healthy..."; sleep 1; done'
            
-      - name: Check PDFs using veraPDF
+      - name: Check PDFs for PDF/A-3a using veraPDF
         run: |
-          find ./ -type f -name "*.pdf" -exec curl -F "file=@{}" localhost:8080/api/validate/3a -H "Accept:application/xml" -o "{}.verapdf.report.xml" \;
+          find ./ -type f -name "*.pdf" -exec curl -F "file=@{}" localhost:8080/api/validate/3a -H "Accept:application/xml" -o "{}.verapdf.3a.report.xml" \;
       
       - name: List files
         run: |
-          find ./ -type f -name "*.verapdf.report.xml"
+          find ./ -type f -name "*.verapdf.3a.report.xml"
           
-      - name: Check veraPDF XML reports on errors
+      - name: Check veraPDF PDF/A-3a XML reports on errors
         run: |
-          err_files_name=err.files.txt
+          err_files_name=err.files.3a.txt
           [ -e $err_files_name ] && rm $err_files_name
-          for f in $(find ./ -type f -name '*.verapdf.report.xml'); do grep -l 'status=\"failed\"' $f >> $err_files_name && cat $f; done
+          for f in $(find ./ -type f -name '*.verapdf.3a.report.xml'); do grep -l 'status=\"failed\"' $f >> $err_files_name && cat $f; done
           if [ -s $err_files_name ]; then
-              echo "veraPDF found PDF errors:"
+              echo "veraPDF found PDF/A-3a errors:"
+              cat $err_files_name
+              exit 1
+          fi
+
+      - name: Check PDFs for PDF/UA-1 using veraPDF
+        run: |
+          find ./ -type f -name "*.pdf" -exec curl -F "file=@{}" localhost:8080/api/validate/ua1 -H "Accept:application/xml" -o "{}.verapdf.ua1.report.xml" \;
+      
+      - name: List files
+        run: |
+          find ./ -type f -name "*.verapdf.ua1.report.xml"
+          
+      - name: Check veraPDF PDF/UA-1 XML reports on errors
+        run: |
+          err_files_name=err.files.ua1.txt
+          [ -e $err_files_name ] && rm $err_files_name
+          for f in $(find ./ -type f -name '*.verapdf.ua1.report.xml'); do grep -l 'status=\"failed\"' $f >> $err_files_name && cat $f; done
+          if [ -s $err_files_name ]; then
+              echo "veraPDF found PDF/UA-1 errors:"
               cat $err_files_name
               exit 1
           fi
