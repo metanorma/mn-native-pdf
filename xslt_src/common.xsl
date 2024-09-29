@@ -19902,10 +19902,26 @@
 							<xsl:value-of select="$level_total - 2"/>
 						</xsl:when>
 						<xsl:when test="ancestor::*[local-name() = 'sections'] and self::*[local-name() = 'title']">
-							<xsl:value-of select="$level_total - 2"/>
+							<xsl:variable name="upper_clause_depth" select="normalize-space(ancestor::*[local-name() = 'clause'][2]/*[local-name() = 'title']/@depth)"/>
+							<xsl:choose>
+								<xsl:when test="string(number($upper_clause_depth)) != 'NaN'">
+									<xsl:value-of select="number($upper_clause_depth + 1)"/>
+								</xsl:when>
+								<xsl:otherwise>
+									<xsl:value-of select="$level_total - 2"/>
+								</xsl:otherwise>
+							</xsl:choose>
 						</xsl:when>
 						<xsl:when test="ancestor::*[local-name() = 'sections']">
-							<xsl:value-of select="$level_total - 1"/>
+							<xsl:variable name="upper_clause_depth" select="normalize-space(ancestor::*[local-name() = 'clause'][1]/*[local-name() = 'title']/@depth)"/>
+							<xsl:choose>
+								<xsl:when test="string(number($upper_clause_depth)) != 'NaN'">
+									<xsl:value-of select="number($upper_clause_depth + 1)"/>
+								</xsl:when>
+								<xsl:otherwise>
+									<xsl:value-of select="$level_total - 1"/>
+								</xsl:otherwise>
+							</xsl:choose>
 						</xsl:when>
 						<xsl:when test="ancestor::*[local-name() = 'bibliography']">
 							<xsl:value-of select="$level_total - 1"/>
@@ -19914,7 +19930,15 @@
 							<xsl:value-of select="$level_total - 1"/>
 						</xsl:when>
 						<xsl:when test="ancestor::*[local-name() = 'annex'] and self::*[local-name() = 'title']">
-							<xsl:value-of select="$level_total - 1"/>
+							<xsl:variable name="upper_clause_depth" select="normalize-space(ancestor::*[local-name() = 'clause'][2]/*[local-name() = 'title']/@depth)"/>
+							<xsl:choose>
+								<xsl:when test="string(number($upper_clause_depth)) != 'NaN'">
+									<xsl:value-of select="number($upper_clause_depth + 1)"/>
+								</xsl:when>
+								<xsl:otherwise>
+									<xsl:value-of select="$level_total - 1"/>
+								</xsl:otherwise>
+							</xsl:choose>
 						</xsl:when>
 						<xsl:when test="ancestor::*[local-name() = 'annex']">
 							<xsl:value-of select="$level_total"/>
