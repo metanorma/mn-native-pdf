@@ -371,21 +371,21 @@
 	
 	<xsl:template name="insertListOf_Item">
 		<fo:block role="TOCI">
-			<fo:list-block provisional-distance-between-starts="8mm">
-				<fo:list-item>
-					<fo:list-item-label end-indent="label-end()">
+			<fo:list-block provisional-distance-between-starts="8mm" role="SKIP">
+				<fo:list-item role="SKIP">
+					<fo:list-item-label end-indent="label-end()" role="SKIP">
 						<fo:block></fo:block>
 					</fo:list-item-label>
-					<fo:list-item-body start-indent="body-start()">
-						<fo:block text-align-last="justify" margin-left="12mm" text-indent="-12mm">
+					<fo:list-item-body start-indent="body-start()" role="SKIP">
+						<fo:block text-align-last="justify" margin-left="12mm" text-indent="-12mm" role="SKIP">
 							<fo:basic-link internal-destination="{@id}">
 								<xsl:call-template name="setAltText">
 									<xsl:with-param name="value" select="@alt-text"/>
 								</xsl:call-template>
 								<xsl:apply-templates select="." mode="contents"/>
-								<fo:inline keep-together.within-line="always">
+								<fo:inline keep-together.within-line="always" role="SKIP">
 									<fo:leader leader-pattern="dots"/>
-									<fo:inline><fo:page-number-citation ref-id="{@id}"/></fo:inline>
+									<fo:inline role="SKIP"><fo:wrapper role="artifact"><fo:page-number-citation ref-id="{@id}"/></fo:wrapper></fo:inline>
 								</fo:inline>
 							</fo:basic-link>
 						</fo:block>
@@ -396,10 +396,12 @@
 	</xsl:template>
 
 	<xsl:template match="csd:preface//csd:clause[@type = 'toc']" priority="3">
-		<fo:block-container font-weight="bold" line-height="115%">
+		<fo:block-container font-weight="bold" line-height="115%" role="SKIP">
+			<!-- render 'Contents' outside if role="TOC" -->
+			<xsl:apply-templates select="*[local-name() = 'title']"/>
 			<fo:block role="TOC">
 				
-				<xsl:apply-templates />
+				<xsl:apply-templates select="node()[not(local-name() = 'title')]"/>
 				
 				<xsl:if test="count(*) = 1 and *[local-name() = 'title']"> <!-- if there isn't user ToC -->
 				
@@ -410,33 +412,35 @@
 								<xsl:attribute name="margin-top">6pt</xsl:attribute>
 							</xsl:if>
 							
-							<fo:list-block>
-								<xsl:attribute name="provisional-distance-between-starts">
-									<xsl:choose>
-										<!-- skip 0 section without subsections -->
-										<xsl:when test="@section != ''">8mm</xsl:when> <!-- and not(@display-section = 'false') -->
-										<xsl:otherwise>0mm</xsl:otherwise>
-									</xsl:choose>
-								</xsl:attribute>
-								<fo:list-item>
-									<fo:list-item-label end-indent="label-end()">
-										<fo:block>												
-											<xsl:value-of select="@section"/>
-										</fo:block>
-									</fo:list-item-label>
-									<fo:list-item-body start-indent="body-start()">
-										<fo:block text-align-last="justify" margin-left="12mm" text-indent="-12mm">
-											<fo:basic-link internal-destination="{@id}" fox:alt-text="{title}">													
-												<xsl:apply-templates select="title"/>
-												<fo:inline keep-together.within-line="always">
-													<fo:leader leader-pattern="dots"/>
-													<fo:inline><fo:page-number-citation ref-id="{@id}"/></fo:inline>
-												</fo:inline>
-											</fo:basic-link>
-										</fo:block>
-									</fo:list-item-body>
-								</fo:list-item>
-							</fo:list-block>
+							<fo:basic-link internal-destination="{@id}" fox:alt-text="{@section} {title}"> <!-- link at this level needs for PDF structure tags -->
+								<fo:list-block role="SKIP">
+									<xsl:attribute name="provisional-distance-between-starts">
+										<xsl:choose>
+											<!-- skip 0 section without subsections -->
+											<xsl:when test="@section != ''">8mm</xsl:when> <!-- and not(@display-section = 'false') -->
+											<xsl:otherwise>0mm</xsl:otherwise>
+										</xsl:choose>
+									</xsl:attribute>
+									<fo:list-item role="SKIP">
+										<fo:list-item-label end-indent="label-end()" role="SKIP">
+											<fo:block role="SKIP" id="__internal_layout__toc_label_{@id}">												
+												<xsl:value-of select="@section"/>
+											</fo:block>
+										</fo:list-item-label>
+										<fo:list-item-body start-indent="body-start()" role="SKIP">
+											<fo:block text-align-last="justify" margin-left="12mm" text-indent="-12mm" role="SKIP">
+												<fo:basic-link internal-destination="{@id}" fox:alt-text="{title}" role="SKIP">													
+													<xsl:apply-templates select="title"/>
+													<fo:inline keep-together.within-line="always" role="SKIP">
+														<fo:leader leader-pattern="dots"/>
+														<fo:inline role="SKIP"><fo:wrapper role="artifact"><fo:page-number-citation ref-id="{@id}"/></fo:wrapper></fo:inline>
+													</fo:inline>
+												</fo:basic-link>
+											</fo:block>
+										</fo:list-item-body>
+									</fo:list-item>
+								</fo:list-block>
+							</fo:basic-link>
 						</fo:block>
 					</xsl:for-each>
 					
