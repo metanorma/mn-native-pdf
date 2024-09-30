@@ -1278,61 +1278,64 @@
 					<xsl:attribute name="space-before">5pt</xsl:attribute>
 				</xsl:if>
 				
-				<fo:list-block>
-					<xsl:attribute name="margin-left">
-						<xsl:choose>
-							<xsl:when test="title/@variant-title = 'true'">0mm</xsl:when>
-							<xsl:when test="@level = 2">8mm</xsl:when>
-							<xsl:when test="@level &gt;= 3"><xsl:value-of select="(@level - 2) * 23"/>mm</xsl:when>
-							<xsl:otherwise>0mm</xsl:otherwise>
-						</xsl:choose>
-					</xsl:attribute>
-					<xsl:attribute name="provisional-distance-between-starts">
-						<xsl:choose>
-							<xsl:when test="@section = ''">0mm</xsl:when>
-							<xsl:when test="@level = 1">8mm</xsl:when>
-							<xsl:when test="@level = 2">15mm</xsl:when>
-							<xsl:when test="@level &gt;= 3"><xsl:value-of select="(@level - 2) * 19"/>mm</xsl:when>
-							<xsl:otherwise>0mm</xsl:otherwise>
-						</xsl:choose>
-					</xsl:attribute>
-					<fo:list-item>
-						<fo:list-item-label end-indent="label-end()">
-							<fo:block>
-								<xsl:value-of select="@section"/>											
-							</fo:block>
-						</fo:list-item-label>
-						<fo:list-item-body start-indent="body-start()">
-							<fo:block text-align-last="justify">
-								<fo:basic-link internal-destination="{@id}" fox:alt-text="{title}">
-									<xsl:variable name="title">
-										<xsl:apply-templates select="title"/>
-									</xsl:variable>
-									<xsl:call-template name="addLetterSpacing">
-										<xsl:with-param name="text" select="$title"/>
-									</xsl:call-template>
-									<xsl:text> </xsl:text>
-									<fo:inline keep-together.within-line="always">
-										<fo:leader leader-pattern="dots"/>
-										<fo:inline><fo:page-number-citation ref-id="{@id}"/></fo:inline>
-									</fo:inline>
-								</fo:basic-link>
-							</fo:block>
-						</fo:list-item-body>
-					</fo:list-item>
-				</fo:list-block>
+				<fo:basic-link internal-destination="{@id}" fox:alt-text="{@section} {title}"> <!-- link at this level needs for PDF structure tags -->
+				
+					<fo:list-block role="SKIP">
+						<xsl:attribute name="margin-left">
+							<xsl:choose>
+								<xsl:when test="title/@variant-title = 'true'">0mm</xsl:when>
+								<xsl:when test="@level = 2">8mm</xsl:when>
+								<xsl:when test="@level &gt;= 3"><xsl:value-of select="(@level - 2) * 23"/>mm</xsl:when>
+								<xsl:otherwise>0mm</xsl:otherwise>
+							</xsl:choose>
+						</xsl:attribute>
+						<xsl:attribute name="provisional-distance-between-starts">
+							<xsl:choose>
+								<xsl:when test="@section = ''">0mm</xsl:when>
+								<xsl:when test="@level = 1">8mm</xsl:when>
+								<xsl:when test="@level = 2">15mm</xsl:when>
+								<xsl:when test="@level &gt;= 3"><xsl:value-of select="(@level - 2) * 19"/>mm</xsl:when>
+								<xsl:otherwise>0mm</xsl:otherwise>
+							</xsl:choose>
+						</xsl:attribute>
+						<fo:list-item role="SKIP">
+							<fo:list-item-label end-indent="label-end()" role="SKIP">
+								<fo:block>
+									<xsl:value-of select="@section"/>											
+								</fo:block>
+							</fo:list-item-label>
+							<fo:list-item-body start-indent="body-start()" role="SKIP">
+								<fo:block text-align-last="justify" role="SKIP">
+									<fo:basic-link internal-destination="{@id}" fox:alt-text="{title}" role="SKIP">
+										<xsl:variable name="title">
+											<xsl:apply-templates select="title"/>
+										</xsl:variable>
+										<xsl:call-template name="addLetterSpacing">
+											<xsl:with-param name="text" select="$title"/>
+										</xsl:call-template>
+										<xsl:text> </xsl:text>
+										<fo:inline keep-together.within-line="always" role="SKIP">
+											<fo:leader leader-pattern="dots"/>
+											<fo:inline role="SKIP"><fo:wrapper role="artifact"><fo:page-number-citation ref-id="{@id}"/></fo:wrapper></fo:inline>
+										</fo:inline>
+									</fo:basic-link>
+								</fo:block>
+							</fo:list-item-body>
+						</fo:list-item>
+					</fo:list-block>
+				</fo:basic-link>
 			</fo:block>
 		</xsl:for-each>
 		
 		<xsl:if test="$contents//figures/figure">
-			<fo:block margin-bottom="5pt">&#xA0;</fo:block>
+			<fo:block margin-bottom="5pt" role="SKIP"><fo:wrapper role="artifact">&#xA0;</fo:wrapper></fo:block>
 			<xsl:for-each select="$contents//figures/figure">
 				<xsl:call-template name="insertListOf_Item"/>
 			</xsl:for-each>
 		</xsl:if>
 		
 		<xsl:if test="$contents//tables/table">
-			<fo:block margin-bottom="5pt">&#xA0;</fo:block>
+			<fo:block margin-bottom="5pt" role="SKIP"><fo:wrapper role="artifact">&#xA0;</fo:wrapper></fo:block>
 			<xsl:for-each select="$contents//tables/table">
 				<xsl:call-template name="insertListOf_Item"/>
 			</xsl:for-each>
@@ -1344,11 +1347,13 @@
 	
 	<xsl:template name="insertListOf_Item">
 		<fo:block text-align-last="justify" margin-bottom="5pt" margin-left="8mm" text-indent="-8mm" role="TOCI">
-			<fo:basic-link internal-destination="{@id}"  fox:alt-text="{local-name()} {@id}">
+			<fo:basic-link internal-destination="{@id}" fox:alt-text="{local-name()} {@id}">
 				<xsl:apply-templates select="." mode="contents"/>
-				<fo:inline keep-together.within-line="always">
+				<fo:inline keep-together.within-line="always" role="SKIP">
 					<fo:leader leader-pattern="dots"/>
-					<fo:page-number-citation ref-id="{@id}"/>
+					<fo:wrapper role="artifact">
+						<fo:page-number-citation ref-id="{@id}"/>
+					</fo:wrapper>
 				</fo:inline>
 			</fo:basic-link>
 		</fo:block>
