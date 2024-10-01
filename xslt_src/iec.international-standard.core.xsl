@@ -1347,7 +1347,8 @@
 	
 	<xsl:template name="insertListOf_Item">
 		<fo:block text-align-last="justify" margin-bottom="5pt" margin-left="8mm" text-indent="-8mm" role="TOCI">
-			<fo:basic-link internal-destination="{@id}" fox:alt-text="{local-name()} {@id}">
+			<xsl:variable name="alt_text" select="normalize-space(translate(normalize-space(*[local-name() = 'name']), '&#xa0;—', ' -'))"/>
+			<fo:basic-link internal-destination="{@id}" fox:alt-text="{$alt_text}"> <!-- {local-name()} {@id} -->
 				<xsl:apply-templates select="." mode="contents"/>
 				<fo:inline keep-together.within-line="always" role="SKIP">
 					<fo:leader leader-pattern="dots"/>
