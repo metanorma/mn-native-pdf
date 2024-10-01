@@ -9490,7 +9490,7 @@
 		
 			<xsl:call-template name="refine_fn-reference-style"/>
 			
-			<fo:basic-link internal-destination="{@reference}_{ancestor::*[@id][1]/@id}" fox:alt-text="{@reference}"> <!-- @reference   | ancestor::*[local-name()='clause'][1]/@id-->
+			<fo:basic-link internal-destination="{@reference}_{ancestor::*[@id][1]/@id}" fox:alt-text="footnote {@reference}"> <!-- @reference   | ancestor::*[local-name()='clause'][1]/@id-->
 				<xsl:if test="ancestor::*[local-name()='table'][1]/@id"> <!-- for footnotes in tables -->
 					<xsl:attribute name="internal-destination">
 						<xsl:value-of select="concat(@reference, '_', ancestor::*[local-name()='table'][1]/@id)"/>
@@ -12499,7 +12499,7 @@
 	<xsl:template match="*[local-name() = 'callout']">
 		<xsl:choose>
 			<xsl:when test="normalize-space(@target) = ''">&lt;<xsl:apply-templates />&gt;</xsl:when>
-			<xsl:otherwise><fo:basic-link internal-destination="{@target}" fox:alt-text="{@target}">&lt;<xsl:apply-templates />&gt;</fo:basic-link></xsl:otherwise>
+			<xsl:otherwise><fo:basic-link internal-destination="{@target}" fox:alt-text="{normalize-space()}">&lt;<xsl:apply-templates />&gt;</fo:basic-link></xsl:otherwise>
 		</xsl:choose>
 	</xsl:template>
 	
