@@ -9065,8 +9065,10 @@
 				
 				<xsl:call-template name="insert_basic_link">
 					<xsl:with-param name="element">
-						<fo:basic-link internal-destination="{$ref_id}" fox:alt-text="footnote {$current_fn_number}"> <!-- role="Lbl" removed in https://github.com/metanorma/mn2pdf/issues/291 -->
-							<xsl:copy-of select="$current_fn_number_text"/>
+						<fo:basic-link internal-destination="{$ref_id}" fox:alt-text="footnote {$current_fn_number}"> <!-- note: role="Lbl" removed in https://github.com/metanorma/mn2pdf/issues/291 -->
+							<fo:inline role="Lbl"> <!-- need for https://github.com/metanorma/metanorma-iso/issues/1003 -->
+								<xsl:copy-of select="$current_fn_number_text"/>
+							</fo:inline>
 						</fo:basic-link>
 					</xsl:with-param>
 				</xsl:call-template>
