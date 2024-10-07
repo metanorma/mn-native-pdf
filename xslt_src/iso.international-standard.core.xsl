@@ -447,7 +447,7 @@
 						<xsl:attribute name="font-size">10pt</xsl:attribute>
 					</xsl:if>
 					
-					<xsl:if test="$layoutVersion = '1987' and $doctype = 'technical-report'">
+					<xsl:if test="(($layoutVersion = '1987' and $doctype = 'technical-report') or ($layoutVersion = '1979' and $doctype = 'addendum'))">
 						<xsl:attribute name="font-size">8.5pt</xsl:attribute>
 					 </xsl:if>
 					
@@ -648,7 +648,7 @@
 				<fo:simple-page-master master-name="first-publishedISO" page-width="{$pageWidth}mm" page-height="{$pageHeight}mm">
 					<fo:region-body margin-top="{$marginTop}mm" margin-bottom="{$marginBottom}mm" margin-left="{$marginLeftRight1}mm" margin-right="{$marginLeftRight2}mm" column-count="{$layout_columns}" column-gap="{$column_gap}"/>
 					<fo:region-before region-name="header-first" extent="{$marginTop}mm">
-						<xsl:if test="$layoutVersion = '1987' and $doctype = 'technical-report'">
+						<xsl:if test="(($layoutVersion = '1987' and $doctype = 'technical-report') or ($layoutVersion = '1979' and $doctype = 'addendum'))">
 							<xsl:attribute name="region-name">header-odd</xsl:attribute>
 						</xsl:if>
 					</fo:region-before>
@@ -729,11 +729,11 @@
 				
 				<!-- First pages for Technical Report (layout 1987) -->
 				<fo:simple-page-master master-name="first-preface_1987_TR" page-width="{$pageWidth}mm" page-height="{$pageHeight}mm">
-					<fo:region-body margin-top="13mm" margin-bottom="30mm" margin-left="19mm" margin-right="{$marginLeftRight2}mm"/>
+					<fo:region-body margin-top="13mm" margin-bottom="30mm" margin-left="19mm" margin-right="10.5mm"/>
 					<fo:region-before region-name="header-empty" extent="13mm"/>
 					<fo:region-after region-name="footer-preface-first_1987_TR" extent="30mm" display-align="after"/>
 					<fo:region-start region-name="left-region-first_1987_TR" extent="19mm"/>
-					<fo:region-end region-name="right-region" extent="{$marginLeftRight2}mm"/>
+					<fo:region-end region-name="right-region" extent="10.5mm"/>
 				</fo:simple-page-master>
 				<fo:page-sequence-master master-name="preface-1987_TR">
 					<fo:repeatable-page-master-alternatives>
@@ -906,7 +906,7 @@
 						</fo:page-sequence>
 					</xsl:when><!-- END: preface sections (Foreword, Brief history for layout 1951 ($layoutVersion = '1951') -->
 					
-					<xsl:when test="$layoutVersion = '1987' and $doctype = 'technical-report'">
+					<xsl:when test="(($layoutVersion = '1987' and $doctype = 'technical-report') or ($layoutVersion = '1979' and $doctype = 'addendum'))">
 						<fo:page-sequence master-reference="preface-1987_TR"  format="i" force-page-count="no-force">
 							
 							<xsl:call-template name="insertHeaderFooter">
@@ -982,7 +982,25 @@
 												</fo:block>
 											</fo:table-cell>
 											<fo:table-cell font-size="11pt" font-weight="bold">
-												<fo:block><xsl:value-of select="$doctype_uppercased"/>&#xa0;<xsl:value-of select="/iso:iso-standard/iso:bibdata/iso:docnumber"/></fo:block>
+												<fo:block>
+													<xsl:choose>
+														<xsl:when test="$doctype = 'addendum'">
+															<xsl:variable name="doctype_international_standard">
+																<xsl:call-template name="getLocalizedString"><xsl:with-param name="key">doctype_dict.international-standard</xsl:with-param></xsl:call-template>
+															</xsl:variable>
+															<xsl:value-of select="java:toUpperCase(java:java.lang.String.new($doctype_international_standard))"/>
+															<xsl:text>&#xa0;</xsl:text>
+															<xsl:value-of select="translate(substring-before(/iso:iso-standard/iso:bibdata/iso:docidentifier[@type = 'iso-undated'], '/'),':','-')"/>
+															<xsl:text>/</xsl:text>
+															<xsl:value-of select="$doctype_localized"/>
+															<xsl:text>&#xa0;</xsl:text>
+															<xsl:value-of select="/iso:iso-standard/iso:bibdata/iso:ext/iso:structuredidentifier/iso:project-number/@addendum"/>
+														</xsl:when>
+														<xsl:otherwise>
+															<xsl:value-of select="$doctype_uppercased"/>&#xa0;<xsl:value-of select="/iso:iso-standard/iso:bibdata/iso:docnumber"/>
+														</xsl:otherwise>
+													</xsl:choose>
+												</fo:block>
 											</fo:table-cell>
 										</fo:table-row>
 										<fo:table-row display-align="after">
@@ -999,16 +1017,25 @@
 									<fo:block font-size="18pt" font-weight="bold" role="H1" line-height="1.05">
 										<xsl:call-template name="insertTitlesLangMain"/>
 									</fo:block>
-									<xsl:for-each select="xalan:nodeset($lang_other)/lang">
-										<xsl:variable name="lang_other" select="."/>
-										<fo:block font-size="12pt" role="SKIP"><xsl:value-of select="$linebreak"/></fo:block>
-										<fo:block role="H1" font-style="italic" line-height="1.2">
-											<!-- Example: title-intro fr -->
-											<xsl:call-template name="insertTitlesLangOther">
-												<xsl:with-param name="lang_other" select="$lang_other"/>
-											</xsl:call-template>
-										</fo:block>
-									</xsl:for-each>
+									<xsl:choose>
+										<xsl:when test="$doctype = 'addendum'">
+											<fo:block font-size="12pt" font-weight="bold" role="H2" line-height="1.05" margin-top="6pt">
+												<xsl:call-template name="printAddendumTitle"/>
+											</fo:block>
+										</xsl:when>
+										<xsl:otherwise>
+											<xsl:for-each select="xalan:nodeset($lang_other)/lang">
+												<xsl:variable name="lang_other" select="."/>
+												<fo:block font-size="12pt" role="SKIP"><xsl:value-of select="$linebreak"/></fo:block>
+												<fo:block role="H1" font-style="italic" line-height="1.2">
+													<!-- Example: title-intro fr -->
+													<xsl:call-template name="insertTitlesLangOther">
+														<xsl:with-param name="lang_other" select="$lang_other"/>
+													</xsl:call-template>
+												</fo:block>
+											</xsl:for-each>
+										</xsl:otherwise>
+									</xsl:choose>
 								</fo:block-container>
 												
 								<!-- ToC, Foreword, Introduction -->					
@@ -1016,7 +1043,7 @@
 								
 							</fo:flow>
 						</fo:page-sequence>
-					</xsl:when> <!-- $layoutVersion = '1987' and $doctype = 'technical-report' -->
+					</xsl:when> <!-- (($layoutVersion = '1987' and $doctype = 'technical-report') or ($layoutVersion = '1979' and $doctype = 'addendum')) -->
 					<xsl:otherwise>
 					
 						<xsl:variable name="copyright-statement">
@@ -1382,7 +1409,7 @@
 					<xsl:when test="$layoutVersion = '1951'"/>
 					<xsl:when test="$layoutVersion = '1972'"/>
 					<xsl:when test="$layoutVersion = '1979'"/>
-					<xsl:when test="$layoutVersion = '1987' and $doctype = 'technical-report'"><!-- UDC, Keywords and Price renders on the first page for technical-report --></xsl:when>
+					<xsl:when test="(($layoutVersion = '1987' and $doctype = 'technical-report') or ($layoutVersion = '1979' and $doctype = 'addendum'))"><!-- UDC, Keywords and Price renders on the first page for technical-report --></xsl:when>
 					<xsl:when test="$layoutVersion = '2024'">
 						<xsl:call-template name="insertLastPage_2024"/>
 					</xsl:when>
@@ -1397,6 +1424,14 @@
 		</fo:root>
 		
 	</xsl:template> 
+
+	<xsl:template name="printAddendumTitle">
+		<xsl:value-of select="java:toUpperCase(java:java.lang.String.new($doctype))"/>
+		<xsl:text>&#xa0;</xsl:text>
+		<xsl:value-of select="/iso:iso-standard/iso:bibdata/iso:ext/iso:structuredidentifier/iso:project-number/@addendum"/>
+		<xsl:text>&#xa0;:&#xa0;</xsl:text>
+		<xsl:value-of select="/iso:iso-standard/iso:bibdata/iso:title[@type = 'title-add']"/>
+	</xsl:template>
 
 
 	<xsl:template name="insertMainSectionsAmendmentPageSequences">
@@ -1575,7 +1610,7 @@
 					</fo:page-sequence>
 				</xsl:when> <!-- END: $layoutVersion = '1951' -->
 				
-				<xsl:when test="$layoutVersion = '1972' or $layoutVersion = '1979'">
+				<xsl:when test="$layoutVersion = '1972' or ($layoutVersion = '1979' and not($doctype = 'addendum'))">
 					<fo:page-sequence master-reference="cover-page_1972" force-page-count="no-force">
 						<fo:static-content flow-name="cover-page-footer" font-size="7pt">
 							<xsl:call-template name="insertSingleLine"/>
@@ -1713,8 +1748,8 @@
 							
 						</fo:flow>
 					</fo:page-sequence>
-				</xsl:when> <!-- END: $layoutVersion = '1972' or $layoutVersion = '1979' -->
-				<xsl:when test="$layoutVersion = '1987' and $doctype = 'technical-report'"><!-- see preface pages below --></xsl:when>
+				</xsl:when> <!-- END: $layoutVersion = '1972' or ($layoutVersion = '1979' and not($doctype = 'addendum')) -->
+				<xsl:when test="(($layoutVersion = '1987' and $doctype = 'technical-report') or ($layoutVersion = '1979' and $doctype = 'addendum'))"><!-- see preface pages below --></xsl:when>
 				<xsl:when test="$layoutVersion = '1987'">
 					<fo:page-sequence master-reference="cover-page_1987" force-page-count="no-force">
 						<fo:static-content flow-name="right-region" >
@@ -1816,7 +1851,7 @@
 										<!-- International 
 										Standard -->
 										<fo:table-cell number-columns-spanned="2" padding-left="6mm">
-											<fo:block-container height="46mm">
+											<fo:block-container height="46mm" role="SKIP">
 												<fo:block font-size="20pt" font-weight="bold" line-height="1.25" margin-top="3mm">
 												
 													<xsl:variable name="updates-document-type" select="/iso:iso-standard/iso:bibdata/iso:ext/iso:updates-document-type"/>
@@ -2421,7 +2456,18 @@
 																	<xsl:if test="$font-size != ''">
 																		<xsl:attribute name="font-size"><xsl:value-of select="$font-size"/></xsl:attribute>
 																	</xsl:if>
-																	<xsl:value-of select="$doctype_uppercased"/>
+																	
+																	<xsl:choose>
+																		<xsl:when test="$doctype = 'addendum'">
+																			<xsl:variable name="doctype_international_standard">
+																				<xsl:call-template name="getLocalizedString"><xsl:with-param name="key">doctype_dict.international-standard</xsl:with-param></xsl:call-template>
+																			</xsl:variable>
+																			<xsl:value-of select="java:toUpperCase(java:java.lang.String.new($doctype_international_standard))"/>
+																		</xsl:when>
+																		<xsl:otherwise>
+																			<xsl:value-of select="$doctype_uppercased"/>
+																		</xsl:otherwise>
+																	</xsl:choose>
 																</xsl:otherwise>
 															</xsl:choose>
 														</fo:block>
@@ -2431,8 +2477,15 @@
 															<xsl:if test="$font-size != ''">
 																<xsl:attribute name="font-size"><xsl:value-of select="$font-size"/></xsl:attribute>
 															</xsl:if>
-															<xsl:value-of select="$docidentifierISO_with_break"/>
-															<xsl:copy-of select="$docidentifier_another"/>
+															<xsl:choose>
+																<xsl:when test="$doctype = 'addendum'">
+																	<xsl:value-of select="substring-before($docidentifierISO_with_break, ':')"/>
+																</xsl:when>
+																<xsl:otherwise>
+																	<xsl:value-of select="$docidentifierISO_with_break"/>
+																	<xsl:copy-of select="$docidentifier_another"/>
+																</xsl:otherwise>
+															</xsl:choose>
 														</fo:block>
 													</fo:table-cell>
 												</fo:table-row>
@@ -2446,6 +2499,23 @@
 														</fo:block>
 														<!-- <xsl:value-of select="$linebreak"/>
 														<xsl:value-of select="/iso:iso-standard/iso:bibdata/iso:version/iso:revision-date"/> -->
+														<xsl:if test="$doctype = 'addendum'">
+															<fo:block text-align="right" margin-right="0.5mm" role="SKIP">
+																<fo:block font-weight="bold" margin-top="16pt">
+																	<xsl:value-of select="$doctype_uppercased"/>
+																		<xsl:text> </xsl:text>
+																		<xsl:variable name="addendum-number" select="/iso:iso-standard/iso:bibdata/iso:ext/iso:structuredidentifier/iso:project-number/@addendum"/>
+																		<xsl:if test="normalize-space($addendum-number) != ''">
+																			<xsl:value-of select="$addendum-number"/><xsl:text> </xsl:text>
+																		</xsl:if>
+																</fo:block>
+																<fo:block>
+																	<xsl:if test="/iso:iso-standard/iso:bibdata/iso:date[@type = 'updated']">																		
+																		<xsl:value-of select="/iso:iso-standard/iso:bibdata/iso:date[@type = 'updated']"/>
+																	</xsl:if>
+																</fo:block>
+															</fo:block>
+														</xsl:if>
 														<xsl:if test="$doctype = 'amendment' and not($stage-abbreviation = 'FDAMD' or $stage-abbreviation = 'FDAM')">
 															<fo:block text-align="right" margin-right="0.5mm" role="SKIP">
 																<fo:block font-weight="bold" margin-top="4pt" role="H1">
@@ -2548,29 +2618,48 @@
 														<xsl:call-template name="insertTripleLine"/>
 														<fo:block-container line-height="1.1" role="SKIP">
 															<fo:block margin-right="3.5mm" role="SKIP">
-																<fo:block font-size="18pt" font-weight="bold" margin-top="12pt" role="H1">
-																	<xsl:if test="$layoutVersion = '1989'">
-																		<xsl:attribute name="font-size">16pt</xsl:attribute>
-																	</xsl:if>
+																<xsl:variable name="font_size">
+																	<xsl:choose>
+																		<xsl:when test="$layoutVersion = '1989'">16pt</xsl:when>
+																		<xsl:otherwise>18pt</xsl:otherwise>
+																	</xsl:choose>
+																</xsl:variable>
+																<fo:block font-size="{$font_size}" font-weight="bold" margin-top="12pt" role="H1">
 																	<xsl:call-template name="insertTitlesLangMain"/>
 																</fo:block>
-																			
-																<xsl:if test="not($stage-abbreviation = 'FDAMD' or $stage-abbreviation = 'FDAM')">
-																	<xsl:for-each select="xalan:nodeset($lang_other)/lang">
-																		<xsl:variable name="lang_other" select="."/>
-																		
-																		<fo:block font-size="12pt" role="SKIP"><xsl:value-of select="$linebreak"/></fo:block>
-																		<fo:block font-size="11pt" font-style="italic" line-height="1.1" role="H1">
-																			<xsl:if test="$layoutVersion = '1989'">
-																				<xsl:attribute name="font-size">10pt</xsl:attribute>
-																			</xsl:if>
-																			<!-- Example: title-intro fr -->
-																			<xsl:call-template name="insertTitlesLangOther">
-																				<xsl:with-param name="lang_other" select="$lang_other"/>
-																			</xsl:call-template>
+																
+																<xsl:choose>
+																	<xsl:when test="$doctype = 'addendum'">
+																		<fo:block font-size="{$font_size}" margin-top="6pt" role="H2">
+																			<xsl:value-of select="$doctype_uppercased"/>
+																			<xsl:text>&#xa0;</xsl:text>
+																			<xsl:value-of select="/iso:iso-standard/iso:bibdata/iso:ext/iso:structuredidentifier/iso:project-number/@addendum"/>
+																			<xsl:text>:</xsl:text>
 																		</fo:block>
-																	</xsl:for-each>
-																</xsl:if>
+																		<fo:block font-size="{$font_size}" font-weight="bold" margin-top="6pt" role="H2">
+																			<xsl:apply-templates select="/iso:iso-standard/iso:bibdata/iso:title[@language = $lang and @type = 'title-add']/node()"/>
+																		</fo:block>
+																	</xsl:when>
+																	<xsl:otherwise>
+																		<xsl:if test="not($stage-abbreviation = 'FDAMD' or $stage-abbreviation = 'FDAM')">
+																			<xsl:for-each select="xalan:nodeset($lang_other)/lang">
+																				<xsl:variable name="lang_other" select="."/>
+																				
+																				<fo:block font-size="12pt" role="SKIP"><xsl:value-of select="$linebreak"/></fo:block>
+																				<fo:block font-size="11pt" font-style="italic" line-height="1.1" role="H1">
+																					<xsl:if test="$layoutVersion = '1989'">
+																						<xsl:attribute name="font-size">10pt</xsl:attribute>
+																					</xsl:if>
+																					<!-- Example: title-intro fr -->
+																					<xsl:call-template name="insertTitlesLangOther">
+																						<xsl:with-param name="lang_other" select="$lang_other"/>
+																					</xsl:call-template>
+																				</fo:block>
+																			</xsl:for-each>
+																		</xsl:if>
+																		
+																	</xsl:otherwise>
+																</xsl:choose>
 																
 																<xsl:if test="$stage-abbreviation = 'NWIP' or $stage-abbreviation = 'NP' or $stage-abbreviation = 'PWI' or $stage-abbreviation = 'AWI' or $stage-abbreviation = 'WD' or $stage-abbreviation = 'CD' or $stage-abbreviation = 'FDIS' or $stagename_abbreviation = 'FDIS'">
 																	<fo:block margin-top="10mm">
@@ -2598,7 +2687,7 @@
 										</fo:block>
 									</fo:block-container>
 								</fo:flow>
-						</xsl:otherwise>
+							</xsl:otherwise>
 						</xsl:choose>
 						
 						
@@ -3500,8 +3589,16 @@
 					<xsl:if test="following-sibling::*[1][self::iso:p][starts-with(@class, 'zzSTDTitle')]">
 						<xsl:attribute name="margin-bottom">0pt</xsl:attribute>
 					</xsl:if>
+					<xsl:if test="$doctype = 'addendum'">
+						<xsl:attribute name="margin-bottom">0pt</xsl:attribute>
+					</xsl:if>
 					<xsl:apply-templates />
 				</fo:block>
+				<xsl:if test="$doctype = 'addendum'">
+					<fo:block font-size="12pt" font-weight="bold" role="H2" line-height="1.05" margin-top="6pt" margin-bottom="40pt">
+						<xsl:call-template name="printAddendumTitle"/>
+					</fo:block>
+				</xsl:if>
 			</xsl:when>
 			<xsl:otherwise>
 				<fo:block font-size="18pt" font-weight="bold" margin-top="40pt" margin-bottom="20pt" line-height="1.1" role="H1">
@@ -3748,7 +3845,7 @@
 			</xsl:when>
 			<xsl:when test="$layoutVersion = '1972' or $layoutVersion = '1979' or $layoutVersion = '1987'">
 				<xsl:if test="@id = 'boilerplate-place'">
-						<fo:block margin-top="6pt"><xsl:if test="$layoutVersion = '1987' and $doctype = 'technical-report'"><xsl:attribute name="margin-top">0</xsl:attribute></xsl:if>&#xa0;</fo:block>
+						<fo:block margin-top="6pt"><xsl:if test="(($layoutVersion = '1987' and $doctype = 'technical-report') or ($layoutVersion = '1979' and $doctype = 'addendum'))"><xsl:attribute name="margin-top">0</xsl:attribute></xsl:if>&#xa0;</fo:block>
 				</xsl:if>
 				<fo:block><xsl:apply-templates /></fo:block>
 			</xsl:when>
@@ -3844,7 +3941,7 @@
 						<xsl:otherwise>9pt</xsl:otherwise>
 					</xsl:choose>
 				</xsl:when>
-				<xsl:when test="$layoutVersion = '1987' and $doctype = 'technical-report'">
+				<xsl:when test="(($layoutVersion = '1987' and $doctype = 'technical-report') or ($layoutVersion = '1979' and $doctype = 'addendum'))">
 					<xsl:choose>
 						<xsl:when test="$level = 1">11pt</xsl:when>
 						<xsl:when test="$level = 2">10pt</xsl:when>
@@ -3896,7 +3993,7 @@
 		</xsl:variable>
 		
 		<xsl:choose>
-			<xsl:when test="$layoutVersion = '1987' and $doctype = 'technical-report' and parent::iso:foreword"><!-- skip Foreword title --></xsl:when>
+			<xsl:when test="(($layoutVersion = '1987' and $doctype = 'technical-report') or ($layoutVersion = '1979' and $doctype = 'addendum')) and parent::iso:foreword"><!-- skip Foreword title --></xsl:when>
 			<xsl:when test="$doctype = 'amendment' and not(ancestor::iso:preface)">
 				<fo:block font-size="11pt" font-style="italic" margin-bottom="12pt" keep-with-next="always" role="H{$level}">
 					<!-- <xsl:if test="$layoutVersion = '2024'">
@@ -3909,7 +4006,7 @@
 			
 			<xsl:otherwise>
 			
-				<xsl:if test="$layoutVersion = '1987' and $doctype = 'technical-report' and parent::iso:introduction">
+				<xsl:if test="(($layoutVersion = '1987' and $doctype = 'technical-report') or ($layoutVersion = '1979' and $doctype = 'addendum')) and parent::iso:introduction">
 					<fo:block span="all" text-align="center" margin-top="15mm" keep-with-previous="always" role="SKIP">
 						<fo:leader leader-pattern="rule" leader-length="12%"/>
 					</fo:block>
@@ -3936,7 +4033,7 @@
 							<xsl:when test="$layoutVersion = '1951' and ancestor::iso:preface and $level = 1">20mm</xsl:when>
 							<xsl:when test="$layoutVersion = '1951' and $level = 1 and $revision_date_num &gt;= 19680101">12pt</xsl:when>
 							<xsl:when test="ancestor::iso:introduction and $level &gt;= 2 and ../preceding-sibling::iso:clause">30pt</xsl:when>
-							<xsl:when test="$layoutVersion = '1987' and $doctype = 'technical-report' and ancestor::iso:preface and $level = 1">10mm</xsl:when>
+							<xsl:when test="(($layoutVersion = '1987' and $doctype = 'technical-report') or ($layoutVersion = '1979' and $doctype = 'addendum')) and ancestor::iso:preface and $level = 1">10mm</xsl:when>
 							<xsl:when test="($layoutVersion = '1972' or $layoutVersion = '1979' or $layoutVersion = '1987' or ($layoutVersion = '1989' and $revision_date_num &lt;= 19981231)) and ancestor::iso:preface and $level = 1">62mm</xsl:when>
 							<xsl:when test="$layoutVersion = '1972' and $level = 1">30pt</xsl:when>
 							<xsl:when test="$layoutVersion = '1989' and ancestor::iso:preface and $level = 1">56pt</xsl:when>
@@ -4636,7 +4733,7 @@
 		</xsl:call-template>
 		<xsl:choose>
 			<xsl:when test="$layoutVersion = '1951'"></xsl:when>
-			<xsl:when test="not($layoutVersion = '1987' and $doctype = 'technical-report') and $insert_header_first = 'true'">
+			<xsl:when test="not((($layoutVersion = '1987' and $doctype = 'technical-report') or ($layoutVersion = '1979' and $doctype = 'addendum'))) and $insert_header_first = 'true'">
 				<xsl:call-template name="insertHeaderFirst"/>
 			</xsl:when>
 		</xsl:choose>
