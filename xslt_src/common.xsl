@@ -1837,6 +1837,9 @@
 			<xsl:if test="starts-with(@id, 'array_')">
 				<xsl:attribute name="margin-top">6pt</xsl:attribute>
 			</xsl:if>
+			<xsl:if test="$layoutVersion = '1951'">
+				<xsl:attribute name="font-size">inherit</xsl:attribute>
+			</xsl:if>
 			<xsl:if test="$layoutVersion = '1972' or $layoutVersion = '1979' or $layoutVersion = '1987' or $layoutVersion = '1989'">
 				<xsl:if test="normalize-space(@width) != 'text-width'">
 					<xsl:attribute name="span">all</xsl:attribute>
@@ -2220,6 +2223,9 @@
 		<xsl:if test="$namespace = 'iso'">
 			<xsl:if test="$continued = 'true'">
 				<xsl:attribute name="margin-bottom">2pt</xsl:attribute>
+			</xsl:if>
+			<xsl:if test="$layoutVersion = '1951'">
+				<xsl:attribute name="font-size">inherit</xsl:attribute>
 			</xsl:if>
 			<xsl:if test="$layoutVersion = '1972' or $layoutVersion = '1979' or $layoutVersion = '1987' or $layoutVersion = '1989'">
 				<xsl:attribute name="font-size">10pt</xsl:attribute>
@@ -3756,6 +3762,11 @@
 		</xsl:if>
 		
 		<xsl:if test="$namespace = 'iso'">
+			<xsl:if test="$layoutVersion = '1951'">
+				<!-- <xsl:if test="$revision_date_num &lt; 19680101"> -->
+					<xsl:attribute name="font-size">8.5pt</xsl:attribute>
+				<!-- </xsl:if> -->
+			</xsl:if>
 			<xsl:if test="$layoutVersion = '1972' or $layoutVersion = '1979' or $layoutVersion = '1987' or $layoutVersion = '1989'">
 				<xsl:attribute name="font-size">9pt</xsl:attribute>
 			</xsl:if>
@@ -3864,6 +3875,11 @@
 		</xsl:if>
 		<xsl:if test="$namespace = 'iso'">
 			<xsl:variable name="note_name" select="*[local-name() = 'name']"/>
+			<xsl:if test="$layoutVersion = '1951'">
+				<xsl:if test="$revision_date_num"> <!--  &lt; 19610101 -->
+					<xsl:attribute name="padding-right">0mm</xsl:attribute>
+				</xsl:if>
+			</xsl:if>
 			<xsl:if test="$layoutVersion = '1987'">
 				<xsl:attribute name="padding-right">1mm</xsl:attribute>
 				<xsl:if test="not(translate($note_name,'0123456789','') = $note_name)"> <!-- NOTE with number -->
@@ -5463,6 +5479,11 @@
 			</xsl:if>
 		</xsl:if>
 		<xsl:if test="$namespace = 'iso'">
+			<xsl:if test="$layoutVersion = '1951'">
+				<xsl:if test="$revision_date_num &gt;= 19680101">
+					<xsl:attribute name="font-size">9pt</xsl:attribute>
+				</xsl:if>
+			</xsl:if>
 			<xsl:if test="$layoutVersion = '1972' or $layoutVersion = '1979' or $layoutVersion = '1987' or $layoutVersion = '1989'">
 				<xsl:attribute name="font-size">9pt</xsl:attribute>
 			</xsl:if>
@@ -7664,6 +7685,9 @@
 								$namespace = 'rsd'">
 					<fo:table table-layout="fixed" width="100%" xsl:use-attribute-sets="table-container-style">
 						<xsl:if test="$namespace = 'iso'">
+							<xsl:if test="$layoutVersion = '1951'">
+								<xsl:attribute name="font-size">inherit</xsl:attribute>
+							</xsl:if>
 							<xsl:if test="$layoutVersion = '2024'">
 								<xsl:attribute name="margin-top">12pt</xsl:attribute>
 								<xsl:attribute name="margin-bottom">2pt</xsl:attribute>
@@ -9003,14 +9027,27 @@
 			</xsl:choose>
 		</xsl:variable>
 		<xsl:variable name="current_fn_number_text">
-			<xsl:value-of select="$current_fn_number"/>
+			<xsl:choose>
+				<xsl:when test="$namespace = 'iso'">
+					<xsl:choose>
+						<xsl:when test="$layoutVersion = '1951' and translate($current_fn_number, '0123456789', '') = ''">
+							<!-- replace number to asterisks -->
+							<xsl:call-template name="repeat">
+								<xsl:with-param name="char" select="'*'"/>
+								<xsl:with-param name="count" select="$current_fn_number"/>
+							</xsl:call-template>
+						</xsl:when>
+						<xsl:otherwise><xsl:value-of select="$current_fn_number"/><xsl:text>)</xsl:text></xsl:otherwise>
+					</xsl:choose>
+				</xsl:when>
+				<xsl:otherwise>
+					<xsl:value-of select="$current_fn_number"/>
+				</xsl:otherwise>
+			</xsl:choose>
 			<xsl:if test="$namespace = 'bsi'">
 				<xsl:if test="$document_type = 'PAS'">
 					<xsl:text>)</xsl:text>
 				</xsl:if>
-			</xsl:if>
-			<xsl:if test="$namespace = 'iso'">
-				<xsl:text>)</xsl:text>
 			</xsl:if>
 			<xsl:if test="$namespace = 'jis'">
 				<fo:inline font-weight="normal">)</fo:inline>
@@ -10819,13 +10856,24 @@
 		</fo:inline>
 	</xsl:template>
 	
-	<xsl:template match="text()[ancestor::*[local-name()='smallcap']]">
+	<xsl:template match="text()[ancestor::*[local-name()='smallcap']]" name="smallcaps">
+		<xsl:param name="txt"/>
 		<!-- <xsl:variable name="text" select="normalize-space(.)"/> --> <!-- https://github.com/metanorma/metanorma-iso/issues/1115 -->
-		<xsl:variable name="text" select="."/>
+		<xsl:variable name="text">
+			<xsl:choose>
+				<xsl:when test="$txt != ''">
+					<xsl:value-of select="$txt"/>
+				</xsl:when>
+				<xsl:otherwise>
+					<xsl:value-of select="."/>
+				</xsl:otherwise>
+			</xsl:choose>
+		</xsl:variable>
 		<xsl:variable name="ratio_">
 			<xsl:choose>
 				<xsl:when test="$namespace = 'iso'">
 					<xsl:choose>
+						<xsl:when test="$layoutVersion = '1951'">0.9</xsl:when>
 						<xsl:when test="$layoutVersion = '2024'">0.8</xsl:when>
 						<xsl:otherwise>0.75</xsl:otherwise>
 					</xsl:choose>
@@ -12775,13 +12823,25 @@
 			</xsl:if>
 		</xsl:if>
 		<xsl:if test="$namespace = 'iso'">
-			<xsl:if test="$layoutVersion = '1987'">
+			<xsl:if test="$layoutVersion = '1951' or $layoutVersion = '1987'">
 				<xsl:if test="following-sibling::*[1][self::iso:note] and not(preceding-sibling::*[1][self::iso:note])">
 					<!-- NOTES -->
 					<fo:block font-size="9.5pt" keep-with-next="always" margin-bottom="6pt" text-transform="uppercase">
-						<xsl:call-template name="getLocalizedString">
-							<xsl:with-param name="key">Note.pl</xsl:with-param>
-						</xsl:call-template>
+						<xsl:variable name="i18n_notes">
+							<xsl:call-template name="getLocalizedString">
+								<xsl:with-param name="key">Note.pl</xsl:with-param>
+							</xsl:call-template>
+						</xsl:variable>
+						<xsl:choose>
+							<xsl:when test="$layoutVersion = '1951'">
+								<xsl:call-template name="smallcaps">
+									<xsl:with-param name="txt" select="$i18n_notes"/>
+								</xsl:call-template>
+							</xsl:when>
+							<xsl:otherwise>
+								<xsl:value-of select="$i18n_notes"/>
+							</xsl:otherwise>
+						</xsl:choose>
 					</fo:block>
 				</xsl:if>
 			</xsl:if>
@@ -15483,11 +15543,16 @@
 				<xsl:choose>			
 					<xsl:when test="$namespace = 'bsi' or 
 														$namespace = 'iho' or 
-														$namespace = 'iso' or 
 														$namespace = 'jcgm' or 
 														$namespace = 'm3d' or
 														$namespace = 'ogc' or 
 														$namespace = 'rsd'">inline</xsl:when> <!-- display first Example paragraph on the same line as EXAMPLE title -->
+					<xsl:when test="$namespace = 'iso'">
+						<xsl:choose>
+							<xsl:when test="$layoutVersion = '1951' and $revision_date_num &lt; 19610101">list</xsl:when>
+							<xsl:otherwise>inline</xsl:otherwise>
+						</xsl:choose>
+					</xsl:when>
 					<xsl:when test="$namespace = 'iec'">
 						<xsl:choose>
 							<!-- if example contains only one (except 'name') element (paragraph for example), then display it on the same line as EXAMPLE title -->
@@ -15532,18 +15597,22 @@
 					
 					<xsl:when test="contains(normalize-space($fo_element), 'list')">
 					
-						<xsl:variable name="provisional_distance_between_starts">
+						<xsl:variable name="provisional_distance_between_starts_">
 							<xsl:choose>
+								<xsl:when test="$namespace = 'iso'">45</xsl:when>
 								<xsl:when test="$namespace = 'jis'"><xsl:value-of select="10 + $text_indent"/></xsl:when>
 								<xsl:otherwise>7</xsl:otherwise>
 							</xsl:choose>
 						</xsl:variable>
-						<xsl:variable name="indent">
+						<xsl:variable name="provisional_distance_between_starts" select="normalize-space($provisional_distance_between_starts_)"/>
+						<xsl:variable name="indent_">
 							<xsl:choose>
+								<xsl:when test="$namespace = 'iso'">28</xsl:when>
 								<xsl:when test="$namespace = 'jis'"><xsl:value-of select="$text_indent"/></xsl:when>
 								<xsl:otherwise>0</xsl:otherwise>
 							</xsl:choose>
 						</xsl:variable>
+						<xsl:variable name="indent" select="normalize-space($indent_)"/>
 					
 						<fo:list-block provisional-distance-between-starts="{$provisional_distance_between_starts}mm">
 							<fo:list-item>
@@ -15632,7 +15701,18 @@
 		
 		<xsl:variable name="num"><xsl:number/></xsl:variable>
 		<xsl:variable name="element">
-			<xsl:if test="$namespace = 'iso' or $namespace = 'jcgm' or $namespace = 'rsd'">
+			<xsl:if test="$namespace = 'iso'">
+				<xsl:choose>
+					<xsl:when test="$num = 1 and not(contains($fo_element, 'block'))">inline</xsl:when>
+					<xsl:otherwise>
+						<xsl:choose>
+							<xsl:when test="$layoutVersion = '1951' and $revision_date_num &lt; 19610101">list</xsl:when>
+							<xsl:otherwise>block</xsl:otherwise>
+						</xsl:choose>
+					</xsl:otherwise>
+				</xsl:choose>
+			</xsl:if>
+			<xsl:if test="$namespace = 'jcgm' or $namespace = 'rsd'">
 				<xsl:choose>
 					<xsl:when test="$num = 1 and not(contains($fo_element, 'block'))">inline</xsl:when>
 					<xsl:otherwise>block</xsl:otherwise>
@@ -16021,7 +16101,14 @@
 				</xsl:choose>
 			</xsl:if>
 			<xsl:if test="$namespace = 'ieee'">1</xsl:if>
-			<xsl:if test="$namespace = 'iso' or $namespace = 'jcgm'">
+			<xsl:if test="$namespace = 'iso'">
+				<xsl:choose>
+					<xsl:when test="$layoutVersion = '1951'">2</xsl:when>
+					<xsl:when test="$depth = 2">3</xsl:when>
+					<xsl:otherwise>4</xsl:otherwise>
+				</xsl:choose>
+			</xsl:if>
+			<xsl:if test=" $namespace = 'jcgm'">
 				<xsl:choose>
 					<xsl:when test="$depth = 2">3</xsl:when>
 					<xsl:otherwise>4</xsl:otherwise>
@@ -16561,7 +16648,14 @@
 				<label level="3" font-size="75%">o</label> <!-- white circle -->
 			</xsl:when>
 			<xsl:when test="$namespace = 'iso'">
-				<label>&#x2014;</label> <!-- em dash -->
+				<xsl:choose>
+					<xsl:when test="$layoutVersion = '1951'">
+						<label>&#x2013;</label> <!-- en dash -->
+					</xsl:when>
+					<xsl:otherwise>
+						<label>&#x2014;</label> <!-- em dash -->
+					</xsl:otherwise>
+				</xsl:choose>
 			</xsl:when>
 			<xsl:when test="$namespace = 'jcgm'">
 				<label level="1">&#x2014;</label> <!-- em dash -->
@@ -16671,13 +16765,18 @@
 			</xsl:when>
 			<xsl:when test="local-name(..) = 'ol' and @label"> <!-- for ordered lists 'ol', and if there is @label, for instance label="1.1.2" -->
 				
-				<xsl:variable name="label">
+				<xsl:variable name="type" select="../@type"/>
 				
-					<xsl:variable name="type" select="../@type"/>
+				<xsl:variable name="label">
 					
 					<xsl:variable name="style_prefix_">
 						<xsl:if test="$type = 'roman'">
 							<xsl:if test="$namespace = 'bipm'">(</xsl:if> <!-- Example: (i) -->
+						</xsl:if>
+						<xsl:if test="$type = 'alphabet'">
+							<xsl:if test="$namespace = 'iso'">
+								<xsl:if test="$layoutVersion = '1951'">(</xsl:if> <!-- Example: (a) -->
+							</xsl:if>
 						</xsl:if>
 					</xsl:variable>
 					<xsl:variable name="style_prefix" select="normalize-space($style_prefix_)"/>
@@ -16717,13 +16816,28 @@
 					<xsl:if test="$style_prefix != '' and not(starts-with(@label, $style_prefix))">
 						<xsl:value-of select="$style_prefix"/>
 					</xsl:if>
+					
 					<xsl:value-of select="@label"/>
+					
 					<xsl:if test="not(java:endsWith(java:java.lang.String.new(@label),$style_suffix))">
 						<xsl:value-of select="$style_suffix"/>
 					</xsl:if>
 				</xsl:variable>
 				
-				<xsl:value-of select="normalize-space($label)"/>
+				
+				<xsl:choose>
+					<xsl:when test="$namespace = 'iso'">
+						<xsl:choose>
+							<xsl:when test="$layoutVersion = '1951' and $type = 'alphabet'">(<fo:inline font-style="italic"><xsl:value-of select="@label"/></fo:inline>)</xsl:when>
+							<xsl:otherwise>
+								<xsl:value-of select="normalize-space($label)"/>
+							</xsl:otherwise>
+						</xsl:choose>
+					</xsl:when>
+					<xsl:otherwise>
+						<xsl:value-of select="normalize-space($label)"/>
+					</xsl:otherwise>
+				</xsl:choose>
 				
 			</xsl:when>
 			<xsl:otherwise> <!-- for ordered lists 'ol' -->
@@ -16842,6 +16956,39 @@
 			</xsl:when>
 			<xsl:otherwise>
 				<xsl:choose>
+					<xsl:when test="$namespace = 'iso'">
+						<xsl:choose>
+							<xsl:when test="$layoutVersion = '1951' and local-name() = 'ul'">
+								<fo:block-container margin-left="8mm">
+									<xsl:if test="ancestor::*[local-name() = 'sections' or local-name() = 'annex']">
+										<xsl:variable name="level">
+											<xsl:for-each select="ancestor::*[1]">
+												<xsl:call-template name="getLevel"/>
+											</xsl:for-each>
+										</xsl:variable>
+										<!-- 5 + 6 (from list-block provisional-distance-between-starts) mm -->
+										<xsl:attribute name="margin-left">
+											<xsl:value-of select="5 + (($level - 1) * 6)"/>mm
+										</xsl:attribute>
+									</xsl:if>
+									<fo:block-container margin-left="0">
+										<fo:block role="SKIP">
+											<xsl:apply-templates select="." mode="list">
+												<xsl:with-param name="indent" select="$indent"/>
+											</xsl:apply-templates>
+										</fo:block>
+									</fo:block-container>
+								</fo:block-container>
+							</xsl:when>
+							<xsl:otherwise>
+								<fo:block role="SKIP">
+									<xsl:apply-templates select="." mode="list">
+										<xsl:with-param name="indent" select="$indent"/>
+									</xsl:apply-templates>
+								</fo:block>
+							</xsl:otherwise>
+						</xsl:choose>
+					</xsl:when>
 					<xsl:when test="$namespace = 'jis'">
 						<fo:block-container role="SKIP">
 							<xsl:if test="ancestor::jis:ol or ancestor::jis:ul">
@@ -16968,6 +17115,13 @@
 				<xsl:attribute name="provisional-distance-between-starts">5mm</xsl:attribute>
 			</xsl:if>
 		</xsl:if>
+		
+		<xsl:if test="$namespace = 'iso'">
+			<xsl:if test="$layoutVersion = '1951' and local-name() = 'ul'">
+				<xsl:attribute name="provisional-distance-between-starts">5mm</xsl:attribute>
+			</xsl:if>
+		</xsl:if>
+		
 		<xsl:if test="$namespace = 'gb' or $namespace = 'm3d' or $namespace = 'mpfd'">
 			<xsl:if test="local-name() = 'ol'">
 				<xsl:attribute name="provisional-distance-between-starts">7mm</xsl:attribute>
