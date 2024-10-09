@@ -97,7 +97,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        flavor: [csa, cc, iec, ieee, iho, iso, itu, jis, m3aawg, ogc, plateau, ribose, un] # gb, mpfa, 
+        flavor: [csa, cc, iec, ieee, iho, iso, itu, jis, ogc, plateau, ribose] # gb, mpfa, m3aawg, un
         include:
           - flavor: bipm
             prefix: '{bipm,jcgm}'
