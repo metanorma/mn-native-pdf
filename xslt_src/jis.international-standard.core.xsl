@@ -66,6 +66,9 @@
 		</xsl:for-each>
 	</xsl:variable>
 
+	<xsl:variable name="pageWidthA5">148</xsl:variable>
+	<xsl:variable name="pageHeightA5">210</xsl:variable>
+
 	<xsl:template match="/">
 	
 		<fo:root xmlns:fo="http://www.w3.org/1999/XSL/Format" xml:lang="{$lang}">
@@ -87,7 +90,15 @@
 					<fo:region-start region-name="left-region" extent="22mm"/>
 					<fo:region-end region-name="right-region" extent="22mm"/>
 				</fo:simple-page-master>
-			
+				
+				<fo:simple-page-master master-name="cover-page_2024" page-width="{$pageWidthA5}mm" page-height="{$pageHeightA5}mm">
+					<fo:region-body margin-top="58mm" margin-bottom="12.8mm" margin-left="20mm" margin-right="17mm"/>
+					<fo:region-before region-name="header" extent="58mm"/>
+					<fo:region-after region-name="footer" extent="12.8mm"/>
+					<fo:region-start region-name="left-region" extent="20mm"/>
+					<fo:region-end region-name="right-region" extent="17mm"/>
+				</fo:simple-page-master>
+		
 				<fo:simple-page-master master-name="first_page" page-width="{$pageWidth}mm" page-height="{$pageHeight}mm">
 					<xsl:if test="$vertical_layout = 'true'">
 						<xsl:attribute name="page-width"><xsl:value-of select="$pageHeight"/>mm</xsl:attribute>
@@ -311,10 +322,19 @@
 					<xsl:variable name="title_ja" select="/*/jis:bibdata/jis:title[@language = 'ja' and @type = 'main']"/>
 					<xsl:variable name="title_en" select="/*/jis:bibdata/jis:title[@language = 'en' and @type = 'main']"/>
 				
-					<xsl:call-template name="insertCoverPage">
-						<xsl:with-param name="num" select="$num"/>
-						<xsl:with-param name="copyrightText" select="$copyrightText"/>
-					</xsl:call-template>
+					<xsl:choose>
+						<xsl:when test="$vertical_layout = 'true'">
+							<xsl:call-template name="insertCoverPage2024">
+								<xsl:with-param name="num" select="$num"/>
+							</xsl:call-template>
+						</xsl:when>
+						<xsl:otherwise>
+							<xsl:call-template name="insertCoverPage">
+								<xsl:with-param name="num" select="$num"/>
+								<xsl:with-param name="copyrightText" select="$copyrightText"/>
+							</xsl:call-template>
+						</xsl:otherwise>
+					</xsl:choose>
 										
 					<xsl:call-template name="insertInnerCoverPage">
 						<xsl:with-param name="docidentifier" select="$docidentifier"/>
@@ -796,6 +816,151 @@
 			</fo:flow>
 		</fo:page-sequence>
 	</xsl:template> <!-- insertCoverPage -->
+	
+	<xsl:template name="insertCoverPage2024">
+		<xsl:param name="num"/>
+		<fo:page-sequence master-reference="cover-page_2024" force-page-count="no-force">
+			
+			
+			
+			<xsl:variable name="cover_page_background_1_value" select="normalize-space(//jis:jis-standard/jis:metanorma-extension/jis:presentation-metadata/jis:color-cover-page-background-1)"/>
+			<xsl:variable name="cover_page_background_1_">
+				<xsl:value-of select="$cover_page_background_1_value"/>
+				<xsl:if test="$cover_page_background_1_value = ''">#00063F</xsl:if>
+			</xsl:variable>
+			<xsl:variable name="cover_page_background_1" select="normalize-space($cover_page_background_1_)"/>
+			
+			<xsl:variable name="cover_page_background_2_value" select="normalize-space(//jis:jis-standard/jis:metanorma-extension/jis:presentation-metadata/jis:color-cover-page-background-2)"/>
+			<xsl:variable name="cover_page_background_2_">
+				<xsl:value-of select="$cover_page_background_2_value"/>
+				<xsl:if test="$cover_page_background_2_value = ''">#DBD6BD</xsl:if>
+			</xsl:variable>
+			<xsl:variable name="cover_page_background_2" select="normalize-space($cover_page_background_2_)"/>
+			
+			
+			<fo:static-content flow-name="header">
+				<xsl:call-template name="insertBackgroundPageImage"/>
+				
+				<!-- vertical bar -->
+				<xsl:call-template name="insertBackgroundColor">
+					<xsl:with-param name="opacity">0.58</xsl:with-param>
+					<xsl:with-param name="color_background" select="$cover_page_background_1"/>
+					<xsl:with-param name="width">20mm</xsl:with-param>
+					<xsl:with-param name="absolute_position">true</xsl:with-param>
+				</xsl:call-template>
+				
+				<!-- vertical bar -->
+				<xsl:call-template name="insertBackgroundColor">
+					<xsl:with-param name="opacity">0.75</xsl:with-param>
+					<xsl:with-param name="color_background" select="$cover_page_background_2"/>
+					<xsl:with-param name="width">46.5mm</xsl:with-param>
+					<xsl:with-param name="absolute_position">true</xsl:with-param>
+					<xsl:with-param name="left">20mm</xsl:with-param>
+				</xsl:call-template>
+				
+				<!-- vertical bar -->
+				<xsl:call-template name="insertBackgroundColor">
+					<xsl:with-param name="opacity">0.75</xsl:with-param>
+					<xsl:with-param name="color_background" select="$cover_page_background_2"/>
+					<xsl:with-param name="width">10.7mm</xsl:with-param>
+					<xsl:with-param name="absolute_position">true</xsl:with-param>
+					<xsl:with-param name="left">133.8mm</xsl:with-param>
+				</xsl:call-template>
+				
+				<!-- vertical bar -->
+				<xsl:call-template name="insertBackgroundColor">
+					<xsl:with-param name="opacity">0.58</xsl:with-param>
+					<xsl:with-param name="color_background" select="$cover_page_background_1"/>
+					<xsl:with-param name="width">17mm</xsl:with-param>
+					<xsl:with-param name="absolute_position">true</xsl:with-param>
+					<xsl:with-param name="left">131mm</xsl:with-param>
+				</xsl:call-template>
+				
+			</fo:static-content>
+			
+			<fo:static-content flow-name="left-region">
+				
+	
+				<!-- JIS, JSA_logos -->
+				<fo:block-container absolute-position="fixed" left="2.4mm" top="171mm" font-size="0">
+					<fo:block id="firstpage_id_{$num}" margin-left="2mm">
+						<fo:instream-foreign-object content-width="12.1mm" fox:alt-text="JIS Logo">
+							<xsl:copy-of select="$JIS-Logo_2024"/>
+						</fo:instream-foreign-object>
+					</fo:block>
+					<fo:block margin-top="3mm">
+						<fo:instream-foreign-object content-width="15.2mm" fox:alt-text="JSA Logo">
+							<xsl:copy-of select="$JSA-Logo_2024"/>
+						</fo:instream-foreign-object>
+					</fo:block>
+				</fo:block-container>
+			</fo:static-content>
+			
+			<fo:static-content flow-name="right-region">
+				<fo:block-container>
+					<fo:block>A</fo:block>
+				</fo:block-container>
+			
+			</fo:static-content>
+			
+			<fo:flow flow-name="xsl-region-body">
+			
+				<fo:block-container text-align="center">
+					<!-- title -->
+					<fo:block role="H1" font-family="IPAexGothic" font-size="22pt" margin-top="27mm"><xsl:apply-templates select="/*/jis:bibdata/jis:title[@language = 'ja' and @type = 'main']/node()"/></fo:block>
+					
+					<fo:block font-family="IPAexGothic" font-size="20pt" margin-top="15mm">
+						<fo:inline font-family="Arial">JIS <xsl:value-of select="$docidentifier_number"/></fo:inline>
+						<fo:inline baseline-shift="20%"><fo:inline font-size="10pt">：</fo:inline>
+						<fo:inline font-family="Times New Roman" font-size="10pt"><xsl:value-of select="$docidentifier_year"/></fo:inline></fo:inline>
+					</fo:block>
+					<fo:block font-family="Arial" font-size="14pt" margin-top="12mm">
+						<fo:inline font-family="IPAexMincho">（</fo:inline>
+						<!-- JSA -->
+						<xsl:value-of select="/*/jis:bibdata/jis:copyright/jis:owner/jis:organization/jis:abbreviation"/>
+						<fo:inline font-family="IPAexMincho">）</fo:inline></fo:block>
+				</fo:block-container>
+				
+				<fo:block-container absolute-position="fixed" left="0mm" top="200mm" height="69mm" text-align="center" display-align="after" font-family="IPAexMincho">
+					<!-- Revised on July 22, 2019 -->
+					<!-- <fo:block font-size="9pt">令和元年<fo:inline font-family="Times New Roman"> 7 </fo:inline>月<fo:inline font-family="Times New Roman"> 22 </fo:inline>日 改正</fo:block> -->
+					<fo:block font-size="9pt"><xsl:apply-templates select="/*/jis:bibdata/jis:date[@type = 'published']/text()"/> 改正</fo:block>
+					<!-- Japan Industrial Standards Survey Council deliberations -->
+					<!-- 日本産業標準調査会 -->
+					<fo:block font-size="14pt" margin-top="7mm"><xsl:value-of select="/*/jis:bibdata/jis:contributor[jis:role/@type = 'authorizer']/jis:organization/jis:name/jis:variant[@language = 'ja']"/> 審議</fo:block>
+					<!-- (Issued by the Japan Standards Association) -->
+					<!-- 日本規格協会 -->
+					<fo:block font-size="9pt" margin-top="6.5mm">（<xsl:value-of select="/*/jis:bibdata/jis:contributor[jis:role/@type = 'publisher']/jis:organization/jis:name/jis:variant[@language = 'ja']"/> 発行）</fo:block>
+				</fo:block-container>
+			</fo:flow>
+		</fo:page-sequence>
+	</xsl:template> <!-- insertCoverPage2024 -->
+	
+	<xsl:template name="insertBackgroundColor">
+		<xsl:param name="opacity">1</xsl:param>
+		<xsl:param name="color_background">#ffffff</xsl:param>
+		<xsl:param name="width">20mm</xsl:param>
+		<xsl:param name="absolute_position">false</xsl:param>
+		<xsl:param name="left"/>
+		
+		<!-- background color -->
+		<fo:block-container font-size="0"> <!-- absolute-position="fixed" left="0" top="0"  -->
+			<xsl:if test="$absolute_position = 'true'">
+				<xsl:attribute name="absolute-position">fixed</xsl:attribute>
+				<xsl:attribute name="top">0</xsl:attribute>
+			</xsl:if>
+			<xsl:if test="normalize-space($left) != ''">
+				<xsl:attribute name="left"><xsl:value-of select="$left"/></xsl:attribute>
+			</xsl:if>
+			<fo:block>
+				<fo:instream-foreign-object content-height="{$pageHeight}mm" fox:alt-text="Background color">
+					<svg xmlns="http://www.w3.org/2000/svg" version="1.0" width="{$width}" height="{$pageHeight}mm">
+						<rect width="{$pageWidth}mm" height="{$pageHeight}mm" style="fill:{$color_background};stroke-width:0;fill-opacity:{$opacity}"/>
+					</svg>
+				</fo:instream-foreign-object>
+			</fo:block>
+		</fo:block-container>
+	</xsl:template>
 	
 	<xsl:template name="insertInnerCoverPage">
 		<xsl:param name="docidentifier"/>
@@ -1830,6 +1995,39 @@
 					 style="display:inline;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:0.352778"
 					 id="path364" />
 			</g>
+		</svg>
+	</xsl:variable>
+	
+	<xsl:variable name="JIS-Logo_2024">
+		<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 34.29 34.29">
+			<defs>
+				<style>
+					.cls-1 {
+						fill: #fff;
+						stroke-width: 0px;
+					}
+				</style>
+			</defs>
+			<path class="cls-1" d="m6.72,27.57c5.76,5.76,15.09,5.76,20.85,0,5.76-5.76,5.76-15.09,0-20.85C21.81.96,12.48.96,6.72,6.72c-3.28,3.28-4.82,7.91-4.17,12.5.26,1.84,1.97,3.13,3.81,2.86,1.66-.24,2.9-1.66,2.9-3.34v-9.32h3.09v9.32c0,3.38-2.74,6.11-6.11,6.11-3.03,0-5.61-2.22-6.05-5.23C-1.19,10.27,5.29,1.56,14.66.18c9.37-1.38,18.08,5.11,19.45,14.47,1.38,9.37-5.1,18.08-14.47,19.45-5.36.79-10.78-1.01-14.61-4.84m13.84-19.84v15.43h-3.43v-15.43m11.78,7.71c1.8,1.68,1.9,4.5.23,6.3-.84.91-2.03,1.42-3.26,1.42h-2.74v-2.74h2.23c1.04,0,1.89-.84,1.89-1.89,0-.52-.22-1.02-.6-1.38l-2.15-1.99c-1.73-1.61-1.83-4.32-.22-6.06.81-.87,1.95-1.37,3.14-1.37h2.06v2.74h-1.54c-.95,0-1.71.77-1.71,1.71,0,.48.2.93.55,1.26"/>
+		</svg>
+	</xsl:variable>
+	
+	<xsl:variable name="JSA-Logo_2024">
+		<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 43.34 25.77">
+			<defs>
+				<style>
+					.cls-1 {
+						fill: #fff;
+						stroke-width: 0px;
+					}
+				</style>
+			</defs>
+			<path class="cls-1" d="m2.01,24.08c-1.58-3.99,5.49-12.06,15.79-17.97C28.09.2,37.75-1.37,39.32,2.62c.67,1.72-.24,4.18-2.34,6.89,2.31-2.77,3.38-5.32,2.72-7.12-1.52-4.17-11.45-2.58-22.51,2.95-1.2.6-2.01,1.19-2.98,1.78-.62.37-1.29.7-1.88,1.09C4.14,13.57-1.09,19.87.19,23.39c.44,1.21,1.6,1.95,3.28,2.26-.67-.32-1.19-.88-1.47-1.56"/>
+			<polygon class="cls-1" points="32.72 6.03 32.72 23.58 43.34 23.58 32.72 6.03"/>
+			<path class="cls-1" d="m20.81,7.75c-2.34,2.17-2.48,5.83-.31,8.17.05.06.1.11.16.17l8.93-8.49c-2.54-2.2-6.33-2.14-8.78.15"/>
+			<path class="cls-1" d="m18.94,21.67c.06.06.1.11.15.16,2.47,2.29,6.28,2.29,8.75,0,2.3-2.13,2.44-5.71.31-8.01-.1-.11-.2-.21-.31-.31-.05-.05-.11-.09-.16-.14l-8.74,8.31Z"/>
+			<path class="cls-1" d="m7.09,25.77l-.32-1.1c3.44-.29,5.37-1.72,5.37-7.99v-8.32l3.81-2.3v10.62c0,6.8-5.17,9.09-8.85,9.09"/>
+			<path class="cls-1" d="m15.98,1.92c0,1.06-.86,1.92-1.92,1.92-1.06,0-1.92-.86-1.92-1.92C12.15.86,13,0,14.06,0c1.06,0,1.92.85,1.92,1.9v.02"/>
 		</svg>
 	</xsl:variable>
 	
