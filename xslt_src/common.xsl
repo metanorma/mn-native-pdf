@@ -248,7 +248,12 @@
 			</xsl:when>
 			<xsl:when test="$namespace = 'itu'">20</xsl:when>
 			<xsl:when test="$namespace = 'jcgm'">25</xsl:when>
-			<xsl:when test="$namespace = 'jis'">22</xsl:when>
+			<xsl:when test="$namespace = 'jis'">
+				<xsl:choose>
+					<xsl:when test="$vertical_layout = 'true'">19</xsl:when>
+					<xsl:otherwise>22</xsl:otherwise>
+				</xsl:choose>
+			</xsl:when>
 			<xsl:when test="$namespace = 'm3d'">17.3</xsl:when>
 			<xsl:when test="$namespace = 'mpfd'">19</xsl:when>
 			<xsl:when test="$namespace = 'nist-cswp' or $namespace = 'nist-sp'">25.4</xsl:when>
@@ -288,7 +293,12 @@
 			</xsl:when>
 			<xsl:when test="$namespace = 'itu'">20</xsl:when>
 			<xsl:when test="$namespace = 'jcgm'">15</xsl:when>
-			<xsl:when test="$namespace = 'jis'">22</xsl:when>
+			<xsl:when test="$namespace = 'jis'">
+				<xsl:choose>
+					<xsl:when test="$vertical_layout = 'true'">12</xsl:when>
+					<xsl:otherwise>22</xsl:otherwise>
+				</xsl:choose>
+			</xsl:when>
 			<xsl:when test="$namespace = 'm3d'">17.3</xsl:when>
 			<xsl:when test="$namespace = 'mpfd'">19</xsl:when>
 			<xsl:when test="$namespace = 'nist-cswp' or $namespace = 'nist-sp'">25.4</xsl:when>
@@ -326,7 +336,12 @@
 			</xsl:when>
 			<xsl:when test="$namespace = 'itu'">20</xsl:when>
 			<xsl:when test="$namespace = 'jcgm'">29.5</xsl:when>
-			<xsl:when test="$namespace = 'jis'">30</xsl:when>
+			<xsl:when test="$namespace = 'jis'">
+				<xsl:choose>
+					<xsl:when test="$vertical_layout = 'true'">9.4</xsl:when>
+					<xsl:otherwise>30</xsl:otherwise>
+				</xsl:choose>
+			</xsl:when>
 			<xsl:when test="$namespace = 'm3d'">35</xsl:when>
 			<xsl:when test="$namespace = 'mpfd'">16.5</xsl:when>
 			<xsl:when test="$namespace = 'nist-cswp' or $namespace = 'nist-sp'">25.4</xsl:when>
@@ -365,7 +380,12 @@
 			</xsl:when>
 			<xsl:when test="$namespace = 'itu'">20</xsl:when>
 			<xsl:when test="$namespace = 'jcgm'">23.5</xsl:when>
-			<xsl:when test="$namespace = 'jis'">24.5</xsl:when>
+			<xsl:when test="$namespace = 'jis'">
+				<xsl:choose>
+					<xsl:when test="$vertical_layout = 'true'">15.2</xsl:when>
+					<xsl:otherwise>24.5</xsl:otherwise>
+				</xsl:choose>
+			</xsl:when>
 			<xsl:when test="$namespace = 'm3d'">23</xsl:when>
 			<xsl:when test="$namespace = 'mpfd'">10</xsl:when>
 			<xsl:when test="$namespace = 'nist-cswp' or $namespace = 'nist-sp'">25.4</xsl:when>

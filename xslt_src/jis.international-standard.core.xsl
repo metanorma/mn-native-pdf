@@ -74,6 +74,12 @@
 		<fo:root xmlns:fo="http://www.w3.org/1999/XSL/Format" xml:lang="{$lang}">
 			<xsl:variable name="root-style">
 				<root-style xsl:use-attribute-sets="root-style">
+					<xsl:if test="$vertical_layout = 'true'">
+						<xsl:attribute name="font-family">Noto Serif JP, STIX Two Math, <xsl:value-of select="$font_noto_serif"/></xsl:attribute>
+						<xsl:attribute name="font-family-generic">Serif</xsl:attribute>
+						<xsl:attribute name="font-size">11pt</xsl:attribute>
+						<xsl:attribute name="font-weight">200</xsl:attribute>
+					</xsl:if>
 				</root-style>
 			</xsl:variable>
 			<xsl:call-template name="insertRootStyle">
@@ -190,6 +196,22 @@
 						<fo:conditional-page-master-reference odd-or-even="odd" master-reference="odd"/>
 					</fo:repeatable-page-master-alternatives>
 				</fo:page-sequence-master>
+			
+			
+				<fo:simple-page-master master-name="document2024" page-width="{$pageHeight}mm" page-height="{$pageWidth}mm">
+					<!-- Note (for writing-mode="tb-rl", may be due the update for support 'tb-rl' mode):
+					 fo:region-body/@margin-top = left margin
+					 fo:region-body/@margin-bottom = right margin
+					 fo:region-body/margin-left = bottom margin
+					 fo:region-body/margin-right = top margin
+					-->
+					<!-- <fo:region-body margin-top="{$marginTop}mm" margin-bottom="{$marginBottom}mm" margin-left="{$marginLeftRight1}mm" margin-right="{$marginLeftRight2 + 40}mm" writing-mode="tb-rl" background-color="rgb(240,240,240)"/> -->
+					<fo:region-body margin-top="{$marginLeftRight1}mm" margin-bottom="{$marginLeftRight2}mm" margin-left="{$marginBottom}mm" margin-right="{$marginTop}mm" writing-mode="tb-rl" background-color="rgb(240,240,240)"/>
+					<fo:region-before region-name="header" extent="{$marginTop}mm" background-color="yellow"/>
+					<fo:region-after region-name="footer" extent="{$marginBottom}mm" background-color="green"/>
+					<fo:region-start region-name="left-region" extent="{$marginLeftRight1}mm" background-color="blue"/>
+					<fo:region-end region-name="right-region" extent="{$marginLeftRight2}mm" background-color="red"/>
+				</fo:simple-page-master>
 			
 				<fo:simple-page-master master-name="commentary_first_page_even" page-width="{$pageWidth}mm" page-height="{$pageHeight}mm">
 					<xsl:if test="$vertical_layout = 'true'">
@@ -535,18 +557,28 @@
 						<xsl:variable name="isCommentary" select="normalize-space(.//jis:annex[@commentary = 'true'] and 1 = 1)"/> <!-- true or false -->
 						<!-- DEBUG: <xsl:copy-of select="."/> -->
 						<fo:page-sequence master-reference="document" force-page-count="no-force">
-							<xsl:if test="position() = 1">
-								<xsl:attribute name="master-reference">document_first_section</xsl:attribute>
-							</xsl:if>
-							<xsl:if test="@orientation = 'landscape'">
-								<xsl:attribute name="master-reference">document-<xsl:value-of select="@orientation"/></xsl:attribute>
-							</xsl:if>
-							<xsl:if test="$isCommentary = 'true'">
-								<xsl:attribute name="master-reference">document_commentary_section</xsl:attribute>
-							</xsl:if>
-							<xsl:if test="position() = 1">
-								<xsl:attribute name="initial-page-number">1</xsl:attribute>
-							</xsl:if>
+							
+							<xsl:choose>
+								<xsl:when test="$vertical_layout = 'true'">
+									<xsl:attribute name="master-reference">document2024</xsl:attribute>
+								</xsl:when>
+								<xsl:otherwise>
+									<xsl:if test="position() = 1">
+										<xsl:attribute name="master-reference">document_first_section</xsl:attribute>
+									</xsl:if>
+									<xsl:if test="@orientation = 'landscape'">
+										<xsl:attribute name="master-reference">document-<xsl:value-of select="@orientation"/></xsl:attribute>
+									</xsl:if>
+									<xsl:if test="$isCommentary = 'true'">
+										<xsl:attribute name="master-reference">document_commentary_section</xsl:attribute>
+									</xsl:if>
+									<xsl:if test="position() = 1">
+										<xsl:attribute name="initial-page-number">1</xsl:attribute>
+									</xsl:if>
+								</xsl:otherwise>
+							</xsl:choose>
+							
+							
 							<fo:static-content flow-name="xsl-footnote-separator">
 								<fo:block>
 									<fo:leader leader-pattern="rule" leader-length="15%"/>
@@ -572,14 +604,23 @@
 								</xsl:choose>
 							</xsl:variable>
 							
-							<xsl:call-template name="insertHeaderFooter">
-								<xsl:with-param name="docidentifier" select="$docidentifier"/>
-								<xsl:with-param name="copyrightText" select="$copyrightText"/>
-								<xsl:with-param name="section" select="$section"/>
-								<xsl:with-param name="section_title">
-									<xsl:copy-of select="$section_title"/>
-								</xsl:with-param>
-							</xsl:call-template>
+							
+							<xsl:choose>
+								<xsl:when test="$vertical_layout = 'true'">
+									<xsl:call-template name="insertLeftRightRegions">
+									</xsl:call-template>
+								</xsl:when>
+								<xsl:otherwise>
+									<xsl:call-template name="insertHeaderFooter">
+										<xsl:with-param name="docidentifier" select="$docidentifier"/>
+										<xsl:with-param name="copyrightText" select="$copyrightText"/>
+										<xsl:with-param name="section" select="$section"/>
+										<xsl:with-param name="section_title">
+											<xsl:copy-of select="$section_title"/>
+										</xsl:with-param>
+									</xsl:call-template>
+								</xsl:otherwise>
+							</xsl:choose>
 							
 							<fo:flow flow-name="xsl-region-body">
 								
@@ -1976,6 +2017,45 @@
 				</fo:block>
 			</fo:block-container>
 		</fo:static-content>
+	</xsl:template>
+	
+	<xsl:template name="insertLeftRightRegions">
+		<xsl:param name="docidentifier" />
+		<xsl:param name="hidePageNumber">false</xsl:param>
+		<xsl:param name="section"/>
+		<xsl:param name="copyrightText"/>
+		<xsl:param name="section_title"/>
+		
+		<xsl:variable name="cover_header_footer_background_value" select="normalize-space(//jis:jis-standard/jis:metanorma-extension/jis:presentation-metadata/jis:color-eader-footer-background)"/>
+		<xsl:variable name="cover_header_footer_background_">
+			<xsl:value-of select="$cover_header_footer_background_value"/>
+			<xsl:if test="$cover_header_footer_background_value = ''">#0B0968</xsl:if>
+		</xsl:variable>
+		<xsl:variable name="cover_header_footer_background" select="normalize-space($cover_header_footer_background_)"/>
+		
+		
+		
+		<fo:static-content flow-name="right-region" role="artifact">
+			<fo:block-container writing-mode="tb-rl"> <!--  -->
+				<fo:block-container font-family="Arial" font-size="9pt" height="6mm" width="{$pageHeightA5}mm" color="white" background-color="{$cover_header_footer_background}" writing-mode="lr-tb" display-align="center">
+					<fo:block margin-left="15mm">ABCDE
+					
+						<fo:inline-container writing-mode="lr-tb" text-align="center" alignment-baseline="central" reference-orientation="90" width="1em" margin="0" padding="0" text-indent="0mm" last-line-end-indent="0mm" start-indent="0mm" end-indent="0mm">
+							<fo:block-container width="1em">
+								<fo:block line-height="1em">A&#x0a;B&#x0a;C&#x0a;D&#x0a;E</fo:block>
+							</fo:block-container>
+						</fo:inline-container>
+					
+						<xsl:copy-of select="$docidentifier"/>
+					</fo:block>
+				</fo:block-container>
+			</fo:block-container>
+		</fo:static-content>
+		
+		<!-- <xsl:call-template name="insertFooter">
+			<xsl:with-param name="section" select="$section"/>
+			<xsl:with-param name="copyrightText" select="$copyrightText"/>
+		</xsl:call-template> -->
 	</xsl:template>
 	
 	<xsl:variable name="JIS-Logo">
