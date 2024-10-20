@@ -352,6 +352,13 @@
 					<xsl:variable name="title_ja" select="/*/jis:bibdata/jis:title[@language = 'ja' and @type = 'main']"/>
 					<xsl:variable name="title_en" select="/*/jis:bibdata/jis:title[@language = 'en' and @type = 'main']"/>
 				
+					<xsl:variable name="cover_header_footer_background_value" select="normalize-space(/*/jis:metanorma-extension/jis:presentation-metadata/jis:color-header-footer-background)"/>
+					<xsl:variable name="cover_header_footer_background_">
+						<xsl:value-of select="$cover_header_footer_background_value"/>
+						<xsl:if test="$cover_header_footer_background_value = ''">#0B0968</xsl:if>
+					</xsl:variable>
+					<xsl:variable name="cover_header_footer_background" select="normalize-space($cover_header_footer_background_)"/>
+					
 					<xsl:choose>
 						<xsl:when test="$vertical_layout = 'true'">
 							<xsl:call-template name="insertCoverPage2024">
@@ -616,6 +623,7 @@
 							<xsl:choose>
 								<xsl:when test="$vertical_layout = 'true'">
 									<xsl:call-template name="insertLeftRightRegions">
+										<xsl:with-param name="cover_header_footer_background" select="$cover_header_footer_background"/>
 									</xsl:call-template>
 								</xsl:when>
 								<xsl:otherwise>
@@ -2066,15 +2074,7 @@
 		<xsl:param name="section"/>
 		<xsl:param name="copyrightText"/>
 		<xsl:param name="section_title"/>
-		
-		<xsl:variable name="cover_header_footer_background_value" select="normalize-space(//jis:jis-standard/jis:metanorma-extension/jis:presentation-metadata/jis:color-eader-footer-background)"/>
-		<xsl:variable name="cover_header_footer_background_">
-			<xsl:value-of select="$cover_header_footer_background_value"/>
-			<xsl:if test="$cover_header_footer_background_value = ''">#0B0968</xsl:if>
-		</xsl:variable>
-		<xsl:variable name="cover_header_footer_background" select="normalize-space($cover_header_footer_background_)"/>
-		
-		
+		<xsl:param name="cover_header_footer_background"/>
 		
 		<fo:static-content flow-name="right-region" role="artifact">
 			<fo:block-container writing-mode="tb-rl"> <!--  -->
