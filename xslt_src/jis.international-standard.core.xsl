@@ -276,6 +276,14 @@
 					</fo:repeatable-page-master-alternatives>
 				</fo:page-sequence-master>
 			
+				<fo:simple-page-master master-name="back-page_2024" page-width="{$pageWidthA5}mm" page-height="{$pageHeightA5}mm">
+					<fo:region-body margin-top="58mm" margin-bottom="6.5mm" margin-left="8mm" margin-right="17mm"/>
+					<fo:region-before region-name="header" extent="58mm"/>
+					<fo:region-after region-name="footer" extent="6.5mm"/>
+					<fo:region-start region-name="left-region" extent="8mm"/>
+					<fo:region-end region-name="right-region" extent="17mm"/>
+				</fo:simple-page-master>
+			
 			</fo:layout-master-set>
 			
 			<fo:declarations>
@@ -693,6 +701,12 @@
 				
 				</xsl:for-each>
 			
+				<xsl:if test="$vertical_layout = 'true'">
+					<xsl:call-template name="insertBackPage2024">
+						<xsl:with-param name="num" select="$num"/>
+					</xsl:call-template>
+				</xsl:if>
+			
 			</xsl:for-each>
 			
 			<xsl:if test="not(//jis:jis-standard)">
@@ -976,6 +990,33 @@
 			</fo:flow>
 		</fo:page-sequence>
 	</xsl:template> <!-- insertCoverPage2024 -->
+	
+	<xsl:template name="insertBackPage2024">
+		<xsl:param name="num"/>
+		<fo:page-sequence master-reference="back-page_2024" force-page-count="no-force">
+
+			<fo:static-content flow-name="header">
+				<xsl:variable name="presentation_metadata_image_name">
+					<xsl:choose>
+						<xsl:when test="/*[contains(local-name(), '-standard')]/*[local-name() = 'metanorma-extension']/*[local-name() = 'presentation-metadata'][*[local-name() = 'name'] = 'backpage-image']/*[local-name() = 'value']/*[local-name() = 'image']">backpage-image</xsl:when>
+						<xsl:otherwise>coverpage-image</xsl:otherwise>
+					</xsl:choose>
+				</xsl:variable>
+				<xsl:call-template name="insertBackgroundPageImage">
+					<xsl:with-param name="name" select="$presentation_metadata_image_name"/>
+				</xsl:call-template>
+			</fo:static-content>
+			
+			<fo:flow flow-name="xsl-region-body">
+			
+				<fo:block-container text-align="center">
+					<!-- title -->
+					<fo:block role="H1" font-family="IPAexGothic" font-size="22pt" margin-top="27mm"><xsl:apply-templates select="/*/jis:bibdata/jis:title[@language = 'ja' and @type = 'main']/node()"/></fo:block>
+				</fo:block-container>
+				
+			</fo:flow>
+		</fo:page-sequence>
+	</xsl:template> <!-- insertBackPage2024 -->
 	
 	<xsl:template name="insertBackgroundColor">
 		<xsl:param name="opacity">1</xsl:param>
