@@ -276,6 +276,13 @@
 					</fo:repeatable-page-master-alternatives>
 				</fo:page-sequence-master>
 			
+				<fo:simple-page-master master-name="back-page_2024" page-width="{$pageWidthA5}mm" page-height="{$pageHeightA5}mm">
+					<fo:region-body margin-top="58mm" margin-bottom="6.5mm" margin-left="8mm" margin-right="17mm"/>
+					<fo:region-before region-name="header" extent="58mm"/>
+					<fo:region-after region-name="footer" extent="6.5mm"/>
+					<fo:region-start region-name="left-region" extent="8mm"/>
+					<fo:region-end region-name="right-region" extent="17mm"/>
+				</fo:simple-page-master>
 			</fo:layout-master-set>
 			
 			<fo:declarations>
@@ -344,6 +351,23 @@
 					<xsl:variable name="title_ja" select="/*/jis:bibdata/jis:title[@language = 'ja' and @type = 'main']"/>
 					<xsl:variable name="title_en" select="/*/jis:bibdata/jis:title[@language = 'en' and @type = 'main']"/>
 				
+					<xsl:variable name="cover_header_footer_background_value" select="normalize-space(/*/jis:metanorma-extension/jis:presentation-metadata/jis:color-header-footer-background)"/>
+					<xsl:variable name="cover_header_footer_background_">
+						<xsl:value-of select="$cover_header_footer_background_value"/>
+						<xsl:if test="$cover_header_footer_background_value = ''">#0B0968</xsl:if>
+					</xsl:variable>
+					<xsl:variable name="cover_header_footer_background" select="normalize-space($cover_header_footer_background_)"/>
+					
+					<xsl:variable name="i18n_JIS"><xsl:call-template name="getLocalizedString"><xsl:with-param name="key">JIS</xsl:with-param></xsl:call-template></xsl:variable>
+					<xsl:variable name="docidentifier_JIS_" select="/*/jis:bibdata/jis:docidentifier[@type = 'JIS']"/>
+					<xsl:variable name="docidentifier_JIS">
+						<xsl:choose>
+							<xsl:when test="contains($docidentifier_JIS_, ':')"><xsl:value-of select="substring-before($docidentifier_JIS_, ':')"/></xsl:when>
+							<xsl:otherwise><xsl:value-of select="$docidentifier_JIS_"/></xsl:otherwise>
+						</xsl:choose>
+					</xsl:variable>
+					<xsl:variable name="edition" select="/jis:jis-standard/jis:bibdata/jis:edition"/>
+					
 					<xsl:choose>
 						<xsl:when test="$vertical_layout = 'true'">
 							<xsl:call-template name="insertCoverPage2024">
@@ -608,6 +632,12 @@
 							<xsl:choose>
 								<xsl:when test="$vertical_layout = 'true'">
 									<xsl:call-template name="insertLeftRightRegions">
+										<xsl:with-param name="cover_header_footer_background" select="$cover_header_footer_background"/>
+										<xsl:with-param name="title_ja" select="$title_ja"/>
+										<xsl:with-param name="i18n_JIS" select="$i18n_JIS"/>
+										<xsl:with-param name="docidentifier" select="concat('JIS ', $docidentifier_JIS)"/>
+										<xsl:with-param name="edition" select="$edition"/>
+										<xsl:with-param name="copyrightText" select="$copyrightText"/>
 									</xsl:call-template>
 								</xsl:when>
 								<xsl:otherwise>
@@ -692,6 +722,12 @@
 					
 				
 				</xsl:for-each>
+			
+				<xsl:if test="$vertical_layout = 'true'">
+					<xsl:call-template name="insertBackPage2024">
+						<xsl:with-param name="num" select="$num"/>
+					</xsl:call-template>
+				</xsl:if>
 			
 			</xsl:for-each>
 			
@@ -862,9 +898,7 @@
 		<xsl:param name="num"/>
 		<fo:page-sequence master-reference="cover-page_2024" force-page-count="no-force">
 			
-			
-			
-			<xsl:variable name="cover_page_background_1_value" select="normalize-space(//jis:jis-standard/jis:metanorma-extension/jis:presentation-metadata/jis:color-cover-page-background-1)"/>
+			<!-- <xsl:variable name="cover_page_background_1_value" select="normalize-space(//jis:jis-standard/jis:metanorma-extension/jis:presentation-metadata/jis:color-cover-page-background-1)"/>
 			<xsl:variable name="cover_page_background_1_">
 				<xsl:value-of select="$cover_page_background_1_value"/>
 				<xsl:if test="$cover_page_background_1_value = ''">#00063F</xsl:if>
@@ -876,54 +910,54 @@
 				<xsl:value-of select="$cover_page_background_2_value"/>
 				<xsl:if test="$cover_page_background_2_value = ''">#DBD6BD</xsl:if>
 			</xsl:variable>
-			<xsl:variable name="cover_page_background_2" select="normalize-space($cover_page_background_2_)"/>
+			<xsl:variable name="cover_page_background_2" select="normalize-space($cover_page_background_2_)"/> -->
 			
 			
 			<fo:static-content flow-name="header">
 				<xsl:call-template name="insertBackgroundPageImage"/>
 				
 				<!-- vertical bar -->
-				<xsl:call-template name="insertBackgroundColor">
+				<!-- <xsl:call-template name="insertBackgroundColor">
 					<xsl:with-param name="opacity">0.58</xsl:with-param>
 					<xsl:with-param name="color_background" select="$cover_page_background_1"/>
 					<xsl:with-param name="width">20mm</xsl:with-param>
 					<xsl:with-param name="absolute_position">true</xsl:with-param>
-				</xsl:call-template>
+				</xsl:call-template> -->
 				
 				<!-- vertical bar -->
-				<xsl:call-template name="insertBackgroundColor">
+				<!-- <xsl:call-template name="insertBackgroundColor">
 					<xsl:with-param name="opacity">0.75</xsl:with-param>
 					<xsl:with-param name="color_background" select="$cover_page_background_2"/>
 					<xsl:with-param name="width">46.5mm</xsl:with-param>
 					<xsl:with-param name="absolute_position">true</xsl:with-param>
 					<xsl:with-param name="left">20mm</xsl:with-param>
-				</xsl:call-template>
+				</xsl:call-template> -->
 				
 				<!-- vertical bar -->
-				<xsl:call-template name="insertBackgroundColor">
+				<!-- <xsl:call-template name="insertBackgroundColor">
 					<xsl:with-param name="opacity">0.75</xsl:with-param>
 					<xsl:with-param name="color_background" select="$cover_page_background_2"/>
 					<xsl:with-param name="width">10.7mm</xsl:with-param>
 					<xsl:with-param name="absolute_position">true</xsl:with-param>
 					<xsl:with-param name="left">133.8mm</xsl:with-param>
-				</xsl:call-template>
+				</xsl:call-template> -->
 				
 				<!-- vertical bar -->
-				<xsl:call-template name="insertBackgroundColor">
+				<!-- <xsl:call-template name="insertBackgroundColor">
 					<xsl:with-param name="opacity">0.58</xsl:with-param>
 					<xsl:with-param name="color_background" select="$cover_page_background_1"/>
 					<xsl:with-param name="width">17mm</xsl:with-param>
 					<xsl:with-param name="absolute_position">true</xsl:with-param>
 					<xsl:with-param name="left">131mm</xsl:with-param>
-				</xsl:call-template>
+				</xsl:call-template> -->
 				
 			</fo:static-content>
 			
-			<fo:static-content flow-name="left-region">
+			<!-- <fo:static-content flow-name="left-region"> -->
 				
 	
 				<!-- JIS, JSA_logos -->
-				<fo:block-container absolute-position="fixed" left="2.4mm" top="171mm" font-size="0">
+				<!-- <fo:block-container absolute-position="fixed" left="2.4mm" top="171mm" font-size="0">
 					<fo:block id="firstpage_id_{$num}" margin-left="2mm">
 						<fo:instream-foreign-object content-width="12.1mm" fox:alt-text="JIS Logo">
 							<xsl:copy-of select="$JIS-Logo_2024"/>
@@ -935,14 +969,7 @@
 						</fo:instream-foreign-object>
 					</fo:block>
 				</fo:block-container>
-			</fo:static-content>
-			
-			<fo:static-content flow-name="right-region">
-				<fo:block-container>
-					<fo:block>A</fo:block>
-				</fo:block-container>
-			
-			</fo:static-content>
+			</fo:static-content> -->
 			
 			<fo:flow flow-name="xsl-region-body">
 			
@@ -976,6 +1003,33 @@
 			</fo:flow>
 		</fo:page-sequence>
 	</xsl:template> <!-- insertCoverPage2024 -->
+	
+	<xsl:template name="insertBackPage2024">
+		<xsl:param name="num"/>
+		<fo:page-sequence master-reference="back-page_2024" force-page-count="no-force">
+
+			<fo:static-content flow-name="header">
+				<xsl:variable name="presentation_metadata_image_name">
+					<xsl:choose>
+						<xsl:when test="/*[contains(local-name(), '-standard')]/*[local-name() = 'metanorma-extension']/*[local-name() = 'presentation-metadata'][*[local-name() = 'name'] = 'backpage-image']/*[local-name() = 'value']/*[local-name() = 'image']">backpage-image</xsl:when>
+						<xsl:otherwise>coverpage-image</xsl:otherwise>
+					</xsl:choose>
+				</xsl:variable>
+				<xsl:call-template name="insertBackgroundPageImage">
+					<xsl:with-param name="name" select="$presentation_metadata_image_name"/>
+				</xsl:call-template>
+			</fo:static-content>
+			
+			<fo:flow flow-name="xsl-region-body">
+			
+				<fo:block-container text-align="center">
+					<!-- title -->
+					<fo:block role="H1" font-family="IPAexGothic" font-size="22pt" margin-top="27mm"><xsl:apply-templates select="/*/jis:bibdata/jis:title[@language = 'ja' and @type = 'main']/node()"/></fo:block>
+				</fo:block-container>
+				
+			</fo:flow>
+		</fo:page-sequence>
+	</xsl:template> <!-- insertBackPage2024 -->
 	
 	<xsl:template name="insertBackgroundColor">
 		<xsl:param name="opacity">1</xsl:param>
@@ -2020,42 +2074,125 @@
 	</xsl:template>
 	
 	<xsl:template name="insertLeftRightRegions">
-		<xsl:param name="docidentifier" />
-		<xsl:param name="hidePageNumber">false</xsl:param>
-		<xsl:param name="section"/>
+		<xsl:param name="cover_header_footer_background"/>
+		<xsl:param name="i18n_JIS"/>
+		<xsl:param name="docidentifier"/>
+		<xsl:param name="title_ja"/>
+		<xsl:param name="edition"/>
 		<xsl:param name="copyrightText"/>
-		<xsl:param name="section_title"/>
 		
-		<xsl:variable name="cover_header_footer_background_value" select="normalize-space(//jis:jis-standard/jis:metanorma-extension/jis:presentation-metadata/jis:color-eader-footer-background)"/>
-		<xsl:variable name="cover_header_footer_background_">
-			<xsl:value-of select="$cover_header_footer_background_value"/>
-			<xsl:if test="$cover_header_footer_background_value = ''">#0B0968</xsl:if>
-		</xsl:variable>
-		<xsl:variable name="cover_header_footer_background" select="normalize-space($cover_header_footer_background_)"/>
-		
-		
-		
+		<!-- header -->
 		<fo:static-content flow-name="right-region" role="artifact">
-			<fo:block-container writing-mode="tb-rl"> <!--  -->
-				<fo:block-container font-family="Arial" font-size="9pt" height="6mm" width="{$pageHeightA5}mm" color="white" background-color="{$cover_header_footer_background}" writing-mode="lr-tb" display-align="center">
-					<fo:block margin-left="15mm">ABCDE
-					
-						<fo:inline-container writing-mode="lr-tb" text-align="center" alignment-baseline="central" reference-orientation="90" width="1em" margin="0" padding="0" text-indent="0mm" last-line-end-indent="0mm" start-indent="0mm" end-indent="0mm">
-							<fo:block-container width="1em">
-								<fo:block line-height="1em">A&#x0a;B&#x0a;C&#x0a;D&#x0a;E</fo:block>
-							</fo:block-container>
-						</fo:inline-container>
-					
-						<xsl:copy-of select="$docidentifier"/>
+			<fo:block-container font-size="9pt" height="{$pageHeightA5}mm" width="6mm" color="white" background-color="{$cover_header_footer_background}" text-align="center" margin-left="6mm">
+				<fo:block-container margin-left="0mm" margin-top="14.5mm" line-height="1.1">
+					 <!-- text-align-last="justify" -->
+						<!-- example: 日本工業規格 JIS Z 8301 規格票の様式及び作成方法    一 -->
+					<xsl:call-template name="insertEachCharInBlock">
+						<xsl:with-param name="str" select="$i18n_JIS"/>
+					</xsl:call-template>
+					<fo:block margin-top="3mm">
+						<xsl:call-template name="insertEachCharInBlock">
+							<xsl:with-param name="str" select="$docidentifier"/>
+							<xsl:with-param name="spaceIndent">1mm</xsl:with-param>
+						</xsl:call-template>
+					</fo:block>
+					<fo:block margin-top="3mm">
+						<xsl:call-template name="insertEachCharInBlock">
+							<xsl:with-param name="str" select="$title_ja"/>
+						</xsl:call-template>
+					</fo:block>
+					<fo:block margin-top="21mm">
+						<xsl:value-of select="$edition"/>
 					</fo:block>
 				</fo:block-container>
 			</fo:block-container>
 		</fo:static-content>
 		
-		<!-- <xsl:call-template name="insertFooter">
-			<xsl:with-param name="section" select="$section"/>
-			<xsl:with-param name="copyrightText" select="$copyrightText"/>
-		</xsl:call-template> -->
+		<!-- footer -->
+		<fo:static-content flow-name="left-region" role="artifact">
+			<fo:block-container absolute-position="fixed" left="0mm" top="0" width="6mm" height="{$pageHeightA5}mm" background-color="{$cover_header_footer_background}">
+				<fo:block-container font-size="9pt" color="white" text-align="center">
+					<fo:block margin-top="131mm">二<!-- <fo:page-number /> --></fo:block>
+				</fo:block-container>
+			</fo:block-container>
+			
+			<fo:block-container font-size="9pt" color="white" height="5.5mm" writing-mode="tb-rl" margin-left="56mm" line-height="1.1">
+				
+				<fo:block text-align-last="justify" margin-top="56mm" margin-bottom="-2mm">
+				
+					<fo:inline baseline-shift="-20%">
+					<fo:inline padding-bottom="5mm">三</fo:inline>用語及び定義
+					</fo:inline>
+					
+					<fo:inline keep-together.within-line="always">
+						<fo:leader leader-pattern="space"/>
+						<fo:inline font-size="6pt" baseline-shift="-10%"><xsl:value-of select="$copyrightText"/></fo:inline>
+					</fo:inline >
+				
+				<!-- <fo:table table-layout="fixed" width="100%">
+					<fo:table-column column-width="proportional-column-width(56)"/>
+					<fo:table-column column-width="proportional-column-width(70)"/>
+					<fo:table-column column-width="proportional-column-width(24)"/>
+					<fo:table-column column-width="proportional-column-width(59)"/>
+					<fo:table-body>
+						<fo:table-row>
+							<fo:table-cell><fo:block>&#xa0;</fo:block></fo:table-cell>
+							<fo:table-cell><fo:block>三用語及び定義</fo:block></fo:table-cell>
+							<fo:table-cell><fo:block text-align="center">二</fo:block></fo:table-cell>
+							<fo:table-cell display-align="center"><fo:block font-size="6pt"><xsl:value-of select="$copyrightText"/></fo:block></fo:table-cell>
+						</fo:table-row>
+					</fo:table-body>
+				</fo:table> -->
+				</fo:block>
+			</fo:block-container>
+		</fo:static-content>
+		
+		<!-- <fo:static-content flow-name="left-region" role="artifact">
+			<fo:block-container font-size="9pt" height="{$pageHeightA5}mm" width="6mm" color="white" background-color="{$cover_header_footer_background}" text-align="center">
+				<fo:block-container margin-left="0mm" margin-top="55.5mm" line-height="1.1">
+					
+					<xsl:call-template name="insertEachCharInBlock">
+						<xsl:with-param name="str" select="$i18n_JIS"/>
+					</xsl:call-template>
+					<fo:block margin-top="3mm">
+						<xsl:call-template name="insertEachCharInBlock">
+							<xsl:with-param name="str" select="$docidentifier"/>
+							<xsl:with-param name="spaceIndent">1mm</xsl:with-param>
+						</xsl:call-template>
+					</fo:block>
+					<fo:block margin-top="3mm">
+						<xsl:call-template name="insertEachCharInBlock">
+							<xsl:with-param name="str" select="$title_ja"/>
+						</xsl:call-template>
+					</fo:block>
+					<fo:block margin-top="21mm">
+						<xsl:value-of select="$edition"/>
+					</fo:block>
+				</fo:block-container>
+			</fo:block-container>
+		</fo:static-content> -->
+	</xsl:template>
+	
+	<xsl:template name="insertEachCharInBlock">
+		<xsl:param name="str"/>
+		<xsl:param name="spaceIndent"/>
+		<xsl:if test="string-length($str) &gt; 0">
+			<xsl:variable name="char" select="substring($str, 1, 1)"/>
+			<fo:block>
+				<xsl:choose>
+					<xsl:when test="$char = ' ' and $spaceIndent != ''">
+						<xsl:attribute name="margin-top"><xsl:value-of select="$spaceIndent"/></xsl:attribute>
+					</xsl:when>
+					<xsl:otherwise>
+						<xsl:value-of select="$char"/>
+					</xsl:otherwise>
+				</xsl:choose>
+			</fo:block>
+			<xsl:call-template name="insertEachCharInBlock">
+				<xsl:with-param name="str" select="substring($str,2)"/>
+				<xsl:with-param name="spaceIndent" select="$spaceIndent"/>
+			</xsl:call-template>
+		</xsl:if>
 	</xsl:template>
 	
 	<xsl:variable name="JIS-Logo">
