@@ -283,7 +283,6 @@
 					<fo:region-start region-name="left-region" extent="8mm"/>
 					<fo:region-end region-name="right-region" extent="17mm"/>
 				</fo:simple-page-master>
-			
 			</fo:layout-master-set>
 			
 			<fo:declarations>
@@ -358,6 +357,16 @@
 						<xsl:if test="$cover_header_footer_background_value = ''">#0B0968</xsl:if>
 					</xsl:variable>
 					<xsl:variable name="cover_header_footer_background" select="normalize-space($cover_header_footer_background_)"/>
+					
+					<xsl:variable name="i18n_JIS"><xsl:call-template name="getLocalizedString"><xsl:with-param name="key">JIS</xsl:with-param></xsl:call-template></xsl:variable>
+					<xsl:variable name="docidentifier_JIS_" select="/*/jis:bibdata/jis:docidentifier[@type = 'JIS']"/>
+					<xsl:variable name="docidentifier_JIS">
+						<xsl:choose>
+							<xsl:when test="contains($docidentifier_JIS_, ':')"><xsl:value-of select="substring-before($docidentifier_JIS_, ':')"/></xsl:when>
+							<xsl:otherwise><xsl:value-of select="$docidentifier_JIS_"/></xsl:otherwise>
+						</xsl:choose>
+					</xsl:variable>
+					<xsl:variable name="edition" select="/jis:jis-standard/jis:bibdata/jis:edition"/>
 					
 					<xsl:choose>
 						<xsl:when test="$vertical_layout = 'true'">
@@ -624,6 +633,10 @@
 								<xsl:when test="$vertical_layout = 'true'">
 									<xsl:call-template name="insertLeftRightRegions">
 										<xsl:with-param name="cover_header_footer_background" select="$cover_header_footer_background"/>
+										<xsl:with-param name="title_ja" select="$title_ja"/>
+										<xsl:with-param name="i18n_JIS" select="$i18n_JIS"/>
+										<xsl:with-param name="docidentifier" select="concat('JIS ', $docidentifier_JIS)"/>
+										<xsl:with-param name="edition" select="$edition"/>
 									</xsl:call-template>
 								</xsl:when>
 								<xsl:otherwise>
@@ -2069,34 +2082,62 @@
 	</xsl:template>
 	
 	<xsl:template name="insertLeftRightRegions">
-		<xsl:param name="docidentifier" />
-		<xsl:param name="hidePageNumber">false</xsl:param>
-		<xsl:param name="section"/>
-		<xsl:param name="copyrightText"/>
-		<xsl:param name="section_title"/>
 		<xsl:param name="cover_header_footer_background"/>
-		
+		<xsl:param name="i18n_JIS"/>
+		<xsl:param name="docidentifier"/>
+		<xsl:param name="title_ja"/>
+		<xsl:param name="edition"/>
 		<fo:static-content flow-name="right-region" role="artifact">
-			<fo:block-container writing-mode="tb-rl"> <!--  -->
-				<fo:block-container font-family="Arial" font-size="9pt" height="6mm" width="{$pageHeightA5}mm" color="white" background-color="{$cover_header_footer_background}" writing-mode="lr-tb" display-align="center">
-					<fo:block margin-left="15mm">ABCDE
-					
-						<fo:inline-container writing-mode="lr-tb" text-align="center" alignment-baseline="central" reference-orientation="90" width="1em" margin="0" padding="0" text-indent="0mm" last-line-end-indent="0mm" start-indent="0mm" end-indent="0mm">
-							<fo:block-container width="1em">
-								<fo:block line-height="1em">A&#x0a;B&#x0a;C&#x0a;D&#x0a;E</fo:block>
-							</fo:block-container>
-						</fo:inline-container>
-					
-						<xsl:copy-of select="$docidentifier"/>
+			<fo:block-container font-size="9pt" height="{$pageHeightA5}mm" width="6mm" color="white" background-color="{$cover_header_footer_background}" text-align="center" margin-left="6mm"> <!-- writing-mode="tb-rl"  -->
+				<fo:block-container margin-left="0mm" margin-top="14.5mm" line-height="1.1">
+					 <!-- text-align-last="justify" -->
+						<!-- example: 日本工業規格 JIS Z 8301 規格票の様式及び作成方法    一 -->
+					<xsl:call-template name="insertEachCharInBlock">
+						<xsl:with-param name="str" select="$i18n_JIS"/>
+					</xsl:call-template>
+					<fo:block margin-top="3mm">
+						<xsl:call-template name="insertEachCharInBlock">
+							<xsl:with-param name="str" select="$docidentifier"/>
+							<xsl:with-param name="spaceIndent">1mm</xsl:with-param>
+						</xsl:call-template>
+					</fo:block>
+					<fo:block margin-top="3mm">
+						<xsl:call-template name="insertEachCharInBlock">
+							<xsl:with-param name="str" select="$title_ja"/>
+						</xsl:call-template>
+					</fo:block>
+					<fo:block margin-top="21mm">
+						<xsl:value-of select="$edition"/>
 					</fo:block>
 				</fo:block-container>
 			</fo:block-container>
 		</fo:static-content>
-		
 		<!-- <xsl:call-template name="insertFooter">
 			<xsl:with-param name="section" select="$section"/>
 			<xsl:with-param name="copyrightText" select="$copyrightText"/>
 		</xsl:call-template> -->
+	</xsl:template>
+	
+	<xsl:template name="insertEachCharInBlock">
+		<xsl:param name="str"/>
+		<xsl:param name="spaceIndent"/>
+		<xsl:if test="string-length($str) &gt; 0">
+			<xsl:variable name="char" select="substring($str, 1, 1)"/>
+			<fo:block>
+				<xsl:choose>
+					<xsl:when test="$char = ' ' and $spaceIndent != ''">
+						<xsl:attribute name="margin-top"><xsl:value-of select="$spaceIndent"/></xsl:attribute>
+					</xsl:when>
+					<xsl:otherwise>
+						<xsl:value-of select="$char"/>
+					</xsl:otherwise>
+				</xsl:choose>
+			</fo:block>
+			<xsl:call-template name="insertEachCharInBlock">
+				<xsl:with-param name="str" select="substring($str,2)"/>
+				<xsl:with-param name="spaceIndent" select="$spaceIndent"/>
+			</xsl:call-template>
+		</xsl:if>
 	</xsl:template>
 	
 	<xsl:variable name="JIS-Logo">
