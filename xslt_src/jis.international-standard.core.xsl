@@ -918,47 +918,47 @@
 				<xsl:call-template name="insertBackgroundPageImage"/>
 				
 				<!-- vertical bar -->
-				<xsl:call-template name="insertBackgroundColor">
+				<!-- <xsl:call-template name="insertBackgroundColor">
 					<xsl:with-param name="opacity">0.58</xsl:with-param>
 					<xsl:with-param name="color_background" select="$cover_page_background_1"/>
 					<xsl:with-param name="width">20mm</xsl:with-param>
 					<xsl:with-param name="absolute_position">true</xsl:with-param>
-				</xsl:call-template>
+				</xsl:call-template> -->
 				
 				<!-- vertical bar -->
-				<xsl:call-template name="insertBackgroundColor">
+				<!-- <xsl:call-template name="insertBackgroundColor">
 					<xsl:with-param name="opacity">0.75</xsl:with-param>
 					<xsl:with-param name="color_background" select="$cover_page_background_2"/>
 					<xsl:with-param name="width">46.5mm</xsl:with-param>
 					<xsl:with-param name="absolute_position">true</xsl:with-param>
 					<xsl:with-param name="left">20mm</xsl:with-param>
-				</xsl:call-template>
+				</xsl:call-template> -->
 				
 				<!-- vertical bar -->
-				<xsl:call-template name="insertBackgroundColor">
+				<!-- <xsl:call-template name="insertBackgroundColor">
 					<xsl:with-param name="opacity">0.75</xsl:with-param>
 					<xsl:with-param name="color_background" select="$cover_page_background_2"/>
 					<xsl:with-param name="width">10.7mm</xsl:with-param>
 					<xsl:with-param name="absolute_position">true</xsl:with-param>
 					<xsl:with-param name="left">133.8mm</xsl:with-param>
-				</xsl:call-template>
+				</xsl:call-template> -->
 				
 				<!-- vertical bar -->
-				<xsl:call-template name="insertBackgroundColor">
+				<!-- <xsl:call-template name="insertBackgroundColor">
 					<xsl:with-param name="opacity">0.58</xsl:with-param>
 					<xsl:with-param name="color_background" select="$cover_page_background_1"/>
 					<xsl:with-param name="width">17mm</xsl:with-param>
 					<xsl:with-param name="absolute_position">true</xsl:with-param>
 					<xsl:with-param name="left">131mm</xsl:with-param>
-				</xsl:call-template>
+				</xsl:call-template> -->
 				
 			</fo:static-content>
 			
-			<fo:static-content flow-name="left-region">
+			<!-- <fo:static-content flow-name="left-region"> -->
 				
 	
 				<!-- JIS, JSA_logos -->
-				<fo:block-container absolute-position="fixed" left="2.4mm" top="171mm" font-size="0">
+				<!-- <fo:block-container absolute-position="fixed" left="2.4mm" top="171mm" font-size="0">
 					<fo:block id="firstpage_id_{$num}" margin-left="2mm">
 						<fo:instream-foreign-object content-width="12.1mm" fox:alt-text="JIS Logo">
 							<xsl:copy-of select="$JIS-Logo_2024"/>
@@ -970,14 +970,7 @@
 						</fo:instream-foreign-object>
 					</fo:block>
 				</fo:block-container>
-			</fo:static-content>
-			
-			<fo:static-content flow-name="right-region">
-				<fo:block-container>
-					<fo:block>A</fo:block>
-				</fo:block-container>
-			
-			</fo:static-content>
+			</fo:static-content> -->
 			
 			<fo:flow flow-name="xsl-region-body">
 			
