@@ -98,11 +98,17 @@
 				</fo:simple-page-master>
 				
 				<fo:simple-page-master master-name="cover-page_2024" page-width="{$pageWidthA5}mm" page-height="{$pageHeightA5}mm">
-					<fo:region-body margin-top="58mm" margin-bottom="12.8mm" margin-left="20mm" margin-right="17mm"/>
-					<fo:region-before region-name="header" extent="58mm"/>
+					<!-- Note (for writing-mode="tb-rl", may be due the update for support 'tb-rl' mode):
+					 fo:region-body/@margin-top = left margin
+					 fo:region-body/@margin-bottom = right margin
+					 fo:region-body/margin-left = bottom margin
+					 fo:region-body/margin-right = top margin
+					-->
+					<fo:region-body margin-top="6mm" margin-bottom="6mm" margin-left="12.8mm" margin-right="58mm" writing-mode="tb-rl"/>
+					<fo:region-before region-name="header" extent="58mm" precedence="true"/>
 					<fo:region-after region-name="footer" extent="12.8mm"/>
-					<fo:region-start region-name="left-region" extent="20mm"/>
-					<fo:region-end region-name="right-region" extent="17mm"/>
+					<fo:region-start region-name="left-region" extent="20mm"/> <!-- 6 20mm -->
+					<fo:region-end region-name="right-region" extent="6.8mm"/> <!-- 17mm -->
 				</fo:simple-page-master>
 		
 				<fo:simple-page-master master-name="first_page" page-width="{$pageWidth}mm" page-height="{$pageHeight}mm">
@@ -358,7 +364,6 @@
 					</xsl:variable>
 					<xsl:variable name="cover_header_footer_background" select="normalize-space($cover_header_footer_background_)"/>
 					
-					<xsl:variable name="i18n_JIS"><xsl:call-template name="getLocalizedString"><xsl:with-param name="key">JIS</xsl:with-param></xsl:call-template></xsl:variable>
 					<xsl:variable name="docidentifier_JIS_" select="/*/jis:bibdata/jis:docidentifier[@type = 'JIS']"/>
 					<xsl:variable name="docidentifier_JIS">
 						<xsl:choose>
@@ -585,6 +590,9 @@
 							<xsl:choose>
 								<xsl:when test="$vertical_layout = 'true'">
 									<xsl:attribute name="master-reference">document2024</xsl:attribute>
+									<xsl:attribute name="fox:number-conversion-features">&#x30A2;</xsl:attribute>
+									
+									
 								</xsl:when>
 								<xsl:otherwise>
 									<xsl:if test="position() = 1">
@@ -894,8 +902,10 @@
 		</fo:page-sequence>
 	</xsl:template> <!-- insertCoverPage -->
 	
+	<xsl:variable name="i18n_JIS"><xsl:call-template name="getLocalizedString"><xsl:with-param name="key">JIS</xsl:with-param></xsl:call-template></xsl:variable>
 	<xsl:template name="insertCoverPage2024">
 		<xsl:param name="num"/>
+		
 		<fo:page-sequence master-reference="cover-page_2024" force-page-count="no-force">
 			
 			<!-- <xsl:variable name="cover_page_background_1_value" select="normalize-space(//jis:jis-standard/jis:metanorma-extension/jis:presentation-metadata/jis:color-cover-page-background-1)"/>
@@ -953,6 +963,34 @@
 				
 			</fo:static-content>
 			
+			<fo:static-content flow-name="left-region">
+				<fo:table table-layout="fixed" width="9mm" font-size="10pt" font-weight="bold" color="white" margin-left="2.7mm" margin-top="-1mm" line-height="1.5">
+					<fo:table-column column-width="proportional-column-width(3)"/>
+					<fo:table-column column-width="proportional-column-width(2.2)"/>
+					<fo:table-column column-width="proportional-column-width(3)"/>
+					<fo:table-body>
+						<fo:table-row height="50mm">
+							<fo:table-cell>
+								<fo:block><xsl:value-of select="/*/jis:bibdata/jis:contributor[jis:role/@type = 'publisher']/jis:organization/jis:name/jis:variant[@language = 'ja']"/></fo:block>
+							</fo:table-cell>
+							<fo:table-cell><fo:block>&#xa0;</fo:block></fo:table-cell>
+							<fo:table-cell>
+								<fo:block><xsl:value-of select="/*/jis:bibdata/jis:contributor[jis:role/@type = 'authorizer']//jis:organization/jis:name"/></fo:block>
+							</fo:table-cell>
+						</fo:table-row>
+						<fo:table-row>
+							<fo:table-cell>
+								<fo:block>発行</fo:block>
+							</fo:table-cell>
+							<fo:table-cell><fo:block>&#xa0;</fo:block></fo:table-cell>
+							<fo:table-cell>
+								<fo:block>審議</fo:block>
+							</fo:table-cell>
+						</fo:table-row>
+					</fo:table-body>
+				</fo:table>
+			</fo:static-content>
+			
 			<!-- <fo:static-content flow-name="left-region"> -->
 				
 	
@@ -971,35 +1009,78 @@
 				</fo:block-container>
 			</fo:static-content> -->
 			
-			<fo:flow flow-name="xsl-region-body">
+			<fo:flow flow-name="xsl-region-body" font-family="Noto Serif JP">
 			
-				<fo:block-container text-align="center">
-					<!-- title -->
-					<fo:block role="H1" font-family="IPAexGothic" font-size="22pt" margin-top="27mm"><xsl:apply-templates select="/*/jis:bibdata/jis:title[@language = 'ja' and @type = 'main']/node()"/></fo:block>
-					
-					<fo:block font-family="IPAexGothic" font-size="20pt" margin-top="15mm">
-						<fo:inline font-family="Arial">JIS <xsl:value-of select="$docidentifier_number"/></fo:inline>
-						<fo:inline baseline-shift="20%"><fo:inline font-size="10pt">：</fo:inline>
-						<fo:inline font-family="Times New Roman" font-size="10pt"><xsl:value-of select="$docidentifier_year"/></fo:inline></fo:inline>
-					</fo:block>
-					<fo:block font-family="Arial" font-size="14pt" margin-top="12mm">
-						<fo:inline font-family="IPAexMincho">（</fo:inline>
-						<!-- JSA -->
-						<xsl:value-of select="/*/jis:bibdata/jis:copyright/jis:owner/jis:organization/jis:abbreviation"/>
-						<fo:inline font-family="IPAexMincho">）</fo:inline></fo:block>
-				</fo:block-container>
+				<fo:block font-weight="900" font-size="14pt" color="white" letter-spacing="2.5mm">
+					<xsl:value-of select="$i18n_JIS"/>
+				</fo:block>
 				
-				<fo:block-container absolute-position="fixed" left="0mm" top="200mm" height="69mm" text-align="center" display-align="after" font-family="IPAexMincho">
-					<!-- Revised on July 22, 2019 -->
-					<!-- <fo:block font-size="9pt">令和元年<fo:inline font-family="Times New Roman"> 7 </fo:inline>月<fo:inline font-family="Times New Roman"> 22 </fo:inline>日 改正</fo:block> -->
-					<fo:block font-size="9pt"><xsl:apply-templates select="/*/jis:bibdata/jis:date[@type = 'published']/text()"/> 改正</fo:block>
-					<!-- Japan Industrial Standards Survey Council deliberations -->
-					<!-- 日本産業標準調査会 -->
-					<fo:block font-size="14pt" margin-top="7mm"><xsl:value-of select="/*/jis:bibdata/jis:contributor[jis:role/@type = 'authorizer']/jis:organization/jis:name/jis:variant[@language = 'ja']"/> 審議</fo:block>
-					<!-- (Issued by the Japan Standards Association) -->
-					<!-- 日本規格協会 -->
-					<fo:block font-size="9pt" margin-top="6.5mm">（<xsl:value-of select="/*/jis:bibdata/jis:contributor[jis:role/@type = 'publisher']/jis:organization/jis:name/jis:variant[@language = 'ja']"/> 発行）</fo:block>
-				</fo:block-container>
+				
+				<fo:block margin-top="75mm" font-size="14pt" font-weight="500">
+					
+					<fo:inline-container writing-mode="lr-tb" text-align="center"
+																		 alignment-baseline="central" reference-orientation="90" width="1em" margin="0" padding="0"
+																		 text-indent="0mm" last-line-end-indent="0mm" start-indent="0mm" end-indent="0mm">
+							
+							<xsl:variable name="blocks">
+								<xsl:call-template name="insertEachCharInBlock">
+									<xsl:with-param name="str">JIS <xsl:value-of select="java:replaceAll(java:java.lang.String.new($docidentifier_number), ' ', '  ')"/></xsl:with-param>
+									<xsl:with-param name="spaceIndent">0.5em</xsl:with-param>
+									<xsl:with-param name="lineHeight">1.1em</xsl:with-param>
+								</xsl:call-template>
+								<fo:block line-height="1em" margin-top="0.2em"/>
+							</xsl:variable>
+							<xsl:variable name="blocksWidth">
+								<xsl:for-each select="xalan:nodeset($blocks)//@line-height[normalize-space(..) != '']">
+									<width><xsl:value-of select="substring-before(.,'em')"/></width>
+								</xsl:for-each>
+								<xsl:for-each select="xalan:nodeset($blocks)//@margin-top">
+									<width><xsl:value-of select="substring-before(.,'em')"/></width>
+								</xsl:for-each>
+							</xsl:variable>
+							<xsl:attribute name="width"><xsl:value-of select="sum(xalan:nodeset($blocksWidth)//width)"/>em</xsl:attribute>
+							<fo:block-container width="1em">
+								<xsl:copy-of select="$blocks"/>
+							</fo:block-container>
+					</fo:inline-container>
+					
+					<fo:inline font-size="8.16pt" baseline-shift="20%">:</fo:inline>
+					
+					<fo:inline-container writing-mode="lr-tb" text-align="center"
+																		 alignment-baseline="central" reference-orientation="90" width="1em" margin="0" padding="0"
+																		 text-indent="0mm" last-line-end-indent="0mm" start-indent="0mm" end-indent="0mm">
+							<fo:block-container width="1em">
+								<fo:block line-height="1em" margin-top="0.2em"/>
+								<fo:block font-size="8.16pt" baseline-shift="20%">
+									<xsl:call-template name="insertEachCharInBlock">
+										<xsl:with-param name="str"><xsl:value-of select="$docidentifier_year"/></xsl:with-param>
+										<xsl:with-param name="lineHeight">1em</xsl:with-param>
+									</xsl:call-template>
+								</fo:block>
+							</fo:block-container>
+					</fo:inline-container>
+				</fo:block>
+				
+				
+				<fo:block margin-top="2mm" font-size="24pt" letter-spacing="2mm" font-weight="bold">
+					<xsl:apply-templates select="/*/jis:bibdata/jis:title[@language = 'ja' and @type = 'main']/node()"/>
+				</fo:block>
+				
+				<fo:block margin-top="3mm" font-size="11pt" font-weight="500">
+					<xsl:apply-templates select="/*/jis:bibdata/jis:title[@language = 'en' and @type = 'main']/node()"/>
+				</fo:block>
+				
+				<fo:block margin-top="6.5mm" font-size="8pt" font-weight="500">
+					<fo:inline padding-right="5mm"><xsl:apply-templates select="/*/jis:bibdata/jis:date[@type = 'published']/text()"/></fo:inline>改正
+				</fo:block>
+				
+				<!--
+				
+				<fo:block font-size="10pt" font-weight="bold" color="white">
+					2<xsl:value-of select="/*/jis:bibdata/jis:contributor[jis:role/@type = 'publisher']/jis:organization/jis:name/jis:variant[@language = 'ja']"/> 発行
+				</fo:block> -->
+				
+				
 			</fo:flow>
 		</fo:page-sequence>
 	</xsl:template> <!-- insertCoverPage2024 -->
@@ -2112,7 +2193,7 @@
 		<fo:static-content flow-name="left-region" role="artifact">
 			<fo:block-container absolute-position="fixed" left="0mm" top="0" width="6mm" height="{$pageHeightA5}mm" background-color="{$cover_header_footer_background}">
 				<fo:block-container font-size="9pt" color="white" text-align="center">
-					<fo:block margin-top="131mm">二<!-- <fo:page-number /> --></fo:block>
+					<fo:block margin-top="131mm">二<fo:page-number /></fo:block>
 				</fo:block-container>
 			</fo:block-container>
 			
@@ -2176,9 +2257,13 @@
 	<xsl:template name="insertEachCharInBlock">
 		<xsl:param name="str"/>
 		<xsl:param name="spaceIndent"/>
+		<xsl:param name="lineHeight"/>
 		<xsl:if test="string-length($str) &gt; 0">
 			<xsl:variable name="char" select="substring($str, 1, 1)"/>
 			<fo:block>
+				<xsl:if test="$lineHeight != ''">
+					<xsl:attribute name="line-height"><xsl:value-of select="$lineHeight"/></xsl:attribute>
+				</xsl:if>
 				<xsl:choose>
 					<xsl:when test="$char = ' ' and $spaceIndent != ''">
 						<xsl:attribute name="margin-top"><xsl:value-of select="$spaceIndent"/></xsl:attribute>
@@ -2191,6 +2276,7 @@
 			<xsl:call-template name="insertEachCharInBlock">
 				<xsl:with-param name="str" select="substring($str,2)"/>
 				<xsl:with-param name="spaceIndent" select="$spaceIndent"/>
+				<xsl:with-param name="lineHeight" select="$lineHeight"/>
 			</xsl:call-template>
 		</xsl:if>
 	</xsl:template>
