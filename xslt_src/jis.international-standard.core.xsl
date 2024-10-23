@@ -79,6 +79,7 @@
 						<xsl:attribute name="font-family-generic">Serif</xsl:attribute>
 						<xsl:attribute name="font-size">11pt</xsl:attribute>
 						<xsl:attribute name="font-weight">200</xsl:attribute>
+						<xsl:attribute name="color">rgb(34,31,31)</xsl:attribute>
 					</xsl:if>
 				</root-style>
 			</xsl:variable>
@@ -632,8 +633,6 @@
 								<xsl:when test="$vertical_layout = 'true'">
 									<xsl:attribute name="master-reference">document_2024</xsl:attribute>
 									<xsl:attribute name="fox:number-conversion-features">&#x30A2;</xsl:attribute>
-									
-									
 								</xsl:when>
 								<xsl:otherwise>
 									<xsl:if test="position() = 1">
@@ -758,6 +757,12 @@
 									<!-- <fo:block role="H1" font-family="IPAexGothic" font-size="16pt" text-align="center" margin-top="6mm"><xsl:value-of select="$title_ja"/></fo:block> -->
 								<!-- </xsl:if> -->
 								
+								<xsl:if test="$vertical_layout = 'true'">
+									<fo:block font-weight="bold" font-size="12pt" margin-top="5mm" letter-spacing="4mm">
+										<xsl:value-of select="$i18n_JIS"/>
+									</fo:block>
+								</xsl:if>
+
 								<xsl:apply-templates select="*" mode="page"/>
 								
 								<xsl:if test="not(*)">
@@ -1285,6 +1290,7 @@
 	</xsl:template> <!-- insertInnerCoverPage -->
 	
 	<xsl:template match="jis:p[@class = 'JapaneseIndustrialStandard']" priority="4">
+		<xsl:if test="not($vertical_layout = 'true')">
 		<fo:table table-layout="fixed" width="100%">
 			<fo:table-column column-width="proportional-column-width(36)"/>
 			<fo:table-column column-width="proportional-column-width(92)"/>
@@ -1307,9 +1313,11 @@
 				</fo:table-row>
 			</fo:table-body>
 		</fo:table>
+		</xsl:if>
 	</xsl:template>
 	
 	<xsl:template match="jis:p[@class = 'StandardNumber']" priority="4">
+		<xsl:if test="not($vertical_layout = 'true')">
 		<fo:table table-layout="fixed" width="100%">
 			<fo:table-column column-width="proportional-column-width(36)"/>
 			<fo:table-column column-width="proportional-column-width(92)"/>
@@ -1330,6 +1338,7 @@
 				</fo:table-row>
 			</fo:table-body>
 		</fo:table>
+		</xsl:if>
 	</xsl:template>
 	
 	<xsl:template match="jis:p[@class = 'StandardNumber']//text()[not(ancestor::jis:span)]" priority="4">
@@ -1365,12 +1374,27 @@
 	
 	<xsl:template match="jis:p[@class = 'zzSTDTitle1']" priority="4">
 		<fo:block font-family="IPAexGothic" font-size="19pt" text-align="center" margin-top="12mm" margin-bottom="4mm">
+			<xsl:if test="$vertical_layout = 'true'">
+				<xsl:attribute name="font-family">Noto Serif JP</xsl:attribute>
+				<xsl:attribute name="font-size">16pt</xsl:attribute>
+				<xsl:attribute name="font-weight">bold</xsl:attribute>
+				<xsl:attribute name="text-align">left</xsl:attribute>
+				<xsl:attribute name="margin-top">6mm</xsl:attribute>
+				<xsl:attribute name="margin-bottom">2.5mm</xsl:attribute>
+				<xsl:attribute name="letter-spacing">3mm</xsl:attribute>
+			</xsl:if>
 			<xsl:apply-templates />
 		</fo:block>
 	</xsl:template>
 	
 	<xsl:template match="jis:p[@class = 'zzSTDTitle2']" priority="4">
 		<fo:block font-family="Arial" font-size="13pt" text-align="center" margin-bottom="10mm">
+			<xsl:if test="$vertical_layout = 'true'">
+				<xsl:attribute name="font-family">Noto Serif JP</xsl:attribute>
+				<xsl:attribute name="font-size">11pt</xsl:attribute>
+				<xsl:attribute name="text-align">left</xsl:attribute>
+				<xsl:attribute name="margin-bottom">3mm</xsl:attribute>
+			</xsl:if>
 			<xsl:apply-templates />
 		</fo:block>
 	</xsl:template>
@@ -1548,29 +1572,16 @@
 		
 		<xsl:variable name="font-size">
 			<xsl:choose>
-				<xsl:when test="@type = 'section-title'">18pt</xsl:when>
-				<xsl:when test="@ancestor = 'foreword' and $level = '1'">14pt</xsl:when>
-				<xsl:when test="@ancestor = 'annex' and $level = '1' and preceding-sibling::*[local-name() = 'annex'][1][@commentary = 'true']">16pt</xsl:when>
-				<xsl:when test="@ancestor = 'annex' and $level = '1'">14pt</xsl:when>
-				<!-- <xsl:when test="@ancestor = 'foreword' and $level &gt;= '2'">12pt</xsl:when>
-				<xsl:when test=". = 'Executive summary'">18pt</xsl:when>
-				<xsl:when test="@ancestor = 'introduction' and $level = '1'">18pt</xsl:when>
-				<xsl:when test="@ancestor = 'introduction' and $level &gt;= '2'">11pt</xsl:when>
-				<xsl:when test="@ancestor = 'sections' and $level = '1'">14pt</xsl:when>
-				<xsl:when test="@ancestor = 'sections' and $level = '2'">11pt</xsl:when>
-				<xsl:when test="@ancestor = 'sections' and $level &gt;= '3'">10pt</xsl:when>
-				<xsl:when test="@ancestor = 'sections' and $level = '2' and preceding-sibling::*[1][local-name() = 'references']">inherit</xsl:when>
-				<xsl:when test="@ancestor = 'sections' and $level = '2'">11pt</xsl:when>
-				<xsl:when test="@ancestor = 'sections' and $level &gt;= '3' and preceding-sibling::*[1][local-name() = 'terms']">11pt</xsl:when>
-				<xsl:when test="@ancestor = 'sections' and $level = '3'">10.5pt</xsl:when>
-				<xsl:when test="@ancestor = 'sections' and $level &gt;= '4'">10pt</xsl:when>
-				
-				<xsl:when test="@ancestor = 'annex' and $level = '2'">13pt</xsl:when>
-				<xsl:when test="@ancestor = 'annex' and $level &gt;= '3'">11.5pt</xsl:when>
-				<xsl:when test="@ancestor = 'bibliography' and $level = '1' and preceding-sibling::*[local-name() = 'references']">11.5pt</xsl:when>
-				<xsl:when test="@ancestor = 'bibliography' and $level = '1'">13pt</xsl:when>
-				<xsl:when test="@ancestor = 'bibliography' and $level &gt;= '2'">10pt</xsl:when> -->
-				<xsl:otherwise>10pt</xsl:otherwise>
+				<xsl:when test="$vertical_layout = 'true'">12pt</xsl:when>
+				<xsl:otherwise>
+					<xsl:choose>
+						<xsl:when test="@type = 'section-title'">18pt</xsl:when>
+						<xsl:when test="@ancestor = 'foreword' and $level = '1'">14pt</xsl:when>
+						<xsl:when test="@ancestor = 'annex' and $level = '1' and preceding-sibling::*[local-name() = 'annex'][1][@commentary = 'true']">16pt</xsl:when>
+						<xsl:when test="@ancestor = 'annex' and $level = '1'">14pt</xsl:when>
+						<xsl:otherwise>10pt</xsl:otherwise>
+					</xsl:choose>
+				</xsl:otherwise>
 			</xsl:choose>
 		</xsl:variable>
 		
@@ -1625,7 +1636,6 @@
 		<!-- to space-before Foreword -->
 		<xsl:if test="@ancestor = 'foreword' and $level = '1'"><fo:block></fo:block></xsl:if>
 	
-
 		<xsl:choose>
 			<xsl:when test="@inline-header = 'true' and following-sibling::*[1][self::jis:p]">
 				<fo:block role="H{$level}">
@@ -1651,6 +1661,10 @@
 						<xsl:copy-of select="@id"/>
 					</xsl:if>
 					
+					<xsl:if test="$vertical_layout = 'true'">
+						<xsl:attribute name="letter-spacing">1mm</xsl:attribute>
+					</xsl:if>
+					
 					<!-- if first and last childs are `add` ace-tag, then move start ace-tag before title -->
 					<xsl:if test="*[local-name() = 'tab'][1]/following-sibling::node()[last()][local-name() = 'add'][starts-with(text(), $ace_tag)]">
 						<xsl:apply-templates select="*[local-name() = 'tab'][1]/following-sibling::node()[1][local-name() = 'add'][starts-with(text(), $ace_tag)]">
@@ -1661,6 +1675,16 @@
 					<xsl:variable name="section">
 						<xsl:call-template name="extractSection"/>
 					</xsl:variable>
+					
+					
+					<xsl:if test="$level &lt;= 3">
+						<fo:marker marker-class-name="section_title">
+							<xsl:variable name="stitle"><xsl:call-template name="extractTitle"/></xsl:variable>
+							<xsl:variable name="section_title"><xsl:value-of select="normalize-space(concat($section, ' ', $stitle))"/></xsl:variable>
+							<xsl:value-of select="translate($section_title, ' ', '　')"/>
+						</fo:marker>
+					</xsl:if>
+					
 					<xsl:if test="normalize-space($section) != ''">
 					
 						<xsl:choose>
@@ -2312,7 +2336,7 @@
 				
 					<fo:inline baseline-shift="-20%">
 						<fo:inline>
-							<fo:retrieve-marker retrieve-class-name="section_title"/>
+							<fo:retrieve-marker retrieve-class-name="section_title" retrieve-position="last-ending-within-page"/>
 						</fo:inline><!-- <fo:inline padding-bottom="5mm">三</fo:inline>用語及び定義 -->
 					</fo:inline>
 					
