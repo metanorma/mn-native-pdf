@@ -181,6 +181,21 @@
 					</fo:repeatable-page-master-alternatives>
 				</fo:page-sequence-master>
 				
+				<fo:simple-page-master master-name="document_toc_2024" page-width="{$pageHeight}mm" page-height="{$pageWidth}mm">
+					<!-- Note (for writing-mode="tb-rl", may be due the update for support 'tb-rl' mode):
+					 fo:region-body/@margin-top = left margin
+					 fo:region-body/@margin-bottom = right margin
+					 fo:region-body/margin-left = bottom margin
+					 fo:region-body/margin-right = top margin
+					-->
+					<!-- <fo:region-body margin-top="{$marginTop}mm" margin-bottom="{$marginBottom}mm" margin-left="{$marginLeftRight1}mm" margin-right="{$marginLeftRight2 + 40}mm" writing-mode="tb-rl" background-color="rgb(240,240,240)"/> -->
+					<fo:region-body margin-top="{$marginLeftRight1}mm" margin-bottom="{$marginLeftRight2}mm" margin-left="30mm" margin-right="30mm" writing-mode="tb-rl" background-color="rgb(240,240,240)"/>
+					<fo:region-before region-name="header" extent="30mm" background-color="yellow"/>
+					<fo:region-after region-name="footer" extent="30mm" background-color="green"/>
+					<fo:region-start region-name="left-region" extent="{$marginLeftRight1}mm" background-color="blue"/>
+					<fo:region-end region-name="right-region" extent="{$marginLeftRight2}mm" background-color="red"/>
+				</fo:simple-page-master>
+				
 				<fo:page-sequence-master master-name="document_preface">
 					<fo:repeatable-page-master-alternatives>
 						<fo:conditional-page-master-reference odd-or-even="even" master-reference="even"/>
@@ -204,7 +219,7 @@
 				</fo:page-sequence-master>
 			
 			
-				<fo:simple-page-master master-name="document2024" page-width="{$pageHeight}mm" page-height="{$pageWidth}mm">
+				<fo:simple-page-master master-name="document_2024" page-width="{$pageHeight}mm" page-height="{$pageWidth}mm">
 					<!-- Note (for writing-mode="tb-rl", may be due the update for support 'tb-rl' mode):
 					 fo:region-body/@margin-top = left margin
 					 fo:region-body/@margin-bottom = right margin
@@ -411,24 +426,44 @@
 						<xsl:choose>
 							<xsl:when test="local-name() = 'clause' and @type = 'toc'">
 								<fo:page-sequence master-reference="document_toc" force-page-count="no-force">
+								
+									<xsl:if test="$vertical_layout = 'true'">
+										<xsl:attribute name="master-reference">document_toc_2024</xsl:attribute>
+									</xsl:if>
 						
 									<xsl:if test="position() = 1">
 										<xsl:attribute name="initial-page-number">1</xsl:attribute>
 									</xsl:if>
-						
-									<xsl:call-template name="insertHeaderFooter">
-										<xsl:with-param name="docidentifier" select="$docidentifier"/>
-										<xsl:with-param name="copyrightText" select="$copyrightText"/>
-										<xsl:with-param name="section">preface</xsl:with-param>
-										<xsl:with-param name="section_title">
-											<fo:inline font-family="IPAexGothic">
-												<xsl:text>&#xa0;</xsl:text>
-												<xsl:call-template name="getLocalizedString">
-													<xsl:with-param name="key">table_of_contents</xsl:with-param>
-												</xsl:call-template>
-											</fo:inline>
-										</xsl:with-param>
-									</xsl:call-template>
+									
+									<xsl:choose>
+										<xsl:when test="$vertical_layout = 'true'">
+											<xsl:call-template name="insertLeftRightRegions">
+												<xsl:with-param name="cover_header_footer_background" select="$cover_header_footer_background"/>
+												<xsl:with-param name="title_ja" select="$title_ja"/>
+												<xsl:with-param name="i18n_JIS" select="$i18n_JIS"/>
+												<xsl:with-param name="docidentifier" select="concat('JIS ', $docidentifier_JIS)"/>
+												<xsl:with-param name="edition" select="$edition"/>
+												<xsl:with-param name="copyrightText" select="$copyrightText"/>
+											</xsl:call-template>
+										</xsl:when>
+										<xsl:otherwise>
+											<xsl:call-template name="insertHeaderFooter">
+												<xsl:with-param name="docidentifier" select="$docidentifier"/>
+												<xsl:with-param name="copyrightText" select="$copyrightText"/>
+												<xsl:with-param name="section">preface</xsl:with-param>
+												<xsl:with-param name="section_title">
+													<fo:inline font-family="IPAexGothic">
+														<xsl:text>&#xa0;</xsl:text>
+														<xsl:call-template name="getLocalizedString">
+															<xsl:with-param name="key">table_of_contents</xsl:with-param>
+														</xsl:call-template>
+													</fo:inline>
+												</xsl:with-param>
+											</xsl:call-template>
+										</xsl:otherwise>
+									</xsl:choose>
+									
+									
 									
 									<fo:flow flow-name="xsl-region-body">
 									
@@ -595,7 +630,7 @@
 							
 							<xsl:choose>
 								<xsl:when test="$vertical_layout = 'true'">
-									<xsl:attribute name="master-reference">document2024</xsl:attribute>
+									<xsl:attribute name="master-reference">document_2024</xsl:attribute>
 									<xsl:attribute name="fox:number-conversion-features">&#x30A2;</xsl:attribute>
 									
 									
@@ -775,39 +810,58 @@
 		<xsl:if test="count(*) = 1 and *[local-name() = 'title']"> <!-- if there isn't user ToC -->
 			<!-- fill ToC -->
 			<fo:block role="TOC" font-family="IPAexGothic">
+			
+				<xsl:if test="$vertical_layout = 'true'">
+					<xsl:attribute name="font-family">Noto Serif JP</xsl:attribute>
+					<xsl:attribute name="font-size">10.5pt</xsl:attribute>
+				</xsl:if>
+			
 				<xsl:if test="$contents/doc[@num = $num]//item[@display = 'true']">
 					<xsl:for-each select="$contents/doc[@num = $num]//item[@display = 'true'][@level &lt;= $toc_level or @type='figure' or @type = 'table']">
 						<fo:block role="TOCI">
 							<xsl:choose>
 								<xsl:when test="@type = 'annex' or @type = 'bibliography'">
 									<fo:block space-after="5pt">
+										<xsl:if test="$vertical_layout = 'true'">
+											<xsl:attribute name="space-after">8pt</xsl:attribute>
+										</xsl:if>
 										<xsl:call-template name="insertTocItem"/>
 									</fo:block>
 								</xsl:when>
 								<xsl:otherwise>
 									<fo:list-block space-after="5pt">
-										<xsl:variable name="provisional-distance-between-starts">
-											<xsl:choose>
-												<xsl:when test="string-length(@section) = 1">5</xsl:when>
-												<xsl:when test="string-length(@section) &gt;= 2"><xsl:value-of select="5 + (string-length(@section) - 1) * 2"/></xsl:when>
-												<xsl:when test="@type = 'annex'">16</xsl:when>
-												<xsl:otherwise>5</xsl:otherwise>
-											</xsl:choose>
-										</xsl:variable>
-										<xsl:attribute name="provisional-distance-between-starts">
-											<xsl:choose>
-												<xsl:when test="$vertical_layout_rotate_clause_numbers = 'true'">
-													<xsl:value-of select="concat($provisional-distance-between-starts * 1.5, 'mm')"/>
-												</xsl:when>
-												<xsl:otherwise>
-													<xsl:value-of select="concat($provisional-distance-between-starts, 'mm')"/>
+										<xsl:if test="$vertical_layout = 'true'">
+											<xsl:attribute name="space-after">8pt</xsl:attribute>
+										</xsl:if>
+										<xsl:choose>
+											<xsl:when test="$vertical_layout = 'true'">
+												<xsl:attribute name="provisional-distance-between-starts">10mm</xsl:attribute>
+											</xsl:when>
+											<xsl:otherwise>
+												<xsl:variable name="provisional-distance-between-starts">
+													<xsl:choose>
+														<xsl:when test="string-length(@section) = 1">5</xsl:when>
+														<xsl:when test="string-length(@section) &gt;= 2"><xsl:value-of select="5 + (string-length(@section) - 1) * 2"/></xsl:when>
+														<xsl:when test="@type = 'annex'">16</xsl:when>
+														<xsl:otherwise>5</xsl:otherwise>
+													</xsl:choose>
+												</xsl:variable>
+												<xsl:attribute name="provisional-distance-between-starts">
+													<xsl:choose>
+														<xsl:when test="$vertical_layout_rotate_clause_numbers = 'true'">
+															<xsl:value-of select="concat($provisional-distance-between-starts * 1.5, 'mm')"/>
+														</xsl:when>
+														<xsl:otherwise>
+															<xsl:value-of select="concat($provisional-distance-between-starts, 'mm')"/>
+														</xsl:otherwise>
+													</xsl:choose>
+												</xsl:attribute>
 												</xsl:otherwise>
 											</xsl:choose>
-										</xsl:attribute>
 										<fo:list-item>
 											<fo:list-item-label end-indent="label-end()">
 												<fo:block>
-													<xsl:if test="@section != '' and @type != 'annex'">
+													<xsl:if test="not($vertical_layout = 'true') and @section != '' and @type != 'annex'">
 														<xsl:attribute name="font-family">Times New Roman</xsl:attribute>
 														<xsl:attribute name="font-weight">bold</xsl:attribute>
 													</xsl:if>
@@ -830,13 +884,29 @@
 	
 	<xsl:template match="*[local-name() = 'clause'][@type = 'toc']/*[local-name() = 'title']" priority="3">
 		<fo:block text-align="center" font-size="14pt" font-family="IPAexGothic" margin-top="8.5mm">
+			<xsl:if test="$vertical_layout = 'true'">
+				<xsl:attribute name="text-align">left</xsl:attribute>
+				<xsl:attribute name="font-family">Noto Serif JP</xsl:attribute>
+				<xsl:attribute name="font-weight">bold</xsl:attribute>
+				<xsl:attribute name="margin-top">26mm</xsl:attribute>
+			</xsl:if>
 			<!-- Contents -->
 			<!-- <xsl:call-template name="getLocalizedString">
 				<xsl:with-param name="key">table_of_contents</xsl:with-param>
 			</xsl:call-template> -->
+			<fo:marker marker-class-name="section_title">
+				<xsl:variable name="section_title"><xsl:apply-templates/></xsl:variable>
+				<xsl:value-of select="translate($section_title, '　', '')"/>
+			</fo:marker>
 			<xsl:apply-templates/>
 		</fo:block>
 		<fo:block text-align="right" font-size="8pt" font-family="IPAexMincho" margin-top="10mm">
+			<xsl:if test="$vertical_layout = 'true'">
+				<xsl:attribute name="font-size">10.5pt</xsl:attribute>
+				<xsl:attribute name="font-family">Noto Serif JP</xsl:attribute>
+				<xsl:attribute name="margin-top">1mm</xsl:attribute>
+				<xsl:attribute name="margin-bottom">6mm</xsl:attribute>
+			</xsl:if>
 			<!-- Page -->
 			<xsl:call-template name="getLocalizedString">
 				<xsl:with-param name="key">locality.page</xsl:with-param>
@@ -848,10 +918,28 @@
 	<xsl:template name="insertTocItem">
 		<fo:block text-align-last="justify" role="TOCI">
 			<fo:basic-link internal-destination="{@id}" fox:alt-text="{title}">
-				<fo:inline><xsl:apply-templates select="title" /></fo:inline>
+				<fo:inline>
+					<xsl:if test="$vertical_layout = 'true'">
+						<xsl:attribute name="padding-right">7.5mm</xsl:attribute>
+					</xsl:if>
+					<xsl:apply-templates select="title" />
+				</fo:inline>
 				<fo:inline keep-together.within-line="always">
-					<fo:leader leader-pattern="dots"/>
-					<fo:inline font-size="8pt" font-family="Times New Roman">
+					<fo:leader leader-pattern="dots">
+						<xsl:if test="$vertical_layout = 'true'">
+							<xsl:attribute name="leader-pattern">rule</xsl:attribute>
+							<xsl:attribute name="rule-thickness">0.5pt</xsl:attribute>
+							<xsl:attribute name="baseline-shift">60%</xsl:attribute>
+						</xsl:if>
+					</fo:leader>
+					<fo:inline>
+						<xsl:if test="not($vertical_layout = 'true')">
+							<xsl:attribute name="font-size">8pt</xsl:attribute>
+							<xsl:attribute name="font-family">Times New Roman</xsl:attribute>
+						</xsl:if>
+						<xsl:if test="$vertical_layout = 'true'">
+							<xsl:attribute name="padding-left">6mm</xsl:attribute>
+						</xsl:if>
 						<fo:page-number-citation ref-id="{@id}"/>
 					</fo:inline>
 				</fo:inline>
@@ -2223,7 +2311,9 @@
 				<fo:block text-align-last="justify" margin-top="56mm" margin-bottom="-2mm">
 				
 					<fo:inline baseline-shift="-20%">
-					<fo:inline padding-bottom="5mm">三</fo:inline>用語及び定義
+						<fo:inline>
+							<fo:retrieve-marker retrieve-class-name="section_title"/>
+						</fo:inline><!-- <fo:inline padding-bottom="5mm">三</fo:inline>用語及び定義 -->
 					</fo:inline>
 					
 					<fo:inline keep-together.within-line="always">
