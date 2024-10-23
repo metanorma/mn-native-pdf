@@ -283,11 +283,17 @@
 				</fo:page-sequence-master>
 			
 				<fo:simple-page-master master-name="back-page_2024" page-width="{$pageWidthA5}mm" page-height="{$pageHeightA5}mm">
-					<fo:region-body margin-top="58mm" margin-bottom="6.5mm" margin-left="8mm" margin-right="17mm"/>
-					<fo:region-before region-name="header" extent="58mm"/>
+					<!-- Note (for writing-mode="tb-rl", may be due the update for support 'tb-rl' mode):
+					 fo:region-body/@margin-top = left margin
+					 fo:region-body/@margin-bottom = right margin
+					 fo:region-body/margin-left = bottom margin
+					 fo:region-body/margin-right = top margin
+					-->
+					<fo:region-body margin-top="5mm" margin-bottom="122mm" margin-left="6.5mm" margin-right="70mm" writing-mode="tb-rl"/>
+					<fo:region-before region-name="header" extent="70mm"/>
 					<fo:region-after region-name="footer" extent="6.5mm"/>
-					<fo:region-start region-name="left-region" extent="8mm"/>
-					<fo:region-end region-name="right-region" extent="17mm"/>
+					<fo:region-start region-name="left-region" extent="5mm"/>
+					<fo:region-end region-name="right-region" extent="122mm"/>
 				</fo:simple-page-master>
 			</fo:layout-master-set>
 			
@@ -727,15 +733,17 @@
 						</fo:page-sequence>
 					</xsl:for-each>
 					
-					
+				
+					<xsl:if test="$vertical_layout = 'true'">
+						<xsl:call-template name="insertBackPage2024">
+							<xsl:with-param name="num" select="$num"/>
+							<xsl:with-param name="copyrightText" select="$copyrightText"/>
+						</xsl:call-template>
+					</xsl:if>
 				
 				</xsl:for-each>
 			
-				<xsl:if test="$vertical_layout = 'true'">
-					<xsl:call-template name="insertBackPage2024">
-						<xsl:with-param name="num" select="$num"/>
-					</xsl:call-template>
-				</xsl:if>
+				
 			
 			</xsl:for-each>
 			
@@ -1087,7 +1095,9 @@
 	
 	<xsl:template name="insertBackPage2024">
 		<xsl:param name="num"/>
-		<fo:page-sequence master-reference="back-page_2024" force-page-count="no-force">
+		<xsl:param name="copyrightText"/>
+		
+		<fo:page-sequence master-reference="back-page_2024" force-page-count="no-force" font-family="Noto Serif JP" font-weight="500">
 
 			<fo:static-content flow-name="header">
 				<xsl:variable name="presentation_metadata_image_name">
@@ -1102,12 +1112,23 @@
 			</fo:static-content>
 			
 			<fo:flow flow-name="xsl-region-body">
-			
-				<fo:block-container text-align="center">
-					<!-- title -->
-					<fo:block role="H1" font-family="IPAexGothic" font-size="22pt" margin-top="27mm"><xsl:apply-templates select="/*/jis:bibdata/jis:title[@language = 'ja' and @type = 'main']/node()"/></fo:block>
-				</fo:block-container>
-				
+				<!-- publication date -->
+				<fo:block font-size="8pt" margin-left="90mm" text-align-last="justify" letter-spacing="0.5mm">
+					<xsl:apply-templates select="/*/jis:bibdata/jis:date[@type = 'published']/text()"/>
+					<fo:inline keep-together.within-line="always">
+						<fo:leader leader-pattern="space"/>
+						<xsl:text>発行</xsl:text>
+					</fo:inline>
+				</fo:block>
+				<!-- revision date -->
+				<fo:block font-size="8pt" margin-left="90mm" text-align-last="justify" letter-spacing="0.5mm">
+					<xsl:apply-templates select="/*/jis:bibdata/jis:date[@type = 'revised']/text()"/>
+					<fo:inline keep-together.within-line="always">
+						<fo:leader leader-pattern="space"/>
+						<xsl:text>改正</xsl:text>
+					</fo:inline>
+				</fo:block>
+				<fo:block font-size="12pt" margin-top="7mm" text-align="right"><xsl:value-of select="$copyrightText"/></fo:block>
 			</fo:flow>
 		</fo:page-sequence>
 	</xsl:template> <!-- insertBackPage2024 -->
