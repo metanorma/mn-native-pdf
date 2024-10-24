@@ -410,7 +410,7 @@
 							<xsl:otherwise><xsl:value-of select="$docidentifier_JIS_"/></xsl:otherwise>
 						</xsl:choose>
 					</xsl:variable>
-					<xsl:variable name="edition" select="/jis:jis-standard/jis:bibdata/jis:edition"/>
+					<xsl:variable name="edition" select="/jis:jis-standard/jis:bibdata/jis:edition[@language = 'ja' and @numberonly = 'true']"/>
 					
 					<xsl:choose>
 						<xsl:when test="$vertical_layout = 'true'">
