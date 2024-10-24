@@ -182,6 +182,23 @@
 					</fo:repeatable-page-master-alternatives>
 				</fo:page-sequence-master>
 				
+				<xsl:if test="1 = 3">
+				<fo:simple-page-master master-name="document_toc_2024" page-width="{$pageHeight}mm" page-height="{$pageWidth}mm">
+					<!-- Note (for writing-mode="tb-rl", may be due the update for support 'tb-rl' mode):
+					 fo:region-body/@margin-top = left margin
+					 fo:region-body/@margin-bottom = right margin
+					 fo:region-body/margin-left = bottom margin
+					 fo:region-body/margin-right = top margin
+					-->
+					<!-- <fo:region-body margin-top="{$marginTop}mm" margin-bottom="{$marginBottom}mm" margin-left="{$marginLeftRight1}mm" margin-right="{$marginLeftRight2 + 40}mm" writing-mode="tb-rl" background-color="rgb(240,240,240)"/> -->
+					<fo:region-body margin-top="{$marginLeftRight1}mm" margin-bottom="{$marginLeftRight2}mm" margin-left="30mm" margin-right="30mm" writing-mode="tb-rl"/> <!--  background-color="rgb(240,240,240)" -->
+					<fo:region-before region-name="header" extent="30mm"/> <!--  background-color="yellow" -->
+					<fo:region-after region-name="footer" extent="210mm" writing-mode="tb-rl" background-color="green"/> <!-- 30  background-color="green" -->
+					<fo:region-start region-name="left-region" extent="{$marginLeftRight1}mm" writing-mode="tb-rl" background-color="blue"/> <!--  background-color="blue" -->
+					<fo:region-end region-name="right-region" extent="{$marginLeftRight2}mm"/> <!--  background-color="red" -->
+				</fo:simple-page-master>
+				</xsl:if>
+				
 				<fo:simple-page-master master-name="document_toc_2024" page-width="{$pageHeight}mm" page-height="{$pageWidth}mm">
 					<!-- Note (for writing-mode="tb-rl", may be due the update for support 'tb-rl' mode):
 					 fo:region-body/@margin-top = left margin
@@ -231,7 +248,7 @@
 					<fo:region-body margin-top="{$marginLeftRight1}mm" margin-bottom="{$marginLeftRight2}mm" margin-left="{$marginBottom}mm" margin-right="{$marginTop}mm" writing-mode="tb-rl"/> <!--  background-color="rgb(240,240,240)" -->
 					<fo:region-before region-name="header" extent="{$marginTop}mm"/> <!--  background-color="yellow" -->
 					<fo:region-after region-name="footer" extent="{$marginBottom}mm"/> <!--  background-color="green" -->
-					<fo:region-start region-name="left-region" extent="{$marginLeftRight1}mm"/> <!--  background-color="blue" -->
+					<fo:region-start region-name="left-region" extent="{$marginLeftRight1}mm" /> <!--  background-color="blue" -->
 					<fo:region-end region-name="right-region" extent="{$marginLeftRight2}mm"/> <!--  background-color="red" -->
 				</fo:simple-page-master>
 			
@@ -2352,17 +2369,45 @@
 			</fo:block-container>
 		</fo:static-content>
 		
+		<xsl:if test="1 = 3">
+		<fo:static-content flow-name="left-region" role="artifact">
+			<fo:block>l=<fo:page-number /> 三用語及び定義</fo:block>
+		</fo:static-content>
+		
+		<fo:static-content flow-name="footer" role="artifact">
+			
+			<fo:block-container absolute-position="fixed" left="0mm" top="0" width="6mm" height="{$pageHeightA5}mm" background-color="{$cover_header_footer_background}">
+				<fo:block color="white">f=<fo:page-number /> 三用語及び定義</fo:block>
+			</fo:block-container>
+			<fo:block text-align="left" margin-top="192.5mm" margin-left="100mm" color="white">
+			
+				<fo:inline-container writing-mode="lr-tb" text-align="center"
+                                       alignment-baseline="central" reference-orientation="90" width="1em" margin="0" padding="0"
+                                       text-indent="0mm" last-line-end-indent="0mm" start-indent="0mm" end-indent="0mm">
+                <fo:block-container width="1em">
+                    <fo:block line-height="1em"><fo:page-number /> </fo:block>
+                </fo:block-container>
+				</fo:inline-container>
+			
+				
+			</fo:block> <!-- f= 三用語及び定義 -->
+		</fo:static-content>
+		</xsl:if>
+		
 		<!-- footer -->
+		<xsl:if test="1 = 1">
 		<fo:static-content flow-name="left-region" role="artifact">
 			<fo:block-container absolute-position="fixed" left="0mm" top="0" width="6mm" height="{$pageHeightA5}mm" background-color="{$cover_header_footer_background}">
 				<fo:block-container font-size="9pt" color="white" text-align="center">
-					<fo:block margin-top="131mm"><fo:page-number /></fo:block> <!-- 二 -->
+					<fo:block margin-top="131mm">
+						<fo:page-number />
+					</fo:block> <!-- 二 -->
 				</fo:block-container>
 			</fo:block-container>
 			
 			<fo:block-container font-size="9pt" color="white" height="5.5mm" writing-mode="tb-rl" margin-left="56mm" line-height="1.1">
 				
-				<fo:block text-align-last="justify" margin-top="56mm" margin-bottom="-2mm">
+				<fo:block text-align-last="justify" margin-top="56mm" margin-bottom="3mm">
 				
 					<fo:inline baseline-shift="-20%">
 						<fo:inline>
@@ -2392,7 +2437,7 @@
 				</fo:block>
 			</fo:block-container>
 		</fo:static-content>
-		
+		</xsl:if>
 		<!-- <fo:static-content flow-name="left-region" role="artifact">
 			<fo:block-container font-size="9pt" height="{$pageHeightA5}mm" width="6mm" color="white" background-color="{$cover_header_footer_background}" text-align="center">
 				<fo:block-container margin-left="0mm" margin-top="55.5mm" line-height="1.1">
