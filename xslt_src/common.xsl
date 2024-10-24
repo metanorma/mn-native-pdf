@@ -3291,7 +3291,6 @@
 			<xsl:attribute name="font-size">70%</xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'jis'">
-			<xsl:attribute name="font-family">Times New Roman</xsl:attribute>
 			<xsl:attribute name="font-size">67%</xsl:attribute>
 			<xsl:attribute name="font-weight">bold</xsl:attribute>
 			<xsl:attribute name="vertical-align">super</xsl:attribute>
@@ -4300,7 +4299,6 @@
 		<xsl:attribute name="keep-with-next">always</xsl:attribute>
 		<xsl:attribute name="font-weight">bold</xsl:attribute>
 		<xsl:if test="$namespace = 'jis'">
-			<xsl:attribute name="font-family">Times New Roman</xsl:attribute>
 			<xsl:attribute name="space-after">2pt</xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'plateau'">
@@ -5235,7 +5233,6 @@
 			<xsl:attribute name="color">blue</xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'jis'">
-			<xsl:attribute name="font-family">Times New Roman</xsl:attribute>
 			<xsl:attribute name="font-size">67%</xsl:attribute>
 			<xsl:attribute name="font-weight">bold</xsl:attribute>
 			<xsl:attribute name="vertical-align">super</xsl:attribute>
@@ -5282,6 +5279,11 @@
 			<xsl:if test="ancestor::*[local-name()='table']">
 				<xsl:attribute name="font-weight">normal</xsl:attribute>
 				<xsl:attribute name="baseline-shift">15%</xsl:attribute>
+			</xsl:if>
+		</xsl:if>
+		<xsl:if test="$namespace = 'jis'">
+			<xsl:if test="not($vertical_layout = 'true')">
+				<xsl:attribute name="font-family">Times New Roman</xsl:attribute>
 			</xsl:if>
 		</xsl:if>
 	</xsl:template> <!-- refine_fn-reference-style -->
@@ -5334,7 +5336,6 @@
 			<xsl:attribute name="vertical-align">super</xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'jis'">
-			<xsl:attribute name="font-family">Times New Roman</xsl:attribute>
 			<xsl:attribute name="font-size">67%</xsl:attribute>
 			<xsl:attribute name="font-weight">bold</xsl:attribute>
 			<xsl:attribute name="vertical-align">super</xsl:attribute>
@@ -5517,7 +5518,9 @@
 			</xsl:if>
 		</xsl:if>
 		<xsl:if test="$namespace = 'jis'">
-			<xsl:attribute name="font-family">IPAexMincho</xsl:attribute> <!-- prevent font for footnote in Times New Roman main text -->
+			<xsl:if test="not($vertical_layout = 'true')">
+				<xsl:attribute name="font-family">IPAexMincho</xsl:attribute> <!-- prevent font for footnote in Times New Roman main text -->
+			</xsl:if>
 		</xsl:if>
 	</xsl:template> <!-- refine_fn-body-style -->
 	
@@ -5567,7 +5570,6 @@
 			<xsl:attribute name="baseline-shift">30%</xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'jis'">
-			<xsl:attribute name="font-family">Times New Roman</xsl:attribute>
 			<xsl:attribute name="font-size">67%</xsl:attribute>
 			<xsl:attribute name="font-weight">bold</xsl:attribute>
 			<xsl:attribute name="vertical-align">super</xsl:attribute>
@@ -5626,6 +5628,11 @@
 		<xsl:if test="$namespace = 'ieee'">
 			<xsl:if test="$current_template = 'whitepaper' or $current_template = 'icap-whitepaper' or $current_template = 'industry-connection-report'">
 				<xsl:attribute name="padding-right">0.5mm</xsl:attribute>
+			</xsl:if>
+		</xsl:if>
+		<xsl:if test="$namespace = 'jis'">
+			<xsl:if test="not($vertical_layout = 'true')">
+				<xsl:attribute name="font-family">Times New Roman</xsl:attribute>
 			</xsl:if>
 		</xsl:if>
 	</xsl:template> <!-- refine_fn-body-num-style -->
@@ -6256,7 +6263,6 @@
 			<xsl:attribute name="baseline-shift">30%</xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'jis'">
-			<xsl:attribute name="font-family">Times New Roman</xsl:attribute>
 			<xsl:attribute name="font-size">67%</xsl:attribute>
 			<xsl:attribute name="font-weight">bold</xsl:attribute>
 			<xsl:attribute name="vertical-align">super</xsl:attribute>
@@ -9088,10 +9094,22 @@
 				<xsl:variable name="fn_styles">
 					<xsl:choose>
 						<xsl:when test="ancestor::*[local-name() = 'bibitem']">
-							<fn_styles xsl:use-attribute-sets="bibitem-note-fn-style"/>
+							<fn_styles xsl:use-attribute-sets="bibitem-note-fn-style">
+								<xsl:if test="$namespace = 'jis'">
+									<xsl:if test="not($vertical_layout = 'true')">
+										<xsl:attribute name="font-family">Times New Roman</xsl:attribute>
+									</xsl:if>
+								</xsl:if>
+							</fn_styles>
 						</xsl:when>
 						<xsl:otherwise>
-							<fn_styles xsl:use-attribute-sets="fn-num-style"/>
+							<fn_styles xsl:use-attribute-sets="fn-num-style">
+								<xsl:if test="$namespace = 'jis'">
+									<xsl:if test="not($vertical_layout = 'true')">
+										<xsl:attribute name="font-family">Times New Roman</xsl:attribute>
+									</xsl:if>
+								</xsl:if>
+							</fn_styles>
 						</xsl:otherwise>
 					</xsl:choose>
 				</xsl:variable>
@@ -9293,6 +9311,9 @@
 										</fo:inline>
 										<xsl:text> </xsl:text>
 										<fo:inline xsl:use-attribute-sets="table-fn-number-style">
+											<xsl:if test="not($vertical_layout = 'true')">
+												<xsl:attribute name="font-family">Times New Roman</xsl:attribute>
+											</xsl:if>
 											<xsl:value-of select="@reference"/>
 											<fo:inline font-weight="normal">)</fo:inline>
 										</fo:inline>
@@ -10598,7 +10619,9 @@
 			</xsl:if>
 		</xsl:if>
 		<xsl:if test="$namespace = 'jis'">
-			<xsl:attribute name="font-family">Times New Roman</xsl:attribute>
+			<xsl:if test="not($vertical_layout = 'true')">
+				<xsl:attribute name="font-family">Times New Roman</xsl:attribute>
+			</xsl:if>
 		</xsl:if>
 		<xsl:if test="$namespace = 'rsd'">
 			<xsl:if test="not(parent::*[local-name() = 'termsource'])">
@@ -16289,6 +16312,11 @@
 			
 			<xsl:if test="parent::*[local-name() = 'term'] and not(preceding-sibling::*[local-name() = 'preferred'])"> <!-- if first preffered in term, then display term's name -->
 				<fo:block xsl:use-attribute-sets="term-name-style" role="SKIP">
+					<xsl:if test="$namespace = 'jis'">
+						<xsl:if test="not($vertical_layout = 'true')">
+							<xsl:attribute name="font-family">Times New Roman</xsl:attribute>
+						</xsl:if>
+					</xsl:if>
 					<xsl:apply-templates select="ancestor::*[local-name() = 'term'][1]/*[local-name() = 'name']" />
 				</fo:block>
 			</xsl:if>
@@ -17957,7 +17985,10 @@
 				<xsl:if test=".//*[local-name() = 'fn']">
 					<xsl:attribute name="line-height-shift-adjustment">disregard-shifts</xsl:attribute>
 				</xsl:if>
-				<fo:inline font-family="Times New Roman" font-weight="bold">
+				<fo:inline font-weight="bold">
+					<xsl:if test="not($vertical_layout = 'true')">
+						<xsl:attribute name="font-family">Times New Roman</xsl:attribute>
+					</xsl:if>
 					<xsl:apply-templates select="*[local-name() = 'biblio-tag']">
 						<xsl:with-param name="biblio_tag_part" select="$biblio_tag_part"/>
 					</xsl:apply-templates>

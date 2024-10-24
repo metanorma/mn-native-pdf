@@ -549,7 +549,7 @@
 									<fo:page-sequence master-reference="document_preface" force-page-count="no-force">
 										
 										<xsl:if test="$vertical_layout = 'true'">
-											<xsl:attribute name="master-reference">document_2024</xsl:attribute>
+											<xsl:attribute name="master-reference">document_2024_page</xsl:attribute>
 											<xsl:attribute name="format">&#x4E8C;</xsl:attribute>
 										</xsl:if>
 										
@@ -572,7 +572,7 @@
 													<xsl:with-param name="docidentifier" select="concat('JIS ', $docidentifier_JIS)"/>
 													<xsl:with-param name="edition" select="$edition"/>
 													<xsl:with-param name="copyrightText" select="$copyrightText"/>
-													<xsl:with-param name="insertLast">true</xsl:with-param>
+													<!-- <xsl:with-param name="insertLast">true</xsl:with-param> -->
 													<xsl:with-param name="bibdata" select="$bibdata"/>
 												</xsl:call-template>
 											</xsl:when>
@@ -981,10 +981,13 @@
 			</fo:marker>
 			<xsl:apply-templates/>
 		</fo:block>
-		<fo:block text-align="right" font-size="8pt" font-family="IPAexMincho" margin-top="10mm">
+		<fo:block text-align="right" margin-top="10mm">
+			<xsl:if test="not($vertical_layout = 'true')">
+				<xsl:attribute name="font-family">IPAexMincho</xsl:attribute>
+				<xsl:attribute name="font-size">8pt</xsl:attribute>
+			</xsl:if>
 			<xsl:if test="$vertical_layout = 'true'">
 				<xsl:attribute name="font-size">10.5pt</xsl:attribute>
-				<xsl:attribute name="font-family">Noto Serif JP</xsl:attribute>
 				<xsl:attribute name="margin-top">1mm</xsl:attribute>
 				<xsl:attribute name="margin-bottom">6mm</xsl:attribute>
 			</xsl:if>
@@ -2260,9 +2263,13 @@
 	
 	<xsl:template match="*[local-name() = 'font_en_bold'][normalize-space() != '']">
 		<xsl:if test="ancestor::*[local-name() = 'td' or local-name() = 'th']"><xsl:value-of select="$zero_width_space"/></xsl:if>
-		<fo:inline font-family="Times New Roman" font-weight="bold">
-			<xsl:if test="ancestor::*[local-name() = 'preferred']">
-				<xsl:attribute name="font-weight">normal</xsl:attribute>
+		<fo:inline>
+			<xsl:if test="not($vertical_layout = 'true')">
+				<xsl:attribute name="font-family">Times New Roman</xsl:attribute>
+				<xsl:attribute name="font-weight">bold</xsl:attribute>
+				<xsl:if test="ancestor::*[local-name() = 'preferred']">
+					<xsl:attribute name="font-weight">normal</xsl:attribute>
+				</xsl:if>
 			</xsl:if>
 			<xsl:apply-templates/>
 		</fo:inline>
@@ -2273,7 +2280,9 @@
 		<xsl:if test="ancestor::*[local-name() = 'td' or local-name() = 'th']"><xsl:value-of select="$zero_width_space"/></xsl:if>
 		<fo:inline>
 			<xsl:if test="not(ancestor::jis:p[@class = 'zzSTDTitle2']) and not(ancestor::jis:span[@class = 'JIS'])">
-				<xsl:attribute name="font-family">Times New Roman</xsl:attribute>
+				<xsl:if test="not($vertical_layout = 'true')">
+					<xsl:attribute name="font-family">Times New Roman</xsl:attribute>
+				</xsl:if>
 			</xsl:if>
 			<xsl:if test="ancestor::*[local-name() = 'preferred']">
 				<xsl:attribute name="font-weight">normal</xsl:attribute>
