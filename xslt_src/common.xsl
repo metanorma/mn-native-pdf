@@ -16394,6 +16394,8 @@
 				<xsl:if test="$namespace = 'jis'">
 					<xsl:if test="$vertical_layout = 'true'">
 						<xsl:attribute name="margin-left">6mm</xsl:attribute>
+						<xsl:attribute name="font-family">Noto Sans JP</xsl:attribute>
+						<xsl:attribute name="font-weight">bold</xsl:attribute>
 					</xsl:if>
 					<xsl:if test="not($vertical_layout = 'true')">
 						<xsl:attribute name="font-family">IPAexGothic</xsl:attribute>

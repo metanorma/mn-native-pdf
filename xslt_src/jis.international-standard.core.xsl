@@ -2295,9 +2295,36 @@
 					<xsl:attribute name="font-weight">normal</xsl:attribute>
 				</xsl:if>
 			</xsl:if>
-			<xsl:apply-templates/>
+			<!-- <xsl:if test="$vertical_layout = 'true'">
+				<xsl:attribute name="font-size">18pt</xsl:attribute>
+				<xsl:attribute name="font-weight">bold</xsl:attribute>
+			</xsl:if> -->
+			<xsl:call-template name="insertEnglishText"/>
 		</fo:inline>
 		<xsl:if test="ancestor::*[local-name() = 'td' or local-name() = 'th']"><xsl:value-of select="$zero_width_space"/></xsl:if>
+	</xsl:template>
+	
+	<xsl:template name="insertEnglishText">
+		<xsl:choose>
+			<xsl:when test="not($vertical_layout = 'true')">
+				<xsl:apply-templates/>
+			</xsl:when>
+			<xsl:otherwise> <!-- $vertical_layout = 'true' -->
+				<xsl:for-each select="node()">
+					<xsl:choose>
+						<xsl:when test="self::text()">
+							<!-- convert to vertical layout -->
+							<xsl:call-template name="insertVerticalChar">
+								<xsl:with-param name="str" select="."/>
+							</xsl:call-template>
+						</xsl:when>
+						<xsl:otherwise>
+							<xsl:apply-templates select="."/>
+						</xsl:otherwise>
+					</xsl:choose>
+				</xsl:for-each>
+			</xsl:otherwise>
+		</xsl:choose>
 	</xsl:template>
 	
 	<xsl:template match="*[local-name() = 'font_en'][normalize-space() != '']">
@@ -2311,7 +2338,10 @@
 			<xsl:if test="ancestor::*[local-name() = 'preferred']">
 				<xsl:attribute name="font-weight">normal</xsl:attribute>
 			</xsl:if>
-			<xsl:apply-templates/>
+			<!-- <xsl:if test="$vertical_layout = 'true'">
+				<xsl:attribute name="font-size">16pt</xsl:attribute>
+			</xsl:if> -->
+			<xsl:call-template name="insertEnglishText"/>
 		</fo:inline>
 		<xsl:if test="ancestor::*[local-name() = 'td' or local-name() = 'th']"><xsl:value-of select="$zero_width_space"/></xsl:if>
 	</xsl:template>
