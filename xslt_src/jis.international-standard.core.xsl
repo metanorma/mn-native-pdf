@@ -731,9 +731,9 @@
 							
 							<xsl:variable name="section_title">
 								<xsl:if test="$isCommentary = 'true'">
-									<fo:inline font-family="IPAexGothic" padding-left="2mm">
-										<xsl:if test="$vertical_layout = 'true'">
-											<xsl:attribute name="font-family">inherit</xsl:attribute>
+									<fo:inline padding-left="2mm">
+										<xsl:if test="not($vertical_layout = 'true')">
+											<xsl:attribute name="font-family">IPAexGothic</xsl:attribute>
 										</xsl:if>
 										<xsl:text>&#xa0;</xsl:text>
 										<xsl:call-template name="getLocalizedString">
@@ -882,7 +882,7 @@
 	
 	<xsl:template match="*[local-name() = 'colon_gothic']">
 		<!-- replace : to ： (Fullwidth colon) and render it in the font IPAexGothic -->
-		<fo:inline font-family="IPAexGothic"><xsl:if test="$vertical_layout = 'true'"><xsl:attribute name="font-family">inherit</xsl:attribute></xsl:if>：</fo:inline>
+		<fo:inline><xsl:if test="not($vertical_layout = 'true')"><xsl:attribute name="font-family">IPAexGothic</xsl:attribute></xsl:if>：</fo:inline>
 	</xsl:template>
 	
 	<xsl:template match="*[local-name()='preface']/*[local-name() = 'clause'][@type = 'toc']" priority="4">
@@ -890,10 +890,11 @@
 		<xsl:apply-templates />
 		<xsl:if test="count(*) = 1 and *[local-name() = 'title']"> <!-- if there isn't user ToC -->
 			<!-- fill ToC -->
-			<fo:block role="TOC" font-family="IPAexGothic">
-			
+			<fo:block role="TOC">
+				<xsl:if test="not($vertical_layout = 'true')">
+					<xsl:attribute name="font-family">IPAexGothic</xsl:attribute>
+				</xsl:if>
 				<xsl:if test="$vertical_layout = 'true'">
-					<xsl:attribute name="font-family">inherit</xsl:attribute>
 					<xsl:attribute name="font-size">10.5pt</xsl:attribute>
 				</xsl:if>
 			
@@ -964,10 +965,12 @@
 	</xsl:template>
 	
 	<xsl:template match="*[local-name() = 'clause'][@type = 'toc']/*[local-name() = 'title']" priority="3">
-		<fo:block text-align="center" font-size="14pt" font-family="IPAexGothic" margin-top="8.5mm">
+		<fo:block text-align="center" font-size="14pt" margin-top="8.5mm">
+			<xsl:if test="not($vertical_layout = 'true')">
+				<xsl:attribute name="font-family">IPAexGothic</xsl:attribute>
+			</xsl:if>
 			<xsl:if test="$vertical_layout = 'true'">
 				<xsl:attribute name="text-align">left</xsl:attribute>
-				<xsl:attribute name="font-family">inherit</xsl:attribute>
 				<xsl:attribute name="font-weight">bold</xsl:attribute>
 				<xsl:attribute name="margin-top">26mm</xsl:attribute>
 			</xsl:if>
@@ -1262,13 +1265,6 @@
 					<fo:inline padding-right="5mm"><xsl:apply-templates select="/*/jis:bibdata/jis:date[@type = 'published']/text()"/></fo:inline>改正
 				</fo:block>
 				
-				<!--
-				
-				<fo:block font-size="10pt" font-weight="bold" color="white">
-					2<xsl:value-of select="/*/jis:bibdata/jis:contributor[jis:role/@type = 'publisher']/jis:organization/jis:name/jis:variant[@language = 'ja']"/> 発行
-				</fo:block> -->
-				
-				
 			</fo:flow>
 		</fo:page-sequence>
 	</xsl:template> <!-- insertCoverPage2024 -->
@@ -1460,9 +1456,11 @@
 	</xsl:template>
 	
 	<xsl:template match="jis:p[@class = 'zzSTDTitle1']" priority="4">
-		<fo:block font-family="IPAexGothic" font-size="19pt" text-align="center" margin-top="12mm" margin-bottom="4mm">
+		<fo:block font-size="19pt" text-align="center" margin-top="12mm" margin-bottom="4mm">
+			<xsl:if test="not($vertical_layout = 'true')">
+				<xsl:attribute name="font-family">IPAexGothic</xsl:attribute>
+			</xsl:if>
 			<xsl:if test="$vertical_layout = 'true'">
-				<xsl:attribute name="font-family">inherit</xsl:attribute>
 				<xsl:attribute name="font-size">16pt</xsl:attribute>
 				<xsl:attribute name="font-weight">bold</xsl:attribute>
 				<xsl:attribute name="text-align">left</xsl:attribute>
@@ -1476,9 +1474,11 @@
 	</xsl:template>
 	
 	<xsl:template match="jis:p[@class = 'zzSTDTitle2']" priority="4">
-		<fo:block font-family="Arial" font-size="13pt" text-align="center" margin-bottom="10mm">
+		<fo:block font-size="13pt" text-align="center" margin-bottom="10mm">
+			<xsl:if test="not($vertical_layout = 'true')">
+				<xsl:attribute name="font-family">Arial</xsl:attribute>
+			</xsl:if>
 			<xsl:if test="$vertical_layout = 'true'">
-				<xsl:attribute name="font-family">inherit</xsl:attribute>
 				<xsl:attribute name="font-size">11pt</xsl:attribute>
 				<xsl:attribute name="text-align">left</xsl:attribute>
 				<xsl:attribute name="margin-bottom">3mm</xsl:attribute>
