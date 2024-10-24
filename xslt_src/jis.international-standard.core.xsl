@@ -237,7 +237,7 @@
 				</fo:page-sequence-master>
 			
 			
-				<fo:simple-page-master master-name="document_2024" page-width="{$pageHeight}mm" page-height="{$pageWidth}mm">
+				<fo:simple-page-master master-name="document_2024_page" page-width="{$pageHeight}mm" page-height="{$pageWidth}mm">
 					<!-- Note (for writing-mode="tb-rl", may be due the update for support 'tb-rl' mode):
 					 fo:region-body/@margin-top = left margin
 					 fo:region-body/@margin-bottom = right margin
@@ -251,6 +251,30 @@
 					<fo:region-start region-name="left-region" extent="{$marginLeftRight1}mm" /> <!--  background-color="blue" -->
 					<fo:region-end region-name="right-region" extent="{$marginLeftRight2}mm"/> <!--  background-color="red" -->
 				</fo:simple-page-master>
+				<fo:simple-page-master master-name="document_2024_last" page-width="{$pageHeight}mm" page-height="{$pageWidth}mm">
+					<!-- Note (for writing-mode="tb-rl", may be due the update for support 'tb-rl' mode):
+					 fo:region-body/@margin-top = left margin
+					 fo:region-body/@margin-bottom = right margin
+					 fo:region-body/margin-left = bottom margin
+					 fo:region-body/margin-right = top margin
+					-->
+					<!-- <fo:region-body margin-top="{$marginTop}mm" margin-bottom="{$marginBottom}mm" margin-left="{$marginLeftRight1}mm" margin-right="{$marginLeftRight2 + 40}mm" writing-mode="tb-rl" background-color="rgb(240,240,240)"/> -->
+					<fo:region-body margin-top="194mm" margin-bottom="{$marginLeftRight2}mm" margin-left="{$marginBottom}mm" margin-right="{$marginTop}mm" writing-mode="tb-rl"/> <!--  background-color="rgb(240,240,240)" -->
+					<fo:region-before region-name="header-last" extent="{$marginTop}mm" writing-mode="tb-rl"/> <!--  background-color="yellow" -->
+					<fo:region-after region-name="footer" extent="{$marginBottom}mm"/> <!--  background-color="green" -->
+					<!-- for boilerplate:
+						reserve paper space in left-region, but text will render in the header 
+					-->
+					<fo:region-start region-name="left-region" extent="194mm" /> <!--  background-color="blue"  background-color="rgb(230,230,230)" -->
+					<fo:region-end region-name="right-region" extent="{$marginLeftRight2}mm"/> <!--  background-color="red" -->
+				</fo:simple-page-master>
+			
+				<fo:page-sequence-master master-name="document_2024">
+					<fo:repeatable-page-master-alternatives>
+						<fo:conditional-page-master-reference page-position="last" master-reference="document_2024_last"/>
+						<fo:conditional-page-master-reference page-position="any" master-reference="document_2024_page"/>
+					</fo:repeatable-page-master-alternatives>
+				</fo:page-sequence-master>
 			
 				<fo:simple-page-master master-name="commentary_first_page_even" page-width="{$pageWidth}mm" page-height="{$pageHeight}mm">
 					<xsl:if test="$vertical_layout = 'true'">
@@ -425,18 +449,22 @@
 							</xsl:call-template>
 						</xsl:otherwise>
 					</xsl:choose>
-										
+					
+					<xsl:if test="not($vertical_layout = 'true')">
 					<xsl:call-template name="insertInnerCoverPage">
 						<xsl:with-param name="docidentifier" select="$docidentifier"/>
 						<xsl:with-param name="copyrightText" select="$copyrightText"/>
 					</xsl:call-template>
+					</xsl:if>
 				
 				
 					<!-- ========================== -->
 					<!-- Contents and preface pages -->
 					<!-- ========================== -->
 					
-					
+					<xsl:variable name="bibdata">
+						<xsl:copy-of select="/jis:jis-standard/jis:bibdata"/>
+					</xsl:variable>
 					 
 					<xsl:for-each select="/*/*[local-name()='preface']/*[not(local-name() = 'clause' and @type = 'contributors')]">
 						<xsl:sort select="@displayorder" data-type="number"/>
@@ -521,7 +549,7 @@
 									<fo:page-sequence master-reference="document_preface" force-page-count="no-force">
 										
 										<xsl:if test="$vertical_layout = 'true'">
-											<xsl:attribute name="master-reference">document_toc_2024</xsl:attribute>
+											<xsl:attribute name="master-reference">document_2024</xsl:attribute>
 											<xsl:attribute name="format">&#x4E8C;</xsl:attribute>
 										</xsl:if>
 										
@@ -535,11 +563,27 @@
 											</fo:block>
 										</fo:static-content>
 										
-										<xsl:call-template name="insertHeaderFooter">
-											<xsl:with-param name="docidentifier" select="$docidentifier"/>
-											<xsl:with-param name="copyrightText" select="$copyrightText"/>
-											<xsl:with-param name="section">preface</xsl:with-param>
-										</xsl:call-template>
+										<xsl:choose>
+											<xsl:when test="$vertical_layout = 'true'">
+												<xsl:call-template name="insertLeftRightRegions">
+													<xsl:with-param name="cover_header_footer_background" select="$cover_header_footer_background"/>
+													<xsl:with-param name="title_ja" select="$title_ja"/>
+													<xsl:with-param name="i18n_JIS" select="$i18n_JIS"/>
+													<xsl:with-param name="docidentifier" select="concat('JIS ', $docidentifier_JIS)"/>
+													<xsl:with-param name="edition" select="$edition"/>
+													<xsl:with-param name="copyrightText" select="$copyrightText"/>
+													<xsl:with-param name="insertLast">true</xsl:with-param>
+													<xsl:with-param name="bibdata" select="$bibdata"/>
+												</xsl:call-template>
+											</xsl:when>
+											<xsl:otherwise>
+												<xsl:call-template name="insertHeaderFooter">
+													<xsl:with-param name="docidentifier" select="$docidentifier"/>
+													<xsl:with-param name="copyrightText" select="$copyrightText"/>
+													<xsl:with-param name="section">preface</xsl:with-param>
+												</xsl:call-template>
+											</xsl:otherwise>
+										</xsl:choose>
 										
 										<fo:flow flow-name="xsl-region-body">
 										
@@ -716,6 +760,8 @@
 										<xsl:with-param name="docidentifier" select="concat('JIS ', $docidentifier_JIS)"/>
 										<xsl:with-param name="edition" select="$edition"/>
 										<xsl:with-param name="copyrightText" select="$copyrightText"/>
+										<xsl:with-param name="insertLast">true</xsl:with-param>
+										<xsl:with-param name="bibdata" select="$bibdata"/>
 									</xsl:call-template>
 								</xsl:when>
 								<xsl:otherwise>
@@ -2348,6 +2394,8 @@
 		<xsl:param name="title_ja"/>
 		<xsl:param name="edition"/>
 		<xsl:param name="copyrightText"/>
+		<xsl:param name="insertLast"/>
+		<xsl:param name="bibdata"/>
 		
 		<!-- header -->
 		<fo:static-content flow-name="right-region" role="artifact">
@@ -2375,6 +2423,39 @@
 				</fo:block-container>
 			</fo:block-container>
 		</fo:static-content>
+		
+		<xsl:if test="$insertLast = 'true'">
+			<!-- header last render in header region -->
+			<fo:static-content flow-name="header-last" role="artifact">
+				<fo:block font-size="12pt" font-weight="bold" margin-left="10mm">
+					<fo:inline-container writing-mode="lr-tb" text-align="center"
+																		 alignment-baseline="central" reference-orientation="90" width="1em" margin="0" padding="0"
+																		 text-indent="0mm" last-line-end-indent="0mm" start-indent="0mm" end-indent="0mm">
+							<fo:block-container width="1em">
+								<xsl:call-template name="insertEachCharInBlock">
+									<xsl:with-param name="str">JIS <xsl:value-of select="$docidentifier_number"/></xsl:with-param>
+									<xsl:with-param name="spaceIndent">0.5em</xsl:with-param>
+									<xsl:with-param name="lineHeight">1.1em</xsl:with-param>
+								</xsl:call-template>
+							</fo:block-container>
+					</fo:inline-container>
+				</fo:block>
+				<fo:block margin-top="2mm" font-size="12pt" font-weight="bold" margin-left="10mm" letter-spacing="2.5mm">
+					<xsl:value-of select="$title_ja"/>
+				</fo:block>
+				<fo:block margin-top="6.5mm" font-size="10pt" font-weight="bold" margin-left="16.5mm">
+					<fo:inline padding-right="7mm"><xsl:value-of select="xalan:nodeset($bibdata)//jis:bibdata/jis:date[@type = 'published']"/></fo:inline>
+					<xsl:variable name="edition" select="xalan:nodeset($bibdata)//jis:edition[@language = 'ja'][1]"/>
+					<!-- add spaced between characters -->
+					<fo:inline padding-right="6mm"><xsl:value-of select="java:replaceAll(java:java.lang.String.new($edition), '(.)', '$1　')"/></fo:inline>
+					発行
+				</fo:block>
+				
+				<fo:block margin-top="13mm" font-size="10pt" font-weight="bold" margin-left="16.5mm">
+				</fo:block>
+				
+			</fo:static-content>
+		</xsl:if>
 		
 		<xsl:if test="1 = 3">
 		<fo:static-content flow-name="left-region" role="artifact">
