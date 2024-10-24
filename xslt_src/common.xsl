@@ -338,7 +338,7 @@
 			<xsl:when test="$namespace = 'jcgm'">29.5</xsl:when>
 			<xsl:when test="$namespace = 'jis'">
 				<xsl:choose>
-					<xsl:when test="$vertical_layout = 'true'">9.4</xsl:when>
+					<xsl:when test="$vertical_layout = 'true'">16</xsl:when> <!-- 9.4 -->
 					<xsl:otherwise>30</xsl:otherwise>
 				</xsl:choose>
 			</xsl:when>
@@ -5172,7 +5172,7 @@
 		</xsl:if>
 	
 		<xsl:if test="$namespace = 'jis'">
-			<xsl:if test="parent::*[local-name() = 'ol']">
+			<xsl:if test="parent::*[local-name() = 'ol'] and not($vertical_layout = 'true')">
 				<xsl:attribute name="font-family">Times New Roman</xsl:attribute>
 				<xsl:attribute name="font-weight">bold</xsl:attribute>
 			</xsl:if>
@@ -17010,18 +17010,32 @@
 						</xsl:choose>
 					</xsl:when>
 					<xsl:when test="$namespace = 'jis'">
-						<fo:block-container role="SKIP">
-							<xsl:if test="ancestor::jis:ol or ancestor::jis:ul">
-								<xsl:attribute name="margin-left">3.5mm</xsl:attribute>
-							</xsl:if>
-							<fo:block-container margin-left="0mm" role="SKIP">
-								<fo:block>
+						<xsl:choose>
+							<xsl:when test="$vertical_layout = 'true'">
+								<fo:block role="SKIP">
+									<xsl:if test="ancestor::jis:ol or ancestor::jis:ul">
+										<xsl:attribute name="margin-left">-3.5mm</xsl:attribute>
+									</xsl:if>
 									<xsl:apply-templates select="." mode="list">
 										<xsl:with-param name="indent" select="$indent"/>
 									</xsl:apply-templates>
 								</fo:block>
-							</fo:block-container>
-						</fo:block-container>
+							</xsl:when>
+							<xsl:otherwise>
+								<fo:block-container role="SKIP">
+									<xsl:if test="ancestor::jis:ol or ancestor::jis:ul">
+										<xsl:attribute name="margin-left">3.5mm</xsl:attribute>
+									</xsl:if>
+									<fo:block-container margin-left="0mm" role="SKIP">
+										<fo:block>
+											<xsl:apply-templates select="." mode="list">
+												<xsl:with-param name="indent" select="$indent"/>
+											</xsl:apply-templates>
+										</fo:block>
+									</fo:block-container>
+								</fo:block-container>
+							</xsl:otherwise>
+						</xsl:choose>
 					</xsl:when>
 					<xsl:when test="$namespace = 'plateau'">
 						<fo:block-container role="SKIP">
@@ -17139,6 +17153,31 @@
 		<xsl:if test="$namespace = 'iso'">
 			<xsl:if test="$layoutVersion = '1951' and local-name() = 'ul'">
 				<xsl:attribute name="provisional-distance-between-starts">5mm</xsl:attribute>
+			</xsl:if>
+		</xsl:if>
+		
+		<xsl:if test="$namespace = 'jis'">
+			<xsl:if test="local-name() = 'ol' and $vertical_layout = 'true' and @type = 'arabic'">
+				<xsl:variable name="labels">
+					<xsl:for-each select="*[local-name() = 'li']"><label_len><xsl:value-of select="string-length(@label)"/></label_len></xsl:for-each>
+				</xsl:variable>
+				<xsl:variable name="max_len_label_">
+					<xsl:for-each select="xalan:nodeset($labels)//*">
+						<xsl:sort select="." data-type="number" order="descending"/>
+						<xsl:if test="position() = 1"><xsl:value-of select="."/></xsl:if>
+					</xsl:for-each>
+				</xsl:variable>
+				<xsl:variable name="max_len_label" select="number($max_len_label_)"/>
+				<xsl:attribute name="provisional-distance-between-starts">
+					<xsl:choose>
+						<xsl:when test="$max_len_label = 1">8.5mm</xsl:when>
+						<xsl:when test="$max_len_label = 2">12mm</xsl:when>
+						<xsl:when test="$max_len_label = 3">20mm</xsl:when>
+						<xsl:otherwise>
+							<xsl:value-of select="3 + number($max_len_label) * 4"/>mm
+						</xsl:otherwise>
+					</xsl:choose>
+				</xsl:attribute>
 			</xsl:if>
 		</xsl:if>
 		

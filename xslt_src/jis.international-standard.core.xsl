@@ -1745,7 +1745,8 @@
 										<xsl:attribute name="font-family">Times New Roman</xsl:attribute>
 										<xsl:attribute name="font-weight">bold</xsl:attribute>
 									</xsl:if>
-									<xsl:value-of select="translate($section, '．', '・')"/>
+									<!-- <xsl:value-of select="translate($section, '．', '・')"/> -->
+									<xsl:value-of select="$section"/>
 									<fo:inline padding-right="4mm">&#xa0;</fo:inline>
 								</fo:inline>
 							</xsl:otherwise>
@@ -1889,6 +1890,12 @@
 					</xsl:variable>
 					
 					<xsl:choose>
+						<xsl:when test="$vertical_layout = 'true' and contains($list_item_label, ')') and ../@type = 'arabic'">
+							<fo:inline font-weight="normal">(</fo:inline>
+							<xsl:value-of select="substring-before($list_item_label,')')"/>
+							<fo:inline font-weight="normal">)</fo:inline>
+							<xsl:value-of select="substring-after($list_item_label,')')"/>
+						</xsl:when>
 						<xsl:when test="contains($list_item_label, ')')">
 							<xsl:value-of select="substring-before($list_item_label,')')"/>
 							<fo:inline font-weight="normal">)</fo:inline>
