@@ -1241,11 +1241,19 @@
 					</fo:inline-container>
 				</fo:block>
 				
-				
-				<fo:block margin-top="2mm" font-size="24pt" letter-spacing="2mm" font-weight="bold">
+				<fo:block margin-top="2mm" letter-spacing="2mm" font-weight="bold">
+					<xsl:variable name="title_len" select="string-length(/*/jis:bibdata/jis:title[@language = 'ja' and @type = 'main']/node())"/>
+					<xsl:attribute name="font-size">
+						<xsl:choose>
+							<xsl:when test="$title_len &gt; 20">16pt</xsl:when>
+							<xsl:when test="$title_len &gt; 16">18pt</xsl:when>
+							<xsl:when test="$title_len &gt; 13">20pt</xsl:when>
+							<xsl:otherwise>24pt</xsl:otherwise>
+						</xsl:choose>
+					</xsl:attribute>
 					<xsl:apply-templates select="/*/jis:bibdata/jis:title[@language = 'ja' and @type = 'main']/node()"/>
 				</fo:block>
-				
+								
 				<fo:block margin-top="3mm" font-size="11pt" font-weight="500">
 					<xsl:apply-templates select="/*/jis:bibdata/jis:title[@language = 'en' and @type = 'main']/node()"/>
 				</fo:block>
@@ -1780,7 +1788,8 @@
 					<xsl:if test="normalize-space($section) != ''">
 					
 						<xsl:choose>
-							<xsl:when test="$vertical_layout_rotate_clause_numbers = 'true'">
+							<!-- DISABLED rotation due writing-mode="tb-rl" -->
+							<xsl:when test="$vertical_layout_rotate_clause_numbers = 'true123'">
 								<fo:inline font-family="Times New Roman" font-weight="bold">
 									<xsl:call-template name="insertVerticalChar">
 										<xsl:with-param name="str" select="$section"/>
@@ -1809,6 +1818,20 @@
 				</xsl:element>
 			</xsl:otherwise>
 		</xsl:choose>
+	</xsl:template>
+
+	<xsl:template match="*[local-name() = 'term']" priority="2">
+		<fo:block id="{@id}" xsl:use-attribute-sets="term-style">
+			<xsl:if test="$namespace = 'jis'">
+				<xsl:if test="$vertical_layout = 'true'">
+					<xsl:attribute name="letter-spacing">1mm</xsl:attribute>
+					<xsl:attribute name="margin-left">-6mm</xsl:attribute>
+				</xsl:if>
+			</xsl:if>
+		</fo:block>
+		<fo:block>
+			<xsl:apply-templates select="node()[not(local-name() = 'name')]" />
+		</fo:block>
 	</xsl:template>
 
 	<xsl:template match="*[local-name() = 'introduction']">
@@ -2141,6 +2164,7 @@
 	
 	<!-- <name>注記  1</name> to <name>注記<font_en>  1</font_en></name> -->
 	<xsl:template match="jis:title/text() | 
+						jis:term/jis:name/text() | 
 						jis:note/jis:name/text() | 
 						jis:termnote/jis:name/text() |
 						jis:table/jis:name/text() |

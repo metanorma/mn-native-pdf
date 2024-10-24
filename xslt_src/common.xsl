@@ -1491,7 +1491,7 @@
 			<xsl:attribute name="font-weight">bold</xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'jis'">
-			<xsl:attribute name="font-family">IPAexGothic</xsl:attribute>
+			
 		</xsl:if>
 		<xsl:if test="$namespace = 'm3d'">
 			<xsl:attribute name="padding-right">5mm</xsl:attribute>
@@ -1548,6 +1548,11 @@
 		<xsl:if test="$namespace = 'iso'">
 			<xsl:if test="$layoutVersion = '2024' and translate(.,'0123456789','') = ."> <!-- EXAMPLE without number -->
 				<xsl:attribute name="padding-right">8mm</xsl:attribute>
+			</xsl:if>
+		</xsl:if>
+		<xsl:if test="$namespace = 'jis'">
+			<xsl:if test="not($vertical_layout = 'true')">
+				<xsl:attribute name="font-family">IPAexGothic</xsl:attribute>
 			</xsl:if>
 		</xsl:if>
 	</xsl:template>
@@ -1643,7 +1648,6 @@
 			<xsl:attribute name="font-style">italic</xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'jis'">
-			<xsl:attribute name="font-family">IPAexGothic</xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'm3d'">
 			<xsl:attribute name="padding-right">1mm</xsl:attribute>
@@ -1660,6 +1664,11 @@
 		<xsl:if test="$namespace = 'iso'">
 			<xsl:if test="$layoutVersion = '2024' and translate(.,'0123456789','') = ."> <!-- EXAMPLE without number -->
 				<xsl:attribute name="padding-right">8mm</xsl:attribute>
+			</xsl:if>
+		</xsl:if>
+		<xsl:if test="$namespace = 'jis'">
+			<xsl:if test="not($vertical_layout = 'true')">
+				<xsl:attribute name="font-family">IPAexGothic</xsl:attribute>
 			</xsl:if>
 		</xsl:if>
 	</xsl:template>
@@ -2129,7 +2138,6 @@
 			<xsl:attribute name="margin-bottom">0pt</xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'jis'">
-			<xsl:attribute name="font-family">IPAexGothic</xsl:attribute>
 			<xsl:attribute name="text-align">center</xsl:attribute>
 			<xsl:attribute name="margin-bottom">4pt</xsl:attribute>
 		</xsl:if>
@@ -2253,6 +2261,11 @@
 					<xsl:attribute name="span">all</xsl:attribute>
 					<xsl:attribute name="margin-top">6pt</xsl:attribute>
 				</xsl:if>
+			</xsl:if>
+		</xsl:if>
+		<xsl:if test="$namespace = 'jis'">
+			<xsl:if test="not($vertical_layout = 'true')">
+				<xsl:attribute name="font-family">IPAexGothic</xsl:attribute>
 			</xsl:if>
 		</xsl:if>
 		<xsl:if test="$namespace = 'plateau'">
@@ -3594,7 +3607,6 @@
 			<xsl:attribute name="text-decoration">underline</xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'jis'">
-			<xsl:attribute name="font-family">IPAexGothic</xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'ogc'">
 		</xsl:if>
@@ -3854,7 +3866,6 @@
 		<xsl:if test="$namespace = 'itu'">
 		</xsl:if>
 		<xsl:if test="$namespace = 'jis'">
-			<xsl:attribute name="font-family">IPAexGothic</xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'm3d'">
 			<xsl:attribute name="padding-right">5mm</xsl:attribute>
@@ -3910,6 +3921,11 @@
 			</xsl:if>
 			<xsl:if test="$layoutVersion = '2024' and translate($note_name,'0123456789','') = $note_name"> <!-- NOTE without number -->
 				<xsl:attribute name="padding-right">8mm</xsl:attribute>
+			</xsl:if>
+		</xsl:if>
+		<xsl:if test="$namespace = 'jis'">
+			<xsl:if test="not($vertical_layout = 'true')">
+				<xsl:attribute name="font-family">IPAexGothic</xsl:attribute>
 			</xsl:if>
 		</xsl:if>
 	</xsl:template> <!-- refine_note-name-style -->
@@ -4106,7 +4122,6 @@
 			<xsl:attribute name="padding-right">1mm</xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'jis'">
-			<xsl:attribute name="font-family">IPAexGothic</xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'rsd'">
 			<xsl:attribute name="font-weight">bold</xsl:attribute>
@@ -4130,6 +4145,11 @@
 		</xsl:if>
 		<xsl:if test="$namespace = 'ieee'">
 			<xsl:attribute name="padding-right">0mm</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'jis'">
+			<xsl:if test="not($vertical_layout = 'true')">
+				<xsl:attribute name="font-family">IPAexGothic</xsl:attribute>
+			</xsl:if>
 		</xsl:if>
 	</xsl:template>
 	
@@ -4478,7 +4498,6 @@
 			<xsl:attribute name="keep-with-previous">always</xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'jis'">
-			<xsl:attribute name="font-family">IPAexGothic</xsl:attribute>
 			<xsl:attribute name="text-align">center</xsl:attribute>
 			<xsl:attribute name="margin-top">6pt</xsl:attribute>
 			<xsl:attribute name="margin-bottom">12pt</xsl:attribute>
@@ -4571,6 +4590,9 @@
 			<xsl:if test="ancestor::jis:figure">
 				<xsl:attribute name="margin-top">0</xsl:attribute>
 				<xsl:attribute name="margin-bottom">6pt</xsl:attribute>
+			</xsl:if>
+			<xsl:if test="not($vertical_layout = 'true')">
+				<xsl:attribute name="font-family">IPAexGothic</xsl:attribute>
 			</xsl:if>
 		</xsl:if>
 		
@@ -4834,7 +4856,6 @@
 		</xsl:if>
 		<xsl:if test="$namespace = 'jis'">
 			<xsl:attribute name="font-weight">normal</xsl:attribute>
-			<xsl:attribute name="font-family">IPAexGothic</xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'plateau'">
 			<xsl:attribute name="font-weight">normal</xsl:attribute>
@@ -7817,6 +7838,12 @@
 						<xsl:if test="not(../preceding-sibling::*) and ancestor::node()[@orientation]">
 							<xsl:attribute name="margin-top">0pt</xsl:attribute>
 						</xsl:if>
+						
+						<xsl:if test="$namespace = 'jis'">
+							<xsl:if test="not($vertical_layout = 'true')">
+								<xsl:attribute name="font-family">IPAexGothic</xsl:attribute>
+							</xsl:if>
+						</xsl:if>
 					
 						<xsl:attribute name="provisional-distance-between-starts">25mm</xsl:attribute>
 						
@@ -8320,6 +8347,13 @@
 						</xsl:if>
 					
 						<fo:block xsl:use-attribute-sets="table-name-style" role="SKIP">
+						
+							<xsl:if test="$namespace = 'jis'">
+								<xsl:if test="not($vertical_layout = 'true')">
+									<xsl:attribute name="font-family">IPAexGothic</xsl:attribute>
+								</xsl:if>
+							</xsl:if>
+							
 							<xsl:apply-templates select="ancestor::*[local-name()='table']/*[local-name()='name']">
 								<xsl:with-param name="continued">true</xsl:with-param>
 							</xsl:apply-templates>
@@ -9304,7 +9338,10 @@
 							<fo:list-item>
 								<fo:list-item-label start-indent="{$text_indent}mm" end-indent="label-end()">
 									<fo:block>
-										<fo:inline font-size="9pt" font-family="IPAexGothic">
+										<fo:inline font-size="9pt">
+											<xsl:if test="not($vertical_layout = 'true')">
+												<xsl:attribute name="font-family">IPAexGothic</xsl:attribute>
+											</xsl:if>
 											<xsl:call-template name="getLocalizedString">
 												<xsl:with-param name="key">table_footnote</xsl:with-param>
 											</xsl:call-template>
@@ -11109,7 +11146,12 @@
 						<xsl:attribute name="{@name}"><xsl:value-of select="."/></xsl:attribute>
 						<xsl:if test="$namespace = 'jis'">
 							<xsl:if test="@name = 'font-family' and . = 'MS Gothic'">
-								<xsl:attribute name="{@name}">IPAexGothic</xsl:attribute>
+								<xsl:if test="not($vertical_layout = 'true')">
+									<xsl:attribute name="{@name}">IPAexGothic</xsl:attribute>
+								</xsl:if>
+								<xsl:if test="$vertical_layout = 'true'">
+									<xsl:attribute name="{@name}">Noto Serif JP</xsl:attribute>
+								</xsl:if>
 							</xsl:if>
 						</xsl:if>
 					</xsl:for-each>
@@ -12632,6 +12674,11 @@
 					<xsl:if test="string-length(normalize-space()) &lt; 30 and not(contains(normalize-space(), 'http://')) and not(contains(normalize-space(), 'https://')) and not(ancestor::*[local-name() = 'table' or local-name() = 'dl'])">
 						<xsl:attribute name="keep-together.within-line">always</xsl:attribute>
 					</xsl:if>
+					<xsl:if test="$namespace = 'jis'">
+						<xsl:if test="not($vertical_layout = 'true')">
+							<xsl:attribute name="font-family">IPAexGothic</xsl:attribute>
+						</xsl:if>
+					</xsl:if>
 					<xsl:if test="parent::*[local-name() = 'add']">
 						<xsl:call-template name="append_add-style"/>
 					</xsl:if>
@@ -12808,6 +12855,9 @@
 							<fo:list-item>
 								<fo:list-item-label start-indent="{$text_indent}mm" end-indent="label-end()">
 									<fo:block xsl:use-attribute-sets="note-name-style">
+										<xsl:if test="not($vertical_layout = 'true')">
+											<xsl:attribute name="font-family">IPAexGothic</xsl:attribute>
+										</xsl:if>
 										<xsl:apply-templates select="*[local-name() = 'name']" />
 									</fo:block>
 								</fo:list-item-label>
@@ -15720,6 +15770,11 @@
 			</xsl:when>
 			<xsl:when test="contains(normalize-space($fo_element), 'block')">
 				<fo:block xsl:use-attribute-sets="example-name-style">
+					<xsl:if test="$namespace = 'jis'">
+						<xsl:if test="not($vertical_layout = 'true')">
+							<xsl:attribute name="font-family">IPAexGothic</xsl:attribute>
+						</xsl:if>
+					</xsl:if>
 					<xsl:apply-templates/>
 				</fo:block>
 			</xsl:when>
@@ -15735,6 +15790,11 @@
 	
 	<xsl:template match="*[local-name() = 'table']/*[local-name() = 'example']/*[local-name() = 'name']">
 		<fo:inline xsl:use-attribute-sets="example-name-style">
+			<xsl:if test="$namespace = 'jis'">
+				<xsl:if test="not($vertical_layout = 'true')">
+					<xsl:attribute name="font-family">IPAexGothic</xsl:attribute>
+				</xsl:if>
+			</xsl:if>
 			<xsl:apply-templates/>
 		</fo:inline>
 	</xsl:template>
@@ -16310,6 +16370,13 @@
 				</xsl:if>
 			</xsl:if>
 			
+			<xsl:if test="$namespace = 'jis'">
+				<xsl:if test="$vertical_layout = 'true'">
+					<xsl:attribute name="letter-spacing">1mm</xsl:attribute>
+					<xsl:attribute name="margin-left">-6mm</xsl:attribute>
+				</xsl:if>
+			</xsl:if>
+			
 			<xsl:if test="parent::*[local-name() = 'term'] and not(preceding-sibling::*[local-name() = 'preferred'])"> <!-- if first preffered in term, then display term's name -->
 				<fo:block xsl:use-attribute-sets="term-name-style" role="SKIP">
 					<xsl:if test="$namespace = 'jis'">
@@ -16323,6 +16390,16 @@
 			
 			<fo:block xsl:use-attribute-sets="preferred-term-style" role="SKIP">
 				<xsl:call-template name="setStyle_preferred"/>
+				
+				<xsl:if test="$namespace = 'jis'">
+					<xsl:if test="$vertical_layout = 'true'">
+						<xsl:attribute name="margin-left">6mm</xsl:attribute>
+					</xsl:if>
+					<xsl:if test="not($vertical_layout = 'true')">
+						<xsl:attribute name="font-family">IPAexGothic</xsl:attribute>
+					</xsl:if>
+				</xsl:if>
+				
 				<xsl:apply-templates />
 			</fo:block>
 		</fo:block>
