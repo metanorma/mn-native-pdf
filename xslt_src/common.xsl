@@ -295,7 +295,7 @@
 			<xsl:when test="$namespace = 'jcgm'">15</xsl:when>
 			<xsl:when test="$namespace = 'jis'">
 				<xsl:choose>
-					<xsl:when test="$vertical_layout = 'true'">12</xsl:when>
+					<xsl:when test="$vertical_layout = 'true'">17</xsl:when>
 					<xsl:otherwise>22</xsl:otherwise>
 				</xsl:choose>
 			</xsl:when>
@@ -20648,9 +20648,10 @@
 	<xsl:template name="insertBackgroundPageImage">
 		<xsl:param name="number">1</xsl:param>
 		<xsl:param name="name">coverpage-image</xsl:param>
+		<xsl:param name="suffix"/>
 		<xsl:variable name="num" select="number($number)"/>
 		<!-- background image -->
-		<fo:block-container absolute-position="fixed" left="0mm" top="0mm" font-size="0" id="__internal_layout__coverpage_{$name}_{$number}_{generate-id()}">
+		<fo:block-container absolute-position="fixed" left="0mm" top="0mm" font-size="0" id="__internal_layout__coverpage{$suffix}_{$name}_{$number}_{generate-id()}">
 			<fo:block>
 				<xsl:for-each select="/*[contains(local-name(), '-standard')]/*[local-name() = 'metanorma-extension']/*[local-name() = 'presentation-metadata'][*[local-name() = 'name'] = $name][1]/*[local-name() = 'value']/*[local-name() = 'image'][$num]">
 					<xsl:choose>

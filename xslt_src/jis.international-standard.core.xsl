@@ -207,7 +207,7 @@
 					 fo:region-body/margin-right = top margin
 					-->
 					<!-- <fo:region-body margin-top="{$marginTop}mm" margin-bottom="{$marginBottom}mm" margin-left="{$marginLeftRight1}mm" margin-right="{$marginLeftRight2 + 40}mm" writing-mode="tb-rl" background-color="rgb(240,240,240)"/> -->
-					<fo:region-body margin-top="{$marginLeftRight1}mm" margin-bottom="{$marginLeftRight2}mm" margin-left="30mm" margin-right="30mm" writing-mode="tb-rl"/> <!--  background-color="rgb(240,240,240)" -->
+					<fo:region-body margin-top="{$marginLeftRight1}mm" margin-bottom="38mm" margin-left="30mm" margin-right="30mm" writing-mode="tb-rl"/> <!--  background-color="rgb(240,240,240)" -->
 					<fo:region-before region-name="header" extent="30mm"/> <!--  background-color="yellow" -->
 					<fo:region-after region-name="footer" extent="30mm"/> <!--  background-color="green" -->
 					<fo:region-start region-name="left-region" extent="{$marginLeftRight1}mm"/> <!--  background-color="blue" -->
@@ -236,6 +236,21 @@
 					</fo:repeatable-page-master-alternatives>
 				</fo:page-sequence-master>
 			
+			
+				<fo:simple-page-master master-name="document_2024" page-width="{$pageHeight}mm" page-height="{$pageWidth}mm">
+					<!-- Note (for writing-mode="tb-rl", may be due the update for support 'tb-rl' mode):
+					 fo:region-body/@margin-top = left margin
+					 fo:region-body/@margin-bottom = right margin
+					 fo:region-body/margin-left = bottom margin
+					 fo:region-body/margin-right = top margin
+					-->
+					<!-- <fo:region-body margin-top="{$marginTop}mm" margin-bottom="{$marginBottom}mm" margin-left="{$marginLeftRight1}mm" margin-right="{$marginLeftRight2 + 40}mm" writing-mode="tb-rl" background-color="rgb(240,240,240)"/> -->
+					<fo:region-body margin-top="{$marginLeftRight1}mm" margin-bottom="{$marginLeftRight2}mm" margin-left="{$marginBottom}mm" margin-right="{$marginTop}mm" writing-mode="tb-rl"/> <!--  background-color="rgb(240,240,240)" -->
+					<fo:region-before region-name="header" extent="{$marginTop}mm"/> <!--  background-color="yellow" -->
+					<fo:region-after region-name="footer" extent="{$marginBottom}mm"/> <!--  background-color="green" -->
+					<fo:region-start region-name="left-region" extent="{$marginLeftRight1}mm" /> <!--  background-color="blue" -->
+					<fo:region-end region-name="right-region" extent="{$marginLeftRight2}mm"/> <!--  background-color="red" -->
+				</fo:simple-page-master>
 			
 				<fo:simple-page-master master-name="document_2024_page" page-width="{$pageHeight}mm" page-height="{$pageWidth}mm">
 					<!-- Note (for writing-mode="tb-rl", may be due the update for support 'tb-rl' mode):
@@ -269,7 +284,7 @@
 					<fo:region-end region-name="right-region" extent="{$marginLeftRight2}mm"/> <!--  background-color="red" -->
 				</fo:simple-page-master>
 			
-				<fo:page-sequence-master master-name="document_2024">
+				<fo:page-sequence-master master-name="document_2024_with_last">
 					<fo:repeatable-page-master-alternatives>
 						<fo:conditional-page-master-reference page-position="last" master-reference="document_2024_last"/>
 						<fo:conditional-page-master-reference page-position="any" master-reference="document_2024_page"/>
@@ -549,7 +564,7 @@
 									<fo:page-sequence master-reference="document_preface" force-page-count="no-force">
 										
 										<xsl:if test="$vertical_layout = 'true'">
-											<xsl:attribute name="master-reference">document_2024_page</xsl:attribute>
+											<xsl:attribute name="master-reference">document_2024</xsl:attribute>
 											<xsl:attribute name="format">&#x4E8C;</xsl:attribute>
 										</xsl:if>
 										
@@ -702,6 +717,10 @@
 							<xsl:choose>
 								<xsl:when test="$vertical_layout = 'true'">
 									<xsl:attribute name="master-reference">document_2024</xsl:attribute>
+									<xsl:if test="position() = last()">
+										<xsl:attribute name="master-reference">document_2024_with_last</xsl:attribute>
+									</xsl:if>
+									
 									<xsl:attribute name="format">&#x4E8C;</xsl:attribute>
 									<!-- <xsl:attribute name="fox:number-conversion-features">&#x30A2;</xsl:attribute> -->
 								</xsl:when>
@@ -760,7 +779,7 @@
 										<xsl:with-param name="docidentifier" select="concat('JIS ', $docidentifier_JIS)"/>
 										<xsl:with-param name="edition" select="$edition"/>
 										<xsl:with-param name="copyrightText" select="$copyrightText"/>
-										<xsl:with-param name="insertLast">true</xsl:with-param>
+										<xsl:with-param name="insertLast" select="normalize-space(position() = last())"/>
 										<xsl:with-param name="bibdata" select="$bibdata"/>
 									</xsl:call-template>
 								</xsl:when>
@@ -972,7 +991,7 @@
 			<xsl:if test="$vertical_layout = 'true'">
 				<xsl:attribute name="text-align">left</xsl:attribute>
 				<xsl:attribute name="font-weight">bold</xsl:attribute>
-				<xsl:attribute name="margin-top">26mm</xsl:attribute>
+				<!-- <xsl:attribute name="margin-top">26mm</xsl:attribute> -->
 			</xsl:if>
 			<!-- Contents -->
 			<!-- <xsl:call-template name="getLocalizedString">
@@ -1284,6 +1303,7 @@
 				</xsl:variable>
 				<xsl:call-template name="insertBackgroundPageImage">
 					<xsl:with-param name="name" select="$presentation_metadata_image_name"/>
+					<xsl:with-param name="suffix">back</xsl:with-param>
 				</xsl:call-template>
 			</fo:static-content>
 			
@@ -2145,7 +2165,7 @@
 	<xsl:variable name="tag_font_en_bold_open">###<xsl:value-of select="$element_name_font_en_bold"/>###</xsl:variable>
 	<xsl:variable name="tag_font_en_bold_close">###/<xsl:value-of select="$element_name_font_en_bold"/>###</xsl:variable>
 	
-	<xsl:template match="jis:p//text()[not(ancestor::jis:strong)] |
+	<xsl:template match="jis:p//text()[not(ancestor::jis:strong) and not(ancestor::jis:p[@class = 'zzSTDTitle2'])] |
 						jis:dt/text()" mode="update_xml_step1">
 		<xsl:variable name="text_en_" select="java:replaceAll(java:java.lang.String.new(.), $regex_en, concat($tag_font_en_open,'$1',$tag_font_en_close))"/>
 		<xsl:variable name="text_en">
@@ -2462,7 +2482,7 @@
 		
 		<!-- header -->
 		<fo:static-content flow-name="right-region" role="artifact">
-			<fo:block-container font-size="9pt" height="{$pageHeightA5}mm" width="6mm" color="white" background-color="{$cover_header_footer_background}" text-align="center" margin-left="6mm">
+			<fo:block-container font-size="9pt" height="{$pageHeightA5}mm" width="6mm" color="white" background-color="{$cover_header_footer_background}" text-align="center" margin-left="11mm">
 				<fo:block-container margin-left="0mm" margin-top="14.5mm" line-height="1.1">
 					 <!-- text-align-last="justify" -->
 						<!-- example: 日本工業規格 JIS Z 8301 規格票の様式及び作成方法    一 -->
