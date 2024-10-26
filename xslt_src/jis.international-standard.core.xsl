@@ -2567,7 +2567,7 @@
 		
 		<!-- footer -->
 		<xsl:if test="1 = 1">
-		<fo:static-content flow-name="left-region" role="artifact">
+		<fo:static-content flow-name="left-region"> <!--  role="artifact" commented, because there is <fo:retrieve-marker below, occurs java.lang.IndexOutOfBoundsException: Index: 1, Size: 1 -->
 			<fo:block-container absolute-position="fixed" left="0mm" top="0" width="6mm" height="{$pageHeightA5}mm" background-color="{$cover_header_footer_background}">
 				<fo:block-container font-size="9pt" color="white" text-align="center">
 					<fo:block margin-top="131mm">
@@ -2582,7 +2582,7 @@
 				
 					<fo:inline baseline-shift="-20%">
 						<fo:inline>
-							<fo:retrieve-marker retrieve-class-name="section_title" retrieve-position="last-ending-within-page"/>
+							<fo:retrieve-marker retrieve-class-name="section_title" retrieve-position="last-ending-within-page" retrieve-boundary="page"/>
 						</fo:inline><!-- <fo:inline padding-bottom="5mm">三</fo:inline>用語及び定義 -->
 					</fo:inline>
 					
