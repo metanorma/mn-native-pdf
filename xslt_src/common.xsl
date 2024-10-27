@@ -3927,6 +3927,9 @@
 			<xsl:if test="not($vertical_layout = 'true')">
 				<xsl:attribute name="font-family">IPAexGothic</xsl:attribute>
 			</xsl:if>
+			<xsl:if test="$vertical_layout = 'true'">
+				<xsl:attribute name="font-weight">bold</xsl:attribute>
+			</xsl:if>
 		</xsl:if>
 	</xsl:template> <!-- refine_note-name-style -->
 
@@ -12806,104 +12809,113 @@
 	
 	<xsl:template match="*[local-name() = 'note']" name="note">
 	
-		<fo:block-container id="{@id}" xsl:use-attribute-sets="note-style" role="SKIP">
-		
-			<xsl:call-template name="setBlockSpanAll"/>
-			
-			<xsl:call-template name="refine_note-style"/>
-			
-			<fo:block-container margin-left="0mm" margin-right="0mm" role="SKIP">
-			
-				<xsl:if test="$namespace = 'csa'">
-					<xsl:if test="ancestor::csa:ul or ancestor::csa:ol and not(ancestor::csa:note[1]/following-sibling::*)">
-						<xsl:attribute name="margin-bottom">0pt</xsl:attribute>
-					</xsl:if>
-				</xsl:if>
-			
-				<xsl:choose>
-					<xsl:when test="$namespace = 'gb'">
-						<fo:table table-layout="fixed" width="100%">
-							<fo:table-column column-width="10mm"/>
-							<fo:table-column column-width="155mm"/>
-							<fo:table-body>
-								<fo:table-row>
-									<fo:table-cell>
-										<fo:block font-family="SimHei" xsl:use-attribute-sets="note-name-style" role="SKIP">
-											<xsl:apply-templates select="gb:name" />
-										</fo:block>
-									</fo:table-cell>
-									<fo:table-cell>
-										<fo:block text-align="justify" role="SKIP">
-											<xsl:apply-templates select="node()[not(local-name() = 'name')]" />
-										</fo:block>
-									</fo:table-cell>
-								</fo:table-row>
-							</fo:table-body>
-						</fo:table>
-						<!-- gb -->
-					</xsl:when>
+		<xsl:choose>
+			<xsl:when test="$namespace = 'jis'">
+				<fo:block id="{@id}" xsl:use-attribute-sets="note-style" role="SKIP">
+					<xsl:call-template name="setBlockSpanAll"/>
 					
-					<xsl:when test="$namespace = 'jis'">
-						<fo:list-block>
-							<xsl:attribute name="provisional-distance-between-starts">
-								<xsl:choose>
-									<!-- if last char is digit -->
-									<xsl:when test="translate(substring(*[local-name() = 'name'], string-length(*[local-name() = 'name'])),'0123456789','') = ''"><xsl:value-of select="14 + $text_indent"/>mm</xsl:when>
-									<xsl:otherwise><xsl:value-of select="10 + $text_indent"/>mm</xsl:otherwise>
-								</xsl:choose>
-							</xsl:attribute>
-							<fo:list-item>
-								<fo:list-item-label start-indent="{$text_indent}mm" end-indent="label-end()">
-									<fo:block xsl:use-attribute-sets="note-name-style">
-										<xsl:if test="not($vertical_layout = 'true')">
-											<xsl:attribute name="font-family">IPAexGothic</xsl:attribute>
+					<xsl:call-template name="refine_note-style"/>
+					
+					<fo:list-block>
+						<xsl:attribute name="provisional-distance-between-starts">
+							<xsl:choose>
+								<!-- if last char is digit -->
+								<xsl:when test="translate(substring(*[local-name() = 'name'], string-length(*[local-name() = 'name'])),'0123456789','') = ''"><xsl:value-of select="16 + $text_indent"/>mm</xsl:when>
+								<xsl:otherwise><xsl:value-of select="10 + $text_indent"/>mm</xsl:otherwise>
+							</xsl:choose>
+						</xsl:attribute>
+						<fo:list-item>
+							<fo:list-item-label start-indent="{$text_indent}mm" end-indent="label-end()">
+								<xsl:if test="$vertical_layout = 'true'">
+									<xsl:attribute name="start-indent">0mm</xsl:attribute>
+								</xsl:if>
+								<fo:block xsl:use-attribute-sets="note-name-style">
+									<xsl:call-template name="refine_note-name-style"/>
+									<xsl:apply-templates select="*[local-name() = 'name']" />
+								</fo:block>
+							</fo:list-item-label>
+							<fo:list-item-body start-indent="body-start()">
+								<fo:block>
+									<xsl:apply-templates select="node()[not(local-name() = 'name')]" />
+								</fo:block>
+							</fo:list-item-body>
+						</fo:list-item>
+					</fo:list-block>
+				</fo:block>
+			</xsl:when> <!-- jis -->
+			<xsl:otherwise>
+			
+				<fo:block-container id="{@id}" xsl:use-attribute-sets="note-style" role="SKIP">
+				
+					<xsl:call-template name="setBlockSpanAll"/>
+					
+					<xsl:call-template name="refine_note-style"/>
+					
+					<fo:block-container margin-left="0mm" margin-right="0mm" role="SKIP">
+					
+						<xsl:if test="$namespace = 'csa'">
+							<xsl:if test="ancestor::csa:ul or ancestor::csa:ol and not(ancestor::csa:note[1]/following-sibling::*)">
+								<xsl:attribute name="margin-bottom">0pt</xsl:attribute>
+							</xsl:if>
+						</xsl:if>
+					
+						<xsl:choose>
+							<xsl:when test="$namespace = 'gb'">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="10mm"/>
+									<fo:table-column column-width="155mm"/>
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell>
+												<fo:block font-family="SimHei" xsl:use-attribute-sets="note-name-style" role="SKIP">
+													<xsl:apply-templates select="gb:name" />
+												</fo:block>
+											</fo:table-cell>
+											<fo:table-cell>
+												<fo:block text-align="justify" role="SKIP">
+													<xsl:apply-templates select="node()[not(local-name() = 'name')]" />
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+								<!-- gb -->
+							</xsl:when>
+							
+							<xsl:otherwise>
+								<fo:block>
+									
+									<xsl:call-template name="refine_note_block_style"/>
+									
+									<fo:inline xsl:use-attribute-sets="note-name-style" role="SKIP">
+									
+										<xsl:call-template name="refine_note-name-style"/>
+									
+										<!-- if 'p' contains all text in 'add' first and last elements in first p are 'add' -->
+										<!-- <xsl:if test="*[not(local-name()='name')][1][node()[normalize-space() != ''][1][local-name() = 'add'] and node()[normalize-space() != ''][last()][local-name() = 'add']]"> -->
+										<xsl:if test="*[not(local-name()='name')][1][count(node()[normalize-space() != '']) = 1 and *[local-name() = 'add']]">
+											<xsl:call-template name="append_add-style"/>
 										</xsl:if>
+										
+										<!-- if note contains only one element and first and last childs are `add` ace-tag, then move start ace-tag before NOTE's name-->
+										<xsl:if test="count(*[not(local-name() = 'name')]) = 1 and *[not(local-name() = 'name')]/node()[last()][local-name() = 'add'][starts-with(text(), $ace_tag)]">
+											<xsl:apply-templates select="*[not(local-name() = 'name')]/node()[1][local-name() = 'add'][starts-with(text(), $ace_tag)]">
+												<xsl:with-param name="skip">false</xsl:with-param>
+											</xsl:apply-templates> 
+										</xsl:if>
+										
 										<xsl:apply-templates select="*[local-name() = 'name']" />
-									</fo:block>
-								</fo:list-item-label>
-								<fo:list-item-body start-indent="body-start()">
-									<fo:block>
-										<xsl:apply-templates select="node()[not(local-name() = 'name')]" />
-									</fo:block>
-								</fo:list-item-body>
-							</fo:list-item>
-						</fo:list-block>
-						<!-- jis -->
-					</xsl:when>
-					
-					<xsl:otherwise>
-						<fo:block>
-							
-							<xsl:call-template name="refine_note_block_style"/>
-							
-							<fo:inline xsl:use-attribute-sets="note-name-style" role="SKIP">
-							
-								<xsl:call-template name="refine_note-name-style"/>
-							
-								<!-- if 'p' contains all text in 'add' first and last elements in first p are 'add' -->
-								<!-- <xsl:if test="*[not(local-name()='name')][1][node()[normalize-space() != ''][1][local-name() = 'add'] and node()[normalize-space() != ''][last()][local-name() = 'add']]"> -->
-								<xsl:if test="*[not(local-name()='name')][1][count(node()[normalize-space() != '']) = 1 and *[local-name() = 'add']]">
-									<xsl:call-template name="append_add-style"/>
-								</xsl:if>
-								
-								<!-- if note contains only one element and first and last childs are `add` ace-tag, then move start ace-tag before NOTE's name-->
-								<xsl:if test="count(*[not(local-name() = 'name')]) = 1 and *[not(local-name() = 'name')]/node()[last()][local-name() = 'add'][starts-with(text(), $ace_tag)]">
-									<xsl:apply-templates select="*[not(local-name() = 'name')]/node()[1][local-name() = 'add'][starts-with(text(), $ace_tag)]">
-										<xsl:with-param name="skip">false</xsl:with-param>
-									</xsl:apply-templates> 
-								</xsl:if>
-								
-								<xsl:apply-templates select="*[local-name() = 'name']" />
-								
-							</fo:inline>
-							
-							<xsl:apply-templates select="node()[not(local-name() = 'name')]" />
-						</fo:block>
-					</xsl:otherwise>
-				</xsl:choose>
-			</fo:block-container>
-		</fo:block-container>
-		
+										
+									</fo:inline>
+									
+									<xsl:apply-templates select="node()[not(local-name() = 'name')]" />
+								</fo:block>
+							</xsl:otherwise>
+						</xsl:choose>
+					</fo:block-container>
+				</fo:block-container>
+			</xsl:otherwise>
+		</xsl:choose>
 	</xsl:template>
 	
 	<xsl:template name="refine_note_block_style">
@@ -20719,10 +20731,16 @@
  
 	<xsl:template name="insertVerticalChar">
 		<xsl:param name="str"/>
+		<xsl:param name="writing-mode">lr-tb</xsl:param>
+		<xsl:param name="reference-orientation">90</xsl:param>
 		<xsl:if test="string-length($str) &gt; 0">
-			<fo:inline-container writing-mode="lr-tb" text-align="center"
-						 alignment-baseline="central" reference-orientation="90" width="1em" margin="0" padding="0"
+			<fo:inline-container text-align="center"
+						 alignment-baseline="central" width="1em" margin="0" padding="0"
 						 text-indent="0mm" last-line-end-indent="0mm" start-indent="0mm" end-indent="0mm">
+				<xsl:if test="normalize-space($writing-mode) != ''">
+					<xsl:attribute name="writing-mode"><xsl:value-of select="$writing-mode"/></xsl:attribute>
+					<xsl:attribute name="reference-orientation">90</xsl:attribute>
+				</xsl:if>
 				<fo:block-container width="1em">
 						<fo:block line-height="1em"><xsl:value-of select="substring($str,1,1)"/></fo:block>
 				</fo:block-container>

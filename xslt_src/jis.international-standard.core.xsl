@@ -2334,8 +2334,16 @@
 					<xsl:choose>
 						<xsl:when test="self::text()">
 							<!-- convert to vertical layout -->
+							<xsl:variable name="text">
+								<xsl:choose>
+									<xsl:when test="ancestor::*[local-name(../..) = 'note'] and ancestor::*[local-name(..) = 'name']">
+										<xsl:value-of select="concat('&#x2002;', normalize-space(.))"/>
+									</xsl:when>
+									<xsl:otherwise><xsl:value-of select="."/></xsl:otherwise>
+								</xsl:choose>
+							</xsl:variable>
 							<xsl:call-template name="insertVerticalChar">
-								<xsl:with-param name="str" select="."/>
+								<xsl:with-param name="str" select="$text"/>
 							</xsl:call-template>
 						</xsl:when>
 						<xsl:otherwise>
@@ -2369,6 +2377,22 @@
 	<!-- ========================= -->
 	<!-- END: Allocate non-Japanese text -->
 	<!-- ========================= -->
+	
+	<!-- patch for correct list-item-label rendering: enclose each char in inline-container -->
+	<xsl:template match="*[local-name() = 'note']/*[local-name() = 'name']/text()" priority="3">
+		<xsl:choose>
+			<xsl:when test="not($vertical_layout = 'true')">
+				<xsl:value-of select="."/>
+			</xsl:when>
+			<xsl:otherwise> <!-- $vertical_layout = 'true' -->
+				<xsl:call-template name="insertVerticalChar">
+					<xsl:with-param name="str" select="."/>
+					<xsl:with-param name="writing-mode"/>
+					<xsl:with-param name="reference-orientation"/>
+				</xsl:call-template>
+			</xsl:otherwise>
+		</xsl:choose>
+	</xsl:template>
 	
 	<xsl:template name="insertHeaderFooter">
 		<xsl:param name="docidentifier" />
