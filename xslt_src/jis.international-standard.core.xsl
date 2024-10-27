@@ -2170,7 +2170,6 @@
 	
 	<!-- if vertical_layout = 'true', then font_en and font_en_bold are using for text rotation -->
 	<xsl:variable name="regex_en_base">\u00A0\u2002-\u200B\u3000-\u9FFF\uF900-\uFFFF</xsl:variable>
-	<xsl:variable name="regex_ja_spec">[\uFF08\uFF09]</xsl:variable>
 	<xsl:variable name="regex_en_">
 		<xsl:choose>
 			<!-- ( ) [ ] _ { } U+FF08 FULLWIDTH LEFT PARENTHESIS U+FF09 FULLWIDTH RIGHT PARENTHESIS-->

@@ -20730,6 +20730,7 @@
 	
 	<!-- END: insert cover page image -->
  
+	<xsl:variable name="regex_ja_spec">[\uFF08\uFF09]</xsl:variable>
 	<xsl:template name="insertVerticalChar">
 		<xsl:param name="str"/>
 		<xsl:param name="writing-mode">lr-tb</xsl:param>
