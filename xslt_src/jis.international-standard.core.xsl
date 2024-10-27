@@ -2161,8 +2161,8 @@
 	<xsl:variable name="regex_ja_spec">[\uFF08\uFF09]</xsl:variable>
 	<xsl:variable name="regex_en_">
 		<xsl:choose>
-			<!-- ( ) [ ] { } U+FF08 FULLWIDTH LEFT PARENTHESIS U+FF09 FULLWIDTH RIGHT PARENTHESIS-->
-			<xsl:when test="$vertical_layout = 'true'">((<xsl:value-of select="$regex_ja_spec"/>)|([^\u0028\u0029\u005B\u005D\u007B\u007D<xsl:value-of select="$regex_en_base"/>]){1,})</xsl:when>
+			<!-- ( ) [ ] _ { } U+FF08 FULLWIDTH LEFT PARENTHESIS U+FF09 FULLWIDTH RIGHT PARENTHESIS-->
+			<xsl:when test="$vertical_layout = 'true'">((<xsl:value-of select="$regex_ja_spec"/>)|([^\u0028\u0029\u005B\u005D\u005F\u007B\u007D<xsl:value-of select="$regex_en_base"/>]){1,})</xsl:when>
 			<xsl:otherwise>([^<xsl:value-of select="$regex_en_base"/>]{1,})</xsl:otherwise>
 		</xsl:choose>
 	</xsl:variable>
