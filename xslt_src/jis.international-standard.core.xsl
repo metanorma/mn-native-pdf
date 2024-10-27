@@ -852,7 +852,7 @@
 									<!-- <fo:block role="H1" font-family="IPAexGothic" font-size="16pt" text-align="center" margin-top="6mm"><xsl:value-of select="$title_ja"/></fo:block> -->
 								<!-- </xsl:if> -->
 								
-								<xsl:if test="$vertical_layout = 'true'">
+								<xsl:if test="$vertical_layout = 'true' and position() = 1">
 									<fo:block font-weight="bold" font-size="12pt" margin-top="5mm" letter-spacing="4mm" margin-left="-6mm">
 										<xsl:value-of select="$i18n_JIS"/>
 									</fo:block>
@@ -1799,9 +1799,21 @@
 					
 					<xsl:if test="$level = 1">
 						<fo:marker marker-class-name="section_title">
-							<xsl:variable name="stitle"><xsl:call-template name="extractTitle"/></xsl:variable>
-							<xsl:variable name="section_title"><xsl:value-of select="normalize-space(concat($section, ' ', $stitle))"/></xsl:variable>
-							<xsl:value-of select="translate($section_title, ' ', '　')"/>
+							<xsl:choose>
+								<xsl:when test="@ancestor = 'annex' and *[local-name() = 'br']">
+									<xsl:variable name="stitle">
+										<xsl:for-each select="jis:br[1]/preceding-sibling::node()">
+											<xsl:value-of select="."/>
+										</xsl:for-each>
+									</xsl:variable>
+									<xsl:value-of select="$stitle"/>
+								</xsl:when>
+								<xsl:otherwise>
+									<xsl:variable name="stitle"><xsl:call-template name="extractTitle"/></xsl:variable>
+									<xsl:variable name="section_title"><xsl:value-of select="normalize-space(concat($section, ' ', $stitle))"/></xsl:variable>
+									<xsl:value-of select="translate($section_title, ' ', '　')"/>
+								</xsl:otherwise>
+							</xsl:choose>
 						</fo:marker>
 					</xsl:if>
 					
