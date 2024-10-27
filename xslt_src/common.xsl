@@ -3928,7 +3928,8 @@
 				<xsl:attribute name="font-family">IPAexGothic</xsl:attribute>
 			</xsl:if>
 			<xsl:if test="$vertical_layout = 'true'">
-				<xsl:attribute name="font-weight">bold</xsl:attribute>
+				<xsl:attribute name="font-family">Noto Sans JP</xsl:attribute>
+				<xsl:attribute name="font-weight">500</xsl:attribute>
 			</xsl:if>
 		</xsl:if>
 	</xsl:template> <!-- refine_note-name-style -->
@@ -20741,12 +20742,18 @@
 					<xsl:attribute name="writing-mode"><xsl:value-of select="$writing-mode"/></xsl:attribute>
 					<xsl:attribute name="reference-orientation">90</xsl:attribute>
 				</xsl:if>
+				<xsl:variable name="char" select="substring($str,1,1)"/>
+				<xsl:if test="normalize-space(java:matches(java:java.lang.String.new($char), concat('(', $regex_ja_spec, '{1,})'))) = 'true'">
+					<xsl:attribute name="reference-orientation">0</xsl:attribute>
+				</xsl:if>
 				<fo:block-container width="1em">
-						<fo:block line-height="1em"><xsl:value-of select="substring($str,1,1)"/></fo:block>
+						<fo:block line-height="1em"><xsl:value-of select="$char"/></fo:block>
 				</fo:block-container>
 			</fo:inline-container>
 			<xsl:call-template name="insertVerticalChar">
 				<xsl:with-param name="str" select="substring($str, 2)"/>
+				<xsl:with-param name="writing-mode" select="$writing-mode"/>
+				<xsl:with-param name="reference-orientation" select="$reference-orientation"/>
 			</xsl:call-template>
 		</xsl:if>
 	</xsl:template>

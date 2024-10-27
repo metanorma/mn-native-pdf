@@ -922,7 +922,7 @@
 						<fo:block role="TOCI">
 							<xsl:choose>
 								<xsl:when test="@type = 'annex' or @type = 'bibliography'">
-									<fo:block space-after="5pt">
+									<fo:block space-after="5pt" role="SKIP">
 										<xsl:if test="$vertical_layout = 'true'">
 											<xsl:attribute name="space-after">8pt</xsl:attribute>
 										</xsl:if>
@@ -930,7 +930,7 @@
 									</fo:block>
 								</xsl:when>
 								<xsl:otherwise>
-									<fo:list-block space-after="5pt">
+									<fo:list-block space-after="5pt" role="SKIP">
 										<xsl:if test="$vertical_layout = 'true'">
 											<xsl:attribute name="space-after">8pt</xsl:attribute>
 										</xsl:if>
@@ -959,9 +959,9 @@
 												</xsl:attribute>
 												</xsl:otherwise>
 											</xsl:choose>
-										<fo:list-item>
-											<fo:list-item-label end-indent="label-end()">
-												<fo:block>
+										<fo:list-item role="SKIP">
+											<fo:list-item-label end-indent="label-end()" role="SKIP">
+												<fo:block role="SKIP">
 													<xsl:if test="not($vertical_layout = 'true') and @section != '' and @type != 'annex'">
 														<xsl:attribute name="font-family">Times New Roman</xsl:attribute>
 														<xsl:attribute name="font-weight">bold</xsl:attribute>
@@ -969,7 +969,7 @@
 													<xsl:value-of select="@section"/>
 												</fo:block>
 											</fo:list-item-label>
-											<fo:list-item-body start-indent="body-start()">
+											<fo:list-item-body start-indent="body-start()" role="SKIP">
 												<xsl:call-template name="insertTocItem"/>
 											</fo:list-item-body>
 										</fo:list-item>
@@ -1022,7 +1022,7 @@
 	
 	
 	<xsl:template name="insertTocItem">
-		<fo:block text-align-last="justify" role="TOCI">
+		<fo:block text-align-last="justify" role="SKIP">
 			<fo:basic-link internal-destination="{@id}" fox:alt-text="{title}">
 				<fo:inline>
 					<xsl:if test="$vertical_layout = 'true'">
@@ -2156,7 +2156,17 @@
 	<!-- Allocate non-Japanese text -->
 	<!-- ========================= -->
 	
-	<xsl:variable name="regex_en">([^\u00A0\u2002-\u200B\u3000-\u9FFF\uF900-\uFFFF]{1,})</xsl:variable>
+	<!-- if vertical_layout = 'true', then font_en and font_en_bold are using for text rotation -->
+	<xsl:variable name="regex_en_base">\u00A0\u2002-\u200B\u3000-\u9FFF\uF900-\uFFFF</xsl:variable>
+	<xsl:variable name="regex_ja_spec">[\uFF08\uFF09]</xsl:variable>
+	<xsl:variable name="regex_en_">
+		<xsl:choose>
+			<!-- ( ) [ ] { } U+FF08 FULLWIDTH LEFT PARENTHESIS U+FF09 FULLWIDTH RIGHT PARENTHESIS-->
+			<xsl:when test="$vertical_layout = 'true'">((<xsl:value-of select="$regex_ja_spec"/>)|([^\u0028\u0029\u005B\u005D\u007B\u007D<xsl:value-of select="$regex_en_base"/>]){1,})</xsl:when>
+			<xsl:otherwise>([^<xsl:value-of select="$regex_en_base"/>]{1,})</xsl:otherwise>
+		</xsl:choose>
+	</xsl:variable>
+	<xsl:variable name="regex_en" select="normalize-space($regex_en_)"/>
 	
 	<xsl:variable name="element_name_font_en">font_en</xsl:variable>
 	<xsl:variable name="tag_font_en_open">###<xsl:value-of select="$element_name_font_en"/>###</xsl:variable>
@@ -2325,6 +2335,7 @@
 	</xsl:template>
 	
 	<xsl:template name="insertEnglishText">
+		<xsl:param name="reference-orientation">90</xsl:param>
 		<xsl:choose>
 			<xsl:when test="not($vertical_layout = 'true')">
 				<xsl:apply-templates/>
@@ -2344,6 +2355,7 @@
 							</xsl:variable>
 							<xsl:call-template name="insertVerticalChar">
 								<xsl:with-param name="str" select="$text"/>
+								<xsl:with-param name="reference-orientation" select="$reference-orientation"/>
 							</xsl:call-template>
 						</xsl:when>
 						<xsl:otherwise>
@@ -2387,8 +2399,8 @@
 			<xsl:otherwise> <!-- $vertical_layout = 'true' -->
 				<xsl:call-template name="insertVerticalChar">
 					<xsl:with-param name="str" select="."/>
-					<xsl:with-param name="writing-mode"/>
-					<xsl:with-param name="reference-orientation"/>
+					<!-- <xsl:with-param name="writing-mode"/>
+					<xsl:with-param name="reference-orientation"/> -->
 				</xsl:call-template>
 			</xsl:otherwise>
 		</xsl:choose>
