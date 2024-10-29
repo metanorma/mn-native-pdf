@@ -3832,6 +3832,21 @@
 		</xsl:choose>
 	</xsl:template>
 	
+	<xsl:template match="iso:copyright-statement/iso:clause" priority="3">
+		<fo:block role="SKIP">
+			<xsl:if test="@id = 'boilerplate-copyright-default' and ../iso:clause">
+				<xsl:attribute name="color">blue</xsl:attribute>
+				<xsl:attribute name="border">1pt solid blue</xsl:attribute>
+				<xsl:attribute name="padding">1mm</xsl:attribute>
+			</xsl:if>
+			<xsl:if test="not(@id = 'boilerplate-copyright-default') and preceding-sibling::iso:clause">
+				<xsl:attribute name="margin-top">5mm</xsl:attribute>
+			</xsl:if>
+			<xsl:copy-of select="@id"/>
+			<xsl:apply-templates/>
+		</fo:block>
+	</xsl:template>
+	
 	<xsl:template match="iso:copyright-statement//iso:p" priority="2">
 		<xsl:choose>
 			<xsl:when test="$layoutVersion = '1951'">
@@ -3878,7 +3893,7 @@
 						<xsl:attribute name="margin-left">0.5mm</xsl:attribute>
 						<xsl:attribute name="margin-right">0.5mm</xsl:attribute>
 					</xsl:if>
-					<xsl:if test="contains(@id, 'address')">
+					<xsl:if test="contains(@id, 'address') or contains(normalize-space(), 'Tel:') or contains(normalize-space(), 'Phone:')">
 						<xsl:attribute name="margin-left">4.5mm</xsl:attribute>
 					</xsl:if>
 					<xsl:apply-templates />
