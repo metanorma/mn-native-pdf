@@ -9861,7 +9861,8 @@
 						</fo:block>
 					</xsl:when>  <!-- END: a few components -->
 					<xsl:when test="$parent = 'figure' and  (not(../@class) or ../@class !='pseudocode')"> <!-- definition list in a figure -->
-						<fo:block font-weight="bold" text-align="left" margin-bottom="12pt" keep-with-next="always">
+						<!-- commented, Presentation XML contains 'Key' caption, https://github.com/metanorma/isodoc/issues/607 -->
+						<!-- <fo:block font-weight="bold" text-align="left" margin-bottom="12pt" keep-with-next="always">
 						
 							<xsl:call-template name="refine_figure_key_style"/>
 						
@@ -9871,7 +9872,7 @@
 								</xsl:call-template>
 							</xsl:variable>
 							<xsl:value-of select="$title-key"/>
-						</fo:block>
+						</fo:block> -->
 					</xsl:when>  <!-- END: definition list in a figure -->
 				</xsl:choose>
 				
@@ -10085,6 +10086,14 @@
 		</xsl:if>
 		
 	</xsl:template> <!-- END: dl -->
+	
+	<!-- caption for figure key and another caption -->
+	<xsl:template match="*[local-name() = 'figure']/*[local-name() = 'p'][@keep-with-next = 'true' and *[local-name() = 'strong']]" priority="3">
+		<fo:block  text-align="left" margin-bottom="12pt" keep-with-next="always">
+			<xsl:call-template name="refine_figure_key_style"/>
+			<xsl:apply-templates/>
+		</fo:block>
+	</xsl:template>
 	
 	<xsl:template name="refine_dl_formula_where_style">
 		<xsl:if test="$namespace = 'bsi'">
