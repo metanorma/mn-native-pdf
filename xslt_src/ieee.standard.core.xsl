@@ -1692,6 +1692,7 @@
 	<xsl:template match="ieee:abstract">
 		<fo:block>
 			<xsl:call-template name="setId"/>
+			<xsl:call-template name="addReviewHelper"/>
 			<xsl:apply-templates />
 		</fo:block>
 	</xsl:template>
@@ -2356,6 +2357,7 @@
 	<xsl:template match="*[local-name() = 'introduction'] | *[local-name() = 'foreword'] | *[local-name() = 'acknowledgements']">
 		<fo:block>
 			<xsl:call-template name="setId"/>
+			<xsl:call-template name="addReviewHelper"/>
 			<xsl:apply-templates />
 		</fo:block>
 	</xsl:template>
