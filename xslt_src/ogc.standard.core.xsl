@@ -1275,6 +1275,7 @@
 				<xsl:attribute name="line-height">125%</xsl:attribute>
 			</xsl:if>
 			<xsl:call-template name="setId"/>
+			<xsl:call-template name="addReviewHelper"/>
 			<xsl:apply-templates />
 		</fo:block>
 	</xsl:template>

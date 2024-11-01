@@ -914,6 +914,7 @@
 	<xsl:template match="*[local-name() = 'preface']/*[local-name() = 'page_sequence']/*[local-name() = 'clause']" priority="3">
 		<fo:block>
 			<xsl:call-template name="setId"/>
+			<xsl:call-template name="addReviewHelper"/>
 			<xsl:apply-templates />
 		</fo:block>
 	</xsl:template>

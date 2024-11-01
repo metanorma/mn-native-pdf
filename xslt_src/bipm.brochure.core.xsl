@@ -2366,6 +2366,7 @@
 	<xsl:template match="bipm:preface/*[not(local-name() = 'note' or local-name() = 'admonition')][1]" priority="3">
 		<fo:block keep-with-next="always">
 			<xsl:call-template name="setId"/>
+			<xsl:call-template name="addReviewHelper"/>
 		</fo:block>
 		<fo:table table-layout="fixed" width="173.5mm">
 			<xsl:call-template name="setId">
@@ -2522,6 +2523,7 @@
 		
 		<fo:block keep-with-next="always">
 			<xsl:call-template name="setId"/>
+			<xsl:call-template name="addReviewHelper"/>
 		</fo:block>
 		<fo:table table-layout="fixed" width="174mm" line-height="135%">
 			<xsl:if test="@orientation = 'landscape'">
@@ -2738,7 +2740,8 @@
 					<xsl:when test="local-name(following-sibling::*[1]) = 'title'"/> <!-- id will set in title -->
 					<xsl:otherwise>
 						<fo:block>
-							<xsl:call-template name="setId"/>									
+							<xsl:call-template name="setId"/>
+							<xsl:call-template name="addReviewHelper"/>
 							<xsl:apply-templates />
 						</fo:block>
 					</xsl:otherwise>
@@ -2746,7 +2749,8 @@
 			</xsl:when>
 			<xsl:otherwise>
 				<fo:block>
-					<xsl:call-template name="setId"/>									
+					<xsl:call-template name="setId"/>
+					<xsl:call-template name="addReviewHelper"/>
 					<xsl:apply-templates />
 				</fo:block>
 			</xsl:otherwise>
@@ -2778,6 +2782,8 @@
 				</xsl:if>
 				
 			</xsl:if>
+			
+			<xsl:call-template name="addReviewHelper"/>
 			
 			<!-- if note relates to title, but not fn -->
 			<xsl:if test="ancestor::bipm:title and not(bipm:sup_fn)"><fo:inline>* </fo:inline></xsl:if>

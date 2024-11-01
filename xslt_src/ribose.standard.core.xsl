@@ -1128,6 +1128,7 @@
 			<fo:block-container margin-left="0mm">
 				<fo:block>
 					<xsl:call-template name="setId"/>
+					<xsl:call-template name="addReviewHelper"/>
 					<xsl:apply-templates />
 				</fo:block>
 			</fo:block-container>

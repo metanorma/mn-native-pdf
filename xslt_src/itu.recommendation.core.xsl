@@ -1967,6 +1967,7 @@
 		</xsl:choose>
 		<fo:block>
 			<xsl:call-template name="setId"/>
+			<xsl:call-template name="addReviewHelper"/>
 			<xsl:apply-templates />
 		</fo:block>
 	</xsl:template>
