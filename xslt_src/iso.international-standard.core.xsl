@@ -4541,6 +4541,8 @@
 				</xsl:if>
 			</xsl:if>
 			
+			<xsl:call-template name="addReviewHelper"/>
+						
 			<xsl:call-template name="processElementContent"/>
 		</fo:block>
 	</xsl:template>
@@ -4557,6 +4559,8 @@
 			<xsl:call-template name="setBlockSpanAll"/>
 			
 			<xsl:call-template name="refine_clause_style"/>
+			
+			<xsl:call-template name="addReviewHelper"/>
 			
 			<xsl:call-template name="processElementContent"/>
 			
