@@ -10087,7 +10087,7 @@
 		
 	</xsl:template> <!-- END: dl -->
 	
-	<!-- caption for figure key and another caption -->
+	<!-- caption for figure key and another caption, https://github.com/metanorma/isodoc/issues/607 -->
 	<xsl:template match="*[local-name() = 'figure']/*[local-name() = 'p'][@keep-with-next = 'true' and *[local-name() = 'strong']]" priority="3">
 		<fo:block  text-align="left" margin-bottom="12pt" keep-with-next="always">
 			<xsl:call-template name="refine_figure_key_style"/>
@@ -12750,9 +12750,11 @@
 
 
 	<xsl:template match="*[local-name() = 'formula']/*[local-name() = 'name']"> <!-- show in 'stem' template -->
+		<!-- https://github.com/metanorma/isodoc/issues/607 
 		<xsl:if test="normalize-space() != ''">
 			<xsl:text>(</xsl:text><xsl:apply-templates /><xsl:text>)</xsl:text>
-		</xsl:if>
+		</xsl:if> -->
+		<xsl:apply-templates />
 	</xsl:template>
 	
 	
