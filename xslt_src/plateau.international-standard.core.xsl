@@ -862,9 +862,10 @@
 			<xsl:choose>
 				<xsl:when test="normalize-space(@id) = ''">false</xsl:when>
 				<xsl:when test="ancestor-or-self::plateau:annex and $level &gt;= 2">false</xsl:when>
-				<xsl:when test="$type = 'bibliography' and $level &gt;= 2">false</xsl:when>
+				<!-- <xsl:when test="$type = 'bibliography' and $level &gt;= 2">false</xsl:when> -->
 				<xsl:when test="$type = 'bibliography'">true</xsl:when>
-				<xsl:when test="$type = 'references' and $level &gt;= 2">false</xsl:when>
+				<!-- <xsl:when test="$type = 'references' and $level &gt;= 2">false</xsl:when> -->
+				<xsl:when test="$type = 'references'">true</xsl:when>
 				<xsl:when test="ancestor-or-self::plateau:colophon">true</xsl:when>
 				<xsl:when test="$section = '' and $type = 'clause' and $level = 1 and ancestor::plateau:preface">true</xsl:when>
 				<xsl:when test="$section = '' and $type = 'clause'">false</xsl:when>
