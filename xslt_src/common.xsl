@@ -13073,7 +13073,7 @@
 						<xsl:text> </xsl:text>
 					</xsl:if>
 					<xsl:if test="$namespace = 'ieee'">
-						<xsl:text>—</xsl:text>
+						<xsl:text>—</xsl:text> <!-- em dash &#x2014; -->
 					</xsl:if>
 					<xsl:if test="$namespace = 'gb' or $namespace = 'iho' or $namespace = 'm3d' or $namespace = 'unece-rec' or $namespace = 'unece'  or $namespace = 'rsd'">
 						<xsl:text>:</xsl:text>
@@ -13084,7 +13084,7 @@
 						</xsl:if>
 					</xsl:if>
 					<xsl:if test="$namespace = 'itu' or $namespace = 'nist-cswp'  or $namespace = 'nist-sp'">				
-						<xsl:text> – </xsl:text>
+						<xsl:text> – </xsl:text> <!-- en dash &#x2013; -->
 					</xsl:if>
 				</xsl:otherwise>
 			</xsl:choose>
@@ -13112,13 +13112,13 @@
 						<xsl:text> </xsl:text>
 					</xsl:if>
 					<xsl:if test="$namespace = 'ieee'">
-						<xsl:text>—</xsl:text>
+						<xsl:text>—</xsl:text> <!-- em dash &#x2014; -->
 					</xsl:if>
-					<xsl:if test="$namespace = 'gb' or $namespace = 'iso' or $namespace = 'iec' or $namespace = 'ogc' or $namespace = 'ogc-white-paper' or $namespace = 'jcgm' or $namespace = 'rsd'">
+					<xsl:if test="$namespace = 'gb' or $namespace = 'iso' or $namespace = 'iec' or $namespace = 'ogc' or $namespace = 'ogc-white-paper' or $namespace = 'rsd'"> <!-- or $namespace = 'jcgm' in XML already -->
 						<xsl:text>:</xsl:text>
 					</xsl:if>
 					<xsl:if test="$namespace = 'itu' or $namespace = 'nist-cswp'  or $namespace = 'nist-sp' or $namespace = 'unece-rec' or $namespace = 'unece'">				
-						<xsl:text> – </xsl:text>
+						<xsl:text> – </xsl:text> <!-- en dash &#x2013; -->
 					</xsl:if>
 				</xsl:otherwise>
 			</xsl:choose>
