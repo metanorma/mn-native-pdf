@@ -16048,15 +16048,19 @@
 
 					<fo:block-container margin-left="0mm" margin-right="0mm" role="SKIP">
 						<fo:block role="BlockQuote">
-							<xsl:apply-templates select="./node()[not(local-name() = 'author') and not(local-name() = 'source')]"/> <!-- process all nested nodes, except author and source -->
+							<xsl:apply-templates select="./node()[not(local-name() = 'author') and 
+							not(local-name() = 'source') and 
+							not(local-name() = 'attribution')]"/> <!-- process all nested nodes, except author and source -->
 						</fo:block>
 					</fo:block-container>
 				</fo:block-container>
-				<xsl:if test="*[local-name() = 'author'] or *[local-name() = 'source']">
+				<xsl:if test="*[local-name() = 'author'] or *[local-name() = 'source'] or *[local-name() = 'attribution']">
 					<fo:block xsl:use-attribute-sets="quote-source-style">
 						<!-- — ISO, ISO 7301:2011, Clause 1 -->
 						<xsl:apply-templates select="*[local-name() = 'author']"/>
-						<xsl:apply-templates select="*[local-name() = 'source']"/>				
+						<xsl:apply-templates select="*[local-name() = 'source']"/>
+						<!-- added for https://github.com/metanorma/isodoc/issues/607 -->
+						<xsl:apply-templates select="*[local-name() = 'attribution']/*[local-name() = 'p']/node()"/>
 					</fo:block>
 				</xsl:if>
 				
@@ -16086,9 +16090,13 @@
 	</xsl:template>
 	
 	<xsl:template match="*[local-name() = 'author']">
-		<xsl:text>— </xsl:text>
+		<xsl:if test="local-name(..) = 'quote'"> <!-- for old Presentation XML, https://github.com/metanorma/isodoc/issues/607 -->
+			<xsl:text>— </xsl:text>
+		</xsl:if>
 		<xsl:apply-templates />
 	</xsl:template>
+	
+	<xsl:template match="*[local-name() = 'quote']//*[local-name() = 'referenceFrom']"/>
 	<!-- ====== -->
 	<!-- ====== -->
 
