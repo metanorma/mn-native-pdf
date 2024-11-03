@@ -9886,18 +9886,20 @@
 						</fo:block>
 					</xsl:when>  <!-- END: a few components -->
 					<xsl:when test="$parent = 'figure' and  (not(../@class) or ../@class !='pseudocode')"> <!-- definition list in a figure -->
-						<!-- commented, Presentation XML contains 'Key' caption, https://github.com/metanorma/isodoc/issues/607 -->
-						<!-- <fo:block font-weight="bold" text-align="left" margin-bottom="12pt" keep-with-next="always">
-						
-							<xsl:call-template name="refine_figure_key_style"/>
-						
-							<xsl:variable name="title-key">
-								<xsl:call-template name="getLocalizedString">
-									<xsl:with-param name="key">key</xsl:with-param>
-								</xsl:call-template>
-							</xsl:variable>
-							<xsl:value-of select="$title-key"/>
-						</fo:block> -->
+						<!-- Presentation XML contains 'Key' caption, https://github.com/metanorma/isodoc/issues/607 -->
+						<xsl:if test="not(preceding-sibling::*[1][local-name() = 'p' and @keep-with-next])"> <!-- for old Presentation XML -->
+							<fo:block font-weight="bold" text-align="left" margin-bottom="12pt" keep-with-next="always">
+							
+								<xsl:call-template name="refine_figure_key_style"/>
+							
+								<xsl:variable name="title-key">
+									<xsl:call-template name="getLocalizedString">
+										<xsl:with-param name="key">key</xsl:with-param>
+									</xsl:call-template>
+								</xsl:variable>
+								<xsl:value-of select="$title-key"/>
+							</fo:block>
+						</xsl:if>
 					</xsl:when>  <!-- END: definition list in a figure -->
 				</xsl:choose>
 				
