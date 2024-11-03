@@ -16435,7 +16435,9 @@
 		<!-- https://github.com/metanorma/isodoc/issues/607 
 		<fo:inline xsl:use-attribute-sets="domain-style">&lt;<xsl:apply-templates/>&gt;</fo:inline>
 		<xsl:text> </xsl:text> -->
-		<xsl:apply-templates/>
+		<xsl:if test="not(@hidden = 'true')">
+			<xsl:apply-templates/>
+		</xsl:if>
 	</xsl:template>
 	
 	<xsl:template match="*[local-name() = 'admitted']">
