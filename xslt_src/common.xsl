@@ -9454,7 +9454,9 @@
 	<!-- EMD table's footnotes rendering -->
 	<!-- ============================ -->
 	
+	<!-- ============================ -->
 	<!-- figure's footnotes rendering -->
+	<!-- ============================ -->
 	<xsl:template name="fn_display_figure">
 	
 		<!-- current figure id -->
@@ -9602,8 +9604,31 @@
 				</xsl:choose>
 			</fo:block>
 		</xsl:if>
-		
 	</xsl:template> <!-- fn_display_figure -->
+	
+	
+	<!-- added for https://github.com/metanorma/isodoc/issues/607 -->
+	<!-- figure's footnote label -->
+	<xsl:template match="*[local-name() = 'figure']/*[local-name() = 'dl'][@key = 'true']/*[local-name() = 'dt']/
+				*[local-name() = 'p'][count(node()[normalize-space() != '']) = 1]/*[local-name() = 'sup']" priority="3">
+		<xsl:variable name="key_iso">
+			<xsl:if test="$namespace = 'bsi' or $namespace = 'iso' or $namespace = 'iec'  or $namespace = 'gb' or $namespace = 'jcgm'">true</xsl:if>
+		</xsl:variable>
+		<xsl:if test="normalize-space($key_iso) = 'true'">
+			<xsl:attribute name="font-size">10pt</xsl:attribute>
+			<xsl:if test="$namespace = 'iec'">
+				<xsl:attribute name="font-size">8pt</xsl:attribute>
+			</xsl:if>
+		</xsl:if>
+		<fo:inline xsl:use-attribute-sets="figure-fn-number-style"> <!-- id="{@id}"  -->
+			<!-- <xsl:value-of select="@reference"/> -->
+			<xsl:apply-templates/>
+		</fo:inline>
+	</xsl:template>
+	
+	<!-- ============================ -->
+	<!-- END: figure's footnotes rendering -->
+	<!-- ============================ -->
 	
 	<!-- fn reference in the text rendering (for instance, 'some text 1) some text' ) -->
 	<xsl:template match="*[local-name()='fn']">
@@ -10489,7 +10514,7 @@
 				<xsl:if test="$namespace = 'itu'">
 					<xsl:attribute name="text-align">justify</xsl:attribute>
 				</xsl:if>
-
+				
 				<xsl:choose>
 					<xsl:when test="$isGenerateTableIF = 'true'">
 						<xsl:apply-templates> <!-- following-sibling::*[local-name()='dd'][1] -->
