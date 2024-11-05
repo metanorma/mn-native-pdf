@@ -2107,18 +2107,24 @@
 			</fo:block>
 			<xsl:if test="$doctype != 'resolution'">
 				<fo:block font-size="12pt" font-weight="normal" margin-top="6pt">
-					<xsl:choose>
+					<!-- <xsl:choose>
 						<xsl:when test="parent::*[@obligation = 'informative']">
 							<xsl:text>(This appendix does not form an integral part of this Recommendation.)</xsl:text>
 						</xsl:when>
 						<xsl:otherwise>
 							<xsl:text>(This annex forms an integral part of this Recommendation.)</xsl:text>
 						</xsl:otherwise>
-					</xsl:choose>
+					</xsl:choose> -->
+					<!-- Added for https://github.com/metanorma/isodoc/issues/614 -->
+					<xsl:apply-templates select="following-sibling::itu:p[not(preceding-sibling::itu:clause)][starts-with(normalize-space(), '(')]/node()"/>
 				</fo:block>
 			</xsl:if>
 		</fo:block>
 	</xsl:template>
+	
+	<!-- Added for https://github.com/metanorma/isodoc/issues/614 -->
+	<!-- renders in the annex/title template -->
+	<xsl:template match="itu:annex/itu:p[preceding-sibling::*[1][self::itu:title or self::itu:variant-title]][starts-with(normalize-space(), '(')]" priority="3"/>
 	
 	<!-- Bibliography -->
 	<xsl:template match="itu:references[not(@normative='true')]/itu:title">
