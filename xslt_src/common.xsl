@@ -9356,7 +9356,7 @@
 												<xsl:attribute name="font-family">Times New Roman</xsl:attribute>
 											</xsl:if>
 											<xsl:value-of select="@reference"/>
-											<fo:inline font-weight="normal">)</fo:inline>
+											<!-- <fo:inline font-weight="normal">)</fo:inline> --> <!-- commented, https://github.com/metanorma/isodoc/issues/614 -->
 										</fo:inline>
 									</fo:block>
 								</fo:list-item-label>
@@ -9662,9 +9662,10 @@
 				<xsl:if test="$namespace = 'bsi'">
 					<xsl:text>)</xsl:text>
 				</xsl:if>
-				<xsl:if test="$namespace = 'jis'">
+				<!-- commented, https://github.com/metanorma/isodoc/issues/614 -->
+				<!-- <xsl:if test="$namespace = 'jis'">
 					<fo:inline font-weight="normal">)</fo:inline>
-				</xsl:if>
+				</xsl:if> -->
 			</fo:basic-link>
 		</fo:inline>
 	</xsl:template>
