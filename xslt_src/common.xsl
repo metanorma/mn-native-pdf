@@ -15834,7 +15834,7 @@
 			<xsl:otherwise>
 				<fo:inline xsl:use-attribute-sets="example-name-style">
 					<xsl:call-template name="refine_example-name-style"/>
-					<xsl:apply-templates/><xsl:if test="$namespace = 'ieee' or $namespace = 'iho' or $namespace = 'ogc' or $namespace = 'rsd'">: </xsl:if>
+					<xsl:apply-templates/><xsl:if test="$namespace = 'iho' or $namespace = 'ogc' or $namespace = 'rsd'">: </xsl:if> <!-- $namespace = 'ieee', see https://github.com/metanorma/isodoc/issues/614  -->
 				</fo:inline>
 			</xsl:otherwise>
 		</xsl:choose>
