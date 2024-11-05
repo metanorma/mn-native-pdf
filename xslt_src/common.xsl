@@ -9395,9 +9395,10 @@
 									<fo:inline font-style="normal">)</fo:inline>
 								</xsl:if>
 								
-								<xsl:if test="$namespace = 'itu'">
+								<!-- commented https://github.com/metanorma/isodoc/issues/614 -->
+								<!-- <xsl:if test="$namespace = 'itu'">
 									<xsl:text>)</xsl:text>
-								</xsl:if>
+								</xsl:if> -->
 								
 								<xsl:if test="$namespace = 'plateau'">
 									<xsl:text>：</xsl:text>
@@ -9415,7 +9416,7 @@
 				
 			</xsl:if>
 		</xsl:for-each>
-	</xsl:template>
+	</xsl:template> <!-- table_fn_display -->
 	
 	<xsl:template name="create_fn">
 		<fn reference="{@reference}" id="{@reference}_{ancestor::*[@id][1]/@id}">
@@ -9457,7 +9458,7 @@
 	<!-- ============================ -->
 	<!-- figure's footnotes rendering -->
 	<!-- ============================ -->
-	<xsl:template name="fn_display_figure">
+	<xsl:template name="fn_display_figure"> <!-- figure_fn_display -->
 	
 		<!-- current figure id -->
 		<xsl:variable name="figure_id_">
