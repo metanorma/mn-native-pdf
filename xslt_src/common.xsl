@@ -18627,7 +18627,7 @@
 						</fo:block-container>
 					</xsl:otherwise>
 				</xsl:choose>
-			</xsl:when>
+			</xsl:when> <!-- BSI -->
 			
 			<xsl:when test="$namespace = 'csd' or $namespace = 'iso' or $namespace = 'jcgm'">
 				<fo:block xsl:use-attribute-sets="admonition-style">
@@ -18647,9 +18647,9 @@
 					
 					<xsl:if test="$namespace = 'iso'">
 						<xsl:if test="@type != 'editorial'">
-							<xsl:call-template name="displayAdmonitionName">
-								<xsl:with-param name="sep"> — </xsl:with-param>
-							</xsl:call-template>
+							<xsl:call-template name="displayAdmonitionName"/>
+								<!-- https://github.com/metanorma/isodoc/issues/614 -->
+								<!-- <xsl:with-param name="sep"> — </xsl:with-param> -->
 						</xsl:if>
 					</xsl:if>
 					
