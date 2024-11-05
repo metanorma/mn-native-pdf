@@ -9454,7 +9454,9 @@
 	<!-- EMD table's footnotes rendering -->
 	<!-- ============================ -->
 	
+	<!-- ============================ -->
 	<!-- figure's footnotes rendering -->
+	<!-- ============================ -->
 	<xsl:template name="fn_display_figure">
 	
 		<!-- current figure id -->
@@ -9602,8 +9604,31 @@
 				</xsl:choose>
 			</fo:block>
 		</xsl:if>
-		
 	</xsl:template> <!-- fn_display_figure -->
+	
+	
+	<!-- added for https://github.com/metanorma/isodoc/issues/607 -->
+	<!-- figure's footnote label -->
+	<xsl:template match="*[local-name() = 'figure']/*[local-name() = 'dl'][@key = 'true']/*[local-name() = 'dt']/
+				*[local-name() = 'p'][count(node()[normalize-space() != '']) = 1]/*[local-name() = 'sup']" priority="3">
+		<xsl:variable name="key_iso">
+			<xsl:if test="$namespace = 'bsi' or $namespace = 'iso' or $namespace = 'iec'  or $namespace = 'gb' or $namespace = 'jcgm'">true</xsl:if>
+		</xsl:variable>
+		<xsl:if test="normalize-space($key_iso) = 'true'">
+			<xsl:attribute name="font-size">10pt</xsl:attribute>
+			<xsl:if test="$namespace = 'iec'">
+				<xsl:attribute name="font-size">8pt</xsl:attribute>
+			</xsl:if>
+		</xsl:if>
+		<fo:inline xsl:use-attribute-sets="figure-fn-number-style"> <!-- id="{@id}"  -->
+			<!-- <xsl:value-of select="@reference"/> -->
+			<xsl:apply-templates/>
+		</fo:inline>
+	</xsl:template>
+	
+	<!-- ============================ -->
+	<!-- END: figure's footnotes rendering -->
+	<!-- ============================ -->
 	
 	<!-- fn reference in the text rendering (for instance, 'some text 1) some text' ) -->
 	<xsl:template match="*[local-name()='fn']">
@@ -9861,18 +9886,20 @@
 						</fo:block>
 					</xsl:when>  <!-- END: a few components -->
 					<xsl:when test="$parent = 'figure' and  (not(../@class) or ../@class !='pseudocode')"> <!-- definition list in a figure -->
-						<!-- commented, Presentation XML contains 'Key' caption, https://github.com/metanorma/isodoc/issues/607 -->
-						<!-- <fo:block font-weight="bold" text-align="left" margin-bottom="12pt" keep-with-next="always">
-						
-							<xsl:call-template name="refine_figure_key_style"/>
-						
-							<xsl:variable name="title-key">
-								<xsl:call-template name="getLocalizedString">
-									<xsl:with-param name="key">key</xsl:with-param>
-								</xsl:call-template>
-							</xsl:variable>
-							<xsl:value-of select="$title-key"/>
-						</fo:block> -->
+						<!-- Presentation XML contains 'Key' caption, https://github.com/metanorma/isodoc/issues/607 -->
+						<xsl:if test="not(preceding-sibling::*[1][local-name() = 'p' and @keep-with-next])"> <!-- for old Presentation XML -->
+							<fo:block font-weight="bold" text-align="left" margin-bottom="12pt" keep-with-next="always">
+							
+								<xsl:call-template name="refine_figure_key_style"/>
+							
+								<xsl:variable name="title-key">
+									<xsl:call-template name="getLocalizedString">
+										<xsl:with-param name="key">key</xsl:with-param>
+									</xsl:call-template>
+								</xsl:variable>
+								<xsl:value-of select="$title-key"/>
+							</fo:block>
+						</xsl:if>
 					</xsl:when>  <!-- END: definition list in a figure -->
 				</xsl:choose>
 				
@@ -10087,7 +10114,7 @@
 		
 	</xsl:template> <!-- END: dl -->
 	
-	<!-- caption for figure key and another caption -->
+	<!-- caption for figure key and another caption, https://github.com/metanorma/isodoc/issues/607 -->
 	<xsl:template match="*[local-name() = 'figure']/*[local-name() = 'p'][@keep-with-next = 'true' and *[local-name() = 'strong']]" priority="3">
 		<fo:block  text-align="left" margin-bottom="12pt" keep-with-next="always">
 			<xsl:call-template name="refine_figure_key_style"/>
@@ -10489,7 +10516,7 @@
 				<xsl:if test="$namespace = 'itu'">
 					<xsl:attribute name="text-align">justify</xsl:attribute>
 				</xsl:if>
-
+				
 				<xsl:choose>
 					<xsl:when test="$isGenerateTableIF = 'true'">
 						<xsl:apply-templates> <!-- following-sibling::*[local-name()='dd'][1] -->
@@ -12750,9 +12777,11 @@
 
 
 	<xsl:template match="*[local-name() = 'formula']/*[local-name() = 'name']"> <!-- show in 'stem' template -->
+		<!-- https://github.com/metanorma/isodoc/issues/607 
 		<xsl:if test="normalize-space() != ''">
 			<xsl:text>(</xsl:text><xsl:apply-templates /><xsl:text>)</xsl:text>
-		</xsl:if>
+		</xsl:if> -->
+		<xsl:apply-templates />
 	</xsl:template>
 	
 	
@@ -13043,20 +13072,21 @@
 						</xsl:choose> -->
 						<xsl:text> </xsl:text>
 					</xsl:if>
-					<xsl:if test="$namespace = 'ieee'">
-						<xsl:text>—</xsl:text>
-					</xsl:if>
-					<xsl:if test="$namespace = 'gb' or $namespace = 'iho' or $namespace = 'm3d' or $namespace = 'unece-rec' or $namespace = 'unece'  or $namespace = 'rsd'">
+					<!-- https://github.com/metanorma/isodoc/issues/607 -->
+					<!-- <xsl:if test="$namespace = 'ieee'">
+						<xsl:text>—</xsl:text> em dash &#x2014;
+					</xsl:if> -->
+					<!-- <xsl:if test="$namespace = 'iho' or $namespace = 'gb' or $namespace = 'm3d' or $namespace = 'unece-rec' or $namespace = 'unece'  or $namespace = 'rsd'">
 						<xsl:text>:</xsl:text>
-					</xsl:if>
+					</xsl:if> -->
 					<xsl:if test="$namespace = 'iso'">
 						<xsl:if test="$layoutVersion = '1987' and . = translate(.,'1234567890','')"> <!-- NOTE without number -->
 							<xsl:text> — </xsl:text>
 						</xsl:if>
 					</xsl:if>
-					<xsl:if test="$namespace = 'itu' or $namespace = 'nist-cswp'  or $namespace = 'nist-sp'">				
-						<xsl:text> – </xsl:text>
-					</xsl:if>
+					<!-- <xsl:if test="$namespace = 'itu' or $namespace = 'nist-cswp'  or $namespace = 'nist-sp'">				
+						<xsl:text> – </xsl:text> en dash &#x2013;
+					</xsl:if> -->
 				</xsl:otherwise>
 			</xsl:choose>
 		</xsl:variable>
@@ -13082,15 +13112,16 @@
 						</xsl:choose> -->
 						<xsl:text> </xsl:text>
 					</xsl:if>
-					<xsl:if test="$namespace = 'ieee'">
-						<xsl:text>—</xsl:text>
-					</xsl:if>
-					<xsl:if test="$namespace = 'gb' or $namespace = 'iso' or $namespace = 'iec' or $namespace = 'ogc' or $namespace = 'ogc-white-paper' or $namespace = 'jcgm' or $namespace = 'rsd'">
+					<!-- https://github.com/metanorma/isodoc/issues/607 -->
+					<!-- <xsl:if test="$namespace = 'ieee'">
+						<xsl:text>—</xsl:text> em dash &#x2014;
+					</xsl:if> -->
+					<!-- <xsl:if test="$namespace = 'gb' or $namespace = 'iso' or $namespace = 'iec' or $namespace = 'ogc' or $namespace = 'ogc-white-paper' or $namespace = 'rsd' or $namespace = 'jcgm'">
 						<xsl:text>:</xsl:text>
-					</xsl:if>
-					<xsl:if test="$namespace = 'itu' or $namespace = 'nist-cswp'  or $namespace = 'nist-sp' or $namespace = 'unece-rec' or $namespace = 'unece'">				
-						<xsl:text> – </xsl:text>
-					</xsl:if>
+					</xsl:if> -->
+					<!-- <xsl:if test="$namespace = 'itu' or $namespace = 'nist-cswp'  or $namespace = 'nist-sp' or $namespace = 'unece-rec' or $namespace = 'unece'">				
+						<xsl:text> – </xsl:text> en dash &#x2013;
+					</xsl:if> -->
 				</xsl:otherwise>
 			</xsl:choose>
 		</xsl:variable>
@@ -16019,15 +16050,19 @@
 
 					<fo:block-container margin-left="0mm" margin-right="0mm" role="SKIP">
 						<fo:block role="BlockQuote">
-							<xsl:apply-templates select="./node()[not(local-name() = 'author') and not(local-name() = 'source')]"/> <!-- process all nested nodes, except author and source -->
+							<xsl:apply-templates select="./node()[not(local-name() = 'author') and 
+							not(local-name() = 'source') and 
+							not(local-name() = 'attribution')]"/> <!-- process all nested nodes, except author and source -->
 						</fo:block>
 					</fo:block-container>
 				</fo:block-container>
-				<xsl:if test="*[local-name() = 'author'] or *[local-name() = 'source']">
+				<xsl:if test="*[local-name() = 'author'] or *[local-name() = 'source'] or *[local-name() = 'attribution']">
 					<fo:block xsl:use-attribute-sets="quote-source-style">
 						<!-- — ISO, ISO 7301:2011, Clause 1 -->
 						<xsl:apply-templates select="*[local-name() = 'author']"/>
-						<xsl:apply-templates select="*[local-name() = 'source']"/>				
+						<xsl:apply-templates select="*[local-name() = 'source']"/>
+						<!-- added for https://github.com/metanorma/isodoc/issues/607 -->
+						<xsl:apply-templates select="*[local-name() = 'attribution']/*[local-name() = 'p']/node()"/>
 					</fo:block>
 				</xsl:if>
 				
@@ -16057,9 +16092,13 @@
 	</xsl:template>
 	
 	<xsl:template match="*[local-name() = 'author']">
-		<xsl:text>— </xsl:text>
+		<xsl:if test="local-name(..) = 'quote'"> <!-- for old Presentation XML, https://github.com/metanorma/isodoc/issues/607 -->
+			<xsl:text>— </xsl:text>
+		</xsl:if>
 		<xsl:apply-templates />
 	</xsl:template>
+	
+	<xsl:template match="*[local-name() = 'quote']//*[local-name() = 'referenceFrom']"/>
 	<!-- ====== -->
 	<!-- ====== -->
 
@@ -16430,8 +16469,12 @@
 	</xsl:template>
 	
 	<xsl:template match="*[local-name() = 'domain']">
+		<!-- https://github.com/metanorma/isodoc/issues/607 
 		<fo:inline xsl:use-attribute-sets="domain-style">&lt;<xsl:apply-templates/>&gt;</fo:inline>
-		<xsl:text> </xsl:text>
+		<xsl:text> </xsl:text> -->
+		<xsl:if test="not(@hidden = 'true')">
+			<xsl:apply-templates/>
+		</xsl:if>
 	</xsl:template>
 	
 	<xsl:template match="*[local-name() = 'admitted']">

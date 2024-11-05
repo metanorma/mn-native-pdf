@@ -3834,7 +3834,7 @@
 	
 	<xsl:template match="iso:copyright-statement/iso:clause" priority="3">
 		<fo:block role="SKIP">
-			<xsl:if test="@id = 'boilerplate-copyright-default' and ../iso:clause">
+			<xsl:if test="@id = 'boilerplate-copyright-default' and ../iso:clause[not(@id = 'boilerplate-copyright-default')]">
 				<xsl:attribute name="color">blue</xsl:attribute>
 				<xsl:attribute name="border">1pt solid blue</xsl:attribute>
 				<xsl:attribute name="padding">1mm</xsl:attribute>
