@@ -9890,7 +9890,8 @@
 						<xsl:if test="not(preceding-sibling::*[1][local-name() = 'p' and @keep-with-next])"> <!-- for old Presentation XML -->
 						
 							<xsl:choose>
-								<xsl:when test="$namespace = 'bsi'"></xsl:when>
+								<xsl:when test="$namespace = 'bsi'"></xsl:when><!-- https://github.com/metanorma/isodoc/issues/607, see template<xsl:template
+								match="bsi:figure/bsi:p[preceding-sibling::bsi:p[@keep-with-next = 'true']][node()[1][self::bsi:sup]]" priority="5"> -->
 								<xsl:otherwise>						
 									<fo:block font-weight="bold" text-align="left" margin-bottom="12pt" keep-with-next="always">
 									
