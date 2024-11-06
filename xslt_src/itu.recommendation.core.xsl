@@ -2307,7 +2307,10 @@
 				</xsl:choose>
 			</xsl:if>			
 			<xsl:if test="following-sibling::itu:definition/node()">
-				<xsl:text>: </xsl:text>
+				<xsl:if test="../itu:termsource">
+					<xsl:text>:</xsl:text>
+				</xsl:if>
+				<xsl:text> </xsl:text>
 				<!-- <xsl:apply-templates select="following-sibling::itu:definition/node()" mode="process"/>			 -->
 				<xsl:apply-templates select="following-sibling::itu:definition">
 					<xsl:with-param name="process">true</xsl:with-param>
