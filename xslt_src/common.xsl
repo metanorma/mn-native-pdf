@@ -15633,7 +15633,7 @@
 		<xsl:if test="normalize-space() != ''">
 			<fo:inline xsl:use-attribute-sets="termexample-name-style">
 				<xsl:call-template name="refine_termexample-name-style"/>
-				<xsl:apply-templates /><xsl:if test="$namespace = 'ieee' or $namespace = 'rsd'">: </xsl:if>
+				<xsl:apply-templates /><xsl:if test="$namespace = 'rsd'">: </xsl:if> <!-- commented $namespace = 'ieee', https://github.com/metanorma/isodoc/issues/614-->
 			</fo:inline>
 		</xsl:if>
 	</xsl:template>
