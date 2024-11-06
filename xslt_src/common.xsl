@@ -9888,17 +9888,24 @@
 					<xsl:when test="$parent = 'figure' and  (not(../@class) or ../@class !='pseudocode')"> <!-- definition list in a figure -->
 						<!-- Presentation XML contains 'Key' caption, https://github.com/metanorma/isodoc/issues/607 -->
 						<xsl:if test="not(preceding-sibling::*[1][local-name() = 'p' and @keep-with-next])"> <!-- for old Presentation XML -->
-							<fo:block font-weight="bold" text-align="left" margin-bottom="12pt" keep-with-next="always">
-							
-								<xsl:call-template name="refine_figure_key_style"/>
-							
-								<xsl:variable name="title-key">
-									<xsl:call-template name="getLocalizedString">
-										<xsl:with-param name="key">key</xsl:with-param>
-									</xsl:call-template>
-								</xsl:variable>
-								<xsl:value-of select="$title-key"/>
-							</fo:block>
+						
+							<xsl:choose>
+								<xsl:when test="$namespace = 'bsi'"></xsl:when><!-- https://github.com/metanorma/isodoc/issues/607, see template<xsl:template
+								match="bsi:figure/bsi:p[preceding-sibling::bsi:p[@keep-with-next = 'true']][node()[1][self::bsi:sup]]" priority="5"> -->
+								<xsl:otherwise>						
+									<fo:block font-weight="bold" text-align="left" margin-bottom="12pt" keep-with-next="always">
+									
+										<xsl:call-template name="refine_figure_key_style"/>
+									
+										<xsl:variable name="title-key">
+											<xsl:call-template name="getLocalizedString">
+												<xsl:with-param name="key">key</xsl:with-param>
+											</xsl:call-template>
+										</xsl:variable>
+										<xsl:value-of select="$title-key"/>
+									</fo:block>
+								</xsl:otherwise>
+							</xsl:choose>
 						</xsl:if>
 					</xsl:when>  <!-- END: definition list in a figure -->
 				</xsl:choose>
@@ -18627,7 +18634,7 @@
 						</fo:block-container>
 					</xsl:otherwise>
 				</xsl:choose>
-			</xsl:when>
+			</xsl:when> <!-- BSI -->
 			
 			<xsl:when test="$namespace = 'csd' or $namespace = 'iso' or $namespace = 'jcgm'">
 				<fo:block xsl:use-attribute-sets="admonition-style">
