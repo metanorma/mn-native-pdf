@@ -19154,8 +19154,10 @@
 		</xsl:choose>
 	</xsl:template>
 	
+	<xsl:variable name="regex_passthrough">.*\bpdf\b.*</xsl:variable>
 	<xsl:template match="*[local-name() = 'passthrough']" mode="update_xml_step1">
-		<xsl:if test="contains(@formats, 'pdf')"> 
+		<!-- <xsl:if test="contains(@formats, ' pdf ')"> -->
+		<xsl:if test="normalize-space(java:matches(java:java.lang.String.new(@formats), $regex_passthrough)) = 'true'">
 			<xsl:apply-templates mode="update_xml_step1"/>
 		</xsl:if>
 	</xsl:template>
