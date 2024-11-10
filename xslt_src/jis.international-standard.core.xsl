@@ -936,7 +936,7 @@
 										</xsl:if>
 										<xsl:choose>
 											<xsl:when test="$vertical_layout = 'true'">
-												<xsl:attribute name="provisional-distance-between-starts">10mm</xsl:attribute>
+												<xsl:attribute name="provisional-distance-between-starts">15mm</xsl:attribute> <!-- 10 isn't enought for 3 chars numbers -->
 											</xsl:when>
 											<xsl:otherwise>
 												<xsl:variable name="provisional-distance-between-starts">
