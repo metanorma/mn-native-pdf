@@ -7,7 +7,9 @@
 											xmlns:fox="http://xmlgraphics.apache.org/fop/extensions" 
 											xmlns:pdf="http://xmlgraphics.apache.org/fop/extensions/pdf"
 											xmlns:java="http://xml.apache.org/xalan/java" 
+											xmlns:redirect="http://xml.apache.org/xalan/redirect"
 											exclude-result-prefixes="java"
+											extension-element-prefixes="redirect"
 											version="1.0">
 
 	<xsl:output version="1.0" method="xml" encoding="UTF-8" indent="no"/>
@@ -452,10 +454,22 @@
 									<xsl:apply-templates select="." mode="title_eref"/>
 								</xsl:variable> -->
 								
-								<xsl:variable name="flatxml_">
+								<xsl:variable name="flatxml__">
 									<!-- <xsl:apply-templates select="xalan:nodeset($title_eref)" mode="flatxml"/> -->
 									<xsl:apply-templates select="." mode="flatxml"/>
 								</xsl:variable>
+								<!-- save flatxml into the file and reload it -->
+								<xsl:variable name="updated_flatxml_filename" select="concat($output_path,'_flatxml_', java:getTime(java:java.util.Date.new()), '.xml')"/>
+								<redirect:write file="{$updated_flatxml_filename}">
+									<xsl:copy-of select="xalan:nodeset($flatxml__)"/>
+								</redirect:write>
+								<xsl:variable name="flatxml_">
+									<xsl:copy-of select="document($updated_flatxml_filename)"/>
+								</xsl:variable>
+								<xsl:call-template name="deleteFile">
+									<xsl:with-param name="filepath" select="$updated_flatxml_filename"/>
+								</xsl:call-template>
+								<xsl:variable name="endTime2" select="java:getTime(java:java.util.Date.new())"/>
 								
 								<xsl:variable name="flatxml">
 									<xsl:apply-templates select="xalan:nodeset($flatxml_)" mode="pagebreak"/>
@@ -478,10 +492,21 @@
 									<xsl:apply-templates select="." mode="title_eref"/>
 								</xsl:variable> -->
 								
-								<xsl:variable name="flatxml_">
+								<xsl:variable name="flatxml__">
 									<!-- <xsl:apply-templates select="xalan:nodeset($title_eref)" mode="flatxml"/> -->
 									<xsl:apply-templates select="." mode="flatxml"/>
 								</xsl:variable>
+								<!-- save flatxml into the file and reload it -->
+								<xsl:variable name="updated_flatxml_filename" select="concat($output_path,'_flatxml_', java:getTime(java:java.util.Date.new()), '.xml')"/>
+								<redirect:write file="{$updated_flatxml_filename}">
+									<xsl:copy-of select="xalan:nodeset($flatxml__)"/>
+								</redirect:write>
+								<xsl:variable name="flatxml_">
+									<xsl:copy-of select="document($updated_flatxml_filename)"/>
+								</xsl:variable>
+								<xsl:call-template name="deleteFile">
+									<xsl:with-param name="filepath" select="$updated_flatxml_filename"/>
+								</xsl:call-template>
 								
 								<xsl:variable name="flatxml">
 									<xsl:apply-templates select="xalan:nodeset($flatxml_)" mode="pagebreak"/>
@@ -503,10 +528,22 @@
 						<xsl:apply-templates mode="title_eref"/>
 					</xsl:variable> -->
 					
-					<xsl:variable name="flatxml_">
+					<xsl:variable name="flatxml__">
 						<!-- <xsl:apply-templates select="xalan:nodeset($title_eref)" mode="flatxml"/> -->
 						<xsl:apply-templates select="." mode="flatxml"/>
 					</xsl:variable>
+
+					<!-- save flatxml into the file and reload it -->
+					<xsl:variable name="updated_flatxml_filename" select="concat($output_path,'_flatxml_', java:getTime(java:java.util.Date.new()), '.xml')"/>
+					<redirect:write file="{$updated_flatxml_filename}">
+						<xsl:copy-of select="xalan:nodeset($flatxml__)"/>
+					</redirect:write>
+					<xsl:variable name="flatxml_">
+						<xsl:copy-of select="document($updated_flatxml_filename)"/>
+					</xsl:variable>
+					<xsl:call-template name="deleteFile">
+						<xsl:with-param name="filepath" select="$updated_flatxml_filename"/>
+					</xsl:call-template>
 
 					<xsl:variable name="flatxml">
 						<xsl:apply-templates select="xalan:nodeset($flatxml_)" mode="pagebreak"/>
@@ -565,6 +602,14 @@
 	
 	<xsl:template match="mathml:math" mode="flatxml" priority="2">
 		<xsl:copy-of select="."/>
+	</xsl:template>
+
+	<!-- split math by element with @linebreak into maths -->
+	<xsl:template match="mathml:math[.//mathml:mo[@linebreak] or .//mathml:mspace[@linebreak]]" mode="flatxml" priority="3">
+		<xsl:variable name="maths">
+			<xsl:apply-templates select="." mode="mathml_linebreak"/>
+		</xsl:variable>
+		<xsl:copy-of select="$maths"/>
 	</xsl:template>
 
 	<xsl:template match="bipm:preface/bipm:clause[@type = 'toc']" mode="flatxml" priority="2"/>
