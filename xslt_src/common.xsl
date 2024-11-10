@@ -19119,7 +19119,7 @@
 	<!-- remove preprocess-xslt -->
 	<xsl:template match="*[local-name() = 'preprocess-xslt']" mode="update_xml_step1"/>
 	
-	<xsl:template match="*[local-name() = 'stem'][not(.//*[local-name() = 'passthrough'])] | 
+	<xsl:template match="*[local-name() = 'stem'][not(.//*[local-name() = 'passthrough']) and not(.//*[@linebreak])] | 
 						*[local-name() = 'image'][not(.//*[local-name() = 'passthrough'])] | 
 						*[local-name() = 'sourcecode'][not(.//*[local-name() = 'passthrough'])] | 
 						*[local-name() = 'bibdata'][not(.//*[local-name() = 'passthrough'])] | 
