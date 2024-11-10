@@ -12517,6 +12517,39 @@
 		</xsl:copy>
 	</xsl:template>
 
+	<xsl:template match="@*|node()" mode="mathml_linebreak">
+		<xsl:copy>
+			<xsl:apply-templates select="@*|node()" mode="mathml_linebreak"/>
+		</xsl:copy>
+	</xsl:template>
+
+	<!-- split math into two math -->
+	<xsl:template match="mathml:mo[@linebreak] | mathml:mspace[@linebreak]" mode="mathml_linebreak">
+		<xsl:variable name="math_elements_tree_">
+			<xsl:for-each select="ancestor::*[ancestor-or-self::mathml:math]">
+				<element pos="{position()}">
+					<xsl:copy-of select="@*[local-name() != 'id']"/>
+					<xsl:value-of select="name()"/>
+				</element>
+			</xsl:for-each>
+		</xsl:variable>
+		
+		<xsl:variable name="math_elements_tree" select="xalan:nodeset($math_elements_tree_)"/>
+			
+		<xsl:call-template name="insertClosingElements">
+			<xsl:with-param name="tree" select="$math_elements_tree"/>
+		</xsl:call-template>
+		
+		<xsl:element name="br" namespace="{$namespace_full}"/>
+		
+		<xsl:call-template name="insertOpeningElements">
+			<xsl:with-param name="tree" select="$math_elements_tree"/>
+			<xsl:with-param name="xmlns">http://www.w3.org/1998/Math/MathML</xsl:with-param>
+			<xsl:with-param name="add_continue">false</xsl:with-param>
+		</xsl:call-template>
+		
+	</xsl:template>
+
 	<!-- Examples: 
 		<stem type="AsciiMath">x = 1</stem> 
 		<stem type="AsciiMath"><asciimath>x = 1</asciimath></stem>
@@ -19164,6 +19197,14 @@
 		</xsl:if>
 	</xsl:template>
 	
+	<!-- split math by element with @linebreak into maths -->
+	<xsl:template match="mathml:math[.//mathml:mo[@linebreak] or .//mathml:mspace[@linebreak]]" mode="update_xml_step1">
+		<xsl:variable name="maths">
+			<xsl:apply-templates select="." mode="mathml_linebreak"/>
+		</xsl:variable>
+		<xsl:copy-of select="$maths"/>
+	</xsl:template>
+	
 	<!-- =========================================================================== -->
 	<!-- END STEP1: Re-order elements in 'preface', 'sections' based on @displayorder -->
 	<!-- =========================================================================== -->
@@ -19269,6 +19310,8 @@
 	
 	<xsl:template name="insertOpeningElements">
 		<xsl:param name="tree"/>
+		<xsl:param name="xmlns"/>
+		<xsl:param name="add_continue">true</xsl:param>
 		<xsl:for-each select="$tree//element">
 			<xsl:text disable-output-escaping="yes">&lt;</xsl:text>
 				<xsl:value-of select="."/>
@@ -19279,7 +19322,8 @@
 					<xsl:value-of select="."/>
 					<xsl:text>"</xsl:text>
 				</xsl:for-each>
-				<xsl:if test="position() = 1"> continue="true"</xsl:if>
+				<xsl:if test="position() = 1 and $add_continue = 'true'"> continue="true"</xsl:if>
+				<xsl:if test="position() = 1 and $xmlns != ''"> xmlns="<xsl:value-of select="$xmlns"/>"</xsl:if>
 			<xsl:text disable-output-escaping="yes">&gt;</xsl:text>
 			<xsl:if test="$debug = 'true'">
 				<xsl:message>&lt;<xsl:value-of select="."/>&gt;</xsl:message>
