@@ -19086,10 +19086,10 @@
 	<!-- remove preprocess-xslt -->
 	<xsl:template match="*[local-name() = 'preprocess-xslt']" mode="update_xml_step1"/>
 	
-	<xsl:template match="*[local-name() = 'stem'] | 
-						*[local-name() = 'image'] | 
-						*[local-name() = 'sourcecode'] | 
-						*[local-name() = 'bibdata'] | 
+	<xsl:template match="*[local-name() = 'stem'][not(.//*[local-name() = 'passthrough'])] | 
+						*[local-name() = 'image'][not(.//*[local-name() = 'passthrough'])] | 
+						*[local-name() = 'sourcecode'][not(.//*[local-name() = 'passthrough'])] | 
+						*[local-name() = 'bibdata'][not(.//*[local-name() = 'passthrough'])] | 
 						*[local-name() = 'localized-strings']" mode="update_xml_step1">
 		<xsl:copy-of select="."/>
 	</xsl:template>
@@ -19156,6 +19156,13 @@
 		</xsl:choose>
 	</xsl:template>
 	
+	<xsl:variable name="regex_passthrough">.*\bpdf\b.*</xsl:variable>
+	<xsl:template match="*[local-name() = 'passthrough']" mode="update_xml_step1">
+		<!-- <xsl:if test="contains(@formats, ' pdf ')"> -->
+		<xsl:if test="normalize-space(java:matches(java:java.lang.String.new(@formats), $regex_passthrough)) = 'true'">
+			<xsl:apply-templates mode="update_xml_step1"/>
+		</xsl:if>
+	</xsl:template>
 	
 	<!-- =========================================================================== -->
 	<!-- END STEP1: Re-order elements in 'preface', 'sections' based on @displayorder -->

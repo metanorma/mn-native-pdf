@@ -920,6 +920,13 @@
 	
 	<xsl:template match="bipm:indexsect" mode="flatxml"/>
 	
+	<xsl:template match="*[local-name() = 'passthrough']" mode="flatxml">
+		<!-- <xsl:if test="contains(@formats, 'pdf')">  -->
+		<xsl:if test="normalize-space(java:matches(java:java.lang.String.new(@formats), $regex_passthrough)) = 'true'">
+			<xsl:apply-templates  mode="flatxml"/>
+		</xsl:if>
+	</xsl:template>
+	
 	<!-- ================================= -->
 	<!-- END: Flattening xml for fit notes at page sides (margins) -->
 	<!-- ================================= -->	
