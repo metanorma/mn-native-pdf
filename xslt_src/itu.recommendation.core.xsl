@@ -2107,18 +2107,24 @@
 			</fo:block>
 			<xsl:if test="$doctype != 'resolution'">
 				<fo:block font-size="12pt" font-weight="normal" margin-top="6pt">
-					<xsl:choose>
+					<!-- <xsl:choose>
 						<xsl:when test="parent::*[@obligation = 'informative']">
 							<xsl:text>(This appendix does not form an integral part of this Recommendation.)</xsl:text>
 						</xsl:when>
 						<xsl:otherwise>
 							<xsl:text>(This annex forms an integral part of this Recommendation.)</xsl:text>
 						</xsl:otherwise>
-					</xsl:choose>
+					</xsl:choose> -->
+					<!-- Added for https://github.com/metanorma/isodoc/issues/614 -->
+					<xsl:apply-templates select="following-sibling::itu:p[not(preceding-sibling::itu:clause)][starts-with(normalize-space(), '(')]/node()"/>
 				</fo:block>
 			</xsl:if>
 		</fo:block>
 	</xsl:template>
+	
+	<!-- Added for https://github.com/metanorma/isodoc/issues/614 -->
+	<!-- renders in the annex/title template -->
+	<xsl:template match="itu:annex/itu:p[preceding-sibling::*[1][self::itu:title or self::itu:variant-title]][starts-with(normalize-space(), '(')]" priority="3"/>
 	
 	<!-- Bibliography -->
 	<xsl:template match="itu:references[not(@normative='true')]/itu:title">
@@ -2261,32 +2267,50 @@
 				<xsl:call-template name="setStyle_preferred"/>
 				<xsl:apply-templates />
 			</fo:inline>
-			<xsl:if test="../itu:termsource/itu:origin">
-				<xsl:text>: </xsl:text>
+			<xsl:if test="../itu:termsource">
+				<!-- https://github.com/metanorma/isodoc/issues/614 -->
+				<!-- <xsl:text>: </xsl:text> -->
+				<xsl:text> </xsl:text>
 				<xsl:variable name="citeas" select="../itu:termsource/itu:origin/@citeas"/>
 				<xsl:variable name="bibitemid" select="../itu:termsource/itu:origin/@bibitemid"/>
 				<xsl:variable name="origin_text" select="normalize-space(../itu:termsource/itu:origin/text())"/>
 				
-				<xsl:call-template name="insert_basic_link">
-					<xsl:with-param name="element">
-						<fo:basic-link internal-destination="{$bibitemid}" fox:alt-text="{$citeas}">
-							<xsl:choose>
-								<xsl:when test="$origin_text != ''">
-									<xsl:text> </xsl:text><xsl:apply-templates select="../itu:termsource/itu:origin/node()"/>
-								</xsl:when>
-								<xsl:when test="contains($citeas, '[')">
-									<xsl:text> </xsl:text><xsl:value-of select="$citeas"/> <!--  disable-output-escaping="yes" -->
-								</xsl:when>
-								<xsl:otherwise>
-									<xsl:text> [</xsl:text><xsl:value-of select="$citeas"/><xsl:text>]</xsl:text>
-								</xsl:otherwise>
-							</xsl:choose>
-						</fo:basic-link>
-					</xsl:with-param>
-				</xsl:call-template>
+				<xsl:choose>
+					<xsl:when test="$origin_text != '' or $citeas != ''">
+						<xsl:call-template name="insert_basic_link">
+							<xsl:with-param name="element">
+								<fo:basic-link internal-destination="{$bibitemid}" fox:alt-text="{$citeas}">
+									<xsl:choose>
+										<xsl:when test="$origin_text != ''">
+											<xsl:text> </xsl:text><xsl:apply-templates select="../itu:termsource/itu:origin/node()"/>
+										</xsl:when>
+										<!-- https://github.com/metanorma/isodoc/issues/614 -->
+										<!-- <xsl:when test="contains($citeas, '[')">
+											<xsl:text> </xsl:text><xsl:value-of select="$citeas"/>disable-output-escaping="yes"
+										</xsl:when>
+										<xsl:otherwise>
+											<xsl:text> [</xsl:text><xsl:value-of select="$citeas"/><xsl:text>]</xsl:text>
+										</xsl:otherwise> -->
+										<xsl:otherwise>
+											<xsl:text> </xsl:text><xsl:value-of select="$citeas"/>
+										</xsl:otherwise>
+									</xsl:choose>
+								</fo:basic-link>
+							</xsl:with-param>
+						</xsl:call-template>
+					</xsl:when>
+					<xsl:otherwise>
+						<xsl:apply-templates select="../itu:termsource">
+							<xsl:with-param name="process">true</xsl:with-param>
+						</xsl:apply-templates>
+					</xsl:otherwise>
+				</xsl:choose>
 			</xsl:if>			
 			<xsl:if test="following-sibling::itu:definition/node()">
-				<xsl:text>: </xsl:text>
+				<xsl:if test="../itu:termsource">
+					<xsl:text>:</xsl:text>
+				</xsl:if>
+				<xsl:text> </xsl:text>
 				<!-- <xsl:apply-templates select="following-sibling::itu:definition/node()" mode="process"/>			 -->
 				<xsl:apply-templates select="following-sibling::itu:definition">
 					<xsl:with-param name="process">true</xsl:with-param>
@@ -2298,7 +2322,12 @@
 		</xsl:if> -->
 	</xsl:template> <!-- preferred -->
 	
-	<xsl:template match="itu:term[itu:preferred]/itu:termsource" priority="2"/>
+	<xsl:template match="itu:term[itu:preferred]/itu:termsource" priority="2">
+		<xsl:param name="process">false</xsl:param>
+		<xsl:if test="$process = 'true'">
+			<xsl:apply-templates />
+		</xsl:if>
+	</xsl:template>
 	
 	<xsl:template match="itu:term[itu:preferred]/itu:definition" priority="2">
 		<xsl:param name="process">false</xsl:param>
