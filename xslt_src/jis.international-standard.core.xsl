@@ -2463,6 +2463,22 @@
 		</xsl:choose>
 	</xsl:template>
 	
+
+	<xsl:template match="*[local-name() = 'figure']/*[local-name() = 'name'] |
+								*[local-name() = 'image']/*[local-name() = 'name']" priority="3">
+		<xsl:param name="process">false</xsl:param>
+		
+		<xsl:if test="normalize-space() != '' and (not($vertical_layout = 'true') or $process = 'true')">			
+			<fo:block xsl:use-attribute-sets="figure-name-style">
+			
+				<xsl:call-template name="refine_figure-name-style"/>
+				
+				<xsl:apply-templates />
+			</fo:block>
+		</xsl:if>
+	</xsl:template>
+	
+	
 	<xsl:template name="insertHeaderFooter">
 		<xsl:param name="docidentifier" />
 		<xsl:param name="hidePageNumber">false</xsl:param>

@@ -4406,6 +4406,9 @@
 			<xsl:if test="ancestor::*[local-name() = 'example'] or ancestor::*[local-name() = 'note']">
 				<xsl:attribute name="margin-left">0mm</xsl:attribute>
 			</xsl:if>
+			<xsl:if test="$vertical_layout = 'true'">
+				<xsl:attribute name="reference-orientation">90</xsl:attribute>
+			</xsl:if>
 		</xsl:if>
 	</xsl:template>
 
@@ -4759,6 +4762,11 @@
 	<xsl:template name="refine_image-style">
 		<xsl:if test="$namespace = 'bsi'">
 			<xsl:if test="ancestor::*[local-name() = 'table']">
+				<xsl:attribute name="text-align">inherit</xsl:attribute>
+			</xsl:if>
+		</xsl:if>
+		<xsl:if test="$namespace = 'jis'">
+			<xsl:if test="$vertical_layout = 'true'">
 				<xsl:attribute name="text-align">inherit</xsl:attribute>
 			</xsl:if>
 		</xsl:if>
@@ -13288,6 +13296,13 @@
 			</xsl:choose>
 			
 		</fo:block-container>
+		<xsl:if test="$namespace = 'jis'">
+			<xsl:if test="$vertical_layout = 'true'">
+				<xsl:apply-templates select="*[local-name() = 'name']">
+					<xsl:with-param name="process">true</xsl:with-param>
+				</xsl:apply-templates>
+			</xsl:if>
+		</xsl:if>
 	</xsl:template>
 	
 	<xsl:template match="*[local-name() = 'figure'][@class = 'pseudocode']">
