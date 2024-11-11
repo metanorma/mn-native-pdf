@@ -2327,6 +2327,50 @@
 		<xsl:copy-of select="xalan:nodeset($text_en)/*[local-name() = 'text']/node()"/>
 	</xsl:template>
 	
+	<!-- add @provisional-distance-between-starts for 'ol' -->
+	<xsl:template match="jis:ol" priority="2" mode="update_xml_step1">
+		<xsl:copy>
+			<xsl:copy-of select="@*"/>
+			<xsl:if test="$vertical_layout = 'true'">
+				<xsl:variable name="labels">
+					<xsl:for-each select="*[local-name() = 'li']"><label_len><xsl:value-of select="string-length(@label)"/></label_len></xsl:for-each>
+				</xsl:variable>
+				<xsl:variable name="max_len_label_">
+					<xsl:for-each select="xalan:nodeset($labels)//*">
+						<xsl:sort select="." data-type="number" order="descending"/>
+						<xsl:if test="position() = 1"><xsl:value-of select="."/></xsl:if>
+					</xsl:for-each>
+				</xsl:variable>
+				<xsl:variable name="max_len_label" select="number($max_len_label_)"/>
+				
+				<xsl:choose>
+					<xsl:when test="@type = 'arabic'">
+						<xsl:attribute name="provisional-distance-between-starts">
+							<xsl:choose>
+								<xsl:when test="$max_len_label = 1">8.5mm</xsl:when>
+								<xsl:when test="$max_len_label = 2">12mm</xsl:when>
+								<xsl:when test="$max_len_label = 3">20mm</xsl:when>
+								<xsl:otherwise>
+									<xsl:value-of select="3 + number($max_len_label) * 4"/>mm
+								</xsl:otherwise>
+							</xsl:choose>
+						</xsl:attribute>
+					</xsl:when>
+					<xsl:otherwise>
+						<xsl:variable name="ol_styles">
+							<styles xsl:use-attribute-sets="list-style"/>
+						</xsl:variable>
+						<xsl:for-each select="xalan:nodeset($ol_styles)//styles">
+							<xsl:copy-of select="@*"/>
+						</xsl:for-each>
+					</xsl:otherwise>
+				</xsl:choose>
+			</xsl:if>
+			<xsl:apply-templates mode="update_xml_step1"/>
+		</xsl:copy>
+	</xsl:template>
+	
+	
 	<xsl:template match="*[local-name() = 'font_en_bold'][normalize-space() != '']">
 		<xsl:if test="ancestor::*[local-name() = 'td' or local-name() = 'th']"><xsl:value-of select="$zero_width_space"/></xsl:if>
 		<fo:inline>
@@ -2359,7 +2403,7 @@
 							<!-- convert to vertical layout -->
 							<xsl:variable name="text">
 								<xsl:choose>
-									<xsl:when test="ancestor::*[local-name(../..) = 'note'] and ancestor::*[local-name(..) = 'name']">
+									<xsl:when test="(ancestor::*[local-name(../..) = 'note'] or ancestor::*[local-name(../..) = 'example'] ) and ancestor::*[local-name(..) = 'name']">
 										<xsl:value-of select="concat('&#x2002;', normalize-space(.))"/>
 									</xsl:when>
 									<xsl:otherwise><xsl:value-of select="."/></xsl:otherwise>
@@ -2403,7 +2447,7 @@
 	<!-- ========================= -->
 	
 	<!-- patch for correct list-item-label rendering: enclose each char in inline-container -->
-	<xsl:template match="*[local-name() = 'note']/*[local-name() = 'name']/text()" priority="3">
+	<xsl:template match="*[local-name() = 'note' or local-name() = 'example']/*[local-name() = 'name']/text()" priority="3">
 		<xsl:choose>
 			<xsl:when test="not($vertical_layout = 'true')">
 				<xsl:value-of select="."/>

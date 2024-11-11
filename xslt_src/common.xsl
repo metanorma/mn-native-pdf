@@ -1554,6 +1554,10 @@
 			<xsl:if test="not($vertical_layout = 'true')">
 				<xsl:attribute name="font-family">IPAexGothic</xsl:attribute>
 			</xsl:if>
+			<xsl:if test="$vertical_layout = 'true'">
+				<xsl:attribute name="font-family">Noto Sans JP</xsl:attribute>
+				<xsl:attribute name="font-weight">500</xsl:attribute>
+			</xsl:if>
 		</xsl:if>
 	</xsl:template>
 	
@@ -15720,137 +15724,188 @@
 	-->
 	<xsl:template match="*[local-name() = 'example']">
 		
-		<fo:block-container id="{@id}" xsl:use-attribute-sets="example-style" role="SKIP">
-		
-			<xsl:call-template name="setBlockSpanAll"/>
-		
-			<xsl:call-template name="refine_example-style"/>
-		
-			<xsl:variable name="fo_element">
-				<xsl:if test=".//*[local-name() = 'table'] or .//*[local-name() = 'dl'] or *[not(local-name() = 'name')][1][local-name() = 'sourcecode']">block</xsl:if> 
-				<xsl:choose>			
-					<xsl:when test="$namespace = 'bsi' or 
-														$namespace = 'iho' or 
-														$namespace = 'jcgm' or 
-														$namespace = 'm3d' or
-														$namespace = 'ogc' or 
-														$namespace = 'rsd'">inline</xsl:when> <!-- display first Example paragraph on the same line as EXAMPLE title -->
-					<xsl:when test="$namespace = 'iso'">
+		<xsl:choose>
+			<xsl:when test="$namespace = 'jis'">
+				<fo:block id="{@id}" xsl:use-attribute-sets="example-style" role="SKIP">
+					<xsl:call-template name="setBlockSpanAll"/>
+					
+					<xsl:call-template name="refine_example-style"/>
+					
+					<xsl:variable name="ol_adjust">
 						<xsl:choose>
-							<xsl:when test="$layoutVersion = '1951' and $revision_date_num &lt; 19610101">list</xsl:when>
-							<xsl:otherwise>inline</xsl:otherwise>
+							<xsl:when test="$vertical_layout = 'true' and ancestor::*[local-name() = 'ol']/@provisional-distance-between-starts">
+								<xsl:value-of select="number(translate(ancestor::*[local-name() = 'ol']/@provisional-distance-between-starts, 'mm', ''))"/>
+							</xsl:when>
+							<xsl:otherwise>0</xsl:otherwise>
 						</xsl:choose>
-					</xsl:when>
-					<xsl:when test="$namespace = 'iec'">
-						<xsl:choose>
-							<!-- if example contains only one (except 'name') element (paragraph for example), then display it on the same line as EXAMPLE title -->
-							<xsl:when test="count(*[not(local-name() = 'name')]) = 1">inline</xsl:when>
+					</xsl:variable>
+					<xsl:variable name="provisional_distance_between_starts_">
+						<xsl:value-of select="10 + $text_indent - $ol_adjust"/>
+					</xsl:variable>
+					<xsl:variable name="provisional_distance_between_starts" select="normalize-space($provisional_distance_between_starts_)"/>
+					<xsl:variable name="indent_">
+						<xsl:value-of select="$text_indent"/>
+					</xsl:variable>
+					<xsl:variable name="indent" select="normalize-space($indent_)"/>
+				
+					<fo:list-block provisional-distance-between-starts="{$provisional_distance_between_starts}mm">
+						<xsl:if test="$vertical_layout = 'true'">
+							<xsl:attribute name="provisional-distance-between-starts"><xsl:value-of select="$provisional_distance_between_starts + 2"/>mm</xsl:attribute>
+						</xsl:if>
+						<fo:list-item>
+							<fo:list-item-label start-indent="{$indent}mm" end-indent="label-end()">
+								<xsl:if test="$vertical_layout = 'true'">
+									<xsl:attribute name="start-indent">0mm</xsl:attribute>
+								</xsl:if>
+								<fo:block>
+									<xsl:apply-templates select="*[local-name()='name']">
+										<xsl:with-param name="fo_element">block</xsl:with-param>
+									</xsl:apply-templates>
+								</fo:block>
+							</fo:list-item-label>
+							<fo:list-item-body start-indent="body-start()">
+								<fo:block>
+									<xsl:apply-templates select="node()[not(local-name() = 'name')]">
+										<xsl:with-param name="fo_element" select="'list'"/>
+									</xsl:apply-templates>
+								</fo:block>
+							</fo:list-item-body>
+						</fo:list-item>
+					</fo:list-block>
+					
+				</fo:block>
+			</xsl:when>
+			<xsl:otherwise>
+				<fo:block-container id="{@id}" xsl:use-attribute-sets="example-style" role="SKIP">
+				
+					<xsl:call-template name="setBlockSpanAll"/>
+				
+					<xsl:call-template name="refine_example-style"/>
+				
+					<xsl:variable name="fo_element">
+						<xsl:if test=".//*[local-name() = 'table'] or .//*[local-name() = 'dl'] or *[not(local-name() = 'name')][1][local-name() = 'sourcecode']">block</xsl:if> 
+						<xsl:choose>			
+							<xsl:when test="$namespace = 'bsi' or 
+																$namespace = 'iho' or 
+																$namespace = 'jcgm' or 
+																$namespace = 'm3d' or
+																$namespace = 'ogc' or 
+																$namespace = 'rsd'">inline</xsl:when> <!-- display first Example paragraph on the same line as EXAMPLE title -->
+							<xsl:when test="$namespace = 'iso'">
+								<xsl:choose>
+									<xsl:when test="$layoutVersion = '1951' and $revision_date_num &lt; 19610101">list</xsl:when>
+									<xsl:otherwise>inline</xsl:otherwise>
+								</xsl:choose>
+							</xsl:when>
+							<xsl:when test="$namespace = 'iec'">
+								<xsl:choose>
+									<!-- if example contains only one (except 'name') element (paragraph for example), then display it on the same line as EXAMPLE title -->
+									<xsl:when test="count(*[not(local-name() = 'name')]) = 1">inline</xsl:when>
+									<xsl:otherwise>block</xsl:otherwise>
+								</xsl:choose>
+							</xsl:when>
 							<xsl:otherwise>block</xsl:otherwise>
 						</xsl:choose>
-					</xsl:when>
-					<xsl:when test="$namespace= 'jis'">list</xsl:when>
-					<xsl:otherwise>block</xsl:otherwise>
-				</xsl:choose>
-			</xsl:variable>
-			
-			<fo:block-container margin-left="0mm" role="SKIP">
-			
-				<xsl:choose>
+					</xsl:variable>
 					
-					<xsl:when test="contains(normalize-space($fo_element), 'block')">
+					<fo:block-container margin-left="0mm" role="SKIP">
 					
-						<!-- display name 'EXAMPLE' in a separate block  -->
-						<fo:block>
-							<xsl:apply-templates select="*[local-name()='name']">
-								<xsl:with-param name="fo_element" select="$fo_element"/>
-							</xsl:apply-templates>
-						</fo:block>
-						
-						<fo:block-container xsl:use-attribute-sets="example-body-style" role="SKIP">
-							<fo:block-container margin-left="0mm" margin-right="0mm" role="SKIP">
-								<xsl:variable name="example_body">
-									<xsl:apply-templates select="node()[not(local-name() = 'name')]">
+						<xsl:choose>
+							
+							<xsl:when test="contains(normalize-space($fo_element), 'block')">
+							
+								<!-- display name 'EXAMPLE' in a separate block  -->
+								<fo:block>
+									<xsl:apply-templates select="*[local-name()='name']">
 										<xsl:with-param name="fo_element" select="$fo_element"/>
 									</xsl:apply-templates>
+								</fo:block>
+								
+								<fo:block-container xsl:use-attribute-sets="example-body-style" role="SKIP">
+									<fo:block-container margin-left="0mm" margin-right="0mm" role="SKIP">
+										<xsl:variable name="example_body">
+											<xsl:apply-templates select="node()[not(local-name() = 'name')]">
+												<xsl:with-param name="fo_element" select="$fo_element"/>
+											</xsl:apply-templates>
+										</xsl:variable>
+										<xsl:choose>
+											<xsl:when test="xalan:nodeset($example_body)/*">
+												<xsl:copy-of select="$example_body"/>
+											</xsl:when>
+											<xsl:otherwise><fo:block/><!-- prevent empty block-container --></xsl:otherwise>
+										</xsl:choose>
+									</fo:block-container>
+								</fo:block-container>
+							</xsl:when> <!-- end block -->
+							
+							<xsl:when test="contains(normalize-space($fo_element), 'list')">
+							
+								<xsl:variable name="provisional_distance_between_starts_">
+									<xsl:choose>
+										<xsl:when test="$namespace = 'iso'">45</xsl:when>
+										<xsl:otherwise>7</xsl:otherwise>
+									</xsl:choose>
 								</xsl:variable>
-								<xsl:choose>
-									<xsl:when test="xalan:nodeset($example_body)/*">
-										<xsl:copy-of select="$example_body"/>
-									</xsl:when>
-									<xsl:otherwise><fo:block/><!-- prevent empty block-container --></xsl:otherwise>
-								</xsl:choose>
-							</fo:block-container>
-						</fo:block-container>
-					</xsl:when> <!-- end block -->
-					
-					<xsl:when test="contains(normalize-space($fo_element), 'list')">
-					
-						<xsl:variable name="provisional_distance_between_starts_">
-							<xsl:choose>
-								<xsl:when test="$namespace = 'iso'">45</xsl:when>
-								<xsl:when test="$namespace = 'jis'"><xsl:value-of select="10 + $text_indent"/></xsl:when>
-								<xsl:otherwise>7</xsl:otherwise>
-							</xsl:choose>
-						</xsl:variable>
-						<xsl:variable name="provisional_distance_between_starts" select="normalize-space($provisional_distance_between_starts_)"/>
-						<xsl:variable name="indent_">
-							<xsl:choose>
-								<xsl:when test="$namespace = 'iso'">28</xsl:when>
-								<xsl:when test="$namespace = 'jis'"><xsl:value-of select="$text_indent"/></xsl:when>
-								<xsl:otherwise>0</xsl:otherwise>
-							</xsl:choose>
-						</xsl:variable>
-						<xsl:variable name="indent" select="normalize-space($indent_)"/>
-					
-						<fo:list-block provisional-distance-between-starts="{$provisional_distance_between_starts}mm">
-							<fo:list-item>
-								<fo:list-item-label start-indent="{$indent}mm" end-indent="label-end()">
-									<fo:block>
-										<xsl:apply-templates select="*[local-name()='name']">
-											<xsl:with-param name="fo_element">block</xsl:with-param>
-										</xsl:apply-templates>
-									</fo:block>
-								</fo:list-item-label>
-								<fo:list-item-body start-indent="body-start()">
-									<fo:block>
-										<xsl:apply-templates select="node()[not(local-name() = 'name')]">
+								<xsl:variable name="provisional_distance_between_starts" select="normalize-space($provisional_distance_between_starts_)"/>
+								<xsl:variable name="indent_">
+									<xsl:choose>
+										<xsl:when test="$namespace = 'iso'">28</xsl:when>
+										<xsl:otherwise>0</xsl:otherwise>
+									</xsl:choose>
+								</xsl:variable>
+								<xsl:variable name="indent" select="normalize-space($indent_)"/>
+							
+								<fo:list-block provisional-distance-between-starts="{$provisional_distance_between_starts}mm">
+									<fo:list-item>
+										<fo:list-item-label start-indent="{$indent}mm" end-indent="label-end()">
+											<fo:block>
+												<xsl:apply-templates select="*[local-name()='name']">
+													<xsl:with-param name="fo_element">block</xsl:with-param>
+												</xsl:apply-templates>
+											</fo:block>
+										</fo:list-item-label>
+										<fo:list-item-body start-indent="body-start()">
+											<fo:block>
+												<xsl:apply-templates select="node()[not(local-name() = 'name')]">
+													<xsl:with-param name="fo_element" select="$fo_element"/>
+												</xsl:apply-templates>
+											</fo:block>
+										</fo:list-item-body>
+									</fo:list-item>
+								</fo:list-block>
+							</xsl:when> <!-- end list -->
+							
+							<xsl:otherwise> <!-- inline -->
+							
+								<!-- display 'EXAMPLE' and first element in the same line -->
+								<fo:block>
+									<xsl:apply-templates select="*[local-name()='name']">
+										<xsl:with-param name="fo_element" select="$fo_element"/>
+									</xsl:apply-templates>
+									<fo:inline>
+										<xsl:apply-templates select="*[not(local-name() = 'name')][1]">
 											<xsl:with-param name="fo_element" select="$fo_element"/>
 										</xsl:apply-templates>
-									</fo:block>
-								</fo:list-item-body>
-							</fo:list-item>
-						</fo:list-block>
-					</xsl:when> <!-- end list -->
-					
-					<xsl:otherwise> <!-- inline -->
-					
-						<!-- display 'EXAMPLE' and first element in the same line -->
-						<fo:block>
-							<xsl:apply-templates select="*[local-name()='name']">
-								<xsl:with-param name="fo_element" select="$fo_element"/>
-							</xsl:apply-templates>
-							<fo:inline>
-								<xsl:apply-templates select="*[not(local-name() = 'name')][1]">
-									<xsl:with-param name="fo_element" select="$fo_element"/>
-								</xsl:apply-templates>
-							</fo:inline>
-						</fo:block> 
-						
-						<xsl:if test="*[not(local-name() = 'name')][position() &gt; 1]">
-							<!-- display further elements in blocks -->
-							<fo:block-container xsl:use-attribute-sets="example-body-style" role="SKIP">
-								<fo:block-container margin-left="0mm" margin-right="0mm" role="SKIP">
-									<xsl:apply-templates select="*[not(local-name() = 'name')][position() &gt; 1]">
-										<xsl:with-param name="fo_element" select="'block'"/>
-									</xsl:apply-templates>
-								</fo:block-container>
-							</fo:block-container>
-						</xsl:if>
-					</xsl:otherwise> <!-- end inline -->
-					
-				</xsl:choose>
-			</fo:block-container>
-		</fo:block-container>
+									</fo:inline>
+								</fo:block> 
+								
+								<xsl:if test="*[not(local-name() = 'name')][position() &gt; 1]">
+									<!-- display further elements in blocks -->
+									<fo:block-container xsl:use-attribute-sets="example-body-style" role="SKIP">
+										<fo:block-container margin-left="0mm" margin-right="0mm" role="SKIP">
+											<xsl:apply-templates select="*[not(local-name() = 'name')][position() &gt; 1]">
+												<xsl:with-param name="fo_element" select="'block'"/>
+											</xsl:apply-templates>
+										</fo:block-container>
+									</fo:block-container>
+								</xsl:if>
+							</xsl:otherwise> <!-- end inline -->
+							
+						</xsl:choose>
+					</fo:block-container>
+				</fo:block-container>
+			</xsl:otherwise>
+		</xsl:choose>
 	</xsl:template>
 	
 	
@@ -15866,9 +15921,7 @@
 			<xsl:when test="contains(normalize-space($fo_element), 'block')">
 				<fo:block xsl:use-attribute-sets="example-name-style">
 					<xsl:if test="$namespace = 'jis'">
-						<xsl:if test="not($vertical_layout = 'true')">
-							<xsl:attribute name="font-family">IPAexGothic</xsl:attribute>
-						</xsl:if>
+						<xsl:call-template name="refine_example-name-style"/>
 					</xsl:if>
 					<xsl:apply-templates/>
 				</fo:block>
@@ -17417,26 +17470,7 @@
 		
 		<xsl:if test="$namespace = 'jis'">
 			<xsl:if test="local-name() = 'ol' and $vertical_layout = 'true' and @type = 'arabic'">
-				<xsl:variable name="labels">
-					<xsl:for-each select="*[local-name() = 'li']"><label_len><xsl:value-of select="string-length(@label)"/></label_len></xsl:for-each>
-				</xsl:variable>
-				<xsl:variable name="max_len_label_">
-					<xsl:for-each select="xalan:nodeset($labels)//*">
-						<xsl:sort select="." data-type="number" order="descending"/>
-						<xsl:if test="position() = 1"><xsl:value-of select="."/></xsl:if>
-					</xsl:for-each>
-				</xsl:variable>
-				<xsl:variable name="max_len_label" select="number($max_len_label_)"/>
-				<xsl:attribute name="provisional-distance-between-starts">
-					<xsl:choose>
-						<xsl:when test="$max_len_label = 1">8.5mm</xsl:when>
-						<xsl:when test="$max_len_label = 2">12mm</xsl:when>
-						<xsl:when test="$max_len_label = 3">20mm</xsl:when>
-						<xsl:otherwise>
-							<xsl:value-of select="3 + number($max_len_label) * 4"/>mm
-						</xsl:otherwise>
-					</xsl:choose>
-				</xsl:attribute>
+				<xsl:copy-of select="@provisional-distance-between-starts"/> <!-- add in update_xml_step1 -->
 			</xsl:if>
 		</xsl:if>
 		
