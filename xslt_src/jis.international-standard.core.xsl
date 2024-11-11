@@ -2412,6 +2412,7 @@
 							<xsl:call-template name="insertVerticalChar">
 								<xsl:with-param name="str" select="$text"/>
 								<xsl:with-param name="reference-orientation" select="$reference-orientation"/>
+								<xsl:with-param name="add_zero_width_space">true</xsl:with-param>
 							</xsl:call-template>
 						</xsl:when>
 						<xsl:otherwise>

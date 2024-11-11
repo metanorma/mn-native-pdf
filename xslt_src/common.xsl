@@ -20926,7 +20926,9 @@
 		<xsl:param name="str"/>
 		<xsl:param name="writing-mode">lr-tb</xsl:param>
 		<xsl:param name="reference-orientation">90</xsl:param>
+		<xsl:param name="add_zero_width_space">false</xsl:param>
 		<xsl:if test="string-length($str) &gt; 0">
+			<xsl:variable name="char" select="substring($str,1,1)"/>
 			<fo:inline-container text-align="center"
 						 alignment-baseline="central" width="1em" margin="0" padding="0"
 						 text-indent="0mm" last-line-end-indent="0mm" start-indent="0mm" end-indent="0mm">
@@ -20934,7 +20936,6 @@
 					<xsl:attribute name="writing-mode"><xsl:value-of select="$writing-mode"/></xsl:attribute>
 					<xsl:attribute name="reference-orientation">90</xsl:attribute>
 				</xsl:if>
-				<xsl:variable name="char" select="substring($str,1,1)"/>
 				<xsl:if test="normalize-space(java:matches(java:java.lang.String.new($char), concat('(', $regex_ja_spec, '{1,})'))) = 'true'">
 					<xsl:attribute name="reference-orientation">0</xsl:attribute>
 				</xsl:if>
@@ -20942,10 +20943,12 @@
 						<fo:block line-height="1em"><xsl:value-of select="$char"/></fo:block>
 				</fo:block-container>
 			</fo:inline-container>
+			<xsl:if test="$add_zero_width_space = 'true' and ($char = ',' or $char = '.' or $char = ' ')"><xsl:value-of select="$zero_width_space"/></xsl:if>
 			<xsl:call-template name="insertVerticalChar">
 				<xsl:with-param name="str" select="substring($str, 2)"/>
 				<xsl:with-param name="writing-mode" select="$writing-mode"/>
 				<xsl:with-param name="reference-orientation" select="$reference-orientation"/>
+				<xsl:with-param name="add_zero_width_space" select="$add_zero_width_space"/>
 			</xsl:call-template>
 		</xsl:if>
 	</xsl:template>
