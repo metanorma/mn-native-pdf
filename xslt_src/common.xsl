@@ -4408,7 +4408,57 @@
 			</xsl:if>
 			<xsl:if test="$vertical_layout = 'true'">
 				<xsl:attribute name="reference-orientation">90</xsl:attribute>
+				<xsl:attribute name="display-align">center</xsl:attribute>
+				<!-- <xsl:attribute name="border">1pt solid blue</xsl:attribute> -->
+				
+				<!-- determine block-container width for rotated image -->
+				<xsl:for-each select="*[local-name() = 'image'][1]"> <!-- set context to 'image' element -->
+					
+					<xsl:variable name="width">
+						<xsl:call-template name="setImageWidth"/>
+					</xsl:variable>
+					
+					<xsl:choose>
+						<xsl:when test="normalize-space($width) != ''">
+							<xsl:attribute name="width">
+								<xsl:value-of select="$width"/>
+							</xsl:attribute>
+						</xsl:when>
+						<xsl:when test="*[local-name() = 'svg']">
+							<xsl:variable name="svg_content">
+								<xsl:apply-templates select="*[local-name() = 'svg'][1]" mode="svg_update"/>
+							</xsl:variable>
+							<xsl:variable name="svg_width_" select="xalan:nodeset($svg_content)/*/@width"/>
+							<xsl:variable name="svg_width" select="number(translate($svg_width_, 'px', ''))"/>
+							
+							<xsl:variable name="scale_width">
+								<xsl:choose>
+									<xsl:when test="$svg_width &gt; $height_effective_px">
+										<xsl:value-of select="$height_effective_px div $svg_width"/>
+									</xsl:when>
+									<xsl:otherwise>1</xsl:otherwise>
+								</xsl:choose>
+							</xsl:variable>
+							<xsl:attribute name="width"><xsl:value-of select="$svg_width * $scale_width"/>px</xsl:attribute>
+							
+							
+						</xsl:when>
+						<xsl:otherwise> <!-- determine image width programmatically -->
+							<xsl:variable name="img_src">
+								<xsl:call-template name="getImageSrc"/>
+							</xsl:variable>
+							<xsl:variable name="image_width" select="java:org.metanorma.fop.utils.ImageUtils.getImageWidth($img_src, $height_effective, $width_effective)"/>
+							<xsl:if test="normalize-space($image_width) != '0'">
+								<xsl:attribute name="width">
+									<xsl:value-of select="concat($image_width, 'mm')"/>
+								</xsl:attribute>
+							</xsl:if>
+						</xsl:otherwise>
+					</xsl:choose>
+				</xsl:for-each>
+				<!-- end: $vertical_layout = 'true -->
 			</xsl:if>
+			<!-- end: $namespace = 'jis' -->
 		</xsl:if>
 	</xsl:template>
 
@@ -13510,6 +13560,21 @@
 		</xsl:if>
 	</xsl:template>
 		
+	<xsl:template name="getImageSrc">
+		<xsl:choose>
+			<xsl:when test="not(starts-with(@src, 'data:'))">
+				<xsl:choose>
+					<xsl:when test="@extracted = 'true'"> <!-- added in mn2pdf v1.97 -->
+						<xsl:value-of select="@src"/>
+					</xsl:when>
+					<xsl:otherwise>
+						<xsl:value-of select="concat($basepath, @src)"/>
+					</xsl:otherwise>
+				</xsl:choose>
+			</xsl:when>
+			<xsl:otherwise><xsl:value-of select="@src"/></xsl:otherwise>
+		</xsl:choose>
+	</xsl:template>
 
 	<xsl:template name="getImageScale">
 		<xsl:param name="indent"/>
@@ -13520,19 +13585,7 @@
 			</xsl:choose>
 		</xsl:variable>
 		<xsl:variable name="img_src">
-			<xsl:choose>
-				<xsl:when test="not(starts-with(@src, 'data:'))">
-					<xsl:choose>
-						<xsl:when test="@extracted = 'true'"> <!-- added in mn2pdf v1.97 -->
-							<xsl:value-of select="@src"/>
-						</xsl:when>
-						<xsl:otherwise>
-							<xsl:value-of select="concat($basepath, @src)"/>
-						</xsl:otherwise>
-					</xsl:choose>
-				</xsl:when>
-				<xsl:otherwise><xsl:value-of select="@src"/></xsl:otherwise>
-			</xsl:choose>
+			<xsl:call-template name="getImageSrc"/>
 		</xsl:variable>
 		
 		<xsl:variable name="image_width_effective">
