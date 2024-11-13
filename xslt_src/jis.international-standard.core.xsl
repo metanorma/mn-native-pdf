@@ -490,7 +490,7 @@
 								
 									<xsl:if test="$vertical_layout = 'true'">
 										<xsl:attribute name="master-reference">document_toc_2024</xsl:attribute>
-										<xsl:attribute name="format">&#x4E8C;</xsl:attribute>
+										<xsl:attribute name="format">&#x4E00;</xsl:attribute>
 									</xsl:if>
 						
 									<xsl:if test="position() = 1">
@@ -565,7 +565,7 @@
 										
 										<xsl:if test="$vertical_layout = 'true'">
 											<xsl:attribute name="master-reference">document_2024</xsl:attribute>
-											<xsl:attribute name="format">&#x4E8C;</xsl:attribute>
+											<xsl:attribute name="format">&#x4E00;</xsl:attribute>
 										</xsl:if>
 										
 										<xsl:if test="position() = 1">
@@ -721,7 +721,7 @@
 										<xsl:attribute name="master-reference">document_2024_with_last</xsl:attribute>
 									</xsl:if>
 									
-									<xsl:attribute name="format">&#x4E8C;</xsl:attribute>
+									<xsl:attribute name="format">&#x4E00;</xsl:attribute>
 									<!-- <xsl:attribute name="fox:number-conversion-features">&#x30A2;</xsl:attribute> -->
 								</xsl:when>
 								<xsl:otherwise>
