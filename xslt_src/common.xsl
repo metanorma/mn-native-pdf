@@ -20265,6 +20265,7 @@
 		</pdf:catalog>
 		<x:xmpmeta xmlns:x="adobe:ns:meta/">
 			<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+				<!-- Commented after upgrade to Apache FOP 2.10
 				<rdf:Description xmlns:pdfaExtension="http://www.aiim.org/pdfa/ns/extension/" xmlns:pdfaProperty="http://www.aiim.org/pdfa/ns/property#" xmlns:pdfaSchema="http://www.aiim.org/pdfa/ns/schema#" rdf:about="">
 					<pdfaExtension:schemas>
 						<rdf:Bag>
@@ -20297,7 +20298,7 @@
 							</rdf:li>
 						</rdf:Bag>
 					</pdfaExtension:schemas>
-				</rdf:Description>
+				</rdf:Description> -->
 				<rdf:Description rdf:about="" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:pdf="http://ns.adobe.com/pdf/1.3/">
 				<!-- Dublin Core properties go here -->
 					<dc:title>
