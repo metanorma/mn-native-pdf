@@ -2478,6 +2478,15 @@
 		</xsl:if>
 	</xsl:template>
 	
+	<xsl:template match="*[local-name() = 'figure']/*[local-name() = 'p'][@class = 'dl']" priority="3">
+		<xsl:param name="process">false</xsl:param>
+		<xsl:if test="normalize-space() != '' and (not($vertical_layout = 'true') or $process = 'true')">			
+			<fo:block>
+				<xsl:apply-templates />
+			</fo:block>
+		</xsl:if>
+	</xsl:template>
+	
 	
 	<xsl:template name="insertHeaderFooter">
 		<xsl:param name="docidentifier" />

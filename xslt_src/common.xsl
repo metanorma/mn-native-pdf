@@ -13339,13 +13339,25 @@
 			<!-- Example: Dimensions in millimeters -->
 			<xsl:apply-templates select="*[local-name() = 'note'][@type = 'units']" />
 			
+			<xsl:variable name="show_figure_key_in_block_container">
+				<xsl:choose>
+					<xsl:when test="$namespace = 'jis'">
+						<xsl:choose>
+							<xsl:when test="$vertical_layout = 'true'">false</xsl:when>
+							<xsl:otherwise>true</xsl:otherwise>
+						</xsl:choose>
+					</xsl:when>
+					<xsl:otherwise>true</xsl:otherwise>
+				</xsl:choose>
+			</xsl:variable>
+			
 			<fo:block xsl:use-attribute-sets="figure-style" role="SKIP">
 				<xsl:apply-templates select="node()[not(local-name() = 'name') and not(local-name() = 'note' and @type = 'units')]" />
 			</fo:block>
-			<xsl:for-each select="*[local-name() = 'note'][not(@type = 'units')]">
-				<xsl:call-template name="note"/>
-			</xsl:for-each>
-			<xsl:call-template name="fn_display_figure"/>
+		
+			<xsl:if test="normalize-space($show_figure_key_in_block_container) = 'true'">
+				<xsl:call-template name="showFigureKey"/>
+			</xsl:if>
 			
 			<xsl:choose>
 				<xsl:when test="$namespace = 'bsi' or $namespace = 'rsd'"></xsl:when>
@@ -13355,13 +13367,27 @@
 			</xsl:choose>
 			
 		</fo:block-container>
+		
 		<xsl:if test="$namespace = 'jis'">
 			<xsl:if test="$vertical_layout = 'true'">
+				<fo:block keep-with-previous="always">
+					<xsl:apply-templates select="*[local-name() = 'p'][@class = 'dl']">
+						<xsl:with-param name="process">true</xsl:with-param>
+					</xsl:apply-templates>
+					<xsl:call-template name="showFigureKey"/>
+				</fo:block>
 				<xsl:apply-templates select="*[local-name() = 'name']">
 					<xsl:with-param name="process">true</xsl:with-param>
 				</xsl:apply-templates>
 			</xsl:if>
 		</xsl:if>
+	</xsl:template>
+	
+	<xsl:template name="showFigureKey">
+		<xsl:for-each select="*[local-name() = 'note'][not(@type = 'units')]">
+			<xsl:call-template name="note"/>
+		</xsl:for-each>
+		<xsl:call-template name="fn_display_figure"/>
 	</xsl:template>
 	
 	<xsl:template match="*[local-name() = 'figure'][@class = 'pseudocode']">
