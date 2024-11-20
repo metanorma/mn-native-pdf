@@ -4406,10 +4406,11 @@
 			<xsl:if test="ancestor::*[local-name() = 'example'] or ancestor::*[local-name() = 'note']">
 				<xsl:attribute name="margin-left">0mm</xsl:attribute>
 			</xsl:if>
-			<xsl:if test="$vertical_layout = 'true'">
+			<xsl:if test="$vertical_layout = 'true' and not(*[local-name() = 'figure'])">
 				<xsl:attribute name="reference-orientation">90</xsl:attribute>
 				<xsl:attribute name="display-align">center</xsl:attribute>
 				<!-- <xsl:attribute name="border">1pt solid blue</xsl:attribute> -->
+				<xsl:attribute name="margin-left">0mm</xsl:attribute>
 				
 				<!-- determine block-container width for rotated image -->
 				<xsl:for-each select="*[local-name() = 'image'][1]"> <!-- set context to 'image' element -->
@@ -4447,11 +4448,19 @@
 							<xsl:variable name="img_src">
 								<xsl:call-template name="getImageSrc"/>
 							</xsl:variable>
-							<xsl:variable name="image_width" select="java:org.metanorma.fop.utils.ImageUtils.getImageWidth($img_src, $height_effective, $width_effective)"/>
-							<xsl:if test="normalize-space($image_width) != '0'">
+							<xsl:variable name="image_width_programmatically" select="java:org.metanorma.fop.utils.ImageUtils.getImageWidth($img_src, $height_effective, $width_effective)"/>
+							
+							<xsl:variable name="scale">
+								<xsl:call-template name="getImageScale"/>
+							</xsl:variable>
+							
+							<xsl:if test="normalize-space($image_width_programmatically) != '0'">
 								<xsl:attribute name="width">
-									<xsl:value-of select="concat($image_width, 'mm')"/>
+									<xsl:value-of select="concat($image_width_programmatically, 'mm')"/> <!-- * ($scale div 100) -->
 								</xsl:attribute>
+								<xsl:if test="$scale != 100">
+									<xsl:attribute name="display-align">before</xsl:attribute>
+								</xsl:if>
 							</xsl:if>
 						</xsl:otherwise>
 					</xsl:choose>
@@ -13606,10 +13615,27 @@
 				</xsl:otherwise>
 			</xsl:choose>
 		</xsl:variable>
+		<xsl:variable name="image_height_effective" select="$height_effective - number($indent_left)"/>
 		<!-- <xsl:message>width_effective=<xsl:value-of select="$width_effective"/></xsl:message>
 		<xsl:message>indent_left=<xsl:value-of select="$indent_left"/></xsl:message>
 		<xsl:message>image_width_effective=<xsl:value-of select="$image_width_effective"/> for <xsl:value-of select="ancestor::ogc:p[1]/@id"/></xsl:message> -->
-		<xsl:variable name="scale" select="java:org.metanorma.fop.utils.ImageUtils.getImageScale($img_src, $image_width_effective, $height_effective)"/>
+		<xsl:variable name="scale">
+			<xsl:choose>
+				<xsl:when test="$namespace = 'jis'">
+					<xsl:choose>
+						<xsl:when test="$vertical_layout = 'true'">
+							<xsl:value-of select="java:org.metanorma.fop.utils.ImageUtils.getImageScale($img_src, $image_height_effective, $width_effective)"/>
+						</xsl:when>
+						<xsl:otherwise>
+							<xsl:value-of select="java:org.metanorma.fop.utils.ImageUtils.getImageScale($img_src, $image_width_effective, $height_effective)"/>
+						</xsl:otherwise>
+					</xsl:choose>
+				</xsl:when>
+				<xsl:otherwise>
+					<xsl:value-of select="java:org.metanorma.fop.utils.ImageUtils.getImageScale($img_src, $image_width_effective, $height_effective)"/>
+				</xsl:otherwise>
+			</xsl:choose>
+		</xsl:variable>
 		<xsl:value-of select="$scale"/>
 	</xsl:template>
 
