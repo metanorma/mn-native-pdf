@@ -21012,7 +21012,7 @@
 						<fo:block line-height="1em"><xsl:value-of select="$char"/></fo:block>
 				</fo:block-container>
 			</fo:inline-container>
-			<xsl:if test="$add_zero_width_space = 'true' and ($char = ',' or $char = '.' or $char = ' ')"><xsl:value-of select="$zero_width_space"/></xsl:if>
+			<xsl:if test="$add_zero_width_space = 'true' and ($char = ',' or $char = '.' or $char = ' ' or $char = '·' or $char = ')' or $char = ']' or $char = '}')"><xsl:value-of select="$zero_width_space"/></xsl:if>
 			<xsl:call-template name="insertVerticalChar">
 				<xsl:with-param name="str" select="substring($str, 2)"/>
 				<xsl:with-param name="writing-mode" select="$writing-mode"/>
