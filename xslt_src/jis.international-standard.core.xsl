@@ -2194,7 +2194,8 @@
 	<xsl:variable name="tag_font_en_bold_close">###/<xsl:value-of select="$element_name_font_en_bold"/>###</xsl:variable>
 	
 	<xsl:template match="jis:p//text()[not(ancestor::jis:strong) and not(ancestor::jis:p[@class = 'zzSTDTitle2'])] |
-						jis:dt/text()" mode="update_xml_step1">
+						jis:dt/text() | 
+						jis:biblio-tag/text()" mode="update_xml_step1">
 		<xsl:variable name="text_en_" select="java:replaceAll(java:java.lang.String.new(.), $regex_en, concat($tag_font_en_open,'$1',$tag_font_en_close))"/>
 		<xsl:variable name="text_en">
 			<xsl:element name="text" namespace="{$namespace_full}">
