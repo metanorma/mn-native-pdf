@@ -2001,6 +2001,12 @@
 							<fo:inline font-weight="normal">)</fo:inline>
 							<xsl:value-of select="substring-after($list_item_label,')')"/>
 						</xsl:when>
+						<xsl:when test="$vertical_layout = 'true' and ../@type = 'alphabet'">
+							<xsl:call-template name="insertVerticalChar">
+								<xsl:with-param name="str" select="substring-before($list_item_label,')')"/>
+							</xsl:call-template>
+							<fo:inline font-weight="normal">)</fo:inline>
+						</xsl:when>
 						<xsl:when test="contains($list_item_label, ')')">
 							<xsl:value-of select="substring-before($list_item_label,')')"/>
 							<fo:inline font-weight="normal">)</fo:inline>
