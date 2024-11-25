@@ -377,15 +377,35 @@
 				<xsl:with-param name="contents" select="$contents"/>
 			</xsl:call-template>
 			
+			<xsl:variable name="updated_xml_step0">
+				<xsl:if test="$vertical_layout = 'true'">
+					<xsl:apply-templates mode="update_xml_step0"/>
+				</xsl:if>
+			</xsl:variable>
+			<xsl:if test="$debug = 'true'">
+				<redirect:write file="update_xml_step0.xml">
+					<xsl:copy-of select="$updated_xml_step0"/>
+				</redirect:write>
+			</xsl:if>
+			
 			<xsl:variable name="updated_xml_step1">
-				<xsl:apply-templates mode="update_xml_step1"/>
+				<xsl:choose>
+					<xsl:when test="$vertical_layout = 'true'">
+						<xsl:apply-templates select="xalan:nodeset($updated_xml_step0)" mode="update_xml_step1"/>
+					</xsl:when>
+					<xsl:otherwise>
+						<xsl:apply-templates mode="update_xml_step1"/>
+					</xsl:otherwise>
+				</xsl:choose>
 			</xsl:variable>
 			<!-- DEBUG: updated_xml_step1=<xsl:copy-of select="$updated_xml_step1"/> -->
-			<!-- <xsl:message>start redirect</xsl:message>
-			<redirect:write file="update_xml_step1.xml">
-				<xsl:copy-of select="$updated_xml_step1"/>
-			</redirect:write>
-			<xsl:message>end redirect</xsl:message> -->
+			<xsl:if test="$debug = 'true'">
+				<xsl:message>start redirect</xsl:message>
+				<redirect:write file="update_xml_step1.xml">
+					<xsl:copy-of select="$updated_xml_step1"/>
+				</redirect:write>
+				<xsl:message>end redirect</xsl:message>
+			</xsl:if>
 			
 			
 			<xsl:variable name="updated_xml_step2_">
@@ -686,6 +706,12 @@
 						</item>
 						
 					</xsl:variable>
+					
+					<!-- <xsl:if test="$debug = 'true'">
+						<redirect:write file="structured_xml_.xml">
+							<xsl:copy-of select="$structured_xml_"/>
+						</redirect:write>
+					</xsl:if> -->
 					
 					<!-- page break before each section -->
 					<xsl:variable name="structured_xml">
@@ -2093,6 +2119,145 @@
 			</fo:block-container>
 		</fo:block-container>
 	</xsl:template>
+	
+	
+	<!-- =========================================================================== -->
+	<!-- STEP 0: Replace characters with vertical form -->
+	<!-- =========================================================================== -->
+	<xsl:template match="@*|node()" mode="update_xml_step0">
+		<xsl:copy>
+			<xsl:apply-templates select="@*|node()" mode="update_xml_step0"/>
+		</xsl:copy>
+	</xsl:template>
+	
+	<xsl:template match="*[local-name() = 'metanorma-extension']" mode="update_xml_step0">
+		<xsl:copy-of select="."/>
+	</xsl:template>
+	
+	<xsl:template match="text()" mode="update_xml_step0">
+		<!-- from https://github.com/metanorma/docs/blob/main/109.adoc -->
+		<!-- 
+		U+0028 LEFT PARENTHESIS (()
+		U+FF08 FULLWIDTH LEFT PARENTHESIS (（)
+		to
+		U+FE35 PRESENTATION FORM FOR VERTICAL LEFT PARENTHESIS (︵)
+		
+		U+0029 RIGHT PARENTHESIS ())
+		U+FF09 FULLWIDTH RIGHT PARENTHESIS (）)
+		to
+		U+FE36 PRESENTATION FORM FOR VERTICAL RIGHT PARENTHESIS (︶)
+		-->
+		<xsl:variable name="text1" select="translate(.,'&#x0028;&#xFF08;&#x0029;&#xFF09;','&#xFE35;&#xFE35;&#xFE36;&#xFE36;')"/>
+		<!--
+		U+007B LEFT CURLY BRACKET ({)
+		U+FF5B FULLWIDTH LEFT CURLY BRACKET (｛)
+		to
+		U+FE37 PRESENTATION FORM FOR VERTICAL LEFT CURLY BRACKET (︷)
+		
+		U+007D RIGHT CURLY BRACKET (})
+		U+FF5D FULLWIDTH RIGHT CURLY BRACKET (｝)
+		to
+		U+FE38 PRESENTATION FORM FOR VERTICAL RIGHT CURLY BRACKET (︸)
+		-->
+		<xsl:variable name="text2" select="translate($text1,'&#x007B;&#xFF5B;&#x007D;&#xFF5D;','&#xFE37;&#xFE37;&#xFE38;&#xFE38;')"/>
+
+		<!--
+		U+3014 LEFT TORTOISE SHELL BRACKET (〔)
+		to
+		U+FE39 PRESENTATION FORM FOR VERTICAL LEFT TORTOISE SHELL BRACKET (︹)
+		
+		U+3015 RIGHT TORTOISE SHELL BRACKET (〕)
+		to
+		U+FE3A PRESENTATION FORM FOR VERTICAL RIGHT TORTOISE SHELL BRACKET (︺)
+		-->
+		<xsl:variable name="text3" select="translate($text2,'&#x3014;&#x3015;','&#xFE39;&#xFE3A;')"/>
+
+		<!--
+		U+3010 LEFT BLACK LENTICULAR BRACKET (【)
+		to
+		U+FE3B PRESENTATION FORM FOR VERTICAL LEFT BLACK LENTICULAR BRACKET (︻)
+		
+		U+3011 RIGHT BLACK LENTICULAR BRACKET (】)
+		to
+		U+FE3C PRESENTATION FORM FOR VERTICAL RIGHT BLACK LENTICULAR BRACKET (︼)
+		-->
+		<xsl:variable name="text4" select="translate($text3,'&#x3010;&#x3011;','&#xFE3B;&#xFE3C;')"/>
+		
+		<!--
+		U+300A LEFT DOUBLE ANGLE BRACKET (《)
+		to
+		U+FE3D PRESENTATION FORM FOR VERTICAL LEFT DOUBLE ANGLE BRACKET (︽)
+		
+		U+300B RIGHT DOUBLE ANGLE BRACKET (》)
+		to
+		U+FE3E PRESENTATION FORM FOR VERTICAL RIGHT DOUBLE ANGLE BRACKET (︾)
+		-->
+		<xsl:variable name="text5" select="translate($text4,'&#x300A;&#x300B;','&#xFE3D;&#xFE3E;')"/>
+		
+		<!--
+		U+FF62 HALFWIDTH LEFT CORNER BRACKET (｢)
+		U+300C LEFT CORNER BRACKET (「)
+		to
+		U+FE41 PRESENTATION FORM FOR VERTICAL LEFT CORNER BRACKET (﹁)
+		
+		U+FF63 HALFWIDTH RIGHT CORNER BRACKET (｣)
+		U+300D RIGHT CORNER BRACKET (」)
+		to
+		U+FE42 PRESENTATION FORM FOR VERTICAL RIGHT CORNER BRACKET (﹂)
+		-->
+		<xsl:variable name="text6" select="translate($text5,'&#xFF62;&#x300C;&#xFF63;&#x300D;','&#xFE41;&#xFE41;&#xFE42;&#xFE42;')"/>
+		
+		<!--
+		U+300E LEFT WHITE CORNER BRACKET (『)
+		to
+		U+FE43 PRESENTATION FORM FOR VERTICAL LEFT WHITE CORNER BRACKET (﹃)
+		
+		U+300F RIGHT WHITE CORNER BRACKET (』)
+		to
+		U+FE44 PRESENTATION FORM FOR VERTICAL RIGHT WHITE CORNER BRACKET (﹄)
+		-->
+		<xsl:variable name="text7" select="translate($text6,'&#x300E;&#x300F;','&#xFE43;&#xFE44;')"/>
+		
+		<!--
+		U+005B LEFT SQUARE BRACKET ([)
+		U+FF3B FULLWIDTH LEFT SQUARE BRACKET (［)
+		to
+		U+FE47 PRESENTATION FORM FOR VERTICAL LEFT SQUARE BRACKET (﹇)
+		
+		U+005D RIGHT SQUARE BRACKET (])
+		U+FF3D FULLWIDTH RIGHT SQUARE BRACKET (］)
+		to
+		U+FE48 PRESENTATION FORM FOR VERTICAL RIGHT SQUARE BRACKET (﹈)
+		-->
+		<xsl:variable name="text8" select="translate($text7,'&#x005B;&#xFF3B;&#x005D;&#xFF3D;','&#xFE47;&#xFE47;&#xFE48;&#xFE48;')"/>
+		
+		<!--
+		U+3008 LEFT ANGLE BRACKET (〈)
+		to
+		U+FE3F PRESENTATION FORM FOR VERTICAL LEFT ANGLE BRACKET (︿)
+		
+		U+3009 RIGHT ANGLE BRACKET (〉)
+		to
+		U+FE40 PRESENTATION FORM FOR VERTICAL RIGHT ANGLE BRACKET (﹀)
+		-->
+		<xsl:variable name="text9" select="translate($text8,'&#x3008;&#x3009;','&#xFE3F;&#xFE40;')"/>
+		
+		<!--
+		U+3016 LEFT WHITE LENTICULAR BRACKET (〖)
+		to
+		U+FE17 PRESENTATION FORM FOR VERTICAL LEFT WHITE LENTICULAR BRACKET (︗)
+		
+		U+3017 RIGHT WHITE LENTICULAR BRACKET (〗)
+		to
+		U+FE18 PRESENTATION FORM FOR VERTICAL RIGHT WHITE LENTICULAR BRACKET (︘)
+		-->
+		<xsl:variable name="text10" select="translate($text9,'&#x3016;&#x3017;','&#xFE17;&#xFE18;')"/>
+		
+		<xsl:value-of select="$text10"/>
+	</xsl:template>
+	<!-- =========================================================================== -->
+	<!-- END STEP 0: Replace characters with vertical form -->
+	<!-- =========================================================================== -->
 	
 	<xsl:template match="*[local-name() = 'span'][@class = 'surname' or @class = 'givenname' or @class = 'JIS' or @class = 'EffectiveYear' or @class = 'CommentaryEffectiveYear']" mode="update_xml_step1" priority="2">
 		<xsl:copy>
