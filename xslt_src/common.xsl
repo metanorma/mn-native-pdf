@@ -39,7 +39,7 @@
 			<!-- <xsl:strip-space elements="iso:xref"/> -->
 		</xsl:when>
 		<xsl:when test="$namespace = 'itu'">
-			<xsl:strip-space elements="itu:xref"/>
+			<!-- <xsl:strip-space elements="itu:xref"/> -->
 		</xsl:when>
 		<xsl:when test="$namespace = 'jcgm'">
 			<xsl:strip-space elements="jcgm:xref"/>
@@ -13151,7 +13151,7 @@
 			<fo:inline xsl:use-attribute-sets="termnote-name-style">
 			
 				<xsl:choose>
-					<xsl:when test="$namespace = 'iso' or $namespace = 'ieee'"></xsl:when>
+					<xsl:when test="$namespace = 'ieee' or $namespace = 'iso' or $namespace = 'itu'"></xsl:when>
 					<xsl:otherwise>
 						<xsl:if test="not(*[local-name() = 'name']/following-sibling::node()[1][self::text()][normalize-space()=''])">
 							<xsl:attribute name="padding-right">1mm</xsl:attribute>
@@ -19819,6 +19819,7 @@
 				ancestor::*[local-name() = 'sourcecode'] or 
 				ancestor::*[local-name() = 'math'] or
 				ancestor::*[local-name() = 'svg'] or
+				ancestor::*[local-name() = 'name'] or
 				starts-with(., 'http://') or starts-with(., 'https://') or starts-with(., 'www.') or normalize-space() = '' )]" name="keep_together_standard_number" mode="update_xml_enclose_keep-together_within-line">
 	
 		<xsl:variable name="parent" select="local-name(..)"/>
