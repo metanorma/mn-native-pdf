@@ -30,7 +30,7 @@
 			<xsl:strip-space elements="iec:xref"/>
 		</xsl:when>
 		<xsl:when test="$namespace = 'ieee'">
-			<xsl:strip-space elements="ieee:xref"/>
+			<!-- <xsl:strip-space elements="ieee:xref"/> -->
 		</xsl:when>
 		<xsl:when test="$namespace = 'iho'">
 			<xsl:strip-space elements="iho:xref"/>
@@ -4151,9 +4151,9 @@
 				<xsl:attribute name="font-weight">bold</xsl:attribute>
 			</xsl:if>
 		</xsl:if>
-		<xsl:if test="$namespace = 'ieee'">
+		<!-- <xsl:if test="$namespace = 'ieee'">
 			<xsl:attribute name="padding-right">0mm</xsl:attribute>
-		</xsl:if>
+		</xsl:if> -->
 		<xsl:if test="$namespace = 'jis'">
 			<xsl:if test="not($vertical_layout = 'true')">
 				<xsl:attribute name="font-family">IPAexGothic</xsl:attribute>
@@ -13151,7 +13151,7 @@
 			<fo:inline xsl:use-attribute-sets="termnote-name-style">
 			
 				<xsl:choose>
-					<xsl:when test="$namespace = 'iso'"></xsl:when>
+					<xsl:when test="$namespace = 'iso' or $namespace = 'ieee'"></xsl:when>
 					<xsl:otherwise>
 						<xsl:if test="not(*[local-name() = 'name']/following-sibling::node()[1][self::text()][normalize-space()=''])">
 							<xsl:attribute name="padding-right">1mm</xsl:attribute>
@@ -20596,7 +20596,7 @@
 									<xsl:value-of select="//*[contains(local-name(), '-standard')]/*[local-name() = 'bibdata']/*[local-name() = 'title'][@language = $lang and @type = 'title-main']"/>
 								</xsl:when>
 								<xsl:otherwise>
-									<xsl:copy-of select="//*[contains(local-name(), '-standard')]/*[local-name() = 'preface']/*[local-name() = 'abstract']//text()[not(ancestor::*[local-name() = 'title'])]"/>									
+									<xsl:copy-of select="//*[contains(local-name(), '-standard')]/*[local-name() = 'preface']/*[local-name() = 'abstract']//text()[not(ancestor::*[local-name() = 'fmt-title']) and not(ancestor::*[local-name() = 'title'])]"/>
 								</xsl:otherwise>
 							</xsl:choose>
 						</xsl:variable>
