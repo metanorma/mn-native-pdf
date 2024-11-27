@@ -54,7 +54,7 @@
 			<xsl:strip-space elements="mpfd:xref"/>
 		</xsl:when>
 		<xsl:when test="$namespace = 'nist-cswp' or $namespace = 'nist-sp'">
-			<xsl:strip-space elements="nist:xref"/>
+			<!-- <xsl:strip-space elements="nist:xref"/> -->
 		</xsl:when>
 		<xsl:when test="$namespace = 'ogc' or $namespace = 'ogc-white-paper'">
 			<xsl:strip-space elements="ogc:xref"/>
@@ -13151,7 +13151,7 @@
 			<fo:inline xsl:use-attribute-sets="termnote-name-style">
 			
 				<xsl:choose>
-					<xsl:when test="$namespace = 'ieee' or $namespace = 'iso' or $namespace = 'itu'"></xsl:when>
+					<xsl:when test="$namespace = 'ieee' or $namespace = 'iso' or $namespace = 'itu' or $namespace = 'nist-sp' or $namespace = 'nist-cswp'"></xsl:when>
 					<xsl:otherwise>
 						<xsl:if test="not(*[local-name() = 'name']/following-sibling::node()[1][self::text()][normalize-space()=''])">
 							<xsl:attribute name="padding-right">1mm</xsl:attribute>
@@ -14405,6 +14405,7 @@
 	<!-- Bookmarks -->
 	<xsl:template name="addBookmarks">
 		<xsl:param name="contents"/>
+		<xsl:param name="contents_addon"/>
 		<xsl:variable name="contents_nodes" select="xalan:nodeset($contents)"/>
 		<xsl:if test="$contents_nodes//item">
 			<fo:bookmark-tree>
@@ -14502,35 +14503,8 @@
 					</xsl:otherwise>
 				</xsl:choose>
 				
-				<xsl:if test="$namespace = 'nist-sp'">
-					<xsl:if test="//*[local-name() = 'figure'][@id and *[local-name() = 'name']]">					
-						<fo:bookmark internal-destination="{//*[local-name() = 'figure'][@id and *[local-name() = 'name']][1]/@id}" starting-state="hide">
-							<fo:bookmark-title>Figures</fo:bookmark-title>
-							<xsl:for-each select="//*[local-name() = 'figure'][@id and *[local-name() = 'name']]">
-								<fo:bookmark internal-destination="{@id}">
-									<fo:bookmark-title><xsl:apply-templates select="*[local-name() = 'name']/text()" mode="bookmarks"/></fo:bookmark-title>
-								</fo:bookmark>
-							</xsl:for-each>
-						</fo:bookmark>
-					</xsl:if>
-					<xsl:if test="//*[local-name() = 'table'][@id and *[local-name() = 'name']]">					
-						<fo:bookmark internal-destination="{//*[local-name() = 'table'][@id and *[local-name() = 'name']][1]/@id}" starting-state="hide">
-							<fo:bookmark-title>
-								<xsl:choose>
-									<xsl:when test="$lang = 'fr'">Tableaux</xsl:when>
-									<xsl:otherwise>Tables</xsl:otherwise>
-								</xsl:choose>
-							</fo:bookmark-title>
-							<xsl:for-each select="//*[local-name() = 'table'][@id and *[local-name() = 'name']]">
-								<fo:bookmark internal-destination="{@id}">
-									<fo:bookmark-title><xsl:apply-templates select="*[local-name() = 'name']//text()" mode="bookmarks"/></fo:bookmark-title>
-								</fo:bookmark>
-							</xsl:for-each>
-						</fo:bookmark>
-					</xsl:if>
-				<!-- $namespace = 'nist-sp' -->
-				</xsl:if> 
-				
+				<!-- for $namespace = 'nist-sp' -->
+				<xsl:copy-of select="$contents_addon"/>
 				
 				<xsl:if test="$namespace = 'ogc'">
 				
