@@ -6820,9 +6820,21 @@
 	<xsl:template name="processTables_Contents">
 		<tables>
 			<xsl:for-each select="//*[local-name() = 'table'][not(ancestor::*[local-name() = 'metanorma-extension'])][@id and *[local-name() = 'name'] and normalize-space(@id) != '']">
-				<table id="{@id}" alt-text="{*[local-name() = 'name']}">
-					<xsl:copy-of select="*[local-name() = 'name']"/>
-				</table>
+				<xsl:choose>
+					<xsl:when test="*[local-name() = 'fmt-name']">
+						<xsl:variable name="fmt_name">
+							<xsl:apply-templates select="*[local-name() = 'fmt-name']" mode="update_xml_step1"/>
+						</xsl:variable>
+						<table id="{@id}" alt-text="{normalize-space($fmt_name)}">
+							<xsl:copy-of select="$fmt_name"/>
+						</table>
+					</xsl:when>
+					<xsl:otherwise>
+						<table id="{@id}" alt-text="{*[local-name() = 'name']}">
+							<xsl:copy-of select="*[local-name() = 'name']"/>
+						</table>
+					</xsl:otherwise>
+				</xsl:choose>
 			</xsl:for-each>
 		</tables>
 	</xsl:template>
@@ -6830,9 +6842,21 @@
 	<xsl:template name="processFigures_Contents">
 		<figures>
 			<xsl:for-each select="//*[local-name() = 'figure'][@id and *[local-name() = 'name'] and not(@unnumbered = 'true') and normalize-space(@id) != ''] | //*[@id and starts-with(*[local-name() = 'name'], 'Figure ') and normalize-space(@id) != '']">
-				<figure id="{@id}" alt-text="{*[local-name() = 'name']}">
-					<xsl:copy-of select="*[local-name() = 'name']"/>
-				</figure>
+				<xsl:choose>
+					<xsl:when test="*[local-name() = 'fmt-name']">
+						<xsl:variable name="fmt_name">
+							<xsl:apply-templates select="*[local-name() = 'fmt-name']" mode="update_xml_step1"/>
+						</xsl:variable>
+						<figure id="{@id}" alt-text="{normalize-space($fmt_name)}">
+							<xsl:copy-of select="$fmt_name"/>
+						</figure>
+					</xsl:when>
+					<xsl:otherwise>
+						<figure id="{@id}" alt-text="{*[local-name() = 'name']}">
+							<xsl:copy-of select="*[local-name() = 'name']"/>
+						</figure>
+					</xsl:otherwise>
+				</xsl:choose>
 			</xsl:for-each>
 		</figures>
 	</xsl:template>
@@ -13151,7 +13175,7 @@
 			<fo:inline xsl:use-attribute-sets="termnote-name-style">
 			
 				<xsl:choose>
-					<xsl:when test="$namespace = 'ieee' or $namespace = 'iso' or $namespace = 'itu' or $namespace = 'nist-sp' or $namespace = 'nist-cswp'"></xsl:when>
+					<xsl:when test="$namespace = 'ieee' or $namespace = 'iso' or $namespace = 'itu' or $namespace = 'nist-sp' or $namespace = 'nist-cswp' or $namespace = 'ogc'"></xsl:when>
 					<xsl:otherwise>
 						<xsl:if test="not(*[local-name() = 'name']/following-sibling::node()[1][self::text()][normalize-space()=''])">
 							<xsl:attribute name="padding-right">1mm</xsl:attribute>
@@ -14235,6 +14259,8 @@
 		</xsl:if>
 	</xsl:template>
 	
+	<xsl:template match="*[local-name() = 'title'][following-sibling::*[1][local-name() = 'fmt-title']]" mode="contents"/>
+	
 	<xsl:template match="*[local-name() = 'figure']/*[local-name() = 'fmt-name'] | 
 														*[local-name() = 'table']/*[local-name() = 'fmt-name'] |
 														*[local-name() = 'permission']/*[local-name() = 'fmt-name'] |
@@ -14505,61 +14531,6 @@
 				
 				<!-- for $namespace = 'nist-sp' -->
 				<xsl:copy-of select="$contents_addon"/>
-				
-				<xsl:if test="$namespace = 'ogc'">
-				
-					<xsl:if test="$contents//tables/table or $contents//figures/figure or //*[local-name() = 'table'][.//*[local-name() = 'p'][@class = 'RecommendationTitle']]">
-						<fo:bookmark internal-destination="empty_bookmark">
-							<fo:bookmark-title>—————</fo:bookmark-title>
-						</fo:bookmark>
-					</xsl:if>
-					
-					<xsl:if test="$contents//tables/table">
-						<fo:bookmark internal-destination="empty_bookmark" starting-state="hide">
-							<fo:bookmark-title>
-								<xsl:value-of select="$title-list-tables"/>
-							</fo:bookmark-title>
-							<xsl:for-each select="$contents//tables/table">
-								<fo:bookmark internal-destination="{@id}">
-									<xsl:variable name="title">
-										<xsl:apply-templates select="*[local-name() = 'name']" mode="bookmarks"/>
-									</xsl:variable>
-									<fo:bookmark-title><xsl:value-of select="$title"/></fo:bookmark-title>
-								</fo:bookmark>
-							</xsl:for-each>
-						</fo:bookmark>
-					</xsl:if>
-
-					<xsl:if test="$contents//figures/figure">
-						<fo:bookmark internal-destination="empty_bookmark" starting-state="hide">
-							<fo:bookmark-title>
-								<xsl:value-of select="$title-list-figures"/>
-							</fo:bookmark-title>
-							<xsl:for-each select="$contents//figures/figure">
-								<fo:bookmark internal-destination="{@id}">
-									<xsl:variable name="title">
-										<xsl:apply-templates select="*[local-name() = 'name']" mode="bookmarks"/>
-									</xsl:variable>
-									<fo:bookmark-title><xsl:value-of select="$title"/></fo:bookmark-title>
-								</fo:bookmark>
-							</xsl:for-each>
-						</fo:bookmark>
-					</xsl:if>
-
-					<xsl:if test="//*[local-name() = 'table'][.//*[local-name() = 'p'][@class = 'RecommendationTitle']]">							
-						<fo:bookmark internal-destination="empty_bookmark" starting-state="hide">
-							<fo:bookmark-title>
-								<xsl:value-of select="$title-list-recommendations"/>
-							</fo:bookmark-title>
-							<xsl:for-each select="xalan:nodeset($toc_recommendations)/*">
-								<fo:bookmark internal-destination="{@id}">
-									<fo:bookmark-title><xsl:value-of select="bookmark"/></fo:bookmark-title>
-								</fo:bookmark>
-							</xsl:for-each>
-						</fo:bookmark>
-					</xsl:if>
-					<!-- $namespace = 'ogc' -->
-				</xsl:if>
 				
 				<xsl:if test="$namespace = 'ogc-white-paper'">
 					<xsl:variable name="list_of_tables_figures_">
@@ -20571,7 +20542,7 @@
 									<xsl:value-of select="//*[contains(local-name(), '-standard')]/*[local-name() = 'bibdata']/*[local-name() = 'title'][@language = $lang and @type = 'title-main']"/>
 								</xsl:when>
 								<xsl:otherwise>
-									<xsl:copy-of select="//*[contains(local-name(), '-standard')]/*[local-name() = 'preface']/*[local-name() = 'abstract']//text()[not(ancestor::*[local-name() = 'fmt-title']) and not(ancestor::*[local-name() = 'title'])]"/>
+									<xsl:copy-of select="//*[contains(local-name(), '-standard')]/*[local-name() = 'preface']/*[local-name() = 'abstract']//text()[not(ancestor::*[local-name() = 'fmt-title']) and not(ancestor::*[local-name() = 'title']) and not(ancestor::*[local-name() = 'fmt-xref-label'])]"/>
 								</xsl:otherwise>
 							</xsl:choose>
 						</xsl:variable>
