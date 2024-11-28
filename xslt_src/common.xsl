@@ -57,7 +57,7 @@
 			<!-- <xsl:strip-space elements="nist:xref"/> -->
 		</xsl:when>
 		<xsl:when test="$namespace = 'ogc' or $namespace = 'ogc-white-paper'">
-			<xsl:strip-space elements="ogc:xref"/>
+			<!-- <xsl:strip-space elements="ogc:xref"/> -->
 		</xsl:when>
 		<xsl:when test="$namespace = 'plateau'">
 			<xsl:strip-space elements="plateau:xref"/>
@@ -13175,7 +13175,7 @@
 			<fo:inline xsl:use-attribute-sets="termnote-name-style">
 			
 				<xsl:choose>
-					<xsl:when test="$namespace = 'ieee' or $namespace = 'iso' or $namespace = 'itu' or $namespace = 'nist-sp' or $namespace = 'nist-cswp' or $namespace = 'ogc'"></xsl:when>
+					<xsl:when test="$namespace = 'ieee' or $namespace = 'iso' or $namespace = 'itu' or $namespace = 'nist-sp' or $namespace = 'nist-cswp' or $namespace = 'ogc' or $namespace = 'ogc-white-paper'"></xsl:when>
 					<xsl:otherwise>
 						<xsl:if test="not(*[local-name() = 'name']/following-sibling::node()[1][self::text()][normalize-space()=''])">
 							<xsl:attribute name="padding-right">1mm</xsl:attribute>
@@ -14529,39 +14529,8 @@
 					</xsl:otherwise>
 				</xsl:choose>
 				
-				<!-- for $namespace = 'nist-sp' -->
+				<!-- for $namespace = 'nist-sp' $namespace = 'ogc' $namespace = 'ogc-white-paper' -->
 				<xsl:copy-of select="$contents_addon"/>
-				
-				<xsl:if test="$namespace = 'ogc-white-paper'">
-					<xsl:variable name="list_of_tables_figures_">
-						<xsl:for-each select="//*[local-name() = 'table'][@id and *[local-name() = 'name']] | //*[local-name() = 'figure'][@id and *[local-name() = 'name']]">
-							<table_figure id="{@id}"><xsl:apply-templates select="*[local-name() = 'name']" mode="bookmarks"/></table_figure>
-						</xsl:for-each>
-					</xsl:variable>
-					<xsl:variable name="list_of_tables_figures" select="xalan:nodeset($list_of_tables_figures_)"/>
-				
-					<xsl:if test="$list_of_tables_figures/table_figure">
-						<fo:bookmark internal-destination="empty_bookmark">
-							<fo:bookmark-title>—————</fo:bookmark-title>
-						</fo:bookmark>
-					</xsl:if>
-					
-					<xsl:if test="$list_of_tables_figures//table_figure">
-						<fo:bookmark internal-destination="empty_bookmark" starting-state="hide">
-							<fo:bookmark-title>
-								<xsl:call-template name="getLocalizedString">
-									<xsl:with-param name="key">table_of_figures</xsl:with-param>
-								</xsl:call-template>
-							</fo:bookmark-title>
-							<xsl:for-each select="$list_of_tables_figures//table_figure">
-								<fo:bookmark internal-destination="{@id}">
-									<fo:bookmark-title><xsl:value-of select="."/></fo:bookmark-title>
-								</fo:bookmark>
-							</xsl:for-each>
-						</fo:bookmark>
-					</xsl:if>
-					<!-- $namespace = 'ogc-white-paper' -->
-				</xsl:if> 
 				
 			</fo:bookmark-tree>
 		</xsl:if>
