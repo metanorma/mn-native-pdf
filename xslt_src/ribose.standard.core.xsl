@@ -439,32 +439,38 @@
 			</fo:page-sequence>
 			<!-- END Cover page -->
 			
-			<!-- ToC pages -->
-			<fo:page-sequence master-reference="document" force-page-count="no-force"> <!-- master-reference="toc" -->
-				<xsl:call-template name="insertHeaderFooter">
-					<xsl:with-param name="section">toc</xsl:with-param>
-				</xsl:call-template>
-				<fo:flow flow-name="xsl-region-body">
-				
-					<xsl:apply-templates select="/ribose:rsd-standard/ribose:preface/ribose:clause[@type = 'toc']" />
-				
-					<xsl:apply-templates select="/ribose:rsd-standard/ribose:boilerplate/ribose:legal-statement"/>
-					
-					<xsl:apply-templates select="/ribose:rsd-standard/ribose:boilerplate/ribose:feedback-statement"/>
-				
-				</fo:flow>
-			</fo:page-sequence>
-			<!-- ============== -->
-			<!-- END ToC  pages -->
-			<!-- ============== -->
-			
 			
 			<xsl:variable name="updated_xml">
 				<xsl:call-template name="updateXML"/>
 				<!-- <xsl:copy-of select="."/> -->
 			</xsl:variable>
 			
+			<xsl:if test="$debug = 'true'">
+				<redirect:write file="contents_.xml"> <!-- {java:getTime(java:java.util.Date.new())} -->
+					<xsl:copy-of select="$contents"/>
+				</redirect:write>
+			</xsl:if>
+			
 			<xsl:for-each select="xalan:nodeset($updated_xml)/*">
+			
+				<!-- ToC pages -->
+				<fo:page-sequence master-reference="document" force-page-count="no-force"> <!-- master-reference="toc" -->
+					<xsl:call-template name="insertHeaderFooter">
+						<xsl:with-param name="section">toc</xsl:with-param>
+					</xsl:call-template>
+					<fo:flow flow-name="xsl-region-body">
+					
+						<xsl:apply-templates select="/ribose:rsd-standard/ribose:preface/ribose:clause[@type = 'toc']" />
+					
+						<xsl:apply-templates select="/ribose:rsd-standard/ribose:boilerplate/ribose:legal-statement"/>
+						
+						<xsl:apply-templates select="/ribose:rsd-standard/ribose:boilerplate/ribose:feedback-statement"/>
+					
+					</fo:flow>
+				</fo:page-sequence>
+				<!-- ============== -->
+				<!-- END ToC  pages -->
+				<!-- ============== -->
 			
 				<xsl:variable name="updated_xml_with_pages">
 					<xsl:call-template name="processPrefaceAndMainSectionsRibose_items"/>
@@ -707,10 +713,10 @@
 	<!-- ============================= -->
 
 	<!-- element with title -->
-	<xsl:template match="*[ribose:title]" mode="contents">
+	<xsl:template match="*[ribose:title or ribose:fmt-title]" mode="contents">
 		<xsl:variable name="level">
 			<xsl:call-template name="getLevel">
-				<xsl:with-param name="depth" select="ribose:title/@depth"/>
+				<xsl:with-param name="depth" select="ribose:fmt-title/@depth | ribose:title/@depth"/>
 			</xsl:call-template>
 		</xsl:variable>
 		
