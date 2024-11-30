@@ -33,7 +33,7 @@
 			<!-- <xsl:strip-space elements="ieee:xref"/> -->
 		</xsl:when>
 		<xsl:when test="$namespace = 'iho'">
-			<xsl:strip-space elements="iho:xref"/>
+			<!-- <xsl:strip-space elements="iho:xref"/> -->
 		</xsl:when>
 		<xsl:when test="$namespace = 'iso'">
 			<!-- <xsl:strip-space elements="iso:xref"/> -->
@@ -13175,7 +13175,7 @@
 			<fo:inline xsl:use-attribute-sets="termnote-name-style">
 			
 				<xsl:choose>
-					<xsl:when test="$namespace = 'csa' or $namespace = 'csd' or $namespace = 'ieee' or $namespace = 'iso' or $namespace = 'itu' or $namespace = 'nist-sp' or $namespace = 'nist-cswp' or $namespace = 'ogc' or $namespace = 'ogc-white-paper' or $namespace = 'rsd'"></xsl:when>
+					<xsl:when test="$namespace = 'csa' or $namespace = 'csd' or $namespace = 'ieee' or $namespace = 'iho' or $namespace = 'iso' or $namespace = 'itu' or $namespace = 'nist-sp' or $namespace = 'nist-cswp' or $namespace = 'ogc' or $namespace = 'ogc-white-paper' or $namespace = 'rsd'"></xsl:when>
 					<xsl:otherwise>
 						<xsl:if test="not(*[local-name() = 'name']/following-sibling::node()[1][self::text()][normalize-space()=''])">
 							<xsl:attribute name="padding-right">1mm</xsl:attribute>
@@ -19396,6 +19396,7 @@
 	<xsl:template match="*[local-name() = 'title'][following-sibling::*[1][local-name() = 'fmt-title']]" mode="update_xml_step1"/>
 	<xsl:template match="*[local-name() = 'name'][following-sibling::*[1][local-name() = 'fmt-name']]" mode="update_xml_step1"/>
 	
+	<xsl:template match="*[local-name() = 'fmt-title']" />
 	<xsl:template match="*[local-name() = 'fmt-title']" mode="update_xml_step1">
 		<xsl:element name="title" namespace="{$namespace_full}">
 			<xsl:copy-of select="@*"/>
@@ -19403,6 +19404,7 @@
 		</xsl:element>
 	</xsl:template>
 	
+	<xsl:template match="*[local-name() = 'fmt-name']" />
 	<xsl:template match="*[local-name() = 'fmt-name']" mode="update_xml_step1">
 		<xsl:element name="name" namespace="{$namespace_full}">
 			<xsl:copy-of select="@*"/>
@@ -19421,6 +19423,7 @@
 		<xsl:apply-templates mode="update_xml_step1"/>
 	</xsl:template>
 	
+	<xsl:template match="*[local-name() = 'fmt-xref-label']" />
 	<xsl:template match="*[local-name() = 'fmt-xref-label']" mode="update_xml_step1"/>
 	<!-- END: update new Presentation XML -->
 	

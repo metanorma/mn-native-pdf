@@ -153,91 +153,90 @@
 				<xsl:with-param name="contents" select="$contents"/>
 			</xsl:call-template>
 			
-			<!-- =========================== -->
-			<!-- Cover Page -->
-			<fo:page-sequence master-reference="cover">				
-				<fo:flow flow-name="xsl-region-body">
-					<fo:block-container position="absolute" left="14.25mm" top="12mm" id="__internal_layout__coverpage_{generate-id()}">
-						<fo:table table-layout="fixed" width="181.1mm">
-								<fo:table-column column-width="26mm"/>
-								<fo:table-column column-width="19.4mm"/> 
-								<fo:table-column column-width="135.7mm"/>
-								<fo:table-body>
-									<fo:table-row>
-										<fo:table-cell><fo:block>&#xA0;</fo:block></fo:table-cell>
-										<fo:table-cell>
-											<fo:block-container width="19.4mm" height="21mm" background-color="rgb(241, 234, 202)" border-bottom="0.05pt solid rgb(0, 21, 50)" text-align="center" display-align="center" font-size="10pt" font-weight="bold">
-												<fo:block>
-													<xsl:value-of select="$docidentifier"/>
-												</fo:block>
-											</fo:block-container>
-										</fo:table-cell>
-										<fo:table-cell><fo:block>&#xA0;</fo:block></fo:table-cell>
-									</fo:table-row>
-									<fo:table-row>
-										<fo:table-cell display-align="after" text-align="right">
-											<fo:block font-size="1">
-												<fo:external-graphic src="{concat('data:image/png;base64,', normalize-space($Image-IHO))}" width="25.9mm" content-width="scale-to-fit" scaling="uniform" fox:alt-text="Image IHO"/>
-											</fo:block>
-										</fo:table-cell>
-										<fo:table-cell number-columns-spanned="2" border="0.5pt solid rgb(0, 21, 50)" font-weight="bold" color="rgb(0, 0, 76)" padding-top="3mm">
-											<fo:block-container height="165mm" width="115mm">
-												<fo:block-container margin-left="10mm">
-													<fo:block-container margin-left="0mm">
-														<fo:block-container display-align="center" height="90mm">
-															<fo:block font-size="28pt" role="H1" line-height="115%">
-																<xsl:copy-of select="$title-en"/>
-															</fo:block>
-														</fo:block-container>
-														<fo:block font-size="14pt">
-															<xsl:value-of select="$edition"/>
-															<xsl:if test="normalize-space($month_year) != ''">
-																<xsl:text> – </xsl:text>
-																<xsl:value-of select="$month_year" />
-															</xsl:if>
-														</fo:block>
-													</fo:block-container>
-												</fo:block-container>
-											</fo:block-container>
-										</fo:table-cell>
-									</fo:table-row>
-									<fo:table-row>
-										<fo:table-cell>
-											<fo:block font-size="1">
-												<fo:external-graphic src="{concat('data:image/png;base64,', normalize-space($Image-Logo-IHO))}" width="25.9mm" content-width="scale-to-fit" scaling="uniform" fox:alt-text="Image Logo IHO"/>
-											</fo:block>
-										</fo:table-cell>
-										<fo:table-cell>
-											<fo:block font-size="1">
-												<fo:external-graphic src="{concat('data:image/png;base64,', normalize-space($Image-Text-IHO))}" width="25.8mm" content-width="scale-to-fit" scaling="uniform" fox:alt-text="Image Text IHO"/>
-											</fo:block>
-										</fo:table-cell>
-										<fo:table-cell>
-											<fo:block-container width="79mm" height="72mm" margin-left="56.8mm" background-color="rgb(0, 172, 158)" text-align="right" display-align="after">
-												<fo:block-container margin-left="0mm">
-													<fo:block font-size="8pt" color="white" margin-right="5mm" margin-bottom="5mm" line-height-shift-adjustment="disregard-shifts">
-														<xsl:apply-templates select="/iho:iho-standard/iho:boilerplate/iho:feedback-statement"/>
-													</fo:block>
-												</fo:block-container>
-											</fo:block-container>					
-										</fo:table-cell>
-									</fo:table-row>
-								</fo:table-body>
-							</fo:table>
-					</fo:block-container>					
-				</fo:flow>
-			</fo:page-sequence>
-			<!-- End Cover Page -->
-			<!-- =========================== -->
-			<!-- =========================== -->
-			
-			
 			
 			<xsl:variable name="updated_xml">
 				<xsl:call-template name="updateXML"/>
 			</xsl:variable>
 			
 			<xsl:for-each select="xalan:nodeset($updated_xml)/*">
+			
+				<!-- =========================== -->
+				<!-- Cover Page -->
+				<fo:page-sequence master-reference="cover">				
+					<fo:flow flow-name="xsl-region-body">
+						<fo:block-container position="absolute" left="14.25mm" top="12mm" id="__internal_layout__coverpage_{generate-id()}">
+							<fo:table table-layout="fixed" width="181.1mm">
+									<fo:table-column column-width="26mm"/>
+									<fo:table-column column-width="19.4mm"/> 
+									<fo:table-column column-width="135.7mm"/>
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell><fo:block>&#xA0;</fo:block></fo:table-cell>
+											<fo:table-cell>
+												<fo:block-container width="19.4mm" height="21mm" background-color="rgb(241, 234, 202)" border-bottom="0.05pt solid rgb(0, 21, 50)" text-align="center" display-align="center" font-size="10pt" font-weight="bold">
+													<fo:block>
+														<xsl:value-of select="$docidentifier"/>
+													</fo:block>
+												</fo:block-container>
+											</fo:table-cell>
+											<fo:table-cell><fo:block>&#xA0;</fo:block></fo:table-cell>
+										</fo:table-row>
+										<fo:table-row>
+											<fo:table-cell display-align="after" text-align="right">
+												<fo:block font-size="1">
+													<fo:external-graphic src="{concat('data:image/png;base64,', normalize-space($Image-IHO))}" width="25.9mm" content-width="scale-to-fit" scaling="uniform" fox:alt-text="Image IHO"/>
+												</fo:block>
+											</fo:table-cell>
+											<fo:table-cell number-columns-spanned="2" border="0.5pt solid rgb(0, 21, 50)" font-weight="bold" color="rgb(0, 0, 76)" padding-top="3mm">
+												<fo:block-container height="165mm" width="115mm">
+													<fo:block-container margin-left="10mm">
+														<fo:block-container margin-left="0mm">
+															<fo:block-container display-align="center" height="90mm">
+																<fo:block font-size="28pt" role="H1" line-height="115%">
+																	<xsl:copy-of select="$title-en"/>
+																</fo:block>
+															</fo:block-container>
+															<fo:block font-size="14pt">
+																<xsl:value-of select="$edition"/>
+																<xsl:if test="normalize-space($month_year) != ''">
+																	<xsl:text> – </xsl:text>
+																	<xsl:value-of select="$month_year" />
+																</xsl:if>
+															</fo:block>
+														</fo:block-container>
+													</fo:block-container>
+												</fo:block-container>
+											</fo:table-cell>
+										</fo:table-row>
+										<fo:table-row>
+											<fo:table-cell>
+												<fo:block font-size="1">
+													<fo:external-graphic src="{concat('data:image/png;base64,', normalize-space($Image-Logo-IHO))}" width="25.9mm" content-width="scale-to-fit" scaling="uniform" fox:alt-text="Image Logo IHO"/>
+												</fo:block>
+											</fo:table-cell>
+											<fo:table-cell>
+												<fo:block font-size="1">
+													<fo:external-graphic src="{concat('data:image/png;base64,', normalize-space($Image-Text-IHO))}" width="25.8mm" content-width="scale-to-fit" scaling="uniform" fox:alt-text="Image Text IHO"/>
+												</fo:block>
+											</fo:table-cell>
+											<fo:table-cell>
+												<fo:block-container width="79mm" height="72mm" margin-left="56.8mm" background-color="rgb(0, 172, 158)" text-align="right" display-align="after">
+													<fo:block-container margin-left="0mm">
+														<fo:block font-size="8pt" color="white" margin-right="5mm" margin-bottom="5mm" line-height-shift-adjustment="disregard-shifts">
+															<xsl:apply-templates select="/iho:iho-standard/iho:boilerplate/iho:feedback-statement"/>
+														</fo:block>
+													</fo:block-container>
+												</fo:block-container>					
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+						</fo:block-container>					
+					</fo:flow>
+				</fo:page-sequence>
+				<!-- End Cover Page -->
+				<!-- =========================== -->
+				<!-- =========================== -->
 			
 				<xsl:variable name="updated_xml_with_pages">
 					<xsl:call-template name="processPrefaceAndMainSectionsDefault_items"/>
@@ -408,19 +407,19 @@
 	
 	<xsl:template match="iho:preface//iho:clause[@type = 'toc']" priority="4">
 		<!-- Table of Contents -->
-		<fo:block role="TOC">
+		<fo:block>
 			
 			<xsl:apply-templates />
 			
-			<!-- <xsl:if test="$debug = 'true'">
-				<redirect:write file="contents_{java:getTime(java:java.util.Date.new())}.xml">
+			<xsl:if test="$debug = 'true'">
+				<redirect:write file="contents_.xml"> <!-- {java:getTime(java:java.util.Date.new())} -->
 					<xsl:copy-of select="$contents"/>
 				</redirect:write>
-			</xsl:if> -->
+			</xsl:if>
 			
 			<xsl:if test="count(*) = 1 and *[local-name() = 'title']"> <!-- if there isn't user ToC -->
 			
-				<fo:block line-height="115%">
+				<fo:block line-height="115%" role="TOC">
 				
 					<xsl:for-each select="$contents//item[@display = 'true']"><!-- [not(@level = 2 and starts-with(@section, '0'))] skip clause from preface -->							
 						<fo:block role="TOCI">
@@ -488,8 +487,8 @@
 	</xsl:template>
 	
 	<xsl:template match="iho:preface//iho:clause[@type = 'toc']/iho:title" priority="3">
-		<fo:block font-weight="bold" margin-bottom="7.5pt" role="H1" font-size="12pt" margin-top="4pt">
-			<fo:block-container width="18.3mm" border-bottom="1.25pt solid black">
+		<fo:block font-weight="bold" margin-bottom="7.5pt" font-size="12pt" margin-top="4pt" role="SKIP">
+			<fo:block-container width="18.3mm" border-bottom="1.25pt solid black" role="SKIP">
 				<fo:block line-height="75%">
 					<!-- <xsl:call-template name="getLocalizedString">
 						<xsl:with-param name="key">table_of_contents</xsl:with-param>
@@ -505,10 +504,10 @@
 	<!-- ============================= -->
 
 	<!-- element with title -->
-	<xsl:template match="*[iho:title]" mode="contents">
+	<xsl:template match="*[iho:title or iho:fmt-title]" mode="contents">
 		<xsl:variable name="level">
 			<xsl:call-template name="getLevel">
-				<xsl:with-param name="depth" select="iho:title/@depth"/>
+				<xsl:with-param name="depth" select="iho:fmt-title/@depth | iho:title/@depth"/>
 			</xsl:call-template>
 		</xsl:variable>
 		
