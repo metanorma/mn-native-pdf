@@ -45,7 +45,7 @@
 			<xsl:strip-space elements="jcgm:xref"/>
 		</xsl:when>
 		<xsl:when test="$namespace = 'jis'">
-			<xsl:strip-space elements="jis:xref"/>
+			<!-- <xsl:strip-space elements="jis:xref"/> -->
 		</xsl:when>
 		<xsl:when test="$namespace = 'm3d'">
 			<xsl:strip-space elements="m3d:xref"/>
@@ -13175,7 +13175,7 @@
 			<fo:inline xsl:use-attribute-sets="termnote-name-style">
 			
 				<xsl:choose>
-					<xsl:when test="$namespace = 'csa' or $namespace = 'csd' or $namespace = 'ieee' or $namespace = 'iho' or $namespace = 'iso' or $namespace = 'itu' or $namespace = 'nist-sp' or $namespace = 'nist-cswp' or $namespace = 'ogc' or $namespace = 'ogc-white-paper' or $namespace = 'rsd'"></xsl:when>
+					<xsl:when test="$namespace = 'csa' or $namespace = 'csd' or $namespace = 'ieee' or $namespace = 'iho' or $namespace = 'iso' or $namespace = 'itu' or $namespace = 'jis' or $namespace = 'nist-sp' or $namespace = 'nist-cswp' or $namespace = 'ogc' or $namespace = 'ogc-white-paper' or $namespace = 'rsd'"></xsl:when>
 					<xsl:otherwise>
 						<xsl:if test="not(*[local-name() = 'name']/following-sibling::node()[1][self::text()][normalize-space()=''])">
 							<xsl:attribute name="padding-right">1mm</xsl:attribute>
