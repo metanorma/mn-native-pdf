@@ -27,7 +27,7 @@
 			<xsl:strip-space elements="gb:xref"/>
 		</xsl:when>
 		<xsl:when test="$namespace = 'iec'">
-			<xsl:strip-space elements="iec:xref"/>
+			<!-- <xsl:strip-space elements="iec:xref"/> -->
 		</xsl:when>
 		<xsl:when test="$namespace = 'ieee'">
 			<!-- <xsl:strip-space elements="ieee:xref"/> -->
@@ -13175,7 +13175,7 @@
 			<fo:inline xsl:use-attribute-sets="termnote-name-style">
 			
 				<xsl:choose>
-					<xsl:when test="$namespace = 'csa' or $namespace = 'csd' or $namespace = 'ieee' or $namespace = 'iho' or $namespace = 'iso' or $namespace = 'itu' or $namespace = 'jis' or $namespace = 'nist-sp' or $namespace = 'nist-cswp' or $namespace = 'ogc' or $namespace = 'ogc-white-paper' or $namespace = 'rsd'"></xsl:when>
+					<xsl:when test="$namespace = 'csa' or $namespace = 'csd' or $namespace = 'iec' or $namespace = 'ieee' or $namespace = 'iho' or $namespace = 'iso' or $namespace = 'itu' or $namespace = 'jis' or $namespace = 'nist-sp' or $namespace = 'nist-cswp' or $namespace = 'ogc' or $namespace = 'ogc-white-paper' or $namespace = 'rsd'"></xsl:when>
 					<xsl:otherwise>
 						<xsl:if test="not(*[local-name() = 'name']/following-sibling::node()[1][self::text()][normalize-space()=''])">
 							<xsl:attribute name="padding-right">1mm</xsl:attribute>
@@ -14741,17 +14741,41 @@
 	<!-- ====== -->
 	<xsl:template match="*[local-name() = 'title']" mode="contents_item">
 		<xsl:param name="mode">bookmarks</xsl:param>
+		<xsl:if test="not(following-sibling::*[1][local-name() = 'fmt-title'])">
+			<xsl:apply-templates mode="contents_item">
+				<xsl:with-param name="mode" select="$mode"/>
+			</xsl:apply-templates>
+			<!-- <xsl:text> </xsl:text> -->
+		</xsl:if>
+	</xsl:template>
+	
+	<xsl:template match="*[local-name() = 'fmt-title']" mode="contents_item">
+		<xsl:param name="mode">bookmarks</xsl:param>
 		<xsl:apply-templates mode="contents_item">
 			<xsl:with-param name="mode" select="$mode"/>
 		</xsl:apply-templates>
 		<!-- <xsl:text> </xsl:text> -->
 	</xsl:template>
+	
+	<xsl:template match="*[local-name() = 'span'][
+															@class = 'fmt-caption-label' or 
+															@class = 'fmt-element-name' or
+															@class = 'fmt-caption-delim']" mode="contents_item" priority="3">
+		<xsl:apply-templates mode="contents_item"/>
+	</xsl:template>
+	
+	<xsl:template match="*[local-name() = 'semx']" mode="contents_item">
+		<xsl:apply-templates mode="contents_item"/>
+	</xsl:template>
+	
+	
+	<xsl:template match="*[local-name() = 'fmt-xref-label']"  mode="contents_item"/>
 
 	<xsl:template name="getSection">
 		<xsl:choose>
 			<xsl:when test="*[local-name() = 'fmt-title']">
 				<xsl:variable name="fmt_title_section">
-					<xsl:copy-of select="*[local-name() = 'fmt-title']//*[local-name() = 'span'][@class = 'fmt-caption-delim'][*[local-name() = 'tab']][1]/preceding-sibling::node()"/>
+					<xsl:copy-of select="*[local-name() = 'fmt-title']//*[local-name() = 'span'][@class = 'fmt-caption-delim'][*[local-name() = 'tab']][1]/preceding-sibling::node()[not(local-name() = 'review')]"/>
 				</xsl:variable>
 				<xsl:value-of select="normalize-space($fmt_title_section)"/>
 			</xsl:when>
