@@ -21050,7 +21050,7 @@
 	
 	<!-- END: insert cover page image -->
  
-	<xsl:variable name="regex_ja_spec">[\uFF08\uFF09]</xsl:variable>
+	<!-- <xsl:variable name="regex_ja_spec">[\uFF08\uFF09]</xsl:variable> -->
 	<xsl:template name="insertVerticalChar">
 		<xsl:param name="str"/>
 		<xsl:param name="writing-mode">lr-tb</xsl:param>
@@ -21065,9 +21065,9 @@
 					<xsl:attribute name="writing-mode"><xsl:value-of select="$writing-mode"/></xsl:attribute>
 					<xsl:attribute name="reference-orientation">90</xsl:attribute>
 				</xsl:if>
-				<xsl:if test="normalize-space(java:matches(java:java.lang.String.new($char), concat('(', $regex_ja_spec, '{1,})'))) = 'true'">
+				<!-- <xsl:if test="normalize-space(java:matches(java:java.lang.String.new($char), concat('(', $regex_ja_spec, '{1,})'))) = 'true'">
 					<xsl:attribute name="reference-orientation">0</xsl:attribute>
-				</xsl:if>
+				</xsl:if> -->
 				<fo:block-container width="1em">
 						<fo:block line-height="1em"><xsl:value-of select="$char"/></fo:block>
 				</fo:block-container>
