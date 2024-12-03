@@ -15,7 +15,7 @@
 			<xsl:strip-space elements="bipm:xref"/>
 		</xsl:when>
 		<xsl:when test="$namespace = 'bsi'">
-			<xsl:strip-space elements="bsi:xref"/>
+			<!-- <xsl:strip-space elements="bsi:xref"/> -->
 		</xsl:when>
 		<xsl:when test="$namespace = 'csa'">
 			<!-- <xsl:strip-space elements="csa:xref"/> -->
@@ -13175,7 +13175,7 @@
 			<fo:inline xsl:use-attribute-sets="termnote-name-style">
 			
 				<xsl:choose>
-					<xsl:when test="$namespace = 'csa' or $namespace = 'csd' or $namespace = 'iec' or $namespace = 'ieee' or $namespace = 'iho' or $namespace = 'iso' or $namespace = 'itu' or $namespace = 'jis' or $namespace = 'nist-sp' or $namespace = 'nist-cswp' or $namespace = 'ogc' or $namespace = 'ogc-white-paper' or $namespace = 'rsd'"></xsl:when>
+					<xsl:when test="$namespace = 'bsi' or $namespace = 'csa' or $namespace = 'csd' or $namespace = 'iec' or $namespace = 'ieee' or $namespace = 'iho' or $namespace = 'iso' or $namespace = 'itu' or $namespace = 'jis' or $namespace = 'nist-sp' or $namespace = 'nist-cswp' or $namespace = 'ogc' or $namespace = 'ogc-white-paper' or $namespace = 'rsd'"></xsl:when>
 					<xsl:otherwise>
 						<xsl:if test="not(*[local-name() = 'name']/following-sibling::node()[1][self::text()][normalize-space()=''])">
 							<xsl:attribute name="padding-right">1mm</xsl:attribute>
@@ -14341,6 +14341,9 @@
 		<xsl:variable name="section">
 			<xsl:choose>
 				<xsl:when test="@type = 'section-title'"></xsl:when>
+				<xsl:when test="*[local-name() = 'span'][@class = 'fmt-caption-delim']">
+					<xsl:value-of select="*[local-name() = 'span'][@class = 'fmt-caption-delim'][1]/preceding-sibling::node()"/>
+				</xsl:when>
 				<xsl:otherwise>
 					<xsl:value-of select="*[local-name() = 'tab'][1]/preceding-sibling::node()"/>
 				</xsl:otherwise>
@@ -14363,6 +14366,19 @@
 		
 			<xsl:variable name="title">
 				<xsl:choose>
+					<!-- https://github.com/metanorma/mn-native-pdf/issues/770 -->
+					<xsl:when test="*[local-name() = 'span'][@class = 'fmt-caption-delim']">
+						<xsl:choose>
+							<xsl:when test="@type = 'section-title'">
+								<xsl:value-of select="*[local-name() = 'span'][@class = 'fmt-caption-delim'][1]/preceding-sibling::node()"/>
+								<xsl:text>: </xsl:text>
+								<xsl:copy-of select="*[local-name() = 'span'][@class = 'fmt-caption-delim'][1]/following-sibling::node()[not(local-name = 'fmt-xref-label')]"/>
+							</xsl:when>
+							<xsl:otherwise>
+								<xsl:copy-of select="*[local-name() = 'span'][@class = 'fmt-caption-delim'][1]/following-sibling::node()[not(local-name = 'fmt-xref-label')]"/>
+							</xsl:otherwise>
+						</xsl:choose>
+					</xsl:when>
 					<xsl:when test="*[local-name() = 'tab']">
 						<xsl:choose>
 							<xsl:when test="@type = 'section-title'">
@@ -14900,6 +14916,15 @@
 	</xsl:template>
 
 	<xsl:template match="*[local-name() = 'name']" mode="contents_item">
+		<xsl:param name="mode">bookmarks</xsl:param>
+		<xsl:if test="not(following-sibling::*[1][local-name() = 'fmt-name'])">
+			<xsl:apply-templates mode="contents_item">
+				<xsl:with-param name="mode" select="$mode"/>
+			</xsl:apply-templates>
+		</xsl:if>
+	</xsl:template>
+	
+	<xsl:template match="*[local-name() = 'fmt-name']" mode="contents_item">
 		<xsl:param name="mode">bookmarks</xsl:param>
 		<xsl:apply-templates mode="contents_item">
 			<xsl:with-param name="mode" select="$mode"/>
@@ -16601,7 +16626,9 @@
 		
 	</xsl:template> <!-- tab -->
 	
-	<xsl:template match="*[local-name() = 'note']/*[local-name() = 'name']/*[local-name() = 'tab']"/>
+	<xsl:template match="*[local-name() = 'note']/*[local-name() = 'name']/*[local-name() = 'tab']" priority="2"/>
+	<xsl:template match="*[local-name() = 'termnote']/*[local-name() = 'name']/*[local-name() = 'tab']" priority="2"/>
+	
 	<xsl:template match="*[local-name() = 'note']/*[local-name() = 'name']/*[local-name() = 'tab']" mode="tab">
 		<xsl:if test="$namespace = 'bsi'">
 			<xsl:attribute name="padding-right">1.5mm</xsl:attribute>
@@ -19419,6 +19446,16 @@
 	<!-- update new Presentation XML -->
 	<xsl:template match="*[local-name() = 'title'][following-sibling::*[1][local-name() = 'fmt-title']]" mode="update_xml_step1"/>
 	<xsl:template match="*[local-name() = 'name'][following-sibling::*[1][local-name() = 'fmt-name']]" mode="update_xml_step1"/>
+	<xsl:template match="*[local-name() = 'section-title'][following-sibling::*[1][local-name() = 'p'][@type = 'section-title' or @type = 'floating-title']]" mode="update_xml_step1"/>
+	
+	<xsl:template match="*[local-name() = 'p'][@type = 'section-title' or @type = 'floating-title']][preceding-sibling::*[1][local-name() = 'section-title']" mode="update_xml_step1">
+		<xsl:copy>
+			<xsl:apply-templates select="@*" mode="update_xml_step1"/>
+			<xsl:copy-of select="preceding-sibling::*[1][local-name() = 'section-title']/@depth"/>
+			<xsl:apply-templates select="node()" mode="update_xml_step1"/>
+		</xsl:copy>
+	</xsl:template>
+	
 	
 	<xsl:template match="*[local-name() = 'fmt-title']" />
 	<xsl:template match="*[local-name() = 'fmt-title']" mode="update_xml_step1">
