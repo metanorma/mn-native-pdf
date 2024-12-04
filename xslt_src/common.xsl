@@ -19448,14 +19448,13 @@
 	<xsl:template match="*[local-name() = 'name'][following-sibling::*[1][local-name() = 'fmt-name']]" mode="update_xml_step1"/>
 	<xsl:template match="*[local-name() = 'section-title'][following-sibling::*[1][local-name() = 'p'][@type = 'section-title' or @type = 'floating-title']]" mode="update_xml_step1"/>
 	
-	<xsl:template match="*[local-name() = 'p'][@type = 'section-title' or @type = 'floating-title']][preceding-sibling::*[1][local-name() = 'section-title']" mode="update_xml_step1">
+	<xsl:template match="*[local-name() = 'p'][@type = 'section-title' or @type = 'floating-title'][preceding-sibling::*[1][local-name() = 'section-title']]" mode="update_xml_step1">
 		<xsl:copy>
 			<xsl:apply-templates select="@*" mode="update_xml_step1"/>
 			<xsl:copy-of select="preceding-sibling::*[1][local-name() = 'section-title']/@depth"/>
 			<xsl:apply-templates select="node()" mode="update_xml_step1"/>
 		</xsl:copy>
 	</xsl:template>
-	
 	
 	<xsl:template match="*[local-name() = 'fmt-title']" />
 	<xsl:template match="*[local-name() = 'fmt-title']" mode="update_xml_step1">
