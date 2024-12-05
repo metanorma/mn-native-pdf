@@ -113,12 +113,12 @@
 				</fo:simple-page-master>
 		
 				<fo:simple-page-master master-name="first_page" page-width="{$pageWidth}mm" page-height="{$pageHeight}mm">
-					<xsl:if test="$vertical_layout = 'true'">
+					<xsl:if test="$vertical_layout = 'true' and $isGenerateTableIF = 'false'">
 						<xsl:attribute name="page-width"><xsl:value-of select="$pageHeight"/>mm</xsl:attribute>
 						<xsl:attribute name="page-height"><xsl:value-of select="$pageWidth"/>mm</xsl:attribute>
 					</xsl:if>
 					<fo:region-body margin-top="{$marginTop}mm" margin-bottom="{$marginBottom}mm" margin-left="{$marginLeftRight1}mm" margin-right="{$marginLeftRight2}mm">
-						<xsl:if test="$vertical_layout = 'true'">
+						<xsl:if test="$vertical_layout = 'true' and $isGenerateTableIF = 'false'">
 							<xsl:attribute name="writing-mode">tb-rl</xsl:attribute>
 						</xsl:if>
 					</fo:region-body>
@@ -128,12 +128,12 @@
 					<fo:region-end region-name="right-region" extent="{$marginLeftRight2}mm"/>
 				</fo:simple-page-master>
 				<fo:simple-page-master master-name="odd" page-width="{$pageWidth}mm" page-height="{$pageHeight}mm">
-					<xsl:if test="$vertical_layout = 'true'">
+					<xsl:if test="$vertical_layout = 'true' and $isGenerateTableIF = 'false'">
 						<xsl:attribute name="page-width"><xsl:value-of select="$pageHeight"/>mm</xsl:attribute>
 						<xsl:attribute name="page-height"><xsl:value-of select="$pageWidth"/>mm</xsl:attribute>
 					</xsl:if>
 					<fo:region-body margin-top="{$marginTop}mm" margin-bottom="{$marginBottom}mm" margin-left="{$marginLeftRight1}mm" margin-right="{$marginLeftRight2}mm">
-						<xsl:if test="$vertical_layout = 'true'">
+						<xsl:if test="$vertical_layout = 'true' and $isGenerateTableIF = 'false'">
 							<xsl:attribute name="writing-mode">tb-rl</xsl:attribute>
 						</xsl:if>
 					</fo:region-body>
@@ -143,12 +143,12 @@
 					<fo:region-end region-name="right-region" extent="{$marginLeftRight2}mm"/>
 				</fo:simple-page-master>
 				<fo:simple-page-master master-name="even" page-width="{$pageWidth}mm" page-height="{$pageHeight}mm">
-					<xsl:if test="$vertical_layout = 'true'">
+					<xsl:if test="$vertical_layout = 'true' and $isGenerateTableIF = 'false'">
 						<xsl:attribute name="page-width"><xsl:value-of select="$pageHeight"/>mm</xsl:attribute>
 						<xsl:attribute name="page-height"><xsl:value-of select="$pageWidth"/>mm</xsl:attribute>
 					</xsl:if>
 					<fo:region-body margin-top="{$marginTop}mm" margin-bottom="{$marginBottom}mm" margin-left="{$marginLeftRight1}mm" margin-right="{$marginLeftRight2}mm">
-						<xsl:if test="$vertical_layout = 'true'">
+						<xsl:if test="$vertical_layout = 'true' and $isGenerateTableIF = 'false'">
 							<xsl:attribute name="writing-mode">tb-rl</xsl:attribute>
 						</xsl:if>
 					</fo:region-body>
@@ -164,7 +164,7 @@
 						<xsl:attribute name="page-height"><xsl:value-of select="$pageWidth"/>mm</xsl:attribute>
 					</xsl:if>
 					<fo:region-body margin-top="{$marginTop}mm" margin-bottom="{$marginBottom}mm" margin-left="{$marginLeftRight1}mm" margin-right="{$marginLeftRight2}mm">
-						<xsl:if test="$vertical_layout = 'true'">
+						<xsl:if test="$vertical_layout = 'true' and $isGenerateTableIF = 'false'">
 							<xsl:attribute name="writing-mode">tb-rl</xsl:attribute>
 						</xsl:if>
 					</fo:region-body>
@@ -245,7 +245,11 @@
 					 fo:region-body/margin-right = top margin
 					-->
 					<!-- <fo:region-body margin-top="{$marginTop}mm" margin-bottom="{$marginBottom}mm" margin-left="{$marginLeftRight1}mm" margin-right="{$marginLeftRight2 + 40}mm" writing-mode="tb-rl" background-color="rgb(240,240,240)"/> -->
-					<fo:region-body margin-top="{$marginLeftRight1}mm" margin-bottom="{$marginLeftRight2}mm" margin-left="{$marginBottom}mm" margin-right="{$marginTop}mm" writing-mode="tb-rl"/> <!--  background-color="rgb(240,240,240)" -->
+					<fo:region-body margin-top="{$marginLeftRight1}mm" margin-bottom="{$marginLeftRight2}mm" margin-left="{$marginBottom}mm" margin-right="{$marginTop}mm">	 <!--  background-color="rgb(240,240,240)" -->
+						<xsl:if test="$isGenerateTableIF = 'false'">
+							<xsl:attribute name="writing-mode">tb-rl</xsl:attribute>
+						</xsl:if>
+					</fo:region-body>
 					<fo:region-before region-name="header" extent="{$marginTop}mm"/> <!--  background-color="yellow" -->
 					<fo:region-after region-name="footer" extent="{$marginBottom}mm"/> <!--  background-color="green" -->
 					<fo:region-start region-name="left-region" extent="{$marginLeftRight1}mm" /> <!--  background-color="blue" -->
@@ -260,7 +264,11 @@
 					 fo:region-body/margin-right = top margin
 					-->
 					<!-- <fo:region-body margin-top="{$marginTop}mm" margin-bottom="{$marginBottom}mm" margin-left="{$marginLeftRight1}mm" margin-right="{$marginLeftRight2 + 40}mm" writing-mode="tb-rl" background-color="rgb(240,240,240)"/> -->
-					<fo:region-body margin-top="{$marginLeftRight1}mm" margin-bottom="{$marginLeftRight2}mm" margin-left="{$marginBottom}mm" margin-right="{$marginTop}mm" writing-mode="tb-rl"/> <!--  background-color="rgb(240,240,240)" -->
+					<fo:region-body margin-top="{$marginLeftRight1}mm" margin-bottom="{$marginLeftRight2}mm" margin-left="{$marginBottom}mm" margin-right="{$marginTop}mm">  <!--  background-color="rgb(240,240,240)" -->
+						<xsl:if test="$isGenerateTableIF = 'false'">
+							<xsl:attribute name="writing-mode">tb-rl</xsl:attribute>
+						</xsl:if>
+					</fo:region-body>
 					<fo:region-before region-name="header" extent="{$marginTop}mm"/> <!--  background-color="yellow" -->
 					<fo:region-after region-name="footer" extent="{$marginBottom}mm"/> <!--  background-color="green" -->
 					<fo:region-start region-name="left-region" extent="{$marginLeftRight1}mm" /> <!--  background-color="blue" -->
@@ -274,8 +282,16 @@
 					 fo:region-body/margin-right = top margin
 					-->
 					<!-- <fo:region-body margin-top="{$marginTop}mm" margin-bottom="{$marginBottom}mm" margin-left="{$marginLeftRight1}mm" margin-right="{$marginLeftRight2 + 40}mm" writing-mode="tb-rl" background-color="rgb(240,240,240)"/> -->
-					<fo:region-body margin-top="194mm" margin-bottom="{$marginLeftRight2}mm" margin-left="{$marginBottom}mm" margin-right="{$marginTop}mm" writing-mode="tb-rl"/> <!--  background-color="rgb(240,240,240)" -->
-					<fo:region-before region-name="header-last" extent="{$marginTop}mm" writing-mode="tb-rl"/> <!--  background-color="yellow" -->
+					<fo:region-body margin-top="194mm" margin-bottom="{$marginLeftRight2}mm" margin-left="{$marginBottom}mm" margin-right="{$marginTop}mm">  <!--  background-color="rgb(240,240,240)" -->
+						<xsl:if test="$isGenerateTableIF = 'false'">
+							<xsl:attribute name="writing-mode">tb-rl</xsl:attribute>
+						</xsl:if>
+					</fo:region-body>
+					<fo:region-before region-name="header-last" extent="{$marginTop}mm">  <!--  background-color="yellow" -->
+						<xsl:if test="$isGenerateTableIF = 'false'">
+							<xsl:attribute name="writing-mode">tb-rl</xsl:attribute>
+						</xsl:if>
+					</fo:region-before>
 					<fo:region-after region-name="footer" extent="{$marginBottom}mm"/> <!--  background-color="green" -->
 					<!-- for boilerplate:
 						reserve paper space in left-region, but text will render in the header 
@@ -292,12 +308,12 @@
 				</fo:page-sequence-master>
 			
 				<fo:simple-page-master master-name="commentary_first_page_even" page-width="{$pageWidth}mm" page-height="{$pageHeight}mm">
-					<xsl:if test="$vertical_layout = 'true'">
+					<xsl:if test="$vertical_layout = 'true' and $isGenerateTableIF = 'false'">
 						<xsl:attribute name="page-width"><xsl:value-of select="$pageHeight"/>mm</xsl:attribute>
 						<xsl:attribute name="page-height"><xsl:value-of select="$pageWidth"/>mm</xsl:attribute>
 					</xsl:if>
 					<fo:region-body margin-top="{$marginTop}mm" margin-bottom="{$marginBottom}mm" margin-left="{$marginLeftRight1}mm" margin-right="{$marginLeftRight2}mm">
-						<xsl:if test="$vertical_layout = 'true'">
+						<xsl:if test="$vertical_layout = 'true' and $isGenerateTableIF = 'false'">
 							<xsl:attribute name="writing-mode">tb-rl</xsl:attribute>
 						</xsl:if>
 					</fo:region-body>
@@ -308,12 +324,12 @@
 				</fo:simple-page-master>
 				
 				<fo:simple-page-master master-name="commentary_first_page_odd" page-width="{$pageWidth}mm" page-height="{$pageHeight}mm">
-					<xsl:if test="$vertical_layout = 'true'">
+					<xsl:if test="$vertical_layout = 'true' and $isGenerateTableIF = 'false'">
 						<xsl:attribute name="page-width"><xsl:value-of select="$pageHeight"/>mm</xsl:attribute>
 						<xsl:attribute name="page-height"><xsl:value-of select="$pageWidth"/>mm</xsl:attribute>
 					</xsl:if>
 					<fo:region-body margin-top="{$marginTop}mm" margin-bottom="{$marginBottom}mm" margin-left="{$marginLeftRight1}mm" margin-right="{$marginLeftRight2}mm">
-						<xsl:if test="$vertical_layout = 'true'">
+						<xsl:if test="$vertical_layout = 'true' and $isGenerateTableIF = 'false'">
 							<xsl:attribute name="writing-mode">tb-rl</xsl:attribute>
 						</xsl:if>
 					</fo:region-body>
@@ -2912,7 +2928,10 @@
 				</fo:block-container>
 			</fo:block-container>
 			
-			<fo:block-container font-size="9pt" color="white" height="5.5mm" writing-mode="tb-rl" margin-left="56mm" line-height="1.1">
+			<fo:block-container font-size="9pt" color="white" height="5.5mm" margin-left="56mm" line-height="1.1">
+				<xsl:if test="$isGenerateTableIF = 'false'">
+					<xsl:attribute name="writing-mode">tb-rl</xsl:attribute>
+				</xsl:if>
 				
 				<fo:block text-align-last="justify" margin-top="56mm" margin-bottom="3mm">
 				
