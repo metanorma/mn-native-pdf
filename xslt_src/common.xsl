@@ -60,7 +60,7 @@
 			<!-- <xsl:strip-space elements="ogc:xref"/> -->
 		</xsl:when>
 		<xsl:when test="$namespace = 'plateau'">
-			<xsl:strip-space elements="plateau:xref"/>
+			<!-- <xsl:strip-space elements="plateau:xref"/> -->
 		</xsl:when>
 		<xsl:when test="$namespace = 'rsd'">
 			<!-- <xsl:strip-space elements="ribose:xref"/> -->
@@ -13175,7 +13175,7 @@
 			<fo:inline xsl:use-attribute-sets="termnote-name-style">
 			
 				<xsl:choose>
-					<xsl:when test="$namespace = 'bsi' or $namespace = 'csa' or $namespace = 'csd' or $namespace = 'iec' or $namespace = 'ieee' or $namespace = 'iho' or $namespace = 'iso' or $namespace = 'itu' or $namespace = 'jis' or $namespace = 'nist-sp' or $namespace = 'nist-cswp' or $namespace = 'ogc' or $namespace = 'ogc-white-paper' or $namespace = 'rsd'"></xsl:when>
+					<xsl:when test="$namespace = 'bsi' or $namespace = 'csa' or $namespace = 'csd' or $namespace = 'iec' or $namespace = 'ieee' or $namespace = 'iho' or $namespace = 'iso' or $namespace = 'itu' or $namespace = 'jis' or $namespace = 'nist-sp' or $namespace = 'nist-cswp' or $namespace = 'ogc' or $namespace = 'ogc-white-paper' or $namespace = 'plateau' or $namespace = 'rsd'"></xsl:when>
 					<xsl:otherwise>
 						<xsl:if test="not(*[local-name() = 'name']/following-sibling::node()[1][self::text()][normalize-space()=''])">
 							<xsl:attribute name="padding-right">1mm</xsl:attribute>
@@ -19253,6 +19253,12 @@
 		</xsl:copy>
 	</xsl:template>
 	
+	<xsl:template match="@*|node()" mode="update_xml_pres">
+		<xsl:copy>
+			<xsl:apply-templates select="@*|node()" mode="update_xml_pres"/>
+		</xsl:copy>
+	</xsl:template>
+	
 	<!-- change section's order based on @displayorder value -->
 	<xsl:template match="*[local-name() = 'preface']" mode="update_xml_step1">
 		<xsl:copy>
@@ -19350,12 +19356,15 @@
 	
 	<!-- remove semantic xml -->
 	<xsl:template match="*[local-name() = 'metanorma-extension']/*[local-name() = 'metanorma']/*[local-name() = 'source']" mode="update_xml_step1"/>
+	<xsl:template match="*[local-name() = 'metanorma-extension']/*[local-name() = 'metanorma']/*[local-name() = 'source']" mode="update_xml_pres"/>
 	
 	<!-- remove image/emf -->
 	<xsl:template match="*[local-name() = 'image']/*[local-name() = 'emf']" mode="update_xml_step1"/>
+	<xsl:template match="*[local-name() = 'image']/*[local-name() = 'emf']" mode="update_xml_pres"/>
 	
 	<!-- remove preprocess-xslt -->
 	<xsl:template match="*[local-name() = 'preprocess-xslt']" mode="update_xml_step1"/>
+	<xsl:template match="*[local-name() = 'preprocess-xslt']" mode="update_xml_pres"/>
 	
 	<xsl:template match="*[local-name() = 'stem'][not(.//*[local-name() = 'passthrough']) and not(.//*[@linebreak])] | 
 						*[local-name() = 'image'][not(.//*[local-name() = 'passthrough'])] | 
@@ -19445,14 +19454,24 @@
 	
 	<!-- update new Presentation XML -->
 	<xsl:template match="*[local-name() = 'title'][following-sibling::*[1][local-name() = 'fmt-title']]" mode="update_xml_step1"/>
+	<xsl:template match="*[local-name() = 'title'][following-sibling::*[1][local-name() = 'fmt-title']]" mode="update_xml_pres"/>
 	<xsl:template match="*[local-name() = 'name'][following-sibling::*[1][local-name() = 'fmt-name']]" mode="update_xml_step1"/>
+	<xsl:template match="*[local-name() = 'name'][following-sibling::*[1][local-name() = 'fmt-name']]" mode="update_xml_pres"/>
 	<xsl:template match="*[local-name() = 'section-title'][following-sibling::*[1][local-name() = 'p'][@type = 'section-title' or @type = 'floating-title']]" mode="update_xml_step1"/>
+	<xsl:template match="*[local-name() = 'section-title'][following-sibling::*[1][local-name() = 'p'][@type = 'section-title' or @type = 'floating-title']]" mode="update_xml_pres"/>
 	
 	<xsl:template match="*[local-name() = 'p'][@type = 'section-title' or @type = 'floating-title'][preceding-sibling::*[1][local-name() = 'section-title']]" mode="update_xml_step1">
 		<xsl:copy>
 			<xsl:apply-templates select="@*" mode="update_xml_step1"/>
 			<xsl:copy-of select="preceding-sibling::*[1][local-name() = 'section-title']/@depth"/>
 			<xsl:apply-templates select="node()" mode="update_xml_step1"/>
+		</xsl:copy>
+	</xsl:template>
+	<xsl:template match="*[local-name() = 'p'][@type = 'section-title' or @type = 'floating-title'][preceding-sibling::*[1][local-name() = 'section-title']]" mode="update_xml_pres">
+		<xsl:copy>
+			<xsl:apply-templates select="@*" mode="update_xml_pres"/>
+			<xsl:copy-of select="preceding-sibling::*[1][local-name() = 'section-title']/@depth"/>
+			<xsl:apply-templates select="node()" mode="update_xml_pres"/>
 		</xsl:copy>
 	</xsl:template>
 	
@@ -19463,6 +19482,12 @@
 			<xsl:apply-templates mode="update_xml_step1"/>
 		</xsl:element>
 	</xsl:template>
+	<xsl:template match="*[local-name() = 'fmt-title']" mode="update_xml_pres">
+		<xsl:element name="title" namespace="{$namespace_full}">
+			<xsl:copy-of select="@*"/>
+			<xsl:apply-templates mode="update_xml_pres"/>
+		</xsl:element>
+	</xsl:template>
 	
 	<xsl:template match="*[local-name() = 'fmt-name']" />
 	<xsl:template match="*[local-name() = 'fmt-name']" mode="update_xml_step1">
@@ -19471,20 +19496,39 @@
 			<xsl:apply-templates mode="update_xml_step1"/>
 		</xsl:element>
 	</xsl:template>
+	<xsl:template match="*[local-name() = 'fmt-name']" mode="update_xml_pres">
+		<xsl:element name="name" namespace="{$namespace_full}">
+			<xsl:copy-of select="@*"/>
+			<xsl:apply-templates mode="update_xml_pres"/>
+		</xsl:element>
+	</xsl:template>
 	
 	<xsl:template match="*[local-name() = 'span'][
 															@class = 'fmt-caption-label' or 
 															@class = 'fmt-element-name' or
-															@class = 'fmt-caption-delim']" mode="update_xml_step1" priority="3">
+															@class = 'fmt-caption-delim' or
+															@class = 'fmt-autonum-delim']" mode="update_xml_step1" priority="3">
 		<xsl:apply-templates mode="update_xml_step1"/>
+	</xsl:template>
+	<xsl:template match="*[local-name() = 'span'][
+															@class = 'fmt-caption-label' or 
+															@class = 'fmt-element-name' or
+															@class = 'fmt-caption-delim' or
+															@class = 'fmt-autonum-delim']" mode="update_xml_pres" priority="3">
+		<xsl:apply-templates mode="update_xml_pres"/>
 	</xsl:template>
 	
 	<xsl:template match="*[local-name() = 'semx']" mode="update_xml_step1">
 		<xsl:apply-templates mode="update_xml_step1"/>
 	</xsl:template>
+	<xsl:template match="*[local-name() = 'semx']" mode="update_xml_pres">
+		<xsl:apply-templates mode="update_xml_pres"/>
+	</xsl:template>
 	
 	<xsl:template match="*[local-name() = 'fmt-xref-label']" />
 	<xsl:template match="*[local-name() = 'fmt-xref-label']" mode="update_xml_step1"/>
+	<xsl:template match="*[local-name() = 'fmt-xref-label']" mode="update_xml_pres"/>
+	
 	<!-- END: update new Presentation XML -->
 	
 	<!-- =========================================================================== -->

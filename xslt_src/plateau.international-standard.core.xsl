@@ -193,8 +193,27 @@
 				<xsl:with-param name="contents" select="$contents"/>
 			</xsl:call-template>
 			
+			<!-- <xsl:if test="$debug = 'true'">
+				<xsl:message>start contents redirect</xsl:message>
+				<redirect:write file="contents.xml">
+					<xsl:copy-of select="$contents"/>
+				</redirect:write>
+				<xsl:message>end contents redirect</xsl:message>
+			</xsl:if> -->
+			
+			<xsl:variable name="updated_xml_pres">
+				<xsl:apply-templates mode="update_xml_pres"/>
+			</xsl:variable>
+			
+			<!-- <xsl:message>start redirect</xsl:message>
+			<redirect:write file="update_xml_pres.xml">
+				<xsl:copy-of select="$updated_xml_pres"/>
+			</redirect:write>
+			<xsl:message>end redirect</xsl:message> -->
+			
 			<xsl:variable name="updated_xml_step1">
-				<xsl:apply-templates mode="update_xml_step1"/>
+				<!-- <xsl:apply-templates mode="update_xml_step1"/> -->
+				<xsl:apply-templates select="xalan:nodeset($updated_xml_pres)" mode="update_xml_step1"/>
 			</xsl:variable>
 			<!-- DEBUG: updated_xml_step1=<xsl:copy-of select="$updated_xml_step1"/> -->
 			<!-- <xsl:message>start redirect</xsl:message>
@@ -249,13 +268,6 @@
 									</xsl:if>
 									<xsl:call-template name="insertHeader"/>
 									<fo:flow flow-name="xsl-region-body">
-										<!-- <xsl:if test="$debug = 'true'"> -->
-										<!-- <xsl:message>start contents redirect</xsl:message>
-										<redirect:write file="contents.xml">
-											<xsl:copy-of select="$contents"/>
-										</redirect:write>
-										<xsl:message>end contents redirect</xsl:message> -->
-										<!-- </xsl:if> -->
 										
 										<!-- <xsl:apply-templates select="/*/*[local-name()='preface']/*[local-name() = 'clause'][@type = 'toc']">
 											<xsl:with-param name="num" select="$num"/>
@@ -829,11 +841,11 @@
 	<!-- ============================= -->
 	
 	<!-- element with title -->
-	<xsl:template match="*[plateau:title]" mode="contents">
+	<xsl:template match="*[plateau:title or plateau:fmt-title]" mode="contents">
 	
 		<xsl:variable name="level">
 			<xsl:call-template name="getLevel">
-				<xsl:with-param name="depth" select="plateau:title/@depth"/>
+				<xsl:with-param name="depth" select="plateau:fmt-title/@depth | plateau:title/@depth"/>
 			</xsl:call-template>
 		</xsl:variable>
 		
