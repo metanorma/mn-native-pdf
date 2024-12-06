@@ -419,9 +419,11 @@
 				<xsl:with-param name="contents" select="$contents"/>
 			</xsl:call-template>
 
-			<!-- <contents>
-				<xsl:copy-of select="$contents"/>
-			</contents> -->
+			<xsl:if test="$debug = 'true'">
+				<redirect:write file="contents_.xml">
+					<xsl:copy-of select="$contents"/>
+				</redirect:write>
+			</xsl:if>
 			
 			<xsl:choose>
 			
@@ -454,9 +456,16 @@
 									<xsl:apply-templates select="." mode="title_eref"/>
 								</xsl:variable> -->
 								
+								<xsl:variable name="update_xml_pres">
+									<xsl:apply-templates mode="update_xml_pres"/>
+								</xsl:variable>
+								
+								<xsl:message>START flatxml_</xsl:message>
+								<xsl:variable name="startTime2" select="java:getTime(java:java.util.Date.new())"/>
 								<xsl:variable name="flatxml__">
 									<!-- <xsl:apply-templates select="xalan:nodeset($title_eref)" mode="flatxml"/> -->
-									<xsl:apply-templates select="." mode="flatxml"/>
+									<!-- <xsl:apply-templates select="." mode="flatxml"/> -->
+									<xsl:apply-templates select="xalan:nodeset($update_xml_pres)" mode="flatxml"/>
 								</xsl:variable>
 								<!-- save flatxml into the file and reload it -->
 								<xsl:variable name="updated_flatxml_filename" select="concat($output_path,'_flatxml_', java:getTime(java:java.util.Date.new()), '.xml')"/>
@@ -492,9 +501,14 @@
 									<xsl:apply-templates select="." mode="title_eref"/>
 								</xsl:variable> -->
 								
+								<xsl:variable name="update_xml_pres">
+									<xsl:apply-templates mode="update_xml_pres"/>
+								</xsl:variable>
+								
 								<xsl:variable name="flatxml__">
 									<!-- <xsl:apply-templates select="xalan:nodeset($title_eref)" mode="flatxml"/> -->
-									<xsl:apply-templates select="." mode="flatxml"/>
+									<!-- <xsl:apply-templates select="." mode="flatxml"/> -->
+									<xsl:apply-templates select="xalan:nodeset($update_xml_pres)" mode="flatxml"/>
 								</xsl:variable>
 								<!-- save flatxml into the file and reload it -->
 								<xsl:variable name="updated_flatxml_filename" select="concat($output_path,'_flatxml_', java:getTime(java:java.util.Date.new()), '.xml')"/>
@@ -528,9 +542,20 @@
 						<xsl:apply-templates mode="title_eref"/>
 					</xsl:variable> -->
 					
+					<xsl:variable name="update_xml_pres">
+						<xsl:apply-templates mode="update_xml_pres"/>
+					</xsl:variable>
+					
+					<xsl:if test="$debug = 'true'">
+						<redirect:write file="update_xml_pres.xml">
+							<xsl:copy-of select="xalan:nodeset($update_xml_pres)"/>
+						</redirect:write>
+					</xsl:if>
+					
 					<xsl:variable name="flatxml__">
 						<!-- <xsl:apply-templates select="xalan:nodeset($title_eref)" mode="flatxml"/> -->
-						<xsl:apply-templates select="." mode="flatxml"/>
+						<!-- <xsl:apply-templates select="." mode="flatxml"/> -->
+						<xsl:apply-templates select="xalan:nodeset($update_xml_pres)" mode="flatxml"/>
 					</xsl:variable>
 
 					<!-- save flatxml into the file and reload it -->
@@ -1030,14 +1055,6 @@
 		</xsl:for-each>
 		
 		<xsl:variable name="curr_lang" select="bipm:bibdata/bipm:language[@current = 'true']"/>
-		
-		<xsl:if test="$debug = 'true'">
-			<xsl:text disable-output-escaping="yes">&lt;!--</xsl:text>
-				DEBUG
-				contents=<xsl:copy-of select="$contents"/>
-			<xsl:text disable-output-escaping="yes">--&gt;</xsl:text>
-		</xsl:if>
-		
 		
 		<xsl:choose>
 			<xsl:when test="$independentAppendix = '' and not($doctype = 'guide')">
@@ -2077,10 +2094,10 @@
 	<!-- ============================= -->
 
 	<!-- element with title -->
-	<xsl:template match="*[bipm:title]" mode="contents">
+	<xsl:template match="*[bipm:title or bipm:fmt-title]" mode="contents">
 		<xsl:variable name="level">
 			<xsl:call-template name="getLevel">
-				<xsl:with-param name="depth" select="bipm:title/@depth"/>
+				<xsl:with-param name="depth" select="bipm:fmt-title/@depth | bipm:title/@depth"/>
 			</xsl:call-template>
 		</xsl:variable>
 		

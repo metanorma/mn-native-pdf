@@ -12,7 +12,7 @@
 
 	<xsl:choose>
 		<xsl:when test="$namespace = 'bipm'">
-			<xsl:strip-space elements="bipm:xref"/>
+			<!-- <xsl:strip-space elements="bipm:xref"/> -->
 		</xsl:when>
 		<xsl:when test="$namespace = 'bsi'">
 			<!-- <xsl:strip-space elements="bsi:xref"/> -->
@@ -42,7 +42,7 @@
 			<!-- <xsl:strip-space elements="itu:xref"/> -->
 		</xsl:when>
 		<xsl:when test="$namespace = 'jcgm'">
-			<xsl:strip-space elements="jcgm:xref"/>
+			<!-- <xsl:strip-space elements="jcgm:xref"/> -->
 		</xsl:when>
 		<xsl:when test="$namespace = 'jis'">
 			<!-- <xsl:strip-space elements="jis:xref"/> -->
@@ -13175,7 +13175,7 @@
 			<fo:inline xsl:use-attribute-sets="termnote-name-style">
 			
 				<xsl:choose>
-					<xsl:when test="$namespace = 'bsi' or $namespace = 'csa' or $namespace = 'csd' or $namespace = 'iec' or $namespace = 'ieee' or $namespace = 'iho' or $namespace = 'iso' or $namespace = 'itu' or $namespace = 'jis' or $namespace = 'nist-sp' or $namespace = 'nist-cswp' or $namespace = 'ogc' or $namespace = 'ogc-white-paper' or $namespace = 'plateau' or $namespace = 'rsd'"></xsl:when>
+					<xsl:when test="$namespace = 'bipm' or $namespace = 'bsi' or $namespace = 'csa' or $namespace = 'csd' or $namespace = 'iec' or $namespace = 'ieee' or $namespace = 'iho' or $namespace = 'iso' or $namespace = 'itu' or $namespace = 'jcgm' or $namespace = 'jis' or $namespace = 'nist-sp' or $namespace = 'nist-cswp' or $namespace = 'ogc' or $namespace = 'ogc-white-paper' or $namespace = 'plateau' or $namespace = 'rsd'"></xsl:when>
 					<xsl:otherwise>
 						<xsl:if test="not(*[local-name() = 'name']/following-sibling::node()[1][self::text()][normalize-space()=''])">
 							<xsl:attribute name="padding-right">1mm</xsl:attribute>
