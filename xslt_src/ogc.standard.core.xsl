@@ -622,11 +622,11 @@
 					<xsl:call-template name="insertHeaderFooter"/>
 					<fo:flow flow-name="xsl-region-body">
 					
-						<!-- <xsl:if test="$debug = 'true'">
+						<xsl:if test="$debug = 'true'">
 							<redirect:write file="contents_.xml"> <!-- {java:getTime(java:java.util.Date.new())} -->
 								<xsl:copy-of select="$contents"/>
 							</redirect:write>
-						</xsl:if> -->
+						</xsl:if>
 
 						<!-- crossing lines -->					
 						<fo:block-container absolute-position="fixed" width="{$pageWidth}mm" height="{$pageHeight}mm" font-size="0">
