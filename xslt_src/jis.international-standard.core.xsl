@@ -113,12 +113,12 @@
 				</fo:simple-page-master>
 		
 				<fo:simple-page-master master-name="first_page" page-width="{$pageWidth}mm" page-height="{$pageHeight}mm">
-					<xsl:if test="$vertical_layout = 'true'">
+					<xsl:if test="$vertical_layout = 'true' and $isGenerateTableIF = 'false'">
 						<xsl:attribute name="page-width"><xsl:value-of select="$pageHeight"/>mm</xsl:attribute>
 						<xsl:attribute name="page-height"><xsl:value-of select="$pageWidth"/>mm</xsl:attribute>
 					</xsl:if>
 					<fo:region-body margin-top="{$marginTop}mm" margin-bottom="{$marginBottom}mm" margin-left="{$marginLeftRight1}mm" margin-right="{$marginLeftRight2}mm">
-						<xsl:if test="$vertical_layout = 'true'">
+						<xsl:if test="$vertical_layout = 'true' and $isGenerateTableIF = 'false'">
 							<xsl:attribute name="writing-mode">tb-rl</xsl:attribute>
 						</xsl:if>
 					</fo:region-body>
@@ -128,12 +128,12 @@
 					<fo:region-end region-name="right-region" extent="{$marginLeftRight2}mm"/>
 				</fo:simple-page-master>
 				<fo:simple-page-master master-name="odd" page-width="{$pageWidth}mm" page-height="{$pageHeight}mm">
-					<xsl:if test="$vertical_layout = 'true'">
+					<xsl:if test="$vertical_layout = 'true' and $isGenerateTableIF = 'false'">
 						<xsl:attribute name="page-width"><xsl:value-of select="$pageHeight"/>mm</xsl:attribute>
 						<xsl:attribute name="page-height"><xsl:value-of select="$pageWidth"/>mm</xsl:attribute>
 					</xsl:if>
 					<fo:region-body margin-top="{$marginTop}mm" margin-bottom="{$marginBottom}mm" margin-left="{$marginLeftRight1}mm" margin-right="{$marginLeftRight2}mm">
-						<xsl:if test="$vertical_layout = 'true'">
+						<xsl:if test="$vertical_layout = 'true' and $isGenerateTableIF = 'false'">
 							<xsl:attribute name="writing-mode">tb-rl</xsl:attribute>
 						</xsl:if>
 					</fo:region-body>
@@ -143,12 +143,12 @@
 					<fo:region-end region-name="right-region" extent="{$marginLeftRight2}mm"/>
 				</fo:simple-page-master>
 				<fo:simple-page-master master-name="even" page-width="{$pageWidth}mm" page-height="{$pageHeight}mm">
-					<xsl:if test="$vertical_layout = 'true'">
+					<xsl:if test="$vertical_layout = 'true' and $isGenerateTableIF = 'false'">
 						<xsl:attribute name="page-width"><xsl:value-of select="$pageHeight"/>mm</xsl:attribute>
 						<xsl:attribute name="page-height"><xsl:value-of select="$pageWidth"/>mm</xsl:attribute>
 					</xsl:if>
 					<fo:region-body margin-top="{$marginTop}mm" margin-bottom="{$marginBottom}mm" margin-left="{$marginLeftRight1}mm" margin-right="{$marginLeftRight2}mm">
-						<xsl:if test="$vertical_layout = 'true'">
+						<xsl:if test="$vertical_layout = 'true' and $isGenerateTableIF = 'false'">
 							<xsl:attribute name="writing-mode">tb-rl</xsl:attribute>
 						</xsl:if>
 					</fo:region-body>
@@ -164,7 +164,7 @@
 						<xsl:attribute name="page-height"><xsl:value-of select="$pageWidth"/>mm</xsl:attribute>
 					</xsl:if>
 					<fo:region-body margin-top="{$marginTop}mm" margin-bottom="{$marginBottom}mm" margin-left="{$marginLeftRight1}mm" margin-right="{$marginLeftRight2}mm">
-						<xsl:if test="$vertical_layout = 'true'">
+						<xsl:if test="$vertical_layout = 'true' and $isGenerateTableIF = 'false'">
 							<xsl:attribute name="writing-mode">tb-rl</xsl:attribute>
 						</xsl:if>
 					</fo:region-body>
@@ -245,7 +245,11 @@
 					 fo:region-body/margin-right = top margin
 					-->
 					<!-- <fo:region-body margin-top="{$marginTop}mm" margin-bottom="{$marginBottom}mm" margin-left="{$marginLeftRight1}mm" margin-right="{$marginLeftRight2 + 40}mm" writing-mode="tb-rl" background-color="rgb(240,240,240)"/> -->
-					<fo:region-body margin-top="{$marginLeftRight1}mm" margin-bottom="{$marginLeftRight2}mm" margin-left="{$marginBottom}mm" margin-right="{$marginTop}mm" writing-mode="tb-rl"/> <!--  background-color="rgb(240,240,240)" -->
+					<fo:region-body margin-top="{$marginLeftRight1}mm" margin-bottom="{$marginLeftRight2}mm" margin-left="{$marginBottom}mm" margin-right="{$marginTop}mm">	 <!--  background-color="rgb(240,240,240)" -->
+						<xsl:if test="$isGenerateTableIF = 'false'">
+							<xsl:attribute name="writing-mode">tb-rl</xsl:attribute>
+						</xsl:if>
+					</fo:region-body>
 					<fo:region-before region-name="header" extent="{$marginTop}mm"/> <!--  background-color="yellow" -->
 					<fo:region-after region-name="footer" extent="{$marginBottom}mm"/> <!--  background-color="green" -->
 					<fo:region-start region-name="left-region" extent="{$marginLeftRight1}mm" /> <!--  background-color="blue" -->
@@ -260,7 +264,11 @@
 					 fo:region-body/margin-right = top margin
 					-->
 					<!-- <fo:region-body margin-top="{$marginTop}mm" margin-bottom="{$marginBottom}mm" margin-left="{$marginLeftRight1}mm" margin-right="{$marginLeftRight2 + 40}mm" writing-mode="tb-rl" background-color="rgb(240,240,240)"/> -->
-					<fo:region-body margin-top="{$marginLeftRight1}mm" margin-bottom="{$marginLeftRight2}mm" margin-left="{$marginBottom}mm" margin-right="{$marginTop}mm" writing-mode="tb-rl"/> <!--  background-color="rgb(240,240,240)" -->
+					<fo:region-body margin-top="{$marginLeftRight1}mm" margin-bottom="{$marginLeftRight2}mm" margin-left="{$marginBottom}mm" margin-right="{$marginTop}mm">  <!--  background-color="rgb(240,240,240)" -->
+						<xsl:if test="$isGenerateTableIF = 'false'">
+							<xsl:attribute name="writing-mode">tb-rl</xsl:attribute>
+						</xsl:if>
+					</fo:region-body>
 					<fo:region-before region-name="header" extent="{$marginTop}mm"/> <!--  background-color="yellow" -->
 					<fo:region-after region-name="footer" extent="{$marginBottom}mm"/> <!--  background-color="green" -->
 					<fo:region-start region-name="left-region" extent="{$marginLeftRight1}mm" /> <!--  background-color="blue" -->
@@ -274,8 +282,16 @@
 					 fo:region-body/margin-right = top margin
 					-->
 					<!-- <fo:region-body margin-top="{$marginTop}mm" margin-bottom="{$marginBottom}mm" margin-left="{$marginLeftRight1}mm" margin-right="{$marginLeftRight2 + 40}mm" writing-mode="tb-rl" background-color="rgb(240,240,240)"/> -->
-					<fo:region-body margin-top="194mm" margin-bottom="{$marginLeftRight2}mm" margin-left="{$marginBottom}mm" margin-right="{$marginTop}mm" writing-mode="tb-rl"/> <!--  background-color="rgb(240,240,240)" -->
-					<fo:region-before region-name="header-last" extent="{$marginTop}mm" writing-mode="tb-rl"/> <!--  background-color="yellow" -->
+					<fo:region-body margin-top="194mm" margin-bottom="{$marginLeftRight2}mm" margin-left="{$marginBottom}mm" margin-right="{$marginTop}mm">  <!--  background-color="rgb(240,240,240)" -->
+						<xsl:if test="$isGenerateTableIF = 'false'">
+							<xsl:attribute name="writing-mode">tb-rl</xsl:attribute>
+						</xsl:if>
+					</fo:region-body>
+					<fo:region-before region-name="header-last" extent="{$marginTop}mm">  <!--  background-color="yellow" -->
+						<xsl:if test="$isGenerateTableIF = 'false'">
+							<xsl:attribute name="writing-mode">tb-rl</xsl:attribute>
+						</xsl:if>
+					</fo:region-before>
 					<fo:region-after region-name="footer" extent="{$marginBottom}mm"/> <!--  background-color="green" -->
 					<!-- for boilerplate:
 						reserve paper space in left-region, but text will render in the header 
@@ -292,12 +308,12 @@
 				</fo:page-sequence-master>
 			
 				<fo:simple-page-master master-name="commentary_first_page_even" page-width="{$pageWidth}mm" page-height="{$pageHeight}mm">
-					<xsl:if test="$vertical_layout = 'true'">
+					<xsl:if test="$vertical_layout = 'true' and $isGenerateTableIF = 'false'">
 						<xsl:attribute name="page-width"><xsl:value-of select="$pageHeight"/>mm</xsl:attribute>
 						<xsl:attribute name="page-height"><xsl:value-of select="$pageWidth"/>mm</xsl:attribute>
 					</xsl:if>
 					<fo:region-body margin-top="{$marginTop}mm" margin-bottom="{$marginBottom}mm" margin-left="{$marginLeftRight1}mm" margin-right="{$marginLeftRight2}mm">
-						<xsl:if test="$vertical_layout = 'true'">
+						<xsl:if test="$vertical_layout = 'true' and $isGenerateTableIF = 'false'">
 							<xsl:attribute name="writing-mode">tb-rl</xsl:attribute>
 						</xsl:if>
 					</fo:region-body>
@@ -308,12 +324,12 @@
 				</fo:simple-page-master>
 				
 				<fo:simple-page-master master-name="commentary_first_page_odd" page-width="{$pageWidth}mm" page-height="{$pageHeight}mm">
-					<xsl:if test="$vertical_layout = 'true'">
+					<xsl:if test="$vertical_layout = 'true' and $isGenerateTableIF = 'false'">
 						<xsl:attribute name="page-width"><xsl:value-of select="$pageHeight"/>mm</xsl:attribute>
 						<xsl:attribute name="page-height"><xsl:value-of select="$pageWidth"/>mm</xsl:attribute>
 					</xsl:if>
 					<fo:region-body margin-top="{$marginTop}mm" margin-bottom="{$marginBottom}mm" margin-left="{$marginLeftRight1}mm" margin-right="{$marginLeftRight2}mm">
-						<xsl:if test="$vertical_layout = 'true'">
+						<xsl:if test="$vertical_layout = 'true' and $isGenerateTableIF = 'false'">
 							<xsl:attribute name="writing-mode">tb-rl</xsl:attribute>
 						</xsl:if>
 					</fo:region-body>
@@ -382,16 +398,36 @@
 					<xsl:copy-of select="$contents"/>
 				</redirect:write>
 			</xsl:if>
+    
+			<xsl:variable name="updated_xml_step0">
+				<xsl:if test="$vertical_layout = 'true'">
+					<xsl:apply-templates mode="update_xml_step0"/>
+				</xsl:if>
+			</xsl:variable>
+			<xsl:if test="$debug = 'true'">
+				<redirect:write file="update_xml_step0.xml">
+					<xsl:copy-of select="$updated_xml_step0"/>
+				</redirect:write>
+			</xsl:if>
 			
 			<xsl:variable name="updated_xml_step1">
-				<xsl:apply-templates mode="update_xml_step1"/>
+				<xsl:choose>
+					<xsl:when test="$vertical_layout = 'true'">
+						<xsl:apply-templates select="xalan:nodeset($updated_xml_step0)" mode="update_xml_step1"/>
+					</xsl:when>
+					<xsl:otherwise>
+						<xsl:apply-templates mode="update_xml_step1"/>
+					</xsl:otherwise>
+				</xsl:choose>
 			</xsl:variable>
 			<!-- DEBUG: updated_xml_step1=<xsl:copy-of select="$updated_xml_step1"/> -->
-			<!-- <xsl:message>start redirect</xsl:message>
-			<redirect:write file="update_xml_step1.xml">
-				<xsl:copy-of select="$updated_xml_step1"/>
-			</redirect:write>
-			<xsl:message>end redirect</xsl:message> -->
+			<xsl:if test="$debug = 'true'">
+				<xsl:message>start redirect</xsl:message>
+				<redirect:write file="update_xml_step1.xml">
+					<xsl:copy-of select="$updated_xml_step1"/>
+				</redirect:write>
+				<xsl:message>end redirect</xsl:message>
+			</xsl:if>
 			
 			
 			<xsl:variable name="updated_xml_step2_">
@@ -2106,6 +2142,145 @@
 		</fo:block-container>
 	</xsl:template>
 	
+	
+	<!-- =========================================================================== -->
+	<!-- STEP 0: Replace characters with vertical form -->
+	<!-- =========================================================================== -->
+	<xsl:template match="@*|node()" mode="update_xml_step0">
+		<xsl:copy>
+			<xsl:apply-templates select="@*|node()" mode="update_xml_step0"/>
+		</xsl:copy>
+	</xsl:template>
+	
+	<xsl:template match="*[local-name() = 'metanorma-extension']" mode="update_xml_step0">
+		<xsl:copy-of select="."/>
+	</xsl:template>
+	
+	<xsl:template match="text()" mode="update_xml_step0">
+		<!-- from https://github.com/metanorma/docs/blob/main/109.adoc -->
+		<!-- 
+		U+0028 LEFT PARENTHESIS (()
+		U+FF08 FULLWIDTH LEFT PARENTHESIS (（)
+		to
+		U+FE35 PRESENTATION FORM FOR VERTICAL LEFT PARENTHESIS (︵)
+		
+		U+0029 RIGHT PARENTHESIS ())
+		U+FF09 FULLWIDTH RIGHT PARENTHESIS (）)
+		to
+		U+FE36 PRESENTATION FORM FOR VERTICAL RIGHT PARENTHESIS (︶)
+		-->
+		<xsl:variable name="text1" select="translate(.,'&#x0028;&#xFF08;&#x0029;&#xFF09;','&#xFE35;&#xFE35;&#xFE36;&#xFE36;')"/>
+		<!--
+		U+007B LEFT CURLY BRACKET ({)
+		U+FF5B FULLWIDTH LEFT CURLY BRACKET (｛)
+		to
+		U+FE37 PRESENTATION FORM FOR VERTICAL LEFT CURLY BRACKET (︷)
+		
+		U+007D RIGHT CURLY BRACKET (})
+		U+FF5D FULLWIDTH RIGHT CURLY BRACKET (｝)
+		to
+		U+FE38 PRESENTATION FORM FOR VERTICAL RIGHT CURLY BRACKET (︸)
+		-->
+		<xsl:variable name="text2" select="translate($text1,'&#x007B;&#xFF5B;&#x007D;&#xFF5D;','&#xFE37;&#xFE37;&#xFE38;&#xFE38;')"/>
+
+		<!--
+		U+3014 LEFT TORTOISE SHELL BRACKET (〔)
+		to
+		U+FE39 PRESENTATION FORM FOR VERTICAL LEFT TORTOISE SHELL BRACKET (︹)
+		
+		U+3015 RIGHT TORTOISE SHELL BRACKET (〕)
+		to
+		U+FE3A PRESENTATION FORM FOR VERTICAL RIGHT TORTOISE SHELL BRACKET (︺)
+		-->
+		<xsl:variable name="text3" select="translate($text2,'&#x3014;&#x3015;','&#xFE39;&#xFE3A;')"/>
+
+		<!--
+		U+3010 LEFT BLACK LENTICULAR BRACKET (【)
+		to
+		U+FE3B PRESENTATION FORM FOR VERTICAL LEFT BLACK LENTICULAR BRACKET (︻)
+		
+		U+3011 RIGHT BLACK LENTICULAR BRACKET (】)
+		to
+		U+FE3C PRESENTATION FORM FOR VERTICAL RIGHT BLACK LENTICULAR BRACKET (︼)
+		-->
+		<xsl:variable name="text4" select="translate($text3,'&#x3010;&#x3011;','&#xFE3B;&#xFE3C;')"/>
+		
+		<!--
+		U+300A LEFT DOUBLE ANGLE BRACKET (《)
+		to
+		U+FE3D PRESENTATION FORM FOR VERTICAL LEFT DOUBLE ANGLE BRACKET (︽)
+		
+		U+300B RIGHT DOUBLE ANGLE BRACKET (》)
+		to
+		U+FE3E PRESENTATION FORM FOR VERTICAL RIGHT DOUBLE ANGLE BRACKET (︾)
+		-->
+		<xsl:variable name="text5" select="translate($text4,'&#x300A;&#x300B;','&#xFE3D;&#xFE3E;')"/>
+		
+		<!--
+		U+FF62 HALFWIDTH LEFT CORNER BRACKET (｢)
+		U+300C LEFT CORNER BRACKET (「)
+		to
+		U+FE41 PRESENTATION FORM FOR VERTICAL LEFT CORNER BRACKET (﹁)
+		
+		U+FF63 HALFWIDTH RIGHT CORNER BRACKET (｣)
+		U+300D RIGHT CORNER BRACKET (」)
+		to
+		U+FE42 PRESENTATION FORM FOR VERTICAL RIGHT CORNER BRACKET (﹂)
+		-->
+		<xsl:variable name="text6" select="translate($text5,'&#xFF62;&#x300C;&#xFF63;&#x300D;','&#xFE41;&#xFE41;&#xFE42;&#xFE42;')"/>
+		
+		<!--
+		U+300E LEFT WHITE CORNER BRACKET (『)
+		to
+		U+FE43 PRESENTATION FORM FOR VERTICAL LEFT WHITE CORNER BRACKET (﹃)
+		
+		U+300F RIGHT WHITE CORNER BRACKET (』)
+		to
+		U+FE44 PRESENTATION FORM FOR VERTICAL RIGHT WHITE CORNER BRACKET (﹄)
+		-->
+		<xsl:variable name="text7" select="translate($text6,'&#x300E;&#x300F;','&#xFE43;&#xFE44;')"/>
+		
+		<!--
+		U+005B LEFT SQUARE BRACKET ([)
+		U+FF3B FULLWIDTH LEFT SQUARE BRACKET (［)
+		to
+		U+FE47 PRESENTATION FORM FOR VERTICAL LEFT SQUARE BRACKET (﹇)
+		
+		U+005D RIGHT SQUARE BRACKET (])
+		U+FF3D FULLWIDTH RIGHT SQUARE BRACKET (］)
+		to
+		U+FE48 PRESENTATION FORM FOR VERTICAL RIGHT SQUARE BRACKET (﹈)
+		-->
+		<xsl:variable name="text8" select="translate($text7,'&#x005B;&#xFF3B;&#x005D;&#xFF3D;','&#xFE47;&#xFE47;&#xFE48;&#xFE48;')"/>
+		
+		<!--
+		U+3008 LEFT ANGLE BRACKET (〈)
+		to
+		U+FE3F PRESENTATION FORM FOR VERTICAL LEFT ANGLE BRACKET (︿)
+		
+		U+3009 RIGHT ANGLE BRACKET (〉)
+		to
+		U+FE40 PRESENTATION FORM FOR VERTICAL RIGHT ANGLE BRACKET (﹀)
+		-->
+		<xsl:variable name="text9" select="translate($text8,'&#x3008;&#x3009;','&#xFE3F;&#xFE40;')"/>
+		
+		<!--
+		U+3016 LEFT WHITE LENTICULAR BRACKET (〖)
+		to
+		U+FE17 PRESENTATION FORM FOR VERTICAL LEFT WHITE LENTICULAR BRACKET (︗)
+		
+		U+3017 RIGHT WHITE LENTICULAR BRACKET (〗)
+		to
+		U+FE18 PRESENTATION FORM FOR VERTICAL RIGHT WHITE LENTICULAR BRACKET (︘)
+		-->
+		<xsl:variable name="text10" select="translate($text9,'&#x3016;&#x3017;','&#xFE17;&#xFE18;')"/>
+		
+		<xsl:value-of select="$text10"/>
+	</xsl:template>
+	<!-- =========================================================================== -->
+	<!-- END STEP 0: Replace characters with vertical form -->
+	<!-- =========================================================================== -->
+	
 	<xsl:template match="*[local-name() = 'span'][@class = 'surname' or @class = 'givenname' or @class = 'JIS' or @class = 'EffectiveYear' or @class = 'CommentaryEffectiveYear']" mode="update_xml_step1" priority="2">
 		<xsl:copy>
 			<xsl:apply-templates select="@* | node()" mode="update_xml_step1"/>
@@ -2192,7 +2367,8 @@
 	<xsl:variable name="regex_en_">
 		<xsl:choose>
 			<!-- ( ) [ ] _ { } U+FF08 FULLWIDTH LEFT PARENTHESIS U+FF09 FULLWIDTH RIGHT PARENTHESIS-->
-			<xsl:when test="$vertical_layout = 'true'">((<xsl:value-of select="$regex_ja_spec"/>)|([^\u0028\u0029\u005B\u005D\u005F\u007B\u007D<xsl:value-of select="$regex_en_base"/>]){1,})</xsl:when>
+			<!-- <xsl:when test="$vertical_layout = 'true'">((<xsl:value-of select="$regex_ja_spec"/>)|([^\u0028\u0029\u005B\u005D\u005F\u007B\u007D<xsl:value-of select="$regex_en_base"/>]){1,})</xsl:when> -->
+			<xsl:when test="$vertical_layout = 'true'">((<xsl:value-of select="$regex_ja_spec"/>)|([^\u005F<xsl:value-of select="$regex_en_base"/>]){1,})</xsl:when> <!-- \u0028\u0029\u005B\u005D \u007B\u007D -->
 			<xsl:otherwise>([^<xsl:value-of select="$regex_en_base"/>]{1,})</xsl:otherwise>
 		</xsl:choose>
 	</xsl:variable>
@@ -2204,16 +2380,64 @@
 	<xsl:variable name="element_name_font_en_bold">font_en_bold</xsl:variable>
 	<xsl:variable name="tag_font_en_bold_open">###<xsl:value-of select="$element_name_font_en_bold"/>###</xsl:variable>
 	<xsl:variable name="tag_font_en_bold_close">###/<xsl:value-of select="$element_name_font_en_bold"/>###</xsl:variable>
+	<xsl:variable name="element_name_font_en_vertical">font_en_vertical</xsl:variable>
+	<xsl:variable name="tag_font_en_vertical_open">###<xsl:value-of select="$element_name_font_en_vertical"/>###</xsl:variable>
+	<xsl:variable name="tag_font_en_vertical_close">###/<xsl:value-of select="$element_name_font_en_vertical"/>###</xsl:variable>
 	
 	<xsl:template match="jis:p//text()[not(ancestor::jis:strong) and not(ancestor::jis:p[@class = 'zzSTDTitle2'])] |
 						jis:dt/text() | 
 						jis:biblio-tag/text()" mode="update_xml_step1">
-		<xsl:variable name="text_en_" select="java:replaceAll(java:java.lang.String.new(.), $regex_en, concat($tag_font_en_open,'$1',$tag_font_en_close))"/>
+		<xsl:choose>
+			<xsl:when test="$vertical_layout = 'true'">
+				<xsl:call-template name="enclose_text_in_vertical_tag"/>
+			</xsl:when>
+			<xsl:otherwise>
+				<xsl:call-template name="enclose_text_in_font_en_tag"/>
+			</xsl:otherwise>
+		</xsl:choose>
+	</xsl:template>
+	
+	<xsl:template name="enclose_text_in_vertical_tag">
+		<xsl:param name="text" select="."/>
+		<xsl:param name="regex" select="$regex_en"/>
+		<xsl:variable name="text_vertical_" select="java:replaceAll(java:java.lang.String.new($text), $regex, concat($tag_font_en_vertical_open,'$1',$tag_font_en_vertical_close))"/>
+		<xsl:variable name="text_vertical">
+			<xsl:element name="text" namespace="{$namespace_full}">
+				<xsl:call-template name="replace_text_tags">
+					<xsl:with-param name="tag_open" select="$tag_font_en_vertical_open"/>
+					<xsl:with-param name="tag_close" select="$tag_font_en_vertical_close"/>
+					<xsl:with-param name="text" select="$text_vertical_"/>
+				</xsl:call-template>
+			</xsl:element>
+		</xsl:variable>
+		<xsl:copy-of select="xalan:nodeset($text_vertical)/*[local-name() = 'text']/node()"/>
+	</xsl:template>
+	
+	<xsl:template name="enclose_text_in_font_en_tag">
+		<xsl:param name="text" select="."/>
+		<xsl:param name="regex" select="$regex_en"/>
+		<xsl:variable name="text_en_" select="java:replaceAll(java:java.lang.String.new($text), $regex, concat($tag_font_en_open,'$1',$tag_font_en_close))"/>
 		<xsl:variable name="text_en">
 			<xsl:element name="text" namespace="{$namespace_full}">
 				<xsl:call-template name="replace_text_tags">
 					<xsl:with-param name="tag_open" select="$tag_font_en_open"/>
 					<xsl:with-param name="tag_close" select="$tag_font_en_close"/>
+					<xsl:with-param name="text" select="$text_en_"/>
+				</xsl:call-template>
+			</xsl:element>
+		</xsl:variable>
+		<xsl:copy-of select="xalan:nodeset($text_en)/*[local-name() = 'text']/node()"/>
+	</xsl:template>
+	
+	<xsl:template name="enclose_text_in_font_en_bold_tag">
+		<xsl:param name="text" select="."/>
+		<xsl:param name="regex" select="$regex_en"/>
+		<xsl:variable name="text_en_" select="java:replaceAll(java:java.lang.String.new($text), $regex, concat($tag_font_en_bold_open,'$1',$tag_font_en_bold_close))"/>
+		<xsl:variable name="text_en">
+			<xsl:element name="text" namespace="{$namespace_full}">
+				<xsl:call-template name="replace_text_tags">
+					<xsl:with-param name="tag_open" select="$tag_font_en_bold_open"/>
+					<xsl:with-param name="tag_close" select="$tag_font_en_bold_close"/>
 					<xsl:with-param name="text" select="$text_en_"/>
 				</xsl:call-template>
 			</xsl:element>
@@ -2233,33 +2457,31 @@
 						jis:termexample/jis:name/text() |
 						jis:xref//text() |
 						jis:origin/text()" mode="update_xml_step1">
-		<xsl:variable name="text_en_" select="java:replaceAll(java:java.lang.String.new(.), $regex_en, concat($tag_font_en_bold_open,'$1',$tag_font_en_bold_close))"/>
-		<xsl:variable name="text_en">
-			<xsl:element name="text" namespace="{$namespace_full}">
-				<xsl:call-template name="replace_text_tags">
-					<xsl:with-param name="tag_open" select="$tag_font_en_bold_open"/>
-					<xsl:with-param name="tag_close" select="$tag_font_en_bold_close"/>
-					<xsl:with-param name="text" select="$text_en_"/>
-				</xsl:call-template>
-			</xsl:element>
-		</xsl:variable>
-		<xsl:copy-of select="xalan:nodeset($text_en)/*[local-name() = 'text']/node()"/>
+		<xsl:choose>
+			<xsl:when test="$vertical_layout = 'true'">
+				<xsl:call-template name="enclose_text_in_vertical_tag"/>
+			</xsl:when>
+			<xsl:otherwise>
+				<xsl:call-template name="enclose_text_in_font_en_bold_tag"/>
+			</xsl:otherwise>
+		</xsl:choose>
 	</xsl:template>
 	
 	<!-- for $contents -->
 	<xsl:template match="title/text()">
 		<xsl:variable name="regex_en_contents">([^\u00A0\u2002-\u200B\u3000-\u9FFF\uF900-\uFFFF\(\)]{1,})</xsl:variable>
-		<xsl:variable name="text_en_" select="java:replaceAll(java:java.lang.String.new(.), $regex_en_contents, concat($tag_font_en_bold_open,'$1',$tag_font_en_bold_close))"/>
-		<xsl:variable name="text_en">
-			<xsl:element name="text" namespace="{$namespace_full}">
-				<xsl:call-template name="replace_text_tags">
-					<xsl:with-param name="tag_open" select="$tag_font_en_bold_open"/>
-					<xsl:with-param name="tag_close" select="$tag_font_en_bold_close"/>
-					<xsl:with-param name="text" select="$text_en_"/>
+		<xsl:choose>
+			<xsl:when test="$vertical_layout = 'true'">
+				<xsl:call-template name="enclose_text_in_vertical_tag">
+					<xsl:with-param name="regex" select="$regex_en_contents"/>
 				</xsl:call-template>
-			</xsl:element>
-		</xsl:variable>
-		<xsl:apply-templates select="xalan:nodeset($text_en)/*[local-name() = 'text']/node()"/>
+			</xsl:when>
+			<xsl:otherwise>
+				<xsl:call-template name="enclose_text_in_font_en_bold_tag">
+					<xsl:with-param name="regex" select="$regex_en_contents"/>
+				</xsl:call-template>
+			</xsl:otherwise>
+		</xsl:choose>
 	</xsl:template>
 	
 	<!-- move example title to the first paragraph -->
@@ -2286,64 +2508,71 @@
 				<xsl:otherwise><xsl:value-of select="."/></xsl:otherwise>
 			</xsl:choose>
 		</xsl:variable>
-		<xsl:variable name="text_en_" select="java:replaceAll(java:java.lang.String.new($example_name), $regex_en, concat($tag_font_en_bold_open,'$1',$tag_font_en_bold_close))"/>
-		<xsl:variable name="text_en">
-			<xsl:element name="text" namespace="{$namespace_full}">
-				<xsl:call-template name="replace_text_tags">
-					<xsl:with-param name="tag_open" select="$tag_font_en_bold_open"/>
-					<xsl:with-param name="tag_close" select="$tag_font_en_bold_close"/>
-					<xsl:with-param name="text" select="$text_en_"/>
+		
+		<xsl:choose>
+			<xsl:when test="$vertical_layout = 'true'">
+				<xsl:call-template name="enclose_text_in_vertical_tag">
+					<xsl:with-param name="text" select="$example_name"/>
 				</xsl:call-template>
-			</xsl:element>
-		</xsl:variable>
-		<xsl:copy-of select="xalan:nodeset($text_en)/*[local-name() = 'text']/node()"/>
+			</xsl:when>
+			<xsl:otherwise>
+				<xsl:call-template name="enclose_text_in_font_en_bold_tag">
+					<xsl:with-param name="text" select="$example_name"/>
+				</xsl:call-template>
+			</xsl:otherwise>
+		</xsl:choose>
 	</xsl:template>
 	
 	<xsl:template match="jis:eref//text()" mode="update_xml_step1">
-		<!-- Example: JIS Z 8301:2011 to <font_en_bold>JIS Z 8301</font_en_bold><font_en>:2011</font_en> -->
-		<xsl:variable name="parts">
-			<xsl:choose>
-				<xsl:when test="contains(., ':')">
-					<xsl:element name="{$element_name_font_en_bold}" namespace="{$namespace_full}"><xsl:value-of select="substring-before(., ':')"/></xsl:element>
-					<xsl:element name="{$element_name_font_en}" namespace="{$namespace_full}">:<xsl:value-of select="substring-after(., ':')"/></xsl:element>
-				</xsl:when>
-				<xsl:otherwise>
-					<xsl:element name="{$element_name_font_en_bold}" namespace="{$namespace_full}"><xsl:value-of select="."/></xsl:element>
-				</xsl:otherwise>
-			</xsl:choose>
-		</xsl:variable>
-		<xsl:for-each select="xalan:nodeset($parts)/*">
-			<xsl:variable name="tag_open">###<xsl:value-of select="local-name()"/>###</xsl:variable>
-			<xsl:variable name="tag_close">###/<xsl:value-of select="local-name()"/>###</xsl:variable>
-			<xsl:variable name="text_en_" select="java:replaceAll(java:java.lang.String.new(.), $regex_en, concat($tag_open,'$1',$tag_close))"/>
-			<xsl:variable name="text_en">
-				<xsl:element name="text" namespace="{$namespace_full}">
-					<xsl:call-template name="replace_text_tags">
-						<xsl:with-param name="tag_open" select="$tag_open"/>
-						<xsl:with-param name="tag_close" select="$tag_close"/>
-						<xsl:with-param name="text" select="$text_en_"/>
-					</xsl:call-template>
-				</xsl:element>
-			</xsl:variable>
-			<xsl:copy-of select="xalan:nodeset($text_en)/*[local-name() = 'text']/node()"/>
-		</xsl:for-each>
+		<xsl:choose>
+			<xsl:when test="$vertical_layout = 'true'">
+				<xsl:call-template name="enclose_text_in_vertical_tag"/>
+			</xsl:when>
+			<xsl:otherwise>
+				<!-- Example: JIS Z 8301:2011 to <font_en_bold>JIS Z 8301</font_en_bold><font_en>:2011</font_en> -->
+				<xsl:variable name="parts">
+					<xsl:choose>
+						<xsl:when test="contains(., ':')">
+							<xsl:element name="{$element_name_font_en_bold}" namespace="{$namespace_full}"><xsl:value-of select="substring-before(., ':')"/></xsl:element>
+							<xsl:element name="{$element_name_font_en}" namespace="{$namespace_full}">:<xsl:value-of select="substring-after(., ':')"/></xsl:element>
+						</xsl:when>
+						<xsl:otherwise>
+							<xsl:element name="{$element_name_font_en_bold}" namespace="{$namespace_full}"><xsl:value-of select="."/></xsl:element>
+						</xsl:otherwise>
+					</xsl:choose>
+				</xsl:variable>
+				<xsl:for-each select="xalan:nodeset($parts)/*">
+					<xsl:variable name="tag_open">###<xsl:value-of select="local-name()"/>###</xsl:variable>
+					<xsl:variable name="tag_close">###/<xsl:value-of select="local-name()"/>###</xsl:variable>
+					<xsl:variable name="text_en_" select="java:replaceAll(java:java.lang.String.new(.), $regex_en, concat($tag_open,'$1',$tag_close))"/>
+					<xsl:variable name="text_en">
+						<xsl:element name="text" namespace="{$namespace_full}">
+							<xsl:call-template name="replace_text_tags">
+								<xsl:with-param name="tag_open" select="$tag_open"/>
+								<xsl:with-param name="tag_close" select="$tag_close"/>
+								<xsl:with-param name="text" select="$text_en_"/>
+							</xsl:call-template>
+						</xsl:element>
+					</xsl:variable>
+					<xsl:copy-of select="xalan:nodeset($text_en)/*[local-name() = 'text']/node()"/>
+				</xsl:for-each>
+			</xsl:otherwise>
+		</xsl:choose>
 	</xsl:template>
 	
 	<xsl:template match="jis:strong" priority="2" mode="update_xml_step1">
 		<xsl:apply-templates mode="update_xml_step1"/>
 	</xsl:template>
 	<xsl:template match="jis:strong/text()" priority="2" mode="update_xml_step1">
-		<xsl:variable name="text_en_" select="java:replaceAll(java:java.lang.String.new(.), $regex_en, concat($tag_font_en_bold_open,'$1',$tag_font_en_bold_close))"/>
-		<xsl:variable name="text_en">
-			<xsl:element name="text" namespace="{$namespace_full}">
-				<xsl:call-template name="replace_text_tags">
-					<xsl:with-param name="tag_open" select="$tag_font_en_bold_open"/>
-					<xsl:with-param name="tag_close" select="$tag_font_en_bold_close"/>
-					<xsl:with-param name="text" select="$text_en_"/>
-				</xsl:call-template>
-			</xsl:element>
-		</xsl:variable>
-		<xsl:copy-of select="xalan:nodeset($text_en)/*[local-name() = 'text']/node()"/>
+	
+		<xsl:choose>
+			<xsl:when test="$vertical_layout = 'true'">
+				<xsl:call-template name="enclose_text_in_vertical_tag"/>
+			</xsl:when>
+			<xsl:otherwise>
+				<xsl:call-template name="enclose_text_in_font_en_bold_tag"/>
+			</xsl:otherwise>
+		</xsl:choose>
 	</xsl:template>
 	
 	<!-- add @provisional-distance-between-starts for 'ol' -->
@@ -2389,75 +2618,67 @@
 		</xsl:copy>
 	</xsl:template>
 	
-	
+	<!-- bold English text in non-vertical layout -->
 	<xsl:template match="*[local-name() = 'font_en_bold'][normalize-space() != '']">
 		<xsl:if test="ancestor::*[local-name() = 'td' or local-name() = 'th']"><xsl:value-of select="$zero_width_space"/></xsl:if>
 		<fo:inline>
-			<xsl:if test="not($vertical_layout = 'true')">
-				<xsl:attribute name="font-family">Times New Roman</xsl:attribute>
-				<xsl:attribute name="font-weight">bold</xsl:attribute>
-				<xsl:if test="ancestor::*[local-name() = 'preferred']">
-					<xsl:attribute name="font-weight">normal</xsl:attribute>
-				</xsl:if>
+			<xsl:attribute name="font-family">Times New Roman</xsl:attribute>
+			<xsl:attribute name="font-weight">bold</xsl:attribute>
+			<xsl:if test="ancestor::*[local-name() = 'preferred']">
+				<xsl:attribute name="font-weight">normal</xsl:attribute>
 			</xsl:if>
-			<!-- <xsl:if test="$vertical_layout = 'true'">
-				<xsl:attribute name="font-size">18pt</xsl:attribute>
-				<xsl:attribute name="font-weight">bold</xsl:attribute>
-			</xsl:if> -->
-			<xsl:call-template name="insertEnglishText"/>
+			<xsl:apply-templates/>
 		</fo:inline>
 		<xsl:if test="ancestor::*[local-name() = 'td' or local-name() = 'th']"><xsl:value-of select="$zero_width_space"/></xsl:if>
 	</xsl:template>
 	
-	<xsl:template name="insertEnglishText">
-		<xsl:param name="reference-orientation">90</xsl:param>
-		<xsl:choose>
-			<xsl:when test="not($vertical_layout = 'true')">
-				<xsl:apply-templates/>
-			</xsl:when>
-			<xsl:otherwise> <!-- $vertical_layout = 'true' -->
-				<xsl:for-each select="node()">
-					<xsl:choose>
-						<xsl:when test="self::text()">
-							<!-- convert to vertical layout -->
-							<xsl:variable name="text">
-								<xsl:choose>
-									<xsl:when test="(ancestor::*[local-name(../..) = 'note'] or ancestor::*[local-name(../..) = 'example'] ) and ancestor::*[local-name(..) = 'name']">
-										<xsl:value-of select="concat('&#x2002;', normalize-space(.))"/>
-									</xsl:when>
-									<xsl:otherwise><xsl:value-of select="."/></xsl:otherwise>
-								</xsl:choose>
-							</xsl:variable>
-							<xsl:call-template name="insertVerticalChar">
-								<xsl:with-param name="str" select="$text"/>
-								<xsl:with-param name="reference-orientation" select="$reference-orientation"/>
-								<xsl:with-param name="add_zero_width_space">true</xsl:with-param>
-							</xsl:call-template>
-						</xsl:when>
-						<xsl:otherwise>
-							<xsl:apply-templates select="."/>
-						</xsl:otherwise>
-					</xsl:choose>
-				</xsl:for-each>
-			</xsl:otherwise>
-		</xsl:choose>
-	</xsl:template>
-	
+	<!-- English text in non-vertical layout -->
 	<xsl:template match="*[local-name() = 'font_en'][normalize-space() != '']">
 		<xsl:if test="ancestor::*[local-name() = 'td' or local-name() = 'th']"><xsl:value-of select="$zero_width_space"/></xsl:if>
 		<fo:inline>
 			<xsl:if test="not(ancestor::jis:p[@class = 'zzSTDTitle2']) and not(ancestor::jis:span[@class = 'JIS'])">
-				<xsl:if test="not($vertical_layout = 'true')">
-					<xsl:attribute name="font-family">Times New Roman</xsl:attribute>
-				</xsl:if>
+				<xsl:attribute name="font-family">Times New Roman</xsl:attribute>
 			</xsl:if>
 			<xsl:if test="ancestor::*[local-name() = 'preferred']">
 				<xsl:attribute name="font-weight">normal</xsl:attribute>
 			</xsl:if>
-			<!-- <xsl:if test="$vertical_layout = 'true'">
-				<xsl:attribute name="font-size">16pt</xsl:attribute>
-			</xsl:if> -->
-			<xsl:call-template name="insertEnglishText"/>
+			<xsl:apply-templates/>
+		</fo:inline>
+		<xsl:if test="ancestor::*[local-name() = 'td' or local-name() = 'th']"><xsl:value-of select="$zero_width_space"/></xsl:if>
+	</xsl:template>
+	
+	<!-- English text in vertical layout -->
+	<xsl:template match="*[local-name() = 'font_en_vertical'][normalize-space() != '']">
+		<xsl:if test="ancestor::*[local-name() = 'td' or local-name() = 'th']"><xsl:value-of select="$zero_width_space"/></xsl:if>
+		<fo:inline>
+			<xsl:if test="not(ancestor::jis:p[@class = 'zzSTDTitle2']) and not(ancestor::jis:span[@class = 'JIS'])">
+			</xsl:if>
+			<xsl:if test="ancestor::*[local-name() = 'preferred']">
+				<xsl:attribute name="font-weight">normal</xsl:attribute>
+			</xsl:if>
+			<xsl:for-each select="node()">
+				<xsl:choose>
+					<xsl:when test="self::text()">
+						<!-- convert to vertical layout -->
+						<xsl:variable name="text">
+							<xsl:choose>
+								<xsl:when test="(ancestor::*[local-name(../..) = 'note'] or ancestor::*[local-name(../..) = 'example'] ) and ancestor::*[local-name(..) = 'name']">
+									<xsl:value-of select="concat('&#x2002;', normalize-space(.))"/>
+								</xsl:when>
+								<xsl:otherwise><xsl:value-of select="."/></xsl:otherwise>
+							</xsl:choose>
+						</xsl:variable>
+						<xsl:call-template name="insertVerticalChar">
+							<xsl:with-param name="str" select="$text"/>
+							<xsl:with-param name="reference-orientation">90</xsl:with-param>
+							<xsl:with-param name="add_zero_width_space">true</xsl:with-param>
+						</xsl:call-template>
+					</xsl:when>
+					<xsl:otherwise>
+						<xsl:apply-templates select="."/>
+					</xsl:otherwise>
+				</xsl:choose>
+			</xsl:for-each>
 		</fo:inline>
 		<xsl:if test="ancestor::*[local-name() = 'td' or local-name() = 'th']"><xsl:value-of select="$zero_width_space"/></xsl:if>
 	</xsl:template>
@@ -2713,7 +2934,10 @@
 				</fo:block-container>
 			</fo:block-container>
 			
-			<fo:block-container font-size="9pt" color="white" height="5.5mm" writing-mode="tb-rl" margin-left="56mm" line-height="1.1">
+			<fo:block-container font-size="9pt" color="white" height="5.5mm" margin-left="56mm" line-height="1.1">
+				<xsl:if test="$isGenerateTableIF = 'false'">
+					<xsl:attribute name="writing-mode">tb-rl</xsl:attribute>
+				</xsl:if>
 				
 				<fo:block text-align-last="justify" margin-top="56mm" margin-bottom="3mm">
 				
