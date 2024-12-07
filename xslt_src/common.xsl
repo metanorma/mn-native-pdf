@@ -21216,9 +21216,29 @@
 	<!-- END: insert cover page image -->
  
 	<!-- https://github.com/metanorma/docs/blob/main/109.adoc -->
+	<!-- Rotate 90° clockwise -->
 	<!-- U+301A LEFT WHITE SQUARE BRACKET (〚) -->
 	<!-- U+301B RIGHT WHITE SQUARE BRACKET (〛) -->
-	<xsl:variable name="regex_ja_spec">[\u301A\u301B]</xsl:variable>
+	<!-- U+301C WAVE DASH (〜) -->
+	<!-- U+30FC KATAKANA-HIRAGANA PROLONGED SOUND MARK (ー) -->
+	<!-- U+2329 LEFT-POINTING ANGLE BRACKET (〈) -->
+	<!-- U+232A RIGHT-POINTING ANGLE BRACKET (〉) -->
+	<!-- U+3018 LEFT WHITE TORTOISE SHELL BRACKET (〘) -->
+	<!-- U+3019 RIGHT WHITE TORTOISE SHELL BRACKET (〙) -->
+	<!-- U+30A0 KATAKANA-HIRAGANA DOUBLE HYPHEN (゠) -->
+	<!-- U+FE59 SMALL LEFT PARENTHESIS (﹙) -->
+	<!-- U+FE5A SMALL RIGHT PARENTHESIS (﹚) -->
+	<!-- U+FE5B SMALL LEFT CURLY BRACKET (﹛) -->
+	<!-- U+FE5C SMALL RIGHT CURLY BRACKET (﹜) -->
+	<!-- U+FE5D SMALL LEFT TORTOISE SHELL BRACKET (﹝) -->
+	<!-- U+FE5E SMALL RIGHT TORTOISE SHELL BRACKET (﹞) -->
+	<!-- U+FF5C FULLWIDTH VERTICAL LINE (｜) -->
+	<!-- U+FF5F FULLWIDTH LEFT WHITE PARENTHESIS (｟) -->
+	<!-- U+FF60 FULLWIDTH RIGHT WHITE PARENTHESIS (｠) -->
+	<!-- U+FFE3 FULLWIDTH MACRON (￣) -->
+	<!-- Rotate 180° -->
+	<!-- U+309C KATAKANA-HIRAGANA SEMI-VOICED SOUND MARK (゜) -->
+	<xsl:variable name="regex_ja_spec">[\u301A\u301B\u301C\u30FC\u2329\u232A\u3018\u3019\u30A0\uFE59\uFE5A\uFE5B\uFE5C\uFE5C\uFE5D\uFE5E\uFF5C\uFF5F\uFF60\uFFE3\u309C]</xsl:variable>
 	<xsl:template name="insertVerticalChar">
 		<xsl:param name="str"/>
 		<xsl:param name="writing-mode">lr-tb</xsl:param>
