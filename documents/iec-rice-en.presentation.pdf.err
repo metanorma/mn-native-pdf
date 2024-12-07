@@ -1,0 +1,5 @@
+PDF isn't valid PDF/UA-1:
+ValidationResult [flavour=ua1, totalAssertions=187572, assertions=[
+TestAssertion [ruleId=RuleId [specification=ISO 14289-1:2014, clause=7.18.1, testNumber=1], status=failed,
+message=An annotation, excluding annotations of subtype Widget, PrinterMark or Link, shall be nested within an Annot tag,
+location=Location [level=CosDocument, context=root/document[0]/pages[3](12 0 obj PDPage)/annots[0](112 0 obj PDMarkupAnnot)], locationContext=null, errorMessage=null]], isCompliant=false]
