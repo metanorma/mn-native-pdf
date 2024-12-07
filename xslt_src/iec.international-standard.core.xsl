@@ -237,6 +237,12 @@
 				<xsl:call-template name="addBookmarks">
 					<xsl:with-param name="contents" select="$contents"/>
 				</xsl:call-template>
+				
+				<xsl:if test="$debug = 'true'">
+					<redirect:write file="contents_.xml"> <!-- {java:getTime(java:java.util.Date.new())} -->
+						<xsl:copy-of select="$contents"/>
+					</redirect:write>
+				</xsl:if>
 
 				<!-- For 'Published' documents insert two cover pages -->
 				<xsl:if test="$stage &gt;= 60">
@@ -896,12 +902,6 @@
 						</fo:flow>
 					</fo:page-sequence> <!-- END: cover-FDIS -->
 				</xsl:if>
-				
-				<!-- <xsl:if test="$debug = 'true'">
-					<redirect:write file="contents_{java:getTime(java:java.util.Date.new())}.xml">
-						<xsl:copy-of select="$contents"/>
-					</redirect:write>
-				</xsl:if> -->
 				
 				<xsl:for-each select="//iec:iec-standard">
 					<xsl:variable name="lang" select="*[local-name()='bibdata']/*[local-name()='language'][@current = 'true']"/>
@@ -1624,10 +1624,10 @@
 	<!-- ============================= -->
 	
 	<!-- element with title -->
-	<xsl:template match="*[iec:title]" mode="contents">
+	<xsl:template match="*[iec:title or iec:fmt-title]" mode="contents">
 		<xsl:variable name="level">
 			<xsl:call-template name="getLevel">
-				<xsl:with-param name="depth" select="iec:title/@depth"/>
+				<xsl:with-param name="depth" select="iec:fmt-title/@depth | iec:title/@depth"/>
 			</xsl:call-template>
 		</xsl:variable>
 		
@@ -1683,7 +1683,14 @@
 							<xsl:value-of select="java:toUpperCase(java:java.lang.String.new($title))"/>
 						</xsl:when>
 						<xsl:when test="$type = 'appendix'">
-							<xsl:apply-templates select="iec:title" mode="contents_item"/>
+							<xsl:choose>
+								<xsl:when test="iec:fmt-title">
+									<xsl:apply-templates select="iec:fmt-title" mode="contents_item"/>
+								</xsl:when>
+								<xsl:otherwise>
+									<xsl:apply-templates select="iec:title" mode="contents_item"/>
+								</xsl:otherwise>
+							</xsl:choose>
 						</xsl:when>
 						<xsl:otherwise>
 							<xsl:apply-templates select="xalan:nodeset($title)" mode="contents_item"/>
