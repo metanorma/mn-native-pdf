@@ -1501,11 +1501,11 @@
 										<xsl:apply-templates select="/itu:itu-standard/itu:boilerplate/itu:copyright-statement"/>
 									</fo:block>
 									
-									<!-- <xsl:if test="$debug = 'true'">
-										<redirect:write file="contents_{java:getTime(java:java.util.Date.new())}.xml">
+									<xsl:if test="$debug = 'true'">
+										<redirect:write file="contents_.xml"> <!-- {java:getTime(java:java.util.Date.new())} -->
 											<xsl:copy-of select="$contents"/>
 										</redirect:write>
-									</xsl:if> -->
+									</xsl:if>
 									
 									<xsl:apply-templates select="/*/*[local-name()='preface']//*[local-name() = 'clause'][@type = 'toc']">
 										<xsl:with-param name="process">true</xsl:with-param>
@@ -1876,18 +1876,18 @@
 	<!-- ============================= -->
 	
 	<!-- element with title -->
-	<xsl:template match="*[itu:title]" mode="contents">
+	<xsl:template match="*[itu:title or itu:fmt-title]" mode="contents">
 		<xsl:variable name="level">
 			<xsl:call-template name="getLevel">
-				<xsl:with-param name="depth" select="itu:title/@depth"/>
+				<xsl:with-param name="depth" select="itu:fmt-title/@depth | itu:title/@depth"/>
 			</xsl:call-template>
 		</xsl:variable>
 		
 		<xsl:variable name="section">
-			<!-- <xsl:call-template name="getSection"/> -->
-			<xsl:for-each select="*[local-name() = 'title']/*[local-name() = 'tab'][1]/preceding-sibling::node()">
+			<xsl:call-template name="getSection"/>
+			<!-- <xsl:for-each select="*[local-name() = 'title']/*[local-name() = 'tab'][1]/preceding-sibling::node()">
 				<xsl:value-of select="."/>
-			</xsl:for-each>
+			</xsl:for-each> -->
 		</xsl:variable>
 		
 		<xsl:variable name="type">
@@ -1907,7 +1907,7 @@
 				<xsl:when test="@type = 'toc'">true</xsl:when>
 				<xsl:when test="ancestor-or-self::itu:bibitem">true</xsl:when>
 				<xsl:when test="ancestor-or-self::itu:term">true</xsl:when>
-				<xsl:when test="@inline-header = 'true' and not(*[local-name() = 'title']/*[local-name() = 'tab'])">true</xsl:when>
+				<xsl:when test="@inline-header = 'true' and not(*[local-name() = 'fmt-title']/*[local-name() = 'tab']) and not(*[local-name() = 'title']/*[local-name() = 'tab'])">true</xsl:when>
 				<xsl:otherwise>false</xsl:otherwise>
 			</xsl:choose>
 		</xsl:variable>

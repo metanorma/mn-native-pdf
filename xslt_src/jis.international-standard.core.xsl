@@ -393,6 +393,12 @@
 				<xsl:with-param name="contents" select="$contents"/>
 			</xsl:call-template>
 			
+			<xsl:if test="$debug = 'true'">
+				<redirect:write file="contents_.xml">
+					<xsl:copy-of select="$contents"/>
+				</redirect:write>
+			</xsl:if>
+    
 			<xsl:variable name="updated_xml_step0">
 				<xsl:if test="$vertical_layout = 'true'">
 					<xsl:apply-templates mode="update_xml_step0"/>
@@ -1588,11 +1594,11 @@
 	<!-- ============================= -->
 	
 	<!-- element with title -->
-	<xsl:template match="*[jis:title]" mode="contents">
+	<xsl:template match="*[jis:title or jis:fmt-title]" mode="contents">
 	
 		<xsl:variable name="level">
 			<xsl:call-template name="getLevel">
-				<xsl:with-param name="depth" select="jis:title/@depth"/>
+				<xsl:with-param name="depth" select="jis:fmt-title/@depth | jis:title/@depth"/>
 			</xsl:call-template>
 		</xsl:variable>
 		

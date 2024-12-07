@@ -282,11 +282,11 @@
 							<xsl:call-template name="insertHeaderFooter"/>
 							<fo:flow flow-name="xsl-region-body">
 								
-								<!-- <xsl:if test="$debug = 'true'">
-									<redirect:write file="contents_{java:getTime(java:java.util.Date.new())}.xml">
+								<xsl:if test="$debug = 'true'">
+									<redirect:write file="contents_.xml"> <!-- {java:getTime(java:java.util.Date.new())} -->
 										<xsl:copy-of select="$contents"/>
 									</redirect:write>
-								</xsl:if> -->
+								</xsl:if>
 								
 								<xsl:if test="position() = 1">
 									<fo:block margin-bottom="15pt">&#xA0;</fo:block>
@@ -489,10 +489,10 @@
 	<!-- ============================= -->
 	
 	<!-- element with title -->
-	<xsl:template match="*[csd:title]" mode="contents">
+	<xsl:template match="*[csd:title or csd:fmt-title]" mode="contents">
 		<xsl:variable name="level">
 			<xsl:call-template name="getLevel">
-				<xsl:with-param name="depth" select="csd:title/@depth"/>
+				<xsl:with-param name="depth" select="csd:fmt-title/@depth | csd:title/@depth"/>
 			</xsl:call-template>
 		</xsl:variable>
 		

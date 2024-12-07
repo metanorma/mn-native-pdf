@@ -712,10 +712,10 @@
 	<!-- ============================= -->
 
 	<!-- element with title -->
-	<xsl:template match="*[*[local-name()='title']]" mode="contents">
+	<xsl:template match="*[*[local-name()='title'] or *[local-name()='fmt-title']]" mode="contents">
 		<xsl:variable name="level">
 			<xsl:call-template name="getLevel">
-				<xsl:with-param name="depth" select="*[local-name()='title']/@depth"/>
+				<xsl:with-param name="depth" select="*[local-name()='fmt-title']/@depth | *[local-name()='title']/@depth"/>
 			</xsl:call-template>
 		</xsl:variable>
 		

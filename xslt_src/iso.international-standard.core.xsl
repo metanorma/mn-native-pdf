@@ -3689,10 +3689,10 @@
 	<!-- ============================= -->
 	
 	<!-- element with title -->
-	<xsl:template match="*[iso:title]" mode="contents">
+	<xsl:template match="*[iso:title or iso:fmt-title]" mode="contents">
 		<xsl:variable name="level">
 			<xsl:call-template name="getLevel">
-				<xsl:with-param name="depth" select="iso:title/@depth"/>
+				<xsl:with-param name="depth" select="iso:fmt-title/@depth | iso:title/@depth"/>
 			</xsl:call-template>
 		</xsl:variable>
 		

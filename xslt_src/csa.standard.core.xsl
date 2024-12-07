@@ -131,11 +131,11 @@
 				<xsl:call-template name="insertHeaderFooter"/>
 				<fo:flow flow-name="xsl-region-body">
 				
-					<!-- <xsl:if test="$debug = 'true'">
-						<redirect:write file="contents_{java:getTime(java:java.util.Date.new())}.xml">
+					<xsl:if test="$debug = 'true'">
+						<redirect:write file="contents_.xml"> <!-- {java:getTime(java:java.util.Date.new())} -->
 							<xsl:copy-of select="$contents"/>
 						</redirect:write>
-					</xsl:if> -->
+					</xsl:if>
 					
 					<fo:block>
 						<fo:block>The permanent and official location for Cloud Security Alliance DevSecOps is</fo:block>
@@ -405,10 +405,10 @@
 	<!-- ============================= -->
 	
 	<!-- element with title -->
-	<xsl:template match="*[csa:title]" mode="contents">
+	<xsl:template match="*[csa:title or csa:fmt-title]" mode="contents">
 		<xsl:variable name="level">
 			<xsl:call-template name="getLevel">
-				<xsl:with-param name="depth" select="csa:title/@depth"/>
+				<xsl:with-param name="depth" select="csa:fmt-title/@depth | csa:title/@depth"/>
 			</xsl:call-template>
 		</xsl:variable>
 		

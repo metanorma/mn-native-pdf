@@ -9,7 +9,9 @@
 											xmlns:xlink="http://www.w3.org/1999/xlink"
 											xmlns:java="http://xml.apache.org/xalan/java"
 											xmlns:barcode="http://barcode4j.krysalis.org/ns" 
+											xmlns:redirect="http://xml.apache.org/xalan/redirect"
 											exclude-result-prefixes="java"
+											extension-element-prefixes="redirect"
 											version="1.0">
 
 	<xsl:output method="xml" encoding="UTF-8" indent="no"/>
@@ -861,12 +863,10 @@
 					</xsl:variable>
 					
 					<xsl:if test="$debug = 'true'">
-						<xsl:text disable-output-escaping="yes">&lt;!--</xsl:text>
-							DEBUG
-							contents=<xsl:copy-of select="$contents"/>
-						<xsl:text disable-output-escaping="yes">--&gt;</xsl:text>
+						<redirect:write file="contents_.xml">
+							<xsl:copy-of select="$contents"/>
+						</redirect:write>
 					</xsl:if>
-					
 					
 					<xsl:choose>
 					
@@ -1840,11 +1840,11 @@
 	<!-- ============================= -->
 	
 	<!-- element with title -->
-	<xsl:template match="*[ieee:title]" mode="contents">
+	<xsl:template match="*[ieee:title or ieee:fmt-title]" mode="contents">
 	
 		<xsl:variable name="level">
 			<xsl:call-template name="getLevel">
-				<xsl:with-param name="depth" select="ieee:title/@depth"/>
+				<xsl:with-param name="depth" select="ieee:fmt-title/@depth | ieee:title/@depth"/>
 			</xsl:call-template>
 		</xsl:variable>
 		

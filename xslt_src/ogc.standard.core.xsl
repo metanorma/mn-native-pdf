@@ -308,6 +308,58 @@
 				
 				<xsl:call-template name="addBookmarks">
 					<xsl:with-param name="contents" select="$contents"/>
+					<xsl:with-param name="contents_addon">
+						<xsl:if test="$contents//tables/table or $contents//figures/figure or //*[local-name() = 'table'][.//*[local-name() = 'p'][@class = 'RecommendationTitle']]">
+						<fo:bookmark internal-destination="empty_bookmark">
+							<fo:bookmark-title>—————</fo:bookmark-title>
+						</fo:bookmark>
+					</xsl:if>
+					
+					<xsl:if test="$contents//tables/table">
+						<fo:bookmark internal-destination="empty_bookmark" starting-state="hide">
+							<fo:bookmark-title>
+								<xsl:value-of select="$title-list-tables"/>
+							</fo:bookmark-title>
+							<xsl:for-each select="$contents//tables/table">
+								<fo:bookmark internal-destination="{@id}">
+									<xsl:variable name="title">
+										<xsl:apply-templates select="*[local-name() = 'name']" mode="bookmarks"/>
+									</xsl:variable>
+									<fo:bookmark-title><xsl:value-of select="$title"/></fo:bookmark-title>
+								</fo:bookmark>
+							</xsl:for-each>
+						</fo:bookmark>
+					</xsl:if>
+
+					<xsl:if test="$contents//figures/figure">
+						<fo:bookmark internal-destination="empty_bookmark" starting-state="hide">
+							<fo:bookmark-title>
+								<xsl:value-of select="$title-list-figures"/>
+							</fo:bookmark-title>
+							<xsl:for-each select="$contents//figures/figure">
+								<fo:bookmark internal-destination="{@id}">
+									<xsl:variable name="title">
+										<xsl:apply-templates select="*[local-name() = 'name']" mode="bookmarks"/>
+									</xsl:variable>
+									<fo:bookmark-title><xsl:value-of select="$title"/></fo:bookmark-title>
+								</fo:bookmark>
+							</xsl:for-each>
+						</fo:bookmark>
+					</xsl:if>
+
+					<xsl:if test="//*[local-name() = 'table'][.//*[local-name() = 'p'][@class = 'RecommendationTitle']]">							
+						<fo:bookmark internal-destination="empty_bookmark" starting-state="hide">
+							<fo:bookmark-title>
+								<xsl:value-of select="$title-list-recommendations"/>
+							</fo:bookmark-title>
+							<xsl:for-each select="xalan:nodeset($toc_recommendations)/*">
+								<fo:bookmark internal-destination="{@id}">
+									<fo:bookmark-title><xsl:value-of select="bookmark"/></fo:bookmark-title>
+								</fo:bookmark>
+							</xsl:for-each>
+						</fo:bookmark>
+					</xsl:if>
+					</xsl:with-param>
 				</xsl:call-template>
 				
 				<!-- Cover Page -->
@@ -538,7 +590,10 @@
 										<fo:block-container margin-left="2.5mm" margin-right="1mm" padding-top="0.5mm" padding-bottom="0.5mm">
 											<fo:block-container margin-left="0mm" margin-right="0mm">
 												<fo:block>
-													<xsl:apply-templates select="/ogc:ogc-standard/ogc:boilerplate/ogc:legal-statement">
+													<xsl:variable name="legal_statement">
+														<xsl:apply-templates select="/ogc:ogc-standard/ogc:boilerplate/ogc:legal-statement" mode="update_xml_step1"/>
+													</xsl:variable>
+													<xsl:apply-templates select="xalan:nodeset($legal_statement)/*">
 														<xsl:with-param name="isLegacy" select="$isLegacy"/>	
 													</xsl:apply-templates>
 												</fo:block>
@@ -547,7 +602,10 @@
 									</fo:block-container>
 								</xsl:when>
 								<xsl:otherwise>
-									<xsl:apply-templates select="/ogc:ogc-standard/ogc:boilerplate/ogc:legal-statement"/>
+									<xsl:variable name="legal_statement">
+										<xsl:apply-templates select="/ogc:ogc-standard/ogc:boilerplate/ogc:legal-statement" mode="update_xml_step1"/>
+									</xsl:variable>
+									<xsl:apply-templates select="xalan:nodeset($legal_statement)/*"/>
 								</xsl:otherwise>
 							</xsl:choose>
 							
@@ -564,11 +622,11 @@
 					<xsl:call-template name="insertHeaderFooter"/>
 					<fo:flow flow-name="xsl-region-body">
 					
-						<!-- <xsl:if test="$debug = 'true'">
-							<redirect:write file="contents_{java:getTime(java:java.util.Date.new())}.xml">
+						<xsl:if test="$debug = 'true'">
+							<redirect:write file="contents_.xml"> <!-- {java:getTime(java:java.util.Date.new())} -->
 								<xsl:copy-of select="$contents"/>
 							</redirect:write>
-						</xsl:if> -->
+						</xsl:if>
 
 						<!-- crossing lines -->					
 						<fo:block-container absolute-position="fixed" width="{$pageWidth}mm" height="{$pageHeight}mm" font-size="0">
@@ -584,12 +642,22 @@
 						</fo:block-container>
 						
 						<xsl:call-template name="insertLogoPreface"/>
-
-						<xsl:apply-templates select="/ogc:ogc-standard/ogc:boilerplate/ogc:license-statement"/>
-						<xsl:apply-templates select="/ogc:ogc-standard/ogc:boilerplate/ogc:feedback-statement"/>
+						
+						<xsl:variable name="license_statement">
+							<xsl:apply-templates select="/ogc:ogc-standard/ogc:boilerplate/ogc:license-statement" mode="update_xml_step1"/>
+						</xsl:variable>
+						<xsl:apply-templates select="xalan:nodeset($license_statement)/*"/>
+						
+						<xsl:variable name="feedback_statement">
+							<xsl:apply-templates select="/ogc:ogc-standard/ogc:boilerplate/ogc:feedback-statement" mode="update_xml_step1"/>
+						</xsl:variable>
+						<xsl:apply-templates select="xalan:nodeset($feedback_statement)/*"/>
 						
 						<!-- Copyright notice -->
-						<xsl:apply-templates select="/ogc:ogc-standard/ogc:boilerplate/ogc:copyright-statement"/>
+						<xsl:variable name="copyright_statement">
+							<xsl:apply-templates select="/ogc:ogc-standard/ogc:boilerplate/ogc:copyright-statement" mode="update_xml_step1"/>
+						</xsl:variable>
+						<xsl:apply-templates select="xalan:nodeset($copyright_statement)/*"/>
 						
 					</fo:flow>
 				</fo:page-sequence>
@@ -987,7 +1055,7 @@
 		</xsl:call-template>
 	</xsl:template>
 
-	<xsl:template match="ogc:title//text() | ogc:name//text()" priority="3" mode="contents">
+	<xsl:template match="ogc:title//text() | ogc:name//text() | ogc:fmt-title//text() | ogc:fmt-name//text()" priority="3" mode="contents">
 		<xsl:call-template name="add_fo_character">
 			<xsl:with-param name="text" select="translate(., $thin_space, ' ')"/>
 		</xsl:call-template>
@@ -1159,10 +1227,10 @@
 	<!-- ============================= -->
 
 	<!-- element with title -->
-	<xsl:template match="*[ogc:title][not(@type = 'toc')]" mode="contents">
+	<xsl:template match="*[ogc:title or ogc:fmt-title][not(@type = 'toc')]" mode="contents">
 		<xsl:variable name="level">
 			<xsl:call-template name="getLevel">
-				<xsl:with-param name="depth" select="ogc:title/@depth"/>
+				<xsl:with-param name="depth" select="ogc:fmt-title/@depth | ogc:title/@depth"/>
 			</xsl:call-template>
 		</xsl:variable>
 		
