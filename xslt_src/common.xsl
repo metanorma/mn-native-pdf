@@ -21250,6 +21250,7 @@
 		\u301A <!-- U+301A LEFT WHITE SQUARE BRACKET (〚) -->
 		\u301B <!-- U+301B RIGHT WHITE SQUARE BRACKET (〛) -->
 		\u301C <!-- U+301C WAVE DASH (〜) -->
+		\u3030 <!-- U+3030 WAVY DASH (〰 )-->
 		\u30FC <!-- U+30FC KATAKANA-HIRAGANA PROLONGED SOUND MARK (ー) -->
 		\u2329 <!-- U+2329 LEFT-POINTING ANGLE BRACKET (〈) -->
 		\u232A <!-- U+232A RIGHT-POINTING ANGLE BRACKET (〉) -->
@@ -21266,9 +21267,13 @@
 		\uFF5F <!-- U+FF5F FULLWIDTH LEFT WHITE PARENTHESIS (｟) -->
 		\uFF60 <!-- U+FF60 FULLWIDTH RIGHT WHITE PARENTHESIS (｠) -->
 		\uFFE3 <!-- U+FFE3 FULLWIDTH MACRON (￣) -->
+		\uFF3F <!-- U+FF3F FULLWIDTH LOW LINE (＿) -->
+		\uFF5E <!-- U+FF5E FULLWIDTH TILDE (～) -->
 		<!-- Rotate 180° -->
 		\u309C <!-- U+309C KATAKANA-HIRAGANA SEMI-VOICED SOUND MARK (゜) -->
 		\u3002 <!-- U+3002 IDEOGRAPHIC FULL STOP (。) -->
+		\uFE52 <!-- U+FE52 SMALL FULL STOP (﹒) -->
+		\uFF0E <!-- U+FF0E FULLWIDTH FULL STOP (．) -->
 		]</xsl:variable>
 	<xsl:variable name="regex_ja_spec"><xsl:value-of select="translate(normalize-space($regex_ja_spec_), ' ', '')"/></xsl:variable>
 	<xsl:template name="insertVerticalChar">
@@ -21294,10 +21299,12 @@
 						<xsl:if test="normalize-space(java:matches(java:java.lang.String.new($char), concat('(', $regex_ja_spec, '{1,})'))) = 'true'">
 							<xsl:attribute name="reference-orientation">0</xsl:attribute>
 						</xsl:if>
-						<xsl:if test="$char = '゜' or $char = '。'">
+						<xsl:if test="$char = '゜' or $char = '。' or $char = '﹒' or $char = '．'">
 							<!-- Rotate 180°: 
 								U+309C KATAKANA-HIRAGANA SEMI-VOICED SOUND MARK (゜)
 								U+3002 IDEOGRAPHIC FULL STOP (。)
+								U+FE52 SMALL FULL STOP (﹒)
+								U+FF0E FULLWIDTH FULL STOP (．)
 							-->
 							<xsl:attribute name="reference-orientation">-90</xsl:attribute>
 						</xsl:if>
