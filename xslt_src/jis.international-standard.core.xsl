@@ -2277,6 +2277,18 @@
 		
 		<xsl:value-of select="$text10"/>
 	</xsl:template>
+	
+	
+	<xsl:template match="text()" mode="update_xml_step0">
+		<!-- from https://github.com/metanorma/docs/blob/main/109.adoc -->
+		<!-- 
+		U+3001 IDEOGRAPHIC COMMA (、)
+		to
+		U+FE11 PRESENTATION FORM FOR VERTICAL IDEOGRAPHIC COMMA (︑) -->
+		<xsl:variable name="text1" select="translate(.,'&#x3001;','&#xFE11;')"/>
+		<xsl:value-of select="$text1"/>
+	</xsl:template>
+	
 	<!-- =========================================================================== -->
 	<!-- END STEP 0: Replace characters with vertical form -->
 	<!-- =========================================================================== -->

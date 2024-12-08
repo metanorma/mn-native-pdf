@@ -21268,6 +21268,7 @@
 		\uFFE3 <!-- U+FFE3 FULLWIDTH MACRON (￣) -->
 		<!-- Rotate 180° -->
 		\u309C <!-- U+309C KATAKANA-HIRAGANA SEMI-VOICED SOUND MARK (゜) -->
+		\u3002 <!-- U+3002 IDEOGRAPHIC FULL STOP (。) -->
 		]</xsl:variable>
 	<xsl:variable name="regex_ja_spec"><xsl:value-of select="translate(normalize-space($regex_ja_spec_), ' ', '')"/></xsl:variable>
 	<xsl:template name="insertVerticalChar">
@@ -21293,8 +21294,11 @@
 						<xsl:if test="normalize-space(java:matches(java:java.lang.String.new($char), concat('(', $regex_ja_spec, '{1,})'))) = 'true'">
 							<xsl:attribute name="reference-orientation">0</xsl:attribute>
 						</xsl:if>
-						<xsl:if test="$char = '゜'">
-							<!-- Rotate 180°: U+309C KATAKANA-HIRAGANA SEMI-VOICED SOUND MARK (゜) -->
+						<xsl:if test="$char = '゜' or $char = '。'">
+							<!-- Rotate 180°: 
+								U+309C KATAKANA-HIRAGANA SEMI-VOICED SOUND MARK (゜)
+								U+3002 IDEOGRAPHIC FULL STOP (。)
+							-->
 							<xsl:attribute name="reference-orientation">-90</xsl:attribute>
 						</xsl:if>
 						<fo:block-container width="1em">
