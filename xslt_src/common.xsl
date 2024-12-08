@@ -21293,6 +21293,10 @@
 						<xsl:if test="normalize-space(java:matches(java:java.lang.String.new($char), concat('(', $regex_ja_spec, '{1,})'))) = 'true'">
 							<xsl:attribute name="reference-orientation">0</xsl:attribute>
 						</xsl:if>
+						<xsl:if test="$char = '゜'">
+							<!-- Rotate 180°: U+309C KATAKANA-HIRAGANA SEMI-VOICED SOUND MARK (゜) -->
+							<xsl:attribute name="reference-orientation">-90</xsl:attribute>
+						</xsl:if>
 						<fo:block-container width="1em">
 							<fo:block line-height="1em">
 								<xsl:choose>
