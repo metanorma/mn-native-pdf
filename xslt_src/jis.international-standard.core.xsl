@@ -2297,17 +2297,31 @@
 		U+FF0C FULLWIDTH COMMA (，)
 		to
 		U+FE10 PRESENTATION FORM FOR VERTICAL COMMA (︐)
+		-->
+		<xsl:variable name="text1" select="translate(.,'&#x3001;&#xFE50;&#xFE51;&#xFF0C;','&#xFE11;&#xFE10;&#xFE11;&#xFE10;')"/>
 		
+		<!-- 
 		U+FF1A FULLWIDTH COLON (：)
 		to
 		U+FE13 PRESENTATION FORM FOR VERTICAL COLON (︓)
 		
 		U+FF1B FULLWIDTH SEMICOLON (；)
 		to
-		U+FE14 PRESENTATION FORM FOR VERTICAL SEMICOLON
+		U+FE14 PRESENTATION FORM FOR VERTICAL SEMICOLON (︔)
 		-->
-		<xsl:variable name="text1" select="translate(.,'&#x3001;&#xFE50;&#xFE51;&#xFF0C;&#xFF1A;&#xFF1B;','&#xFE11;&#xFE10;&#xFE11;&#xFE10;&#xFE13;&#xFE14;')"/>
-		<xsl:value-of select="$text1"/>
+		<xsl:variable name="text2" select="translate($text1,'&#xFF1A;&#xFF1B;','&#xFE13;&#xFE14;')"/>
+		
+		<!-- 
+		U+FF01 FULLWIDTH EXCLAMATION MARK (！)
+		to
+		U+FE15 PRESENTATION FORM FOR VERTICAL EXCLAMATION MARK (︕)
+		
+		U+FF1F FULLWIDTH QUESTION MARK (？)
+		to
+		U+FE16 PRESENTATION FORM FOR VERTICAL QUESTION MARK (︖)
+		-->
+		<xsl:variable name="text3" select="translate($text2,'&#xFF01;&#xFF1F;','&#xFE15;&#xFE16;')"/>
+		<xsl:value-of select="$text3"/>
 	</xsl:template>
 	
 	<!-- =========================================================================== -->
