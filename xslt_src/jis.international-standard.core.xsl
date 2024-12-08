@@ -2156,7 +2156,7 @@
 		<xsl:copy-of select="."/>
 	</xsl:template>
 	
-	<xsl:template match="text()" mode="update_xml_step0">
+	<xsl:template match="text()" mode="SKIP_update_xml_step0">
 		<!-- from https://github.com/metanorma/docs/blob/main/109.adoc -->
 		<!-- 
 		U+0028 LEFT PARENTHESIS (()
@@ -2368,6 +2368,7 @@
 		<xsl:choose>
 			<!-- ( ) [ ] _ { } U+FF08 FULLWIDTH LEFT PARENTHESIS U+FF09 FULLWIDTH RIGHT PARENTHESIS-->
 			<!-- <xsl:when test="$vertical_layout = 'true'">((<xsl:value-of select="$regex_ja_spec"/>)|([^\u0028\u0029\u005B\u005D\u005F\u007B\u007D<xsl:value-of select="$regex_en_base"/>]){1,})</xsl:when> -->
+			<!-- regex for find characters to rotation -->
 			<xsl:when test="$vertical_layout = 'true'">((<xsl:value-of select="$regex_ja_spec"/>)|([^\u005F<xsl:value-of select="$regex_en_base"/>]){1,})</xsl:when> <!-- \u0028\u0029\u005B\u005D \u007B\u007D -->
 			<xsl:otherwise>([^<xsl:value-of select="$regex_en_base"/>]{1,})</xsl:otherwise>
 		</xsl:choose>
@@ -2383,6 +2384,17 @@
 	<xsl:variable name="element_name_font_en_vertical">font_en_vertical</xsl:variable>
 	<xsl:variable name="tag_font_en_vertical_open">###<xsl:value-of select="$element_name_font_en_vertical"/>###</xsl:variable>
 	<xsl:variable name="tag_font_en_vertical_close">###/<xsl:value-of select="$element_name_font_en_vertical"/>###</xsl:variable>
+	
+	<xsl:template match="text()[not(ancestor::*[local-name() = 'bibdata']) and not(ancestor::jis:p[@class = 'zzSTDTitle2'])]" mode="update_xml_step1">
+		<xsl:choose>
+			<xsl:when test="$vertical_layout = 'true'">
+				<xsl:call-template name="enclose_text_in_vertical_tag"/>
+			</xsl:when>
+			<xsl:otherwise>
+				<xsl:value-of select="."/>
+			</xsl:otherwise>
+		</xsl:choose>
+	</xsl:template>
 	
 	<xsl:template match="jis:p//text()[not(ancestor::jis:strong) and not(ancestor::jis:p[@class = 'zzSTDTitle2'])] |
 						jis:dt/text() | 
