@@ -21335,35 +21335,7 @@
 			</xsl:otherwise>
 		</xsl:choose>
 	</xsl:template>
- 
- 
-	<xsl:template match="*[local-name() = 'span'][@class = 'norotate']//text()" name="norotate" priority="3">
-		<xsl:param name="str" select="."/>
-		<xsl:choose>
-			<xsl:when test="$vertical_layout = 'true'">
-				<xsl:if test="string-length($str) &gt; 0">
-					<xsl:variable name="char" select="substring($str,1,1)"/>
-					<fo:inline-container text-align="center"
-								 alignment-baseline="central" width="1em" margin="0" padding="0"
-								 text-indent="0mm" last-line-end-indent="0mm" start-indent="0mm" end-indent="0mm" reference-orientation="0">
-						<fo:block-container width="1em">
-							<fo:block line-height="1em">
-								<xsl:value-of select="$char"/>
-							</fo:block>
-						</fo:block-container>
-					</fo:inline-container>
-					<xsl:call-template name="norotate">
-						<xsl:with-param name="str" select="substring($str, 2)"/>
-					</xsl:call-template>
-			 </xsl:if>
-			</xsl:when>
-			<xsl:otherwise><xsl:value-of select="."/></xsl:otherwise>
-		</xsl:choose>
-	</xsl:template>
- 
-	<xsl:template match="*[local-name() = 'span'][@class = 'halffontsize']" priority="3">
-		<fo:inline font-size="50%" baseline-shift="15%"><xsl:apply-templates/></fo:inline>
-	</xsl:template>
+
  
 	<xsl:template name="number-to-words">
 		<xsl:param name="number" />
