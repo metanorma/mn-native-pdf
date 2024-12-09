@@ -2005,7 +2005,7 @@
 	
 	<xsl:template match="jis:termnote" priority="2">
 		<fo:block id="{@id}" xsl:use-attribute-sets="termnote-style">
-			<fo:list-block provisional-distance-between-starts="{14 + $text_indent}mm">
+			<fo:list-block provisional-distance-between-starts="{18 + $text_indent}mm">
 				<fo:list-item>
 					<fo:list-item-label start-indent="{$text_indent}mm" end-indent="label-end()">
 						<fo:block xsl:use-attribute-sets="note-name-style">
