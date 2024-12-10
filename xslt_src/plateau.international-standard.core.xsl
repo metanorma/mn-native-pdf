@@ -491,12 +491,10 @@
 					</xsl:for-each>
 				</xsl:element>
 				
-				<xsl:call-template name="insertBibliographyInSeparatePageSequences"/>
-				
 				<xsl:call-template name="insertAnnexInSeparatePageSequences"/>
+				<xsl:call-template name="insertBibliographyInSeparatePageSequences"/>
 				<xsl:call-template name="insertIndexInSeparatePageSequences"/>
 		
-				
 			</xsl:element>
 		</xsl:variable>
 		
