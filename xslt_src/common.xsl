@@ -6710,6 +6710,11 @@
 			<xsl:attribute name="font-weight">bold</xsl:attribute>
 			<xsl:attribute name="span">all</xsl:attribute>
 		</xsl:if>
+		<xsl:if test="$namespace = 'plateau'">
+			<xsl:attribute name="font-weight">bold</xsl:attribute>
+			<xsl:attribute name="span">all</xsl:attribute>
+			<xsl:attribute name="margin-bottom">12pt</xsl:attribute>
+		</xsl:if>
 	</xsl:attribute-set>
 	
 	<xsl:attribute-set name="indexsect-clause-title-style">
@@ -17967,6 +17972,9 @@
 						<xsl:attribute name="space-before">12pt</xsl:attribute>
 					</xsl:if>
 				</xsl:if>
+			</xsl:if>
+			<xsl:if test="$namespace = 'plateau'">
+				<xsl:attribute name="space-after">12pt</xsl:attribute>
 			</xsl:if>
 			<xsl:apply-templates />
 		</fo:block>
