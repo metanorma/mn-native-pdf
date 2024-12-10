@@ -81,6 +81,12 @@
 						<xsl:attribute name="font-weight">200</xsl:attribute>
 						<xsl:attribute name="color">rgb(34,31,31)</xsl:attribute>
 					</xsl:if>
+					
+					<xsl:if test="$lang = 'en'">
+						<xsl:attribute name="font-family">Times New Roman, STIX Two Math, <xsl:value-of select="$font_noto_serif"/></xsl:attribute>
+						<xsl:attribute name="font-family-generic">Serif</xsl:attribute>
+						<xsl:attribute name="font-size">11pt</xsl:attribute>
+					</xsl:if> 
 				</root-style>
 			</xsl:variable>
 			<xsl:call-template name="insertRootStyle">
@@ -672,7 +678,7 @@
 					</xsl:for-each>
 					
 					
-					<xsl:if test="not($vertical_layout = 'true')">
+					<xsl:if test="not($vertical_layout = 'true') and not($doctype = 'technical-specification')">
 										
 					<!-- Document type rendering -->
 					<fo:page-sequence master-reference="document_preface" force-page-count="no-force">
@@ -929,6 +935,7 @@
 					</xsl:for-each>
 					
 					
+					<!-- insert Last Cover Page on English for Japanese document -->
 					<xsl:if test="$doctype = 'technical-specification' and $doclang != 'en'">
 						<xsl:call-template name="insertCoverPageJSA">
 							<xsl:with-param name="num" select="$num"/>
@@ -978,7 +985,7 @@
 		<xsl:if test="count(*) = 1 and *[local-name() = 'title']"> <!-- if there isn't user ToC -->
 			<!-- fill ToC -->
 			<fo:block role="TOC">
-				<xsl:if test="not($vertical_layout = 'true')">
+				<xsl:if test="not($vertical_layout = 'true') and not($lang = 'en')">
 					<xsl:attribute name="font-family">IPAexGothic</xsl:attribute>
 				</xsl:if>
 				<xsl:if test="$vertical_layout = 'true'">
@@ -1181,7 +1188,7 @@
 				<fo:block text-align="center">
 					<fo:block>
 						<xsl:if test="$doclang = 'en'">Published&#xa0;</xsl:if>
-						<xsl:apply-templates select="/*/jis:bibdata/jis:date[@type = 'published']/text()"/>
+						<xsl:apply-templates select="/*/jis:bibdata/jis:date[@type = 'published']//text()"/>
 						<xsl:if test="$doclang = 'ja'">
 							<xsl:text>&#xa0;発行</xsl:text>
 						</xsl:if>
@@ -1552,9 +1559,9 @@
 	<xsl:template match="jis:p[@class = 'StandardNumber']" priority="4">
 		<xsl:if test="not($vertical_layout = 'true')">
 		<fo:table table-layout="fixed" width="100%">
-			<fo:table-column column-width="proportional-column-width(36)"/>
-			<fo:table-column column-width="proportional-column-width(92)"/>
-			<fo:table-column column-width="proportional-column-width(36)"/>
+			<fo:table-column column-width="proportional-column-width(60)"/>
+			<fo:table-column column-width="proportional-column-width(44)"/>
+			<fo:table-column column-width="proportional-column-width(60)"/>
 			<fo:table-body>
 				<fo:table-row>
 					<fo:table-cell>
@@ -2618,9 +2625,17 @@
 				</xsl:call-template>
 			</xsl:when>
 			<xsl:otherwise>
-				<xsl:call-template name="enclose_text_in_font_en_bold_tag">
-					<xsl:with-param name="regex" select="$regex_en_contents"/>
-				</xsl:call-template>
+				<xsl:variable name="text_markup">
+					<xsl:call-template name="enclose_text_in_font_en_bold_tag">
+						<xsl:with-param name="regex" select="$regex_en_contents"/>
+					</xsl:call-template>
+				</xsl:variable>
+				<xsl:for-each select="xalan:nodeset($text_markup)/node()">
+					<xsl:choose>
+						<xsl:when test="self::text()"><xsl:value-of select="."/></xsl:when>
+						<xsl:otherwise><xsl:apply-templates/></xsl:otherwise>
+					</xsl:choose>
+				</xsl:for-each>
 			</xsl:otherwise>
 		</xsl:choose>
 	</xsl:template>
