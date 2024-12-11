@@ -17,7 +17,7 @@ jobs:
     outputs:
       common_changed: ${{ steps.common-changed.outputs.only_changed }}
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
 
       - id: common-changed
         uses: tj-actions/changed-files@v41.0.0
@@ -39,7 +39,7 @@ jobs:
           ruby-version: 3.1
           bundler-cache: true
 
-      - uses: actions/cache@v2
+      - uses: actions/cache@v4
         with:
           path: ~/.fontist
           key: fontist-ubuntu
@@ -102,14 +102,14 @@ jobs:
           - flavor: bipm
             prefix: '{bipm,jcgm}'
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - uses: actions/download-artifact@master
         with:
           name: xslt
           path: xslt
 
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           submodules: recursive
           repository: metanorma/metanorma-${{ matrix.flavor }}
@@ -160,7 +160,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: update-xslts
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - uses: actions/download-artifact@v4.1.7
 
