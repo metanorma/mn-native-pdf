@@ -2511,6 +2511,8 @@
 	</xsl:variable>
 	<xsl:variable name="regex_en" select="normalize-space($regex_en_)"/>
 	
+	<xsl:variable name="regex_horizontal">(\d{1,3})</xsl:variable>
+	
 	<xsl:variable name="element_name_font_en">font_en</xsl:variable>
 	<xsl:variable name="tag_font_en_open">###<xsl:value-of select="$element_name_font_en"/>###</xsl:variable>
 	<xsl:variable name="tag_font_en_close">###/<xsl:value-of select="$element_name_font_en"/>###</xsl:variable>
@@ -2520,6 +2522,9 @@
 	<xsl:variable name="element_name_font_en_vertical">font_en_vertical</xsl:variable>
 	<xsl:variable name="tag_font_en_vertical_open">###<xsl:value-of select="$element_name_font_en_vertical"/>###</xsl:variable>
 	<xsl:variable name="tag_font_en_vertical_close">###/<xsl:value-of select="$element_name_font_en_vertical"/>###</xsl:variable>
+	<xsl:variable name="element_name_font_en_horizontal">font_en_horizontal</xsl:variable>
+	<xsl:variable name="tag_font_en_horizontal_open">###<xsl:value-of select="$element_name_font_en_horizontal"/>###</xsl:variable>
+	<xsl:variable name="tag_font_en_horizontal_close">###/<xsl:value-of select="$element_name_font_en_horizontal"/>###</xsl:variable>
 	
 	<xsl:template match="text()[not(ancestor::*[local-name() = 'bibdata']) and not(ancestor::jis:p[@class = 'zzSTDTitle2'])]" mode="update_xml_step1">
 		<xsl:choose>
@@ -2545,6 +2550,37 @@
 		</xsl:choose>
 	</xsl:template>
 	
+	<!-- <biblio-tag>[15]<tab/>JIS...</biblio-tag>
+		to
+		<biblio-tag><font_en_vertical>[</font_en_vertical><font_en_horizontal>15</font_en_horizontal><font_en_vertical>]</font_en_vertical><tab/>JIS...
+	-->
+	<xsl:template match="jis:references[@normative = 'false']//jis:biblio-tag/text()[not(preceding-sibling::node())]" mode="update_xml_step1" priority="2">
+		<xsl:choose>
+			<xsl:when test="$vertical_layout = 'true'">
+				<xsl:variable name="biblio_tag_text_nodes">
+					<xsl:call-template name="enclose_text_in_vertical_tag">
+						<xsl:with-param name="regex" select="concat('((', $regex_ja_spec, '){1,})')"/>
+					</xsl:call-template>
+				</xsl:variable>
+				<xsl:for-each select="xalan:nodeset($biblio_tag_text_nodes)/node()">
+					<xsl:choose>
+						<xsl:when test="self::text()">
+							<xsl:call-template name="enclose_text_in_horizontal_tag">
+								<xsl:with-param name="regex" select="$regex_horizontal"/>
+							</xsl:call-template>
+						</xsl:when>
+						<xsl:otherwise>
+							<xsl:copy-of select="."/>
+						</xsl:otherwise>
+					</xsl:choose>
+				</xsl:for-each>
+			</xsl:when>
+			<xsl:otherwise>
+				<xsl:call-template name="enclose_text_in_font_en_tag"/>
+			</xsl:otherwise>
+		</xsl:choose>
+	</xsl:template>
+	
 	<xsl:template name="enclose_text_in_vertical_tag">
 		<xsl:param name="text" select="."/>
 		<xsl:param name="regex" select="$regex_en"/>
@@ -2559,6 +2595,22 @@
 			</xsl:element>
 		</xsl:variable>
 		<xsl:copy-of select="xalan:nodeset($text_vertical)/*[local-name() = 'text']/node()"/>
+	</xsl:template>
+	
+	<xsl:template name="enclose_text_in_horizontal_tag">
+		<xsl:param name="text" select="."/>
+		<xsl:param name="regex" select="$regex_horizontal"/>
+		<xsl:variable name="text_horizontal_" select="java:replaceAll(java:java.lang.String.new($text), $regex, concat($tag_font_en_horizontal_open,'$1',$tag_font_en_horizontal_close))"/>
+		<xsl:variable name="text_horizontal">
+			<xsl:element name="text" namespace="{$namespace_full}">
+				<xsl:call-template name="replace_text_tags">
+					<xsl:with-param name="tag_open" select="$tag_font_en_horizontal_open"/>
+					<xsl:with-param name="tag_close" select="$tag_font_en_horizontal_close"/>
+					<xsl:with-param name="text" select="$text_horizontal_"/>
+				</xsl:call-template>
+			</xsl:element>
+		</xsl:variable>
+		<xsl:copy-of select="xalan:nodeset($text_horizontal)/*[local-name() = 'text']/node()"/>
 	</xsl:template>
 	
 	<xsl:template name="enclose_text_in_font_en_tag">
@@ -2828,6 +2880,26 @@
 							<xsl:with-param name="str" select="$text"/>
 							<xsl:with-param name="reference-orientation">90</xsl:with-param>
 							<xsl:with-param name="add_zero_width_space">true</xsl:with-param>
+						</xsl:call-template>
+					</xsl:when>
+					<xsl:otherwise>
+						<xsl:apply-templates select="."/>
+					</xsl:otherwise>
+				</xsl:choose>
+			</xsl:for-each>
+		</fo:inline>
+		<xsl:if test="ancestor::*[local-name() = 'td' or local-name() = 'th']"><xsl:value-of select="$zero_width_space"/></xsl:if>
+	</xsl:template>
+	
+	<!-- English text in vertical layout, in horizontal mode -->
+	<xsl:template match="*[local-name() = 'font_en_horizontal'][normalize-space() != '']">
+		<xsl:if test="ancestor::*[local-name() = 'td' or local-name() = 'th']"><xsl:value-of select="$zero_width_space"/></xsl:if>
+		<fo:inline>
+			<xsl:for-each select="node()">
+				<xsl:choose>
+					<xsl:when test="self::text()">
+						<xsl:call-template name="insertHorizontalChars">
+							<xsl:with-param name="str" select="."/>
 						</xsl:call-template>
 					</xsl:when>
 					<xsl:otherwise>

@@ -21344,6 +21344,25 @@
 		</xsl:choose>
 	</xsl:template>
 
+	<xsl:template name="insertHorizontalChars">
+		<xsl:param name="str"/>
+		<xsl:param name="writing-mode">lr-tb</xsl:param>
+		<xsl:param name="reference-orientation">90</xsl:param>
+		<xsl:param name="add_zero_width_space">false</xsl:param>
+		<fo:inline-container text-align="center"
+								 alignment-baseline="central" width="1em" margin="0" padding="0"
+								 text-indent="0mm" last-line-end-indent="0mm" start-indent="0mm" end-indent="0mm">
+			<xsl:if test="normalize-space($writing-mode) != ''">
+				<xsl:attribute name="writing-mode"><xsl:value-of select="$writing-mode"/></xsl:attribute>
+				<xsl:attribute name="reference-orientation">90</xsl:attribute>
+			</xsl:if>
+			<fo:block-container width="1em">
+				<fo:block line-height="1em">
+					<xsl:value-of select="$str"/>
+				</fo:block>
+			</fo:block-container>
+		</fo:inline-container>
+	</xsl:template>
  
 	<xsl:template name="number-to-words">
 		<xsl:param name="number" />
