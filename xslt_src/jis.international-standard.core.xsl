@@ -2368,6 +2368,7 @@
 	</xsl:template>
 	
 	
+	<!-- replace horizontal to vertical oriented character -->
 	<xsl:template match="text()" mode="update_xml_step0">
 		<!-- from https://github.com/metanorma/docs/blob/main/109.adoc -->
 		<!-- 
@@ -2498,6 +2499,19 @@
 	<!-- Allocate non-Japanese text -->
 	<!-- ========================= -->
 	
+	<xsl:template match="*[local-name() = 'span'][@class = 'horizontal']" mode="update_xml_step1" priority="3">
+		<xsl:element name="{$element_name_font_en_horizontal}" namespace="{$namespace_full}">
+			<xsl:apply-templates mode="update_xml_step1"/>
+		</xsl:element>
+	</xsl:template>
+	<xsl:template match="*[local-name() = 'span'][@class = 'horizontal']//text()" mode="update_xml_step1" priority="3">
+		<xsl:value-of select="."/>
+	</xsl:template>
+	
+	<xsl:template match="*[local-name() = 'span'][@class = 'norotate']" mode="update_xml_step1" priority="3">
+		<xsl:copy-of select="."/>
+	</xsl:template>
+	
 	<!-- if vertical_layout = 'true', then font_en and font_en_bold are using for text rotation -->
 	<xsl:variable name="regex_en_base">\u00A0\u2002-\u200B\u3000-\u9FFF\uF900-\uFFFF</xsl:variable>
 	<xsl:variable name="regex_en_">
@@ -2584,17 +2598,43 @@
 	<xsl:template name="enclose_text_in_vertical_tag">
 		<xsl:param name="text" select="."/>
 		<xsl:param name="regex" select="$regex_en"/>
-		<xsl:variable name="text_vertical_" select="java:replaceAll(java:java.lang.String.new($text), $regex, concat($tag_font_en_vertical_open,'$1',$tag_font_en_vertical_close))"/>
-		<xsl:variable name="text_vertical">
+		
+		<xsl:variable name="regex_two_digits">(^|[^\d])(\d{2,3})($|[^\d])</xsl:variable>
+		
+		<xsl:variable name="text_width_two_or_three_digits_" select="java:replaceAll(java:java.lang.String.new($text), $regex_two_digits, concat('$1',$tag_font_en_horizontal_open,'$2',$tag_font_en_horizontal_close,'$3'))"/>
+		<xsl:variable name="text_width_two_or_three_digits">
 			<xsl:element name="text" namespace="{$namespace_full}">
 				<xsl:call-template name="replace_text_tags">
-					<xsl:with-param name="tag_open" select="$tag_font_en_vertical_open"/>
-					<xsl:with-param name="tag_close" select="$tag_font_en_vertical_close"/>
-					<xsl:with-param name="text" select="$text_vertical_"/>
+					<xsl:with-param name="tag_open" select="$tag_font_en_horizontal_open"/>
+					<xsl:with-param name="tag_close" select="$tag_font_en_horizontal_close"/>
+					<xsl:with-param name="text" select="$text_width_two_or_three_digits_"/>
 				</xsl:call-template>
 			</xsl:element>
 		</xsl:variable>
-		<xsl:copy-of select="xalan:nodeset($text_vertical)/*[local-name() = 'text']/node()"/>
+		
+		<!-- <xsl:copy-of select="$text_width_two_or_three_digits"/> -->
+		
+		<xsl:for-each select="xalan:nodeset($text_width_two_or_three_digits)/*[local-name() = 'text']/node()">
+		
+			<xsl:choose>
+				<xsl:when test="self::text()">
+					<xsl:variable name="text_vertical_" select="java:replaceAll(java:java.lang.String.new(.), $regex, concat($tag_font_en_vertical_open,'$1',$tag_font_en_vertical_close))"/>
+					<xsl:variable name="text_vertical">
+						<xsl:element name="text" namespace="{$namespace_full}">
+							<xsl:call-template name="replace_text_tags">
+								<xsl:with-param name="tag_open" select="$tag_font_en_vertical_open"/>
+								<xsl:with-param name="tag_close" select="$tag_font_en_vertical_close"/>
+								<xsl:with-param name="text" select="$text_vertical_"/>
+							</xsl:call-template>
+						</xsl:element>
+					</xsl:variable>
+					<xsl:copy-of select="xalan:nodeset($text_vertical)/*[local-name() = 'text']/node()"/>
+				</xsl:when>
+				<xsl:otherwise>
+					<xsl:copy-of select="."/>
+				</xsl:otherwise>
+			</xsl:choose>
+		</xsl:for-each>
 	</xsl:template>
 	
 	<xsl:template name="enclose_text_in_horizontal_tag">

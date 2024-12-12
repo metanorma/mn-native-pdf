@@ -21224,7 +21224,7 @@
 	<!-- END: insert cover page image -->
  
 	<!-- https://github.com/metanorma/docs/blob/main/109.adoc -->
-	<xsl:variable name="regex_ja_spec_half_width">
+	<xsl:variable name="regex_ja_spec_half_width_">
 		\u0028  <!-- U+0028 LEFT PARENTHESIS (() -->
 		\u0029 <!-- U+0029 RIGHT PARENTHESIS ()) -->
 		\u007B <!-- U+007B LEFT CURLY BRACKET ({) -->
@@ -21234,6 +21234,7 @@
 		\u005B <!-- U+005B LEFT SQUARE BRACKET ([) -->
 		\u005D <!-- U+005D RIGHT SQUARE BRACKET (]) -->
 	</xsl:variable>
+	<xsl:variable name="regex_ja_spec_half_width" select="translate(normalize-space($regex_ja_spec_half_width_), ' ', '')"/>
 	<xsl:variable name="regex_ja_spec_">[
 		<!-- Rotate 90° clockwise -->
 		<xsl:value-of select="$regex_ja_spec_half_width"/>
@@ -21297,60 +21298,65 @@
 			</xsl:when>
 			<xsl:otherwise>
 				<xsl:if test="string-length($str) &gt; 0">
-					<xsl:variable name="horizontal_mode" select="normalize-space(ancestor::*[local-name() = 'span'][@class = 'horizontal'] and 1 = 1)"/>
+				
+					<!-- <xsl:variable name="horizontal_mode" select="normalize-space(ancestor::*[local-name() = 'span'][@class = 'horizontal'] and 1 = 1)"/> -->
 					<xsl:variable name="char" select="substring($str,1,1)"/>
 					
 					<xsl:variable name="char_half_width" select="normalize-space(java:matches(java:java.lang.String.new($char), concat('([', $regex_ja_spec_half_width, ']{1,})')))"/>
 					
-					<fo:inline-container text-align="center"
-								 alignment-baseline="central" width="1em" margin="0" padding="0"
-								 text-indent="0mm" last-line-end-indent="0mm" start-indent="0mm" end-indent="0mm">
-						<xsl:if test="$char_half_width = 'true'">
-						 <xsl:attribute name="width">0.5em</xsl:attribute>
-						 <xsl:attribute name="baseline-shift">7%</xsl:attribute>
-						</xsl:if>
-						<xsl:if test="normalize-space($writing-mode) != ''">
-							<xsl:attribute name="writing-mode"><xsl:value-of select="$writing-mode"/></xsl:attribute>
-							<xsl:attribute name="reference-orientation">90</xsl:attribute>
-						</xsl:if>
-						<xsl:if test="normalize-space(java:matches(java:java.lang.String.new($char), concat('(', $regex_ja_spec, '{1,})'))) = 'true'">
-							<xsl:attribute name="reference-orientation">0</xsl:attribute>
-						</xsl:if>
-						<xsl:if test="$char = '゜' or $char = '。' or $char = '﹒' or $char = '．'">
-							<!-- Rotate 180°: 
-								U+309C KATAKANA-HIRAGANA SEMI-VOICED SOUND MARK (゜)
-								U+3002 IDEOGRAPHIC FULL STOP (。)
-								U+FE52 SMALL FULL STOP (﹒)
-								U+FF0E FULLWIDTH FULL STOP (．)
-							-->
-							<xsl:attribute name="reference-orientation">-90</xsl:attribute>
-						</xsl:if>
-						<fo:block-container width="1em"><!-- border="0.5pt solid blue" -->
-							<xsl:if test="$char_half_width = 'true'">
-								<xsl:attribute name="width">0.5em</xsl:attribute>
-							</xsl:if>
-							<fo:block line-height="1em">
-								<xsl:choose>
-									<xsl:when test="$horizontal_mode = 'true'">
-										<xsl:value-of select="$str"/>
-									</xsl:when>
-									<xsl:otherwise>
+					<xsl:choose>
+						<xsl:when test="$char_half_width = 'true'">
+							<fo:inline>
+								<xsl:attribute name="baseline-shift">7%</xsl:attribute>
+								<xsl:value-of select="$char"/>
+							</fo:inline>
+						</xsl:when>
+						<xsl:otherwise>
+							<fo:inline-container text-align="center"
+										 alignment-baseline="central" width="1em" margin="0" padding="0"
+										 text-indent="0mm" last-line-end-indent="0mm" start-indent="0mm" end-indent="0mm" role="SKIP">
+								<xsl:if test="normalize-space($writing-mode) != ''">
+									<xsl:attribute name="writing-mode"><xsl:value-of select="$writing-mode"/></xsl:attribute>
+									<xsl:attribute name="reference-orientation">90</xsl:attribute>
+								</xsl:if>
+								<xsl:if test="normalize-space(java:matches(java:java.lang.String.new($char), concat('(', $regex_ja_spec, '{1,})'))) = 'true'">
+									<xsl:attribute name="reference-orientation">0</xsl:attribute>
+								</xsl:if>
+								<xsl:if test="$char = '゜' or $char = '。' or $char = '﹒' or $char = '．'">
+									<!-- Rotate 180°: 
+										U+309C KATAKANA-HIRAGANA SEMI-VOICED SOUND MARK (゜)
+										U+3002 IDEOGRAPHIC FULL STOP (。)
+										U+FE52 SMALL FULL STOP (﹒)
+										U+FF0E FULLWIDTH FULL STOP (．)
+									-->
+									<xsl:attribute name="reference-orientation">-90</xsl:attribute>
+								</xsl:if>
+								<fo:block-container width="1em" role="SKIP"><!-- border="0.5pt solid blue" -->
+									<fo:block line-height="1em" role="SKIP">
+										<!-- <xsl:choose>
+											<xsl:when test="$horizontal_mode = 'true'">
+												<xsl:value-of select="$str"/>
+											</xsl:when>
+											<xsl:otherwise>
+												<xsl:value-of select="$char"/>
+											</xsl:otherwise>
+										</xsl:choose> -->
 										<xsl:value-of select="$char"/>
-									</xsl:otherwise>
-								</xsl:choose>
-							</fo:block>
-						</fo:block-container>
-					</fo:inline-container>
-					<xsl:if test="$add_zero_width_space = 'true' and ($char = ',' or $char = '.' or $char = ' ' or $char = '·' or $char = ')' or $char = ']' or $char = '}')"><xsl:value-of select="$zero_width_space"/></xsl:if>
+									</fo:block>
+								</fo:block-container>
+							</fo:inline-container>
+						</xsl:otherwise>
+					</xsl:choose>
 					
-					<xsl:if test="$horizontal_mode = 'false'">
-						<xsl:call-template name="insertVerticalChar">
-							<xsl:with-param name="str" select="substring($str, 2)"/>
-							<xsl:with-param name="writing-mode" select="$writing-mode"/>
-							<xsl:with-param name="reference-orientation" select="$reference-orientation"/>
-							<xsl:with-param name="add_zero_width_space" select="$add_zero_width_space"/>
-						</xsl:call-template>
-					</xsl:if>
+					<xsl:if test="$add_zero_width_space = 'true' and ($char = ',' or $char = '.' or $char = ' ' or $char = '·' or $char = ')' or $char = ']' or $char = '}')"><xsl:value-of select="$zero_width_space"/></xsl:if>
+						<!-- <xsl:if test="$horizontal_mode = 'false'"> -->
+							<xsl:call-template name="insertVerticalChar">
+								<xsl:with-param name="str" select="substring($str, 2)"/>
+								<xsl:with-param name="writing-mode" select="$writing-mode"/>
+								<xsl:with-param name="reference-orientation" select="$reference-orientation"/>
+								<xsl:with-param name="add_zero_width_space" select="$add_zero_width_space"/>
+							</xsl:call-template>
+						<!-- </xsl:if> -->
 				</xsl:if>
 			</xsl:otherwise>
 		</xsl:choose>
@@ -21363,13 +21369,13 @@
 		<xsl:param name="add_zero_width_space">false</xsl:param>
 		<fo:inline-container text-align="center"
 								 alignment-baseline="central" width="1em" margin="0" padding="0"
-								 text-indent="0mm" last-line-end-indent="0mm" start-indent="0mm" end-indent="0mm">
+								 text-indent="0mm" last-line-end-indent="0mm" start-indent="0mm" end-indent="0mm" role="SKIP">
 			<xsl:if test="normalize-space($writing-mode) != ''">
 				<xsl:attribute name="writing-mode"><xsl:value-of select="$writing-mode"/></xsl:attribute>
 				<xsl:attribute name="reference-orientation">90</xsl:attribute>
 			</xsl:if>
-			<fo:block-container width="1em"> <!-- border="0.5pt solid green" -->
-				<fo:block line-height="1em">
+			<fo:block-container width="1em" role="SKIP"> <!-- border="0.5pt solid green" -->
+				<fo:block line-height="1em" role="SKIP">
 					<xsl:value-of select="$str"/>
 				</fo:block>
 			</fo:block-container>
