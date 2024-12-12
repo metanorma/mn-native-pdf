@@ -21224,15 +21224,22 @@
 	<!-- END: insert cover page image -->
  
 	<!-- https://github.com/metanorma/docs/blob/main/109.adoc -->
+	<xsl:variable name="regex_ja_spec_half_width">
+		\u0028  <!-- U+0028 LEFT PARENTHESIS (() -->
+		\u0029 <!-- U+0029 RIGHT PARENTHESIS ()) -->
+		\u007B <!-- U+007B LEFT CURLY BRACKET ({) -->
+		\u007D <!-- U+007D RIGHT CURLY BRACKET (}) -->
+		\uFF62 <!-- U+FF62 HALFWIDTH LEFT CORNER BRACKET (｢) -->
+		\uFF63 <!-- U+FF63 HALFWIDTH RIGHT CORNER BRACKET (｣) -->
+		\u005B <!-- U+005B LEFT SQUARE BRACKET ([) -->
+		\u005D <!-- U+005D RIGHT SQUARE BRACKET (]) -->
+	</xsl:variable>
 	<xsl:variable name="regex_ja_spec_">[
 		<!-- Rotate 90° clockwise -->
-		\u0028  <!-- U+0028 LEFT PARENTHESIS (() -->
+		<xsl:value-of select="$regex_ja_spec_half_width"/>
 		\uFF08 <!-- U+FF08 FULLWIDTH LEFT PARENTHESIS (（) -->
-		\u0029 <!-- U+0029 RIGHT PARENTHESIS ()) -->
 		\uFF09 <!-- U+FF09 FULLWIDTH RIGHT PARENTHESIS (）) -->
-		\u007B <!-- U+007B LEFT CURLY BRACKET ({) -->
 		\uFF5B <!-- U+FF5B FULLWIDTH LEFT CURLY BRACKET (｛) -->
-		\u007D <!-- U+007D RIGHT CURLY BRACKET (}) -->
 		\uFF5D <!-- U+FF5D FULLWIDTH RIGHT CURLY BRACKET (｝) -->
 		\u3014 <!-- U+3014 LEFT TORTOISE SHELL BRACKET (〔) -->
 		\u3015 <!-- U+3015 RIGHT TORTOISE SHELL BRACKET (〕) -->
@@ -21240,21 +21247,16 @@
 		\u3011 <!-- U+3011 RIGHT BLACK LENTICULAR BRACKET (】) -->
 		\u300A <!-- U+300A LEFT DOUBLE ANGLE BRACKET (《) -->
 		\u300B <!-- U+300B RIGHT DOUBLE ANGLE BRACKET (》) -->
-		\uFF62 <!-- U+FF62 HALFWIDTH LEFT CORNER BRACKET (｢) -->
 		\u300C <!-- U+300C LEFT CORNER BRACKET (「) -->
-		\uFF63 <!-- U+FF63 HALFWIDTH RIGHT CORNER BRACKET (｣) -->
 		\u300D <!-- U+300D RIGHT CORNER BRACKET (」) -->
 		\u300E <!-- U+300E LEFT WHITE CORNER BRACKET (『) -->
 		\u300F <!-- U+300F RIGHT WHITE CORNER BRACKET (』) -->
-		\u005B <!-- U+005B LEFT SQUARE BRACKET ([) -->
 		\uFF3B <!-- U+FF3B FULLWIDTH LEFT SQUARE BRACKET (［) -->
-		\u005D <!-- U+005D RIGHT SQUARE BRACKET (]) -->
 		\uFF3D <!-- U+FF3D FULLWIDTH RIGHT SQUARE BRACKET (］) -->
 		\u3008 <!-- U+3008 LEFT ANGLE BRACKET (〈) -->
 		\u3009 <!-- U+3009 RIGHT ANGLE BRACKET (〉) -->
 		\u3016 <!-- U+3016 LEFT WHITE LENTICULAR BRACKET (〖) -->
 		\u3017 <!-- U+3017 RIGHT WHITE LENTICULAR BRACKET (〗) -->
-		
 		\u301A <!-- U+301A LEFT WHITE SQUARE BRACKET (〚) -->
 		\u301B <!-- U+301B RIGHT WHITE SQUARE BRACKET (〛) -->
 		\u301C <!-- U+301C WAVE DASH (〜) -->
@@ -21297,9 +21299,16 @@
 				<xsl:if test="string-length($str) &gt; 0">
 					<xsl:variable name="horizontal_mode" select="normalize-space(ancestor::*[local-name() = 'span'][@class = 'horizontal'] and 1 = 1)"/>
 					<xsl:variable name="char" select="substring($str,1,1)"/>
+					
+					<xsl:variable name="char_half_width" select="normalize-space(java:matches(java:java.lang.String.new($char), concat('([', $regex_ja_spec_half_width, ']{1,})')))"/>
+					
 					<fo:inline-container text-align="center"
 								 alignment-baseline="central" width="1em" margin="0" padding="0"
 								 text-indent="0mm" last-line-end-indent="0mm" start-indent="0mm" end-indent="0mm">
+						<xsl:if test="$char_half_width = 'true'">
+						 <xsl:attribute name="width">0.5em</xsl:attribute>
+						 <xsl:attribute name="baseline-shift">7%</xsl:attribute>
+						</xsl:if>
 						<xsl:if test="normalize-space($writing-mode) != ''">
 							<xsl:attribute name="writing-mode"><xsl:value-of select="$writing-mode"/></xsl:attribute>
 							<xsl:attribute name="reference-orientation">90</xsl:attribute>
@@ -21316,7 +21325,10 @@
 							-->
 							<xsl:attribute name="reference-orientation">-90</xsl:attribute>
 						</xsl:if>
-						<fo:block-container width="1em">
+						<fo:block-container width="1em"><!-- border="0.5pt solid blue" -->
+							<xsl:if test="$char_half_width = 'true'">
+								<xsl:attribute name="width">0.5em</xsl:attribute>
+							</xsl:if>
 							<fo:block line-height="1em">
 								<xsl:choose>
 									<xsl:when test="$horizontal_mode = 'true'">
@@ -21356,7 +21368,7 @@
 				<xsl:attribute name="writing-mode"><xsl:value-of select="$writing-mode"/></xsl:attribute>
 				<xsl:attribute name="reference-orientation">90</xsl:attribute>
 			</xsl:if>
-			<fo:block-container width="1em">
+			<fo:block-container width="1em"> <!-- border="0.5pt solid green" -->
 				<fo:block line-height="1em">
 					<xsl:value-of select="$str"/>
 				</fo:block>
