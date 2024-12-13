@@ -1083,8 +1083,11 @@
 				<xsl:with-param name="key">table_of_contents</xsl:with-param>
 			</xsl:call-template> -->
 			<fo:marker marker-class-name="section_title">
-				<xsl:variable name="section_title"><xsl:apply-templates/></xsl:variable>
-				<xsl:value-of select="translate($section_title, '　', '')"/>
+				<xsl:variable name="section_title_"><xsl:apply-templates/></xsl:variable>
+				<xsl:variable name="section_title" select="translate($section_title_, '　', '')"/>
+				<xsl:call-template name="insertVerticalChar">
+					<xsl:with-param name="str" select="$section_title"/>
+				</xsl:call-template>
 			</fo:marker>
 			<xsl:apply-templates/>
 		</fo:block>
@@ -1957,12 +1960,18 @@
 											<xsl:value-of select="."/>
 										</xsl:for-each>
 									</xsl:variable>
-									<xsl:value-of select="$stitle"/>
+									<!-- <xsl:value-of select="$stitle"/> -->
+									<xsl:call-template name="insertVerticalChar">
+										<xsl:with-param name="str" select="$stitle"/>
+									</xsl:call-template>
 								</xsl:when>
 								<xsl:otherwise>
 									<xsl:variable name="stitle"><xsl:call-template name="extractTitle"/></xsl:variable>
-									<xsl:variable name="section_title"><xsl:value-of select="normalize-space(concat($section, ' ', $stitle))"/></xsl:variable>
-									<xsl:value-of select="translate($section_title, ' ', '　')"/>
+									<xsl:variable name="section_title_"><xsl:value-of select="normalize-space(concat($section, ' ', $stitle))"/></xsl:variable>
+									<xsl:variable name="section_title" select="translate($section_title_, ' ', '　')"/>
+									<xsl:call-template name="insertVerticalChar">
+										<xsl:with-param name="str" select="$section_title"/>
+									</xsl:call-template>
 								</xsl:otherwise>
 							</xsl:choose>
 						</fo:marker>
@@ -3278,7 +3287,18 @@
 						<fo:leader leader-pattern="space"/>
 						<fo:inline font-size="6pt" baseline-shift="-10%">
 							<!-- <xsl:value-of select="$copyrightText"/> -->
-							<xsl:copy-of select="$copyrightText"/>
+							<xsl:for-each select="xalan:nodeset($copyrightText)/node()">
+								<xsl:choose>
+									<xsl:when test="self::text()">
+										<xsl:call-template name="insertVerticalChar">
+											<xsl:with-param name="str" select="."/>
+										</xsl:call-template>
+									</xsl:when>
+									<xsl:otherwise>
+										<xsl:copy-of select="."/>
+									</xsl:otherwise>
+								</xsl:choose>
+							</xsl:for-each>
 						</fo:inline>
 					</fo:inline >
 				
