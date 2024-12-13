@@ -483,6 +483,8 @@
 					<xsl:variable name="copyrightText">
 						<xsl:call-template name="getLocalizedString">
 							<xsl:with-param name="key">permission_footer</xsl:with-param>
+							<xsl:with-param name="formatted" select="$vertical_layout"/> <!-- $vertical_layout = 'true' -->
+							<xsl:with-param name="bibdata_updated" select="/*/jis:bibdata"/> <!-- $vertical_layout = 'true' -->
 						</xsl:call-template>
 					</xsl:variable>
 					
@@ -571,7 +573,9 @@
 												<xsl:with-param name="i18n_JIS" select="$i18n_JIS"/>
 												<xsl:with-param name="docidentifier" select="concat('JIS ', $docidentifier_JIS)"/>
 												<xsl:with-param name="edition" select="$edition"/>
-												<xsl:with-param name="copyrightText" select="$copyrightText"/>
+												<xsl:with-param name="copyrightText">
+													<xsl:copy-of select="$copyrightText"/>
+												</xsl:with-param>
 											</xsl:call-template>
 										</xsl:when>
 										<xsl:otherwise>
@@ -646,7 +650,9 @@
 													<xsl:with-param name="i18n_JIS" select="$i18n_JIS"/>
 													<xsl:with-param name="docidentifier" select="concat('JIS ', $docidentifier_JIS)"/>
 													<xsl:with-param name="edition" select="$edition"/>
-													<xsl:with-param name="copyrightText" select="$copyrightText"/>
+													<xsl:with-param name="copyrightText">
+														<xsl:copy-of select="$copyrightText"/>
+													</xsl:with-param>
 													<!-- <xsl:with-param name="insertLast">true</xsl:with-param> -->
 													<xsl:with-param name="bibdata" select="$bibdata"/>
 												</xsl:call-template>
@@ -844,7 +850,9 @@
 										<xsl:with-param name="i18n_JIS" select="$i18n_JIS"/>
 										<xsl:with-param name="docidentifier" select="concat('JIS ', $docidentifier_JIS)"/>
 										<xsl:with-param name="edition" select="$edition"/>
-										<xsl:with-param name="copyrightText" select="$copyrightText"/>
+										<xsl:with-param name="copyrightText">
+											<xsl:copy-of select="$copyrightText"/>
+										</xsl:with-param>
 										<xsl:with-param name="insertLast" select="normalize-space(position() = last())"/>
 										<xsl:with-param name="bibdata" select="$bibdata"/>
 									</xsl:call-template>
@@ -947,7 +955,9 @@
 					<xsl:if test="$vertical_layout = 'true'">
 						<xsl:call-template name="insertBackPage2024">
 							<xsl:with-param name="num" select="$num"/>
-							<xsl:with-param name="copyrightText" select="$copyrightText"/>
+							<xsl:with-param name="copyrightText">
+								<xsl:copy-of select="$copyrightText"/>
+							</xsl:with-param>
 						</xsl:call-template>
 					</xsl:if>
 				
@@ -1461,7 +1471,10 @@
 						<xsl:text>改正</xsl:text>
 					</fo:inline>
 				</fo:block>
-				<fo:block font-size="12pt" margin-top="7mm" text-align="right"><xsl:value-of select="$copyrightText"/></fo:block>
+				<fo:block font-size="12pt" margin-top="7mm" text-align="right">
+					<!-- <xsl:value-of select="$copyrightText"/> -->
+					<xsl:copy-of select="$copyrightText"/>
+				</fo:block>
 			</fo:flow>
 		</fo:page-sequence>
 	</xsl:template> <!-- insertBackPage2024 -->
@@ -2369,7 +2382,8 @@
 	
 	
 	<!-- replace horizontal to vertical oriented character -->
-	<xsl:template match="text()" mode="update_xml_step0">
+	<xsl:template match="text()" mode="update_xml_step0" name="replace_horizontal_to_vertical_form">
+		<xsl:param name="text" select="."/>
 		<!-- from https://github.com/metanorma/docs/blob/main/109.adoc -->
 		<!-- 
 		U+3001 IDEOGRAPHIC COMMA (、)
@@ -2388,7 +2402,7 @@
 		to
 		U+FE10 PRESENTATION FORM FOR VERTICAL COMMA (︐)
 		-->
-		<xsl:variable name="text1" select="translate(.,'&#x3001;&#xFE50;&#xFE51;&#xFF0C;','&#xFE11;&#xFE10;&#xFE11;&#xFE10;')"/>
+		<xsl:variable name="text1" select="translate($text,'&#x3001;&#xFE50;&#xFE51;&#xFF0C;','&#xFE11;&#xFE10;&#xFE11;&#xFE10;')"/>
 		
 		<!-- 
 		U+FF1A FULLWIDTH COLON (：)
@@ -2417,6 +2431,24 @@
 	<!-- =========================================================================== -->
 	<!-- END STEP 0: Replace characters with vertical form -->
 	<!-- =========================================================================== -->
+	
+	<xsl:template match="*[local-name() = 'bibdata'][not(.//*[local-name() = 'passthrough'])] | 
+						*[local-name() = 'localized-strings']" mode="update_xml_step1" priority="2">
+		<xsl:choose>
+			<xsl:when test="$vertical_layout = 'true'">
+				<xsl:copy>
+					<xsl:apply-templates select="@* | node()" mode="update_xml_step1"/>
+				</xsl:copy>
+			</xsl:when>
+			<xsl:otherwise>
+				<xsl:copy-of select="."/>
+			</xsl:otherwise>
+		</xsl:choose>
+	</xsl:template>
+	
+	<xsl:template match="*[local-name() = 'bibdata']/*[local-name() = 'title']" mode="update_xml_step1" priority="2">
+		<xsl:copy-of select="."/>
+	</xsl:template>
 	
 	<xsl:template match="*[local-name() = 'span'][@class = 'surname' or @class = 'givenname' or @class = 'JIS' or @class = 'EffectiveYear' or @class = 'CommentaryEffectiveYear']" mode="update_xml_step1" priority="2">
 		<xsl:copy>
@@ -2540,7 +2572,7 @@
 	<xsl:variable name="tag_font_en_horizontal_open">###<xsl:value-of select="$element_name_font_en_horizontal"/>###</xsl:variable>
 	<xsl:variable name="tag_font_en_horizontal_close">###/<xsl:value-of select="$element_name_font_en_horizontal"/>###</xsl:variable>
 	
-	<xsl:template match="text()[not(ancestor::*[local-name() = 'bibdata']) and not(ancestor::jis:p[@class = 'zzSTDTitle2'])]" mode="update_xml_step1">
+	<xsl:template match="text()[not(ancestor::*[local-name() = 'bibdata'] and ancestor::*[local-name() = 'title']) and not(ancestor::jis:p[@class = 'zzSTDTitle2'])][normalize-space() != '']" mode="update_xml_step1">
 		<xsl:choose>
 			<xsl:when test="$vertical_layout = 'true'">
 				<xsl:call-template name="enclose_text_in_vertical_tag"/>
@@ -2551,9 +2583,9 @@
 		</xsl:choose>
 	</xsl:template>
 	
-	<xsl:template match="jis:p//text()[not(ancestor::jis:strong) and not(ancestor::jis:p[@class = 'zzSTDTitle2'])] |
-						jis:dt/text() | 
-						jis:biblio-tag/text()" mode="update_xml_step1">
+	<xsl:template match="jis:p//text()[not(ancestor::jis:strong) and not(ancestor::jis:p[@class = 'zzSTDTitle2'])][normalize-space() != ''] |
+						jis:dt/text()[normalize-space() != ''] | 
+						jis:biblio-tag/text()[normalize-space() != '']" mode="update_xml_step1">
 		<xsl:choose>
 			<xsl:when test="$vertical_layout = 'true'">
 				<xsl:call-template name="enclose_text_in_vertical_tag"/>
@@ -2568,7 +2600,7 @@
 		to
 		<biblio-tag><font_en_vertical>[</font_en_vertical><font_en_horizontal>15</font_en_horizontal><font_en_vertical>]</font_en_vertical><tab/>JIS...
 	-->
-	<xsl:template match="jis:references[@normative = 'false']//jis:biblio-tag/text()[not(preceding-sibling::node())]" mode="update_xml_step1" priority="2">
+	<xsl:template match="jis:references[@normative = 'false']//jis:biblio-tag/text()[not(preceding-sibling::node())][normalize-space() != '']" mode="update_xml_step1" priority="2">
 		<xsl:choose>
 			<xsl:when test="$vertical_layout = 'true'">
 				<xsl:variable name="biblio_tag_text_nodes">
@@ -3244,7 +3276,10 @@
 					
 					<fo:inline keep-together.within-line="always">
 						<fo:leader leader-pattern="space"/>
-						<fo:inline font-size="6pt" baseline-shift="-10%"><xsl:value-of select="$copyrightText"/></fo:inline>
+						<fo:inline font-size="6pt" baseline-shift="-10%">
+							<!-- <xsl:value-of select="$copyrightText"/> -->
+							<xsl:copy-of select="$copyrightText"/>
+						</fo:inline>
 					</fo:inline >
 				
 				<!-- <fo:table table-layout="fixed" width="100%">

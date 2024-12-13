@@ -21010,6 +21010,7 @@
 		<xsl:param name="formatted">false</xsl:param>
 		<xsl:param name="lang"/>
 		<xsl:param name="returnEmptyIfNotFound">false</xsl:param>
+		<xsl:param name="bibdata_updated"/>
 		
 		<xsl:variable name="curr_lang">
 			<xsl:choose>
@@ -21023,6 +21024,9 @@
 		
 		<xsl:variable name="data_value">
 			<xsl:choose>
+				<xsl:when test="$formatted = 'true' and string-length($bibdata_updated) != ''">
+					<xsl:apply-templates select="xalan:nodeset($bibdata_updated)//*[local-name() = 'localized-string'][@key = $key and @language = $curr_lang]"/>
+				</xsl:when>
 				<xsl:when test="$formatted = 'true'">
 					<xsl:apply-templates select="xalan:nodeset($bibdata)//*[local-name() = 'localized-string'][@key = $key and @language = $curr_lang]"/>
 				</xsl:when>
