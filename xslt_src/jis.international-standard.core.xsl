@@ -2393,48 +2393,55 @@
 	<!-- replace horizontal to vertical oriented character -->
 	<xsl:template match="text()" mode="update_xml_step0" name="replace_horizontal_to_vertical_form">
 		<xsl:param name="text" select="."/>
-		<!-- from https://github.com/metanorma/docs/blob/main/109.adoc -->
-		<!-- 
-		U+3001 IDEOGRAPHIC COMMA (、)
-		to
-		U+FE11 PRESENTATION FORM FOR VERTICAL IDEOGRAPHIC COMMA (︑) 
-		
-		U+FE50 SMALL COMMA (﹐)
-		to
-		U+FE10 PRESENTATION FORM FOR VERTICAL COMMA (︐)
-		
-		U+FE51 SMALL IDEOGRAPHIC COMMA (﹑)
-		to
-		U+FE11 PRESENTATION FORM FOR VERTICAL IDEOGRAPHIC COMMA (︑)
-		
-		U+FF0C FULLWIDTH COMMA (，)
-		to
-		U+FE10 PRESENTATION FORM FOR VERTICAL COMMA (︐)
-		-->
-		<xsl:variable name="text1" select="translate($text,'&#x3001;&#xFE50;&#xFE51;&#xFF0C;','&#xFE11;&#xFE10;&#xFE11;&#xFE10;')"/>
-		
-		<!-- 
-		U+FF1A FULLWIDTH COLON (：)
-		to
-		U+FE13 PRESENTATION FORM FOR VERTICAL COLON (︓)
-		
-		U+FF1B FULLWIDTH SEMICOLON (；)
-		to
-		U+FE14 PRESENTATION FORM FOR VERTICAL SEMICOLON (︔)
-		-->
-		<xsl:variable name="text2" select="translate($text1,'&#xFF1A;&#xFF1B;','&#xFE13;&#xFE14;')"/>
-		
-		<!-- 
-		U+FF01 FULLWIDTH EXCLAMATION MARK (！)
-		to
-		U+FE15 PRESENTATION FORM FOR VERTICAL EXCLAMATION MARK (︕)
-		
-		U+FF1F FULLWIDTH QUESTION MARK (？)
-		to
-		U+FE16 PRESENTATION FORM FOR VERTICAL QUESTION MARK (︖)
-		-->
-		<xsl:variable name="text3" select="translate($text2,'&#xFF01;&#xFF1F;','&#xFE15;&#xFE16;')"/>
-		<xsl:value-of select="$text3"/>
+		<xsl:choose>
+			<xsl:when test="$isGenerateTableIF = 'false'">
+				<!-- from https://github.com/metanorma/docs/blob/main/109.adoc -->
+				<!-- 
+				U+3001 IDEOGRAPHIC COMMA (、)
+				to
+				U+FE11 PRESENTATION FORM FOR VERTICAL IDEOGRAPHIC COMMA (︑) 
+				
+				U+FE50 SMALL COMMA (﹐)
+				to
+				U+FE10 PRESENTATION FORM FOR VERTICAL COMMA (︐)
+				
+				U+FE51 SMALL IDEOGRAPHIC COMMA (﹑)
+				to
+				U+FE11 PRESENTATION FORM FOR VERTICAL IDEOGRAPHIC COMMA (︑)
+				
+				U+FF0C FULLWIDTH COMMA (，)
+				to
+				U+FE10 PRESENTATION FORM FOR VERTICAL COMMA (︐)
+				-->
+				<xsl:variable name="text1" select="translate($text,'&#x3001;&#xFE50;&#xFE51;&#xFF0C;','&#xFE11;&#xFE10;&#xFE11;&#xFE10;')"/>
+				
+				<!-- 
+				U+FF1A FULLWIDTH COLON (：)
+				to
+				U+FE13 PRESENTATION FORM FOR VERTICAL COLON (︓)
+				
+				U+FF1B FULLWIDTH SEMICOLON (；)
+				to
+				U+FE14 PRESENTATION FORM FOR VERTICAL SEMICOLON (︔)
+				-->
+				<xsl:variable name="text2" select="translate($text1,'&#xFF1A;&#xFF1B;','&#xFE13;&#xFE14;')"/>
+				
+				<!-- 
+				U+FF01 FULLWIDTH EXCLAMATION MARK (！)
+				to
+				U+FE15 PRESENTATION FORM FOR VERTICAL EXCLAMATION MARK (︕)
+				
+				U+FF1F FULLWIDTH QUESTION MARK (？)
+				to
+				U+FE16 PRESENTATION FORM FOR VERTICAL QUESTION MARK (︖)
+				-->
+				<xsl:variable name="text3" select="translate($text2,'&#xFF01;&#xFF1F;','&#xFE15;&#xFE16;')"/>
+				<xsl:value-of select="$text3"/>
+			</xsl:when>
+			<xsl:otherwise>
+				<xsl:value-of select="$text"/>
+			</xsl:otherwise>
+		</xsl:choose>
 	</xsl:template>
 	
 	<!-- =========================================================================== -->

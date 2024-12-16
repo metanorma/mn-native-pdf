@@ -21297,6 +21297,9 @@
 		<xsl:param name="reference-orientation">90</xsl:param>
 		<xsl:param name="add_zero_width_space">false</xsl:param>
 		<xsl:choose>
+			<xsl:when test="$isGenerateTableIF = 'true'">
+				<xsl:value-of select="$str"/>
+			</xsl:when>
 			<xsl:when test="ancestor::*[local-name() = 'span'][@class = 'norotate']">
 				<xsl:value-of select="$str"/>
 			</xsl:when>
@@ -21371,19 +21374,26 @@
 		<xsl:param name="writing-mode">lr-tb</xsl:param>
 		<xsl:param name="reference-orientation">90</xsl:param>
 		<xsl:param name="add_zero_width_space">false</xsl:param>
-		<fo:inline-container text-align="center"
-								 alignment-baseline="central" width="1em" margin="0" padding="0"
-								 text-indent="0mm" last-line-end-indent="0mm" start-indent="0mm" end-indent="0mm" role="SKIP">
-			<xsl:if test="normalize-space($writing-mode) != ''">
-				<xsl:attribute name="writing-mode"><xsl:value-of select="$writing-mode"/></xsl:attribute>
-				<xsl:attribute name="reference-orientation">90</xsl:attribute>
-			</xsl:if>
-			<fo:block-container width="1em" role="SKIP"> <!-- border="0.5pt solid green" -->
-				<fo:block line-height="1em" role="SKIP">
-					<xsl:value-of select="$str"/>
-				</fo:block>
-			</fo:block-container>
-		</fo:inline-container>
+		<xsl:choose>
+			<xsl:when test="$isGenerateTableIF = 'true'">
+				<xsl:value-of select="$str"/>
+			</xsl:when>
+			<xsl:otherwise>
+				<fo:inline-container text-align="center"
+										 alignment-baseline="central" width="1em" margin="0" padding="0"
+										 text-indent="0mm" last-line-end-indent="0mm" start-indent="0mm" end-indent="0mm" role="SKIP">
+					<xsl:if test="normalize-space($writing-mode) != ''">
+						<xsl:attribute name="writing-mode"><xsl:value-of select="$writing-mode"/></xsl:attribute>
+						<xsl:attribute name="reference-orientation">90</xsl:attribute>
+					</xsl:if>
+					<fo:block-container width="1em" role="SKIP"> <!-- border="0.5pt solid green" -->
+						<fo:block line-height="1em" role="SKIP">
+							<xsl:value-of select="$str"/>
+						</fo:block>
+					</fo:block-container>
+				</fo:inline-container>
+			</xsl:otherwise>
+		</xsl:choose>
 	</xsl:template>
  
 	<xsl:template name="number-to-words">
