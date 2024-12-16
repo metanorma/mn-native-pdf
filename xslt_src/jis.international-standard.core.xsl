@@ -3038,7 +3038,7 @@
 	
 	<xsl:template match="*[local-name() = 'span'][@class = 'norotate']//text()" name="norotate" priority="3">
 		<xsl:param name="str" select="."/>
-		<xsl:choose>
+		<!-- <xsl:choose>
 			<xsl:when test="$vertical_layout = 'true'">
 				<xsl:if test="string-length($str) &gt; 0">
 					<xsl:variable name="char" select="substring($str,1,1)"/>
@@ -3057,7 +3057,8 @@
 			 </xsl:if>
 			</xsl:when>
 			<xsl:otherwise><xsl:value-of select="."/></xsl:otherwise>
-		</xsl:choose>
+		</xsl:choose> -->
+		<xsl:value-of select="."/>
 	</xsl:template>
  
 	<xsl:template match="*[local-name() = 'span'][@class = 'halffontsize']" priority="3">
