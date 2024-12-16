@@ -2740,7 +2740,15 @@
 						jis:origin/text()" mode="update_xml_step1">
 		<xsl:choose>
 			<xsl:when test="$vertical_layout = 'true'">
-				<xsl:call-template name="enclose_text_in_vertical_tag"/>
+				<xsl:choose>
+					<xsl:when test="ancestor::jis:xref and 
+					(starts-with(., 'http:') or starts-with(., 'https') or starts-with(., 'www') or starts-with(., 'mailto') or starts-with(., 'ftp'))">
+						<xsl:value-of select="."/>
+					</xsl:when>
+					<xsl:otherwise>
+						<xsl:call-template name="enclose_text_in_vertical_tag"/>
+					</xsl:otherwise>
+				</xsl:choose>
 			</xsl:when>
 			<xsl:otherwise>
 				<xsl:call-template name="enclose_text_in_font_en_bold_tag"/>

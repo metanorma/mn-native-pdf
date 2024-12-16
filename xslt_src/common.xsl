@@ -21352,7 +21352,7 @@
 						</xsl:otherwise>
 					</xsl:choose>
 					
-					<xsl:if test="$add_zero_width_space = 'true' and ($char = ',' or $char = '.' or $char = ' ' or $char = '·' or $char = ')' or $char = ']' or $char = '}')"><xsl:value-of select="$zero_width_space"/></xsl:if>
+					<xsl:if test="$add_zero_width_space = 'true' and ($char = ',' or $char = '.' or $char = ' ' or $char = '·' or $char = ')' or $char = ']' or $char = '}' or $char = '/')"><xsl:value-of select="$zero_width_space"/></xsl:if>
 						<!-- <xsl:if test="$horizontal_mode = 'false'"> -->
 							<xsl:call-template name="insertVerticalChar">
 								<xsl:with-param name="str" select="substring($str, 2)"/>
