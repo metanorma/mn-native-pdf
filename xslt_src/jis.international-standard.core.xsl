@@ -60,6 +60,23 @@
 	</xsl:variable>
 	<xsl:variable name="contents" select="xalan:nodeset($contents_)"/>
 	
+	<xsl:variable name="updated_contents_xml_step0">
+		<xsl:if test="$vertical_layout = 'true'">
+			<xsl:apply-templates select="$contents" mode="update_xml_step0"/>
+		</xsl:if>
+	</xsl:variable>
+	<xsl:variable name="updated_contents_xml_">
+		<xsl:choose>
+			<xsl:when test="$vertical_layout = 'true'">
+				<xsl:apply-templates select="xalan:nodeset($updated_contents_xml_step0)" mode="update_xml_step1"/>
+			</xsl:when>
+			<xsl:otherwise>
+				<xsl:copy-of select="$contents"/>
+			</xsl:otherwise>
+		</xsl:choose>
+	</xsl:variable>
+	<xsl:variable name="updated_contents_xml" select="xalan:nodeset($updated_contents_xml_)"/>
+	
 	<xsl:variable name="ids">
 		<xsl:for-each select="//*[@id]">
 			<id><xsl:value-of select="@id"/></id>
@@ -410,6 +427,11 @@
 			<xsl:if test="$debug = 'true'">
 				<redirect:write file="contents_.xml">
 					<xsl:copy-of select="$contents"/>
+				</redirect:write>
+			</xsl:if>
+			<xsl:if test="$debug = 'true'">
+				<redirect:write file="contents_updated_.xml">
+					<xsl:copy-of select="$updated_contents_xml"/>
 				</redirect:write>
 			</xsl:if>
 			
@@ -1002,8 +1024,8 @@
 					<xsl:attribute name="font-size">10.5pt</xsl:attribute>
 				</xsl:if>
 			
-				<xsl:if test="$contents/doc[@num = $num]//item[@display = 'true']">
-					<xsl:for-each select="$contents/doc[@num = $num]//item[@display = 'true'][@level &lt;= $toc_level or @type='figure' or @type = 'table']">
+				<xsl:if test="$updated_contents_xml/doc[@num = $num]//item[@display = 'true']">
+					<xsl:for-each select="$updated_contents_xml/doc[@num = $num]//item[@display = 'true'][@level &lt;= $toc_level or @type='figure' or @type = 'table']">
 						<fo:block role="TOCI">
 							<xsl:choose>
 								<xsl:when test="@type = 'annex' or @type = 'bibliography'">
@@ -2601,7 +2623,8 @@
 	
 	<xsl:template match="jis:p//text()[not(ancestor::jis:strong) and not(ancestor::jis:p[@class = 'zzSTDTitle2'])][normalize-space() != ''] |
 						jis:dt/text()[normalize-space() != ''] | 
-						jis:biblio-tag/text()[normalize-space() != '']" mode="update_xml_step1">
+						jis:biblio-tag/text()[normalize-space() != ''] |
+						item/title/text()" mode="update_xml_step1">
 		<xsl:choose>
 			<xsl:when test="$vertical_layout = 'true'">
 				<xsl:call-template name="enclose_text_in_vertical_tag"/>
