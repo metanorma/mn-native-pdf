@@ -21321,7 +21321,7 @@
 						<xsl:otherwise>
 							<fo:inline-container text-align="center"
 										 alignment-baseline="central" width="1em" margin="0" padding="0"
-										 text-indent="0mm" last-line-end-indent="0mm" start-indent="0mm" end-indent="0mm" role="SKIP">
+										 text-indent="0mm" last-line-end-indent="0mm" start-indent="0mm" end-indent="0mm" role="SKIP" text-align-last="center">
 								<xsl:if test="normalize-space($writing-mode) != ''">
 									<xsl:attribute name="writing-mode"><xsl:value-of select="$writing-mode"/></xsl:attribute>
 									<xsl:attribute name="reference-orientation">90</xsl:attribute>
