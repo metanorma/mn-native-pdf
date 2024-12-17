@@ -591,6 +591,12 @@
 					<!-- indexes=<xsl:copy-of select="$indexes"/> -->
 					
 				
+					<xsl:if test="$debug = 'true'">
+						<redirect:write file="flatxml.xml">
+							<xsl:copy-of select="$flatxml"/>
+						</redirect:write>
+					</xsl:if>
+				
 					<xsl:apply-templates select="xalan:nodeset($flatxml)/bipm:bipm-standard" mode="bipm-standard">
 						<xsl:with-param name="curr_docnum" select="1"/>
 					</xsl:apply-templates>
@@ -1236,10 +1242,10 @@
 								<!-- <xsl:copy-of select="$contents"/> -->
 								
 								<xsl:if test="$contents/doc[@id = $docid]//item[@display='true']">
-									<fo:table table-layout="fixed" width="100%" id="__internal_layout__toc_{generate-id()}">
+									<fo:table table-layout="fixed" width="100%" id="__internal_layout__toc_{generate-id()}" role="SKIP">
 										<fo:table-column column-width="127mm"/>
 										<fo:table-column column-width="12mm"/>
-										<fo:table-body>											
+										<fo:table-body role="SKIP">											
 											<xsl:for-each select="$contents/doc[@id = $docid]//item[@display='true' and not(@type = 'annex') and not(@type = 'index') and not(@parent = 'annex')]">								
 												<xsl:call-template name="insertContentItem"/>								
 											</xsl:for-each>
@@ -1947,7 +1953,7 @@
 		
 	<xsl:template name="insertContentItem">
 		<xsl:param name="keep-with-next"/>
-		<fo:table-row>
+		<fo:table-row role="TOCI">
 			<xsl:if test="$keep-with-next = 'true'">
 				<xsl:attribute name="keep-with-next">always</xsl:attribute>
 			</xsl:if>
@@ -1965,14 +1971,14 @@
 				</xsl:choose>
 			</xsl:variable>
 			
-			<fo:table-cell>
+			<fo:table-cell role="SKIP">
 				<xsl:if test="normalize-space($space-before) != ''">
 					<xsl:attribute name="padding-top"><xsl:value-of select="normalize-space($space-before)"/></xsl:attribute>
 				</xsl:if>
 				<xsl:if test="normalize-space($space-after) != ''">
 					<xsl:attribute name="padding-bottom"><xsl:value-of select="normalize-space($space-after)"/></xsl:attribute>
 				</xsl:if>				
-				<fo:block role="TOCI">
+				<fo:block role="SKIP">
 					<xsl:if test="@level = 1">
 						<xsl:attribute name="font-family">Arial</xsl:attribute>
 						<xsl:attribute name="font-size">10pt</xsl:attribute>
@@ -2001,7 +2007,7 @@
 					</xsl:if>
 					
 					
-					<fo:list-block>
+					<fo:list-block role="SKIP">
 						<xsl:attribute name="provisional-distance-between-starts">
 							<xsl:choose>
 								<xsl:when test="@section = '' or @level &gt; 3">0mm</xsl:when>
@@ -2012,9 +2018,9 @@
 							</xsl:choose>
 						</xsl:attribute>
 						
-						<fo:list-item>
-							<fo:list-item-label end-indent="label-end()">
-								<fo:block>
+						<fo:list-item role="SKIP">
+							<fo:list-item-label end-indent="label-end()" role="SKIP">
+								<fo:block role="SKIP">
 									<xsl:if test="@level = 1 or (@level = 2 and not(@parent = 'annex'))">
 										<xsl:value-of select="@section"/>
 										<xsl:if test="normalize-space(@section) != '' and @type = 'annex'">.</xsl:if>
@@ -2022,18 +2028,18 @@
 									
 								</fo:block>
 							</fo:list-item-label>
-							<fo:list-item-body start-indent="body-start()">
-								<fo:block>
+							<fo:list-item-body start-indent="body-start()" role="SKIP">
+								<fo:block role="SKIP">
 									<xsl:if test="@level &gt;= 3">
 										<xsl:attribute name="margin-left">11mm</xsl:attribute>
 										<xsl:attribute name="text-indent">-11mm</xsl:attribute>
 									</xsl:if>
-									<fo:basic-link internal-destination="{@id}" fox:alt-text="{title}">
+									<fo:basic-link internal-destination="{@id}" fox:alt-text="{title}" role="SKIP">
 										<xsl:if test="@level &gt;= 3">
-											<fo:inline padding-right="2mm"><xsl:value-of select="@section"/></fo:inline>
+											<fo:inline padding-right="2mm" role="SKIP"><xsl:value-of select="@section"/></fo:inline>
 										</xsl:if>
 										
-										<fo:inline>
+										<fo:inline role="SKIP">
 											<xsl:apply-templates select="title"/>
 										</fo:inline>
 										
@@ -2044,16 +2050,16 @@
 					</fo:list-block>
 				</fo:block>				
 			</fo:table-cell>
-			<fo:table-cell text-align="right">
+			<fo:table-cell text-align="right" role="SKIP">
 				<xsl:if test="normalize-space($space-before) != ''">
 					<xsl:attribute name="padding-top"><xsl:value-of select="normalize-space($space-before)"/></xsl:attribute>
 				</xsl:if>
 				<xsl:if test="normalize-space($space-after) != ''">
 					<xsl:attribute name="padding-bottom"><xsl:value-of select="normalize-space($space-after)"/></xsl:attribute>
 				</xsl:if>
-				<fo:block>
-					<fo:basic-link internal-destination="{@id}" fox:alt-text="{title}">
-						<fo:inline font-family="Arial" font-weight="bold" font-size="10pt"><fo:page-number-citation ref-id="{@id}"/></fo:inline>
+				<fo:block role="SKIP">
+					<fo:basic-link internal-destination="{@id}" fox:alt-text="{title}" role="SKIP">
+						<fo:inline font-family="Arial" font-weight="bold" font-size="10pt" role="SKIP"><fo:wrapper role="artifact"><fo:page-number-citation ref-id="{@id}" /></fo:wrapper></fo:inline>
 					</fo:basic-link>
 				</fo:block>
 			</fo:table-cell>
@@ -2400,6 +2406,10 @@
 					</xsl:when>
 					<xsl:otherwise>
 						<fo:block role="H{$level}">
+							
+							<xsl:if test="ancestor::*[local-name() = 'clause'][@type = 'toc'] and $level &gt;= 3">
+								<xsl:attribute name="role">Caption</xsl:attribute>
+							</xsl:if>
 							
 							<xsl:choose>
 								<xsl:when test="ancestor::bipm:annex and $level &gt;= 2">
@@ -3440,7 +3450,7 @@
 	<!-- Table of Contents (ToC) processing -->
 	<!-- =================== -->
 	<xsl:template match="bipm:clause[@type = 'toc']" priority="3">
-		<fo:block role="TOC">
+		<fo:block>
 			<xsl:copy-of select="@id"/>
 			<xsl:apply-templates select="bipm:title[1]"/>
 			
@@ -3458,12 +3468,12 @@
 				</xsl:call-template>
 			</xsl:variable>
 			
-			<fo:table width="100%" table-layout="fixed">
+			<fo:table width="100%" table-layout="fixed" role="TOC">
 				<fo:table-column column-width="100%" />
-				<fo:table-header>
-					<fo:table-row font-weight="bold">
-						<fo:table-cell text-align="right" font-size="9pt" font-family="Arial">
-							<fo:block>
+				<fo:table-header role="SKIP">
+					<fo:table-row font-weight="bold" role="SKIP">
+						<fo:table-cell text-align="right" font-size="9pt" font-family="Arial" role="SKIP">
+							<fo:block role="Caption">
 								<xsl:variable name="page">
 									<xsl:call-template name="getLocalizedString">
 										<xsl:with-param name="key">Page.sg</xsl:with-param>
@@ -3474,10 +3484,10 @@
 						</fo:table-cell>
 					</fo:table-row>
 				</fo:table-header>
-				<fo:table-body>
-					<fo:table-row>
-						<fo:table-cell>
-							<fo:block>
+				<fo:table-body role="SKIP">
+					<fo:table-row role="SKIP">
+						<fo:table-cell role="SKIP">
+							<fo:block role="SKIP">
 								<xsl:variable name="title_id" select="generate-id(bipm:title[1])"/>
 								<xsl:apply-templates select="*[not(generate-id() = $title_id)]">
 									<xsl:with-param name="colwidths" select="$colwidths"/>
