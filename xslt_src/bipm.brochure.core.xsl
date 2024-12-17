@@ -460,6 +460,12 @@
 									<xsl:apply-templates select="." mode="update_xml_pres"/>
 								</xsl:variable>
 								
+								<xsl:if test="$debug = 'true'">
+									<redirect:write file="update_xml_pres.xml">
+										<xsl:copy-of select="xalan:nodeset($update_xml_pres)"/>
+									</redirect:write>
+								</xsl:if>
+								
 								<xsl:message>START flatxml_</xsl:message>
 								<xsl:variable name="startTime2" select="java:getTime(java:java.util.Date.new())"/>
 								<xsl:variable name="flatxml__">
@@ -502,8 +508,14 @@
 								</xsl:variable> -->
 								
 								<xsl:variable name="update_xml_pres">
-									<xsl:apply-templates mode="update_xml_pres"/>
+									<xsl:apply-templates select="." mode="update_xml_pres"/>
 								</xsl:variable>
+								
+								<xsl:if test="$debug = 'true'">
+									<redirect:write file="update_xml_pres.xml">
+										<xsl:copy-of select="xalan:nodeset($update_xml_pres)"/>
+									</redirect:write>
+								</xsl:if>
 								
 								<xsl:variable name="flatxml__">
 									<!-- <xsl:apply-templates select="xalan:nodeset($title_eref)" mode="flatxml"/> -->
@@ -610,6 +622,21 @@
 	<!-- ================================= -->
 	<!-- END Move eref inside title -->
 	<!-- ================================= -->	
+	
+	
+	<xsl:template match="*[local-name() = 'fmt-title']" mode="update_xml_pres" priority="2">
+		<xsl:element name="title" namespace="https://www.metanorma.org/ns/bipm">
+			<xsl:copy-of select="@*"/>
+			<xsl:apply-templates mode="update_xml_pres"/>
+		</xsl:element>
+	</xsl:template>
+	
+	<xsl:template match="*[local-name() = 'fmt-name']" mode="update_xml_pres" priority="2">
+		<xsl:element name="name" namespace="https://www.metanorma.org/ns/bipm">
+			<xsl:copy-of select="@*"/>
+			<xsl:apply-templates mode="update_xml_pres"/>
+		</xsl:element>
+	</xsl:template>
 	
 	<!-- ================================= -->
 	<!-- Flattening xml for fit notes at page sides (margins) -->
