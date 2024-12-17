@@ -457,7 +457,7 @@
 								</xsl:variable> -->
 								
 								<xsl:variable name="update_xml_pres">
-									<xsl:apply-templates mode="update_xml_pres"/>
+									<xsl:apply-templates select="." mode="update_xml_pres"/>
 								</xsl:variable>
 								
 								<xsl:message>START flatxml_</xsl:message>
