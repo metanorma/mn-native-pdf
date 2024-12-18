@@ -21293,6 +21293,7 @@
 	<xsl:variable name="regex_ja_spec"><xsl:value-of select="translate(normalize-space($regex_ja_spec_), ' ', '')"/></xsl:variable>
 	<xsl:template name="insertVerticalChar">
 		<xsl:param name="str"/>
+		<xsl:param name="char_prev"/>
 		<xsl:param name="writing-mode">lr-tb</xsl:param>
 		<xsl:param name="reference-orientation">90</xsl:param>
 		<xsl:param name="add_zero_width_space">false</xsl:param>
@@ -21308,6 +21309,7 @@
 				
 					<!-- <xsl:variable name="horizontal_mode" select="normalize-space(ancestor::*[local-name() = 'span'][@class = 'horizontal'] and 1 = 1)"/> -->
 					<xsl:variable name="char" select="substring($str,1,1)"/>
+					<xsl:variable name="char_next" select="substring($str,2,1)"/>
 					
 					<xsl:variable name="char_half_width" select="normalize-space(java:matches(java:java.lang.String.new($char), concat('([', $regex_ja_spec_half_width, ']{1,})')))"/>
 					
@@ -21319,6 +21321,9 @@
 							</fo:inline>
 						</xsl:when>
 						<xsl:otherwise>
+							<xsl:if test="ancestor::*[local-name() = 'title'] and ($char_prev = '' and ../preceding-sibling::node())">
+								<fo:inline padding-left="1mm"><xsl:value-of select="$zero_width_space"/></fo:inline>
+							</xsl:if>
 							<fo:inline-container text-align="center"
 										 alignment-baseline="central" width="1em" margin="0" padding="0"
 										 text-indent="0mm" last-line-end-indent="0mm" start-indent="0mm" end-indent="0mm" role="SKIP" text-align-last="center">
@@ -21352,6 +21357,9 @@
 									</fo:block>
 								</fo:block-container>
 							</fo:inline-container>
+							<xsl:if test="ancestor::*[local-name() = 'title' or local-name() = 'name'] and ($char_next != '' or ../following-sibling::node())">
+								<fo:inline padding-left="1mm"><xsl:value-of select="$zero_width_space"/></fo:inline>
+							</xsl:if>
 						</xsl:otherwise>
 					</xsl:choose>
 					
@@ -21359,6 +21367,7 @@
 						<!-- <xsl:if test="$horizontal_mode = 'false'"> -->
 							<xsl:call-template name="insertVerticalChar">
 								<xsl:with-param name="str" select="substring($str, 2)"/>
+								<xsl:with-param name="char_prev" select="$char"/>
 								<xsl:with-param name="writing-mode" select="$writing-mode"/>
 								<xsl:with-param name="reference-orientation" select="$reference-orientation"/>
 								<xsl:with-param name="add_zero_width_space" select="$add_zero_width_space"/>

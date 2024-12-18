@@ -1957,8 +1957,10 @@
 					</xsl:if>
 					
 					<xsl:if test="$vertical_layout = 'true'">
-						<xsl:attribute name="letter-spacing">1mm</xsl:attribute>
-						<xsl:attribute name="margin-left">-6mm</xsl:attribute>
+						<!-- <xsl:attribute name="letter-spacing">1mm</xsl:attribute> -->
+						<xsl:if test="not($text-align = 'center')">
+							<xsl:attribute name="margin-left">-6mm</xsl:attribute>
+						</xsl:if>
 					</xsl:if>
 					
 					<!-- if first and last childs are `add` ace-tag, then move start ace-tag before title -->
@@ -2020,6 +2022,7 @@
 									<!-- <xsl:value-of select="translate($section, '．', '・')"/> -->
 									<xsl:choose>
 										<xsl:when test="$vertical_layout = 'true'">
+											<xsl:attribute name="letter-spacing">1mm</xsl:attribute>
 											<!-- Example: <title depth="2"><font_en_vertical>G</font_en_vertical>・一<tab/>一般</title> -->
 											<xsl:apply-templates select="*[local-name() = 'tab'][1]/preceding-sibling::node()"/>
 										</xsl:when>
@@ -2034,13 +2037,50 @@
 						
 					</xsl:if>
 					
-					<xsl:call-template name="extractTitle"/>
+					<xsl:choose>
+						<xsl:when test="$vertical_layout = 'true'">
+							<!-- <xsl:call-template name="extractTitle"/> -->
+							<xsl:variable name="title_fo">
+								<title_fo>
+									<xsl:call-template name="extractTitle"/>
+								</title_fo>
+							</xsl:variable>
+							<!-- title_fo='<xsl:copy-of select="xalan:nodeset($title_fo)"/>' -->
+							<xsl:apply-templates select="xalan:nodeset($title_fo)" mode="letter_spacing"/>
+						</xsl:when>
+						<xsl:otherwise>
+							<xsl:call-template name="extractTitle"/>
+						</xsl:otherwise>
+					</xsl:choose>
 					
 					<xsl:apply-templates select="following-sibling::*[1][local-name() = 'variant-title'][@type = 'sub']" mode="subtitle"/>
 				</xsl:element>
 			</xsl:otherwise>
 		</xsl:choose>
 	</xsl:template>
+
+	<!-- ============================= -->
+	<!-- add letter-spacing between characters letter_spacing -->
+	<!-- ============================= -->
+	<xsl:template match="@*|node()" mode="letter_spacing">
+		<xsl:copy>
+			<xsl:apply-templates select="@*|node()" mode="letter_spacing"/>
+		</xsl:copy>
+	</xsl:template>
+	
+	<xsl:template match="title_fo" mode="letter_spacing">
+		<xsl:apply-templates mode="letter_spacing"/>
+	</xsl:template>
+	
+	<xsl:template match="title_fo/text() | fo:inline[@font-family]/text()" mode="letter_spacing">
+		<xsl:call-template name="add-letter-spacing">
+			<xsl:with-param name="text" select="."/>
+			<xsl:with-param name="letter-spacing">1</xsl:with-param>
+		</xsl:call-template>
+	</xsl:template>
+	<!-- ============================= -->
+	<!-- END: letter_spacing -->
+	<!-- ============================= -->
 
 	<xsl:template match="*[local-name() = 'term']" priority="2">
 		<fo:block id="{@id}" xsl:use-attribute-sets="term-style">
