@@ -20553,9 +20553,16 @@
 									</xsl:when>
 									<xsl:when test="$namespace = 'itu'">
 										<xsl:value-of select="*[local-name() = 'title'][@type='main']"/>
-									</xsl:when>	
+									</xsl:when>
 									<xsl:otherwise>
-										<xsl:value-of select="*[local-name() = 'title'][@language = $lang and @type = 'main']"/>
+										<xsl:choose>
+											<xsl:when test="*[local-name() = 'title'][@language = $lang and @type = 'main']">
+												<xsl:value-of select="*[local-name() = 'title'][@language = $lang and @type = 'main']"/>
+											</xsl:when>
+											<xsl:otherwise>
+												<xsl:value-of select="*[local-name() = 'title'][@language = $lang and @type = 'title-main']"/>
+											</xsl:otherwise>
+										</xsl:choose>
 									</xsl:otherwise>
 								</xsl:choose>
 							</xsl:for-each>
