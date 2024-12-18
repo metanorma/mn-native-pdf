@@ -21321,7 +21321,8 @@
 							</fo:inline>
 						</xsl:when>
 						<xsl:otherwise>
-							<xsl:if test="ancestor::*[local-name() = 'title'] and ($char_prev = '' and ../preceding-sibling::node())">
+							<!--  namespace-uri(ancestor::*[local-name() = 'title']) != '' to skip title from $contents  -->
+							<xsl:if test="namespace-uri(ancestor::*[local-name() = 'title']) != '' and ($char_prev = '' and ../preceding-sibling::node())">
 								<fo:inline padding-left="1mm"><xsl:value-of select="$zero_width_space"/></fo:inline>
 							</xsl:if>
 							<fo:inline-container text-align="center"
@@ -21357,7 +21358,7 @@
 									</fo:block>
 								</fo:block-container>
 							</fo:inline-container>
-							<xsl:if test="ancestor::*[local-name() = 'title' or local-name() = 'name'] and ($char_next != '' or ../following-sibling::node())">
+							<xsl:if test="namespace-uri(ancestor::*[local-name() = 'title']) != '' and ($char_next != '' or ../following-sibling::node())">
 								<fo:inline padding-left="1mm"><xsl:value-of select="$zero_width_space"/></fo:inline>
 							</xsl:if>
 						</xsl:otherwise>
