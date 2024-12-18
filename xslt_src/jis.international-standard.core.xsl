@@ -2018,7 +2018,15 @@
 										<xsl:attribute name="font-weight">bold</xsl:attribute>
 									</xsl:if>
 									<!-- <xsl:value-of select="translate($section, '．', '・')"/> -->
-									<xsl:value-of select="$section"/>
+									<xsl:choose>
+										<xsl:when test="$vertical_layout = 'true'">
+											<!-- Example: <title depth="2"><font_en_vertical>G</font_en_vertical>・一<tab/>一般</title> -->
+											<xsl:apply-templates select="*[local-name() = 'tab'][1]/preceding-sibling::node()"/>
+										</xsl:when>
+										<xsl:otherwise>
+											<xsl:value-of select="$section"/>
+										</xsl:otherwise>
+									</xsl:choose>
 									<fo:inline padding-right="4mm">&#xa0;</fo:inline>
 								</fo:inline>
 							</xsl:otherwise>
@@ -3318,7 +3326,7 @@
 				
 					<fo:inline baseline-shift="-20%">
 						<fo:inline>
-							<fo:retrieve-marker retrieve-class-name="section_title" retrieve-position="last-ending-within-page" retrieve-boundary="page"/>
+							<fo:retrieve-marker retrieve-class-name="section_title" retrieve-position="last-ending-within-page" retrieve-boundary="page-sequence"/>
 						</fo:inline><!-- <fo:inline padding-bottom="5mm">三</fo:inline>用語及び定義 -->
 					</fo:inline>
 					
