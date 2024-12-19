@@ -9071,9 +9071,18 @@
 			<fo:block role="SKIP">
 			
 				<xsl:if test="$isGenerateTableIF = 'true'">
-					<xsl:attribute name="id"><xsl:value-of select="@id"/></xsl:attribute>
+					<xsl:choose>
+						<xsl:when test="$namespace = 'jis'">
+							<fo:inline>
+								<xsl:attribute name="id"><xsl:value-of select="@id"/></xsl:attribute>
+								<xsl:value-of select="$hair_space"/>
+							</fo:inline>
+						</xsl:when>
+						<xsl:otherwise>
+							<xsl:attribute name="id"><xsl:value-of select="@id"/></xsl:attribute>
+						</xsl:otherwise>
+					</xsl:choose>
 				</xsl:if>
-			
 			
 				<xsl:if test="$namespace = 'bipm'">
 					<xsl:if test="not(.//bipm:image)">
@@ -10586,7 +10595,25 @@
 			<xsl:call-template name="refine_dt-cell-style"/>
 			
 			<fo:block xsl:use-attribute-sets="dt-block-style" role="SKIP">
-				<xsl:copy-of select="@id"/>
+			
+				<xsl:choose>
+					<xsl:when test="$isGenerateTableIF = 'true'">
+						<xsl:choose>
+						<xsl:when test="$namespace = 'jis'">
+							<fo:inline>
+								<xsl:attribute name="id"><xsl:value-of select="@id"/></xsl:attribute>
+								<xsl:value-of select="$hair_space"/>
+							</fo:inline>
+						</xsl:when>
+						<xsl:otherwise>
+							<xsl:copy-of select="@id"/>
+						</xsl:otherwise>
+						</xsl:choose>
+					</xsl:when>
+					<xsl:otherwise>
+						<xsl:copy-of select="@id"/>
+					</xsl:otherwise>
+				</xsl:choose>
 				
 				<xsl:if test="normalize-space($key_iso) = 'true'">
 					<xsl:attribute name="margin-top">0</xsl:attribute>
@@ -10619,7 +10646,17 @@
 			<fo:block role="SKIP">
 			
 				<xsl:if test="$isGenerateTableIF = 'true'">
-					<xsl:attribute name="id"><xsl:value-of select="@id"/></xsl:attribute>
+					<xsl:choose>
+						<xsl:when test="$namespace = 'jis'">
+							<fo:inline>
+								<xsl:attribute name="id"><xsl:value-of select="@id"/></xsl:attribute>
+								<xsl:value-of select="$hair_space"/>
+							</fo:inline>
+						</xsl:when>
+						<xsl:otherwise>
+							<xsl:attribute name="id"><xsl:value-of select="@id"/></xsl:attribute>
+						</xsl:otherwise>
+					</xsl:choose>
 				</xsl:if>
 			
 				<xsl:if test="$namespace = 'itu'">
@@ -12030,6 +12067,14 @@
 						<xsl:copy-of select="."/>
 					</xsl:for-each>
 				</xsl:variable>
+				
+				<!-- <xsl:if test="$debug = 'true'">
+					<redirect:write file="{generate-id()}_words_with_width_sorted.xml">
+						<td_text><xsl:copy-of select="$td_text"/></td_text>
+						<words_with_width><xsl:copy-of select="$words_with_width"/></words_with_width>
+						<xsl:copy-of select="$words_with_width_sorted"/>
+					</redirect:write>
+				</xsl:if> -->
 			
 				<xsl:variable name="words">
 					<xsl:for-each select=".//*[local-name() = 'image' or local-name() = 'stem']">
@@ -12157,6 +12202,7 @@
 			<xsl:if test="ancestor::*[local-name() = 'tt']"><tag>tt</tag></xsl:if>
 			<xsl:if test="ancestor::*[local-name() = 'sourcecode']"><tag>sourcecode</tag></xsl:if>
 			<xsl:if test="ancestor::*[local-name() = 'keep-together_within-line']"><tag>keep-together_within-line</tag></xsl:if>
+			<xsl:if test="ancestor::*[local-name() = 'font_en_vertical']"><tag>font_en_vertical</tag></xsl:if>
 		</tags>
 	</xsl:template>
 	<!-- =============================== -->
@@ -19410,7 +19456,9 @@
 	<xsl:template name="add_id">
 		<xsl:if test="not(@id)">
 			<!-- add @id - first element with @id plus '_element_name' -->
-			<xsl:attribute name="id"><xsl:value-of select="(.//*[@id])[1]/@id"/>_<xsl:value-of select="local-name()"/></xsl:attribute>
+			<xsl:variable name="prefix_id_" select="(.//*[@id])[1]/@id"/>
+			<xsl:variable name="prefix_id"><xsl:value-of select="$prefix_id_"/><xsl:if test="normalize-space($prefix_id_) = ''"><xsl:value-of select="generate-id()"/></xsl:if></xsl:variable>
+			<xsl:attribute name="id"><xsl:value-of select="$prefix_id"/>_<xsl:value-of select="local-name()"/></xsl:attribute>
 		</xsl:if>
 	</xsl:template>
 	
@@ -21298,9 +21346,6 @@
 		<xsl:param name="reference-orientation">90</xsl:param>
 		<xsl:param name="add_zero_width_space">false</xsl:param>
 		<xsl:choose>
-			<xsl:when test="$isGenerateTableIF = 'true'">
-				<xsl:value-of select="$str"/>
-			</xsl:when>
 			<xsl:when test="ancestor::*[local-name() = 'span'][@class = 'norotate']">
 				<xsl:value-of select="$str"/>
 			</xsl:when>
@@ -21385,9 +21430,6 @@
 		<xsl:param name="reference-orientation">90</xsl:param>
 		<xsl:param name="add_zero_width_space">false</xsl:param>
 		<xsl:choose>
-			<xsl:when test="$isGenerateTableIF = 'true'">
-				<xsl:value-of select="$str"/>
-			</xsl:when>
 			<xsl:otherwise>
 				<fo:inline-container text-align="center"
 										 alignment-baseline="central" width="1em" margin="0" padding="0"

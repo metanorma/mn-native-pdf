@@ -269,6 +269,10 @@
 			
 			
 				<fo:simple-page-master master-name="document_2024" page-width="{$pageHeight}mm" page-height="{$pageWidth}mm">
+					<xsl:if test="$isGenerateTableIF = 'true'">
+						<xsl:attribute name="page-width"><xsl:value-of select="$pageWidth"/>mm</xsl:attribute>
+						<xsl:attribute name="page-height"><xsl:value-of select="$pageHeight"/>mm</xsl:attribute>
+					</xsl:if>
 					<!-- Note (for writing-mode="tb-rl", may be due the update for support 'tb-rl' mode):
 					 fo:region-body/@margin-top = left margin
 					 fo:region-body/@margin-bottom = right margin
@@ -288,6 +292,10 @@
 				</fo:simple-page-master>
 			
 				<fo:simple-page-master master-name="document_2024_page" page-width="{$pageHeight}mm" page-height="{$pageWidth}mm">
+					<xsl:if test="$isGenerateTableIF = 'true'">
+						<xsl:attribute name="page-width"><xsl:value-of select="$pageWidth"/>mm</xsl:attribute>
+						<xsl:attribute name="page-height"><xsl:value-of select="$pageHeight"/>mm</xsl:attribute>
+					</xsl:if>
 					<!-- Note (for writing-mode="tb-rl", may be due the update for support 'tb-rl' mode):
 					 fo:region-body/@margin-top = left margin
 					 fo:region-body/@margin-bottom = right margin
@@ -306,6 +314,10 @@
 					<fo:region-end region-name="right-region" extent="{$marginLeftRight2}mm"/> <!--  background-color="red" -->
 				</fo:simple-page-master>
 				<fo:simple-page-master master-name="document_2024_last" page-width="{$pageHeight}mm" page-height="{$pageWidth}mm">
+					<xsl:if test="$isGenerateTableIF = 'true'">
+						<xsl:attribute name="page-width"><xsl:value-of select="$pageWidth"/>mm</xsl:attribute>
+						<xsl:attribute name="page-height"><xsl:value-of select="$pageHeight"/>mm</xsl:attribute>
+					</xsl:if>
 					<!-- Note (for writing-mode="tb-rl", may be due the update for support 'tb-rl' mode):
 					 fo:region-body/@margin-top = left margin
 					 fo:region-body/@margin-bottom = right margin
@@ -535,6 +547,7 @@
 						<xsl:call-template name="getLang"/>
 					</xsl:variable>
 					
+					<xsl:if test="$isGenerateTableIF = 'false'">
 					<xsl:choose>
 						<xsl:when test="$vertical_layout = 'true'">
 							<xsl:call-template name="insertCoverPage2024">
@@ -560,6 +573,7 @@
 						<xsl:with-param name="docidentifier" select="$docidentifier"/>
 						<xsl:with-param name="copyrightText" select="$copyrightText"/>
 					</xsl:call-template>
+					</xsl:if>
 					</xsl:if>
 				
 				
@@ -965,6 +979,7 @@
 					</xsl:for-each>
 					
 					
+					<xsl:if test="$isGenerateTableIF = 'false'">
 					<!-- insert Last Cover Page on English for Japanese document -->
 					<xsl:if test="$doctype = 'technical-specification' and $doclang != 'en'">
 						<xsl:call-template name="insertCoverPageJSA">
@@ -981,6 +996,7 @@
 								<xsl:copy-of select="$copyrightText"/>
 							</xsl:with-param>
 						</xsl:call-template>
+					</xsl:if>
 					</xsl:if>
 				
 				</xsl:for-each>
@@ -2637,6 +2653,7 @@
 			<!-- ( ) [ ] _ { } U+FF08 FULLWIDTH LEFT PARENTHESIS U+FF09 FULLWIDTH RIGHT PARENTHESIS-->
 			<!-- <xsl:when test="$vertical_layout = 'true'">((<xsl:value-of select="$regex_ja_spec"/>)|([^\u0028\u0029\u005B\u005D\u005F\u007B\u007D<xsl:value-of select="$regex_en_base"/>]){1,})</xsl:when> -->
 			<!-- regex for find characters to rotation -->
+			<xsl:when test="$isGenerateTableIF = 'true' and $vertical_layout = 'true'">(([^\u005F<xsl:value-of select="$regex_ja_spec"/><xsl:value-of select="$regex_en_base"/>]){1,})</xsl:when> <!-- \u0028\u0029\u005B\u005D \u007B\u007D -->
 			<xsl:when test="$vertical_layout = 'true'">((<xsl:value-of select="$regex_ja_spec"/>)|([^\u005F<xsl:value-of select="$regex_en_base"/>]){1,})</xsl:when> <!-- \u0028\u0029\u005B\u005D \u007B\u007D -->
 			<xsl:otherwise>([^<xsl:value-of select="$regex_en_base"/>]{1,})</xsl:otherwise>
 		</xsl:choose>
