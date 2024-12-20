@@ -1,0 +1,3101 @@
+MIME-Version: 1.0
+Content-Type: multipart/related; boundary="----=_NextPart_4e283c07.ec0f.48b2"
+
+------=_NextPart_4e283c07.ec0f.48b2
+Content-ID: <mpfa-guidelines.htm>
+Content-Disposition: inline; filename="mpfa-guidelines.htm"
+Content-Type: text/html; charset="utf-8"
+
+<?xml version="1.0"?>
+<html xmlns:epub="http://www.idpf.org/2007/ops" xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:w="urn:schemas-microsoft-com:office:word" xmlns:v="urn:schemas-microsoft-com:vml" xmlns:m="http://schemas.microsoft.com/office/2004/12/omml" xmlns="http://www.w3.org/TR/REC-html40" lang="en" xml:lang="en">
+  <head><!--[if gte mso 9]>
+<xml>
+<w:WordDocument>
+<w:View>Print</w:View>
+<w:Zoom>100</w:Zoom>
+<w:DoNotOptimizeForBrowser/>
+</w:WordDocument>
+</xml>
+<![endif]-->
+<meta http-equiv=Content-Type content="text/html; charset=utf-8"/>
+
+  <link rel=File-List href="cid:filelist.xml"/>
+<style>
+  <!--
+@charset "UTF-8";
+/* Font Definitions */
+@font-face {
+  font-family: Wingdings;
+  panose-1: 5 0 0 0 0 0 0 0 0 0;
+  mso-font-charset: 2;
+  mso-generic-font-family: decorative;
+  mso-font-pitch: variable;
+  mso-font-signature: 0 268435456 0 0 -2147483648 0; }
+
+@font-face {
+  font-family: "MS Mincho";
+  panose-1: 2 2 6 9 4 2 5 8 3 4;
+  mso-font-alt: "ＭＳ 明朝";
+  mso-font-charset: 128;
+  mso-generic-font-family: modern;
+  mso-font-pitch: fixed;
+  mso-font-signature: -536870145 1791491579 134217746 0 131231 0; }
+
+@font-face {
+  font-family: "Cambria Math";
+  panose-1: 2 4 5 3 5 4 6 3 2 4;
+  mso-font-charset: 0;
+  mso-generic-font-family: roman;
+  mso-font-pitch: variable;
+  mso-font-signature: -536870145 1107305727 0 0 415 0; }
+
+@font-face {
+  font-family: "Arial Narrow";
+  panose-1: 2 11 5 6 2 2 2 3 2 4;
+  mso-font-charset: 0;
+  mso-generic-font-family: swiss;
+  mso-font-pitch: variable;
+  mso-font-signature: 3 0 0 0 1 0; }
+
+@font-face {
+  font-family: "Source Sans Pro";
+  panose-1: 2 11 5 3 3 4 3 2 2 4;
+  mso-font-alt: Arial;
+  mso-font-charset: 77;
+  mso-generic-font-family: swiss;
+  mso-font-pitch: variable;
+  mso-font-signature: 536870919 1 0 0 403 0; }
+
+@font-face {
+  font-family: Tahoma;
+  panose-1: 2 11 6 4 3 5 4 4 2 4;
+  mso-font-charset: 0;
+  mso-generic-font-family: swiss;
+  mso-font-pitch: variable;
+  mso-font-signature: -520081665 -1073717157 41 0 66047 0; }
+
+@font-face {
+  font-family: Times;
+  panose-1: 2 0 5 0 0 0 0 0 0 0;
+  mso-font-charset: 0;
+  mso-generic-font-family: auto;
+  mso-font-pitch: variable;
+  mso-font-signature: -536870145 1342185562 0 0 415 0; }
+
+@font-face {
+  font-family: "Wingdings 2";
+  panose-1: 5 2 1 2 1 5 7 7 7 7;
+  mso-font-charset: 2;
+  mso-generic-font-family: decorative;
+  mso-font-pitch: variable;
+  mso-font-signature: 0 268435456 0 0 -2147483648 0; }
+
+@font-face {
+  font-family: "\@MS Mincho";
+  panose-1: 2 2 6 9 4 2 5 8 3 4;
+  mso-font-charset: 128;
+  mso-generic-font-family: modern;
+  mso-font-pitch: fixed;
+  mso-font-signature: -536870145 1791491579 134217746 0 131231 0; }
+
+p.MsoNormal, li.MsoNormal, div.MsoNormal {
+  mso-style-unhide: no;
+  mso-style-qformat: yes;
+  mso-style-parent: "";
+  margin: 0cm;
+  margin-bottom: 12.0pt;
+  mso-pagination: widow-orphan;
+  font-size: 10.5pt;
+  font-family: "Arial",sans-serif;
+  mso-fareast-font-family: "Times New Roman";
+  mso-ansi-language: EN-US;
+  mso-fareast-language: EN-US; }
+
+p.MsoListParagraph, li.MsoListParagraph, div.MsoListParagraph {
+  mso-style-priority: 34;
+  mso-style-unhide: no;
+  mso-style-qformat: yes;
+  margin-top: 0cm;
+  margin-right: 0cm;
+  /* do not put in margin-left, it is specific to list level */
+  margin-bottom: 12.0pt;
+  mso-add-space: auto;
+  mso-pagination: widow-orphan;
+  font-size: 10.5pt;
+  font-family: "Arial",sans-serif;
+  mso-ansi-language: EN-AU;
+  mso-fareast-language: EN-US; }
+
+p.MsoListParagraphCxSpFirst, li.MsoListParagraphCxSpFirst, div.MsoListParagraphCxSpFirst {
+  mso-style-priority: 34;
+  mso-style-unhide: no;
+  mso-style-qformat: yes;
+  mso-style-type: export-only;
+  margin-top: 0cm;
+  margin-right: 0cm;
+  margin-bottom: 12.0pt;
+  /* do not put in margin-left, it is specific to list level */
+  mso-add-space: auto;
+  mso-pagination: widow-orphan;
+  font-size: 10.5pt;
+  font-family: "Arial",sans-serif;
+  mso-ansi-language: EN-AU;
+  mso-fareast-language: EN-US; }
+
+p.MsoListParagraphCxSpMiddle, li.MsoListParagraphCxSpMiddle, div.MsoListParagraphCxSpMiddle {
+  mso-style-priority: 34;
+  mso-style-unhide: no;
+  mso-style-qformat: yes;
+  mso-style-type: export-only;
+  margin-top: 0cm;
+  margin-right: 0cm;
+  margin-bottom: 12.0pt;
+  /* do not put in margin-left, it is specific to list level */
+  mso-add-space: auto;
+  mso-pagination: widow-orphan;
+  font-size: 10.5pt;
+  font-family: "Arial",sans-serif;
+  mso-ansi-language: EN-AU;
+  mso-fareast-language: EN-US; }
+
+p.MsoListParagraphCxSpLast, li.MsoListParagraphCxSpLast, div.MsoListParagraphCxSpLast {
+  mso-style-priority: 34;
+  mso-style-unhide: no;
+  mso-style-qformat: yes;
+  mso-style-type: export-only;
+  margin-top: 0cm;
+  margin-right: 0cm;
+  margin-bottom: 12.0pt;
+  /* do not put in margin-left, it is specific to list level */
+  mso-add-space: auto;
+  mso-pagination: widow-orphan;
+  font-size: 10.5pt;
+  font-family: "Arial",sans-serif;
+  mso-ansi-language: EN-AU;
+  mso-fareast-language: EN-US; }
+
+p.MsoCommentText, li.MsoCommentText, div.MsoCommentText {
+  mso-style-noshow: yes;
+  mso-style-unhide: no;
+  margin: 0cm;
+  margin-bottom: .0001pt;
+  mso-pagination: widow-orphan;
+  font-size: 10.0pt;
+  font-family: "Arial",sans-serif;
+  mso-fareast-font-family: "Times New Roman";
+  mso-ansi-language: EN-US;
+  mso-fareast-language: EN-US; }
+
+p.MsoHeader, li.MsoHeader, div.MsoHeader {
+  mso-style-unhide: no;
+  margin: 0cm;
+  margin-bottom: .0001pt;
+  mso-pagination: widow-orphan;
+  tab-stops: center 216.0pt right 482.0pt;
+  font-size: 10.5pt;
+  font-family: "Arial",sans-serif;
+  mso-fareast-font-family: "Times New Roman";
+  mso-ansi-language: EN-US;
+  mso-fareast-language: EN-US; }
+
+p.MsoHeaderLandscape, li.MsoHeaderLandscape, div.MsoHeaderLandscape {
+  mso-style-unhide: no;
+  margin: 0cm;
+  margin-bottom: .0001pt;
+  mso-pagination: widow-orphan;
+  tab-stops: center 367.0pt right 734.0pt;
+  font-size: 10.5pt;
+  font-family: "Arial",sans-serif;
+  mso-fareast-font-family: "Times New Roman";
+  mso-ansi-language: EN-US;
+  mso-fareast-language: EN-US; }
+
+p.MsoFooter, li.MsoFooter, div.MsoFooter {
+  mso-style-unhide: no;
+  margin: 0cm;
+  margin-bottom: .0001pt;
+  mso-pagination: widow-orphan;
+  tab-stops: right 482.0pt;
+  font-size: 10.5pt;
+  font-family: "Arial",sans-serif;
+  mso-fareast-font-family: "Times New Roman";
+  mso-ansi-language: EN-US;
+  mso-fareast-language: EN-US; }
+
+p.MsoFooterLandscape, li.MsoFooterLandscape, div.MsoFooterLandscape {
+  mso-style-unhide: no;
+  margin: 0cm;
+  margin-bottom: .0001pt;
+  mso-pagination: widow-orphan;
+  tab-stops: right 734.0pt;
+  font-size: 10.5pt;
+  font-family: "Arial",sans-serif;
+  mso-fareast-font-family: "Times New Roman";
+  mso-ansi-language: EN-US;
+  mso-fareast-language: EN-US; }
+
+span.MsoCommentReference {
+  mso-style-noshow: yes;
+  mso-style-unhide: no;
+  mso-style-parent: "";
+  mso-ansi-font-size: 8.0pt;
+  mso-bidi-font-size: 8.0pt; }
+
+p.MsoBodyText, li.MsoBodyText, div.MsoBodyText {
+  mso-style-unhide: no;
+  margin-top: 9.0pt;
+  margin-right: 0cm;
+  margin-bottom: 0cm;
+  margin-left: 0cm;
+  margin-bottom: .0001pt;
+  mso-pagination: widow-orphan;
+  font-size: 12.0pt;
+  font-family: "Arial",sans-serif;
+  mso-fareast-font-family: "Times New Roman";
+  mso-bidi-font-family: "Times New Roman";
+  mso-ansi-language: EN-US;
+  mso-fareast-language: EN-US; }
+
+p.MsoTitle, li.MsoTitle, div.MsoTitle {
+  mso-style-priority: 10;
+  mso-style-unhide: no;
+  mso-style-qformat: yes;
+  mso-style-link: "Title Char";
+  mso-style-next: Normal;
+  margin: 0cm;
+  margin-bottom: .0001pt;
+  mso-add-space: auto;
+  mso-pagination: widow-orphan;
+  font-size: 28.0pt;
+  font-family: "Calibri Light",sans-serif;
+  mso-fareast-font-family: "Times New Roman";
+  mso-bidi-font-family: "Times New Roman";
+  letter-spacing: -.5pt;
+  mso-font-kerning: 14.0pt;
+  mso-ansi-language: EN-US;
+  mso-fareast-language: EN-US; }
+
+p.MsoTitleCxSpFirst, li.MsoTitleCxSpFirst, div.MsoTitleCxSpFirst {
+  mso-style-priority: 10;
+  mso-style-unhide: no;
+  mso-style-qformat: yes;
+  mso-style-link: "Title Char";
+  mso-style-next: Normal;
+  mso-style-type: export-only;
+  margin: 0cm;
+  margin-bottom: .0001pt;
+  mso-add-space: auto;
+  mso-pagination: widow-orphan;
+  font-size: 28.0pt;
+  font-family: "Calibri Light",sans-serif;
+  mso-fareast-font-family: "Times New Roman";
+  mso-bidi-font-family: "Times New Roman";
+  letter-spacing: -.5pt;
+  mso-font-kerning: 14.0pt;
+  mso-ansi-language: EN-US;
+  mso-fareast-language: EN-US; }
+
+p.MsoTitleCxSpMiddle, li.MsoTitleCxSpMiddle, div.MsoTitleCxSpMiddle {
+  mso-style-priority: 10;
+  mso-style-unhide: no;
+  mso-style-qformat: yes;
+  mso-style-link: "Title Char";
+  mso-style-next: Normal;
+  mso-style-type: export-only;
+  margin: 0cm;
+  margin-bottom: .0001pt;
+  mso-add-space: auto;
+  mso-pagination: widow-orphan;
+  font-size: 28.0pt;
+  font-family: "Calibri Light",sans-serif;
+  mso-fareast-font-family: "Times New Roman";
+  mso-bidi-font-family: "Times New Roman";
+  letter-spacing: -.5pt;
+  mso-font-kerning: 14.0pt;
+  mso-ansi-language: EN-US;
+  mso-fareast-language: EN-US; }
+
+p.MsoTitleCxSpLast, li.MsoTitleCxSpLast, div.MsoTitleCxSpLast {
+  mso-style-priority: 10;
+  mso-style-unhide: no;
+  mso-style-qformat: yes;
+  mso-style-link: "Title Char";
+  mso-style-next: Normal;
+  mso-style-type: export-only;
+  margin: 0cm;
+  margin-bottom: .0001pt;
+  mso-add-space: auto;
+  mso-pagination: widow-orphan;
+  font-size: 28.0pt;
+  font-family: "Calibri Light",sans-serif;
+  mso-fareast-font-family: "Times New Roman";
+  mso-bidi-font-family: "Times New Roman";
+  letter-spacing: -.5pt;
+  mso-font-kerning: 14.0pt;
+  mso-ansi-language: EN-US;
+  mso-fareast-language: EN-US; }
+
+a:link, span.MsoHyperlink {
+  mso-style-unhide: no;
+  mso-style-parent: "";
+  color: blue;
+  text-decoration: underline;
+  text-underline: single; }
+
+a:visited, span.MsoHyperlinkFollowed {
+  mso-style-unhide: no;
+  mso-style-parent: "";
+  color: purple;
+  text-decoration: underline;
+  text-underline: single; }
+
+p.MsoCommentSubject, li.MsoCommentSubject, div.MsoCommentSubject {
+  mso-style-noshow: yes;
+  mso-style-unhide: no;
+  mso-style-parent: "Comment Text";
+  mso-style-next: "Comment Text";
+  margin: 0cm;
+  margin-bottom: .0001pt;
+  mso-pagination: widow-orphan;
+  font-size: 10.0pt;
+  font-family: "Arial",sans-serif;
+  mso-fareast-font-family: "Times New Roman";
+  mso-ansi-language: EN-US;
+  mso-fareast-language: EN-US;
+  font-weight: bold; }
+
+p.MsoAcetate, li.MsoAcetate, div.MsoAcetate {
+  mso-style-noshow: yes;
+  mso-style-unhide: no;
+  margin: 0cm;
+  margin-bottom: .0001pt;
+  mso-pagination: widow-orphan;
+  font-size: 8.0pt;
+  font-family: "Tahoma",sans-serif;
+  mso-fareast-font-family: "Times New Roman";
+  mso-ansi-language: EN-US;
+  mso-fareast-language: EN-US; }
+
+span.blackgraphtxsidebar {
+  mso-style-name: blackgraphtxsidebar;
+  mso-style-unhide: no;
+  mso-style-parent: ""; }
+
+span.blackgraphtx {
+  mso-style-name: blackgraphtx;
+  mso-style-unhide: no;
+  mso-style-parent: ""; }
+
+.MsoChpDefault {
+  mso-style-type: export-only;
+  mso-default-props: yes; }
+
+div.figure, p.figure {
+  text-align: center; }
+
+h1 {
+  mso-style-priority: 1;
+  mso-style-unhide: no;
+  mso-style-qformat: yes;
+  mso-style-link: "Heading 1 Char";
+  mso-style-next: Normal;
+  margin-top: 13.5pt;
+  margin-right: 0cm;
+  margin-bottom: 12.0pt;
+  margin-left: 0cm;
+  text-indent: 0cm;
+  line-height: 13.5pt;
+  mso-pagination: widow-orphan;
+  page-break-after: avoid;
+  mso-outline-level: 1;
+  mso-list: l1 level1 lfo6;
+  mso-hyphenate: none;
+  tab-stops: 20.0pt list 21.6pt left 28.0pt;
+  font-size: 13.0pt;
+  mso-bidi-font-size: 11.0pt;
+  font-family: "Arial",sans-serif;
+  mso-fareast-font-family: "Arial",sans-serif;
+  color: #0E1A85;
+  mso-font-kerning: 0pt;
+  mso-ansi-language: EN-GB;
+  mso-fareast-language: JA;
+  mso-bidi-font-weight: normal; }
+
+h1.Annex {
+  mso-style-priority: 1;
+  mso-style-unhide: no;
+  mso-style-qformat: yes;
+  mso-style-link: "Heading 1 Char";
+  mso-style-next: Normal;
+  margin-top: 3.0pt;
+  margin-right: 0cm;
+  margin-bottom: 12.0pt;
+  margin-left: 0cm;
+  text-indent: 0cm;
+  line-height: 12.5pt;
+  text-align: center;
+  mso-pagination: widow-orphan;
+  page-break-after: avoid;
+  font-weight: normal;
+  mso-outline-level: 1;
+  mso-list: l1 level1 lfo6;
+  mso-hyphenate: none;
+  tab-stops: 20.0pt list 21.6pt left 28.0pt;
+  font-size: 12.0pt;
+  mso-bidi-font-size: 11.0pt;
+  font-family: "Arial",sans-serif;
+  mso-fareast-font-family: "Arial",sans-serif;
+  color: #0E1A85;
+  mso-font-kerning: 0pt;
+  mso-ansi-language: EN-GB;
+  mso-fareast-language: JA;
+  mso-bidi-font-weight: normal; }
+
+.h2Annex {
+  mso-style-priority: 2;
+  mso-style-unhide: no;
+  mso-style-qformat: yes;
+  mso-style-parent: "Heading 1";
+  mso-style-link: "Heading 2 Char";
+  mso-style-next: Normal;
+  margin-top: 3.0pt;
+  margin-right: 0cm;
+  margin-bottom: 12.0pt;
+  margin-left: 0cm;
+  text-indent: 0cm;
+  line-height: 12.5pt;
+  mso-pagination: widow-orphan;
+  page-break-after: avoid;
+  mso-outline-level: 2;
+  mso-hyphenate: none;
+  tab-stops: 27.0pt 35.0pt;
+  font-size: 12.0pt;
+  mso-bidi-font-size: 11.0pt;
+  font-family: "Arial",sans-serif;
+  font-weight: bold;
+  mso-fareast-font-family: "Arial",sans-serif;
+  color: #0E1A85;
+  mso-ansi-language: EN-GB;
+  mso-fareast-language: JA;
+  mso-bidi-font-weight: normal; }
+
+h2 {
+  mso-style-priority: 2;
+  mso-style-unhide: no;
+  mso-style-qformat: yes;
+  mso-style-parent: "Heading 1";
+  mso-style-link: "Heading 2 Char";
+  mso-style-next: Normal;
+  margin-top: 3.0pt;
+  margin-right: 0cm;
+  margin-bottom: 12.0pt;
+  margin-left: 0cm;
+  text-indent: 0cm;
+  line-height: 12.5pt;
+  mso-pagination: widow-orphan;
+  page-break-after: avoid;
+  mso-outline-level: 2;
+  mso-list: l1 level2 lfo6;
+  mso-hyphenate: none;
+  tab-stops: 27.0pt 35.0pt;
+  font-size: 12.0pt;
+  mso-bidi-font-size: 11.0pt;
+  font-family: "Arial",sans-serif;
+  mso-fareast-font-family: "Arial",sans-serif;
+  color: #0E1A85;
+  mso-ansi-language: EN-GB;
+  mso-fareast-language: JA;
+  mso-bidi-font-weight: normal; }
+
+h3 {
+  mso-style-priority: 3;
+  mso-style-unhide: no;
+  mso-style-qformat: yes;
+  mso-style-parent: "Heading 1";
+  mso-style-link: "Heading 3 Char";
+  mso-style-next: Normal;
+  margin-top: 3.0pt;
+  margin-right: 0cm;
+  margin-bottom: 12.0pt;
+  margin-left: 0cm;
+  text-indent: 0cm;
+  line-height: 12.0pt;
+  mso-pagination: widow-orphan;
+  page-break-after: avoid;
+  mso-outline-level: 3;
+  mso-list: l1 level3 lfo6;
+  mso-hyphenate: none;
+  tab-stops: list 36.0pt left 44.0pt;
+  font-size: 11.0pt;
+  font-family: "Arial",sans-serif;
+  color: #0E1A85;
+  mso-fareast-font-family: "Arial",sans-serif;
+  mso-ansi-language: EN-GB;
+  mso-fareast-language: JA;
+  mso-bidi-font-weight: normal; }
+
+h4 {
+  mso-style-priority: 4;
+  mso-style-unhide: no;
+  mso-style-qformat: yes;
+  mso-style-parent: "Heading 3";
+  mso-style-link: "Heading 4 Char";
+  mso-style-next: Normal;
+  margin-top: 3.0pt;
+  margin-right: 0cm;
+  margin-bottom: 12.0pt;
+  margin-left: 0cm;
+  text-indent: 0cm;
+  line-height: 12.0pt;
+  mso-pagination: widow-orphan;
+  page-break-after: avoid;
+  mso-outline-level: 4;
+  mso-list: l1 level4 lfo6;
+  mso-hyphenate: none;
+  tab-stops: 51.05pt 57.0pt 68.0pt;
+  font-size: 11.0pt;
+  font-family: "Arial",sans-serif;
+  color: #0E1A85;
+  mso-fareast-font-family: "Arial",sans-serif;
+  mso-ansi-language: EN-GB;
+  mso-fareast-language: JA;
+  mso-bidi-font-weight: normal; }
+
+h5 {
+  mso-style-priority: 5;
+  mso-style-unhide: no;
+  mso-style-qformat: yes;
+  mso-style-parent: "Heading 4";
+  mso-style-link: "Heading 5 Char";
+  mso-style-next: Normal;
+  margin-top: 3.0pt;
+  margin-right: 0cm;
+  margin-bottom: 12.0pt;
+  margin-left: 0cm;
+  text-indent: 0cm;
+  line-height: 12.0pt;
+  mso-pagination: widow-orphan;
+  page-break-after: avoid;
+  mso-outline-level: 5;
+  mso-list: l1 level5 lfo6;
+  mso-hyphenate: none;
+  tab-stops: 51.05pt list 54.0pt;
+  font-size: 11.0pt;
+  font-family: "Arial",sans-serif;
+  mso-fareast-font-family: "Arial",sans-serif;
+  color: #0E1A85;
+  mso-ansi-language: EN-GB;
+  mso-fareast-language: JA;
+  mso-bidi-font-weight: normal; }
+
+h6 {
+  mso-style-priority: 6;
+  mso-style-unhide: no;
+  mso-style-qformat: yes;
+  mso-style-parent: "Heading 5";
+  mso-style-link: "Heading 6 Char";
+  mso-style-next: Normal;
+  margin-top: 3.0pt;
+  margin-right: 0cm;
+  margin-bottom: 12.0pt;
+  margin-left: 0cm;
+  text-indent: 0cm;
+  line-height: 12.0pt;
+  mso-pagination: widow-orphan;
+  page-break-after: avoid;
+  mso-outline-level: 6;
+  mso-list: l1 level6 lfo6;
+  mso-hyphenate: none;
+  tab-stops: 51.05pt list 72.0pt;
+  font-size: 11.0pt;
+  font-family: "Arial",sans-serif;
+  color: #0E1A85;
+  mso-fareast-font-family: "Arial",sans-serif;
+  mso-ansi-language: EN-GB;
+  mso-fareast-language: JA;
+  mso-bidi-font-weight: normal; }
+
+p.MsoToc1, li.MsoToc1, div.MsoToc1 {
+  mso-style-priority: 39;
+  mso-style-unhide: no;
+  mso-style-next: Normal;
+  margin-top: 6.0pt;
+  margin-right: 25.0pt;
+  margin-bottom: 0cm;
+  margin-left: 36.0pt;
+  margin-bottom: .0001pt;
+  text-indent: -36.0pt;
+  line-height: 12.0pt;
+  mso-pagination: widow-orphan;
+  mso-hyphenate: none;
+  tab-stops: 20.15pt 36.0pt right dotted 487.6pt;
+  font-size: 10.5pt;
+  font-family: "Arial",sans-serif;
+  mso-fareast-font-family: "Arial",sans-serif;
+  mso-bidi-font-family: "Arial",sans-serif;
+  mso-ansi-language: EN-GB;
+  font-weight: bold;
+  mso-bidi-font-weight: normal; }
+
+p.MsoToc2, li.MsoToc2, div.MsoToc2 {
+  mso-style-noshow: yes;
+  mso-style-priority: 39;
+  mso-style-unhide: no;
+  mso-style-parent: "TOC 1";
+  mso-style-next: Normal;
+  margin-top: 0cm;
+  margin-right: 25.0pt;
+  margin-bottom: 0cm;
+  margin-left: 36.0pt;
+  margin-bottom: .0001pt;
+  text-indent: -36.0pt;
+  line-height: 12.0pt;
+  mso-pagination: widow-orphan;
+  mso-hyphenate: none;
+  tab-stops: 20.15pt 36.0pt right dotted 487.6pt;
+  font-size: 10.5pt;
+  font-family: "Arial",sans-serif;
+  mso-fareast-font-family: "Arial",sans-serif;
+  mso-bidi-font-family: "Arial",sans-serif;
+  mso-ansi-language: EN-GB;
+  font-weight: bold;
+  mso-bidi-font-weight: normal; }
+
+p.MsoToc3, li.MsoToc3, div.MsoToc3 {
+  mso-style-noshow: yes;
+  mso-style-priority: 39;
+  mso-style-unhide: no;
+  mso-style-parent: "TOC 2";
+  mso-style-next: Normal;
+  margin-top: 0cm;
+  margin-right: 25.0pt;
+  margin-bottom: 0cm;
+  margin-left: 36.0pt;
+  margin-bottom: .0001pt;
+  text-indent: -36.0pt;
+  line-height: 12.0pt;
+  mso-pagination: widow-orphan;
+  mso-hyphenate: none;
+  tab-stops: 20.15pt 36.0pt right dotted 487.6pt;
+  font-size: 10.5pt;
+  font-family: "Arial",sans-serif;
+  mso-fareast-font-family: "Arial",sans-serif;
+  mso-bidi-font-family: "Arial",sans-serif;
+  mso-ansi-language: EN-GB;
+  font-weight: bold;
+  mso-bidi-font-weight: normal; }
+
+span.MsoFootnoteReference {
+  mso-style-priority: 99;
+  vertical-align: super; }
+
+p.MsoFootnoteText, li.MsoFootnoteText, div.MsoFootnoteText {
+  mso-style-noshow: yes;
+  mso-style-priority: 99;
+  mso-style-link: "Footnote Text Char";
+  margin-top: 0cm;
+  margin-right: 0cm;
+  margin-bottom: 12.0pt;
+  margin-left: 0cm;
+  text-align: justify;
+  line-height: 12.0pt;
+  mso-pagination: widow-orphan;
+  tab-stops: 20.15pt;
+  font-size: 10.0pt;
+  font-family: "Arial",sans-serif;
+  mso-fareast-font-family: "Arial",sans-serif;
+  mso-bidi-font-family: "Arial",sans-serif;
+  mso-ansi-language: EN-GB;
+  mso-fareast-language: EN-US; }
+
+p.MsoBodyText, li.MsoBodyText, div.MsoBodyText {
+  mso-style-noshow: yes;
+  mso-style-priority: 99;
+  mso-style-unhide: no;
+  mso-style-link: "Body Text Char";
+  margin-top: 0cm;
+  margin-right: 0cm;
+  margin-bottom: 6.0pt;
+  margin-left: 0cm;
+  text-align: justify;
+  line-height: 12.0pt;
+  mso-pagination: widow-orphan;
+  font-size: 10.5pt;
+  font-family: "Arial",sans-serif;
+  mso-fareast-font-family: "Arial",sans-serif;
+  mso-bidi-font-family: "Arial",sans-serif;
+  mso-ansi-language: EN-GB; }
+
+span.Heading1Char {
+  mso-style-name: "Heading 1 Char";
+  mso-style-priority: 1;
+  mso-style-unhide: no;
+  mso-style-locked: yes;
+  mso-style-parent: "";
+  mso-style-link: "Heading 1";
+  mso-ansi-font-size: 13.0pt;
+  font-family: "Arial",sans-serif;
+  mso-ascii-font-family: Cambria;
+  mso-fareast-font-family: "Arial",sans-serif;
+  mso-hansi-font-family: "Arial",sans-serif;
+  mso-ansi-language: EN-GB;
+  mso-fareast-language: JA;
+  font-weight: bold;
+  mso-bidi-font-weight: normal; }
+
+span.Heading2Char {
+  mso-style-name: "Heading 2 Char";
+  mso-style-priority: 2;
+  mso-style-unhide: no;
+  mso-style-locked: yes;
+  mso-style-parent: "";
+  mso-style-link: "Heading 2";
+  mso-ansi-font-size: 12.0pt;
+  font-family: "Arial",sans-serif;
+  mso-ascii-font-family: Cambria;
+  mso-fareast-font-family: "Arial",sans-serif;
+  mso-hansi-font-family: "Arial",sans-serif;
+  mso-ansi-language: EN-GB;
+  mso-fareast-language: JA;
+  font-weight: bold;
+  mso-bidi-font-weight: normal; }
+
+span.Heading3Char {
+  mso-style-name: "Heading 3 Char";
+  mso-style-priority: 3;
+  mso-style-unhide: no;
+  mso-style-locked: yes;
+  mso-style-parent: "";
+  mso-style-link: "Heading 3";
+  mso-ansi-font-size: 11.0pt;
+  font-family: "Arial",sans-serif;
+  mso-ascii-font-family: "Arial",sans-serif;
+  mso-fareast-font-family: "Arial",sans-serif;
+  mso-hansi-font-family: "Arial",sans-serif;
+  mso-ansi-language: EN-GB;
+  mso-fareast-language: JA;
+  font-weight: bold;
+  mso-bidi-font-weight: normal; }
+
+span.Heading4Char {
+  mso-style-name: "Heading 4 Char";
+  mso-style-priority: 4;
+  mso-style-unhide: no;
+  mso-style-locked: yes;
+  mso-style-parent: "";
+  mso-style-link: "Heading 4";
+  mso-ansi-font-size: 11.0pt;
+  font-family: "Arial",sans-serif;
+  mso-ascii-font-family: "Arial",sans-serif;
+  mso-fareast-font-family: "Arial",sans-serif;
+  mso-hansi-font-family: "Arial",sans-serif;
+  mso-ansi-language: EN-GB;
+  mso-fareast-language: JA;
+  font-weight: bold;
+  mso-bidi-font-weight: normal; }
+
+span.Heading5Char {
+  mso-style-name: "Heading 5 Char";
+  mso-style-priority: 5;
+  mso-style-unhide: no;
+  mso-style-locked: yes;
+  mso-style-parent: "";
+  mso-style-link: "Heading 5";
+  mso-ansi-font-size: 11.0pt;
+  font-family: "Arial",sans-serif;
+  mso-ascii-font-family: "Arial",sans-serif;
+  mso-fareast-font-family: "Arial",sans-serif;
+  mso-hansi-font-family: "Arial",sans-serif;
+  mso-ansi-language: EN-GB;
+  mso-fareast-language: JA;
+  font-weight: bold;
+  mso-bidi-font-weight: normal; }
+
+span.Heading6Char {
+  mso-style-name: "Heading 6 Char";
+  mso-style-priority: 6;
+  mso-style-unhide: no;
+  mso-style-locked: yes;
+  mso-style-parent: "";
+  mso-style-link: "Heading 6";
+  mso-ansi-font-size: 11.0pt;
+  font-family: "Arial",sans-serif;
+  mso-ascii-font-family: "Arial",sans-serif;
+  mso-fareast-font-family: "Arial",sans-serif;
+  mso-hansi-font-family: "Arial",sans-serif;
+  mso-ansi-language: EN-GB;
+  mso-fareast-language: JA;
+  font-weight: bold;
+  mso-bidi-font-weight: normal; }
+
+p.Tablebody, li.Tablebody, div.Tablebody {
+  mso-style-name: "Table body";
+  mso-style-noshow: yes;
+  mso-style-unhide: no;
+  margin-top: 3.0pt;
+  margin-right: 0cm;
+  margin-bottom: 3.0pt;
+  margin-left: 0cm;
+  line-height: 10.5pt;
+  mso-pagination: widow-orphan;
+  font-size: 10.0pt;
+  mso-bidi-font-size: 11.0pt;
+  font-family: "Arial",sans-serif;
+  mso-fareast-font-family: "Arial",sans-serif;
+  mso-bidi-font-family: "Arial",sans-serif;
+  mso-ansi-language: EN-GB; }
+
+/* Page Definitions */
+@page {
+  size: 612.0pt 792.0pt;
+  margin: 36.0pt 53.85pt 21.55pt 53.85pt;
+  mso-header-margin: 42.55pt;
+  mso-footer-margin: 43.1pt;
+  mso-footnote-separator: url(cid:header.html) fs;
+  mso-footnote-continuation-separator: url(cid:header.html) fcs;
+  mso-endnote-separator: url(cid:header.html) es;
+  mso-endnote-continuation-separator: url(cid:header.html) ecs; }
+
+/* List Definitions */
+@list l0 {
+  mso-list-id: 145051656;
+  mso-list-template-ids: 2112159680; }
+
+@list l0:level1 {
+  mso-level-number-format: alpha-upper;
+  mso-level-style-link: ANNEX;
+  mso-level-suffix: none;
+  mso-level-text: "Annex\00A0%1";
+  mso-level-tab-stop: none;
+  mso-level-number-position: left;
+  margin-left: 0cm;
+  text-indent: 0cm;
+  mso-ansi-font-size: 14.0pt;
+  mso-bidi-font-size: 14.0pt;
+  font-family: "Arial",sans-serif;
+  mso-bidi-font-family: "Arial",sans-serif;
+  mso-ansi-font-weight: bold;
+  mso-ansi-font-style: normal; }
+
+@list l0:level2 {
+  mso-level-style-link: a2;
+  mso-level-text: "%1\.%2";
+  mso-level-tab-stop: 18.0pt;
+  mso-level-number-position: left;
+  margin-left: 0cm;
+  text-indent: 0cm;
+  mso-bidi-font-family: "Arial",sans-serif;
+  mso-ansi-font-weight: bold;
+  mso-ansi-font-style: normal; }
+
+@list l0:level3 {
+  mso-level-style-link: a3;
+  mso-level-text: "%1\.%2\.%3";
+  mso-level-tab-stop: 36.0pt;
+  mso-level-number-position: left;
+  margin-left: 0cm;
+  text-indent: 0cm;
+  mso-bidi-font-family: "Arial",sans-serif;
+  mso-ansi-font-weight: bold;
+  mso-ansi-font-style: normal; }
+
+@list l0:level4 {
+  mso-level-style-link: a4;
+  mso-level-text: "%1\.%2\.%3\.%4";
+  mso-level-tab-stop: 54.0pt;
+  mso-level-number-position: left;
+  margin-left: 0cm;
+  text-indent: 0cm;
+  mso-bidi-font-family: "Arial",sans-serif;
+  mso-ansi-font-weight: bold;
+  mso-ansi-font-style: normal; }
+
+@list l0:level5 {
+  mso-level-style-link: a5;
+  mso-level-text: "%1\.%2\.%3\.%4\.%5";
+  mso-level-tab-stop: 54.0pt;
+  mso-level-number-position: left;
+  margin-left: 0cm;
+  text-indent: 0cm;
+  mso-bidi-font-family: "Arial",sans-serif;
+  mso-ansi-font-weight: bold;
+  mso-ansi-font-style: normal; }
+
+@list l0:level6 {
+  mso-level-style-link: a6;
+  mso-level-text: "%1\.%2\.%3\.%4\.%5\.%6";
+  mso-level-tab-stop: 72.0pt;
+  mso-level-number-position: left;
+  margin-left: 0cm;
+  text-indent: 0cm;
+  mso-bidi-font-family: "Arial",sans-serif;
+  mso-ansi-font-weight: bold;
+  mso-ansi-font-style: normal; }
+
+@list l0:level7 {
+  mso-level-reset-level: level2;
+  mso-level-suffix: space;
+  mso-level-text: "Figure\00A0%1\.%7\00A0—";
+  mso-level-tab-stop: none;
+  mso-level-number-position: left;
+  margin-left: 0cm;
+  text-indent: 0cm;
+  mso-bidi-font-family: "Arial",sans-serif; }
+
+@list l0:level8 {
+  mso-level-reset-level: level2;
+  mso-level-suffix: space;
+  mso-level-text: "Table\00A0%1\.%8\00A0—";
+  mso-level-tab-stop: none;
+  mso-level-number-position: left;
+  margin-left: 0cm;
+  text-indent: 0cm;
+  mso-bidi-font-family: "Arial",sans-serif; }
+
+@list l0:level9 {
+  mso-level-number-format: roman-lower;
+  mso-level-text: "\(%9\)";
+  mso-level-tab-stop: 306.0pt;
+  mso-level-number-position: left;
+  margin-left: 0cm;
+  text-indent: 0cm;
+  mso-bidi-font-family: "Arial",sans-serif; }
+
+@list l1 {
+  mso-list-id: 866942648;
+  mso-list-template-ids: -1756330000; }
+
+@list l1:level1 {
+  mso-level-style-link: "Heading 1";
+  mso-level-text: "%1";
+  mso-level-tab-stop: 21.6pt;
+  mso-level-number-position: left;
+  margin-left: 21.6pt;
+  text-indent: -21.6pt;
+  mso-bidi-font-family: "Arial",sans-serif;
+  mso-ansi-font-weight: bold;
+  mso-ansi-font-style: normal; }
+
+@list l1:level2 {
+  mso-level-style-link: "Heading 2";
+  mso-level-text: "%1\.%2";
+  mso-level-tab-stop: 18.0pt;
+  mso-level-number-position: left;
+  margin-left: 0cm;
+  text-indent: 0cm;
+  mso-bidi-font-family: "Arial",sans-serif;
+  mso-ansi-font-weight: bold;
+  mso-ansi-font-style: normal; }
+
+@list l1:level3 {
+  mso-level-style-link: "Heading 3";
+  mso-level-text: "%1\.%2\.%3";
+  mso-level-tab-stop: 36.0pt;
+  mso-level-number-position: left;
+  margin-left: 0cm;
+  text-indent: 0cm;
+  mso-bidi-font-family: "Arial",sans-serif;
+  mso-ansi-font-weight: bold;
+  mso-ansi-font-style: normal; }
+
+@list l1:level4 {
+  mso-level-style-link: "Heading 4";
+  mso-level-text: "%1\.%2\.%3\.%4";
+  mso-level-tab-stop: 54.0pt;
+  mso-level-number-position: left;
+  margin-left: 0cm;
+  text-indent: 0cm;
+  mso-bidi-font-family: "Arial",sans-serif;
+  mso-ansi-font-weight: bold;
+  mso-ansi-font-style: normal; }
+
+@list l1:level5 {
+  mso-level-style-link: "Heading 5";
+  mso-level-text: "%1\.%2\.%3\.%4\.%5";
+  mso-level-tab-stop: 54.0pt;
+  mso-level-number-position: left;
+  margin-left: 0cm;
+  text-indent: 0cm;
+  mso-bidi-font-family: "Arial",sans-serif;
+  mso-ansi-font-weight: bold;
+  mso-ansi-font-style: normal; }
+
+@list l1:level6 {
+  mso-level-style-link: "Heading 6";
+  mso-level-text: "%1\.%2\.%3\.%4\.%5\.%6";
+  mso-level-tab-stop: 72.0pt;
+  mso-level-number-position: left;
+  margin-left: 0cm;
+  text-indent: 0cm;
+  mso-bidi-font-family: "Arial",sans-serif;
+  mso-ansi-font-weight: bold;
+  mso-ansi-font-style: normal; }
+
+@list l1:level7 {
+  mso-level-text: "%1\.%2\.%3\.%4\.%5\.%6\.%7";
+  mso-level-tab-stop: 72.0pt;
+  mso-level-number-position: left;
+  margin-left: 0cm;
+  text-indent: 0cm;
+  mso-bidi-font-family: "Arial",sans-serif; }
+
+@list l1:level8 {
+  mso-level-text: "%1\.%2\.%3\.%4\.%5\.%6\.%7\.%8";
+  mso-level-tab-stop: 90.0pt;
+  mso-level-number-position: left;
+  margin-left: 0cm;
+  text-indent: 0cm;
+  mso-bidi-font-family: "Arial",sans-serif; }
+
+@list l1:level9 {
+  mso-level-text: "%1\.%2\.%3\.%4\.%5\.%6\.%7\.%8\.%9";
+  mso-level-tab-stop: 90.0pt;
+  mso-level-number-position: left;
+  margin-left: 0cm;
+  text-indent: 0cm;
+  mso-bidi-font-family: "Arial",sans-serif; }
+
+/* ordered list */
+@list l2 {
+  mso-list-id: 525294607;
+  mso-list-template-ids: 67633181; }
+
+@list l2:level1 {
+  mso-level-number-format: alpha-lower;
+  mso-level-text: "%1\)";
+  mso-level-tab-stop: none;
+  mso-level-number-position: left;
+  margin-left: 18.0pt;
+  text-indent: -18.0pt; }
+
+@list l2:level2 {
+  mso-level-text: "%2\)";
+  mso-level-tab-stop: none;
+  mso-level-number-position: left;
+  margin-left: 36.0pt;
+  text-indent: -18.0pt; }
+
+@list l2:level3 {
+  mso-level-number-format: roman-lower;
+  mso-level-text: "%3\)";
+  mso-level-tab-stop: none;
+  mso-level-number-position: left;
+  margin-left: 54.0pt;
+  text-indent: -18.0pt; }
+
+@list l2:level4 {
+  mso-level-number-format: alpha-upper;
+  mso-level-text: "%4\)";
+  mso-level-tab-stop: none;
+  mso-level-number-position: left;
+  margin-left: 72.0pt;
+  text-indent: -18.0pt; }
+
+@list l2:level5 {
+  mso-level-number-format: roman-upper;
+  mso-level-text: "%5\)";
+  mso-level-tab-stop: none;
+  mso-level-number-position: left;
+  margin-left: 90.0pt;
+  text-indent: -18.0pt; }
+
+@list l2:level6 {
+  mso-level-number-format: alpha-lower;
+  mso-level-text: "%6\)";
+  mso-level-tab-stop: none;
+  mso-level-number-position: left;
+  margin-left: 108.0pt;
+  text-indent: -18.0pt; }
+
+@list l2:level7 {
+  mso-level-tab-stop: none;
+  mso-level-text: "%7\)";
+  mso-level-number-position: left;
+  margin-left: 126.0pt;
+  text-indent: -18.0pt; }
+
+@list l2:level8 {
+  mso-level-number-format: roman-lower;
+  mso-level-text: "%8\)";
+  mso-level-tab-stop: none;
+  mso-level-number-position: left;
+  margin-left: 144.0pt;
+  text-indent: -18.0pt; }
+
+@list l2:level9 {
+  mso-level-number-format: alpha-upper;
+  mso-level-text: "%9\)";
+  mso-level-tab-stop: none;
+  mso-level-number-position: left;
+  margin-left: 162.0pt;
+  text-indent: -18.0pt; }
+
+/* Unordered list */
+@list l3 {
+  mso-list-id: 1308196397;
+  mso-list-type: hybrid;
+  mso-list-template-ids: -277327948 -457018030 67633155 67633157 67633153 67633155 67633157 67633153 67633155 67633157; }
+
+@list l3:level1 {
+  mso-level-number-format: bullet;
+  mso-level-text: —;
+  mso-level-tab-stop: none;
+  mso-level-number-position: left;
+  margin-left: 18.0pt;
+  text-indent: -18.0pt; }
+
+@list l3:level2 {
+  mso-level-number-format: bullet;
+  mso-level-text: —;
+  mso-level-tab-stop: none;
+  mso-level-number-position: left;
+  margin-left: 36.0pt;
+  text-indent: -18.0pt; }
+
+@list l3:level3 {
+  mso-level-number-format: bullet;
+  mso-level-text: —;
+  mso-level-tab-stop: none;
+  mso-level-number-position: left;
+  margin-left: 54.0pt;
+  text-indent: -18.0pt; }
+
+@list l3:level4 {
+  mso-level-number-format: bullet;
+  mso-level-text: —;
+  mso-level-tab-stop: none;
+  mso-level-number-position: left;
+  margin-left: 72.0pt;
+  text-indent: -18.0pt; }
+
+@list l3:level5 {
+  mso-level-number-format: bullet;
+  mso-level-text: —;
+  mso-level-tab-stop: none;
+  mso-level-number-position: left;
+  margin-left: 90.0pt;
+  text-indent: -18.0pt; }
+
+@list l3:level6 {
+  mso-level-number-format: bullet;
+  mso-level-text: —;
+  mso-level-tab-stop: none;
+  mso-level-number-position: left;
+  margin-left: 108.0pt;
+  text-indent: -18.0pt; }
+
+@list l3:level7 {
+  mso-level-number-format: bullet;
+  mso-level-text: —;
+  mso-level-tab-stop: none;
+  mso-level-number-position: left;
+  margin-left: 126.0pt;
+  text-indent: -18.0pt; }
+
+@list l3:level8 {
+  mso-level-number-format: bullet;
+  mso-level-text: —;
+  mso-level-tab-stop: none;
+  mso-level-number-position: left;
+  margin-left: 144.0pt;
+  text-indent: -18.0pt; }
+
+@list l3:level9 {
+  mso-level-number-format: bullet;
+  mso-level-text: —;
+  mso-level-tab-stop: none;
+  mso-level-number-position: left;
+  margin-left: 162.0pt;
+  text-indent: -18.0pt; }
+
+div.ListContLevel1 {
+  mso-style-priority: 34;
+  margin-left: 18.0pt;
+  margin-right: 0cm; }
+
+div.ListContLevel2 {
+  mso-style-priority: 34;
+  margin-top: 0cm;
+  margin-left: 36.0pt;
+  margin-right: 0cm; }
+
+div.ListContLevel3 {
+  mso-style-priority: 34;
+  margin-left: 54.0pt;
+  margin-right: 0cm; }
+
+div.ListContLevel4 {
+  mso-style-priority: 34;
+  margin-left: 72.0pt;
+  margin-right: 0cm; }
+
+div.ListContLevel5 {
+  mso-style-priority: 34;
+  margin-left: 90.0pt;
+  margin-right: 0cm; }
+
+div.ListContLevel6 {
+  mso-style-priority: 34;
+  margin-left: 108.0pt;
+  margin-right: 0cm; }
+
+div.ListContLevel7 {
+  mso-style-priority: 34;
+  margin-left: 126.0pt;
+  margin-right: 0cm; }
+
+div.ListContLevel8 {
+  mso-style-priority: 34;
+  margin-left: 144.0pt;
+  margin-right: 0cm; }
+
+div.ListContLevel9 {
+  mso-style-priority: 34;
+  margin-left: 162.0pt;
+  margin-right: 0cm; }
+
+table.MsoNormalTable {
+  mso-style-name: "Table Normal";
+  mso-tstyle-rowband-size: 0;
+  mso-tstyle-colband-size: 0;
+  mso-style-noshow: yes;
+  mso-style-priority: 99;
+  mso-style-parent: "";
+  mso-padding-alt: 0cm 5.4pt 0cm 5.4pt;
+  mso-para-margin: 0cm;
+  mso-para-margin-bottom: .0001pt;
+  mso-pagination: widow-orphan;
+  font-size: 10.0pt;
+  font-family: "Arial",sans-serif; }
+
+ol {
+  margin-bottom: 0cm;
+  margin-left: 18pt; }
+
+ul {
+  margin-bottom: 0cm;
+  margin-left: 18pt; }
+
+-->
+</style><meta http-equiv=Content-Type content="text/html; charset=UTF-8"/>
+    <style>
+      <!--
+div.table_container {
+  margin-bottom: 14pt;
+}
+
+ol
+        {margin-bottom:0cm;}
+ul
+        {margin-bottom:0cm;}
+
+table.MsoISOTable tr
+    {page-break-inside:avoid;}
+
+td { page-break-inside:avoid; }
+tr { page-break-after:avoid; }
+
+table.MsoISOTableBig tr
+    {page-break-inside:auto;}
+
+table.MsoISOTableBig td
+    {page-break-inside:auto;}
+
+span.stem
+    {font-family:"Cambria Math",serif;
+    mso-ascii-font-family:"Cambria Math";
+    font-style:italic;}
+
+dt
+    {page-break-inside:avoid;
+    page-break-after:avoid}
+
+br.section
+    {page-break-before:always;
+    mso-break-type:section-break;}
+br.pagebreak
+    {page-break-before:always;
+    mso-special-character:line-break;}
+
+span.addition {
+        color: blue;
+}
+span.deletion {
+        color: red;
+        text-decoration: line-through;
+}
+
+-->
+    </style>
+    <style>
+      <!--
+p.Sourcecode, li.Sourcecode, div.Sourcecode, pre.Sourcecode, pre {
+  mso-style-unhide: no;
+  mso-style-qformat: yes;
+  mso-style-parent: "";
+  margin-top: 6.0pt;
+  margin-right: 0cm;
+  margin-bottom: 6.0pt;
+  margin-left: 0cm;
+  text-align: left;
+  mso-pagination: widow-orphan;
+  tab-stops: 45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt;
+  font-size: 10.0pt;
+  font-family: "Courier New",monospace;
+  mso-fareast-font-family: Calibri;
+  mso-bidi-font-family: "Courier New";
+  mso-ansi-language: EN-GB; }
+
+p.pseudocode, li.pseudocode, div.pseudocode {
+  mso-style-unhide: no;
+  mso-style-qformat: yes;
+  mso-style-parent: "";
+  margin-top: 6.0pt;
+  margin-right: 0cm;
+  margin-bottom: 6.0pt;
+  margin-left: 0cm;
+  text-align: left;
+  mso-pagination: widow-orphan;
+  tab-stops: 45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt;
+  font-size: 10.5pt;
+  font-family: "Arial",sans-serif;
+  mso-fareast-font-family: Calibri;
+  mso-bidi-font-family: "Courier New";
+  mso-ansi-language: EN-GB; }
+
+p.Biblio, li.Biblio, div.Biblio, p.NormRef, li.NormRef, div.NormRef {
+  mso-style-unhide: no;
+  mso-style-qformat: yes;
+  mso-style-parent: "";
+  margin-top: 0cm;
+  margin-right: 0cm;
+  margin-bottom: 12.0pt;
+  margin-left: 33.15pt;
+  text-indent: -33.15pt;
+  tab-stops: 33.15pt;
+  line-height: 12.0pt;
+  mso-pagination: widow-orphan;
+  font-size: 10.5pt;
+  font-weight: normal;
+  font-family: "Arial",sans-serif;
+  mso-fareast-font-family: "Arial",sans-serif;
+  mso-bidi-font-family: "Arial",sans-serif;
+  mso-ansi-language: EN-GB; }
+
+p.FigureTitle {
+  mso-style-unhide: no;
+  mso-style-qformat: yes;
+  mso-style-parent: "";
+  margin-top: 0cm;
+  margin-right: 0cm;
+  margin-bottom: 6.0pt;
+  margin-left: 0cm;
+  text-align: center;
+  line-height: 12.0pt;
+  page-break-before: avoid;
+  mso-pagination: widow-orphan;
+  tab-stops: 20.15pt;
+  font-size: 11.0pt;
+  font-weight: bold;
+  font-family: "Arial",sans-serif;
+  mso-fareast-font-family: "Arial",sans-serif;
+  mso-bidi-font-family: "Arial",sans-serif;
+  mso-ansi-language: EN-GB; }
+
+p.SourceTitle {
+  mso-style-unhide: no;
+  mso-style-qformat: yes;
+  mso-style-parent: "";
+  margin-top: 0cm;
+  margin-right: 0cm;
+  margin-bottom: 6.0pt;
+  margin-left: 0cm;
+  text-align: center;
+  line-height: 12.0pt;
+  page-break-before: avoid;
+  mso-pagination: widow-orphan;
+  tab-stops: 20.15pt;
+  font-size: 11.0pt;
+  font-weight: bold;
+  font-family: "Arial",sans-serif;
+  mso-fareast-font-family: "Arial",sans-serif;
+  mso-bidi-font-family: "Arial",sans-serif;
+  mso-ansi-language: EN-GB; }
+
+p.AdmonitionTitle, p.RecommendationTitle {
+  mso-style-unhide: no;
+  mso-style-qformat: yes;
+  mso-style-parent: "";
+  margin-top: 0cm;
+  margin-right: 0cm;
+  margin-bottom: 6.0pt;
+  margin-left: 0cm;
+  text-align: center;
+  line-height: 12.0pt;
+  page-break-after: avoid;
+  mso-pagination: widow-orphan;
+  tab-stops: 20.15pt;
+  font-size: 11.0pt;
+  font-weight: bold;
+  font-family: "Arial",sans-serif;
+  mso-fareast-font-family: "Arial",sans-serif;
+  mso-bidi-font-family: "Arial",sans-serif;
+  mso-ansi-language: EN-GB; }
+
+p.TableTitle {
+  mso-style-unhide: no;
+  mso-style-qformat: yes;
+  mso-style-parent: "";
+  margin-top: 0cm;
+  margin-right: 0cm;
+  margin-bottom: 6.0pt;
+  margin-left: 0cm;
+  text-align: center;
+  page-break-after: avoid;
+  line-height: 12.0pt;
+  mso-pagination: widow-orphan;
+  tab-stops: 20.15pt;
+  font-size: 11.0pt;
+  font-family: "Arial",sans-serif;
+  mso-fareast-font-family: "Arial",sans-serif;
+  mso-bidi-font-family: "Arial",sans-serif;
+  mso-ansi-language: EN-GB; }
+
+p.Note, div.Note, li.Note, p.TableFootnote, div.TableFootnote, li.TableFootnote {
+  mso-style-unhide: no;
+  mso-style-qformat: yes;
+  mso-style-parent: "";
+  margin-top: 0cm;
+  margin-right: 0cm;
+  margin-bottom: 12.0pt;
+  margin-left: 0cm;
+  text-align: justify;
+  line-height: 12.0pt;
+  mso-pagination: widow-orphan;
+  tab-stops: 20.15pt;
+  font-size: 10.0pt;
+  mso-bidi-font-size: 11.0pt;
+  font-family: "Arial",sans-serif;
+  mso-fareast-font-family: "Arial",sans-serif;
+  mso-bidi-font-family: "Arial",sans-serif;
+  mso-ansi-language: EN-GB; }
+
+p.ANNEX, li.ANNEX, div.ANNEX {
+  mso-style-name: ANNEX;
+  mso-style-priority: 10;
+  mso-style-unhide: no;
+  mso-style-next: Normal;
+  margin-top: 0cm;
+  margin-right: 0cm;
+  margin-bottom: 24.0pt;
+  margin-left: 0cm;
+  text-align: center;
+  text-indent: 0cm;
+  line-height: 15.5pt;
+  mso-line-height-rule: exactly;
+  page-break-before: always;
+  mso-pagination: widow-orphan;
+  page-break-after: avoid;
+  mso-outline-level: 1;
+  mso-list: l0 level1 lfo12;
+  tab-stops: 20.15pt;
+  font-size: 14.0pt;
+  mso-bidi-font-size: 11.0pt;
+  font-family: "Arial",sans-serif;
+  mso-fareast-font-family: "Arial",sans-serif;
+  mso-bidi-font-family: "Arial",sans-serif;
+  mso-ansi-language: EN-GB;
+  mso-fareast-language: JA;
+  font-weight: bold;
+  mso-bidi-font-weight: normal; }
+
+p.BiblioTitle, li.BiblioTitle, div.BiblioTitle {
+  mso-style-name: "Biblio Title";
+  mso-style-noshow: yes;
+  mso-style-unhide: no;
+  margin-top: 0cm;
+  margin-right: 0cm;
+  margin-bottom: 15.5pt;
+  margin-left: 0cm;
+  text-align: center;
+  line-height: 15.5pt;
+  mso-pagination: widow-orphan;
+  mso-outline-level: 1;
+  tab-stops: 20.15pt;
+  font-size: 14.0pt;
+  mso-bidi-font-size: 11.0pt;
+  font-family: "Arial",sans-serif;
+  mso-fareast-font-family: "Arial",sans-serif;
+  mso-bidi-font-family: "Arial",sans-serif;
+  mso-ansi-language: EN-GB;
+  font-weight: bold;
+  mso-bidi-font-weight: normal; }
+
+p.Definition, li.Definition, div.Definition {
+  mso-style-name: Definition;
+  mso-style-priority: 9;
+  mso-style-unhide: no;
+  margin-top: 0cm;
+  margin-right: 0cm;
+  margin-bottom: 12.0pt;
+  margin-left: 0cm;
+  text-align: justify;
+  line-height: 12.0pt;
+  mso-pagination: widow-orphan;
+  tab-stops: 20.15pt;
+  font-size: 11.0pt;
+  font-family: "Arial",sans-serif;
+  mso-fareast-font-family: "Arial",sans-serif;
+  mso-bidi-font-family: "Arial",sans-serif;
+  mso-ansi-language: EN-GB; }
+
+p.ForewordTitle, li.ForewordTitle, div.ForewordTitle {
+  mso-style-name: "Foreword Title";
+  mso-style-noshow: yes;
+  mso-style-unhide: no;
+  margin-top: 0cm;
+  margin-right: 0cm;
+  margin-bottom: 15.5pt;
+  margin-left: 0cm;
+  text-align: justify;
+  line-height: 15.5pt;
+  page-break-before: always;
+  mso-pagination: widow-orphan;
+  page-break-after: avoid;
+  mso-outline-level: 1;
+  mso-hyphenate: none;
+  tab-stops: 20.15pt;
+  font-size: 14.0pt;
+  mso-bidi-font-size: 11.0pt;
+  font-family: "Arial",sans-serif;
+  mso-fareast-font-family: "Arial",sans-serif;
+  mso-bidi-font-family: "Arial",sans-serif;
+  mso-ansi-language: EN-GB;
+  font-weight: bold;
+  mso-bidi-font-weight: normal; }
+
+p.IntroTitle, li.IntroTitle, div.IntroTitle {
+  mso-style-name: "Intro Title";
+  mso-style-noshow: yes;
+  mso-style-unhide: no;
+  mso-style-parent: "Foreword Title";
+  margin-top: 0cm;
+  margin-right: 0cm;
+  margin-bottom: 15.5pt;
+  margin-left: 0cm;
+  text-align: justify;
+  line-height: 15.5pt;
+  mso-pagination: widow-orphan;
+  page-break-after: avoid;
+  mso-outline-level: 1;
+  mso-hyphenate: none;
+  tab-stops: 20.15pt;
+  font-size: 14.0pt;
+  mso-bidi-font-size: 11.0pt;
+  font-family: "Arial",sans-serif;
+  mso-fareast-font-family: "Arial",sans-serif;
+  mso-bidi-font-family: "Arial",sans-serif;
+  mso-ansi-language: EN-GB;
+  font-weight: bold;
+  page-break-before: always;
+  mso-bidi-font-weight: normal; }
+
+p.TitlePageSubhead, li.TitlePageSubhead, div.TitlePageSubhead {
+  mso-style-noshow: yes;
+  mso-style-unhide: no;
+  mso-style-parent: "Foreword Title";
+  margin-top: 0cm;
+  margin-right: 0cm;
+  margin-bottom: 15.5pt;
+  margin-left: 0cm;
+  text-align: center;
+  line-height: 15.5pt;
+  mso-pagination: widow-orphan;
+  page-break-after: avoid;
+  mso-hyphenate: none;
+  tab-stops: 20.15pt;
+  font-size: 14.0pt;
+  mso-bidi-font-size: 11.0pt;
+  font-family: "Arial",sans-serif;
+  mso-fareast-font-family: "Arial",sans-serif;
+  mso-bidi-font-family: "Arial",sans-serif;
+  mso-ansi-language: EN-GB;
+  font-weight: bold;
+  mso-bidi-font-weight: normal; }
+
+p.Terms, li.Terms, div.Terms {
+  mso-style-name: "Term\(s\)";
+  mso-style-priority: 8;
+  mso-style-unhide: no;
+  mso-style-next: Definition;
+  margin: 0cm;
+  margin-bottom: .0001pt;
+  line-height: 12.0pt;
+  mso-pagination: widow-orphan;
+  page-break-after: avoid;
+  mso-hyphenate: none;
+  tab-stops: 20.15pt;
+  font-size: 11.0pt;
+  font-family: "Arial",sans-serif;
+  mso-fareast-font-family: "Arial",sans-serif;
+  mso-bidi-font-family: "Arial",sans-serif;
+  mso-ansi-language: EN-GB;
+  font-weight: bold;
+  mso-bidi-font-weight: normal; }
+
+p.AltTerms, li.AltTerms, div.AltTerms {
+  mso-style-name: "AltTerm\(s\)";
+  mso-style-priority: 8;
+  mso-style-unhide: no;
+  mso-style-next: Definition;
+  margin: 0cm;
+  margin-bottom: .0001pt;
+  line-height: 12.0pt;
+  mso-pagination: widow-orphan;
+  page-break-after: avoid;
+  mso-hyphenate: none;
+  tab-stops: 20.15pt;
+  font-size: 11.0pt;
+  font-family: "Arial",sans-serif;
+  mso-fareast-font-family: "Arial",sans-serif;
+  mso-bidi-font-family: "Arial",sans-serif;
+  mso-ansi-language: EN-GB;
+  mso-bidi-font-weight: normal; }
+
+p.DeprecatedTerms, li.DeprecatedTerms, div.DeprecatedTerms {
+  mso-style-name: "DeprecatedTerm\(s\)";
+  mso-style-priority: 8;
+  mso-style-unhide: no;
+  mso-style-next: Definition;
+  margin: 0cm;
+  margin-bottom: .0001pt;
+  line-height: 12.0pt;
+  mso-pagination: widow-orphan;
+  page-break-after: avoid;
+  mso-hyphenate: none;
+  tab-stops: 20.15pt;
+  font-size: 11.0pt;
+  font-family: "Arial",sans-serif;
+  mso-fareast-font-family: "Arial",sans-serif;
+  mso-bidi-font-family: "Arial",sans-serif;
+  mso-ansi-language: EN-GB;
+  mso-bidi-font-weight: normal; }
+
+p.TermNum, li.TermNum, div.TermNum {
+  mso-style-name: TermNum;
+  mso-style-priority: 7;
+  mso-style-unhide: no;
+  mso-style-next: "Term\(s\)";
+  margin: 0cm;
+  margin-bottom: .0001pt;
+  line-height: 12.0pt;
+  mso-pagination: widow-orphan;
+  page-break-after: avoid;
+  tab-stops: 20.15pt;
+  font-size: 11.0pt;
+  font-family: "Arial",sans-serif;
+  mso-fareast-font-family: "Arial",sans-serif;
+  mso-bidi-font-family: "Arial",sans-serif;
+  mso-ansi-language: EN-GB;
+  font-weight: bold;
+  mso-bidi-font-weight: normal; }
+
+p.zzContents, li.zzContents, div.zzContents {
+  mso-style-name: zzContents;
+  mso-style-noshow: yes;
+  mso-style-unhide: no;
+  mso-style-next: "TOC 1";
+  margin-top: 48.0pt;
+  margin-right: 0cm;
+  margin-bottom: 15.5pt;
+  margin-left: 0cm;
+  line-height: 15.5pt;
+  mso-line-height-rule: exactly;
+  page-break-before: always;
+  mso-pagination: widow-orphan;
+  page-break-after: avoid;
+  mso-hyphenate: none;
+  tab-stops: 20.15pt;
+  font-size: 14.0pt;
+  mso-bidi-font-size: 11.0pt;
+  font-family: "Arial",sans-serif;
+  mso-fareast-font-family: "Arial",sans-serif;
+  mso-bidi-font-family: "Arial",sans-serif;
+  mso-ansi-language: EN-GB;
+  font-weight: bold;
+  mso-bidi-font-weight: normal; }
+
+p.zzCopyright, li.zzCopyright {
+  mso-style-name: zzCopyright;
+  mso-style-noshow: yes;
+  mso-style-unhide: no;
+  mso-style-next: Normal;
+  margin-top: 0cm;
+  margin-right: 14.2pt;
+  margin-bottom: 12.0pt;
+  margin-left: 14.2pt;
+  text-align: justify;
+  line-height: 12.0pt;
+  mso-pagination: widow-orphan;
+  tab-stops: 20.15pt 25.7pt 481.15pt;
+  padding: 0cm;
+  mso-padding-alt: 1.0pt 4.0pt 1.0pt 4.0pt;
+  font-size: 10.5pt;
+  font-family: "Arial",sans-serif;
+  mso-fareast-font-family: "Arial",sans-serif;
+  mso-bidi-font-family: "Arial",sans-serif;
+  mso-ansi-language: EN-GB; }
+
+div.zzCopyright {
+  mso-element: para-border-div;
+  border: solid windowtext 1.0pt;
+  mso-border-top-alt: solid windowtext .5pt;
+  mso-border-left-alt: solid windowtext .5pt;
+  mso-border-right-alt: solid windowtext .5pt;
+  mso-border-bottom-alt: solid windowtext .5pt;
+  padding: 1.0pt 4.0pt 0cm 4.0pt;
+  margin-left: 5.1pt;
+  margin-right: 5.1pt; }
+
+p.zzCopyright_address {
+  margin-top: 0cm;
+  margin-right: 14.2pt;
+  margin-bottom: 0.0pt;
+  margin-left: 14.2pt;
+  mso-layout-grid-align: none;
+  text-autospace: none;
+  padding-left: 20pt;
+  mso-padding-alt-left: 20pt;
+  font-size: 10.0pt;
+  text-align: left;
+  mso-bidi-font-size: 11.0pt; }
+
+p.zzSTDTitle, li.zzSTDTitle, div.zzSTDTitle {
+  mso-style-name: zzSTDTitle;
+  mso-style-noshow: yes;
+  mso-style-unhide: no;
+  mso-style-next: Normal;
+  margin-top: 20.0pt;
+  margin-right: 0cm;
+  margin-bottom: 38.0pt;
+  margin-left: 0cm;
+  line-height: 17.5pt;
+  mso-line-height-rule: exactly;
+  mso-pagination: widow-orphan;
+  mso-hyphenate: none;
+  tab-stops: 20.15pt;
+  font-size: 16.0pt;
+  mso-bidi-font-size: 11.0pt;
+  font-family: "Arial",sans-serif;
+  mso-fareast-font-family: "Arial",sans-serif;
+  mso-bidi-font-family: "Arial",sans-serif;
+  mso-ansi-language: EN-GB;
+  font-weight: bold;
+  mso-bidi-font-weight: normal; }
+
+p.zzSTDTitle1, li.zzSTDTitle1, div.zzSTDTitle1 {
+  mso-style-name: zzSTDTitle;
+  mso-style-noshow: yes;
+  mso-style-unhide: no;
+  mso-style-next: Normal;
+  margin-top: 0pt;
+  margin-right: 0cm;
+  margin-bottom: 18.0pt;
+  margin-left: 0cm;
+  line-height: 17.5pt;
+  mso-line-height-rule: exactly;
+  mso-pagination: widow-orphan;
+  mso-hyphenate: none;
+  tab-stops: 20.15pt;
+  font-size: 16.0pt;
+  mso-bidi-font-size: 11.0pt;
+  font-family: "Arial",sans-serif;
+  mso-fareast-font-family: "Arial",sans-serif;
+  mso-bidi-font-family: "Arial",sans-serif;
+  mso-ansi-language: EN-GB;
+  font-weight: bold;
+  mso-bidi-font-weight: normal; }
+
+p.Quote, li.Quote, div.Quote {
+  mso-style-priority: 99;
+  margin-top: 0cm;
+  margin-right: 36.0pt;
+  margin-bottom: 0cm;
+  margin-left: 36.0pt;
+  text-align: justify;
+  line-height: 12.0pt;
+  mso-pagination: widow-orphan;
+  tab-stops: 20.15pt;
+  font-size: 10.5pt;
+  font-family: "Arial",sans-serif;
+  mso-fareast-font-family: "Arial",sans-serif;
+  mso-bidi-font-family: "Arial",sans-serif;
+  mso-ansi-language: EN-GB; }
+
+p.QuoteAttribution {
+  text-align: right;
+  mso-style-priority: 99;
+  margin-top: 0cm;
+  margin-right: 36.0pt;
+  margin-bottom: 0cm;
+  margin-left: 36.0pt;
+  line-height: 12.0pt;
+  mso-pagination: widow-orphan;
+  tab-stops: 20.15pt;
+  font-size: 10.5pt;
+  font-family: "Arial",sans-serif;
+  mso-fareast-font-family: "Arial",sans-serif;
+  mso-bidi-font-family: "Arial",sans-serif;
+  mso-ansi-language: EN-GB; }
+
+p.Admonition, li.Admonition, div.Admonition {
+  mso-style-priority: 99;
+  margin-top: 0cm;
+  margin-right: 57.6pt;
+  margin-bottom: 0cm;
+  margin-left: 57.6pt;
+  margin-bottom: .0001pt;
+  mso-pagination: widow-orphan;
+  border: none;
+  mso-border-alt: solid #4472C4 .25pt;
+  mso-border-themecolor: accent1;
+  padding: 0cm;
+  mso-padding-alt: 10.0pt 10.0pt 10.0pt 10.0pt;
+  font-size: 12.0pt;
+  font-family: "Arial",sans-serif;
+  mso-ascii-font-family: "Arial",sans-serif;
+  mso-ascii-theme-font: minor-latin;
+  mso-fareast-font-family: "Arial",sans-serif;
+  mso-fareast-theme-font: minor-fareast;
+  mso-hansi-font-family: "Arial",sans-serif;
+  mso-hansi-theme-font: minor-latin;
+  mso-bidi-font-family: "Arial",sans-serif;
+  mso-bidi-theme-font: minor-bidi;
+  color: #4472C4;
+  mso-themecolor: accent1;
+  mso-ansi-language: EN-AU;
+  font-style: italic; }
+
+p.Code, li.Code, div.Code {
+  mso-style-name: Code;
+  mso-style-priority: 16;
+  mso-style-unhide: no;
+  mso-style-qformat: yes;
+  margin: 0cm;
+  margin-bottom: .0001pt;
+  line-height: 10.0pt;
+  mso-pagination: widow-orphan;
+  tab-stops: 20.15pt;
+  font-size: 9.0pt;
+  mso-bidi-font-size: 11.0pt;
+  font-family: "Courier New",monospace;
+  mso-fareast-font-family: Calibri;
+  mso-bidi-font-family: "Source Sans Pro";
+  mso-ansi-language: EN-GB; }
+
+p.Formula, li.Formula, div.Formula {
+  mso-style-name: Formula;
+  mso-style-noshow: yes;
+  mso-style-unhide: no;
+  margin-top: 0cm;
+  margin-right: 0cm;
+  margin-bottom: 11.0pt;
+  margin-left: 20.15pt;
+  line-height: 12.0pt;
+  mso-pagination: widow-orphan;
+  tab-stops: right 487.45pt;
+  font-size: 10.5pt;
+  font-family: "Arial",sans-serif;
+  mso-fareast-font-family: "Arial",sans-serif;
+  mso-bidi-font-family: "Arial",sans-serif;
+  mso-ansi-language: EN-GB; }
+
+@page {
+  mso-facing-pages: yes; }
+
+@page WordSection1 {
+  size: 595.3pt 841.9pt;
+  margin: 39.7pt 53.85pt 1.0cm 53.85pt;
+  mso-header-margin: 35.45pt;
+  mso-footer-margin: 14.2pt;
+  mso-even-header: url(cid:header.html) eh1;
+  mso-header: url(cid:header.html) h1;
+  mso-even-footer: url(cid:header.html) ef1;
+  mso-paper-source: 0; }
+
+div.WordSection1 {
+  page: WordSection1; }
+
+@page WordSection2 {
+  size: 595.3pt 841.9pt;
+  margin: 39.7pt 53.85pt 1.0cm 53.85pt;
+  mso-header-margin: 35.45pt;
+  mso-footer-margin: 14.2pt;
+  mso-page-numbers: roman-lower;
+  mso-even-header: url(cid:header.html) eh2;
+  mso-header: url(cid:header.html) h2;
+  mso-even-footer: url(cid:header.html) ef2;
+  mso-footer: url(cid:header.html) f2;
+  mso-paper-source: 0; }
+
+@page WordSection2L {
+  size: 841.9pt 595.3pt;
+  margin: 39.7pt 53.85pt 1.0cm 53.85pt;
+  mso-header-margin: 35.45pt;
+  mso-footer-margin: 14.2pt;
+  mso-even-header: url(cid:header.html) eh2l;
+  mso-header: url(cid:header.html) h2l;
+  mso-even-footer: url(cid:header.html) ef2l;
+  mso-footer: url(cid:header.html) f2l;
+  mso-paper-source: 0; }
+
+@page WordSection2P {
+  size: 595.3pt 841.9pt;
+  margin: 39.7pt 53.85pt 1.0cm 53.85pt;
+  mso-header-margin: 35.45pt;
+  mso-footer-margin: 14.2pt;
+  mso-even-header: url(cid:header.html) eh2;
+  mso-header: url(cid:header.html) h2;
+  mso-even-footer: url(cid:header.html) ef2;
+  mso-footer: url(cid:header.html) f2;
+  mso-paper-source: 0; }
+
+div.WordSection2 {
+  page: WordSection2; }
+
+@page WordSection3 {
+  size: 595.3pt 841.9pt;
+  margin: 39.7pt 53.85pt 1.0cm 53.85pt;
+  mso-header-margin: 35.45pt;
+  mso-footer-margin: 14.2pt;
+  mso-page-numbers: 1;
+  mso-even-header: url(cid:header.html) eh2;
+  mso-header: url(cid:header.html) h2;
+  mso-even-footer: url(cid:header.html) ef3;
+  mso-footer: url(cid:header.html) f3;
+  mso-paper-source: 0; }
+
+@page WordSection3L {
+  size: 841.9pt 595.3pt;
+  margin: 39.7pt 53.85pt 1.0cm 53.85pt;
+  mso-header-margin: 35.45pt;
+  mso-footer-margin: 14.2pt;
+  mso-even-header: url(cid:header.html) eh2l;
+  mso-header: url(cid:header.html) h2l;
+  mso-even-footer: url(cid:header.html) ef3l;
+  mso-footer: url(cid:header.html) f3l;
+  mso-paper-source: 0; }
+
+@page WordSection3P {
+  size: 595.3pt 841.9pt;
+  margin: 39.7pt 53.85pt 1.0cm 53.85pt;
+  mso-header-margin: 35.45pt;
+  mso-footer-margin: 14.2pt;
+  mso-even-header: url(cid:header.html) eh2;
+  mso-header: url(cid:header.html) h2;
+  mso-even-footer: url(cid:header.html) ef3;
+  mso-footer: url(cid:header.html) f3;
+  mso-paper-source: 0; }
+
+div.WordSection3 {
+  page: WordSection3; }
+
+table.MsoISOTable, table.MsoISOTableBig {
+  mso-style-name: "Table ISO";
+  mso-tstyle-rowband-size: 0;
+  mso-tstyle-colband-size: 0;
+  mso-style-noshow: yes;
+  mso-style-priority: 99;
+  mso-style-parent: "";
+  mso-padding-alt: 0cm 2.85pt 0cm 2.85pt;
+  mso-para-margin: 0cm;
+  mso-para-margin-bottom: .0001pt;
+  mso-pagination: widow-orphan;
+  border-collapse: collapse;
+  mso-table-layout-alt: fixed;
+  border: solid windowtext 2pt;
+  mso-border-alt: solid windowtext 2pt;
+  mso-yfti-tbllook: 480;
+  mso-border-insideh: .75pt solid windowtext;
+  mso-border-insidev: .75pt solid windowtext;
+  font-size: 10.0pt;
+  font-family: "Arial",sans-serif; }
+
+table.MsoISOTable th, table.MsoISOTableBig th {
+  border: solid windowtext 1pt;
+  mso-border-alt: solid windowtext 1pt;
+  padding: 0cm 2.85pt 0cm 2.85pt; }
+
+table.MsoISOTable td, table.MsoISOTableBig td {
+  border: solid windowtext 1pt;
+  mso-border-alt: solid windowtext 1pt;
+  padding: 0cm 2.85pt 0cm 2.85pt; }
+
+table.MsoISOTable p, table.MsoISOTableBig p {
+  font-size: 10.0pt; }
+
+table.MsoTableGrid {
+  mso-style-name: "Table Grid";
+  mso-tstyle-rowband-size: 0;
+  mso-tstyle-colband-size: 0;
+  mso-style-priority: 39;
+  mso-style-unhide: no;
+  border: solid windowtext 1.0pt;
+  mso-border-alt: solid windowtext .5pt;
+  mso-padding-alt: 0cm 5.4pt 0cm 5.4pt;
+  mso-border-insideh: .5pt solid windowtext;
+  mso-border-insidev: .5pt solid windowtext;
+  mso-para-margin: 0cm;
+  mso-para-margin-bottom: .0001pt;
+  mso-pagination: widow-orphan;
+  font-size: 10.0pt;
+  font-family: "Arial",sans-serif; }
+
+div.formula {
+  tab-stops: right 487.45pt; }
+
+body {
+  tab-interval: 36.0pt; }
+
+.coverpage_docnumber {
+  text-align: center;
+  font-size: 14.0pt;
+  font-weight: bold; }
+
+.coverpage_techcommittee {
+  text-align: center;
+  font-size: 12.0pt; }
+
+.coverpage_docstage {
+  text-align: center;
+  font-size: 30.0pt;
+  color: #485094; }
+
+div.coverpage_warning {
+  mso-element: para-border-div;
+  border: solid windowtext 1.0pt #485094;
+  mso-border-alt: solid windowtext .5pt;
+  padding: 1.0pt 4.0pt 1.0pt 4.0pt #485094;
+  font-size: 10.0pt;
+  margin-left: 4.25pt;
+  margin-right: 4.25pt; }
+
+.coverpage_warning {
+  color: #485094;
+  font-size: 10.0pt; }
+
+a.TableFootnoteRef, span.TableFootnoteRef {
+  mso-style-priority: 99;
+  mso-style-parent: "Footnote Reference";
+  vertical-align: super; }
+
+aside {
+  font-size: 10.0pt; }
+
+.example-title {
+  font-weight: bold;
+  margin-left: -36.0pt; }
+
+p.example, li.example, div.example, td.example {
+  margin-right: 0pt;
+  margin-left: 0pt; }
+
+div.example {
+  margin-right: 36.0pt;
+  margin-left: 36.0pt;
+  margin-top: 0cm;
+  margin-bottom: 0cm; }
+
+p.example, li.example, div.example, td.example {
+  mso-pagination: none;
+  font-size: 10.0pt;
+  font-family: "Arial",sans-serif; }
+
+td.example p.MsoListParagraph {
+  font-size: 10.0pt; }
+
+div.example p.MsoListParagraph {
+  font-size: 10.0pt; }
+
+div.Note p.MsoListParagraph {
+  font-size: 10.0pt;
+  margin-left: 1.0cm; }
+
+div.Note span.stem {
+  font-size: 10.0pt; }
+
+div.Note p.Sourcecode, div.Note pre.Sourcecode {
+  font-size: 8.0pt;
+  margin-left: 1.0cm; }
+
+div.Note table.dl {
+  font-size: 10.0pt;
+  margin-left: 1.0cm; }
+
+span.note_label, span.example_label, td.example_label, td.note_label {
+  font-size: 10.0pt;
+  font-family: "Arial",sans-serif; }
+
+table.dl {
+  margin-top: 0cm;
+  margin-right: 0cm;
+  margin-bottom: 11.0pt;
+  margin-left: 20.15pt; }
+
+-->
+    </style>
+  </head>
+  <body lang="EN-US" link="blue" vlink="#954F72" xml:lang="EN-US">
+    <div class="WordSection1">
+<p class="MsoNormal" align="right" style="text-align:right">
+  <b style="mso-bidi-font-weight:&#10;normal">
+    <span lang="EN-GB" style="font-size:14.0pt;mso-no-proof:yes" xml:lang="EN-GB">V.2  (draft 6, 2016-02-01)</span>
+  </b>
+  <b style="mso-bidi-font-weight:normal">
+    <span lang="EN-GB" style="font-size:14.0pt" xml:lang="EN-GB">
+      <p class="MsoNormal"></p>
+    </span>
+  </b>
+</p>
+
+
+<img src="cid:a6dd7181-4989-4799-9b52-a468fa2e9988.png" width="50" height="49"/>
+
+<p class="MsoNormal" align="center" style="text-align:center;line-height:18.0pt;margin-bottom:0.0pt">
+  <b style="mso-bidi-font-weight:normal"><span lang="EN-GB" style="font-size:24.0pt" xml:lang="EN-GB">Guidelines</span>
+</b>
+  <br/>
+  <span lang="EN-GB" style="font-size:16.0pt" xml:lang="EN-GB">Guidelines on MPF Exempted ORSO Schemes - Application for Exemption of ORSO Registered Schemes</span>
+</p>
+
+<p class="MsoNormal" style="margin-top:100.0pt">
+  <span lang="EN-GB" xml:lang="EN-GB">
+    <p class="MsoNormal">&#xA0;</p>
+  </span>
+</p>
+
+<div style="mso-element:para-border-div;border:solid windowtext 1.0pt;&#10;mso-border-alt:solid windowtext .5pt;padding:1.0pt 4.0pt 1.0pt 4.0pt;&#10;margin-left:4.25pt;margin-right:4.25pt">
+
+<p class="MsoNormal" align="left" style="text-align:center;border:none;&#10;mso-border-alt:solid windowtext .5pt;padding:0cm;mso-padding-alt:1.0pt 4.0pt 1.0pt 4.0pt">
+<span lang="EN-GB" style="font-size:16.0pt" xml:lang="EN-GB">1 Edition</span><br/>
+<span lang="EN-GB" style="font-size:16.0pt" xml:lang="EN-GB">1 February 2016 <p class="MsoNormal"></p></span></p>
+
+<p class="MsoNormal" align="left" style="text-align:center;border:none;&#10;mso-border-alt:solid windowtext .5pt;padding:0cm;mso-padding-alt:1.0pt 4.0pt 1.0pt 4.0pt">Hong Kong</p>
+</div>
+
+<p class="MsoNormal" style="margin-bottom:6.0pt">
+  <span lang="EN-GB" xml:lang="EN-GB">
+    <p class="MsoNormal">&#xA0;</p>
+  </span>
+</p>
+
+<div style="mso-element:para-border-div;border:solid windowtext 1.0pt;&#10;mso-border-alt:solid windowtext .5pt;padding:1.0pt 4.0pt 1.0pt 4.0pt;&#10;margin-left:4.25pt;margin-right:4.25pt">
+
+</div>
+
+<p class="MsoNormal" align="center" style="text-align:center">
+  <span lang="EN-GB" style="mso-no-proof:yes" xml:lang="EN-GB">Ribose Group Inc.&#xA0;</span>
+  <span lang="EN-GB" xml:lang="EN-GB">
+    <span style="mso-no-proof:yes">2021</span>
+  </span>
+</p>
+
+
+
+
+
+      <p class="MsoNormal">&#xA0;</p>
+    </div>
+    <p class="MsoNormal">
+      <br clear="all" class="section"/>
+    </p>
+    <div class="WordSection2"><p class="zzContents" style="margin-top:0cm">
+  <span lang="EN-GB" xml:lang="EN-GB">Contents</span>
+</p>
+
+<p class="MsoToc1"><span lang="EN-GB" xml:lang="EN-GB"><span style="mso-element:field-begin"></span><span style="mso-spacerun:yes">&#xA0;</span>TOC
+  \o "1-2" \h \z \u <span style="mso-element:field-separator"></span></span>
+<span class="MsoHyperlink"><span lang="EN-GB" style="mso-no-proof:yes" xml:lang="EN-GB">
+<a href="#_Toc140878790">Introductory<span lang="EN-GB" class="MsoTocTextSpan" xml:lang="EN-GB">
+<span style="mso-tab-count:1 dotted">. </span>
+</span><span lang="EN-GB" class="MsoTocTextSpan" xml:lang="EN-GB">
+<span style="mso-element:field-begin"></span></span>
+<span lang="EN-GB" class="MsoTocTextSpan" xml:lang="EN-GB"> PAGEREF _Toc140878790 \h </span>
+  <span lang="EN-GB" class="MsoTocTextSpan" xml:lang="EN-GB"><span style="mso-element:field-separator"></span></span><span lang="EN-GB" class="MsoTocTextSpan" xml:lang="EN-GB">1</span>
+  <span lang="EN-GB" class="MsoTocTextSpan" xml:lang="EN-GB"></span><span lang="EN-GB" class="MsoTocTextSpan" xml:lang="EN-GB"><span style="mso-element:field-end"></span></span></a></span></span></p>
+
+<p class="MsoToc2">
+  <span class="MsoHyperlink">
+    <span lang="EN-GB" style="mso-no-proof:yes" xml:lang="EN-GB">
+<a href="#_Toc426074909"> <span lang="EN-GB" class="MsoTocTextSpan" xml:lang="EN-GB">
+<span style="mso-tab-count:1 dotted">. </span>
+</span><span lang="EN-GB" class="MsoTocTextSpan" xml:lang="EN-GB">
+<span style="mso-element:field-begin"></span></span>
+<span lang="EN-GB" class="MsoTocTextSpan" xml:lang="EN-GB"> PAGEREF _Toc426074909 \h </span>
+  <span lang="EN-GB" class="MsoTocTextSpan" xml:lang="EN-GB"><span style="mso-element:field-separator"></span></span><span lang="EN-GB" class="MsoTocTextSpan" xml:lang="EN-GB">1</span>
+  <span lang="EN-GB" class="MsoTocTextSpan" xml:lang="EN-GB"></span><span lang="EN-GB" class="MsoTocTextSpan" xml:lang="EN-GB"><span style="mso-element:field-end"></span></span></a></span>
+  </span>
+</p>
+
+<p class="MsoToc2">
+  <span class="MsoHyperlink">
+    <span lang="EN-GB" style="mso-no-proof:yes" xml:lang="EN-GB">
+<a href="#_Toc350878182">2.<span lang="EN-GB" class="MsoTocTextSpan" xml:lang="EN-GB">
+<span style="mso-tab-count:1 dotted">. </span>
+</span><span lang="EN-GB" class="MsoTocTextSpan" xml:lang="EN-GB">
+<span style="mso-element:field-begin"></span></span>
+<span lang="EN-GB" class="MsoTocTextSpan" xml:lang="EN-GB"> PAGEREF _Toc350878182 \h </span>
+  <span lang="EN-GB" class="MsoTocTextSpan" xml:lang="EN-GB"><span style="mso-element:field-separator"></span></span><span lang="EN-GB" class="MsoTocTextSpan" xml:lang="EN-GB">1</span>
+  <span lang="EN-GB" class="MsoTocTextSpan" xml:lang="EN-GB"></span><span lang="EN-GB" class="MsoTocTextSpan" xml:lang="EN-GB"><span style="mso-element:field-end"></span></span></a></span>
+  </span>
+</p>
+
+<p class="MsoToc2">
+  <span class="MsoHyperlink">
+    <span lang="EN-GB" style="mso-no-proof:yes" xml:lang="EN-GB">
+<a href="#_Toc856850162">3.<span lang="EN-GB" class="MsoTocTextSpan" xml:lang="EN-GB">
+<span style="mso-tab-count:1 dotted">. </span>
+</span><span lang="EN-GB" class="MsoTocTextSpan" xml:lang="EN-GB">
+<span style="mso-element:field-begin"></span></span>
+<span lang="EN-GB" class="MsoTocTextSpan" xml:lang="EN-GB"> PAGEREF _Toc856850162 \h </span>
+  <span lang="EN-GB" class="MsoTocTextSpan" xml:lang="EN-GB"><span style="mso-element:field-separator"></span></span><span lang="EN-GB" class="MsoTocTextSpan" xml:lang="EN-GB">1</span>
+  <span lang="EN-GB" class="MsoTocTextSpan" xml:lang="EN-GB"></span><span lang="EN-GB" class="MsoTocTextSpan" xml:lang="EN-GB"><span style="mso-element:field-end"></span></span></a></span>
+  </span>
+</p>
+
+<p class="MsoToc1">
+  <span class="MsoHyperlink">
+    <span lang="EN-GB" style="mso-no-proof:yes" xml:lang="EN-GB">
+<a href="#_Toc255970923">Application for Approval<span lang="EN-GB" class="MsoTocTextSpan" xml:lang="EN-GB">
+<span style="mso-tab-count:1 dotted">. </span>
+</span><span lang="EN-GB" class="MsoTocTextSpan" xml:lang="EN-GB">
+<span style="mso-element:field-begin"></span></span>
+<span lang="EN-GB" class="MsoTocTextSpan" xml:lang="EN-GB"> PAGEREF _Toc255970923 \h </span>
+  <span lang="EN-GB" class="MsoTocTextSpan" xml:lang="EN-GB"><span style="mso-element:field-separator"></span></span><span lang="EN-GB" class="MsoTocTextSpan" xml:lang="EN-GB">1</span>
+  <span lang="EN-GB" class="MsoTocTextSpan" xml:lang="EN-GB"></span><span lang="EN-GB" class="MsoTocTextSpan" xml:lang="EN-GB"><span style="mso-element:field-end"></span></span></a></span>
+  </span>
+</p>
+
+<p class="MsoToc2">
+  <span class="MsoHyperlink">
+    <span lang="EN-GB" style="mso-no-proof:yes" xml:lang="EN-GB">
+<a href="#_Toc321180446">Eligibility<span lang="EN-GB" class="MsoTocTextSpan" xml:lang="EN-GB">
+<span style="mso-tab-count:1 dotted">. </span>
+</span><span lang="EN-GB" class="MsoTocTextSpan" xml:lang="EN-GB">
+<span style="mso-element:field-begin"></span></span>
+<span lang="EN-GB" class="MsoTocTextSpan" xml:lang="EN-GB"> PAGEREF _Toc321180446 \h </span>
+  <span lang="EN-GB" class="MsoTocTextSpan" xml:lang="EN-GB"><span style="mso-element:field-separator"></span></span><span lang="EN-GB" class="MsoTocTextSpan" xml:lang="EN-GB">1</span>
+  <span lang="EN-GB" class="MsoTocTextSpan" xml:lang="EN-GB"></span><span lang="EN-GB" class="MsoTocTextSpan" xml:lang="EN-GB"><span style="mso-element:field-end"></span></span></a></span>
+  </span>
+</p>
+
+<p class="MsoToc2">
+  <span class="MsoHyperlink">
+    <span lang="EN-GB" style="mso-no-proof:yes" xml:lang="EN-GB">
+<a href="#_Toc923624004">Governing Rules<span lang="EN-GB" class="MsoTocTextSpan" xml:lang="EN-GB">
+<span style="mso-tab-count:1 dotted">. </span>
+</span><span lang="EN-GB" class="MsoTocTextSpan" xml:lang="EN-GB">
+<span style="mso-element:field-begin"></span></span>
+<span lang="EN-GB" class="MsoTocTextSpan" xml:lang="EN-GB"> PAGEREF _Toc923624004 \h </span>
+  <span lang="EN-GB" class="MsoTocTextSpan" xml:lang="EN-GB"><span style="mso-element:field-separator"></span></span><span lang="EN-GB" class="MsoTocTextSpan" xml:lang="EN-GB">1</span>
+  <span lang="EN-GB" class="MsoTocTextSpan" xml:lang="EN-GB"></span><span lang="EN-GB" class="MsoTocTextSpan" xml:lang="EN-GB"><span style="mso-element:field-end"></span></span></a></span>
+  </span>
+</p>
+
+<p class="MsoToc2">
+  <span class="MsoHyperlink">
+    <span lang="EN-GB" style="mso-no-proof:yes" xml:lang="EN-GB">
+<a href="#_Toc050389965">Prescribed Forms<span lang="EN-GB" class="MsoTocTextSpan" xml:lang="EN-GB">
+<span style="mso-tab-count:1 dotted">. </span>
+</span><span lang="EN-GB" class="MsoTocTextSpan" xml:lang="EN-GB">
+<span style="mso-element:field-begin"></span></span>
+<span lang="EN-GB" class="MsoTocTextSpan" xml:lang="EN-GB"> PAGEREF _Toc050389965 \h </span>
+  <span lang="EN-GB" class="MsoTocTextSpan" xml:lang="EN-GB"><span style="mso-element:field-separator"></span></span><span lang="EN-GB" class="MsoTocTextSpan" xml:lang="EN-GB">1</span>
+  <span lang="EN-GB" class="MsoTocTextSpan" xml:lang="EN-GB"></span><span lang="EN-GB" class="MsoTocTextSpan" xml:lang="EN-GB"><span style="mso-element:field-end"></span></span></a></span>
+  </span>
+</p>
+
+<p class="MsoToc2">
+  <span class="MsoHyperlink">
+    <span lang="EN-GB" style="mso-no-proof:yes" xml:lang="EN-GB">
+<a href="#_Toc554928460">Definition of Terms<span lang="EN-GB" class="MsoTocTextSpan" xml:lang="EN-GB">
+<span style="mso-tab-count:1 dotted">. </span>
+</span><span lang="EN-GB" class="MsoTocTextSpan" xml:lang="EN-GB">
+<span style="mso-element:field-begin"></span></span>
+<span lang="EN-GB" class="MsoTocTextSpan" xml:lang="EN-GB"> PAGEREF _Toc554928460 \h </span>
+  <span lang="EN-GB" class="MsoTocTextSpan" xml:lang="EN-GB"><span style="mso-element:field-separator"></span></span><span lang="EN-GB" class="MsoTocTextSpan" xml:lang="EN-GB">1</span>
+  <span lang="EN-GB" class="MsoTocTextSpan" xml:lang="EN-GB"></span><span lang="EN-GB" class="MsoTocTextSpan" xml:lang="EN-GB"><span style="mso-element:field-end"></span></span></a></span>
+  </span>
+</p>
+
+<p class="MsoToc2">
+  <span class="MsoHyperlink">
+    <span lang="EN-GB" style="mso-no-proof:yes" xml:lang="EN-GB">
+<a href="#_Toc268085990">The Applicant<span lang="EN-GB" class="MsoTocTextSpan" xml:lang="EN-GB">
+<span style="mso-tab-count:1 dotted">. </span>
+</span><span lang="EN-GB" class="MsoTocTextSpan" xml:lang="EN-GB">
+<span style="mso-element:field-begin"></span></span>
+<span lang="EN-GB" class="MsoTocTextSpan" xml:lang="EN-GB"> PAGEREF _Toc268085990 \h </span>
+  <span lang="EN-GB" class="MsoTocTextSpan" xml:lang="EN-GB"><span style="mso-element:field-separator"></span></span><span lang="EN-GB" class="MsoTocTextSpan" xml:lang="EN-GB">1</span>
+  <span lang="EN-GB" class="MsoTocTextSpan" xml:lang="EN-GB"></span><span lang="EN-GB" class="MsoTocTextSpan" xml:lang="EN-GB"><span style="mso-element:field-end"></span></span></a></span>
+  </span>
+</p>
+
+<p class="MsoToc2">
+  <span class="MsoHyperlink">
+    <span lang="EN-GB" style="mso-no-proof:yes" xml:lang="EN-GB">
+<a href="#_Toc892494680">Signing Requirements<span lang="EN-GB" class="MsoTocTextSpan" xml:lang="EN-GB">
+<span style="mso-tab-count:1 dotted">. </span>
+</span><span lang="EN-GB" class="MsoTocTextSpan" xml:lang="EN-GB">
+<span style="mso-element:field-begin"></span></span>
+<span lang="EN-GB" class="MsoTocTextSpan" xml:lang="EN-GB"> PAGEREF _Toc892494680 \h </span>
+  <span lang="EN-GB" class="MsoTocTextSpan" xml:lang="EN-GB"><span style="mso-element:field-separator"></span></span><span lang="EN-GB" class="MsoTocTextSpan" xml:lang="EN-GB">1</span>
+  <span lang="EN-GB" class="MsoTocTextSpan" xml:lang="EN-GB"></span><span lang="EN-GB" class="MsoTocTextSpan" xml:lang="EN-GB"><span style="mso-element:field-end"></span></span></a></span>
+  </span>
+</p>
+
+<p class="MsoToc2">
+  <span class="MsoHyperlink">
+    <span lang="EN-GB" style="mso-no-proof:yes" xml:lang="EN-GB">
+<a href="#_Toc953321046">Submission of Application<span lang="EN-GB" class="MsoTocTextSpan" xml:lang="EN-GB">
+<span style="mso-tab-count:1 dotted">. </span>
+</span><span lang="EN-GB" class="MsoTocTextSpan" xml:lang="EN-GB">
+<span style="mso-element:field-begin"></span></span>
+<span lang="EN-GB" class="MsoTocTextSpan" xml:lang="EN-GB"> PAGEREF _Toc953321046 \h </span>
+  <span lang="EN-GB" class="MsoTocTextSpan" xml:lang="EN-GB"><span style="mso-element:field-separator"></span></span><span lang="EN-GB" class="MsoTocTextSpan" xml:lang="EN-GB">1</span>
+  <span lang="EN-GB" class="MsoTocTextSpan" xml:lang="EN-GB"></span><span lang="EN-GB" class="MsoTocTextSpan" xml:lang="EN-GB"><span style="mso-element:field-end"></span></span></a></span>
+  </span>
+</p>
+
+<p class="MsoToc2">
+  <span class="MsoHyperlink">
+    <span lang="EN-GB" style="mso-no-proof:yes" xml:lang="EN-GB">
+<a href="#_Toc963453525">Warning<span lang="EN-GB" class="MsoTocTextSpan" xml:lang="EN-GB">
+<span style="mso-tab-count:1 dotted">. </span>
+</span><span lang="EN-GB" class="MsoTocTextSpan" xml:lang="EN-GB">
+<span style="mso-element:field-begin"></span></span>
+<span lang="EN-GB" class="MsoTocTextSpan" xml:lang="EN-GB"> PAGEREF _Toc963453525 \h </span>
+  <span lang="EN-GB" class="MsoTocTextSpan" xml:lang="EN-GB"><span style="mso-element:field-separator"></span></span><span lang="EN-GB" class="MsoTocTextSpan" xml:lang="EN-GB">1</span>
+  <span lang="EN-GB" class="MsoTocTextSpan" xml:lang="EN-GB"></span><span lang="EN-GB" class="MsoTocTextSpan" xml:lang="EN-GB"><span style="mso-element:field-end"></span></span></a></span>
+  </span>
+</p>
+
+<p class="MsoToc1">
+  <span lang="EN-GB" xml:lang="EN-GB">
+    <span style="mso-element:field-end"></span>
+  </span>
+  <span lang="EN-GB" xml:lang="EN-GB">
+    <p class="MsoNormal">&#xA0;</p>
+  </span>
+</p>
+
+
+      <p class="MsoNormal">&#xA0;</p>
+    </div>
+    <p class="MsoNormal">
+      <br clear="all" class="section"/>
+    </p>
+    <div class="WordSection3">
+      <p class="zzSTDTitle1">Guidelines on MPF Exempted ORSO Schemes - Application for Exemption of ORSO Registered Schemes</p>
+      <div><a name="_introductory" id="_introductory"></a>
+        <h1 class="containerhdr">Introductory</h1>
+        <div><a name="_522735b1-9201-4e5d-8b4a-4e2eebbe354d" id="_522735b1-9201-4e5d-8b4a-4e2eebbe354d"></a><h2> </h2>
+
+<p class="MsoNormal"><a name="_56c2c694-6dc2-4bff-bb25-128b65c9a6e6" id="_56c2c694-6dc2-4bff-bb25-128b65c9a6e6"></a>Section 5(1) of the <a href="https://www.elegislation.gov.hk/hk/cap485">Mandatory Provident Fund Schemes Ordinance (&#x201C;the Ordinance&#x201D;)</a> provides for the exemption of the members of occupational retirement schemes and their employers from the operation of all, or any specified, provisions of <a href="https://www.elegislation.gov.hk/hk/cap485">the Ordinance</a>.</p>
+</div>
+        <div><a name="_2" id="_2"></a><h2>2.</h2>
+
+<p class="MsoNormal"><a name="_bd7b4ea7-3493-4ccf-9dfc-a4825ef8b0b3" id="_bd7b4ea7-3493-4ccf-9dfc-a4825ef8b0b3"></a>Section 16 of the <a href="https://www.elegislation.gov.hk/hk/cap485B">Mandatory Provident Fund Schemes (Exemption) Regulation (&#x201C;the Exemption Regulation&#x201D;)</a> sets out the detailed requirements with respect to the application for exemption of relevant ORSO registered schemes.</p>
+</div>
+        <div><a name="_3" id="_3"></a><h2>3.</h2>
+
+<p class="MsoNormal"><a name="_7ff3b809-3db7-4c7f-965f-b8c2e8a68d3b" id="_7ff3b809-3db7-4c7f-965f-b8c2e8a68d3b"></a>The Mandatory Provident Fund Schemes Authority (&#x201C;the Authority&#x201D;) hereby issues guidelines relating to the application for exemption of relevant ORSO registered schemes under <a href="https://www.elegislation.gov.hk/hk/cap485">the Ordinance</a> and the <a href="https://www.elegislation.gov.hk/hk/cap485B">Exemption Regulation</a>.</p>
+</div>
+      </div>
+      <div><a name="_application_for_approval" id="_application_for_approval"></a>
+        <h1 class="containerhdr">Application for Approval</h1>
+        <div><a name="_eligibility" id="_eligibility"></a><h2 class="containerhdr">Eligibility</h2><div><a name="_4" id="_4"></a><h3>4.</h3>
+
+<p class="MsoNormal"><a name="_c6c51dd8-71c9-4f85-b98a-c0006d72a8f6" id="_c6c51dd8-71c9-4f85-b98a-c0006d72a8f6"></a>Pursuant to section 16 of the <a href="https://www.elegislation.gov.hk/hk/cap485B">Exemption Regulation</a>, an application may be made in respect of a &#x201C;relevant ORSO registered scheme&#x201D; for exemption from MPF requirements.</p>
+</div>
+<div><a name="_5" id="_5"></a><h3>5.</h3><p class="MsoNormal"><a name="_a47ec4f7-e1b2-46fe-a8e2-1c8462d93759" id="_a47ec4f7-e1b2-46fe-a8e2-1c8462d93759"></a>According to section 2 of the <a href="https://www.elegislation.gov.hk/hk/cap485B">Exemption Regulation</a>, a relevant ORSO registered scheme is defined as an ORSO registered scheme -</p>
+
+<p style="mso-list:l2 level1 lfo1;" class="MsoListParagraphCxSpFirst">
+which is governed by a trust;
+</p>
+<p style="mso-list:l2 level1 lfo1;" class="MsoListParagraphCxSpMiddle"><a name="x5b" id="x5b"></a>
+which provides benefits payable on termination of service, death, disability, retirement or winding up of the scheme;
+</p>
+<p style="mso-list:l2 level1 lfo1;" class="MsoListParagraphCxSpMiddle">
+established before or on 15 October 1995; and
+</p>
+<p style="mso-list:l2 level1 lfo1;" class="MsoListParagraphCxSpLast"><a name="x5d" id="x5d"></a>
+in respect of which an application under section 7 or 15 of the Occupational Retirement Schemes Ordinance was received by the Registrar of Occupational Retirement Schemes not later than 15 January 1996.
+</p>
+</div>
+<div><a name="_6" id="_6"></a><h3>6.</h3>
+
+<p class="MsoNormal"><a name="_e7f8ff3c-8965-44a3-9f3e-e0573bac39a1" id="_e7f8ff3c-8965-44a3-9f3e-e0573bac39a1"></a>For ORSO schemes which were originally the subject of or regulated by an insurance arrangement but subsequently converted into a scheme governed by trust, as long as they fulfil the criteria set out in <a href="#x5b">Paragraph 5, b)</a> to <a href="#x5d">Paragraph 5, d)</a>, they will be, for exemption purposes, treated as continuation of the original schemes, thus eligible to apply for MPF exemption.</p>
+</div>
+<div><a name="_7" id="_7"></a><h3>7.</h3>
+
+<p class="MsoNormal"><a name="_a8312474-bf90-4212-a139-b23f2ae58183" id="_a8312474-bf90-4212-a139-b23f2ae58183"></a>For ORSO schemes that are re-registered with the Registrar of Occupational Retirement Schemes as a result of a change of administrator or change of pooling agreement, they will also be treated as continuation of the original schemes for exemption purposes.</p>
+</div>
+<div><a name="_8" id="_8"></a><h3>8.</h3>
+
+<p class="MsoNormal"><a name="_094ad51f-c8c4-481d-958b-e36c4a520623" id="_094ad51f-c8c4-481d-958b-e36c4a520623"></a>Furthermore, section 14 of the <a href="https://www.elegislation.gov.hk/hk/cap485B">Exemption Regulation</a> provides that ORSO registered schemes that are established after 15 October 1995 as a result of scheme restructuring or bona fide business transactions, such as company amalgamation, restructuring and joint ventures, may be eligible to apply for MPF exemption provided that all or a class of the members of the scheme and the assets of the scheme have been transferred or will, before or as soon as practicable after the issue of an exemption certificate in respect of the scheme under section 16 of the <a href="https://www.elegislation.gov.hk/hk/cap485B">Exemption Regulation</a>, be transferred to the scheme from one or more relevant ORSO registered schemes. These &#x201C;new schemes&#x201D; shall be deemed to be relevant ORSO registered schemes by virtue of section 2(2) of the <a href="https://www.elegislation.gov.hk/hk/cap485B">Exemption Regulation</a>.</p>
+</div>
+<div><a name="_9" id="_9"></a><h3>9.</h3><p class="MsoNormal"><a name="_3550881b-3115-45b0-bd62-ea530c5d4552" id="_3550881b-3115-45b0-bd62-ea530c5d4552"></a>The Authority has the discretionary power to determine whether a new ORSO scheme is to be treated as a relevant ORSO registered scheme. Applications made with respect to new schemes will need to submit the following additional information and documents -</p>
+
+<p style="mso-list:l2 level1 lfo2;" class="MsoListParagraphCxSpFirst">
+evidencing the bona fide business transaction, if applicable, e.g. sale and purchase agreement, minutes of board meeting, correspondence, solicitor statement, etc.;
+</p>
+<p style="mso-list:l2 level1 lfo2;" class="MsoListParagraphCxSpMiddle">
+evidencing the scheme restructuring, if applicable, e.g. trust deeds of the original and the new schemes, employee communication booklets or leaflets, etc.;
+</p>
+<p style="mso-list:l2 level1 lfo2;" class="MsoListParagraphCxSpMiddle">
+evidencing the transfer of scheme assets (if applicable), e.g. correspondence between the former and the current administrators;
+</p>
+<p style="mso-list:l2 level1 lfo2;" class="MsoListParagraphCxSpMiddle">
+comparing the terms and conditions of the original scheme and the new scheme with respect to overall benefit design, benefit level, etc.; and
+</p>
+<p style="mso-list:l2 level1 lfo2;" class="MsoListParagraphCxSpLast">
+the percentage of members of the new scheme who are or will be members of the original scheme.
+</p>
+</div></div>
+        <div><a name="_governing_rules" id="_governing_rules"></a><h2 class="containerhdr">Governing Rules</h2>
+
+<div><a name="_10" id="_10"></a><h3>10.</h3><p class="MsoNormal"><a name="_b75504fa-46f0-46b9-a5c9-fade95b73262" id="_b75504fa-46f0-46b9-a5c9-fade95b73262"></a>In order to be qualified for MPF exemption, the terms of relevant ORSO registered schemes will most likely need to be amended in the following aspects:</p>
+
+<p style="mso-list:l2 level1 lfo3;" class="MsoListParagraphCxSpFirst">
+For schemes which close membership to new employees -
+
+<p style="mso-list:l2 level2 lfo3;" class="MsoListParagraphCxSpFirst">
+definition of &#x201C;minimum MPF benefits&#x201D; (including &#x201C;relevant income&#x201D;, &#x201C;final average monthly relevant income&#x201D; and &#x201C;years of post-MPF service&#x201D;), &#x201C;commencement date of MPF&#x201D;, etc.;
+</p>
+<p style="mso-list:l2 level2 lfo3;" class="MsoListParagraphCxSpMiddle">
+eligibility provision for joining the scheme, i.e. no new employee can join (except for membership transfer, if applicable);
+</p>
+<p style="mso-list:l2 level2 lfo3;" class="MsoListParagraphCxSpMiddle">
+treatment of accrued benefits of members who join an MPF scheme upon retirement, termination of service, death, disability, etc.;
+</p>
+<p style="mso-list:l2 level2 lfo3;" class="MsoListParagraphCxSpMiddle">
+restrictions on withholding an existing member&#x2019;s minimum MPF benefits upon dismissal for cause;
+</p>
+<p style="mso-list:l2 level2 lfo3;" class="MsoListParagraphCxSpMiddle">
+option to existing members to join an MPF scheme upon the commencement date of MPF and upon reduction of future benefits;
+</p>
+<p style="mso-list:l2 level2 lfo3;" class="MsoListParagraphCxSpLast">
+restrictions on the use of derivatives and borrowing;
+</p>
+
+</p>
+<p style="mso-list:l2 level1 lfo3;" class="MsoListParagraphCxSpLast">
+For schemes which open membership to new employees
+
+<p style="mso-list:l2 level2 lfo3;" class="MsoListParagraphCxSpFirst">
+definitions of &#x201C;commencement date of MPF&#x201D;, &#x201C;existing member&#x201D;, &#x201C;new eligible employee&#x201D;, &#x201C;new member&#x201D;, &#x201C;minimum MPF benefits&#x201D; (including &#x201C;relevant income&#x201D;, &#x201C;final average monthly relevant income&#x201D; and &#x201C;years of post-MPF service&#x201D;), etc.;
+</p>
+<p style="mso-list:l2 level2 lfo3;" class="MsoListParagraphCxSpMiddle">
+eligibility provision for joining the scheme&#x2009;&#x2014;&#x2009;the eligibility period will need to be shorter than 60 days since an employer is obliged to enrol a new employee into an MPF scheme after being employed for 60 days unless the employee is either exempt by virtue of section 4 of <a href="https://www.elegislation.gov.hk/hk/cap485">the Ordinance</a> or is a member of an MPF exempted ORSO scheme;
+</p>
+<p style="mso-list:l2 level2 lfo3;" class="MsoListParagraphCxSpMiddle">
+treatment of accrued benefits of members who join an MPF scheme upon retirement, termination of service, death, disability, etc.;
+</p>
+<p style="mso-list:l2 level2 lfo3;" class="MsoListParagraphCxSpMiddle">
+grandfathering provisions of existing members except for restrictions on withholding an existing member&#x2019;s minimum MPF benefits upon dismissal for cause;
+</p>
+<p style="mso-list:l2 level2 lfo3;" class="MsoListParagraphCxSpMiddle">
+option to existing members to join an MPF scheme upon the commencement date of MPF;
+</p>
+<p style="mso-list:l2 level2 lfo3;" class="MsoListParagraphCxSpMiddle">
+option to all members to join an MPF scheme upon reduction of future benefits;
+</p>
+<p style="mso-list:l2 level2 lfo3;" class="MsoListParagraphCxSpMiddle">
+preservation, portability and withdrawal of minimum MPF benefits requirements with respect to new members;
+</p>
+<p style="mso-list:l2 level2 lfo3;" class="MsoListParagraphCxSpMiddle">
+treatment of minimum MPF benefits upon inter-group transfer and scheme transfers;
+</p>
+<p style="mso-list:l2 level2 lfo3;" class="MsoListParagraphCxSpLast">
+restrictions on the use of derivatives and borrowing.
+</p>
+
+</p>
+</div>
+</div>
+        <div><a name="_prescribed_forms" id="_prescribed_forms"></a><h2 class="containerhdr">Prescribed Forms</h2><div><a name="_11" id="_11"></a><h3>11.</h3><p class="MsoNormal"><a name="_1f5a87ec-9b6e-4200-a7db-532791153c16" id="_1f5a87ec-9b6e-4200-a7db-532791153c16"></a>In making an application to the Authority for exemption of a relevant ORSO registered scheme, the applicant must:</p>
+
+<p style="mso-list:l2 level1 lfo4;" class="MsoListParagraphCxSpFirst">
+make the application in the prescribed format (Form ER) as set out in the Annex;
+</p>
+<p style="mso-list:l2 level1 lfo4;" class="MsoListParagraphCxSpMiddle">
+submit a copy of the latest governing rules of the scheme;
+</p>
+<p style="mso-list:l2 level1 lfo4;" class="MsoListParagraphCxSpMiddle">
+submit such other documents as prescribed in the application form;
+</p>
+<p style="mso-list:l2 level1 lfo4;" class="MsoListParagraphCxSpMiddle">
+accompanied by the application fee; and
+</p>
+<p style="mso-list:l2 level1 lfo4;" class="MsoListParagraphCxSpLast">
+make the application on or before the specified date, i.e. a date
+specified by the Authority by notice in the Gazette. For an application made with respect to a new scheme to which section 14 of the <a href="https://www.elegislation.gov.hk/hk/cap485B">Exemption Regulation</a> applies and is established after the commencement date of the <a href="https://www.elegislation.gov.hk/hk/cap485B">Exemption Regulation</a>, the application should be made within 60 days of the date of establishment of the scheme; or on or before the specified date, whichever is later; or such later date as the Authority may specify in writing. However, employers are reminded that if there are new employees eligible to join the new scheme, employers are required to give an option to these employees to join the new scheme or an MPF scheme in accordance with section 15 of the <a href="https://www.elegislation.gov.hk/hk/cap485B">Exemption Regulation</a>. In addition, after commencement of sections 7, 7A and 7B of <a href="https://www.elegislation.gov.hk/hk/cap485">the Ordinance</a>, new employees will be compelled by law to make mandatory contributions after 60 days of employment if they are not an exempt person or a member of an MPF exempted ORSO scheme. Thus, where new employees are eligible to join the new scheme, applications should be made as soon as possible if employers foresee such a new scheme being established.
+</p>
+</div>
+<div><a name="_12" id="_12"></a><h3>12.</h3>
+
+<p class="MsoNormal"><a name="_6ecc7728-c9bd-40cd-80d3-0d80e1632483" id="_6ecc7728-c9bd-40cd-80d3-0d80e1632483"></a>The prescribed format of the form in the Annex can be downloaded from the Authority&#x2019;s website at: <a href="http://www.mpfa.org.hk">http://www.mpfa.org.hk</a></p>
+</div></div>
+        <div><a name="_definition_of_terms" id="_definition_of_terms"></a><h2 class="containerhdr">Definition of Terms</h2>
+
+<div><a name="_13" id="_13"></a><h3>13.</h3>
+
+<p class="MsoNormal"><a name="_33b70d6f-0b9b-4550-9f3c-edf12779ea1e" id="_33b70d6f-0b9b-4550-9f3c-edf12779ea1e"></a>Where a term used in the Guidelines is defined in <a href="https://www.elegislation.gov.hk/hk/cap485">the Ordinance</a> or the subsidiary legislation then, except where specified in the Guidelines, that term carries the meaning as defined in <a href="https://www.elegislation.gov.hk/hk/cap485">the Ordinance</a> or the subsidiary legislation.</p>
+</div>
+</div>
+        <div><a name="_the_applicant" id="_the_applicant"></a><h2 class="containerhdr">The Applicant</h2>
+
+<div><a name="_14" id="_14"></a><h3>14.</h3>
+
+<p class="MsoNormal"><a name="_0aef7a1e-050e-4d81-abf3-c9f8fb7bff93" id="_0aef7a1e-050e-4d81-abf3-c9f8fb7bff93"></a>The applicant making an application for exemption of a relevant ORSO registered scheme must be the trustee of the scheme. In case the scheme is a group scheme under section 67 of the Occupational Retirement Schemes Ordinance, the application shall be deemed to be made by each relevant employer of the scheme under section 25(a) of the <a href="https://www.elegislation.gov.hk/hk/cap485B">Exemption Regulation</a>.</p>
+</div>
+</div>
+        <div><a name="_signing_requirements" id="_signing_requirements"></a><h2 class="containerhdr">Signing Requirements</h2>
+
+<div><a name="_15" id="_15"></a><h3>15.</h3><p class="MsoNormal"><a name="_fb478c09-6ad6-47a3-886f-3089360106ca" id="_fb478c09-6ad6-47a3-886f-3089360106ca"></a>The application for exemption of a relevant ORSO registered scheme must be signed:</p>
+
+<p style="mso-list:l2 level1 lfo5;" class="MsoListParagraphCxSpFirst">
+if all the trustees are natural persons, by at least 2 trustees and one of whom must be the non-employer trustee; in the case where there is only one trustee, by that trustee;
+</p>
+<p style="mso-list:l2 level1 lfo5;" class="MsoListParagraphCxSpLast">
+if the trustee or one of the trustees is a company, by at least 2 of the directors of the trustee that is a company or their authorised persons.
+</p>
+</div>
+</div>
+        <div><a name="_submission_of_application" id="_submission_of_application"></a><h2 class="containerhdr">Submission of Application</h2>
+
+<div><a name="_16" id="_16"></a><h3>16.</h3><p class="MsoNormal"><a name="_73713821-762c-4f39-af56-864dc87e6b9d" id="_73713821-762c-4f39-af56-864dc87e6b9d"></a>Completed application form and the relevant documents, if any, should be submitted in hard copies and sent, together with the application fee, to:</p>
+<p style="text-align:left;" align="left" class="MsoNormal"><a name="_cc2a6525-04ec-4652-8f22-2237cd8b0320" id="_cc2a6525-04ec-4652-8f22-2237cd8b0320"></a>Mandatory Provident Fund Schemes Authority Level 8,<br/>
+Tower 1, Kowloon Commerce Centre<br/>
+51 Kwai Cheong Road, Kwai Chung Hong Kong</p></div>
+</div>
+        <div><a name="_warning" id="_warning"></a><h2 class="containerhdr">Warning</h2>
+
+<div><a name="_17" id="_17"></a><h3>17.</h3>
+
+<p class="MsoNormal"><a name="_5f3445ab-02c8-4c83-87fb-03f78670fd0e" id="_5f3445ab-02c8-4c83-87fb-03f78670fd0e"></a>If there is any change to the application information or documents after an application is submitted to the Authority, the applicant should inform the Authority as soon as reasonably practicable. It is an offence under section 43E of <a href="https://www.elegislation.gov.hk/hk/cap485">the Ordinance</a> if a person, in any document given to the Authority, makes a statement that he knows to be false or misleading in a material respect, or recklessly makes a statement which is false or misleading in a material respect.</p>
+</div>
+</div>
+      </div>
+    </div>
+  <div style="mso-element:footnote-list"/></body>
+</html>
+
+
+------=_NextPart_4e283c07.ec0f.48b2
+Content-ID: <filelist.xml>
+Content-Disposition: inline; filename="filelist.xml"
+Content-Transfer-Encoding: base64
+Content-Type: application/xml
+
+PHhtbCB4bWxuczpvPSJ1cm46c2NoZW1hcy1taWNyb3NvZnQtY29tOm9mZmljZTpvZmZpY2UiPgog
+ICAgICAgIDxvOk1haW5GaWxlIEhSZWY9Ii4uLy9fX3cvbW4tc2FtcGxlcy1tcGZhL21uLXNhbXBs
+ZXMtbXBmYS9zaXRlL2RvY3VtZW50cy9tcGZhLWd1aWRlbGluZXMuaHRtIi8+ICA8bzpGaWxlIEhS
+ZWY9ImE2ZGQ3MTgxLTQ5ODktNDc5OS05YjUyLWE0NjhmYTJlOTk4OC5wbmciLz4KICA8bzpGaWxl
+IEhSZWY9ImZpbGVsaXN0LnhtbCIvPgogIDxvOkZpbGUgSFJlZj0iaGVhZGVyLmh0bWwiLz4KPC94
+bWw+Cg==
+
+------=_NextPart_4e283c07.ec0f.48b2
+Content-ID: <header.html>
+Content-Disposition: inline; filename="header.html"
+Content-Transfer-Encoding: base64
+Content-Type: text/html charset="utf-8"
+
+PGh0bWwgeG1sbnM6dj0idXJuOnNjaGVtYXMtbWljcm9zb2Z0LWNvbTp2bWwiDQp4bWxuczpvPSJ1
+cm46c2NoZW1hcy1taWNyb3NvZnQtY29tOm9mZmljZTpvZmZpY2UiDQp4bWxuczp3PSJ1cm46c2No
+ZW1hcy1taWNyb3NvZnQtY29tOm9mZmljZTp3b3JkIg0KeG1sbnM6bT0iaHR0cDovL3NjaGVtYXMu
+bWljcm9zb2Z0LmNvbS9vZmZpY2UvMjAwNC8xMi9vbW1sIg0KeG1sbnM6bXY9Imh0dHA6Ly9tYWNW
+bWxTY2hlbWFVcmkiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy9UUi9SRUMtaHRtbDQwIj4NCg0K
+PGhlYWQ+DQo8bWV0YSBuYW1lPVRpdGxlIGNvbnRlbnQ9IiI+DQo8bWV0YSBuYW1lPUtleXdvcmRz
+IGNvbnRlbnQ9IiI+DQo8bWV0YSBodHRwLWVxdWl2PUNvbnRlbnQtVHlwZSBjb250ZW50PSJ0ZXh0
+L2h0bWw7IGNoYXJzZXQ9dXRmLTgiPg0KPG1ldGEgbmFtZT1Qcm9nSWQgY29udGVudD1Xb3JkLkRv
+Y3VtZW50Pg0KPG1ldGEgbmFtZT1HZW5lcmF0b3IgY29udGVudD0iTWljcm9zb2Z0IFdvcmQgMTUi
+Pg0KPG1ldGEgbmFtZT1PcmlnaW5hdG9yIGNvbnRlbnQ9Ik1pY3Jvc29mdCBXb3JkIDE1Ij4NCjxs
+aW5rIGlkPU1haW4tRmlsZSByZWw9TWFpbi1GaWxlIGhyZWY9Ii4uLy9fX3cvbW4tc2FtcGxlcy1t
+cGZhL21uLXNhbXBsZXMtbXBmYS9zaXRlL2RvY3VtZW50cy9tcGZhLWd1aWRlbGluZXMuaHRtbCI+
+DQo8IS0tW2lmIGd0ZSBtc28gOV0+PHhtbD4NCiA8bzpzaGFwZWRlZmF1bHRzIHY6ZXh0PSJlZGl0
+IiBzcGlkbWF4PSIyMDQ5Ii8+DQo8L3htbD48IVtlbmRpZl0tLT4NCjwvaGVhZD4NCg0KPGJvZHkg
+bGFuZz1FTiBsaW5rPWJsdWUgdmxpbms9IiM5NTRGNzIiPg0KDQo8ZGl2IHN0eWxlPSdtc28tZWxl
+bWVudDpmb290bm90ZS1zZXBhcmF0b3InIGlkPWZzPg0KDQo8cCBjbGFzcz1Nc29Ob3JtYWwgc3R5
+bGU9J21hcmdpbi1ib3R0b206MGNtO21hcmdpbi1ib3R0b206LjAwMDFwdDtsaW5lLWhlaWdodDoN
+Cm5vcm1hbCc+PHNwYW4gbGFuZz1FTi1HQj48c3BhbiBzdHlsZT0nbXNvLXNwZWNpYWwtY2hhcmFj
+dGVyOmZvb3Rub3RlLXNlcGFyYXRvcic+PCFbaWYgIXN1cHBvcnRGb290bm90ZXNdPg0KDQo8aHIg
+YWxpZ249bGVmdCBzaXplPTEgd2lkdGg9IjMzJSI+DQoNCjwhW2VuZGlmXT48L3NwYW4+PC9zcGFu
+PjwvcD4NCg0KPC9kaXY+DQoNCjxkaXYgc3R5bGU9J21zby1lbGVtZW50OmZvb3Rub3RlLWNvbnRp
+bnVhdGlvbi1zZXBhcmF0b3InIGlkPWZjcz4NCg0KPHAgY2xhc3M9TXNvTm9ybWFsIHN0eWxlPSdt
+YXJnaW4tYm90dG9tOjBjbTttYXJnaW4tYm90dG9tOi4wMDAxcHQ7bGluZS1oZWlnaHQ6DQpub3Jt
+YWwnPjxzcGFuIGxhbmc9RU4tR0I+PHNwYW4gc3R5bGU9J21zby1zcGVjaWFsLWNoYXJhY3Rlcjpm
+b290bm90ZS1jb250aW51YXRpb24tc2VwYXJhdG9yJz48IVtpZiAhc3VwcG9ydEZvb3Rub3Rlc10+
+DQoNCjxociBhbGlnbj1sZWZ0IHNpemU9MT4NCg0KPCFbZW5kaWZdPjwvc3Bhbj48L3NwYW4+PC9w
+Pg0KDQo8L2Rpdj4NCg0KPGRpdiBzdHlsZT0nbXNvLWVsZW1lbnQ6ZW5kbm90ZS1zZXBhcmF0b3In
+IGlkPWVzPg0KDQo8cCBjbGFzcz1Nc29Ob3JtYWwgc3R5bGU9J21hcmdpbi1ib3R0b206MGNtO21h
+cmdpbi1ib3R0b206LjAwMDFwdDtsaW5lLWhlaWdodDoNCm5vcm1hbCc+PHNwYW4gbGFuZz1FTi1H
+Qj48c3BhbiBzdHlsZT0nbXNvLXNwZWNpYWwtY2hhcmFjdGVyOmZvb3Rub3RlLXNlcGFyYXRvcic+
+PCFbaWYgIXN1cHBvcnRGb290bm90ZXNdPg0KDQo8aHIgYWxpZ249bGVmdCBzaXplPTEgd2lkdGg9
+IjMzJSI+DQoNCjwhW2VuZGlmXT48L3NwYW4+PC9zcGFuPjwvcD4NCg0KPC9kaXY+DQoNCjxkaXYg
+c3R5bGU9J21zby1lbGVtZW50OmVuZG5vdGUtY29udGludWF0aW9uLXNlcGFyYXRvcicgaWQ9ZWNz
+Pg0KDQo8cCBjbGFzcz1Nc29Ob3JtYWwgc3R5bGU9J21hcmdpbi1ib3R0b206MGNtO21hcmdpbi1i
+b3R0b206LjAwMDFwdDtsaW5lLWhlaWdodDoNCm5vcm1hbCc+PHNwYW4gbGFuZz1FTi1HQj48c3Bh
+biBzdHlsZT0nbXNvLXNwZWNpYWwtY2hhcmFjdGVyOmZvb3Rub3RlLWNvbnRpbnVhdGlvbi1zZXBh
+cmF0b3InPjwhW2lmICFzdXBwb3J0Rm9vdG5vdGVzXT4NCg0KPGhyIGFsaWduPWxlZnQgc2l6ZT0x
+Pg0KDQo8IVtlbmRpZl0+PC9zcGFuPjwvc3Bhbj48L3A+DQoNCjwvZGl2Pg0KDQo8ZGl2IHN0eWxl
+PSdtc28tZWxlbWVudDpoZWFkZXInIGlkPWVoMT4NCg0KPHAgY2xhc3M9TXNvSGVhZGVyIGFsaWdu
+PWxlZnQgc3R5bGU9J3RleHQtYWxpZ246bGVmdDtsaW5lLWhlaWdodDoxMi4wcHQ7DQptc28tbGlu
+ZS1oZWlnaHQtcnVsZTpleGFjdGx5Jz48c3BhbiBsYW5nPUVOLUdCPkNTJm5ic3A7Vi4yOjIwMjE8
+L3NwYW4+PC9wPg0KDQo8L2Rpdj4NCg0KPGRpdiBzdHlsZT0nbXNvLWVsZW1lbnQ6aGVhZGVyJyBp
+ZD1oMT4NCg0KPHAgY2xhc3M9TXNvSGVhZGVyIHN0eWxlPSdtYXJnaW4tYm90dG9tOjE4LjBwdCc+
+PHNwYW4gbGFuZz1FTi1HQg0Kc3R5bGU9J2ZvbnQtc2l6ZToxMC4wcHQ7bXNvLWJpZGktZm9udC1z
+aXplOjExLjBwdDtmb250LXdlaWdodDpub3JtYWwnPsKpDQpSaWJvc2UgR3JvdXAgSW5jLiZuYnNw
+OzIwMjEmbmJzcDvigJMgQWxsIHJpZ2h0cyByZXNlcnZlZDwvc3Bhbj48c3BhbiBsYW5nPUVOLUdC
+DQpzdHlsZT0nZm9udC13ZWlnaHQ6bm9ybWFsJz48bzpwPjwvbzpwPjwvc3Bhbj48L3A+DQoNCjwv
+ZGl2Pg0KDQo8ZGl2IHN0eWxlPSdtc28tZWxlbWVudDpmb290ZXInIGlkPWVmMT4NCg0KPHAgY2xh
+c3M9TXNvRm9vdGVyIHN0eWxlPSdtYXJnaW4tdG9wOjEyLjBwdDtsaW5lLWhlaWdodDoxMi4wcHQ7
+bXNvLWxpbmUtaGVpZ2h0LXJ1bGU6DQpleGFjdGx5Jz48IS0tW2lmIHN1cHBvcnRGaWVsZHNdPjxi
+IHN0eWxlPSdtc28tYmlkaS1mb250LXdlaWdodDpub3JtYWwnPjxzcGFuDQpsYW5nPUVOLUdCIHN0
+eWxlPSdmb250LXNpemU6MTAuMHB0O21zby1iaWRpLWZvbnQtc2l6ZToxMS4wcHQnPjxzcGFuDQpz
+dHlsZT0nbXNvLWVsZW1lbnQ6ZmllbGQtYmVnaW4nPjwvc3Bhbj48c3Bhbg0Kc3R5bGU9J21zby1z
+cGFjZXJ1bjp5ZXMnPsKgPC9zcGFuPlBBR0U8c3BhbiBzdHlsZT0nbXNvLXNwYWNlcnVuOnllcyc+
+wqDCoA0KPC9zcGFuPlwqIE1FUkdFRk9STUFUIDxzcGFuIHN0eWxlPSdtc28tZWxlbWVudDpmaWVs
+ZC1zZXBhcmF0b3InPjwvc3Bhbj48L3NwYW4+PC9iPjwhW2VuZGlmXS0tPjxiDQpzdHlsZT0nbXNv
+LWJpZGktZm9udC13ZWlnaHQ6bm9ybWFsJz48c3BhbiBsYW5nPUVOLUdCIHN0eWxlPSdmb250LXNp
+emU6MTAuMHB0Ow0KbXNvLWJpZGktZm9udC1zaXplOjExLjBwdCc+PHNwYW4gc3R5bGU9J21zby1u
+by1wcm9vZjp5ZXMnPjI8L3NwYW4+PC9zcGFuPjwvYj48IS0tW2lmIHN1cHBvcnRGaWVsZHNdPjxi
+DQpzdHlsZT0nbXNvLWJpZGktZm9udC13ZWlnaHQ6bm9ybWFsJz48c3BhbiBsYW5nPUVOLUdCIHN0
+eWxlPSdmb250LXNpemU6MTAuMHB0Ow0KbXNvLWJpZGktZm9udC1zaXplOjExLjBwdCc+PHNwYW4g
+c3R5bGU9J21zby1lbGVtZW50OmZpZWxkLWVuZCc+PC9zcGFuPjwvc3Bhbj48L2I+PCFbZW5kaWZd
+LS0+PHNwYW4NCmxhbmc9RU4tR0Igc3R5bGU9J2ZvbnQtc2l6ZToxMC4wcHQ7bXNvLWJpZGktZm9u
+dC1zaXplOjExLjBwdCc+PHNwYW4NCnN0eWxlPSdtc28tdGFiLWNvdW50OjEnPsKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgPC9zcGFuPsKpDQpS
+aWJvc2UgR3JvdXAgSW5jLiZuYnNwOzIwMjEmbmJzcDvigJMgQWxsIHJpZ2h0cyByZXNlcnZlZDxv
+OnA+PC9vOnA+PC9zcGFuPjwvcD4NCg0KPC9kaXY+DQoNCjxkaXYgc3R5bGU9J21zby1lbGVtZW50
+OmhlYWRlcicgaWQ9ZWgyPg0KPHAgY2xhc3M9TXNvSGVhZGVyIGFsaWduPWxlZnQgc3R5bGU9J3Rl
+eHQtYWxpZ246bGVmdDtsaW5lLWhlaWdodDoxMi4wcHQ7DQptc28tbGluZS1oZWlnaHQtcnVsZTpl
+eGFjdGx5Jz48c3BhbiBsYW5nPUVOLUdCPlJpYm9zZSBHcm91cCBJbmMuJm5ic3A7Vi4yOjIwMjE8
+L3NwYW4+PC9wPg0KPC9kaXY+DQoNCjxkaXYgc3R5bGU9J21zby1lbGVtZW50OmhlYWRlcicgaWQ9
+ZWgybD4NCjxwIGNsYXNzPU1zb0hlYWRlckxhbmRzY2FwZSBhbGlnbj1sZWZ0IHN0eWxlPSd0ZXh0
+LWFsaWduOmxlZnQ7bGluZS1oZWlnaHQ6MTIuMHB0Ow0KbXNvLWxpbmUtaGVpZ2h0LXJ1bGU6ZXhh
+Y3RseSc+PHNwYW4gbGFuZz1FTi1HQj5SaWJvc2UgR3JvdXAgSW5jLiZuYnNwO1YuMjoyMDIxPC9z
+cGFuPjwvcD4NCjwvZGl2Pg0KDQo8ZGl2IHN0eWxlPSdtc28tZWxlbWVudDpoZWFkZXInIGlkPWgy
+Pg0KPHAgY2xhc3M9TXNvSGVhZGVyIGFsaWduPXJpZ2h0IHN0eWxlPSd0ZXh0LWFsaWduOnJpZ2h0
+O2xpbmUtaGVpZ2h0OjEyLjBwdDsNCm1zby1saW5lLWhlaWdodC1ydWxlOmV4YWN0bHknPjxzcGFu
+IGxhbmc9RU4tR0I+Umlib3NlIEdyb3VwIEluYy4mbmJzcDtWLjI6MjAyMTwvc3Bhbj48L3A+DQo8
+L2Rpdj4NCg0KPGRpdiBzdHlsZT0nbXNvLWVsZW1lbnQ6aGVhZGVyJyBpZD1oMmw+DQo8cCBjbGFz
+cz1Nc29IZWFkZXJMYW5kc2NhcGUgYWxpZ249cmlnaHQgc3R5bGU9J3RleHQtYWxpZ246cmlnaHQ7
+bGluZS1oZWlnaHQ6MTIuMHB0Ow0KbXNvLWxpbmUtaGVpZ2h0LXJ1bGU6ZXhhY3RseSc+PHNwYW4g
+bGFuZz1FTi1HQj5SaWJvc2UgR3JvdXAgSW5jLiZuYnNwO1YuMjoyMDIxPC9zcGFuPjwvcD4NCjwv
+ZGl2Pg0KDQo8ZGl2IHN0eWxlPSdtc28tZWxlbWVudDpmb290ZXInIGlkPWVmMj4NCjxwIGNsYXNz
+PU1zb0Zvb3RlciBzdHlsZT0nbGluZS1oZWlnaHQ6MTIuMHB0O21zby1saW5lLWhlaWdodC1ydWxl
+OmV4YWN0bHknPjwhLS1baWYgc3VwcG9ydEZpZWxkc10+PHNwYW4NCmxhbmc9RU4tR0Igc3R5bGU9
+J2ZvbnQtc2l6ZToxMC4wcHQ7bXNvLWJpZGktZm9udC1zaXplOjExLjBwdCc+PHNwYW4NCnN0eWxl
+PSdtc28tZWxlbWVudDpmaWVsZC1iZWdpbic+PC9zcGFuPjxzcGFuDQpzdHlsZT0nbXNvLXNwYWNl
+cnVuOnllcyc+wqA8L3NwYW4+UEFHRTxzcGFuIHN0eWxlPSdtc28tc3BhY2VydW46eWVzJz7CoMKg
+DQo8L3NwYW4+XCogTUVSR0VGT1JNQVQgPHNwYW4gc3R5bGU9J21zby1lbGVtZW50OmZpZWxkLXNl
+cGFyYXRvcic+PC9zcGFuPjwvc3Bhbj48IVtlbmRpZl0tLT48c3Bhbg0KbGFuZz1FTi1HQiBzdHls
+ZT0nZm9udC1zaXplOjEwLjBwdDttc28tYmlkaS1mb250LXNpemU6MTEuMHB0Jz48c3Bhbg0Kc3R5
+bGU9J21zby1uby1wcm9vZjp5ZXMnPmlpPC9zcGFuPjwvc3Bhbj48IS0tW2lmIHN1cHBvcnRGaWVs
+ZHNdPjxzcGFuDQpsYW5nPUVOLUdCIHN0eWxlPSdmb250LXNpemU6MTAuMHB0O21zby1iaWRpLWZv
+bnQtc2l6ZToxMS4wcHQnPjxzcGFuDQpzdHlsZT0nbXNvLWVsZW1lbnQ6ZmllbGQtZW5kJz48L3Nw
+YW4+PC9zcGFuPjwhW2VuZGlmXS0tPjxzcGFuIGxhbmc9RU4tR0INCnN0eWxlPSdmb250LXNpemU6
+MTAuMHB0O21zby1iaWRpLWZvbnQtc2l6ZToxMS4wcHQnPjxzcGFuIHN0eWxlPSdtc28tdGFiLWNv
+dW50Og0KMSc+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoCA8L3NwYW4+wqkNClJpYm9zZSBHcm91cCBJbmMuJm5ic3A7MjAyMSZuYnNwO+KAkyBB
+bGwgcmlnaHRzIHJlc2VydmVkPG86cD48L286cD48L3NwYW4+PC9wPg0KPC9kaXY+DQoNCjxkaXYg
+c3R5bGU9J21zby1lbGVtZW50OmZvb3RlcicgaWQ9ZWYybD4NCjxwIGNsYXNzPU1zb0Zvb3Rlckxh
+bmRzY2FwZSBzdHlsZT0nbGluZS1oZWlnaHQ6MTIuMHB0O21zby1saW5lLWhlaWdodC1ydWxlOmV4
+YWN0bHknPjwhLS1baWYgc3VwcG9ydEZpZWxkc10+PHNwYW4NCmxhbmc9RU4tR0Igc3R5bGU9J2Zv
+bnQtc2l6ZToxMC4wcHQ7bXNvLWJpZGktZm9udC1zaXplOjExLjBwdCc+PHNwYW4NCnN0eWxlPSdt
+c28tZWxlbWVudDpmaWVsZC1iZWdpbic+PC9zcGFuPjxzcGFuDQpzdHlsZT0nbXNvLXNwYWNlcnVu
+Onllcyc+wqA8L3NwYW4+UEFHRTxzcGFuIHN0eWxlPSdtc28tc3BhY2VydW46eWVzJz7CoMKgDQo8
+L3NwYW4+XCogTUVSR0VGT1JNQVQgPHNwYW4gc3R5bGU9J21zby1lbGVtZW50OmZpZWxkLXNlcGFy
+YXRvcic+PC9zcGFuPjwvc3Bhbj48IVtlbmRpZl0tLT48c3Bhbg0KbGFuZz1FTi1HQiBzdHlsZT0n
+Zm9udC1zaXplOjEwLjBwdDttc28tYmlkaS1mb250LXNpemU6MTEuMHB0Jz48c3Bhbg0Kc3R5bGU9
+J21zby1uby1wcm9vZjp5ZXMnPmlpPC9zcGFuPjwvc3Bhbj48IS0tW2lmIHN1cHBvcnRGaWVsZHNd
+PjxzcGFuDQpsYW5nPUVOLUdCIHN0eWxlPSdmb250LXNpemU6MTAuMHB0O21zby1iaWRpLWZvbnQt
+c2l6ZToxMS4wcHQnPjxzcGFuDQpzdHlsZT0nbXNvLWVsZW1lbnQ6ZmllbGQtZW5kJz48L3NwYW4+
+PC9zcGFuPjwhW2VuZGlmXS0tPjxzcGFuIGxhbmc9RU4tR0INCnN0eWxlPSdmb250LXNpemU6MTAu
+MHB0O21zby1iaWRpLWZvbnQtc2l6ZToxMS4wcHQnPjxzcGFuIHN0eWxlPSdtc28tdGFiLWNvdW50
+Og0KMSc+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoCA8L3NwYW4+wqkNClJpYm9zZSBHcm91cCBJbmMuJm5ic3A7MjAyMSZuYnNwO+KAkyBBbGwg
+cmlnaHRzIHJlc2VydmVkPG86cD48L286cD48L3NwYW4+PC9wPg0KPC9kaXY+DQoNCjxkaXYgc3R5
+bGU9J21zby1lbGVtZW50OmZvb3RlcicgaWQ9ZjI+DQo8cCBjbGFzcz1Nc29Gb290ZXIgc3R5bGU9
+J2xpbmUtaGVpZ2h0OjEyLjBwdCc+PHNwYW4gbGFuZz1FTi1HQg0Kc3R5bGU9J2ZvbnQtc2l6ZTox
+MC4wcHQ7bXNvLWJpZGktZm9udC1zaXplOjExLjBwdCc+wqkgUmlib3NlIEdyb3VwIEluYy4mbmJz
+cDsyMDIxJm5ic3A74oCTIEFsbA0KcmlnaHRzIHJlc2VydmVkPHNwYW4gc3R5bGU9J21zby10YWIt
+Y291bnQ6MSc+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqAgPC9zcGFuPjwvc3Bhbj48IS0tW2lmIHN1cHBvcnRGaWVsZHNdPjxzcGFuDQpsYW5nPUVO
+LUdCIHN0eWxlPSdmb250LXNpemU6MTAuMHB0O21zby1iaWRpLWZvbnQtc2l6ZToxMS4wcHQnPjxz
+cGFuDQpzdHlsZT0nbXNvLWVsZW1lbnQ6ZmllbGQtYmVnaW4nPjwvc3Bhbj4gUEFHRTxzcGFuIHN0
+eWxlPSdtc28tc3BhY2VydW46eWVzJz7CoMKgDQo8L3NwYW4+XCogTUVSR0VGT1JNQVQgPHNwYW4g
+c3R5bGU9J21zby1lbGVtZW50OmZpZWxkLXNlcGFyYXRvcic+PC9zcGFuPjwvc3Bhbj48IVtlbmRp
+Zl0tLT48c3Bhbg0KbGFuZz1FTi1HQiBzdHlsZT0nZm9udC1zaXplOjEwLjBwdDttc28tYmlkaS1m
+b250LXNpemU6MTEuMHB0Jz48c3Bhbg0Kc3R5bGU9J21zby1uby1wcm9vZjp5ZXMnPmlpaTwvc3Bh
+bj48L3NwYW4+PCEtLVtpZiBzdXBwb3J0RmllbGRzXT48c3Bhbg0KbGFuZz1FTi1HQiBzdHlsZT0n
+Zm9udC1zaXplOjEwLjBwdDttc28tYmlkaS1mb250LXNpemU6MTEuMHB0Jz48c3Bhbg0Kc3R5bGU9
+J21zby1lbGVtZW50OmZpZWxkLWVuZCc+PC9zcGFuPjwvc3Bhbj48IVtlbmRpZl0tLT48c3BhbiBs
+YW5nPUVOLUdCDQpzdHlsZT0nZm9udC1zaXplOjEwLjBwdDttc28tYmlkaS1mb250LXNpemU6MTEu
+MHB0Jz48bzpwPjwvbzpwPjwvc3Bhbj48L3A+DQo8L2Rpdj4NCg0KPGRpdiBzdHlsZT0nbXNvLWVs
+ZW1lbnQ6Zm9vdGVyJyBpZD1mMmw+DQo8cCBjbGFzcz1Nc29Gb290ZXJMYW5kc2NhcGUgc3R5bGU9
+J2xpbmUtaGVpZ2h0OjEyLjBwdCc+PHNwYW4gbGFuZz1FTi1HQg0Kc3R5bGU9J2ZvbnQtc2l6ZTox
+MC4wcHQ7bXNvLWJpZGktZm9udC1zaXplOjExLjBwdCc+wqkgUmlib3NlIEdyb3VwIEluYy4mbmJz
+cDsyMDIxJm5ic3A74oCTIEFsbA0KcmlnaHRzIHJlc2VydmVkPHNwYW4gc3R5bGU9J21zby10YWIt
+Y291bnQ6MSc+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqAgPC9zcGFuPjwvc3Bhbj48IS0tW2lmIHN1cHBvcnRGaWVsZHNdPjxzcGFuDQpsYW5nPUVO
+LUdCIHN0eWxlPSdmb250LXNpemU6MTAuMHB0O21zby1iaWRpLWZvbnQtc2l6ZToxMS4wcHQnPjxz
+cGFuDQpzdHlsZT0nbXNvLWVsZW1lbnQ6ZmllbGQtYmVnaW4nPjwvc3Bhbj4gUEFHRTxzcGFuIHN0
+eWxlPSdtc28tc3BhY2VydW46eWVzJz7CoMKgDQo8L3NwYW4+XCogTUVSR0VGT1JNQVQgPHNwYW4g
+c3R5bGU9J21zby1lbGVtZW50OmZpZWxkLXNlcGFyYXRvcic+PC9zcGFuPjwvc3Bhbj48IVtlbmRp
+Zl0tLT48c3Bhbg0KbGFuZz1FTi1HQiBzdHlsZT0nZm9udC1zaXplOjEwLjBwdDttc28tYmlkaS1m
+b250LXNpemU6MTEuMHB0Jz48c3Bhbg0Kc3R5bGU9J21zby1uby1wcm9vZjp5ZXMnPmlpaTwvc3Bh
+bj48L3NwYW4+PCEtLVtpZiBzdXBwb3J0RmllbGRzXT48c3Bhbg0KbGFuZz1FTi1HQiBzdHlsZT0n
+Zm9udC1zaXplOjEwLjBwdDttc28tYmlkaS1mb250LXNpemU6MTEuMHB0Jz48c3Bhbg0Kc3R5bGU9
+J21zby1lbGVtZW50OmZpZWxkLWVuZCc+PC9zcGFuPjwvc3Bhbj48IVtlbmRpZl0tLT48c3BhbiBs
+YW5nPUVOLUdCDQpzdHlsZT0nZm9udC1zaXplOjEwLjBwdDttc28tYmlkaS1mb250LXNpemU6MTEu
+MHB0Jz48bzpwPjwvbzpwPjwvc3Bhbj48L3A+DQo8L2Rpdj4NCg0KPGRpdiBzdHlsZT0nbXNvLWVs
+ZW1lbnQ6Zm9vdGVyJyBpZD1lZjM+DQo8cCBjbGFzcz1Nc29Gb290ZXIgc3R5bGU9J21hcmdpbi10
+b3A6MTIuMHB0O2xpbmUtaGVpZ2h0OjEyLjBwdDttc28tbGluZS1oZWlnaHQtcnVsZToNCmV4YWN0
+bHknPjwhLS1baWYgc3VwcG9ydEZpZWxkc10+PGIgc3R5bGU9J21zby1iaWRpLWZvbnQtd2VpZ2h0
+Om5vcm1hbCc+PHNwYW4NCmxhbmc9RU4tR0Igc3R5bGU9J2ZvbnQtc2l6ZToxMC4wcHQ7bXNvLWJp
+ZGktZm9udC1zaXplOjExLjBwdCc+PHNwYW4NCnN0eWxlPSdtc28tZWxlbWVudDpmaWVsZC1iZWdp
+bic+PC9zcGFuPjxzcGFuDQpzdHlsZT0nbXNvLXNwYWNlcnVuOnllcyc+wqA8L3NwYW4+UEFHRTxz
+cGFuIHN0eWxlPSdtc28tc3BhY2VydW46eWVzJz7CoMKgDQo8L3NwYW4+XCogTUVSR0VGT1JNQVQg
+PHNwYW4gc3R5bGU9J21zby1lbGVtZW50OmZpZWxkLXNlcGFyYXRvcic+PC9zcGFuPjwvc3Bhbj48
+L2I+PCFbZW5kaWZdLS0+PGINCnN0eWxlPSdtc28tYmlkaS1mb250LXdlaWdodDpub3JtYWwnPjxz
+cGFuIGxhbmc9RU4tR0Igc3R5bGU9J2ZvbnQtc2l6ZToxMC4wcHQ7DQptc28tYmlkaS1mb250LXNp
+emU6MTEuMHB0Jz48c3BhbiBzdHlsZT0nbXNvLW5vLXByb29mOnllcyc+Mjwvc3Bhbj48L3NwYW4+
+PC9iPjwhLS1baWYgc3VwcG9ydEZpZWxkc10+PGINCnN0eWxlPSdtc28tYmlkaS1mb250LXdlaWdo
+dDpub3JtYWwnPjxzcGFuIGxhbmc9RU4tR0Igc3R5bGU9J2ZvbnQtc2l6ZToxMC4wcHQ7DQptc28t
+YmlkaS1mb250LXNpemU6MTEuMHB0Jz48c3BhbiBzdHlsZT0nbXNvLWVsZW1lbnQ6ZmllbGQtZW5k
+Jz48L3NwYW4+PC9zcGFuPjwvYj48IVtlbmRpZl0tLT48c3Bhbg0KbGFuZz1FTi1HQiBzdHlsZT0n
+Zm9udC1zaXplOjEwLjBwdDttc28tYmlkaS1mb250LXNpemU6MTEuMHB0Jz48c3Bhbg0Kc3R5bGU9
+J21zby10YWItY291bnQ6MSc+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoCA8L3NwYW4+wqkNClJpYm9zZSBHcm91cCBJbmMuJm5ic3A7MjAyMSZu
+YnNwO+KAkyBBbGwgcmlnaHRzIHJlc2VydmVkPG86cD48L286cD48L3NwYW4+PC9wPg0KPC9kaXY+
+DQoNCjxkaXYgc3R5bGU9J21zby1lbGVtZW50OmZvb3RlcicgaWQ9ZWYzbD4NCjxwIGNsYXNzPU1z
+b0Zvb3RlckxhbmRzY2FwZSBzdHlsZT0nbWFyZ2luLXRvcDoxMi4wcHQ7bGluZS1oZWlnaHQ6MTIu
+MHB0O21zby1saW5lLWhlaWdodC1ydWxlOg0KZXhhY3RseSc+PCEtLVtpZiBzdXBwb3J0RmllbGRz
+XT48YiBzdHlsZT0nbXNvLWJpZGktZm9udC13ZWlnaHQ6bm9ybWFsJz48c3Bhbg0KbGFuZz1FTi1H
+QiBzdHlsZT0nZm9udC1zaXplOjEwLjBwdDttc28tYmlkaS1mb250LXNpemU6MTEuMHB0Jz48c3Bh
+bg0Kc3R5bGU9J21zby1lbGVtZW50OmZpZWxkLWJlZ2luJz48L3NwYW4+PHNwYW4NCnN0eWxlPSdt
+c28tc3BhY2VydW46eWVzJz7CoDwvc3Bhbj5QQUdFPHNwYW4gc3R5bGU9J21zby1zcGFjZXJ1bjp5
+ZXMnPsKgwqANCjwvc3Bhbj5cKiBNRVJHRUZPUk1BVCA8c3BhbiBzdHlsZT0nbXNvLWVsZW1lbnQ6
+ZmllbGQtc2VwYXJhdG9yJz48L3NwYW4+PC9zcGFuPjwvYj48IVtlbmRpZl0tLT48Yg0Kc3R5bGU9
+J21zby1iaWRpLWZvbnQtd2VpZ2h0Om5vcm1hbCc+PHNwYW4gbGFuZz1FTi1HQiBzdHlsZT0nZm9u
+dC1zaXplOjEwLjBwdDsNCm1zby1iaWRpLWZvbnQtc2l6ZToxMS4wcHQnPjxzcGFuIHN0eWxlPSdt
+c28tbm8tcHJvb2Y6eWVzJz4yPC9zcGFuPjwvc3Bhbj48L2I+PCEtLVtpZiBzdXBwb3J0RmllbGRz
+XT48Yg0Kc3R5bGU9J21zby1iaWRpLWZvbnQtd2VpZ2h0Om5vcm1hbCc+PHNwYW4gbGFuZz1FTi1H
+QiBzdHlsZT0nZm9udC1zaXplOjEwLjBwdDsNCm1zby1iaWRpLWZvbnQtc2l6ZToxMS4wcHQnPjxz
+cGFuIHN0eWxlPSdtc28tZWxlbWVudDpmaWVsZC1lbmQnPjwvc3Bhbj48L3NwYW4+PC9iPjwhW2Vu
+ZGlmXS0tPjxzcGFuDQpsYW5nPUVOLUdCIHN0eWxlPSdmb250LXNpemU6MTAuMHB0O21zby1iaWRp
+LWZvbnQtc2l6ZToxMS4wcHQnPjxzcGFuDQpzdHlsZT0nbXNvLXRhYi1jb3VudDoxJz7CoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIDwvc3Bhbj7C
+qQ0KUmlib3NlIEdyb3VwIEluYy4mbmJzcDsyMDIxJm5ic3A74oCTIEFsbCByaWdodHMgcmVzZXJ2
+ZWQ8bzpwPjwvbzpwPjwvc3Bhbj48L3A+DQo8L2Rpdj4NCg0KPGRpdiBzdHlsZT0nbXNvLWVsZW1l
+bnQ6Zm9vdGVyJyBpZD1mMz4NCjxwIGNsYXNzPU1zb0Zvb3RlciBzdHlsZT0nbGluZS1oZWlnaHQ6
+MTIuMHB0Jz48c3BhbiBsYW5nPUVOLUdCDQpzdHlsZT0nZm9udC1zaXplOjEwLjBwdDttc28tYmlk
+aS1mb250LXNpemU6MTEuMHB0Jz7CqSBSaWJvc2UgR3JvdXAgSW5jLiZuYnNwOzIwMjEmbmJzcDvi
+gJMgQWxsDQpyaWdodHMgcmVzZXJ2ZWQ8c3BhbiBzdHlsZT0nbXNvLXRhYi1jb3VudDoxJz7CoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIDwvc3Bh
+bj48L3NwYW4+PCEtLVtpZiBzdXBwb3J0RmllbGRzXT48Yg0Kc3R5bGU9J21zby1iaWRpLWZvbnQt
+d2VpZ2h0Om5vcm1hbCc+PHNwYW4gbGFuZz1FTi1HQiBzdHlsZT0nZm9udC1zaXplOjEwLjBwdDsN
+Cm1zby1iaWRpLWZvbnQtc2l6ZToxMS4wcHQnPjxzcGFuIHN0eWxlPSdtc28tZWxlbWVudDpmaWVs
+ZC1iZWdpbic+PC9zcGFuPg0KUEFHRTxzcGFuIHN0eWxlPSdtc28tc3BhY2VydW46eWVzJz7CoMKg
+IDwvc3Bhbj5cKiBNRVJHRUZPUk1BVCA8c3Bhbg0Kc3R5bGU9J21zby1lbGVtZW50OmZpZWxkLXNl
+cGFyYXRvcic+PC9zcGFuPjwvc3Bhbj48L2I+PCFbZW5kaWZdLS0+PGINCnN0eWxlPSdtc28tYmlk
+aS1mb250LXdlaWdodDpub3JtYWwnPjxzcGFuIGxhbmc9RU4tR0Igc3R5bGU9J2ZvbnQtc2l6ZTox
+MC4wcHQ7DQptc28tYmlkaS1mb250LXNpemU6MTEuMHB0Jz48c3BhbiBzdHlsZT0nbXNvLW5vLXBy
+b29mOnllcyc+Mzwvc3Bhbj48L3NwYW4+PC9iPjwhLS1baWYgc3VwcG9ydEZpZWxkc10+PGINCnN0
+eWxlPSdtc28tYmlkaS1mb250LXdlaWdodDpub3JtYWwnPjxzcGFuIGxhbmc9RU4tR0Igc3R5bGU9
+J2ZvbnQtc2l6ZToxMC4wcHQ7DQptc28tYmlkaS1mb250LXNpemU6MTEuMHB0Jz48c3BhbiBzdHls
+ZT0nbXNvLWVsZW1lbnQ6ZmllbGQtZW5kJz48L3NwYW4+PC9zcGFuPjwvYj48IVtlbmRpZl0tLT48
+c3Bhbg0KbGFuZz1FTi1HQiBzdHlsZT0nZm9udC1zaXplOjEwLjBwdDttc28tYmlkaS1mb250LXNp
+emU6MTEuMHB0Jz48bzpwPjwvbzpwPjwvc3Bhbj48L3A+DQo8L2Rpdj4NCg0KPGRpdiBzdHlsZT0n
+bXNvLWVsZW1lbnQ6Zm9vdGVyJyBpZD1mM2w+DQo8cCBjbGFzcz1Nc29Gb290ZXJMYW5kc2NhcGUg
+c3R5bGU9J2xpbmUtaGVpZ2h0OjEyLjBwdCc+PHNwYW4gbGFuZz1FTi1HQg0Kc3R5bGU9J2ZvbnQt
+c2l6ZToxMC4wcHQ7bXNvLWJpZGktZm9udC1zaXplOjExLjBwdCc+wqkgUmlib3NlIEdyb3VwIElu
+Yy4mbmJzcDsyMDIxJm5ic3A74oCTIEFsbA0KcmlnaHRzIHJlc2VydmVkPHNwYW4gc3R5bGU9J21z
+by10YWItY291bnQ6MSc+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoCA8L3NwYW4+PC9zcGFuPjwhLS1baWYgc3VwcG9ydEZpZWxkc10+PGINCnN0
+eWxlPSdtc28tYmlkaS1mb250LXdlaWdodDpub3JtYWwnPjxzcGFuIGxhbmc9RU4tR0Igc3R5bGU9
+J2ZvbnQtc2l6ZToxMC4wcHQ7DQptc28tYmlkaS1mb250LXNpemU6MTEuMHB0Jz48c3BhbiBzdHls
+ZT0nbXNvLWVsZW1lbnQ6ZmllbGQtYmVnaW4nPjwvc3Bhbj4NClBBR0U8c3BhbiBzdHlsZT0nbXNv
+LXNwYWNlcnVuOnllcyc+wqDCoCA8L3NwYW4+XCogTUVSR0VGT1JNQVQgPHNwYW4NCnN0eWxlPSdt
+c28tZWxlbWVudDpmaWVsZC1zZXBhcmF0b3InPjwvc3Bhbj48L3NwYW4+PC9iPjwhW2VuZGlmXS0t
+PjxiDQpzdHlsZT0nbXNvLWJpZGktZm9udC13ZWlnaHQ6bm9ybWFsJz48c3BhbiBsYW5nPUVOLUdC
+IHN0eWxlPSdmb250LXNpemU6MTAuMHB0Ow0KbXNvLWJpZGktZm9udC1zaXplOjExLjBwdCc+PHNw
+YW4gc3R5bGU9J21zby1uby1wcm9vZjp5ZXMnPjM8L3NwYW4+PC9zcGFuPjwvYj48IS0tW2lmIHN1
+cHBvcnRGaWVsZHNdPjxiDQpzdHlsZT0nbXNvLWJpZGktZm9udC13ZWlnaHQ6bm9ybWFsJz48c3Bh
+biBsYW5nPUVOLUdCIHN0eWxlPSdmb250LXNpemU6MTAuMHB0Ow0KbXNvLWJpZGktZm9udC1zaXpl
+OjExLjBwdCc+PHNwYW4gc3R5bGU9J21zby1lbGVtZW50OmZpZWxkLWVuZCc+PC9zcGFuPjwvc3Bh
+bj48L2I+PCFbZW5kaWZdLS0+PHNwYW4NCmxhbmc9RU4tR0Igc3R5bGU9J2ZvbnQtc2l6ZToxMC4w
+cHQ7bXNvLWJpZGktZm9udC1zaXplOjExLjBwdCc+PG86cD48L286cD48L3NwYW4+PC9wPg0KPC9k
+aXY+DQoNCjwvYm9keT4NCg0KPC9odG1sPg0K
+
+------=_NextPart_4e283c07.ec0f.48b2
+Content-ID: <a6dd7181-4989-4799-9b52-a468fa2e9988.png>
+Content-Disposition: inline; filename="a6dd7181-4989-4799-9b52-a468fa2e9988.png"
+Content-Transfer-Encoding: base64
+Content-Type: image/png
+
+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
+TkSuQmCC
+
+------=_NextPart_4e283c07.ec0f.48b2--
