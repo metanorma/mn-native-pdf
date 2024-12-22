@@ -380,7 +380,7 @@
 			
 				<xsl:for-each select="xalan:nodeset($updated_xml_with_pages)"> <!-- set context to preface -->
 				
-					<xsl:for-each select=".//*[local-name() = 'page_sequence'][parent::*[local-name() = 'boilerplate'] or parent::*[local-name() = 'preface']][normalize-space() != '' or .//image or .//svg]">
+					<xsl:for-each select=".//*[local-name() = 'page_sequence'][parent::*[local-name() = 'boilerplate'] or parent::*[local-name() = 'preface']][normalize-space() != '' or .//*[local-name() = 'image'] or .//*[local-name() = 'svg']]">
 					
 						<fo:page-sequence master-reference="document-jcgm" format="i">
 				
@@ -413,7 +413,7 @@
 					
 						<xsl:for-each select="xalan:nodeset($updated_xml_with_pages)"> <!-- set context to preface -->
 							
-							<xsl:for-each select=".//*[local-name() = 'page_sequence'][not(parent::*[local-name() = 'boilerplate'] or parent::*[local-name() = 'preface'])][normalize-space() != '' or .//image or .//svg]">
+							<xsl:for-each select=".//*[local-name() = 'page_sequence'][not(parent::*[local-name() = 'boilerplate'] or parent::*[local-name() = 'preface'])][normalize-space() != '' or .//*[local-name() = 'image'] or .//*[local-name() = 'svg']]">
 					
 								<!-- JCGM BODY -->
 								<fo:page-sequence master-reference="document-jcgm" force-page-count="no-force">

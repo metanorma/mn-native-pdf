@@ -236,7 +236,7 @@
 				</xsl:variable>
 			
 				<xsl:for-each select="xalan:nodeset($updated_xml_with_pages)"> <!-- set context to preface -->
-					<xsl:for-each select=".//*[local-name() = 'page_sequence'][normalize-space() != '' or .//image or .//svg]">
+					<xsl:for-each select=".//*[local-name() = 'page_sequence'][normalize-space() != '' or .//*[local-name() = 'image'] or .//*[local-name() = 'svg']]">
 						<fo:page-sequence master-reference="document" format="1" force-page-count="no-force">
 							
 							<xsl:attribute name="master-reference">
