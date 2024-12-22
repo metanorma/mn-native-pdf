@@ -1444,7 +1444,7 @@
 	<xsl:template name="insertPrefacepages">
 		<xsl:param name="num"/>
 		
-		<xsl:for-each select=".//*[local-name() = 'page_sequence'][parent::*[local-name() = 'preface']][normalize-space() != '' or .//image or .//svg]">
+		<xsl:for-each select=".//*[local-name() = 'page_sequence'][parent::*[local-name() = 'preface']][normalize-space() != '' or .//*[local-name() = 'image'] or .//*[local-name() = 'svg']]">
 	
 			<fo:page-sequence master-reference="document" format="1" force-page-count="no-force">
 				
@@ -1477,7 +1477,7 @@
 		<xsl:param name="lang" select="'en'"/>
 		<!-- BODY -->
 		
-		<xsl:for-each select=".//*[local-name() = 'page_sequence'][not(parent::*[local-name() = 'preface'])][normalize-space() != '' or .//image or .//svg]">
+		<xsl:for-each select=".//*[local-name() = 'page_sequence'][not(parent::*[local-name() = 'preface'])][normalize-space() != '' or .//*[local-name() = 'image'] or .//*[local-name() = 'svg']]">
 	
 			<fo:page-sequence master-reference="document" force-page-count="no-force">						
 			
