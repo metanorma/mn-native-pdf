@@ -81,7 +81,7 @@ XSLT_GENERATED := xslt/iec.international-standard.xsl \
 	xslt/bipm.rapport.xsl \
 	xslt/jcgm.standard.xsl
 
-MN2PDF_DOWNLOAD_PATH := https://github.com/metanorma/mn2pdf/releases/download/v2.10/mn2pdf-2.10.jar
+MN2PDF_DOWNLOAD_PATH := https://github.com/metanorma/mn2pdf/releases/download/v2.12/mn2pdf-2.12.jar
 # MN2PDF_DOWNLOAD_PATH := https://maven.pkg.github.com/metanorma/mn2pdf/com/metanorma/fop/mn2pdf/1.7/mn2pdf-1.7.jar
 MN2PDF_EXECUTABLE := $(notdir $(MN2PDF_DOWNLOAD_PATH))
 
@@ -95,7 +95,10 @@ targets:
 xslts: xsltsclean $(XSLT_GENERATED)
 
 $(MN2PDF_EXECUTABLE):
-	curl -sSL ${MN2PDF_DOWNLOAD_PATH} -o $(MN2PDF_EXECUTABLE)
+	git clone https://github.com/metanorma/mn2pdf; \
+	mvn -f ./mn2pdf/pom.xml -DskipTests clean install; \
+	cp ./mn2pdf/target/mn2pdf-2.12.jar $(MN2PDF_EXECUTABLE)
+#	curl -sSL ${MN2PDF_DOWNLOAD_PATH} -o $(MN2PDF_EXECUTABLE)
 
 xalan/xalan.jar:
 ifeq ($(OS),Windows_NT)
