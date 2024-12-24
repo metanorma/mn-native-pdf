@@ -98,7 +98,7 @@ $(MN2PDF_EXECUTABLE):
 	git clone https://github.com/metanorma/mn2pdf; \
 	cd mn2pdf; \
 	git checkout upgrade/pdfbox_3_0_3; \
-	mvn -DskipTests clean install; \
+	mvn --settings settings.xml -DskipTests clean package shade:shade; \
 	cd ..; \
 	cp ./mn2pdf/target/mn2pdf-2.12.jar $(MN2PDF_EXECUTABLE)
 #	curl -sSL ${MN2PDF_DOWNLOAD_PATH} -o $(MN2PDF_EXECUTABLE)
