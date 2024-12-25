@@ -308,7 +308,7 @@
 	<xsl:variable name="i18n_date_printing"><xsl:call-template name="getLocalizedString"><xsl:with-param name="key">date_printing</xsl:with-param></xsl:call-template></xsl:variable>
 	<xsl:variable name="i18n_corrected_version"><xsl:call-template name="getLocalizedString"><xsl:with-param name="key">corrected_version</xsl:with-param></xsl:call-template></xsl:variable>
 	<xsl:variable name="i18n_fast_track_procedure"><xsl:call-template name="getLocalizedString"><xsl:with-param name="key">fast-track-procedure</xsl:with-param></xsl:call-template></xsl:variable>
-	<xsl:variable name="i18n_iso_cen_parallel">ISO/CEN PARALLEL PROCESSING<!-- <xsl:call-template name="getLocalizedString"><xsl:with-param name="key">iso-cen-parallel</xsl:with-param></xsl:call-template>--></xsl:variable>
+	<xsl:variable name="i18n_iso_cen_parallel"><xsl:call-template name="getLocalizedString"><xsl:with-param name="key">iso-cen-parallel</xsl:with-param></xsl:call-template></xsl:variable>
 	<xsl:variable name="i18n_all_rights_reserved"><xsl:call-template name="getLocalizedString"><xsl:with-param name="key">all_rights_reserved</xsl:with-param></xsl:call-template></xsl:variable>	
 	<xsl:variable name="i18n_locality_page"><xsl:call-template name="getLocalizedString"><xsl:with-param name="key">locality.page</xsl:with-param></xsl:call-template></xsl:variable>
 	<xsl:variable name="i18n_locality_part"><xsl:call-template name="getLocalizedString"><xsl:with-param name="key">locality.part</xsl:with-param></xsl:call-template></xsl:variable>
@@ -2234,7 +2234,7 @@
 													<xsl:attribute name="height">28mm</xsl:attribute>
 												</xsl:if>
 												
-												<xsl:variable name="iso-cen-parallel" select="normalize-space(/iso:iso-standard/iso:bibdata/iso:ext/iso:iso-cen-parallel) or 1 = 1"/>
+												<xsl:variable name="iso-cen-parallel" select="normalize-space(/iso:iso-standard/iso:bibdata/iso:ext/iso:iso-cen-parallel)"/>
 												<xsl:if test="normalize-space($iso-cen-parallel) = 'true'">
 													<xsl:attribute name="height">35mm</xsl:attribute>
 												</xsl:if>
@@ -3210,7 +3210,7 @@
 				</fo:block-container>
 			</xsl:if>
 			
-			<xsl:variable name="iso-cen-parallel" select="normalize-space(/iso:iso-standard/iso:bibdata/iso:ext/iso:iso-cen-parallel) or 1 = 1"/>
+			<xsl:variable name="iso-cen-parallel" select="normalize-space(/iso:iso-standard/iso:bibdata/iso:ext/iso:iso-cen-parallel)"/>
 			
 			<xsl:if test="normalize-space($iso-cen-parallel) = 'true'">
 				<fo:block-container space-before="4mm" role="SKIP">
