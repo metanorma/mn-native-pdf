@@ -314,6 +314,9 @@
 	<xsl:variable name="i18n_locality_part"><xsl:call-template name="getLocalizedString"><xsl:with-param name="key">locality.part</xsl:with-param></xsl:call-template></xsl:variable>
 	<xsl:variable name="i18n_secretariat"><xsl:call-template name="getLocalizedString"><xsl:with-param name="key">secretariat</xsl:with-param></xsl:call-template></xsl:variable>
 	<xsl:variable name="i18n_classification_UDC"><xsl:call-template name="getLocalizedString"><xsl:with-param name="key">classification-UDC</xsl:with-param></xsl:call-template></xsl:variable>
+	<xsl:variable name="i18n_draft_comment_1"><xsl:call-template name="getLocalizedString"><xsl:with-param name="key">draft_comment_1</xsl:with-param></xsl:call-template></xsl:variable>
+	<xsl:variable name="i18n_draft_comment_2"><xsl:call-template name="getLocalizedString"><xsl:with-param name="key">draft_comment_2</xsl:with-param></xsl:call-template></xsl:variable>
+	<xsl:variable name="i18n_draft_comment_3"><xsl:call-template name="getLocalizedString"><xsl:with-param name="key">draft_comment_3</xsl:with-param></xsl:call-template></xsl:variable>
 	
 	<!-- Example:
 		<item level="1" id="Foreword" display="true">Foreword</item>
@@ -2171,6 +2174,9 @@
 											</fo:block>
 										</fo:table-cell>
 										<fo:table-cell number-columns-spanned="2" padding-left="6mm" display-align="after">
+											<xsl:if test="$lang = 'fr'">
+												<xsl:attribute name="padding-top">-15mm</xsl:attribute>
+											</xsl:if>
 											<fo:block font-size="6.5pt" margin-right="15mm">
 												<xsl:call-template name="insertDraftComments"/>
 											</fo:block>
@@ -3108,7 +3114,8 @@
 											$stage-abbreviation = 'WD' or 
 											$stage-abbreviation = 'CD'">
 			<fo:block margin-bottom="1.5mm">
-				<xsl:text>THIS DOCUMENT IS A DRAFT CIRCULATED FOR COMMENT AND APPROVAL. IT IS THEREFORE SUBJECT TO CHANGE AND MAY NOT BE REFERRED TO AS AN INTERNATIONAL STANDARD UNTIL PUBLISHED AS SUCH.</xsl:text>
+				<!-- <xsl:text>THIS DOCUMENT IS A DRAFT CIRCULATED FOR COMMENT AND APPROVAL. IT IS THEREFORE SUBJECT TO CHANGE AND MAY NOT BE REFERRED TO AS AN INTERNATIONAL STANDARD UNTIL PUBLISHED AS SUCH.</xsl:text> -->
+				<xsl:value-of select="java:toUpperCase(java:java.lang.String.new($i18n_draft_comment_1))"/>
 			</fo:block>
 		</xsl:if>
 		<xsl:if test="$stagename_abbreviation = 'DIS' or
@@ -3126,21 +3133,23 @@
 											$stage-abbreviation = 'WD' or 
 											$stage-abbreviation = 'CD'">
 			<fo:block margin-bottom="1.5mm">
-				<xsl:text>RECIPIENTS OF THIS DRAFT ARE INVITED TO
+				<!-- <xsl:text>RECIPIENTS OF THIS DRAFT ARE INVITED TO
 									SUBMIT, WITH THEIR COMMENTS, NOTIFICATION
 									OF ANY RELEVANT PATENT RIGHTS OF WHICH
 									THEY ARE AWARE AND TO PROVIDE SUPPORTING
-									DOCUMENTATION.</xsl:text>
+									DOCUMENTATION.</xsl:text> -->
+				<xsl:value-of select="java:toUpperCase(java:java.lang.String.new($i18n_draft_comment_2))"/>
 			</fo:block>
 			<fo:block>
-				<xsl:text>IN ADDITION TO THEIR EVALUATION AS
+				<!-- <xsl:text>IN ADDITION TO THEIR EVALUATION AS
 						BEING ACCEPTABLE FOR INDUSTRIAL, TECHNOLOGICAL,
 						COMMERCIAL AND USER PURPOSES,
 						DRAFT INTERNATIONAL STANDARDS MAY ON
 						OCCASION HAVE TO BE CONSIDERED IN THE
 						LIGHT OF THEIR POTENTIAL TO BECOME STANDARDS
 						TO WHICH REFERENCE MAY BE MADE IN
-						NATIONAL REGULATIONS.</xsl:text>
+						NATIONAL REGULATIONS.</xsl:text> -->
+				<xsl:value-of select="java:toUpperCase(java:java.lang.String.new($i18n_draft_comment_3))"/>
 			</fo:block>
 		</xsl:if>
 	</xsl:template>
