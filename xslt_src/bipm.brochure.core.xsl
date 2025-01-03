@@ -1437,6 +1437,7 @@
 								<fo:block>&#xA0;</fo:block>
 								<fo:block>&#xA0;</fo:block>
 								<fo:block>&#xA0;</fo:block>
+								<fo:block text-align="right"><xsl:value-of select="bipm:bibdata/bipm:version/bipm:draft"/></fo:block>
 								<fo:block text-align-last="justify">
 									<fo:inline>
 										<xsl:if test="/bipm:bipm-standard/bipm:bibdata/bipm:ext/bipm:structuredidentifier/bipm:appendix">
