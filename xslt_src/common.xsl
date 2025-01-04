@@ -19539,16 +19539,28 @@
 	<xsl:template match="*[local-name() = 'name'][following-sibling::*[1][local-name() = 'fmt-name']]" mode="update_xml_pres"/>
 	<xsl:template match="*[local-name() = 'section-title'][following-sibling::*[1][local-name() = 'p'][@type = 'section-title' or @type = 'floating-title']]" mode="update_xml_step1"/>
 	<xsl:template match="*[local-name() = 'section-title'][following-sibling::*[1][local-name() = 'p'][@type = 'section-title' or @type = 'floating-title']]" mode="update_xml_pres"/>
-	<xsl:template match="*[local-name() = 'preferred'][following-sibling::*[not(local-name() = 'preferred')][1][local-name() = 'fmt-preferred']]" mode="update_xml_step1"/>
-	<xsl:template match="*[local-name() = 'preferred'][following-sibling::*[not(local-name() = 'preferred')][1][local-name() = 'fmt-preferred']]" mode="update_xml_pres"/>
-	<xsl:template match="*[local-name() = 'admitted'][following-sibling::*[not(local-name() = 'admitted')][1][local-name() = 'fmt-admitted']]" mode="update_xml_step1"/>
-	<xsl:template match="*[local-name() = 'admitted'][following-sibling::*[not(local-name() = 'admitted')][1][local-name() = 'fmt-admitted']]" mode="update_xml_pres"/>
-	<xsl:template match="*[local-name() = 'deprecates'][following-sibling::*[not(local-name() = 'deprecates')][1][local-name() = 'fmt-deprecates']]" mode="update_xml_step1"/>
-	<xsl:template match="*[local-name() = 'deprecates'][following-sibling::*[not(local-name() = 'deprecates')][1][local-name() = 'fmt-deprecates']]" mode="update_xml_pres"/>
-	<xsl:template match="*[local-name() = 'definition'][following-sibling::*[1][local-name() = 'fmt-definition']]" mode="update_xml_step1"/>
-	<xsl:template match="*[local-name() = 'definition'][following-sibling::*[1][local-name() = 'fmt-definition']]" mode="update_xml_pres"/>
-	<xsl:template match="*[local-name() = 'termsource'][following-sibling::*[1][local-name() = 'fmt-termsource']]" mode="update_xml_step1"/>
-	<xsl:template match="*[local-name() = 'termsource'][following-sibling::*[1][local-name() = 'fmt-termsource']]" mode="update_xml_pres"/>
+	<!-- <xsl:template match="*[local-name() = 'preferred'][following-sibling::*[not(local-name() = 'preferred')][1][local-name() = 'fmt-preferred']]" mode="update_xml_step1"/> -->
+	<xsl:template match="*[local-name() = 'preferred']" mode="update_xml_step1"/>
+	<!-- <xsl:template match="*[local-name() = 'preferred'][following-sibling::*[not(local-name() = 'preferred')][1][local-name() = 'fmt-preferred']]" mode="update_xml_pres"/> -->
+	<xsl:template match="*[local-name() = 'preferred']" mode="update_xml_pres"/>
+	<!-- <xsl:template match="*[local-name() = 'admitted'][following-sibling::*[not(local-name() = 'admitted')][1][local-name() = 'fmt-admitted']]" mode="update_xml_step1"/> -->
+	<xsl:template match="*[local-name() = 'admitted']" mode="update_xml_step1"/>
+	<!-- <xsl:template match="*[local-name() = 'admitted'][following-sibling::*[not(local-name() = 'admitted')][1][local-name() = 'fmt-admitted']]" mode="update_xml_pres"/> -->
+	<xsl:template match="*[local-name() = 'admitted']" mode="update_xml_pres"/>
+	<!-- <xsl:template match="*[local-name() = 'deprecates'][following-sibling::*[not(local-name() = 'deprecates')][1][local-name() = 'fmt-deprecates']]" mode="update_xml_step1"/> -->
+	<xsl:template match="*[local-name() = 'deprecates']" mode="update_xml_step1"/>
+	<xsl:template match="*[local-name() = 'related']" mode="update_xml_step1"/>
+	<!-- <xsl:template match="*[local-name() = 'deprecates'][following-sibling::*[not(local-name() = 'deprecates')][1][local-name() = 'fmt-deprecates']]" mode="update_xml_pres"/> -->
+	<xsl:template match="*[local-name() = 'deprecates']" mode="update_xml_pres"/>
+	<xsl:template match="*[local-name() = 'related']" mode="update_xml_pres"/>
+	<!-- <xsl:template match="*[local-name() = 'definition'][following-sibling::*[1][local-name() = 'fmt-definition']]" mode="update_xml_step1"/> -->
+	<xsl:template match="*[local-name() = 'definition']" mode="update_xml_step1"/>
+	<!-- <xsl:template match="*[local-name() = 'definition'][following-sibling::*[1][local-name() = 'fmt-definition']]" mode="update_xml_pres"/> -->
+	<xsl:template match="*[local-name() = 'definition']" mode="update_xml_pres"/>
+	<!-- <xsl:template match="*[local-name() = 'termsource'][following-sibling::*[1][local-name() = 'fmt-termsource']]" mode="update_xml_step1"/> -->
+	<xsl:template match="*[local-name() = 'termsource']" mode="update_xml_step1"/>
+	<!-- <xsl:template match="*[local-name() = 'termsource'][following-sibling::*[1][local-name() = 'fmt-termsource']]" mode="update_xml_pres"/> -->
+	<xsl:template match="*[local-name() = 'termsource']" mode="update_xml_pres"/>
 	
 	<xsl:template match="*[local-name() = 'p'][@type = 'section-title' or @type = 'floating-title'][preceding-sibling::*[1][local-name() = 'section-title']]" mode="update_xml_step1">
 		<xsl:copy>
