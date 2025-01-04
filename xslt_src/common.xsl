@@ -4967,7 +4967,9 @@
 			<xsl:attribute name="color">black</xsl:attribute>
 		</xsl:if>
 	</xsl:attribute-set>
-
+	
+	<xsl:attribute-set name="related-block-style" use-attribute-sets="preferred-block-style">
+	</xsl:attribute-set>
 
 	<xsl:attribute-set name="definition-style">
 		<xsl:if test="$namespace = 'csa' or $namespace = 'ogc' or $namespace = 'ogc-white-paper'">
@@ -16847,6 +16849,17 @@
 		<xsl:value-of select="java:replaceAll(java:java.lang.String.new(.), ';', $linebreak)"/>
 	</xsl:template>
 	<!--  End Preferred, admitted, deprecated -->
+	
+	<xsl:template match="*[local-name() = 'fmt-related']">
+		<fo:block role="SKIP" xsl:use-attribute-sets="related-block-style">
+			<xsl:apply-templates/>
+		</fo:block>
+	</xsl:template>
+	<xsl:template match="*[local-name() = 'fmt-related']/*[local-name() = 'p']" priority="4">
+		<fo:block>
+			<xsl:apply-templates />
+		</fo:block>
+	</xsl:template>
 	
 	<!-- ========== -->
 	<!-- definition -->
