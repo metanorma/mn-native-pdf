@@ -16816,14 +16816,17 @@
 		</fo:block>
 	</xsl:template>
 	
-	<xsl:template match="*[local-name() = 'domain']">
+	<!-- <xsl:template match="*[local-name() = 'domain']"> -->
 		<!-- https://github.com/metanorma/isodoc/issues/607 
 		<fo:inline xsl:use-attribute-sets="domain-style">&lt;<xsl:apply-templates/>&gt;</fo:inline>
 		<xsl:text> </xsl:text> -->
-		<xsl:if test="not(@hidden = 'true')">
+		<!-- <xsl:if test="not(@hidden = 'true')">
 			<xsl:apply-templates/>
 		</xsl:if>
-	</xsl:template>
+	</xsl:template> -->
+	
+	<!-- https://github.com/metanorma/isodoc/issues/632#issuecomment-2567163931 -->
+	<xsl:template match="*[local-name() = 'domain']"/>
 	
 	<xsl:template match="*[local-name() = 'admitted']">
 		<fo:block xsl:use-attribute-sets="admitted-style">
