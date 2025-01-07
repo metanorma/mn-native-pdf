@@ -19606,16 +19606,19 @@
 	</xsl:template>
 	
 	<xsl:template match="*[local-name() = 'fmt-preferred']" />
-	<xsl:template match="*[local-name() = 'fmt-preferred']" mode="update_xml_step1">
+	<xsl:template match="*[local-name() = 'fmt-preferred'][*[local-name() = 'p']]" mode="update_xml_step1">
 		<xsl:apply-templates mode="update_xml_step1"/>
 	</xsl:template>
-	<xsl:template match="*[local-name() = 'fmt-preferred']/*[local-name() = 'p']" mode="update_xml_step1">
+	<xsl:template match="*[local-name() = 'fmt-preferred'][not(*[local-name() = 'p'])] | *[local-name() = 'fmt-preferred']/*[local-name() = 'p']" mode="update_xml_step1">
 		<xsl:element name="preferred" namespace="{$namespace_full}">
 			<xsl:copy-of select="@*"/>
 			<xsl:apply-templates mode="update_xml_step1"/>
 		</xsl:element>
 	</xsl:template>
-	<xsl:template match="*[local-name() = 'fmt-preferred']" mode="update_xml_pres">
+	<xsl:template match="*[local-name() = 'fmt-preferred'][*[local-name() = 'p']]" mode="update_xml_pres">
+		<xsl:apply-templates mode="update_xml_pres"/>
+	</xsl:template>
+	<xsl:template match="*[local-name() = 'fmt-preferred'][not(*[local-name() = 'p'])] | *[local-name() = 'fmt-preferred']/*[local-name() = 'p']" mode="update_xml_pres">
 		<xsl:element name="preferred" namespace="{$namespace_full}">
 			<xsl:copy-of select="@*"/>
 			<xsl:apply-templates mode="update_xml_pres"/>
@@ -19623,16 +19626,19 @@
 	</xsl:template>
 	
 	<xsl:template match="*[local-name() = 'fmt-admitted']" />
-	<xsl:template match="*[local-name() = 'fmt-admitted']" mode="update_xml_step1">
+	<xsl:template match="*[local-name() = 'fmt-admitted'][*[local-name() = 'p']]" mode="update_xml_step1">
 		<xsl:apply-templates mode="update_xml_step1"/>
 	</xsl:template>
-	<xsl:template match="*[local-name() = 'fmt-admitted']/*[local-name() = 'p']" mode="update_xml_step1">
+	<xsl:template match="*[local-name() = 'fmt-admitted'][not(*[local-name() = 'p'])] | *[local-name() = 'fmt-admitted']/*[local-name() = 'p']" mode="update_xml_step1">
 		<xsl:element name="admitted" namespace="{$namespace_full}">
 			<xsl:copy-of select="@*"/>
 			<xsl:apply-templates mode="update_xml_step1"/>
 		</xsl:element>
 	</xsl:template>
-	<xsl:template match="*[local-name() = 'fmt-admitted']" mode="update_xml_pres">
+	<xsl:template match="*[local-name() = 'fmt-admitted'][*[local-name() = 'p']]" mode="update_xml_pres">
+		<xsl:apply-templates mode="update_xml_pres"/>
+	</xsl:template>
+	<xsl:template match="*[local-name() = 'fmt-admitted'][not(*[local-name() = 'p'])] | *[local-name() = 'fmt-admitted']/*[local-name() = 'p']" mode="update_xml_pres">
 		<xsl:element name="admitted" namespace="{$namespace_full}">
 			<xsl:copy-of select="@*"/>
 			<xsl:apply-templates mode="update_xml_pres"/>
@@ -19640,16 +19646,19 @@
 	</xsl:template>
 	
 	<xsl:template match="*[local-name() = 'fmt-deprecates']" />
-	<xsl:template match="*[local-name() = 'fmt-deprecates']" mode="update_xml_step1">
+	<xsl:template match="*[local-name() = 'fmt-deprecates'][*[local-name() = 'p']]" mode="update_xml_step1">
 		<xsl:apply-templates mode="update_xml_step1"/>
 	</xsl:template>
-	<xsl:template match="*[local-name() = 'fmt-deprecates']/*[local-name() = 'p']" mode="update_xml_step1">
+	<xsl:template match="*[local-name() = 'fmt-deprecates'][not(*[local-name() = 'p'])] | *[local-name() = 'fmt-deprecates']/*[local-name() = 'p']" mode="update_xml_step1">
 		<xsl:element name="deprecates" namespace="{$namespace_full}">
 			<xsl:copy-of select="@*"/>
 			<xsl:apply-templates mode="update_xml_step1"/>
 		</xsl:element>
 	</xsl:template>
-	<xsl:template match="*[local-name() = 'fmt-deprecates']" mode="update_xml_pres">
+	<xsl:template match="*[local-name() = 'fmt-deprecates'][*[local-name() = 'p']]" mode="update_xml_pres">
+		<xsl:apply-templates mode="update_xml_pres"/>
+	</xsl:template>
+	<xsl:template match="*[local-name() = 'fmt-deprecates'][not(*[local-name() = 'p'])] | *[local-name() = 'fmt-deprecates']/*[local-name() = 'p']" mode="update_xml_pres">
 		<xsl:element name="deprecates" namespace="{$namespace_full}">
 			<xsl:copy-of select="@*"/>
 			<xsl:apply-templates mode="update_xml_pres"/>
