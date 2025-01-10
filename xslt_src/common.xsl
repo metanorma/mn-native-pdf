@@ -16841,9 +16841,17 @@
 	</xsl:template>
 
 	<xsl:template name="setStyle_preferred">
-		<xsl:if test="*[local-name() = 'strong']">
-			<xsl:attribute name="font-weight">normal</xsl:attribute>
-		</xsl:if>
+		<xsl:choose>
+			<xsl:when test="$namespace = 'rsd'">
+				<xsl:attribute name="font-weight">normal</xsl:attribute>
+				<xsl:attribute name="color">black</xsl:attribute>
+			</xsl:when>
+			<xsl:otherwise>
+				<xsl:if test="*[local-name() = 'strong']">
+					<xsl:attribute name="font-weight">normal</xsl:attribute>
+				</xsl:if>
+			</xsl:otherwise>
+		</xsl:choose>
 	</xsl:template>
 	
 	<!-- regarding ISO 10241-1:2011,  If there is more than one preferred term, each preferred term follows the previous one on a new line. -->
