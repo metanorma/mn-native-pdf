@@ -919,12 +919,12 @@
 												<fo:list-item-body start-indent="body-start()">
 													<fo:block text-align-last="justify" margin-left="12mm" text-indent="-12mm">
 														<fo:basic-link internal-destination="{@id}">
-															<xsl:call-template name="setAltText">
-																<xsl:with-param name="value" select="text()"/>
-															</xsl:call-template>
 															<xsl:variable name="sectionTitle">
 																<xsl:apply-templates select="title"/>
 															</xsl:variable>
+															<xsl:call-template name="setAltText">
+																<xsl:with-param name="value" select="concat(@section, $sectionTitle)"/>
+															</xsl:call-template>
 															<xsl:value-of select="java:toUpperCase(java:java.lang.String.new($sectionTitle))"/>															
 															<xsl:text> </xsl:text>															
 															<fo:inline keep-together.within-line="always">
