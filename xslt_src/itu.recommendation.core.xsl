@@ -360,7 +360,7 @@
 					<xsl:variable name="document_scheme" select="normalize-space(/*[contains(local-name(), '-standard')]/*[local-name() = 'metanorma-extension']/*[local-name() = 'presentation-metadata'][*[local-name() = 'name'] = 'document-scheme']/*[local-name() = 'value'])"/>
 					<xsl:variable name="layoutVersion_">
 						<xsl:choose>
-							<xsl:when test="$document_scheme = '' or $document_scheme = 'current'">20231</xsl:when>
+							<xsl:when test="$document_scheme = '' or $document_scheme = 'current'">2023</xsl:when>
 							<xsl:otherwise>default</xsl:otherwise>
 						</xsl:choose>
 					</xsl:variable>
