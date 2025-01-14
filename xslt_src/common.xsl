@@ -1895,6 +1895,7 @@
 		</xsl:if>
 		
 		<xsl:if test="$namespace = 'itu'">
+			<xsl:variable name="doctype" select="ancestor::itu:itu-standard/itu:bibdata/itu:ext/itu:doctype[not(@language) or @language = '']"/>
 			<xsl:if test="$doctype = 'service-publication' and $lang != 'ar'">
 				<xsl:attribute name="font-family">Calibri</xsl:attribute>
 			</xsl:if>
@@ -2077,6 +2078,7 @@
 		<xsl:call-template name="setBordersTableArray"/>
 		
 		<xsl:if test="$namespace = 'itu'">
+			<xsl:variable name="doctype" select="ancestor::itu:itu-standard/itu:bibdata/itu:ext/itu:doctype[not(@language) or @language = '']"/>
 			<xsl:if test="$doctype = 'service-publication'">
 				<xsl:attribute name="border">1pt solid rgb(211,211,211)</xsl:attribute>
 			</xsl:if>
@@ -2415,6 +2417,7 @@
 		</xsl:if>
 
 		<xsl:if test="$namespace = 'itu'">
+			<xsl:variable name="doctype" select="ancestor::itu:itu-standard/itu:bibdata/itu:ext/itu:doctype[not(@language) or @language = '']"/>
 			<xsl:if test="$doctype = 'service-publication'">
 				<xsl:attribute name="border-bottom">1.1pt solid black</xsl:attribute>
 			</xsl:if>
@@ -2742,6 +2745,7 @@
 		<xsl:call-template name="setBordersTableArray"/>
 		
 		<xsl:if test="$namespace = 'itu'">
+			<xsl:variable name="doctype" select="ancestor::itu:itu-standard/itu:bibdata/itu:ext/itu:doctype[not(@language) or @language = '']"/>
 			<xsl:if test="ancestor::*[local-name()='preface']">
 				<xsl:if test="$doctype != 'service-publication'">
 					<xsl:attribute name="border">solid black 0pt</xsl:attribute>
@@ -3039,6 +3043,7 @@
 			<xsl:if test="ancestor::*[local-name()='preface']">
 				<xsl:attribute name="border">solid black 0pt</xsl:attribute>
 			</xsl:if>
+			<xsl:variable name="doctype" select="ancestor::itu:itu-standard/itu:bibdata/itu:ext/itu:doctype[not(@language) or @language = '']"/>
 			<xsl:if test="$doctype = 'service-publication'">
 				<xsl:attribute name="border">1pt solid rgb(211,211,211)</xsl:attribute>
 				<xsl:attribute name="padding-top">1mm</xsl:attribute>
@@ -3140,6 +3145,7 @@
 			</xsl:if>
 		</xsl:if>
 		<xsl:if test="$namespace = 'itu'">
+			<xsl:variable name="doctype" select="ancestor::itu:itu-standard/itu:bibdata/itu:ext/itu:doctype[not(@language) or @language = '']"/>
 			<xsl:if test="ancestor::*[local-name()='preface']">
 				<xsl:if test="$doctype != 'service-publication'">
 					<xsl:attribute name="border">solid black 0pt</xsl:attribute>
@@ -5622,6 +5628,7 @@
 			</xsl:if>
 		</xsl:if>
 		<xsl:if test="$namespace = 'itu'">
+			<xsl:variable name="doctype" select="ancestor::itu:itu-standard/itu:bibdata/itu:ext/itu:doctype[not(@language) or @language = '']"/>
 			<xsl:if test="$doctype = 'service-publication'">
 				<xsl:attribute name="font-size">10pt</xsl:attribute>
 			</xsl:if>
@@ -7557,6 +7564,7 @@
 	
 		<xsl:variable name="table-preamble">
 			<xsl:if test="$namespace = 'itu'">
+				<xsl:variable name="doctype" select="ancestor::itu:itu-standard/itu:bibdata/itu:ext/itu:doctype[not(@language) or @language = '']"/>
 				<xsl:if test="$doctype != 'service-publication'">
 					<fo:block space-before="18pt">&#xA0;</fo:block>
 				</xsl:if>
@@ -8610,6 +8618,7 @@
 					</xsl:for-each>
 					
 					<xsl:if test="$namespace = 'itu'">
+						<xsl:variable name="doctype" select="ancestor::itu:itu-standard/itu:bibdata/itu:ext/itu:doctype[not(@language) or @language = '']"/>
 						<xsl:if test="$doctype = 'service-publication'">
 							<xsl:attribute name="border">none</xsl:attribute>
 							<xsl:attribute name="font-family">Arial</xsl:attribute>
@@ -8659,6 +8668,7 @@
 								</xsl:if>
 								
 								<xsl:if test="$namespace = 'itu'">
+									<xsl:variable name="doctype" select="ancestor::itu:itu-standard/itu:bibdata/itu:ext/itu:doctype[not(@language) or @language = '']"/>
 									<xsl:if test="$doctype = 'service-publication'">
 										<fo:block margin-top="7pt" margin-bottom="2pt" role="SKIP"><fo:inline>____________</fo:inline></fo:block>
 									</xsl:if>
@@ -8982,6 +8992,7 @@
 		</xsl:if>
 
 		<xsl:if test="$namespace = 'itu'">
+			<xsl:variable name="doctype" select="ancestor::itu:itu-standard/itu:bibdata/itu:ext/itu:doctype[not(@language) or @language = '']"/>
 			<xsl:if test="$doctype = 'service-publication'">
 				<xsl:attribute name="min-height">5mm</xsl:attribute>
 			</xsl:if>
@@ -18468,6 +18479,7 @@
 			<xsl:when test="$namespace ='itu'">
 				<!-- start ITU bibitem processing -->
 				<!-- Example: [ITU-T A.23]	ITU-T A.23, Recommendation ITU-T A.23, Annex A (2014), Guide for ITU-T and ISO/IEC JTC 1 cooperation. -->
+				<xsl:variable name="doctype" select="ancestor::itu:itu-standard/itu:bibdata/itu:ext/itu:doctype[not(@language) or @language = '']"/>
 				<xsl:if test="$doctype = 'implementers-guide'">
 					<xsl:attribute name="margin-left">0mm</xsl:attribute>
 					<xsl:attribute name="text-indent">0mm</xsl:attribute>
@@ -19485,7 +19497,8 @@
 			<!-- add @id - first element with @id plus '_element_name' -->
 			<xsl:variable name="prefix_id_" select="(.//*[@id])[1]/@id"/>
 			<xsl:variable name="prefix_id"><xsl:value-of select="$prefix_id_"/><xsl:if test="normalize-space($prefix_id_) = ''"><xsl:value-of select="generate-id()"/></xsl:if></xsl:variable>
-			<xsl:attribute name="id"><xsl:value-of select="$prefix_id"/>_<xsl:value-of select="local-name()"/></xsl:attribute>
+			<xsl:variable name="document_suffix" select="ancestor::itu:itu-standard/@document_suffix"/>
+			<xsl:attribute name="id"><xsl:value-of select="concat($prefix_id, '_', local-name(), '_', $document_suffix)"/></xsl:attribute>
 		</xsl:if>
 	</xsl:template>
 	
@@ -20971,7 +20984,7 @@
 	</xsl:template>
 
 	<xsl:template name="namespaceCheck">
-		<xsl:variable name="documentNS" select="namespace-uri(/*)"/>
+		<xsl:variable name="documentNS" select="$namespace_full"/> <!-- namespace-uri(/*) -->
 		<xsl:variable name="XSLNS">			
 			<xsl:if test="$namespace = 'bsi'">
 				<xsl:value-of select="document('')//*/namespace::bsi"/>
@@ -21108,6 +21121,9 @@
 			<xsl:choose>
 				<xsl:when test="$formatted = 'true' and string-length($bibdata_updated) != ''">
 					<xsl:apply-templates select="xalan:nodeset($bibdata_updated)//*[local-name() = 'localized-string'][@key = $key and @language = $curr_lang]"/>
+				</xsl:when>
+				<xsl:when test="string-length($bibdata_updated) != ''">
+					<xsl:value-of select="xalan:nodeset($bibdata_updated)//*[local-name() = 'localized-string'][@key = $key and @language = $curr_lang]"/>
 				</xsl:when>
 				<xsl:when test="$formatted = 'true'">
 					<xsl:apply-templates select="xalan:nodeset($bibdata)//*[local-name() = 'localized-string'][@key = $key and @language = $curr_lang]"/>
