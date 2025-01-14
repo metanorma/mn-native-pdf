@@ -58,12 +58,25 @@
 		<item id="term-script" display="false">3.2</item>
 	-->
 	<xsl:variable name="contents_">
-		<contents>
-			<!-- <xsl:apply-templates select="/itu:itu-standard/itu:preface/node()" mode="contents"/> -->
-			<!-- <xsl:apply-templates select="/itu:itu-standard/itu:sections/itu:clause[@type='scope']" mode="contents" /> -->
-				
-			<!-- Normative references -->
-			<!-- <xsl:apply-templates select="/itu:itu-standard/itu:bibliography/itu:references[@normative='true']" mode="contents" />
+		<xsl:variable name="bundle" select="count(//itu:itu-standard) &gt; 1"/>
+		
+		<xsl:if test="normalize-space($bundle) = 'true'">
+			<collection firstpage_id="firstpage_id_0"/>
+		</xsl:if>
+		
+		<xsl:for-each select="//itu:itu-standard">
+			<xsl:variable name="num"><xsl:number level="any" count="itu:itu-standard"/></xsl:variable>
+			<xsl:variable name="docidentifier"><xsl:value-of select="itu:bibdata/itu:docidentifier[@type = 'ITU']"/></xsl:variable>
+			<xsl:variable name="docnumber_">
+				<xsl:value-of select="$docidentifier"/>
+				<xsl:if test="normalize-space($docidentifier) = ''">
+					<xsl:value-of select="itu:bibdata/itu:docidentifier[1]"/>
+				</xsl:if>
+			</xsl:variable>
+			<xsl:variable name="docnumber" select="normalize-space($docnumber_)"/>
+			<xsl:variable name="current_document">
+				<xsl:copy-of select="."/>
+			</xsl:variable>
 			
 			<xsl:apply-templates select="/itu:itu-standard/itu:sections/*[not(@type='scope')]" mode="contents" />
 				
