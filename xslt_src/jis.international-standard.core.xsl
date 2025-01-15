@@ -1423,7 +1423,11 @@
 			<fo:flow flow-name="xsl-region-body" font-family="Noto Serif JP">
 			
 				<fo:block font-weight="900" font-size="14pt" color="white" letter-spacing="2.5mm">
-					<xsl:value-of select="$i18n_JIS"/>
+					<xsl:variable name="coverpage_header"  select="normalize-space(/*/jis:metanorma-extension/jis:presentation-metadata/jis:coverpage-header)"/>
+					<xsl:value-of select="$coverpage_header"/>
+					<xsl:if test="$coverpage_header = ''">
+						<xsl:value-of select="$i18n_JIS"/>
+					</xsl:if>
 				</fo:block>
 				
 				
