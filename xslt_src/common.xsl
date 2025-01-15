@@ -18356,7 +18356,18 @@
 				<xsl:call-template name="bibitem"/>
 			</xsl:when>
 			
-			<xsl:when test="$namespace = 'itu' or $namespace = 'nist-sp' or $namespace = 'unece' or $namespace = 'unece-rec'">
+			<xsl:when test="$namespace = 'itu'">
+				<xsl:choose>
+					<xsl:when test="$skip = 'true'"><!-- skip bibitem --></xsl:when>
+					<xsl:otherwise>
+						<fo:block id="{@id}" xsl:use-attribute-sets="bibitem-non-normative-style">
+							<xsl:call-template name="processBibitem"/>
+						</fo:block>
+					</xsl:otherwise>
+				</xsl:choose>
+			</xsl:when>
+			
+			<xsl:when test="$namespace = 'nist-sp' or $namespace = 'unece' or $namespace = 'unece-rec'">
 				<fo:block id="{@id}" xsl:use-attribute-sets="bibitem-non-normative-style">
 					<xsl:call-template name="processBibitem"/>
 				</fo:block>

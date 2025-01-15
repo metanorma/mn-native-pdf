@@ -2652,6 +2652,106 @@
 		</fo:inline>
 	</xsl:template>
 	
+	<!-- https://github.com/metanorma/metanorma-itu/issues/607 -->
+	<xsl:template match="*[local-name() = 'references'][not(@normative='true')]/*[local-name() = 'bibitem'][1]" priority="5">
+		<xsl:param name="doctype" select="ancestor::itu:itu-standard/itu:bibdata/itu:ext/itu:doctype[not(@language) or @language = '']"/>
+		
+		<xsl:variable name="docidentifier_metanorma_ordinal" select="normalize-space(itu:docidentifier[@type = 'metanorma-ordinal'])"/>
+		
+		<xsl:variable name="bibitem_label">
+			<xsl:apply-templates select="*[local-name() = 'biblio-tag']">
+				<xsl:with-param name="biblio_tag_part">first</xsl:with-param>
+			</xsl:apply-templates>
+		</xsl:variable>
+		
+		<xsl:choose>
+			<xsl:when test="not($doctype = 'implementers-guide') and $bibitem_label != $docidentifier_metanorma_ordinal">
+				
+				<xsl:variable name="bibitems_table_simple">
+					<tbody>
+						<xsl:call-template name="bibitem_itu"/>
+						<xsl:for-each select="following-sibling::*[local-name() = 'bibitem']">
+							<xsl:call-template name="bibitem_itu"/>
+						</xsl:for-each>
+					</tbody>
+				</xsl:variable>
+				<!-- bibitems_table_simple='<xsl:copy-of select="$bibitems_table_simple"/>' -->
+				
+				<!-- maximum row length is 65 characters (experimentally calculated by char 'E', 12pt Times New Roman) -->
+				<xsl:variable name="col1_width_">
+					<xsl:for-each select="self::itu:biblio-tag | following-sibling::*[local-name() = 'bibitem']/itu:biblio-tag">
+						<xsl:sort select="string-length(.)" data-type="number" />
+						<xsl:if test="position() = last()">
+							<xsl:value-of select="string-length(.)" />
+						</xsl:if>
+					</xsl:for-each>
+				</xsl:variable>
+				<xsl:variable name="col1_width" select="number(normalize-space($col1_width_)) + 5"/> <!-- +5 for distance between cells -->
+				
+				<xsl:variable name="colwidths2">
+					<!-- <xsl:call-template name="calculate-column-widths-proportional">
+						<xsl:with-param name="cols-count" select="2"/>
+						<xsl:with-param name="table" select="$bibitems_table_simple"/>
+					</xsl:call-template> -->
+				</xsl:variable>
+				<xsl:variable name="colwidths">
+					<xsl:choose>
+						<xsl:when test="$col1_width &lt; 50">
+							<column><xsl:value-of select="$col1_width"/></column>
+							<column><xsl:value-of select="65 - $col1_width"/></column>
+						</xsl:when>
+						<xsl:otherwise>
+							<column>1</column>
+							<column>1</column>
+						</xsl:otherwise>
+					</xsl:choose>
+				</xsl:variable>
+				
+				<fo:table width="100%" table-layout="fixed">
+					<xsl:for-each select="xalan:nodeset($colwidths)/column">
+						<fo:table-column column-width="proportional-column-width({.})"/>
+					</xsl:for-each>
+					<fo:table-body>
+						<xsl:for-each select="xalan:nodeset($bibitems_table_simple)//tr">
+							<fo:table-row>
+								<fo:table-cell><fo:block id="{@id}" xsl:use-attribute-sets="bibitem-non-normative-style"><xsl:copy-of select="td[1]/node()"/></fo:block></fo:table-cell>
+								<fo:table-cell><fo:block xsl:use-attribute-sets="bibitem-non-normative-style"><xsl:copy-of select="td[2]/node()"/></fo:block></fo:table-cell>
+							</fo:table-row>
+						</xsl:for-each>
+						
+					</fo:table-body>
+				</fo:table>
+				
+			</xsl:when>
+			<xsl:otherwise>
+				<xsl:call-template name="bibitem_non_normative">
+					<xsl:with-param name="skip">false</xsl:with-param>
+				</xsl:call-template>
+			</xsl:otherwise>
+		</xsl:choose>
+	</xsl:template>
+
+
+	<xsl:template name="bibitem_itu">
+		<xsl:variable name="bibitem_label">
+			<xsl:apply-templates select="*[local-name() = 'biblio-tag']">
+				<xsl:with-param name="biblio_tag_part">first</xsl:with-param>
+			</xsl:apply-templates>
+		</xsl:variable>
+		
+		<xsl:variable name="bibitem_body">
+			<xsl:apply-templates select="*[local-name() = 'biblio-tag']">
+				<xsl:with-param name="biblio_tag_part">last</xsl:with-param>
+			</xsl:apply-templates>
+			<xsl:apply-templates select="itu:formattedref"/>
+		</xsl:variable>
+		
+		<tr id="{@id}">
+			<td><xsl:copy-of select="$bibitem_label"/></td>
+			<td><xsl:copy-of select="$bibitem_body"/></td>
+		</tr>
+		
+	</xsl:template>
 
 <!-- 	
 	<xsl:template match="itu:annex/itu:clause">
