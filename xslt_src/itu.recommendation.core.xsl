@@ -2665,7 +2665,7 @@
 		</xsl:variable>
 		
 		<xsl:choose>
-			<xsl:when test="not($doctype = 'implementers-guide') and $bibitem_label != $docidentifier_metanorma_ordinal">
+			<xsl:when test="not($doctype = 'implementers-guide') and $bibitem_label != '' and $bibitem_label != $docidentifier_metanorma_ordinal">
 				
 				<xsl:variable name="bibitems_table_simple">
 					<tbody>
@@ -2724,9 +2724,11 @@
 				
 			</xsl:when>
 			<xsl:otherwise>
-				<xsl:call-template name="bibitem_non_normative">
-					<xsl:with-param name="skip">false</xsl:with-param>
-				</xsl:call-template>
+				<xsl:for-each select=". | following-sibling::*[local-name() = 'bibitem']">
+					<xsl:call-template name="bibitem_non_normative">
+						<xsl:with-param name="skip">false</xsl:with-param>
+					</xsl:call-template>
+				</xsl:for-each>
 			</xsl:otherwise>
 		</xsl:choose>
 	</xsl:template>
