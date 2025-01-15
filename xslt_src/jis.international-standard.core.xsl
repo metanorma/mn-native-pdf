@@ -1379,23 +1379,25 @@
 					<fo:table-column column-width="proportional-column-width(3)"/>
 					<fo:table-column column-width="proportional-column-width(2.2)"/>
 					<fo:table-column column-width="proportional-column-width(3)"/>
+					<xsl:variable name="publisher" select="/*/jis:bibdata/jis:contributor[jis:role/@type = 'publisher']/jis:organization/jis:name/jis:variant[@language = 'ja']"/>
+					<xsl:variable name="authorizer" select="/*/jis:bibdata/jis:contributor[jis:role/@type = 'authorizer']//jis:organization/jis:name"/>
 					<fo:table-body>
 						<fo:table-row height="50mm">
 							<fo:table-cell>
-								<fo:block><xsl:value-of select="/*/jis:bibdata/jis:contributor[jis:role/@type = 'publisher']/jis:organization/jis:name/jis:variant[@language = 'ja']"/></fo:block>
+								<fo:block><xsl:value-of select="$publisher"/></fo:block>
 							</fo:table-cell>
 							<fo:table-cell><fo:block>&#xa0;</fo:block></fo:table-cell>
 							<fo:table-cell>
-								<fo:block><xsl:value-of select="/*/jis:bibdata/jis:contributor[jis:role/@type = 'authorizer']//jis:organization/jis:name"/></fo:block>
+								<fo:block><xsl:value-of select="$authorizer"/></fo:block>
 							</fo:table-cell>
 						</fo:table-row>
 						<fo:table-row>
 							<fo:table-cell>
-								<fo:block>発行</fo:block>
+								<fo:block><xsl:if test="normalize-space($publisher) != ''">発行</xsl:if></fo:block>
 							</fo:table-cell>
 							<fo:table-cell><fo:block>&#xa0;</fo:block></fo:table-cell>
 							<fo:table-cell>
-								<fo:block>審議</fo:block>
+								<fo:block><xsl:if test="normalize-space($authorizer) != ''">審議</xsl:if></fo:block>
 							</fo:table-cell>
 						</fo:table-row>
 					</fo:table-body>
@@ -1423,7 +1425,11 @@
 			<fo:flow flow-name="xsl-region-body" font-family="Noto Serif JP">
 			
 				<fo:block font-weight="900" font-size="14pt" color="white" letter-spacing="2.5mm">
-					<xsl:value-of select="$i18n_JIS"/>
+					<xsl:variable name="coverpage_header"  select="normalize-space(/*/jis:metanorma-extension/jis:presentation-metadata/jis:coverpage-header)"/>
+					<xsl:value-of select="$coverpage_header"/>
+					<xsl:if test="$coverpage_header = ''">
+						<xsl:value-of select="$i18n_JIS"/>
+					</xsl:if>
 				</fo:block>
 				
 				
@@ -1490,7 +1496,8 @@
 				</fo:block>
 				
 				<fo:block margin-top="6.5mm" font-size="8pt" font-weight="500">
-					<fo:inline padding-right="5mm"><xsl:apply-templates select="/*/jis:bibdata/jis:date[@type = 'published']/text()"/></fo:inline>改正
+					<xsl:variable name="revised_date"><xsl:apply-templates select="/*/jis:bibdata/jis:date[@type = 'revised']/text()"/></xsl:variable>
+					<xsl:if test="normalize-space($revised_date) != ''"><fo:inline padding-right="5mm"><xsl:copy-of select="$revised_date"/></fo:inline>改正</xsl:if>&#xa0;
 				</fo:block>
 				
 			</fo:flow>
