@@ -18319,6 +18319,7 @@
 	
 	<!-- Normative references -->
 	<xsl:template match="*[local-name() = 'references'][@normative='true']/*[local-name() = 'bibitem']" name="bibitem" priority="2">
+		<xsl:param name="skip" select="normalize-space(preceding-sibling::*[1][local-name() = 'bibitem'] and 1 = 1)"/> <!-- current bibiitem is non-first -->
 		<xsl:choose>
 			<xsl:when test="$namespace = 'iho' or $namespace = 'nist-cswp'">
 				<fo:list-block id="{@id}" xsl:use-attribute-sets="bibitem-normative-list-style">
@@ -18367,6 +18368,17 @@
 						</fo:block>
 					</fo:block-container>
 				</fo:block-container>
+			</xsl:when>
+			
+			<xsl:when test="$namespace = 'itu'">
+				<xsl:choose>
+					<xsl:when test="$skip = 'true'"><!-- skip bibitem --></xsl:when>
+					<xsl:otherwise>
+						<fo:block id="{@id}" xsl:use-attribute-sets="bibitem-normative-style">
+							<xsl:call-template name="processBibitem"/>
+						</fo:block>
+					</xsl:otherwise>
+				</xsl:choose>
 			</xsl:when>
 			
 			<xsl:otherwise>
@@ -18440,7 +18452,18 @@
 				<xsl:call-template name="bibitem"/>
 			</xsl:when>
 			
-			<xsl:when test="$namespace = 'itu' or $namespace = 'nist-sp' or $namespace = 'unece' or $namespace = 'unece-rec'">
+			<xsl:when test="$namespace = 'itu'">
+				<xsl:choose>
+					<xsl:when test="$skip = 'true'"><!-- skip bibitem --></xsl:when>
+					<xsl:otherwise>
+						<fo:block id="{@id}" xsl:use-attribute-sets="bibitem-non-normative-style">
+							<xsl:call-template name="processBibitem"/>
+						</fo:block>
+					</xsl:otherwise>
+				</xsl:choose>
+			</xsl:when>
+			
+			<xsl:when test="$namespace = 'nist-sp' or $namespace = 'unece' or $namespace = 'unece-rec'">
 				<fo:block id="{@id}" xsl:use-attribute-sets="bibitem-non-normative-style">
 					<xsl:call-template name="processBibitem"/>
 				</fo:block>
