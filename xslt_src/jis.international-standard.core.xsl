@@ -514,13 +514,18 @@
 						<xsl:apply-templates select="xalan:nodeset($docidentifier__)/node()"/>
 					</xsl:variable>
 					
-					<xsl:variable name="copyrightText">
-						<xsl:call-template name="getLocalizedString">
-							<xsl:with-param name="key">permission_footer</xsl:with-param>
-							<xsl:with-param name="formatted" select="$vertical_layout"/> <!-- $vertical_layout = 'true' -->
-							<xsl:with-param name="bibdata_updated" select="/*/jis:bibdata"/> <!-- $vertical_layout = 'true' -->
-						</xsl:call-template>
+					<xsl:variable name="copyrightText_">
+						<xsl:variable name="backpage_boilerplate_text" select="normalize-space(/*/jis:metanorma-extension/jis:presentation-metadata/jis:backpage-boilerplate-text)"/>
+						<xsl:value-of select="$backpage_boilerplate_text"/>
+						<xsl:if test="$backpage_boilerplate_text = ''">
+							<xsl:call-template name="getLocalizedString">
+								<xsl:with-param name="key">permission_footer</xsl:with-param>
+								<xsl:with-param name="formatted" select="$vertical_layout"/> <!-- $vertical_layout = 'true' -->
+								<xsl:with-param name="bibdata_updated" select="/*/jis:bibdata"/> <!-- $vertical_layout = 'true' -->
+							</xsl:call-template>
+						</xsl:if>
 					</xsl:variable>
+					<xsl:variable name="copyrightText" select="normalize-space($copyrightText_)"/>
 					
 					<xsl:variable name="doctype" select="/*/jis:bibdata/jis:ext/jis:doctype"/>
 					
@@ -1557,11 +1562,7 @@
 				</fo:block>
 				<fo:block font-size="12pt" margin-top="7mm" text-align="right">
 					<!-- <xsl:value-of select="$copyrightText"/> -->
-					<xsl:variable name="backpage_boilerplate_text" select="normalize-space(/*/jis:metanorma-extension/jis:presentation-metadata/jis:backpage-boilerplate-text)"/>
-					<xsl:value-of select="$backpage_boilerplate_text"/>
-					<xsl:if test="$backpage_boilerplate_text = ''">
-						<xsl:copy-of select="$copyrightText"/>
-					</xsl:if>
+					<xsl:copy-of select="$copyrightText"/>
 				</fo:block>
 			</fo:flow>
 		</fo:page-sequence>
