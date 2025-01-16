@@ -2689,34 +2689,39 @@
 						<colwidth v="{.}"><xsl:value-of select="format-number(java:org.metanorma.fop.Util.getStringWidthByFontSize(., $font_main, $font_size), '#')"/></colwidth>
 					</xsl:for-each>
 				</xsl:variable>
-				<!-- col1_widths='<xsl:copy-of select="$col1_widths"/>' -->
+				<!-- col1_widths='<xsl:copy-of select="$col1_widths"/>'
+				font_size='<xsl:value-of select="$font_size"/>' -->
 				
 				<xsl:variable name="col1_width_">
-					<!-- <xsl:for-each select="xalan:nodeset($col1_widths)/colwidth">
+					<xsl:for-each select="xalan:nodeset($col1_widths)/colwidth">
 						<xsl:sort select="." data-type="number" />
 						<xsl:if test="position() = last()">
-							<xsl:value-of select="." />
-						</xsl:if>
-					</xsl:for-each> -->
-					<xsl:for-each select="itu:biblio-tag | following-sibling::*[local-name() = 'bibitem']/itu:biblio-tag">
-						<xsl:sort select="string-length(translate(., '[]', ''))" data-type="number" />
-						<xsl:if test="position() = last()">
-							<xsl:value-of select="string-length(translate(., '[]', ''))" />
+							<xsl:value-of select=". * $font_size * 0.0264583333" /> <!-- em to mm: (em * em size) * 0.0264583333 -->
 						</xsl:if>
 					</xsl:for-each>
+					<!-- <xsl:for-each select="itu:biblio-tag | following-sibling::*[local-name() = 'bibitem']/itu:biblio-tag">
+						<xsl:sort select="string-length(.)" data-type="number" />
+						<xsl:if test="position() = last()">
+							<xsl:value-of select="string-length(.)" />
+						</xsl:if>
+					</xsl:for-each> -->
 				</xsl:variable>
-				<xsl:variable name="col1_width" select="number(normalize-space($col1_width_))"/>
+				<xsl:variable name="col1_width" select="format-number(number(normalize-space($col1_width_)), '#') + 10"/>
 				
 				<!-- col1_width='<xsl:value-of select="$col1_width"/>'
 				width_effective='<xsl:value-of select="$width_effective"/>' -->
 				
 				<xsl:variable name="colwidths">
 					<xsl:choose>
-						<xsl:when test="$col1_width &lt; 50">
+						<!-- <xsl:when test="$col1_width &lt; 50">
 							<column><xsl:value-of select="$col1_width"/></column>
 							<column><xsl:value-of select="65 - $col1_width"/></column>
-							<!-- <column><xsl:value-of select="$width_effective - $col1_width"/></column> -->
+						</xsl:when> -->
+						<xsl:when test="$col1_width &lt; $width_effective div 2">
+							<column><xsl:value-of select="$col1_width"/></column>
+							<column><xsl:value-of select="$width_effective - $col1_width"/></column>
 						</xsl:when>
+						
 						<xsl:otherwise>
 							<column>1</column>
 							<column>1</column>
