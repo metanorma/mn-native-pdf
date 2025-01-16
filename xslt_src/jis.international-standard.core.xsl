@@ -30,6 +30,14 @@
 	<xsl:variable name="vertical_layout" select="normalize-space(/*/jis:metanorma-extension/jis:presentation-metadata/jis:vertical-layout)"/>
 	<xsl:variable name="vertical_layout_rotate_clause_numbers" select="normalize-space(/*/jis:metanorma-extension/jis:presentation-metadata/jis:vertical-layout-rotate-clause-numbers)"/>
 	
+	<xsl:variable name="autonumbering_style" select="normalize-space(/*/jis:metanorma-extension/jis:presentation-metadata/jis:autonumbering-style)"/>
+	
+	<xsl:variable name="numbers_japanese_">
+		<xsl:copy-of select="/*/jis:localized-strings/jis:localized-string[starts-with(@key,'0') or starts-with(@key,'1') or starts-with(@key,'2') or starts-with(@key,'3') or
+				starts-with(@key,'4') or starts-with(@key,'5') or starts-with(@key,'6') or starts-with(@key,'7') or starts-with(@key,'8') or starts-with(@key,'9')]"/>
+	</xsl:variable>
+	<xsl:variable name="numbers_japanese" select="xalan:nodeset($numbers_japanese_)"/>
+	
 	<xsl:variable name="contents_">
 		<xsl:variable name="bundle" select="count(//jis:jis-standard) &gt; 1"/>
 		
