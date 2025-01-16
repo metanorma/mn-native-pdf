@@ -2665,7 +2665,7 @@
 		</xsl:variable>
 		
 		<xsl:choose>
-			<xsl:when test="not($doctype = 'implementers-guide') and $bibitem_label != '' and $bibitem_label != $docidentifier_metanorma_ordinal">
+			<xsl:when test="$bibitem_label != '' and $bibitem_label != $docidentifier_metanorma_ordinal">
 				
 				<xsl:variable name="bibitems_table_simple">
 					<tbody>
