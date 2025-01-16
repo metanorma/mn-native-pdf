@@ -514,13 +514,18 @@
 						<xsl:apply-templates select="xalan:nodeset($docidentifier__)/node()"/>
 					</xsl:variable>
 					
-					<xsl:variable name="copyrightText">
-						<xsl:call-template name="getLocalizedString">
-							<xsl:with-param name="key">permission_footer</xsl:with-param>
-							<xsl:with-param name="formatted" select="$vertical_layout"/> <!-- $vertical_layout = 'true' -->
-							<xsl:with-param name="bibdata_updated" select="/*/jis:bibdata"/> <!-- $vertical_layout = 'true' -->
-						</xsl:call-template>
+					<xsl:variable name="copyrightText_">
+						<xsl:variable name="backpage_boilerplate_text" select="normalize-space(/*/jis:metanorma-extension/jis:presentation-metadata/jis:backpage-boilerplate-text)"/>
+						<xsl:value-of select="$backpage_boilerplate_text"/>
+						<xsl:if test="$backpage_boilerplate_text = ''">
+							<xsl:call-template name="getLocalizedString">
+								<xsl:with-param name="key">permission_footer</xsl:with-param>
+								<xsl:with-param name="formatted" select="$vertical_layout"/> <!-- $vertical_layout = 'true' -->
+								<xsl:with-param name="bibdata_updated" select="/*/jis:bibdata"/> <!-- $vertical_layout = 'true' -->
+							</xsl:call-template>
+						</xsl:if>
 					</xsl:variable>
+					<xsl:variable name="copyrightText" select="normalize-space($copyrightText_)"/>
 					
 					<xsl:variable name="doctype" select="/*/jis:bibdata/jis:ext/jis:doctype"/>
 					
@@ -1308,7 +1313,15 @@
 		</fo:page-sequence>
 	</xsl:template> <!-- insertCoverPageJSA -->
 	
-	<xsl:variable name="i18n_JIS"><xsl:call-template name="getLocalizedString"><xsl:with-param name="key">JIS</xsl:with-param></xsl:call-template></xsl:variable>
+	<xsl:variable name="i18n_JIS_">
+		<xsl:variable name="coverpage_header" select="normalize-space(/*/jis:metanorma-extension/jis:presentation-metadata/jis:coverpage-header)"/>
+		<xsl:value-of select="$coverpage_header"/>
+		<xsl:if test="$coverpage_header = ''">
+			<xsl:call-template name="getLocalizedString"><xsl:with-param name="key">JIS</xsl:with-param></xsl:call-template>
+		</xsl:if>
+	</xsl:variable>
+	<xsl:variable name="i18n_JIS" select="normalize-space($i18n_JIS_)"/>
+	
 	<xsl:template name="insertCoverPage2024">
 		<xsl:param name="num"/>
 		<xsl:param name="docidentifier_jis"/>
@@ -1425,13 +1438,8 @@
 			<fo:flow flow-name="xsl-region-body" font-family="Noto Serif JP">
 			
 				<fo:block font-weight="900" font-size="14pt" color="white" letter-spacing="2.5mm">
-					<xsl:variable name="coverpage_header"  select="normalize-space(/*/jis:metanorma-extension/jis:presentation-metadata/jis:coverpage-header)"/>
-					<xsl:value-of select="$coverpage_header"/>
-					<xsl:if test="$coverpage_header = ''">
-						<xsl:value-of select="$i18n_JIS"/>
-					</xsl:if>
+					<xsl:value-of select="$i18n_JIS"/>
 				</fo:block>
-				
 				
 				<fo:block margin-top="75mm" font-size="14pt" font-weight="500">
 					
@@ -1526,19 +1534,31 @@
 			<fo:flow flow-name="xsl-region-body">
 				<!-- publication date -->
 				<fo:block font-size="8pt" margin-left="90mm" text-align-last="justify" letter-spacing="0.5mm">
-					<xsl:apply-templates select="/*/jis:bibdata/jis:date[@type = 'published']/text()"/>
-					<fo:inline keep-together.within-line="always">
-						<fo:leader leader-pattern="space"/>
-						<xsl:text>発行</xsl:text>
-					</fo:inline>
+					<xsl:variable name="date_published"><xsl:apply-templates select="/*/jis:bibdata/jis:date[@type = 'published']/text()"/></xsl:variable>
+					<xsl:copy-of select="$date_published"/>
+					<xsl:choose>
+						<xsl:when test="normalize-space($date_published) != ''">
+							<fo:inline keep-together.within-line="always">
+								<fo:leader leader-pattern="space"/>
+								<xsl:text>発行</xsl:text>
+							</fo:inline>
+						</xsl:when>
+						<xsl:otherwise>&#xa0;</xsl:otherwise>
+					</xsl:choose>
 				</fo:block>
 				<!-- revision date -->
 				<fo:block font-size="8pt" margin-left="90mm" text-align-last="justify" letter-spacing="0.5mm">
-					<xsl:apply-templates select="/*/jis:bibdata/jis:date[@type = 'revised']/text()"/>
-					<fo:inline keep-together.within-line="always">
-						<fo:leader leader-pattern="space"/>
-						<xsl:text>改正</xsl:text>
-					</fo:inline>
+					<xsl:variable name="date_revised"><xsl:apply-templates select="/*/jis:bibdata/jis:date[@type = 'revised']/text()"/></xsl:variable>
+					<xsl:copy-of select="$date_revised"/>
+					<xsl:choose>
+						<xsl:when test="normalize-space($date_revised) != ''">
+							<fo:inline keep-together.within-line="always">
+								<fo:leader leader-pattern="space"/>
+								<xsl:text>改正</xsl:text>
+							</fo:inline>
+						</xsl:when>
+						<xsl:otherwise>&#xa0;</xsl:otherwise>
+					</xsl:choose>
 				</fo:block>
 				<fo:block font-size="12pt" margin-top="7mm" text-align="right">
 					<!-- <xsl:value-of select="$copyrightText"/> -->
