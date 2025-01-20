@@ -1575,8 +1575,9 @@
 	</xsl:template>
 	
 	<!-- allow cross-align for element title -->
-	<xsl:template match="jcgm:sections//jcgm:title | jcgm:annex//jcgm:title" mode="flatxml_step1">
-		<xsl:copy>
+	<xsl:template match="jcgm:sections//jcgm:title | jcgm:annex//jcgm:title" mode="flatxml_step1"/>
+	<xsl:template match="jcgm:sections//jcgm:fmt-title | jcgm:annex//jcgm:fmt-title" mode="flatxml_step1">
+		<xsl:element name="title" namespace="{$namespace_full}">
 			<xsl:apply-templates select="@*" mode="flatxml_step1"/>
 			<xsl:call-template name="setCrossAlignAttributes"/>
 			<xsl:attribute name="keep-with-next">always</xsl:attribute>
@@ -1587,7 +1588,7 @@
 				<xsl:copy-of select="../@inline-header"/>
 			</xsl:if>
 			<xsl:apply-templates mode="flatxml_step1"/>
-		</xsl:copy>
+		</xsl:element>
 	</xsl:template>
 	
 	<xsl:template match="*[local-name()='annex']" mode="flatxml_step1">
@@ -1667,7 +1668,8 @@
 	<term><name>...</name></term>
 	To:
 	<term><term_name>...</term_name></term> -->
-	<xsl:template match="jcgm:term/jcgm:name" mode="flatxml_step1">
+	<xsl:template match="jcgm:term/jcgm:name" mode="flatxml_step1"/>
+	<xsl:template match="jcgm:term/jcgm:fmt-name" mode="flatxml_step1">
 		<xsl:element name="term_name" namespace="https://www.metanorma.org/ns/bipm">
 			<xsl:apply-templates select="@*" mode="flatxml_step1"/>
 			<xsl:call-template name="setCrossAlignAttributes"/>
@@ -1695,15 +1697,14 @@
 	
 	
 	<!-- allow cross-align for element p, note, termsource, table, figure,  li (and set label)  -->
+	<xsl:template match="jcgm:sections//jcgm:termsource | jcgm:annex//jcgm:termsource" mode="flatxml_step1"/>
 	<xsl:template match="jcgm:sections//jcgm:p | 
 																	jcgm:sections//jcgm:note | 
-																	jcgm:sections//jcgm:termsource |
 																	jcgm:sections//jcgm:li |
 																	jcgm:table |
 																	jcgm:figure |
 																	jcgm:annex//jcgm:p | 
 																	jcgm:annex//jcgm:note |
-																	jcgm:annex//jcgm:termsource |
 																	jcgm:annex//jcgm:li" mode="flatxml_step1">
 		<xsl:copy>
 			<xsl:apply-templates select="@*" mode="flatxml_step1"/>
@@ -1714,7 +1715,70 @@
 			<xsl:apply-templates mode="flatxml_step1"/>
 		</xsl:copy>
 	</xsl:template>
+	<xsl:template match="jcgm:sections//jcgm:fmt-termsource | jcgm:annex//jcgm:fmt-termsource" mode="flatxml_step1">
+		<xsl:element name="termsource" namespace="{$namespace_full}">
+			<xsl:apply-templates select="@*" mode="flatxml_step1"/>
+			<xsl:call-template name="setCrossAlignAttributes"/>
+			<xsl:if test="local-name() = 'li'">
+				<xsl:call-template name="setListItemLabel"/>
+			</xsl:if>
+			<xsl:apply-templates mode="flatxml_step1"/>
+		</xsl:element>
+	</xsl:template>
 	
+	<xsl:template match="*[local-name() = 'preferred']" mode="flatxml_step1"/>
+	<xsl:template match="*[local-name() = 'admitted']" mode="flatxml_step1"/>
+	<xsl:template match="*[local-name() = 'deprecates']" mode="flatxml_step1"/>
+	<xsl:template match="*[local-name() = 'related']" mode="flatxml_step1"/>
+	<xsl:template match="*[local-name() = 'definition']" mode="flatxml_step1"/>
+	
+	<xsl:template match="*[local-name() = 'fmt-preferred'][*[local-name() = 'p']]" mode="flatxml_step1">
+		<xsl:apply-templates mode="flatxml_step1"/>
+	</xsl:template>
+	<xsl:template match="*[local-name() = 'fmt-preferred'][not(*[local-name() = 'p'])] | *[local-name() = 'fmt-preferred']/*[local-name() = 'p']" mode="flatxml_step1">
+		<xsl:element name="preferred" namespace="{$namespace_full}">
+			<xsl:copy-of select="@*"/>
+			<xsl:apply-templates mode="flatxml_step1"/>
+		</xsl:element>
+	</xsl:template>
+	<xsl:template match="*[local-name() = 'fmt-admitted'][*[local-name() = 'p']]" mode="flatxml_step1">
+		<xsl:apply-templates mode="flatxml_step1"/>
+	</xsl:template>
+	<xsl:template match="*[local-name() = 'fmt-admitted'][not(*[local-name() = 'p'])] | *[local-name() = 'fmt-admitted']/*[local-name() = 'p']" mode="flatxml_step1">
+		<xsl:element name="admitted" namespace="{$namespace_full}">
+			<xsl:copy-of select="@*"/>
+			<xsl:apply-templates mode="flatxml_step1"/>
+		</xsl:element>
+	</xsl:template>
+	<xsl:template match="*[local-name() = 'fmt-deprecates'][*[local-name() = 'p']]" mode="flatxml_step1">
+		<xsl:apply-templates mode="flatxml_step1"/>
+	</xsl:template>
+	<xsl:template match="*[local-name() = 'fmt-deprecates'][not(*[local-name() = 'p'])] | *[local-name() = 'fmt-deprecates']/*[local-name() = 'p']" mode="flatxml_step1">
+		<xsl:element name="deprecates" namespace="{$namespace_full}">
+			<xsl:copy-of select="@*"/>
+			<xsl:apply-templates mode="flatxml_step1"/>
+		</xsl:element>
+	</xsl:template>
+	<xsl:template match="*[local-name() = 'fmt-definition']" mode="flatxml_step1">
+		<xsl:element name="definition" namespace="{$namespace_full}">
+			<xsl:copy-of select="@*"/>
+			<xsl:apply-templates mode="flatxml_step1"/>
+		</xsl:element>
+	</xsl:template>
+	
+	<xsl:template match="*[local-name() = 'span'][
+															@class = 'fmt-caption-label' or 
+															@class = 'fmt-element-name' or
+															@class = 'fmt-caption-delim' or
+															@class = 'fmt-autonum-delim']" mode="flatxml_step1" priority="3">
+		<xsl:apply-templates mode="flatxml_step1"/>
+	</xsl:template>
+	
+	<xsl:template match="*[local-name() = 'semx']" mode="flatxml_step1">
+		<xsl:apply-templates mode="flatxml_step1"/>
+	</xsl:template>
+	
+	<xsl:template match="*[local-name() = 'fmt-xref-label']" mode="flatxml_step1"/>
 	
 	<xsl:template name="setCrossAlignAttributes">
 		<xsl:variable name="is_cross_aligned">
