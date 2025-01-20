@@ -456,9 +456,9 @@
 			</xsl:if>
 			
 			<xsl:variable name="updated_xml_step0">
-				<xsl:if test="$vertical_layout = 'true'">
-					<xsl:apply-templates mode="update_xml_step0"/>
-				</xsl:if>
+				<!-- <xsl:if test="$vertical_layout = 'true'"> -->
+				<xsl:apply-templates mode="update_xml_step0"/>
+				<!-- </xsl:if> -->
 			</xsl:variable>
 			<xsl:if test="$debug = 'true'">
 				<redirect:write file="update_xml_step0.xml">
@@ -467,14 +467,15 @@
 			</xsl:if>
 			
 			<xsl:variable name="updated_xml_step1">
-				<xsl:choose>
+				<!-- <xsl:choose>
 					<xsl:when test="$vertical_layout = 'true'">
 						<xsl:apply-templates select="xalan:nodeset($updated_xml_step0)" mode="update_xml_step1"/>
 					</xsl:when>
 					<xsl:otherwise>
 						<xsl:apply-templates mode="update_xml_step1"/>
 					</xsl:otherwise>
-				</xsl:choose>
+				</xsl:choose> -->
+				<xsl:apply-templates select="xalan:nodeset($updated_xml_step0)" mode="update_xml_step1"/>
 			</xsl:variable>
 			<!-- DEBUG: updated_xml_step1=<xsl:copy-of select="$updated_xml_step1"/> -->
 			<xsl:if test="$debug = 'true'">
@@ -2531,59 +2532,79 @@
 		<xsl:value-of select="$text10"/>
 	</xsl:template>
 	
+	<!-- enclose surrogate pair characters into the tag 'spair' -->
+	<xsl:variable name="element_name_spair">spair</xsl:variable>
+	<xsl:variable name="tag_spair_open">###<xsl:value-of select="$element_name_spair"/>###</xsl:variable>
+	<xsl:variable name="tag_spair_close">###/<xsl:value-of select="$element_name_spair"/>###</xsl:variable>
 	
 	<!-- replace horizontal to vertical oriented character -->
 	<xsl:template match="text()" mode="update_xml_step0" name="replace_horizontal_to_vertical_form">
 		<xsl:param name="text" select="."/>
-		<xsl:choose>
-			<xsl:when test="$isGenerateTableIF = 'false'">
-				<!-- from https://github.com/metanorma/docs/blob/main/109.adoc -->
-				<!-- 
-				U+3001 IDEOGRAPHIC COMMA (、)
-				to
-				U+FE11 PRESENTATION FORM FOR VERTICAL IDEOGRAPHIC COMMA (︑) 
-				
-				U+FE50 SMALL COMMA (﹐)
-				to
-				U+FE10 PRESENTATION FORM FOR VERTICAL COMMA (︐)
-				
-				U+FE51 SMALL IDEOGRAPHIC COMMA (﹑)
-				to
-				U+FE11 PRESENTATION FORM FOR VERTICAL IDEOGRAPHIC COMMA (︑)
-				
-				U+FF0C FULLWIDTH COMMA (，)
-				to
-				U+FE10 PRESENTATION FORM FOR VERTICAL COMMA (︐)
-				-->
-				<xsl:variable name="text1" select="translate($text,'&#x3001;&#xFE50;&#xFE51;&#xFF0C;','&#xFE11;&#xFE10;&#xFE11;&#xFE10;')"/>
-				
-				<!-- 
-				U+FF1A FULLWIDTH COLON (：)
-				to
-				U+FE13 PRESENTATION FORM FOR VERTICAL COLON (︓)
-				
-				U+FF1B FULLWIDTH SEMICOLON (；)
-				to
-				U+FE14 PRESENTATION FORM FOR VERTICAL SEMICOLON (︔)
-				-->
-				<xsl:variable name="text2" select="translate($text1,'&#xFF1A;&#xFF1B;','&#xFE13;&#xFE14;')"/>
-				
-				<!-- 
-				U+FF01 FULLWIDTH EXCLAMATION MARK (！)
-				to
-				U+FE15 PRESENTATION FORM FOR VERTICAL EXCLAMATION MARK (︕)
-				
-				U+FF1F FULLWIDTH QUESTION MARK (？)
-				to
-				U+FE16 PRESENTATION FORM FOR VERTICAL QUESTION MARK (︖)
-				-->
-				<xsl:variable name="text3" select="translate($text2,'&#xFF01;&#xFF1F;','&#xFE15;&#xFE16;')"/>
-				<xsl:value-of select="$text3"/>
-			</xsl:when>
-			<xsl:otherwise>
-				<xsl:value-of select="$text"/>
-			</xsl:otherwise>
-		</xsl:choose>
+		<xsl:variable name="text_replaced">
+			<xsl:choose>
+				<xsl:when test="$vertical_layout = 'true' and $isGenerateTableIF = 'false'">
+					<!-- from https://github.com/metanorma/docs/blob/main/109.adoc -->
+					<!-- 
+					U+3001 IDEOGRAPHIC COMMA (、)
+					to
+					U+FE11 PRESENTATION FORM FOR VERTICAL IDEOGRAPHIC COMMA (︑) 
+					
+					U+FE50 SMALL COMMA (﹐)
+					to
+					U+FE10 PRESENTATION FORM FOR VERTICAL COMMA (︐)
+					
+					U+FE51 SMALL IDEOGRAPHIC COMMA (﹑)
+					to
+					U+FE11 PRESENTATION FORM FOR VERTICAL IDEOGRAPHIC COMMA (︑)
+					
+					U+FF0C FULLWIDTH COMMA (，)
+					to
+					U+FE10 PRESENTATION FORM FOR VERTICAL COMMA (︐)
+					-->
+					<xsl:variable name="text1" select="translate($text,'&#x3001;&#xFE50;&#xFE51;&#xFF0C;','&#xFE11;&#xFE10;&#xFE11;&#xFE10;')"/>
+					
+					<!-- 
+					U+FF1A FULLWIDTH COLON (：)
+					to
+					U+FE13 PRESENTATION FORM FOR VERTICAL COLON (︓)
+					
+					U+FF1B FULLWIDTH SEMICOLON (；)
+					to
+					U+FE14 PRESENTATION FORM FOR VERTICAL SEMICOLON (︔)
+					-->
+					<xsl:variable name="text2" select="translate($text1,'&#xFF1A;&#xFF1B;','&#xFE13;&#xFE14;')"/>
+					
+					<!-- 
+					U+FF01 FULLWIDTH EXCLAMATION MARK (！)
+					to
+					U+FE15 PRESENTATION FORM FOR VERTICAL EXCLAMATION MARK (︕)
+					
+					U+FF1F FULLWIDTH QUESTION MARK (？)
+					to
+					U+FE16 PRESENTATION FORM FOR VERTICAL QUESTION MARK (︖)
+					-->
+					<xsl:variable name="text3" select="translate($text2,'&#xFF01;&#xFF1F;','&#xFE15;&#xFE16;')"/>
+					<xsl:value-of select="$text3"/>
+				</xsl:when>
+				<xsl:otherwise>
+					<xsl:value-of select="$text"/>
+				</xsl:otherwise>
+			</xsl:choose>
+		</xsl:variable>
+		
+		
+		<xsl:variable name="text_spair_" select="java:replaceAll(java:java.lang.String.new($text_replaced), $regex_surrogate_pairs, concat($tag_spair_open,'$1',$tag_spair_close))"/>
+		<xsl:variable name="text_spair">
+			<xsl:element name="text" namespace="{$namespace_full}">
+				<xsl:call-template name="replace_text_tags">
+					<xsl:with-param name="tag_open" select="$tag_spair_open"/>
+					<xsl:with-param name="tag_close" select="$tag_spair_close"/>
+					<xsl:with-param name="text" select="$text_spair_"/>
+				</xsl:call-template>
+			</xsl:element>
+		</xsl:variable>
+		<xsl:copy-of select="xalan:nodeset($text_spair)/*[local-name() = 'text']/node()"/>
+		
 	</xsl:template>
 	
 	<!-- =========================================================================== -->
@@ -2702,8 +2723,11 @@
 		<xsl:copy-of select="."/>
 	</xsl:template>
 	
-	<!-- if vertical_layout = 'true', then font_en and font_en_bold are using for text rotation -->
+	<!-- https://github.com/metanorma/laozi/issues/8 -->
 	<xsl:variable name="surrogate_pairs">\ud800\udc00-\udbff\udfff\ud800-\udfff</xsl:variable>
+	<xsl:variable name="regex_surrogate_pairs">([<xsl:value-of select="$surrogate_pairs"/>])</xsl:variable>
+	
+	<!-- if vertical_layout = 'true', then font_en and font_en_bold are using for text rotation -->
 	<xsl:variable name="regex_en_base">\u00A0\u2002-\u200B\u3000-\u9FFF\uF900-\uFFFF<xsl:value-of select="$surrogate_pairs"/></xsl:variable>
 	<xsl:variable name="regex_en_">
 		<xsl:choose>
@@ -3155,6 +3179,10 @@
 	<!-- ========================= -->
 	<!-- END: Allocate non-Japanese text -->
 	<!-- ========================= -->
+	
+	<xsl:template match="*[local-name() = 'spair'][normalize-space() != '']">
+		<fo:inline><xsl:apply-templates/></fo:inline>
+	</xsl:template>
 	
 	<!-- patch for correct list-item-label rendering: enclose each char in inline-container -->
 	<xsl:template match="*[local-name() = 'note' or local-name() = 'example']/*[local-name() = 'name']/text()" priority="3">
