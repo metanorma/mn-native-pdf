@@ -1169,7 +1169,7 @@
 	
 	<xsl:template name="insertTocItem">
 		<fo:block text-align-last="justify" role="SKIP">
-			<fo:basic-link internal-destination="{@id}" fox:alt-text="{title}">
+			<fo:basic-link internal-destination="{@id}" fox:alt-text="{normalize-space(title)}">
 				<fo:inline>
 					<xsl:if test="$vertical_layout = 'true'">
 						<xsl:attribute name="padding-right">7.5mm</xsl:attribute>
@@ -2703,7 +2703,8 @@
 	</xsl:template>
 	
 	<!-- if vertical_layout = 'true', then font_en and font_en_bold are using for text rotation -->
-	<xsl:variable name="regex_en_base">\u00A0\u2002-\u200B\u3000-\u9FFF\uF900-\uFFFF</xsl:variable>
+	<xsl:variable name="surrogate_pairs">\ud800\udc00-\udbff\udfff\ud800-\udfff</xsl:variable>
+	<xsl:variable name="regex_en_base">\u00A0\u2002-\u200B\u3000-\u9FFF\uF900-\uFFFF<xsl:value-of select="$surrogate_pairs"/></xsl:variable>
 	<xsl:variable name="regex_en_">
 		<xsl:choose>
 			<!-- ( ) [ ] _ { } U+FF08 FULLWIDTH LEFT PARENTHESIS U+FF09 FULLWIDTH RIGHT PARENTHESIS-->
