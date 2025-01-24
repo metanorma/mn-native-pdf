@@ -1736,7 +1736,12 @@
 	<xsl:template match="plateau:table/plateau:p[@class = 'ListTitle']" priority="2" mode="update_xml_step1"/>
 	
 	<xsl:template match="*[local-name() = 'font_en_bold'][normalize-space() != '']">
-		<xsl:if test="ancestor::*[local-name() = 'td' or local-name() = 'th']"><xsl:value-of select="$zero_width_space"/></xsl:if>
+		<xsl:if test="ancestor::*[local-name() = 'td' or local-name() = 'th']">
+			<xsl:choose>
+				<xsl:when test="$isGenerateTableIF = 'false'"><fo:inline font-size="0.1pt"><xsl:text> </xsl:text></fo:inline></xsl:when>
+				<xsl:otherwise><fo:inline><xsl:value-of select="$zero_width_space"/></fo:inline></xsl:otherwise>
+			</xsl:choose>
+		</xsl:if>
 		<fo:inline font-family="Noto Sans Condensed" font-weight="300"> <!--  font-weight="bold" -->
 			<!-- <xsl:if test="ancestor::*[local-name() = 'preferred']">
 				<xsl:attribute name="font-weight">normal</xsl:attribute>
@@ -1755,11 +1760,21 @@
 			
 			<xsl:apply-templates/>
 		</fo:inline>
-		<xsl:if test="ancestor::*[local-name() = 'td' or local-name() = 'th']"><xsl:value-of select="$zero_width_space"/></xsl:if>
+		<xsl:if test="ancestor::*[local-name() = 'td' or local-name() = 'th']">
+			<xsl:choose>
+				<xsl:when test="$isGenerateTableIF = 'false'"><fo:inline font-size="0.1pt"><xsl:text> </xsl:text></fo:inline></xsl:when>
+				<xsl:otherwise><fo:inline><xsl:value-of select="$zero_width_space"/></fo:inline></xsl:otherwise>
+			</xsl:choose>
+		</xsl:if>
 	</xsl:template>
 	
 	<xsl:template match="*[local-name() = 'font_en'][normalize-space() != '']">
-		<xsl:if test="ancestor::*[local-name() = 'td' or local-name() = 'th']"><xsl:value-of select="$zero_width_space"/></xsl:if>
+		<xsl:if test="ancestor::*[local-name() = 'td' or local-name() = 'th']">
+			<xsl:choose>
+				<xsl:when test="$isGenerateTableIF = 'false'"><fo:inline font-size="0.1pt"><xsl:text> </xsl:text></fo:inline></xsl:when>
+				<xsl:otherwise><fo:inline><xsl:value-of select="$zero_width_space"/></fo:inline></xsl:otherwise>
+			</xsl:choose>
+		</xsl:if>
 		<fo:inline>
 			<xsl:if test="not(ancestor::plateau:p[@class = 'zzSTDTitle2']) and not(ancestor::plateau:span[@class = 'JIS'])">
 				<xsl:attribute name="font-family">Noto Sans Condensed</xsl:attribute>
@@ -1770,7 +1785,12 @@
 			</xsl:if>
 			<xsl:apply-templates/>
 		</fo:inline>
-		<xsl:if test="ancestor::*[local-name() = 'td' or local-name() = 'th']"><xsl:value-of select="$zero_width_space"/></xsl:if>
+		<xsl:if test="ancestor::*[local-name() = 'td' or local-name() = 'th']">
+			<xsl:choose>
+				<xsl:when test="$isGenerateTableIF = 'false'"><fo:inline font-size="0.1pt"><xsl:text> </xsl:text></fo:inline></xsl:when>
+				<xsl:otherwise><fo:inline><xsl:value-of select="$zero_width_space"/></fo:inline></xsl:otherwise>
+			</xsl:choose>
+		</xsl:if>
 	</xsl:template>
 	
 	<!-- ========================= -->

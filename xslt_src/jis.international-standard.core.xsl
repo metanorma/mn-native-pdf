@@ -3093,7 +3093,12 @@
 	
 	<!-- bold English text in non-vertical layout -->
 	<xsl:template match="*[local-name() = 'font_en_bold'][normalize-space() != '']">
-		<xsl:if test="ancestor::*[local-name() = 'td' or local-name() = 'th']"><xsl:value-of select="$zero_width_space"/></xsl:if>
+		<xsl:if test="ancestor::*[local-name() = 'td' or local-name() = 'th']">
+			<xsl:choose>
+				<xsl:when test="$isGenerateTableIF = 'false'"><fo:inline font-size="0.1pt"><xsl:text> </xsl:text></fo:inline></xsl:when>
+				<xsl:otherwise><fo:inline><xsl:value-of select="$zero_width_space"/></fo:inline></xsl:otherwise>
+			</xsl:choose>
+		</xsl:if>
 		<fo:inline>
 			<xsl:attribute name="font-family">Times New Roman</xsl:attribute>
 			<xsl:attribute name="font-weight">bold</xsl:attribute>
@@ -3102,12 +3107,22 @@
 			</xsl:if>
 			<xsl:apply-templates/>
 		</fo:inline>
-		<xsl:if test="ancestor::*[local-name() = 'td' or local-name() = 'th']"><xsl:value-of select="$zero_width_space"/></xsl:if>
+		<xsl:if test="ancestor::*[local-name() = 'td' or local-name() = 'th']">
+			<xsl:choose>
+				<xsl:when test="$isGenerateTableIF = 'false'"><fo:inline font-size="0.1pt"><xsl:text> </xsl:text></fo:inline></xsl:when>
+				<xsl:otherwise><fo:inline><xsl:value-of select="$zero_width_space"/></fo:inline></xsl:otherwise>
+			</xsl:choose>
+		</xsl:if>
 	</xsl:template>
 	
 	<!-- English text in non-vertical layout -->
 	<xsl:template match="*[local-name() = 'font_en'][normalize-space() != '']">
-		<xsl:if test="ancestor::*[local-name() = 'td' or local-name() = 'th']"><xsl:value-of select="$zero_width_space"/></xsl:if>
+		<xsl:if test="ancestor::*[local-name() = 'td' or local-name() = 'th']">
+			<xsl:choose>
+				<xsl:when test="$isGenerateTableIF = 'false'"><fo:inline font-size="0.1pt"><xsl:text> </xsl:text></fo:inline></xsl:when>
+				<xsl:otherwise><fo:inline><xsl:value-of select="$zero_width_space"/></fo:inline></xsl:otherwise>
+			</xsl:choose>
+		</xsl:if>
 		<fo:inline>
 			<xsl:if test="not(ancestor::jis:p[@class = 'zzSTDTitle2']) and not(ancestor::jis:span[@class = 'JIS'])">
 				<xsl:attribute name="font-family">Times New Roman</xsl:attribute>
@@ -3117,7 +3132,12 @@
 			</xsl:if>
 			<xsl:apply-templates/>
 		</fo:inline>
-		<xsl:if test="ancestor::*[local-name() = 'td' or local-name() = 'th']"><xsl:value-of select="$zero_width_space"/></xsl:if>
+		<xsl:if test="ancestor::*[local-name() = 'td' or local-name() = 'th']">
+			<xsl:choose>
+				<xsl:when test="$isGenerateTableIF = 'false'"><fo:inline font-size="0.1pt"><xsl:text> </xsl:text></fo:inline></xsl:when>
+				<xsl:otherwise><fo:inline><xsl:value-of select="$zero_width_space"/></fo:inline></xsl:otherwise>
+			</xsl:choose>
+		</xsl:if>
 	</xsl:template>
 	
 	<!-- English text in vertical layout -->
