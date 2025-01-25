@@ -1735,6 +1735,15 @@
 	<!-- Key title after the table -->
 	<xsl:template match="plateau:table/plateau:p[@class = 'ListTitle']" priority="2" mode="update_xml_step1"/>
 	
+  <!-- added to fix conflict with previous update in update_xml_pres -->
+	<xsl:template match="*[local-name() = 'preferred'] | *[local-name() = 'admitted'] | *[local-name() = 'deprecates'] |
+					*[local-name() = 'definition'] | *[local-name() = 'termsource'] | *[local-name() = 'termsource'] |
+					*[local-name() = 'term'][@unnumbered = 'true']" mode="update_xml_step1" priority="2">
+		<xsl:copy>
+			<xsl:apply-templates select="@*|node()" mode="update_xml_step1"/>
+		</xsl:copy>
+	</xsl:template>
+  
 	<xsl:template match="*[local-name() = 'font_en_bold'][normalize-space() != '']">
 		<xsl:if test="ancestor::*[local-name() = 'td' or local-name() = 'th']">
 			<xsl:choose>
