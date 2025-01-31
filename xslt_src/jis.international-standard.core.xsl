@@ -3478,7 +3478,10 @@
 		<fo:static-content flow-name="left-region"> <!--  role="artifact" commented, because there is <fo:retrieve-marker below, occurs java.lang.IndexOutOfBoundsException: Index: 1, Size: 1 -->
 			<fo:block-container absolute-position="fixed" left="0mm" top="0" width="6mm" height="{$pageHeightA5}mm" background-color="{$cover_header_footer_background}">
 				<fo:block-container font-size="9pt" color="white" text-align="center">
-					<fo:block margin-top="131mm">
+					<xsl:if test="$isGenerateTableIF = 'false'">
+						<xsl:attribute name="writing-mode">tb-rl</xsl:attribute>
+					</xsl:if>
+					<fo:block margin-top="131mm" margin-right="1mm">
 						<fo:page-number />
 					</fo:block> <!-- 二 -->
 				</fo:block-container>
