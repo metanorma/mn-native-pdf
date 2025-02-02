@@ -19883,6 +19883,30 @@
 	<xsl:template match="*[local-name() = 'fmt-xref-label']" mode="update_xml_step1"/>
 	<xsl:template match="*[local-name() = 'fmt-xref-label']" mode="update_xml_pres"/>
 	
+	<xsl:template match="*[local-name() = 'requirement'] | *[local-name() = 'recommendation'] | *[local-name() = 'permission']" mode="update_xml_step1">
+		<xsl:apply-templates mode="update_xml_step1"/>
+	</xsl:template>
+	
+	<xsl:template match="*[local-name() = 'requirement'] | *[local-name() = 'recommendation'] | *[local-name() = 'permission']" mode="update_xml_pres">
+		<xsl:apply-templates mode="update_xml_pres"/>
+	</xsl:template>
+	
+	<xsl:template match="*[local-name() = 'requirement']/*[not(starts-with(local-name(), 'fmt-'))] |
+												*[local-name() = 'recommendation']/*[not(starts-with(local-name(), 'fmt-'))] | 
+												*[local-name() = 'permission']/*[not(starts-with(local-name(), 'fmt-'))]" mode="update_xml_step1"/>
+											
+	<xsl:template match="*[local-name() = 'requirement']/*[not(starts-with(local-name(), 'fmt-'))] |
+												*[local-name() = 'recommendation']/*[not(starts-with(local-name(), 'fmt-'))] | 
+												*[local-name() = 'permission']/*[not(starts-with(local-name(), 'fmt-'))]" mode="update_xml_pres"/>
+	
+	<xsl:template match="*[local-name() = 'fmt-provision']" mode="update_xml_step1">
+		<xsl:apply-templates mode="update_xml_step1"/>
+	</xsl:template>
+	<xsl:template match="*[local-name() = 'fmt-provision']" mode="update_xml_pres">
+		<xsl:apply-templates mode="update_xml_pres"/>
+	</xsl:template>
+	
+	
 	<!-- END: update new Presentation XML -->
 	
 	<!-- =========================================================================== -->
