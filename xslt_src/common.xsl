@@ -19906,7 +19906,22 @@
 		<xsl:apply-templates mode="update_xml_pres"/>
 	</xsl:template>
 	
-	
+	<xsl:template match="*[local-name() = 'identifier']" mode="update_xml_step1"/>
+	<xsl:template match="*[local-name() = 'identifier']" mode="update_xml_pres"/>
+	<xsl:template match="*[local-name() = 'fmt-identifier']" mode="update_xml_step1">
+		<xsl:element name="identifier" namespace="{$namespace_full}">
+			<xsl:copy-of select="@*"/>
+			<xsl:apply-templates mode="update_xml_step1"/>
+		</xsl:element>
+	</xsl:template>
+  <xsl:template match="*[local-name() = 'fmt-identifier']" mode="update_xml_pres">
+		<xsl:element name="identifier" namespace="{$namespace_full}">
+			<xsl:copy-of select="@*"/>
+			<xsl:apply-templates mode="update_xml_pres"/>
+		</xsl:element>
+	</xsl:template>
+  
+  
 	<!-- END: update new Presentation XML -->
 	
 	<!-- =========================================================================== -->
