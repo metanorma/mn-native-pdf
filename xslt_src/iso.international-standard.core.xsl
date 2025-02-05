@@ -1979,7 +1979,16 @@
 												<xsl:if test="$stage &gt;=60 and $substage != 0">
 													<xsl:attribute name="color"><xsl:value-of select="$color_red"/></xsl:attribute>
 												</xsl:if>
-												<xsl:value-of select="$docidentifierISO"/>
+												<xsl:choose>
+													<xsl:when test="contains($docidentifierISO, ' ')">
+														<xsl:value-of select="substring-before($docidentifierISO, ' ')"/>
+														<xsl:text>&#xa0;&#xa0;</xsl:text>
+														<xsl:value-of select="substring-after($docidentifierISO, ' ')"/>
+													</xsl:when>
+													<xsl:otherwise>
+														<xsl:value-of select="$docidentifierISO"/>
+													</xsl:otherwise>
+												</xsl:choose>
 											</fo:block>
 										</fo:table-cell>
 									</fo:table-row>
@@ -2092,7 +2101,21 @@
 													<!-- Voting begins on: -->
 														<xsl:value-of select="concat($i18n_voting_begins_on, ':')"/>
 														<fo:block font-weight="bold">
-															<xsl:call-template name="insertVoteStarted"/>
+															<xsl:variable name="v_date">
+																<xsl:call-template name="split">
+																	<xsl:with-param name="pText">
+																		<xsl:call-template name="insertVoteStarted"/>
+																	</xsl:with-param>
+																	<xsl:with-param name="sep" select="'-'"/>
+																	<xsl:with-param name="keep_sep">true</xsl:with-param>
+																</xsl:call-template>
+															</xsl:variable>
+															<xsl:for-each select="xalan:nodeset($v_date)/item">
+																<xsl:choose>
+																	<xsl:when test=". = '-'"><fo:inline font-weight="normal"><xsl:value-of select="."/></fo:inline></xsl:when>
+																	<xsl:otherwise><xsl:value-of select="."/></xsl:otherwise>
+																</xsl:choose>
+															</xsl:for-each>
 														</fo:block>
 													</fo:block>
 												
@@ -2100,7 +2123,21 @@
 														<!-- Voting terminates on: -->
 														<xsl:value-of select="concat($i18n_voting_terminates_on, ':')"/>
 														<fo:block font-weight="bold">
-															<xsl:call-template name="insertVoteEnded"/>
+															<xsl:variable name="v_date">
+																<xsl:call-template name="split">
+																	<xsl:with-param name="pText">
+																		<xsl:call-template name="insertVoteEnded"/>
+																	</xsl:with-param>
+																	<xsl:with-param name="sep" select="'-'"/>
+																	<xsl:with-param name="keep_sep">true</xsl:with-param>
+																</xsl:call-template>
+															</xsl:variable>
+															<xsl:for-each select="xalan:nodeset($v_date)/item">
+																<xsl:choose>
+																	<xsl:when test=". = '-'"><fo:inline font-weight="normal"><xsl:value-of select="."/></fo:inline></xsl:when>
+																	<xsl:otherwise><xsl:value-of select="."/></xsl:otherwise>
+																</xsl:choose>
+															</xsl:for-each>
 														</fo:block>
 													</fo:block>
 												</xsl:if>
@@ -2179,11 +2216,11 @@
 												</xsl:if>
 											</fo:block>
 										</fo:table-cell>
-										<fo:table-cell number-columns-spanned="2" padding-left="6mm" display-align="after">
+										<fo:table-cell number-columns-spanned="2" padding-top="-3mm" padding-left="5mm" display-align="after">
 											<xsl:if test="$lang = 'fr'">
-												<xsl:attribute name="padding-top">-15mm</xsl:attribute>
+												<xsl:attribute name="padding-top">-18mm</xsl:attribute>
 											</xsl:if>
-											<fo:block font-size="6.5pt" margin-right="15mm">
+											<fo:block font-size="7pt" margin-right="20mm" font-family="Cambria">
 												<xsl:call-template name="insertDraftComments"/>
 											</fo:block>
 										</fo:table-cell>
@@ -3242,7 +3279,10 @@
 							</xsl:if>
 							<fo:block>
 								<!-- <xsl:text>ISO/CEN PARALLEL PROCESSING</xsl:text>  -->
-								<xsl:value-of select="java:toUpperCase(java:java.lang.String.new($i18n_iso_cen_parallel))"/>
+								<xsl:call-template name="add-letter-spacing">
+									<xsl:with-param name="text" select="java:toUpperCase(java:java.lang.String.new($i18n_iso_cen_parallel))"/>
+									<xsl:with-param name="letter-spacing" select="0.13"/>
+								</xsl:call-template>
 							</fo:block>
 						</fo:block-container>
 					</fo:block>
