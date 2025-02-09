@@ -20566,7 +20566,7 @@
 			</xsl:when>
 			<xsl:when test="contains($text, $replace)">
 				<xsl:value-of select="substring-before($text,$replace)" />
-				<xsl:element name="inlineChar" namespace="https://www.metanorma.org/ns/jis"><xsl:value-of select="$by"/></xsl:element>
+				<xsl:element name="inlineChar" namespace="https://www.metanorma.org/ns/standoc"><xsl:value-of select="$by"/></xsl:element>
 				<xsl:call-template name="replaceChar">
 						<xsl:with-param name="text" select="substring-after($text,$replace)" />
 						<xsl:with-param name="replace" select="$replace" />
@@ -21386,10 +21386,10 @@
 		
 		<xsl:variable name="data_value">
 			<xsl:choose>
-				<xsl:when test="$formatted = 'true' and string-length($bibdata_updated) != ''">
+				<xsl:when test="$formatted = 'true' and string-length($bibdata_updated) != 0">
 					<xsl:apply-templates select="xalan:nodeset($bibdata_updated)//*[local-name() = 'localized-string'][@key = $key and @language = $curr_lang]"/>
 				</xsl:when>
-				<xsl:when test="string-length($bibdata_updated) != ''">
+				<xsl:when test="string-length($bibdata_updated) != 0">
 					<xsl:value-of select="xalan:nodeset($bibdata_updated)//*[local-name() = 'localized-string'][@key = $key and @language = $curr_lang]"/>
 				</xsl:when>
 				<xsl:when test="$formatted = 'true'">
