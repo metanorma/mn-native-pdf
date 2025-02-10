@@ -871,6 +871,9 @@
 			</xsl:variable>
 			
 			<xsl:if test="$debug = 'true'">
+				<redirect:write file="updated_xml.xml">
+					<xsl:copy-of select="$updated_xml"/>
+				</redirect:write>
 				<xsl:message>End updated_xml</xsl:message>
 				<xsl:message>DEBUG: processing time <xsl:value-of select="java:getTime(java:java.util.Date.new()) - $startTime0"/> msec.</xsl:message>
 			</xsl:if>
