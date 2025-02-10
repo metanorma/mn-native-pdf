@@ -14611,6 +14611,8 @@
 		<xsl:apply-templates mode="contents"/>
 	</xsl:template>
 	
+	<xsl:template match="*[local-name() = 'concept']" mode="contents"/>
+	
 	<xsl:template match="*[local-name() = 'stem']" mode="bookmarks">
 		<xsl:apply-templates mode="bookmarks"/>
 	</xsl:template>
@@ -14623,6 +14625,8 @@
 	<xsl:template match="*[local-name() = 'semx']" mode="bookmarks">
 		<xsl:apply-templates mode="bookmarks"/>
 	</xsl:template>
+	
+	<xsl:template match="*[local-name() = 'concept']" mode="bookmarks"/>
 	
 	<!-- Bookmarks -->
 	<xsl:template name="addBookmarks">
@@ -14966,6 +14970,8 @@
 	
 	
 	<xsl:template match="*[local-name() = 'fmt-xref-label']"  mode="contents_item"/>
+	
+	<xsl:template match="*[local-name() = 'concept']"  mode="contents_item"/>
 
 	<xsl:template name="getSection">
 		<xsl:choose>
@@ -19891,6 +19897,21 @@
 	<xsl:template match="*[local-name() = 'fmt-xref-label']" />
 	<xsl:template match="*[local-name() = 'fmt-xref-label']" mode="update_xml_step1"/>
 	<xsl:template match="*[local-name() = 'fmt-xref-label']" mode="update_xml_pres"/>
+	
+	
+	<xsl:template match="*[local-name() = 'concept']"/>
+	<xsl:template match="*[local-name() = 'concept']" mode="update_xml_step1"/>
+	<xsl:template match="*[local-name() = 'concept']" mode="update_xml_pres"/>
+	
+	<xsl:template match="*[local-name() = 'fmt-concept']">
+		<xsl:apply-templates />
+	</xsl:template>
+	<xsl:template match="*[local-name() = 'fmt-concept']" mode="update_xml_step1">
+		<xsl:apply-templates mode="update_xml_step1"/>
+	</xsl:template>
+	<xsl:template match="*[local-name() = 'fmt-concept']" mode="update_xml_pres">
+		<xsl:apply-templates mode="update_xml_pres"/>
+	</xsl:template>
 	
 	<!-- END: update new Presentation XML -->
 	

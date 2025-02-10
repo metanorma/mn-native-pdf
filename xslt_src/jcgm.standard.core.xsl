@@ -1780,6 +1780,12 @@
 	
 	<xsl:template match="*[local-name() = 'fmt-xref-label']" mode="flatxml_step1"/>
 	
+	<xsl:template match="*[local-name() = 'concept']"  mode="flatxml_step1"/>
+	
+	<xsl:template match="*[local-name() = 'fmt-concept']" mode="flatxml_step1">
+		<xsl:apply-templates mode="flatxml_step1"/>
+	</xsl:template>
+	
 	<xsl:template name="setCrossAlignAttributes">
 		<xsl:variable name="is_cross_aligned">
 			<xsl:call-template name="isCrossAligned"/>
