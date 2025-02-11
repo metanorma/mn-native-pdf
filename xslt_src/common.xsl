@@ -21344,9 +21344,9 @@
 				<xsl:value-of select="document('')//*/namespace::bipm"/>
 			</xsl:if>
 		</xsl:variable>
-		<xsl:if test="$documentNS != $XSLNS">
+		<!-- <xsl:if test="$documentNS != $XSLNS">
 			<xsl:message>[WARNING]: Document namespace: '<xsl:value-of select="$documentNS"/>' doesn't equal to xslt namespace '<xsl:value-of select="$XSLNS"/>'</xsl:message>
-		</xsl:if>
+		</xsl:if> -->
 	</xsl:template> <!-- namespaceCheck -->
  
 	<xsl:template name="getLanguage">
