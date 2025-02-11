@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" 
 											xmlns:fo="http://www.w3.org/1999/XSL/Format" 
-											xmlns:ogc="https://www.metanorma.org/ns/ogc" 
+											xmlns:ogc="https://www.metanorma.org/ns/standoc" 
 											xmlns:mathml="http://www.w3.org/1998/Math/MathML" 
 											xmlns:xalan="http://xml.apache.org/xalan" 
 											xmlns:fox="http://xmlgraphics.apache.org/fop/extensions" 
@@ -37,8 +37,8 @@
 
 	<xsl:variable name="color">rgb(0, 51, 102)</xsl:variable>
 	
-	<xsl:variable name="color_text_title" select="/ogc:ogc-standard/ogc:metanorma-extension/ogc:presentation-metadata[ogc:name = 'color-text-title']/ogc:value"/>
-	<xsl:variable name="color_table_header_row" select="/ogc:ogc-standard/ogc:metanorma-extension/ogc:presentation-metadata[ogc:name = 'color-background-table-header']/ogc:value"/>
+	<xsl:variable name="color_text_title" select="/ogc:metanorma/ogc:metanorma-extension/ogc:presentation-metadata[ogc:name = 'color-text-title']/ogc:value"/>
+	<xsl:variable name="color_table_header_row" select="/ogc:metanorma/ogc:metanorma-extension/ogc:presentation-metadata[ogc:name = 'color-background-table-header']/ogc:value"/>
 	
 	<xsl:attribute-set name="title-toc-style">
 		<xsl:attribute name="font-size">26pt</xsl:attribute>		
@@ -169,7 +169,7 @@
 						<fo:block-container margin-left="-12mm" margin-right="-9mm">
 							<fo:block-container margin-left="0mm" margin-right="0mm">
 								<fo:block font-size="36pt" background-color="{$color}" color="white" margin-left="2.5mm" padding-top="1mm" padding-left="1mm" role="H1">
-									<xsl:apply-templates select="/ogc:ogc-standard/ogc:bibdata/ogc:title/node()"/>
+									<xsl:apply-templates select="/ogc:metanorma/ogc:bibdata/ogc:title/node()"/>
 								</fo:block>
 							</fo:block-container>
 						</fo:block-container>
@@ -179,27 +179,27 @@
 						</fo:block> -->
 						
 						<fo:block text-align="right" font-size="10pt" margin-top="12pt" margin-bottom="24pt">
-							<fo:block margin-top="6pt">Submission Date: <xsl:value-of select="/ogc:ogc-standard/ogc:bibdata/ogc:date[@type = 'received']/ogc:on"/></fo:block>
-							<fo:block margin-top="6pt">Approval Date: <xsl:value-of select="/ogc:ogc-standard/ogc:bibdata/ogc:date[@type = 'issued']/ogc:on"/></fo:block>
-							<fo:block margin-top="6pt">Publication Date: <xsl:value-of select="/ogc:ogc-standard/ogc:bibdata/ogc:date[@type = 'published']/ogc:on"/></fo:block>
-							<fo:block margin-top="6pt">External identifier of this OGC&#xAE; document: <xsl:value-of select="/ogc:ogc-standard/ogc:bibdata/ogc:docidentifier[@type = 'ogc-external']"/></fo:block>
-							<fo:block margin-top="6pt">Internal reference number of this OGC&#xAE; document: <xsl:value-of select="/ogc:ogc-standard/ogc:bibdata/ogc:docnumber"/></fo:block>
+							<fo:block margin-top="6pt">Submission Date: <xsl:value-of select="/ogc:metanorma/ogc:bibdata/ogc:date[@type = 'received']/ogc:on"/></fo:block>
+							<fo:block margin-top="6pt">Approval Date: <xsl:value-of select="/ogc:metanorma/ogc:bibdata/ogc:date[@type = 'issued']/ogc:on"/></fo:block>
+							<fo:block margin-top="6pt">Publication Date: <xsl:value-of select="/ogc:metanorma/ogc:bibdata/ogc:date[@type = 'published']/ogc:on"/></fo:block>
+							<fo:block margin-top="6pt">External identifier of this OGC&#xAE; document: <xsl:value-of select="/ogc:metanorma/ogc:bibdata/ogc:docidentifier[@type = 'ogc-external']"/></fo:block>
+							<fo:block margin-top="6pt">Internal reference number of this OGC&#xAE; document: <xsl:value-of select="/ogc:metanorma/ogc:bibdata/ogc:docnumber"/></fo:block>
 							
-							<xsl:variable name="url" select="/ogc:ogc-standard/ogc:bibdata/ogc:uri"/>
+							<xsl:variable name="url" select="/ogc:metanorma/ogc:bibdata/ogc:uri"/>
 							<xsl:if test="normalize-space($url) != ''">
 								<fo:block margin-top="6pt">URL for this OGC&#xAE; document: <xsl:value-of select="$url"/></fo:block>
 							</xsl:if>
 								
-							<xsl:apply-templates select="/ogc:ogc-standard/ogc:bibdata/ogc:edition[normalize-space(@language) = '']"/>
+							<xsl:apply-templates select="/ogc:metanorma/ogc:bibdata/ogc:edition[normalize-space(@language) = '']"/>
 								
 							<fo:block margin-top="6pt"><xsl:text>Category: </xsl:text>
 								<xsl:call-template name="capitalizeWords">
-									<xsl:with-param name="str" select="/ogc:ogc-standard/ogc:bibdata/ogc:ext/ogc:doctype"/>
+									<xsl:with-param name="str" select="/ogc:metanorma/ogc:bibdata/ogc:ext/ogc:doctype"/>
 								</xsl:call-template>
 							</fo:block>
 							
 							<xsl:variable name="editors">
-								<xsl:for-each select="/ogc:ogc-standard/ogc:bibdata/ogc:contributor[ogc:role/@type='editor']/ogc:person/ogc:name/ogc:completename">
+								<xsl:for-each select="/ogc:metanorma/ogc:bibdata/ogc:contributor[ogc:role/@type='editor']/ogc:person/ogc:name/ogc:completename">
 									<xsl:value-of select="."/>
 									<xsl:if test="position() != last()">, </xsl:if>
 								</xsl:for-each>
@@ -219,14 +219,14 @@
 							<fo:block-container margin-left="0mm" margin-right="0mm">
 								<fo:block margin-top="8pt">
 									<xsl:variable name="copyright_statement">
-										<xsl:apply-templates select="/ogc:ogc-standard/ogc:boilerplate/ogc:copyright-statement" mode="update_xml_step1"/>
+										<xsl:apply-templates select="/ogc:metanorma/ogc:boilerplate/ogc:copyright-statement" mode="update_xml_step1"/>
 									</xsl:variable>
 									<xsl:apply-templates select="xalan:nodeset($copyright_statement)/*"/>
 								</fo:block>
 								<fo:block margin-top="8pt">&#xA0;</fo:block>
 								<fo:block margin-top="8pt">
 									<xsl:variable name="legal_statement">
-										<xsl:apply-templates select="/ogc:ogc-standard/ogc:boilerplate/ogc:legal-statement" mode="update_xml_step1"/>
+										<xsl:apply-templates select="/ogc:metanorma/ogc:boilerplate/ogc:legal-statement" mode="update_xml_step1"/>
 									</xsl:variable>
 									<xsl:apply-templates select="xalan:nodeset($legal_statement)/*"/>
 								</fo:block>
@@ -271,8 +271,8 @@
 								<xsl:call-template name="insertHeaderFooter"/>
 								<fo:flow flow-name="xsl-region-body">
 								
-									<!-- <xsl:apply-templates select="/ogc:ogc-standard/ogc:boilerplate/ogc:license-statement"/>
-									<xsl:apply-templates select="/ogc:ogc-standard/ogc:boilerplate/ogc:feedback-statement"/> -->
+									<!-- <xsl:apply-templates select="/ogc:metanorma/ogc:boilerplate/ogc:license-statement"/>
+									<xsl:apply-templates select="/ogc:metanorma/ogc:boilerplate/ogc:feedback-statement"/> -->
 									
 									<!-- Abstract, Keywords, Preface, Submitting Organizations, Submitters -->
 									<!-- <xsl:for-each select="/*/*[local-name()='preface']/*[not(local-name() = 'note' or local-name() = 'admonition')]">
@@ -337,8 +337,8 @@
 				
 				<xsl:element name="boilerplate" namespace="{$namespace_full}"> <!-- save context element -->
 					<xsl:element name="page_sequence" namespace="{$namespace_full}">
-						<xsl:apply-templates select="/ogc:ogc-standard/ogc:boilerplate/ogc:license-statement" mode="update_xml_step_move_pagebreak"/>
-						<xsl:apply-templates select="/ogc:ogc-standard/ogc:boilerplate/ogc:feedback-statement" mode="update_xml_step_move_pagebreak"/>
+						<xsl:apply-templates select="/ogc:metanorma/ogc:boilerplate/ogc:license-statement" mode="update_xml_step_move_pagebreak"/>
+						<xsl:apply-templates select="/ogc:metanorma/ogc:boilerplate/ogc:feedback-statement" mode="update_xml_step_move_pagebreak"/>
 					</xsl:element>
 				</xsl:element>
 				
@@ -518,7 +518,7 @@
 	<!-- ============================= -->
 	<!-- ============================= -->
 	
-	<xsl:template match="/ogc:ogc-standard/ogc:bibdata/ogc:uri[not(@type)]">
+	<xsl:template match="/ogc:metanorma/ogc:bibdata/ogc:uri[not(@type)]">
 		<fo:block margin-bottom="12pt">
 			<xsl:text>URL for this OGC® document: </xsl:text>
 			<xsl:value-of select="."/><xsl:text> </xsl:text>
@@ -526,7 +526,7 @@
 	</xsl:template>
 	
 	
-	<xsl:template match="/ogc:ogc-standard/ogc:bibdata/ogc:edition">
+	<xsl:template match="/ogc:metanorma/ogc:bibdata/ogc:edition">
 		<xsl:variable name="edition" select="."/>
 		<xsl:if test="normalize-space($edition) != ''">
 			<fo:block margin-top="6pt">
