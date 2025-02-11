@@ -996,6 +996,16 @@
 						</fo:flow>
 					</fo:page-sequence>
 				</xsl:if>
+				
+				<!-- namespace document doesn't equal to xslt namespace -->
+				<xsl:if test="not(//iec:metanorma)">
+					<fo:page-sequence master-reference="blank-page">
+						<fo:flow flow-name="xsl-region-body">
+							<fo:block>&#xA0;</fo:block>
+						</fo:flow>
+					</fo:page-sequence>
+				</xsl:if>
+				
 			</fo:root>
 		<!-- </xsl:variable> -->
 		
