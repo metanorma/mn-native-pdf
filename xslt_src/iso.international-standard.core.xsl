@@ -3033,7 +3033,7 @@
 	</xsl:template>
 		
 	<!-- transform NOTE to Note for smallcaps feature working -->
-	<xsl:template match="iso:note/iso:name/text() | iso:example/iso:name/text()" mode="update_xml_step1" priority="3">
+	<xsl:template match="iso:note/iso:name/text() | iso:example/iso:name/text() | iso:note/iso:fmt-name/text() | iso:example/iso:fmt-name/text()" mode="update_xml_step1" priority="3">
 		<xsl:choose>
 			<xsl:when test="$layoutVersion = '1951'"> <!--  and $revision_date_num &lt; 19680101 -->
 				<xsl:value-of select="substring(., 1, 1)"/>
