@@ -14612,6 +14612,11 @@
 	</xsl:template>
 	
 	<xsl:template match="*[local-name() = 'concept']" mode="contents"/>
+	<xsl:template match="*[local-name() = 'eref']" mode="contents"/>
+	<xsl:template match="*[local-name() = 'xref']" mode="contents"/>
+	<xsl:template match="*[local-name() = 'link']" mode="contents"/>
+	<xsl:template match="*[local-name() = 'origin']" mode="contents"/>
+	<xsl:template match="*[local-name() = 'erefstack ']" mode="contents"/>
 	
 	<xsl:template match="*[local-name() = 'stem']" mode="bookmarks">
 		<xsl:apply-templates mode="bookmarks"/>
@@ -14627,6 +14632,11 @@
 	</xsl:template>
 	
 	<xsl:template match="*[local-name() = 'concept']" mode="bookmarks"/>
+	<xsl:template match="*[local-name() = 'eref']" mode="bookmarks"/>
+	<xsl:template match="*[local-name() = 'xref']" mode="bookmarks"/>
+	<xsl:template match="*[local-name() = 'link']" mode="bookmarks"/>
+	<xsl:template match="*[local-name() = 'origin']" mode="bookmarks"/>
+	<xsl:template match="*[local-name() = 'erefstack ']" mode="bookmarks"/>
 	
 	<!-- Bookmarks -->
 	<xsl:template name="addBookmarks">
@@ -14972,6 +14982,11 @@
 	<xsl:template match="*[local-name() = 'fmt-xref-label']"  mode="contents_item"/>
 	
 	<xsl:template match="*[local-name() = 'concept']"  mode="contents_item"/>
+	<xsl:template match="*[local-name() = 'eref']" mode="contents_item"/>
+	<xsl:template match="*[local-name() = 'xref']" mode="contents_item"/>
+	<xsl:template match="*[local-name() = 'link']" mode="contents_item"/>
+	<xsl:template match="*[local-name() = 'origin']" mode="contents_item"/>
+	<xsl:template match="*[local-name() = 'erefstack ']" mode="contents_item"/>
 
 	<xsl:template name="getSection">
 		<xsl:choose>
@@ -19912,6 +19927,78 @@
 	<xsl:template match="*[local-name() = 'fmt-concept']" mode="update_xml_pres">
 		<xsl:apply-templates mode="update_xml_pres"/>
 	</xsl:template>
+	
+	<xsl:template match="*[local-name() = 'eref']" mode="update_xml_step1"/>
+	<xsl:template match="*[local-name() = 'eref']" mode="update_xml_pres"/>
+	
+	<xsl:template match="*[local-name() = 'fmt-eref']" mode="update_xml_step1">
+		<xsl:element name="eref" namespace="{$namespace_full}">
+			<xsl:copy-of select="@*"/>
+			<xsl:apply-templates mode="update_xml_step1"/>
+		</xsl:element>
+	</xsl:template>
+  <xsl:template match="*[local-name() = 'fmt-eref']" mode="update_xml_pres">
+		<xsl:element name="eref" namespace="{$namespace_full}">
+			<xsl:copy-of select="@*"/>
+			<xsl:apply-templates mode="update_xml_pres"/>
+		</xsl:element>
+	</xsl:template>
+	
+	<xsl:template match="*[local-name() = 'xref']" mode="update_xml_step1"/>
+	<xsl:template match="*[local-name() = 'xref']" mode="update_xml_pres"/>
+	
+	<xsl:template match="*[local-name() = 'fmt-xref']" mode="update_xml_step1">
+		<xsl:element name="xref" namespace="{$namespace_full}">
+			<xsl:copy-of select="@*"/>
+			<xsl:apply-templates mode="update_xml_step1"/>
+		</xsl:element>
+	</xsl:template>
+  <xsl:template match="*[local-name() = 'fmt-xref']" mode="update_xml_pres">
+		<xsl:element name="xref" namespace="{$namespace_full}">
+			<xsl:copy-of select="@*"/>
+			<xsl:apply-templates mode="update_xml_pres"/>
+		</xsl:element>
+	</xsl:template>
+	
+	<xsl:template match="*[local-name() = 'link']" mode="update_xml_step1"/>
+	<xsl:template match="*[local-name() = 'link']" mode="update_xml_pres"/>
+	
+	<xsl:template match="*[local-name() = 'fmt-link']" mode="update_xml_step1">
+		<xsl:element name="link" namespace="{$namespace_full}">
+			<xsl:copy-of select="@*"/>
+			<xsl:apply-templates mode="update_xml_step1"/>
+		</xsl:element>
+	</xsl:template>
+  <xsl:template match="*[local-name() = 'fmt-link']" mode="update_xml_pres">
+		<xsl:element name="link" namespace="{$namespace_full}">
+			<xsl:copy-of select="@*"/>
+			<xsl:apply-templates mode="update_xml_pres"/>
+		</xsl:element>
+	</xsl:template>
+	
+	<xsl:template match="*[local-name() = 'origin']" mode="update_xml_step1"/>
+	<xsl:template match="*[local-name() = 'origin']" mode="update_xml_pres"/>
+	
+	<xsl:template match="*[local-name() = 'fmt-origin']" mode="update_xml_step1">
+		<xsl:element name="origin" namespace="{$namespace_full}">
+			<xsl:copy-of select="@*"/>
+			<xsl:apply-templates mode="update_xml_step1"/>
+		</xsl:element>
+	</xsl:template>
+  <xsl:template match="*[local-name() = 'fmt-origin']" mode="update_xml_pres">
+		<xsl:element name="origin" namespace="{$namespace_full}">
+			<xsl:copy-of select="@*"/>
+			<xsl:apply-templates mode="update_xml_pres"/>
+		</xsl:element>
+	</xsl:template>
+	
+	<xsl:template match="*[local-name() = 'erefstack']" />
+	<xsl:template match="*[local-name() = 'erefstack']" mode="update_xml_step1"/>
+	<xsl:template match="*[local-name() = 'erefstack']" mode="update_xml_pres"/>
+
+	<xsl:template match="*[local-name() = 'svgmap']" />
+	<xsl:template match="*[local-name() = 'svgmap']" mode="update_xml_step1"/>
+	<xsl:template match="*[local-name() = 'svgmap']" mode="update_xml_pres"/>
 	
 	<!-- END: update new Presentation XML -->
 	

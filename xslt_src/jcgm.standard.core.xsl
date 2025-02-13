@@ -1786,6 +1786,46 @@
 		<xsl:apply-templates mode="flatxml_step1"/>
 	</xsl:template>
 	
+	<xsl:template match="*[local-name() = 'eref']" mode="flatxml_step1"/>
+	
+	<xsl:template match="*[local-name() = 'fmt-eref']" mode="flatxml_step1">
+		<xsl:element name="eref" namespace="{$namespace_full}">
+			<xsl:copy-of select="@*"/>
+			<xsl:apply-templates mode="flatxml_step1"/>
+		</xsl:element>
+	</xsl:template>
+	
+	<xsl:template match="*[local-name() = 'xref']" mode="flatxml_step1"/>
+	
+	<xsl:template match="*[local-name() = 'fmt-xref']" mode="flatxml_step1">
+		<xsl:element name="xref" namespace="{$namespace_full}">
+			<xsl:copy-of select="@*"/>
+			<xsl:apply-templates mode="flatxml_step1"/>
+		</xsl:element>
+	</xsl:template>
+	
+	<xsl:template match="*[local-name() = 'link']" mode="flatxml_step1"/>
+	
+	<xsl:template match="*[local-name() = 'fmt-link']" mode="flatxml_step1">
+		<xsl:element name="link" namespace="{$namespace_full}">
+			<xsl:copy-of select="@*"/>
+			<xsl:apply-templates mode="flatxml_step1"/>
+		</xsl:element>
+	</xsl:template>
+	
+	<xsl:template match="*[local-name() = 'origin']" mode="flatxml_step1"/>
+	
+	<xsl:template match="*[local-name() = 'fmt-origin']" mode="flatxml_step1">
+		<xsl:element name="origin" namespace="{$namespace_full}">
+			<xsl:copy-of select="@*"/>
+			<xsl:apply-templates mode="flatxml_step1"/>
+		</xsl:element>
+	</xsl:template>
+	
+	<xsl:template match="*[local-name() = 'erefstack']" mode="flatxml_step1"/>
+	
+	<xsl:template match="*[local-name() = 'svgmap']" mode="flatxml_step1"/>
+	
 	<xsl:template name="setCrossAlignAttributes">
 		<xsl:variable name="is_cross_aligned">
 			<xsl:call-template name="isCrossAligned"/>
