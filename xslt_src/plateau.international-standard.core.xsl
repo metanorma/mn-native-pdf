@@ -1618,14 +1618,14 @@
 	<!-- plateau:term/plateau:preferred2//text() | -->
 	
 	<!-- <name>注記  1</name> to <name>注記<font_en>  1</font_en></name> -->
-	<xsl:template match="plateau:title/text() | 
-						plateau:note/plateau:name/text() | 
-						plateau:termnote/plateau:name/text() |
-						plateau:table/plateau:name/text() |
-						plateau:figure/plateau:name/text() |
-						plateau:termexample/plateau:name/text() |
-						plateau:xref//text() |
-						plateau:origin/text()" mode="update_xml_step1">
+	<xsl:template match="plateau:title/text() | plateau:fmt-title/text() | 
+						plateau:note/plateau:name/text() | plateau:note/plateau:fmt-name/text() | 
+						plateau:termnote/plateau:name/text() | plateau:termnote/plateau:fmt-name/text() |
+						plateau:table/plateau:name/text() | plateau:table/plateau:fmt-name/text() |
+						plateau:figure/plateau:name/text() | plateau:figure/plateau:fmt-name/text() |
+						plateau:termexample/plateau:name/text() | plateau:termexample/plateau:fmt-name/text() |
+						plateau:xref//text() | plateau:fmt-xref//text() |
+						plateau:origin/text() | plateau:fmt-origin/text()" mode="update_xml_step1">
 		<xsl:variable name="text_en_" select="java:replaceAll(java:java.lang.String.new(.), $regex_en, concat($tag_font_en_bold_open,'$1',$tag_font_en_bold_close))"/>
 		<xsl:variable name="text_en">
 			<xsl:element name="text" namespace="{$namespace_full}">
@@ -1656,22 +1656,43 @@
 	</xsl:template>
 	
 	<!-- move example title to the first paragraph -->
-	<xsl:template match="plateau:example[contains(plateau:name/text(), ' — ')]" mode="update_xml_step1">
+	<!-- Example:
+		<example id="_7569d639-c245-acb6-2141-3b746374a9e1" autonum="1">
+		<name id="_8eac959b-b129-4892-b8bb-fcca2914bd39">（可能性の例）</name>
+		<fmt-name>
+			<span class="fmt-caption-label">
+				<span class="fmt-element-name">例</span>
+				<semx element="autonum" source="_7569d639-c245-acb6-2141-3b746374a9e1">1</semx>
+			</span>
+			<span class="fmt-caption-delim"> — </span>
+			<semx element="name" source="_8eac959b-b129-4892-b8bb-fcca2914bd39">（可能性の例）</semx>
+		</fmt-name>
+	-->
+	<!-- <xsl:template match="plateau:example[contains(plateau:name/text(), ' — ')]" mode="update_xml_step1"> -->
+	<xsl:template match="plateau:example[plateau:fmt-name[contains(plateau:span/text(), ' — ')]]" mode="update_xml_step1">
 		<xsl:copy>
 			<xsl:copy-of select="@*"/>
 			<xsl:element name="p" namespace="{$namespace_full}">
-				<xsl:value-of select="substring-after(plateau:name/text(), ' — ')"/>
+				<!-- <xsl:value-of select="substring-after(plateau:name/text(), ' — ')"/> -->
+				<xsl:apply-templates select="plateau:fmt-name/plateau:span[contains(., ' — ')][1]/following-sibling::node()" mode="update_xml_step1"/>
 			</xsl:element>
 			<xsl:apply-templates mode="update_xml_step1"/>
 		</xsl:copy>
 	</xsl:template>
+	<xsl:template match="plateau:example/plateau:fmt-name[contains(plateau:span/text(), ' — ')]" mode="update_xml_step1" priority="2">
+		<xsl:element name="name" namespace="{$namespace_full}">
+			<xsl:copy-of select="@*"/>
+			<xsl:apply-templates select="*[1]" mode="update_xml_step1"/>
+		</xsl:element>
+	</xsl:template>
 	<xsl:template match="plateau:example/plateau:name/text()" mode="update_xml_step1">
-		<xsl:variable name="example_name">
+		<xsl:variable name="example_name" select="."/>
+		<!-- 
 			<xsl:choose>
 				<xsl:when test="contains(., ' — ')"><xsl:value-of select="substring-before(., ' — ')"/></xsl:when>
 				<xsl:otherwise><xsl:value-of select="."/></xsl:otherwise>
 			</xsl:choose>
-		</xsl:variable>
+		</xsl:variable> -->
 		<xsl:variable name="text_en_" select="java:replaceAll(java:java.lang.String.new($example_name), $regex_en, concat($tag_font_en_bold_open,'$1',$tag_font_en_bold_close))"/>
 		<xsl:variable name="text_en">
 			<xsl:element name="text" namespace="{$namespace_full}">
