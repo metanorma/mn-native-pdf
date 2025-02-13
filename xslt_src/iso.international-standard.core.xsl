@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" 
 											xmlns:fo="http://www.w3.org/1999/XSL/Format" 
-											xmlns:iso="https://www.metanorma.org/ns/iso" 
+											xmlns:iso="https://www.metanorma.org/ns/standoc" 
 											xmlns:mathml="http://www.w3.org/1998/Math/MathML" 
 											xmlns:xalan="http://xml.apache.org/xalan" 
 											xmlns:fox="http://xmlgraphics.apache.org/fop/extensions" 
@@ -29,9 +29,9 @@
 	
 	<xsl:variable name="column_gap">8.5mm</xsl:variable>
 	
-	<xsl:variable name="docidentifier_iso" select="/iso:iso-standard/iso:bibdata/iso:docidentifier[@type = 'iso'] | /iso:iso-standard/iso:bibdata/iso:docidentifier[@type = 'ISO']"/>
+	<xsl:variable name="docidentifier_iso" select="/iso:metanorma/iso:bibdata/iso:docidentifier[@type = 'iso'] | /iso:metanorma/iso:bibdata/iso:docidentifier[@type = 'ISO']"/>
 	
-	<xsl:variable name="docidentifier_undated_" select="normalize-space(/iso:iso-standard/iso:bibdata/iso:docidentifier[@type = 'iso-undated'])"/>
+	<xsl:variable name="docidentifier_undated_" select="normalize-space(/iso:metanorma/iso:bibdata/iso:docidentifier[@type = 'iso-undated'])"/>
 	<xsl:variable name="docidentifier_undated"><xsl:value-of select="$docidentifier_undated_"/><xsl:if test="$docidentifier_undated_ = ''"><xsl:value-of select="$docidentifier_iso"/></xsl:if></xsl:variable>
 	<xsl:variable name="docidentifierISO_undated_">
 		<xsl:if test="not($stage-abbreviation = 'FDAMD' or $stage-abbreviation = 'FDAM' or $stage-abbreviation = 'DAMD' or $stage-abbreviation = 'DAM')">
@@ -49,7 +49,7 @@
 	<xsl:variable name="docidentifierISO_with_break" select="java:replaceAll(java:java.lang.String.new($docidentifierISO),'^([^\d]+) (\d)', concat('$1', $linebreak, '$2'))"/> <!-- add line break before 1st sequence 'space digit' -->
 
 	<xsl:variable name="docidentifier_another_">
-		<xsl:for-each select="/iso:iso-standard/iso:bibdata/iso:docidentifier[@type != '' and @type != 'ISO' and not(starts-with(@type, 'iso-')) and @type != 'URN']">
+		<xsl:for-each select="/iso:metanorma/iso:bibdata/iso:docidentifier[@type != '' and @type != 'ISO' and not(starts-with(@type, 'iso-')) and @type != 'URN']">
 			<xsl:value-of select="."/>
 			<xsl:if test="position() != last()"><xsl:value-of select="$linebreak"/></xsl:if>
 		</xsl:for-each>
@@ -62,9 +62,9 @@
 		</xsl:if>
 	</xsl:variable>
 
-	<xsl:variable name="copyrightYear" select="/iso:iso-standard/iso:bibdata/iso:copyright/iso:from"/>
+	<xsl:variable name="copyrightYear" select="/iso:metanorma/iso:bibdata/iso:copyright/iso:from"/>
 	<xsl:variable name="copyrightAbbr__">
-		<xsl:for-each select="/iso:iso-standard/iso:bibdata/iso:copyright/iso:owner/iso:organization[normalize-space(iso:abbreviation) != 'IEEE']">
+		<xsl:for-each select="/iso:metanorma/iso:bibdata/iso:copyright/iso:owner/iso:organization[normalize-space(iso:abbreviation) != 'IEEE']">
 			<abbr>
 				<xsl:choose>
 					<xsl:when test="iso:abbreviation"><xsl:value-of select="iso:abbreviation"/></xsl:when>
@@ -85,7 +85,7 @@
 		</xsl:for-each>
 	</xsl:variable>
 	<xsl:variable name="copyrightAbbr" select="normalize-space($copyrightAbbr_)"/>
-	<xsl:variable name="copyrightAbbrIEEE" select="normalize-space(/iso:iso-standard/iso:bibdata/iso:copyright/iso:owner/iso:organization/iso:abbreviation[. = 'IEEE'])"/>
+	<xsl:variable name="copyrightAbbrIEEE" select="normalize-space(/iso:metanorma/iso:bibdata/iso:copyright/iso:owner/iso:organization/iso:abbreviation[. = 'IEEE'])"/>
 	<xsl:variable name="copyrightText">
 		<xsl:value-of select="concat('© ', $copyrightAbbr, ' ', $copyrightYear ,' – ', $i18n_all_rights_reserved)"/>
 		<xsl:if test="$copyrightAbbrIEEE != ''">
@@ -105,17 +105,17 @@
 	</xsl:variable>
 	
   
-	<xsl:variable name="docidentifier_iso_with_lang_" select="normalize-space(/iso:iso-standard/iso:bibdata/iso:docidentifier[@type = 'iso-with-lang'])"/>
+	<xsl:variable name="docidentifier_iso_with_lang_" select="normalize-space(/iso:metanorma/iso:bibdata/iso:docidentifier[@type = 'iso-with-lang'])"/>
 	<xsl:variable name="docidentifier_iso_with_lang"><xsl:value-of select="$docidentifier_iso_with_lang_"/><xsl:if test="$docidentifier_iso_with_lang_ = ''"><xsl:value-of select="$docidentifier_iso"/></xsl:if></xsl:variable>
 	
 	<xsl:variable name="lang-1st-letter_tmp" select="substring-before(substring-after($docidentifier_iso_with_lang, '('), ')')"/>
 	<xsl:variable name="lang-1st-letter" select="concat('(', $lang-1st-letter_tmp , ')')"/>
   
-	<xsl:variable name="iso_reference_" select="normalize-space(/iso:iso-standard/iso:bibdata/iso:docidentifier[@type = 'iso-reference'])"/>
+	<xsl:variable name="iso_reference_" select="normalize-space(/iso:metanorma/iso:bibdata/iso:docidentifier[@type = 'iso-reference'])"/>
 	<xsl:variable name="iso_reference"><xsl:value-of select="$iso_reference_"/><xsl:if test="$iso_reference_ = ''"><xsl:value-of select="$docidentifier_iso"/></xsl:if></xsl:variable>
 	<xsl:variable name="anotherNumbers">
 		<xsl:variable name="year_iso_reference" select="concat(':',substring-after($iso_reference,':'))"/> 
-		<xsl:for-each select="/iso:iso-standard/iso:bibdata/iso:docidentifier[@type != '' and @type != 'ISO' and not(starts-with(@type, 'iso-')) and @type != 'URN']">
+		<xsl:for-each select="/iso:metanorma/iso:bibdata/iso:docidentifier[@type != '' and @type != 'ISO' and not(starts-with(@type, 'iso-')) and @type != 'URN']">
 			<xsl:value-of select="$linebreak"/><xsl:value-of select="concat(., $year_iso_reference)"/>
 		</xsl:for-each>
 	</xsl:variable>
@@ -152,10 +152,10 @@
 		<xsl:value-of select="$anotherNumbers"/>
 	</xsl:variable>
 
-	<xsl:variable name="part" select="normalize-space(/iso:iso-standard/iso:bibdata/iso:ext/iso:structuredidentifier/iso:project-number/@part)"/>
+	<xsl:variable name="part" select="normalize-space(/iso:metanorma/iso:bibdata/iso:ext/iso:structuredidentifier/iso:project-number/@part)"/>
 	
-	<xsl:variable name="doctype" select="/iso:iso-standard/iso:bibdata/iso:ext/iso:doctype"/>	 
-	<xsl:variable name="doctype_localized_" select="/iso:iso-standard/iso:bibdata/iso:ext/iso:doctype[@language = $lang]"/>
+	<xsl:variable name="doctype" select="/iso:metanorma/iso:bibdata/iso:ext/iso:doctype"/>	 
+	<xsl:variable name="doctype_localized_" select="/iso:metanorma/iso:bibdata/iso:ext/iso:doctype[@language = $lang]"/>
 	<xsl:variable name="doctype_localized">
 		<xsl:choose>
 			<xsl:when test="$doctype_localized_ != ''">
@@ -169,12 +169,12 @@
     
 	<xsl:variable name="doctype_uppercased" select="java:toUpperCase(java:java.lang.String.new($doctype_localized))"/>
 	 	
-	<xsl:variable name="stage" select="number(/iso:iso-standard/iso:bibdata/iso:status/iso:stage)"/>
-	<xsl:variable name="substage" select="number(/iso:iso-standard/iso:bibdata/iso:status/iso:substage)"/>	
-	<xsl:variable name="stagename" select="normalize-space(/iso:iso-standard/iso:bibdata/iso:ext/iso:stagename)"/>
-	<xsl:variable name="stagename_abbreviation" select="normalize-space(/iso:iso-standard/iso:bibdata/iso:ext/iso:stagename/@abbreviation)"/>
-	<xsl:variable name="stagename_localized" select="normalize-space(/iso:iso-standard/iso:bibdata/iso:status/iso:stage[@language = $lang])"/>
-	<xsl:variable name="abbreviation" select="normalize-space(/iso:iso-standard/iso:bibdata/iso:status/iso:stage/@abbreviation)"/>
+	<xsl:variable name="stage" select="number(/iso:metanorma/iso:bibdata/iso:status/iso:stage)"/>
+	<xsl:variable name="substage" select="number(/iso:metanorma/iso:bibdata/iso:status/iso:substage)"/>	
+	<xsl:variable name="stagename" select="normalize-space(/iso:metanorma/iso:bibdata/iso:ext/iso:stagename)"/>
+	<xsl:variable name="stagename_abbreviation" select="normalize-space(/iso:metanorma/iso:bibdata/iso:ext/iso:stagename/@abbreviation)"/>
+	<xsl:variable name="stagename_localized" select="normalize-space(/iso:metanorma/iso:bibdata/iso:status/iso:stage[@language = $lang])"/>
+	<xsl:variable name="abbreviation" select="normalize-space(/iso:metanorma/iso:bibdata/iso:status/iso:stage/@abbreviation)"/>
 	<xsl:variable name="abbreviation_uppercased" select="java:toUpperCase(java:java.lang.String.new($abbreviation))"/>
 		
 	<xsl:variable name="stage-abbreviation">
@@ -290,7 +290,7 @@
 	<xsl:variable name="proof-text">PROOF/ÉPREUVE</xsl:variable>
 
 	<xsl:variable name="docnumber_with_prefix">
-		<xsl:if test="$doctype = 'recommendation'">R&#xa0;</xsl:if><xsl:value-of select="/iso:iso-standard/iso:bibdata/iso:docnumber"/>
+		<xsl:if test="$doctype = 'recommendation'">R&#xa0;</xsl:if><xsl:value-of select="/iso:metanorma/iso:bibdata/iso:docnumber"/>
 	</xsl:variable>
 
 	<xsl:variable name="ISO_title_en">INTERNATIONAL ORGANIZATION FOR STANDARDIZATION</xsl:variable>
@@ -335,7 +335,7 @@
 	<xsl:variable name="contents" select="xalan:nodeset($contents_)"/>
 	
 	<xsl:variable name="lang_other">
-		<xsl:for-each select="/iso:iso-standard/iso:bibdata/iso:title[@language != $lang]">
+		<xsl:for-each select="/iso:metanorma/iso:bibdata/iso:title[@language != $lang]">
 			<xsl:if test="not(preceding-sibling::iso:title[@language = current()/@language])">
 				<lang><xsl:value-of select="@language"/></lang>
 			</xsl:if>
@@ -345,7 +345,7 @@
 	<xsl:variable name="editorialgroup_">
 		<!-- Example: ISO/TC 46/SC 2 -->
 		<!-- ISO/SG SMART/SG TS/AG 1 -->
-		<xsl:variable name="approvalgroup" select="normalize-space(/iso:iso-standard/iso:bibdata/iso:ext/iso:approvalgroup/@identifier)"/>
+		<xsl:variable name="approvalgroup" select="normalize-space(/iso:metanorma/iso:bibdata/iso:ext/iso:approvalgroup/@identifier)"/>
 		<xsl:variable name="parts_by_slash">
 			<xsl:call-template name="split">
 				<xsl:with-param name="pText" select="$approvalgroup"/>
@@ -389,7 +389,7 @@
 	<xsl:variable name="editorialgroup" select="xalan:nodeset($editorialgroup_)" />
 	
 	<xsl:variable name="secretariat_">
-		<xsl:variable name="value" select="normalize-space(/iso:iso-standard/iso:bibdata/iso:ext/iso:editorialgroup/iso:secretariat)"/>
+		<xsl:variable name="value" select="normalize-space(/iso:metanorma/iso:bibdata/iso:ext/iso:editorialgroup/iso:secretariat)"/>
 		<xsl:if test="$value != ''">
 			<xsl:value-of select="concat($i18n_secretariat, ': ')"/>
 			<fo:inline font-weight="bold"><xsl:value-of select="$value"/></fo:inline>
@@ -398,7 +398,7 @@
 	<xsl:variable name="secretariat" select="xalan:nodeset($secretariat_)" />
 	
 	<xsl:variable name="ics_">
-		<xsl:for-each select="/iso:iso-standard/iso:bibdata/iso:ext/iso:ics/iso:code">
+		<xsl:for-each select="/iso:metanorma/iso:bibdata/iso:ext/iso:ics/iso:code">
 			<xsl:if test="position() = 1"><fo:inline>ICS: </fo:inline></xsl:if>
 			<xsl:value-of select="."/>
 			<xsl:if test="position() != last()"><xsl:text>; </xsl:text></xsl:if>
@@ -406,7 +406,7 @@
 	</xsl:variable>
 	<xsl:variable name="ics" select="xalan:nodeset($ics_)"/>
 	<xsl:variable name="udc">
-		<xsl:variable name="classification_udc" select="normalize-space(/iso:iso-standard/iso:bibdata/iso:classification[@type = 'UDC'])"/>
+		<xsl:variable name="classification_udc" select="normalize-space(/iso:metanorma/iso:bibdata/iso:classification[@type = 'UDC'])"/>
 		<xsl:choose>
 			<xsl:when test="$classification_udc != ''">
 				<xsl:value-of select="concat($i18n_classification_UDC, '&#xa0;')"/>
@@ -416,7 +416,7 @@
 		</xsl:choose>
 	</xsl:variable>
 
-	<xsl:variable name="revision_date" select="normalize-space(/iso:iso-standard/iso:bibdata/iso:version/iso:revision-date)"/>
+	<xsl:variable name="revision_date" select="normalize-space(/iso:metanorma/iso:bibdata/iso:version/iso:revision-date)"/>
 	<xsl:variable name="revision_date_num" select="number(translate($revision_date,'-',''))"/>
 	
 	<xsl:variable name="layoutVersion_">
@@ -480,7 +480,7 @@
 				<xsl:attribute name="color">rgb(35,31,32)</xsl:attribute>
 			</xsl:if>
 			
-			<xsl:if test="/iso:iso-standard/iso:metanorma-extension/iso:presentation-metadata/iso:linenumbers = 'true'">
+			<xsl:if test="/iso:metanorma/iso:metanorma-extension/iso:presentation-metadata/iso:linenumbers = 'true'">
 				<xsl:processing-instruction name="add_line_numbers">true</xsl:processing-instruction>
 			</xsl:if>
 			
@@ -953,7 +953,7 @@
 										</fo:inline>
 									</fo:block>
 									
-									<xsl:if test="/iso:iso-standard/iso:bibdata/iso:keyword">
+									<xsl:if test="/iso:metanorma/iso:bibdata/iso:keyword">
 										<fo:block margin-top="6pt">
 											<fo:inline font-weight="bold"><xsl:value-of select="$i18n_descriptors"/> : </fo:inline>
 											<xsl:call-template name="insertKeywords">
@@ -968,7 +968,7 @@
 											<fo:table-row>
 												<fo:table-cell>
 													<fo:block>
-														<xsl:apply-templates select="/iso:iso-standard/iso:boilerplate/iso:copyright-statement"/>
+														<xsl:apply-templates select="/iso:metanorma/iso:boilerplate/iso:copyright-statement"/>
 													</fo:block>
 												</fo:table-cell>
 												<fo:table-cell display-align="after" text-align="right">
@@ -1012,10 +1012,10 @@
 															<xsl:text>/</xsl:text>
 															<xsl:value-of select="$doctype_localized"/>
 															<xsl:text>&#xa0;</xsl:text>
-															<xsl:value-of select="/iso:iso-standard/iso:bibdata/iso:ext/iso:structuredidentifier/iso:project-number/@addendum"/>
+															<xsl:value-of select="/iso:metanorma/iso:bibdata/iso:ext/iso:structuredidentifier/iso:project-number/@addendum"/>
 														</xsl:when>
 														<xsl:otherwise>
-															<xsl:value-of select="$doctype_uppercased"/>&#xa0;<xsl:value-of select="/iso:iso-standard/iso:bibdata/iso:docnumber"/>
+															<xsl:value-of select="$doctype_uppercased"/>&#xa0;<xsl:value-of select="/iso:metanorma/iso:bibdata/iso:docnumber"/>
 														</xsl:otherwise>
 													</xsl:choose>
 												</fo:block>
@@ -1023,7 +1023,7 @@
 										</fo:table-row>
 										<fo:table-row display-align="after">
 											<fo:table-cell>
-												<fo:block margin-bottom="-1mm">Published <xsl:value-of select="/iso:iso-standard/iso:bibdata/iso:date[@type = 'published']"/></fo:block>
+												<fo:block margin-bottom="-1mm">Published <xsl:value-of select="/iso:metanorma/iso:bibdata/iso:date[@type = 'published']"/></fo:block>
 											</fo:table-cell>
 										</fo:table-row>
 									</fo:table-body>
@@ -1041,7 +1041,7 @@
 												<xsl:call-template name="printAddendumTitle"/>
 											</fo:block>
 											
-											<xsl:apply-templates select="/iso:iso-standard/iso:preface/iso:clause[@type = 'provenance']">
+											<xsl:apply-templates select="/iso:metanorma/iso:preface/iso:clause[@type = 'provenance']">
 												<xsl:with-param name="process">true</xsl:with-param>
 											</xsl:apply-templates>
 											
@@ -1074,7 +1074,7 @@
 					<xsl:otherwise>
 					
 						<xsl:variable name="copyright-statement">
-							<xsl:apply-templates select="/iso:iso-standard/iso:boilerplate/iso:copyright-statement"/>
+							<xsl:apply-templates select="/iso:metanorma/iso:boilerplate/iso:copyright-statement"/>
 						</xsl:variable>
 						
 						<xsl:for-each select="xalan:nodeset($updated_xml_with_pages)"> <!-- set context to preface/sections -->
@@ -1164,7 +1164,7 @@
 												<xsl:when test="$layoutVersion = '1972' or $layoutVersion = '1979' or $layoutVersion = '1987' or ($layoutVersion = '1989' and $revision_date_num &lt;= 19981231)"><!-- copyright renders in the footer footer-preface-first_1987-1998--></xsl:when>
 												<xsl:otherwise>
 												
-													<!-- <xsl:if test="/iso:iso-standard/iso:boilerplate/iso:copyright-statement"> -->
+													<!-- <xsl:if test="/iso:metanorma/iso:boilerplate/iso:copyright-statement"> -->
 													<xsl:if test="normalize-space($copyright-statement) != ''">
 													
 														<fo:block-container height="252mm" display-align="after" role="SKIP">
@@ -1186,12 +1186,12 @@
 																	<!-- <xsl:if test="$layoutVersion = '2024'">
 																		<xsl:attribute name="font-size">8.6pt</xsl:attribute>
 																	</xsl:if> -->
-																	<!-- <xsl:apply-templates select="/iso:iso-standard/iso:boilerplate/iso:copyright-statement"/> -->
+																	<!-- <xsl:apply-templates select="/iso:metanorma/iso:boilerplate/iso:copyright-statement"/> -->
 																	<xsl:copy-of select="$copyright-statement"/>
 																</fo:block>
 															</fo:block>
 														</fo:block-container>
-														<!-- <xsl:if test="/iso:iso-standard/iso:preface/*"> -->
+														<!-- <xsl:if test="/iso:metanorma/iso:preface/*"> -->
 														<!-- <xsl:copy-of select="."/> -->
 														
 														<xsl:if test="//iso:preface/*">
@@ -1282,21 +1282,21 @@
 									
 										<fo:block role="SKIP">
 										
-											<xsl:apply-templates select="/iso:iso-standard/iso:bibdata/iso:title[@language = $lang and @type = 'title-intro']"/>
+											<xsl:apply-templates select="/iso:metanorma/iso:bibdata/iso:title[@language = $lang and @type = 'title-intro']"/>
 											
-											<xsl:apply-templates select="/iso:iso-standard/iso:bibdata/iso:title[@language = $lang and @type = 'title-main']"/>
+											<xsl:apply-templates select="/iso:metanorma/iso:bibdata/iso:title[@language = $lang and @type = 'title-main']"/>
 											
-											<xsl:apply-templates select="/iso:iso-standard/iso:bibdata/iso:title[@language = $lang and @type = 'title-part']">
+											<xsl:apply-templates select="/iso:metanorma/iso:bibdata/iso:title[@language = $lang and @type = 'title-part']">
 												<xsl:with-param name="isMainLang">true</xsl:with-param>
 												<xsl:with-param name="isMainBody">true</xsl:with-param>
 											</xsl:apply-templates>
 											
 										</fo:block>
 										<fo:block role="SKIP">
-											<xsl:apply-templates select="/iso:iso-standard/iso:bibdata/iso:title[@language = $lang and @type = 'title-part']/node()"/>
+											<xsl:apply-templates select="/iso:metanorma/iso:bibdata/iso:title[@language = $lang and @type = 'title-part']/node()"/>
 										</fo:block>
 										
-										<xsl:apply-templates select="/iso:iso-standard/iso:bibdata/iso:title[@language = $lang and @type = 'title-amd']">
+										<xsl:apply-templates select="/iso:metanorma/iso:bibdata/iso:title[@language = $lang and @type = 'title-amd']">
 											<xsl:with-param name="isMainLang">true</xsl:with-param>
 											<xsl:with-param name="isMainBody">true</xsl:with-param>
 										</xsl:apply-templates>
@@ -1358,7 +1358,7 @@
 											<xsl:choose>
 												<xsl:when test="$doctype = 'amendment'">
 													<xsl:variable name="flatxml">
-														<xsl:apply-templates select="/iso:iso-standard/iso:sections/*" mode="flatxml"/>
+														<xsl:apply-templates select="/iso:metanorma/iso:sections/*" mode="flatxml"/>
 													</xsl:variable>
 													<xsl:apply-templates select="xalan:nodeset($flatxml)/*"/>
 												</xsl:when>
@@ -1370,7 +1370,7 @@
 										<xsl:otherwise>
 											<xsl:choose>
 												<xsl:when test="$doctype = 'amendment'">
-													<xsl:apply-templates select="/iso:iso-standard/iso:sections/*"/>
+													<xsl:apply-templates select="/iso:metanorma/iso:sections/*"/>
 												</xsl:when>
 												<xsl:otherwise>  -->
 													<!-- <xsl:call-template name="processMainSectionsDefault"/> -->
@@ -1455,9 +1455,9 @@
 	<xsl:template name="printAddendumTitle">
 		<xsl:value-of select="java:toUpperCase(java:java.lang.String.new($doctype))"/>
 		<xsl:text>&#xa0;</xsl:text>
-		<xsl:value-of select="/iso:iso-standard/iso:bibdata/iso:ext/iso:structuredidentifier/iso:project-number/@addendum"/>
+		<xsl:value-of select="/iso:metanorma/iso:bibdata/iso:ext/iso:structuredidentifier/iso:project-number/@addendum"/>
 		<xsl:text>&#xa0;:&#xa0;</xsl:text>
-		<xsl:value-of select="/iso:iso-standard/iso:bibdata/iso:title[@type = 'title-add']"/>
+		<xsl:value-of select="/iso:metanorma/iso:bibdata/iso:title[@type = 'title-add']"/>
 	</xsl:template>
 
 	<xsl:template match="iso:preface/iso:clause[@type = 'provenance']" priority="5">
@@ -1577,7 +1577,7 @@
 						<fo:static-content flow-name="cover-page-footer" font-size="9.5pt">
 							<fo:block text-align="center">
 								<!-- COPYRIGHT RESERVED -->
-								<xsl:apply-templates select="/iso:iso-standard/iso:boilerplate/iso:copyright-statement"/>
+								<xsl:apply-templates select="/iso:metanorma/iso:boilerplate/iso:copyright-statement"/>
 							</fo:block>
 						</fo:static-content>
 						<fo:flow flow-name="xsl-region-body">
@@ -1593,7 +1593,7 @@
 											<xsl:choose>
 												<xsl:when test="$lang = 'fr'"><xsl:value-of select="java:toUpperCase(java:java.lang.String.new('Organisation Internationale de Normalisation'))"/></xsl:when>
 												<xsl:otherwise>
-													<xsl:value-of select="java:toUpperCase(java:java.lang.String.new(/iso:iso-standard/iso:bibdata/iso:copyright/iso:owner/iso:organization/iso:name))"/>
+													<xsl:value-of select="java:toUpperCase(java:java.lang.String.new(/iso:metanorma/iso:bibdata/iso:copyright/iso:owner/iso:organization/iso:name))"/>
 												</xsl:otherwise>
 											</xsl:choose>
 										</xsl:with-param>
@@ -1618,10 +1618,10 @@
 											<xsl:attribute name="font-size">14pt</xsl:attribute>
 										</xsl:if>
 										
-										<xsl:apply-templates select="/iso:iso-standard/iso:bibdata/iso:title[@language = $lang and @type = 'title-intro']"/>
-										<xsl:apply-templates select="/iso:iso-standard/iso:bibdata/iso:title[@language = $lang and @type = 'title-main']"/>
+										<xsl:apply-templates select="/iso:metanorma/iso:bibdata/iso:title[@language = $lang and @type = 'title-intro']"/>
+										<xsl:apply-templates select="/iso:metanorma/iso:bibdata/iso:title[@language = $lang and @type = 'title-main']"/>
 										<fo:block font-size="11pt" text-transform="uppercase" margin-top="2mm">
-											<xsl:apply-templates select="/iso:iso-standard/iso:bibdata/iso:title[@language = $lang and @type = 'title-part']/node()"/>
+											<xsl:apply-templates select="/iso:metanorma/iso:bibdata/iso:title[@language = $lang and @type = 'title-part']/node()"/>
 										</fo:block>
 										
 									</fo:block>
@@ -1629,17 +1629,17 @@
 								
 								<fo:block-container margin-top="8.5mm" font-size="10pt"> <!--  height="40mm" display-align="center"  -->
 									<!-- Example: 1st EDITION -->
-									<!-- <fo:block><xsl:apply-templates select="/iso:iso-standard/iso:bibdata/iso:edition[@language != '']" /></fo:block> -->
-									<fo:block><xsl:value-of select="/iso:iso-standard/iso:bibdata/iso:edition[@language != '']" /></fo:block> <!--  font-weight="bold" -->
+									<!-- <fo:block><xsl:apply-templates select="/iso:metanorma/iso:bibdata/iso:edition[@language != '']" /></fo:block> -->
+									<fo:block><xsl:value-of select="/iso:metanorma/iso:bibdata/iso:edition[@language != '']" /></fo:block> <!--  font-weight="bold" -->
 									<!-- <fo:block>&#xa0;</fo:block> -->
 									<!-- Example: October 1971 -->
 									<fo:block margin-top="2mm" font-size="9pt">
 										<xsl:call-template name="convertDate">
-											<xsl:with-param name="date" select="/iso:iso-standard/iso:bibdata/iso:version/iso:revision-date"/>
+											<xsl:with-param name="date" select="/iso:metanorma/iso:bibdata/iso:version/iso:revision-date"/>
 										</xsl:call-template>
 									</fo:block>
 									<fo:block margin-top="14mm">
-										<xsl:value-of select="/iso:iso-standard/iso:bibdata/iso:ext/iso:edn-replacement"/>
+										<xsl:value-of select="/iso:metanorma/iso:bibdata/iso:ext/iso:edn-replacement"/>
 									</fo:block>
 								</fo:block-container>
 							</fo:block>
@@ -1661,7 +1661,7 @@
 								</fo:inline>
 							</fo:block>
 							
-							<xsl:if test="/iso:iso-standard/iso:bibdata/iso:keyword">
+							<xsl:if test="/iso:metanorma/iso:bibdata/iso:keyword">
 								<fo:block margin-top="10pt">
 									<fo:inline font-weight="bold"><xsl:value-of select="$i18n_descriptors"/> : </fo:inline>
 									<xsl:call-template name="insertKeywords">
@@ -1690,7 +1690,7 @@
 						</fo:static-content>
 						<fo:flow flow-name="xsl-region-body">
 							<xsl:variable name="docnumber">
-								<xsl:variable name="value" select="/iso:iso-standard/iso:bibdata/iso:docnumber"/>
+								<xsl:variable name="value" select="/iso:metanorma/iso:bibdata/iso:docnumber"/>
 								<xsl:value-of select="$value"/>
 								<xsl:if test="$part != ''">/<xsl:value-of select="$part"/></xsl:if>
 							</xsl:variable>
@@ -1780,7 +1780,7 @@
 							<fo:block margin-top="6mm" font-weight="bold">
 								<xsl:call-template name="printEdition"/>
 								<xsl:text>&#xa0;— </xsl:text>
-								<xsl:value-of select="/iso:iso-standard/iso:bibdata/iso:version/iso:revision-date"/>
+								<xsl:value-of select="/iso:metanorma/iso:bibdata/iso:version/iso:revision-date"/>
 							</fo:block>
 							
 						</fo:flow>
@@ -1799,7 +1799,7 @@
 										<fo:block line-height="1">
 											<xsl:call-template name="printEdition"/>
 											<xsl:value-of select="$linebreak"/>
-											<xsl:text>&#xa0;</xsl:text><xsl:value-of select="/iso:iso-standard/iso:bibdata/iso:version/iso:revision-date"/>
+											<xsl:text>&#xa0;</xsl:text><xsl:value-of select="/iso:metanorma/iso:bibdata/iso:version/iso:revision-date"/>
 										</fo:block>
 								</fo:block-container>
 								</fo:block-container>
@@ -1891,7 +1891,7 @@
 											<fo:block-container height="46mm" role="SKIP">
 												<fo:block font-size="20pt" font-weight="bold" line-height="1.25" margin-top="3mm">
 												
-													<xsl:variable name="updates-document-type" select="/iso:iso-standard/iso:bibdata/iso:ext/iso:updates-document-type"/>
+													<xsl:variable name="updates-document-type" select="/iso:metanorma/iso:bibdata/iso:ext/iso:updates-document-type"/>
 													<xsl:variable name="updates-document-type_localized">
 														<xsl:call-template name="getLocalizedString">
 															<xsl:with-param name="key" select="concat('doctype_dict.',$updates-document-type)"/>
@@ -1938,7 +1938,7 @@
 															<xsl:value-of select="$stagename-header-coverpage"/>
 															
 															<!-- if there is iteration number, then print it -->
-															<xsl:variable name="iteration" select="number(/iso:iso-standard/iso:bibdata/iso:status/iso:iteration)"/>
+															<xsl:variable name="iteration" select="number(/iso:metanorma/iso:bibdata/iso:status/iso:iteration)"/>
 															<xsl:if test="number($iteration) = $iteration and 
 																																							($stage-abbreviation = 'NWIP' or 
 																																							$stage-abbreviation = 'NP' or 
@@ -2056,7 +2056,7 @@
 													<fo:block font-size="15pt" font-weight="bold" margin-bottom="3mm">
 														<xsl:value-of select="$doctype_uppercased"/>
 														<xsl:text> </xsl:text>
-														<xsl:variable name="amendment-number" select="/iso:iso-standard/iso:bibdata/iso:ext/iso:structuredidentifier/iso:project-number/@amendment"/>
+														<xsl:variable name="amendment-number" select="/iso:metanorma/iso:bibdata/iso:ext/iso:structuredidentifier/iso:project-number/@amendment"/>
 														<xsl:if test="normalize-space($amendment-number) != ''">
 															<xsl:value-of select="$amendment-number"/><xsl:text> </xsl:text>
 														</xsl:if>
@@ -2064,14 +2064,14 @@
 												<!-- </xsl:if>
 											
 												<xsl:if test="$doctype = 'amendment' and not($stage-abbreviation = 'FDAMD' or $stage-abbreviation = 'FDAM')"> -->
-													<xsl:if test="/iso:iso-standard/iso:bibdata/iso:date[@type = 'updated']">																		
+													<xsl:if test="/iso:metanorma/iso:bibdata/iso:date[@type = 'updated']">																		
 														<fo:block font-size="18pt" font-weight="bold" margin-bottom="3mm">
-															<xsl:value-of select="/iso:iso-standard/iso:bibdata/iso:date[@type = 'updated']"/>
+															<xsl:value-of select="/iso:metanorma/iso:bibdata/iso:date[@type = 'updated']"/>
 														</fo:block>
 													</xsl:if>
 												</xsl:if>
 											
-												<xsl:variable name="date_corrected" select="normalize-space(/iso:iso-standard/iso:bibdata/iso:date[@type = 'corrected'])"/>
+												<xsl:variable name="date_corrected" select="normalize-space(/iso:metanorma/iso:bibdata/iso:date[@type = 'corrected'])"/>
 												<xsl:if test="$date_corrected != ''">
 													<fo:block font-size="18pt" font-weight="bold" margin-bottom="3mm">
 														<xsl:value-of select="$i18n_corrected_version"/>
@@ -2156,7 +2156,7 @@
 												<xsl:call-template name="insertCoverPageAdditionalNotes"/>
 											</xsl:variable>
 											
-											<xsl:variable name="feedback_link" select="normalize-space(/iso:iso-standard/iso:metanorma-extension/iso:semantic-metadata/iso:feedback-link)"/>
+											<xsl:variable name="feedback_link" select="normalize-space(/iso:metanorma/iso:metanorma-extension/iso:semantic-metadata/iso:feedback-link)"/>
 											
 											<xsl:if test="normalize-space($additionalNotes) != ''"> <!--  or $stage-abbreviation = 'PRF' -->
 												<xsl:attribute name="display-align">center</xsl:attribute>
@@ -2281,12 +2281,12 @@
 										<fo:table-cell display-align="after" padding-bottom="3mm" role="SKIP">
 											<fo:block-container height="22.5mm" display-align="center" role="SKIP">
 											
-												<xsl:variable name="iso-fast-track" select="normalize-space(/iso:iso-standard/iso:bibdata/iso:ext/iso:fast-track)"/>
+												<xsl:variable name="iso-fast-track" select="normalize-space(/iso:metanorma/iso:bibdata/iso:ext/iso:fast-track)"/>
 												<xsl:if test="normalize-space($iso-fast-track) = 'true'">
 													<xsl:attribute name="height">28mm</xsl:attribute>
 												</xsl:if>
 												
-												<xsl:variable name="iso-cen-parallel" select="normalize-space(/iso:iso-standard/iso:bibdata/iso:ext/iso:iso-cen-parallel)"/>
+												<xsl:variable name="iso-cen-parallel" select="normalize-space(/iso:metanorma/iso:bibdata/iso:ext/iso:iso-cen-parallel)"/>
 												<xsl:if test="normalize-space($iso-cen-parallel) = 'true'">
 													<xsl:attribute name="height">35mm</xsl:attribute>
 												</xsl:if>
@@ -2314,7 +2314,7 @@
 																		<xsl:attribute name="margin-top">0</xsl:attribute>
 																	</xsl:if>
 																
-																	<!-- <xsl:variable name="docid" select="substring-before(/iso:iso-standard/iso:bibdata/iso:docidentifier, ' ')"/>
+																	<!-- <xsl:variable name="docid" select="substring-before(/iso:metanorma/iso:bibdata/iso:docidentifier, ' ')"/>
 																	<xsl:for-each select="xalan:tokenize($docid, '/')"> -->
 																	<xsl:variable name="content-height">
 																		<xsl:choose>
@@ -2323,7 +2323,7 @@
 																		</xsl:choose>
 																	</xsl:variable>
 																	
-																	<xsl:for-each select="/iso:iso-standard/iso:bibdata/iso:copyright/iso:owner/iso:organization">
+																	<xsl:for-each select="/iso:metanorma/iso:bibdata/iso:copyright/iso:owner/iso:organization">
 																		<xsl:choose>
 																			<xsl:when test="iso:abbreviation = 'ISO'">
 																				<xsl:choose>
@@ -2523,7 +2523,7 @@
 															<xsl:value-of select="translate($stagename-header-coverpage, ' ', $linebreak)"/>
 															
 															<!-- if there is iteration number, then print it -->
-															<xsl:variable name="iteration" select="number(/iso:iso-standard/iso:bibdata/iso:status/iso:iteration)"/>	
+															<xsl:variable name="iteration" select="number(/iso:metanorma/iso:bibdata/iso:status/iso:iteration)"/>	
 															
 															<xsl:if test="number($iteration) = $iteration and 
 																																							($stage-abbreviation = 'NWIP' or 
@@ -2552,7 +2552,7 @@
 															<xsl:choose>
 																<xsl:when test="$stage-abbreviation = 'FDAMD' or $stage-abbreviation = 'FDAM'"><xsl:value-of select="$doctype_uppercased"/></xsl:when>
 																<xsl:when test="$doctype = 'amendment'">
-																	<xsl:value-of select="java:toUpperCase(java:java.lang.String.new(translate(/iso:iso-standard/iso:bibdata/iso:ext/iso:updates-document-type,'-',' ')))"/>
+																	<xsl:value-of select="java:toUpperCase(java:java.lang.String.new(translate(/iso:metanorma/iso:bibdata/iso:ext/iso:updates-document-type,'-',' ')))"/>
 																</xsl:when>
 																<xsl:otherwise>
 																	<xsl:if test="$font-size != ''">
@@ -2600,20 +2600,20 @@
 															<xsl:call-template name="insertEditionAndDate"/>
 														</fo:block>
 														<!-- <xsl:value-of select="$linebreak"/>
-														<xsl:value-of select="/iso:iso-standard/iso:bibdata/iso:version/iso:revision-date"/> -->
+														<xsl:value-of select="/iso:metanorma/iso:bibdata/iso:version/iso:revision-date"/> -->
 														<xsl:if test="$doctype = 'addendum'">
 															<fo:block text-align="right" margin-right="0.5mm" role="SKIP">
 																<fo:block font-weight="bold" margin-top="16pt">
 																	<xsl:value-of select="$doctype_uppercased"/>
 																		<xsl:text> </xsl:text>
-																		<xsl:variable name="addendum-number" select="/iso:iso-standard/iso:bibdata/iso:ext/iso:structuredidentifier/iso:project-number/@addendum"/>
+																		<xsl:variable name="addendum-number" select="/iso:metanorma/iso:bibdata/iso:ext/iso:structuredidentifier/iso:project-number/@addendum"/>
 																		<xsl:if test="normalize-space($addendum-number) != ''">
 																			<xsl:value-of select="$addendum-number"/><xsl:text> </xsl:text>
 																		</xsl:if>
 																</fo:block>
 																<fo:block>
-																	<xsl:if test="/iso:iso-standard/iso:bibdata/iso:date[@type = 'updated']">																		
-																		<xsl:value-of select="/iso:iso-standard/iso:bibdata/iso:date[@type = 'updated']"/>
+																	<xsl:if test="/iso:metanorma/iso:bibdata/iso:date[@type = 'updated']">																		
+																		<xsl:value-of select="/iso:metanorma/iso:bibdata/iso:date[@type = 'updated']"/>
 																	</xsl:if>
 																</fo:block>
 															</fo:block>
@@ -2623,19 +2623,19 @@
 																<fo:block font-weight="bold" margin-top="4pt" role="H1">
 																	<xsl:value-of select="$doctype_uppercased"/>
 																	<xsl:text> </xsl:text>
-																	<xsl:variable name="amendment-number" select="/iso:iso-standard/iso:bibdata/iso:ext/iso:structuredidentifier/iso:project-number/@amendment"/>
+																	<xsl:variable name="amendment-number" select="/iso:metanorma/iso:bibdata/iso:ext/iso:structuredidentifier/iso:project-number/@amendment"/>
 																	<xsl:if test="normalize-space($amendment-number) != ''">
 																		<xsl:value-of select="$amendment-number"/><xsl:text> </xsl:text>
 																	</xsl:if>
 																</fo:block>
 																<fo:block>
-																	<xsl:if test="/iso:iso-standard/iso:bibdata/iso:date[@type = 'updated']">																		
-																		<xsl:value-of select="/iso:iso-standard/iso:bibdata/iso:date[@type = 'updated']"/>
+																	<xsl:if test="/iso:metanorma/iso:bibdata/iso:date[@type = 'updated']">																		
+																		<xsl:value-of select="/iso:metanorma/iso:bibdata/iso:date[@type = 'updated']"/>
 																	</xsl:if>
 																</fo:block>
 															</fo:block>
 														</xsl:if>
-														<xsl:variable name="date_corrected" select="normalize-space(/iso:iso-standard/iso:bibdata/iso:date[@type = 'corrected'])"/>
+														<xsl:variable name="date_corrected" select="normalize-space(/iso:metanorma/iso:bibdata/iso:date[@type = 'corrected'])"/>
 														<xsl:if test="$date_corrected != ''">
 															<fo:block text-align="right" font-size="9.5pt">
 																<xsl:value-of select="$linebreak"/>
@@ -2735,11 +2735,11 @@
 																		<fo:block font-size="{$font_size}" margin-top="6pt" role="H2">
 																			<xsl:value-of select="$doctype_uppercased"/>
 																			<xsl:text>&#xa0;</xsl:text>
-																			<xsl:value-of select="/iso:iso-standard/iso:bibdata/iso:ext/iso:structuredidentifier/iso:project-number/@addendum"/>
+																			<xsl:value-of select="/iso:metanorma/iso:bibdata/iso:ext/iso:structuredidentifier/iso:project-number/@addendum"/>
 																			<xsl:text>:</xsl:text>
 																		</fo:block>
 																		<fo:block font-size="{$font_size}" font-weight="bold" margin-top="6pt" role="H2">
-																			<xsl:apply-templates select="/iso:iso-standard/iso:bibdata/iso:title[@language = $lang and @type = 'title-add']/node()"/>
+																			<xsl:apply-templates select="/iso:metanorma/iso:bibdata/iso:title[@language = $lang and @type = 'title-add']/node()"/>
 																		</fo:block>
 																	</xsl:when>
 																	<xsl:otherwise>
@@ -2858,7 +2858,7 @@
 												<fo:block text-align="right">
 													<xsl:call-template name="printEdition"/>
 													<xsl:value-of select="$linebreak"/>
-													<xsl:value-of select="/iso:iso-standard/iso:bibdata/iso:version/iso:revision-date"/></fo:block>
+													<xsl:value-of select="/iso:metanorma/iso:bibdata/iso:version/iso:revision-date"/></fo:block>
 											</fo:table-cell>
 										</fo:table-row>
 									</fo:table-body>
@@ -2906,25 +2906,25 @@
 						<fo:flow flow-name="xsl-region-body">
 							<fo:block-container text-align="right" role="SKIP">
 								<xsl:choose>
-									<xsl:when test="/iso:iso-standard/iso:bibdata/iso:docidentifier[@type = 'iso-tc']">
+									<xsl:when test="/iso:metanorma/iso:bibdata/iso:docidentifier[@type = 'iso-tc']">
 										<!-- 17301  -->
 										<fo:block font-size="14pt" font-weight="bold" margin-bottom="12pt">
-											<xsl:value-of select="/iso:iso-standard/iso:bibdata/iso:docidentifier[@type = 'iso-tc']"/>
+											<xsl:value-of select="/iso:metanorma/iso:bibdata/iso:docidentifier[@type = 'iso-tc']"/>
 										</fo:block>
 										<!-- Date: 2016-05-01  -->
 										<fo:block margin-bottom="12pt">
-											<xsl:text>Date: </xsl:text><xsl:value-of select="/iso:iso-standard/iso:bibdata/iso:version/iso:revision-date"/>
+											<xsl:text>Date: </xsl:text><xsl:value-of select="/iso:metanorma/iso:bibdata/iso:version/iso:revision-date"/>
 										</fo:block>
 									
 										<!-- ISO/CD 17301-1(E)  -->
 										<fo:block margin-bottom="12pt">
-											<xsl:value-of select="concat(/iso:iso-standard/iso:bibdata/iso:docidentifier, $lang-1st-letter)"/>
+											<xsl:value-of select="concat(/iso:metanorma/iso:bibdata/iso:docidentifier, $lang-1st-letter)"/>
 										</fo:block>
 									</xsl:when>
 									<xsl:otherwise>
 										<fo:block font-size="14pt" font-weight="bold" margin-bottom="12pt">
 											<!-- ISO/WD 24229(E)  -->
-											<xsl:value-of select="concat(/iso:iso-standard/iso:bibdata/iso:docidentifier, $lang-1st-letter)"/>
+											<xsl:value-of select="concat(/iso:metanorma/iso:bibdata/iso:docidentifier, $lang-1st-letter)"/>
 										</fo:block>
 										
 									</xsl:otherwise>
@@ -2980,10 +2980,10 @@
 							</fo:block-container>
 							<fo:block role="SKIP"><xsl:value-of select="$linebreak"/></fo:block>
 							
-							<xsl:if test="/iso:iso-standard/iso:boilerplate/iso:license-statement">
+							<xsl:if test="/iso:metanorma/iso:boilerplate/iso:license-statement">
 								<fo:block-container font-size="10pt" margin-top="12pt" margin-bottom="6pt" border="0.5pt solid black" role="SKIP">
 									<fo:block padding-top="1mm">
-										<xsl:apply-templates select="/iso:iso-standard/iso:boilerplate/iso:license-statement"/>
+										<xsl:apply-templates select="/iso:metanorma/iso:boilerplate/iso:license-statement"/>
 									</fo:block>
 								</fo:block-container>
 							</xsl:if>
@@ -3047,7 +3047,7 @@
 		
 	<xsl:template name="insertLogoImages2024">
 		<xsl:variable name="content-height">20</xsl:variable>
-		<xsl:for-each select="/iso:iso-standard/iso:bibdata/iso:copyright/iso:owner/iso:organization">
+		<xsl:for-each select="/iso:metanorma/iso:bibdata/iso:copyright/iso:owner/iso:organization">
 			<xsl:choose>
 				<xsl:when test="iso:abbreviation = 'ISO'">
 					<fo:instream-foreign-object content-height="{$content-height}mm" fox:alt-text="Image ISO Logo">
@@ -3077,24 +3077,24 @@
 	</xsl:template>
 	
 	<xsl:template name="insertTitlesLangMain">
-		<xsl:apply-templates select="/iso:iso-standard/iso:bibdata/iso:title[@language = $lang and @type = 'title-intro']"/>
-		<xsl:apply-templates select="/iso:iso-standard/iso:bibdata/iso:title[@language = $lang and @type = 'title-main']"/>
-		<xsl:apply-templates select="/iso:iso-standard/iso:bibdata/iso:title[@language = $lang and @type = 'title-part']">
+		<xsl:apply-templates select="/iso:metanorma/iso:bibdata/iso:title[@language = $lang and @type = 'title-intro']"/>
+		<xsl:apply-templates select="/iso:metanorma/iso:bibdata/iso:title[@language = $lang and @type = 'title-main']"/>
+		<xsl:apply-templates select="/iso:metanorma/iso:bibdata/iso:title[@language = $lang and @type = 'title-part']">
 			<xsl:with-param name="isMainLang">true</xsl:with-param>
 		</xsl:apply-templates>
-		<xsl:apply-templates select="/iso:iso-standard/iso:bibdata/iso:title[@language = $lang and @type = 'title-amd']">
+		<xsl:apply-templates select="/iso:metanorma/iso:bibdata/iso:title[@language = $lang and @type = 'title-amd']">
 			<xsl:with-param name="isMainLang">true</xsl:with-param>
 		</xsl:apply-templates>
 	</xsl:template>
 	
 	<xsl:template name="insertTitlesLangOther">
 		<xsl:param name="lang_other"/>
-		<xsl:apply-templates select="$XML/iso:iso-standard/iso:bibdata/iso:title[@language = $lang_other and @type = 'title-intro']"/>
-		<xsl:apply-templates select="$XML/iso:iso-standard/iso:bibdata/iso:title[@language = $lang_other and @type = 'title-main']"/>
-		<xsl:apply-templates select="$XML/iso:iso-standard/iso:bibdata/iso:title[@language = $lang_other and @type = 'title-part']">
+		<xsl:apply-templates select="$XML/iso:metanorma/iso:bibdata/iso:title[@language = $lang_other and @type = 'title-intro']"/>
+		<xsl:apply-templates select="$XML/iso:metanorma/iso:bibdata/iso:title[@language = $lang_other and @type = 'title-main']"/>
+		<xsl:apply-templates select="$XML/iso:metanorma/iso:bibdata/iso:title[@language = $lang_other and @type = 'title-part']">
 			<xsl:with-param name="curr_lang" select="$lang_other"/>
 		</xsl:apply-templates>
-		<xsl:apply-templates select="$XML/iso:iso-standard/iso:bibdata/iso:title[@language = $lang_other and @type = 'title-amd']">
+		<xsl:apply-templates select="$XML/iso:metanorma/iso:bibdata/iso:title[@language = $lang_other and @type = 'title-amd']">
 			<xsl:with-param name="curr_lang" select="$lang_other"/>
 		</xsl:apply-templates>																
 	</xsl:template>
@@ -3119,17 +3119,17 @@
 		<xsl:value-of select="$edition"/>
 		<xsl:variable name="date">
 			<xsl:choose>
-				<xsl:when test="($stage-abbreviation = 'NWIP' or $stage-abbreviation = 'NP' or $stage-abbreviation = 'PWI' or $stage-abbreviation = 'AWI' or $stage-abbreviation = 'WD' or $stage-abbreviation = 'CD' or $stage-abbreviation = 'FDIS' or $stagename_abbreviation = 'FDIS') and /iso:iso-standard/iso:bibdata/iso:version/iso:revision-date">
-					<xsl:value-of select="/iso:iso-standard/iso:bibdata/iso:version/iso:revision-date"/>
+				<xsl:when test="($stage-abbreviation = 'NWIP' or $stage-abbreviation = 'NP' or $stage-abbreviation = 'PWI' or $stage-abbreviation = 'AWI' or $stage-abbreviation = 'WD' or $stage-abbreviation = 'CD' or $stage-abbreviation = 'FDIS' or $stagename_abbreviation = 'FDIS') and /iso:metanorma/iso:bibdata/iso:version/iso:revision-date">
+					<xsl:value-of select="/iso:metanorma/iso:bibdata/iso:version/iso:revision-date"/>
 				</xsl:when>
-				<xsl:when test="$stage-abbreviation = 'IS' and /iso:iso-standard/iso:bibdata/iso:date[@type = 'published']">
-					<xsl:value-of select="/iso:iso-standard/iso:bibdata/iso:date[@type = 'published']"/>
+				<xsl:when test="$stage-abbreviation = 'IS' and /iso:metanorma/iso:bibdata/iso:date[@type = 'published']">
+					<xsl:value-of select="/iso:metanorma/iso:bibdata/iso:date[@type = 'published']"/>
 				</xsl:when>
-				<xsl:when test="($stage-abbreviation = 'IS' or $stage-abbreviation = 'D') and /iso:iso-standard/iso:bibdata/iso:date[@type = 'created']">
-					<xsl:value-of select="/iso:iso-standard/iso:bibdata/iso:date[@type = 'created']"/>
+				<xsl:when test="($stage-abbreviation = 'IS' or $stage-abbreviation = 'D') and /iso:metanorma/iso:bibdata/iso:date[@type = 'created']">
+					<xsl:value-of select="/iso:metanorma/iso:bibdata/iso:date[@type = 'created']"/>
 				</xsl:when>
 				<xsl:when test="$stage-abbreviation = 'IS' or $stage-abbreviation = 'published' or $stage-abbreviation = 'PRF'">
-					<xsl:value-of select="substring(/iso:iso-standard/iso:bibdata/iso:version/iso:revision-date,1, 7)"/>
+					<xsl:value-of select="substring(/iso:metanorma/iso:bibdata/iso:version/iso:revision-date,1, 7)"/>
 				</xsl:when>
 			</xsl:choose>
 		</xsl:variable>
@@ -3201,7 +3201,7 @@
 	</xsl:template>
 	
 	<xsl:template name="insertVoteStarted">
-		<xsl:variable name="vote_started" select="normalize-space(/iso:iso-standard/iso:bibdata/iso:date[@type = 'vote-started']/iso:on)"/>
+		<xsl:variable name="vote_started" select="normalize-space(/iso:metanorma/iso:bibdata/iso:date[@type = 'vote-started']/iso:on)"/>
 		<xsl:choose>
 			<xsl:when test="$vote_started != ''">
 				<xsl:value-of select="$vote_started"/>
@@ -3210,7 +3210,7 @@
 		</xsl:choose>
 	</xsl:template>
 	<xsl:template name="insertVoteEnded">
-		<xsl:variable name="vote_ended" select="normalize-space(/iso:iso-standard/iso:bibdata/iso:date[@type = 'vote-ended']/iso:on)"/>
+		<xsl:variable name="vote_ended" select="normalize-space(/iso:metanorma/iso:bibdata/iso:date[@type = 'vote-ended']/iso:on)"/>
 		<xsl:choose>
 			<xsl:when test="$vote_ended != ''">
 				<xsl:value-of select="$vote_ended"/>
@@ -3223,7 +3223,7 @@
 		<xsl:if test="$stage-abbreviation = 'NWIP' or $stage-abbreviation = 'NP' or $stage-abbreviation = 'PWI' or $stage-abbreviation = 'AWI' or $stage-abbreviation = 'WD' or $stage-abbreviation = 'CD' or $stage-abbreviation = 'FCD' or 
 											$stage-abbreviation = 'DIS' or $stage-abbreviation = 'FDIS' or $stage-abbreviation = 'DAMD' or $stage-abbreviation = 'DAM' or $stagename_abbreviation = 'DIS' or $stagename_abbreviation = 'FDIS'">
 			<xsl:variable name="text">
-				<xsl:for-each select="/iso:iso-standard/iso:preface/iso:note[@coverpage='true']/iso:p">
+				<xsl:for-each select="/iso:metanorma/iso:preface/iso:note[@coverpage='true']/iso:p">
 					<fo:block>
 						<xsl:apply-templates />
 					</fo:block>
@@ -3243,7 +3243,7 @@
 				</fo:block-container>
 			</xsl:if>
 			
-			<xsl:variable name="iso-fast-track" select="normalize-space(/iso:iso-standard/iso:bibdata/iso:ext/iso:fast-track)"/>
+			<xsl:variable name="iso-fast-track" select="normalize-space(/iso:metanorma/iso:bibdata/iso:ext/iso:fast-track)"/>
 			
 			<xsl:if test="normalize-space($iso-fast-track) = 'true'">
 				<fo:block-container space-before="2mm" role="SKIP">
@@ -3265,7 +3265,7 @@
 				</fo:block-container>
 			</xsl:if>
 			
-			<xsl:variable name="iso-cen-parallel" select="normalize-space(/iso:iso-standard/iso:bibdata/iso:ext/iso:iso-cen-parallel)"/>
+			<xsl:variable name="iso-cen-parallel" select="normalize-space(/iso:metanorma/iso:bibdata/iso:ext/iso:iso-cen-parallel)"/>
 			
 			<xsl:if test="normalize-space($iso-cen-parallel) = 'true'">
 				<fo:block-container space-before="4mm" role="SKIP">
@@ -3671,7 +3671,7 @@
 						<xsl:when test="$isMainLang = 'false' and $curr_lang = 'fr'">AMENDEMENT</xsl:when>
 						<xsl:otherwise><xsl:value-of select="$doctype_uppercased"/></xsl:otherwise>
 					</xsl:choose>
-					<xsl:variable name="amendment-number" select="/iso:iso-standard/iso:bibdata/iso:ext/iso:structuredidentifier/iso:project-number/@amendment"/>
+					<xsl:variable name="amendment-number" select="/iso:metanorma/iso:bibdata/iso:ext/iso:structuredidentifier/iso:project-number/@amendment"/>
 					<xsl:if test="normalize-space($amendment-number) != ''">
 						<xsl:text> </xsl:text><xsl:value-of select="$amendment-number"/>
 					</xsl:if>
@@ -3701,17 +3701,17 @@
 					
 					<xsl:choose>
 						<xsl:when test="$revision_date_num &gt;= 19680101">
-							<fo:block font-weight="normal"><xsl:apply-templates select="/iso:iso-standard/iso:bibdata/iso:title[@language = $lang and @type = 'title-intro']"/></fo:block>
-							<fo:block space-before="24pt"><xsl:apply-templates select="/iso:iso-standard/iso:bibdata/iso:title[@language = $lang and @type = 'title-main']"/></fo:block>
+							<fo:block font-weight="normal"><xsl:apply-templates select="/iso:metanorma/iso:bibdata/iso:title[@language = $lang and @type = 'title-intro']"/></fo:block>
+							<fo:block space-before="24pt"><xsl:apply-templates select="/iso:metanorma/iso:bibdata/iso:title[@language = $lang and @type = 'title-main']"/></fo:block>
 						</xsl:when>
 						<xsl:otherwise>
 						
-							<xsl:apply-templates select="/iso:iso-standard/iso:bibdata/iso:title[@language = $lang and @type = 'title-intro']"/>
-							<xsl:apply-templates select="/iso:iso-standard/iso:bibdata/iso:title[@language = $lang and @type = 'title-main']">
+							<xsl:apply-templates select="/iso:metanorma/iso:bibdata/iso:title[@language = $lang and @type = 'title-intro']"/>
+							<xsl:apply-templates select="/iso:metanorma/iso:bibdata/iso:title[@language = $lang and @type = 'title-main']">
 								<xsl:with-param name="body">true</xsl:with-param>
 							</xsl:apply-templates>
 							<fo:block font-size="11pt" text-transform="uppercase" margin-top="2mm">
-								<xsl:apply-templates select="/iso:iso-standard/iso:bibdata/iso:title[@language = $lang and @type = 'title-part']/node()"/>
+								<xsl:apply-templates select="/iso:metanorma/iso:bibdata/iso:title[@language = $lang and @type = 'title-part']/node()"/>
 							</fo:block>
 						
 							<!-- <xsl:apply-templates/> -->
@@ -5112,7 +5112,7 @@
 						<xsl:attribute name="margin-bottom">5mm</xsl:attribute>
 					</xsl:if>
 					<fo:block font-size="8pt" text-align="justify" role="SKIP">
-						<xsl:apply-templates select="/iso:iso-standard/iso:boilerplate/iso:copyright-statement"/>
+						<xsl:apply-templates select="/iso:metanorma/iso:boilerplate/iso:copyright-statement"/>
 					</fo:block>
 				</fo:block>
 			
@@ -5268,15 +5268,15 @@
 						<fo:table-row>
 							<fo:table-cell font-size="8pt">
 								<fo:block line-height="1" margin-top="2mm">
-									<!-- <xsl:variable name="date_first_printing" select="normalize-space(/iso:iso-standard/iso:metanorma-extension/iso:presentation-metadata/iso:first-printing-date)"/> -->
-									<xsl:variable name="number_printing" select="normalize-space(/iso:iso-standard/iso:metanorma-extension/iso:presentation-metadata[iso:printing-date][1]/iso:printing-date)"/>
-									<xsl:variable name="date_printing" select="normalize-space(/iso:iso-standard/iso:metanorma-extension/iso:presentation-metadata[iso:printing-date][last()]/iso:printing-date)"/>
+									<!-- <xsl:variable name="date_first_printing" select="normalize-space(/iso:metanorma/iso:metanorma-extension/iso:presentation-metadata/iso:first-printing-date)"/> -->
+									<xsl:variable name="number_printing" select="normalize-space(/iso:metanorma/iso:metanorma-extension/iso:presentation-metadata[iso:printing-date][1]/iso:printing-date)"/>
+									<xsl:variable name="date_printing" select="normalize-space(/iso:metanorma/iso:metanorma-extension/iso:presentation-metadata[iso:printing-date][last()]/iso:printing-date)"/>
 									<xsl:if test="$insert_footer_last = 'true' and $date_printing != ''">
 										<xsl:variable name="date_number_printing">
 											<xsl:choose>
 												<xsl:when test="$number_printing != $date_printing">
 													<!-- <xsl:value-of select="java:replaceAll(java:java.lang.String.new($i18n_date_printing), '%', $number_printing)"/> -->
-													<xsl:value-of select="/iso:iso-standard/iso:bibdata/iso:ext/iso:date-printing"/>
+													<xsl:value-of select="/iso:metanorma/iso:bibdata/iso:ext/iso:date-printing"/>
 												</xsl:when>
 												<xsl:otherwise>
 													<xsl:value-of select="$i18n_date_first_printing"/>
@@ -5302,7 +5302,7 @@
 							</fo:table-cell>
 							<fo:table-cell>
 								<fo:block font-size="8.5pt" text-align="right" font-weight="bold">
-									<xsl:variable name="price_" select="normalize-space(/iso:iso-standard/iso:metanorma-extension/iso:presentation-metadata/iso:price)"/>
+									<xsl:variable name="price_" select="normalize-space(/iso:metanorma/iso:metanorma-extension/iso:presentation-metadata/iso:price)"/>
 									<xsl:variable name="price" select="java:replaceAll(java:java.lang.String.new($price_), '-{2}', $em_dash)"/>
 									<xsl:if test="$insert_footer_last = 'true'">
 									
@@ -5459,7 +5459,7 @@
 									<xsl:value-of select="$udc"/>
 								</fo:block>
 							</xsl:if>
-							<xsl:for-each select="/iso:iso-standard/iso:bibdata/iso:ext/iso:ics/iso:code">
+							<xsl:for-each select="/iso:metanorma/iso:bibdata/iso:ext/iso:ics/iso:code">
 								<xsl:if test="position() = 1"><fo:inline>ICS&#xA0;&#xA0;</fo:inline></xsl:if>
 								<xsl:value-of select="."/>
 								<xsl:if test="position() != last()">
@@ -5476,7 +5476,7 @@
 								<xsl:otherwise>ICS&#xA0;&#xA0;67.060</xsl:otherwise>
 							</xsl:choose> -->
 						</fo:block>
-						<xsl:if test="/iso:iso-standard/iso:bibdata/iso:keyword">
+						<xsl:if test="/iso:metanorma/iso:bibdata/iso:keyword">
 							<fo:block font-size="{$font-size_footer_copyright}" margin-bottom="6pt">
 								<fo:inline font-weight="bold"><xsl:value-of select="$i18n_descriptors"/>: </fo:inline>
 								<xsl:call-template name="insertKeywords">
@@ -5540,7 +5540,7 @@
 						<fo:table-row height="182mm"> <!-- 174 -->
 							<fo:table-cell number-columns-spanned="2" display-align="after" border-right="{$cover_page_border}">
 								<fo:block font-size="12pt" font-weight="bold">
-									<xsl:for-each select="/iso:iso-standard/iso:bibdata/iso:ext/iso:ics/iso:code">
+									<xsl:for-each select="/iso:metanorma/iso:bibdata/iso:ext/iso:ics/iso:code">
 										<xsl:if test="position() = 1"><fo:inline>ICS&#xA0;&#xA0;</fo:inline></xsl:if>
 										<xsl:value-of select="."/>
 										<xsl:if test="position() != last()"><xsl:text>; </xsl:text></xsl:if>

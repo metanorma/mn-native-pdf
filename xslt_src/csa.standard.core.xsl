@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" 
 											xmlns:fo="http://www.w3.org/1999/XSL/Format" 
-											xmlns:csa="https://www.metanorma.org/ns/csa" 
+											xmlns:csa="https://www.metanorma.org/ns/standoc" 
 											xmlns:mathml="http://www.w3.org/1998/Math/MathML" 
 											xmlns:xalan="http://xml.apache.org/xalan" 
 											xmlns:fox="http://xmlgraphics.apache.org/fop/extensions" 
@@ -21,7 +21,7 @@
 	
 	<xsl:variable name="copyright">
 		<xsl:text>© Copyright </xsl:text>
-		<xsl:value-of select="/csa:csa-standard/csa:bibdata/csa:copyright/csa:from"/>
+		<xsl:value-of select="/csa:metanorma/csa:bibdata/csa:copyright/csa:from"/>
 		<xsl:text>, Cloud Security Alliance. All rights reserved.</xsl:text>
 	</xsl:variable>
 	
@@ -99,12 +99,12 @@
 					
 					<fo:block-container width="136mm" margin-bottom="12pt">
 						<fo:block font-size="36pt" font-weight="bold" color="rgb(54, 59, 74)" role="H1">
-							<xsl:value-of select="/csa:csa-standard/csa:bibdata/csa:title[@language = 'en']" />
+							<xsl:value-of select="/csa:metanorma/csa:bibdata/csa:title[@language = 'en']" />
 						</fo:block>
 					</fo:block-container>
 					
 					<fo:block font-size="26pt" color="rgb(55, 60, 75)" role="H2">
-						<xsl:value-of select="/csa:csa-standard/csa:bibdata/csa:title[@language = 'en' and @type = 'subtitle']"/>
+						<xsl:value-of select="/csa:metanorma/csa:bibdata/csa:title[@language = 'en' and @type = 'subtitle']"/>
 					</fo:block>
 					
 					<fo:block-container absolute-position="fixed" left="11mm" top="245mm">
@@ -143,7 +143,7 @@
 					</fo:block>
 
 					<fo:block-container absolute-position="fixed" left="25mm" top="152mm" width="165mm" height="100mm" display-align="after" color="rgb(165, 169, 172)" line-height="145%">
-						<fo:block>© <xsl:value-of select="/csa:csa-standard/csa:bibdata/csa:copyright/csa:from"/> Cloud Security Alliance – All Rights Reserved. You may download, store, display on your
+						<fo:block>© <xsl:value-of select="/csa:metanorma/csa:bibdata/csa:copyright/csa:from"/> Cloud Security Alliance – All Rights Reserved. You may download, store, display on your
 						computer, view, print, and link to the Cloud Security Alliance at <fo:inline text-decoration="underline">https://cloudsecurityalliance.org</fo:inline>
 						subject to the following: (a) the draft may be used solely for your personal, informational, noncommercial
 						use; (b) the draft may not be modified or altered in any way; (c) the draft may not be
@@ -161,7 +161,7 @@
 					</fo:block>
 
 					<xsl:variable name="persons">
-						<xsl:for-each select="/csa:csa-standard/csa:bibdata/csa:contributor[csa:person]">
+						<xsl:for-each select="/csa:metanorma/csa:bibdata/csa:contributor[csa:person]">
 							<contributor>
 								<xsl:attribute name="type">
 									<xsl:choose>

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" 
 											xmlns:fo="http://www.w3.org/1999/XSL/Format" 
-											xmlns:plateau="https://www.metanorma.org/ns/plateau" 
+											xmlns:plateau="https://www.metanorma.org/ns/standoc" 
 											xmlns:mathml="http://www.w3.org/1998/Math/MathML" 
 											xmlns:xalan="http://xml.apache.org/xalan" 
 											xmlns:fox="http://xmlgraphics.apache.org/fop/extensions" 
@@ -27,7 +27,7 @@
 	
 	<!-- <xsl:variable name="isIgnoreComplexScripts">true</xsl:variable> -->
 	
-	<xsl:variable name="doctype" select="//plateau:plateau-standard[1]/plateau:bibdata/plateau:ext/plateau:doctype[@language = '' or not(@language)]"/>
+	<xsl:variable name="doctype" select="//plateau:metanorma[1]/plateau:bibdata/plateau:ext/plateau:doctype[@language = '' or not(@language)]"/>
 	
 	<xsl:variable name="i18n_doctype_dict_annex"><xsl:call-template name="getLocalizedString"><xsl:with-param name="key">doctype_dict.annex</xsl:with-param></xsl:call-template></xsl:variable>
 	<xsl:variable name="i18n_doctype_dict_technical_report"><xsl:call-template name="getLocalizedString"><xsl:with-param name="key">doctype_dict.technical-report</xsl:with-param></xsl:call-template></xsl:variable>
@@ -45,14 +45,14 @@
 	</xsl:variable>
 	
 	<xsl:variable name="contents_">
-		<xsl:variable name="bundle" select="count(//plateau:plateau-standard) &gt; 1"/>
+		<xsl:variable name="bundle" select="count(//plateau:metanorma) &gt; 1"/>
 		
 		<xsl:if test="normalize-space($bundle) = 'true'">
 			<collection firstpage_id="firstpage_id_0"/>
 		</xsl:if>
 		
-		<xsl:for-each select="//plateau:plateau-standard">
-			<xsl:variable name="num"><xsl:number level="any" count="plateau:plateau-standard"/></xsl:variable>
+		<xsl:for-each select="//plateau:metanorma">
+			<xsl:variable name="num"><xsl:number level="any" count="plateau:metanorma"/></xsl:variable>
 			<xsl:variable name="docnumber"><xsl:value-of select="plateau:bibdata/plateau:docidentifier[@type = 'JIS']"/></xsl:variable>
 			<xsl:variable name="current_document">
 				<xsl:copy-of select="."/>
@@ -235,8 +235,8 @@
 			<xsl:message>end redirect</xsl:message> -->
 			
 			
-			<xsl:for-each select="$updated_xml_step2//plateau:plateau-standard">
-				<xsl:variable name="num"><xsl:number level="any" count="plateau:plateau-standard"/></xsl:variable>
+			<xsl:for-each select="$updated_xml_step2//plateau:metanorma">
+				<xsl:variable name="num"><xsl:number level="any" count="plateau:metanorma"/></xsl:variable>
 				
 				<!-- <xsl:variable name="current_document">
 					<xsl:copy-of select="."/>
@@ -407,7 +407,7 @@
 			
 			</xsl:for-each>
 			
-			<xsl:if test="not(//plateau:plateau-standard)">
+			<xsl:if test="not(//plateau:metanorma)">
 				<fo:page-sequence master-reference="document" force-page-count="no-force">
 					<fo:flow flow-name="xsl-region-body">
 						<fo:block><!-- prevent fop error for empty document --></fo:block>
@@ -1540,7 +1540,7 @@
 		<xsl:param name="structured_xml"/>
 		<xsl:choose>
 			<xsl:when test="not(xalan:nodeset($structured_xml)/*[local-name()='pagebreak'])">
-				<xsl:element name="page" namespace="https://www.metanorma.org/ns/plateau">
+				<xsl:element name="page" namespace="{$namespace_full}">
 					<xsl:copy-of select="xalan:nodeset($structured_xml)"/>
 				</xsl:element>
 			</xsl:when>
@@ -1550,7 +1550,7 @@
 					<xsl:variable name="pagebreak_id" select="generate-id()"/>
 					
 					<!-- copy elements before pagebreak -->
-					<xsl:element name="page" namespace="https://www.metanorma.org/ns/plateau">
+					<xsl:element name="page" namespace="{$namespace_full}">
 						<xsl:if test="not(preceding-sibling::plateau:pagebreak)">
 							<xsl:copy-of select="../@*" />
 						</xsl:if>
@@ -1562,7 +1562,7 @@
 					
 					<!-- copy elements after last page break -->
 					<xsl:if test="position() = last() and following-sibling::node()">
-						<xsl:element name="page" namespace="https://www.metanorma.org/ns/plateau">
+						<xsl:element name="page" namespace="{$namespace_full}">
 							<xsl:copy-of select="@orientation" />
 							<xsl:copy-of select="following-sibling::node()" />
 						</xsl:element>
@@ -1659,7 +1659,7 @@
 	<xsl:template match="plateau:example[contains(plateau:name/text(), ' — ')]" mode="update_xml_step1">
 		<xsl:copy>
 			<xsl:copy-of select="@*"/>
-			<xsl:element name="p" namespace="https://www.metanorma.org/ns/plateau">
+			<xsl:element name="p" namespace="{$namespace_full}">
 				<xsl:value-of select="substring-after(plateau:name/text(), ' — ')"/>
 			</xsl:element>
 			<xsl:apply-templates mode="update_xml_step1"/>

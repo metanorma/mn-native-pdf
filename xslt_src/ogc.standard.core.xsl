@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" 
 											xmlns:fo="http://www.w3.org/1999/XSL/Format" 
-											xmlns:ogc="https://www.metanorma.org/ns/ogc" 
+											xmlns:ogc="https://www.metanorma.org/ns/standoc" 
 											xmlns:mathml="http://www.w3.org/1998/Math/MathML" 
 											xmlns:xalan="http://xml.apache.org/xalan" 
 											xmlns:fox="http://xmlgraphics.apache.org/fop/extensions" 
@@ -20,8 +20,8 @@
 
 	<xsl:variable name="debug">false</xsl:variable>
 	
-	<xsl:variable name="docnumber" select="java:toUpperCase(java:java.lang.String.new(/ogc:ogc-standard/ogc:bibdata/ogc:docnumber))"/>
-	<xsl:variable name="doctitle" select="/ogc:ogc-standard/ogc:bibdata/ogc:title[@language = 'en']"/>
+	<xsl:variable name="docnumber" select="java:toUpperCase(java:java.lang.String.new(/ogc:metanorma/ogc:bibdata/ogc:docnumber))"/>
+	<xsl:variable name="doctitle" select="/ogc:metanorma/ogc:bibdata/ogc:title[@language = 'en']"/>
 	
 	<!-- <xsl:variable name="docLatestDate_">
 		<xsl:for-each select="/*/ogc:bibdata/ogc:date[normalize-space(ogc:on) != '']">
@@ -49,13 +49,13 @@
 
 	<xsl:variable name="doctype">
 		<xsl:call-template name="capitalizeWords">
-			<xsl:with-param name="str" select="/ogc:ogc-standard/ogc:bibdata/ogc:ext/ogc:doctype"/>
+			<xsl:with-param name="str" select="/ogc:metanorma/ogc:bibdata/ogc:ext/ogc:doctype"/>
 		</xsl:call-template>
 	</xsl:variable>
 	
-	<xsl:variable name="copyright-owner" select="java:toUpperCase(java:java.lang.String.new(/ogc:ogc-standard/ogc:bibdata/ogc:copyright/ogc:owner/ogc:organization/ogc:name))"/>
+	<xsl:variable name="copyright-owner" select="java:toUpperCase(java:java.lang.String.new(/ogc:metanorma/ogc:bibdata/ogc:copyright/ogc:owner/ogc:organization/ogc:name))"/>
 	
-	<xsl:variable name="presentation_metadata_color_text" select="normalize-space(/ogc:ogc-standard/ogc:metanorma-extension/ogc:presentation-metadata[ogc:name = 'color-text']/ogc:value)"/>
+	<xsl:variable name="presentation_metadata_color_text" select="normalize-space(/ogc:metanorma/ogc:metanorma-extension/ogc:presentation-metadata[ogc:name = 'color-text']/ogc:value)"/>
 	<xsl:variable name="color_main">
 		<xsl:choose>
 			<xsl:when test="$presentation_metadata_color_text != ''"><xsl:value-of select="$presentation_metadata_color_text"/></xsl:when>
@@ -63,7 +63,7 @@
 		</xsl:choose>
 	</xsl:variable>
 	
-	<xsl:variable name="presentation_metadata_color_secondary_shade_1" select="normalize-space(/ogc:ogc-standard/ogc:metanorma-extension/ogc:presentation-metadata[ogc:name = 'color-secondary-shade-1']/ogc:value)"/>
+	<xsl:variable name="presentation_metadata_color_secondary_shade_1" select="normalize-space(/ogc:metanorma/ogc:metanorma-extension/ogc:presentation-metadata[ogc:name = 'color-secondary-shade-1']/ogc:value)"/>
 	<xsl:variable name="color_design">
 		<xsl:choose>
 			<xsl:when test="$presentation_metadata_color_secondary_shade_1 != ''"><xsl:value-of select="$presentation_metadata_color_secondary_shade_1"/></xsl:when>
@@ -72,7 +72,7 @@
 		</xsl:choose>
 	</xsl:variable>
 	
-	<xsl:variable name="presentation_metadata_color_secondary_shade_2" select="normalize-space(/ogc:ogc-standard/ogc:metanorma-extension/ogc:presentation-metadata[ogc:name = 'color-secondary-shade-2']/ogc:value)"/>
+	<xsl:variable name="presentation_metadata_color_secondary_shade_2" select="normalize-space(/ogc:metanorma/ogc:metanorma-extension/ogc:presentation-metadata[ogc:name = 'color-secondary-shade-2']/ogc:value)"/>
 	<xsl:variable name="color_design_light">
 		<xsl:choose>
 			<xsl:when test="$presentation_metadata_color_secondary_shade_2 != ''"><xsl:value-of select="$presentation_metadata_color_secondary_shade_2"/></xsl:when>
@@ -81,7 +81,7 @@
 		</xsl:choose>
 	</xsl:variable>
 	
-	<xsl:variable name="presentation_metadata_color_background_definition_term" select="normalize-space(/ogc:ogc-standard/ogc:metanorma-extension/ogc:presentation-metadata[ogc:name = 'color-background-definition-term']/ogc:value)"/>
+	<xsl:variable name="presentation_metadata_color_background_definition_term" select="normalize-space(/ogc:metanorma/ogc:metanorma-extension/ogc:presentation-metadata[ogc:name = 'color-background-definition-term']/ogc:value)"/>
 	<xsl:variable name="color_dl_dt">
 		<xsl:choose>
 			<xsl:when test="$presentation_metadata_color_background_definition_term != ''"><xsl:value-of select="$presentation_metadata_color_background_definition_term"/></xsl:when>
@@ -89,7 +89,7 @@
 		</xsl:choose>
 	</xsl:variable>
 	
-	<xsl:variable name="presentation_metadata_color_background_definition_description" select="normalize-space(/ogc:ogc-standard/ogc:metanorma-extension/ogc:presentation-metadata[ogc:name = 'color-background-definition-description']/ogc:value)"/>
+	<xsl:variable name="presentation_metadata_color_background_definition_description" select="normalize-space(/ogc:metanorma/ogc:metanorma-extension/ogc:presentation-metadata[ogc:name = 'color-background-definition-description']/ogc:value)"/>
 	<xsl:variable name="color_dl_dd">
 		<xsl:choose>
 			<xsl:when test="$presentation_metadata_color_background_definition_description != ''"><xsl:value-of select="$presentation_metadata_color_background_definition_description"/></xsl:when>
@@ -97,7 +97,7 @@
 		</xsl:choose>
 	</xsl:variable>
 	
-	<xsl:variable name="presentation_metadata_color_text_title" select="normalize-space(/ogc:ogc-standard/ogc:metanorma-extension/ogc:presentation-metadata[ogc:name = 'color-text-title']/ogc:value)"/>
+	<xsl:variable name="presentation_metadata_color_text_title" select="normalize-space(/ogc:metanorma/ogc:metanorma-extension/ogc:presentation-metadata[ogc:name = 'color-text-title']/ogc:value)"/>
 	<xsl:variable name="color_text_title">
 		<xsl:choose>
 			<xsl:when test="$presentation_metadata_color_text_title != ''"><xsl:value-of select="$presentation_metadata_color_text_title"/></xsl:when>
@@ -105,7 +105,7 @@
 		</xsl:choose>
 	</xsl:variable>
 	
-	<xsl:variable name="presentation_metadata_color_background_page" select="normalize-space(/ogc:ogc-standard/ogc:metanorma-extension/ogc:presentation-metadata[ogc:name = 'color-background-page']/ogc:value)"/>
+	<xsl:variable name="presentation_metadata_color_background_page" select="normalize-space(/ogc:metanorma/ogc:metanorma-extension/ogc:presentation-metadata[ogc:name = 'color-background-page']/ogc:value)"/>
 	<xsl:variable name="color-background-page">
 		<xsl:choose>
 			<xsl:when test="$presentation_metadata_color_background_page != ''"><xsl:value-of select="$presentation_metadata_color_background_page"/></xsl:when>
@@ -113,7 +113,7 @@
 		</xsl:choose>
 	</xsl:variable>
 	
-	<xsl:variable name="presentation_metadata_color_background_text_label_legacy" select="normalize-space(/ogc:ogc-standard/ogc:metanorma-extension/ogc:presentation-metadata[ogc:name = 'color-background-text-label-legacy']/ogc:value)"/>
+	<xsl:variable name="presentation_metadata_color_background_text_label_legacy" select="normalize-space(/ogc:metanorma/ogc:metanorma-extension/ogc:presentation-metadata[ogc:name = 'color-background-text-label-legacy']/ogc:value)"/>
 	<xsl:variable name="color_background_blue">
 		<xsl:choose>
 			<xsl:when test="$presentation_metadata_color_background_text_label_legacy != ''"><xsl:value-of select="$presentation_metadata_color_background_text_label_legacy"/></xsl:when>
@@ -121,7 +121,7 @@
 		</xsl:choose>
 	</xsl:variable>
 	
-	<xsl:variable name="presentation_metadata_color_background_term_preferred_label" select="normalize-space(/ogc:ogc-standard/ogc:metanorma-extension/ogc:presentation-metadata[ogc:name = 'color-background-term-preferred-label']/ogc:value)"/>
+	<xsl:variable name="presentation_metadata_color_background_term_preferred_label" select="normalize-space(/ogc:metanorma/ogc:metanorma-extension/ogc:presentation-metadata[ogc:name = 'color-background-term-preferred-label']/ogc:value)"/>
 	<xsl:variable name="color_term_preferred">
 		<xsl:choose>
 			<xsl:when test="$presentation_metadata_color_background_term_preferred_label != ''"><xsl:value-of select="$presentation_metadata_color_background_term_preferred_label"/></xsl:when>
@@ -129,7 +129,7 @@
 		</xsl:choose>
 	</xsl:variable>
 	
-	<xsl:variable name="presentation_metadata_color_background_term_deprecated_label" select="normalize-space(/ogc:ogc-standard/ogc:metanorma-extension/ogc:presentation-metadata[ogc:name = 'color-background-term-deprecated-label']/ogc:value)"/>
+	<xsl:variable name="presentation_metadata_color_background_term_deprecated_label" select="normalize-space(/ogc:metanorma/ogc:metanorma-extension/ogc:presentation-metadata[ogc:name = 'color-background-term-deprecated-label']/ogc:value)"/>
 	<xsl:variable name="color_term_deprecated">
 		<xsl:choose>
 			<xsl:when test="$presentation_metadata_color_background_term_deprecated_label != ''"><xsl:value-of select="$presentation_metadata_color_background_term_deprecated_label"/></xsl:when>
@@ -137,7 +137,7 @@
 		</xsl:choose>
 	</xsl:variable>
 	
-	<xsl:variable name="presentation_metadata_color_background_term_admitted_label" select="normalize-space(/ogc:ogc-standard/ogc:metanorma-extension/ogc:presentation-metadata[ogc:name = 'color-background-term-admitted-label']/ogc:value)"/>
+	<xsl:variable name="presentation_metadata_color_background_term_admitted_label" select="normalize-space(/ogc:metanorma/ogc:metanorma-extension/ogc:presentation-metadata[ogc:name = 'color-background-term-admitted-label']/ogc:value)"/>
 	<xsl:variable name="color_term_admitted">
 		<xsl:choose>
 			<xsl:when test="$presentation_metadata_color_background_term_admitted_label != ''"><xsl:value-of select="$presentation_metadata_color_background_term_admitted_label"/></xsl:when>
@@ -145,7 +145,7 @@
 		</xsl:choose>
 	</xsl:variable>
 	
-	<xsl:variable name="presentation_metadata_color_background_table_header" select="normalize-space(/ogc:ogc-standard/ogc:metanorma-extension/ogc:presentation-metadata[ogc:name = 'color-background-table-header']/ogc:value)"/>
+	<xsl:variable name="presentation_metadata_color_background_table_header" select="normalize-space(/ogc:metanorma/ogc:metanorma-extension/ogc:presentation-metadata[ogc:name = 'color-background-table-header']/ogc:value)"/>
 	<xsl:variable name="color_table_header_row">
 		<xsl:choose>
 			<xsl:when test="$presentation_metadata_color_background_table_header != ''"><xsl:value-of select="$presentation_metadata_color_background_table_header"/></xsl:when>
@@ -153,7 +153,7 @@
 		</xsl:choose>
 	</xsl:variable>
 	
-	<xsl:variable name="presentation_metadata_color_background_table_row_even" select="normalize-space(/ogc:ogc-standard/ogc:metanorma-extension/ogc:presentation-metadata[ogc:name = 'color-background-table-row-even']/ogc:value)"/>
+	<xsl:variable name="presentation_metadata_color_background_table_row_even" select="normalize-space(/ogc:metanorma/ogc:metanorma-extension/ogc:presentation-metadata[ogc:name = 'color-background-table-row-even']/ogc:value)"/>
 	<xsl:variable name="color_table_row_even">
 		<xsl:choose>
 			<xsl:when test="$presentation_metadata_color_background_table_row_even != ''"><xsl:value-of select="$presentation_metadata_color_background_table_row_even"/></xsl:when>
@@ -161,7 +161,7 @@
 		</xsl:choose>
 	</xsl:variable>
 	
-	<xsl:variable name="presentation_metadata_color_background_table_row_odd" select="normalize-space(/ogc:ogc-standard/ogc:metanorma-extension/ogc:presentation-metadata[ogc:name = 'color-background-table-row-odd']/ogc:value)"/>
+	<xsl:variable name="presentation_metadata_color_background_table_row_odd" select="normalize-space(/ogc:metanorma/ogc:metanorma-extension/ogc:presentation-metadata[ogc:name = 'color-background-table-row-odd']/ogc:value)"/>
 	<xsl:variable name="color_table_row_odd">
 		<xsl:choose>
 			<xsl:when test="$presentation_metadata_color_background_table_row_odd != ''"><xsl:value-of select="$presentation_metadata_color_background_table_row_odd"/></xsl:when>
@@ -372,8 +372,8 @@
 						
 					<fo:flow flow-name="xsl-region-body" color="white">
 					
-						<xsl:variable name="curr_lang" select="/ogc:ogc-standard/ogc:bibdata/ogc:language[@current = 'true']"/>					
-						<xsl:variable name="stage" select="/ogc:ogc-standard/ogc:bibdata/ogc:status/ogc:stage[@language = $curr_lang] | /ogc:ogc-standard/ogc:bibdata/ogc:status/ogc:stage[not(@language)]"/>
+						<xsl:variable name="curr_lang" select="/ogc:metanorma/ogc:bibdata/ogc:language[@current = 'true']"/>					
+						<xsl:variable name="stage" select="/ogc:metanorma/ogc:bibdata/ogc:status/ogc:stage[@language = $curr_lang] | /ogc:metanorma/ogc:bibdata/ogc:status/ogc:stage[not(@language)]"/>
 						<xsl:variable name="isLegacy" select="normalize-space($stage = 'deprecated' or $stage = 'legacy' or $stage = 'retired' or $stage = 'rescinded')"/>
 						
 						<!-- background image -->
@@ -404,7 +404,7 @@
 													<xsl:with-param name="letter-spacing" select="0.3"/>
 												</xsl:call-template>
 											</fo:block>
-											<xsl:variable name="ogc_external" select="/ogc:ogc-standard/ogc:bibdata/ogc:docidentifier[@type='ogc-external']" />
+											<xsl:variable name="ogc_external" select="/ogc:metanorma/ogc:bibdata/ogc:docidentifier[@type='ogc-external']" />
 											<xsl:if test="normalize-space($ogc_external) != ''">
 												<fo:block font-size="10pt">External identifier of this OGC<fo:inline font-size="58%" baseline-shift="30%">®</fo:inline>  document: <fo:inline font-weight="normal"><xsl:value-of select="$ogc_external"/></fo:inline></fo:block>
 											</xsl:if>
@@ -449,7 +449,7 @@
 											<xsl:with-param name="text" select="java:toUpperCase(java:java.lang.String.new($doctype))"/>
 										</xsl:call-template>									
 										<xsl:value-of select="$linebreak"/>
-										<xsl:variable name="docsubtype" select="normalize-space(/ogc:ogc-standard/ogc:bibdata/ogc:ext/ogc:subdoctype)"/>
+										<xsl:variable name="docsubtype" select="normalize-space(/ogc:metanorma/ogc:bibdata/ogc:ext/ogc:subdoctype)"/>
 										<xsl:variable name="docsubtype_str">
 											<xsl:choose>
 												<xsl:when test="$docsubtype = 'implementation'">Implementation</xsl:when>
@@ -499,7 +499,7 @@
 
 						<fo:block-container absolute-position="fixed" left="16.5mm" top="204mm" height="60mm" width="180mm" display-align="after" font-size="10pt">
 							<fo:block line-height="140%">
-								<xsl:apply-templates select="/ogc:ogc-standard/ogc:bibdata/ogc:edition[normalize-space(@language) = '']"/>
+								<xsl:apply-templates select="/ogc:metanorma/ogc:bibdata/ogc:edition[normalize-space(@language) = '']"/>
 								<fo:block>
 									<fo:inline font-weight="bold">
 										<!-- Submission Date:  -->
@@ -508,8 +508,8 @@
 										</xsl:call-template><xsl:text>: </xsl:text>
 									</fo:inline>
 									<xsl:choose>
-										<xsl:when test="/ogc:ogc-standard/ogc:bibdata/ogc:date[@type = 'received']/ogc:on">
-											<xsl:value-of select="/ogc:ogc-standard/ogc:bibdata/ogc:date[@type = 'received']/ogc:on"/>
+										<xsl:when test="/ogc:metanorma/ogc:bibdata/ogc:date[@type = 'received']/ogc:on">
+											<xsl:value-of select="/ogc:metanorma/ogc:bibdata/ogc:date[@type = 'received']/ogc:on"/>
 										</xsl:when>
 										<xsl:otherwise>XXX</xsl:otherwise>
 									</xsl:choose>
@@ -522,8 +522,8 @@
 									</xsl:call-template><xsl:text>: </xsl:text>
 									</fo:inline>
 									<xsl:choose>
-										<xsl:when test="/ogc:ogc-standard/ogc:bibdata/ogc:date[@type = 'issued']/ogc:on">
-											<xsl:value-of select="/ogc:ogc-standard/ogc:bibdata/ogc:date[@type = 'issued']/ogc:on"/>
+										<xsl:when test="/ogc:metanorma/ogc:bibdata/ogc:date[@type = 'issued']/ogc:on">
+											<xsl:value-of select="/ogc:metanorma/ogc:bibdata/ogc:date[@type = 'issued']/ogc:on"/>
 										</xsl:when>
 										<xsl:otherwise>XXX</xsl:otherwise>
 									</xsl:choose>							
@@ -535,11 +535,11 @@
 											<xsl:with-param name="key">publication_date</xsl:with-param>
 										</xsl:call-template><xsl:text>: </xsl:text>
 									</fo:inline>
-									<xsl:value-of select="/ogc:ogc-standard/ogc:bibdata/ogc:date[@type = 'published']/ogc:on"/>
+									<xsl:value-of select="/ogc:metanorma/ogc:bibdata/ogc:date[@type = 'published']/ogc:on"/>
 								</fo:block>
 								
 								<fo:block margin-bottom="12pt">
-									<xsl:if test="/ogc:ogc-standard/ogc:bibdata/ogc:contributor[ogc:role/@type='author']/ogc:person/ogc:name/ogc:completename">
+									<xsl:if test="/ogc:metanorma/ogc:bibdata/ogc:contributor[ogc:role/@type='author']/ogc:person/ogc:name/ogc:completename">
 										<fo:block>
 											<fo:inline font-weight="bold">
 												<!-- Author:  -->
@@ -547,13 +547,13 @@
 													<xsl:with-param name="key">author</xsl:with-param>
 												</xsl:call-template><xsl:text>: </xsl:text>
 											</fo:inline>
-											<xsl:for-each select="/ogc:ogc-standard/ogc:bibdata/ogc:contributor[ogc:role/@type='author']/ogc:person/ogc:name/ogc:completename">
+											<xsl:for-each select="/ogc:metanorma/ogc:bibdata/ogc:contributor[ogc:role/@type='author']/ogc:person/ogc:name/ogc:completename">
 												<xsl:value-of select="."/>
 												<xsl:if test="position() != last()">, </xsl:if>
 											</xsl:for-each>
 										</fo:block>
 									</xsl:if>
-									<xsl:if test="/ogc:ogc-standard/ogc:bibdata/ogc:contributor[ogc:role/@type='editor']/ogc:person/ogc:name/ogc:completename">
+									<xsl:if test="/ogc:metanorma/ogc:bibdata/ogc:contributor[ogc:role/@type='editor']/ogc:person/ogc:name/ogc:completename">
 										<fo:block>
 											<fo:inline font-weight="bold">
 												<!-- Editor:  -->
@@ -561,13 +561,13 @@
 													<xsl:with-param name="key">editor_full</xsl:with-param>
 												</xsl:call-template><xsl:text>: </xsl:text>
 											</fo:inline>
-											<xsl:for-each select="/ogc:ogc-standard/ogc:bibdata/ogc:contributor[ogc:role/@type='editor']/ogc:person/ogc:name/ogc:completename">
+											<xsl:for-each select="/ogc:metanorma/ogc:bibdata/ogc:contributor[ogc:role/@type='editor']/ogc:person/ogc:name/ogc:completename">
 												<xsl:value-of select="."/>
 												<xsl:if test="position() != last()">, </xsl:if>
 											</xsl:for-each>
 										</fo:block>
 									</xsl:if>
-									<xsl:if test="/ogc:ogc-standard/ogc:bibdata/ogc:contributor[ogc:role/@type='contributor']/ogc:person/ogc:name/ogc:completename">
+									<xsl:if test="/ogc:metanorma/ogc:bibdata/ogc:contributor[ogc:role/@type='contributor']/ogc:person/ogc:name/ogc:completename">
 										<fo:block>
 											<fo:inline font-weight="bold">
 												<!-- Contributor:  -->
@@ -575,7 +575,7 @@
 													<xsl:with-param name="key">contributor</xsl:with-param>
 												</xsl:call-template><xsl:text>: </xsl:text>
 											</fo:inline>
-											<xsl:for-each select="/ogc:ogc-standard/ogc:bibdata/ogc:contributor[ogc:role/@type='contributor']/ogc:person/ogc:name/ogc:completename">
+											<xsl:for-each select="/ogc:metanorma/ogc:bibdata/ogc:contributor[ogc:role/@type='contributor']/ogc:person/ogc:name/ogc:completename">
 												<xsl:value-of select="."/>
 												<xsl:if test="position() != last()">, </xsl:if>
 											</xsl:for-each>
@@ -591,7 +591,7 @@
 											<fo:block-container margin-left="0mm" margin-right="0mm">
 												<fo:block>
 													<xsl:variable name="legal_statement">
-														<xsl:apply-templates select="/ogc:ogc-standard/ogc:boilerplate/ogc:legal-statement" mode="update_xml_step1"/>
+														<xsl:apply-templates select="/ogc:metanorma/ogc:boilerplate/ogc:legal-statement" mode="update_xml_step1"/>
 													</xsl:variable>
 													<xsl:apply-templates select="xalan:nodeset($legal_statement)/*">
 														<xsl:with-param name="isLegacy" select="$isLegacy"/>	
@@ -603,7 +603,7 @@
 								</xsl:when>
 								<xsl:otherwise>
 									<xsl:variable name="legal_statement">
-										<xsl:apply-templates select="/ogc:ogc-standard/ogc:boilerplate/ogc:legal-statement" mode="update_xml_step1"/>
+										<xsl:apply-templates select="/ogc:metanorma/ogc:boilerplate/ogc:legal-statement" mode="update_xml_step1"/>
 									</xsl:variable>
 									<xsl:apply-templates select="xalan:nodeset($legal_statement)/*"/>
 								</xsl:otherwise>
@@ -644,18 +644,18 @@
 						<xsl:call-template name="insertLogoPreface"/>
 						
 						<xsl:variable name="license_statement">
-							<xsl:apply-templates select="/ogc:ogc-standard/ogc:boilerplate/ogc:license-statement" mode="update_xml_step1"/>
+							<xsl:apply-templates select="/ogc:metanorma/ogc:boilerplate/ogc:license-statement" mode="update_xml_step1"/>
 						</xsl:variable>
 						<xsl:apply-templates select="xalan:nodeset($license_statement)/*"/>
 						
 						<xsl:variable name="feedback_statement">
-							<xsl:apply-templates select="/ogc:ogc-standard/ogc:boilerplate/ogc:feedback-statement" mode="update_xml_step1"/>
+							<xsl:apply-templates select="/ogc:metanorma/ogc:boilerplate/ogc:feedback-statement" mode="update_xml_step1"/>
 						</xsl:variable>
 						<xsl:apply-templates select="xalan:nodeset($feedback_statement)/*"/>
 						
 						<!-- Copyright notice -->
 						<xsl:variable name="copyright_statement">
-							<xsl:apply-templates select="/ogc:ogc-standard/ogc:boilerplate/ogc:copyright-statement" mode="update_xml_step1"/>
+							<xsl:apply-templates select="/ogc:metanorma/ogc:boilerplate/ogc:copyright-statement" mode="update_xml_step1"/>
 						</xsl:variable>
 						<xsl:apply-templates select="xalan:nodeset($copyright_statement)/*"/>
 						
@@ -808,8 +808,8 @@
 				
 				<xsl:element name="boilerplate" namespace="{$namespace_full}"> <!-- save context element -->
 					<xsl:element name="page_sequence" namespace="{$namespace_full}">
-						<xsl:apply-templates select="/ogc:ogc-standard/ogc:boilerplate/ogc:license-statement" mode="update_xml_step_move_pagebreak"/>
-						<xsl:apply-templates select="/ogc:ogc-standard/ogc:boilerplate/ogc:feedback-statement" mode="update_xml_step_move_pagebreak"/>
+						<xsl:apply-templates select="/ogc:metanorma/ogc:boilerplate/ogc:license-statement" mode="update_xml_step_move_pagebreak"/>
+						<xsl:apply-templates select="/ogc:metanorma/ogc:boilerplate/ogc:feedback-statement" mode="update_xml_step_move_pagebreak"/>
 					</xsl:element>
 				</xsl:element>
 				
@@ -1280,14 +1280,14 @@
 	<!-- ============================= -->
 	
 	
-	<xsl:template match="/ogc:ogc-standard/ogc:bibdata/ogc:uri[not(@type)]">
+	<xsl:template match="/ogc:metanorma/ogc:bibdata/ogc:uri[not(@type)]">
 		<fo:block margin-bottom="12pt">
 			<xsl:text>URL for this OGC® document: </xsl:text>
 			<xsl:value-of select="."/><xsl:text> </xsl:text>
 		</fo:block>
 	</xsl:template>
 	
-	<xsl:template match="/ogc:ogc-standard/ogc:bibdata/ogc:edition">
+	<xsl:template match="/ogc:metanorma/ogc:bibdata/ogc:edition">
 		<fo:block>
 			<xsl:variable name="title-version">
 				<xsl:call-template name="capitalize">
