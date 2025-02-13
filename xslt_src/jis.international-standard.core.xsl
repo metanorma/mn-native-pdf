@@ -2905,15 +2905,15 @@
 	<!-- jis:term/jis:preferred2//text() | -->
 	
 	<!-- <name>注記  1</name> to <name>注記<font_en>  1</font_en></name> -->
-	<xsl:template match="jis:title/text() | 
-						jis:term/jis:name/text() | 
-						jis:note/jis:name/text() | 
-						jis:termnote/jis:name/text() |
-						jis:table/jis:name/text() |
-						jis:figure/jis:name/text() |
-						jis:termexample/jis:name/text() |
-						jis:xref//text() |
-						jis:origin/text()" mode="update_xml_step1">
+	<xsl:template match="jis:title/text() | jis:fmt-title/text() | 
+						jis:term/jis:name/text() | jis:term/jis:fmt-name/text() | 
+						jis:note/jis:name/text() | jis:note/jis:fmt-name/text() | 
+						jis:termnote/jis:name/text() |jis:termnote/jis:fmt-name/text() |
+						jis:table/jis:name/text() |jis:table/jis:fmt-name/text() |
+						jis:figure/jis:name/text() |jis:figure/jis:fmt-name/text() |
+						jis:termexample/jis:name/text() |jis:termexample/jis:fmtname/text() |
+						jis:xref//text() | jis:fmt-xref//text() |
+						jis:origin/text() | jis:fmt-origin/text()" mode="update_xml_step1">
 		<xsl:choose>
 			<xsl:when test="$vertical_layout = 'true'">
 				<xsl:choose>
@@ -2958,23 +2958,29 @@
 	</xsl:template>
 	
 	<!-- move example title to the first paragraph -->
-	<xsl:template match="jis:example[contains(jis:name/text(), ' — ')]" mode="update_xml_step1">
+	<xsl:template match="jis:example[contains(normalize-space(jis:fmt-name), ' — ')]" mode="update_xml_step1">
 		<xsl:copy>
 			<xsl:copy-of select="@*"/>
 			<xsl:element name="p" namespace="{$namespace_full}">
-				<xsl:value-of select="substring-after(jis:name/text()[1], ' — ')"/>
-				<xsl:apply-templates select="jis:name/text()[1]/following-sibling::node()" mode="update_xml_step1"/>
+				<xsl:variable name="example_name">
+					<xsl:apply-templates select="jis:fmt-name" mode="update_xml_step1"/>
+				</xsl:variable>
+				<xsl:value-of select="substring-after(xalan:nodeset($example_name)/jis:name/text()[1], ' — ')"/>
+				<xsl:apply-templates select="xalan:nodeset($example_name)/jis:name/text()[1]/following-sibling::node()" mode="update_xml_step1"/>
 			</xsl:element>
 			<xsl:apply-templates mode="update_xml_step1"/>
 		</xsl:copy>
 	</xsl:template>
-	<xsl:template match="jis:example/jis:name[contains(text(), ' — ')]" mode="update_xml_step1">
+	<xsl:template match="jis:example/jis:fmt-name[contains(normalize-space(), ' — ')]" mode="update_xml_step1">
 		<xsl:copy>
 			<xsl:copy-of select="@*"/>
-			<xsl:apply-templates select="text()[1]" mode="update_xml_step1"/>
+			<xsl:variable name="example_name">
+				<xsl:apply-templates select="." mode="update_xml_step1"/>
+			</xsl:variable>
+			<xsl:apply-templates select="xalan:nodeset($example_name)//text()[1]" mode="update_xml_step1"/>
 		</xsl:copy>
 	</xsl:template>
-	<xsl:template match="jis:example/jis:name/text()" mode="update_xml_step1">
+	<xsl:template match="jis:example/jis:fmt-name/text()" mode="update_xml_step1">
 		<xsl:variable name="example_name">
 			<xsl:choose>
 				<xsl:when test="contains(., ' — ')"><xsl:value-of select="substring-before(., ' — ')"/></xsl:when>
@@ -2996,7 +3002,7 @@
 		</xsl:choose>
 	</xsl:template>
 	
-	<xsl:template match="jis:eref//text()" mode="update_xml_step1">
+	<xsl:template match="jis:fmt-eref//text()" mode="update_xml_step1">
 		<xsl:choose>
 			<xsl:when test="$vertical_layout = 'true'">
 				<xsl:call-template name="enclose_text_in_vertical_tag"/>
@@ -3037,7 +3043,6 @@
 		<xsl:apply-templates mode="update_xml_step1"/>
 	</xsl:template>
 	<xsl:template match="jis:strong/text()" priority="2" mode="update_xml_step1">
-	
 		<xsl:choose>
 			<xsl:when test="$vertical_layout = 'true'">
 				<xsl:call-template name="enclose_text_in_vertical_tag"/>
