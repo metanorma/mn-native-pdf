@@ -215,11 +215,13 @@
 	
 	<xsl:variable name="mathml_attachments">
 		<xsl:if test="$add_math_as_attachment = 'true' and $final_transform = 'true'">
-			<xsl:for-each select="//mathml:math">
+			<xsl:for-each select="//mathml:math[ancestor::*[local-name() = 'fmt-stem']]">
 						
-				<xsl:variable name="sequence_number"><xsl:number level="any" format="00001"/></xsl:variable>
+				<xsl:variable name="sequence_number"><xsl:number level="any" format="00001" count="mathml:math[ancestor::*[local-name() = 'fmt-stem']]"/></xsl:variable>
 				
-				<xsl:variable name="clause_title_number" select="ancestor-or-self::bipm:clause[bipm:title[bipm:tab]][1]/bipm:title/node()[1]"/>
+				<!-- <xsl:variable name="clause_title_number" select="ancestor-or-self::bipm:clause[bipm:title[bipm:tab]][1]/bipm:title/node()[1]"/> -->
+				<!-- <fmt-title depth="1"><span class="fmt-caption-label"><semx element="autonum" source="_introduction">1</semx><span class="fmt-autonum-delim">.</span></span> -->
+				<xsl:variable name="clause_title_number" select="normalize-space(ancestor-or-self::bipm:clause[bipm:fmt-title[bipm:span[@class = 'fmt-caption-label']]][1]/bipm:fmt-title/bipm:span[@class = 'fmt-caption-label'][1])"/>
 				
 				<xsl:variable name="mathml_filename">
 					<xsl:text>math</xsl:text>
