@@ -2958,36 +2958,52 @@
 	</xsl:template>
 	
 	<!-- move example title to the first paragraph -->
-	<xsl:template match="jis:example[contains(normalize-space(jis:fmt-name), ' — ')]" mode="update_xml_step1">
+	<!-- Example:
+		<example id="_7569d639-c245-acb6-2141-3b746374a9e1" autonum="1">
+		<name id="_8eac959b-b129-4892-b8bb-fcca2914bd39">（可能性の例）</name>
+		<fmt-name>
+			<span class="fmt-caption-label">
+				<span class="fmt-element-name">例</span>
+				<semx element="autonum" source="_7569d639-c245-acb6-2141-3b746374a9e1">1</semx>
+			</span>
+			<span class="fmt-caption-delim"> — </span>
+			<semx element="name" source="_8eac959b-b129-4892-b8bb-fcca2914bd39">（可能性の例）</semx>
+		</fmt-name>
+	-->
+	<!-- <xsl:template match="jis:example[contains(normalize-space(jis:fmt-name), ' — ')]" mode="update_xml_step1"> -->
+	<xsl:template match="jis:example[jis:fmt-name[contains(jis:span/text(), ' — ')]]" mode="update_xml_step1">
 		<xsl:copy>
 			<xsl:copy-of select="@*"/>
 			<xsl:element name="p" namespace="{$namespace_full}">
-				<xsl:variable name="example_name">
+				<!-- <xsl:variable name="example_name">
 					<xsl:apply-templates select="jis:fmt-name" mode="update_xml_step1"/>
 				</xsl:variable>
 				<xsl:value-of select="substring-after(xalan:nodeset($example_name)/jis:name/text()[1], ' — ')"/>
-				<xsl:apply-templates select="xalan:nodeset($example_name)/jis:name/text()[1]/following-sibling::node()" mode="update_xml_step1"/>
+				<xsl:apply-templates select="xalan:nodeset($example_name)/jis:name/text()[1]/following-sibling::node()" mode="update_xml_step1"/> -->
+				<xsl:apply-templates select="jis:fmt-name/jis:span[contains(., ' — ')][1]/following-sibling::node()" mode="update_xml_step1"/>
 			</xsl:element>
 			<xsl:apply-templates mode="update_xml_step1"/>
 		</xsl:copy>
 	</xsl:template>
-	<xsl:template match="jis:example/jis:fmt-name[contains(normalize-space(), ' — ')]" mode="update_xml_step1">
-		<xsl:copy>
+	<!-- <xsl:template match="jis:example/jis:fmt-name[contains(normalize-space(), ' — ')]" mode="update_xml_step1"> -->
+	<xsl:template match="jis:example/jis:fmt-name[contains(jis:span/text(), ' — ')]" mode="update_xml_step1" priority="2">
+		<xsl:element name="name" namespace="{$namespace_full}">
 			<xsl:copy-of select="@*"/>
-			<xsl:variable name="example_name">
+			<!-- <xsl:variable name="example_name">
 				<xsl:apply-templates select="." mode="update_xml_step1"/>
 			</xsl:variable>
 			<xsl:apply-templates select="xalan:nodeset($example_name)//text()[1]" mode="update_xml_step1"/>
-		</xsl:copy>
+			-->
+			<xsl:apply-templates select="*[1]" mode="update_xml_step1"/>
+		</xsl:element>
 	</xsl:template>
-	<xsl:template match="jis:example/jis:fmt-name/text()" mode="update_xml_step1">
-		<xsl:variable name="example_name">
-			<xsl:choose>
+	<xsl:template match="jis:example/jis:fmt-name//text()" mode="update_xml_step1">
+		<xsl:variable name="example_name" select="."/>
+			<!-- <xsl:choose>
 				<xsl:when test="contains(., ' — ')"><xsl:value-of select="substring-before(., ' — ')"/></xsl:when>
 				<xsl:otherwise><xsl:value-of select="."/></xsl:otherwise>
 			</xsl:choose>
-		</xsl:variable>
-		
+		</xsl:variable> -->
 		<xsl:choose>
 			<xsl:when test="$vertical_layout = 'true'">
 				<xsl:call-template name="enclose_text_in_vertical_tag">
