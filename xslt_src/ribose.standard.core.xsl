@@ -454,20 +454,26 @@
 			<xsl:for-each select="xalan:nodeset($updated_xml)/*">
 			
 				<!-- ToC pages -->
-				<fo:page-sequence master-reference="document" force-page-count="no-force"> <!-- master-reference="toc" -->
-					<xsl:call-template name="insertHeaderFooter">
-						<xsl:with-param name="section">toc</xsl:with-param>
-					</xsl:call-template>
-					<fo:flow flow-name="xsl-region-body">
+				<xsl:variable name="toc_and_boilerplate">
+					<xsl:apply-templates select="/ribose:metanorma/ribose:preface/ribose:clause[@type = 'toc']" />
 					
-						<xsl:apply-templates select="/ribose:metanorma/ribose:preface/ribose:clause[@type = 'toc']" />
+					<xsl:apply-templates select="/ribose:metanorma/ribose:boilerplate/ribose:legal-statement"/>
 					
-						<xsl:apply-templates select="/ribose:metanorma/ribose:boilerplate/ribose:legal-statement"/>
+					<xsl:apply-templates select="/ribose:metanorma/ribose:boilerplate/ribose:feedback-statement"/>
+				</xsl:variable>
+				
+				<xsl:if test="normalize-space($toc_and_boilerplate) != ''">
+					<fo:page-sequence master-reference="document" force-page-count="no-force"> <!-- master-reference="toc" -->
+						<xsl:call-template name="insertHeaderFooter">
+							<xsl:with-param name="section">toc</xsl:with-param>
+						</xsl:call-template>
+						<fo:flow flow-name="xsl-region-body">
 						
-						<xsl:apply-templates select="/ribose:metanorma/ribose:boilerplate/ribose:feedback-statement"/>
-					
-					</fo:flow>
-				</fo:page-sequence>
+							<xsl:copy-of select="$toc_and_boilerplate"/>
+						
+						</fo:flow>
+					</fo:page-sequence>
+				</xsl:if>
 				<!-- ============== -->
 				<!-- END ToC  pages -->
 				<!-- ============== -->
