@@ -19699,6 +19699,17 @@
 		</xsl:copy>
 	</xsl:template>
 	
+	<!-- https://github.com/metanorma/isodoc/issues/652 -->
+	<xsl:template match="*[local-name() = 'quote']/*[local-name() = 'source']" />
+	<xsl:template match="*[local-name() = 'quote']/*[local-name() = 'author']" />
+	<xsl:template match="*[local-name() = 'amend']" />
+	<xsl:template match="*[local-name() = 'quote']/*[local-name() = 'source']" mode="update_xml_step1"/>
+	<xsl:template match="*[local-name() = 'quote']/*[local-name() = 'author']" mode="update_xml_step1"/>
+	<xsl:template match="*[local-name() = 'quote']/*[local-name() = 'source']" mode="update_xml_pres"/>
+	<xsl:template match="*[local-name() = 'quote']/*[local-name() = 'author']" mode="update_xml_pres"/>
+	<xsl:template match="*[local-name() = 'amend']" mode="update_xml_step1"/>
+	<xsl:template match="*[local-name() = 'amend']" mode="update_xml_pres"/>
+	
 	<xsl:template match="*[local-name() = 'metanorma-extension']/*[local-name() = 'attachment']" mode="update_xml_step1">
 		<xsl:copy>
 			<xsl:copy-of select="@*"/>
