@@ -1779,6 +1779,22 @@
 	</xsl:template>
 	
 	<xsl:template match="*[local-name() = 'fmt-xref-label']" mode="flatxml_step1"/>
+
+	<xsl:template match="*[local-name() = 'stem']" mode="flatxml_step1"/>
+	
+	<xsl:template match="*[local-name() = 'fmt-stem'][not(.//*[local-name() = 'passthrough']) and not(.//*[@linebreak])]" mode="flatxml_step1">
+		<xsl:element name="stem" namespace="{$namespace_full}">
+			<xsl:copy-of select="@*"/>
+			<xsl:choose>
+				<xsl:when test="*[local-name() = 'semx'] and count(node()) = 1">
+					<xsl:copy-of select="*[local-name() = 'semx']/node()"/>
+				</xsl:when>
+				<xsl:otherwise>
+					<xsl:copy-of select="node()"/>
+				</xsl:otherwise>
+			</xsl:choose>
+		</xsl:element>
+	</xsl:template>
 	
 	<xsl:template match="*[local-name() = 'concept']"  mode="flatxml_step1"/>
 	
