@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" 
 											xmlns:fo="http://www.w3.org/1999/XSL/Format" 
-											xmlns:bipm="https://www.metanorma.org/ns/bipm" 
+											xmlns:bipm="https://www.metanorma.org/ns/standoc" 
 											xmlns:mathml="http://www.w3.org/1998/Math/MathML" 
 											xmlns:xalan="http://xml.apache.org/xalan" 
 											xmlns:fox="http://xmlgraphics.apache.org/fop/extensions" 
@@ -33,9 +33,9 @@
 	
 	<xsl:variable name="debug">false</xsl:variable>
 	
-	<xsl:variable name="copyrightYear" select="//bipm:bipm-standard/bipm:bibdata/bipm:copyright/bipm:from"/>
+	<xsl:variable name="copyrightYear" select="//bipm:metanorma/bipm:bibdata/bipm:copyright/bipm:from"/>
 	
-	<xsl:variable name="doc_first_language" select="(//bipm:bipm-standard)[1]/bipm:bibdata/bipm:language[@current = 'true']"/>
+	<xsl:variable name="doc_first_language" select="(//bipm:metanorma)[1]/bipm:bibdata/bipm:language[@current = 'true']"/>
 
 	<xsl:variable name="root-element" select="local-name(/*)"/>
 
@@ -44,9 +44,9 @@
 			<xsl:when test="$root-element = 'metanorma-collection'">
 				<xsl:choose>
 					<xsl:when test="$doc_split_by_language = ''"><!-- all documents -->
-						<xsl:for-each select="//bipm:bipm-standard">
+						<xsl:for-each select="//bipm:metanorma">
 							<xsl:variable name="lang" select="*[local-name()='bibdata']/*[local-name()='language'][@current = 'true']"/>
-							<xsl:variable name="num"><xsl:number level="any" count="bipm:bipm-standard"/></xsl:variable>
+							<xsl:variable name="num"><xsl:number level="any" count="bipm:metanorma"/></xsl:variable>
 							<xsl:variable name="title-part"><xsl:value-of select="bipm:bibdata/bipm:title[@type = 'title-part']"/></xsl:variable>
 							<xsl:variable name="current_document">
 								<xsl:copy-of select="."/>
@@ -62,9 +62,9 @@
 						</xsl:for-each>
 					</xsl:when>
 					<xsl:otherwise>
-						<xsl:for-each select="(//bipm:bipm-standard)[*[local-name()='bibdata']/*[local-name()='language'][@current = 'true'] = $doc_split_by_language]">
+						<xsl:for-each select="(//bipm:metanorma)[*[local-name()='bibdata']/*[local-name()='language'][@current = 'true'] = $doc_split_by_language]">
 							<xsl:variable name="lang" select="*[local-name()='bibdata']/*[local-name()='language'][@current = 'true']"/>
-							<xsl:variable name="num"><xsl:number level="any" count="bipm:bipm-standard"/></xsl:variable>
+							<xsl:variable name="num"><xsl:number level="any" count="bipm:metanorma"/></xsl:variable>
 							<xsl:variable name="current_document">
 								<xsl:copy-of select="."/>
 							</xsl:variable>				
@@ -96,7 +96,7 @@
 	<xsl:variable name="indexes">
 		<xsl:choose>
 			<xsl:when test="$doc_split_by_language = ''"><!-- all documents -->
-				<xsl:for-each select="//bipm:bipm-standard">
+				<xsl:for-each select="//bipm:metanorma">
 					
 					<!-- <xsl:variable name="current_document">
 						<xsl:copy-of select="."/>
@@ -135,7 +135,7 @@
 				</xsl:for-each>
 			</xsl:when>
 			<xsl:otherwise>
-				<xsl:for-each select="(//bipm:bipm-standard)[*[local-name()='bibdata']/*[local-name()='language'][@current = 'true'] = $doc_split_by_language]">
+				<xsl:for-each select="(//bipm:metanorma)[*[local-name()='bibdata']/*[local-name()='language'][@current = 'true'] = $doc_split_by_language]">
 				
 					<!-- <xsl:variable name="current_document">
 						<xsl:copy-of select="."/>
@@ -188,9 +188,9 @@
 	
 	
 	
-	<xsl:variable name="independentAppendix" select="normalize-space((//bipm:bipm-standard)[1]/bipm:bibdata/bipm:ext/bipm:structuredidentifier/bipm:appendix)"/>
+	<xsl:variable name="independentAppendix" select="normalize-space((//bipm:metanorma)[1]/bipm:bibdata/bipm:ext/bipm:structuredidentifier/bipm:appendix)"/>
 	
-	<xsl:variable name="doctype" select="//bipm:bipm-standard/bipm:bibdata/bipm:ext/bipm:doctype"/>
+	<xsl:variable name="doctype" select="//bipm:metanorma/bipm:bibdata/bipm:ext/bipm:doctype"/>
 
 	<xsl:template name="generateContents">
 		<contents>
@@ -215,11 +215,13 @@
 	
 	<xsl:variable name="mathml_attachments">
 		<xsl:if test="$add_math_as_attachment = 'true' and $final_transform = 'true'">
-			<xsl:for-each select="//mathml:math">
+			<xsl:for-each select="//mathml:math[ancestor::*[local-name() = 'fmt-stem']]">
 						
-				<xsl:variable name="sequence_number"><xsl:number level="any" format="00001"/></xsl:variable>
+				<xsl:variable name="sequence_number"><xsl:number level="any" format="00001" count="mathml:math[ancestor::*[local-name() = 'fmt-stem']]"/></xsl:variable>
 				
-				<xsl:variable name="clause_title_number" select="ancestor-or-self::bipm:clause[bipm:title[bipm:tab]][1]/bipm:title/node()[1]"/>
+				<!-- <xsl:variable name="clause_title_number" select="ancestor-or-self::bipm:clause[bipm:title[bipm:tab]][1]/bipm:title/node()[1]"/> -->
+				<!-- <fmt-title depth="1"><span class="fmt-caption-label"><semx element="autonum" source="_introduction">1</semx><span class="fmt-autonum-delim">.</span></span> -->
+				<xsl:variable name="clause_title_number" select="normalize-space(ancestor-or-self::bipm:clause[bipm:fmt-title[bipm:span[@class = 'fmt-caption-label']]][1]/bipm:fmt-title/bipm:span[@class = 'fmt-caption-label'][1])"/>
 				
 				<xsl:variable name="mathml_filename">
 					<xsl:text>math</xsl:text>
@@ -448,9 +450,9 @@
 					
 					<xsl:choose>
 						<xsl:when test="$doc_split_by_language = ''"><!-- all documents -->
-							<xsl:for-each select="//bipm:bipm-standard">
+							<xsl:for-each select="//bipm:metanorma">
 								<xsl:variable name="lang" select="*[local-name()='bibdata']//*[local-name()='language'][@current = 'true']"/>						
-								<xsl:variable name="num"><xsl:number level="any" count="bipm:bipm-standard"/></xsl:variable>
+								<xsl:variable name="num"><xsl:number level="any" count="bipm:metanorma"/></xsl:variable>
 								
 								<!-- <xsl:variable name="title_eref">
 									<xsl:apply-templates select="." mode="title_eref"/>
@@ -499,9 +501,9 @@
 							</xsl:for-each>
 						</xsl:when>
 						<xsl:otherwise>
-							<xsl:for-each select="(//bipm:bipm-standard)[*[local-name()='bibdata']/*[local-name()='language'][@current = 'true'] = $doc_split_by_language]">
+							<xsl:for-each select="(//bipm:metanorma)[*[local-name()='bibdata']/*[local-name()='language'][@current = 'true'] = $doc_split_by_language]">
 								<xsl:variable name="lang" select="*[local-name()='bibdata']//*[local-name()='language'][@current = 'true']"/>						
-								<xsl:variable name="num"><xsl:number level="any" count="bipm:bipm-standard"/></xsl:variable>
+								<xsl:variable name="num"><xsl:number level="any" count="bipm:metanorma"/></xsl:variable>
 								
 								<!-- <xsl:variable name="title_eref">
 									<xsl:apply-templates select="." mode="title_eref"/>
@@ -538,7 +540,7 @@
 									<xsl:apply-templates select="xalan:nodeset($flatxml_)" mode="pagebreak"/>
 								</xsl:variable>
 								
-								<xsl:apply-templates select="xalan:nodeset($flatxml)/bipm:bipm-standard" mode="bipm-standard">
+								<xsl:apply-templates select="xalan:nodeset($flatxml)/bipm:metanorma" mode="bipm-standard">
 									<xsl:with-param name="curr_docnum" select="$num"/>
 								</xsl:apply-templates>
 								
@@ -597,7 +599,7 @@
 						</redirect:write>
 					</xsl:if>
 				
-					<xsl:apply-templates select="xalan:nodeset($flatxml)/bipm:bipm-standard" mode="bipm-standard">
+					<xsl:apply-templates select="xalan:nodeset($flatxml)/bipm:metanorma" mode="bipm-standard">
 						<xsl:with-param name="curr_docnum" select="1"/>
 					</xsl:apply-templates>
 				</xsl:otherwise>
@@ -631,14 +633,14 @@
 	
 	
 	<xsl:template match="*[local-name() = 'fmt-title']" mode="update_xml_pres" priority="2">
-		<xsl:element name="title" namespace="https://www.metanorma.org/ns/bipm">
+		<xsl:element name="title" namespace="https://www.metanorma.org/ns/standoc">
 			<xsl:copy-of select="@*"/>
 			<xsl:apply-templates mode="update_xml_pres"/>
 		</xsl:element>
 	</xsl:template>
 	
 	<xsl:template match="*[local-name() = 'fmt-name']" mode="update_xml_pres" priority="2">
-		<xsl:element name="name" namespace="https://www.metanorma.org/ns/bipm">
+		<xsl:element name="name" namespace="https://www.metanorma.org/ns/standoc">
 			<xsl:copy-of select="@*"/>
 			<xsl:apply-templates mode="update_xml_pres"/>
 		</xsl:element>
@@ -692,7 +694,7 @@
 				<xsl:choose>
 				
 						<xsl:when test="$pos_first_clause &gt; 0">
-							<xsl:element name="clause" namespace="https://www.metanorma.org/ns/bipm">
+							<xsl:element name="clause" namespace="https://www.metanorma.org/ns/standoc">
 								<xsl:attribute name="id"><xsl:value-of select="concat(@id,'_clause')"/></xsl:attribute>
 								<xsl:for-each select="*[position() &gt; 0 and position() &lt;= $pos_first_clause]">
 									<xsl:apply-templates select="." mode="flatxml"/>									
@@ -786,7 +788,7 @@
 			</xsl:choose>
 		</xsl:variable>
 		<!-- <xsl:copy> -->
-		<xsl:element name="{$element}" namespace="https://www.metanorma.org/ns/bipm">
+		<xsl:element name="{$element}" namespace="https://www.metanorma.org/ns/standoc">
 			<xsl:if test="ancestor::bipm:quote">
 				<xsl:attribute name="parent-type">quote</xsl:attribute>				
 			</xsl:if>
@@ -835,7 +837,7 @@
 	</xsl:template>
 	
 	<xsl:template match="bipm:fn" mode="fn_to_xref">
-		<xsl:element name="xref" namespace="https://www.metanorma.org/ns/bipm">
+		<xsl:element name="xref" namespace="https://www.metanorma.org/ns/standoc">
 			
 			<xsl:attribute name="target">
 				<xsl:call-template name="fn_reference_to_xref_target"/>				
@@ -855,7 +857,7 @@
 				</xsl:choose>
 			</xsl:variable>
 			
-			<xsl:element name="sup_fn" namespace="https://www.metanorma.org/ns/bipm">
+			<xsl:element name="sup_fn" namespace="https://www.metanorma.org/ns/standoc">
 				<xsl:value-of select="concat('(',$number,')')"/>
 			</xsl:element>
 			
@@ -863,7 +865,7 @@
 	</xsl:template>
 	
 	<xsl:template name="fn_reference_to_xref_target">
-		<xsl:variable name="lang" select="ancestor::bipm:bipm-standard/*[local-name()='bibdata']//*[local-name()='language'][@current = 'true']"/>
+		<xsl:variable name="lang" select="ancestor::bipm:metanorma/*[local-name()='bibdata']//*[local-name()='language'][@current = 'true']"/>
 			<xsl:variable name="gen_id" select="generate-id()"/>
 			<xsl:variable name="curr_clause_id" select="ancestor::bipm:clause[1]/@id"/>
 			<xsl:variable name="number">
@@ -975,7 +977,7 @@
 	</xsl:template>
 	
 	<xsl:template name="fn_to_note_side">		
-		<xsl:element name="note_side" namespace="https://www.metanorma.org/ns/bipm">
+		<xsl:element name="note_side" namespace="https://www.metanorma.org/ns/standoc">
 	
 			<xsl:attribute name="id">						
 				<xsl:call-template name="fn_reference_to_xref_target"/>				
@@ -996,7 +998,7 @@
 			</xsl:variable>
 			
 			
-			<xsl:element name="sup_fn" namespace="https://www.metanorma.org/ns/bipm">
+			<xsl:element name="sup_fn" namespace="https://www.metanorma.org/ns/standoc">
 				<xsl:value-of select="concat('(',$number,')')"/>
 			</xsl:element>
 			<xsl:text> </xsl:text>
@@ -1050,7 +1052,7 @@
 			<xsl:variable name="pagebreak_previous_orientation" select="preceding-sibling::bipm:pagebreak[@orientation][1]/@orientation"/>
 			
 			<!-- copy elements before page break -->
-			<xsl:element name="{$element_name}" namespace="https://www.metanorma.org/ns/bipm">
+			<xsl:element name="{$element_name}" namespace="https://www.metanorma.org/ns/standoc">
 				<xsl:if test="not(preceding-sibling::bipm:pagebreak[@orientation])">
 					<xsl:apply-templates select="../@*" mode="pagebreak"/>
 				</xsl:if>
@@ -1063,7 +1065,7 @@
 			
 			<!-- copy elements after last page break -->
 			<xsl:if test="position() = last() and following-sibling::node()">
-				<xsl:element name="{$element_name}" namespace="https://www.metanorma.org/ns/bipm">
+				<xsl:element name="{$element_name}" namespace="https://www.metanorma.org/ns/standoc">
 					<xsl:attribute name="orientation"><xsl:value-of select="@orientation"/></xsl:attribute>
 					<xsl:apply-templates select="following-sibling::node()" mode="pagebreak"/>
 				</xsl:element>
@@ -1077,8 +1079,8 @@
 	<!-- END: Page breaks processing  -->
 	<!-- ================================= -->	
 	
-	<xsl:template match="bipm:bipm-standard"/>
-	<xsl:template match="bipm:bipm-standard" mode="bipm-standard">
+	<xsl:template match="bipm:metanorma"/>
+	<xsl:template match="bipm:metanorma" mode="bipm-standard">
 		<xsl:param name="curr_docnum"/>
 		<xsl:variable name="curr_xml">
 			<xsl:copy-of select="."/>
@@ -1131,7 +1133,7 @@
 						
 						<fo:block-container font-size="18pt" font-weight="bold" text-align="center">
 							<fo:block role="H1">						
-								<xsl:value-of select="//bipm:bipm-standard/bipm:bibdata/bipm:title[@language = $curr_lang and @type='title-cover']"/>
+								<xsl:value-of select="//bipm:metanorma/bipm:bibdata/bipm:title[@language = $curr_lang and @type='title-cover']"/>
 							</fo:block>	
 						</fo:block-container>
 						
@@ -1226,7 +1228,7 @@
 						<fo:block-container margin-left="-14mm"  margin-right="0mm">
 							<fo:block-container margin-left="0mm" margin-right="0mm">							
 								<fo:block font-family="Arial" font-size="16pt" font-weight="bold" text-align-last="justify" margin-bottom="82pt" role="H1">
-									<fo:inline><xsl:value-of select="//bipm:bipm-standard/bipm:bibdata/bipm:title[@language = $curr_lang and @type='title-main']"/></fo:inline>
+									<fo:inline><xsl:value-of select="//bipm:metanorma/bipm:bibdata/bipm:title[@language = $curr_lang and @type='title-main']"/></fo:inline>
 									<fo:inline keep-together.within-line="always">
 										<fo:leader leader-pattern="space"/>
 										<fo:inline>
@@ -1321,9 +1323,9 @@
 				
 				<!-- Index -->
 				<xsl:apply-templates select="xalan:nodeset($indexes)/doc[@id = $docid]//bipm:indexsect" mode="index">
-					<xsl:with-param name="isDraft" select="normalize-space(//bipm:bipm-standard/bipm:bibdata/bipm:version/bipm:draft or
-						contains(//bipm:bipm-standard/bipm:bibdata/bipm:status/bipm:stage, 'draft') or
-						contains(//bipm:bipm-standard/bipm:bibdata/bipm:status/bipm:stage, 'projet'))"/>
+					<xsl:with-param name="isDraft" select="normalize-space(//bipm:metanorma/bipm:bibdata/bipm:version/bipm:draft or
+						contains(//bipm:metanorma/bipm:bibdata/bipm:status/bipm:stage, 'draft') or
+						contains(//bipm:metanorma/bipm:bibdata/bipm:status/bipm:stage, 'projet'))"/>
 					<xsl:with-param name="lang" select="$curr_lang"/>
 				</xsl:apply-templates>
 				
@@ -1373,13 +1375,13 @@
 								
 								<xsl:choose>
 									<xsl:when test="$independentAppendix != ''">
-										<xsl:apply-templates select="//bipm:bipm-standard/bipm:bibdata/bipm:title[@language = $curr_lang and @type='title-appendix']" mode="title"/>
+										<xsl:apply-templates select="//bipm:metanorma/bipm:bibdata/bipm:title[@language = $curr_lang and @type='title-appendix']" mode="title"/>
 										<fo:block>
-											<xsl:apply-templates select="//bipm:bipm-standard/bipm:bibdata/bipm:title[@language = $curr_lang and @type='title-annex']" mode="title"/>
+											<xsl:apply-templates select="//bipm:metanorma/bipm:bibdata/bipm:title[@language = $curr_lang and @type='title-annex']" mode="title"/>
 										</fo:block>
 									</xsl:when>
 									<xsl:otherwise> <!-- doctype = 'guide' -->
-										<xsl:apply-templates select="//bipm:bipm-standard/bipm:bibdata/bipm:title[@language = $curr_lang and @type='title-main']" mode="title"/>
+										<xsl:apply-templates select="//bipm:metanorma/bipm:bibdata/bipm:title[@language = $curr_lang and @type='title-main']" mode="title"/>
 									</xsl:otherwise>
 								</xsl:choose>
 								
@@ -1387,8 +1389,8 @@
 							</fo:block>
 							
 							
-							<!-- <xsl:variable name="part_num" select="normalize-space(/bipm:bipm-standard/bipm:bibdata/bipm:ext/bipm:structuredidentifier/bipm:part)"/> -->
-							<xsl:if test="/bipm:bipm-standard/bipm:bibdata/bipm:title[@language = $curr_lang and @type = 'title-part-with-numbering']">
+							<!-- <xsl:variable name="part_num" select="normalize-space(/bipm:metanorma/bipm:bibdata/bipm:ext/bipm:structuredidentifier/bipm:part)"/> -->
+							<xsl:if test="/bipm:metanorma/bipm:bibdata/bipm:title[@language = $curr_lang and @type = 'title-part-with-numbering']">
 								<fo:block role="H2">
 									<!-- <xsl:if test="$part_num != ''">
 										<xsl:call-template name="getLocalizedString">
@@ -1399,24 +1401,24 @@
 										<xsl:value-of select="$part_num"/>
 									</xsl:if>
 									<xsl:text>: </xsl:text> -->
-									<xsl:apply-templates select="/bipm:bipm-standard/bipm:bibdata/bipm:title[@language = $curr_lang and @type = 'title-part-with-numbering']" mode="title"/>
+									<xsl:apply-templates select="/bipm:metanorma/bipm:bibdata/bipm:title[@language = $curr_lang and @type = 'title-part-with-numbering']" mode="title"/>
 								</fo:block>
 							</xsl:if>
-							<!-- <xsl:variable name="subpart_num" select="normalize-space(/bipm:bipm-standard/bipm:bibdata/bipm:ext/bipm:structuredidentifier/bipm:subpart)"/> -->
-							<xsl:if test="/bipm:bipm-standard/bipm:bibdata/bipm:title[@language = $curr_lang and @type = 'title-subpart-with-numbering']">
+							<!-- <xsl:variable name="subpart_num" select="normalize-space(/bipm:metanorma/bipm:bibdata/bipm:ext/bipm:structuredidentifier/bipm:subpart)"/> -->
+							<xsl:if test="/bipm:metanorma/bipm:bibdata/bipm:title[@language = $curr_lang and @type = 'title-subpart-with-numbering']">
 								<fo:block role="H3">
 									<!-- <xsl:if test="$subpart_num != ''">
 										<xsl:value-of select="java:replaceAll(java:java.lang.String.new($titles/title-subpart[@lang=$curr_lang]),'#',$subpart_num)"/>
 									</xsl:if>
 									<xsl:text>: </xsl:text> -->
-									<xsl:apply-templates select="/bipm:bipm-standard/bipm:bibdata/bipm:title[@language = $curr_lang and @type = 'title-subpart-with-numbering']" mode="title"/>
+									<xsl:apply-templates select="/bipm:metanorma/bipm:bibdata/bipm:title[@language = $curr_lang and @type = 'title-subpart-with-numbering']" mode="title"/>
 								</fo:block>
 							</xsl:if>
 							
 							
 							<fo:block>&#xA0;</fo:block>
 							<fo:block font-size="9pt">
-								<xsl:value-of select="/bipm:bipm-standard/bipm:bibdata/bipm:ext/bipm:editorialgroup/bipm:committee/bipm:variant[@language = $curr_lang]"/>
+								<xsl:value-of select="/bipm:metanorma/bipm:bibdata/bipm:ext/bipm:editorialgroup/bipm:committee/bipm:variant[@language = $curr_lang]"/>
 							</fo:block>
 						</fo:block-container>
 						
@@ -1440,18 +1442,18 @@
 								<fo:block text-align="right"><xsl:value-of select="bipm:bibdata/bipm:version/bipm:draft"/></fo:block>
 								<fo:block text-align-last="justify">
 									<fo:inline>
-										<xsl:if test="/bipm:bipm-standard/bipm:bibdata/bipm:ext/bipm:structuredidentifier/bipm:appendix">
+										<xsl:if test="/bipm:metanorma/bipm:bibdata/bipm:ext/bipm:structuredidentifier/bipm:appendix">
 											<xsl:choose>
 												<xsl:when test="$lang = 'fr'">Annexe </xsl:when>
 												<xsl:otherwise>Appendix </xsl:otherwise>
 											</xsl:choose>
-											<xsl:value-of select="/bipm:bipm-standard/bipm:bibdata/bipm:ext/bipm:structuredidentifier/bipm:appendix"/>
+											<xsl:value-of select="/bipm:metanorma/bipm:bibdata/bipm:ext/bipm:structuredidentifier/bipm:appendix"/>
 										</xsl:if>
 									</fo:inline>
 									<fo:inline keep-together.within-line="always">
 										<fo:leader leader-pattern="space"/>
 										<xsl:call-template name="printRevisionDate">
-											<xsl:with-param name="date" select="/bipm:bipm-standard/bipm:bibdata/bipm:version/bipm:revision-date"/>
+											<xsl:with-param name="date" select="/bipm:metanorma/bipm:bibdata/bipm:version/bipm:revision-date"/>
 											<xsl:with-param name="lang" select="$lang"/>
 											<xsl:with-param name="variant" select="'true'"/>
 										</xsl:call-template>
@@ -1485,9 +1487,9 @@
 				
 				<!-- Index -->
 				<xsl:apply-templates select="xalan:nodeset($indexes)/doc[@id = $docid]//bipm:indexsect" mode="index">
-					<xsl:with-param name="isDraft" select="normalize-space(//bipm:bipm-standard/bipm:bibdata/bipm:version/bipm:draft or
-						contains(//bipm:bipm-standard/bipm:bibdata/bipm:status/bipm:stage, 'draft') or
-						contains(//bipm:bipm-standard/bipm:bibdata/bipm:status/bipm:stage, 'projet'))"/>
+					<xsl:with-param name="isDraft" select="normalize-space(//bipm:metanorma/bipm:bibdata/bipm:version/bipm:draft or
+						contains(//bipm:metanorma/bipm:bibdata/bipm:status/bipm:stage, 'draft') or
+						contains(//bipm:metanorma/bipm:bibdata/bipm:status/bipm:stage, 'projet'))"/>
 					<xsl:with-param name="lang" select="$curr_lang"/>
 				</xsl:apply-templates>
 				
@@ -1516,13 +1518,13 @@
 							<xsl:call-template name="getLanguages"/>
 						</xsl:variable>						
 						<xsl:variable name="editionFO">
-							<xsl:apply-templates select="(//bipm:bipm-standard)[1]/bipm:bibdata/bipm:edition[normalize-space(@language) = '']">
+							<xsl:apply-templates select="(//bipm:metanorma)[1]/bipm:bibdata/bipm:edition[normalize-space(@language) = '']">
 								<xsl:with-param name="curr_lang" select="xalan:nodeset($languages)/lang[1]"/>
 							</xsl:apply-templates>
 						</xsl:variable>
 						
 						<xsl:variable name="titles">
-							<xsl:for-each select="(//bipm:bipm-standard)[1]/bipm:bibdata/bipm:title">
+							<xsl:for-each select="(//bipm:metanorma)[1]/bipm:bibdata/bipm:title">
 								<xsl:copy-of select="."/>
 							</xsl:for-each>
 						</xsl:variable>
@@ -1590,40 +1592,40 @@
 				
 				<fo:block-container absolute-position="fixed" left="12.5mm" top="60mm">
 					
-					<fo:block font-size="22.2pt" font-weight="{$weight-normal}" role="H1"><xsl:value-of select="(//bipm:bipm-standard)[1]/bipm:bibdata/bipm:title[@language = 'fr' and @type = 'title-main']"/></fo:block>
-					<fo:block font-size="22.2pt" font-weight="{$weight-bold}" margin-top="1mm" role="H1"><xsl:value-of select="(//bipm:bipm-standard)[1]/bipm:bibdata/bipm:title[@language = 'en' and @type = 'title-main']"/></fo:block>
+					<fo:block font-size="22.2pt" font-weight="{$weight-normal}" role="H1"><xsl:value-of select="(//bipm:metanorma)[1]/bipm:bibdata/bipm:title[@language = 'fr' and @type = 'title-main']"/></fo:block>
+					<fo:block font-size="22.2pt" font-weight="{$weight-bold}" margin-top="1mm" role="H1"><xsl:value-of select="(//bipm:metanorma)[1]/bipm:bibdata/bipm:title[@language = 'en' and @type = 'title-main']"/></fo:block>
 					
 					<xsl:variable name="edition_str">édition</xsl:variable>
 						
-					<fo:block font-size="14pt" font-weight="{$weight-bold}" margin-top="4mm"><xsl:value-of select="concat((//bipm:bipm-standard)[1]/bipm:bibdata/bipm:edition[normalize-space(@language) = ''], ' ', $edition_str, ' ', $copyrightYear)"/></fo:block>				
+					<fo:block font-size="14pt" font-weight="{$weight-bold}" margin-top="4mm"><xsl:value-of select="concat((//bipm:metanorma)[1]/bipm:bibdata/bipm:edition[normalize-space(@language) = ''], ' ', $edition_str, ' ', $copyrightYear)"/></fo:block>				
 				</fo:block-container>
 				
 				<fo:block-container absolute-position="fixed" left="12.5mm" top="92mm" height="170mm" width="144mm" display-align="center">
 					<fo:block role="H1">
 					
 						<xsl:variable name="title_appendix_fr">
-							<xsl:apply-templates select="(//bipm:bipm-standard)[1]/bipm:bibdata/bipm:title[@language = 'fr' and @type = 'title-appendix']" mode="title"/>
+							<xsl:apply-templates select="(//bipm:metanorma)[1]/bipm:bibdata/bipm:title[@language = 'fr' and @type = 'title-appendix']" mode="title"/>
 						</xsl:variable>
 						<xsl:variable name="title_appendix_en">
-							<xsl:apply-templates select="(//bipm:bipm-standard)[1]/bipm:bibdata/bipm:title[@language = 'en' and @type = 'title-appendix']" mode="title"/>
+							<xsl:apply-templates select="(//bipm:metanorma)[1]/bipm:bibdata/bipm:title[@language = 'en' and @type = 'title-appendix']" mode="title"/>
 						</xsl:variable>
 						<xsl:variable name="title_annex_fr">
-							<xsl:apply-templates select="(//bipm:bipm-standard)[1]/bipm:bibdata/bipm:title[@language = 'fr' and @type = 'title-annex']" mode="title"/>
+							<xsl:apply-templates select="(//bipm:metanorma)[1]/bipm:bibdata/bipm:title[@language = 'fr' and @type = 'title-annex']" mode="title"/>
 						</xsl:variable>
 						<xsl:variable name="title_annex_en">
-							<xsl:apply-templates select="(//bipm:bipm-standard)[1]/bipm:bibdata/bipm:title[@language = 'en' and @type = 'title-annex']" mode="title"/>
+							<xsl:apply-templates select="(//bipm:metanorma)[1]/bipm:bibdata/bipm:title[@language = 'en' and @type = 'title-annex']" mode="title"/>
 						</xsl:variable>
 						<xsl:variable name="title_part_fr">
-							<xsl:apply-templates select="(//bipm:bipm-standard)[1]/bipm:bibdata/bipm:title[@language = 'fr' and @type = 'title-part']" mode="title"/>
+							<xsl:apply-templates select="(//bipm:metanorma)[1]/bipm:bibdata/bipm:title[@language = 'fr' and @type = 'title-part']" mode="title"/>
 						</xsl:variable>
 						<xsl:variable name="title_part_en">
-							<xsl:apply-templates select="(//bipm:bipm-standard)[1]/bipm:bibdata/bipm:title[@language = 'en' and @type = 'title-part']" mode="title"/>
+							<xsl:apply-templates select="(//bipm:metanorma)[1]/bipm:bibdata/bipm:title[@language = 'en' and @type = 'title-part']" mode="title"/>
 						</xsl:variable>
 						<xsl:variable name="title_subpart_fr">
-							<xsl:apply-templates select="(//bipm:bipm-standard)[1]/bipm:bibdata/bipm:title[@language = 'fr' and @type = 'title-subpart']" mode="title"/>
+							<xsl:apply-templates select="(//bipm:metanorma)[1]/bipm:bibdata/bipm:title[@language = 'fr' and @type = 'title-subpart']" mode="title"/>
 						</xsl:variable>
 						<xsl:variable name="title_subpart_en">
-							<xsl:apply-templates select="(//bipm:bipm-standard)[1]/bipm:bibdata/bipm:title[@language = 'en' and @type = 'title-subpart']" mode="title"/>
+							<xsl:apply-templates select="(//bipm:metanorma)[1]/bipm:bibdata/bipm:title[@language = 'en' and @type = 'title-subpart']" mode="title"/>
 						</xsl:variable>
 						
 						<xsl:variable name="titles_length" select="string-length($title_appendix_fr) + 
@@ -1663,14 +1665,14 @@
 						</xsl:variable>
 						
 						<!-- Appendix titles processing -->
-						<xsl:variable name="appendix_num" select="normalize-space((//bipm:bipm-standard)[1]/bipm:bibdata/bipm:ext/bipm:structuredidentifier/bipm:appendix)"/>
+						<xsl:variable name="appendix_num" select="normalize-space((//bipm:metanorma)[1]/bipm:bibdata/bipm:ext/bipm:structuredidentifier/bipm:appendix)"/>
 						<xsl:if test="$appendix_num != ''">
 							<fo:block font-size="{$font-size-number-factor * 17}pt" font-weight="{$weight-normal}">Annexe <xsl:value-of select="$appendix_num"/></fo:block>
 							<fo:block font-size="{$font-size-number-factor * 17}pt" font-weight="{$weight-bold}">Appendix  <xsl:value-of select="$appendix_num"/></fo:block>
 						</xsl:if>
 
 
-						<xsl:if test="(//bipm:bipm-standard)[1]/bipm:bibdata/bipm:title[@type = 'title-appendix']">
+						<xsl:if test="(//bipm:metanorma)[1]/bipm:bibdata/bipm:title[@type = 'title-appendix']">
 							<fo:block font-size="{$font-size-factor * 30.4}pt">
 								<fo:block font-size="{$space-factor * 30.4}pt">&#xA0;</fo:block>
 								<fo:block font-weight="{$weight-normal}"><xsl:copy-of select="$title_appendix_fr"/></fo:block>
@@ -1683,8 +1685,8 @@
 						<!-- End Appendix titles processing -->
 						
 						<!-- Annex title processing -->
-						<xsl:if test="(//bipm:bipm-standard)[1]/bipm:bibdata/bipm:title[@type = 'title-annex']">
-							<xsl:variable name="annex_num" select="normalize-space((//bipm:bipm-standard)[1]/bipm:bibdata/bipm:ext/bipm:structuredidentifier/bipm:annexid)"/>					
+						<xsl:if test="(//bipm:metanorma)[1]/bipm:bibdata/bipm:title[@type = 'title-annex']">
+							<xsl:variable name="annex_num" select="normalize-space((//bipm:metanorma)[1]/bipm:bibdata/bipm:ext/bipm:structuredidentifier/bipm:annexid)"/>					
 							<xsl:if test="$annex_num != ''">
 								<fo:block font-size="{$space-factor * 30.4}pt">&#xA0;</fo:block>
 								<!-- Annexe -->
@@ -1711,8 +1713,8 @@
 						<!-- End Annex titles  processing -->
 						
 						<!--  Part titles processing -->
-						<xsl:if test="(//bipm:bipm-standard)[1]/bipm:bibdata/bipm:title[@type = 'title-part']">
-							<xsl:variable name="part_num" select="normalize-space((//bipm:bipm-standard)[1]/bipm:bibdata/bipm:ext/bipm:structuredidentifier/bipm:part)"/>					
+						<xsl:if test="(//bipm:metanorma)[1]/bipm:bibdata/bipm:title[@type = 'title-part']">
+							<xsl:variable name="part_num" select="normalize-space((//bipm:metanorma)[1]/bipm:bibdata/bipm:ext/bipm:structuredidentifier/bipm:part)"/>					
 							<xsl:if test="$part_num != ''">
 								<fo:block font-size="{$space-factor * 30.4}pt">&#xA0;</fo:block>
 								<!-- Part -->
@@ -1743,8 +1745,8 @@
 						<!-- End Part titles  processing -->
 						
 						<!-- Sub-part titles  processing -->
-						<xsl:if test="(//bipm:bipm-standard)[1]/bipm:bibdata/bipm:title[@type = 'title-subpart']">
-							<xsl:variable name="subpart_num" select="normalize-space((//bipm:bipm-standard)[1]/bipm:bibdata/bipm:ext/bipm:structuredidentifier/bipm:subpart)"/>
+						<xsl:if test="(//bipm:metanorma)[1]/bipm:bibdata/bipm:title[@type = 'title-subpart']">
+							<xsl:variable name="subpart_num" select="normalize-space((//bipm:metanorma)[1]/bipm:bibdata/bipm:ext/bipm:structuredidentifier/bipm:subpart)"/>
 							<xsl:if test="$subpart_num != ''">
 								<fo:block font-size="{$space-factor * 30.4}pt">&#xA0;</fo:block>
 								<!-- Sub-part -->
@@ -1777,19 +1779,19 @@
 				
 				<fo:block-container absolute-position="fixed" left="12mm" top="242mm" height="42mm" width="140mm" display-align="after">
 					<fo:block font-size="12pt">
-						<fo:block><xsl:value-of select="(//bipm:bipm-standard)[1]/bipm:bibdata/bipm:ext/bipm:editorialgroup/bipm:committee/bipm:variant[@language = 'fr']"/></fo:block>
-						<fo:block><xsl:value-of select="(//bipm:bipm-standard)[1]/bipm:bibdata/bipm:ext/bipm:editorialgroup/bipm:committee/bipm:variant[@language = 'en']"/></fo:block>
+						<fo:block><xsl:value-of select="(//bipm:metanorma)[1]/bipm:bibdata/bipm:ext/bipm:editorialgroup/bipm:committee/bipm:variant[@language = 'fr']"/></fo:block>
+						<fo:block><xsl:value-of select="(//bipm:metanorma)[1]/bipm:bibdata/bipm:ext/bipm:editorialgroup/bipm:committee/bipm:variant[@language = 'en']"/></fo:block>
 						<fo:block>&#xA0;</fo:block>
 				
 						<fo:block>
 							<xsl:call-template name="printRevisionDate">
-								<xsl:with-param name="date" select="(//bipm:bipm-standard)[1]/bipm:bibdata/bipm:version/bipm:revision-date"/>
+								<xsl:with-param name="date" select="(//bipm:metanorma)[1]/bipm:bibdata/bipm:version/bipm:revision-date"/>
 								<xsl:with-param name="lang" select="'en'"/>
 							</xsl:call-template>
 						</fo:block>
 						<fo:block>
 							<xsl:call-template name="printRevisionDate">
-								<xsl:with-param name="date" select="(//bipm:bipm-standard)[1]/bipm:bibdata/bipm:version/bipm:revision-date"/>
+								<xsl:with-param name="date" select="(//bipm:metanorma)[1]/bipm:bibdata/bipm:version/bipm:revision-date"/>
 								<xsl:with-param name="lang" select="'fr'"/>
 							</xsl:call-template>
 						</fo:block>
@@ -1836,7 +1838,7 @@
 	
 	<xsl:template name="insertInnerCoverPage">
 		
-		<xsl:if test="(//bipm:bipm-standard)[1]/bipm:bibdata/bipm:title[@type='title-cover']">
+		<xsl:if test="(//bipm:metanorma)[1]/bipm:bibdata/bipm:title[@type='title-cover']">
 	
 			<fo:page-sequence master-reference="title-page" format="1" initial-page-number="1" force-page-count="even">
 				
@@ -1849,7 +1851,7 @@
 					</xsl:variable>
 				
 					<xsl:variable name="titles">
-						<xsl:for-each select="(//bipm:bipm-standard)[1]/bipm:bibdata/bipm:title">
+						<xsl:for-each select="(//bipm:metanorma)[1]/bipm:bibdata/bipm:title">
 							<xsl:copy-of select="."/>
 						</xsl:for-each>
 					</xsl:variable>
@@ -1907,7 +1909,7 @@
 	<!-- End Cover Pages -->
 		
 	
-	<xsl:template match="bipm:bipm-standard/bipm:bibdata/bipm:title[@language = 'en']/text()" priority="3">
+	<xsl:template match="bipm:metanorma/bipm:bibdata/bipm:title[@language = 'en']/text()" priority="3">
 		<xsl:variable name="mep_text" select="'Mise en pratique'"/>
 		<xsl:choose>
 			<xsl:when test="contains(., $mep_text)">
@@ -1942,7 +1944,7 @@
 	<xsl:template name="getLanguages">
 		<xsl:choose>
 			<xsl:when test="$doc_split_by_language = ''"><!-- all documents -->
-				<xsl:for-each select="//bipm:bipm-standard/bipm:bibdata">
+				<xsl:for-each select="//bipm:metanorma/bipm:bibdata">
 					<lang><xsl:value-of select="bipm:language[@current = 'true']"/></lang>
 				</xsl:for-each>
 			</xsl:when>
@@ -2256,14 +2258,14 @@
 		<fo:page-sequence master-reference="document" force-page-count="no-force">
 			<xsl:call-template name="insertFootnoteSeparator"/>
 			
-			<xsl:variable name="curr_lang" select="/bipm:bipm-standard/bipm:bibdata/bipm:language[@current = 'true']"/>
+			<xsl:variable name="curr_lang" select="/bipm:metanorma/bipm:bibdata/bipm:language[@current = 'true']"/>
 												
 			<xsl:variable name="header-title">
 				<xsl:choose>
 					<xsl:when test="$lang = 'fr'">Annexe </xsl:when>
 					<xsl:otherwise>Appendix </xsl:otherwise>
 				</xsl:choose>
-				<xsl:value-of select="/bipm:bipm-standard/bipm:bibdata/bipm:ext/bipm:structuredidentifier/bipm:appendix"/>
+				<xsl:value-of select="/bipm:metanorma/bipm:bibdata/bipm:ext/bipm:structuredidentifier/bipm:appendix"/>
 			</xsl:variable>
 			<xsl:call-template name="insertHeaderFooter">
 				<xsl:with-param name="header-title" select="$header-title"/>
@@ -2280,7 +2282,7 @@
 		</fo:page-sequence>
 	</xsl:template>
 	
-	<xsl:template match="bipm:bipm-standard/bipm:bibdata/bipm:edition">
+	<xsl:template match="bipm:metanorma/bipm:bibdata/bipm:edition">
 		<xsl:param name="font-size" select="'65%'"/>
 		<xsl:param name="baseline-shift" select="'30%'"/>
 		<xsl:param name="curr_lang" select="'fr'"/>
@@ -3169,12 +3171,12 @@
 								<xsl:text>, </xsl:text>
 								<xsl:variable name="nosee" select="normalize-space(@nosee)"/>
 								<xsl:if test="$nosee != 'true'">
-									<xsl:variable name="curr_lang" select="ancestor::bipm:bipm-standard/bipm:bibdata/bipm:language[@current = 'true']"/>					
+									<xsl:variable name="curr_lang" select="ancestor::bipm:metanorma/bipm:bibdata/bipm:language[@current = 'true']"/>					
 									<fo:inline>
 										<xsl:if test="ancestor::bipm:note_side">
 											<xsl:attribute name="font-style">italic</xsl:attribute>
 										</xsl:if>
-										<xsl:value-of select="ancestor::bipm:bipm-standard/bipm:localized-strings/bipm:localized-string[@key='see' and @language=$curr_lang]"/>
+										<xsl:value-of select="ancestor::bipm:metanorma/bipm:localized-strings/bipm:localized-string[@key='see' and @language=$curr_lang]"/>
 									</fo:inline>
 									<xsl:text> </xsl:text>
 								</xsl:if>
@@ -3207,7 +3209,7 @@
 	<xsl:template match="bipm:note[not(ancestor::bipm:preface)]/bipm:name" priority="2">
 		<xsl:choose>
 			<xsl:when test="not(../preceding-sibling::bipm:note) and not((../following-sibling::bipm:note))">
-				<!-- <xsl:variable name="curr_lang" select="ancestor::bipm:bipm-standard/bipm:bibdata/bipm:language[@current = 'true']"/>
+				<!-- <xsl:variable name="curr_lang" select="ancestor::bipm:metanorma/bipm:bibdata/bipm:language[@current = 'true']"/>
 				<xsl:choose>
 					<xsl:when test="$curr_lang = 'fr'">
 						<xsl:choose>
@@ -3596,9 +3598,9 @@
 	<xsl:template name="insertDraftWatermark">
 		<xsl:param name="isDraft"/>
 		<xsl:param name="lang"/>
-		<xsl:if test="$isDraft = 'true' or normalize-space(//bipm:bipm-standard/bipm:bibdata/bipm:version/bipm:draft or
-		contains(//bipm:bipm-standard/bipm:bibdata/bipm:status/bipm:stage, 'draft') or
-		contains(//bipm:bipm-standard/bipm:bibdata/bipm:status/bipm:stage, 'projet')) = 'true'">
+		<xsl:if test="$isDraft = 'true' or normalize-space(//bipm:metanorma/bipm:bibdata/bipm:version/bipm:draft or
+		contains(//bipm:metanorma/bipm:bibdata/bipm:status/bipm:stage, 'draft') or
+		contains(//bipm:metanorma/bipm:bibdata/bipm:status/bipm:stage, 'projet')) = 'true'">
 			<!-- DRAFT -->
 			<xsl:variable name="draft_label">
 				<xsl:choose>
@@ -3642,9 +3644,9 @@
 	</xsl:template>
 
 	<xsl:template name="insertHeaderDraftWatermark">
-		<xsl:variable name="isDraft" select="normalize-space(//bipm:bipm-standard/bipm:bibdata/bipm:version/bipm:draft or
-		contains(//bipm:bipm-standard/bipm:bibdata/bipm:status/bipm:stage, 'draft') or
-		contains(//bipm:bipm-standard/bipm:bibdata/bipm:status/bipm:stage, 'projet'))"/>
+		<xsl:variable name="isDraft" select="normalize-space(//bipm:metanorma/bipm:bibdata/bipm:version/bipm:draft or
+		contains(//bipm:metanorma/bipm:bibdata/bipm:status/bipm:stage, 'draft') or
+		contains(//bipm:metanorma/bipm:bibdata/bipm:status/bipm:stage, 'projet'))"/>
 		<xsl:variable name="curr_lang" select="$doc_split_by_language"/>
 		<xsl:if test="$isDraft = 'true'">
 			<fo:static-content flow-name="header-blank" role="artifact">
@@ -3782,7 +3784,7 @@
 	</xsl:variable>
 	
 	<xsl:variable name="Image-Logo-SI">
-		<xsl:variable name="si-aspect" select="java:toLowerCase(java:java.lang.String.new(normalize-space(//bipm:bipm-standard/bipm:bibdata//bipm:si-aspect)))"/>		
+		<xsl:variable name="si-aspect" select="java:toLowerCase(java:java.lang.String.new(normalize-space(//bipm:metanorma/bipm:bibdata//bipm:si-aspect)))"/>		
 		<xsl:choose>
 			<xsl:when test="$si-aspect = 'a_e_deltanu'">
 				<svg

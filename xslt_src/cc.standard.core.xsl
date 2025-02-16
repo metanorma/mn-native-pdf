@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" 
 											xmlns:fo="http://www.w3.org/1999/XSL/Format" 
-											xmlns:csd="https://www.metanorma.org/ns/csd" 
+											xmlns:csd="https://www.metanorma.org/ns/standoc" 
 											xmlns:mathml="http://www.w3.org/1998/Math/MathML" 
 											xmlns:xalan="http://xml.apache.org/xalan" 
 											xmlns:fox="http://xmlgraphics.apache.org/fop/extensions" 
@@ -21,14 +21,14 @@
 	
 	<xsl:variable name="copyright">
 		<xsl:text>© The Calendaring and Scheduling Consortium, Inc. </xsl:text>
-		<xsl:value-of select="/csd:csd-standard/csd:bibdata/csd:copyright/csd:from"/>
+		<xsl:value-of select="/csd:metanorma/csd:bibdata/csd:copyright/csd:from"/>
 		<xsl:text> – All rights reserved</xsl:text>
 	</xsl:variable>
 	
 	<xsl:variable name="header">
-		<xsl:value-of select="/csd:csd-standard/csd:bibdata/csd:docidentifier[@type = 'csd']"/>
+		<xsl:value-of select="/csd:metanorma/csd:bibdata/csd:docidentifier[@type = 'csd']"/>
 		<xsl:text>:</xsl:text>
-		<xsl:value-of select="/csd:csd-standard/csd:bibdata/csd:copyright/csd:from"/>
+		<xsl:value-of select="/csd:metanorma/csd:bibdata/csd:copyright/csd:from"/>
 	</xsl:variable>
 	
 	<xsl:variable name="contents_">
@@ -198,17 +198,17 @@
 					<fo:block text-align="right">
 						<!-- CC/FDS 18011:2018 -->
 						<fo:block font-size="14pt" font-weight="bold" margin-bottom="10pt">
-							<xsl:value-of select="/csd:csd-standard/csd:bibdata/csd:docidentifier[@type = 'csd']"/><xsl:text> </xsl:text>
+							<xsl:value-of select="/csd:metanorma/csd:bibdata/csd:docidentifier[@type = 'csd']"/><xsl:text> </xsl:text>
 						</fo:block>
 						<fo:block margin-bottom="12pt">
-							<xsl:value-of select="/csd:csd-standard/csd:bibdata/csd:copyright/csd:owner/csd:organization/csd:name"/>
+							<xsl:value-of select="/csd:metanorma/csd:bibdata/csd:copyright/csd:owner/csd:organization/csd:name"/>
 							<xsl:text> TC </xsl:text>
-							<xsl:value-of select="/csd:csd-standard/csd:bibdata/csd:ext/csd:editorialgroup/csd:technical-committee"/>
+							<xsl:value-of select="/csd:metanorma/csd:bibdata/csd:ext/csd:editorialgroup/csd:technical-committee"/>
 							<xsl:text> </xsl:text>
 						</fo:block>
 					</fo:block>
 					<fo:block font-size="24pt" font-weight="bold" text-align="center" role="H1">
-						<xsl:value-of select="/csd:csd-standard/csd:bibdata/csd:title[@language = 'en']" />
+						<xsl:value-of select="/csd:metanorma/csd:bibdata/csd:title[@language = 'en']" />
 						<xsl:value-of select="$linebreak"/>
 					</fo:block>
 					<fo:block>&#xA0;</fo:block>
@@ -218,12 +218,12 @@
 							<fo:block padding-top="1mm">
 								<xsl:call-template name="capitalizeWords">
 									<!-- ex: final-draft -->
-									<xsl:with-param name="str" select="/csd:csd-standard/csd:bibdata/csd:status/csd:stage"/>
+									<xsl:with-param name="str" select="/csd:metanorma/csd:bibdata/csd:status/csd:stage"/>
 								</xsl:call-template>
 								<xsl:text> </xsl:text>
 								<xsl:call-template name="capitalizeWords">
 									<!-- ex: standard -->
-									<xsl:with-param name="str" select="/csd:csd-standard/csd:bibdata/csd:ext/csd:doctype"/>
+									<xsl:with-param name="str" select="/csd:metanorma/csd:bibdata/csd:ext/csd:doctype"/>
 								</xsl:call-template>
 							</fo:block>
 						</fo:block-container>
@@ -240,7 +240,7 @@
 					</fo:block-container>
 					<fo:block text-align="center">
 						<xsl:text>The Calendaring and Scheduling Consortium, Inc.&#xA0; </xsl:text>
-						<xsl:value-of select="/csd:csd-standard/csd:bibdata/csd:copyright/csd:from"/>
+						<xsl:value-of select="/csd:metanorma/csd:bibdata/csd:copyright/csd:from"/>
 					</fo:block>
 				</fo:flow>
 			</fo:page-sequence>
@@ -292,20 +292,20 @@
 									<fo:block margin-bottom="15pt">&#xA0;</fo:block>
 									<fo:block margin-bottom="14pt">
 										<xsl:text>© </xsl:text>
-										<xsl:value-of select="/csd:csd-standard/csd:bibdata/csd:copyright/csd:from"/>
+										<xsl:value-of select="/csd:metanorma/csd:bibdata/csd:copyright/csd:from"/>
 										<xsl:text> </xsl:text>
 										<fo:inline>
-											<xsl:apply-templates select="/csd:csd-standard/csd:boilerplate/csd:feedback-statement/csd:clause/csd:p[@id = 'boilerplate-name']"/>
+											<xsl:apply-templates select="/csd:metanorma/csd:boilerplate/csd:feedback-statement/csd:clause/csd:p[@id = 'boilerplate-name']"/>
 										</fo:inline>
 									</fo:block>
 									<fo:block margin-bottom="12pt">
-										<xsl:apply-templates select="/csd:csd-standard/csd:boilerplate/csd:legal-statement"/>
+										<xsl:apply-templates select="/csd:metanorma/csd:boilerplate/csd:legal-statement"/>
 									</fo:block>
 									<fo:block margin-bottom="12pt">
-										<xsl:apply-templates select="/csd:csd-standard/csd:boilerplate/csd:feedback-statement/csd:clause/csd:p[@id = 'boilerplate-name']"/>
+										<xsl:apply-templates select="/csd:metanorma/csd:boilerplate/csd:feedback-statement/csd:clause/csd:p[@id = 'boilerplate-name']"/>
 									</fo:block>
 									<fo:block>
-										<xsl:apply-templates select="/csd:csd-standard/csd:boilerplate/csd:feedback-statement/csd:clause/csd:p[@id = 'boilerplate-address']"/>
+										<xsl:apply-templates select="/csd:metanorma/csd:boilerplate/csd:feedback-statement/csd:clause/csd:p[@id = 'boilerplate-address']"/>
 									</fo:block>
 									
 									<fo:block break-after="page"/>
@@ -344,7 +344,7 @@
 							<xsl:call-template name="insertHeaderFooter"/>
 							<fo:flow flow-name="xsl-region-body">
 								<!-- <fo:block font-size="16pt" font-weight="bold" margin-bottom="17pt" role="H1">
-									<xsl:value-of select="/csd:csd-standard/csd:bibdata/csd:title[@language = 'en']"/>
+									<xsl:value-of select="/csd:metanorma/csd:bibdata/csd:title[@language = 'en']"/>
 								</fo:block> -->
 								<fo:block>
 									<!-- <xsl:call-template name="processMainSectionsDefault"/> -->

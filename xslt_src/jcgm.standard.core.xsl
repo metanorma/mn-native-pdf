@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" 
 											xmlns:fo="http://www.w3.org/1999/XSL/Format" 
-											xmlns:jcgm="https://www.metanorma.org/ns/bipm" 
-											xmlns:bipm="https://www.metanorma.org/ns/bipm" 
+											xmlns:jcgm="https://www.metanorma.org/ns/standoc" 
+											xmlns:bipm="https://www.metanorma.org/ns/standoc" 
 											xmlns:mathml="http://www.w3.org/1998/Math/MathML" 
 											xmlns:xalan="http://xml.apache.org/xalan" 
 											xmlns:fox="http://xmlgraphics.apache.org/fop/extensions" 
@@ -27,7 +27,7 @@
 		<xsl:choose>
 			<xsl:when test="normalize-space($align-cross-elements) != ''"><xsl:value-of select="$align-cross-elements"/></xsl:when>
 			<xsl:otherwise>
-				<xsl:value-of select="normalize-space((//jcgm:bipm-standard)[1]/jcgm:bibdata/jcgm:ext/jcgm:parallel-align-element)"/>
+				<xsl:value-of select="normalize-space((//jcgm:metanorma)[1]/jcgm:bibdata/jcgm:ext/jcgm:parallel-align-element)"/>
 			</xsl:otherwise>
 		</xsl:choose>
 	</xsl:variable>
@@ -48,7 +48,7 @@
 	<xsl:variable name="doc_first">
 		<xsl:if test="*[local-name()='metanorma-collection']">
 			<xsl:variable name="doc_first_step1">
-				<xsl:apply-templates  select="(/*[local-name()='metanorma-collection']//*[local-name() = 'bipm-standard'])[1]" mode="flatxml_step1">
+				<xsl:apply-templates  select="(/*[local-name()='metanorma-collection']//*[local-name() = 'metanorma'])[1]" mode="flatxml_step1">
 					<xsl:with-param name="num" select="'first'"/>
 				</xsl:apply-templates>
 			</xsl:variable>
@@ -60,7 +60,7 @@
 	</xsl:variable>
 	<xsl:variable name="docs_slave">
 		<xsl:if test="*[local-name()='metanorma-collection']">
-			<xsl:for-each select="(/*[local-name()='metanorma-collection']//*[local-name() = 'bipm-standard'])[position() &gt; 1]">
+			<xsl:for-each select="(/*[local-name()='metanorma-collection']//*[local-name() = 'metanorma'])[position() &gt; 1]">
 				<xsl:variable name="doc_first_step1">
 					<xsl:apply-templates  select="." mode="flatxml_step1">
 					<xsl:with-param name="num" select="'slave'"/>
@@ -79,7 +79,7 @@
 	<xsl:variable name="docs_count">
 		<xsl:choose>
 			<xsl:when test="/*[local-name()='metanorma-collection']">
-				<xsl:value-of select="count(/*[local-name()='metanorma-collection']//*[local-name() = 'bipm-standard'])"/>
+				<xsl:value-of select="count(/*[local-name()='metanorma-collection']//*[local-name() = 'metanorma'])"/>
 			</xsl:when>
 			<xsl:otherwise>1</xsl:otherwise>
 		</xsl:choose>
@@ -96,7 +96,7 @@
 		</xsl:call-template>
 	</xsl:variable>
 	
-	<xsl:variable name="copyrightText" select="concat('© ', (//jcgm:bipm-standard)[1]/jcgm:bibdata/jcgm:ext/jcgm:editorialgroup/jcgm:committee/@acronym, ' ', (//jcgm:bipm-standard)[1]/jcgm:bibdata/jcgm:copyright/jcgm:from, ' — ', $all_rights_reserved)"/>
+	<xsl:variable name="copyrightText" select="concat('© ', (//jcgm:metanorma)[1]/jcgm:bibdata/jcgm:ext/jcgm:editorialgroup/jcgm:committee/@acronym, ' ', (//jcgm:metanorma)[1]/jcgm:bibdata/jcgm:copyright/jcgm:from, ' — ', $all_rights_reserved)"/>
   
 	
 	<!-- Example:
@@ -105,7 +105,7 @@
 	-->
 	<xsl:variable name="contents_">
 	
-		<xsl:for-each select="//*[local-name() = 'bipm-standard']">
+		<xsl:for-each select="//*[local-name() = 'metanorma']">
 			<xsl:variable name="lang" select="*[local-name()='bibdata']/*[local-name()='language'][@current = 'true']"/>
 			<xsl:variable name="current_document">
 				<xsl:copy-of select="."/>
@@ -132,7 +132,7 @@
 	
 	
 	<xsl:variable name="indexes">
-		<xsl:for-each select="//jcgm:bipm-standard">
+		<xsl:for-each select="//jcgm:metanorma">
 			
 			<xsl:variable name="current_document">
 				<xsl:copy-of select="."/>
@@ -249,11 +249,11 @@
 				<xsl:call-template name="addPDFUAmeta"/>
 			</fo:declarations>
 				
-			<!-- <xsl:if test="$debug = 'true'">
-				<redirect:write file="contents_{java:getTime(java:java.util.Date.new())}.xml">
+			<xsl:if test="$debug = 'true'">
+				<redirect:write file="contents_.xml"> <!-- {java:getTime(java:java.util.Date.new())} -->
 					<xsl:copy-of select="$contents"/>
 				</redirect:write>
-			</xsl:if> -->
+			</xsl:if>
 				
 			<xsl:call-template name="addBookmarks">
 				<xsl:with-param name="contents" select="$contents"/>
@@ -266,15 +266,15 @@
 						<xsl:call-template name="printEdition"/>
 						<xsl:text>&#xa0;&#xa0;&#xa0;</xsl:text>
 						<xsl:call-template name="convertDate">
-							<xsl:with-param name="date" select="(//jcgm:bipm-standard)[1]/jcgm:bibdata/jcgm:date[@type = 'published']/jcgm:on"/>
+							<xsl:with-param name="date" select="(//jcgm:metanorma)[1]/jcgm:bibdata/jcgm:date[@type = 'published']/jcgm:on"/>
 						</xsl:call-template>
 					</fo:block>
 					<!-- Example © JCGM 2009 -->
 					<fo:block font-size="11pt">
 						<fo:inline font-family="Times New Roman" font-size="12pt"><xsl:text>© </xsl:text></fo:inline>
-						<xsl:value-of select="(//jcgm:bipm-standard)[1]/jcgm:bibdata/jcgm:ext/jcgm:editorialgroup/jcgm:committee/@acronym"/>
+						<xsl:value-of select="(//jcgm:metanorma)[1]/jcgm:bibdata/jcgm:ext/jcgm:editorialgroup/jcgm:committee/@acronym"/>
 						<xsl:text> </xsl:text>
-						<xsl:value-of select="(//jcgm:bipm-standard)[1]/jcgm:bibdata/jcgm:copyright/jcgm:from"/>
+						<xsl:value-of select="(//jcgm:metanorma)[1]/jcgm:bibdata/jcgm:copyright/jcgm:from"/>
 					</fo:block>
 				</fo:static-content>
 				<fo:flow flow-name="xsl-region-body">
@@ -282,20 +282,20 @@
 					<xsl:call-template name="insertDraftWatermark"/>
 					<fo:block-container font-weight="bold">
 						<fo:block font-size="16.5pt">
-							<xsl:value-of select="(//jcgm:bipm-standard)[1]/jcgm:bibdata/jcgm:ext/jcgm:editorialgroup/jcgm:committee/@acronym"/>
+							<xsl:value-of select="(//jcgm:metanorma)[1]/jcgm:bibdata/jcgm:ext/jcgm:editorialgroup/jcgm:committee/@acronym"/>
 							<xsl:text> </xsl:text>
-							<xsl:value-of select="(//jcgm:bipm-standard)[1]/jcgm:bibdata/jcgm:docnumber"/>
+							<xsl:value-of select="(//jcgm:metanorma)[1]/jcgm:bibdata/jcgm:docnumber"/>
 							<fo:inline font-weight="normal">:</fo:inline>
-							<xsl:value-of select="(//jcgm:bipm-standard)[1]/jcgm:bibdata/jcgm:copyright/jcgm:from"/>
+							<xsl:value-of select="(//jcgm:metanorma)[1]/jcgm:bibdata/jcgm:copyright/jcgm:from"/>
 						</fo:block>
 						<fo:block font-size="13pt" font-weight="normal" space-after="19.5mm">
-							<xsl:value-of select="(//jcgm:bipm-standard)[1]/jcgm:bibdata/jcgm:title[@type = 'title-provenance']"/>
+							<xsl:value-of select="(//jcgm:metanorma)[1]/jcgm:bibdata/jcgm:title[@type = 'title-provenance']"/>
 						</fo:block>
 						<fo:block border-bottom="1pt solid black">&#xa0;</fo:block>
 						<fo:block font-size="16.5pt" margin-left="-0.5mm"  padding-top="3.5mm" space-after="7mm" margin-right="7mm" line-height="105%" role="H1">
-							<xsl:apply-templates select="(//jcgm:bipm-standard)[1]/jcgm:bibdata/jcgm:title[@language = $lang and @type = 'title-main']" mode="title"/>
+							<xsl:apply-templates select="(//jcgm:metanorma)[1]/jcgm:bibdata/jcgm:title[@language = $lang and @type = 'title-main']" mode="title"/>
 							<xsl:variable name="title_part">
-								<xsl:apply-templates select="(//jcgm:bipm-standard)[1]/jcgm:bibdata/jcgm:title[@language = $lang and @type = 'title-part']" mode="title"/>
+								<xsl:apply-templates select="(//jcgm:metanorma)[1]/jcgm:bibdata/jcgm:title[@language = $lang and @type = 'title-part']" mode="title"/>
 							</xsl:variable>
 							<xsl:if test="normalize-space($title_part) != ''">
 								<xsl:text> — </xsl:text>
@@ -303,10 +303,10 @@
 							</xsl:if>
 						</fo:block>
 						<fo:block font-size="12pt" font-style="italic" line-height="140%" role="H1">
-							<xsl:variable name="secondLang" select="(//jcgm:bipm-standard)[1]/jcgm:bibdata/jcgm:title/@language[. != $lang]"/>
-							<xsl:apply-templates select="(//jcgm:bipm-standard)[1]/jcgm:bibdata/jcgm:title[@language = $secondLang and @type = 'title-main']" mode="title"/>
+							<xsl:variable name="secondLang" select="(//jcgm:metanorma)[1]/jcgm:bibdata/jcgm:title/@language[. != $lang]"/>
+							<xsl:apply-templates select="(//jcgm:metanorma)[1]/jcgm:bibdata/jcgm:title[@language = $secondLang and @type = 'title-main']" mode="title"/>
 							<xsl:variable name="title_part">
-								<xsl:apply-templates select="(//jcgm:bipm-standard)[1]/jcgm:bibdata/jcgm:title[@language = $secondLang and @type = 'title-part']" mode="title"/>
+								<xsl:apply-templates select="(//jcgm:metanorma)[1]/jcgm:bibdata/jcgm:title[@language = $secondLang and @type = 'title-part']" mode="title"/>
 							</xsl:variable>
 							<xsl:if test="normalize-space($title_part) != ''">
 								<xsl:text> — </xsl:text>
@@ -332,20 +332,20 @@
 						<fo:table-body>
 							<fo:table-row>
 								<fo:table-cell>
-									<fo:block><xsl:value-of select="(//jcgm:bipm-standard)[1]/jcgm:bibdata/jcgm:ext/jcgm:editorialgroup/jcgm:committee"/></fo:block>
+									<fo:block><xsl:value-of select="(//jcgm:metanorma)[1]/jcgm:bibdata/jcgm:ext/jcgm:editorialgroup/jcgm:committee"/></fo:block>
 								</fo:table-cell>
 								<fo:table-cell line-height="140%">
-									<fo:block><xsl:value-of select="(//jcgm:bipm-standard)[1]/jcgm:bibdata/jcgm:ext/jcgm:editorialgroup/jcgm:committee/@acronym"/></fo:block>
-									<fo:block><xsl:value-of select="(//jcgm:bipm-standard)[1]/jcgm:bibdata/jcgm:docnumber"/></fo:block>
-									<fo:block><xsl:value-of select="(//jcgm:bipm-standard)[1]/jcgm:bibdata/jcgm:copyright/jcgm:from"/></fo:block>
+									<fo:block><xsl:value-of select="(//jcgm:metanorma)[1]/jcgm:bibdata/jcgm:ext/jcgm:editorialgroup/jcgm:committee/@acronym"/></fo:block>
+									<fo:block><xsl:value-of select="(//jcgm:metanorma)[1]/jcgm:bibdata/jcgm:docnumber"/></fo:block>
+									<fo:block><xsl:value-of select="(//jcgm:metanorma)[1]/jcgm:bibdata/jcgm:copyright/jcgm:from"/></fo:block>
 								</fo:table-cell>
 							</fo:table-row>
 						</fo:table-body>
 					</fo:table>
 					<fo:block font-size="18pt" space-before="70mm" role="H1">
-						<xsl:apply-templates select="(//jcgm:bipm-standard)[1]/jcgm:bibdata/jcgm:title[@language = $lang and @type = 'title-main']" mode="title"/>
+						<xsl:apply-templates select="(//jcgm:metanorma)[1]/jcgm:bibdata/jcgm:title[@language = $lang and @type = 'title-main']" mode="title"/>
 						<xsl:variable name="title_part">
-							<xsl:apply-templates select="(//jcgm:bipm-standard)[1]/jcgm:bibdata/jcgm:title[@language = $lang and @type = 'title-part']" mode="title"/>
+							<xsl:apply-templates select="(//jcgm:metanorma)[1]/jcgm:bibdata/jcgm:title[@language = $lang and @type = 'title-part']" mode="title"/>
 						</xsl:variable>
 						<xsl:if test="normalize-space($title_part) != ''">
 							<xsl:text> — </xsl:text>
@@ -353,10 +353,10 @@
 						</xsl:if>
 					</fo:block>
 					<fo:block font-size="13pt" space-before="35mm" role="H1">
-						<xsl:variable name="secondLang" select="(//jcgm:bipm-standard)[1]/jcgm:bibdata/jcgm:title/@language[. != $lang]"/>
-						<xsl:apply-templates select="(//jcgm:bipm-standard)[1]/jcgm:bibdata/jcgm:title[@language = $secondLang and @type = 'title-main']" mode="title"/>
+						<xsl:variable name="secondLang" select="(//jcgm:metanorma)[1]/jcgm:bibdata/jcgm:title/@language[. != $lang]"/>
+						<xsl:apply-templates select="(//jcgm:metanorma)[1]/jcgm:bibdata/jcgm:title[@language = $secondLang and @type = 'title-main']" mode="title"/>
 						<xsl:variable name="title_part">
-							<xsl:apply-templates select="(//jcgm:bipm-standard)[1]/jcgm:bibdata/jcgm:title[@language = $secondLang and @type = 'title-part']" mode="title"/>
+							<xsl:apply-templates select="(//jcgm:metanorma)[1]/jcgm:bibdata/jcgm:title[@language = $secondLang and @type = 'title-part']" mode="title"/>
 						</xsl:variable>
 						<xsl:if test="normalize-space($title_part) != ''">
 							<xsl:text> — </xsl:text>
@@ -409,7 +409,7 @@
 			
 			
 				<xsl:choose>
-					<xsl:when test="count(..//*[local-name() = 'bipm-standard']) = 1">
+					<xsl:when test="count(..//*[local-name() = 'metanorma']) = 1">
 					
 						<xsl:for-each select="xalan:nodeset($updated_xml_with_pages)"> <!-- set context to preface -->
 							
@@ -441,9 +441,9 @@
 								</fo:page-sequence>
 							</xsl:for-each>
 						</xsl:for-each>
-					</xsl:when> <!-- END: count(//*[local-name() = 'bipm-standard']) = 1 -->
+					</xsl:when> <!-- END: count(//*[local-name() = 'metanorma']) = 1 -->
 					
-					<xsl:otherwise> <!-- count(//*[local-name() = 'bipm-standard']) != 1 -->
+					<xsl:otherwise> <!-- count(//*[local-name() = 'metanorma']) != 1 -->
 						<fo:page-sequence master-reference="document-jcgm" initial-page-number="1" force-page-count="no-force">
 							
 							<xsl:call-template name="insertHeaderFooter"/>
@@ -452,7 +452,7 @@
 								<!-- Show title -->
 								<!-- Example: Evaluation of measurement data — An introduction to the `Guide to the expression of uncertainty in measurement' and related documents -->
 								
-								<xsl:for-each select="..//*[local-name() = 'bipm-standard']">	
+								<xsl:for-each select="..//*[local-name() = 'metanorma']">	
 									<xsl:apply-templates select="jcgm:sections/jcgm:p[starts-with(@class, 'zzSTDTitle')]"/>
 								</xsl:for-each>
 								
@@ -479,7 +479,7 @@
 								
 							</fo:flow>
 						</fo:page-sequence>
-					</xsl:otherwise> <!-- count(//*[local-name() = 'bipm-standard']) != 1  -->
+					</xsl:otherwise> <!-- count(//*[local-name() = 'metanorma']) != 1  -->
 				</xsl:choose>
 			
 			</xsl:for-each> 
@@ -502,7 +502,7 @@
 				<xsl:element name="boilerplate" namespace="{$namespace_full}"> <!-- save context element -->
 				
 					<!-- Copyright -->
-					<xsl:for-each select="..//*[local-name() = 'bipm-standard']">
+					<xsl:for-each select="..//*[local-name() = 'metanorma']">
 						<xsl:element name="page_sequence" namespace="{$namespace_full}">
 							<xsl:apply-templates select="./*[local-name()='boilerplate']/*" mode="update_xml_step_move_pagebreak"/>
 						</xsl:element>
@@ -513,7 +513,7 @@
 				<xsl:element name="preface" namespace="{$namespace_full}"> <!-- save context element -->
 				
 					<!-- Table of Contents -->
-					<xsl:for-each select="..//*[local-name() = 'bipm-standard']">
+					<xsl:for-each select="..//*[local-name() = 'metanorma']">
 						<xsl:variable name="current_document">
 							<xsl:copy-of select="."/>
 						</xsl:variable>				
@@ -527,28 +527,28 @@
 					
 					<!-- Foreword, Introduction -->					
 					<!-- <xsl:call-template name="processPrefaceSectionsDefault"/> -->
-					<xsl:for-each select="..//*[local-name() = 'bipm-standard']">
+					<xsl:for-each select="..//*[local-name() = 'metanorma']">
 						<xsl:element name="page_sequence" namespace="{$namespace_full}">
 							<xsl:apply-templates select="./*[local-name()='preface']/*[local-name()='abstract']" mode="update_xml_step_move_pagebreak"/>
 						</xsl:element>
 					</xsl:for-each>
-					<xsl:for-each select="..//*[local-name() = 'bipm-standard']">
+					<xsl:for-each select="..//*[local-name() = 'metanorma']">
 						<xsl:element name="page_sequence" namespace="{$namespace_full}">
 							<xsl:apply-templates select="./*[local-name()='preface']/*[local-name()='foreword']" mode="update_xml_step_move_pagebreak"/>
 						</xsl:element>
 					</xsl:for-each>
-					<xsl:for-each select="..//*[local-name() = 'bipm-standard']">
+					<xsl:for-each select="..//*[local-name() = 'metanorma']">
 						<xsl:element name="page_sequence" namespace="{$namespace_full}">
 							<xsl:apply-templates select="./*[local-name()='preface']/*[local-name()='introduction']" mode="update_xml_step_move_pagebreak"/>
 						</xsl:element>
 					</xsl:for-each>
-					<xsl:for-each select="..//*[local-name() = 'bipm-standard']">
+					<xsl:for-each select="..//*[local-name() = 'metanorma']">
 						<xsl:element name="page_sequence" namespace="{$namespace_full}">
 							<xsl:apply-templates select="./*[local-name()='preface']/*[local-name() != 'abstract' and local-name() != 'foreword' and local-name() != 'introduction' and local-name() != 'acknowledgements' and local-name() != 'note' and local-name() != 'admonition' and 
 					not(local-name() = 'clause' and @type = 'toc')]" mode="update_xml_step_move_pagebreak"/>
 						</xsl:element>
 					</xsl:for-each>
-					<xsl:for-each select="..//*[local-name() = 'bipm-standard']">
+					<xsl:for-each select="..//*[local-name() = 'metanorma']">
 						<xsl:element name="page_sequence" namespace="{$namespace_full}">
 							<xsl:apply-templates select="./*[local-name()='preface']/*[local-name()='acknowledgements']" mode="update_xml_step_move_pagebreak"/>
 						</xsl:element>
@@ -683,9 +683,9 @@
 			</xsl:if>
 			<xsl:apply-templates />
 		</fo:block>
-		<xsl:variable name="curr_lang" select="ancestor::jcgm:bipm-standard/*[local-name()='bibdata']/*[local-name()='language'][@current = 'true']"/>
+		<xsl:variable name="curr_lang" select="ancestor::jcgm:metanorma/*[local-name()='bibdata']/*[local-name()='language'][@current = 'true']"/>
 		<xsl:variable name="edition">
-			<xsl:apply-templates select="ancestor::jcgm:bipm-standard/*[local-name() = 'bibdata']/*[local-name() = 'edition'][normalize-space(@language) = '']">
+			<xsl:apply-templates select="ancestor::jcgm:metanorma/*[local-name() = 'bibdata']/*[local-name() = 'edition'][normalize-space(@language) = '']">
 				<xsl:with-param name="curr_lang" select="$curr_lang"/>
 			</xsl:apply-templates>
 		</xsl:variable>
@@ -1058,11 +1058,11 @@
 
 	
 	<xsl:variable name="header_text">
-		<xsl:value-of select="(//jcgm:bipm-standard)[1]/jcgm:bibdata/jcgm:ext/jcgm:editorialgroup/jcgm:committee/@acronym"/>
+		<xsl:value-of select="(//jcgm:metanorma)[1]/jcgm:bibdata/jcgm:ext/jcgm:editorialgroup/jcgm:committee/@acronym"/>
 		<xsl:text> </xsl:text>
-		<xsl:value-of select="(//jcgm:bipm-standard)[1]/jcgm:bibdata/jcgm:docnumber"/>
+		<xsl:value-of select="(//jcgm:metanorma)[1]/jcgm:bibdata/jcgm:docnumber"/>
 		<xsl:text>:</xsl:text>
-		<xsl:value-of select="(//jcgm:bipm-standard)[1]/jcgm:bibdata/jcgm:copyright/jcgm:from"/>
+		<xsl:value-of select="(//jcgm:metanorma)[1]/jcgm:bibdata/jcgm:copyright/jcgm:from"/>
 	</xsl:variable>
 	
 	<xsl:template name="insertHeaderFooter">
@@ -1124,9 +1124,9 @@
 	
 	<xsl:template name="insertDraftWatermark">
 		<xsl:param name="isDraft"/>
-		<xsl:if test="$isDraft = 'true' or normalize-space(//jcgm:bipm-standard/jcgm:bibdata/jcgm:version/jcgm:draft or
-		contains(//jcgm:bipm-standard/jcgm:bibdata/jcgm:status/jcgm:stage, 'draft') or
-		contains(//jcgm:bipm-standard/jcgm:bibdata/jcgm:status/jcgm:stage, 'projet')) = 'true'">
+		<xsl:if test="$isDraft = 'true' or normalize-space(//jcgm:metanorma/jcgm:bibdata/jcgm:version/jcgm:draft or
+		contains(//jcgm:metanorma/jcgm:bibdata/jcgm:status/jcgm:stage, 'draft') or
+		contains(//jcgm:metanorma/jcgm:bibdata/jcgm:status/jcgm:stage, 'projet')) = 'true'">
 			<!-- DRAFT -->
 			<xsl:variable name="draft_label">
 				<xsl:call-template name="getLocalizedString">
@@ -1233,7 +1233,7 @@
 		
 	</xsl:template>
 
-	<xsl:template match="jcgm:bipm-standard/jcgm:bibdata/jcgm:edition">
+	<xsl:template match="jcgm:metanorma/jcgm:bibdata/jcgm:edition">
 		<xsl:param name="font-size" select="'65%'"/>
 		<xsl:param name="baseline-shift" select="'30%'"/>
 		<xsl:param name="curr_lang" select="'fr'"/>
@@ -1537,7 +1537,7 @@
 		</xsl:copy>
 	</xsl:template>
 	
-	<xsl:template match="*[local-name() = 'bipm-standard']" mode="flatxml_step1">
+	<xsl:template match="*[local-name() = 'metanorma']" mode="flatxml_step1">
 		<xsl:param name="num"/>
 		<xsl:copy>
 			<xsl:apply-templates select="@*" mode="flatxml_step1"/>
@@ -1551,7 +1551,7 @@
 		<!-- <section_scope>
 			<clause @type=scope>...
 		</section_scope> -->
-		<xsl:element name="section_scope" namespace="https://www.metanorma.org/ns/bipm">
+		<xsl:element name="section_scope" namespace="{$namespace_full}">
 			<xsl:call-template name="clause"/>
 		</xsl:element>
 	</xsl:template>
@@ -1595,7 +1595,7 @@
 		<xsl:copy>
 			<xsl:apply-templates select="@*" mode="flatxml_step1"/>
 			<!-- create empty element for case if first element isn't cross-align -->
-			<xsl:element name="empty" namespace="https://www.metanorma.org/ns/bipm">
+			<xsl:element name="empty" namespace="{$namespace_full}">
 				<xsl:attribute name="cross-align">true</xsl:attribute>
 				<xsl:attribute name="element-number">empty_annex<xsl:number/></xsl:attribute>
 			</xsl:element>
@@ -1614,9 +1614,9 @@
 		<section_terms>
 			<terms>...</terms>
 		</section_terms> -->
-		<xsl:element name="section_terms" namespace="https://www.metanorma.org/ns/bipm">
+		<xsl:element name="section_terms" namespace="{$namespace_full}">
 			<!-- create empty element for case if first element isn't cross-align -->
-			<xsl:element name="empty" namespace="https://www.metanorma.org/ns/bipm">
+			<xsl:element name="empty" namespace="{$namespace_full}">
 				<xsl:attribute name="cross-align">true</xsl:attribute>
 				<xsl:attribute name="element-number">empty_terms_<xsl:number/></xsl:attribute>
 			</xsl:element>
@@ -1624,7 +1624,7 @@
 		</xsl:element>
 	</xsl:template>
 	<xsl:template match="*[local-name()='sections']//*[local-name()='definitions']" mode="flatxml_step1" priority="2">
-		<xsl:element name="section_terms" namespace="https://www.metanorma.org/ns/bipm">
+		<xsl:element name="section_terms" namespace="{$namespace_full}">
 			<xsl:call-template name="terms"/>
 		</xsl:element>
 	</xsl:template>
@@ -1670,7 +1670,7 @@
 	<term><term_name>...</term_name></term> -->
 	<xsl:template match="jcgm:term/jcgm:name" mode="flatxml_step1"/>
 	<xsl:template match="jcgm:term/jcgm:fmt-name" mode="flatxml_step1">
-		<xsl:element name="term_name" namespace="https://www.metanorma.org/ns/bipm">
+		<xsl:element name="term_name" namespace="{$namespace_full}">
 			<xsl:apply-templates select="@*" mode="flatxml_step1"/>
 			<xsl:call-template name="setCrossAlignAttributes"/>
 			<xsl:apply-templates mode="flatxml_step1"/>
@@ -1796,6 +1796,82 @@
 		</xsl:element>
 	</xsl:template>
 	
+	<xsl:template match="*[local-name() = 'concept']"  mode="flatxml_step1"/>
+	
+	<xsl:template match="*[local-name() = 'fmt-concept']" mode="flatxml_step1">
+		<xsl:apply-templates mode="flatxml_step1"/>
+	</xsl:template>
+	
+	<xsl:template match="*[local-name() = 'eref']" mode="flatxml_step1"/>
+	
+	<xsl:template match="*[local-name() = 'fmt-eref']" mode="flatxml_step1">
+		<xsl:element name="eref" namespace="{$namespace_full}">
+			<xsl:copy-of select="@*"/>
+			<xsl:apply-templates mode="flatxml_step1"/>
+		</xsl:element>
+	</xsl:template>
+	
+	<xsl:template match="*[local-name() = 'xref']" mode="flatxml_step1"/>
+	
+	<xsl:template match="*[local-name() = 'fmt-xref']" mode="flatxml_step1">
+		<xsl:element name="xref" namespace="{$namespace_full}">
+			<xsl:copy-of select="@*"/>
+			<xsl:apply-templates mode="flatxml_step1"/>
+		</xsl:element>
+	</xsl:template>
+	
+	<xsl:template match="*[local-name() = 'link']" mode="flatxml_step1"/>
+	
+	<xsl:template match="*[local-name() = 'fmt-link']" mode="flatxml_step1">
+		<xsl:element name="link" namespace="{$namespace_full}">
+			<xsl:copy-of select="@*"/>
+			<xsl:apply-templates mode="flatxml_step1"/>
+		</xsl:element>
+	</xsl:template>
+	
+	<xsl:template match="*[local-name() = 'origin']" mode="flatxml_step1"/>
+	
+	<xsl:template match="*[local-name() = 'fmt-origin']" mode="flatxml_step1">
+		<xsl:element name="origin" namespace="{$namespace_full}">
+			<xsl:copy-of select="@*"/>
+			<xsl:apply-templates mode="flatxml_step1"/>
+		</xsl:element>
+	</xsl:template>
+	
+	<xsl:template match="*[local-name() = 'erefstack']" mode="flatxml_step1"/>
+	
+	<xsl:template match="*[local-name() = 'svgmap']" mode="flatxml_step1"/>
+	
+	<!-- https://github.com/metanorma/isodoc/issues/651 -->
+	<xsl:template match="*[local-name() = 'sourcecode']" mode="flatxml_step1">
+		<xsl:copy>
+			<xsl:copy-of select="@*"/>
+			<xsl:apply-templates select="*[local-name() = 'fmt-name']" mode="flatxml_step1"/>
+			<xsl:choose>
+				<xsl:when test="*[local-name() = 'fmt-sourcecode']">
+					<xsl:apply-templates select="*[local-name() = 'fmt-sourcecode']/node()" mode="flatxml_step1"/>
+				</xsl:when>
+				<xsl:otherwise> <!-- If fmt-sourcecode is not present -->
+					<xsl:apply-templates select="node()[not(local-name() = 'fmt-name')]" mode="flatxml_step1"/>
+				</xsl:otherwise>
+			</xsl:choose>
+		</xsl:copy>
+	</xsl:template>	
+	
+	<!-- https://github.com/metanorma/isodoc/issues/651 -->
+	<xsl:template match="*[local-name() = 'figure'][*[local-name() = 'fmt-figure']]" mode="flatxml_step1" priority="2">
+		<xsl:copy>
+			<xsl:copy-of select="@*"/>
+			<xsl:apply-templates select="*[local-name() = 'fmt-name']" mode="flatxml_step1"/>
+			<xsl:apply-templates select="*[local-name() = 'fmt-figure']/node()" mode="flatxml_step1"/>
+		</xsl:copy>
+	</xsl:template>
+	
+	<!-- https://github.com/metanorma/isodoc/issues/652 -->
+	<xsl:template match="*[local-name() = 'quote']/*[local-name() = 'source']" mode="flatxml_step1"/>
+	<xsl:template match="*[local-name() = 'quote']/*[local-name() = 'author']" mode="flatxml_step1"/>
+	<xsl:template match="*[local-name() = 'amend']" mode="flatxml_step1"/>
+	
 	<xsl:template name="setCrossAlignAttributes">
 		<xsl:variable name="is_cross_aligned">
 			<xsl:call-template name="isCrossAligned"/>
@@ -1867,13 +1943,13 @@
 	<!-- enclose elements after table/figure with @multilingual-rendering = 'common' and @multilingual-rendering = 'all-columns' in a separate element cross-align -->
 	<xsl:template match="*[@multilingual-rendering = 'common' or @multilingual-rendering = 'all-columns']" mode="flatxml_step2" priority="2">
 		<xsl:variable name="curr_id" select="generate-id()"/>
-		<xsl:element name="cross-align" namespace="https://www.metanorma.org/ns/bipm">
+		<xsl:element name="cross-align" namespace="{$namespace_full}">
 			<xsl:copy-of select="@element-number"/>
 			<xsl:copy-of select="@multilingual-rendering"/>
 			<xsl:copy-of select="."/>
 		</xsl:element>
 		<xsl:if test="following-sibling::*[(not(@cross-align) or not(@cross-align='true')) and preceding-sibling::*[@cross-align='true'][1][generate-id() = $curr_id]]">
-			<xsl:element name="cross-align" namespace="https://www.metanorma.org/ns/bipm">
+			<xsl:element name="cross-align" namespace="{$namespace_full}">
 				<!-- <xsl:copy-of select="following-sibling::*[(not(@cross-align) or not(@cross-align='true')) and preceding-sibling::*[@cross-align='true'][1][generate-id() = $curr_id]][1]/@element-number"/> -->
 				<xsl:for-each select="following-sibling::*[(not(@cross-align) or not(@cross-align='true')) and preceding-sibling::*[@cross-align='true'][1][generate-id() = $curr_id]]">
 					<xsl:if test="position() = 1">
@@ -1887,7 +1963,7 @@
 	
 	<xsl:template match="*[@cross-align='true']" mode="flatxml_step2">
 		<xsl:variable name="curr_id" select="generate-id()"/>
-		<xsl:element name="cross-align" namespace="https://www.metanorma.org/ns/bipm">
+		<xsl:element name="cross-align" namespace="{$namespace_full}">
 			<xsl:copy-of select="@element-number"/>
 			<xsl:if test="local-name() = 'clause'">
 				<xsl:copy-of select="@keep-with-next"/>

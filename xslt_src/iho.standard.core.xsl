@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" 
 											xmlns:fo="http://www.w3.org/1999/XSL/Format" 
-											xmlns:iho="https://www.metanorma.org/ns/iho" 
+											xmlns:iho="https://www.metanorma.org/ns/standoc" 
 											xmlns:mathml="http://www.w3.org/1998/Math/MathML" 
 											xmlns:xalan="http://xml.apache.org/xalan" 
 											xmlns:fox="http://xmlgraphics.apache.org/fop/extensions" 
@@ -23,15 +23,15 @@
 	
 
 	<xsl:variable name="title-en">
-		<xsl:apply-templates select="/iho:iho-standard/iho:bibdata/iho:title[@language = 'en']/node()"/>
+		<xsl:apply-templates select="/iho:metanorma/iho:bibdata/iho:title[@language = 'en']/node()"/>
 	</xsl:variable>
-	<xsl:variable name="docidentifier" select="/iho:iho-standard/iho:bibdata/iho:docidentifier[@type = 'IHO']"/>
-	<xsl:variable name="copyrightText" select="concat('© International Hydrographic Association ', /iho:iho-standard/iho:bibdata/iho:copyright/iho:from ,' – All rights reserved')"/>
+	<xsl:variable name="docidentifier" select="/iho:metanorma/iho:bibdata/iho:docidentifier[@type = 'IHO']"/>
+	<xsl:variable name="copyrightText" select="concat('© International Hydrographic Association ', /iho:metanorma/iho:bibdata/iho:copyright/iho:from ,' – All rights reserved')"/>
 	<xsl:variable name="edition">
-		<xsl:apply-templates select="/iho:iho-standard/iho:bibdata/iho:edition[normalize-space(@language) = '']"/>
+		<xsl:apply-templates select="/iho:metanorma/iho:bibdata/iho:edition[normalize-space(@language) = '']"/>
 	</xsl:variable>
 	<xsl:variable name="month_year">
-		<xsl:apply-templates select="/iho:iho-standard/iho:bibdata/iho:date[@type = 'published']"/>
+		<xsl:apply-templates select="/iho:metanorma/iho:bibdata/iho:date[@type = 'published']"/>
 	</xsl:variable>
 
 	<!-- Example:
@@ -223,7 +223,7 @@
 												<fo:block-container width="79mm" height="72mm" margin-left="56.8mm" background-color="rgb(0, 172, 158)" text-align="right" display-align="after">
 													<fo:block-container margin-left="0mm">
 														<fo:block font-size="8pt" color="white" margin-right="5mm" margin-bottom="5mm" line-height-shift-adjustment="disregard-shifts">
-															<xsl:apply-templates select="/iho:iho-standard/iho:boilerplate/iho:feedback-statement"/>
+															<xsl:apply-templates select="/iho:metanorma/iho:boilerplate/iho:feedback-statement"/>
 														</fo:block>
 													</fo:block-container>
 												</fo:block-container>					
@@ -271,7 +271,7 @@
 											<fo:block-container margin-top="6.5mm" margin-left="7.5mm" margin-right="8.5mm" margin-bottom="7.5mm">
 												<fo:block-container margin="0">
 													<fo:block text-align="justify">
-														<xsl:apply-templates select="/iho:iho-standard/iho:boilerplate/*[local-name() != 'feedback-statement']"/>
+														<xsl:apply-templates select="/iho:metanorma/iho:boilerplate/*[local-name() != 'feedback-statement']"/>
 													</fo:block>
 												</fo:block-container>
 											</fo:block-container>
@@ -336,7 +336,7 @@
 					</xsl:for-each>
 				</xsl:for-each>
 					
-					<!-- <xsl:if test="/iho:iho-standard/iho:annex">
+					<!-- <xsl:if test="/iho:metanorma/iho:annex">
 						<fo:page-sequence master-reference="document">
 							<fo:static-content flow-name="xsl-footnote-separator">
 								<fo:block>
@@ -570,7 +570,7 @@
 	
 
 	
-	<xsl:template match="/iho:iho-standard/iho:bibdata/iho:edition">
+	<xsl:template match="/iho:metanorma/iho:bibdata/iho:edition">
 		<xsl:call-template name="capitalize">
 			<xsl:with-param name="str">
 				<xsl:call-template name="getLocalizedString">
@@ -582,7 +582,7 @@
 		<xsl:apply-templates/>
 	</xsl:template>
 	
-	<xsl:template match="/iho:iho-standard/iho:bibdata/iho:date[@type = 'published']">
+	<xsl:template match="/iho:metanorma/iho:bibdata/iho:date[@type = 'published']">
 		<xsl:call-template name="convertDate">
 			<xsl:with-param name="date" select="."/>
 			<xsl:with-param name="format" select="'short'"/>

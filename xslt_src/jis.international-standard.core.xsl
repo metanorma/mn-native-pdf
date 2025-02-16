@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" 
 											xmlns:fo="http://www.w3.org/1999/XSL/Format" 
-											xmlns:jis="https://www.metanorma.org/ns/jis" 
+											xmlns:jis="https://www.metanorma.org/ns/standoc" 
 											xmlns:mathml="http://www.w3.org/1998/Math/MathML" 
 											xmlns:xalan="http://xml.apache.org/xalan" 
 											xmlns:fox="http://xmlgraphics.apache.org/fop/extensions" 
@@ -39,14 +39,14 @@
 	<xsl:variable name="numbers_japanese" select="xalan:nodeset($numbers_japanese_)"/>
 	
 	<xsl:variable name="contents_">
-		<xsl:variable name="bundle" select="count(//jis:jis-standard) &gt; 1"/>
+		<xsl:variable name="bundle" select="count(//jis:metanorma) &gt; 1"/>
 		
 		<xsl:if test="normalize-space($bundle) = 'true'">
 			<collection firstpage_id="firstpage_id_0"/>
 		</xsl:if>
 		
-		<xsl:for-each select="//jis:jis-standard">
-			<xsl:variable name="num"><xsl:number level="any" count="jis:jis-standard"/></xsl:variable>
+		<xsl:for-each select="//jis:metanorma">
+			<xsl:variable name="num"><xsl:number level="any" count="jis:metanorma"/></xsl:variable>
 			<xsl:variable name="docnumber"><xsl:value-of select="jis:bibdata/jis:docidentifier[@type = 'JIS']"/></xsl:variable>
 			<xsl:variable name="current_document">
 				<xsl:copy-of select="."/>
@@ -494,8 +494,8 @@
 			<!-- DEBUG: updated_xml_step2=<xsl:copy-of select="$updated_xml_step2"/> -->
 			
 			
-			<xsl:for-each select="$updated_xml_step2//jis:jis-standard">
-				<xsl:variable name="num"><xsl:number level="any" count="jis:jis-standard"/></xsl:variable>
+			<xsl:for-each select="$updated_xml_step2//jis:metanorma">
+				<xsl:variable name="num"><xsl:number level="any" count="jis:metanorma"/></xsl:variable>
 				
 				<xsl:variable name="current_document">
 					<xsl:copy-of select="."/>
@@ -555,7 +555,7 @@
 							<xsl:otherwise><xsl:value-of select="$docidentifier_JIS_"/></xsl:otherwise>
 						</xsl:choose>
 					</xsl:variable>
-					<xsl:variable name="edition" select="/jis:jis-standard/jis:bibdata/jis:edition[@language = 'ja' and @numberonly = 'true']"/>
+					<xsl:variable name="edition" select="/jis:metanorma/jis:bibdata/jis:edition[@language = 'ja' and @numberonly = 'true']"/>
 					
 					<xsl:variable name="doclang">
 						<xsl:call-template name="getLang"/>
@@ -599,7 +599,7 @@
 					<!-- ========================== -->
 					
 					<xsl:variable name="bibdata">
-						<xsl:copy-of select="/jis:jis-standard/jis:bibdata"/>
+						<xsl:copy-of select="/jis:metanorma/jis:bibdata"/>
 					</xsl:variable>
 					 
 					<xsl:for-each select="/*/*[local-name()='preface']/*[not(local-name() = 'clause' and @type = 'contributors')]">
@@ -817,7 +817,7 @@
 					<!-- page break before each section -->
 					<xsl:variable name="structured_xml">
 						<xsl:for-each select="xalan:nodeset($structured_xml_)/item[*]">
-							<xsl:element name="pagebreak" namespace="https://www.metanorma.org/ns/jis"/>
+							<xsl:element name="pagebreak" namespace="{$namespace_full}"/>
 							<xsl:copy-of select="./*"/>
 						</xsl:for-each>
 					</xsl:variable>
@@ -1026,7 +1026,7 @@
 			
 			</xsl:for-each>
 			
-			<xsl:if test="not(//jis:jis-standard)">
+			<xsl:if test="not(//jis:metanorma)">
 				<fo:page-sequence master-reference="document" force-page-count="no-force">
 					<fo:flow flow-name="xsl-region-body">
 						<fo:block><!-- prevent fop error for empty document --></fo:block>
@@ -1341,14 +1341,14 @@
 		
 		<fo:page-sequence master-reference="cover-page_2024" force-page-count="no-force">
 			
-			<!-- <xsl:variable name="cover_page_background_1_value" select="normalize-space(//jis:jis-standard/jis:metanorma-extension/jis:presentation-metadata/jis:color-cover-page-background-1)"/>
+			<!-- <xsl:variable name="cover_page_background_1_value" select="normalize-space(//jis:metanorma/jis:metanorma-extension/jis:presentation-metadata/jis:color-cover-page-background-1)"/>
 			<xsl:variable name="cover_page_background_1_">
 				<xsl:value-of select="$cover_page_background_1_value"/>
 				<xsl:if test="$cover_page_background_1_value = ''">#00063F</xsl:if>
 			</xsl:variable>
 			<xsl:variable name="cover_page_background_1" select="normalize-space($cover_page_background_1_)"/>
 			
-			<xsl:variable name="cover_page_background_2_value" select="normalize-space(//jis:jis-standard/jis:metanorma-extension/jis:presentation-metadata/jis:color-cover-page-background-2)"/>
+			<xsl:variable name="cover_page_background_2_value" select="normalize-space(//jis:metanorma/jis:metanorma-extension/jis:presentation-metadata/jis:color-cover-page-background-2)"/>
 			<xsl:variable name="cover_page_background_2_">
 				<xsl:value-of select="$cover_page_background_2_value"/>
 				<xsl:if test="$cover_page_background_2_value = ''">#DBD6BD</xsl:if>
@@ -1530,7 +1530,7 @@
 			<fo:static-content flow-name="header">
 				<xsl:variable name="presentation_metadata_image_name">
 					<xsl:choose>
-						<xsl:when test="/*[contains(local-name(), '-standard')]/*[local-name() = 'metanorma-extension']/*[local-name() = 'presentation-metadata'][*[local-name() = 'name'] = 'backpage-image']/*[local-name() = 'value']/*[local-name() = 'image']">backpage-image</xsl:when>
+						<xsl:when test="/*[local-name() = 'metanorma']/*[local-name() = 'metanorma-extension']/*[local-name() = 'presentation-metadata'][*[local-name() = 'name'] = 'backpage-image']/*[local-name() = 'value']/*[local-name() = 'image']">backpage-image</xsl:when>
 						<xsl:otherwise>coverpage-image</xsl:otherwise>
 					</xsl:choose>
 				</xsl:variable>
@@ -2673,7 +2673,7 @@
 		<xsl:param name="structured_xml"/>
 		<xsl:choose>
 			<xsl:when test="not(xalan:nodeset($structured_xml)/*[local-name()='pagebreak'])">
-				<xsl:element name="page" namespace="https://www.metanorma.org/ns/jis">
+				<xsl:element name="page" namespace="{$namespace_full}">
 					<xsl:copy-of select="xalan:nodeset($structured_xml)"/>
 				</xsl:element>
 			</xsl:when>
@@ -2683,7 +2683,7 @@
 					<xsl:variable name="pagebreak_id" select="generate-id()"/>
 					
 					<!-- copy elements before pagebreak -->
-					<xsl:element name="page" namespace="https://www.metanorma.org/ns/jis">
+					<xsl:element name="page" namespace="{$namespace_full}">
 						<xsl:if test="not(preceding-sibling::jis:pagebreak)">
 							<xsl:copy-of select="../@*" />
 						</xsl:if>
@@ -2695,7 +2695,7 @@
 					
 					<!-- copy elements after last page break -->
 					<xsl:if test="position() = last() and following-sibling::node()">
-						<xsl:element name="page" namespace="https://www.metanorma.org/ns/jis">
+						<xsl:element name="page" namespace="{$namespace_full}">
 							<xsl:copy-of select="@orientation" />
 							<xsl:copy-of select="following-sibling::node()" />
 						</xsl:element>
@@ -2905,15 +2905,15 @@
 	<!-- jis:term/jis:preferred2//text() | -->
 	
 	<!-- <name>注記  1</name> to <name>注記<font_en>  1</font_en></name> -->
-	<xsl:template match="jis:title/text() | 
-						jis:term/jis:name/text() | 
-						jis:note/jis:name/text() | 
-						jis:termnote/jis:name/text() |
-						jis:table/jis:name/text() |
-						jis:figure/jis:name/text() |
-						jis:termexample/jis:name/text() |
-						jis:xref//text() |
-						jis:origin/text()" mode="update_xml_step1">
+	<xsl:template match="jis:title/text() | jis:fmt-title/text() | 
+						jis:term/jis:name/text() | jis:term/jis:fmt-name/text() | 
+						jis:note/jis:name/text() | jis:note/jis:fmt-name/text() | 
+						jis:termnote/jis:name/text() |jis:termnote/jis:fmt-name/text() |
+						jis:table/jis:name/text() |jis:table/jis:fmt-name/text() |
+						jis:figure/jis:name/text() |jis:figure/jis:fmt-name/text() |
+						jis:termexample/jis:name/text() |jis:termexample/jis:fmtname/text() |
+						jis:xref//text() | jis:fmt-xref//text() |
+						jis:origin/text() | jis:fmt-origin/text()" mode="update_xml_step1">
 		<xsl:choose>
 			<xsl:when test="$vertical_layout = 'true'">
 				<xsl:choose>
@@ -2958,30 +2958,52 @@
 	</xsl:template>
 	
 	<!-- move example title to the first paragraph -->
-	<xsl:template match="jis:example[contains(jis:name/text(), ' — ')]" mode="update_xml_step1">
+	<!-- Example:
+		<example id="_7569d639-c245-acb6-2141-3b746374a9e1" autonum="1">
+		<name id="_8eac959b-b129-4892-b8bb-fcca2914bd39">（可能性の例）</name>
+		<fmt-name>
+			<span class="fmt-caption-label">
+				<span class="fmt-element-name">例</span>
+				<semx element="autonum" source="_7569d639-c245-acb6-2141-3b746374a9e1">1</semx>
+			</span>
+			<span class="fmt-caption-delim"> — </span>
+			<semx element="name" source="_8eac959b-b129-4892-b8bb-fcca2914bd39">（可能性の例）</semx>
+		</fmt-name>
+	-->
+	<!-- <xsl:template match="jis:example[contains(normalize-space(jis:fmt-name), ' — ')]" mode="update_xml_step1"> -->
+	<xsl:template match="jis:example[jis:fmt-name[contains(jis:span/text(), ' — ')]]" mode="update_xml_step1">
 		<xsl:copy>
 			<xsl:copy-of select="@*"/>
-			<xsl:element name="p" namespace="https://www.metanorma.org/ns/jis">
-				<xsl:value-of select="substring-after(jis:name/text()[1], ' — ')"/>
-				<xsl:apply-templates select="jis:name/text()[1]/following-sibling::node()" mode="update_xml_step1"/>
+			<xsl:element name="p" namespace="{$namespace_full}">
+				<!-- <xsl:variable name="example_name">
+					<xsl:apply-templates select="jis:fmt-name" mode="update_xml_step1"/>
+				</xsl:variable>
+				<xsl:value-of select="substring-after(xalan:nodeset($example_name)/jis:name/text()[1], ' — ')"/>
+				<xsl:apply-templates select="xalan:nodeset($example_name)/jis:name/text()[1]/following-sibling::node()" mode="update_xml_step1"/> -->
+				<xsl:apply-templates select="jis:fmt-name/jis:span[contains(., ' — ')][1]/following-sibling::node()" mode="update_xml_step1"/>
 			</xsl:element>
 			<xsl:apply-templates mode="update_xml_step1"/>
 		</xsl:copy>
 	</xsl:template>
-	<xsl:template match="jis:example/jis:name[contains(text(), ' — ')]" mode="update_xml_step1">
-		<xsl:copy>
+	<!-- <xsl:template match="jis:example/jis:fmt-name[contains(normalize-space(), ' — ')]" mode="update_xml_step1"> -->
+	<xsl:template match="jis:example/jis:fmt-name[contains(jis:span/text(), ' — ')]" mode="update_xml_step1" priority="2">
+		<xsl:element name="name" namespace="{$namespace_full}">
 			<xsl:copy-of select="@*"/>
-			<xsl:apply-templates select="text()[1]" mode="update_xml_step1"/>
-		</xsl:copy>
+			<!-- <xsl:variable name="example_name">
+				<xsl:apply-templates select="." mode="update_xml_step1"/>
+			</xsl:variable>
+			<xsl:apply-templates select="xalan:nodeset($example_name)//text()[1]" mode="update_xml_step1"/>
+			-->
+			<xsl:apply-templates select="*[1]" mode="update_xml_step1"/>
+		</xsl:element>
 	</xsl:template>
-	<xsl:template match="jis:example/jis:name/text()" mode="update_xml_step1">
-		<xsl:variable name="example_name">
-			<xsl:choose>
+	<xsl:template match="jis:example/jis:fmt-name//text()" mode="update_xml_step1">
+		<xsl:variable name="example_name" select="."/>
+			<!-- <xsl:choose>
 				<xsl:when test="contains(., ' — ')"><xsl:value-of select="substring-before(., ' — ')"/></xsl:when>
 				<xsl:otherwise><xsl:value-of select="."/></xsl:otherwise>
 			</xsl:choose>
-		</xsl:variable>
-		
+		</xsl:variable> -->
 		<xsl:choose>
 			<xsl:when test="$vertical_layout = 'true'">
 				<xsl:call-template name="enclose_text_in_vertical_tag">
@@ -2996,7 +3018,7 @@
 		</xsl:choose>
 	</xsl:template>
 	
-	<xsl:template match="jis:eref//text()" mode="update_xml_step1">
+	<xsl:template match="jis:fmt-eref//text()" mode="update_xml_step1">
 		<xsl:choose>
 			<xsl:when test="$vertical_layout = 'true'">
 				<xsl:call-template name="enclose_text_in_vertical_tag"/>
@@ -3037,7 +3059,6 @@
 		<xsl:apply-templates mode="update_xml_step1"/>
 	</xsl:template>
 	<xsl:template match="jis:strong/text()" priority="2" mode="update_xml_step1">
-	
 		<xsl:choose>
 			<xsl:when test="$vertical_layout = 'true'">
 				<xsl:call-template name="enclose_text_in_vertical_tag"/>

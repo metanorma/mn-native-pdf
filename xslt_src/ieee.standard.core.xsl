@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" 
 											xmlns:fo="http://www.w3.org/1999/XSL/Format" 
-											xmlns:ieee="https://www.metanorma.org/ns/ieee" 
+											xmlns:ieee="https://www.metanorma.org/ns/standoc" 
 											xmlns:mathml="http://www.w3.org/1998/Math/MathML" 
 											xmlns:xalan="http://xml.apache.org/xalan" 
 											xmlns:fox="http://xmlgraphics.apache.org/fop/extensions" 
@@ -29,9 +29,9 @@
 	
 	<!-- mandatory variable -->
 	<xsl:variable name="contents_">
-		<xsl:variable name="bundle" select="count(//ieee:ieee-standard) &gt; 1"/>
-		<xsl:for-each select="//ieee:ieee-standard">
-			<xsl:variable name="num"><xsl:number level="any" count="ieee:ieee-standard"/></xsl:variable>
+		<xsl:variable name="bundle" select="count(//ieee:metanorma) &gt; 1"/>
+		<xsl:for-each select="//ieee:metanorma">
+			<xsl:variable name="num"><xsl:number level="any" count="ieee:metanorma"/></xsl:variable>
 			<xsl:variable name="docnumber"><xsl:value-of select="ieee:bibdata/ieee:docidentifier[@type = 'IEEE']"/></xsl:variable>
 			<!-- <xsl:variable name="current_document">
 				<xsl:copy-of select="."/>
@@ -58,13 +58,13 @@
 		</xsl:for-each>
 	</xsl:variable>
 
-	<xsl:variable name="doctype" select="(//ieee:ieee-standard)[1]/ieee:bibdata/ieee:ext/ieee:doctype[normalize-space(@language) = '']"/> <!-- values standard, guide, recommended-practice -->
+	<xsl:variable name="doctype" select="(//ieee:metanorma)[1]/ieee:bibdata/ieee:ext/ieee:doctype[normalize-space(@language) = '']"/> <!-- values standard, guide, recommended-practice -->
 	
-	<xsl:variable name="doctype_localized" select="(//ieee:ieee-standard)[1]/ieee:bibdata/ieee:ext/ieee:doctype[@language = $lang]"/>
+	<xsl:variable name="doctype_localized" select="(//ieee:metanorma)[1]/ieee:bibdata/ieee:ext/ieee:doctype[@language = $lang]"/>
 	
-	<xsl:variable name="subdoctype" select="(//ieee:ieee-standard)[1]/ieee:bibdata/ieee:ext/ieee:subdoctype[normalize-space(@language) = '']"/> <!-- has values amendment, corrigendum, erratum -->
+	<xsl:variable name="subdoctype" select="(//ieee:metanorma)[1]/ieee:bibdata/ieee:ext/ieee:subdoctype[normalize-space(@language) = '']"/> <!-- has values amendment, corrigendum, erratum -->
 	
-	<xsl:variable name="stage_" select="normalize-space((//ieee:ieee-standard)[1]/ieee:bibdata/ieee:status/ieee:stage)"/>
+	<xsl:variable name="stage_" select="normalize-space((//ieee:metanorma)[1]/ieee:bibdata/ieee:status/ieee:stage)"/>
 	
 	<xsl:variable name="stage">
 		<xsl:choose>
@@ -86,7 +86,7 @@
 		</xsl:choose>
 	</xsl:variable>
 	
-	<xsl:variable name="trial_use" select="(//ieee:ieee-standard)[1]/ieee:bibdata/ieee:ext/ieee:trial-use[normalize-space(@language) = '']"/>
+	<xsl:variable name="trial_use" select="(//ieee:metanorma)[1]/ieee:bibdata/ieee:ext/ieee:trial-use[normalize-space(@language) = '']"/>
 	
 	<xsl:variable name="current_template">
 		<xsl:choose>
@@ -143,7 +143,7 @@
 				<xsl:with-param name="root-style" select="$root-style"/>
 			</xsl:call-template>
 			
-			<xsl:if test="$stage = 'draft'"> <!-- //ieee:ieee-standard/ieee:bibdata[ieee:ext/ieee:doctype = 'international-standard' and ieee:version/ieee:draft] -->
+			<xsl:if test="$stage = 'draft'"> <!-- //ieee:metanorma/ieee:bibdata[ieee:ext/ieee:doctype = 'international-standard' and ieee:version/ieee:draft] -->
 				<xsl:processing-instruction name="add_line_numbers">true</xsl:processing-instruction>
 			</xsl:if>
 			
@@ -325,23 +325,29 @@
 			</xsl:variable>
 			<!-- DEBUG: updated_xml_step2=<xsl:copy-of select="$updated_xml_step2"/> -->
 			
-			<xsl:for-each select="xalan:nodeset($updated_xml_step2)//ieee:ieee-standard">
-				<xsl:variable name="num"><xsl:number level="any" count="ieee:ieee-standard"/></xsl:variable>
+			<xsl:if test="$debug = 'true'">
+				<redirect:write file="updated_xml.xml">
+					<xsl:copy-of select="$updated_xml_step2"/>
+				</redirect:write>
+			</xsl:if>
+			
+			<xsl:for-each select="xalan:nodeset($updated_xml_step2)//ieee:metanorma">
+				<xsl:variable name="num"><xsl:number level="any" count="ieee:metanorma"/></xsl:variable>
 				
 				
 				<xsl:for-each select=".">
 				
-					<xsl:variable name="copyright_year" select="/ieee:ieee-standard/ieee:bibdata/ieee:copyright/ieee:from"/>
+					<xsl:variable name="copyright_year" select="/ieee:metanorma/ieee:bibdata/ieee:copyright/ieee:from"/>
 				
-					<xsl:variable name="approved_date_year" select="substring(normalize-space(/ieee:ieee-standard/ieee:bibdata/ieee:date[@type = 'issued']),1,4)"/>
+					<xsl:variable name="approved_date_year" select="substring(normalize-space(/ieee:metanorma/ieee:bibdata/ieee:date[@type = 'issued']),1,4)"/>
 					
 					<!-- IEEE Std 802.1X™-2020 -->
-					<xsl:variable name="standard_number">IEEE Std <xsl:value-of select="/ieee:ieee-standard/ieee:bibdata/ieee:docidentifier[@type = 'IEEE']"/>-<xsl:value-of select="$approved_date_year"/></xsl:variable>
-					<!-- <xsl:value-of select="substring(/ieee:ieee-standard/ieee:bibdata/ieee:date[@type = 'published'],1,4)"/> -->
+					<xsl:variable name="standard_number">IEEE Std <xsl:value-of select="/ieee:metanorma/ieee:bibdata/ieee:docidentifier[@type = 'IEEE']"/>-<xsl:value-of select="$approved_date_year"/></xsl:variable>
+					<!-- <xsl:value-of select="substring(/ieee:metanorma/ieee:bibdata/ieee:date[@type = 'published'],1,4)"/> -->
 				
-					<xsl:variable name="designation" select="/ieee:ieee-standard/ieee:bibdata/ieee:docnumber"/>
-					<xsl:variable name="draft_number" select="/ieee:ieee-standard/ieee:bibdata/ieee:version/ieee:draft"/>
-					<xsl:variable name="revision_month" select="/ieee:ieee-standard/ieee:bibdata/ieee:version/ieee:revision-date"/>
+					<xsl:variable name="designation" select="/ieee:metanorma/ieee:bibdata/ieee:docnumber"/>
+					<xsl:variable name="draft_number" select="/ieee:metanorma/ieee:bibdata/ieee:version/ieee:draft"/>
+					<xsl:variable name="revision_month" select="/ieee:metanorma/ieee:bibdata/ieee:version/ieee:revision-date"/>
 					<xsl:variable name="draft_month">
 						<xsl:call-template name="getMonthLocalizedByNum">
 							<xsl:with-param name="num" select="substring($revision_month, 6, 2)"/>
@@ -351,16 +357,16 @@
 					
 					<xsl:variable name="title_intro">
 						<!-- Example Local and Metropolitan Area Networks— -->
-						<xsl:apply-templates select="/ieee:ieee-standard/ieee:bibdata/ieee:title[@language = 'en']/node()"/>
-						<!-- <xsl:apply-templates select="/ieee:ieee-standard/ieee:bibdata/ieee:title[@language = 'intro' or @language = 'intro-en']/node()"/>
-						<xsl:if test="not(/ieee:ieee-standard/ieee:bibdata/ieee:title[@language = 'intro' or @language = 'intro-en'])">
+						<xsl:apply-templates select="/ieee:metanorma/ieee:bibdata/ieee:title[@language = 'en']/node()"/>
+						<!-- <xsl:apply-templates select="/ieee:metanorma/ieee:bibdata/ieee:title[@language = 'intro' or @language = 'intro-en']/node()"/>
+						<xsl:if test="not(/ieee:metanorma/ieee:bibdata/ieee:title[@language = 'intro' or @language = 'intro-en'])">
 						</xsl:if>
-						<xsl:if test="/ieee:ieee-standard/ieee:bibdata/ieee:title[@language = 'intro' or @language = 'intro-en' or @language = 'en'] and /ieee:ieee-standard/ieee:bibdata/ieee:title[@language = 'main' or @language = 'main-en']">—</xsl:if> -->
+						<xsl:if test="/ieee:metanorma/ieee:bibdata/ieee:title[@language = 'intro' or @language = 'intro-en' or @language = 'en'] and /ieee:metanorma/ieee:bibdata/ieee:title[@language = 'main' or @language = 'main-en']">—</xsl:if> -->
 					</xsl:variable>
 					
 					<xsl:variable name="title_main">
 						<!-- Example: Port-Based Network Access Control -->
-						<!-- <xsl:apply-templates select="/ieee:ieee-standard/ieee:bibdata/ieee:title[@language = 'main' or @language = 'main-en']/node()"/> -->
+						<!-- <xsl:apply-templates select="/ieee:metanorma/ieee:bibdata/ieee:title[@language = 'main' or @language = 'main-en']/node()"/> -->
 					</xsl:variable>
 					
 					<xsl:variable name="title">
@@ -370,7 +376,7 @@
 								<xsl:copy-of select="$title_main"/>
 							</xsl:when>
 							<xsl:otherwise>
-								<xsl:apply-templates select="/ieee:ieee-standard/ieee:bibdata/ieee:title[1]/node()"/>
+								<xsl:apply-templates select="/ieee:metanorma/ieee:bibdata/ieee:title[1]/node()"/>
 								
 								<!-- Example: Amendment # -->
 								<xsl:if test="contains('amendment corrigendum erratum', $subdoctype) and $subdoctype != ''">
@@ -385,11 +391,11 @@
 						</xsl:choose>
 					</xsl:variable>
 					
-					<xsl:variable name="copyright_abbreviation" select="normalize-space(/ieee:ieee-standard/ieee:bibdata/ieee:copyright/ieee:owner/ieee:organization/ieee:abbreviation)"/>
+					<xsl:variable name="copyright_abbreviation" select="normalize-space(/ieee:metanorma/ieee:bibdata/ieee:copyright/ieee:owner/ieee:organization/ieee:abbreviation)"/>
 					<xsl:variable name="copyright_holder">
 						<xsl:value-of select="$copyright_abbreviation"/>
 						<xsl:if test="$copyright_abbreviation = ''">
-							<xsl:for-each select="/ieee:ieee-standard/ieee:bibdata/ieee:contributor[ieee:role/@type = 'publisher']/ieee:organization/ieee:abbreviation">
+							<xsl:for-each select="/ieee:metanorma/ieee:bibdata/ieee:contributor[ieee:role/@type = 'publisher']/ieee:organization/ieee:abbreviation">
 								<xsl:value-of select="."/>
 								<xsl:if test="position() != last()">, </xsl:if>
 							</xsl:for-each>
@@ -419,28 +425,28 @@
 					
 					
 					
-					<xsl:variable name="society" select="/ieee:ieee-standard/ieee:bibdata/ieee:ext/ieee:editorialgroup/ieee:society"/> 
+					<xsl:variable name="society" select="/ieee:metanorma/ieee:bibdata/ieee:ext/ieee:editorialgroup/ieee:society"/> 
 					
-					<xsl:variable name="committee" select="/ieee:ieee-standard/ieee:bibdata/ieee:ext/ieee:editorialgroup/ieee:committee"/>
+					<xsl:variable name="committee" select="/ieee:metanorma/ieee:bibdata/ieee:ext/ieee:editorialgroup/ieee:committee"/>
 					
 					<xsl:variable name="approved_by">IEEE SA Standards Board</xsl:variable>
 					<xsl:variable name="approved_date">
 						<xsl:call-template name="convertDate">
-							<xsl:with-param name="date" select="normalize-space(/ieee:ieee-standard/ieee:bibdata/ieee:date[@type = 'issued'])"/>
+							<xsl:with-param name="date" select="normalize-space(/ieee:metanorma/ieee:bibdata/ieee:date[@type = 'issued'])"/>
 							<xsl:with-param name="format" select="'ddMMyyyy'"/>
 						</xsl:call-template>
 					</xsl:variable>
 					
 					<xsl:variable name="cutoff_date">
 						<xsl:call-template name="convertDate">
-							<xsl:with-param name="date" select="normalize-space(/ieee:ieee-standard/ieee:bibdata/ieee:date[@type = 'feedback-ended'])"/>
+							<xsl:with-param name="date" select="normalize-space(/ieee:metanorma/ieee:bibdata/ieee:date[@type = 'feedback-ended'])"/>
 							<xsl:with-param name="format" select="'ddMMyyyy'"/>
 						</xsl:call-template>
 					</xsl:variable>
 					
 					<xsl:variable name="expiration_date">
 						<xsl:call-template name="convertDate">
-							<xsl:with-param name="date" select="normalize-space(/ieee:ieee-standard/ieee:bibdata/ieee:date[@type = 'obsoleted'])"/>
+							<xsl:with-param name="date" select="normalize-space(/ieee:metanorma/ieee:bibdata/ieee:date[@type = 'obsoleted'])"/>
 							<xsl:with-param name="format" select="'ddMMyyyy'"/>
 						</xsl:call-template>
 					</xsl:variable>
@@ -449,10 +455,10 @@
 						Incorporating IEEE Std 802.1Xbx™-2014
 						and IEEE Std 802.1Xck™-2018 -->
 					<xsl:variable name="history_">
-						<xsl:for-each select="/ieee:ieee-standard/ieee:bibdata/ieee:relation[@type = 'updates']">
+						<xsl:for-each select="/ieee:metanorma/ieee:bibdata/ieee:relation[@type = 'updates']">
 							<revision_of><xsl:value-of select="ieee:bibitem/ieee:docidentifier"/></revision_of>
 						</xsl:for-each>
-						<xsl:for-each select="/ieee:ieee-standard/ieee:bibdata/ieee:relation[@type = 'merges']">
+						<xsl:for-each select="/ieee:metanorma/ieee:bibdata/ieee:relation[@type = 'merges']">
 							<incorporating><xsl:value-of select="ieee:bibitem/ieee:docidentifier"/></incorporating>
 						</xsl:for-each>
 					</xsl:variable>
@@ -566,9 +572,9 @@
 											</xsl:if>
 										</fo:block>
 										
-										<xsl:apply-templates select="/ieee:ieee-standard/ieee:boilerplate/ieee:copyright-statement"/>
+										<xsl:apply-templates select="/ieee:metanorma/ieee:boilerplate/ieee:copyright-statement"/>
 										
-										<xsl:apply-templates select="/ieee:ieee-standard/ieee:boilerplate/ieee:license-statement"/>
+										<xsl:apply-templates select="/ieee:metanorma/ieee:boilerplate/ieee:license-statement"/>
 									
 									
 										<fo:block break-after="page"/>
@@ -583,17 +589,17 @@
 													</xsl:call-template>
 													<xsl:text>: </xsl:text>
 												</fo:inline>
-												<xsl:apply-templates select="/ieee:ieee-standard/ieee:preface/ieee:abstract/node()[not(self::ieee:title)] | /ieee:ieee-standard/ieee:preface/ieee:clause[@id = '_abstract' or ieee:title = 'Abstract']/node()[not(self::ieee:title)]"/>
+												<xsl:apply-templates select="/ieee:metanorma/ieee:preface/ieee:abstract/node()[not(self::ieee:title)] | /ieee:metanorma/ieee:preface/ieee:clause[@id = '_abstract' or ieee:title = 'Abstract']/node()[not(self::ieee:title)]"/>
 											</fo:block>
 											<fo:block>&#xa0;</fo:block>
 											<fo:block>
 												<fo:inline font-weight="bold">Keywords: </fo:inline>
-												<xsl:for-each select="/ieee:ieee-standard/ieee:bibdata/ieee:keyword">
+												<xsl:for-each select="/ieee:metanorma/ieee:bibdata/ieee:keyword">
 													<xsl:value-of select="."/>
 													<xsl:if test="position() != last()">, </xsl:if>
 												</xsl:for-each>
 											</fo:block>
-											<xsl:apply-templates select="/ieee:ieee-standard/ieee:preface/ieee:acknowledgements"/>
+											<xsl:apply-templates select="/ieee:metanorma/ieee:preface/ieee:acknowledgements"/>
 										</fo:block>
 										
 										<!-- Example:
@@ -603,7 +609,7 @@
 										PDF: ISBN 978-0-XXXX-XXXX-X STDXXXXX
 										Print: ISBN 978-0-XXXX-XXXX-X STDPDXXXXX
 										-->
-										<xsl:apply-templates select="/ieee:ieee-standard/ieee:boilerplate/ieee:feedback-statement"/>
+										<xsl:apply-templates select="/ieee:metanorma/ieee:boilerplate/ieee:feedback-statement"/>
 										
 									</fo:block-container>
 								</fo:flow>
@@ -690,7 +696,7 @@
 										IEEE Standards documents are made available for use subject to important notices and legal disclaimers. These notices and disclaimers, or a reference to this page (https://standards.ieee.org/ipr/disclaimers.html), appear in all standards and may be found under the heading “Important Notices and Disclaimers Concerning IEEE Standards Documents.”
 										...
 										-->
-										<xsl:apply-templates select="/ieee:ieee-standard/ieee:boilerplate/ieee:legal-statement"/>
+										<xsl:apply-templates select="/ieee:metanorma/ieee:boilerplate/ieee:legal-statement"/>
 									</fo:block>
 								</fo:flow>
 								
@@ -748,17 +754,17 @@
 												</xsl:call-template>
 												<xsl:text>: </xsl:text>
 											</fo:inline>
-											<xsl:apply-templates select="/ieee:ieee-standard/ieee:preface/ieee:abstract/node()[not(self::ieee:title)] | /ieee:ieee-standard/ieee:preface/ieee:clause[@id = '_abstract' or ieee:title = 'Abstract']/node()[not(self::ieee:title)]"/>
+											<xsl:apply-templates select="/ieee:metanorma/ieee:preface/ieee:abstract/node()[not(self::ieee:title)] | /ieee:metanorma/ieee:preface/ieee:clause[@id = '_abstract' or ieee:title = 'Abstract']/node()[not(self::ieee:title)]"/>
 										</fo:block>
 										<fo:block>&#xa0;</fo:block>
 										<fo:block>
 											<fo:inline font-weight="bold">Keywords: </fo:inline>
-											<xsl:for-each select="/ieee:ieee-standard/ieee:bibdata/ieee:keyword">
+											<xsl:for-each select="/ieee:metanorma/ieee:bibdata/ieee:keyword">
 												<xsl:value-of select="."/>
 												<xsl:if test="position() != last()">, </xsl:if>
 											</xsl:for-each>
 										</fo:block>
-										<xsl:apply-templates select="/ieee:ieee-standard/ieee:preface/ieee:acknowledgements"/>
+										<xsl:apply-templates select="/ieee:metanorma/ieee:preface/ieee:acknowledgements"/>
 									</fo:block>
 										
 									<!-- Example:
@@ -768,7 +774,7 @@
 									PDF: ISBN 978-0-XXXX-XXXX-X STDXXXXX
 									Print: ISBN 978-0-XXXX-XXXX-X STDPDXXXXX
 									-->
-									<xsl:apply-templates select="/ieee:ieee-standard/ieee:boilerplate/ieee:feedback-statement"/>
+									<xsl:apply-templates select="/ieee:metanorma/ieee:boilerplate/ieee:feedback-statement"/>
 									
 								</fo:flow>
 							</fo:page-sequence>
@@ -791,7 +797,7 @@
 										IEEE Standards documents are made available for use subject to important notices and legal disclaimers. These notices and disclaimers, or a reference to this page (https://standards.ieee.org/ipr/disclaimers.html), appear in all standards and may be found under the heading “Important Notices and Disclaimers Concerning IEEE Standards Documents.”
 										...
 										-->
-										<xsl:apply-templates select="/ieee:ieee-standard/ieee:boilerplate/ieee:legal-statement"/>
+										<xsl:apply-templates select="/ieee:metanorma/ieee:boilerplate/ieee:legal-statement"/>
 									</fo:block>
 								</fo:flow>
 							</fo:page-sequence>
@@ -814,7 +820,7 @@
 										<fo:block>
 											<!-- TRADEMARKS AND DISCLAIMERS -->
 											<!-- ACKNOWLEDGEMENTS -->
-											<xsl:apply-templates select="/ieee:ieee-standard/ieee:boilerplate/ieee:legal-statement/*[@id = 'boilerplate-tm' or ieee:title = 'Trademarks and Disclaimers' or @id = 'boilerplate-participants' or ieee:title = 'Acknowledgements']" mode="whitepaper"/>
+											<xsl:apply-templates select="/ieee:metanorma/ieee:boilerplate/ieee:legal-statement/*[@id = 'boilerplate-tm' or ieee:title = 'Trademarks and Disclaimers' or @id = 'boilerplate-participants' or ieee:title = 'Acknowledgements']" mode="whitepaper"/>
 										</fo:block>
 										
 										<!-- Example:
@@ -823,12 +829,12 @@
 										PDF: STDXXXXX ISBN 978-0-XXXX-XXXX-X 
 										-->
 										<fo:block font-style="italic">
-											<xsl:apply-templates select="/ieee:ieee-standard/ieee:boilerplate/ieee:feedback-statement"/>
+											<xsl:apply-templates select="/ieee:metanorma/ieee:boilerplate/ieee:feedback-statement"/>
 										</fo:block>
 										
 										<!-- NOTICE AND DISCLAIMER OF LIABILITY CONCERNING THE USE OF IEEE SA DOCUMENTS -->
 										<fo:block break-after="page"/>
-										<xsl:apply-templates select="/ieee:ieee-standard/ieee:boilerplate/ieee:legal-statement/*[not(@id = 'boilerplate-tm') and not(ieee:title = 'Trademarks and Disclaimers') and not(@id = 'boilerplate-participants') and not(ieee:title = 'Acknowledgements')]"/>
+										<xsl:apply-templates select="/ieee:metanorma/ieee:boilerplate/ieee:legal-statement/*[not(@id = 'boilerplate-tm') and not(ieee:title = 'Trademarks and Disclaimers') and not(@id = 'boilerplate-participants') and not(ieee:title = 'Acknowledgements')]"/>
 										
 									</fo:block-container>
 								</fo:flow>
@@ -971,15 +977,15 @@
 							<xsl:when test="$current_template = 'whitepaper' or $current_template = 'icap-whitepaper' or $current_template = 'industry-connection-report'">
 							
 								<item>
-									<xsl:apply-templates select="/ieee:ieee-standard/ieee:preface/ieee:introduction" mode="flatxml"/>
+									<xsl:apply-templates select="/ieee:metanorma/ieee:preface/ieee:introduction" mode="flatxml"/>
 								</item>
 							
 								<item>
-									<xsl:apply-templates select="/ieee:ieee-standard/ieee:preface/ieee:acknowledgements" mode="flatxml"/>
+									<xsl:apply-templates select="/ieee:metanorma/ieee:preface/ieee:acknowledgements" mode="flatxml"/>
 								</item>
 							
 								<item>
-									<xsl:apply-templates select="/ieee:ieee-standard/ieee:preface/ieee:abstract" mode="flatxml"/>
+									<xsl:apply-templates select="/ieee:metanorma/ieee:preface/ieee:abstract" mode="flatxml"/>
 								</item>
 							
 								<xsl:for-each select="/*/*[local-name()='sections']/*"> <!-- each section starts with a new page -->
@@ -1025,7 +1031,7 @@
 					<!-- page break before each section -->
 					<xsl:variable name="structured_xml">
 						<xsl:for-each select="xalan:nodeset($structured_xml_)/item[*]">
-							<xsl:element name="pagebreak" namespace="https://www.metanorma.org/ns/ieee"/>
+							<xsl:element name="pagebreak" namespace="{$namespace_full}"/>
 							<xsl:copy-of select="./*"/>
 						</xsl:for-each>
 					</xsl:variable>
@@ -1037,6 +1043,12 @@
 							<xsl:with-param name="structured_xml" select="$structured_xml"/>
 						</xsl:call-template>
 					</xsl:variable>
+					
+					<xsl:if test="$debug = 'true'">
+						<redirect:write file="paged_xml.xml">
+							<xsl:copy-of select="$paged_xml"/>
+						</redirect:write>
+					</xsl:if>
 					
 					<!-- paged_xml=<xsl:copy-of select="$paged_xml"/> -->
 			
@@ -1171,9 +1183,9 @@
 					</xsl:if>
 				
 				</xsl:for-each>
-			</xsl:for-each> <!-- END of //ieee-standard iteration -->
+			</xsl:for-each> <!-- END of //metanorma (former ieee-standard) iteration -->
 			
-			<xsl:if test="not(//ieee:ieee-standard)">
+			<xsl:if test="not(//ieee:metanorma)">
 				<fo:page-sequence master-reference="document-nonstandard" force-page-count="no-force">
 					<fo:flow flow-name="xsl-region-body">
 						<fo:block><!-- prevent fop error for empty document --></fo:block>
@@ -1698,7 +1710,7 @@
 	</xsl:template>
 	
 	<!-- for 'draft' -->
-	<xsl:template match="ieee:preface/ieee:abstract/ieee:p[1] | /ieee:ieee-standard/ieee:preface/ieee:clause[@id = '_abstract' or ieee:title = 'Abstract']/ieee:p[1]" priority="2">
+	<xsl:template match="ieee:preface/ieee:abstract/ieee:p[1] | /ieee:metanorma/ieee:preface/ieee:clause[@id = '_abstract' or ieee:title = 'Abstract']/ieee:p[1]" priority="2">
 		<fo:inline><xsl:apply-templates /></fo:inline>
 	</xsl:template>
 	
@@ -1768,7 +1780,7 @@
 		<xsl:param name="structured_xml"/>
 		<xsl:choose>
 			<xsl:when test="not(xalan:nodeset($structured_xml)/*[local-name()='pagebreak'])">
-				<xsl:element name="page" namespace="https://www.metanorma.org/ns/ieee">
+				<xsl:element name="page" namespace="{$namespace_full}">
 					<xsl:copy-of select="xalan:nodeset($structured_xml)"/>
 				</xsl:element>
 			</xsl:when>
@@ -1779,7 +1791,7 @@
 					<!-- <xsl:variable name="pagebreak_previous_orientation" select="normalize-space(preceding-sibling::ieee:pagebreak[1]/@orientation)"/> -->
 					
 					<!-- copy elements before pagebreak -->
-					<xsl:element name="page" namespace="https://www.metanorma.org/ns/ieee">
+					<xsl:element name="page" namespace="{$namespace_full}">
 						<xsl:if test="not(preceding-sibling::ieee:pagebreak)">
 							<xsl:copy-of select="../@*" />
 						</xsl:if>
@@ -1793,7 +1805,7 @@
 					
 					<!-- copy elements after last page break -->
 					<xsl:if test="position() = last() and following-sibling::node()">
-						<xsl:element name="page" namespace="https://www.metanorma.org/ns/ieee">
+						<xsl:element name="page" namespace="{$namespace_full}">
 							<xsl:copy-of select="@orientation" />
 							<xsl:copy-of select="following-sibling::node()" />
 						</xsl:element>
@@ -2242,7 +2254,7 @@
 		</xsl:variable>
 		<xsl:variable name="p_fn" select="xalan:nodeset($p_fn_)"/>
 		<xsl:variable name="gen_id" select="generate-id(.)"/>
-		<xsl:variable name="lang" select="ancestor::*[contains(local-name(), '-standard')]/*[local-name()='bibdata']//*[local-name()='language'][@current = 'true']"/>
+		<xsl:variable name="lang" select="ancestor::*[local-name() = 'metanorma']/*[local-name()='bibdata']//*[local-name()='language'][@current = 'true']"/>
 		<xsl:variable name="reference_">
 			<xsl:value-of select="@reference"/>
 			<xsl:if test="normalize-space(@reference) = ''"><xsl:value-of select="$gen_id"/></xsl:if>
@@ -3694,7 +3706,7 @@
 								<xsl:text>IEEE CONFORMITY ASSESSMENT PROGRAM (ICAP)</xsl:text>
 							</xsl:when>
 							<xsl:otherwise> <!-- PROGRAM TITLE TO GO HERE -->
-								<xsl:value-of select="/ieee:ieee-standard/ieee:bibdata/ieee:ext/ieee:program"/>
+								<xsl:value-of select="/ieee:metanorma/ieee:bibdata/ieee:ext/ieee:program"/>
 							</xsl:otherwise>
 						</xsl:choose>
 					</fo:block>
@@ -3708,7 +3720,7 @@
 					<fo:block font-style="italic">Title</fo:block>
 					<fo:block>Firstname Lastname</fo:block>
 					<fo:block font-style="italic">Title</fo:block> -->
-					<xsl:for-each select="/ieee:ieee-standard/ieee:bibdata/ieee:contributor[ieee:role[@type = 'author']]">
+					<xsl:for-each select="/ieee:metanorma/ieee:bibdata/ieee:contributor[ieee:role[@type = 'author']]">
 						<fo:block><xsl:value-of select="concat(ieee:person/ieee:name/ieee:forename, ' ', ieee:person/ieee:name/ieee:surname)"/></fo:block>
 					<fo:block font-style="italic"><xsl:value-of select="ieee:person/ieee:affiliation/ieee:name"/></fo:block>
 					</xsl:for-each>

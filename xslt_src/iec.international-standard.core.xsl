@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" 
 											xmlns:fo="http://www.w3.org/1999/XSL/Format" 
-											xmlns:iec="https://www.metanorma.org/ns/iec" 
+											xmlns:iec="https://www.metanorma.org/ns/standoc" 
 											xmlns:mathml="http://www.w3.org/1998/Math/MathML" 
 											xmlns:xalan="http://xml.apache.org/xalan" 
 											xmlns:fox="http://xmlgraphics.apache.org/fop/extensions" 
@@ -30,27 +30,27 @@
 	<xsl:variable name="debug">false</xsl:variable>
 	
 	<xsl:variable name="SDO">
-		<xsl:for-each select="(//iec:iec-standard)[1]/iec:bibdata/iec:copyright/iec:owner/iec:organization/iec:abbreviation">
+		<xsl:for-each select="(//iec:metanorma)[1]/iec:bibdata/iec:copyright/iec:owner/iec:organization/iec:abbreviation">
 			<xsl:value-of select="."/><xsl:if test="position() != last()">/</xsl:if>
 		</xsl:for-each>
 	</xsl:variable>
 		
 	<xsl:variable name="copyrightSDO">
 		<xsl:text> </xsl:text>
-		<xsl:variable name="value" select="concat('© ', $SDO, ' ', //iec:iec-standard/iec:bibdata/iec:copyright/iec:from)"/>
+		<xsl:variable name="value" select="concat('© ', $SDO, ' ', //iec:metanorma/iec:bibdata/iec:copyright/iec:from)"/>
 		<fo:inline keep-together.within-line="always"><xsl:value-of select="$value"/></fo:inline>
 	</xsl:variable>
   
-	<xsl:variable name="ISOname" select="//iec:iec-standard/iec:bibdata/iec:docidentifier[@type='iso' or @type='ISO']"/>
+	<xsl:variable name="ISOname" select="//iec:metanorma/iec:bibdata/iec:docidentifier[@type='iso' or @type='ISO']"/>
 	
-	<xsl:variable name="part" select="//iec:iec-standard/iec:bibdata/iec:ext/iec:structuredidentifier/iec:project-number/@part"/>
+	<xsl:variable name="part" select="//iec:metanorma/iec:bibdata/iec:ext/iec:structuredidentifier/iec:project-number/@part"/>
 	
-	<xsl:variable name="doctype_uppercased" select="java:toUpperCase(java:java.lang.String.new(//iec:iec-standard/iec:bibdata/iec:ext/iec:doctype[@language = $lang]))"/>
+	<xsl:variable name="doctype_uppercased" select="java:toUpperCase(java:java.lang.String.new(//iec:metanorma/iec:bibdata/iec:ext/iec:doctype[@language = $lang]))"/>
 		
-	<xsl:variable name="stage" select="number(//iec:iec-standard/iec:bibdata/iec:status/iec:stage)"/>
-	<xsl:variable name="substage" select="number(//iec:iec-standard/iec:bibdata/iec:status/iec:substage)"/>	
-	<xsl:variable name="stagename" select="normalize-space(//iec:iec-standard/iec:bibdata/iec:ext/iec:stagename)"/>
-	<xsl:variable name="abbreviation" select="normalize-space(//iec:iec-standard/iec:bibdata/iec:status/iec:stage/@abbreviation)"/>
+	<xsl:variable name="stage" select="number(//iec:metanorma/iec:bibdata/iec:status/iec:stage)"/>
+	<xsl:variable name="substage" select="number(//iec:metanorma/iec:bibdata/iec:status/iec:substage)"/>	
+	<xsl:variable name="stagename" select="normalize-space(//iec:metanorma/iec:bibdata/iec:ext/iec:stagename)"/>
+	<xsl:variable name="abbreviation" select="normalize-space(//iec:metanorma/iec:bibdata/iec:status/iec:stage/@abbreviation)"/>
 	
 	<xsl:variable name="stage-abbreviation">
 		<xsl:choose>
@@ -98,7 +98,7 @@
 	-->
 	<xsl:variable name="contents_">
 	
-		<xsl:for-each select="//iec:iec-standard">
+		<xsl:for-each select="//iec:metanorma">
 			<xsl:variable name="lang" select="*[local-name()='bibdata']/*[local-name()='language'][@current = 'true']"/>
 			<xsl:variable name="current_document">
 				<xsl:copy-of select="."/>
@@ -130,7 +130,7 @@
 	<xsl:variable name="color_blue">rgb(0, 90, 162)</xsl:variable>
 	<xsl:variable name="color_gray">rgb(157, 158, 160)</xsl:variable>
 	
-	<xsl:variable name="isIEV" select="normalize-space((//iec:iec-standard/iec:bibdata/iec:title[@language = 'en' and @type = 'title-main'] = 'International Electrotechnical Vocabulary') and 1 = 1)"/>
+	<xsl:variable name="isIEV" select="normalize-space((//iec:metanorma/iec:bibdata/iec:title[@language = 'en' and @type = 'title-main'] = 'International Electrotechnical Vocabulary') and 1 = 1)"/>
 	
 	<xsl:template match="/">
 		<xsl:call-template name="namespaceCheck"/>
@@ -252,7 +252,7 @@
 						<fo:static-content flow-name="left-region" >
 							<fo:block-container reference-orientation="90">
 								<fo:block font-size="7pt" margin-left="3.5mm" margin-top="5.5mm">
-									<xsl:value-of select="(//iec:iec-standard)[1]/iec:bibdata/iec:docidentifier[@type = 'iso-revdate']"/>
+									<xsl:value-of select="(//iec:metanorma)[1]/iec:bibdata/iec:docidentifier[@type = 'iso-revdate']"/>
 								</fo:block>
 							</fo:block-container>
 						</fo:static-content>
@@ -287,7 +287,7 @@
 															<fo:block margin-bottom="3pt">THIS PUBLICATION IS COPYRIGHT PROTECTED</fo:block>
 															<fo:block margin-bottom="10pt">
 																<!-- Example: Copyright © 2014 IEC, Geneva, Switzerland -->
-																<xsl:apply-templates select="(//iec:iec-standard)[1]/iec:boilerplate/iec:copyright-statement/iec:clause/iec:p[contains(@id, 'boilerplate-year')]"/>
+																<xsl:apply-templates select="(//iec:metanorma)[1]/iec:boilerplate/iec:copyright-statement/iec:clause/iec:p[contains(@id, 'boilerplate-year')]"/>
 															</fo:block>
 														</fo:table-cell>
 													</fo:table-row>
@@ -300,7 +300,7 @@
 			either IEC or IEC's member National Committee in the country of the requester. If you have any questions about IEC
 			copyright or have an enquiry about obtaining additional rights to this publication, please contact the address below or
 			your local IEC member National Committee for further information. -->
-												<xsl:apply-templates select="(//iec:iec-standard)[1]/iec:boilerplate/iec:copyright-statement/iec:clause/iec:p[contains(@id, 'boilerplate-message')]"/>
+												<xsl:apply-templates select="(//iec:metanorma)[1]/iec:boilerplate/iec:copyright-statement/iec:clause/iec:p[contains(@id, 'boilerplate-message')]"/>
 												</fo:block>
 												<!-- Droits de reproduction réservés. Sauf indication contraire, aucune partie de cette publication ne peut être reproduite
 			ni utilisée sous quelque forme que ce soit et par aucun procédé, électronique ou mécanique, y compris la photocopie
@@ -308,10 +308,10 @@
 			questions sur le copyright de l'IEC ou si vous désirez obtenir des droits supplémentaires sur cette publication, utilisez
 			les coordonnées ci-après ou contactez le Comité national de l'IEC de votre pays de résidence. -->
 												<fo:block margin-bottom="8pt" text-align="justify">
-													<xsl:apply-templates select="(//iec:iec-standard)[2]/iec:boilerplate/iec:copyright-statement/iec:clause/iec:p[contains(@id, 'boilerplate-message')]"/>
+													<xsl:apply-templates select="(//iec:metanorma)[2]/iec:boilerplate/iec:copyright-statement/iec:clause/iec:p[contains(@id, 'boilerplate-message')]"/>
 												</fo:block>
 											
-												<xsl:variable name="telpos" select="count((//iec:iec-standard)[1]/iec:boilerplate/iec:copyright-statement/iec:clause/iec:p[contains(@id, 'boilerplate-address')]/text()[contains(., 'Tel.')]/preceding-sibling::node())"/>
+												<xsl:variable name="telpos" select="count((//iec:metanorma)[1]/iec:boilerplate/iec:copyright-statement/iec:clause/iec:p[contains(@id, 'boilerplate-address')]/text()[contains(., 'Tel.')]/preceding-sibling::node())"/>
 												<fo:table table-layout="fixed" width="100%">
 													<fo:table-column column-width="59mm"/>
 													<fo:table-column column-width="90mm"/>
@@ -323,13 +323,13 @@
 																		3, rue de Varembé
 																		CH-1211 Geneva 20
 																		Switzerland -->
-																	<xsl:apply-templates select="(//iec:iec-standard)[1]/iec:boilerplate/iec:copyright-statement/iec:clause/iec:p[contains(@id, 'boilerplate-name')]" mode="coverpage"/>
+																	<xsl:apply-templates select="(//iec:metanorma)[1]/iec:boilerplate/iec:copyright-statement/iec:clause/iec:p[contains(@id, 'boilerplate-name')]" mode="coverpage"/>
 																	<xsl:choose>
 																		<xsl:when test="$telpos != 0">
-																			<xsl:apply-templates select="(//iec:iec-standard)[1]/iec:boilerplate/iec:copyright-statement/iec:clause/iec:p[contains(@id, 'boilerplate-address')]/node()[position() &lt; $telpos]" mode="coverpage"/>
+																			<xsl:apply-templates select="(//iec:metanorma)[1]/iec:boilerplate/iec:copyright-statement/iec:clause/iec:p[contains(@id, 'boilerplate-address')]/node()[position() &lt; $telpos]" mode="coverpage"/>
 																		</xsl:when>
 																		<xsl:otherwise>
-																			<xsl:apply-templates select="(//iec:iec-standard)[1]/iec:boilerplate/iec:copyright-statement/iec:clause/iec:p[contains(@id, 'boilerplate-address')]" mode="coverpage"/>
+																			<xsl:apply-templates select="(//iec:metanorma)[1]/iec:boilerplate/iec:copyright-statement/iec:clause/iec:p[contains(@id, 'boilerplate-address')]" mode="coverpage"/>
 																		</xsl:otherwise>
 																	</xsl:choose>
 																</fo:block>
@@ -342,7 +342,7 @@
 																	www.iec.ch -->
 																	<xsl:choose>
 																		<xsl:when test="$telpos != 0">
-																			<xsl:apply-templates select="(//iec:iec-standard)[1]/iec:boilerplate/iec:copyright-statement/iec:clause/iec:p[contains(@id, 'boilerplate-address')]/node()[position() &gt; $telpos]" mode="coverpage"/>
+																			<xsl:apply-templates select="(//iec:metanorma)[1]/iec:boilerplate/iec:copyright-statement/iec:clause/iec:p[contains(@id, 'boilerplate-address')]/node()[position() &gt; $telpos]" mode="coverpage"/>
 																		</xsl:when>
 																		<xsl:otherwise>&#xA0;</xsl:otherwise>
 																	</xsl:choose>
@@ -358,7 +358,7 @@
 								</fo:block-container>
 							</fo:block>
 							
-							<xsl:apply-templates select="(//iec:iec-standard)[1]/iec:boilerplate/iec:feedback-statement"/> <!-- //iec:clause[not(@id) or @id != 'boilerplate-cenelec-attention'] -->
+							<xsl:apply-templates select="(//iec:metanorma)[1]/iec:boilerplate/iec:feedback-statement"/> <!-- //iec:clause[not(@id) or @id != 'boilerplate-cenelec-attention'] -->
 							<fo:block span="all" border-bottom="0.5pt solid black"/>
 							<!-- About the IEC
 							The International Electrotechnical Commission (IEC) is the leading global organization that prepares and publishes
@@ -368,15 +368,15 @@
 							latest edition, a corrigenda or an amendment might have been published.
 							...
 							-->
-							<xsl:if test="(//iec:iec-standard)[2]/iec:boilerplate/iec:feedback-statement">
-								<xsl:apply-templates select="(//iec:iec-standard)[2]/iec:boilerplate/iec:feedback-statement"/>
+							<xsl:if test="(//iec:metanorma)[2]/iec:boilerplate/iec:feedback-statement">
+								<xsl:apply-templates select="(//iec:metanorma)[2]/iec:boilerplate/iec:feedback-statement"/>
 								<fo:block span="all"/>
 							</xsl:if>
 							
 						</fo:flow>
 					</fo:page-sequence> <!-- END: 2nd Cover Page -->
 				</xsl:if>
-				<xsl:variable name="lang_second" select="(//iec:iec-standard)[2]/iec:bibdata/iec:language[@current = 'true']"/>
+				<xsl:variable name="lang_second" select="(//iec:metanorma)[2]/iec:bibdata/iec:language[@current = 'true']"/>
 				<!-- For 'Published' documents insert 3rd Cover Page 
 						OR insert first Cover Page for FDIS -->
 				<xsl:if test="$stage &gt;= 60 or $stage-abbreviation = 'FDIS'">
@@ -416,7 +416,7 @@
 									</xsl:if>
 								</fo:block-container>
 								
-								<xsl:variable name="price_code_value" select="//iec:iec-standard/iec:bibdata/iec:ext/iec:price-code"/>
+								<xsl:variable name="price_code_value" select="//iec:metanorma/iec:bibdata/iec:ext/iec:price-code"/>
 								<fo:table table-layout="fixed" width="102%" margin-top="-9mm" margin-bottom="2mm" id="__internal_layout__price_code">
 									<fo:table-column column-width="148mm"/>
 									<fo:table-column column-width="16mm"/>
@@ -458,7 +458,7 @@
 									</fo:table-body>
 								</fo:table>
 								<fo:block font-size="8pt" text-align-last="justify">
-									<xsl:for-each select="//iec:iec-standard/iec:bibdata/iec:ext/iec:ics">
+									<xsl:for-each select="//iec:metanorma/iec:bibdata/iec:ext/iec:ics">
 										<xsl:if test="position() = 1">ICS </xsl:if>
 										<xsl:value-of select="iec:code"/>
 										<xsl:if test="position() != last()"><xsl:text>; </xsl:text></xsl:if>
@@ -466,10 +466,10 @@
 									<xsl:text>&#xA0;</xsl:text>
 									<fo:inline keep-together.within-line="always"><fo:leader leader-pattern="space"/>
 										<xsl:text>&#xA0;</xsl:text>
-										<xsl:if test="//iec:iec-standard/iec:bibdata/iec:docidentifier[@type='ISBN']">
+										<xsl:if test="//iec:metanorma/iec:bibdata/iec:docidentifier[@type='ISBN']">
 											<!-- Example: ISBN 978-2-8322-1532-6 -->
 											<xsl:text>ISBN </xsl:text>
-											<xsl:value-of select="//iec:iec-standard/iec:bibdata/iec:docidentifier[@type='ISBN']"/>
+											<xsl:value-of select="//iec:metanorma/iec:bibdata/iec:docidentifier[@type='ISBN']"/>
 										</xsl:if>
 									</fo:inline>
 								</fo:block>
@@ -477,16 +477,16 @@
 									<fo:block-container margin-left="0mm">
 										<fo:block-container border="0.5pt solid black" font-size="10pt" margin-top="8mm" font-weight="bold" padding-left="1.5mm" padding-top="0.5mm" width="102%" height="11mm" display-align="center" id="__internal_layout__warning_block">
 											<fo:block margin-left="1mm">Warning! Make sure that you obtained this publication from an authorized distributor.</fo:block>
-											<xsl:if test="//iec:iec-standard/iec:bibdata/iec:title[@language = 'fr']">
+											<xsl:if test="//iec:metanorma/iec:bibdata/iec:title[@language = 'fr']">
 												<fo:block margin-left="1mm" margin-top="3pt">Attention! Veuillez vous assurer que vous avez obtenu cette publication via un distributeur agréé.</fo:block>
 											</xsl:if>
 										</fo:block-container>
 									</fo:block-container>
 								</fo:block-container>
 								<fo:block font-size="6pt" margin-top="6mm" margin-left="1mm">
-									<xsl:if test="count((//iec:iec-standard)[1]/iec:bibdata/iec:copyright) = 1">
+									<xsl:if test="count((//iec:metanorma)[1]/iec:bibdata/iec:copyright) = 1">
 										<fo:block>® Registered trademark of the International Electrotechnical Commission</fo:block>
-										<xsl:if test="//iec:iec-standard/iec:bibdata/iec:title[@language = 'fr']">
+										<xsl:if test="//iec:metanorma/iec:bibdata/iec:title[@language = 'fr']">
 											<fo:block margin-left="2mm">Marque déposée de la Commission Electrotechnique Internationale</fo:block>
 										</xsl:if>
 									</xsl:if>
@@ -515,7 +515,7 @@
 							<fo:block-container background-color="rgb(236, 232, 232)" padding="2mm" border="1.5pt solid white">
 								<fo:block font-size="8pt" margin-bottom="6pt">
 								
-									<xsl:apply-templates select="(//iec:iec-standard)[1]/iec:boilerplate/iec:copyright-statement/iec:clause/iec:p[not(@id)]"/>
+									<xsl:apply-templates select="(//iec:metanorma)[1]/iec:boilerplate/iec:copyright-statement/iec:clause/iec:p[not(@id)]"/>
 								
 								</fo:block>
 							</fo:block-container>
@@ -530,7 +530,7 @@
 								</xsl:if>
 								<fo:inline keep-together.within-line="always" font-size="18pt" font-weight="bold" baseline-shift="10mm"><fo:leader leader-pattern="space"/>
 									<!-- Ex: 34D/1511/FDIS -->
-									<xsl:value-of select="//iec:iec-standard/iec:bibdata/iec:docidentifier[@type='iso-tc']"/>
+									<xsl:value-of select="//iec:metanorma/iec:bibdata/iec:docidentifier[@type='iso-tc']"/>
 									<xsl:text>&#xA0;</xsl:text>
 								</fo:inline>
 							</fo:block>
@@ -556,7 +556,7 @@
 													</fo:block>
 													<fo:block font-size="9pt" font-weight="bold">
 														<xsl:call-template name="addLetterSpacing">
-															<xsl:with-param name="text"><xsl:value-of select="//iec:iec-standard/iec:bibdata/iec:ext/iec:structuredidentifier/iec:project-number"/></xsl:with-param>
+															<xsl:with-param name="text"><xsl:value-of select="//iec:metanorma/iec:bibdata/iec:ext/iec:structuredidentifier/iec:project-number"/></xsl:with-param>
 														</xsl:call-template>
 													</fo:block>
 												</fo:table-cell>
@@ -570,7 +570,7 @@
 													</fo:block>
 													<fo:block font-size="9pt" font-weight="bold">
 														<xsl:call-template name="addLetterSpacing">
-															<xsl:with-param name="text"><xsl:value-of select="//iec:iec-standard/iec:bibdata/iec:date[@type ='circulated']/iec:on"/></xsl:with-param>
+															<xsl:with-param name="text"><xsl:value-of select="//iec:metanorma/iec:bibdata/iec:date[@type ='circulated']/iec:on"/></xsl:with-param>
 														</xsl:call-template>
 													</fo:block>
 												</fo:table-cell>
@@ -583,7 +583,7 @@
 													<fo:block font-size="9pt" font-weight="bold">
 														<xsl:call-template name="addLetterSpacing">
 															<!-- 2019-12-06 -->
-															<xsl:with-param name="text"><xsl:value-of select="//iec:iec-standard/iec:bibdata/iec:date[@type='vote-ended']/iec:on"/></xsl:with-param>
+															<xsl:with-param name="text"><xsl:value-of select="//iec:metanorma/iec:bibdata/iec:date[@type='vote-ended']/iec:on"/></xsl:with-param>
 														</xsl:call-template>
 													</fo:block>
 												</fo:table-cell>
@@ -597,8 +597,8 @@
 													</fo:block>
 													<fo:block font-size="9pt" font-weight="bold">
 														<xsl:variable name="supersedes_documents">
-															<!-- <xsl:for-each select="//iec:iec-standard/iec:bibdata/iec:relation[@type='supersedes']/iec:bibitem/iec:docnumber"> -->
-															<xsl:for-each select="//iec:iec-standard/iec:bibdata/iec:relation[@type='obsoletes']/iec:bibitem/iec:docidentifier">
+															<!-- <xsl:for-each select="//iec:metanorma/iec:bibdata/iec:relation[@type='supersedes']/iec:bibitem/iec:docnumber"> -->
+															<xsl:for-each select="//iec:metanorma/iec:bibdata/iec:relation[@type='obsoletes']/iec:bibitem/iec:docidentifier">
 																<xsl:value-of select="."/>
 																<xsl:if test="position() != last()">,</xsl:if>
 															</xsl:for-each>
@@ -627,19 +627,19 @@
 														<!-- If //bibdata/ext/editorialgroup/subcommittee exists, use "IEC SC" + //bibdata/ext/editorialgroup/subcommittee/@number + //bibdata/ext/editorialgroup/subcommittee, 
 														else use "IEC TC" + //bibdata/ext/editorialgroup/technical-committee/@number + //bibdata/ext/editorialgroup/technical-committee -->
 														<xsl:choose>
-															<xsl:when test="//iec:iec-standard/iec:bibdata/iec:ext/iec:editorialgroup/iec:subcommittee">
+															<xsl:when test="//iec:metanorma/iec:bibdata/iec:ext/iec:editorialgroup/iec:subcommittee">
 																<fo:block font-size="6.5pt">
-																	<fo:inline font-size="8pt">IEC SC <xsl:value-of select="//iec:iec-standard/iec:bibdata/iec:ext/iec:editorialgroup/iec:subcommittee/@number"/> : </fo:inline>
+																	<fo:inline font-size="8pt">IEC SC <xsl:value-of select="//iec:metanorma/iec:bibdata/iec:ext/iec:editorialgroup/iec:subcommittee/@number"/> : </fo:inline>
 																	<xsl:call-template name="addLetterSpacingSmallCaps">
-																		<xsl:with-param name="text" select="//iec:iec-standard/iec:bibdata/iec:ext/iec:editorialgroup/iec:subcommittee"/>
+																		<xsl:with-param name="text" select="//iec:metanorma/iec:bibdata/iec:ext/iec:editorialgroup/iec:subcommittee"/>
 																	</xsl:call-template>
 																</fo:block>
 															</xsl:when>
-															<xsl:when test="//iec:iec-standard/iec:bibdata/iec:ext/iec:editorialgroup/iec:technical-committee">
+															<xsl:when test="//iec:metanorma/iec:bibdata/iec:ext/iec:editorialgroup/iec:technical-committee">
 																<fo:block font-size="6.5pt">
-																	<fo:inline font-size="8pt">IEC TC <xsl:value-of select="//iec:iec-standard/iec:bibdata/iec:ext/iec:editorialgroup/iec:technical-committee/@number"/> : </fo:inline>
+																	<fo:inline font-size="8pt">IEC TC <xsl:value-of select="//iec:metanorma/iec:bibdata/iec:ext/iec:editorialgroup/iec:technical-committee/@number"/> : </fo:inline>
 																	<xsl:call-template name="addLetterSpacingSmallCaps">
-																		<xsl:with-param name="text" select="//iec:iec-standard/iec:bibdata/iec:ext/iec:editorialgroup/iec:technical-committee"/>
+																		<xsl:with-param name="text" select="//iec:metanorma/iec:bibdata/iec:ext/iec:editorialgroup/iec:technical-committee"/>
 																	</xsl:call-template>
 																</fo:block>
 															</xsl:when>
@@ -656,7 +656,7 @@
 													</fo:block>
 													<fo:block font-size="9pt">
 														<xsl:call-template name="addLetterSpacing">
-															<xsl:with-param name="text" select="//iec:iec-standard/iec:bibdata/iec:ext/iec:editorialgroup/iec:secretariat"/>
+															<xsl:with-param name="text" select="//iec:metanorma/iec:bibdata/iec:ext/iec:editorialgroup/iec:secretariat"/>
 														</xsl:call-template>
 													</fo:block>
 												</fo:table-cell>
@@ -669,7 +669,7 @@
 													<fo:block font-size="9pt">
 														<!-- Example: Ms Shanti Conn -->
 														<xsl:call-template name="addLetterSpacing">
-															<xsl:with-param name="text" select="//iec:iec-standard/iec:bibdata/iec:ext/iec:secretary"/>
+															<xsl:with-param name="text" select="//iec:metanorma/iec:bibdata/iec:ext/iec:secretary"/>
 														</xsl:call-template>
 													</fo:block>
 												</fo:table-cell>
@@ -686,7 +686,7 @@
 													</fo:block>
 													<fo:block font-size="9pt">
 														<xsl:call-template name="addLetterSpacing">
-															<xsl:with-param name="text" select="//iec:iec-standard/iec:bibdata/iec:ext/iec:interest-to-committees"/>
+															<xsl:with-param name="text" select="//iec:metanorma/iec:bibdata/iec:ext/iec:interest-to-committees"/>
 														</xsl:call-template>
 													</fo:block>
 												</fo:table-cell>
@@ -706,7 +706,7 @@
 														</fo:block>
 														<fo:block>
 															<xsl:choose>
-																<xsl:when test="//iec:iec-standard/iec:bibdata/iec:ext/iec:horizontal = 'true'">
+																<xsl:when test="//iec:metanorma/iec:bibdata/iec:ext/iec:horizontal = 'true'">
 																	<xsl:call-template name="insertCheckBoxOn"/>
 																</xsl:when>
 																<xsl:otherwise>
@@ -741,7 +741,7 @@
 														<!-- function: { emc | safety | environment | quality-assurance } -->
 														<fo:block font-size="6.5pt">
 															<xsl:choose>
-																<xsl:when test="//iec:iec-standard/iec:bibdata/iec:ext/iec:function = 'emc'">
+																<xsl:when test="//iec:metanorma/iec:bibdata/iec:ext/iec:function = 'emc'">
 																	<xsl:call-template name="insertCheckBoxOn"/>
 																</xsl:when>
 																<xsl:otherwise>
@@ -753,7 +753,7 @@
 															</xsl:call-template>
 															<fo:inline padding-right="33mm">&#xA0;</fo:inline>
 															<xsl:choose>
-																<xsl:when test="//iec:iec-standard/iec:bibdata/iec:ext/iec:function = 'environment'">
+																<xsl:when test="//iec:metanorma/iec:bibdata/iec:ext/iec:function = 'environment'">
 																	<xsl:call-template name="insertCheckBoxOn"/>
 																</xsl:when>
 																<xsl:otherwise>
@@ -769,7 +769,7 @@
 														<fo:block font-size="6.5pt" margin-bottom="6pt">&#xA0;</fo:block>
 														<fo:block font-size="6.5pt">
 															<xsl:choose>
-																<xsl:when test="//iec:iec-standard/iec:bibdata/iec:ext/iec:function = 'quality-assurance'">
+																<xsl:when test="//iec:metanorma/iec:bibdata/iec:ext/iec:function = 'quality-assurance'">
 																	<xsl:call-template name="insertCheckBoxOn"/>
 																</xsl:when>
 																<xsl:otherwise>
@@ -781,7 +781,7 @@
 															</xsl:call-template>
 															<fo:inline padding-right="13mm">&#xA0;</fo:inline>
 															<xsl:choose>
-																<xsl:when test="//iec:iec-standard/iec:bibdata/iec:ext/iec:function = 'safety'">
+																<xsl:when test="//iec:metanorma/iec:bibdata/iec:ext/iec:function = 'safety'">
 																	<xsl:call-template name="insertCheckBoxOn"/>
 																</xsl:when>
 																<xsl:otherwise>
@@ -802,7 +802,7 @@
 													<fo:table-cell border="1.5pt solid {$border-color}" padding="1.5mm" padding-bottom="0mm">
 														<fo:block font-size="6.5pt" margin-bottom="12pt">
 															<xsl:choose>
-																<xsl:when test="/iec:iec-standard/iec:bibdata/iec:ext/iec:cen-processing = 'true'">
+																<xsl:when test="/iec:metanorma/iec:bibdata/iec:ext/iec:cen-processing = 'true'">
 																	<xsl:call-template name="insertCheckBoxOn"/>
 																</xsl:when>
 																<xsl:otherwise>
@@ -814,13 +814,13 @@
 															</xsl:call-template>
 														</fo:block>
 														
-														<xsl:apply-templates select="(//iec:iec-standard)[1]/iec:boilerplate/iec:feedback-statement/iec:clause[@id = 'boilerplate-cenelec-attention']"/>
+														<xsl:apply-templates select="(//iec:metanorma)[1]/iec:boilerplate/iec:feedback-statement/iec:clause[@id = 'boilerplate-cenelec-attention']"/>
 														
 													</fo:table-cell>
 													<fo:table-cell border="1.5pt solid {$border-color}" padding="1.5mm" padding-bottom="0mm">
 														<fo:block font-size="6.5pt" margin-bottom="6pt">
 															<xsl:choose>
-																<xsl:when test="/iec:iec-standard/iec:bibdata/iec:ext/iec:cen-processing = 'true'">
+																<xsl:when test="/iec:metanorma/iec:bibdata/iec:ext/iec:cen-processing = 'true'">
 																	<xsl:call-template name="insertCheckBoxOff"/>
 																</xsl:when>
 																<xsl:otherwise>
@@ -841,7 +841,7 @@
 							
 							<fo:block-container font-size="8pt" background-color="rgb(236, 232, 232)" margin-top="5mm" padding="2mm" text-align="justify" border="1.5pt solid white">
 								<fo:block>
-									<xsl:apply-templates select="(//iec:iec-standard)[1]/iec:boilerplate/iec:license-statement" mode="cover-page-internal"/>
+									<xsl:apply-templates select="(//iec:metanorma)[1]/iec:boilerplate/iec:license-statement" mode="cover-page-internal"/>
 								</fo:block>
 							</fo:block-container>
 							
@@ -859,7 +859,7 @@
 								</fo:block>
 								<fo:block font-size="9pt" font-weight="bold">
 									<xsl:call-template name="addLetterSpacing">
-										<xsl:with-param name="text"><xsl:value-of select="(//iec:iec-standard)[1]/iec:bibdata/iec:title[@language = $lang and @type = 'main']"/></xsl:with-param>
+										<xsl:with-param name="text"><xsl:value-of select="(//iec:metanorma)[1]/iec:bibdata/iec:title[@language = $lang and @type = 'main']"/></xsl:with-param>
 									</xsl:call-template>
 								</fo:block>
 							</fo:block-container>
@@ -877,7 +877,7 @@
 											</xsl:with-param>
 										</xsl:call-template>
 										<!-- 2023 -->
-										<fo:inline font-size="9pt"><xsl:value-of select="//iec:iec-standard/iec:bibdata/iec:date[@type='unchanged']/iec:on"/></fo:inline>
+										<fo:inline font-size="9pt"><xsl:value-of select="//iec:metanorma/iec:bibdata/iec:date[@type='unchanged']/iec:on"/></fo:inline>
 									</fo:block>
 								</fo:block-container>
 							</xsl:if>
@@ -895,7 +895,7 @@
 									</xsl:call-template>
 								</fo:block>
 								<!-- Example: This FDIS is the result of the discussion between the IEC SC21A experts WG 3 during the meeting held in -->
-								<xsl:apply-templates select="(//iec:iec-standard)[1]/iec:bibdata/iec:ext/iec:tc-sc-officers-note"/>
+								<xsl:apply-templates select="(//iec:metanorma)[1]/iec:bibdata/iec:ext/iec:tc-sc-officers-note"/>
 							</fo:block-container>
 									
 							
@@ -903,13 +903,13 @@
 					</fo:page-sequence> <!-- END: cover-FDIS -->
 				</xsl:if>
 				
-				<xsl:for-each select="//iec:iec-standard">
+				<xsl:for-each select="//iec:metanorma">
 					<xsl:variable name="lang" select="*[local-name()='bibdata']/*[local-name()='language'][@current = 'true']"/>
 					<xsl:variable name="current_document">
 						<xsl:copy-of select="."/>
 					</xsl:variable>
 					
-					<xsl:variable name="num"><xsl:number count="iec:iec-standard" level="any"/></xsl:variable>
+					<xsl:variable name="num"><xsl:number count="iec:metanorma" level="any"/></xsl:variable>
 					
 					
 					<xsl:variable name="updated_xml">
@@ -962,7 +962,7 @@
 									<fo:block font-size="11pt" color="{$color_blue}" margin-bottom="12pt" line-height="150%">
 										<fo:block-container width="42mm">
 											<fo:block>
-												<xsl:variable name="publisher" select="java:toUpperCase(java:java.lang.String.new(//iec:iec-standard/iec:bibdata/iec:contributor[iec:role/@type = 'publisher']/iec:organization/iec:name))"/>
+												<xsl:variable name="publisher" select="java:toUpperCase(java:java.lang.String.new(//iec:metanorma/iec:bibdata/iec:contributor[iec:role/@type = 'publisher']/iec:organization/iec:name))"/>
 												<xsl:value-of select="$publisher"/>
 											</fo:block>
 										</fo:block-container>
@@ -978,16 +978,16 @@
 										Fax: + 41 22 919 03 00
 										info@iec.ch
 										www.iec.ch -->
-										<xsl:variable name="telpos" select="count((//iec:iec-standard)[1]/iec:boilerplate/iec:copyright-statement/iec:clause/iec:p[contains(@id, 'boilerplate-address')]/text()[contains(., 'Tel.')]/preceding-sibling::node())"/>
+										<xsl:variable name="telpos" select="count((//iec:metanorma)[1]/iec:boilerplate/iec:copyright-statement/iec:clause/iec:p[contains(@id, 'boilerplate-address')]/text()[contains(., 'Tel.')]/preceding-sibling::node())"/>
 										<xsl:choose>
 											<xsl:when test="$telpos != 0">
-												<xsl:apply-templates select="(//iec:iec-standard)[1]/iec:boilerplate/iec:copyright-statement/iec:clause/iec:p[contains(@id, 'boilerplate-address')]/node()[position() &lt;= $telpos]" mode="coverpage"/>
-												<xsl:apply-templates select="(//iec:iec-standard)[1]/iec:boilerplate/iec:copyright-statement/iec:clause/iec:p[contains(@id, 'boilerplate-address')]/node()[position() &gt;= $telpos]" mode="coverpage">
+												<xsl:apply-templates select="(//iec:metanorma)[1]/iec:boilerplate/iec:copyright-statement/iec:clause/iec:p[contains(@id, 'boilerplate-address')]/node()[position() &lt;= $telpos]" mode="coverpage"/>
+												<xsl:apply-templates select="(//iec:metanorma)[1]/iec:boilerplate/iec:copyright-statement/iec:clause/iec:p[contains(@id, 'boilerplate-address')]/node()[position() &gt;= $telpos]" mode="coverpage">
 													<xsl:with-param name="lastpage">true</xsl:with-param>
 												</xsl:apply-templates>
 											</xsl:when>
 											<xsl:otherwise>
-												<xsl:apply-templates select="(//iec:iec-standard)[1]/iec:boilerplate/iec:copyright-statement/iec:clause/iec:p[contains(@id, 'boilerplate-address')]" mode="coverpage"/>
+												<xsl:apply-templates select="(//iec:metanorma)[1]/iec:boilerplate/iec:copyright-statement/iec:clause/iec:p[contains(@id, 'boilerplate-address')]" mode="coverpage"/>
 											</xsl:otherwise>
 										</xsl:choose>
 									</fo:block>
@@ -996,6 +996,16 @@
 						</fo:flow>
 					</fo:page-sequence>
 				</xsl:if>
+				
+				<!-- namespace document doesn't equal to xslt namespace -->
+				<xsl:if test="not(//iec:metanorma)">
+					<fo:page-sequence master-reference="blank-page">
+						<fo:flow flow-name="xsl-region-body">
+							<fo:block>&#xA0;</fo:block>
+						</fo:flow>
+					</fo:page-sequence>
+				</xsl:if>
+				
 			</fo:root>
 		<!-- </xsl:variable> -->
 		
@@ -1014,11 +1024,11 @@
 	<xsl:template name="insertCoverPart1">
 		<xsl:variable name="lang_second">
 			<xsl:choose>
-				<xsl:when test="(//iec:iec-standard)[2]/iec:bibdata/iec:language[@current = 'true']">
-					<xsl:value-of select="(//iec:iec-standard)[2]/iec:bibdata/iec:language[@current = 'true']"/>
+				<xsl:when test="(//iec:metanorma)[2]/iec:bibdata/iec:language[@current = 'true']">
+					<xsl:value-of select="(//iec:metanorma)[2]/iec:bibdata/iec:language[@current = 'true']"/>
 				</xsl:when>
 				<xsl:otherwise>
-					<xsl:value-of select="/iec:iec-standard/iec:bibdata/iec:title[@language and @language != $lang]/@language"/>
+					<xsl:value-of select="/iec:metanorma/iec:bibdata/iec:title[@language and @language != $lang]/@language"/>
 				</xsl:otherwise>
 			</xsl:choose>
 		</xsl:variable>
@@ -1026,11 +1036,11 @@
 			<xsl:call-template name="outputLogo"/>
 			<fo:inline font-size="8pt" padding-left="0.5mm" color="rgb(88, 88, 90)">
 				<xsl:choose>
-					<xsl:when test="count((//iec:iec-standard)[1]/iec:bibdata/iec:copyright) = 1">®</xsl:when>
+					<xsl:when test="count((//iec:metanorma)[1]/iec:bibdata/iec:copyright) = 1">®</xsl:when>
 					<xsl:otherwise><xsl:attribute name="padding-left">1mm</xsl:attribute>&#xa0;</xsl:otherwise>
 				</xsl:choose>
 			</fo:inline>
-			<fo:inline keep-together.within-line="always" font-size="25pt" font-weight="bold" color="{$color_gray}" border-bottom="0.5pt solid {$color_gray}" padding-bottom="3.5mm" baseline-shift="5.5mm"><fo:leader leader-pattern="space"/><xsl:value-of select="//iec:iec-standard/iec:bibdata/iec:docidentifier[@type = 'iso-undated']"/></fo:inline>
+			<fo:inline keep-together.within-line="always" font-size="25pt" font-weight="bold" color="{$color_gray}" border-bottom="0.5pt solid {$color_gray}" padding-bottom="3.5mm" baseline-shift="5.5mm"><fo:leader leader-pattern="space"/><xsl:value-of select="//iec:metanorma/iec:bibdata/iec:docidentifier[@type = 'iso-undated']"/></fo:inline>
 		</fo:block>
 		<fo:block font-size="10.5pt" text-align="right" margin-top="0.5mm">			
 			<xsl:call-template name="capitalize">
@@ -1042,7 +1052,7 @@
 			</xsl:call-template>
 			<xsl:text> </xsl:text>
 			<fo:inline>
-				<xsl:variable name="edition_" select="normalize-space(//iec:iec-standard/iec:bibdata/iec:edition[normalize-space(@language) = ''])"/>
+				<xsl:variable name="edition_" select="normalize-space(//iec:metanorma/iec:bibdata/iec:edition[normalize-space(@language) = ''])"/>
 				<xsl:variable name="edition">
 					<xsl:choose>
 						<xsl:when test="$edition_ = ''">1</xsl:when>
@@ -1054,7 +1064,7 @@
 			</fo:inline>
 			<fo:inline padding-left="4mm">
 				<!-- Example 2014-05 -->
-				<xsl:value-of select="substring(//iec:iec-standard/iec:bibdata/iec:version/iec:revision-date, 1, 7)"/>
+				<xsl:value-of select="substring(//iec:metanorma/iec:bibdata/iec:version/iec:revision-date, 1, 7)"/>
 			</fo:inline>
 			<fo:block>&#xA0;</fo:block>
 		</fo:block>
@@ -1070,7 +1080,7 @@
 								<xsl:text>PRE-RELEASE VERSION (FDIS)</xsl:text>
 							</xsl:when>
 							<xsl:when test="$stage &gt;= 60">
-								<xsl:variable name="doctype_uppercased" select="java:toUpperCase(java:java.lang.String.new((//iec:iec-standard)[1]/iec:bibdata/iec:ext/iec:doctype[@language = $lang]))"/>
+								<xsl:variable name="doctype_uppercased" select="java:toUpperCase(java:java.lang.String.new((//iec:metanorma)[1]/iec:bibdata/iec:ext/iec:doctype[@language = $lang]))"/>
 								<xsl:value-of select="$doctype_uppercased"/>
 							</xsl:when>
 							<xsl:otherwise>
@@ -1081,7 +1091,7 @@
 					</fo:block>
 				</fo:block-container> 
 				
-				<xsl:if test="//iec:iec-standard/iec:bibdata/iec:title[@language = $lang_second]">
+				<xsl:if test="//iec:metanorma/iec:bibdata/iec:title[@language = $lang_second]">
 					<fo:block-container height="26mm" margin-top="10pt" display-align="after">
 						<xsl:if test="$stage &gt;= 60">
 							<xsl:attribute name="width">100mm</xsl:attribute>
@@ -1089,7 +1099,7 @@
 						<fo:block color="{$color_gray}">
 							<xsl:if test="$stage &gt;= 60">
 								<!-- <xsl:text>NORME INTERNATIONALE</xsl:text> -->
-								<xsl:value-of  select="java:toUpperCase(java:java.lang.String.new(//iec:iec-standard/iec:bibdata/iec:ext/iec:doctype[@language = $lang_second]))"/>
+								<xsl:value-of  select="java:toUpperCase(java:java.lang.String.new(//iec:metanorma/iec:bibdata/iec:ext/iec:doctype[@language = $lang_second]))"/>
 							</xsl:if>
 						</fo:block>
 					</fo:block-container>
@@ -1100,7 +1110,7 @@
 			<fo:block-container margin-left="0mm">
 				<fo:block-container height="6mm">
 					<fo:block text-align="right" margin-top="-4.5mm" margin-right="-1mm">
-						<xsl:if test="//iec:iec-standard/iec:bibdata/iec:ext/iec:accessibility-color-inside = 'true'">
+						<xsl:if test="//iec:metanorma/iec:bibdata/iec:ext/iec:accessibility-color-inside = 'true'">
 							<fo:external-graphic src="{concat('data:image/png;base64,', normalize-space($Image-Colour-Inside))}" width="19mm" content-height="scale-to-fit" scaling="uniform" fox:alt-text="Image Logo IEC"/>
 						</xsl:if>
 					</fo:block>
@@ -1108,11 +1118,11 @@
 				<fo:block-container border-bottom="0.5pt solid {$color_gray}" margin-top="4mm" margin-bottom="16pt" height="14mm" display-align="center">
 					<fo:block font-size="10pt" color="{$color_blue}" margin-bottom="4pt">
 						<xsl:choose>
-							<xsl:when test="//iec:iec-standard/iec:bibdata/iec:ext/iec:horizontal = 'true'">
-								<xsl:value-of select="java:toUpperCase(java:java.lang.String.new(//iec:iec-standard/iec:bibdata/iec:ext/iec:horizontal[@language = $lang]))"/>
+							<xsl:when test="//iec:metanorma/iec:bibdata/iec:ext/iec:horizontal = 'true'">
+								<xsl:value-of select="java:toUpperCase(java:java.lang.String.new(//iec:metanorma/iec:bibdata/iec:ext/iec:horizontal[@language = $lang]))"/>
 							</xsl:when>
 							<xsl:otherwise><!-- horizontal is false -->
-								<xsl:value-of select="java:toUpperCase(java:java.lang.String.new(//iec:iec-standard/iec:bibdata/iec:ext/iec:function[@language = $lang]))"/>
+								<xsl:value-of select="java:toUpperCase(java:java.lang.String.new(//iec:metanorma/iec:bibdata/iec:ext/iec:function[@language = $lang]))"/>
 							</xsl:otherwise>
 						</xsl:choose>
 						<!-- Example: BASIC EMC PUBLICATION -->
@@ -1122,14 +1132,14 @@
 						Basic Environment Publication
 						Basic Quality Assurance Publication -->
 					</fo:block>
-					<xsl:if test="//iec:iec-standard/iec:bibdata/iec:title[@language = $lang_second]">
+					<xsl:if test="//iec:metanorma/iec:bibdata/iec:title[@language = $lang_second]">
 						<fo:block font-size="10pt" margin-bottom="10pt">
 							<xsl:choose>
-								<xsl:when test="//iec:iec-standard/iec:bibdata/iec:ext/iec:horizontal = 'true'">
-									<xsl:value-of select="java:toUpperCase(java:java.lang.String.new(//iec:iec-standard/iec:bibdata/iec:ext/iec:horizontal[@language = $lang_second]))"/>
+								<xsl:when test="//iec:metanorma/iec:bibdata/iec:ext/iec:horizontal = 'true'">
+									<xsl:value-of select="java:toUpperCase(java:java.lang.String.new(//iec:metanorma/iec:bibdata/iec:ext/iec:horizontal[@language = $lang_second]))"/>
 								</xsl:when>
 								<xsl:otherwise><!-- horizontal is false -->
-									<xsl:value-of select="java:toUpperCase(java:java.lang.String.new(//iec:iec-standard/iec:bibdata/iec:ext/iec:function[@language = $lang_second]))"/>
+									<xsl:value-of select="java:toUpperCase(java:java.lang.String.new(//iec:metanorma/iec:bibdata/iec:ext/iec:function[@language = $lang_second]))"/>
 								</xsl:otherwise>
 							</xsl:choose>
 							<!-- Example: PUBLICATION FONDAMENTALE EN CEM -->
@@ -1147,9 +1157,9 @@
 						Part 4-5: Testing and measurement techniques – Surge immunity test
 					-->
 					<xsl:variable name="titles_first_">
-						<title-intro><xsl:value-of select="//iec:iec-standard/iec:bibdata/iec:title[@language = $lang and @type = 'title-intro']"/></title-intro>
-						<title-main><xsl:value-of select="//iec:iec-standard/iec:bibdata/iec:title[@language = $lang and @type = 'title-main']"/></title-main>
-						<title-part><xsl:value-of select="//iec:iec-standard/iec:bibdata/iec:title[@language = $lang and @type = 'title-part']"/></title-part>
+						<title-intro><xsl:value-of select="//iec:metanorma/iec:bibdata/iec:title[@language = $lang and @type = 'title-intro']"/></title-intro>
+						<title-main><xsl:value-of select="//iec:metanorma/iec:bibdata/iec:title[@language = $lang and @type = 'title-main']"/></title-main>
+						<title-part><xsl:value-of select="//iec:metanorma/iec:bibdata/iec:title[@language = $lang and @type = 'title-part']"/></title-part>
 					</xsl:variable>
 					<xsl:variable name="titles_first" select="xalan:nodeset($titles_first_)"/>
 					
@@ -1179,9 +1189,9 @@
 					choc -->
 					
 					<xsl:variable name="titles_second_">
-						<title-intro><xsl:value-of select="//iec:iec-standard/iec:bibdata/iec:title[@language = $lang_second and @type = 'title-intro']"/></title-intro>
-						<title-main><xsl:value-of select="//iec:iec-standard/iec:bibdata/iec:title[@language = $lang_second and @type = 'title-main']"/></title-main>
-						<title-part><xsl:value-of select="//iec:iec-standard/iec:bibdata/iec:title[@language = $lang_second and @type = 'title-part']"/></title-part>
+						<title-intro><xsl:value-of select="//iec:metanorma/iec:bibdata/iec:title[@language = $lang_second and @type = 'title-intro']"/></title-intro>
+						<title-main><xsl:value-of select="//iec:metanorma/iec:bibdata/iec:title[@language = $lang_second and @type = 'title-main']"/></title-main>
+						<title-part><xsl:value-of select="//iec:metanorma/iec:bibdata/iec:title[@language = $lang_second and @type = 'title-part']"/></title-part>
 					</xsl:variable>
 					<xsl:variable name="titles_second" select="xalan:nodeset($titles_second_)"/>
 					
@@ -1224,7 +1234,7 @@
 	
 	<xsl:template name="outputLogo">
 		<!-- <fo:external-graphic src="{concat('data:image/png;base64,', normalize-space($Image-Logo-IEC))}" width="18mm" content-height="scale-to-fit" scaling="uniform" fox:alt-text="Image Logo IEC"/> -->
-		<xsl:for-each select="(//iec:iec-standard)[1]/iec:bibdata/iec:copyright/iec:owner/iec:organization/iec:abbreviation">
+		<xsl:for-each select="(//iec:metanorma)[1]/iec:bibdata/iec:copyright/iec:owner/iec:organization/iec:abbreviation">
 			<xsl:choose>
 				<xsl:when test=". = 'IEC'">
 					<!-- <fo:external-graphic src="{concat('data:image/png;base64,', normalize-space($Image-Logo-IEC))}" content-height="18mm" content-width="scale-to-fit" scaling="uniform" fox:alt-text="Image Logo IEC"/> -->
@@ -1529,9 +1539,9 @@
 		<xsl:param name="lang"/>
 		
 		<xsl:variable name="titles_doc_">
-			<title-intro><xsl:value-of select="java:toUpperCase(java:java.lang.String.new(/iec:iec-standard/iec:bibdata/iec:title[@language = $lang and @type = 'title-intro']))"/></title-intro>
-			<title-main><xsl:value-of select="java:toUpperCase(java:java.lang.String.new(/iec:iec-standard/iec:bibdata/iec:title[@language = $lang and @type = 'title-main']))"/></title-main>
-			<title-part><xsl:value-of select="/iec:iec-standard/iec:bibdata/iec:title[@language = $lang and @type = 'title-part']"/></title-part>
+			<title-intro><xsl:value-of select="java:toUpperCase(java:java.lang.String.new(/iec:metanorma/iec:bibdata/iec:title[@language = $lang and @type = 'title-intro']))"/></title-intro>
+			<title-main><xsl:value-of select="java:toUpperCase(java:java.lang.String.new(/iec:metanorma/iec:bibdata/iec:title[@language = $lang and @type = 'title-main']))"/></title-main>
+			<title-part><xsl:value-of select="/iec:metanorma/iec:bibdata/iec:title[@language = $lang and @type = 'title-part']"/></title-part>
 		</xsl:variable>
 		<xsl:variable name="titles_doc" select="xalan:nodeset($titles_doc_)"/>
 		
@@ -1783,7 +1793,7 @@
 	</xsl:template>
 	
 	
-	<xsl:template match="iec:iec-standard/iec:preface//iec:foreword" priority="3">
+	<xsl:template match="iec:metanorma/iec:preface//iec:foreword" priority="3">
 		<fo:block id="{@id}" margin-bottom="12pt" font-size="12pt" text-align="center">
 			<xsl:call-template name="addLetterSpacing">
 				<!-- <xsl:with-param name="text" select="java:toUpperCase(java:java.lang.String.new(iec:title))"/> -->
@@ -1792,7 +1802,7 @@
 		</fo:block>
 		<!--  margin-left="6.3mm" -->
 		<!-- <fo:block font-size="8.2pt" text-align="justify">
-			<xsl:apply-templates select="/iec:iec-standard/iec:boilerplate/iec:legal-statement/*"/>
+			<xsl:apply-templates select="/iec:metanorma/iec:boilerplate/iec:legal-statement/*"/>
 		</fo:block> -->
 		<fo:block>
 			<xsl:apply-templates select="*[not(local-name() = 'title')]"/>

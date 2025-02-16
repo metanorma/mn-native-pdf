@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" 
 											xmlns:fo="http://www.w3.org/1999/XSL/Format" 
-											xmlns:ribose="https://www.metanorma.org/ns/ribose" 
+											xmlns:ribose="https://www.metanorma.org/ns/standoc" 
 											xmlns:mathml="http://www.w3.org/1998/Math/MathML" 
 											xmlns:xalan="http://xml.apache.org/xalan" 
 											xmlns:fox="http://xmlgraphics.apache.org/fop/extensions" 
@@ -21,25 +21,25 @@
 	
 	<xsl:variable name="color_blue">rgb(22, 97, 173)</xsl:variable>
 	
-	<xsl:variable name="copyright_year" select="/ribose:rsd-standard/ribose:bibdata/ribose:copyright/ribose:from"/>
+	<xsl:variable name="copyright_year" select="/ribose:metanorma/ribose:bibdata/ribose:copyright/ribose:from"/>
 	
 	<xsl:variable name="copyright">
 		<xsl:text>© </xsl:text>
 		<xsl:value-of select="$copyright_year"/>
 		<xsl:text> </xsl:text>
-		<xsl:value-of select="/ribose:rsd-standard/ribose:bibdata/ribose:copyright/ribose:owner/ribose:organization/ribose:name"/>
+		<xsl:value-of select="/ribose:metanorma/ribose:bibdata/ribose:copyright/ribose:owner/ribose:organization/ribose:name"/>
 	</xsl:variable>
 	
 	
 	<xsl:variable name="contents_">
 		<contents>
 		
-			<xsl:apply-templates select="/ribose:rsd-standard/ribose:preface/ribose:abstract" mode="contents"/>
-			<xsl:apply-templates select="/ribose:rsd-standard/ribose:preface/ribose:foreword" mode="contents"/>
-			<xsl:apply-templates select="/ribose:rsd-standard/ribose:preface/ribose:executivesummary" mode="contents"/>
-			<xsl:apply-templates select="/ribose:rsd-standard/ribose:preface/ribose:introduction" mode="contents"/>
-			<xsl:apply-templates select="/ribose:rsd-standard/ribose:preface/ribose:clause" mode="contents"/>
-			<xsl:apply-templates select="/ribose:rsd-standard/ribose:preface/ribose:acknowledgements" mode="contents"/>
+			<xsl:apply-templates select="/ribose:metanorma/ribose:preface/ribose:abstract" mode="contents"/>
+			<xsl:apply-templates select="/ribose:metanorma/ribose:preface/ribose:foreword" mode="contents"/>
+			<xsl:apply-templates select="/ribose:metanorma/ribose:preface/ribose:executivesummary" mode="contents"/>
+			<xsl:apply-templates select="/ribose:metanorma/ribose:preface/ribose:introduction" mode="contents"/>
+			<xsl:apply-templates select="/ribose:metanorma/ribose:preface/ribose:clause" mode="contents"/>
+			<xsl:apply-templates select="/ribose:metanorma/ribose:preface/ribose:acknowledgements" mode="contents"/>
 					
 			<xsl:call-template name="processMainSectionsDefault_Contents"/>
 			
@@ -49,11 +49,11 @@
 	<xsl:variable name="contents" select="xalan:nodeset($contents_)"/>
 	
 	<xsl:variable name="docnumber_version">
-		<xsl:value-of select="/ribose:rsd-standard/ribose:bibdata/ribose:docidentifier[@type = 'rsd' or @type = 'Ribose']"/>
+		<xsl:value-of select="/ribose:metanorma/ribose:bibdata/ribose:docidentifier[@type = 'rsd' or @type = 'Ribose']"/>
 			<xsl:text>:</xsl:text>
 			<xsl:value-of select="$copyright_year"/>
 			
-			<xsl:variable name="edition" select="normalize-space(/ribose:rsd-standard/ribose:bibdata/ribose:edition[normalize-space(@language) = ''])"/>
+			<xsl:variable name="edition" select="normalize-space(/ribose:metanorma/ribose:bibdata/ribose:edition[normalize-space(@language) = ''])"/>
 			<xsl:if test="$edition != ''">
 				<xsl:variable name="title-version">
 					<xsl:call-template name="capitalize">
@@ -378,7 +378,7 @@
 										<fo:table-cell display-align="before" border-right="0.5pt solid black" padding-top="1.5mm" padding-right="5mm">
 											<!-- Author's list -->
 											<fo:block>
-												<xsl:for-each select="/ribose:rsd-standard/ribose:bibdata/ribose:contributor[ribose:role/@type='author']/ribose:person/ribose:name/ribose:completename">
+												<xsl:for-each select="/ribose:metanorma/ribose:bibdata/ribose:contributor[ribose:role/@type='author']/ribose:person/ribose:name/ribose:completename">
 													<fo:block>
 														<xsl:apply-templates />
 													</fo:block>
@@ -387,20 +387,20 @@
 										</fo:table-cell>
 										<fo:table-cell display-align="before" padding-top="1.5mm" padding-left="8mm">
 											<fo:block>
-												<xsl:apply-templates select="/ribose:rsd-standard/ribose:bibdata/ribose:ext/ribose:security"/>
+												<xsl:apply-templates select="/ribose:metanorma/ribose:bibdata/ribose:ext/ribose:security"/>
 												<fo:block>
 													<xsl:call-template name="convertDate">
-														<xsl:with-param name="date" select="/ribose:rsd-standard/ribose:bibdata/ribose:date[@type = 'published']/ribose:on"/>
+														<xsl:with-param name="date" select="/ribose:metanorma/ribose:bibdata/ribose:date[@type = 'published']/ribose:on"/>
 														<xsl:with-param name="format" select="'Month DD, YYYY'"/>
 													</xsl:call-template>
 												</fo:block>
 												<fo:block><xsl:value-of select="$docnumber_version"/></fo:block>
-												<xsl:apply-templates select="/ribose:rsd-standard/ribose:bibdata/ribose:ext/ribose:editorialgroup/ribose:committee"/>
+												<xsl:apply-templates select="/ribose:metanorma/ribose:bibdata/ribose:ext/ribose:editorialgroup/ribose:committee"/>
 												<fo:block>
 													<xsl:text>© </xsl:text>
 													<xsl:value-of select="$copyright_year"/>
 													<xsl:text> </xsl:text>
-													<xsl:variable name="publisher" select="/ribose:rsd-standard/ribose:bibdata/ribose:contributor[ribose:role/@type='publisher']/ribose:organization/ribose:name"/>
+													<xsl:variable name="publisher" select="/ribose:metanorma/ribose:bibdata/ribose:contributor[ribose:role/@type='publisher']/ribose:organization/ribose:name"/>
 													<xsl:value-of select="$publisher"/>
 													<xsl:if test="substring($publisher, string-length($publisher)) != '.'"><xsl:text>.</xsl:text></xsl:if>
 													<xsl:text> </xsl:text>
@@ -424,12 +424,12 @@
 					
 					<!-- title and version  -->
 					<fo:block-container margin-top="{$pageHeight - 279.4}mm" height="60mm" display-align="center">
-						<xsl:variable name="title" select="/ribose:rsd-standard/ribose:bibdata/ribose:title[@language = $lang]"/>
+						<xsl:variable name="title" select="/ribose:metanorma/ribose:bibdata/ribose:title[@language = $lang]"/>
 						<xsl:if test="string-length($title) &gt; 80">
 							<xsl:attribute name="margin-right">-30mm</xsl:attribute>
 						</xsl:if>
 						<fo:block font-size="27pt" font-weight="bold" role="H1">
-								<xsl:apply-templates select="/ribose:rsd-standard/ribose:bibdata/ribose:title[@language = $lang]" mode="cover_page"/>
+								<xsl:apply-templates select="/ribose:metanorma/ribose:bibdata/ribose:title[@language = $lang]" mode="cover_page"/>
 						</fo:block>
 						<fo:block space-before="9pt" font-size="16.8pt" font-weight="600">
 							<xsl:value-of select="$docnumber_version"/>
@@ -454,20 +454,26 @@
 			<xsl:for-each select="xalan:nodeset($updated_xml)/*">
 			
 				<!-- ToC pages -->
-				<fo:page-sequence master-reference="document" force-page-count="no-force"> <!-- master-reference="toc" -->
-					<xsl:call-template name="insertHeaderFooter">
-						<xsl:with-param name="section">toc</xsl:with-param>
-					</xsl:call-template>
-					<fo:flow flow-name="xsl-region-body">
+				<xsl:variable name="toc_and_boilerplate">
+					<xsl:apply-templates select="/ribose:metanorma/ribose:preface/ribose:clause[@type = 'toc']" />
 					
-						<xsl:apply-templates select="/ribose:rsd-standard/ribose:preface/ribose:clause[@type = 'toc']" />
+					<xsl:apply-templates select="/ribose:metanorma/ribose:boilerplate/ribose:legal-statement"/>
 					
-						<xsl:apply-templates select="/ribose:rsd-standard/ribose:boilerplate/ribose:legal-statement"/>
+					<xsl:apply-templates select="/ribose:metanorma/ribose:boilerplate/ribose:feedback-statement"/>
+				</xsl:variable>
+				
+				<xsl:if test="normalize-space($toc_and_boilerplate) != ''">
+					<fo:page-sequence master-reference="document" force-page-count="no-force"> <!-- master-reference="toc" -->
+						<xsl:call-template name="insertHeaderFooter">
+							<xsl:with-param name="section">toc</xsl:with-param>
+						</xsl:call-template>
+						<fo:flow flow-name="xsl-region-body">
 						
-						<xsl:apply-templates select="/ribose:rsd-standard/ribose:boilerplate/ribose:feedback-statement"/>
-					
-					</fo:flow>
-				</fo:page-sequence>
+							<xsl:copy-of select="$toc_and_boilerplate"/>
+						
+						</fo:flow>
+					</fo:page-sequence>
+				</xsl:if>
 				<!-- ============== -->
 				<!-- END ToC  pages -->
 				<!-- ============== -->
@@ -499,12 +505,12 @@
 							
 								<fo:block line-height="130%">
 								
-									<!-- <xsl:apply-templates select="/ribose:rsd-standard/ribose:preface/ribose:abstract" />
-									<xsl:apply-templates select="/ribose:rsd-standard/ribose:preface/ribose:foreword" />
-									<xsl:apply-templates select="/ribose:rsd-standard/ribose:preface/ribose:executivesummary" />
-									<xsl:apply-templates select="/ribose:rsd-standard/ribose:preface/ribose:introduction" />
-									<xsl:apply-templates select="/ribose:rsd-standard/ribose:preface/ribose:clause[not(@type = 'toc')]" />
-									<xsl:apply-templates select="/ribose:rsd-standard/ribose:preface/ribose:acknowledgements" />
+									<!-- <xsl:apply-templates select="/ribose:metanorma/ribose:preface/ribose:abstract" />
+									<xsl:apply-templates select="/ribose:metanorma/ribose:preface/ribose:foreword" />
+									<xsl:apply-templates select="/ribose:metanorma/ribose:preface/ribose:executivesummary" />
+									<xsl:apply-templates select="/ribose:metanorma/ribose:preface/ribose:introduction" />
+									<xsl:apply-templates select="/ribose:metanorma/ribose:preface/ribose:clause[not(@type = 'toc')]" />
+									<xsl:apply-templates select="/ribose:metanorma/ribose:preface/ribose:acknowledgements" />
 								
 									<xsl:call-template name="processMainSectionsDefault"/> -->
 									
@@ -532,22 +538,22 @@
 				
 					<xsl:element name="preface" namespace="{$namespace_full}"> <!-- save context element -->
 						
-						<xsl:apply-templates select="/ribose:rsd-standard/ribose:preface/ribose:abstract" mode="update_xml_step_move_pagebreak">
+						<xsl:apply-templates select="/ribose:metanorma/ribose:preface/ribose:abstract" mode="update_xml_step_move_pagebreak">
 							<xsl:with-param name="page_sequence_at_top">true</xsl:with-param>
 						</xsl:apply-templates>
-						<xsl:apply-templates select="/ribose:rsd-standard/ribose:preface/ribose:foreword" mode="update_xml_step_move_pagebreak">
+						<xsl:apply-templates select="/ribose:metanorma/ribose:preface/ribose:foreword" mode="update_xml_step_move_pagebreak">
 							<xsl:with-param name="page_sequence_at_top">true</xsl:with-param>
 						</xsl:apply-templates>
-						<xsl:apply-templates select="/ribose:rsd-standard/ribose:preface/ribose:executivesummary" mode="update_xml_step_move_pagebreak">
+						<xsl:apply-templates select="/ribose:metanorma/ribose:preface/ribose:executivesummary" mode="update_xml_step_move_pagebreak">
 							<xsl:with-param name="page_sequence_at_top">true</xsl:with-param>
 						</xsl:apply-templates>
-						<xsl:apply-templates select="/ribose:rsd-standard/ribose:preface/ribose:introduction" mode="update_xml_step_move_pagebreak">
+						<xsl:apply-templates select="/ribose:metanorma/ribose:preface/ribose:introduction" mode="update_xml_step_move_pagebreak">
 							<xsl:with-param name="page_sequence_at_top">true</xsl:with-param>
 						</xsl:apply-templates>
-						<xsl:apply-templates select="/ribose:rsd-standard/ribose:preface/ribose:clause[not(@type = 'toc')]" mode="update_xml_step_move_pagebreak">
+						<xsl:apply-templates select="/ribose:metanorma/ribose:preface/ribose:clause[not(@type = 'toc')]" mode="update_xml_step_move_pagebreak">
 							<xsl:with-param name="page_sequence_at_top">true</xsl:with-param>
 						</xsl:apply-templates>
-						<xsl:apply-templates select="/ribose:rsd-standard/ribose:preface/ribose:acknowledgements" mode="update_xml_step_move_pagebreak">
+						<xsl:apply-templates select="/ribose:metanorma/ribose:preface/ribose:acknowledgements" mode="update_xml_step_move_pagebreak">
 							<xsl:with-param name="page_sequence_at_top">true</xsl:with-param>
 						</xsl:apply-templates>
 						
@@ -1250,7 +1256,7 @@
 			<xsl:text>Ribose</xsl:text>
 			<xsl:text>&#xA0;</xsl:text>
 			<xsl:call-template name="capitalize">
-				<xsl:with-param name="str" select="/ribose:rsd-standard/ribose:bibdata/ribose:ext/ribose:doctype"/>
+				<xsl:with-param name="str" select="/ribose:metanorma/ribose:bibdata/ribose:ext/ribose:doctype"/>
 			</xsl:call-template>
 		</xsl:variable>
 		<fo:static-content flow-name="footer-odd" role="artifact">
