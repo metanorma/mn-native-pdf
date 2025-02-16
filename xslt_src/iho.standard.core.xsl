@@ -547,7 +547,7 @@
 								</xsl:attribute>
 								<fo:list-item>
 									<fo:list-item-label end-indent="label-end()">
-										<fo:block>
+										<fo:block id="__internal_layout__toc_sectionnum_{generate-id()}">
 											<xsl:if test="@section != '' and not(@type = 'annex')"> <!-- output below   -->
 												<xsl:value-of select="@section"/>
 											</xsl:if>
