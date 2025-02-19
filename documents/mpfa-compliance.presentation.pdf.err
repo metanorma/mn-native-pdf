@@ -1,0 +1,5 @@
+PDF isn't valid PDF/UA-1:
+ValidationResult [flavour=ua1, totalAssertions=131020, assertions=[
+TestAssertion [ruleId=RuleId [specification=ISO 14289-1:2014, clause=7.2, testNumber=42], status=failed,
+message=Table rows shall have the same number of columns (taking into account column spans),
+location=Location [level=CosDocument, context=root/document[0]/StructTreeRoot[0](777 0 obj PDStructTreeRoot)/K[0](779 0 obj SEDocument Document)/K[1](783 0 obj SEPart Part)/K[0](793 0 obj SESect Sect)/K[0](794 0 obj SEDiv Div)/K[3](797 0 obj SEDiv Div)/K[0](799 0 obj SETable Table)], locationContext=null, errorMessage=null]], isCompliant=false]
