@@ -205,22 +205,26 @@
 				<xsl:apply-templates mode="update_xml_pres"/>
 			</xsl:variable>
 			
-			<!-- <xsl:message>start redirect</xsl:message>
-			<redirect:write file="update_xml_pres.xml">
-				<xsl:copy-of select="$updated_xml_pres"/>
-			</redirect:write>
-			<xsl:message>end redirect</xsl:message> -->
+			<xsl:if test="$debug = 'true'">
+				<xsl:message>start redirect</xsl:message>
+				<redirect:write file="update_xml_pres.xml">
+					<xsl:copy-of select="$updated_xml_pres"/>
+				</redirect:write>
+				<xsl:message>end redirect</xsl:message>
+			</xsl:if>
 			
 			<xsl:variable name="updated_xml_step1">
 				<!-- <xsl:apply-templates mode="update_xml_step1"/> -->
 				<xsl:apply-templates select="xalan:nodeset($updated_xml_pres)" mode="update_xml_step1"/>
 			</xsl:variable>
 			<!-- DEBUG: updated_xml_step1=<xsl:copy-of select="$updated_xml_step1"/> -->
-			<!-- <xsl:message>start redirect</xsl:message>
-			<redirect:write file="update_xml_step1.xml">
-				<xsl:copy-of select="$updated_xml_step1"/>
-			</redirect:write>
-			<xsl:message>end redirect</xsl:message> -->
+			<xsl:if test="$debug = 'true'">
+				<xsl:message>start redirect</xsl:message>
+				<redirect:write file="update_xml_step1.xml">
+					<xsl:copy-of select="$updated_xml_step1"/>
+				</redirect:write>
+				<xsl:message>end redirect</xsl:message>
+			</xsl:if>
 			
 			
 			<xsl:variable name="updated_xml_step2_">
@@ -228,11 +232,14 @@
 			</xsl:variable>
 			<xsl:variable name="updated_xml_step2" select="xalan:nodeset($updated_xml_step2_)"/>
 			<!-- DEBUG: updated_xml_step2=<xsl:copy-of select="$updated_xml_step2"/> -->
-			<!-- <xsl:message>start redirect</xsl:message>
-			<redirect:write file="update_xml_step2.xml">
-				<xsl:copy-of select="$updated_xml_step2"/>
-			</redirect:write>
-			<xsl:message>end redirect</xsl:message> -->
+			
+			<xsl:if test="$debug = 'true'">
+				<xsl:message>start redirect</xsl:message>
+				<redirect:write file="update_xml_step2.xml">
+					<xsl:copy-of select="$updated_xml_step2"/>
+				</redirect:write>
+				<xsl:message>end redirect</xsl:message>
+			</xsl:if>
 			
 			
 			<xsl:for-each select="$updated_xml_step2//plateau:metanorma">
@@ -1757,9 +1764,17 @@
 	<xsl:template match="plateau:table/plateau:p[@class = 'ListTitle']" priority="2" mode="update_xml_step1"/>
 	
   <!-- added to fix conflict with previous update in update_xml_pres -->
-	<xsl:template match="*[local-name() = 'preferred'] | *[local-name() = 'admitted'] | *[local-name() = 'deprecates'] |
-					*[local-name() = 'definition'] | *[local-name() = 'termsource'] | *[local-name() = 'termsource'] |
-					*[local-name() = 'term'][@unnumbered = 'true']" mode="update_xml_step1" priority="2">
+	<xsl:template match="*[local-name() = 'preferred'] | 
+											*[local-name() = 'admitted'] | 
+											*[local-name() = 'deprecates'] |
+											*[local-name() = 'definition'] | 
+											*[local-name() = 'termsource'] | 
+											*[local-name() = 'term'][@unnumbered = 'true'] | 
+											*[local-name() = 'identifier'] | 
+											*[local-name() = 'eref'] | 
+											*[local-name() = 'xref'] | 
+											*[local-name() = 'link'] | 
+											*[local-name() = 'origin']" mode="update_xml_step1" priority="2">
 		<xsl:copy>
 			<xsl:apply-templates select="@*|node()" mode="update_xml_step1"/>
 		</xsl:copy>
