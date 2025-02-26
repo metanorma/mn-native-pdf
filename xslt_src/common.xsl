@@ -3352,6 +3352,11 @@
 	</xsl:attribute-set> <!-- table-fn-number-style -->
 	
 	<xsl:template name="refine_table-fn-number-style">
+		<xsl:if test="$namespace = 'bsi'">
+			<xsl:if test="$document_type = 'PAS'">
+				<xsl:attribute name="font-size">80%</xsl:attribute>
+			</xsl:if>
+		</xsl:if>
 		<xsl:if test="$namespace = 'iso'">
 			<xsl:if test="$layoutVersion = '2024'">
 				<xsl:attribute name="alignment-baseline">auto</xsl:attribute>
@@ -7787,7 +7792,7 @@
 								</xsl:when>
 								<xsl:otherwise>
 									<xsl:apply-templates select="node()[not(local-name() = 'name') and not(local-name() = 'note') and not(local-name() = 'example') and not(local-name() = 'dl') and not(local-name() = 'source') and not(local-name() = 'p')
-									and not(local-name() = 'thead') and not(local-name() = 'tfoot')]" /> <!-- process all table' elements, except name, header, footer, note, source and dl which render separaterely -->
+									and not(local-name() = 'thead') and not(local-name() = 'tfoot') and not(local-name() = 'fmt-footnote-container')]" /> <!-- process all table' elements, except name, header, footer, note, source and dl which render separaterely -->
 								</xsl:otherwise>
 							</xsl:choose>
 					
@@ -9195,12 +9200,20 @@
 	<!-- ===================== -->
 	<!-- Footnotes processing  -->
 	<!-- ===================== -->
+	
+	<xsl:variable name="footnotes_">
+		<xsl:for-each select="//*[local-name() = 'metanorma']/*[local-name() = 'fmt-footnote-container']/*[local-name() = 'fmt-fn-body']">
+			<xsl:copy-of select="."/>
+		</xsl:for-each>
+	</xsl:variable>
+	<xsl:variable name="footnotes" select="xalan:nodeset($footnotes_)"/>
+	
 	<!--
 	<fn reference="1">
 			<p id="_8e5cf917-f75a-4a49-b0aa-1714cb6cf954">Formerly denoted as 15 % (m/m).</p>
 		</fn>
 	-->
-	<!-- footnotes in text (title, bibliography, main body, table's, figure's names), not for tables, figures -->
+	<!-- footnotes in text (title, bibliography, main body), not for tables, figures and names --> <!-- table's, figure's names -->
 	<xsl:template match="*[local-name() = 'fn'][not(ancestor::*[(local-name() = 'table' or local-name() = 'figure')] and not(ancestor::*[local-name() = 'name']))]" priority="2" name="fn">
 	
 		<!-- list of footnotes to calculate actual footnotes number -->
@@ -9516,8 +9529,11 @@
 	<!-- ============================ -->
 	<!-- table's footnotes rendering -->
 	<!-- ============================ -->
+	
+	<xsl:template match="*[local-name() = 'table']//*[local-name() = 'fmt-footnote-container']"/>
+	
 	<xsl:template name="table_fn_display">
-		<xsl:variable name="references">
+		<!-- <xsl:variable name="references">
 			<xsl:if test="$namespace = 'bsi'">
 				<xsl:for-each select="..//*[local-name()='fn'][local-name(..) = 'name']">
 					<xsl:call-template name="create_fn" />
@@ -9526,11 +9542,12 @@
 			<xsl:for-each select="..//*[local-name()='fn'][local-name(..) != 'name']">
 				<xsl:call-template name="create_fn" />
 			</xsl:for-each>
-		</xsl:variable>
+		</xsl:variable> -->
 		
-		<xsl:for-each select="xalan:nodeset($references)//fn">
+		<!-- <xsl:for-each select="xalan:nodeset($references)//fn">
 			<xsl:variable name="reference" select="@reference"/>
-			<xsl:if test="not(preceding-sibling::*[@reference = $reference])"> <!-- only unique reference puts in note-->
+			<xsl:if test="not(preceding-sibling::*[@reference = $reference])">  --> <!-- only unique reference puts in note-->
+		<xsl:for-each select="..//*[local-name() = 'fmt-footnote-container']/*[local-name() = 'fmt-fn-body']">
 			
 				<xsl:choose>
 					<xsl:when test="$namespace = 'bsi'">
@@ -9595,55 +9612,64 @@
 					
 					<xsl:otherwise>
 						<fo:block xsl:use-attribute-sets="table-fn-style">
+							<xsl:copy-of select="@id"/>
 							<xsl:call-template name="refine_table-fn-style"/>
-							<fo:inline id="{@id}" xsl:use-attribute-sets="table-fn-number-style">
-								<xsl:call-template name="refine_table-fn-number-style"/>
-								<xsl:if test="$namespace = 'bsi'">
-									<xsl:if test="$document_type = 'PAS'">
-										<xsl:attribute name="font-size">80%</xsl:attribute>
-									</xsl:if>
-								</xsl:if>
-								
-								<xsl:if test="$namespace = 'bipm'">
-									<fo:inline font-style="normal">(</fo:inline>
-								</xsl:if>
-								
-								<xsl:if test="$namespace = 'plateau'">
-									<xsl:text>※</xsl:text>
-								</xsl:if>
-								
-								<xsl:value-of select="@reference"/>
-								
-								<xsl:if test="$namespace = 'bipm'">
-									<fo:inline font-style="normal">)</fo:inline>
-								</xsl:if>
-								
-								<!-- commented https://github.com/metanorma/isodoc/issues/614 -->
-								<!-- <xsl:if test="$namespace = 'itu'">
-									<xsl:text>)</xsl:text>
-								</xsl:if> -->
-								
-								<xsl:if test="$namespace = 'plateau'">
-									<xsl:text>：</xsl:text>
-								</xsl:if>
-								
-							</fo:inline>
+							
+							<xsl:apply-templates select=".//*[local-name() = 'fmt-fn-label']">
+								<xsl:with-param name="process">true</xsl:with-param>
+							</xsl:apply-templates>
+							
 							<fo:inline xsl:use-attribute-sets="table-fn-body-style">
-								<xsl:copy-of select="./node()"/>
+								<!-- <xsl:copy-of select="./node()"/> -->
+								<xsl:apply-templates />
 							</fo:inline>
 							
 						</fo:block>
 					</xsl:otherwise>
 				</xsl:choose>
 			
-				
-			</xsl:if>
+			<!-- </xsl:if> -->
 		</xsl:for-each>
 	</xsl:template> <!-- table_fn_display -->
 	
+	<xsl:template match="*[local-name() = 'fmt-footnote-container']/*[local-name() = 'fmt-fn-body']//*[local-name() = 'fmt-fn-label']">
+		<xsl:param name="process">false</xsl:param>
+		<xsl:if test="$process = 'true'">
+			<fo:inline xsl:use-attribute-sets="table-fn-number-style">
+				<xsl:call-template name="refine_table-fn-number-style"/>
+				
+				<xsl:if test="$namespace = 'bipm'">
+					<fo:inline font-style="normal">(</fo:inline>
+				</xsl:if>
+				
+				<xsl:if test="$namespace = 'plateau'">
+					<xsl:text>※</xsl:text>
+				</xsl:if>
+				
+				<!-- <xsl:value-of select="@reference"/> -->
+				<xsl:value-of select="normalize-space()"/>
+				
+				<xsl:if test="$namespace = 'bipm'">
+					<fo:inline font-style="normal">)</fo:inline>
+				</xsl:if>
+				
+				<!-- commented https://github.com/metanorma/isodoc/issues/614 -->
+				<!-- <xsl:if test="$namespace = 'itu'">
+					<xsl:text>)</xsl:text>
+				</xsl:if> -->
+				
+				<xsl:if test="$namespace = 'plateau'">
+					<xsl:text>：</xsl:text>
+				</xsl:if>
+				
+			</fo:inline>
+		</xsl:if>
+	</xsl:template>
+	<!-- <xsl:template match="*[local-name() = 'fmt-footnote-container']/*[local-name() = 'fmt-fn-body']//*[local-name() = 'fmt-fn-label']//*[local-name() = 'tab']"/> -->
+	<!-- 
 	<xsl:template name="create_fn">
 		<fn reference="{@reference}" id="{@reference}_{ancestor::*[@id][1]/@id}">
-			<xsl:if test="ancestor::*[local-name()='table'][1]/@id"> <!-- for footnotes in tables -->
+			<xsl:if test="ancestor::*[local-name()='table'][1]/@id">  - for footnotes in tables -
 				<xsl:attribute name="id">
 					<xsl:value-of select="concat(@reference, '_', ancestor::*[local-name()='table'][1]/@id)"/>
 				</xsl:attribute>
@@ -9662,7 +9688,7 @@
 			</xsl:if>
 			<xsl:apply-templates />
 		</fn>
-	</xsl:template>
+	</xsl:template> -->
 	
 	<!-- footnotes for table's name rendering -->
 	<xsl:template name="table_name_fn_display">
@@ -9899,7 +9925,7 @@
 		<fo:inline role="SKIP"><xsl:value-of select="."/></fo:inline>
 	</xsl:template>
 	
-	<xsl:template match="*[local-name()='fn']//*[local-name()='p']">
+	<xsl:template match="*[local-name()='fn']//*[local-name()='p'] | *[local-name() = 'fmt-fn-body']//*[local-name()='p']">
 		<fo:inline role="P">
 			<xsl:apply-templates />
 		</fo:inline>
