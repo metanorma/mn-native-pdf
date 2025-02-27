@@ -9563,13 +9563,15 @@
 											<xsl:attribute name="padding-right">0.5mm</xsl:attribute>
 											<xsl:attribute name="font-size">4.5pt</xsl:attribute>
 										</xsl:if>
-										<xsl:value-of select="@reference"/>
-										<xsl:text>)</xsl:text>								
+										<!-- <xsl:value-of select="@reference"/>
+										<xsl:text>)</xsl:text> -->
+										<xsl:value-of select="normalize-space(.//*[local-name() = 'fmt-fn-label'])"/>
 									</fo:block>
 								</fo:list-item-label>
 								<fo:list-item-body start-indent="body-start()" xsl:use-attribute-sets="table-fn-body-style">
 									<fo:block>
-										<xsl:copy-of select="./node()"/>
+										<!-- <xsl:copy-of select="./node()"/> -->
+										<xsl:apply-templates />
 									</fo:block>
 								</fo:list-item-body>
 							</fo:list-item>
@@ -9880,15 +9882,16 @@
 	<!-- END: figure's footnotes rendering -->
 	<!-- ============================ -->
 	
-	<!-- fn reference in the text rendering (for instance, 'some text 1) some text' ) -->
+	<!-- fn reference in the table, figure rendering (for instance, 'some text 1) some text' ) -->
 	<xsl:template match="*[local-name()='fn']">
 		<fo:inline xsl:use-attribute-sets="fn-reference-style">
 		
 			<xsl:call-template name="refine_fn-reference-style"/>
 			
-			<fo:basic-link internal-destination="{@reference}_{ancestor::*[@id][1]/@id}" fox:alt-text="footnote {@reference}"> <!-- @reference   | ancestor::*[local-name()='clause'][1]/@id-->
-				<xsl:if test="ancestor::*[local-name()='table'][1]/@id"> <!-- for footnotes in tables -->
-					<xsl:attribute name="internal-destination">
+			<!-- <fo:basic-link internal-destination="{@reference}_{ancestor::*[@id][1]/@id}" fox:alt-text="footnote {@reference}"> --> <!-- @reference   | ancestor::*[local-name()='clause'][1]/@id-->
+			<fo:basic-link internal-destination="{@target}" fox:alt-text="footnote {@reference}">
+				<!-- <xsl:if test="ancestor::*[local-name()='table'][1]/@id"> --> <!-- for footnotes in tables -->
+				<!-- 	<xsl:attribute name="internal-destination">
 						<xsl:value-of select="concat(@reference, '_', ancestor::*[local-name()='table'][1]/@id)"/>
 					</xsl:attribute>
 				</xsl:if>
@@ -9897,20 +9900,21 @@
 						<xsl:value-of select="@reference"/><xsl:text>_</xsl:text>
 						<xsl:value-of select="ancestor::*[local-name()='table'][1]/@id"/>
 					</xsl:attribute>
-				</xsl:if>
+				</xsl:if> -->
 				<xsl:if test="$namespace = 'bipm'">
 					<fo:inline font-style="normal">&#xA0;(</fo:inline>
 				</xsl:if>
 				<xsl:if test="$namespace = 'plateau'">
 					<xsl:text>※</xsl:text>
 				</xsl:if>
-				<xsl:value-of select="@reference"/>
+				<!-- <xsl:value-of select="@reference"/> -->
+				<xsl:value-of select="normalize-space(*[local-name() = 'fmt-fn-label'])"/>
 				<xsl:if test="$namespace = 'bipm'">
 					<fo:inline font-style="normal">)</fo:inline>
 				</xsl:if>
-				<xsl:if test="$namespace = 'bsi'">
+				<!-- <xsl:if test="$namespace = 'bsi'">
 					<xsl:text>)</xsl:text>
-				</xsl:if>
+				</xsl:if> -->
 				<!-- commented, https://github.com/metanorma/isodoc/issues/614 -->
 				<!-- <xsl:if test="$namespace = 'jis'">
 					<fo:inline font-weight="normal">)</fo:inline>
