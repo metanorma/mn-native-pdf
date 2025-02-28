@@ -9203,7 +9203,8 @@
 	
 	<xsl:variable name="footnotes_">
 		<xsl:for-each select="//*[local-name() = 'metanorma']/*[local-name() = 'fmt-footnote-container']/*[local-name() = 'fmt-fn-body']">
-			<xsl:copy-of select="."/>
+			<!-- <xsl:copy-of select="."/> -->
+			<xsl:apply-templates select="." mode="update_xml_enclose_keep-together_within-line"/>
 		</xsl:for-each>
 	</xsl:variable>
 	<xsl:variable name="footnotes" select="xalan:nodeset($footnotes_)"/>
@@ -9238,14 +9239,16 @@
 		</xsl:variable>
 		<xsl:variable name="reference" select="normalize-space($reference_)"/>
 		<!-- fn sequence number in document -->
-		<xsl:variable name="current_fn_number">
+		<!-- <xsl:variable name="current_fn_number">
 			<xsl:choose>
-				<xsl:when test="@current_fn_number"><xsl:value-of select="@current_fn_number"/></xsl:when> <!-- for BSI -->
+				<xsl:when test="@current_fn_number"><xsl:value-of select="@current_fn_number"/></xsl:when> - for BSI -
 				<xsl:otherwise>
 					<xsl:value-of select="count($p_fn//fn[@reference = $reference]/preceding-sibling::fn) + 1" />
 				</xsl:otherwise>
 			</xsl:choose>
-		</xsl:variable>
+		</xsl:variable> -->
+		<xsl:variable name="current_fn_number" select="@reference"/>
+		
 		<xsl:variable name="current_fn_number_text">
 			<xsl:choose>
 				<xsl:when test="$namespace = 'iso'">
@@ -9257,7 +9260,8 @@
 								<xsl:with-param name="count" select="$current_fn_number"/>
 							</xsl:call-template>
 						</xsl:when>
-						<xsl:otherwise><xsl:value-of select="$current_fn_number"/><xsl:text>)</xsl:text></xsl:otherwise>
+						<!-- <xsl:otherwise><xsl:value-of select="$current_fn_number"/><xsl:text>)</xsl:text></xsl:otherwise> -->
+						<xsl:otherwise><xsl:value-of select="normalize-space(*[local-name() = 'fmt-fn-label'])"/></xsl:otherwise>
 					</xsl:choose>
 				</xsl:when>
 				<xsl:when test="$namespace = 'jis'">
@@ -9281,14 +9285,17 @@
 			</xsl:if>
 		</xsl:variable>
 		
-		<xsl:variable name="ref_id">
+		<!-- <xsl:variable name="ref_id">
 			<xsl:choose>
 				<xsl:when test="normalize-space(@ref_id) != ''"><xsl:value-of select="@ref_id"/></xsl:when>
 				<xsl:otherwise>
 					<xsl:value-of select="concat('footnote_', $lang, '_', $reference, '_', $current_fn_number)"/>
 				</xsl:otherwise>
 			</xsl:choose>
-		</xsl:variable>
+		</xsl:variable> -->
+		
+		<xsl:variable name="ref_id" select="@target"/>
+		
 		<xsl:variable name="footnote_inline">
 			<fo:inline role="Reference">
 			
@@ -9374,7 +9381,9 @@
 			<xsl:when test="normalize-space(@skip_footnote_body) = 'true'">
 				<xsl:copy-of select="$footnote_inline"/>
 			</xsl:when>
-			<xsl:when test="$p_fn//fn[@gen_id = $gen_id] or normalize-space(@skip_footnote_body) = 'false'">
+			<!-- <xsl:when test="$p_fn//fn[@gen_id = $gen_id] or normalize-space(@skip_footnote_body) = 'false'"> -->
+			<xsl:when test="$footnotes//*[local-name() = 'fmt-fn-body'][@id = $ref_id] or normalize-space(@skip_footnote_body) = 'false'">
+			
 				<fo:footnote xsl:use-attribute-sets="fn-style" role="SKIP">
 					<xsl:copy-of select="$footnote_inline"/>
 					<fo:footnote-body role="Note">
@@ -9396,7 +9405,8 @@
 									<xsl:value-of select="$current_fn_number_text"/>
 									
 								</fo:inline>
-								<xsl:apply-templates />
+								<!-- <xsl:apply-templates /> -->
+								<xsl:apply-templates select="$footnotes/*[local-name() = 'fmt-fn-body'][@id = $ref_id]"/>
 							</xsl:variable>
 							
 							<xsl:choose>
@@ -9427,12 +9437,13 @@
 													</fo:list-item-label>
 													<fo:list-item-body start-indent="body-start()" xsl:use-attribute-sets="table-fn-body-style" role="SKIP">
 														<fo:block role="SKIP">
-															<xsl:apply-templates />
+															<!-- <xsl:apply-templates /> -->
+															<xsl:apply-templates select="$footnotes/*[local-name() = 'fmt-fn-body'][@id = $ref_id]"/>
 														</fo:block>
 													</fo:list-item-body>
 												</fo:list-item>
 											</fo:list-block>
-										</xsl:when>
+										</xsl:when> <!-- $vertical_layout = 'true' -->
 										<xsl:otherwise>
 											<fo:block xsl:use-attribute-sets="fn-body-style" role="SKIP">
 												<xsl:copy-of select="$fn_block"/>
@@ -9447,8 +9458,6 @@
 									</fo:block>
 								</xsl:otherwise>
 							</xsl:choose>
-							
-							
 							
 							
 						</fo:block-container>
@@ -9634,7 +9643,7 @@
 		</xsl:for-each>
 	</xsl:template> <!-- table_fn_display -->
 	
-	<xsl:template match="*[local-name() = 'fmt-footnote-container']/*[local-name() = 'fmt-fn-body']//*[local-name() = 'fmt-fn-label']">
+	<xsl:template match="*[local-name() = 'fmt-fn-body']//*[local-name() = 'fmt-fn-label']"> <!-- *[local-name() = 'fmt-footnote-container']/ -->
 		<xsl:param name="process">false</xsl:param>
 		<xsl:if test="$process = 'true'">
 			<fo:inline xsl:use-attribute-sets="table-fn-number-style">
