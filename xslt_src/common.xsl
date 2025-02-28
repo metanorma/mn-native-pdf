@@ -9219,37 +9219,8 @@
 	-->
 	<!-- footnotes in text (title, bibliography, main body), not for tables, figures and names --> <!-- table's, figure's names -->
 	<xsl:template match="*[local-name() = 'fn'][not(ancestor::*[(local-name() = 'table' or local-name() = 'figure')] and not(ancestor::*[local-name() = 'name']))]" priority="2" name="fn">
-	
-		<!-- list of footnotes to calculate actual footnotes number -->
-		<xsl:variable name="p_fn_">
-			<xsl:call-template name="get_fn_list"/>
-			<!-- <xsl:choose>
-				<xsl:when test="$namespace = 'jis'">
-					<xsl:call-template name="get_fn_list_for_element"/>
-				</xsl:when>
-				<xsl:otherwise>
-					<xsl:call-template name="get_fn_list"/>
-				</xsl:otherwise>
-			</xsl:choose> -->
-		</xsl:variable>
-		<xsl:variable name="p_fn" select="xalan:nodeset($p_fn_)"/>
 		
-		<xsl:variable name="gen_id" select="generate-id(.)"/>
-		<xsl:variable name="lang" select="ancestor::*[local-name() = 'metanorma']/*[local-name()='bibdata']//*[local-name()='language'][@current = 'true']"/>
-		<xsl:variable name="reference_">
-			<xsl:value-of select="@reference"/>
-			<xsl:if test="normalize-space(@reference) = ''"><xsl:value-of select="$gen_id"/></xsl:if>
-		</xsl:variable>
-		<xsl:variable name="reference" select="normalize-space($reference_)"/>
 		<!-- fn sequence number in document -->
-		<!-- <xsl:variable name="current_fn_number">
-			<xsl:choose>
-				<xsl:when test="@current_fn_number"><xsl:value-of select="@current_fn_number"/></xsl:when> - for BSI -
-				<xsl:otherwise>
-					<xsl:value-of select="count($p_fn//fn[@reference = $reference]/preceding-sibling::fn) + 1" />
-				</xsl:otherwise>
-			</xsl:choose>
-		</xsl:variable> -->
 		<xsl:variable name="current_fn_number" select="@reference"/>
 		
 		<xsl:variable name="current_fn_number_text">
@@ -9263,7 +9234,6 @@
 								<xsl:with-param name="count" select="$current_fn_number"/>
 							</xsl:call-template>
 						</xsl:when>
-						<!-- <xsl:otherwise><xsl:value-of select="$current_fn_number"/><xsl:text>)</xsl:text></xsl:otherwise> -->
 						<xsl:otherwise><xsl:value-of select="normalize-space(*[local-name() = 'fmt-fn-label'])"/></xsl:otherwise>
 					</xsl:choose>
 				</xsl:when>
@@ -9287,15 +9257,6 @@
 				</xsl:if>
 			</xsl:if>
 		</xsl:variable>
-		
-		<!-- <xsl:variable name="ref_id">
-			<xsl:choose>
-				<xsl:when test="normalize-space(@ref_id) != ''"><xsl:value-of select="@ref_id"/></xsl:when>
-				<xsl:otherwise>
-					<xsl:value-of select="concat('footnote_', $lang, '_', $reference, '_', $current_fn_number)"/>
-				</xsl:otherwise>
-			</xsl:choose>
-		</xsl:variable> -->
 		
 		<xsl:variable name="ref_id" select="@target"/>
 		
@@ -9384,7 +9345,6 @@
 			<xsl:when test="normalize-space(@skip_footnote_body) = 'true'">
 				<xsl:copy-of select="$footnote_inline"/>
 			</xsl:when>
-			<!-- <xsl:when test="$p_fn//fn[@gen_id = $gen_id] or normalize-space(@skip_footnote_body) = 'false'"> -->
 			<xsl:when test="$footnotes//*[local-name() = 'fmt-fn-body'][@id = $ref_id] or normalize-space(@skip_footnote_body) = 'false'">
 			
 				<fo:footnote xsl:use-attribute-sets="fn-style" role="SKIP">
@@ -9516,28 +9476,6 @@
 		</xsl:choose>
 	</xsl:template>
 	
-	<xsl:template name="get_fn_list_for_element">
-		<xsl:choose>
-			<xsl:when test="@current_fn_number"> <!-- footnote reference number calculated already -->
-				<fn gen_id="{generate-id(.)}">
-					<xsl:copy-of select="@*"/>
-					<xsl:copy-of select="node()"/>
-				</fn>
-			</xsl:when>
-			<xsl:otherwise>
-				<xsl:for-each select="ancestor::*[local-name() = 'ul' or local-name() = 'ol'][1]">
-					<xsl:variable name="element_id" select="@id"/>
-					<xsl:for-each select=".//*[local-name() = 'fn'][generate-id(.)=generate-id(key('kfn',@reference)[1])]">
-						<!-- copy unique fn -->
-						<fn gen_id="{generate-id(.)}">
-							<xsl:copy-of select="@*"/>
-							<xsl:copy-of select="node()"/>
-						</fn>
-					</xsl:for-each>
-				</xsl:for-each>
-			</xsl:otherwise>
-		</xsl:choose>
-	</xsl:template>
 	<!-- ============================ -->
 	<!-- table's footnotes rendering -->
 	<!-- ============================ -->
