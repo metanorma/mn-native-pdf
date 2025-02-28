@@ -9204,7 +9204,10 @@
 	<xsl:variable name="footnotes_">
 		<xsl:for-each select="//*[local-name() = 'metanorma']/*[local-name() = 'fmt-footnote-container']/*[local-name() = 'fmt-fn-body']">
 			<!-- <xsl:copy-of select="."/> -->
-			<xsl:apply-templates select="." mode="update_xml_enclose_keep-together_within-line"/>
+			<xsl:variable name="update_xml_step1">
+				<xsl:apply-templates select="." mode="update_xml_step1"/>
+			</xsl:variable>
+			<xsl:apply-templates select="xalan:nodeset($update_xml_step1)" mode="update_xml_enclose_keep-together_within-line"/>
 		</xsl:for-each>
 	</xsl:variable>
 	<xsl:variable name="footnotes" select="xalan:nodeset($footnotes_)"/>
