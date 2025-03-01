@@ -2254,21 +2254,9 @@
 		</xsl:variable>
 		<xsl:variable name="p_fn" select="xalan:nodeset($p_fn_)"/>
 		<xsl:variable name="gen_id" select="generate-id(.)"/>
-		<xsl:variable name="lang" select="ancestor::*[local-name() = 'metanorma']/*[local-name()='bibdata']//*[local-name()='language'][@current = 'true']"/>
-		<xsl:variable name="reference_">
-			<xsl:value-of select="@reference"/>
-			<xsl:if test="normalize-space(@reference) = ''"><xsl:value-of select="$gen_id"/></xsl:if>
-		</xsl:variable>
-		<xsl:variable name="reference" select="normalize-space($reference_)"/>
-		<!-- fn sequence number in document -->
-		<xsl:variable name="current_fn_number" select="count($p_fn//fn[@reference = $reference]/preceding-sibling::fn) + 1" />
 		
 		<xsl:copy>
 			<xsl:apply-templates select="@*" mode="flatxml"/>
-			<!-- put actual reference number -->
-			<xsl:attribute name="current_fn_number">
-				<xsl:value-of select="$current_fn_number"/>
-			</xsl:attribute>
 			<xsl:attribute name="skip_footnote_body"> <!-- false for repeatable footnote -->
 				<xsl:value-of select="not($p_fn//fn[@gen_id = $gen_id] and (1 = 1))"/>
 			</xsl:attribute>
@@ -2831,7 +2819,7 @@
 	</xsl:template>
 	
 
-	<xsl:template match="ieee:p/ieee:fn/ieee:p" priority="2">
+	<xsl:template match="ieee:p/ieee:fn/ieee:p | *[local-name() = 'fmt-fn-body']//*[local-name()='p']" priority="2">
 		<xsl:choose>
 			<xsl:when test="preceding-sibling::ieee:p"> <!-- for multi-paragraphs footnotes -->
 				<fo:block>
@@ -2840,7 +2828,9 @@
 				</fo:block>
 			</xsl:when>
 			<xsl:otherwise>
-				<xsl:apply-templates />
+				<fo:inline role="P">
+					<xsl:apply-templates />
+				</fo:inline>
 			</xsl:otherwise>
 		</xsl:choose>
 	</xsl:template>
