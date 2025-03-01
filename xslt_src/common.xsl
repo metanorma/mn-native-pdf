@@ -19271,9 +19271,9 @@
 									<xsl:when test="$namespace = 'iec'">
 										<fo:block text-align="justify">
 											<fo:inline>
-												<xsl:call-template name="displayAdmonitionName">
-													<xsl:with-param name="sep"> – </xsl:with-param>
-												</xsl:call-template>
+												<xsl:call-template name="displayAdmonitionName"/>
+													<!-- <xsl:with-param name="sep"> – </xsl:with-param>
+												</xsl:call-template> -->
 											</fo:inline>
 											<xsl:apply-templates select="node()[not(local-name() = 'name')]" />
 										</fo:block>
