@@ -25,11 +25,12 @@
 		<xsl:text> – All rights reserved</xsl:text>
 	</xsl:variable>
 	
-	<xsl:variable name="header">
+	<!-- <xsl:variable name="header">
 		<xsl:value-of select="/csd:metanorma/csd:bibdata/csd:docidentifier[@type = 'csd']"/>
 		<xsl:text>:</xsl:text>
 		<xsl:value-of select="/csd:metanorma/csd:bibdata/csd:copyright/csd:from"/>
-	</xsl:variable>
+	</xsl:variable> -->
+	<xsl:variable name="header" select="/csd:metanorma/csd:bibdata/csd:docidentifier[@type = 'CalConnect']"/>
 	
 	<xsl:variable name="contents_">
 		<contents>
