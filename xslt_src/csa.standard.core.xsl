@@ -577,15 +577,7 @@
 			<fo:block>&#xA0;</fo:block>
 		</xsl:if>
 	</xsl:template>
-	
-
-	<xsl:template match="csa:fn/csa:p">
-		<fo:block>
-			<xsl:apply-templates />
-		</fo:block>
-	</xsl:template>
-	
-	
+		
 	<xsl:template match="csa:ul | csa:ol" mode="list" priority="2">
 		<xsl:choose>
 			<xsl:when test="not(ancestor::csa:ul) and not(ancestor::csa:ol)">
