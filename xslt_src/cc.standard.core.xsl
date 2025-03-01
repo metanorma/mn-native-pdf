@@ -180,12 +180,9 @@
 			</xsl:call-template>
 			
 			<!-- Cover Page -->
-			<fo:page-sequence master-reference="cover-page" force-page-count="no-force">				
-				<fo:static-content flow-name="xsl-footnote-separator">
-					<fo:block>
-						<fo:leader leader-pattern="rule" leader-length="30%"/>
-					</fo:block>
-				</fo:static-content>
+			<fo:page-sequence master-reference="cover-page" force-page-count="no-force">
+				<xsl:call-template name="insertFootnoteSeparatorCommon"/>
+				
 				<fo:static-content flow-name="cover-page-header" font-size="10pt">
 					<fo:block-container height="23.5mm" display-align="before">
 						<fo:block padding-top="12.5mm">
@@ -275,11 +272,7 @@
 								<xsl:attribute name="force-page-count">end-on-even</xsl:attribute>
 							</xsl:if>
 						
-							<fo:static-content flow-name="xsl-footnote-separator">
-								<fo:block>
-									<fo:leader leader-pattern="rule" leader-length="30%"/>
-								</fo:block>
-							</fo:static-content>
+							<xsl:call-template name="insertFootnoteSeparatorCommon"/>
 							<xsl:call-template name="insertHeaderFooter"/>
 							<fo:flow flow-name="xsl-region-body">
 								
@@ -336,12 +329,7 @@
 								<xsl:attribute name="initial-page-number">1</xsl:attribute>
 							</xsl:if>
 							
-							
-							<fo:static-content flow-name="xsl-footnote-separator">
-								<fo:block>
-									<fo:leader leader-pattern="rule" leader-length="30%"/>
-								</fo:block>
-							</fo:static-content>
+							<xsl:call-template name="insertFootnoteSeparatorCommon"/>
 							<xsl:call-template name="insertHeaderFooter"/>
 							<fo:flow flow-name="xsl-region-body">
 								<!-- <fo:block font-size="16pt" font-weight="bold" margin-bottom="17pt" role="H1">
