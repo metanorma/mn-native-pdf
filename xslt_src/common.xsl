@@ -5350,6 +5350,10 @@
 			<xsl:attribute name="font-weight">normal</xsl:attribute>
 			<xsl:attribute name="vertical-align">super</xsl:attribute>
 		</xsl:if>
+		<xsl:if test="$namespace = 'ieee'">
+			<xsl:attribute name="font-size">65%</xsl:attribute>
+			<xsl:attribute name="vertical-align">super</xsl:attribute>
+		</xsl:if>
 		<xsl:if test="$namespace = 'itu'">
 			<xsl:attribute name="vertical-align">super</xsl:attribute>
 			<xsl:attribute name="color">blue</xsl:attribute>
