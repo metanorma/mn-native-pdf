@@ -493,11 +493,8 @@
 								<xsl:call-template name="getPageSequenceOrientation"/>
 							</xsl:attribute>
 						
-							<fo:static-content flow-name="xsl-footnote-separator">
-								<fo:block>
-									<fo:leader leader-pattern="rule" leader-length="30%"/>
-								</fo:block>
-							</fo:static-content>
+							<xsl:call-template name="insertFootnoteSeparatorCommon"/>
+							
 							<xsl:call-template name="insertHeaderFooter">
 								<xsl:with-param name="section">main</xsl:with-param>
 							</xsl:call-template>
