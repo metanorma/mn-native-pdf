@@ -364,11 +364,8 @@
 				
 				<!-- Cover Page -->
 				<fo:page-sequence master-reference="cover-page" force-page-count="no-force">				
-					<fo:static-content flow-name="xsl-footnote-separator">
-						<fo:block>
-							<fo:leader leader-pattern="rule" leader-length="30%"/>
-						</fo:block>
-					</fo:static-content>
+					<xsl:call-template name="insertFootnoteSeparatorCommon"/>
+					
 						
 					<fo:flow flow-name="xsl-region-body" color="white">
 					
@@ -618,7 +615,7 @@
 				
 				<!-- Copyright, Content, Foreword, etc. pages -->
 				<fo:page-sequence master-reference="preface" initial-page-number="2" format="i" force-page-count="no-force">
-					<xsl:call-template name="insertFootnoteSeparator"/>				
+					<xsl:call-template name="insertFootnoteSeparator"/>
 					<xsl:call-template name="insertHeaderFooter"/>
 					<fo:flow flow-name="xsl-region-body">
 					
@@ -1517,15 +1514,7 @@
 			<fo:block>&#xA0;</fo:block>
 		</xsl:if>
 	</xsl:template>
-	
-
-	<xsl:template match="ogc:fn/ogc:p">
-		<fo:block>
-			<xsl:apply-templates />
-		</fo:block>
-	</xsl:template>
-	
-	
+		
 	
 	<xsl:template match="ogc:ul | ogc:ol" mode="list" priority="2">
 		<xsl:param name="indent">0</xsl:param>
