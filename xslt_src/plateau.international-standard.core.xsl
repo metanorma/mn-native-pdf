@@ -346,11 +346,7 @@
 								<xsl:attribute name="initial-page-number">1</xsl:attribute>
 							</xsl:if>
 							
-							<fo:static-content flow-name="xsl-footnote-separator">
-								<fo:block>
-									<fo:leader leader-pattern="rule" leader-length="15%"/>
-								</fo:block>
-							</fo:static-content>
+							<xsl:call-template name="insertFootnoteSeparatorCommon"><xsl:with-param name="leader_length">15%</xsl:with-param></xsl:call-template>
 							
 							<xsl:call-template name="insertHeaderFooter"/>
 							
