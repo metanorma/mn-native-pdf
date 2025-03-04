@@ -9259,6 +9259,9 @@
 						<xsl:otherwise><xsl:value-of select="$current_fn_number"/><fo:inline font-weight="normal">)</fo:inline></xsl:otherwise>
 					</xsl:choose>
 				</xsl:when>
+				<xsl:when test="$namespace = 'plateau'">
+					<xsl:value-of select="normalize-space(*[local-name() = 'fmt-fn-label'])"/>
+				</xsl:when>
 				<xsl:otherwise>
 					<xsl:value-of select="$current_fn_number"/>
 				</xsl:otherwise>

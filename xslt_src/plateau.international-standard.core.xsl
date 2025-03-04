@@ -527,13 +527,6 @@
 	</xsl:template> <!-- END: processPrefaceAndMainSectionsPlateau_items -->
 	
 	
-	<xsl:template match="*[local-name() = 'references'][not(@hidden = 'true')]" mode="linear_xml" priority="2">
-		<xsl:copy>
-			<xsl:apply-templates select="@*|node()" mode="linear_xml"/>
-		</xsl:copy>
-	</xsl:template>
-	
-	
 	<xsl:template match="*[local-name()='preface']//*[local-name() = 'clause'][@type = 'toc']" priority="4">
 		<xsl:param name="num"/>
 		<xsl:if test="$doctype = 'technical-report'">
@@ -1464,8 +1457,11 @@
 		<!-- <debug><xsl:copy-of select="$ancestor_tree"/></debug>
 		<debug><ancestor><xsl:value-of select="$ancestor"/></ancestor></debug> -->
 		
+		
+		<xsl:variable name="ref_id" select="@target"/>
+		
 		<xsl:if test="$ancestor_tree//item[last()][. = $ancestor]">
-			<fo:block-container margin-left="11mm" margin-bottom="4pt" id="{@ref_id}">
+			<fo:block-container margin-left="11mm" margin-bottom="4pt" id="{$ref_id}">
 				
 				<xsl:if test="position() = last()">
 					<xsl:attribute name="margin-bottom">10pt</xsl:attribute>
@@ -1474,11 +1470,13 @@
 					<fo:list-block provisional-distance-between-starts="10mm">
 						<fo:list-item>
 							<fo:list-item-label end-indent="label-end()">
-								<fo:block xsl:use-attribute-sets="note-name-style">注 <fo:inline xsl:use-attribute-sets="fn-num-style"><xsl:value-of select="@current_fn_number"/><fo:inline font-weight="normal">)</fo:inline></fo:inline></fo:block>
+								<xsl:variable name="current_fn_number" select="translate(normalize-space(plateau:fmt-fn-label), ')', '')"/>
+								<fo:block xsl:use-attribute-sets="note-name-style">注 <fo:inline xsl:use-attribute-sets="fn-num-style"><xsl:value-of select="$current_fn_number"/><fo:inline font-weight="normal">)</fo:inline></fo:inline></fo:block>
 							</fo:list-item-label>
 							<fo:list-item-body start-indent="body-start()">
 								<fo:block>
-									<xsl:apply-templates />
+									<!-- <xsl:apply-templates /> -->
+									<xsl:apply-templates select="$footnotes/*[local-name() = 'fmt-fn-body'][@id = $ref_id]"/>
 								</fo:block>
 							</fo:list-item-body>
 						</fo:list-item>
@@ -1498,6 +1496,16 @@
 		<xsl:copy>
 			<xsl:copy-of select="@*[not(name() = 'style')]"/>
 			<xsl:apply-templates mode="update_xml_step1"/>
+		</xsl:copy>
+	</xsl:template>
+	
+	
+	<xsl:template match="plateau:ul//plateau:fn | plateau:ol//plateau:fn" mode="update_xml_pres">
+		<xsl:copy>
+			<xsl:apply-templates select="@*" mode="update_xml_pres"/>
+			<!-- for output footnote after the 'li' -->
+			<xsl:attribute name="skip_footnote_body">true</xsl:attribute>
+			<xsl:apply-templates select="node()" mode="update_xml_pres"/>
 		</xsl:copy>
 	</xsl:template>
 	
