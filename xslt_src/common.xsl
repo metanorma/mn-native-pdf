@@ -9256,7 +9256,7 @@
 							<xsl:value-of select="$numbers_japanese//jis:localized-string[@key = $current_fn_number]"/>
 							<xsl:text>&#x2008;</xsl:text>
 						</xsl:when>
-						<xsl:otherwise><xsl:value-of select="$current_fn_number"/><fo:inline font-weight="normal">)</fo:inline></xsl:otherwise>
+						<xsl:otherwise><xsl:value-of select="translate($current_fn_number, ')', '')"/><fo:inline font-weight="normal">)</fo:inline></xsl:otherwise>
 					</xsl:choose>
 				</xsl:when>
 				<xsl:when test="$namespace = 'plateau'">
@@ -9563,14 +9563,19 @@
 											<xsl:if test="not($vertical_layout = 'true')">
 												<xsl:attribute name="font-family">Times New Roman</xsl:attribute>
 											</xsl:if>
-											<xsl:value-of select="@reference"/>
+											<!-- <xsl:value-of select="@reference"/> -->
+											<!-- <xsl:apply-templates select=".//*[local-name() = 'fmt-fn-label']">
+												<xsl:with-param name="process">true</xsl:with-param>
+											</xsl:apply-templates> -->
+											<xsl:value-of select="normalize-space(.//*[local-name() = 'fmt-fn-label'])"/>
 											<!-- <fo:inline font-weight="normal">)</fo:inline> --> <!-- commented, https://github.com/metanorma/isodoc/issues/614 -->
 										</fo:inline>
 									</fo:block>
 								</fo:list-item-label>
 								<fo:list-item-body start-indent="body-start()" xsl:use-attribute-sets="table-fn-body-style">
 									<fo:block>
-										<xsl:copy-of select="./node()"/>
+										<!-- <xsl:copy-of select="./node()"/> -->
+										<xsl:apply-templates />
 									</fo:block>
 								</fo:list-item-body>
 							</fo:list-item>
