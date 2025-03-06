@@ -7798,19 +7798,21 @@
 				
 				<xsl:variable name="colgroup" select="*[local-name()='colgroup']"/>
 				
-				
+				<!-- https://github.com/metanorma/metanorma-plateau/issues/171 -->
 				<xsl:choose>
 					<xsl:when test="$namespace = 'plateau'"><!-- table footer after table --></xsl:when>
 					<xsl:otherwise>
-						<xsl:for-each select="*[local-name()='tbody']"><!-- select context to tbody -->
-							<xsl:call-template name="insertTableFooterInSeparateTable">
-								<xsl:with-param name="table_attributes" select="$table_attributes"/>
-								<xsl:with-param name="colwidths" select="$colwidths"/>				
-								<xsl:with-param name="colgroup" select="$colgroup"/>				
-							</xsl:call-template>
-						</xsl:for-each>
+						
 					</xsl:otherwise>
 				</xsl:choose>
+				
+				<xsl:for-each select="*[local-name()='tbody']"><!-- select context to tbody -->
+					<xsl:call-template name="insertTableFooterInSeparateTable">
+						<xsl:with-param name="table_attributes" select="$table_attributes"/>
+						<xsl:with-param name="colwidths" select="$colwidths"/>				
+						<xsl:with-param name="colgroup" select="$colgroup"/>				
+					</xsl:call-template>
+				</xsl:for-each>
 				
 				<xsl:if test="$namespace = 'gb'">
 					<xsl:apply-templates select="*[local-name()='note']" />
@@ -7820,15 +7822,16 @@
 					<xsl:apply-templates select="*[local-name()='name']" />
 				</xsl:if>
 				
+				<!-- https://github.com/metanorma/metanorma-plateau/issues/171
 				<xsl:if test="$namespace = 'plateau'">
 					<xsl:apply-templates select="*[not(local-name()='thead') and not(local-name()='tbody') and not(local-name()='tfoot') and not(local-name()='name')]" />
-					<xsl:for-each select="*[local-name()='tbody']"> <!-- select context to tbody -->
+					<xsl:for-each select="*[local-name()='tbody']"> - select context to tbody -
 						<xsl:variable name="table_fn_block">
 							<xsl:call-template name="table_fn_display" />
 						</xsl:variable>
 						<xsl:copy-of select="$table_fn_block"/>
 					</xsl:for-each>
-				</xsl:if>
+				</xsl:if> -->
 				
 				<xsl:if test="*[local-name()='bookmark']"> <!-- special case: table/bookmark -->
 					<fo:block keep-with-previous="always" line-height="0.1">
@@ -8698,6 +8701,15 @@
 									<xsl:when test="$namespace = 'gb' or $namespace = 'bsi'"></xsl:when>
 									<xsl:when test="$namespace = 'jis'">
 										<xsl:apply-templates select="../*[local-name()='p' or local-name()='dl' or (local-name()='note' and not(@type = 'units')) or local-name()='example' or local-name()='source']" />
+									</xsl:when>
+									<xsl:when test="$namespace = 'plateau'">
+										<!-- https://github.com/metanorma/metanorma-plateau/issues/171 : the order is: definition list, text paragraphs, EXAMPLEs, NOTEs, footnotes, then source at the end -->
+										<xsl:apply-templates select="../*[local-name()='dl']" />
+										<xsl:apply-templates select="../*[local-name()='p']" />
+										<xsl:apply-templates select="../*[local-name()='example']" />
+										<xsl:apply-templates select="../*[local-name()='note'][not(@type = 'units')]" />
+										<!-- footnotes -->
+										<xsl:apply-templates select="../*[local-name()='source']" />
 									</xsl:when>
 									<xsl:otherwise>
 										<xsl:apply-templates select="../*[local-name()='p']" />
