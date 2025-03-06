@@ -32,6 +32,7 @@
 	<xsl:variable name="i18n_doctype_dict_annex"><xsl:call-template name="getLocalizedString"><xsl:with-param name="key">doctype_dict.annex</xsl:with-param></xsl:call-template></xsl:variable>
 	<xsl:variable name="i18n_doctype_dict_technical_report"><xsl:call-template name="getLocalizedString"><xsl:with-param name="key">doctype_dict.technical-report</xsl:with-param></xsl:call-template></xsl:variable>
 	<xsl:variable name="i18n_table_of_contents"><xsl:call-template name="getLocalizedString"><xsl:with-param name="key">table_of_contents</xsl:with-param></xsl:call-template></xsl:variable>
+	<xsl:variable name="i18n_table_footnote"><xsl:call-template name="getLocalizedString"><xsl:with-param name="key">table_footnote</xsl:with-param></xsl:call-template></xsl:variable>
 	
 	<xsl:variable name="vertical_layout" select="normalize-space(/*/plateau:metanorma-extension/plateau:presentation-metadata/plateau:vertical-layout)"/>
 	<xsl:variable name="vertical_layout_rotate_clause_numbers" select="normalize-space(/*/plateau:metanorma-extension/plateau:presentation-metadata/plateau:vertical-layout-rotate-clause-numbers)"/>
@@ -1761,7 +1762,7 @@
 	</xsl:template>
 	
 	<!-- Key title after the table -->
-	<xsl:template match="plateau:table/plateau:p[@class = 'ListTitle']" priority="2" mode="update_xml_step1"/>
+	<!-- <xsl:template match="plateau:table/plateau:p[@class = 'ListTitle']" priority="2" mode="update_xml_step1"/> -->
 	
   <!-- added to fix conflict with previous update in update_xml_pres -->
 	<xsl:template match="*[local-name() = 'preferred'] | 
@@ -1843,8 +1844,18 @@
 	<!-- ========================= -->
 	
 	<!-- Table key -->
+	
+	<xsl:template match="plateau:table/plateau:p[@class = 'ListTitle']" priority="2">
+		<fo:block>
+			<xsl:copy-of select="@id"/>
+			<xsl:apply-templates />
+		</fo:block>
+	</xsl:template>
+	
+	<xsl:variable name="tableAnnotationIndent">3mm</xsl:variable>
+	
 	<xsl:template match="plateau:table/plateau:p[@class = 'dl']" priority="2">
-		<fo:block-container margin-left="90mm">
+		<fo:block-container margin-left="{$tableAnnotationIndent}"> <!-- 90mm -->
 			<xsl:if test="not(following-sibling::*[1][self::plateau:p[@class = 'dl']])"> <!-- last dl -->
 				<xsl:attribute name="margin-bottom">2pt</xsl:attribute>
 			</xsl:if>
