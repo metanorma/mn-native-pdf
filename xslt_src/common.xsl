@@ -3223,6 +3223,9 @@
 				<xsl:attribute name="color"><xsl:value-of select="$color_secondary_shade_1_PAS"/></xsl:attribute>
 			</xsl:if>
 		</xsl:if>
+		<xsl:if test="$namespace = 'plateau'">
+			<xsl:attribute name="margin-left"><xsl:value-of select="$tableAnnotationIndent"/></xsl:attribute>
+		</xsl:if>
 	</xsl:template> <!-- refine_table-note-style -->
 	
 	<xsl:attribute-set name="table-fn-style">
@@ -3286,6 +3289,9 @@
 					<xsl:attribute name="margin-bottom">0pt</xsl:attribute>
 				</xsl:if>
 			</xsl:if>
+		</xsl:if>
+		<xsl:if test="$namespace = 'plateau'">
+			<xsl:attribute name="margin-left"><xsl:value-of select="$tableAnnotationIndent"/></xsl:attribute>
 		</xsl:if>
 	</xsl:template>
 	
@@ -3358,6 +3364,11 @@
 				<xsl:attribute name="baseline-shift">15%</xsl:attribute>
 			</xsl:if>
 		</xsl:if>
+		<xsl:if test="$namespace = 'plateau'">
+			<xsl:attribute name="font-size">60%</xsl:attribute>
+			<xsl:attribute name="vertical-align">super</xsl:attribute>
+			<xsl:attribute name="padding-right">2mm</xsl:attribute>
+		</xsl:if>
 	</xsl:template>
 	
 	<xsl:attribute-set name="fn-container-body-style">
@@ -3390,6 +3401,10 @@
 		</xsl:if>
 		<xsl:if test="$namespace = 'm3d'">
 			<xsl:attribute name="baseline-shift">30%</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'plateau'">
+			<xsl:attribute name="font-size">60%</xsl:attribute>
+			<xsl:attribute name="vertical-align">super</xsl:attribute>
 		</xsl:if>
 	</xsl:attribute-set>
 	
@@ -3955,6 +3970,8 @@
 				<xsl:attribute name="font-weight">500</xsl:attribute>
 			</xsl:if>
 		</xsl:if>
+		<xsl:if test="$namespace = 'plateau'">
+		</xsl:if>
 	</xsl:template> <!-- refine_note-name-style -->
 
 	
@@ -4302,6 +4319,11 @@
 				<xsl:attribute name="text-align">left</xsl:attribute>
 				<xsl:attribute name="space-before">12pt</xsl:attribute>
 				<xsl:attribute name="margin-bottom">12pt</xsl:attribute>
+			</xsl:if>
+		</xsl:if>
+		<xsl:if test="$namespace = 'plateau'">
+			<xsl:if test="ancestor::*[local-name() = 'table']">
+				<xsl:attribute name="margin-bottom">1pt</xsl:attribute>
 			</xsl:if>
 		</xsl:if>
 	</xsl:template> <!-- refine_termsource-style -->
@@ -7733,12 +7755,13 @@
 					
 					<xsl:variable name="isNoteOrFnExist" select="./*[local-name()='note'][not(@type = 'units')] or ./*[local-name()='example'] or .//*[local-name()='fn'][local-name(..) != 'name'] or ./*[local-name()='source']"/>				
 					<xsl:if test="$isNoteOrFnExist = 'true'">
-						<xsl:choose>
+						<!-- <xsl:choose>
 							<xsl:when test="$namespace = 'plateau'"></xsl:when>
 							<xsl:otherwise>
-								<xsl:attribute name="border-bottom">0pt solid black</xsl:attribute><!-- set 0pt border, because there is a separete table below for footer -->
+								
 							</xsl:otherwise>
-						</xsl:choose>
+						</xsl:choose> -->
+						<xsl:attribute name="border-bottom">0pt solid black</xsl:attribute><!-- set 0pt border, because there is a separete table below for footer -->
 					</xsl:if>
 					
 					
@@ -7798,19 +7821,21 @@
 				
 				<xsl:variable name="colgroup" select="*[local-name()='colgroup']"/>
 				
-				
+				<!-- https://github.com/metanorma/metanorma-plateau/issues/171 -->
 				<xsl:choose>
 					<xsl:when test="$namespace = 'plateau'"><!-- table footer after table --></xsl:when>
 					<xsl:otherwise>
-						<xsl:for-each select="*[local-name()='tbody']"><!-- select context to tbody -->
-							<xsl:call-template name="insertTableFooterInSeparateTable">
-								<xsl:with-param name="table_attributes" select="$table_attributes"/>
-								<xsl:with-param name="colwidths" select="$colwidths"/>				
-								<xsl:with-param name="colgroup" select="$colgroup"/>				
-							</xsl:call-template>
-						</xsl:for-each>
+						
 					</xsl:otherwise>
 				</xsl:choose>
+				
+				<xsl:for-each select="*[local-name()='tbody']"><!-- select context to tbody -->
+					<xsl:call-template name="insertTableFooterInSeparateTable">
+						<xsl:with-param name="table_attributes" select="$table_attributes"/>
+						<xsl:with-param name="colwidths" select="$colwidths"/>				
+						<xsl:with-param name="colgroup" select="$colgroup"/>				
+					</xsl:call-template>
+				</xsl:for-each>
 				
 				<xsl:if test="$namespace = 'gb'">
 					<xsl:apply-templates select="*[local-name()='note']" />
@@ -7820,15 +7845,16 @@
 					<xsl:apply-templates select="*[local-name()='name']" />
 				</xsl:if>
 				
+				<!-- https://github.com/metanorma/metanorma-plateau/issues/171
 				<xsl:if test="$namespace = 'plateau'">
 					<xsl:apply-templates select="*[not(local-name()='thead') and not(local-name()='tbody') and not(local-name()='tfoot') and not(local-name()='name')]" />
-					<xsl:for-each select="*[local-name()='tbody']"> <!-- select context to tbody -->
+					<xsl:for-each select="*[local-name()='tbody']"> - select context to tbody -
 						<xsl:variable name="table_fn_block">
 							<xsl:call-template name="table_fn_display" />
 						</xsl:variable>
 						<xsl:copy-of select="$table_fn_block"/>
 					</xsl:for-each>
-				</xsl:if>
+				</xsl:if> -->
 				
 				<xsl:if test="*[local-name()='bookmark']"> <!-- special case: table/bookmark -->
 					<fo:block keep-with-previous="always" line-height="0.1">
@@ -8699,6 +8725,15 @@
 									<xsl:when test="$namespace = 'jis'">
 										<xsl:apply-templates select="../*[local-name()='p' or local-name()='dl' or (local-name()='note' and not(@type = 'units')) or local-name()='example' or local-name()='source']" />
 									</xsl:when>
+									<xsl:when test="$namespace = 'plateau'">
+										<!-- https://github.com/metanorma/metanorma-plateau/issues/171 : the order is: definition list, text paragraphs, EXAMPLEs, NOTEs, footnotes, then source at the end -->
+										<xsl:apply-templates select="../*[local-name()='dl']" />
+										<xsl:apply-templates select="../*[local-name()='p']" />
+										<xsl:apply-templates select="../*[local-name()='example']" />
+										<xsl:apply-templates select="../*[local-name()='note'][not(@type = 'units')]" />
+										<xsl:copy-of select="$table_fn_block"/>
+										<xsl:apply-templates select="../*[local-name()='source']" />
+									</xsl:when>
 									<xsl:otherwise>
 										<xsl:apply-templates select="../*[local-name()='p']" />
 										<xsl:apply-templates select="../*[local-name()='dl']" />
@@ -8733,6 +8768,7 @@
 								<!-- fn processing -->
 								<xsl:choose>
 									<xsl:when test="$namespace = 'ieee'"><fo:block></fo:block><!-- display fn after table --></xsl:when>
+									<xsl:when test="$namespace = 'plateau'"><fo:block></fo:block><!-- display fn before 'source', see above --></xsl:when>
 									<xsl:otherwise>
 										<!-- <xsl:call-template name="table_fn_display" /> -->
 										<xsl:copy-of select="$table_fn_block"/>
@@ -9100,6 +9136,17 @@
 			<xsl:if test="$isGenerateTableIF = 'true'">
 				<xsl:attribute name="border">1pt solid black</xsl:attribute> <!-- border is mandatory, to determine page width -->
 				<xsl:attribute name="text-align">left</xsl:attribute>
+			</xsl:if>
+			
+			<xsl:if test="$isGenerateTableIF = 'false'">
+				<xsl:if test="@colspan and *[local-name() = 'note'][@type = 'units']">
+					<xsl:attribute name="text-align">right</xsl:attribute>
+					<xsl:attribute name="border">none</xsl:attribute>
+					<xsl:attribute name="border-bottom"><xsl:value-of select="$table-border"/></xsl:attribute>
+					<xsl:attribute name="border-top">1pt solid white</xsl:attribute>
+					<xsl:attribute name="border-left">1pt solid white</xsl:attribute>
+					<xsl:attribute name="border-right">1pt solid white</xsl:attribute>
+				</xsl:if>
 			</xsl:if>
 			
 			<fo:block role="SKIP">
@@ -9596,6 +9643,12 @@
 					<xsl:otherwise>
 						<fo:block xsl:use-attribute-sets="table-fn-style">
 							<xsl:call-template name="refine_table-fn-style"/>
+							
+							<!-- https://github.com/metanorma/metanorma-plateau/issues/171 -->
+							<xsl:if test="$namespace = 'plateau'">
+								<xsl:value-of select="$i18n_table_footnote"/>
+							</xsl:if>
+								
 							<fo:inline id="{@id}" xsl:use-attribute-sets="table-fn-number-style">
 								<xsl:call-template name="refine_table-fn-number-style"/>
 								<xsl:if test="$namespace = 'bsi'">
@@ -9608,9 +9661,9 @@
 									<fo:inline font-style="normal">(</fo:inline>
 								</xsl:if>
 								
-								<xsl:if test="$namespace = 'plateau'">
+								<!-- <xsl:if test="$namespace = 'plateau'">
 									<xsl:text>※</xsl:text>
-								</xsl:if>
+								</xsl:if> -->
 								
 								<xsl:value-of select="@reference"/>
 								
@@ -9623,9 +9676,9 @@
 									<xsl:text>)</xsl:text>
 								</xsl:if> -->
 								
-								<xsl:if test="$namespace = 'plateau'">
+								<!-- <xsl:if test="$namespace = 'plateau'">
 									<xsl:text>：</xsl:text>
-								</xsl:if>
+								</xsl:if> -->
 								
 							</fo:inline>
 							<fo:inline xsl:use-attribute-sets="table-fn-body-style">
@@ -9801,6 +9854,10 @@
 										<fo:table-row>
 											<fo:table-cell>
 												<fo:block>
+													<xsl:if test="$namespace = 'plateau'">
+														<xsl:attribute name="margin-left"><xsl:value-of select="$tableAnnotationIndent"/></xsl:attribute>
+														<xsl:value-of select="$i18n_table_footnote"/>
+													</xsl:if>
 													<fo:inline id="{@id}" xsl:use-attribute-sets="figure-fn-number-style">
 														<xsl:value-of select="@reference"/>
 													</fo:inline>
@@ -9815,6 +9872,10 @@
 																<xsl:attribute name="margin-bottom">0</xsl:attribute>
 															</xsl:otherwise>
 														</xsl:choose>
+													</xsl:if>
+													<xsl:if test="$namespace = 'plateau'">
+														<xsl:attribute name="margin-left">5mm</xsl:attribute>
+														<xsl:attribute name="margin-bottom">0</xsl:attribute>
 													</xsl:if>
 													<xsl:copy-of select="./node()"/>
 												</fo:block>
@@ -9875,9 +9936,9 @@
 				<xsl:if test="$namespace = 'bipm'">
 					<fo:inline font-style="normal">&#xA0;(</fo:inline>
 				</xsl:if>
-				<xsl:if test="$namespace = 'plateau'">
+				<!-- <xsl:if test="$namespace = 'plateau'">
 					<xsl:text>※</xsl:text>
-				</xsl:if>
+				</xsl:if> -->
 				<xsl:value-of select="@reference"/>
 				<xsl:if test="$namespace = 'bipm'">
 					<fo:inline font-style="normal">)</fo:inline>
@@ -13331,7 +13392,12 @@
 				<xsl:attribute name="padding-top">0mm</xsl:attribute>					
 			</xsl:if>
 		</xsl:if>
-	</xsl:template>
+		<xsl:if test="$namespace = 'plateau'">
+			<xsl:if test="ancestor::*[local-name() = 'figure']">
+				<xsl:attribute name="margin-left"><xsl:value-of select="$tableAnnotationIndent"/></xsl:attribute>
+			</xsl:if>
+		</xsl:if>
+	</xsl:template> <!-- refine_note_block_style -->
 	
 
 	
