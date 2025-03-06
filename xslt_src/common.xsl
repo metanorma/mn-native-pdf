@@ -3402,6 +3402,10 @@
 		<xsl:if test="$namespace = 'm3d'">
 			<xsl:attribute name="baseline-shift">30%</xsl:attribute>
 		</xsl:if>
+		<xsl:if test="$namespace = 'plateau'">
+			<xsl:attribute name="font-size">60%</xsl:attribute>
+			<xsl:attribute name="vertical-align">super</xsl:attribute>
+		</xsl:if>
 	</xsl:attribute-set>
 	
 	<xsl:attribute-set name="figure-fn-body-style">
@@ -3965,6 +3969,8 @@
 				<xsl:attribute name="font-family">Noto Sans JP</xsl:attribute>
 				<xsl:attribute name="font-weight">500</xsl:attribute>
 			</xsl:if>
+		</xsl:if>
+		<xsl:if test="$namespace = 'plateau'">
 		</xsl:if>
 	</xsl:template> <!-- refine_note-name-style -->
 
@@ -9848,6 +9854,10 @@
 										<fo:table-row>
 											<fo:table-cell>
 												<fo:block>
+													<xsl:if test="$namespace = 'plateau'">
+														<xsl:attribute name="margin-left"><xsl:value-of select="$tableAnnotationIndent"/></xsl:attribute>
+														<xsl:value-of select="$i18n_table_footnote"/>
+													</xsl:if>
 													<fo:inline id="{@id}" xsl:use-attribute-sets="figure-fn-number-style">
 														<xsl:value-of select="@reference"/>
 													</fo:inline>
@@ -9862,6 +9872,10 @@
 																<xsl:attribute name="margin-bottom">0</xsl:attribute>
 															</xsl:otherwise>
 														</xsl:choose>
+													</xsl:if>
+													<xsl:if test="$namespace = 'plateau'">
+														<xsl:attribute name="margin-left">5mm</xsl:attribute>
+														<xsl:attribute name="margin-bottom">0</xsl:attribute>
 													</xsl:if>
 													<xsl:copy-of select="./node()"/>
 												</fo:block>
@@ -13378,7 +13392,12 @@
 				<xsl:attribute name="padding-top">0mm</xsl:attribute>					
 			</xsl:if>
 		</xsl:if>
-	</xsl:template>
+		<xsl:if test="$namespace = 'plateau'">
+			<xsl:if test="ancestor::*[local-name() = 'figure']">
+				<xsl:attribute name="margin-left"><xsl:value-of select="$tableAnnotationIndent"/></xsl:attribute>
+			</xsl:if>
+		</xsl:if>
+	</xsl:template> <!-- refine_note_block_style -->
 	
 
 	
