@@ -3224,7 +3224,7 @@
 			</xsl:if>
 		</xsl:if>
 		<xsl:if test="$namespace = 'plateau'">
-			<!-- <xsl:attribute name="margin-left"><xsl:value-of select="$tableAnnotationIndent"/></xsl:attribute> -->
+			<xsl:attribute name="margin-left"><xsl:value-of select="$tableAnnotationIndent"/></xsl:attribute>
 		</xsl:if>
 	</xsl:template> <!-- refine_table-note-style -->
 	
@@ -3289,6 +3289,9 @@
 					<xsl:attribute name="margin-bottom">0pt</xsl:attribute>
 				</xsl:if>
 			</xsl:if>
+		</xsl:if>
+		<xsl:if test="$namespace = 'plateau'">
+			<xsl:attribute name="margin-left"><xsl:value-of select="$tableAnnotationIndent"/></xsl:attribute>
 		</xsl:if>
 	</xsl:template>
 	
@@ -4310,6 +4313,11 @@
 				<xsl:attribute name="text-align">left</xsl:attribute>
 				<xsl:attribute name="space-before">12pt</xsl:attribute>
 				<xsl:attribute name="margin-bottom">12pt</xsl:attribute>
+			</xsl:if>
+		</xsl:if>
+		<xsl:if test="$namespace = 'plateau'">
+			<xsl:if test="ancestor::*[local-name() = 'table']">
+				<xsl:attribute name="margin-bottom">1pt</xsl:attribute>
 			</xsl:if>
 		</xsl:if>
 	</xsl:template> <!-- refine_termsource-style -->
@@ -9124,6 +9132,17 @@
 				<xsl:attribute name="text-align">left</xsl:attribute>
 			</xsl:if>
 			
+			<xsl:if test="$isGenerateTableIF = 'false'">
+				<xsl:if test="@colspan and *[local-name() = 'note'][@type = 'units']">
+					<xsl:attribute name="text-align">right</xsl:attribute>
+					<xsl:attribute name="border">none</xsl:attribute>
+					<xsl:attribute name="border-bottom"><xsl:value-of select="$table-border"/></xsl:attribute>
+					<xsl:attribute name="border-top">1pt solid white</xsl:attribute>
+					<xsl:attribute name="border-left">1pt solid white</xsl:attribute>
+					<xsl:attribute name="border-right">1pt solid white</xsl:attribute>
+				</xsl:if>
+			</xsl:if>
+			
 			<fo:block role="SKIP">
 			
 				<xsl:if test="$isGenerateTableIF = 'true'">
@@ -9903,9 +9922,9 @@
 				<xsl:if test="$namespace = 'bipm'">
 					<fo:inline font-style="normal">&#xA0;(</fo:inline>
 				</xsl:if>
-				<xsl:if test="$namespace = 'plateau'">
+				<!-- <xsl:if test="$namespace = 'plateau'">
 					<xsl:text>※</xsl:text>
-				</xsl:if>
+				</xsl:if> -->
 				<xsl:value-of select="@reference"/>
 				<xsl:if test="$namespace = 'bipm'">
 					<fo:inline font-style="normal">)</fo:inline>
