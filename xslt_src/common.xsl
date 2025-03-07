@@ -10385,8 +10385,21 @@
 										<!-- https://github.com/metanorma/metanorma-plateau/issues/171 -->
 										<xsl:if test="$namespace = 'plateau'">
 											<xsl:if test="@key = 'true' and ancestor::*[local-name() = 'tfoot'] and not(xalan:nodeset($colwidths)//column)">
-												<fo:table-column column-width="5%"/>
-												<fo:table-column column-width="95%"/>
+												<xsl:variable name="dt_length_max">
+													<xsl:for-each select="*[local-name() = 'dt']">
+														<xsl:sort select="string-length()" data-type="number" order="descending"/>
+														<xsl:if test="position() = 1"><xsl:value-of select="string-length()"/></xsl:if>
+													</xsl:for-each>
+												</xsl:variable>
+												<xsl:variable name="col1_percent_" select="number($dt_length_max) + 1"/>
+												<xsl:variable name="col1_percent">
+													<xsl:choose>
+														<xsl:when test="$col1_percent_ &gt; 50">50</xsl:when>
+														<xsl:otherwise><xsl:value-of select="$col1_percent_"/></xsl:otherwise>
+													</xsl:choose>
+												</xsl:variable>
+												<fo:table-column column-width="{$col1_percent}%"/>
+												<fo:table-column column-width="{100 - $col1_percent}%"/>
 											</xsl:if>
 										</xsl:if>
 										
