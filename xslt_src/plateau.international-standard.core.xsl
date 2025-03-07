@@ -1264,6 +1264,10 @@
 						<xsl:attribute name="margin-bottom">5pt</xsl:attribute>
 					</xsl:if>
 					
+					<xsl:if test="parent::plateau:dd and ancestor::plateau:tfoot">
+						<xsl:attribute name="margin-bottom">2pt</xsl:attribute>
+					</xsl:if>
+					
 					<xsl:if test="parent::plateau:clause[@type = 'inner-cover-note'] or ancestor::plateau:boilerplate">
 						<xsl:attribute name="margin-bottom">0pt</xsl:attribute>
 					</xsl:if>
@@ -1881,27 +1885,6 @@
 						<xsl:attribute name="font-size">10pt</xsl:attribute>
 					</xsl:if>
 					<xsl:copy-of select="@id"/>
-					<!-- 
-					<fo:table table-layout="fixed" width="100%">
-						<fo:table-column column-width="7%"/>
-						<fo:table-column column-width="93%"/>
-						<fo:table-body>
-							<fo:table-row>
-								<fo:table-cell>
-									<fo:block>
-										<xsl:apply-templates select="node()[contains(., ':')][1]/preceding-sibling::node()"/>
-									</fo:block>
-								</fo:table-cell>
-								<fo:table-cell>
-									<fo:block>
-										<xsl:apply-templates select="node()[contains(., ':')][1]"/>
-										<xsl:apply-templates select="node()[contains(., ':')][1]/following-sibling::node()"/>
-									</fo:block>
-								</fo:table-cell>
-							</fo:table-row>
-						</fo:table-body>
-					</fo:table>
-					-->
 					<xsl:apply-templates/>
 				</fo:block>
 			</fo:block-container>
