@@ -1,0 +1,19 @@
+Page 2: Unresolved ID reference "footnote__1_1" found.
+1 link target could not be fully resolved and now point to the top of the page or is dysfunctional.
+PDF isn't valid PDF/UA-1:
+ValidationResult [flavour=ua1, totalAssertions=27628, assertions=[
+TestAssertion [ruleId=RuleId [specification=ISO 14289-1:2014, clause=7.18.5, testNumber=2], status=failed,
+message=Links shall contain an alternate description via their Contents key as described in ISO 32000-1:2008, 14.9.3,
+location=Location [level=CosDocument, context=root/document[0]/pages[2](85 0 obj PDPage)/annots[0](52 0 obj PDLinkAnnot)], locationContext=null, errorMessage=null], 
+TestAssertion [ruleId=RuleId [specification=ISO 14289-1:2014, clause=7.18.5, testNumber=1], status=failed,
+message=Links shall be tagged according to ISO 32000-1:2008, 14.8.4.4.2, Link Element,
+location=Location [level=CosDocument, context=root/document[0]/pages[2](85 0 obj PDPage)/annots[0](52 0 obj PDLinkAnnot)], locationContext=null, errorMessage=null], 
+TestAssertion [ruleId=RuleId [specification=ISO 14289-1:2014, clause=7.18.1, testNumber=2], status=failed,
+message=An annotation (except Widget annotations or hidden annotations, or those having rectangle outside the crop-box) shall have either Contents key or an Alt entry in the enclosing structure element,
+location=Location [level=CosDocument, context=root/document[0]/pages[2](85 0 obj PDPage)/annots[0](52 0 obj PDLinkAnnot)], locationContext=null, errorMessage=null], 
+TestAssertion [ruleId=RuleId [specification=ISO 14289-1:2014, clause=7.2, testNumber=43], status=failed,
+message=Table rows shall have the same number of columns (taking into account column spans),
+location=Location [level=CosDocument, context=root/document[0]/StructTreeRoot[0](334 0 obj PDStructTreeRoot)/K[0](336 0 obj SEDocument Document)/K[1](340 0 obj SEPart Part)/K[0](348 0 obj SESect Sect)/K[0](349 0 obj SEDiv Div)/K[1](351 0 obj SEDiv Div)/K[3](364 0 obj SEDiv Div)/K[1](94 0 obj SEDiv Div)/K[3](388 0 obj SETable Table)], locationContext=null, errorMessage=null], 
+TestAssertion [ruleId=RuleId [specification=ISO 14289-1:2014, clause=7.2, testNumber=43], status=failed,
+message=Table rows shall have the same number of columns (taking into account column spans),
+location=Location [level=CosDocument, context=root/document[0]/StructTreeRoot[0](334 0 obj PDStructTreeRoot)/K[0](336 0 obj SEDocument Document)/K[1](340 0 obj SEPart Part)/K[0](348 0 obj SESect Sect)/K[0](349 0 obj SEDiv Div)/K[2](352 0 obj SEDiv Div)/K[3](406 0 obj SEDiv Div)/K[1](130 0 obj SEDiv Div)/K[3](413 0 obj SETable Table)], locationContext=null, errorMessage=null]], isCompliant=false]
