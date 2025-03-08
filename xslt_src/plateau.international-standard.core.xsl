@@ -1264,7 +1264,7 @@
 						<xsl:attribute name="margin-bottom">5pt</xsl:attribute>
 					</xsl:if>
 					
-					<xsl:if test="parent::plateau:dd and ancestor::plateau:tfoot">
+					<xsl:if test="parent::plateau:dd and ancestor::plateau:dl[@key = 'true'] and (ancestor::plateau:tfoot or ancestor::plateau:figure)">
 						<xsl:attribute name="margin-bottom">2pt</xsl:attribute>
 					</xsl:if>
 					
@@ -1289,7 +1289,7 @@
 					</xsl:if>
 					
 					<!-- paragraph in table or figure footer -->
-					<xsl:if test="parent::plateau:table or parent::plateau:figure">
+					<xsl:if test="parent::plateau:table or parent::plateau:figure or (ancestor::plateau:tfoot and ancestor::td[1]/@colspan)">
 						<xsl:attribute name="margin-left"><xsl:value-of select="$tableAnnotationIndent"/></xsl:attribute>
 						<xsl:attribute name="margin-bottom">0pt</xsl:attribute>
 					</xsl:if>
@@ -1868,6 +1868,7 @@
 	<xsl:template match="plateau:table/plateau:p[@class = 'ListTitle'] | plateau:figure/plateau:p[@keep-with-next = 'true']" priority="2">
 		<fo:block>
 			<xsl:copy-of select="@id"/>
+			<xsl:attribute name="font-weight">bold</xsl:attribute>
 			<xsl:apply-templates />
 		</fo:block>
 	</xsl:template>

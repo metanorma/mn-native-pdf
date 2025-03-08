@@ -1572,6 +1572,11 @@
 				<xsl:attribute name="font-weight">500</xsl:attribute>
 			</xsl:if>
 		</xsl:if>
+		<xsl:if test="$namespace = 'plateau'">
+			<xsl:if test="ancestor::*[local-name() = 'figure']">
+				<xsl:attribute name="font-weight">bold</xsl:attribute>
+			</xsl:if>
+		</xsl:if>
 	</xsl:template>
 	
 	<xsl:attribute-set name="example-p-style">
@@ -3368,6 +3373,7 @@
 			<xsl:attribute name="font-size">60%</xsl:attribute>
 			<xsl:attribute name="vertical-align">super</xsl:attribute>
 			<xsl:attribute name="padding-right">2mm</xsl:attribute>
+			<xsl:attribute name="font-weight">bold</xsl:attribute>
 		</xsl:if>
 	</xsl:template>
 	
@@ -3971,6 +3977,9 @@
 			</xsl:if>
 		</xsl:if>
 		<xsl:if test="$namespace = 'plateau'">
+			<xsl:if test="ancestor::*[local-name() = 'figure']">
+				<xsl:attribute name="font-weight">bold</xsl:attribute>
+			</xsl:if>
 		</xsl:if>
 	</xsl:template> <!-- refine_note-name-style -->
 
@@ -4004,6 +4013,10 @@
 				<xsl:attribute name="padding-right">1mm</xsl:attribute>
 				<!-- <xsl:attribute name="font-style">italic</xsl:attribute> -->
 			</xsl:if>
+		</xsl:if>
+		
+		<xsl:if test="$namespace = 'plateau'">
+			<xsl:attribute name="font-weight">bold</xsl:attribute>
 		</xsl:if>
 		
 		<xsl:if test="$namespace = 'unece' or $namespace = 'unece-rec'">
@@ -9188,7 +9201,7 @@
 	</xsl:template> <!-- td -->
 	
 
-	
+	<!-- table/note, table/example, table/tfoot//note, table/tfoot//example -->
 	<xsl:template match="*[local-name()='table']/*[local-name()='note' or local-name() = 'example'] |
 						*[local-name()='table']/*[local-name()='tfoot']//*[local-name()='note' or local-name() = 'example']" priority="2">
 		<xsl:choose>
@@ -9649,7 +9662,7 @@
 							
 							<!-- https://github.com/metanorma/metanorma-plateau/issues/171 -->
 							<xsl:if test="$namespace = 'plateau'">
-								<xsl:value-of select="$i18n_table_footnote"/>
+								<fo:inline font-weight="bold"><xsl:value-of select="$i18n_table_footnote"/></fo:inline>
 							</xsl:if>
 								
 							<fo:inline id="{@id}" xsl:use-attribute-sets="table-fn-number-style">
@@ -9859,6 +9872,7 @@
 												<fo:block>
 													<xsl:if test="$namespace = 'plateau'">
 														<xsl:attribute name="margin-left"><xsl:value-of select="$tableAnnotationIndent"/></xsl:attribute>
+														<xsl:attribute name="font-weight">bold</xsl:attribute>
 														<xsl:value-of select="$i18n_table_footnote"/>
 													</xsl:if>
 													<fo:inline id="{@id}" xsl:use-attribute-sets="figure-fn-number-style">
@@ -10068,7 +10082,7 @@
 			</xsl:if>
 			
 			<xsl:if test="$namespace = 'plateau'">
-				<xsl:if test="ancestor::*[local-name() = 'tfoot']">
+				<xsl:if test="@key = 'true' and (ancestor::*[local-name() = 'tfoot'] or parent::*[local-name() = 'figure'])">
 					<xsl:attribute name="margin-left"><xsl:value-of select="$tableAnnotationIndent"/></xsl:attribute>
 					<xsl:attribute name="margin-bottom">0</xsl:attribute>
 				</xsl:if>
@@ -10376,32 +10390,52 @@
 										<xsl:variable name="isContainsKeepTogetherTag" select="normalize-space($isContainsKeepTogetherTag_)"/>
 										<!-- isContainsExpressReference=<xsl:value-of select="$isContainsExpressReference"/> -->
 										
-										<xsl:call-template name="setColumnWidth_dl">
-											<xsl:with-param name="colwidths" select="$colwidths"/>							
-											<xsl:with-param name="maxlength_dt" select="$maxlength_dt"/>
-											<xsl:with-param name="isContainsKeepTogetherTag" select="$isContainsKeepTogetherTag"/>
-										</xsl:call-template>
 										
-										<!-- https://github.com/metanorma/metanorma-plateau/issues/171 -->
-										<xsl:if test="$namespace = 'plateau'">
-											<xsl:if test="@key = 'true' and ancestor::*[local-name() = 'tfoot'] and not(xalan:nodeset($colwidths)//column)">
-												<xsl:variable name="dt_length_max">
-													<xsl:for-each select="*[local-name() = 'dt']">
-														<xsl:sort select="string-length()" data-type="number" order="descending"/>
-														<xsl:if test="position() = 1"><xsl:value-of select="string-length()"/></xsl:if>
-													</xsl:for-each>
-												</xsl:variable>
-												<xsl:variable name="col1_percent_" select="number($dt_length_max) + 1"/>
-												<xsl:variable name="col1_percent">
-													<xsl:choose>
-														<xsl:when test="$col1_percent_ &gt; 50">50</xsl:when>
-														<xsl:otherwise><xsl:value-of select="$col1_percent_"/></xsl:otherwise>
-													</xsl:choose>
-												</xsl:variable>
-												<fo:table-column column-width="{$col1_percent}%"/>
-												<fo:table-column column-width="{100 - $col1_percent}%"/>
-											</xsl:if>
-										</xsl:if>
+										<xsl:choose>
+											<xsl:when test="$namespace = 'plateau'">
+												<xsl:choose>
+													<!-- https://github.com/metanorma/metanorma-plateau/issues/171 -->
+													<xsl:when test="@key = 'true' and (ancestor::*[local-name() = 'tfoot'] or parent::*[local-name() = 'figure'])"> <!--  and not(xalan:nodeset($colwidths)//column) -->
+														<xsl:variable name="dt_nodes">
+															<xsl:for-each select="*[local-name() = 'dt']">
+																<xsl:apply-templates select="." mode="dt_clean"/>
+															</xsl:for-each>
+														</xsl:variable>
+														<!-- <xsl:copy-of select="$dt_nodes"/> -->
+														<xsl:variable name="dt_length_max">
+															<xsl:for-each select="xalan:nodeset($dt_nodes)//*[local-name() = 'dt']">
+																<xsl:sort select="string-length(normalize-space())" data-type="number" order="descending"/>
+																<xsl:if test="position() = 1"><xsl:value-of select="string-length(normalize-space())"/></xsl:if>
+															</xsl:for-each>
+														</xsl:variable>
+														<xsl:variable name="col1_percent_" select="number($dt_length_max) + 1"/>
+														<xsl:variable name="col1_percent">
+															<xsl:choose>
+																<xsl:when test="$col1_percent_ &gt; 50">50</xsl:when>
+																<xsl:otherwise><xsl:value-of select="$col1_percent_"/></xsl:otherwise>
+															</xsl:choose>
+														</xsl:variable>
+														<fo:table-column column-width="{$col1_percent}%"/>
+														<fo:table-column column-width="{100 - $col1_percent}%"/>
+													</xsl:when>
+													<xsl:otherwise>
+														<xsl:call-template name="setColumnWidth_dl">
+															<xsl:with-param name="colwidths" select="$colwidths"/>							
+															<xsl:with-param name="maxlength_dt" select="$maxlength_dt"/>
+															<xsl:with-param name="isContainsKeepTogetherTag" select="$isContainsKeepTogetherTag"/>
+														</xsl:call-template>
+													</xsl:otherwise>
+												</xsl:choose>
+												<!-- $namespace = 'plateau' -->
+											</xsl:when>
+											<xsl:otherwise>
+												<xsl:call-template name="setColumnWidth_dl">
+													<xsl:with-param name="colwidths" select="$colwidths"/>							
+													<xsl:with-param name="maxlength_dt" select="$maxlength_dt"/>
+													<xsl:with-param name="isContainsKeepTogetherTag" select="$isContainsKeepTogetherTag"/>
+												</xsl:call-template>
+											</xsl:otherwise>
+										</xsl:choose>
 										
 										<fo:table-body>
 											
@@ -10443,6 +10477,14 @@
 		</xsl:if>
 		
 	</xsl:template> <!-- END: dl -->
+	
+	<xsl:template match="@*|node()" mode="dt_clean">
+		<xsl:copy>
+			<xsl:apply-templates select="@*|node()" mode="dt_clean"/>
+		</xsl:copy>
+	</xsl:template>
+	
+	<xsl:template match="*[local-name() = 'asciimath']" mode="dt_clean"/>
 	
 	<!-- caption for figure key and another caption, https://github.com/metanorma/isodoc/issues/607 -->
 	<xsl:template match="*[local-name() = 'figure']/*[local-name() = 'p'][@keep-with-next = 'true' and *[local-name() = 'strong']]" priority="3">
@@ -10554,15 +10596,17 @@
 	<!-- ignore 'p' with 'where' in formula, before 'dl' -->
 	<xsl:template match="*[local-name() = 'formula']/*[local-name() = 'p' and @keep-with-next = 'true' and following-sibling::*[1][local-name() = 'dl']]" />
 	
+	<!-- dl/name -->
 	<xsl:template match="*[local-name() = 'dl']/*[local-name() = 'name']">
 		<xsl:param name="process">false</xsl:param>
 		<xsl:if test="$process = 'true'">
 			<fo:block xsl:use-attribute-sets="dl-name-style">
 			
 				<xsl:if test="$namespace = 'plateau'">
-					<xsl:if test="ancestor::*[local-name() = 'tfoot']">
+					<xsl:if test="ancestor::*[local-name() = 'tfoot'] and ../@key = 'true'">
 						<xsl:attribute name="margin-left">-<xsl:value-of select="$tableAnnotationIndent"/></xsl:attribute>
 						<xsl:attribute name="margin-bottom">2pt</xsl:attribute>
+						<xsl:attribute name="font-weight">bold</xsl:attribute>
 					</xsl:if>
 				</xsl:if>
 				
@@ -14669,10 +14713,10 @@
 							<xsl:when test="@type = 'section-title'">
 								<xsl:value-of select="*[local-name() = 'span'][@class = 'fmt-caption-delim'][1]/preceding-sibling::node()"/>
 								<xsl:text>: </xsl:text>
-								<xsl:copy-of select="*[local-name() = 'span'][@class = 'fmt-caption-delim'][1]/following-sibling::node()[not(local-name = 'fmt-xref-label')]"/>
+								<xsl:copy-of select="*[local-name() = 'span'][@class = 'fmt-caption-delim'][1]/following-sibling::node()[not(local-name() = 'fmt-xref-label')]"/>
 							</xsl:when>
 							<xsl:otherwise>
-								<xsl:copy-of select="*[local-name() = 'span'][@class = 'fmt-caption-delim'][1]/following-sibling::node()[not(local-name = 'fmt-xref-label')]"/>
+								<xsl:copy-of select="*[local-name() = 'span'][@class = 'fmt-caption-delim'][1]/following-sibling::node()[not(local-name() = 'fmt-xref-label')]"/>
 							</xsl:otherwise>
 						</xsl:choose>
 					</xsl:when>
@@ -16380,6 +16424,7 @@
 	</xsl:template>
 	
 	
+	<!-- example/name -->
 	<xsl:template match="*[local-name() = 'example']/*[local-name() = 'name']">
 		<xsl:param name="fo_element">block</xsl:param>
 	
@@ -16407,6 +16452,7 @@
 
 	</xsl:template>
 	
+	<!-- table/example/name, table/tfoot//example/name -->
 	<xsl:template match="*[local-name() = 'table']/*[local-name() = 'example']/*[local-name() = 'name'] |
 	*[local-name() = 'table']/*[local-name() = 'tfoot']//*[local-name() = 'example']/*[local-name() = 'name']">
 		<fo:inline xsl:use-attribute-sets="example-name-style">
@@ -16414,6 +16460,9 @@
 				<xsl:if test="not($vertical_layout = 'true')">
 					<xsl:attribute name="font-family">IPAexGothic</xsl:attribute>
 				</xsl:if>
+			</xsl:if>
+			<xsl:if test="$namespace = 'plateau'">
+				<xsl:attribute name="font-weight">bold</xsl:attribute>
 			</xsl:if>
 			<xsl:apply-templates/>
 		</fo:inline>
