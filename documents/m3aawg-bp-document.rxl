@@ -1,0 +1,13 @@
+<bibdata type="standard">
+<title language="en" format="text/plain">Calendar operator practices — Guidelines to protect against calendar abuse</title>
+<docidentifier type="M3AAWG">333:2018</docidentifier><docnumber>333</docnumber><date type="published"><on>2018-10-31T00:00:00Z</on></date><contributor><role type="author"/><organization>
+<name>Messaging Malware and Mobile Anti-Abuse Working Group</name>
+<abbreviation>M3AAWG</abbreviation></organization></contributor><contributor><role type="author"/><person>
+<name><completename>Thomas Schäfer, 1&amp;amp;1 Mail&amp;amp;Media Development and Technology GmbH</completename></name>
+</person></contributor><contributor><role type="author"/><person>
+<name><completename>Jesse Thompson, University of Wisconsin-Madison</completename></name>
+</person></contributor><contributor><role type="publisher"/><organization>
+<name>Messaging Malware and Mobile Anti-Abuse Working Group</name>
+<abbreviation>M3AAWG</abbreviation></organization></contributor><edition>1</edition><version><revision-date>2018-10-31T00:00:00Z</revision-date></version><language>en</language><script>Latn</script><status><stage>draft</stage></status><copyright><from>2018</from><owner><organization>
+<name>Messaging Malware and Mobile Anti-Abuse Working Group</name>
+<abbreviation>M3AAWG</abbreviation></organization></owner></copyright><ext><doctype>report</doctype><editorialgroup><committee>CalConnect TC CALSPAM</committee></editorialgroup></ext></bibdata>
