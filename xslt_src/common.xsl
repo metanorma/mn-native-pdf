@@ -9591,6 +9591,8 @@
 			</xsl:for-each>
 		</xsl:variable>
 		
+		<!-- <test><xsl:copy-of select="$references"/></test> -->
+		
 		<xsl:for-each select="xalan:nodeset($references)//fn">
 			<xsl:variable name="reference" select="@reference"/>
 			<xsl:if test="not(preceding-sibling::*[@reference = $reference])"> <!-- only unique reference puts in note-->
@@ -9984,7 +9986,7 @@
 	</xsl:template>
 	
 	<xsl:template match="*[local-name() = 'div'][@class = 'footnotes-go-here']" priority="3">
-		<xsl:for-each select="ancestor::*[local-name()='table'][1]">
+		<xsl:for-each select="ancestor::*[local-name() = 'table'][1]/*[local-name() = 'tbody']">
 			<xsl:call-template name="table_fn_display" />
 		</xsl:for-each>
 	</xsl:template>
