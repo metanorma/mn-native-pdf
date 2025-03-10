@@ -9205,6 +9205,7 @@
 	<!-- Footnotes processing  -->
 	<!-- ===================== -->
 	
+	<!-- document text (not figures, or tables) footnotes -->
 	<xsl:variable name="footnotes_">
 		<xsl:for-each select="//*[local-name() = 'metanorma']/*[local-name() = 'fmt-footnote-container']/*[local-name() = 'fmt-fn-body']">
 			<!-- <xsl:copy-of select="."/> -->
@@ -9222,6 +9223,7 @@
 		</fn>
 	-->
 	<!-- footnotes in text (title, bibliography, main body), not for tables, figures and names --> <!-- table's, figure's names -->
+	<!-- fn in text -->
 	<xsl:template match="*[local-name() = 'fn'][not(ancestor::*[(local-name() = 'table' or local-name() = 'figure')] and not(ancestor::*[local-name() = 'name']))]" priority="2" name="fn">
 		
 		<!-- list of unique footnotes -->
@@ -9496,6 +9498,7 @@
 	<!-- table's footnotes rendering -->
 	<!-- ============================ -->
 	
+	<!-- table/fmt-footnote-container -->
 	<xsl:template match="*[local-name() = 'table']//*[local-name() = 'fmt-footnote-container']"/>
 	
 	<xsl:template name="table_fn_display">
@@ -9605,6 +9608,7 @@
 		</xsl:for-each>
 	</xsl:template> <!-- table_fn_display -->
 	
+	<!-- fmt-fn-body//fmt-fn-label -->
 	<xsl:template match="*[local-name() = 'fmt-fn-body']//*[local-name() = 'fmt-fn-label']"> <!-- *[local-name() = 'fmt-footnote-container']/ -->
 		<xsl:param name="process">false</xsl:param>
 		<xsl:if test="$process = 'true'">
@@ -9680,6 +9684,8 @@
 	<!-- ============================ -->
 	<!-- figure's footnotes rendering -->
 	<!-- ============================ -->
+	
+	<!-- TO DO: remove, now the figure fn in figure/dl/... https://github.com/metanorma/isodoc/issues/658 -->
 	<xsl:template name="fn_display_figure"> <!-- figure_fn_display -->
 	
 		<!-- current figure id -->
@@ -9832,6 +9838,7 @@
 	
 	<!-- added for https://github.com/metanorma/isodoc/issues/607 -->
 	<!-- figure's footnote label -->
+	<!-- figure/dl[@key = 'true']/dt/p/sup -->
 	<xsl:template match="*[local-name() = 'figure']/*[local-name() = 'dl'][@key = 'true']/*[local-name() = 'dt']/
 				*[local-name() = 'p'][count(node()[normalize-space() != '']) = 1]/*[local-name() = 'sup']" priority="3">
 		<xsl:variable name="key_iso">
@@ -9853,7 +9860,8 @@
 	<!-- END: figure's footnotes rendering -->
 	<!-- ============================ -->
 	
-	<!-- fn reference in the table, figure rendering (for instance, 'some text 1) some text' ) -->
+	<!-- fn reference in the table rendering (for instance, 'some text 1) some text' ) -->
+	<!-- fn --> <!-- in table --> <!-- for figure see <xsl:template match="*[local-name() = 'figure']/*[local-name() = 'fn']" priority="2"/> -->
 	<xsl:template match="*[local-name()='fn']">
 		<fo:inline xsl:use-attribute-sets="fn-reference-style">
 		
@@ -9895,11 +9903,12 @@
 	</xsl:template>
 
 
-	
+	<!-- fn/text() -->
 	<xsl:template match="*[local-name()='fn']/text()[normalize-space() != '']">
 		<fo:inline role="SKIP"><xsl:value-of select="."/></fo:inline>
 	</xsl:template>
 	
+	<!-- fn//p fmt-fn-body//p -->
 	<xsl:template match="*[local-name()='fn']//*[local-name()='p'] | *[local-name() = 'fmt-fn-body']//*[local-name()='p']">
 		<fo:inline role="P">
 			<xsl:apply-templates />
@@ -13616,7 +13625,8 @@
 		<xsl:for-each select="*[local-name() = 'note'][not(@type = 'units')]">
 			<xsl:call-template name="note"/>
 		</xsl:for-each>
-		<xsl:call-template name="fn_display_figure"/>
+		<!-- TO DO: remove, now the figure fn in figure/dl/... https://github.com/metanorma/isodoc/issues/658 -->
+		<!-- <xsl:call-template name="fn_display_figure"/> -->
 	</xsl:template>
 	
 	<xsl:template match="*[local-name() = 'figure'][@class = 'pseudocode']">
@@ -14955,11 +14965,13 @@
 	</xsl:template>
 					
 
-	
+	<!-- figure/fn -->
 	<xsl:template match="*[local-name() = 'figure']/*[local-name() = 'fn']" priority="2"/>
+	<!-- figure/note -->
 	<xsl:template match="*[local-name() = 'figure']/*[local-name() = 'note']"/>
 	
-	
+	<!-- figure/note[@type = 'units'] -->
+	<!-- image/note[@type = 'units'] -->
 	<xsl:template match="*[local-name() = 'figure']/*[local-name() = 'note'][@type = 'units'] |
 								*[local-name() = 'image']/*[local-name() = 'note'][@type = 'units']" priority="2">
 		<fo:block text-align="right" keep-with-next="always">
@@ -15085,6 +15097,7 @@
 			</xsl:choose>
 	</xsl:template>
 	
+	<!-- fn -->
 	<xsl:template match="*[local-name() = 'fn']" mode="contents"/>
 	<xsl:template match="*[local-name() = 'fn']" mode="bookmarks"/>
 	
@@ -20869,6 +20882,7 @@
 			<p id="_8e5cf917-f75a-4a49-b0aa-1714cb6cf954">Formerly denoted as 15 % (m/m).</p>
 		</fn>
 	-->
+	<!-- fn in text -->
 	<xsl:template match="*[local-name() = 'fn'][not(ancestor::*[(local-name() = 'table' or local-name() = 'figure')] and not(ancestor::*[local-name() = 'name']))]" mode="linear_xml" name="linear_xml_fn">
 		<xsl:variable name="p_fn_">
 			<xsl:call-template name="get_fn_list"/>
