@@ -10172,6 +10172,9 @@
 											<xsl:if test="$document_type != 'PAS'">
 												<xsl:attribute name="font-size">9pt</xsl:attribute>
 											</xsl:if>
+											<xsl:if test="$document_type = 'PAS' and parent::bsi:figure">
+												<xsl:attribute name="font-size">9pt</xsl:attribute>
+											</xsl:if>
 										</xsl:if>
 									</xsl:when>
 								</xsl:choose>
