@@ -1637,7 +1637,7 @@
 									<xsl:attribute name="initial-page-number">auto</xsl:attribute>
 								</xsl:if>
 								
-								<xsl:call-template name="insertFootnoteSeparator"/>
+								<xsl:call-template name="insertFootnoteSeparatorCommon"/>
 								
 								<xsl:choose>
 									<xsl:when test="$doctype = 'service-publication'">
