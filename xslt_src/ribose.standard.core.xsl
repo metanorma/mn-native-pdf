@@ -972,13 +972,6 @@
 	</xsl:template>
 	
 	
-	<xsl:template match="ribose:fn/ribose:p">
-		<fo:block>
-			<xsl:apply-templates />
-		</fo:block>
-	</xsl:template>
-	
-
 	<xsl:template match="ribose:ul | ribose:ol" mode="list" priority="2">
 		<fo:block-container>
 			<fo:block-container margin-left="0mm">
