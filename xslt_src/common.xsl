@@ -9207,7 +9207,7 @@
 	
 	<!-- document text (not figures, or tables) footnotes -->
 	<xsl:variable name="footnotes_">
-		<xsl:for-each select="//*[local-name() = 'metanorma']/*[local-name() = 'fmt-footnote-container']/*[local-name() = 'fmt-fn-body']">
+		<xsl:for-each select="//*[local-name() = 'fmt-footnote-container']/*[local-name() = 'fmt-fn-body']"> <!-- commented *[local-name() = 'metanorma']/, because there are fn in figure or table name -->
 			<!-- <xsl:copy-of select="."/> -->
 			<xsl:variable name="update_xml_step1">
 				<xsl:apply-templates select="." mode="update_xml_step1"/>
@@ -9339,16 +9339,20 @@
 							
 								<xsl:if test="$namespace = 'jis'">
 									<xsl:attribute name="keep-together.within-line">always</xsl:attribute>
-									<xsl:call-template name="insertVerticalChar">
-										<xsl:with-param name="str" select="'&#x3014;'"/>
-									</xsl:call-template>
+									<fo:inline font-family="IPAexGothic">
+										<xsl:call-template name="insertVerticalChar">
+											<xsl:with-param name="str" select="'&#x3014;'"/>
+										</xsl:call-template>
+									</fo:inline>
 								</xsl:if>
 								<xsl:copy-of select="$current_fn_number_text"/>
 								
 								<xsl:if test="$namespace = 'jis'">
-									<xsl:call-template name="insertVerticalChar">
-										<xsl:with-param name="str" select="'&#x3015;'"/>
-									</xsl:call-template>
+									<fo:inline font-family="IPAexGothic">
+										<xsl:call-template name="insertVerticalChar">
+											<xsl:with-param name="str" select="'&#x3015;'"/>
+										</xsl:call-template>
+									</fo:inline>
 								</xsl:if>
 								
 							</fo:inline>
@@ -9387,6 +9391,8 @@
 									
 								</fo:inline>
 								<!-- <xsl:apply-templates /> -->
+								<!-- <ref_id><xsl:value-of select="$ref_id"/></ref_id>
+								<here><xsl:copy-of select="$footnotes"/></here> -->
 								<xsl:apply-templates select="$footnotes/*[local-name() = 'fmt-fn-body'][@id = $ref_id]"/>
 							</xsl:variable>
 							
@@ -9427,6 +9433,7 @@
 										</xsl:when> <!-- $vertical_layout = 'true' -->
 										<xsl:otherwise>
 											<fo:block xsl:use-attribute-sets="fn-body-style" role="SKIP">
+												<xsl:attribute name="text-align">left</xsl:attribute> <!-- because footer is centered -->
 												<xsl:copy-of select="$fn_block"/>
 											</fo:block>
 										</xsl:otherwise>
@@ -9685,6 +9692,9 @@
 	<!-- figure's footnotes rendering -->
 	<!-- ============================ -->
 	
+	<!-- figure/fmt-footnote-container -->
+	<xsl:template match="*[local-name() = 'figure']//*[local-name() = 'fmt-footnote-container']"/>
+	
 	<!-- TO DO: remove, now the figure fn in figure/dl/... https://github.com/metanorma/isodoc/issues/658 -->
 	<xsl:template name="figure_fn_display">
 	
@@ -9705,7 +9715,25 @@
 		</xsl:variable> -->
 	
 		<!-- <xsl:if test="xalan:nodeset($references)//fn"> -->
-		<xsl:if test="./*[local-name() = 'fmt-footnote-container']/*[local-name() = 'fmt-fn-body']">
+		
+		<xsl:variable name="references">
+			<xsl:for-each select="./*[local-name() = 'fmt-footnote-container']/*[local-name() = 'fmt-fn-body']">
+				<xsl:variable name="curr_id" select="@id"/>
+				<!-- <curr_id><xsl:value-of select="$curr_id"/></curr_id>
+				<curr><xsl:copy-of select="."/></curr>
+				<ancestor><xsl:copy-of select="ancestor::*[local-name() = 'figure'][.//*[local-name() = 'name'][.//*[local-name() = 'fn']]]"/></ancestor> -->
+				<xsl:choose>
+					<!-- skip figure/name/fn -->
+					<xsl:when test="ancestor::*[local-name() = 'figure'][.//*[local-name() = 'name'][.//*[local-name() = 'fn'][@target = $curr_id]]]"><!-- skip --></xsl:when>
+					<xsl:otherwise>
+						<xsl:copy-of select="."/>
+					</xsl:otherwise>
+				</xsl:choose>
+			</xsl:for-each>
+		</xsl:variable>
+		<!-- <references><xsl:copy-of select="$references"/></references> -->
+		
+		<xsl:if test="xalan:nodeset($references)//*[local-name() = 'fmt-fn-body']">
 		
 			<xsl:variable name="key_iso">
 				<xsl:if test="$namespace = 'iso' or $namespace = 'iec'  or $namespace = 'gb' or $namespace = 'jcgm'">true</xsl:if>
@@ -9773,14 +9801,15 @@
 					</xsl:choose>
 					<fo:table-body>
 						<!-- <xsl:for-each select="xalan:nodeset($references)//fn"> -->
-						<xsl:for-each select="./*[local-name() = 'fmt-footnote-container']/*[local-name() = 'fmt-fn-body']">
+						<xsl:for-each select="xalan:nodeset($references)//*[local-name() = 'fmt-fn-body']">
 						
 							<xsl:variable name="reference" select="@reference"/>
-							<xsl:if test="not(preceding-sibling::*[@reference = $reference])"> <!-- only unique reference puts in note-->
+							<!-- <xsl:if test="not(preceding-sibling::*[@reference = $reference])"> --> <!-- only unique reference puts in note-->
 								<fo:table-row>
 									<fo:table-cell>
 										<fo:block>
 											<fo:inline id="{@id}" xsl:use-attribute-sets="figure-fn-number-style">
+												<xsl:attribute name="padding-right">0mm</xsl:attribute>
 												<!-- <xsl:value-of select="@reference"/> -->
 												<xsl:value-of select="normalize-space(.//*[local-name() = 'fmt-fn-label'])"/>
 											</fo:inline>
@@ -9801,7 +9830,7 @@
 										</fo:block>
 									</fo:table-cell>
 								</fo:table-row>
-							</xsl:if>
+							<!-- </xsl:if> -->
 						</xsl:for-each>
 					</fo:table-body>
 				</fo:table>
@@ -13599,10 +13628,13 @@
 	</xsl:template>
 	
 	<xsl:template name="showFigureKey">
-		<xsl:for-each select="*[local-name() = 'note'][not(@type = 'units')] | *[local-name() = 'example'] | *[local-name() = 'source']">
+		<xsl:for-each select="*[(local-name() = 'note' and not(@type = 'units')) or local-name() = 'example']">
 			<xsl:choose>
 				<xsl:when test="local-name() = 'note'">
 					<xsl:call-template name="note"/>
+				</xsl:when>
+				<xsl:when test="local-name() = 'example'">
+					<xsl:call-template name="example"/>
 				</xsl:when>
 				<xsl:otherwise>
 					<xsl:apply-templates select="."/>
@@ -14952,7 +14984,9 @@
 	<!-- figure/fn -->
 	<xsl:template match="*[local-name() = 'figure']/*[local-name() = 'fn']" priority="2"/>
 	<!-- figure/note -->
-	<xsl:template match="*[local-name() = 'figure']/*[local-name() = 'note']"/>
+	<xsl:template match="*[local-name() = 'figure']/*[local-name() = 'note']" priority="2"/>
+	<!-- figure/example -->
+	<xsl:template match="*[local-name() = 'figure']/*[local-name() = 'example']" priority="2"/>
 	
 	<!-- figure/note[@type = 'units'] -->
 	<!-- image/note[@type = 'units'] -->
@@ -16090,7 +16124,7 @@
 	     text line 1
 			 text line 2
 	-->
-	<xsl:template match="*[local-name() = 'example']">
+	<xsl:template match="*[local-name() = 'example']" name="example">
 		
 		<xsl:choose>
 			<xsl:when test="$namespace = 'jis'">
