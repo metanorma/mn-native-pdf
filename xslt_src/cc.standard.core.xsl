@@ -613,11 +613,6 @@
 		</xsl:if>
 	</xsl:template>
 	
-	
-	<xsl:template match="csd:p/csd:fn/csd:p">
-		<xsl:apply-templates />
-	</xsl:template>
-	
 		
 	<xsl:template match="csd:xref" priority="2">
 		<xsl:call-template name="insert_basic_link">
