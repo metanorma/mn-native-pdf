@@ -877,10 +877,6 @@
 	</xsl:template>
 	
 
-	<xsl:template match="iho:p/iho:fn/iho:p">
-		<xsl:apply-templates />
-	</xsl:template>
-
 	<!-- note in list item -->
 	<!-- <xsl:template match="iho:ul//iho:note  | iho:ol//iho:note" priority="2">
 		<fo:block id="{@id}">
