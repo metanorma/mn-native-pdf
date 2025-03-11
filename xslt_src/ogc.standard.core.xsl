@@ -1672,12 +1672,13 @@
 		<!-- <fo:block>debug figure indent=<xsl:value-of select="$indent"/></fo:block> -->
 		<fo:block-container id="{@id}" margin-top="12pt" margin-bottom="12pt">			
 			<fo:block>
-				<xsl:apply-templates select="node()[not(local-name() = 'name')]">
+				<xsl:apply-templates select="ogc:note[@type = 'units']"/>
+				<xsl:apply-templates select="node()[not(local-name() = 'name') and not(local-name() = 'note' and @type = 'units')]">
 					<xsl:with-param name="indent" select="$indent"/>
 				</xsl:apply-templates>
 			</fo:block>
-			<xsl:call-template name="fn_display_figure"/>
-			<xsl:for-each select="ogc:note">
+			<xsl:call-template name="figure_fn_display"/>
+			<xsl:for-each select="ogc:note[not(@type = 'units')]">
 				<xsl:call-template name="note"/>
 			</xsl:for-each>
 			<xsl:apply-templates select="ogc:name" />

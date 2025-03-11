@@ -9686,30 +9686,29 @@
 	<!-- ============================ -->
 	
 	<!-- TO DO: remove, now the figure fn in figure/dl/... https://github.com/metanorma/isodoc/issues/658 -->
-	<xsl:template name="fn_display_figure"> <!-- figure_fn_display -->
+	<xsl:template name="figure_fn_display">
 	
 		<!-- current figure id -->
-		<xsl:variable name="figure_id_">
+		<!-- <xsl:variable name="figure_id_">
 			<xsl:value-of select="@id"/>
 			<xsl:if test="not(@id)"><xsl:value-of select="generate-id()"/></xsl:if>
 		</xsl:variable>
-		<xsl:variable name="figure_id" select="normalize-space($figure_id_)"/>
+		<xsl:variable name="figure_id" select="normalize-space($figure_id_)"/> -->
 	
 		<!-- all footnotes relates to the current figure -->
-		<xsl:variable name="references">
-			<!-- <xsl:for-each select=".//*[local-name()='fn'][not(parent::*[local-name()='name'])][ancestor::*[local-name() = 'figure'][1][@id = $figure_id]]"> -->
-			<!-- https://github.com/metanorma/isodoc/issues/658 -->
-			<xsl:for-each select=".//*[local-name() = 'fmt-footnote-container']/*[local-name() = 'fmt-fn-body'][ancestor::*[local-name() = 'figure'][1][@id = $figure_id]]">
+		<!-- <xsl:variable name="references">
+			<xsl:for-each select=".//*[local-name()='fn'][not(parent::*[local-name()='name'])][ancestor::*[local-name() = 'figure'][1][@id = $figure_id]]">
 				<fn reference="{@reference}" id="{@reference}_{ancestor::*[@id][1]/@id}">
 					<xsl:apply-templates />
 				</fn>
 			</xsl:for-each>
-		</xsl:variable>
+		</xsl:variable> -->
 	
-		<xsl:if test="xalan:nodeset($references)//fn">
+		<!-- <xsl:if test="xalan:nodeset($references)//fn"> -->
+		<xsl:if test="./*[local-name() = 'fmt-footnote-container']/*[local-name() = 'fmt-fn-body']">
 		
 			<xsl:variable name="key_iso">
-				<xsl:if test="$namespace = 'bsi' or $namespace = 'iso' or $namespace = 'iec'  or $namespace = 'gb' or $namespace = 'jcgm'">true</xsl:if>
+				<xsl:if test="$namespace = 'iso' or $namespace = 'iec'  or $namespace = 'gb' or $namespace = 'jcgm'">true</xsl:if>
 			</xsl:variable>
 			
 			<fo:block>
@@ -9773,14 +9772,17 @@
 						</xsl:otherwise>
 					</xsl:choose>
 					<fo:table-body>
-						<xsl:for-each select="xalan:nodeset($references)//fn">
+						<!-- <xsl:for-each select="xalan:nodeset($references)//fn"> -->
+						<xsl:for-each select="./*[local-name() = 'fmt-footnote-container']/*[local-name() = 'fmt-fn-body']">
+						
 							<xsl:variable name="reference" select="@reference"/>
 							<xsl:if test="not(preceding-sibling::*[@reference = $reference])"> <!-- only unique reference puts in note-->
 								<fo:table-row>
 									<fo:table-cell>
 										<fo:block>
 											<fo:inline id="{@id}" xsl:use-attribute-sets="figure-fn-number-style">
-												<xsl:value-of select="@reference"/>
+												<!-- <xsl:value-of select="@reference"/> -->
+												<xsl:value-of select="normalize-space(.//*[local-name() = 'fmt-fn-label'])"/>
 											</fo:inline>
 										</fo:block>
 									</fo:table-cell>
@@ -9794,7 +9796,8 @@
 													</xsl:otherwise>
 												</xsl:choose>
 											</xsl:if>
-											<xsl:copy-of select="./node()"/>
+											<!-- <xsl:copy-of select="./node()"/> -->
+											<xsl:apply-templates />
 										</fo:block>
 									</fo:table-cell>
 								</fo:table-row>
@@ -9804,7 +9807,7 @@
 				</fo:table>
 			</fo:block>
 		</xsl:if>
-	</xsl:template> <!-- fn_display_figure -->
+	</xsl:template> <!-- figure_fn_display -->
 	
 	
 	<!-- added for https://github.com/metanorma/isodoc/issues/607 -->
@@ -13604,7 +13607,7 @@
 			</xsl:choose>
 		</xsl:for-each>
 		<!-- TO DO: remove, now the figure fn in figure/dl/... https://github.com/metanorma/isodoc/issues/658 -->
-		<!-- <xsl:call-template name="fn_display_figure"/> -->
+		<xsl:call-template name="figure_fn_display"/>
 	</xsl:template>
 	
 	<xsl:template match="*[local-name() = 'figure'][@class = 'pseudocode']">
@@ -16871,8 +16874,10 @@
 			<xsl:attribute name="padding-right">5mm</xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'ogc'">
+			<xsl:attribute name="padding-right">1mm</xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'ogc-white-paper'">
+			<xsl:attribute name="padding-right">1mm</xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'unece'">
 			<xsl:attribute name="padding-right">4mm</xsl:attribute>
