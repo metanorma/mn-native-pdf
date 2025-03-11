@@ -16882,6 +16882,9 @@
 		<xsl:if test="$namespace = 'ogc-white-paper'">
 			<xsl:attribute name="padding-right">1mm</xsl:attribute>
 		</xsl:if>
+		<xsl:if test="$namespace = 'nist-sp' or $namespace = 'nist-cswp'">
+			<xsl:attribute name="padding-right">1mm</xsl:attribute>
+		</xsl:if>
 		<xsl:if test="$namespace = 'unece'">
 			<xsl:attribute name="padding-right">4mm</xsl:attribute>
 		</xsl:if>
