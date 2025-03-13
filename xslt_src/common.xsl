@@ -9795,20 +9795,22 @@
 					<xsl:copy-of select="$references_"/>
 				</xsl:when>
 				<xsl:otherwise> <!-- variant for plateau -->
-					<!-- current figure id -->
-					<xsl:variable name="figure_id_">
-						<xsl:value-of select="@id"/>
-						<xsl:if test="not(@id)"><xsl:value-of select="generate-id()"/></xsl:if>
-					</xsl:variable>
-					<xsl:variable name="figure_id" select="normalize-space($figure_id_)"/>
-				
-					<!-- all footnotes relates to the current figure -->
-					<xsl:for-each select=".//*[local-name()='fn'][not(parent::*[local-name()='name'])][ancestor::*[local-name() = 'figure'][1][@id = $figure_id]]">
-						<fmt-fn-body id="{@reference}_{ancestor::*[@id][1]/@id}">
-							<fmt-fn-label><xsl:value-of select="@reference"/></fmt-fn-label>
-							<xsl:copy-of select="node()"/>
-						</fmt-fn-body>
-					</xsl:for-each>
+					<xsl:if test=".//*[local-name()='fn'] and not(.//*[local-name()='fmt-fn-body'])">
+						<!-- current figure id -->
+						<xsl:variable name="figure_id_">
+							<xsl:value-of select="@id"/>
+							<xsl:if test="not(@id)"><xsl:value-of select="generate-id()"/></xsl:if>
+						</xsl:variable>
+						<xsl:variable name="figure_id" select="normalize-space($figure_id_)"/>
+					
+						<!-- all footnotes relates to the current figure -->
+						<xsl:for-each select=".//*[local-name()='fn'][not(parent::*[local-name()='name'])][ancestor::*[local-name() = 'figure'][1][@id = $figure_id]]">
+							<fmt-fn-body id="{@reference}_{ancestor::*[@id][1]/@id}">
+								<fmt-fn-label><xsl:value-of select="@reference"/></fmt-fn-label>
+								<xsl:copy-of select="node()"/>
+							</fmt-fn-body>
+						</xsl:for-each>
+					</xsl:if>
 				</xsl:otherwise>
 			</xsl:choose>
 		</xsl:variable>
