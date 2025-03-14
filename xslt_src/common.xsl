@@ -3326,7 +3326,8 @@
 		</xsl:if>
 		<xsl:if test="$namespace = 'bsi'">
 			<xsl:attribute name="baseline-shift">30%</xsl:attribute>
-			<xsl:attribute name="font-size">6pt</xsl:attribute>
+			<!--<xsl:attribute name="font-size">6pt</xsl:attribute> -->
+			<xsl:attribute name="font-size">5.5pt</xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'bipm'">
 		</xsl:if>
@@ -3379,7 +3380,8 @@
 	<xsl:template name="refine_table-fmt-fn-label-style">
 		<xsl:if test="$namespace = 'bsi'">
 			<xsl:if test="$document_type = 'PAS'">
-				<xsl:attribute name="font-size">80%</xsl:attribute>
+				<!-- <xsl:attribute name="font-size">80%</xsl:attribute> -->
+				<xsl:attribute name="font-size">4.5pt</xsl:attribute>
 			</xsl:if>
 		</xsl:if>
 		<xsl:if test="$namespace = 'iso'">
@@ -3413,8 +3415,11 @@
 	</xsl:attribute-set>
 	
 	<xsl:attribute-set name="figure-fn-number-style">
-		<xsl:attribute name="font-size">80%</xsl:attribute>
 		<xsl:attribute name="padding-right">5mm</xsl:attribute>
+	</xsl:attribute-set> <!-- figure-fn-number-style -->
+	
+	<xsl:attribute-set name="figure-fmt-fn-label-style">
+		<xsl:attribute name="font-size">80%</xsl:attribute>
 		<xsl:attribute name="vertical-align">super</xsl:attribute>
 		<xsl:if test="$namespace = 'bsi'">
 			<xsl:attribute name="baseline-shift">30%</xsl:attribute>
@@ -3430,7 +3435,15 @@
 			<xsl:attribute name="font-size">60%</xsl:attribute>
 			<xsl:attribute name="vertical-align">super</xsl:attribute>
 		</xsl:if>
-	</xsl:attribute-set> <!-- figure-fn-number-style -->
+	</xsl:attribute-set> <!-- figure-fmt-fn-label-style -->
+	
+	<xsl:template name="refine_figure-fmt-fn-label-style">
+		<xsl:if test="$namespace = 'bsi'">
+			<xsl:if test="$document_type = 'PAS'">
+				<xsl:attribute name="font-size">4.5pt</xsl:attribute>
+			</xsl:if>
+		</xsl:if>
+	</xsl:template>
 	
 	<xsl:attribute-set name="figure-fn-body-style">
 		<xsl:attribute name="text-align">justify</xsl:attribute>
@@ -9617,14 +9630,18 @@
 							<fo:list-item>
 								<fo:list-item-label end-indent="label-end()">
 									<fo:block>
-										<xsl:attribute name="font-size">5.5pt</xsl:attribute>
+										<!-- <xsl:attribute name="font-size">5.5pt</xsl:attribute>
 										<xsl:if test="$document_type = 'PAS'">
 											<xsl:attribute name="padding-right">0.5mm</xsl:attribute>
 											<xsl:attribute name="font-size">4.5pt</xsl:attribute>
-										</xsl:if>
+										</xsl:if> -->
 										<!-- <xsl:value-of select="@reference"/>
 										<xsl:text>)</xsl:text> -->
-										<xsl:value-of select="normalize-space(.//*[local-name() = 'fmt-fn-label'])"/>
+										<!-- <xsl:value-of select="normalize-space(.//*[local-name() = 'fmt-fn-label'])"/> -->
+										<xsl:apply-templates select=".//*[local-name() = 'fmt-fn-label'])">
+											<xsl:with-param name="process">true</xsl:with-param>
+										</xsl:apply-templates>
+										
 									</fo:block>
 								</fo:list-item-label>
 								<fo:list-item-body start-indent="body-start()" xsl:use-attribute-sets="table-fn-body-style">
@@ -9715,7 +9732,7 @@
 	<xsl:template match="*[local-name() = 'table']//*[local-name() = 'fmt-fn-body']//*[local-name() = 'fmt-fn-label']"> <!-- *[local-name() = 'fmt-footnote-container']/ -->
 		<xsl:param name="process">false</xsl:param>
 		<xsl:if test="$process = 'true'">
-			<fo:inline xsl:use-attribute-sets="table-fn-number-style">
+			<fo:inline xsl:use-attribute-sets="table-fn-number-style" role="SKIP">
 				
 				<!-- tab is padding-right -->
 				<xsl:apply-templates select=".//*[local-name() = 'tab']">
@@ -9758,6 +9775,12 @@
 			<xsl:if test="$namespace = 'bipm'">
 				<xsl:attribute name="padding-right">2.5mm</xsl:attribute>
 			</xsl:if>
+			<xsl:if test="$namespace = 'bsi'">
+				<xsl:attribute name="padding-right">0mm</xsl:attribute>
+				<xsl:if test="$document_type = 'PAS'">
+					<xsl:attribute name="padding-right">0.5mm</xsl:attribute>
+				</xsl:if>
+			</xsl:if>
 			<xsl:if test="$namespace = 'itu'">
 				<xsl:attribute name="padding-right">3mm</xsl:attribute>
 			</xsl:if>
@@ -9771,7 +9794,7 @@
 	</xsl:template>
 	
 	<xsl:template match="*[local-name() = 'table']//*[local-name() = 'fmt-fn-body']//*[local-name() = 'fmt-fn-label']//*[local-name() = 'sup']" priority="5">
-		<fo:inline xsl:use-attribute-sets="table-fmt-fn-label-style">
+		<fo:inline xsl:use-attribute-sets="table-fmt-fn-label-style" role="SKIP">
 			<xsl:call-template name="refine_table-fmt-fn-label-style"/>
 			<xsl:apply-templates />
 		</fo:inline>
@@ -9936,8 +9959,8 @@
 													</fo:inline>
 												</xsl:when>
 												<xsl:otherwise>
-													<fo:inline id="{@id}" xsl:use-attribute-sets="figure-fn-number-style">
-														<xsl:attribute name="padding-right">0mm</xsl:attribute>
+													<fo:inline id="{@id}" xsl:use-attribute-sets="figure-fmt-fn-label-style">
+														<!-- <xsl:attribute name="padding-right">0mm</xsl:attribute> -->
 														<!-- <xsl:value-of select="@reference"/> -->
 														<xsl:value-of select="normalize-space(.//*[local-name() = 'fmt-fn-label'])"/>
 													</fo:inline>
@@ -9973,9 +9996,33 @@
 		</xsl:if>
 	</xsl:template> <!-- figure_fn_display -->
 	
-	<xsl:template match="*[local-name() = 'figure']//*[local-name() = 'fmt-footnote-container']//*[local-name() = 'fmt-fn-label']//*[local-name() = 'sup']" priority="5">
-		<fo:inline xsl:use-attribute-sets="figure-fn-number-style">
-			<xsl:attribute name="padding-right">0mm</xsl:attribute>
+	<xsl:template match="*[local-name() = 'figure']//*[local-name() = 'fmt-fn-body']//*[local-name() = 'fmt-fn-label']"> <!-- *[local-name() = 'fmt-footnote-container']/ -->
+		<xsl:param name="process">false</xsl:param>
+		<xsl:if test="$process = 'true'">
+			<fo:inline xsl:use-attribute-sets="figure-fn-number-style" role="SKIP">
+				<xsl:attribute name="padding-right">0mm</xsl:attribute>
+				
+				<!-- tab is padding-right -->
+				<xsl:apply-templates select=".//*[local-name() = 'tab']">
+					<xsl:with-param name="process">true</xsl:with-param>
+				</xsl:apply-templates>
+				
+				<xsl:apply-templates />
+				
+			</fo:inline>
+		</xsl:if>
+	</xsl:template> <!--  figure//fmt-fn-body//fmt-fn-label -->
+	
+	<xsl:template match="*[local-name() = 'figure']//*[local-name() = 'fmt-fn-body']//*[local-name() = 'fmt-fn-label']//*[local-name() = 'tab']" priority="5">
+		<xsl:param name="process">false</xsl:param>
+		<xsl:if test="$process = 'true'">
+			
+		</xsl:if>
+	</xsl:template>
+	
+	<xsl:template match="*[local-name() = 'figure']//*[local-name() = 'fmt-fn-body']//*[local-name() = 'fmt-fn-label']//*[local-name() = 'sup']" priority="5">
+		<fo:inline xsl:use-attribute-sets="figure-fmt-fn-label-style" role="SKIP">
+			<xsl:call-template name="refine_figure-fmt-fn-label-style"/>
 			<xsl:apply-templates />
 		</fo:inline>
 	</xsl:template>
@@ -9995,7 +10042,7 @@
 				<xsl:attribute name="font-size">8pt</xsl:attribute>
 			</xsl:if>
 		</xsl:if>
-		<fo:inline xsl:use-attribute-sets="figure-fn-number-style"> <!-- id="{@id}"  -->
+		<fo:inline xsl:use-attribute-sets="figure-fn-number-style figure-fmt-fn-label-style"> <!-- id="{@id}"  -->
 			<!-- <xsl:value-of select="@reference"/> -->
 			<xsl:apply-templates/>
 		</fo:inline>
