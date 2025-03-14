@@ -2399,6 +2399,19 @@
 		</fo:block-container>
 	</xsl:template>
 	
+	<!-- <fmt-fn-label>注<sup> -->
+	<xsl:template match="*[local-name() = 'table']//*[local-name() = 'fmt-fn-body']//*[local-name() = 'fmt-fn-label']/node()[1][self::text()]" priority="5">
+		<fo:inline font-size="9pt" padding-right="1mm">
+			<xsl:if test="not($vertical_layout = 'true')">
+				<xsl:attribute name="font-family">IPAexGothic</xsl:attribute>
+			</xsl:if>
+			<!-- <xsl:call-template name="getLocalizedString">
+				<xsl:with-param name="key">table_footnote</xsl:with-param>
+			</xsl:call-template> -->
+			<xsl:value-of select="."/>
+		</fo:inline>
+		<!-- <xsl:text> </xsl:text> -->
+	</xsl:template>
 	
 	<!-- =========================================================================== -->
 	<!-- STEP 0: Replace characters with vertical form -->
