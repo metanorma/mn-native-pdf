@@ -59,27 +59,30 @@ XSLT_GENERATED := xslt/iec.international-standard.xsl \
 	xslt/ogc.user-guide.xsl \
 	xslt/ogc.white-paper.xsl \
 	xslt/plateau.international-standard.xsl \
-	xslt/un.plenary.xsl \
-	xslt/un.plenary-attachment.xsl \
-	xslt/un.recommendation.xsl \
 	xslt/cc.standard.xsl \
 	xslt/csa.standard.xsl \
 	xslt/ribose.standard.xsl \
-	xslt/m3aawg.report.xsl \
-	xslt/m3aawg.policy.xsl \
-	xslt/gb.recommendation.xsl \
 	xslt/iho.specification.xsl \
 	xslt/iho.standard.xsl \
-	xslt/mpfa.standards.xsl \
-	xslt/mpfa.circular.xsl \
-	xslt/mpfa.compliance-standards-for-mpf-trustees.xsl \
-	xslt/mpfa.guidelines.xsl \
-	xslt/mpfa.supervision-of-mpf-intermediaries.xsl \
 	xslt/bipm.brochure.xsl \
 	xslt/bipm.mise-en-pratique.xsl \
 	xslt/bipm.guide.xsl \
 	xslt/bipm.rapport.xsl \
 	xslt/jcgm.standard.xsl
+
+# OLD
+# 	xslt/un.plenary.xsl \
+#	xslt/un.plenary-attachment.xsl \
+#	xslt/un.recommendation.xsl \
+#	xslt/m3aawg.report.xsl \
+#	xslt/m3aawg.policy.xsl \
+#	xslt/gb.recommendation.xsl \
+#	xslt/mpfa.standards.xsl \
+#	xslt/mpfa.circular.xsl \
+#	xslt/mpfa.compliance-standards-for-mpf-trustees.xsl \
+#	xslt/mpfa.guidelines.xsl \
+#	xslt/mpfa.supervision-of-mpf-intermediaries.xsl \
+
 
 MN2PDF_DOWNLOAD_PATH := https://github.com/metanorma/mn2pdf/releases/download/v2.13/mn2pdf-2.13.jar
 # MN2PDF_DOWNLOAD_PATH := https://maven.pkg.github.com/metanorma/mn2pdf/com/metanorma/fop/mn2pdf/1.7/mn2pdf-1.7.jar
