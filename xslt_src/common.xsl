@@ -9739,9 +9739,9 @@
 					<xsl:with-param name="process">true</xsl:with-param>
 				</xsl:apply-templates>
 				
-				<xsl:if test="$namespace = 'bipm'">
+				<!-- <xsl:if test="$namespace = 'bipm'">
 					<fo:inline font-style="normal">(</fo:inline>
-				</xsl:if>
+				</xsl:if> -->
 				
 				<!-- <xsl:if test="$namespace = 'plateau'">
 					<xsl:text>※</xsl:text>
@@ -9751,9 +9751,9 @@
 				<!-- <xsl:value-of select="normalize-space()"/> -->
 				<xsl:apply-templates />
 				
-				<xsl:if test="$namespace = 'bipm'">
+				<!-- <xsl:if test="$namespace = 'bipm'">
 					<fo:inline font-style="normal">)</fo:inline>
-				</xsl:if>
+				</xsl:if> -->
 				
 				<!-- commented https://github.com/metanorma/isodoc/issues/614 -->
 				<!-- <xsl:if test="$namespace = 'itu'">
@@ -10072,17 +10072,23 @@
 						<xsl:value-of select="ancestor::*[local-name()='table'][1]/@id"/>
 					</xsl:attribute>
 				</xsl:if> -->
-				<xsl:if test="$namespace = 'bipm'">
-					<fo:inline font-style="normal">&#xA0;(</fo:inline>
-				</xsl:if>
 				<!-- <xsl:if test="$namespace = 'plateau'">
 					<xsl:text>※</xsl:text>
 				</xsl:if> -->
 				<!-- <xsl:value-of select="@reference"/> -->
-				<xsl:value-of select="normalize-space(*[local-name() = 'fmt-fn-label'])"/>
-				<xsl:if test="$namespace = 'bipm'">
-					<fo:inline font-style="normal">)</fo:inline>
-				</xsl:if>
+				
+				<xsl:choose>
+					<xsl:when test="$namespace = 'bipm'">
+						<fo:inline font-style="normal">&#xA0;</fo:inline>
+						<!-- Example: <fmt-fn-label><sup><span class="fmt-label-delim">(</span>a<span class="fmt-label-delim">)</span></sup></fmt-fn-label> -->
+						<!-- to <fo:inline font-style="normal">(</fo:inline> ... -->
+						<xsl:apply-templates select="*[local-name() = 'fmt-fn-label']/node()"/>
+					</xsl:when>
+					<xsl:otherwise>
+						<xsl:value-of select="normalize-space(*[local-name() = 'fmt-fn-label'])"/>
+					</xsl:otherwise>
+				</xsl:choose>
+				
 				<!-- <xsl:if test="$namespace = 'bsi'">
 					<xsl:text>)</xsl:text>
 				</xsl:if> -->
