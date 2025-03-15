@@ -19324,8 +19324,33 @@
 
 	<xsl:template match="*[local-name() = 'toc']//*[local-name() = 'xref']" priority="3">
 		<!-- <xref target="cgpm9th1948r6">1.6.3<tab/>&#8220;9th CGPM, 1948:<tab/>decision to establish the SI&#8221;</xref> -->
+		<!-- New format: one tab <xref target="cgpm9th1948r6">&#8220;9th CGPM, 1948:<tab/>decision to establish the SI&#8221;</xref> -->
+		<!-- <test><xsl:copy-of select="."/></test> -->
+		
 		<xsl:variable name="target" select="@target"/>
+		
 		<xsl:for-each select="*[local-name() = 'tab']">
+		
+			<xsl:if test="position() = 1">
+				<!-- first column (data before first `tab`) -->
+				<fo:table-cell>
+					<fo:block line-height-shift-adjustment="disregard-shifts" role="SKIP">
+						<xsl:call-template name="insert_basic_link">
+							<xsl:with-param name="element">
+								<fo:basic-link internal-destination="{$target}" fox:alt-text="{.}">
+									<xsl:for-each select="preceding-sibling::node()">
+										<xsl:choose>
+											<xsl:when test="self::text()"><xsl:value-of select="."/></xsl:when>
+											<xsl:otherwise><xsl:apply-templates select="."/></xsl:otherwise>
+										</xsl:choose>
+									</xsl:for-each>
+								</fo:basic-link>
+							</xsl:with-param>
+						</xsl:call-template>
+					</fo:block>
+				</fo:table-cell>
+			</xsl:if>
+		
 			<xsl:variable name="current_id" select="generate-id()"/>
 			<fo:table-cell>
 				<fo:block line-height-shift-adjustment="disregard-shifts" role="SKIP">
@@ -19376,11 +19401,25 @@
 	
 	<xsl:template match="*[local-name() = 'xref']" mode="toc_table_width">
 		<!-- <xref target="cgpm9th1948r6">1.6.3<tab/>&#8220;9th CGPM, 1948:<tab/>decision to establish the SI&#8221;</xref> -->
+		<!-- New format - one tab <xref target="cgpm9th1948r6">&#8220;9th CGPM, 1948:<tab/>decision to establish the SI&#8221;</xref> -->
 		<xsl:for-each select="*[local-name() = 'tab']">
+			<xsl:if test="position() = 1">
+				<td>
+					<xsl:for-each select="preceding-sibling::node()">
+						<xsl:choose>
+							<xsl:when test="self::text()"><xsl:value-of select="."/></xsl:when>
+							<xsl:otherwise><xsl:copy-of select="."/></xsl:otherwise>
+						</xsl:choose>
+					</xsl:for-each>
+				</td>
+			</xsl:if>
 			<xsl:variable name="current_id" select="generate-id()"/>
 			<td>
 				<xsl:for-each select="following-sibling::node()[not(self::*[local-name() = 'tab']) and preceding-sibling::*[local-name() = 'tab'][1][generate-id() = $current_id]]">
-					<xsl:copy-of select="."/>
+					<xsl:choose>
+						<xsl:when test="self::text()"><xsl:value-of select="."/></xsl:when>
+						<xsl:otherwise><xsl:copy-of select="."/></xsl:otherwise>
+					</xsl:choose>
 				</xsl:for-each>
 			</td>
 		</xsl:for-each>

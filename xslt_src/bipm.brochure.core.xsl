@@ -3546,13 +3546,27 @@
 
 	<xsl:template match="*[local-name() = 'xref']" mode="toc_table_width" priority="2">
 		<!-- <xref target="cgpm9th1948r6">1.6.3<tab/>&#8220;9th CGPM, 1948:<tab/>decision to establish the SI&#8221;</xref> -->
+		<!-- New format - one tab <xref target="cgpm9th1948r6">&#8220;9th CGPM, 1948:<tab/>decision to establish the SI&#8221;</xref> -->
 		<xsl:for-each select="*[local-name() = 'tab']">
 			<xsl:variable name="pos" select="position()"/>
 			<xsl:variable name="current_id" select="generate-id()"/>
+			
+			<xsl:if test="$pos = 1">
+				<td>
+					<xsl:for-each select="preceding-sibling::node()">
+						<xsl:choose>
+							<xsl:when test="self::text()"><xsl:value-of select="translate(., ' ', '&#xa0;')"/></xsl:when>
+							<xsl:otherwise><xsl:copy-of select="."/></xsl:otherwise>
+						</xsl:choose>
+					</xsl:for-each>
+				</td>
+			</xsl:if>
+			
 			<td>
 				<xsl:for-each select="following-sibling::node()[not(self::*[local-name() = 'tab']) and preceding-sibling::*[local-name() = 'tab'][1][generate-id() = $current_id]]">
 					<xsl:choose>
-						<xsl:when test="$pos = 1 and self::text()"><xsl:value-of select="translate(., ' ', '&#xa0;')"/></xsl:when>
+						<!-- <xsl:when test="$pos = 1 and self::text()"><xsl:value-of select="translate(., ' ', '&#xa0;')"/></xsl:when> -->
+						<xsl:when test="self::text()"><xsl:value-of select="."/></xsl:when>
 						<xsl:otherwise><xsl:copy-of select="."/></xsl:otherwise>
 					</xsl:choose>
 				</xsl:for-each>
