@@ -834,18 +834,6 @@
 	</xsl:template>
 	
 
-	<xsl:template match="*[local-name()='p']/*[local-name()='fn']/*[local-name()='p']">
-		<xsl:apply-templates />
-	</xsl:template>
-	
-	
- 
-	<xsl:template match="jcgm:fn/jcgm:p">
-		<fo:block>
-			<xsl:apply-templates />
-		</fo:block>
-	</xsl:template>
-	
 	
 	
 	<!-- for two-columns layout -->
@@ -1067,11 +1055,9 @@
 	
 	<xsl:template name="insertHeaderFooter">
 		<xsl:param name="isDraft"/>
-		<fo:static-content flow-name="xsl-footnote-separator">
-			<fo:block>
-				<fo:leader leader-pattern="rule" leader-length="30%"/>
-			</fo:block>
-		</fo:static-content>
+		
+		<xsl:call-template name="insertFootnoteSeparatorCommon"/>
+		
 		<fo:static-content flow-name="header-even-jcgm" role="artifact">
 			<xsl:call-template name="insertDraftWatermark">
 				<xsl:with-param name="isDraft" select="$isDraft"/>
