@@ -1636,11 +1636,9 @@
 								<xsl:if test="$doctype = 'service-publication'">
 									<xsl:attribute name="initial-page-number">auto</xsl:attribute>
 								</xsl:if>
-								<fo:static-content flow-name="xsl-footnote-separator">
-									<fo:block>
-										<fo:leader leader-pattern="rule" leader-length="30%"/>
-									</fo:block>
-								</fo:static-content>
+								
+								<xsl:call-template name="insertFootnoteSeparatorCommon"/>
+								
 								<xsl:choose>
 									<xsl:when test="$doctype = 'service-publication'">
 										<xsl:call-template name="insertHeaderFooterSP">

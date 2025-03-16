@@ -11,16 +11,17 @@ SRC := $(patsubst mn-samples-iso/documents/international-standard/%,sources/iso-
 	$(patsubst mn-samples-itu/documents/%,sources/itu-%,$(wildcard mn-samples-itu/documents/*.xml)) \
 	$(patsubst mn-samples-iec/documents/%,sources/%,$(wildcard mn-samples-iec/documents/*.xml)) \
 	$(patsubst mn-samples-ogc/documents/%,sources/ogc-%,$(wildcard mn-samples-ogc/documents/*.xml)) \
- 	$(patsubst mn-samples-un/documents/%,sources/un-%,$(wildcard mn-samples-un/documents/*.xml)) \
 	$(patsubst mn-samples-cc/documents/%,sources/%,$(wildcard mn-samples-cc/documents/*.xml)) \
-	$(patsubst mn-samples-m3aawg/documents/best-practice/%,sources/m3aawg-bp-%,$(wildcard mn-samples-m3aawg/documents/best-practice/*.xml)) \
-	$(patsubst mn-samples-m3aawg/documents/policy/%,sources/m3aawg-p-%,$(wildcard mn-samples-m3aawg/documents/policy/*.xml)) \
-	$(patsubst mn-samples-m3aawg/documents/report/%,sources/m3aawg-r-%,$(wildcard mn-samples-m3aawg/documents/report/*.xml)) \
 	$(patsubst mn-samples-cc/documents/%,sources/%,$(wildcard mn-samples-cc/documents/*.xml)) \
-	$(patsubst mn-samples-gb/documents/%,sources/gb-%,$(wildcard mn-samples-gb/documents/*.xml)) \
 	$(patsubst mn-samples-iho/documents/%,sources/iho-%,$(wildcard mn-samples-iho/documents/*.xml)) \
-	$(patsubst mn-samples-mpfa/documents/mpfa-%,sources/mpfa-%,$(wildcard mn-samples-mpfa/documents/*.xml))
 
+# OLD
+#  	$(patsubst mn-samples-un/documents/%,sources/un-%,$(wildcard mn-samples-un/documents/*.xml)) \
+#	$(patsubst mn-samples-m3aawg/documents/best-practice/%,sources/m3aawg-bp-%,$(wildcard mn-samples-m3aawg/documents/best-practice/*.xml)) \
+#	$(patsubst mn-samples-m3aawg/documents/policy/%,sources/m3aawg-p-%,$(wildcard mn-samples-m3aawg/documents/policy/*.xml)) \
+#	$(patsubst mn-samples-m3aawg/documents/report/%,sources/m3aawg-r-%,$(wildcard mn-samples-m3aawg/documents/report/*.xml)) \
+#	$(patsubst mn-samples-gb/documents/%,sources/gb-%,$(wildcard mn-samples-gb/documents/*.xml)) \
+#	$(patsubst mn-samples-mpfa/documents/mpfa-%,sources/mpfa-%,$(wildcard mn-samples-mpfa/documents/*.xml))
  
 PDF := $(patsubst sources/%,documents/%,$(patsubst %.xml,%.pdf,$(SRC)))
 HTML := $(patsubst sources/%,documents/%,$(patsubst %.xml,%.html,$(SRC)))
@@ -59,27 +60,30 @@ XSLT_GENERATED := xslt/iec.international-standard.xsl \
 	xslt/ogc.user-guide.xsl \
 	xslt/ogc.white-paper.xsl \
 	xslt/plateau.international-standard.xsl \
-	xslt/un.plenary.xsl \
-	xslt/un.plenary-attachment.xsl \
-	xslt/un.recommendation.xsl \
 	xslt/cc.standard.xsl \
 	xslt/csa.standard.xsl \
 	xslt/ribose.standard.xsl \
-	xslt/m3aawg.report.xsl \
-	xslt/m3aawg.policy.xsl \
-	xslt/gb.recommendation.xsl \
 	xslt/iho.specification.xsl \
 	xslt/iho.standard.xsl \
-	xslt/mpfa.standards.xsl \
-	xslt/mpfa.circular.xsl \
-	xslt/mpfa.compliance-standards-for-mpf-trustees.xsl \
-	xslt/mpfa.guidelines.xsl \
-	xslt/mpfa.supervision-of-mpf-intermediaries.xsl \
 	xslt/bipm.brochure.xsl \
 	xslt/bipm.mise-en-pratique.xsl \
 	xslt/bipm.guide.xsl \
 	xslt/bipm.rapport.xsl \
 	xslt/jcgm.standard.xsl
+
+# OLD
+# 	xslt/un.plenary.xsl \
+#	xslt/un.plenary-attachment.xsl \
+#	xslt/un.recommendation.xsl \
+#	xslt/m3aawg.report.xsl \
+#	xslt/m3aawg.policy.xsl \
+#	xslt/gb.recommendation.xsl \
+#	xslt/mpfa.standards.xsl \
+#	xslt/mpfa.circular.xsl \
+#	xslt/mpfa.compliance-standards-for-mpf-trustees.xsl \
+#	xslt/mpfa.guidelines.xsl \
+#	xslt/mpfa.supervision-of-mpf-intermediaries.xsl \
+
 
 MN2PDF_DOWNLOAD_PATH := https://github.com/metanorma/mn2pdf/releases/download/v2.13/mn2pdf-2.13.jar
 # MN2PDF_DOWNLOAD_PATH := https://maven.pkg.github.com/metanorma/mn2pdf/com/metanorma/fop/mn2pdf/1.7/mn2pdf-1.7.jar

@@ -4518,12 +4518,6 @@
 	</xsl:template>
 	
 	
-	
-	<xsl:template match="iso:p/iso:fn/iso:p">
-		<xsl:apply-templates />
-	</xsl:template>
-	
-	
 	<!-- For express listings PDF attachments -->
 	<xsl:template match="*[local-name() = 'eref'][java:endsWith(java:java.lang.String.new(@bibitemid),'.exp')]" priority="2">
 		<fo:inline xsl:use-attribute-sets="eref-style">
