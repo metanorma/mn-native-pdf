@@ -9638,7 +9638,7 @@
 										<!-- <xsl:value-of select="@reference"/>
 										<xsl:text>)</xsl:text> -->
 										<!-- <xsl:value-of select="normalize-space(.//*[local-name() = 'fmt-fn-label'])"/> -->
-										<xsl:apply-templates select=".//*[local-name() = 'fmt-fn-label'])">
+										<xsl:apply-templates select=".//*[local-name() = 'fmt-fn-label']">
 											<xsl:with-param name="process">true</xsl:with-param>
 										</xsl:apply-templates>
 										
