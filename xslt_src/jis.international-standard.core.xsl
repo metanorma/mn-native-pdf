@@ -2375,7 +2375,8 @@
 	</xsl:template>
 	
 	<xsl:template name="fn_jis">
-		<fo:block-container margin-left="11mm" margin-bottom="4pt" id="{@ref_id}">
+		<xsl:variable name="ref_id" select="@target"/>
+		<fo:block-container margin-left="11mm" margin-bottom="4pt" id="{$ref_id}">
 			<xsl:if test="position() = last()">
 				<xsl:attribute name="margin-bottom">10pt</xsl:attribute>
 			</xsl:if>
@@ -2383,11 +2384,13 @@
 				<fo:list-block provisional-distance-between-starts="10mm">
 					<fo:list-item>
 						<fo:list-item-label end-indent="label-end()">
-							<fo:block xsl:use-attribute-sets="note-name-style">注 <fo:inline xsl:use-attribute-sets="fn-num-style"><xsl:value-of select="@current_fn_number"/><fo:inline font-weight="normal">)</fo:inline></fo:inline></fo:block>
+							<xsl:variable name="current_fn_number" select="translate(normalize-space(jis:fmt-fn-label), ')', '')"/>
+							<fo:block xsl:use-attribute-sets="note-name-style">注 <fo:inline xsl:use-attribute-sets="fn-num-style"><xsl:value-of select="$current_fn_number"/><fo:inline font-weight="normal">)</fo:inline></fo:inline></fo:block>
 						</fo:list-item-label>
 						<fo:list-item-body start-indent="body-start()">
 							<fo:block>
-								<xsl:apply-templates />
+								<!-- <xsl:apply-templates /> -->
+								<xsl:apply-templates select="$footnotes/*[local-name() = 'fmt-fn-body'][@id = $ref_id]"/>
 							</fo:block>
 						</fo:list-item-body>
 					</fo:list-item>
@@ -2396,6 +2399,19 @@
 		</fo:block-container>
 	</xsl:template>
 	
+	<!-- <fmt-fn-label>注<sup> -->
+	<xsl:template match="*[local-name() = 'table']//*[local-name() = 'fmt-fn-body']//*[local-name() = 'fmt-fn-label']/node()[1][self::text()]" priority="5">
+		<fo:inline font-size="9pt" padding-right="1mm">
+			<xsl:if test="not($vertical_layout = 'true')">
+				<xsl:attribute name="font-family">IPAexGothic</xsl:attribute>
+			</xsl:if>
+			<!-- <xsl:call-template name="getLocalizedString">
+				<xsl:with-param name="key">table_footnote</xsl:with-param>
+			</xsl:call-template> -->
+			<xsl:value-of select="."/>
+		</fo:inline>
+		<!-- <xsl:text> </xsl:text> -->
+	</xsl:template>
 	
 	<!-- =========================================================================== -->
 	<!-- STEP 0: Replace characters with vertical form -->

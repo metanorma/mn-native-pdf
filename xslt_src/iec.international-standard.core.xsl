@@ -1971,10 +1971,6 @@
 		
 	</xsl:template>
 	
-
-	<xsl:template match="iec:p/iec:fn/iec:p">
-		<xsl:apply-templates />
-	</xsl:template>
 	
 	<xsl:template match="iec:dd/iec:p">
 		<fo:block margin-bottom="5pt"><xsl:apply-templates /></fo:block>

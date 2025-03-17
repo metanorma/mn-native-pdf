@@ -842,6 +842,7 @@
 			<xsl:attribute name="target">
 				<xsl:call-template name="fn_reference_to_xref_target"/>				
 			</xsl:attribute>
+			<!-- <xsl:copy-of select="@target"/> -->
 			
 			<xsl:variable name="curr_clause_id" select="normalize-space(ancestor::bipm:clause[1]/@id)"/>
 			<xsl:variable name="curr_annex_id" select="normalize-space(ancestor::bipm:annex[1]/@id)"/>
@@ -859,18 +860,27 @@
 			
 			<xsl:element name="sup_fn" namespace="https://www.metanorma.org/ns/standoc">
 				<xsl:value-of select="concat('(',$number,')')"/>
+				<!-- <xsl:value-of select="concat('(',normalize-space(./*[local-name() = 'fmt-fn-label']),')')"/> -->
+			<!-- https://github.com/metanorma/isodoc/issues/658#issuecomment-2726450824 -->
+			<!-- <xsl:apply-templates select="*[local-name() = 'fmt-fn-label']/node()" mode="flatxml"/> -->
 			</xsl:element>
 			
 		</xsl:element>
 	</xsl:template>
 	
+	<!-- <xsl:template match="*[local-name() = 'fmt-fn-label']//*[local-name() = 'sup']" mode="flatxml">
+		<xsl:element name="sup_fn" namespace="https://www.metanorma.org/ns/standoc">
+			<xsl:apply-templates mode="flatxml"/>
+		</xsl:element>
+	</xsl:template> -->
+	
 	<xsl:template name="fn_reference_to_xref_target">
 		<xsl:variable name="lang" select="ancestor::bipm:metanorma/*[local-name()='bibdata']//*[local-name()='language'][@current = 'true']"/>
-			<xsl:variable name="gen_id" select="generate-id()"/>
-			<xsl:variable name="curr_clause_id" select="ancestor::bipm:clause[1]/@id"/>
-			<xsl:variable name="number">
-				<xsl:number count="bipm:fn[ancestor::bipm:clause[1]/@id = $curr_clause_id][ancestor::bipm:quote or not(ancestor::bipm:table)]" level="any"/>
-			</xsl:variable>
+		<xsl:variable name="gen_id" select="generate-id()"/>
+		<xsl:variable name="curr_clause_id" select="ancestor::bipm:clause[1]/@id"/>
+		<xsl:variable name="number">
+			<xsl:number count="bipm:fn[ancestor::bipm:clause[1]/@id = $curr_clause_id][ancestor::bipm:quote or not(ancestor::bipm:table)]" level="any"/>
+		</xsl:variable>
 		<xsl:value-of select="concat($lang, '_footnote_', @reference, '_', $number, '_', $gen_id)"/>
 	</xsl:template>
 	
@@ -980,8 +990,12 @@
 		<xsl:element name="note_side" namespace="https://www.metanorma.org/ns/standoc">
 	
 			<xsl:attribute name="id">						
-				<xsl:call-template name="fn_reference_to_xref_target"/>				
+				<xsl:call-template name="fn_reference_to_xref_target"/>
+				<!-- <xsl:value-of select="@target"/> -->
 			</xsl:attribute>
+			
+			
+			<xsl:variable name="curr_id" select="@target"/>
 			
 			<xsl:variable name="curr_clause_id" select="normalize-space(ancestor::bipm:clause[1]/@id)"/>
 			<xsl:variable name="curr_annex_id" select="normalize-space(ancestor::bipm:annex[1]/@id)"/>
@@ -1000,10 +1014,13 @@
 			
 			<xsl:element name="sup_fn" namespace="https://www.metanorma.org/ns/standoc">
 				<xsl:value-of select="concat('(',$number,')')"/>
+			<!-- https://github.com/metanorma/isodoc/issues/658#issuecomment-2726450824 -->
+			<!-- <xsl:apply-templates select="*[local-name() = 'fmt-fn-label']/node()" mode="flatxml"/> -->
 			</xsl:element>
 			<xsl:text> </xsl:text>
 			
-			<xsl:apply-templates mode="flatxml"/>
+			<!-- <xsl:apply-templates mode="flatxml"/> -->
+			<xsl:apply-templates select="$footnotes/*[local-name() = 'fmt-fn-body'][@id = $curr_id]/node()" mode="flatxml"/>
 		</xsl:element>
 	</xsl:template>
 	
@@ -2906,6 +2923,9 @@
 		<xsl:apply-templates select="."/>
 	</xsl:template>
 
+	<!-- note_side/fmt-fn-label in text -->
+	<xsl:template match="*[local-name() = 'note_side']//*[local-name() = 'fmt-fn-label']"/>
+
 
 	<xsl:template match="*[local-name() = 'note_side']/*[local-name() = 'p']">
 		<xsl:variable name="num"><xsl:number/></xsl:variable>
@@ -3256,10 +3276,26 @@
 		<xsl:value-of select="."/>
 	</xsl:template>
 
+	<!-- <xsl:template match="*[local-name() = 'sup_fn']/*[local-name() = 'sup']"> -->
 	<xsl:template match="*[local-name() = 'sup_fn']">
 		<fo:inline font-size="65%" keep-with-previous.within-line="always" vertical-align="super">
 			<xsl:apply-templates />
 		</fo:inline>
+	</xsl:template>
+	
+	<xsl:template match="*[local-name() = 'fmt-fn-body']//*[local-name() = 'sup_fn']">
+		<fo:inline xsl:use-attribute-sets="table-fmt-fn-label-style">
+			<xsl:apply-templates />
+		</fo:inline>
+	</xsl:template>
+
+	<!-- see <xsl:template match="*[local-name()='fn']"> -->
+	<xsl:template match="*[local-name() = 'fn']/*[local-name() = 'fmt-fn-label']/*[local-name() = 'sup']" priority="5">
+		<xsl:apply-templates />
+	</xsl:template>
+	<!-- For: <fo:inline font-style="normal">(</fo:inline>a<fo:inline font-style="normal">)</fo:inline> -->
+	<xsl:template match="*[local-name() = 'fmt-fn-label']//*[local-name() = 'span'][@class = 'fmt-label-delim']" priority="5">
+		<fo:inline font-style="normal"><xsl:apply-templates /></fo:inline>
 	</xsl:template>
 
 	<!-- DEBUG -->
@@ -3510,13 +3546,27 @@
 
 	<xsl:template match="*[local-name() = 'xref']" mode="toc_table_width" priority="2">
 		<!-- <xref target="cgpm9th1948r6">1.6.3<tab/>&#8220;9th CGPM, 1948:<tab/>decision to establish the SI&#8221;</xref> -->
+		<!-- New format - one tab <xref target="cgpm9th1948r6">&#8220;9th CGPM, 1948:<tab/>decision to establish the SI&#8221;</xref> -->
 		<xsl:for-each select="*[local-name() = 'tab']">
 			<xsl:variable name="pos" select="position()"/>
 			<xsl:variable name="current_id" select="generate-id()"/>
+			
+			<xsl:if test="$pos = 1">
+				<td>
+					<xsl:for-each select="preceding-sibling::node()">
+						<xsl:choose>
+							<xsl:when test="self::text()"><xsl:value-of select="translate(., ' ', '&#xa0;')"/></xsl:when>
+							<xsl:otherwise><xsl:copy-of select="."/></xsl:otherwise>
+						</xsl:choose>
+					</xsl:for-each>
+				</td>
+			</xsl:if>
+			
 			<td>
 				<xsl:for-each select="following-sibling::node()[not(self::*[local-name() = 'tab']) and preceding-sibling::*[local-name() = 'tab'][1][generate-id() = $current_id]]">
 					<xsl:choose>
-						<xsl:when test="$pos = 1 and self::text()"><xsl:value-of select="translate(., ' ', '&#xa0;')"/></xsl:when>
+						<!-- <xsl:when test="$pos = 1 and self::text()"><xsl:value-of select="translate(., ' ', '&#xa0;')"/></xsl:when> -->
+						<xsl:when test="self::text()"><xsl:value-of select="."/></xsl:when>
 						<xsl:otherwise><xsl:copy-of select="."/></xsl:otherwise>
 					</xsl:choose>
 				</xsl:for-each>

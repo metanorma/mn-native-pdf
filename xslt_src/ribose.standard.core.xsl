@@ -493,11 +493,8 @@
 								<xsl:call-template name="getPageSequenceOrientation"/>
 							</xsl:attribute>
 						
-							<fo:static-content flow-name="xsl-footnote-separator">
-								<fo:block>
-									<fo:leader leader-pattern="rule" leader-length="30%"/>
-								</fo:block>
-							</fo:static-content>
+							<xsl:call-template name="insertFootnoteSeparatorCommon"/>
+							
 							<xsl:call-template name="insertHeaderFooter">
 								<xsl:with-param name="section">main</xsl:with-param>
 							</xsl:call-template>
@@ -975,13 +972,6 @@
 	</xsl:template>
 	
 	
-	<xsl:template match="ribose:fn/ribose:p">
-		<fo:block>
-			<xsl:apply-templates />
-		</fo:block>
-	</xsl:template>
-	
-
 	<xsl:template match="ribose:ul | ribose:ol" mode="list" priority="2">
 		<fo:block-container>
 			<fo:block-container margin-left="0mm">
