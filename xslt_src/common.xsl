@@ -17762,7 +17762,7 @@
 				<label level="2">&#x2212;</label><!-- minus sign -->
 				<label level="3" font-size="75%">o</label> <!-- white circle -->
 			</xsl:when>
-			<xsl:when test="$namespace = 'jis'">
+			<xsl:when test="$namespace = 'jis' or $namespace = 'plateau'">
 				<label level="1">－</label> <!-- full-width hyphen minus -->
 				<label level="2" font-size="130%" line-height="1.2">・</label> <!-- Katakana Middle Dot -->
 			</xsl:when>
@@ -17784,21 +17784,20 @@
 			<xsl:when test="$namespace = 'ogc-white-paper'">
 				<label>&#x2014;</label> <!-- em dash -->
 			</xsl:when>
-			<xsl:when test="$namespace = 'plateau'">
+			<!-- <xsl:when test="$namespace = 'plateau'">
 				<xsl:choose>
 					<xsl:when test="$doctype = 'technical-report'">
-						<label level="1" font-size="130%" line-height="1.2">・</label> <!-- Katakana Middle Dot -->
-						<label level="2">→</label> <!-- will be replaced in the template 'li' -->
-						<label level="3">☆</label> <!-- will be replaced in the template 'li' -->
+						<label level="1" font-size="130%" line-height="1.2">・</label> - Katakana Middle Dot -
+						<label level="2">→</label> - will be replaced in the template 'li' -
+						<label level="3">☆</label> - will be replaced in the template 'li' -
 					</xsl:when>
 					<xsl:otherwise>
-						<label level="1" font-size="130%" line-height="1.2">・</label> <!-- Katakana Middle Dot -->
-						<label level="2">－</label> <!-- full-width hyphen minus -->
+						<label level="1" font-size="130%" line-height="1.2">・</label> - Katakana Middle Dot -
+						<label level="2">－</label> - full-width hyphen minus -
 						<label level="3" font-size="130%" line-height="1.2">・</label>
 					</xsl:otherwise>
 				</xsl:choose>
-				
-			</xsl:when>
+			</xsl:when> -->
 			<xsl:when test="$namespace = 'rsd'">
 				<label level="1" font-size="75%">o</label> <!-- white circle -->
 				<label level="2">&#x2014;</label> <!-- em dash -->
@@ -17822,7 +17821,7 @@
 	<xsl:template name="setULLabel">
 		<xsl:variable name="list_level__">
 			<xsl:choose>
-				<xsl:when test="$namespace = 'jis'"><xsl:value-of select="count(ancestor::*[local-name() = 'ul'])"/></xsl:when>
+				<xsl:when test="$namespace = 'jis' or $namespace = 'plateau'"><xsl:value-of select="count(ancestor::*[local-name() = 'ul'])"/></xsl:when>
 				<xsl:otherwise><xsl:value-of select="count(ancestor::*[local-name() = 'ul']) + count(ancestor::*[local-name() = 'ol'])" /></xsl:otherwise>
 			</xsl:choose>
 		</xsl:variable>
@@ -17830,15 +17829,20 @@
 		<xsl:variable name="list_level">
 			<xsl:choose>
 				<xsl:when test="$list_level_ &lt;= 3"><xsl:value-of select="$list_level_"/></xsl:when>
-				<xsl:otherwise><xsl:value-of select="$list_level_ mod 3"/></xsl:otherwise>
+				<xsl:when test="$ul_labels/label[@level = 3]"><xsl:value-of select="$list_level_ mod 3"/></xsl:when>
+				<xsl:when test="$list_level_ mod 2 = 0">2</xsl:when>
+				<xsl:otherwise><xsl:value-of select="$list_level_ mod 2"/></xsl:otherwise>
 			</xsl:choose>
 		</xsl:variable>
 		<xsl:choose>
 			<xsl:when test="$ul_labels/label[not(@level)]"> <!-- one label for all levels -->
 				<xsl:apply-templates select="$ul_labels/label[not(@level)]" mode="ul_labels"/>
 			</xsl:when>
-			<xsl:when test="$list_level mod 3 = 0">
+			<xsl:when test="$list_level mod 3 = 0 and $ul_labels/label[@level = 3]">
 				<xsl:apply-templates select="$ul_labels/label[@level = 3]" mode="ul_labels"/>
+			</xsl:when>
+			<xsl:when test="$list_level mod 3 = 0">
+				<xsl:apply-templates select="$ul_labels/label[@level = 1]" mode="ul_labels"/>
 			</xsl:when>
 			<xsl:when test="$list_level mod 2 = 0">
 				<xsl:apply-templates select="$ul_labels/label[@level = 2]" mode="ul_labels"/>
