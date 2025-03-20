@@ -646,6 +646,8 @@
 		</xsl:element>
 	</xsl:template>
 	
+	<xsl:template match="*[local-name() = 'clause']/*[local-name() = 'fmt-footnote-container']" priority="3" mode="update_xml_pres"/>
+	
 	<!-- ================================= -->
 	<!-- Flattening xml for fit notes at page sides (margins) -->
 	<!-- ================================= -->	
@@ -750,6 +752,8 @@
 						../bipm:clause/bipm:title/@depth = 4 and count(following-sibling::*[1][local-name() = 'note']) &gt; 0">
 				<!-- then move here footnotes from clause level 4 -->
 				<xsl:for-each select="../bipm:clause//bipm:fn[ancestor::bipm:quote or not(ancestor::bipm:table)]"> 
+					<!-- <debug><xsl:for-each select="ancestor::*"><xsl:value-of select="local-name()"/>@<xsl:value-of select="@id"/><xsl:text>/</xsl:text></xsl:for-each>
+					</debug> -->
 					<xsl:call-template name="fn_to_note_side"/>
 				</xsl:for-each>
 			</xsl:if>
@@ -839,51 +843,16 @@
 	<xsl:template match="bipm:fn" mode="fn_to_xref">
 		<xsl:element name="xref" namespace="https://www.metanorma.org/ns/standoc">
 			
-			<xsl:attribute name="target">
-				<xsl:call-template name="fn_reference_to_xref_target"/>				
-			</xsl:attribute>
-			<!-- <xsl:copy-of select="@target"/> -->
-			
-			<xsl:variable name="curr_clause_id" select="normalize-space(ancestor::bipm:clause[1]/@id)"/>
-			<xsl:variable name="curr_annex_id" select="normalize-space(ancestor::bipm:annex[1]/@id)"/>
-			
-			<xsl:variable name="number">
-				<xsl:choose>
-					<xsl:when test="$curr_clause_id != ''">
-						<xsl:number count="bipm:fn[ancestor::bipm:clause[1]/@id = $curr_clause_id][ancestor::bipm:quote or not(ancestor::bipm:table)]" level="any"/>
-					</xsl:when>
-					<xsl:otherwise>
-						<xsl:number count="bipm:fn[ancestor::bipm:annex[1]/@id = $curr_annex_id]"/>
-					</xsl:otherwise>
-				</xsl:choose>
-			</xsl:variable>
+			<xsl:copy-of select="@target"/>
 			
 			<xsl:element name="sup_fn" namespace="https://www.metanorma.org/ns/standoc">
-				<xsl:value-of select="concat('(',$number,')')"/>
-				<!-- <xsl:value-of select="concat('(',normalize-space(./*[local-name() = 'fmt-fn-label']),')')"/> -->
+				<!-- <xsl:value-of select="concat('(',$number,')')"/> -->
 			<!-- https://github.com/metanorma/isodoc/issues/658#issuecomment-2726450824 -->
-			<!-- <xsl:apply-templates select="*[local-name() = 'fmt-fn-label']/node()" mode="flatxml"/> -->
+			<xsl:apply-templates select="*[local-name() = 'fmt-fn-label']/node()" mode="flatxml"/>
 			</xsl:element>
 			
 		</xsl:element>
 	</xsl:template>
-	
-	<!-- <xsl:template match="*[local-name() = 'fmt-fn-label']//*[local-name() = 'sup']" mode="flatxml">
-		<xsl:element name="sup_fn" namespace="https://www.metanorma.org/ns/standoc">
-			<xsl:apply-templates mode="flatxml"/>
-		</xsl:element>
-	</xsl:template> -->
-	
-	<xsl:template name="fn_reference_to_xref_target">
-		<xsl:variable name="lang" select="ancestor::bipm:metanorma/*[local-name()='bibdata']//*[local-name()='language'][@current = 'true']"/>
-		<xsl:variable name="gen_id" select="generate-id()"/>
-		<xsl:variable name="curr_clause_id" select="ancestor::bipm:clause[1]/@id"/>
-		<xsl:variable name="number">
-			<xsl:number count="bipm:fn[ancestor::bipm:clause[1]/@id = $curr_clause_id][ancestor::bipm:quote or not(ancestor::bipm:table)]" level="any"/>
-		</xsl:variable>
-		<xsl:value-of select="concat($lang, '_footnote_', @reference, '_', $number, '_', $gen_id)"/>
-	</xsl:template>
-	
 	
 	<xsl:template match="bipm:preface/bipm:clause[not(@type = 'toc')][position() &gt; 1]" mode="flatxml">
 		<xsl:copy-of select="."/>
@@ -989,33 +958,16 @@
 	<xsl:template name="fn_to_note_side">		
 		<xsl:element name="note_side" namespace="https://www.metanorma.org/ns/standoc">
 	
-			<xsl:attribute name="id">						
-				<xsl:call-template name="fn_reference_to_xref_target"/>
-				<!-- <xsl:value-of select="@target"/> -->
+			<xsl:attribute name="id">
+				<xsl:value-of select="@target"/>
 			</xsl:attribute>
-			
 			
 			<xsl:variable name="curr_id" select="@target"/>
 			
-			<xsl:variable name="curr_clause_id" select="normalize-space(ancestor::bipm:clause[1]/@id)"/>
-			<xsl:variable name="curr_annex_id" select="normalize-space(ancestor::bipm:annex[1]/@id)"/>
-			
-			<xsl:variable name="number">
-				<xsl:choose>
-					<xsl:when test="$curr_clause_id != ''">
-						<xsl:number count="bipm:fn[ancestor::bipm:clause[1]/@id = $curr_clause_id][ancestor::bipm:quote or not(ancestor::bipm:table)]" level="any"/>
-					</xsl:when>
-					<xsl:otherwise>
-						<xsl:number count="bipm:fn[ancestor::bipm:annex[1]/@id = $curr_annex_id]"/>
-					</xsl:otherwise>
-				</xsl:choose>
-			</xsl:variable>
-			
-			
 			<xsl:element name="sup_fn" namespace="https://www.metanorma.org/ns/standoc">
-				<xsl:value-of select="concat('(',$number,')')"/>
+				<!-- <xsl:value-of select="concat('(',$number,')')"/> -->
 			<!-- https://github.com/metanorma/isodoc/issues/658#issuecomment-2726450824 -->
-			<!-- <xsl:apply-templates select="*[local-name() = 'fmt-fn-label']/node()" mode="flatxml"/> -->
+			<xsl:apply-templates select="*[local-name() = 'fmt-fn-label']/node()" mode="flatxml"/>
 			</xsl:element>
 			<xsl:text> </xsl:text>
 			
@@ -1047,6 +999,10 @@
 		<xsl:if test="normalize-space(java:matches(java:java.lang.String.new(@formats), $regex_passthrough)) = 'true'">
 			<xsl:apply-templates  mode="flatxml"/>
 		</xsl:if>
+	</xsl:template>
+	
+	<xsl:template match="*[local-name() = 'fn']/*[local-name() = 'fmt-fn-label']/*[local-name() = 'sup']" priority="5" mode="flatxml">
+		<xsl:apply-templates mode="flatxml"/>
 	</xsl:template>
 	
 	<!-- ================================= -->
