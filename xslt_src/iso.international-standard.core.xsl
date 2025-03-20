@@ -3323,11 +3323,11 @@
 					
 						<xsl:if test="count(*) = 1 and *[local-name() = 'title']"> <!-- if there isn't user ToC -->
 			
-							<!-- <xsl:if test="$debug = 'true'">
+							<xsl:if test="$debug = 'true'">
 								<redirect:write file="contents_.xml">
 									<xsl:copy-of select="$contents"/>
 								</redirect:write>
-							</xsl:if> -->
+							</xsl:if>
 							
 							<xsl:variable name="margin-left">12</xsl:variable>
 							
