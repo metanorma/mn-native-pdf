@@ -14953,6 +14953,10 @@
 	<xsl:template match="*[local-name() = 'origin']" mode="contents"/>
 	<xsl:template match="*[local-name() = 'erefstack ']" mode="contents"/>
 	
+	<xsl:template match="*[local-name() = 'requirement'] |
+												*[local-name() = 'recommendation'] | 
+												*[local-name() = 'permission']" mode="contents" priority="3"/>
+	
 	<xsl:template match="*[local-name() = 'stem']" mode="bookmarks"/>
 	<xsl:template match="*[local-name() = 'fmt-stem']" mode="bookmarks">
 		<xsl:apply-templates mode="bookmarks"/>
@@ -14973,6 +14977,10 @@
 	<xsl:template match="*[local-name() = 'link']" mode="bookmarks"/>
 	<xsl:template match="*[local-name() = 'origin']" mode="bookmarks"/>
 	<xsl:template match="*[local-name() = 'erefstack ']" mode="bookmarks"/>
+	
+	<xsl:template match="*[local-name() = 'requirement'] |
+												*[local-name() = 'recommendation'] | 
+												*[local-name() = 'permission']" mode="bookmarks" priority="3"/>
 	
 	<!-- Bookmarks -->
 	<xsl:template name="addBookmarks">
