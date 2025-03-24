@@ -17431,10 +17431,21 @@
 	</xsl:variable>
 	<xsl:variable name="reviews" select="xalan:nodeset($reviews_)"/>
 	
+	<xsl:variable name="reviews_start_">
+		<xsl:for-each select="//*[local-name() = 'fmt-review-start'][@source]">
+			<xsl:copy>
+				<xsl:copy-of select="@source"/>
+				<xsl:copy-of select="@id"/>
+			</xsl:copy>
+		</xsl:for-each>
+	</xsl:variable>
+	<xsl:variable name="reviews_start" select="xalan:nodeset($reviews_start_)"/>
+	
 	<xsl:template name="addReviewHelper">
 		<!-- if there is review with from="...", then add small helper block for Annot tag adding, see 'review' template -->
 		<xsl:variable name="curr_id" select="@id"/>
-		<xsl:variable name="review_id" select="normalize-space($reviews//*[local-name() = 'review'][@from = $curr_id]/@id)"/>
+		<!-- <xsl:variable name="review_id" select="normalize-space($reviews//*[local-name() = 'review'][@from = $curr_id]/@id)"/> -->
+		<xsl:variable name="review_id" select="normalize-space($reviews_start//*[local-name() = 'fmt-review-start'][@source = $curr_id]/@id)"/>
 		<xsl:if test="$review_id != ''"> <!-- i.e. if review found -->
 			<fo:block keep-with-next="always" line-height="0.1" id="{$review_id}" font-size="1pt" role="SKIP"><xsl:value-of select="$hair_space"/><fo:basic-link internal-destination="{$review_id}" fox:alt-text="Annot___{$review_id}" role="Annot"><xsl:value-of select="$hair_space"/></fo:basic-link></fo:block>
 		</xsl:if>
@@ -17678,7 +17689,21 @@
 		</xsl:if>
 	</xsl:template>
 	
-	<xsl:template match="*[local-name() = 'review']"> <!-- 'review' will be processed in mn2pdf/review.xsl -->
+	<!-- document text (not figures, or tables) footnotes -->
+	<xsl:variable name="reviews_container_">
+		<xsl:for-each select="//*[local-name() = 'review-container']/*[local-name() = 'fmt-review-body']">
+			<xsl:variable name="update_xml_step1">
+				<xsl:apply-templates select="." mode="update_xml_step1"/>
+			</xsl:variable>
+			<xsl:apply-templates select="xalan:nodeset($update_xml_step1)" mode="update_xml_enclose_keep-together_within-line"/>
+		</xsl:for-each>
+	</xsl:variable>
+	<xsl:variable name="reviews_container" select="xalan:nodeset($reviews_container_)"/>
+  
+	<xsl:template match="*[local-name() = 'review-container']"/>
+	
+	<!-- <xsl:template match="*[local-name() = 'review']"> --> <!-- 'review' will be processed in mn2pdf/review.xsl -->
+	<xsl:template match="*[local-name() = 'fmt-review-start']"> <!-- 'review' will be processed in mn2pdf/review.xsl -->
 		<!-- comment 2019-11-29 -->
 		<!-- <fo:block font-weight="bold">Review:</fo:block>
 		<xsl:apply-templates /> -->
@@ -20581,6 +20606,9 @@
 	<xsl:template match="*[local-name() = 'svgmap']" />
 	<xsl:template match="*[local-name() = 'svgmap']" mode="update_xml_step1"/>
 	<xsl:template match="*[local-name() = 'svgmap']" mode="update_xml_pres"/>
+	
+	<xsl:template match="*[local-name() = 'review-container']" mode="update_xml_step1"/>
+	<xsl:template match="*[local-name() = 'review-container']" mode="update_xml_pres"/>
 	
 	<!-- END: update new Presentation XML -->
 	
