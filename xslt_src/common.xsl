@@ -17442,6 +17442,7 @@
 	<xsl:variable name="reviews_start" select="xalan:nodeset($reviews_start_)"/>
 	
 	<xsl:template name="addReviewHelper">
+		<xsl:if test="1 = 2">
 		<!-- if there is review with from="...", then add small helper block for Annot tag adding, see 'review' template -->
 		<xsl:variable name="curr_id" select="@id"/>
 		<!-- <xsl:variable name="review_id" select="normalize-space($reviews//*[local-name() = 'review'][@from = $curr_id]/@id)"/> -->
@@ -17453,6 +17454,7 @@
 			<curr_id><xsl:value-of select="$curr_id"/></curr_id>
 			<xsl:copy-of select="$reviews"/>
 		</fo:block> -->
+		</xsl:if>
 	</xsl:template>
 	
 	<!-- main sections -->
@@ -17713,10 +17715,12 @@
 
 		<xsl:variable name="source" select="normalize-space(@source)"/>
 		
-		<xsl:if test="following-sibling::node()[1][local-name() = 'bookmark'][@id = $source] and
-				following-sibling::node()[2][local-name() = 'fmt-review-end'][@source = $source]">
-			<fo:block id="{$source}" font-size="1pt" role="SKIP"><xsl:value-of select="$hair_space"/><fo:basic-link internal-destination="{$source}" fox:alt-text="Annot___{$source}" role="Annot"><xsl:value-of select="$hair_space"/></fo:basic-link></fo:block>
-		</xsl:if>
+		<!-- <xsl:if test="@source = @end"> -->
+		<!-- following-sibling::node()[1][local-name() = 'bookmark'][@id = $source] and
+				following-sibling::node()[2][local-name() = 'fmt-review-end'][@source = $source] -->
+			<!-- <fo:block id="{$source}" font-size="1pt" role="SKIP"><xsl:value-of select="$hair_space"/><fo:basic-link internal-destination="{$source}" fox:alt-text="Annot___{$source}" role="Annot"><xsl:value-of select="$hair_space"/></fo:basic-link></fo:block> -->
+			<fo:block id="{@id}" font-size="1pt" role="SKIP" keep-with-next="always" line-height="0.1"><xsl:value-of select="$hair_space"/><fo:basic-link internal-destination="{@id}" fox:alt-text="Annot___{@id}" role="Annot"><xsl:value-of select="$hair_space"/></fo:basic-link></fo:block>
+		<!-- </xsl:if> -->
 
 		<xsl:if test="1 = 2">
 		<xsl:choose>
