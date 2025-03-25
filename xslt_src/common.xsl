@@ -17708,9 +17708,17 @@
 		<!-- <fo:block font-weight="bold">Review:</fo:block>
 		<xsl:apply-templates /> -->
 		
-		<xsl:variable name="id_from" select="normalize-space(current()/@from)"/>
+		<!-- <xsl:variable name="id_from" select="normalize-space(current()/@from)"/> -->
+		<xsl:variable name="id_from" select="normalize-space(current()/@source)"/>
 
-		<xsl:if test="1 = 1">
+		<xsl:variable name="source" select="normalize-space(@source)"/>
+		
+		<xsl:if test="following-sibling::node()[1][local-name() = 'bookmark'][@id = $source] and
+				following-sibling::node()[2][local-name() = 'fmt-review-end'][@source = $source]">
+			<fo:block id="{$source}" font-size="1pt" role="SKIP"><xsl:value-of select="$hair_space"/><fo:basic-link internal-destination="{$source}" fox:alt-text="Annot___{$source}" role="Annot"><xsl:value-of select="$hair_space"/></fo:basic-link></fo:block>
+		</xsl:if>
+
+		<xsl:if test="1 = 2">
 		<xsl:choose>
 			<!-- if there isn't the attribute '@from', then -->
 			<xsl:when test="$id_from = ''">
@@ -17718,10 +17726,10 @@
 			</xsl:when>
 			<!-- if there isn't element with id 'from', then create 'bookmark' here -->
 			<xsl:when test="ancestor::*[local-name() = 'metanorma'] and not(ancestor::*[local-name() = 'metanorma']//*[@id = $id_from])">
-				<fo:block id="{@from}" font-size="1pt" role="SKIP"><xsl:value-of select="$hair_space"/><fo:basic-link internal-destination="{@from}" fox:alt-text="Annot___{@id}" role="Annot"><xsl:value-of select="$hair_space"/></fo:basic-link></fo:block>
+				<fo:block id="{$id_from}" font-size="1pt" role="SKIP"><xsl:value-of select="$hair_space"/><fo:basic-link internal-destination="{$id_from}" fox:alt-text="Annot___{@id}" role="Annot"><xsl:value-of select="$hair_space"/></fo:basic-link></fo:block>
 			</xsl:when>
 			<xsl:when test="not(/*[@id = $id_from]) and not(/*//*[@id = $id_from]) and not(preceding-sibling::*[@id = $id_from])">
-				<fo:block id="{@from}" font-size="1pt" role="SKIP"><xsl:value-of select="$hair_space"/><fo:basic-link internal-destination="{@from}" fox:alt-text="Annot___{@id}" role="Annot"><xsl:value-of select="$hair_space"/></fo:basic-link></fo:block>
+				<fo:block id="{$id_from}" font-size="1pt" role="SKIP"><xsl:value-of select="$hair_space"/><fo:basic-link internal-destination="{$id_from}" fox:alt-text="Annot___{@id}" role="Annot"><xsl:value-of select="$hair_space"/></fo:basic-link></fo:block>
 			</xsl:when>
 		</xsl:choose>
 		</xsl:if>
@@ -18623,10 +18631,23 @@
 	<xsl:template match="*[local-name() = 'table']/*[local-name() = 'bookmark']" priority="2"/>
 	
 	<xsl:template match="*[local-name() = 'bookmark']" name="bookmark">
-		<!-- <fo:inline id="{@id}" font-size="1pt"/> -->
-		<fo:inline id="{@id}" font-size="1pt"><xsl:value-of select="$hair_space"/></fo:inline>
-		<!-- we need to add zero-width space, otherwise this fo:inline is missing in IF xml -->
-		<xsl:if test="not(following-sibling::node()[normalize-space() != ''])"><fo:inline font-size="1pt">&#xA0;</fo:inline></xsl:if>
+		<xsl:variable name="bookmark_id" select="@id"/>
+		<xsl:choose>
+			<!-- Example:
+				<fmt-review-start id="_7ef81cf7-3f6c-4ed4-9c1f-1ba092052bbd" source="_dda23915-8574-ef1e-29a1-822d465a5b97" target="_ecfb2210-3b1b-46a2-b63a-8b8505be6686" end="_dda23915-8574-ef1e-29a1-822d465a5b97" author="" date="2025-03-24T00:00:00Z"/>
+				<bookmark id="_dda23915-8574-ef1e-29a1-822d465a5b97"/>
+				<fmt-review-end id="_f336a8d0-08a8-4b7f-a1aa-b04688ed40c1" source="_dda23915-8574-ef1e-29a1-822d465a5b97" target="_ecfb2210-3b1b-46a2-b63a-8b8505be6686" start="_dda23915-8574-ef1e-29a1-822d465a5b97" author="" date="2025-03-24T00:00:00Z"/> -->
+			<xsl:when test="preceding-sibling::node()[local-name() = 'fmt-review-start'][@source = $bookmark_id] and 
+						following-sibling::node()[local-name() = 'fmt-review-end'][@source = $bookmark_id]">
+				<!-- skip here, see the template 'fmt-review-start' -->
+			</xsl:when>
+			<xsl:otherwise>
+				<!-- <fo:inline id="{@id}" font-size="1pt"/> -->
+				<fo:inline id="{@id}" font-size="1pt"><xsl:value-of select="$hair_space"/></fo:inline>
+				<!-- we need to add zero-width space, otherwise this fo:inline is missing in IF xml -->
+				<xsl:if test="not(following-sibling::node()[normalize-space() != ''])"><fo:inline font-size="1pt">&#xA0;</fo:inline></xsl:if>
+			</xsl:otherwise>
+		</xsl:choose>
 	</xsl:template>
 	<!-- =================== -->
 	<!-- End of Index processing -->
