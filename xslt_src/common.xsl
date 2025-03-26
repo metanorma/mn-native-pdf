@@ -17446,10 +17446,12 @@
 		<!-- if there is review with from="...", then add small helper block for Annot tag adding, see 'review' template -->
 		<xsl:variable name="curr_id" select="@id"/>
 		<!-- <xsl:variable name="review_id" select="normalize-space($reviews//*[local-name() = 'review'][@from = $curr_id]/@id)"/> -->
-		<xsl:variable name="review_id" select="normalize-space($reviews_start//*[local-name() = 'fmt-review-start'][@source = $curr_id]/@id)"/>
-		<xsl:if test="$review_id != ''"> <!-- i.e. if review found -->
-			<fo:block keep-with-next="always" line-height="0.1" id="{$review_id}" font-size="1pt" role="SKIP"><xsl:value-of select="$hair_space"/><fo:basic-link internal-destination="{$review_id}" fox:alt-text="Annot___{$review_id}" role="Annot"><xsl:value-of select="$hair_space"/></fo:basic-link></fo:block>
-		</xsl:if>
+		<xsl:for-each select="$reviews_start//*[local-name() = 'fmt-review-start'][@source = $curr_id]">
+			<xsl:variable name="review_id" select="normalize-space(@id)"/>
+			<xsl:if test="$review_id != ''"> <!-- i.e. if review found -->
+				<fo:block keep-with-next="always" line-height="0.1" id="{$review_id}" font-size="1pt" role="SKIP"><xsl:value-of select="$hair_space"/><fo:basic-link internal-destination="{$review_id}" fox:alt-text="Annot___{$review_id}" role="Annot"><xsl:value-of select="$hair_space"/></fo:basic-link></fo:block>
+			</xsl:if>
+		</xsl:for-each>
 		<!-- <fo:block>
 			<curr_id><xsl:value-of select="$curr_id"/></curr_id>
 			<xsl:copy-of select="$reviews"/>
@@ -18641,13 +18643,15 @@
 				<fmt-review-start id="_7ef81cf7-3f6c-4ed4-9c1f-1ba092052bbd" source="_dda23915-8574-ef1e-29a1-822d465a5b97" target="_ecfb2210-3b1b-46a2-b63a-8b8505be6686" end="_dda23915-8574-ef1e-29a1-822d465a5b97" author="" date="2025-03-24T00:00:00Z"/>
 				<bookmark id="_dda23915-8574-ef1e-29a1-822d465a5b97"/>
 				<fmt-review-end id="_f336a8d0-08a8-4b7f-a1aa-b04688ed40c1" source="_dda23915-8574-ef1e-29a1-822d465a5b97" target="_ecfb2210-3b1b-46a2-b63a-8b8505be6686" start="_dda23915-8574-ef1e-29a1-822d465a5b97" author="" date="2025-03-24T00:00:00Z"/> -->
-			<xsl:when test="preceding-sibling::node()[local-name() = 'fmt-review-start'][@source = $bookmark_id] and 
+			<xsl:when test="1 = 2 and preceding-sibling::node()[local-name() = 'fmt-review-start'][@source = $bookmark_id] and 
 						following-sibling::node()[local-name() = 'fmt-review-end'][@source = $bookmark_id]">
 				<!-- skip here, see the template 'fmt-review-start' -->
 			</xsl:when>
 			<xsl:otherwise>
 				<!-- <fo:inline id="{@id}" font-size="1pt"/> -->
 				<fo:inline id="{@id}" font-size="1pt"><xsl:value-of select="$hair_space"/></fo:inline>
+				<!-- <xsl:if test="preceding-sibling::node()[local-name() = 'fmt-review-start'][@source = $bookmark_id] and 
+						following-sibling::node()[local-name() = 'fmt-review-end'][@source = $bookmark_id]"><xsl:attribute name="line-height">0.1</xsl:attribute></xsl:if> -->
 				<!-- we need to add zero-width space, otherwise this fo:inline is missing in IF xml -->
 				<xsl:if test="not(following-sibling::node()[normalize-space() != ''])"><fo:inline font-size="1pt">&#xA0;</fo:inline></xsl:if>
 			</xsl:otherwise>
