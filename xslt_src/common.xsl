@@ -17707,7 +17707,7 @@
 	<xsl:template match="*[local-name() = 'review-container']"/>
 	
 	<!-- <xsl:template match="*[local-name() = 'review']"> --> <!-- 'review' will be processed in mn2pdf/review.xsl -->
-	<xsl:template match="*[local-name() = 'fmt-review-start']"> <!-- 'review' will be processed in mn2pdf/review.xsl -->
+	<xsl:template match="*[local-name() = 'fmt-review-start']" name="fmt-review-start"> <!-- 'review' will be processed in mn2pdf/review.xsl -->
 		<!-- comment 2019-11-29 -->
 		<!-- <fo:block font-weight="bold">Review:</fo:block>
 		<xsl:apply-templates /> -->
