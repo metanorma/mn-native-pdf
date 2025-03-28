@@ -6,12 +6,12 @@ SHELL := /bin/bash
 endif
 SRCDIR := sources
 DESTDIR := documents
-SRC := $(patsubst mn-samples-iso/documents/international-standard/%,sources/iso-is-%,$(wildcard mn-samples-iso/documents/international-standard/*.xml)) \
-	$(patsubst mn-samples-iso/documents/amendment/%,sources/iso-amendment-%,$(wildcard mn-samples-iso/documents/amendment/*.xml)) \
+SRC := $(patsubst mn-samples-iso/documents/international-standard/rice-2023/%,sources/iso-is-%,$(wildcard mn-samples-iso/documents/international-standard/rice-2023/*.xml)) \
+	$(patsubst mn-samples-iso/documents/amendment/rice-2023/%,sources/iso-amendment-%,$(wildcard mn-samples-iso/documents/amendment/rice-2023/*.xml)) \
 	$(patsubst mn-samples-itu/documents/%,sources/itu-%,$(wildcard mn-samples-itu/documents/*.xml)) \
 	$(patsubst mn-samples-iec/documents/%,sources/%,$(wildcard mn-samples-iec/documents/*.xml)) \
-	$(patsubst mn-samples-ogc/documents/%,sources/ogc-%,$(wildcard mn-samples-ogc/documents/*.xml)) \
-	$(patsubst mn-samples-cc/documents/%,sources/%,$(wildcard mn-samples-cc/documents/*.xml)) \
+	$(patsubst mn-samples-iho/documents/s102/%,sources/iho-%,$(wildcard mn-samples-iho/documents/s102/*.xml)) \
+	$(patsubst mn-samples-ogc/documents/14-065r2/%,sources/ogc-%,$(wildcard mn-samples-ogc/documents/14-065r2/*.xml)) \
 	$(patsubst mn-samples-cc/documents/%,sources/%,$(wildcard mn-samples-cc/documents/*.xml)) \
 	$(patsubst mn-samples-iho/documents/%,sources/iho-%,$(wildcard mn-samples-iho/documents/*.xml))
 
@@ -117,10 +117,10 @@ else
 	popd
 endif
 
-sources/iso-is-%: mn-samples-iso/documents/international-standard/%
+sources/iso-is-%: mn-samples-iso/documents/international-standard/rice-2023/%
 	cp $< $@
 
-sources/iso-amendment-%: mn-samples-iso/documents/amendment/%
+sources/iso-amendment-%: mn-samples-iso/documents/amendment/rice-2023/%
 	cp $< $@
 
 sources/iec-%: mn-samples-iec/documents/iec-%
@@ -132,7 +132,7 @@ sources/itu-%: mn-samples-itu/documents/%
 sources/un-%: mn-samples-un/documents/%
 	cp $< $@
 
-sources/ogc-%: mn-samples-ogc/documents/%
+sources/ogc-%: mn-samples-ogc/documents/14-065r2/%
 	cp $< $@
 
 sources/cc-%: mn-samples-cc/documents/cc-%
@@ -151,6 +151,9 @@ sources/gb-%: mn-samples-gb/documents/%
 	cp $< $@
 
 sources/iho-%: mn-samples-iho/documents/%
+	cp $< $@
+
+sources/iho-%: mn-samples-iho/documents/s102/%
 	cp $< $@
 
 sources/mpfa-%: mn-samples-mpfa/documents/mpfa-%
