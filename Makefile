@@ -193,6 +193,9 @@ documents/%.presentation.rxl:
 documents/%.sts.rxl:
 	echo "### skipping $@"
 
+documents/ieee-document.ieee.html:
+	echo "### skipping $@"
+
 #documents/%.presentation.xml:
 #	echo "### skipping $@"
 
