@@ -13,7 +13,7 @@ SRC := $(patsubst mn-samples-iso/documents/international-standard/rice-2023/%,so
 	$(patsubst mn-samples-iho/documents/s102/%,sources/iho-%,$(wildcard mn-samples-iho/documents/s102/*.xml)) \
 	$(patsubst mn-samples-ogc/documents/14-065r2/%,sources/ogc-%,$(wildcard mn-samples-ogc/documents/14-065r2/*.xml)) \
 	$(patsubst mn-samples-cc/documents/%,sources/%,$(wildcard mn-samples-cc/documents/*.xml)) \
-	$(patsubst mn-samples-csa/documents/csa-dso/%,sources/csa-%,$(wildcard mn-samples-csa/csa-dso/documents/*.xml)) \
+	$(patsubst mn-samples-csa/documents/csa-dso/%,sources/csa-%,$(wildcard mn-samples-csa/documents/csa-dso/*.xml)) \
 	$(patsubst mn-samples-ieee/documents/p987.6/%,sources/ieee-%,$(wildcard mn-samples-ieee/documents/p987.6/*.xml))
 
 #	$(patsubst mn-samples-ribose/documents/nistir-8214a/%,sources/ribose-%,$(wildcard mn-samples-ribose/documents/nistir-8214a/*.xml))
