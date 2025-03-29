@@ -6,14 +6,17 @@ SHELL := /bin/bash
 endif
 SRCDIR := sources
 DESTDIR := documents
-SRC := $(patsubst mn-samples-iso/documents/international-standard/%,sources/iso-is-%,$(wildcard mn-samples-iso/documents/international-standard/*.xml)) \
-	$(patsubst mn-samples-iso/documents/amendment/%,sources/iso-amendment-%,$(wildcard mn-samples-iso/documents/amendment/*.xml)) \
-	$(patsubst mn-samples-itu/documents/%,sources/itu-%,$(wildcard mn-samples-itu/documents/*.xml)) \
+SRC := $(patsubst mn-samples-iso/documents/international-standard/rice-2023/%,sources/iso-is-%,$(wildcard mn-samples-iso/documents/international-standard/rice-2023/*.xml)) \
+	$(patsubst mn-samples-iso/documents/amendment/rice-2023/%,sources/iso-amendment-%,$(wildcard mn-samples-iso/documents/amendment/rice-2023/*.xml)) \
+	$(patsubst mn-samples-itu/documents/G.650.1-201803/%,sources/itu-%,$(wildcard mn-samples-itu/documents/G.650.1-201803/*.xml)) \
 	$(patsubst mn-samples-iec/documents/%,sources/%,$(wildcard mn-samples-iec/documents/*.xml)) \
-	$(patsubst mn-samples-ogc/documents/%,sources/ogc-%,$(wildcard mn-samples-ogc/documents/*.xml)) \
+	$(patsubst mn-samples-iho/documents/s102/%,sources/iho-%,$(wildcard mn-samples-iho/documents/s102/*.xml)) \
+	$(patsubst mn-samples-ogc/documents/14-065r2/%,sources/ogc-%,$(wildcard mn-samples-ogc/documents/14-065r2/*.xml)) \
 	$(patsubst mn-samples-cc/documents/%,sources/%,$(wildcard mn-samples-cc/documents/*.xml)) \
-	$(patsubst mn-samples-cc/documents/%,sources/%,$(wildcard mn-samples-cc/documents/*.xml)) \
-	$(patsubst mn-samples-iho/documents/%,sources/iho-%,$(wildcard mn-samples-iho/documents/*.xml)) \
+	$(patsubst mn-samples-csa/documents/csa-dso/%,sources/csa-%,$(wildcard mn-samples-csa/documents/csa-dso/*.xml)) \
+	$(patsubst mn-samples-ieee/documents/p987.6/%,sources/ieee-%,$(wildcard mn-samples-ieee/documents/p987.6/*.xml))
+
+#	$(patsubst mn-samples-ribose/documents/nistir-8214a/%,sources/ribose-%,$(wildcard mn-samples-ribose/documents/nistir-8214a/*.xml))
 
 # OLD
 #  	$(patsubst mn-samples-un/documents/%,sources/un-%,$(wildcard mn-samples-un/documents/*.xml)) \
@@ -85,7 +88,7 @@ XSLT_GENERATED := xslt/iec.international-standard.xsl \
 #	xslt/mpfa.supervision-of-mpf-intermediaries.xsl \
 
 
-MN2PDF_DOWNLOAD_PATH := https://github.com/metanorma/mn2pdf/releases/download/v2.13/mn2pdf-2.13.jar
+MN2PDF_DOWNLOAD_PATH := https://github.com/metanorma/mn2pdf/releases/download/v2.18/mn2pdf-2.18.jar
 # MN2PDF_DOWNLOAD_PATH := https://maven.pkg.github.com/metanorma/mn2pdf/com/metanorma/fop/mn2pdf/1.7/mn2pdf-1.7.jar
 MN2PDF_EXECUTABLE := $(notdir $(MN2PDF_DOWNLOAD_PATH))
 
@@ -117,25 +120,28 @@ else
 	popd
 endif
 
-sources/iso-is-%: mn-samples-iso/documents/international-standard/%
+sources/iso-is-%: mn-samples-iso/documents/international-standard/rice-2023/%
 	cp $< $@
 
-sources/iso-amendment-%: mn-samples-iso/documents/amendment/%
+sources/iso-amendment-%: mn-samples-iso/documents/amendment/rice-2023/%
 	cp $< $@
 
 sources/iec-%: mn-samples-iec/documents/iec-%
 	cp $< $@
 
-sources/itu-%: mn-samples-itu/documents/%
+sources/itu-%: mn-samples-itu/documents/G.650.1-201803/%
 	cp $< $@
 
 sources/un-%: mn-samples-un/documents/%
 	cp $< $@
 
-sources/ogc-%: mn-samples-ogc/documents/%
+sources/ogc-%: mn-samples-ogc/documents/14-065r2/%
 	cp $< $@
 
 sources/cc-%: mn-samples-cc/documents/cc-%
+	cp $< $@
+
+sources/csa-%: mn-samples-csa/documents/csa-dso/%
 	cp $< $@
 
 sources/m3aawg-bp-%: mn-samples-m3aawg/documents/best-practice/%
@@ -153,8 +159,18 @@ sources/gb-%: mn-samples-gb/documents/%
 sources/iho-%: mn-samples-iho/documents/%
 	cp $< $@
 
+sources/iho-%: mn-samples-iho/documents/s102/%
+	cp $< $@
+
 sources/mpfa-%: mn-samples-mpfa/documents/mpfa-%
 	cp $< $@
+
+sources/ieee-%: mn-samples-ieee/documents/p987.6/%
+	cp $< $@
+
+sources/mpfa-%: mn-samples-ribose/documents/nistir-8214a/%
+	cp $< $@
+
 
 documents:
 	mkdir -p $@
@@ -176,6 +192,16 @@ documents/%.presentation.rxl:
 
 documents/%.sts.rxl:
 	echo "### skipping $@"
+
+documents/ieee-document.ieee.html:
+	echo "### skipping $@"
+
+documents/ieee-document.ieee.doc:
+	echo "### skipping $@"
+
+documents/ieee-document.ieee.rxl:
+	echo "### skipping $@"
+
 
 #documents/%.presentation.xml:
 #	echo "### skipping $@"

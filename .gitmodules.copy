@@ -10,6 +10,10 @@
 	path = mn-samples-iec
 	url = https://github.com/metanorma/mn-samples-iec
 	branch = gh-pages
+[submodule "mn-samples-un"]
+	path = mn-samples-un
+	url = https://github.com/metanorma/mn-samples-un
+	branch = gh-pages
 [submodule "mn-samples-ogc"]
 	path = mn-samples-ogc
 	url = https://github.com/metanorma/mn-samples-ogc
@@ -18,19 +22,18 @@
 	path = mn-samples-cc
 	url = https://github.com/metanorma/mn-samples-cc
 	branch = gh-pages
+[submodule "mn-samples-gb"]
+	path = mn-samples-gb
+	url = https://github.com/metanorma/mn-samples-gb
+	branch = gh-pages
 [submodule "mn-samples-iho"]
 	path = mn-samples-iho
 	url = https://github.com/metanorma/mn-samples-iho
+[submodule "mn-samples-m3aawg"]
+	path = mn-samples-m3aawg
+	url = https://github.com/metanorma/mn-samples-m3aawg
 	branch = gh-pages
-[submodule "mn-samples-csa"]
-	path = mn-samples-csa
-	url = https://github.com/metanorma/mn-samples-csa/
-	branch = gh-pages
-[submodule "mn-samples-ieee"]
-	path = mn-samples-ieee
-	url = https://github.com/metanorma/mn-samples-ieee/
-	branch = gh-pages
-[submodule "mn-samples-ribose"]
-	path = mn-samples-ribose
-	url = https://github.com/metanorma/mn-samples-ribose/
+[submodule "mn-samples-mpfa"]
+	path = mn-samples-mpfa
+	url = https://github.com/metanorma/mn-samples-mpfa
 	branch = gh-pages
