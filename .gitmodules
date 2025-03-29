@@ -24,13 +24,13 @@
 	branch = gh-pages
 [submodule "mn-samples-csa"]
 	path = mn-samples-csa
-	url = https://github.com/metanorma/mn-samples-csa
+	url = https://github.com/metanorma/mn-samples-csa/
 	branch = gh-pages
 [submodule "mn-samples-ieee"]
 	path = mn-samples-ieee
-	url = https://github.com/metanorma/mn-samples-ieee
+	url = https://github.com/metanorma/mn-samples-ieee/
 	branch = gh-pages
 [submodule "mn-samples-ribose"]
 	path = mn-samples-ribose
-	url = https://github.com/metanorma/mn-samples-ribose
+	url = https://github.com/metanorma/mn-samples-ribose/
 	branch = gh-pages
