@@ -141,7 +141,7 @@ sources/ogc-%: mn-samples-ogc/documents/14-065r2/%
 sources/cc-%: mn-samples-cc/documents/cc-%
 	cp $< $@
 
-sources/cc-%: mn-samples-csa/documents/csa-dso/%
+sources/csa-%: mn-samples-csa/documents/csa-dso/%
 	cp $< $@
 
 sources/m3aawg-bp-%: mn-samples-m3aawg/documents/best-practice/%
@@ -165,7 +165,7 @@ sources/iho-%: mn-samples-iho/documents/s102/%
 sources/mpfa-%: mn-samples-mpfa/documents/mpfa-%
 	cp $< $@
 
-sources/mpfa-%: mn-samples-ieee/documents/p987.6/%
+sources/ieee-%: mn-samples-ieee/documents/p987.6/%
 	cp $< $@
 
 sources/mpfa-%: mn-samples-ribose/documents/nistir-8214a/%
