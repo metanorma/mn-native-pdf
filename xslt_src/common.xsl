@@ -7727,8 +7727,7 @@
 					<xsl:otherwise>0</xsl:otherwise>
 				</xsl:choose>
 			</xsl:variable>
-			
-			
+
 			<fo:block-container xsl:use-attribute-sets="table-container-style" role="SKIP">
 			
 				<xsl:call-template name="refine_table-container-style">
@@ -7923,7 +7922,7 @@
 				</xsl:if>
 				
 			</fo:block-container>
-		</xsl:variable>
+		</xsl:variable> <!-- END: variable name="table" -->
 		
 		<xsl:variable name="isAdded" select="@added"/>
 		<xsl:variable name="isDeleted" select="@deleted"/>
@@ -7939,7 +7938,7 @@
 								$namespace = 'plateau' or 
 								$namespace = 'nist-cswp' or $namespace = 'nist-sp' or 
 								$namespace = 'rsd'">
-					<fo:table table-layout="fixed" width="100%" xsl:use-attribute-sets="table-container-style">
+					<fo:table table-layout="fixed" width="100%" xsl:use-attribute-sets="table-container-style" role="SKIP">
 						<xsl:if test="$namespace = 'iso'">
 							<xsl:if test="$layoutVersion = '1951'">
 								<xsl:attribute name="font-size">inherit</xsl:attribute>
@@ -7952,9 +7951,9 @@
 						<fo:table-column column-width="proportional-column-width(1)"/>
 						<fo:table-column column-width="{@width}"/>
 						<fo:table-column column-width="proportional-column-width(1)"/>
-						<fo:table-body>
-							<fo:table-row>
-								<fo:table-cell column-number="2">
+						<fo:table-body role="SKIP">
+							<fo:table-row role="SKIP">
+								<fo:table-cell column-number="2" role="SKIP">
 									<xsl:copy-of select="$table-preamble"/>
 									<fo:block role="SKIP">
 										<xsl:call-template name="setTrackChangesStyles">
