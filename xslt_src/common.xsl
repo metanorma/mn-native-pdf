@@ -2110,6 +2110,7 @@
 	</xsl:template> <!-- refine_table-style -->
 	
 	<xsl:attribute-set name="table-name-style">
+		<xsl:attribute name="role">Caption</xsl:attribute>
 		<xsl:attribute name="keep-with-next">always</xsl:attribute>
 		<xsl:if test="$namespace = 'bsi'">
 			<xsl:attribute name="font-size">10pt</xsl:attribute>
@@ -2236,6 +2237,9 @@
 
 	<xsl:template name="refine_table-name-style">
 		<xsl:param name="continued"/>
+		<xsl:if test="$continued = 'true'">
+			<xsl:attribute name="role">SKIP</xsl:attribute>
+		</xsl:if>
 		<xsl:if test="$namespace = 'bsi'">
 			<xsl:if test="$continued != 'true'">
 				<xsl:attribute name="margin-top">6pt</xsl:attribute>
@@ -8080,7 +8084,7 @@
 				
 				<xsl:otherwise>
 				
-					<fo:block xsl:use-attribute-sets="table-name-style" role="SKIP">
+					<fo:block xsl:use-attribute-sets="table-name-style">
 
 						<xsl:call-template name="refine_table-name-style">
 							<xsl:with-param name="continued" select="$continued"/>
