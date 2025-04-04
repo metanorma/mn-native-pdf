@@ -8687,7 +8687,7 @@
 			
 			<xsl:variable name="tableWithNotesAndFootnotes">
 			
-				<fo:table keep-with-previous="always">
+				<fo:table keep-with-previous="always" role="SKIP">
 					<xsl:for-each select="xalan:nodeset($table_attributes)/table_attributes/@*">
 						<xsl:variable name="name" select="local-name()"/>
 						<xsl:choose>
@@ -8727,9 +8727,9 @@
 						</xsl:otherwise>
 					</xsl:choose>
 					
-					<fo:table-body>
-						<fo:table-row>
-							<fo:table-cell xsl:use-attribute-sets="table-footer-cell-style" number-columns-spanned="{$cols-count}">
+					<fo:table-body role="SKIP">
+						<fo:table-row role="SKIP">
+							<fo:table-cell xsl:use-attribute-sets="table-footer-cell-style" number-columns-spanned="{$cols-count}" role="SKIP">
 								
 								<xsl:call-template name="refine_table-footer-cell-style"/>
 								
