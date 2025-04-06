@@ -18390,6 +18390,11 @@
 				
 					<xsl:call-template name="refine_list-item-label-style"/>
 					
+					<xsl:if test="local-name(..) = 'ul'">
+						<xsl:variable name="li_label" select="@label"/>
+						<xsl:copy-of select="$ul_labels//label[. = $li_label]/@*[not(local-name() = 'level')]"/>
+					</xsl:if>
+					
 					<!-- if 'p' contains all text in 'add' first and last elements in first p are 'add' -->
 					<xsl:if test="*[1][count(node()[normalize-space() != '']) = 1 and *[local-name() = 'add']]">
 						<xsl:call-template name="append_add-style"/>

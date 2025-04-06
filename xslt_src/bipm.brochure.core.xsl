@@ -3046,13 +3046,17 @@
 						<fo:list-item-label end-indent="label-end()">
 							<fo:block> <!-- debug: border="0.5pt solid green" -->
 								<fo:inline>
-									<!-- <xsl:if test="@list_type = 'ul'">
-										<xsl:attribute name="font-size">15pt</xsl:attribute> -->
+									<xsl:if test="@list_type = 'ul'">
+										<xsl:variable name="li_label" select="@label"/>
+										<xsl:copy-of select="$ul_labels//label[. = $li_label]/@*[not(local-name() = 'level')]"/>
+									</xsl:if>
+									
 									<xsl:copy-of select="@font-size"/>
 									<xsl:copy-of select="@baseline-shift"/>
 									<xsl:if test="@list_type = 'ul' and ancestor::bipm:note_side">
 										<xsl:attribute name="font-size">10pt</xsl:attribute>
 									</xsl:if>
+									
 									<xsl:value-of select="@label"/>
 								</fo:inline>
 							</fo:block>
