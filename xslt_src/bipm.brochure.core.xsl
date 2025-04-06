@@ -494,7 +494,7 @@
 								
 								<!-- flatxml=<xsl:copy-of select="$flatxml"/> -->
 								
-								<xsl:apply-templates select="xalan:nodeset($flatxml)/bipm:bipm-standard" mode="bipm-standard">
+								<xsl:apply-templates select="xalan:nodeset($flatxml)/bipm:metanorma" mode="bipm-standard">
 									<xsl:with-param name="curr_docnum" select="$num"/>
 								</xsl:apply-templates>
 								
@@ -647,6 +647,17 @@
 	</xsl:template>
 	
 	<xsl:template match="*[local-name() = 'clause']/*[local-name() = 'fmt-footnote-container']" priority="3" mode="update_xml_pres"/>
+	
+	<xsl:template match="*[local-name() = 'li']/*[local-name() = 'fmt-name']" priority="3" mode="update_xml_pres">
+		<xsl:choose>
+			<!-- no need li labels in BIPM brochure preface -->
+			<xsl:when test="ancestor::*[bipm:preface] and ancestor::bipm:clause[not(@type = 'toc')]"></xsl:when>
+			<xsl:otherwise>
+				<xsl:attribute name="label"><xsl:value-of select="."/></xsl:attribute>
+				<xsl:attribute name="full">true</xsl:attribute>
+			</xsl:otherwise>
+		</xsl:choose>
+	</xsl:template>
 	
 	<!-- ================================= -->
 	<!-- Flattening xml for fit notes at page sides (margins) -->
