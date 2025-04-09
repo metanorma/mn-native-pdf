@@ -2891,7 +2891,7 @@
 				<xsl:choose>
 					<xsl:when test="ancestor::ieee:table/@unnumbered = 'true' and normalize-space($substring_after) = 'Key'"><!-- no display Table - --></xsl:when>
 					<xsl:otherwise>
-						<fo:inline font-weight="bold" font-style="normal">
+						<fo:inline font-weight="bold" font-style="normal" role="SKIP">
 							<xsl:choose>
 								<xsl:when test="$current_template = 'whitepaper' or $current_template= 'icap-whitepaper' or $current_template = 'industry-connection-report'">
 									<!-- Figure N in blue color -->

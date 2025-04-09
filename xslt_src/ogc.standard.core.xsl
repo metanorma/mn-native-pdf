@@ -854,8 +854,8 @@
 
 	<xsl:template name="insertListOf_Title">
 		<xsl:param name="title"/>
-		<fo:block-container margin-left="-18mm" keep-with-next="always" margin-bottom="10pt" space-before="36pt">
-			<fo:block-container margin-left="0mm">								
+		<fo:block-container margin-left="-18mm" keep-with-next="always" margin-bottom="10pt" space-before="36pt" role="SKIP">
+			<fo:block-container margin-left="0mm" role="H2">								
 				<xsl:call-template name="insertSectionTitle">
 					<xsl:with-param name="title" select="$title"/>
 				</xsl:call-template>
@@ -971,7 +971,7 @@
 					<xsl:call-template name="insertListOf_Title">
 						<xsl:with-param name="title" select="$title-list-tables"/>
 					</xsl:call-template>
-					<fo:block-container line-height="130%">
+					<fo:block-container line-height="130%" role="TOC">
 						<xsl:for-each select="$contents//tables/table">
 							<xsl:call-template name="insertListOf_Item"/>
 						</xsl:for-each>
@@ -983,7 +983,7 @@
 					<xsl:call-template name="insertListOf_Title">
 						<xsl:with-param name="title" select="$title-list-figures"/>
 					</xsl:call-template>
-					<fo:block-container line-height="130%">
+					<fo:block-container line-height="130%" role="TOC">
 						<xsl:for-each select="$contents//figures/figure">
 							<xsl:call-template name="insertListOf_Item"/>
 						</xsl:for-each>
@@ -995,7 +995,7 @@
 					<xsl:call-template name="insertListOf_Title">
 						<xsl:with-param name="title" select="$title-list-recommendations"/>
 					</xsl:call-template>
-					<fo:block-container line-height="130%">
+					<fo:block-container line-height="130%" role="TOC">
 						<xsl:for-each select="xalan:nodeset($toc_recommendations)/*[normalize-space(@id) != '']">
 							<fo:block text-align-last="justify" margin-top="6pt" role="TOCI">
 								<fo:basic-link internal-destination="{@id}">
@@ -1037,9 +1037,7 @@
 							<xsl:with-param name="letter-spacing" select="1.1"/>
 						</xsl:call-template>
 					</fo:block>
-					<fo:block-container width="22.5mm" border-bottom="2pt solid {$color_design}">
-						<fo:block margin-top="4pt">&#xA0;</fo:block>
-					</fo:block-container>						
+					<xsl:call-template name="insertBigHorizontalLine"/>
 				</fo:block>
 			</fo:block-container>
 		</fo:block-container>
@@ -1382,8 +1380,8 @@
 		
 		<xsl:choose>
 			<xsl:when test="$level = 1">			
-				<fo:block-container margin-left="-22mm">
-					<fo:block-container margin-left="0mm">
+				<fo:block-container margin-left="-22mm" role="SKIP">
+					<fo:block-container margin-left="0mm" role="SKIP">
 						<fo:block margin-bottom="10pt" space-before="36pt" keep-with-next="always" role="H{$level}">
 							<fo:table table-layout="fixed" width="100%">
 								<fo:table-column column-width="22mm"/>
@@ -1868,9 +1866,7 @@
 			</xsl:call-template> -->
 		</fo:block>
 		
-		<fo:block-container width="22.5mm" border-bottom="2pt solid {$color_design}">
-			<fo:block margin-top="4pt">&#xA0;</fo:block>
-		</fo:block-container>
+		<xsl:call-template name="insertBigHorizontalLine"/>
 	</xsl:template>
 	
 	<xsl:template match="text()" mode="titlebig">
@@ -1996,9 +1992,15 @@
 	</xsl:template>
 	
 	<xsl:template name="insertShortHorizontalLine">		
-		<fo:block-container width="12.7mm" border-top="1pt solid {$color_design}" margin-top="3mm">
-			<fo:block font-size="1pt">&#xA0;</fo:block>
+		<fo:block-container width="12.7mm" border-top="1pt solid {$color_design}" margin-top="3mm" role="SKIP">
+			<fo:block font-size="1pt" role="SKIP"><fo:wrapper role="artifact">&#xA0;</fo:wrapper></fo:block>
 		</fo:block-container>						
+	</xsl:template>
+	
+	<xsl:template name="insertBigHorizontalLine">
+		<fo:block-container width="22.5mm" border-bottom="2pt solid {$color_design}" role="SKIP">
+			<fo:block margin-top="4pt" role="SKIP"><fo:wrapper role="artifact">&#xA0;</fo:wrapper></fo:block>
+		</fo:block-container>
 	</xsl:template>
 	
 	<xsl:template name="insertFootnoteSeparator">

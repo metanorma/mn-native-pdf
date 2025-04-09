@@ -1836,10 +1836,11 @@
 			<xsl:if test="$doctype != 'resolution' and $doctype != 'service-publication'">
 				<fo:block break-after="page"/>
 				<fo:block-container>
-					<fo:block role="TOC">
-					
+					<fo:block role="SKIP">
 						<xsl:apply-templates />
-
+					</fo:block>
+					
+					<fo:block role="TOC">
 						<xsl:if test="count(*) = 1 and *[local-name() = 'title']"> <!-- if there isn't user ToC -->
 
 							<xsl:for-each select="$contents/doc[@num = $num]//item[@display = 'true']">									
