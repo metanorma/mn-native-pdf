@@ -8024,19 +8024,20 @@
 		</xsl:if>
 	</xsl:template>
 
+	<!-- table/name-->
 	<xsl:template match="*[local-name()='table']/*[local-name() = 'name']">
 		<xsl:param name="continued"/>
 		<xsl:if test="normalize-space() != ''">
 		
 			<xsl:choose>
 				<xsl:when test="$namespace = 'ieee'">
-					<fo:inline>
+					<fo:inline role="SKIP">
 				
 						<xsl:if test="$current_template = 'whitepaper' or $current_template = 'icap-whitepaper' or $current_template = 'industry-connection-report'">
 							<xsl:attribute name="font-size">11pt</xsl:attribute>
 							<xsl:attribute name="font-family">Arial Black</xsl:attribute>
 						</xsl:if>
-				
+						
 						<xsl:apply-templates />
 					</fo:inline>
 				</xsl:when>
@@ -8877,7 +8878,7 @@
 		<xsl:if test="$namespace = 'bsi' or $namespace = 'iec' or $namespace = 'ieee' or $namespace = 'iso' or $namespace = 'jcgm'">
 			<!-- if there isn't 'thead' and there is a table's title -->
 			<xsl:if test="not(ancestor::*[local-name()='table']/*[local-name()='thead']) and ancestor::*[local-name()='table']/*[local-name()='name']">
-				<fo:table-header>
+				<fo:table-header role="Caption">
 					<xsl:call-template name="table-header-title">
 						<xsl:with-param name="cols-count" select="$cols-count"/>
 					</xsl:call-template>
