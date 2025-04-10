@@ -15245,7 +15245,8 @@
 						
 						<xsl:for-each select="$contents_nodes//tables/table">
 							<fo:bookmark internal-destination="{@id}">
-								<fo:bookmark-title><xsl:value-of select="normalize-space(.)"/></fo:bookmark-title>
+								<!-- <fo:bookmark-title><xsl:value-of select="normalize-space(.)"/></fo:bookmark-title> -->
+								<fo:bookmark-title><xsl:apply-templates mode="bookmark_clean"/></fo:bookmark-title>
 							</fo:bookmark>
 						</xsl:for-each>
 					</fo:bookmark>
@@ -15255,6 +15256,25 @@
 	</xsl:template> <!-- insertTableBookmarks -->
 	<!-- End Bookmarks -->
 	
+	<!-- ============================ -->
+	<!-- mode="bookmark_clean" -->
+	<!-- ============================ -->
+	<xsl:template match="node()" mode="bookmark_clean">
+		<xsl:apply-templates select="node()" mode="bookmark_clean"/>
+	</xsl:template>
+	
+	<xsl:template match="text()" mode="bookmark_clean">
+		<xsl:value-of select="."/>
+	</xsl:template>
+	
+	<xsl:template match="*[local-name() = 'math']" mode="bookmark_clean">
+		<xsl:value-of select="normalize-space(.)"/>
+	</xsl:template>
+	
+	<xsl:template match="*[local-name() = 'asciimath']" mode="bookmark_clean"/>
+	<!-- ============================ -->
+	<!-- END: mode="bookmark_clean" -->
+	<!-- ============================ -->
 	
 	<xsl:template name="getLangVersion">
 		<xsl:param name="lang"/>
