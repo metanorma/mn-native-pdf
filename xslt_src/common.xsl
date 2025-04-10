@@ -14980,6 +14980,13 @@
 		<xsl:apply-templates select="."/>
 	</xsl:template>
 	
+	<!-- prevent missing stem for table and figures in ToC -->
+	<xsl:template match="*[local-name() = 'name' or local-name() = 'fmt-name']//*[local-name() = 'stem']" mode="contents">
+		<xsl:if test="not(following-sibling::*[1][local-name() = 'fmt-stem'])">
+			<xsl:apply-templates select="."/>
+		</xsl:if>
+	</xsl:template>
+	
 	<xsl:template match="*[local-name() = 'references'][@hidden='true']" mode="contents" priority="3"/>
 	
 	<xsl:template match="*[local-name() = 'references']/*[local-name() = 'bibitem']" mode="contents"/>
