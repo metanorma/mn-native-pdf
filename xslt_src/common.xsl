@@ -19450,7 +19450,7 @@
 				<xsl:attribute name="alignment-baseline">central</xsl:attribute>
 			</xsl:if>
 			<xsl:variable name="rt_text" select="*[local-name() = 'rt']"/>
-			<xsl:variable name="rb_text" select="*[local-name() = 'rb']"/>
+			<xsl:variable name="rb_text" select=".//*[local-name() = 'rb'][not(*[local-name() = 'ruby'])]"/>
 			<!-- Example: width="2em"  -->
 			<xsl:variable name="text_rt_width" select="java:org.metanorma.fop.Util.getStringWidthByFontSize($rt_text, $font_main, 6)"/>
 			<xsl:variable name="text_rb_width" select="java:org.metanorma.fop.Util.getStringWidthByFontSize($rb_text, $font_main, 10)"/>
