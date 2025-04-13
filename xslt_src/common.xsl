@@ -19445,7 +19445,10 @@
 	<!-- ===================================== -->
 	<!-- ===================================== -->
 	<xsl:template match="*[local-name() = 'ruby']">
-		<fo:inline-container text-indent="0mm" last-line-end-indent="0mm" alignment-baseline="central">
+		<fo:inline-container text-indent="0mm" last-line-end-indent="0mm">
+			<xsl:if test="not(ancestor::*[local-name() = 'ruby'])">
+				<xsl:attribute name="alignment-baseline">central</xsl:attribute>
+			</xsl:if>
 			<xsl:variable name="rt_text" select="*[local-name() = 'rt']"/>
 			<xsl:variable name="rb_text" select="*[local-name() = 'rb']"/>
 			<!-- Example: width="2em"  -->
@@ -19458,20 +19461,35 @@
 				</xsl:choose>
 			</xsl:variable>
 			<xsl:attribute name="width"><xsl:value-of select="$text_width div 10"/>em</xsl:attribute>
-			<xsl:apply-templates select="*[local-name() = 'rt']"/>
-			<xsl:apply-templates select="*[local-name() = 'rb']"/>
+			
+			<xsl:choose>
+				<xsl:when test="ancestor::*[local-name() = 'ruby']">
+					<xsl:apply-templates select="*[local-name() = 'rb']"/>
+					<xsl:apply-templates select="*[local-name() = 'rt']"/>
+				</xsl:when>
+				<xsl:otherwise>
+					<xsl:apply-templates select="*[local-name() = 'rt']"/>
+					<xsl:apply-templates select="*[local-name() = 'rb']"/>
+				</xsl:otherwise>
+			</xsl:choose>
+			
 			<xsl:apply-templates select="node()[not(local-name() = 'rt') and not(local-name() = 'rb')]"/>
 		</fo:inline-container>
 	</xsl:template>
 	
 	<xsl:template match="*[local-name() = 'rb']">
-		<!-- border="0.3pt solid blue" -->
 		<fo:block line-height="1em" text-align="center"><xsl:apply-templates /></fo:block>
 	</xsl:template>
 	
 	<xsl:template match="*[local-name() = 'rt']">
-		<!-- border="0.3pt solid red" -->
-		<fo:block font-size="0.5em" text-align="center" line-height="1.2em" space-before="-1.4em" space-before.conditionality="retain"><xsl:apply-templates /></fo:block>
+		<fo:block font-size="0.5em" text-align="center" line-height="1.2em" space-before="-1.4em" space-before.conditionality="retain"> <!--  -->
+			<xsl:if test="ancestor::*[local-name() = 'ruby'][last()]//*[local-name() = 'ruby'] or
+					ancestor::*[local-name() = 'rb']">
+				<xsl:attribute name="space-before">0em</xsl:attribute>
+			</xsl:if>
+			<xsl:apply-templates />
+		</fo:block>
+		
 	</xsl:template>
 	
 	<!-- ===================================== -->
