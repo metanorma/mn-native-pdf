@@ -3508,11 +3508,22 @@
 		</fo:block>
 	</xsl:template>
 	
-	
 	<xsl:template match="iso:pagebreak" priority="2">
-		<xsl:copy-of select="."/>
+		<xsl:choose>
+			<xsl:when test="ancestor::*[local-name() = 'annex']">
+				<xsl:variable name="annex_id" select="ancestor::*[local-name() = 'annex']/@id"/>
+				<xsl:choose>
+					<xsl:when test="following::*[ancestor::*[local-name() = 'annex'][@id = $annex_id]]">
+						<xsl:copy-of select="."/>
+					</xsl:when>
+					<xsl:otherwise><!-- skip --></xsl:otherwise>
+				</xsl:choose>
+			</xsl:when>
+			<xsl:otherwise>
+				<xsl:copy-of select="."/>
+			</xsl:otherwise>
+		</xsl:choose>
 	</xsl:template>
-	
 
 	<xsl:template name="insertListOf_Title">
 		<xsl:param name="title"/>
