@@ -11047,6 +11047,7 @@
 			
 			<xsl:call-template name="refine_dt-cell-style"/>
 			
+			<xsl:call-template name="setNamedDestination"/>
 			<fo:block xsl:use-attribute-sets="dt-block-style" role="SKIP">
 			
 				<xsl:choose>
