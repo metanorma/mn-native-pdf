@@ -7732,6 +7732,8 @@
 				</xsl:choose>
 			</xsl:variable>
 
+			<xsl:call-template name="setNamedDestination"/>
+			
 			<fo:block-container xsl:use-attribute-sets="table-container-style" role="SKIP">
 			
 				<xsl:call-template name="refine_table-container-style">
@@ -9273,6 +9275,7 @@
 						*[local-name()='table']/*[local-name()='tfoot']//*[local-name()='note' or local-name() = 'example']" priority="2">
 		<xsl:choose>
 			<xsl:when test="$namespace = 'jis'">
+				<xsl:call-template name="setNamedDestination"/>
 				<fo:list-block id="{@id}" xsl:use-attribute-sets="table-note-style" provisional-distance-between-starts="{9 + $text_indent}mm"> <!-- 12 -->
 					<fo:list-item>
 						<fo:list-item-label start-indent="{$text_indent}mm" end-indent="label-end()">
@@ -9290,6 +9293,7 @@
 				<!-- jis -->
 			</xsl:when>
 			<xsl:otherwise>
+				<xsl:call-template name="setNamedDestination"/>
 				<fo:block xsl:use-attribute-sets="table-note-style">
 					<xsl:copy-of select="@id"/>
 
@@ -13329,6 +13333,7 @@
 	<!-- Appendix processing -->
 	<!-- ======================== -->
 	<xsl:template match="*[local-name()='appendix']">
+		<xsl:call-template name="setNamedDestination"/>
 		<fo:block id="{@id}" xsl:use-attribute-sets="appendix-style">
 			<xsl:apply-templates select="*[local-name()='title']" />
 		</fo:block>
@@ -13346,6 +13351,7 @@
 	<!-- ======================== -->
 	
 	<xsl:template match="*[local-name()='appendix']//*[local-name()='example']" priority="2">
+		<xsl:call-template name="setNamedDestination"/>
 		<fo:block id="{@id}" xsl:use-attribute-sets="appendix-example-style">			
 			<xsl:apply-templates select="*[local-name()='name']" />
 		</fo:block>
@@ -13380,6 +13386,7 @@
 	<xsl:template match="*[local-name() = 'annotation']/*[local-name() = 'p']">
 		<xsl:param name="callout"/>
 		<fo:inline id="{@id}">
+			<xsl:call-template name="setNamedDestination"/>
 			<!-- for first p in annotation, put <x> -->
 			<xsl:if test="not(preceding-sibling::*[local-name() = 'p'])"><xsl:value-of select="$callout"/></xsl:if>
 			<xsl:apply-templates />
@@ -13438,6 +13445,7 @@
 				</xsl:if>
 			</xsl:if>
 			<fo:block-container margin-left="0mm" role="SKIP">	
+				<xsl:call-template name="setNamedDestination"/>
 				<fo:block id="{@id}">
 					<xsl:apply-templates select="node()[not(local-name() = 'name')]" /> <!-- formula's number will be process in 'stem' template -->
 				</fo:block>
@@ -13532,6 +13540,7 @@
 	
 		<xsl:choose>
 			<xsl:when test="$namespace = 'jis'">
+				<xsl:call-template name="setNamedDestination"/>
 				<fo:block id="{@id}" xsl:use-attribute-sets="note-style" role="SKIP">
 					<xsl:call-template name="setBlockSpanAll"/>
 					
@@ -13566,6 +13575,8 @@
 			</xsl:when> <!-- jis -->
 			<xsl:otherwise>
 			
+				<xsl:call-template name="setNamedDestination"/>
+				
 				<fo:block-container id="{@id}" xsl:use-attribute-sets="note-style" role="SKIP">
 				
 					<xsl:call-template name="setBlockSpanAll"/>
@@ -13716,6 +13727,7 @@
 	
 	
 	<xsl:template match="*[local-name() = 'termnote']">
+		<xsl:call-template name="setNamedDestination"/>
 		<fo:block id="{@id}" xsl:use-attribute-sets="termnote-style">
 		
 			<xsl:call-template name="setBlockSpanAll"/>
@@ -13851,12 +13863,14 @@
 	
 	<xsl:template match="*[local-name() = 'terms']">
 		<!-- <xsl:message>'terms' <xsl:number/> processing...</xsl:message> -->
+		<xsl:call-template name="setNamedDestination"/>
 		<fo:block id="{@id}">
 			<xsl:apply-templates />
 		</fo:block>
 	</xsl:template>
 	
 	<xsl:template match="*[local-name() = 'term']">
+		<xsl:call-template name="setNamedDestination"/>
 		<fo:block id="{@id}" xsl:use-attribute-sets="term-style">
 
 			<xsl:if test="$namespace = 'gb'">
@@ -13905,6 +13919,7 @@
 	<xsl:template match="*[local-name() = 'figure']" name="figure">
 		<xsl:variable name="isAdded" select="@added"/>
 		<xsl:variable name="isDeleted" select="@deleted"/>
+		<xsl:call-template name="setNamedDestination"/>
 		<fo:block-container id="{@id}" xsl:use-attribute-sets="figure-block-style">
 			<xsl:call-template name="refine_figure-block-style" />
 			
@@ -13983,6 +13998,7 @@
 	</xsl:template>
 	
 	<xsl:template match="*[local-name() = 'figure'][@class = 'pseudocode']">
+		<xsl:call-template name="setNamedDestination"/>
 		<fo:block id="{@id}">
 			<xsl:apply-templates select="node()[not(local-name() = 'name')]" />
 		</fo:block>
@@ -16120,6 +16136,7 @@
 	<!-- permission -->	
 	<!-- ========== -->		
 	<xsl:template match="*[local-name() = 'permission']">
+		<xsl:call-template name="setNamedDestination"/>
 		<fo:block id="{@id}" xsl:use-attribute-sets="permission-style">			
 			<xsl:apply-templates select="*[local-name()='name']" />
 			<xsl:apply-templates select="node()[not(local-name() = 'name')]" />
@@ -16149,6 +16166,7 @@
 	<!-- requirement -->
 <!-- ========== -->
 	<xsl:template match="*[local-name() = 'requirement']">
+		<xsl:call-template name="setNamedDestination"/>
 		<fo:block id="{@id}" xsl:use-attribute-sets="requirement-style">			
 			<xsl:apply-templates select="*[local-name()='name']" />
 			<xsl:apply-templates select="*[local-name()='label']" />
@@ -16199,6 +16217,7 @@
 	<!-- recommendation -->
 	<!-- ========== -->
 	<xsl:template match="*[local-name() = 'recommendation']">
+		<xsl:call-template name="setNamedDestination"/>
 		<fo:block id="{@id}" xsl:use-attribute-sets="recommendation-style">			
 			<xsl:apply-templates select="*[local-name()='name']" />
 			<xsl:apply-templates select="node()[not(local-name() = 'name')]" />
@@ -16312,6 +16331,7 @@
 			<xsl:if test="ancestor::*[local-name() = 'table'][@class = 'recommendation' or @class='requirement' or @class='permission']">
 				<xsl:attribute name="margin-bottom">0pt</xsl:attribute>
 			</xsl:if>
+			<xsl:call-template name="setNamedDestination"/>
 			<fo:block-container margin-left="0mm" margin-right="0mm" role="SKIP">
 				<fo:table id="{@id}" table-layout="fixed" width="100%"> <!-- border="1pt solid black" -->
 					<xsl:if test="ancestor::*[local-name() = 'table'][@class = 'recommendation' or @class='requirement' or @class='permission']">
@@ -16438,6 +16458,7 @@
 	<!-- termexample -->	
 	<!-- ====== -->
 	<xsl:template match="*[local-name() = 'termexample']">
+		<xsl:call-template name="setNamedDestination"/>
 		<fo:block id="{@id}" xsl:use-attribute-sets="termexample-style">
 			<xsl:call-template name="refine_termexample-style"/>
 			<xsl:call-template name="setBlockSpanAll"/>
@@ -16500,6 +16521,7 @@
 		
 		<xsl:choose>
 			<xsl:when test="$namespace = 'jis'">
+				<xsl:call-template name="setNamedDestination"/>
 				<fo:block id="{@id}" xsl:use-attribute-sets="example-style" role="SKIP">
 					<xsl:call-template name="setBlockSpanAll"/>
 					
@@ -16550,6 +16572,7 @@
 				</fo:block>
 			</xsl:when>
 			<xsl:otherwise>
+				<xsl:call-template name="setNamedDestination"/>
 				<fo:block-container id="{@id}" xsl:use-attribute-sets="example-style" role="SKIP">
 				
 					<xsl:call-template name="setBlockSpanAll"/>
@@ -17507,6 +17530,7 @@
 		<xsl:if test="$namespace = 'm3d' or $namespace = 'unece-rec'">
 				<fo:block break-after="page"/>
 		</xsl:if>
+		<xsl:call-template name="setNamedDestination"/>
 		<fo:block>
 			<xsl:call-template name="setId"/>
 			
@@ -17632,6 +17656,7 @@
 				<fo:block break-after="page"/>
 			</xsl:otherwise>
 		</xsl:choose>
+		<xsl:call-template name="setNamedDestination"/>
 		<fo:block>
 			<xsl:call-template name="setId"/>
 			<xsl:call-template name="addReviewHelper"/>
@@ -17661,6 +17686,7 @@
 	</xsl:template>
 	
 	<xsl:template match="*[local-name() = 'clause'][normalize-space() != '' or *[local-name() = 'figure'] or @id]" name="template_clause"> <!-- if clause isn't empty -->
+		<xsl:call-template name="setNamedDestination"/>
 		<fo:block>
 			<xsl:if test="parent::*[local-name() = 'copyright-statement']">
 				<xsl:attribute name="role">SKIP</xsl:attribute>
@@ -17693,6 +17719,7 @@
 	</xsl:template> <!-- refine_clause_style -->
 	
 	<xsl:template match="*[local-name() = 'definitions']">
+		<xsl:call-template name="setNamedDestination"/>
 		<fo:block id="{@id}">
 			<xsl:apply-templates />
 		</fo:block>
@@ -17710,6 +17737,7 @@
 			<xsl:otherwise>
 			
 				<fo:block break-after="page"/>
+				<xsl:call-template name="setNamedDestination"/>
 				<fo:block id="{@id}">
 				
 					<xsl:call-template name="setBlockSpanAll"/>
@@ -17786,6 +17814,7 @@
 		<!-- following-sibling::node()[1][local-name() = 'bookmark'][@id = $source] and
 				following-sibling::node()[2][local-name() = 'fmt-review-end'][@source = $source] -->
 			<!-- <fo:block id="{$source}" font-size="1pt" role="SKIP"><xsl:value-of select="$hair_space"/><fo:basic-link internal-destination="{$source}" fox:alt-text="Annot___{$source}" role="Annot"><xsl:value-of select="$hair_space"/></fo:basic-link></fo:block> -->
+			<xsl:call-template name="setNamedDestination"/>
 			<fo:block id="{@id}" font-size="1pt" role="SKIP" keep-with-next="always" line-height="0.1"><xsl:value-of select="$hair_space"/><fo:basic-link internal-destination="{@id}" fox:alt-text="Annot___{@id}" role="Annot"><xsl:value-of select="$hair_space"/></fo:basic-link></fo:block>
 		<!-- </xsl:if> -->
 		</xsl:if>
@@ -18814,6 +18843,7 @@
 			</xsl:if>
 		</xsl:if>
 		
+		<xsl:call-template name="setNamedDestination"/>
 		<fo:block id="{@id}">
 			<xsl:apply-templates />
 			
@@ -18851,6 +18881,7 @@
 			</xsl:if>
 		</xsl:if> -->
 		
+		<xsl:call-template name="setNamedDestination"/>
 		<fo:block id="{@id}"/>
 		
 		<xsl:apply-templates select="*[local-name() = 'title'][@columns = 1]"/>
@@ -18894,6 +18925,7 @@
 		<xsl:param name="skip" select="normalize-space(preceding-sibling::*[1][local-name() = 'bibitem'] and 1 = 1)"/> <!-- current bibiitem is non-first -->
 		<xsl:choose>
 			<xsl:when test="$namespace = 'iho' or $namespace = 'nist-cswp'">
+				<xsl:call-template name="setNamedDestination"/>
 				<fo:list-block id="{@id}" xsl:use-attribute-sets="bibitem-normative-list-style">
 					
 					<xsl:variable name="docidentifier">
@@ -18933,6 +18965,7 @@
 			</xsl:when>
 			
 			<xsl:when test="$namespace = 'jis'">
+				<xsl:call-template name="setNamedDestination"/>
 				<fo:block-container margin-left="6mm" role="SKIP">
 					<fo:block-container margin-left="0mm" role="SKIP">
 						<fo:block id="{@id}" xsl:use-attribute-sets="bibitem-normative-style">
@@ -18946,6 +18979,7 @@
 				<xsl:choose>
 					<xsl:when test="$skip = 'true'"><!-- skip bibitem --></xsl:when>
 					<xsl:otherwise>
+						<xsl:call-template name="setNamedDestination"/>
 						<fo:block id="{@id}" xsl:use-attribute-sets="bibitem-normative-style">
 							<xsl:call-template name="processBibitem"/>
 						</fo:block>
@@ -18954,6 +18988,7 @@
 			</xsl:when>
 			
 			<xsl:otherwise>
+				<xsl:call-template name="setNamedDestination"/>
 				<fo:block id="{@id}" xsl:use-attribute-sets="bibitem-normative-style">
 					<xsl:if test="$namespace = 'iso'">
 						<xsl:if test="$layoutVersion = '2024'">
@@ -18988,6 +19023,7 @@
 		<xsl:choose>
 			<xsl:when test="$namespace = 'bipm'">
 				<!-- start BIPM bibitem processing -->
+				<xsl:call-template name="setNamedDestination"/>
 				<fo:list-block id="{@id}" xsl:use-attribute-sets="bibitem-non-normative-list-style">
 					<fo:list-item>
 						<fo:list-item-label end-indent="label-end()">
@@ -19013,6 +19049,7 @@
 			
 			<xsl:when test="$namespace = 'csa'">
 				<!-- start CSA bibitem processing -->
+				<xsl:call-template name="setNamedDestination"/>
 				<fo:block id="{@id}" xsl:use-attribute-sets="bibitem-non-normative-style">
 					<xsl:apply-templates select="*[local-name() = 'biblio-tag']"/>
 					<xsl:apply-templates select="csa:formattedref"/>
@@ -19028,6 +19065,7 @@
 				<xsl:choose>
 					<xsl:when test="$skip = 'true'"><!-- skip bibitem --></xsl:when>
 					<xsl:otherwise>
+						<xsl:call-template name="setNamedDestination"/>
 						<fo:block id="{@id}" xsl:use-attribute-sets="bibitem-non-normative-style">
 							<xsl:call-template name="processBibitem"/>
 						</fo:block>
@@ -19036,12 +19074,14 @@
 			</xsl:when>
 			
 			<xsl:when test="$namespace = 'nist-sp' or $namespace = 'unece' or $namespace = 'unece-rec'">
+				<xsl:call-template name="setNamedDestination"/>
 				<fo:block id="{@id}" xsl:use-attribute-sets="bibitem-non-normative-style">
 					<xsl:call-template name="processBibitem"/>
 				</fo:block>
 			</xsl:when>
 			
 			<xsl:when test="$namespace = 'rsd'">
+				<xsl:call-template name="setNamedDestination"/>
 				<fo:list-block id="{@id}" xsl:use-attribute-sets="bibitem-non-normative-list-style">
 					<fo:list-item>
 						<fo:list-item-label end-indent="label-end()">
@@ -19076,6 +19116,7 @@
 			<xsl:otherwise> <!-- $namespace = 'csd' or $namespace = 'gb' or $namespace = 'iec' or $namespace = 'ieee' or $namespace = 'iso' or $namespace = 'jcgm' or $namespace = 'm3d' or 
 			$namespace = 'mpfd' or $namespace = 'ogc' or $namespace = 'ogc-white-paper' -->
 				<!-- Example: [1] ISO 9:1995, Information and documentation – Transliteration of Cyrillic characters into Latin characters – Slavic and non-Slavic languages -->	
+				<xsl:call-template name="setNamedDestination"/>
 				<fo:list-block id="{@id}" xsl:use-attribute-sets="bibitem-non-normative-list-style">
 					<xsl:if test="$namespace = 'ieee'">
 						<xsl:variable name="bibitem_label">
@@ -19120,6 +19161,7 @@
 		<xsl:choose>
 			<xsl:when test="@hidden = 'true'"><!-- skip --></xsl:when>
 			<xsl:otherwise>
+				<xsl:call-template name="setNamedDestination"/>
 				<fo:list-item id="{@id}" xsl:use-attribute-sets="bibitem-non-normative-list-item-style">
 					<xsl:if test="$namespace = 'iso'">
 						<xsl:if test="$layoutVersion = '2024'">
@@ -19694,6 +19736,7 @@
 						</fo:block>
 					</xsl:when>
 					<xsl:otherwise>	<!-- BSI -->
+						<xsl:call-template name="setNamedDestination"/>
 						<fo:block-container id="{@id}" xsl:use-attribute-sets="admonition-style" role="SKIP">
 						
 							<xsl:call-template name="setBlockSpanAll"/>
@@ -19758,6 +19801,7 @@
 			</xsl:when>
 			
 			<xsl:otherwise> <!-- text in the box -->
+				<xsl:call-template name="setNamedDestination"/>
 				<fo:block-container id="{@id}" xsl:use-attribute-sets="admonition-style">
 					
 					<xsl:call-template name="setBlockSpanAll"/>
@@ -22256,6 +22300,14 @@
 				</xsl:otherwise>
 			</xsl:choose>					
 		</xsl:attribute>
+	</xsl:template>
+	
+	<xsl:template name="setNamedDestination">
+		<!-- skip GUID, e.g. _33eac3cb-9663-4291-ae26-1d4b6f4635fc -->
+		<xsl:if test="@id and 
+				normalize-space(java:matches(java:java.lang.String.new(@id), '_[0-9a-z]{8}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{12}')) = 'false'">
+			<fox:destination internal-destination="{@id}"/>
+		</xsl:if>
 	</xsl:template>
 
 	<xsl:template name="add-letter-spacing">

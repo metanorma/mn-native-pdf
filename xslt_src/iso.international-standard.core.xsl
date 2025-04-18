@@ -4404,6 +4404,8 @@
 				<xsl:otherwise>fo:block</xsl:otherwise>
 			</xsl:choose>
 		</xsl:variable>
+		
+		<xsl:call-template name="setNamedDestination"/>
 		<xsl:element name="{$element-name}">
 			
 			<xsl:call-template name="setBlockAttributes">
@@ -4644,6 +4646,7 @@
 	
 	<!-- main sections -->
 	<xsl:template match="/*/*[local-name() = 'sections']/*" name="sections_node_iso" priority="3">
+		<xsl:call-template name="setNamedDestination"/>
 		<fo:block>
 			<xsl:call-template name="setId"/>
 			
@@ -4664,6 +4667,7 @@
 	
 	
 	<xsl:template match="*[local-name() = 'sections' or local-name() = 'annex']//*[local-name() = 'clause'][normalize-space() != '' or *[local-name() = 'figure'] or @id]" name="template_clause_iso"> <!-- if clause isn't empty -->
+		<xsl:call-template name="setNamedDestination"/>
 		<fo:block>
 			<xsl:if test="parent::*[local-name() = 'copyright-statement']">
 				<xsl:attribute name="role">SKIP</xsl:attribute>
