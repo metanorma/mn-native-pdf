@@ -13499,7 +13499,14 @@
 							</fo:block>
 						</fo:table-cell>
 						<fo:table-cell display-align="center">
+							<xsl:for-each select="../*[local-name() = 'name']">
+								<xsl:call-template name="setNamedDestination"/>
+							</xsl:for-each>
 							<fo:block xsl:use-attribute-sets="formula-stem-number-style" role="SKIP">
+							
+								<xsl:for-each select="../*[local-name() = 'name']">
+									<xsl:call-template name="setIDforNamedDestination"/>
+								</xsl:for-each>
 							
 								<xsl:call-template name="refine_formula-stem-number-style"/>
 								
@@ -13947,7 +13954,16 @@
 				</xsl:choose>
 			</xsl:variable>
 			
+			<xsl:for-each select="*[local-name() = 'name']"> <!-- set context -->
+				<xsl:call-template name="setNamedDestination"/>
+			</xsl:for-each>
+			
 			<fo:block xsl:use-attribute-sets="figure-style" role="SKIP">
+				
+				<xsl:for-each select="*[local-name() = 'name']"> <!-- set context -->
+					<xsl:call-template name="setIDforNamedDestination"/>
+				</xsl:for-each>
+				
 				<xsl:apply-templates select="node()[not(local-name() = 'name') and not(local-name() = 'note' and @type = 'units')]" />
 			</fo:block>
 		
@@ -17385,12 +17401,20 @@
 			</xsl:if>
 			
 			<xsl:if test="parent::*[local-name() = 'term'] and not(preceding-sibling::*[local-name() = 'preferred'])"> <!-- if first preffered in term, then display term's name -->
+				<xsl:for-each select="ancestor::*[local-name() = 'term'][1]/*[local-name() = 'name']"><!-- change context -->
+					<xsl:call-template name="setNamedDestination"/>
+				</xsl:for-each>
 				<fo:block xsl:use-attribute-sets="term-name-style" role="SKIP">
 					<xsl:if test="$namespace = 'jis'">
 						<xsl:if test="not($vertical_layout = 'true')">
 							<xsl:attribute name="font-family">Times New Roman</xsl:attribute>
 						</xsl:if>
 					</xsl:if>
+					
+					<xsl:for-each select="ancestor::*[local-name() = 'term'][1]/*[local-name() = 'name']"><!-- change context -->
+						<xsl:call-template name="setIDforNamedDestination"/>
+					</xsl:for-each>
+					
 					<xsl:apply-templates select="ancestor::*[local-name() = 'term'][1]/*[local-name() = 'name']" />
 				</fo:block>
 			</xsl:if>
@@ -20512,6 +20536,8 @@
 	<xsl:template match="*[local-name() = 'fmt-title']" mode="update_xml_pres">
 		<xsl:element name="title" namespace="{$namespace_full}">
 			<xsl:copy-of select="@*"/>
+			<xsl:call-template name="addNamedDestinationAttribute"/>
+			
 			<xsl:apply-templates mode="update_xml_pres"/>
 		</xsl:element>
 	</xsl:template>
@@ -20519,16 +20545,21 @@
 	<xsl:template name="addNamedDestinationAttribute">
 		<xsl:if test="$namespace = 'iso'">
 		<xsl:variable name="docnum"><xsl:number level="any" count="*[local-name() = 'metanorma']"/></xsl:variable>
-		<xsl:variable name="caption_label" select="translate(normalize-space(.//*[local-name() = 'span'][@class = 'fmt-caption-label']), ' ', '')"/>
-		<xsl:if test="$caption_label != ''">
-			<xsl:variable name="named_dest">
-				<xsl:value-of select="$caption_label"/>
-				<xsl:if test="$docnum != '1'">_<xsl:value-of select="$docnum"/></xsl:if>
-			</xsl:variable>
-			<xsl:if test="not(key('kid', $named_dest))"> <!-- if element with id '$named_dest' doesn't exist in the document -->
-				<xsl:attribute name="named_dest"><xsl:value-of select="normalize-space($named_dest)"/></xsl:attribute>
-			</xsl:if>
-		</xsl:if>
+		<xsl:variable name="caption_label" select="translate(normalize-space(.//*[local-name() = 'span'][@class = 'fmt-caption-label']), ' ()', '')"/>
+		<xsl:choose>
+			<xsl:when test="count(ancestor::*[local-name() = 'figure']) &gt; 1"></xsl:when> <!-- prevent id 'a)' -->
+			<xsl:when test="$caption_label = ''"></xsl:when>
+			<xsl:otherwise>
+				<xsl:variable name="named_dest">
+					<xsl:if test="parent::*[local-name() = 'formula']">Formula</xsl:if>
+					<xsl:value-of select="$caption_label"/>
+					<xsl:if test="$docnum != '1'">_<xsl:value-of select="$docnum"/></xsl:if>
+				</xsl:variable>
+				<xsl:if test="not(key('kid', $named_dest))"> <!-- if element with id '$named_dest' doesn't exist in the document -->
+					<xsl:attribute name="named_dest"><xsl:value-of select="normalize-space($named_dest)"/></xsl:attribute>
+				</xsl:if>
+			</xsl:otherwise>
+		</xsl:choose>
 		</xsl:if>
 	</xsl:template>
 	
@@ -20541,6 +20572,8 @@
 			<xsl:otherwise>
 				<xsl:element name="name" namespace="{$namespace_full}">
 					<xsl:copy-of select="@*"/>
+					<xsl:call-template name="addNamedDestinationAttribute"/>
+					
 					<xsl:apply-templates mode="update_xml_step1"/>
 				</xsl:element>
 			</xsl:otherwise>
@@ -20554,6 +20587,8 @@
 			<xsl:otherwise>
 				<xsl:element name="name" namespace="{$namespace_full}">
 					<xsl:copy-of select="@*"/>
+					<xsl:call-template name="addNamedDestinationAttribute"/>
+					
 					<xsl:apply-templates mode="update_xml_pres"/>
 				</xsl:element>
 			</xsl:otherwise>
