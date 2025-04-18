@@ -20504,6 +20504,8 @@
 	<xsl:template match="*[local-name() = 'fmt-title']" mode="update_xml_step1">
 		<xsl:element name="title" namespace="{$namespace_full}">
 			<xsl:copy-of select="@*"/>
+			<xsl:call-template name="addNamedDestinationAttribute"/>
+			
 			<xsl:apply-templates mode="update_xml_step1"/>
 		</xsl:element>
 	</xsl:template>
@@ -20512,6 +20514,22 @@
 			<xsl:copy-of select="@*"/>
 			<xsl:apply-templates mode="update_xml_pres"/>
 		</xsl:element>
+	</xsl:template>
+	
+	<xsl:template name="addNamedDestinationAttribute">
+		<xsl:if test="$namespace = 'iso'">
+		<xsl:variable name="docnum"><xsl:number level="any" count="*[local-name() = 'metanorma']"/></xsl:variable>
+		<xsl:variable name="caption_label" select="translate(normalize-space(.//*[local-name() = 'span'][@class = 'fmt-caption-label']), ' ', '')"/>
+		<xsl:if test="$caption_label != ''">
+			<xsl:variable name="named_dest">
+				<xsl:value-of select="$caption_label"/>
+				<xsl:if test="$docnum != '1'">_<xsl:value-of select="$docnum"/></xsl:if>
+			</xsl:variable>
+			<xsl:if test="not(key('kid', $named_dest))"> <!-- if element with id '$named_dest' doesn't exist in the document -->
+				<xsl:attribute name="named_dest"><xsl:value-of select="normalize-space($named_dest)"/></xsl:attribute>
+			</xsl:if>
+		</xsl:if>
+		</xsl:if>
 	</xsl:template>
 	
 	<xsl:template match="*[local-name() = 'fmt-name']" />
@@ -22302,11 +22320,20 @@
 		</xsl:attribute>
 	</xsl:template>
 	
+	<xsl:template name="setIDforNamedDestination">
+		<xsl:if test="@named_dest">
+			<xsl:attribute name="id"><xsl:value-of select="@named_dest"/></xsl:attribute>
+		</xsl:if>
+	</xsl:template>
+	
 	<xsl:template name="setNamedDestination">
 		<!-- skip GUID, e.g. _33eac3cb-9663-4291-ae26-1d4b6f4635fc -->
 		<xsl:if test="@id and 
 				normalize-space(java:matches(java:java.lang.String.new(@id), '_[0-9a-z]{8}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{12}')) = 'false'">
 			<fox:destination internal-destination="{@id}"/>
+		</xsl:if>
+		<xsl:if test="@named_dest">
+			<fox:destination internal-destination="{@named_dest}"/>
 		</xsl:if>
 	</xsl:template>
 
