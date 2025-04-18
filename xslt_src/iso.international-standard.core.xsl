@@ -4171,15 +4171,12 @@
 			
 				<xsl:if test="(($layoutVersion = '1987' and $doctype = 'technical-report') or ($layoutVersion = '1979' and $doctype = 'addendum')) and parent::iso:introduction">
 					<fo:block span="all" text-align="center" margin-top="15mm" keep-with-previous="always" role="SKIP">
-						<xsl:call-template name="setIDforNamedDestination"/>
 						<fo:leader leader-pattern="rule" leader-length="12%"/>
 					</fo:block>
 				</xsl:if>
 				
 			
 				<xsl:element name="{$element-name}">
-				
-					<xsl:call-template name="setIDforNamedDestination"/>
 				
 					<xsl:if test="$layoutVersion = '1951' or $layoutVersion = '1972' or $layoutVersion = '1979' or $layoutVersion = '1987' or $layoutVersion = '1989'">
 						<!-- copy @id from empty preceding clause -->
@@ -4272,6 +4269,11 @@
 							</xsl:otherwise>
 						</xsl:choose>						
 					</xsl:if>
+					
+					<xsl:if test="@named_dest">
+						<fo:inline><xsl:call-template name="setIDforNamedDestination"/></fo:inline>
+					</xsl:if>
+					
 					<xsl:choose>
 						<xsl:when test="$layoutVersion = '1951' and ((ancestor::iso:preface and $level  = 1) or (parent::iso:introduction and $revision_date_num &lt; 19680101))">
 							<xsl:call-template name="add-letter-spacing">

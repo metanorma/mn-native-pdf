@@ -20547,20 +20547,30 @@
 		<xsl:if test="$namespace = 'iso'">
 		<xsl:variable name="docnum"><xsl:number level="any" count="*[local-name() = 'metanorma']"/></xsl:variable>
 		<xsl:variable name="caption_label" select="translate(normalize-space(.//*[local-name() = 'span'][@class = 'fmt-caption-label']), ' ()', '')"/>
-		<xsl:choose>
-			<xsl:when test="count(ancestor::*[local-name() = 'figure']) &gt; 1"></xsl:when> <!-- prevent id 'a)' -->
-			<xsl:when test="$caption_label = ''"></xsl:when>
-			<xsl:otherwise>
-				<xsl:variable name="named_dest">
+		
+		<xsl:variable name="named_dest_">
+			<xsl:choose>
+				<xsl:when test="count(ancestor::*[local-name() = 'figure']) &gt; 1"></xsl:when> <!-- prevent id 'a)' -->
+				<xsl:when test="$caption_label = '' and parent::*[local-name() = 'foreword']">Foreword</xsl:when>
+				<xsl:when test="$caption_label = '' and parent::*[local-name() = 'introduction']">Introduction</xsl:when>
+				<xsl:when test="$caption_label = ''"></xsl:when>
+				<xsl:otherwise>
 					<xsl:if test="parent::*[local-name() = 'formula']">Formula</xsl:if>
 					<xsl:value-of select="$caption_label"/>
-					<xsl:if test="$docnum != '1'">_<xsl:value-of select="$docnum"/></xsl:if>
-				</xsl:variable>
-				<xsl:if test="not(key('kid', $named_dest))"> <!-- if element with id '$named_dest' doesn't exist in the document -->
-					<xsl:attribute name="named_dest"><xsl:value-of select="normalize-space($named_dest)"/></xsl:attribute>
-				</xsl:if>
-			</xsl:otherwise>
-		</xsl:choose>
+				</xsl:otherwise>
+			</xsl:choose>
+		</xsl:variable>
+		<xsl:variable name="named_dest" select="normalize-space($named_dest_)"/>
+		<xsl:if test="$named_dest != ''">
+			<xsl:variable name="named_dest_doc_">
+				<xsl:value-of select="$named_dest"/>
+				<xsl:if test="$docnum != '1'">_<xsl:value-of select="$docnum"/></xsl:if>
+			</xsl:variable>
+			<xsl:variable name="named_dest_doc" select="normalize-space($named_dest_doc_)"/>
+			<xsl:if test="not(key('kid', $named_dest_doc))"> <!-- if element with id '$named_dest_doc' doesn't exist in the document -->
+				<xsl:attribute name="named_dest"><xsl:value-of select="normalize-space($named_dest_doc)"/></xsl:attribute>
+			</xsl:if>
+		</xsl:if>
 		</xsl:if>
 	</xsl:template>
 	
