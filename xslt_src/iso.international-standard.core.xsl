@@ -20,6 +20,8 @@
 
 	<xsl:key name="kfn" match="*[local-name() = 'fn'][not(ancestor::*[(local-name() = 'table' or local-name() = 'figure' or local-name() = 'localized-strings')] and not(ancestor::*[local-name() = 'name']))]" use="@reference"/>
 	
+	<xsl:key name="kid" match="*" use="@id"/>
+	
 	<xsl:key name="attachments" match="iso:eref[java:endsWith(java:java.lang.String.new(@bibitemid),'.exp')]" use="@bibitemid"/>
 	<xsl:key name="attachments2" match="iso:eref[contains(@bibitemid,'.exp_')]" use="@bibitemid"/>
 	
@@ -4150,10 +4152,13 @@
 			</xsl:choose>
 		</xsl:variable>
 		
+		<xsl:call-template name="setNamedDestination"/>
+		
 		<xsl:choose>
 			<xsl:when test="(($layoutVersion = '1987' and $doctype = 'technical-report') or ($layoutVersion = '1979' and $doctype = 'addendum')) and parent::iso:foreword"><!-- skip Foreword title --></xsl:when>
 			<xsl:when test="$doctype = 'amendment' and not(ancestor::iso:preface)">
 				<fo:block font-size="11pt" font-style="italic" margin-bottom="12pt" keep-with-next="always" role="H{$level}">
+					<xsl:call-template name="setIDforNamedDestination"/>
 					<!-- <xsl:if test="$layoutVersion = '2024'">
 						<xsl:attribute name="font-size">10.5pt</xsl:attribute>
 					</xsl:if> -->
@@ -4264,6 +4269,11 @@
 							</xsl:otherwise>
 						</xsl:choose>						
 					</xsl:if>
+					
+					<xsl:if test="@named_dest">
+						<fo:inline><xsl:call-template name="setIDforNamedDestination"/></fo:inline>
+					</xsl:if>
+					
 					<xsl:choose>
 						<xsl:when test="$layoutVersion = '1951' and ((ancestor::iso:preface and $level  = 1) or (parent::iso:introduction and $revision_date_num &lt; 19680101))">
 							<xsl:call-template name="add-letter-spacing">
@@ -4343,6 +4353,18 @@
 						</xsl:otherwise>
 					</xsl:choose>
 					<xsl:apply-templates select="following-sibling::*[1][local-name() = 'variant-title'][@type = 'sub']" mode="subtitle"/>
+					
+					
+					<!-- becaise @id applied above -->
+					<xsl:if test="$layoutVersion = '1951' or $layoutVersion = '1972' or $layoutVersion = '1979' or $layoutVersion = '1987' or $layoutVersion = '1989' or
+							@type = 'floating-title' or @type = 'section-title'">
+						<xsl:if test="@named_dest">
+							<fo:inline>
+								<xsl:call-template name="setIDforNamedDestination"/>
+								<xsl:value-of select="$zero_width_space"/>
+							</fo:inline>
+						</xsl:if>
+					</xsl:if>
 				</xsl:element>
 				
 				<xsl:if test="$element-name = 'fo:inline' and not(following-sibling::iso:p)">
@@ -4404,6 +4426,8 @@
 				<xsl:otherwise>fo:block</xsl:otherwise>
 			</xsl:choose>
 		</xsl:variable>
+		
+		<xsl:call-template name="setNamedDestination"/>
 		<xsl:element name="{$element-name}">
 			
 			<xsl:call-template name="setBlockAttributes">
@@ -4644,6 +4668,7 @@
 	
 	<!-- main sections -->
 	<xsl:template match="/*/*[local-name() = 'sections']/*" name="sections_node_iso" priority="3">
+		<xsl:call-template name="setNamedDestination"/>
 		<fo:block>
 			<xsl:call-template name="setId"/>
 			
@@ -4664,6 +4689,7 @@
 	
 	
 	<xsl:template match="*[local-name() = 'sections' or local-name() = 'annex']//*[local-name() = 'clause'][normalize-space() != '' or *[local-name() = 'figure'] or @id]" name="template_clause_iso"> <!-- if clause isn't empty -->
+		<xsl:call-template name="setNamedDestination"/>
 		<fo:block>
 			<xsl:if test="parent::*[local-name() = 'copyright-statement']">
 				<xsl:attribute name="role">SKIP</xsl:attribute>
