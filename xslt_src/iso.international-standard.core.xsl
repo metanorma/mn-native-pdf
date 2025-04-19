@@ -4039,6 +4039,7 @@
 			</xsl:when>
 			<xsl:otherwise>
 				<fo:block font-size="16pt" text-align="center" margin-bottom="48pt" keep-with-next="always" role="H1">
+					<xsl:call-template name="setIDforNamedDestination"/>
 					<xsl:if test="$layoutVersion = '2024'">
 						<xsl:attribute name="line-height">1.1</xsl:attribute>
 						<!-- <xsl:attribute name="margin-bottom">52pt</xsl:attribute> -->
@@ -4151,8 +4152,6 @@
 				<xsl:otherwise>fo:block</xsl:otherwise>
 			</xsl:choose>
 		</xsl:variable>
-		
-		<xsl:call-template name="setNamedDestination"/>
 		
 		<xsl:choose>
 			<xsl:when test="(($layoutVersion = '1987' and $doctype = 'technical-report') or ($layoutVersion = '1979' and $doctype = 'addendum')) and parent::iso:foreword"><!-- skip Foreword title --></xsl:when>
@@ -4393,6 +4392,7 @@
 			<xsl:call-template name="getId"/>
 		</xsl:variable> id="{$id}"  -->
 		<fo:block font-size="11pt" font-style="italic" margin-bottom="12pt" keep-with-next="always">
+			<xsl:call-template name="setIDforNamedDestination"/>
 			<!-- <xsl:if test="$layoutVersion = '2024'">
 				<xsl:attribute name="font-size">10.5pt</xsl:attribute>
 			</xsl:if> -->
