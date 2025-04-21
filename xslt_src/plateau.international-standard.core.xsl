@@ -1395,13 +1395,13 @@
 						</xsl:when>
 						<xsl:otherwise>
 							<xsl:choose>
-								<xsl:when test="parent::*[local-name() = 'ul'] and ancestor::*[local-name() = 'sections'] and $list_item_label = '・' and not(ancestor::*[local-name() = 'table'])">
+								<!-- <xsl:when test="parent::*[local-name() = 'ul'] and ancestor::*[local-name() = 'sections'] and $list_item_label = '・' and not(ancestor::*[local-name() = 'table'])">
 									<fo:inline>
 										<fo:instream-foreign-object content-width="2.5mm" fox:alt-text="ul list label">
 											<xsl:copy-of select="$list_label_black_circle"/>
 										</fo:instream-foreign-object>
 									</fo:inline>
-								</xsl:when>
+								</xsl:when> -->
 								<xsl:when test="parent::*[local-name() = 'ul'] and $list_item_label = '→'">
 									<fo:inline>
 										<fo:instream-foreign-object content-width="2.5mm" fox:alt-text="ul list label">
