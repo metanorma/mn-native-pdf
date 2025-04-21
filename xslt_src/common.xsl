@@ -1192,6 +1192,9 @@
 	</xsl:attribute-set>
 
 	<xsl:attribute-set name="permission-name-style">
+		<xsl:if test="$namespace = 'iho'">
+			<xsl:attribute name="font-weight">bold</xsl:attribute>
+		</xsl:if>
 		<xsl:if test="$namespace = 'ogc' or $namespace = 'ogc-white-paper'">
 			<xsl:attribute name="font-size">11pt</xsl:attribute>
 			<xsl:attribute name="font-weight">bold</xsl:attribute>
@@ -1222,6 +1225,9 @@
 
 	<xsl:attribute-set name="requirement-name-style">
 		<xsl:attribute name="keep-with-next">always</xsl:attribute>
+		<xsl:if test="$namespace = 'iho'">
+			<xsl:attribute name="font-weight">bold</xsl:attribute>
+		</xsl:if>
 		<xsl:if test="$namespace = 'iso'">
 			<xsl:attribute name="font-weight">bold</xsl:attribute>
 			<xsl:attribute name="text-align">center</xsl:attribute>			
@@ -1269,6 +1275,9 @@
 	</xsl:attribute-set>
 	
 	<xsl:attribute-set name="recommendation-style">
+		<xsl:if test="$namespace = 'iho'">
+			<xsl:attribute name="border">1pt solid black</xsl:attribute>
+		</xsl:if>
 		<xsl:if test="$namespace = 'ogc' or $namespace = 'ogc-white-paper'">
 			<xsl:attribute name="margin-top">6pt</xsl:attribute>
 		</xsl:if>
@@ -1278,6 +1287,9 @@
 	</xsl:attribute-set>
 	
 	<xsl:attribute-set name="recommendation-name-style">
+		<xsl:if test="$namespace = 'iho'">
+			<xsl:attribute name="font-weight">bold</xsl:attribute>
+		</xsl:if>
 		<xsl:if test="$namespace = 'ogc' or $namespace = 'ogc-white-paper'">
 			<xsl:attribute name="font-size">11pt</xsl:attribute>
 			<xsl:attribute name="font-weight">bold</xsl:attribute>
@@ -16160,12 +16172,23 @@
 	
 	<xsl:template match="*[local-name() = 'permission']/*[local-name() = 'name']">
 		<xsl:if test="normalize-space() != ''">
-			<fo:block xsl:use-attribute-sets="permission-name-style">
-				<xsl:apply-templates />
-				<xsl:if test="$namespace = 'ogc' or $namespace = 'ogc-white-paper'">
-					<xsl:text>:</xsl:text>
-				</xsl:if>
-			</fo:block>
+			<xsl:choose>
+			
+				<xsl:when test="$namespace = 'iho'">
+					<fo:inline xsl:use-attribute-sets="permission-name-style">
+						<xsl:apply-templates /><xsl:text>:</xsl:text>
+					</fo:inline>
+				</xsl:when>
+				
+				<xsl:otherwise>
+					<fo:block xsl:use-attribute-sets="permission-name-style">
+						<xsl:apply-templates />
+						<xsl:if test="$namespace = 'ogc' or $namespace = 'ogc-white-paper'">
+							<xsl:text>:</xsl:text>
+						</xsl:if>
+					</fo:block>
+				</xsl:otherwise>
+			</xsl:choose>
 		</xsl:if>
 	</xsl:template>
 	
@@ -16193,17 +16216,30 @@
 	
 	<xsl:template match="*[local-name() = 'requirement']/*[local-name() = 'name']">
 		<xsl:if test="normalize-space() != ''">
-			<fo:block xsl:use-attribute-sets="requirement-name-style">
-				<xsl:if test="$namespace = 'ogc' or $namespace = 'ogc-white-paper'">
-					<xsl:if test="../@type = 'class'">
-						<xsl:attribute name="background-color">white</xsl:attribute>
-					</xsl:if>
-				</xsl:if>
-				<xsl:apply-templates />
-				<xsl:if test="$namespace = 'iso' or $namespace = 'ogc' or $namespace = 'ogc-white-paper'">
-					<xsl:text>:</xsl:text>
-				</xsl:if>
-			</fo:block>
+			<xsl:choose>
+			
+				<xsl:when test="$namespace = 'iho'">
+					<fo:inline xsl:use-attribute-sets="requirement-name-style">
+						<xsl:apply-templates /><xsl:text>:</xsl:text>
+					</fo:inline>
+				</xsl:when>
+				
+				<xsl:otherwise>
+		
+					<fo:block xsl:use-attribute-sets="requirement-name-style">
+						<xsl:if test="$namespace = 'ogc' or $namespace = 'ogc-white-paper'">
+							<xsl:if test="../@type = 'class'">
+								<xsl:attribute name="background-color">white</xsl:attribute>
+							</xsl:if>
+						</xsl:if>
+						<xsl:apply-templates />
+						<xsl:if test="$namespace = 'iso' or $namespace = 'ogc' or $namespace = 'ogc-white-paper'">
+							<xsl:text>:</xsl:text>
+						</xsl:if>
+					</fo:block>
+					
+				</xsl:otherwise>
+			</xsl:choose>
 		</xsl:if>
 	</xsl:template>
 	
@@ -16233,7 +16269,7 @@
 	<!-- ========== -->
 	<xsl:template match="*[local-name() = 'recommendation']">
 		<xsl:call-template name="setNamedDestination"/>
-		<fo:block id="{@id}" xsl:use-attribute-sets="recommendation-style">			
+		<fo:block id="{@id}" xsl:use-attribute-sets="recommendation-style">
 			<xsl:apply-templates select="*[local-name()='name']" />
 			<xsl:apply-templates select="node()[not(local-name() = 'name')]" />
 		</fo:block>
@@ -16241,12 +16277,25 @@
 	
 	<xsl:template match="*[local-name() = 'recommendation']/*[local-name() = 'name']">
 		<xsl:if test="normalize-space() != ''">
-			<fo:block xsl:use-attribute-sets="recommendation-name-style">
-				<xsl:apply-templates />
-				<xsl:if test="$namespace = 'nist-sp'">
-					<xsl:text>:</xsl:text>
-				</xsl:if>
-			</fo:block>
+			<xsl:choose>
+			
+				<xsl:when test="$namespace = 'iho'">
+					<fo:inline xsl:use-attribute-sets="recommendation-name-style">
+						<xsl:apply-templates /><xsl:text>:</xsl:text>
+					</fo:inline>
+				</xsl:when>
+				
+				<xsl:otherwise>
+				
+					<fo:block xsl:use-attribute-sets="recommendation-name-style">
+						<xsl:apply-templates />
+						<xsl:if test="$namespace = 'nist-sp'">
+							<xsl:text>:</xsl:text>
+						</xsl:if>
+					</fo:block>
+					
+				</xsl:otherwise>
+			</xsl:choose>
 		</xsl:if>
 	</xsl:template>
 	
