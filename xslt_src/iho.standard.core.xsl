@@ -719,8 +719,34 @@
 	<!-- ============================= -->
 	<!-- ============================= -->
 	
+	<xsl:template match="*[local-name() = 'requirement'] | *[local-name() = 'recommendation'] | *[local-name() = 'permission']" priority="2" mode="update_xml_step1">
+		<xsl:copy>
+			<xsl:apply-templates select="@*|node()" mode="update_xml_step1"/>
+		</xsl:copy>
+	</xsl:template>
 	
-
+	<xsl:template match="*[local-name() = 'requirement'] | *[local-name() = 'recommendation'] | *[local-name() = 'permission']" priority="2">
+		<xsl:call-template name="setNamedDestination"/>
+		<fo:block-container id="{@id}" xsl:use-attribute-sets="recommendation-style">
+			<fo:block-container margin="2mm">
+				<fo:block-container margin="0">
+					<fo:block>
+						<xsl:apply-templates />
+					</fo:block>
+				</fo:block-container>
+			</fo:block-container>
+		</fo:block-container>
+	</xsl:template>
+	
+	<xsl:template match="*[local-name() = 'fmt-provision']" priority="2" mode="update_xml_step1">
+		<xsl:copy>
+			<xsl:apply-templates select="@*|node()" mode="update_xml_step1"/>
+		</xsl:copy>
+	</xsl:template>
+	
+	<xsl:template match="*[local-name() = 'fmt-provision']/*[local-name() = 'div']" priority="2">
+		<fo:inline><xsl:copy-of select="@id"/><xsl:apply-templates /></fo:inline>
+	</xsl:template>
 	
 	<xsl:template match="/iho:metanorma/iho:bibdata/iho:edition">
 		<xsl:call-template name="capitalize">
@@ -871,6 +897,7 @@
 				<xsl:when test="$inline = 'true'">fo:inline</xsl:when>
 				<xsl:when test="../@inline-header = 'true' and $previous-element = 'title'">fo:inline</xsl:when> <!-- first paragraph after inline title -->
 				<xsl:when test="local-name(..) = 'admonition'">fo:inline</xsl:when>
+				<xsl:when test="ancestor::*[local-name() = 'recommendation' or local-name() = 'requirement' or local-name() = 'permission'] and not(preceding-sibling::*[local-name() = 'p'])">fo:inline</xsl:when>
 				<xsl:otherwise>fo:block</xsl:otherwise>
 			</xsl:choose>
 		</xsl:variable>
@@ -912,6 +939,11 @@
 				<!-- <xsl:attribute name="margin-bottom">12pt</xsl:attribute> -->
 			</xsl:if>
 			
+			<xsl:if test="ancestor::*[local-name() = 'recommendation' or local-name() = 'requirement' or local-name() = 'permission'] and
+			not(following-sibling::*)">
+				<xsl:attribute name="space-after">0pt</xsl:attribute>
+			</xsl:if>
+			
 			<xsl:if test=".//iho:fn">
 				<xsl:attribute name="line-height-shift-adjustment">disregard-shifts</xsl:attribute>
 			</xsl:if>
@@ -920,7 +952,8 @@
 				<xsl:with-param name="split_keep-within-line" select="$split_keep-within-line"/>
 			</xsl:apply-templates>
 		</xsl:element>
-		<xsl:if test="$element-name = 'fo:inline' and not($inline = 'true') and not(local-name(..) = 'admonition')">
+		<xsl:if test="$element-name = 'fo:inline' and not($inline = 'true') and not(local-name(..) = 'admonition') and
+		not(ancestor::*[local-name() = 'recommendation' or local-name() = 'requirement' or local-name() = 'permission'])">
 			<fo:block margin-bottom="12pt">
 				<!--  <xsl:if test="ancestor::iho:annex">
 					<xsl:attribute name="margin-bottom">0</xsl:attribute>
