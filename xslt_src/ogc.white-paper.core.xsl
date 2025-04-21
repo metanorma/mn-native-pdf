@@ -386,9 +386,12 @@
 	<xsl:template match="ogc:preface//ogc:clause[@type = 'toc']" priority="4">
 		<fo:block break-after="page"/>
 		<fo:block-container line-height="1.08" font-family="Lato">
+		
+			<xsl:apply-templates select="*[local-name() = 'title']"/>
+		
 			<fo:block role="TOC">
 				
-				<xsl:apply-templates />
+				<xsl:apply-templates select="*[not(local-name() = 'title')]"/>
 			
 				<xsl:if test="count(*) = 1 and *[local-name() = 'title']"> <!-- if there isn't user ToC -->
 				
