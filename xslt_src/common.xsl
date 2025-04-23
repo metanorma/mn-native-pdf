@@ -1610,8 +1610,9 @@
 			<xsl:attribute name="margin-top">5pt</xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'iho'">
-			<xsl:attribute name="font-size">11pt</xsl:attribute>
-			<xsl:attribute name="margin-left">12.7mm</xsl:attribute>			
+			<!-- <xsl:attribute name="font-size">11pt</xsl:attribute>
+			<xsl:attribute name="margin-left">12.7mm</xsl:attribute> -->
+			<xsl:attribute name="space-before">2pt</xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'bsi' or $namespace = 'iso'">
 			<xsl:attribute name="text-align">justify</xsl:attribute>
