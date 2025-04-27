@@ -3382,7 +3382,7 @@
 												</xsl:choose>
 											</xsl:variable>
 											<xsl:variable name="section_length_str" select="string-length(normalize-space(@section))"/>
-											<xsl:variable name="section_length_mm" select="$section_length_str * 2"/>
+											<xsl:variable name="section_length_mm" select="$section_length_str * 2.1"/>
 											
 											<!-- refine the distance depends on the section string length -->
 											<xsl:attribute name="provisional-distance-between-starts">
