@@ -20633,6 +20633,7 @@
 				<xsl:when test="$caption_label = '' and parent::*[local-name() = 'foreword']">Foreword</xsl:when>
 				<xsl:when test="$caption_label = '' and parent::*[local-name() = 'introduction']">Introduction</xsl:when>
 				<xsl:when test="$caption_label = ''"></xsl:when>
+				<xsl:when test="../@unnumbered = 'true'"></xsl:when>
 				<xsl:otherwise>
 					<xsl:if test="parent::*[local-name() = 'formula']">Formula</xsl:if>
 					<xsl:value-of select="$caption_label"/>
