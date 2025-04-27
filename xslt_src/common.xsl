@@ -8897,7 +8897,10 @@
 		<xsl:if test="$namespace = 'bsi' or $namespace = 'iec' or $namespace = 'ieee' or $namespace = 'iso' or $namespace = 'jcgm'">
 			<!-- if there isn't 'thead' and there is a table's title -->
 			<xsl:if test="not(ancestor::*[local-name()='table']/*[local-name()='thead']) and ancestor::*[local-name()='table']/*[local-name()='name']">
-				<fo:table-header role="Caption">
+				<fo:table-header>
+					<xsl:if test="$namespace = 'jcgm'">
+						<xsl:attribute name="role">Caption</xsl:attribute>
+					</xsl:if>
 					<xsl:call-template name="table-header-title">
 						<xsl:with-param name="cols-count" select="$cols-count"/>
 					</xsl:call-template>
@@ -14065,6 +14068,7 @@
 	</xsl:template>
 
 	<!-- SOURCE: ... -->
+	<!-- figure/source -->
 	<xsl:template match="*[local-name() = 'figure']/*[local-name() = 'source']" priority="2">
 		<xsl:choose>
 			<xsl:when test="$namespace = 'iec'">
@@ -15408,7 +15412,8 @@
 	<xsl:template match="title" mode="bookmark"/>	
 	<xsl:template match="text()" mode="bookmark"/>
 	
-
+	
+	<!-- figure/name -->
 	<xsl:template match="*[local-name() = 'figure']/*[local-name() = 'name'] |
 								*[local-name() = 'image']/*[local-name() = 'name']">
 		<xsl:if test="normalize-space() != ''">			
@@ -15420,7 +15425,7 @@
 			</fo:block>
 		</xsl:if>
 	</xsl:template>
-					
+	
 
 	<!-- figure/fn -->
 	<xsl:template match="*[local-name() = 'figure']/*[local-name() = 'fn']" priority="2"/>
