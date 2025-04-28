@@ -20,6 +20,7 @@
 	<xsl:include href="./common.xsl"/>
 
 	<xsl:key name="kfn" match="*[local-name() = 'fn'][not(ancestor::*[(local-name() = 'table' or local-name() = 'figure' or local-name() = 'localized-strings')] and not(ancestor::*[local-name() = 'name']))]" use="@reference"/>
+	<xsl:key name="kid" match="*" use="@id"/>
 	
 	<xsl:variable name="namespace">jis</xsl:variable>
 	
@@ -1877,6 +1878,7 @@
 	</xsl:template>
 	
 	<xsl:template match="*[local-name() = 'preface']/*[local-name() = 'clause']" priority="3">
+		<xsl:call-template name="setNamedDestination"/>
 		<fo:block>
 			<xsl:call-template name="setId"/>
 			<xsl:call-template name="addReviewHelper"/>
@@ -2004,6 +2006,8 @@
 		<!-- to space-before Foreword -->
 		<xsl:if test="@ancestor = 'foreword' and $level = '1'"><fo:block></fo:block></xsl:if>
 	
+		<xsl:call-template name="setNamedDestination"/>
+		
 		<xsl:choose>
 			<xsl:when test="@inline-header = 'true' and following-sibling::*[1][self::jis:p]">
 				<fo:block role="H{$level}">
@@ -2110,6 +2114,8 @@
 						
 					</xsl:if>
 					
+					<xsl:call-template name="setIDforNamedDestinationInline"/>
+					
 					<xsl:choose>
 						<xsl:when test="$vertical_layout = 'true'">
 							<!-- <xsl:call-template name="extractTitle"/> -->
@@ -2156,6 +2162,7 @@
 	<!-- ============================= -->
 
 	<xsl:template match="*[local-name() = 'term']" priority="2">
+		<xsl:call-template name="setNamedDestination"/>
 		<fo:block id="{@id}" xsl:use-attribute-sets="term-style">
 			<xsl:if test="$namespace = 'jis'">
 				<xsl:if test="$vertical_layout = 'true'">
@@ -2170,12 +2177,14 @@
 	</xsl:template>
 
 	<xsl:template match="*[local-name() = 'introduction']">
+		<xsl:call-template name="setNamedDestination"/>
 		<fo:block id="{@id}">
 			<xsl:apply-templates />
 		</fo:block>
 	</xsl:template>
 
 	<xsl:template match="*[local-name() = 'annex']" priority="2">
+		<xsl:call-template name="setNamedDestination"/>
 		<fo:block id="{@id}">
 		</fo:block>
 		<xsl:apply-templates />

@@ -14,6 +14,7 @@
 	<xsl:output version="1.0" method="xml" encoding="UTF-8" indent="no"/>
 	
 	<xsl:key name="kfn" match="*[local-name() = 'fn'][not(ancestor::*[(local-name() = 'table' or local-name() = 'figure' or local-name() = 'localized-strings')] and not(ancestor::*[local-name() = 'name']))]" use="@reference"/>
+	<xsl:key name="kid" match="*" use="@id"/>
 
 	<xsl:variable name="namespace">rsd</xsl:variable>
 	
@@ -858,6 +859,7 @@
 			</xsl:choose>
 		</xsl:variable>
 		
+		<xsl:call-template name="setNamedDestination"/>
 		
 		<xsl:element name="{$element-name}">
 			<xsl:attribute name="font-size"><xsl:value-of select="$font-size"/></xsl:attribute>
@@ -880,6 +882,7 @@
 									<fo:table-row>
 										<fo:table-cell text-align="left">
 											<fo:block>
+												<xsl:call-template name="setIDforNamedDestinationInline"/>
 												<xsl:call-template name="extractSection"/><!-- section number 1 2 3  ... -->
 											</fo:block>
 										</fo:table-cell>
@@ -896,6 +899,7 @@
 					</fo:block-container>
 				</xsl:when>
 				<xsl:otherwise>
+						<xsl:call-template name="setIDforNamedDestinationInline"/>
 						<xsl:apply-templates />
 						<xsl:apply-templates select="following-sibling::*[1][local-name() = 'variant-title'][@type = 'sub']" mode="subtitle"/>
 				</xsl:otherwise>
@@ -935,6 +939,7 @@
 				<xsl:otherwise>fo:block</xsl:otherwise>
 			</xsl:choose>
 		</xsl:variable>
+		<xsl:call-template name="setNamedDestination"/>
 		<xsl:element name="{$element-name}">
 			<xsl:attribute name="id">
 				<xsl:value-of select="@id"/>
@@ -1128,6 +1133,7 @@
 				<xsl:attribute name="margin-left">13mm</xsl:attribute>
 			</xsl:if>
 			<fo:block-container margin-left="0mm">
+				<xsl:call-template name="setNamedDestination"/>
 				<fo:block>
 					<xsl:call-template name="setId"/>
 					<xsl:call-template name="addReviewHelper"/>

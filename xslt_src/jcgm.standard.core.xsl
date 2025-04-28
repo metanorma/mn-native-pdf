@@ -19,6 +19,7 @@
 	<xsl:include href="./common.xsl"/>
 
 	<xsl:key name="kfn" match="*[local-name() = 'fn'][not(ancestor::*[(local-name() = 'table' or local-name() = 'figure' or local-name() = 'localized-strings')] and not(ancestor::*[local-name() = 'name']))]" use="@reference"/>
+	<xsl:key name="kid" match="*" use="@id"/>
 	
 	<xsl:variable name="namespace">jcgm</xsl:variable>
 	
@@ -804,6 +805,7 @@
 				<xsl:otherwise>fo:block</xsl:otherwise>
 			</xsl:choose>
 		</xsl:variable>
+		<xsl:call-template name="setNamedDestination"/>
 		<xsl:element name="{$element-name}">
 		
 			<xsl:call-template name="setBlockAttributes">
@@ -1169,6 +1171,8 @@
 			</xsl:choose>
 		</xsl:variable>
 		
+		<xsl:call-template name="setNamedDestination"/>
+		
 			<xsl:element name="{$element-name}">
 				<xsl:attribute name="font-size"><xsl:value-of select="$font-size"/></xsl:attribute>
 				<xsl:attribute name="font-weight">bold</xsl:attribute>
@@ -1206,6 +1210,7 @@
 					<xsl:attribute name="line-height">130%</xsl:attribute>
 				</xsl:if>
 				<xsl:attribute name="role">H<xsl:value-of select="$level"/></xsl:attribute>
+				<xsl:call-template name="setIDforNamedDestinationInline"/>
 				<xsl:apply-templates />
 				<xsl:apply-templates select="following-sibling::*[1][local-name() = 'variant-title'][@type = 'sub']" mode="subtitle"/>
 			</xsl:element>

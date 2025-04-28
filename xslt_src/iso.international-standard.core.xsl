@@ -4354,7 +4354,7 @@
 					<xsl:apply-templates select="following-sibling::*[1][local-name() = 'variant-title'][@type = 'sub']" mode="subtitle"/>
 					
 					
-					<!-- becaise @id applied above -->
+					<!-- because @id from preceding clause applied, see above -->
 					<xsl:if test="$layoutVersion = '1951' or $layoutVersion = '1972' or $layoutVersion = '1979' or $layoutVersion = '1987' or $layoutVersion = '1989' or
 							@type = 'floating-title' or @type = 'section-title'">
 						<xsl:if test="@named_dest">

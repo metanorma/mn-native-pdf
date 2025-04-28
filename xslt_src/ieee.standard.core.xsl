@@ -20,6 +20,7 @@
 
 	<!-- mandatory 'key' -->
 	<xsl:key name="kfn" match="*[local-name() = 'fn'][not(ancestor::*[(local-name() = 'table' or local-name() = 'figure' or local-name() = 'localized-strings')] and not(ancestor::*[local-name() = 'name']))]" use="@reference"/>
+	<xsl:key name="kid" match="*" use="@id"/>
 	
 	<!-- mandatory variable -->
 	<xsl:variable name="namespace">ieee</xsl:variable>
@@ -1702,6 +1703,7 @@
 	</xsl:template>
 	
 	<xsl:template match="ieee:abstract">
+		<xsl:call-template name="setNamedDestination"/>
 		<fo:block>
 			<xsl:call-template name="setId"/>
 			<xsl:call-template name="addReviewHelper"/>
@@ -2355,6 +2357,7 @@
 
 					
 	<xsl:template match="*[local-name() = 'introduction'] | *[local-name() = 'foreword'] | *[local-name() = 'acknowledgements']">
+		<xsl:call-template name="setNamedDestination"/>
 		<fo:block>
 			<xsl:call-template name="setId"/>
 			<xsl:call-template name="addReviewHelper"/>
@@ -2538,6 +2541,7 @@
 			<xsl:call-template name="extractSection"/>
 		</xsl:variable>
 		
+		<xsl:call-template name="setNamedDestination"/>
 		
 		<xsl:choose>
 			<xsl:when test="string-length($section) != 0 and $element-name = 'fo:block' and ($current_template = 'whitepaper' or $current_template = 'icap-whitepaper' or $current_template = 'industry-connection-report')">
@@ -2564,6 +2568,7 @@
 								<xsl:if test="$level = 1">
 									<xsl:attribute name="color"><xsl:value-of select="$color_blue"/></xsl:attribute>
 								</xsl:if>
+								<xsl:call-template name="setIDforNamedDestinationInline"/>
 								<xsl:value-of select="$section"/>
 							</fo:block>
 						</fo:list-item-label>
@@ -2597,6 +2602,8 @@
 							<xsl:with-param name="skip">false</xsl:with-param>
 						</xsl:apply-templates> 
 					</xsl:if>
+					
+					<xsl:call-template name="setIDforNamedDestinationInline"/>
 					
 					<xsl:apply-templates />
 					<xsl:apply-templates select="following-sibling::*[1][local-name() = 'variant-title'][@type = 'sub']" mode="subtitle"/>
@@ -2660,6 +2667,8 @@
 			</xsl:choose>
 		</xsl:variable>
 		
+		<xsl:call-template name="setNamedDestination"/>
+		
 		<fo:block margin-bottom="16pt">
 			<xsl:if test="@ancestor = 'sections' and $level &gt; 2">
 				<xsl:attribute name="margin-bottom">6pt</xsl:attribute>
@@ -2670,6 +2679,7 @@
 						<xsl:attribute name="margin-bottom">2pt</xsl:attribute>
 					</xsl:if>
 					<!-- term/name -->
+					<xsl:call-template name="setIDforNamedDestination"/>
 					<xsl:apply-templates select="ieee:name" />
 					<xsl:text> </xsl:text>
 					<xsl:apply-templates select="ieee:preferred" />
@@ -2714,6 +2724,7 @@
 
 
 	<xsl:template match="*[local-name() = 'annex']" priority="2">
+		<xsl:call-template name="setNamedDestination"/>
 		<fo:block id="{@id}">
 		</fo:block>
 		<xsl:apply-templates />
@@ -2738,6 +2749,9 @@
 					<!-- 	<xsl:otherwise>fo:block</xsl:otherwise>
 					</xsl:choose>
 				</xsl:variable> -->
+				
+				<xsl:call-template name="setNamedDestination"/>
+				
 				<xsl:element name="{$element-name}">
 					<xsl:call-template name="setBlockAttributes">
 						<xsl:with-param name="text_align_default">justify</xsl:with-param>

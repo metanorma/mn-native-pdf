@@ -14,6 +14,7 @@
 	<xsl:output version="1.0" method="xml" encoding="UTF-8" indent="no"/>
 	
 	<xsl:key name="kfn" match="*[local-name() = 'fn'][not(ancestor::*[(local-name() = 'table' or local-name() = 'figure' or local-name() = 'localized-strings')] and not(ancestor::*[local-name() = 'name']))]" use="@reference"/>
+	<xsl:key name="kid" match="*" use="@id"/>
 
 	<xsl:variable name="namespace">ogc-white-paper</xsl:variable>
 
@@ -579,6 +580,7 @@
 	<!-- ====== -->
 	
 	<xsl:template match="ogc:annex/ogc:title">
+		<xsl:call-template name="setNamedDestination"/>
 		<fo:block xsl:use-attribute-sets="title-depth1-style" role="H1">			
 			<xsl:apply-templates />
 			<xsl:apply-templates select="following-sibling::*[1][local-name() = 'variant-title'][@type = 'sub']" mode="subtitle"/>
@@ -592,26 +594,31 @@
 		</xsl:variable>
 		
 		
+		<xsl:call-template name="setNamedDestination"/>
 		<xsl:choose>
 			<xsl:when test="../@inline-header = 'true'">
 				<xsl:choose>
 					<xsl:when test="$level = 1">
 						<fo:inline xsl:use-attribute-sets="title-depth1-style">
+							<xsl:call-template name="setIDforNamedDestination"/>
 							<xsl:apply-templates />
 						</fo:inline>
 					</xsl:when>
 					<xsl:when test="$level = 2">
 						<fo:inline xsl:use-attribute-sets="title-depth2-style">
+							<xsl:call-template name="setIDforNamedDestination"/>
 							<xsl:apply-templates />
 						</fo:inline>
 					</xsl:when>
 					<xsl:when test="$level = 3">
 						<fo:inline xsl:use-attribute-sets="title-depth3-style">
+							<xsl:call-template name="setIDforNamedDestination"/>
 							<xsl:apply-templates />
 						</fo:inline>
 					</xsl:when>
 					<xsl:otherwise>
 						<fo:inline font-family="Lato" role="H{$level}">
+							<xsl:call-template name="setIDforNamedDestination"/>
 							<xsl:apply-templates />
 						</fo:inline>
 					</xsl:otherwise>
@@ -621,24 +628,28 @@
 				<xsl:choose>
 					<xsl:when test="$level = 1">
 						<fo:block xsl:use-attribute-sets="title-depth1-style">
+							<xsl:call-template name="setIDforNamedDestination"/>
 							<xsl:apply-templates />
 							<xsl:apply-templates select="following-sibling::*[1][local-name() = 'variant-title'][@type = 'sub']" mode="subtitle"/>
 						</fo:block>
 					</xsl:when>
 					<xsl:when test="$level = 2">
 						<fo:block xsl:use-attribute-sets="title-depth2-style">
+							<xsl:call-template name="setIDforNamedDestination"/>
 							<xsl:apply-templates />
 							<xsl:apply-templates select="following-sibling::*[1][local-name() = 'variant-title'][@type = 'sub']" mode="subtitle"/>
 						</fo:block>
 					</xsl:when>
 					<xsl:when test="$level = 3">
 						<fo:block xsl:use-attribute-sets="title-depth3-style">
+							<xsl:call-template name="setIDforNamedDestination"/>
 							<xsl:apply-templates />
 							<xsl:apply-templates select="following-sibling::*[1][local-name() = 'variant-title'][@type = 'sub']" mode="subtitle"/>
 						</fo:block>
 					</xsl:when>
 					<xsl:otherwise>
 						<fo:block font-family="Lato" role="H{$level}">
+							<xsl:call-template name="setIDforNamedDestination"/>
 							<xsl:apply-templates />
 							<xsl:apply-templates select="following-sibling::*[1][local-name() = 'variant-title'][@type = 'sub']" mode="subtitle"/>
 						</fo:block>
@@ -664,6 +675,7 @@
 				<xsl:otherwise>fo:block</xsl:otherwise>
 			</xsl:choose>
 		</xsl:variable>
+		<xsl:call-template name="setNamedDestination"/>
 		<xsl:element name="{$element-name}">
 			<xsl:attribute name="id">
 				<xsl:value-of select="@id"/>

@@ -15,7 +15,8 @@
 	<xsl:output version="1.0" method="xml" encoding="UTF-8" indent="no"/>
 		
 	<xsl:key name="kfn" match="*[local-name() = 'fn'][not(ancestor::*[(local-name() = 'table' or local-name() = 'figure' or local-name() = 'localized-strings')] and not(ancestor::*[local-name() = 'name']))]" use="@reference"/>
-	
+	<xsl:key name="kid" match="*" use="@id"/>
+		
 	<xsl:variable name="namespace">ogc</xsl:variable>
 
 	<xsl:variable name="debug">false</xsl:variable>
@@ -1378,6 +1379,8 @@
 			</xsl:choose>
 		</xsl:variable>
 		
+		<xsl:call-template name="setNamedDestination"/>
+		
 		<xsl:choose>
 			<xsl:when test="$level = 1">			
 				<fo:block-container margin-left="-22mm" role="SKIP">
@@ -1389,6 +1392,7 @@
 								<fo:table-body>
 									<fo:table-row>
 										<fo:table-cell>
+											<xsl:call-template name="setIDforNamedDestination"/>
 											<fo:block margin-top="-3mm">
 												<xsl:for-each select="..">
 													<xsl:call-template name="insertSectionNumInCircle">
@@ -1475,6 +1479,7 @@
 				<xsl:otherwise>fo:block</xsl:otherwise>
 			</xsl:choose>
 		</xsl:variable>
+		<xsl:call-template name="setNamedDestination"/>
 		<xsl:element name="{$element-name}">
 			<xsl:if test="@id">
 				<xsl:attribute name="id">
@@ -1575,7 +1580,9 @@
 		<xsl:variable name="levelTerm">
 			<xsl:call-template name="getLevelTermName"/>
 		</xsl:variable>
+		<xsl:call-template name="setNamedDestination"/>
 		<fo:block space-before="36pt" margin-bottom="10pt" keep-with-next="always" role="H{$levelTerm}">
+			<xsl:call-template name="setIDforNamedDestination"/>
 			<fo:list-block color="{$color_text_title}" keep-with-next="always" provisional-distance-between-starts="{string-length()*3.25}mm">
 				<fo:list-item>
 					<fo:list-item-label end-indent="label-end()">
@@ -1668,6 +1675,7 @@
 	<xsl:template match="ogc:figure" priority="2">
 		<xsl:param name="indent"/>
 		<!-- <fo:block>debug figure indent=<xsl:value-of select="$indent"/></fo:block> -->
+		<xsl:call-template name="setNamedDestination"/>
 		<fo:block-container id="{@id}" margin-top="12pt" margin-bottom="12pt">			
 			<fo:block>
 				<xsl:apply-templates select="ogc:note[@type = 'units']"/>
