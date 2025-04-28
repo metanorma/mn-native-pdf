@@ -16,6 +16,7 @@
 	<xsl:param name="additionalXMLs" select="''"/> <!-- iec-rice.fr.xml  -->
 	
 	<xsl:key name="kfn" match="*[local-name() = 'fn'][not(ancestor::*[(local-name() = 'table' or local-name() = 'figure' or local-name() = 'localized-strings')] and not(ancestor::*[local-name() = 'name']))]" use="@reference"/>
+	<xsl:key name="kid" match="*" use="@id"/>
 	
 	<xsl:include href="./common.xsl"/>
 		
@@ -1816,12 +1817,14 @@
 	</xsl:template>
 	
 	<xsl:template match="iec:annex//iec:clause" priority="2">		
+		<xsl:call-template name="setNamedDestination"/>
 		<fo:block id="{@id}" margin-top="5pt" margin-bottom="10pt" text-align="justify">
 			<xsl:apply-templates />				
 		</fo:block>
 	</xsl:template>
 	
 	<xsl:template match="iec:clause//iec:clause" priority="2">
+		<xsl:call-template name="setNamedDestination"/>
 		<fo:block id="{@id}" space-after="10pt">
 			<xsl:apply-templates/>
 		</fo:block>
@@ -1831,7 +1834,9 @@
 	<!-- title      -->
 	<!-- ====== -->
 	<xsl:template match="iec:introduction/iec:title">
+		<xsl:call-template name="setNamedDestination"/>
 		<fo:block font-size="12pt" text-align="center" margin-bottom="12pt" role="H1">
+		<xsl:call-template name="setIDforNamedDestination"/>
 			<xsl:apply-templates />
 			<xsl:apply-templates select="following-sibling::*[1][local-name() = 'variant-title'][@type = 'sub']" mode="subtitle"/>
 		</fo:block>
@@ -1843,7 +1848,9 @@
 	</xsl:template>
 	
 	<xsl:template match="iec:annex/iec:title">
+		<xsl:call-template name="setNamedDestination"/>
 		<fo:block font-size="12pt" text-align="center" margin-bottom="32pt" keep-with-next="always" role="H1">
+			<xsl:call-template name="setIDforNamedDestination"/>
 			<xsl:apply-templates />
 			<xsl:apply-templates select="following-sibling::*[1][local-name() = 'variant-title'][@type = 'sub']" mode="subtitle"/>
 		</fo:block>
@@ -1877,9 +1884,11 @@
 			</xsl:choose>
 		</xsl:variable>
 			
+		<xsl:call-template name="setNamedDestination"/>
 		<xsl:choose>
 			<xsl:when test="../@inline-header = 'true'">
 				<fo:inline font-size="{$font-size}" font-weight="bold" role="H{$level}">
+					<xsl:call-template name="setIDforNamedDestination"/>
 					<xsl:apply-templates />
 				</fo:inline>
 			</xsl:when>
@@ -1899,7 +1908,8 @@
 							<xsl:when test="$level = 2 and ancestor::iec:annex">14pt</xsl:when>
 							<xsl:otherwise>5pt</xsl:otherwise>
 						</xsl:choose>
-					</xsl:attribute>					
+					</xsl:attribute>
+					<xsl:call-template name="setIDforNamedDestination"/>
 					<xsl:apply-templates />
 					<xsl:apply-templates select="following-sibling::*[1][local-name() = 'variant-title'][@type = 'sub']" mode="subtitle"/>
 				</fo:block>
@@ -1923,6 +1933,8 @@
 				<xsl:otherwise>fo:block</xsl:otherwise>
 			</xsl:choose>
 		</xsl:variable>
+		
+		<xsl:call-template name="setNamedDestination"/>
 		
 		<xsl:choose>
 			<xsl:when test="$element-name = 'fo:block'">

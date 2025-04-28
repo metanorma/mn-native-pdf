@@ -16,6 +16,7 @@
 	<xsl:include href="./common.xsl"/>
 	
 	<xsl:key name="kfn" match="*[local-name() = 'fn'][not(ancestor::*[(local-name() = 'table' or local-name() = 'figure' or local-name() = 'localized-strings')] and not(ancestor::*[local-name() = 'name']))]" use="@reference"/>
+	<xsl:key name="kid" match="*" use="@id"/>
 	
 	<xsl:variable name="namespace">itu</xsl:variable>
 	
@@ -2078,6 +2079,7 @@
 				</fo:block>
 			</xsl:otherwise>
 		</xsl:choose>
+		<xsl:call-template name="setNamedDestination"/>
 		<fo:block>
 			<xsl:call-template name="setId"/>
 			<xsl:call-template name="addReviewHelper"/>
@@ -2093,6 +2095,7 @@
 				<xsl:value-of select="$linebreak"/>
 			</fo:block>
 		</xsl:if>
+		<xsl:call-template name="setNamedDestination"/>
 		<xsl:apply-templates />
 	</xsl:template>
 	
@@ -2105,12 +2108,14 @@
 			<xsl:call-template name="getLevel"/>
 		</xsl:variable>
 		<xsl:variable name="doctype" select="ancestor::itu:metanorma/itu:bibdata/itu:ext/itu:doctype[not(@language) or @language = '']"/>
+		<xsl:call-template name="setNamedDestination"/>
 		<fo:block font-weight="bold" margin-top="18pt" margin-bottom="18pt" keep-with-next="always" role="H{$level}">
 			<xsl:if test="$doctype = 'service-publication'">
 				<xsl:attribute name="margin-top">24pt</xsl:attribute>
 				<xsl:attribute name="margin-bottom">12pt</xsl:attribute>
 				<xsl:attribute name="font-size">12pt</xsl:attribute>
 			</xsl:if>
+			<xsl:call-template name="setIDforNamedDestinationInline"/>
 			<xsl:apply-templates />
 			<xsl:apply-templates select="following-sibling::*[1][local-name() = 'variant-title'][@type = 'sub']" mode="subtitle"/>
 		</fo:block>
@@ -2135,6 +2140,7 @@
 				<xsl:otherwise>fo:block</xsl:otherwise>
 			</xsl:choose>
 		</xsl:variable>
+		<xsl:call-template name="setNamedDestination"/>
 		<xsl:element name="{$element-name}">
 			<xsl:attribute name="margin-top">6pt</xsl:attribute>
 			
@@ -2196,10 +2202,12 @@
 	
 
 	<xsl:template match="itu:clause[starts-with(@id, 'draft-warning')]/itu:title" mode="caution">
+	<xsl:call-template name="setNamedDestination"/>
 		<fo:block font-size="16pt" font-style="italic" font-weight="bold" text-align="center" space-after="6pt" role="H1">
 			<xsl:if test="$lang = 'ar'"> <!-- to prevent rendering `###` due the missing Arabic glyphs in the italic font (Times New Roman) -->
 				<xsl:attribute name="font-style">normal</xsl:attribute>
 			</xsl:if>
+			<xsl:call-template name="setIDforNamedDestinationInline"/>
 			<xsl:apply-templates />
 			<xsl:apply-templates select="following-sibling::*[1][local-name() = 'variant-title'][@type = 'sub']" mode="subtitle"/>
 		</fo:block>
@@ -2217,8 +2225,10 @@
 	<!-- ====== -->	
 	<xsl:template match="itu:annex/itu:title">
 		<xsl:variable name="doctype" select="ancestor::itu:metanorma/itu:bibdata/itu:ext/itu:doctype[not(@language) or @language = '']"/>
+		<xsl:call-template name="setNamedDestination"/>
 		<fo:block  font-size="14pt" font-weight="bold" text-align="center" margin-bottom="18pt" role="H1">			
 			<fo:block>
+				<xsl:call-template name="setIDforNamedDestinationInline"/>
 				<xsl:apply-templates />
 				<xsl:apply-templates select="following-sibling::*[1][local-name() = 'variant-title'][@type = 'sub']" mode="subtitle"/>
 			</fo:block>
@@ -2308,6 +2318,8 @@
 			</xsl:choose>
 		</xsl:variable>
 		
+		<xsl:call-template name="setNamedDestination"/>
+		
 		<xsl:element name="{$element-name}">
 			<xsl:attribute name="font-size"><xsl:value-of select="$font-size"/></xsl:attribute>
 			<xsl:attribute name="font-weight">bold</xsl:attribute>
@@ -2325,6 +2337,7 @@
 				</xsl:attribute>
 			</xsl:if>
 			<xsl:attribute name="role">H<xsl:value-of select="$level"/></xsl:attribute>
+			<xsl:call-template name="setIDforNamedDestinationInline"/>
 			<xsl:apply-templates />
 			<xsl:apply-templates select="following-sibling::*[1][local-name() = 'variant-title'][@type = 'sub']" mode="subtitle"/>
 		</xsl:element>
@@ -2371,6 +2384,7 @@
 		<xsl:variable name="levelTerm">
 			<xsl:call-template name="getLevelTermName"/>
 		</xsl:variable>
+		<xsl:call-template name="setNamedDestination"/>
 		<fo:block space-before="6pt" text-align="justify" role="H{$levelTerm}">
 			<fo:inline padding-right="5mm" font-weight="bold">				
 				<!-- level=<xsl:value-of select="$level"/> -->

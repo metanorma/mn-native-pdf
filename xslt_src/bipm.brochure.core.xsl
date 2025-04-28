@@ -21,6 +21,7 @@
 	<xsl:param name="final_transform">true</xsl:param>
 	
 	<xsl:key name="kfn" match="*[local-name() = 'fn'][not(ancestor::*[(local-name() = 'table' or local-name() = 'figure' or local-name() = 'localized-strings')] and not(ancestor::*[local-name() = 'name']))]" use="@reference"/>
+	<xsl:key name="kid" match="*" use="@id"/>
 	
 	<xsl:variable name="first_pass" select="count($index//item) = 0"/>
 	
@@ -2332,6 +2333,8 @@
 			</xsl:choose>
 		</xsl:variable>
 		
+		<xsl:call-template name="setNamedDestination"/>
+		
 		<fo:block-container margin-left="-14mm" font-family="Arial" font-size="{$font-size}" font-weight="bold" keep-with-next="always"  line-height="130%">				 <!-- line-height="145%" -->
 			<xsl:if test="local-name(preceding-sibling::*[1]) = 'clause'">
 				<xsl:attribute name="id"><xsl:value-of select="preceding-sibling::*[1]/@id"/></xsl:attribute>
@@ -2414,10 +2417,14 @@
 										<xsl:attribute name="text-align">left</xsl:attribute>
 									</xsl:if>
 									
+									<xsl:call-template name="setIDforNamedDestinationInline"/>
+									
 									<xsl:apply-templates />
 									<xsl:apply-templates select="following-sibling::*[1][local-name() = 'variant-title'][@type = 'sub']" mode="subtitle"/>
 								</xsl:when>
 								<xsl:otherwise>
+									
+									<xsl:call-template name="setIDforNamedDestinationInline"/>
 									
 									<xsl:apply-templates />
 									<xsl:apply-templates select="following-sibling::*[1][local-name() = 'variant-title'][@type = 'sub']" mode="subtitle"/>
@@ -2461,6 +2468,7 @@
 
 
 	<xsl:template match="bipm:preface/*[not(local-name() = 'note' or local-name() = 'admonition')][1]" priority="3">
+		<xsl:call-template name="setNamedDestination"/>
 		<fo:block keep-with-next="always">
 			<xsl:call-template name="setId"/>
 			<xsl:call-template name="addReviewHelper"/>
@@ -2618,6 +2626,7 @@
 		</xsl:variable>					
 		<xsl:variable name="space-before-value" select="normalize-space($space-before)"/>			
 		
+		<xsl:call-template name="setNamedDestination"/>
 		<fo:block keep-with-next="always">
 			<xsl:call-template name="setId"/>
 			<xsl:call-template name="addReviewHelper"/>
@@ -2831,6 +2840,7 @@
 
 	<!-- from common.xsl -->
 	<xsl:template match="*[local-name() = 'clause']" priority="2">
+		<xsl:call-template name="setNamedDestination"/>
 		<xsl:choose>
 			<xsl:when test="count(./node()) = 0"> <!-- if empty clause, then move id into next title -->
 				<xsl:choose>
@@ -2938,6 +2948,7 @@
 			</xsl:choose>
 		</xsl:variable>
 		
+		<xsl:call-template name="setNamedDestination"/>
 		<xsl:element name="{$element-name}">
 			<xsl:attribute name="id">
 				<xsl:value-of select="@id"/>

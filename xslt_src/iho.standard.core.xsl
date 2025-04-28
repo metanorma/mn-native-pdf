@@ -16,6 +16,7 @@
 	<xsl:include href="./common.xsl"/>
 
 	<xsl:key name="kfn" match="*[local-name() = 'fn'][not(ancestor::*[(local-name() = 'table' or local-name() = 'figure' or local-name() = 'localized-strings')] and not(ancestor::*[local-name() = 'name']))]" use="@reference"/>
+	<xsl:key name="kid" match="*" use="@id"/>
 	
 	<xsl:variable name="namespace">iho</xsl:variable>
 	
@@ -788,7 +789,9 @@
 	<!-- ====== -->
 	
 	<xsl:template match="iho:annex/iho:title">
+		<xsl:call-template name="setNamedDestination"/>
 		<fo:block font-size="12pt" font-weight="bold" text-align="center" margin-bottom="12pt" keep-with-next="always" role="H1">			
+			<xsl:call-template name="setIDforNamedDestination"/>
 			<xsl:apply-templates />
 			<xsl:apply-templates select="following-sibling::*[1][local-name() = 'variant-title'][@type = 'sub']" mode="subtitle"/>
 		</fo:block>
@@ -809,6 +812,7 @@
 				<xsl:apply-templates />
 			</xsl:when>
 			<xsl:otherwise>
+				<xsl:call-template name="setNamedDestination"/>
 				<fo:block>
 					<xsl:call-template name="setId"/>
 					<xsl:call-template name="addReviewHelper"/>
@@ -839,6 +843,8 @@
 				<xsl:otherwise>fo:block</xsl:otherwise>
 			</xsl:choose>
 		</xsl:variable>
+		
+		<xsl:call-template name="setNamedDestination"/>
 		
 		<xsl:element name="{$element-name}">
 			<xsl:for-each select="parent::*[local-name() = 'clause']">
@@ -873,6 +879,8 @@
 				<xsl:attribute name="text-align">center</xsl:attribute>
 			</xsl:if>
 			
+			<xsl:call-template name="setIDforNamedDestinationInline"/>
+			
 			<xsl:apply-templates />
 			<xsl:apply-templates select="following-sibling::*[1][local-name() = 'variant-title'][@type = 'sub']" mode="subtitle"/>
 		</xsl:element>
@@ -901,6 +909,7 @@
 				<xsl:otherwise>fo:block</xsl:otherwise>
 			</xsl:choose>
 		</xsl:variable>
+		<xsl:call-template name="setNamedDestination"/>
 		<xsl:element name="{$element-name}">
 			<xsl:attribute name="text-align">
 				<xsl:choose>

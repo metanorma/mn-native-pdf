@@ -22477,6 +22477,12 @@
 		</xsl:if>
 	</xsl:template>
 	
+	<xsl:template name="setIDforNamedDestinationInline">
+		<xsl:if test="@named_dest">
+			<fo:inline><xsl:call-template name="setIDforNamedDestination"/></fo:inline>
+		</xsl:if>
+	</xsl:template>
+	
 	<xsl:template name="setNamedDestination">
 		<!-- skip GUID, e.g. _33eac3cb-9663-4291-ae26-1d4b6f4635fc -->
 		<xsl:if test="@id and 

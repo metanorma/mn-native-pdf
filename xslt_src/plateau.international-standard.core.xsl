@@ -20,6 +20,7 @@
 	<xsl:include href="./common.xsl"/>
 
 	<xsl:key name="kfn" match="*[local-name() = 'fn'][not(ancestor::*[(local-name() = 'table' or local-name() = 'figure' or local-name() = 'localized-strings')] and not(ancestor::*[local-name() = 'name']))]" use="@reference"/>
+	<xsl:key name="kid" match="*" use="@id"/>
 	
 	<xsl:variable name="namespace">plateau</xsl:variable>
 	
@@ -920,6 +921,7 @@
 	</xsl:template>
 	
 	<xsl:template match="*[local-name() = 'preface']/*[local-name() = 'page_sequence']/*[local-name() = 'clause']" priority="3">
+		<xsl:call-template name="setNamedDestination"/>
 		<fo:block>
 			<xsl:call-template name="setId"/>
 			<xsl:call-template name="addReviewHelper"/>
@@ -1056,10 +1058,11 @@
 		<!-- to space-before Foreword -->
 		<xsl:if test="ancestor::*[local-name() = 'foreword'] and $level = '1'"><fo:block></fo:block></xsl:if>
 	
-
+		<xsl:call-template name="setNamedDestination"/>
 		<xsl:choose>
 			<xsl:when test="@inline-header = 'true' and following-sibling::*[1][self::plateau:p]">
 				<fo:block role="H{$level}">
+					<xsl:call-template name="setIDforNamedDestination"/>
 					<xsl:for-each select="following-sibling::*[1][self::plateau:p]">
 						<xsl:call-template name="paragraph">
 							<xsl:with-param name="inline-header">true</xsl:with-param>
@@ -1125,6 +1128,8 @@
 						</xsl:choose>
 					</xsl:if>
 					
+					<xsl:call-template name="setIDforNamedDestinationInline"/>
+					
 					<xsl:call-template name="extractTitle"/>
 					
 					<xsl:apply-templates select="following-sibling::*[1][local-name() = 'variant-title'][@type = 'sub']" mode="subtitle"/>
@@ -1143,6 +1148,7 @@
 	</xsl:template>
 
 	<xsl:template match="*[local-name() = 'sections']/*[local-name() = 'page_sequence']//*[local-name() = 'clause']" priority="20">
+		<xsl:call-template name="setNamedDestination"/>
 		<fo:block keep-with-next="always">
 			<fo:block id="{@id}" />
 		</fo:block>
@@ -1151,6 +1157,7 @@
 	
 	<!-- indent for clause level 4 and more -->
 	<xsl:template match="*[local-name() = 'sections']/*[local-name() = 'page_sequence']//*[local-name() = 'clause'][*[local-name() = 'title'][@depth &gt;= 4]]" priority="20">
+		<xsl:call-template name="setNamedDestination"/>
 		<fo:block keep-with-next="always">
 			<fo:block id="{@id}" />
 		</fo:block>
@@ -1175,6 +1182,7 @@
 	
 
 	<xsl:template match="*[local-name() = 'annex']" priority="2">
+		<xsl:call-template name="setNamedDestination"/>
 		<fo:block id="{@id}">
 		</fo:block>
 		<xsl:apply-templates />
@@ -1200,6 +1208,8 @@
 						<xsl:otherwise>fo:block</xsl:otherwise>
 					</xsl:choose>
 				</xsl:variable>
+				
+				<xsl:call-template name="setNamedDestination"/>
 				
 				<xsl:element name="{$element-name}">
 					<xsl:call-template name="setBlockAttributes">

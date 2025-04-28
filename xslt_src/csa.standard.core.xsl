@@ -14,6 +14,7 @@
 	<xsl:output version="1.0" method="xml" encoding="UTF-8" indent="yes"/>
 
 	<xsl:key name="kfn" match="*[local-name() = 'fn'][not(ancestor::*[(local-name() = 'table' or local-name() = 'figure' or local-name() = 'localized-strings')] and not(ancestor::*[local-name() = 'name']))]" use="@reference"/>
+	<xsl:key name="kid" match="*" use="@id"/>
 	
 	<xsl:variable name="namespace">csa</xsl:variable>
 
@@ -454,7 +455,10 @@
 				<xsl:otherwise>black</xsl:otherwise>
 			</xsl:choose>
 		</xsl:variable>
+		
+		<xsl:call-template name="setNamedDestination"/>
 		<fo:block font-size="12pt" text-align="center" margin-bottom="12pt" keep-with-next="always" color="{$color}" role="H{$level}">
+			<xsl:call-template name="setIDforNamedDestination"/>
 			<xsl:apply-templates />
 			<xsl:apply-templates select="following-sibling::*[1][local-name() = 'variant-title'][@type = 'sub']" mode="subtitle"/>
 		</fo:block>		
@@ -499,6 +503,8 @@
 			</xsl:choose>
 		</xsl:variable>
 		
+		<xsl:call-template name="setNamedDestination"/>
+		
 		<xsl:element name="{$element-name}">			
 			<xsl:attribute name="font-size"><xsl:value-of select="$font-size"/></xsl:attribute>
 			<xsl:attribute name="font-weight"><xsl:value-of select="$font-weight"/></xsl:attribute>
@@ -508,6 +514,8 @@
 			<xsl:attribute name="color"><xsl:value-of select="$color"/></xsl:attribute>
 			<xsl:attribute name="line-height">120%</xsl:attribute>
 			<xsl:attribute name="role">H<xsl:value-of select="$level"/></xsl:attribute>
+			
+			<xsl:call-template name="setIDforNamedDestination"/>
 			
 			<xsl:if test="$level = 2">
 				<fo:inline padding-right="1mm">							
@@ -536,6 +544,9 @@
 				<xsl:otherwise>fo:block</xsl:otherwise>
 			</xsl:choose>
 		</xsl:variable>
+		
+		<xsl:call-template name="setNamedDestination"/>
+		
 		<xsl:element name="{$element-name}">
 			<xsl:attribute name="id">
 				<xsl:value-of select="@id"/>
