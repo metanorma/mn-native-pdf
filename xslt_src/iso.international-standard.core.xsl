@@ -4354,8 +4354,8 @@
 					<xsl:apply-templates select="following-sibling::*[1][local-name() = 'variant-title'][@type = 'sub']" mode="subtitle"/>
 					
 					
-					<!-- becaise @id applied above -->
-					<xsl:if test="$layoutVersion = '1951' or $layoutVersion = '1972' or $layoutVersion = '1979' or $layoutVersion = '1987' or $layoutVersion = '1989' or
+					<!-- because @id from preceding clause applied, see above -->
+					<!-- <xsl:if test="$layoutVersion = '1951' or $layoutVersion = '1972' or $layoutVersion = '1979' or $layoutVersion = '1987' or $layoutVersion = '1989' or
 							@type = 'floating-title' or @type = 'section-title'">
 						<xsl:if test="@named_dest">
 							<fo:inline>
@@ -4363,7 +4363,7 @@
 								<xsl:value-of select="$zero_width_space"/>
 							</fo:inline>
 						</xsl:if>
-					</xsl:if>
+					</xsl:if> -->
 				</xsl:element>
 				
 				<xsl:if test="$element-name = 'fo:inline' and not(following-sibling::iso:p)">
