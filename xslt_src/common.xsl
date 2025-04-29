@@ -20655,8 +20655,14 @@
 				<xsl:when test="count(ancestor::*[local-name() = 'figure']) &gt; 1"></xsl:when> <!-- prevent id 'a)' -->
 				<xsl:when test="ancestor::*[local-name() = 'note'] or ancestor::*[local-name() = 'example'] or
 							ancestor::*[local-name() = 'termnote'] or ancestor::*[local-name() = 'termexample']"></xsl:when>
-				<xsl:when test="$caption_label = '' and parent::*[local-name() = 'foreword']">Foreword</xsl:when>
-				<xsl:when test="$caption_label = '' and parent::*[local-name() = 'introduction']">Introduction</xsl:when>
+				<xsl:when test="$caption_label = '' and parent::*[local-name() = 'foreword']">
+					<xsl:variable name="foreword_number"><xsl:number count="*[local-name() = 'foreword']" level="any"/></xsl:variable>
+					<xsl:if test="$foreword_number = 1">Foreword</xsl:if>
+				</xsl:when>
+				<xsl:when test="$caption_label = '' and parent::*[local-name() = 'introduction']">
+					<xsl:variable name="introduction_number"><xsl:number count="*[local-name() = 'introduction']" level="any"/></xsl:variable>
+					<xsl:if test="$introduction_number = 1">Introduction</xsl:if>
+				</xsl:when>
 				<xsl:when test="$caption_label = ''"></xsl:when>
 				<xsl:when test="../@unnumbered = 'true'"></xsl:when>
 				<xsl:otherwise>
@@ -22474,6 +22480,12 @@
 	<xsl:template name="setIDforNamedDestination">
 		<xsl:if test="@named_dest">
 			<xsl:attribute name="id"><xsl:value-of select="@named_dest"/></xsl:attribute>
+		</xsl:if>
+	</xsl:template>
+	
+	<xsl:template name="setIDforNamedDestinationInline">
+		<xsl:if test="@named_dest">
+			<fo:inline><xsl:call-template name="setIDforNamedDestination"/></fo:inline>
 		</xsl:if>
 	</xsl:template>
 	
