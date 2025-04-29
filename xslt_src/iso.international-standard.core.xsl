@@ -4269,9 +4269,7 @@
 						</xsl:choose>						
 					</xsl:if>
 					
-					<xsl:if test="@named_dest">
-						<fo:inline><xsl:call-template name="setIDforNamedDestination"/></fo:inline>
-					</xsl:if>
+					<xsl:call-template name="setIDforNamedDestinationInline"/>
 					
 					<xsl:choose>
 						<xsl:when test="$layoutVersion = '1951' and ((ancestor::iso:preface and $level  = 1) or (parent::iso:introduction and $revision_date_num &lt; 19680101))">
