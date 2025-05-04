@@ -1857,6 +1857,16 @@
 	<xsl:template match="*[local-name() = 'quote']/*[local-name() = 'source']" mode="flatxml_step1"/>
 	<xsl:template match="*[local-name() = 'quote']/*[local-name() = 'author']" mode="flatxml_step1"/>
 	<xsl:template match="*[local-name() = 'amend']" mode="flatxml_step1"/>
+	<!-- https://github.com/metanorma/isodoc/issues/687 -->
+	<xsl:template match="*[local-name() = 'source']" mode="flatxml_step1"/>
+	
+	<xsl:template match="*[local-name() = 'fmt-source']" />
+	<xsl:template match="*[local-name() = 'fmt-source']" mode="flatxml_step1">
+		<xsl:element name="source" namespace="{$namespace_full}">
+			<xsl:copy-of select="@*"/>
+			<xsl:apply-templates mode="flatxml_step1"/>
+		</xsl:element>
+	</xsl:template>
 	
 	<xsl:template name="setCrossAlignAttributes">
 		<xsl:variable name="is_cross_aligned">
