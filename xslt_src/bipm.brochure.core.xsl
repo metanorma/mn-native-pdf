@@ -1016,7 +1016,7 @@
 		</xsl:if>
 	</xsl:template>
 	
-	<xsl:template match="*[local-name() = 'fn']/*[local-name() = 'fmt-fn-label']/*[local-name() = 'sup']" priority="5" mode="flatxml">
+	<xsl:template match="*[local-name() = 'fn']/*[local-name() = 'fmt-fn-label']//*[local-name() = 'sup']" priority="5" mode="flatxml">
 		<xsl:apply-templates mode="flatxml"/>
 	</xsl:template>
 	
@@ -3265,7 +3265,7 @@
 	</xsl:template>
 
 	<!-- see <xsl:template match="*[local-name()='fn']"> -->
-	<xsl:template match="*[local-name() = 'fn']/*[local-name() = 'fmt-fn-label']/*[local-name() = 'sup']" priority="5">
+	<xsl:template match="*[local-name() = 'fn']/*[local-name() = 'fmt-fn-label']//*[local-name() = 'sup']" priority="5">
 		<xsl:apply-templates />
 	</xsl:template>
 	<!-- For: <fo:inline font-style="normal">(</fo:inline>a<fo:inline font-style="normal">)</fo:inline> -->
