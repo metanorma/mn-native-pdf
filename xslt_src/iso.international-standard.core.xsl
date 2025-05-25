@@ -170,7 +170,9 @@
 	</xsl:variable>
     
 	<xsl:variable name="doctype_uppercased" select="java:toUpperCase(java:java.lang.String.new($doctype_localized))"/>
-	 	
+	 
+	<xsl:variable name="doctype_customized" select="normalize-space(/iso:metanorma/iso:metanorma-extension/iso:presentation-metadata/iso:doctype-customized)"/>
+		
 	<xsl:variable name="stage" select="number(/iso:metanorma/iso:bibdata/iso:status/iso:stage)"/>
 	<xsl:variable name="substage" select="number(/iso:metanorma/iso:bibdata/iso:status/iso:substage)"/>	
 	<xsl:variable name="stagename" select="normalize-space(/iso:metanorma/iso:bibdata/iso:ext/iso:stagename)"/>
@@ -1919,8 +1921,6 @@
 															</xsl:otherwise>
 														</xsl:choose>
 													</xsl:variable>
-													
-													<xsl:variable name="doctype_customized" select="normalize-space(/iso:metanorma/iso:metanorma-extension/iso:presentation-metadata/iso:doctype-customized)"/>
 													
 													<xsl:choose>
 														<xsl:when test="$doctype_customized != ''"><xsl:value-of select="$doctype_customized"/></xsl:when>
@@ -5047,6 +5047,7 @@
 									<fo:table-cell>
 										<fo:block>
 											<xsl:choose>
+												<xsl:when test="$doctype_customized != ''"><xsl:value-of select="$doctype_customized"/></xsl:when>
 												<xsl:when test="$layoutVersion = '2024'">
 													<xsl:choose>
 														<xsl:when test="$doctype = 'committee-document'"><xsl:value-of select="$doctype_localized"/></xsl:when>
