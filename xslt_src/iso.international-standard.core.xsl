@@ -1913,8 +1913,10 @@
 														</xsl:choose>
 													</xsl:variable>
 													
+													<xsl:variable name="doctype_customized" select="normalize-space(/iso:metanorma/iso:metanorma-extension/iso:presentation-metadata/iso:doctype-customized)"/>
 													
 													<xsl:choose>
+														<xsl:when test="$doctype_customized != ''"><xsl:value-of select="$doctype_customized"/></xsl:when>
 														<xsl:when test="$stage-abbreviation = 'DIS'"> <!--  or $stage-abbreviation = 'DAMD' or $stage-abbreviation = 'DAM' -->
 															<xsl:choose>
 																<xsl:when test="normalize-space($stagename_localized_coverpage) != ''">
