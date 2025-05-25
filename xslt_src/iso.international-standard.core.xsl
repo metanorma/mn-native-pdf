@@ -433,6 +433,13 @@
 	<xsl:variable name="layoutVersion" select="normalize-space($layoutVersion_)"/>
 	<xsl:variable name="cover_page_border">0.5pt solid black</xsl:variable>
 	<xsl:variable name="color_red">rgb(237, 28, 36)</xsl:variable>
+	<xsl:variable name="color_secondary_value" select="normalize-space(/iso:metanorma/iso:metanorma-extension/iso:presentation-metadata/iso:color-secondary)"/>
+	<xsl:variable name="color_secondary">
+		<xsl:choose>
+			<xsl:when test="$color_secondary_value != ''"><xsl:value-of select="$color_secondary_value"/></xsl:when>
+			<xsl:otherwise><xsl:value-of select="$color_red"/></xsl:otherwise>
+		</xsl:choose>
+	</xsl:variable>
 	
 	
 	<xsl:variable name="XML" select="/"/>
@@ -1979,7 +1986,7 @@
 										<fo:table-cell number-columns-spanned="2" display-align="after" padding-left="6mm">
 											<fo:block font-size="19pt" font-weight="bold" line-height="1">
 												<xsl:if test="$stage &gt;=60 and $substage != 0">
-													<xsl:attribute name="color"><xsl:value-of select="$color_red"/></xsl:attribute>
+													<xsl:attribute name="color"><xsl:value-of select="$color_secondary"/></xsl:attribute>
 												</xsl:if>
 												<xsl:choose>
 													<xsl:when test="contains($docidentifierISO, ' ')">
