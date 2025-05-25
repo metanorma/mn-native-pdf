@@ -5604,13 +5604,23 @@
 									<fo:block margin-top="18pt" margin-bottom="-1mm" line-height="1.1"><xsl:value-of select="$copyrightTextLastPage2024"/></fo:block>
 								</fo:block>
 							</fo:table-cell>
-							<fo:table-cell number-columns-spanned="2" text-align="right" display-align="after">
-								<fo:block font-size="16pt" font-weight="bold" margin-bottom="1mm" margin-right="1.5mm">
-									<xsl:if test="$stage &gt;=60 and $substage != 0">
-										<xsl:attribute name="color"><xsl:value-of select="$color_red"/></xsl:attribute>
-									</xsl:if>
-									<xsl:text>iso.org</xsl:text>
-								</fo:block>
+							<fo:table-cell number-columns-spanned="2" display-align="after">
+								<xsl:choose>
+									<xsl:when test="/iso:metanorma/iso:boilerplate/iso:feedback-statement">
+										<fo:block font-size="16pt" margin-bottom="1mm" margin-right="1.5mm">
+											<xsl:apply-templates select="/iso:metanorma/iso:boilerplate/iso:feedback-statement"/>
+										</fo:block>
+									</xsl:when>
+									<xsl:otherwise>
+										<xsl:attribute name="text-align">right</xsl:attribute>
+										<fo:block font-size="16pt" font-weight="bold" margin-bottom="1mm" margin-right="1.5mm">
+											<xsl:if test="$stage &gt;=60 and $substage != 0">
+												<xsl:attribute name="color"><xsl:value-of select="$color_red"/></xsl:attribute>
+											</xsl:if>
+											<xsl:text>iso.org</xsl:text>
+										</fo:block>
+									</xsl:otherwise>
+								</xsl:choose>
 							</fo:table-cell>
 						</fo:table-row>
 					</fo:table-body>
