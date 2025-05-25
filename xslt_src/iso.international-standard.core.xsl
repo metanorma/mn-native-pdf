@@ -4041,9 +4041,9 @@
 				<fo:block>
 					<xsl:if test="following-sibling::iso:p">
 						<xsl:attribute name="margin-bottom">3pt</xsl:attribute>
-						<xsl:attribute name="margin-left">0.5mm</xsl:attribute>
-						<xsl:attribute name="margin-right">0.5mm</xsl:attribute>
 					</xsl:if>
+					<xsl:attribute name="margin-left">0.5mm</xsl:attribute>
+					<xsl:attribute name="margin-right">0.5mm</xsl:attribute>
 					<xsl:if test="contains(@id, 'address') or contains(normalize-space(), 'Tel:') or contains(normalize-space(), 'Phone:')">
 						<xsl:attribute name="margin-left">4.5mm</xsl:attribute>
 					</xsl:if>
