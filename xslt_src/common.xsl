@@ -22060,7 +22060,7 @@
 										<xsl:value-of select="$title_prefix"/>
 										<xsl:value-of select="*[local-name() = 'title']"/>
 									</xsl:when>
-									<xsl:when test="$namespace = 'iho' or $namespace = 'csa' or $namespace = 'csd' or $namespace = 'rsd' or $namespace = 'ogc' or $namespace = 'ogc-white-paper' or $namespace = 'mpfd'">								
+									<xsl:when test="$namespace = 'iho' or $namespace = 'csa' or $namespace = 'csd' or $namespace = 'rsd' or $namespace = 'ogc' or $namespace = 'ogc-white-paper' or $namespace = 'mpfd'">
 										<xsl:value-of select="*[local-name() = 'title'][@language = $lang]"/>
 									</xsl:when>
 									<xsl:when test="$namespace = 'm3d'">
@@ -22072,7 +22072,21 @@
 									<xsl:otherwise>
 										<xsl:choose>
 											<xsl:when test="*[local-name() = 'title'][@language = $lang and @type = 'main']">
-												<xsl:value-of select="*[local-name() = 'title'][@language = $lang and @type = 'main']"/>
+												<!-- <xsl:value-of select="*[local-name() = 'title'][@language = $lang and @type = 'main']"/> -->
+												<xsl:variable name="partnumber" select="*[local-name() = 'ext']/*[local-name() = 'structuredidentifier']/*[local-name() = 'project-number']/@part"/>
+												<xsl:for-each select="*[local-name() = 'title'][@language = $lang and @type = 'title-intro'] |
+															*[local-name() = 'title'][@language = $lang and @type = 'title-main'] |
+															*[local-name() = 'title'][@language = $lang and @type = 'title-complementary'] |
+															*[local-name() = 'title'][@language = $lang and @type = 'title-part']">
+													<xsl:if test="@type = 'title-part'">
+														<xsl:call-template name="getLocalizedString"><xsl:with-param name="key">locality.part</xsl:with-param></xsl:call-template>
+														<xsl:text> </xsl:text>
+														<xsl:value-of select="$partnumber"/>
+														<xsl:text>: </xsl:text>
+													</xsl:if>
+													<xsl:value-of select="."/>
+													<xsl:if test="position() != last()"><xsl:text> — </xsl:text></xsl:if>
+												</xsl:for-each>
 											</xsl:when>
 											<xsl:otherwise>
 												<xsl:value-of select="*[local-name() = 'title'][@language = $lang and @type = 'title-main']"/>
