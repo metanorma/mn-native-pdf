@@ -22073,6 +22073,13 @@
 										<xsl:choose>
 											<xsl:when test="*[local-name() = 'title'][@language = $lang and @type = 'main']">
 												<!-- <xsl:value-of select="*[local-name() = 'title'][@language = $lang and @type = 'main']"/> -->
+												<xsl:variable name="bibdata_doctype" select="*[local-name() = 'ext']/*[local-name() = 'doctype']"/>
+												<xsl:if test="$bibdata_doctype = 'amendment'">
+													<xsl:variable name="bibdata_doctype_localized" select="*[local-name() = 'ext']/*[local-name() = 'doctype'][@language = $lang]"/>
+													<xsl:variable name="bibdata_amendment_number" select="*[local-name() = 'ext']/*[local-name() = 'structuredidentifier']/*[local-name() = 'project-number']/@amendment"/>
+													<xsl:value-of select="normalize-space(concat($bibdata_doctype_localized, ' ', $bibdata_amendment_number))"/>
+													<xsl:text> — </xsl:text>
+												</xsl:if>
 												<xsl:variable name="partnumber" select="*[local-name() = 'ext']/*[local-name() = 'structuredidentifier']/*[local-name() = 'project-number']/@part"/>
 												<xsl:for-each select="*[local-name() = 'title'][@language = $lang and @type = 'title-intro'] |
 															*[local-name() = 'title'][@language = $lang and @type = 'title-main'] |
