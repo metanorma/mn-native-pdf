@@ -4999,6 +4999,9 @@
 			<xsl:choose>
 				<xsl:when test="$stage-abbreviation = 'FDAMD' or $stage-abbreviation = 'FDAM' or $stage-abbreviation = 'DAMD' or $stage-abbreviation = 'DAM'">
 					<fo:block-container height="24mm" display-align="before">
+						<xsl:if test="$layoutVersion = '2024'">
+							<xsl:attribute name="height">23mm</xsl:attribute>
+						</xsl:if>
 						<fo:block font-size="{$font-size_header}" font-weight="bold" text-align="right" padding-top="12.5mm" line-height="1.1">
 							<xsl:call-template name="insertLayoutVersionAttributesTop"/>
 							<xsl:value-of select="$ISOnumber"/>
