@@ -5496,6 +5496,11 @@
 			</fo:static-content>
 			<fo:flow flow-name="xsl-region-body">
 				<fo:block-container height="252mm" display-align="after">
+					<xsl:if test="/iso:metanorma/iso:boilerplate/iso:feedback-statement">
+						<fo:block font-size="16pt" margin-bottom="3mm" margin-right="5mm">
+							<xsl:apply-templates select="/iso:metanorma/iso:boilerplate/iso:feedback-statement"/>
+						</fo:block>
+					</xsl:if>
 					<xsl:choose>
 						<xsl:when test="$layoutVersion = '1972' or $layoutVersion = '1979' or $layoutVersion = '1987'">
 							<xsl:call-template name="insertSingleLine"/>
