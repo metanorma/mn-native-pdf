@@ -168,11 +168,16 @@
 			</xsl:otherwise>
 		</xsl:choose>
 	</xsl:variable>
-    
-	<xsl:variable name="doctype_uppercased" select="java:toUpperCase(java:java.lang.String.new($doctype_localized))"/>
-	 
+  
 	<xsl:variable name="doctype_customized" select="normalize-space(/iso:metanorma/iso:metanorma-extension/iso:presentation-metadata/iso:doctype-customized)"/>
-		
+  
+	<xsl:variable name="doctype_uppercased">
+		<xsl:choose>
+			<xsl:when test="$doctype_customized != ''"><xsl:value-of select="$doctype_customized"/></xsl:when>
+			<xsl:otherwise><xsl:value-of select="java:toUpperCase(java:java.lang.String.new($doctype_localized))"/></xsl:otherwise>
+		</xsl:choose>
+	</xsl:variable>
+	
 	<xsl:variable name="stage" select="number(/iso:metanorma/iso:bibdata/iso:status/iso:stage)"/>
 	<xsl:variable name="substage" select="number(/iso:metanorma/iso:bibdata/iso:status/iso:substage)"/>	
 	<xsl:variable name="stagename" select="normalize-space(/iso:metanorma/iso:bibdata/iso:ext/iso:stagename)"/>
@@ -1345,7 +1350,14 @@
 															<xsl:attribute name="height">7mm</xsl:attribute>
 														</xsl:if>
 														<fo:table-cell><fo:block>&#xa0;</fo:block></fo:table-cell>
-														<fo:table-cell><fo:block><xsl:value-of select="$doctype_localized"/></fo:block></fo:table-cell>
+														<fo:table-cell>
+															<fo:block>
+																<xsl:choose>
+																	<xsl:when test="$doctype_customized != ''"><xsl:value-of select="$doctype_customized"/></xsl:when>
+																	<xsl:otherwise><xsl:value-of select="$doctype_localized"/></xsl:otherwise>
+																</xsl:choose>
+															</fo:block>
+														</fo:table-cell>
 														<fo:table-cell text-align="center"><fo:block><xsl:value-of select="$docnumber_with_prefix"/></fo:block></fo:table-cell>
 														<fo:table-cell text-align="right">
 															<fo:block>
@@ -1740,7 +1752,10 @@
 												<xsl:if test="$layoutVersion = '1979'">
 													<xsl:attribute name="letter-spacing">-0.02em</xsl:attribute>
 												</xsl:if>
-												<xsl:value-of select="$doctype_localized"/>
+												<xsl:choose>
+													<xsl:when test="$doctype_customized != ''"><xsl:value-of select="$doctype_customized"/></xsl:when>
+													<xsl:otherwise><xsl:value-of select="$doctype_localized"/></xsl:otherwise>
+												</xsl:choose>
 											</fo:block>
 										</fo:table-cell>
 										<fo:table-cell>
@@ -2557,6 +2572,7 @@
 													<fo:table-cell role="SKIP">
 														<fo:block text-align="left">
 															<xsl:choose>
+																<xsl:when test="$doctype_customized != ''"><xsl:value-of select="$doctype_customized"/></xsl:when>
 																<xsl:when test="$stage-abbreviation = 'FDAMD' or $stage-abbreviation = 'FDAM'"><xsl:value-of select="$doctype_uppercased"/></xsl:when>
 																<xsl:when test="$doctype = 'amendment'">
 																	<xsl:value-of select="java:toUpperCase(java:java.lang.String.new(translate(/iso:metanorma/iso:bibdata/iso:ext/iso:updates-document-type,'-',' ')))"/>
@@ -2850,7 +2866,10 @@
 										<fo:table-row role="SKIP">
 											<fo:table-cell role="SKIP">
 												<fo:block text-align="left">
-													<xsl:value-of select="$doctype_uppercased"/>
+													<xsl:choose>
+														<xsl:when test="$doctype_customized != ''"><xsl:value-of select="$doctype_customized"/></xsl:when>
+														<xsl:otherwise><xsl:value-of select="$doctype_uppercased"/></xsl:otherwise>
+													</xsl:choose>
 												</fo:block>
 											</fo:table-cell>
 											<fo:table-cell role="SKIP">
