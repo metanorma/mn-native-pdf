@@ -991,12 +991,7 @@
 												</fo:table-cell>
 												<fo:table-cell display-align="after" text-align="right">
 													<fo:block>
-														<xsl:for-each select="xalan:nodeset($price_based_on_items)/item">
-															<xsl:value-of select="."/>
-															<xsl:if test="position() != last()">
-																<fo:page-number-citation ref-id="lastBlock"/>
-															</xsl:if>										
-														</xsl:for-each>
+														<xsl:call-template name="insertPriceBasedOn"/>
 													</fo:block>
 												</fo:table-cell>
 											</fo:table-row>
@@ -1698,12 +1693,7 @@
 							</xsl:if>
 							<fo:block-container position="absolute" left="0mm" top="0mm" height="25mm" text-align="right" display-align="after" role="SKIP">
 								<fo:block>
-									<xsl:for-each select="xalan:nodeset($price_based_on_items)/item">
-										<xsl:value-of select="."/>
-										<xsl:if test="position() != last()">
-											<fo:page-number-citation ref-id="lastBlock"/>
-										</xsl:if>										
-									</xsl:for-each>
+									<xsl:call-template name="insertPriceBasedOn"/>
 								</fo:block>
 							</fo:block-container>
 						</fo:static-content>
@@ -5401,7 +5391,7 @@
 				</fo:table>
 			</fo:block-container>
 		</fo:block-container>
-	</xsl:template>
+	</xsl:template><!-- END: insertFooter1951 -->
 	<xsl:template name="insertFooter2024">
 		<xsl:param name="font-weight" select="'bold'"/>
 		<xsl:attribute name="text-align">center</xsl:attribute>
@@ -5562,12 +5552,7 @@
 						</xsl:if>
 						<!-- Price based on ... pages -->
 						<fo:block font-size="{$font-size_footer_copyright}">
-							<xsl:for-each select="xalan:nodeset($price_based_on_items)/item">
-								<xsl:value-of select="."/>
-								<xsl:if test="position() != last()">
-									<fo:page-number-citation ref-id="lastBlock"/>
-								</xsl:if>										
-							</xsl:for-each>
+							<xsl:call-template name="insertPriceBasedOn"/>
 						</fo:block>
 						<xsl:if test="$layoutVersion = '1989' and $revision_date_num &gt;= 19990101">
 							<fo:block>&#xa0;</fo:block>
@@ -5626,12 +5611,7 @@
 								<!-- Price based on ... pages -->
 								<fo:block font-size="9pt" space-before="2pt">
 									<fo:block>
-										<xsl:for-each select="xalan:nodeset($price_based_on_items)/item">
-											<xsl:value-of select="."/>
-											<xsl:if test="position() != last()">
-												<fo:page-number-citation ref-id="lastBlock"/>
-											</xsl:if>										
-										</xsl:for-each>
+										<xsl:call-template name="insertPriceBasedOn"/>
 									</fo:block>
 									<fo:block margin-top="18pt" margin-bottom="-1mm" line-height="1.1"><xsl:value-of select="$copyrightTextLastPage2024"/></fo:block>
 								</fo:block>
