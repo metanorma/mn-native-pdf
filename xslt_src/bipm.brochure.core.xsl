@@ -1307,7 +1307,7 @@
 				</xsl:if>
 				
 				<!-- Document Control -->
-				<xsl:apply-templates select="bipm:doccontrol" mode="sections"/> 
+				<xsl:apply-templates select="bipm:doccontrol | bipm:colophon" mode="sections"/> 
 				
 				<!-- Index -->
 				<xsl:apply-templates select="xalan:nodeset($indexes)/doc[@id = $docid]//bipm:indexsect" mode="index">
@@ -1471,7 +1471,7 @@
 				</xsl:if>
 				
 				<!-- Document Control -->
-				<xsl:apply-templates select="bipm:doccontrol" mode="sections"/> 
+				<xsl:apply-templates select="bipm:doccontrol | bipm:colophon" mode="sections"/> 
 				
 				<!-- Index -->
 				<xsl:apply-templates select="xalan:nodeset($indexes)/doc[@id = $docid]//bipm:indexsect" mode="index">
