@@ -300,7 +300,7 @@
 													<fo:table-cell number-columns-spanned="2" padding-top="2mm">
 														<fo:block-container width="51.5mm">
 															<fo:block>
-																<xsl:for-each select="/iho:metanorma/iho:bibdata/iho:copyright/iho:owner/iho:organization[not(iho:abbreviation = 'IHO')]">
+																<xsl:for-each select="/iho:metanorma/iho:bibdata/iho:contributor[iho:role/@type = 'publisher']/iho:organization[not(iho:abbreviation = 'IHO')]">
 																	<xsl:apply-templates select="*[local-name() = 'logo']/*[local-name() = 'image']">
 																		<xsl:with-param name="logo_width">25.8mm</xsl:with-param>
 																	</xsl:apply-templates>
