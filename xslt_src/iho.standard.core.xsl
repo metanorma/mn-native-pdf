@@ -286,7 +286,7 @@
 															</fo:instream-foreign-object>
 														</fo:block>
 													</fo:table-cell>
-													<fo:table-cell>
+													<fo:table-cell number-rows-spanned="2">
 														<fo:block-container width="79mm" height="72mm" margin-left="56.8mm" background-color="rgb(0, 172, 158)" text-align="right" display-align="after">
 															<fo:block-container margin-left="0mm">
 																<fo:block font-size="8pt" color="white" margin-right="5mm" margin-bottom="5mm" line-height-shift-adjustment="disregard-shifts">
@@ -294,6 +294,20 @@
 																</fo:block>
 															</fo:block-container>
 														</fo:block-container>					
+													</fo:table-cell>
+												</fo:table-row>
+												<fo:table-row>
+													<fo:table-cell number-columns-spanned="2" padding-top="2mm">
+														<fo:block-container width="51.5mm">
+															<fo:block>
+																<xsl:for-each select="/iho:metanorma/iho:bibdata/iho:copyright/iho:owner/iho:organization[not(iho:abbreviation = 'IHO')]">
+																	<xsl:apply-templates select="*[local-name() = 'logo']/*[local-name() = 'image']">
+																		<xsl:with-param name="logo_width">25.8mm</xsl:with-param>
+																	</xsl:apply-templates>
+																	<xsl:if test="position() != last()"><fo:inline> </fo:inline></xsl:if>
+																</xsl:for-each>
+															</fo:block>
+														</fo:block-container>
 													</fo:table-cell>
 												</fo:table-row>
 											</fo:table-body>
