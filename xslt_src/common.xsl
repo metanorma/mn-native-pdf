@@ -10,26 +10,15 @@
 											extension-element-prefixes="redirect"
 											version="1.0">
 
-	<xsl:variable name="namespace_full_">
-		<xsl:choose>
-			<xsl:when test="local-name(/*) = 'metanorma-collection'"><xsl:value-of select="namespace-uri(//*[local-name() = 'metanorma'][1])"/></xsl:when>
-			<xsl:otherwise><xsl:value-of select="namespace-uri(/*)"/></xsl:otherwise><!-- example: https://www.metanorma.org/ns/standoc -->
-		</xsl:choose>
-	</xsl:variable>
-	<xsl:variable name="namespace_full" select="normalize-space($namespace_full_)"/>
+	<!-- https://www.metanorma.org/ns/standoc -->
+	<xsl:variable name="namespace_full" select="namespace-uri(//*[local-name() = 'metanorma'][1])"/>
+		
+	<xsl:variable name="root_element">metanorma</xsl:variable>
 	
-	<xsl:variable name="root_element_">
-		<xsl:choose>
-			<xsl:when test="local-name(/*) = 'metanorma-collection'"><xsl:value-of select="local-name(//*[local-name() = 'metanorma'][1])"/></xsl:when>
-			<xsl:otherwise><xsl:value-of  select="local-name(/*)"/></xsl:otherwise><!-- example: metanorma (former iso-standard) -->
-		</xsl:choose>
-	</xsl:variable>
-	<xsl:variable name="root_element" select="normalize-space($root_element_)"/>
-	
+	<!---examples: 2013, 2024 -->
 	<xsl:variable name="document_scheme" select="normalize-space(//*[local-name() = 'metanorma']/*[local-name() = 'metanorma-extension']/*[local-name() = 'presentation-metadata'][*[local-name() = 'name'] = 'document-scheme']/*[local-name() = 'value'])"/>
 
 	<!-- external parameters -->
-	
 	<xsl:param name="svg_images"/> <!-- svg images array -->
 	<xsl:variable name="images" select="document($svg_images)"/>
 	<xsl:param name="basepath"/> <!-- base path for images -->
