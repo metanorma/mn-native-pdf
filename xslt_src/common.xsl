@@ -74,24 +74,8 @@
 	
 	<xsl:param name="table_if_debug">false</xsl:param> <!-- set 'true' to put debug width data before table or dl -->
 
-	<xsl:variable name="isApplyAutolayoutAlgorithm_">
-		<xsl:choose>
-			<xsl:when test="$namespace = 'bipm' or $namespace = 'bsi' or $namespace = 'csa' or $namespace = 'csd' or $namespace = 'iec' or $namespace = 'ieee' or $namespace = 'iho' or $namespace = 'iso' or $namespace = 'itu' or $namespace = 'jcgm' or $namespace = 'jis' or $namespace = 'm3d' or $namespace = 'mpfd' or $namespace = 'nist-sp' or $namespace = 'nist-cswp' or $namespace = 'ogc' or $namespace = 'ogc-white-paper' or $namespace = 'plateau' or $namespace = 'rsd' or $namespace = 'unece' or $namespace = 'unece-rec'">true</xsl:when>
-			<!-- <xsl:when test="$namespace = 'plateau'">skip</xsl:when> -->
-			<xsl:otherwise>false</xsl:otherwise>
-		</xsl:choose>
-	</xsl:variable>
-	<xsl:variable name="isApplyAutolayoutAlgorithm" select="normalize-space($isApplyAutolayoutAlgorithm_)"/>
-
-	<xsl:variable name="isGenerateTableIF_">
-		<xsl:choose>
-			<xsl:when test="$isApplyAutolayoutAlgorithm = 'true'">
-				<xsl:value-of select="normalize-space($table_if) = 'true'"/>
-			</xsl:when>
-			<xsl:otherwise>false</xsl:otherwise>
-		</xsl:choose>
-	</xsl:variable>
-	<xsl:variable name="isGenerateTableIF" select="normalize-space($isGenerateTableIF_)"/>
+	<xsl:variable name="isApplyAutolayoutAlgorithm">true</xsl:variable>
+	<xsl:variable name="isGenerateTableIF" select="normalize-space(normalize-space($table_if) = 'true')"/>
 
 	<xsl:variable name="lang">
 		<xsl:call-template name="getLang"/>
@@ -1286,7 +1270,6 @@
 		<xsl:if test="$namespace = 'rsd'">
 			<xsl:attribute name="margin-bottom">12pt</xsl:attribute>
 		</xsl:if>
-
 	</xsl:attribute-set>
 
 	<xsl:template name="refine_termexample-style">
@@ -2951,8 +2934,8 @@
 			<xsl:if test="ancestor::*[local-name()='preface'] and ancestor::*[local-name()='clause'][@type = 'logos']">
 				<xsl:attribute name="border">none</xsl:attribute>
 			</xsl:if>
-			
-		</xsl:if> <!-- bsi -->
+			<!-- bsi -->
+		</xsl:if>
 		
 		<xsl:if test="$namespace = 'gb'">
 			<xsl:if test="ancestor::*[local-name() = 'tfoot']">
@@ -4182,9 +4165,6 @@
 				<xsl:attribute name="font-weight">bold</xsl:attribute>
 			</xsl:if>
 		</xsl:if>
-		<!-- <xsl:if test="$namespace = 'ieee'">
-			<xsl:attribute name="padding-right">0mm</xsl:attribute>
-		</xsl:if> -->
 		<xsl:if test="$namespace = 'jis'">
 			<xsl:if test="not($vertical_layout = 'true')">
 				<xsl:attribute name="font-family">IPAexGothic</xsl:attribute>
@@ -6191,10 +6171,6 @@
 			<xsl:attribute name="margin-top">5pt</xsl:attribute>
 			<xsl:attribute name="margin-bottom">14pt</xsl:attribute>
 		</xsl:if>
-		<!-- <xsl:if test="$namespace = 'ieee'">
-			<xsl:attribute name="margin-bottom">6pt</xsl:attribute>
-			<xsl:attribute name="provisional-distance-between-starts">9.5mm</xsl:attribute>
-		</xsl:if> -->
 		<xsl:if test="$namespace = 'iho'">
 			<!-- <xsl:attribute name="line-height">115%</xsl:attribute> -->
 			<xsl:attribute name="margin-bottom">6pt</xsl:attribute>
@@ -8740,8 +8716,8 @@
 									</xsl:if>
 								</xsl:if>
 								
-								<!-- for BSI (not PAS) display Notes before footnotes -->
 								<xsl:if test="$namespace = 'bsi'">
+									<!-- for BSI (not PAS) display Notes before footnotes -->
 									<xsl:if test="$document_type != 'PAS'">
 										<xsl:apply-templates select="../*[local-name()='dl']" />
 										<xsl:apply-templates select="../*[local-name()='note'][not(@type = 'units')]" />
@@ -8749,9 +8725,8 @@
 									</xsl:if>
 								</xsl:if>
 								
-								<!-- except gb and bsi  -->
 								<xsl:choose>
-									<xsl:when test="$namespace = 'gb' or $namespace = 'bsi'"></xsl:when>
+									<xsl:when test="$namespace = 'gb' or $namespace = 'bsi'"><!-- except gb and bsi  --></xsl:when>
 									<xsl:when test="$namespace = 'jis'">
 										<xsl:apply-templates select="../*[local-name()='p' or local-name()='dl' or (local-name()='note' and not(@type = 'units')) or local-name()='example' or local-name()='source']" />
 									</xsl:when>
@@ -8806,9 +8781,8 @@
 									</xsl:otherwise>
 								</xsl:choose>
 								
-								
-								<!-- for PAS display Notes after footnotes -->
 								<xsl:if test="$namespace = 'bsi'">
+									<!-- for PAS display Notes after footnotes -->
 									<xsl:if test="$document_type = 'PAS'">
 										<xsl:apply-templates select="../*[local-name()='dl']" />
 										<xsl:apply-templates select="../*[local-name()='note'][not(@type = 'units')]" />
@@ -15661,9 +15635,6 @@
 				<xsl:if test="$namespace = 'iso'">9</xsl:if><!-- inherit -->
 				<xsl:if test="$namespace = 'bsi'">9</xsl:if>
 				<xsl:if test="$namespace = 'jcgm'">9</xsl:if>
-				<!-- <xsl:if test="$namespace = 'ieee'">							
-					<xsl:if test="$current_template = 'standard'">8</xsl:if>
-				</xsl:if> -->
 				<xsl:if test="$namespace = 'itu'">10</xsl:if>
 				<xsl:if test="$namespace = 'm3d'"></xsl:if>		
 				<xsl:if test="$namespace = 'mpfd'"></xsl:if>
@@ -15968,27 +15939,7 @@
 			<xsl:otherwise><xsl:value-of select="$text"/></xsl:otherwise>
 		</xsl:choose>
 	</xsl:template>
-	
-	
-	<!-- insert 'char' between each character in the string -->
-	<xsl:template name="interspers">
-		<xsl:param name="str"/>
-		<xsl:param name="char" select="$zero_width_space"/>
-		<xsl:if test="$str != ''">
-			<xsl:value-of select="substring($str, 1, 1)"/>
-			
-			<xsl:variable name="next_char" select="substring($str, 2, 1)"/>
-			<xsl:if test="not(contains(concat(' -.:=_— ', $char), $next_char))">
-				<xsl:value-of select="$char"/>
-			</xsl:if>
-			
-			<xsl:call-template name="interspers">
-				<xsl:with-param name="str" select="substring($str, 2)"/>
-				<xsl:with-param name="char" select="$char"/>
-			</xsl:call-template>
-		</xsl:if>
-	</xsl:template>
-	
+		
 	
 	<xsl:template name="interspers-java">
 		<xsl:param name="str"/>
@@ -16960,7 +16911,7 @@
 			</xsl:call-template>
 		</xsl:variable>
 		
-    <xsl:variable name="text"><xsl:apply-templates/></xsl:variable>
+		<xsl:variable name="text"><xsl:apply-templates/></xsl:variable>
 		<xsl:choose>
 			<xsl:when test="$lang = 'zh'"><xsl:text>、</xsl:text><xsl:value-of select="$title-modified"/><xsl:if test="normalize-space($text) != ''"><xsl:text>—</xsl:text></xsl:if></xsl:when>
 			<xsl:otherwise><xsl:text>, </xsl:text><xsl:value-of select="$title-modified"/><xsl:if test="normalize-space($text) != ''"><xsl:text> — </xsl:text></xsl:if></xsl:otherwise>
