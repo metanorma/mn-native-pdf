@@ -10,66 +10,6 @@
 											extension-element-prefixes="redirect"
 											version="1.0">
 
-	<xsl:choose>
-		<xsl:when test="$namespace = 'bipm'">
-			<!-- <xsl:strip-space elements="bipm:xref"/> -->
-		</xsl:when>
-		<xsl:when test="$namespace = 'bsi'">
-			<!-- <xsl:strip-space elements="bsi:xref"/> -->
-		</xsl:when>
-		<xsl:when test="$namespace = 'csa'">
-			<!-- <xsl:strip-space elements="csa:xref"/> -->
-		</xsl:when>
-		<xsl:when test="$namespace = 'csd'">
-			<!-- <xsl:strip-space elements="csd:xref"/> -->
-		</xsl:when>
-		<xsl:when test="$namespace = 'gb'">
-			<xsl:strip-space elements="gb:xref"/>
-		</xsl:when>
-		<xsl:when test="$namespace = 'iec'">
-			<!-- <xsl:strip-space elements="iec:xref"/> -->
-		</xsl:when>
-		<xsl:when test="$namespace = 'ieee'">
-			<!-- <xsl:strip-space elements="ieee:xref"/> -->
-		</xsl:when>
-		<xsl:when test="$namespace = 'iho'">
-			<!-- <xsl:strip-space elements="iho:xref"/> -->
-		</xsl:when>
-		<xsl:when test="$namespace = 'iso'">
-			<!-- <xsl:strip-space elements="iso:xref"/> -->
-		</xsl:when>
-		<xsl:when test="$namespace = 'itu'">
-			<!-- <xsl:strip-space elements="itu:xref"/> -->
-		</xsl:when>
-		<xsl:when test="$namespace = 'jcgm'">
-			<!-- <xsl:strip-space elements="jcgm:xref"/> -->
-		</xsl:when>
-		<xsl:when test="$namespace = 'jis'">
-			<!-- <xsl:strip-space elements="jis:xref"/> -->
-		</xsl:when>
-		<xsl:when test="$namespace = 'm3d'">
-			<xsl:strip-space elements="m3d:xref"/>
-		</xsl:when>
-		<xsl:when test="$namespace = 'mpfd'">
-			<xsl:strip-space elements="mpfd:xref"/>
-		</xsl:when>
-		<xsl:when test="$namespace = 'nist-cswp' or $namespace = 'nist-sp'">
-			<!-- <xsl:strip-space elements="nist:xref"/> -->
-		</xsl:when>
-		<xsl:when test="$namespace = 'ogc' or $namespace = 'ogc-white-paper'">
-			<!-- <xsl:strip-space elements="ogc:xref"/> -->
-		</xsl:when>
-		<xsl:when test="$namespace = 'plateau'">
-			<!-- <xsl:strip-space elements="plateau:xref"/> -->
-		</xsl:when>
-		<xsl:when test="$namespace = 'rsd'">
-			<!-- <xsl:strip-space elements="ribose:xref"/> -->
-		</xsl:when>
-		<xsl:when test="$namespace = 'unece' or $namespace = 'unece-rec'">
-			<xsl:strip-space elements="un:xref"/>
-		</xsl:when>
-	</xsl:choose>
-
 	<xsl:variable name="namespace_full_">
 		<xsl:choose>
 			<xsl:when test="local-name(/*) = 'metanorma-collection'"><xsl:value-of select="namespace-uri(//*[local-name() = 'metanorma'][1])"/></xsl:when>
