@@ -452,7 +452,6 @@
 	<xsl:variable name="XML" select="/"/>
 	
 	<xsl:template match="/">
-		<xsl:call-template name="namespaceCheck"/>
 		
 		<fo:root xmlns:fo="http://www.w3.org/1999/XSL/Format" xml:lang="{$lang}">
 			
@@ -1496,14 +1495,6 @@
 				<xsl:for-each select="/*/*[local-name()='sections']/*">
 					<xsl:sort select="@displayorder" data-type="number"/>
 					<xsl:apply-templates select="." mode="update_xml_step_move_pagebreak"/>
-					<xsl:if test="$namespace = 'm3d'">
-						<xsl:if test="local-name()='clause' and @type='scope'">
-							<xsl:if test="/*/*[local-name()='bibliography']/*[local-name()='references'][@normative='true']">
-								<fo:block break-after="page"/>
-								<xsl:element name="pagebreak" namespace="{$namespace_full}"/>
-							</xsl:if>
-						</xsl:if>
-					</xsl:if>
 				</xsl:for-each>
 			</xsl:element>
 		</xsl:element>

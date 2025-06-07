@@ -1073,9 +1073,6 @@
 		<xsl:variable name="curr_xml">
 			<xsl:copy-of select="."/>
 		</xsl:variable>
-		<xsl:for-each select="xalan:nodeset($curr_xml)">
-			<xsl:call-template name="namespaceCheck"/>
-		</xsl:for-each>
 		
 		<xsl:variable name="curr_lang" select="bipm:bibdata/bipm:language[@current = 'true']"/>
 		

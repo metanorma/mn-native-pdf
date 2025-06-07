@@ -70,7 +70,6 @@
 	</xsl:variable>
 	
 	<xsl:template match="/">
-		<xsl:call-template name="namespaceCheck"/>
 		<fo:root xmlns:fo="http://www.w3.org/1999/XSL/Format" xml:lang="{$lang}">
 			<xsl:variable name="root-style">
 				<root-style xsl:use-attribute-sets="root-style"/>

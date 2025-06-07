@@ -10,86 +10,15 @@
 											extension-element-prefixes="redirect"
 											version="1.0">
 
-	<xsl:choose>
-		<xsl:when test="$namespace = 'bipm'">
-			<!-- <xsl:strip-space elements="bipm:xref"/> -->
-		</xsl:when>
-		<xsl:when test="$namespace = 'bsi'">
-			<!-- <xsl:strip-space elements="bsi:xref"/> -->
-		</xsl:when>
-		<xsl:when test="$namespace = 'csa'">
-			<!-- <xsl:strip-space elements="csa:xref"/> -->
-		</xsl:when>
-		<xsl:when test="$namespace = 'csd'">
-			<!-- <xsl:strip-space elements="csd:xref"/> -->
-		</xsl:when>
-		<xsl:when test="$namespace = 'gb'">
-			<xsl:strip-space elements="gb:xref"/>
-		</xsl:when>
-		<xsl:when test="$namespace = 'iec'">
-			<!-- <xsl:strip-space elements="iec:xref"/> -->
-		</xsl:when>
-		<xsl:when test="$namespace = 'ieee'">
-			<!-- <xsl:strip-space elements="ieee:xref"/> -->
-		</xsl:when>
-		<xsl:when test="$namespace = 'iho'">
-			<!-- <xsl:strip-space elements="iho:xref"/> -->
-		</xsl:when>
-		<xsl:when test="$namespace = 'iso'">
-			<!-- <xsl:strip-space elements="iso:xref"/> -->
-		</xsl:when>
-		<xsl:when test="$namespace = 'itu'">
-			<!-- <xsl:strip-space elements="itu:xref"/> -->
-		</xsl:when>
-		<xsl:when test="$namespace = 'jcgm'">
-			<!-- <xsl:strip-space elements="jcgm:xref"/> -->
-		</xsl:when>
-		<xsl:when test="$namespace = 'jis'">
-			<!-- <xsl:strip-space elements="jis:xref"/> -->
-		</xsl:when>
-		<xsl:when test="$namespace = 'm3d'">
-			<xsl:strip-space elements="m3d:xref"/>
-		</xsl:when>
-		<xsl:when test="$namespace = 'mpfd'">
-			<xsl:strip-space elements="mpfd:xref"/>
-		</xsl:when>
-		<xsl:when test="$namespace = 'nist-cswp' or $namespace = 'nist-sp'">
-			<!-- <xsl:strip-space elements="nist:xref"/> -->
-		</xsl:when>
-		<xsl:when test="$namespace = 'ogc' or $namespace = 'ogc-white-paper'">
-			<!-- <xsl:strip-space elements="ogc:xref"/> -->
-		</xsl:when>
-		<xsl:when test="$namespace = 'plateau'">
-			<!-- <xsl:strip-space elements="plateau:xref"/> -->
-		</xsl:when>
-		<xsl:when test="$namespace = 'rsd'">
-			<!-- <xsl:strip-space elements="ribose:xref"/> -->
-		</xsl:when>
-		<xsl:when test="$namespace = 'unece' or $namespace = 'unece-rec'">
-			<xsl:strip-space elements="un:xref"/>
-		</xsl:when>
-	</xsl:choose>
-
-	<xsl:variable name="namespace_full_">
-		<xsl:choose>
-			<xsl:when test="local-name(/*) = 'metanorma-collection'"><xsl:value-of select="namespace-uri(//*[local-name() = 'metanorma'][1])"/></xsl:when>
-			<xsl:otherwise><xsl:value-of select="namespace-uri(/*)"/></xsl:otherwise><!-- example: https://www.metanorma.org/ns/standoc -->
-		</xsl:choose>
-	</xsl:variable>
-	<xsl:variable name="namespace_full" select="normalize-space($namespace_full_)"/>
+	<!-- https://www.metanorma.org/ns/standoc -->
+	<xsl:variable name="namespace_full" select="namespace-uri(//*[local-name() = 'metanorma'][1])"/>
+		
+	<xsl:variable name="root_element">metanorma</xsl:variable>
 	
-	<xsl:variable name="root_element_">
-		<xsl:choose>
-			<xsl:when test="local-name(/*) = 'metanorma-collection'"><xsl:value-of select="local-name(//*[local-name() = 'metanorma'][1])"/></xsl:when>
-			<xsl:otherwise><xsl:value-of  select="local-name(/*)"/></xsl:otherwise><!-- example: metanorma (former iso-standard) -->
-		</xsl:choose>
-	</xsl:variable>
-	<xsl:variable name="root_element" select="normalize-space($root_element_)"/>
-	
+	<!---examples: 2013, 2024 -->
 	<xsl:variable name="document_scheme" select="normalize-space(//*[local-name() = 'metanorma']/*[local-name() = 'metanorma-extension']/*[local-name() = 'presentation-metadata'][*[local-name() = 'name'] = 'document-scheme']/*[local-name() = 'value'])"/>
 
 	<!-- external parameters -->
-	
 	<xsl:param name="svg_images"/> <!-- svg images array -->
 	<xsl:variable name="images" select="document($svg_images)"/>
 	<xsl:param name="basepath"/> <!-- base path for images -->
@@ -145,6 +74,7 @@
 	
 	<xsl:param name="table_if_debug">false</xsl:param> <!-- set 'true' to put debug width data before table or dl -->
 
+	<!-- don't remove and rename this variable, it's using in mn2pdf tool -->
 	<xsl:variable name="isApplyAutolayoutAlgorithm_">
 		<xsl:choose>
 			<xsl:when test="$namespace = 'bipm' or $namespace = 'bsi' or $namespace = 'csa' or $namespace = 'csd' or $namespace = 'iec' or $namespace = 'ieee' or $namespace = 'iho' or $namespace = 'iso' or $namespace = 'itu' or $namespace = 'jcgm' or $namespace = 'jis' or $namespace = 'm3d' or $namespace = 'mpfd' or $namespace = 'nist-sp' or $namespace = 'nist-cswp' or $namespace = 'ogc' or $namespace = 'ogc-white-paper' or $namespace = 'plateau' or $namespace = 'rsd' or $namespace = 'unece' or $namespace = 'unece-rec'">true</xsl:when>
@@ -153,16 +83,9 @@
 		</xsl:choose>
 	</xsl:variable>
 	<xsl:variable name="isApplyAutolayoutAlgorithm" select="normalize-space($isApplyAutolayoutAlgorithm_)"/>
-
-	<xsl:variable name="isGenerateTableIF_">
-		<xsl:choose>
-			<xsl:when test="$isApplyAutolayoutAlgorithm = 'true'">
-				<xsl:value-of select="normalize-space($table_if) = 'true'"/>
-			</xsl:when>
-			<xsl:otherwise>false</xsl:otherwise>
-		</xsl:choose>
-	</xsl:variable>
-	<xsl:variable name="isGenerateTableIF" select="normalize-space($isGenerateTableIF_)"/>
+	
+	<xsl:variable name="isGenerateTableIF"><xsl:value-of select="$table_if"/></xsl:variable>
+	<!-- <xsl:variable name="isGenerateTableIF" select="normalize-space(normalize-space($table_if) = 'true' and 1 = 1)"/> -->
 
 	<xsl:variable name="lang">
 		<xsl:call-template name="getLang"/>
@@ -1357,7 +1280,6 @@
 		<xsl:if test="$namespace = 'rsd'">
 			<xsl:attribute name="margin-bottom">12pt</xsl:attribute>
 		</xsl:if>
-
 	</xsl:attribute-set>
 
 	<xsl:template name="refine_termexample-style">
@@ -3022,8 +2944,8 @@
 			<xsl:if test="ancestor::*[local-name()='preface'] and ancestor::*[local-name()='clause'][@type = 'logos']">
 				<xsl:attribute name="border">none</xsl:attribute>
 			</xsl:if>
-			
-		</xsl:if> <!-- bsi -->
+			<!-- bsi -->
+		</xsl:if>
 		
 		<xsl:if test="$namespace = 'gb'">
 			<xsl:if test="ancestor::*[local-name() = 'tfoot']">
@@ -4253,9 +4175,6 @@
 				<xsl:attribute name="font-weight">bold</xsl:attribute>
 			</xsl:if>
 		</xsl:if>
-		<!-- <xsl:if test="$namespace = 'ieee'">
-			<xsl:attribute name="padding-right">0mm</xsl:attribute>
-		</xsl:if> -->
 		<xsl:if test="$namespace = 'jis'">
 			<xsl:if test="not($vertical_layout = 'true')">
 				<xsl:attribute name="font-family">IPAexGothic</xsl:attribute>
@@ -6262,10 +6181,6 @@
 			<xsl:attribute name="margin-top">5pt</xsl:attribute>
 			<xsl:attribute name="margin-bottom">14pt</xsl:attribute>
 		</xsl:if>
-		<!-- <xsl:if test="$namespace = 'ieee'">
-			<xsl:attribute name="margin-bottom">6pt</xsl:attribute>
-			<xsl:attribute name="provisional-distance-between-starts">9.5mm</xsl:attribute>
-		</xsl:if> -->
 		<xsl:if test="$namespace = 'iho'">
 			<!-- <xsl:attribute name="line-height">115%</xsl:attribute> -->
 			<xsl:attribute name="margin-bottom">6pt</xsl:attribute>
@@ -8811,8 +8726,8 @@
 									</xsl:if>
 								</xsl:if>
 								
-								<!-- for BSI (not PAS) display Notes before footnotes -->
 								<xsl:if test="$namespace = 'bsi'">
+									<!-- for BSI (not PAS) display Notes before footnotes -->
 									<xsl:if test="$document_type != 'PAS'">
 										<xsl:apply-templates select="../*[local-name()='dl']" />
 										<xsl:apply-templates select="../*[local-name()='note'][not(@type = 'units')]" />
@@ -8820,9 +8735,8 @@
 									</xsl:if>
 								</xsl:if>
 								
-								<!-- except gb and bsi  -->
 								<xsl:choose>
-									<xsl:when test="$namespace = 'gb' or $namespace = 'bsi'"></xsl:when>
+									<xsl:when test="$namespace = 'gb' or $namespace = 'bsi'"><!-- except gb and bsi  --></xsl:when>
 									<xsl:when test="$namespace = 'jis'">
 										<xsl:apply-templates select="../*[local-name()='p' or local-name()='dl' or (local-name()='note' and not(@type = 'units')) or local-name()='example' or local-name()='source']" />
 									</xsl:when>
@@ -8877,9 +8791,8 @@
 									</xsl:otherwise>
 								</xsl:choose>
 								
-								
-								<!-- for PAS display Notes after footnotes -->
 								<xsl:if test="$namespace = 'bsi'">
+									<!-- for PAS display Notes after footnotes -->
 									<xsl:if test="$document_type = 'PAS'">
 										<xsl:apply-templates select="../*[local-name()='dl']" />
 										<xsl:apply-templates select="../*[local-name()='note'][not(@type = 'units')]" />
@@ -15732,9 +15645,6 @@
 				<xsl:if test="$namespace = 'iso'">9</xsl:if><!-- inherit -->
 				<xsl:if test="$namespace = 'bsi'">9</xsl:if>
 				<xsl:if test="$namespace = 'jcgm'">9</xsl:if>
-				<!-- <xsl:if test="$namespace = 'ieee'">							
-					<xsl:if test="$current_template = 'standard'">8</xsl:if>
-				</xsl:if> -->
 				<xsl:if test="$namespace = 'itu'">10</xsl:if>
 				<xsl:if test="$namespace = 'm3d'"></xsl:if>		
 				<xsl:if test="$namespace = 'mpfd'"></xsl:if>
@@ -16039,27 +15949,7 @@
 			<xsl:otherwise><xsl:value-of select="$text"/></xsl:otherwise>
 		</xsl:choose>
 	</xsl:template>
-	
-	
-	<!-- insert 'char' between each character in the string -->
-	<xsl:template name="interspers">
-		<xsl:param name="str"/>
-		<xsl:param name="char" select="$zero_width_space"/>
-		<xsl:if test="$str != ''">
-			<xsl:value-of select="substring($str, 1, 1)"/>
-			
-			<xsl:variable name="next_char" select="substring($str, 2, 1)"/>
-			<xsl:if test="not(contains(concat(' -.:=_— ', $char), $next_char))">
-				<xsl:value-of select="$char"/>
-			</xsl:if>
-			
-			<xsl:call-template name="interspers">
-				<xsl:with-param name="str" select="substring($str, 2)"/>
-				<xsl:with-param name="char" select="$char"/>
-			</xsl:call-template>
-		</xsl:if>
-	</xsl:template>
-	
+		
 	
 	<xsl:template name="interspers-java">
 		<xsl:param name="str"/>
@@ -17031,7 +16921,7 @@
 			</xsl:call-template>
 		</xsl:variable>
 		
-    <xsl:variable name="text"><xsl:apply-templates/></xsl:variable>
+		<xsl:variable name="text"><xsl:apply-templates/></xsl:variable>
 		<xsl:choose>
 			<xsl:when test="$lang = 'zh'"><xsl:text>、</xsl:text><xsl:value-of select="$title-modified"/><xsl:if test="normalize-space($text) != ''"><xsl:text>—</xsl:text></xsl:if></xsl:when>
 			<xsl:otherwise><xsl:text>, </xsl:text><xsl:value-of select="$title-modified"/><xsl:if test="normalize-space($text) != ''"><xsl:text> — </xsl:text></xsl:if></xsl:otherwise>
@@ -22448,77 +22338,6 @@
 		<xsl:call-template name="getLang_fromCurrentNode"/><xsl:value-of select=".//*[local-name() = 'p'][1]/@id"/>
 	</xsl:template>
 
-	<xsl:template name="namespaceCheck">
-		<xsl:variable name="documentNS" select="$namespace_full"/> <!-- namespace-uri(/*) -->
-		<xsl:variable name="XSLNS">			
-			<xsl:if test="$namespace = 'bsi'">
-				<xsl:value-of select="document('')//*/namespace::bsi"/>
-			</xsl:if>
-			<xsl:if test="$namespace = 'iso'">
-				<xsl:value-of select="document('')//*/namespace::iso"/>
-			</xsl:if>
-			<xsl:if test="$namespace = 'iec'">
-				<xsl:value-of select="document('')//*/namespace::iec"/>
-			</xsl:if>
-			<xsl:if test="$namespace = 'ieee'">
-				<xsl:value-of select="document('')//*/namespace::ieee"/>
-			</xsl:if>
-			<xsl:if test="$namespace = 'itu'">
-				<xsl:value-of select="document('')//*/namespace::itu"/>
-			</xsl:if>
-			<xsl:if test="$namespace = 'unece' or $namespace = 'unece-rec'">
-				<xsl:value-of select="document('')//*/namespace::un"/>
-			</xsl:if>
-			<xsl:if test="$namespace = 'nist-cswp'  or $namespace = 'nist-sp'">
-				<xsl:value-of select="document('')//*/namespace::nist"/>
-			</xsl:if>
-			<xsl:if test="$namespace = 'ogc' or $namespace = 'ogc-white-paper'">
-				<xsl:value-of select="document('')//*/namespace::ogc"/>
-			</xsl:if>
-			<xsl:if test="$namespace = 'rsd'">
-				<xsl:value-of select="document('')//*/namespace::ribose"/>
-			</xsl:if>
-			<xsl:if test="$namespace = 'csa'">
-				<xsl:value-of select="document('')//*/namespace::csa"/>
-			</xsl:if>
-			<xsl:if test="$namespace = 'csd'">
-				<xsl:value-of select="document('')//*/namespace::csd"/>
-			</xsl:if>
-			<xsl:if test="$namespace = 'm3d'">
-				<xsl:value-of select="document('')//*/namespace::m3d"/>
-			</xsl:if>
-			<xsl:if test="$namespace = 'iho'">
-				<xsl:value-of select="document('')//*/namespace::iho"/>
-			</xsl:if>			
-			<xsl:if test="$namespace = 'gb'">
-				<xsl:value-of select="document('')//*/namespace::gb"/>
-			</xsl:if>
-			<xsl:if test="$namespace = 'mpfd'">
-				<xsl:value-of select="document('')//*/namespace::mpfd"/>
-			</xsl:if>
-			<xsl:if test="$namespace = 'bipm'">
-				<xsl:value-of select="document('')//*/namespace::bipm"/>
-			</xsl:if>
-			<xsl:if test="$namespace = 'jcgm'">
-				<xsl:value-of select="document('')//*/namespace::bipm"/>
-			</xsl:if>
-		</xsl:variable>
-		<!-- <xsl:if test="$documentNS != $XSLNS">
-			<xsl:message>[WARNING]: Document namespace: '<xsl:value-of select="$documentNS"/>' doesn't equal to xslt namespace '<xsl:value-of select="$XSLNS"/>'</xsl:message>
-		</xsl:if> -->
-	</xsl:template> <!-- namespaceCheck -->
- 
-	<xsl:template name="getLanguage">
-		<xsl:param name="lang"/>		
-		<xsl:variable name="language" select="java:toLowerCase(java:java.lang.String.new($lang))"/>
-		<xsl:choose>
-			<xsl:when test="$language = 'en'">English</xsl:when>
-			<xsl:when test="$language = 'fr'">French</xsl:when>
-			<xsl:when test="$language = 'de'">Deutsch</xsl:when>
-			<xsl:when test="$language = 'cn'">Chinese</xsl:when>
-			<xsl:otherwise><xsl:value-of select="$language"/></xsl:otherwise>
-		</xsl:choose>
-	</xsl:template>
 
 	<xsl:template name="setId">
 		<xsl:param name="prefix"/>

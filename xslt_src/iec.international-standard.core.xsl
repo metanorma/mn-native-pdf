@@ -133,7 +133,6 @@
 	<xsl:variable name="isIEV" select="normalize-space((//iec:metanorma/iec:bibdata/iec:title[@language = 'en' and @type = 'title-main'] = 'International Electrotechnical Vocabulary') and 1 = 1)"/>
 	
 	<xsl:template match="/">
-		<xsl:call-template name="namespaceCheck"/>
 		
 		<!-- <xsl:variable name="xslfo"> -->
 			<!-- https://stackoverflow.com/questions/25261949/xsl-fo-letter-spacing-with-text-align -->
