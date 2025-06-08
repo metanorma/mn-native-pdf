@@ -29,11 +29,11 @@
 	<xsl:variable name="color-header-document">rgb(79, 201, 204)</xsl:variable>
 	
 	<xsl:variable name="contents_">
-		<contents>		
+		<mn:contents>
 			<xsl:call-template name="processPrefaceSectionsDefault_Contents"/>
 			<xsl:call-template name="processMainSectionsDefault_Contents"/>
 			<xsl:call-template name="processTablesFigures_Contents"/>
-		</contents>
+		</mn:contents>
 	</xsl:variable>
 	<xsl:variable name="contents" select="xalan:nodeset($contents_)"/>
 	
@@ -321,7 +321,7 @@
 				
 				<xsl:if test="count(*) = 1 and *[local-name() = 'title']"> <!-- if there isn't user ToC -->
 					<fo:block margin-left="-3mm" role="TOC">
-						<xsl:for-each select="$contents//item[@display = 'true']">
+						<xsl:for-each select="$contents//mn:item[@display = 'true']">
 							<fo:block role="TOCI">
 								<fo:list-block>
 									<xsl:attribute name="provisional-distance-between-starts">
@@ -336,9 +336,9 @@
 										</fo:list-item-label>
 										<fo:list-item-body start-indent="body-start()">
 											<fo:block text-align-last="justify" margin-left="12mm" text-indent="-12mm">
-												<fo:basic-link internal-destination="{@id}" fox:alt-text="{title}">
+												<fo:basic-link internal-destination="{@id}" fox:alt-text="{mn:title}">
 													<fo:inline padding-right="2mm"><xsl:value-of select="@section"/></fo:inline>
-													<xsl:apply-templates select="title"/>
+													<xsl:apply-templates select="mn:title"/>
 													<fo:inline keep-together.within-line="always">
 														<fo:leader leader-pattern="dots"/>
 														<fo:inline><fo:page-number-citation ref-id="{@id}"/></fo:inline>
@@ -352,21 +352,21 @@
 						</xsl:for-each>
 						
 						<!-- List of Tables -->
-						<xsl:if test="$contents//tables/table">
+						<xsl:if test="$contents//mn:tables/mn:table">
 							<xsl:call-template name="insertListOf_Title">
 								<xsl:with-param name="title" select="$title-list-tables"/>
 							</xsl:call-template>
-							<xsl:for-each select="$contents//tables/table">
+							<xsl:for-each select="$contents//mn:tables/mn:table">
 								<xsl:call-template name="insertListOf_Item"/>
 							</xsl:for-each>
 						</xsl:if>
 						
 						<!-- List of Figures -->
-						<xsl:if test="$contents//figures/figure">
+						<xsl:if test="$contents//mn:figures/mn:figure">
 							<xsl:call-template name="insertListOf_Title">
 								<xsl:with-param name="title" select="$title-list-figures"/>
 							</xsl:call-template>
-							<xsl:for-each select="$contents//figures/figure">
+							<xsl:for-each select="$contents//mn:figures/mn:figure">
 								<xsl:call-template name="insertListOf_Item"/>
 							</xsl:for-each>
 						</xsl:if>
@@ -427,12 +427,12 @@
 				<xsl:call-template name="getName"/>
 			</xsl:variable>
 			
-			<item id="{@id}" level="{$level}" section="{$section}" display="{$display}">
-				<title>
+			<mn:item id="{@id}" level="{$level}" section="{$section}" display="{$display}">
+				<mn:title>
 					<xsl:apply-templates select="xalan:nodeset($title)" mode="contents_item"/>
-				</title>
+				</mn:title>
 				<xsl:apply-templates mode="contents" />
-			</item>
+			</mn:item>
 		</xsl:if>
 	</xsl:template>
 
