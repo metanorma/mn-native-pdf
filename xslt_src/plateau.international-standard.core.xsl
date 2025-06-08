@@ -1672,7 +1672,7 @@
 	</xsl:template>
 	
 	<!-- for $contents -->
-	<xsl:template match="title/text()">
+	<xsl:template match="mn:title/text()">
 		<xsl:variable name="regex_en_contents">([^\u3000-\u9FFF\uF900-\uFFFF\(\)]{1,})</xsl:variable>
 		<xsl:variable name="text_en_" select="java:replaceAll(java:java.lang.String.new(.), $regex_en_contents, concat($tag_font_en_bold_open,'$1',$tag_font_en_bold_close))"/>
 		<xsl:variable name="text_en">
