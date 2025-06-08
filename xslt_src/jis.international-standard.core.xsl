@@ -54,16 +54,16 @@
 			</xsl:variable>
 			
 			<xsl:for-each select="xalan:nodeset($current_document)"> <!-- . -->
-				<doc num="{$num}" firstpage_id="firstpage_id_{$num}" title-part="{$docnumber}" bundle="{$bundle}"> <!-- 'bundle' means several different documents (not language versions) in one xml -->
-					<contents>
+				<mn:doc num="{$num}" firstpage_id="firstpage_id_{$num}" title-part="{$docnumber}" bundle="{$bundle}"> <!-- 'bundle' means several different documents (not language versions) in one xml -->
+					<mn:contents>
 						<!-- <xsl:call-template name="processPrefaceSectionsDefault_Contents"/> -->
 						
 						<xsl:call-template name="processMainSectionsDefault_Contents"/>
 						
 						<xsl:apply-templates select="//jis:indexsect" mode="contents"/>
 
-					</contents>
-				</doc>
+					</mn:contents>
+				</mn:doc>
 			</xsl:for-each>
 		</xsl:for-each>
 	</xsl:variable>
@@ -1062,8 +1062,8 @@
 					<xsl:attribute name="font-size">10.5pt</xsl:attribute>
 				</xsl:if>
 			
-				<xsl:if test="$updated_contents_xml/doc[@num = $num]//item[@display = 'true']">
-					<xsl:for-each select="$updated_contents_xml/doc[@num = $num]//item[@display = 'true'][@level &lt;= $toc_level or @type='figure' or @type = 'table']">
+				<xsl:if test="$updated_contents_xml/mn:doc[@num = $num]//mn:item[@display = 'true']">
+					<xsl:for-each select="$updated_contents_xml/mn:doc[@num = $num]//mn:item[@display = 'true'][@level &lt;= $toc_level or @type='figure' or @type = 'table']">
 						<fo:block role="TOCI">
 							<xsl:choose>
 								<xsl:when test="@type = 'annex' or @type = 'bibliography'">
@@ -1171,12 +1171,12 @@
 	
 	<xsl:template name="insertTocItem">
 		<fo:block text-align-last="justify" role="SKIP">
-			<fo:basic-link internal-destination="{@id}" fox:alt-text="{normalize-space(title)}">
+			<fo:basic-link internal-destination="{@id}" fox:alt-text="{normalize-space(mn:title)}">
 				<fo:inline>
 					<xsl:if test="$vertical_layout = 'true'">
 						<xsl:attribute name="padding-right">7.5mm</xsl:attribute>
 					</xsl:if>
-					<xsl:apply-templates select="title" />
+					<xsl:apply-templates select="mn:title" />
 				</fo:inline>
 				<fo:inline keep-together.within-line="always">
 					<fo:leader leader-pattern="dots">
@@ -1861,19 +1861,19 @@
 				<xsl:if test="ancestor-or-self::jis:annex">annex</xsl:if>
 			</xsl:variable>
 			
-			<item id="{@id}" level="{$level}" section="{$section}" type="{$type}" root="{$root}" display="{$display}">
+			<mn:item id="{@id}" level="{$level}" section="{$section}" type="{$type}" root="{$root}" display="{$display}">
 				<xsl:if test="$type = 'index'">
 					<xsl:attribute name="level">1</xsl:attribute>
 				</xsl:if>
-				<title>
+				<mn:title>
 					<xsl:apply-templates select="xalan:nodeset($title)" mode="contents_item">
 						<xsl:with-param name="mode">contents</xsl:with-param>
 					</xsl:apply-templates>
-				</title>
+				</mn:title>
 				<xsl:if test="$type != 'index'">
 					<xsl:apply-templates  mode="contents" />
 				</xsl:if>
-			</item>
+			</mn:item>
 		</xsl:if>
 	</xsl:template>
 	
