@@ -335,14 +335,14 @@
 		<item id="term-script" display="false">3.2</item>
 	-->
 	<xsl:variable name="contents_">
-		<contents>
+		<mn:contents>
 			<xsl:if test="$isGenerateTableIF = 'false'">
 				<xsl:call-template name="processPrefaceSectionsDefault_Contents"/>
 				<xsl:call-template name="processMainSectionsDefault_Contents"/>
 				<xsl:apply-templates select="//iso:indexsect" mode="contents"/>
 				<xsl:call-template name="processTablesFigures_Contents"/>
 			</xsl:if>
-		</contents>
+		</mn:contents>
 	</xsl:variable>
 	<xsl:variable name="contents" select="xalan:nodeset($contents_)"/>
 	
@@ -3349,7 +3349,7 @@
 							
 							<xsl:variable name="margin-left">12</xsl:variable>
 							
-							<xsl:for-each select="$contents//item[@display = 'true']"><!-- [not(@level = 2 and starts-with(@section, '0'))] skip clause from preface -->
+							<xsl:for-each select="$contents//mn:item[@display = 'true']"><!-- [not(@level = 2 and starts-with(@section, '0'))] skip clause from preface -->
 								
 								<xsl:if test="$layoutVersion = '1987'">
 									<xsl:if test="@type = 'annex'	and @level = 1 and not(preceding-sibling::item[@type = 'annex' and @level = 1])">
@@ -3376,7 +3376,7 @@
 										<xsl:attribute name="margin-bottom">6pt</xsl:attribute>
 									</xsl:if>
 									
-									<fo:basic-link internal-destination="{@id}" fox:alt-text="{@section} {title}"> <!-- link at this level needs for PDF structure tags -->
+									<fo:basic-link internal-destination="{@id}" fox:alt-text="{@section} {mn:title}"> <!-- link at this level needs for PDF structure tags -->
 									
 										<fo:list-block role="SKIP">
 											<xsl:attribute name="margin-left"><xsl:value-of select="$margin-left * (@level - 1)"/>mm</xsl:attribute>
@@ -3439,12 +3439,12 @@
 															<xsl:attribute name="font-weight">bold</xsl:attribute>
 														</xsl:if>
 													
-														<fo:basic-link internal-destination="{@id}" fox:alt-text="{title}" role="SKIP">
+														<fo:basic-link internal-destination="{@id}" fox:alt-text="{mn:title}" role="SKIP">
 														
 															<xsl:if test="$layoutVersion = '1987' and @type = 'section'">
 																<xsl:value-of select="concat(@section, ' ')"/>
 															</xsl:if>
-															<xsl:apply-templates select="title"/>
+															<xsl:apply-templates select="mn:title"/>
 															
 															<fo:inline keep-together.within-line="always" role="SKIP">
 																<fo:leader font-size="9pt" font-weight="normal" leader-pattern="dots"/>
@@ -3471,21 +3471,21 @@
 							</xsl:for-each>
 							
 							<!-- List of Tables -->
-							<xsl:if test="$contents//tables/table">
+							<xsl:if test="$contents//mn:tables/mn:table">
 								<xsl:call-template name="insertListOf_Title">
 									<xsl:with-param name="title" select="$title-list-tables"/>
 								</xsl:call-template>
-								<xsl:for-each select="$contents//tables/table">
+								<xsl:for-each select="$contents//mn:tables/mn:table">
 									<xsl:call-template name="insertListOf_Item"/>
 								</xsl:for-each>
 							</xsl:if>
 							
 							<!-- List of Figures -->
-							<xsl:if test="$contents//figures/figure">
+							<xsl:if test="$contents//mn:figures/mn:figure">
 								<xsl:call-template name="insertListOf_Title">
 									<xsl:with-param name="title" select="$title-list-figures"/>
 								</xsl:call-template>
-								<xsl:for-each select="$contents//figures/figure">
+								<xsl:for-each select="$contents//mn:figures/mn:figure">
 									<xsl:call-template name="insertListOf_Item"/>
 								</xsl:for-each>
 							</xsl:if>
@@ -3893,21 +3893,21 @@
 				<xsl:if test="ancestor-or-self::iso:annex">annex</xsl:if>
 			</xsl:variable>
 			
-			<item id="{@id}" level="{$level}" section="{$section}" type="{$type}" root="{$root}" display="{$display}">
+			<mn:item id="{@id}" level="{$level}" section="{$section}" type="{$type}" root="{$root}" display="{$display}">
 				<xsl:if test="$type = 'index'">
 					<xsl:attribute name="level">1</xsl:attribute>
 				</xsl:if>
-				<title>
+				<mn:title>
 					<xsl:apply-templates select="xalan:nodeset($title)" mode="contents_item">
 						<xsl:with-param name="element">
 							<xsl:if test="$level = 1"><xsl:value-of select="$root"/></xsl:if>
 						</xsl:with-param>
 					</xsl:apply-templates>
-				</title>
+				</mn:title>
 				<xsl:if test="$type != 'index'">
 					<xsl:apply-templates  mode="contents" />
 				</xsl:if>
-			</item>
+			</mn:item>
 		</xsl:if>
 	</xsl:template>
 	
