@@ -48,8 +48,8 @@
 			</xsl:variable>
 			
 			<xsl:for-each select="xalan:nodeset($current_document)">
-				<doc num="{$num}" firstpage_id="firstpage_id_{$num}" title-part="{$docnumber}" bundle="{$bundle}"> <!-- 'bundle' means several different documents (not language versions) in one xml -->
-					<contents>
+				<mn:doc num="{$num}" firstpage_id="firstpage_id_{$num}" title-part="{$docnumber}" bundle="{$bundle}"> <!-- 'bundle' means several different documents (not language versions) in one xml -->
+					<mn:contents>
 						<xsl:call-template name="processMainSectionsDefault_Contents"/>
 			
 						<xsl:apply-templates select="//itu:table" mode="contents"/>
@@ -59,8 +59,8 @@
 						<xsl:call-template name="processTablesFigures_Contents">
 							<xsl:with-param name="always" select="$doctype = 'technical-report' or $doctype = 'technical-paper'"/>
 						</xsl:call-template>
-					</contents>
-				</doc>
+					</mn:contents>
+				</mn:doc>
 			</xsl:for-each>
 		</xsl:for-each>
 	</xsl:variable>
@@ -1847,7 +1847,7 @@
 					<fo:block role="TOC">
 						<xsl:if test="count(*) = 1 and *[local-name() = 'title']"> <!-- if there isn't user ToC -->
 
-							<xsl:for-each select="$contents/doc[@num = $num]//item[@display = 'true']">									
+							<xsl:for-each select="$contents/mn:doc[@num = $num]//mn:item[@display = 'true']">									
 								<fo:block role="TOCI">
 									<xsl:if test="@level = 1">
 										<xsl:attribute name="margin-top">6pt</xsl:attribute>
@@ -1886,8 +1886,8 @@
 											</fo:list-item-label>
 												<fo:list-item-body start-indent="body-start()">
 													<fo:block text-align-last="justify">															
-														<fo:basic-link internal-destination="{@id}" fox:alt-text="{title}">
-															<xsl:apply-templates select="title"/>
+														<fo:basic-link internal-destination="{@id}" fox:alt-text="{mn:title}">
+															<xsl:apply-templates select="mn:title"/>
 															<fo:inline keep-together.within-line="always">
 																<fo:leader leader-pattern="dots"/>
 																<fo:page-number-citation ref-id="{@id}"/>
@@ -1903,7 +1903,7 @@
 							<xsl:variable name="i18n_page"><xsl:call-template name="getLocalizedString"><xsl:with-param name="key">Page.sg</xsl:with-param><xsl:with-param name="bibdata_updated" select="/*/itu:bibdata"/></xsl:call-template></xsl:variable>
 							
 							<!-- List of Tables -->
-							<xsl:if test="$contents//tables/table">
+							<xsl:if test="$contents//mn:tables/mn:table">
 								<xsl:call-template name="insertListOf_Title">
 									<xsl:with-param name="title" select="$title-list-tables"/>
 								</xsl:call-template>
@@ -1911,14 +1911,14 @@
 									<xsl:value-of select="$i18n_page"/>
 								</fo:block>
 								<fo:block-container>
-									<xsl:for-each select="$contents//tables/table">
+									<xsl:for-each select="$contents//mn:tables/mn:table">
 										<xsl:call-template name="insertListOf_Item"/>
 									</xsl:for-each>
 								</fo:block-container>
 							</xsl:if>
 							
 							<!-- List of Figures -->
-							<xsl:if test="$contents//figures/figure">
+							<xsl:if test="$contents//mn:figures/mn:figure">
 								<xsl:call-template name="insertListOf_Title">
 									<xsl:with-param name="title" select="$title-list-figures"/>
 								</xsl:call-template>
@@ -1926,7 +1926,7 @@
 									<xsl:value-of select="$i18n_page"/>
 								</fo:block>
 								<fo:block-container>
-									<xsl:for-each select="$contents//figures/figure">
+									<xsl:for-each select="$contents//mn:figures/mn:figure">
 										<xsl:call-template name="insertListOf_Item"/>
 									</xsl:for-each>
 								</fo:block-container>
@@ -2035,13 +2035,13 @@
 				<xsl:call-template name="getName"/>
 			</xsl:variable>
 			
-			<item level="{$level}" section="{$section}" type="{$type}" display="{$display}">
+			<mn:item level="{$level}" section="{$section}" type="{$type}" display="{$display}">
 				<xsl:call-template name="setId"/>
-				<title>
+				<mn:title>
 					<xsl:apply-templates select="xalan:nodeset($title)" mode="contents_item"/>
-				</title>
+				</mn:title>
 				<xsl:apply-templates  mode="contents" />
-			</item>
+			</mn:item>
 			
 		</xsl:if>	
 		
