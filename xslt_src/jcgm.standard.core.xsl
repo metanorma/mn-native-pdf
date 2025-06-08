@@ -115,8 +115,8 @@
 				<xsl:variable name="docid">
 					<xsl:call-template name="getDocumentId"/>
 				</xsl:variable>
-				<doc id="{$docid}" lang="{$lang}">
-					<contents>
+				<mn:doc id="{$docid}" lang="{$lang}">
+					<mn:contents>
 						<xsl:call-template name="processPrefaceSectionsDefault_Contents"/>
 						<xsl:call-template name="processMainSectionsDefault_Contents"/>
 						<!-- Index -->
@@ -124,8 +124,8 @@
 						<xsl:apply-templates select="//jcgm:indexsect" mode="contents"/>
 						
 						<xsl:call-template name="processTablesFigures_Contents"/>
-					</contents>
-				</doc>
+					</mn:contents>
+				</mn:doc>
 			</xsl:for-each>				
 		</xsl:for-each>
 	</xsl:variable>
@@ -626,8 +626,8 @@
 						<xsl:call-template name="getDocumentId"/>
 					</xsl:variable>
 				
-					<xsl:for-each select="$contents/doc[@id=$docid]//item[@display = 'true']"> <!-- and not (@type = 'annex') and not (@type = 'references') -->
-						<xsl:if test="@type = 'annex' and not(preceding-sibling::item[@display = 'true' and @type = 'annex'])">
+					<xsl:for-each select="$contents/mn:doc[@id=$docid]//mn:item[@display = 'true']"> <!-- and not (@type = 'annex') and not (@type = 'references') -->
+						<xsl:if test="@type = 'annex' and not(preceding-sibling::mn:item[@display = 'true' and @type = 'annex'])">
 							<fo:block font-size="12pt" space-before="16pt" font-weight="bold" role="TOCI">
 								<xsl:call-template name="getLocalizedString">
 									<xsl:with-param name="key">Annex.pl</xsl:with-param>
@@ -638,21 +638,21 @@
 					</xsl:for-each>	
 					
 					<!-- List of Tables -->
-					<xsl:if test="$contents//tables/table">
+					<xsl:if test="$contents//mn:tables/mn:table">
 						<xsl:call-template name="insertListOf_Title">
 							<xsl:with-param name="title" select="$title-list-tables"/>
 						</xsl:call-template>
-						<xsl:for-each select="$contents//tables/table">
+						<xsl:for-each select="$contents//mn:tables/mn:table">
 							<xsl:call-template name="insertListOf_Item"/>
 						</xsl:for-each>
 					</xsl:if>
 					
 					<!-- List of Figures -->
-					<xsl:if test="$contents//figures/figure">
+					<xsl:if test="$contents//mn:figures/mn:figure">
 						<xsl:call-template name="insertListOf_Title">
 							<xsl:with-param name="title" select="$title-list-figures"/>
 						</xsl:call-template>
-						<xsl:for-each select="$contents//figures/figure">
+						<xsl:for-each select="$contents//mn:figures/mn:figure">
 							<xsl:call-template name="insertListOf_Item"/>
 						</xsl:for-each>
 					</xsl:if>
@@ -762,17 +762,17 @@
 				<xsl:if test="ancestor-or-self::*[local-name()='annex']">annex</xsl:if>
 			</xsl:variable>
 			
-			<item id="{@id}" level="{$level}" section="{$section}" type="{$type}" root="{$root}" display="{$display}">
+			<mn:item id="{@id}" level="{$level}" section="{$section}" type="{$type}" root="{$root}" display="{$display}">
 				<xsl:if test="$type = 'index'">
 					<xsl:attribute name="level">1</xsl:attribute>
 				</xsl:if>
-				<title>
+				<mn:title>
 					<xsl:apply-templates select="xalan:nodeset($title)" mode="contents_item"/>
-				</title>
+				</mn:title>
 				<xsl:if test="$type != 'index'">
 					<xsl:apply-templates  mode="contents" />
 				</xsl:if>
-			</item>
+			</mn:item>
 		</xsl:if>
 	</xsl:template>
 	
@@ -1025,12 +1025,12 @@
 					</fo:list-item-label>
 					<fo:list-item-body start-indent="body-start()">
 						<fo:block text-align-last="justify" margin-left="12mm" text-indent="-12mm">
-							<fo:basic-link internal-destination="{@id}" fox:alt-text="{title}">
+							<fo:basic-link internal-destination="{@id}" fox:alt-text="{mn:title}">
 								<fo:inline>
 									<xsl:if test="@level = 1">
 										<xsl:attribute name="font-weight">bold</xsl:attribute>
 									</xsl:if>
-									<xsl:apply-templates select="title"/>
+									<xsl:apply-templates select="mn:title"/>
 								</fo:inline>
 								<xsl:text> </xsl:text>
 								<fo:inline keep-together.within-line="always" font-weight="normal">
