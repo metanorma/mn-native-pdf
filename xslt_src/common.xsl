@@ -7303,7 +7303,7 @@
 						<xsl:with-param name="keep_sep">true</xsl:with-param>
 					</xsl:call-template>
 				</xsl:variable>
-				<xsl:for-each select="xalan:nodeset($items)/item">
+				<xsl:for-each select="xalan:nodeset($items)/mn:item">
 					<xsl:choose>
 						<xsl:when test=". = $sep">
 							<xsl:value-of select="$sep"/><xsl:value-of select="$zero_width_space"/>
@@ -9001,7 +9001,7 @@
 						<xsl:with-param name="pText" select="$border_under_row_"/>
 					</xsl:call-template>
 				</xsl:variable>
-				<xsl:if test="xalan:nodeset($border_under_row)/item[. = normalize-space($row_num)]">
+				<xsl:if test="xalan:nodeset($border_under_row)/mn:item[. = normalize-space($row_num)]">
 					<xsl:attribute name="border-bottom"><xsl:value-of select="$table-border"/></xsl:attribute>
 				</xsl:if>
 			</xsl:when>
@@ -9152,7 +9152,7 @@
 		</xsl:variable>
 		<xsl:variable name="quot">"</xsl:variable>
 		<xsl:variable name="styles_">
-			<xsl:for-each select="xalan:nodeset($styles__)/item">
+			<xsl:for-each select="xalan:nodeset($styles__)/mn:item">
 				<xsl:variable name="key" select="normalize-space(substring-before(., ':'))"/>
 				<xsl:variable name="value" select="normalize-space(substring-after(translate(.,$quot,''), ':'))"/>
 				<xsl:if test="$key = 'color' or 
@@ -11756,7 +11756,7 @@
 		
 		<xsl:variable name="quot">"</xsl:variable>
 		<xsl:variable name="styles_">
-			<xsl:for-each select="xalan:nodeset($styles__)/item">
+			<xsl:for-each select="xalan:nodeset($styles__)/mn:item">
 				<xsl:variable name="key" select="normalize-space(substring-before(., ':'))"/>
 				<xsl:variable name="value_" select="normalize-space(substring-after(translate(.,$quot,''), ':'))"/>
 				<xsl:variable name="value">
@@ -14616,8 +14616,8 @@
 				</xsl:call-template>
 			</xsl:variable>
 			<xsl:variable name="viewbox" select="xalan:nodeset($viewbox_)"/>
-			<xsl:variable name="width" select="normalize-space($viewbox//item[3])"/>
-			<xsl:variable name="height" select="normalize-space($viewbox//item[4])"/>
+			<xsl:variable name="width" select="normalize-space($viewbox//mn:item[3])"/>
+			<xsl:variable name="height" select="normalize-space($viewbox//mn:item[4])"/>
 			
 			<xsl:variable name="parent_image_width" select="normalize-space(ancestor::*[1][local-name() = 'image']/@width)"/>
 			<xsl:variable name="parent_image_height" select="normalize-space(ancestor::*[1][local-name() = 'image']/@height)"/>
@@ -14690,8 +14690,8 @@
 		</xsl:variable>
 		<xsl:variable name="components" select="xalan:nodeset($components_)"/>
 		<xsl:variable name="att_name" select="local-name()"/>
-		<xsl:attribute name="{$att_name}"><xsl:value-of select="concat('rgb(', $components/item[1], ',', $components/item[2], ',', $components/item[3], ')')"/></xsl:attribute>
-		<xsl:attribute name="{$att_name}-opacity"><xsl:value-of select="$components/item[4]"/></xsl:attribute>
+		<xsl:attribute name="{$att_name}"><xsl:value-of select="concat('rgb(', $components/mn:item[1], ',', $components/mn:item[2], ',', $components/mn:item[3], ')')"/></xsl:attribute>
+		<xsl:attribute name="{$att_name}-opacity"><xsl:value-of select="$components/mn:item[4]"/></xsl:attribute>
 	</xsl:template>
 	
 	<!-- ============== -->
@@ -14764,13 +14764,13 @@
 				</xsl:call-template>
 			</xsl:variable>
 			<xsl:variable name="x_coords">
-				<xsl:for-each select="xalan:nodeset($points)//item[position() mod 2 = 1]">
+				<xsl:for-each select="xalan:nodeset($points)//mn:item[position() mod 2 = 1]">
 					<xsl:sort select="." data-type="number"/>
 					<x><xsl:value-of select="."/></x>
 				</xsl:for-each>
 			</xsl:variable>
 			<xsl:variable name="y_coords">
-				<xsl:for-each select="xalan:nodeset($points)//item[position() mod 2 = 0]">
+				<xsl:for-each select="xalan:nodeset($points)//mn:item[position() mod 2 = 0]">
 					<xsl:sort select="." data-type="number"/>
 					<y><xsl:value-of select="."/></y>
 				</xsl:for-each>
@@ -16052,7 +16052,7 @@
 			</xsl:variable>
 			<xsl:variable name="classes" select="xalan:nodeset($classes_)"/>
 			
-			<xsl:for-each select="$classes/item">
+			<xsl:for-each select="$classes/*[local-name() = 'item']">
 				<xsl:variable name="class_name" select="."/>
 				<xsl:for-each select="$syntax_highlight_styles/style[@class = $class_name]/@*[not(local-name() = 'class')]">
 					<xsl:attribute name="{local-name()}"><xsl:value-of select="."/></xsl:attribute>
@@ -22313,7 +22313,7 @@
 		<xsl:param name="normalize-space" select="'true'"/>
 		<xsl:param name="keep_sep" select="'false'"/>
 		<xsl:if test="string-length($pText) >0">
-			<item>
+			<xsl:element name="item" namespace="{$namespace_mn_xsl}">
 				<xsl:choose>
 					<xsl:when test="$normalize-space = 'true'">
 						<xsl:value-of select="normalize-space(substring-before(concat($pText, $sep), $sep))"/>
@@ -22322,8 +22322,8 @@
 						<xsl:value-of select="substring-before(concat($pText, $sep), $sep)"/>
 					</xsl:otherwise>
 				</xsl:choose>
-			</item>
-			<xsl:if test="$keep_sep = 'true' and contains($pText, $sep)"><item><xsl:value-of select="$sep"/></item></xsl:if>
+			</xsl:element>
+			<xsl:if test="$keep_sep = 'true' and contains($pText, $sep)"><xsl:element name="item" namespace="{$namespace_mn_xsl}"><xsl:value-of select="$sep"/></xsl:element></xsl:if>
 			<xsl:call-template name="split">
 				<xsl:with-param name="pText" select="substring-after($pText, $sep)"/>
 				<xsl:with-param name="sep" select="$sep"/>

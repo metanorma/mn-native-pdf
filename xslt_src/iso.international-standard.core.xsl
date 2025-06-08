@@ -349,7 +349,7 @@
 	<xsl:variable name="lang_other">
 		<xsl:for-each select="/iso:metanorma/iso:bibdata/iso:title[@language != $lang]">
 			<xsl:if test="not(preceding-sibling::iso:title[@language = current()/@language])">
-				<lang><xsl:value-of select="@language"/></lang>
+				<xsl:element name="lang" namespace="{$namespace_mn_xsl}"><xsl:value-of select="@language"/></xsl:element>
 			</xsl:if>
 		</xsl:for-each>
 	</xsl:variable>
@@ -367,24 +367,24 @@
 			</xsl:call-template>
 		</xsl:variable>
 		<xsl:variable name="parts_with_subparts">
-			<xsl:for-each select="xalan:nodeset($parts_by_slash)//item">
-				<subitem>
+			<xsl:for-each select="xalan:nodeset($parts_by_slash)//mn:item">
+				<xsl:element name="subitem" namespace="{$namespace_mn_xsl}">
 					<xsl:call-template name="split">
 						<xsl:with-param name="pText" select="."/>
 						<xsl:with-param name="sep" select="' '"/>
 						<xsl:with-param name="normalize-space">false</xsl:with-param>
 						<xsl:with-param name="keep_sep">true</xsl:with-param>
 					</xsl:call-template>
-				</subitem>
+				</xsl:element>
 			</xsl:for-each>
 		</xsl:variable>
-		<xsl:for-each select="xalan:nodeset($parts_with_subparts)//subitem">
+		<xsl:for-each select="xalan:nodeset($parts_with_subparts)//mn:subitem">
 			<xsl:choose>
 				<xsl:when test="position() = 1">
 					<xsl:value-of select="."/>
 				</xsl:when>
 				<xsl:otherwise>
-					<xsl:for-each select="item">
+					<xsl:for-each select="mn:item">
 						<xsl:choose>
 							<xsl:when test="position() = last()">
 								<fo:inline font-weight="bold"><xsl:value-of select="."/></fo:inline>
@@ -1060,7 +1060,7 @@
 											
 										</xsl:when>
 										<xsl:otherwise>
-											<xsl:for-each select="xalan:nodeset($lang_other)/lang">
+											<xsl:for-each select="xalan:nodeset($lang_other)/mn:lang">
 												<xsl:variable name="lang_other" select="."/>
 												<fo:block font-size="12pt" role="SKIP"><xsl:value-of select="$linebreak"/></fo:block>
 												<fo:block role="H1" font-style="italic" line-height="1.2">
@@ -1778,7 +1778,7 @@
 								<xsl:call-template name="insertTitlesLangMain"/>
 							</fo:block>
 							
-							<xsl:for-each select="xalan:nodeset($lang_other)/lang">
+							<xsl:for-each select="xalan:nodeset($lang_other)/mn:lang">
 								<xsl:variable name="lang_other" select="."/>
 								<fo:block font-size="8pt" font-style="italic" line-height="1.1" role="H1">
 									<!-- Example: title-intro fr -->
@@ -1862,7 +1862,7 @@
 											<xsl:call-template name="insertTitlesLangMain"/>
 										</fo:block>
 										
-										<xsl:for-each select="xalan:nodeset($lang_other)/lang">
+										<xsl:for-each select="xalan:nodeset($lang_other)/mn:lang">
 											<xsl:variable name="lang_other" select="."/>
 											<fo:block font-size="8pt" font-style="italic" line-height="1.1" role="H1">
 												<!-- Example: title-intro fr -->
@@ -2020,7 +2020,7 @@
 													</fo:block>
 																
 													<xsl:if test="not($stage-abbreviation = 'FDAMD' or $stage-abbreviation = 'FDAM')"> <!--  or $stage-abbreviation = 'PRF' -->
-														<xsl:for-each select="xalan:nodeset($lang_other)/lang">
+														<xsl:for-each select="xalan:nodeset($lang_other)/mn:lang">
 															<xsl:variable name="lang_other" select="."/>
 															<fo:block font-size="12pt" role="SKIP"><xsl:value-of select="$linebreak"/></fo:block>
 															<fo:block font-size="11pt" font-style="italic" line-height="1.1" role="H1">
@@ -2118,7 +2118,7 @@
 																	<xsl:with-param name="keep_sep">true</xsl:with-param>
 																</xsl:call-template>
 															</xsl:variable>
-															<xsl:for-each select="xalan:nodeset($v_date)/item">
+															<xsl:for-each select="xalan:nodeset($v_date)/mn:item">
 																<xsl:choose>
 																	<xsl:when test=". = '-'"><fo:inline font-weight="normal"><xsl:value-of select="."/></fo:inline></xsl:when>
 																	<xsl:otherwise><xsl:value-of select="."/></xsl:otherwise>
@@ -2140,7 +2140,7 @@
 																	<xsl:with-param name="keep_sep">true</xsl:with-param>
 																</xsl:call-template>
 															</xsl:variable>
-															<xsl:for-each select="xalan:nodeset($v_date)/item">
+															<xsl:for-each select="xalan:nodeset($v_date)/mn:item">
 																<xsl:choose>
 																	<xsl:when test=". = '-'"><fo:inline font-weight="normal"><xsl:value-of select="."/></fo:inline></xsl:when>
 																	<xsl:otherwise><xsl:value-of select="."/></xsl:otherwise>
@@ -2482,7 +2482,7 @@
 												</fo:block>
 												
 												
-												<xsl:for-each select="xalan:nodeset($lang_other)/lang">
+												<xsl:for-each select="xalan:nodeset($lang_other)/mn:lang">
 													<xsl:variable name="lang_other" select="."/>
 												
 													<fo:block font-size="12pt" role="SKIP"><xsl:value-of select="$linebreak"/></fo:block>
@@ -2754,7 +2754,7 @@
 																	</xsl:when>
 																	<xsl:otherwise>
 																		<xsl:if test="not($stage-abbreviation = 'FDAMD' or $stage-abbreviation = 'FDAM')">
-																			<xsl:for-each select="xalan:nodeset($lang_other)/lang">
+																			<xsl:for-each select="xalan:nodeset($lang_other)/mn:lang">
 																				<xsl:variable name="lang_other" select="."/>
 																				
 																				<fo:block font-size="12pt" role="SKIP"><xsl:value-of select="$linebreak"/></fo:block>
@@ -2887,7 +2887,7 @@
 											<xsl:call-template name="insertTitlesLangMain"/>
 										</fo:block>
 											
-										<xsl:for-each select="xalan:nodeset($lang_other)/lang">
+										<xsl:for-each select="xalan:nodeset($lang_other)/mn:lang">
 											<xsl:variable name="lang_other" select="."/>
 											
 											<fo:block font-size="12pt" role="SKIP"><xsl:value-of select="$linebreak"/></fo:block>
@@ -2964,7 +2964,7 @@
 										<xsl:call-template name="insertTitlesLangMain"/>
 									</fo:block>
 									
-									<xsl:for-each select="xalan:nodeset($lang_other)/lang">
+									<xsl:for-each select="xalan:nodeset($lang_other)/mn:lang">
 										<xsl:variable name="lang_other" select="."/>
 									
 										<fo:block font-size="12pt" role="SKIP"><xsl:value-of select="$linebreak"/></fo:block>
@@ -5454,7 +5454,7 @@
 	</xsl:variable>
 	
 	<xsl:template name="insertPriceBasedOn">
-		<xsl:for-each select="xalan:nodeset($price_based_on_items)/item">
+		<xsl:for-each select="xalan:nodeset($price_based_on_items)/mn:item">
 			<xsl:value-of select="."/>
 			<xsl:if test="position() != last()">
 				<fo:page-number-citation ref-id="lastBlock"/>
