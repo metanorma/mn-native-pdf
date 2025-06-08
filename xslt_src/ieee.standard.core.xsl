@@ -2,6 +2,7 @@
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" 
 											xmlns:fo="http://www.w3.org/1999/XSL/Format" 
 											xmlns:ieee="https://www.metanorma.org/ns/standoc" 
+											xmlns:mn="https://www.metanorma.org/ns/xslt" 
 											xmlns:mathml="http://www.w3.org/1998/Math/MathML" 
 											xmlns:xalan="http://xml.apache.org/xalan" 
 											xmlns:fox="http://xmlgraphics.apache.org/fop/extensions" 
@@ -37,15 +38,15 @@
 				<xsl:copy-of select="."/>
 			</xsl:variable> -->
 			<xsl:for-each select="."> <!-- xalan:nodeset($current_document) -->
-				<doc num="{$num}" firstpage_id="firstpage_id_{$num}" title-part="{$docnumber}" bundle="{$bundle}"> <!-- 'bundle' means several different documents (not language versions) in one xml -->
-					<contents>
+				<mn:doc num="{$num}" firstpage_id="firstpage_id_{$num}" title-part="{$docnumber}" bundle="{$bundle}"> <!-- 'bundle' means several different documents (not language versions) in one xml -->
+					<mn:contents>
 						<xsl:call-template name="processPrefaceSectionsDefault_Contents"/>
 						<xsl:call-template name="processMainSectionsDefault_Contents"/>
 						<xsl:apply-templates select="//ieee:indexsect" mode="contents"/>
 						
 						<xsl:call-template name="processTablesFigures_Contents"/>
-					</contents>
-				</doc>
+					</mn:contents>
+				</mn:doc>
 			</xsl:for-each>
 		</xsl:for-each>
 	</xsl:variable>
@@ -1205,7 +1206,7 @@
 		
 		<xsl:if test="count(*) = 1 and *[local-name() = 'title']"> <!-- if there isn't user ToC -->
 			<fo:block role="TOC">
-				<xsl:if test="$contents/doc[@num = $num]//item[@display = 'true']">
+				<xsl:if test="$contents/mn:doc[@num = $num]//mn:item[@display = 'true']">
 					<xsl:choose>
 						<xsl:when test="$current_template = 'standard' or $current_template = 'draft'">
 							
@@ -1214,7 +1215,7 @@
 								
 									<xsl:variable name="margin-left">4</xsl:variable>
 									
-									<xsl:for-each select="$contents/doc[@num = $num]//item[@display = 'true']">
+									<xsl:for-each select="$contents/mn:doc[@num = $num]//mn:item[@display = 'true']">
 										<fo:block role="TOCI">
 											<xsl:if test="@level = 1">
 												<xsl:attribute name="margin-top">12pt</xsl:attribute>
@@ -1226,13 +1227,13 @@
 													<xsl:attribute name="font-weight">normal</xsl:attribute>
 												</xsl:if>
 												
-												<fo:basic-link internal-destination="{@id}" fox:alt-text="{title}">
+												<fo:basic-link internal-destination="{@id}" fox:alt-text="{mn:title}">
 												
 													<xsl:value-of select="@section"/>
 													<!-- <xsl:if test="normalize-space(@section) != '' and @level = 1">.</xsl:if> -->
 													<xsl:if test="normalize-space(@section) != ''"><xsl:text>&#xa0;</xsl:text></xsl:if>
 													
-													<xsl:apply-templates select="title"/>
+													<xsl:apply-templates select="mn:title"/>
 												
 													<fo:inline keep-together.within-line="always">
 														<fo:leader font-size="9pt" font-weight="normal" leader-pattern="dots"/>
@@ -1247,21 +1248,21 @@
 									</xsl:for-each>
 									
 									<!-- List of Tables -->
-									<xsl:if test="$contents//tables/table">
+									<xsl:if test="$contents//mn:tables/mn:table">
 										<xsl:call-template name="insertListOf_Title">
 											<xsl:with-param name="title" select="$title-list-tables"/>
 										</xsl:call-template>
-										<xsl:for-each select="$contents//tables/table">
+										<xsl:for-each select="$contents//mn:tables/mn:table">
 											<xsl:call-template name="insertListOf_Item"/>
 										</xsl:for-each>
 									</xsl:if>
 									
 									<!-- List of Figures -->
-									<xsl:if test="$contents//figures/figure">
+									<xsl:if test="$contents//mn:figures/mn:figure">
 										<xsl:call-template name="insertListOf_Title">
 											<xsl:with-param name="title" select="$title-list-figures"/>
 										</xsl:call-template>
-										<xsl:for-each select="$contents//figures/figure">
+										<xsl:for-each select="$contents//mn:figures/mn:figure">
 											<xsl:call-template name="insertListOf_Item"/>
 										</xsl:for-each>
 									</xsl:if>
@@ -1272,7 +1273,7 @@
 								
 									<xsl:variable name="provisional-distance-between-starts">10</xsl:variable>
 									
-									<xsl:for-each select="$contents/doc[@num = $num]//item[@display = 'true']">
+									<xsl:for-each select="$contents/mn:doc[@num = $num]//mn:item[@display = 'true']">
 									
 										<fo:list-block provisional-distance-between-starts="{$provisional-distance-between-starts}mm" role="TOCI">
 										
@@ -1299,9 +1300,9 @@
 															</xsl:if>
 														</xsl:if>
 														
-														<fo:basic-link internal-destination="{@id}" fox:alt-text="{title}">
+														<fo:basic-link internal-destination="{@id}" fox:alt-text="{mn:title}">
 															
-															<xsl:apply-templates select="title"/>
+															<xsl:apply-templates select="mn:title"/>
 														
 															<fo:inline keep-together.within-line="always">
 																<fo:leader font-size="9pt" font-weight="normal" leader-pattern="dots"/>
@@ -1319,23 +1320,23 @@
 									</xsl:for-each>
 									
 									<!-- List of Figures -->
-									<xsl:if test="$contents//figures/figure">
+									<xsl:if test="$contents//mn:figures/mn:figure">
 										<fo:block break-after="page"/>
 										<xsl:call-template name="insertListOf_Title">
 											<xsl:with-param name="title" select="'Figures'"/>
 										</xsl:call-template>
-										<xsl:for-each select="$contents//figures/figure">
+										<xsl:for-each select="$contents//mn:figures/mn:figure">
 											<xsl:call-template name="insertListOf_Item"/>
 										</xsl:for-each>
 									</xsl:if>
 									
 									<!-- List of Tables -->
-									<xsl:if test="$contents//tables/table">
+									<xsl:if test="$contents//mn:tables/mn:table">
 										<fo:block break-after="page"/>
 										<xsl:call-template name="insertListOf_Title">
 											<xsl:with-param name="title" select="'Tables'"/>
 										</xsl:call-template>
-										<xsl:for-each select="$contents//tables/table">
+										<xsl:for-each select="$contents//mn:tables/mn:table">
 											<xsl:call-template name="insertListOf_Item"/>
 										</xsl:for-each>
 									</xsl:if>
@@ -1357,14 +1358,14 @@
 								</xsl:choose>
 							</xsl:variable>
 							
-							<xsl:for-each select="$contents/doc[@num = $num]//item[@display = 'true'][@level &lt;= $toc_level or @type = 'figure' or @type = 'table']">
+							<xsl:for-each select="$contents/mn:doc[@num = $num]//mn:item[@display = 'true'][@level &lt;= $toc_level or @type = 'figure' or @type = 'table']">
 								<fo:block role="TOCI">
 									<xsl:if test="@level = 1">
 										<xsl:attribute name="margin-top">12pt</xsl:attribute>
 										<xsl:attribute name="margin-bottom">6pt</xsl:attribute>
 									</xsl:if>
 									
-									<xsl:if test="@type = 'figure' or @type = 'table' and preceding-sibling::item[1][@type = 'figure' or @type = 'table']">
+									<xsl:if test="@type = 'figure' or @type = 'table' and preceding-sibling::mn:item[1][@type = 'figure' or @type = 'table']">
 										<xsl:attribute name="margin-top">0pt</xsl:attribute>
 										<xsl:attribute name="margin-bottom">0pt</xsl:attribute>
 									</xsl:if>
@@ -1375,13 +1376,13 @@
 											<xsl:attribute name="font-weight">normal</xsl:attribute>
 										</xsl:if>
 										
-										<fo:basic-link internal-destination="{@id}" fox:alt-text="{title}">
+										<fo:basic-link internal-destination="{@id}" fox:alt-text="{mn:title}">
 										
 											<xsl:value-of select="@section"/>
 											<xsl:if test="normalize-space(@section) != ''"><xsl:text>&#xa0;</xsl:text></xsl:if>
 											
 											<xsl:variable name="section_title">
-												<xsl:apply-templates select="title"/>
+												<xsl:apply-templates select="mn:title"/>
 											</xsl:variable>
 											
 											<!-- DEBUG=<xsl:copy-of select="$title"/> -->
@@ -1919,19 +1920,19 @@
 				<xsl:if test="ancestor-or-self::ieee:annex">annex</xsl:if>
 			</xsl:variable>
 			
-			<item id="{@id}" level="{$level}" section="{$section}" type="{$type}" root="{$root}" display="{$display}">
+			<mn:item id="{@id}" level="{$level}" section="{$section}" type="{$type}" root="{$root}" display="{$display}">
 				<xsl:if test="$type = 'index'">
 					<xsl:attribute name="level">1</xsl:attribute>
 				</xsl:if>
-				<title>
+				<mn:title>
 					<xsl:apply-templates select="xalan:nodeset($title)" mode="contents_item">
 						<xsl:with-param name="mode">contents</xsl:with-param>
 					</xsl:apply-templates>
-				</title>
+				</mn:title>
 				<xsl:if test="$type != 'index'">
 					<xsl:apply-templates  mode="contents" />
 				</xsl:if>
-			</item>
+			</mn:item>
 		</xsl:if>
 	</xsl:template>
 	
@@ -1944,7 +1945,7 @@
 					</xsl:call-template>
 				</xsl:for-each>
 			</xsl:variable>
-			<item id="{@id}" level="{$level}" section="" type="{local-name()}" root="" display="true">
+			<mn:item id="{@id}" level="{$level}" section="" type="{local-name()}" root="" display="true">
 				<xsl:variable name="name">
 					<xsl:apply-templates select="ieee:name" mode="contents_item">
 						<xsl:with-param name="mode">contents</xsl:with-param>
@@ -1953,10 +1954,10 @@
 				<xsl:if test="not(contains(normalize-space($name), '—'))">
 					<xsl:attribute name="display">false</xsl:attribute>
 				</xsl:if>
-				<title>
+				<mn:title>
 					<xsl:copy-of select="$name"/>
-				</title>
-			</item>
+				</mn:title>
+			</mn:item>
 		</xsl:if>
 	</xsl:template>
 

@@ -2,6 +2,7 @@
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" 
 											xmlns:fo="http://www.w3.org/1999/XSL/Format" 
 											xmlns:ogc="https://www.metanorma.org/ns/standoc" 
+											xmlns:mn="https://www.metanorma.org/ns/xslt" 
 											xmlns:mathml="http://www.w3.org/1998/Math/MathML" 
 											xmlns:xalan="http://xml.apache.org/xalan" 
 											xmlns:fox="http://xmlgraphics.apache.org/fop/extensions" 
@@ -233,7 +234,7 @@
 	</xsl:variable>	
 	
 	<xsl:variable name="contents_">
-		<contents>
+		<mn:contents>
 			<!-- Abstract, Keywords, Preface, Submitting Organizations, Submitters -->			
 			<xsl:call-template name="processPrefaceSectionsDefault_Contents"/>
 			
@@ -243,7 +244,7 @@
 			<xsl:call-template name="processTablesFigures_Contents">
 				<xsl:with-param name="always">true</xsl:with-param>
 			</xsl:call-template>
-		</contents>
+		</mn:contents>
 	</xsl:variable>
 	<xsl:variable name="contents" select="xalan:nodeset($contents_)"/>
 	
@@ -308,18 +309,18 @@
 				<xsl:call-template name="addBookmarks">
 					<xsl:with-param name="contents" select="$contents"/>
 					<xsl:with-param name="contents_addon">
-						<xsl:if test="$contents//tables/table or $contents//figures/figure or //*[local-name() = 'table'][.//*[local-name() = 'p'][@class = 'RecommendationTitle']]">
+						<xsl:if test="$contents//mn:tables/mn:table or $contents//mn:figures/mn:figure or //*[local-name() = 'table'][.//*[local-name() = 'p'][@class = 'RecommendationTitle']]">
 						<fo:bookmark internal-destination="empty_bookmark">
 							<fo:bookmark-title>—————</fo:bookmark-title>
 						</fo:bookmark>
 					</xsl:if>
 					
-					<xsl:if test="$contents//tables/table">
+					<xsl:if test="$contents//mn:tables/mn:table">
 						<fo:bookmark internal-destination="empty_bookmark" starting-state="hide">
 							<fo:bookmark-title>
 								<xsl:value-of select="$title-list-tables"/>
 							</fo:bookmark-title>
-							<xsl:for-each select="$contents//tables/table">
+							<xsl:for-each select="$contents//mn:tables/mn:table">
 								<fo:bookmark internal-destination="{@id}">
 									<xsl:variable name="title">
 										<xsl:apply-templates select="*[local-name() = 'name']" mode="bookmarks"/>
@@ -330,12 +331,12 @@
 						</fo:bookmark>
 					</xsl:if>
 
-					<xsl:if test="$contents//figures/figure">
+					<xsl:if test="$contents//mn:figures/mn:figure">
 						<fo:bookmark internal-destination="empty_bookmark" starting-state="hide">
 							<fo:bookmark-title>
 								<xsl:value-of select="$title-list-figures"/>
 							</fo:bookmark-title>
-							<xsl:for-each select="$contents//figures/figure">
+							<xsl:for-each select="$contents//mn:figures/mn:figure">
 								<fo:bookmark internal-destination="{@id}">
 									<xsl:variable name="title">
 										<xsl:apply-templates select="*[local-name() = 'name']" mode="bookmarks"/>
@@ -887,7 +888,7 @@
 			
 				<fo:block-container line-height="130%">
 					<fo:block role="TOC">
-						<xsl:for-each select="$contents//item[@display = 'true' and normalize-space(@id) != '']">
+						<xsl:for-each select="$contents//mn:item[@display = 'true' and normalize-space(@id) != '']">
 							
 							<fo:block role="TOCI">
 								<xsl:if test="@level = 1">
@@ -916,7 +917,7 @@
 													<fo:block text-align-last="justify" margin-left="12mm" text-indent="-12mm">
 														<fo:basic-link internal-destination="{@id}">
 															<xsl:variable name="sectionTitle">
-																<xsl:apply-templates select="title"/>
+																<xsl:apply-templates select="mn:title"/>
 															</xsl:variable>
 															<xsl:call-template name="setAltText">
 																<xsl:with-param name="value" select="concat(@section, $sectionTitle)"/>
@@ -947,7 +948,7 @@
 												</xsl:call-template>
 												<xsl:value-of select="java:toUpperCase(java:java.lang.String.new(@section))"/>
 												<xsl:text> </xsl:text>
-												<xsl:apply-templates select="title"/>
+												<xsl:apply-templates select="mn:title"/>
 												<xsl:text> </xsl:text>
 												<fo:inline keep-together.within-line="always">
 													<fo:leader leader-pattern="dots"/>
@@ -966,24 +967,24 @@
 						
 
 				<!-- List of Tables -->
-				<xsl:if test="$contents//tables/table">
+				<xsl:if test="$contents//mn:tables/mn:table">
 					<xsl:call-template name="insertListOf_Title">
 						<xsl:with-param name="title" select="$title-list-tables"/>
 					</xsl:call-template>
 					<fo:block-container line-height="130%" role="TOC">
-						<xsl:for-each select="$contents//tables/table">
+						<xsl:for-each select="$contents//mn:tables/mn:table">
 							<xsl:call-template name="insertListOf_Item"/>
 						</xsl:for-each>
 					</fo:block-container>
 				</xsl:if>
 				
 				<!-- List of Figures -->
-				<xsl:if test="$contents//figures/figure">
+				<xsl:if test="$contents//mn:figures/mn:figure">
 					<xsl:call-template name="insertListOf_Title">
 						<xsl:with-param name="title" select="$title-list-figures"/>
 					</xsl:call-template>
 					<fo:block-container line-height="130%" role="TOC">
-						<xsl:for-each select="$contents//figures/figure">
+						<xsl:for-each select="$contents//mn:figures/mn:figure">
 							<xsl:call-template name="insertListOf_Item"/>
 						</xsl:for-each>
 					</fo:block-container>
@@ -1257,15 +1258,15 @@
 				<xsl:value-of select="local-name()"/>
 			</xsl:variable>
 			
-			<item id="{@id}" level="{$level}" section="{$section}" type="{$type}" display="{$display}">
+			<mn:item id="{@id}" level="{$level}" section="{$section}" type="{$type}" display="{$display}">
 				<xsl:if test="ancestor::ogc:annex">
 					<xsl:attribute name="parent">annex</xsl:attribute>
 				</xsl:if>
-				<title>
+				<mn:title>
 					<xsl:apply-templates select="xalan:nodeset($title)" mode="contents_item"/>
-				</title>
+				</mn:title>
 				<xsl:apply-templates mode="contents" />
-			</item>
+			</mn:item>
 		</xsl:if>	
 		
 	</xsl:template>
