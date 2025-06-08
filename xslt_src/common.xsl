@@ -15123,11 +15123,11 @@
 										<xsl:apply-templates select="contents/mn:item" mode="bookmark"/>
 										
 										<xsl:call-template name="insertFigureBookmarks">
-											<xsl:with-param name="contents" select="contents"/>
+											<xsl:with-param name="contents" select="mn:contents"/>
 										</xsl:call-template>
 										
 										<xsl:call-template name="insertTableBookmarks">
-											<xsl:with-param name="contents" select="contents"/>
+											<xsl:with-param name="contents" select="mn:contents"/>
 											<xsl:with-param name="lang" select="@lang"/>
 										</xsl:call-template>
 										
@@ -15141,11 +15141,11 @@
 									<xsl:apply-templates select="mn:contents/mn:item" mode="bookmark"/>
 									
 									<xsl:call-template name="insertFigureBookmarks">
-										<xsl:with-param name="contents" select="contents"/>
+										<xsl:with-param name="contents" select="mn:contents"/>
 									</xsl:call-template>
 										
 									<xsl:call-template name="insertTableBookmarks">
-										<xsl:with-param name="contents" select="contents"/>
+										<xsl:with-param name="contents" select="mn:contents"/>
 										<xsl:with-param name="lang" select="@lang"/>
 									</xsl:call-template>
 									
