@@ -3352,7 +3352,7 @@
 							<xsl:for-each select="$contents//mn:item[@display = 'true']"><!-- [not(@level = 2 and starts-with(@section, '0'))] skip clause from preface -->
 								
 								<xsl:if test="$layoutVersion = '1987'">
-									<xsl:if test="@type = 'annex'	and @level = 1 and not(preceding-sibling::item[@type = 'annex' and @level = 1])">
+									<xsl:if test="@type = 'annex'	and @level = 1 and not(preceding-sibling::mn:item[@type = 'annex' and @level = 1])">
 										<fo:block role="TOCI" font-weight="bold" margin-top="12pt" margin-bottom="6pt" keep-with-next="always">
 											<xsl:call-template name="getLocalizedString">
 												<xsl:with-param name="key">Annex.pl</xsl:with-param>
