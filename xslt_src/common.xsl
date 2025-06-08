@@ -15075,9 +15075,9 @@
 		<xsl:if test="$contents_nodes//mn:item">
 			<fo:bookmark-tree>
 				<xsl:choose>
-					<xsl:when test="$contents_nodes/doc">
+					<xsl:when test="$contents_nodes/mn:doc">
 						<xsl:choose>
-							<xsl:when test="count($contents_nodes/doc) &gt; 1">
+							<xsl:when test="count($contents_nodes/mn:doc) &gt; 1">
 								
 								<xsl:if test="$contents_nodes/collection">
 									<fo:bookmark internal-destination="{$contents/collection/@firstpage_id}">
@@ -15085,7 +15085,7 @@
 									</fo:bookmark>
 								</xsl:if>
 							
-								<xsl:for-each select="$contents_nodes/doc">
+								<xsl:for-each select="$contents_nodes/mn:doc">
 									<fo:bookmark internal-destination="{contents/mn:item[@display = 'true'][1]/@id}" starting-state="hide">
 										<xsl:if test="@bundle = 'true'">
 											<xsl:attribute name="internal-destination"><xsl:value-of select="@firstpage_id"/></xsl:attribute>
@@ -15136,7 +15136,7 @@
 								</xsl:for-each>
 							</xsl:when>
 							<xsl:otherwise>
-								<xsl:for-each select="$contents_nodes/doc">
+								<xsl:for-each select="$contents_nodes/mn:doc">
 								
 									<xsl:apply-templates select="mn:contents/mn:item" mode="bookmark"/>
 									

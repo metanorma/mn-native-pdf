@@ -56,9 +56,9 @@
 								<xsl:variable name="docid">
 									<xsl:call-template name="getDocumentId"/>
 								</xsl:variable>
-								<doc id="{$docid}" lang="{$lang}" doctype="{$doctype}" title-part="{$title-part}">
+								<mn:doc id="{$docid}" lang="{$lang}" doctype="{$doctype}" title-part="{$title-part}">
 									<xsl:call-template name="generateContents"/>
-								</doc>
+								</mn:doc>
 							</xsl:for-each>				
 						</xsl:for-each>
 					</xsl:when>
@@ -73,9 +73,9 @@
 								<xsl:variable name="docid">
 									<xsl:call-template name="getDocumentId"/>
 								</xsl:variable>
-								<doc id="{$docid}" lang="{$lang}">
+								<mn:doc id="{$docid}" lang="{$lang}">
 									<xsl:call-template name="generateContents"/>
-								</doc>
+								</mn:doc>
 							</xsl:for-each>				
 						</xsl:for-each>
 					</xsl:otherwise>
@@ -86,9 +86,9 @@
 				<xsl:variable name="docid">
 					<xsl:call-template name="getDocumentId"/>
 				</xsl:variable>
-				<doc id="{$docid}" lang="{$lang}">
+				<mn:doc id="{$docid}" lang="{$lang}">
 					<xsl:call-template name="generateContents"/>
-				</doc>
+				</mn:doc>
 			</xsl:otherwise>
 		</xsl:choose>
 	</xsl:variable>
@@ -194,7 +194,7 @@
 	<xsl:variable name="doctype" select="//bipm:metanorma/bipm:bibdata/bipm:ext/bipm:doctype"/>
 
 	<xsl:template name="generateContents">
-		<contents>
+		<mn:contents>
 
 			<xsl:apply-templates select="/*/bipm:preface/*[not(local-name() = 'note' or local-name() = 'admonition' or (local-name() = 'clause' and @type = 'toc'))][position() &gt; 1]" mode="contents" />
 			
@@ -210,7 +210,7 @@
 			
 			<xsl:call-template name="processTablesFigures_Contents"/>
 			
-		</contents>
+		</mn:contents>
 	</xsl:template>
 	
 	
@@ -1229,12 +1229,12 @@
 							<fo:block role="TOC">
 								<!-- <xsl:copy-of select="$contents"/> -->
 								
-								<xsl:if test="$contents/doc[@id = $docid]//item[@display='true']">
+								<xsl:if test="$contents/mn:doc[@id = $docid]//mn:item[@display='true']">
 									<fo:table table-layout="fixed" width="100%" id="__internal_layout__toc_{generate-id()}" role="SKIP">
 										<fo:table-column column-width="127mm"/>
 										<fo:table-column column-width="12mm"/>
 										<fo:table-body role="SKIP">											
-											<xsl:for-each select="$contents/doc[@id = $docid]//item[@display='true' and not(@type = 'annex') and not(@type = 'index') and not(@parent = 'annex')]">								
+											<xsl:for-each select="$contents/mn:doc[@id = $docid]//mn:item[@display='true' and not(@type = 'annex') and not(@type = 'index') and not(@parent = 'annex')]">
 												<xsl:call-template name="insertContentItem"/>								
 											</xsl:for-each>
 											<!-- insert page break between main sections and appendixes in ToC -->
@@ -1245,31 +1245,31 @@
 													</fo:table-cell>
 												</fo:table-row>
 											</xsl:if> -->
-											<xsl:for-each select="$contents/doc[@id = $docid]//item[@display='true' and (@type = 'annex')]"> <!--  or (@level = 2 and @parent = 'annex') -->
+											<xsl:for-each select="$contents/mn:doc[@id = $docid]//mn:item[@display='true' and (@type = 'annex')]"> <!--  or (@level = 2 and @parent = 'annex') -->
 												<xsl:call-template name="insertContentItem">
 													<xsl:with-param name="keep-with-next">true</xsl:with-param>
 												</xsl:call-template>
 											</xsl:for-each>
-											<xsl:for-each select="$contents/doc[@id = $docid]//item[@display='true' and (@type = 'index')]">
+											<xsl:for-each select="$contents/mn:doc[@id = $docid]//mn:item[@display='true' and (@type = 'index')]">
 												<xsl:call-template name="insertContentItem"/>								
 											</xsl:for-each>
 											
 											<!-- List of Tables -->
-											<xsl:if test="$contents/doc[@id = $docid]//tables/table">
+											<xsl:if test="$contents/mn:doc[@id = $docid]//mn:tables/mn:table">
 												<xsl:call-template name="insertListOf_Title">
 													<xsl:with-param name="title" select="$title-list-tables"/>
 												</xsl:call-template>
-												<xsl:for-each select="$contents/doc[@id = $docid]//tables/table">
+												<xsl:for-each select="$contents/mn:doc[@id = $docid]//mn:tables/mn:table">
 													<xsl:call-template name="insertListOf_Item"/>
 												</xsl:for-each>
 											</xsl:if>
 											
 											<!-- List of Figures -->
-											<xsl:if test="$contents/doc[@id = $docid]//figures/figure">
+											<xsl:if test="$contents/doc[@id = $docid]//mn:figures/mn:figure">
 												<xsl:call-template name="insertListOf_Title">
 													<xsl:with-param name="title" select="$title-list-figures"/>
 												</xsl:call-template>
-												<xsl:for-each select="$contents/doc[@id = $docid]//figures/figure">
+												<xsl:for-each select="$contents/mn:doc[@id = $docid]//mn:figures/mn:figure">
 													<xsl:call-template name="insertListOf_Item"/>
 												</xsl:for-each>
 											</xsl:if>
@@ -1955,8 +1955,8 @@
 				<xsl:choose>
 					<xsl:when test="@level = 1 and @type = 'annex'">0pt</xsl:when>
 					<xsl:when test="@level = 1">6pt</xsl:when>
-					<xsl:when test="@level = 2 and not(following-sibling::item[@display='true']) and not(item[@display='true']) and not(position() = last())">12pt</xsl:when>
-					<xsl:when test="@level = 3 and not(following-sibling::item[@display='true']) and not(../following-sibling::item[@display='true']) and not(position() = last())">12pt</xsl:when>
+					<xsl:when test="@level = 2 and not(following-sibling::mn:item[@display='true']) and not(mn:item[@display='true']) and not(position() = last())">12pt</xsl:when>
+					<xsl:when test="@level = 3 and not(following-sibling::mn:item[@display='true']) and not(../following-sibling::mn:item[@display='true']) and not(position() = last())">12pt</xsl:when>
 				</xsl:choose>
 			</xsl:variable>
 			
@@ -2023,13 +2023,13 @@
 										<xsl:attribute name="margin-left">11mm</xsl:attribute>
 										<xsl:attribute name="text-indent">-11mm</xsl:attribute>
 									</xsl:if>
-									<fo:basic-link internal-destination="{@id}" fox:alt-text="{title}" role="SKIP">
+									<fo:basic-link internal-destination="{@id}" fox:alt-text="{mn:title}" role="SKIP">
 										<xsl:if test="@level &gt;= 3">
 											<fo:inline padding-right="2mm" role="SKIP"><xsl:value-of select="@section"/></fo:inline>
 										</xsl:if>
 										
 										<fo:inline role="SKIP">
-											<xsl:apply-templates select="title"/>
+											<xsl:apply-templates select="mn:title"/>
 										</fo:inline>
 										
 									</fo:basic-link>
@@ -2047,7 +2047,7 @@
 					<xsl:attribute name="padding-bottom"><xsl:value-of select="normalize-space($space-after)"/></xsl:attribute>
 				</xsl:if>
 				<fo:block role="SKIP">
-					<fo:basic-link internal-destination="{@id}" fox:alt-text="{title}" role="SKIP">
+					<fo:basic-link internal-destination="{@id}" fox:alt-text="{mn:title}" role="SKIP">
 						<fo:inline font-family="Arial" font-weight="bold" font-size="10pt" role="SKIP"><fo:wrapper role="artifact"><fo:page-number-citation ref-id="{@id}" /></fo:wrapper></fo:inline>
 					</fo:basic-link>
 				</fo:block>
@@ -2155,17 +2155,17 @@
 				</xsl:choose>
 			</xsl:variable>
 			
-			<item id="{@id}" level="{$level}" section="{$section}" type="{$type}" display="{$display}">
+			<mn:item id="{@id}" level="{$level}" section="{$section}" type="{$type}" display="{$display}">
 				<xsl:if test="ancestor::bipm:annex">
 					<xsl:attribute name="parent">annex</xsl:attribute>
 				</xsl:if>
-				<title>
+				<mn:title>
 					<xsl:apply-templates select="xalan:nodeset($title)" mode="contents_item"/>
-				</title>
+				</mn:title>
 				<xsl:if test="$type != 'index'">
 					<xsl:apply-templates  mode="contents" />
 				</xsl:if>
-			</item>
+			</mn:item>
 		</xsl:if>
 	</xsl:template>
 	
