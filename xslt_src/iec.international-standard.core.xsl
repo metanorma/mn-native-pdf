@@ -2,7 +2,7 @@
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" 
 											xmlns:fo="http://www.w3.org/1999/XSL/Format" 
 											xmlns:iec="https://www.metanorma.org/ns/standoc" 
-											xmlns:mn="https://www.metanorma.org/ns/xslt" 
+											xmlns:mnx="https://www.metanorma.org/ns/xslt" 
 											xmlns:mathml="http://www.w3.org/1998/Math/MathML" 
 											xmlns:xalan="http://xml.apache.org/xalan" 
 											xmlns:fox="http://xmlgraphics.apache.org/fop/extensions" 
@@ -108,9 +108,9 @@
 				<xsl:variable name="docid">
 					<xsl:call-template name="getDocumentId"/>
 				</xsl:variable>
-				<mn:doc id="{$docid}" lang="{$lang}">
+				<mnx:doc id="{$docid}" lang="{$lang}">
 					<xsl:call-template name="generateContents"/>
-				</mn:doc>
+				</mnx:doc>
 			</xsl:for-each>				
 		</xsl:for-each>
 	
@@ -118,14 +118,14 @@
 	<xsl:variable name="contents" select="xalan:nodeset($contents_)"/>
 
 	<xsl:template name="generateContents">
-		<mn:contents>
+		<mnx:contents>
 			<xsl:call-template name="processPrefaceSectionsDefault_Contents"/>
 			<xsl:call-template name="processMainSectionsDefault_Contents"/>
 			<xsl:apply-templates select="//iec:indexsect" mode="contents"/>
 			<xsl:call-template name="processTablesFigures_Contents">
 				<xsl:with-param name="always">true</xsl:with-param>
 			</xsl:call-template>
-		</mn:contents>
+		</mnx:contents>
 	</xsl:template>
 	
 	<xsl:variable name="color_blue">rgb(0, 90, 162)</xsl:variable>
@@ -1268,7 +1268,7 @@
 					</xsl:call-template>
 				</fo:block> -->
 				
-		<xsl:for-each select="xalan:nodeset($contents)//mn:item[@display = 'true']"><!-- [@display = 'true']
+		<xsl:for-each select="xalan:nodeset($contents)//mnx:item[@display = 'true']"><!-- [@display = 'true']
 																																									[@level &lt;= 3]
 																																									[not(@level = 2 and starts-with(@section, '0'))] skip clause from preface -->
 			<fo:block text-align-last="justify" role="TOCI">
@@ -1288,12 +1288,12 @@
 					<xsl:attribute name="space-before">5pt</xsl:attribute>
 				</xsl:if>
 				
-				<fo:basic-link internal-destination="{@id}" fox:alt-text="{@section} {mn:title}"> <!-- link at this level needs for PDF structure tags -->
+				<fo:basic-link internal-destination="{@id}" fox:alt-text="{@section} {mnx:title}"> <!-- link at this level needs for PDF structure tags -->
 				
 					<fo:list-block role="SKIP">
 						<xsl:attribute name="margin-left">
 							<xsl:choose>
-								<xsl:when test="mn:title/@variant-title = 'true'">0mm</xsl:when>
+								<xsl:when test="mnx:title/@variant-title = 'true'">0mm</xsl:when>
 								<xsl:when test="@level = 2">8mm</xsl:when>
 								<xsl:when test="@level &gt;= 3"><xsl:value-of select="(@level - 2) * 23"/>mm</xsl:when>
 								<xsl:otherwise>0mm</xsl:otherwise>
@@ -1316,9 +1316,9 @@
 							</fo:list-item-label>
 							<fo:list-item-body start-indent="body-start()" role="SKIP">
 								<fo:block text-align-last="justify" role="SKIP">
-									<fo:basic-link internal-destination="{@id}" fox:alt-text="{mn:title}" role="SKIP">
+									<fo:basic-link internal-destination="{@id}" fox:alt-text="{mnx:title}" role="SKIP">
 										<xsl:variable name="title">
-											<xsl:apply-templates select="mn:title"/>
+											<xsl:apply-templates select="mnx:title"/>
 										</xsl:variable>
 										<xsl:call-template name="addLetterSpacing">
 											<xsl:with-param name="text" select="$title"/>
@@ -1337,16 +1337,16 @@
 			</fo:block>
 		</xsl:for-each>
 		
-		<xsl:if test="$contents//mn:figures/mn:figure">
+		<xsl:if test="$contents//mnx:figures/mnx:figure">
 			<fo:block margin-bottom="5pt" role="SKIP"><fo:wrapper role="artifact">&#xA0;</fo:wrapper></fo:block>
-			<xsl:for-each select="$contents//mn:figures/mn:figure">
+			<xsl:for-each select="$contents//mnx:figures/mnx:figure">
 				<xsl:call-template name="insertListOf_Item"/>
 			</xsl:for-each>
 		</xsl:if>
 		
-		<xsl:if test="$contents//mn:tables/mn:table">
+		<xsl:if test="$contents//mnx:tables/mnx:table">
 			<fo:block margin-bottom="5pt" role="SKIP"><fo:wrapper role="artifact">&#xA0;</fo:wrapper></fo:block>
-			<xsl:for-each select="$contents//mn:tables/mn:table">
+			<xsl:for-each select="$contents//mnx:tables/mnx:table">
 				<xsl:call-template name="insertListOf_Item"/>
 			</xsl:for-each>
 		</xsl:if>
@@ -1382,7 +1382,7 @@
 						<xsl:call-template name="getDocumentId"/>
 					</xsl:variable>
 					<xsl:call-template name="insertTOCpages">
-						<xsl:with-param name="contents" select="$contents/mn:doc[@id = $docid]"/>
+						<xsl:with-param name="contents" select="$contents/mnx:doc[@id = $docid]"/>
 					</xsl:call-template>
 				</xsl:if>
 			</fo:block>
@@ -1676,14 +1676,14 @@
 				<xsl:copy-of select="iec:variant-title/node()"/>
 			</xsl:variable>
 			
-			<mn:item id="{@id}" level="{$level}" section="{$section}" type="{$type}" display="{$display}">
+			<mnx:item id="{@id}" level="{$level}" section="{$section}" type="{$type}" display="{$display}">
 				<xsl:if test="$type ='appendix'">
 					<xsl:attribute name="section"></xsl:attribute>
 				</xsl:if>
 				<xsl:if test="$type ='indexsect'">
 					<xsl:attribute name="level">1</xsl:attribute>
 				</xsl:if>
-				<mn:title>
+				<mnx:title>
 					<xsl:choose>
 						<xsl:when test="normalize-space($variant_title) != ''">
 							<xsl:attribute name="variant-title">true</xsl:attribute>
@@ -1706,11 +1706,11 @@
 							<xsl:apply-templates select="xalan:nodeset($title)" mode="contents_item"/>
 						</xsl:otherwise>
 					</xsl:choose>
-				</mn:title>
+				</mnx:title>
 				<xsl:if test="$type != 'indexsect'">
 					<xsl:apply-templates  mode="contents" />
 				</xsl:if>
-			</mn:item>
+			</mnx:item>
 			
 		</xsl:if>	
 		

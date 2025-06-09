@@ -2,7 +2,7 @@
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" 
 											xmlns:fo="http://www.w3.org/1999/XSL/Format" 
 											xmlns:csa="https://www.metanorma.org/ns/standoc" 
-											xmlns:mn="https://www.metanorma.org/ns/xslt" 
+											xmlns:mnx="https://www.metanorma.org/ns/xslt" 
 											xmlns:mathml="http://www.w3.org/1998/Math/MathML" 
 											xmlns:xalan="http://xml.apache.org/xalan" 
 											xmlns:fox="http://xmlgraphics.apache.org/fop/extensions" 
@@ -29,11 +29,11 @@
 	<xsl:variable name="color-header-document">rgb(79, 201, 204)</xsl:variable>
 	
 	<xsl:variable name="contents_">
-		<mn:contents>
+		<mnx:contents>
 			<xsl:call-template name="processPrefaceSectionsDefault_Contents"/>
 			<xsl:call-template name="processMainSectionsDefault_Contents"/>
 			<xsl:call-template name="processTablesFigures_Contents"/>
-		</mn:contents>
+		</mnx:contents>
 	</xsl:variable>
 	<xsl:variable name="contents" select="xalan:nodeset($contents_)"/>
 	
@@ -321,7 +321,7 @@
 				
 				<xsl:if test="count(*) = 1 and *[local-name() = 'title']"> <!-- if there isn't user ToC -->
 					<fo:block margin-left="-3mm" role="TOC">
-						<xsl:for-each select="$contents//mn:item[@display = 'true']">
+						<xsl:for-each select="$contents//mnx:item[@display = 'true']">
 							<fo:block role="TOCI">
 								<fo:list-block>
 									<xsl:attribute name="provisional-distance-between-starts">
@@ -336,9 +336,9 @@
 										</fo:list-item-label>
 										<fo:list-item-body start-indent="body-start()">
 											<fo:block text-align-last="justify" margin-left="12mm" text-indent="-12mm">
-												<fo:basic-link internal-destination="{@id}" fox:alt-text="{mn:title}">
+												<fo:basic-link internal-destination="{@id}" fox:alt-text="{mnx:title}">
 													<fo:inline padding-right="2mm"><xsl:value-of select="@section"/></fo:inline>
-													<xsl:apply-templates select="mn:title"/>
+													<xsl:apply-templates select="mnx:title"/>
 													<fo:inline keep-together.within-line="always">
 														<fo:leader leader-pattern="dots"/>
 														<fo:inline><fo:page-number-citation ref-id="{@id}"/></fo:inline>
@@ -352,21 +352,21 @@
 						</xsl:for-each>
 						
 						<!-- List of Tables -->
-						<xsl:if test="$contents//mn:tables/mn:table">
+						<xsl:if test="$contents//mnx:tables/mnx:table">
 							<xsl:call-template name="insertListOf_Title">
 								<xsl:with-param name="title" select="$title-list-tables"/>
 							</xsl:call-template>
-							<xsl:for-each select="$contents//mn:tables/mn:table">
+							<xsl:for-each select="$contents//mnx:tables/mnx:table">
 								<xsl:call-template name="insertListOf_Item"/>
 							</xsl:for-each>
 						</xsl:if>
 						
 						<!-- List of Figures -->
-						<xsl:if test="$contents//mn:figures/mn:figure">
+						<xsl:if test="$contents//mnx:figures/mnx:figure">
 							<xsl:call-template name="insertListOf_Title">
 								<xsl:with-param name="title" select="$title-list-figures"/>
 							</xsl:call-template>
-							<xsl:for-each select="$contents//mn:figures/mn:figure">
+							<xsl:for-each select="$contents//mnx:figures/mnx:figure">
 								<xsl:call-template name="insertListOf_Item"/>
 							</xsl:for-each>
 						</xsl:if>
@@ -427,12 +427,12 @@
 				<xsl:call-template name="getName"/>
 			</xsl:variable>
 			
-			<mn:item id="{@id}" level="{$level}" section="{$section}" display="{$display}">
-				<mn:title>
+			<mnx:item id="{@id}" level="{$level}" section="{$section}" display="{$display}">
+				<mnx:title>
 					<xsl:apply-templates select="xalan:nodeset($title)" mode="contents_item"/>
-				</mn:title>
+				</mnx:title>
 				<xsl:apply-templates mode="contents" />
-			</mn:item>
+			</mnx:item>
 		</xsl:if>
 	</xsl:template>
 

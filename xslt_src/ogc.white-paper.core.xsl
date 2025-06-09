@@ -2,7 +2,7 @@
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" 
 											xmlns:fo="http://www.w3.org/1999/XSL/Format" 
 											xmlns:ogc="https://www.metanorma.org/ns/standoc" 
-											xmlns:mn="https://www.metanorma.org/ns/xslt" 
+											xmlns:mnx="https://www.metanorma.org/ns/xslt" 
 											xmlns:mathml="http://www.w3.org/1998/Math/MathML" 
 											xmlns:xalan="http://xml.apache.org/xalan" 
 											xmlns:fox="http://xmlgraphics.apache.org/fop/extensions" 
@@ -82,7 +82,7 @@
 	</xsl:attribute-set>
 	
 	<xsl:variable name="contents_">
-		<mn:contents>
+		<mnx:contents>
 			<!-- Abstract, Keywords, Preface, Submitting Organizations, Submitters -->
 			<xsl:call-template name="processPrefaceSectionsDefault_Contents"/>
 			
@@ -90,7 +90,7 @@
 			<xsl:apply-templates select="//ogc:indexsect" mode="contents"/>
 			
 			<xsl:call-template name="processTablesFigures_Contents"/>
-		</mn:contents>
+		</mnx:contents>
 	</xsl:variable>
 	<xsl:variable name="contents" select="xalan:nodeset($contents_)"/>
 
@@ -396,13 +396,13 @@
 				<xsl:if test="count(*) = 1 and *[local-name() = 'title']"> <!-- if there isn't user ToC -->
 				
 					<xsl:variable name="margin-left">3.9</xsl:variable>
-					<xsl:for-each select="$contents//mn:item[@display = 'true']">
+					<xsl:for-each select="$contents//mnx:item[@display = 'true']">
 						<fo:block margin-top="8pt" margin-bottom="5pt" margin-left="{(@level - 1) * $margin-left}mm" text-align-last="justify" role="TOCI">
-							<fo:basic-link internal-destination="{@id}" fox:alt-text="{mn:title}">
+							<fo:basic-link internal-destination="{@id}" fox:alt-text="{mnx:title}">
 								<xsl:if test="@section != ''">
 									<xsl:value-of select="@section"/><xsl:text> </xsl:text>
 								</xsl:if>
-								<xsl:apply-templates select="mn:title"/>
+								<xsl:apply-templates select="mnx:title"/>
 								<fo:inline keep-together.within-line="always">
 									<fo:leader leader-pattern="dots"/>
 									<fo:inline><fo:page-number-citation ref-id="{@id}"/></fo:inline>
@@ -508,12 +508,12 @@
 				<xsl:value-of select="local-name()"/>
 			</xsl:variable>
 			
-			<mn:item id="{@id}" level="{$level}" section="{$section}" type="{$type}" display="{$display}">
-				<mn:title>
+			<mnx:item id="{@id}" level="{$level}" section="{$section}" type="{$type}" display="{$display}">
+				<mnx:title>
 					<xsl:apply-templates select="xalan:nodeset($title)" mode="contents_item"/>
-				</mn:title>
+				</mnx:title>
 				<xsl:apply-templates mode="contents" />
-			</mn:item>
+			</mnx:item>
 		</xsl:if>	
 		
 	</xsl:template>

@@ -2,7 +2,7 @@
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" 
 											xmlns:fo="http://www.w3.org/1999/XSL/Format" 
 											xmlns:plateau="https://www.metanorma.org/ns/standoc" 
-											xmlns:mn="https://www.metanorma.org/ns/xslt" 
+											xmlns:mnx="https://www.metanorma.org/ns/xslt" 
 											xmlns:mathml="http://www.w3.org/1998/Math/MathML" 
 											xmlns:xalan="http://xml.apache.org/xalan" 
 											xmlns:fox="http://xmlgraphics.apache.org/fop/extensions" 
@@ -61,16 +61,16 @@
 			</xsl:variable>
 			
 			<xsl:for-each select="xalan:nodeset($current_document)"> <!-- . -->
-				<mn:doc num="{$num}" firstpage_id="firstpage_id_{$num}" title-part="{$docnumber}" bundle="{$bundle}"> <!-- 'bundle' means several different documents (not language versions) in one xml -->
-					<mn:contents>
+				<mnx:doc num="{$num}" firstpage_id="firstpage_id_{$num}" title-part="{$docnumber}" bundle="{$bundle}"> <!-- 'bundle' means several different documents (not language versions) in one xml -->
+					<mnx:contents>
 						<!-- <xsl:call-template name="processPrefaceSectionsDefault_Contents"/> -->
 						
 						<xsl:call-template name="processMainSectionsDefault_Contents"/>
 						
 						<xsl:apply-templates select="//plateau:indexsect" mode="contents"/>
 
-					</mn:contents>
-				</mn:doc>
+					</mnx:contents>
+				</mnx:doc>
 			</xsl:for-each>
 		</xsl:for-each>
 	</xsl:variable>
@@ -539,8 +539,8 @@
 					<xsl:attribute name="font-weight">normal</xsl:attribute>
 					<xsl:attribute name="line-height">1.2</xsl:attribute>
 				</xsl:if>
-				<xsl:if test="$contents/mn:doc[@num = $num]//mn:item[@display = 'true']">
-					<xsl:for-each select="$contents/mn:doc[@num = $num]//mn:item[@display = 'true'][@level &lt;= $toc_level or @type='figure' or @type = 'table']">
+				<xsl:if test="$contents/mnx:doc[@num = $num]//mnx:item[@display = 'true']">
+					<xsl:for-each select="$contents/mnx:doc[@num = $num]//mnx:item[@display = 'true'][@level &lt;= $toc_level or @type='figure' or @type = 'table']">
 						<fo:block role="TOCI">
 							<xsl:choose>
 								<xsl:when test="$doctype = 'technical-report'">
@@ -633,12 +633,12 @@
 	<xsl:template name="insertTocItem">
 		<xsl:param name="printSection">false</xsl:param>
 		<fo:block text-align-last="justify" role="TOCI">
-			<fo:basic-link internal-destination="{@id}" fox:alt-text="{mn:title}">
+			<fo:basic-link internal-destination="{@id}" fox:alt-text="{mnx:title}">
 				<xsl:if test="$printSection = 'true' and @section != ''">
 					<xsl:value-of select="@section"/>
 					<xsl:text>. </xsl:text>
 				</xsl:if>
-				<fo:inline><xsl:apply-templates select="mn:title" /><xsl:text> </xsl:text></fo:inline>
+				<fo:inline><xsl:apply-templates select="mnx:title" /><xsl:text> </xsl:text></fo:inline>
 				<fo:inline keep-together.within-line="always">
 					<fo:leader leader-pattern="dots"/>
 					<fo:inline>
@@ -904,19 +904,19 @@
 				<xsl:if test="ancestor-or-self::plateau:annex">annex</xsl:if>
 			</xsl:variable>
 			
-			<mn:item id="{@id}" level="{$level}" section="{$section}" type="{$type}" root="{$root}" display="{$display}">
+			<mnx:item id="{@id}" level="{$level}" section="{$section}" type="{$type}" root="{$root}" display="{$display}">
 				<xsl:if test="$type = 'index'">
 					<xsl:attribute name="level">1</xsl:attribute>
 				</xsl:if>
-				<mn:title>
+				<mnx:title>
 					<xsl:apply-templates select="xalan:nodeset($title)" mode="contents_item">
 						<xsl:with-param name="mode">contents</xsl:with-param>
 					</xsl:apply-templates>
-				</mn:title>
+				</mnx:title>
 				<xsl:if test="$type != 'index'">
 					<xsl:apply-templates  mode="contents" />
 				</xsl:if>
-			</mn:item>
+			</mnx:item>
 		</xsl:if>
 	</xsl:template>
 	
@@ -1672,7 +1672,7 @@
 	</xsl:template>
 	
 	<!-- for $contents -->
-	<xsl:template match="mn:title/text()">
+	<xsl:template match="mnx:title/text()">
 		<xsl:variable name="regex_en_contents">([^\u3000-\u9FFF\uF900-\uFFFF\(\)]{1,})</xsl:variable>
 		<xsl:variable name="text_en_" select="java:replaceAll(java:java.lang.String.new(.), $regex_en_contents, concat($tag_font_en_bold_open,'$1',$tag_font_en_bold_close))"/>
 		<xsl:variable name="text_en">

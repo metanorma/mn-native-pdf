@@ -3,7 +3,7 @@
 											xmlns:fo="http://www.w3.org/1999/XSL/Format" 
 											xmlns:jcgm="https://www.metanorma.org/ns/standoc" 
 											xmlns:bipm="https://www.metanorma.org/ns/standoc" 
-											xmlns:mn="https://www.metanorma.org/ns/xslt" 
+											xmlns:mnx="https://www.metanorma.org/ns/xslt" 
 											xmlns:mathml="http://www.w3.org/1998/Math/MathML" 
 											xmlns:xalan="http://xml.apache.org/xalan" 
 											xmlns:fox="http://xmlgraphics.apache.org/fop/extensions" 
@@ -115,8 +115,8 @@
 				<xsl:variable name="docid">
 					<xsl:call-template name="getDocumentId"/>
 				</xsl:variable>
-				<mn:doc id="{$docid}" lang="{$lang}">
-					<mn:contents>
+				<mnx:doc id="{$docid}" lang="{$lang}">
+					<mnx:contents>
 						<xsl:call-template name="processPrefaceSectionsDefault_Contents"/>
 						<xsl:call-template name="processMainSectionsDefault_Contents"/>
 						<!-- Index -->
@@ -124,8 +124,8 @@
 						<xsl:apply-templates select="//jcgm:indexsect" mode="contents"/>
 						
 						<xsl:call-template name="processTablesFigures_Contents"/>
-					</mn:contents>
-				</mn:doc>
+					</mnx:contents>
+				</mnx:doc>
 			</xsl:for-each>				
 		</xsl:for-each>
 	</xsl:variable>
@@ -626,8 +626,8 @@
 						<xsl:call-template name="getDocumentId"/>
 					</xsl:variable>
 				
-					<xsl:for-each select="$contents/mn:doc[@id=$docid]//mn:item[@display = 'true']"> <!-- and not (@type = 'annex') and not (@type = 'references') -->
-						<xsl:if test="@type = 'annex' and not(preceding-sibling::mn:item[@display = 'true' and @type = 'annex'])">
+					<xsl:for-each select="$contents/mnx:doc[@id=$docid]//mnx:item[@display = 'true']"> <!-- and not (@type = 'annex') and not (@type = 'references') -->
+						<xsl:if test="@type = 'annex' and not(preceding-sibling::mnx:item[@display = 'true' and @type = 'annex'])">
 							<fo:block font-size="12pt" space-before="16pt" font-weight="bold" role="TOCI">
 								<xsl:call-template name="getLocalizedString">
 									<xsl:with-param name="key">Annex.pl</xsl:with-param>
@@ -638,21 +638,21 @@
 					</xsl:for-each>	
 					
 					<!-- List of Tables -->
-					<xsl:if test="$contents//mn:tables/mn:table">
+					<xsl:if test="$contents//mnx:tables/mnx:table">
 						<xsl:call-template name="insertListOf_Title">
 							<xsl:with-param name="title" select="$title-list-tables"/>
 						</xsl:call-template>
-						<xsl:for-each select="$contents//mn:tables/mn:table">
+						<xsl:for-each select="$contents//mnx:tables/mnx:table">
 							<xsl:call-template name="insertListOf_Item"/>
 						</xsl:for-each>
 					</xsl:if>
 					
 					<!-- List of Figures -->
-					<xsl:if test="$contents//mn:figures/mn:figure">
+					<xsl:if test="$contents//mnx:figures/mnx:figure">
 						<xsl:call-template name="insertListOf_Title">
 							<xsl:with-param name="title" select="$title-list-figures"/>
 						</xsl:call-template>
-						<xsl:for-each select="$contents//mn:figures/mn:figure">
+						<xsl:for-each select="$contents//mnx:figures/mnx:figure">
 							<xsl:call-template name="insertListOf_Item"/>
 						</xsl:for-each>
 					</xsl:if>
@@ -762,17 +762,17 @@
 				<xsl:if test="ancestor-or-self::*[local-name()='annex']">annex</xsl:if>
 			</xsl:variable>
 			
-			<mn:item id="{@id}" level="{$level}" section="{$section}" type="{$type}" root="{$root}" display="{$display}">
+			<mnx:item id="{@id}" level="{$level}" section="{$section}" type="{$type}" root="{$root}" display="{$display}">
 				<xsl:if test="$type = 'index'">
 					<xsl:attribute name="level">1</xsl:attribute>
 				</xsl:if>
-				<mn:title>
+				<mnx:title>
 					<xsl:apply-templates select="xalan:nodeset($title)" mode="contents_item"/>
-				</mn:title>
+				</mnx:title>
 				<xsl:if test="$type != 'index'">
 					<xsl:apply-templates  mode="contents" />
 				</xsl:if>
-			</mn:item>
+			</mnx:item>
 		</xsl:if>
 	</xsl:template>
 	
@@ -1025,12 +1025,12 @@
 					</fo:list-item-label>
 					<fo:list-item-body start-indent="body-start()">
 						<fo:block text-align-last="justify" margin-left="12mm" text-indent="-12mm">
-							<fo:basic-link internal-destination="{@id}" fox:alt-text="{mn:title}">
+							<fo:basic-link internal-destination="{@id}" fox:alt-text="{mnx:title}">
 								<fo:inline>
 									<xsl:if test="@level = 1">
 										<xsl:attribute name="font-weight">bold</xsl:attribute>
 									</xsl:if>
-									<xsl:apply-templates select="mn:title"/>
+									<xsl:apply-templates select="mnx:title"/>
 								</fo:inline>
 								<xsl:text> </xsl:text>
 								<fo:inline keep-together.within-line="always" font-weight="normal">

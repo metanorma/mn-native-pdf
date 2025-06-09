@@ -2,7 +2,7 @@
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" 
 											xmlns:fo="http://www.w3.org/1999/XSL/Format" 
 											xmlns:iso="https://www.metanorma.org/ns/standoc" 
-											xmlns:mn="https://www.metanorma.org/ns/xslt" 
+											xmlns:mnx="https://www.metanorma.org/ns/xslt" 
 											xmlns:mathml="http://www.w3.org/1998/Math/MathML" 
 											xmlns:xalan="http://xml.apache.org/xalan" 
 											xmlns:fox="http://xmlgraphics.apache.org/fop/extensions" 
@@ -335,14 +335,14 @@
 		<item id="term-script" display="false">3.2</item>
 	-->
 	<xsl:variable name="contents_">
-		<mn:contents>
+		<mnx:contents>
 			<xsl:if test="$isGenerateTableIF = 'false'">
 				<xsl:call-template name="processPrefaceSectionsDefault_Contents"/>
 				<xsl:call-template name="processMainSectionsDefault_Contents"/>
 				<xsl:apply-templates select="//iso:indexsect" mode="contents"/>
 				<xsl:call-template name="processTablesFigures_Contents"/>
 			</xsl:if>
-		</mn:contents>
+		</mnx:contents>
 	</xsl:variable>
 	<xsl:variable name="contents" select="xalan:nodeset($contents_)"/>
 	
@@ -367,7 +367,7 @@
 			</xsl:call-template>
 		</xsl:variable>
 		<xsl:variable name="parts_with_subparts">
-			<xsl:for-each select="xalan:nodeset($parts_by_slash)//mn:item">
+			<xsl:for-each select="xalan:nodeset($parts_by_slash)//mnx:item">
 				<xsl:element name="subitem" namespace="{$namespace_mn_xsl}">
 					<xsl:call-template name="split">
 						<xsl:with-param name="pText" select="."/>
@@ -378,13 +378,13 @@
 				</xsl:element>
 			</xsl:for-each>
 		</xsl:variable>
-		<xsl:for-each select="xalan:nodeset($parts_with_subparts)//mn:subitem">
+		<xsl:for-each select="xalan:nodeset($parts_with_subparts)//mnx:subitem">
 			<xsl:choose>
 				<xsl:when test="position() = 1">
 					<xsl:value-of select="."/>
 				</xsl:when>
 				<xsl:otherwise>
-					<xsl:for-each select="mn:item">
+					<xsl:for-each select="mnx:item">
 						<xsl:choose>
 							<xsl:when test="position() = last()">
 								<fo:inline font-weight="bold"><xsl:value-of select="."/></fo:inline>
@@ -1060,7 +1060,7 @@
 											
 										</xsl:when>
 										<xsl:otherwise>
-											<xsl:for-each select="xalan:nodeset($lang_other)/mn:lang">
+											<xsl:for-each select="xalan:nodeset($lang_other)/mnx:lang">
 												<xsl:variable name="lang_other" select="."/>
 												<fo:block font-size="12pt" role="SKIP"><xsl:value-of select="$linebreak"/></fo:block>
 												<fo:block role="H1" font-style="italic" line-height="1.2">
@@ -1778,7 +1778,7 @@
 								<xsl:call-template name="insertTitlesLangMain"/>
 							</fo:block>
 							
-							<xsl:for-each select="xalan:nodeset($lang_other)/mn:lang">
+							<xsl:for-each select="xalan:nodeset($lang_other)/mnx:lang">
 								<xsl:variable name="lang_other" select="."/>
 								<fo:block font-size="8pt" font-style="italic" line-height="1.1" role="H1">
 									<!-- Example: title-intro fr -->
@@ -1862,7 +1862,7 @@
 											<xsl:call-template name="insertTitlesLangMain"/>
 										</fo:block>
 										
-										<xsl:for-each select="xalan:nodeset($lang_other)/mn:lang">
+										<xsl:for-each select="xalan:nodeset($lang_other)/mnx:lang">
 											<xsl:variable name="lang_other" select="."/>
 											<fo:block font-size="8pt" font-style="italic" line-height="1.1" role="H1">
 												<!-- Example: title-intro fr -->
@@ -2020,7 +2020,7 @@
 													</fo:block>
 																
 													<xsl:if test="not($stage-abbreviation = 'FDAMD' or $stage-abbreviation = 'FDAM')"> <!--  or $stage-abbreviation = 'PRF' -->
-														<xsl:for-each select="xalan:nodeset($lang_other)/mn:lang">
+														<xsl:for-each select="xalan:nodeset($lang_other)/mnx:lang">
 															<xsl:variable name="lang_other" select="."/>
 															<fo:block font-size="12pt" role="SKIP"><xsl:value-of select="$linebreak"/></fo:block>
 															<fo:block font-size="11pt" font-style="italic" line-height="1.1" role="H1">
@@ -2118,7 +2118,7 @@
 																	<xsl:with-param name="keep_sep">true</xsl:with-param>
 																</xsl:call-template>
 															</xsl:variable>
-															<xsl:for-each select="xalan:nodeset($v_date)/mn:item">
+															<xsl:for-each select="xalan:nodeset($v_date)/mnx:item">
 																<xsl:choose>
 																	<xsl:when test=". = '-'"><fo:inline font-weight="normal"><xsl:value-of select="."/></fo:inline></xsl:when>
 																	<xsl:otherwise><xsl:value-of select="."/></xsl:otherwise>
@@ -2140,7 +2140,7 @@
 																	<xsl:with-param name="keep_sep">true</xsl:with-param>
 																</xsl:call-template>
 															</xsl:variable>
-															<xsl:for-each select="xalan:nodeset($v_date)/mn:item">
+															<xsl:for-each select="xalan:nodeset($v_date)/mnx:item">
 																<xsl:choose>
 																	<xsl:when test=". = '-'"><fo:inline font-weight="normal"><xsl:value-of select="."/></fo:inline></xsl:when>
 																	<xsl:otherwise><xsl:value-of select="."/></xsl:otherwise>
@@ -2482,7 +2482,7 @@
 												</fo:block>
 												
 												
-												<xsl:for-each select="xalan:nodeset($lang_other)/mn:lang">
+												<xsl:for-each select="xalan:nodeset($lang_other)/mnx:lang">
 													<xsl:variable name="lang_other" select="."/>
 												
 													<fo:block font-size="12pt" role="SKIP"><xsl:value-of select="$linebreak"/></fo:block>
@@ -2754,7 +2754,7 @@
 																	</xsl:when>
 																	<xsl:otherwise>
 																		<xsl:if test="not($stage-abbreviation = 'FDAMD' or $stage-abbreviation = 'FDAM')">
-																			<xsl:for-each select="xalan:nodeset($lang_other)/mn:lang">
+																			<xsl:for-each select="xalan:nodeset($lang_other)/mnx:lang">
 																				<xsl:variable name="lang_other" select="."/>
 																				
 																				<fo:block font-size="12pt" role="SKIP"><xsl:value-of select="$linebreak"/></fo:block>
@@ -2887,7 +2887,7 @@
 											<xsl:call-template name="insertTitlesLangMain"/>
 										</fo:block>
 											
-										<xsl:for-each select="xalan:nodeset($lang_other)/mn:lang">
+										<xsl:for-each select="xalan:nodeset($lang_other)/mnx:lang">
 											<xsl:variable name="lang_other" select="."/>
 											
 											<fo:block font-size="12pt" role="SKIP"><xsl:value-of select="$linebreak"/></fo:block>
@@ -2964,7 +2964,7 @@
 										<xsl:call-template name="insertTitlesLangMain"/>
 									</fo:block>
 									
-									<xsl:for-each select="xalan:nodeset($lang_other)/mn:lang">
+									<xsl:for-each select="xalan:nodeset($lang_other)/mnx:lang">
 										<xsl:variable name="lang_other" select="."/>
 									
 										<fo:block font-size="12pt" role="SKIP"><xsl:value-of select="$linebreak"/></fo:block>
@@ -3349,10 +3349,10 @@
 							
 							<xsl:variable name="margin-left">12</xsl:variable>
 							
-							<xsl:for-each select="$contents//mn:item[@display = 'true']"><!-- [not(@level = 2 and starts-with(@section, '0'))] skip clause from preface -->
+							<xsl:for-each select="$contents//mnx:item[@display = 'true']"><!-- [not(@level = 2 and starts-with(@section, '0'))] skip clause from preface -->
 								
 								<xsl:if test="$layoutVersion = '1987'">
-									<xsl:if test="@type = 'annex'	and @level = 1 and not(preceding-sibling::mn:item[@type = 'annex' and @level = 1])">
+									<xsl:if test="@type = 'annex'	and @level = 1 and not(preceding-sibling::mnx:item[@type = 'annex' and @level = 1])">
 										<fo:block role="TOCI" font-weight="bold" margin-top="12pt" margin-bottom="6pt" keep-with-next="always">
 											<xsl:call-template name="getLocalizedString">
 												<xsl:with-param name="key">Annex.pl</xsl:with-param>
@@ -3376,7 +3376,7 @@
 										<xsl:attribute name="margin-bottom">6pt</xsl:attribute>
 									</xsl:if>
 									
-									<fo:basic-link internal-destination="{@id}" fox:alt-text="{@section} {mn:title}"> <!-- link at this level needs for PDF structure tags -->
+									<fo:basic-link internal-destination="{@id}" fox:alt-text="{@section} {mnx:title}"> <!-- link at this level needs for PDF structure tags -->
 									
 										<fo:list-block role="SKIP">
 											<xsl:attribute name="margin-left"><xsl:value-of select="$margin-left * (@level - 1)"/>mm</xsl:attribute>
@@ -3439,12 +3439,12 @@
 															<xsl:attribute name="font-weight">bold</xsl:attribute>
 														</xsl:if>
 													
-														<fo:basic-link internal-destination="{@id}" fox:alt-text="{mn:title}" role="SKIP">
+														<fo:basic-link internal-destination="{@id}" fox:alt-text="{mnx:title}" role="SKIP">
 														
 															<xsl:if test="$layoutVersion = '1987' and @type = 'section'">
 																<xsl:value-of select="concat(@section, ' ')"/>
 															</xsl:if>
-															<xsl:apply-templates select="mn:title"/>
+															<xsl:apply-templates select="mnx:title"/>
 															
 															<fo:inline keep-together.within-line="always" role="SKIP">
 																<fo:leader font-size="9pt" font-weight="normal" leader-pattern="dots"/>
@@ -3471,21 +3471,21 @@
 							</xsl:for-each>
 							
 							<!-- List of Tables -->
-							<xsl:if test="$contents//mn:tables/mn:table">
+							<xsl:if test="$contents//mnx:tables/mnx:table">
 								<xsl:call-template name="insertListOf_Title">
 									<xsl:with-param name="title" select="$title-list-tables"/>
 								</xsl:call-template>
-								<xsl:for-each select="$contents//mn:tables/mn:table">
+								<xsl:for-each select="$contents//mnx:tables/mnx:table">
 									<xsl:call-template name="insertListOf_Item"/>
 								</xsl:for-each>
 							</xsl:if>
 							
 							<!-- List of Figures -->
-							<xsl:if test="$contents//mn:figures/mn:figure">
+							<xsl:if test="$contents//mnx:figures/mnx:figure">
 								<xsl:call-template name="insertListOf_Title">
 									<xsl:with-param name="title" select="$title-list-figures"/>
 								</xsl:call-template>
-								<xsl:for-each select="$contents//mn:figures/mn:figure">
+								<xsl:for-each select="$contents//mnx:figures/mnx:figure">
 									<xsl:call-template name="insertListOf_Item"/>
 								</xsl:for-each>
 							</xsl:if>
@@ -3893,21 +3893,21 @@
 				<xsl:if test="ancestor-or-self::iso:annex">annex</xsl:if>
 			</xsl:variable>
 			
-			<mn:item id="{@id}" level="{$level}" section="{$section}" type="{$type}" root="{$root}" display="{$display}">
+			<mnx:item id="{@id}" level="{$level}" section="{$section}" type="{$type}" root="{$root}" display="{$display}">
 				<xsl:if test="$type = 'index'">
 					<xsl:attribute name="level">1</xsl:attribute>
 				</xsl:if>
-				<mn:title>
+				<mnx:title>
 					<xsl:apply-templates select="xalan:nodeset($title)" mode="contents_item">
 						<xsl:with-param name="element">
 							<xsl:if test="$level = 1"><xsl:value-of select="$root"/></xsl:if>
 						</xsl:with-param>
 					</xsl:apply-templates>
-				</mn:title>
+				</mnx:title>
 				<xsl:if test="$type != 'index'">
 					<xsl:apply-templates  mode="contents" />
 				</xsl:if>
-			</mn:item>
+			</mnx:item>
 		</xsl:if>
 	</xsl:template>
 	
@@ -5454,7 +5454,7 @@
 	</xsl:variable>
 	
 	<xsl:template name="insertPriceBasedOn">
-		<xsl:for-each select="xalan:nodeset($price_based_on_items)/mn:item">
+		<xsl:for-each select="xalan:nodeset($price_based_on_items)/mnx:item">
 			<xsl:value-of select="."/>
 			<xsl:if test="position() != last()">
 				<fo:page-number-citation ref-id="lastBlock"/>
