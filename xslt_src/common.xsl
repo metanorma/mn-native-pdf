@@ -3166,7 +3166,7 @@
 	
 	<xsl:template name="refine_table-note-style">
 		<xsl:if test="$namespace = 'bipm'">					
-			<xsl:if test="ancestor::bipm:preface">
+			<xsl:if test="ancestor::mn:preface">
 				<xsl:attribute name="margin-top">18pt</xsl:attribute>
 				<xsl:attribute name="margin-bottom">12pt</xsl:attribute>
 			</xsl:if>
@@ -3983,7 +3983,7 @@
 	
 	<xsl:template name="refine_table-note-name-style">
 		<xsl:if test="$namespace = 'bipm'">
-			<xsl:if test="ancestor::bipm:preface">
+			<xsl:if test="ancestor::mn:preface">
 				<xsl:attribute name="text-decoration">underline</xsl:attribute>
 			</xsl:if>
 		</xsl:if>
@@ -8713,9 +8713,9 @@
 								</xsl:if>
 								
 								<xsl:if test="$namespace = 'bipm'">
-									<xsl:if test="count(ancestor::bipm:table//*[local-name()='note'][not(@type = 'units')]) &gt; 1">
+									<xsl:if test="count(ancestor::mn:table//*[local-name()='note'][not(@type = 'units')]) &gt; 1">
 										<fo:block font-weight="bold" role="SKIP">
-											<xsl:variable name="curr_lang" select="ancestor::bipm:metanorma/bipm:bibdata/bipm:language"/>
+											<xsl:variable name="curr_lang" select="ancestor::mn:metanorma/mn:bibdata/mn:language"/>
 											<xsl:choose>
 												<xsl:when test="$curr_lang = 'fr'">Remarques</xsl:when>
 												<xsl:otherwise>Notes</xsl:otherwise>
@@ -9238,7 +9238,7 @@
 				</xsl:if>
 			
 				<xsl:if test="$namespace = 'bipm'">
-					<xsl:if test="not(.//bipm:image)">
+					<xsl:if test="not(.//mn:image)">
 						<xsl:attribute name="line-stacking-strategy">font-height</xsl:attribute>
 					</xsl:if>
 					<!-- hanging indent for left column -->
@@ -9298,7 +9298,7 @@
 					</fo:inline>
 					
 					<xsl:if test="$namespace = 'bipm'">
-						<xsl:if test="ancestor::bipm:preface">
+						<xsl:if test="ancestor::mn:preface">
 							<fo:block>&#xA0;</fo:block>
 						</xsl:if>
 					</xsl:if>
@@ -13770,7 +13770,7 @@
 				</xsl:when>
 				<xsl:otherwise>
 					<xsl:if test="$namespace = 'bipm'">
-						<!-- <xsl:variable name="curr_lang" select="ancestor::bipm:bipm-standard/bipm:bibdata/bipm:language[@current = 'true']"/>
+						<!-- <xsl:variable name="curr_lang" select="ancestor::mn:bipm-standard/mn:bibdata/mn:language[@current = 'true']"/>
 						<xsl:choose>
 							<xsl:when test="$curr_lang = 'fr'"><xsl:text>&#xa0;: </xsl:text></xsl:when>
 							<xsl:otherwise><xsl:text>: </xsl:text></xsl:otherwise>
@@ -13810,7 +13810,7 @@
 				</xsl:when>
 				<xsl:otherwise>
 					<xsl:if test="$namespace = 'bipm'">
-						<!-- <xsl:variable name="curr_lang" select="ancestor::bipm:bipm-standard/bipm:bibdata/bipm:language[@current = 'true']"/>
+						<!-- <xsl:variable name="curr_lang" select="ancestor::mn:bipm-standard/mn:bibdata/mn:language[@current = 'true']"/>
 						<xsl:choose>
 							<xsl:when test="$curr_lang = 'fr'"><xsl:text>&#xa0;: </xsl:text></xsl:when>
 							<xsl:otherwise><xsl:text>: </xsl:text></xsl:otherwise>
@@ -17274,7 +17274,7 @@
 			<xsl:if test="$namespace = 'mpfd'">3</xsl:if>
 			<xsl:if test="$namespace = 'bipm'">
 				<xsl:choose>
-					<xsl:when test="ancestor::bipm:annex">2</xsl:when>
+					<xsl:when test="ancestor::mn:annex">2</xsl:when>
 					<xsl:otherwise>8</xsl:otherwise>
 				</xsl:choose>
 			</xsl:if>
