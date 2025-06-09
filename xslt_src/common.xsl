@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" 
 											xmlns:fo="http://www.w3.org/1999/XSL/Format"
+											xmlns:mn="https://www.metanorma.org/ns/standoc" 
 											xmlns:mnx="https://www.metanorma.org/ns/xslt" 
 											xmlns:mathml="http://www.w3.org/1998/Math/MathML" 
 											xmlns:xalan="http://xml.apache.org/xalan"  
@@ -926,7 +927,7 @@
 		</xsl:if>
 		<xsl:if test="$namespace = 'iso'">
 			<xsl:if test="(ancestor::*[local-name() = 'copyright-statement'] and contains(@target, 'mailto:')) or
-							($layoutVersion = '2024' and ancestor::iso:termsource)">
+							($layoutVersion = '2024' and ancestor::mn:termsource)">
 				<xsl:attribute name="color">inherit</xsl:attribute>
 				<xsl:attribute name="text-decoration">none</xsl:attribute>
 			</xsl:if>
@@ -13661,7 +13662,7 @@
 		</xsl:if>
 		<xsl:if test="$namespace = 'iso'">
 			<xsl:if test="$layoutVersion = '1951' or $layoutVersion = '1987'">
-				<xsl:if test="following-sibling::*[1][self::iso:note] and not(preceding-sibling::*[1][self::iso:note])">
+				<xsl:if test="following-sibling::*[1][self::mn:note] and not(preceding-sibling::*[1][self::mn:note])">
 					<!-- NOTES -->
 					<fo:block font-size="9.5pt" keep-with-next="always" margin-bottom="6pt" text-transform="uppercase">
 						<xsl:variable name="i18n_notes">
