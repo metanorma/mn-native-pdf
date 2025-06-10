@@ -5171,7 +5171,7 @@
 			</xsl:if>
 		</xsl:if>		
 		<xsl:if test="$namespace = 'iec'">
-			<xsl:if test="ancestor::iec:ul or ancestor::iec:ol">
+			<xsl:if test="ancestor::mn:ul or ancestor::mn:ol">
 				<xsl:attribute name="margin-bottom">0pt</xsl:attribute>
 			</xsl:if>
 		</xsl:if>
@@ -17162,8 +17162,8 @@
 			<xsl:if test="$namespace = 'gb'">3</xsl:if>
 			<xsl:if test="$namespace = 'iec'">
 				<xsl:choose>
-					<xsl:when test="parent::iec:appendix">5</xsl:when>
-					<xsl:when test="$depth = 2 and ancestor::iec:annex">6</xsl:when>
+					<xsl:when test="parent::mn:appendix">5</xsl:when>
+					<xsl:when test="$depth = 2 and ancestor::mn:annex">6</xsl:when>
 					<xsl:when test="$depth = 2">7</xsl:when>
 					<xsl:otherwise>5</xsl:otherwise>
 				</xsl:choose>
@@ -17403,7 +17403,7 @@
 		<fo:block font-size="{normalize-space($font-size)}" role="H{$levelTerm}" xsl:use-attribute-sets="preferred-block-style">
 		
 			<xsl:if test="$namespace = 'iec'">
-				<xsl:if test="preceding-sibling::*[1][self::iec:preferred]">
+				<xsl:if test="preceding-sibling::*[1][self::mn:preferred]">
 					<xsl:attribute name="space-before">1pt</xsl:attribute>
 				</xsl:if>
 			</xsl:if>
@@ -18442,7 +18442,7 @@
 	
 	<xsl:template name="refine_list-style_provisional-distance-between-starts">
 		<xsl:if test="$namespace = 'iec'">
-			<xsl:if test="ancestor::iec:legal-statement or ancestor::iec:clause[@type = 'boilerplate_legal']">
+			<xsl:if test="ancestor::mn:legal-statement or ancestor::mn:clause[@type = 'boilerplate_legal']">
 				<xsl:attribute name="provisional-distance-between-starts">5mm</xsl:attribute>
 			</xsl:if>
 		</xsl:if>
