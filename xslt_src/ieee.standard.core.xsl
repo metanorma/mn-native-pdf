@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" 
 											xmlns:fo="http://www.w3.org/1999/XSL/Format" 
-											xmlns:ieee="https://www.metanorma.org/ns/standoc" 
+											xmlns:mn="https://www.metanorma.org/ns/standoc" 
 											xmlns:mnx="https://www.metanorma.org/ns/xslt" 
 											xmlns:mathml="http://www.w3.org/1998/Math/MathML" 
 											xmlns:xalan="http://xml.apache.org/xalan" 
@@ -20,7 +20,7 @@
 	<xsl:include href="./common.xsl"/>
 
 	<!-- mandatory 'key' -->
-	<xsl:key name="kfn" match="*[local-name() = 'fn'][not(ancestor::*[(local-name() = 'table' or local-name() = 'figure' or local-name() = 'localized-strings')] and not(ancestor::*[local-name() = 'name']))]" use="@reference"/>
+	<xsl:key name="kfn" match="mn:fn[not(ancestor::*[self::mn:table or self::mn:figure or self::mn:localized-strings] and not(ancestor::mn:name))]" use="@reference"/>
 	
 	<!-- mandatory variable -->
 	<xsl:variable name="namespace">ieee</xsl:variable>
@@ -30,10 +30,10 @@
 	
 	<!-- mandatory variable -->
 	<xsl:variable name="contents_">
-		<xsl:variable name="bundle" select="count(//ieee:metanorma) &gt; 1"/>
-		<xsl:for-each select="//ieee:metanorma">
-			<xsl:variable name="num"><xsl:number level="any" count="ieee:metanorma"/></xsl:variable>
-			<xsl:variable name="docnumber"><xsl:value-of select="ieee:bibdata/ieee:docidentifier[@type = 'IEEE']"/></xsl:variable>
+		<xsl:variable name="bundle" select="count(//mn:metanorma) &gt; 1"/>
+		<xsl:for-each select="//mn:metanorma">
+			<xsl:variable name="num"><xsl:number level="any" count="mn:metanorma"/></xsl:variable>
+			<xsl:variable name="docnumber"><xsl:value-of select="mn:bibdata/mn:docidentifier[@type = 'IEEE']"/></xsl:variable>
 			<!-- <xsl:variable name="current_document">
 				<xsl:copy-of select="."/>
 			</xsl:variable> -->
@@ -42,7 +42,7 @@
 					<mnx:contents>
 						<xsl:call-template name="processPrefaceSectionsDefault_Contents"/>
 						<xsl:call-template name="processMainSectionsDefault_Contents"/>
-						<xsl:apply-templates select="//ieee:indexsect" mode="contents"/>
+						<xsl:apply-templates select="//mn:indexsect" mode="contents"/>
 						
 						<xsl:call-template name="processTablesFigures_Contents"/>
 					</mnx:contents>
@@ -59,13 +59,13 @@
 		</xsl:for-each>
 	</xsl:variable>
 
-	<xsl:variable name="doctype" select="(//ieee:metanorma)[1]/ieee:bibdata/ieee:ext/ieee:doctype[normalize-space(@language) = '']"/> <!-- values standard, guide, recommended-practice -->
+	<xsl:variable name="doctype" select="(//mn:metanorma)[1]/mn:bibdata/mn:ext/mn:doctype[normalize-space(@language) = '']"/> <!-- values standard, guide, recommended-practice -->
 	
-	<xsl:variable name="doctype_localized" select="(//ieee:metanorma)[1]/ieee:bibdata/ieee:ext/ieee:doctype[@language = $lang]"/>
+	<xsl:variable name="doctype_localized" select="(//mn:metanorma)[1]/mn:bibdata/mn:ext/mn:doctype[@language = $lang]"/>
 	
-	<xsl:variable name="subdoctype" select="(//ieee:metanorma)[1]/ieee:bibdata/ieee:ext/ieee:subdoctype[normalize-space(@language) = '']"/> <!-- has values amendment, corrigendum, erratum -->
+	<xsl:variable name="subdoctype" select="(//mn:metanorma)[1]/mn:bibdata/mn:ext/mn:subdoctype[normalize-space(@language) = '']"/> <!-- has values amendment, corrigendum, erratum -->
 	
-	<xsl:variable name="stage_" select="normalize-space((//ieee:metanorma)[1]/ieee:bibdata/ieee:status/ieee:stage)"/>
+	<xsl:variable name="stage_" select="normalize-space((//mn:metanorma)[1]/mn:bibdata/mn:status/mn:stage)"/>
 	
 	<xsl:variable name="stage">
 		<xsl:choose>
@@ -87,7 +87,7 @@
 		</xsl:choose>
 	</xsl:variable>
 	
-	<xsl:variable name="trial_use" select="(//ieee:metanorma)[1]/ieee:bibdata/ieee:ext/ieee:trial-use[normalize-space(@language) = '']"/>
+	<xsl:variable name="trial_use" select="(//mn:metanorma)[1]/mn:bibdata/mn:ext/mn:trial-use[normalize-space(@language) = '']"/>
 	
 	<xsl:variable name="current_template">
 		<xsl:choose>
@@ -144,7 +144,7 @@
 				<xsl:with-param name="root-style" select="$root-style"/>
 			</xsl:call-template>
 			
-			<xsl:if test="$stage = 'draft'"> <!-- //ieee:metanorma/ieee:bibdata[ieee:ext/ieee:doctype = 'international-standard' and ieee:version/ieee:draft] -->
+			<xsl:if test="$stage = 'draft'"> <!-- //mn:metanorma/mn:bibdata[mn:ext/mn:doctype = 'international-standard' and mn:version/mn:draft] -->
 				<xsl:processing-instruction name="add_line_numbers">true</xsl:processing-instruction>
 			</xsl:if>
 			
@@ -332,23 +332,23 @@
 				</redirect:write>
 			</xsl:if>
 			
-			<xsl:for-each select="xalan:nodeset($updated_xml_step2)//ieee:metanorma">
-				<xsl:variable name="num"><xsl:number level="any" count="ieee:metanorma"/></xsl:variable>
+			<xsl:for-each select="xalan:nodeset($updated_xml_step2)//mn:metanorma">
+				<xsl:variable name="num"><xsl:number level="any" count="mn:metanorma"/></xsl:variable>
 				
 				
 				<xsl:for-each select=".">
 				
-					<xsl:variable name="copyright_year" select="/ieee:metanorma/ieee:bibdata/ieee:copyright/ieee:from"/>
+					<xsl:variable name="copyright_year" select="/mn:metanorma/mn:bibdata/mn:copyright/mn:from"/>
 				
-					<xsl:variable name="approved_date_year" select="substring(normalize-space(/ieee:metanorma/ieee:bibdata/ieee:date[@type = 'issued']),1,4)"/>
+					<xsl:variable name="approved_date_year" select="substring(normalize-space(/mn:metanorma/mn:bibdata/mn:date[@type = 'issued']),1,4)"/>
 					
 					<!-- IEEE Std 802.1X™-2020 -->
-					<xsl:variable name="standard_number">IEEE Std <xsl:value-of select="/ieee:metanorma/ieee:bibdata/ieee:docidentifier[@type = 'IEEE']"/>-<xsl:value-of select="$approved_date_year"/></xsl:variable>
-					<!-- <xsl:value-of select="substring(/ieee:metanorma/ieee:bibdata/ieee:date[@type = 'published'],1,4)"/> -->
+					<xsl:variable name="standard_number">IEEE Std <xsl:value-of select="/mn:metanorma/mn:bibdata/mn:docidentifier[@type = 'IEEE']"/>-<xsl:value-of select="$approved_date_year"/></xsl:variable>
+					<!-- <xsl:value-of select="substring(/mn:metanorma/mn:bibdata/mn:date[@type = 'published'],1,4)"/> -->
 				
-					<xsl:variable name="designation" select="/ieee:metanorma/ieee:bibdata/ieee:docnumber"/>
-					<xsl:variable name="draft_number" select="/ieee:metanorma/ieee:bibdata/ieee:version/ieee:draft"/>
-					<xsl:variable name="revision_month" select="/ieee:metanorma/ieee:bibdata/ieee:version/ieee:revision-date"/>
+					<xsl:variable name="designation" select="/mn:metanorma/mn:bibdata/mn:docnumber"/>
+					<xsl:variable name="draft_number" select="/mn:metanorma/mn:bibdata/mn:version/mn:draft"/>
+					<xsl:variable name="revision_month" select="/mn:metanorma/mn:bibdata/mn:version/mn:revision-date"/>
 					<xsl:variable name="draft_month">
 						<xsl:call-template name="getMonthLocalizedByNum">
 							<xsl:with-param name="num" select="substring($revision_month, 6, 2)"/>
@@ -358,16 +358,16 @@
 					
 					<xsl:variable name="title_intro">
 						<!-- Example Local and Metropolitan Area Networks— -->
-						<xsl:apply-templates select="/ieee:metanorma/ieee:bibdata/ieee:title[@language = 'en']/node()"/>
-						<!-- <xsl:apply-templates select="/ieee:metanorma/ieee:bibdata/ieee:title[@language = 'intro' or @language = 'intro-en']/node()"/>
-						<xsl:if test="not(/ieee:metanorma/ieee:bibdata/ieee:title[@language = 'intro' or @language = 'intro-en'])">
+						<xsl:apply-templates select="/mn:metanorma/mn:bibdata/mn:title[@language = 'en']/node()"/>
+						<!-- <xsl:apply-templates select="/mn:metanorma/mn:bibdata/mn:title[@language = 'intro' or @language = 'intro-en']/node()"/>
+						<xsl:if test="not(/mn:metanorma/mn:bibdata/mn:title[@language = 'intro' or @language = 'intro-en'])">
 						</xsl:if>
-						<xsl:if test="/ieee:metanorma/ieee:bibdata/ieee:title[@language = 'intro' or @language = 'intro-en' or @language = 'en'] and /ieee:metanorma/ieee:bibdata/ieee:title[@language = 'main' or @language = 'main-en']">—</xsl:if> -->
+						<xsl:if test="/mn:metanorma/mn:bibdata/mn:title[@language = 'intro' or @language = 'intro-en' or @language = 'en'] and /mn:metanorma/mn:bibdata/mn:title[@language = 'main' or @language = 'main-en']">—</xsl:if> -->
 					</xsl:variable>
 					
 					<xsl:variable name="title_main">
 						<!-- Example: Port-Based Network Access Control -->
-						<!-- <xsl:apply-templates select="/ieee:metanorma/ieee:bibdata/ieee:title[@language = 'main' or @language = 'main-en']/node()"/> -->
+						<!-- <xsl:apply-templates select="/mn:metanorma/mn:bibdata/mn:title[@language = 'main' or @language = 'main-en']/node()"/> -->
 					</xsl:variable>
 					
 					<xsl:variable name="title">
@@ -377,7 +377,7 @@
 								<xsl:copy-of select="$title_main"/>
 							</xsl:when>
 							<xsl:otherwise>
-								<xsl:apply-templates select="/ieee:metanorma/ieee:bibdata/ieee:title[1]/node()"/>
+								<xsl:apply-templates select="/mn:metanorma/mn:bibdata/mn:title[1]/node()"/>
 								
 								<!-- Example: Amendment # -->
 								<xsl:if test="contains('amendment corrigendum erratum', $subdoctype) and $subdoctype != ''">
@@ -392,11 +392,11 @@
 						</xsl:choose>
 					</xsl:variable>
 					
-					<xsl:variable name="copyright_abbreviation" select="normalize-space(/ieee:metanorma/ieee:bibdata/ieee:copyright/ieee:owner/ieee:organization/ieee:abbreviation)"/>
+					<xsl:variable name="copyright_abbreviation" select="normalize-space(/mn:metanorma/mn:bibdata/mn:copyright/mn:owner/mn:organization/mn:abbreviation)"/>
 					<xsl:variable name="copyright_holder">
 						<xsl:value-of select="$copyright_abbreviation"/>
 						<xsl:if test="$copyright_abbreviation = ''">
-							<xsl:for-each select="/ieee:metanorma/ieee:bibdata/ieee:contributor[ieee:role/@type = 'publisher']/ieee:organization/ieee:abbreviation">
+							<xsl:for-each select="/mn:metanorma/mn:bibdata/mn:contributor[mn:role/@type = 'publisher']/mn:organization/mn:abbreviation">
 								<xsl:value-of select="."/>
 								<xsl:if test="position() != last()">, </xsl:if>
 							</xsl:for-each>
@@ -426,28 +426,28 @@
 					
 					
 					
-					<xsl:variable name="society" select="/ieee:metanorma/ieee:bibdata/ieee:ext/ieee:editorialgroup/ieee:society"/> 
+					<xsl:variable name="society" select="/mn:metanorma/mn:bibdata/mn:ext/mn:editorialgroup/mn:society"/> 
 					
-					<xsl:variable name="committee" select="/ieee:metanorma/ieee:bibdata/ieee:ext/ieee:editorialgroup/ieee:committee"/>
+					<xsl:variable name="committee" select="/mn:metanorma/mn:bibdata/mn:ext/mn:editorialgroup/mn:committee"/>
 					
 					<xsl:variable name="approved_by">IEEE SA Standards Board</xsl:variable>
 					<xsl:variable name="approved_date">
 						<xsl:call-template name="convertDate">
-							<xsl:with-param name="date" select="normalize-space(/ieee:metanorma/ieee:bibdata/ieee:date[@type = 'issued'])"/>
+							<xsl:with-param name="date" select="normalize-space(/mn:metanorma/mn:bibdata/mn:date[@type = 'issued'])"/>
 							<xsl:with-param name="format" select="'ddMMyyyy'"/>
 						</xsl:call-template>
 					</xsl:variable>
 					
 					<xsl:variable name="cutoff_date">
 						<xsl:call-template name="convertDate">
-							<xsl:with-param name="date" select="normalize-space(/ieee:metanorma/ieee:bibdata/ieee:date[@type = 'feedback-ended'])"/>
+							<xsl:with-param name="date" select="normalize-space(/mn:metanorma/mn:bibdata/mn:date[@type = 'feedback-ended'])"/>
 							<xsl:with-param name="format" select="'ddMMyyyy'"/>
 						</xsl:call-template>
 					</xsl:variable>
 					
 					<xsl:variable name="expiration_date">
 						<xsl:call-template name="convertDate">
-							<xsl:with-param name="date" select="normalize-space(/ieee:metanorma/ieee:bibdata/ieee:date[@type = 'obsoleted'])"/>
+							<xsl:with-param name="date" select="normalize-space(/mn:metanorma/mn:bibdata/mn:date[@type = 'obsoleted'])"/>
 							<xsl:with-param name="format" select="'ddMMyyyy'"/>
 						</xsl:call-template>
 					</xsl:variable>
@@ -456,11 +456,11 @@
 						Incorporating IEEE Std 802.1Xbx™-2014
 						and IEEE Std 802.1Xck™-2018 -->
 					<xsl:variable name="history_">
-						<xsl:for-each select="/ieee:metanorma/ieee:bibdata/ieee:relation[@type = 'updates']">
-							<revision_of><xsl:value-of select="ieee:bibitem/ieee:docidentifier"/></revision_of>
+						<xsl:for-each select="/mn:metanorma/mn:bibdata/mn:relation[@type = 'updates']">
+							<revision_of><xsl:value-of select="mn:bibitem/mn:docidentifier"/></revision_of>
 						</xsl:for-each>
-						<xsl:for-each select="/ieee:metanorma/ieee:bibdata/ieee:relation[@type = 'merges']">
-							<incorporating><xsl:value-of select="ieee:bibitem/ieee:docidentifier"/></incorporating>
+						<xsl:for-each select="/mn:metanorma/mn:bibdata/mn:relation[@type = 'merges']">
+							<incorporating><xsl:value-of select="mn:bibitem/mn:docidentifier"/></incorporating>
 						</xsl:for-each>
 					</xsl:variable>
 					<xsl:variable name="history" select="xalan:nodeset($history_)"/>
@@ -573,9 +573,9 @@
 											</xsl:if>
 										</fo:block>
 										
-										<xsl:apply-templates select="/ieee:metanorma/ieee:boilerplate/ieee:copyright-statement"/>
+										<xsl:apply-templates select="/mn:metanorma/mn:boilerplate/mn:copyright-statement"/>
 										
-										<xsl:apply-templates select="/ieee:metanorma/ieee:boilerplate/ieee:license-statement"/>
+										<xsl:apply-templates select="/mn:metanorma/mn:boilerplate/mn:license-statement"/>
 									
 									
 										<fo:block break-after="page"/>
@@ -590,17 +590,17 @@
 													</xsl:call-template>
 													<xsl:text>: </xsl:text>
 												</fo:inline>
-												<xsl:apply-templates select="/ieee:metanorma/ieee:preface/ieee:abstract/node()[not(self::ieee:title)] | /ieee:metanorma/ieee:preface/ieee:clause[@id = '_abstract' or ieee:title = 'Abstract']/node()[not(self::ieee:title)]"/>
+												<xsl:apply-templates select="/mn:metanorma/mn:preface/mn:abstract/node()[not(self::mn:title)] | /mn:metanorma/mn:preface/mn:clause[@id = '_abstract' or mn:title = 'Abstract']/node()[not(self::mn:title)]"/>
 											</fo:block>
 											<fo:block>&#xa0;</fo:block>
 											<fo:block>
 												<fo:inline font-weight="bold">Keywords: </fo:inline>
-												<xsl:for-each select="/ieee:metanorma/ieee:bibdata/ieee:keyword">
+												<xsl:for-each select="/mn:metanorma/mn:bibdata/mn:keyword">
 													<xsl:value-of select="."/>
 													<xsl:if test="position() != last()">, </xsl:if>
 												</xsl:for-each>
 											</fo:block>
-											<xsl:apply-templates select="/ieee:metanorma/ieee:preface/ieee:acknowledgements"/>
+											<xsl:apply-templates select="/mn:metanorma/mn:preface/mn:acknowledgements"/>
 										</fo:block>
 										
 										<!-- Example:
@@ -610,7 +610,7 @@
 										PDF: ISBN 978-0-XXXX-XXXX-X STDXXXXX
 										Print: ISBN 978-0-XXXX-XXXX-X STDPDXXXXX
 										-->
-										<xsl:apply-templates select="/ieee:metanorma/ieee:boilerplate/ieee:feedback-statement"/>
+										<xsl:apply-templates select="/mn:metanorma/mn:boilerplate/mn:feedback-statement"/>
 										
 									</fo:block-container>
 								</fo:flow>
@@ -697,7 +697,7 @@
 										IEEE Standards documents are made available for use subject to important notices and legal disclaimers. These notices and disclaimers, or a reference to this page (https://standards.ieee.org/ipr/disclaimers.html), appear in all standards and may be found under the heading “Important Notices and Disclaimers Concerning IEEE Standards Documents.”
 										...
 										-->
-										<xsl:apply-templates select="/ieee:metanorma/ieee:boilerplate/ieee:legal-statement"/>
+										<xsl:apply-templates select="/mn:metanorma/mn:boilerplate/mn:legal-statement"/>
 									</fo:block>
 								</fo:flow>
 								
@@ -755,17 +755,17 @@
 												</xsl:call-template>
 												<xsl:text>: </xsl:text>
 											</fo:inline>
-											<xsl:apply-templates select="/ieee:metanorma/ieee:preface/ieee:abstract/node()[not(self::ieee:title)] | /ieee:metanorma/ieee:preface/ieee:clause[@id = '_abstract' or ieee:title = 'Abstract']/node()[not(self::ieee:title)]"/>
+											<xsl:apply-templates select="/mn:metanorma/mn:preface/mn:abstract/node()[not(self::mn:title)] | /mn:metanorma/mn:preface/mn:clause[@id = '_abstract' or mn:title = 'Abstract']/node()[not(self::mn:title)]"/>
 										</fo:block>
 										<fo:block>&#xa0;</fo:block>
 										<fo:block>
 											<fo:inline font-weight="bold">Keywords: </fo:inline>
-											<xsl:for-each select="/ieee:metanorma/ieee:bibdata/ieee:keyword">
+											<xsl:for-each select="/mn:metanorma/mn:bibdata/mn:keyword">
 												<xsl:value-of select="."/>
 												<xsl:if test="position() != last()">, </xsl:if>
 											</xsl:for-each>
 										</fo:block>
-										<xsl:apply-templates select="/ieee:metanorma/ieee:preface/ieee:acknowledgements"/>
+										<xsl:apply-templates select="/mn:metanorma/mn:preface/mn:acknowledgements"/>
 									</fo:block>
 										
 									<!-- Example:
@@ -775,7 +775,7 @@
 									PDF: ISBN 978-0-XXXX-XXXX-X STDXXXXX
 									Print: ISBN 978-0-XXXX-XXXX-X STDPDXXXXX
 									-->
-									<xsl:apply-templates select="/ieee:metanorma/ieee:boilerplate/ieee:feedback-statement"/>
+									<xsl:apply-templates select="/mn:metanorma/mn:boilerplate/mn:feedback-statement"/>
 									
 								</fo:flow>
 							</fo:page-sequence>
@@ -798,7 +798,7 @@
 										IEEE Standards documents are made available for use subject to important notices and legal disclaimers. These notices and disclaimers, or a reference to this page (https://standards.ieee.org/ipr/disclaimers.html), appear in all standards and may be found under the heading “Important Notices and Disclaimers Concerning IEEE Standards Documents.”
 										...
 										-->
-										<xsl:apply-templates select="/ieee:metanorma/ieee:boilerplate/ieee:legal-statement"/>
+										<xsl:apply-templates select="/mn:metanorma/mn:boilerplate/mn:legal-statement"/>
 									</fo:block>
 								</fo:flow>
 							</fo:page-sequence>
@@ -821,7 +821,7 @@
 										<fo:block>
 											<!-- TRADEMARKS AND DISCLAIMERS -->
 											<!-- ACKNOWLEDGEMENTS -->
-											<xsl:apply-templates select="/ieee:metanorma/ieee:boilerplate/ieee:legal-statement/*[@id = 'boilerplate-tm' or ieee:title = 'Trademarks and Disclaimers' or @id = 'boilerplate-participants' or ieee:title = 'Acknowledgements']" mode="whitepaper"/>
+											<xsl:apply-templates select="/mn:metanorma/mn:boilerplate/mn:legal-statement/*[@id = 'boilerplate-tm' or mn:title = 'Trademarks and Disclaimers' or @id = 'boilerplate-participants' or mn:title = 'Acknowledgements']" mode="whitepaper"/>
 										</fo:block>
 										
 										<!-- Example:
@@ -830,12 +830,12 @@
 										PDF: STDXXXXX ISBN 978-0-XXXX-XXXX-X 
 										-->
 										<fo:block font-style="italic">
-											<xsl:apply-templates select="/ieee:metanorma/ieee:boilerplate/ieee:feedback-statement"/>
+											<xsl:apply-templates select="/mn:metanorma/mn:boilerplate/mn:feedback-statement"/>
 										</fo:block>
 										
 										<!-- NOTICE AND DISCLAIMER OF LIABILITY CONCERNING THE USE OF IEEE SA DOCUMENTS -->
 										<fo:block break-after="page"/>
-										<xsl:apply-templates select="/ieee:metanorma/ieee:boilerplate/ieee:legal-statement/*[not(@id = 'boilerplate-tm') and not(ieee:title = 'Trademarks and Disclaimers') and not(@id = 'boilerplate-participants') and not(ieee:title = 'Acknowledgements')]"/>
+										<xsl:apply-templates select="/mn:metanorma/mn:boilerplate/mn:legal-statement/*[not(@id = 'boilerplate-tm') and not(mn:title = 'Trademarks and Disclaimers') and not(@id = 'boilerplate-participants') and not(mn:title = 'Acknowledgements')]"/>
 										
 									</fo:block-container>
 								</fo:flow>
@@ -858,7 +858,7 @@
 					<!-- ================================ -->
 					
 					<xsl:variable name="structured_xml_preface">
-						<xsl:apply-templates select="/*/*[local-name()='preface']/*[local-name() = 'introduction']" mode="flatxml" />
+						<xsl:apply-templates select="/*/mn:preface/mn:introduction" mode="flatxml" />
 					</xsl:variable>
 					
 					<!-- structured_xml_preface=<xsl:copy-of select="$structured_xml_preface"/> -->
@@ -894,13 +894,13 @@
 								<fo:flow flow-name="xsl-region-body">
 									
 									<fo:block>
-										<xsl:for-each select="xalan:nodeset($paged_xml_preface)/*[local-name()='page']">
+										<xsl:for-each select="xalan:nodeset($paged_xml_preface)/mn:page">
 											<xsl:apply-templates select="*" mode="page"/>
 											<fo:block break-after="page"/>
 										</xsl:for-each>
 									</fo:block>
 										
-									<xsl:apply-templates select="/*/*[local-name()='preface']/*[local-name() = 'clause'][@type = 'toc']">
+									<xsl:apply-templates select="/*/mn:preface/mn:clause[@type = 'toc']">
 										<xsl:with-param name="num" select="$num"/>
 									</xsl:apply-templates>
 								
@@ -951,7 +951,7 @@
 									
 										<fo:block-container margin-left="0mm">
 										
-											<xsl:apply-templates select="/*/*[local-name()='preface']/*[local-name() = 'clause'][@type = 'toc']">
+											<xsl:apply-templates select="/*/mn:preface/mn:clause[@type = 'toc']">
 												<xsl:with-param name="num" select="$num"/>
 											</xsl:apply-templates>
 										
@@ -978,18 +978,18 @@
 							<xsl:when test="$current_template = 'whitepaper' or $current_template = 'icap-whitepaper' or $current_template = 'industry-connection-report'">
 							
 								<item>
-									<xsl:apply-templates select="/ieee:metanorma/ieee:preface/ieee:introduction" mode="flatxml"/>
+									<xsl:apply-templates select="/mn:metanorma/mn:preface/mn:introduction" mode="flatxml"/>
 								</item>
 							
 								<item>
-									<xsl:apply-templates select="/ieee:metanorma/ieee:preface/ieee:acknowledgements" mode="flatxml"/>
+									<xsl:apply-templates select="/mn:metanorma/mn:preface/mn:acknowledgements" mode="flatxml"/>
 								</item>
 							
 								<item>
-									<xsl:apply-templates select="/ieee:metanorma/ieee:preface/ieee:abstract" mode="flatxml"/>
+									<xsl:apply-templates select="/mn:metanorma/mn:preface/mn:abstract" mode="flatxml"/>
 								</item>
 							
-								<xsl:for-each select="/*/*[local-name()='sections']/*"> <!-- each section starts with a new page -->
+								<xsl:for-each select="/*/mn:sections/*"> <!-- each section starts with a new page -->
 									<item>
 										<xsl:apply-templates select="." mode="flatxml"/>
 									</item>
@@ -997,7 +997,7 @@
 							</xsl:when> <!-- $current_template = 'whitepaper' or $current_template = 'icap-whitepaper' or $current_template = 'industry-connection-report' -->
 							
 							<xsl:when test="$current_template = 'standard'">
-								<xsl:for-each select="/*/*[local-name()='sections']/*"> <!-- each section starts with a new page -->
+								<xsl:for-each select="/*/mn:sections/*"> <!-- each section starts with a new page -->
 									<item>
 										<xsl:apply-templates select="." mode="flatxml"/>
 									</item>
@@ -1006,25 +1006,25 @@
 							
 							<xsl:otherwise>
 								<item>
-									<xsl:apply-templates select="/*/*[local-name()='sections']/*" mode="flatxml"/>
+									<xsl:apply-templates select="/*/mn:sections/*" mode="flatxml"/>
 								</item>	
 							</xsl:otherwise>
 						</xsl:choose>
 						
 						<!-- Annexes -->
-						<xsl:for-each select="/*/*[local-name()='annex']">
+						<xsl:for-each select="/*/mn:annex">
 							<item>
 								<xsl:apply-templates select="." mode="flatxml"/>
 							</item>
 						</xsl:for-each>
 						
 						<!-- Bibliography -->
-						<xsl:for-each select="/*/*[local-name()='bibliography']/*">
+						<xsl:for-each select="/*/mn:bibliography/*">
 							<item><xsl:apply-templates select="." mode="flatxml"/></item>
 						</xsl:for-each>
 						
 						<item>
-							<xsl:copy-of select="//ieee:indexsect" />
+							<xsl:copy-of select="//mn:indexsect" />
 						</item>
 						
 					</xsl:variable>
@@ -1054,7 +1054,7 @@
 					<!-- paged_xml=<xsl:copy-of select="$paged_xml"/> -->
 			
 					
-					<xsl:for-each select="xalan:nodeset($paged_xml)/*[local-name()='page'][*]">
+					<xsl:for-each select="xalan:nodeset($paged_xml)/mn:page[*]">
 						<fo:page-sequence master-reference="document-draft" force-page-count="no-force">
 						
 							<xsl:if test="@orientation = 'landscape'">
@@ -1078,7 +1078,7 @@
 							<!-- <xsl:if test="position() = 1">
 								<xsl:attribute name="initial-page-number">1</xsl:attribute>
 							</xsl:if> -->
-							<xsl:if test=".//ieee:indexsect">
+							<xsl:if test=".//mn:indexsect">
 								<xsl:attribute name="master-reference">page-index</xsl:attribute>
 							</xsl:if>
 							
@@ -1175,7 +1175,7 @@
 					<!-- ======================= -->
 					<!-- END Back page -->
 					<!-- ======================= -->
-					<xsl:if test="not(xalan:nodeset($paged_xml)/*[local-name()='page'][*])">
+					<xsl:if test="not(xalan:nodeset($paged_xml)/mn:page[*])">
 						<fo:page-sequence master-reference="document-nonstandard" force-page-count="no-force">
 							<fo:flow flow-name="xsl-region-body">
 								<fo:block><!-- prevent fop error for empty document --></fo:block>
@@ -1186,7 +1186,7 @@
 				</xsl:for-each>
 			</xsl:for-each> <!-- END of //metanorma (former ieee-standard) iteration -->
 			
-			<xsl:if test="not(//ieee:metanorma)">
+			<xsl:if test="not(//mn:metanorma)">
 				<fo:page-sequence master-reference="document-nonstandard" force-page-count="no-force">
 					<fo:flow flow-name="xsl-region-body">
 						<fo:block><!-- prevent fop error for empty document --></fo:block>
@@ -1199,12 +1199,12 @@
 	</xsl:template>
 	
 	
-	<xsl:template match="ieee:preface/ieee:clause[@type = 'toc']" priority="3">
+	<xsl:template match="mn:preface/mn:clause[@type = 'toc']" priority="3">
 		<xsl:param name="num"/>
 		
 		<xsl:apply-templates />
 		
-		<xsl:if test="count(*) = 1 and *[local-name() = 'title']"> <!-- if there isn't user ToC -->
+		<xsl:if test="count(*) = 1 and mn:title"> <!-- if there isn't user ToC -->
 			<fo:block role="TOC">
 				<xsl:if test="$contents/mnx:doc[@num = $num]//mnx:item[@display = 'true']">
 					<xsl:choose>
@@ -1415,7 +1415,7 @@
 		</xsl:if>
 	</xsl:template>
 									
-	<xsl:template match="ieee:preface/ieee:clause[@type = 'toc']/ieee:title" priority="3">
+	<xsl:template match="mn:preface/mn:clause[@type = 'toc']/mn:title" priority="3">
 		<xsl:choose>
 			<xsl:when test="$current_template = 'standard' or $current_template = 'draft'">
 				<fo:block font-family="Arial" font-size="12pt" role="H1" font-weight="bold" margin-top="12pt" margin-bottom="24pt">
@@ -1440,19 +1440,19 @@
 	
 	</xsl:template>
 	
-	<xsl:template match="ieee:boilerplate/ieee:copyright-statement//ieee:p" priority="2">
+	<xsl:template match="mn:boilerplate/mn:copyright-statement//mn:p" priority="2">
 		<fo:block margin-top="6pt" margin-bottom="6pt" text-align="justify">
 			<xsl:apply-templates />
 		</fo:block>
 	</xsl:template>
 	
-	<xsl:template match="ieee:boilerplate/ieee:license-statement//ieee:p" priority="2">
+	<xsl:template match="mn:boilerplate/mn:license-statement//mn:p" priority="2">
 		<fo:block margin-top="6pt" margin-bottom="6pt" text-align="justify">
 			<xsl:apply-templates />
 		</fo:block>
 	</xsl:template>
 	
-	<xsl:template match="ieee:boilerplate/ieee:feedback-statement" priority="2">
+	<xsl:template match="mn:boilerplate/mn:feedback-statement" priority="2">
 		<fo:block>
 			<fo:footnote>
 				<fo:inline></fo:inline>
@@ -1477,32 +1477,32 @@
 		</fo:block>
 	</xsl:template>
 	
-	<xsl:template match="ieee:boilerplate/ieee:feedback-statement//ieee:p" priority="2">
+	<xsl:template match="mn:boilerplate/mn:feedback-statement//mn:p" priority="2">
 		<fo:block margin-bottom="6pt">
 			<xsl:apply-templates />
 		</fo:block>
 	</xsl:template>
 	
-	<xsl:template match="ieee:boilerplate/ieee:legal-statement" priority="2">
+	<xsl:template match="mn:boilerplate/mn:legal-statement" priority="2">
 		<fo:block break-after="page"/>
 		<xsl:apply-templates />
 	</xsl:template>
 	
-	<xsl:template match="ieee:boilerplate/ieee:legal-statement/ieee:clause[@id = 'boilerplate-participants' or ieee:title = 'Participants']" priority="2">
+	<xsl:template match="mn:boilerplate/mn:legal-statement/mn:clause[@id = 'boilerplate-participants' or mn:title = 'Participants']" priority="2">
 		<fo:block break-after="page"/>
 		<fo:block id="{@id}">
 			<xsl:apply-templates />
 		</fo:block>
 	</xsl:template>
 	
-	<xsl:template match="ieee:boilerplate/ieee:legal-statement/ieee:clause[@id = 'boilerplate-participants' or ieee:title = 'Participants']/ieee:clause" priority="2">
+	<xsl:template match="mn:boilerplate/mn:legal-statement/mn:clause[@id = 'boilerplate-participants' or mn:title = 'Participants']/mn:clause" priority="2">
 		<fo:block id="{@id}" space-before="12pt">
 			<xsl:apply-templates />
 		</fo:block>
 	</xsl:template>
 	
 	<!-- Example: Important Notices and Disclaimers Concerning IEEE Standards Documents -->
-	<xsl:template match="ieee:boilerplate/ieee:legal-statement//ieee:title" priority="3">
+	<xsl:template match="mn:boilerplate/mn:legal-statement//mn:title" priority="3">
 		<xsl:variable name="level">
 			<xsl:call-template name="getLevel"/>
 		</xsl:variable>
@@ -1523,9 +1523,9 @@
 		</fo:block>
 	</xsl:template>
 	
-	<xsl:template match="ieee:boilerplate/ieee:legal-statement//ieee:p" priority="2">
+	<xsl:template match="mn:boilerplate/mn:legal-statement//mn:p" priority="2">
 		<xsl:choose>
-			<xsl:when test="@type = 'officemember' and not(preceding-sibling::*[1][self::ieee:p][@type = 'officemember'])"> <!-- special case -->
+			<xsl:when test="@type = 'officemember' and not(preceding-sibling::*[1][self::mn:p][@type = 'officemember'])"> <!-- special case -->
 			
 				<xsl:variable name="officemembers_">
 					<officemember><xsl:copy-of select="node()"/></officemember>
@@ -1538,7 +1538,7 @@
 						</xsl:choose>
 					</xsl:variable>
 					<xsl:variable name="p_count" select="$pos_end - $pos_curr"/>
-					<xsl:for-each select="following-sibling::ieee:p[position() &lt;= $p_count]">
+					<xsl:for-each select="following-sibling::mn:p[position() &lt;= $p_count]">
 						<officemember><xsl:copy-of select="node()"/></officemember>
 					</xsl:for-each>
 				</xsl:variable>
@@ -1596,7 +1596,7 @@
 				</xsl:if>
 			</xsl:when> <!-- @type = 'officemember' -->
 			
-			<xsl:when test="@type = 'officemember' and preceding-sibling::*[1][self::ieee:p][@type = 'officemember']"><!-- skip --></xsl:when>
+			<xsl:when test="@type = 'officemember' and preceding-sibling::*[1][self::mn:p][@type = 'officemember']"><!-- skip --></xsl:when>
 			
 			<xsl:when test="@type = 'emeritus_sign'">
 				<fo:block font-size="9pt" margin-left="9.4mm" space-before="6pt" space-after="12pt" keep-with-previous="always">
@@ -1607,11 +1607,11 @@
 			<xsl:when test="@type = 'officeorgrepmemberhdr'">
 				<fo:block text-align-last="justify" space-after="12pt">
 					<!-- before tab - left aligned text -->
-					<xsl:apply-templates select="ieee:tab[1]/preceding-sibling::node()"/>
+					<xsl:apply-templates select="mn:tab[1]/preceding-sibling::node()"/>
 					<fo:inline keep-together.within-line="always">
 						<fo:leader leader-pattern="space"/>
 						<!-- after tab - right aligned text -->
-						<xsl:apply-templates select="ieee:tab[1]/following-sibling::node()"/>
+						<xsl:apply-templates select="mn:tab[1]/following-sibling::node()"/>
 					</fo:inline>
 				</fo:block>
 			</xsl:when>
@@ -1619,11 +1619,11 @@
 			<xsl:when test="@type = 'officeorgrepmember'">
 				<fo:block text-align-last="justify" space-after="6pt" font-size="9pt">
 					<!-- before tab - left aligned text -->
-					<xsl:apply-templates select="ieee:tab[1]/preceding-sibling::node()"/>
+					<xsl:apply-templates select="mn:tab[1]/preceding-sibling::node()"/>
 					<fo:inline keep-together.within-line="always">
 						<fo:leader font-size="9pt" font-weight="normal" leader-pattern="dots"/>
 						<!-- after tab - right aligned text -->
-						<xsl:apply-templates select="ieee:tab[1]/following-sibling::node()"/>
+						<xsl:apply-templates select="mn:tab[1]/following-sibling::node()"/>
 					</fo:inline>
 				</fo:block>
 			</xsl:when>
@@ -1632,7 +1632,7 @@
 			
 				<xsl:variable name="attributes_">
 					<attributes>
-						<xsl:if test="@align = 'center' and ancestor::ieee:clause[@id = 'boilerplate-participants' or ieee:title = 'Participants'] and following-sibling::*[1][self::ieee:p and @align = 'center']">
+						<xsl:if test="@align = 'center' and ancestor::mn:clause[@id = 'boilerplate-participants' or mn:title = 'Participants'] and following-sibling::*[1][self::mn:p and @align = 'center']">
 							<xsl:attribute name="space-after">0</xsl:attribute>
 						</xsl:if>
 						<xsl:call-template name="setTextAlignment">
@@ -1667,33 +1667,33 @@
 		</xsl:choose>
 	</xsl:template>
 	
-	<xsl:template match="ieee:boilerplate/ieee:legal-statement" mode="whitepaper">
+	<xsl:template match="mn:boilerplate/mn:legal-statement" mode="whitepaper">
 		<xsl:apply-templates mode="whitepaper"/>
 	</xsl:template>
 	
-	<xsl:template match="ieee:boilerplate/ieee:legal-statement/ieee:clause/ieee:title" mode="whitepaper">
+	<xsl:template match="mn:boilerplate/mn:legal-statement/mn:clause/mn:title" mode="whitepaper">
 		<fo:block font-family="Arial Black" font-size="13pt"><xsl:apply-templates mode="whitepaper"/></fo:block>
 	</xsl:template>
 	
-	<xsl:template match="ieee:boilerplate/ieee:legal-statement/ieee:clause/ieee:title//text()" mode="whitepaper">
+	<xsl:template match="mn:boilerplate/mn:legal-statement/mn:clause/mn:title//text()" mode="whitepaper">
 		<xsl:value-of select="java:toUpperCase(java:java.lang.String.new(.))"/>
 	</xsl:template>
 	
-	<xsl:template match="ieee:boilerplate/ieee:legal-statement/ieee:clause/ieee:p" mode="whitepaper">
+	<xsl:template match="mn:boilerplate/mn:legal-statement/mn:clause/mn:p" mode="whitepaper">
 		<fo:block font-size="10pt" margin-top="12pt" margin-bottom="12pt" text-align="justify" line-height="{$line-height}">
 			<xsl:apply-templates />
 		</fo:block>
 	</xsl:template>
 	
-	<xsl:template match="ieee:boilerplate/ieee:legal-statement/ieee:clause/ieee:clause" mode="whitepaper">
+	<xsl:template match="mn:boilerplate/mn:legal-statement/mn:clause/mn:clause" mode="whitepaper">
 		<fo:block font-family="Calibri">
 			<xsl:apply-templates mode="whitepaper"/>
 		</fo:block>
 	</xsl:template>
 	
-	<xsl:template match="ieee:boilerplate/ieee:legal-statement/ieee:clause/ieee:clause/ieee:p" mode="whitepaper">
+	<xsl:template match="mn:boilerplate/mn:legal-statement/mn:clause/mn:clause/mn:p" mode="whitepaper">
 		<fo:block font-size="10pt" margin-bottom="6pt">
-			<xsl:if test="not(preceding-sibling::ieee:p)">
+			<xsl:if test="not(preceding-sibling::mn:p)">
 				<xsl:attribute name="margin-top">12pt</xsl:attribute>
 				<xsl:attribute name="margin-bottom">12pt</xsl:attribute>
 				<xsl:attribute name="font-size">inherit</xsl:attribute>
@@ -1702,7 +1702,7 @@
 		</fo:block>
 	</xsl:template>
 	
-	<xsl:template match="ieee:abstract">
+	<xsl:template match="mn:abstract">
 		<fo:block>
 			<xsl:call-template name="setId"/>
 			<xsl:call-template name="addReviewHelper"/>
@@ -1711,11 +1711,11 @@
 	</xsl:template>
 	
 	<!-- for 'draft' -->
-	<xsl:template match="ieee:preface/ieee:abstract/ieee:p[1] | /ieee:metanorma/ieee:preface/ieee:clause[@id = '_abstract' or ieee:title = 'Abstract']/ieee:p[1]" priority="2">
+	<xsl:template match="mn:preface/mn:abstract/mn:p[1] | /mn:metanorma/mn:preface/mn:clause[@id = '_abstract' or mn:title = 'Abstract']/mn:p[1]" priority="2">
 		<fo:inline><xsl:apply-templates /></fo:inline>
 	</xsl:template>
 	
-	<xsl:template match="ieee:preface/ieee:acknowledgements" priority="3">
+	<xsl:template match="mn:preface/mn:acknowledgements" priority="3">
 		<fo:block>
 			<xsl:apply-templates />
 		</fo:block>
@@ -1767,11 +1767,11 @@
 	</xsl:template>
 
 
-	<xsl:template match="*[local-name() = 'br']" priority="2" mode="contents_item">
+	<xsl:template match="mn:br" priority="2" mode="contents_item">
 		<xsl:text> </xsl:text>
 	</xsl:template>
 
-	<xsl:template match="*[local-name() = 'strong']" priority="2" mode="contents_item">
+	<xsl:template match="mn:strong" priority="2" mode="contents_item">
 		<xsl:copy>
 			<xsl:apply-templates mode="contents_item"/>
 		</xsl:copy>
@@ -1780,28 +1780,28 @@
 	<xsl:template name="makePagedXML">
 		<xsl:param name="structured_xml"/>
 		<xsl:choose>
-			<xsl:when test="not(xalan:nodeset($structured_xml)/*[local-name()='pagebreak'])">
+			<xsl:when test="not(xalan:nodeset($structured_xml)/mn:pagebreak)">
 				<xsl:element name="page" namespace="{$namespace_full}">
 					<xsl:copy-of select="xalan:nodeset($structured_xml)"/>
 				</xsl:element>
 			</xsl:when>
 			<xsl:otherwise>
-				<xsl:for-each select="xalan:nodeset($structured_xml)/*[local-name()='pagebreak']">
+				<xsl:for-each select="xalan:nodeset($structured_xml)/mn:pagebreak">
 			
 					<xsl:variable name="pagebreak_id" select="generate-id()"/>
-					<!-- <xsl:variable name="pagebreak_previous_orientation" select="normalize-space(preceding-sibling::ieee:pagebreak[1]/@orientation)"/> -->
+					<!-- <xsl:variable name="pagebreak_previous_orientation" select="normalize-space(preceding-sibling::mn:pagebreak[1]/@orientation)"/> -->
 					
 					<!-- copy elements before pagebreak -->
 					<xsl:element name="page" namespace="{$namespace_full}">
-						<xsl:if test="not(preceding-sibling::ieee:pagebreak)">
+						<xsl:if test="not(preceding-sibling::mn:pagebreak)">
 							<xsl:copy-of select="../@*" />
 						</xsl:if>
 						<!-- copy previous pagebreak orientation -->
-						<xsl:copy-of select="preceding-sibling::ieee:pagebreak[1]/@orientation"/>
+						<xsl:copy-of select="preceding-sibling::mn:pagebreak[1]/@orientation"/>
 						<!-- <xsl:if test="$pagebreak_previous_orientation != ''">
 							<xsl:attribute name="orientation"><xsl:value-of select="$pagebreak_previous_orientation"/></xsl:attribute>
 						</xsl:if> -->
-						<xsl:copy-of select="preceding-sibling::node()[following-sibling::ieee:pagebreak[1][generate-id(.) = $pagebreak_id]][not(local-name() = 'pagebreak')]" />
+						<xsl:copy-of select="preceding-sibling::node()[following-sibling::mn:pagebreak[1][generate-id(.) = $pagebreak_id]][not(self::mn:pagebreak)]" />
 					</xsl:element>
 					
 					<!-- copy elements after last page break -->
@@ -1817,7 +1817,7 @@
 		</xsl:choose>
 	</xsl:template>
 
-	<xsl:template match="ieee:p[@class = 'zzSTDTitle1']" priority="4">
+	<xsl:template match="mn:p[@class = 'zzSTDTitle1']" priority="4">
 		<xsl:choose>
 			<xsl:when test="$current_template = 'draft'">
 				<fo:block font-family="Arial" font-size="23pt" font-weight="bold" margin-top="70pt" margin-bottom="48pt">
@@ -1853,21 +1853,21 @@
 	<!-- ============================= -->
 	
 	<!-- element with title -->
-	<xsl:template match="*[ieee:title or ieee:fmt-title]" mode="contents">
+	<xsl:template match="*[mn:title or mn:fmt-title]" mode="contents">
 	
 		<xsl:variable name="level">
 			<xsl:call-template name="getLevel">
-				<xsl:with-param name="depth" select="ieee:fmt-title/@depth | ieee:title/@depth"/>
+				<xsl:with-param name="depth" select="mn:fmt-title/@depth | mn:title/@depth"/>
 			</xsl:call-template>
 		</xsl:variable>
 		
 		<!-- if previous clause contains section-title as latest element (section-title may contain  note's, admonition's, etc.),
 		and if @depth of current clause equals to section-title @depth,
 		then put section-title before current clause -->
-		<xsl:if test="local-name() = 'clause'">
-			<xsl:apply-templates select="preceding-sibling::*[1][local-name() = 'clause']//*[local-name() = 'p' and @type = 'section-title'
+		<xsl:if test="self::mn:clause">
+			<xsl:apply-templates select="preceding-sibling::*[1][self::mn:clause]//mn:p[@type = 'section-title'
 				and @depth = $level 
-				and not(following-sibling::*[local-name()='clause'])]" mode="contents_in_clause"/>
+				and not(following-sibling::mn:clause)]" mode="contents_in_clause"/>
 		</xsl:if>
 		
 		<xsl:variable name="section">
@@ -1876,8 +1876,8 @@
 		
 		<xsl:variable name="type">
 			<xsl:choose>
-				<xsl:when test="local-name() = 'indexsect'">index</xsl:when>
-				<xsl:when test="(ancestor-or-self::ieee:bibliography and local-name() = 'clause' and not(.//*[local-name() = 'references' and @normative='true'])) or self::ieee:references[not(@normative) or @normative='false']">bibliography</xsl:when>
+				<xsl:when test="self::mn:indexsect">index</xsl:when>
+				<xsl:when test="(ancestor-or-self::mn:bibliography and self::mn:clause and not(.//mn:references[@normative='true'])) or self::mn:references[not(@normative) or @normative='false']">bibliography</xsl:when>
 				<xsl:otherwise><xsl:value-of select="local-name()"/></xsl:otherwise>
 			</xsl:choose>
 		</xsl:variable>
@@ -1886,11 +1886,11 @@
 			<xsl:choose>
 				<xsl:when test="normalize-space(@id) = ''">false</xsl:when>
 				
-				<!-- <xsl:when test="ancestor-or-self::ieee:annex and $level &gt;= 2">false</xsl:when> -->
+				<!-- <xsl:when test="ancestor-or-self::mn:annex and $level &gt;= 2">false</xsl:when> -->
 				<xsl:when test="$type = 'bibliography' and $level &gt;= 2">false</xsl:when>
 				<xsl:when test="$type = 'bibliography'">true</xsl:when>
 				<xsl:when test="$type = 'references' and $level &gt;= 2">false</xsl:when>
-				<xsl:when test="$section = '' and $type = 'clause' and $level = 1 and ancestor::ieee:preface">true</xsl:when>
+				<xsl:when test="$section = '' and $type = 'clause' and $level = 1 and ancestor::mn:preface">true</xsl:when>
 				<xsl:when test="$section = '' and $type = 'clause'">false</xsl:when>
 				<xsl:when test="$level &lt;= $toc_level">true</xsl:when>
 				<xsl:otherwise>false</xsl:otherwise>
@@ -1900,9 +1900,9 @@
 		<xsl:variable name="skip">
 			<xsl:choose>
 				<xsl:when test="@type = 'toc'">true</xsl:when>
-				<xsl:when test="($current_template = 'standard' or $current_template = 'draft') and ancestor-or-self::ieee:preface">true</xsl:when> <!-- no need render preface sections in ToC -->
-				<xsl:when test="ancestor-or-self::ieee:bibitem">true</xsl:when>
-				<xsl:when test="ancestor-or-self::ieee:term">true</xsl:when>				
+				<xsl:when test="($current_template = 'standard' or $current_template = 'draft') and ancestor-or-self::mn:preface">true</xsl:when> <!-- no need render preface sections in ToC -->
+				<xsl:when test="ancestor-or-self::mn:bibitem">true</xsl:when>
+				<xsl:when test="ancestor-or-self::mn:term">true</xsl:when>				
 				<xsl:when test="@type = 'corrigenda'">true</xsl:when>
 				<xsl:otherwise>false</xsl:otherwise>
 			</xsl:choose>
@@ -1916,8 +1916,8 @@
 			</xsl:variable>
 			
 			<xsl:variable name="root">
-				<xsl:if test="ancestor-or-self::ieee:preface">preface</xsl:if>
-				<xsl:if test="ancestor-or-self::ieee:annex">annex</xsl:if>
+				<xsl:if test="ancestor-or-self::mn:preface">preface</xsl:if>
+				<xsl:if test="ancestor-or-self::mn:annex">annex</xsl:if>
 			</xsl:variable>
 			
 			<mnx:item id="{@id}" level="{$level}" section="{$section}" type="{$type}" root="{$root}" display="{$display}">
@@ -1936,18 +1936,18 @@
 		</xsl:if>
 	</xsl:template>
 	
-	<xsl:template match="ieee:figure[ieee:name] | ieee:table[ieee:name and not(@unnumbered = 'true' and java:endsWith(java:java.lang.String.new(ieee:name),'Key'))]" priority="2" mode="contents">		
+	<xsl:template match="mn:figure[mn:name] | mn:table[mn:name and not(@unnumbered = 'true' and java:endsWith(java:java.lang.String.new(mn:name),'Key'))]" priority="2" mode="contents">		
 		<xsl:if test="$current_template = 'whitepaper' or $current_template = 'icap-whitepaper' or $current_template = 'industry-connection-report'">
 			<xsl:variable name="level">
-				<xsl:for-each select="ancestor::ieee:clause[1] | ancestor::ieee:annex[1]">
+				<xsl:for-each select="ancestor::mn:clause[1] | ancestor::mn:annex[1]">
 					<xsl:call-template name="getLevel">
-						<xsl:with-param name="depth" select="ieee:title/@depth"/>
+						<xsl:with-param name="depth" select="mn:title/@depth"/>
 					</xsl:call-template>
 				</xsl:for-each>
 			</xsl:variable>
 			<mnx:item id="{@id}" level="{$level}" section="" type="{local-name()}" root="" display="true">
 				<xsl:variable name="name">
-					<xsl:apply-templates select="ieee:name" mode="contents_item">
+					<xsl:apply-templates select="mn:name" mode="contents_item">
 						<xsl:with-param name="mode">contents</xsl:with-param>
 					</xsl:apply-templates>
 				</xsl:variable>
@@ -1961,7 +1961,7 @@
 		</xsl:if>
 	</xsl:template>
 
-	<xsl:template match="*[local-name()='add'][parent::*[local-name() = 'name'] and ancestor::*[local-name() = 'figure'] and normalize-space(following-sibling::node()) = '']" mode="contents_item" priority="2"/>
+	<xsl:template match="mn:add[parent::mn:name and ancestor::mn:figure and normalize-space(following-sibling::node()) = '']" mode="contents_item" priority="2"/>
 
 	<xsl:template match="text()" mode="contents_item">
 		<xsl:choose>
@@ -2042,8 +2042,8 @@
 		
 	</xsl:template>
 	
-	<xsl:template match="*[local-name() = 'figures']/*[local-name() = 'figure']/*[local-name() = 'name']/text()[1] |
-								*[local-name() = 'tables']/*[local-name() = 'table']/*[local-name() = 'name']/text()[1]" mode="contents" priority="3">
+	<xsl:template match="mn:figures/mn:figure/mn:name/text()[1] |
+								mn:tables/mn:table/mn:name/text()[1]" mode="contents" priority="3">
 		<xsl:choose>
 			<xsl:when test="$current_template = 'standard' and contains(.,'—')"><xsl:value-of select="substring-after(.,'—')"/></xsl:when>
 			<xsl:otherwise><xsl:value-of select="."/></xsl:otherwise>
@@ -2051,7 +2051,7 @@
 	</xsl:template>
 	
 	<!-- disable bold in ToC -->
-	<xsl:template match="*[local-name() = 'item']/*[local-name() = 'title']/*[local-name() = 'strong']" priority="2">
+	<xsl:template match="mnx:item/mnx:title/*[local-name() = 'strong']" priority="2">
 		<xsl:apply-templates />
 	</xsl:template>
 	
@@ -2063,12 +2063,12 @@
 	<!-- ==================== -->
 	<!-- display titles       -->
 	<!-- ==================== -->
-	<xsl:template match="ieee:bibdata/ieee:title[@type = 'title-intro']">
+	<xsl:template match="mn:bibdata/mn:title[@type = 'title-intro']">
 		<xsl:apply-templates />
 		<xsl:text>—</xsl:text>
 	</xsl:template>
 
-	<xsl:template match="ieee:bibdata/ieee:title[@type = 'title-main']">
+	<xsl:template match="mn:bibdata/mn:title[@type = 'title-main']">
 		<xsl:apply-templates />
 	</xsl:template>
 	
@@ -2089,23 +2089,23 @@
 		<xsl:copy-of select="."/>
 	</xsl:template>
 	
-	<xsl:template match="ieee:preface//ieee:clause[@type = 'front_notes']" mode="flatxml" priority="2">
+	<xsl:template match="mn:preface//mn:clause[@type = 'front_notes']" mode="flatxml" priority="2">
 		<!-- ignore processing (source STS is front/notes) -->
 	</xsl:template>
 	
-	<xsl:template match="ieee:foreword |
-											ieee:foreword//ieee:clause |
-											ieee:preface//ieee:clause[not(@type = 'corrigenda') and not(@type = 'related-refs') and not(@type = 'toc') ] |
-											ieee:introduction |
-											ieee:introduction//ieee:clause |
-											ieee:sections//ieee:clause | 
-											ieee:annex | 
-											ieee:annex//ieee:clause | 
-											ieee:references |
-											ieee:bibliography/ieee:clause | 
-											*[local-name()='sections']//*[local-name()='terms'] | 
-											*[local-name()='sections']//*[local-name()='definitions'] |
-											*[local-name()='annex']//*[local-name()='definitions']" mode="flatxml" name="clause">
+	<xsl:template match="mn:foreword |
+											mn:foreword//mn:clause |
+											mn:preface//mn:clause[not(@type = 'corrigenda') and not(@type = 'related-refs') and not(@type = 'toc') ] |
+											mn:introduction |
+											mn:introduction//mn:clause |
+											mn:sections//mn:clause | 
+											mn:annex | 
+											mn:annex//mn:clause | 
+											mn:references |
+											mn:bibliography/mn:clause | 
+											mn:sections//mn:terms | 
+											mn:sections//mn:definitions |
+											mn:annex//mn:definitions" mode="flatxml" name="clause">
 		<!-- From:
 		<clause>
 			<title>...</title>
@@ -2119,12 +2119,12 @@
 		<xsl:copy>
 			<xsl:apply-templates select="@*" mode="flatxml"/>
 			<xsl:attribute name="keep-with-next">always</xsl:attribute>
-			<xsl:if test="local-name() = 'foreword' or local-name() = 'introduction' or
-			local-name(..) = 'preface' or local-name(..) = 'sections' or 
-			(local-name() = 'references' and parent::*[local-name() = 'bibliography']) or
-			(local-name() = 'clause' and parent::*[local-name() = 'bibliography']) or
-			local-name() = 'annex' or 
-			local-name(..) = 'annex'">
+			<xsl:if test="self::mn:foreword or self::mn:introduction or
+			parent::mn:preface or parent::mn:sections or 
+			(self::mn:references and parent::mn:bibliography) or
+			(self::mn:clause and parent::mn:bibliography) or
+			self::mn:annex or 
+			parent::mn:annex">
 				<xsl:attribute name="mainsection">true</xsl:attribute>
 			</xsl:if>
 			
@@ -2133,7 +2133,7 @@
 		
 	</xsl:template>
 	
-	<xsl:template match="ieee:term" mode="flatxml" priority="2">
+	<xsl:template match="mn:term" mode="flatxml" priority="2">
 		<xsl:copy>
 			<xsl:apply-templates select="@*" mode="flatxml"/>
 			<xsl:attribute name="keep-with-next">always</xsl:attribute>
@@ -2142,12 +2142,12 @@
 			</xsl:variable>
 			<xsl:attribute name="depth"><xsl:value-of select="$level"/></xsl:attribute>
 			<xsl:attribute name="ancestor">sections</xsl:attribute>
-			<xsl:apply-templates select="node()[not(self::ieee:term)]" mode="flatxml"/>
+			<xsl:apply-templates select="node()[not(self::mn:term)]" mode="flatxml"/>
 		</xsl:copy>
-		<xsl:apply-templates select="ieee:term" mode="flatxml"/>
+		<xsl:apply-templates select="mn:term" mode="flatxml"/>
 	</xsl:template>
 	
-	<xsl:template match="ieee:introduction//ieee:title | ieee:foreword//ieee:title | ieee:sections//ieee:title | ieee:annex//ieee:title | ieee:bibliography/ieee:clause/ieee:title | ieee:references/ieee:title" mode="flatxml" priority="2"> <!-- | ieee:term -->
+	<xsl:template match="mn:introduction//mn:title | mn:foreword//mn:title | mn:sections//mn:title | mn:annex//mn:title | mn:bibliography/mn:clause/mn:title | mn:references/mn:title" mode="flatxml" priority="2"> <!-- | mn:term -->
 		<xsl:copy>
 			<xsl:apply-templates select="@*" mode="flatxml"/>
 			<xsl:attribute name="keep-with-next">always</xsl:attribute>
@@ -2155,7 +2155,7 @@
 				<xsl:call-template name="getLevel"/>
 			</xsl:variable>
 			<xsl:attribute name="depth"><xsl:value-of select="$level"/></xsl:attribute>
-			<xsl:if test="parent::ieee:annex">
+			<xsl:if test="parent::mn:annex">
 				<xsl:attribute name="depth">1</xsl:attribute>
 			</xsl:if>
 			<xsl:if test="../@inline-header = 'true'">
@@ -2163,11 +2163,11 @@
 			</xsl:if>
 			<xsl:attribute name="ancestor">
 				<xsl:choose>
-					<xsl:when test="ancestor::ieee:foreword">foreword</xsl:when>
-					<xsl:when test="ancestor::ieee:introduction">introduction</xsl:when>
-					<xsl:when test="ancestor::ieee:sections">sections</xsl:when>
-					<xsl:when test="ancestor::ieee:annex">annex</xsl:when>
-					<xsl:when test="ancestor::ieee:bibliography">bibliography</xsl:when>
+					<xsl:when test="ancestor::mn:foreword">foreword</xsl:when>
+					<xsl:when test="ancestor::mn:introduction">introduction</xsl:when>
+					<xsl:when test="ancestor::mn:sections">sections</xsl:when>
+					<xsl:when test="ancestor::mn:annex">annex</xsl:when>
+					<xsl:when test="ancestor::mn:bibliography">bibliography</xsl:when>
 				</xsl:choose>
 			</xsl:attribute>
 			
@@ -2184,9 +2184,9 @@
 	<xsl:variable name="max_table_landscape_width_mm" select="$pageHeight - ($marginTop + $marginBottom)"/> 
 	<xsl:variable name="max_table_landscape_width_px" select="round($max_table_landscape_width_mm div 25.4 * 96)"/> 
 	
-	<xsl:template match="ieee:table/@width[contains(., 'px')]" mode="flatxml">
+	<xsl:template match="mn:table/@width[contains(., 'px')]" mode="flatxml">
 		<xsl:variable name="width" select="number(substring-before(., 'px'))"/>
-		<xsl:variable name="isLandscapeTable" select="../preceding-sibling::*[local-name() != 'table'][1]/@orientation = 'landscape'"/>
+		<xsl:variable name="isLandscapeTable" select="../preceding-sibling::*[not(self::mn:table)][1]/@orientation = 'landscape'"/>
 		<xsl:attribute name="width">
 			<xsl:choose>
 				<xsl:when test="normalize-space($isLandscapeTable) = 'true' and $width &gt; $max_table_landscape_width_px"><xsl:value-of select="$max_table_landscape_width_px"/>px</xsl:when>
@@ -2198,7 +2198,7 @@
 	
 	<!-- add @to = figure, table, clause -->
 	<!-- add @depth = from  -->
-	<xsl:template match="ieee:xref" mode="flatxml">
+	<xsl:template match="mn:xref" mode="flatxml">
 		<xsl:copy>
 			<xsl:apply-templates select="@*" mode="flatxml"/>
 			<xsl:variable name="target" select="@target"/>
@@ -2206,7 +2206,7 @@
 				<xsl:value-of select="local-name(//*[@id = current()/@target][1])"/>
 			</xsl:attribute>
 			<xsl:attribute name="depth">
-				<xsl:value-of select="//*[@id = current()/@target][1]/ieee:title/@depth"/>
+				<xsl:value-of select="//*[@id = current()/@target][1]/mn:title/@depth"/>
 			</xsl:attribute>
 			<xsl:apply-templates select="node()" mode="flatxml"/>
 		</xsl:copy>
@@ -2228,7 +2228,7 @@
 	
 	
 	<!-- remove newlines chars (0xd 0xa, 0xa, 0xd) in p, em, strong (except in sourcecode). -->
-	<xsl:template match="*[not(ancestor::ieee:sourcecode)]/*[self::ieee:p or self::ieee:strong or self::ieee:em]/text()" mode="flatxml">
+	<xsl:template match="*[not(ancestor::mn:sourcecode)]/*[self::mn:p or self::mn:strong or self::mn:em]/text()" mode="flatxml">
 		<xsl:choose>
 			<xsl:when test=". = '&#x0d;' or . = '&#x0a;' or . = '&#x0d;&#x0a;'"></xsl:when>
 			<xsl:when test="contains(., $non_breaking_hyphen)">
@@ -2249,7 +2249,7 @@
 		</fn>
 	-->
 	
-	<xsl:template match="*[local-name() = 'fn'][not(ancestor::*[(local-name() = 'table' or local-name() = 'figure')] and not(ancestor::*[local-name() = 'name']))]" mode="flatxml">
+	<xsl:template match="mn:fn[not(ancestor::*[(self::mn:table or self::mn:figure)] and not(ancestor::mn:name))]" mode="flatxml">
 		<xsl:variable name="p_fn_">
 			<xsl:call-template name="get_fn_list"/>
 		</xsl:variable>
@@ -2286,7 +2286,7 @@
 	</xsl:template> -->
 	
 	
-	<xsl:template match="ieee:p[@type = 'section-title']" priority="3" mode="flatxml">
+	<xsl:template match="mn:p[@type = 'section-title']" priority="3" mode="flatxml">
 		<xsl:copy>
 			<xsl:apply-templates select="@*" mode="flatxml"/>
 			<xsl:if test="@depth = '1'">
@@ -2305,17 +2305,17 @@
 		<xsl:call-template name="elementProcessing"/>
 	</xsl:template>
 	
-	<xsl:template match="ieee:clauses_union/*" priority="3" mode="clauses_union">
+	<xsl:template match="mn:clauses_union/*" priority="3" mode="clauses_union">
 		<xsl:call-template name="elementProcessing"/>
 	</xsl:template>
 	
 	<xsl:template name="elementProcessing">
 		<xsl:choose>
-			<xsl:when test="local-name() = 'p' and count(node()) = count(processing-instruction())"><!-- skip --></xsl:when> <!-- empty paragraph with processing-instruction -->
+			<xsl:when test="self::mn:p and count(node()) = count(processing-instruction())"><!-- skip --></xsl:when> <!-- empty paragraph with processing-instruction -->
 			<xsl:when test="@hidden = 'true'"><!-- skip --></xsl:when>
 			<xsl:otherwise>
 				<xsl:choose>
-					<xsl:when test="local-name() = 'title' or local-name() = 'term'">
+					<xsl:when test="self::mn:title or self::mn:term">
 						<xsl:apply-templates select="."/>
 					</xsl:when>
 					<!-- <xsl:when test="not(node()) and @mainsection = 'true'"> -->
@@ -2325,7 +2325,7 @@
 							<xsl:apply-templates select="."/>
 						</fo:block>
 					</xsl:when>
-					<xsl:when test="local-name() = 'indexsect'">
+					<xsl:when test="self::mn:indexsect">
 						<xsl:apply-templates select="." mode="index"/>
 					</xsl:when>
 					<xsl:otherwise>
@@ -2344,7 +2344,7 @@
 	</xsl:template>
 	
 
-	<xsl:template match="/*/ieee:bibdata/ieee:docidentifier[@type = 'ISBN']">
+	<xsl:template match="/*/mn:bibdata/mn:docidentifier[@type = 'ISBN']">
 		<fo:block space-after="6pt">
 			<fo:inline>
 				<xsl:attribute name="font-weight">bold</xsl:attribute>
@@ -2355,7 +2355,7 @@
 	</xsl:template>
 
 					
-	<xsl:template match="*[local-name() = 'introduction'] | *[local-name() = 'foreword'] | *[local-name() = 'acknowledgements']">
+	<xsl:template match="mn:introduction | mn:foreword | mn:acknowledgements">
 		<fo:block>
 			<xsl:call-template name="setId"/>
 			<xsl:call-template name="addReviewHelper"/>
@@ -2368,21 +2368,21 @@
 	<!-- title      -->
 	<!-- ====== -->
 	
-	<!-- <xsl:template match="ieee:annex/ieee:title">
+	<!-- <xsl:template match="mn:annex/mn:title">
 		<fo:block font-size="16pt" text-align="center" margin-bottom="48pt" keep-with-next="always">
 			<xsl:apply-templates />
 		</fo:block>
 	</xsl:template> -->
 	
 	<!-- Bibliography -->
-	<xsl:template match="ieee:references[not(@normative='true')]/ieee:title">
+	<xsl:template match="mn:references[not(@normative='true')]/mn:title">
 		<fo:block font-size="16pt" font-weight="bold" margin-top="6pt" margin-bottom="36pt" keep-with-next="always" role="H1">
 				<xsl:apply-templates />
 			</fo:block>
 	</xsl:template>
 	
 	
-	<xsl:template match="ieee:title[@inline-header = 'true'][following-sibling::*[1][local-name() = 'p'] or following-sibling::*[1][local-name() = 'clause'] or not(following-sibling::*)]" priority="3">
+	<xsl:template match="mn:title[@inline-header = 'true'][following-sibling::*[1][self::mn:p] or following-sibling::*[1][self::mn:clause] or not(following-sibling::*)]" priority="3">
 		<fo:block>
 			<xsl:attribute name="space-before">
 				<xsl:call-template name="getTitleMarginTop"/>
@@ -2391,13 +2391,13 @@
 				<xsl:call-template name="getTitleMarginBottom"/>
 			</xsl:attribute>
 			<xsl:call-template name="title"/>
-			<xsl:apply-templates select="following-sibling::*[1][local-name() = 'p']">
+			<xsl:apply-templates select="following-sibling::*[1][self::mn:p]">
 				<xsl:with-param name="inline-header">true</xsl:with-param>
 			</xsl:apply-templates>
 		</fo:block>
 	</xsl:template>
 	
-	<xsl:template match="ieee:clauses_union" priority="4">
+	<xsl:template match="mn:clauses_union" priority="4">
 		<fo:block-container margin-left="-1.5mm" margin-right="-0.5mm">
 			<fo:block-container margin="0mm" padding-left="0.5mm" padding-top="0.1mm" padding-bottom="2.5mm">
 				<xsl:apply-templates mode="clauses_union"/>
@@ -2440,7 +2440,7 @@
 		<xsl:choose>
 			<xsl:when test="$current_template = 'whitepaper' or $current_template = 'icap-whitepaper' or $current_template = 'industry-connection-report'">
 				<xsl:choose>
-					<xsl:when test="ancestor::ieee:abstract">6pt</xsl:when>
+					<xsl:when test="ancestor::mn:abstract">6pt</xsl:when>
 					<xsl:otherwise>12pt</xsl:otherwise>
 				</xsl:choose>
 			</xsl:when>
@@ -2448,7 +2448,7 @@
 		</xsl:choose>
 	</xsl:template>
 	
-	<xsl:template match="ieee:title" priority="2" name="title">
+	<xsl:template match="mn:title" priority="2" name="title">
 	
 		<xsl:variable name="level">
 			<xsl:call-template name="getLevel"/>
@@ -2465,7 +2465,7 @@
 			<xsl:choose>
 				<xsl:when test="$current_template = 'whitepaper' or $current_template = 'icap-whitepaper' or $current_template = 'industry-connection-report'">
 					<xsl:choose>
-						<xsl:when test="ancestor::ieee:abstract">13pt</xsl:when>
+						<xsl:when test="ancestor::mn:abstract">13pt</xsl:when>
 						<xsl:when test="$level = 1">20pt</xsl:when>
 						<xsl:when test="$level = 2">16pt</xsl:when>
 						<xsl:when test="$level = 3">13pt</xsl:when>
@@ -2475,7 +2475,7 @@
 				<xsl:otherwise>
 					<xsl:choose>
 						<xsl:when test="@type = 'section-title'">12pt</xsl:when>
-						<xsl:when test="ancestor::ieee:acknowledgements">inherit</xsl:when>
+						<xsl:when test="ancestor::mn:acknowledgements">inherit</xsl:when>
 						<xsl:when test="$level = 1">12pt</xsl:when>
 						<xsl:when test="$level = 2">11pt</xsl:when>
 						<xsl:otherwise>10pt</xsl:otherwise> <!-- 3rd, 4th, ... levels -->
@@ -2572,15 +2572,15 @@
 							<fo:block>
 							
 								<!-- if first and last childs are `add` ace-tag, then move start ace-tag before title -->
-								<xsl:if test="*[local-name() = 'tab'][1]/following-sibling::node()[last()][local-name() = 'add'][starts-with(text(), $ace_tag)]">
-									<xsl:apply-templates select="*[local-name() = 'tab'][1]/following-sibling::node()[1][local-name() = 'add'][starts-with(text(), $ace_tag)]">
+								<xsl:if test="mn:tab[1]/following-sibling::node()[last()][self::mn:add][starts-with(text(), $ace_tag)]">
+									<xsl:apply-templates select="mn:tab[1]/following-sibling::node()[1][self::mn:add][starts-with(text(), $ace_tag)]">
 										<xsl:with-param name="skip">false</xsl:with-param>
 									</xsl:apply-templates> 
 								</xsl:if>
 							
 								<xsl:call-template name="extractTitle"/>
 								
-								<xsl:apply-templates select="following-sibling::*[1][local-name() = 'variant-title'][@type = 'sub']" mode="subtitle"/>
+								<xsl:apply-templates select="following-sibling::*[1][self::mn:variant-title][@type = 'sub']" mode="subtitle"/>
 							</fo:block>
 						</fo:list-item-body>
 					</fo:list-item>
@@ -2593,20 +2593,20 @@
 					<xsl:copy-of select="$attributes/attributes/@*"/>
 					
 					<!-- if first and last childs are `add` ace-tag, then move start ace-tag before title -->
-					<xsl:if test="*[local-name() = 'tab'][1]/following-sibling::node()[last()][local-name() = 'add'][starts-with(text(), $ace_tag)]">
-						<xsl:apply-templates select="*[local-name() = 'tab'][1]/following-sibling::node()[1][local-name() = 'add'][starts-with(text(), $ace_tag)]">
+					<xsl:if test="mn:tab[1]/following-sibling::node()[last()][self::mn:add][starts-with(text(), $ace_tag)]">
+						<xsl:apply-templates select="mn:tab[1]/following-sibling::node()[1][self::mn:add][starts-with(text(), $ace_tag)]">
 							<xsl:with-param name="skip">false</xsl:with-param>
 						</xsl:apply-templates> 
 					</xsl:if>
 					
 					<xsl:apply-templates />
-					<xsl:apply-templates select="following-sibling::*[1][local-name() = 'variant-title'][@type = 'sub']" mode="subtitle"/>
+					<xsl:apply-templates select="following-sibling::*[1][self::mn:variant-title][@type = 'sub']" mode="subtitle"/>
 				</xsl:element>
 			</xsl:otherwise>
 		</xsl:choose>
 			
 			
-		<xsl:if test="($current_template = 'whitepaper' or $current_template = 'icap-whitepaper' or $current_template = 'industry-connection-report') and preceding-sibling::*[1][self::ieee:references[@normative = 'false']]">
+		<xsl:if test="($current_template = 'whitepaper' or $current_template = 'icap-whitepaper' or $current_template = 'industry-connection-report') and preceding-sibling::*[1][self::mn:references[@normative = 'false']]">
 			<xsl:call-template name="addBlueBox"/>
 		</xsl:if>
 			
@@ -2626,7 +2626,7 @@
 	</xsl:template>
 	
 	<!-- add blue box after first break in Annex title -->
-	<xsl:template match="*[local-name()='br'][not(preceding-sibling::ieee:br)][ancestor::ieee:title[preceding-sibling::*[1][self::ieee:annex]]]" priority="2">
+	<xsl:template match="mn:br[not(preceding-sibling::mn:br)][ancestor::mn:title[preceding-sibling::*[1][self::mn:annex]]]" priority="2">
 		<xsl:choose>
 			<xsl:when test="($current_template = 'whitepaper' or $current_template = 'icap-whitepaper' or $current_template = 'industry-connection-report') ">
 				<xsl:call-template name="addBlueBox"/>
@@ -2638,7 +2638,7 @@
 		</xsl:choose>
 	</xsl:template>
 	
-	<xsl:template match="ieee:term" priority="2">
+	<xsl:template match="mn:term" priority="2">
 	
 		<xsl:variable name="level">
 			<xsl:call-template name="getLevel"/>
@@ -2671,35 +2671,35 @@
 						<xsl:attribute name="margin-bottom">2pt</xsl:attribute>
 					</xsl:if>
 					<!-- term/name -->
-					<xsl:apply-templates select="ieee:name" />
+					<xsl:apply-templates select="mn:name" />
 					<xsl:text> </xsl:text>
-					<xsl:apply-templates select="ieee:preferred" />
-					<xsl:for-each select="ieee:admitted">
+					<xsl:apply-templates select="mn:preferred" />
+					<xsl:for-each select="mn:admitted">
 						<xsl:if test="position() = 1"><xsl:text> (</xsl:text></xsl:if>
 						<xsl:apply-templates />
 						<xsl:if test="position() != last()"><xsl:text>, </xsl:text></xsl:if>
 						<xsl:if test="position() = last()"><xsl:text>)</xsl:text></xsl:if>
 					</xsl:for-each>
 				</fo:block>
-				<xsl:apply-templates select="*[not(self::ieee:preferred) and not(self::ieee:admitted) and not(self::ieee:name)]"/> <!-- further processing child elements -->
+				<xsl:apply-templates select="*[not(self::mn:preferred) and not(self::mn:admitted) and not(self::mn:name)]"/> <!-- further processing child elements -->
 		</fo:block>
 		
 	</xsl:template>
 	
-	<xsl:template match="ieee:preferred" priority="2">
+	<xsl:template match="mn:preferred" priority="2">
 		<xsl:apply-templates />
 	</xsl:template>
 	
-	<xsl:template match="*[local-name() = 'term']/*[local-name() = 'definition']" priority="2">
+	<xsl:template match="mn:term/mn:definition" priority="2">
 		<fo:block xsl:use-attribute-sets="definition-style">
 			<xsl:apply-templates />
 		</fo:block>
 		<!-- change termsource order - show after definition before termnote -->
-		<xsl:for-each select="ancestor::ieee:term[1]/ieee:termsource">
+		<xsl:for-each select="ancestor::mn:term[1]/mn:termsource">
 			<xsl:call-template name="termsource"/>
 		</xsl:for-each>
 	</xsl:template>
-	<xsl:template match="*[local-name() = 'term']/*[local-name() = 'termsource']" priority="2">
+	<xsl:template match="mn:term/mn:termsource" priority="2">
 		<xsl:call-template name="termsource"/>
 	</xsl:template>
 	
@@ -2714,19 +2714,19 @@
 	<!-- ====== -->
 
 
-	<xsl:template match="*[local-name() = 'annex']" priority="2">
+	<xsl:template match="mn:annex" priority="2">
 		<fo:block id="{@id}">
 		</fo:block>
 		<xsl:apply-templates />
 	</xsl:template>
 	
-	<xsl:template match="ieee:p" name="paragraph">
+	<xsl:template match="mn:p" name="paragraph">
 		<xsl:param name="inline-header">false</xsl:param>
 		<xsl:param name="split_keep-within-line"/>
 	
 		<xsl:choose>
 		
-			<xsl:when test="preceding-sibling::*[1][self::ieee:title]/@inline-header = 'true' and $inline-header = 'false'"/> <!-- paragraph displayed in title template -->
+			<xsl:when test="preceding-sibling::*[1][self::mn:title]/@inline-header = 'true' and $inline-header = 'false'"/> <!-- paragraph displayed in title template -->
 			
 			<xsl:otherwise>
 			
@@ -2745,22 +2745,22 @@
 					</xsl:call-template>
 					
 					<xsl:attribute name="margin-bottom">6pt</xsl:attribute><!-- 8pt -->
-					<xsl:if test="($current_template = 'whitepaper' or $current_template = 'icap-whitepaper' or $current_template = 'industry-connection-report') and (ancestor::ieee:sections or ancestor::ieee:annex)">
+					<xsl:if test="($current_template = 'whitepaper' or $current_template = 'icap-whitepaper' or $current_template = 'industry-connection-report') and (ancestor::mn:sections or ancestor::mn:annex)">
 						<xsl:attribute name="margin-bottom">12pt</xsl:attribute>
 					</xsl:if>
-					<xsl:if test="../following-sibling::*[1][self::ieee:note or self::ieee:termnote or self::ieee:ul or self::ieee:ol] or following-sibling::*[1][self::ieee:ul or self::ieee:ol]">
+					<xsl:if test="../following-sibling::*[1][self::mn:note or self::mn:termnote or self::mn:ul or self::mn:ol] or following-sibling::*[1][self::mn:ul or self::mn:ol]">
 						<xsl:attribute name="margin-bottom">4pt</xsl:attribute>
 					</xsl:if>
-					<xsl:if test="parent::ieee:li">
+					<xsl:if test="parent::mn:li">
 						<xsl:attribute name="margin-bottom">6pt</xsl:attribute>
-						<xsl:if test="ancestor::ieee:feedback-statement">
+						<xsl:if test="ancestor::mn:feedback-statement">
 							<xsl:attribute name="margin-bottom">0pt</xsl:attribute>
 						</xsl:if>
 					</xsl:if>
-					<xsl:if test="parent::ieee:li and (ancestor::ieee:note or ancestor::ieee:termnote)">
+					<xsl:if test="parent::mn:li and (ancestor::mn:note or ancestor::mn:termnote)">
 						<xsl:attribute name="margin-bottom">4pt</xsl:attribute>
 					</xsl:if>
-					<xsl:if test="(following-sibling::*[1][self::ieee:clause or self::ieee:terms or self::ieee:references])">
+					<xsl:if test="(following-sibling::*[1][self::mn:clause or self::mn:terms or self::mn:references])">
 						<xsl:attribute name="margin-bottom">8pt</xsl:attribute>
 					</xsl:if>
 					<xsl:if test="@id">
@@ -2768,18 +2768,18 @@
 					</xsl:if>
 					<xsl:attribute name="line-height">1.2</xsl:attribute>
 					<!-- bookmarks only in paragraph -->
-					<xsl:if test="count(ieee:bookmark) != 0 and count(*) = count(ieee:bookmark) and normalize-space() = ''">
+					<xsl:if test="count(mn:bookmark) != 0 and count(*) = count(mn:bookmark) and normalize-space() = ''">
 						<xsl:attribute name="font-size">0</xsl:attribute>
 						<xsl:attribute name="margin-bottom">0pt</xsl:attribute>
 						<xsl:attribute name="line-height">0</xsl:attribute>
 					</xsl:if>
 					
-					<xsl:if test="($current_template = 'whitepaper' or $current_template = 'icap-whitepaper' or $current_template = 'industry-connection-report') and not(parent::ieee:li)">
+					<xsl:if test="($current_template = 'whitepaper' or $current_template = 'icap-whitepaper' or $current_template = 'industry-connection-report') and not(parent::mn:li)">
 						<xsl:attribute name="line-height"><xsl:value-of select="$line-height"/></xsl:attribute>
 						<xsl:attribute name="margin-bottom">12pt</xsl:attribute>
 					</xsl:if>
 					
-					<xsl:if test="($current_template = 'whitepaper' or $current_template = 'icap-whitepaper' or $current_template = 'industry-connection-report') and parent::ieee:li">
+					<xsl:if test="($current_template = 'whitepaper' or $current_template = 'icap-whitepaper' or $current_template = 'industry-connection-report') and parent::mn:li">
 						<xsl:attribute name="line-height">inherit</xsl:attribute>
 						<xsl:attribute name="margin-bottom">6pt</xsl:attribute>
 					</xsl:if>
@@ -2790,9 +2790,9 @@
 					</xsl:apply-templates>
 					
 				</xsl:element>
-				<xsl:if test="$element-name = 'fo:inline' and not(local-name(..) = 'admonition')"> <!-- and not($inline = 'true')  -->
+				<xsl:if test="$element-name = 'fo:inline' and not(parent::mn:admonition)"> <!-- and not($inline = 'true')  -->
 					<fo:block margin-bottom="12pt">
-						 <xsl:if test="ancestor::ieee:annex or following-sibling::ieee:table">
+						 <xsl:if test="ancestor::mn:annex or following-sibling::mn:table">
 							<xsl:attribute name="margin-bottom">0</xsl:attribute>
 						 </xsl:if>
 						<xsl:value-of select="$linebreak"/>
@@ -2804,7 +2804,7 @@
 			
 	</xsl:template>
 			
-	<xsl:template match="ieee:li//ieee:p//text()">
+	<xsl:template match="mn:li//mn:p//text()">
 		<xsl:choose>
 			<xsl:when test="contains(., '&#x9;')">
 				<fo:inline white-space="pre"><xsl:value-of select="."/></fo:inline>
@@ -2815,14 +2815,14 @@
 		</xsl:choose>
 	</xsl:template>
 	
-	<xsl:template match="*[local-name() = 'fn'][not(ancestor::*[(local-name() = 'table' or local-name() = 'figure')] and not(ancestor::*[local-name() = 'name']))]" priority="3">
+	<xsl:template match="mn:fn[not(ancestor::*[(self::mn:table or self::mn:figure)] and not(ancestor::mn:name))]" priority="3">
 		<xsl:call-template name="fn" />
 	</xsl:template>
 	
 
-	<xsl:template match="ieee:p/ieee:fn/ieee:p | *[local-name() = 'fmt-fn-body']//*[local-name()='p']" priority="2">
+	<xsl:template match="mn:p/mn:fn/mn:p | mn:fmt-fn-body//mn:p" priority="2">
 		<xsl:choose>
-			<xsl:when test="preceding-sibling::ieee:p"> <!-- for multi-paragraphs footnotes -->
+			<xsl:when test="preceding-sibling::mn:p"> <!-- for multi-paragraphs footnotes -->
 				<fo:block>
 					<fo:inline padding-right="4mm">&#xa0;</fo:inline>
 					<xsl:apply-templates />
@@ -2838,22 +2838,22 @@
 	
 	
 	
-	<xsl:template match="ieee:ul | ieee:ol" mode="list" priority="2">
+	<xsl:template match="mn:ul | mn:ol" mode="list" priority="2">
 		<fo:list-block xsl:use-attribute-sets="list-style">
 			
-			<xsl:if test="parent::ieee:admonition[@type = 'commentary']">
+			<xsl:if test="parent::mn:admonition[@type = 'commentary']">
 				<xsl:attribute name="margin-left">7mm</xsl:attribute>
 			</xsl:if>
-			<xsl:if test="preceding-sibling::*[1][self::ieee:p]">
+			<xsl:if test="preceding-sibling::*[1][self::mn:p]">
 				<xsl:attribute name="margin-top">6pt</xsl:attribute>
 			</xsl:if>
 			
-			<xsl:if test="ancestor::ieee:note or ancestor::ieee:termnote">
+			<xsl:if test="ancestor::mn:note or ancestor::mn:termnote">
 				<xsl:attribute name="provisional-distance-between-starts">4mm</xsl:attribute>
 			</xsl:if>
 			
 			<xsl:variable name="processing_instruction_type" select="normalize-space(preceding-sibling::*[1]/processing-instruction('list-type'))"/>
-			<xsl:if test="self::ieee:ul and normalize-space($processing_instruction_type) = 'simple'">
+			<xsl:if test="self::mn:ul and normalize-space($processing_instruction_type) = 'simple'">
 				<xsl:attribute name="provisional-distance-between-starts">0mm</xsl:attribute>
 			</xsl:if>
 			
@@ -2863,9 +2863,9 @@
 				<xsl:attribute name="provisional-distance-between-starts">6.5mm</xsl:attribute>
 			</xsl:if>
 			
-			<xsl:apply-templates select="node()[not(local-name() = 'note')]" />
+			<xsl:apply-templates select="node()[not(self::mn:note)]" />
 		</fo:list-block>
-		<xsl:apply-templates select="./ieee:note"/>
+		<xsl:apply-templates select="./mn:note"/>
 	</xsl:template>
 	
 
@@ -2885,12 +2885,12 @@
 	</xsl:template> -->
 
 
-	<xsl:template match="*[local-name()='table' or local-name()='figure' or local-name() = 'image']/*[local-name() = 'name']/node()[1][self::text()]" priority="2">
+	<xsl:template match="*[self::mn:table or self::mn:figure or self::mn:image]/mn:name/node()[1][self::text()]" priority="2">
 		<xsl:choose>
 			<xsl:when test="contains(., '—')">
 				<xsl:variable name="substring_after" select="substring-after(., '—')"/>
 				<xsl:choose>
-					<xsl:when test="ancestor::ieee:table/@unnumbered = 'true' and normalize-space($substring_after) = 'Key'"><!-- no display Table - --></xsl:when>
+					<xsl:when test="ancestor::mn:table/@unnumbered = 'true' and normalize-space($substring_after) = 'Key'"><!-- no display Table - --></xsl:when>
 					<xsl:otherwise>
 						<fo:inline font-weight="bold" font-style="normal" role="SKIP">
 							<xsl:choose>
@@ -2899,7 +2899,7 @@
 									<xsl:attribute name="color"><xsl:value-of select="$color_blue"/></xsl:attribute>
 									<xsl:value-of select="java:toUpperCase(java:java.lang.String.new(substring-before(., '—')))"/> <!-- 'FIgure' 1 to 'FIGURE A' -->
 									<xsl:text>&#xa0;&#xa0;</xsl:text>
-									<xsl:if test="ancestor::*[local-name()='table']">
+									<xsl:if test="ancestor::mn:table">
 										<xsl:text>&#xa0;&#xa0;&#xa0;</xsl:text>
 									</xsl:if>
 								</xsl:when>
@@ -2924,7 +2924,7 @@
 
 <!--
 	<xsl:variable name="example_name_width">25</xsl:variable>
-	<xsl:template match="ieee:termexample" priority="2">
+	<xsl:template match="mn:termexample" priority="2">
 		<fo:block id="{@id}" xsl:use-attribute-sets="termexample-style">
 		
 			<fo:list-block provisional-distance-between-starts="{$example_name_width}mm">						
@@ -2942,7 +2942,7 @@
 		</fo:block>
 	</xsl:template>
 	
-	<xsl:template match="ieee:example" priority="2">
+	<xsl:template match="mn:example" priority="2">
 		<fo:block id="{@id}" xsl:use-attribute-sets="example-style">
 		
 			<fo:list-block provisional-distance-between-starts="{$example_name_width}mm">						
@@ -2964,11 +2964,11 @@
 	</xsl:template> -->
 
 	<!-- remove space after 'NOTE' without number -->
-	<xsl:template match="*[local-name() = 'note' or local-name() = 'termnote']/*[local-name() = 'name']/text()" priority="2">
+	<xsl:template match="*[self::mn:note or self::mn:termnote]/mn:name/text()" priority="2">
 		<xsl:value-of select="normalize-space()"/>
 	</xsl:template>
 
-	<xsl:template match="*[local-name() = 'bibitem'][preceding-sibling::*[local-name() = 'references'][1][not(@normative='true')]]" priority="3">
+	<xsl:template match="mn:bibitem[preceding-sibling::mn:references[1][not(@normative='true')]]" priority="3">
 		<xsl:call-template name="bibitem_non_normative"/>
 	</xsl:template>
 
@@ -2976,18 +2976,18 @@
 	<!-- Index processing -->
 	<!-- =================== -->
 	
-	<xsl:template match="ieee:indexsect" />
-	<xsl:template match="ieee:indexsect" mode="index">
+	<xsl:template match="mn:indexsect" />
+	<xsl:template match="mn:indexsect" mode="index">
 		<fo:block id="{@id}" span="all">
-			<xsl:apply-templates select="ieee:title"/>
+			<xsl:apply-templates select="mn:title"/>
 		</fo:block>
 		<fo:block role="Index">
-			<xsl:apply-templates select="*[not(local-name() = 'title')]"/>
+			<xsl:apply-templates select="*[not(self::mn:title)]"/>
 		</fo:block>
 	</xsl:template>
 	
 	
-	<xsl:template match="ieee:xref"  priority="2">
+	<xsl:template match="mn:xref"  priority="2">
 		<xsl:if test="@target and @target != ''">
 			<fo:basic-link internal-destination="{@target}" fox:alt-text="{@target}" xsl:use-attribute-sets="xref-style">
 				
@@ -3007,12 +3007,12 @@
 					<xsl:attribute name="text-decoration">none</xsl:attribute>
 				</xsl:if>
 				
-				<xsl:if test="parent::ieee:add">
+				<xsl:if test="parent::mn:add">
 					<xsl:call-template name="append_add-style"/>
 				</xsl:if>
 				
 				<xsl:choose>
-					<xsl:when test="@pagenumber='true' and not(ancestor::ieee:indexsect)">
+					<xsl:when test="@pagenumber='true' and not(ancestor::mn:indexsect)">
 						<fo:inline>
 							<xsl:if test="@id">
 								<xsl:attribute name="id"><xsl:value-of select="@id"/></xsl:attribute>
@@ -3029,11 +3029,11 @@
 	</xsl:template>
 	
 	<!-- Figure 1 to Figure&#xA0;<bold>1</bold> -->
-	<xsl:template match="ieee:xref[@to = 'figure' or @to = 'table']/text()" priority="2">
+	<xsl:template match="mn:xref[@to = 'figure' or @to = 'table']/text()" priority="2">
 		<xsl:value-of select="."/>
 	</xsl:template>
 	
-	<xsl:template match="ieee:td/ieee:xref/ieee:strong"  priority="2">
+	<xsl:template match="mn:td/mn:xref/mn:strong"  priority="2">
 		<xsl:apply-templates />
 	</xsl:template>
 
@@ -3042,17 +3042,17 @@
 	<!-- End of Index processing -->
 	<!-- =================== -->
 	
-	<xsl:template match="*[local-name() = 'origin']" priority="3">
+	<xsl:template match="mn:origin" priority="3">
 		<xsl:variable name="current_bibitemid" select="@bibitemid"/>
 		<xsl:variable name="bibitemid">
 			<xsl:choose>
 				<!-- <xsl:when test="key('bibitems', $current_bibitemid)/*[local-name() = 'uri'][@type = 'citation']"></xsl:when> --><!-- external hyperlink -->
-				<xsl:when test="$bibitems/*[local-name() ='bibitem'][@id = $current_bibitemid]/*[local-name() = 'uri'][@type = 'citation']"></xsl:when><!-- external hyperlink -->
+				<xsl:when test="$bibitems/mn:bibitem[@id = $current_bibitemid]/mn:uri[@type = 'citation']"></xsl:when><!-- external hyperlink -->
 				<xsl:otherwise><xsl:value-of select="@bibitemid"/></xsl:otherwise>
 			</xsl:choose>
 		</xsl:variable>
 		<xsl:choose>
-			<xsl:when test="normalize-space($bibitemid) != '' and not($bibitems_hidden/*[local-name() ='bibitem'][@id = $current_bibitemid])">
+			<xsl:when test="normalize-space($bibitemid) != '' and not($bibitems_hidden/mn:bibitem[@id = $current_bibitemid])">
 				<fo:basic-link internal-destination="{@bibitemid}" fox:alt-text="{@citeas}">
 					<xsl:if test="normalize-space(@citeas) = ''">
 						<xsl:attribute name="fox:alt-text"><xsl:value-of select="@bibitemid"/></xsl:attribute>
@@ -3074,7 +3074,7 @@
 	</xsl:template>
 	
 
-	<xsl:template match="ieee:pagebreak[ancestor::ieee:table]" priority="2">
+	<xsl:template match="mn:pagebreak[ancestor::mn:table]" priority="2">
 		<fo:block break-after="page"/>
 	</xsl:template>
 
@@ -3697,7 +3697,7 @@
 								<xsl:text>IEEE CONFORMITY ASSESSMENT PROGRAM (ICAP)</xsl:text>
 							</xsl:when>
 							<xsl:otherwise> <!-- PROGRAM TITLE TO GO HERE -->
-								<xsl:value-of select="/ieee:metanorma/ieee:bibdata/ieee:ext/ieee:program"/>
+								<xsl:value-of select="/mn:metanorma/mn:bibdata/mn:ext/mn:program"/>
 							</xsl:otherwise>
 						</xsl:choose>
 					</fo:block>
@@ -3711,9 +3711,9 @@
 					<fo:block font-style="italic">Title</fo:block>
 					<fo:block>Firstname Lastname</fo:block>
 					<fo:block font-style="italic">Title</fo:block> -->
-					<xsl:for-each select="/ieee:metanorma/ieee:bibdata/ieee:contributor[ieee:role[@type = 'author']]">
-						<fo:block><xsl:value-of select="concat(ieee:person/ieee:name/ieee:forename, ' ', ieee:person/ieee:name/ieee:surname)"/></fo:block>
-					<fo:block font-style="italic"><xsl:value-of select="ieee:person/ieee:affiliation/ieee:name"/></fo:block>
+					<xsl:for-each select="/mn:metanorma/mn:bibdata/mn:contributor[mn:role[@type = 'author']]">
+						<fo:block><xsl:value-of select="concat(mn:person/mn:name/mn:forename, ' ', mn:person/mn:name/mn:surname)"/></fo:block>
+					<fo:block font-style="italic"><xsl:value-of select="mn:person/mn:affiliation/mn:name"/></fo:block>
 					</xsl:for-each>
 				</fo:block-container>
 			</fo:flow>

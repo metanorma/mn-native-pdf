@@ -5292,7 +5292,7 @@
 			<xsl:if test="$current_template = 'whitepaper' or $current_template = 'icap-whitepaper' or $current_template = 'industry-connection-report'">
 				<xsl:attribute name="color">rgb(128,128,128)</xsl:attribute>
 				<xsl:attribute name="line-height">1.1</xsl:attribute>
-				<xsl:if test=".//ieee:fn">
+				<xsl:if test=".//mn:fn">
 					<xsl:attribute name="line-height">1.4</xsl:attribute>
 				</xsl:if>
 			</xsl:if>
@@ -22032,7 +22032,7 @@
 								<xsl:when test="$namespace = 'ieee'">
 									<rdf:Seq>
 										<rdf:li>
-											<xsl:value-of select="ieee:ext/ieee:editorialgroup/ieee:committee"/>
+											<xsl:value-of select="mn:ext/mn:editorialgroup/mn:committee"/>
 										</rdf:li>
 									</rdf:Seq>
 								</xsl:when>
