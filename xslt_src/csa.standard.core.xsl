@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" 
 											xmlns:fo="http://www.w3.org/1999/XSL/Format" 
-											xmlns:csa="https://www.metanorma.org/ns/standoc" 
+											xmlns:mn="https://www.metanorma.org/ns/standoc" 
 											xmlns:mnx="https://www.metanorma.org/ns/xslt" 
 											xmlns:mathml="http://www.w3.org/1998/Math/MathML" 
 											xmlns:xalan="http://xml.apache.org/xalan" 
@@ -14,7 +14,7 @@
 
 	<xsl:output version="1.0" method="xml" encoding="UTF-8" indent="yes"/>
 
-	<xsl:key name="kfn" match="*[local-name() = 'fn'][not(ancestor::*[(local-name() = 'table' or local-name() = 'figure' or local-name() = 'localized-strings')] and not(ancestor::*[local-name() = 'name']))]" use="@reference"/>
+	<xsl:key name="kfn" match="mn:fn[not(ancestor::*[self::mn:table or self::mn:figure or self::mn:localized-strings] and not(ancestor::mn:name))]" use="@reference"/>
 	
 	<xsl:variable name="namespace">csa</xsl:variable>
 
@@ -22,7 +22,7 @@
 	
 	<xsl:variable name="copyright">
 		<xsl:text>© Copyright </xsl:text>
-		<xsl:value-of select="/csa:metanorma/csa:bibdata/csa:copyright/csa:from"/>
+		<xsl:value-of select="/mn:metanorma/mn:bibdata/mn:copyright/mn:from"/>
 		<xsl:text>, Cloud Security Alliance. All rights reserved.</xsl:text>
 	</xsl:variable>
 	
@@ -95,12 +95,12 @@
 					
 					<fo:block-container width="136mm" margin-bottom="12pt">
 						<fo:block font-size="36pt" font-weight="bold" color="rgb(54, 59, 74)" role="H1">
-							<xsl:value-of select="/csa:metanorma/csa:bibdata/csa:title[@language = 'en']" />
+							<xsl:value-of select="/mn:metanorma/mn:bibdata/mn:title[@language = 'en']" />
 						</fo:block>
 					</fo:block-container>
 					
 					<fo:block font-size="26pt" color="rgb(55, 60, 75)" role="H2">
-						<xsl:value-of select="/csa:metanorma/csa:bibdata/csa:title[@language = 'en' and @type = 'subtitle']"/>
+						<xsl:value-of select="/mn:metanorma/mn:bibdata/mn:title[@language = 'en' and @type = 'subtitle']"/>
 					</fo:block>
 					
 					<fo:block-container absolute-position="fixed" left="11mm" top="245mm">
@@ -136,7 +136,7 @@
 					</fo:block>
 
 					<fo:block-container absolute-position="fixed" left="25mm" top="152mm" width="165mm" height="100mm" display-align="after" color="rgb(165, 169, 172)" line-height="145%">
-						<fo:block>© <xsl:value-of select="/csa:metanorma/csa:bibdata/csa:copyright/csa:from"/> Cloud Security Alliance – All Rights Reserved. You may download, store, display on your
+						<fo:block>© <xsl:value-of select="/mn:metanorma/mn:bibdata/mn:copyright/mn:from"/> Cloud Security Alliance – All Rights Reserved. You may download, store, display on your
 						computer, view, print, and link to the Cloud Security Alliance at <fo:inline text-decoration="underline">https://cloudsecurityalliance.org</fo:inline>
 						subject to the following: (a) the draft may be used solely for your personal, informational, noncommercial
 						use; (b) the draft may not be modified or altered in any way; (c) the draft may not be
@@ -154,19 +154,19 @@
 					</fo:block>
 
 					<xsl:variable name="persons">
-						<xsl:for-each select="/csa:metanorma/csa:bibdata/csa:contributor[csa:person]">
+						<xsl:for-each select="/mn:metanorma/mn:bibdata/mn:contributor[mn:person]">
 							<contributor>
 								<xsl:attribute name="type">
 									<xsl:choose>
-										<xsl:when test="csa:role/@type='author'">
-											<xsl:value-of select="csa:role/csa:description"/>
+										<xsl:when test="mn:role/@type='author'">
+											<xsl:value-of select="mn:role/mn:description"/>
 										</xsl:when>
 										<xsl:otherwise>
-											<xsl:value-of select="csa:role/@type"/>
+											<xsl:value-of select="mn:role/@type"/>
 										</xsl:otherwise>
 									</xsl:choose>
 								</xsl:attribute>
-								<xsl:value-of select="csa:person/csa:name/csa:completename"/>
+								<xsl:value-of select="mn:person/mn:name/mn:completename"/>
 							</contributor>
 						</xsl:for-each>
 					</xsl:variable>
@@ -206,7 +206,7 @@
 					<!-- <fo:block break-after="page"/> -->
 
 					<!-- Table of Contents -->
-					<!-- <xsl:apply-templates select="/*/csa:preface/csa:clause[@type = 'toc']">
+					<!-- <xsl:apply-templates select="/*/mn:preface/mn:clause[@type = 'toc']">
 						<xsl:with-param name="process">true</xsl:with-param>
 					</xsl:apply-templates> -->
 
@@ -229,7 +229,7 @@
 				</xsl:variable>
 			
 				<xsl:for-each select="xalan:nodeset($updated_xml_with_pages)"> <!-- set context to preface -->
-					<xsl:for-each select=".//*[local-name() = 'page_sequence'][normalize-space() != '' or .//*[local-name() = 'image'] or .//*[local-name() = 'svg']]">
+					<xsl:for-each select=".//mn:page_sequence[normalize-space() != '' or .//mn:image or .//*[local-name() = 'svg']]">
 						<fo:page-sequence master-reference="document" format="1" force-page-count="no-force">
 							
 							<xsl:attribute name="master-reference">
@@ -242,7 +242,7 @@
 							<fo:flow flow-name="xsl-region-body">
 							
 								<!-- Table of Contents -->
-								<xsl:apply-templates select=".//csa:preface//csa:clause[@type = 'toc']">
+								<xsl:apply-templates select=".//mn:preface//mn:clause[@type = 'toc']">
 									<xsl:with-param name="process">true</xsl:with-param>
 								</xsl:apply-templates>
 
@@ -312,14 +312,14 @@
 		</fo:block>
 	</xsl:template>
 
-	<xsl:template match="csa:preface//csa:clause[@type = 'toc']" priority="3">
+	<xsl:template match="mn:preface//mn:clause[@type = 'toc']" priority="3">
 		<xsl:param name="process">false</xsl:param>
 		<xsl:if test="$process = 'true'">
 			<fo:block-container font-size="12pt" line-height="170%" color="rgb(7, 72, 156)">
 			
 				<xsl:apply-templates />
 				
-				<xsl:if test="count(*) = 1 and *[local-name() = 'title']"> <!-- if there isn't user ToC -->
+				<xsl:if test="count(*) = 1 and mn:title"> <!-- if there isn't user ToC -->
 					<fo:block margin-left="-3mm" role="TOC">
 						<xsl:for-each select="$contents//mnx:item[@display = 'true']">
 							<fo:block role="TOCI">
@@ -379,7 +379,7 @@
 		</xsl:if>
 	</xsl:template>
 
-	<xsl:template match="csa:preface//csa:clause[@type = 'toc']/csa:title" priority="3">
+	<xsl:template match="mn:preface//mn:clause[@type = 'toc']/mn:title" priority="3">
 		<fo:block font-size="26pt" color="black" margin-top="2pt" margin-bottom="30pt" role="H1">
 			<xsl:apply-templates />
 		</fo:block>
@@ -394,10 +394,10 @@
 	<!-- ============================= -->
 	
 	<!-- element with title -->
-	<xsl:template match="*[csa:title or csa:fmt-title]" mode="contents">
+	<xsl:template match="*[mn:title or mn:fmt-title]" mode="contents">
 		<xsl:variable name="level">
 			<xsl:call-template name="getLevel">
-				<xsl:with-param name="depth" select="csa:fmt-title/@depth | csa:title/@depth"/>
+				<xsl:with-param name="depth" select="mn:fmt-title/@depth | mn:title/@depth"/>
 			</xsl:call-template>
 		</xsl:variable>
 		
@@ -412,8 +412,8 @@
 		<xsl:variable name="skip">
 			<xsl:choose>
 				<xsl:when test="@type = 'toc'">true</xsl:when>
-				<xsl:when test="ancestor-or-self::csa:bibitem">true</xsl:when>
-				<xsl:when test="ancestor-or-self::csa:term">true</xsl:when>
+				<xsl:when test="ancestor-or-self::mn:bibitem">true</xsl:when>
+				<xsl:when test="ancestor-or-self::mn:term">true</xsl:when>
 				<xsl:otherwise>false</xsl:otherwise>
 			</xsl:choose>
 		</xsl:variable>
@@ -444,7 +444,7 @@
 	<!-- ====== -->
 	<!-- title      -->
 	<!-- ====== -->	
-	<xsl:template match="csa:annex/csa:title">
+	<xsl:template match="mn:annex/mn:title">
 		<xsl:variable name="level">
 			<xsl:call-template name="getLevel"/>
 		</xsl:variable>
@@ -456,11 +456,11 @@
 		</xsl:variable>
 		<fo:block font-size="12pt" text-align="center" margin-bottom="12pt" keep-with-next="always" color="{$color}" role="H{$level}">
 			<xsl:apply-templates />
-			<xsl:apply-templates select="following-sibling::*[1][local-name() = 'variant-title'][@type = 'sub']" mode="subtitle"/>
+			<xsl:apply-templates select="following-sibling::*[1][self::mn:variant-title][@type = 'sub']" mode="subtitle"/>
 		</fo:block>		
 	</xsl:template>
 	
-	<xsl:template match="csa:title" name="title">
+	<xsl:template match="mn:title" name="title">
 
 		<xsl:variable name="level">
 			<xsl:call-template name="getLevel"/>
@@ -468,10 +468,10 @@
 		
 		<xsl:variable name="font-size">
 			<xsl:choose>
-				<xsl:when test="ancestor::csa:preface and $level &gt;= 2">12pt</xsl:when>
-				<xsl:when test="ancestor::csa:preface">13pt</xsl:when>
+				<xsl:when test="ancestor::mn:preface and $level &gt;= 2">12pt</xsl:when>
+				<xsl:when test="ancestor::mn:preface">13pt</xsl:when>
 				<xsl:when test="$level = 1">26pt</xsl:when>
-				<xsl:when test="$level = 2 and ancestor::csa:terms">11pt</xsl:when>
+				<xsl:when test="$level = 2 and ancestor::mn:terms">11pt</xsl:when>
 				<xsl:when test="$level = 2">14pt</xsl:when>
 				<xsl:when test="$level &gt;= 3">11pt</xsl:when>
 				<xsl:otherwise>16pt</xsl:otherwise>
@@ -516,7 +516,7 @@
 			</xsl:if>
 			
 			<xsl:apply-templates />
-			<xsl:apply-templates select="following-sibling::*[1][local-name() = 'variant-title'][@type = 'sub']" mode="subtitle"/>
+			<xsl:apply-templates select="following-sibling::*[1][self::mn:variant-title][@type = 'sub']" mode="subtitle"/>
 
 		</xsl:element>
 		
@@ -524,7 +524,7 @@
 	<!-- ====== -->
 	<!-- ====== -->
 	
-	<xsl:template match="csa:p" name="paragraph">
+	<xsl:template match="mn:p" name="paragraph">
 		<xsl:param name="inline" select="'false'"/>
 		<xsl:param name="split_keep-within-line"/>
 		<xsl:variable name="previous-element" select="local-name(preceding-sibling::*[1])"/>
@@ -532,7 +532,7 @@
 			<xsl:choose>
 				<xsl:when test="$inline = 'true'">fo:inline</xsl:when>
 				<xsl:when test="../@inline-header = 'true' and $previous-element = 'title'">fo:inline</xsl:when> <!-- first paragraph after inline title -->
-				<xsl:when test="local-name(..) = 'admonition'">fo:inline</xsl:when>
+				<xsl:when test="parent::mn:admonition">fo:inline</xsl:when>
 				<xsl:otherwise>fo:block</xsl:otherwise>
 			</xsl:choose>
 		</xsl:variable>
@@ -545,7 +545,7 @@
 			
 			<xsl:attribute name="space-after">
 				<xsl:choose>
-					<xsl:when test="ancestor::csa:li">0pt</xsl:when>
+					<xsl:when test="ancestor::mn:li">0pt</xsl:when>
 					<xsl:otherwise>12pt</xsl:otherwise>
 				</xsl:choose>
 			</xsl:attribute>
@@ -554,9 +554,9 @@
 				<xsl:with-param name="split_keep-within-line" select="$split_keep-within-line"/>
 			</xsl:apply-templates>
 		</xsl:element>
-		<xsl:if test="$element-name = 'fo:inline' and not($inline = 'true') and not(local-name(..) = 'admonition')">
+		<xsl:if test="$element-name = 'fo:inline' and not($inline = 'true') and not(parent::mn:admonition)">
 			<fo:block margin-bottom="12pt">
-				 <xsl:if test="ancestor::csa:annex">
+				 <xsl:if test="ancestor::mn:annex">
 					<xsl:attribute name="margin-bottom">0</xsl:attribute>
 				 </xsl:if>
 				<xsl:value-of select="$linebreak"/>
@@ -567,9 +567,9 @@
 		</xsl:if>
 	</xsl:template>
 		
-	<xsl:template match="csa:ul | csa:ol" mode="list" priority="2">
+	<xsl:template match="mn:ul | mn:ol" mode="list" priority="2">
 		<xsl:choose>
-			<xsl:when test="not(ancestor::csa:ul) and not(ancestor::csa:ol)">
+			<xsl:when test="not(ancestor::mn:ul) and not(ancestor::mn:ol)">
 				<fo:block-container border-left="0.75mm solid {$color-header-document}" margin-left="1mm" margin-bottom="12pt">
 					<fo:block-container margin-left="8mm">
 						<fo:block margin-left="-8mm" padding-top="6pt">
@@ -597,13 +597,13 @@
 	</xsl:template>
 	
 	
-	<xsl:template match="csa:ul/csa:note | csa:ol/csa:note" priority="2">
+	<xsl:template match="mn:ul/mn:note | mn:ol/mn:note" priority="2">
 		<fo:list-item font-size="10pt">
 			<fo:list-item-label><fo:block></fo:block></fo:list-item-label>
 			<fo:list-item-body>
 				<fo:block>
-					<xsl:apply-templates select="csa:name" />
-					<xsl:apply-templates select="node()[not(local-name() = 'name')]" />
+					<xsl:apply-templates select="mn:name" />
+					<xsl:apply-templates select="node()[not(self::mn:name)]" />
 				</fo:block>
 			</fo:list-item-body>
 		</fo:list-item>

@@ -13585,7 +13585,7 @@
 					<fo:block-container margin-left="0mm" margin-right="0mm" role="SKIP">
 					
 						<xsl:if test="$namespace = 'csa'">
-							<xsl:if test="ancestor::csa:ul or ancestor::csa:ol and not(ancestor::csa:note[1]/following-sibling::*)">
+							<xsl:if test="ancestor::mn:ul or ancestor::mn:ol and not(ancestor::mn:note[1]/following-sibling::*)">
 								<xsl:attribute name="margin-bottom">0pt</xsl:attribute>
 							</xsl:if>
 						</xsl:if>
@@ -17608,7 +17608,7 @@
 	
 	<xsl:template name="sections_element_style">
 		<xsl:if test="$namespace = 'csa'">
-			<xsl:variable name="pos"><xsl:number count="csa:sections/csa:clause[not(@type='scope') and not(@type='conformance')]"/></xsl:variable>
+			<xsl:variable name="pos"><xsl:number count="mn:sections/mn:clause[not(@type='scope') and not(@type='conformance')]"/></xsl:variable>
 			<xsl:if test="$pos &gt;= 2">
 				<xsl:attribute name="space-before">18pt</xsl:attribute>
 			</xsl:if>
@@ -19090,7 +19090,7 @@
 				<xsl:call-template name="setNamedDestination"/>
 				<fo:block id="{@id}" xsl:use-attribute-sets="bibitem-non-normative-style">
 					<xsl:apply-templates select="*[local-name() = 'biblio-tag']"/>
-					<xsl:apply-templates select="csa:formattedref"/>
+					<xsl:apply-templates select="mn:formattedref"/>
 				</fo:block>
 				<!-- END CSA bibitem processing -->
 			</xsl:when>
