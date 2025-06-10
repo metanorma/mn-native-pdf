@@ -2657,7 +2657,7 @@
 					<xsl:otherwise>
 						<xsl:attribute name="color">white</xsl:attribute>
 						
-						<xsl:if test="not(ancestor::bsi:clause[@type = 'corrigenda' or contains(*[local-name()='title'], 'Amendments/corrigenda')] and ancestor::bsi:thead)">
+						<xsl:if test="not(ancestor::mn:clause[@type = 'corrigenda' or contains(*[local-name()='title'], 'Amendments/corrigenda')] and ancestor::mn:thead)">
 							<xsl:if test="following-sibling::*[1][local-name() = 'th']">
 								<xsl:attribute name="border-right">0.75pt solid white</xsl:attribute>
 							</xsl:if>
@@ -2752,7 +2752,7 @@
 		
 		<xsl:if test="$namespace = 'bsi'">
 			<xsl:if test="$document_type = 'PAS'">
-				<xsl:if test="ancestor::bsi:clause[@type = 'corrigenda' or contains(*[local-name()='title'], 'Amendments/corrigenda')] and ancestor::bsi:thead">
+				<xsl:if test="ancestor::mn:clause[@type = 'corrigenda' or contains(*[local-name()='title'], 'Amendments/corrigenda')] and ancestor::mn:thead">
 					<xsl:attribute name="display-align">center</xsl:attribute>
 					<xsl:attribute name="font-weight">bold</xsl:attribute>
 					<xsl:attribute name="padding-left">3mm</xsl:attribute>
@@ -3807,7 +3807,7 @@
 					</xsl:if>
 				</xsl:if>
 				<!-- if 1st note -->
-				<xsl:if test="parent::bsi:figure and preceding-sibling::*[1][self::bsi:image]">
+				<xsl:if test="parent::mn:figure and preceding-sibling::*[1][self::mn:image]">
 					<xsl:attribute name="space-before">0pt</xsl:attribute>
 				</xsl:if>
 			</xsl:if>
@@ -10383,7 +10383,7 @@
 						
 							<xsl:choose>
 								<xsl:when test="$namespace = 'bsi'"></xsl:when><!-- https://github.com/metanorma/isodoc/issues/607, see template<xsl:template
-								match="bsi:figure/bsi:p[preceding-sibling::bsi:p[@keep-with-next = 'true']][node()[1][self::bsi:sup]]" priority="5"> -->
+								match="mn:figure/mn:p[preceding-sibling::mn:p[@keep-with-next = 'true']][node()[1][self::mn:sup]]" priority="5"> -->
 								<xsl:otherwise>						
 									<fo:block font-weight="bold" text-align="left" margin-bottom="12pt" keep-with-next="always">
 									
@@ -10445,7 +10445,7 @@
 											<xsl:if test="$document_type != 'PAS'">
 												<xsl:attribute name="font-size">9pt</xsl:attribute>
 											</xsl:if>
-											<xsl:if test="$document_type = 'PAS' and parent::bsi:figure">
+											<xsl:if test="$document_type = 'PAS' and parent::mn:figure">
 												<xsl:attribute name="font-size">9pt</xsl:attribute>
 											</xsl:if>
 										</xsl:if>
@@ -18524,7 +18524,7 @@
 				
 					<!-- <xsl:apply-templates select="node()[not(local-name() = 'note')]" />
 					
-					<xsl:for-each select="./bsi:note">
+					<xsl:for-each select="./mn:note">
 						<xsl:call-template name="note"/>
 					</xsl:for-each> -->
 				</fo:block>
@@ -18758,10 +18758,10 @@
 		<xsl:variable name="level" select="count(ancestor::*[local-name() = 'ul'])" />
 		<fo:block start-indent="{5 * $level}mm" text-indent="-5mm">
 			<xsl:if test="$namespace = 'bsi'">
-				<xsl:if test="count(ancestor::bsi:ul) = 1">
-					<xsl:variable name="prev_first_char" select="java:toLowerCase(java:java.lang.String.new(substring(normalize-space(preceding-sibling::bsi:li[1]), 1, 1)))"/>
+				<xsl:if test="count(ancestor::mn:ul) = 1">
+					<xsl:variable name="prev_first_char" select="java:toLowerCase(java:java.lang.String.new(substring(normalize-space(preceding-sibling::mn:li[1]), 1, 1)))"/>
 					<xsl:variable name="curr_first_char" select="java:toLowerCase(java:java.lang.String.new(substring(normalize-space(), 1, 1)))"/>
-					<xsl:if test="$curr_first_char != $prev_first_char and preceding-sibling::bsi:li">
+					<xsl:if test="$curr_first_char != $prev_first_char and preceding-sibling::mn:li">
 						<xsl:attribute name="space-before">12pt</xsl:attribute>
 					</xsl:if>
 				</xsl:if>
