@@ -1842,7 +1842,7 @@
 		</xsl:if>
 		
 		<xsl:if test="$namespace = 'itu'">
-			<xsl:variable name="doctype" select="ancestor::itu:metanorma/itu:bibdata/itu:ext/itu:doctype[not(@language) or @language = '']"/>
+			<xsl:variable name="doctype" select="ancestor::mn:metanorma/mn:bibdata/mn:ext/mn:doctype[not(@language) or @language = '']"/>
 			<xsl:if test="$doctype = 'service-publication' and $lang != 'ar'">
 				<xsl:attribute name="font-family">Calibri</xsl:attribute>
 			</xsl:if>
@@ -2025,7 +2025,7 @@
 		<xsl:call-template name="setBordersTableArray"/>
 		
 		<xsl:if test="$namespace = 'itu'">
-			<xsl:variable name="doctype" select="ancestor::itu:metanorma/itu:bibdata/itu:ext/itu:doctype[not(@language) or @language = '']"/>
+			<xsl:variable name="doctype" select="ancestor::mn:metanorma/mn:bibdata/mn:ext/mn:doctype[not(@language) or @language = '']"/>
 			<xsl:if test="$doctype = 'service-publication'">
 				<xsl:attribute name="border">1pt solid rgb(211,211,211)</xsl:attribute>
 			</xsl:if>
@@ -2368,7 +2368,7 @@
 		</xsl:if>
 
 		<xsl:if test="$namespace = 'itu'">
-			<xsl:variable name="doctype" select="ancestor::itu:metanorma/itu:bibdata/itu:ext/itu:doctype[not(@language) or @language = '']"/>
+			<xsl:variable name="doctype" select="ancestor::mn:metanorma/mn:bibdata/mn:ext/mn:doctype[not(@language) or @language = '']"/>
 			<xsl:if test="$doctype = 'service-publication'">
 				<xsl:attribute name="border-bottom">1.1pt solid black</xsl:attribute>
 			</xsl:if>
@@ -2696,7 +2696,7 @@
 		<xsl:call-template name="setBordersTableArray"/>
 		
 		<xsl:if test="$namespace = 'itu'">
-			<xsl:variable name="doctype" select="ancestor::itu:metanorma/itu:bibdata/itu:ext/itu:doctype[not(@language) or @language = '']"/>
+			<xsl:variable name="doctype" select="ancestor::mn:metanorma/mn:bibdata/mn:ext/mn:doctype[not(@language) or @language = '']"/>
 			<xsl:if test="ancestor::*[local-name()='preface']">
 				<xsl:if test="$doctype != 'service-publication'">
 					<xsl:attribute name="border">solid black 0pt</xsl:attribute>
@@ -2997,7 +2997,7 @@
 			<xsl:if test="ancestor::*[local-name()='preface']">
 				<xsl:attribute name="border">solid black 0pt</xsl:attribute>
 			</xsl:if>
-			<xsl:variable name="doctype" select="ancestor::itu:metanorma/itu:bibdata/itu:ext/itu:doctype[not(@language) or @language = '']"/>
+			<xsl:variable name="doctype" select="ancestor::mn:metanorma/mn:bibdata/mn:ext/mn:doctype[not(@language) or @language = '']"/>
 			<xsl:if test="$doctype = 'service-publication'">
 				<xsl:attribute name="border">1pt solid rgb(211,211,211)</xsl:attribute>
 				<xsl:attribute name="padding-top">1mm</xsl:attribute>
@@ -3099,7 +3099,7 @@
 			</xsl:if>
 		</xsl:if>
 		<xsl:if test="$namespace = 'itu'">
-			<xsl:variable name="doctype" select="ancestor::itu:metanorma/itu:bibdata/itu:ext/itu:doctype[not(@language) or @language = '']"/>
+			<xsl:variable name="doctype" select="ancestor::mn:metanorma/mn:bibdata/mn:ext/mn:doctype[not(@language) or @language = '']"/>
 			<xsl:if test="ancestor::*[local-name()='preface']">
 				<xsl:if test="$doctype != 'service-publication'">
 					<xsl:attribute name="border">solid black 0pt</xsl:attribute>
@@ -5646,7 +5646,7 @@
 			</xsl:if>
 		</xsl:if>
 		<xsl:if test="$namespace = 'itu'">
-			<xsl:variable name="doctype" select="ancestor::itu:metanorma/itu:bibdata/itu:ext/itu:doctype[not(@language) or @language = '']"/>
+			<xsl:variable name="doctype" select="ancestor::mn:metanorma/mn:bibdata/mn:ext/mn:doctype[not(@language) or @language = '']"/>
 			<xsl:if test="$doctype = 'service-publication'">
 				<xsl:attribute name="font-size">10pt</xsl:attribute>
 			</xsl:if>
@@ -7586,7 +7586,7 @@
 	
 		<xsl:variable name="table-preamble">
 			<xsl:if test="$namespace = 'itu'">
-				<xsl:variable name="doctype" select="ancestor::itu:metanorma/itu:bibdata/itu:ext/itu:doctype[not(@language) or @language = '']"/>
+				<xsl:variable name="doctype" select="ancestor::mn:metanorma/mn:bibdata/mn:ext/mn:doctype[not(@language) or @language = '']"/>
 				<xsl:if test="$doctype != 'service-publication'">
 					<fo:block space-before="18pt">&#xA0;</fo:block>
 				</xsl:if>
@@ -8675,7 +8675,7 @@
 					</xsl:for-each>
 					
 					<xsl:if test="$namespace = 'itu'">
-						<xsl:variable name="doctype" select="ancestor::itu:metanorma/itu:bibdata/itu:ext/itu:doctype[not(@language) or @language = '']"/>
+						<xsl:variable name="doctype" select="ancestor::mn:metanorma/mn:bibdata/mn:ext/mn:doctype[not(@language) or @language = '']"/>
 						<xsl:if test="$doctype = 'service-publication'">
 							<xsl:attribute name="border">none</xsl:attribute>
 							<xsl:attribute name="font-family">Arial</xsl:attribute>
@@ -8725,7 +8725,7 @@
 								</xsl:if>
 								
 								<xsl:if test="$namespace = 'itu'">
-									<xsl:variable name="doctype" select="ancestor::itu:metanorma/itu:bibdata/itu:ext/itu:doctype[not(@language) or @language = '']"/>
+									<xsl:variable name="doctype" select="ancestor::mn:metanorma/mn:bibdata/mn:ext/mn:doctype[not(@language) or @language = '']"/>
 									<xsl:if test="$doctype = 'service-publication'">
 										<fo:block margin-top="7pt" margin-bottom="2pt" role="SKIP"><fo:inline>____________</fo:inline></fo:block>
 									</xsl:if>
@@ -9062,7 +9062,7 @@
 		</xsl:if>
 
 		<xsl:if test="$namespace = 'itu'">
-			<xsl:variable name="doctype" select="ancestor::itu:metanorma/itu:bibdata/itu:ext/itu:doctype[not(@language) or @language = '']"/>
+			<xsl:variable name="doctype" select="ancestor::mn:metanorma/mn:bibdata/mn:ext/mn:doctype[not(@language) or @language = '']"/>
 			<xsl:if test="$doctype = 'service-publication'">
 				<xsl:attribute name="min-height">5mm</xsl:attribute>
 			</xsl:if>
@@ -13685,7 +13685,7 @@
 			</xsl:if>
 		</xsl:if>
 		<xsl:if test="$namespace = 'itu'">
-			<xsl:if test="ancestor::itu:figure">
+			<xsl:if test="ancestor::mn:figure">
 				<xsl:attribute name="keep-with-previous">always</xsl:attribute>
 			</xsl:if>
 		</xsl:if>
@@ -19238,13 +19238,13 @@
 			<xsl:when test="$namespace ='itu'">
 				<!-- start ITU bibitem processing -->
 				<!-- Example: [ITU-T A.23]	ITU-T A.23, Recommendation ITU-T A.23, Annex A (2014), Guide for ITU-T and ISO/IEC JTC 1 cooperation. -->
-				<xsl:variable name="doctype" select="ancestor::itu:metanorma/itu:bibdata/itu:ext/itu:doctype[not(@language) or @language = '']"/>
+				<xsl:variable name="doctype" select="ancestor::mn:metanorma/mn:bibdata/mn:ext/mn:doctype[not(@language) or @language = '']"/>
 				<xsl:if test="$doctype = 'implementers-guide'">
 					<xsl:attribute name="margin-left">0mm</xsl:attribute>
 					<xsl:attribute name="text-indent">0mm</xsl:attribute>
 				</xsl:if>
 				
-				<xsl:variable name="docidentifier_metanorma_ordinal" select="normalize-space(itu:docidentifier[@type = 'metanorma-ordinal'])"/>
+				<xsl:variable name="docidentifier_metanorma_ordinal" select="normalize-space(mn:docidentifier[@type = 'metanorma-ordinal'])"/>
 				
 				<xsl:variable name="bibitem_label">
 					<xsl:apply-templates select="*[local-name() = 'biblio-tag']">
@@ -19256,7 +19256,7 @@
 					<xsl:apply-templates select="*[local-name() = 'biblio-tag']">
 						<xsl:with-param name="biblio_tag_part">last</xsl:with-param>
 					</xsl:apply-templates>
-					<xsl:apply-templates select="itu:formattedref"/>
+					<xsl:apply-templates select="mn:formattedref"/>
 				</xsl:variable>
 				
 				<xsl:choose>
