@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" 
 											xmlns:fo="http://www.w3.org/1999/XSL/Format" 
-											xmlns:csd="https://www.metanorma.org/ns/standoc" 
+											xmlns:mn="https://www.metanorma.org/ns/standoc" 
 											xmlns:mnx="https://www.metanorma.org/ns/xslt" 
 											xmlns:mathml="http://www.w3.org/1998/Math/MathML" 
 											xmlns:xalan="http://xml.apache.org/xalan" 
@@ -14,7 +14,7 @@
 
 	<xsl:output version="1.0" method="xml" encoding="UTF-8" indent="no"/>
 	
-	<xsl:key name="kfn" match="*[local-name() = 'fn'][not(ancestor::*[(local-name() = 'table' or local-name() = 'figure' or local-name() = 'localized-strings')] and not(ancestor::*[local-name() = 'name']))]" use="@reference"/>
+	<xsl:key name="kfn" match="mn:fn[not(ancestor::*[self::mn:table or self::mn:figure or self::mn:localized-strings] and not(ancestor::mn:name))]" use="@reference"/>
 	
 	<xsl:variable name="namespace">csd</xsl:variable>
 	
@@ -22,16 +22,16 @@
 	
 	<xsl:variable name="copyright">
 		<xsl:text>© The Calendaring and Scheduling Consortium, Inc. </xsl:text>
-		<xsl:value-of select="/csd:metanorma/csd:bibdata/csd:copyright/csd:from"/>
+		<xsl:value-of select="/mn:metanorma/mn:bibdata/mn:copyright/mn:from"/>
 		<xsl:text> – All rights reserved</xsl:text>
 	</xsl:variable>
 	
 	<!-- <xsl:variable name="header">
-		<xsl:value-of select="/csd:metanorma/csd:bibdata/csd:docidentifier[@type = 'csd']"/>
+		<xsl:value-of select="/mn:metanorma/mn:bibdata/mn:docidentifier[@type = 'csd']"/>
 		<xsl:text>:</xsl:text>
-		<xsl:value-of select="/csd:metanorma/csd:bibdata/csd:copyright/csd:from"/>
+		<xsl:value-of select="/mn:metanorma/mn:bibdata/mn:copyright/mn:from"/>
 	</xsl:variable> -->
-	<xsl:variable name="header" select="/csd:metanorma/csd:bibdata/csd:docidentifier[@type = 'CalConnect']"/>
+	<xsl:variable name="header" select="/mn:metanorma/mn:bibdata/mn:docidentifier[@type = 'CalConnect']"/>
 	
 	<xsl:variable name="contents_">
 		<mnx:contents>
@@ -196,17 +196,17 @@
 					<fo:block text-align="right">
 						<!-- CC/FDS 18011:2018 -->
 						<fo:block font-size="14pt" font-weight="bold" margin-bottom="10pt">
-							<xsl:value-of select="/csd:metanorma/csd:bibdata/csd:docidentifier[@type = 'csd']"/><xsl:text> </xsl:text>
+							<xsl:value-of select="/mn:metanorma/mn:bibdata/mn:docidentifier[@type = 'csd']"/><xsl:text> </xsl:text>
 						</fo:block>
 						<fo:block margin-bottom="12pt">
-							<xsl:value-of select="/csd:metanorma/csd:bibdata/csd:copyright/csd:owner/csd:organization/csd:name"/>
+							<xsl:value-of select="/mn:metanorma/mn:bibdata/mn:copyright/mn:owner/mn:organization/mn:name"/>
 							<xsl:text> TC </xsl:text>
-							<xsl:value-of select="/csd:metanorma/csd:bibdata/csd:ext/csd:editorialgroup/csd:technical-committee"/>
+							<xsl:value-of select="/mn:metanorma/mn:bibdata/mn:ext/mn:editorialgroup/mn:technical-committee"/>
 							<xsl:text> </xsl:text>
 						</fo:block>
 					</fo:block>
 					<fo:block font-size="24pt" font-weight="bold" text-align="center" role="H1">
-						<xsl:value-of select="/csd:metanorma/csd:bibdata/csd:title[@language = 'en']" />
+						<xsl:value-of select="/mn:metanorma/mn:bibdata/mn:title[@language = 'en']" />
 						<xsl:value-of select="$linebreak"/>
 					</fo:block>
 					<fo:block>&#xA0;</fo:block>
@@ -216,12 +216,12 @@
 							<fo:block padding-top="1mm">
 								<xsl:call-template name="capitalizeWords">
 									<!-- ex: final-draft -->
-									<xsl:with-param name="str" select="/csd:metanorma/csd:bibdata/csd:status/csd:stage"/>
+									<xsl:with-param name="str" select="/mn:metanorma/mn:bibdata/mn:status/mn:stage"/>
 								</xsl:call-template>
 								<xsl:text> </xsl:text>
 								<xsl:call-template name="capitalizeWords">
 									<!-- ex: standard -->
-									<xsl:with-param name="str" select="/csd:metanorma/csd:bibdata/csd:ext/csd:doctype"/>
+									<xsl:with-param name="str" select="/mn:metanorma/mn:bibdata/mn:ext/mn:doctype"/>
 								</xsl:call-template>
 							</fo:block>
 						</fo:block-container>
@@ -238,7 +238,7 @@
 					</fo:block-container>
 					<fo:block text-align="center">
 						<xsl:text>The Calendaring and Scheduling Consortium, Inc.&#xA0; </xsl:text>
-						<xsl:value-of select="/csd:metanorma/csd:bibdata/csd:copyright/csd:from"/>
+						<xsl:value-of select="/mn:metanorma/mn:bibdata/mn:copyright/mn:from"/>
 					</fo:block>
 				</fo:flow>
 			</fo:page-sequence>
@@ -255,7 +255,7 @@
 				</xsl:variable>
 			
 				<xsl:for-each select="xalan:nodeset($updated_xml_with_pages)"> <!-- set context to preface/sections -->
-					<xsl:for-each select=".//*[local-name() = 'page_sequence'][parent::*[local-name() = 'preface']][normalize-space() != '' or .//*[local-name() = 'image'] or .//*[local-name() = 'svg']]">
+					<xsl:for-each select=".//mn:page_sequence[parent::mn:preface][normalize-space() != '' or .//mn:image or .//*[local-name() = 'svg']]">
 			
 						<!-- Copyright, Content, Foreword, etc. pages -->
 						<fo:page-sequence master-reference="preface" format="i">
@@ -286,20 +286,20 @@
 									<fo:block margin-bottom="15pt">&#xA0;</fo:block>
 									<fo:block margin-bottom="14pt">
 										<xsl:text>© </xsl:text>
-										<xsl:value-of select="/csd:metanorma/csd:bibdata/csd:copyright/csd:from"/>
+										<xsl:value-of select="/mn:metanorma/mn:bibdata/mn:copyright/mn:from"/>
 										<xsl:text> </xsl:text>
 										<fo:inline>
-											<xsl:apply-templates select="/csd:metanorma/csd:boilerplate/csd:feedback-statement/csd:clause/csd:p[@id = 'boilerplate-name']"/>
+											<xsl:apply-templates select="/mn:metanorma/mn:boilerplate/mn:feedback-statement/mn:clause/mn:p[@id = 'boilerplate-name']"/>
 										</fo:inline>
 									</fo:block>
 									<fo:block margin-bottom="12pt">
-										<xsl:apply-templates select="/csd:metanorma/csd:boilerplate/csd:legal-statement"/>
+										<xsl:apply-templates select="/mn:metanorma/mn:boilerplate/mn:legal-statement"/>
 									</fo:block>
 									<fo:block margin-bottom="12pt">
-										<xsl:apply-templates select="/csd:metanorma/csd:boilerplate/csd:feedback-statement/csd:clause/csd:p[@id = 'boilerplate-name']"/>
+										<xsl:apply-templates select="/mn:metanorma/mn:boilerplate/mn:feedback-statement/mn:clause/mn:p[@id = 'boilerplate-name']"/>
 									</fo:block>
 									<fo:block>
-										<xsl:apply-templates select="/csd:metanorma/csd:boilerplate/csd:feedback-statement/csd:clause/csd:p[@id = 'boilerplate-address']"/>
+										<xsl:apply-templates select="/mn:metanorma/mn:boilerplate/mn:feedback-statement/mn:clause/mn:p[@id = 'boilerplate-address']"/>
 									</fo:block>
 									
 									<fo:block break-after="page"/>
@@ -315,7 +315,7 @@
 					</xsl:for-each>
 				
 				
-					<xsl:for-each select=".//*[local-name() = 'page_sequence'][not(parent::*[local-name() = 'preface'])][normalize-space() != '' or .//*[local-name() = 'image'] or .//*[local-name() = 'svg']]">
+					<xsl:for-each select=".//mn:page_sequence[not(parent::mn:preface)][normalize-space() != '' or .//mn:image or .//*[local-name() = 'svg']]">
 				
 						<!-- Document Pages -->
 						<fo:page-sequence master-reference="document" format="1" force-page-count="no-force">
@@ -333,7 +333,7 @@
 							<xsl:call-template name="insertHeaderFooter"/>
 							<fo:flow flow-name="xsl-region-body">
 								<!-- <fo:block font-size="16pt" font-weight="bold" margin-bottom="17pt" role="H1">
-									<xsl:value-of select="/csd:metanorma/csd:bibdata/csd:title[@language = 'en']"/>
+									<xsl:value-of select="/mn:metanorma/mn:bibdata/mn:title[@language = 'en']"/>
 								</fo:block> -->
 								<fo:block>
 									<!-- <xsl:call-template name="processMainSectionsDefault"/> -->
@@ -384,15 +384,15 @@
 		</fo:block>
 	</xsl:template>
 
-	<xsl:template match="csd:preface//csd:clause[@type = 'toc']" priority="3">
+	<xsl:template match="mn:preface//mn:clause[@type = 'toc']" priority="3">
 		<fo:block-container font-weight="bold" line-height="115%" role="SKIP">
 			<!-- render 'Contents' outside if role="TOC" -->
-			<xsl:apply-templates select="*[local-name() = 'title']"/>
+			<xsl:apply-templates select="mn:title"/>
 			<fo:block role="TOC">
 				
-				<xsl:apply-templates select="node()[not(local-name() = 'title')]"/>
+				<xsl:apply-templates select="node()[not(self::mn:title)]"/>
 				
-				<xsl:if test="count(*) = 1 and *[local-name() = 'title']"> <!-- if there isn't user ToC -->
+				<xsl:if test="count(*) = 1 and mn:title"> <!-- if there isn't user ToC -->
 				
 					<xsl:for-each select="$contents//mnx:item[@display = 'true']"><!-- [not(@level = 2 and starts-with(@section, '0'))] skip clause from preface -->
 						
@@ -457,7 +457,7 @@
 		</fo:block-container>
 	</xsl:template>
 
-	<xsl:template match="csd:preface//csd:clause[@type = 'toc']/csd:title" priority="3">
+	<xsl:template match="mn:preface//mn:clause[@type = 'toc']/mn:title" priority="3">
 		<!-- <xsl:variable name="title-toc">
 			<xsl:call-template name="getTitle">
 				<xsl:with-param name="name" select="'title-toc'"/>
@@ -478,10 +478,10 @@
 	<!-- ============================= -->
 	
 	<!-- element with title -->
-	<xsl:template match="*[csd:title or csd:fmt-title]" mode="contents">
+	<xsl:template match="*[mn:title or mn:fmt-title]" mode="contents">
 		<xsl:variable name="level">
 			<xsl:call-template name="getLevel">
-				<xsl:with-param name="depth" select="csd:fmt-title/@depth | csd:title/@depth"/>
+				<xsl:with-param name="depth" select="mn:fmt-title/@depth | mn:title/@depth"/>
 			</xsl:call-template>
 		</xsl:variable>
 		
@@ -495,8 +495,8 @@
 		<xsl:variable name="skip">
 			<xsl:choose>
 				<xsl:when test="@type = 'toc'">true</xsl:when>
-				<xsl:when test="ancestor-or-self::csd:bibitem">true</xsl:when>
-				<xsl:when test="ancestor-or-self::csd:term">true</xsl:when>
+				<xsl:when test="ancestor-or-self::mn:bibitem">true</xsl:when>
+				<xsl:when test="ancestor-or-self::mn:term">true</xsl:when>
 				<xsl:otherwise>false</xsl:otherwise>
 			</xsl:choose>
 		</xsl:variable>
@@ -525,13 +525,13 @@
 	<!-- ============================= -->
 	<!-- ============================= -->
 	
-	<xsl:template match="csd:sections//csd:p[@class = 'zzSTDTitle1']" priority="4">
+	<xsl:template match="mn:sections//mn:p[@class = 'zzSTDTitle1']" priority="4">
 		<fo:block font-size="16pt" font-weight="bold" margin-bottom="17pt" role="H1">
 			<xsl:apply-templates />
 		</fo:block>
 	</xsl:template>
 	
-	<xsl:template match="csd:title" name="title">
+	<xsl:template match="mn:title" name="title">
 		
 		<xsl:variable name="level">
 			<xsl:call-template name="getLevel"/>
@@ -539,7 +539,7 @@
 
 		<xsl:variable name="font-size">
 			<xsl:choose>
-				<xsl:when test="ancestor::csd:preface">13pt</xsl:when>
+				<xsl:when test="ancestor::mn:preface">13pt</xsl:when>
 				<xsl:when test="$level = 1">13pt</xsl:when>
 				<xsl:when test="$level = 2">12pt</xsl:when>
 				<xsl:when test="$level &gt;= 3">11pt</xsl:when>
@@ -562,17 +562,17 @@
 			<xsl:attribute name="margin-bottom">12pt</xsl:attribute>
 			<xsl:attribute name="keep-with-next">always</xsl:attribute>		
 			<xsl:attribute name="color"><xsl:value-of select="$color"/></xsl:attribute>
-			<xsl:if test="ancestor::csd:sections">
+			<xsl:if test="ancestor::mn:sections">
 				<xsl:attribute name="margin-top">13.5pt</xsl:attribute>
 			</xsl:if>
 			<xsl:attribute name="role">H<xsl:value-of select="$level"/></xsl:attribute>
 			<xsl:apply-templates />
-			<xsl:apply-templates select="following-sibling::*[1][local-name() = 'variant-title'][@type = 'sub']" mode="subtitle"/>
+			<xsl:apply-templates select="following-sibling::*[1][self::mn:variant-title][@type = 'sub']" mode="subtitle"/>
 		</xsl:element>		
 	</xsl:template>
 	
 
-	<xsl:template match="csd:p" name="paragraph">
+	<xsl:template match="mn:p" name="paragraph">
 		<xsl:param name="inline" select="'false'"/>
 		<xsl:param name="split_keep-within-line"/>
 		<xsl:variable name="previous-element" select="local-name(preceding-sibling::*[1])"/>
@@ -580,7 +580,7 @@
 			<xsl:choose>
 				<xsl:when test="$inline = 'true'">fo:inline</xsl:when>
 				<xsl:when test="../@inline-header = 'true' and $previous-element = 'title'">fo:inline</xsl:when> <!-- first paragraph after inline title -->
-				<xsl:when test="local-name(..) = 'admonition'">fo:inline</xsl:when>
+				<xsl:when test="parent::mn:admonition">fo:inline</xsl:when>
 				<xsl:when test="@id = 'boilerplate-name'">fo:inline</xsl:when>
 				<xsl:otherwise>fo:block</xsl:otherwise>
 			</xsl:choose>
@@ -591,7 +591,7 @@
 			
 			<xsl:attribute name="margin-bottom">
 				<xsl:choose>
-					<xsl:when test="ancestor::csd:li">0pt</xsl:when>
+					<xsl:when test="ancestor::mn:li">0pt</xsl:when>
 					<xsl:otherwise>12pt</xsl:otherwise>
 				</xsl:choose>
 			</xsl:attribute>
@@ -600,9 +600,9 @@
 				<xsl:with-param name="split_keep-within-line" select="$split_keep-within-line"/>
 			</xsl:apply-templates>
 		</xsl:element>
-		<xsl:if test="$element-name = 'fo:inline' and not($inline = 'true') and not(local-name(..) = 'admonition')">
+		<xsl:if test="$element-name = 'fo:inline' and not($inline = 'true') and not(parent::mn:admonition)">
 			<fo:block margin-bottom="12pt">
-				 <xsl:if test="ancestor::csd:annex">
+				 <xsl:if test="ancestor::mn:annex">
 					<xsl:attribute name="margin-bottom">0</xsl:attribute>
 				 </xsl:if>
 				<xsl:value-of select="$linebreak"/>
@@ -614,7 +614,7 @@
 	</xsl:template>
 	
 		
-	<xsl:template match="csd:xref" priority="2">
+	<xsl:template match="mn:xref" priority="2">
 		<xsl:call-template name="insert_basic_link">
 			<xsl:with-param name="element">
 				<fo:basic-link internal-destination="{@target}" fox:alt-text="{@target}">

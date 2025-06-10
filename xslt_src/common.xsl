@@ -5166,7 +5166,7 @@
 	
 	<xsl:template name="refine_list-style">
 		<xsl:if test="$namespace = 'csd'">
-			<xsl:if test="ancestor::csd:ol">
+			<xsl:if test="ancestor::mn:ol">
 				<xsl:attribute name="margin-bottom">0pt</xsl:attribute>
 			</xsl:if>
 		</xsl:if>		
@@ -17614,7 +17614,7 @@
 			</xsl:if>
 		</xsl:if>
 		<xsl:if test="$namespace = 'csd'">
-			<xsl:variable name="pos"><xsl:number count="csd:sections/*/csd:clause | csd:sections/*/csd:terms"/></xsl:variable>
+			<xsl:variable name="pos"><xsl:number count="mn:sections/*/mn:clause | mn:sections/*/mn:terms"/></xsl:variable>
 			<xsl:if test="$pos &gt;= 2">
 				<xsl:attribute name="space-before">18pt</xsl:attribute>
 			</xsl:if>
