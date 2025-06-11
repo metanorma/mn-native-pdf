@@ -3443,7 +3443,7 @@
 			</xsl:if>
 		</xsl:if>
 		<xsl:if test="$namespace = 'ogc'">
-			<xsl:if test="not(ancestor::ogc:sourcecode)">
+			<xsl:if test="not(ancestor::mn:sourcecode)">
 				<!-- <xsl:attribute name="border-left">1pt solid <xsl:value-of select="$color_design"/></xsl:attribute> -->
 				<xsl:attribute name="background-color"><xsl:value-of select="$color_dl_dt"/></xsl:attribute>
 			</xsl:if>
@@ -3498,10 +3498,10 @@
 			</xsl:if>
 		</xsl:if>
 		<xsl:if test="$namespace = 'ogc'">
-			<xsl:if test="ancestor::ogc:sourcecode">
+			<xsl:if test="ancestor::mn:sourcecode">
 				<xsl:attribute name="margin-bottom">2pt</xsl:attribute>
 			</xsl:if>
-			<xsl:if test="not(following-sibling::ogc:dt)"> <!-- last dt -->
+			<xsl:if test="not(following-sibling::mn:dt)"> <!-- last dt -->
 				<xsl:attribute name="margin-bottom">0</xsl:attribute>
 			</xsl:if>
 		</xsl:if>
@@ -3569,7 +3569,7 @@
 	
 	<xsl:template name="refine_dd-cell-style">
 		<xsl:if test="$namespace = 'ogc'">
-			<xsl:if test="not(ancestor::ogc:sourcecode)">
+			<xsl:if test="not(ancestor::mn:sourcecode)">
 				<xsl:attribute name="background-color"><xsl:value-of select="$color_dl_dd"/></xsl:attribute>
 			</xsl:if>
 		</xsl:if>
@@ -3842,7 +3842,7 @@
 		</xsl:if>
 		
 		<xsl:if test="$namespace = 'ogc' or $namespace = 'ogc-white-paper'">
-			<xsl:if test="ancestor::ogc:ul or ancestor::ogc:ol and not(ancestor::ogc:note[1]/following-sibling::*)">
+			<xsl:if test="ancestor::mn:ul or ancestor::mn:ol and not(ancestor::mn:note[1]/following-sibling::*)">
 				<xsl:attribute name="margin-bottom">0pt</xsl:attribute>
 			</xsl:if>
 		</xsl:if>
@@ -5330,7 +5330,7 @@
 		</xsl:if>
 		<xsl:if test="$namespace = 'ogc'">
 			<xsl:attribute name="margin-bottom">10pt</xsl:attribute>
-			<xsl:if test="ancestor::ogc:table[not(@class)]">
+			<xsl:if test="ancestor::mn:table[not(@class)]">
 				<xsl:attribute name="margin-bottom">1mm</xsl:attribute>
 			</xsl:if>
 			<xsl:if test="not(following-sibling::*) and not(../following-sibling::*)">
@@ -11006,7 +11006,7 @@
 		
 		<fo:table-row xsl:use-attribute-sets="dt-row-style">
 			<xsl:if test="$namespace = 'ogc'">
-				<xsl:if test="not(following-sibling::ogc:dt) or ancestor::ogc:sourcecode"> <!-- last item -->
+				<xsl:if test="not(following-sibling::mn:dt) or ancestor::mn:sourcecode"> <!-- last item -->
 					<xsl:attribute name="min-height">3mm</xsl:attribute>
 				</xsl:if>
 			</xsl:if>
@@ -13883,7 +13883,7 @@
 				</fo:block>
 			</xsl:if>
 			<xsl:if test="$namespace = 'ogc'">
-				<xsl:apply-templates select="ogc:name" />
+				<xsl:apply-templates select="mn:name" />
 			</xsl:if>
 			
 			<xsl:if test="parent::*[local-name() = 'term'] and not(preceding-sibling::*[local-name() = 'term'])">
@@ -14280,7 +14280,7 @@
 		<xsl:variable name="image_height_effective" select="$height_effective - number($indent_left)"/>
 		<!-- <xsl:message>width_effective=<xsl:value-of select="$width_effective"/></xsl:message>
 		<xsl:message>indent_left=<xsl:value-of select="$indent_left"/></xsl:message>
-		<xsl:message>image_width_effective=<xsl:value-of select="$image_width_effective"/> for <xsl:value-of select="ancestor::ogc:p[1]/@id"/></xsl:message> -->
+		<xsl:message>image_width_effective=<xsl:value-of select="$image_width_effective"/> for <xsl:value-of select="ancestor::mn:p[1]/@id"/></xsl:message> -->
 		<xsl:variable name="scale">
 			<xsl:choose>
 				<xsl:when test="$namespace = 'jis'">
@@ -17252,7 +17252,7 @@
 					<xsl:when test="ancestor::*[local-name() = 'note'] and ancestor::*[local-name() = 'name']">4</xsl:when>
 					<xsl:when test="$depth &gt;= 5"/>
 					<xsl:when test="$depth &gt;= 4">5</xsl:when>
-					<xsl:when test="$depth &gt;= 3 and ancestor::ogc:terms">3</xsl:when>
+					<xsl:when test="$depth &gt;= 3 and ancestor::mn:terms">3</xsl:when>
 					<xsl:when test="$depth &gt;= 2">4</xsl:when>
 					<xsl:when test="$depth = 1">4</xsl:when>
 					<xsl:otherwise>2</xsl:otherwise>
@@ -17652,13 +17652,13 @@
 			</xsl:if>
 		</xsl:if>
 		<xsl:if test="$namespace = 'ogc'">
-			<xsl:variable name="pos"><xsl:number count="ogc:sections/ogc:clause[not(@type='scope') and not(@type='conformance')]"/></xsl:variable> <!--  | ogc:sections/ogc:terms -->
+			<xsl:variable name="pos"><xsl:number count="mn:sections/mn:clause[not(@type='scope') and not(@type='conformance')]"/></xsl:variable> <!--  | mn:sections/mn:terms -->
 			<xsl:if test="$pos &gt;= 2">
 				<xsl:attribute name="space-before">18pt</xsl:attribute>
 			</xsl:if>
 		</xsl:if>
 		<xsl:if test="$namespace = 'ogc-white-paper'">
-			<xsl:variable name="pos"><xsl:number count="ogc:sections/*/ogc:clause[not(@type='scope') and not(@type='conformance')]"/></xsl:variable> <!--  | ogc:sections/ogc:terms -->
+			<xsl:variable name="pos"><xsl:number count="mn:sections/*/mn:clause[not(@type='scope') and not(@type='conformance')]"/></xsl:variable> <!--  | mn:sections/mn:terms -->
 			<xsl:if test="$pos &gt;= 2">
 				<xsl:attribute name="space-before">18pt</xsl:attribute>
 			</xsl:if>
@@ -19862,7 +19862,7 @@
 					</xsl:if>
 					
 					<xsl:if test="$namespace = 'ogc' or $namespace = 'ogc-white-paper'">
-						<xsl:variable name="admonition_color" select="normalize-space(/ogc:metanorma/ogc:metanorma-extension/ogc:presentation-metadata[ogc:name = concat('color-admonition-', @type)]/ogc:value)"/>
+						<xsl:variable name="admonition_color" select="normalize-space(/mn:metanorma/mn:metanorma-extension/mn:presentation-metadata[mn:name = concat('color-admonition-', @type)]/mn:value)"/>
 						<xsl:if test="$admonition_color != ''">
 							<xsl:attribute name="border">0.5pt solid <xsl:value-of select="$admonition_color"/></xsl:attribute>
 							<xsl:attribute name="color"><xsl:value-of select="$admonition_color"/></xsl:attribute>
