@@ -4656,7 +4656,7 @@
 	
 	<xsl:template name="refine_figure-name-style">
 		<xsl:if test="$namespace = 'nist-cswp'  or $namespace = 'nist-sp'">
-			<xsl:if test="nist:dl">
+			<xsl:if test="mn:dl">
 				<xsl:attribute name="space-before">12pt</xsl:attribute>
 			</xsl:if>
 		</xsl:if>
@@ -5181,7 +5181,7 @@
 			</xsl:if>
 		</xsl:if>
 		<xsl:if test="$namespace = 'nist-sp'">
-			<xsl:if test="ancestor::nist:figure and not(following-sibling::*)">
+			<xsl:if test="ancestor::mn:figure and not(following-sibling::*)">
 				<xsl:attribute name="space-after">0pt</xsl:attribute>
 			</xsl:if>
 		</xsl:if>
@@ -17228,7 +17228,7 @@
 			</xsl:if>
 			<xsl:if test="$namespace = 'nist-sp'">
 				<xsl:choose>
-					<xsl:when test="ancestor-or-self::nist:annex and $depth &gt;= 2">1</xsl:when>
+					<xsl:when test="ancestor-or-self::mn:annex and $depth &gt;= 2">1</xsl:when>
 					<xsl:when test="$depth = 1 and local-name(..) != 'annex'">5</xsl:when>
 					<xsl:otherwise>1</xsl:otherwise>
 				</xsl:choose>
@@ -19326,7 +19326,7 @@
 				<xsl:apply-templates select="*[local-name() = 'biblio-tag']">
 					<xsl:with-param name="biblio_tag_part">last</xsl:with-param>
 				</xsl:apply-templates>
-				<xsl:apply-templates select="nist:formattedref"/>
+				<xsl:apply-templates select="mn:formattedref"/>
 				<!-- END NIST SP bibitem processing -->
 			</xsl:when>
 			
@@ -20023,7 +20023,7 @@
 				
 					<xsl:if test="$namespace = 'nist-sp'">
 						<xsl:variable name="num"><xsl:number/></xsl:variable>
-						<xsl:if test="$num &lt; count(ancestor::nist:admonition//nist:p)">
+						<xsl:if test="$num &lt; count(ancestor::mn:admonition//mn:p)">
 							<xsl:attribute name="margin-bottom">12pt</xsl:attribute>
 						</xsl:if>
 					</xsl:if>
