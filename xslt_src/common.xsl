@@ -4688,7 +4688,7 @@
 		</xsl:if>
     
 		<xsl:if test="$namespace = 'jis'">
-			<xsl:if test="ancestor::jis:figure">
+			<xsl:if test="ancestor::mn:figure">
 				<xsl:attribute name="margin-top">0</xsl:attribute>
 				<xsl:attribute name="margin-bottom">6pt</xsl:attribute>
 			</xsl:if>
@@ -9370,7 +9370,7 @@
 					<xsl:choose>
 						<xsl:when test="$autonumbering_style = 'japanese'">
 							<xsl:text>&#x2008;</xsl:text>
-							<xsl:value-of select="$numbers_japanese//jis:localized-string[@key = $current_fn_number]"/>
+							<xsl:value-of select="$numbers_japanese//mn:localized-string[@key = $current_fn_number]"/>
 							<xsl:text>&#x2008;</xsl:text>
 						</xsl:when>
 						<xsl:otherwise><xsl:value-of select="translate($current_fn_number, ')', '')"/><fo:inline font-weight="normal">)</fo:inline></xsl:otherwise>
@@ -10648,7 +10648,7 @@
 		<xsl:if test="$namespace = 'jis'">
 			<!-- display footnotes after after upper-level `dl` -->
 			<xsl:if test="not(ancestor::*[local-name() = 'dl'])">
-				<xsl:for-each select=".//jis:fn[generate-id(.)=generate-id(key('kfn',@reference)[1])]">
+				<xsl:for-each select=".//mn:fn[generate-id(.)=generate-id(key('kfn',@reference)[1])]">
 					<xsl:call-template name="fn_jis"/>
 				</xsl:for-each>
 			</xsl:if>
@@ -16997,7 +16997,7 @@
 				
 				<xsl:if test="$namespace = 'jis'">
 					<!-- render footnotes after references -->
-					<xsl:apply-templates select=".//jis:fn[generate-id(.)=generate-id(key('kfn',@reference)[1])]" mode="fn_after_element">
+					<xsl:apply-templates select=".//mn:fn[generate-id(.)=generate-id(key('kfn',@reference)[1])]" mode="fn_after_element">
 						<xsl:with-param name="ancestor">quote</xsl:with-param>
 					</xsl:apply-templates>
 				</xsl:if>
@@ -18310,7 +18310,7 @@
 						<xsl:choose>
 							<xsl:when test="$vertical_layout = 'true'">
 								<fo:block role="SKIP">
-									<xsl:if test="ancestor::jis:ol or ancestor::jis:ul">
+									<xsl:if test="ancestor::mn:ol or ancestor::mn:ul">
 										<xsl:attribute name="margin-left">-3.5mm</xsl:attribute>
 									</xsl:if>
 									<xsl:apply-templates select="." mode="list">
@@ -18320,7 +18320,7 @@
 							</xsl:when>
 							<xsl:otherwise>
 								<fo:block-container role="SKIP">
-									<xsl:if test="ancestor::jis:ol or ancestor::jis:ul">
+									<xsl:if test="ancestor::mn:ol or ancestor::mn:ul">
 										<xsl:attribute name="margin-left">3.5mm</xsl:attribute>
 									</xsl:if>
 									<fo:block-container margin-left="0mm" role="SKIP">
@@ -18887,7 +18887,7 @@
 			
 			<xsl:if test="$namespace = 'jis'">
 				<!-- render footnotes after references -->
-				<xsl:apply-templates select=".//jis:fn[generate-id(.)=generate-id(key('kfn',@reference)[1])]" mode="fn_after_element">
+				<xsl:apply-templates select=".//mn:fn[generate-id(.)=generate-id(key('kfn',@reference)[1])]" mode="fn_after_element">
 					<xsl:with-param name="ancestor">references</xsl:with-param>
 				</xsl:apply-templates>
 			</xsl:if>
@@ -18929,7 +18929,7 @@
 			
 			<xsl:if test="$namespace = 'jis'">
 				<!-- render footnotes after references -->
-				<xsl:apply-templates select=".//jis:fn[generate-id(.)=generate-id(key('kfn',@reference)[1])]" mode="fn_after_element">
+				<xsl:apply-templates select=".//mn:fn[generate-id(.)=generate-id(key('kfn',@reference)[1])]" mode="fn_after_element">
 					<xsl:with-param name="ancestor">references</xsl:with-param>
 				</xsl:apply-templates>
 			</xsl:if>
@@ -22787,23 +22787,19 @@
 		<xsl:param name="writing-mode">lr-tb</xsl:param>
 		<xsl:param name="reference-orientation">90</xsl:param>
 		<xsl:param name="add_zero_width_space">false</xsl:param>
-		<xsl:choose>
-			<xsl:otherwise>
-				<fo:inline-container text-align="center"
-										 alignment-baseline="central" width="1em" margin="0" padding="0"
-										 text-indent="0mm" last-line-end-indent="0mm" start-indent="0mm" end-indent="0mm" role="SKIP">
-					<xsl:if test="normalize-space($writing-mode) != ''">
-						<xsl:attribute name="writing-mode"><xsl:value-of select="$writing-mode"/></xsl:attribute>
-						<xsl:attribute name="reference-orientation">90</xsl:attribute>
-					</xsl:if>
-					<fo:block-container width="1em" role="SKIP"> <!-- border="0.5pt solid green" -->
-						<fo:block line-height="1em" role="SKIP">
-							<xsl:value-of select="$str"/>
-						</fo:block>
-					</fo:block-container>
-				</fo:inline-container>
-			</xsl:otherwise>
-		</xsl:choose>
+		<fo:inline-container text-align="center"
+								 alignment-baseline="central" width="1em" margin="0" padding="0"
+								 text-indent="0mm" last-line-end-indent="0mm" start-indent="0mm" end-indent="0mm" role="SKIP">
+			<xsl:if test="normalize-space($writing-mode) != ''">
+				<xsl:attribute name="writing-mode"><xsl:value-of select="$writing-mode"/></xsl:attribute>
+				<xsl:attribute name="reference-orientation">90</xsl:attribute>
+			</xsl:if>
+			<fo:block-container width="1em" role="SKIP"> <!-- border="0.5pt solid green" -->
+				<fo:block line-height="1em" role="SKIP">
+					<xsl:value-of select="$str"/>
+				</fo:block>
+			</fo:block-container>
+		</fo:inline-container>
 	</xsl:template>
  
 	<xsl:template name="number-to-words">
