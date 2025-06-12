@@ -1377,7 +1377,7 @@
 			</xsl:if>
 		</xsl:if>
 		<xsl:if test="$namespace = 'rsd'">
-			<xsl:if test="ancestor::ribose:ul or ancestor::ribose:ol">
+			<xsl:if test="ancestor::mn:ul or ancestor::mn:ol">
 				<xsl:attribute name="margin-top">6pt</xsl:attribute>
 				<xsl:attribute name="margin-bottom">6pt</xsl:attribute>
 			</xsl:if>
@@ -3848,7 +3848,7 @@
 		</xsl:if>
 		
 		<xsl:if test="$namespace = 'rsd'">
-			<xsl:if test="ancestor::ribose:ul or ancestor::ribose:ol and not(ancestor::ribose:note[1]/following-sibling::*)">
+			<xsl:if test="ancestor::mn:ul or ancestor::mn:ol and not(ancestor::mn:note[1]/following-sibling::*)">
 				<xsl:attribute name="margin-top">6pt</xsl:attribute>
 				<xsl:attribute name="margin-bottom">6pt</xsl:attribute>
 			</xsl:if>
@@ -17646,7 +17646,7 @@
 			</xsl:if>
 		</xsl:if>			
 		<xsl:if test="$namespace = 'rsd'">
-			<xsl:variable name="pos"><xsl:number count="ribose:sections/ribose:clause[not(@type='scope') and not(@type='conformance')]"/></xsl:variable> <!--  | ribose:sections/ribose:terms -->
+			<xsl:variable name="pos"><xsl:number count="mn:sections/mn:clause[not(@type='scope') and not(@type='conformance')]"/></xsl:variable> <!--  | mn:sections/mn:terms -->
 			<xsl:if test="$pos &gt;= 2">
 				<xsl:attribute name="space-before">18pt</xsl:attribute>
 			</xsl:if>
@@ -19134,7 +19134,7 @@
 								<xsl:apply-templates select="*[local-name() = 'biblio-tag']">
 									<xsl:with-param name="biblio_tag_part">last</xsl:with-param>
 								</xsl:apply-templates>
-								<xsl:apply-templates select="ribose:formattedref"/>
+								<xsl:apply-templates select="mn:formattedref"/>
 							</fo:block>
 						</fo:list-item-body>
 					</fo:list-item>
