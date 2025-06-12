@@ -18336,8 +18336,8 @@
 					</xsl:when>
 					<xsl:when test="$namespace = 'plateau'">
 						<fo:block-container role="SKIP">
-							<xsl:if test="local-name() = 'ol' and (ancestor::plateau:li)">
-								<xsl:attribute name="margin-left"><xsl:value-of select="count(ancestor::plateau:li) * 6 + 6"/>mm</xsl:attribute>
+							<xsl:if test="local-name() = 'ol' and (ancestor::mn:li)">
+								<xsl:attribute name="margin-left"><xsl:value-of select="count(ancestor::mn:li) * 6 + 6"/>mm</xsl:attribute>
 							</xsl:if>
 							<fo:block-container margin-left="0mm" role="SKIP">
 								<fo:block>
