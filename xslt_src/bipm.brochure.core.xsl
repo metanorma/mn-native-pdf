@@ -3468,17 +3468,19 @@
 			
 			<!-- create virtual table to determine column's width -->
 			<xsl:variable name="toc_table_simple">
-				<tbody>
+				<mn:tbody>
 					<xsl:apply-templates mode="toc_table_width" />
-				</tbody>
+				</mn:tbody>
 			</xsl:variable>
-			<xsl:variable name="cols-count" select="count(xalan:nodeset($toc_table_simple)/*/tr[1]/td)"/>
+			<!-- <debug_toc_table_simple><xsl:copy-of select="$toc_table_simple"/></debug_toc_table_simple> -->
+			<xsl:variable name="cols-count" select="count(xalan:nodeset($toc_table_simple)/*/mn:tr[1]/mn:td)"/>
 			<xsl:variable name="colwidths">
 				<xsl:call-template name="calculate-column-widths-proportional">
 					<xsl:with-param name="cols-count" select="$cols-count"/>
 					<xsl:with-param name="table" select="$toc_table_simple"/>
 				</xsl:call-template>
 			</xsl:variable>
+			<!-- <debug_colwidths><xsl:copy-of select="$colwidths"/></debug_colwidths> -->
 			
 			<fo:table width="100%" table-layout="fixed" role="TOC">
 				<fo:table-column column-width="100%" />
@@ -3525,17 +3527,17 @@
 			<xsl:variable name="current_id" select="generate-id()"/>
 			
 			<xsl:if test="$pos = 1">
-				<td>
+				<mn:td>
 					<xsl:for-each select="preceding-sibling::node()">
 						<xsl:choose>
 							<xsl:when test="self::text()"><xsl:value-of select="translate(., ' ', '&#xa0;')"/></xsl:when>
 							<xsl:otherwise><xsl:copy-of select="."/></xsl:otherwise>
 						</xsl:choose>
 					</xsl:for-each>
-				</td>
+				</mn:td>
 			</xsl:if>
 			
-			<td>
+			<mn:td>
 				<xsl:for-each select="following-sibling::node()[not(self::mn:tab) and preceding-sibling::mn:tab[1][generate-id() = $current_id]]">
 					<xsl:choose>
 						<!-- <xsl:when test="$pos = 1 and self::text()"><xsl:value-of select="translate(., ' ', '&#xa0;')"/></xsl:when> -->
@@ -3543,9 +3545,9 @@
 						<xsl:otherwise><xsl:copy-of select="."/></xsl:otherwise>
 					</xsl:choose>
 				</xsl:for-each>
-			</td>
+			</mn:td>
 		</xsl:for-each>
-		<td>333</td> <!-- page number, just for fill -->
+		<mn:td>333</mn:td> <!-- page number, just for fill -->
 	</xsl:template>
 
 	<!-- =================== -->
