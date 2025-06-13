@@ -1279,7 +1279,7 @@
 					</xsl:if>
 					
 					<!-- paragraph in table or figure footer -->
-					<xsl:if test="parent::mn:table or parent::mn:figure or (ancestor::mn:tfoot and ancestor::td[1]/@colspan)">
+					<xsl:if test="parent::mn:table or parent::mn:figure or (ancestor::mn:tfoot and ancestor::mn:td[1]/@colspan)">
 						<xsl:attribute name="margin-left"><xsl:value-of select="$tableAnnotationIndent"/></xsl:attribute>
 						<xsl:attribute name="margin-bottom">0pt</xsl:attribute>
 					</xsl:if>
