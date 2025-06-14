@@ -6796,13 +6796,13 @@
 	
 	<xsl:template name="processPrefaceSectionsDefault_Contents">
 		<xsl:variable name="nodes_preface_">
-			<xsl:for-each select="/*/*[local-name()='preface']/*[not(local-name() = 'note' or local-name() = 'admonition' or @type = 'toc')]">
+			<xsl:for-each select="/*/mn:preface/*[not(self::mn:note or self::mn:admonition or @type = 'toc')]">
 				<node id="{@id}"/>
 			</xsl:for-each>
 		</xsl:variable>
 		<xsl:variable name="nodes_preface" select="xalan:nodeset($nodes_preface_)"/>
 		
-		<xsl:for-each select="/*/*[local-name()='preface']/*[not(local-name() = 'note' or local-name() = 'admonition' or @type = 'toc')]">
+		<xsl:for-each select="/*/mn:preface/*[not(self::mn:note or self::mn:admonition or @type = 'toc')]">
 			<xsl:sort select="@displayorder" data-type="number"/>
 			
 			<!-- process Section's title -->
@@ -6819,14 +6819,14 @@
 	<xsl:template name="processMainSectionsDefault_Contents">
 	
 		<xsl:variable name="nodes_sections_">
-			<xsl:for-each select="/*/*[local-name()='sections']/*">
+			<xsl:for-each select="/*/mn:sections/*">
 				<node id="{@id}"/>
 			</xsl:for-each>
 		</xsl:variable>
 		<xsl:variable name="nodes_sections" select="xalan:nodeset($nodes_sections_)"/>
 		
-		<xsl:for-each select="/*/*[local-name()='sections']/* | /*/*[local-name()='bibliography']/*[local-name()='references'][@normative='true'] |
-			/*/*[local-name()='bibliography']/*[local-name()='clause'][*[local-name()='references'][@normative='true']]">
+		<xsl:for-each select="/*/mn:sections/* | /*/mn:bibliography/mn:references[@normative='true'] |
+			/*/mn:bibliography/mn:clause[mn:references[@normative='true']]">
 			<xsl:sort select="@displayorder" data-type="number"/>
 			
 			<!-- process Section's title -->
@@ -6838,13 +6838,13 @@
 			<xsl:apply-templates select="." mode="contents"/>
 		</xsl:for-each>
 		
-		<!-- <xsl:for-each select="/*/*[local-name()='annex']">
+		<!-- <xsl:for-each select="/*/mn:annex">
 			<xsl:sort select="@displayorder" data-type="number"/>
 			<xsl:apply-templates select="." mode="contents"/>
 		</xsl:for-each> -->
 		
-		<xsl:for-each select="/*/*[local-name()='annex'] | /*/*[local-name()='bibliography']/*[not(@normative='true') and not(*[local-name()='references'][@normative='true'])][count(.//*[local-name() = 'bibitem'][not(@hidden) = 'true']) &gt; 0] | 
-								/*/*[local-name()='bibliography']/*[local-name()='clause'][*[local-name()='references'][not(@normative='true')]][count(.//*[local-name() = 'bibitem'][not(@hidden) = 'true']) &gt; 0]">
+		<xsl:for-each select="/*/mn:annex | /*/mn:bibliography/*[not(@normative='true') and not(mn:references[@normative='true'])][count(.//mn:bibitem[not(@hidden) = 'true']) &gt; 0] | 
+								/*/mn:bibliography/mn:clause[mn:references[not(@normative='true')]][count(.//mn:bibitem[not(@hidden) = 'true']) &gt; 0]">
 			<xsl:sort select="@displayorder" data-type="number"/>
 			<xsl:apply-templates select="." mode="contents"/>
 		</xsl:for-each>
@@ -6852,29 +6852,29 @@
 
 	<xsl:template name="processTablesFigures_Contents">
 		<xsl:param name="always"/>
-		<xsl:if test="(//*[local-name() = 'metanorma']/*[local-name() = 'metanorma-extension']/*[local-name() = 'toc'][@type='table']/*[local-name() = 'title']) or normalize-space($always) = 'true'">
+		<xsl:if test="(//mn:metanorma/mn:metanorma-extension/mn:toc[@type='table']/mn:title) or normalize-space($always) = 'true'">
 			<xsl:call-template name="processTables_Contents"/>
 		</xsl:if>
-		<xsl:if test="(//*[local-name() = 'metanorma']/*[local-name() = 'metanorma-extension']/*[local-name() = 'toc'][@type='figure']/*[local-name() = 'title']) or normalize-space($always) = 'true'">
+		<xsl:if test="(//mn:metanorma/mn:metanorma-extension/mn:toc[@type='figure']/mn:title) or normalize-space($always) = 'true'">
 			<xsl:call-template name="processFigures_Contents"/>
 		</xsl:if>
 	</xsl:template>
 
 	<xsl:template name="processTables_Contents">
 		<mnx:tables>
-			<xsl:for-each select="//*[local-name() = 'table'][not(ancestor::*[local-name() = 'metanorma-extension'])][@id and *[local-name() = 'name'] and normalize-space(@id) != '']">
+			<xsl:for-each select="//mn:table[not(ancestor::mn:metanorma-extension)][@id and mn:name and normalize-space(@id) != '']">
 				<xsl:choose>
-					<xsl:when test="*[local-name() = 'fmt-name']">
+					<xsl:when test="mn:fmt-name">
 						<xsl:variable name="fmt_name">
-							<xsl:apply-templates select="*[local-name() = 'fmt-name']" mode="update_xml_step1"/>
+							<xsl:apply-templates select="mn:fmt-name" mode="update_xml_step1"/>
 						</xsl:variable>
 						<mnx:table id="{@id}" alt-text="{normalize-space($fmt_name)}">
 							<xsl:copy-of select="$fmt_name"/>
 						</mnx:table>
 					</xsl:when>
 					<xsl:otherwise>
-						<mnx:table id="{@id}" alt-text="{*[local-name() = 'name']}">
-							<xsl:copy-of select="*[local-name() = 'name']"/>
+						<mnx:table id="{@id}" alt-text="{mn:name}">
+							<xsl:copy-of select="mn:name"/>
 						</mnx:table>
 					</xsl:otherwise>
 				</xsl:choose>
@@ -6884,19 +6884,19 @@
 	
 	<xsl:template name="processFigures_Contents">
 		<mnx:figures>
-			<xsl:for-each select="//*[local-name() = 'figure'][@id and *[local-name() = 'name'] and not(@unnumbered = 'true') and normalize-space(@id) != ''] | //*[@id and starts-with(*[local-name() = 'name'], 'Figure ') and normalize-space(@id) != '']">
+			<xsl:for-each select="//mn:figure[@id and mn:name and not(@unnumbered = 'true') and normalize-space(@id) != ''] | //*[@id and starts-with(mn:name, 'Figure ') and normalize-space(@id) != '']">
 				<xsl:choose>
-					<xsl:when test="*[local-name() = 'fmt-name']">
+					<xsl:when test="mn:fmt-name">
 						<xsl:variable name="fmt_name">
-							<xsl:apply-templates select="*[local-name() = 'fmt-name']" mode="update_xml_step1"/>
+							<xsl:apply-templates select="mn:fmt-name" mode="update_xml_step1"/>
 						</xsl:variable>
 						<mnx:figure id="{@id}" alt-text="{normalize-space($fmt_name)}">
 							<xsl:copy-of select="$fmt_name"/>
 						</mnx:figure>
 					</xsl:when>
 					<xsl:otherwise>
-						<mnx:figure id="{@id}" alt-text="{*[local-name() = 'name']}">
-							<xsl:copy-of select="*[local-name() = 'name']"/>
+						<mnx:figure id="{@id}" alt-text="{mn:name}">
+							<xsl:copy-of select="mn:name"/>
 						</mnx:figure>
 					</xsl:otherwise>
 				</xsl:choose>
@@ -6905,7 +6905,7 @@
 	</xsl:template>
 
 	<xsl:template name="processPrefaceSectionsDefault">
-		<xsl:for-each select="/*/*[local-name()='preface']/*[not(local-name() = 'note' or local-name() = 'admonition')]">
+		<xsl:for-each select="/*/mn:preface/*[not(self::mn:note or self::mn:admonition)]">
 			<xsl:sort select="@displayorder" data-type="number"/>
 			<xsl:apply-templates select="."/>
 		</xsl:for-each>
@@ -6913,7 +6913,7 @@
 	
 	<xsl:template name="copyCommonElements">
 		<!-- copy bibdata, localized-strings, metanorma-extension and boilerplate -->
-		<xsl:copy-of select="/*/*[local-name() != 'preface' and local-name() != 'sections' and local-name() != 'annex' and local-name() != 'bibliography' and local-name() != 'indexsect']"/>
+		<xsl:copy-of select="/*/*[not(self::mn:preface) and not(self::mn:sections) and not(self::mn:annex) and not(self::mn:bibliography) and not(self::mn:indexsect)]"/>
 	</xsl:template>
 	
 	<xsl:template name="processMainSectionsDefault">
