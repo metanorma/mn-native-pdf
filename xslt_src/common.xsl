@@ -13,7 +13,7 @@
 											version="1.0">
 
 	<!-- https://www.metanorma.org/ns/standoc -->
-	<xsl:variable name="namespace_full" select="namespace-uri(//*[local-name() = 'metanorma'][1])"/>
+	<xsl:variable name="namespace_full" select="namespace-uri(//mn:metanorma[1])"/>
 	
 	<!-- https://www.metanorma.org/ns/xsl -->
 	<xsl:variable name="namespace_mn_xsl">https://www.metanorma.org/ns/xslt</xsl:variable>
@@ -21,7 +21,7 @@
 	<xsl:variable name="root_element">metanorma</xsl:variable>
 	
 	<!---examples: 2013, 2024 -->
-	<xsl:variable name="document_scheme" select="normalize-space(//*[local-name() = 'metanorma']/*[local-name() = 'metanorma-extension']/*[local-name() = 'presentation-metadata'][*[local-name() = 'name'] = 'document-scheme']/*[local-name() = 'value'])"/>
+	<xsl:variable name="document_scheme" select="normalize-space(//mn:metanorma/mn:metanorma-extension/mn:presentation-metadata[mn:name = 'document-scheme']/mn:value)"/>
 
 	<!-- external parameters -->
 	<xsl:param name="svg_images"/> <!-- svg images array -->
@@ -122,7 +122,7 @@
 	</metanorma-extension>
 	-->
 	
-	<xsl:variable name="papersize" select="java:toLowerCase(java:java.lang.String.new(normalize-space(//*[local-name() = 'metanorma']/*[local-name() = 'metanorma-extension']/*[local-name() = 'presentation-metadata']/*[local-name() = 'papersize'])))"/>
+	<xsl:variable name="papersize" select="java:toLowerCase(java:java.lang.String.new(normalize-space(//mn:metanorma/mn:metanorma-extension/mn:presentation-metadata/mn:papersize)))"/>
 	<xsl:variable name="papersize_width_">
 		<xsl:choose>
 			<xsl:when test="$papersize = 'letter'">215.9</xsl:when>
@@ -348,7 +348,7 @@
 	<xsl:variable name="marginBottom" select="normalize-space($marginBottom_)"/>
 	
 	<xsl:variable name="layout_columns_default">1</xsl:variable>
-	<xsl:variable name="layout_columns_" select="normalize-space((//*[local-name() = 'metanorma'])[1]/*[local-name() = 'metanorma-extension']/*[local-name() = 'presentation-metadata']/*[local-name() = 'layout-columns'])"/>
+	<xsl:variable name="layout_columns_" select="normalize-space((//mn:metanorma)[1]/mn:metanorma-extension/mn:presentation-metadata/mn:layout-columns)"/>
 	<xsl:variable name="layout_columns">
 		<xsl:choose>
 			<xsl:when test="$layout_columns_ != ''"><xsl:value-of select="$layout_columns_"/></xsl:when>
@@ -431,7 +431,7 @@
 	<xsl:variable name="titles" select="xalan:nodeset($titles_)"/>
 	
 	<xsl:variable name="title-list-tables">
-		<xsl:variable name="toc_table_title" select="//*[local-name() = 'metanorma']/*[local-name() = 'metanorma-extension']/*[local-name() = 'toc'][@type='table']/*[local-name() = 'title']"/>
+		<xsl:variable name="toc_table_title" select="//mn:metanorma/mn:metanorma-extension/mn:toc[@type='table']/mn:title"/>
 		<xsl:value-of select="$toc_table_title"/>
 		<xsl:if test="normalize-space($toc_table_title) = ''">
 			<xsl:call-template name="getLocalizedString">
@@ -441,7 +441,7 @@
 	</xsl:variable>
 	
 	<xsl:variable name="title-list-figures">
-		<xsl:variable name="toc_figure_title" select="//*[local-name() = 'metanorma']/*[local-name() = 'metanorma-extension']/*[local-name() = 'toc'][@type='figure']/*[local-name() = 'title']"/>
+		<xsl:variable name="toc_figure_title" select="//mn:metanorma/mn:metanorma-extension/mn:toc[@type='figure']/mn:title"/>
 		<xsl:value-of select="$toc_figure_title"/>
 		<xsl:if test="normalize-space($toc_figure_title) = ''">
 			<xsl:call-template name="getLocalizedString">
@@ -451,7 +451,7 @@
 	</xsl:variable>
 	
 	<xsl:variable name="title-list-recommendations">
-		<xsl:variable name="toc_requirement_title" select="//*[local-name() = 'metanorma']/*[local-name() = 'metanorma-extension']/*[local-name() = 'toc'][@type='requirement']/*[local-name() = 'title']"/>
+		<xsl:variable name="toc_requirement_title" select="//mn:metanorma/mn:metanorma-extension/mn:toc[@type='requirement']/mn:title"/>
 		<xsl:value-of select="$toc_requirement_title"/>
 		<xsl:if test="normalize-space($toc_requirement_title) = ''">
 			<xsl:call-template name="getLocalizedString">
@@ -461,8 +461,8 @@
 	</xsl:variable>
 
 	<xsl:variable name="bibdata">
-		<xsl:copy-of select="//*[local-name() = 'metanorma']/*[local-name() = 'bibdata']" />
-		<xsl:copy-of select="//*[local-name() = 'metanorma']/*[local-name() = 'localized-strings']" />
+		<xsl:copy-of select="//mn:metanorma/mn:bibdata" />
+		<xsl:copy-of select="//mn:metanorma/mn:localized-strings" />
 	</xsl:variable>
 	
 	<!-- Characters -->
@@ -623,8 +623,8 @@
 		<xsl:variable name="root-style_" select="xalan:nodeset($root-style)"/>
 		
 		<xsl:variable name="additional_fonts_">
-			<xsl:for-each select="//*[local-name() = 'metanorma'][1]/*[local-name() = 'metanorma-extension']/*[local-name() = 'presentation-metadata'][*[local-name() = 'name'] = 'fonts']/*[local-name() = 'value'] | 
-					//*[local-name() = 'metanorma'][1]/*[local-name() = 'presentation-metadata'][*[local-name() = 'name'] = 'fonts']/*[local-name() = 'value']">
+			<xsl:for-each select="//mn:metanorma[1]/mn:metanorma-extension/mn:presentation-metadata[mn:name = 'fonts']/mn:value | 
+					//mn:metanorma[1]/mn:presentation-metadata[mn:name = 'fonts']/mn:value">
 				<xsl:value-of select="."/><xsl:if test="position() != last()">, </xsl:if>
 			</xsl:for-each>
 		</xsl:variable>
@@ -903,7 +903,7 @@
 				<xsl:attribute name="color">inherit</xsl:attribute>
 				<xsl:attribute name="text-decoration">none</xsl:attribute>
 			</xsl:if>
-			<xsl:if test="$doctype = 'flex-standard' and ancestor::*[local-name() = 'copyright-statement']">
+			<xsl:if test="$doctype = 'flex-standard' and ancestor::mn:copyright-statement">
 				<xsl:attribute name="color"><xsl:value-of select="$color_secondary_shade_1_PAS"/></xsl:attribute>
 			</xsl:if>
 		</xsl:if>
@@ -915,25 +915,25 @@
 			<xsl:if test="$current_template = 'standard'">
 				<xsl:attribute name="color"><xsl:value-of select="$color_blue"/></xsl:attribute>
 				<xsl:attribute name="text-decoration">none</xsl:attribute>
-				<xsl:if test="ancestor::*[local-name() = 'feedback-statement']">
+				<xsl:if test="ancestor::mn:feedback-statement">
 					<xsl:attribute name="text-decoration">underline</xsl:attribute>
 				</xsl:if>
 			</xsl:if>
 		</xsl:if>
 		<xsl:if test="$namespace = 'iec'">
-			<xsl:if test="ancestor::*[local-name()='feedback-statement' or local-name() = 'copyright-statement']">
+			<xsl:if test="ancestor::*[self::mn:feedback-statement or self::mn:copyright-statement]">
 				<xsl:attribute name="color">blue</xsl:attribute>
 			</xsl:if>
 		</xsl:if>
 		<xsl:if test="$namespace = 'iso'">
-			<xsl:if test="(ancestor::*[local-name() = 'copyright-statement'] and contains(@target, 'mailto:')) or
+			<xsl:if test="(ancestor::mn:copyright-statement and contains(@target, 'mailto:')) or
 							($layoutVersion = '2024' and ancestor::mn:termsource)">
 				<xsl:attribute name="color">inherit</xsl:attribute>
 				<xsl:attribute name="text-decoration">none</xsl:attribute>
 			</xsl:if>
 		</xsl:if>
 		<xsl:if test="$namespace = 'rsd'">
-			<xsl:if test="ancestor::*[local-name() = 'bibitem']">
+			<xsl:if test="ancestor::mn:bibitem">
 				<xsl:attribute name="color">black</xsl:attribute>
 				<xsl:attribute name="text-decoration">none</xsl:attribute>
 				<xsl:attribute name="font-weight">300</xsl:attribute>
@@ -1035,7 +1035,7 @@
 
 	<xsl:template name="refine_sourcecode-style">
 		<xsl:if test="$namespace = 'rsd'"> <!-- background for image -->
-			<xsl:if test="starts-with(*[local-name() = 'name']/text()[1], 'Figure ')">
+			<xsl:if test="starts-with(mn:name/text()[1], 'Figure ')">
 				<xsl:attribute name="background-color">rgb(236,242,246)</xsl:attribute>
 				<xsl:attribute name="padding-left">11mm</xsl:attribute>
 				<xsl:attribute name="margin-left">0mm</xsl:attribute>
@@ -1043,13 +1043,13 @@
 				<xsl:attribute name="margin-right">0mm</xsl:attribute>
 				<xsl:attribute name="padding-top">7.5mm</xsl:attribute>
 				<xsl:attribute name="padding-bottom">7.5mm</xsl:attribute>
-				<xsl:if test="following-sibling::*[1][local-name() = 'sourcecode'] and starts-with(*[local-name() = 'name']/text()[1], 'Figure ')">
+				<xsl:if test="following-sibling::*[1][self::mn:sourcecode] and starts-with(mn:name/text()[1], 'Figure ')">
 					<xsl:attribute name="margin-bottom">16pt</xsl:attribute>
 				</xsl:if>
 			</xsl:if>
 		</xsl:if>
 		<xsl:if test="$namespace = 'ogc'">
-			<xsl:if test="parent::*[local-name() = 'example']">
+			<xsl:if test="parent::mn:example">
 				<xsl:attribute name="margin-bottom">0pt</xsl:attribute>
 			</xsl:if>
 		</xsl:if>
@@ -1514,7 +1514,7 @@
 			</xsl:if>
 		</xsl:if>
 		<xsl:if test="$namespace = 'plateau'">
-			<xsl:if test="ancestor::*[local-name() = 'figure']">
+			<xsl:if test="ancestor::mn:figure">
 				<xsl:attribute name="font-weight">bold</xsl:attribute>
 			</xsl:if>
 		</xsl:if>
@@ -1580,7 +1580,7 @@
 
 	<xsl:template name="refine_example-p-style">
 		<xsl:if test="$namespace = 'ieee'">
-			<xsl:if test="not(preceding-sibling::*[local-name() = 'p'])">
+			<xsl:if test="not(preceding-sibling::mn:p)">
 				<xsl:attribute name="margin-top">6pt</xsl:attribute>
 			</xsl:if>
 		</xsl:if>
@@ -1759,7 +1759,7 @@
 		</xsl:if>
 	
 		<xsl:if test="$namespace = 'bipm'">
-			<xsl:if test="not(ancestor::*[local-name()='note_side'])">
+			<xsl:if test="not(ancestor::mn:note_side)">
 				<xsl:attribute name="font-size">10pt</xsl:attribute>
 			</xsl:if>
 			<xsl:if test="ancestor-or-self::*[@parent-type = 'quote']">
@@ -1772,13 +1772,13 @@
 			<xsl:if test="starts-with(@id, 'boxed-text')">
 				<xsl:attribute name="font-size">inherit</xsl:attribute>
 			</xsl:if>
-			<xsl:if test="$document_type != 'PAS' and *[local-name() = 'name']">
+			<xsl:if test="$document_type != 'PAS' and mn:name">
 				<xsl:attribute name="margin-top">-14pt</xsl:attribute>
 			</xsl:if>
-			<xsl:if test="not(*[local-name()='tbody']) and *[local-name()='thead']">
+			<xsl:if test="not(mn:tbody) and mn:thead">
 				<xsl:attribute name="margin-top">4pt</xsl:attribute>
 			</xsl:if>
-			<xsl:if test="(ancestor::*[local-name() = 'preface'] and not(*[local-name() = 'tbody']))">
+			<xsl:if test="ancestor::mn:preface and not(mn:tbody)">
 				<xsl:attribute name="margin-top">0pt</xsl:attribute>
 				<xsl:attribute name="margin-bottom">0pt</xsl:attribute>
 			</xsl:if>
@@ -1786,7 +1786,7 @@
 				<xsl:attribute name="font-size">9pt</xsl:attribute>
 				<!-- two-columns table without name renders in column (not spanned) -->
 				<xsl:choose>
-					<xsl:when test="count(*[local-name()='colgroup']/*[local-name()='col']) = 2 and not(*[local-name() = 'name']) and not(*[local-name() = 'thead'])">
+					<xsl:when test="count(mn:colgroup/mn:col) = 2 and not(mn:name) and not(mn:thead)">
 						<xsl:attribute name="font-size">inherit</xsl:attribute>
 					</xsl:when>
 					<xsl:when test="@width = 'text-width'"><!-- renders in column, not spanned --></xsl:when>
@@ -1797,17 +1797,17 @@
 				<xsl:attribute name="margin-top">12pt</xsl:attribute>
 				<xsl:attribute name="space-before">12pt</xsl:attribute>
 				<xsl:attribute name="space-after">12pt</xsl:attribute>
-				<xsl:if test="not(*[local-name() = 'name']) and (ancestor::*[local-name()='clause'][@type = 'corrigenda'] or contains(ancestor::*[local-name()='clause'][1]/*[local-name()='title'], 'Amendments/corrigenda'))">
+				<xsl:if test="not(mn:name) and (ancestor::mn:clause[@type = 'corrigenda'] or contains(ancestor::mn:clause[1]/mn:title, 'Amendments/corrigenda'))">
 					<xsl:attribute name="margin-top">2pt</xsl:attribute>
 				</xsl:if>
 			</xsl:if>
-			<xsl:if test="$document_type != 'PAS' and not(following-sibling::*[2][@depth = '1']) and not (ancestor::*[local-name()='preface'] and (ancestor::*[local-name()='clause'][@type = 'corrigenda'] or contains(ancestor::*[local-name()='clause'][1]/*[local-name()='title'], 'Amendments/corrigenda')))">
+			<xsl:if test="$document_type != 'PAS' and not(following-sibling::*[2][@depth = '1']) and not (ancestor::mn:preface and (ancestor::mn:clause[@type = 'corrigenda'] or contains(ancestor::mn:clause[1]/mn:title, 'Amendments/corrigenda')))">
 				<xsl:attribute name="margin-bottom">24pt</xsl:attribute>
 			</xsl:if>
 		</xsl:if>
 	
 		<xsl:if test="$namespace = 'iec'">
-			<xsl:if test="ancestor::*[local-name() = 'preface']">
+			<xsl:if test="ancestor::mn:preface">
 				<xsl:attribute name="space-after">16pt</xsl:attribute>
 			</xsl:if>
 		</xsl:if>
@@ -1816,7 +1816,7 @@
 			<xsl:if test="$current_template = 'whitepaper' or $current_template = 'icap-whitepaper' or $current_template = 'industry-connection-report'">
 				<xsl:attribute name="font-size">10pt</xsl:attribute>
 			</xsl:if>
-			<xsl:if test="ancestor::*[local-name() = 'feedback-statement']">
+			<xsl:if test="ancestor::mn:feedback-statement">
 				<xsl:attribute name="font-size">inherit</xsl:attribute>
 				<xsl:attribute name="margin-top">6pt</xsl:attribute>
 				<xsl:attribute name="margin-bottom">6pt</xsl:attribute>
@@ -1824,7 +1824,7 @@
 		</xsl:if>
 		
 		<xsl:if test="$namespace = 'iso'">
-			<xsl:if test="not(*[local-name() = 'name'])">
+			<xsl:if test="not(mn:name)">
 				<xsl:attribute name="margin-top">12pt</xsl:attribute>
 			</xsl:if>
 			<xsl:if test="starts-with(@id, 'array_')">
@@ -1849,19 +1849,19 @@
 		</xsl:if>
 	
 		<xsl:if test="$namespace = 'nist-cswp'  or $namespace = 'nist-sp'">
-			<xsl:if test="ancestor::*[local-name()='annex'] or ancestor::*[local-name()='preface']">
+			<xsl:if test="ancestor::mn:annex or ancestor::mn:preface">
 				<xsl:attribute name="font-size">10pt</xsl:attribute>
 			</xsl:if>
 		</xsl:if>
 		
 		<xsl:if test="$namespace = 'ogc'">
-			<!-- <xsl:if test="ancestor::*[local-name()='sections']"> -->
+			<!-- <xsl:if test="ancestor::mn:sections"> -->
 				<xsl:attribute name="font-size">9pt</xsl:attribute>
 			<!-- </xsl:if> -->
 		</xsl:if>
 		
 		<xsl:if test="$namespace = 'unece-rec'">
-			<xsl:if test="not(ancestor::*[local-name()='sections'])">
+			<xsl:if test="not(ancestor::mn:sections)">
 				<xsl:attribute name="font-size">10pt</xsl:attribute>
 			</xsl:if>
 		</xsl:if>
@@ -1952,7 +1952,7 @@
 		</xsl:if>
 		
 		<xsl:if test="$namespace = 'bipm'">					
-			<xsl:if test="not(ancestor::*[local-name()='preface']) and not(ancestor::*[local-name()='note_side']) and not(ancestor::*[local-name() = 'annex'] and .//*[local-name() = 'xref'][@pagenumber]) and not(ancestor::*[local-name() = 'doccontrol']) and not(ancestor::*[local-name() = 'colophon'])">
+			<xsl:if test="not(ancestor::mn:preface) and not(ancestor::mn:note_side) and not(ancestor::mn:annex and .//mn:xref[@pagenumber]) and not(ancestor::mn:doccontrol) and not(ancestor::mn:colophon)">
 				<xsl:attribute name="border-top">0.5pt solid black</xsl:attribute>
 				<xsl:attribute name="border-bottom">0.5pt solid black</xsl:attribute>
 			</xsl:if>
@@ -1963,13 +1963,13 @@
 				<xsl:attribute name="border-bottom">2.5pt solid black</xsl:attribute>
 			</xsl:if>
 			<xsl:if test=".//*[local-name() = 'tr'][1]/*[local-name() = 'td'][normalize-space() = 'Key'] or
-			normalize-space(substring-after(*[local-name() = 'name'], '—')) = 'Key' or 
-			normalize-space(*[local-name() = 'name']) = 'Key'
+			normalize-space(substring-after(mn:name, '—')) = 'Key' or 
+			normalize-space(mn:name) = 'Key'
 			">
 				<xsl:attribute name="border-bottom">none</xsl:attribute>
 			</xsl:if>
-			<xsl:if test="(ancestor::*[local-name()='preface'] and ancestor::*[local-name()='clause'][@type = 'corrigenda']) or
-			(ancestor::*[local-name()='copyright-statement'] and contains(ancestor::*[local-name()='clause'][1]/*[local-name()='title'], 'Amendments/corrigenda'))">
+			<xsl:if test="(ancestor::mn:preface and ancestor::mn:clause[@type = 'corrigenda']) or
+			(ancestor::mn:copyright-statement and contains(ancestor::mn:clause[1]/mn:title, 'Amendments/corrigenda'))">
 				<xsl:if test="normalize-space(*[local-name() = 'tbody']) = ''">
 					<xsl:attribute name="border-bottom">none</xsl:attribute>
 				</xsl:if>
@@ -1979,20 +1979,20 @@
 					<xsl:attribute name="border-bottom">none</xsl:attribute>
 				</xsl:if>
 			</xsl:if>
-			<xsl:if test="ancestor::*[local-name() = 'preface']">
+			<xsl:if test="ancestor::mn:preface">
 				<xsl:attribute name="border">0pt solid black</xsl:attribute>
 				<xsl:attribute name="border-top">0pt solid black</xsl:attribute>
 			</xsl:if>
 			<xsl:if test="$document_type = 'PAS'">
-				<xsl:if test="ancestor::*[local-name()='preface'] and ancestor::*[local-name()='clause'][@type = 'logos']">
+				<xsl:if test="ancestor::mn:preface and ancestor::mn:clause[@type = 'logos']">
 					<xsl:attribute name="border-bottom">none</xsl:attribute>
 				</xsl:if>
 				<!-- two-columns table without name renders without borders -->
-				<xsl:if test="count(*[local-name()='colgroup']/*[local-name()='col']) = 2 and not(*[local-name() = 'name']) and not(*[local-name() = 'thead'])">
+				<xsl:if test="count(mn:colgroup/mn:col) = 2 and not(mn:name) and not(*[local-name() = 'thead'])">
 					<xsl:attribute name="border-bottom">none</xsl:attribute>
 				</xsl:if>
 			</xsl:if>
-			<xsl:if test="ancestor::*[local-name() = 'table']">
+			<xsl:if test="ancestor::mn:table">
 				<!-- for internal table in table cell -->
 				<xsl:attribute name="border"><xsl:value-of select="$table-border"/></xsl:attribute>
 			</xsl:if>
@@ -2002,7 +2002,7 @@
 			<xsl:if test="$current_template = 'whitepaper' or $current_template = 'icap-whitepaper' or $current_template = 'industry-connection-report'">
 				<xsl:attribute name="border">0.5 solid black</xsl:attribute>
 			</xsl:if>
-			<xsl:if test="ancestor::*[local-name() = 'feedback-statement']">
+			<xsl:if test="ancestor::mn:feedback-statement">
 				<xsl:attribute name="border">none</xsl:attribute>
 			</xsl:if>
 		</xsl:if>
@@ -2011,12 +2011,12 @@
 			<xsl:if test="*[local-name()='thead']">
 				<xsl:attribute name="border-top"><xsl:value-of select="$table-border"/></xsl:attribute>
 			</xsl:if>
-			<xsl:if test="ancestor::*[local-name() = 'table']">
+			<xsl:if test="ancestor::mn:table">
 				<!-- for internal table in table cell -->
 				<xsl:attribute name="border"><xsl:value-of select="$table-cell-border"/></xsl:attribute>
 			</xsl:if>
 			<xsl:if test="$layoutVersion = '1951'">
-				<xsl:if test="@unnumbered = 'true' and ancestor::*[local-name() = 'preface']">
+				<xsl:if test="@unnumbered = 'true' and ancestor::mn:preface">
 					<xsl:attribute name="border">none</xsl:attribute>
 				</xsl:if>
 			</xsl:if>
@@ -2038,13 +2038,13 @@
 		</xsl:if>
 		
 		<xsl:if test="$namespace = 'jis'">
-			<xsl:if test="ancestor::*[local-name()='preface']">
+			<xsl:if test="ancestor::mn:preface">
 				<xsl:attribute name="border">none</xsl:attribute>
 			</xsl:if>
 		</xsl:if>
 		
 		<xsl:if test="$namespace = 'unece-rec'">
-			<xsl:if test="ancestor::*[local-name()='sections']">
+			<xsl:if test="ancestor::mn:sections">
 				<xsl:attribute name="border-top">1.5pt solid black</xsl:attribute>
 				<xsl:attribute name="border-bottom">1.5pt solid black</xsl:attribute>
 			</xsl:if>
@@ -2202,7 +2202,7 @@
 			<xsl:if test="../@width = 'full-page-width'">
 				<xsl:attribute name="margin-left">0mm</xsl:attribute>
 			</xsl:if>
-			<xsl:if test="../@unnumbered = 'true' and (ancestor::*[@type = 'corrigenda'] or contains(ancestor::*[local-name()='clause'][1]/*[local-name()='title'], 'Amendments/corrigenda'))">
+			<xsl:if test="../@unnumbered = 'true' and (ancestor::*[@type = 'corrigenda'] or contains(ancestor::mn:clause[1]/mn:title, 'Amendments/corrigenda'))">
 				<xsl:attribute name="margin-left">0mm</xsl:attribute>
 				<xsl:attribute name="font-size">9pt</xsl:attribute>
 				<xsl:attribute name="font-weight">bold</xsl:attribute>
@@ -2323,7 +2323,7 @@
 			<xsl:if test="position() = last() and $document_type = 'PAS'">
 				<xsl:attribute name="border-bottom">none</xsl:attribute>
 			</xsl:if>
-			<xsl:if test="ancestor::*[local-name() = 'preface']">
+			<xsl:if test="ancestor::mn:preface">
 				<xsl:attribute name="border-top">solid black 0pt</xsl:attribute>
 				<xsl:attribute name="border-bottom">solid black 0pt</xsl:attribute>
 				<xsl:attribute name="font-weight">normal</xsl:attribute>
@@ -2375,7 +2375,7 @@
 		</xsl:if>
 		
 		<xsl:if test="$namespace = 'jis'">
-			<xsl:if test="ancestor::*[local-name() = 'preface']">
+			<xsl:if test="ancestor::mn:preface">
 				<xsl:attribute name="border-top">none</xsl:attribute>
 				<xsl:attribute name="border-bottom">none</xsl:attribute>
 			</xsl:if>
@@ -2431,12 +2431,12 @@
 		
 		<xsl:if test="$namespace = 'bsi'">
 			<xsl:call-template name="setBorderUnderRow" />
-			<xsl:if test="position() = 1 and $document_type != 'PAS' and not(ancestor::*[local-name() = 'table'][1]/*[local-name() = 'thead'])">
+			<xsl:if test="position() = 1 and $document_type != 'PAS' and not(ancestor::mn:table[1]/*[local-name() = 'thead'])">
 				<!-- set border for 1st row if thead is missing -->
 				<xsl:attribute name="border-top">2.5pt solid black</xsl:attribute>
 			</xsl:if>
 			
-			<xsl:if test="ancestor::*[local-name() = 'preface'] or ancestor::*[local-name() = 'boilerplate']">
+			<xsl:if test="ancestor::mn:preface or ancestor::mn:boilerplate">
 				<xsl:attribute name="border-top">none</xsl:attribute>
 				<xsl:attribute name="border-bottom">none</xsl:attribute>
 			</xsl:if>
@@ -2445,8 +2445,8 @@
 				<xsl:variable name="number"><xsl:number/></xsl:variable>
 				<xsl:attribute name="background-color">
 					<xsl:choose>
-						<xsl:when test="ancestor::*[local-name()='clause'][@type = 'corrigenda' or contains(*[local-name()='title'], 'Amendments/corrigenda')]">transparent</xsl:when>
-						<xsl:when test="preceding::*[local-name() = 'foreword' or local-name() = 'introduction']">
+						<xsl:when test="ancestor::mn:clause[@type = 'corrigenda' or contains(mn:title, 'Amendments/corrigenda')]">transparent</xsl:when>
+						<xsl:when test="preceding::*[self::mn:foreword or self::mn:introduction]">
 							<!-- for preface sections -->
 							<xsl:choose>
 								<xsl:when test="$number mod 2 = 0"><xsl:value-of select="$color_secondary_shade_4_PAS"/></xsl:when>
@@ -2462,20 +2462,20 @@
 						</xsl:otherwise>
 					</xsl:choose>
 				</xsl:attribute>
-				<xsl:if test="ancestor::*[local-name()='clause'][@type = 'corrigenda' or contains(*[local-name()='title'], 'Amendments/corrigenda')] and not(following-sibling::*[local-name() = 'tr'])">
+				<xsl:if test="ancestor::mn:clause[@type = 'corrigenda' or contains(mn:title, 'Amendments/corrigenda')] and not(following-sibling::*[local-name() = 'tr'])">
 					<xsl:attribute name="border-bottom">2pt solid <xsl:value-of select="$color_secondary_shade_1_PAS"/></xsl:attribute>
 				</xsl:if>
 			</xsl:if>
 		</xsl:if>
 	
 		<xsl:if test="$namespace = 'ieee'">
-			<xsl:if test="ancestor::*[local-name() = 'feedback-statement']">
+			<xsl:if test="ancestor::mn:feedback-statement">
 				<xsl:attribute name="min-height">0mm</xsl:attribute>
 			</xsl:if>
 		</xsl:if>
 	
 		<xsl:if test="$namespace = 'iso'">
-			<xsl:if test="position() = 1 and not(ancestor::*[local-name() = 'table']/*[local-name() = 'thead']) and ancestor::*[local-name() = 'table']/*[local-name() = 'name']">
+			<xsl:if test="position() = 1 and not(ancestor::mn:table/*[local-name() = 'thead']) and ancestor::mn:table/mn:name">
 				<xsl:attribute name="border-top"><xsl:value-of select="$table-border"/></xsl:attribute>
 			</xsl:if>
 		</xsl:if>
@@ -2601,11 +2601,11 @@
 	<xsl:template name="refine_table-header-cell-style">
 			
 		<xsl:if test="$namespace = 'bipm'">
-			<xsl:if test="(ancestor::*[local-name() = 'annex'] and ancestor::*[local-name() = 'table']//*[local-name() = 'xref'][@pagenumber]) or ancestor::*[local-name() = 'doccontrol'] or ancestor::*[local-name() = 'colophon']"><!-- for Annex ToC -->
+			<xsl:if test="(ancestor::mn:annex and ancestor::mn:table//mn:xref[@pagenumber]) or ancestor::mn:doccontrol or ancestor::mn:colophon"><!-- for Annex ToC -->
 				<xsl:attribute name="border-top">solid black 0pt</xsl:attribute>
 				<xsl:attribute name="border-bottom">solid black 0pt</xsl:attribute>
 			</xsl:if>
-			<xsl:if test="ancestor::*[local-name() = 'doccontrol'] or ancestor::*[local-name() = 'colophon']">
+			<xsl:if test="ancestor::mn:doccontrol or ancestor::mn:colophon">
 				<xsl:call-template name="setTextAlignment">
 					<xsl:with-param name="default">left</xsl:with-param>
 				</xsl:call-template>
@@ -2619,13 +2619,13 @@
 				<xsl:attribute name="border-top"><xsl:value-of select="$table-border"/></xsl:attribute>
 				<xsl:attribute name="border-bottom"><xsl:value-of select="$table-border"/></xsl:attribute> -->
 			</xsl:if>
-			<xsl:if test="ancestor::*[local-name() = 'preface'] or ancestor::*[local-name() = 'boilerplate']">
+			<xsl:if test="ancestor::mn:preface or ancestor::mn:boilerplate">
 				<xsl:attribute name="font-weight">normal</xsl:attribute>
 				<xsl:attribute name="text-align">left</xsl:attribute>
 				<xsl:if test="$document_type != 'PAS'">
 					<xsl:attribute name="border">solid black 0pt</xsl:attribute>
 				</xsl:if>
-				<xsl:if test="ancestor::*[local-name()='clause'][@type = 'corrigenda' or contains(*[local-name()='title'], 'Amendments/corrigenda')]">
+				<xsl:if test="ancestor::mn:clause[@type = 'corrigenda' or contains(mn:title, 'Amendments/corrigenda')]">
 					<xsl:if test="$document_type != 'PAS'">
 						<xsl:attribute name="border-top">none</xsl:attribute>
 						<xsl:attribute name="border-bottom">solid black 1pt</xsl:attribute>
@@ -2657,7 +2657,7 @@
 					<xsl:otherwise>
 						<xsl:attribute name="color">white</xsl:attribute>
 						
-						<xsl:if test="not(ancestor::mn:clause[@type = 'corrigenda' or contains(*[local-name()='title'], 'Amendments/corrigenda')] and ancestor::mn:thead)">
+						<xsl:if test="not(ancestor::mn:clause[@type = 'corrigenda' or contains(mn:title, 'Amendments/corrigenda')] and ancestor::mn:thead)">
 							<xsl:if test="following-sibling::*[1][local-name() = 'th']">
 								<xsl:attribute name="border-right">0.75pt solid white</xsl:attribute>
 							</xsl:if>
@@ -2674,7 +2674,7 @@
 
 		<xsl:if test="$namespace = 'iec'">
 			<xsl:attribute name="text-align">center</xsl:attribute>
-			<xsl:if test="ancestor::*[local-name()='preface']">
+			<xsl:if test="ancestor::mn:preface">
 				<xsl:attribute name="font-weight">normal</xsl:attribute>
 			</xsl:if>
 		</xsl:if>
@@ -2697,7 +2697,7 @@
 		
 		<xsl:if test="$namespace = 'itu'">
 			<xsl:variable name="doctype" select="ancestor::mn:metanorma/mn:bibdata/mn:ext/mn:doctype[not(@language) or @language = '']"/>
-			<xsl:if test="ancestor::*[local-name()='preface']">
+			<xsl:if test="ancestor::mn:preface">
 				<xsl:if test="$doctype != 'service-publication'">
 					<xsl:attribute name="border">solid black 0pt</xsl:attribute>
 				</xsl:if>
@@ -2710,7 +2710,7 @@
 		</xsl:if>
 		
 		<xsl:if test="$namespace = 'jis'">
-			<xsl:if test="ancestor::*[local-name()='preface']">
+			<xsl:if test="ancestor::mn:preface">
 				<xsl:attribute name="border">none</xsl:attribute>
 			</xsl:if>
 		</xsl:if>
@@ -2719,19 +2719,19 @@
 			<xsl:attribute name="text-align">center</xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'ogc'">
-			<xsl:if test="starts-with(ancestor::*[local-name() = 'table'][1]/@type, 'recommend') and normalize-space(@align) = ''">
+			<xsl:if test="starts-with(ancestor::mn:table[1]/@type, 'recommend') and normalize-space(@align) = ''">
 				<xsl:call-template name="setTextAlignment">
 					<xsl:with-param name="default">left</xsl:with-param>
 				</xsl:call-template>
 			</xsl:if>
 		</xsl:if>
 		<xsl:if test="$namespace = 'unece-rec'">				
-			<xsl:if test="ancestor::*[local-name()='sections']">
+			<xsl:if test="ancestor::mn:sections">
 				<xsl:attribute name="border">solid black 0pt</xsl:attribute>
 				<xsl:attribute name="display-align">before</xsl:attribute>
 				<xsl:attribute name="padding-top">1mm</xsl:attribute>
 			</xsl:if>
-			<xsl:if test="ancestor::*[local-name()='annex']">
+			<xsl:if test="ancestor::mn:annex">
 				<xsl:attribute name="font-weight">normal</xsl:attribute>
 				<xsl:attribute name="padding-top">1mm</xsl:attribute>
 				<xsl:attribute name="background-color">rgb(218, 218, 218)</xsl:attribute>
@@ -2752,7 +2752,7 @@
 		
 		<xsl:if test="$namespace = 'bsi'">
 			<xsl:if test="$document_type = 'PAS'">
-				<xsl:if test="ancestor::mn:clause[@type = 'corrigenda' or contains(*[local-name()='title'], 'Amendments/corrigenda')] and ancestor::mn:thead">
+				<xsl:if test="ancestor::mn:clause[@type = 'corrigenda' or contains(mn:title, 'Amendments/corrigenda')] and ancestor::mn:thead">
 					<xsl:attribute name="display-align">center</xsl:attribute>
 					<xsl:attribute name="font-weight">bold</xsl:attribute>
 					<xsl:attribute name="padding-left">3mm</xsl:attribute>
@@ -2853,7 +2853,7 @@
 			<xsl:if test="not(ancestor::*[local-name()='tr']/following-sibling::*[local-name()='tr'])"> <!-- last row -->
 				<xsl:attribute name="padding-bottom">2mm</xsl:attribute>
 			</xsl:if>
-			<xsl:if test="ancestor::*[local-name() = 'doccontrol'] or ancestor::*[local-name() = 'colophon']">
+			<xsl:if test="ancestor::mn:doccontrol or ancestor::mn:colophon">
 				<xsl:attribute name="display-align">before</xsl:attribute>
 			</xsl:if>
 		</xsl:if>
@@ -2872,7 +2872,7 @@
 				<xsl:attribute name="padding-bottom">1mm</xsl:attribute>
 			</xsl:if>
 
-			<xsl:if test="not(ancestor::*[local-name()='preface']) and ancestor::*[local-name() = 'table']/*[local-name() = 'thead'] and not(ancestor::*[local-name() = 'tr']/preceding-sibling::*[local-name() = 'tr'])">
+			<xsl:if test="not(ancestor::mn:preface) and ancestor::mn:table/*[local-name() = 'thead'] and not(ancestor::*[local-name() = 'tr']/preceding-sibling::*[local-name() = 'tr'])">
 				<!-- first row in table body, and if exists header -->
 				<xsl:attribute name="border-top">0pt solid black</xsl:attribute>
 			</xsl:if>
@@ -2885,10 +2885,10 @@
 			</xsl:if>
 			
 			<!-- Key table for figure -->
-			<xsl:if test="ancestor::*[local-name() = 'table'][1]/preceding-sibling::*[1][local-name() = 'figure'] and 
-			(ancestor::*[local-name() = 'table'][1]//*[local-name() = 'tr'][1]/*[local-name() = 'td'][normalize-space() = 'Key'] or
-			normalize-space(substring-after(ancestor::*[local-name() = 'table'][1]/*[local-name() = 'name'], '—')) = 'Key' or 
-			normalize-space(ancestor::*[local-name() = 'table'][1]/*[local-name() = 'name']) = 'Key')">
+			<xsl:if test="ancestor::mn:table[1]/preceding-sibling::*[1][self::mn:figure] and 
+			(ancestor::mn:table[1]//*[local-name() = 'tr'][1]/*[local-name() = 'td'][normalize-space() = 'Key'] or
+			normalize-space(substring-after(ancestor::mn:table[1]/mn:name, '—')) = 'Key' or 
+			normalize-space(ancestor::mn:table[1]/mn:name) = 'Key')">
 				<xsl:attribute name="border">none</xsl:attribute>
 				
 				<xsl:if test="count(*) = 1 and local-name(*[1]) = 'figure'">
@@ -2899,8 +2899,8 @@
 				</xsl:if>
 			</xsl:if>
 			
-			<xsl:if test="(ancestor::*[local-name()='preface'] and ancestor::*[local-name()='clause'][@type = 'corrigenda']) or
-			(ancestor::*[local-name()='copyright-statement'] and contains(ancestor::*[local-name()='clause'][1]/*[local-name()='title'], 'Amendments/corrigenda'))">
+			<xsl:if test="(ancestor::mn:preface and ancestor::mn:clause[@type = 'corrigenda']) or
+			(ancestor::mn:copyright-statement and contains(ancestor::mn:clause[1]/mn:title, 'Amendments/corrigenda'))">
 				<xsl:if test="normalize-space(parent::*[local-name() = 'tr']) = ''">
 					<xsl:attribute name="border">none</xsl:attribute>
 					<xsl:if test="$document_type != 'PAS'">
@@ -2927,45 +2927,45 @@
 				</xsl:if>
 			</xsl:if>
 			
-			<xsl:if test="starts-with(ancestor::*[local-name() = 'table']/@id, 'boxed-text')">
+			<xsl:if test="starts-with(ancestor::mn:table/@id, 'boxed-text')">
 				<xsl:attribute name="padding-left">2mm</xsl:attribute>
 				<xsl:attribute name="padding-right">2mm</xsl:attribute>
 				<xsl:attribute name="padding-top">4mm</xsl:attribute>
 				<xsl:attribute name="padding-bottom">4mm</xsl:attribute>
 			</xsl:if>
 			
-			<xsl:if test="ancestor::*[local-name() = 'tfoot']">
+			<xsl:if test="ancestor::mn:tfoot">
 				<xsl:attribute name="border">solid black 0</xsl:attribute>
 			</xsl:if>
 			
 			<xsl:if test="$document_type = 'PAS'">
 				<xsl:attribute name="border">0.75pt solid <xsl:value-of select="$color_secondary_shade_1_PAS"/></xsl:attribute>
 				<!-- two-columns table without name renders without borders -->
-				<xsl:if test="ancestor::*[local-name() = 'table'][count(*[local-name()='colgroup']/*[local-name()='col']) = 2 and not(*[local-name() = 'name']) and not(*[local-name() = 'thead'])]">
+				<xsl:if test="ancestor::mn:table[count(mn:colgroup/mn:col) = 2 and not(mn:name) and not(*[local-name() = 'thead'])]">
 					<xsl:attribute name="border">none</xsl:attribute>
 				</xsl:if>
 			</xsl:if>
 			
-			<xsl:if test="ancestor::*[local-name()='preface'] and ancestor::*[local-name()='clause'][@type = 'logos']">
+			<xsl:if test="ancestor::mn:preface and ancestor::mn:clause[@type = 'logos']">
 				<xsl:attribute name="border">none</xsl:attribute>
 			</xsl:if>
 			<!-- bsi -->
 		</xsl:if>
 		
 		<xsl:if test="$namespace = 'gb'">
-			<xsl:if test="ancestor::*[local-name() = 'tfoot']">
+			<xsl:if test="ancestor::mn:tfoot">
 				<xsl:attribute name="border-bottom">solid black 0</xsl:attribute>
 			</xsl:if>
 		</xsl:if>
 		
 		<xsl:if test="$namespace = 'iec'">
-			<xsl:if test="ancestor::*[local-name()='preface']">
+			<xsl:if test="ancestor::mn:preface">
 				<xsl:attribute name="text-align">center</xsl:attribute>
 			</xsl:if>
 		</xsl:if>
 		
 		<xsl:if test="$namespace = 'ieee'">
-			<xsl:if test="ancestor::*[local-name() = 'feedback-statement']">
+			<xsl:if test="ancestor::mn:feedback-statement">
 				<xsl:attribute name="padding-left">0mm</xsl:attribute>
 				<xsl:attribute name="padding-top">0mm</xsl:attribute>
 				<xsl:attribute name="padding-right">0mm</xsl:attribute>
@@ -2974,17 +2974,17 @@
 		</xsl:if>
 		
 		<xsl:if test="$namespace = 'iso'">
-			<xsl:if test="ancestor::*[local-name() = 'tfoot']">
+			<xsl:if test="ancestor::mn:tfoot">
 				<xsl:attribute name="border">solid black 0</xsl:attribute>
 			</xsl:if>
-			<xsl:if test="starts-with(ancestor::*[local-name() = 'table'][1]/@type, 'recommend')">
+			<xsl:if test="starts-with(ancestor::mn:table[1]/@type, 'recommend')">
 				<xsl:attribute name="display-align">before</xsl:attribute>
 			</xsl:if>
-			<xsl:if test="ancestor::*[local-name() = 'tbody'] and not(../preceding-sibling::*[local-name() = 'tr']) and ancestor::*[local-name() = 'table'][1]/*[local-name() = 'thead']"> <!-- cells in 1st row in the table body, and if thead exists -->
+			<xsl:if test="ancestor::*[local-name() = 'tbody'] and not(../preceding-sibling::*[local-name() = 'tr']) and ancestor::mn:table[1]/*[local-name() = 'thead']"> <!-- cells in 1st row in the table body, and if thead exists -->
 				<xsl:attribute name="border-top">0pt solid black</xsl:attribute>
 			</xsl:if>
 			<xsl:if test="$layoutVersion = '1951'">
-				<xsl:if test="ancestor::*[local-name() = 'table'][1]/@unnumbered = 'true' and ancestor::*[local-name() = 'preface']">
+				<xsl:if test="ancestor::mn:table[1]/@unnumbered = 'true' and ancestor::mn:preface">
 					<xsl:attribute name="border">none</xsl:attribute>
 				</xsl:if>
 			</xsl:if>
@@ -2994,7 +2994,7 @@
 		<xsl:call-template name="setBordersTableArray"/>
 		
 		<xsl:if test="$namespace = 'itu'">
-			<xsl:if test="ancestor::*[local-name()='preface']">
+			<xsl:if test="ancestor::mn:preface">
 				<xsl:attribute name="border">solid black 0pt</xsl:attribute>
 			</xsl:if>
 			<xsl:variable name="doctype" select="ancestor::mn:metanorma/mn:bibdata/mn:ext/mn:doctype[not(@language) or @language = '']"/>
@@ -3008,13 +3008,13 @@
 			<xsl:if test="count(*) = 1 and (local-name(*[1]) = 'stem' or local-name(*[1]) = 'figure')">
 				<xsl:attribute name="padding-left">0mm</xsl:attribute>
 			</xsl:if>
-			<xsl:if test="ancestor::*[local-name() = 'tfoot']">
+			<xsl:if test="ancestor::mn:tfoot">
 				<xsl:attribute name="border">solid black 0</xsl:attribute>
 			</xsl:if>
 		</xsl:if>
 		
 		<xsl:if test="$namespace = 'jis'">
-			<xsl:if test="ancestor::*[local-name() = 'preface']">
+			<xsl:if test="ancestor::mn:preface">
 				<xsl:attribute name="border">none</xsl:attribute>
 			</xsl:if>
 		</xsl:if>
@@ -3026,7 +3026,7 @@
 		</xsl:if>
 		
 		<xsl:if test="$namespace = 'unece-rec'">
-			<xsl:if test="ancestor::*[local-name()='sections']">
+			<xsl:if test="ancestor::mn:sections">
 				<xsl:attribute name="border">solid black 0pt</xsl:attribute>
 				<xsl:attribute name="padding-top">1mm</xsl:attribute>					
 			</xsl:if>
@@ -3100,7 +3100,7 @@
 		</xsl:if>
 		<xsl:if test="$namespace = 'itu'">
 			<xsl:variable name="doctype" select="ancestor::mn:metanorma/mn:bibdata/mn:ext/mn:doctype[not(@language) or @language = '']"/>
-			<xsl:if test="ancestor::*[local-name()='preface']">
+			<xsl:if test="ancestor::mn:preface">
 				<xsl:if test="$doctype != 'service-publication'">
 					<xsl:attribute name="border">solid black 0pt</xsl:attribute>
 				</xsl:if>
@@ -3438,7 +3438,7 @@
 	
 	<xsl:template name="refine_dt-cell-style">
 		<xsl:if test="$namespace = 'itu'">
-			<xsl:if test="ancestor::*[1][local-name() = 'dl']/preceding-sibling::*[1][local-name() = 'formula']">						
+			<xsl:if test="ancestor::*[1][self::mn:dl]/preceding-sibling::*[1][self::mn:formula]">						
 				<xsl:attribute name="padding-right">3mm</xsl:attribute>
 			</xsl:if>
 		</xsl:if>
@@ -3493,7 +3493,7 @@
 			</xsl:if>
 		</xsl:if>
 		<xsl:if test="$namespace = 'itu'">
-			<xsl:if test="ancestor::*[1][local-name() = 'dl']/preceding-sibling::*[1][local-name() = 'formula']">
+			<xsl:if test="ancestor::*[1][self::mn:dl]/preceding-sibling::*[1][self::mn:formula]">
 				<xsl:attribute name="text-align">right</xsl:attribute>							
 			</xsl:if>
 		</xsl:if>
@@ -3779,7 +3779,7 @@
 	
 	<xsl:template name="refine_note-style">
 		<xsl:if test="$namespace = 'bipm'">
-			<xsl:if test="parent::*[local-name() = 'li']">
+			<xsl:if test="parent::mn:li">
 				<xsl:attribute name="margin-top">4pt</xsl:attribute>
 				<xsl:attribute name="margin-bottom">4pt</xsl:attribute>
 			</xsl:if>
@@ -3791,17 +3791,17 @@
 				<xsl:attribute name="color"><xsl:value-of select="$color_secondary_shade_1_PAS"/></xsl:attribute>
 				<xsl:attribute name="line-height">1.3</xsl:attribute>
 				<xsl:attribute name="margin-right">0mm</xsl:attribute>
-				<xsl:if test="following-sibling::*[1][local-name() = 'clause' or local-name() = 'term']">
+				<xsl:if test="following-sibling::*[1][self::mn:clause or self::mn:term]">
 					<xsl:attribute name="space-after">12pt</xsl:attribute>
-					<xsl:if test="following-sibling::*[2][local-name() = 'title']/@depth = 2">
+					<xsl:if test="following-sibling::*[2][self::mn:title]/@depth = 2">
 						<xsl:attribute name="space-after">24pt</xsl:attribute>
 					</xsl:if>
 				</xsl:if>
 				<!-- note inside p or ul or ul : p/note ul/note ol/note -->
-				<xsl:if test="parent::*[local-name() = 'p' or local-name() = 'ul' or local-name() = 'ol'] and not(following-sibling::*)">
-					<xsl:if test="../following-sibling::*[1][local-name() = 'clause' or local-name() = 'term']">
+				<xsl:if test="parent::*[self::mn:p or self::mn:ul or self::mn:ol] and not(following-sibling::*)">
+					<xsl:if test="../following-sibling::*[1][self::mn:clause or self::mn:term]">
 						<xsl:attribute name="margin-bottom">12pt</xsl:attribute>
-						<xsl:if test="../following-sibling::*[2][local-name() = 'title']/@depth = 2">
+						<xsl:if test="../following-sibling::*[2][self::mn:title]/@depth = 2">
 							<xsl:attribute name="margin-bottom">24pt</xsl:attribute>
 						</xsl:if>
 					</xsl:if>
@@ -3829,14 +3829,14 @@
 				<xsl:attribute name="margin-bottom">6pt</xsl:attribute>
 			</xsl:if>
 			<xsl:if test="$layoutVersion  = '2024'">
-				<xsl:if test="ancestor::*[local-name() = 'li'] and not(following-sibling::*)">
+				<xsl:if test="ancestor::mn:li and not(following-sibling::*)">
 					<xsl:attribute name="margin-bottom">8pt</xsl:attribute>
 				</xsl:if>
-				<xsl:if test="preceding-sibling::*[1][local-name() = 'table']">
+				<xsl:if test="preceding-sibling::*[1][self::mn:table]">
 					<xsl:attribute name="margin-top">0pt</xsl:attribute>
 				</xsl:if>
 			</xsl:if>
-			<xsl:if test="$doctype = 'amendment' and parent::*[local-name() = 'quote']">
+			<xsl:if test="$doctype = 'amendment' and parent::mn:quote">
 				<xsl:attribute name="font-size">inherit</xsl:attribute>
 			</xsl:if>
 		</xsl:if>
@@ -3914,7 +3914,7 @@
 	
 	<xsl:template name="refine_note-name-style">
 		<xsl:if test="$namespace = 'bsi'">
-			<xsl:variable name="name" select="normalize-space(*[local-name() = 'name'])" />
+			<xsl:variable name="name" select="normalize-space(mn:name)" />
 			<!-- if NOTE without number -->
 			<xsl:if test="translate(substring($name, string-length($name)), '0123456789', '') != ''">
 				<xsl:attribute name="padding-right">3.5mm</xsl:attribute>
@@ -3928,7 +3928,7 @@
 			</xsl:if>
 		</xsl:if>
 		<xsl:if test="$namespace = 'iso'">
-			<xsl:variable name="note_name" select="*[local-name() = 'name']"/>
+			<xsl:variable name="note_name" select="mn:name"/>
 			<xsl:if test="$layoutVersion = '1951'">
 				<xsl:if test="$revision_date_num"> <!--  &lt; 19610101 -->
 					<xsl:attribute name="padding-right">0mm</xsl:attribute>
@@ -3957,7 +3957,7 @@
 			</xsl:if>
 		</xsl:if>
 		<xsl:if test="$namespace = 'plateau'">
-			<xsl:if test="ancestor::*[local-name() = 'figure']">
+			<xsl:if test="ancestor::mn:figure">
 				<xsl:attribute name="font-weight">bold</xsl:attribute>
 			</xsl:if>
 		</xsl:if>
@@ -4126,7 +4126,7 @@
 				<xsl:if test="not(following-sibling::*)">
 					<xsl:attribute name="space-after">24pt</xsl:attribute>
 					<xsl:variable name="level">
-						<xsl:for-each select="ancestor::*[local-name() = 'term']/*[local-name() = 'name']">
+						<xsl:for-each select="ancestor::mn:term/mn:name">
 							<xsl:call-template name="getLevelTermName"/>
 						</xsl:for-each>
 					</xsl:variable>
@@ -4141,7 +4141,7 @@
 			<xsl:if test="$layoutVersion = '1972' or $layoutVersion = '1979' or $layoutVersion = '1987' or $layoutVersion = '1989'">
 				<xsl:attribute name="font-size">9pt</xsl:attribute>
 			</xsl:if>
-			<xsl:if test="$doctype = 'amendment' and parent::*[local-name() = 'quote']">
+			<xsl:if test="$doctype = 'amendment' and parent::mn:quote">
 				<xsl:attribute name="font-size">inherit</xsl:attribute>
 			</xsl:if>
 		</xsl:if>
@@ -4170,7 +4170,7 @@
 	<xsl:template name="refine_termnote-name-style">
 		<xsl:if test="$namespace = 'bsi'">
 			<xsl:attribute name="padding-right">1.5mm</xsl:attribute>
-			<xsl:variable name="name" select="normalize-space(*[local-name() = 'name'])" />
+			<xsl:variable name="name" select="normalize-space(mn:name)" />
 			<!-- if NOTE without number -->
 			<xsl:if test="translate(substring($name, string-length($name)), '0123456789', '') != ''">
 				<xsl:attribute name="padding-right">3.5mm</xsl:attribute>
@@ -4240,20 +4240,20 @@
 	
 	<xsl:template name="refine_quote-style">
 		<xsl:if test="$namespace = 'iso'">
-			<xsl:if test="$doctype = 'amendment' and (*[local-name() = 'note'] or *[local-name() = 'termnote'])">
+			<xsl:if test="$doctype = 'amendment' and (mn:note or mn:termnote)">
 				<xsl:attribute name="margin-left">7mm</xsl:attribute>
 				<xsl:attribute name="margin-right">0mm</xsl:attribute>
 			</xsl:if>
 		</xsl:if>
 		<xsl:if test="$namespace = 'jcgm'">
-			<xsl:if test="ancestor::*[local-name() = 'boilerplate']">
+			<xsl:if test="ancestor::mn:boilerplate">
 				<xsl:attribute name="margin-left">7mm</xsl:attribute>
 				<xsl:attribute name="margin-right">7mm</xsl:attribute>
 				<xsl:attribute name="font-style">normal</xsl:attribute>
 			</xsl:if>
 		</xsl:if>
 		<xsl:if test="$namespace = 'jis'">
-			<xsl:if test="ancestor::*[local-name() = 'li']">
+			<xsl:if test="ancestor::mn:li">
 				<xsl:attribute name="margin-left">7.5mm</xsl:attribute>
 			</xsl:if>
 		</xsl:if>
@@ -4312,7 +4312,7 @@
 			</xsl:if>
 		</xsl:if>
 		<xsl:if test="$namespace = 'plateau'">
-			<xsl:if test="ancestor::*[local-name() = 'table']">
+			<xsl:if test="ancestor::mn:table">
 				<xsl:attribute name="margin-bottom">1pt</xsl:attribute>
 			</xsl:if>
 		</xsl:if>
@@ -4417,7 +4417,7 @@
 
 	<xsl:template name="refine_figure-block-style">
 		<xsl:if test="$namespace = 'bipm'">
-			<xsl:if test="*[local-name() = 'name']">
+			<xsl:if test="mn:name">
 				<xsl:attribute name="space-after">12pt</xsl:attribute>
 			</xsl:if>
 		</xsl:if>
@@ -4434,17 +4434,17 @@
 			</xsl:if>
 		</xsl:if>
 		<xsl:if test="$namespace = 'jis'">
-			<xsl:if test="ancestor::*[local-name() = 'example'] or ancestor::*[local-name() = 'note']">
+			<xsl:if test="ancestor::mn:example or ancestor::mn:note">
 				<xsl:attribute name="margin-left">0mm</xsl:attribute>
 			</xsl:if>
-			<xsl:if test="$vertical_layout = 'true' and not(*[local-name() = 'figure'])">
+			<xsl:if test="$vertical_layout = 'true' and not(mn:figure)">
 				<xsl:attribute name="reference-orientation">90</xsl:attribute>
 				<xsl:attribute name="display-align">center</xsl:attribute>
 				<!-- <xsl:attribute name="border">1pt solid blue</xsl:attribute> -->
 				<xsl:attribute name="margin-left">0mm</xsl:attribute>
 				
 				<!-- determine block-container width for rotated image -->
-				<xsl:for-each select="*[local-name() = 'image'][1]"> <!-- set context to 'image' element -->
+				<xsl:for-each select="mn:image[1]"> <!-- set context to 'image' element -->
 					
 					<xsl:variable name="width">
 						<xsl:call-template name="setImageWidth"/>
@@ -4661,7 +4661,7 @@
 			</xsl:if>
 		</xsl:if>
 		<xsl:if test="$namespace = 'bsi'">
-			<xsl:if test="count(ancestor::*[local-name() = 'figure']) &gt; 1">
+			<xsl:if test="count(ancestor::mn:figure) &gt; 1">
 				<xsl:attribute name="margin-left">0mm</xsl:attribute>
 				<xsl:if test="$document_type != 'PAS'">
 					<!-- for sub-figures -->
@@ -4675,7 +4675,7 @@
 				<xsl:attribute name="font-size">11pt</xsl:attribute>
 				<xsl:attribute name="font-style">normal</xsl:attribute>
 			</xsl:if>
-			<xsl:if test="../@width = 'full-page-width' or ../*[local-name() = 'figure']/@width = 'full-page-width'">
+			<xsl:if test="../@width = 'full-page-width' or ../mn:figure/@width = 'full-page-width'">
 				<xsl:attribute name="margin-left">0mm</xsl:attribute>
 			</xsl:if>
 		</xsl:if>
@@ -4788,7 +4788,7 @@
 	
 	<xsl:template name="refine_formula-stem-block-style">
 		<xsl:if test="$namespace = 'nist-cswp' or $namespace = 'unece' or $namespace = 'unece-rec'">
-			<xsl:if test="ancestor::*[local-name() ='annex']">
+			<xsl:if test="ancestor::mn:annex">
 				<xsl:attribute name="text-align">left</xsl:attribute>
 				<xsl:attribute name="margin-left">7mm</xsl:attribute>
 			</xsl:if>
@@ -4817,7 +4817,7 @@
 	
 	<xsl:template name="refine_formula-stem-number-style">
 		<xsl:if test="$namespace = 'iec'">
-			<xsl:if test="ancestor::*[local-name() = 'table']">
+			<xsl:if test="ancestor::mn:table">
 				<xsl:attribute name="margin-right">0mm</xsl:attribute>
 			</xsl:if>
 		</xsl:if>
@@ -4851,7 +4851,7 @@
 
 	<xsl:template name="refine_image-style">
 		<xsl:if test="$namespace = 'bsi'">
-			<xsl:if test="ancestor::*[local-name() = 'table']">
+			<xsl:if test="ancestor::mn:table">
 				<xsl:attribute name="text-align">inherit</xsl:attribute>
 			</xsl:if>
 		</xsl:if>
@@ -5176,7 +5176,7 @@
 			</xsl:if>
 		</xsl:if>
 		<xsl:if test="$namespace = 'iso'">
-			<xsl:if test="not(ancestor::*[local-name() = 'ul' or local-name() = 'ol'])">
+			<xsl:if test="not(ancestor::*[self::mn:ul or self::mn:ol])">
 				<xsl:attribute name="margin-bottom">8pt</xsl:attribute>
 			</xsl:if>
 		</xsl:if>
@@ -5186,7 +5186,7 @@
 			</xsl:if>
 		</xsl:if>
 		<xsl:if test="$namespace = 'plateau'">
-			<xsl:if test="ancestor::*[local-name() = 'table']">
+			<xsl:if test="ancestor::mn:table">
 				<xsl:attribute name="provisional-distance-between-starts">4.5mm</xsl:attribute>
 				<xsl:attribute name="space-after">0pt</xsl:attribute>
 			</xsl:if>
@@ -5280,7 +5280,7 @@
 	
 	<xsl:template name="refine_list-item-label-style">
 		<xsl:if test="$namespace = 'bsi'">
-			<xsl:if test="$document_type = 'PAS' and not(ancestor::*[local-name() = 'note' or local-name() = 'termnote'])">
+			<xsl:if test="$document_type = 'PAS' and not(ancestor::*[self::mn:note or self::mn:termnote])">
 				<xsl:attribute name="color"><xsl:value-of select="$color_list_label_PAS"/></xsl:attribute>
 			</xsl:if>
 			<xsl:if test="$document_type = 'PAS'">
@@ -5299,7 +5299,7 @@
 		</xsl:if>
 	
 		<xsl:if test="$namespace = 'jis'">
-			<xsl:if test="parent::*[local-name() = 'ol'] and not($vertical_layout = 'true')">
+			<xsl:if test="parent::mn:ol and not($vertical_layout = 'true')">
 				<xsl:attribute name="font-family">Times New Roman</xsl:attribute>
 				<xsl:attribute name="font-weight">bold</xsl:attribute>
 			</xsl:if>
@@ -5324,7 +5324,7 @@
 	
 	<xsl:template name="refine_list-item-body-style">
 		<xsl:if test="$namespace = 'bsi'">
-			<xsl:if test="*[last()][local-name() = 'note']">
+			<xsl:if test="*[last()][self::mn:note]">
 				<xsl:attribute name="margin-bottom">5pt</xsl:attribute>
 			</xsl:if>
 		</xsl:if>
@@ -5406,7 +5406,7 @@
 					<xsl:attribute name="padding-left">0.5mm</xsl:attribute>
 				</xsl:if>
 			</xsl:if>
-			<xsl:if test="preceding-sibling::*[1][local-name() = 'fn']">,&#xa0;</xsl:if>
+			<xsl:if test="preceding-sibling::*[1][self::mn:fn]">,&#xa0;</xsl:if>
 		</xsl:if>
 		<xsl:if test="$namespace = 'iso' or $namespace = 'iec' or $namespace = 'jcgm'">
 			<xsl:if test="ancestor::*[local-name()='table']">
