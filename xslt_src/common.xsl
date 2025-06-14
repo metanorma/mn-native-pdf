@@ -14910,7 +14910,12 @@
 		<xsl:value-of select="."/>
 	</xsl:template>
 	
-	<xsl:template match="mn:add[starts-with(., $ace_tag)]/text()" mode="bookmarks" priority="3"/>
+	<xsl:template match="mn:add/text()" mode="bookmarks" priority="3"> <!-- mn:add[starts-with(., $ace_tag)] -->
+		<xsl:choose>
+			<xsl:when test="starts-with(normalize-space(..), $ace_tag)"><!-- skip --></xsl:when>
+			<xsl:otherwise><xsl:value-of select="."/></xsl:otherwise>
+		</xsl:choose>
+	</xsl:template>
 	
 	<xsl:template match="node()" mode="contents">
 		<xsl:apply-templates mode="contents"/>
@@ -15619,8 +15624,8 @@
 		</xsl:for-each>
 	</xsl:template>
 
-	<xsl:template match="mn:add[starts-with(., $ace_tag)]/text()" mode="contents_item" priority="2">
-		<xsl:value-of select="."/>
+	<xsl:template match="mn:add/text()" mode="contents_item" priority="2"> <!-- mn:add[starts-with(., $ace_tag)]/text() -->
+		<xsl:if test="starts-with(normalize-space(..), $ace_tag)"><xsl:value-of select="."/></xsl:if>
 	</xsl:template>
 
 	<!-- Note: to enable the addition of character span markup with semantic styling for DIS Word output -->
