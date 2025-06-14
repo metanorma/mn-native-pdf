@@ -7283,7 +7283,7 @@
 	
 	
 
-	<xsl:template match="*[local-name()='br']">
+	<xsl:template match="mn:br">
 		<xsl:value-of select="$linebreak"/>
 	</xsl:template>
 	
@@ -7327,13 +7327,13 @@
 	<!-- ================================= -->
 	<!-- Preface boilerplate sections processing -->
 	<!-- ================================= -->
-	<xsl:template match="*[local-name()='copyright-statement']">
+	<xsl:template match="mn:copyright-statement">
 		<fo:block xsl:use-attribute-sets="copyright-statement-style" role="SKIP">
 			<xsl:apply-templates />
 		</fo:block>
 	</xsl:template> <!-- copyright-statement -->
 	
-	<xsl:template match="*[local-name()='copyright-statement']//*[local-name()='title']">
+	<xsl:template match="mn:copyright-statement//mn:title">
 		<xsl:choose>
 			<xsl:when test="$namespace = 'ogc' or $namespace = 'ogc-white-paper'">
 				<xsl:variable name="level">
@@ -7350,7 +7350,7 @@
 		</xsl:choose>
 	</xsl:template> <!-- copyright-statement//title -->
 	
-	<xsl:template match="*[local-name()='copyright-statement']//*[local-name()='p']">
+	<xsl:template match="mn:copyright-statement//mn:p">
 		
 		<xsl:choose>
 			<xsl:when test="$namespace = 'bsi' or $namespace = 'ogc' or $namespace = 'ogc-white-paper'">
@@ -7363,7 +7363,7 @@
 						<xsl:if test="$doctype = 'flex-standard'">
 							<xsl:attribute name="space-after">6pt</xsl:attribute>
 						</xsl:if>
-						<xsl:if test="ancestor::*[local-name() = 'boilerplate'] and contains(ancestor::*[local-name()='clause'][1]/*[local-name()='title'], 'Publication history')">
+						<xsl:if test="ancestor::mn:boilerplate and contains(ancestor::mn:clause[1]/mn:title, 'Publication history')">
 							<xsl:attribute name="space-after">0pt</xsl:attribute>
 						</xsl:if>
 					</xsl:if>
@@ -7387,13 +7387,13 @@
 		</xsl:choose>
 	</xsl:template> <!-- copyright-statement//p -->
 	
-	<xsl:template match="*[local-name()='license-statement']">
+	<xsl:template match="mn:license-statement">
 		<fo:block xsl:use-attribute-sets="license-statement-style">
 			<xsl:apply-templates />
 		</fo:block>
 	</xsl:template> <!-- license-statement -->
 
-	<xsl:template match="*[local-name()='license-statement']//*[local-name()='title']">
+	<xsl:template match="mn:license-statement//mn:title">
 		<xsl:choose>
 			<xsl:when test="$namespace = 'bipm' or $namespace = 'iso' or $namespace = 'itu' or $namespace = 'nist-sp' or $namespace = 'ogc' or $namespace = 'ogc-white-paper'">
 				<xsl:variable name="level">
@@ -7410,20 +7410,20 @@
 		</xsl:choose>
 	</xsl:template> <!-- license-statement/title -->
 
-	<xsl:template match="*[local-name()='license-statement']//*[local-name()='p']">
+	<xsl:template match="mn:license-statement//mn:p">
 		<xsl:choose>
 			<xsl:when test="$namespace = 'bipm' or $namespace = 'iso' or $namespace = 'ogc' or $namespace = 'ogc-white-paper'">
 				<fo:block xsl:use-attribute-sets="license-statement-p-style">
 		
 					<xsl:if test="$namespace = 'iso'">
-						<xsl:if test="following-sibling::*[local-name() = 'p']">
+						<xsl:if test="following-sibling::mn:p">
 							<xsl:attribute name="margin-top">6pt</xsl:attribute>
 							<xsl:attribute name="margin-bottom">6pt</xsl:attribute>
 						</xsl:if>
 					</xsl:if>
 					
 					<xsl:if test="$namespace = 'ogc-white-paper'">
-						<xsl:if test="following-sibling::*[local-name() = 'p']">
+						<xsl:if test="following-sibling::mn:p">
 							<xsl:attribute name="margin-bottom">14pt</xsl:attribute>
 						</xsl:if>
 					</xsl:if>
@@ -7439,7 +7439,7 @@
 	</xsl:template> <!-- license-statement/p -->
 	
 	
-	<xsl:template match="*[local-name()='legal-statement']">
+	<xsl:template match="mn:legal-statement">
 		<xsl:param name="isLegacy">false</xsl:param>
 		<fo:block xsl:use-attribute-sets="legal-statement-style">
 			<xsl:if test="$namespace = 'ogc'">
@@ -7451,7 +7451,7 @@
 		</fo:block>
 	</xsl:template> <!-- legal-statement -->
 	
-	<xsl:template match="*[local-name()='legal-statement']//*[local-name()='title']">
+	<xsl:template match="mn:legal-statement//mn:title">
 		<xsl:choose>
 			<xsl:when test="$namespace = 'itu' or $namespace = 'nist-cswp' or $namespace = 'nist-sp' or $namespace = 'ogc-white-paper' or $namespace = 'rsd'">
 				<!-- ogc-white-paper rsd -->
@@ -7470,7 +7470,7 @@
 	
 	</xsl:template> <!-- legal-statement/title -->
 	
-	<xsl:template match="*[local-name()='legal-statement']//*[local-name()='p']">
+	<xsl:template match="mn:legal-statement//mn:p">
 		<xsl:param name="margin"/>
 		<xsl:choose>
 			<xsl:when test="$namespace = 'ogc-white-paper'">
@@ -7495,13 +7495,13 @@
 		</xsl:choose>
 	</xsl:template> <!-- legal-statement/p -->
 	
-	<xsl:template match="*[local-name()='feedback-statement']">
+	<xsl:template match="mn:feedback-statement">
 		<fo:block xsl:use-attribute-sets="feedback-statement-style">
 			<xsl:apply-templates />
 		</fo:block>
 	</xsl:template> <!-- feedback-statement -->
 	
-	<xsl:template match="*[local-name()='feedback-statement']//*[local-name()='title']">
+	<xsl:template match="mn:feedback-statement//mn:title">
 		<xsl:choose>
 			<xsl:when test="$namespace = 'iec'">
 				<xsl:variable name="level">
@@ -7518,7 +7518,7 @@
 		</xsl:choose>
 	</xsl:template>
 	
-	<xsl:template match="*[local-name()='feedback-statement']//*[local-name()='p']">
+	<xsl:template match="mn:feedback-statement//mn:p">
 		<xsl:param name="margin"/>
 		<xsl:choose>
 			<xsl:when test="$namespace = 'iec' or $namespace = 'ogc'">
