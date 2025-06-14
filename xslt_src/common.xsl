@@ -6917,25 +6917,25 @@
 	</xsl:template>
 	
 	<xsl:template name="processMainSectionsDefault">
-		<xsl:for-each select="/*/*[local-name()='sections']/* | /*/*[local-name()='bibliography']/*[local-name()='references'][@normative='true']">
+		<xsl:for-each select="/*/mn:sections/* | /*/mn:bibliography/mn:references[@normative='true']">
 			<xsl:sort select="@displayorder" data-type="number"/>
 			<xsl:apply-templates select="."/>
 			<xsl:if test="$namespace = 'm3d'">
-				<xsl:if test="local-name()='clause' and @type='scope'">
-					<xsl:if test="/*/*[local-name()='bibliography']/*[local-name()='references'][@normative='true']">
+				<xsl:if test="self::mn:clause and @type='scope'">
+					<xsl:if test="/*/mn:bibliography/mn:references[@normative='true']">
 						<fo:block break-after="page"/>			
 					</xsl:if>
 				</xsl:if>
 			</xsl:if>
 		</xsl:for-each>
 		
-		<xsl:for-each select="/*/*[local-name()='annex']">
+		<xsl:for-each select="/*/mn:annex">
 			<xsl:sort select="@displayorder" data-type="number"/>
 			<xsl:apply-templates select="."/>
 		</xsl:for-each>
 		
-		<xsl:for-each select="/*/*[local-name()='bibliography']/*[not(@normative='true')] | 
-								/*/*[local-name()='bibliography']/*[local-name()='clause'][*[local-name()='references'][not(@normative='true')]]">
+		<xsl:for-each select="/*/mn:bibliography/*[not(@normative='true')] | 
+								/*/mn:bibliography/mn:clause[mn:references[not(@normative='true')]]">
 			<xsl:sort select="@displayorder" data-type="number"/>
 			<xsl:apply-templates select="."/>
 		</xsl:for-each>
@@ -7001,7 +7001,7 @@
 	<xsl:template name="insertPrefaceSectionsPageSequences">
 		<xsl:element name="preface" namespace="{$namespace_full}"> <!-- save context element -->
 			<xsl:element name="page_sequence" namespace="{$namespace_full}">
-				<xsl:for-each select="/*/*[local-name()='preface']/*[not(local-name() = 'note' or local-name() = 'admonition')]">
+				<xsl:for-each select="/*/mn:preface/*[not(self::mn:note or self::mn:admonition)]">
 					<xsl:sort select="@displayorder" data-type="number"/>
 					<xsl:apply-templates select="." mode="update_xml_step_move_pagebreak"/>
 				</xsl:for-each>
@@ -7014,7 +7014,7 @@
 		<xsl:call-template name="insertSectionsInPageSequence"/>
 	
 		<xsl:element name="page_sequence" namespace="{$namespace_full}">
-			<xsl:for-each select="/*/*[local-name()='annex']">
+			<xsl:for-each select="/*/mn:annex">
 				<xsl:sort select="@displayorder" data-type="number"/>
 				<xsl:apply-templates select="." mode="update_xml_step_move_pagebreak"/>
 			</xsl:for-each>
@@ -7022,8 +7022,8 @@
 		
 		<xsl:element name="page_sequence" namespace="{$namespace_full}">
 			<xsl:element name="bibliography" namespace="{$namespace_full}"> <!-- save context element -->
-				<xsl:for-each select="/*/*[local-name()='bibliography']/*[not(@normative='true')] | 
-										/*/*[local-name()='bibliography']/*[local-name()='clause'][*[local-name()='references'][not(@normative='true')]]">
+				<xsl:for-each select="/*/mn:bibliography/*[not(@normative='true')] | 
+										/*/mn:bibliography/mn:clause[mn:references[not(@normative='true')]]">
 					<xsl:sort select="@displayorder" data-type="number"/>
 					<xsl:apply-templates select="." mode="update_xml_step_move_pagebreak"/>
 				</xsl:for-each>
@@ -7034,12 +7034,12 @@
 	<xsl:template name="insertSectionsInPageSequence">
 		<xsl:element name="sections" namespace="{$namespace_full}"> <!-- save context element -->
 			<xsl:element name="page_sequence" namespace="{$namespace_full}">
-				<xsl:for-each select="/*/*[local-name()='sections']/* | /*/*[local-name()='bibliography']/*[local-name()='references'][@normative='true']">
+				<xsl:for-each select="/*/mn:sections/* | /*/mn:bibliography/mn:references[@normative='true']">
 					<xsl:sort select="@displayorder" data-type="number"/>
 					<xsl:apply-templates select="." mode="update_xml_step_move_pagebreak"/>
 					<xsl:if test="$namespace = 'm3d'">
-						<xsl:if test="local-name()='clause' and @type='scope'">
-							<xsl:if test="/*/*[local-name()='bibliography']/*[local-name()='references'][@normative='true']">
+						<xsl:if test="self::mn:clause and @type='scope'">
+							<xsl:if test="/*/mn:bibliography/mn:references[@normative='true']">
 								<fo:block break-after="page"/>
 								<xsl:element name="pagebreak" namespace="{$namespace_full}"/>
 							</xsl:if>
@@ -7052,7 +7052,7 @@
 	
 	<xsl:template name="insertMainSectionsInSeparatePageSequences">
 		<xsl:element name="sections" namespace="{$namespace_full}"> <!-- save context element -->
-			<xsl:for-each select="/*/*[local-name()='sections']/* | /*/*[local-name()='bibliography']/*[local-name()='references'][@normative='true']">
+			<xsl:for-each select="/*/mn:sections/* | /*/mn:bibliography/mn:references[@normative='true']">
 				<xsl:sort select="@displayorder" data-type="number"/>
 				<xsl:element name="page_sequence" namespace="{$namespace_full}">
 					<xsl:attribute name="main_page_sequence"/>
@@ -7070,13 +7070,13 @@
 	
 	
 	<xsl:template name="insertAnnexAndBibliographyInSeparatePageSequences">
-		<xsl:for-each select="/*/*[local-name()='annex'] | 
-									/*/*[local-name()='bibliography']/*[not(@normative='true')] | 
-									/*/*[local-name()='bibliography']/*[local-name()='clause'][*[local-name()='references'][not(@normative='true')]] |
-									/*/*[local-name()='indexsect']">
+		<xsl:for-each select="/*/mn:annex | 
+									/*/mn:bibliography/*[not(@normative='true')] | 
+									/*/mn:bibliography/mn:clause[mn:references[not(@normative='true')]] |
+									/*/mn:indexsect">
 			<xsl:sort select="@displayorder" data-type="number"/>
 			<xsl:choose>
-				<xsl:when test="local-name() = 'annex' or local-name() = 'indexsect'">
+				<xsl:when test="self::mn:annex or self::mn:indexsect">
 					<xsl:element name="page_sequence" namespace="{$namespace_full}">
 						<xsl:attribute name="main_page_sequence"/>
 						<xsl:apply-templates select="." mode="update_xml_step_move_pagebreak"/>
@@ -7095,7 +7095,7 @@
 	</xsl:template>
   
 	<xsl:template name="insertAnnexInSeparatePageSequences">
-		<xsl:for-each select="/*/*[local-name()='annex']">
+		<xsl:for-each select="/*/mn:annex">
 			<xsl:sort select="@displayorder" data-type="number"/>
 			<xsl:element name="page_sequence" namespace="{$namespace_full}">
 				<xsl:attribute name="main_page_sequence"/>
@@ -7105,8 +7105,8 @@
 	</xsl:template>
 	<xsl:template name="insertBibliographyInSeparatePageSequences">
 		<xsl:element name="bibliography" namespace="{$namespace_full}"> <!-- save context element -->
-			<xsl:for-each select="/*/*[local-name()='bibliography']/*[not(@normative='true')] | 
-									/*/*[local-name()='bibliography']/*[local-name()='clause'][*[local-name()='references'][not(@normative='true')]]">
+			<xsl:for-each select="/*/mn:bibliography/*[not(@normative='true')] | 
+									/*/mn:bibliography/mn:clause[mn:references[not(@normative='true')]]">
 				<xsl:sort select="@displayorder" data-type="number"/>
 				<xsl:element name="page_sequence" namespace="{$namespace_full}">
 					<xsl:attribute name="main_page_sequence"/>
@@ -7116,7 +7116,7 @@
 		</xsl:element>
 	</xsl:template>
 	<xsl:template name="insertIndexInSeparatePageSequences">
-		<xsl:for-each select="/*/*[local-name()='indexsect']">
+		<xsl:for-each select="/*/mn:indexsect">
 			<xsl:sort select="@displayorder" data-type="number"/>
 			<xsl:element name="page_sequence" namespace="{$namespace_full}">
 				<xsl:attribute name="main_page_sequence"/>
@@ -7147,7 +7147,7 @@
 		<xsl:copy-of select="document($updated_xml_step_move_pagebreak_filename)"/>
 		
 		<!-- TODO: instead of 
-		<xsl:for-each select=".//*[local-name() = 'page_sequence'][normalize-space() != '' or .//image or .//svg]">
+		<xsl:for-each select=".//mn:page_sequence[normalize-space() != '' or .//image or .//svg]">
 		in each template, add removing empty page_sequence here
 		-->
 		
@@ -7166,7 +7166,7 @@
 	
 	<xsl:template name="insertPrefaceSections">
 		<xsl:element name="preface" namespace="{$namespace_full}"> <!-- save context element -->
-			<xsl:for-each select="/*/*[local-name()='preface']/*[not(local-name() = 'note' or local-name() = 'admonition')]">
+			<xsl:for-each select="/*/mn:preface/*[not(self::mn:note or self::mn:admonition)]">
 				<xsl:sort select="@displayorder" data-type="number"/>
 				<xsl:apply-templates select="." mode="update_xml_step_move_pagebreak">
 					<xsl:with-param name="page_sequence_at_top">true</xsl:with-param>
@@ -7178,14 +7178,14 @@
 	<xsl:template name="insertMainSections">
 		<xsl:element name="sections" namespace="{$namespace_full}"> <!-- save context element -->
 		
-			<xsl:for-each select="/*/*[local-name()='sections']/* | /*/*[local-name()='bibliography']/*[local-name()='references'][@normative='true']">
+			<xsl:for-each select="/*/mn:sections/* | /*/mn:bibliography/mn:references[@normative='true']">
 				<xsl:sort select="@displayorder" data-type="number"/>
 				<xsl:apply-templates select="." mode="update_xml_step_move_pagebreak">
 					<xsl:with-param name="page_sequence_at_top">true</xsl:with-param>
 				</xsl:apply-templates>
 				<xsl:if test="$namespace = 'm3d'">
-					<xsl:if test="local-name()='clause' and @type='scope'">
-						<xsl:if test="/*/*[local-name()='bibliography']/*[local-name()='references'][@normative='true']">
+					<xsl:if test="self::mn:clause and @type='scope'">
+						<xsl:if test="/*/mn:bibliography/mn:references[@normative='true']">
 							<fo:block break-after="page"/>
 							<xsl:element name="pagebreak" namespace="{$namespace_full}"/>
 						</xsl:if>
@@ -7194,7 +7194,7 @@
 			</xsl:for-each>
 		</xsl:element>
 
-		<xsl:for-each select="/*/*[local-name()='annex']">
+		<xsl:for-each select="/*/mn:annex">
 			<xsl:sort select="@displayorder" data-type="number"/>
 			<xsl:apply-templates select="." mode="update_xml_step_move_pagebreak">
 					<xsl:with-param name="page_sequence_at_top">true</xsl:with-param>
@@ -7202,8 +7202,8 @@
 		</xsl:for-each>
 
 		<xsl:element name="bibliography" namespace="{$namespace_full}"> <!-- save context element -->
-			<xsl:for-each select="/*/*[local-name()='bibliography']/*[not(@normative='true')] | 
-									/*/*[local-name()='bibliography']/*[local-name()='clause'][*[local-name()='references'][not(@normative='true')]]">
+			<xsl:for-each select="/*/mn:bibliography/*[not(@normative='true')] | 
+									/*/mn:bibliography/mn:clause[mn:references[not(@normative='true')]]">
 				<xsl:sort select="@displayorder" data-type="number"/>
 				<xsl:apply-templates select="." mode="update_xml_step_move_pagebreak">
 					<xsl:with-param name="page_sequence_at_top">true</xsl:with-param>
@@ -7221,7 +7221,7 @@
 	</xsl:template>
 	
 	<xsl:template name="getPageSequenceOrientation">
-		<xsl:variable name="previous_orientation" select="preceding-sibling::*[local-name() = 'page_sequence'][@orientation][1]/@orientation"/>
+		<xsl:variable name="previous_orientation" select="preceding-sibling::mn:page_sequence[@orientation][1]/@orientation"/>
 		<xsl:choose>
 			<xsl:when test="@orientation = 'landscape'">-<xsl:value-of select="@orientation"/></xsl:when>
 			<xsl:when test="$previous_orientation = 'landscape' and not(@orientation = 'portrait')">-<xsl:value-of select="$previous_orientation"/></xsl:when>
@@ -7237,7 +7237,7 @@
 			<xsl:when test="$namespace = 'iso'"><xsl:value-of select="."/></xsl:when>
 			<xsl:otherwise>
 				<xsl:choose>
-					<xsl:when test="ancestor::*[local-name() = 'table']"><xsl:value-of select="."/></xsl:when>
+					<xsl:when test="ancestor::mn:table"><xsl:value-of select="."/></xsl:when>
 					<xsl:otherwise>
 						<xsl:variable name="text" select="java:replaceAll(java:java.lang.String.new(.),$regex_standard_reference,concat($tag_fo_inline_keep-together_within-line_open,'$1',$tag_fo_inline_keep-together_within-line_close))"/>
 						<xsl:call-template name="replace_fo_inline_tags">
