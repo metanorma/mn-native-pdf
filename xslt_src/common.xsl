@@ -11308,19 +11308,19 @@
 		<fo:inline padding-right="{@value}">&#xA0;</fo:inline>
 	</xsl:template>
 	
-	<xsl:template match="*[local-name()='sup']">
+	<xsl:template match="mn:sup">
 		<fo:inline font-size="80%" vertical-align="super">
 			<xsl:apply-templates />
 		</fo:inline>
 	</xsl:template>
 	
-	<xsl:template match="*[local-name()='sub']">
+	<xsl:template match="mn:sub">
 		<fo:inline font-size="80%" vertical-align="sub">
 			<xsl:apply-templates />
 		</fo:inline>
 	</xsl:template>
 	
-	<xsl:template match="*[local-name()='tt']">
+	<xsl:template match="mn:tt">
 		<fo:inline xsl:use-attribute-sets="tt-style">
 		
 			<xsl:variable name="_font-size">
@@ -11335,7 +11335,7 @@
 				<xsl:if test="$namespace = 'itu'"></xsl:if>
 				<xsl:if test="$namespace = 'm3d'">
 					<xsl:choose>
-						<xsl:when test="not(ancestor::*[local-name()='note'])">10</xsl:when>
+						<xsl:when test="not(ancestor::mn:note)">10</xsl:when>
 						<xsl:otherwise>11</xsl:otherwise>
 					</xsl:choose>
 				</xsl:if>
@@ -11343,19 +11343,19 @@
 				<xsl:if test="$namespace = 'nist-cswp'  or $namespace = 'nist-sp'"></xsl:if>
 				<xsl:if test="$namespace = 'ogc'">
 					<xsl:choose>
-						<xsl:when test="ancestor::*[local-name() = 'table']">8.5</xsl:when>
+						<xsl:when test="ancestor::mn:table">8.5</xsl:when>
 						<xsl:otherwise>9.5</xsl:otherwise>
 					</xsl:choose>
 				</xsl:if>
 				<xsl:if test="$namespace = 'ogc-white-paper'">
 					<xsl:choose>
-						<xsl:when test="ancestor::*[local-name() = 'table']">8.5</xsl:when>
+						<xsl:when test="ancestor::mn:table">8.5</xsl:when>
 						<xsl:otherwise>9.5</xsl:otherwise>
 					</xsl:choose>
 				</xsl:if>
 				<xsl:if test="$namespace = 'rsd'">
 					<xsl:choose>
-						<xsl:when test="ancestor::*[local-name() = 'table']">inherit</xsl:when>
+						<xsl:when test="ancestor::mn:table">inherit</xsl:when>
 						<xsl:otherwise>95%</xsl:otherwise> <!-- 110% -->
 					</xsl:choose>
 				</xsl:if>
@@ -11367,7 +11367,7 @@
 					<xsl:choose>
 						<xsl:when test="$font-size = 'inherit'"><xsl:value-of select="$font-size"/></xsl:when>
 						<xsl:when test="contains($font-size, '%')"><xsl:value-of select="$font-size"/></xsl:when>
-						<xsl:when test="ancestor::*[local-name()='note'] or ancestor::*[local-name()='example']"><xsl:value-of select="$font-size * 0.91"/>pt</xsl:when>
+						<xsl:when test="ancestor::mn:note or ancestor::mn:example"><xsl:value-of select="$font-size * 0.91"/>pt</xsl:when>
 						<xsl:otherwise><xsl:value-of select="$font-size"/>pt</xsl:otherwise>
 					</xsl:choose>
 				</xsl:attribute>
@@ -11377,7 +11377,7 @@
 	</xsl:template> <!-- tt -->
 	
 	<xsl:variable name="regex_url_start">^(http://|https://|www\.)?(.*)</xsl:variable>
-	<xsl:template match="*[local-name()='tt']/text()" priority="2">
+	<xsl:template match="mn:tt/text()" priority="2">
 		<xsl:choose>
 			<xsl:when test="java:replaceAll(java:java.lang.String.new(.), $regex_url_start, '$2') != ''">
 				 <!-- url -->
@@ -11390,7 +11390,7 @@
 	</xsl:template>
 	
 	
-	<xsl:template match="*[local-name()='underline']">
+	<xsl:template match="mn:underline">
 		<fo:inline text-decoration="underline">
 			<xsl:apply-templates />
 		</fo:inline>
@@ -11400,35 +11400,35 @@
 	<!-- ================= -->
 	<!-- Added,deleted text -->
 	<!-- ================= -->
-	<xsl:template match="*[local-name()='add'] | *[local-name() = 'change-open-tag'] | *[local-name() = 'change-close-tag']" name="tag_add">
+	<xsl:template match="mn:add | mn:change-open-tag | mn:change-close-tag" name="tag_add">
 		<xsl:param name="skip">true</xsl:param>
 		<xsl:param name="block">false</xsl:param>
 		<xsl:param name="type"/>
 		<xsl:param name="text-align"/>
 		<xsl:choose>
-			<xsl:when test="starts-with(., $ace_tag) or local-name() = 'change-open-tag' or local-name() = 'change-close-tag'"> <!-- examples: ace-tag_A1_start, ace-tag_A2_end, C1_start, AC_start, or
+			<xsl:when test="starts-with(., $ace_tag) or self::mn:change-open-tag or self::mn:change-close-tag"> <!-- examples: ace-tag_A1_start, ace-tag_A2_end, C1_start, AC_start, or
 							<change-open-tag>A<sub>1</sub></change-open-tag>, <change-close-tag>A<sub>1</sub></change-close-tag> -->
 				<xsl:choose>
 					<xsl:when test="$skip = 'true' and 
 					((local-name(../..) = 'note' and not(preceding-sibling::node())) or 
-					(local-name(..) = 'title' and preceding-sibling::node()[1][local-name() = 'tab']) or
+					(local-name(..) = 'title' and preceding-sibling::node()[1][self::mn:tab]) or
 					local-name(..) = 'formattedref' and not(preceding-sibling::node()))
 					and 
-					../node()[last()][local-name() = 'add'][starts-with(text(), $ace_tag)]"><!-- start tag displayed in template name="note" and title --></xsl:when>
+					../node()[last()][self::mn:add][starts-with(text(), $ace_tag)]"><!-- start tag displayed in template name="note" and title --></xsl:when>
 					<xsl:otherwise>
 						<xsl:variable name="tag">
 							<xsl:call-template name="insertTag">
 								<xsl:with-param name="type">
 									<xsl:choose>
-										<xsl:when test="local-name() = 'change-open-tag'">start</xsl:when>
-										<xsl:when test="local-name() = 'change-close-tag'">end</xsl:when>
+										<xsl:when test="self::mn:change-open-tag">start</xsl:when>
+										<xsl:when test="self::mn:change-close-tag">end</xsl:when>
 										<xsl:when test="$type = ''"><xsl:value-of select="substring-after(substring-after(., $ace_tag), '_')"/> <!-- start or end --></xsl:when>
 										<xsl:otherwise><xsl:value-of select="$type"/></xsl:otherwise>
 									</xsl:choose>
 								</xsl:with-param>
 								<xsl:with-param name="kind">
 									<xsl:choose>
-										<xsl:when test="local-name() = 'change-open-tag' or local-name() = 'change-close-tag'">
+										<xsl:when test="self::mn:change-open-tag or self::mn:change-close-tag">
 											<xsl:value-of select="text()"/>
 										</xsl:when>
 										<xsl:otherwise>
@@ -11438,8 +11438,8 @@
 								</xsl:with-param>
 								<xsl:with-param name="value">
 									<xsl:choose>
-										<xsl:when test="local-name() = 'change-open-tag' or local-name() = 'change-close-tag'">
-											<xsl:value-of select="*[local-name() = 'sub']"/>
+										<xsl:when test="self::mn:change-open-tag or self::mn:change-close-tag">
+											<xsl:value-of select="mn:sub"/>
 										</xsl:when>
 										<xsl:otherwise>
 											<xsl:value-of select="substring(substring-before(substring-after(., $ace_tag), '_'), 2)"/> <!-- 1, 2, C -->
@@ -11553,7 +11553,7 @@
 			</fo:instream-foreign-object>
 	</xsl:template>
 	
-	<xsl:template match="*[local-name()='del']">
+	<xsl:template match="mn:del">
 		<fo:inline xsl:use-attribute-sets="del-style">
 			<xsl:apply-templates />
 		</fo:inline>
@@ -11563,13 +11563,13 @@
 	<!-- ================= -->
 	
 	<!-- highlight text -->
-	<xsl:template match="*[local-name()='hi'] | *[local-name() = 'span'][@class = 'fmt-hi']" priority="3">
+	<xsl:template match="mn:hi | mn:span[@class = 'fmt-hi']" priority="3">
 		<fo:inline background-color="yellow">
 			<xsl:apply-templates />
 		</fo:inline>
 	</xsl:template>
 	
-	<xsl:template match="text()[ancestor::*[local-name()='smallcap']]" name="smallcaps">
+	<xsl:template match="text()[ancestor::mn:smallcap]" name="smallcaps">
 		<xsl:param name="txt"/>
 		<!-- <xsl:variable name="text" select="normalize-space(.)"/> --> <!-- https://github.com/metanorma/metanorma-iso/issues/1115 -->
 		<xsl:variable name="text">
@@ -11659,13 +11659,13 @@
     </xsl:if>
   </xsl:template>
 	
-	<xsl:template match="*[local-name()='strike']">
+	<xsl:template match="mn:strike">
 		<fo:inline text-decoration="line-through">
 			<xsl:apply-templates />
 		</fo:inline>
 	</xsl:template>
 	
-	<xsl:template match="*[local-name() = 'pagebreak']">
+	<xsl:template match="mn:pagebreak">
 		<fo:block break-after="page"/>
 		<fo:block>&#xA0;</fo:block>
 		<fo:block break-after="page"/>
@@ -11682,7 +11682,7 @@
 			</xsl:copy>
 		</xsl:template>
 		
-		<xsl:template match="*[local-name() = 'pagebreak'][not(following-sibling::*[1][local-name() = 'pagebreak'])]" mode="landscape_portrait">	
+		<xsl:template match="mn:pagebreak[not(following-sibling::*[1][self::mn:pagebreak])]" mode="landscape_portrait">	
 		
 			<!-- determine pagebreak is last element before </fo:flow> or not -->
 			<xsl:variable name="isLast">
@@ -11747,7 +11747,7 @@
 	
 	
 	<!-- Example: <span style="font-family:&quot;Noto Sans JP&quot;">styled text</span> -->
-	<xsl:template match="*[local-name() = 'span'][@style]" priority="2">
+	<xsl:template match="mn:span[@style]" priority="2">
 		<xsl:variable name="styles__">
 			<xsl:call-template name="split">
 				<xsl:with-param name="pText" select="concat(@style,';')"/>
@@ -11804,16 +11804,16 @@
 	</xsl:template> <!-- END: span[@style] -->
 	
 	<!-- Note: to enable the addition of character span markup with semantic styling for DIS Word output -->
-	<xsl:template match="*[local-name() = 'span']">
+	<xsl:template match="mn:span">
 		<xsl:apply-templates />
 	</xsl:template>
 	
 	<!-- Don't break standard's numbers -->
 	<!-- Example : <span class="stdpublisher">ISO</span> <span class="stddocNumber">10303</span>-<span class="stddocPartNumber">1</span>:<span class="stdyear">1994</span> -->
-	<xsl:template match="*[local-name() = 'span'][@class = 'stdpublisher' or @class = 'stddocNumber' or @class = 'stddocPartNumber' or @class = 'stdyear']" priority="2">
+	<xsl:template match="mn:span[@class = 'stdpublisher' or @class = 'stddocNumber' or @class = 'stddocPartNumber' or @class = 'stdyear']" priority="2">
 		<xsl:choose>
-			<xsl:when test="ancestor::*[local-name() = 'table']"><xsl:apply-templates /></xsl:when>
-			<xsl:when test="following-sibling::*[2][local-name() = 'span'][@class = 'stdpublisher' or @class = 'stddocNumber' or @class = 'stddocPartNumber' or @class = 'stdyear']">
+			<xsl:when test="ancestor::mn:table"><xsl:apply-templates /></xsl:when>
+			<xsl:when test="following-sibling::*[2][self::mn:span][@class = 'stdpublisher' or @class = 'stddocNumber' or @class = 'stddocPartNumber' or @class = 'stdyear']">
 				<fo:inline keep-with-next.within-line="always" role="SKIP"><xsl:apply-templates /></fo:inline>
 			</xsl:when>
 			<xsl:otherwise>
@@ -11821,13 +11821,13 @@
 			</xsl:otherwise>
 		</xsl:choose>
 	</xsl:template>
-	<xsl:template match="text()[not(ancestor::*[local-name() = 'table']) and preceding-sibling::*[1][local-name() = 'span'][@class = 'stdpublisher' or @class = 'stddocNumber' or @class = 'stddocPartNumber' or @class = 'stdyear'] and 
-	following-sibling::*[1][local-name() = 'span'][@class = 'stdpublisher' or @class = 'stddocNumber' or @class = 'stddocPartNumber' or @class = 'stdyear']]" priority="2">
+	<xsl:template match="text()[not(ancestor::mn:table) and preceding-sibling::*[1][self::mn:span][@class = 'stdpublisher' or @class = 'stddocNumber' or @class = 'stddocPartNumber' or @class = 'stdyear'] and 
+	following-sibling::*[1][self::mn:span][@class = 'stdpublisher' or @class = 'stddocNumber' or @class = 'stddocPartNumber' or @class = 'stdyear']]" priority="2">
 		<fo:inline keep-with-next.within-line="always" role="SKIP"><xsl:value-of select="."/></fo:inline>
 	</xsl:template>
 	
 	
-	<xsl:template match="*[local-name() = 'span'][contains(@style, 'text-transform:none')]//text()" priority="5">
+	<xsl:template match="mn:span[contains(@style, 'text-transform:none')]//text()" priority="5">
 		<xsl:value-of select="."/>
 	</xsl:template>
 	
@@ -11917,7 +11917,7 @@
 		
 			<xsl:when test="not(contains($text, $separator))">
 				<word>
-					<xsl:if test="ancestor::*[local-name() = 'p'][@from_dl = 'true']">
+					<xsl:if test="ancestor::mn:p[@from_dl = 'true']">
 						<xsl:text>&#xa;&#xa0;</xsl:text> <!-- to add distance between dt and dd -->
 					</xsl:if>
 					<xsl:call-template name="enclose_text_in_tags">
@@ -11928,7 +11928,7 @@
 			</xsl:when>
 			<xsl:otherwise>
 				<word>
-					<xsl:if test="ancestor::*[local-name() = 'p'][@from_dl = 'true']">
+					<xsl:if test="ancestor::mn:p[@from_dl = 'true']">
 						<xsl:text>&#xa;&#xa0;</xsl:text> <!-- to add distance between dt and dd -->
 					</xsl:if>
 					<xsl:call-template name="enclose_text_in_tags">
@@ -11955,7 +11955,7 @@
 		<xsl:choose>
 			<xsl:when test="$tag_name = ''"><xsl:value-of select="$text"/></xsl:when>
 			<xsl:otherwise>
-				<xsl:element name="{$tag_name}">
+				<xsl:element name="{$tag_name}" namespace="{$namespace_full}">
 					<xsl:call-template name="enclose_text_in_tags">
 						<xsl:with-param name="text" select="$text"/>
 						<xsl:with-param name="tags" select="$tags"/>
@@ -12140,18 +12140,21 @@
 				<!-- <xsl:apply-templates mode="table-without-br"/> -->
 				<xsl:apply-templates select="xalan:nodeset($table_without_semantic_elements)" mode="table-without-br"/>
 			</xsl:variable>
+			<!-- <debug-table_without_br><xsl:copy-of select="$table_without_br"/></debug-table_without_br> -->
 		
 			<!-- Step 1. colspan processing -->
 			<xsl:variable name="simple-table-colspan">
-				<tbody>
+				<mn:tbody>
 					<xsl:apply-templates select="xalan:nodeset($table_without_br)" mode="simple-table-colspan"/>
-				</tbody>
+				</mn:tbody>
 			</xsl:variable>
+			<!-- <debug-simple-table-colspan><xsl:copy-of select="$simple-table-colspan"/></debug-simple-table-colspan> -->
 			
 			<!-- Step 2. rowspan processing -->
 			<xsl:variable name="simple-table-rowspan">
 				<xsl:apply-templates select="xalan:nodeset($simple-table-colspan)" mode="simple-table-rowspan"/>
 			</xsl:variable>
+			<!-- <debug-simple-table-rowspan><xsl:copy-of select="$simple-table-rowspan"/></debug-simple-table-rowspan> -->
 			
 			<!-- Step 3: add id to each cell -->
 			<!-- add <word>...</word> for each word, image, math -->
@@ -12160,6 +12163,7 @@
 					<xsl:with-param name="id" select="$id"/>
 				</xsl:apply-templates>
 			</xsl:variable>
+			<!-- <debug-simple-table-id><xsl:copy-of select="$simple-table-id"/></debug-simple-table-id> -->
 			
 			<xsl:copy-of select="xalan:nodeset($simple-table-id)"/>
 
@@ -12176,60 +12180,60 @@
 		</xsl:copy>
 	</xsl:template>
 	
-	<xsl:template match="*[local-name()='th' or local-name() = 'td'][not(*[local-name()='br']) and not(*[local-name()='p']) and not(*[local-name()='sourcecode']) and not(*[local-name()='ul']) and not(*[local-name()='ol'])]" mode="table-without-br">
+	<xsl:template match="*[local-name()='th' or local-name() = 'td'][not(mn:br) and not(mn:p) and not(mn:sourcecode) and not(mn:ul) and not(mn:ol)]" mode="table-without-br">
 		<xsl:copy>
 			<xsl:copy-of select="@*"/>
-			<p>
+			<mn:p>
 				<xsl:copy-of select="node()"/>
-			</p>
+			</mn:p>
 		</xsl:copy>
 	</xsl:template>
 	
-	<xsl:template match="*[local-name()='th' or local-name()='td'][*[local-name()='br']]" mode="table-without-br">
+	<xsl:template match="*[local-name()='th' or local-name()='td'][mn:br]" mode="table-without-br">
 		<xsl:copy>
 			<xsl:copy-of select="@*"/>
-			<xsl:for-each select="*[local-name()='br']">
+			<xsl:for-each select="mn:br">
 				<xsl:variable name="current_id" select="generate-id()"/>
-				<p>
-					<xsl:for-each select="preceding-sibling::node()[following-sibling::*[local-name() = 'br'][1][generate-id() = $current_id]][not(local-name() = 'br')]">
+				<mn:p>
+					<xsl:for-each select="preceding-sibling::node()[following-sibling::mn:br[1][generate-id() = $current_id]][not(local-name() = 'br')]">
 						<xsl:copy-of select="."/>
 					</xsl:for-each>
-				</p>
-				<xsl:if test="not(following-sibling::*[local-name() = 'br'])">
-					<p>
+				</mn:p>
+				<xsl:if test="not(following-sibling::mn:br)">
+					<mn:p>
 						<xsl:for-each select="following-sibling::node()">
 							<xsl:copy-of select="."/>
 						</xsl:for-each>
-					</p>
+					</mn:p>
 				</xsl:if>
 			</xsl:for-each>
 		</xsl:copy>
 	</xsl:template>
 	
-	<xsl:template match="*[local-name()='th' or local-name()='td']/*[local-name() = 'p'][*[local-name()='br']]" mode="table-without-br">
-		<xsl:for-each select="*[local-name()='br']">
+	<xsl:template match="*[local-name()='th' or local-name()='td']/mn:p[mn:br]" mode="table-without-br">
+		<xsl:for-each select="mn:br">
 			<xsl:variable name="current_id" select="generate-id()"/>
-			<p>
-				<xsl:for-each select="preceding-sibling::node()[following-sibling::*[local-name() = 'br'][1][generate-id() = $current_id]][not(local-name() = 'br')]">
+			<mn:p>
+				<xsl:for-each select="preceding-sibling::node()[following-sibling::mn:br[1][generate-id() = $current_id]][not(local-name() = 'br')]">
 					<xsl:copy-of select="."/>
 				</xsl:for-each>
-			</p>
-			<xsl:if test="not(following-sibling::*[local-name() = 'br'])">
-				<p>
+			</mn:p>
+			<xsl:if test="not(following-sibling::mn:br)">
+				<mn:p>
 					<xsl:for-each select="following-sibling::node()">
 						<xsl:copy-of select="."/>
 					</xsl:for-each>
-				</p>
+				</mn:p>
 			</xsl:if>
 		</xsl:for-each>
 	</xsl:template>
 
 
-	<xsl:template match="*[local-name()='th' or local-name()='td']/*[local-name() = 'sourcecode']" mode="table-without-br">
+	<xsl:template match="*[local-name()='th' or local-name()='td']/mn:sourcecode" mode="table-without-br">
 		<xsl:apply-templates mode="table-without-br"/>
 	</xsl:template>
 	
-	<xsl:template match="*[local-name()='th' or local-name()='td']/*[local-name() = 'sourcecode']/text()[contains(., '&#x0d;') or contains(., '&#x0a;')]" mode="table-without-br">
+	<xsl:template match="*[local-name()='th' or local-name()='td']/mn:sourcecode/text()[contains(., '&#x0d;') or contains(., '&#x0a;')]" mode="table-without-br">
 	
 		<xsl:variable name="sep">###SOURCECODE_NEWLINE###</xsl:variable>
 		<xsl:variable name="sourcecode_text" select="java:replaceAll(java:java.lang.String.new(.),'(&#x0d;&#x0a;|&#x0d;|&#x0a;)', $sep)"/>
@@ -12241,14 +12245,14 @@
 			</xsl:call-template>
 		</xsl:variable>
 		<xsl:for-each select="xalan:nodeset($items)/*">
-			<p>
-				<sourcecode><xsl:copy-of select="node()"/></sourcecode>
-			</p>
+			<mn:p>
+				<mn:sourcecode><xsl:copy-of select="node()"/></mn:sourcecode>
+			</mn:p>
 		</xsl:for-each>
 	</xsl:template>
 	
 	<!-- remove redundant white spaces -->
-	<xsl:template match="text()[not(ancestor::*[local-name() = 'sourcecode'])]" mode="table-without-br">
+	<xsl:template match="text()[not(ancestor::mn:sourcecode)]" mode="table-without-br">
 		<xsl:variable name="text" select="translate(.,'&#x09;&#x0a;&#x0d;','')"/>
 		<xsl:value-of select="java:replaceAll(java:java.lang.String.new($text),' {2,}',' ')"/>
 	</xsl:template>
@@ -12257,7 +12261,7 @@
 		<xsl:apply-templates mode="table-without-br"/>
 	</xsl:template>
 	
-	<xsl:template match="*[local-name()='th' or local-name()='td']//*[local-name() = 'li']" mode="table-without-br">
+	<xsl:template match="*[local-name()='th' or local-name()='td']//mn:li" mode="table-without-br">
 		<xsl:apply-templates mode="table-without-br"/>
 	</xsl:template>
 	
@@ -12280,13 +12284,13 @@
 	<xsl:template match="*[local-name()='thead'] | *[local-name()='tbody']" mode="simple-table-colspan">
 		<xsl:apply-templates mode="simple-table-colspan"/>
 	</xsl:template>
-	<xsl:template match="*[local-name()='fn']" mode="simple-table-colspan"/>
+	<xsl:template match="mn:fn" mode="simple-table-colspan"/>
 	
 	<xsl:template match="*[local-name()='th'] | *[local-name()='td']" mode="simple-table-colspan">
 		<xsl:choose>
 			<xsl:when test="@colspan">
 				<xsl:variable name="td">
-					<xsl:element name="{local-name()}">
+					<xsl:element name="{local-name()}" namespace="{$namespace_full}">
 						<xsl:attribute name="divide"><xsl:value-of select="@colspan"/></xsl:attribute>
 						<xsl:if test="local-name()='th'">
 							<xsl:attribute name="font-weight">bold</xsl:attribute>
@@ -12301,7 +12305,7 @@
 				</xsl:call-template>
 			</xsl:when>
 			<xsl:otherwise>
-				<xsl:element name="{local-name()}">
+				<xsl:element name="{local-name()}" namespace="{$namespace_full}">
 					<xsl:apply-templates select="@*" mode="simple-table-colspan"/>
 					<xsl:if test="local-name()='th'">
 						<xsl:attribute name="font-weight">bold</xsl:attribute>
@@ -12315,10 +12319,10 @@
 	<xsl:template match="@colspan" mode="simple-table-colspan"/>
 	
 	<xsl:template match="*[local-name()='tr']" mode="simple-table-colspan">
-		<xsl:element name="tr">
+		<mn:tr>
 			<xsl:apply-templates select="@*" mode="simple-table-colspan"/>
 			<xsl:apply-templates mode="simple-table-colspan"/>
-		</xsl:element>
+		</mn:tr>
 	</xsl:template>
 	
 	<xsl:template match="@*|node()" mode="simple-table-colspan">
@@ -12354,21 +12358,21 @@
 		</xsl:copy>
 	</xsl:template>
 	
-	<xsl:template match="tbody" mode="simple-table-rowspan">
+	<xsl:template match="mn:tbody" mode="simple-table-rowspan">
 		<xsl:copy>
-				<xsl:copy-of select="tr[1]" />
-				<xsl:apply-templates select="tr[2]" mode="simple-table-rowspan">
-						<xsl:with-param name="previousRow" select="tr[1]" />
+				<xsl:copy-of select="mn:tr[1]" />
+				<xsl:apply-templates select="mn:tr[2]" mode="simple-table-rowspan">
+						<xsl:with-param name="previousRow" select="mn:tr[1]" />
 				</xsl:apply-templates>
 		</xsl:copy>
 	</xsl:template>
 	
-	<xsl:template match="tr" mode="simple-table-rowspan">
+	<xsl:template match="mn:tr" mode="simple-table-rowspan">
 		<xsl:param name="previousRow"/>
 		<xsl:variable name="currentRow" select="." />
 	
 		<xsl:variable name="normalizedTDs">
-				<xsl:for-each select="xalan:nodeset($previousRow)//*[self::td or self::th]">
+				<xsl:for-each select="xalan:nodeset($previousRow)//*[self::mn:td or self::mn:th]">
 						<xsl:choose>
 								<xsl:when test="@rowspan &gt; 1">
 										<xsl:copy>
@@ -12380,7 +12384,7 @@
 										</xsl:copy>
 								</xsl:when>
 								<xsl:otherwise>
-										<xsl:copy-of select="$currentRow/*[self::td or self::th][1 + count(current()/preceding-sibling::*[self::td or self::th][not(@rowspan) or (@rowspan = 1)])]" />
+										<xsl:copy-of select="$currentRow/*[self::mn:td or self::mn:th][1 + count(current()/preceding-sibling::*[self::mn:td or self::mn:th][not(@rowspan) or (@rowspan = 1)])]" />
 								</xsl:otherwise>
 						</xsl:choose>
 				</xsl:for-each>
@@ -12395,12 +12399,12 @@
 		<xsl:copy-of select="$newRow" />
 
 		<!-- optimize to prevent StackOverflowError, just copy next 'tr' -->
-		<xsl:variable name="currrow_num" select="count(preceding-sibling::tr) + 1"/>
-		<xsl:variable name="nextrow_without_rowspan_" select="count(following-sibling::tr[*[@rowspan and @rowspan != 1]][1]/preceding-sibling::tr) + 1"/>
+		<xsl:variable name="currrow_num" select="count(preceding-sibling::mn:tr) + 1"/>
+		<xsl:variable name="nextrow_without_rowspan_" select="count(following-sibling::mn:tr[*[@rowspan and @rowspan != 1]][1]/preceding-sibling::mn:tr) + 1"/>
 		<xsl:variable name="nextrow_without_rowspan" select="$nextrow_without_rowspan_ - $currrow_num"/>
 		<xsl:choose>
 			<xsl:when test="not(xalan:nodeset($newRow)/*/*[@rowspan and @rowspan != 1]) and $nextrow_without_rowspan &lt;= 0">
-				<xsl:copy-of select="following-sibling::tr"/>
+				<xsl:copy-of select="following-sibling::mn:tr"/>
 			</xsl:when>
 			<!-- <xsl:when test="xalan:nodeset($newRow)/*[not(@rowspan) or (@rowspan = 1)] and $nextrow_without_rowspan &gt; 0">
 				<xsl:copy-of select="following-sibling::tr[position() &lt;= $nextrow_without_rowspan]"/>
@@ -12411,7 +12415,7 @@
 				</xsl:apply-templates>
 			</xsl:when> -->
 			<xsl:otherwise>
-				<xsl:apply-templates select="following-sibling::tr[1]" mode="simple-table-rowspan">
+				<xsl:apply-templates select="following-sibling::mn:tr[1]" mode="simple-table-rowspan">
 						<xsl:with-param name="previousRow" select="$newRow"/>
 				</xsl:apply-templates>
 			</xsl:otherwise>
@@ -12630,7 +12634,7 @@
 		</xsl:call-template>
 	</xsl:template>
 
-	<xsl:template match="*[local-name() = 'link'][normalize-space() = '']" mode="td_text_with_formatting">
+	<xsl:template match="mn:link[normalize-space() = '']" mode="td_text_with_formatting">
 		<xsl:variable name="link">
 			<link_updated>
 				<xsl:variable name="target_text">
@@ -12653,12 +12657,12 @@
 
 	<xsl:template name="getFormattingTags">
 		<tags>
-			<xsl:if test="ancestor::*[local-name() = 'strong']"><tag>strong</tag></xsl:if>
-			<xsl:if test="ancestor::*[local-name() = 'em']"><tag>em</tag></xsl:if>
-			<xsl:if test="ancestor::*[local-name() = 'sub']"><tag>sub</tag></xsl:if>
-			<xsl:if test="ancestor::*[local-name() = 'sup']"><tag>sup</tag></xsl:if>
-			<xsl:if test="ancestor::*[local-name() = 'tt']"><tag>tt</tag></xsl:if>
-			<xsl:if test="ancestor::*[local-name() = 'sourcecode']"><tag>sourcecode</tag></xsl:if>
+			<xsl:if test="ancestor::mn:strong"><tag>strong</tag></xsl:if>
+			<xsl:if test="ancestor::mn:em"><tag>em</tag></xsl:if>
+			<xsl:if test="ancestor::mn:sub"><tag>sub</tag></xsl:if>
+			<xsl:if test="ancestor::mn:sup"><tag>sup</tag></xsl:if>
+			<xsl:if test="ancestor::mn:tt"><tag>tt</tag></xsl:if>
+			<xsl:if test="ancestor::mn:sourcecode"><tag>sourcecode</tag></xsl:if>
 			<xsl:if test="ancestor::*[local-name() = 'keep-together_within-line']"><tag>keep-together_within-line</tag></xsl:if>
 			<xsl:if test="ancestor::*[local-name() = 'font_en_vertical']"><tag>font_en_vertical</tag></xsl:if>
 		</tags>
@@ -12669,20 +12673,20 @@
 
 
 	<xsl:template name="getLang">
-		<xsl:variable name="language_current" select="normalize-space(//*[local-name()='bibdata']//*[local-name()='language'][@current = 'true'])"/>
+		<xsl:variable name="language_current" select="normalize-space(//mn:bibdata//mn:language[@current = 'true'])"/>
 		<xsl:variable name="language">
 			<xsl:choose>
 				<xsl:when test="$language_current != ''">
 					<xsl:value-of select="$language_current"/>
 				</xsl:when>
 				<xsl:otherwise>
-					<xsl:variable name="language_current_2" select="normalize-space(xalan:nodeset($bibdata)//*[local-name()='bibdata']//*[local-name()='language'][@current = 'true'])"/>
+					<xsl:variable name="language_current_2" select="normalize-space(xalan:nodeset($bibdata)//mn:bibdata//mn:language[@current = 'true'])"/>
 					<xsl:choose>
 						<xsl:when test="$language_current_2 != ''">
 							<xsl:value-of select="$language_current_2"/>
 						</xsl:when>
 						<xsl:otherwise>
-							<xsl:variable name="language_current_3" select="normalize-space(//*[local-name()='bibdata']//*[local-name()='language'])"/>
+							<xsl:variable name="language_current_3" select="normalize-space(//mn:bibdata//mn:language)"/>
 							<xsl:choose>
 								<xsl:when test="$language_current_3 != ''">
 									<xsl:value-of select="$language_current_3"/>
@@ -12702,20 +12706,20 @@
 	</xsl:template>
 	
 	<xsl:template name="getLang_fromCurrentNode">
-		<xsl:variable name="language_current" select="normalize-space(.//*[local-name()='bibdata']//*[local-name()='language'][@current = 'true'])"/>
+		<xsl:variable name="language_current" select="normalize-space(.//mn:bibdata//mn:language[@current = 'true'])"/>
 		<xsl:variable name="language">
 			<xsl:choose>
 				<xsl:when test="$language_current != ''">
 					<xsl:value-of select="$language_current"/>
 				</xsl:when>
 				<xsl:otherwise>
-					<xsl:variable name="language_current_2" select="normalize-space(xalan:nodeset($bibdata)//*[local-name()='bibdata']//*[local-name()='language'][@current = 'true'])"/>
+					<xsl:variable name="language_current_2" select="normalize-space(xalan:nodeset($bibdata)//mn:bibdata//mn:language[@current = 'true'])"/>
 					<xsl:choose>
 						<xsl:when test="$language_current_2 != ''">
 							<xsl:value-of select="$language_current_2"/>
 						</xsl:when>
 						<xsl:otherwise>
-							<xsl:value-of select=".//*[local-name()='bibdata']//*[local-name()='language']"/>
+							<xsl:value-of select=".//mn:bibdata//mn:language"/>
 						</xsl:otherwise>
 					</xsl:choose>
 				</xsl:otherwise>
@@ -12760,7 +12764,7 @@
 	<!-- ======================================= -->
 	<!-- math -->
 	<!-- ======================================= -->
-	<xsl:template match="*[local-name() = 'stem'][following-sibling::*[1][local-name() = 'fmt-stem']]"/> <!-- for tablesonly.xml generated by mn2pdf -->
+	<xsl:template match="mn:stem[following-sibling::*[1][self::mn:fmt-stem]]"/> <!-- for tablesonly.xml generated by mn2pdf -->
   
 	<xsl:template match="mathml:math">
 		<xsl:variable name="isAdded" select="@added"/>
@@ -12769,7 +12773,7 @@
 		<fo:inline xsl:use-attribute-sets="mathml-style">
 		
 			<!-- DEBUG -->
-			<!-- <xsl:copy-of select="ancestor::*[local-name() = 'stem']/@font-family"/> -->
+			<!-- <xsl:copy-of select="ancestor::mn:stem/@font-family"/> -->
     
 			<xsl:call-template name="refine_mathml-style"/>
 		
@@ -12852,20 +12856,20 @@
 		<xsl:value-of select="$comment_text"/>
 	</xsl:template>
 
-	<xsl:template match="*[local-name() = 'asciimath']">
+	<xsl:template match="mn:asciimath">
 		<xsl:param name="process" select="'false'"/>
 		<xsl:if test="$process = 'true'">
 			<xsl:apply-templates />
 		</xsl:if>
 	</xsl:template>
 	
-	<xsl:template match="*[local-name() = 'latexmath']"/>
+	<xsl:template match="mn:latexmath"/>
 	
 	<xsl:template name="getMathml_asciimath_text">
-		<xsl:variable name="asciimath" select="../*[local-name() = 'asciimath']"/>
+		<xsl:variable name="asciimath" select="../mn:asciimath"/>
 		<xsl:variable name="latexmath">
 			<xsl:if test="$namespace = 'ieee'">
-				<xsl:value-of select="../*[local-name() = 'latexmath']"/>
+				<xsl:value-of select="../mn:latexmath"/>
 			</xsl:if>
 		</xsl:variable>
 		<xsl:variable name="asciimath_text_following">
@@ -12950,7 +12954,7 @@
 		</xsl:if>
 		
 		<xsl:if test="$namespace = 'bsi' or $namespace = 'iso'">
-			<xsl:if test="count(ancestor::*[local-name() = 'table']) &gt; 1">
+			<xsl:if test="count(ancestor::mn:table) &gt; 1">
 				<xsl:attribute name="width">95%</xsl:attribute>
 				<xsl:attribute name="content-height">100%</xsl:attribute>
 				<xsl:attribute name="content-width">scale-down-to-fit</xsl:attribute>
@@ -13163,7 +13167,7 @@
 		<stem type="AsciiMath"><asciimath>x = 1</asciimath></stem>
 		<stem type="AsciiMath"><asciimath>x = 1</asciimath><latexmath>x = 1</latexmath></stem>
 	-->
-	<xsl:template match="*[local-name() = 'stem'][@type = 'AsciiMath'][count(*) = 0]/text() | *[local-name() = 'stem'][@type = 'AsciiMath'][*[local-name() = 'asciimath']]" priority="3">
+	<xsl:template match="mn:stem[@type = 'AsciiMath'][count(*) = 0]/text() | mn:stem[@type = 'AsciiMath'][mn:asciimath]" priority="3">
 		<fo:inline xsl:use-attribute-sets="mathml-style">
 		
 			<xsl:call-template name="refine_mathml-style" />
@@ -13183,22 +13187,22 @@
 	<!-- END: math -->
 	<!-- ======================================= -->
 
-	<xsl:template match="*[local-name()='localityStack']"/>
+	<xsl:template match="mn:localityStack"/>
 
 	<xsl:variable name="pdfAttachmentsList_">
-		<xsl:for-each select="//*[local-name() = 'metanorma']/*[local-name() = 'metanorma-extension']/*[local-name() = 'attachment']">
+		<xsl:for-each select="//mn:metanorma/mn:metanorma-extension/mn:attachment">
 			<attachment filename="{@name}"/>
 		</xsl:for-each>
-		<xsl:if test="not(//*[local-name() = 'metanorma']/*[local-name() = 'metanorma-extension']/*[local-name() = 'attachment'])">
-			<xsl:for-each select="//*[local-name() = 'bibitem'][@hidden = 'true'][*[local-name() = 'uri'][@type = 'attachment']]">
-				<xsl:variable name="attachment_path" select="*[local-name() = 'uri'][@type = 'attachment']"/>
+		<xsl:if test="not(//mn:metanorma/mn:metanorma-extension/mn:attachment)">
+			<xsl:for-each select="//mn:bibitem[@hidden = 'true'][mn:uri[@type = 'attachment']]">
+				<xsl:variable name="attachment_path" select="mn:uri[@type = 'attachment']"/>
 				<attachment filename="{$attachment_path}"/>
 			</xsl:for-each>
 		</xsl:if>
 	</xsl:variable>
 	<xsl:variable name="pdfAttachmentsList" select="xalan:nodeset($pdfAttachmentsList_)"/>
 
-	<xsl:template match="*[local-name()='link']" name="link">
+	<xsl:template match="mn:link" name="link">
 		<xsl:variable name="target_normalized" select="translate(@target, '\', '/')"/>
 		<xsl:variable name="target_attachment_name" select="substring-after($target_normalized, '_attachments/')"/>
 		<xsl:variable name="isLinkToEmbeddedFile" select="normalize-space(@attachment = 'true' and $pdfAttachmentsList//attachment[@filename = current()/@target])"/>
@@ -13326,15 +13330,15 @@
 	<!-- ======================== -->
 	<!-- Appendix processing -->
 	<!-- ======================== -->
-	<xsl:template match="*[local-name()='appendix']">
+	<xsl:template match="mn:appendix">
 		<xsl:call-template name="setNamedDestination"/>
 		<fo:block id="{@id}" xsl:use-attribute-sets="appendix-style">
-			<xsl:apply-templates select="*[local-name()='title']" />
+			<xsl:apply-templates select="mn:title" />
 		</fo:block>
 		<xsl:apply-templates select="node()[not(local-name()='title')]"/>
 	</xsl:template>
 
-	<xsl:template match="*[local-name()='appendix']/*[local-name()='title']" priority="2">
+	<xsl:template match="mn:appendix/mn:title" priority="2">
 		<xsl:variable name="level">
 			<xsl:call-template name="getLevel"/>
 		</xsl:variable>
@@ -13344,28 +13348,28 @@
 	<!-- END Appendix processing -->
 	<!-- ======================== -->
 	
-	<xsl:template match="*[local-name()='appendix']//*[local-name()='example']" priority="2">
+	<xsl:template match="mn:appendix//mn:example" priority="2">
 		<xsl:call-template name="setNamedDestination"/>
 		<fo:block id="{@id}" xsl:use-attribute-sets="appendix-example-style">			
-			<xsl:apply-templates select="*[local-name()='name']" />
+			<xsl:apply-templates select="mn:name" />
 		</fo:block>
 		<xsl:apply-templates select="node()[not(local-name()='name')]"/>
 	</xsl:template>
 	
 	
-	<xsl:template match="*[local-name() = 'callout']">
+	<xsl:template match="mn:callout">
 		<xsl:choose>
 			<xsl:when test="normalize-space(@target) = ''">&lt;<xsl:apply-templates />&gt;</xsl:when>
 			<xsl:otherwise><fo:basic-link internal-destination="{@target}" fox:alt-text="{normalize-space()}">&lt;<xsl:apply-templates />&gt;</fo:basic-link></xsl:otherwise>
 		</xsl:choose>
 	</xsl:template>
 	
-	<xsl:template match="*[local-name() = 'annotation']">
+	<xsl:template match="mn:annotation">
 		<xsl:variable name="annotation-id" select="@id"/>
 		<xsl:variable name="callout" select="//*[@target = $annotation-id]/text()"/>		
 		<fo:block id="{$annotation-id}" white-space="nowrap">			
 			<xsl:if test="$namespace = 'ogc'">
-				<xsl:if test="not(preceding-sibling::*[local-name() = 'annotation'])">
+				<xsl:if test="not(preceding-sibling::mn:annotation)">
 					<xsl:attribute name="space-before">6pt</xsl:attribute>
 				</xsl:if>
 			</xsl:if>
@@ -13377,24 +13381,24 @@
 		</fo:block>		
 	</xsl:template>	
 
-	<xsl:template match="*[local-name() = 'annotation']/*[local-name() = 'p']">
+	<xsl:template match="mn:annotation/mn:p">
 		<xsl:param name="callout"/>
 		<fo:inline id="{@id}">
 			<xsl:call-template name="setNamedDestination"/>
 			<!-- for first p in annotation, put <x> -->
-			<xsl:if test="not(preceding-sibling::*[local-name() = 'p'])"><xsl:value-of select="$callout"/></xsl:if>
+			<xsl:if test="not(preceding-sibling::mn:p)"><xsl:value-of select="$callout"/></xsl:if>
 			<xsl:apply-templates />
 		</fo:inline>		
 	</xsl:template>
 
-	<xsl:template match="*[local-name() = 'xref']">
+	<xsl:template match="mn:xref">
 		<xsl:call-template name="insert_basic_link">
 			<xsl:with-param name="element">
 				<xsl:variable name="alt_text">
 					<xsl:call-template name="getAltText"/>
 				</xsl:variable>
 				<fo:basic-link internal-destination="{@target}" fox:alt-text="{$alt_text}" xsl:use-attribute-sets="xref-style">
-					<xsl:if test="string-length(normalize-space()) &lt; 30 and not(contains(normalize-space(), 'http://')) and not(contains(normalize-space(), 'https://')) and not(ancestor::*[local-name() = 'table' or local-name() = 'dl'])">
+					<xsl:if test="string-length(normalize-space()) &lt; 30 and not(contains(normalize-space(), 'http://')) and not(contains(normalize-space(), 'https://')) and not(ancestor::*[self::mn:table or self::mn:dl])">
 						<xsl:attribute name="keep-together.within-line">always</xsl:attribute>
 					</xsl:if>
 					<xsl:if test="$namespace = 'jis'">
@@ -13402,7 +13406,7 @@
 							<xsl:attribute name="font-family">IPAexGothic</xsl:attribute>
 						</xsl:if>
 					</xsl:if>
-					<xsl:if test="parent::*[local-name() = 'add']">
+					<xsl:if test="parent::mn:add">
 						<xsl:call-template name="append_add-style"/>
 					</xsl:if>
 					<xsl:apply-templates />
@@ -13412,8 +13416,8 @@
 	</xsl:template>
 	
 	<!-- command between two xref points to non-standard bibitem -->
-	<xsl:template match="text()[. = ','][preceding-sibling::node()[1][local-name() = 'sup'][*[local-name() = 'xref'][@type = 'footnote']] and 
-		following-sibling::node()[1][local-name() = 'sup'][*[local-name() = 'xref'][@type = 'footnote']]]">
+	<xsl:template match="text()[. = ','][preceding-sibling::node()[1][self::mn:sup][mn:xref[@type = 'footnote']] and 
+		following-sibling::node()[1][self::mn:sup][mn:xref[@type = 'footnote']]]">
 		<xsl:choose>
 			<xsl:when test="$namespace = 'iso'">
 				<fo:inline baseline-shift="20%" font-size="80%"><xsl:value-of select="."/></fo:inline>
@@ -13425,12 +13429,12 @@
 	<!-- ====== -->
 	<!-- formula  -->
 	<!-- ====== -->	
-	<xsl:template match="*[local-name() = 'formula']" name="formula">
+	<xsl:template match="mn:formula" name="formula">
 		<fo:block-container margin-left="0mm" role="SKIP">
-			<xsl:if test="parent::*[local-name() = 'note']">
+			<xsl:if test="parent::mn:note">
 				<xsl:attribute name="margin-left">
 					<xsl:choose>
-						<xsl:when test="not(ancestor::*[local-name() = 'table'])"><xsl:value-of select="$note-body-indent"/></xsl:when>
+						<xsl:when test="not(ancestor::mn:table)"><xsl:value-of select="$note-body-indent"/></xsl:when>
 						<xsl:otherwise><xsl:value-of select="$note-body-indent-table"/></xsl:otherwise>
 					</xsl:choose>
 				</xsl:attribute>
@@ -13441,26 +13445,26 @@
 			<fo:block-container margin-left="0mm" role="SKIP">	
 				<xsl:call-template name="setNamedDestination"/>
 				<fo:block id="{@id}">
-					<xsl:apply-templates select="node()[not(local-name() = 'name')]" /> <!-- formula's number will be process in 'stem' template -->
+					<xsl:apply-templates select="node()[not(self::mn:name)]" /> <!-- formula's number will be process in 'stem' template -->
 				</fo:block>
 			</fo:block-container>
 		</fo:block-container>
 	</xsl:template>
 
-	<xsl:template match="*[local-name() = 'formula']/*[local-name() = 'dt']/*[local-name() = 'stem']">
+	<xsl:template match="mn:formula/mn:dt/mn:stem">
 		<fo:inline>
 			<xsl:apply-templates />
 		</fo:inline>
 	</xsl:template>
 	
-	<xsl:template match="*[local-name() = 'admitted']/*[local-name() = 'stem']">
+	<xsl:template match="mn:admitted/mn:stem">
 		<fo:inline>
 			<xsl:apply-templates />
 		</fo:inline>
 	</xsl:template>
 
 
-	<xsl:template match="*[local-name() = 'formula']/*[local-name() = 'name']"> <!-- show in 'stem' template -->
+	<xsl:template match="mn:formula/mn:name"> <!-- show in 'stem' template -->
 		<!-- https://github.com/metanorma/isodoc/issues/607 
 		<xsl:if test="normalize-space() != ''">
 			<xsl:text>(</xsl:text><xsl:apply-templates /><xsl:text>)</xsl:text>
@@ -13470,11 +13474,11 @@
 	
 	
 	<!-- stem inside formula with name (with formula's number) -->
-	<xsl:template match="*[local-name() = 'formula'][*[local-name() = 'name']]/*[local-name() = 'stem']">
+	<xsl:template match="mn:formula[mn:name]/mn:stem">
 		<fo:block xsl:use-attribute-sets="formula-style">
 		
 			<xsl:if test="$namespace = 'gb'">
-				<xsl:if test="not(ancestor::*[local-name()='note'])">
+				<xsl:if test="not(ancestor::mn:note)">
 					<xsl:attribute name="font-size">11pt</xsl:attribute>
 				</xsl:if>
 			</xsl:if>
@@ -13496,13 +13500,13 @@
 							
 							<fo:block xsl:use-attribute-sets="formula-stem-number-style" role="SKIP">
 							
-								<xsl:for-each select="../*[local-name() = 'name']">
+								<xsl:for-each select="../mn:name">
 									<xsl:call-template name="setIDforNamedDestination"/>
 								</xsl:for-each>
 							
 								<xsl:call-template name="refine_formula-stem-number-style"/>
 								
-								<xsl:apply-templates select="../*[local-name() = 'name']"/>
+								<xsl:apply-templates select="../mn:name"/>
 							</fo:block>
 						</fo:table-cell>
 					</fo:table-row>
@@ -13514,7 +13518,7 @@
 
 	
 	<!-- stem inside formula without name (without formula's number) -->
-	<xsl:template match="*[local-name() = 'formula'][not(*[local-name() = 'name'])]/*[local-name() = 'stem']">
+	<xsl:template match="mn:formula[not(mn:name)]/mn:stem">
 		<fo:block xsl:use-attribute-sets="formula-style">
 			<fo:block xsl:use-attribute-sets="formula-stem-block-style">
 				<xsl:apply-templates />
@@ -13535,7 +13539,7 @@
 	<!-- termnote -->
 	<!-- ====== -->
 	
-	<xsl:template match="*[local-name() = 'note']" name="note">
+	<xsl:template match="mn:note" name="note">
 	
 		<xsl:choose>
 			<xsl:when test="$namespace = 'jis'">
@@ -13549,7 +13553,7 @@
 						<xsl:attribute name="provisional-distance-between-starts">
 							<xsl:choose>
 								<!-- if last char is digit -->
-								<xsl:when test="translate(substring(*[local-name() = 'name'], string-length(*[local-name() = 'name'])),'0123456789','') = ''"><xsl:value-of select="16 + $text_indent"/>mm</xsl:when>
+								<xsl:when test="translate(substring(mn:name, string-length(mn:name)),'0123456789','') = ''"><xsl:value-of select="16 + $text_indent"/>mm</xsl:when>
 								<xsl:otherwise><xsl:value-of select="10 + $text_indent"/>mm</xsl:otherwise>
 							</xsl:choose>
 						</xsl:attribute>
@@ -13560,12 +13564,12 @@
 								</xsl:if>
 								<fo:block xsl:use-attribute-sets="note-name-style">
 									<xsl:call-template name="refine_note-name-style"/>
-									<xsl:apply-templates select="*[local-name() = 'name']" />
+									<xsl:apply-templates select="mn:name" />
 								</fo:block>
 							</fo:list-item-label>
 							<fo:list-item-body start-indent="body-start()">
 								<fo:block>
-									<xsl:apply-templates select="node()[not(local-name() = 'name')]" />
+									<xsl:apply-templates select="node()[not(self::mn:name)]" />
 								</fo:block>
 							</fo:list-item-body>
 						</fo:list-item>
@@ -13604,7 +13608,7 @@
 											</fo:table-cell>
 											<fo:table-cell>
 												<fo:block text-align="justify" role="SKIP">
-													<xsl:apply-templates select="node()[not(local-name() = 'name')]" />
+													<xsl:apply-templates select="node()[not(self::mn:name)]" />
 												</fo:block>
 											</fo:table-cell>
 										</fo:table-row>
@@ -13620,28 +13624,28 @@
 									
 									<fo:inline xsl:use-attribute-sets="note-name-style" role="SKIP">
 										
-										<xsl:apply-templates select="*[local-name() = 'name']/*[local-name() = 'tab']" mode="tab"/>
+										<xsl:apply-templates select="mn:name/mn:tab" mode="tab"/>
 									
 										<xsl:call-template name="refine_note-name-style"/>
 									
 										<!-- if 'p' contains all text in 'add' first and last elements in first p are 'add' -->
 										<!-- <xsl:if test="*[not(local-name()='name')][1][node()[normalize-space() != ''][1][local-name() = 'add'] and node()[normalize-space() != ''][last()][local-name() = 'add']]"> -->
-										<xsl:if test="*[not(local-name()='name')][1][count(node()[normalize-space() != '']) = 1 and *[local-name() = 'add']]">
+										<xsl:if test="*[not(local-name()='name')][1][count(node()[normalize-space() != '']) = 1 and mn:add]">
 											<xsl:call-template name="append_add-style"/>
 										</xsl:if>
 										
 										<!-- if note contains only one element and first and last childs are `add` ace-tag, then move start ace-tag before NOTE's name-->
-										<xsl:if test="count(*[not(local-name() = 'name')]) = 1 and *[not(local-name() = 'name')]/node()[last()][local-name() = 'add'][starts-with(text(), $ace_tag)]">
-											<xsl:apply-templates select="*[not(local-name() = 'name')]/node()[1][local-name() = 'add'][starts-with(text(), $ace_tag)]">
+										<xsl:if test="count(*[not(self::mn:name)]) = 1 and *[not(self::mn:name)]/node()[last()][self::mn:add][starts-with(text(), $ace_tag)]">
+											<xsl:apply-templates select="*[not(self::mn:name)]/node()[1][self::mn:add][starts-with(text(), $ace_tag)]">
 												<xsl:with-param name="skip">false</xsl:with-param>
 											</xsl:apply-templates> 
 										</xsl:if>
 										
-										<xsl:apply-templates select="*[local-name() = 'name']" />
+										<xsl:apply-templates select="mn:name" />
 										
 									</fo:inline>
 									
-									<xsl:apply-templates select="node()[not(local-name() = 'name')]" />
+									<xsl:apply-templates select="node()[not(self::mn:name)]" />
 								</fo:block>
 							</xsl:otherwise>
 						</xsl:choose>
@@ -13700,7 +13704,7 @@
 			</xsl:if>
 		</xsl:if>
 		<xsl:if test="$namespace = 'plateau'">
-			<xsl:if test="ancestor::*[local-name() = 'figure']">
+			<xsl:if test="ancestor::mn:figure">
 				<xsl:attribute name="margin-left"><xsl:value-of select="$tableAnnotationIndent"/></xsl:attribute>
 			</xsl:if>
 		</xsl:if>
@@ -13708,7 +13712,7 @@
 	
 
 	
-	<xsl:template match="*[local-name() = 'note']/*[local-name() = 'p']">
+	<xsl:template match="mn:note/mn:p">
 		<xsl:variable name="num"><xsl:number/></xsl:variable>
 		<xsl:choose>
 			<xsl:when test="$num = 1"> <!-- display first NOTE's paragraph in the same line with label NOTE -->
@@ -13725,7 +13729,7 @@
 	</xsl:template>
 	
 	
-	<xsl:template match="*[local-name() = 'termnote']">
+	<xsl:template match="mn:termnote">
 		<xsl:call-template name="setNamedDestination"/>
 		<fo:block id="{@id}" xsl:use-attribute-sets="termnote-style">
 		
@@ -13738,7 +13742,7 @@
 				<xsl:choose>
 					<xsl:when test="$namespace = 'bipm' or $namespace = 'bsi' or $namespace = 'csa' or $namespace = 'csd' or $namespace = 'iec' or $namespace = 'ieee' or $namespace = 'iho' or $namespace = 'iso' or $namespace = 'itu' or $namespace = 'jcgm' or $namespace = 'jis' or $namespace = 'nist-sp' or $namespace = 'nist-cswp' or $namespace = 'ogc' or $namespace = 'ogc-white-paper' or $namespace = 'plateau' or $namespace = 'rsd'"></xsl:when>
 					<xsl:otherwise>
-						<xsl:if test="not(*[local-name() = 'name']/following-sibling::node()[1][self::text()][normalize-space()=''])">
+						<xsl:if test="not(mn:name/following-sibling::node()[1][self::text()][normalize-space()=''])">
 							<xsl:attribute name="padding-right">1mm</xsl:attribute>
 						</xsl:if>
 					</xsl:otherwise>
@@ -13748,20 +13752,20 @@
 			
 				<!-- if 'p' contains all text in 'add' first and last elements in first p are 'add' -->
 				<!-- <xsl:if test="*[not(local-name()='name')][1][node()[normalize-space() != ''][1][local-name() = 'add'] and node()[normalize-space() != ''][last()][local-name() = 'add']]"> -->
-				<xsl:if test="*[not(local-name()='name')][1][count(node()[normalize-space() != '']) = 1 and *[local-name() = 'add']]">
+				<xsl:if test="*[not(local-name()='name')][1][count(node()[normalize-space() != '']) = 1 and mn:add]">
 					<xsl:call-template name="append_add-style"/>
 				</xsl:if>
 				
-				<xsl:apply-templates select="*[local-name() = 'name']" />
+				<xsl:apply-templates select="mn:name" />
 				
 			</fo:inline>
 			
-			<xsl:apply-templates select="node()[not(local-name() = 'name')]" />
+			<xsl:apply-templates select="node()[not(self::mn:name)]" />
 		</fo:block>
 	</xsl:template>
 
 
-	<xsl:template match="*[local-name() = 'note']/*[local-name() = 'name']">
+	<xsl:template match="mn:note/mn:name">
 		<xsl:param name="sfx"/>
 		<xsl:variable name="suffix">
 			<xsl:choose>
@@ -13801,7 +13805,7 @@
 		</xsl:if>
 	</xsl:template>
 	
-	<xsl:template match="*[local-name() = 'termnote']/*[local-name() = 'name']">
+	<xsl:template match="mn:termnote/mn:name">
 		<xsl:param name="sfx"/>
 		<xsl:variable name="suffix">
 			<xsl:choose>
@@ -13836,7 +13840,7 @@
 		</xsl:if>
 	</xsl:template>
 	
-	<xsl:template match="*[local-name() = 'termnote']/*[local-name() = 'p']">
+	<xsl:template match="mn:termnote/mn:p">
 		<xsl:variable name="num"><xsl:number/></xsl:variable>
 		<xsl:choose>
 			<xsl:when test="$num = 1"> <!-- first paragraph renders in the same line as titlenote name -->
@@ -13860,7 +13864,7 @@
 	<!-- term      -->	
 	<!-- ====== -->
 	
-	<xsl:template match="*[local-name() = 'terms']">
+	<xsl:template match="mn:terms">
 		<!-- <xsl:message>'terms' <xsl:number/> processing...</xsl:message> -->
 		<xsl:call-template name="setNamedDestination"/>
 		<fo:block id="{@id}">
@@ -13868,7 +13872,7 @@
 		</fo:block>
 	</xsl:template>
 	
-	<xsl:template match="*[local-name() = 'term']">
+	<xsl:template match="mn:term">
 		<xsl:call-template name="setNamedDestination"/>
 		<fo:block id="{@id}" xsl:use-attribute-sets="term-style">
 
@@ -13886,17 +13890,17 @@
 				<xsl:apply-templates select="mn:name" />
 			</xsl:if>
 			
-			<xsl:if test="parent::*[local-name() = 'term'] and not(preceding-sibling::*[local-name() = 'term'])">
+			<xsl:if test="parent::mn:term and not(preceding-sibling::mn:term)">
 				<xsl:if test="$namespace = 'iso'">
 					<xsl:attribute name="space-before">12pt</xsl:attribute>
 				</xsl:if>
 			</xsl:if>
-			<xsl:apply-templates select="node()[not(local-name() = 'name')]" />
+			<xsl:apply-templates select="node()[not(self::mn:name)]" />
 		</fo:block>
 	</xsl:template>
 	
 	
-	<xsl:template match="*[local-name() = 'term']/*[local-name() = 'name']">
+	<xsl:template match="mn:term/mn:name">
 		<xsl:if test="normalize-space() != ''">
 			<!-- <xsl:variable name="level">
 				<xsl:call-template name="getLevelTermName"/>
@@ -13915,7 +13919,7 @@
 	<!-- image    -->
 	<!-- ====== -->
 	
-	<xsl:template match="*[local-name() = 'figure']" name="figure">
+	<xsl:template match="mn:figure" name="figure">
 		<xsl:variable name="isAdded" select="@added"/>
 		<xsl:variable name="isDeleted" select="@deleted"/>
 		<xsl:call-template name="setNamedDestination"/>
@@ -13928,11 +13932,11 @@
 			</xsl:call-template>
 			
 			<xsl:if test="$namespace = 'bsi' or $namespace = 'rsd'"> <!-- show figure's name BEFORE image -->
-				<xsl:apply-templates select="*[local-name() = 'name']" />
+				<xsl:apply-templates select="mn:name" />
 			</xsl:if>
 			
 			<!-- Example: Dimensions in millimeters -->
-			<xsl:apply-templates select="*[local-name() = 'note'][@type = 'units']" />
+			<xsl:apply-templates select="mn:note[@type = 'units']" />
 			
 			<xsl:variable name="show_figure_key_in_block_container">
 				<xsl:choose>
@@ -13948,11 +13952,11 @@
 			
 			<fo:block xsl:use-attribute-sets="figure-style" role="SKIP">
 				
-				<xsl:for-each select="*[local-name() = 'name']"> <!-- set context -->
+				<xsl:for-each select="mn:name"> <!-- set context -->
 					<xsl:call-template name="setIDforNamedDestination"/>
 				</xsl:for-each>
 				
-				<xsl:apply-templates select="node()[not(local-name() = 'name') and not(local-name() = 'note' and @type = 'units')]" />
+				<xsl:apply-templates select="node()[not(self::mn:name) and not(self::mn:note and @type = 'units')]" />
 			</fo:block>
 		
 			<xsl:if test="normalize-space($show_figure_key_in_block_container) = 'true'">
@@ -13962,7 +13966,7 @@
 			<xsl:choose>
 				<xsl:when test="$namespace = 'bsi' or $namespace = 'rsd'"></xsl:when>
 				<xsl:otherwise>
-					<xsl:apply-templates select="*[local-name() = 'name']" /> <!-- show figure's name AFTER image -->
+					<xsl:apply-templates select="mn:name" /> <!-- show figure's name AFTER image -->
 				</xsl:otherwise>
 			</xsl:choose>
 			
@@ -13971,12 +13975,12 @@
 		<xsl:if test="$namespace = 'jis'">
 			<xsl:if test="$vertical_layout = 'true'">
 				<fo:block keep-with-previous="always">
-					<xsl:apply-templates select="*[local-name() = 'p'][@class = 'dl']">
+					<xsl:apply-templates select="mn:p[@class = 'dl']">
 						<xsl:with-param name="process">true</xsl:with-param>
 					</xsl:apply-templates>
 					<xsl:call-template name="showFigureKey"/>
 				</fo:block>
-				<xsl:apply-templates select="*[local-name() = 'name']">
+				<xsl:apply-templates select="mn:name">
 					<xsl:with-param name="process">true</xsl:with-param>
 				</xsl:apply-templates>
 			</xsl:if>
@@ -13984,12 +13988,12 @@
 	</xsl:template>
 	
 	<xsl:template name="showFigureKey">
-		<xsl:for-each select="*[(local-name() = 'note' and not(@type = 'units')) or local-name() = 'example']">
+		<xsl:for-each select="*[(self::mn:note and not(@type = 'units')) or self::mn:example]">
 			<xsl:choose>
-				<xsl:when test="local-name() = 'note'">
+				<xsl:when test="self::mn:note">
 					<xsl:call-template name="note"/>
 				</xsl:when>
-				<xsl:when test="local-name() = 'example'">
+				<xsl:when test="self::mn:example">
 					<xsl:call-template name="example"/>
 				</xsl:when>
 				<xsl:otherwise>
@@ -14001,15 +14005,15 @@
 		<xsl:call-template name="figure_fn_display"/>
 	</xsl:template>
 	
-	<xsl:template match="*[local-name() = 'figure'][@class = 'pseudocode']">
+	<xsl:template match="mn:figure[@class = 'pseudocode']">
 		<xsl:call-template name="setNamedDestination"/>
 		<fo:block id="{@id}">
-			<xsl:apply-templates select="node()[not(local-name() = 'name')]" />
+			<xsl:apply-templates select="node()[not(self::mn:name)]" />
 		</fo:block>
-		<xsl:apply-templates select="*[local-name() = 'name']" />
+		<xsl:apply-templates select="mn:name" />
 	</xsl:template>
 	
-	<xsl:template match="*[local-name() = 'figure'][@class = 'pseudocode']//*[local-name() = 'p']">
+	<xsl:template match="mn:figure[@class = 'pseudocode']//mn:p">
 		<fo:block xsl:use-attribute-sets="figure-pseudocode-p-style">
 			<xsl:apply-templates />
 		</fo:block>
@@ -14017,7 +14021,7 @@
 
 	<!-- SOURCE: ... -->
 	<!-- figure/source -->
-	<xsl:template match="*[local-name() = 'figure']/*[local-name() = 'source']" priority="2">
+	<xsl:template match="mn:figure/mn:source" priority="2">
 		<xsl:choose>
 			<xsl:when test="$namespace = 'iec'">
 				<fo:block xsl:use-attribute-sets="figure-source-style">
@@ -14030,15 +14034,15 @@
 		</xsl:choose>
 	</xsl:template>
 	
-	<xsl:template match="*[local-name() = 'image']">
+	<xsl:template match="mn:image">
 		<xsl:param name="indent">0</xsl:param>
 		<xsl:param name="logo_width"/>
 		<xsl:variable name="isAdded" select="../@added"/>
 		<xsl:variable name="isDeleted" select="../@deleted"/>
 		<xsl:choose>
-			<xsl:when test="ancestor::*[local-name() = 'title'] or not(parent::*[local-name() = 'figure']) or parent::*[local-name() = 'p']"> <!-- inline image ( 'image:path' in adoc, with one colon after image) -->
+			<xsl:when test="ancestor::mn:title or not(parent::mn:figure) or parent::mn:p"> <!-- inline image ( 'image:path' in adoc, with one colon after image) -->
 				<fo:inline padding-left="1mm" padding-right="1mm">
-					<xsl:if test="not(parent::*[local-name() = 'figure']) or parent::*[local-name() = 'p']">
+					<xsl:if test="not(parent::mn:figure) or parent::mn:p">
 						<xsl:attribute name="padding-left">0mm</xsl:attribute>
 						<xsl:attribute name="padding-right">0mm</xsl:attribute>
 					</xsl:if>
@@ -14056,7 +14060,7 @@
 					
 					<fo:external-graphic src="{$src}" fox:alt-text="Image {@alt}" vertical-align="middle">
 						
-						<xsl:if test="parent::*[local-name() = 'logo']"> <!-- publisher's logo -->
+						<xsl:if test="parent::mn:logo"> <!-- publisher's logo -->
 							<xsl:attribute name="width">100%</xsl:attribute>
 							<xsl:if test="normalize-space($logo_width) != ''">
 								<xsl:attribute name="width"><xsl:value-of select="$logo_width"/></xsl:attribute>
@@ -14137,7 +14141,7 @@
 										</xsl:variable>
 										<xsl:copy-of select="xalan:nodeset($image-graphic-style_attributes)/attributes/@*"/>
 										
-										<xsl:if test="not(@mimetype = 'image/svg+xml') and not(ancestor::*[local-name() = 'table'])">
+										<xsl:if test="not(@mimetype = 'image/svg+xml') and not(ancestor::mn:table)">
 											<xsl:variable name="scale">
 												<xsl:call-template name="getImageScale">
 													<xsl:with-param name="indent" select="$indent"/>
@@ -14177,7 +14181,7 @@
 								</xsl:choose>
 								
 								<!-- 
-								<xsl:if test="not(@mimetype = 'image/svg+xml') and (../*[local-name() = 'name'] or parent::*[local-name() = 'figure'][@unnumbered = 'true']) and not(ancestor::*[local-name() = 'table'])">
+								<xsl:if test="not(@mimetype = 'image/svg+xml') and (../mn:name or parent::mn:figure[@unnumbered = 'true']) and not(ancestor::mn:table)">
 								-->
 								
 							</fo:external-graphic>
@@ -14328,7 +14332,7 @@
 		</xsl:choose>
 	</xsl:template>
 	
-	<xsl:template match="*[local-name() = 'image']" mode="cross_image">
+	<xsl:template match="mn:image" mode="cross_image">
 		<xsl:choose>
 			<xsl:when test="@mimetype = 'image/svg+xml' and $images/images/image[@id = current()/@id]">
 				<xsl:variable name="src">
@@ -14389,8 +14393,8 @@
 	<xsl:variable name="width_effective_px" select="$width_effective div 25.4 * $image_dpi"/>
 	<xsl:variable name="height_effective_px" select="$height_effective div 25.4 * $image_dpi"/>
 	
-	<xsl:template match="*[local-name() = 'figure'][not(*[local-name() = 'image']) and *[local-name() = 'svg']]/*[local-name() = 'name']/*[local-name() = 'bookmark']" priority="2"/>
-	<xsl:template match="*[local-name() = 'figure'][not(*[local-name() = 'image'])]/*[local-name() = 'svg']" priority="2" name="image_svg">
+	<xsl:template match="mn:figure[not(mn:image) and *[local-name() = 'svg']]/mn:name/mn:bookmark" priority="2"/>
+	<xsl:template match="mn:figure[not(mn:image)]/*[local-name() = 'svg']" priority="2" name="image_svg">
 		<xsl:param name="name"/>
 		
 		<xsl:variable name="svg_content">
@@ -14399,8 +14403,8 @@
 		
 		<xsl:variable name="alt-text">
 			<xsl:choose>
-				<xsl:when test="normalize-space(../*[local-name() = 'name']) != ''">
-					<xsl:value-of select="../*[local-name() = 'name']"/>
+				<xsl:when test="normalize-space(../mn:name) != ''">
+					<xsl:value-of select="../mn:name"/>
 				</xsl:when>
 				<xsl:when test="normalize-space($name) != ''">
 					<xsl:value-of select="$name"/>
@@ -14409,7 +14413,7 @@
 			</xsl:choose>
 		</xsl:variable>
 		
-		<xsl:variable name="isPrecedingTitle" select="normalize-space(ancestor::*[local-name() = 'figure']/preceding-sibling::*[1][local-name() = 'title'] and 1 = 1)"/>
+		<xsl:variable name="isPrecedingTitle" select="normalize-space(ancestor::mn:figure/preceding-sibling::*[1][self::mn:title] and 1 = 1)"/>
 		
 		<xsl:choose>
 			<xsl:when test=".//*[local-name() = 'a'][*[local-name() = 'rect'] or *[local-name() = 'polygon'] or *[local-name() = 'circle'] or *[local-name() = 'ellipse']]">
@@ -14458,9 +14462,9 @@
 								<fo:table-cell column-number="2">
 									<fo:block>
 										<fo:block-container width="{$width_scale}px" height="{$height_scale}px">
-											<xsl:if test="../*[local-name() = 'name']/*[local-name() = 'bookmark']">
+											<xsl:if test="../mn:name/mn:bookmark">
 												<fo:block  line-height="0" font-size="0">
-													<xsl:for-each select="../*[local-name() = 'name']/*[local-name() = 'bookmark']">
+													<xsl:for-each select="../mn:name/mn:bookmark">
 														<xsl:call-template name="bookmark"/>
 													</xsl:for-each>
 												</fo:block>
@@ -14491,7 +14495,7 @@
 			</xsl:when>
 			<xsl:otherwise>
 			
-				<xsl:variable name="image_class" select="ancestor::*[local-name() = 'image']/@class"/>
+				<xsl:variable name="image_class" select="ancestor::mn:image/@class"/>
 				<xsl:variable name="ancestor_table_cell" select="normalize-space(ancestor::*[local-name() = 'td'] or ancestor::*[local-name() = 'th'])"/>
 			
 				<xsl:variable name="element">
@@ -14499,12 +14503,12 @@
 						<xsl:when test="ancestor::*[local-name() = 'tr'] and $isGenerateTableIF = 'true'">
 							<fo:inline xsl:use-attribute-sets="image-style" text-align="left"/>
 						</xsl:when>
-						<xsl:when test="not(ancestor::*[local-name() = 'figure'])">
+						<xsl:when test="not(ancestor::mn:figure)">
 							<fo:inline xsl:use-attribute-sets="image-style" text-align="left"/>
 						</xsl:when>
 						<xsl:otherwise>
 							<fo:block xsl:use-attribute-sets="image-style">
-								<xsl:if test="ancestor::*[local-name() = 'dt']">
+								<xsl:if test="ancestor::mn:dt">
 									<xsl:attribute name="text-align">left</xsl:attribute>
 								</xsl:if>
 							</fo:block>
@@ -14599,7 +14603,7 @@
 		</xsl:copy>
 	</xsl:template>
 	
-	<xsl:template match="*[local-name() = 'image']/@href" mode="svg_update">
+	<xsl:template match="mn:image/@href" mode="svg_update">
 		<xsl:attribute name="href" namespace="http://www.w3.org/1999/xlink">
 			<xsl:value-of select="."/>
 		</xsl:attribute>
@@ -14620,8 +14624,8 @@
 			<xsl:variable name="width" select="normalize-space($viewbox//mnx:item[3])"/>
 			<xsl:variable name="height" select="normalize-space($viewbox//mnx:item[4])"/>
 			
-			<xsl:variable name="parent_image_width" select="normalize-space(ancestor::*[1][local-name() = 'image']/@width)"/>
-			<xsl:variable name="parent_image_height" select="normalize-space(ancestor::*[1][local-name() = 'image']/@height)"/>
+			<xsl:variable name="parent_image_width" select="normalize-space(ancestor::*[1][self::mn:image]/@width)"/>
+			<xsl:variable name="parent_image_height" select="normalize-space(ancestor::*[1][self::mn:image]/@height)"/>
 			
 			<xsl:attribute name="width">
 				<xsl:choose>
@@ -14650,7 +14654,7 @@
 	
 	<xsl:template match="*[local-name() = 'svg']/@width" mode="svg_update">
 		<!-- image[@width]/svg -->
-		<xsl:variable name="parent_image_width" select="normalize-space(ancestor::*[2][local-name() = 'image']/@width)"/>
+		<xsl:variable name="parent_image_width" select="normalize-space(ancestor::*[2][self::mn:image]/@width)"/>
 		<xsl:attribute name="width">
 			<xsl:choose>
 				<xsl:when test="$parent_image_width != '' and normalize-space(java:matches(java:java.lang.String.new($parent_image_width), $regex_starts_with_digit)) = 'true'"><xsl:value-of select="$parent_image_width"/></xsl:when>
@@ -14661,7 +14665,7 @@
 	
 	<xsl:template match="*[local-name() = 'svg']/@height" mode="svg_update">
 		<!-- image[@height]/svg -->
-		<xsl:variable name="parent_image_height" select="normalize-space(ancestor::*[2][local-name() = 'image']/@height)"/>
+		<xsl:variable name="parent_image_height" select="normalize-space(ancestor::*[2][self::mn:image]/@height)"/>
 		<xsl:attribute name="height">
 			<xsl:choose>
 				<xsl:when test="$parent_image_height != '' and normalize-space(java:matches(java:java.lang.String.new($parent_image_height), $regex_starts_with_digit)) = 'true'"><xsl:value-of select="$parent_image_height"/></xsl:when>
@@ -14700,8 +14704,8 @@
 	<!-- ============== -->
 	
 	<!-- image with svg and emf -->
-	<xsl:template match="*[local-name() = 'figure']/*[local-name() = 'image'][*[local-name() = 'svg']]" priority="3">
-		<xsl:variable name="name" select="ancestor::*[local-name() = 'figure']/*[local-name() = 'name']"/>
+	<xsl:template match="mn:figure/mn:image[*[local-name() = 'svg']]" priority="3">
+		<xsl:variable name="name" select="ancestor::mn:figure/mn:name"/>
 		<xsl:for-each select="*[local-name() = 'svg']">
 			<xsl:call-template name="image_svg">
 				<xsl:with-param name="name" select="$name"/>
@@ -14710,15 +14714,15 @@
 	</xsl:template>
 	
 	<!-- For the structures like: <dt><image src="" mimetype="image/svg+xml" height="" width=""><svg xmlns="http://www.w3.org/2000/svg" ... -->
-	<xsl:template match="*[local-name() != 'figure']/*[local-name() = 'image'][*[local-name() = 'svg']]" priority="3">
+	<xsl:template match="*[not(self::mn:figure)]/mn:image[*[local-name() = 'svg']]" priority="3">
 		<xsl:for-each select="*[local-name() = 'svg']">
 			<xsl:call-template name="image_svg" />
 		</xsl:for-each>
 	</xsl:template>
 	
-	<xsl:template match="*[local-name() = 'figure']/*[local-name() = 'image'][@mimetype = 'image/svg+xml' and @src[not(starts-with(., 'data:image/'))]]" priority="2">
+	<xsl:template match="mn:figure/mn:image[@mimetype = 'image/svg+xml' and @src[not(starts-with(., 'data:image/'))]]" priority="2">
 		<xsl:variable name="svg_content" select="document(@src)"/>
-		<xsl:variable name="name" select="ancestor::*[local-name() = 'figure']/*[local-name() = 'name']"/>
+		<xsl:variable name="name" select="ancestor::mn:figure/mn:name"/>
 		<xsl:for-each select="xalan:nodeset($svg_content)/node()">
 			<xsl:call-template name="image_svg">
 				<xsl:with-param name="name" select="$name"/>
@@ -14838,92 +14842,94 @@
 	<!-- =================== -->
 	
 	<!-- ignore emf processing (Apache FOP doesn't support EMF) -->
-	<xsl:template match="*[local-name() = 'emf']"/>
+	<xsl:template match="mn:emf"/>
 	
-	<xsl:template match="*[local-name() = 'figure']/*[local-name() = 'name'] | 
-														*[local-name() = 'table']/*[local-name() = 'name'] |
-														*[local-name() = 'permission']/*[local-name() = 'name'] |
-														*[local-name() = 'recommendation']/*[local-name() = 'name'] |
-														*[local-name() = 'requirement']/*[local-name() = 'name']" mode="contents">		
-		<xsl:if test="not(following-sibling::*[1][local-name() = 'fmt-name'])">
+	<xsl:template match="mn:figure/mn:name | mnx:figure/mn:name | 
+														mn:table/mn:name | mnx:table/mn:name |
+														mn:permission/mn:name | mnx:permission/mn:name |
+														mn:recommendation/mn:name | mnx:recommendation/mn:name |
+														mn:requirement/mn:name | mnx:requirement/mn:name" mode="contents">		
+		<xsl:if test="not(following-sibling::*[1][self::mn:fmt-name])">
 			<xsl:apply-templates mode="contents"/>
 			<xsl:text> </xsl:text>
 		</xsl:if>
 	</xsl:template>
 	
-	<xsl:template match="*[local-name() = 'title'][following-sibling::*[1][local-name() = 'fmt-title']]" mode="contents"/>
+	<xsl:template match="mn:title[following-sibling::*[1][self::mn:fmt-title]]" mode="contents"/>
 	
-	<xsl:template match="*[local-name() = 'figure']/*[local-name() = 'fmt-name'] | 
-														*[local-name() = 'table']/*[local-name() = 'fmt-name'] |
-														*[local-name() = 'permission']/*[local-name() = 'fmt-name'] |
-														*[local-name() = 'recommendation']/*[local-name() = 'fmt-name'] |
-														*[local-name() = 'requirement']/*[local-name() = 'fmt-name']" mode="contents">		
+	<xsl:template match="mn:figure/mn:fmt-name | 
+														mn:table/mn:fmt-name |
+														mn:permission/mn:fmt-name |
+														mn:recommendation/mn:fmt-name |
+														mn:requirement/mn:fmt-name" mode="contents">		
 		<xsl:apply-templates mode="contents"/>
 		<xsl:text> </xsl:text>
 	</xsl:template>
 	
-	<xsl:template match="*[local-name() = 'figure']/*[local-name() = 'name'] | 
-														*[local-name() = 'table']/*[local-name() = 'name'] |
-														*[local-name() = 'permission']/*[local-name() = 'name'] |
-														*[local-name() = 'recommendation']/*[local-name() = 'name'] |
-														*[local-name() = 'requirement']/*[local-name() = 'name'] |
-														*[local-name() = 'sourcecode']/*[local-name() = 'name']" mode="bookmarks">
-		<xsl:if test="not(following-sibling::*[1][local-name() = 'fmt-name'])">
+	<xsl:template match="mn:figure/mn:name | mnx:figure/mn:name | 
+														mn:table/mn:name | mnx:table/mn:name |
+														mn:permission/mn:name | mnx:permission/mn:name |
+														mn:recommendation/mn:name | mnx:recommendation/mn:name |
+														mn:requirement/mn:name | mnx:requirement/mn:name |
+														mn:sourcecode/mn:name" mode="bookmarks">
+		<xsl:if test="not(following-sibling::*[1][self::mn:fmt-name])">
 			<xsl:apply-templates mode="bookmarks"/>
 			<xsl:text> </xsl:text>
 		</xsl:if>
 	</xsl:template>
 	
-	<xsl:template match="*[local-name() = 'figure']/*[local-name() = 'fmt-name'] | 
-														*[local-name() = 'table']/*[local-name() = 'fmt-name'] |
-														*[local-name() = 'permission']/*[local-name() = 'fmt-name'] |
-														*[local-name() = 'recommendation']/*[local-name() = 'fmt-name'] |
-														*[local-name() = 'requirement']/*[local-name() = 'fmt-name'] |
-														*[local-name() = 'sourcecode']/*[local-name() = 'fmt-name']" mode="bookmarks">		
+	<xsl:template match="mn:figure/mn:fmt-name | 
+														mn:table/mn:fmt-name |
+														mn:permission/mn:fmt-name |
+														mn:recommendation/mn:fmt-name |
+														mn:requirement/mn:fmt-name |
+														mn:sourcecode/mn:fmt-name" mode="bookmarks">		
 		<xsl:apply-templates mode="bookmarks"/>
 		<xsl:text> </xsl:text>
 	</xsl:template>
 	
-	<xsl:template match="*[local-name() = 'figure' or local-name() = 'table' or local-name() = 'permission' or local-name() = 'recommendation' or local-name() = 'requirement']/*[local-name() = 'name']/text()" mode="contents" priority="2">
-		<xsl:if test="not(../following-sibling::*[1][local-name() = 'fmt-name'])">
+	<xsl:template match="*[self::mn:figure or self::mn:table or self::mn:permission or self::mn:recommendation or self::mn:requirement]/mn:name/text() |
+			*[self::mnx:figure or self::mnx:table or self::mnx:permission or self::mnx:recommendation or self::mnx:requirement]/mn:name/text()" mode="contents" priority="2">
+		<xsl:if test="not(../following-sibling::*[1][self::mn:fmt-name])">
 			<xsl:value-of select="."/>
 		</xsl:if>
 	</xsl:template>
 	
-	<xsl:template match="*[local-name() = 'figure' or local-name() = 'table' or local-name() = 'permission' or local-name() = 'recommendation' or local-name() = 'requirement']/*[local-name() = 'fmt-name']/text()" mode="contents" priority="2">
+	<xsl:template match="*[self::mn:figure or self::mn:table or self::mn:permission or self::mn:recommendation or self::mn:requirement]/mn:fmt-name/text()" mode="contents" priority="2">
 		<xsl:value-of select="."/>
 	</xsl:template>
 	
-	<xsl:template match="*[local-name() = 'figure' or local-name() = 'table' or local-name() = 'permission' or local-name() = 'recommendation' or local-name() = 'requirement' or local-name() = 'sourcecode']/*[local-name() = 'name']//text()" mode="bookmarks" priority="2">
-		<xsl:if test="not(../following-sibling::*[1][local-name() = 'fmt-name'])">
+	<xsl:template match="*[self::mn:figure or self::mn:table or self::mn:permission or self::mn:recommendation or self::mn:requirement or self::mn:sourcecode]/mn:name//text() |
+			*[self::mnx:figure or self::mnx:table or self::mnx:permission or self::mnx:recommendation or self::mnx:requirement or self::mnx:sourcecode]/mn:name//text()" mode="bookmarks" priority="2">
+		<xsl:if test="not(../following-sibling::*[1][self::mn:fmt-name])">
 			<xsl:value-of select="."/>
 		</xsl:if>
 	</xsl:template>
 	
-	<xsl:template match="*[local-name() = 'figure' or local-name() = 'table' or local-name() = 'permission' or local-name() = 'recommendation' or local-name() = 'requirement' or local-name() = 'sourcecode']/*[local-name() = 'fmt-name']//text()" mode="bookmarks" priority="2">
+	<xsl:template match="*[self::mn:figure or self::mn:table or self::mn:permission or self::mn:recommendation or self::mn:requirement or self::mn:sourcecode]/mn:fmt-name//text()" mode="bookmarks" priority="2">
 		<xsl:value-of select="."/>
 	</xsl:template>
 	
-	<xsl:template match="*[local-name() = 'add'][starts-with(., $ace_tag)]/text()" mode="bookmarks" priority="3"/>
+	<xsl:template match="mn:add[starts-with(., $ace_tag)]/text()" mode="bookmarks" priority="3"/>
 	
 	<xsl:template match="node()" mode="contents">
 		<xsl:apply-templates mode="contents"/>
 	</xsl:template>
 
 	<!-- special case: ignore preface/section-title and sections/section-title without @displayorder  -->
-	<xsl:template match="*[local-name() = 'preface' or local-name() = 'sections']/*[local-name() = 'p'][@type = 'section-title' and not(@displayorder)]" priority="3" mode="contents"/>
+	<xsl:template match="*[self::mn:preface or self::mn:sections]/mn:p[@type = 'section-title' and not(@displayorder)]" priority="3" mode="contents"/>
 	<!-- process them by demand (mode="contents_no_displayorder") -->
-	<xsl:template match="*[local-name() = 'p'][@type = 'section-title' and not(@displayorder)]" mode="contents_no_displayorder">
+	<xsl:template match="mn:p[@type = 'section-title' and not(@displayorder)]" mode="contents_no_displayorder">
 		<xsl:call-template name="contents_section-title"/>
 	</xsl:template>
-	<xsl:template match="*[local-name() = 'p'][@type = 'section-title']" mode="contents_in_clause">
+	<xsl:template match="mn:p[@type = 'section-title']" mode="contents_in_clause">
 		<xsl:call-template name="contents_section-title"/>
 	</xsl:template>
 	
 	<!-- special case: ignore section-title if @depth different than @depth of parent clause, or @depth of parent clause = 1 -->
-	<xsl:template match="*[local-name() = 'clause']/*[local-name() = 'p'][@type = 'section-title' and (@depth != ../*[local-name() = 'title' or local-name() = 'fmt-title']/@depth or ../*[local-name() = 'title' or local-name() = 'fmt-title']/@depth = 1)]" priority="3" mode="contents"/>
+	<xsl:template match="mn:clause/mn:p[@type = 'section-title' and (@depth != ../*[self::mn:title or self::mn:fmt-title]/@depth or ../*[self::mn:title or self::mn:fmt-title]/@depth = 1)]" priority="3" mode="contents"/>
 	
-	<xsl:template match="*[local-name() = 'p'][@type = 'floating-title' or @type = 'section-title']" priority="2" name="contents_section-title" mode="contents">
+	<xsl:template match="mn:p[@type = 'floating-title' or @type = 'section-title']" priority="2" name="contents_section-title" mode="contents">
 		<xsl:variable name="level">
 			<xsl:call-template name="getLevel">
 				<xsl:with-param name="depth" select="@depth"/>
@@ -14933,11 +14939,11 @@
 		<xsl:variable name="section">
 			<xsl:choose>
 				<xsl:when test="@type = 'section-title'"></xsl:when>
-				<xsl:when test="*[local-name() = 'span'][@class = 'fmt-caption-delim']">
-					<xsl:value-of select="*[local-name() = 'span'][@class = 'fmt-caption-delim'][1]/preceding-sibling::node()"/>
+				<xsl:when test="mn:span[@class = 'fmt-caption-delim']">
+					<xsl:value-of select="mn:span[@class = 'fmt-caption-delim'][1]/preceding-sibling::node()"/>
 				</xsl:when>
 				<xsl:otherwise>
-					<xsl:value-of select="*[local-name() = 'tab'][1]/preceding-sibling::node()"/>
+					<xsl:value-of select="mn:tab[1]/preceding-sibling::node()"/>
 				</xsl:otherwise>
 			</xsl:choose>
 		</xsl:variable>
@@ -14959,27 +14965,27 @@
 			<xsl:variable name="title">
 				<xsl:choose>
 					<!-- https://github.com/metanorma/mn-native-pdf/issues/770 -->
-					<xsl:when test="*[local-name() = 'span'][@class = 'fmt-caption-delim']">
+					<xsl:when test="mn:span[@class = 'fmt-caption-delim']">
 						<xsl:choose>
 							<xsl:when test="@type = 'section-title'">
-								<xsl:value-of select="*[local-name() = 'span'][@class = 'fmt-caption-delim'][1]/preceding-sibling::node()"/>
+								<xsl:value-of select="mn:span[@class = 'fmt-caption-delim'][1]/preceding-sibling::node()"/>
 								<xsl:text>: </xsl:text>
-								<xsl:copy-of select="*[local-name() = 'span'][@class = 'fmt-caption-delim'][1]/following-sibling::node()[not(local-name() = 'fmt-xref-label')]"/>
+								<xsl:copy-of select="mn:span[@class = 'fmt-caption-delim'][1]/following-sibling::node()[not(self::mn:fmt-xref-label)]"/>
 							</xsl:when>
 							<xsl:otherwise>
-								<xsl:copy-of select="*[local-name() = 'span'][@class = 'fmt-caption-delim'][1]/following-sibling::node()[not(local-name() = 'fmt-xref-label')]"/>
+								<xsl:copy-of select="mn:span[@class = 'fmt-caption-delim'][1]/following-sibling::node()[not(self::mn:fmt-xref-label)]"/>
 							</xsl:otherwise>
 						</xsl:choose>
 					</xsl:when>
-					<xsl:when test="*[local-name() = 'tab']">
+					<xsl:when test="mn:tab">
 						<xsl:choose>
 							<xsl:when test="@type = 'section-title'">
-								<xsl:value-of select="*[local-name() = 'tab'][1]/preceding-sibling::node()"/>
+								<xsl:value-of select="mn:tab[1]/preceding-sibling::node()"/>
 								<xsl:text>: </xsl:text>
-								<xsl:copy-of select="*[local-name() = 'tab'][1]/following-sibling::node()"/>
+								<xsl:copy-of select="mn:tab[1]/following-sibling::node()"/>
 							</xsl:when>
 							<xsl:otherwise>
-								<xsl:copy-of select="*[local-name() = 'tab'][1]/following-sibling::node()"/>
+								<xsl:copy-of select="mn:tab[1]/following-sibling::node()"/>
 							</xsl:otherwise>
 						</xsl:choose>
 					</xsl:when>
@@ -14990,8 +14996,8 @@
 			</xsl:variable>
 			
 			<xsl:variable name="root">
-				<xsl:if test="ancestor-or-self::*[local-name() = 'preface']">preface</xsl:if>
-				<xsl:if test="ancestor-or-self::*[local-name() = 'annex']">annex</xsl:if>
+				<xsl:if test="ancestor-or-self::mn:preface">preface</xsl:if>
+				<xsl:if test="ancestor-or-self::mn:annex">annex</xsl:if>
 			</xsl:variable>
 			
 			<mnx:item id="{@id}" level="{$level}" section="{$section}" type="{$type}" root="{$root}" display="{$display}">
@@ -15006,67 +15012,67 @@
 		<xsl:apply-templates mode="bookmarks"/>
 	</xsl:template>
 	
-	<xsl:template match="*[local-name() = 'stem']" mode="contents"/>
+	<xsl:template match="mn:stem" mode="contents"/>
 	
-	<xsl:template match="*[local-name() = 'title' or local-name() = 'name' or local-name() = 'fmt-title' or local-name() = 'fmt-name']//*[local-name() = 'fmt-stem']" mode="contents">
+	<xsl:template match="*[self::mn:title or self::mn:name or self::mn:fmt-title or self::mn:fmt-name]//mn:fmt-stem" mode="contents">
 		<xsl:apply-templates select="."/>
 	</xsl:template>
 	
 	<!-- prevent missing stem for table and figures in ToC -->
-	<xsl:template match="*[local-name() = 'name' or local-name() = 'fmt-name']//*[local-name() = 'stem']" mode="contents">
-		<xsl:if test="not(following-sibling::*[1][local-name() = 'fmt-stem'])">
+	<xsl:template match="*[self::mn:name or self::mn:fmt-name]//mn:stem" mode="contents">
+		<xsl:if test="not(following-sibling::*[1][self::mn:fmt-stem])">
 			<xsl:apply-templates select="."/>
 		</xsl:if>
 	</xsl:template>
 	
-	<xsl:template match="*[local-name() = 'references'][@hidden='true']" mode="contents" priority="3"/>
+	<xsl:template match="mn:references[@hidden='true']" mode="contents" priority="3"/>
 	
-	<xsl:template match="*[local-name() = 'references']/*[local-name() = 'bibitem']" mode="contents"/>
+	<xsl:template match="mn:references/mn:bibitem" mode="contents"/>
 	
 	<!-- Note: to enable the addition of character span markup with semantic styling for DIS Word output -->
-	<xsl:template match="*[local-name() = 'span']" mode="contents">
+	<xsl:template match="mn:span" mode="contents">
 		<xsl:apply-templates mode="contents"/>
 	</xsl:template>
 	
-	<xsl:template match="*[local-name() = 'semx']" mode="contents">
+	<xsl:template match="mn:semx" mode="contents">
 		<xsl:apply-templates mode="contents"/>
 	</xsl:template>
 	
-	<xsl:template match="*[local-name() = 'concept']" mode="contents"/>
-	<xsl:template match="*[local-name() = 'eref']" mode="contents"/>
-	<xsl:template match="*[local-name() = 'xref']" mode="contents"/>
-	<xsl:template match="*[local-name() = 'link']" mode="contents"/>
-	<xsl:template match="*[local-name() = 'origin']" mode="contents"/>
-	<xsl:template match="*[local-name() = 'erefstack ']" mode="contents"/>
+	<xsl:template match="mn:concept" mode="contents"/>
+	<xsl:template match="mn:eref" mode="contents"/>
+	<xsl:template match="mn:xref" mode="contents"/>
+	<xsl:template match="mn:link" mode="contents"/>
+	<xsl:template match="mn:origin" mode="contents"/>
+	<xsl:template match="mn:erefstack" mode="contents"/>
 	
-	<xsl:template match="*[local-name() = 'requirement'] |
-												*[local-name() = 'recommendation'] | 
-												*[local-name() = 'permission']" mode="contents" priority="3"/>
+	<xsl:template match="mn:requirement |
+												mn:recommendation | 
+												mn:permission" mode="contents" priority="3"/>
 	
-	<xsl:template match="*[local-name() = 'stem']" mode="bookmarks"/>
-	<xsl:template match="*[local-name() = 'fmt-stem']" mode="bookmarks">
+	<xsl:template match="mn:stem" mode="bookmarks"/>
+	<xsl:template match="mn:fmt-stem" mode="bookmarks">
 		<xsl:apply-templates mode="bookmarks"/>
 	</xsl:template>
 	
 	<!-- Note: to enable the addition of character span markup with semantic styling for DIS Word output -->
-	<xsl:template match="*[local-name() = 'span']" mode="bookmarks">
+	<xsl:template match="mn:span" mode="bookmarks">
 		<xsl:apply-templates mode="bookmarks"/>
 	</xsl:template>
 	
-	<xsl:template match="*[local-name() = 'semx']" mode="bookmarks">
+	<xsl:template match="mn:semx" mode="bookmarks">
 		<xsl:apply-templates mode="bookmarks"/>
 	</xsl:template>
 	
-	<xsl:template match="*[local-name() = 'concept']" mode="bookmarks"/>
-	<xsl:template match="*[local-name() = 'eref']" mode="bookmarks"/>
-	<xsl:template match="*[local-name() = 'xref']" mode="bookmarks"/>
-	<xsl:template match="*[local-name() = 'link']" mode="bookmarks"/>
-	<xsl:template match="*[local-name() = 'origin']" mode="bookmarks"/>
-	<xsl:template match="*[local-name() = 'erefstack ']" mode="bookmarks"/>
+	<xsl:template match="mn:concept" mode="bookmarks"/>
+	<xsl:template match="mn:eref" mode="bookmarks"/>
+	<xsl:template match="mn:xref" mode="bookmarks"/>
+	<xsl:template match="mn:link" mode="bookmarks"/>
+	<xsl:template match="mn:origin" mode="bookmarks"/>
+	<xsl:template match="mn:erefstack" mode="bookmarks"/>
 	
-	<xsl:template match="*[local-name() = 'requirement'] |
-												*[local-name() = 'recommendation'] | 
-												*[local-name() = 'permission']" mode="bookmarks" priority="3"/>
+	<xsl:template match="mn:requirement |
+												mn:recommendation | 
+												mn:permission" mode="bookmarks" priority="3"/>
 	
 	<!-- Bookmarks -->
 	<xsl:template name="addBookmarks">
@@ -15303,7 +15309,7 @@
 		<xsl:value-of select="normalize-space(.)"/>
 	</xsl:template>
 	
-	<xsl:template match="*[local-name() = 'asciimath']" mode="bookmark_clean"/>
+	<xsl:template match="mn:asciimath" mode="bookmark_clean"/>
 	<!-- ============================ -->
 	<!-- END: mode="bookmark_clean" -->
 	<!-- ============================ -->
@@ -15373,8 +15379,8 @@
 	
 	
 	<!-- figure/name -->
-	<xsl:template match="*[local-name() = 'figure']/*[local-name() = 'name'] |
-								*[local-name() = 'image']/*[local-name() = 'name']">
+	<xsl:template match="mn:figure/mn:name |
+								mn:image/mn:name">
 		<xsl:if test="normalize-space() != ''">			
 			<fo:block xsl:use-attribute-sets="figure-name-style">
 			
@@ -15387,16 +15393,16 @@
 	
 
 	<!-- figure/fn -->
-	<xsl:template match="*[local-name() = 'figure'][not(@class = 'pseudocode')]/*[local-name() = 'fn']" priority="2"/>
+	<xsl:template match="mn:figure[not(@class = 'pseudocode')]/mn:fn" priority="2"/>
 	<!-- figure/note -->
-	<xsl:template match="*[local-name() = 'figure'][not(@class = 'pseudocode')]/*[local-name() = 'note']" priority="2"/>
+	<xsl:template match="mn:figure[not(@class = 'pseudocode')]/mn:note" priority="2"/>
 	<!-- figure/example -->
-	<xsl:template match="*[local-name() = 'figure'][not(@class = 'pseudocode')]/*[local-name() = 'example']" priority="2"/>
+	<xsl:template match="mn:figure[not(@class = 'pseudocode')]/mn:example" priority="2"/>
 	
 	<!-- figure/note[@type = 'units'] -->
 	<!-- image/note[@type = 'units'] -->
-	<xsl:template match="*[local-name() = 'figure']/*[local-name() = 'note'][@type = 'units'] |
-								*[local-name() = 'image']/*[local-name() = 'note'][@type = 'units']" priority="2">
+	<xsl:template match="mn:figure/mn:note[@type = 'units'] |
+								mn:image/mn:note[@type = 'units']" priority="2">
 		<fo:block text-align="right" keep-with-next="always">
 			<xsl:apply-templates />
 		</fo:block>
@@ -15404,9 +15410,9 @@
 	
 	<!-- ====== -->
 	<!-- ====== -->
-	<xsl:template match="*[local-name() = 'title']" mode="contents_item">
+	<xsl:template match="mn:title" mode="contents_item">
 		<xsl:param name="mode">bookmarks</xsl:param>
-		<xsl:if test="not(following-sibling::*[1][local-name() = 'fmt-title'])">
+		<xsl:if test="not(following-sibling::*[1][self::mn:fmt-title])">
 			<xsl:apply-templates mode="contents_item">
 				<xsl:with-param name="mode" select="$mode"/>
 			</xsl:apply-templates>
@@ -15414,7 +15420,7 @@
 		</xsl:if>
 	</xsl:template>
 	
-	<xsl:template match="*[local-name() = 'fmt-title']" mode="contents_item">
+	<xsl:template match="mn:fmt-title" mode="contents_item">
 		<xsl:param name="mode">bookmarks</xsl:param>
 		<xsl:apply-templates mode="contents_item">
 			<xsl:with-param name="mode" select="$mode"/>
@@ -15422,54 +15428,54 @@
 		<!-- <xsl:text> </xsl:text> -->
 	</xsl:template>
 	
-	<xsl:template match="*[local-name() = 'span'][
+	<xsl:template match="mn:span[
 															@class = 'fmt-caption-label' or 
 															@class = 'fmt-element-name' or
 															@class = 'fmt-caption-delim']" mode="contents_item" priority="3">
 		<xsl:apply-templates mode="contents_item"/>
 	</xsl:template>
 	
-	<xsl:template match="*[local-name() = 'semx']" mode="contents_item">
+	<xsl:template match="mn:semx" mode="contents_item">
 		<xsl:apply-templates mode="contents_item"/>
 	</xsl:template>
 	
 	
-	<xsl:template match="*[local-name() = 'fmt-xref-label']"  mode="contents_item"/>
+	<xsl:template match="mn:fmt-xref-label"  mode="contents_item"/>
 	
-	<xsl:template match="*[local-name() = 'concept']"  mode="contents_item"/>
-	<xsl:template match="*[local-name() = 'eref']" mode="contents_item"/>
-	<xsl:template match="*[local-name() = 'xref']" mode="contents_item"/>
-	<xsl:template match="*[local-name() = 'link']" mode="contents_item"/>
-	<xsl:template match="*[local-name() = 'origin']" mode="contents_item"/>
-	<xsl:template match="*[local-name() = 'erefstack ']" mode="contents_item"/>
+	<xsl:template match="mn:concept"  mode="contents_item"/>
+	<xsl:template match="mn:eref" mode="contents_item"/>
+	<xsl:template match="mn:xref" mode="contents_item"/>
+	<xsl:template match="mn:link" mode="contents_item"/>
+	<xsl:template match="mn:origin" mode="contents_item"/>
+	<xsl:template match="mn:erefstack" mode="contents_item"/>
 
 	<xsl:template name="getSection">
 		<xsl:choose>
-			<xsl:when test="*[local-name() = 'fmt-title']">
+			<xsl:when test="mn:fmt-title">
 				<xsl:variable name="fmt_title_section">
-					<xsl:copy-of select="*[local-name() = 'fmt-title']//*[local-name() = 'span'][@class = 'fmt-caption-delim'][*[local-name() = 'tab']][1]/preceding-sibling::node()[not(local-name() = 'review')]"/>
+					<xsl:copy-of select="mn:fmt-title//mn:span[@class = 'fmt-caption-delim'][mn:tab][1]/preceding-sibling::node()[not(self::mn:review)]"/>
 				</xsl:variable>
 				<xsl:value-of select="normalize-space($fmt_title_section)"/>
 			</xsl:when>
 			<xsl:otherwise>
-				<xsl:value-of select="*[local-name() = 'title']/*[local-name() = 'tab'][1]/preceding-sibling::node()"/>
+				<xsl:value-of select="mn:title/mn:tab[1]/preceding-sibling::node()"/>
 			</xsl:otherwise>
 		</xsl:choose>
 	</xsl:template>
 
 	<xsl:template name="getName">
 		<xsl:choose>
-			<xsl:when test="*[local-name() = 'fmt-title']//*[local-name() = 'span'][@class = 'fmt-caption-delim'][*[local-name() = 'tab']]">
-				<xsl:copy-of select="*[local-name() = 'fmt-title']//*[local-name() = 'span'][@class = 'fmt-caption-delim'][*[local-name() = 'tab']][1]/following-sibling::node()"/>
+			<xsl:when test="mn:fmt-title//mn:span[@class = 'fmt-caption-delim'][mn:tab]">
+				<xsl:copy-of select="mn:fmt-title//mn:span[@class = 'fmt-caption-delim'][mn:tab][1]/following-sibling::node()"/>
 			</xsl:when>
-			<xsl:when test="*[local-name() = 'fmt-title']">
-				<xsl:copy-of select="*[local-name() = 'fmt-title']/node()"/>
+			<xsl:when test="mn:fmt-title">
+				<xsl:copy-of select="mn:fmt-title/node()"/>
 			</xsl:when>
-			<xsl:when test="*[local-name() = 'title']/*[local-name() = 'tab']">
-				<xsl:copy-of select="*[local-name() = 'title']/*[local-name() = 'tab'][1]/following-sibling::node()"/>
+			<xsl:when test="mn:title/mn:tab">
+				<xsl:copy-of select="mn:title/mn:tab[1]/following-sibling::node()"/>
 			</xsl:when>
 			<xsl:otherwise>
-				<xsl:copy-of select="*[local-name() = 'title']/node()"/>
+				<xsl:copy-of select="mn:title/node()"/>
 			</xsl:otherwise>
 		</xsl:choose>
 	</xsl:template>
@@ -15491,12 +15497,12 @@
 				<fo:list-item-body start-indent="body-start()">
 					<fo:block>						
 						<xsl:choose>
-							<xsl:when test="*[local-name() = 'tab']">
-								<xsl:apply-templates select="*[local-name() = 'tab'][1]/following-sibling::node()"/>
+							<xsl:when test="mn:tab">
+								<xsl:apply-templates select="mn:tab[1]/following-sibling::node()"/>
 							</xsl:when>
 							<xsl:otherwise>
 								<xsl:apply-templates />
-								<xsl:apply-templates select="following-sibling::*[1][local-name() = 'variant-title'][@type = 'sub']" mode="subtitle"/>
+								<xsl:apply-templates select="following-sibling::*[1][self::mn:variant-title][@type = 'sub']" mode="subtitle"/>
 							</xsl:otherwise>
 						</xsl:choose>
 					</fo:block>
@@ -15506,13 +15512,13 @@
 	</xsl:template>
 	
 	<xsl:template name="extractSection">
-		<xsl:value-of select="*[local-name() = 'tab'][1]/preceding-sibling::node()"/>
+		<xsl:value-of select="mn:tab[1]/preceding-sibling::node()"/>
 	</xsl:template>
 
 	<xsl:template name="extractTitle">
 		<xsl:choose>
-				<xsl:when test="*[local-name() = 'tab']">
-					<xsl:apply-templates select="*[local-name() = 'tab'][1]/following-sibling::node()"/>
+				<xsl:when test="mn:tab">
+					<xsl:apply-templates select="mn:tab[1]/following-sibling::node()"/>
 				</xsl:when>
 				<xsl:otherwise>
 					<xsl:apply-templates />
@@ -15521,23 +15527,23 @@
 	</xsl:template>
 	
 	<!-- fn -->
-	<xsl:template match="*[local-name() = 'fn']" mode="contents"/>
-	<xsl:template match="*[local-name() = 'fn']" mode="bookmarks"/>
+	<xsl:template match="mn:fn" mode="contents"/>
+	<xsl:template match="mn:fn" mode="bookmarks"/>
 	
-	<xsl:template match="*[local-name() = 'fn']" mode="contents_item"/>
+	<xsl:template match="mn:fn" mode="contents_item"/>
 
-	<xsl:template match="*[local-name() = 'xref'] | *[local-name() = 'eref']" mode="contents">
+	<xsl:template match="mn:xref | mn:eref" mode="contents">
 		<xsl:value-of select="."/>
 	</xsl:template>
 
 	
-	<xsl:template match="*[local-name() = 'review']" mode="contents_item"/>
+	<xsl:template match="mn:review" mode="contents_item"/>
 
-	<xsl:template match="*[local-name() = 'tab']" mode="contents_item">
+	<xsl:template match="mn:tab" mode="contents_item">
 		<xsl:text> </xsl:text>
 	</xsl:template>
 
-	<xsl:template match="*[local-name() = 'strong']" mode="contents_item">
+	<xsl:template match="mn:strong" mode="contents_item">
 		<xsl:param name="element"/>
 		<xsl:copy>
 			<xsl:apply-templates mode="contents_item">
@@ -15546,50 +15552,50 @@
 		</xsl:copy>		
 	</xsl:template>
 	
-	<xsl:template match="*[local-name() = 'em']" mode="contents_item">
+	<xsl:template match="mn:em" mode="contents_item">
 		<xsl:copy>
 			<xsl:apply-templates mode="contents_item"/>
 		</xsl:copy>		
 	</xsl:template>
 	
-	<xsl:template match="*[local-name() = 'sub']" mode="contents_item">
+	<xsl:template match="mn:sub" mode="contents_item">
 		<xsl:copy>
 			<xsl:apply-templates mode="contents_item"/>
 		</xsl:copy>		
 	</xsl:template>
 	
-	<xsl:template match="*[local-name() = 'sup']" mode="contents_item">
+	<xsl:template match="mn:sup" mode="contents_item">
 		<xsl:copy>
 			<xsl:apply-templates mode="contents_item"/>
 		</xsl:copy>		
 	</xsl:template>
 	
-	<xsl:template match="*[local-name() = 'stem']" mode="contents_item"/>
-	<xsl:template match="*[local-name() = 'fmt-stem']" mode="contents_item">
+	<xsl:template match="mn:stem" mode="contents_item"/>
+	<xsl:template match="mn:fmt-stem" mode="contents_item">
 		<xsl:copy-of select="." />
 	</xsl:template>
 
-	<xsl:template match="*[local-name() = 'br']" mode="contents_item">
+	<xsl:template match="mn:br" mode="contents_item">
 		<xsl:text> </xsl:text>
 	</xsl:template>
 
-	<xsl:template match="*[local-name() = 'name']" mode="contents_item">
+	<xsl:template match="mn:name" mode="contents_item">
 		<xsl:param name="mode">bookmarks</xsl:param>
-		<xsl:if test="not(following-sibling::*[1][local-name() = 'fmt-name'])">
+		<xsl:if test="not(following-sibling::*[1][self::mn:fmt-name])">
 			<xsl:apply-templates mode="contents_item">
 				<xsl:with-param name="mode" select="$mode"/>
 			</xsl:apply-templates>
 		</xsl:if>
 	</xsl:template>
 	
-	<xsl:template match="*[local-name() = 'fmt-name']" mode="contents_item">
+	<xsl:template match="mn:fmt-name" mode="contents_item">
 		<xsl:param name="mode">bookmarks</xsl:param>
 		<xsl:apply-templates mode="contents_item">
 			<xsl:with-param name="mode" select="$mode"/>
 		</xsl:apply-templates>
 	</xsl:template>
 	
-	<xsl:template match="*[local-name() = 'add']" mode="contents_item">
+	<xsl:template match="mn:add" mode="contents_item">
 		<xsl:param name="mode">bookmarks</xsl:param>
 		<xsl:choose>
 			<xsl:when test="starts-with(text(), $ace_tag)">
@@ -15613,12 +15619,12 @@
 		</xsl:for-each>
 	</xsl:template>
 
-	<xsl:template match="*[local-name() = 'add'][starts-with(., $ace_tag)]/text()" mode="contents_item" priority="2">
+	<xsl:template match="mn:add[starts-with(., $ace_tag)]/text()" mode="contents_item" priority="2">
 		<xsl:value-of select="."/>
 	</xsl:template>
 
 	<!-- Note: to enable the addition of character span markup with semantic styling for DIS Word output -->
-	<xsl:template match="*[local-name() = 'span']" mode="contents_item">
+	<xsl:template match="mn:span" mode="contents_item">
 		<xsl:param name="element"/>
 		<xsl:apply-templates mode="contents_item">
 			<xsl:with-param name="element" select="$element"/>
@@ -15629,7 +15635,7 @@
 	<!-- sourcecode  -->
 	<!-- =============== -->
 	
-	<xsl:variable name="source-highlighter-css_" select="//*[local-name() = 'metanorma']/*[local-name() = 'metanorma-extension']/*[local-name() = 'source-highlighter-css']"/>
+	<xsl:variable name="source-highlighter-css_" select="//mn:metanorma/mn:metanorma-extension/mn:source-highlighter-css"/>
 	<xsl:variable name="sourcecode_css_" select="java:org.metanorma.fop.Util.parseCSS($source-highlighter-css_)"/>
 	<xsl:variable name="sourcecode_css" select="xalan:nodeset($sourcecode_css_)"/>	
 	
@@ -15656,19 +15662,19 @@
 				<xsl:if test="$namespace = 'nist-cswp'  or $namespace = 'nist-sp'">10</xsl:if>
 				<xsl:if test="$namespace = 'ogc'">
 					<xsl:choose>
-						<xsl:when test="ancestor::*[local-name() = 'table'][not(parent::*[local-name() = 'sourcecode'][@linenums = 'true'])]">8.5</xsl:when>
+						<xsl:when test="ancestor::mn:table[not(parent::mn:sourcecode[@linenums = 'true'])]">8.5</xsl:when>
 						<xsl:otherwise>9.5</xsl:otherwise>
 					</xsl:choose>
 				</xsl:if>
 				<xsl:if test="$namespace = 'ogc-white-paper'">
 					<xsl:choose>
-						<xsl:when test="ancestor::*[local-name() = 'table'][not(parent::*[local-name() = 'sourcecode'][@linenums = 'true'])]">8.5</xsl:when>
+						<xsl:when test="ancestor::mn:table[not(parent::mn:sourcecode[@linenums = 'true'])]">8.5</xsl:when>
 						<xsl:otherwise>9.5</xsl:otherwise>
 					</xsl:choose>
 				</xsl:if>						
 				<xsl:if test="$namespace = 'rsd'">
 					<xsl:choose>
-						<xsl:when test="ancestor::*[local-name() = 'table'][not(parent::*[local-name() = 'sourcecode'][@linenums = 'true'])]">inherit</xsl:when>
+						<xsl:when test="ancestor::mn:table[not(parent::mn:sourcecode[@linenums = 'true'])]">inherit</xsl:when>
 						<xsl:otherwise>95%</xsl:otherwise><!-- 110% -->
 					</xsl:choose>
 				</xsl:if>
@@ -15681,7 +15687,7 @@
 					<xsl:choose>
 						<xsl:when test="$font-size = 'inherit'"><xsl:value-of select="$font-size"/></xsl:when>
 						<xsl:when test="contains($font-size, '%')"><xsl:value-of select="$font-size"/></xsl:when>
-						<xsl:when test="ancestor::*[local-name()='note']"><xsl:value-of select="$font-size * 0.91"/>pt</xsl:when>
+						<xsl:when test="ancestor::mn:note"><xsl:value-of select="$font-size * 0.91"/>pt</xsl:when>
 						<xsl:otherwise><xsl:value-of select="$font-size"/>pt</xsl:otherwise>
 					</xsl:choose>
 				</xsl:attribute>
@@ -15690,7 +15696,7 @@
 		</xsl:element>
 	</xsl:template>
 	
-	<xsl:template match="*[local-name()='sourcecode']" name="sourcecode">
+	<xsl:template match="mn:sourcecode" name="sourcecode">
 	
 		<xsl:variable name="sourcecode_attributes">
 			<xsl:call-template name="get_sourcecode_attributes"/>
@@ -15705,26 +15711,26 @@
 						<xsl:value-of select="."/>
 					</xsl:attribute>
 				</xsl:for-each>
-				<xsl:apply-templates select="node()[not(local-name() = 'name')]" />
+				<xsl:apply-templates select="node()[not(self::mn:name)]" />
 			</xsl:when>
 			
 			<xsl:otherwise>
 				<fo:block-container xsl:use-attribute-sets="sourcecode-container-style" role="SKIP">
 				
-					<xsl:if test="not(ancestor::*[local-name() = 'li']) or ancestor::*[local-name() = 'example']">
+					<xsl:if test="not(ancestor::mn:li) or ancestor::mn:example">
 						<xsl:attribute name="margin-left">0mm</xsl:attribute>
 					</xsl:if>
 					
-					<xsl:if test="ancestor::*[local-name() = 'example']">
+					<xsl:if test="ancestor::mn:example">
 						<xsl:attribute name="margin-right">0mm</xsl:attribute>
 					</xsl:if>
 					
 					<xsl:copy-of select="@id"/>
 					
-					<xsl:if test="parent::*[local-name() = 'note']">
+					<xsl:if test="parent::mn:note">
 						<xsl:attribute name="margin-left">
 							<xsl:choose>
-								<xsl:when test="not(ancestor::*[local-name() = 'table'])"><xsl:value-of select="$note-body-indent"/></xsl:when>
+								<xsl:when test="not(ancestor::mn:table)"><xsl:value-of select="$note-body-indent"/></xsl:when>
 								<xsl:otherwise><xsl:value-of select="$note-body-indent-table"/></xsl:otherwise>
 							</xsl:choose>
 						</xsl:attribute>
@@ -15735,11 +15741,11 @@
 					<fo:block-container margin-left="0mm" role="SKIP">
 				
 						<xsl:if test="$namespace = 'rsd'">
-							<xsl:apply-templates select="*[local-name()='name']" /> <!-- show sourcecode's name BEFORE content -->
+							<xsl:apply-templates select="mn:name" /> <!-- show sourcecode's name BEFORE content -->
 						</xsl:if>
 						
 						<xsl:if test="$namespace = 'ogc'">
-							<xsl:if test="parent::*[local-name() = 'example']">
+							<xsl:if test="parent::mn:example">
 								<fo:block font-size="1pt" line-height="10%" space-after="4pt">&#xa0;</fo:block>
 							</xsl:if>
 						</xsl:if>
@@ -15755,25 +15761,25 @@
 							<xsl:call-template name="refine_sourcecode-style"/>
 							
 							<!-- remove margin between rows in the table with sourcecode line numbers -->
-							<xsl:if test="ancestor::*[local-name() = 'sourcecode'][@linenums = 'true'] and ancestor::*[local-name() = 'tr'][1]/following-sibling::*[local-name() = 'tr']">
+							<xsl:if test="ancestor::mn:sourcecode[@linenums = 'true'] and ancestor::mn:tr[1]/following-sibling::mn:tr">
 								<xsl:attribute name="margin-top">0pt</xsl:attribute>
 								<xsl:attribute name="margin-bottom">0pt</xsl:attribute>
 							</xsl:if>
 							
-							<xsl:apply-templates select="node()[not(local-name() = 'name' or local-name() = 'dl')]" />
+							<xsl:apply-templates select="node()[not(self::mn:name or self::mn:dl)]" />
 						</fo:block>
 						
-						<xsl:apply-templates select="*[local-name() = 'dl']"/> <!-- Key table -->
+						<xsl:apply-templates select="mn:dl"/> <!-- Key table -->
 						
 						<xsl:choose>
 							<xsl:when test="$namespace = 'rsd'"></xsl:when>
 							<xsl:otherwise>
-								<xsl:apply-templates select="*[local-name()='name']" /> <!-- show sourcecode's name AFTER content -->
+								<xsl:apply-templates select="mn:name" /> <!-- show sourcecode's name AFTER content -->
 							</xsl:otherwise>
 						</xsl:choose>
 							
 						<xsl:if test="$namespace = 'ogc'">
-							<xsl:if test="parent::*[local-name() = 'example']">
+							<xsl:if test="parent::mn:example">
 								<fo:block font-size="1pt" line-height="10%" space-before="6pt">&#xa0;</fo:block>
 							</xsl:if>
 						</xsl:if>
@@ -15785,7 +15791,7 @@
 	</xsl:template>
 	
 
-	<xsl:template match="*[local-name()='sourcecode']/text() | *[local-name()='sourcecode']//*[local-name()='span']/text()" priority="2">
+	<xsl:template match="mn:sourcecode/text() | mn:sourcecode//mn:span/text()" priority="2">
 		<xsl:choose>
 			<!-- disabled -->
 			<xsl:when test="1 = 2 and normalize-space($syntax-highlight) = 'true' and normalize-space(../@lang) != ''"> <!-- condition for turn on of highlighting -->
@@ -15806,14 +15812,14 @@
 	</xsl:template>
 	
 	<!-- add sourcecode highlighting -->
-	<xsl:template match="*[local-name()='sourcecode']//*[local-name()='span'][@class]" priority="2">
+	<xsl:template match="mn:sourcecode//mn:span[@class]" priority="2">
 		<xsl:variable name="class" select="@class"/>
 		
 		<!-- Example: <1> -->
 		<xsl:variable name="is_callout">
-			<xsl:if test="parent::*[local-name() = 'dt']">
+			<xsl:if test="parent::mn:dt">
 				<xsl:variable name="dt_id" select="../@id"/>
-				<xsl:if test="ancestor::*[local-name() = 'sourcecode']//*[local-name() = 'callout'][@target = $dt_id]">true</xsl:if>
+				<xsl:if test="ancestor::mn:sourcecode//mn:callout[@target = $dt_id]">true</xsl:if>
 			</xsl:if>
 		</xsl:variable>
 		
@@ -15833,7 +15839,7 @@
 	</xsl:template>
 	
 	<!-- outer table with line numbers for sourcecode -->
-	<xsl:template match="*[local-name() = 'sourcecode'][@linenums = 'true']/*[local-name()='table']" priority="2"> <!-- *[local-name()='table'][@type = 'sourcecode'] |  -->
+	<xsl:template match="mn:sourcecode[@linenums = 'true']/mn:table" priority="2"> <!-- *[local-name()='table'][@type = 'sourcecode'] |  -->
 		<fo:block>
 			<fo:table width="100%" table-layout="fixed">
 				<xsl:copy-of select="@id"/>
@@ -15845,22 +15851,22 @@
 			</fo:table>
 		</fo:block>
 	</xsl:template>
-	<xsl:template match="*[local-name() = 'sourcecode'][@linenums = 'true']/*[local-name()='table']/*[local-name() = 'tbody']" priority="2"> <!-- *[local-name()='table'][@type = 'sourcecode']/*[local-name() = 'tbody'] |  -->
+	<xsl:template match="mn:sourcecode[@linenums = 'true']/mn:table/mn:tbody" priority="2"> <!-- *[local-name()='table'][@type = 'sourcecode']/*[local-name() = 'tbody'] |  -->
 		<xsl:apply-templates />
 	</xsl:template>
-	<xsl:template match="*[local-name() = 'sourcecode'][@linenums = 'true']/*[local-name()='table']//*[local-name()='tr']" priority="2"> <!-- *[local-name()='table'][@type = 'sourcecode']//*[local-name()='tr'] |  -->
+	<xsl:template match="mn:sourcecode[@linenums = 'true']/mn:table//mn:tr" priority="2"> <!-- *[local-name()='table'][@type = 'sourcecode']//*[local-name()='tr'] |  -->
 		<fo:table-row>
 			<xsl:apply-templates />
 		</fo:table-row>
 	</xsl:template>
 	<!-- first td with line numbers -->
-	<xsl:template match="*[local-name() = 'sourcecode'][@linenums = 'true']/*[local-name()='table']//*[local-name()='tr']/*[local-name()='td'][not(preceding-sibling::*)]" priority="2"> <!-- *[local-name()='table'][@type = 'sourcecode'] -->
+	<xsl:template match="mn:sourcecode[@linenums = 'true']/mn:table//mn:tr/*[local-name() = 'td'][not(preceding-sibling::*)]" priority="2"> <!-- *[local-name()='table'][@type = 'sourcecode'] -->
 		<fo:table-cell>
 			<fo:block>
 				
 				<!-- set attibutes for line numbers - same as sourcecode -->
 				<xsl:variable name="sourcecode_attributes">
-					<xsl:for-each select="following-sibling::*[local-name() = 'td']/*[local-name() = 'sourcecode']">
+					<xsl:for-each select="following-sibling::*[local-name() = 'td']/mn:sourcecode">
 						<xsl:call-template name="get_sourcecode_attributes"/>
 					</xsl:for-each>
 				</xsl:variable>
@@ -15876,7 +15882,7 @@
 	</xsl:template>
 	
 	<!-- second td with sourcecode -->
-	<xsl:template match="*[local-name() = 'sourcecode'][@linenums = 'true']/*[local-name()='table']//*[local-name()='tr']/*[local-name()='td'][preceding-sibling::*]" priority="2"> <!-- *[local-name()='table'][@type = 'sourcecode'] -->
+	<xsl:template match="mn:sourcecode[@linenums = 'true']/mn:table//mn:tr/*[local-name() = 'td'][preceding-sibling::*]" priority="2"> <!-- *[local-name()='table'][@type = 'sourcecode'] -->
 		<fo:table-cell>
 			<fo:block role="SKIP">
 				<xsl:apply-templates />
@@ -16083,7 +16089,7 @@
 	
 	
 	
-	<xsl:template match="*[local-name() = 'sourcecode']/*[local-name() = 'name']">
+	<xsl:template match="mn:sourcecode/mn:name">
 		<xsl:if test="normalize-space() != ''">		
 			<fo:block xsl:use-attribute-sets="sourcecode-name-style">				
 				<xsl:apply-templates/>
@@ -16098,13 +16104,13 @@
 	<!-- =============== -->
 	<!-- pre  -->
 	<!-- =============== -->
-	<xsl:template match="*[local-name()='pre']" name="pre">
+	<xsl:template match="mn:pre" name="pre">
 		<fo:block xsl:use-attribute-sets="pre-style">
 			<xsl:copy-of select="@id"/>
 			<xsl:choose>
 			
-				<xsl:when test="ancestor::*[local-name() = 'sourcecode'][@linenums = 'true'] and ancestor::*[local-name()='td'][1][not(preceding-sibling::*)]"> <!-- pre in the first td in the table with @linenums = 'true' -->
-					<xsl:if test="ancestor::*[local-name() = 'tr'][1]/following-sibling::*[local-name() = 'tr']"> <!-- is current tr isn't last -->
+				<xsl:when test="ancestor::mn:sourcecode[@linenums = 'true'] and ancestor::*[local-name() = 'td'][1][not(preceding-sibling::*)]"> <!-- pre in the first td in the table with @linenums = 'true' -->
+					<xsl:if test="ancestor::mn:tr[1]/following-sibling::mn:tr"> <!-- is current tr isn't last -->
 						<xsl:attribute name="margin-top">0pt</xsl:attribute>
 						<xsl:attribute name="margin-bottom">0pt</xsl:attribute>
 					</xsl:if>
@@ -16129,15 +16135,15 @@
 	<!-- ========== -->
 	<!-- permission -->	
 	<!-- ========== -->		
-	<xsl:template match="*[local-name() = 'permission']">
+	<xsl:template match="mn:permission">
 		<xsl:call-template name="setNamedDestination"/>
 		<fo:block id="{@id}" xsl:use-attribute-sets="permission-style">			
-			<xsl:apply-templates select="*[local-name()='name']" />
-			<xsl:apply-templates select="node()[not(local-name() = 'name')]" />
+			<xsl:apply-templates select="mn:name" />
+			<xsl:apply-templates select="node()[not(self::mn:name)]" />
 		</fo:block>
 	</xsl:template>
 	
-	<xsl:template match="*[local-name() = 'permission']/*[local-name() = 'name']">
+	<xsl:template match="mn:permission/mn:name">
 		<xsl:if test="normalize-space() != ''">
 			<xsl:choose>
 			
@@ -16159,7 +16165,7 @@
 		</xsl:if>
 	</xsl:template>
 	
-	<xsl:template match="*[local-name() = 'permission']/*[local-name() = 'label']">
+	<xsl:template match="mn:permission/mn:label">
 		<fo:block xsl:use-attribute-sets="permission-label-style">
 			<xsl:apply-templates />
 		</fo:block>
@@ -16170,18 +16176,18 @@
 	<!-- ========== -->
 	<!-- requirement -->
 <!-- ========== -->
-	<xsl:template match="*[local-name() = 'requirement']">
+	<xsl:template match="mn:requirement">
 		<xsl:call-template name="setNamedDestination"/>
 		<fo:block id="{@id}" xsl:use-attribute-sets="requirement-style">			
-			<xsl:apply-templates select="*[local-name()='name']" />
-			<xsl:apply-templates select="*[local-name()='label']" />
+			<xsl:apply-templates select="mn:name" />
+			<xsl:apply-templates select="mn:label" />
 			<xsl:apply-templates select="@obligation"/>
-			<xsl:apply-templates select="*[local-name()='subject']" />
-			<xsl:apply-templates select="node()[not(local-name() = 'name') and not(local-name() = 'label') and not(local-name() = 'subject')]" />
+			<xsl:apply-templates select="mn:subject" />
+			<xsl:apply-templates select="node()[not(self::mn:name) and not(self::mn:label) and not(self::mn:subject)]" />
 		</fo:block>
 	</xsl:template>
 	
-	<xsl:template match="*[local-name() = 'requirement']/*[local-name() = 'name']">
+	<xsl:template match="mn:requirement/mn:name">
 		<xsl:if test="normalize-space() != ''">
 			<xsl:choose>
 			
@@ -16210,19 +16216,19 @@
 		</xsl:if>
 	</xsl:template>
 	
-	<xsl:template match="*[local-name() = 'requirement']/*[local-name() = 'label']">
+	<xsl:template match="mn:requirement/mn:label">
 		<fo:block xsl:use-attribute-sets="requirement-label-style">
 			<xsl:apply-templates />
 		</fo:block>
 	</xsl:template>
 	
-	<xsl:template match="*[local-name() = 'requirement']/@obligation">
+	<xsl:template match="mn:requirement/@obligation">
 			<fo:block>
 				<fo:inline padding-right="3mm">Obligation</fo:inline><xsl:value-of select="."/>
 			</fo:block>
 	</xsl:template>
 	
-	<xsl:template match="*[local-name() = 'requirement']/*[local-name() = 'subject']" priority="2">
+	<xsl:template match="mn:requirement/mn:subject" priority="2">
 		<fo:block xsl:use-attribute-sets="subject-style">
 			<xsl:text>Target Type </xsl:text><xsl:apply-templates />
 		</fo:block>
@@ -16234,15 +16240,15 @@
 	<!-- ========== -->
 	<!-- recommendation -->
 	<!-- ========== -->
-	<xsl:template match="*[local-name() = 'recommendation']">
+	<xsl:template match="mn:recommendation">
 		<xsl:call-template name="setNamedDestination"/>
 		<fo:block id="{@id}" xsl:use-attribute-sets="recommendation-style">
-			<xsl:apply-templates select="*[local-name()='name']" />
-			<xsl:apply-templates select="node()[not(local-name() = 'name')]" />
+			<xsl:apply-templates select="mn:name" />
+			<xsl:apply-templates select="node()[not(self::mn:name)]" />
 		</fo:block>
 	</xsl:template>
 	
-	<xsl:template match="*[local-name() = 'recommendation']/*[local-name() = 'name']">
+	<xsl:template match="mn:recommendation/mn:name">
 		<xsl:if test="normalize-space() != ''">
 			<xsl:choose>
 			
@@ -16266,7 +16272,7 @@
 		</xsl:if>
 	</xsl:template>
 	
-	<xsl:template match="*[local-name() = 'recommendation']/*[local-name() = 'label']">
+	<xsl:template match="mn:recommendation/mn:label">
 		<fo:block xsl:use-attribute-sets="recommendation-label-style">
 			<xsl:apply-templates />
 		</fo:block>
@@ -16279,73 +16285,73 @@
 	<!-- ========== -->
 	
 	
-	<xsl:template match="*[local-name() = 'subject']">
+	<xsl:template match="mn:subject">
 		<fo:block xsl:use-attribute-sets="subject-style">
 			<xsl:text>Target Type </xsl:text><xsl:apply-templates />
 		</fo:block>
 	</xsl:template>
 	
-	<xsl:template match="*[local-name() = 'div']">
+	<xsl:template match="mn:div">
 		<fo:block><xsl:apply-templates /></fo:block>
 	</xsl:template>
 	
-	<xsl:template match="*[local-name() = 'inherit'] | *[local-name() = 'component'][@class = 'inherit'] |
-										*[local-name() = 'div'][@type = 'requirement-inherit'] |
-										*[local-name() = 'div'][@type = 'recommendation-inherit'] |
-										*[local-name() = 'div'][@type = 'permission-inherit']">
+	<xsl:template match="mn:inherit | mn:component[@class = 'inherit'] |
+										mn:div[@type = 'requirement-inherit'] |
+										mn:div[@type = 'recommendation-inherit'] |
+										mn:div[@type = 'permission-inherit']">
 		<fo:block xsl:use-attribute-sets="inherit-style">
 			<xsl:text>Dependency </xsl:text><xsl:apply-templates />
 		</fo:block>
 	</xsl:template>
 	
-	<xsl:template match="*[local-name() = 'description'] | *[local-name() = 'component'][@class = 'description'] |
-										*[local-name() = 'div'][@type = 'requirement-description'] |
-										*[local-name() = 'div'][@type = 'recommendation-description'] |
-										*[local-name() = 'div'][@type = 'permission-description']">
+	<xsl:template match="mn:description | mn:component[@class = 'description'] |
+										mn:div[@type = 'requirement-description'] |
+										mn:div[@type = 'recommendation-description'] |
+										mn:div[@type = 'permission-description']">
 		<fo:block xsl:use-attribute-sets="description-style">
 			<xsl:apply-templates />
 		</fo:block>
 	</xsl:template>
 	
-	<xsl:template match="*[local-name() = 'specification'] | *[local-name() = 'component'][@class = 'specification'] |
-										*[local-name() = 'div'][@type = 'requirement-specification'] |
-										*[local-name() = 'div'][@type = 'recommendation-specification'] |
-										*[local-name() = 'div'][@type = 'permission-specification']">
+	<xsl:template match="mn:specification | mn:component[@class = 'specification'] |
+										mn:div[@type = 'requirement-specification'] |
+										mn:div[@type = 'recommendation-specification'] |
+										mn:div[@type = 'permission-specification']">
 		<fo:block xsl:use-attribute-sets="specification-style">
 			<xsl:apply-templates />
 		</fo:block>
 	</xsl:template>
 	
-	<xsl:template match="*[local-name() = 'measurement-target'] | *[local-name() = 'component'][@class = 'measurement-target'] |
-										*[local-name() = 'div'][@type = 'requirement-measurement-target'] |
-										*[local-name() = 'div'][@type = 'recommendation-measurement-target'] |
-										*[local-name() = 'div'][@type = 'permission-measurement-target']">
+	<xsl:template match="mn:measurement-target | mn:component[@class = 'measurement-target'] |
+										mn:div[@type = 'requirement-measurement-target'] |
+										mn:div[@type = 'recommendation-measurement-target'] |
+										mn:div[@type = 'permission-measurement-target']">
 		<fo:block xsl:use-attribute-sets="measurement-target-style">
 			<xsl:apply-templates />
 		</fo:block>
 	</xsl:template>
 	
-	<xsl:template match="*[local-name() = 'verification'] | *[local-name() = 'component'][@class = 'verification'] |
-										*[local-name() = 'div'][@type = 'requirement-verification'] |
-										*[local-name() = 'div'][@type = 'recommendation-verification'] |
-										*[local-name() = 'div'][@type = 'permission-verification']">
+	<xsl:template match="mn:verification | mn:component[@class = 'verification'] |
+										mn:div[@type = 'requirement-verification'] |
+										mn:div[@type = 'recommendation-verification'] |
+										mn:div[@type = 'permission-verification']">
 		<fo:block xsl:use-attribute-sets="verification-style">
 			<xsl:apply-templates />
 		</fo:block>
 	</xsl:template>
 	
-	<xsl:template match="*[local-name() = 'import'] | *[local-name() = 'component'][@class = 'import'] |
-										*[local-name() = 'div'][@type = 'requirement-import'] |
-										*[local-name() = 'div'][@type = 'recommendation-import'] |
-										*[local-name() = 'div'][@type = 'permission-import']">
+	<xsl:template match="mn:import | mn:component[@class = 'import'] |
+										mn:div[@type = 'requirement-import'] |
+										mn:div[@type = 'recommendation-import'] |
+										mn:div[@type = 'permission-import']">
 		<fo:block xsl:use-attribute-sets="import-style">
 			<xsl:apply-templates />
 		</fo:block>
 	</xsl:template>
 	
-	<xsl:template match="*[local-name() = 'div'][starts-with(@type, 'requirement-component')] |
-										*[local-name() = 'div'][starts-with(@type, 'recommendation-component')] |
-										*[local-name() = 'div'][starts-with(@type, 'permission-component')]">
+	<xsl:template match="mn:div[starts-with(@type, 'requirement-component')] |
+										mn:div[starts-with(@type, 'recommendation-component')] |
+										mn:div[starts-with(@type, 'permission-component')]">
 		<fo:block xsl:use-attribute-sets="component-style">
 			<xsl:apply-templates />
 		</fo:block>
@@ -16357,15 +16363,15 @@
 	<!-- ========== -->
 	<!-- requirement, recommendation, permission table -->
 	<!-- ========== -->
-	<xsl:template match="*[local-name() = 'table'][@class = 'recommendation' or @class='requirement' or @class='permission']">
+	<xsl:template match="mn:table[@class = 'recommendation' or @class='requirement' or @class='permission']">
 		<fo:block-container margin-left="0mm" margin-right="0mm" margin-bottom="12pt" role="SKIP">
-			<xsl:if test="ancestor::*[local-name() = 'table'][@class = 'recommendation' or @class='requirement' or @class='permission']">
+			<xsl:if test="ancestor::mn:table[@class = 'recommendation' or @class='requirement' or @class='permission']">
 				<xsl:attribute name="margin-bottom">0pt</xsl:attribute>
 			</xsl:if>
 			<xsl:call-template name="setNamedDestination"/>
 			<fo:block-container margin-left="0mm" margin-right="0mm" role="SKIP">
 				<fo:table id="{@id}" table-layout="fixed" width="100%"> <!-- border="1pt solid black" -->
-					<xsl:if test="ancestor::*[local-name() = 'table'][@class = 'recommendation' or @class='requirement' or @class='permission']">
+					<xsl:if test="ancestor::mn:table[@class = 'recommendation' or @class='requirement' or @class='permission']">
 						<!-- <xsl:attribute name="border">0.5pt solid black</xsl:attribute> -->
 					</xsl:if>
 					<xsl:variable name="simple-table">	
@@ -16373,7 +16379,7 @@
 							<xsl:with-param name="id" select="@id"/>
 						</xsl:call-template>
 					</xsl:variable>					
-					<xsl:variable name="cols-count" select="count(xalan:nodeset($simple-table)//tr[1]/td)"/>
+					<xsl:variable name="cols-count" select="count(xalan:nodeset($simple-table)//mn:tr[1]/mn:td)"/>
 					<xsl:if test="$cols-count = 2 and not(ancestor::*[local-name()='table'])">
 						<fo:table-column column-width="30%"/>
 						<fo:table-column column-width="70%"/>
@@ -16381,8 +16387,8 @@
 					<xsl:apply-templates mode="requirement"/>
 				</fo:table>
 				<!-- fn processing -->
-				<xsl:if test=".//*[local-name() = 'fn']">
-					<xsl:for-each select="*[local-name() = 'tbody']">
+				<xsl:if test=".//mn:fn">
+					<xsl:for-each select="mn:tbody">
 						<fo:block font-size="90%" border-bottom="1pt solid black">
 							<xsl:call-template name="table_fn_display" />
 						</fo:block>
@@ -16412,7 +16418,7 @@
 				
 				<xsl:if test="$namespace = 'ogc' or $namespace = 'ogc-white-paper'">
 					<xsl:attribute name="font-weight">normal</xsl:attribute>
-					<xsl:if test="parent::*[local-name()='thead']"> <!-- and not(ancestor::*[local-name() = 'table'][@class = 'recommendation' or @class='requirement' or @class='permission']) -->
+					<xsl:if test="parent::*[local-name()='thead']"> <!-- and not(ancestor::mn:table[@class = 'recommendation' or @class='requirement' or @class='permission']) -->
 						<xsl:attribute name="background-color"><xsl:value-of select="$color_table_header_row"/></xsl:attribute>
 					</xsl:if>
 					<xsl:if test="starts-with(*[local-name()='td'][1], 'Requirement ')">
@@ -16446,7 +16452,7 @@
 	
 	<xsl:template match="*[local-name()='td']" mode="requirement">
 		<fo:table-cell text-align="{@align}" display-align="center" padding="1mm" padding-left="2mm" > <!-- border="0.5pt solid black" -->
-			<xsl:if test="*[local-name() = 'table'][@class = 'recommendation' or @class='requirement' or @class='permission']">
+			<xsl:if test="mn:table[@class = 'recommendation' or @class='requirement' or @class='permission']">
 				<xsl:attribute name="padding">0mm</xsl:attribute>
 				<xsl:attribute name="padding-left">0mm</xsl:attribute>
 			</xsl:if>
@@ -16466,7 +16472,7 @@
 		</fo:table-cell>
 	</xsl:template>
 	
-	<xsl:template match="*[local-name() = 'p'][@class='RecommendationTitle' or @class = 'RecommendationTestTitle']" priority="2">
+	<xsl:template match="mn:p[@class='RecommendationTitle' or @class = 'RecommendationTestTitle']" priority="2">
 		<fo:block font-size="11pt">
 			<xsl:if test="$namespace = 'ogc' or $namespace = 'ogc-white-paper'">
 				<!-- <xsl:attribute name="color"><xsl:value-of select="$color_design"/></xsl:attribute> -->
@@ -16476,7 +16482,7 @@
 		</fo:block>
 	</xsl:template>
 	
-	<xsl:template match="*[local-name() = 'p2'][ancestor::*[local-name() = 'table'][@class = 'recommendation' or @class='requirement' or @class='permission']]">
+	<xsl:template match="*[local-name() = 'p2'][ancestor::mn:table[@class = 'recommendation' or @class='requirement' or @class='permission']]">
 		<fo:block>
 			<xsl:apply-templates />
 		</fo:block>
