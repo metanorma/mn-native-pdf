@@ -459,13 +459,13 @@
 									<xsl:apply-templates select="." mode="title_eref"/>
 								</xsl:variable> -->
 								
-								<xsl:variable name="update_xml_pres">
-									<xsl:apply-templates select="." mode="update_xml_pres"/>
+								<xsl:variable name="update_xml_step1">
+									<xsl:apply-templates select="." mode="update_xml_step1"/>
 								</xsl:variable>
 								
 								<xsl:if test="$debug = 'true'">
-									<redirect:write file="update_xml_pres.xml">
-										<xsl:copy-of select="xalan:nodeset($update_xml_pres)"/>
+									<redirect:write file="update_xml_step1.xml">
+										<xsl:copy-of select="xalan:nodeset($update_xml_step1)"/>
 									</redirect:write>
 								</xsl:if>
 								
@@ -474,7 +474,7 @@
 								<xsl:variable name="flatxml__">
 									<!-- <xsl:apply-templates select="xalan:nodeset($title_eref)" mode="flatxml"/> -->
 									<!-- <xsl:apply-templates select="." mode="flatxml"/> -->
-									<xsl:apply-templates select="xalan:nodeset($update_xml_pres)" mode="flatxml"/>
+									<xsl:apply-templates select="xalan:nodeset($update_xml_step1)" mode="flatxml"/>
 								</xsl:variable>
 								<!-- save flatxml into the file and reload it -->
 								<xsl:variable name="updated_flatxml_filename" select="concat($output_path,'_flatxml_', java:getTime(java:java.util.Date.new()), '.xml')"/>
@@ -510,20 +510,20 @@
 									<xsl:apply-templates select="." mode="title_eref"/>
 								</xsl:variable> -->
 								
-								<xsl:variable name="update_xml_pres">
-									<xsl:apply-templates select="." mode="update_xml_pres"/>
+								<xsl:variable name="update_xml_step1">
+									<xsl:apply-templates select="." mode="update_xml_step1"/>
 								</xsl:variable>
 								
 								<xsl:if test="$debug = 'true'">
-									<redirect:write file="update_xml_pres.xml">
-										<xsl:copy-of select="xalan:nodeset($update_xml_pres)"/>
+									<redirect:write file="update_xml_step1.xml">
+										<xsl:copy-of select="xalan:nodeset($update_xml_step1)"/>
 									</redirect:write>
 								</xsl:if>
 								
 								<xsl:variable name="flatxml__">
 									<!-- <xsl:apply-templates select="xalan:nodeset($title_eref)" mode="flatxml"/> -->
 									<!-- <xsl:apply-templates select="." mode="flatxml"/> -->
-									<xsl:apply-templates select="xalan:nodeset($update_xml_pres)" mode="flatxml"/>
+									<xsl:apply-templates select="xalan:nodeset($update_xml_step1)" mode="flatxml"/>
 								</xsl:variable>
 								<!-- save flatxml into the file and reload it -->
 								<xsl:variable name="updated_flatxml_filename" select="concat($output_path,'_flatxml_', java:getTime(java:java.util.Date.new()), '.xml')"/>
@@ -557,20 +557,20 @@
 						<xsl:apply-templates mode="title_eref"/>
 					</xsl:variable> -->
 					
-					<xsl:variable name="update_xml_pres">
-						<xsl:apply-templates mode="update_xml_pres"/>
+					<xsl:variable name="update_xml_step1">
+						<xsl:apply-templates mode="update_xml_step1"/>
 					</xsl:variable>
 					
 					<xsl:if test="$debug = 'true'">
-						<redirect:write file="update_xml_pres.xml">
-							<xsl:copy-of select="xalan:nodeset($update_xml_pres)"/>
+						<redirect:write file="update_xml_step1.xml">
+							<xsl:copy-of select="xalan:nodeset($update_xml_step1)"/>
 						</redirect:write>
 					</xsl:if>
 					
 					<xsl:variable name="flatxml__">
 						<!-- <xsl:apply-templates select="xalan:nodeset($title_eref)" mode="flatxml"/> -->
 						<!-- <xsl:apply-templates select="." mode="flatxml"/> -->
-						<xsl:apply-templates select="xalan:nodeset($update_xml_pres)" mode="flatxml"/>
+						<xsl:apply-templates select="xalan:nodeset($update_xml_step1)" mode="flatxml"/>
 					</xsl:variable>
 
 					<!-- save flatxml into the file and reload it -->
@@ -633,23 +633,9 @@
 	<!-- ================================= -->	
 	
 	
-	<xsl:template match="mn:fmt-title" mode="update_xml_pres" priority="2">
-		<xsl:element name="title" namespace="https://www.metanorma.org/ns/standoc">
-			<xsl:copy-of select="@*"/>
-			<xsl:apply-templates mode="update_xml_pres"/>
-		</xsl:element>
-	</xsl:template>
+	<xsl:template match="mn:clause/mn:fmt-footnote-container" priority="3" mode="update_xml_step1"/>
 	
-	<xsl:template match="mn:fmt-name" mode="update_xml_pres" priority="2">
-		<xsl:element name="name" namespace="https://www.metanorma.org/ns/standoc">
-			<xsl:copy-of select="@*"/>
-			<xsl:apply-templates mode="update_xml_pres"/>
-		</xsl:element>
-	</xsl:template>
-	
-	<xsl:template match="mn:clause/mn:fmt-footnote-container" priority="3" mode="update_xml_pres"/>
-	
-	<xsl:template match="mn:li/mn:fmt-name" priority="3" mode="update_xml_pres">
+	<xsl:template match="mn:li/mn:fmt-name" priority="3" mode="update_xml_step1">
 		<xsl:choose>
 			<!-- no need li labels in BIPM brochure preface -->
 			<xsl:when test="ancestor::*[mn:preface] and ancestor::mn:clause[not(@type = 'toc')]"></xsl:when>
@@ -658,6 +644,13 @@
 				<xsl:attribute name="full">true</xsl:attribute>
 			</xsl:otherwise>
 		</xsl:choose>
+	</xsl:template>
+	
+	<xsl:template match="mn:span[@class = 'fmt-label-delim']" priority="2" mode="update_xml_step1">
+		<xsl:copy>
+			<xsl:copy-of select="@*"/>
+			<xsl:apply-templates mode="update_xml_step1"/>
+		</xsl:copy>
 	</xsl:template>
 	
 	<!-- ================================= -->
