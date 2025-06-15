@@ -216,7 +216,6 @@
 			</xsl:if>
 			
 			<xsl:variable name="updated_xml_step1">
-				<!-- <xsl:apply-templates mode="update_xml_step1"/> -->
 				<xsl:apply-templates select="xalan:nodeset($updated_xml_pres)" mode="update_xml_step1"/>
 			</xsl:variable>
 			<!-- DEBUG: updated_xml_step1=<xsl:copy-of select="$updated_xml_step1"/> -->
@@ -1516,6 +1515,33 @@
 		</xsl:copy>
 	</xsl:template>
 	
+	<xsl:template match="@*|node()" mode="update_xml_pres">
+		<xsl:copy>
+			<xsl:apply-templates select="@*|node()" mode="update_xml_pres"/>
+		</xsl:copy>
+	</xsl:template>
+	
+	<!-- remove semantic xml -->
+	<xsl:template match="mn:metanorma-extension/mn:metanorma/mn:source" mode="update_xml_pres"/>
+	<!-- remove image/emf -->
+	<xsl:template match="mn:image/mn:emf" mode="update_xml_pres"/>
+	<xsl:template match="mn:preprocess-xslt" mode="update_xml_pres"/>
+	<xsl:template match="mn:stem" mode="update_xml_pres"/>
+	
+	<xsl:template match="mn:span[
+															@class = 'fmt-caption-label' or 
+															@class = 'fmt-element-name' or
+															@class = 'fmt-caption-delim' or
+															@class = 'fmt-autonum-delim']" mode="update_xml_pres" priority="3">
+		<xsl:apply-templates mode="update_xml_pres"/>
+	</xsl:template>
+	
+	<xsl:template match="mn:semx" mode="update_xml_pres">
+		<xsl:apply-templates mode="update_xml_pres"/>
+	</xsl:template>
+	
+	<xsl:template match="mn:fmt-xref-label" mode="update_xml_pres"/>
+	<xsl:template match="mn:erefstack" mode="update_xml_pres"/>
 	
 	<xsl:template match="mn:ul//mn:fn | mn:ol//mn:fn" mode="update_xml_pres">
 		<xsl:copy>
@@ -1683,7 +1709,7 @@
 					<xsl:with-param name="text" select="$text_en_"/>
 				</xsl:call-template>
 			</xsl:element>
-			</xsl:variable>
+		</xsl:variable>
 		<xsl:apply-templates select="xalan:nodeset($text_en)/*[local-name() = 'text']/node()"/>
 	</xsl:template>
 	
@@ -1787,24 +1813,6 @@
 	
 	<!-- Key title after the table -->
 	<!-- <xsl:template match="mn:table/mn:p[@class = 'ListTitle']" priority="2" mode="update_xml_step1"/> -->
-	
-  <!-- added to fix conflict with previous update in update_xml_pres -->
-	<xsl:template match="mn:preferred | 
-											mn:admitted | 
-											mn:deprecates |
-											mn:definition | 
-											mn:termsource | 
-											mn:term[@unnumbered = 'true'] | 
-											mn:identifier | 
-											mn:eref | 
-											mn:xref | 
-											mn:link | 
-											mn:origin | 
-											mn:stem" mode="update_xml_step1" priority="2">
-		<xsl:copy>
-			<xsl:apply-templates select="@*|node()" mode="update_xml_step1"/>
-		</xsl:copy>
-	</xsl:template>
   
 	<xsl:template match="*[local-name() = 'font_en_bold'][normalize-space() != '']">
 		<xsl:if test="ancestor::*[local-name() = 'td' or local-name() = 'th']">

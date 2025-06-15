@@ -12132,7 +12132,8 @@
 		<xsl:variable name="simple-table">
 		
 			<xsl:variable name="table_without_semantic_elements">
-				<xsl:apply-templates mode="update_xml_pres"/>
+				<!-- <xsl:apply-templates mode="update_xml_pres"/> -->
+				<xsl:apply-templates mode="update_xml_step1"/>
 			</xsl:variable>
 		
 			<!-- Step 0. replace <br/> to <p>...</p> -->
@@ -20159,12 +20160,6 @@
 		</xsl:copy>
 	</xsl:template>
 	
-	<xsl:template match="@*|node()" mode="update_xml_pres">
-		<xsl:copy>
-			<xsl:apply-templates select="@*|node()" mode="update_xml_pres"/>
-		</xsl:copy>
-	</xsl:template>
-	
 	<!-- change section's order based on @displayorder value -->
 	<xsl:template match="mn:preface" mode="update_xml_step1">
 		<xsl:copy>
@@ -20262,18 +20257,14 @@
 	
 	<!-- remove semantic xml -->
 	<xsl:template match="mn:metanorma-extension/mn:metanorma/mn:source" mode="update_xml_step1"/>
-	<xsl:template match="mn:metanorma-extension/mn:metanorma/mn:source" mode="update_xml_pres"/>
 	
 	<!-- remove image/emf -->
 	<xsl:template match="mn:image/mn:emf" mode="update_xml_step1"/>
-	<xsl:template match="mn:image/mn:emf" mode="update_xml_pres"/>
 	
 	<!-- remove preprocess-xslt -->
 	<xsl:template match="mn:preprocess-xslt" mode="update_xml_step1"/>
-	<xsl:template match="mn:preprocess-xslt" mode="update_xml_pres"/>
-	
+
 	<xsl:template match="mn:stem" mode="update_xml_step1"/>
-	<xsl:template match="mn:stem" mode="update_xml_pres"/>
 	
 	<xsl:template match="mn:fmt-stem" mode="update_xml_step1">
 		<xsl:element name="stem" namespace="{$namespace_full}">
@@ -20296,33 +20287,6 @@
 						</xsl:when>
 						<xsl:otherwise>
 							<xsl:apply-templates select="node()" mode="update_xml_step1"/>
-						</xsl:otherwise>
-					</xsl:choose>
-				</xsl:otherwise>
-			</xsl:choose>
-		</xsl:element>
-	</xsl:template>
-	<xsl:template match="mn:fmt-stem" mode="update_xml_pres">
-		<xsl:element name="stem" namespace="{$namespace_full}">
-			<xsl:copy-of select="@*"/>
-			<xsl:choose>
-				<xsl:when test="mn:semx and count(node()) = 1">
-					<xsl:choose>
-						<xsl:when test="not(.//mn:passthrough) and not(.//*[@linebreak])">
-							<xsl:copy-of select="mn:semx/node()"/>
-						</xsl:when>
-						<xsl:otherwise>
-							<xsl:apply-templates select="mn:semx/node()" mode="update_xml_pres"/>
-						</xsl:otherwise>
-					</xsl:choose>
-				</xsl:when>
-				<xsl:otherwise>
-					<xsl:choose>
-						<xsl:when test="not(.//mn:passthrough) and not(.//*[@linebreak])">
-							<xsl:copy-of select="node()"/>
-						</xsl:when>
-						<xsl:otherwise>
-							<xsl:apply-templates select="node()" mode="update_xml_pres"/>
 						</xsl:otherwise>
 					</xsl:choose>
 				</xsl:otherwise>
@@ -20366,34 +20330,6 @@
 			</xsl:choose>
 		</xsl:copy>
 	</xsl:template>
-	<xsl:template match="mn:sourcecode" mode="update_xml_pres">
-		<xsl:copy>
-			<xsl:copy-of select="@*"/>
-			<xsl:apply-templates select="mn:fmt-name" mode="update_xml_pres"/>
-			<xsl:choose>
-				<xsl:when test="mn:fmt-sourcecode">
-					<xsl:choose>
-						<xsl:when test="mn:fmt-sourcecode[not(.//mn:passthrough)] and not(.//mn:fmt-name)">
-							<xsl:copy-of select="mn:fmt-sourcecode/node()"/>
-						</xsl:when>
-						<xsl:otherwise>
-							<xsl:apply-templates select="mn:fmt-sourcecode/node()" mode="update_xml_pres"/>
-						</xsl:otherwise>
-					</xsl:choose>
-				</xsl:when>
-				<xsl:otherwise> <!-- If fmt-sourcecode is not present -->
-					<xsl:choose>
-						<xsl:when test="not(.//mn:passthrough) and not(.//mn:fmt-name)">
-							<xsl:copy-of select="node()"/>
-						</xsl:when>
-						<xsl:otherwise>
-							<xsl:apply-templates select="node()[not(self::mn:fmt-name)]" mode="update_xml_pres"/>
-						</xsl:otherwise>
-					</xsl:choose>
-				</xsl:otherwise>
-			</xsl:choose>
-		</xsl:copy>
-	</xsl:template>
 	
 	<!-- https://github.com/metanorma/isodoc/issues/651 -->
 	<xsl:template match="mn:figure[mn:fmt-figure]" mode="update_xml_step1" priority="2">
@@ -20403,13 +20339,6 @@
 			<xsl:apply-templates select="mn:fmt-figure/node()" mode="update_xml_step1"/>
 		</xsl:copy>
 	</xsl:template>
-	<xsl:template match="mn:figure[mn:fmt-figure]" mode="update_xml_pres" priority="2">
-		<xsl:copy>
-			<xsl:copy-of select="@*"/>
-			<xsl:apply-templates select="mn:fmt-name" mode="update_xml_pres"/>
-			<xsl:apply-templates select="mn:fmt-figure/node()" mode="update_xml_pres"/>
-		</xsl:copy>
-	</xsl:template>
 	
 	<!-- https://github.com/metanorma/isodoc/issues/652 -->
 	<xsl:template match="mn:quote/mn:source" />
@@ -20417,13 +20346,9 @@
 	<xsl:template match="mn:amend" />
 	<xsl:template match="mn:quote/mn:source" mode="update_xml_step1"/>
 	<xsl:template match="mn:quote/mn:author" mode="update_xml_step1"/>
-	<xsl:template match="mn:quote/mn:source" mode="update_xml_pres"/>
-	<xsl:template match="mn:quote/mn:author" mode="update_xml_pres"/>
 	<xsl:template match="mn:amend" mode="update_xml_step1"/>
-	<xsl:template match="mn:amend" mode="update_xml_pres"/>
 	<!-- https://github.com/metanorma/isodoc/issues/687 -->
 	<xsl:template match="mn:source" mode="update_xml_step1"/>
-	<xsl:template match="mn:source" mode="update_xml_pres"/>
 	
 	
 	<xsl:template match="mn:metanorma-extension/mn:attachment" mode="update_xml_step1">
@@ -20509,49 +20434,32 @@
 	
 	<!-- update new Presentation XML -->
 	<xsl:template match="mn:title[following-sibling::*[1][self::mn:fmt-title]]" mode="update_xml_step1"/>
-	<xsl:template match="mn:title[following-sibling::*[1][self::mn:fmt-title]]" mode="update_xml_pres"/>
 	<xsl:template match="mn:name[following-sibling::*[1][self::mn:fmt-name]]" mode="update_xml_step1"/>
-	<xsl:template match="mn:name[following-sibling::*[1][self::mn:fmt-name]]" mode="update_xml_pres"/>
 	<xsl:template match="mn:section-title[following-sibling::*[1][self::mn:p][@type = 'section-title' or @type = 'floating-title']]" mode="update_xml_step1"/>
-	<xsl:template match="mn:section-title[following-sibling::*[1][self::mn:p][@type = 'section-title' or @type = 'floating-title']]" mode="update_xml_pres"/>
 	<!-- <xsl:template match="mn:preferred[following-sibling::*[not(local-name() = 'preferred')][1][local-name() = 'fmt-preferred']]" mode="update_xml_step1"/> -->
 	<xsl:template match="mn:preferred" mode="update_xml_step1"/>
 	<!-- <xsl:template match="mn:preferred[following-sibling::*[not(local-name() = 'preferred')][1][local-name() = 'fmt-preferred']]" mode="update_xml_pres"/> -->
-	<xsl:template match="mn:preferred" mode="update_xml_pres"/>
 	<!-- <xsl:template match="mn:admitted[following-sibling::*[not(local-name() = 'admitted')][1][local-name() = 'fmt-admitted']]" mode="update_xml_step1"/> -->
 	<xsl:template match="mn:admitted" mode="update_xml_step1"/>
 	<!-- <xsl:template match="mn:admitted[following-sibling::*[not(local-name() = 'admitted')][1][local-name() = 'fmt-admitted']]" mode="update_xml_pres"/> -->
-	<xsl:template match="mn:admitted" mode="update_xml_pres"/>
 	<!-- <xsl:template match="mn:deprecates[following-sibling::*[not(local-name() = 'deprecates')][1][local-name() = 'fmt-deprecates']]" mode="update_xml_step1"/> -->
 	<xsl:template match="mn:deprecates" mode="update_xml_step1"/>
 	<xsl:template match="mn:related" mode="update_xml_step1"/>
 	<!-- <xsl:template match="mn:deprecates[following-sibling::*[not(local-name() = 'deprecates')][1][local-name() = 'fmt-deprecates']]" mode="update_xml_pres"/> -->
-	<xsl:template match="mn:deprecates" mode="update_xml_pres"/>
-	<xsl:template match="mn:related" mode="update_xml_pres"/>
 	<!-- <xsl:template match="mn:definition[following-sibling::*[1][local-name() = 'fmt-definition']]" mode="update_xml_step1"/> -->
 	<xsl:template match="mn:definition" mode="update_xml_step1"/>
 	<!-- <xsl:template match="mn:definition[following-sibling::*[1][local-name() = 'fmt-definition']]" mode="update_xml_pres"/> -->
-	<xsl:template match="mn:definition" mode="update_xml_pres"/>
 	<!-- <xsl:template match="mn:termsource[following-sibling::*[1][local-name() = 'fmt-termsource']]" mode="update_xml_step1"/> -->
 	<xsl:template match="mn:termsource" mode="update_xml_step1"/>
 	<!-- <xsl:template match="mn:termsource[following-sibling::*[1][local-name() = 'fmt-termsource']]" mode="update_xml_pres"/> -->
-	<xsl:template match="mn:termsource" mode="update_xml_pres"/>
 	
 	<xsl:template match="mn:term[@unnumbered = 'true'][not(.//*[starts-with(local-name(), 'fmt-')])]" mode="update_xml_step1"/>
-	<xsl:template match="mn:term[@unnumbered = 'true'][not(.//*[starts-with(local-name(), 'fmt-')])]" mode="update_xml_pres"/>
 	
 	<xsl:template match="mn:p[@type = 'section-title' or @type = 'floating-title'][preceding-sibling::*[1][self::mn:section-title]]" mode="update_xml_step1">
 		<xsl:copy>
 			<xsl:apply-templates select="@*" mode="update_xml_step1"/>
 			<xsl:copy-of select="preceding-sibling::*[1][self::mn:section-title]/@depth"/>
 			<xsl:apply-templates select="node()" mode="update_xml_step1"/>
-		</xsl:copy>
-	</xsl:template>
-	<xsl:template match="mn:p[@type = 'section-title' or @type = 'floating-title'][preceding-sibling::*[1][self::mn:section-title]]" mode="update_xml_pres">
-		<xsl:copy>
-			<xsl:apply-templates select="@*" mode="update_xml_pres"/>
-			<xsl:copy-of select="preceding-sibling::*[1][self::mn:section-title]/@depth"/>
-			<xsl:apply-templates select="node()" mode="update_xml_pres"/>
 		</xsl:copy>
 	</xsl:template>
 	
@@ -20562,14 +20470,6 @@
 			<xsl:call-template name="addNamedDestinationAttribute"/>
 			
 			<xsl:apply-templates mode="update_xml_step1"/>
-		</xsl:element>
-	</xsl:template>
-	<xsl:template match="mn:fmt-title" mode="update_xml_pres">
-		<xsl:element name="title" namespace="{$namespace_full}">
-			<xsl:copy-of select="@*"/>
-			<xsl:call-template name="addNamedDestinationAttribute"/>
-			
-			<xsl:apply-templates mode="update_xml_pres"/>
 		</xsl:element>
 	</xsl:template>
 	
@@ -20629,32 +20529,12 @@
 			</xsl:otherwise>
 		</xsl:choose>
 	</xsl:template>
-	<xsl:template match="mn:fmt-name" mode="update_xml_pres">
-		<xsl:choose>
-			<xsl:when test="local-name(..) = 'p' and ancestor::mn:table">
-				<xsl:apply-templates mode="update_xml_step1"/>
-			</xsl:when>
-			<xsl:otherwise>
-				<xsl:element name="name" namespace="{$namespace_full}">
-					<xsl:copy-of select="@*"/>
-					<xsl:call-template name="addNamedDestinationAttribute"/>
-					
-					<xsl:apply-templates mode="update_xml_pres"/>
-				</xsl:element>
-			</xsl:otherwise>
-		</xsl:choose>
-	</xsl:template>
 	
 	<!-- li/fmt-name -->
 	<xsl:template match="mn:li/mn:fmt-name" priority="2" mode="update_xml_step1">
 		<xsl:attribute name="label"><xsl:value-of select="."/></xsl:attribute>
 		<xsl:attribute name="full">true</xsl:attribute>
 	</xsl:template>
-	<xsl:template match="mn:li/mn:fmt-name" priority="2" mode="update_xml_pres">
-		<xsl:attribute name="label"><xsl:value-of select="."/></xsl:attribute>
-		<xsl:attribute name="full">true</xsl:attribute>
-	</xsl:template>
-	
 	
 	<xsl:template match="mn:fmt-preferred" />
 	<xsl:template match="mn:fmt-preferred[mn:p]" mode="update_xml_step1">
@@ -20664,15 +20544,6 @@
 		<xsl:element name="preferred" namespace="{$namespace_full}">
 			<xsl:copy-of select="@*"/>
 			<xsl:apply-templates mode="update_xml_step1"/>
-		</xsl:element>
-	</xsl:template>
-	<xsl:template match="mn:fmt-preferred[mn:p]" mode="update_xml_pres">
-		<xsl:apply-templates mode="update_xml_pres"/>
-	</xsl:template>
-	<xsl:template match="mn:fmt-preferred[not(mn:p)] | mn:fmt-preferred/mn:p" mode="update_xml_pres">
-		<xsl:element name="preferred" namespace="{$namespace_full}">
-			<xsl:copy-of select="@*"/>
-			<xsl:apply-templates mode="update_xml_pres"/>
 		</xsl:element>
 	</xsl:template>
 	
@@ -20686,15 +20557,6 @@
 			<xsl:apply-templates mode="update_xml_step1"/>
 		</xsl:element>
 	</xsl:template>
-	<xsl:template match="mn:fmt-admitted[mn:p]" mode="update_xml_pres">
-		<xsl:apply-templates mode="update_xml_pres"/>
-	</xsl:template>
-	<xsl:template match="mn:fmt-admitted[not(mn:p)] | mn:fmt-admitted/mn:p" mode="update_xml_pres">
-		<xsl:element name="admitted" namespace="{$namespace_full}">
-			<xsl:copy-of select="@*"/>
-			<xsl:apply-templates mode="update_xml_pres"/>
-		</xsl:element>
-	</xsl:template>
 	
 	<xsl:template match="mn:fmt-deprecates" />
 	<xsl:template match="mn:fmt-deprecates[mn:p]" mode="update_xml_step1">
@@ -20706,27 +20568,12 @@
 			<xsl:apply-templates mode="update_xml_step1"/>
 		</xsl:element>
 	</xsl:template>
-	<xsl:template match="mn:fmt-deprecates[mn:p]" mode="update_xml_pres">
-		<xsl:apply-templates mode="update_xml_pres"/>
-	</xsl:template>
-	<xsl:template match="mn:fmt-deprecates[not(mn:p)] | mn:fmt-deprecates/mn:p" mode="update_xml_pres">
-		<xsl:element name="deprecates" namespace="{$namespace_full}">
-			<xsl:copy-of select="@*"/>
-			<xsl:apply-templates mode="update_xml_pres"/>
-		</xsl:element>
-	</xsl:template>
 	
 	<xsl:template match="mn:fmt-definition" />
 	<xsl:template match="mn:fmt-definition" mode="update_xml_step1">
 		<xsl:element name="definition" namespace="{$namespace_full}">
 			<xsl:copy-of select="@*"/>
 			<xsl:apply-templates mode="update_xml_step1"/>
-		</xsl:element>
-	</xsl:template>
-	<xsl:template match="mn:fmt-definition" mode="update_xml_pres">
-		<xsl:element name="definition" namespace="{$namespace_full}">
-			<xsl:copy-of select="@*"/>
-			<xsl:apply-templates mode="update_xml_pres"/>
 		</xsl:element>
 	</xsl:template>
 	
@@ -20737,24 +20584,12 @@
 			<xsl:apply-templates mode="update_xml_step1"/>
 		</xsl:element>
 	</xsl:template>
-	<xsl:template match="mn:fmt-termsource" mode="update_xml_pres">
-		<xsl:element name="termsource" namespace="{$namespace_full}">
-			<xsl:copy-of select="@*"/>
-			<xsl:apply-templates mode="update_xml_pres"/>
-		</xsl:element>
-	</xsl:template>
 	
 	<xsl:template match="mn:fmt-source" />
 	<xsl:template match="mn:fmt-source" mode="update_xml_step1">
 		<xsl:element name="source" namespace="{$namespace_full}">
 			<xsl:copy-of select="@*"/>
 			<xsl:apply-templates mode="update_xml_step1"/>
-		</xsl:element>
-	</xsl:template>
-	<xsl:template match="mn:fmt-source" mode="update_xml_pres">
-		<xsl:element name="source" namespace="{$namespace_full}">
-			<xsl:copy-of select="@*"/>
-			<xsl:apply-templates mode="update_xml_pres"/>
 		</xsl:element>
 	</xsl:template>
 	
@@ -20765,14 +20600,6 @@
 															@class = 'fmt-autonum-delim']" mode="update_xml_step1" priority="3">
 		<xsl:apply-templates mode="update_xml_step1"/>
 	</xsl:template>
-	<xsl:template match="mn:span[
-															@class = 'fmt-caption-label' or 
-															@class = 'fmt-element-name' or
-															@class = 'fmt-caption-delim' or
-															@class = 'fmt-autonum-delim']" mode="update_xml_pres" priority="3">
-		<xsl:apply-templates mode="update_xml_pres"/>
-	</xsl:template>
-	
 	
 	<xsl:template match="mn:semx">
 		<xsl:apply-templates />
@@ -20780,55 +20607,32 @@
 	<xsl:template match="mn:semx" mode="update_xml_step1">
 		<xsl:apply-templates mode="update_xml_step1"/>
 	</xsl:template>
-	<xsl:template match="mn:semx" mode="update_xml_pres">
-		<xsl:apply-templates mode="update_xml_pres"/>
-	</xsl:template>
 	
 	<xsl:template match="mn:fmt-xref-label" />
 	<xsl:template match="mn:fmt-xref-label" mode="update_xml_step1"/>
-	<xsl:template match="mn:fmt-xref-label" mode="update_xml_pres"/>
 
 	<xsl:template match="mn:requirement | mn:recommendation | mn:permission" mode="update_xml_step1">
 		<xsl:apply-templates mode="update_xml_step1"/>
-	</xsl:template>
-	
-	<xsl:template match="mn:requirement | mn:recommendation | mn:permission" mode="update_xml_pres">
-		<xsl:apply-templates mode="update_xml_pres"/>
 	</xsl:template>
 	
 	<xsl:template match="mn:requirement/*[not(starts-with(local-name(), 'fmt-'))] |
 												mn:recommendation/*[not(starts-with(local-name(), 'fmt-'))] | 
 												mn:permission/*[not(starts-with(local-name(), 'fmt-'))]" mode="update_xml_step1"/>
 											
-	<xsl:template match="mn:requirement/*[not(starts-with(local-name(), 'fmt-'))] |
-												mn:recommendation/*[not(starts-with(local-name(), 'fmt-'))] | 
-												mn:permission/*[not(starts-with(local-name(), 'fmt-'))]" mode="update_xml_pres"/>
-	
 	<xsl:template match="mn:fmt-provision" mode="update_xml_step1">
 		<xsl:apply-templates mode="update_xml_step1"/>
 	</xsl:template>
-	<xsl:template match="mn:fmt-provision" mode="update_xml_pres">
-		<xsl:apply-templates mode="update_xml_pres"/>
-	</xsl:template>
 	
 	<xsl:template match="mn:identifier" mode="update_xml_step1"/>
-	<xsl:template match="mn:identifier" mode="update_xml_pres"/>
 	<xsl:template match="mn:fmt-identifier" mode="update_xml_step1">
 		<xsl:element name="identifier" namespace="{$namespace_full}">
 			<xsl:copy-of select="@*"/>
 			<xsl:apply-templates mode="update_xml_step1"/>
 		</xsl:element>
 	</xsl:template>
-  <xsl:template match="mn:fmt-identifier" mode="update_xml_pres">
-		<xsl:element name="identifier" namespace="{$namespace_full}">
-			<xsl:copy-of select="@*"/>
-			<xsl:apply-templates mode="update_xml_pres"/>
-		</xsl:element>
-	</xsl:template>
-
+  
 	<xsl:template match="mn:concept"/>
 	<xsl:template match="mn:concept" mode="update_xml_step1"/>
-	<xsl:template match="mn:concept" mode="update_xml_pres"/>
 	
 	<xsl:template match="mn:fmt-concept">
 		<xsl:apply-templates />
@@ -20836,12 +20640,8 @@
 	<xsl:template match="mn:fmt-concept" mode="update_xml_step1">
 		<xsl:apply-templates mode="update_xml_step1"/>
 	</xsl:template>
-	<xsl:template match="mn:fmt-concept" mode="update_xml_pres">
-		<xsl:apply-templates mode="update_xml_pres"/>
-	</xsl:template>
 	
 	<xsl:template match="mn:eref" mode="update_xml_step1"/>
-	<xsl:template match="mn:eref" mode="update_xml_pres"/>
 	
 	<xsl:template match="mn:fmt-eref" mode="update_xml_step1">
 		<xsl:element name="eref" namespace="{$namespace_full}">
@@ -20849,15 +20649,8 @@
 			<xsl:apply-templates mode="update_xml_step1"/>
 		</xsl:element>
 	</xsl:template>
-  <xsl:template match="mn:fmt-eref" mode="update_xml_pres">
-		<xsl:element name="eref" namespace="{$namespace_full}">
-			<xsl:copy-of select="@*"/>
-			<xsl:apply-templates mode="update_xml_pres"/>
-		</xsl:element>
-	</xsl:template>
-	
+  
 	<xsl:template match="mn:xref" mode="update_xml_step1"/>
-	<xsl:template match="mn:xref" mode="update_xml_pres"/>
 	
 	<xsl:template match="mn:fmt-xref" mode="update_xml_step1">
 		<xsl:element name="xref" namespace="{$namespace_full}">
@@ -20865,15 +20658,8 @@
 			<xsl:apply-templates mode="update_xml_step1"/>
 		</xsl:element>
 	</xsl:template>
-  <xsl:template match="mn:fmt-xref" mode="update_xml_pres">
-		<xsl:element name="xref" namespace="{$namespace_full}">
-			<xsl:copy-of select="@*"/>
-			<xsl:apply-templates mode="update_xml_pres"/>
-		</xsl:element>
-	</xsl:template>
-	
+  
 	<xsl:template match="mn:link" mode="update_xml_step1"/>
-	<xsl:template match="mn:link" mode="update_xml_pres"/>
 	
 	<xsl:template match="mn:fmt-link" mode="update_xml_step1">
 		<xsl:element name="link" namespace="{$namespace_full}">
@@ -20881,15 +20667,8 @@
 			<xsl:apply-templates mode="update_xml_step1"/>
 		</xsl:element>
 	</xsl:template>
-  <xsl:template match="mn:fmt-link" mode="update_xml_pres">
-		<xsl:element name="link" namespace="{$namespace_full}">
-			<xsl:copy-of select="@*"/>
-			<xsl:apply-templates mode="update_xml_pres"/>
-		</xsl:element>
-	</xsl:template>
-	
+  
 	<xsl:template match="mn:origin" mode="update_xml_step1"/>
-	<xsl:template match="mn:origin" mode="update_xml_pres"/>
 	
 	<xsl:template match="mn:fmt-origin" mode="update_xml_step1">
 		<xsl:element name="origin" namespace="{$namespace_full}">
@@ -20897,23 +20676,14 @@
 			<xsl:apply-templates mode="update_xml_step1"/>
 		</xsl:element>
 	</xsl:template>
-  <xsl:template match="mn:fmt-origin" mode="update_xml_pres">
-		<xsl:element name="origin" namespace="{$namespace_full}">
-			<xsl:copy-of select="@*"/>
-			<xsl:apply-templates mode="update_xml_pres"/>
-		</xsl:element>
-	</xsl:template>
 	
 	<xsl:template match="mn:erefstack" />
 	<xsl:template match="mn:erefstack" mode="update_xml_step1"/>
-	<xsl:template match="mn:erefstack" mode="update_xml_pres"/>
-
+	
 	<xsl:template match="mn:svgmap" />
 	<xsl:template match="mn:svgmap" mode="update_xml_step1"/>
-	<xsl:template match="mn:svgmap" mode="update_xml_pres"/>
 	
 	<xsl:template match="mn:review-container" mode="update_xml_step1"/>
-	<xsl:template match="mn:review-container" mode="update_xml_pres"/>
 	
 	<!-- END: update new Presentation XML -->
 	
