@@ -12132,7 +12132,6 @@
 		<xsl:variable name="simple-table">
 		
 			<xsl:variable name="table_without_semantic_elements">
-				<!-- <xsl:apply-templates mode="update_xml_pres"/> -->
 				<xsl:apply-templates mode="update_xml_step1"/>
 			</xsl:variable>
 		
@@ -20438,20 +20437,15 @@
 	<xsl:template match="mn:section-title[following-sibling::*[1][self::mn:p][@type = 'section-title' or @type = 'floating-title']]" mode="update_xml_step1"/>
 	<!-- <xsl:template match="mn:preferred[following-sibling::*[not(local-name() = 'preferred')][1][local-name() = 'fmt-preferred']]" mode="update_xml_step1"/> -->
 	<xsl:template match="mn:preferred" mode="update_xml_step1"/>
-	<!-- <xsl:template match="mn:preferred[following-sibling::*[not(local-name() = 'preferred')][1][local-name() = 'fmt-preferred']]" mode="update_xml_pres"/> -->
 	<!-- <xsl:template match="mn:admitted[following-sibling::*[not(local-name() = 'admitted')][1][local-name() = 'fmt-admitted']]" mode="update_xml_step1"/> -->
 	<xsl:template match="mn:admitted" mode="update_xml_step1"/>
-	<!-- <xsl:template match="mn:admitted[following-sibling::*[not(local-name() = 'admitted')][1][local-name() = 'fmt-admitted']]" mode="update_xml_pres"/> -->
 	<!-- <xsl:template match="mn:deprecates[following-sibling::*[not(local-name() = 'deprecates')][1][local-name() = 'fmt-deprecates']]" mode="update_xml_step1"/> -->
 	<xsl:template match="mn:deprecates" mode="update_xml_step1"/>
 	<xsl:template match="mn:related" mode="update_xml_step1"/>
-	<!-- <xsl:template match="mn:deprecates[following-sibling::*[not(local-name() = 'deprecates')][1][local-name() = 'fmt-deprecates']]" mode="update_xml_pres"/> -->
 	<!-- <xsl:template match="mn:definition[following-sibling::*[1][local-name() = 'fmt-definition']]" mode="update_xml_step1"/> -->
 	<xsl:template match="mn:definition" mode="update_xml_step1"/>
-	<!-- <xsl:template match="mn:definition[following-sibling::*[1][local-name() = 'fmt-definition']]" mode="update_xml_pres"/> -->
 	<!-- <xsl:template match="mn:termsource[following-sibling::*[1][local-name() = 'fmt-termsource']]" mode="update_xml_step1"/> -->
 	<xsl:template match="mn:termsource" mode="update_xml_step1"/>
-	<!-- <xsl:template match="mn:termsource[following-sibling::*[1][local-name() = 'fmt-termsource']]" mode="update_xml_pres"/> -->
 	
 	<xsl:template match="mn:term[@unnumbered = 'true'][not(.//*[starts-with(local-name(), 'fmt-')])]" mode="update_xml_step1"/>
 	
