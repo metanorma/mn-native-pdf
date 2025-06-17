@@ -1349,7 +1349,7 @@
 			</xsl:call-template>
 		</xsl:if>
 	</xsl:template>
-						
-
+	
+	<xsl:include href="./common.xsl"/>
 	
 </xsl:stylesheet>

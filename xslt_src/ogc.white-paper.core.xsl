@@ -794,4 +794,6 @@
 		</xsl:choose>
 	</xsl:template>
 	
+	<xsl:include href="./common.xsl"/>
+	
 </xsl:stylesheet>

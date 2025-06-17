@@ -17,9 +17,7 @@
 											version="1.0">
 
 	<xsl:output method="xml" encoding="UTF-8" indent="no"/>
-		
-	<xsl:include href="./common.xsl"/>
-
+	
 	<xsl:key name="kfn" match="mn:fn[not(ancestor::*[self::mn:table or self::mn:figure or self::mn:localized-strings] and not(ancestor::mn:name))]" use="@reference"/>
 	
 	<xsl:variable name="namespace">plateau</xsl:variable>
@@ -2082,5 +2080,7 @@
 			<path class="cls-1" d="m0,4.04c1.04-.05,1.92-.37,2.63-.97.88-.75,1.36-1.77,1.43-3.07h.58c.08,1.31.56,2.34,1.42,3.07.7.6,1.57.92,2.62.97v.58c-1.05.05-1.92.38-2.62.97-.88.75-1.36,1.78-1.42,3.08h-.58c-.05-1.04-.37-1.92-.98-2.63-.75-.89-1.78-1.36-3.07-1.43v-.58Zm7.09.29c-1.33-.5-2.24-1.42-2.75-2.75-.47,1.32-1.39,2.24-2.75,2.75.65.23,1.21.58,1.68,1.06s.83,1.04,1.07,1.69c.24-.65.6-1.22,1.07-1.7s1.04-.83,1.68-1.06Z"/>
 		</svg>
 	</xsl:variable>
+	
+	<xsl:include href="./common.xsl"/>
 	
 </xsl:stylesheet>

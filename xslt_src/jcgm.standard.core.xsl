@@ -16,8 +16,6 @@
 	
 	<xsl:param name="align-cross-elements" />
 	
-	<xsl:include href="./common.xsl"/>
-
 	<xsl:key name="kfn" match="mn:fn[not(ancestor::*[self::mn:table or self::mn:figure or self::mn:localized-strings] and not(ancestor::mn:name))]" use="@reference"/>
 	
 	<xsl:variable name="namespace">jcgm</xsl:variable>
@@ -2009,5 +2007,7 @@
 				</fo:block>
 			</fo:block-container>
 	</xsl:template>
+	
+	<xsl:include href="./common.xsl"/>
 	
 </xsl:stylesheet>

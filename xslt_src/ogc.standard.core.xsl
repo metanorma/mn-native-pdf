@@ -2011,4 +2011,6 @@
 		</fo:static-content>
 	</xsl:template>
 	
+	<xsl:include href="./common.xsl"/>
+	
 </xsl:stylesheet>
