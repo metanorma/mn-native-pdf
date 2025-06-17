@@ -119,4 +119,8 @@
 		<xsl:attribute name="text-decoration">line-through</xsl:attribute>
 	</xsl:attribute-set>
 	
+	<xsl:template match="mn:br">
+		<xsl:value-of select="$linebreak"/>
+	</xsl:template>
+	
 </xsl:stylesheet>
