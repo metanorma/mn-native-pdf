@@ -20257,6 +20257,9 @@
 	<!-- remove semantic xml -->
 	<xsl:template match="mn:metanorma-extension/mn:metanorma/mn:source" mode="update_xml_step1"/>
 	
+	<!-- remove UnitML elements, big section especially in BIPM xml -->
+	<xsl:template match="mn:metanorma-extension/*[local-name() = 'UnitsML']" mode="update_xml_step1"/>
+	
 	<!-- remove image/emf -->
 	<xsl:template match="mn:image/mn:emf" mode="update_xml_step1"/>
 	

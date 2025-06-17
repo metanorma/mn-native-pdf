@@ -701,7 +701,7 @@
 				<xsl:choose>
 				
 						<xsl:when test="$pos_first_clause &gt; 0">
-							<xsl:element name="clause" namespace="https://www.metanorma.org/ns/standoc">
+							<xsl:element name="clause" namespace="{$namespace_full}">
 								<xsl:attribute name="id"><xsl:value-of select="concat(@id,'_clause')"/></xsl:attribute>
 								<xsl:for-each select="*[position() &gt; 0 and position() &lt;= $pos_first_clause]">
 									<xsl:apply-templates select="." mode="flatxml"/>									
@@ -797,7 +797,7 @@
 			</xsl:choose>
 		</xsl:variable>
 		<!-- <xsl:copy> -->
-		<xsl:element name="{$element}" namespace="https://www.metanorma.org/ns/standoc">
+		<xsl:element name="{$element}" namespace="{$namespace_full}">
 			<xsl:if test="ancestor::mn:quote">
 				<xsl:attribute name="parent-type">quote</xsl:attribute>				
 			</xsl:if>
@@ -845,11 +845,11 @@
 	</xsl:template>
 	
 	<xsl:template match="mn:fn" mode="fn_to_xref">
-		<xsl:element name="xref" namespace="https://www.metanorma.org/ns/standoc">
+		<xsl:element name="xref" namespace="{$namespace_full}">
 			
 			<xsl:copy-of select="@target"/>
 			
-			<xsl:element name="sup_fn" namespace="https://www.metanorma.org/ns/standoc">
+			<xsl:element name="sup_fn" namespace="{$namespace_full}">
 				<!-- <xsl:value-of select="concat('(',$number,')')"/> -->
 			<!-- https://github.com/metanorma/isodoc/issues/658#issuecomment-2726450824 -->
 			<xsl:apply-templates select="mn:fmt-fn-label/node()" mode="flatxml"/>
@@ -963,7 +963,7 @@
 			<!-- every repeated footnote is only rendered at the first instance -->
 			<xsl:when test="preceding::*[@target = $target]"></xsl:when>
 			<xsl:otherwise>
-				<xsl:element name="note_side" namespace="https://www.metanorma.org/ns/standoc">
+				<xsl:element name="note_side" namespace="{$namespace_full}">
 			
 					<xsl:attribute name="id">
 						<xsl:value-of select="@target"/>
@@ -971,7 +971,7 @@
 					
 					<xsl:variable name="curr_id" select="@target"/>
 					
-					<xsl:element name="sup_fn" namespace="https://www.metanorma.org/ns/standoc">
+					<xsl:element name="sup_fn" namespace="{$namespace_full}">
 						<!-- <xsl:value-of select="concat('(',$number,')')"/> -->
 						<!-- https://github.com/metanorma/isodoc/issues/658#issuecomment-2726450824 -->
 						<xsl:apply-templates select="mn:fmt-fn-label/node()" mode="flatxml"/>
@@ -1034,7 +1034,7 @@
 			<xsl:variable name="pagebreak_previous_orientation" select="preceding-sibling::mn:pagebreak[@orientation][1]/@orientation"/>
 			
 			<!-- copy elements before page break -->
-			<xsl:element name="{$element_name}" namespace="https://www.metanorma.org/ns/standoc">
+			<xsl:element name="{$element_name}" namespace="{$namespace_full}">
 				<xsl:if test="not(preceding-sibling::mn:pagebreak[@orientation])">
 					<xsl:apply-templates select="../@*" mode="pagebreak"/>
 				</xsl:if>
@@ -1047,7 +1047,7 @@
 			
 			<!-- copy elements after last page break -->
 			<xsl:if test="position() = last() and following-sibling::node()">
-				<xsl:element name="{$element_name}" namespace="https://www.metanorma.org/ns/standoc">
+				<xsl:element name="{$element_name}" namespace="{$namespace_full}">
 					<xsl:attribute name="orientation"><xsl:value-of select="@orientation"/></xsl:attribute>
 					<xsl:apply-templates select="following-sibling::node()" mode="pagebreak"/>
 				</xsl:element>
