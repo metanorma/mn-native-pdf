@@ -11,6 +11,10 @@
 											exclude-result-prefixes="java redirect"
 											extension-element-prefixes="redirect"
 											version="1.0">
+
+	<!-- ========================= -->
+	<!-- Rich text formatting -->
+	<!-- ========================= -->
 	
 	<xsl:attribute-set name="pre-style">
 		<xsl:attribute name="font-family">Courier New, <xsl:value-of select="$font_noto_sans_mono"/></xsl:attribute>
@@ -121,6 +125,420 @@
 	
 	<xsl:template match="mn:br">
 		<xsl:value-of select="$linebreak"/>
+	</xsl:template>
+	
+		<xsl:template match="mn:em">
+		<fo:inline font-style="italic">
+			<xsl:call-template name="refine_italic_style"/>
+			<xsl:apply-templates />
+		</fo:inline>
+	</xsl:template>
+
+	<xsl:template name="refine_italic_style">
+		<xsl:if test="$namespace = 'iso'">
+			<xsl:if test="ancestor::*[local-name() = 'item']">
+				<xsl:attribute name="role">SKIP</xsl:attribute>
+			</xsl:if>
+		</xsl:if>
+		<xsl:if test="$namespace = 'itu'">
+			<xsl:if test="$lang = 'ar'"> <!-- to prevent rendering `###` due the missing Arabic glyphs in the italic font (Times New Roman) -->
+				<xsl:attribute name="font-style">normal</xsl:attribute>
+			</xsl:if>
+		</xsl:if>
+	</xsl:template>
+
+	<xsl:template match="mn:strong | *[local-name()='b']">
+		<xsl:param name="split_keep-within-line"/>
+		<fo:inline font-weight="bold">
+		
+			<xsl:call-template name="refine_strong_style"/>
+			
+			<xsl:apply-templates>
+				<xsl:with-param name="split_keep-within-line" select="$split_keep-within-line"/>
+			</xsl:apply-templates>
+		</fo:inline>
+	</xsl:template>
+	
+	<xsl:template name="refine_strong_style">
+		<xsl:if test="$namespace = 'iso'">
+			<xsl:if test="ancestor::*[local-name() = 'item']">
+				<xsl:attribute name="role">SKIP</xsl:attribute>
+			</xsl:if>
+		</xsl:if>
+		<xsl:if test="$namespace = 'jis'">
+			<xsl:if test="not($vertical_layout = 'true')">
+				<xsl:attribute name="font-family">Times New Roman</xsl:attribute>
+			</xsl:if>
+		</xsl:if>
+		<xsl:if test="$namespace = 'rsd'">
+			<xsl:if test="not(parent::mn:termsource)">
+				<xsl:attribute name="font-weight">normal</xsl:attribute>
+				<xsl:attribute name="color">black</xsl:attribute>
+			</xsl:if>
+		</xsl:if>
+		<xsl:if test="ancestor::*['preferred']">
+			<xsl:attribute name="role">SKIP</xsl:attribute>
+		</xsl:if>
+	</xsl:template>
+	
+	<xsl:template match="*[local-name()='padding']">
+		<fo:inline padding-right="{@value}">&#xA0;</fo:inline>
+	</xsl:template>
+	
+	<xsl:template match="mn:sup">
+		<fo:inline font-size="80%" vertical-align="super">
+			<xsl:apply-templates />
+		</fo:inline>
+	</xsl:template>
+	
+	<xsl:template match="mn:sub">
+		<fo:inline font-size="80%" vertical-align="sub">
+			<xsl:apply-templates />
+		</fo:inline>
+	</xsl:template>
+	
+	<xsl:template match="mn:tt">
+		<fo:inline xsl:use-attribute-sets="tt-style">
+		
+			<xsl:variable name="_font-size">
+				<xsl:if test="$namespace = 'csa'">10</xsl:if>
+				<xsl:if test="$namespace = 'csd'">10</xsl:if>
+				<xsl:if test="$namespace = 'gb'">10</xsl:if>
+				<xsl:if test="$namespace = 'iec'">10</xsl:if>
+				<xsl:if test="$namespace = 'iho'">9.5</xsl:if>
+				<xsl:if test="$namespace = 'iso'">9</xsl:if> <!-- inherit -->
+				<xsl:if test="$namespace = 'bsi'">10</xsl:if>
+				<xsl:if test="$namespace = 'jcgm'">10</xsl:if>
+				<xsl:if test="$namespace = 'itu'"></xsl:if>
+				<xsl:if test="$namespace = 'm3d'">
+					<xsl:choose>
+						<xsl:when test="not(ancestor::mn:note)">10</xsl:when>
+						<xsl:otherwise>11</xsl:otherwise>
+					</xsl:choose>
+				</xsl:if>
+				<xsl:if test="$namespace = 'mpfd'"></xsl:if>
+				<xsl:if test="$namespace = 'nist-cswp'  or $namespace = 'nist-sp'"></xsl:if>
+				<xsl:if test="$namespace = 'ogc'">
+					<xsl:choose>
+						<xsl:when test="ancestor::mn:table">8.5</xsl:when>
+						<xsl:otherwise>9.5</xsl:otherwise>
+					</xsl:choose>
+				</xsl:if>
+				<xsl:if test="$namespace = 'ogc-white-paper'">
+					<xsl:choose>
+						<xsl:when test="ancestor::mn:table">8.5</xsl:when>
+						<xsl:otherwise>9.5</xsl:otherwise>
+					</xsl:choose>
+				</xsl:if>
+				<xsl:if test="$namespace = 'rsd'">
+					<xsl:choose>
+						<xsl:when test="ancestor::mn:table">inherit</xsl:when>
+						<xsl:otherwise>95%</xsl:otherwise> <!-- 110% -->
+					</xsl:choose>
+				</xsl:if>
+				<xsl:if test="$namespace = 'unece' or $namespace = 'unece-rec'"></xsl:if>		
+			</xsl:variable>
+			<xsl:variable name="font-size" select="normalize-space($_font-size)"/>		
+			<xsl:if test="$font-size != ''">
+				<xsl:attribute name="font-size">
+					<xsl:choose>
+						<xsl:when test="$font-size = 'inherit'"><xsl:value-of select="$font-size"/></xsl:when>
+						<xsl:when test="contains($font-size, '%')"><xsl:value-of select="$font-size"/></xsl:when>
+						<xsl:when test="ancestor::mn:note or ancestor::mn:example"><xsl:value-of select="$font-size * 0.91"/>pt</xsl:when>
+						<xsl:otherwise><xsl:value-of select="$font-size"/>pt</xsl:otherwise>
+					</xsl:choose>
+				</xsl:attribute>
+			</xsl:if>
+			<xsl:apply-templates />
+		</fo:inline>
+	</xsl:template> <!-- tt -->
+	
+	<xsl:variable name="regex_url_start">^(http://|https://|www\.)?(.*)</xsl:variable>
+	<xsl:template match="mn:tt/text()" priority="2">
+		<xsl:choose>
+			<xsl:when test="java:replaceAll(java:java.lang.String.new(.), $regex_url_start, '$2') != ''">
+				 <!-- url -->
+				<xsl:call-template name="add-zero-spaces-link-java"/>
+			</xsl:when>
+			<xsl:otherwise>
+				<xsl:call-template name="add_spaces_to_sourcecode"/>
+			</xsl:otherwise>
+		</xsl:choose>
+	</xsl:template>
+	
+	
+	<xsl:template match="mn:underline">
+		<fo:inline text-decoration="underline">
+			<xsl:apply-templates />
+		</fo:inline>
+	</xsl:template>
+	
+	<!-- ================= -->
+	<!-- Added,deleted text -->
+	<!-- ================= -->
+	<xsl:template match="mn:add | mn:change-open-tag | mn:change-close-tag" name="tag_add">
+		<xsl:param name="skip">true</xsl:param>
+		<xsl:param name="block">false</xsl:param>
+		<xsl:param name="type"/>
+		<xsl:param name="text-align"/>
+		<xsl:choose>
+			<xsl:when test="starts-with(., $ace_tag) or self::mn:change-open-tag or self::mn:change-close-tag"> <!-- examples: ace-tag_A1_start, ace-tag_A2_end, C1_start, AC_start, or
+							<change-open-tag>A<sub>1</sub></change-open-tag>, <change-close-tag>A<sub>1</sub></change-close-tag> -->
+				<xsl:choose>
+					<xsl:when test="$skip = 'true' and 
+					((local-name(../..) = 'note' and not(preceding-sibling::node())) or 
+					(local-name(..) = 'title' and preceding-sibling::node()[1][self::mn:tab]) or
+					local-name(..) = 'formattedref' and not(preceding-sibling::node()))
+					and 
+					../node()[last()][self::mn:add][starts-with(text(), $ace_tag)]"><!-- start tag displayed in template name="note" and title --></xsl:when>
+					<xsl:otherwise>
+						<xsl:variable name="tag">
+							<xsl:call-template name="insertTag">
+								<xsl:with-param name="type">
+									<xsl:choose>
+										<xsl:when test="self::mn:change-open-tag">start</xsl:when>
+										<xsl:when test="self::mn:change-close-tag">end</xsl:when>
+										<xsl:when test="$type = ''"><xsl:value-of select="substring-after(substring-after(., $ace_tag), '_')"/> <!-- start or end --></xsl:when>
+										<xsl:otherwise><xsl:value-of select="$type"/></xsl:otherwise>
+									</xsl:choose>
+								</xsl:with-param>
+								<xsl:with-param name="kind">
+									<xsl:choose>
+										<xsl:when test="self::mn:change-open-tag or self::mn:change-close-tag">
+											<xsl:value-of select="text()"/>
+										</xsl:when>
+										<xsl:otherwise>
+											<xsl:value-of select="substring(substring-before(substring-after(., $ace_tag), '_'), 1, 1)"/> <!-- A or C -->
+										</xsl:otherwise>
+									</xsl:choose>
+								</xsl:with-param>
+								<xsl:with-param name="value">
+									<xsl:choose>
+										<xsl:when test="self::mn:change-open-tag or self::mn:change-close-tag">
+											<xsl:value-of select="mn:sub"/>
+										</xsl:when>
+										<xsl:otherwise>
+											<xsl:value-of select="substring(substring-before(substring-after(., $ace_tag), '_'), 2)"/> <!-- 1, 2, C -->
+										</xsl:otherwise>
+									</xsl:choose>
+								</xsl:with-param>
+							</xsl:call-template>
+						</xsl:variable>
+						<xsl:choose>
+							<xsl:when test="$block = 'false'">
+								<fo:inline>
+									<xsl:copy-of select="$tag"/>									
+								</fo:inline>
+							</xsl:when>
+							<xsl:otherwise>
+								<fo:block> <!-- for around figures -->
+									<xsl:if test="$text-align != ''">
+										<xsl:attribute name="text-align"><xsl:value-of select="$text-align"/></xsl:attribute>
+									</xsl:if>
+									<xsl:copy-of select="$tag"/>
+								</fo:block>
+							</xsl:otherwise>
+						</xsl:choose>
+						
+					</xsl:otherwise>
+				</xsl:choose>
+			</xsl:when>
+			<xsl:when test="@amendment">
+				<fo:inline>
+					<xsl:call-template name="insertTag">
+						<xsl:with-param name="kind">A</xsl:with-param>
+						<xsl:with-param name="value"><xsl:value-of select="@amendment"/></xsl:with-param>
+					</xsl:call-template>
+					<xsl:apply-templates />
+					<xsl:call-template name="insertTag">
+						<xsl:with-param name="type">closing</xsl:with-param>
+						<xsl:with-param name="kind">A</xsl:with-param>
+						<xsl:with-param name="value"><xsl:value-of select="@amendment"/></xsl:with-param>
+					</xsl:call-template>
+				</fo:inline>
+			</xsl:when>
+			<xsl:when test="@corrigenda">
+				<fo:inline>
+					<xsl:call-template name="insertTag">
+						<xsl:with-param name="kind">C</xsl:with-param>
+						<xsl:with-param name="value"><xsl:value-of select="@corrigenda"/></xsl:with-param>
+					</xsl:call-template>
+					<xsl:apply-templates />
+					<xsl:call-template name="insertTag">
+						<xsl:with-param name="type">closing</xsl:with-param>
+						<xsl:with-param name="kind">C</xsl:with-param>
+						<xsl:with-param name="value"><xsl:value-of select="@corrigenda"/></xsl:with-param>
+					</xsl:call-template>
+				</fo:inline>
+			</xsl:when>
+			<xsl:otherwise>
+				<fo:inline xsl:use-attribute-sets="add-style">
+					<xsl:apply-templates />
+				</fo:inline>
+			</xsl:otherwise>
+		</xsl:choose>
+	</xsl:template> <!-- add -->
+	
+	<xsl:template name="insertTag">
+		<xsl:param name="type"/>
+		<xsl:param name="kind"/>
+		<xsl:param name="value"/>
+		<xsl:variable name="add_width" select="string-length($value) * 20" />
+		<xsl:variable name="maxwidth" select="60 + $add_width"/>
+			<fo:instream-foreign-object fox:alt-text="OpeningTag" baseline-shift="-10%"><!-- alignment-baseline="middle" -->
+				<xsl:attribute name="height">3.5mm</xsl:attribute> <!-- 5mm -->
+				<xsl:attribute name="content-width">100%</xsl:attribute>
+				<xsl:attribute name="content-width">scale-down-to-fit</xsl:attribute>
+				<xsl:attribute name="scaling">uniform</xsl:attribute>
+				<!-- <svg xmlns="http://www.w3.org/2000/svg" width="{$maxwidth + 32}" height="80">
+					<g>
+						<xsl:if test="$type = 'closing' or $type = 'end'">
+							<xsl:attribute name="transform">scale(-1 1) translate(-<xsl:value-of select="$maxwidth + 32"/>,0)</xsl:attribute>
+						</xsl:if>
+						<polyline points="0,0 {$maxwidth},0 {$maxwidth + 30},40 {$maxwidth},80 0,80 " stroke="black" stroke-width="5" fill="white"/>
+						<line x1="0" y1="0" x2="0" y2="80" stroke="black" stroke-width="20"/>
+					</g>
+					<text font-family="Arial" x="15" y="57" font-size="40pt">
+						<xsl:if test="$type = 'closing' or $type = 'end'">
+							<xsl:attribute name="x">25</xsl:attribute>
+						</xsl:if>
+						<xsl:value-of select="$kind"/><tspan dy="10" font-size="30pt"><xsl:value-of select="$value"/></tspan>
+					</text>
+				</svg> -->
+				<svg xmlns="http://www.w3.org/2000/svg" width="{$maxwidth + 32}" height="80">
+					<g>
+						<xsl:if test="$type = 'closing' or $type = 'end'">
+							<xsl:attribute name="transform">scale(-1 1) translate(-<xsl:value-of select="$maxwidth + 32"/>,0)</xsl:attribute>
+						</xsl:if>
+						<polyline points="0,2.5 {$maxwidth},2.5 {$maxwidth + 20},40 {$maxwidth},77.5 0,77.5" stroke="black" stroke-width="5" fill="white"/>
+						<line x1="9.5" y1="0" x2="9.5" y2="80" stroke="black" stroke-width="19"/>
+					</g>
+					<xsl:variable name="text_x">
+						<xsl:choose>
+							<xsl:when test="$type = 'closing' or $type = 'end'">28</xsl:when>
+							<xsl:otherwise>22</xsl:otherwise>
+						</xsl:choose>
+					</xsl:variable>
+					<text font-family="Arial" x="{$text_x}" y="50" font-size="40pt">
+						<xsl:value-of select="$kind"/>
+					</text>
+					<text font-family="Arial" x="{$text_x + 33}" y="65" font-size="38pt">
+						<xsl:value-of select="$value"/>
+					</text>
+				</svg>
+			</fo:instream-foreign-object>
+	</xsl:template>
+	
+	<xsl:template match="mn:del">
+		<fo:inline xsl:use-attribute-sets="del-style">
+			<xsl:apply-templates />
+		</fo:inline>
+	</xsl:template>
+	<!-- ================= -->
+	<!-- END Added,deleted text -->
+	<!-- ================= -->
+	
+	<!-- highlight text -->
+	<xsl:template match="mn:hi | mn:span[@class = 'fmt-hi']" priority="3">
+		<fo:inline background-color="yellow">
+			<xsl:apply-templates />
+		</fo:inline>
+	</xsl:template>
+	
+	<xsl:template match="text()[ancestor::mn:smallcap]" name="smallcaps">
+		<xsl:param name="txt"/>
+		<!-- <xsl:variable name="text" select="normalize-space(.)"/> --> <!-- https://github.com/metanorma/metanorma-iso/issues/1115 -->
+		<xsl:variable name="text">
+			<xsl:choose>
+				<xsl:when test="$txt != ''">
+					<xsl:value-of select="$txt"/>
+				</xsl:when>
+				<xsl:otherwise>
+					<xsl:value-of select="."/>
+				</xsl:otherwise>
+			</xsl:choose>
+		</xsl:variable>
+		<xsl:variable name="ratio_">
+			<xsl:choose>
+				<xsl:when test="$namespace = 'iso'">
+					<xsl:choose>
+						<xsl:when test="$layoutVersion = '1951'">0.9</xsl:when>
+						<xsl:when test="$layoutVersion = '2024'">0.8</xsl:when>
+						<xsl:otherwise>0.75</xsl:otherwise>
+					</xsl:choose>
+				</xsl:when>
+				<xsl:otherwise>0.75</xsl:otherwise>
+			</xsl:choose>
+		</xsl:variable>
+		<xsl:variable name="ratio" select="number(normalize-space($ratio_))"/>
+		<fo:inline font-size="{$ratio * 100}%" role="SKIP">
+				<xsl:if test="string-length($text) &gt; 0">
+					<xsl:variable name="smallCapsText">
+						<xsl:call-template name="recursiveSmallCaps">
+							<xsl:with-param name="text" select="$text"/>
+							<xsl:with-param name="ratio" select="$ratio"/>
+						</xsl:call-template>
+					</xsl:variable>
+					<!-- merge neighboring fo:inline -->
+					<xsl:for-each select="xalan:nodeset($smallCapsText)/node()">
+						<xsl:choose>
+							<xsl:when test="self::fo:inline and preceding-sibling::node()[1][self::fo:inline]"><!-- <xsl:copy-of select="."/> --></xsl:when>
+							<xsl:when test="self::fo:inline and @font-size">
+								<xsl:variable name="curr_pos" select="count(preceding-sibling::node()) + 1"/>
+								<!-- <curr_pos><xsl:value-of select="$curr_pos"/></curr_pos> -->
+								<xsl:variable name="next_text_" select="count(following-sibling::node()[not(local-name() = 'inline')][1]/preceding-sibling::node())"/>
+								<xsl:variable name="next_text">
+									<xsl:choose>
+										<xsl:when test="$next_text_ = 0">99999999</xsl:when>
+										<xsl:otherwise><xsl:value-of select="$next_text_ + 1"/></xsl:otherwise>
+									</xsl:choose>
+								</xsl:variable>
+								<!-- <next_text><xsl:value-of select="$next_text"/></next_text> -->
+								<fo:inline>
+									<xsl:copy-of select="@*"/>
+									<xsl:copy-of select="./node()"/>
+									<xsl:for-each select="following-sibling::node()[position() &lt; $next_text - $curr_pos]"> <!-- [self::fo:inline] -->
+										<xsl:copy-of select="./node()"/>
+									</xsl:for-each>
+								</fo:inline>
+							</xsl:when>
+							<xsl:otherwise>
+								<xsl:copy-of select="."/>
+							</xsl:otherwise>
+						</xsl:choose>
+					</xsl:for-each>
+				</xsl:if>
+			</fo:inline> 
+	</xsl:template>
+	
+	<xsl:template name="recursiveSmallCaps">
+    <xsl:param name="text"/>
+    <xsl:param name="ratio">0.75</xsl:param>
+    <xsl:variable name="char" select="substring($text,1,1)"/>
+    <!-- <xsl:variable name="upperCase" select="translate($char, $lower, $upper)"/> -->
+		<xsl:variable name="upperCase" select="java:toUpperCase(java:java.lang.String.new($char))"/>
+    <xsl:choose>
+      <xsl:when test="$char=$upperCase">
+        <fo:inline font-size="{100 div $ratio}%" role="SKIP">
+          <xsl:value-of select="$upperCase"/>
+        </fo:inline>
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:value-of select="$upperCase"/>
+      </xsl:otherwise>
+    </xsl:choose>
+    <xsl:if test="string-length($text) &gt; 1">
+      <xsl:call-template name="recursiveSmallCaps">
+        <xsl:with-param name="text" select="substring($text,2)"/>
+        <xsl:with-param name="ratio" select="$ratio"/>
+      </xsl:call-template>
+    </xsl:if>
+  </xsl:template>
+	
+	<xsl:template match="mn:strike">
+		<fo:inline text-decoration="line-through">
+			<xsl:apply-templates />
+		</fo:inline>
 	</xsl:template>
 	
 </xsl:stylesheet>
