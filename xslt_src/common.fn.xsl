@@ -444,4 +444,331 @@
 		</xsl:if>
 	</xsl:template> <!-- refine_fn-body-num-style -->
 	
+	<!-- ===================== -->
+	<!-- Footnotes processing  -->
+	<!-- ===================== -->
+	
+	<!-- document text (not figures, or tables) footnotes -->
+	<xsl:variable name="footnotes_">
+		<xsl:for-each select="//mn:fmt-footnote-container/mn:fmt-fn-body"> <!-- commented mn:metanorma/, because there are fn in figure or table name -->
+			<!-- <xsl:copy-of select="."/> -->
+			<xsl:variable name="update_xml_step1">
+				<xsl:apply-templates select="." mode="update_xml_step1"/>
+			</xsl:variable>
+			<xsl:apply-templates select="xalan:nodeset($update_xml_step1)" mode="update_xml_enclose_keep-together_within-line"/>
+		</xsl:for-each>
+	</xsl:variable>
+	<xsl:variable name="footnotes" select="xalan:nodeset($footnotes_)"/>
+	
+	<!--
+	<fn reference="1">
+			<p id="_8e5cf917-f75a-4a49-b0aa-1714cb6cf954">Formerly denoted as 15 % (m/m).</p>
+		</fn>
+	-->
+	<!-- footnotes in text (title, bibliography, main body), not for tables, figures and names --> <!-- table's, figure's names -->
+	<!-- fn in text -->
+	<xsl:template match="mn:fn[not(ancestor::*[(self::mn:table or self::mn:figure)] and not(ancestor::mn:name))]" priority="2" name="fn">
+		<xsl:param name="footnote_body_from_table">false</xsl:param>
+		
+		<!-- list of unique footnotes -->
+		<xsl:variable name="p_fn_">
+			<xsl:call-template name="get_fn_list"/>
+		</xsl:variable>
+		<xsl:variable name="p_fn" select="xalan:nodeset($p_fn_)"/>
+		
+		<xsl:variable name="gen_id" select="generate-id(.)"/>
+		
+		<!-- fn sequence number in document -->
+		<xsl:variable name="current_fn_number" select="@reference"/>
+		
+		<xsl:variable name="current_fn_number_text">
+			<xsl:choose>
+				<xsl:when test="$namespace = 'iso'">
+					<xsl:choose>
+						<xsl:when test="$layoutVersion = '1951' and translate($current_fn_number, '0123456789', '') = ''">
+							<!-- replace number to asterisks -->
+							<xsl:call-template name="repeat">
+								<xsl:with-param name="char" select="'*'"/>
+								<xsl:with-param name="count" select="$current_fn_number"/>
+							</xsl:call-template>
+						</xsl:when>
+						<xsl:otherwise><xsl:value-of select="normalize-space(mn:fmt-fn-label)"/></xsl:otherwise>
+					</xsl:choose>
+				</xsl:when>
+				<xsl:when test="$namespace = 'jis'">
+					<xsl:choose>
+						<xsl:when test="$autonumbering_style = 'japanese'">
+							<xsl:text>&#x2008;</xsl:text>
+							<xsl:value-of select="$numbers_japanese//mn:localized-string[@key = $current_fn_number]"/>
+							<xsl:text>&#x2008;</xsl:text>
+						</xsl:when>
+						<xsl:otherwise><xsl:value-of select="translate($current_fn_number, ')', '')"/><fo:inline font-weight="normal">)</fo:inline></xsl:otherwise>
+					</xsl:choose>
+				</xsl:when>
+				<xsl:when test="$namespace = 'plateau'">
+					<xsl:value-of select="normalize-space(mn:fmt-fn-label)"/>
+				</xsl:when>
+				<xsl:otherwise>
+					<xsl:value-of select="$current_fn_number"/>
+				</xsl:otherwise>
+			</xsl:choose>
+			<xsl:if test="$namespace = 'bsi'">
+				<xsl:if test="$document_type = 'PAS'">
+					<xsl:text>)</xsl:text>
+				</xsl:if>
+			</xsl:if>
+		</xsl:variable>
+		
+		<xsl:variable name="ref_id" select="@target"/>
+		
+		<xsl:variable name="footnote_inline">
+			<fo:inline role="Reference">
+			
+				<xsl:variable name="fn_styles">
+					<xsl:choose>
+						<xsl:when test="ancestor::mn:bibitem">
+							<fn_styles xsl:use-attribute-sets="bibitem-note-fn-style">
+								<xsl:if test="$namespace = 'jis'">
+									<xsl:if test="not($vertical_layout = 'true')">
+										<xsl:attribute name="font-family">Times New Roman</xsl:attribute>
+									</xsl:if>
+								</xsl:if>
+							</fn_styles>
+						</xsl:when>
+						<xsl:otherwise>
+							<fn_styles xsl:use-attribute-sets="fn-num-style">
+								<xsl:if test="$namespace = 'jis'">
+									<xsl:if test="not($vertical_layout = 'true')">
+										<xsl:attribute name="font-family">Times New Roman</xsl:attribute>
+									</xsl:if>
+									<xsl:if test="$vertical_layout = 'true'">
+										<xsl:attribute name="vertical-align">baseline</xsl:attribute>
+										<xsl:attribute name="font-size">80%</xsl:attribute>
+										<xsl:attribute name="baseline-shift">20%</xsl:attribute>
+									</xsl:if>
+								</xsl:if>
+							</fn_styles>
+						</xsl:otherwise>
+					</xsl:choose>
+				</xsl:variable>
+			
+				<xsl:for-each select="xalan:nodeset($fn_styles)/fn_styles/@*">
+					<xsl:copy-of select="."/>
+				</xsl:for-each>
+			
+				<xsl:if test="following-sibling::node()[normalize-space() != ''][1][self::mn:fn]">
+					<xsl:attribute name="padding-right">0.5mm</xsl:attribute>
+				</xsl:if>
+			
+				<xsl:if test="$namespace = 'bsi'">
+					<xsl:if test="$document_type = 'PAS'">
+						<xsl:attribute name="font-size">5pt</xsl:attribute>
+					</xsl:if>
+					<xsl:if test="following-sibling::*[1][self::mn:fn]">
+						<xsl:attribute name="padding-right">0mm</xsl:attribute>
+					</xsl:if>
+					<xsl:if test="preceding-sibling::*[1][self::mn:fn]">,</xsl:if>
+				</xsl:if>
+				
+				<xsl:if test="$namespace = 'iso'">
+					<xsl:if test="$layoutVersion = '2024'">
+						<xsl:attribute name="font-size">70%</xsl:attribute>
+					</xsl:if>
+				</xsl:if>
+				
+				<xsl:call-template name="insert_basic_link">
+					<xsl:with-param name="element">
+						<fo:basic-link internal-destination="{$ref_id}" fox:alt-text="footnote {$current_fn_number}"> <!-- note: role="Lbl" removed in https://github.com/metanorma/mn2pdf/issues/291 -->
+							<fo:inline role="Lbl"> <!-- need for https://github.com/metanorma/metanorma-iso/issues/1003 -->
+							
+								<xsl:if test="$namespace = 'jis'">
+									<xsl:attribute name="keep-together.within-line">always</xsl:attribute>
+									<fo:inline font-family="IPAexGothic">
+										<xsl:call-template name="insertVerticalChar">
+											<xsl:with-param name="str" select="'&#x3014;'"/>
+										</xsl:call-template>
+									</fo:inline>
+								</xsl:if>
+								<xsl:copy-of select="$current_fn_number_text"/>
+								
+								<xsl:if test="$namespace = 'jis'">
+									<fo:inline font-family="IPAexGothic">
+										<xsl:call-template name="insertVerticalChar">
+											<xsl:with-param name="str" select="'&#x3015;'"/>
+										</xsl:call-template>
+									</fo:inline>
+								</xsl:if>
+								
+							</fo:inline>
+						</fo:basic-link>
+					</xsl:with-param>
+				</xsl:call-template>
+			</fo:inline>
+		</xsl:variable>
+		
+		<xsl:choose>
+			<xsl:when test="normalize-space(@skip_footnote_body) = 'true'">
+				<xsl:copy-of select="$footnote_inline"/>
+			</xsl:when>
+			<!-- <xsl:when test="$footnotes//mn:fmt-fn-body[@id = $ref_id] or normalize-space(@skip_footnote_body) = 'false'"> -->
+			<xsl:when test="$p_fn//fn[@gen_id = $gen_id] or normalize-space(@skip_footnote_body) = 'false' or $footnote_body_from_table = 'true'">
+			
+				<fo:footnote xsl:use-attribute-sets="fn-style" role="SKIP">
+					<xsl:copy-of select="$footnote_inline"/>
+					<fo:footnote-body role="Note">
+						<xsl:if test="$namespace = 'bsi'">
+							<xsl:if test="$document_type = 'PAS'">
+								<fo:block role="SKIP">&#xa0;</fo:block>
+							</xsl:if>
+						</xsl:if>
+						
+						<fo:block-container xsl:use-attribute-sets="fn-container-body-style" role="SKIP">
+							
+							<xsl:variable name="fn_block">
+								<xsl:call-template name="refine_fn-body-style"/>
+									
+								<fo:inline id="{$ref_id}" xsl:use-attribute-sets="fn-body-num-style" role="Lbl">
+								
+									<xsl:call-template name="refine_fn-body-num-style"/>
+									
+									<xsl:value-of select="$current_fn_number_text"/>
+									
+								</fo:inline>
+								<!-- <xsl:apply-templates /> -->
+								<!-- <ref_id><xsl:value-of select="$ref_id"/></ref_id>
+								<here><xsl:copy-of select="$footnotes"/></here> -->
+								<xsl:apply-templates select="$footnotes/mn:fmt-fn-body[@id = $ref_id]"/>
+							</xsl:variable>
+							
+							<xsl:choose>
+								<xsl:when test="$namespace = 'jis'">
+									<xsl:choose>
+										<xsl:when test="$vertical_layout = 'true'">
+											<fo:list-block xsl:use-attribute-sets="fn-body-style" role="SKIP" provisional-distance-between-starts="25mm">
+												<xsl:call-template name="refine_fn-body-style"/>
+												<fo:list-item role="SKIP">
+													<fo:list-item-label start-indent="{$text_indent}mm" end-indent="label-end()" role="SKIP">
+														<fo:block role="SKIP">
+															<fo:inline id="{$ref_id}" xsl:use-attribute-sets="fn-body-num-style" role="Lbl">
+								
+																<xsl:call-template name="refine_fn-body-num-style"/>
+																
+																<xsl:call-template name="insertVerticalChar">
+																	<xsl:with-param name="str" select="'&#x3014;'"/>
+																</xsl:call-template>
+																
+																<xsl:value-of select="$current_fn_number_text"/>
+																
+																<xsl:call-template name="insertVerticalChar">
+																	<xsl:with-param name="str" select="'&#x3015;'"/>
+																</xsl:call-template>
+																
+															</fo:inline>
+														</fo:block>
+													</fo:list-item-label>
+													<fo:list-item-body start-indent="body-start()" xsl:use-attribute-sets="table-fn-body-style" role="SKIP">
+														<fo:block role="SKIP">
+															<!-- <xsl:apply-templates /> -->
+															<xsl:apply-templates select="$footnotes/mn:fmt-fn-body[@id = $ref_id]"/>
+														</fo:block>
+													</fo:list-item-body>
+												</fo:list-item>
+											</fo:list-block>
+										</xsl:when> <!-- $vertical_layout = 'true' -->
+										<xsl:otherwise>
+											<fo:block xsl:use-attribute-sets="fn-body-style" role="SKIP">
+												<xsl:attribute name="text-align">left</xsl:attribute> <!-- because footer is centered -->
+												<xsl:copy-of select="$fn_block"/>
+											</fo:block>
+										</xsl:otherwise>
+									</xsl:choose>
+									<!-- jis -->
+								</xsl:when>
+								<xsl:otherwise>
+									<fo:block xsl:use-attribute-sets="fn-body-style" role="SKIP">
+										<xsl:copy-of select="$fn_block"/>
+									</fo:block>
+								</xsl:otherwise>
+							</xsl:choose>
+							
+							
+						</fo:block-container>
+					</fo:footnote-body>
+				</fo:footnote>
+			</xsl:when>
+			<xsl:otherwise>
+				<xsl:copy-of select="$footnote_inline"/>
+			</xsl:otherwise>
+		</xsl:choose>
+	</xsl:template> <!-- fn in text -->
+	
+	
+	
+	<xsl:template name="get_fn_list">
+		<xsl:choose>
+			<xsl:when test="@current_fn_number"> <!-- for BSI, footnote reference number calculated already -->
+				<fn gen_id="{generate-id(.)}">
+					<xsl:copy-of select="@*"/>
+					<xsl:copy-of select="node()"/>
+				</fn>
+			</xsl:when>
+			<xsl:otherwise>
+				<!-- itetation for:
+				footnotes in bibdata/title
+				footnotes in bibliography
+				footnotes in document's body (except table's head/body/foot and figure text) 
+				-->
+				<xsl:for-each select="ancestor::mn:metanorma/mn:bibdata/mn:note[@type='title-footnote']">
+					<fn gen_id="{generate-id(.)}">
+						<xsl:copy-of select="@*"/>
+						<xsl:copy-of select="node()"/>
+					</fn>
+				</xsl:for-each>
+				<xsl:for-each select="ancestor::mn:metanorma/mn:boilerplate/* | 
+					ancestor::mn:metanorma//mn:preface/* |
+					ancestor::mn:metanorma//mn:sections/* | 
+					ancestor::mn:metanorma//mn:annex |
+					ancestor::mn:metanorma//mn:bibliography/*">
+					<xsl:sort select="@displayorder" data-type="number"/>
+					<!-- commented:
+					 .//mn:bibitem[ancestor::mn:references]/mn:note |
+					 because 'fn' there is in biblio-tag -->
+					<xsl:for-each select=".//mn:fn[not(ancestor::*[(self::mn:table or self::mn:figure)] and not(ancestor::mn:name))][generate-id(.)=generate-id(key('kfn',@reference)[1])]">
+						<!-- copy unique fn -->
+						<fn gen_id="{generate-id(.)}">
+							<xsl:copy-of select="@*"/>
+							<xsl:copy-of select="node()"/>
+						</fn>
+					</xsl:for-each>
+				</xsl:for-each>
+			</xsl:otherwise>
+		</xsl:choose>
+	</xsl:template>
+	
+
+	<!-- fn/text() -->
+	<xsl:template match="mn:fn/text()[normalize-space() != '']">
+		<fo:inline role="SKIP"><xsl:value-of select="."/></fo:inline>
+	</xsl:template>
+	
+	<!-- fn//p fmt-fn-body//p -->
+	<xsl:template match="mn:fn//mn:p | mn:fmt-fn-body//mn:p">
+		<fo:inline role="P">
+			<xsl:apply-templates />
+		</fo:inline>
+	</xsl:template>
+	
+	<xsl:template name="insertFootnoteSeparatorCommon">
+		<xsl:param name="leader_length">30%</xsl:param>
+		<fo:static-content flow-name="xsl-footnote-separator">
+			<fo:block>
+				<fo:leader leader-pattern="rule" leader-length="{$leader_length}"/>
+			</fo:block>
+		</fo:static-content>
+	</xsl:template>
+	
+	<!-- ===================== -->
+	<!-- END Footnotes processing  -->
+	<!-- ===================== -->
+	
 </xsl:stylesheet>
