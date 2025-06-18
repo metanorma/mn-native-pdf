@@ -143,4 +143,36 @@
 		</xsl:if>
 	</xsl:attribute-set> <!-- sourcecode-name-style -->
 
+	<xsl:template name="add-zero-spaces-equal">
+		<xsl:param name="text" select="."/>
+		<xsl:variable name="zero-space-after-equals">==========</xsl:variable>
+		<xsl:variable name="regex_zero-space-after-equals">(==========)</xsl:variable>
+		<xsl:variable name="zero-space-after-equal">=</xsl:variable>
+		<xsl:variable name="regex_zero-space-after-equal">(=)</xsl:variable>
+		<xsl:variable name="zero-space">&#x200B;</xsl:variable>
+		<xsl:choose>
+			<xsl:when test="contains($text, $zero-space-after-equals)">
+				<!-- <xsl:value-of select="substring-before($text, $zero-space-after-equals)"/>
+				<xsl:value-of select="$zero-space-after-equals"/>
+				<xsl:value-of select="$zero-space"/>
+				<xsl:call-template name="add-zero-spaces-equal">
+					<xsl:with-param name="text" select="substring-after($text, $zero-space-after-equals)"/>
+				</xsl:call-template> -->
+				<xsl:value-of select="java:replaceAll(java:java.lang.String.new(.),$regex_zero-space-after-equals,concat('$1',$zero_width_space))"/>
+			</xsl:when>
+			<xsl:when test="contains($text, $zero-space-after-equal)">
+				<!-- <xsl:value-of select="substring-before($text, $zero-space-after-equal)"/>
+				<xsl:value-of select="$zero-space-after-equal"/>
+				<xsl:value-of select="$zero-space"/>
+				<xsl:call-template name="add-zero-spaces-equal">
+					<xsl:with-param name="text" select="substring-after($text, $zero-space-after-equal)"/>
+				</xsl:call-template> -->
+				<xsl:value-of select="java:replaceAll(java:java.lang.String.new(.),$regex_zero-space-after-equal,concat('$1',$zero_width_space))"/>
+			</xsl:when>
+			<xsl:otherwise>
+				<xsl:value-of select="$text"/>
+			</xsl:otherwise>
+		</xsl:choose>
+	</xsl:template> <!-- add-zero-spaces-equal -->
+
 </xsl:stylesheet>

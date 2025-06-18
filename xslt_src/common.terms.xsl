@@ -200,4 +200,58 @@
 		</xsl:if>
 	</xsl:attribute-set> <!-- origin-style -->
 	
+	<!-- ====== -->
+	<!-- term      -->	
+	<!-- ====== -->
+	
+	<xsl:template match="mn:terms">
+		<!-- <xsl:message>'terms' <xsl:number/> processing...</xsl:message> -->
+		<xsl:call-template name="setNamedDestination"/>
+		<fo:block id="{@id}">
+			<xsl:apply-templates />
+		</fo:block>
+	</xsl:template>
+	
+	<xsl:template match="mn:term">
+		<xsl:call-template name="setNamedDestination"/>
+		<fo:block id="{@id}" xsl:use-attribute-sets="term-style">
+
+			<xsl:if test="$namespace = 'gb'">
+				<fo:block font-family="SimHei" font-size="11pt" keep-with-next="always" margin-top="10pt" margin-bottom="8pt" line-height="1.1">
+					<xsl:apply-templates select="gb:name" />
+				</fo:block>
+			</xsl:if>
+			<xsl:if test="$namespace = 'm3d'">
+				<fo:block keep-with-next="always" margin-top="10pt" margin-bottom="8pt" line-height="1.1">
+					<xsl:apply-templates select="m3d:name" />
+				</fo:block>
+			</xsl:if>
+			<xsl:if test="$namespace = 'ogc'">
+				<xsl:apply-templates select="mn:name" />
+			</xsl:if>
+			
+			<xsl:if test="parent::mn:term and not(preceding-sibling::mn:term)">
+				<xsl:if test="$namespace = 'iso'">
+					<xsl:attribute name="space-before">12pt</xsl:attribute>
+				</xsl:if>
+			</xsl:if>
+			<xsl:apply-templates select="node()[not(self::mn:name)]" />
+		</fo:block>
+	</xsl:template>
+	
+	
+	<xsl:template match="mn:term/mn:name">
+		<xsl:if test="normalize-space() != ''">
+			<!-- <xsl:variable name="level">
+				<xsl:call-template name="getLevelTermName"/>
+			</xsl:variable>
+			<fo:inline role="H{$level}">
+				<xsl:apply-templates />
+			</fo:inline> -->
+			<xsl:apply-templates />
+		</xsl:if>
+	</xsl:template>
+	<!-- ====== -->
+	<!-- ====== -->
+	
 </xsl:stylesheet>

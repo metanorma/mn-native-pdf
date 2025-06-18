@@ -50,4 +50,34 @@
 		</xsl:if>
 	</xsl:attribute-set>
 	
+	
+	<!-- ======================== -->
+	<!-- Appendix processing -->
+	<!-- ======================== -->
+	<xsl:template match="mn:appendix">
+		<xsl:call-template name="setNamedDestination"/>
+		<fo:block id="{@id}" xsl:use-attribute-sets="appendix-style">
+			<xsl:apply-templates select="mn:title" />
+		</fo:block>
+		<xsl:apply-templates select="node()[not(local-name()='title')]"/>
+	</xsl:template>
+
+	<xsl:template match="mn:appendix/mn:title" priority="2">
+		<xsl:variable name="level">
+			<xsl:call-template name="getLevel"/>
+		</xsl:variable>
+		<fo:inline role="H{$level}"><xsl:call-template name="setIDforNamedDestination"/><xsl:apply-templates /></fo:inline>
+	</xsl:template>
+	<!-- ======================== -->
+	<!-- END Appendix processing -->
+	<!-- ======================== -->
+	
+	<xsl:template match="mn:appendix//mn:example" priority="2">
+		<xsl:call-template name="setNamedDestination"/>
+		<fo:block id="{@id}" xsl:use-attribute-sets="appendix-example-style">			
+			<xsl:apply-templates select="mn:name" />
+		</fo:block>
+		<xsl:apply-templates select="node()[not(local-name()='name')]"/>
+	</xsl:template>
+	
 </xsl:stylesheet>

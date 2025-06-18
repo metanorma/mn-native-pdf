@@ -541,4 +541,93 @@
 		</fo:inline>
 	</xsl:template>
 	
+	<!-- Example: <span style="font-family:&quot;Noto Sans JP&quot;">styled text</span> -->
+	<xsl:template match="mn:span[@style]" priority="2">
+		<xsl:variable name="styles__">
+			<xsl:call-template name="split">
+				<xsl:with-param name="pText" select="concat(@style,';')"/>
+				<xsl:with-param name="sep" select="';'"/>
+			</xsl:call-template>
+		</xsl:variable>
+		
+		<xsl:variable name="quot">"</xsl:variable>
+		<xsl:variable name="styles_">
+			<xsl:for-each select="xalan:nodeset($styles__)/mnx:item">
+				<xsl:variable name="key" select="normalize-space(substring-before(., ':'))"/>
+				<xsl:variable name="value_" select="normalize-space(substring-after(translate(.,$quot,''), ':'))"/>
+				<xsl:variable name="value">
+					<xsl:choose>
+						<!-- if font-size is digits only -->
+						<xsl:when test="$key = 'font-size' and translate($value_, '0123456789', '') = ''"><xsl:value-of select="$value_"/>pt</xsl:when>
+						<xsl:otherwise>
+							<xsl:value-of select="$value_"/>
+						</xsl:otherwise>
+					</xsl:choose>
+				</xsl:variable>
+				<xsl:if test="$key = 'font-family' or $key = 'font-size' or $key = 'color' or $key = 'baseline-shift'">
+					<style name="{$key}"><xsl:value-of select="$value"/></style>
+				</xsl:if>
+				<xsl:if test="$key = 'text-indent'">
+					<style name="padding-left"><xsl:value-of select="$value"/></style>
+				</xsl:if>
+			</xsl:for-each>
+		</xsl:variable>
+		<xsl:variable name="styles" select="xalan:nodeset($styles_)"/>
+		<xsl:choose>
+			<xsl:when test="$styles/style">
+				<fo:inline>
+					<xsl:for-each select="$styles/style">
+						<xsl:attribute name="{@name}"><xsl:value-of select="."/></xsl:attribute>
+						<xsl:if test="$namespace = 'jis'">
+							<xsl:if test="@name = 'font-family' and . = 'MS Gothic'">
+								<xsl:if test="not($vertical_layout = 'true')">
+									<xsl:attribute name="{@name}">IPAexGothic</xsl:attribute>
+								</xsl:if>
+								<xsl:if test="$vertical_layout = 'true'">
+									<xsl:attribute name="{@name}">Noto Serif JP</xsl:attribute>
+								</xsl:if>
+							</xsl:if>
+						</xsl:if>
+					</xsl:for-each>
+					<xsl:apply-templates />
+				</fo:inline>
+			</xsl:when>
+			<xsl:otherwise>
+				<xsl:apply-templates />
+			</xsl:otherwise>
+		</xsl:choose>
+	</xsl:template> <!-- END: span[@style] -->
+	
+	<!-- Note: to enable the addition of character span markup with semantic styling for DIS Word output -->
+	<xsl:template match="mn:span">
+		<xsl:apply-templates />
+	</xsl:template>
+	
+	<!-- Don't break standard's numbers -->
+	<!-- Example : <span class="stdpublisher">ISO</span> <span class="stddocNumber">10303</span>-<span class="stddocPartNumber">1</span>:<span class="stdyear">1994</span> -->
+	<xsl:template match="mn:span[@class = 'stdpublisher' or @class = 'stddocNumber' or @class = 'stddocPartNumber' or @class = 'stdyear']" priority="2">
+		<xsl:choose>
+			<xsl:when test="ancestor::mn:table"><xsl:apply-templates /></xsl:when>
+			<xsl:when test="following-sibling::*[2][self::mn:span][@class = 'stdpublisher' or @class = 'stddocNumber' or @class = 'stddocPartNumber' or @class = 'stdyear']">
+				<fo:inline keep-with-next.within-line="always" role="SKIP"><xsl:apply-templates /></fo:inline>
+			</xsl:when>
+			<xsl:otherwise>
+				<xsl:apply-templates />
+			</xsl:otherwise>
+		</xsl:choose>
+	</xsl:template>
+	<xsl:template match="text()[not(ancestor::mn:table) and preceding-sibling::*[1][self::mn:span][@class = 'stdpublisher' or @class = 'stddocNumber' or @class = 'stddocPartNumber' or @class = 'stdyear'] and 
+	following-sibling::*[1][self::mn:span][@class = 'stdpublisher' or @class = 'stddocNumber' or @class = 'stddocPartNumber' or @class = 'stdyear']]" priority="2">
+		<fo:inline keep-with-next.within-line="always" role="SKIP"><xsl:value-of select="."/></fo:inline>
+	</xsl:template>
+	
+	
+	<xsl:template match="mn:span[contains(@style, 'text-transform:none')]//text()" priority="5">
+		<xsl:value-of select="."/>
+	</xsl:template>
+	
+	<!-- ========================= -->
+	<!-- END Rich text formatting -->
+	<!-- ========================= -->
+	
 </xsl:stylesheet>
