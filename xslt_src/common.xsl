@@ -787,62 +787,6 @@
 		<fo:block break-after="page"/>
 	</xsl:template>
 
-	
-	<!-- add zero space after dash character (for table's entries) -->
-	<xsl:template name="add-zero-spaces">
-		<xsl:param name="text" select="."/>
-		<xsl:variable name="zero-space-after-chars">&#x002D;</xsl:variable>
-		<xsl:variable name="zero-space-after-dot">.</xsl:variable>
-		<xsl:variable name="zero-space-after-colon">:</xsl:variable>
-		<xsl:variable name="zero-space-after-equal">=</xsl:variable>
-		<xsl:variable name="zero-space-after-underscore">_</xsl:variable>
-		<xsl:variable name="zero-space">&#x200B;</xsl:variable>
-		<xsl:choose>
-			<xsl:when test="contains($text, $zero-space-after-chars)">
-				<xsl:value-of select="substring-before($text, $zero-space-after-chars)"/>
-				<xsl:value-of select="$zero-space-after-chars"/>
-				<xsl:value-of select="$zero-space"/>
-				<xsl:call-template name="add-zero-spaces">
-					<xsl:with-param name="text" select="substring-after($text, $zero-space-after-chars)"/>
-				</xsl:call-template>
-			</xsl:when>
-			<xsl:when test="contains($text, $zero-space-after-dot)">
-				<xsl:value-of select="substring-before($text, $zero-space-after-dot)"/>
-				<xsl:value-of select="$zero-space-after-dot"/>
-				<xsl:value-of select="$zero-space"/>
-				<xsl:call-template name="add-zero-spaces">
-					<xsl:with-param name="text" select="substring-after($text, $zero-space-after-dot)"/>
-				</xsl:call-template>
-			</xsl:when>
-			<xsl:when test="contains($text, $zero-space-after-colon)">
-				<xsl:value-of select="substring-before($text, $zero-space-after-colon)"/>
-				<xsl:value-of select="$zero-space-after-colon"/>
-				<xsl:value-of select="$zero-space"/>
-				<xsl:call-template name="add-zero-spaces">
-					<xsl:with-param name="text" select="substring-after($text, $zero-space-after-colon)"/>
-				</xsl:call-template>
-			</xsl:when>
-			<xsl:when test="contains($text, $zero-space-after-equal)">
-				<xsl:value-of select="substring-before($text, $zero-space-after-equal)"/>
-				<xsl:value-of select="$zero-space-after-equal"/>
-				<xsl:value-of select="$zero-space"/>
-				<xsl:call-template name="add-zero-spaces">
-					<xsl:with-param name="text" select="substring-after($text, $zero-space-after-equal)"/>
-				</xsl:call-template>
-			</xsl:when>
-			<xsl:when test="contains($text, $zero-space-after-underscore)">
-				<xsl:value-of select="substring-before($text, $zero-space-after-underscore)"/>
-				<xsl:value-of select="$zero-space-after-underscore"/>
-				<xsl:value-of select="$zero-space"/>
-				<xsl:call-template name="add-zero-spaces">
-					<xsl:with-param name="text" select="substring-after($text, $zero-space-after-underscore)"/>
-				</xsl:call-template>
-			</xsl:when>
-			<xsl:otherwise>
-				<xsl:value-of select="$text"/>
-			</xsl:otherwise>
-		</xsl:choose>
-	</xsl:template>
 
 	<xsl:template name="add-zero-spaces-equal">
 		<xsl:param name="text" select="."/>
