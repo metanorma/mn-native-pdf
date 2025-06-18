@@ -1123,37 +1123,6 @@
 		</xsl:choose>
 	</xsl:template>
 	
-	<xsl:template name="insertTitleAsListItem">
-		<xsl:param name="provisional-distance-between-starts" select="'9.5mm'"/>
-		<xsl:variable name="section">						
-			<xsl:for-each select="..">
-				<xsl:call-template name="getSection"/>
-			</xsl:for-each>
-		</xsl:variable>							
-		<fo:list-block provisional-distance-between-starts="{$provisional-distance-between-starts}">						
-			<fo:list-item>
-				<fo:list-item-label end-indent="label-end()">
-					<fo:block>
-						<xsl:value-of select="$section"/>
-					</fo:block>
-				</fo:list-item-label>
-				<fo:list-item-body start-indent="body-start()">
-					<fo:block>						
-						<xsl:choose>
-							<xsl:when test="mn:tab">
-								<xsl:apply-templates select="mn:tab[1]/following-sibling::node()"/>
-							</xsl:when>
-							<xsl:otherwise>
-								<xsl:apply-templates />
-								<xsl:apply-templates select="following-sibling::*[1][self::mn:variant-title][@type = 'sub']" mode="subtitle"/>
-							</xsl:otherwise>
-						</xsl:choose>
-					</fo:block>
-				</fo:list-item-body>
-			</fo:list-item>
-		</fo:list-block>
-	</xsl:template>
-	
 	<xsl:template name="extractSection">
 		<xsl:value-of select="mn:tab[1]/preceding-sibling::node()"/>
 	</xsl:template>
