@@ -1009,8 +1009,6 @@
 			</fo:root>
 		<!-- </xsl:variable> -->
 		
-		<!-- <xsl:apply-templates select="xalan:nodeset($xslfo)" mode="landscape_portrait"/> -->
-		
 	</xsl:template> 
 
 	<xsl:template match="mn:pagebreak" priority="2">
