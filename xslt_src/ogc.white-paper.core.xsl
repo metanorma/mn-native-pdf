@@ -457,7 +457,7 @@
 
 	<xsl:template match="*[local-name()='td']//text() | *[local-name()='th']//text()" priority="2">
 		<xsl:variable name="content">
-			<xsl:call-template name="add-zero-spaces"/>
+			<xsl:call-template name="add-zero-spaces-java"/>
 		</xsl:variable>
 		<xsl:value-of select="translate($content, $thin_space, ' ')"/>
 	</xsl:template>
