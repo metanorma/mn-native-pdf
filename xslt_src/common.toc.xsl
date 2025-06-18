@@ -706,4 +706,110 @@
 	<xsl:template match="mn:origin" mode="contents_item"/>
 	<xsl:template match="mn:erefstack" mode="contents_item"/>
 
+	<!-- fn -->
+	<xsl:template match="mn:fn" mode="contents"/>
+	<xsl:template match="mn:fn" mode="bookmarks"/>
+	
+	<xsl:template match="mn:fn" mode="contents_item"/>
+
+	<xsl:template match="mn:xref | mn:eref" mode="contents">
+		<xsl:value-of select="."/>
+	</xsl:template>
+
+	
+	<xsl:template match="mn:review" mode="contents_item"/>
+
+	<xsl:template match="mn:tab" mode="contents_item">
+		<xsl:text> </xsl:text>
+	</xsl:template>
+
+	<xsl:template match="mn:strong" mode="contents_item">
+		<xsl:param name="element"/>
+		<xsl:copy>
+			<xsl:apply-templates mode="contents_item">
+				<xsl:with-param name="element" select="$element"/>
+			</xsl:apply-templates>
+		</xsl:copy>		
+	</xsl:template>
+	
+	<xsl:template match="mn:em" mode="contents_item">
+		<xsl:copy>
+			<xsl:apply-templates mode="contents_item"/>
+		</xsl:copy>		
+	</xsl:template>
+	
+	<xsl:template match="mn:sub" mode="contents_item">
+		<xsl:copy>
+			<xsl:apply-templates mode="contents_item"/>
+		</xsl:copy>		
+	</xsl:template>
+	
+	<xsl:template match="mn:sup" mode="contents_item">
+		<xsl:copy>
+			<xsl:apply-templates mode="contents_item"/>
+		</xsl:copy>		
+	</xsl:template>
+	
+	<xsl:template match="mn:stem" mode="contents_item"/>
+	<xsl:template match="mn:fmt-stem" mode="contents_item">
+		<xsl:copy-of select="." />
+	</xsl:template>
+
+	<xsl:template match="mn:br" mode="contents_item">
+		<xsl:text> </xsl:text>
+	</xsl:template>
+
+	<xsl:template match="mn:name" mode="contents_item">
+		<xsl:param name="mode">bookmarks</xsl:param>
+		<xsl:if test="not(following-sibling::*[1][self::mn:fmt-name])">
+			<xsl:apply-templates mode="contents_item">
+				<xsl:with-param name="mode" select="$mode"/>
+			</xsl:apply-templates>
+		</xsl:if>
+	</xsl:template>
+	
+	<xsl:template match="mn:fmt-name" mode="contents_item">
+		<xsl:param name="mode">bookmarks</xsl:param>
+		<xsl:apply-templates mode="contents_item">
+			<xsl:with-param name="mode" select="$mode"/>
+		</xsl:apply-templates>
+	</xsl:template>
+	
+	<xsl:template match="mn:add" mode="contents_item">
+		<xsl:param name="mode">bookmarks</xsl:param>
+		<xsl:choose>
+			<xsl:when test="starts-with(text(), $ace_tag)">
+				<xsl:if test="$mode = 'contents'">
+					<xsl:copy>
+						<xsl:apply-templates mode="contents_item"/>
+					</xsl:copy>		
+				</xsl:if>
+			</xsl:when>
+			<xsl:otherwise><xsl:apply-templates mode="contents_item"/></xsl:otherwise>
+		</xsl:choose>
+	</xsl:template>
+
+	<xsl:template match="text()" mode="contents_item">
+		<xsl:variable name="text">
+			<!-- to split by '_' and other chars -->
+			<mnx:text><xsl:call-template name="add-zero-spaces-java"/></mnx:text>
+		</xsl:variable>
+		<xsl:for-each select="xalan:nodeset($text)/mnx:text/text()">
+			<xsl:call-template name="keep_together_standard_number"/>
+		</xsl:for-each>
+	</xsl:template>
+
+	<xsl:template match="mn:add/text()" mode="contents_item" priority="2"> <!-- mn:add[starts-with(., $ace_tag)]/text() -->
+		<xsl:if test="starts-with(normalize-space(..), $ace_tag)"><xsl:value-of select="."/></xsl:if>
+	</xsl:template>
+
+	<!-- Note: to enable the addition of character span markup with semantic styling for DIS Word output -->
+	<xsl:template match="mn:span" mode="contents_item">
+		<xsl:param name="element"/>
+		<xsl:apply-templates mode="contents_item">
+			<xsl:with-param name="element" select="$element"/>
+		</xsl:apply-templates>
+	</xsl:template>
+
+
 </xsl:stylesheet>
