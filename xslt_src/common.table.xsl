@@ -3847,4 +3847,198 @@
 		</xsl:choose>
 	</xsl:template> <!-- fn -->
 	
+	<!-- split string 'text' by 'separator' -->
+	<xsl:template name="tokenize">
+		<xsl:param name="text"/>
+		<xsl:param name="separator" select="' '"/>
+		<xsl:choose>
+		
+			<xsl:when test="$isGenerateTableIF = 'true' and not(contains($text, $separator))">
+				<word><xsl:value-of select="normalize-space($text)"/></word>
+			</xsl:when>
+			<xsl:when test="not(contains($text, $separator))">
+				<word>
+					<xsl:variable name="len_str_tmp" select="string-length(normalize-space($text))"/>
+					<xsl:choose>
+						<xsl:when test="normalize-space(translate($text, 'X', '')) = ''"> <!-- special case for keep-together.within-line -->
+							<xsl:value-of select="$len_str_tmp"/>
+						</xsl:when>
+						<xsl:otherwise>
+							<xsl:variable name="str_no_en_chars" select="normalize-space(translate($text, $en_chars, ''))"/>
+							<xsl:variable name="len_str_no_en_chars" select="string-length($str_no_en_chars)"/>
+							<xsl:variable name="len_str">
+								<xsl:choose>
+									<xsl:when test="normalize-space(translate($text, $upper, '')) = ''"> <!-- english word in CAPITAL letters -->
+										<xsl:value-of select="$len_str_tmp * 1.5"/>
+									</xsl:when>
+									<xsl:otherwise>
+										<xsl:value-of select="$len_str_tmp"/>
+									</xsl:otherwise>
+								</xsl:choose>
+							</xsl:variable> 
+							
+							<!-- <xsl:if test="$len_str_no_en_chars div $len_str &gt; 0.8">
+								<xsl:message>
+									div=<xsl:value-of select="$len_str_no_en_chars div $len_str"/>
+									len_str=<xsl:value-of select="$len_str"/>
+									len_str_no_en_chars=<xsl:value-of select="$len_str_no_en_chars"/>
+								</xsl:message>
+							</xsl:if> -->
+							<!-- <len_str_no_en_chars><xsl:value-of select="$len_str_no_en_chars"/></len_str_no_en_chars>
+							<len_str><xsl:value-of select="$len_str"/></len_str> -->
+							<xsl:choose>
+								<xsl:when test="$len_str_no_en_chars div $len_str &gt; 0.8"> <!-- means non-english string -->
+									<xsl:value-of select="$len_str - $len_str_no_en_chars"/>
+								</xsl:when>
+								<xsl:otherwise>
+									<xsl:value-of select="$len_str"/>
+								</xsl:otherwise>
+							</xsl:choose>
+						</xsl:otherwise>
+					</xsl:choose>
+				</word>
+			</xsl:when>
+			<xsl:otherwise>
+				<word>
+					<xsl:variable name="word" select="normalize-space(substring-before($text, $separator))"/>
+					<xsl:choose>
+						<xsl:when test="$isGenerateTableIF = 'true'">
+							<xsl:value-of select="$word"/>
+						</xsl:when>
+						<xsl:otherwise>
+							<xsl:value-of select="string-length($word)"/>
+						</xsl:otherwise>
+					</xsl:choose>
+				</word>
+				<xsl:call-template name="tokenize">
+					<xsl:with-param name="text" select="substring-after($text, $separator)"/>
+				</xsl:call-template>
+			</xsl:otherwise>
+		</xsl:choose>
+	</xsl:template>
+	
+	<!-- split string 'text' by 'separator', enclosing in formatting tags -->
+	<xsl:template name="tokenize_with_tags">
+		<xsl:param name="tags"/>
+		<xsl:param name="text"/>
+		<xsl:param name="separator" select="' '"/>
+		<xsl:choose>
+		
+			<xsl:when test="not(contains($text, $separator))">
+				<word>
+					<xsl:if test="ancestor::mn:p[@from_dl = 'true']">
+						<xsl:text>&#xa;&#xa0;</xsl:text> <!-- to add distance between dt and dd -->
+					</xsl:if>
+					<xsl:call-template name="enclose_text_in_tags">
+						<xsl:with-param name="text" select="normalize-space($text)"/>
+						<xsl:with-param name="tags" select="$tags"/>
+					</xsl:call-template>
+				</word>
+			</xsl:when>
+			<xsl:otherwise>
+				<word>
+					<xsl:if test="ancestor::mn:p[@from_dl = 'true']">
+						<xsl:text>&#xa;&#xa0;</xsl:text> <!-- to add distance between dt and dd -->
+					</xsl:if>
+					<xsl:call-template name="enclose_text_in_tags">
+						<xsl:with-param name="text" select="normalize-space(substring-before($text, $separator))"/>
+						<xsl:with-param name="tags" select="$tags"/>
+					</xsl:call-template>
+				</word>
+				<xsl:call-template name="tokenize_with_tags">
+					<xsl:with-param name="text" select="substring-after($text, $separator)"/>
+					<xsl:with-param name="tags" select="$tags"/>
+				</xsl:call-template>
+			</xsl:otherwise>
+		</xsl:choose>
+	</xsl:template>
+	
+
+	<xsl:template name="enclose_text_in_tags">
+		<xsl:param name="text"/>
+		<xsl:param name="tags"/>
+		<xsl:param name="num">1</xsl:param> <!-- default (start) value -->
+		
+		<xsl:variable name="tag_name" select="normalize-space(xalan:nodeset($tags)//tag[$num])"/>
+		
+		<xsl:choose>
+			<xsl:when test="$tag_name = ''"><xsl:value-of select="$text"/></xsl:when>
+			<xsl:otherwise>
+				<xsl:element name="{$tag_name}" namespace="{$namespace_full}">
+					<xsl:call-template name="enclose_text_in_tags">
+						<xsl:with-param name="text" select="$text"/>
+						<xsl:with-param name="tags" select="$tags"/>
+						<xsl:with-param name="num" select="$num + 1"/>
+					</xsl:call-template>
+				</xsl:element>
+			</xsl:otherwise>
+		</xsl:choose>
+	</xsl:template>
+
+
+	<!-- get max value in array -->
+	<xsl:template name="max_length">
+		<xsl:param name="words"/>
+		<xsl:for-each select="$words//word">
+				<xsl:sort select="." data-type="number" order="descending"/>
+				<xsl:if test="position()=1">
+						<xsl:value-of select="."/>
+				</xsl:if>
+		</xsl:for-each>
+	</xsl:template>
+	
+	<xsl:template name="add-zero-spaces-java">
+		<xsl:param name="text" select="."/>
+		
+		<!-- add zero-width space (#x200B) after dot with next non-digit -->
+		<xsl:variable name="text1" select="java:replaceAll(java:java.lang.String.new($text),'(\.)([^\d\s])','$1&#x200B;$2')"/>
+		<!-- add zero-width space (#x200B) after characters: dash, equal, underscore, em dash, thin space, arrow right, ;   -->
+		<xsl:variable name="text2" select="java:replaceAll(java:java.lang.String.new($text1),'(-|=|_|—| |→|;)','$1&#x200B;')"/>
+		<!-- add zero-width space (#x200B) after characters: colon, if there aren't digits after -->
+		<xsl:variable name="text3" select="java:replaceAll(java:java.lang.String.new($text2),'(:)(\D)','$1&#x200B;$2')"/>
+		<!-- add zero-width space (#x200B) after characters: 'great than' -->
+		<xsl:variable name="text4" select="java:replaceAll(java:java.lang.String.new($text3), '(\u003e)(?!\u003e)', '$1&#x200B;')"/><!-- negative lookahead: 'great than' not followed by 'great than' -->
+		<!-- add zero-width space (#x200B) before characters: 'less than' -->
+		<xsl:variable name="text5" select="java:replaceAll(java:java.lang.String.new($text4), '(?&lt;!\u003c)(\u003c)', '&#x200B;$1')"/> <!-- (?<!\u003c)(\u003c) --> <!-- negative lookbehind: 'less than' not preceeded by 'less than' -->
+		<!-- add zero-width space (#x200B) before character: { -->
+		<xsl:variable name="text6" select="java:replaceAll(java:java.lang.String.new($text5), '(?&lt;!\W)(\{)', '&#x200B;$1')"/> <!-- negative lookbehind: '{' not preceeded by 'punctuation char' -->
+		<!-- add zero-width space (#x200B) after character: , -->
+		<xsl:variable name="text7" select="java:replaceAll(java:java.lang.String.new($text6), '(\,)(?!\d)', '$1&#x200B;')"/> <!-- negative lookahead: ',' not followed by digit -->
+		<!-- add zero-width space (#x200B) after character: '/' -->
+		<xsl:variable name="text8" select="java:replaceAll(java:java.lang.String.new($text7), '(\u002f)(?!\u002f)', '$1&#x200B;')"/><!-- negative lookahead: '/' not followed by '/' -->
+		
+		
+		<xsl:variable name="text9">
+			<xsl:choose>
+				<xsl:when test="$isGenerateTableIF = 'true'">
+					<xsl:value-of select="java:replaceAll(java:java.lang.String.new($text8), '([\u3000-\u9FFF])', '$1&#x200B;')"/> <!-- 3000 - CJK Symbols and Punctuation ... 9FFF CJK Unified Ideographs-->
+				</xsl:when>
+				<xsl:otherwise><xsl:value-of select="$text8"/></xsl:otherwise>
+			</xsl:choose>
+		</xsl:variable>
+		
+		<!-- replace sequence #x200B to one &#x200B -->
+		<xsl:variable name="text10" select="java:replaceAll(java:java.lang.String.new($text9), '\u200b{2,}', '&#x200B;')"/>
+		
+		<!-- replace sequence #x200B and space TO space -->
+		<xsl:variable name="text11" select="java:replaceAll(java:java.lang.String.new($text10), '\u200b ', ' ')"/>
+		
+		<xsl:value-of select="$text11"/>
+	</xsl:template> <!-- add-zero-spaces-java -->
+	
+	<xsl:template name="add-zero-spaces-link-java">
+		<xsl:param name="text" select="."/>
+		
+		<xsl:value-of select="java:replaceAll(java:java.lang.String.new($text), $regex_url_start, '$1')"/> <!-- http://. https:// or www. -->
+		<xsl:variable name="url_continue" select="java:replaceAll(java:java.lang.String.new($text), $regex_url_start, '$2')"/>
+		<!-- add zero-width space (#x200B) after characters: dash, dot, colon, equal, underscore, em dash, thin space, comma, slash, @  -->
+		<xsl:variable name="url" select="java:replaceAll(java:java.lang.String.new($url_continue),'(-|\.|:|=|_|—| |,|/|@)','$1&#x200B;')"/>
+		
+		<!-- replace sequence #x200B to one &#x200B -->
+		<xsl:variable name="url2" select="java:replaceAll(java:java.lang.String.new($url), '\u200b{2,}', '&#x200B;')"/>
+		
+		<!-- remove zero-width space at the end -->
+		<xsl:value-of select="java:replaceAll(java:java.lang.String.new($url2), '&#x200B;$', '')"/>
+	</xsl:template> <!-- add-zero-spaces-link-java -->
+	
 </xsl:stylesheet>
