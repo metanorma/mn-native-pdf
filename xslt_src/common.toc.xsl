@@ -812,4 +812,188 @@
 	</xsl:template>
 
 
+	<!-- =================== -->
+	<!-- Table of Contents (ToC) processing -->
+	<!-- =================== -->
+	
+	<xsl:variable name="toc_level">
+		<!-- https://www.metanorma.org/author/ref/document-attributes/ -->
+		<xsl:variable name="pdftoclevels" select="normalize-space(//mn:metanorma-extension/mn:presentation-metadata[mn:name/text() = 'PDF TOC Heading Levels']/mn:value)"/> <!-- :toclevels-pdf  Number of table of contents levels to render in PDF output; used to override :toclevels:-->
+		<xsl:variable name="toclevels" select="normalize-space(//mn:metanorma-extension/mn:presentation-metadata[mn:name/text() = 'TOC Heading Levels']/mn:value)"/> <!-- Number of table of contents levels to render -->
+		<xsl:choose>
+			<xsl:when test="$pdftoclevels != ''"><xsl:value-of select="number($pdftoclevels)"/></xsl:when> <!-- if there is value in xml -->
+			<xsl:when test="$toclevels != ''"><xsl:value-of select="number($toclevels)"/></xsl:when>  <!-- if there is value in xml -->
+			<xsl:otherwise><!-- default value -->
+				<xsl:choose>
+					<xsl:when test="$namespace = 'bipm' or $namespace = 'iec' or $namespace = 'iso' or $namespace = 'jcgm' or $namespace = 'm3d' or $namespace = 'nist-cswp' or 
+					$namespace = 'ogc-white-paper' or $namespace = 'unece' or $namespace = 'unece-rec'">3</xsl:when>
+					<xsl:when test="$namespace = 'ieee'">
+						<xsl:choose>
+							<xsl:when test="$current_template = 'whitepaper' or $current_template = 'icap-whitepaper' or $current_template = 'industry-connection-report'">3</xsl:when>
+							<xsl:otherwise>2</xsl:otherwise>
+						</xsl:choose>
+					</xsl:when>
+					<xsl:otherwise>2</xsl:otherwise>
+				</xsl:choose>
+			</xsl:otherwise>
+		</xsl:choose>
+	</xsl:variable>
+	
+	<xsl:template match="mn:toc">
+		<xsl:param name="colwidths"/>
+		<xsl:variable name="colwidths_">
+			<xsl:choose>
+				<xsl:when test="not($colwidths)">
+					<xsl:variable name="toc_table_simple">
+						<mn:tbody>
+							<xsl:apply-templates mode="toc_table_width" />
+						</mn:tbody>
+					</xsl:variable>
+					<!-- <debug_toc_table_simple><xsl:copy-of select="$toc_table_simple"/></debug_toc_table_simple> -->
+					<xsl:variable name="cols-count" select="count(xalan:nodeset($toc_table_simple)/*/mn:tr[1]/mn:td)"/>
+					<xsl:call-template name="calculate-column-widths-proportional">
+						<xsl:with-param name="cols-count" select="$cols-count"/>
+						<xsl:with-param name="table" select="$toc_table_simple"/>
+					</xsl:call-template>
+				</xsl:when>
+				<xsl:otherwise>
+					<xsl:copy-of select="$colwidths"/>
+				</xsl:otherwise>
+			</xsl:choose>
+		</xsl:variable>
+		<!-- <debug_colwidth><xsl:copy-of select="$colwidths_"/></debug_colwidth> -->
+		<fo:block role="TOCI" space-after="16pt">
+			<fo:table width="100%" table-layout="fixed">
+				<xsl:for-each select="xalan:nodeset($colwidths_)/column">
+					<fo:table-column column-width="proportional-column-width({.})"/>
+				</xsl:for-each>
+				<fo:table-body>
+					<xsl:apply-templates />
+				</fo:table-body>
+			</fo:table>
+		</fo:block>
+	</xsl:template>
+
+	<xsl:template match="mn:toc//mn:li" priority="2">
+		<fo:table-row min-height="5mm">
+			<xsl:apply-templates />
+		</fo:table-row>
+	</xsl:template>
+	
+	<xsl:template match="mn:toc//mn:li/mn:p">
+		<xsl:apply-templates />
+	</xsl:template>
+
+	<xsl:template match="mn:toc//mn:xref" priority="3">
+		<!-- <xref target="cgpm9th1948r6">1.6.3<tab/>&#8220;9th CGPM, 1948:<tab/>decision to establish the SI&#8221;</xref> -->
+		<!-- New format: one tab <xref target="cgpm9th1948r6">&#8220;9th CGPM, 1948:<tab/>decision to establish the SI&#8221;</xref> -->
+		<!-- <test><xsl:copy-of select="."/></test> -->
+		
+		<xsl:variable name="target" select="@target"/>
+		
+		<xsl:for-each select="mn:tab">
+		
+			<xsl:if test="position() = 1">
+				<!-- first column (data before first `tab`) -->
+				<fo:table-cell>
+					<fo:block line-height-shift-adjustment="disregard-shifts" role="SKIP">
+						<xsl:call-template name="insert_basic_link">
+							<xsl:with-param name="element">
+								<fo:basic-link internal-destination="{$target}" fox:alt-text="{.}">
+									<xsl:for-each select="preceding-sibling::node()">
+										<xsl:choose>
+											<xsl:when test="self::text()"><xsl:value-of select="."/></xsl:when>
+											<xsl:otherwise><xsl:apply-templates select="."/></xsl:otherwise>
+										</xsl:choose>
+									</xsl:for-each>
+								</fo:basic-link>
+							</xsl:with-param>
+						</xsl:call-template>
+					</fo:block>
+				</fo:table-cell>
+			</xsl:if>
+		
+			<xsl:variable name="current_id" select="generate-id()"/>
+			<fo:table-cell>
+				<fo:block line-height-shift-adjustment="disregard-shifts" role="SKIP">
+					<xsl:call-template name="insert_basic_link">
+						<xsl:with-param name="element">
+							<fo:basic-link internal-destination="{$target}" fox:alt-text="{.}">
+								<xsl:for-each select="following-sibling::node()[not(self::mn:tab) and preceding-sibling::mn:tab[1][generate-id() = $current_id]]">
+									<xsl:choose>
+										<xsl:when test="self::text()"><xsl:value-of select="."/></xsl:when>
+										<xsl:otherwise><xsl:apply-templates select="."/></xsl:otherwise>
+									</xsl:choose>
+								</xsl:for-each>
+							</fo:basic-link>
+						</xsl:with-param>
+					</xsl:call-template>
+				</fo:block>
+			</fo:table-cell>
+		</xsl:for-each>
+		<!-- last column - for page numbers -->
+		<fo:table-cell text-align="right" font-size="10pt" font-weight="bold" font-family="Arial">
+			<fo:block role="SKIP">
+				<xsl:call-template name="insert_basic_link">
+					<xsl:with-param name="element">
+						<fo:basic-link internal-destination="{$target}" fox:alt-text="{.}">
+							<fo:page-number-citation ref-id="{$target}"/>
+						</fo:basic-link>
+					</xsl:with-param>
+				</xsl:call-template>
+			</fo:block>
+		</fo:table-cell>
+	</xsl:template>
+	
+	<!-- ================================== -->
+	<!-- calculate ToC table columns widths -->
+	<!-- ================================== -->
+	<xsl:template match="*" mode="toc_table_width">
+		<xsl:apply-templates mode="toc_table_width" />
+	</xsl:template>
+
+	<xsl:template match="mn:clause[@type = 'toc']/mn:title" mode="toc_table_width"/>
+	<xsl:template match="mn:clause[not(@type = 'toc')]/mn:title" mode="toc_table_width" />
+	
+	<xsl:template match="mn:li" mode="toc_table_width">
+		<mn:tr>
+			<xsl:apply-templates mode="toc_table_width"/>
+		</mn:tr>
+	</xsl:template>
+	
+	<xsl:template match="mn:xref" mode="toc_table_width">
+		<!-- <xref target="cgpm9th1948r6">1.6.3<tab/>&#8220;9th CGPM, 1948:<tab/>decision to establish the SI&#8221;</xref> -->
+		<!-- New format - one tab <xref target="cgpm9th1948r6">&#8220;9th CGPM, 1948:<tab/>decision to establish the SI&#8221;</xref> -->
+		<xsl:for-each select="mn:tab">
+			<xsl:if test="position() = 1">
+				<mn:td>
+					<xsl:for-each select="preceding-sibling::node()">
+						<xsl:choose>
+							<xsl:when test="self::text()"><xsl:value-of select="."/></xsl:when>
+							<xsl:otherwise><xsl:copy-of select="."/></xsl:otherwise>
+						</xsl:choose>
+					</xsl:for-each>
+				</mn:td>
+			</xsl:if>
+			<xsl:variable name="current_id" select="generate-id()"/>
+			<mn:td>
+				<xsl:for-each select="following-sibling::node()[not(self::mn:tab) and preceding-sibling::mn:tab[1][generate-id() = $current_id]]">
+					<xsl:choose>
+						<xsl:when test="self::text()"><xsl:value-of select="."/></xsl:when>
+						<xsl:otherwise><xsl:copy-of select="."/></xsl:otherwise>
+					</xsl:choose>
+				</xsl:for-each>
+			</mn:td>
+		</xsl:for-each>
+		<mn:td>333</mn:td> <!-- page number, just for fill -->
+	</xsl:template>
+	
+	<!-- ================================== -->
+	<!-- END: calculate ToC table columns widths -->
+	<!-- ================================== -->
+	
+	<!-- =================== -->
+	<!-- End Table of Contents (ToC) processing -->
+	<!-- =================== -->
+
 </xsl:stylesheet>

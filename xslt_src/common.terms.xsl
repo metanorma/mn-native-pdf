@@ -524,4 +524,11 @@
 	<!-- END definition -->
 	<!-- ========== -->
 	
+	<xsl:template match="mn:definitions">
+		<xsl:call-template name="setNamedDestination"/>
+		<fo:block id="{@id}">
+			<xsl:apply-templates />
+		</fo:block>
+	</xsl:template>
+	
 </xsl:stylesheet>
