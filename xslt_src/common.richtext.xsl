@@ -626,6 +626,31 @@
 		<xsl:value-of select="."/>
 	</xsl:template>
 	
+	<xsl:template match="mn:pre" name="pre">
+		<fo:block xsl:use-attribute-sets="pre-style">
+			<xsl:copy-of select="@id"/>
+			<xsl:choose>
+			
+				<xsl:when test="ancestor::mn:sourcecode[@linenums = 'true'] and ancestor::*[local-name() = 'td'][1][not(preceding-sibling::*)]"> <!-- pre in the first td in the table with @linenums = 'true' -->
+					<xsl:if test="ancestor::mn:tr[1]/following-sibling::mn:tr"> <!-- is current tr isn't last -->
+						<xsl:attribute name="margin-top">0pt</xsl:attribute>
+						<xsl:attribute name="margin-bottom">0pt</xsl:attribute>
+					</xsl:if>
+					<fo:instream-foreign-object fox:alt-text="{.}" content-width="95%">
+						<math xmlns="http://www.w3.org/1998/Math/MathML">
+							<mtext><xsl:value-of select="."/></mtext>
+						</math>
+					</fo:instream-foreign-object>
+				</xsl:when>
+				
+				<xsl:otherwise>
+					<xsl:apply-templates />
+				</xsl:otherwise>
+				
+			</xsl:choose>		
+		</fo:block>
+	</xsl:template> <!-- pre -->
+	
 	<!-- ========================= -->
 	<!-- END Rich text formatting -->
 	<!-- ========================= -->
