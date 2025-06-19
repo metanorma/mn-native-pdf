@@ -644,4 +644,38 @@
 	<!-- END sourcecode  -->
 	<!-- =============== -->
 
+	<xsl:template match="mn:callout">
+		<xsl:choose>
+			<xsl:when test="normalize-space(@target) = ''">&lt;<xsl:apply-templates />&gt;</xsl:when>
+			<xsl:otherwise><fo:basic-link internal-destination="{@target}" fox:alt-text="{normalize-space()}">&lt;<xsl:apply-templates />&gt;</fo:basic-link></xsl:otherwise>
+		</xsl:choose>
+	</xsl:template>
+	
+	<xsl:template match="mn:annotation">
+		<xsl:variable name="annotation-id" select="@id"/>
+		<xsl:variable name="callout" select="//*[@target = $annotation-id]/text()"/>		
+		<fo:block id="{$annotation-id}" white-space="nowrap">			
+			<xsl:if test="$namespace = 'ogc'">
+				<xsl:if test="not(preceding-sibling::mn:annotation)">
+					<xsl:attribute name="space-before">6pt</xsl:attribute>
+				</xsl:if>
+			</xsl:if>
+			<fo:inline>				
+				<xsl:apply-templates>
+					<xsl:with-param name="callout" select="concat('&lt;', $callout, '&gt; ')"/>
+				</xsl:apply-templates>
+			</fo:inline>
+		</fo:block>		
+	</xsl:template>	
+
+	<xsl:template match="mn:annotation/mn:p">
+		<xsl:param name="callout"/>
+		<fo:inline id="{@id}">
+			<xsl:call-template name="setNamedDestination"/>
+			<!-- for first p in annotation, put <x> -->
+			<xsl:if test="not(preceding-sibling::mn:p)"><xsl:value-of select="$callout"/></xsl:if>
+			<xsl:apply-templates />
+		</fo:inline>		
+	</xsl:template>
+
 </xsl:stylesheet>
