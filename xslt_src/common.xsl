@@ -78,6 +78,11 @@
 	
 	
 	<xsl:param name="table_if_debug">false</xsl:param> <!-- set 'true' to put debug width data before table or dl -->
+	
+	<!-- for table auto-layout algorithm, see <xsl:template match="*[local-name()='table']" priority="2"> -->
+	<xsl:param name="table_only_with_id"/> <!-- Example: 'table1' -->
+	<xsl:param name="table_only_with_ids"/> <!-- Example: 'table1 table2 table3 ' -->
+
 
 	<!-- don't remove and rename this variable, it's using in mn2pdf tool -->
 	<xsl:variable name="isApplyAutolayoutAlgorithm_">
@@ -114,7 +119,7 @@
 	You can put such conditions by using xslt construction `xsl:if test="..."` or <xsl:choose><xsl:when test=""></xsl:when><xsl:otherwiste></xsl:otherwiste></xsl:choose>,
 	BUT DON'T put any another conditions together with $namespace = '...' (such conditions will be ignored). For another conditions, please use nested xsl:if or xsl:choose -->
 	
-	<xsl:include href="./common.page.xsl"/>
+
 	
 	<!-- Note 2: almost all localized string determined in the element //localized-strings in metanorma xml, but there are a few cases when:
 	 - string didn't determined yet
@@ -188,6 +193,8 @@
 	</xsl:variable>
 	<xsl:variable name="titles" select="xalan:nodeset($titles_)"/>
 	
+	<xsl:variable name="ace_tag">ace-tag_</xsl:variable>
+	
 	<xsl:variable name="title-list-tables">
 		<xsl:variable name="toc_table_title" select="//mn:metanorma/mn:metanorma-extension/mn:toc[@type='table']/mn:title"/>
 		<xsl:value-of select="$toc_table_title"/>
@@ -223,18 +230,6 @@
 		<xsl:copy-of select="//mn:metanorma/mn:localized-strings" />
 	</xsl:variable>
 	
-	<!-- Characters -->
-	<xsl:variable name="linebreak">&#x2028;</xsl:variable>
-	<xsl:variable name="tab_zh">&#x3000;</xsl:variable>
-	<xsl:variable name="non_breaking_hyphen">&#x2011;</xsl:variable>
-	<xsl:variable name="thin_space">&#x2009;</xsl:variable>	
-	<xsl:variable name="zero_width_space">&#x200B;</xsl:variable>
-	<xsl:variable name="hair_space">&#x200A;</xsl:variable>
-	<xsl:variable name="en_dash">&#x2013;</xsl:variable>
-	<xsl:variable name="em_dash">&#x2014;</xsl:variable>
-	<xsl:variable name="nonbreak_space_em_dash_space">&#xa0;— </xsl:variable>
-	<xsl:variable name="cr">&#x0d;</xsl:variable>
-	<xsl:variable name="lf">&#x0a;</xsl:variable>
 	
 	<xsl:template name="getTitle">
 		<xsl:param name="name"/>
@@ -261,16 +256,7 @@
 		</xsl:choose>
 	</xsl:template>
 	
-		
-	<xsl:variable name="lower">abcdefghijklmnopqrstuvwxyz</xsl:variable> 
-	<xsl:variable name="upper">ABCDEFGHIJKLMNOPQRSTUVWXYZ</xsl:variable>
-
-	<xsl:variable name="en_chars" select="concat($lower,$upper,',.`1234567890-=~!@#$%^*()_+[]{}\|?/')"/>
-	
-	
-	<!-- ====================================== -->
-	<!-- STYLES -->
-	<!-- ====================================== -->
+	<xsl:include href="./common.characters.xsl"/>
 	
 	<xsl:include href="./common.fonts.xsl"/>
 
@@ -321,18 +307,19 @@
 	
 	<xsl:include href="./common.form.xsl"/>
 
-
-	<!-- ====================================== -->
-	<!-- END STYLES -->
-	<!-- ====================================== -->
-	
-	<xsl:variable name="border-block-added">2.5pt solid rgb(0, 176, 80)</xsl:variable>
-	<xsl:variable name="border-block-deleted">2.5pt solid rgb(255, 0, 0)</xsl:variable>
-	
-	<xsl:variable name="ace_tag">ace-tag_</xsl:variable>
-	
 	<xsl:include href="./common.toc.xsl"/>
 	
+	<xsl:include href="./common.tab.xsl"/>
+	
+	<xsl:include href="./common.review.xsl"/>
+	
+	<xsl:include href="./common.errata.xsl"/>
+
+	<xsl:include href="./common.updatexml.xsl"/>
+	
+	<xsl:include href="./common.ruby.xsl"/>
+	
+	<xsl:include href="./common.page.xsl"/>
 	
 	<xsl:template name="processPrefaceSectionsDefault">
 		<xsl:for-each select="/*/mn:preface/*[not(self::mn:note or self::mn:admonition)]">
@@ -371,277 +358,6 @@
 		</xsl:for-each>
 	</xsl:template><!-- END: processMainSectionsDefault -->
 
-		
-	<!-- Example:
-	<metanorma>
-		<preface>
-			<page_sequence>
-				<clause...
-			</page_sequence>
-			<page_sequence>
-				<clause...
-			</page_sequence>
-		</preface>
-		<sections>
-			<page_sequence>
-				<clause...
-			</page_sequence>
-			<page_sequence>
-				<clause...
-			</page_sequence>
-		</sections>
-		<page_sequence>
-			<annex ..
-		</page_sequence>
-		<page_sequence>
-			<annex ..
-		</page_sequence>
-	</metanorma>
-	-->
-	<xsl:template name="processPrefaceAndMainSectionsDefault_items">
-	
-		<xsl:variable name="updated_xml_step_move_pagebreak">
-			<xsl:element name="{$root_element}" namespace="{$namespace_full}">
-				<xsl:call-template name="copyCommonElements"/>
-				<xsl:call-template name="insertPrefaceSectionsPageSequences"/>
-				<xsl:call-template name="insertMainSectionsPageSequences"/>
-			</xsl:element>
-		</xsl:variable>
-		
-		<xsl:variable name="updated_xml_step_move_pagebreak_filename" select="concat($output_path,'_main_', java:getTime(java:java.util.Date.new()), '.xml')"/>
-		
-		<redirect:write file="{$updated_xml_step_move_pagebreak_filename}">
-			<xsl:copy-of select="$updated_xml_step_move_pagebreak"/>
-		</redirect:write>
-		
-		<xsl:copy-of select="document($updated_xml_step_move_pagebreak_filename)"/>
-		
-		<xsl:if test="$debug = 'true'">
-			<redirect:write file="page_sequence_preface_and_main.xml">
-				<xsl:copy-of select="$updated_xml_step_move_pagebreak"/>
-			</redirect:write>
-		</xsl:if>
-		
-		<xsl:call-template name="deleteFile">
-			<xsl:with-param name="filepath" select="$updated_xml_step_move_pagebreak_filename"/>
-		</xsl:call-template>
-	</xsl:template> <!-- END: processPrefaceAndMainSectionsDefault_items -->
-	
-	
-	<xsl:template name="insertPrefaceSectionsPageSequences">
-		<xsl:element name="preface" namespace="{$namespace_full}"> <!-- save context element -->
-			<xsl:element name="page_sequence" namespace="{$namespace_full}">
-				<xsl:for-each select="/*/mn:preface/*[not(self::mn:note or self::mn:admonition)]">
-					<xsl:sort select="@displayorder" data-type="number"/>
-					<xsl:apply-templates select="." mode="update_xml_step_move_pagebreak"/>
-				</xsl:for-each>
-			</xsl:element>
-		</xsl:element>
-	</xsl:template> <!-- END: insertPrefaceSectionsPageSequences -->
-	
-	<xsl:template name="insertMainSectionsPageSequences">
-	
-		<xsl:call-template name="insertSectionsInPageSequence"/>
-	
-		<xsl:element name="page_sequence" namespace="{$namespace_full}">
-			<xsl:for-each select="/*/mn:annex">
-				<xsl:sort select="@displayorder" data-type="number"/>
-				<xsl:apply-templates select="." mode="update_xml_step_move_pagebreak"/>
-			</xsl:for-each>
-		</xsl:element>
-		
-		<xsl:element name="page_sequence" namespace="{$namespace_full}">
-			<xsl:element name="bibliography" namespace="{$namespace_full}"> <!-- save context element -->
-				<xsl:for-each select="/*/mn:bibliography/*[not(@normative='true')] | 
-										/*/mn:bibliography/mn:clause[mn:references[not(@normative='true')]]">
-					<xsl:sort select="@displayorder" data-type="number"/>
-					<xsl:apply-templates select="." mode="update_xml_step_move_pagebreak"/>
-				</xsl:for-each>
-			</xsl:element>
-		</xsl:element>
-	</xsl:template> <!-- END: insertMainSectionsPageSequences -->
-	
-	<xsl:template name="insertSectionsInPageSequence">
-		<xsl:element name="sections" namespace="{$namespace_full}"> <!-- save context element -->
-			<xsl:element name="page_sequence" namespace="{$namespace_full}">
-				<xsl:for-each select="/*/mn:sections/* | /*/mn:bibliography/mn:references[@normative='true']">
-					<xsl:sort select="@displayorder" data-type="number"/>
-					<xsl:apply-templates select="." mode="update_xml_step_move_pagebreak"/>
-					<xsl:if test="$namespace = 'm3d'">
-						<xsl:if test="self::mn:clause and @type='scope'">
-							<xsl:if test="/*/mn:bibliography/mn:references[@normative='true']">
-								<fo:block break-after="page"/>
-								<xsl:element name="pagebreak" namespace="{$namespace_full}"/>
-							</xsl:if>
-						</xsl:if>
-					</xsl:if>
-				</xsl:for-each>
-			</xsl:element>
-		</xsl:element>
-	</xsl:template>
-	
-	<xsl:template name="insertMainSectionsInSeparatePageSequences">
-		<xsl:element name="sections" namespace="{$namespace_full}"> <!-- save context element -->
-			<xsl:for-each select="/*/mn:sections/* | /*/mn:bibliography/mn:references[@normative='true']">
-				<xsl:sort select="@displayorder" data-type="number"/>
-				<xsl:element name="page_sequence" namespace="{$namespace_full}">
-					<xsl:attribute name="main_page_sequence"/>
-					<xsl:apply-templates select="." mode="update_xml_step_move_pagebreak"/>
-				</xsl:element>
-			</xsl:for-each>
-		</xsl:element>
-		
-		<xsl:call-template name="insertAnnexAndBibliographyInSeparatePageSequences"/>
-		
-		<!-- <xsl:call-template name="insertBibliographyInSeparatePageSequences"/> -->
-		
-		<!-- <xsl:call-template name="insertIndexInSeparatePageSequences"/> -->
-	</xsl:template> <!-- END: insertMainSectionsInSeparatePageSequences -->
-	
-	
-	<xsl:template name="insertAnnexAndBibliographyInSeparatePageSequences">
-		<xsl:for-each select="/*/mn:annex | 
-									/*/mn:bibliography/*[not(@normative='true')] | 
-									/*/mn:bibliography/mn:clause[mn:references[not(@normative='true')]] |
-									/*/mn:indexsect">
-			<xsl:sort select="@displayorder" data-type="number"/>
-			<xsl:choose>
-				<xsl:when test="self::mn:annex or self::mn:indexsect">
-					<xsl:element name="page_sequence" namespace="{$namespace_full}">
-						<xsl:attribute name="main_page_sequence"/>
-						<xsl:apply-templates select="." mode="update_xml_step_move_pagebreak"/>
-					</xsl:element>
-				</xsl:when>
-				<xsl:otherwise> <!-- bibliography -->
-					<xsl:element name="bibliography" namespace="{$namespace_full}"> <!-- save context element -->
-						<xsl:element name="page_sequence" namespace="{$namespace_full}">
-							<xsl:attribute name="main_page_sequence"/>
-							<xsl:apply-templates select="." mode="update_xml_step_move_pagebreak"/>
-						</xsl:element>
-					</xsl:element>
-				</xsl:otherwise>
-			</xsl:choose>
-		</xsl:for-each>
-	</xsl:template>
-  
-	<xsl:template name="insertAnnexInSeparatePageSequences">
-		<xsl:for-each select="/*/mn:annex">
-			<xsl:sort select="@displayorder" data-type="number"/>
-			<xsl:element name="page_sequence" namespace="{$namespace_full}">
-				<xsl:attribute name="main_page_sequence"/>
-				<xsl:apply-templates select="." mode="update_xml_step_move_pagebreak"/>
-			</xsl:element>
-		</xsl:for-each>
-	</xsl:template>
-	<xsl:template name="insertBibliographyInSeparatePageSequences">
-		<xsl:element name="bibliography" namespace="{$namespace_full}"> <!-- save context element -->
-			<xsl:for-each select="/*/mn:bibliography/*[not(@normative='true')] | 
-									/*/mn:bibliography/mn:clause[mn:references[not(@normative='true')]]">
-				<xsl:sort select="@displayorder" data-type="number"/>
-				<xsl:element name="page_sequence" namespace="{$namespace_full}">
-					<xsl:attribute name="main_page_sequence"/>
-					<xsl:apply-templates select="." mode="update_xml_step_move_pagebreak"/>
-				</xsl:element>
-			</xsl:for-each>
-		</xsl:element>
-	</xsl:template>
-	<xsl:template name="insertIndexInSeparatePageSequences">
-		<xsl:for-each select="/*/mn:indexsect">
-			<xsl:sort select="@displayorder" data-type="number"/>
-			<xsl:element name="page_sequence" namespace="{$namespace_full}">
-				<xsl:attribute name="main_page_sequence"/>
-				<xsl:apply-templates select="." mode="update_xml_step_move_pagebreak"/>
-			</xsl:element>
-		</xsl:for-each>
-	</xsl:template>
-	
-	<xsl:template name="processAllSectionsDefault_items">
-		<xsl:variable name="updated_xml_step_move_pagebreak">
-			<xsl:element name="{$root_element}" namespace="{$namespace_full}">
-				<xsl:call-template name="copyCommonElements"/>
-				<xsl:element name="page_sequence" namespace="{$namespace_full}">				
-					<xsl:call-template name="insertPrefaceSections"/>
-					<xsl:call-template name="insertMainSections"/>
-				</xsl:element>
-			</xsl:element>
-		</xsl:variable>
-		
-		<xsl:variable name="updated_xml_step_move_pagebreak_filename" select="concat($output_path,'_preface_and_main_', java:getTime(java:java.util.Date.new()), '.xml')"/>
-		<!-- <xsl:message>updated_xml_step_move_pagebreak_filename=<xsl:value-of select="$updated_xml_step_move_pagebreak_filename"/></xsl:message>
-		<xsl:message>start write updated_xml_step_move_pagebreak_filename</xsl:message> -->
-		<redirect:write file="{$updated_xml_step_move_pagebreak_filename}">
-			<xsl:copy-of select="$updated_xml_step_move_pagebreak"/>
-		</redirect:write>
-		<!-- <xsl:message>end write updated_xml_step_move_pagebreak_filename</xsl:message> -->
-		
-		<xsl:copy-of select="document($updated_xml_step_move_pagebreak_filename)"/>
-		
-		<!-- TODO: instead of 
-		<xsl:for-each select=".//mn:page_sequence[normalize-space() != '' or .//image or .//svg]">
-		in each template, add removing empty page_sequence here
-		-->
-		
-		<xsl:if test="$debug = 'true'">
-			<redirect:write file="page_sequence_preface_and_main.xml">
-				<xsl:copy-of select="$updated_xml_step_move_pagebreak"/>
-			</redirect:write>
-		</xsl:if>
-		
-		<!-- <xsl:message>start delete updated_xml_step_move_pagebreak_filename</xsl:message> -->
-		<xsl:call-template name="deleteFile">
-			<xsl:with-param name="filepath" select="$updated_xml_step_move_pagebreak_filename"/>
-		</xsl:call-template>
-		<!-- <xsl:message>end delete updated_xml_step_move_pagebreak_filename</xsl:message> -->
-	</xsl:template> <!-- END: processAllSectionsDefault_items -->
-	
-	<xsl:template name="insertPrefaceSections">
-		<xsl:element name="preface" namespace="{$namespace_full}"> <!-- save context element -->
-			<xsl:for-each select="/*/mn:preface/*[not(self::mn:note or self::mn:admonition)]">
-				<xsl:sort select="@displayorder" data-type="number"/>
-				<xsl:apply-templates select="." mode="update_xml_step_move_pagebreak">
-					<xsl:with-param name="page_sequence_at_top">true</xsl:with-param>
-				</xsl:apply-templates>
-			</xsl:for-each>
-		</xsl:element>
-	</xsl:template>
-	
-	<xsl:template name="insertMainSections">
-		<xsl:element name="sections" namespace="{$namespace_full}"> <!-- save context element -->
-		
-			<xsl:for-each select="/*/mn:sections/* | /*/mn:bibliography/mn:references[@normative='true']">
-				<xsl:sort select="@displayorder" data-type="number"/>
-				<xsl:apply-templates select="." mode="update_xml_step_move_pagebreak">
-					<xsl:with-param name="page_sequence_at_top">true</xsl:with-param>
-				</xsl:apply-templates>
-				<xsl:if test="$namespace = 'm3d'">
-					<xsl:if test="self::mn:clause and @type='scope'">
-						<xsl:if test="/*/mn:bibliography/mn:references[@normative='true']">
-							<fo:block break-after="page"/>
-							<xsl:element name="pagebreak" namespace="{$namespace_full}"/>
-						</xsl:if>
-					</xsl:if>
-				</xsl:if>
-			</xsl:for-each>
-		</xsl:element>
-
-		<xsl:for-each select="/*/mn:annex">
-			<xsl:sort select="@displayorder" data-type="number"/>
-			<xsl:apply-templates select="." mode="update_xml_step_move_pagebreak">
-					<xsl:with-param name="page_sequence_at_top">true</xsl:with-param>
-				</xsl:apply-templates>
-		</xsl:for-each>
-
-		<xsl:element name="bibliography" namespace="{$namespace_full}"> <!-- save context element -->
-			<xsl:for-each select="/*/mn:bibliography/*[not(@normative='true')] | 
-									/*/mn:bibliography/mn:clause[mn:references[not(@normative='true')]]">
-				<xsl:sort select="@displayorder" data-type="number"/>
-				<xsl:apply-templates select="." mode="update_xml_step_move_pagebreak">
-					<xsl:with-param name="page_sequence_at_top">true</xsl:with-param>
-				</xsl:apply-templates>
-			</xsl:for-each>
-		</xsl:element>
-	</xsl:template>
-	
 	
 	<xsl:template name="deleteFile">
 		<xsl:param name="filepath"/>
@@ -659,7 +375,7 @@
 	</xsl:template>
 	
 	
-	<xsl:variable name="regex_standard_reference">([A-Z]{2,}(/[A-Z]{2,})* \d+(-\d+)*(:\d{4})?)</xsl:variable>
+	<xsl:variable name="regex_standard_reference">([A-Z]{2,}(/[A-Z]{2,})* \d+(-\d+)*(:\d{4})?)</xsl:variable> <!-- example: ISO 1234:2000 -->
 	<xsl:variable name="tag_fo_inline_keep-together_within-line_open">###fo:inline keep-together_within-line###</xsl:variable>
 	<xsl:variable name="tag_fo_inline_keep-together_within-line_close">###/fo:inline keep-together_within-line###</xsl:variable>
 	<xsl:template match="text()" name="text">
@@ -712,7 +428,7 @@
 	</xsl:template>
 	
 	
-	<!-- keep-together for standard's name (ISO 12345:2020) -->
+	<!-- keep-together for standard's name (ISO 12345:2020), added in mode="update_xml_enclose_keep-together_within-line" -->
 	<xsl:template match="*[local-name() = 'keep-together_within-line']">
 		<xsl:param name="split_keep-within-line"/>
 		
@@ -772,9 +488,6 @@
 		</xsl:for-each>
 	</xsl:template>
 
-	<!-- for table auto-layout algorithm, see <xsl:template match="*[local-name()='table']" priority="2"> -->
-	<xsl:param name="table_only_with_id"/> <!-- Example: 'table1' -->
-	<xsl:param name="table_only_with_ids"/> <!-- Example: 'table1 table2 table3 ' -->
 
 
 	
@@ -969,42 +682,7 @@
 			</xsl:choose>
 	</xsl:template>
 	
-	<xsl:include href="./common.tab.xsl"/>
 	
-
-	<xsl:variable name="reviews_">
-		<xsl:for-each select="//mn:review[not(parent::mn:review-container)][@from]">
-			<xsl:copy>
-				<xsl:copy-of select="@from"/>
-				<xsl:copy-of select="@id"/>
-			</xsl:copy>
-		</xsl:for-each>
-		<xsl:for-each select="//mn:fmt-review-start[@source]">
-			<xsl:copy>
-				<xsl:copy-of select="@source"/>
-				<xsl:copy-of select="@id"/>
-			</xsl:copy>
-		</xsl:for-each>
-	</xsl:variable>
-	<xsl:variable name="reviews" select="xalan:nodeset($reviews_)"/>
-	
-	<xsl:template name="addReviewHelper">
-		<xsl:if test="$isGenerateTableIF = 'false'">
-			<!-- if there is review with from="...", then add small helper block for Annot tag adding, see 'review' template -->
-			<xsl:variable name="curr_id" select="@id"/>
-			<!-- <xsl:variable name="review_id" select="normalize-space(/@id)"/> -->
-			<xsl:for-each select="$reviews//mn:review[@from = $curr_id]"> <!-- $reviews//mn:fmt-review-start[@source = $curr_id] -->
-				<xsl:variable name="review_id" select="normalize-space(@id)"/>
-				<xsl:if test="$review_id != ''"> <!-- i.e. if review found -->
-					<fo:block keep-with-next="always" line-height="0.1" id="{$review_id}" font-size="1pt" role="SKIP"><xsl:value-of select="$hair_space"/><fo:basic-link internal-destination="{$review_id}" fox:alt-text="Annot___{$review_id}" role="Annot"><xsl:value-of select="$hair_space"/></fo:basic-link></fo:block>
-				</xsl:if>
-			</xsl:for-each>
-		</xsl:if>
-		<!-- <fo:block>
-			<curr_id><xsl:value-of select="$curr_id"/></curr_id>
-			<xsl:copy-of select="$reviews"/>
-		</fo:block> -->
-	</xsl:template>
 	
 	<!-- main sections -->
 	<xsl:template match="/*/mn:sections/*" name="sections_node" priority="2">
@@ -1237,98 +915,6 @@
 			</xsl:if>
 		</xsl:if>
 	</xsl:template>
-	
-	<!-- document text (not figures, or tables) footnotes -->
-	<xsl:variable name="reviews_container_">
-		<xsl:for-each select="//mn:review-container/mn:fmt-review-body">
-			<xsl:variable name="update_xml_step1">
-				<xsl:apply-templates select="." mode="update_xml_step1"/>
-			</xsl:variable>
-			<xsl:apply-templates select="xalan:nodeset($update_xml_step1)" mode="update_xml_enclose_keep-together_within-line"/>
-		</xsl:for-each>
-	</xsl:variable>
-	<xsl:variable name="reviews_container" select="xalan:nodeset($reviews_container_)"/>
-  
-	<xsl:template match="mn:review-container"/>
-	
-	<!-- for old Presentation XML (before https://github.com/metanorma/isodoc/issues/670) -->
-	<xsl:template match="mn:review[not(parent::mn:review-container)]">  <!-- 'review' will be processed in mn2pdf/review.xsl -->
-		<xsl:variable name="id_from" select="normalize-space(current()/@from)"/>
-		<xsl:if test="$isGenerateTableIF = 'false'">
-		<xsl:choose>
-			<!-- if there isn't the attribute '@from', then -->
-			<xsl:when test="$id_from = ''">
-				<fo:block id="{@id}" font-size="1pt" role="SKIP"><xsl:value-of select="$hair_space"/><fo:basic-link internal-destination="{@id}" fox:alt-text="Annot___{@id}" role="Annot"><xsl:value-of select="$hair_space"/></fo:basic-link></fo:block>
-			</xsl:when>
-			<!-- if there isn't element with id 'from', then create 'bookmark' here -->
-			<xsl:when test="ancestor::mn:metanorma and not(ancestor::mn:metanorma//*[@id = $id_from])">
-				<fo:block id="{@from}" font-size="1pt" role="SKIP"><xsl:value-of select="$hair_space"/><fo:basic-link internal-destination="{@from}" fox:alt-text="Annot___{@id}" role="Annot"><xsl:value-of select="$hair_space"/></fo:basic-link></fo:block>
-			</xsl:when>
-			<xsl:when test="not(/*[@id = $id_from]) and not(/*//*[@id = $id_from]) and not(preceding-sibling::*[@id = $id_from])">
-				<fo:block id="{@from}" font-size="1pt" role="SKIP"><xsl:value-of select="$hair_space"/><fo:basic-link internal-destination="{@from}" fox:alt-text="Annot___{@id}" role="Annot"><xsl:value-of select="$hair_space"/></fo:basic-link></fo:block>
-			</xsl:when>
-		</xsl:choose>
-		</xsl:if>
-	</xsl:template>
-	
-	<!-- for new Presentation XML (https://github.com/metanorma/isodoc/issues/670) -->
-	<xsl:template match="mn:fmt-review-start" name="fmt-review-start"> <!-- 'review' will be processed in mn2pdf/review.xsl -->
-		<!-- comment 2019-11-29 -->
-		<!-- <fo:block font-weight="bold">Review:</fo:block>
-		<xsl:apply-templates /> -->
-		
-		<xsl:variable name="id_from" select="normalize-space(current()/@source)"/>
-
-		<xsl:variable name="source" select="normalize-space(@source)"/>
-		
-		<xsl:if test="$isGenerateTableIF = 'false'">
-		<!-- <xsl:variable name="id_from" select="normalize-space(current()/@from)"/> -->
-		
-		<!-- <xsl:if test="@source = @end"> -->
-		<!-- following-sibling::node()[1][local-name() = 'bookmark'][@id = $source] and
-				following-sibling::node()[2][local-name() = 'fmt-review-end'][@source = $source] -->
-			<!-- <fo:block id="{$source}" font-size="1pt" role="SKIP"><xsl:value-of select="$hair_space"/><fo:basic-link internal-destination="{$source}" fox:alt-text="Annot___{$source}" role="Annot"><xsl:value-of select="$hair_space"/></fo:basic-link></fo:block> -->
-			<xsl:call-template name="setNamedDestination"/>
-			<fo:block id="{@id}" font-size="1pt" role="SKIP" keep-with-next="always" line-height="0.1"><xsl:value-of select="$hair_space"/><fo:basic-link internal-destination="{@id}" fox:alt-text="Annot___{@id}" role="Annot"><xsl:value-of select="$hair_space"/></fo:basic-link></fo:block>
-		<!-- </xsl:if> -->
-		</xsl:if>
-		
-		<xsl:if test="1 = 2">
-		<xsl:choose>
-			<!-- if there isn't the attribute '@from', then -->
-			<xsl:when test="$id_from = ''">
-				<fo:block id="{@id}" font-size="1pt" role="SKIP"><xsl:value-of select="$hair_space"/><fo:basic-link internal-destination="{@id}" fox:alt-text="Annot___{@id}" role="Annot"><xsl:value-of select="$hair_space"/></fo:basic-link></fo:block>
-			</xsl:when>
-			<!-- if there isn't element with id 'from', then create 'bookmark' here -->
-			<xsl:when test="ancestor::mn:metanorma and not(ancestor::mn:metanorma//*[@id = $id_from])">
-				<fo:block id="{$id_from}" font-size="1pt" role="SKIP"><xsl:value-of select="$hair_space"/><fo:basic-link internal-destination="{$id_from}" fox:alt-text="Annot___{@id}" role="Annot"><xsl:value-of select="$hair_space"/></fo:basic-link></fo:block>
-			</xsl:when>
-			<xsl:when test="not(/*[@id = $id_from]) and not(/*//*[@id = $id_from]) and not(preceding-sibling::*[@id = $id_from])">
-				<fo:block id="{$id_from}" font-size="1pt" role="SKIP"><xsl:value-of select="$hair_space"/><fo:basic-link internal-destination="{$id_from}" fox:alt-text="Annot___{@id}" role="Annot"><xsl:value-of select="$hair_space"/></fo:basic-link></fo:block>
-			</xsl:when>
-		</xsl:choose>
-		</xsl:if>
-		
-    <xsl:if test="1 = 2">
-		<xsl:choose>
-			<!-- if there isn't the attribute '@from', then -->
-			<xsl:when test="$id_from = ''">
-				<fo:block id="{@id}" font-size="1pt"><xsl:value-of select="$hair_space"/></fo:block>
-			</xsl:when>
-			<!-- if there isn't element with id 'from', then create 'bookmark' here -->
-			<xsl:when test="ancestor::*[contains(local-name(), '-standard')] and not(ancestor::*[contains(local-name(), '-standard')]//*[@id = $id_from])">
-				<fo:block id="{@from}" font-size="1pt"><xsl:value-of select="$hair_space"/></fo:block>
-			</xsl:when>
-			<xsl:when test="not(/*[@id = $id_from]) and not(/*//*[@id = $id_from]) and not(preceding-sibling::*[@id = $id_from])">
-				<fo:block id="{@from}" font-size="1pt"><xsl:value-of select="$hair_space"/></fo:block>
-			</xsl:when>
-		</xsl:choose>
-    </xsl:if>
-		
-	</xsl:template>
-
-	<!-- https://github.com/metanorma/mn-samples-bsi/issues/312 -->
-	<xsl:template match="mn:review[@type = 'other']"/>
 
 	<xsl:template match="mn:name/text()">
 		<!-- 0xA0 to space replacement -->
@@ -1336,7 +922,6 @@
 	</xsl:template>
 	
 	
-	<xsl:include href="./common.errata.xsl"/>
 
 	
 	<!-- insert fo:basic-link, if external-destination or internal-destination is non-empty, otherwise insert fo:inline -->
@@ -1386,7 +971,7 @@
 	</xsl:template>
 	
 
-	<xsl:include href="common.updatexml.xsl"/>
+
 
 	
 	<!-- https://github.com/metanorma/isodoc/issues/652 -->
@@ -1440,7 +1025,7 @@
 		<fo:inline xml:lang="none"><xsl:value-of select="."/></fo:inline>
 	</xsl:template>
 	
-	<xsl:include href="common.ruby.xsl"/>
+
 	
 	<xsl:template name="printEdition">
 		<xsl:variable name="edition_i18n" select="normalize-space((//mn:metanorma)[1]/mn:bibdata/mn:edition[normalize-space(@language) != ''])"/>
@@ -2198,6 +1783,10 @@
 	<xsl:template name="setTrackChangesStyles">
 		<xsl:param name="isAdded"/>
 		<xsl:param name="isDeleted"/>
+		
+		<xsl:variable name="border-block-added">2.5pt solid rgb(0, 176, 80)</xsl:variable>
+		<xsl:variable name="border-block-deleted">2.5pt solid rgb(255, 0, 0)</xsl:variable>
+	
 		<xsl:choose>
 			<xsl:when test="local-name() = 'math'">
 				<xsl:if test="$isAdded = 'true'">
@@ -2222,6 +1811,7 @@
 			</xsl:otherwise>
 		</xsl:choose>
 	</xsl:template> <!-- setTrackChangesStyles -->
+	
 	
 	<!--  see https://xmlgraphics.apache.org/fop/2.5/complexscripts.html#bidi_controls-->
 	<xsl:variable name="LRM" select="'&#x200e;'"/> <!-- U+200E - LEFT-TO-RIGHT MARK (LRM) -->
@@ -2768,6 +2358,9 @@
 		</xsl:choose>
 	</xsl:template>
  
+	<!-- ============================================= -->
+	<!--  mode="print_as_xml", for debug purposes -->
+	<!-- ============================================= -->
 	<xsl:template match="*" mode="print_as_xml">
 		<xsl:param name="level">0</xsl:param>
 
@@ -2804,7 +2397,13 @@
 			</fo:block>
 		</xsl:if>
 	</xsl:template>
+	<!-- ============================================= -->
+	<!-- END: mode="print_as_xml", for debug purposes -->
+	<!-- ============================================= -->
 	
+	<!-- ============================================= -->
+	<!-- mode="set_table_role_skip" -->
+	<!-- ============================================= -->
 	<xsl:template match="@*|node()" mode="set_table_role_skip">
 		<xsl:copy>
 			<xsl:apply-templates select="@*|node()" mode="set_table_role_skip"/>
@@ -2818,6 +2417,8 @@
 			<xsl:apply-templates select="node()" mode="set_table_role_skip"/>
 		</xsl:copy>
 	</xsl:template>
-	
+	<!-- ============================================= -->
+	<!-- END: mode="set_table_role_skip" -->
+	<!-- ============================================= -->
 	
 </xsl:stylesheet>

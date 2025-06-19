@@ -1111,4 +1111,274 @@
 	<!-- END XML UPDATE STEP: enclose standard's name into tag 'keep-together_within-line'  -->
 	<!-- ===================================== -->
 	
+	<!-- Example:
+	<metanorma>
+		<preface>
+			<page_sequence>
+				<clause...
+			</page_sequence>
+			<page_sequence>
+				<clause...
+			</page_sequence>
+		</preface>
+		<sections>
+			<page_sequence>
+				<clause...
+			</page_sequence>
+			<page_sequence>
+				<clause...
+			</page_sequence>
+		</sections>
+		<page_sequence>
+			<annex ..
+		</page_sequence>
+		<page_sequence>
+			<annex ..
+		</page_sequence>
+	</metanorma>
+	-->
+	<xsl:template name="processPrefaceAndMainSectionsDefault_items">
+	
+		<xsl:variable name="updated_xml_step_move_pagebreak">
+			<xsl:element name="{$root_element}" namespace="{$namespace_full}">
+				<xsl:call-template name="copyCommonElements"/>
+				<xsl:call-template name="insertPrefaceSectionsPageSequences"/>
+				<xsl:call-template name="insertMainSectionsPageSequences"/>
+			</xsl:element>
+		</xsl:variable>
+		
+		<xsl:variable name="updated_xml_step_move_pagebreak_filename" select="concat($output_path,'_main_', java:getTime(java:java.util.Date.new()), '.xml')"/>
+		
+		<redirect:write file="{$updated_xml_step_move_pagebreak_filename}">
+			<xsl:copy-of select="$updated_xml_step_move_pagebreak"/>
+		</redirect:write>
+		
+		<xsl:copy-of select="document($updated_xml_step_move_pagebreak_filename)"/>
+		
+		<xsl:if test="$debug = 'true'">
+			<redirect:write file="page_sequence_preface_and_main.xml">
+				<xsl:copy-of select="$updated_xml_step_move_pagebreak"/>
+			</redirect:write>
+		</xsl:if>
+		
+		<xsl:call-template name="deleteFile">
+			<xsl:with-param name="filepath" select="$updated_xml_step_move_pagebreak_filename"/>
+		</xsl:call-template>
+	</xsl:template> <!-- END: processPrefaceAndMainSectionsDefault_items -->
+	
+	
+	<xsl:template name="insertPrefaceSectionsPageSequences">
+		<xsl:element name="preface" namespace="{$namespace_full}"> <!-- save context element -->
+			<xsl:element name="page_sequence" namespace="{$namespace_full}">
+				<xsl:for-each select="/*/mn:preface/*[not(self::mn:note or self::mn:admonition)]">
+					<xsl:sort select="@displayorder" data-type="number"/>
+					<xsl:apply-templates select="." mode="update_xml_step_move_pagebreak"/>
+				</xsl:for-each>
+			</xsl:element>
+		</xsl:element>
+	</xsl:template> <!-- END: insertPrefaceSectionsPageSequences -->
+	
+	<xsl:template name="insertMainSectionsPageSequences">
+	
+		<xsl:call-template name="insertSectionsInPageSequence"/>
+	
+		<xsl:element name="page_sequence" namespace="{$namespace_full}">
+			<xsl:for-each select="/*/mn:annex">
+				<xsl:sort select="@displayorder" data-type="number"/>
+				<xsl:apply-templates select="." mode="update_xml_step_move_pagebreak"/>
+			</xsl:for-each>
+		</xsl:element>
+		
+		<xsl:element name="page_sequence" namespace="{$namespace_full}">
+			<xsl:element name="bibliography" namespace="{$namespace_full}"> <!-- save context element -->
+				<xsl:for-each select="/*/mn:bibliography/*[not(@normative='true')] | 
+										/*/mn:bibliography/mn:clause[mn:references[not(@normative='true')]]">
+					<xsl:sort select="@displayorder" data-type="number"/>
+					<xsl:apply-templates select="." mode="update_xml_step_move_pagebreak"/>
+				</xsl:for-each>
+			</xsl:element>
+		</xsl:element>
+	</xsl:template> <!-- END: insertMainSectionsPageSequences -->
+	
+	<xsl:template name="insertSectionsInPageSequence">
+		<xsl:element name="sections" namespace="{$namespace_full}"> <!-- save context element -->
+			<xsl:element name="page_sequence" namespace="{$namespace_full}">
+				<xsl:for-each select="/*/mn:sections/* | /*/mn:bibliography/mn:references[@normative='true']">
+					<xsl:sort select="@displayorder" data-type="number"/>
+					<xsl:apply-templates select="." mode="update_xml_step_move_pagebreak"/>
+					<xsl:if test="$namespace = 'm3d'">
+						<xsl:if test="self::mn:clause and @type='scope'">
+							<xsl:if test="/*/mn:bibliography/mn:references[@normative='true']">
+								<fo:block break-after="page"/>
+								<xsl:element name="pagebreak" namespace="{$namespace_full}"/>
+							</xsl:if>
+						</xsl:if>
+					</xsl:if>
+				</xsl:for-each>
+			</xsl:element>
+		</xsl:element>
+	</xsl:template>
+	
+	<xsl:template name="insertMainSectionsInSeparatePageSequences">
+		<xsl:element name="sections" namespace="{$namespace_full}"> <!-- save context element -->
+			<xsl:for-each select="/*/mn:sections/* | /*/mn:bibliography/mn:references[@normative='true']">
+				<xsl:sort select="@displayorder" data-type="number"/>
+				<xsl:element name="page_sequence" namespace="{$namespace_full}">
+					<xsl:attribute name="main_page_sequence"/>
+					<xsl:apply-templates select="." mode="update_xml_step_move_pagebreak"/>
+				</xsl:element>
+			</xsl:for-each>
+		</xsl:element>
+		
+		<xsl:call-template name="insertAnnexAndBibliographyInSeparatePageSequences"/>
+		
+		<!-- <xsl:call-template name="insertBibliographyInSeparatePageSequences"/> -->
+		
+		<!-- <xsl:call-template name="insertIndexInSeparatePageSequences"/> -->
+	</xsl:template> <!-- END: insertMainSectionsInSeparatePageSequences -->
+	
+	
+	<xsl:template name="insertAnnexAndBibliographyInSeparatePageSequences">
+		<xsl:for-each select="/*/mn:annex | 
+									/*/mn:bibliography/*[not(@normative='true')] | 
+									/*/mn:bibliography/mn:clause[mn:references[not(@normative='true')]] |
+									/*/mn:indexsect">
+			<xsl:sort select="@displayorder" data-type="number"/>
+			<xsl:choose>
+				<xsl:when test="self::mn:annex or self::mn:indexsect">
+					<xsl:element name="page_sequence" namespace="{$namespace_full}">
+						<xsl:attribute name="main_page_sequence"/>
+						<xsl:apply-templates select="." mode="update_xml_step_move_pagebreak"/>
+					</xsl:element>
+				</xsl:when>
+				<xsl:otherwise> <!-- bibliography -->
+					<xsl:element name="bibliography" namespace="{$namespace_full}"> <!-- save context element -->
+						<xsl:element name="page_sequence" namespace="{$namespace_full}">
+							<xsl:attribute name="main_page_sequence"/>
+							<xsl:apply-templates select="." mode="update_xml_step_move_pagebreak"/>
+						</xsl:element>
+					</xsl:element>
+				</xsl:otherwise>
+			</xsl:choose>
+		</xsl:for-each>
+	</xsl:template>
+  
+	<xsl:template name="insertAnnexInSeparatePageSequences">
+		<xsl:for-each select="/*/mn:annex">
+			<xsl:sort select="@displayorder" data-type="number"/>
+			<xsl:element name="page_sequence" namespace="{$namespace_full}">
+				<xsl:attribute name="main_page_sequence"/>
+				<xsl:apply-templates select="." mode="update_xml_step_move_pagebreak"/>
+			</xsl:element>
+		</xsl:for-each>
+	</xsl:template>
+	<xsl:template name="insertBibliographyInSeparatePageSequences">
+		<xsl:element name="bibliography" namespace="{$namespace_full}"> <!-- save context element -->
+			<xsl:for-each select="/*/mn:bibliography/*[not(@normative='true')] | 
+									/*/mn:bibliography/mn:clause[mn:references[not(@normative='true')]]">
+				<xsl:sort select="@displayorder" data-type="number"/>
+				<xsl:element name="page_sequence" namespace="{$namespace_full}">
+					<xsl:attribute name="main_page_sequence"/>
+					<xsl:apply-templates select="." mode="update_xml_step_move_pagebreak"/>
+				</xsl:element>
+			</xsl:for-each>
+		</xsl:element>
+	</xsl:template>
+	<xsl:template name="insertIndexInSeparatePageSequences">
+		<xsl:for-each select="/*/mn:indexsect">
+			<xsl:sort select="@displayorder" data-type="number"/>
+			<xsl:element name="page_sequence" namespace="{$namespace_full}">
+				<xsl:attribute name="main_page_sequence"/>
+				<xsl:apply-templates select="." mode="update_xml_step_move_pagebreak"/>
+			</xsl:element>
+		</xsl:for-each>
+	</xsl:template>
+	
+	<xsl:template name="processAllSectionsDefault_items">
+		<xsl:variable name="updated_xml_step_move_pagebreak">
+			<xsl:element name="{$root_element}" namespace="{$namespace_full}">
+				<xsl:call-template name="copyCommonElements"/>
+				<xsl:element name="page_sequence" namespace="{$namespace_full}">				
+					<xsl:call-template name="insertPrefaceSections"/>
+					<xsl:call-template name="insertMainSections"/>
+				</xsl:element>
+			</xsl:element>
+		</xsl:variable>
+		
+		<xsl:variable name="updated_xml_step_move_pagebreak_filename" select="concat($output_path,'_preface_and_main_', java:getTime(java:java.util.Date.new()), '.xml')"/>
+		<!-- <xsl:message>updated_xml_step_move_pagebreak_filename=<xsl:value-of select="$updated_xml_step_move_pagebreak_filename"/></xsl:message>
+		<xsl:message>start write updated_xml_step_move_pagebreak_filename</xsl:message> -->
+		<redirect:write file="{$updated_xml_step_move_pagebreak_filename}">
+			<xsl:copy-of select="$updated_xml_step_move_pagebreak"/>
+		</redirect:write>
+		<!-- <xsl:message>end write updated_xml_step_move_pagebreak_filename</xsl:message> -->
+		
+		<xsl:copy-of select="document($updated_xml_step_move_pagebreak_filename)"/>
+		
+		<!-- TODO: instead of 
+		<xsl:for-each select=".//mn:page_sequence[normalize-space() != '' or .//image or .//svg]">
+		in each template, add removing empty page_sequence here
+		-->
+		
+		<xsl:if test="$debug = 'true'">
+			<redirect:write file="page_sequence_preface_and_main.xml">
+				<xsl:copy-of select="$updated_xml_step_move_pagebreak"/>
+			</redirect:write>
+		</xsl:if>
+		
+		<!-- <xsl:message>start delete updated_xml_step_move_pagebreak_filename</xsl:message> -->
+		<xsl:call-template name="deleteFile">
+			<xsl:with-param name="filepath" select="$updated_xml_step_move_pagebreak_filename"/>
+		</xsl:call-template>
+		<!-- <xsl:message>end delete updated_xml_step_move_pagebreak_filename</xsl:message> -->
+	</xsl:template> <!-- END: processAllSectionsDefault_items -->
+	
+	<xsl:template name="insertPrefaceSections">
+		<xsl:element name="preface" namespace="{$namespace_full}"> <!-- save context element -->
+			<xsl:for-each select="/*/mn:preface/*[not(self::mn:note or self::mn:admonition)]">
+				<xsl:sort select="@displayorder" data-type="number"/>
+				<xsl:apply-templates select="." mode="update_xml_step_move_pagebreak">
+					<xsl:with-param name="page_sequence_at_top">true</xsl:with-param>
+				</xsl:apply-templates>
+			</xsl:for-each>
+		</xsl:element>
+	</xsl:template>
+	
+	<xsl:template name="insertMainSections">
+		<xsl:element name="sections" namespace="{$namespace_full}"> <!-- save context element -->
+		
+			<xsl:for-each select="/*/mn:sections/* | /*/mn:bibliography/mn:references[@normative='true']">
+				<xsl:sort select="@displayorder" data-type="number"/>
+				<xsl:apply-templates select="." mode="update_xml_step_move_pagebreak">
+					<xsl:with-param name="page_sequence_at_top">true</xsl:with-param>
+				</xsl:apply-templates>
+				<xsl:if test="$namespace = 'm3d'">
+					<xsl:if test="self::mn:clause and @type='scope'">
+						<xsl:if test="/*/mn:bibliography/mn:references[@normative='true']">
+							<fo:block break-after="page"/>
+							<xsl:element name="pagebreak" namespace="{$namespace_full}"/>
+						</xsl:if>
+					</xsl:if>
+				</xsl:if>
+			</xsl:for-each>
+		</xsl:element>
+
+		<xsl:for-each select="/*/mn:annex">
+			<xsl:sort select="@displayorder" data-type="number"/>
+			<xsl:apply-templates select="." mode="update_xml_step_move_pagebreak">
+					<xsl:with-param name="page_sequence_at_top">true</xsl:with-param>
+				</xsl:apply-templates>
+		</xsl:for-each>
+
+		<xsl:element name="bibliography" namespace="{$namespace_full}"> <!-- save context element -->
+			<xsl:for-each select="/*/mn:bibliography/*[not(@normative='true')] | 
+									/*/mn:bibliography/mn:clause[mn:references[not(@normative='true')]]">
+				<xsl:sort select="@displayorder" data-type="number"/>
+				<xsl:apply-templates select="." mode="update_xml_step_move_pagebreak">
+					<xsl:with-param name="page_sequence_at_top">true</xsl:with-param>
+				</xsl:apply-templates>
+			</xsl:for-each>
+		</xsl:element>
+	</xsl:template>
+	
 </xsl:stylesheet>
